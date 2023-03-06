@@ -1,1 +1,0 @@
-# Pears-Samp

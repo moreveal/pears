@@ -1,0 +1,184 @@
+
+--------------------------
+SA-MP Server: 0.3.7-R2
+
+Exception At Address: 0x0048D56F Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000001	EBX: 0x02388DA0	ECX: 0x0238D808	EDX: 0x69567110
+ESI: 0x000003E8	EDI: 0x000003E8	EBP: 0x00000000	ESP: 0x0019FE20
+EFLAGS: 0x00010202
+
+Stack:
++0000: 0x00000000   0x000023F0   0x0019FF70   0x0039F000
++0010: 0x00017E2C   0x00010101   0x00000005   0x00001E61
++0020: 0x0000017C   0x00001DD8   0x02389E28   0x656D6167
++0030: 0x65646F6D   0x00003531   0x004C4020   0x004C401C
++0040: 0x0039F000   0x004AB4A0   0x0019FE58   0x0019FF60
++0050: 0x0019FF60   0x0049D208   0x004BA2F8   0xFFFFFFFF
++0060: 0x0049B4A1   0x0049B4B1   0x004AB4A0   0x0019FF60
++0070: 0x004AB0E1   0xFFFFFFFF   0x0049CCA6   0x00000001
++0080: 0x023815E0   0x02381638   0x00000094   0x00000006
++0090: 0x00000002   0x000023F0   0x00000002   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x00000000   0x00000000
++00F0: 0x00000000   0x00000000   0x00000000   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x0049CB52   0x0049CB3A
++0120: 0x0049CB3A   0x0039F000   0x00000000   0x00000000
++0130: 0xC0000005   0x00000000   0x0019FEA8   0x0019F7DC
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x00519000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\samp-server.exe)
+ntdll.dll	A: 0x77790000 - 0x77934000	(C:\Windows\SYSTEM32\ntdll.dll)
+KERNEL32.DLL	A: 0x76FF0000 - 0x770E0000	(C:\Windows\System32\KERNEL32.DLL)
+KERNELBASE.dll	A: 0x77560000 - 0x7777C000	(C:\Windows\System32\KERNELBASE.dll)
+SHELL32.dll	A: 0x76770000 - 0x76D25000	(C:\Windows\System32\SHELL32.dll)
+msvcp_win.dll	A: 0x75D40000 - 0x75DBB000	(C:\Windows\System32\msvcp_win.dll)
+ucrtbase.dll	A: 0x77190000 - 0x772B0000	(C:\Windows\System32\ucrtbase.dll)
+USER32.dll	A: 0x76200000 - 0x7639C000	(C:\Windows\System32\USER32.dll)
+win32u.dll	A: 0x772B0000 - 0x772C8000	(C:\Windows\System32\win32u.dll)
+GDI32.dll	A: 0x76EA0000 - 0x76EC3000	(C:\Windows\System32\GDI32.dll)
+gdi32full.dll	A: 0x76ED0000 - 0x76FB0000	(C:\Windows\System32\gdi32full.dll)
+WINMM.dll	A: 0x75310000 - 0x75338000	(C:\Windows\SYSTEM32\WINMM.dll)
+msvcrt.dll	A: 0x759D0000 - 0x75A8F000	(C:\Windows\System32\msvcrt.dll)
+WSOCK32.dll	A: 0x63AF0000 - 0x63AF8000	(C:\Windows\SYSTEM32\WSOCK32.dll)
+WS2_32.dll	A: 0x75CD0000 - 0x75D33000	(C:\Windows\System32\WS2_32.dll)
+RPCRT4.dll	A: 0x75B20000 - 0x75BDE000	(C:\Windows\System32\RPCRT4.dll)
+IMM32.DLL	A: 0x77530000 - 0x77556000	(C:\Windows\System32\IMM32.DLL)
+sampvoice.DLL	A: 0x717D0000 - 0x717FB000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\sampvoice.DLL)
+MSVCP140.dll	A: 0x681C0000 - 0x6822D000	(C:\Windows\SYSTEM32\MSVCP140.dll)
+VCRUNTIME140.dll	A: 0x68FC0000 - 0x68FD5000	(C:\Windows\SYSTEM32\VCRUNTIME140.dll)
+kernel.appcore.dll	A: 0x734B0000 - 0x734BF000	(C:\Windows\SYSTEM32\kernel.appcore.dll)
+MSVCR100.dll	A: 0x701A0000 - 0x7025F000	(C:\Windows\SYSTEM32\MSVCR100.dll)
+MSVCP100.dll	A: 0x6A9B0000 - 0x6AA19000	(C:\Windows\SYSTEM32\MSVCP100.dll)
+mysql.DLL	A: 0x71710000 - 0x71762000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\mysql.DLL)
+libmariadb.dll	A: 0x5EF40000 - 0x5F021000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\libmariadb.dll)
+log-core.dll	A: 0x70180000 - 0x7019C000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\log-core.dll)
+ADVAPI32.dll	A: 0x773D0000 - 0x7744B000	(C:\Windows\System32\ADVAPI32.dll)
+sechost.dll	A: 0x76630000 - 0x766A6000	(C:\Windows\System32\sechost.dll)
+CRYPTBASE.DLL	A: 0x74E10000 - 0x74E1A000	(C:\Windows\SYSTEM32\CRYPTBASE.DLL)
+napinsp.dll	A: 0x67190000 - 0x671A1000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x67170000 - 0x67186000	(C:\Windows\system32\pnrpnsp.dll)
+wshbth.dll	A: 0x68F10000 - 0x68F20000	(C:\Windows\system32\wshbth.dll)
+NLAapi.dll	A: 0x67150000 - 0x67166000	(C:\Windows\system32\NLAapi.dll)
+IPHLPAPI.DLL	A: 0x752A0000 - 0x752D2000	(C:\Windows\SYSTEM32\IPHLPAPI.DLL)
+mswsock.dll	A: 0x73520000 - 0x73572000	(C:\Windows\System32\mswsock.dll)
+DNSAPI.dll	A: 0x73920000 - 0x739B0000	(C:\Windows\SYSTEM32\DNSAPI.dll)
+NSI.dll	A: 0x756E0000 - 0x756E7000	(C:\Windows\System32\NSI.dll)
+winrnr.dll	A: 0x67140000 - 0x6714E000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x72670000 - 0x72678000	(C:\Windows\System32\rasadhlp.dll)
+streamer.DLL	A: 0x6A950000 - 0x6A9AA000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\streamer.DLL)
+pawnraknet.DLL	A: 0x69550000 - 0x695BB000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\pawnraknet.DLL)
+sscanf.DLL	A: 0x1FA20000 - 0x1FA2F000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\sscanf.DLL)
+audio.DLL	A: 0x5EEF0000 - 0x5EF3C000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\audio.DLL)
+MSVCR90.dll	A: 0x5EE40000 - 0x5EEE3000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.9625_none_508ef7e4bcbbe589\MSVCR90.dll)
+MSVCP90.dll	A: 0x5EDB0000 - 0x5EE3E000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.9625_none_508ef7e4bcbbe589\MSVCP90.dll)
+TOTP.DLL	A: 0x70160000 - 0x70177000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\TOTP.DLL)
+YSF.DLL	A: 0x1FCC0000 - 0x1FD6A000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\YSF.DLL)
+combase.dll	A: 0x756F0000 - 0x75970000	(C:\Windows\System32\combase.dll)
+OLEAUT32.dll	A: 0x75BE0000 - 0x75C76000	(C:\Windows\System32\OLEAUT32.dll)
+bcrypt.dll	A: 0x76FB0000 - 0x76FC9000	(C:\Windows\System32\bcrypt.dll)
+SHCORE.dll	A: 0x763A0000 - 0x76427000	(C:\Windows\System32\SHCORE.dll)
+bcryptPrimitives.dll	A: 0x76710000 - 0x7676F000	(C:\Windows\System32\bcryptPrimitives.dll)
+shlwapi.dll	A: 0x75C80000 - 0x75CC5000	(C:\Windows\System32\shlwapi.dll)
+windows.storage.dll	A: 0x72A80000 - 0x7308A000	(C:\Windows\SYSTEM32\windows.storage.dll)
+uxtheme.dll	A: 0x73430000 - 0x734A4000	(C:\Windows\system32\uxtheme.dll)
+PROPSYS.dll	A: 0x68510000 - 0x685D2000	(C:\Windows\SYSTEM32\PROPSYS.dll)
+
+--------------------------
+SA-MP Server: 0.3.7-R2
+
+Exception At Address: 0x0048D56F Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000001	EBX: 0x022D8DA0	ECX: 0x022DD808	EDX: 0x5E127110
+ESI: 0x000003E8	EDI: 0x000003E8	EBP: 0x00000000	ESP: 0x0019FE20
+EFLAGS: 0x00010202
+
+Stack:
++0000: 0x00000000   0x000023F0   0x0019FF70   0x00386000
++0010: 0x00017E2C   0x00010101   0x00000005   0x00001E61
++0020: 0x00000104   0x00003744   0x022D9E28   0x656D6167
++0030: 0x65646F6D   0x00003531   0x004C4020   0x004C401C
++0040: 0x00386000   0x004AB4A0   0x0019FE58   0x0019FF60
++0050: 0x0019FF60   0x0049D208   0x004BA2F8   0xFFFFFFFF
++0060: 0x0049B4A1   0x0049B4B1   0x004AB4A0   0x0019FF60
++0070: 0x004AB0E1   0xFFFFFFFF   0x0049CCA6   0x00000001
++0080: 0x022D15E0   0x022D1638   0x00000094   0x00000006
++0090: 0x00000002   0x000023F0   0x00000002   0x00000000
++00A0: 0x00000000   0x00000000   0x00000000   0x00000000
++00B0: 0x00000000   0x00000000   0x00000000   0x00000000
++00C0: 0x00000000   0x00000000   0x00000000   0x00000000
++00D0: 0x00000000   0x00000000   0x00000000   0x00000000
++00E0: 0x00000000   0x00000000   0x00000000   0x00000000
++00F0: 0x00000000   0x00000000   0x00000000   0x00000000
++0100: 0x00000000   0x00000000   0x00000000   0x00000000
++0110: 0x00000000   0x00000000   0x0049CB52   0x0049CB3A
++0120: 0x0049CB3A   0x00386000   0x00000000   0x00000000
++0130: 0xC0000005   0x00000000   0x0019FEA8   0x0019F7DC
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x00519000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\samp-server.exe)
+ntdll.dll	A: 0x77CF0000 - 0x77E94000	(C:\Windows\SYSTEM32\ntdll.dll)
+KERNEL32.DLL	A: 0x76DC0000 - 0x76EB0000	(C:\Windows\System32\KERNEL32.DLL)
+KERNELBASE.dll	A: 0x76760000 - 0x7697C000	(C:\Windows\System32\KERNELBASE.dll)
+SHELL32.dll	A: 0x76100000 - 0x766B5000	(C:\Windows\System32\SHELL32.dll)
+msvcp_win.dll	A: 0x778C0000 - 0x7793B000	(C:\Windows\System32\msvcp_win.dll)
+ucrtbase.dll	A: 0x777A0000 - 0x778C0000	(C:\Windows\System32\ucrtbase.dll)
+USER32.dll	A: 0x77A40000 - 0x77BDC000	(C:\Windows\System32\USER32.dll)
+win32u.dll	A: 0x771C0000 - 0x771D8000	(C:\Windows\System32\win32u.dll)
+GDI32.dll	A: 0x77520000 - 0x77543000	(C:\Windows\System32\GDI32.dll)
+gdi32full.dll	A: 0x76EB0000 - 0x76F90000	(C:\Windows\System32\gdi32full.dll)
+WSOCK32.dll	A: 0x706B0000 - 0x706B8000	(C:\Windows\SYSTEM32\WSOCK32.dll)
+msvcrt.dll	A: 0x75F20000 - 0x75FDF000	(C:\Windows\System32\msvcrt.dll)
+WS2_32.dll	A: 0x77C70000 - 0x77CD3000	(C:\Windows\System32\WS2_32.dll)
+RPCRT4.dll	A: 0x76040000 - 0x760FE000	(C:\Windows\System32\RPCRT4.dll)
+WINMM.dll	A: 0x75870000 - 0x75898000	(C:\Windows\SYSTEM32\WINMM.dll)
+IMM32.DLL	A: 0x773F0000 - 0x77416000	(C:\Windows\System32\IMM32.DLL)
+sampvoice.DLL	A: 0x5F700000 - 0x5F72B000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\sampvoice.DLL)
+MSVCP140.dll	A: 0x72D50000 - 0x72DBD000	(C:\Windows\SYSTEM32\MSVCP140.dll)
+VCRUNTIME140.dll	A: 0x73890000 - 0x738A5000	(C:\Windows\SYSTEM32\VCRUNTIME140.dll)
+kernel.appcore.dll	A: 0x73A70000 - 0x73A7F000	(C:\Windows\SYSTEM32\kernel.appcore.dll)
+MSVCR100.dll	A: 0x5E330000 - 0x5E3EF000	(C:\Windows\SYSTEM32\MSVCR100.dll)
+MSVCP100.dll	A: 0x5F210000 - 0x5F279000	(C:\Windows\SYSTEM32\MSVCP100.dll)
+mysql.DLL	A: 0x5E2D0000 - 0x5E322000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\mysql.DLL)
+log-core.dll	A: 0x5F6E0000 - 0x5F6FC000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\log-core.dll)
+libmariadb.dll	A: 0x5E1E0000 - 0x5E2C1000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\libmariadb.dll)
+ADVAPI32.dll	A: 0x772C0000 - 0x7733B000	(C:\Windows\System32\ADVAPI32.dll)
+sechost.dll	A: 0x77240000 - 0x772B6000	(C:\Windows\System32\sechost.dll)
+CRYPTBASE.DLL	A: 0x75370000 - 0x7537A000	(C:\Windows\SYSTEM32\CRYPTBASE.DLL)
+napinsp.dll	A: 0x72F60000 - 0x72F71000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x72B10000 - 0x72B26000	(C:\Windows\system32\pnrpnsp.dll)
+wshbth.dll	A: 0x72B00000 - 0x72B10000	(C:\Windows\system32\wshbth.dll)
+NLAapi.dll	A: 0x725E0000 - 0x725F6000	(C:\Windows\system32\NLAapi.dll)
+IPHLPAPI.DLL	A: 0x75560000 - 0x75592000	(C:\Windows\SYSTEM32\IPHLPAPI.DLL)
+mswsock.dll	A: 0x73A80000 - 0x73AD2000	(C:\Windows\System32\mswsock.dll)
+DNSAPI.dll	A: 0x73C40000 - 0x73CD0000	(C:\Windows\SYSTEM32\DNSAPI.dll)
+NSI.dll	A: 0x77BE0000 - 0x77BE7000	(C:\Windows\System32\NSI.dll)
+winrnr.dll	A: 0x725D0000 - 0x725DE000	(C:\Windows\System32\winrnr.dll)
+rasadhlp.dll	A: 0x706A0000 - 0x706A8000	(C:\Windows\System32\rasadhlp.dll)
+streamer.DLL	A: 0x5E180000 - 0x5E1DA000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\streamer.DLL)
+pawnraknet.DLL	A: 0x5E110000 - 0x5E17B000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\pawnraknet.DLL)
+sscanf.DLL	A: 0x1FA00000 - 0x1FA0F000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\sscanf.DLL)
+audio.DLL	A: 0x5E0C0000 - 0x5E10C000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\audio.DLL)
+MSVCR90.dll	A: 0x5E010000 - 0x5E0B3000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.9625_none_508ef7e4bcbbe589\MSVCR90.dll)
+MSVCP90.dll	A: 0x5DF80000 - 0x5E00E000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.9625_none_508ef7e4bcbbe589\MSVCP90.dll)
+TOTP.DLL	A: 0x5F1E0000 - 0x5F1F7000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\TOTP.DLL)
+YSF.DLL	A: 0x1FB90000 - 0x1FC3A000	(C:\Users\felik\OneDrive\Рабочий стол\Pears Project\plugins\YSF.DLL)
+combase.dll	A: 0x75BB0000 - 0x75E30000	(C:\Windows\System32\combase.dll)
+OLEAUT32.dll	A: 0x766C0000 - 0x76756000	(C:\Windows\System32\OLEAUT32.dll)
+bcrypt.dll	A: 0x77C50000 - 0x77C69000	(C:\Windows\System32\bcrypt.dll)
+SHCORE.dll	A: 0x770D0000 - 0x77157000	(C:\Windows\System32\SHCORE.dll)
+bcryptPrimitives.dll	A: 0x77BF0000 - 0x77C4F000	(C:\Windows\System32\bcryptPrimitives.dll)
+shlwapi.dll	A: 0x76F90000 - 0x76FD5000	(C:\Windows\System32\shlwapi.dll)
+windows.storage.dll	A: 0x72FE0000 - 0x735EA000	(C:\Windows\SYSTEM32\windows.storage.dll)
+uxtheme.dll	A: 0x739F0000 - 0x73A64000	(C:\Windows\system32\uxtheme.dll)
+PROPSYS.dll	A: 0x72470000 - 0x72532000	(C:\Windows\SYSTEM32\PROPSYS.dll)

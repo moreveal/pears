@@ -1,0 +1,1528 @@
+//==================================
+//=====[ ѕараметры »нвентарей ]=====
+//==================================
+// ƒобавление нового ѕредмета:
+// 0. INVENTER + 1 предмет
+// 1. fdrawName и fdrawNameEN - его название в текстдравах
+// 2. friskName - просто его название
+// 3. friskPick - его модель объекта на текстдравах
+// 4. friskKol - имеет ли предмет множественное количество
+// 5. friskDefault - гос. цена предмета
+
+// Ќе количественный:
+// 6. player_tile (юзать его только и всЄ)
+
+//  оличественный:
+// 6.  player_tile (юзать предмет)
+// 7.  v_limit - лимиты багажника (сколько помещаетс€)
+// 8.  d_limit - лимиты дома (сколько помещаетс€)
+// 9. i_limit - лимиты инвентар€ (сколько помещаетс€)
+
+#define INVENTER 179 // ћаксимальный ID (обычный предмет)
+
+// “ип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
+
+new fdrawName[][] = // Ќазвание ¬ещи
+{
+    "","XЗEА","ИOЗOПOE_KOЗТЙO","АYПСЗKA","ПPAЛA","CМЕГС","ВPЕАС","МOPOОOK","AМПEНKA","KAHЕCПPA","МOХC_CO_ЛИPСЛНAПKOЕ",
+    "АOMАA","ГEПOHAПOP","ЛEPEЛKA","МЕЛO","none","МAНKA_CЕВAPEП","АPOHХ","HAДЕЛKA","OПMСНKЕ","PСАA","PAЙЕХ",
+    "MХCO","MEОOK","ОAОKA_ПAKCЕ","ГEHТВЕ","CMAPПБOH","AMMO 20,8mm","AMMO 11,43mm","AMMO 5,45mm","AMMO 45mm","YГOНKA","БOHAPЕK",
+	"BOX","TOY","MAN","CHRISTMAS GIFT","ОAMМAHCKOE","АOKAЗ","YМAKOЛKA","БEЕEPЛEPK","АEHВAЗТCKЕE OВHЕ","HOYПАYK","ОOKEP",
+	"ЗOМAПA","KAPПA MOPХKA","MOPCKAХ ИЛEИГA","PAKYОKA","HAГYЛHAХ ЗOГKA","CYHГYK C COKPOЛЕКAMЕ", "ЗOЛYОKA ГЗХ AKYЗС","МACМOPП",
+	"YВЗЕ","ИAДЕВAЗKA","ДAPEHOE MХCO","ДAPEHAХ PСАA","ПЕПAH","MOЗЕАГEH","YPAH","MEПEOPЕП","МAЗЗAГЕЕ","ВEЗЕЕ 3","PlayBoy",
+	"MEГ KAPПA","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","MYCOP","TPYМ","АЕHT","МPEИEPЛAПЕЛС",
+	"ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO",
+	"ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","ЗEKAPCПЛO","CEMEHA","KAPПOОKA","MOHПЕPOЛKA","KAPПA COKPOЛЕК",
+	"ГPEЛHХХ ЛA3A","YPHA","CЗЕПOK","CПAПYУПKA","АOKAЗ C KPOЛТФ","KYXOHHСЖ HOД","АOKAЗ C KPOЛТФ","АAHAH","ХАЗOKO","AМEЗТCЕH",
+	"MOЗOKO","ПСKЛA","KAPПOОKA","ПOMAП","YГOАPEHЕE","АСНТХ KPOЛТ","CEMEHA ПСKЛС","CEMEHA_ПOMAПOЛ","PACCAГA","KOCПЕ",
+	"ЛOГKA","ЛЕHO","ЛЕCKЕ","KOHТХK","АPУHГЕ","CЕГP","CЕГP","МЕЛO","SPRUNK","KOБE",
+	"АOKAЗ","KPYДKA","SPRUNK","АYPВEP","АYPВEP","POЗЗ","HAАOP_1","HAАOP_2","HAАOP_3","HAАOP_4",
+	"HAАOP_5","HAАOP_6","HAАOP_7","HAАOP_8","HAАOP_9","HAАOP_10","HAАOP_11","SPRUNK","KOCХK","XOП ГOВ",
+	"CЕВAPEПA","CЕВAPA","YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK",
+	"YНEАHЕK","YНEАHЕK","YНEАHЕK","YНEАHЕK","МPAЛA","ЗЕЙEH3ЕХ","МPAЛA","ЗЕЙEH3ЕХ","ГМЕЗOM","ЗЕЙEH3ЕХ",
+	"ЗЕЙEH3ЕХ","TOPT","KYCOK ПOPПA", "МЕЙЙA", "МЕЙЙA ГOM.", "KYCOK МЕЙЙС", "MХCO Л YМAK.", "CСPOЖ CПEЖK", "ДAPEHСЖ CПEЖK", "ЗOMПЕK XЗEАA",
+	"COK AМEЗТCЕH.", "COK ХАЗOН.", "OЛOКЕ", "CЕВHAЗЕ?AЙЕХ", "CЕВHAЗЕ?AЙЕХ", "CЕВHAЗЕ?AЙЕХ", "ПOМЗЕЛO"
+};
+new fdrawNameEN[][] = // Ќазвание ¬ещи на јнглийском
+{
+    "","BREAD","WEDDING RING","BOTTLE","WEED","PILL","MUSHROOMS","POWDER","AID KIT","CANISTER","EXPLOSIVES",
+    "BOMB","DETONATOR","ROPE","BEER","POISON","CIGARETTES","ARMOR","BAIT","MASTER KEY","FISH","TRANSMITTER",
+    "MEAT","BAG","TAXI CHECKER","MONEY","SMARTPHONE","AMMO 20,8mm","AMMO 11,43mm","AMMO 5,45mm","AMMO 45mm","FISHING ROD","LANTERN",
+	"BOX","TOY","MAN","CHRISTMAS GIFT","CHAMPAGNE","GLASS","PACKAGING","FIREWORK","SPARKLER","LAPTOP","SHOCKER",
+	"SHOVEL","SEA MAP","STARFISH","SEASHELL","INFLATABLE BOAT","TREASURES", "SHARK TRAP","PASSPORT",
+	"COALS","LIGHTER","FRIED MEAT","FRIED FISH","TITANIUM","MOLYBDENUM","URANUS","METEORITE","PALLADIUM","HELIUM 3","PLAYBOY",
+	"MEDICAL CARD","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","TRASH","CORPSE","BANDAGE","CONDOMS",
+	"MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE",
+	"MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","SEEDS","POTATO","TIRE IRON","TREASURE MAP",
+	"ANCIENT VASE","URN","GOLD","STATUETTE","GLASS OF BLOOD","KITCHEN KNIFE","GLASS OF BLOOD","BANANA","APPLE","ORANGE",
+	"MILK","PUMPKIN","POTATO","TOMATO","FERTILIZER","BOVINE BLOOD","PUMPKIN SEEDS","TOMATO SEEDS","POTATO SEEDLINGS","DICE",
+	"VODKA","WINE","WHISKEY","COGNAC","BRANDY","APPLE CIDER","CHERRY CIDER","DRAFT BEER","SPRUNK","COFFEE",
+	"GLASS","CUP","SPRUNK","BURGER","BURGER","ROLL","SET_1","SET_2","SET_3","SET_4",
+	"SET_5","SET_6","SET_7","SET_8","SET_9","SET_10","SET_11","SPRUNK","JOINT","HOT DOG",
+	"CIGARETTE","CIGAR","TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK",
+	"TEXTBOOK","TEXTBOOK","TEXTBOOK","TEXTBOOK","LICENSE","LICENSE","LICENSE","LICENSE","DIPLOMA","GUN LICENSE 1",
+	"GUN LICENSE 2","WEDDING CAKE","PIECE OF CAKE","PIZZA","PIZZA HOME","SLICE OF PIZZA","MEAT IN A PACK","RAW STEAK","FRIED STEAK","SLICE OF BREAD",
+	"ORANGE JUICE","APPLE JUICE","VEGETABLES","ALARM","ALARM","ALARM","FUEL"
+};
+new friskName[][] = // Ќазвание ¬ещи
+{
+    "","’леб","«олотое  ольцо","Ѕутылка","“рава","“аблетки","√рибы","ѕорошок","јптечка"," анистра","ѕо€с с ¬зрывчаткой", // 0 - 10
+    "Ѕомба","ѕульт от Ѕомбы","¬ерЄвка","ѕиво","яд","ѕачка —игарет","Ѕрон€","Ќаживка","ќтмычки","–ыба","–аци€", // 11 - 21
+    "ћ€со","ћешок","Ўашка “акси","ƒеньги","—мартфон","Ammo 20,8mm","Ammo 11,43mm","Ammo 5,45mm","Ammo 45mm","”дочка","‘онарик", // 22 - 32
+	"ящик","ящик с “оваром","„еловек","Ќовогодний ѕодарок","Ўампанское","Ѕокал","”паковка","‘еиерверк","Ѕенгальские —вечи","Ќоутбук","Ўокер", // 33 - 43
+	"Ћопата"," арта ћор€ка","ћорска€ «везда","–акушка","Ќадувна€ Ћодка","—ундук с —окровищами","Ћовушка дл€ јкулы","ѕаспорт", // 44 - 51
+	"”гли","«ажигалка","∆ареное ћ€со","∆арена€ –ыба","“итан","ћолибден","”ран","ћетеорит","ѕалладий","√елий 3","PlayBoy", // 52 - 62
+	"ћед. арта","E-Ammo 20,8mm","E-Ammo 11,43mm","E-Ammo 5,45mm","E-Ammo 45mm","ћусор","“руп","Ѕинт","ѕрезервативы", // 63 - 71
+	"’ламидиуберин","√оногон","—ифистоп","–адиануклин","ѕеритонин","√рибкоубивин","ƒерматитогон","јкнестопин","ѕорошкозаменин","Ќикотиновый пластырь", // 72 - 81
+	"Ѕухлозаменин","√астритоуберин","язвазаживин"," олдрекс","“ерафлю","јнвимакс","—емена травы"," артошка","ћонтировка", " арта сокровищ", // 82 - 91
+	"ƒревн€€ ¬аза","”рна с прахом","—литок золота","—татуэтка","Ѕокал с кровью"," ухонный Ќож","Ѕокал с кровью","Ѕанан","яблоко","јпельсин", // 92 - 101
+	"ћолоко","“ыква"," артошка","“омат","”добрение","Ѕычь€  ровь","—емена “ыквы","—емена “оматов"," артошка –ассада"," ости", // 102 - 111
+	"¬одка","¬ино","¬иски"," онь€к","Ѕрэнди","—идр яблочный","—идр ¬ишневый","ѕиво –азливное","Sprunk"," офе", // 112 - 121
+	"Ѕокал", " ружка", "Sprunk", "Ѕургер", "Ѕургер", "–олл", "Ќабор 1", "Ќабор 2", "Ќабор 3", "Ќабор 4",  // 122 - 131
+	"Ќабор 5", "Ќабор 6", "Ќабор 7", "Ќабор 8", "Ќабор 9", "Ќабор 10", "Ќабор 11", "Sprunk ќткрытый", " ос€к", "’от-дог", // 132 - 141
+	"—игарета", "—игара", "”чебник ѕƒƒ", "ќсновы вождени€", "ќсновы пилотировани€", "¬интокрылые машины", "”правление катерами", "ќсновы мототранспорта", "”чебник русского €зыка", "”чебник €понского €зыка", // 142 - 151
+	"”чебник италь€нского €зыка", "”чебник китайского €зыка", "”чебник испанского €зыка", "”чебник арабского €зыка", "¬одительские права", "Ћицензи€ пилота", "ѕрава на катер", "Ћицензи€ мототранспорта", "ƒиплом о высшем образовании", "Ћицензи€ на оружие 1", // 152 - 161
+	"Ћицензи€ на оружие 2","—вадебный торт", " усок торта", "ѕицца", "ѕицца ƒомашн€€", " усок пиццы", "ћ€со в упаковке", "—ырой стейк", "∆ареный стейк", "Ћомтик хлеба",  // 162 - 171
+	"јпельсиновый сок", "яблочный сок", "ќвощи", "ƒом —игнализаци€ 1 ур.", "ƒом —игнализаци€ 2 ур.", "ƒом —игнализаци€ 3 ур.", "“опливо" // 172 - 178
+};
+new friskPick[] = // ID ћодельки в »нвентаре (обычный предмет)
+{
+    0,19579,2710,1520,19473,1241,1578,1279,11738,1650,19515,
+    1654,364,19088,1486,2057,19897,19142,1455,18644,19630,19942,
+    2806,2060,19308,1212,18872,2061,2061,2061,2061,18632,18641,
+    3014,2484,1314,19054,19824,19819,19921,3016,19616,19893,18642,
+    337,19171,902,2782,473,2969,2803,1581,
+    19573,19998,19882,19630,3930,3930,3930,3931,2040,2976,2826,
+    2894,2061,2061,2061,2061,1265,2908,11747,321,
+    11748,11748,11748,11748,11748,11748,11748,11748,11748,11748,
+    11748,11748,11748,11748,11748,11748,19562,19575,18634,19169,
+    14705,2709,19941,1276,1667,19583,1667,19578,19576,19574,
+    19569,19320,19575,19577,1644,1667,2752,2752,2060,1852,
+    1668,19822,19821,19820,19823,1544,1543,1951,2601,19835,
+    19818,1666,1546,2703,2768,2769,2212,2213,2214,2215,
+    2216,2217,2221,2222,2223,2353,2354, 2601,3027,19346,
+    19625,3044,2894,2894,2894,2894,2894,2894,2894,2894,
+    2894,2894,2894,2894,2684,2684,2684,2684,2684,2684,
+    2684,19525,11739, 19571,19580,2702,19560,19582,19882,19883,
+    19563,19564,19572,1614,1616,1622,3465
+};
+new friskKol[] = // »меет ли предмет множественное количество (обычный предмет)
+{
+    0,0,0,0,1,1,1,1,1,1,0,
+    0,0,0,0,0,0,0,1,1,1,0,
+    0,0,0,1,0,1,1,1,1,0,0,
+    0,0,0,0,0,0,0,0,1,0,0,
+    0,0,1,1,0,0,0,0,
+    0,0,0,1,0,0,0,0,1,1,0,
+    0,1,1,1,1,0,0,0,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,1,0,1,1,1,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,1,0,
+    1,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,1
+};
+new friskDefault[] = // √ос. стоимости предметов
+{
+    0,60,3500,5,500,1000,500,1000,3000,100,1, // 10
+    1,1,450,60,1,150,5000,30,650,50,3500, // 21
+    700,900,1100,1,25000,60,35,20,50,1500,700, // 32
+    1,1,1,1,550,250,1500,2300,150,75000,3000, // 43
+    2500,900,500,1000,45000,350000,500,1, // 51
+    450,100,2300,50,1,1,1,1,900,800,2500, // 62
+    1,600,350,200,500,1,5000,900,300, // 71
+    7000,5000,8000,13000,23000,19000,16000,14000,24500,1300, // 81
+    2000,3000,9000,900,900,900,350,50,850,35000, // 91
+	150,150,10,9600,950000,490,7000,40,40,40, // 101
+	10,3500,350,350,1500,7900,1200,400,400,5900, // 111
+	450,690,1300,3900,7900,80,80,190,80,90, // 121
+	250,150,80,190,190,250,1200,1350,1450,1490, // 131
+	1490,1800,850,950,1030,700,750,80,500,130, // 141
+	15,900,1500,1500,1500,1500,1500,1500,1500,1500, // 151
+	1500,1500,1500,1500,15000,350000,60000,26000,500000,30000, // 161
+	150000,45000,100,1200,1200,200,500,500,800,10, // 171
+	200,200,1,30000,120000,390000,40 // 178
+};
+new friskPrice[INVENTER];
+//==================================
+//==================================
+//==================================
+
+
+new gunName[][] =
+{
+    " улак", " астет", " люшка", "ѕолицейска€ дубинка", "Ќож", "Ѕита", "Ћопата", " ий", " атана", "Ѕензопила",
+    "‘аллоимитатор", "‘аллоимитатор", "‘аллоимитатор", "‘аллоимитатор", "÷веты", "“рость", "√раната", "ƒымова€ шашка", " октейль молотова","none","none","none", "Colt",
+    "Ёлектрошокер", "Desert eagle", "ƒробовик", "ќбрез", "—корострельный дробовик", "Uzi", "MP5", "AK-47", "M4",
+    "Tec-9", "¬интовка", "—найперска€ винтовка", "RPG", "Ѕазука", "ќгнемЄт", "ћиниган", "¬зрыв. пакет", "ƒетонатор", "Ѕалончик",
+    "ќгнетушитель", "‘отоаппарат", "Ќочное видение", "“епловизор", "ѕарашют", " аска" ,"", "“ранспорт", "¬инты ¬ертолЄта",
+	"¬зрыв","","”тонул","ѕадение"
+};
+new gunDraw[][] =
+{
+    "NONE", "KNUCKLES", "GOLFCLUB", "NITESTICK", "KNIFE", "BAT", "SHOVEL", "POOLSTICK", "KATANA", "CHAINSAW",
+    "DILDO", "DILDO", "DILDO", "DILDO", "FLOWER", "CANE", "GRENADE", "TEARGAS", "MOLTOV","","","", "COLT",
+    "SHOCKER", "DESERT_EAGLE", "SHOTGUN", "SAWEDOFF", "SHOTGSPA", "UZI", "MP5", "AK47", "M4",
+    "TEC9", "RIFLE", "SNIPER_RIFLE", "RPG", "HS ROCKET", "FLAMETHROWER", "MINIGUN", "SATCHEL", "DETONATOR", "SPRAYCAN",
+    "FIRE", "CAMERA", "NIGHT", "TERMAL", "PARACHUTE", "Fake Pistol" ,"", "“ранспорт", "¬инты ¬ертолЄта",
+	"¬зрыв","","”тонул","ѕадение"
+};
+new friskGun[] = // ID ћодельки ќружи€ в »нвентар€х
+{
+    0,331,333,334,335,336,337,338,339,341,321,
+    322,323,324,325,326,342,343,344,0,0,0,
+    346,347,348,349,350,351,352,353,355,356,372,
+    357,358,359,360,361,362,363,364,365,366,367,368,369,371
+};
+new gunPrice[48];
+
+
+new Page[MAX_REALPLAYERS]; //  ака€ страница открыта в инвентаре
+new Pagetwo[MAX_REALPLAYERS]; //  ака€ страница открыта во второй вкладке инвентар€
+
+new PlayerText:PlaNestPick[40][MAX_REALPLAYERS]; //  нопка предмета в инвентаре
+new PlayerText:PlaNestPickNum[40][MAX_REALPLAYERS]; // “екст каждой кнопки предмета (отображение количества)
+new PlayerText:PlaNestOthe[3][MAX_REALPLAYERS]; // —кин персонажа и выбранный предмет
+new PlayerText:PlaNestPrice[MAX_REALPLAYERS]; // —тоимость товара
+
+CMD:gthing(playerid, const params[]) // ¬ыдать предмет (Ќ≈ »—ѕќЋ№«ќ¬ј“№ эту команду без надобности, она не учитывает кучу условий дл€ разных предметов)
+{
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}¬ы не администратор");
+    if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ ћысли ]: ¬ыдать предмет в инвентарь [ ID, ѕредмет,  ол-во ]");
+    
+    // “ип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
+    new put_inva = GiveThingPlayer(params[0], params[1], params[2], 0, 0, 0, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}” игрока нет места в инвентаре");
+	return 1;
+}
+
+stock tile_second(playerid, invatab) //  лацаем по €чейкам в правом разделе
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1) return 0;
+	PlayerPlaySound(playerid,17803,0,0,0);
+	if(LoadPick[playerid] != 9999) return reset_aksess_tile(playerid); // —брасываем выбранные аксесуары
+	if(LoadGun[playerid] != 9999) return reset_gun_tile(playerid); // —брасываем выбранное оружие
+	
+	new fpick, tab, inva = invatab-20, fpara, thingType, thingPack;
+	if(Tabs_Load[playerid] == 1) // Ћавка “оваров
+	{
+	    tab = OnlineInfo[playerid][oShowInterfaceGoods];
+	    if(!IsOnline(tab)) return closetab(playerid);
+		fpick = PlayerInfo[tab][pMarkInven][inva];
+		fpara = PlayerInfo[tab][pMarkInvenPara][inva];
+		thingType = PlayerInfo[tab][pMarkInvenType][inva];
+		thingPack = PlayerInfo[tab][pMarkInvenPack][inva];
+	}
+	else if(Tabs_Load[playerid] == 2) // ƒом
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceDom];
+		fpick = DomInfo[tab][dInvent][inva];
+		fpara = DomInfo[tab][dInvPara][inva];
+		thingType = DomInfo[tab][dInvType][inva];
+		thingPack = DomInfo[tab][dInvPack][inva];
+	}
+	else if(Tabs_Load[playerid] == 3) // —клад ќрганизации
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceSklad];
+		fpick = OrganInfo[tab][gInvent][inva];
+		thingType = OrganInfo[tab][gInvType][inva];
+		thingPack = 0;
+	}
+	else if(Tabs_Load[playerid] == 4) // јрендованный —клад
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceRent];
+		fpick = WhInfo[tab][wInvent][inva];
+		thingType = WhInfo[tab][wInvType][inva];
+		thingPack = 0;
+	}
+	else if(Tabs_Load[playerid] == 5) // Ѕагажник
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceVeh];
+		fpick = VehInfo[tab][vInvent][inva];
+		fpara = VehInfo[tab][vInvPara][inva];
+		thingType = VehInfo[tab][vInvType][inva];
+		thingPack = VehInfo[tab][vInvPack][inva];
+	}
+	else if(Tabs_Load[playerid] == 6) // ћои “овары
+	{
+		fpick = PlayerInfo[playerid][pMarkInven][inva];
+		fpara = PlayerInfo[playerid][pMarkInvenPara][inva];
+		thingType = PlayerInfo[playerid][pMarkInvenType][inva];
+		thingPack = PlayerInfo[playerid][pMarkInvenPack][inva];
+	}
+	else if(Tabs_Load[playerid] == 7) // ¬ыбошенные ѕредметы
+	{
+		if(MyThrow[inva][playerid] >= 0)
+		{
+			fpick = ThrowInfo[MyThrow[inva][playerid]][tId];
+			fpara = ThrowInfo[MyThrow[inva][playerid]][tPara];
+			thingType = ThrowInfo[MyThrow[inva][playerid]][tType];
+			thingPack = ThrowInfo[MyThrow[inva][playerid]][tPack];
+		}
+	}
+	else if(Tabs_Load[playerid] == 8) // ћусорный  онтейнер
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceTrash];
+		fpick = gTrash[inva][tab];
+		fpara = gTrashPara[inva][tab];
+		thingType = gTrashType[inva][tab];
+		thingPack = gTrashPack[inva][tab];
+	}
+	else if(Tabs_Load[playerid] == 9) // Ѕиз
+	{
+		tab = OnlineInfo[playerid][oShowInterfaceBiz];
+		fpick = BizzInfo[tab][bInvent][inva];
+		fpara = BizzInfo[tab][bInvPara][inva];
+		thingType = BizzInfo[tab][bInvType][inva];
+		thingPack = BizzInfo[tab][bInvPack][inva];
+	}
+	
+	if(fpick == 0) // ≈сли клацаем по пустой €чейке
+	{
+		if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // ≈сли €чейка в левом разделе не выбрана
+		{
+			if(OnlineInfo[playerid][oInventSelectRight] != 9999 && OnlineInfo[playerid][oInventSelectRight] != inva) // ѕерекладываем
+			{
+				if(Tabs_Load[playerid] == 2) shift_dom(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 3) shift_sklad(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 4) shift_rent(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 5) shift_boot(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 6) shift_goods(playerid, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 9) shift_biz(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else i_resettabs(playerid);
+			}
+		}
+		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999) //  ладЄм предмет из инвентар€ в другой
+		{
+		    new myinva = OnlineInfo[playerid][oInventSelectLeft], myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
+		    if(NotGiveThing(myfpick, myThingType)) return ErrorMessage(playerid, "{FF6347}Ётот предмет нельз€ передавать, продавать или убирать"), i_resetveshi(playerid);
+		    if(Tabs_Load[playerid] == 2) // ƒом
+			{
+			    if(myThingType == 0 && myThingPack == 0)
+			    {
+			        if(friskKol[myfpick] == 1)
+			        {
+			            OnlineInfo[playerid][oInventSelectRight] = inva;
+						format(store,sizeof(store),"{cccccc}„тобы положить в дом {ff9000}%s {cccccc}введите количество\nЌе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+						return 1;
+			        }
+			    }
+			    put_dom(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
+			}
+			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}¬ы не можете положить предметы на склад\n\n{cccccc}“олько €щики с оружием и аммуницией"), i_resetveshi(playerid); // —клады
+			else if(Tabs_Load[playerid] == 5) // Ѕагажник
+			{
+			    if(myThingType == 0 && myThingPack == 0)
+			    {
+			        if(friskKol[myfpick] == 1)
+			        {
+			            OnlineInfo[playerid][oInventSelectRight] = inva;
+						format(store,sizeof(store),"{cccccc}„тобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nЌе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+						return 1;
+			        }
+			    }
+			    put_boot(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
+			}
+			else if(Tabs_Load[playerid] == 6) // ћои “овары
+			{
+			    if(myThingType == 0 && myThingPack == 0)
+			    {
+			        if(friskKol[myfpick] == 1)
+			        {
+			            OnlineInfo[playerid][oInventSelectRight] = inva;
+						format(store,sizeof(store),"{cccccc}„тобы выставить на продажу {ff9000}%s {cccccc}введите количество\n\nЌе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,1103,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+						return 1;
+			        }
+			    }
+			    new put_invent = put_goods(playerid, myinva, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva);
+			    if(put_invent == -1) return ErrorMessage(playerid, "{FF6347}¬ разделе товаров нет места"), i_resetveshi(playerid);
+			}
+			else if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}Ќа склад бизнеса нельз€ класть обычные предметы\n\n{cccccc}“олько мебель из IKEA или багажника автомобил€"), i_resetveshi(playerid);
+			else i_resetveshi(playerid);
+		}
+	}
+	else if(fpick > 0) // „то-то Ћежит
+	{
+		if(OnlineInfo[playerid][oInventSelectRight] == 9999) // ¬ыдел€ем
+		{
+		    if(Pagetwo[playerid] == 0 && inva <= 19) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva+20][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva+20][playerid]);
+			else if(Pagetwo[playerid] == 1 && inva >= 20 && inva <= 39) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
+			else if(Pagetwo[playerid] == 2 && inva >= 40 && inva <= 59) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva-20][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva-20][playerid]);
+			else if(Pagetwo[playerid] == 3 && inva >= 60 && inva <= 79) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva-40][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva-40][playerid]);
+			i_infofpick(playerid, fpick, inva, Tabs_Load[playerid], fpara, thingType, thingPack);
+			OnlineInfo[playerid][oInventSelectRight] = inva;
+			if(OnlineInfo[playerid][oInventSelectLeft] != 9999) //  ладЄм (≈сли предмет количественный, мы складируем его поверх такого-же)
+			{
+			    if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}Ќа склад бизнеса нельз€ класть обычные предметы\n\n{cccccc}“олько мебель из IKEA или багажника автомобил€"), i_resetveshi(playerid);
+				if(Tabs_Load[playerid] == 1 || Tabs_Load[playerid] == 6 || Tabs_Load[playerid] == 7) return i_resetveshi(playerid);
+			    new myinva = OnlineInfo[playerid][oInventSelectLeft];
+			    if(PlayerInfo[playerid][pInven][myinva] == 0 || PlayerInfo[playerid][pInven][myinva] != fpick) return i_resetveshi(playerid);
+			    new myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
+			    
+			    if(myThingType == 0 && myThingPack == 0)
+			    {
+			        if(friskKol[myfpick] == 1)
+			        {
+			        	if(Tabs_Load[playerid] == 2) // ƒом
+						{
+							format(store,sizeof(store),"{cccccc}„тобы положить в дом {ff9000}%s {cccccc}введите количество\n\nЌе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+							ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+						}
+						else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}¬ы не можете положить предметы на склад\n\n{cccccc}“олько €щики с оружием и аммуницией"), i_resetveshi(playerid); // —клады
+						else if(Tabs_Load[playerid] == 5) // Ѕагажник
+						{
+							format(store,sizeof(store),"{cccccc}„тобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nЌе меньше 1 и не больше 1.000.000",friskName[myfpick]);
+							ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+						}
+			        }
+			        else i_resetveshi(playerid);
+       			}
+       			else i_resetveshi(playerid);
+			}
+		}
+		else if(OnlineInfo[playerid][oInventSelectRight] == inva) // ¬ыполн€ем
+		{
+			if(Tabs_Load[playerid] == 1) return use_goods(playerid, tab, inva);
+			else if(Tabs_Load[playerid] == 2) return use_dom(playerid, tab, inva, 9999);
+			else if(Tabs_Load[playerid] == 3) return use_sklad(playerid, tab, inva, 9999);
+			else if(Tabs_Load[playerid] == 4) return use_rent(playerid, tab, inva);
+			else if(Tabs_Load[playerid] == 5) return use_boot(playerid, tab, inva, 9999);
+			else if(Tabs_Load[playerid] == 6) return use_mygoods(playerid, inva, 9999);
+			else if(Tabs_Load[playerid] == 7) return use_throw(playerid, inva, 9999);
+			else if(Tabs_Load[playerid] == 8) return use_trash(playerid, tab, inva, 9999);
+			else if(Tabs_Load[playerid] == 9) return use_biz(playerid, tab, inva, 9999);
+		}
+		else if(OnlineInfo[playerid][oInventSelectRight] != 9999 && OnlineInfo[playerid][oInventSelectRight] != inva)
+		{
+			if(Tabs_Load[playerid] == 1 || Tabs_Load[playerid] == 6 || Tabs_Load[playerid] == 7 || Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4 || Tabs_Load[playerid] == 9) return i_resettabs(playerid);
+		    new tabfpick, tabType, tabPack;
+			if(Tabs_Load[playerid] == 2) tabfpick = DomInfo[tab][dInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = DomInfo[tab][dInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = DomInfo[tab][dInvPack][OnlineInfo[playerid][oInventSelectRight]]; // ƒом
+			else if(Tabs_Load[playerid] == 5) tabfpick = VehInfo[tab][vInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]]; // Ѕагажник
+			if(tabfpick > 0 && fpick == tabfpick)
+			{
+			    if(tabType == 0 && tabPack == 0) // “олько обычные предметы
+			    {
+			    	if(friskKol[fpick] == 1) // ≈сли количественные, складываем их в одну €чейку
+					{
+						if(Tabs_Load[playerid] == 2) return mix_dom(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+						else if(Tabs_Load[playerid] == 5) return mix_boot(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+					}
+				}
+			}
+			i_resettabs(playerid); // —брасываем ¬ыбор
+		}
+	}
+	return 1;
+}
+stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1 || OnlineInfo[playerid][oInventSelectLeft] == 9999) return 1;
+
+	new inva = OnlineInfo[playerid][oInventSelectLeft];
+	new fpick = PlayerInfo[playerid][pInven][inva], thingType = PlayerInfo[playerid][pInvenType][inva], thingPack = PlayerInfo[playerid][pInvenPack][inva];
+	if(fpick <= 0) return 1;
+	
+	if(thingPack == 1) return ErrorMessage(playerid, "{FF6347}ѕодарок нельз€ продать\n\n{cccccc}ѕодарите его кому-нибудь ;)");
+	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}Ќельз€ продать упакованный предмет");
+	
+	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}¬ам нужно сдуть лодку, прежде чем еЄ продать");
+	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Ётот предмет нельз€ продать этому игроку");
+
+	if(giveplayerid == -1)
+	{
+	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}¬ы не ввели текст");
+		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}¬ы используете запрещЄнный символ");
+		giveplayerid = ReturnUser(inputtext);
+	}
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}»грок не в сети");
+	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}¬ы не можете продавать предметы себе");
+    if(OnlineInfo[giveplayerid][oSaleThing] != 0) return ErrorMessage(playerid, "{FF6347}” игрока уже есть предложение о покупке\n\n{cccccc}≈му необходимо согласитьс€ /yes или отказатьс€ /no");
+
+    DP[0][playerid] = giveplayerid;
+    DP[1][playerid] = inva;
+    DP[2][playerid] = fpick;
+    DP[3][playerid] = 1;
+	if(thingType == 0 && thingPack == 0)
+	{
+	    if(friskKol[fpick] == 1)
+	    {
+		    format(store,sizeof(store),"{cccccc}ѕокупатель: %s\nѕредмет: {99ff66}%s\n{cccccc}¬ведите количество\n\nЌе меньше 1 и не больше 100.000", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+			ShowDialog(playerid,1096,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+			return 1;
+		}
+	}
+	format(store,sizeof(store),"{cccccc}ѕокупатель: %s\nѕредмет: {99ff66}%s\n{cccccc}¬ведите стоимость\n\nЌе меньше 1$ и не больше 100.000.000$", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+	ShowDialog(playerid,1097,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+	return 1;
+}
+stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, inva)
+{
+	Veshi[playerid] = 0, i_resetveshi(playerid);
+	if(OnlineInfo[playerid][oShowInterface] != 1 || fpick != PlayerInfo[playerid][pInven][inva] || fquan > PlayerInfo[playerid][pInvenQuan][inva]
+	|| fpick <= 0 || playerid == giveplayerid) return 1;
+
+	// ѕростые проверки
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}»грок не в сети");
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}¬ы находитесь в слежке");
+	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(5.0, playerid,giveplayerid)) return ErrorMessage(playerid, "{FF6347}¬ы далеко от игрока {cccccc}[ Ќе дальше 5-ти метров ]");
+	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Ќельз€ передавать предметы во врем€ покупок в супермаркете");
+	
+	// ѕроверка на особые предметы
+	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Ётот предмет нельз€ передать этому игроку");
+	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}¬ам нужно сдуть лодку, прежде чем еЄ передать или убрать");
+
+	// ѕроверка на наличие особых аксессуаров ( аска и Ѕрон€)
+	if(IsHelmet(fpick) && thingType == 2 && (PlayerInfo[giveplayerid][pOdet][0] == fpick || PlayerInfo[giveplayerid][pOdet][1] == fpick || PlayerInfo[giveplayerid][pOdet][2] == fpick || PlayerInfo[giveplayerid][pOdet][3] == fpick || PlayerInfo[giveplayerid][pOdet][4] == fpick)) return ErrorMessage(playerid, "{FF6347}” игрока уже есть этот предмет");
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[giveplayerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}” игрока уже есть этот предмет");
+
+	new fpara = PlayerInfo[playerid][pInvenPara][inva], fqara = PlayerInfo[playerid][pInvenQara][inva];
+
+	// ѕроверка на лимиты количественного предмета
+	new quanThing;
+	if(thingType == 0) // ќбычный предмет
+	{
+	    if(friskKol[fpick] == 1) // ѕредмет имеет количество
+		{
+		    if(thingPack == 0) quanThing = 1;
+		    new getQuan, getLimit;
+		    i_limit(giveplayerid, fpick, getQuan, getLimit);
+		    if(getQuan+fquan > getLimit)
+		    {
+		        format(store,sizeof(store),"{FF6347}” игрока нет места в инвентаре\nЋимит дл€ этого предмета: %d\n\n{cccccc}ѕредметы учитываютс€ из раздела торговли и упаковок с подарками", getLimit);
+		        ErrorMessage(playerid, store);
+				i_resetveshi(playerid);
+				i_resettabs(playerid);
+				return 1;
+		    }
+		}
+	}
+
+    // ѕередача предмета
+    if(JustOneThingInventory(fpick, thingType) && get_invent(giveplayerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}” игрока уже есть этот предмет");
+
+    new put_inva = GiveThingPlayer(giveplayerid, fpick, fquan, fpara, fqara, thingType, thingPack, 9999); // ¬ыдаЄм предмет игроку
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}” игрока нет места в инвентаре"); // ѕолучили -1 в ответ, значит не нашли €чейку, куда класть предмет
+
+    if(quanThing == 1) take_away(playerid, fquan, inva); // ќтнимаем предмет (по количеству)
+    else i_del(playerid, inva); // ќтнимаем предмет (целиком)
+
+    format(store, sizeof(store), "[ ћысли ]: я передал%s %s предмет: {333333}%s", gender(playerid), playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+	SendClientMessage(playerid, COLOR_GREY, store);
+	format(store, sizeof(store), "[ ћысли ]: %s передал%s мне предмет: {333333}%s", playername(playerid), gender(playerid), GetNameThing(0, fpick, thingType, thingPack));
+	SendClientMessage(giveplayerid, COLOR_GREY, store);
+	format(store, sizeof(store), "* %s достаЄт %s и передаЄт %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
+	ProxDetector(20.0, playerid, store, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+    PlayerPlaySound(playerid,1053,0,0,0), PlayerPlaySound(giveplayerid,1052,0,0,0);
+
+    if(thingPack == 1 && (IsANewYear() || PlayerInfo[playerid][pSoska] >= 22)) doneqwest(playerid, 4); // ≈сли передали подарок
+    
+    SaveInvent(playerid, inva);
+    SaveInvent(giveplayerid, put_inva);
+
+    // Ћогируем передачу
+    format(store,sizeof(store),"ѕередал: %s", GetNameThing(1, fpick, thingType, thingPack));
+	UserLog("give", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], fquan, store);
+	return 1;
+}
+stock PreviouslyGiveThingPlayer(playerid, giveplayerid, const inputtext[])
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1 || OnlineInfo[playerid][oInventSelectLeft] == 9999) return 1;
+
+	new inva = OnlineInfo[playerid][oInventSelectLeft];
+	new fpick = PlayerInfo[playerid][pInven][inva], fquan = PlayerInfo[playerid][pInvenQuan][inva], thingType = PlayerInfo[playerid][pInvenType][inva], thingPack = PlayerInfo[playerid][pInvenPack][inva];
+	if(fpick <= 0) return 1;
+	
+	if(giveplayerid == -1)
+	{
+	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}¬ы не ввели текст");
+		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}¬ы используете запрещЄнный символ");
+		giveplayerid = ReturnUser(inputtext);
+	}
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}»грок не в сети");
+	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}¬ы не можете передать предметы себе");
+
+	if(thingType == 0 && thingPack == 0)
+	{
+	    if(friskKol[fpick] == 1)
+	    {
+	        DP[0][playerid] = giveplayerid;
+	        DP[1][playerid] = inva;
+	        DP[2][playerid] = fpick;
+	    	format(store,sizeof(store),"{cccccc}„тобы передать %s {ff9000}%s {cccccc}введите количество\n\nЌе меньше 1 и не больше 100.000", playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+			ShowDialog(playerid,906,DIALOG_STYLE_INPUT,"{ff9000}»нвентарь",store,"ѕрин€ть","ќтмена");
+			return 1;
+		}
+	}
+	give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, inva);
+	return 1;
+}
+//=================================
+// »нтерфейс »нвентар€
+stock i_infofpick(playerid, fpick, inva, sels, fpara, thingType, thingPack) // ќтображение выбранного предмета
+{
+	new yesFindModel;
+	if(thingPack == 1)
+	{
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "МOГAPOK");
+		else format(store, sizeof(store), "GIFT");
+		yesFindModel = 19054;
+	}
+	else if(thingPack == 2)
+	{
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "ХКЕK");
+		else format(store, sizeof(store), "BOX");
+		yesFindModel = 3014;
+	}
+	else
+	{
+	    if(thingType == 0) // ќбычный предмет
+	    {
+	        if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "%s", fdrawName[fpick]);
+			else format(store, sizeof(store), "%s", fdrawNameEN[fpick]);
+			yesFindModel = friskPick[fpick];
+	    }
+	    else if(thingType == 1) // ќружие
+	    {
+		    if(fpara <= 0 && (sels == 0 || sels == 1 || sels == 2 || sels == 5 || sels == 6 || sels == 7 || sels == 8))
+		    {
+		    	if(fpick == 25 || fpick == 26 || fpick == 27) yesFindModel = 2034;
+		    	else if(fpick == 22 || fpick == 24) yesFindModel = 2034;
+		    	else if(fpick == 30 || fpick == 31) yesFindModel = 2035;
+		        else if(fpick == 33 || fpick == 34) yesFindModel = 2036;
+		        else yesFindModel = friskGun[fpick];
+		    }
+		    else yesFindModel = friskGun[fpick];
+		    format(store, sizeof(store), "%s", gunDraw[fpick]);
+
+	    }
+	    else if(thingType == 2) // јксессуар
+	    {
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "AKCECCYAP");
+			else format(store, sizeof(store), "ACCESSORY");
+			yesFindModel = fpick;
+		}
+		else if(thingType == 3) // ќдежда
+	    {
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "OГEДГA");
+			else format(store, sizeof(store), "CLOTHES");
+			yesFindModel = fpick;
+		}
+		else if(thingType == 4) // ћебель
+	    {
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "MEАEЗТ");
+			else format(store, sizeof(store), "FURNITURE");
+			yesFindModel = fpick;
+		}
+	}
+	
+	if(yesFindModel > 0)
+	{
+	    new Float:modelPos[4], findIt;
+		GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+		PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[2][playerid], yesFindModel);
+		PlayerTextDrawSetPreviewRot(playerid, PlaNestOthe[2][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
+	}
+	
+	PlayerTextDrawSetString(playerid, PlaNestOthe[1][playerid], store);
+	PlayerTextDrawColor(playerid, PlaNestOthe[2][playerid], -1);
+	PlayerTextDrawSetSelectable(playerid, PlaNestOthe[2][playerid], true);
+	PlayerTextDrawShow(playerid, PlaNestOthe[1][playerid]);
+	PlayerTextDrawShow(playerid, PlaNestOthe[2][playerid]);
+
+	if(sels == 1 || sels == 6)
+	{
+		if(Tabs_Load[playerid] == 6) format(store, sizeof(store), "%d$", PlayerInfo[playerid][pMarkPrice][inva]), PlayerTextDrawSetString(playerid, PlaNestPrice[playerid], store), PlayerTextDrawShow(playerid, PlaNestPrice[playerid]);
+		else if(Tabs_Load[playerid] == 1)
+		{
+		    new p = Tabs_ID[playerid];
+		    if(IsOnline(p)) format(store, sizeof(store), "%d$", PlayerInfo[p][pMarkPrice][inva]), PlayerTextDrawSetString(playerid, PlaNestPrice[playerid], store), PlayerTextDrawShow(playerid, PlaNestPrice[playerid]);
+		}
+	}
+	return 1;
+}
+stock i_page(playerid, page) // ѕереключаем страницы главного раздела
+{
+	if(page == 0 && Page[playerid] != 0)
+	{
+		PlayerPlaySound(playerid,17803,0,0,0);
+		Page[playerid] = 0;
+		i_switches(playerid, 0, 1);
+		i_switches(playerid, 1, 0);
+		for(new inva = 0; inva < 20; inva++) i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
+	}
+	else if(page == 1 && Page[playerid] != 1)
+	{
+		PlayerPlaySound(playerid,17803,0,0,0);
+		Page[playerid] = 1;
+		i_switches(playerid, 0, 0);
+		i_switches(playerid, 1, 1);
+		for(new inva = 20; inva < 40; inva++) i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
+	}
+	return 1;
+}
+stock i_resetveshi(p) // —брос отображени€ выбранной €чейки основного раздела
+{
+	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectLeft] != 9999)
+	{
+		if(Page[p] == 1 && OnlineInfo[p][oInventSelectLeft] >= 20) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-20][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-20][p]);
+		else if(Page[p] == 0 && OnlineInfo[p][oInventSelectLeft] <= 19) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]][p]);
+		OnlineInfo[p][oInventSelectLeft] = 9999;
+		if(OnlineInfo[p][oInventSelectRight] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+	}
+	return 1;
+}
+stock i_resettabs(p) // —брос отображени€ выбранной €чейки второго раздела
+{
+	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectRight] != 9999)
+	{
+	    if(OnlineInfo[p][oShowInterfaceGoods] != 9999 || OnlineInfo[p][oShowInterfaceDom] != 0 || OnlineInfo[p][oShowInterfaceBiz] != 0 || OnlineInfo[p][oShowInterfaceSklad] != 0 || OnlineInfo[p][oShowInterfaceRent] != 9999 || OnlineInfo[p][oShowInterfaceVeh] != 9999 || OnlineInfo[p][oShowInterfaceTrash] != 9999 || Tabs_Load[p] == 6 || Tabs_Load[p] == 7)
+	    {
+	        new plusitem = 1000;
+			if(Pagetwo[p] == 0 && OnlineInfo[p][oInventSelectRight] >= 0 && OnlineInfo[p][oInventSelectRight] <= 19) plusitem = 20;
+			else if(Pagetwo[p] == 1 && OnlineInfo[p][oInventSelectRight] >= 20 && OnlineInfo[p][oInventSelectRight] <= 39) plusitem = 0;
+			else if(Pagetwo[p] == 2 && OnlineInfo[p][oInventSelectRight] >= 40 && OnlineInfo[p][oInventSelectRight] <= 59) plusitem = -20;
+			else if(Pagetwo[p] == 3 && OnlineInfo[p][oInventSelectRight] >= 60 && OnlineInfo[p][oInventSelectRight] <= 79) plusitem = -40;
+
+			if(plusitem != 1000)
+			{
+				if(OnlineInfo[p][oShowInterfaceGoods] != 9999 || Tabs_Load[p] == 6) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], PlayerInfo[p][pStyle2]);
+				else if(Tabs_Load[p] == 7)
+				{
+					new t = MyThrow[OnlineInfo[p][oInventSelectRight]][p];
+					if(ThrowInfo[t][tPlayerid] == PlayerInfo[p][pID]) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], -226); // ≈сли предмет оставил этот игрок
+					else PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], 40); // ≈сли предмет оставил хер знает кто
+				}
+				else PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], PlayerInfo[p][pStyle1]);
+				PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p]);
+			}
+
+			OnlineInfo[p][oInventSelectRight] = 9999;
+			if(Tabs_Load[p] == 1 || Tabs_Load[p] == 6) PlayerTextDrawHide(p, PlaNestPrice[p]);
+			if(OnlineInfo[p][oInventSelectLeft] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+		}
+	}
+	return 1;
+}
+stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // ќтображаем €чейку
+{
+	if(Page[playerid] == 0 && cell <= 19 || Page[playerid] == 1 && cell >= 20)
+	{
+		new cell2 = cell;
+		if(Page[playerid] == 1) cell = cell-20;
+		PlayerTextDrawFont(playerid, PlaNestPick[cell][playerid], 4);
+		PlayerTextDrawBackgroundColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle1]);
+		PlayerTextDrawColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle1]);
+		PlayerTextDrawShow(playerid, PlaNestPick[cell][playerid]);
+		PlayerTextDrawHide(playerid, PlaNestPickNum[cell][playerid]);
+		if(item >= 1)
+		{
+			PlayerTextDrawBackgroundColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle1]);
+			PlayerTextDrawColor(playerid, PlaNestPick[cell][playerid], -1);
+			PlayerTextDrawBoxColor(playerid, PlaNestPick[cell][playerid], 0);
+			PlayerTextDrawFont(playerid, PlaNestPick[cell][playerid], 5);
+			
+			new yesFindModel;
+			if(thingPack == 1) yesFindModel = 19054; // ѕодарок
+			else if(thingPack == 2) yesFindModel = 3014; // ящик
+			else if(thingPack == 3) yesFindModel = 2060; // ћешок
+			else if(thingPack == 0) // Ѕез упаковки
+			{
+				if(thingType == 0) // ќбычный предмет
+				{
+				    yesFindModel = friskPick[item];
+					if(friskKol[item] == 1) //  оличественный
+					{
+						new string[6];
+						format(string, sizeof(string), "%d", quan);
+						PlayerTextDrawSetString(playerid, PlaNestPickNum[cell][playerid], string);
+						if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[cell][playerid], 673720575);
+						else PlayerTextDrawColor(playerid, PlaNestPickNum[cell][playerid], -1);
+		  				PlayerTextDrawShow(playerid, PlaNestPickNum[cell][playerid]);
+					}
+				}
+				if(thingType == 1) // ќружие
+				{
+				    yesFindModel = friskGun[item];
+				    if(para <= 0)
+				    {
+				    	if(item == 25 || item == 26 || item == 27) yesFindModel = 2034;
+				    	else if(item == 22 || item == 24) yesFindModel = 2034;
+				    	else if(item == 30 || item == 31) yesFindModel = 2035;
+				        else if(item == 33 || item == 34) yesFindModel = 2036;
+				    }
+				}
+				if(thingType == 2) yesFindModel = item; // јксессуары
+			 	if(thingType == 3) yesFindModel = item; // ќдежда
+			}
+			if(OnlineInfo[playerid][oInventSelectLeft] == cell2) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle3]);
+			
+			if(yesFindModel > 0)
+			{
+			    new Float:modelPos[4], findIt;
+				GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+				PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[cell][playerid], yesFindModel);
+				PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[cell][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
+			}
+			
+			PlayerTextDrawShow(playerid, PlaNestPick[cell][playerid]);
+		}
+	}
+	return 1;
+}
+stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPack, throwPlayerId)
+{
+    if(Pagetwo[playerid] == 0 && inva <= 19 || Pagetwo[playerid] == 1 && inva >= 20 && inva <= 39 || Pagetwo[playerid] == 2 && inva >= 40 && inva <= 59 || Pagetwo[playerid] == 3 && inva >= 60 && inva <= 79)
+	{
+	    if(fpara == 0) fpara = 0;
+	    new inva2 = inva;
+		if(Pagetwo[playerid] == 0) inva = inva+20;
+		else if(Pagetwo[playerid] == 1) { }
+        else if(Pagetwo[playerid] == 2) inva = inva-20;
+        else if(Pagetwo[playerid] == 3) inva = inva-40;
+        PlayerTextDrawHide(playerid, PlaNestPickNum[inva][playerid]);
+        
+        new yesFindModel;
+       	if(fpick == 0)
+		{
+	 		if(stat == 0)
+	 		{
+	 			PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 4);
+			 	PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
+			 	PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
+			 	PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+		 	}
+	 		else if(stat == 1)
+	 		{
+			 	PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 4);
+			 	PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle2]);
+			 	PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle2]);
+			 	PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+		 	}
+	 		else if(stat == 2)
+		 	{
+		 		PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+		 		PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], 2485);
+				PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], 0.0, 0.0, 0.0, -1.0);
+				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 150); // 40
+			 	PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], 60);
+			 	PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+		 	}
+			PlayerTextDrawHide(playerid, PlaNestPickNum[inva][playerid]);
+		}
+		else
+		{
+			new string[28];
+			if(stat == 0)
+	 		{
+				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
+				PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
+				PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+				PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+			}
+			else if(stat == 1)
+	 		{
+				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle2]);
+				PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
+				PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+				PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+			}
+			else if(stat == 2)
+	 		{
+				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 40);
+				PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
+				PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
+				PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+				
+				if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], -226); // ≈сли предмет оставил этот игрок
+				else PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 40); // ≈сли предмет оставил хер знает кто
+			}
+			
+			if(thingPack == 1) yesFindModel = 19054; // ѕодарок
+			else if(thingPack == 2) yesFindModel = 3014; // ящик
+			else if(thingPack == 3) yesFindModel = 2060; // ћешок
+			else if(thingPack == 0) // Ѕез упаковки
+			{
+				if(thingType == 0) // ќбычный предмет
+				{
+				    yesFindModel = friskPick[fpick];
+					if(friskKol[fpick] == 1) //  оличественный
+					{
+						format(string, sizeof(string), "%d", fquan);
+						PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], string);
+						if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], 673720575);
+						else PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], -1);
+		  				PlayerTextDrawShow(playerid, PlaNestPickNum[inva][playerid]);
+					}
+				}
+				if(thingType == 1) // ќружие
+				{
+				    yesFindModel = friskGun[fpick];
+				    if(fpara <= 0)
+				    {
+				    	if(fpick == 25 || fpick == 26 || fpick == 27) yesFindModel = 2034;
+				    	else if(fpick == 22 || fpick == 24) yesFindModel = 2034;
+				    	else if(fpick == 30 || fpick == 31) yesFindModel = 2035;
+				        else if(fpick == 33 || fpick == 34) yesFindModel = 2036;
+				    }
+				}
+				if(thingType == 2) yesFindModel = fpick; // јксессуары
+			 	if(thingType == 3) yesFindModel = fpick; // ќдежда
+				if(thingType == 4) yesFindModel = fpick; // ћебель
+			}
+			if(OnlineInfo[playerid][oShowInterfaceSklad] > 0 || OnlineInfo[playerid][oShowInterfaceRent] != 9999)
+			{
+				format(string, sizeof(string), "%d", fquan);
+	    		PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], string);
+	    		if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], 673720575);
+				else PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], -1);
+	    		PlayerTextDrawShow(playerid, PlaNestPickNum[inva][playerid]);
+			}
+		}
+		if(OnlineInfo[playerid][oInventSelectRight] == inva2) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle3]);
+		
+		if(yesFindModel > 0)
+		{
+		    new Float:modelPos[4], findIt;
+			GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+			PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], yesFindModel);
+			PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
+		}
+		
+		PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
+	}
+	return 1;
+}
+//=================================
+//=================================
+stock CheckGoods(playerid)
+{
+	new free;
+    for(new i = 0; i < 40; i ++)
+    {
+		if(PlayerInfo[playerid][pMarkInven][i] == 0)
+		{
+			free ++;
+			break; // ќстановим, поскольку мы не возвращаем количество свободных слотов, нам не нужно считать все
+		}
+    }
+    if(free == 0) return 0;
+    else return 1;
+}
+stock CheckInvent(playerid)
+{
+	new free;
+    for(new i = 0; i < 40; i ++)
+    {
+		if(PlayerInfo[playerid][pInven][i] == 0)
+		{
+			free ++;
+			break; // ќстановим, поскольку мы не возвращаем количество свободных слотов, нам не нужно считать все
+		}
+    }
+    if(free == 0) return 1;
+    else return 0;
+}
+stock free_invent(playerid, quan)
+{
+	new free;
+    for(new i = 0; i < 40; i ++)
+    {
+    	if(PlayerInfo[playerid][pInven][i] == 0) free ++;
+   	}
+	if(free >= quan) return 1;
+	return 0;
+}
+stock get_and_take_invent(playerid, thingId, takeQuan) // »зымаем предмет и возвращаем количество
+{
+    new quan = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == 0 && PlayerInfo[playerid][pInvenPack][i] == 0)
+		{
+			quan += PlayerInfo[playerid][pInvenQuan][i];
+			if(quan >= takeQuan) take_away(playerid, takeQuan, i);
+			else take_away(playerid, quan, i);
+		}
+	}
+	return quan;
+}
+stock get_invent(playerid, thingId, thingType) // ѕоиск предмета в инвентаре (ќсновные страницы + “орговл€)
+{
+	new quan = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenQuan][i] > 0 && PlayerInfo[playerid][pInvenType][i] == thingType) quan += PlayerInfo[playerid][pInvenQuan][i];
+		if(i < 20)
+		{
+		    if(PlayerInfo[playerid][pMarkInven][i] == thingId && PlayerInfo[playerid][pMarkInvenQuan][i] > 0 && PlayerInfo[playerid][pMarkInvenType][i] == thingType) quan += PlayerInfo[playerid][pMarkInvenQuan][i];
+		}
+	}
+	return quan;
+}
+stock get_invent2(playerid, stat, thingType) // ѕоиск предмета в инвентаре (“олько две страницы основного инвентар€)
+{
+	new quan = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenQuan][i] > 0) quan += PlayerInfo[playerid][pInvenQuan][i];
+	}
+	return quan;
+}
+stock get_invent3(playerid, stat, unix) // ѕоиск при продаже не испорченного товара в лавках лесника
+{
+	new kolvo = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInvenQuan][i] >= 1)
+		{
+			if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenPara][i] > unix && PlayerInfo[playerid][pInvenType][i] == 0 && PlayerInfo[playerid][pInvenPack][i] == 0) kolvo += PlayerInfo[playerid][pInvenQuan][i];
+		}
+	}
+	return kolvo;
+}
+stock get_invent4(playerid, stat, thingType) // ѕоиск предмета в инвентаре (“олько две страницы основного инвентар€) и Ѕ≈« ”ѕј ќ¬ »
+{
+	new quan = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0 && PlayerInfo[playerid][pInvenQuan][i] > 0) quan += PlayerInfo[playerid][pInvenQuan][i];
+	}
+	return quan;
+}
+stock i_setinvent(playerid, thingId, quan) // ”становить значение в €чейке инвентар€
+{
+	new inva;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+			PlayerInfo[playerid][pInvenQuan][i] = quan;
+			inva = i;
+			break;
+		}
+	}
+	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
+}
+stock DelInvent(playerid, thingId, input, thingType) // ”далить предметы из инвентар€ одного id по количеству и типу
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
+		{
+			PlayerInfo[playerid][pInven][i] = 0, PlayerInfo[playerid][pInvenQuan][i] = 0, PlayerInfo[playerid][pInvenPara][i] = 0, PlayerInfo[playerid][pInvenQara][i] = 0, i_takehands(playerid, thingId);
+			input --;
+			if(input == 0) break;
+		}
+	}
+	return 1;
+}
+stock DelInvent2(playerid, stat, unix)
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenPara][i] > unix && PlayerInfo[playerid][pInvenType][i] == 0 && PlayerInfo[playerid][pInvenPack][i] == 0)
+		{
+		    ClearPlayerInven(playerid, i);
+		    i_takehands(playerid, stat);
+		}
+	}
+	return 1;
+}
+stock DelInvent3(playerid, stat)
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+			ClearPlayerInven(playerid, i);
+			i_takehands(playerid, stat);
+			if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]), PlayerPlaySound(playerid,1053,0,0,0), i_resetveshi(playerid);
+		}
+		if(i < 20)
+		{
+			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenType][i] == 0)
+			{
+			    ClearMyGoods(playerid, i);
+				PlayerInfo[playerid][pM_Update][i] = true;
+				updategoods(playerid, i);
+			}
+		}
+	}
+	return 1;
+}
+stock DelLesson(playerid)
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] >= 145 && PlayerInfo[playerid][pInven][i] <= 155 && PlayerInfo[playerid][pInvenType][i] == 0) ClearPlayerInven(playerid, i);
+		if(i < 20)
+		{
+		    if(PlayerInfo[playerid][pMarkInven][i] >= 145 && PlayerInfo[playerid][pMarkInven][i] <= 155 && PlayerInfo[playerid][pMarkInvenType][i] == 0) ClearMyGoods(playerid, i);
+		}
+	}
+	return 1;
+}
+stock check_invent_free(playerid) // ѕоиск количества свободных слотов
+{
+	new kolvo = 0;
+	for(new inva = 0; inva < 40; inva++)
+	{
+		if(PlayerInfo[playerid][pInven][inva] <= 0) kolvo ++;
+	}
+	return kolvo;
+}
+stock get_helmet(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // ѕоиск каски в инвентаре дл€ команды /usehelm
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(IsHelmet(PlayerInfo[playerid][pInven][i]) && PlayerInfo[playerid][pInvenPara][i] > 0 && PlayerInfo[playerid][pInvenType][i] == 2)
+		{
+		    thingId = PlayerInfo[playerid][pInven][i];
+			fpara = PlayerInfo[playerid][pInvenPara][i];
+			fqara = PlayerInfo[playerid][pInvenQara][i];
+			fpack = PlayerInfo[playerid][pInvenPack][i];
+			inva = i;
+		}
+	}
+	return 1;
+}
+stock get_armor(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // ѕоиск бронежилета в инвентаре дл€ команды /usearm
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(IsArmor(PlayerInfo[playerid][pInven][i]) && PlayerInfo[playerid][pInvenPara][i] > 0 && PlayerInfo[playerid][pInvenType][i] == 2)
+		{
+		    thingId = PlayerInfo[playerid][pInven][i];
+			fpara = PlayerInfo[playerid][pInvenPara][i];
+			fqara = PlayerInfo[playerid][pInvenQara][i];
+			fpack = PlayerInfo[playerid][pInvenPack][i];
+			inva = i;
+		}
+	}
+	return 1;
+}
+stock get_lic(playerid, stat) // ѕоиск лицензий ( оторые принадлежат игроку)
+{
+	new kolvo = 0;
+	for(new i = 0; i < 40; i++)
+	{
+	    if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == 0 && PlayerInfo[playerid][pInvenPara][i] == PlayerInfo[playerid][pID]) kolvo ++;
+	    if(i < 20)
+		{
+			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenType][i] == 0 && PlayerInfo[playerid][pMarkInvenPara][i] == PlayerInfo[playerid][pID]) kolvo ++;
+		}
+	}
+	return kolvo;
+}
+stock get_alienlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5, &s6) // ѕоиск лицензий („ужих, добровольно отданных)
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInvenPara][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+		    if(PlayerInfo[playerid][pInven][i] == 156) s0 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 157) s1 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 158) s2 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 159) s3 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 161) s4 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 162) s5 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 160) s6 = 1;
+		}
+	    if(i < 20)
+		{
+		    if(PlayerInfo[playerid][pMarkInvenPara][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pMarkInvenType][i] == 0)
+		    {
+		        if(PlayerInfo[playerid][pMarkInven][i] == 156) s0 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 157) s1 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 158) s2 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 159) s3 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 161) s4 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 162) s5 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 160) s6 = 1;
+		    }
+		}
+	}
+	return 1;
+}
+stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // ѕоиск лицензий (”краденной)
+{
+	for(new i = 0; i < 40; i++)
+	{
+	    if(PlayerInfo[playerid][pInvenQara][i] > 0 && PlayerInfo[playerid][pInvenType][i] == 0)
+	    {
+	        if(PlayerInfo[playerid][pInven][i] == 156) s0 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 157) s1 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 158) s2 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 159) s3 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 161) s4 = 1;
+	        if(PlayerInfo[playerid][pInven][i] == 162) s5 = 1;
+	    }
+	    if(i < 20)
+		{
+		    if(PlayerInfo[playerid][pMarkInvenQara][i] > 0 && PlayerInfo[playerid][pMarkInvenType][i] == 0)
+			{
+			    if(PlayerInfo[playerid][pMarkInven][i] == 156) s0 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 157) s1 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 158) s2 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 159) s3 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 161) s4 = 1;
+		        if(PlayerInfo[playerid][pMarkInven][i] == 162) s5 = 1;
+			}
+		}
+	}
+	return 1;
+}
+stock get_para(playerid, fpick) // ѕараметр предмета
+{
+	new para = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+			para = PlayerInfo[playerid][pInvenPara][i];
+			break;
+		}
+	}
+	return para;
+}
+stock get_qara(playerid, fpick) // ¬торой параметр предмета
+{
+	new qara = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+			qara = PlayerInfo[playerid][pInvenQara][i];
+			break;
+		}
+	}
+	return qara;
+}
+stock get_drugs(playerid, stat) // ѕоиск веществ
+{
+	new kolvo = 0;
+	for(new i = 0; i < 40; i++)
+	{
+	    if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInvenType][i] == 0) kolvo ++;
+	    if(i < 20)
+		{
+			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenQuan][i] >= 1 && PlayerInfo[playerid][pMarkInvenType][i] == 0) kolvo ++;
+		}
+	}
+	return kolvo;
+}
+stock set_para(playerid, fpick, para) // ”становка параметра предмета
+{
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] != fpick || PlayerInfo[playerid][pInvenQuan][i] == 0 || PlayerInfo[playerid][pInvenType][i] != 0) continue;
+		PlayerInfo[playerid][pInvenPara][i] = para;
+	}
+}
+stock TakeInvent(playerid, stat, quan, thingType, dopinf) // —ток дл€ изъ€ти€ предмета из инвентар€ (id, id премета, количество, €чейка)
+{
+	new plit;
+	if(dopinf == 999) // ≈сли мы Ќ≈ знаем €чейку, нам нужно найти еЄ (999)
+	{
+		for(new i = 0; i < 40; i++)
+		{
+			if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
+			{
+			    plit = i;
+			    take_away(playerid, quan, i);
+				break;
+			}
+		}
+	}
+	else // ≈сли знаем €чейку, нам не нужно еЄ искать)
+	{
+	    plit = dopinf;
+	    if(PlayerInfo[playerid][pInven][dopinf] == stat && PlayerInfo[playerid][pInvenType][dopinf] == thingType) take_away(playerid, quan, dopinf);
+	}
+	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][plit], PlayerInfo[playerid][pInvenQuan][plit], plit, PlayerInfo[playerid][pInvenPara][plit], PlayerInfo[playerid][pInvenType][plit], PlayerInfo[playerid][pInvenPack][plit]), PlayerPlaySound(playerid,1053,0,0,0), i_resetveshi(playerid);
+	i_takehands(playerid, stat);
+	return 1;
+}
+stock take_away(playerid, quan, i) // »зымаем предмет, если он был точно найден в €чейке
+{
+	if(PlayerInfo[playerid][pInvenQuan][i]-quan <= 0) // ≈сли при изъ€тии ничего не останетс€ - очищаем полностью
+	{
+	    if(PlayerInfo[playerid][pInvenType][i] == 0) i_takehands(playerid, PlayerInfo[playerid][pInven][i]);
+		PlayerInfo[playerid][pInven][i] = 0;
+		PlayerInfo[playerid][pInvenQuan][i] = 0;
+		PlayerInfo[playerid][pInvenPara][i] = 0;
+		PlayerInfo[playerid][pInvenQara][i] = 0;
+		PlayerInfo[playerid][pInvenType][i] = 0;
+		PlayerInfo[playerid][pInvenPack][i] = 0;
+	}
+	else PlayerInfo[playerid][pInvenQuan][i] -= quan;
+	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]);
+	return 1;
+}
+stock i_del(playerid, i)
+{
+    if(PlayerInfo[playerid][pInvenType][i] == 0) i_takehands(playerid, PlayerInfo[playerid][pInven][i]);
+	PlayerInfo[playerid][pInven][i] = 0;
+	PlayerInfo[playerid][pInvenQuan][i] = 0;
+	PlayerInfo[playerid][pInvenPara][i] = 0;
+	PlayerInfo[playerid][pInvenQara][i] = 0;
+	PlayerInfo[playerid][pInvenType][i] = 0;
+	PlayerInfo[playerid][pInvenPack][i] = 0;
+	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, i, 0, 0, 0);
+}
+stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack, useinva) // ƒаЄм игроку предмет в инвентарь
+{
+    new inva = -1;
+	if(thingId == 0) return inva; // ћалоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
+	
+	if(useinva == 9999) // Ќе знаем в какую €чейку класть
+	{
+	    if(thingType == 0) // ќбычный предмет
+		{
+		    if(friskKol[thingId] == 1) // ѕредмет имеет количество (—кладываетс€ в одну €чейку)
+		    {
+		        new find;
+		    	for(new i = 0; i < 40; i++)
+				{
+					if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == thingPack) // »щем тот, где уже предмет лежит
+					{
+					    inva = i;
+		  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+		  				find = 1;
+			   			break;
+					}
+				}
+				if(find == 0) // ≈сли не нашли, ищем пустую
+				{
+					for(new i = 0; i < 40; i++)
+					{
+						if(PlayerInfo[playerid][pInven][i] == 0) // »щем пустую €чейку
+						{
+						    inva = i;
+			  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+				   			break;
+						}
+					}
+				}
+			}
+			else if(friskKol[thingId] == 0) // ќбъект не имеет количество
+			{
+			    for(new i = 0; i < 40; i++)
+				{
+					if(PlayerInfo[playerid][pInven][i] == 0) // »щем пустую €чейку
+					{
+					    inva = i;
+		  				put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i);
+			   			break;
+					}
+				}
+			}
+		}
+		else // ¬се остальные предметы не имеют количества или возможности складыватьс€ в одну €чейку
+		{
+		    for(new i = 0; i < 40; i++)
+			{
+				if(PlayerInfo[playerid][pInven][i] == 0) // »щем пустую €чейку
+				{
+				    inva = i;
+	  				put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i);
+		   			break;
+				}
+			}
+		}
+	}
+	else inva = put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, useinva); // «наем в какую €чейку класть
+	return inva;
+}
+stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i)
+{
+	if(PlayerInfo[playerid][pInven][i] != 0 && PlayerInfo[playerid][pInven][i] != thingId) return -1; // «ащита от ошибки, на вс€кий случай
+
+    if(qara == PlayerInfo[playerid][pID]) qara = 0; // ”дал€ем статус краденного предмета, если он принадлежит этому игроку
+    
+    // ¬ыдача особых предметов
+    if(thingType == 0) // ќбычные предметы
+    {
+        new unix = gettime();
+        if(thingId == 1 && para == 0) quan = GetFullThingQuan(thingId), para = unix+432000; // ’леб (¬рем€ до испорченности)
+        else if(thingId == 14 && para == 0) quan = GetFullThingQuan(thingId), para = unix+7776000; // ѕиво (¬рем€ до испорченности + количество)
+        else if(thingId == 16 && quan == 0) quan = GetFullThingQuan(thingId); // ѕачка сигарет (ѕолный комплект)
+        else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // ќтмычки (ѕолный комплект)
+		else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // —мартфон (Ќомер телефона)
+		else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // Ўампанское ( оличество)
+		else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Ѕенгальские свечи (ѕолный комплект)
+		else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // ≈сли выдаЄм ∆урнал PlayBoy
+		else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // —емена травы (ѕолный комплект)
+		else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // —вадебный торт (¬рем€ до испорченности + количество)
+		else
+		{
+		    if(quan == 0) quan = GetFullThingQuan(thingId);
+		}
+	}
+	else if(thingType == 2) // јксессуары с особыми возможност€ми
+    {
+        if(IsHelmet(thingId) && para == 0) para = 3; //  аска
+        if(IsArmor(thingId) && para == 0) para = 100; // Ѕронежилет
+    }
+	
+	PlayerInfo[playerid][pInven][i] = thingId; // —тавим предмет в слот
+	PlayerInfo[playerid][pInvenQuan][i] += quan; // —тавим количество в слот
+	
+	// (“ехника сломана или нет, ќдежда какой организации принадлежит, Unix врем€ свежести продуктов, »зношенность оружи€, ѕрнадлежность лицензии к ID игрока, “ип креплени€ аксессуара)
+	if(PerishableThing(thingId, thingType)) // ѕроверка на порт€щиес€ продукты - у них используетс€ Unix (ƒобавл€€ испорченный продукт к свежему, портитьс€ должно всЄ)
+	{
+	    if(PlayerInfo[playerid][pInvenPara][i] > 0)
+		{
+			if(PlayerInfo[playerid][pInvenPara][i] > para) PlayerInfo[playerid][pInvenPara][i] = para;
+		}
+		else PlayerInfo[playerid][pInvenPara][i] = para;
+	}
+	else PlayerInfo[playerid][pInvenPara][i] = para;
+	PlayerInfo[playerid][pInvenQara][i] = qara; // —татус краденного предмета
+	PlayerInfo[playerid][pInvenType][i] = thingType; // “ип предмета
+	PlayerInfo[playerid][pInvenPack][i] = thingPack; // ”паковка предмета
+	
+	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]), PlayerPlaySound(playerid,1052,0,0,0);
+	return i;
+}
+stock GetFullThingQuan(thingId)
+{
+	new quan;
+    if(thingId == 1) quan = 1; // ’леб
+    else if(thingId == 14) quan = 6; // ѕиво
+    else if(thingId == 16) quan = 50; // ѕачка сигарет
+    else if(thingId == 19) quan = 5; // ќтмычки
+	else if(thingId == 37) quan = 15; // Ўампанское
+	else if(thingId == 41) quan = 5; // Ѕенгальские свечи 
+	else if(thingId == 62) quan = 1; // PlayBoy
+	else if(thingId == 88) quan = 5; // —емена травы
+	else if(thingId == 163) quan = 21; // —вадебный торт
+	else quan = 1;
+	return quan;
+}
+stock SaveInventAll(playerid) // —охранение всего инвентар€ по цилку
+{
+	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', `InvenType1` = '%d', `InvenPack1` = '%d'",
+	PlayerInfo[playerid][pInven][0], PlayerInfo[playerid][pInvenQuan][0], PlayerInfo[playerid][pInvenPara][0], PlayerInfo[playerid][pInvenQara][0], PlayerInfo[playerid][pInvenType][0], PlayerInfo[playerid][pInvenPack][0]);
+	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', `InvenPack%d` = '%d'", big_query,
+	i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
+	query_empty(pearsq, big_query);
+	
+	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Inven21` = '%d', `InvenKol21` = '%d', `InvenPara21` = '%d', `InvenQara21` = '%d', `InvenType21` = '%d', `InvenPack21` = '%d'",
+	PlayerInfo[playerid][pInven][20], PlayerInfo[playerid][pInvenQuan][20], PlayerInfo[playerid][pInvenPara][20], PlayerInfo[playerid][pInvenQara][20], PlayerInfo[playerid][pInvenType][20], PlayerInfo[playerid][pInvenPack][20]);
+	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', `InvenPack%d` = '%d'", big_query,
+	i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
+	query_empty(pearsq, big_query);
+	return 1;
+}
+stock SaveInvent(playerid, i) // —охранение одной €чейки инвентар€
+{
+	format(big_query, sizeof(big_query), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `id`='%d'",
+	i+1,PlayerInfo[playerid][pInven][i],i+1,PlayerInfo[playerid][pInvenQuan][i],i+1,PlayerInfo[playerid][pInvenPara][i],i+1,PlayerInfo[playerid][pInvenQara][i],i+1,PlayerInfo[playerid][pInvenType][i],i+1,PlayerInfo[playerid][pInvenPack][i],PlayerInfo[playerid][pID]);
+	query_empty(pearsq, big_query);
+    return 1;
+}
+stock NumberSmartfonPlayer(playerid) // ”станавливаем номер телефона игроку, исход€ из уже существующих
+{
+    if(ServerInfo[54] <= 0) ServerInfo[54] = 500000; // ≈сли в конфиге нет номера телефона
+	ServerInfo[54] += 1;
+	PlayerInfo[playerid][pDrugPerk] = ServerInfo[54];
+	SaveServer(54);
+	return 1;
+}
+stock ClearPlayerInven(playerid, inva)
+{
+    PlayerInfo[playerid][pInven][inva] = 0;
+	PlayerInfo[playerid][pInvenQuan][inva] = 0;
+	PlayerInfo[playerid][pInvenPara][inva] = 0;
+	PlayerInfo[playerid][pInvenQara][inva] = 0;
+	PlayerInfo[playerid][pInvenType][inva] = 0;
+    PlayerInfo[playerid][pInvenPack][inva] = 0;
+    if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, inva, 0, 0, 0);
+	return 1;
+}
+stock GetNameThing(readStatus, thingId, thingType, thingPack) // ѕолучаем обычное им€ предмета по его типу (ƒл€ текста, диалоговых окон и логов)
+{
+	new nameProduct[84];
+	// “ип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
+	if(thingPack == 0)
+	{
+	    if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s", friskName[thingId]);
+		else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s", gunName[thingId]);
+		else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
+		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"ќдежда ID %d", thingId);
+		else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
+	}
+	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 €щик, 3 ћешок (помещаетс€ только 1 предмет и занимает 1 €чейку)
+	{
+	    new hideName[8];
+	    if(thingPack == 1) format(hideName,sizeof(hideName),"ѕодарок");
+    	else if(thingPack == 2) format(hideName,sizeof(hideName),"ящик");
+    	else if(thingPack == 3) format(hideName,sizeof(hideName),"ћешок");
+	    
+	    if(readStatus == 0) format(nameProduct,sizeof(nameProduct),"%s", hideName);
+	    else // „итаемый, дл€ логов и просмотра содержимого администрацией
+		{
+			if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, friskName[thingId]);
+			else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, gunName[thingId]);
+			else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetNameAccessory(thingId));
+			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (ќдежда ID %d)", hideName, thingId);
+			else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, object_name(thingId));
+		}
+	}
+	return nameProduct;
+}
+stock JustOneThingInventory(i, type) // ѕроверка на наличие предметов, которые не могут повтор€тьс€ в инвентаре (“олько 1)
+{
+	if(type == 0 && (i == 10 || i == 11 || i == 12 || i == 13 || i == 17 || i == 21 || i == 23 || i == 26
+	|| i == 42 || i == 43 || i == 48 || i == 51 || i == 63 || i == 91)
+	|| type == 2 && (IsHelmet(i) || IsArmor(i))) return 1; //  аски, Ѕроник
+	return 0;
+}
+stock IsHelmet(i)
+{
+	if(i == 19093 || i == 19160 || i == 2053 || i == 18638 || i >= 19106 && i <= 19120 || i == 19519 || i == 18640 || i == 19330 || i == 19331) return 1;
+	return 0;
+}
+stock IsArmor(i)
+{
+	if(i == 19142) return 1;
+	return 0;
+}
+stock PerishableThing(i, type) // ѕроверка на порт€щиес€ продукты
+{
+    if(type == 0 && (i == 1 || i == 6 || i == 18 || i == 20 || i == 22 || i == 54 || i == 55 || i == 96 || i == 98 || i == 99 || i == 100 || i == 101 || i == 102
+ 	|| i == 103 || i == 104 || i == 105 || i == 107 || i == 14 || i == 117 || i == 118 || i == 119 || i == 120 || i == 121 || i == 124 || i == 125
+  	|| i == 126 || i == 127 || i >= 128 && i <= 138 || i == 139 || i == 163 || i == 164)) return 1;
+	return 0;
+}
+stock NotGiveThing(i, type)
+{
+	if(type == 0 && (i == 10 || i == 11 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63)
+	|| type == 1 && (i == 34)) return 1;
+	return 0;
+}
+stock i_limit(playerid, thingId, &getQuan, &getLimit) // ѕровер€ем лимиты инвентар€
+{
+	new lim[INVENTER], pow = get_power(playerid);
+	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
+	lim[8] = 2, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // јптечки, ќтмычки, Ѕенгальские —вечи, ƒеньги 999кк
+	lim[4] = 100*pow, lim[5] = 100*pow, lim[6] = 100*pow, lim[7] = 100*pow, lim[9] = 20, lim[18] = 100*pow, lim[20] = 10*pow, lim[27] = 100*pow, lim[28] = 100*pow, lim[29] = 100*pow, lim[30] = 100*pow;
+	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10, lim[60] = 100, lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow, lim[71] = 5;
+	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
+	lim[82] = 10, lim[83] = 10, lim[84] = 10, lim[85] = 10, lim[86] = 10, lim[87] = 10, lim[88] = 10, lim[89] = 10, lim[106] = 12, lim[108] = 20, lim[109] = 20, lim[110] = 20;
+	lim[140] = 100, lim[141] = 100, lim[142] = 10;
+
+    getQuan = get_invent(playerid, thingId, 0);
+    getLimit = lim[thingId];
+	return 1;
+}

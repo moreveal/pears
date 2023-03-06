@@ -1,0 +1,263 @@
+stock showgoods(playerid, i)
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1 || howstun(playerid)) return 1;
+	i_tabs(playerid, 4, 1);
+	OnlineInfo[playerid][oShowInterfaceGoods] = i;
+	Pagetwo[playerid] = 0;
+	for(new m = 0; m < 20; m++) item_second(playerid, PlayerInfo[i][pMarkInven][m], PlayerInfo[i][pMarkInvenQuan][m], m, 1, PlayerInfo[i][pMarkInvenPara][m], PlayerInfo[i][pMarkInvenType][m], PlayerInfo[i][pMarkInvenPack][m], 0);
+	return 1;
+}
+stock showmygoods(playerid)
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1 || howstun(playerid)) return 1;
+	i_tabs(playerid, 2, 1);
+	Pagetwo[playerid] = 0;
+	for(new m = 0; m < 20; m++) item_second(playerid, PlayerInfo[playerid][pMarkInven][m], PlayerInfo[playerid][pMarkInvenQuan][m], m, 1, PlayerInfo[playerid][pMarkInvenPara][m], PlayerInfo[playerid][pMarkInvenType][m], PlayerInfo[playerid][pMarkInvenPack][m], 0);
+	return 1;
+}
+stock use_mygoods(playerid, inva, useinva) // Берём предмет из собственного раздела товаров
+{
+    new fpick = PlayerInfo[playerid][pMarkInven][inva], fquan = PlayerInfo[playerid][pMarkInvenQuan][inva], thingType = PlayerInfo[playerid][pMarkInvenType][inva], thingPack = PlayerInfo[playerid][pMarkInvenPack][inva];
+    if(fpick == 0) return i_resettabs(playerid);
+	if(useinva != 9999)
+	{
+ 		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+	}
+	if(Goods[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас перекладывать товары\n{cccccc}Откройте или арендуйте торговую лавку"), i_resetveshi(playerid), i_resettabs(playerid);
+	
+	// Забираем предмет из товаров
+	if(thingType == 0 && thingPack == 0)
+	{
+	    if(friskKol[fpick] == 1)
+		{
+		    DP[0][playerid] = inva;
+		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
+			format(store,sizeof(store),"{cccccc}Чтобы переложить {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1104,DIALOG_STYLE_INPUT,"{ff9000}Торговля",store,"Принять","Отмена");
+			return 1;
+		}
+	}
+	
+	Veshi[playerid] = 0;
+    i_resetveshi(playerid);
+	i_resettabs(playerid);
+	
+	new put_inva = GiveThingPlayer(playerid, fpick, fquan, PlayerInfo[playerid][pMarkInvenPara][inva], PlayerInfo[playerid][pMarkInvenQara][inva], thingType, thingPack, useinva);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+
+    ClearMyGoods(playerid, inva);
+    PlayerInfo[playerid][pM_Update][inva] = true;
+    item_second(playerid, 0, 0, inva, 1, 0, 0, 0, 0);
+    PlayerInfo[playerid][pI_Update][put_inva] = true; // Сохраняем то, что игрок взял
+
+	// Отображаем всем кто смотрит раздел моих товаров
+	updategoods(playerid, inva);
+	return 1;
+}
+stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
+{
+	i_resettabs(playerid);
+	i_resetveshi(playerid);
+	Veshi[playerid] = 0;
+	new thingType = PlayerInfo[seller][pMarkInvenType][inva], thingPack = PlayerInfo[seller][pMarkInvenPack][inva], price = PlayerInfo[seller][pMarkPrice][inva];
+	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
+	
+	// Проверка на наличие особых аксессуаров (Каска и Броня)
+	if(IsHelmet(fpick) && thingType == 2 && (PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick)) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	
+	// Проверка на лимиты количественного предмета
+	new quanThing;
+	if(thingType == 0) // Обычный предмет
+	{
+	    if(friskKol[fpick] == 1) // Предмет имеет количество
+		{
+		    if(thingPack == 0) quanThing = 1;
+		    new getQuan, getLimit;
+		    i_limit(playerid, fpick, getQuan, getLimit);
+		    if(getQuan+fquan > getLimit)
+		    {
+		        format(store,sizeof(store),"{FF6347}У меня нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit);
+		        ErrorMessage(playerid, store);
+				i_resetveshi(playerid);
+				i_resettabs(playerid);
+				return 1;
+		    }
+		}
+	}
+	
+	// Покупка предмета
+    if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+
+    new put_inva = GiveThingPlayer(playerid, fpick, fquan, para, qara, thingType, thingPack, 9999); // Выдаём предмет игроку
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+
+	if(quanThing == 1) // Отнимаем предмет (по количеству)
+	{
+    	PlayerInfo[seller][pMarkInvenQuan][inva] -= fquan;
+		if(PlayerInfo[seller][pMarkInvenQuan][inva] <= 0) PlayerInfo[seller][pMarkInven][inva] = 0, PlayerInfo[seller][pMarkPrice][inva] = 0, PlayerInfo[seller][pMarkInvenPara][inva] = 0, PlayerInfo[seller][pMarkInvenQara][inva] = 0, PlayerInfo[seller][pMarkInvenType][inva] = 0, PlayerInfo[seller][pMarkInvenPack][inva] = 0;
+	}
+	else PlayerInfo[seller][pMarkInven][inva] = 0, PlayerInfo[seller][pMarkInvenQuan][inva] = 0, PlayerInfo[seller][pMarkPrice][inva] = 0, PlayerInfo[seller][pMarkInvenPara][inva] = 0, PlayerInfo[seller][pMarkInvenQara][inva] = 0, PlayerInfo[seller][pMarkInvenType][inva] = 0, PlayerInfo[seller][pMarkInvenPack][inva] = 0;
+    PlayerInfo[seller][pM_Update][inva] = true;
+
+	// Если предмет имеет количество, мы умножаем стоимость
+	if(quanThing == 1) price = price*fquan;
+
+    format(store,sizeof(store),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$ [%s]", GetNameThing(0, fpick, thingType, thingPack), price, get_k(price));
+	SuccessMessage(playerid, store);
+	oGivePlayerMoney(playerid, -price);
+	oGivePlayerMoney(seller, price);
+	payanim(playerid, 0); // Анимация передачи денег с появление бабла в руках
+
+	SaveInvent(playerid, put_inva);
+    updategoods(seller, inva);
+    
+    format(store,sizeof(store),"Купил: %s [%d$]",GetNameThing(1, fpick, thingType, thingPack), price);
+	UserLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], fquan, store);
+    
+    if(PlayerInfo[seller][pAchieve][22] == 0) AchievePlayer(seller, 22, 1);
+	if(PlayerInfo[playerid][pAchieve][23] == 0) AchievePlayer(playerid, 23, 1);
+	return 1;
+}
+stock use_goods(playerid, seller, inva)
+{
+    new fpick = PlayerInfo[seller][pMarkInven][inva], thingType = PlayerInfo[seller][pMarkInvenType][inva], thingPack = PlayerInfo[seller][pMarkInvenPack][inva];
+    if(fpick == 0) return i_resettabs(playerid);
+	if(PlayerInfo[seller][pMarkPrice][inva] == 0) return ErrorMessage(playerid, "{FF6347}Этот товар не продаётся [ Не установлена цена ]"), i_resettabs(playerid);
+	
+	if(thingType == 0 && thingPack == 0)
+	{
+		if(friskKol[fpick] == 1)
+		{
+		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
+			format(store,sizeof(store),"{cccccc}Чтобы купить {ff9000}%s {cccccc}введите количество",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1106,DIALOG_STYLE_INPUT,"{ff9000}Торговля",store,"Принять","Отмена");
+			return 1;
+		}
+	}
+	DP[0][playerid] = 0;
+	Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
+	format(store,sizeof(store),"{cccccc}Вы уверены, что хотите купить {ff9000}%s {cccccc}за {99ff66}%d$ [%s] {cccccc}?",GetNameThing(0, fpick, thingType, thingPack), PlayerInfo[seller][pMarkPrice][inva], get_k(PlayerInfo[seller][pMarkPrice][inva]));
+	ShowDialog(playerid,1107,DIALOG_STYLE_MSGBOX,"{ff9000}Торговля",store,"Да","Нет");
+	return 1;
+}
+stock put_goods(playerid, inva, fpick, quan, binva)
+{
+	new put_inva = -1;
+	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oInventSelectLeft] == 9999
+	|| PlayerInfo[playerid][pInven][inva] <= 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < quan) return 1;
+	
+	i_resetveshi(playerid);
+	i_resettabs(playerid);
+	if(Goods[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас перекладывать товары\n{cccccc}Откройте или арендуйте торговую лавку");
+	
+	new thingType = PlayerInfo[playerid][pInvenType][inva], thingPack = PlayerInfo[playerid][pInvenType][inva];
+	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем положить в раздел товаров");
+    if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать");
+	if(PlayerInfo[playerid][pMarkInven][binva] > 0) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята");
+	
+	put_inva = binva;
+	PlayerInfo[playerid][pMarkInven][binva] = fpick;
+	PlayerInfo[playerid][pMarkInvenQuan][binva] = quan;
+	PlayerInfo[playerid][pMarkInvenPara][binva] = PlayerInfo[playerid][pInvenPara][inva];
+	PlayerInfo[playerid][pMarkInvenQara][binva] = PlayerInfo[playerid][pInvenQara][inva];
+	PlayerInfo[playerid][pMarkInvenType][binva] = PlayerInfo[playerid][pInvenType][inva];
+	PlayerInfo[playerid][pMarkInvenPack][binva] = PlayerInfo[playerid][pInvenPack][inva];
+	PlayerInfo[playerid][pMarkPrice][binva] = 0;
+	PlayerInfo[playerid][pM_Update][binva] = true;
+	
+	new quanThing;
+	if(thingType == 0 && thingPack == 0)
+	{
+	    if(friskKol[fpick] == 1) quanThing = 1;
+	}
+	if(quanThing == 1) take_away(playerid, quan, inva); // Отнимаем предмет (по количеству)
+    else i_del(playerid, inva); // Отнимаем предмет (целиком)
+	PlayerInfo[playerid][pI_Update][inva] = true;
+
+    updategoods(playerid, binva);
+	item_second(playerid, PlayerInfo[playerid][pMarkInven][binva], PlayerInfo[playerid][pMarkInvenQuan][binva], binva, 1, PlayerInfo[playerid][pMarkInvenPara][binva], PlayerInfo[playerid][pMarkInvenType][binva], PlayerInfo[playerid][pMarkInvenPack][binva], 0);
+	return put_inva;
+}
+stock shift_goods(playerid, getinva, putinva)
+{
+	if(PlayerInfo[playerid][pMarkInven][getinva] == 0 || PlayerInfo[playerid][pMarkInven][putinva] != 0) return i_resettabs(playerid);
+	new quanPlayer;
+	foreach(Player,i)
+	{
+	    if(OnlineInfo[i][oLogged] == 0) continue;
+	    if(OnlineInfo[i][oShowInterface] != 1) continue;
+	    if(OnlineInfo[i][oShowInterfaceGoods] == 9999) continue;
+		if(playerid == OnlineInfo[i][oShowInterfaceGoods]) quanPlayer ++;
+	}
+	if(quanPlayer >= 1)
+	{
+		format(store, sizeof(store), "{FF6347}Ваши товары просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer);
+		ErrorMessage(playerid, store);
+		i_resettabs(playerid);
+		return 1;
+	}
+	PlayerInfo[playerid][pMarkInven][putinva] = PlayerInfo[playerid][pMarkInven][getinva];
+	PlayerInfo[playerid][pMarkInvenQuan][putinva] = PlayerInfo[playerid][pMarkInvenQuan][getinva];
+	PlayerInfo[playerid][pMarkInvenPara][putinva] = PlayerInfo[playerid][pMarkInvenPara][getinva];
+	PlayerInfo[playerid][pMarkInvenQara][putinva] = PlayerInfo[playerid][pMarkInvenQara][getinva];
+	PlayerInfo[playerid][pMarkPrice][putinva] = PlayerInfo[playerid][pMarkPrice][getinva];
+	PlayerInfo[playerid][pMarkInvenType][putinva] = PlayerInfo[playerid][pMarkInvenType][getinva];
+	PlayerInfo[playerid][pMarkInvenPack][putinva] = PlayerInfo[playerid][pMarkInvenPack][getinva];
+
+	ClearMyGoods(playerid, getinva);
+	PlayerInfo[playerid][pM_Update][putinva] = true;
+	PlayerInfo[playerid][pM_Update][getinva] = true;
+	i_resettabs(playerid);
+	item_second(playerid, 0, 0, getinva, 1, 0, 0, 0, 0);
+	item_second(playerid, PlayerInfo[playerid][pMarkInven][putinva], PlayerInfo[playerid][pMarkInvenQuan][putinva], putinva, 1, PlayerInfo[playerid][pMarkInvenPara][putinva], PlayerInfo[playerid][pMarkInvenType][putinva], PlayerInfo[playerid][pMarkInvenPack][putinva], 0);
+	return 1;
+}
+stock SaveMarkAll(playerid) // Сохранение всего раздела торговли по цилку
+{
+	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Mark0` = '%d', `MarkKol0` = '%d', `MarkPara0` = '%d', `MarkQara0` = '%d', `MarkType0` = '%d', `MarkPack0` = '%d', `MarkPrice0` = '%d'",
+	PlayerInfo[playerid][pMarkInven][0], PlayerInfo[playerid][pMarkInvenQuan][0], PlayerInfo[playerid][pMarkInvenPara][0], PlayerInfo[playerid][pMarkInvenQara][0], PlayerInfo[playerid][pMarkInvenType][0], PlayerInfo[playerid][pMarkInvenPack][0], PlayerInfo[playerid][pMarkPrice][0]);
+	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Mark%d` = '%d', `MarkKol%d` = '%d', `MarkPara%d` = '%d', `MarkQara%d` = '%d', `MarkType%d` = '%d', `MarkPack%d` = '%d', `MarkPrice%d` = '%d'", big_query,
+	i, PlayerInfo[playerid][pMarkInven][i], i, PlayerInfo[playerid][pMarkInvenQuan][i], i, PlayerInfo[playerid][pMarkInvenPara][i], i, PlayerInfo[playerid][pMarkInvenQara][i], i, PlayerInfo[playerid][pMarkInvenType][i], i, PlayerInfo[playerid][pMarkInvenPack][i], i, PlayerInfo[playerid][pMarkPrice][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
+	query_empty(pearsq, big_query);
+	return 1;
+}
+stock SaveMark(playerid, i)
+{
+	format(big_query, sizeof(big_query), "UPDATE `pp_igroki` SET `Mark%d`='%d',`MarkKol%d`='%d',`MarkPara%d`='%d',`MarkQara%d`='%d',`MarkPrice%d`='%d',`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `id`='%d'",
+	i,PlayerInfo[playerid][pMarkInven][i],i,PlayerInfo[playerid][pMarkInvenQuan][i],i,PlayerInfo[playerid][pMarkInvenPara][i],i,PlayerInfo[playerid][pMarkInvenQara][i],
+	i,PlayerInfo[playerid][pMarkPrice][i],i,PlayerInfo[playerid][pMarkInvenType][i],i,PlayerInfo[playerid][pMarkInvenPack][i],PlayerInfo[playerid][pID]);
+	query_empty(pearsq, big_query);
+    return 1;
+}
+stock IsAUpdateM(playerid)
+{
+	new up = 0;
+	for(new i = 0; i < 20; i++)
+	{
+	    if(PlayerInfo[playerid][pM_Update][i] == true) up ++;
+	}
+	return up;
+}
+stock updategoods(seller, inva)
+{
+	foreach(Player,i)
+	{
+	    if(OnlineInfo[i][oLogged] == 0) continue;
+	    if(OnlineInfo[i][oShowInterface] != 1) continue;
+	    if(OnlineInfo[i][oShowInterfaceGoods] != 9999 && OnlineInfo[i][oShowInterfaceGoods] == seller || Tabs_Load[i] == 6 && i == seller) item_second(i, PlayerInfo[seller][pMarkInven][inva], PlayerInfo[seller][pMarkInvenQuan][inva], inva, 1, PlayerInfo[seller][pMarkInvenPara][inva], PlayerInfo[seller][pMarkInvenType][inva], PlayerInfo[seller][pMarkInvenPack][inva], 0);
+	}
+	return 1;
+}
+stock ClearMyGoods(playerid, i)
+{
+    PlayerInfo[playerid][pMarkInven][i] = 0;
+	PlayerInfo[playerid][pMarkInvenQuan][i] = 0;
+	PlayerInfo[playerid][pMarkInvenPara][i] = 0;
+	PlayerInfo[playerid][pMarkInvenQara][i] = 0;
+	PlayerInfo[playerid][pMarkInvenType][i] = 0;
+	PlayerInfo[playerid][pMarkInvenPack][i] = 0;
+	PlayerInfo[playerid][pMarkPrice][i] = 0;
+	return 1;
+}
