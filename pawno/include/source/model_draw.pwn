@@ -4,6 +4,7 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
     findIt = 1;
 	switch(model)
 	{
+		case 1210: x = 0.0000, y = 0.0000, z = 32.0000, s = 1.0199;
 		case 18891..18905: x = 83.0, y = 90.0, z = 0.0, s = 1.0;
 		case 18911..18920: x = 0.0, y = -90.0, z = -90.0, s = 1.0;
 		case 18921..18925: x = -100.0, y = -30.0, z = 283.0, s = 1.0;

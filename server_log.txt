@@ -12366,3 +12366,1317 @@ v0.3.7-R2, (C)2005-2015 SA-MP Team
 [22:22:00] [dbg:raknet:free] : module released
 [22:22:00] [sv:dbg:network:free] : module releasing...
 [22:22:00] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[18:55:58] 
+[18:55:58] Server Plugins
+[18:55:58] --------------
+[18:55:58]  Loading plugin: ColAndreas
+[18:55:58] *********************
+[18:55:58] ** Created By:     **
+[18:55:58] ** [uL]Chris42O    **
+[18:55:58] ** [uL]Slice       **
+[18:55:58] ** [uL]Pottus      **
+[18:55:58] *********************
+[18:56:01] Loaded collision data.
+[18:56:01] *********************
+[18:56:01]   ColAndreas Loaded
+[18:56:01]    v1.4.0
+[18:56:01] *********************
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: sampvoice
+[18:56:01] [sv:dbg:network:init] : module initializing...
+[18:56:01] [dbg:raknet:init] : module initializing...
+[18:56:01] [dbg:raknet:init] : module initialized
+[18:56:01] [sv:dbg:network:init] : module initialized
+[18:56:01] [sv:dbg:main:Load] : creating 8 work threads...
+[18:56:01] Sampik Voice Loaded [LOADED]
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: crashdetect
+[18:56:01]   CrashDetect plugin 4.19.4
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: mysql
+[18:56:01]  >> plugin.mysql: R41-3 successfully loaded.
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: streamer
+[18:56:01] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: pawnraknet
+[18:56:01] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: sscanf
+[18:56:01] 
+
+[18:56:01]  ===============================
+
+[18:56:01]       sscanf plugin loaded.     
+
+[18:56:01]          Version:  2.8.2        
+
+[18:56:01]    (c) 2012 Alex "Y_Less" Cole  
+
+[18:56:01]  ===============================
+
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: audio
+[18:56:01] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: TOTP
+[18:56:01] TOTP plugin v1.0.1 by Games loaded.
+[18:56:01]   Loaded.
+[18:56:01]  Loading plugin: YSF
+[18:56:01] 
+[18:56:01]  ==============================================
+[18:56:01]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[18:56:01]   (c) 2008 Alex "Y_Less" Cole
+[18:56:01]   (c) 2010 - 2018 kurta999
+[18:56:01]   (c) 2018 - 2020 IllidanS4
+[18:56:01]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[18:56:01]  ==============================================
+[18:56:01] 
+[18:56:01]   Loaded.
+[18:56:01]  Loaded 10 plugins.
+
+[18:56:01] 
+[18:56:01] Ban list
+[18:56:01] --------
+[18:56:01]  Loaded: samp.ban
+[18:56:01] 
+[18:56:01] 
+[18:56:01] Filterscripts
+[18:56:01] ---------------
+[18:56:01]   Loading filterscript 'pearsmap.amx'...
+[18:56:01] [sv:dbg:main:AmxLoad] : net game pointer (value:023E9E68) received
+[18:56:01] [sv:dbg:network:bind] : voice server running on port 7801
+[18:56:01] |===============================|
+[18:56:01] |===[ Mapping Pears Project ]===|
+[18:56:01] |===============================|
+[18:56:01]   Loaded 1 filterscripts.
+
+[18:56:02] Setting server password to: "ybf76b76BYFDB"
+[18:56:02] [sv:dbg:pawn:SvDebug] : mode(1)
+[18:56:02] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(101D2828)
+[18:56:02] [MODE]: Загружен [526 ms]
+[18:56:02] Loading Map.
+[18:56:02] Loaded Map.                             
+[18:56:02] Server password has been removed.
+[18:56:02] Server password has been removed.
+[18:56:02] [MODE]: OPEN SERVER
+[18:56:02] Number of vehicle models: 29
+[18:56:03] [MODE]: Организации [378 ms]
+[18:56:03] [MODE]: Сервер [1 ms]
+[18:56:03] [MODE]: Экономика [1 ms]
+[18:56:03] [MODE]: Стоимость Транспорта [5 ms]
+[18:56:03] [MODE]: Стоимость Скинов [8 ms]
+[18:56:03] [MODE]: Стоимость Оружия [1 ms]
+[18:56:03] [MODE]: Стоимость Предметов [4 ms]
+[18:56:03] [MODE]: Реклама [30 Quan][7 ms]
+[18:56:03] [MODE]: Постройки [0 Quan][0 ms]
+[18:56:03] [MODE]: Gang Zone [119 Quan][10 ms]
+[18:56:03] [MODE]: Квартиры [25 Quan][7 ms]
+[18:56:18] [MODE]: Дома [1000 Quan][14299 ms]
+[18:56:18] [MODE]: Камеры Слежения [5 Quan][2 ms]
+[18:56:18] [MODE]: Склады [15 Quan][28 ms]
+[18:56:18] [MODE]: Семьи [11 Quan][25 ms]
+[18:56:18] [MODE]: Промокоды [1 Quan][0 ms]
+[18:56:18] [MODE]: Погода [1 ms]
+[18:56:18] [MODE]: Ачивки 123 [3 ms]
+[18:56:18] [MODE]: IKEA [8 Quan][4 ms]
+[18:56:18] [MODE]: Frame [69 Quan][21 ms]
+[18:56:23] [MODE]: Бизнесы [200 Quan][4777 ms]
+[18:56:23] [MODE]: Одежда в Бизнесах [37 ms]
+[18:56:23] [MODE]: Аксессуары в Бизнесах [72 ms]
+[18:56:23] [MODE]: Комиссия в Банке [10 Quan][0 ms]
+[18:56:23] [MODE]: Терминалы Бизнесов [29 ms]
+[18:56:23] [MODE]: Аксессуары [11 Quan][1 ms]
+[18:56:23] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][3 ms]
+[18:56:23] [MODE]: Reload Online [0 Игроков][0 ms]
+[18:56:30] [MODE]: Объекты [5181 Quan][5882 ms]
+[18:56:33] [connection] 127.0.0.1:54039 requests connection cookie.
+[18:56:39] [MODE]: Объекты [7312 Quan][8354 ms]
+[18:56:39] [connection] incoming connection: 127.0.0.1:54039 id: 0
+[18:56:39] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[18:56:39] [nick] Elon_Musk nick changed to player0
+[18:56:39] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[18:56:39] [Monitoring Load]: Отсутствует
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [Monitoring Load]: Загружено
+[18:56:39] [MODE]: Объекты [35 Quan][42 ms]
+[18:56:40] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[18:56:40] OnPlayerLoad(Elon_Musk) start: 48ms
+[18:56:40] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[18:56:44] OnPlayerLogin(0) - Elon_Musk
+[18:56:44] [nick] player0 nick changed to Elon_Musk
+[18:56:44] [sv:dbg:pawn:SvAttachListenerToStream] : stream(101D2828), playerid(0) : return(0)
+[18:56:44] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[18:56:44] GF_OnPlayerUpdate Elon_Musk
+[18:56:44] load_greenhouse Elon_Musk 1
+[18:56:54] EnterDynamicArea 111
+[18:57:04] Использовалась команда Elon_Musk /setskin 0 313
+[18:57:08] Использовалась команда Elon_Musk /setskin 0 312
+[18:58:12] Использовалась команда Elon_Musk /editmodel
+[18:58:18] Использовалась команда Elon_Musk /editmodel 1200
+[18:58:27] Использовалась команда Elon_Musk /editmodel 1202
+[18:58:30] Использовалась команда Elon_Musk /editmodel 1210
+[18:59:01] OnDialogResponse Elon_Musk case:1700 
+[18:59:10] Использовалась команда Elon_Musk /accessory
+[18:59:12] OnDialogResponse Elon_Musk case:1278 Добавить аксессуар
+[18:59:15] OnDialogResponse Elon_Musk case:1280 1210
+[18:59:17] OnDialogResponse Elon_Musk case:1281 Название: 
+[18:59:20] OnDialogResponse Elon_Musk case:1282 Чумадан
+[18:59:23] OnDialogResponse Elon_Musk case:1281 Расположение на игроке >> 
+[18:59:31] OnDialogResponse Elon_Musk case:1281 Кость крепления: 
+[18:59:32] OnDialogResponse Elon_Musk case:1284 1. Спина
+[18:59:36] OnDialogResponse Elon_Musk case:1281 Статус: 
+[18:59:37] OnDialogResponse Elon_Musk case:1281 Статус: 
+[18:59:39] OnDialogResponse Elon_Musk case:1278 Найти
+[18:59:41] OnDialogResponse Elon_Musk case:1279 банан
+[18:59:43] OnDialogResponse Elon_Musk case:1278 Найти [банан]
+[18:59:44] OnDialogResponse Elon_Musk case:1279 
+[18:59:47] OnDialogResponse Elon_Musk case:1278 Добавить аксессуар
+[19:00:09] Использовалась команда Elon_Musk /exportmodel
+[19:00:12] OnDialogResponse Elon_Musk case:1700 
+[19:00:45] [ DONE ] stuff обновлён
+[19:01:44] LeaveDynamicArea 111
+[19:01:48] Использовалась команда Elon_Musk /stats
+[19:01:52] OnDialogResponse Elon_Musk case:1500 
+[19:01:55] Использовалась команда Elon_Musk /gotobiz 93
+[19:01:55] EnterDynamicArea 102
+[19:01:58] LeaveDynamicArea 102
+[19:02:06] Использовалась команда Elon_Musk /bedit
+[19:02:08] OnDialogResponse Elon_Musk case:1263 Выбрать Планировку
+[19:02:15] Использовалась команда Elon_Musk /frame
+[19:02:19] OnDialogResponse Elon_Musk case:1264 Добавить каркас + 
+[19:02:33] OnDialogResponse Elon_Musk case:1264 Тип: 
+[19:02:40] OnDialogResponse Elon_Musk case:1264 Добавить каркас + 
+[19:03:27] OnDialogResponse Elon_Musk case:1046 [№ 93] Клуб
+[19:03:29] OnDialogResponse Elon_Musk case:694 Интерьер
+[19:03:34] OnDialogResponse Elon_Musk case:1263 Переместить Предмет
+[19:03:36] OnDialogResponse Elon_Musk case:1271 Выбрать Предмет
+[19:03:45] Использовалась команда Elon_Musk /tp3
+[19:03:46] OnDialogResponse Elon_Musk case:79 IKEA
+[19:03:47] EnterDynamicArea 101
+[19:03:48] LeaveDynamicArea 101
+[19:04:04] Использовалась команда Elon_Musk /cobject 1210
+[19:04:14] Использовалась команда Elon_Musk /ikea 3
+[19:04:15] OnDialogResponse Elon_Musk case:1260 Продажа: 
+[19:04:16] OnDialogResponse Elon_Musk case:1700 
+[19:04:17] Использовалась команда Elon_Musk /ikea 3
+[19:04:18] OnDialogResponse Elon_Musk case:1260 Стоимость: 
+[19:04:19] OnDialogResponse Elon_Musk case:1261 10000
+[19:04:19] OnDialogResponse Elon_Musk case:1260 Продажа: 
+[19:04:21] OnDialogResponse Elon_Musk case:1260 Название: 
+[19:04:23] OnDialogResponse Elon_Musk case:1261 Чумадана 2
+[19:04:23] OnDialogResponse Elon_Musk case:1260 Продажа: 
+[19:04:38] Использовалась команда Elon_Musk /ikea 3
+[19:04:40] OnDialogResponse Elon_Musk case:1260 Точка продажи >> 
+[19:04:41] OnDialogResponse Elon_Musk case:1262 
+[19:04:42] OnDialogResponse Elon_Musk case:1260 Продажа: 
+[19:04:45] OnDialogResponse Elon_Musk case:887 
+[19:04:45] OnDialogResponse Elon_Musk case:887 
+[19:04:47] OnDialogResponse Elon_Musk case:887 
+[19:04:50] OnDialogResponse Elon_Musk case:887 
+[19:05:11] OnDialogResponse Elon_Musk case:886 Бизнес Клуб № 93 
+[19:05:51] Использовалась команда Elon_Musk /dom 1
+[19:05:51] EnterDynamicArea 111
+[19:05:52] LeaveDynamicArea 111
+[19:05:56] OnDialogResponse Elon_Musk case:408 Редактор Взаимодействия
+[19:06:25] EnterDynamicArea 111
+[19:06:29] Использовалась команда Elon_Musk /biz 93
+[19:06:32] Использовалась команда Elon_Musk /gotobiz 93
+[19:06:33] LeaveDynamicArea 111
+[19:06:33] EnterDynamicArea 102
+[19:07:01] LeaveDynamicArea 102
+[19:07:21] Использовалась команда Elon_Musk /spawns
+[19:07:22] OnDialogResponse Elon_Musk case:76 LSPD
+[19:07:22] EnterDynamicArea 112
+[19:07:28] Использовалась команда Elon_Musk /gotobiz 93
+[19:07:28] LeaveDynamicArea 112
+[19:07:28] EnterDynamicArea 102
+[19:07:31] LeaveDynamicArea 102
+[19:08:19] Использовалась команда Elon_Musk /spawns
+[19:08:20] OnDialogResponse Elon_Musk case:76 Аэропорт LS
+[19:08:20] EnterDynamicArea 112
+[19:08:20] EnterDynamicArea 18
+[19:08:35] LeaveDynamicArea 112
+[19:08:35] LeaveDynamicArea 18
+[19:08:35] EnterDynamicArea 17
+[19:09:04] LeaveDynamicArea 17
+[19:09:04] EnterDynamicArea 112
+[19:09:04] EnterDynamicArea 18
+[19:09:22] OnDialogResponse Elon_Musk case:1175 Положить Деньги 
+[19:09:23] OnDialogResponse Elon_Musk case:1175 Положить Деньги 
+[19:09:49] OnDialogResponse Elon_Musk case:1175 Положить Деньги 
+[19:09:50] GF_OnPlayerUpdate Elon_Musk
+[19:09:58] OnDialogResponse Elon_Musk case:1175 Положить Деньги 
+[19:10:15] OnDialogResponse Elon_Musk case:243 Настройки Оформления
+[19:10:19] OnDialogResponse Elon_Musk case:1241 Смартфон
+[19:10:20] OnDialogResponse Elon_Musk case:1242 Размер
+[19:10:29] OnDialogResponse Elon_Musk case:1241 Ноутбук
+[19:10:30] OnDialogResponse Elon_Musk case:1242 Положение
+[19:11:06] Использовалась команда Elon_Musk /mm
+[19:11:16] OnDialogResponse Elon_Musk case:243 Навыки >>
+[19:11:17] Использовалась команда Elon_Musk /car
+[19:11:19] OnDialogResponse Elon_Musk case:653 Sultan [119] 
+[19:11:49] OnDialogResponse Elon_Musk case:298 Вызвать Транспорт [-5 Fuel]
+[19:11:49] OnDialogResponse Elon_Musk case:653 Нет 
+[19:11:59] OnDialogResponse Elon_Musk case:1173 Faggio
+[19:14:15] GF_OnPlayerUpdate Elon_Musk
+[19:14:15] [sv:dbg:pawn:SvDetachListenerFromStream] : stream(101D2828), playerid(0) : return(0)
+[19:14:15] [sv:dbg:pawn:SvRemoveKey] : playerid(0), keyid(0x42) : return(0)
+[19:14:15] [part] Elon_Musk has left the server (0:1)
+[19:14:19]  -------------------------------------------
+[19:14:19]            SampVoice unloading...           
+[19:14:19]  -------------------------------------------
+[19:14:19] [dbg:raknet:free] : module releasing...
+[19:14:19] [dbg:raknet:free] : module released
+[19:14:19] [sv:dbg:network:free] : module releasing...
+[19:14:19] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[21:38:40] 
+[21:38:40] Server Plugins
+[21:38:40] --------------
+[21:38:40]  Loading plugin: ColAndreas
+[21:38:40] *********************
+[21:38:40] ** Created By:     **
+[21:38:40] ** [uL]Chris42O    **
+[21:38:40] ** [uL]Slice       **
+[21:38:40] ** [uL]Pottus      **
+[21:38:40] *********************
+[21:38:43] Loaded collision data.
+[21:38:43] *********************
+[21:38:43]   ColAndreas Loaded
+[21:38:43]    v1.4.0
+[21:38:43] *********************
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: sampvoice
+[21:38:43] [sv:dbg:network:init] : module initializing...
+[21:38:43] [dbg:raknet:init] : module initializing...
+[21:38:43] [dbg:raknet:init] : module initialized
+[21:38:43] [sv:dbg:network:init] : module initialized
+[21:38:43] [sv:dbg:main:Load] : creating 8 work threads...
+[21:38:43] Sampik Voice Loaded [LOADED]
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: crashdetect
+[21:38:43]   CrashDetect plugin 4.19.4
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: mysql
+[21:38:43]  >> plugin.mysql: R41-3 successfully loaded.
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: streamer
+[21:38:43] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: pawnraknet
+[21:38:43] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: sscanf
+[21:38:43] 
+
+[21:38:43]  ===============================
+
+[21:38:43]       sscanf plugin loaded.     
+
+[21:38:43]          Version:  2.8.2        
+
+[21:38:43]    (c) 2012 Alex "Y_Less" Cole  
+
+[21:38:43]  ===============================
+
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: audio
+[21:38:43] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: TOTP
+[21:38:43] TOTP plugin v1.0.1 by Games loaded.
+[21:38:43]   Loaded.
+[21:38:43]  Loading plugin: YSF
+[21:38:43] 
+[21:38:43]  ==============================================
+[21:38:43]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[21:38:43]   (c) 2008 Alex "Y_Less" Cole
+[21:38:43]   (c) 2010 - 2018 kurta999
+[21:38:43]   (c) 2018 - 2020 IllidanS4
+[21:38:43]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[21:38:43]  ==============================================
+[21:38:43] 
+[21:38:43]   Loaded.
+[21:38:43]  Loaded 10 plugins.
+
+[21:38:43] 
+[21:38:43] Ban list
+[21:38:43] --------
+[21:38:43]  Loaded: samp.ban
+[21:38:43] 
+[21:38:43] 
+[21:38:43] Filterscripts
+[21:38:43] ---------------
+[21:38:43]   Loading filterscript 'pearsmap.amx'...
+[21:38:43] [sv:dbg:main:AmxLoad] : net game pointer (value:00659E60) received
+[21:38:43] [sv:dbg:network:bind] : voice server running on port 7801
+[21:38:43] |===============================|
+[21:38:43] |===[ Mapping Pears Project ]===|
+[21:38:43] |===============================|
+[21:38:43]   Loaded 1 filterscripts.
+
+[21:38:43] Setting server password to: "ybf76b76BYFDB"
+[21:38:43] [sv:dbg:pawn:SvDebug] : mode(1)
+[21:38:43] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(1028CF68)
+[21:38:45] [MODE]: Загружен [1526 ms]
+[21:38:45] Loading Map.
+[21:38:45] Loaded Map.                             
+[21:38:45] Server password has been removed.
+[21:38:45] Server password has been removed.
+[21:38:45] [MODE]: OPEN SERVER
+[21:38:45] Number of vehicle models: 29
+[21:38:45] [MODE]: Организации [406 ms]
+[21:38:45] [MODE]: Сервер [2 ms]
+[21:38:45] [MODE]: Экономика [0 ms]
+[21:38:45] [MODE]: Стоимость Транспорта [5 ms]
+[21:38:45] [MODE]: Стоимость Скинов [8 ms]
+[21:38:45] [MODE]: Стоимость Оружия [1 ms]
+[21:38:45] [MODE]: Стоимость Предметов [4 ms]
+[21:38:45] [MODE]: Реклама [30 Quan][8 ms]
+[21:38:45] [MODE]: Постройки [0 Quan][0 ms]
+[21:38:45] [MODE]: Gang Zone [119 Quan][11 ms]
+[21:38:45] [MODE]: Квартиры [25 Quan][7 ms]
+[21:39:00] [MODE]: Дома [1000 Quan][14275 ms]
+[21:39:00] [MODE]: Камеры Слежения [5 Quan][2 ms]
+[21:39:00] [MODE]: Склады [15 Quan][28 ms]
+[21:39:00] [MODE]: Семьи [11 Quan][24 ms]
+[21:39:00] [MODE]: Промокоды [1 Quan][1 ms]
+[21:39:00] [MODE]: Погода [0 ms]
+[21:39:00] [MODE]: Ачивки 123 [3 ms]
+[21:39:00] [MODE]: IKEA [8 Quan][3 ms]
+[21:39:00] [MODE]: Frame [69 Quan][24 ms]
+[21:39:03] [connection] 127.0.0.1:54273 requests connection cookie.
+[21:39:04] [MODE]: Бизнесы [200 Quan][4547 ms]
+[21:39:04] [connection] incoming connection: 127.0.0.1:54273 id: 0
+[21:39:04] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[21:39:04] [nick] Elon_Musk nick changed to player0
+[21:39:04] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[21:39:05] [MODE]: Одежда в Бизнесах [36 ms]
+[21:39:05] [MODE]: Аксессуары в Бизнесах [72 ms]
+[21:39:05] [MODE]: Комиссия в Банке [10 Quan][0 ms]
+[21:39:05] [MODE]: Терминалы Бизнесов [30 ms]
+[21:39:05] [MODE]: Аксессуары [12 Quan][2 ms]
+[21:39:05] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][4 ms]
+[21:39:05] [MODE]: Reload Online [0 Игроков][0 ms]
+[21:39:11] [MODE]: Объекты [5181 Quan][5826 ms]
+[21:39:19] [MODE]: Объекты [7312 Quan][8228 ms]
+[21:39:19] [Monitoring Load]: Отсутствует
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [Monitoring Load]: Загружено
+[21:39:19] [MODE]: Объекты [35 Quan][39 ms]
+[21:39:20] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[21:39:20] OnPlayerLoad(Elon_Musk) start: 24ms
+[21:39:20] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[21:39:21] OnDialogResponse Elon_Musk case:220 
+[21:39:21] OnPlayerLogin(0) - Elon_Musk
+[21:39:25] [nick] player0 nick changed to Elon_Musk
+[21:39:25] [sv:dbg:pawn:SvAttachListenerToStream] : stream(1028CF68), playerid(0) : return(0)
+[21:39:25] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[21:39:25] GF_OnPlayerUpdate Elon_Musk
+[21:39:25] load_greenhouse Elon_Musk 1
+[21:39:30] Использовалась команда Elon_Musk /setskin 0 314
+[21:40:13] Использовалась команда Elon_Musk /nohp
+[21:40:13] [death] Elon_Musk died 255
+[21:40:22] EnterDynamicArea 111
+[21:41:04]  -------------------------------------------
+[21:41:04]            SampVoice unloading...           
+[21:41:04]  -------------------------------------------
+[21:41:04] [dbg:raknet:free] : module releasing...
+[21:41:04] [dbg:raknet:free] : module released
+[21:41:04] [sv:dbg:network:free] : module releasing...
+[21:41:04] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[21:41:12] 
+[21:41:12] Server Plugins
+[21:41:12] --------------
+[21:41:12]  Loading plugin: ColAndreas
+[21:41:12] *********************
+[21:41:12] ** Created By:     **
+[21:41:12] ** [uL]Chris42O    **
+[21:41:12] ** [uL]Slice       **
+[21:41:12] ** [uL]Pottus      **
+[21:41:12] *********************
+[21:41:15] Loaded collision data.
+[21:41:15] *********************
+[21:41:15]   ColAndreas Loaded
+[21:41:15]    v1.4.0
+[21:41:15] *********************
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: sampvoice
+[21:41:15] [sv:dbg:network:init] : module initializing...
+[21:41:15] [dbg:raknet:init] : module initializing...
+[21:41:15] [dbg:raknet:init] : module initialized
+[21:41:15] [sv:dbg:network:init] : module initialized
+[21:41:15] [sv:dbg:main:Load] : creating 8 work threads...
+[21:41:15] Sampik Voice Loaded [LOADED]
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: crashdetect
+[21:41:15]   CrashDetect plugin 4.19.4
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: mysql
+[21:41:15]  >> plugin.mysql: R41-3 successfully loaded.
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: streamer
+[21:41:15] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: pawnraknet
+[21:41:15] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: sscanf
+[21:41:15] 
+
+[21:41:15]  ===============================
+
+[21:41:15]       sscanf plugin loaded.     
+
+[21:41:15]          Version:  2.8.2        
+
+[21:41:15]    (c) 2012 Alex "Y_Less" Cole  
+
+[21:41:15]  ===============================
+
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: audio
+[21:41:15] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: TOTP
+[21:41:15] TOTP plugin v1.0.1 by Games loaded.
+[21:41:15]   Loaded.
+[21:41:15]  Loading plugin: YSF
+[21:41:15] 
+[21:41:15]  ==============================================
+[21:41:15]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[21:41:15]   (c) 2008 Alex "Y_Less" Cole
+[21:41:15]   (c) 2010 - 2018 kurta999
+[21:41:15]   (c) 2018 - 2020 IllidanS4
+[21:41:15]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[21:41:15]  ==============================================
+[21:41:15] 
+[21:41:15]   Loaded.
+[21:41:15]  Loaded 10 plugins.
+
+[21:41:15] 
+[21:41:15] Ban list
+[21:41:15] --------
+[21:41:15]  Loaded: samp.ban
+[21:41:15] 
+[21:41:15] 
+[21:41:15] Filterscripts
+[21:41:15] ---------------
+[21:41:15]   Loading filterscript 'pearsmap.amx'...
+[21:41:15] [sv:dbg:main:AmxLoad] : net game pointer (value:02169E60) received
+[21:41:15] [sv:dbg:network:bind] : voice server running on port 7801
+[21:41:15] |===============================|
+[21:41:15] |===[ Mapping Pears Project ]===|
+[21:41:15] |===============================|
+[21:41:15]   Loaded 1 filterscripts.
+
+[21:41:15] Setting server password to: "ybf76b76BYFDB"
+[21:41:15] [sv:dbg:pawn:SvDebug] : mode(1)
+[21:41:15] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(142BC6E8)
+[21:41:16] [MODE]: Загружен [399 ms]
+[21:41:16] Loading Map.
+[21:41:16] Loaded Map.                             
+[21:41:16] Server password has been removed.
+[21:41:16] Server password has been removed.
+[21:41:16] [MODE]: OPEN SERVER
+[21:41:16] Number of vehicle models: 29
+[21:41:16] [MODE]: Организации [407 ms]
+[21:41:16] [MODE]: Сервер [1 ms]
+[21:41:16] [MODE]: Экономика [0 ms]
+[21:41:16] [MODE]: Стоимость Транспорта [5 ms]
+[21:41:16] [MODE]: Стоимость Скинов [8 ms]
+[21:41:16] [MODE]: Стоимость Оружия [1 ms]
+[21:41:16] [MODE]: Стоимость Предметов [5 ms]
+[21:41:16] [MODE]: Реклама [30 Quan][7 ms]
+[21:41:16] [MODE]: Постройки [0 Quan][1 ms]
+[21:41:17] [MODE]: Gang Zone [119 Quan][11 ms]
+[21:41:17] [MODE]: Квартиры [25 Quan][7 ms]
+[21:41:31] [MODE]: Дома [1000 Quan][14214 ms]
+[21:41:31] [MODE]: Камеры Слежения [5 Quan][2 ms]
+[21:41:31] [MODE]: Склады [15 Quan][28 ms]
+[21:41:31] [MODE]: Семьи [11 Quan][31 ms]
+[21:41:31] [MODE]: Промокоды [1 Quan][0 ms]
+[21:41:31] [MODE]: Погода [0 ms]
+[21:41:31] [MODE]: Ачивки 123 [3 ms]
+[21:41:31] [MODE]: IKEA [8 Quan][3 ms]
+[21:41:31] [MODE]: Frame [69 Quan][37 ms]
+[21:41:36] [MODE]: Бизнесы [200 Quan][4415 ms]
+[21:41:36] [MODE]: Одежда в Бизнесах [35 ms]
+[21:41:36] [MODE]: Аксессуары в Бизнесах [71 ms]
+[21:41:36] [MODE]: Комиссия в Банке [10 Quan][0 ms]
+[21:41:36] [MODE]: Терминалы Бизнесов [32 ms]
+[21:41:36] [MODE]: Аксессуары [12 Quan][2 ms]
+[21:41:36] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][4 ms]
+[21:41:36] [MODE]: Reload Online [1 Игроков][0 ms]
+[21:41:42] [connection] 127.0.0.1:49540 requests connection cookie.
+[21:41:42] [MODE]: Объекты [5181 Quan][5880 ms]
+[21:41:50] [MODE]: Объекты [7312 Quan][8383 ms]
+[21:41:50] [connection] incoming connection: 127.0.0.1:49540 id: 0
+[21:41:50] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[21:41:50] [nick] Elon_Musk nick changed to player0
+[21:41:50] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[21:41:51] [Monitoring Load]: Отсутствует
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [Monitoring Load]: Загружено
+[21:41:51] [MODE]: Объекты [35 Quan][39 ms]
+[21:41:52] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[21:41:52] OnPlayerLoad(Elon_Musk) start: 23ms
+[21:41:52] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[21:41:54] OnDialogResponse Elon_Musk case:220 
+[21:41:54] OnPlayerLogin(0) - Elon_Musk
+[21:41:57] [nick] player0 nick changed to Elon_Musk
+[21:41:57] [sv:dbg:pawn:SvAttachListenerToStream] : stream(142BC6E8), playerid(0) : return(0)
+[21:41:57] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[21:41:57] GF_OnPlayerUpdate Elon_Musk
+[21:41:58] load_greenhouse Elon_Musk 1
+[21:42:01] Использовалась команда Elon_Musk /setskin 0 314
+[21:42:11] EnterDynamicArea 111
+[21:45:24] GF_OnPlayerUpdate Elon_Musk
+[21:45:24] [sv:dbg:pawn:SvDetachListenerFromStream] : stream(142BC6E8), playerid(0) : return(0)
+[21:45:24] [sv:dbg:pawn:SvRemoveKey] : playerid(0), keyid(0x42) : return(0)
+[21:45:24] [part] Elon_Musk has left the server (0:1)
+[21:45:28]  -------------------------------------------
+[21:45:28]            SampVoice unloading...           
+[21:45:28]  -------------------------------------------
+[21:45:28] [dbg:raknet:free] : module releasing...
+[21:45:28] [dbg:raknet:free] : module released
+[21:45:28] [sv:dbg:network:free] : module releasing...
+[21:45:28] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[16:01:57] 
+[16:01:57] Server Plugins
+[16:01:57] --------------
+[16:01:57]  Loading plugin: ColAndreas
+[16:01:57] *********************
+[16:01:57] ** Created By:     **
+[16:01:57] ** [uL]Chris42O    **
+[16:01:57] ** [uL]Slice       **
+[16:01:57] ** [uL]Pottus      **
+[16:01:57] *********************
+[16:02:01] Loaded collision data.
+[16:02:01] *********************
+[16:02:01]   ColAndreas Loaded
+[16:02:01]    v1.4.0
+[16:02:01] *********************
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: sampvoice
+[16:02:01] [sv:dbg:network:init] : module initializing...
+[16:02:01] [dbg:raknet:init] : module initializing...
+[16:02:01] [dbg:raknet:init] : module initialized
+[16:02:01] [sv:dbg:network:init] : module initialized
+[16:02:01] [sv:dbg:main:Load] : creating 8 work threads...
+[16:02:01] Sampik Voice Loaded [LOADED]
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: crashdetect
+[16:02:01]   CrashDetect plugin 4.19.4
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: mysql
+[16:02:01]  >> plugin.mysql: R41-3 successfully loaded.
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: streamer
+[16:02:01] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: pawnraknet
+[16:02:01] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: sscanf
+[16:02:01] 
+
+[16:02:01]  ===============================
+
+[16:02:01]       sscanf plugin loaded.     
+
+[16:02:01]          Version:  2.8.2        
+
+[16:02:01]    (c) 2012 Alex "Y_Less" Cole  
+
+[16:02:01]  ===============================
+
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: audio
+[16:02:01] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: TOTP
+[16:02:01] TOTP plugin v1.0.1 by Games loaded.
+[16:02:01]   Loaded.
+[16:02:01]  Loading plugin: YSF
+[16:02:02] 
+[16:02:02]  ==============================================
+[16:02:02]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[16:02:02]   (c) 2008 Alex "Y_Less" Cole
+[16:02:02]   (c) 2010 - 2018 kurta999
+[16:02:02]   (c) 2018 - 2020 IllidanS4
+[16:02:02]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[16:02:02]  ==============================================
+[16:02:02] 
+[16:02:02]   Loaded.
+[16:02:02]  Loaded 10 plugins.
+
+[16:02:02] 
+[16:02:02] Ban list
+[16:02:02] --------
+[16:02:02]  Loaded: samp.ban
+[16:02:02] 
+[16:02:02] 
+[16:02:02] Filterscripts
+[16:02:02] ---------------
+[16:02:02]   Loading filterscript 'pearsmap.amx'...
+[16:02:02] [sv:dbg:main:AmxLoad] : net game pointer (value:02229E60) received
+[16:02:02] [sv:dbg:network:bind] : voice server running on port 7801
+[16:02:02] |===============================|
+[16:02:02] |===[ Mapping Pears Project ]===|
+[16:02:02] |===============================|
+[16:02:02]   Loaded 1 filterscripts.
+
+[16:02:02] Setting server password to: "ybf76b76BYFDB"
+[16:02:02] [sv:dbg:pawn:SvDebug] : mode(1)
+[16:02:02] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(142F2668)
+[16:02:02] [MODE]: Загружен [426 ms]
+[16:02:02] Loading Map.
+[16:02:02] Loaded Map.                             
+[16:02:02] Server password has been removed.
+[16:02:02] Server password has been removed.
+[16:02:02] [MODE]: OPEN SERVER
+[16:02:02] Number of vehicle models: 29
+[16:02:03] [MODE]: Организации [381 ms]
+[16:02:03] [MODE]: Сервер [2 ms]
+[16:02:03] [MODE]: Экономика [0 ms]
+[16:02:03] [MODE]: Стоимость Транспорта [5 ms]
+[16:02:03] [MODE]: Стоимость Скинов [8 ms]
+[16:02:03] [MODE]: Стоимость Оружия [1 ms]
+[16:02:03] [MODE]: Стоимость Предметов [5 ms]
+[16:02:03] [MODE]: Реклама [30 Quan][8 ms]
+[16:02:03] [MODE]: Постройки [0 Quan][0 ms]
+[16:02:03] [MODE]: Gang Zone [119 Quan][11 ms]
+[16:02:03] [MODE]: Квартиры [25 Quan][7 ms]
+[16:02:18] [MODE]: Дома [1000 Quan][14216 ms]
+[16:02:18] [MODE]: Камеры Слежения [5 Quan][1 ms]
+[16:02:18] [MODE]: Склады [15 Quan][29 ms]
+[16:02:18] [MODE]: Семьи [11 Quan][24 ms]
+[16:02:18] [MODE]: Промокоды [1 Quan][1 ms]
+[16:02:18] [MODE]: Погода [1 ms]
+[16:02:18] [MODE]: Ачивки 123 [4 ms]
+[16:02:18] [MODE]: IKEA [8 Quan][3 ms]
+[16:02:18] [MODE]: Frame [69 Quan][25 ms]
+[16:02:22] [MODE]: Бизнесы [200 Quan][4553 ms]
+[16:02:22] [MODE]: Одежда в Бизнесах [35 ms]
+[16:02:22] [MODE]: Аксессуары в Бизнесах [71 ms]
+[16:02:23] [MODE]: Комиссия в Банке [10 Quan][1 ms]
+[16:02:23] [MODE]: Терминалы Бизнесов [29 ms]
+[16:02:23] [MODE]: Аксессуары [14 Quan][3 ms]
+[16:02:23] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][4 ms]
+[16:02:23] [MODE]: Reload Online [1 Игроков][0 ms]
+[16:02:29] [MODE]: Объекты [5181 Quan][5824 ms]
+[16:02:31] [connection] 127.0.0.1:50686 requests connection cookie.
+[16:02:37] [MODE]: Объекты [7312 Quan][8474 ms]
+[16:02:37] [connection] incoming connection: 127.0.0.1:50686 id: 0
+[16:02:37] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[16:02:37] [nick] Elon_Musk nick changed to player0
+[16:02:37] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[16:02:37] [Monitoring Load]: Отсутствует
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:37] [Monitoring Load]: Загружено
+[16:02:38] [MODE]: Объекты [35 Quan][40 ms]
+[16:02:39] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[16:02:39] OnPlayerLoad(Elon_Musk) start: 29ms
+[16:02:39] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[16:03:18] OnPlayerLogin(0) - Elon_Musk
+[16:03:18] [nick] player0 nick changed to Elon_Musk
+[16:03:18] [sv:dbg:pawn:SvAttachListenerToStream] : stream(142F2668), playerid(0) : return(0)
+[16:03:18] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[16:03:18] GF_OnPlayerUpdate Elon_Musk
+[16:03:19] load_greenhouse Elon_Musk 1
+[16:03:24] EnterDynamicArea 111
+[16:03:50] OnDialogResponse Elon_Musk case:1742 
+[16:05:24] LeaveDynamicArea 111
+[16:05:24] EnterDynamicArea 112
+[16:05:36] Использовалась команда Elon_Musk /jetpack
+[16:06:17] Использовалась команда Elon_Musk /gotolv
+[16:06:18] LeaveDynamicArea 112
+[16:06:18] EnterDynamicArea 101
+[16:06:20] Использовалась команда Elon_Musk /jetpack
+[16:07:00] Использовалась команда Elon_Musk /flycam
+[16:07:49] Использовалась команда Elon_Musk /reloadbiz
+[16:07:52] Использовалась команда Elon_Musk /reloadbiz 0
+[16:07:54] Использовалась команда Elon_Musk /reloadbizpos 0
+[16:07:59] GF_OnPlayerUpdate Elon_Musk
+[16:07:59] Использовалась команда Elon_Musk /update
+[16:08:10] Использовалась команда Elon_Musk /flycam
+[16:08:12] Использовалась команда Elon_Musk /flycam
+[16:09:34] Использовалась команда Elon_Musk /gps
+[16:09:35] OnDialogResponse Elon_Musk case:10 Услуги
+[16:09:37] OnDialogResponse Elon_Musk case:857 Закусочные
+[16:09:38] OnDialogResponse Elon_Musk case:713 Ближайшая Закусочная
+[16:13:33] Использовалась команда Elon_Musk /flycam
+[16:13:34] Использовалась команда Elon_Musk /gotosf
+[16:13:35] LeaveDynamicArea 101
+[16:13:35] EnterDynamicArea 103
+[16:13:41] Использовалась команда Elon_Musk /gotosf
+[16:13:43] Использовалась команда Elon_Musk /flycam
+[16:14:56] LeaveDynamicArea 103
+[16:14:56] EnterDynamicArea 102
+[16:18:22] [debug] Run time error 4: "Array index out of bounds"
+[16:18:22] [debug]  Attempted to read/write array element at negative index -1
+[16:18:22] [debug] AMX backtrace:
+[16:18:22] [debug] #0 000113f8 in public OnOutcomingRPC (playerid=-1, rpcid=68, BitStream:bs=1700312) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\pawno\include\m_custom-sync.inc:247
+[16:18:22] [debug] #1 native SetSpawnInfo () in samp-server.exe
+[16:18:22] [debug] #2 00012798 in m_custom_sync_SetSpawnInfo (playerid=0, team=13, skin=91, Float:x=-1417.00000, Float:y=-295.79999, Float:z=14.14844, Float:rotation=283.91043, weapon1=0, weapon1_ammo=0, weapon2=0, ... <3 more arguments>) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\pawno\include\m_custom-sync.inc:452
+[16:18:22] [debug] #3 000cea50 in PPSetSpawnInfo (playerid=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\gamemodes\pears.pwn:8383
+[16:18:22] [debug] #4 000d8e00 in PPExitSpectating (playerid=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\gamemodes\pears.pwn:8842
+[16:18:22] [debug] #5 000d6fc0 in CancelFlyMode (playerid=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\gamemodes\pears.pwn:8715
+[16:18:22] [debug] #6 001c6abc in public mob_OnPlayerDisconnect (playerid=0, reason=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\gamemodes\pears.pwn:19743
+[16:18:22] [debug] #7 0000b6e0 in public SSCANF_OnPlayerDisconnect (playerid=0, reason=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\pawno\include\mobile.inc:65
+[16:18:22] [debug] #8 00004424 in public Itter_OnPlayerDisconnect (playerid=0, reason=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\pawno\include\sscanf2.inc:260
+[16:18:22] [debug] #9 native CallLocalFunction () in samp-server.exe
+[16:18:22] [debug] #10 00003110 in public OnPlayerDisconnect (playerid=0, reason=0) at C:\Users\felik\OneDrive\Рабочий стол\Pears Project\pawno\include\foreach.inc:735
+[16:18:22] GF_OnPlayerUpdate Elon_Musk
+[16:18:22] [sv:dbg:pawn:SvDetachListenerFromStream] : stream(142F2668), playerid(0) : return(0)
+[16:18:22] [sv:dbg:pawn:SvRemoveKey] : playerid(0), keyid(0x42) : return(0)
+[16:18:22] [part] Elon_Musk has left the server (0:0)
+[16:23:19]  -------------------------------------------
+[16:23:19]            SampVoice unloading...           
+[16:23:19]  -------------------------------------------
+[16:23:19] [dbg:raknet:free] : module releasing...
+[16:23:19] [dbg:raknet:free] : module released
+[16:23:19] [sv:dbg:network:free] : module releasing...
+[16:23:19] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[17:15:04] 
+[17:15:04] Server Plugins
+[17:15:04] --------------
+[17:15:04]  Loading plugin: ColAndreas
+[17:15:04] *********************
+[17:15:04] ** Created By:     **
+[17:15:04] ** [uL]Chris42O    **
+[17:15:04] ** [uL]Slice       **
+[17:15:04] ** [uL]Pottus      **
+[17:15:04] *********************
+[17:15:07] Loaded collision data.
+[17:15:07] *********************
+[17:15:07]   ColAndreas Loaded
+[17:15:07]    v1.4.0
+[17:15:07] *********************
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: sampvoice
+[17:15:07] [sv:dbg:network:init] : module initializing...
+[17:15:07] [dbg:raknet:init] : module initializing...
+[17:15:07] [dbg:raknet:init] : module initialized
+[17:15:07] [sv:dbg:network:init] : module initialized
+[17:15:07] [sv:dbg:main:Load] : creating 8 work threads...
+[17:15:07] Sampik Voice Loaded [LOADED]
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: crashdetect
+[17:15:07]   CrashDetect plugin 4.19.4
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: mysql
+[17:15:07]  >> plugin.mysql: R41-3 successfully loaded.
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: streamer
+[17:15:07] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: pawnraknet
+[17:15:07] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: sscanf
+[17:15:07] 
+
+[17:15:07]  ===============================
+
+[17:15:07]       sscanf plugin loaded.     
+
+[17:15:07]          Version:  2.8.2        
+
+[17:15:07]    (c) 2012 Alex "Y_Less" Cole  
+
+[17:15:07]  ===============================
+
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: audio
+[17:15:07] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: TOTP
+[17:15:07] TOTP plugin v1.0.1 by Games loaded.
+[17:15:07]   Loaded.
+[17:15:07]  Loading plugin: YSF
+[17:15:07] 
+[17:15:07]  ==============================================
+[17:15:07]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[17:15:07]   (c) 2008 Alex "Y_Less" Cole
+[17:15:07]   (c) 2010 - 2018 kurta999
+[17:15:07]   (c) 2018 - 2020 IllidanS4
+[17:15:07]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[17:15:07]  ==============================================
+[17:15:07] 
+[17:15:07]   Loaded.
+[17:15:07]  Loaded 10 plugins.
+
+[17:15:07] 
+[17:15:07] Ban list
+[17:15:07] --------
+[17:15:07]  Loaded: samp.ban
+[17:15:07] 
+[17:15:07] 
+[17:15:07] Filterscripts
+[17:15:07] ---------------
+[17:15:07]   Loading filterscript 'pearsmap.amx'...
+[17:15:07] [sv:dbg:main:AmxLoad] : net game pointer (value:02329E60) received
+[17:15:07] [sv:dbg:network:bind] : voice server running on port 7801
+[17:15:07] |===============================|
+[17:15:07] |===[ Mapping Pears Project ]===|
+[17:15:07] |===============================|
+[17:15:07]   Loaded 1 filterscripts.
+
+[17:15:08] Setting server password to: "ybf76b76BYFDB"
+[17:15:08] [sv:dbg:pawn:SvDebug] : mode(1)
+[17:15:08] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(103867C8)
+[17:15:08] [MODE]: Загружен [417 ms]
+[17:15:08] Loading Map.
+[17:15:08] Loaded Map.                             
+[17:15:08] Server password has been removed.
+[17:15:08] Server password has been removed.
+[17:15:08] [MODE]: OPEN SERVER
+[17:15:08] Number of vehicle models: 29
+[17:15:09] [MODE]: Организации [408 ms]
+[17:15:09] [MODE]: Сервер [5 ms]
+[17:15:09] [MODE]: Экономика [1 ms]
+[17:15:09] [MODE]: Стоимость Транспорта [15 ms]
+[17:15:09] [MODE]: Стоимость Скинов [23 ms]
+[17:15:09] [MODE]: Стоимость Оружия [3 ms]
+[17:15:09] [MODE]: Стоимость Предметов [6 ms]
+[17:15:09] [MODE]: Реклама [30 Quan][11 ms]
+[17:15:09] [MODE]: Постройки [0 Quan][0 ms]
+[17:15:09] [MODE]: Gang Zone [119 Quan][16 ms]
+[17:15:09] [MODE]: Квартиры [25 Quan][11 ms]
+[17:15:24] [MODE]: Дома [1000 Quan][14295 ms]
+[17:15:24] [MODE]: Камеры Слежения [5 Quan][2 ms]
+[17:15:24] [MODE]: Склады [15 Quan][28 ms]
+[17:15:24] [MODE]: Семьи [11 Quan][23 ms]
+[17:15:24] [MODE]: Промокоды [1 Quan][0 ms]
+[17:15:24] [MODE]: Погода [0 ms]
+[17:15:24] [MODE]: Ачивки 123 [5 ms]
+[17:15:24] [MODE]: IKEA [8 Quan][7 ms]
+[17:15:24] [MODE]: Frame [69 Quan][39 ms]
+[17:15:25] [connection] 127.0.0.1:63443 requests connection cookie.
+[17:15:29] [MODE]: Бизнесы [200 Quan][4383 ms]
+[17:15:29] [connection] incoming connection: 127.0.0.1:63443 id: 0
+[17:15:29] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[17:15:29] [nick] Elon_Musk nick changed to player0
+[17:15:29] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[17:15:29] [MODE]: Одежда в Бизнесах [36 ms]
+[17:15:29] [MODE]: Аксессуары в Бизнесах [71 ms]
+[17:15:29] [MODE]: Комиссия в Банке [10 Quan][1 ms]
+[17:15:29] [MODE]: Терминалы Бизнесов [30 ms]
+[17:15:29] [MODE]: Аксессуары [14 Quan][3 ms]
+[17:15:29] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][3 ms]
+[17:15:29] [MODE]: Reload Online [0 Игроков][0 ms]
+[17:15:35] [MODE]: Объекты [5181 Quan][5845 ms]
+[17:15:43] [MODE]: Объекты [7312 Quan][8242 ms]
+[17:15:43] [Monitoring Load]: Отсутствует
+[17:15:43] [Monitoring Load]: Загружено
+[17:15:43] [Monitoring Load]: Загружено
+[17:15:43] [Monitoring Load]: Загружено
+[17:15:43] [Monitoring Load]: Загружено
+[17:15:43] [Monitoring Load]: Загружено
+[17:15:44] [Monitoring Load]: Загружено
+[17:15:44] [MODE]: Объекты [35 Quan][66 ms]
+[17:15:45] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[17:15:45] OnPlayerLoad(Elon_Musk) start: 35ms
+[17:15:45] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[17:15:46] OnDialogResponse Elon_Musk case:220 
+[17:15:46] OnPlayerLogin(0) - Elon_Musk
+[17:15:49] [nick] player0 nick changed to Elon_Musk
+[17:15:49] [sv:dbg:pawn:SvAttachListenerToStream] : stream(103867C8), playerid(0) : return(0)
+[17:15:49] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[17:15:49] GF_OnPlayerUpdate Elon_Musk
+[17:15:49] [death] Elon_Musk died 255
+[17:15:50] load_greenhouse Elon_Musk 1
+[17:15:52] EnterDynamicArea 111
+[17:15:57] Использовалась команда Elon_Musk /spawns
+[17:15:57] OnDialogResponse Elon_Musk case:76 Аэропорт LS
+[17:15:58] LeaveDynamicArea 111
+[17:15:58] EnterDynamicArea 112
+[17:15:58] EnterDynamicArea 18
+[17:15:59] Использовалась команда Elon_Musk /jetpack
+[17:16:59] GF_OnPlayerUpdate Elon_Musk
+[17:16:59] [sv:dbg:pawn:SvDetachListenerFromStream] : stream(103867C8), playerid(0) : return(0)
+[17:16:59] [sv:dbg:pawn:SvRemoveKey] : playerid(0), keyid(0x42) : return(0)
+[17:16:59] [part] Elon_Musk has left the server (0:1)
+[17:17:01]  -------------------------------------------
+[17:17:01]            SampVoice unloading...           
+[17:17:01]  -------------------------------------------
+[17:17:01] [dbg:raknet:free] : module releasing...
+[17:17:01] [dbg:raknet:free] : module released
+[17:17:01] [sv:dbg:network:free] : module releasing...
+[17:17:01] [sv:dbg:network:free] : module released
+
+----------
+Loaded log file: "server_log.txt".
+----------
+
+SA-MP Dedicated Server
+----------------------
+v0.3.7-R2, (C)2005-2015 SA-MP Team
+
+[19:31:24] 
+[19:31:24] Server Plugins
+[19:31:24] --------------
+[19:31:24]  Loading plugin: ColAndreas
+[19:31:24] *********************
+[19:31:24] ** Created By:     **
+[19:31:24] ** [uL]Chris42O    **
+[19:31:24] ** [uL]Slice       **
+[19:31:24] ** [uL]Pottus      **
+[19:31:24] *********************
+[19:31:27] Loaded collision data.
+[19:31:27] *********************
+[19:31:27]   ColAndreas Loaded
+[19:31:27]    v1.4.0
+[19:31:27] *********************
+[19:31:27]   Loaded.
+[19:31:27]  Loading plugin: sampvoice
+[19:31:27] [sv:dbg:network:init] : module initializing...
+[19:31:27] [dbg:raknet:init] : module initializing...
+[19:31:27] [dbg:raknet:init] : module initialized
+[19:31:27] [sv:dbg:network:init] : module initialized
+[19:31:27] [sv:dbg:main:Load] : creating 8 work threads...
+[19:31:27] Sampik Voice Loaded [LOADED]
+[19:31:27]   Loaded.
+[19:31:27]  Loading plugin: crashdetect
+[19:31:27]   CrashDetect plugin 4.19.4
+[19:31:27]   Loaded.
+[19:31:27]  Loading plugin: mysql
+[19:31:28]  >> plugin.mysql: R41-3 successfully loaded.
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: streamer
+[19:31:28] 
+
+*** Streamer Plugin v2.9.1 by Incognito loaded ***
+
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: pawnraknet
+[19:31:28] [Pawn.RakNet] 
+
+    | Pawn.RakNet 1.4.1 | 2016 - 2020
+    |--------------------------------
+    | Author and maintainer: urShadow
+
+
+    | Compiled: Jun 18 2020 at 14:19:11
+    |--------------------------------------------------------------
+    | Forum thread: https://forum.sa-mp.com/showthread.php?t=640306
+    |--------------------------------------------------------------
+    | Repository: https://github.com/urShadow/Pawn.RakNet
+    |--------------------------------------------------------------
+    | Wiki: https://github.com/urShadow/Pawn.RakNet/wiki
+
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: sscanf
+[19:31:28] 
+
+[19:31:28]  ===============================
+
+[19:31:28]       sscanf plugin loaded.     
+
+[19:31:28]          Version:  2.8.2        
+
+[19:31:28]    (c) 2012 Alex "Y_Less" Cole  
+
+[19:31:28]  ===============================
+
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: audio
+[19:31:28] 
+
+*** Audio Plugin v0.5 by Incognito loaded ***
+
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: TOTP
+[19:31:28] TOTP plugin v1.0.1 by Games loaded.
+[19:31:28]   Loaded.
+[19:31:28]  Loading plugin: YSF
+[19:31:28] 
+[19:31:28]  ==============================================
+[19:31:28]  YSF 2.1 (compiled Nov 14 2020 15:42:22) loaded
+[19:31:28]   (c) 2008 Alex "Y_Less" Cole
+[19:31:28]   (c) 2010 - 2018 kurta999
+[19:31:28]   (c) 2018 - 2020 IllidanS4
+[19:31:28]  Server version: 0.3.7 R2-1 or R2-2, Windows
+[19:31:28]  ==============================================
+[19:31:28] 
+[19:31:28]   Loaded.
+[19:31:28]  Loaded 10 plugins.
+
+[19:31:28] 
+[19:31:28] Ban list
+[19:31:28] --------
+[19:31:28]  Loaded: samp.ban
+[19:31:28] 
+[19:31:28] 
+[19:31:28] Filterscripts
+[19:31:28] ---------------
+[19:31:28]   Loading filterscript 'pearsmap.amx'...
+[19:31:28] [sv:dbg:main:AmxLoad] : net game pointer (value:022F9E60) received
+[19:31:28] [sv:dbg:network:bind] : voice server running on port 7801
+[19:31:28] |===============================|
+[19:31:28] |===[ Mapping Pears Project ]===|
+[19:31:28] |===============================|
+[19:31:28]   Loaded 1 filterscripts.
+
+[19:31:28] Setting server password to: "ybf76b76BYFDB"
+[19:31:28] [sv:dbg:pawn:SvDebug] : mode(1)
+[19:31:28] [sv:dbg:pawn:SvCreateGStream] : color(0xff0000ff), name(A) : return(134837F0)
+[19:31:28] [MODE]: Загружен [414 ms]
+[19:31:28] Loading Map.
+[19:31:28] Loaded Map.                             
+[19:31:28] Server password has been removed.
+[19:31:28] Server password has been removed.
+[19:31:28] [MODE]: OPEN SERVER
+[19:31:28] Number of vehicle models: 29
+[19:31:29] [MODE]: Организации [413 ms]
+[19:31:29] [MODE]: Сервер [2 ms]
+[19:31:29] [MODE]: Экономика [0 ms]
+[19:31:29] [MODE]: Стоимость Транспорта [5 ms]
+[19:31:29] [MODE]: Стоимость Скинов [8 ms]
+[19:31:29] [MODE]: Стоимость Оружия [1 ms]
+[19:31:29] [MODE]: Стоимость Предметов [4 ms]
+[19:31:29] [MODE]: Реклама [30 Quan][8 ms]
+[19:31:29] [MODE]: Постройки [0 Quan][0 ms]
+[19:31:29] [MODE]: Gang Zone [119 Quan][10 ms]
+[19:31:29] [MODE]: Квартиры [25 Quan][7 ms]
+[19:31:43] [MODE]: Дома [1000 Quan][14112 ms]
+[19:31:43] [MODE]: Камеры Слежения [5 Quan][1 ms]
+[19:31:43] [MODE]: Склады [15 Quan][28 ms]
+[19:31:43] [MODE]: Семьи [11 Quan][23 ms]
+[19:31:43] [MODE]: Промокоды [1 Quan][0 ms]
+[19:31:43] [MODE]: Погода [0 ms]
+[19:31:43] [MODE]: Ачивки 123 [7 ms]
+[19:31:43] [MODE]: IKEA [8 Quan][8 ms]
+[19:31:43] [MODE]: Frame [69 Quan][41 ms]
+[19:31:48] [MODE]: Бизнесы [200 Quan][4362 ms]
+[19:31:48] [MODE]: Одежда в Бизнесах [35 ms]
+[19:31:48] [MODE]: Аксессуары в Бизнесах [70 ms]
+[19:31:48] [MODE]: Комиссия в Банке [10 Quan][0 ms]
+[19:31:48] [MODE]: Терминалы Бизнесов [30 ms]
+[19:31:48] [MODE]: Аксессуары [14 Quan][2 ms]
+[19:31:48] [MODE]: Редактор Моделей Текстдравов [0/50 Quan][3 ms]
+[19:31:48] [MODE]: Reload Online [0 Игроков][0 ms]
+[19:31:54] [MODE]: Объекты [5181 Quan][5898 ms]
+[19:32:02] [MODE]: Объекты [7312 Quan][8285 ms]
+[19:32:03] [Monitoring Load]: Отсутствует
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [Monitoring Load]: Загружено
+[19:32:03] [MODE]: Объекты [35 Quan][39 ms]
+[19:32:04] [connection] 127.0.0.1:49565 requests connection cookie.
+[19:32:05] [connection] incoming connection: 127.0.0.1:49565 id: 0
+[19:32:05] [join] Elon_Musk has joined the server (0:127.0.0.1)
+[19:32:05] [nick] Elon_Musk nick changed to player0
+[19:32:05] [sv:dbg:pawn:SvGetVersion] : playerid(0) : return(0)
+[19:32:05] OnPlayerConnect(Elon_Musk) [ Начинаем Грузить Аккаунт ]
+[19:32:05] OnPlayerLoad(Elon_Musk) start: 49ms
+[19:32:05] OnPlayerLoad(Elon_Musk) Аккаунт Найден
+[19:32:09] OnDialogResponse Elon_Musk case:220 
+[19:32:09] OnPlayerLogin(0) - Elon_Musk
+[19:32:13] [nick] player0 nick changed to Elon_Musk
+[19:32:13] [sv:dbg:pawn:SvAttachListenerToStream] : stream(134837F0), playerid(0) : return(0)
+[19:32:13] [sv:dbg:pawn:SvAddKey] : playerid(0), keyid(0x42) : return(0)
+[19:32:13] GF_OnPlayerUpdate Elon_Musk
+[19:32:13] [death] Elon_Musk died 255
+[19:32:13] load_greenhouse Elon_Musk 1
+[19:32:16] EnterDynamicArea 111
+[19:32:17] Использовалась команда Elon_Musk /gotols
+[19:32:18] LeaveDynamicArea 111
+[19:32:18] EnterDynamicArea 112
+[19:32:20] Использовалась команда Elon_Musk /spawns
+[19:32:21] OnDialogResponse Elon_Musk case:76 Аэропорт LS
+[19:32:21] EnterDynamicArea 18
+[19:32:39] Использовалась команда Elon_Musk /gototo 992.3076,-1343.8839,13.6369
+[19:32:39] LeaveDynamicArea 18
+[19:32:46] OnDialogResponse Elon_Musk case:1191 Bus (Автобус)
+[19:32:47] OnDialogResponse Elon_Musk case:1700 
+[19:32:49] OnDialogResponse Elon_Musk case:1191 Bus (Автобус)
+[19:32:51] OnDialogResponse Elon_Musk case:1700 
+[19:32:58] OnDialogResponse Elon_Musk case:1700 
+[19:33:07] Использовалась команда Elon_Musk /gototo -1654.2604,1288.7062,7.2908
+[19:33:08] LeaveDynamicArea 112
+[19:33:08] EnterDynamicArea 102
+[19:33:53] Использовалась команда Elon_Musk /gototo 1661.5186,1300.3572,7.0391
+[19:33:53] LeaveDynamicArea 102
+[19:33:53] EnterDynamicArea 101
+[19:34:13] Использовалась команда Elon_Musk /gototo 1052.3445,2310.6680,10.8363
+[19:34:15] OnDialogResponse Elon_Musk case:1191 Bus (Автобус)
+[19:34:20] OnDialogResponse Elon_Musk case:1700 
+[19:34:24] OnDialogResponse Elon_Musk case:1191 Bus (Автобус)
+[19:34:32] GF_OnPlayerUpdate Elon_Musk
+[19:34:32] [sv:dbg:pawn:SvDetachListenerFromStream] : stream(134837F0), playerid(0) : return(0)
+[19:34:32] [sv:dbg:pawn:SvRemoveKey] : playerid(0), keyid(0x42) : return(0)
+[19:34:32] [part] Elon_Musk has left the server (0:1)
+[19:34:33]  -------------------------------------------
+[19:34:33]            SampVoice unloading...           
+[19:34:33]  -------------------------------------------
+[19:34:33] [dbg:raknet:free] : module releasing...
+[19:34:33] [dbg:raknet:free] : module released
+[19:34:33] [sv:dbg:network:free] : module releasing...
+[19:34:33] [sv:dbg:network:free] : module released

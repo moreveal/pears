@@ -742,6 +742,8 @@ stock AccessorySetting(playerid, i) // Меню настройки конкретного аксессуара
 	    if(i < 0 || i >= MAX_ACCESSORY) return 1;
 	    if(AccessoryInfo[i][acModel] == 0) return 1;
 	    DP[3][playerid] = i;
+	    
+	    
 	    format(lines,sizeof(lines),""); // Очищаем Lines
 		format(line,sizeof(line),"%d. Model: %d \t", i+1, AccessoryInfo[i][acModel]), strcat(lines,line);
 		
