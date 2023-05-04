@@ -57,18 +57,10 @@ stock LoadBot()
 	SetActorVirtualWorld(BotPears[39], 7);
 	BotPears[40] = CreateActor(71, 1743.6726,-1895.4208,913.6010,357.6015); // Вокзал Bot 9
 	SetActorVirtualWorld(BotPears[40], 7);
-	BotPears[41] = CreateActor(194, 1448.1943,-1004.8884,934.5612,178.0563); // Банк Bot 1
-	SetActorVirtualWorld(BotPears[41], 1);
-	BotPears[42] = CreateActor(240, 1470.2015,-1012.3074,934.5612,144.7220); // Банк Bot 2
-	SetActorVirtualWorld(BotPears[42], 1);
-	BotPears[43] = CreateActor(250, 1469.3521,-1013.6862,934.5612,323.3238); // Банк Bot 3
-	SetActorVirtualWorld(BotPears[43], 1);
-	BotPears[44] = CreateActor(71, 1460.7341,-1014.5112,934.5612,7.3114); // Банк Bot 4
-	SetActorVirtualWorld(BotPears[44], 1);
 	BotPears[45] = CreateActor(151, 607.0654,-1538.5491,15.3926,268.8089); // Спермобанк Bot 1 [ Спермобанк Приёмная ]
 	SetActorVirtualWorld(BotPears[45], 220);
 	BotPears[46] = CreateActor(159, -29.5093,67.5059,3.1172,72.0570); // Ферма бот на улице (фрукты)
-    BotPears[47] = CreateActor(262,-338.6107,1729.5956,42.8917,4.2150); // археология бот на улице (гасхититель гробниц)
+    BotPears[47] = CreateActor(262,-338.6107,1729.5956,42.8917,4.2150); // археология бот на улице (расхититель гробниц)
     BotPears[48] = CreateActor(133, -1655.5134,1289.8231,7.2908,225.2348); // Автобусное Депо SF
 	BotPears[49] = CreateActor(308, 1391.5339,-13.7709,1000.9217,1.1784); // Госпиталь Bot 2
 	SetActorVirtualWorld(BotPears[49], 5);
@@ -191,12 +183,6 @@ stock LoadBot()
 	BotPears[220] = CreateActor(50, -1680.8055,415.6465,7.3641,158.2703);// Заправщик Bot 5
 	BotPears[221] = CreateActor(151, -1682.5594,425.5037,7.1989,316.5287);// Заправщик Bot 6
 	BotPears[222] = CreateActor(11, 1638.1517,1449.1168,15.3081,270.8537);// Авиасалон Bot 1
-	BotPears[223] = CreateActor(40, 1451.5735,-1004.8928,934.5612,180.2496); // Банк Bot 5
-	SetActorVirtualWorld(BotPears[223], 1);
-	BotPears[224] = CreateActor(40, 1455.4291,-1004.8458,934.5612,180.5630); // Банк Bot 6
-	SetActorVirtualWorld(BotPears[224], 1);
-	BotPears[225] = CreateActor(40, 1459.2037,-1004.8942,934.5612,176.8029); // Банк Bot 7
-	SetActorVirtualWorld(BotPears[225], 1);
 	BotPears[226] = CreateActor(37, -2230.7534,251.7373,894.7211,4.7700); // Ледовый Дворец Bot 1
 	SetActorVirtualWorld(BotPears[226], 77);
 	BotPears[227] = CreateActor(42, -2105.4768,-0.9047,35.5099,339.2878);// Заправщик Bot 7 sf-2
@@ -539,6 +525,7 @@ stock LoadBot()
     SetActorVirtualWorld(BotPears[515], 236);
     BotPears[516] = CreateActor(45, 565.910583,-1809.059204,6.062500,97.0); // Бот Регистрация
     BotPears[517] = CreateActor(140, 564.8656,-1809.2654,6.0625,280.8233); // Бот Регистрация
+	BotPears[518] = CreateActor(270, 2530.8591,-1664.4253,15.1665,171.8431); // Бот Квестов Grove
 
 	LoadZoneBot();
 	BotInfo[107] = 0;

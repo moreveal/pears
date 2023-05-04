@@ -110,6 +110,12 @@ stock LoadBusinessProduct(b, stat) // Åñëè íåò ïğîäóêòà (çíà÷èò ïåğâûé çàïóñê áè
     	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 176, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Ñèãíàëèçàöèÿ 2 óğ.
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Ñèãíàëèçàöèÿ 3 óğ.
 	}
+	if(b >= 153 && b <= 162) // Ëàğüêè ñ åäîé
+	{
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 168, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ìÿñî â óïàêîâêå
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 1, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Õëåá
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk â áóòûëêå
+	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
         if(BizzInfo[b][bProduct][i] > 0 && (yes[i] || stat == 1))

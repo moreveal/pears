@@ -1360,6 +1360,11 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 		else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
 		else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Если выдаём Журнал PlayBoy
 		else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // Семена травы (Полный комплект)
+		else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Кофе
+		else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Спранк стакан
+		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+1209600; // Sprunk Банка
+		else if(thingId == 127 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Ролл
+		else if(thingId == 141 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // ХОТЕ ДОГЕ
 		else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Свадебный торт (Время до испорченности + количество)
 		else
 		{
@@ -1404,6 +1409,11 @@ stock GetFullThingQuan(thingId)
 	else if(thingId == 62) quan = 1; // PlayBoy
 	else if(thingId == 88) quan = 5; // Семена травы
 	else if(thingId == 163) quan = 21; // Свадебный торт
+	else if(thingId == 121) quan = 4; // Кофе
+	else if(thingId == 124) quan = 4; // Спранк стакан
+	else if(thingId == 120) quan = 4; // Sprunk Банка
+	else if(thingId == 127) quan = 4; // Ролл
+	else if(thingId == 141) quan = 4; // ХОТЕ ДОГЕ
 	else quan = 1;
 	return quan;
 }

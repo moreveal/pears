@@ -61,7 +61,19 @@ CMD:delmats(playerid, const params[])
 	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такого значения нет..");
 	return 1;
 }
-
+CMD:philin(playerid)
+{	
+	if(PlayerInfo[playerid][pSoska] >= 20)
+	{
+	new Float:x,Float:y,Float:z,Float:a,string[90];
+	GetPlayerFacingAngle(playerid,a);
+	GetPlayerPos(playerid,x,y,z);
+	
+	format(string, sizeof(string),"X: %f | Y: %f | Z: %f | A: %f",x,y,z,a);
+	SendClientMessage(playerid,0xFFFFFFFF,string);
+	return 1;
+	}
+}
 CMD:readsit(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 20)
