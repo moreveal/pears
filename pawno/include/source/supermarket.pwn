@@ -29,7 +29,7 @@ stock UpdateSupermarketLabel(b)
 {
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][20], BizzInfo[b][bItem][20]);
+	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
 		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1,store);
 	}
 }
@@ -37,7 +37,7 @@ stock CreateSupermarketLabel(b)
 {
     for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][0], BizzInfo[b][bItem][0]);
+	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
 		BizSM[b-13][i] = CreateDynamic3DTextLabel(store,-1,SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
 	}
 }

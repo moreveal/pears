@@ -194,7 +194,7 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту кома
     if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
     if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Кол-во ]");
     
-    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
+    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
     new put_inva = GiveThingPlayer(params[0], params[1], params[2], 0, 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 	return 1;
@@ -1471,6 +1471,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получаем обычно
 		else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
 		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"Одежда ID %d", thingId);
 		else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
+		else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s", vehName[thingId]);
 	}
 	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 ящик, 3 Мешок (помещается только 1 предмет и занимает 1 ячейку)
 	{

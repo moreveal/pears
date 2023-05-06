@@ -115,6 +115,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 168, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Мясо в упаковке
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 1, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Хлеб
     	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk в бутылке
+		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 141, BizzInfo[b][bTypeProduct][2] = 0, yes[3] = true; // Хот Дог
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
@@ -137,6 +138,43 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 	    if(b >= 13 && b <= 26) UpdateSupermarketLabel(b);
 		SaveBizzProduct(b);
 	}
+	return 1;
+}
+stock pricebiz(playerid, b)
+{
+	DP[4][playerid] = b;
+	
+	if(b >= 173 && b <= 182) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
+	new lol[84], quan;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 42 && b <= 76 ) // Прайс автоматгенерация
+	{
+		for(new i = 0; i < MAX_BIZ_ITEM; i++)
+    	{
+			List[quan][playerid] = i;
+			if(b >= 42 && b <= 76) format(line,sizeof(line),"{cccccc}%s \t {99ff66}[%d$]\n",vehName[BizzInfo[b][bProduct][i]], BizzInfo[b][bPrice][i]), strcat(lines,line);
+			else format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
+			quan++;
+		}		
+	}
+	else if(b >= 153 && b <= 162) // Прайс Ларьков
+	{
+		List[0][playerid] = 3;
+		List[0][playerid] = 2;
+		format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][3], BizzInfo[b][bTypeProduct][3], 0),BizzInfo[b][bPrice][3]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][2], BizzInfo[b][bTypeProduct][2], 0),BizzInfo[b][bPrice][2]), strcat(lines,line);
+	}
+	else if(b >= 163 && b <= 172) // Прайс Банкоматов
+	{
+		format(line,sizeof(line),"{cccccc}Комиссия на {99ff66}Внесение \t [%.3f проц.]\n", comput[b-163]), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Комиссия на {FF6347}Вывод {99ff66} \t [%.3f проц.]\n", comtake[b-163]), strcat(lines,line);
+		format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1171,DIALOG_STYLE_LIST,lol,lines,"Выбрать","Отмена");
+		return 1;
+	}
+	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В этом бизнесе нельзя настраивать стоимость товаров или услуг"), mybiz(playerid, b);
+	format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
 	return 1;
 }
 stock use_biz(playerid, biz, inva, useinva)
