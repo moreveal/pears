@@ -64,6 +64,8 @@ static const pressSeatObjects[][e_pressSeatObjects] = {
 	{1562, -180.0, 0.65, 0.0, -0.33}
 };
 
+new bool:playerSeat[MAX_REALPLAYERS];
+
 // ќпредел¤ет, относитс¤ ли модель к тому объекту, на котором можно сидеть по нажатию клавиши
 stock IsPressSeatDynamicObject(modelid) {
 	for (new i = 0; i < sizeof pressSeatObjects; i++) {
@@ -108,7 +110,13 @@ stock GetDynamicObjectSeatPosition(objectid, &Float: x, &Float: y, &Float: z, &F
 	return false;
 }
 
-stock PressSeatableObjectSeatHandler(playerid) {
+stock PressSeatableObjectSeatHandler(playerid) 
+{
+
+  if(GetPlayerVirtualWorld(playerid) >= 1 && GetPlayerInterior(playerid) == 199) return 0; // Исключение в игровой комнате казино
+
+  if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос [ Положите его на стол F ]");
+
   // Получаем три ближайших к игроку динамических объекта
   new Float: player_pos[3];
   GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
@@ -131,11 +139,161 @@ stock PressSeatableObjectSeatHandler(playerid) {
     new result = GetDynamicObjectSeatPosition(current_object, x, y, z, a);
     if (result) {
       // Если модель объекта найдена и позиция определена - помещаем игрока на неё
-      PPSetPlayerPos(playerid, x, y, player_pos[2]);
-      SetPlayerFacingAngle(playerid, a);
-      ApplyAnimation(playerid, "PED", "SEAT_down", 4.0, 0, 0, 0, 1, 1, 1);
+	  if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос [ Положите его на стол F ]");
+	  new status = sit(playerid);
+	  if(status > 0)
+	  {
+		playerSeat[playerid] = true;
+      	PPSetPlayerPos(playerid, x, y, player_pos[2]);
+      	SetPlayerFacingAngle(playerid, a);
+	  	sit_Active(playerid, x, y, player_pos[2], a);
+	  }
     }
     break;
   }
+  return 1;
+}
+
+
+stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
+{
+	SetPVarInt(playerid, "antifsit", 3);
+	Job_X[playerid] = x, Job_Y[playerid] = y, Job_Z[playerid] = z, Job_A[playerid] = a;
+	NoAnim[playerid] = 1;
+	ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
+	SetTimerEx("sitload", 1500, 0, "d", playerid);
+	return 1;
+}
+stock sit(playerid)
+{
+	new status = 1;
+	if(SitPlayer[playerid] == 0 && HealthAC[playerid] >= 1 && Stun[0][playerid] == 0 && Stun[2][playerid] == 0 && Stun[3][playerid] == 0 && !IsPlayerInAnyVehicle(playerid)
+	&& GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+	{
+		if(GetPVarInt(playerid, "antifsit") > 0) return 0;
+		new sitid = 0, mw = GetPlayerVirtualWorld(playerid), mi = GetPlayerInterior(playerid);
+		for(new s = 0; s < sizeof(SitPos); ++s)
+		{
+			if(IsPlayerInRangeOfPoint(playerid,0.5, SitPos[s][SitPos_X], SitPos[s][SitPos_Y], SitPos[s][SitPos_Z])
+			&& (SitPos[s][SitWorld] >= 0 && mw == SitPos[s][SitWorld] || SitPos[s][SitWorld] <= -1)
+			&& (SitPos[s][SitInt] >= 0 && mi == SitPos[s][SitInt] || SitPos[s][SitInt] <= -1) && SitID[s] == 0)
+			{
+				sitid = s+1;
+				break;
+			}
+		}
+		if(sitid > 0)
+		{
+			new sid = sitid-1, kassit, minussid;
+			
+			// Стулья в комнате казино для игры в карты
+			if(sid >= 18 && sid <= 23) kassit = 1, minussid = 18;
+			else if(sid >= 24 && sid <= 29) kassit = 2, minussid = 24;
+			else if(sid >= 30 && sid <= 35) kassit = 3, minussid = 30;
+			else if(sid >= 36 && sid <= 41) kassit = 4, minussid = 36;
+			else if(sid >= 42 && sid <= 47) kassit = 5, minussid = 42;
+			else if(sid >= 48 && sid <= 53) kassit = 6, minussid = 48;
+			else if(sid >= 54 && sid <= 59) kassit = 7, minussid = 54;
+			else if(sid >= 60 && sid <= 65) kassit = 8, minussid = 60;
+			else if(sid >= 66 && sid <= 71) kassit = 9, minussid = 66;
+			else if(sid >= 72 && sid <= 75) kassit = 10, minussid = 72;
+			if(kassit > 0)
+			{
+				if(DeskInfo[kassit-1][Table] == 1) return ErrorMessage(playerid, "{FF6347}Стол закрыт лидером"), status = -1;
+				if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование текстдравов"), status = -1;
+			}
+
+			// Дойка Коров
+			if(sid >= 0 && sid <= 17)
+			{
+				if(Dei[playerid] == 13)
+				{
+					RemovePlayerAttachedObject(playerid, 1);
+					SetPlayerAttachedObject(playerid, 1, 19468, 1, -0.496000, 1.380000, 0.000000, 3.999999, 88.799995, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+					if(DeiStat[playerid] < 20)
+					{
+						format(store,sizeof(store),"{ffcc66}Доить корову: {ff9000}%s", buttonName[Device[playerid]]);
+						ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•",store,"•","");
+						DeiStat[playerid] = 0;
+					}
+				}
+				else return ErrorMessage(playerid, "{FF6347}Возьмите ведро у входа в сарай"), status = -1;
+			}
+			// Образовательный Центр
+			if(sid >= 78 && sid <= 101)
+			{
+				LessonQuest[playerid] = 0;
+				if(Lesson[playerid] == 0)
+				{
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно взять нужный учебник из инвентаря, чтобы начать обучение");
+					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•","{ffcc66}Откройте инвентарь и кликните два раза по нужному учебнику, чтобы начать обучение\n\n{cccccc}Если у вас нет учебника - возьмите его в библиотеке","•","");
+				}
+				else ShowDialog(playerid,1227,DIALOG_STYLE_MSGBOX,"{ff9000}Образовательный Центр","\n{ff9000}Вы уверены, что хотите начать экзамен?\n","Да","Нет");
+			}
+
+			SitID[sid] = playerid+1;
+			SitPlayer[playerid] = sitid;
+
+			// Стулья в комнате казино для игры в карты
+			if(kassit > 0) join_player_desk(playerid, kassit-1, sid-minussid);
+
+			if(readsit == 1) SendClientMessagef(playerid, COLOR_GREY, "%d", sid);
+		}
+		TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
+
+	}
+	return status;
+}
+stock exitsit(playerid, stat)
+{
+	if(SitPlayer[playerid] >= 1 || playerSeat[playerid])
+	{
+		if(playerSeat[playerid]) playerSeat[playerid] = false;
+		NoAnim[playerid] = 0;
+	    if(stat == 1) ApplyAnimation(playerid,"PED","SEAT_up",4.0,0,0,0,0,0,1);
+	    if(stat == 2) ClearAnimations(playerid);
+
+		if(SitPlayer[playerid] >= 1)
+		{
+			new sitid = SitPlayer[playerid]-1;
+
+			// FBI Прослушка
+			if(sitid >= 183 && sitid <= 194) SetPVarInt(playerid,"komp", -1), SetPVarInt(playerid,"komp2", -1);
+			
+			// Дойка Коров
+			if(sitid >= 0 && sitid <= 17 && Dei[playerid] == 13) RemovePlayerAttachedObject(playerid, 1), SetPlayerAttachedObject(playerid, 1, 19468, 6, 0.325999, -0.114999, 0.019000, 99.999977, -103.299972, 1.999999, 1.000000, 1.000000, 1.000000, 0, 0);
+			
+			// Место в казино
+			if(sitid >= 18 && sitid <= 77) leave_desk(playerid);
+			
+			// Обучение
+			if(sitid >= 78 && sitid <= 101)
+			{
+				if(Ash[playerid] > 0)
+				{
+					Ash[playerid] = 0, AshTime[playerid] = 0;
+					if(stat == 1) ErrorMessage(playerid, "{FF6347}Вы встали из-за парты и прервали обучение {cccccc}[ Вы можете повторить или уйти и вернуться в любое время ]");
+				}
+				if(AeroStat[playerid] > 0) DestroyPlayerObject(playerid, AeroObj[playerid]);
+				if(stat == 1) SetCameraBehindPlayer(playerid);
+			}
+
+			if(SitID[sitid] == playerid+1) SitID[sitid] = 0;
+			SitPlayer[playerid] = 0;
+		}
+		
+		// Взаимодействие Off
+		if(Hold[playerid] == 13)
+		{
+			new t = HoldStat[playerid];
+		    if(ThrowInfo[t][tId] > 0 && HoldFrisk[playerid] == ThrowInfo[t][tId] && ThrowInfo[t][tUseplayer] > 0 && ThrowInfo[t][tUseplayer] == playerid+1) ThrowInfo[t][tUseplayer] = 0;
+			Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0;
+			if(Komputer[playerid] == 1 || Komputer[playerid] == 2) closecomp(playerid), CancelSelectTextDraw(playerid);
+		}
+	
+		TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton);
+		if(Komputer[playerid] == 1 || Komputer[playerid] == 2) exitkomp(playerid, 1);
+	}
+	return 1;
 }
 
