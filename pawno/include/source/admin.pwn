@@ -71,8 +71,8 @@ CMD:philin(playerid)
 	
 	format(string, sizeof(string),"X: %f | Y: %f | Z: %f | A: %f",x,y,z,a);
 	SendClientMessage(playerid,0xFFFFFFFF,string);
-	return 1;
 	}
+	return 1;
 }
 CMD:readsit(playerid)
 {
