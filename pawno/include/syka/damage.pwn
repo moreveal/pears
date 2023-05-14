@@ -2,6 +2,18 @@
 #define NON_DAMAGE_TEAM 1 // Тима для отмены стандартного урона
 #define max(%0,%1) (%0 > %1 ? %0 : %1) // Получает максимальное значение среди двух переданных
 
+#if !defined BODY_PART_TORSO
+enum {
+	BODY_PART_TORSO = 3,
+	BODY_PART_GROIN,
+	BODY_PART_LEFT_ARM,
+	BODY_PART_RIGHT_ARM,
+	BODY_PART_LEFT_LEG,
+	BODY_PART_RIGHT_LEG,
+	BODY_PART_HEAD
+};
+#endif
+
 // Узнает является ли оружие огнестрельным
 stock IsShootingWeapon(weaponid)
 {
@@ -19,75 +31,87 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
     if (GetVehicleModel(GetPlayerVehicleID(damagedid)) == 432) return 0; // Если игрок находится в танке - отмена урона
     if (GetPlayerState(playerid) == PLAYER_STATE_WASTED) return 0; // Если урон наносит мертвый игрок - отмена урона
     if (GetPVarInt(damagedid, "afksystem") >= 10) return 0; // Если игрок, по которому наносят урон, в AFK не менее 10 секунд - отмена урона
-	if (Iamzz[damagedid]) return 0;// Если игрок, по которому наносят урон, в зелёной зоне - отмена урона
+	if (Iamzz[damagedid]) return 0;// Если игрок, по которому наносят урон, в зелёной зоне - отмена урона [вернуть]
 
-    // Обработка урона с оружий по Weapon ID
-    static const weapons_damage[][] = {
-        // Weapon ID -> Мин. дамаг -> Макс. дамаг -> Мин. дамаг в голову -> Макс. дамаг в голову
-        {0, 1, 3}, // Fist
-        {WEAPON_NITESTICK, 5, 10, 5, 10},
-        {WEAPON_KNIFE, 15, 20, 15, 20},
-        {WEAPON_BAT, 10, 15, 10, 15},
-        {WEAPON_KATANA, 20, 30, 100, 100},
-        {WEAPON_MOLTOV, 1, 1, 1, 1},
-        {WEAPON_COLT45, 8, 14, 15, 17},
-        {WEAPON_TEC9, 5, 12, 13, 16},
-        {WEAPON_DEAGLE, 20, 32, 33, 49},
-        {WEAPON_UZI, 9, 12, 13, 15},
-        {WEAPON_MP5, 9, 13, 14, 17},
-        {WEAPON_M4, 9, 12, 19, 23},
-        {WEAPON_AK47, 11, 21, 22, 26},
-        {WEAPON_SHOTGUN, 20, 35, 26, 37},
-		{WEAPON_SAWEDOFF, 15, 25, 20, 35},
-        {WEAPON_SHOTGSPA, 8, 18, 20, 23},
-        {WEAPON_RIFLE, 20, 35, 36, 39},
-        {WEAPON_SNIPER, 75, 80, 360, 360},
-        {WEAPON_BRASSKNUCKLE, 10, 25},
-        {WEAPON_GOLFCLUB, 5, 10},
-        {WEAPON_SHOVEL, 8, 15},
-        {WEAPON_POOLSTICK, 8, 15},
-        {WEAPON_CHAINSAW, 8, 20},
-        {WEAPON_DILDO, 3, 7},
-        {WEAPON_DILDO2, 3, 7},
-        {WEAPON_VIBRATOR, 3, 7},
-        {WEAPON_VIBRATOR2, 3, 7},
-        {WEAPON_CANE, 3, 7},
-        {WEAPON_GRENADE, 50, 60},
-        {WEAPON_TEARGAS, 0, 0},
+    // Характеристики оружия по WeaponID
+	enum e_WeaponProperties {
+		wpID, // ID оружия
+		wpDistance[2], // Фиксированная [при которой урон не изменяется] и максимальная дистанция [при которой урон не идет вообще]
+		wpBodyDamage[2], // Минимальный и максимальный урон [Все части тела кроме головы]
+		wpHeadDamage[2], // Минимальный и максимальный урон [Голова]
+	};
+	static const weaponProperties[][e_WeaponProperties] = {
+		// слот кулака
+		{0, {30, 30}, {1, 3} },
+		{WEAPON_BRASSKNUCKLE, {30, 30}, {10, 25} },
+        {WEAPON_GOLFCLUB, {30, 30}, {5, 10} },
+        {WEAPON_SHOVEL, {30, 30}, {8, 15} },
+        {WEAPON_POOLSTICK, {30, 30}, {8, 15} },
+        {WEAPON_CHAINSAW, {30, 30}, {8, 20} },
+        {WEAPON_DILDO, {30, 30}, {3, 7} },
+        {WEAPON_DILDO2, {30, 30}, {3, 7} },
+        {WEAPON_VIBRATOR, {30, 30}, {3, 7} },
+        {WEAPON_VIBRATOR2, {30, 30}, {3, 7} },
+        {WEAPON_CANE, {30, 30}, {3, 7} },
+        {WEAPON_NITESTICK, {30, 30}, {5, 10} },
+        {WEAPON_KNIFE, {30, 30}, {15, 20} },
+        {WEAPON_BAT, {30, 30}, {10, 15} },
+        {WEAPON_KATANA, {30, 30}, {20, 30}, {100, 100} },
+		// огнестрел
+		{WEAPON_COLT45, {10, 30}, {7, 15}, {17, 35} },
+		{WEAPON_SILENCED, {10, 30}, {6, 13}, {19, 26} },
+		{WEAPON_DEAGLE, {13, 30}, {30, 46}, {46, 63} },
+		{WEAPON_SHOTGUN, {5, 40}, {7, 50}, {44, 58} },
+		{WEAPON_SAWEDOFF, {5, 35}, {5, 29}, {30, 37} },
+        {WEAPON_SHOTGSPA, {5, 40}, {6, 37}, {38, 45} },
+        {WEAPON_TEC9, {35, 105}, {2, 3}, {2, 4} },
+		{WEAPON_UZI, {10, 30}, {2, 3}, {2, 4} },
+        {WEAPON_MP5, {10, 30}, {8, 8}, {9, 12} },
+		{WEAPON_AK47, {30, 70}, {10, 12}, {12, 16} },
+        {WEAPON_M4, {30, 90}, {9, 11}, {11, 14} },
+        {WEAPON_RIFLE, {100, 100}, {20, 35}, {40, 50} },
+        {WEAPON_SNIPER, {300, 300}, {75, 80}, {360, 360} },
+		{WEAPON_MINIGUN, {100, 100}, {20, 20}, {20, 20} },
+		// гранаты
+		{WEAPON_GRENADE, {10, 50}, {50, 60} },
+        {WEAPON_TEARGAS, {10, 50}, {0, 0} },
+		// прочее
+		{18, {30, 30}, {1, 1} }, // Любой огонь
+        {35, {300, 300}, {360, 360}, {360, 360} }, // Очень близкий взрыв
+        {36, {300, 300}, {50, 80}, {50, 80} } // Дальний взрыв
+	};
 
-        {35, 360, 360}, // Очень близкий взрыв
-        {36, 50, 80} // Дальний взрыв
-    };
-
-    // Обработка поглощения урона бронежилетом по Weapon ID
-    static const weapons_suppression[1][][] = {
-        {
-            // Weapon ID, Мин. процент подавления -> Макс. процент подавления
-            {WEAPON_NITESTICK, 65, 70},
-            {WEAPON_KNIFE, 65, 70},
-            {WEAPON_BAT, 65, 70},
-            {WEAPON_KATANA, 65, 68},
-            {WEAPON_GRENADE, 30, 50},
-            {WEAPON_CAMERA, 100, 100},
-            {WEAPON_COLT45, 35, 49},
-            {WEAPON_TEC9, 35, 49},
-            {WEAPON_DEAGLE, 35, 49},
-            {WEAPON_UZI, 30, 45},
-            {WEAPON_MP5, 30, 45},
-            {WEAPON_M4, 25, 40},
-            {WEAPON_AK47, 25, 40},
-            {WEAPON_SHOTGUN, 30, 50},
-			{WEAPON_SAWEDOFF, 30, 50},
-            {WEAPON_SHOTGSPA, 30, 50},
-            {WEAPON_RIFLE, 25, 40},
-            {WEAPON_SNIPER, 20, 30}
-        }
-    };
+	enum e_WeaponsSuppresion {
+		wsID, // ID оружия
+		wsDegree[2] // Минимальная и максимальная степени подавления
+	};
+	static const weaponsSuppresion[1][][e_WeaponsSuppresion] = {
+		{
+			{WEAPON_NITESTICK, {65, 70} },
+            {WEAPON_KNIFE, {65, 70} },
+            {WEAPON_BAT, {65, 70} },
+            {WEAPON_KATANA, {65, 68} },
+            {WEAPON_GRENADE, {30, 50} },
+            {WEAPON_CAMERA, {100, 100} },
+            {WEAPON_COLT45, {35, 49} },
+            {WEAPON_TEC9, {35, 49} },
+            {WEAPON_DEAGLE, {35, 49} },
+            {WEAPON_UZI, {30, 45} },
+            {WEAPON_MP5, {30, 45} },
+            {WEAPON_M4, {25, 40} },
+            {WEAPON_AK47, {25, 40} },
+            {WEAPON_SHOTGUN, {30, 50} },
+			{WEAPON_SAWEDOFF, {30, 50} },
+            {WEAPON_SHOTGSPA, {30, 50} },
+            {WEAPON_RIFLE, {25, 40} },
+            {WEAPON_SNIPER, {20, 30} }
+		}
+	};
 
     new armour_action;
-    for (new i = 0; i < sizeof weapons_damage; i++)
+    for (new i = 0; i < sizeof weaponProperties; i++)
     {
-        if (floatround(weapons_damage[i][0]) == weaponid) {
+        if (weaponProperties[i][wpID] == weaponid) {
 			// Сокращение урона в зависимости от расстояния
 			new Float: distance_coef = 1.0, Float: distance = 0.0;
 			
@@ -96,30 +120,27 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 				new Float: target_pos[3]; GetPlayerPos(damagedid, target_pos[0], target_pos[1], target_pos[2]);
 				distance = GetPlayerDistanceFromPoint(playerid, target_pos[0], target_pos[1], target_pos[2]);
 				
-				static const Float: NOT_EFFECT_DISTANCE = 5.0; // Максимальная дистанция при которой урон не будет корректироваться
-				if (distance > NOT_EFFECT_DISTANCE) {
+				// Если дистанция между игроками больше, чем фиксированная (та, при которой влияния на урон быть не должно)
+				if (distance > weaponProperties[i][wpDistance][0]) {
 					// Расчёт коэффициента, на который будет снижаться урон
-					// Если проще: чем больше MAX_DAMAGE_DISTANCE - тем менее урон чувствителен к дистанции; MIN_DISTANCE_COEF нужен, чтобы не давать коэффициенту опускаться ниже этого значения
-					// Чем коэффициент ближе к нулю, тем меньше будет урон - например, с коэффициентом 0 - урон не будет проходить вообще
-					static const Float: MAX_DAMAGE_DISTANCE = 75.0; // Максимальное расстояние до которого будет вляние на коэффициент, после - он всегда будет равен MIN_DISTANCE_COEF
-					static const Float: MIN_DISTANCE_COEF = 0.70; // Минимальный размер коэффициента: он всегда будет не меньше этого значения
-					distance_coef = max(1.0 - (distance / MAX_DAMAGE_DISTANCE), MIN_DISTANCE_COEF);
+					distance_coef = max(1.0 - ( (distance - weaponProperties[i][wpDistance][0]) / (weaponProperties[i][wpDistance][1] - weaponProperties[i][wpDistance][0]) ), 0.0);
 				}
 			}
 			// --------------------------------------------
 
-            if (bodypart == 9) { // Обработка урона в голову
-                damage = random_range(weapons_damage[i][3], weapons_damage[i][4]);
+            if (bodypart == BODY_PART_HEAD) { // Обработка урона в голову
+				if (weaponProperties[i][wpHeadDamage])
+					damage = random_range(weaponProperties[i][wpHeadDamage][0], weaponProperties[i][wpHeadDamage][1]);
             } else { // Обработка урона во всё остальное
                 new Float: armour;
                 ACGetPlayerArmour(damagedid, armour);
                 if (armour > 0.0) { // Есть ли у потерпевшего бронежилет
                     static const armour_type = 0; // [ Временно тип армора статичный, в будущем можно добавить несколько ]
                     if (bodypart == 3) { // Если попадание было в торс - поглощаем урон
-                        for (new s = 0; s < sizeof weapons_suppression[]; s++) {
-                            if (weapons_suppression[armour_type][s][0] == weaponid) {
+                        for (new s = 0; s < sizeof weaponsSuppresion[]; s++) {
+                            if (weaponsSuppresion[armour_type][s][wsID] == weaponid) {
                                 // Количество поглощаемого урона (N% от нанесенного урона)
-                                armour_action = random_range(weapons_suppression[armour_type][s][1], weapons_suppression[armour_type][s][2]);
+                                armour_action = random_range(weaponsSuppresion[armour_type][s][wsDegree][0], weaponsSuppresion[armour_type][s][wsDegree][1]);
                                 // Степень урона бронежилета (N% от поглощенного урона)
                                 armour_breaking = armour_action * 0.40;
 
@@ -128,20 +149,34 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
                         }
                     }
                 }
-                damage = random_range(weapons_damage[i][1], weapons_damage[i][2]);
+                damage = random_range(weaponProperties[i][wpBodyDamage][0], weaponProperties[i][wpBodyDamage][1]);
+
+				// Уменьшение урона в два раза при попадании в ноги/руки
+				if (bodypart > 4) damage *= 0.5;
             }
 			damage *= distance_coef; // Учитывание коэффициента дистанции
 
             new string[144];
-            format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d] | Дистанция: %0.2fм", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid, distance);
-            SendClientMessageToAll(COLOR_GREY, string);
+            format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
+			SendClientMessageToAll(COLOR_GREY, string);
+			if (distance_coef < 1.0) {
+				format(string, sizeof string, "Урон был скорректирован с учетом дистанции: [%0.2f -> %0.2f] (%0.3f метров)", 
+					damage + (damage * (1.0 - distance_coef)),
+					damage,
+					distance
+				);
+				SendClientMessageToAll(COLOR_GREY, string);
+			}
             if (armour_action > 0) { // Если бронежилет есть, и он подействовал на наносимый урон
                 format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
                 SendClientMessageToAll(COLOR_GREY, string);
                 damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
 
-			if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid)) CaptTakeHealth(playerid, damagedid, damage);
+			if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid))
+            {
+                 CaptTakeHealth(playerid, damagedid, damage);
+            }
             return 1;
         }
     }
@@ -188,9 +223,9 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
     
     // Возвращение NO_TEAM обоим игрокам
 	if (PlayerInfo[playerid][pResetTeamTimer] != 0) KillTimer(PlayerInfo[playerid][pResetTeamTimer]);
-	PlayerInfo[playerid][pResetTeamTimer] = SetTimerEx("ResetTeam", 500, 0, "d", playerid);
+	PlayerInfo[playerid][pResetTeamTimer] = SetTimerEx("ResetTeam", 100, 0, "d", playerid);
     if (PlayerInfo[damagedid][pResetTeamTimer] != 0) KillTimer(PlayerInfo[damagedid][pResetTeamTimer]);
-	PlayerInfo[damagedid][pResetTeamTimer] = SetTimerEx("ResetTeam", 500, 0, "d", damagedid);
+	PlayerInfo[damagedid][pResetTeamTimer] = SetTimerEx("ResetTeam", 100, 0, "d", damagedid);
     // ---------------------------------
     return 1;
 }

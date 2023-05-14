@@ -1,4 +1,3 @@
-
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
 	new kolnum;
@@ -64,7 +63,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 	    if(BizzInfo[b][bProduct][19] == 0 || stat == 1) BizzInfo[b][bProduct][19] = 97, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // Кухонный Нож
 	    if(BizzInfo[b][bProduct][20] == 0 || stat == 1) BizzInfo[b][bProduct][20] = 163, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // Свадебный Торт
 	}
-	if(b >= 27 && b <= 41) // Оружейный Магазин
+	else if(b >= 27 && b <= 41) // Оружейный Магазин
 	{
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 27, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ammo 20,8mm
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 28, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Ammo 11,43mm
@@ -77,6 +76,40 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 31, BizzInfo[b][bTypeProduct][8] = 1, yes[8] = true; // M4
     	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 33, BizzInfo[b][bTypeProduct][9] = 1, yes[9] = true; // Винтовка
     	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 19106, BizzInfo[b][bTypeProduct][10] = 2, yes[10] = true; // Каска
+	}
+	else if(b >= 93 && b <= 102) // Клубы
+	{
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 1, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // пиво бокал
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 1, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // вино бокал
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 1, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // шампанское бокал
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 1, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // виски бокал
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 1, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // коньяк бокал
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 1, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // брэнди бокал
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 113, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Вино
+    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 37, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; //  Шампанское
+    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 114, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Виски
+    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 115, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Коньяк
+    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 116, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Брэнди
+    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 112, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Водка
+	}
+	else if(b >= 103 && b <= 117)
+	{
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 121, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; //  Кофе
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 124, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk Стакан
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk Банка
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 125, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Бургер
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 127, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Ролл
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 128, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Набор 1
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 129, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Набор 2
+    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 130, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; //  Набор 3
+    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 131, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Набор 4
+    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 132, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Набор 5
+    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 133, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Набор 6
+    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 134, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Набор 7
+		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 135, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Набор 8
+    	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 136, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Набор 9
+    	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 137, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Набор 10
+    	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 138, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Набор 11
 	}
 	else if(b >= 123 && b <= 132) // Аптека
 	{
@@ -99,7 +132,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 86, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // Терафлю
     	if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 87, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // Анвимакс
 	}
-	if(b >= 133 && b <= 142) // Магазины с Техникой
+	else if(b >= 133 && b <= 142) // Магазины с Техникой
 	{
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 43, BizzInfo[b][bTypeProduct][0] = 1, yes[0] = true; // Фотоаппарат
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 21, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Рация
@@ -110,12 +143,12 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 176, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Сигнализация 2 ур.
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Сигнализация 3 ур.
 	}
-	if(b >= 153 && b <= 162) // Ларьки с едой
+	else if(b >= 153 && b <= 162) // Ларьки с едой
 	{
-    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 168, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Мясо в упаковке
-    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 1, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Хлеб
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk в бутылке
-		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 141, BizzInfo[b][bTypeProduct][2] = 0, yes[3] = true; // Хот Дог
+    	/*if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 168, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Мясо в упаковке
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 1, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Хлеб*/
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 141, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Хот Дог
+		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 120, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk в бутылке
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
@@ -145,24 +178,33 @@ stock pricebiz(playerid, b)
 	DP[4][playerid] = b;
 	
 	if(b >= 173 && b <= 182) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
-	new lol[84], quan;
+	new lol[84], quan, checkingname[900];
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 42 && b <= 76 ) // Прайс автоматгенерация
+	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 93 && b <= 102|| b >= 103 && b <= 117 || b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 42 && b <= 76 ) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
 			List[quan][playerid] = i;
-			if(b >= 42 && b <= 76) format(line,sizeof(line),"{cccccc}%s \t {99ff66}[%d$]\n",vehName[BizzInfo[b][bProduct][i]], BizzInfo[b][bPrice][i]), strcat(lines,line);
-			else format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
+			if(b >= 42 && b <= 76) 
+			{
+				if (isnull(vehName[BizzInfo[b][bProduct][i]])) break;
+				format(line,sizeof(line),"{cccccc}%s \t {99ff66}[%d$]\n",vehName[BizzInfo[b][bProduct][i]], BizzInfo[b][bPrice][i]), strcat(lines,line);
+			}
+			else 
+			{	
+				checkingname = GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0);
+				if (isnull(checkingname)) break;
+				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
+			}
 			quan++;
 		}		
 	}
 	else if(b >= 153 && b <= 162) // Прайс Ларьков
 	{
-		List[0][playerid] = 3;
-		List[0][playerid] = 2;
-		format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][3], BizzInfo[b][bTypeProduct][3], 0),BizzInfo[b][bPrice][3]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][2], BizzInfo[b][bTypeProduct][2], 0),BizzInfo[b][bPrice][2]), strcat(lines,line);
+		List[0][playerid] = 0;
+		List[1][playerid] = 1;
+		format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][0], BizzInfo[b][bTypeProduct][0], 0),BizzInfo[b][bPrice][0]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][1], BizzInfo[b][bTypeProduct][1], 0),BizzInfo[b][bPrice][1]), strcat(lines,line);
 	}
 	else if(b >= 163 && b <= 172) // Прайс Банкоматов
 	{
@@ -410,7 +452,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     {
         BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
     }
-    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 123 && b <= 132 || b >= 133 && b <= 142) // Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой
+    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142) // Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
     {
         for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -446,9 +488,9 @@ stock SaveBizz(b)
 	mysql_escape_string(BizzInfo[b][bArReason], f_str3, sizeof(f_str3));
 	mysql_escape_string(BizzInfo[b][bStatReason], f_str4, sizeof(f_str4));
 	format(big_query, sizeof(big_query), "UPDATE `pp_bizz` SET `Vlad`='%s',`Level`='%d',`Sost`='%d',`Data`='%d',`Freeze`='%d',`Arest`='%d',`Fam`='%d',`Intorval`='%d',\
-	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',",f_str1,
+	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',",f_str1,
 	BizzInfo[b][bLevel], BizzInfo[b][bSost], BizzInfo[b][bData], BizzInfo[b][bFreeze], BizzInfo[b][bArest], BizzInfo[b][bFam], BizzInfo[b][bInterval],
-	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], f_str2);
+	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], f_str2, BizzInfo[b][bBar], BizzInfo[b][bBarX], BizzInfo[b][bBarY], BizzInfo[b][bBarZ]);
 
 	format(big_query, sizeof(big_query), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
 	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`Frame`='%d',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',",big_query,
