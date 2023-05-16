@@ -129,7 +129,7 @@ stock PressSeatableObjectHandler(playerid)
 		} else return 1;
   }
 
-  if(GetPlayerVirtualWorld(playerid) >= 1 && GetPlayerInterior(playerid) == 199) return 0; // Исключение в игровой комнате казино
+  
 
   // Получаем ближайшие к игроку динамические объекты
   new objects[5];
