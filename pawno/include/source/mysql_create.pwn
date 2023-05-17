@@ -109,5 +109,17 @@ stock CreateMysqlTable()
     /*
     Unixload
     */
+
+	// pp_bizz
+	// Добавлено в TEST
+	/*format(big_query,sizeof(big_query),"ALTER TABLE `pp_bizz` ADD `Ware0` INT NOT NULL");
+	for(new i = 1; i < MAX_BIZ_ITEM; i++) format(big_query,sizeof(big_query),"%s , ADD `Ware%d` INT NOT NULL", big_query, i);
+	query_empty(pearsq, big_query);
+	printf("[CREATE TABLE]: Добавлены новые таблицы pp_bizz [ Ware ]");
+	*/
+
+	// Добавлено в TEST
+	//query_empty(pearsq, "ALTER TABLE `pp_bizz` ADD `DeliveryPay` INT NOT NULL");
+	//query_empty(pearsq, "ALTER TABLE `pp_bizz` ADD `OrderStatus` INT NOT NULL");
 	return 1;
 }

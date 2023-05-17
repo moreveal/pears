@@ -202,6 +202,7 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 		case 19128: x = -20.0000, y = 0.0000, z = 38.0000, s = 1.1599;
 		case 3089: x = 0.0000, y = 0.0000, z = 18.0000, s = 1.2799;
 		case 1444: x = 0.0000, y = 0.0000, z = 30.0000, s = 1.2399;
+		case 19568: x = -30.0000, y = 0.0000, z = 156.0000, s = 1.0999;
 
 
 		default: x = 0.0, y = 0.0, z = 0.0, s = 1.0, findIt = 0;

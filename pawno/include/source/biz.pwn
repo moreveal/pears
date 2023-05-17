@@ -3,7 +3,10 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
-    format(line,sizeof(line),"{ff9000}Заказать Товар {cccccc}>>\t \t \n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
+	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
+	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
     for(new i = 0; i < 50; i++)
 	{
 		List[i][playerid] = 0;
@@ -13,7 +16,7 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 		{
 		    List[quan][playerid] = i;
 			quan ++;
-			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d]\t{cccccc}Оплата: {99ff66}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], BizzInfo[b][bOrderType][i]), BizzInfo[b][bOrderQuan][i], BizzInfo[b][bOrderPay][i]), strcat(lines,line);
+			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], BizzInfo[b][bOrderType][i]), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
 		}
 	}
 	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
@@ -26,23 +29,21 @@ stock insertorder(playerid, b, ord) // Управление заказом доставки товара
 
 	format(line,sizeof(line),"{444444}Товар: {ff9000}%s \t", GetNameThing(0, BizzInfo[b][bOrder][ord], BizzInfo[b][bOrderType][ord], 0)), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", BizzInfo[b][bOrderQuan][ord]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Оплата: \t{99ff66}%d$", BizzInfo[b][bOrderPay][ord]), strcat(lines,line);
-    format(line,sizeof(line),"\n{FF6347}Удалить Заказ\t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}Удалить товар\t "), strcat(lines,line);
 	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,1058,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
 	return 1;
 }
-stock createorder(playerid, b, ord, zakaz, zakazprice)
+stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 {
-	if(BizzInfo[b][bDeposit] < zakazprice) return ErrorText(playerid, "{FF6347}На депозите бизнеса недостаточно средств"), productbiz(playerid, b);
-	BizzInfo[b][bOrder][ord] = zakaz, BizzInfo[b][bOrderQuan][ord] = 1;
-	BizzInfo[b][bOrderPay][ord] = zakazprice, BizzInfo[b][bDeliveryOrder][ord] = -1;
+	if(BizzInfo[b][bDeposit] < thingPrice) return ErrorText(playerid, "{FF6347}На депозите бизнеса недостаточно средств"), productbiz(playerid, b);
+	BizzInfo[b][bOrder][ord] = thingId, BizzInfo[b][bOrderQuan][ord] = 1;
 	SaveBizzOrder(b, ord);
 	Orders ++, BizzInfo[b][bOrders] ++;
 	SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Нужно убедиться, что на депозите бизнеса достаточно средств для {99ff66}оплаты доставок!");
 	PlayerPlaySound(playerid,6401,0,0,0);
 	insertorder(playerid, b, ord);
-	BizLog("setorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, ord, GetNameThing(0, BizzInfo[b][bProduct][ord], BizzInfo[b][bTypeProduct][ord],0));
+	BizLog("setorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, ord, GetNameThing(0, thingId, thingType,0));
 	return 1;
 }
 stock ShowOrderThing(playerid, b)
@@ -50,18 +51,28 @@ stock ShowOrderThing(playerid, b)
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	if(b <= 12) // Заправка
 	{
+		format(line,sizeof(line),"{ff9000}Топливо {cccccc}[10.000 Литров]\t {99ff66}[%d$]\n",getThingPriceGos(178, 0) * 10000), strcat(lines,line);
 		format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,"{ff9000}1 Цистерна с топливом {cccccc}[10.000 Литров]\n","Выбрать","Отмена");
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
 	}
 	else if(b >= 13 && b <= 41 || b >= 93 && b <= 162 || b >= 183 && b <= 200)
-	{	
+	{
 		new lol[84], quan;
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
 		{
 			List[i][playerid] = 0;
-			if (BizzInfo[b][bProduct][i] == 0) break;
-			List[quan][playerid] = i;
-			format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])), strcat(lines,line);
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			{
+				if (BizzInfo[b][bWare][i] == 0) break;
+				List[quan][playerid] = i;
+				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bWare][i], 0, 0), getThingPriceGos(BizzInfo[b][bWare][i], 0)), strcat(lines,line);
+			}
+			else 
+			{
+				if (BizzInfo[b][bProduct][i] == 0) break;
+				List[quan][playerid] = i;
+				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])), strcat(lines,line);
+			}
 			quan++;
 		}		
 		format(lol,sizeof(lol),"{cccccc}Бизнеc {ff9000}%s [%d]",bizname(b), b);
@@ -83,6 +94,59 @@ stock getPayOrderDelivery(b) // Расчитываем стоимость оплаты доставки в бизнес з
 	if(pay <= 0) pay = ServerInfo[11];
 	return pay; 
 }
+stock maxQuanThingProduct(thingId, thingType) // Подсчет максимального количество товаров в бизнесе
+{
+	new maxQuan;
+	if(thingType == 0)
+	{
+		if(thingId == 1) maxQuan = 1000; // Хлеб
+	}
+	return maxQuan;
+}
+stock putThingBizzProduct(b, thingId, thingType, thingQuan) // Кладём товары по ячейкам (В доставке)
+{
+	for(new i = 0; i < MAX_BIZ_ITEM; i++)
+    {
+		if(BizzInfo[b][bTypeProduct][i] == thingType) // Если тип совпадает
+		{
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // У магазов с хавкой, товары формируются из продуктов
+			{
+				if(BizzInfo[b][bWare][i] == thingId) BizzInfo[b][bItem][i] += thingQuan;
+			}
+			else // Прочие бизы
+			{
+				if(BizzInfo[b][bProduct][i] == thingId) BizzInfo[b][bItem][i] += thingQuan;
+			}
+		}
+	}
+	return 1;
+}
+
+stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного товара в бизнесе по id и типу
+{
+	new quan;
+	for(new i = 0; i < 50; i++)
+	{
+		if(b >= 103 && b <= 122 || b >= 153 && b <= 162)
+		{
+			if(BizzInfo[b][bWare][i] == thingId) 
+			{
+				quan = BizzInfo[b][bItem][i];
+				break;
+			}
+		}
+		else
+		{
+			if(BizzInfo[b][bProduct][i] == thingId) 
+			{
+				quan = BizzInfo[b][bItem][i];
+				break;
+			}
+		}
+	}
+	return quan;
+}
+
 
 stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск бизнеса, устанавливаем продукты)
 {
@@ -160,7 +224,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 116, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // брэнди бокал
     	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 112, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Водка
 	}
-	else if(b >= 103 && b <= 122)
+	else if(b >= 103 && b <= 122) // Закусочные, Рестораны
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 121, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; //  Кофе
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 124, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk Стакан
@@ -178,6 +242,13 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
     	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 136, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Набор 9
     	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 137, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Набор 10
     	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 138, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Набор 11
+
+		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // Хлеб
+		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // Мясо в Упаковке
+		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 174, yes[2] = true; // Овощи
+		if(BizzInfo[b][bWare][3] == 0 || stat == 1) BizzInfo[b][bWare][3] = 120, yes[3] = true; // Sprunk
+		if(BizzInfo[b][bWare][4] == 0 || stat == 1) BizzInfo[b][bWare][4] = 104, yes[4] = true; // Картошка
+		if(BizzInfo[b][bWare][5] == 0 || stat == 1) BizzInfo[b][bWare][5] = 179, yes[5] = true; // Мороженое
 	}
 	else if(b >= 123 && b <= 132) // Аптека
 	{
@@ -213,10 +284,13 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 	}
 	else if(b >= 153 && b <= 162) // Ларьки с едой
 	{
-    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 168, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Мясо в упаковке
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 1, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Хлеб
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 141, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Хот Дог
 		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 120, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk в бутылке
+		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // Хлеб (Было bProduct[2])
+		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // Мясо в Упаковке (Было bProduct[3])
+		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 120, yes[2] = true; // Sprunk
+
+		BizzInfo[b][bProduct][2] = 0, BizzInfo[b][bProduct][3] = 0; // (Сбросим предыдущую херню с исключением, чтобы не мешать формированию списка)
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
@@ -246,7 +320,7 @@ stock getThingPriceGos(thingId, thingType)
 	new price;
 	if(thingType == 0) price = friskPrice[thingId];
 	else if(thingType == 1) price = gunPrice[thingId];
-//	else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
+	else if(thingType == 2) price = GetPriceGosAccessory(thingId);
 	else if(thingType == 3) price = SkinGos[thingId];
 //	else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
 	else if(thingType == 5) price = VehGos[thingId];
@@ -256,36 +330,20 @@ stock pricebiz(playerid, b)
 {
 	DP[4][playerid] = b;
 	
-	if(b >= 173 && b <= 182) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
+	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
 	new lol[84], quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	for(new i = 0; i < MAX_BIZ_ITEM; i++)
-	{
-		List[i][playerid] = 0;
-	}
-	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 93 && b <= 102 || b >= 103 && b <= 122 || b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 42 && b <= 76 ) // Прайс автоматгенерация
+	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 93 && b <= 102 || b >= 103 && b <= 122 || b >= 123 && b <= 132 || b >= 133 && b <= 142 
+	|| b >= 42 && b <= 76 || b >= 153 && b <= 162) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
+			List[i][playerid] = 0;
 			if (BizzInfo[b][bProduct][i] == 0) break;
 			List[quan][playerid] = i;
-			if(b >= 42 && b <= 76) 
-			{
-				format(line,sizeof(line),"{cccccc}%s \t {99ff66}[%d$]\n",vehName[BizzInfo[b][bProduct][i]], BizzInfo[b][bPrice][i]), strcat(lines,line);
-			}
-			else 
-			{	
-				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
-			}
+			format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
 			quan++;
 		}		
-	}
-	else if(b >= 153 && b <= 162) // Прайс Ларьков
-	{
-		List[0][playerid] = 0;
-		List[1][playerid] = 1;
-		format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][0], BizzInfo[b][bTypeProduct][0], 0),BizzInfo[b][bPrice][0]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}%s \t {99FF66}[%d$]",GetNameThing(0, BizzInfo[b][bProduct][1], BizzInfo[b][bTypeProduct][1], 0),BizzInfo[b][bPrice][1]), strcat(lines,line);
 	}
 	else if(b >= 163 && b <= 172) // Прайс Банкоматов
 	{
@@ -295,7 +353,7 @@ stock pricebiz(playerid, b)
 		ShowDialog(playerid,1171,DIALOG_STYLE_LIST,lol,lines,"Выбрать","Отмена");
 		return 1;
 	}
-	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В этом бизнесе нельзя настраивать стоимость товаров или услуг"), mybiz(playerid, b);
+	else return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя настраивать стоимость товаров и услуг"), mybiz(playerid, b);
 	format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
 	return 1;
@@ -504,7 +562,6 @@ stock delproduct(b, ord) // Удаляем заказ доставки товара в бизнесы
 {
 	BizzInfo[b][bOrder][ord] = 0;
     BizzInfo[b][bOrderQuan][ord] = 0;
-    BizzInfo[b][bOrderPay][ord] = 0;
     BizzInfo[b][bOrderType][ord] = 0;
     SaveBizzOrder(b, ord);
     BizzInfo[b][bOrders] --;
@@ -579,27 +636,29 @@ stock SaveBizz(b)
 	BizzInfo[b][bBizOX][1],BizzInfo[b][bBizOY][1],BizzInfo[b][bBizOZ][1],BizzInfo[b][bBizORX][1],BizzInfo[b][bBizORY][1],BizzInfo[b][bBizORZ][1],BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],
 	BizzInfo[b][bEnterZ],BizzInfo[b][bEnterA],BizzInfo[b][bFrame], BizzInfo[b][bInteriorX], BizzInfo[b][bInteriorY], BizzInfo[b][bInteriorZ], BizzInfo[b][bInteriorA], BizzInfo[b][bInterior]);
 	format(big_query, sizeof(big_query), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',`acc0`='%d',`acc1`='%d',`acc2`='%d',`acc3`='%d',`acc4`='%d',\
-	`acc5`='%d',`acc6`='%d',`acc7`='%d',`acc8`='%d',`acc9`='%d',`acc10`='%d',`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%s',`Stat`='%d',`StatReason`='%s',`Taxday`='%d',`Deposit`='%d',`Income`='%d' WHERE `newid`='%d'", big_query,
+	`acc5`='%d',`acc6`='%d',`acc7`='%d',`acc8`='%d',`acc9`='%d',`acc10`='%d',`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%s',`Stat`='%d',`StatReason`='%s',`Taxday`='%d',\
+	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d' WHERE `newid`='%d'", big_query,
 	BizzInfo[b][bMafia],BizzInfo[b][bBablo],BizzInfo[b][bSchet],BizzInfo[b][bSell],BizzInfo[b][bPastime],BizzInfo[b][bMafunix],BizzInfo[b][bAcc][0],BizzInfo[b][bAcc][1],
 	BizzInfo[b][bAcc][2],BizzInfo[b][bAcc][3],BizzInfo[b][bAcc][4],BizzInfo[b][bAcc][5],BizzInfo[b][bAcc][6],BizzInfo[b][bAcc][7],BizzInfo[b][bAcc][8],BizzInfo[b][bAcc][9],BizzInfo[b][bAcc][10], BizzInfo[b][bTaxes],
-	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], f_str3, BizzInfo[b][bStat], f_str4, BizzInfo[b][bTaxday], BizzInfo[b][bDeposit], BizzInfo[b][bIncome], b);
+	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], f_str3, BizzInfo[b][bStat], f_str4, BizzInfo[b][bTaxday], 
+	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus], b);
 	query_empty(pearsq, big_query);
 	return true;
 }
 stock SaveBizzProduct(idx)
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item0` = '%d', `Price0` = '%d', `Product0` = '%d', `TypeProduct0` = '%d'",
-	BizzInfo[idx][bItem][0], BizzInfo[idx][bPrice][0], BizzInfo[idx][bProduct][0], BizzInfo[idx][bTypeProduct][0]);
-	for(new i = 1; i < MAX_BIZ_ITEM; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d'", big_query,
-	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i]);
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item0` = '%d', `Price0` = '%d', `Product0` = '%d', `TypeProduct0` = '%d', `Ware0` = '%d'",
+	BizzInfo[idx][bItem][0], BizzInfo[idx][bPrice][0], BizzInfo[idx][bProduct][0], BizzInfo[idx][bTypeProduct][0], BizzInfo[idx][bWare][0]);
+	for(new i = 1; i < MAX_BIZ_ITEM; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
+	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
     format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
 	query_empty(pearsq, big_query);
 	return 1;
 }
 stock SaveBizzProductItem(idx, i)
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d' WHERE `newid` = '%d'",
-	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], idx);
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d' WHERE `newid` = '%d'",
+	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i], idx);
 	query_empty(pearsq, big_query);
 	return 1;
 }
@@ -607,8 +666,18 @@ stock SaveBizzOrder(idx, ord)
 {
 	if(ord >= 0 && ord <= 49)
 	{
-		format(big_query, sizeof(big_query), "UPDATE `pp_bizz` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderPay%d`='%d',`OrderType%d`='%d' WHERE `newid` = '%d'", ord, BizzInfo[idx][bOrder][ord], ord, BizzInfo[idx][bOrderQuan][ord], ord, BizzInfo[idx][bOrderPay][ord], ord, BizzInfo[idx][bOrderType][ord], idx);
+		format(big_query, sizeof(big_query), "UPDATE `pp_bizz` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `newid` = '%d'", ord, BizzInfo[idx][bOrder][ord], ord, BizzInfo[idx][bOrderQuan][ord], ord, BizzInfo[idx][bOrderType][ord], idx);
 		query_empty(pearsq, big_query);
 	}
   	return 1;
+}
+stock SaveBizzOrderAll(idx)
+{
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Order0` = '%d', `OrderQuan0` = '%d', `OrderType0` = '%d'",
+	BizzInfo[idx][bOrder][0], BizzInfo[idx][bOrderQuan][0], BizzInfo[idx][bOrderType][0]);
+	for(new i = 1; i < 50; i++) format(big_query,sizeof(big_query),"%s, `Order%d` = '%d', `OrderQuan%d` = '%d', `OrderType%d` = '%d'", big_query,
+	i, BizzInfo[idx][bOrder][i], i, BizzInfo[idx][bOrderQuan][i], i, BizzInfo[idx][bOrderType][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
+	query_empty(pearsq, big_query);
+	return 1;
 }

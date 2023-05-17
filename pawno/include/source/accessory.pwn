@@ -848,6 +848,20 @@ stock GetNameAccessory(modelId)
 	return send_name;
 }
 
+stock GetPriceGosAccessory(modelId)
+{
+	new price;
+    for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+	    if(AccessoryInfo[i][acModel] == modelId)
+	    {
+	        price = AccessoryInfo[i][acPrice];
+            break;
+	    }
+	}
+	return price;
+}
+
 stock GetTextDrawNameAccessory(modelId)
 {
 	new findSlot = -1, send_name[34];
