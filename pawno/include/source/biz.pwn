@@ -100,6 +100,11 @@ stock maxQuanThingProduct(thingId, thingType) // Подсчет максимального количеств
 	if(thingType == 0)
 	{
 		if(thingId == 1) maxQuan = 1000; // Хлеб
+		else if(thingId == 168) maxQuan = 1000; // Мясо в Упаковке
+		else if(thingId == 174) maxQuan = 1000; // Овощи
+		else if(thingId == 120) maxQuan = 1000; // Sprunk
+		else if(thingId == 104) maxQuan = 1000; // Картошка
+		else if(thingId == 179) maxQuan = 1000; // Мороженое
 	}
 	return maxQuan;
 }

@@ -140,8 +140,8 @@ stock PressSeatableObjectHandler(playerid)
     // Перебираем каждый объект
     new current_object = objects[i];
 
-    /* Функция Streamer_GetAllVisibleItems возвращает уже отсортированный по дистанции список, т.е. если один из объектов при последовательном прохождении
-    цикла находится дальше, чем требуется - то все остальные объекты тоже, поэтому можно не пропускать один объект, а прервать цикл вовсе */
+    // Функция Streamer_GetAllVisibleItems возвращает уже отсортированный по дистанции список, т.е. если один из объектов при последовательном прохождении
+   // цикла находится дальше, чем требуется - то все остальные объекты тоже, поэтому можно не пропускать один объект, а прервать цикл вовсе 
     new Float: distance;
     Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
     if (distance > 2.50) break;
@@ -166,6 +166,45 @@ stock PressSeatableObjectHandler(playerid)
   return 1;
 }
 
+/*stock PressSeatableObjectHandler(playerid) {
+	new Float: player_pos[3];
+	GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
+
+	// Узнаем есть ли рядом пикапы и отменяем посадку, если да (чтобы не было конфликтов со входами и т.п.)
+	new pickups[1];
+	new pickups_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_PICKUP, pickups), sizeof pickups);
+	for (new i = 0; i < pickups_count; i++) {
+		new Float: distance;
+		Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_PICKUP, pickups[i], distance);
+		
+		// Если рядом есть пикап - прекращаем обработку
+		if (distance >= 2.05) break; else return;
+	}
+	// Получаем три ближайших к игроку динамических объекта
+	new objects[5];
+	// Функция Streamer_GetAllVisibleItems возвращает количество динамических элементов, которые находятся в зоне стрима игрока и помещает их ID в массив (objects)
+	// Но это количество не учитывает то, что в массиве может не хватить для них места, поэтому я использую макрос min, который вернёт 3 (sizeof objects), если количество объектов больше
+	new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
+	for (new i = 0; i < objects_count; i++) {
+		// Перебираем каждый объект
+		new current_object = objects[i];
+
+		// Установка нужной позиции и анимации игроку (если объект является стулом)
+		new Float: x, Float: y, Float: z, Float: a;
+		new result = GetDynamicObjectSeatPosition(current_object, x, y, z, a);
+		if (result) {
+			// Функция Streamer_GetAllVisibleItems возвращает уже отсортированный по дистанции список, т.е. если один из объектов при последовательном прохождении
+			//цикла находится дальше, чем требуется - то все остальные объекты тоже, поэтому можно не пропускать один объект, а прервать цикл вовсе 
+			if (GetPlayerDistanceFromPoint(playerid, x, y, z) > 1.25) break;
+
+			// Помещаем игрока на стул
+			SetPlayerPos(playerid, x, y, player_pos[2]);
+			SetPlayerFacingAngle(playerid, a);
+			ApplyAnimation(playerid, "PED", "SEAT_down", 4.0, 0, 0, 0, 1, 1, 1);
+			break;
+		}
+	}
+}*/
 
 stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 {
