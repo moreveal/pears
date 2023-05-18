@@ -113,6 +113,11 @@ stock GetDynamicObjectSeatPosition(objectid, &Float: x, &Float: y, &Float: z, &F
 stock PressSeatableObjectHandler(playerid) 
 {
 
+  // В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
+  if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
+  || GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
+  || GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0;
+
   new Float: player_pos[3];
   GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 

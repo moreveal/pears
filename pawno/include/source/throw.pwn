@@ -137,7 +137,7 @@ stock use_throw(playerid, inva, useinva)
 	if((fpick >= 128 && fpick <= 138 || fpick == 42) && thingType == 0 && thingPack == 0)
 	{
 	    if(ThrowInfo[t][tUseplayer] > 0 && ThrowInfo[t][tUseplayer] != playerid+1) return format(store,sizeof(store),"{FF6347}С этим предметом взаимодействует %s",PlayerInfo[ThrowInfo[t][tUseplayer]-1][pName]), ErrorMessage(playerid, store);
-		if(SitPlayer[playerid] > 0)
+		if(playerSeat[playerid])
 		{
 		    if(!IsPlayerInRangeOfPoint(playerid,2.0,ThrowInfo[t][tX],ThrowInfo[t][tY],ThrowInfo[t][tZ])) return ErrorMessage(playerid, "{FF6347}Этот предмет слишком далеко");
 		    if(ThrowInfo[t][tPutLocation] == 0) return ErrorMessage(playerid, "{FF6347}Этот предмет лежит на полу [ Чтобы взаимодействовать - поставте его на стол ]");

@@ -85,6 +85,31 @@ stock ShowOrderThing(playerid, b)
 	}
 	return 1;
 }
+stock getThingHaveQuanOrder(b, thingId, thingType) // Проверка, имеется ли уже такой товар в текущем заказе на доставку
+{
+	new stop;
+	for(new i = 0; i < 50; i++)
+	{
+		if(BizzInfo[b][bOrder][i] == thingId && BizzInfo[b][bOrderType][i] == thingType)
+		{
+			stop ++;
+		}
+	}
+	return stop;
+}
+stock getFreeOrderSlot(b)
+{
+	new ordId = -1;
+	for(new i = 0; i < 50; i++) // Ищем свободный слот заказа
+	{
+		if(BizzInfo[b][bOrder][i] == 0) // Нашли
+		{
+			ordId = i; // Передали id свободного слота в переменную
+			break;
+		}
+	}
+	return ordId;
+}
 stock getPayOrderDelivery(b) // Расчитываем стоимость оплаты доставки в бизнес за километр
 {
 	new Float:dist, pay;
@@ -97,15 +122,13 @@ stock getPayOrderDelivery(b) // Расчитываем стоимость оплаты доставки в бизнес з
 stock maxQuanThingProduct(thingId, thingType) // Подсчет максимального количество товаров в бизнесе
 {
 	new maxQuan;
-	if(thingType == 0)
+	if(thingType == 0) // Обычные Предметы
 	{
-		if(thingId == 1) maxQuan = 1000; // Хлеб
-		else if(thingId == 168) maxQuan = 1000; // Мясо в Упаковке
-		else if(thingId == 174) maxQuan = 1000; // Овощи
-		else if(thingId == 120) maxQuan = 1000; // Sprunk
-		else if(thingId == 104) maxQuan = 1000; // Картошка
-		else if(thingId == 179) maxQuan = 1000; // Мороженое
+		if(thingId == 178) maxQuan = 50000; // Топливо
+		else if(thingId >= 27 && thingId <= 30) maxQuan = 10000; // Патроны
+		else maxQuan = 1000; 
 	}
+	else maxQuan = 1000; 
 	return maxQuan;
 }
 stock putThingBizzProduct(b, thingId, thingType, thingQuan) // Кладём товары по ячейкам (В доставке)
@@ -130,28 +153,55 @@ stock putThingBizzProduct(b, thingId, thingType, thingQuan) // Кладём товары по 
 stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного товара в бизнесе по id и типу
 {
 	new quan;
-	for(new i = 0; i < 50; i++)
+	if(b >= 173 && b <= 182) // Магазины с одеждой
 	{
-		if(b >= 103 && b <= 122 || b >= 153 && b <= 162)
+		if(thingType == 2) // Аксессуары
 		{
-			if(BizzInfo[b][bWare][i] == thingId) 
+			for(new as = 0; as < 100; as++)
 			{
-				quan = BizzInfo[b][bItem][i];
-				break;
+				if(AksesItem[b][as] == thingId)
+				{
+					quan = AksesQuan[b][as];
+					break;
+				}
 			}
 		}
-		else
+		else if(thingType == 3) // Одежда
 		{
-			if(BizzInfo[b][bProduct][i] == thingId) 
+			for(new as = 0; as < 50; as++)
 			{
-				quan = BizzInfo[b][bItem][i];
-				break;
+				if(StoreItem[b][as] == thingId)
+				{
+					quan = StoreQuan[b][as];
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		for(new i = 0; i < 50; i++)
+		{
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			{
+				if(BizzInfo[b][bWare][i] == thingId) 
+				{
+					quan = BizzInfo[b][bItem][i];
+					break;
+				}
+			}
+			else // Прочие бизнесы
+			{
+				if(BizzInfo[b][bProduct][i] == thingId) 
+				{
+					quan = BizzInfo[b][bItem][i];
+					break;
+				}
 			}
 		}
 	}
 	return quan;
 }
-
 
 stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск бизнеса, устанавливаем продукты)
 {
@@ -250,10 +300,12 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 
 		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // Хлеб
 		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // Мясо в Упаковке
-		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 174, yes[2] = true; // Овощи
-		if(BizzInfo[b][bWare][3] == 0 || stat == 1) BizzInfo[b][bWare][3] = 120, yes[3] = true; // Sprunk
+		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 120, yes[2] = true; // Sprunk
+		if(BizzInfo[b][bWare][3] == 0 || stat == 1) BizzInfo[b][bWare][3] = 174, yes[3] = true; // Овощи
 		if(BizzInfo[b][bWare][4] == 0 || stat == 1) BizzInfo[b][bWare][4] = 104, yes[4] = true; // Картошка
 		if(BizzInfo[b][bWare][5] == 0 || stat == 1) BizzInfo[b][bWare][5] = 179, yes[5] = true; // Мороженое
+		if(BizzInfo[b][bWare][6] == 0 || stat == 1) BizzInfo[b][bWare][6] = 102, yes[6] = true; // Молоко
+		if(BizzInfo[b][bWare][7] == 0 || stat == 1) BizzInfo[b][bWare][7] = 121, yes[7] = true; // Кофе
 	}
 	else if(b >= 123 && b <= 132) // Аптека
 	{
@@ -299,16 +351,17 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
-        if(BizzInfo[b][bProduct][i] > 0 && (yes[i] || stat == 1))
+        if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && (yes[i] || stat == 1))
         {
             if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
             
-            if(BizzInfo[b][bProduct][i] == 178) BizzInfo[b][bItem][i] = 50000; // Топливо
-            else if(BizzInfo[b][bProduct][i] >= 27 && BizzInfo[b][bProduct][i] <= 30) BizzInfo[b][bItem][i] = 10000; // Патроны
-            else BizzInfo[b][bItem][i] = 1000;
-            
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			{
+				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]);
+			}
+			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
             yesUpdate = true;
         }
     }
@@ -623,6 +676,97 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 	}
 	return 1;
 }
+stock putshop(b, item, thingType, quan) // Кладём товары в Магазины с Одеждой во время доставки
+{
+	new nashel = -1;
+	if(thingType == 3) // Одежда
+	{
+		for(new gs = 0; gs < 50; gs++)
+		{
+		    if(StoreItem[b][gs] == item)
+		    {
+		    	StoreQuan[b][gs] += quan, nashel = gs;
+		    	SaveBizzStore(b, gs);
+		        break;
+		    }
+		}
+		if(nashel == -1)
+		{
+			for(new gs = 0; gs < 50; gs++)
+			{
+			    if(StoreItem[b][gs] == 0)
+			    {
+			    	StoreItem[b][gs] = item;
+			    	StoreQuan[b][gs] = quan;
+			    	StorePrice[b][gs] = SkinGos[item] + SkinGos[item]/2;
+			    	SaveBizzStore(b, gs);
+			        break;
+			    }
+			}
+		}
+	}
+	else if(thingType == 2) // Аксессуары
+	{
+		for(new as = 0; as < 100; as++)
+		{
+		    if(AksesItem[b][as] == item)
+		    {
+		    	AksesQuan[b][as] += quan, nashel = as;
+		    	SaveBizzAkses(b, as);
+		        break;
+		    }
+		}
+		if(nashel == -1)
+		{
+			new price = GetPriceGosAccessory(item);
+			for(new as = 0; as < 100; as++)
+			{
+			    if(AksesItem[b][as] == 0)
+			    {
+			    	AksesItem[b][as] = item;
+			    	AksesQuan[b][as] = quan;
+			    	AksesPrice[b][as] = price + price/2;
+			    	SaveBizzAkses(b, as);
+			        break;
+			    }
+			}
+		}
+	}
+	return 1;
+}
+
+stock takeWareBusiness(b, thingId) // Снимаем продукты из бизнеса
+{
+	new ingId[6], ingQuan[6], slot;
+	menuEatIngredient(thingId, ingId[0], ingId[1], ingId[2], ingId[3], ingId[4], ingId[5], ingQuan[0], ingQuan[1], ingQuan[2], ingQuan[3], ingQuan[4], ingQuan[5]);
+
+	for(new i = 0; i < 6; i++)
+    {
+		if(ingId[i] > 0)
+		{
+			slot = getSlotIngredientBusiness(ingId[i]);
+			if(BizzInfo[b][bItem][slot] - ingQuan[i] < 0) BizzInfo[b][bItem][slot] = 0;
+			else BizzInfo[b][bItem][slot] -= ingQuan[i];
+		}
+	}
+	BizzInfo[b][bUpdate] = 1;
+	return 1;
+}
+
+stock getSlotIngredientBusiness(thingId) // Получаем слот, который используется для продукта (По сути нужно динамически искать, но мне насрать)
+{
+	new slot;
+	if(thingId == 1) slot = 0;
+	else if(thingId == 168) slot = 1;
+	else if(thingId == 120) slot = 2;
+	else if(thingId == 174) slot = 3;
+	else if(thingId == 104) slot = 4;
+	else if(thingId == 179) slot = 5;
+	else if(thingId == 102) slot = 6;
+	else if(thingId == 121) slot = 7;
+	return slot;
+}
+
 stock SaveBizz(b)
 {
 	new f_str1[24],f_str2[34],f_str3[64],f_str4[64];

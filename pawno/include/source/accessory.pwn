@@ -1,3 +1,294 @@
+
+#define MAX_ACCESSORY 1000 // Максимальное количество аксессуаров для игроков
+
+enum acInfo
+{
+	acID, // ID В базе данных
+	acModel, // Модель Аксессуара
+	acName[34], // Название аксессуара
+	acPrice, // Гос цена аксессуара
+	acStatus, // Статус аксессуара, активен он или нет
+	acBone, // Кость (Куда крепится этот аксессуар)
+	Float:acX,
+	Float:acY,
+	Float:acZ,
+	Float:acrX,
+	Float:acrY,
+	Float:acrZ,
+	Float:acsX,
+	Float:acsY,
+	Float:acsZ,
+	bool:acUpdate, // Статус сохранения в базу (раз в минуту проверка)
+	bool:acMysqlCheck // Запрет на повторный запрос в базу, пока от предыдущего не пришел ответ
+};
+new AccessoryInfo[MAX_ACCESSORY][acInfo];
+new AccessoryQuan;
+
+new AccessoryEditSkin;
+
+new boneName[][] = // Названия креплений аксессуара к костям
+{
+    "Голова", "Спина", "Голова", "Левое плечо", "Правое плечо", "Левая рука", "Правая рука", "Левое бедро", "Правое бедро", "Левая нога",
+    "Правая нога", "Правая икра", "Левая икра", "Левое предплечье", "Правое предплечье", "Левая ключица", "Правая ключица", "Шея", "Челюсть"
+};
+
+CMD:aeditskin(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(AccessoryEditSkin == 0) AccessoryEditSkin = 1, SuccessMessage(playerid, "{99ff66}Редактор вкл");
+	else AccessoryEditSkin = 0, SuccessMessage(playerid, "{FF6347}Редактор выкл");
+	return 1;
+}
+
+CMD:accessory(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	DP[0][playerid] = 0;
+	AccessoryList(playerid, 0, "");
+	return 1;
+}
+
+stock AccessoryList(playerid, page, const findName[]) // Меню настроек аксессуаров для игроков
+{
+    format(ListName[playerid],34, ""); // Очищаем имя сохранённого поиска
+	DP[1][playerid] = page; // Сохраняем открытую страницу
+	DP[2][playerid] = 0; // Сбрасываем статус отображения списка аксессуаров
+	
+    new minId = 0, maxId = 99, quanId, quanFind = strlen(findName), quanType, findModel; // Минимальный и максимально отображаемые аксессуары на странице
+    if(page >= 1) minId += 100*page, maxId += 100*page; // Если это следующие страницы, присваиваем следующие ID
+    
+    format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line),"Аксессуар\tModel\tЦена"), strcat(lines,line);
+	format(line,sizeof(line),"\n{99ff66}Добавить аксессуар\t\t"), strcat(lines,line);
+	
+	if(quanFind > 0)
+	{
+	    format(ListName[playerid],34, "%s", findName); // Сохраняем поиск по имени
+	    if(IsNumeric(findName)) quanType = 1, findModel = strval(findName);
+		format(line,sizeof(line),"\n{cccccc}Найти [%s]\t\t", findName), strcat(lines,line);
+	}
+	else format(line,sizeof(line),"\n{cccccc}Найти\t\t"), strcat(lines,line);
+	
+    for(new i = minId; i < maxId; i++)
+	{
+	    if(AccessoryInfo[i][acModel] > 0 && quanFind == 0 // Если поиск по модели и имени не активен, просто показываем все аксессуары
+		|| quanFind > 0 && (quanType == 1 && AccessoryInfo[i][acModel] == findModel) // Ищем по model
+		|| quanFind > 0 && (quanType == 0 && strfind(AccessoryInfo[i][acName], findName, true) != -1)) // Ищем по названию
+	    {
+	        List[quanId][playerid] = i; // Сохраняем найденный аксессуар в переменную
+	        quanId ++; // Ведём подсчёт переменных
+			if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}%d. %s\t%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
+			else format(line,sizeof(line),"\n{cccccc}%d. {ff9000}%s\t{cccccc}%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
+		}
+	}
+	if(quanId == 0)
+	{
+		DP[2][playerid] = 1;
+		format(line,sizeof(line),"\n{FF6347}Аксессуары не найдены\t\t"), strcat(lines,line);
+	}
+	if(page > 0 || quanId >= 100) format(line,sizeof(line),"\n{444444}Далее >>\t\t"), strcat(lines,line);
+	
+	new lol[60];
+	format(lol,sizeof(lol),"{ff9000}Аксессуары %d {cccccc}[Страница %d]", AccessoryQuan, page+1);
+    ShowDialog(playerid,1278,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Выход");
+    return 1;
+}
+
+stock AccessorySetting(playerid, i) // Меню настройки конкретного аксессуара
+{
+	if(i == -1)
+	{
+	    format(store,sizeof(store),"{cccccc}Введите ID Model аксессуара [321 - %d]\n\n{444444}Вся необходимая информация об аксессуарах и поиске моделей на форуме", MAX_OBJECT_MODEL_ID);
+	    ShowDialog(playerid,1280,DIALOG_STYLE_INPUT,"{ff9000}Создание Аксессуара",store,"Принять","Отмена");
+	}
+	else
+	{
+	    if(i < 0 || i >= MAX_ACCESSORY) return 1;
+	    if(AccessoryInfo[i][acModel] == 0) return 1;
+	    DP[3][playerid] = i;
+	    
+	    
+	    format(lines,sizeof(lines),""); // Очищаем Lines
+		format(line,sizeof(line),"%d. Model: %d \t", i+1, AccessoryInfo[i][acModel]), strcat(lines,line);
+		
+		if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}Статус: \t{FF6347}Не активен"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{cccccc}Статус: \t{99ff66}Активен"), strcat(lines,line);
+		
+		format(line,sizeof(line),"\n{cccccc}Название: \t{ff9000}%s", AccessoryInfo[i][acName]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Гос. Стоимость: \t{99ff66}%d$ [%s]", AccessoryInfo[i][acPrice], get_k(AccessoryInfo[i][acPrice])), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Кость крепления: \t{444444}%s", boneName[AccessoryInfo[i][acBone]]), strcat(lines,line);
+		format(line,sizeof(line),"\n{444444}Расположение на игроке >> \t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{444444}Отображение в текстдраве >> \t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{FF6347}Удалить аксессуар \t"), strcat(lines,line);
+		
+	    ShowDialog(playerid,1281,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аксессуар",lines,"Выбрать","Назад");
+	}
+	return 1;
+}
+
+stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
+{
+	new accId = -1;
+	
+	//=====
+	// Добавление при надевании, следовательно - сначала проверяем на наличие такого аксессуара в списке
+	// Это временный функционал, нужен для добавления аксессуаров старого типа игроками и тестерами без участия разрабов. В будущем его можно будет ВЫРЕЗАТЬ
+	new bool:isAvailable;
+	if(stat == 1)
+	{
+	    for(new i = 0; i < MAX_ACCESSORY; i++)
+		{
+		    if(AccessoryInfo[i][acModel] == modelId && AccessoryInfo[i][acBone] == boneId)
+		    {
+                isAvailable = true;
+                break;
+		    }
+  		}
+  		if(isAvailable) return accId;
+	}
+	//=====
+
+	for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+	    if(AccessoryInfo[i][acModel] == 0) // Находим пустой слот и создаём аксессуар туда
+	    {
+	        AccessoryInfo[i][acModel] = modelId; // Записываем модель
+	        format(AccessoryInfo[i][acName], 34, "%s", thing_name(modelId)); // Получаем имя из старого списка имён аксессуаров
+	        AccessoryInfo[i][acPrice] = 10000; // Записываем дефолтную стоимость
+	        AccessoryInfo[i][acStatus] = stat; // Устанавливаем статус
+	        
+	        // Получаем расположение на игроке и кость из старого списка
+	        thing(modelId, AccessoryInfo[i][acX], AccessoryInfo[i][acY], AccessoryInfo[i][acZ], AccessoryInfo[i][acrX], AccessoryInfo[i][acrY], AccessoryInfo[i][acrZ], AccessoryInfo[i][acsX], AccessoryInfo[i][acsY], AccessoryInfo[i][acsZ], AccessoryInfo[i][acBone]);
+
+            AccessoryQuan ++;
+            SaveAccessory(i, 0); // Создаём новую строку в базу
+            
+            accId = i;
+	        break;
+	    }
+ 	}
+	return accId;
+}
+
+stock SaveAccessory(i, stat) // Обновляем или добавляем строку об аксессуаре
+{
+	new send_name[34];
+    mysql_escape_string(AccessoryInfo[i][acName], send_name, sizeof(send_name));
+    
+    if(stat == 1) format(big_query, sizeof(big_query), "UPDATE");
+    else format(big_query, sizeof(big_query), "INSERT INTO");
+
+	format(big_query, sizeof(big_query), "%s `accessory` SET `acModel`='%d',`acName`='%s',`acPrice`='%d',`acStatus`='%d',`acBone`='%d'",big_query,
+	AccessoryInfo[i][acModel], send_name, AccessoryInfo[i][acPrice], AccessoryInfo[i][acStatus], AccessoryInfo[i][acBone]);
+	
+	format(big_query,sizeof(big_query),"%s, `acX` = '%f', `acY` = '%f', `acZ` = '%f', `acrX` = '%f', `acrY` = '%f', `acrZ` = '%f',\
+	`acsX` = '%f', `acsY` = '%f', `acsZ` = '%f'", big_query,
+	AccessoryInfo[i][acX],AccessoryInfo[i][acY],AccessoryInfo[i][acZ],AccessoryInfo[i][acrX],AccessoryInfo[i][acrY],AccessoryInfo[i][acrZ],
+	AccessoryInfo[i][acsX],AccessoryInfo[i][acsY],AccessoryInfo[i][acsZ]);
+	
+	if(stat == 1) format(big_query, sizeof(big_query), "%s  WHERE `newid` = '%d'", big_query, AccessoryInfo[i][acID]);
+	query_empty(pearsq, big_query);
+	
+	if(stat == 0) AccessoryInfo[i][acID] = cache_insert_id();
+	
+	AccessoryInfo[i][acMysqlCheck] = false;
+    return 1;
+}
+
+stock GetNameAccessory(modelId)
+{
+	new findSlot = -1, send_name[34];
+    for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+	    if(AccessoryInfo[i][acModel] == modelId)
+	    {
+	        findSlot = i;
+            break;
+	    }
+	}
+	if(findSlot >= 0) format(send_name, 34, "%s", AccessoryInfo[findSlot][acName]);
+	else format(send_name, 34, "%s", thing_name(modelId));
+	
+	return send_name;
+}
+
+stock GetPriceGosAccessory(modelId) // Получаем гос. стоимость аксессуара
+{
+	new price;
+    for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+	    if(AccessoryInfo[i][acModel] == modelId)
+	    {
+	        price = AccessoryInfo[i][acPrice];
+            break;
+	    }
+	}
+	return price;
+}
+
+stock GetTextDrawNameAccessory(modelId)
+{
+	new findSlot = -1, send_name[34];
+    for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+	    if(AccessoryInfo[i][acModel] == modelId)
+	    {
+	        findSlot = i;
+            break;
+	    }
+	}
+	if(findSlot >= 0) format(send_name, 34, RusToGame("%s"), AccessoryInfo[findSlot][acName]);
+	else format(send_name, 34, "%s", thing_namedraw(modelId));
+
+	return send_name;
+}
+
+stock DeleteAccessory(i)
+{
+	format(store,sizeof(store),"DELETE FROM `accessory` WHERE `newid` = '%d'", AccessoryInfo[i][acID]);
+	query_empty(pearsq, store);
+	AccessoryInfo[i][acMysqlCheck] = false;
+	
+	AccessoryInfo[i][acModel] = 0;
+    format(AccessoryInfo[i][acName], 34, "");
+    AccessoryInfo[i][acPrice] = 0;
+    AccessoryInfo[i][acStatus] = 0;
+
+    AccessoryInfo[i][acX] = 0, AccessoryInfo[i][acY] = 0, AccessoryInfo[i][acZ] = 0, AccessoryInfo[i][acrX] = 0, AccessoryInfo[i][acrY] = 0, AccessoryInfo[i][acrZ] = 0, AccessoryInfo[i][acsX] = 0, AccessoryInfo[i][acsY] = 0, AccessoryInfo[i][acsZ] = 0, AccessoryInfo[i][acBone] = 0;
+
+    AccessoryInfo[i][acUpdate] = false;
+    AccessoryQuan --;
+	return 1;
+}
+
+forward LoadAccessory(); // Загрузка аксессуаров из базы
+public LoadAccessory()
+{
+	new rows, time = GetTickCount();
+	cache_get_row_count(rows);
+	for(new f; f < rows; ++f)
+	{
+    	cache_get_value_name_int(f, "newid", AccessoryInfo[f][acID]);
+    	cache_get_value_name_int(f, "acModel", AccessoryInfo[f][acModel]);
+    	cache_get_value_name(f, "acName", AccessoryInfo[f][acName], 34);
+    	cache_get_value_name_int(f, "acPrice", AccessoryInfo[f][acPrice]);
+    	cache_get_value_name_int(f, "acStatus", AccessoryInfo[f][acStatus]);
+    	cache_get_value_name_int(f, "acBone", AccessoryInfo[f][acBone]);
+		cache_get_value_name_float(f, "acX", AccessoryInfo[f][acX]);
+		cache_get_value_name_float(f, "acY", AccessoryInfo[f][acY]);
+		cache_get_value_name_float(f, "acZ", AccessoryInfo[f][acZ]);
+		cache_get_value_name_float(f, "acrX", AccessoryInfo[f][acrX]);
+		cache_get_value_name_float(f, "acrY", AccessoryInfo[f][acrY]);
+		cache_get_value_name_float(f, "acrZ", AccessoryInfo[f][acrZ]);
+		cache_get_value_name_float(f, "acsX", AccessoryInfo[f][acsX]);
+		cache_get_value_name_float(f, "acsY", AccessoryInfo[f][acsY]);
+		cache_get_value_name_float(f, "acsZ", AccessoryInfo[f][acsZ]);
+		AccessoryQuan ++;
+	}
+	printf("[MODE]: Аксессуары [%d Quan][%d ms]",rows, GetTickCount() - time);
+	return 1;
+}
+
 stock CorrectAccessoryBodyPosition(skinId, &Float:X, &Float:Y, &Float:Z, &Float:sX, &Float:sY, &Float:sZ)
 {
 	switch(skinId)
@@ -312,6 +603,7 @@ stock CorrectAccessoryBodyPosition(skinId, &Float:X, &Float:Y, &Float:Z, &Float:
 		case 309: X = -0.087002, Y = 0.006999, Z = -0.009999, sX = 0.313002, sY = 0.210974, sZ = 0.280988;
 		case 310: X = -0.051002, Y = 0.006999, Z = -0.009999, sX = 0.202002, sY = 0.129974, sZ = 0.081988;
 		case 311: X = -0.051002, Y = 0.006999, Z = -0.011999, sX = 0.202002, sY = 0.129974, sZ = 0.058988;
+		default: X = -0.051002, Y = 0.006999, Z = -0.011999, sX = 0.202002, sY = 0.129974, sZ = 0.058988;
 	}
 	return 1;
 }
@@ -632,295 +924,5 @@ stock CorrectAccessoryHeadPosition(skinId, &Float:X, &Float:Y, &Float:Z, &Float:
 		case 311: X = 0.004999, Y = 0.000000, Z = 0.001000, sX = 0.077988, sY = -0.088007, sZ = 0.051991;
     	default: X = 0.0, Y = 0.0, Z = 0.0, sX = 0.0, sY = 0.0, sZ = 0.0;
 	}
-	return 1;
-}
-
-#define MAX_ACCESSORY 1000 // Максимальное количество аксессуаров для игроков
-
-enum acInfo
-{
-	acID, // ID В базе данных
-	acModel, // Модель Аксессуара
-	acName[34], // Название аксессуара
-	acPrice, // Гос цена аксессуара
-	acStatus, // Статус аксессуара, активен он или нет
-	acBone, // Кость (Куда крепится этот аксессуар)
-	Float:acX,
-	Float:acY,
-	Float:acZ,
-	Float:acrX,
-	Float:acrY,
-	Float:acrZ,
-	Float:acsX,
-	Float:acsY,
-	Float:acsZ,
-	bool:acUpdate, // Статус сохранения в базу (раз в минуту проверка)
-	bool:acMysqlCheck // Запрет на повторный запрос в базу, пока от предыдущего не пришел ответ
-};
-new AccessoryInfo[MAX_ACCESSORY][acInfo];
-new AccessoryQuan;
-
-new AccessoryEditSkin;
-
-new boneName[][] = // Названия креплений аксессуара к костям
-{
-    "Голова", "Спина", "Голова", "Левое плечо", "Правое плечо", "Левая рука", "Правая рука", "Левое бедро", "Правое бедро", "Левая нога",
-    "Правая нога", "Правая икра", "Левая икра", "Левое предплечье", "Правое предплечье", "Левая ключица", "Правая ключица", "Шея", "Челюсть"
-};
-
-CMD:aeditskin(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(AccessoryEditSkin == 0) AccessoryEditSkin = 1, SuccessMessage(playerid, "{99ff66}Редактор вкл");
-	else AccessoryEditSkin = 0, SuccessMessage(playerid, "{FF6347}Редактор выкл");
-	return 1;
-}
-
-CMD:accessory(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	DP[0][playerid] = 0;
-	AccessoryList(playerid, 0, "");
-	return 1;
-}
-
-stock AccessoryList(playerid, page, const findName[]) // Меню настроек аксессуаров для игроков
-{
-    format(ListName[playerid],34, ""); // Очищаем имя сохранённого поиска
-	DP[1][playerid] = page; // Сохраняем открытую страницу
-	DP[2][playerid] = 0; // Сбрасываем статус отображения списка аксессуаров
-	
-    new minId = 0, maxId = 99, quanId, quanFind = strlen(findName), quanType, findModel; // Минимальный и максимально отображаемые аксессуары на странице
-    if(page >= 1) minId += 100*page, maxId += 100*page; // Если это следующие страницы, присваиваем следующие ID
-    
-    format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"Аксессуар\tModel\tЦена"), strcat(lines,line);
-	format(line,sizeof(line),"\n{99ff66}Добавить аксессуар\t\t"), strcat(lines,line);
-	
-	if(quanFind > 0)
-	{
-	    format(ListName[playerid],34, "%s", findName); // Сохраняем поиск по имени
-	    if(IsNumeric(findName)) quanType = 1, findModel = strval(findName);
-		format(line,sizeof(line),"\n{cccccc}Найти [%s]\t\t", findName), strcat(lines,line);
-	}
-	else format(line,sizeof(line),"\n{cccccc}Найти\t\t"), strcat(lines,line);
-	
-    for(new i = minId; i < maxId; i++)
-	{
-	    if(AccessoryInfo[i][acModel] > 0 && quanFind == 0 // Если поиск по модели и имени не активен, просто показываем все аксессуары
-		|| quanFind > 0 && (quanType == 1 && AccessoryInfo[i][acModel] == findModel) // Ищем по model
-		|| quanFind > 0 && (quanType == 0 && strfind(AccessoryInfo[i][acName], findName, true) != -1)) // Ищем по названию
-	    {
-	        List[quanId][playerid] = i; // Сохраняем найденный аксессуар в переменную
-	        quanId ++; // Ведём подсчёт переменных
-			if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}%d. %s\t%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
-			else format(line,sizeof(line),"\n{cccccc}%d. {ff9000}%s\t{cccccc}%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
-		}
-	}
-	if(quanId == 0)
-	{
-		DP[2][playerid] = 1;
-		format(line,sizeof(line),"\n{FF6347}Аксессуары не найдены\t\t"), strcat(lines,line);
-	}
-	if(page > 0 || quanId >= 100) format(line,sizeof(line),"\n{444444}Далее >>\t\t"), strcat(lines,line);
-	
-	new lol[60];
-	format(lol,sizeof(lol),"{ff9000}Аксессуары %d {cccccc}[Страница %d]", AccessoryQuan, page+1);
-    ShowDialog(playerid,1278,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Выход");
-    return 1;
-}
-
-stock AccessorySetting(playerid, i) // Меню настройки конкретного аксессуара
-{
-	if(i == -1)
-	{
-	    format(store,sizeof(store),"{cccccc}Введите ID Model аксессуара [321 - %d]\n\n{444444}Вся необходимая информация об аксессуарах и поиске моделей на форуме", MAX_OBJECT_MODEL_ID);
-	    ShowDialog(playerid,1280,DIALOG_STYLE_INPUT,"{ff9000}Создание Аксессуара",store,"Принять","Отмена");
-	}
-	else
-	{
-	    if(i < 0 || i >= MAX_ACCESSORY) return 1;
-	    if(AccessoryInfo[i][acModel] == 0) return 1;
-	    DP[3][playerid] = i;
-	    
-	    
-	    format(lines,sizeof(lines),""); // Очищаем Lines
-		format(line,sizeof(line),"%d. Model: %d \t", i+1, AccessoryInfo[i][acModel]), strcat(lines,line);
-		
-		if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}Статус: \t{FF6347}Не активен"), strcat(lines,line);
-		else format(line,sizeof(line),"\n{cccccc}Статус: \t{99ff66}Активен"), strcat(lines,line);
-		
-		format(line,sizeof(line),"\n{cccccc}Название: \t{ff9000}%s", AccessoryInfo[i][acName]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Гос. Стоимость: \t{99ff66}%d$ [%s]", AccessoryInfo[i][acPrice], get_k(AccessoryInfo[i][acPrice])), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Кость крепления: \t{444444}%s", boneName[AccessoryInfo[i][acBone]]), strcat(lines,line);
-		format(line,sizeof(line),"\n{444444}Расположение на игроке >> \t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{444444}Отображение в текстдраве >> \t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{FF6347}Удалить аксессуар \t"), strcat(lines,line);
-		
-	    ShowDialog(playerid,1281,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аксессуар",lines,"Выбрать","Назад");
-	}
-	return 1;
-}
-
-stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
-{
-	new accId = -1;
-	
-	//=====
-	// Добавление при надевании, следовательно - сначала проверяем на наличие такого аксессуара в списке
-	// Это временный функционал, нужен для добавления аксессуаров старого типа игроками и тестерами без участия разрабов. В будущем его можно будет ВЫРЕЗАТЬ
-	new bool:isAvailable;
-	if(stat == 1)
-	{
-	    for(new i = 0; i < MAX_ACCESSORY; i++)
-		{
-		    if(AccessoryInfo[i][acModel] == modelId && AccessoryInfo[i][acBone] == boneId)
-		    {
-                isAvailable = true;
-                break;
-		    }
-  		}
-  		if(isAvailable) return accId;
-	}
-	//=====
-
-	for(new i = 0; i < MAX_ACCESSORY; i++)
-	{
-	    if(AccessoryInfo[i][acModel] == 0) // Находим пустой слот и создаём аксессуар туда
-	    {
-	        AccessoryInfo[i][acModel] = modelId; // Записываем модель
-	        format(AccessoryInfo[i][acName], 34, "%s", thing_name(modelId)); // Получаем имя из старого списка имён аксессуаров
-	        AccessoryInfo[i][acPrice] = 10000; // Записываем дефолтную стоимость
-	        AccessoryInfo[i][acStatus] = stat; // Устанавливаем статус
-	        
-	        // Получаем расположение на игроке и кость из старого списка
-	        thing(modelId, AccessoryInfo[i][acX], AccessoryInfo[i][acY], AccessoryInfo[i][acZ], AccessoryInfo[i][acrX], AccessoryInfo[i][acrY], AccessoryInfo[i][acrZ], AccessoryInfo[i][acsX], AccessoryInfo[i][acsY], AccessoryInfo[i][acsZ], AccessoryInfo[i][acBone]);
-
-            AccessoryQuan ++;
-            SaveAccessory(i, 0); // Создаём новую строку в базу
-            
-            accId = i;
-	        break;
-	    }
- 	}
-	return accId;
-}
-
-stock SaveAccessory(i, stat) // Обновляем или добавляем строку об аксессуаре
-{
-	new send_name[34];
-    mysql_escape_string(AccessoryInfo[i][acName], send_name, sizeof(send_name));
-    
-    if(stat == 1) format(big_query, sizeof(big_query), "UPDATE");
-    else format(big_query, sizeof(big_query), "INSERT INTO");
-
-	format(big_query, sizeof(big_query), "%s `accessory` SET `acModel`='%d',`acName`='%s',`acPrice`='%d',`acStatus`='%d',`acBone`='%d'",big_query,
-	AccessoryInfo[i][acModel], send_name, AccessoryInfo[i][acPrice], AccessoryInfo[i][acStatus], AccessoryInfo[i][acBone]);
-	
-	format(big_query,sizeof(big_query),"%s, `acX` = '%f', `acY` = '%f', `acZ` = '%f', `acrX` = '%f', `acrY` = '%f', `acrZ` = '%f',\
-	`acsX` = '%f', `acsY` = '%f', `acsZ` = '%f'", big_query,
-	AccessoryInfo[i][acX],AccessoryInfo[i][acY],AccessoryInfo[i][acZ],AccessoryInfo[i][acrX],AccessoryInfo[i][acrY],AccessoryInfo[i][acrZ],
-	AccessoryInfo[i][acsX],AccessoryInfo[i][acsY],AccessoryInfo[i][acsZ]);
-	
-	if(stat == 1) format(big_query, sizeof(big_query), "%s  WHERE `newid` = '%d'", big_query, AccessoryInfo[i][acID]);
-	query_empty(pearsq, big_query);
-	
-	if(stat == 0) AccessoryInfo[i][acID] = cache_insert_id();
-	
-	AccessoryInfo[i][acMysqlCheck] = false;
-    return 1;
-}
-
-stock GetNameAccessory(modelId)
-{
-	new findSlot = -1, send_name[34];
-    for(new i = 0; i < MAX_ACCESSORY; i++)
-	{
-	    if(AccessoryInfo[i][acModel] == modelId)
-	    {
-	        findSlot = i;
-            break;
-	    }
-	}
-	if(findSlot >= 0) format(send_name, 34, "%s", AccessoryInfo[findSlot][acName]);
-	else format(send_name, 34, "%s", thing_name(modelId));
-	
-	return send_name;
-}
-
-stock GetPriceGosAccessory(modelId)
-{
-	new price;
-    for(new i = 0; i < MAX_ACCESSORY; i++)
-	{
-	    if(AccessoryInfo[i][acModel] == modelId)
-	    {
-	        price = AccessoryInfo[i][acPrice];
-            break;
-	    }
-	}
-	return price;
-}
-
-stock GetTextDrawNameAccessory(modelId)
-{
-	new findSlot = -1, send_name[34];
-    for(new i = 0; i < MAX_ACCESSORY; i++)
-	{
-	    if(AccessoryInfo[i][acModel] == modelId)
-	    {
-	        findSlot = i;
-            break;
-	    }
-	}
-	if(findSlot >= 0) format(send_name, 34, RusToGame("%s"), AccessoryInfo[findSlot][acName]);
-	else format(send_name, 34, "%s", thing_namedraw(modelId));
-
-	return send_name;
-}
-
-stock DeleteAccessory(i)
-{
-	format(store,sizeof(store),"DELETE FROM `accessory` WHERE `newid` = '%d'", AccessoryInfo[i][acID]);
-	query_empty(pearsq, store);
-	AccessoryInfo[i][acMysqlCheck] = false;
-	
-	AccessoryInfo[i][acModel] = 0;
-    format(AccessoryInfo[i][acName], 34, "");
-    AccessoryInfo[i][acPrice] = 0;
-    AccessoryInfo[i][acStatus] = 0;
-
-    AccessoryInfo[i][acX] = 0, AccessoryInfo[i][acY] = 0, AccessoryInfo[i][acZ] = 0, AccessoryInfo[i][acrX] = 0, AccessoryInfo[i][acrY] = 0, AccessoryInfo[i][acrZ] = 0, AccessoryInfo[i][acsX] = 0, AccessoryInfo[i][acsY] = 0, AccessoryInfo[i][acsZ] = 0, AccessoryInfo[i][acBone] = 0;
-
-    AccessoryInfo[i][acUpdate] = false;
-    AccessoryQuan --;
-	return 1;
-}
-
-forward LoadAccessory(); // Загрузка аксессуаров из базы
-public LoadAccessory()
-{
-	new rows, time = GetTickCount();
-	cache_get_row_count(rows);
-	for(new f; f < rows; ++f)
-	{
-    	cache_get_value_name_int(f, "newid", AccessoryInfo[f][acID]);
-    	cache_get_value_name_int(f, "acModel", AccessoryInfo[f][acModel]);
-    	cache_get_value_name(f, "acName", AccessoryInfo[f][acName], 34);
-    	cache_get_value_name_int(f, "acPrice", AccessoryInfo[f][acPrice]);
-    	cache_get_value_name_int(f, "acStatus", AccessoryInfo[f][acStatus]);
-    	cache_get_value_name_int(f, "acBone", AccessoryInfo[f][acBone]);
-		cache_get_value_name_float(f, "acX", AccessoryInfo[f][acX]);
-		cache_get_value_name_float(f, "acY", AccessoryInfo[f][acY]);
-		cache_get_value_name_float(f, "acZ", AccessoryInfo[f][acZ]);
-		cache_get_value_name_float(f, "acrX", AccessoryInfo[f][acrX]);
-		cache_get_value_name_float(f, "acrY", AccessoryInfo[f][acrY]);
-		cache_get_value_name_float(f, "acrZ", AccessoryInfo[f][acrZ]);
-		cache_get_value_name_float(f, "acsX", AccessoryInfo[f][acsX]);
-		cache_get_value_name_float(f, "acsY", AccessoryInfo[f][acsY]);
-		cache_get_value_name_float(f, "acsZ", AccessoryInfo[f][acsZ]);
-		AccessoryQuan ++;
-	}
-	printf("[MODE]: Аксессуары [%d Quan][%d ms]",rows, GetTickCount() - time);
 	return 1;
 }

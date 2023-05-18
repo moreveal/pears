@@ -1,4 +1,3 @@
-new readsit, readput;
 
 CMD:givemats(playerid, const params[])
 {
