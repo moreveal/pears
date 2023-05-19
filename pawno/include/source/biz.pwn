@@ -58,6 +58,8 @@ stock ShowOrderThing(playerid, b)
 	else if(b >= 13 && b <= 41 || b >= 93 && b <= 162 || b >= 183 && b <= 200)
 	{
 		new lol[84], quan;
+
+		format(line,sizeof(line),"Товар \t На складе \t Гос. стоимость\n"), strcat(lines,line);
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
 		{
 			List[i][playerid] = 0;
@@ -65,18 +67,18 @@ stock ShowOrderThing(playerid, b)
 			{
 				if (BizzInfo[b][bWare][i] == 0) break;
 				List[quan][playerid] = i;
-				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bWare][i], 0, 0), getThingPriceGos(BizzInfo[b][bWare][i], 0)), strcat(lines,line);
+				format(line,sizeof(line),"{cccccc}%s \t {444444}%d/%d \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bWare][i], 0, 0), BizzInfo[b][bItem][i],maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]), getThingPriceGos(BizzInfo[b][bWare][i], 0)), strcat(lines,line);
 			}
 			else 
 			{
 				if (BizzInfo[b][bProduct][i] == 0) break;
 				List[quan][playerid] = i;
-				format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])), strcat(lines,line);
+				format(line,sizeof(line),"{cccccc}%s \t {444444}%d/%d  \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bItem][i],maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]), getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])), strcat(lines,line);
 			}
 			quan++;
 		}		
 		format(lol,sizeof(lol),"{cccccc}Бизнеc {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Отмена");
 	}
 	else if(b >= 173 && b <= 182) // Магазин Одежды
 	{

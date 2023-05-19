@@ -349,3 +349,19 @@ stock getability_max(abilityType) // Узнаём сколько нужно на следующий уровень
 	else if(abilityType >= 80000) pow = 80000;
 	return pow;
 }
+stock getAbilityRealProgress(p, a) // Узнаем сколько нужно прогресса на уровень навыка
+{
+	new realProgress;
+	if(PlayerInfo[p][pAbilStat][a] == 1) realProgress = 0;
+	else if(PlayerInfo[p][pAbilStat][a] == 2) realProgress = 1000;
+	else if(PlayerInfo[p][pAbilStat][a] == 3) realProgress = 5000;
+	else if(PlayerInfo[p][pAbilStat][a] == 4) realProgress = 10000;
+	else if(PlayerInfo[p][pAbilStat][a] == 5) realProgress = 15000;
+	else if(PlayerInfo[p][pAbilStat][a] == 6) realProgress = 20000;
+	else if(PlayerInfo[p][pAbilStat][a] == 7) realProgress = 30000;
+	else if(PlayerInfo[p][pAbilStat][a] == 8) realProgress = 40000;
+	else if(PlayerInfo[p][pAbilStat][a] == 9) realProgress = 60000;
+	else if(PlayerInfo[p][pAbilStat][a] == 10) realProgress = 80000;
+	else realProgress = 0;
+	return realProgress;
+}
