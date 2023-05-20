@@ -20,7 +20,7 @@ stock setDomDefaultFrame(d) // Ставим дефолтный каркас в дом
 
 stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодействие
 {
-	for(new oba = 1; oba < MAX_OBJECT_INT_DOM; oba++)
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1) DestroyDynamicObject(DomInfo[dom][dObject][oba]), DomInfo[dom][dOmodel][oba] = 0, DomInfo[dom][dQara][oba] = 0, DelObject(dom, oba);
 	}
@@ -39,11 +39,11 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодейств
 stock CheckObject(dom) // Проверяем есть ли свободные слоты для установки объекта мебели
 {
 	new quan;
-	for(new oba = 0; oba < MAX_OBJECT_INT_DOM; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
 	{
 		if(DomInfo[dom][dOmodel][oba] > 0) quan ++;
 	}
-	if(quan >= MAX_OBJECT_INT_DOM) return 1;
+	if(quan >= MAX_OBJECT_INT) return 1;
 	return 0;
 }
 
