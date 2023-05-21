@@ -24,6 +24,8 @@ enum peoEnum // Enum отвечающий за личный редактор объектов
     Float:peoRX[MAX_OBJECT_INT], // координата объекта
     Float:peoRY[MAX_OBJECT_INT], // координата объекта
     Float:peoRZ[MAX_OBJECT_INT], // координата объекта
+    Text3D:peoObjectLabel[MAX_OBJECT_INT], // Label объектов
+    bool:peoObjectLabelStatus, // Статус отображения 3d лейблов на объектах
 };
 new peoInfo[MAX_REALPLAYERS][peoEnum];
 new peoTexture[MAX_REALPLAYERS][MAX_OBJECT_INT][MAX_TEXTURES_ON_OBJECTS]; // Переменные хранения текстур на объекте
@@ -35,8 +37,12 @@ stock showDialogPersonalEditor(playerid, targetid)
     format(line,sizeof(line),"Изменений: %d \t Объектов: %d", peoInfo[targetid][peoQuanUpdates], peoInfo[targetid][peoQuanObjects]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Выйти из редактора {FF6347}>> \t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить интерьер \t "), strcat(lines,line);
+    if(!peoInfo[playerid][peoLoaded]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить интерьер \t "), strcat(lines,line);
+    else format(line,sizeof(line),"\n{A86CFB}* {cccccc}Выгрузить интерьер \t {99ff66}[ Загружен ]"), strcat(lines,line);
     format(line,sizeof(line),"\n{A86CFB}* {cccccc}Планировка \t "), strcat(lines,line);
+
+    if(!peoInfo[playerid][peoObjectLabelStatus]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {FF6347}[ Off ]"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {99ff66}[ On ]"), strcat(lines,line);
 
     format(line,sizeof(line),"\n{A86CFB}* {99ff66}Сохранить \t "), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Название интерьера \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
@@ -56,6 +62,7 @@ CMD:editor(playerid) // Команда для открытия диалогового окна с управлением реда
 stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание объекта в личном редакторе
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
     new peoId = world-4000;
     if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
     if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
@@ -71,6 +78,8 @@ stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание
     peoInfo[peoId][peoModel][slotId] = modelId;
     peoInfo[peoId][peoObject][slotId] = CreateDynamicObject(modelId,f_pos[0], f_pos[1], f_pos[2],0.0,0.0,0.0, world, interior, -1, 100.00, 100.00);
 
+    if(peoInfo[playerid][peoObjectLabelStatus]) create3dtextLabel(playerid, slotId); // 3d label ставим, если включено отображение
+
     gRedakt2[playerid] = 0; // Сброс координат при начале редактирования объекта (Чтобы в последствии верно расчитывать расстояние от точки начала)
     gRedakt3[playerid] = slotId; // Записываем слот объекта
     gRedakt4[playerid] = peoId; // Записываем id личного редактора, в который создаём объект
@@ -83,6 +92,7 @@ stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание
 stock EditObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в личном редакторе
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
     new peoId = world-4000;
     if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
 
@@ -145,12 +155,13 @@ stock goloadInterior(playerid, userId, str_name[]) // Начинаем загрузку интерьер
             break;
         }
     }
-    if(playerIdFind >= 0) return format(store,sizeof(store),"{FF6347}Интерьер %s уже загружен на аккаунт %s[%d]", str_name, PlayerInfo[playerIdFind][pName], playerIdFind), ErrorMessage(playerid, store);
+    if(playerIdFind >= 0) return format(store,sizeof(store),"{FF6347}Интерьер %s уже загружен или загружается на аккаунт %s[%d]", str_name, PlayerInfo[playerIdFind][pName], playerIdFind), ErrorMessage(playerid, store);
 
     DP[0][playerid] = 1; // Загрузка интерьера
     DialogLoadInterior(playerid);
 
     peoInfo[playerid][peoStatusLoad] = true;
+    peoInfo[playerid][peoCreatorId] = userId;
     format(big_query,sizeof(big_query),"SELECT * FROM `pp_peo_information` WHERE `userId` = '%d'", userId);
 	mysql_tquery(pearsq, big_query, "Call_loadinterior_information", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
     return 1;
@@ -161,7 +172,7 @@ public Call_loadinterior_information(playerid, race_check, userId, str_name[]) /
 {
     new rows;
 	cache_get_row_count(rows);
-    if(!rows) return ErrorMessage(playerid, "{FF6347}Интерьера не существует");
+    if(!rows) return ErrorMessage(playerid, "{FF6347}Интерьера не существует"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
     if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
     cache_get_value_name_int(0, "newid", peoInfo[playerid][peoNewid]); // ID Интерьера в личном редакторе
@@ -182,7 +193,7 @@ public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Гру
 {
 	new rows;
 	cache_get_row_count(rows);
-    if(!rows) return ErrorMessage(playerid, "{FF6347}В интерьере нет объектов");
+    if(!rows) return ErrorMessage(playerid, "{FF6347}В интерьере нет объектов"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
     if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
     
     new slotId, string[6];
@@ -214,6 +225,7 @@ public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Гру
 			}
         }
     }
+    peoInfo[playerid][peoLoaded] = true;
     peoInfo[playerid][peoStatusLoad] = false;
     return 1;
 }
@@ -244,6 +256,34 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерьер
 
     // Если не админ и ничего не вводили, то просто грузим обственный интерьер
     goloadInterior(playerid, PlayerInfo[playerid][pID], PlayerInfo[playerid][pName]);
+    return 1;
+}
+
+CMD:unloadinterior(playerid, const params[]) // Выгружаем интерьер
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoLoaded]) return ErrorMessage(playerid, "{FF6347}На ваш аккаунт не загружен интерьер");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Завершите редактирование объекта");
+    if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}Покиньте меню выбора планировки");
+
+    for(new i = 0; i < MAX_OBJECT_INT; i++) // Удаляем объекты
+    {
+        if(peoInfo[playerid][peoModel][i] > 0) 
+        {
+            DestroyDynamicObject(peoInfo[playerid][peoObject][i]);
+            peoInfo[playerid][peoModel][i] = 0;
+        }
+    }
+
+    peoInfo[playerid][peoNewid] = 0;
+    peoInfo[playerid][peoLoaded] = false;
+    peoInfo[playerid][peoQuanUpdates] = 0;
+    peoInfo[playerid][peoQuanObjects] = 0;
+    peoInfo[playerid][peoCreatorId] = 0;
+    peoInfo[playerid][peoStatusLoad] = false;
+    peoInfo[playerid][peoPriceInterior] = 0;
+    peoInfo[playerid][peoPublicationStatus] = 0;
     return 1;
 }
 
@@ -293,9 +333,199 @@ CMD:exiteditor(playerid) // Выходим из личного редактора
 	return 1;
 }
 
+CMD:showlabel(playerid)
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+
+    if(!peoInfo[playerid][peoObjectLabelStatus])
+    {
+        peoInfo[playerid][peoObjectLabelStatus] = true;
+        show3dtextLabels(playerid);
+    }
+    else
+    {
+        peoInfo[playerid][peoObjectLabelStatus] = false;
+        hide3dtextLabels(playerid);
+    }
+    showDialogPersonalEditor(playerid, playerid);
+    return 1;
+}
+
+stock create3dtextLabel(playerid, slotId) // Создаём 3d text
+{
+    peoInfo[playerid][peoObjectLabel][slotId] = CreateDynamic3DTextLabel("_",0xA9C4E4FF,peoInfo[playerid][peoX][slotId], peoInfo[playerid][peoY][slotId], peoInfo[playerid][peoZ][slotId],100.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,playerid+4000,90, playerid);
+    update3dtextLabel(playerid, slotId);
+    return 1;
+}
+
+stock update3dtextLabel(playerid, slotId) // Обновляем название 3d text
+{
+    format(store,sizeof(store),"{cccccc}ID: {A86CFB}%d {cccccc}| Model: {A86CFB}%d", slotId, peoInfo[playerid][peoModel][slotId]);
+	UpdateDynamic3DTextLabelText(peoInfo[playerid][peoObjectLabel][slotId],0xA9C4E4FF,store);
+	Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL);
+    return 1;
+}
+
+stock update3dtextLabelPos(playerid, slotId) // Обновляем позицию 3d text
+{
+    DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][slotId]);
+    create3dtextLabel(playerid, slotId);
+    return 1;
+}
+
+stock show3dtextLabels(playerid) // Показываем все 3d text
+{
+    for(new i = 1; i < MAX_OBJECT_INT; i++)
+    {
+        if(peoInfo[playerid][peoModel][i] > 0) 
+        {
+            if(IsValidDynamicObject(peoInfo[playerid][peoObject][i])) create3dtextLabel(playerid, i);
+        }
+    }
+    return 1;
+}
+
+stock hide3dtextLabels(playerid) // Убираем все 3d text
+{
+    for(new i = 1; i < MAX_OBJECT_INT; i++)
+    {
+        if(peoInfo[playerid][peoModel][i] > 0) 
+        {
+            if(IsValidDynamicObject(peoInfo[playerid][peoObject][i])) DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][i]);
+        }
+    }
+    return 1;
+}
+
 stock DialogLoadInterior(playerid)
 {
 	if(DP[0][playerid] == 0) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Поиск аккаунта..","*","");
 	else if(DP[0][playerid] == 1) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка интерьера..","*","");
 	return 1;
+}
+
+CMD:loadmap(playerid)
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    peoLoadMap(playerid);
+    return 1;
+}
+
+#define         MAX_MATERIALS               16
+#define         MAX_TEXT_LENGTH             129
+static DBStatement:loadstmt;
+
+enum OBJECTINFO
+{
+	oID,                                        // Object id
+#if defined COMPILE_MANGLE
+	oCAID,                                      // ColAndreas index
+#endif
+	oGroup,                                     // Object group
+	oModel,                                     // Object Model
+	Text3D:oTextID,                             // Object 3d text label
+    oNote[64],                                  // Object note
+	Float:oPositionX,                                   // Position Z
+	Float:oPositionY,                                   // Position Z
+	Float:oPositionZ,                                   // Position Z
+	Float:oPositionRX,                                  // Rotation Z
+	Float:oPositionRY,                                  // Rotation Z
+	Float:oPositionRZ,                                  // Rotation Z
+	oTexIndex[MAX_MATERIALS],                   // Texture index ref
+	oColorIndex[MAX_MATERIALS],                 // Material List
+	ousetext,              						// Use text
+	oFontFace,    								// Font face reference
+	oFontSize,    								// Font size reference
+	oFontBold,    								// Font bold
+	oFontColor,   								// Font color
+	oBackColor,   								// Font back color
+	oAlignment,   								// Font alignment
+	oTextFontSize, 							 	// Font text size
+	oObjectText[MAX_TEXT_LENGTH],              	// Font text
+	oAttachedVehicle,                           // Vehicle object is attached to
+    Float:oDD                                   // Draw distance
+}
+
+new DB:EditMap;
+
+stock peoLoadMap(playerid)
+{
+    EditMap = db_open_persistent("map_interior.db");
+    sqlite_LoadMapObjects(playerid);
+	return 1;
+}
+
+stock sqlite_LoadMapObjects(playerid)
+{
+	new tmpobject[OBJECTINFO];
+	new i;
+	loadstmt = db_prepare(EditMap, "SELECT * FROM `Objects`");
+
+	// Bind our results
+    stmt_bind_result_field(loadstmt, 0, DB::TYPE_INT, i);
+    stmt_bind_result_field(loadstmt, 1, DB::TYPE_INT, tmpobject[oModel]);
+    stmt_bind_result_field(loadstmt, 2, DB::TYPE_FLOAT, tmpobject[oPositionX]);
+    stmt_bind_result_field(loadstmt, 3, DB::TYPE_FLOAT, tmpobject[oPositionY]);
+    stmt_bind_result_field(loadstmt, 4, DB::TYPE_FLOAT, tmpobject[oPositionZ]);
+    stmt_bind_result_field(loadstmt, 5, DB::TYPE_FLOAT, tmpobject[oPositionRX]);
+    stmt_bind_result_field(loadstmt, 6, DB::TYPE_FLOAT, tmpobject[oPositionRY]);
+    stmt_bind_result_field(loadstmt, 7, DB::TYPE_FLOAT, tmpobject[oPositionRZ]);
+    stmt_bind_result_field(loadstmt, 8, DB::TYPE_ARRAY, tmpobject[oTexIndex], MAX_MATERIALS);
+    stmt_bind_result_field(loadstmt, 9, DB::TYPE_ARRAY, tmpobject[oColorIndex], MAX_MATERIALS);
+    stmt_bind_result_field(loadstmt, 10, DB::TYPE_INT, tmpobject[ousetext]);
+    stmt_bind_result_field(loadstmt, 11, DB::TYPE_INT, tmpobject[oFontFace]);
+    stmt_bind_result_field(loadstmt, 12, DB::TYPE_INT, tmpobject[oFontSize]);
+    stmt_bind_result_field(loadstmt, 13, DB::TYPE_INT, tmpobject[oFontBold]);
+    stmt_bind_result_field(loadstmt, 14, DB::TYPE_INT, tmpobject[oFontColor]);
+    stmt_bind_result_field(loadstmt, 15, DB::TYPE_INT, tmpobject[oBackColor]);
+    stmt_bind_result_field(loadstmt, 16, DB::TYPE_INT, tmpobject[oAlignment]);
+    stmt_bind_result_field(loadstmt, 17, DB::TYPE_INT, tmpobject[oTextFontSize]);
+    stmt_bind_result_field(loadstmt, 18, DB::TYPE_STRING, tmpobject[oObjectText], MAX_TEXT_LENGTH);
+    stmt_bind_result_field(loadstmt, 19, DB::TYPE_INT, tmpobject[oGroup]);
+    stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote], 64);
+    stmt_bind_result_field(loadstmt, 21, DB::TYPE_FLOAT, tmpobject[oDD]);
+
+	// Execute query
+    new count;
+    if(stmt_execute(loadstmt))
+    {
+        // Удаляем все объекты, которые были созданы
+        for(new ob = 0; ob < MAX_OBJECT_INT; ob++)
+        {
+            if(peoInfo[playerid][peoModel][ob] > 0) 
+            {
+                if(IsValidDynamicObject(peoInfo[playerid][peoObject][ob])) DestroyDynamicObject(peoInfo[playerid][peoObject][ob]);
+            }
+        }
+
+        while(stmt_fetch_row(loadstmt))
+        {
+            if(i < MAX_OBJECT_INT)
+            {
+                peoInfo[playerid][peoModel][i] = tmpobject[oModel];
+                peoInfo[playerid][peoX][i] = tmpobject[oPositionX];
+                peoInfo[playerid][peoY][i] = tmpobject[oPositionY];
+                peoInfo[playerid][peoZ][i] = tmpobject[oPositionZ];
+                peoInfo[playerid][peoRX][i] = tmpobject[oPositionRX];
+                peoInfo[playerid][peoRY][i] = tmpobject[oPositionRY];
+                peoInfo[playerid][peoRZ][i] = tmpobject[oPositionRZ];
+                peoInfo[playerid][peoObject][i] = CreateDynamicObject(peoInfo[playerid][peoModel][i], peoInfo[playerid][peoX][i], peoInfo[playerid][peoY][i], peoInfo[playerid][peoZ][i], peoInfo[playerid][peoRX][i], peoInfo[playerid][peoRY][i], peoInfo[playerid][peoRZ][i], playerid+4000, 90, -1, 100.00, 100.00);
+
+                for(new m = 0; m < MAX_MATERIALS; m++)
+                {
+                    peoTexture[playerid][i][m] = tmpobject[oTexIndex][m];
+                    if(peoTexture[playerid][i][m] > 0) // Натягиваем текстуру
+                    {
+                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[peoTexture[playerid][i][m]][TModel], ObjectTextures[peoTexture[playerid][i][m]][TXDName], ObjectTextures[peoTexture[playerid][i][m]][TextureName], 0x00000000);
+                    }
+                }
+                count++;
+            }
+        }
+		stmt_close(loadstmt);
+        return count;
+    }
+	stmt_close(loadstmt);
+    format(store,sizeof(store),"{444444}Маппинг с интерьером загружен {A86CFB}[Объектов: %d]", count), SuccessMessage(playerid, store);
+    return 0;
 }
