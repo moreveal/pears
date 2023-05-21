@@ -35,12 +35,14 @@ stock showDialogPersonalEditor(playerid, targetid)
     format(line,sizeof(line),"Изменений: %d \t Объектов: %d", peoInfo[targetid][peoQuanUpdates], peoInfo[targetid][peoQuanObjects]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Выйти из редактора {FF6347}>> \t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}Загрузить интерьер \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить интерьер \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Планировка \t "), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{99ff66}Сохранить \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {99ff66}Сохранить \t "), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Название интерьера \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
 
-    ShowDialog(playerid,1292,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Редактор Интерьера",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"\n{666666}Команды редактора {A86CFB}>> \t "), strcat(lines,line);
+    ShowDialog(playerid,1292,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Редактор Интерьера",lines,"Выбрать","Выход");
     return 1;
 }
 
@@ -49,6 +51,69 @@ CMD:editor(playerid) // Команда для открытия диалогового окна с управлением реда
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
     showDialogPersonalEditor(playerid, playerid);
     return 1;
+}
+
+stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание объекта в личном редакторе
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    new peoId = world-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+
+    new slotId = getFreeObjectSlot(peoId);
+    if(slotId == -1) return format(store,sizeof(store),"{FF6347}Лимит объектов для интерьеров: %d", MAX_OBJECT_INT-1), ErrorMessage(playerid, store);
+
+    // Ищем координату перед игроком
+    new Float:f_pos[4];
+    frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+
+    SetCameraBehindPlayer(playerid); // Сбрасываем камеру
+    peoInfo[peoId][peoModel][slotId] = modelId;
+    peoInfo[peoId][peoObject][slotId] = CreateDynamicObject(modelId,f_pos[0], f_pos[1], f_pos[2],0.0,0.0,0.0, world, interior, -1, 100.00, 100.00);
+
+    gRedakt2[playerid] = 0; // Сброс координат при начале редактирования объекта (Чтобы в последствии верно расчитывать расстояние от точки начала)
+    gRedakt3[playerid] = slotId; // Записываем слот объекта
+    gRedakt4[playerid] = peoId; // Записываем id личного редактора, в который создаём объект
+    gRedakt[playerid] = 20; // ID Типа редактирования или создания объекта (Для какой системы объект ставится)
+    Idobj[playerid] = modelId; // Записываем модель объекта
+    EditDynamicObject(playerid, peoInfo[peoId][peoObject][slotId]); // Начинаем редактирования
+    return 1;
+}
+
+stock EditObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в личном редакторе
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    new peoId = world-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+
+    if(slotId <= 0 || slotId >= MAX_OBJECT_INT) return format(store,sizeof(store),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT), ErrorMessage(playerid, store);
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    new Float:dobject_pos[3];
+    GetDynamicObjectPos(peoInfo[peoId][peoObject][slotId], dobject_pos[0], dobject_pos[1], dobject_pos[2]);
+    if(!IsPlayerInRangeOfPoint(playerid, 100.0, dobject_pos[0], dobject_pos[1], dobject_pos[2])) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от объекта [ Не дальше 100 метров ]");
+
+    gRedakt2[playerid] = 0;
+    gRedakt[playerid] = 21;
+    gRedakt3[playerid] = slotId;
+    gRedakt4[playerid] = peoId;
+    EditDynamicObject(playerid, peoInfo[peoId][peoObject][slotId]);
+    return 1;
+}
+
+stock getFreeObjectSlot(peoId) // Получаем свободный слот для создания объекта
+{
+    new objid = -1;
+    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    {
+        if(peoInfo[peoId][peoModel][i] == 0)
+        {
+            objid = i;
+            break;
+        }
+    }
+    return objid;
 }
 
 forward Call_checkname_loadinterior(playerid, race_check, str_name[]); // Ищем ID аккаунта, если игрок Offline
