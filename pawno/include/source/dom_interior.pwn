@@ -109,7 +109,7 @@ public LoadObject() // Грузим объекты интерьера для дома
 		{
 			if(DomTexture[nd][sla][t] >= 1)
 			{
-				new textid = DomTexture[nd][sla][t]-1;
+				new textid = DomTexture[nd][sla][t];
 				SetDynamicObjectMaterial(DomInfo[nd][dObject][sla], t, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName], 0x00000000);
 			}
 		}

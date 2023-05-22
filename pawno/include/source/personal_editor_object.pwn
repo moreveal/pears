@@ -1,4 +1,34 @@
 
+/*
+- Сделать адм команду (1 раз предупреждение, 2 раз блокировка к личному редактору, админ выставит время блокировки) - в случае если чел в интерьер общего доступа (дом, биз) поставил хуету
+- Добавить unix для каждого объекта и карты в целом (чтобы можно было в будущем удалять не используемые мапы в личных редакторах)
+
+- Сохранение в базу (изменение строк, добавление и удаление лишних)
+- Загрузка интерьера дома, бизнеса в личный редактор
+- Отправление интерьера из личного редактора на одобрение админам
+- Админ команды одобрения и отказа в публикации интерьера в шоурум
+- Установка прайса инта в личном редакторе
+
+- Список объектов в личном редакторе
+
+- Создать быструю установку интерьера в дом или бизнес за 500 gold (в обход системы ремонта)
+
+
+- /sel (выбор объекта)
+- /eobject должен работать по /sel
+- /dobject работать по /sel 
+- /ox /oy /oz /rx /ry /rz
+- /clone (копирование выбранного объекта)
+- /model - замена модели объекта
+- /mtset - замена текстуры на объекте по слоту и номеру текстуры
+- заблокировать все команды и кнопки внутри редактора (кроме /editor и им доступных)
+- на кнопку N - открывать редактор текстур перед лицом, а не внутри хрен знает чего и летающей камеры
+- на кнопку Y - открывать список редактируемых текстур на объекте в виде текстдравов на экране
+- Убираю стандартный редактор текстур из редактора интерьеров домов и бизнесов
+*/
+
+
+
 enum peoEnum // Enum отвечающий за личный редактор объектов
 {
     bool:peoInEditor, // Статус - находится ли игрок внутри редактора
@@ -37,18 +67,38 @@ stock showDialogPersonalEditor(playerid, targetid)
     format(line,sizeof(line),"Изменений: %d \t Объектов: %d", peoInfo[targetid][peoQuanUpdates], peoInfo[targetid][peoQuanObjects]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{cccccc}Выйти из редактора {FF6347}>> \t "), strcat(lines,line);
-    if(!peoInfo[playerid][peoLoaded]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить интерьер \t "), strcat(lines,line);
+    if(!peoInfo[targetid][peoLoaded]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить сохранённый интерьер \t "), strcat(lines,line);
     else format(line,sizeof(line),"\n{A86CFB}* {cccccc}Выгрузить интерьер \t {99ff66}[ Загружен ]"), strcat(lines,line);
     format(line,sizeof(line),"\n{A86CFB}* {cccccc}Планировка \t "), strcat(lines,line);
 
-    if(!peoInfo[playerid][peoObjectLabelStatus]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {FF6347}[ Off ]"), strcat(lines,line);
+    if(!peoInfo[targetid][peoObjectLabelStatus]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {FF6347}[ Off ]"), strcat(lines,line);
     else format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {99ff66}[ On ]"), strcat(lines,line);
 
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Название интерьера \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
+
     format(line,sizeof(line),"\n{A86CFB}* {99ff66}Сохранить \t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Название интерьера \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
 
     format(line,sizeof(line),"\n{666666}Команды редактора {A86CFB}>> \t "), strcat(lines,line);
     ShowDialog(playerid,1292,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Редактор Интерьера",lines,"Выбрать","Выход");
+    return 1;
+}
+
+stock showDialogCommandEditor(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"\n{A86CFB}/loadinterior {cccccc}- загрузить сохранённый интерьер"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/unloadinterior {cccccc}- выгрузить интерьер"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/exiteditor {cccccc}- выйти из редактора"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{A86CFB}/cobject {cccccc}- создать объект"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/eobject {cccccc}- переместить объект"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/dobject {cccccc}- удалить объект"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/ox /oy /oz /rx /ry /rz {cccccc}- установка угла объекта"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/label3d {cccccc}- 3d label для отображения id объектов"), strcat(lines,line);
+
+    if(PlayerInfo[playerid][pSoska] >= 22) format(line,sizeof(line),"\n{A86CFB}/loadmap {cccccc}- загрузить мап из map_interior.db"), strcat(lines,line);
+	ShowDialog(playerid,1295,DIALOG_STYLE_MSGBOX,"{A86CFB}Редактор Интерьера",lines,"*","");
     return 1;
 }
 
@@ -56,6 +106,114 @@ CMD:editor(playerid) // Команда для открытия диалогового окна с управлением реда
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
     showDialogPersonalEditor(playerid, playerid);
+    return 1;
+}
+
+CMD:nameinterior(playerid, const params[])
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    new world = GetPlayerVirtualWorld(playerid);
+    new peoId = world-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    new inputtext[34];
+    if(sscanf(params, "s[34]", inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить название интерьера в личном редакторе [ /nameinterior Имя ]");
+    if(!strlen(inputtext)) return 1;
+    if(strlen(inputtext) < 3 || strlen(inputtext) > 34) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Название не меньше 3 и не больше 34 символов");
+    if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Хм... я пытаюсь указать в названии какие-то каракули... [ Запрещённый Символ ]");
+
+    format(peoInfo[playerid][peoName],34,"%s", inputtext);
+    showDialogPersonalEditor(playerid, playerid);
+
+    peoInfo[playerid][peoQuanUpdates] ++;
+    return 1;
+}
+
+CMD:ox(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по X координате [ /ox ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 0);
+    return 1;
+}
+
+CMD:oy(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по Y координате [ /oy ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 1);
+    return 1;
+}
+
+CMD:oz(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по Z координате [ /oz ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 2);
+    return 1;
+}
+
+CMD:rx(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RX координате [ /rx ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 3);
+    return 1;
+}
+
+CMD:ry(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RY координате [ /ry ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 4);
+    return 1;
+}
+
+CMD:rz(playerid, const params[])
+{
+    new Float:input, slotId;
+    if(sscanf(params, "if", slotId, input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RZ координате [ /rz ObjectID Координата ]");
+    SetObjectPosPersonalEditor(playerid, slotId, input, 5);
+    return 1;
+}
+
+stock SetObjectPosPersonalEditor(playerid, slotId, Float:pos, posId)
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    new world = GetPlayerVirtualWorld(playerid);
+    new peoId = world-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+
+    if(slotId <= 0 || slotId >= MAX_OBJECT_INT) return format(store,sizeof(store),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT), ErrorMessage(playerid, store);
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+
+    if(posId >= 3) // Углы наклона
+    {
+        if(pos < -360.0 || pos > 360.0) return ErrorMessage(playerid, "{FF6347}Не меньше -360.0 и не больше 360.0");
+    }
+    else // Сдвиг в сторону
+    {
+        if(pos < -200.0 || pos > 200.0) return ErrorMessage(playerid, "{FF6347}Не меньше -200.0 и не больше 200.0");
+        new Float:maxDistFromInterior = GetDistancePoint(1387.4436,-16.2143,1000.8868,peoInfo[playerid][peoX][slotId]+pos,peoInfo[playerid][peoY][slotId]+pos,peoInfo[playerid][peoZ][slotId]+pos);
+        if(maxDistFromInterior >= 200.0) return ErrorMessage(playerid, "{FF6347}Нельзя переносить объект дальше чем на 200 метров от точки входа в интерьер");
+    }
+
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+
+    if(posId == 0) peoInfo[playerid][peoX][slotId] += pos; // x
+    else if(posId == 1) peoInfo[playerid][peoY][slotId] += pos; // y
+    else if(posId == 2) peoInfo[playerid][peoZ][slotId] += pos; // z
+    else if(posId == 3) peoInfo[playerid][peoRX][slotId] += pos; // rx
+    else if(posId == 4) peoInfo[playerid][peoRY][slotId] += pos; // ry
+    else if(posId == 5) peoInfo[playerid][peoRZ][slotId] += pos; // rz
+
+    SetDynamicObjectPos(peoInfo[peoId][peoObject][slotId], peoInfo[playerid][peoX][slotId], peoInfo[playerid][peoY][slotId], peoInfo[playerid][peoZ][slotId]);
+    SetDynamicObjectRot(peoInfo[peoId][peoObject][slotId], peoInfo[playerid][peoRX][slotId], peoInfo[playerid][peoRY][slotId], peoInfo[playerid][peoRZ][slotId]);
+    peoInfo[playerid][peoQuanUpdates] ++;
+
+    if(peoInfo[playerid][peoObjectLabelStatus]) update3dtextLabelPos(playerid, slotId);
     return 1;
 }
 
@@ -77,6 +235,7 @@ stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание
     SetCameraBehindPlayer(playerid); // Сбрасываем камеру
     peoInfo[peoId][peoModel][slotId] = modelId;
     peoInfo[peoId][peoObject][slotId] = CreateDynamicObject(modelId,f_pos[0], f_pos[1], f_pos[2],0.0,0.0,0.0, world, interior, -1, 100.00, 100.00);
+    peoInfo[playerid][peoX][slotId] = f_pos[0], peoInfo[playerid][peoY][slotId] = f_pos[1], peoInfo[playerid][peoZ][slotId] = f_pos[2];
 
     if(peoInfo[playerid][peoObjectLabelStatus]) create3dtextLabel(playerid, slotId); // 3d label ставим, если включено отображение
 
@@ -109,6 +268,27 @@ stock EditObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в
     gRedakt3[playerid] = slotId;
     gRedakt4[playerid] = peoId;
     EditDynamicObject(playerid, peoInfo[peoId][peoObject][slotId]);
+    return 1;
+}
+
+stock DeleteObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в личном редакторе
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    new peoId = world-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(slotId <= 0 || slotId >= MAX_OBJECT_INT) return format(store,sizeof(store),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT), ErrorMessage(playerid, store);
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+
+    DestroyDynamicObject(peoInfo[peoId][peoObject][slotId]);
+    peoInfo[peoId][peoModel][slotId] = 0;
+
+    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) peoTexture[playerid][slotId][i] = 0; // Очищаем текстуры
+
+    if(peoInfo[playerid][peoObjectLabelStatus]) DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][slotId]);
+
+    peoInfo[playerid][peoQuanUpdates] ++;
     return 1;
 }
 
@@ -262,7 +442,6 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерьер
 CMD:unloadinterior(playerid, const params[]) // Выгружаем интерьер
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(!peoInfo[playerid][peoLoaded]) return ErrorMessage(playerid, "{FF6347}На ваш аккаунт не загружен интерьер");
     if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
     if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Завершите редактирование объекта");
     if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}Покиньте меню выбора планировки");
@@ -271,7 +450,11 @@ CMD:unloadinterior(playerid, const params[]) // Выгружаем интерьер
     {
         if(peoInfo[playerid][peoModel][i] > 0) 
         {
-            DestroyDynamicObject(peoInfo[playerid][peoObject][i]);
+            if(IsValidDynamicObject(peoInfo[playerid][peoObject][i])) 
+            {
+                DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][i]);
+                DestroyDynamicObject(peoInfo[playerid][peoObject][i]);
+            }
             peoInfo[playerid][peoModel][i] = 0;
         }
     }
@@ -284,6 +467,7 @@ CMD:unloadinterior(playerid, const params[]) // Выгружаем интерьер
     peoInfo[playerid][peoStatusLoad] = false;
     peoInfo[playerid][peoPriceInterior] = 0;
     peoInfo[playerid][peoPublicationStatus] = 0;
+    peoInfo[playerid][peoObjectLabelStatus] = false;
     return 1;
 }
 
@@ -333,7 +517,7 @@ CMD:exiteditor(playerid) // Выходим из личного редактора
 	return 1;
 }
 
-CMD:showlabel(playerid)
+CMD:label3d(playerid)
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
 
