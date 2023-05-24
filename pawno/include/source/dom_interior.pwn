@@ -7,7 +7,7 @@ stock showDialogInteriorDom(playerid)
 	return 1;
 }
 
-stock setDomDefaultFrame(d) // Ставим дефолтный каркас в дом
+stock setDomDefaultFrame(d) // Ставим дефолтную планировку в дом
 {
 	DomInfo[d][dOmodel][0] = 14713;
 	GetCoordFrame(14713, DomInfo[d][dOx][0], DomInfo[d][dOy][0], DomInfo[d][dOz][0], DomInfo[d][dOrx][0], DomInfo[d][dOry][0], DomInfo[d][dOrz][0]);
