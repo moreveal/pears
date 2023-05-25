@@ -1,33 +1,3 @@
-
-
-#define MAX_TEXTURE_OBJECT 38 // Максимальное количество текстур на объекте
-enum zInfo // Enum отвечающий за редактор текстур
-{
-	zStat,
-	Float:zRotation,
-	Float:zAddingX,
-	Float:zAddingY,
-	zPick[16],
-	Float:zPosX[16],
-	Float:zPosY[16],
-	Float:zPosZ[16],
-	zSelect,
-	zList,
-	zLibrary,
-	zObject,
-	zTextid,
-	zDom,
-	zBiz,
-	zTexture[MAX_TEXTURE_OBJECT],
-	Float:zEditX,
-	Float:zEditY,
-	Float:zEditZ,
-	Float:zEditRX,
-	Float:zEditRY,
-	Float:zEditRZ,
-	zChange,
-};
-new MenuInfo[MAX_REALPLAYERS][zInfo];
 enum TEXTUREDEF { TModel, TXDName[32], TextureName[32] }
 new ObjectTextures[][TEXTUREDEF] =
 {
