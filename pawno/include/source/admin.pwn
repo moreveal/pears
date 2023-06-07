@@ -364,3 +364,53 @@ CMD:showdip(playerid, const params[])
 	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Дипломатия банд и мафий [ ID 5,6,10,12,13,14,15,16,17,18,19,20 ]");
 	return 1;
 }
+CMD:hpgro(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] >= 4 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] >= 2)
+	{
+		foreach (Player, i)
+		{
+			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+			{
+				ACSetPlayerHealth(i,100);
+				SendClientMessage(i, COLOR_GRAD1, "Администратор пополнил вам здоровье.");
+			}
+		}
+		ACSetPlayerHealth(playerid,100);
+		SendClientMessage(playerid, COLOR_GRAD1, "Вы пополнили здоровье рядом находящимся игрокам.");
+	}
+	return 1;
+}
+CMD:armgro(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	foreach (Player, i)
+	{
+		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
+		{
+			ACSetPlayerArmour(i, 100);
+			SendClientMessage(i, COLOR_GRAD1, " Администратор пополнил вам Броню.");
+		}
+	}
+	ACSetPlayerArmour(playerid, 100);
+	SendClientMessage(playerid, COLOR_GRAD1, " Вы пополнили броню рядом находящимся игрокам.");
+	return 1;
+}
+CMD:delaction(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
+	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
+	new kol = 0;
+	for(new i = 0; i < 5; i++)
+	{
+		if(gAction[i][params[0]] == 1) DestroyDynamic3DTextLabel(ActionLabel[i][params[0]]), gAction[i][params[0]] = 0, kol ++, format(ActionText[i][playerid], 20, " ");
+	}
+	if(kol == 0) return ErrorMessage(playerid, "{FF6347}У этого игрока нет RP ситуаций");
+	new string[128];
+	format(string, sizeof(string), "* Администратор %s удалил все ваши RP ситуации.", PlayerInfo[playerid][pName]);
+	SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
+	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил все RP ситуации %s[%d]", PlayerInfo[playerid][pName],playerid,PlayerInfo[params[0]][pName],params[0]);
+	ABroadCast(COLOR_ADM,string,1);
+	return 1;
+}

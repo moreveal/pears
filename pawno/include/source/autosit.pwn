@@ -355,6 +355,7 @@ stock exitsit(playerid, stat)
 }
 
 CMD:createseat(playerid, const params[]) {
+	if(server != 0) return 0;
 	new modelid;
 	if (sscanf(params, "d", modelid)) return SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Создание стула [ /createseat ModelID ]");
 	if (!IsPressSeatDynamicObject(modelid)) return SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Модель этого объекта не поддерживается");

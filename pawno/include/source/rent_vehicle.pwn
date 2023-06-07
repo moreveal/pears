@@ -113,7 +113,7 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 	if(statusLabel == 1)
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
-	 	TimestampToDate(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3, 0);
+	 	stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3, 0);
 	   	VehInfo[newcar][v3dstat] = 4000;
 		format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{333333}%s", thour, tminute, PlayerInfo[playerid][pName]);
 	    VehLabel[newcar] = CreateDynamic3DTextLabel(store,0xfaf75c99,pos[0],pos[1],pos[2],15.0,INVALID_PLAYER_ID, newcar,0,0,0);
