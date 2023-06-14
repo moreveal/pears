@@ -1,4 +1,14 @@
 
+/*
+1- Хлеб
+102 - Молоко
+104 - Картошка
+120 - Sprunk Банка
+121 - Кофе
+168 - Мясо
+174 - Овощи
+179 - Мороженное
+*/
 
 // Получение ингредиентов для создания еды
 stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQuan1, &ingQuan2, &ingQuan3, &ingQuan4, &ingQuan5, &ingQuan6)
@@ -116,6 +126,27 @@ stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQ
 	{
 		ing1 = 1, ingQuan1 = 1; // Хлеб
 		ing2 = 168, ingQuan2 = 1; // Мясо
+	}
+	return 1;
+}
+
+stock SetSatiety(thingId, &fquan) //
+{	
+	new ingId[6], ingQuan[6];
+	menuEatIngredient(thingId, ingId[0], ingId[1], ingId[2], ingId[3], ingId[4], ingId[5], ingQuan[0], ingQuan[1], ingQuan[2], ingQuan[3], ingQuan[4], ingQuan[5]);
+	for(new i = 0; i < 6; i++)
+    {
+		if(ingId[i] > 0)
+		{
+			if(ingId[i] == 1) fquan += 1;
+			else if(ingId[i] == 102) fquan += 2;
+			else if(ingId[i] == 104) fquan += 1;
+			else if(ingId[i] == 120) fquan += 4;
+			else if(ingId[i] == 121) fquan += 2;
+			else if(ingId[i] == 168) fquan += 8;
+			else if(ingId[i] == 174) fquan += 2;
+			else if(ingId[i] == 179) fquan += 2;
+		}
 	}
 	return 1;
 }
