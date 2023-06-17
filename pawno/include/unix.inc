@@ -1,115 +1,100 @@
-/*
--               Timestamp To Date converter             -
--                    Made by Jochemd                    -
--          http://forum.sa-mp.com/member.php?u=580      -
- 
-native TimestampToDate(Timestamp, &year, &month, &day, &hour, &minute, &second, HourGMT, MinuteGMT = 0);
-native DateToTimestamp(str[11]);
-*/
- 
+stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpchour)
+{
+    gpchour -= 3;       
+    new seconds_in_day = 86400;
+    new seconds_in_hour = 3600;
+    new seconds_in_minute = 60;
 
- 
-#define SPLITTER .
- 
-new MonthTimes[12][4] = 
-{
-    { 31, 31, 2678400, 2678400 },
-    { 28, 29, 2419200, 2505600 },
-    { 31, 31, 2678400, 2678400 },
-    { 30, 30, 2592000, 2592000 },
-    { 31, 31, 2678400, 2678400 },
-    { 30, 30, 2592000, 2592000 },
-    { 31, 31, 2678400, 2678400 },
-    { 31, 31, 2678400, 2678400 },
-    { 30, 30, 2592000, 2592000 },
-    { 31, 31, 2678400, 2678400 },
-    { 30, 30, 2592000, 2592000 },
-    { 31, 31, 2678400, 2678400 }
-};
- 
-stock IsLeapYear(year)
-{
-    if(year % 4 == 0) return 1;
-    else return 0;
-}
- 
-stock stamp2datetime(Timestamp, &year, &month, &day, &hour, &minute, &second, HourGMT, MinuteGMT = 0)
-{
-    new tmp = 2;
-    year = 1970;
-    month = 1;
-    Timestamp -= 172800; // Delete two days from the current timestamp. This is necessary, because the timestamp retrieved using gettime() includes two too many days.
-    for(;;)
+    // Расчет количества дней с Unix эпохи
+    new days = unixtime / seconds_in_day;
+
+    // Расчет оставшихся секунд после полных дней
+    new remaining_seconds = unixtime % seconds_in_day;
+
+    // Расчет года
+    new current_year = 1970; // Начальный год Unix эпохи
+
+    while (days >= 365)
     {
-        if(Timestamp >= 31536000)
+        // Учитываем високосные годы
+        if (IsLeapYear(current_year))
         {
-            year ++;
-            Timestamp -= 31536000;
-            tmp ++;
-            if(tmp == 4)
+            if (days >= 366)
             {
-                if(Timestamp >= 31622400)
-                {
-                    tmp = 0;
-                    year ++;
-                    Timestamp -= 31622400;
-                }
-                else break;
+                days -= 366;
+                current_year++;
+            }
+            else
+                break;
+        }
+        else
+        {
+            days -= 365;
+            current_year++;
+        }
+    }
+
+    // Расчет месяца и дня
+    month = 1; // Январь
+    day = 1;
+
+    while (days > 0)
+    {
+        new days_in_month = GetDaysInMonth(current_year, month);
+
+        if (days >= days_in_month)
+        {
+            days -= days_in_month;
+            month++;
+
+            if (month > 12)
+            {
+                month = 1;
+                current_year++;
             }
         }
-        else break;
-    }       
-    for(new i = 0; i < 12; i ++)
-    {
-        if(Timestamp >= MonthTimes[i][2 + IsLeapYear(year)])
+        else
         {
-            month ++;
-            Timestamp -= MonthTimes[i][2 + IsLeapYear(year)];
+            day += days;
+            days = 0;
         }
-        else break;
     }
-    day = 1 + (Timestamp / 86400);
-    Timestamp %= 86400;
-    hour = HourGMT + (Timestamp / 3600);
-    Timestamp %= 3600;
-    minute = MinuteGMT + (Timestamp / 60);
-    second = (Timestamp % 60);
-    if(minute > 59)
-    {
-        minute = 0;
-        hour ++;
-    }
-    if(hour > 23)
-    {
-        hour -= 24;
-        day ++;
-    }   
-    if(day > MonthTimes[month][IsLeapYear(year)])
-    {
-        day = 1;
-        month ++;
-    }
-    if(month > 12)
-    {
-        month = 1;
-        year ++;
-    }
+
+    // Расчет часов, минут и секунд
+    hour = remaining_seconds / seconds_in_hour;
+    remaining_seconds %= seconds_in_hour;
+
+    minute = remaining_seconds / seconds_in_minute;
+    remaining_seconds %= seconds_in_minute;
+
+    second = remaining_seconds;
+
+    year = current_year;
+
     return 1;
 }
- 
-stock DateToTimestamp(str[11])
+
+stock IsLeapYear(year)
 {
-    new date[3]; // date[0] = day       date[1] = month         date[2] = year
-    if(!sscanf(str,"p<"#SPLITTER">ddd",date[0],date[1],date[2]))
+    return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+}
+
+stock GetDaysInMonth(year, month)
+{
+    new days_in_month;
+
+    if (month == 2)
     {
-        new total = 0, tmp = 0;
-        total += date[0] * 86400;
-        if(date[1] == 2 && date[0] < 29) tmp = ((date[2] - 1968) / 4 - 2);
-        else tmp = ((date[2] - 1968) / 4 - 1);
-        total += tmp * 31622400;
-        total += (date[2] - 1970 - tmp) * 31536000;
-        for(new i = 1; i < date[1]; i ++) total += MonthTimes[i][0 + IsLeapYear(date[2])] * 86400;
-        return total;
+        days_in_month = IsLeapYear(year) ? 29 : 28;
     }
-    else return -1;
+    else if (month == 4 || month == 6 || month == 9 || month == 11)
+    {
+        days_in_month = 30;
+    }
+    else
+    {
+        days_in_month = 31;
+    }
+
+    return days_in_month;
 }

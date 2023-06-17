@@ -131,7 +131,7 @@ stock ShowDialogCriminalCodeInfo(playerid, i)
     format(line,sizeof(line),"\n\n{cccccc}%s",CriminalCodeInfo[i][ccText]), strcat(lines,line);
 
     new tyear, tmonth, tday, thour, tminute, tsecond;
-	stamp2datetime(CriminalCodeInfo[i][ccUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3, 0);
+	stamp2datetime(CriminalCodeInfo[i][ccUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
     format(line,sizeof(line),"\n\n{555555}Редактировал"), strcat(lines,line);
     format(line,sizeof(line),"\n{555555}%s [ %02d.%02d.%d %02d:%02d ]\n", CriminalCodeInfo[i][ccPlayer], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
     ShowDialog(playerid,1308,DIALOG_STYLE_MSGBOX,"{ff9000}Кодекс Правонарушений {cccccc}[Описание статьи]",lines,"*","");
@@ -185,5 +185,18 @@ public LoadCriminalCode()
 	}
 	printf("[MODE]: Кодекс Правонарушений [%d ms]", GetTickCount() - time);
 	return 1;
+}
+
+CMD:unix(playerid, const params[])
+{
+    if(server != 0) return 1;
+    if(sscanf(params, "i", params[0])) return ErrorText(playerid, "[ Мысли ]: /unix Время");
+
+    new tyear, tmonth, tday, thour, tminute, tsecond;
+	stamp2datetime(params[0], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+    format(store, sizeof(store), "%02d.%02d.%d %02d:%02d",tday, tmonth, tyear, thour, tminute);
+	SendClientMessage(playerid, COLOR_GREY, store);
+    return 1;
 }
 
