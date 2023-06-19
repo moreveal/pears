@@ -154,19 +154,26 @@ stock CriminalCodeUpdate(playerid, i) // Записываем необходимую инфу и отправляе
     return 1;
 }
 
-stock CriminalCodeSave(i) // Сохраняем статью кодекса в базу (моментальное сохранение при любом изменении)
+stock CriminalCodeSave(i) // Сохраняем в базу (моментальное сохранение при любом изменении)
 {
+    // Экранируем текстовые строки (Для защиты от sql инъекций)
+    new escapeName[31], escapeText[121];
+	mysql_escape_string(CriminalCodeInfo[i][ccName], escapeName, sizeof(escapeName));
+    mysql_escape_string(CriminalCodeInfo[i][ccText], escapeText, sizeof(escapeText));
+
+    // Формируем запросы в переменную
     format(big_query,sizeof(big_query),"UPDATE `criminal_code` SET `ccArcticle` = '%f', `ccType` = '%d', `ccName` = '%s', `ccLevel` = '%d', `ccFine` = '%d'",
-    CriminalCodeInfo[i][ccArcticle], CriminalCodeInfo[i][ccType], CriminalCodeInfo[i][ccName], CriminalCodeInfo[i][ccLevel], CriminalCodeInfo[i][ccFine]);
+    CriminalCodeInfo[i][ccArcticle], CriminalCodeInfo[i][ccType], escapeName, CriminalCodeInfo[i][ccLevel], CriminalCodeInfo[i][ccFine]);
 
     format(big_query,sizeof(big_query),"%s, `ccText` = '%s', `ccUnix` = '%d', `ccPlayer` = '%s', `ccUserID` = '%d' WHERE `newid` = '%d'", big_query,
-    CriminalCodeInfo[i][ccText], CriminalCodeInfo[i][ccUnix], CriminalCodeInfo[i][ccPlayer], CriminalCodeInfo[i][ccUserID], CriminalCodeInfo[i][ccID]);
+    escapeText, CriminalCodeInfo[i][ccUnix], CriminalCodeInfo[i][ccPlayer], CriminalCodeInfo[i][ccUserID], CriminalCodeInfo[i][ccID]);
 
+    // Отправляем запрос
     query_empty(pearsq, big_query);
     return 1;
 }
 
-forward LoadCriminalCode(); // Загрузка кодекса из базы
+forward LoadCriminalCode(); // Загрузка из базы
 public LoadCriminalCode()
 {
 	new time = GetTickCount();
