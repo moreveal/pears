@@ -639,7 +639,7 @@ stock SendBizMessage(b, const string[]) // Сообщение в чат семье, привязанной к 
 {
     if(BizzInfo[b][bFam] > 0)
 	{
-        if(FamilyInfo[BizzInfo[b][bFam]][fSost] > 0) SendSkypeMessage(BizzInfo[b][bFam], COLOR_GREY, string);
+        if(FamilyInfo[BizzInfo[b][bFam]][fSost] > 0) SendFamilyMessage(BizzInfo[b][bFam], COLOR_GREY, string);
 	}
 	return 1;
 }

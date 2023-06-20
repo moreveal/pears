@@ -48,46 +48,6 @@ CMD:division(playerid) // Меню подфракции
 	return 1;
 }
 
-CMD:i(playerid, const params[])
-{
-	commandI(playerid, 0, params);
-	return 1;
-}
-
-CMD:ib(playerid, const params[])
-{
-	commandI(playerid, 1, params);
-	return 1;
-}
-
-stock commandI(playerid, typeCommand, const params[])
-{
-	if(checkTransmitterPermission(playerid)) return 0; // Проверки разрешений рации
-
-	if(PlayerInfo[playerid][pDivision] == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-
-	new g = fraction(playerid)-1, i = PlayerInfo[playerid][pDivision]-1, r = PlayerInfo[playerid][pRank];
-	
-	if(r <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! У вас нет ранга или он имеет значение 0");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации подфракции /i или /ib текст");
-
-	if(PlayerInfo[playerid][pFmuteTime] >= 1)
-	{
-	    if(PlayerInfo[playerid][pFmuteTime] >= 61) format(store, sizeof(store), "{FF6347}У вас бан чата организации [ Осталось %d минут ]", PlayerInfo[playerid][pFmuteTime]/60);
-	 	else format(store, sizeof(store), "{FF6347}У вас бан чата организации [ Осталось %d секунд ]", PlayerInfo[playerid][pFmuteTime]);
-	 	ErrorMessage(playerid, store);
-	    return 1;
-	}
-	if(PlayerInfo[playerid][pTransmitterOff][2] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал подфракции /i /ib [ Y >> Меню >> Настройки Чата ]");
-	if(antiflood(playerid, params) == 1) return 1;
-
-	if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s %s: %s", DivisionInfo[g][i][divAbbreviation], DivisionRankName[g][i][r], rpplayername(playerid), params[0]);
-	else format(store, sizeof(store), "** [%s] %s %s: (( %s ))", DivisionInfo[g][i][divAbbreviation], DivisionRankName[g][i][r], rpplayername(playerid), params[0]);
-	SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
-	return 1;
-}
-
 CMD:dleave(playerid) return cmd_divleave(playerid);
 CMD:divleave(playerid)
 {
@@ -125,13 +85,19 @@ stock showDialogMenuDivision(playerid) // Меню настройки подфракции
 
 	format(lines,sizeof(lines),""); // Очищаем Lines
 
-	//format(line,sizeof(line),"{555555}Участники Online\t"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Информация\t"), strcat(lines,line);
+	format(line,sizeof(line),"{555555}Участники {99ff66}Online\t"), strcat(lines,line);
 
 	// Настройки подфракции для лидеров, замов и глав подфракции
 	if(PlayerInfo[playerid][pLeader] > 0 
 	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g+1)-1
 	|| PlayerInfo[playerid][pDivision] == i+1 && PlayerInfo[playerid][pRank] >= DivisionInfo[g][i][divRanks])
 	{
+		format(line,sizeof(line),"{555555}Участники {FF6347}Offline\t"), strcat(lines,line);
+		format(line,sizeof(line),"{555555}Пригласить\t"), strcat(lines,line);
+		format(line,sizeof(line),"{555555}Исключить\t"), strcat(lines,line);
+		format(line,sizeof(line),"{555555}Настройки склада >>\t"), strcat(lines,line);
+
 		format(line,sizeof(line),"{cccccc}Название: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Аббревиатура: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divAbbreviation]), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Количество рангов: \t{555555}%d", DivisionInfo[g][i][divRanks]), strcat(lines,line);
@@ -248,8 +214,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divName], MAX_NAME_DIVISION_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), inputtext);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s название подфракции: %s", gender(playerid), inputtext);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -274,8 +240,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divAbbreviation], MAX_NAME_DIVISION_ABBREVIATION_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s аббревиатуру подфракции: %s.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), inputtext);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s аббревиатуру подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s аббревиатуру подфракции: %s", gender(playerid), inputtext);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -301,8 +267,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(DivisionInfo[g][i][divRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divRanks] = input;
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s количество рангов: %d.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), input);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s количество рангов: %d.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), input);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s количество рангов в подфракции: %d", gender(playerid), input);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -341,8 +307,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionRankName[g][i][r], MAX_NAME_DIVISION_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), r, inputtext);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r, inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r, inputtext);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -378,8 +344,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		    DivisionInfo[g][i][divSpawnInterior] = GetPlayerInterior(playerid);
 		    DivisionInfo[g][i][divSpawnWorld] = GetPlayerVirtualWorld(playerid);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s установил%s новый спавн.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid));
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s установил%s новый спавн.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid));
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я установил%s новый спавн для %s", gender(playerid), DivisionInfo[g][i][divName]);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -404,8 +370,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divColorHex], 7, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет {%s}%s.", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет {%s}%s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s цвет подфракции {%s}%s", gender(playerid), inputtext, DivisionInfo[g][i][divName]);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -432,8 +398,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(DivisionInfo[g][i][divColorVeh][s] == input) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже указан"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divColorVeh][s] = input;
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет транспорта {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], rpplayername(playerid), gender(playerid), VehicleColoursTableHex[input], input);
-			SendDivisionMessage(i + 1, COLOR_DIVISION_CHAT, store);
+			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет транспорта {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), VehicleColoursTableHex[input], input);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
 			format(store, sizeof(store), "[ Мысли ]: Я изменил%s цвет транспорта в подфракции {%s}[ ID: %d ]", gender(playerid), VehicleColoursTableHex[input], input);
 			SendClientMessage(playerid, COLOR_GREY, store);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -496,18 +462,6 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		else showDialogMenuDivision(playerid);
 	}
 	return 1;
-}
-
-function SendDivisionMessage(div, color, const string[]) // Чат подфракции
-{
-	foreach (Player, i)
-	{
-		if(OnlineInfo[i][oLogged] == 0) continue;
-		if(PlayerInfo[i][pBkyrenie] >= 2) continue;
-		if(PlayerInfo[i][pTransmitterOff][2] == true) continue; // 2 - чаты /i /ib
-
-		if(PlayerInfo[i][pDivision] == div) SendClientMessage(i, color, string);
-	}
 }
 
 stock DivisionSave(g, i) // Сохраняем в базу (моментальное сохранение при любом изменении)
