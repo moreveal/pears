@@ -1,63 +1,63 @@
 
 CMD:givemats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
-	if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предметы на склад [ /givemats Организация Предмет Тип Количество ]");
-	if(params[2] < 0 || params[2] > 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип предметов [ 0 Вещества и патроны, 1 Оружие, 2 Каска и броня ]");
-	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Организации 1 - 22 [ 29 Надзиратели, 33 ВМС ]");
-	if(params[3] < 1 || params[3] > 50000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 50.000");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹РґР°С‚СЊ РїСЂРµРґРјРµС‚С‹ РЅР° СЃРєР»Р°Рґ [ /givemats РћСЂРіР°РЅРёР·Р°С†РёСЏ РџСЂРµРґРјРµС‚ РўРёРї РљРѕР»РёС‡РµСЃС‚РІРѕ ]");
+	if(params[2] < 0 || params[2] > 2) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРёРї РїСЂРµРґРјРµС‚РѕРІ [ 0 Р’РµС‰РµСЃС‚РІР° Рё РїР°С‚СЂРѕРЅС‹, 1 РћСЂСѓР¶РёРµ, 2 РљР°СЃРєР° Рё Р±СЂРѕРЅСЏ ]");
+	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: ID РћСЂРіР°РЅРёР·Р°С†РёРё 1 - 22 [ 29 РќР°РґР·РёСЂР°С‚РµР»Рё, 33 Р’РњРЎ ]");
+	if(params[3] < 1 || params[3] > 50000) return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 50.000");
 	
-	if(params[0] <= 22 || params[0] == 29 || params[0] == 33) // ID Организаций
+	if(params[0] <= 22 || params[0] == 29 || params[0] == 33) // ID РћСЂРіР°РЅРёР·Р°С†РёР№
 	{
 		new yes;
-	    if(params[2] == 0) // Обычные Предметы
+	    if(params[2] == 0) // РћР±С‹С‡РЅС‹Рµ РџСЂРµРґРјРµС‚С‹
 	    {
-	        if(params[1] >= 4 && params[1] <= 8 || params[1] >= 27 && params[1] <= 30) yes = 1; // Только вещества и патроны
-	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Предметов [ 4-8 Вещества, 27-30 Патроны ]");
+	        if(params[1] >= 4 && params[1] <= 8 || params[1] >= 27 && params[1] <= 30) yes = 1; // РўРѕР»СЊРєРѕ РІРµС‰РµСЃС‚РІР° Рё РїР°С‚СЂРѕРЅС‹
+	        else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: ID РџСЂРµРґРјРµС‚РѕРІ [ 4-8 Р’РµС‰РµСЃС‚РІР°, 27-30 РџР°С‚СЂРѕРЅС‹ ]");
 	    }
-	    else if(params[2] == 1) // Оружие
+	    else if(params[2] == 1) // РћСЂСѓР¶РёРµ
 	    {
-	        if(params[1] >= 2 && params[1] <= 15 || params[1] == 24 || params[1] == 25 || params[1] == 27 || params[1] == 30 || params[1] == 31 || params[1] == 33 || params[1] == 34) yes = 1; // Только оружие
-	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Оружия [ 2-15, 24, 25, 27, 30, 31, 33, 34 ]");
+	        if(params[1] >= 2 && params[1] <= 15 || params[1] == 24 || params[1] == 25 || params[1] == 27 || params[1] == 30 || params[1] == 31 || params[1] == 33 || params[1] == 34) yes = 1; // РўРѕР»СЊРєРѕ РѕСЂСѓР¶РёРµ
+	        else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: ID РћСЂСѓР¶РёСЏ [ 2-15, 24, 25, 27, 30, 31, 33, 34 ]");
 	    }
-	    else if(params[2] == 2) // Аксессуары
+	    else if(params[2] == 2) // РђРєСЃРµСЃСЃСѓР°СЂС‹
 	    {
 	        if(IsArmor(params[1]) || IsHelmet(params[1])) yes = 1;
-	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Аксессуаров [ 19142 Бронежилет, 19106 Каска ]");
+	        else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: ID РђРєСЃРµСЃСЃСѓР°СЂРѕРІ [ 19142 Р‘СЂРѕРЅРµР¶РёР»РµС‚, 19106 РљР°СЃРєР° ]");
 	    }
 	
 		if(yes == 1)
 		{
-		    new put_inva = putsklad(params[0], params[1], params[3], 0, params[2]); // Кладём предмет
-			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места");
+		    new put_inva = putsklad(params[0], params[1], params[3], 0, params[2]); // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РќР° СЃРєР»Р°РґРµ РѕСЂРіР°РЅРёР·Р°С†РёРё, РґР»СЏ СЌС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°, РЅРµС‚ РјРµСЃС‚Р°");
 
-			format(store, sizeof(store), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
+			format(store, sizeof(store), " [ ADM ]: %s РІС‹РґР°Р» %s [РљРѕР»-РІРѕ: %d] РЅР° СЃРєР»Р°Рґ %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
 			ABroadCast(COLOR_ADM,store,1);
-			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Положил на склад предметы");
+			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "РџРѕР»РѕР¶РёР» РЅР° СЃРєР»Р°Рґ РїСЂРµРґРјРµС‚С‹");
 		}
 	}
-	else ErrorMessage(playerid, "{FF6347}Организации под этим ID не существует");
+	else ErrorMessage(playerid, "{FF6347}РћСЂРіР°РЅРёР·Р°С†РёРё РїРѕРґ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 	return 1;
 }
 CMD:delmats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить боеприпасы со склада [ /delmats ID Организации ]");
-	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 22 [ 29 Надзиратели | 33 ВМС ]");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈРґР°Р»РёС‚СЊ Р±РѕРµРїСЂРёРїР°СЃС‹ СЃРѕ СЃРєР»Р°РґР° [ /delmats ID РћСЂРіР°РЅРёР·Р°С†РёРё ]");
+	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 22 [ 29 РќР°РґР·РёСЂР°С‚РµР»Рё | 33 Р’РњРЎ ]");
 	if(params[0] <= 22 || params[0] == 29 || params[0] == 33)
 	{
 		new string[144];
-	  	format(string, sizeof(string), " [ ADM ]: Админ %s очистил склад: %s",PlayerInfo[playerid][pName],frakName[params[0]]), ABroadCast(COLOR_ADM,string,1);
+	  	format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s РѕС‡РёСЃС‚РёР» СЃРєР»Р°Рґ: %s",PlayerInfo[playerid][pName],frakName[params[0]]), ABroadCast(COLOR_ADM,string,1);
 	   	for(new inva = 0; inva < 20; inva++) OrganInfo[params[0]][gInvent][inva] = 0, OrganInfo[params[0]][gInv][inva]= 0, OrganInfo[params[0]][gInvType][inva]= 0, OrganInfo[params[0]][gInvPara][inva]= 0;
 		OrganInfo[params[0]][gUpdate] = 1;
 		foreach(Player,i)
 		{
 			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceSklad] > 0) tabs_close(i, 2), OnlineInfo[i][oShowInterfaceSklad] = 0, Tabs_Type[i] = 0;
 		}
-		AdminLog("delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Очистил Склад");
-		OrgLog(params[0], "delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Очистил Склад");
+		AdminLog("delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "РћС‡РёСЃС‚РёР» РЎРєР»Р°Рґ");
+		OrgLog(params[0], "delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РћС‡РёСЃС‚РёР» РЎРєР»Р°Рґ");
 	}
-	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такого значения нет..");
+	else return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўР°РєРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ РЅРµС‚..");
 	return 1;
 }
 CMD:philin(playerid)
@@ -77,8 +77,8 @@ CMD:readsit(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 20)
 	{
-	    if(readsit == 0) readsit = 1, SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь я считываю ID всех стульев");
-		else readsit = 0, SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Считывание отключено");
+	    if(readsit == 0) readsit = 1, SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРµРїРµСЂСЊ СЏ СЃС‡РёС‚С‹РІР°СЋ ID РІСЃРµС… СЃС‚СѓР»СЊРµРІ");
+		else readsit = 0, SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎС‡РёС‚С‹РІР°РЅРёРµ РѕС‚РєР»СЋС‡РµРЅРѕ");
 	}
 	return 1;
 }
@@ -86,8 +86,8 @@ CMD:readput(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 20)
 	{
-	    if(readput == 0) readput = 1, SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь я считываю ID объектов, на которые кладутся предметы");
-		else readput = 0, SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Считывание отключено");
+	    if(readput == 0) readput = 1, SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРµРїРµСЂСЊ СЏ СЃС‡РёС‚С‹РІР°СЋ ID РѕР±СЉРµРєС‚РѕРІ, РЅР° РєРѕС‚РѕСЂС‹Рµ РєР»Р°РґСѓС‚СЃСЏ РїСЂРµРґРјРµС‚С‹");
+		else readput = 0, SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎС‡РёС‚С‹РІР°РЅРёРµ РѕС‚РєР»СЋС‡РµРЅРѕ");
 	}
 	return 1;
 }
@@ -95,7 +95,7 @@ CMD:mytug(playerid)
 {
 	new str[144];
 	new veh = GetPlayerVehicleID(playerid);
-	format(str,sizeof(str),"Я сижу в машине и у неё прицеп VEH ID: %d",GetVehicleTrailer(veh));
+	format(str,sizeof(str),"РЇ СЃРёР¶Сѓ РІ РјР°С€РёРЅРµ Рё Сѓ РЅРµС‘ РїСЂРёС†РµРї VEH ID: %d",GetVehicleTrailer(veh));
 	SendClientMessage(playerid, COLOR_GREY, str);
 	return 1;
 }
@@ -103,9 +103,9 @@ CMD:tug(playerid)
 {
 	new str[144];
 	new veh = LichCarID[playerid];
-	format(str,sizeof(str),"Моя личная тачка на прицепе у VEH ID: %d",gettug(veh));
+	format(str,sizeof(str),"РњРѕСЏ Р»РёС‡РЅР°СЏ С‚Р°С‡РєР° РЅР° РїСЂРёС†РµРїРµ Сѓ VEH ID: %d",gettug(veh));
 	SendClientMessage(playerid, COLOR_GREY, str);
-	format(str,sizeof(str),"Моя личная тачка на прицепе у VEH ID: %d {00CC00}NEW",GetVehicleTrailer(veh));
+	format(str,sizeof(str),"РњРѕСЏ Р»РёС‡РЅР°СЏ С‚Р°С‡РєР° РЅР° РїСЂРёС†РµРїРµ Сѓ VEH ID: %d {00CC00}NEW",GetVehicleTrailer(veh));
 	SendClientMessage(playerid, COLOR_GREY, str);
 	return 1;
 }
@@ -116,7 +116,7 @@ CMD:mysql(playerid)
  	mysql_tquery(pearsq,"SET CHARACTER SET 'cp1251'", "", "");
  	//mysql_tquery(pearsq, "SET NAMES 'utf8'", "", "");
  	//mysql_tquery(pearsq, "SET CHARACTER SET 'utf8'", "", "");
- 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кодировка основной базы переустановлена");
+ 	SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљРѕРґРёСЂРѕРІРєР° РѕСЃРЅРѕРІРЅРѕР№ Р±Р°Р·С‹ РїРµСЂРµСѓСЃС‚Р°РЅРѕРІР»РµРЅР°");
     return true;
 }
 CMD:mysql2(playerid)
@@ -126,159 +126,159 @@ CMD:mysql2(playerid)
  	mysql_tquery(pearsq_2,"SET CHARACTER SET 'cp1251'", "", "");
  	//mysql_tquery(pearsq, "SET NAMES 'utf8'", "", "");
  	//mysql_tquery(pearsq, "SET CHARACTER SET 'utf8'", "", "");
- 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кодировка второй базы переустановлена");
+ 	SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљРѕРґРёСЂРѕРІРєР° РІС‚РѕСЂРѕР№ Р±Р°Р·С‹ РїРµСЂРµСѓСЃС‚Р°РЅРѕРІР»РµРЅР°");
     return true;
 }
 CMD:stopmaf(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 5+ ]");
-	if(MafGz[0][mStat] == 0) return ErrorMessage(playerid, "{FF6347}В данный момент битва не ведётся");
+    if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 5+ ]");
+	if(MafGz[0][mStat] == 0) return ErrorMessage(playerid, "{FF6347}Р’ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ Р±РёС‚РІР° РЅРµ РІРµРґС‘С‚СЃСЏ");
 	MafGz[0][mStat] = 2;
 	CheckMafWar(0, 1);
-	format(store, sizeof(store), " [ ADM ]: %s завершил мафиозную войну", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	format(store, sizeof(store), " [ ADM ]: %s Р·Р°РІРµСЂС€РёР» РјР°С„РёРѕР·РЅСѓСЋ РІРѕР№РЅСѓ", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
 	return 1;
 }
 CMD:gotobiz(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к бизнесу [ /gotobiz ID ]");
+	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРµР»РµРїРѕСЂС‚РёСЂРѕРІР°С‚СЊСЃСЏ Рє Р±РёР·РЅРµСЃСѓ [ /gotobiz ID ]");
 	if(params[0] >= 1 && params[0] <= 200)
 	{
-	    if(BizzInfo[params[0]][bLab] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Позиция бизнеса недоступна [ Только в Бизнес Центре | Тп к терминалу /gototerm ]");
+	    if(BizzInfo[params[0]][bLab] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕР·РёС†РёСЏ Р±РёР·РЅРµСЃР° РЅРµРґРѕСЃС‚СѓРїРЅР° [ РўРѕР»СЊРєРѕ РІ Р‘РёР·РЅРµСЃ Р¦РµРЅС‚СЂРµ | РўРї Рє С‚РµСЂРјРёРЅР°Р»Сѓ /gototerm ]");
 		PPSetPlayerPos(playerid,BizzInfo[params[0]][bX],BizzInfo[params[0]][bY],BizzInfo[params[0]][bZ]);
 		S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
 	}
-	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
+	else SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРѕРјРµСЂ Р±РёР·РЅРµСЃР° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 200");
 	return 1;
 }
 CMD:gototerm(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к терминалу бизнеса [ /gototerm Бизнес Терминал ]");
+	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРµР»РµРїРѕСЂС‚РёСЂРѕРІР°С‚СЊСЃСЏ Рє С‚РµСЂРјРёРЅР°Р»Сѓ Р±РёР·РЅРµСЃР° [ /gototerm Р‘РёР·РЅРµСЃ РўРµСЂРјРёРЅР°Р» ]");
 	if(params[0] >= 42 && params[0] <= 52 || params[0] >= 62 && params[0] <= 76 || params[0] >= 163 && params[0] <= 172)
 	{
-	    if(params[1] < 1 || params[1] > 5) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер терминала не меньше 1 - 5");
+	    if(params[1] < 1 || params[1] > 5) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРѕРјРµСЂ С‚РµСЂРјРёРЅР°Р»Р° РЅРµ РјРµРЅСЊС€Рµ 1 - 5");
 	    new br = numnrent(params[0]);
-	    if(RentStat[br][params[1]-1] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У бизнеса нет терминала под этим номером");
+	    if(RentStat[br][params[1]-1] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ Р±РёР·РЅРµСЃР° РЅРµС‚ С‚РµСЂРјРёРЅР°Р»Р° РїРѕРґ СЌС‚РёРј РЅРѕРјРµСЂРѕРј");
 		PPSetPlayerPos(playerid,RentPos_X[br][params[1]-1],RentPos_Y[br][params[1]-1],RentPos_Z[br][params[1]-1]);
 		S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
 	}
-	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У этого бизнеса нет терминалов");
+	else SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ СЌС‚РѕРіРѕ Р±РёР·РЅРµСЃР° РЅРµС‚ С‚РµСЂРјРёРЅР°Р»РѕРІ");
 	return 1;
 }
 CMD:pricevehup(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Повысить цены транспортных средств [ /pricevehup Сумма ]");
-	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРІС‹СЃРёС‚СЊ С†РµРЅС‹ С‚СЂР°РЅСЃРїРѕСЂС‚РЅС‹С… СЃСЂРµРґСЃС‚РІ [ /pricevehup РЎСѓРјРјР° ]");
+	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎСѓРјРјР° РЅРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000$");
 	for(new v = 0; v < 212; v++)
 	{
 		VehGos[v] += params[0], SaveEconomy(v+400);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s повысил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("pricevehup", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Повысил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s РїРѕРІС‹СЃРёР» С†РµРЅС‹ РІСЃРµС… С‚.СЃ. РЅР° %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("pricevehup", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РџРѕРІС‹СЃРёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:pricevehdown(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Понизить цены транспортных средств [ /pricevehdown Сумма ]");
-	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРЅРёР·РёС‚СЊ С†РµРЅС‹ С‚СЂР°РЅСЃРїРѕСЂС‚РЅС‹С… СЃСЂРµРґСЃС‚РІ [ /pricevehdown РЎСѓРјРјР° ]");
+	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎСѓРјРјР° РЅРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000$");
 	for(new v = 0; v < 212; v++)
 	{
 		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveEconomy(v+400);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s понизил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Понизил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s РїРѕРЅРёР·РёР» С†РµРЅС‹ РІСЃРµС… С‚.СЃ. РЅР° %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РџРѕРЅРёР·РёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:reloadpricefrisk(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
 	for(new s = 0; s < INVENTER; s++)
 	{
 		friskPrice[s] = friskDefault[s];
 		SavePriceFrisk(s);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("reloadpricefrisk", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РіРѕСЃ. С†РµРЅС‹ РЅР° РІСЃРµ РїСЂРµРґРјРµС‚С‹", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("reloadpricefrisk", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РЎР±СЂРѕСЃРёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:reloadpricegun(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
 	for(new g = 1; g < 48; g++)
 	{
 		gunPrice[g] = gunDefault[g];
 		SavePriceGun(g);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("reloadpricegun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РіРѕСЃ. С†РµРЅС‹ РЅР° РІСЃС‘ РѕСЂСѓР¶РёРµ", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("reloadpricegun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РЎР±СЂРѕСЃРёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:reloadpriceveh(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
 	for(new v = 0; v < 212; v++)
 	{
 		VehGos[v] = vehSumma[v+400];
 		SaveEconomy(v+400);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РіРѕСЃ. С†РµРЅС‹ РЅР° РІСЃРµ С‚СЂР°РЅСЃРїРѕСЂС‚РЅС‹Рµ СЃСЂРµРґСЃС‚РІР°", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РЎР±СЂРѕСЃРёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:reloadpriceskin(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
 	for(new s = 0; s < 312; s++)
 	{
 		SkinGos[s] = 10000;
 		SaveSkinEconomy(s);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все скины", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
-	AdminLog("reloadskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
+	format(store, sizeof(store), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РіРѕСЃ. С†РµРЅС‹ РЅР° РІСЃРµ СЃРєРёРЅС‹", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	AdminLog("reloadskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РЎР±СЂРѕСЃРёР» Р¦РµРЅС‹");
 	return 1;
 }
 CMD:reloadbiz(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить продукты и тарифы бизнеса [ /reloadbiz ID ][ 0 - Сбросить Все ]");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎР±СЂРѕСЃРёС‚СЊ РїСЂРѕРґСѓРєС‚С‹ Рё С‚Р°СЂРёС„С‹ Р±РёР·РЅРµСЃР° [ /reloadbiz ID ][ 0 - РЎР±СЂРѕСЃРёС‚СЊ Р’СЃРµ ]");
 	new string[128];
 	if(params[0] == 0)
 	{
 		for(new b = 0; b < sizeof(BizzInfo); b++) relprodbiz(b);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты всех бизнесов", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» С‚Р°СЂРёС„С‹ Рё РїСЂРѕРґСѓРєС‚С‹ РІСЃРµС… Р±РёР·РЅРµСЃРѕРІ", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	}
 	else if(params[0] >= 1 && params[0] <= 200)
 	{
 		relprodbiz(params[0]);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» С‚Р°СЂРёС„С‹ Рё РїСЂРѕРґСѓРєС‚С‹ Р±РёР·РЅРµСЃР° %s в„– %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
 	}
-	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	else SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРѕРјРµСЂ Р±РёР·РЅРµСЃР° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 200 [ 0 - РЎР±СЂРѕСЃРёС‚СЊ Р’СЃРµ ]");
 	return 1;
 }
 CMD:reloadbizpos(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить позицию бизнеса [ /reloadbizpos ID ][ 0 - Сбросить Все ]");
+	if(PlayerInfo[playerid][pSoska] <= 20) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎР±СЂРѕСЃРёС‚СЊ РїРѕР·РёС†РёСЋ Р±РёР·РЅРµСЃР° [ /reloadbizpos ID ][ 0 - РЎР±СЂРѕСЃРёС‚СЊ Р’СЃРµ ]");
 	new string[128];
 	if(params[0] == 0)
 	{
 		for(new b = 0; b < sizeof(BizzInfo); b++) relposbiz(b);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил позицию всех бизнесов", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РїРѕР·РёС†РёСЋ РІСЃРµС… Р±РёР·РЅРµСЃРѕРІ", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	}
 	else if(params[0] >= 1 && params[0] <= 200)
 	{
 		relposbiz(params[0]);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил позицию бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РїРѕР·РёС†РёСЋ Р±РёР·РЅРµСЃР° %s в„– %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
 	}
-	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	else SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРѕРјРµСЂ Р±РёР·РЅРµСЃР° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 200 [ 0 - РЎР±СЂРѕСЃРёС‚СЊ Р’СЃРµ ]");
 	return 1;
 }
 CMD:rasformbiz(playerid)
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
 	for(new b = 0; b < sizeof(BizzInfo); b++)
 	{
 	    if(b == 10 || b == 20 || b == 30 || b == 40 || b == 50 || b == 60 || b == 70 || b == 80 || b == 90 || b == 100 || b == 110 || b == 120
@@ -311,57 +311,57 @@ CMD:rasformbiz(playerid)
 	    SaveBizz(b);
   	}
   	new string[128];
-	format(string, sizeof(string), " [ ADM ]: Админ %s расформировал все бизнесы для мафий",PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р» РІСЃРµ Р±РёР·РЅРµСЃС‹ РґР»СЏ РјР°С„РёР№",PlayerInfo[playerid][pName]);
 	ABroadCast(COLOR_ADM,string,1);
-	SendRadioMessage(5,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(6,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(10,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(12,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(18,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
+	SendRadioMessage(5,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р»Р° РІСЃРµ Р±РёР·РЅРµСЃС‹");
+	SendRadioMessage(6,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р»Р° РІСЃРµ Р±РёР·РЅРµСЃС‹");
+	SendRadioMessage(10,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р»Р° РІСЃРµ Р±РёР·РЅРµСЃС‹");
+	SendRadioMessage(12,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р»Р° РІСЃРµ Р±РёР·РЅРµСЃС‹");
+	SendRadioMessage(18,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ СЂР°СЃС„РѕСЂРјРёСЂРѕРІР°Р»Р° РІСЃРµ Р±РёР·РЅРµСЃС‹");
 	AdminLog("rasformbiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 	return 1;
 }
 CMD:bizmaf(playerid, const params[])
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить бизнес мафии [ /bizmaf ID Фракции № Бизнеса ]");
-	if(params[0] != 5 && params[0] != 6 && params[0] != 10 && params[0] != 12 && params[0] != 18) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Только номер мафии [ 5,6,10,12,18 ]");
-	if(params[1] > 200 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Бизнес не меньше 1 и не больше 200");
+	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РёР·РЅРµСЃ РјР°С„РёРё [ /bizmaf ID Р¤СЂР°РєС†РёРё в„– Р‘РёР·РЅРµСЃР° ]");
+	if(params[0] != 5 && params[0] != 6 && params[0] != 10 && params[0] != 12 && params[0] != 18) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўРѕР»СЊРєРѕ РЅРѕРјРµСЂ РјР°С„РёРё [ 5,6,10,12,18 ]");
+	if(params[1] > 200 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р‘РёР·РЅРµСЃ РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 200");
 	new string[128];
-	format(string, sizeof(string), " [ ADM ]: Админ %s установил %s для %s",PlayerInfo[playerid][pName], bizname(params[1]),frakName[params[0]]);
+	format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s СѓСЃС‚Р°РЅРѕРІРёР» %s РґР»СЏ %s",PlayerInfo[playerid][pName], bizname(params[1]),frakName[params[0]]);
 	ABroadCast(COLOR_ADM,string,1);
   	BizzInfo[params[1]][bMafia] = params[0];
   	BizzInfo[params[1]][bMafunix] = 0;
   	if(BizzInfo[params[1]][bLab] == 1) UpdateBizLabel(params[1], BizzInfo[params[1]][bLab]);
   	SaveBizz(params[1]);
-	format(string,sizeof(string),"{ff9000}[ Mafia War ]: {ffffff}Администрация передала %s под ваш контроль",bizname(params[1]));
+	format(string,sizeof(string),"{ff9000}[ Mafia War ]: {ffffff}РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ РїРµСЂРµРґР°Р»Р° %s РїРѕРґ РІР°С€ РєРѕРЅС‚СЂРѕР»СЊ",bizname(params[1]));
 	SendRadioMessage(params[0],COLOR_LIGHTRED,string);
 	return 1;
 }
 CMD:mafship(playerid, const params[])
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Запустить корабль мафии [ /mafship 0 - SF | 1 - LS ]");
-	if(mafstat == 1 || mafstat == 3) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Корабль находится в порту San Fierro");
-	if(mafstat == 2 || mafstat == 4) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Корабль находится в порту Los Santos");
-	if(mafstat == 5) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Корабль покидает порт");
-	if(params[0] < 0 || params[0] >= 2) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Такого кода запуска не существует [ /mafship 0 - SF | 1 - LS ]");
+	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РїСѓСЃС‚РёС‚СЊ РєРѕСЂР°Р±Р»СЊ РјР°С„РёРё [ /mafship 0 - SF | 1 - LS ]");
+	if(mafstat == 1 || mafstat == 3) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљРѕСЂР°Р±Р»СЊ РЅР°С…РѕРґРёС‚СЃСЏ РІ РїРѕСЂС‚Сѓ San Fierro");
+	if(mafstat == 2 || mafstat == 4) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљРѕСЂР°Р±Р»СЊ РЅР°С…РѕРґРёС‚СЃСЏ РІ РїРѕСЂС‚Сѓ Los Santos");
+	if(mafstat == 5) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљРѕСЂР°Р±Р»СЊ РїРѕРєРёРґР°РµС‚ РїРѕСЂС‚");
+	if(params[0] < 0 || params[0] >= 2) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РўР°РєРѕРіРѕ РєРѕРґР° Р·Р°РїСѓСЃРєР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ [ /mafship 0 - SF | 1 - LS ]");
 	new string[144];
-	if(params[0] == 0) format(string, sizeof(string), " [ ADM ]: Админ %s запустил корабль мафии в порт SF",PlayerInfo[playerid][pName]), Mafia_Ship(3);
-	else format(string, sizeof(string), " [ ADM ]: Админ %s запустил корабль мафии в порт LS",PlayerInfo[playerid][pName]), Mafia_Ship(4);
+	if(params[0] == 0) format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s Р·Р°РїСѓСЃС‚РёР» РєРѕСЂР°Р±Р»СЊ РјР°С„РёРё РІ РїРѕСЂС‚ SF",PlayerInfo[playerid][pName]), Mafia_Ship(3);
+	else format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s Р·Р°РїСѓСЃС‚РёР» РєРѕСЂР°Р±Р»СЊ РјР°С„РёРё РІ РїРѕСЂС‚ LS",PlayerInfo[playerid][pName]), Mafia_Ship(4);
 	ABroadCast(COLOR_ADM,string,1);
 	return 1;
 }
 CMD:showdip(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Показать дипломатию банд и мафий [ /showdip ID Фракции ]");
+	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРєР°Р·Р°С‚СЊ РґРёРїР»РѕРјР°С‚РёСЋ Р±Р°РЅРґ Рё РјР°С„РёР№ [ /showdip ID Р¤СЂР°РєС†РёРё ]");
 	if(params[0] == 5 || params[0] == 6 || params[0] == 10 || params[0] == 12 || params[0] == 13 || params[0] == 14
 	|| params[0] == 15 || params[0] == 16 || params[0] == 17 || params[0] == 18 || params[0] == 19 || params[0] == 20)
 	{
 		ShowDip(playerid, params[0]);
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Дипломатия банд и мафий [ ID 5,6,10,12,13,14,15,16,17,18,19,20 ]");
+	else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р”РёРїР»РѕРјР°С‚РёСЏ Р±Р°РЅРґ Рё РјР°С„РёР№ [ ID 5,6,10,12,13,14,15,16,17,18,19,20 ]");
 	return 1;
 }
 CMD:hpgro(playerid)
@@ -373,44 +373,44 @@ CMD:hpgro(playerid)
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
 				ACSetPlayerHealth(i,100);
-				SendClientMessage(i, COLOR_GRAD1, "Администратор пополнил вам здоровье.");
+				SendClientMessage(i, COLOR_GRAD1, "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ РїРѕРїРѕР»РЅРёР» РІР°Рј Р·РґРѕСЂРѕРІСЊРµ.");
 			}
 		}
 		ACSetPlayerHealth(playerid,100);
-		SendClientMessage(playerid, COLOR_GRAD1, "Вы пополнили здоровье рядом находящимся игрокам.");
+		SendClientMessage(playerid, COLOR_GRAD1, "Р’С‹ РїРѕРїРѕР»РЅРёР»Рё Р·РґРѕСЂРѕРІСЊРµ СЂСЏРґРѕРј РЅР°С…РѕРґСЏС‰РёРјСЃСЏ РёРіСЂРѕРєР°Рј.");
 	}
 	return 1;
 }
 CMD:armgro(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
 	foreach (Player, i)
 	{
 		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 		{
 			ACSetPlayerArmour(i, 100);
-			SendClientMessage(i, COLOR_GRAD1, " Администратор пополнил вам Броню.");
+			SendClientMessage(i, COLOR_GRAD1, " РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ РїРѕРїРѕР»РЅРёР» РІР°Рј Р‘СЂРѕРЅСЋ.");
 		}
 	}
 	ACSetPlayerArmour(playerid, 100);
-	SendClientMessage(playerid, COLOR_GRAD1, " Вы пополнили броню рядом находящимся игрокам.");
+	SendClientMessage(playerid, COLOR_GRAD1, " Р’С‹ РїРѕРїРѕР»РЅРёР»Рё Р±СЂРѕРЅСЋ СЂСЏРґРѕРј РЅР°С…РѕРґСЏС‰РёРјСЃСЏ РёРіСЂРѕРєР°Рј.");
 	return 1;
 }
 CMD:delaction(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации");
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
-	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
+    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Р­С‚Р° РєРѕРјР°РЅРґР° РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈРґР°Р»РёС‚СЊ СЃРѕР·РґР°РЅРЅС‹Рµ СЃРёС‚СѓР°С†РёРё РёРіСЂРѕРєР° [ /delaction ID ]");
+	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕРіРѕ РёРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё [ РќРµРІРµСЂРЅС‹Р№ ID ]");
 	new kol = 0;
 	for(new i = 0; i < 5; i++)
 	{
 		if(gAction[i][params[0]] == 1) DestroyDynamic3DTextLabel(ActionLabel[i][params[0]]), gAction[i][params[0]] = 0, kol ++, format(ActionText[i][playerid], 20, " ");
 	}
-	if(kol == 0) return ErrorMessage(playerid, "{FF6347}У этого игрока нет RP ситуаций");
+	if(kol == 0) return ErrorMessage(playerid, "{FF6347}РЈ СЌС‚РѕРіРѕ РёРіСЂРѕРєР° РЅРµС‚ RP СЃРёС‚СѓР°С†РёР№");
 	new string[128];
-	format(string, sizeof(string), "* Администратор %s удалил все ваши RP ситуации.", PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), "* РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s СѓРґР°Р»РёР» РІСЃРµ РІР°С€Рё RP СЃРёС‚СѓР°С†РёРё.", PlayerInfo[playerid][pName]);
 	SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил все RP ситуации %s[%d]", PlayerInfo[playerid][pName],playerid,PlayerInfo[params[0]][pName],params[0]);
+	format(string, sizeof(string), " [ ADM ]: %s[%d] СѓРґР°Р»РёР» РІСЃРµ RP СЃРёС‚СѓР°С†РёРё %s[%d]", PlayerInfo[playerid][pName],playerid,PlayerInfo[params[0]][pName],params[0]);
 	ABroadCast(COLOR_ADM,string,1);
 	return 1;
 }
