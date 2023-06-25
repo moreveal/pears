@@ -414,3 +414,71 @@ CMD:delaction(playerid, const params[])
 	ABroadCast(COLOR_ADM,string,1);
 	return 1;
 }
+CMD:veh(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+    if(sscanf(params, "iii", params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт /veh Модель Цвет1 Цвет2");
+	if(params[0] < 400 || params[0] > 611) return ErrorMessage(playerid, "{FF6347}Модель транспорта не меньше 400 и не больше 611");
+	if(params[1] < 0 || params[1] > 255 || params[2] < 0 || params[2] > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
+	if(QuanCar >= MAX_MAPVEH) return format(store, sizeof(store), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, store);
+    new createid = -1;
+    for(new i = 0; i < MAX_MAPVEH; i++)
+	{
+	    if(CreatedCars[i] == 0) createid = i;
+ 	}
+ 	if(createid == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Нет свободных слотов для транспорта");
+    new Float:X,Float:Y,Float:Z,Float:A;
+	GetPlayerPos(playerid, X,Y,Z);
+	GetPlayerFacingAngle(playerid,A);
+	X=X+7.0*floatsin(-A,degrees);
+    Y=Y+7.0*floatcos(-A,degrees);
+    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], 60000,0);
+    else CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z, A+180.0, params[1], params[2], 60000,0);
+	LinkVehicleToInterior(CreatedCars[createid], GetPlayerInterior(playerid));
+	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
+	QuanCar ++;
+	Cars[CreatedCars[createid]] = 9999;
+	Gas[CreatedCars[createid]] = GasMax;
+	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
+	format(store, sizeof(store), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", vehName[params[0]], params[0], CreatedCars[createid]);
+	SendClientMessage(playerid, COLOR_GREY, store);
+	return 1;
+}
+CMD:delveh(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+    if(QuanCar <= 0) return ErrorMessage(playerid, "{FF6347}На сервере нет созданного транспорта");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить транспорт /delveh ID (ID транспорта в /dl)");
+	if(params[0] < 0 || params[0] >= SKOKOCAROV) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
+	if(Cars[params[0]] == 0) return ErrorMessage(playerid, "{FF6347}Транспорта не существует");
+	if(Cars[params[0]] != 9999) return ErrorMessage(playerid, "{FF6347}Этот транспорт не создан администрацией");
+	
+	for(new i = 0; i < MAX_MAPVEH; i++)
+	{
+	    if(CreatedCars[i] == params[0])
+		{
+			ACDestroyVehicle(CreatedCars[i]);
+			CreatedCars[i] = 0;
+			break;
+		}
+ 	}
+ 	QuanCar --;
+ 	PlayerPlaySound(playerid,6801,0,0,0);
+	AdminLog("delveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
+	format(store, sizeof(store), "{0088ff}Транспорт ID %d {FF6347}удалён", params[0]);
+	SendClientMessage(playerid, COLOR_GREY, store);
+	return 1;
+}
+CMD:rvc(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+	if(QuanCar <= 0) return ErrorMessage(playerid, "{FF6347}На сервере нет созданного транспорта");
+    for(new i = 0; i < MAX_MAPVEH; i++)
+	{
+	    if(CreatedCars[i] > 0) ACDestroyVehicle(CreatedCars[i]), CreatedCars[i] = 0;
+ 	}
+    QuanCar = 0;
+    format(store, sizeof(store), " [ ADM ]: %s удалил весь созданный транспорт",PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+    AdminLog("rvc", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return 1;
+}

@@ -1,18 +1,18 @@
-new buttonName[][] = // Подсказка нажатия кнопки для разных девайсов
+new buttonName[][] = // РџРѕРґСЃРєР°Р·РєР° РЅР°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё РґР»СЏ СЂР°Р·РЅС‹С… РґРµРІР°Р№СЃРѕРІ
 {
-    "ПКМ", "H"
+    "РџРљРњ", "H"
 };
 
 new MindTimer[MAX_REALPLAYERS];
 
-new Text:MindDraw[5]; // Мысли облака
-new PlayerText:HintButton; // Подсказка какую кнопку нажимать
+new Text:MindDraw[5]; // РњС‹СЃР»Рё РѕР±Р»Р°РєР°
+new PlayerText:HintButton; // РџРѕРґСЃРєР°Р·РєР° РєР°РєСѓСЋ РєРЅРѕРїРєСѓ РЅР°Р¶РёРјР°С‚СЊ
 
-new PlayerText:MindDraw1; // Мысли (текст верхний)
-new PlayerText:MindDraw2; // Мысли (текст нижний)
+new PlayerText:MindDraw1; //  РњС‹СЃР»Рё (С‚РµРєСЃС‚ РІРµСЂС…РЅРёР№)
+new PlayerText:MindDraw2; // РњС‹СЃР»Рё (С‚РµРєСЃС‚ РЅРёР¶РЅРёР№)
 
 forward SendMindMessage(playerid, const text[], const texttwo[]);
-public SendMindMessage(playerid, const text[], const texttwo[]) // Отправляем сообщение в текстдрав мыслей
+public SendMindMessage(playerid, const text[], const texttwo[]) // РћС‚РїСЂР°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ РІ С‚РµРєСЃС‚РґСЂР°РІ РјС‹СЃР»РµР№
 {
 	if(OnlineInfo[playerid][oMind])
 	{
@@ -20,7 +20,7 @@ public SendMindMessage(playerid, const text[], const texttwo[]) // Отправляем со
 		PlayerTextDrawHide(playerid, MindDraw1), PlayerTextDrawHide(playerid, MindDraw2);
 	}
 	OnlineInfo[playerid][oMind] = true;
-	MindTimer[playerid] = SetTimerEx("DelMind", 7000, false, "d", playerid); // Удаляем через 7 секунд
+	MindTimer[playerid] = SetTimerEx("DelMind", 7000, false, "d", playerid); // РЈРґР°Р»СЏРµРј С‡РµСЂРµР· 7 СЃРµРєСѓРЅРґ
 	TextDrawShowForPlayer(playerid, MindDraw[0]);
 	TextDrawShowForPlayer(playerid, MindDraw[1]);
 	TextDrawShowForPlayer(playerid, MindDraw[2]);
@@ -36,7 +36,7 @@ public SendMindMessage(playerid, const text[], const texttwo[]) // Отправляем со
 }
 
 forward DelMind(playerid);
-public DelMind(playerid) // Удаляем сообщение
+public DelMind(playerid) // РЈРґР°Р»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ
 {
     KillTimer(MindTimer[playerid]);
     ClearMind(playerid);
@@ -54,7 +54,7 @@ stock ClearMind(playerid)
 }
 stock CreateGlobalTextDrawMind()
 {
-	MindDraw[0] = TextDrawCreate(434.666687, 129.422195, "LD_POOL:ball"); // Большой фон
+	MindDraw[0] = TextDrawCreate(434.666687, 129.422195, "LD_POOL:ball"); // Р‘РѕР»СЊС€РѕР№ С„РѕРЅ
 	TextDrawLetterSize(MindDraw[0], 0.000000, 0.000000);
 	TextDrawTextSize(MindDraw[0], 92.666671, 109.096328);
 	TextDrawAlignment(MindDraw[0], 1);
@@ -63,7 +63,7 @@ stock CreateGlobalTextDrawMind()
 	TextDrawSetOutline(MindDraw[0], 0);
 	TextDrawFont(MindDraw[0], 4);
 
-	MindDraw[1] = TextDrawCreate(452.333404, 97.651802, "LD_POOL:ball"); // Маленькие кружочки
+	MindDraw[1] = TextDrawCreate(452.333404, 97.651802, "LD_POOL:ball"); // РњР°Р»РµРЅСЊРєРёРµ РєСЂСѓР¶РѕС‡РєРё
 	TextDrawLetterSize(MindDraw[1], 0.000000, 0.000000);
 	TextDrawTextSize(MindDraw[1], 21.666664, 26.133358);
 	TextDrawAlignment(MindDraw[1], 1);
@@ -72,7 +72,7 @@ stock CreateGlobalTextDrawMind()
 	TextDrawSetOutline(MindDraw[1], 0);
 	TextDrawFont(MindDraw[1], 4);
 
-	MindDraw[2] = TextDrawCreate(470.333404, 72.933288, "LD_POOL:ball"); // Маленькие кружочки
+	MindDraw[2] = TextDrawCreate(470.333404, 72.933288, "LD_POOL:ball"); // РњР°Р»РµРЅСЊРєРёРµ РєСЂСѓР¶РѕС‡РєРё
 	TextDrawLetterSize(MindDraw[2], 0.000000, 0.000000);
 	TextDrawTextSize(MindDraw[2], 14.666664, 17.422246);
 	TextDrawAlignment(MindDraw[2], 1);
@@ -107,7 +107,7 @@ stock CreateGlobalTextDrawHintButton()
 	return 1;
 }
 
-// Диалоговые уведомления
+// Р”РёР°Р»РѕРіРѕРІС‹Рµ СѓРІРµРґРѕРјР»РµРЅРёСЏ
 stock SuccessMessage(playerid, const string[])
 {
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*",string,"*",""), PlayerPlaySound(playerid,6401,0,0,0);

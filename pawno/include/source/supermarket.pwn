@@ -1,35 +1,35 @@
 new Float:SupermarketItemPos[][] =
 {
-	{ 1105.087158, -1372.597167, 1401.845336 }, // 0 Парашют
-	{ 1101.706665, -1373.357910, 1401.545043 }, // 1 Верёвка
-	{ 1101.706665, -1370.817138, 1401.545043 }, // 2 Отмычки
-	{ 1111.009155, -1377.957885, 1401.935424 }, // 3 Бенгальские свечи
-	{ 1105.085937, -1375.336914, 1401.855346 }, // 4 Бита
-	{ 1101.726318, -1376.236572, 1401.855346 }, // 5 Золотое кольцо
-	{ 1103.216796, -1369.375610, 1401.855346 }, // 6 Шашка таксиста
-	{ 1106.046752, -1369.375610, 1401.855346 }, // 7 Цветы
-	{ 1115.489379, -1374.966186, 1401.855346 }, // 8 Подарочная упаковка
-	{ 1115.489379, -1372.265869, 1401.855346 }, // 9 Феиерверк
-	{ 1121.029907, -1373.405761, 1401.855346 }, // 10 Семена травы
-	{ 1121.029907, -1377.447631, 1401.855346 }, // 11 Сигареты
-	{ 1121.920776, -1378.028198, 1401.855346 }, // 12 Бокал
-	{ 1110.919799, -1372.167480, 1401.855346 }, // 13 Мешок
-	{ 1125.142456, -1372.837768, 1401.855346 }, // 14 Хлеб
-	{ 1117.922729, -1369.777587, 1401.454956 }, // 15 Шампанское
-	{ 1121.273315, -1369.777587, 1401.454956 }, // 16 Пиво
-	{ 1110.982055, -1374.947509, 1401.855346 }, // 17 Уголь
-	{ 1108.325073, -1378.018188, 1401.935424}, // 18 Зажигалка
-	{ 1124.570190, -1378.077636, 1401.935424 }, // 19 Кухонный нож
-	{ 1131.505126, -1372.518798, 1402.124633 } // 20 Свадебный торт
+	{ 1105.087158, -1372.597167, 1401.845336 }, // 0 РџР°СЂР°С€СЋС‚
+	{ 1101.706665, -1373.357910, 1401.545043 }, // 1 Р’РµСЂС‘РІРєР°
+	{ 1101.706665, -1370.817138, 1401.545043 }, // 2 РћС‚РјС‹С‡РєРё
+	{ 1111.009155, -1377.957885, 1401.935424 }, // 3 Р‘РµРЅРіР°Р»СЊСЃРєРёРµ СЃРІРµС‡Рё
+	{ 1105.085937, -1375.336914, 1401.855346 }, // 4 Р‘РёС‚Р°
+	{ 1101.726318, -1376.236572, 1401.855346 }, // 5 Р—РѕР»РѕС‚РѕРµ РєРѕР»СЊС†Рѕ
+	{ 1103.216796, -1369.375610, 1401.855346 }, // 6 РЁР°С€РєР° С‚Р°РєСЃРёСЃС‚Р°
+	{ 1106.046752, -1369.375610, 1401.855346 }, // 7 Р¦РІРµС‚С‹
+	{ 1115.489379, -1374.966186, 1401.855346 }, // 8 РџРѕРґР°СЂРѕС‡РЅР°СЏ СѓРїР°РєРѕРІРєР°
+	{ 1115.489379, -1372.265869, 1401.855346 }, // 9 Р¤РµРёРµСЂРІРµСЂРє
+	{ 1121.029907, -1373.405761, 1401.855346 }, // 10 РЎРµРјРµРЅР° С‚СЂР°РІС‹
+	{ 1121.029907, -1377.447631, 1401.855346 }, // 11 РЎРёРіР°СЂРµС‚С‹
+	{ 1121.920776, -1378.028198, 1401.855346 }, // 12 Р‘РѕРєР°Р»
+	{ 1110.919799, -1372.167480, 1401.855346 }, // 13 РњРµС€РѕРє
+	{ 1125.142456, -1372.837768, 1401.855346 }, // 14 РҐР»РµР±
+	{ 1117.922729, -1369.777587, 1401.454956 }, // 15 РЁР°РјРїР°РЅСЃРєРѕРµ
+	{ 1121.273315, -1369.777587, 1401.454956 }, // 16 РџРёРІРѕ
+	{ 1110.982055, -1374.947509, 1401.855346 }, // 17 РЈРіРѕР»СЊ
+	{ 1108.325073, -1378.018188, 1401.935424}, // 18 Р—Р°Р¶РёРіР°Р»РєР°
+	{ 1124.570190, -1378.077636, 1401.935424 }, // 19 РљСѓС…РѕРЅРЅС‹Р№ РЅРѕР¶
+	{ 1131.505126, -1372.518798, 1402.124633 } // 20 РЎРІР°РґРµР±РЅС‹Р№ С‚РѕСЂС‚
 };
 
-new Text3D: BizSM[14][MAX_BIZ_ITEM]; // 3D Текст Продукции Супермаркета
+new Text3D: BizSM[14][MAX_BIZ_ITEM]; // 3D РўРµРєСЃС‚ РџСЂРѕРґСѓРєС†РёРё РЎСѓРїРµСЂРјР°СЂРєРµС‚Р°
 
 stock UpdateSupermarketLabel(b)
 {
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}Р’ РЅР°Р»РёС‡РёРё: %d С€С‚.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
 		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1,store);
 	}
 }
@@ -37,18 +37,18 @@ stock CreateSupermarketLabel(b)
 {
     for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}Р’ РЅР°Р»РёС‡РёРё: %d С€С‚.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
 		BizSM[b-13][i] = CreateDynamic3DTextLabel(store,-1,SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
 	}
 }
-CMD:supermarket(playerid) // Взять тележку
+CMD:supermarket(playerid) // Р’Р·СЏС‚СЊ С‚РµР»РµР¶РєСѓ
 {
 	if(IsPlayerInRangeOfPoint(playerid,2.0,1113.8209,-1384.0480,1401.7142) && GetPlayerInterior(playerid) == 206 && GetPlayerVirtualWorld(playerid) >= 1)
 	{
 		if(GetPVarInt(playerid,"svzyal") >= 1) return Svalilizsm(playerid);
 		if(PPP15[playerid] != 4)
 		{
-			if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2 || Hold[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
+			if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2 || Hold[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё [ РџСЂРµРґРјРµС‚ РёР»Рё РѕСЂСѓР¶РёРµ ]");
 			new b = GetPlayerVirtualWorld(playerid)+12;
 			SetPVarInt(playerid,"sbussines",b);
 			SetPVarInt(playerid,"svzyal", 1);
@@ -59,7 +59,7 @@ CMD:supermarket(playerid) // Взять тележку
 	}
 	return 1;
 }
-CMD:buy(playerid) // Покупаем предметы в супермаркете
+CMD:buy(playerid) // РџРѕРєСѓРїР°РµРј РїСЂРµРґРјРµС‚С‹ РІ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ
 {
 	if(IsPlayerInRangeOfPoint(playerid,1.5,1110.2102,-1380.6837,1401.7142) || IsPlayerInRangeOfPoint(playerid,1.5,1109.0911,-1380.6733,1401.7142)
 	|| IsPlayerInRangeOfPoint(playerid,1.5,1104.6500,-1380.7075,1401.7142) || IsPlayerInRangeOfPoint(playerid,1.5,1103.5388,-1380.7046,1401.7142))
@@ -68,13 +68,13 @@ CMD:buy(playerid) // Покупаем предметы в супермаркете
 		{
 			if(GetPVarInt(playerid,"svzyal") >= 2)
 			{
-          		if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+          		if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
           		RemovePlayerAttachedObject(playerid,1);
           		PPP15[playerid] = 0;
           		ClearAnimations(playerid);
           		new b = GetPVarInt(playerid,"sbussines");
           		new str[100],sctring[1500], item;
-          		format(str,sizeof(str),"{ff9000}Кассовый чек:\n"), strcat(sctring,str);
+          		format(str,sizeof(str),"{ff9000}РљР°СЃСЃРѕРІС‹Р№ С‡РµРє:\n"), strcat(sctring,str);
 
 				for(new i = 0; i < 10; i++)
 			    {
@@ -83,39 +83,39 @@ CMD:buy(playerid) // Покупаем предметы в супермаркете
 			            new bool:noBuy;
 			            item = OnlineInfo[playerid][oShopCartsThing][i]-1;
 			            
-		             	// Обычный
+		             	// РћР±С‹С‡РЅС‹Р№
 			            if(BizzInfo[b][bTypeProduct][item] == 0)
 						{
-						    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Если предмет имеет количество
+						    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
 			        		{
 			        		    new getQuan, getLimit;
 								i_limit(playerid, BizzInfo[b][bProduct][item], getQuan, getLimit);
-								if(getQuan+GetFullThingQuan(BizzInfo[b][bProduct][item]) > getLimit) noBuy = true; // Если нет места
+								if(getQuan+GetFullThingQuan(BizzInfo[b][bProduct][item]) > getLimit) noBuy = true; // Р•СЃР»Рё РЅРµС‚ РјРµСЃС‚Р°
 			        		}
 			        		if(noBuy == false)
 			        		{
-			        		    new put_inva = GiveThingPlayer(playerid, BizzInfo[b][bProduct][item], 0, 0, 0, BizzInfo[b][bTypeProduct][item], 0, 9999); // Выдаём предмет
-						    	if(put_inva == -1) noBuy = true; // Если нет места
+			        		    new put_inva = GiveThingPlayer(playerid, BizzInfo[b][bProduct][item], 0, 0, 0, BizzInfo[b][bTypeProduct][item], 0, 9999); // Р’С‹РґР°С‘Рј РїСЂРµРґРјРµС‚
+						    	if(put_inva == -1) noBuy = true; // Р•СЃР»Рё РЅРµС‚ РјРµСЃС‚Р°
 						    	else format(str,sizeof(str),"\n{cccccc}%s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), strcat(sctring,str);
 			        		}
 						}
 						
-						// Оружие (Цветы и бита и парашют являются оружием)
+						// РћСЂСѓР¶РёРµ (Р¦РІРµС‚С‹ Рё Р±РёС‚Р° Рё РїР°СЂР°С€СЋС‚ СЏРІР»СЏСЋС‚СЃСЏ РѕСЂСѓР¶РёРµРј)
 						else if(BizzInfo[b][bTypeProduct][item] == 1)
 						{
-						    new sl = Protect_Slot(BizzInfo[b][bProduct][item]); // Получаем слот оружия
-						    if(PlayerInfo[playerid][pBeret] == 1 && BizzInfo[b][bProduct][item] != 46) // Если временное лишение оружия (чел в зелёной зоне) - кроме парашюта, он выдаётся всегда и никогда не отнимается
+						    new sl = Protect_Slot(BizzInfo[b][bProduct][item]); // РџРѕР»СѓС‡Р°РµРј СЃР»РѕС‚ РѕСЂСѓР¶РёСЏ
+						    if(PlayerInfo[playerid][pBeret] == 1 && BizzInfo[b][bProduct][item] != 46) // Р•СЃР»Рё РІСЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ РѕСЂСѓР¶РёСЏ (С‡РµР» РІ Р·РµР»С‘РЅРѕР№ Р·РѕРЅРµ) - РєСЂРѕРјРµ РїР°СЂР°С€СЋС‚Р°, РѕРЅ РІС‹РґР°С‘С‚СЃСЏ РІСЃРµРіРґР° Рё РЅРёРєРѕРіРґР° РЅРµ РѕС‚РЅРёРјР°РµС‚СЃСЏ
 							{
-							    if(TempWeapon[playerid][sl] == BizzInfo[b][bProduct][item] && TempAmmo[playerid][sl] > 0) noBuy = true; // Если такое оружие уже есть в руках
+							    if(TempWeapon[playerid][sl] == BizzInfo[b][bProduct][item] && TempAmmo[playerid][sl] > 0) noBuy = true; // Р•СЃР»Рё С‚Р°РєРѕРµ РѕСЂСѓР¶РёРµ СѓР¶Рµ РµСЃС‚СЊ РІ СЂСѓРєР°С…
 								else
 								{
 									TempWeapon[playerid][sl] = BizzInfo[b][bProduct][item], TempAmmo[playerid][sl] = 1, TempQet[playerid][sl] = 0;
 									format(str,sizeof(str),"\n{cccccc}%s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), strcat(sctring,str);
 								}
 							}
-							else // Если нет временного лишения (выдаём в руки)
+							else // Р•СЃР»Рё РЅРµС‚ РІСЂРµРјРµРЅРЅРѕРіРѕ Р»РёС€РµРЅРёСЏ (РІС‹РґР°С‘Рј РІ СЂСѓРєРё)
 							{
-							    if(ProtectInfo[playerid][prWeapon][sl] == BizzInfo[b][bProduct][item] && ProtectInfo[playerid][prAmmo][sl] > 0) noBuy = true; // Если такое оружие уже есть в руках
+							    if(ProtectInfo[playerid][prWeapon][sl] == BizzInfo[b][bProduct][item] && ProtectInfo[playerid][prAmmo][sl] > 0) noBuy = true; // Р•СЃР»Рё С‚Р°РєРѕРµ РѕСЂСѓР¶РёРµ СѓР¶Рµ РµСЃС‚СЊ РІ СЂСѓРєР°С…
 								else
 								{
 									Protect_GiveWeapons(playerid, BizzInfo[b][bProduct][item], 1, 0, 0);
@@ -126,8 +126,8 @@ CMD:buy(playerid) // Покупаем предметы в супермаркете
 						
 						if(noBuy)
 						{
-							if(OnlineInfo[playerid][oShopPrice]-BizzInfo[b][bPrice][item] > 0) OnlineInfo[playerid][oShopPrice] -= BizzInfo[b][bPrice][item]; // Вычитаем из стоимости, только если не загоним вычет в минуса
-						    format(str,sizeof(str),"\n{cccccc}%s {FF6347}Не куплен - нет места", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), strcat(sctring,str);
+							if(OnlineInfo[playerid][oShopPrice]-BizzInfo[b][bPrice][item] > 0) OnlineInfo[playerid][oShopPrice] -= BizzInfo[b][bPrice][item]; // Р’С‹С‡РёС‚Р°РµРј РёР· СЃС‚РѕРёРјРѕСЃС‚Рё, С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРµ Р·Р°РіРѕРЅРёРј РІС‹С‡РµС‚ РІ РјРёРЅСѓСЃР°
+						    format(str,sizeof(str),"\n{cccccc}%s {FF6347}РќРµ РєСѓРїР»РµРЅ - РЅРµС‚ РјРµСЃС‚Р°", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), strcat(sctring,str);
 						}
 						else OnlineInfo[playerid][oShopCartsThing][i] = 0;
 			        }
@@ -138,29 +138,29 @@ CMD:buy(playerid) // Покупаем предметы в супермаркете
           		{
 	        		oGivePlayerMoney(playerid, -zaplati);
 	        		paybiz(b, zaplati);
-              		format(str,sizeof(str),"\n\n{cccccc}Вы заплатили: {99ff66}%d$",zaplati), strcat(sctring,str);
+              		format(str,sizeof(str),"\n\n{cccccc}Р’С‹ Р·Р°РїР»Р°С‚РёР»Рё: {99ff66}%d$",zaplati), strcat(sctring,str);
          		}
-         		else format(str,sizeof(str),"\n\n{cccccc}Вы заплатили: {FF6347}%d$",zaplati), strcat(sctring,str);
-            	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Супермаркет",sctring,"•","");
+         		else format(str,sizeof(str),"\n\n{cccccc}Р’С‹ Р·Р°РїР»Р°С‚РёР»Рё: {FF6347}%d$",zaplati), strcat(sctring,str);
+            	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}РЎСѓРїРµСЂРјР°СЂРєРµС‚",sctring,"вЂў","");
             	PlayerPlaySound(playerid,6401,0,0,0);
             	PlayAudioStreamForPlayer(playerid,"https://pears-project.ru/music/check.mp3");
 
-            	payanim(playerid, 0); // Анимация оплаты
-            	Svalilizsm(playerid); // Очистка переменных супермаркета
+            	payanim(playerid, 0); // РђРЅРёРјР°С†РёСЏ РѕРїР»Р°С‚С‹
+            	Svalilizsm(playerid); // РћС‡РёСЃС‚РєР° РїРµСЂРµРјРµРЅРЅС‹С… СЃСѓРїРµСЂРјР°СЂРєРµС‚Р°
 
-            	// Ачивка за первую покупку
+            	// РђС‡РёРІРєР° Р·Р° РїРµСЂРІСѓСЋ РїРѕРєСѓРїРєСѓ
             	if(PlayerInfo[playerid][pAchieve][6] == 0) AchievePlayer(playerid, 6, 1);
           	}
-          	else ErrorMessage(playerid, "{FF6347}В вашей тележке ничего нет");
+          	else ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµР№ С‚РµР»РµР¶РєРµ РЅРёС‡РµРіРѕ РЅРµС‚");
         }
-        else ErrorMessage(playerid, "{FF6347}Возьмите тележку и кладите в неё покупки");
+        else ErrorMessage(playerid, "{FF6347}Р’РѕР·СЊРјРёС‚Рµ С‚РµР»РµР¶РєСѓ Рё РєР»Р°РґРёС‚Рµ РІ РЅРµС‘ РїРѕРєСѓРїРєРё");
     }
 	return 1;
 }
-stock Korochepokypau(playerid) // Кладём предмет в тележку
+stock Korochepokypau(playerid) // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚ РІ С‚РµР»РµР¶РєСѓ
 {
 	if(GetPlayerVirtualWorld(playerid) <= 0 || GetPlayerVirtualWorld(playerid) >= 15) return 1;
-	if(PPP15[playerid] != 4) return ErrorMessage(playerid, "{FF6347}Возьмите тележку возле кассы");
+	if(PPP15[playerid] != 4) return ErrorMessage(playerid, "{FF6347}Р’РѕР·СЊРјРёС‚Рµ С‚РµР»РµР¶РєСѓ РІРѕР·Р»Рµ РєР°СЃСЃС‹");
 
 	new b = GetPlayerVirtualWorld(playerid)+12, item;
 
@@ -187,13 +187,13 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	else if(IsPlayerInRangeOfPoint(playerid,1.5,1131.505126, -1372.518798, 1402.124633)) item = 20;
 
 
-    if(BizzInfo[b][bItem][item] <= 0) return ErrorMessage(playerid, "{FF6347}В супермаркете нет этого товара в наличии");
+    if(BizzInfo[b][bItem][item] <= 0) return ErrorMessage(playerid, "{FF6347}Р’ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ РЅРµС‚ СЌС‚РѕРіРѕ С‚РѕРІР°СЂР° РІ РЅР°Р»РёС‡РёРё");
     
-    if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]) return format(store, sizeof(store), "{FF6347}На кассе вам не хватит %d$", OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]-oGetPlayerMoney(playerid)), ErrorMessage(playerid, store);
+    if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]) return format(store, sizeof(store), "{FF6347}РќР° РєР°СЃСЃРµ РІР°Рј РЅРµ С…РІР°С‚РёС‚ %d$", OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]-oGetPlayerMoney(playerid)), ErrorMessage(playerid, store);
 
     new fquan;
     new put_i = putshopcarts(playerid, item, 0, fquan);
-    if(put_i == -1) return ErrorMessage(playerid, "{FF6347}В тележке нет места\n{cccccc}Вы можете положить до 10 предметов");
+    if(put_i == -1) return ErrorMessage(playerid, "{FF6347}Р’ С‚РµР»РµР¶РєРµ РЅРµС‚ РјРµСЃС‚Р°\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РїРѕР»РѕР¶РёС‚СЊ РґРѕ 10 РїСЂРµРґРјРµС‚РѕРІ");
     BizzInfo[b][bItem][item] -= 1, BizzInfo[b][bUpdate] = 1;
 
 	SetPVarInt(playerid,"sbussines",b);
@@ -201,14 +201,14 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	PlayerPlaySound(playerid,1052,0,0,0);
 	OnlineInfo[playerid][oShopPrice] += BizzInfo[b][bPrice][item];
 
-	format(store, sizeof(store), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
-	if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-	else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+	format(store, sizeof(store), "РєР»Р°РґС‘С‚ РІ С‚РµР»РµР¶РєСѓ %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
+	if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР» РІ С‚РµР»РµР¶РєСѓ {0088ff}%s {cccccc}[ Р’ С‚РµР»РµР¶РєРµ: %d С€С‚. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+	else format(store, sizeof(store), "[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР»Р° РІ С‚РµР»РµР¶РєСѓ {0088ff}%s {cccccc}[ Р’ С‚РµР»РµР¶РєРµ: %d С€С‚. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 	SendClientMessage(playerid, COLOR_GREY, store);
 	UpdateSupermarketLabel(b);
 	return 1;
 }
-stock putshopcarts(playerid, item, stat, &fquan) // Помещаем предмет в переменные тележки
+stock putshopcarts(playerid, item, stat, &fquan) //  РџРѕРјРµС‰Р°РµРј РїСЂРµРґРјРµС‚ РІ РїРµСЂРµРјРµРЅРЅС‹Рµ С‚РµР»РµР¶РєРё
 {
 	new put_i = -1;
  	for(new i = 0; i < 10; i++)
@@ -228,7 +228,7 @@ stock putshopcarts(playerid, item, stat, &fquan) // Помещаем предмет в переменны
 	}
 	return put_i;
 }
-stock Svalilizsm(playerid) // Удаляем тележку
+stock Svalilizsm(playerid) // РЈРґР°Р»СЏРµРј С‚РµР»РµР¶РєСѓ
 {
 	if(PPP15[playerid] == 4)
 	{
@@ -255,7 +255,7 @@ stock Svalilizsm(playerid) // Удаляем тележку
 stock addiction(playerid, item)
 {
     new b = GetPlayerVirtualWorld(playerid)+12;
-    if(b >= 13 && b <= 26) // Если в интерьере одного из супермаркете
+    if(b >= 13 && b <= 26) // Р•СЃР»Рё РІ РёРЅС‚РµСЂСЊРµСЂРµ РѕРґРЅРѕРіРѕ РёР· СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ
     {
         if(BizzInfo[b][bItem][item] <= 0) return 1;
 
@@ -265,7 +265,7 @@ stock addiction(playerid, item)
 	    
 	    if(BizzInfo[b][bTypeProduct][item] == 0)
 		{
-		    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Если предмет имеет количество
+		    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
     		{
     		    new getQuan, getLimit;
 				i_limit(playerid, BizzInfo[b][bProduct][item], getQuan, getLimit);
@@ -283,9 +283,9 @@ stock addiction(playerid, item)
 		PlayerPlaySound(playerid,1052,0,0,0);
 		OnlineInfo[playerid][oShopPrice] += BizzInfo[b][bPrice][item];
 
-		format(store, sizeof(store), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
-		if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-		else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		format(store, sizeof(store), "РєР»Р°РґС‘С‚ РІ С‚РµР»РµР¶РєСѓ %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
+		if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР» РІ С‚РµР»РµР¶РєСѓ {0088ff}%s {FF6347}[ РљР°Р¶РµС‚СЃСЏ, Сѓ РјРµРЅСЏ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		else format(store, sizeof(store), "[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР»Р° РІ С‚РµР»РµР¶РєСѓ {0088ff}%s {FF6347}[ РљР°Р¶РµС‚СЃСЏ, Сѓ РјРµРЅСЏ Р·Р°РІРёСЃРёРјРѕСЃС‚СЊ ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 		SendClientMessage(playerid, COLOR_GREY, store);
 		UpdateSupermarketLabel(b);
     }

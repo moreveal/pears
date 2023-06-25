@@ -4,49 +4,49 @@ function gunsklad(playerid)
 	if(skladstat > 0)
 	{
 	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], fpara = OnlineInfo[playerid][oInHandThing][2], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
-		if(fpick > 0 && thingPack == 2) // Êëàä¸ì ßùèê
+		if(fpick > 0 && thingPack == 2) //  ÐšÐ»Ð°Ð´Ñ‘Ð¼ Ð¯Ñ‰Ð¸Ðº
 		{
-		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}Íà ýòîì ñêëàäå íåëüçÿ õðàíèòü âåùåñòâà");
+		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}ÐÐ° ÑÑ‚Ð¾Ð¼ ÑÐºÐ»Ð°Ð´Ðµ Ð½ÐµÐ»ÑŒÐ·Ñ Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ Ð²ÐµÑ‰ÐµÑÑ‚Ð²Ð°");
 
-			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}Íà ýòîì ñêëàäå íåëüçÿ õðàíèòü ñíàéïåðñêóþ âèíòîâêó\n{cccccc}[Òîëüêî äëÿ ICA, SWAT]");
+			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}ÐÐ° ÑÑ‚Ð¾Ð¼ ÑÐºÐ»Ð°Ð´Ðµ Ð½ÐµÐ»ÑŒÐ·Ñ Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ ÑÐ½Ð°Ð¹Ð¿ÐµÑ€ÑÐºÑƒÑŽ Ð²Ð¸Ð½Ñ‚Ð¾Ð²ÐºÑƒ\n{cccccc}[Ð¢Ð¾Ð»ÑŒÐºÐ¾ Ð´Ð»Ñ ICA, SWAT]");
 			if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 			{
 			    if(thingType == 1) fpara = 300000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
 			    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 			
-			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType); // Êëàä¸ì ïðåäìåò
-				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}Íà ñêëàäå îðãàíèçàöèè, äëÿ ýòîãî ïðåäìåòà, íåò ìåñòà [ Ëèìèò ]");
+			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType); // ÐšÐ»Ð°Ð´Ñ‘Ð¼ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚
+				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}ÐÐ° ÑÐºÐ»Ð°Ð´Ðµ Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸, Ð´Ð»Ñ ÑÑ‚Ð¾Ð³Ð¾ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð°, Ð½ÐµÑ‚ Ð¼ÐµÑÑ‚Ð° [ Ð›Ð¸Ð¼Ð¸Ñ‚ ]");
 
 				InHandClear(playerid);
-				if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"[ Ìûñëè ]: ß ïîëîæèë íà ñêëàä {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
-				else format(store,sizeof(store),"[ Ìûñëè ]: ß ïîëîæèëà íà ñêëàä {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
+				if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"[ ÐœÑ‹ÑÐ»Ð¸ ]: Ð¯ Ð¿Ð¾Ð»Ð¾Ð¶Ð¸Ð» Ð½Ð° ÑÐºÐ»Ð°Ð´ {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
+				else format(store,sizeof(store),"[ ÐœÑ‹ÑÐ»Ð¸ ]: Ð¯ Ð¿Ð¾Ð»Ð¾Ð¶Ð¸Ð»Ð° Ð½Ð° ÑÐºÐ»Ð°Ð´ {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
     			SendClientMessage(playerid, COLOR_GREY, store);
 				OrgLog(skladstat, "putsklad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
 
-	   		    SetPlayerChatBubble(playerid,"êëàä¸ò ÿùèê íà ñêëàä",COLOR_PURPLE,20.0,3000);
+	   		    SetPlayerChatBubble(playerid,"ÐºÐ»Ð°Ð´Ñ‘Ñ‚ ÑÑ‰Ð¸Ðº Ð½Ð° ÑÐºÐ»Ð°Ð´",COLOR_PURPLE,20.0,3000);
 	       	    RemovePlayerAttachedObject(playerid,1);
 	       	    PPP15[playerid] = 0;
 	       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
 	       	    PlayerPlaySound(playerid,6401,0,0,0);
 
-	       	    // Âûäà¸ì þíèòû
+	       	    // Ð’Ñ‹Ð´Ð°Ñ‘Ð¼ ÑŽÐ½Ð¸Ñ‚Ñ‹
 	       	    if(OrganInfo[fraction(playerid)][gUnitStat][2] > 0)
 	   			{
 	   			    new kol;
-	   				if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0) kol = fquan; // Âåùåñòâà, Ïàòðîíû
-	   				else if(IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1) kol = fquan*1000; // Êàñêà, Áðîíÿ, Îðóæèå
+	   				if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0) kol = fquan; // Ð’ÐµÑ‰ÐµÑÑ‚Ð²Ð°, ÐŸÐ°Ñ‚Ñ€Ð¾Ð½Ñ‹
+	   				else if(IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1) kol = fquan*1000; // ÐšÐ°ÑÐºÐ°, Ð‘Ñ€Ð¾Ð½Ñ, ÐžÑ€ÑƒÐ¶Ð¸Ðµ
 	   				PlayerInfo[playerid][pUnit] += kol*OrganInfo[fraction(playerid)][gUnitStat][2];
 	   				format(store,sizeof(store),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[fraction(playerid)][gUnitStat][2]);
 	   				GameTextForPlayer(playerid,store,3000,3);
 				}
 
-				// Âûäà¸ì à÷èâêó, ïåðâûé äîñòàâëåííûé ÿùèê
+				// Ð’Ñ‹Ð´Ð°Ñ‘Ð¼ Ð°Ñ‡Ð¸Ð²ÐºÑƒ, Ð¿ÐµÑ€Ð²Ñ‹Ð¹ Ð´Ð¾ÑÑ‚Ð°Ð²Ð»ÐµÐ½Ð½Ñ‹Ð¹ ÑÑ‰Ð¸Ðº
 				if(PlayerInfo[playerid][pAchieve][99] == 0) AchievePlayer(playerid, 99, 1);
   	    	}
-			else ErrorMessage(playerid, "{FF6347}Ñîäåðæèìîå ÿùèêà â ðóêàõ íå ìîæåò õðàíèòüñÿ íà ýòîì ñêëàäå");
+			else ErrorMessage(playerid, "{FF6347}Ð¡Ð¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ ÑÑ‰Ð¸ÐºÐ° Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒÑÑ Ð½Ð° ÑÑ‚Ð¾Ð¼ ÑÐºÐ»Ð°Ð´Ðµ");
 		}
-		else ErrorMessage(playerid, "{FF6347}Ó âàñ â ðóêàõ íåò ÿùèêà");
+		else ErrorMessage(playerid, "{FF6347}Ð£ Ð²Ð°Ñ Ð² Ñ€ÑƒÐºÐ°Ñ… Ð½ÐµÑ‚ ÑÑ‰Ð¸ÐºÐ°");
 	}
 	return 1;
 }
@@ -60,32 +60,32 @@ stock use_sklad(playerid, wh, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != OrganInfo[wh][gInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}Ó ìåíÿ óæå åñòü ýòîò ïðåäìåò");
+	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}Ð£ Ð¼ÐµÐ½Ñ ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ ÑÑ‚Ð¾Ñ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚");
 
 	new yes, giveThing;
-	if(IsHelmet(fpick) && thingType == 2) // Êàñêà (Òèï àêñåññóàð)
+	if(IsHelmet(fpick) && thingType == 2) // ÐšÐ°ÑÐºÐ° (Ð¢Ð¸Ð¿ Ð°ÐºÑÐµÑÑÑƒÐ°Ñ€)
 	{
-	    if(PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Âû íå ìîæåòå ñåé÷àñ âçÿòü êàñêó [ ×åðåç %d ìèí. ]", ((PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60)-unixtime)/60), ErrorMessage(playerid, store);
-	    if(PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick) return ErrorMessage(playerid, "{FF6347}Ó ìåíÿ óæå åñòü ýòîò ïðåäìåò");
+	    if(PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ð·ÑÑ‚ÑŒ ÐºÐ°ÑÐºÑƒ [ Ð§ÐµÑ€ÐµÐ· %d Ð¼Ð¸Ð½. ]", ((PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60)-unixtime)/60), ErrorMessage(playerid, store);
+	    if(PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick) return ErrorMessage(playerid, "{FF6347}Ð£ Ð¼ÐµÐ½Ñ ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ ÑÑ‚Ð¾Ñ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚");
 	    giveThing = 6;
 	    yes = 1;
 	}
-	else if(IsArmor(fpick) && thingType == 2) // Áðîíåæèëåò (Òèï àêñåññóàð)
+	else if(IsArmor(fpick) && thingType == 2) // Ð‘Ñ€Ð¾Ð½ÐµÐ¶Ð¸Ð»ÐµÑ‚ (Ð¢Ð¸Ð¿ Ð°ÐºÑÐµÑÑÑƒÐ°Ñ€)
 	{
-	    if(PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Âû íå ìîæåòå ñåé÷àñ âçÿòü áðîíåæèëåò [ ×åðåç %d ìèí. ]", ((PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60)-unixtime)/60), ErrorMessage(playerid, store);
-	    if(PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}Ó ìåíÿ óæå åñòü ýòîò ïðåäìåò");
+	    if(PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ð·ÑÑ‚ÑŒ Ð±Ñ€Ð¾Ð½ÐµÐ¶Ð¸Ð»ÐµÑ‚ [ Ð§ÐµÑ€ÐµÐ· %d Ð¼Ð¸Ð½. ]", ((PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60)-unixtime)/60), ErrorMessage(playerid, store);
+	    if(PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}Ð£ Ð¼ÐµÐ½Ñ ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ ÑÑ‚Ð¾Ñ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚");
 	    giveThing = 7;
 	    yes = 1;
 	}
-	else if(thingType == 1) // Îðóæèå
+	else if(thingType == 1) // ÐžÑ€ÑƒÐ¶Ð¸Ðµ
 	{
-	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Âû íå ìîæåòå ñåé÷àñ âçÿòü îðóæèå [ ×åðåç %d ìèí. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, store);
+	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ð·ÑÑ‚ÑŒ Ð¾Ñ€ÑƒÐ¶Ð¸Ðµ [ Ð§ÐµÑ€ÐµÐ· %d Ð¼Ð¸Ð½. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, store);
 	    giveThing = 4;
 	    yes = 1;
 	}
 	else if(thingType == 0)
 	{
-	    if(friskKol[fpick] == 1) // Ïðåäìåò èìååò êîëè÷åñòâî
+	    if(friskKol[fpick] == 1) // ÐŸÑ€ÐµÐ´Ð¼ÐµÑ‚ Ð¸Ð¼ÐµÐµÑ‚ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾
 		{
 		    DP[0][playerid] = inva;
 			new maxQuan = 1000, maxTime;
@@ -95,14 +95,14 @@ stock use_sklad(playerid, wh, inva, useinva)
 			else if(fpick == 30) maxQuan = OrganInfo[wh][gUnitStat][13], maxTime = PlayerInfo[playerid][pGacc][3]+OrganInfo[wh][gUnitStat][17]*60;
 			else if(fpick >= 4 && fpick <= 7) maxQuan = OrganInfo[wh][gUnitStat][22], maxTime = PlayerInfo[playerid][pGacc][8]+OrganInfo[wh][gUnitStat][23]*60;
 			
-			if(maxTime > 0 && maxTime > unixtime) return format(store,sizeof(store),"{FF6347}Âû íå ìîæåòå ñåé÷àñ âçÿòü ýòîò ïðåäìåò [ ×åðåç %d ìèí. ]\n\n{cccccc}Îãðàíè÷åíèÿ óñòàíàâëèâàåò ðóêîâîäèòåëü", maxQuan), ErrorMessage(playerid, store);
-			format(store,sizeof(store),"{cccccc}×òîáû âçÿòü {ff9000}%s {cccccc}ââåäèòå êîëè÷åñòâî\n\n{cccccc}Íå ìåíüøå 1 è íå áîëüøå %d\nËèìèòû óñòàíàâëèâàåò ðóêîâîäèòåëü",friskName[fpick], maxQuan);
-			ShowDialog(playerid,967,DIALOG_STYLE_INPUT,"{ff9000}Ñêëàä",store,"Ïðèíÿòü","Îòìåíà");
+			if(maxTime > 0 && maxTime > unixtime) return format(store,sizeof(store),"{FF6347}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ð·ÑÑ‚ÑŒ ÑÑ‚Ð¾Ñ‚ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ [ Ð§ÐµÑ€ÐµÐ· %d Ð¼Ð¸Ð½. ]\n\n{cccccc}ÐžÐ³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ñ ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÑ‚ Ñ€ÑƒÐºÐ¾Ð²Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒ", maxQuan), ErrorMessage(playerid, store);
+			format(store,sizeof(store),"{cccccc}Ð§Ñ‚Ð¾Ð±Ñ‹ Ð²Ð·ÑÑ‚ÑŒ {ff9000}%s {cccccc}Ð²Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾\n\n{cccccc}ÐÐµ Ð¼ÐµÐ½ÑŒÑˆÐµ 1 Ð¸ Ð½Ðµ Ð±Ð¾Ð»ÑŒÑˆÐµ %d\nÐ›Ð¸Ð¼Ð¸Ñ‚Ñ‹ ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÑ‚ Ñ€ÑƒÐºÐ¾Ð²Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒ",friskName[fpick], maxQuan);
+			ShowDialog(playerid,967,DIALOG_STYLE_INPUT,"{ff9000}Ð¡ÐºÐ»Ð°Ð´",store,"ÐŸÑ€Ð¸Ð½ÑÑ‚ÑŒ","ÐžÑ‚Ð¼ÐµÐ½Ð°");
 			return 1;
 		}
-		if(fpick == 8) // Àïòå÷êà
+		if(fpick == 8) // ÐÐ¿Ñ‚ÐµÑ‡ÐºÐ°
 		{
-			if(PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Âû íå ìîæåòå ñåé÷àñ âçÿòü ïðåäìåò [ ×åðåç %d ìèí. ]\n\n{cccccc}Îãðàíè÷åíèÿ óñòàíàâëèâàåò ðóêîâîäèòåëü", ((PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60)-unixtime)/60), ErrorMessage(playerid, store);
+			if(PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60 > unixtime) return format(store,sizeof(store),"{FF6347}Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ ÑÐµÐ¹Ñ‡Ð°Ñ Ð²Ð·ÑÑ‚ÑŒ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ [ Ð§ÐµÑ€ÐµÐ· %d Ð¼Ð¸Ð½. ]\n\n{cccccc}ÐžÐ³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð¸Ñ ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÑ‚ Ñ€ÑƒÐºÐ¾Ð²Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒ", ((PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60)-unixtime)/60), ErrorMessage(playerid, store);
 			giveThing = 5;
 		}
 		yes = 1;
@@ -116,8 +116,8 @@ stock use_sklad(playerid, wh, inva, useinva)
 	    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 	    OrganInfo[wh][gInvPara][inva] = fpara;
 	
-		new put_inva = GiveThingPlayer(playerid, fpick, 1, OrganInfo[wh][gInvPara][inva], 0, OrganInfo[wh][gInvType][inva], 0, useinva); // Âûäà¸ì ïðåäìåò èãðîêó
-    	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}Ó ìåíÿ íåò ìåñòà â èíâåíòàðå"); // Ïîëó÷èëè -1 â îòâåò, çíà÷èò íå íàøëè ÿ÷åéêó, êóäà êëàñòü ïðåäìåò
+		new put_inva = GiveThingPlayer(playerid, fpick, 1, OrganInfo[wh][gInvPara][inva], 0, OrganInfo[wh][gInvType][inva], 0, useinva); // Ð’Ñ‹Ð´Ð°Ñ‘Ð¼ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ Ð¸Ð³Ñ€Ð¾ÐºÑƒ
+    	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}Ð£ Ð¼ÐµÐ½Ñ Ð½ÐµÑ‚ Ð¼ÐµÑÑ‚Ð° Ð² Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ðµ"); // ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ð»Ð¸ -1 Ð² Ð¾Ñ‚Ð²ÐµÑ‚, Ð·Ð½Ð°Ñ‡Ð¸Ñ‚ Ð½Ðµ Ð½Ð°ÑˆÐ»Ð¸ ÑÑ‡ÐµÐ¹ÐºÑƒ, ÐºÑƒÐ´Ð° ÐºÐ»Ð°ÑÑ‚ÑŒ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚
     	SaveInvent(playerid, put_inva);
 
     	TakeSklad(wh, fpick, 1, thingType, inva);
@@ -125,17 +125,17 @@ stock use_sklad(playerid, wh, inva, useinva)
     	PlayerPlaySound(playerid, 36401, 0.0, 0.0, 0.0);
 
     	if(giveThing > 0) PlayerInfo[playerid][pGacc][giveThing] = unixtime;
-    	format(store, sizeof(store), "áåð¸ò ñî ñêëàäà: %s", GetNameThing(0, fpick, thingType, 0));
+    	format(store, sizeof(store), "Ð±ÐµÑ€Ñ‘Ñ‚ ÑÐ¾ ÑÐºÐ»Ð°Ð´Ð°: %s", GetNameThing(0, fpick, thingType, 0));
 		SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,5000);
     	OrgLog(wh, "sklad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 1, GetNameThing(1, fpick, thingType, 0));
 	}
 	return 1;
 }
-stock shift_sklad(playerid, wh, getinva, putinva) // Ïåðåìåùåíèå ïðåäìåòîâ âíóòðè èíâåíòàðÿ ñêëàäà îðãàíèçàöèè (ñ îäíîé ÿ÷åéêè íà äðóãóþ)
+stock shift_sklad(playerid, wh, getinva, putinva) // ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð²Ð½ÑƒÑ‚Ñ€Ð¸ Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ ÑÐºÐ»Ð°Ð´Ð° Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸ (Ñ Ð¾Ð´Ð½Ð¾Ð¹ ÑÑ‡ÐµÐ¹ÐºÐ¸ Ð½Ð° Ð´Ñ€ÑƒÐ³ÑƒÑŽ)
 {
 	if(OnlineInfo[playerid][oShowInterfaceSklad] == wh)
 	{
-	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Ïåðåìåùàòü ïðåäìåòû ìîæåò òîëüêî ëèäåð"), i_resettabs(playerid);
+	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰Ð°Ñ‚ÑŒ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð¼Ð¾Ð¶ÐµÑ‚ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð»Ð¸Ð´ÐµÑ€"), i_resettabs(playerid);
 		if(OrganInfo[wh][gInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(OrganInfo[wh][gInvent][putinva] != 0) return 1;
 		new quanPlayer;
@@ -148,7 +148,7 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Ïåðåìåùåíèå ïðåäìåòîâ âíóòð
 		}
 		if(quanPlayer >= 2)
 		{
-		    format(store, sizeof(store), "{FF6347}Ñêëàä ïðîñìàòðèâàþò %d ÷åë. [ Ïåðåìåùåíèå ïðåäìåòà íåâîçìîæíî ]", quanPlayer-1);
+		    format(store, sizeof(store), "{FF6347}Ð¡ÐºÐ»Ð°Ð´ Ð¿Ñ€Ð¾ÑÐ¼Ð°Ñ‚Ñ€Ð¸Ð²Ð°ÑŽÑ‚ %d Ñ‡ÐµÐ». [ ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð° Ð½ÐµÐ²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ ]", quanPlayer-1);
 			ErrorMessage(playerid, store);
 			i_resettabs(playerid);
 			return 1;
@@ -177,7 +177,7 @@ stock putsklad(wh, pick, kol, fpara, thingType)
 	{
 		if(OrganInfo[wh][gInvent][inva] == pick && OrganInfo[wh][gInvType][inva] == thingType)
 		{
-		    if(OrganInfo[wh][gInv][inva]+kol > getLimit) // Âñòðîåííàÿ ïðîâåðêà íà ëèìèò
+		    if(OrganInfo[wh][gInv][inva]+kol > getLimit) // Ð’ÑÑ‚Ñ€Ð¾ÐµÐ½Ð½Ð°Ñ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð»Ð¸Ð¼Ð¸Ñ‚
 		    {
 		        stopFind = true;
 		    }
@@ -226,7 +226,7 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 	}
 	return 1;
 }
-stock SaveSklad(idx) // Ñîõðàíåíèå âñåãî ñêëàäà îðãàíèçàöèè ïî öèêëó
+stock SaveSklad(idx) // Ð¡Ð¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ Ð²ÑÐµÐ³Ð¾ ÑÐºÐ»Ð°Ð´Ð° Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð¿Ð¾ Ñ†Ð¸ÐºÐ»Ñƒ
 {
 	format(big_query,sizeof(big_query),"UPDATE `pp_organization` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvPara0` = '%d'",
 	OrganInfo[idx][gInvent][0], OrganInfo[idx][gInv][0], OrganInfo[idx][gInvType][0], OrganInfo[idx][gInvPara][0]);
@@ -238,16 +238,16 @@ stock SaveSklad(idx) // Ñîõðàíåíèå âñåãî ñêëàäà îðãàíèçàöèè ïî öèêëó
 	query_empty(pearsq_2, big_query);
 	return 1;
 }
-stock sklad_limit(thingId, thingType, &getLimit) // Ïðîâåðÿåì ëèìèòû ñêëàäà îðãàíèçàöèè
+stock sklad_limit(thingId, thingType, &getLimit) // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ð»Ð¸Ð¼Ð¸Ñ‚Ñ‹ ÑÐºÐ»Ð°Ð´Ð° Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸
 {
-	if(thingType == 0) // Îáû÷íûå Ïðåäìåòû
+	if(thingType == 0) // ÐžÐ±Ñ‹Ñ‡Ð½Ñ‹Ðµ ÐŸÑ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹
 	{
-	    if(thingId >= 4 && thingId <= 8) getLimit = 10000; // Âåùåñòâà
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 20000; // Ïàòðîíû
-	    else getLimit = 1000; // Íà ñëó÷àé îøèáêè, îñòàëüíûå ïðåäìåòû ëèìèò 1ê
+	    if(thingId >= 4 && thingId <= 8) getLimit = 10000; // Ð’ÐµÑ‰ÐµÑÑ‚Ð²Ð°
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 20000; // ÐŸÐ°Ñ‚Ñ€Ð¾Ð½Ñ‹
+	    else getLimit = 1000; // ÐÐ° ÑÐ»ÑƒÑ‡Ð°Ð¹ Ð¾ÑˆÐ¸Ð±ÐºÐ¸, Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð»Ð¸Ð¼Ð¸Ñ‚ 1Ðº
  	}
-	else if(thingType == 1) getLimit = 500; // Îðóæèå
-    else if(thingType == 2) getLimit = 1000; // Êàñêè è Áðîíåæèëåòû (Àêñåññóàðû)
-    else getLimit = 1000; // Íà ñëó÷àé îøèáêè, îñòàëüíûå ïðåäìåòû ëèìèò 1ê
+	else if(thingType == 1) getLimit = 500; // ÐžÑ€ÑƒÐ¶Ð¸Ðµ
+    else if(thingType == 2) getLimit = 1000; // ÐšÐ°ÑÐºÐ¸ Ð¸ Ð‘Ñ€Ð¾Ð½ÐµÐ¶Ð¸Ð»ÐµÑ‚Ñ‹ (ÐÐºÑÐµÑÑÑƒÐ°Ñ€Ñ‹)
+    else getLimit = 1000; // ÐÐ° ÑÐ»ÑƒÑ‡Ð°Ð¹ Ð¾ÑˆÐ¸Ð±ÐºÐ¸, Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð»Ð¸Ð¼Ð¸Ñ‚ 1Ðº
 	return 1;
 }

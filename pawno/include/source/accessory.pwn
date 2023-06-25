@@ -1,14 +1,14 @@
 
-#define MAX_ACCESSORY 1000 // Максимальное количество аксессуаров для игроков
+#define MAX_ACCESSORY 1000 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ РґР»СЏ РёРіСЂРѕРєРѕРІ
 
 enum acInfo
 {
-	acID, // ID В базе данных
-	acModel, // Модель Аксессуара
-	acName[34], // Название аксессуара
-	acPrice, // Гос цена аксессуара
-	acStatus, // Статус аксессуара, активен он или нет
-	acBone, // Кость (Куда крепится этот аксессуар)
+	acID, // ID Р’ Р±Р°Р·Рµ РґР°РЅРЅС‹С…
+	acModel, // РњРѕРґРµР»СЊ РђРєСЃРµСЃСЃСѓР°СЂР°
+	acName[34], // РќР°Р·РІР°РЅРёРµ Р°РєСЃРµСЃСЃСѓР°СЂР°.
+	acPrice, // Р“РѕСЃ С†РµРЅР° Р°РєСЃРµСЃСЃСѓР°СЂР°
+	acStatus, // РЎС‚Р°С‚СѓСЃ Р°РєСЃРµСЃСЃСѓР°СЂР°, Р°РєС‚РёРІРµРЅ РѕРЅ РёР»Рё РЅРµС‚
+	acBone, // РљРѕСЃС‚СЊ (РљСѓРґР° РєСЂРµРїРёС‚СЃСЏ СЌС‚РѕС‚ Р°РєСЃРµСЃСЃСѓР°СЂ)
 	Float:acX,
 	Float:acY,
 	Float:acZ,
@@ -18,65 +18,65 @@ enum acInfo
 	Float:acsX,
 	Float:acsY,
 	Float:acsZ,
-	bool:acUpdate, // Статус сохранения в базу (раз в минуту проверка)
-	bool:acMysqlCheck // Запрет на повторный запрос в базу, пока от предыдущего не пришел ответ
+	bool:acUpdate, // РЎС‚Р°С‚СѓСЃ СЃРѕС…СЂР°РЅРµРЅРёСЏ РІ Р±Р°Р·Сѓ (СЂР°Р· РІ РјРёРЅСѓС‚Сѓ РїСЂРѕРІРµСЂРєР°)
+	bool:acMysqlCheck // Р—Р°РїСЂРµС‚ РЅР° РїРѕРІС‚РѕСЂРЅС‹Р№ Р·Р°РїСЂРѕСЃ РІ Р±Р°Р·Сѓ, РїРѕРєР° РѕС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РЅРµ РїСЂРёС€РµР» РѕС‚РІРµС‚
 };
 new AccessoryInfo[MAX_ACCESSORY][acInfo];
 new AccessoryQuan;
 
 new AccessoryEditSkin;
 
-new boneName[][] = // Названия креплений аксессуара к костям
+new boneName[][] = // РќР°Р·РІР°РЅРёСЏ РєСЂРµРїР»РµРЅРёР№ Р°РєСЃРµСЃСЃСѓР°СЂР° Рє РєРѕСЃС‚СЏРј
 {
-    "Голова", "Спина", "Голова", "Левое плечо", "Правое плечо", "Левая рука", "Правая рука", "Левое бедро", "Правое бедро", "Левая нога",
-    "Правая нога", "Правая икра", "Левая икра", "Левое предплечье", "Правое предплечье", "Левая ключица", "Правая ключица", "Шея", "Челюсть"
+    "Р“РѕР»РѕРІР°", "РЎРїРёРЅР°", "Р“РѕР»РѕРІР°", "Р›РµРІРѕРµ РїР»РµС‡Рѕ", "РџСЂР°РІРѕРµ РїР»РµС‡Рѕ", "Р›РµРІР°СЏ СЂСѓРєР°", "РџСЂР°РІР°СЏ СЂСѓРєР°", "Р›РµРІРѕРµ Р±РµРґСЂРѕ", "РџСЂР°РІРѕРµ Р±РµРґСЂРѕ", "Р›РµРІР°СЏ РЅРѕРіР°",
+    "РџСЂР°РІР°СЏ РЅРѕРіР°", "РџСЂР°РІР°СЏ РёРєСЂР°", "Р›РµРІР°СЏ РёРєСЂР°", "Р›РµРІРѕРµ РїСЂРµРґРїР»РµС‡СЊРµ", "РџСЂР°РІРѕРµ РїСЂРµРґРїР»РµС‡СЊРµ", "Р›РµРІР°СЏ РєР»СЋС‡РёС†Р°", "РџСЂР°РІР°СЏ РєР»СЋС‡РёС†Р°", "РЁРµСЏ", "Р§РµР»СЋСЃС‚СЊ"
 };
 
 CMD:aeditskin(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(AccessoryEditSkin == 0) AccessoryEditSkin = 1, SuccessMessage(playerid, "{99ff66}Редактор вкл");
-	else AccessoryEditSkin = 0, SuccessMessage(playerid, "{FF6347}Редактор выкл");
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(AccessoryEditSkin == 0) AccessoryEditSkin = 1, SuccessMessage(playerid, "{99ff66}Р РµРґР°РєС‚РѕСЂ РІРєР»");
+	else AccessoryEditSkin = 0, SuccessMessage(playerid, "{FF6347}Р РµРґР°РєС‚РѕСЂ РІС‹РєР»");
 	return 1;
 }
 
 CMD:accessory(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
 	DP[0][playerid] = 0;
 	AccessoryList(playerid, 0, "");
 	return 1;
 }
 
-stock AccessoryList(playerid, page, const findName[]) // Меню настроек аксессуаров для игроков
+stock AccessoryList(playerid, page, const findName[]) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕРµРє Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ РґР»СЏ РёРіСЂРѕРєРѕРІ
 {
-    format(ListName[playerid],34, ""); // Очищаем имя сохранённого поиска
-	DP[1][playerid] = page; // Сохраняем открытую страницу
-	DP[2][playerid] = 0; // Сбрасываем статус отображения списка аксессуаров
+    format(ListName[playerid],34, ""); // РћС‡РёС‰Р°РµРј РёРјСЏ СЃРѕС…СЂР°РЅС‘РЅРЅРѕРіРѕ РїРѕРёСЃРєР°
+	DP[1][playerid] = page; // РЎРѕС…СЂР°РЅСЏРµРј РѕС‚РєСЂС‹С‚СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
+	DP[2][playerid] = 0; // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‚Р°С‚СѓСЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРїРёСЃРєР° Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ
 	
-    new minId = 0, maxId = 99, quanId, quanFind = strlen(findName), quanType, findModel; // Минимальный и максимально отображаемые аксессуары на странице
-    if(page >= 1) minId += 100*page, maxId += 100*page; // Если это следующие страницы, присваиваем следующие ID
+    new minId = 0, maxId = 99, quanId, quanFind = strlen(findName), quanType, findModel; // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕ РѕС‚РѕР±СЂР°Р¶Р°РµРјС‹Рµ Р°РєСЃРµСЃСЃСѓР°СЂС‹ РЅР° СЃС‚СЂР°РЅРёС†Рµ
+    if(page >= 1) minId += 100*page, maxId += 100*page; // Р•СЃР»Рё СЌС‚Рѕ СЃР»РµРґСѓСЋС‰РёРµ СЃС‚СЂР°РЅРёС†С‹, РїСЂРёСЃРІР°РёРІР°РµРј СЃР»РµРґСѓСЋС‰РёРµ ID
     
-    format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"Аксессуар\tModel\tЦена"), strcat(lines,line);
-	format(line,sizeof(line),"\n{99ff66}Добавить аксессуар\t\t"), strcat(lines,line);
+    format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
+	format(line,sizeof(line),"РђРєСЃРµСЃСЃСѓР°СЂ\tModel\tР¦РµРЅР°"), strcat(lines,line);
+	format(line,sizeof(line),"\n{99ff66}Р”РѕР±Р°РІРёС‚СЊ Р°РєСЃРµСЃСЃСѓР°СЂ\t\t"), strcat(lines,line);
 	
 	if(quanFind > 0)
 	{
-	    format(ListName[playerid],34, "%s", findName); // Сохраняем поиск по имени
+	    format(ListName[playerid],34, "%s", findName); // РЎРѕС…СЂР°РЅСЏРµРј РїРѕРёСЃРє РїРѕ РёРјРµРЅРё
 	    if(IsNumeric(findName)) quanType = 1, findModel = strval(findName);
-		format(line,sizeof(line),"\n{cccccc}Найти [%s]\t\t", findName), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}РќР°Р№С‚Рё [%s]\t\t", findName), strcat(lines,line);
 	}
-	else format(line,sizeof(line),"\n{cccccc}Найти\t\t"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}РќР°Р№С‚Рё\t\t"), strcat(lines,line);
 	
     for(new i = minId; i < maxId; i++)
 	{
-	    if(AccessoryInfo[i][acModel] > 0 && quanFind == 0 // Если поиск по модели и имени не активен, просто показываем все аксессуары
-		|| quanFind > 0 && (quanType == 1 && AccessoryInfo[i][acModel] == findModel) // Ищем по model
-		|| quanFind > 0 && (quanType == 0 && strfind(AccessoryInfo[i][acName], findName, true) != -1)) // Ищем по названию
+	    if(AccessoryInfo[i][acModel] > 0 && quanFind == 0 // Р•СЃР»Рё РїРѕРёСЃРє РїРѕ РјРѕРґРµР»Рё Рё РёРјРµРЅРё РЅРµ Р°РєС‚РёРІРµРЅ, РїСЂРѕСЃС‚Рѕ РїРѕРєР°Р·С‹РІР°РµРј РІСЃРµ Р°РєСЃРµСЃСЃСѓР°СЂС‹
+		|| quanFind > 0 && (quanType == 1 && AccessoryInfo[i][acModel] == findModel) // РС‰РµРј РїРѕ model
+		|| quanFind > 0 && (quanType == 0 && strfind(AccessoryInfo[i][acName], findName, true) != -1)) // РС‰РµРј РїРѕ РЅР°Р·РІР°РЅРёСЋ
 	    {
-	        List[quanId][playerid] = i; // Сохраняем найденный аксессуар в переменную
-	        quanId ++; // Ведём подсчёт переменных
+	        List[quanId][playerid] = i; // РЎРѕС…СЂР°РЅСЏРµРј РЅР°Р№РґРµРЅРЅС‹Р№ Р°РєСЃРµСЃСЃСѓР°СЂ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
+	        quanId ++; // Р’РµРґС‘Рј РїРѕРґСЃС‡С‘С‚ РїРµСЂРµРјРµРЅРЅС‹С…
 			if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}%d. %s\t%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
 			else format(line,sizeof(line),"\n{cccccc}%d. {ff9000}%s\t{cccccc}%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
 		}
@@ -84,22 +84,22 @@ stock AccessoryList(playerid, page, const findName[]) // Меню настроек аксессуар
 	if(quanId == 0)
 	{
 		DP[2][playerid] = 1;
-		format(line,sizeof(line),"\n{FF6347}Аксессуары не найдены\t\t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{FF6347}РђРєСЃРµСЃСЃСѓР°СЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹\t\t"), strcat(lines,line);
 	}
-	if(page > 0 || quanId >= 100) format(line,sizeof(line),"\n{444444}Далее >>\t\t"), strcat(lines,line);
+	if(page > 0 || quanId >= 100) format(line,sizeof(line),"\n{444444}Р”Р°Р»РµРµ >>\t\t"), strcat(lines,line);
 	
 	new lol[60];
-	format(lol,sizeof(lol),"{ff9000}Аксессуары %d {cccccc}[Страница %d]", AccessoryQuan, page+1);
-    ShowDialog(playerid,1278,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Выход");
+	format(lol,sizeof(lol),"{ff9000}РђРєСЃРµСЃСЃСѓР°СЂС‹ %d {cccccc}[РЎС‚СЂР°РЅРёС†Р° %d]", AccessoryQuan, page+1);
+    ShowDialog(playerid,1278,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
-stock AccessorySetting(playerid, i) // Меню настройки конкретного аксессуара
+stock AccessorySetting(playerid, i) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ Р°РєСЃРµСЃСЃСѓР°СЂР°
 {
 	if(i == -1)
 	{
-	    format(store,sizeof(store),"{cccccc}Введите ID Model аксессуара [321 - %d]\n\n{444444}Вся необходимая информация об аксессуарах и поиске моделей на форуме", MAX_OBJECT_MODEL_ID);
-	    ShowDialog(playerid,1280,DIALOG_STYLE_INPUT,"{ff9000}Создание Аксессуара",store,"Принять","Отмена");
+	    format(store,sizeof(store),"{cccccc}Р’РІРµРґРёС‚Рµ ID Model Р°РєСЃРµСЃСЃСѓР°СЂР° [321 - %d]\n\n{444444}Р’СЃСЏ РЅРµРѕР±С…РѕРґРёРјР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ РѕР± Р°РєСЃРµСЃСЃСѓР°СЂР°С… Рё РїРѕРёСЃРєРµ РјРѕРґРµР»РµР№ РЅР° С„РѕСЂСѓРјРµ", MAX_OBJECT_MODEL_ID);
+	    ShowDialog(playerid,1280,DIALOG_STYLE_INPUT,"{ff9000}РЎРѕР·РґР°РЅРёРµ РђРєСЃРµСЃСЃСѓР°СЂР°",store,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 	}
 	else
 	{
@@ -108,31 +108,31 @@ stock AccessorySetting(playerid, i) // Меню настройки конкретного аксессуара
 	    DP[3][playerid] = i;
 	    
 	    
-	    format(lines,sizeof(lines),""); // Очищаем Lines
+	    format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
 		format(line,sizeof(line),"%d. Model: %d \t", i+1, AccessoryInfo[i][acModel]), strcat(lines,line);
 		
-		if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}Статус: \t{FF6347}Не активен"), strcat(lines,line);
-		else format(line,sizeof(line),"\n{cccccc}Статус: \t{99ff66}Активен"), strcat(lines,line);
+		if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ: \t{FF6347}РќРµ Р°РєС‚РёРІРµРЅ"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ: \t{99ff66}РђРєС‚РёРІРµРЅ"), strcat(lines,line);
 		
-		format(line,sizeof(line),"\n{cccccc}Название: \t{ff9000}%s", AccessoryInfo[i][acName]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Гос. Стоимость: \t{99ff66}%d$ [%s]", AccessoryInfo[i][acPrice], get_k(AccessoryInfo[i][acPrice])), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Кость крепления: \t{444444}%s", boneName[AccessoryInfo[i][acBone]]), strcat(lines,line);
-		format(line,sizeof(line),"\n{444444}Расположение на игроке >> \t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{444444}Отображение в текстдраве >> \t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{FF6347}Удалить аксессуар \t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ: \t{ff9000}%s", AccessoryInfo[i][acName]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Р“РѕСЃ. РЎС‚РѕРёРјРѕСЃС‚СЊ: \t{99ff66}%d$ [%s]", AccessoryInfo[i][acPrice], get_k(AccessoryInfo[i][acPrice])), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}РљРѕСЃС‚СЊ РєСЂРµРїР»РµРЅРёСЏ: \t{444444}%s", boneName[AccessoryInfo[i][acBone]]), strcat(lines,line);
+		format(line,sizeof(line),"\n{444444}Р Р°СЃРїРѕР»РѕР¶РµРЅРёРµ РЅР° РёРіСЂРѕРєРµ >> \t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{444444}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РІ С‚РµРєСЃС‚РґСЂР°РІРµ >> \t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{FF6347}РЈРґР°Р»РёС‚СЊ Р°РєСЃРµСЃСЃСѓР°СЂ \t"), strcat(lines,line);
 		
-	    ShowDialog(playerid,1281,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аксессуар",lines,"Выбрать","Назад");
+	    ShowDialog(playerid,1281,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РђРєСЃРµСЃСЃСѓР°СЂ",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
 	}
 	return 1;
 }
 
-stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
+stock CreateAccessory(modelId, stat, boneId) // Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ Р°РєСЃРµСЃСЃСѓР°СЂР°
 {
 	new accId = -1;
 	
 	//=====
-	// Добавление при надевании, следовательно - сначала проверяем на наличие такого аксессуара в списке
-	// Это временный функционал, нужен для добавления аксессуаров старого типа игроками и тестерами без участия разрабов. В будущем его можно будет ВЫРЕЗАТЬ
+	// Р”РѕР±Р°РІР»РµРЅРёРµ РїСЂРё РЅР°РґРµРІР°РЅРёРё, СЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ - СЃРЅР°С‡Р°Р»Р° РїСЂРѕРІРµСЂСЏРµРј РЅР° РЅР°Р»РёС‡РёРµ С‚Р°РєРѕРіРѕ Р°РєСЃРµСЃСЃСѓР°СЂР° РІ СЃРїРёСЃРєРµ
+	// Р­С‚Рѕ РІСЂРµРјРµРЅРЅС‹Р№ С„СѓРЅРєС†РёРѕРЅР°Р», РЅСѓР¶РµРЅ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ СЃС‚Р°СЂРѕРіРѕ С‚РёРїР° РёРіСЂРѕРєР°РјРё Рё С‚РµСЃС‚РµСЂР°РјРё Р±РµР· СѓС‡Р°СЃС‚РёСЏ СЂР°Р·СЂР°Р±РѕРІ. Р’ Р±СѓРґСѓС‰РµРј РµРіРѕ РјРѕР¶РЅРѕ Р±СѓРґРµС‚ Р’Р«Р Р•Р—РђРўР¬
 	new bool:isAvailable;
 	if(stat == 1)
 	{
@@ -150,18 +150,18 @@ stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
 
 	for(new i = 0; i < MAX_ACCESSORY; i++)
 	{
-	    if(AccessoryInfo[i][acModel] == 0) // Находим пустой слот и создаём аксессуар туда
+	    if(AccessoryInfo[i][acModel] == 0) // РќР°С…РѕРґРёРј РїСѓСЃС‚РѕР№ СЃР»РѕС‚ Рё СЃРѕР·РґР°С‘Рј Р°РєСЃРµСЃСЃСѓР°СЂ С‚СѓРґР°
 	    {
-	        AccessoryInfo[i][acModel] = modelId; // Записываем модель
-	        format(AccessoryInfo[i][acName], 34, "%s", thing_name(modelId)); // Получаем имя из старого списка имён аксессуаров
-	        AccessoryInfo[i][acPrice] = 10000; // Записываем дефолтную стоимость
-	        AccessoryInfo[i][acStatus] = stat; // Устанавливаем статус
+	        AccessoryInfo[i][acModel] = modelId; // Р—Р°РїРёСЃС‹РІР°РµРј РјРѕРґРµР»СЊ
+	        format(AccessoryInfo[i][acName], 34, "%s", thing_name(modelId)); // РџРѕР»СѓС‡Р°РµРј РёРјСЏ РёР· СЃС‚Р°СЂРѕРіРѕ СЃРїРёСЃРєР° РёРјС‘РЅ Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ
+	        AccessoryInfo[i][acPrice] = 10000; // Р—Р°РїРёСЃС‹РІР°РµРј РґРµС„РѕР»С‚РЅСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ
+	        AccessoryInfo[i][acStatus] = stat; // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚Р°С‚СѓСЃ
 	        
-	        // Получаем расположение на игроке и кость из старого списка
+	        // РџРѕР»СѓС‡Р°РµРј СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ РЅР° РёРіСЂРѕРєРµ Рё РєРѕСЃС‚СЊ РёР· СЃС‚Р°СЂРѕРіРѕ СЃРїРёСЃРєР°
 	        thing(modelId, AccessoryInfo[i][acX], AccessoryInfo[i][acY], AccessoryInfo[i][acZ], AccessoryInfo[i][acrX], AccessoryInfo[i][acrY], AccessoryInfo[i][acrZ], AccessoryInfo[i][acsX], AccessoryInfo[i][acsY], AccessoryInfo[i][acsZ], AccessoryInfo[i][acBone]);
 
             AccessoryQuan ++;
-            SaveAccessory(i, 0); // Создаём новую строку в базу
+            SaveAccessory(i, 0); // РЎРѕР·РґР°С‘Рј РЅРѕРІСѓСЋ СЃС‚СЂРѕРєСѓ РІ Р±Р°Р·Сѓ
             
             accId = i;
 	        break;
@@ -170,7 +170,7 @@ stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
 	return accId;
 }
 
-stock SaveAccessory(i, stat) // Обновляем или добавляем строку об аксессуаре
+stock SaveAccessory(i, stat) // РћР±РЅРѕРІР»СЏРµРј РёР»Рё РґРѕР±Р°РІР»СЏРµРј СЃС‚СЂРѕРєСѓ РѕР± Р°РєСЃРµСЃСЃСѓР°СЂРµ
 {
 	new send_name[34];
     mysql_escape_string(AccessoryInfo[i][acName], send_name, sizeof(send_name));
@@ -212,7 +212,7 @@ stock GetNameAccessory(modelId)
 	return send_name;
 }
 
-stock GetPriceGosAccessory(modelId) // Получаем гос. стоимость аксессуара
+stock GetPriceGosAccessory(modelId) // РџРѕР»СѓС‡Р°РµРј РіРѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ Р°РєСЃРµСЃСЃСѓР°СЂР°
 {
 	new price;
     for(new i = 0; i < MAX_ACCESSORY; i++)
@@ -261,7 +261,7 @@ stock DeleteAccessory(i)
 	return 1;
 }
 
-forward LoadAccessory(); // Загрузка аксессуаров из базы
+forward LoadAccessory(); // Р—Р°РіСЂСѓР·РєР° Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ РёР· Р±Р°Р·С‹
 public LoadAccessory()
 {
 	new rows, time = GetTickCount();
@@ -285,7 +285,7 @@ public LoadAccessory()
 		cache_get_value_name_float(f, "acsZ", AccessoryInfo[f][acsZ]);
 		AccessoryQuan ++;
 	}
-	printf("[MODE]: Аксессуары [%d Quan][%d ms]",rows, GetTickCount() - time);
+	printf("[MODE]: РђРєСЃРµСЃСЃСѓР°СЂС‹ [%d Quan][%d ms]",rows, GetTickCount() - time);
 	return 1;
 }
 

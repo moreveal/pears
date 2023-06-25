@@ -1,12 +1,12 @@
-stock productbiz(playerid, b) // Заказ товаров в бизнес
+stock productbiz(playerid, b) // Р—Р°РєР°Р· С‚РѕРІР°СЂРѕРІ РІ Р±РёР·РЅРµСЃ
 {
 	new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
-	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
-	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
+	format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
+    format(line,sizeof(line),"{cccccc}Р”РµРїРѕР·РёС‚ {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Р—Р°РєР°Р·Р°С‚СЊ С‚РѕРІР°СЂ {ff9000}>>\t \t \n"), strcat(lines,line);
+	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}РЎС‚Р°С‚СѓСЃ Р·Р°РєР°Р·Р° \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
+	else format(line,sizeof(line),"{cccccc}РЎС‚Р°С‚СѓСЃ Р·Р°РєР°Р·Р° \t {99ff66}[Active] \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}РћРїР»Р°С‚Р° РґРѕСЃС‚Р°РІРєРё С‚РѕРІР°СЂРѕРІ\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
     for(new i = 0; i < 50; i++)
 	{
 		List[i][playerid] = 0;
@@ -16,31 +16,31 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 		{
 		    List[quan][playerid] = i;
 			quan ++;
-			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], BizzInfo[b][bOrderType][i]), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
+			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[РљРѕР»РёС‡РµСЃС‚РІРѕ: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], BizzInfo[b][bOrderType][i]), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,1054,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	format(store,sizeof(store),"{cccccc}Р‘РёР·РЅРµСЃ {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1054,DIALOG_STYLE_TABLIST,store,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
-stock insertorder(playerid, b, ord) // Управление заказом доставки товара
+stock insertorder(playerid, b, ord) // РЈРїСЂР°РІР»РµРЅРёРµ Р·Р°РєР°Р·РѕРј РґРѕСЃС‚Р°РІРєРё С‚РѕРІР°СЂР°
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
 
-	format(line,sizeof(line),"{444444}Товар: {ff9000}%s \t", GetNameThing(0, BizzInfo[b][bOrder][ord], BizzInfo[b][bOrderType][ord], 0)), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", BizzInfo[b][bOrderQuan][ord]), strcat(lines,line);
-    format(line,sizeof(line),"\n{FF6347}Удалить товар\t "), strcat(lines,line);
-	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,1058,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
+	format(line,sizeof(line),"{444444}РўРѕРІР°СЂ: {ff9000}%s \t", GetNameThing(0, BizzInfo[b][bOrder][ord], BizzInfo[b][bOrderType][ord], 0)), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ: \t{ffffff}%d", BizzInfo[b][bOrderQuan][ord]), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}РЈРґР°Р»РёС‚СЊ С‚РѕРІР°СЂ\t "), strcat(lines,line);
+	format(store,sizeof(store),"{cccccc}Р‘РёР·РЅРµСЃ {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1058,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 {
-	if(BizzInfo[b][bDeposit] < thingPrice) return ErrorText(playerid, "{FF6347}На депозите бизнеса недостаточно средств"), productbiz(playerid, b);
+	if(BizzInfo[b][bDeposit] < thingPrice) return ErrorText(playerid, "{FF6347}РќР° РґРµРїРѕР·РёС‚Рµ Р±РёР·РЅРµСЃР° РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ"), productbiz(playerid, b);
 	BizzInfo[b][bOrder][ord] = thingId, BizzInfo[b][bOrderQuan][ord] = 1;
 	SaveBizzOrder(b, ord);
 	Orders ++, BizzInfo[b][bOrders] ++;
-	SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Нужно убедиться, что на депозите бизнеса достаточно средств для {99ff66}оплаты доставок!");
+	SendClientMessage(playerid, COLOR_GREY,"[ РњС‹СЃР»Рё ]: РќСѓР¶РЅРѕ СѓР±РµРґРёС‚СЊСЃСЏ, С‡С‚Рѕ РЅР° РґРµРїРѕР·РёС‚Рµ Р±РёР·РЅРµСЃР° РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ РґР»СЏ {99ff66}РѕРїР»Р°С‚С‹ РґРѕСЃС‚Р°РІРѕРє!");
 	PlayerPlaySound(playerid,6401,0,0,0);
 	insertorder(playerid, b, ord);
 	BizLog("setorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, ord, GetNameThing(0, thingId, thingType,0));
@@ -48,22 +48,22 @@ stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 }
 stock ShowOrderThing(playerid, b)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
-	if(b <= 12) // Заправка
+	format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
+	if(b <= 12) // Р—Р°РїСЂР°РІРєР°
 	{
-		format(line,sizeof(line),"{ff9000}Топливо {cccccc}[10.000 Литров]\t {99ff66}[%d$]\n",getThingPriceGos(178, 0) * 10000), strcat(lines,line);
-		format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+		format(line,sizeof(line),"{ff9000}РўРѕРїР»РёРІРѕ {cccccc}[10.000 Р›РёС‚СЂРѕРІ]\t {99ff66}[%d$]\n",getThingPriceGos(178, 0) * 10000), strcat(lines,line);
+		format(store,sizeof(store),"{cccccc}Р‘РёР·РЅРµСЃ {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	}
 	else if(b >= 13 && b <= 41 || b >= 93 && b <= 162 || b >= 183 && b <= 200)
 	{
 		new lol[84], quan;
 
-		format(line,sizeof(line),"Товар \t На складе \t Гос. стоимость\n"), strcat(lines,line);
+		format(line,sizeof(line),"РўРѕРІР°СЂ \t РќР° СЃРєР»Р°РґРµ \t Р“РѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ\n"), strcat(lines,line);
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
 		{
 			List[i][playerid] = 0;
-			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Р—Р°РєСѓСЃРѕС‡РЅС‹Рµ, Р РµСЃС‚РѕСЂР°РЅС‹, Р›Р°СЂСЊРєРё СЃ РµРґРѕР№
 			{
 				if (BizzInfo[b][bWare][i] == 0) break;
 				List[quan][playerid] = i;
@@ -77,17 +77,17 @@ stock ShowOrderThing(playerid, b)
 			}
 			quan++;
 		}		
-		format(lol,sizeof(lol),"{cccccc}Бизнеc {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Отмена");
+		format(lol,sizeof(lol),"{cccccc}Р‘РёР·РЅРµc {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	}
-	else if(b >= 173 && b <= 182) // Магазин Одежды
+	else if(b >= 173 && b <= 182) // РњР°РіР°Р·РёРЅ РћРґРµР¶РґС‹
 	{
-		format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,"{ff9000}Одежда\n{ff9000}Аксессуары","Выбрать","Отмена");
+		format(store,sizeof(store),"{cccccc}Р‘РёР·РЅРµСЃ {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,"{ff9000}РћРґРµР¶РґР°\n{ff9000}РђРєСЃРµСЃСЃСѓР°СЂС‹","Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	}
 	return 1;
 }
-stock getThingHaveQuanOrder(b, thingId, thingType) // Проверка, имеется ли уже такой товар в текущем заказе на доставку
+stock getThingHaveQuanOrder(b, thingId, thingType) // РџСЂРѕРІРµСЂРєР°, РёРјРµРµС‚СЃСЏ Р»Рё СѓР¶Рµ С‚Р°РєРѕР№ С‚РѕРІР°СЂ РІ С‚РµРєСѓС‰РµРј Р·Р°РєР°Р·Рµ РЅР° РґРѕСЃС‚Р°РІРєСѓ
 {
 	new stop;
 	for(new i = 0; i < 50; i++)
@@ -102,48 +102,48 @@ stock getThingHaveQuanOrder(b, thingId, thingType) // Проверка, имеется ли уже т
 stock getFreeOrderSlot(b)
 {
 	new ordId = -1;
-	for(new i = 0; i < 50; i++) // Ищем свободный слот заказа
+	for(new i = 0; i < 50; i++) // РС‰РµРј СЃРІРѕР±РѕРґРЅС‹Р№ СЃР»РѕС‚ Р·Р°РєР°Р·Р°
 	{
-		if(BizzInfo[b][bOrder][i] == 0) // Нашли
+		if(BizzInfo[b][bOrder][i] == 0) // РќР°С€Р»Рё
 		{
-			ordId = i; // Передали id свободного слота в переменную
+			ordId = i; // РџРµСЂРµРґР°Р»Рё id СЃРІРѕР±РѕРґРЅРѕРіРѕ СЃР»РѕС‚Р° РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
 			break;
 		}
 	}
 	return ordId;
 }
-stock getPayOrderDelivery(b) // Расчитываем стоимость оплаты доставки в бизнес за километр
+stock getPayOrderDelivery(b) // Р Р°СЃС‡РёС‚С‹РІР°РµРј СЃС‚РѕРёРјРѕСЃС‚СЊ РѕРїР»Р°С‚С‹ РґРѕСЃС‚Р°РІРєРё РІ Р±РёР·РЅРµСЃ Р·Р° РєРёР»РѕРјРµС‚СЂ
 {
 	new Float:dist, pay;
-	if(b <= 12) dist = GetDistancePoint(2533.0725,2789.3311,10.8203, BizzInfo[b][bX],BizzInfo[b][bY],BizzInfo[b][bZ]); // Доставка к заправкам (С нефтеперерабатывающего)
-	else dist = GetDistancePoint(2265.3845,2796.5225,10.8203, BizzInfo[b][bX],BizzInfo[b][bY],BizzInfo[b][bZ]); // Доставка к прочим бизнеса (С гос. склада)
+	if(b <= 12) dist = GetDistancePoint(2533.0725,2789.3311,10.8203, BizzInfo[b][bX],BizzInfo[b][bY],BizzInfo[b][bZ]); // Р”РѕСЃС‚Р°РІРєР° Рє Р·Р°РїСЂР°РІРєР°Рј (РЎ РЅРµС„С‚РµРїРµСЂРµСЂР°Р±Р°С‚С‹РІР°СЋС‰РµРіРѕ)
+	else dist = GetDistancePoint(2265.3845,2796.5225,10.8203, BizzInfo[b][bX],BizzInfo[b][bY],BizzInfo[b][bZ]); // Р”РѕСЃС‚Р°РІРєР° Рє РїСЂРѕС‡РёРј Р±РёР·РЅРµСЃР° (РЎ РіРѕСЃ. СЃРєР»Р°РґР°)
 	pay = (floatround(dist, floatround_round)/1000) * ServerInfo[11];
 	if(pay <= 0) pay = ServerInfo[11];
 	return pay; 
 }
-stock maxQuanThingProduct(thingId, thingType) // Подсчет максимального количество товаров в бизнесе
+stock maxQuanThingProduct(thingId, thingType) // РџРѕРґСЃС‡РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕРІР°СЂРѕРІ РІ Р±РёР·РЅРµСЃРµ
 {
 	new maxQuan;
-	if(thingType == 0) // Обычные Предметы
+	if(thingType == 0) // РћР±С‹С‡РЅС‹Рµ РџСЂРµРґРјРµС‚С‹
 	{
-		if(thingId == 178) maxQuan = 50000; // Топливо
-		else if(thingId >= 27 && thingId <= 30) maxQuan = 10000; // Патроны
+		if(thingId == 178) maxQuan = 50000; // РўРѕРїР»РёРІРѕ
+		else if(thingId >= 27 && thingId <= 30) maxQuan = 10000; // РџР°С‚СЂРѕРЅС‹
 		else maxQuan = 1000; 
 	}
 	else maxQuan = 1000; 
 	return maxQuan;
 }
-stock putThingBizzProduct(b, thingId, thingType, thingQuan) // Кладём товары по ячейкам (В доставке)
+stock putThingBizzProduct(b, thingId, thingType, thingQuan) // РљР»Р°РґС‘Рј С‚РѕРІР°СЂС‹ РїРѕ СЏС‡РµР№РєР°Рј (Р’ РґРѕСЃС‚Р°РІРєРµ)
 {
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
-		if(BizzInfo[b][bTypeProduct][i] == thingType) // Если тип совпадает
+		if(BizzInfo[b][bTypeProduct][i] == thingType) // Р•СЃР»Рё С‚РёРї СЃРѕРІРїР°РґР°РµС‚
 		{
-			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // У магазов с хавкой, товары формируются из продуктов
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // РЈ РјР°РіР°Р·РѕРІ СЃ С…Р°РІРєРѕР№, С‚РѕРІР°СЂС‹ С„РѕСЂРјРёСЂСѓСЋС‚СЃСЏ РёР· РїСЂРѕРґСѓРєС‚РѕРІ
 			{
 				if(BizzInfo[b][bWare][i] == thingId) BizzInfo[b][bItem][i] += thingQuan;
 			}
-			else // Прочие бизы
+			else // РџСЂРѕС‡РёРµ Р±РёР·С‹
 			{
 				if(BizzInfo[b][bProduct][i] == thingId) BizzInfo[b][bItem][i] += thingQuan;
 			}
@@ -152,12 +152,12 @@ stock putThingBizzProduct(b, thingId, thingType, thingQuan) // Кладём товары по 
 	return 1;
 }
 
-stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного товара в бизнесе по id и типу
+stock getThingQuanItemBizz(b, thingId, thingType) // РџРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРґРЅРѕРіРѕ С‚РѕРІР°СЂР° РІ Р±РёР·РЅРµСЃРµ РїРѕ id Рё С‚РёРїСѓ
 {
 	new quan;
-	if(b >= 173 && b <= 182) // Магазины с одеждой
+	if(b >= 173 && b <= 182) // РњР°РіР°Р·РёРЅС‹ СЃ РѕРґРµР¶РґРѕР№
 	{
-		if(thingType == 2) // Аксессуары
+		if(thingType == 2) // РђРєСЃРµСЃСЃСѓР°СЂС‹
 		{
 			for(new as = 0; as < 100; as++)
 			{
@@ -168,7 +168,7 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного 
 				}
 			}
 		}
-		else if(thingType == 3) // Одежда
+		else if(thingType == 3) // РћРґРµР¶РґР°
 		{
 			for(new as = 0; as < 50; as++)
 			{
@@ -184,7 +184,7 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного 
 	{
 		for(new i = 0; i < 50; i++)
 		{
-			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Р—Р°РєСѓСЃРѕС‡РЅС‹Рµ, Р РµСЃС‚РѕСЂР°РЅС‹, Р›Р°СЂСЊРєРё СЃ РµРґРѕР№
 			{
 				if(BizzInfo[b][bWare][i] == thingId) 
 				{
@@ -192,7 +192,7 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного 
 					break;
 				}
 			}
-			else // Прочие бизнесы
+			else // РџСЂРѕС‡РёРµ Р±РёР·РЅРµСЃС‹
 			{
 				if(BizzInfo[b][bProduct][i] == thingId) 
 				{
@@ -205,53 +205,53 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем количество одного 
 	return quan;
 }
 
-stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск бизнеса, устанавливаем продукты)
+stock LoadBusinessProduct(b, stat) // Р•СЃР»Рё РЅРµС‚ РїСЂРѕРґСѓРєС‚Р° (Р·РЅР°С‡РёС‚ РїРµСЂРІС‹Р№ Р·Р°РїСѓСЃРє Р±РёР·РЅРµСЃР°, СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїСЂРѕРґСѓРєС‚С‹)
 {
     new bool:yes[MAX_BIZ_ITEM], bool:yesUpdate;
-    if(b <= 12) // Заправки
+    if(b <= 12) // Р—Р°РїСЂР°РІРєРё
 	{
-	    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 машина)
-	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 178, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Топливо
+	    // РўРёРї С‚РѕРІР°СЂР° (0 РѕР±С‹С‡РЅС‹Р№, 1 РѕСЂСѓР¶РёРµ, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 4 РјРµР±РµР»СЊ, 5 РјР°С€РёРЅР°)
+	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 178, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // РўРѕРїР»РёРІРѕ
 	}
-	if(b >= 13 && b <= 26) // Супермаркеты
+	if(b >= 13 && b <= 26) // РЎСѓРїРµСЂРјР°СЂРєРµС‚С‹
 	{
-	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 46, BizzInfo[b][bTypeProduct][0] = 1, yes[0] = true; // Парашют
-	    if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 13, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Верёвка
-	    if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 19, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Отмычки
-	    if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 41, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Бенгальские Свечи
-	    if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 5, BizzInfo[b][bTypeProduct][4] = 1, yes[4] = true; // Бита
-	    if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 2, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Золотое Кольцо
-	    if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 24, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Шашка Таксиста
-	    if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 14, BizzInfo[b][bTypeProduct][7] = 1, yes[7] = true; // Цветы
-	    if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 39, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Подарочная Упаковка
-	    if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 40, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Феиерверк
-	    if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 88, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Семена Травы
-	    if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 16, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Пачка Сигарет
-	    if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 38, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Бокал
-	    if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 23, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Мешок
-	    if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 1, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Хлеб
-	    if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 37, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Шампанское
-	    if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 14, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // Пиво
-	    if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 52, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // Угли
-	    if(BizzInfo[b][bProduct][18] == 0 || stat == 1) BizzInfo[b][bProduct][18] = 53, BizzInfo[b][bTypeProduct][18] = 0, yes[18] = true; // Зажигалка
-	    if(BizzInfo[b][bProduct][19] == 0 || stat == 1) BizzInfo[b][bProduct][19] = 97, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // Кухонный Нож
-	    if(BizzInfo[b][bProduct][20] == 0 || stat == 1) BizzInfo[b][bProduct][20] = 163, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // Свадебный Торт
+	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 46, BizzInfo[b][bTypeProduct][0] = 1, yes[0] = true; // РџР°СЂР°С€СЋС‚
+	    if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 13, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Р’РµСЂС‘РІРєР°
+	    if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 19, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // РћС‚РјС‹С‡РєРё
+	    if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 41, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Р‘РµРЅРіР°Р»СЊСЃРєРёРµ РЎРІРµС‡Рё
+	    if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 5, BizzInfo[b][bTypeProduct][4] = 1, yes[4] = true; // Р‘РёС‚Р°
+	    if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 2, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Р—РѕР»РѕС‚РѕРµ РљРѕР»СЊС†Рѕ
+	    if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 24, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // РЁР°С€РєР° РўР°РєСЃРёСЃС‚Р°
+	    if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 14, BizzInfo[b][bTypeProduct][7] = 1, yes[7] = true; // Р¦РІРµС‚С‹
+	    if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 39, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // РџРѕРґР°СЂРѕС‡РЅР°СЏ РЈРїР°РєРѕРІРєР°
+	    if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 40, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Р¤РµРёРµСЂРІРµСЂРє
+	    if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 88, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // РЎРµРјРµРЅР° РўСЂР°РІС‹
+	    if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 16, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // РџР°С‡РєР° РЎРёРіР°СЂРµС‚
+	    if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 38, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Р‘РѕРєР°Р»
+	    if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 23, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // РњРµС€РѕРє
+	    if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 1, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // РҐР»РµР±
+	    if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 37, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // РЁР°РјРїР°РЅСЃРєРѕРµ
+	    if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 14, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // РџРёРІРѕ
+	    if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 52, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // РЈРіР»Рё
+	    if(BizzInfo[b][bProduct][18] == 0 || stat == 1) BizzInfo[b][bProduct][18] = 53, BizzInfo[b][bTypeProduct][18] = 0, yes[18] = true; // Р—Р°Р¶РёРіР°Р»РєР°
+	    if(BizzInfo[b][bProduct][19] == 0 || stat == 1) BizzInfo[b][bProduct][19] = 97, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // РљСѓС…РѕРЅРЅС‹Р№ РќРѕР¶
+	    if(BizzInfo[b][bProduct][20] == 0 || stat == 1) BizzInfo[b][bProduct][20] = 163, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // РЎРІР°РґРµР±РЅС‹Р№ РўРѕСЂС‚
 	}
-	else if(b >= 27 && b <= 41) // Оружейный Магазин
+	else if(b >= 27 && b <= 41) // РћСЂСѓР¶РµР№РЅС‹Р№ РњР°РіР°Р·РёРЅ
 	{
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 27, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ammo 20,8mm
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 28, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Ammo 11,43mm
     	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 29, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Ammo 5,45mm
     	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 30, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Ammo 45mm
     	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 24, BizzInfo[b][bTypeProduct][4] = 1, yes[4] = true; // Deagle
-    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 25, BizzInfo[b][bTypeProduct][5] = 1, yes[5] = true; // Дробовик
-    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 27, BizzInfo[b][bTypeProduct][6] = 1, yes[6] = true; // Скорострельный Дробовик
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 25, BizzInfo[b][bTypeProduct][5] = 1, yes[5] = true; // Р”СЂРѕР±РѕРІРёРє
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 27, BizzInfo[b][bTypeProduct][6] = 1, yes[6] = true; // РЎРєРѕСЂРѕСЃС‚СЂРµР»СЊРЅС‹Р№ Р”СЂРѕР±РѕРІРёРє
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 30, BizzInfo[b][bTypeProduct][7] = 1, yes[7] = true; // AK-47
     	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 31, BizzInfo[b][bTypeProduct][8] = 1, yes[8] = true; // M4
-    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 33, BizzInfo[b][bTypeProduct][9] = 1, yes[9] = true; // Винтовка
-    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 19106, BizzInfo[b][bTypeProduct][10] = 2, yes[10] = true; // Каска
+    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 33, BizzInfo[b][bTypeProduct][9] = 1, yes[9] = true; // Р’РёРЅС‚РѕРІРєР°
+    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 19106, BizzInfo[b][bTypeProduct][10] = 2, yes[10] = true; // РљР°СЃРєР°
 	}
-	else if(b >= 42 && b <= 52) // Аренда Автомобилей
+	else if(b >= 42 && b <= 52) // РђСЂРµРЅРґР° РђРІС‚РѕРјРѕР±РёР»РµР№
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 410, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // MANANA
 		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 401, BizzInfo[b][bTypeProduct][1] = 5, yes[1] = true; // Bravura
@@ -259,7 +259,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 516, BizzInfo[b][bTypeProduct][3] = 5, yes[3] = true; // nebula
 		if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 547, BizzInfo[b][bTypeProduct][4] = 5, yes[4] = true; // primo
 	}
-	else if(b >= 62 && b <= 66) // Аренда Мото
+	else if(b >= 62 && b <= 66) // РђСЂРµРЅРґР° РњРѕС‚Рѕ
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 461, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // PCJ 600
 		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 468, BizzInfo[b][bTypeProduct][1] = 5, yes[1] = true; // sanchez
@@ -267,89 +267,89 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
 		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 581, BizzInfo[b][bTypeProduct][3] = 5, yes[3] = true; // BF-400
 		if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 586, BizzInfo[b][bTypeProduct][4] = 5, yes[4] = true; // Wayfarer
 	}
-	else if(b >= 67 && b <= 76) // Аренда Скутеров
+	else if(b >= 67 && b <= 76) // РђСЂРµРЅРґР° РЎРєСѓС‚РµСЂРѕРІ
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 462, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // Fagio
 	}
-	else if(b >= 93 && b <= 102) // Клубы
+	else if(b >= 93 && b <= 102) // РљР»СѓР±С‹
 	{
-    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 14, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // пиво
-    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 113, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // вино бокал
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 37, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // шампанское бокал
-    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 114, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // виски бокал
-    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 115, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // коньяк бокал
-    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 116, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // брэнди бокал
-    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 112, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Водка
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 14, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // РїРёРІРѕ
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 113, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // РІРёРЅРѕ Р±РѕРєР°Р»
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 37, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // С€Р°РјРїР°РЅСЃРєРѕРµ Р±РѕРєР°Р»
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 114, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // РІРёСЃРєРё Р±РѕРєР°Р»
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 115, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // РєРѕРЅСЊСЏРє Р±РѕРєР°Р»
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 116, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Р±СЂСЌРЅРґРё Р±РѕРєР°Р»
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 112, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Р’РѕРґРєР°
 	}
-	else if(b >= 103 && b <= 122) // Закусочные, Рестораны
+	else if(b >= 103 && b <= 122) // Р—Р°РєСѓСЃРѕС‡РЅС‹Рµ, Р РµСЃС‚РѕСЂР°РЅС‹
 	{
-		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 121, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; //  Кофе
-    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 124, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk Стакан
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk Банка
-    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 125, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Бургер
-    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 127, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Ролл
-    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 128, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Набор 1
-    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 129, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Набор 2
-    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 130, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; //  Набор 3
-    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 131, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Набор 4
-    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 132, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Набор 5
-    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 133, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Набор 6
-    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 134, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Набор 7
-		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 135, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Набор 8
-    	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 136, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Набор 9
-    	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 137, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Набор 10
-    	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 138, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Набор 11
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 121, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; //  РљРѕС„Рµ
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 124, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk РЎС‚Р°РєР°РЅ
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 120, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Sprunk Р‘Р°РЅРєР°
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 125, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Р‘СѓСЂРіРµСЂ
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 127, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Р РѕР»Р»
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 128, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // РќР°Р±РѕСЂ 1
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 129, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // РќР°Р±РѕСЂ 2
+    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 130, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; //  РќР°Р±РѕСЂ 3
+    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 131, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // РќР°Р±РѕСЂ 4
+    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 132, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // РќР°Р±РѕСЂ 5
+    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 133, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // РќР°Р±РѕСЂ 6
+    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 134, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // РќР°Р±РѕСЂ 7
+		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 135, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // РќР°Р±РѕСЂ 8
+    	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 136, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // РќР°Р±РѕСЂ 9
+    	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 137, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // РќР°Р±РѕСЂ 10
+    	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 138, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // РќР°Р±РѕСЂ 11
 
-		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // Хлеб
-		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // Мясо в Упаковке
+		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // РҐР»РµР±
+		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // РњСЏСЃРѕ РІ РЈРїР°РєРѕРІРєРµ
 		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 120, yes[2] = true; // Sprunk
-		if(BizzInfo[b][bWare][3] == 0 || stat == 1) BizzInfo[b][bWare][3] = 174, yes[3] = true; // Овощи
-		if(BizzInfo[b][bWare][4] == 0 || stat == 1) BizzInfo[b][bWare][4] = 104, yes[4] = true; // Картошка
-		if(BizzInfo[b][bWare][5] == 0 || stat == 1) BizzInfo[b][bWare][5] = 179, yes[5] = true; // Мороженое
-		if(BizzInfo[b][bWare][6] == 0 || stat == 1) BizzInfo[b][bWare][6] = 102, yes[6] = true; // Молоко
-		if(BizzInfo[b][bWare][7] == 0 || stat == 1) BizzInfo[b][bWare][7] = 121, yes[7] = true; // Кофе
+		if(BizzInfo[b][bWare][3] == 0 || stat == 1) BizzInfo[b][bWare][3] = 174, yes[3] = true; // РћРІРѕС‰Рё
+		if(BizzInfo[b][bWare][4] == 0 || stat == 1) BizzInfo[b][bWare][4] = 104, yes[4] = true; // РљР°СЂС‚РѕС€РєР°
+		if(BizzInfo[b][bWare][5] == 0 || stat == 1) BizzInfo[b][bWare][5] = 179, yes[5] = true; // РњРѕСЂРѕР¶РµРЅРѕРµ
+		if(BizzInfo[b][bWare][6] == 0 || stat == 1) BizzInfo[b][bWare][6] = 102, yes[6] = true; // РњРѕР»РѕРєРѕ
+		if(BizzInfo[b][bWare][7] == 0 || stat == 1) BizzInfo[b][bWare][7] = 121, yes[7] = true; // РљРѕС„Рµ
 	}
-	else if(b >= 123 && b <= 132) // Аптека
+	else if(b >= 123 && b <= 132) // РђРїС‚РµРєР°
 	{
-	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 70, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Бинт
-    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 71, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Презерватив
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 72, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Хламидиуберин
-    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 73, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Гоногон
-    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 74, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Сифистоп
-    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 75, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Радиануклин
-    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 76, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Перитонин
-    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 77, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Грибкоубивин
-    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 78, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Дерматитогон
-    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 79, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Акнестопин
-    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 80, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Порошкоозаменин
-    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 81, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Никотиновый пластырь
-    	if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 82, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Бухлозаменин
-    	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 83, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Гастритоуберин
-    	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 84, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Язвазаживин
-    	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 85, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Колдрекс
-    	if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 86, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // Терафлю
-    	if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 87, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // Анвимакс
+	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 70, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Р‘РёРЅС‚
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 71, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // РџСЂРµР·РµСЂРІР°С‚РёРІ
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 72, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // РҐР»Р°РјРёРґРёСѓР±РµСЂРёРЅ
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 73, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Р“РѕРЅРѕРіРѕРЅ
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 74, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // РЎРёС„РёСЃС‚РѕРї
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 75, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Р Р°РґРёР°РЅСѓРєР»РёРЅ
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 76, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // РџРµСЂРёС‚РѕРЅРёРЅ
+    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 77, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Р“СЂРёР±РєРѕСѓР±РёРІРёРЅ
+    	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 78, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Р”РµСЂРјР°С‚РёС‚РѕРіРѕРЅ
+    	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 79, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // РђРєРЅРµСЃС‚РѕРїРёРЅ
+    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 80, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // РџРѕСЂРѕС€РєРѕРѕР·Р°РјРµРЅРёРЅ
+    	if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 81, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // РќРёРєРѕС‚РёРЅРѕРІС‹Р№ РїР»Р°СЃС‚С‹СЂСЊ
+    	if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 82, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Р‘СѓС…Р»РѕР·Р°РјРµРЅРёРЅ
+    	if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 83, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Р“Р°СЃС‚СЂРёС‚РѕСѓР±РµСЂРёРЅ
+    	if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 84, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // РЇР·РІР°Р·Р°Р¶РёРІРёРЅ
+    	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 85, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // РљРѕР»РґСЂРµРєСЃ
+    	if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 86, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // РўРµСЂР°С„Р»СЋ
+    	if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 87, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // РђРЅРІРёРјР°РєСЃ
 	}
-	else if(b >= 133 && b <= 142) // Магазины с Техникой
+	else if(b >= 133 && b <= 142) // РњР°РіР°Р·РёРЅС‹ СЃ РўРµС…РЅРёРєРѕР№
 	{
-    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 43, BizzInfo[b][bTypeProduct][0] = 1, yes[0] = true; // Фотоаппарат
-    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 21, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Рация
-    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 32, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Фонарик
-    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 26, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Смартфон
-    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 42, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Ноутбук
-    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 175, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Сигнализация 1 ур.
-    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 176, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Сигнализация 2 ур.
-    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Сигнализация 3 ур.
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 43, BizzInfo[b][bTypeProduct][0] = 1, yes[0] = true; // Р¤РѕС‚РѕР°РїРїР°СЂР°С‚
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 21, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Р Р°С†РёСЏ
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 32, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Р¤РѕРЅР°СЂРёРє
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 26, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // РЎРјР°СЂС‚С„РѕРЅ
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 42, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // РќРѕСѓС‚Р±СѓРє
+    	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 175, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 1 СѓСЂ.
+    	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 176, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 2 СѓСЂ.
+    	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 3 СѓСЂ.
 	}
-	else if(b >= 153 && b <= 162) // Ларьки с едой
+	else if(b >= 153 && b <= 162) // Р›Р°СЂСЊРєРё СЃ РµРґРѕР№
 	{
-		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 141, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Хот Дог
-		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 120, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk в бутылке
-		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // Хлеб (Было bProduct[2])
-		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // Мясо в Упаковке (Было bProduct[3])
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 141, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // РҐРѕС‚ Р”РѕРі
+		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 120, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Sprunk РІ Р±СѓС‚С‹Р»РєРµ
+		if(BizzInfo[b][bWare][0] == 0 || stat == 1) BizzInfo[b][bWare][0] = 1, yes[0] = true; // РҐР»РµР± (Р‘С‹Р»Рѕ bProduct[2])
+		if(BizzInfo[b][bWare][1] == 0 || stat == 1) BizzInfo[b][bWare][1] = 168, yes[1] = true; // РњСЏСЃРѕ РІ РЈРїР°РєРѕРІРєРµ (Р‘С‹Р»Рѕ bProduct[3])
 		if(BizzInfo[b][bWare][2] == 0 || stat == 1) BizzInfo[b][bWare][2] = 120, yes[2] = true; // Sprunk
 
-		BizzInfo[b][bProduct][2] = 0, BizzInfo[b][bProduct][3] = 0; // (Сбросим предыдущую херню с исключением, чтобы не мешать формированию списка)
+		BizzInfo[b][bProduct][2] = 0, BizzInfo[b][bProduct][3] = 0; // (РЎР±СЂРѕСЃРёРј РїСЂРµРґС‹РґСѓС‰СѓСЋ С…РµСЂРЅСЋ СЃ РёСЃРєР»СЋС‡РµРЅРёРµРј, С‡С‚РѕР±С‹ РЅРµ РјРµС€Р°С‚СЊ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЋ СЃРїРёСЃРєР°)
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
@@ -359,7 +359,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (значит первый запуск би
             else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
             
-			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
+			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Р—Р°РєСѓСЃРѕС‡РЅС‹Рµ, Р РµСЃС‚РѕСЂР°РЅС‹, Р›Р°СЂСЊРєРё СЃ РµРґРѕР№
 			{
 				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]);
 			}
@@ -390,11 +390,11 @@ stock pricebiz(playerid, b)
 {
 	DP[4][playerid] = b;
 	
-	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
+	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}РџСЂР°Р№СЃ РјРѕР¶РЅРѕ РЅР°СЃС‚СЂРѕРёС‚СЊ С‚РѕР»СЊРєРѕ РІ РјРµРЅСЋ РІС‹Р±РѕСЂР° С‚РѕРІР°СЂР°"), mybiz(playerid, b);
 	new lol[84], quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
 	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 93 && b <= 102 || b >= 103 && b <= 122 || b >= 123 && b <= 132 || b >= 133 && b <= 142 
-	|| b >= 42 && b <= 76 || b >= 153 && b <= 162) // Прайс автоматгенерация
+	|| b >= 42 && b <= 76 || b >= 153 && b <= 162) // РџСЂР°Р№СЃ Р°РІС‚РѕРјР°С‚РіРµРЅРµСЂР°С†РёСЏ
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -405,36 +405,36 @@ stock pricebiz(playerid, b)
 			quan++;
 		}		
 	}
-	else if(b >= 163 && b <= 172) // Прайс Банкоматов
+	else if(b >= 163 && b <= 172) // РџСЂР°Р№СЃ Р‘Р°РЅРєРѕРјР°С‚РѕРІ
 	{
-		format(line,sizeof(line),"{cccccc}Комиссия на {99ff66}Внесение \t [%.3f проц.]\n", comput[b-163]), strcat(lines,line);
-		format(line,sizeof(line),"{cccccc}Комиссия на {FF6347}Вывод {99ff66} \t [%.3f проц.]\n", comtake[b-163]), strcat(lines,line);
-		format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1171,DIALOG_STYLE_LIST,lol,lines,"Выбрать","Отмена");
+		format(line,sizeof(line),"{cccccc}РљРѕРјРёСЃСЃРёСЏ РЅР° {99ff66}Р’РЅРµСЃРµРЅРёРµ \t [%.3f РїСЂРѕС†.]\n", comput[b-163]), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}РљРѕРјРёСЃСЃРёСЏ РЅР° {FF6347}Р’С‹РІРѕРґ {99ff66} \t [%.3f РїСЂРѕС†.]\n", comtake[b-163]), strcat(lines,line);
+		format(lol,sizeof(lol),"{cccccc}РџСЂР°Р№СЃ Р‘РёР·РЅРµСЃР° {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1171,DIALOG_STYLE_LIST,lol,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 		return 1;
 	}
-	else return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя настраивать стоимость товаров и услуг"), mybiz(playerid, b);
-	format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
+	else return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµР»СЊР·СЏ РЅР°СЃС‚СЂР°РёРІР°С‚СЊ СЃС‚РѕРёРјРѕСЃС‚СЊ С‚РѕРІР°СЂРѕРІ Рё СѓСЃР»СѓРі"), mybiz(playerid, b);
+	format(lol,sizeof(lol),"{cccccc}РџСЂР°Р№СЃ Р‘РёР·РЅРµСЃР° {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 stock use_biz(playerid, biz, inva, useinva)
 {
     if(Veshi[playerid] >= 1) return i_resettabs(playerid);
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Ваш персонаж занят ремонтом или настройкой предмета"), i_resettabs(playerid);
+	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ Р·Р°РЅСЏС‚ СЂРµРјРѕРЅС‚РѕРј РёР»Рё РЅР°СЃС‚СЂРѕР№РєРѕР№ РїСЂРµРґРјРµС‚Р°"), i_resettabs(playerid);
 	if(useinva != 9999)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != BizzInfo[biz][bInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(IsPlayerInRangeOfPoint(playerid,200.0,BizzInfo[biz][bX], BizzInfo[biz][bY], BizzInfo[biz][bZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceBiz] = 0, Tabs_Type[playerid] = 0;
+	if(IsPlayerInRangeOfPoint(playerid,200.0,BizzInfo[biz][bX], BizzInfo[biz][bY], BizzInfo[biz][bZ])) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ СЃРєР»Р°РґР° Р±РёР·РЅРµСЃР°"), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceBiz] = 0, Tabs_Type[playerid] = 0;
     new thingType = BizzInfo[biz][bInvType][inva];
     if(thingType == 4)
     {
      	PlayerPlaySound(playerid,1052,0,0,0);
 		new obid;
-		if(BizzInfo[biz][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом бизнесе не установлен каркас"), i_resettabs(playerid);
-		if(BizzInfo[biz][bSell]  >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься ремонтом интерьера во время продажи"), i_resettabs(playerid);
-		if(CheckObjectBiz(biz)) return ErrorMessage(playerid, "{FF6347}Лимит объектов мебели: 60"), i_resettabs(playerid);
+		if(BizzInfo[biz][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РєР°СЂРєР°СЃ"), i_resettabs(playerid);
+		if(BizzInfo[biz][bSell]  >= 1) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ Р·Р°РЅРёРјР°С‚СЊСЃСЏ СЂРµРјРѕРЅС‚РѕРј РёРЅС‚РµСЂСЊРµСЂР° РІРѕ РІСЂРµРјСЏ РїСЂРѕРґР°Р¶Рё"), i_resettabs(playerid);
+		if(CheckObjectBiz(biz)) return ErrorMessage(playerid, "{FF6347}Р›РёРјРёС‚ РѕР±СЉРµРєС‚РѕРІ РјРµР±РµР»Рё: 60"), i_resettabs(playerid);
 		obid = BizzInfo[biz][bInvent][inva], BizzInfo[biz][bInvent][inva] = 0, BizzInfo[biz][bInv][inva] = 0, BizzInfo[biz][bInvPara][inva] = 0, BizzInfo[biz][bInvQara][inva] = 0, BizzInfo[biz][bInvType][inva] = 0, BizzInfo[biz][bInvPack][inva] = 0;
 		SaveSkladBiz(biz, inva);
 		CloseFrisk(playerid);
@@ -467,7 +467,7 @@ stock shift_biz(playerid, b, getinva, putinva)
 		}
 		if(quanPlayer >= 2)
 		{
-		    format(store, sizeof(store), "{FF6347}Склад бизнеса просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+		    format(store, sizeof(store), "{FF6347}РЎРєР»Р°Рґ Р±РёР·РЅРµСЃР° РїСЂРѕСЃРјР°С‚СЂРёРІР°СЋС‚ %d С‡РµР». [ РџРµСЂРµРјРµС‰РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РЅРµРІРѕР·РјРѕР¶РЅРѕ ]", quanPlayer-1);
 			ErrorMessage(playerid, store);
 			i_resettabs(playerid);
 			return 1;
@@ -492,45 +492,45 @@ stock shift_biz(playerid, b, getinva, putinva)
 	}
 	return 1;
 }
-stock PutThingBiz(b, thingId, quan, para, qara, thingType, useinva) // Кладём предмет в инвентарь бизнеса
+stock PutThingBiz(b, thingId, quan, para, qara, thingType, useinva) // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂСЊ Р±РёР·РЅРµСЃР°
 {
 	new put_inva = -1;
-	if(thingId == 0) return 1; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
+	if(thingId == 0) return 1; // РњР°Р»РѕР»Рё РіРґРµ С‚Рѕ РѕС€РёР±РєР° РјРѕР¶РµС‚ Р±С‹С‚СЊ (0 - РЅРµ РїСЂРѕРїСѓСЃРєР°РµРј РІС‹РґР°С‡Сѓ РїСЂРµРґРјРµС‚Р°)
 	if(useinva == 999)
 	{
-	    if(thingType == 0) // Обычный предмет
+	    if(thingType == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 		{
-		    if(friskKol[thingId] == 1) // Предмет имеет количество (Складывается в одну ячейку)
+		    if(friskKol[thingId] == 1) // РџСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ (РЎРєР»Р°РґС‹РІР°РµС‚СЃСЏ РІ РѕРґРЅСѓ СЏС‡РµР№РєСѓ)
 		    {
 		        new find;
 		    	for(new i = 0; i < 80; i++)
 				{
-					if(BizzInfo[b][bInvent][i] == thingId && BizzInfo[b][bInvType][i] == thingType) // Ищем тот, где уже предмет лежит
+					if(BizzInfo[b][bInvent][i] == thingId && BizzInfo[b][bInvType][i] == thingType) // РС‰РµРј С‚РѕС‚, РіРґРµ СѓР¶Рµ РїСЂРµРґРјРµС‚ Р»РµР¶РёС‚
 					{
-		  				put_thing_biz(b, thingId, quan, para, 0, thingType, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+		  				put_thing_biz(b, thingId, quan, para, 0, thingType, i); // qara 0 - РїРѕСЃРєРѕР»СЊРєСѓ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РјРѕРіСѓС‚ РёРјРµС‚СЊ СЃС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ
 		  				put_inva = i;
 		  				find = 1;
 			   			break;
 					}
 				}
-				if(find == 0) // Если не нашли, ищем пустую
+				if(find == 0) // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё, РёС‰РµРј РїСѓСЃС‚СѓСЋ
 				{
 					for(new i = 0; i < 80; i++)
 					{
-						if(BizzInfo[b][bInvent][i] == 0) // Ищем пустую ячейку
+						if(BizzInfo[b][bInvent][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 						{
-			  				put_thing_biz(b, thingId, quan, para, 0, thingType, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+			  				put_thing_biz(b, thingId, quan, para, 0, thingType, i); // qara 0 - РїРѕСЃРєРѕР»СЊРєСѓ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РјРѕРіСѓС‚ РёРјРµС‚СЊ СЃС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ
 			  				put_inva = i;
 				   			break;
 						}
 					}
 				}
 			}
-			else if(friskKol[thingId] == 0) // Объект не имеет количество
+			else if(friskKol[thingId] == 0) // РћР±СЉРµРєС‚ РЅРµ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
 			{
 			    for(new i = 0; i < 80; i++)
 				{
-					if(BizzInfo[b][bInvent][i] == 0) // Ищем пустую ячейку
+					if(BizzInfo[b][bInvent][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 					{
 		  				put_thing_biz(b, thingId, quan, para, qara, thingType, i);
 		  				put_inva = i;
@@ -539,11 +539,11 @@ stock PutThingBiz(b, thingId, quan, para, qara, thingType, useinva) // Кладём пр
 				}
 			}
 		}
-		else // Все остальные предметы не имеют количества или возможности складываться в одну ячейку
+		else // Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РёРјРµСЋС‚ РєРѕР»РёС‡РµСЃС‚РІР° РёР»Рё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРєР»Р°РґС‹РІР°С‚СЊСЃСЏ РІ РѕРґРЅСѓ СЏС‡РµР№РєСѓ
 		{
 		    for(new i = 0; i < 80; i++)
 			{
-				if(BizzInfo[b][bInvent][i] == 0) // Ищем пустую ячейку
+				if(BizzInfo[b][bInvent][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 				{
 	  				put_thing_biz(b, thingId, quan, para, qara, thingType, i);
 	  				put_inva = i;
@@ -557,11 +557,11 @@ stock PutThingBiz(b, thingId, quan, para, qara, thingType, useinva) // Кладём пр
 }
 stock put_thing_biz(b, thingId, quan, para, qara, thingType, i)
 {
-	BizzInfo[b][bInvent][i] = thingId; // Ставим предмет в слот
-	BizzInfo[b][bInv][i] += quan; // Ставим количество в слот
+	BizzInfo[b][bInvent][i] = thingId; // РЎС‚Р°РІРёРј РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚
+	BizzInfo[b][bInv][i] += quan; // РЎС‚Р°РІРёРј РєРѕР»РёС‡РµСЃС‚РІРѕ РІ СЃР»РѕС‚
 
-	// (Техника сломана или нет, Одежда какой организации принадлежит, Unix время свежести продуктов, Изношенность оружия, Прнадлежность лицензии к ID игрока, Тип крепления аксессуара)
-	if(PerishableThing(thingId, thingType)) // Проверка на портящиеся продукты - у них используется Unix (Добавляя испорченный продукт к свежему, портиться должно всё)
+	// (РўРµС…РЅРёРєР° СЃР»РѕРјР°РЅР° РёР»Рё РЅРµС‚, РћРґРµР¶РґР° РєР°РєРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё РїСЂРёРЅР°РґР»РµР¶РёС‚, Unix РІСЂРµРјСЏ СЃРІРµР¶РµСЃС‚Рё РїСЂРѕРґСѓРєС‚РѕРІ, РР·РЅРѕС€РµРЅРЅРѕСЃС‚СЊ РѕСЂСѓР¶РёСЏ, РџСЂРЅР°РґР»РµР¶РЅРѕСЃС‚СЊ Р»РёС†РµРЅР·РёРё Рє ID РёРіСЂРѕРєР°, РўРёРї РєСЂРµРїР»РµРЅРёСЏ Р°РєСЃРµСЃСЃСѓР°СЂР°)
+	if(PerishableThing(thingId, thingType)) // РџСЂРѕРІРµСЂРєР° РЅР° РїРѕСЂС‚СЏС‰РёРµСЃСЏ РїСЂРѕРґСѓРєС‚С‹ - Сѓ РЅРёС… РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ Unix (Р”РѕР±Р°РІР»СЏСЏ РёСЃРїРѕСЂС‡РµРЅРЅС‹Р№ РїСЂРѕРґСѓРєС‚ Рє СЃРІРµР¶РµРјСѓ, РїРѕСЂС‚РёС‚СЊСЃСЏ РґРѕР»Р¶РЅРѕ РІСЃС‘)
 	{
 	    if(BizzInfo[b][bInvPara][i] > 0)
 		{
@@ -570,8 +570,8 @@ stock put_thing_biz(b, thingId, quan, para, qara, thingType, i)
 		else BizzInfo[b][bInvPara][i] = para;
 	}
 	else BizzInfo[b][bInvPara][i] = para;
-	BizzInfo[b][bInvQara][i] = qara; // Статус краденного предмета
-	BizzInfo[b][bInvType][i] = thingType; // Тип предмета
+	BizzInfo[b][bInvQara][i] = qara; // РЎС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
+	BizzInfo[b][bInvType][i] = thingType; // РўРёРї РїСЂРµРґРјРµС‚Р°
 	SaveSkladBiz(b, i);
 	foreach(Player,playerid)
 	{
@@ -579,7 +579,7 @@ stock put_thing_biz(b, thingId, quan, para, qara, thingType, i)
 	}
 	return i;
 }
-stock TakeThingBiz(b, thingId, kolvo, thingType, inv) // Забираем из бизнеса предмет
+stock TakeThingBiz(b, thingId, kolvo, thingType, inv) // Р—Р°Р±РёСЂР°РµРј РёР· Р±РёР·РЅРµСЃР° РїСЂРµРґРјРµС‚
 {
 	new plalit;
 	if(inv == 999)
@@ -611,14 +611,14 @@ stock TakeThingBiz(b, thingId, kolvo, thingType, inv) // Забираем из бизнеса пре
 	}
 	return 1;
 }
-stock SaveSkladBiz(idx, i) // Сохраняем ячейку склада бизнеса
+stock SaveSkladBiz(idx, i) // РЎРѕС…СЂР°РЅСЏРµРј СЏС‡РµР№РєСѓ СЃРєР»Р°РґР° Р±РёР·РЅРµСЃР°
 {
 	format(big_query, sizeof(big_query), "UPDATE `pp_bizz` SET `Invent%d`='%d',`Inv%d`='%d',`InvPara%d`='%d',`InvQara%d`='%d',`InvType%d`='%d',`InvPack%d`='%d' WHERE `newid`='%d'",
 	i,BizzInfo[idx][bInvent][i],i,BizzInfo[idx][bInv][i],i,BizzInfo[idx][bInvPara][i],i,BizzInfo[idx][bInvQara][i],i,BizzInfo[idx][bInvType][i],i,BizzInfo[idx][bInvPack][i],idx);
 	query_empty(pearsq, big_query);
 	return 1;
 }
-stock delproduct(b, ord) // Удаляем заказ доставки товара в бизнесы
+stock delproduct(b, ord) // РЈРґР°Р»СЏРµРј Р·Р°РєР°Р· РґРѕСЃС‚Р°РІРєРё С‚РѕРІР°СЂР° РІ Р±РёР·РЅРµСЃС‹
 {
 	BizzInfo[b][bOrder][ord] = 0;
     BizzInfo[b][bOrderQuan][ord] = 0;
@@ -629,13 +629,13 @@ stock delproduct(b, ord) // Удаляем заказ доставки товара в бизнесы
 }
 stock IsBizOrder(b)
 {
-    // Заправка, Супермаркет, Оружейный Магазин, Аптека
-	// Магазин с Техникой, Магазин Одежды
+    // Р—Р°РїСЂР°РІРєР°, РЎСѓРїРµСЂРјР°СЂРєРµС‚, РћСЂСѓР¶РµР№РЅС‹Р№ РњР°РіР°Р·РёРЅ, РђРїС‚РµРєР°
+	// РњР°РіР°Р·РёРЅ СЃ РўРµС…РЅРёРєРѕР№, РњР°РіР°Р·РёРЅ РћРґРµР¶РґС‹
     if(b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 122 || b >= 123 && b <= 132
 	|| b >= 133 && b <= 142 || b >= 173 && b <= 182) return 1;
 	return 0;
 }
-stock SendBizMessage(b, const string[]) // Сообщение в чат семье, привязанной к бизнесу
+stock SendBizMessage(b, const string[]) // РЎРѕРѕР±С‰РµРЅРёРµ РІ С‡Р°С‚ СЃРµРјСЊРµ, РїСЂРёРІСЏР·Р°РЅРЅРѕР№ Рє Р±РёР·РЅРµСЃСѓ
 {
     if(BizzInfo[b][bFam] > 0)
 	{
@@ -646,11 +646,11 @@ stock SendBizMessage(b, const string[]) // Сообщение в чат семье, привязанной к 
 stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 {
     new bool:bizUpdate;
-    if(b >= 1 && b <= 12) // Заправки
+    if(b >= 1 && b <= 12) // Р—Р°РїСЂР°РІРєРё
     {
         BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
     }
-    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142) // Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
+    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142) // РЎСѓРїРµСЂРјР°СЂРєРµС‚С‹, РћСЂСѓР¶РµР№РЅС‹Р№ РњР°РіР°Р·РёРЅ, РђРїС‚РµРєРё, РњР°РіР°Р·РёРЅС‹ СЃ РўРµС…РЅРёРєРѕР№, РљР»СѓР±
     {
         for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -663,25 +663,25 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     	if(b >= 13 && b <= 26) UpdateSupermarketLabel(b);
     	SaveBizzProduct(b);
     }
-	if(b >= 173 && b <= 182) // Магазины с Одеждой
+	if(b >= 173 && b <= 182) // РњР°РіР°Р·РёРЅС‹ СЃ РћРґРµР¶РґРѕР№
 	{
 	    new bn = b-173;
-	    for(new gs = 0; gs < 50; gs++) // Прокатываем цикл по слотам с одеждой
+	    for(new gs = 0; gs < 50; gs++) // РџСЂРѕРєР°С‚С‹РІР°РµРј С†РёРєР» РїРѕ СЃР»РѕС‚Р°Рј СЃ РѕРґРµР¶РґРѕР№
 		{
-			if(StoreItem[bn][gs] == thingId) StorePrice[bn][gs] = SkinGos[thingId]+SkinGos[thingId]/2, bizUpdate = true, SaveBizzStore(bn, gs); // Нашли скин и установили новую стоимость
+			if(StoreItem[bn][gs] == thingId) StorePrice[bn][gs] = SkinGos[thingId]+SkinGos[thingId]/2, bizUpdate = true, SaveBizzStore(bn, gs); // РќР°С€Р»Рё СЃРєРёРЅ Рё СѓСЃС‚Р°РЅРѕРІРёР»Рё РЅРѕРІСѓСЋ СЃС‚РѕРёРјРѕСЃС‚СЊ
 		}
 	}
-	if(bizUpdate && BizzInfo[b][bSost] > 0) // Если изменения для бизнеса были, отправляем все необходимые уведомления
+	if(bizUpdate && BizzInfo[b][bSost] > 0) //  Р•СЃР»Рё РёР·РјРµРЅРµРЅРёСЏ РґР»СЏ Р±РёР·РЅРµСЃР° Р±С‹Р»Рё, РѕС‚РїСЂР°РІР»СЏРµРј РІСЃРµ РЅРµРѕР±С…РѕРґРёРјС‹Рµ СѓРІРµРґРѕРјР»РµРЅРёСЏ
 	{
-        format(store, sizeof(store), "Новая гос. стоимость %s [%d$]", GetNameThing(0, thingId, thingType, 0), input);
+        format(store, sizeof(store), "РќРѕРІР°СЏ РіРѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ %s [%d$]", GetNameThing(0, thingId, thingType, 0), input);
 		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], BizzInfo[b][bSost], BizzInfo[b][bVlad], store);
 	}
 	return 1;
 }
-stock putshop(b, item, thingType, quan) // Кладём товары в Магазины с Одеждой во время доставки
+stock putshop(b, item, thingType, quan) // РљР»Р°РґС‘Рј С‚РѕРІР°СЂС‹ РІ РњР°РіР°Р·РёРЅС‹ СЃ РћРґРµР¶РґРѕР№ РІРѕ РІСЂРµРјСЏ РґРѕСЃС‚Р°РІРєРё
 {
 	new nashel = -1;
-	if(thingType == 3) // Одежда
+	if(thingType == 3) // РћРґРµР¶РґР°
 	{
 		for(new gs = 0; gs < 50; gs++)
 		{
@@ -707,7 +707,7 @@ stock putshop(b, item, thingType, quan) // Кладём товары в Магазины с Одеждой во
 			}
 		}
 	}
-	else if(thingType == 2) // Аксессуары
+	else if(thingType == 2) // РђРєСЃРµСЃСЃСѓР°СЂС‹
 	{
 		for(new as = 0; as < 100; as++)
 		{
@@ -737,7 +737,7 @@ stock putshop(b, item, thingType, quan) // Кладём товары в Магазины с Одеждой во
 	return 1;
 }
 
-stock takeWareBusiness(b, thingId) // Снимаем продукты из бизнеса
+stock takeWareBusiness(b, thingId) // РЎРЅРёРјР°РµРј РїСЂРѕРґСѓРєС‚С‹ РёР· Р±РёР·РЅРµСЃР°
 {
 	new ingId[6], ingQuan[6], slot;
 	menuEatIngredient(thingId, ingId[0], ingId[1], ingId[2], ingId[3], ingId[4], ingId[5], ingQuan[0], ingQuan[1], ingQuan[2], ingQuan[3], ingQuan[4], ingQuan[5]);
@@ -755,7 +755,7 @@ stock takeWareBusiness(b, thingId) // Снимаем продукты из бизнеса
 	return 1;
 }
 
-stock getSlotIngredientBusiness(thingId) // Получаем слот, который используется для продукта (По сути нужно динамически искать, но мне насрать)
+stock getSlotIngredientBusiness(thingId) // РџРѕР»СѓС‡Р°РµРј СЃР»РѕС‚, РєРѕС‚РѕСЂС‹Р№ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РїСЂРѕРґСѓРєС‚Р° (РџРѕ СЃСѓС‚Рё РЅСѓР¶РЅРѕ РґРёРЅР°РјРёС‡РµСЃРєРё РёСЃРєР°С‚СЊ, РЅРѕ РјРЅРµ РЅР°СЃСЂР°С‚СЊ)
 {
 	new slot;
 	if(thingId == 1) slot = 0;

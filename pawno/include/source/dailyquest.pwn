@@ -6,26 +6,26 @@ stock IsAQuestActor(playerid)
 
 stock dailyquest(playerid)
 {
-	if(PlayerInfo[playerid][pMember] >= 13 && PlayerInfo[playerid][pMember] <= 18) return ErrorMessage(playerid, "{FF6347}Âû íå ñîñòîèòå â áàíäå");
+	if(PlayerInfo[playerid][pMember] >= 13 && PlayerInfo[playerid][pMember] <= 18) return ErrorMessage(playerid, "{FF6347}Ð’Ñ‹ Ð½Ðµ ÑÐ¾ÑÑ‚Ð¾Ð¸Ñ‚Ðµ Ð² Ð±Ð°Ð½Ð´Ðµ");
 	
-	format(lines,sizeof(lines),""); // Î÷èùàåì Lines
+	format(lines,sizeof(lines),""); //  ÐžÑ‡Ð¸Ñ‰Ð°ÐµÐ¼ Lines
 	
 	if(PlayerInfo[playerid][pAchieve][124] == 0) 
 	{
-		format(line,sizeof(line),"{99ff66}Ïîäðî÷èòü \t {ffff00}[ Íåâûïîëíåí ]\n"), strcat(lines,line);
+		format(line,sizeof(line),"{99ff66}ÐŸÐ¾Ð´Ñ€Ð¾Ñ‡Ð¸Ñ‚ÑŒ \t {ffff00}[ ÐÐµÐ²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½ ]\n"), strcat(lines,line);
 	}
 	else
 	{
-	format(line,sizeof(line),"{99ff66}Ïîäðî÷èòü \t {00cc00}[ Âûïîëíåí ]\n"), strcat(lines,line);
+	format(line,sizeof(line),"{99ff66}ÐŸÐ¾Ð´Ñ€Ð¾Ñ‡Ð¸Ñ‚ÑŒ \t {00cc00}[ Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½ ]\n"), strcat(lines,line);
 	}
 	if(PlayerInfo[playerid][pAchieve][125] == 0) 
 	{
-		format(line,sizeof(line),"{99ff66}Ïîñðàòü \t {ffff00}[ Íåâûïîëíåí ]\n"), strcat(lines,line);
+		format(line,sizeof(line),"{99ff66}ÐŸÐ¾ÑÑ€Ð°Ñ‚ÑŒ \t {ffff00}[ ÐÐµÐ²Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½ ]\n"), strcat(lines,line);
 	}
 	else
 	{
-	format(line,sizeof(line),"{99ff66}Ïîñðàòü \t {00cc00}[ Âûïîëíåí ]\n"), strcat(lines,line);
+	format(line,sizeof(line),"{99ff66}ÐŸÐ¾ÑÑ€Ð°Ñ‚ÑŒ \t {00cc00}[ Ð’Ñ‹Ð¿Ð¾Ð»Ð½ÐµÐ½ ]\n"), strcat(lines,line);
 	}
-	ShowDialog(playerid,1400,DIALOG_STYLE_TABLIST,"{ff9000}Åæåäíåâíûå êâåñòû",lines,"Âûáîð","Îòìåíà");
+	ShowDialog(playerid,1400,DIALOG_STYLE_TABLIST,"{ff9000}Ð•Ð¶ÐµÐ´Ð½ÐµÐ²Ð½Ñ‹Ðµ ÐºÐ²ÐµÑÑ‚Ñ‹",lines,"Ð’Ñ‹Ð±Ð¾Ñ€","ÐžÑ‚Ð¼ÐµÐ½Ð°");
 	return 1;
 }

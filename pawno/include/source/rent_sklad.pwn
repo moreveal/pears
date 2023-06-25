@@ -9,31 +9,31 @@ CMD:rentsklad(playerid)
 		    if(WhInfo[r][wStat] >= 1)
 			{
 			    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
-				if(fpick > 0 && thingPack == 2) // Êëàä¸ì ßùèê
+				if(fpick > 0 && thingPack == 2) //  ÐšÐ»Ð°Ð´Ñ‘Ð¼ Ð¯Ñ‰Ð¸Ðº
 				{
-					if(fpick == 34 && thingType == 1 && WhInfo[r][wStat] != 8 && WhInfo[r][wStat] != 22) return ErrorMessage(playerid, "{FF6347}Íà ýòîì ñêëàäå íåëüçÿ õðàíèòü ñíàéïåðñêóþ âèíòîâêó");
+					if(fpick == 34 && thingType == 1 && WhInfo[r][wStat] != 8 && WhInfo[r][wStat] != 22) return ErrorMessage(playerid, "{FF6347}ÐÐ° ÑÑ‚Ð¾Ð¼ ÑÐºÐ»Ð°Ð´Ðµ Ð½ÐµÐ»ÑŒÐ·Ñ Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒ ÑÐ½Ð°Ð¹Ð¿ÐµÑ€ÑÐºÑƒÑŽ Ð²Ð¸Ð½Ñ‚Ð¾Ð²ÐºÑƒ");
 					if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 					{
-					    new put_inva = putrentwh(r, fpick, fquan, thingType); // Êëàä¸ì ïðåäìåò
-						if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}Íà ñêëàäå, äëÿ ýòîãî ïðåäìåòà, íåò ìåñòà [ Ëèìèò ]");
+					    new put_inva = putrentwh(r, fpick, fquan, thingType); // ÐšÐ»Ð°Ð´Ñ‘Ð¼ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚
+						if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}ÐÐ° ÑÐºÐ»Ð°Ð´Ðµ, Ð´Ð»Ñ ÑÑ‚Ð¾Ð³Ð¾ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð°, Ð½ÐµÑ‚ Ð¼ÐµÑÑ‚Ð° [ Ð›Ð¸Ð¼Ð¸Ñ‚ ]");
 
 					    InHandClear(playerid);
-						if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"[ Ìûñëè ]: ß ïîëîæèë ÿùèê íà ñêëàä {ff9000}[ %s | %d ]",GetNameThing(1, fpick, thingType, thingPack),fquan);
-						else format(store,sizeof(store),"[ Ìûñëè ]: ß ïîëîæèëà ÿùèê íà ñêëàä {ff9000}[ %s | %d ]",GetNameThing(1, fpick, thingType, thingPack),fquan);
+						if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"[ ÐœÑ‹ÑÐ»Ð¸ ]: Ð¯ Ð¿Ð¾Ð»Ð¾Ð¶Ð¸Ð» ÑÑ‰Ð¸Ðº Ð½Ð° ÑÐºÐ»Ð°Ð´ {ff9000}[ %s | %d ]",GetNameThing(1, fpick, thingType, thingPack),fquan);
+						else format(store,sizeof(store),"[ ÐœÑ‹ÑÐ»Ð¸ ]: Ð¯ Ð¿Ð¾Ð»Ð¾Ð¶Ð¸Ð»Ð° ÑÑ‰Ð¸Ðº Ð½Ð° ÑÐºÐ»Ð°Ð´ {ff9000}[ %s | %d ]",GetNameThing(1, fpick, thingType, thingPack),fquan);
 		    			SendClientMessage(playerid, COLOR_GREY, store);
 						OrgLog(WhInfo[r][wStat], "putrentwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
 
-			   		    SetPlayerChatBubble(playerid,"êëàä¸ò ÿùèê íà ñêëàä",COLOR_PURPLE,20.0,3000);
+			   		    SetPlayerChatBubble(playerid,"ÐºÐ»Ð°Ð´Ñ‘Ñ‚ ÑÑ‰Ð¸Ðº Ð½Ð° ÑÐºÐ»Ð°Ð´",COLOR_PURPLE,20.0,3000);
 			       	    RemovePlayerAttachedObject(playerid,1);
 			       	    PPP15[playerid] = 0;
 			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
 			       	    PlayerPlaySound(playerid,6401,0,0,0);
        	    		}
-       	    		else ErrorMessage(playerid, "{FF6347}Ñîäåðæèìîå ÿùèêà â ìîèõ ðóêàõ, íå ìîæåò õðàíèòüñÿ íà ýòîì ñêëàäå");
+       	    		else ErrorMessage(playerid, "{FF6347}Ð¡Ð¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ ÑÑ‰Ð¸ÐºÐ° Ð² Ð¼Ð¾Ð¸Ñ… Ñ€ÑƒÐºÐ°Ñ…, Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚ Ñ…Ñ€Ð°Ð½Ð¸Ñ‚ÑŒÑÑ Ð½Ð° ÑÑ‚Ð¾Ð¼ ÑÐºÐ»Ð°Ð´Ðµ");
 				}
-				else ErrorMessage(playerid, "{FF6347}Ó ìåíÿ íåò â ðóêàõ ÿùèêà [ Îòêðûòü ñêëàä: N >> Ñêëàä ]");
+				else ErrorMessage(playerid, "{FF6347}Ð£ Ð¼ÐµÐ½Ñ Ð½ÐµÑ‚ Ð² Ñ€ÑƒÐºÐ°Ñ… ÑÑ‰Ð¸ÐºÐ° [ ÐžÑ‚ÐºÑ€Ñ‹Ñ‚ÑŒ ÑÐºÐ»Ð°Ð´: N >> Ð¡ÐºÐ»Ð°Ð´ ]");
 			}
-			else ErrorMessage(playerid, "{FF6347}Ýòîò ñêëàä íèêåì íå àðåíäîâàí");
+			else ErrorMessage(playerid, "{FF6347}Ð­Ñ‚Ð¾Ñ‚ ÑÐºÐ»Ð°Ð´ Ð½Ð¸ÐºÐµÐ¼ Ð½Ðµ Ð°Ñ€ÐµÐ½Ð´Ð¾Ð²Ð°Ð½");
 		}
 	}
 	return 1;
@@ -44,30 +44,30 @@ stock use_rent(playerid, wh, inva)
     i_resettabs(playerid);
 	new fpick = WhInfo[wh][wInvent][inva], thingType = WhInfo[wh][wInvType][inva];
 	if(fpick == 0) return 1;
-	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}Ó âàñ çàíÿòû ðóêè [ Ïðåäìåò èëè îðóæèå ]");
+	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}Ð£ Ð²Ð°Ñ Ð·Ð°Ð½ÑÑ‚Ñ‹ Ñ€ÑƒÐºÐ¸ [ ÐŸÑ€ÐµÐ´Ð¼ÐµÑ‚ Ð¸Ð»Ð¸ Ð¾Ñ€ÑƒÐ¶Ð¸Ðµ ]");
 
-	if(thingType == 0) // Êîëè÷åñòâåííûå ïðåäìåòû äî 1000 â îäèí ÿùèê
+	if(thingType == 0) // ÐšÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð´Ð¾ 1000 Ð² Ð¾Ð´Ð¸Ð½ ÑÑ‰Ð¸Ðº
 	{
 	    if(friskKol[fpick] == 1)
 	    {
 	        DP[0][playerid] = inva;
-			format(store,sizeof(store),"{cccccc}×òîáû ñîáðàòü ÿùèê ñ {ff9000}%s {cccccc}ââåäèòå êîëè÷åñòâî\n\nÍå ìåíüøå 1 è íå áîëüøå 1000",GetNameThing(1, fpick, thingType, 0));
-			ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Ñêëàä",store,"Ïðèíÿòü","Îòìåíà");
+			format(store,sizeof(store),"{cccccc}Ð§Ñ‚Ð¾Ð±Ñ‹ ÑÐ¾Ð±Ñ€Ð°Ñ‚ÑŒ ÑÑ‰Ð¸Ðº Ñ {ff9000}%s {cccccc}Ð²Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾\n\nÐÐµ Ð¼ÐµÐ½ÑŒÑˆÐµ 1 Ð¸ Ð½Ðµ Ð±Ð¾Ð»ÑŒÑˆÐµ 1000",GetNameThing(1, fpick, thingType, 0));
+			ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Ð¡ÐºÐ»Ð°Ð´",store,"ÐŸÑ€Ð¸Ð½ÑÑ‚ÑŒ","ÐžÑ‚Ð¼ÐµÐ½Ð°");
 			return 1;
 	    }
 	}
 	
-	// Âñå îñòàëüíûå ïðåäìåòû äî 10 øòóê â 1 ÿùèê
+	// Ð’ÑÐµ Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð´Ð¾ 10 ÑˆÑ‚ÑƒÐº Ð² 1 ÑÑ‰Ð¸Ðº
 	DP[0][playerid] = inva;
-	format(store,sizeof(store),"{cccccc}×òîáû ñîáðàòü ÿùèê ñ {ff9000}%s {cccccc}ââåäèòå êîëè÷åñòâî\n\nÍå ìåíüøå 1 è íå áîëüøå 10",GetNameThing(1, fpick, thingType, 0));
-	ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Ñêëàä",store,"Ïðèíÿòü","Îòìåíà");
+	format(store,sizeof(store),"{cccccc}Ð§Ñ‚Ð¾Ð±Ñ‹ ÑÐ¾Ð±Ñ€Ð°Ñ‚ÑŒ ÑÑ‰Ð¸Ðº Ñ {ff9000}%s {cccccc}Ð²Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾\n\nÐÐµ Ð¼ÐµÐ½ÑŒÑˆÐµ 1 Ð¸ Ð½Ðµ Ð±Ð¾Ð»ÑŒÑˆÐµ 10",GetNameThing(1, fpick, thingType, 0));
+	ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Ð¡ÐºÐ»Ð°Ð´",store,"ÐŸÑ€Ð¸Ð½ÑÑ‚ÑŒ","ÐžÑ‚Ð¼ÐµÐ½Ð°");
 	return 1;
 }
-stock shift_rent(playerid, wh, getinva, putinva) // Ïåðåìåùåíèå ïðåäìåòîâ âíóòðè èíâåíòàðÿ àðåíäîâàííîãî ñêëàäà îðãàíèçàöèè (ñ îäíîé ÿ÷åéêè íà äðóãóþ)
+stock shift_rent(playerid, wh, getinva, putinva) // ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð¾Ð² Ð²Ð½ÑƒÑ‚Ñ€Ð¸ Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ Ð°Ñ€ÐµÐ½Ð´Ð¾Ð²Ð°Ð½Ð½Ð¾Ð³Ð¾ ÑÐºÐ»Ð°Ð´Ð° Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸ (Ñ Ð¾Ð´Ð½Ð¾Ð¹ ÑÑ‡ÐµÐ¹ÐºÐ¸ Ð½Ð° Ð´Ñ€ÑƒÐ³ÑƒÑŽ)
 {
 	if(OnlineInfo[playerid][oShowInterfaceRent] == wh)
 	{
-	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Ïåðåìåùàòü ïðåäìåòû ìîæåò òîëüêî ëèäåð"), i_resettabs(playerid);
+	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰Ð°Ñ‚ÑŒ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð¼Ð¾Ð¶ÐµÑ‚ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð»Ð¸Ð´ÐµÑ€"), i_resettabs(playerid);
 		if(WhInfo[wh][wInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(WhInfo[wh][wInvent][putinva] != 0) return 1;
 		new quanPlayer;
@@ -80,7 +80,7 @@ stock shift_rent(playerid, wh, getinva, putinva) // Ïåðåìåùåíèå ïðåäìåòîâ âíóòðè
 		}
 		if(quanPlayer >= 2)
 		{
-			format(store, sizeof(store), "{FF6347}Ñêëàä ïðîñìàòðèâàþò %d ÷åë. [ Ïåðåìåùåíèå ïðåäìåòà íåâîçìîæíî ]", quanPlayer-1);
+			format(store, sizeof(store), "{FF6347}Ð¡ÐºÐ»Ð°Ð´ Ð¿Ñ€Ð¾ÑÐ¼Ð°Ñ‚Ñ€Ð¸Ð²Ð°ÑŽÑ‚ %d Ñ‡ÐµÐ». [ ÐŸÐµÑ€ÐµÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð° Ð½ÐµÐ²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ ]", quanPlayer-1);
 			ErrorMessage(playerid, store);
 			i_resettabs(playerid);
 			return 1;
@@ -109,7 +109,7 @@ stock putrentwh(wh, pick, kol, thingType)
 	{
 		if(WhInfo[wh][wInvent][inva] == pick && WhInfo[wh][wInvType][inva] == thingType)
 		{
-		    if(OrganInfo[wh][gInv][inva]+kol > getLimit) // Âñòðîåííàÿ ïðîâåðêà íà ëèìèò
+		    if(OrganInfo[wh][gInv][inva]+kol > getLimit) // Ð’ÑÑ‚Ñ€Ð¾ÐµÐ½Ð½Ð°Ñ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð»Ð¸Ð¼Ð¸Ñ‚
 		    {
 		        stopFind = true;
 		    }
@@ -159,7 +159,7 @@ stock TakeRentwh(wh, stat, kolvo, thingType, dopinf)
 	}
 	return 1;
 }
-stock SaveRent(idx) // Ñîõðàíåíèå âñåãî àðåíäîâàííîãî ñêëàäà ïî öèêëó
+stock SaveRent(idx) // Ð¡Ð¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ðµ Ð²ÑÐµÐ³Ð¾ Ð°Ñ€ÐµÐ½Ð´Ð¾Ð²Ð°Ð½Ð½Ð¾Ð³Ð¾ ÑÐºÐ»Ð°Ð´Ð° Ð¿Ð¾ Ñ†Ð¸ÐºÐ»Ñƒ
 {
 	format(big_query,sizeof(big_query),"UPDATE `pp_rentwh` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvQara0` = '%d'",
 	WhInfo[idx][wInvent][0], WhInfo[idx][wInv][0], WhInfo[idx][wInvType][0], WhInfo[idx][wInvQara][0]);
@@ -171,16 +171,16 @@ stock SaveRent(idx) // Ñîõðàíåíèå âñåãî àðåíäîâàííîãî ñêëàäà ïî öèêëó
 	query_empty(pearsq, big_query);
 	return 1;
 }
-stock rentwh_limit(thingId, thingType, &getLimit) // Ïðîâåðÿåì ëèìèòû ñêëàäà îðãàíèçàöèè
+stock rentwh_limit(thingId, thingType, &getLimit) // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ Ð»Ð¸Ð¼Ð¸Ñ‚Ñ‹ ÑÐºÐ»Ð°Ð´Ð° Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸
 {
-	if(thingType == 0) // Îáû÷íûå Ïðåäìåòû
+	if(thingType == 0) // ÐžÐ±Ñ‹Ñ‡Ð½Ñ‹Ðµ ÐŸÑ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹
 	{
-	    if(thingId >= 4 && thingId <= 8) getLimit = 50000; // Âåùåñòâà
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 50000; // Ïàòðîíû
-	    else getLimit = 10000; // Íà ñëó÷àé îøèáêè, îñòàëüíûå ïðåäìåòû ëèìèò 10ê
+	    if(thingId >= 4 && thingId <= 8) getLimit = 50000; // Ð’ÐµÑ‰ÐµÑÑ‚Ð²Ð°
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 50000; // ÐŸÐ°Ñ‚Ñ€Ð¾Ð½Ñ‹
+	    else getLimit = 10000; // ÐÐ° ÑÐ»ÑƒÑ‡Ð°Ð¹ Ð¾ÑˆÐ¸Ð±ÐºÐ¸, Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð»Ð¸Ð¼Ð¸Ñ‚ 10Ðº
  	}
-	else if(thingType == 1) getLimit = 5000; // Îðóæèå
-    else if(thingType == 2) getLimit = 5000; // Êàñêè è Áðîíåæèëåòû (Àêñåññóàðû)
-    else getLimit = 10000; // Íà ñëó÷àé îøèáêè, îñòàëüíûå ïðåäìåòû ëèìèò 10ê
+	else if(thingType == 1) getLimit = 5000; // ÐžÑ€ÑƒÐ¶Ð¸Ðµ
+    else if(thingType == 2) getLimit = 5000; // ÐšÐ°ÑÐºÐ¸ Ð¸ Ð‘Ñ€Ð¾Ð½ÐµÐ¶Ð¸Ð»ÐµÑ‚Ñ‹ (ÐÐºÑÐµÑÑÑƒÐ°Ñ€Ñ‹)
+    else getLimit = 10000; // ÐÐ° ÑÐ»ÑƒÑ‡Ð°Ð¹ Ð¾ÑˆÐ¸Ð±ÐºÐ¸, Ð¾ÑÑ‚Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ñ‹ Ð»Ð¸Ð¼Ð¸Ñ‚ 10Ðº
 	return 1;
 }

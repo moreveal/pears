@@ -1,4 +1,4 @@
-// Координаты отображения аксессуара в текстдраве
+//  РљРѕРѕСЂРґРёРЅР°С‚С‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Р°РєСЃРµСЃСЃСѓР°СЂР° РІ С‚РµРєСЃС‚РґСЂР°РІРµ
 stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 {
     findIt = 1;
@@ -14,13 +14,13 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 		case 18926..18935, 19161, 19162, 19098, 18944..18951: x = -100.0, y = -30.0, z = 272.0, s = 1.0;
 		case 19006..19035, 19138, 19139, 19140: x = 0.0, y = 0.0, z = 110.0, s = 1.0;
 		case 18906..18910: x = -100.0, y = -30.0, z = 183.0, s = 1.0;
-		case 2782: x = -20.0, y = 0.0, z = 170.0, s = 1.0; // Ракушка
-		case 19078, 19079: x = 0.0, y = -90.0, z = 0.0, s = 1.0; // Попугай
+		case 2782: x = -20.0, y = 0.0, z = 170.0, s = 1.0; // Р Р°РєСѓС€РєР°
+		case 19078, 19079: x = 0.0, y = -90.0, z = 0.0, s = 1.0; // РџРѕРїСѓРіР°Р№
 		case 2045: x = 0.0, y = 30.0, z = -90.0, s = 1.0;
 		case 19590: x = 0.0, y = 30.0, z = 90.0, s = 1.0;
 		case 2404,2405,2406,19559: x = 0.0, y = 0.0, z = 180.0, s = 1.0;
-		case 902: x = 90.0, y = 0.0, z = 0.0, s = 1.0; // Морская Звезда
-		case 1599,1600,19085,11712: x = 0.0, y = 0.0, z = 90.0, s = 1.0; // Синяя и Жёлтая Рыбка, Повязка на Глаз
+		case 902: x = 90.0, y = 0.0, z = 0.0, s = 1.0; // РњРѕСЂСЃРєР°СЏ Р—РІРµР·РґР°
+		case 1599,1600,19085,11712: x = 0.0, y = 0.0, z = 90.0, s = 1.0; // РЎРёРЅСЏСЏ Рё Р–С‘Р»С‚Р°СЏ Р С‹Р±РєР°, РџРѕРІСЏР·РєР° РЅР° Р“Р»Р°Р·
 		case 18632,2484,804,650,2806,18890,19569: x = 0.0, y = 0.0, z = 0.0, s = 1.0;
 		case 1828: x = 90.0, y = 0.0, z = -90.0, s = 1.0;
 		case 2061: x = 0.0, y = 0.0, z = 0.0, s = 1.5;
@@ -193,8 +193,8 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 		case 1616: x = 0.0000, y = 0.0000, z = 0.0000, s = 1.0000;
 		case 1622: x = 0.0000, y = 0.0000, z = 0.0000, s = 1.0000;
 		case 3465: x = 0.0000, y = 0.0000, z = 0.0000, s = 1.0000;
-		case 19106: x = 74.0000, y = -60.0000, z = 90.0000, s = 0.7400; // Каска
-		case 18954: x = -8.0000, y = -90.0000, z = 14.0000, s = 0.7200; // Шапка серая
+		case 19106: x = 74.0000, y = -60.0000, z = 90.0000, s = 0.7400; // РљР°СЃРєР°
+		case 18954: x = -8.0000, y = -90.0000, z = 14.0000, s = 0.7200; // РЁР°РїРєР° СЃРµСЂР°СЏ
 		case 1798: x = -18.0000, y = 0.0000, z = 212.0000, s = 0.5200;
 		case 1797: x = -18.0000, y = 0.0000, z = 209.0000, s = 0.6200;
 		case 1764: x = -28.0000, y = 2.0000, z = 309.0000, s = 1.0000;
@@ -216,9 +216,9 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 new PlayerText:DynamicTextDraw[15][MAX_REALPLAYERS];
 new typeDynamicTextDraw[MAX_REALPLAYERS];
 
-new editModelId[MAX_REALPLAYERS]; // ID Модели, которую редактируем
-new editModelAxis[MAX_REALPLAYERS]; // Ось по которой редактируем модель
-new Float:editModelPos[4][MAX_REALPLAYERS]; // Координаты отображения
+new editModelId[MAX_REALPLAYERS]; // ID РњРѕРґРµР»Рё, РєРѕС‚РѕСЂСѓСЋ СЂРµРґР°РєС‚РёСЂСѓРµРј
+new editModelAxis[MAX_REALPLAYERS]; // РћСЃСЊ РїРѕ РєРѕС‚РѕСЂРѕР№ СЂРµРґР°РєС‚РёСЂСѓРµРј РјРѕРґРµР»СЊ
+new Float:editModelPos[4][MAX_REALPLAYERS]; // РљРѕРѕСЂРґРёРЅР°С‚С‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
 
 enum editmInfo
 {
@@ -231,28 +231,28 @@ new editModelQuan;
 
 CMD:editmodel(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду [ 10+ Adm ]");
-    if(sscanf(params, "i",params[0])) return ErrorText(playerid, "{FF6347}/editmodel ID Модели объекта");
-    if(params[0] >= MAX_OBJECT_MODEL_ID || params[0] < 321) return format(store,sizeof(store),"{FF6347}ID Объекта не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, store);
-    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, store);
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ [ 10+ Adm ]");
+    if(sscanf(params, "i",params[0])) return ErrorText(playerid, "{FF6347}/editmodel ID РњРѕРґРµР»Рё РѕР±СЉРµРєС‚Р°");
+    if(params[0] >= MAX_OBJECT_MODEL_ID || params[0] < 321) return format(store,sizeof(store),"{FF6347}ID РћР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 321 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, store);
+    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Р›РёРјРёС‚ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ %d\n{cccccc}Р”РѕР¶РґРёС‚РµСЃСЊ РєРѕРіРґР° СЂР°Р·СЂР°Р±РѕС‚С‡РёРє РїРµСЂРµРЅРµСЃС‘С‚ РёС… РІ stock РјРѕРґР° СЃРµСЂРІРµСЂР°", MAX_EDITMODEL), ErrorMessage(playerid, store);
     
-    // Закрываем использование компьютера или ноутбука
+    // Р—Р°РєСЂС‹РІР°РµРј РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РєРѕРјРїСЊСЋС‚РµСЂР° РёР»Рё РЅРѕСѓС‚Р±СѓРєР°
     if(Komputer[playerid] == 2) exitkomp(playerid, 2);
     
-    // Делаем проверку на открытое меню
-    if(OnlineInfo[playerid][oShowInterface] > 0 && OnlineInfo[playerid][oShowInterface] != 15) return ErrorMessage(playerid, "{FF6347}Закройте открытое меню [ Инвентарь, меню покупок, смартфон и так далее ]");
+    // Р”РµР»Р°РµРј РїСЂРѕРІРµСЂРєСѓ РЅР° РѕС‚РєСЂС‹С‚РѕРµ РјРµРЅСЋ
+    if(OnlineInfo[playerid][oShowInterface] > 0 && OnlineInfo[playerid][oShowInterface] != 15) return ErrorMessage(playerid, "{FF6347}Р—Р°РєСЂРѕР№С‚Рµ РѕС‚РєСЂС‹С‚РѕРµ РјРµРЅСЋ [ РРЅРІРµРЅС‚Р°СЂСЊ, РјРµРЅСЋ РїРѕРєСѓРїРѕРє, СЃРјР°СЂС‚С„РѕРЅ Рё С‚Р°Рє РґР°Р»РµРµ ]");
     
     new Float:modelPos[4], findModel;
     GetModelTextDraw(params[0], modelPos[0], modelPos[1], modelPos[2], modelPos[3], findModel);
-    if(findModel == 1) return ErrorText(playerid, "{FF6347}Этот объект уже добавлен в общий stock и не нуждается в редактировании"), AccessorySetting(playerid, DP[3][playerid]);
+    if(findModel == 1) return ErrorText(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ СѓР¶Рµ РґРѕР±Р°РІР»РµРЅ РІ РѕР±С‰РёР№ stock Рё РЅРµ РЅСѓР¶РґР°РµС‚СЃСЏ РІ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРё"), AccessorySetting(playerid, DP[3][playerid]);
 	
     GameTextForPlayer(playerid," ",1000,3);
 	DP[4][playerid] = 0;
-    editModelId[playerid] = params[0]; // Сохраняем ID редактируемой модели
-    editModelAxis[playerid] = 0; // Редактируем по оси X (0 x, 1 y, 2 z, 3 zoom)
+    editModelId[playerid] = params[0]; // РЎРѕС…СЂР°РЅСЏРµРј ID СЂРµРґР°РєС‚РёСЂСѓРµРјРѕР№ РјРѕРґРµР»Рё
+    editModelAxis[playerid] = 0; // Р РµРґР°РєС‚РёСЂСѓРµРј РїРѕ РѕСЃРё X (0 x, 1 y, 2 z, 3 zoom)
     
 	new findIt = -1;
-    for(new i = 0; i < MAX_EDITMODEL; i++) // Ищем эту модель, вдруг она есть в списке на редактирование
+    for(new i = 0; i < MAX_EDITMODEL; i++) // РС‰РµРј СЌС‚Сѓ РјРѕРґРµР»СЊ, РІРґСЂСѓРі РѕРЅР° РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ РЅР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ
     {
         if(EditModelInfo[i][editModel] == editModelId[playerid])
         {
@@ -263,7 +263,7 @@ CMD:editmodel(playerid, const params[])
 			editModelPos[3][playerid] = EditModelInfo[i][editPos][3];
         }
     }
-    if(findIt == -1) // Если не нашли, сбрасываем координаты
+    if(findIt == -1) // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё, СЃР±СЂР°СЃС‹РІР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹
     {
         editModelPos[0][playerid] = 0.0;
 		editModelPos[1][playerid] = 0.0;
@@ -271,55 +271,55 @@ CMD:editmodel(playerid, const params[])
 		editModelPos[3][playerid] = 1.0;
     }
     
-    if(typeDynamicTextDraw[playerid] == 0) CreateEditModelTextDraw(playerid); // Создаём текстдравы редактора
-    ShowEditModelMenu(playerid); // Показываем меню редактора
+    if(typeDynamicTextDraw[playerid] == 0) CreateEditModelTextDraw(playerid); // РЎРѕР·РґР°С‘Рј С‚РµРєСЃС‚РґСЂР°РІС‹ СЂРµРґР°РєС‚РѕСЂР°
+    ShowEditModelMenu(playerid); // РџРѕРєР°Р·С‹РІР°РµРј РјРµРЅСЋ СЂРµРґР°РєС‚РѕСЂР°
     UpdateColorButtonEditModelDraw(playerid, 0);
-    SelectTextDraw(playerid,0x666666AA); // Активируем кликабельность (мышка)
+    SelectTextDraw(playerid,0x666666AA); // РђРєС‚РёРІРёСЂСѓРµРј РєР»РёРєР°Р±РµР»СЊРЅРѕСЃС‚СЊ (РјС‹С€РєР°)
 	return 1;
 }
 
 CMD:exportmodel(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду [ 10+ Adm ]");
-	if(editModelQuan <= 0) return ErrorMessage(playerid, "{FF6347}Нет отредактированных объектов для экспорта");
+    if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ [ 10+ Adm ]");
+	if(editModelQuan <= 0) return ErrorMessage(playerid, "{FF6347}РќРµС‚ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ РґР»СЏ СЌРєСЃРїРѕСЂС‚Р°");
 	
 	new year, month, day;
-	getdate(year, month, day); // Получаем дату
+	getdate(year, month, day); // РџРѕР»СѓС‡Р°РµРј РґР°С‚Сѓ
 	new hours, minuite, second;
-	gettime(hours,minuite,second); // Получаем время
+	gettime(hours,minuite,second); // РџРѕР»СѓС‡Р°РµРј РІСЂРµРјСЏ
 	
 	new filename[64], quanExport;
-	format(filename, 64, "EditModel_%02d.%02d.%d_%02d %02d %02d.txt", day, month, year, hours, minuite, second); // Называем файл по дате и времени экспорта
+	format(filename, 64, "EditModel_%02d.%02d.%d_%02d %02d %02d.txt", day, month, year, hours, minuite, second); // РќР°Р·С‹РІР°РµРј С„Р°Р№Р» РїРѕ РґР°С‚Рµ Рё РІСЂРµРјРµРЅРё СЌРєСЃРїРѕСЂС‚Р°
 	
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(lines,sizeof(lines),""); // РћС‡РёС‰Р°РµРј Lines
 	for(new i = 0; i < MAX_EDITMODEL; i++)
     {
         if(EditModelInfo[i][editModel] > 0)
         {
-            // Вносим информацию в строку
+            // Р’РЅРѕСЃРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ СЃС‚СЂРѕРєСѓ
         	format(line,sizeof(line),"case %d: x = %.4f, y = %.4f, z = %.4f, s = %.4f;\r\n",EditModelInfo[i][editModel], EditModelInfo[i][editPos][0], EditModelInfo[i][editPos][1], EditModelInfo[i][editPos][2], EditModelInfo[i][editPos][3]), strcat(lines,line);
 
-			// Очищаем переменные
+			// РћС‡РёС‰Р°РµРј РїРµСЂРµРјРµРЅРЅС‹Рµ
 			EditModelInfo[i][editModel] = 0;
         	EditModelInfo[i][editPos][0] = 0.0;
         	EditModelInfo[i][editPos][1] = 0.0;
         	EditModelInfo[i][editPos][2] = 0.0;
         	EditModelInfo[i][editPos][3] = 0.0;
         	
-        	editModelQuan --; // Вычитаем сохранённую модель
-         	SaveEditModel(i); // Сохраняем результат
+        	editModelQuan --; // Р’С‹С‡РёС‚Р°РµРј СЃРѕС…СЂР°РЅС‘РЅРЅСѓСЋ РјРѕРґРµР»СЊ
+         	SaveEditModel(i); // РЎРѕС…СЂР°РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚
          	
          	quanExport ++;
        	}
 	}
-	new File:File = fopen(filename, io_write); // Открываем или создаём этот файл
-	fwrite(File, lines); // Записываем все строки в файл
-	fclose(File); // Закрываем файл
+	new File:File = fopen(filename, io_write); // РћС‚РєСЂС‹РІР°РµРј РёР»Рё СЃРѕР·РґР°С‘Рј СЌС‚РѕС‚ С„Р°Р№Р»
+	fwrite(File, lines); // Р—Р°РїРёСЃС‹РІР°РµРј РІСЃРµ СЃС‚СЂРѕРєРё РІ С„Р°Р№Р»
+	fclose(File); // Р—Р°РєСЂС‹РІР°РµРј С„Р°Р№Р»
 	
-	format(store,sizeof(store),"{99ff66}Экспортировано %d моделей\n{cccccc}Файл: %s", quanExport, filename);
+	format(store,sizeof(store),"{99ff66}Р­РєСЃРїРѕСЂС‚РёСЂРѕРІР°РЅРѕ %d РјРѕРґРµР»РµР№\n{cccccc}Р¤Р°Р№Р»: %s", quanExport, filename);
 	SuccessMessage(playerid, store);
 	
-	AdminLog("exportmodel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quanExport, "Экспортировал модели");
+	AdminLog("exportmodel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quanExport, "Р­РєСЃРїРѕСЂС‚РёСЂРѕРІР°Р» РјРѕРґРµР»Рё");
 	return 1;
 }
 
@@ -328,12 +328,12 @@ stock SaveEditModelTextDraw(playerid)
     SetPVarInt(playerid,"afmysql",GetPVarInt(playerid,"afmysql")+1);
 	if(GetPVarInt(playerid,"afmysql") >= 5)
 	{
-		SendClientMessage(playerid, COLOR_GREEN,"* Не флуди!");
-		ShowDialog(playerid,11001,DIALOG_STYLE_MSGBOX,"{ff0000}****  {FFFFFF}*[АнтиФлуд]*  {ff0000}****","{ff0000}******** {ffffff}Не флуди! {ff0000}********","•","");
+		SendClientMessage(playerid, COLOR_GREEN,"* РќРµ С„Р»СѓРґРё!");
+		ShowDialog(playerid,11001,DIALOG_STYLE_MSGBOX,"{ff0000}****  {FFFFFF}*[РђРЅС‚РёР¤Р»СѓРґ]*  {ff0000}****","{ff0000}******** {ffffff}РќРµ С„Р»СѓРґРё! {ff0000}********","вЂў","");
 		return 1;
 	}
 
-    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, store);
+    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Р›РёРјРёС‚ РѕС‚СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ %d\n{cccccc}Р”РѕР¶РґРёС‚РµСЃСЊ РєРѕРіРґР° СЂР°Р·СЂР°Р±РѕС‚С‡РёРє РїРµСЂРµРЅРµСЃС‘С‚ РёС… РІ stock РјРѕРґР° СЃРµСЂРІРµСЂР°", MAX_EDITMODEL), ErrorMessage(playerid, store);
 
 	new findIt = -1, noFind;
     for(new i = 0; i < MAX_EDITMODEL; i++)
@@ -349,7 +349,7 @@ stock SaveEditModelTextDraw(playerid)
 	            EditModelInfo[i][editPos][3] = editModelPos[3][playerid];
 	            SaveEditModel(i);
             }
-            else ErrorMessage(playerid, "{FF6347}Вы не внесли изменения, чтобы их сохранять"), noFind = 1;
+            else ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІРЅРµСЃР»Рё РёР·РјРµРЅРµРЅРёСЏ, С‡С‚РѕР±С‹ РёС… СЃРѕС…СЂР°РЅСЏС‚СЊ"), noFind = 1;
 			break;
         }
     }
@@ -370,11 +370,11 @@ stock SaveEditModelTextDraw(playerid)
 	        }
 	    }
     }
-    if(noFind == 0) SuccessMessage(playerid, "{99ff66}Отображение текстдрава сохранено\n{cccccc}Разработчик внесёт это изменение в stock мода в ближайшем обновлении: /exportmodel");
+    if(noFind == 0) SuccessMessage(playerid, "{99ff66}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚РґСЂР°РІР° СЃРѕС…СЂР°РЅРµРЅРѕ\n{cccccc}Р Р°Р·СЂР°Р±РѕС‚С‡РёРє РІРЅРµСЃС‘С‚ СЌС‚Рѕ РёР·РјРµРЅРµРЅРёРµ РІ stock РјРѕРґР° РІ Р±Р»РёР¶Р°Р№С€РµРј РѕР±РЅРѕРІР»РµРЅРёРё: /exportmodel");
 	return 1;
 }
 
-forward LoadEditModelTextDraw(); // Загрузка сохранённых переменных из базы
+forward LoadEditModelTextDraw(); // Р—Р°РіСЂСѓР·РєР° СЃРѕС…СЂР°РЅС‘РЅРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… РёР· Р±Р°Р·С‹
 public LoadEditModelTextDraw()
 {
 	new rows, time = GetTickCount();
@@ -389,11 +389,11 @@ public LoadEditModelTextDraw()
 		cache_get_value_name_float(f, "editPos3", EditModelInfo[f][editPos][3]);
 		if(EditModelInfo[f][editModel] > 0) editModelQuan ++;
 	}
-	printf("[MODE]: Редактор Моделей Текстдравов [%d/%d Quan][%d ms]", editModelQuan, rows, GetTickCount() - time);
+	printf("[MODE]: Р РµРґР°РєС‚РѕСЂ РњРѕРґРµР»РµР№ РўРµРєСЃС‚РґСЂР°РІРѕРІ [%d/%d Quan][%d ms]", editModelQuan, rows, GetTickCount() - time);
 	return 1;
 }
 
-stock SaveEditModel(i) // Обновляем или добавляем строку об аксессуаре
+stock SaveEditModel(i) // РћР±РЅРѕРІР»СЏРµРј РёР»Рё РґРѕР±Р°РІР»СЏРµРј СЃС‚СЂРѕРєСѓ РѕР± Р°РєСЃРµСЃСЃСѓР°СЂРµ
 {
 	format(big_query, sizeof(big_query), "UPDATE `editModel` SET `editModel`='%d',`editPos0`='%f',`editPos1`='%f',`editPos2`='%f',`editPos3`='%f'  WHERE `newid` = '%d'",
 	EditModelInfo[i][editModel], EditModelInfo[i][editPos][0], EditModelInfo[i][editPos][1], EditModelInfo[i][editPos][2], EditModelInfo[i][editPos][3], EditModelInfo[i][editId]);
@@ -401,12 +401,12 @@ stock SaveEditModel(i) // Обновляем или добавляем строку об аксессуаре
     return 1;
 }
 
-stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
+stock CreateEditModelTextDraw(playerid) // РЎРѕР·РґР°С‘Рј С‚РµРєСЃС‚РґСЂР°РІС‹ СЂРµРґР°РєС‚РѕСЂР°
 {
 	if(typeDynamicTextDraw[playerid] > 0) return 0;
     typeDynamicTextDraw[playerid] = 1;
     
-	DynamicTextDraw[0][playerid] = CreatePlayerTextDraw(playerid, 247.500000, 149.333435, "LD_SPAC:white"); // Основной текстдрав
+	DynamicTextDraw[0][playerid] = CreatePlayerTextDraw(playerid, 247.500000, 149.333435, "LD_SPAC:white"); // РћСЃРЅРѕРІРЅРѕР№ С‚РµРєСЃС‚РґСЂР°РІ
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[0][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[0][playerid], 135.312500, 150.110900);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[0][playerid], 1);
@@ -420,7 +420,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[0][playerid], editModelId[playerid]);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[0][playerid], editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
 	
-	DynamicTextDraw[1][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 305.500000, "LD_SPAC:white"); // Кнопка X
+	DynamicTextDraw[1][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 305.500000, "LD_SPAC:white"); // РљРЅРѕРїРєР° X
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[1][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[1][playerid], 28.750000, 32.277770);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[1][playerid], 1);
@@ -435,7 +435,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[1][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[1][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[2][playerid] = CreatePlayerTextDraw(playerid, 263.125000, 311.500122, "X"); // Надпись X (Подсвечивается выбор оранжевым)
+	DynamicTextDraw[2][playerid] = CreatePlayerTextDraw(playerid, 263.125000, 311.500122, "X"); // РќР°РґРїРёСЃСЊ X (РџРѕРґСЃРІРµС‡РёРІР°РµС‚СЃСЏ РІС‹Р±РѕСЂ РѕСЂР°РЅР¶РµРІС‹Рј)
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[2][playerid], 0.611874, 2.008332);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[2][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[2][playerid], -5963521);
@@ -445,7 +445,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawFont(playerid, DynamicTextDraw[2][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[2][playerid], 1);
 
-	DynamicTextDraw[3][playerid] = CreatePlayerTextDraw(playerid, 277.875000, 305.500000, "LD_SPAC:white"); // Кнопка Y
+	DynamicTextDraw[3][playerid] = CreatePlayerTextDraw(playerid, 277.875000, 305.500000, "LD_SPAC:white"); // РљРЅРѕРїРєР° Y
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[3][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[3][playerid], 28.750000, 32.277770);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[3][playerid], 1);
@@ -460,7 +460,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[3][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[3][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[4][playerid] = CreatePlayerTextDraw(playerid, 292.250000, 311.500122, "Y"); // Надпись Y
+	DynamicTextDraw[4][playerid] = CreatePlayerTextDraw(playerid, 292.250000, 311.500122, "Y"); // РќР°РґРїРёСЃСЊ Y
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[4][playerid], 0.611874, 2.008332);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[4][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[4][playerid], -1);
@@ -470,7 +470,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawFont(playerid, DynamicTextDraw[4][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[4][playerid], 1);
 
-	DynamicTextDraw[5][playerid] = CreatePlayerTextDraw(playerid, 308.500000, 305.500000, "LD_SPAC:white"); // Кнопка Z
+	DynamicTextDraw[5][playerid] = CreatePlayerTextDraw(playerid, 308.500000, 305.500000, "LD_SPAC:white"); // РљРЅРѕРїРєР° Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[5][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[5][playerid], 28.750000, 32.277770);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[5][playerid], 1);
@@ -485,7 +485,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[5][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[5][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпсь Z
+	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // РќР°РґРїСЃСЊ Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[6][playerid], 0.611874, 2.008332);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[6][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[6][playerid], -1);
@@ -495,7 +495,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawFont(playerid, DynamicTextDraw[6][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[6][playerid], 1);
 
-	DynamicTextDraw[7][playerid] = CreatePlayerTextDraw(playerid, 338.812500, 305.500000, "LD_SPAC:white"); // Кнопка Zoom
+	DynamicTextDraw[7][playerid] = CreatePlayerTextDraw(playerid, 338.812500, 305.500000, "LD_SPAC:white"); // РљРЅРѕРїРєР° Zoom
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[7][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[7][playerid], 43.750000, 32.277770);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[7][playerid], 1);
@@ -510,7 +510,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[7][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[7][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[8][playerid] = CreatePlayerTextDraw(playerid, 360.750000, 313.500122, "Zoom"); // Надпись Zoom
+	DynamicTextDraw[8][playerid] = CreatePlayerTextDraw(playerid, 360.750000, 313.500122, "Zoom"); // РќР°РґРїРёСЃСЊ Zoom
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[8][playerid], 0.339062, 1.495000);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[8][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[8][playerid], -1);
@@ -520,7 +520,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawFont(playerid, DynamicTextDraw[8][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[8][playerid], 1);
 
-	DynamicTextDraw[9][playerid] = CreatePlayerTextDraw(playerid, 254.062500, 344.944427, "LD_SPAC:white"); // Кнопка влево
+	DynamicTextDraw[9][playerid] = CreatePlayerTextDraw(playerid, 254.062500, 344.944427, "LD_SPAC:white"); // РљРЅРѕРїРєР° РІР»РµРІРѕ
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[9][playerid], 0.020625, 0.597222);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[9][playerid], 52.500000, 48.999996);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[9][playerid], 1);
@@ -535,7 +535,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[9][playerid], 19132);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[9][playerid], 0.000000, -90.000000, 90.000000, 1.000000);
 
-	DynamicTextDraw[10][playerid] = CreatePlayerTextDraw(playerid, 324.125000, 344.944427, "LD_SPAC:white"); // Кнопка вправо
+	DynamicTextDraw[10][playerid] = CreatePlayerTextDraw(playerid, 324.125000, 344.944427, "LD_SPAC:white"); // РљРЅРѕРїРєР° РІРїСЂР°РІРѕ
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[10][playerid], 0.020625, 0.597222);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[10][playerid], 52.500000, 48.999996);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[10][playerid], 1);
@@ -550,7 +550,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[10][playerid], 19132);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[10][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-	DynamicTextDraw[11][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 120.0, "LD_SPAC:white"); // Кнопка Input
+	DynamicTextDraw[11][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 120.0, "LD_SPAC:white"); // РљРЅРѕРїРєР° Input
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[11][playerid], 0.017500, 0.171111);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[11][playerid], 65.312500, 24.111114);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[11][playerid], 1);
@@ -565,7 +565,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[11][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[11][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[12][playerid] = CreatePlayerTextDraw(playerid, 317.562500, 120.0, "LD_SPAC:white"); // Кнопка Save
+	DynamicTextDraw[12][playerid] = CreatePlayerTextDraw(playerid, 317.562500, 120.0, "LD_SPAC:white"); // РљРЅРѕРїРєР° Save
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[12][playerid], 0.017500, 0.171111);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[12][playerid], 65.312500, 24.111114);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[12][playerid], 1);
@@ -580,7 +580,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[12][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[12][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[13][playerid] = CreatePlayerTextDraw(playerid, 279.750000, 125.444572, "Input"); // Надпись Input
+	DynamicTextDraw[13][playerid] = CreatePlayerTextDraw(playerid, 279.750000, 125.444572, "Input"); // РќР°РґРїРёСЃСЊ Input
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[13][playerid], 0.296249, 1.308333);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[13][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[13][playerid], -5963521);
@@ -590,7 +590,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawFont(playerid, DynamicTextDraw[13][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[13][playerid], 1);
 
-	DynamicTextDraw[14][playerid] = CreatePlayerTextDraw(playerid, 350.437500, 125.444572, "Save"); // Надпись Save
+	DynamicTextDraw[14][playerid] = CreatePlayerTextDraw(playerid, 350.437500, 125.444572, "Save"); // РќР°РґРїРёСЃСЊ Save
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[14][playerid], 0.296249, 1.308333);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[14][playerid], 2);
 	PlayerTextDrawColor(playerid, DynamicTextDraw[14][playerid], 14706431);
@@ -601,7 +601,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[14][playerid], 1);
 	return 1;
 }
-stock ShowEditModelMenu(playerid) // Показываем меню редактора
+stock ShowEditModelMenu(playerid) // РџРѕРєР°Р·С‹РІР°РµРј РјРµРЅСЋ СЂРµРґР°РєС‚РѕСЂР°
 {
     PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[0][playerid], editModelId[playerid]);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[0][playerid], editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
@@ -628,7 +628,7 @@ stock UpdateColorButtonEditModelDraw(playerid, buttonId)
     else if(editModelAxis[playerid] == 1) drawId = 4;
     else if(editModelAxis[playerid] == 2) drawId = 6;
     else if(editModelAxis[playerid] == 3) drawId = 8;
-    PlayerTextDrawColor(playerid, DynamicTextDraw[drawId][playerid], -1); // Удаляем цвет у кнопки
+    PlayerTextDrawColor(playerid, DynamicTextDraw[drawId][playerid], -1); // РЈРґР°Р»СЏРµРј С†РІРµС‚ Сѓ РєРЅРѕРїРєРё
     PlayerTextDrawShow(playerid, DynamicTextDraw[drawId][playerid]);
     
     if(buttonId >= 0)
