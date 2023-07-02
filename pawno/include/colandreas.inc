@@ -8,7 +8,7 @@
 #define _colandreas_included
 #pragma library colandreas
 
-#define COLANDREAS_VERSION (10400) //a.b.c 10000*a+100*b+c
+#define COLANDREAS_VERSION (10500) //a.b.c 10000*a+100*b+c
 #define COLANDREAS (COLANDREAS_VERSION)
 
 // Default extra ID types
@@ -74,6 +74,23 @@ native CA_Init();
 </remarks>
 \**--------------------------------------------------------------------------**/
 native CA_RemoveBuilding(modelid, Float:x, Float:y, Float:z, Float:radius);
+
+/**--------------------------------------------------------------------------**\
+<summary>
+	CA_RestoreBuilding
+</summary>
+<param name="modelid">The removed model to be restored</param>
+<param name="Float:x, Float:y, Float:z">The coordinates in which the objects will be restored</param>
+<param name="Float:radius">The radius around the specified point to restore from</param>
+<returns>
+	0 when the map is not initialized
+	1 when successfully restored
+</returns>
+<remarks>
+    You must use this function after using `CA_Init`
+</remarks>
+\**--------------------------------------------------------------------------**/
+native CA_RestoreBuilding(modelid, Float:x, Float:y, Float:z, Float:radius);
 
 /**--------------------------------------------------------------------------**\
 <summary>
@@ -432,7 +449,7 @@ static stock CA_ObjectList[MAX_CA_OBJECTS][CAOBJECTINFO];
 #if defined STREAMER_TYPE_OBJECT
 
 	// Static collision object functions (The index is not returned these can not be deleted!)
-	stock STREAMER_TAG_OBJECT:CA_CreateDynamicObjectEx_SC(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, worlds[] = { -1 }, interiors[] = { -1 }, players[] = { -1 }, STREAMER_TAG_AREA:areas[] = { STREAMER_TAG_AREA:-1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
+	stock STREAMER_TAG_OBJECT:CA_CreateDynamicObjectEx_SC(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, const worlds[] = { -1 }, const interiors[] = { -1 }, const players[] = { -1 }, const STREAMER_TAG_AREA:areas[] = { STREAMER_TAG_AREA:-1 }, priority = 0, maxworlds = sizeof worlds, maxinteriors = sizeof interiors, maxplayers = sizeof players, maxareas = sizeof areas)
 	{
 		new STREAMER_TAG_OBJECT:id = CreateDynamicObjectEx(modelid, x, y, z, rx, ry, rz, streamdistance, drawdistance, worlds, interiors, players, areas, priority, maxworlds, maxinteriors, maxplayers, maxareas);
 		CA_CreateObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz);
@@ -845,30 +862,30 @@ stock CA_RemoveBreakableBuildings()
 
 /**--------------------------------------------------------------------------**\
 <summary>
-	CA_IsPlayerInWater
+	CA_IsVehicleInWater
 </summary>
-<param name="playerid">The playerid to check</param>
+<param name="vehicleid">The vehicleid to check</param>
 <param name="&Float:depth">The depth</param>
-<param name="&Float:playerdepth">The depth of the player</param>
+<param name="&Float:vehicledepth">The depth of the vehicle</param>
 <returns>
-    0 if the player is not in water
-    1 if the player is in water
+    0 if the vehicle is not in water
+    1 if the vehicle is in water
 </returns>
 \**--------------------------------------------------------------------------**/
-stock CA_IsPlayerInWater(playerid, &Float:depth, &Float:playerdepth)
+stock CA_IsVehicleInWater(vehicleid, &Float:depth, &Float:vehicledepth)
 {
-	new Float:x, Float:y, Float:z, Float:retx[10], Float:rety[10], Float:retz[10], Float: retdist[10], modelids[10];
-	GetPlayerPos(playerid, x, y, z);
-	new collisions = CA_RayCastMultiLine(x, y, z+1000.0, x, y, z-1000.0, retx, rety, retz, retdist, modelids, 10);
-	if(collisions > 0)
+	new Float:x, Float:y, Float:z, Float:retx[10], Float:rety[10], Float:retz[10], Float:retdist[10], modelids[10];
+	GetVehiclePos(vehicleid, x, y, z);
+	new collisions = CA_RayCastMultiLine(x, y, z + 1000.0, x, y, z - 1000.0, retx, rety, retz, retdist, modelids, 10);
+	if(collisions)
 	{
-		for(new i = 0; i < collisions; i++)
+		for(new i = 0, j = 0; i < collisions; i++)
 		{
 			if(modelids[i] == WATER_OBJECT)
 			{
 				depth = FLOAT_INFINITY;
 
-				for(new j = 0; j < collisions; j++)
+				for(j = 0; j < collisions; j++)
 				{
 					if(retz[j] < depth)
 					depth = retz[j];
@@ -877,15 +894,41 @@ stock CA_IsPlayerInWater(playerid, &Float:depth, &Float:playerdepth)
 				depth = retz[i] - depth;
 				if(depth < 0.001 && depth > -0.001)
 					depth = 100.0;
-				playerdepth = retz[i] - z;
+				vehicledepth = retz[i] - z;
 
-				if(playerdepth < -2.0)
+				if(vehicledepth < -2.0)
 					return 0;
 
 				return 1;
 			}
 		}
 	}
+	return 0;
+}
+
+/**--------------------------------------------------------------------------**\
+<summary>
+	CA_IsVehicleNearWater
+</summary>
+<param name="vehicleid">The vehicleid to check</param>
+<param name="Float:dist = 3.0">The distance to check for water</param>
+<param name="Float:height = 3.0">The height the vehicle can be from the water</param>
+<returns>
+    0 if the vehicle is not in water
+    1 if the vehicle is in water
+</returns>
+<remarks>
+    Checks for water all around the vehicle
+</remarks>
+\**--------------------------------------------------------------------------**/
+stock CA_IsVehicleNearWater(vehicleid, Float:dist=3.0, Float:height=3.0)
+{
+	new Float:x, Float:y, Float:z, Float:tmp;
+	GetVehiclePos(vehicleid, x, y, z);
+
+	for(new i; i < 6; i++)
+		if(CA_RayCastLine(x + (dist * floatsin(i * 60.0, degrees)), y + (dist * floatcos(i * 60.0, degrees)), z + height, x + (dist * floatsin(i * 60.0, degrees)), y + (dist * floatcos(i * 60.0, degrees)), z - height, tmp, tmp, tmp) == WATER_OBJECT)
+			return 1;
 	return 0;
 }
 

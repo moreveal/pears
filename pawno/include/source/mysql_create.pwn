@@ -123,3 +123,5 @@ stock CreateMysqlTable()
 	 //query_empty(pearsq, "ALTER TABLE `pp_bizz` ADD `OrderStatus` INT NOT NULL");
 	return 1;
 }
+
+
