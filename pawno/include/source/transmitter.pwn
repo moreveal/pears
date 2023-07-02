@@ -58,9 +58,9 @@ stock resetPlayerTransmitter(playerid) // Сбрасываем чтение ра
 
         PlayerInfo[playerid][pRacDep][0] = g;
         PlayerInfo[playerid][pRacDep][1] = g;
-        if(PlayerInfo[playerid][pDivision] > 0)
+        if(PlayerInfo[playerid][pDivision][0] > 0)
         {
-            new i = PlayerInfo[playerid][pDivision];
+            new i = PlayerInfo[playerid][pDivision][0];
             PlayerInfo[playerid][pRacDiv][0] = g;
             PlayerInfo[playerid][pRacDiv][1] = i;
             PlayerInfo[playerid][pRacDiv][2] = 1;
@@ -98,7 +98,7 @@ stock commandR(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_DIVISION_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(playerid, g, 1));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
     else // Получаем ранг организации с учётом подфракции
@@ -109,8 +109,8 @@ stock commandR(playerid, typeCommand, const params[])
 
     if(IsADepartID(g)) // Законные организации
     {
-        if(typeCommand == 0) format(store, sizeof(store), "** %s%s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
-        else format(store, sizeof(store), "** %s%s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+        if(typeCommand == 0) format(store, sizeof(store), "** %s %s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+        else format(store, sizeof(store), "** %s %s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         SendRadioMessage(g, COLOR_WHITE, store);
     }
     else // Прочие организации
@@ -158,7 +158,7 @@ stock commandD(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_DIVISION_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(playerid, g, 1));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
     else // Получаем ранг организации с учётом подфракции
@@ -177,13 +177,13 @@ stock commandD(playerid, typeCommand, const params[])
         new maxRank = get_maxrank(g);
         if(PlayerInfo[playerid][pRank] >= maxRank-1) // Лидеры и Замы
         {
-            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s[%d]: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), playerid, params[0]);
-            else format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s[%d]: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), playerid, params[0]);
+            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            else format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         }
         else 
         {
-            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s %s[%d]: %s **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), playerid, params[0]);
-            else format(store, sizeof(store), "** [%s] %s%s %s[%d]: (( %s )) **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), playerid, params[0]);
+            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s %s: %s **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            else format(store, sizeof(store), "** [%s] %s%s %s: (( %s )) **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         }
         if(IsADepartID(g)) SendDepartMessage(COLOR_ALLDEPT, store);
         else if(IsAGangID(g)) SendGangMessage(COLOR_ALLDEPT, store);
@@ -222,7 +222,7 @@ stock commandI(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_DIVISION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(playerid, g, 1));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
     }
     else // Получаем ранг организации с учётом подфракции
     {
@@ -286,18 +286,13 @@ stock getNameRank(playerid) // Получаем общее название ра
     new g = fraction(playerid);
 
     if(g == 0 && PlayerInfo[playerid][pSoska] > 0) format(nameRank,sizeof(nameRank), "Админ");
-    else if(g > 0) format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(playerid, g, 0));
+    else if(g > 0) format(nameRank,sizeof(nameRank), getNameRankOrganization(g, PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pRank]));
     else format(nameRank,sizeof(nameRank), "None");
     return nameRank;
 }
-stock getNameRankOrganization(playerid, g, typeFbi) // Получаем название ранга внутри организации (с учётом подфракции)
+stock getNameRankOrganization(g, i, r) // Получаем название ранга внутри организации (с учётом подфракции)
 {
     new nameRank[MAX_NAME_DIVISION_LENGTH];
-    new i;
-    if(typeFbi == 0) i = PlayerInfo[playerid][pDivision];
-    else if(typeFbi == 1) i = PlayerInfo[playerid][pDivSave];
-    new r = PlayerInfo[playerid][pRank];
-
     if(i > 0)  // Если состоит в подфракции
     {
         g -= 1, i -= 1, r -= 1; // Исправления, для корректного получения названий переменных
@@ -321,8 +316,8 @@ stock getNameAbbreviationOrganization(playerid, g, typeFbi)
 {
     new nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     new i;
-    if(typeFbi == 0) i = PlayerInfo[playerid][pDivision] - 1;
-    else if(typeFbi == 1) i = PlayerInfo[playerid][pDivSave] - 1;
+    if(typeFbi == 0) i = PlayerInfo[playerid][pDivision][0] - 1;
+    else if(typeFbi == 1) i = PlayerInfo[playerid][pDivision][1] - 1;
     if(i >= 0) format(nameAbb, sizeof(nameAbb), "[%s] ", DivisionInfo[g - 1][i][divAbbreviation]);
     return nameAbb;
 }
@@ -331,10 +326,10 @@ stock getPlayerNameTransmitter(playerid) // Получение имени для
     new PlayerName[24];
 	if(PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8) // ICA
 	{
-		if(PlayerInfo[playerid][pSignTransmitter] == true) format(PlayerName,sizeof(PlayerName), PlayerInfo[playerid][pName]); // Включено отображением имени
+		if(PlayerInfo[playerid][pSignTransmitter] == true) format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid); // Включено отображением имени
 		else format(PlayerName,sizeof(PlayerName), PlayerInfo[playerid][pCallSign]); // Отображение имени выключено, значит всегда видно только звание (позывной)
 	}
-	else format(PlayerName,sizeof(PlayerName), PlayerInfo[playerid][pName]);
+	else format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid);
 	return PlayerName;
 }
 
