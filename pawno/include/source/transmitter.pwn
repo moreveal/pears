@@ -47,9 +47,7 @@ stock resetPlayerTransmitter(playerid) // Сбрасываем чтение ра
         PlayerInfo[playerid][pRacDep][0] = 0;
         PlayerInfo[playerid][pRacDep][1] = 0;
 
-        PlayerInfo[playerid][pRacDiv][0] = 0;
-        PlayerInfo[playerid][pRacDiv][1] = 0;
-        PlayerInfo[playerid][pRacDiv][2] = 0;
+        racDivisionSetting(playerid, 0, 0, 0);
     }
     else
     {
@@ -58,15 +56,27 @@ stock resetPlayerTransmitter(playerid) // Сбрасываем чтение ра
 
         PlayerInfo[playerid][pRacDep][0] = g;
         PlayerInfo[playerid][pRacDep][1] = g;
-        if(PlayerInfo[playerid][pDivision][0] > 0)
-        {
-            new i = PlayerInfo[playerid][pDivision][0];
-            PlayerInfo[playerid][pRacDiv][0] = g;
-            PlayerInfo[playerid][pRacDiv][1] = i;
-            PlayerInfo[playerid][pRacDiv][2] = 1;
-        }
+        if(PlayerInfo[playerid][pDivision][0] > 0) racDivisionSetting(playerid, g, PlayerInfo[playerid][pDivision][0], 1);
+        else if(PlayerInfo[playerid][pDivision][1] > 0) racDivisionSetting(playerid, 2, PlayerInfo[playerid][pDivision][1], 1);
+        else if(PlayerInfo[playerid][pDivision][0] == 0 && PlayerInfo[playerid][pDivision][1] == 0) racDivisionSetting(playerid, 0, 0, 0);
     }
     return 1;
+}
+stock resetTransmitterDivisionKey(div0, playerOrg, &getOrg, &getDiv, &getReadRac) // Получаем инфу о том, что делаем с рацией /i
+{
+	if(div0 > 0 && playerOrg > 0) // Если у игрока есть организация и подфракция
+	{
+		getOrg = playerOrg;
+		getDiv = div0;
+		getReadRac = 1;
+	}
+	else // Если нет, доступ к /i должен быть выключен
+	{
+		getOrg = 0;
+		getDiv = 0;
+		getReadRac = 0;
+	}
+	return 1;
 }
 
 // Команды /r и /rb (Рация организаций) - Работает для всех организаций и учитывает прикрытием FBI (Переключается в /mm)
