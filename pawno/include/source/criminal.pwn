@@ -193,17 +193,3 @@ public LoadCriminalCode()
 	printf("[MODE]: Кодекс Правонарушений [%d ms]", GetTickCount() - time);
 	return 1;
 }
-
-CMD:unix(playerid, const params[])
-{
-    if(server != 0) return 1;
-    if(sscanf(params, "i", params[0])) return ErrorText(playerid, "[ Мысли ]: /unix Время");
-
-    new tyear, tmonth, tday, thour, tminute, tsecond;
-	stamp2datetime(params[0], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-
-    format(store, sizeof(store), "%02d.%02d.%d %02d:%02d",tday, tmonth, tyear, thour, tminute);
-	SendClientMessage(playerid, COLOR_GREY, store);
-    return 1;
-}
-

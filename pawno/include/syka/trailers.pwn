@@ -14,11 +14,13 @@ enum e_TrailerInfo {
 	tModel, // ID модели трейлера
 	Float: tPos[3], Float: tRot[3], // Позиция в игровом мире
 	Text3D: t3DLabel, // Идентификатор 3д текста у входа
+    Text3D: tt3DLabel, // Идентификатор Стола
 	tEnterPickup, // Идентификатор иконки домика
 	tAttached, // ID транспорта, к которому прикреплен трейлер [0 - если не прикреплен]
 	tObject, // ID установленного объекта (если он стоит в игровом мире)
 	bool: tActive, // Статус существования в игровом мире
 	bool: tLocked, // Статус дверей
+    bool: tTable, // Статус стола
 	tTimerID // Хранит идентификатор таймера для сохранения прицепа
 }
 new trailerInfo[MAX_TRAILERS][e_TrailerInfo];
@@ -44,11 +46,8 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
     if (model == 3171) GetRelativePos(x, y, z, rx, ry, rz, (1153.9735 - 1155.514282), (-1412.2659 - -1411.623779), (13.6603 - 12.465091), doorX, doorY, doorZ);
     else if (model == 3172) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
 
-//    new query_string[40];
-//    mysql_format(pearsq, query_string, sizeof query_string, "SELECT Name FROM pp_igroki WHERE id = %d", trailerInfo[id][tOwnerID]);
     format(store,sizeof(store),"SELECT * FROM pp_igroki WHERE id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
     mysql_tquery(pearsq, store, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
-//    mysql_tquery(pearsq, query_string, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
 
     // Сохранение позиции
     trailerInfo[id][tModel] = model;
@@ -73,10 +72,14 @@ stock UnloadPlacedTrailer(id)
     if (!IsValidDynamicObject(trailer_obj) || GetDynamicObjectModel(trailer_obj) != trailerInfo[id][tModel]) return 0;
     
     DestroyDynamicObject(trailer_obj);
+    if (trailerInfo[id][tTable] == true){
+        DestroyDynamic3DTextLabel(trailerInfo[id][tt3DLabel]);
+    }
     DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
     DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
 
     trailerInfo[id][tActive] = false;
+    trailerInfo[id][tTable] = false;
     SavePlayerTrailerInfo(id);
 
     return 1;
@@ -238,13 +241,13 @@ stock ShowTrailerMenu(playerid) {
     new tid = GetPlayerTrailerID(playerid);
     if (tid < 0) return 0;
 
-    static const fmt_str[] = "{ffffff} Отметить на карте\nДверь [ %s ]";
-    new str[sizeof fmt_str - 2 + 8 + 7 + 1];
+    static const fmt_str[] = "{ffffff}Отметить на карте\nДверь [ %s ]\nСтол для варки [ %s ]";
+    new str[sizeof fmt_str - 2 + 8 + 7 + 1 + 16 + 1 + 10];
     format(str, sizeof str, fmt_str, 
-        (trailerInfo[tid][tLocked] ? ("{ff3333}Закрыта") : ("{ffffff}Открыта"))
+        (trailerInfo[tid][tLocked] ? ("{ff3333}Закрыта{ffffff}") : ("{ffffff}Открыта")),(trailerInfo[tid][tTable] ? ("{ff3333}Спрятан{ffffff}") : ("{ffffff}Установлен"))
     );
 
-    ShowDialog(playerid, 1330, DIALOG_STYLE_LIST,"Трейлер", str, "Ок", "Закрыть");
+    ShowDialog(playerid, 1390, DIALOG_STYLE_LIST,"Трейлер", str, "Ок", "Закрыть");
 
     return 1;
 }
@@ -331,7 +334,8 @@ CMD:trailer_add(playerid, const params[]) {
     }
     SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Трейлер выдан указанному игроку");
     
-    AddPlayerTrailer(targetid, model);
+    new infocreate = AddPlayerTrailer(targetid, model);
+    if (infocreate == 0) ErrorMessage(playerid, "{FF6347}Трейлер не может быть создан [ Лимит: 1000 ]");
     return 1;
 }
 
@@ -382,6 +386,7 @@ public UploadTrailers()
 		cache_get_value_name_float(i, "rot_z", trailerInfo[i][tRot][2]);
 		cache_get_value_name_bool(i, "active", trailerInfo[i][tActive]);
 		cache_get_value_name_bool(i, "locked", trailerInfo[i][tLocked]);
+        cache_get_value_name_bool(i, "stol", trailerInfo[i][tTable]);
 
 		if (trailerInfo[i][tActive]) PlaceTrailer(i, trailerInfo[i][tModel], trailerInfo[i][tPos][0], trailerInfo[i][tPos][1], trailerInfo[i][tPos][2], trailerInfo[i][tRot][0], trailerInfo[i][tRot][1], trailerInfo[i][tRot][2]);
 	}
@@ -391,37 +396,36 @@ public UploadTrailers()
 
 forward OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z);
 public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
-	new owner_name[MAX_PLAYER_NAME + 1];
+	new owner_name[MAX_PLAYER_NAME + 1], number = id+1;
 	cache_get_value_name(0, "Name", owner_name);
 	static const label_fmt_str[] = "Трейлер "COLOR_ORANGE_TEXT"№%d\n"COLOR_WHITE_TEXT"Владелец: "COLOR_ORANGE_TEXT"%s";
     new label_str[sizeof label_fmt_str - 2 + 5 - 2 + MAX_PLAYER_NAME + 1];
     format(label_str, sizeof label_str, label_fmt_str,
-        trailerInfo[id][tID],
+        number,
         owner_name
     );
-	
-    trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(label_str, 0xA9C4E4FF, x, y, z, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
+	if (trailerInfo[id][tTable] == true) 
+    {
+        trailerInfo[id][tt3DLabel] = CreateDynamic3DTextLabel("{ff9000}Химический Стол\n{cccccc}[ /kakish ]", 0xA9C4E4FF, 391.608337, -2089.791015, 899.472961, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,id+5000,0);
+    }
+    trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(label_str, 0xA9C4E4FF, x, y, z, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,0,0);
     trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_OBJECT, x, y, z, 0, 0, .streamdistance = 100.0);
 	Streamer_SetIntData(STREAMER_TYPE_PICKUP, trailerInfo[id][tEnterPickup], STREAMER_EXTRA_TYPE_TRAILER_ENTER, id + 1);
-    printf("%d, %s",trailerInfo[id][tEnterPickup], owner_name);
 	return 1;
 }
 
 
 stock SavePlayerTrailerInfo(id) {
     if (id < 0 || id > MAX_TRAILERS) return 0;
-
-    static const fmt_str[] = "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d";
-    new query_string[sizeof fmt_str - 2 + 9 - 2 + 7 - 2 + 9 - 4 * 6 + 10 * 6 - 2 + 1 - 2 + 1 - 2 + 5 + 1];
-    mysql_format(pearsq, query_string, sizeof query_string, fmt_str,
-        trailerInfo[id][tOwnerID],
+    format(big_query, sizeof(big_query), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d, stol = %d WHERE id = %d",
+	    trailerInfo[id][tOwnerID],
         trailerInfo[id][tPos][0], trailerInfo[id][tPos][1], trailerInfo[id][tPos][2],
         trailerInfo[id][tRot][0], trailerInfo[id][tRot][1], trailerInfo[id][tRot][2],
         trailerInfo[id][tActive],
         trailerInfo[id][tLocked],
-        trailerInfo[id][tID]
-    );
-    mysql_tquery(pearsq, query_string);
+        trailerInfo[id][tTable],
+        trailerInfo[id][tID]);
+	query_empty(pearsq, big_query);
     return 1;
 }
 
@@ -514,7 +518,7 @@ stock SetVehicleSpeed(vehicleid, speed_mph)
 		SetVehicleVelocity(vehicleid, newVelX, floattan(zAngle,degrees) *newVelX, 0.0);
 		return;
 	}
-	new Float: vMultiplier = float(speed_mph) / float(cur_speed_mph);
+	new Float: vMultiplier = float(speed_mph) / cur_speed_mph;
 	SetVehicleVelocity(vehicleid, v[0] *vMultiplier, v[1] *vMultiplier, v[2] *vMultiplier);
 }
 
@@ -543,4 +547,89 @@ stock memset(array[], val, size = sizeof array)
     #emit fill 1                        // 4
     #emit zero.pri
     #emit retn
+}
+
+stock exittrailer(playerid)
+{   
+    new tid = GetPlayerVirtualWorld(playerid)-5000;
+    if(Sleep[playerid] >= 1 || SleepRP[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я сплю");
+    S_SetPlayerVirtualWorld(playerid,0,0);
+    SetPlayerInterior(playerid,0);
+    PPSetPlayerPos(playerid,trailerInfo[tid][tPos][0], trailerInfo[tid][tPos][1], trailerInfo[tid][tPos][2]);
+    return 1;
+}
+
+CMD:kakish(playerid)
+{
+	if(IsPlayerInRangeOfPoint(playerid,0.5,391.608337, -2089.791015, 899.472961))
+	{
+		if(!howstun(playerid))
+	 	{
+			if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7 || Dei[playerid] > 0 || OnlineInfo[playerid][oInHandThing][0] > 0 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки или выполняется действие [Предмет или оружие]");
+			new str[64],sctring[704];
+			format(str,sizeof(str),"{ff9000}Таблетка\n"), strcat(sctring,str);
+			ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Изготовительный Стол",sctring,"Выбор","Отмена");
+		}
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы должны быть у изготовительного стола\n[В интерьере трейлера!]");
+	return 1;
+}
+
+stock Pump_Pill(playerid)
+{
+	new current_tick = GetTickCount();
+	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
+	if(interval > 300)
+	{
+		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 3));
+		if(!IsPlayerInRangeOfPoint(playerid,3.0,Job_X[playerid], Job_Y[playerid], Job_Z[playerid]))
+		{
+			SetPVarInt(playerid,"oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0), ClearAnimations(playerid), TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), PlayerPlaySound(playerid,4203,0,0,0);
+			Dei[playerid] = 7, GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Вы отошли от стола"), 5000, 3), RemovePlayerAttachedObject(playerid,1);
+		}
+		new string[58];
+		format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/100"),GetPVarInt(playerid,"oryjtemp")), GameTextForPlayer(playerid,string, 1500, 3);
+	 	ApplyAnimation(playerid,"OTB","betslp_loop",2.0, 1, 0, 0, 0, 0);
+	 	if(GetPVarInt(playerid,"oryjtemp") >= 100)
+		{
+			RemovePlayerAttachedObject(playerid,1), ClearAnim(playerid), ClearAnimations(playerid), Dei[playerid] = 0, TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), SetPVarInt(playerid,"oryjtemp", 0);
+
+			if(get_drugs(playerid, 7) < 10) return ErrorMessage(playerid, "{FF6347}У вас не хватает Грибов\n\n{cccccc}1 Таблетка = 10 штук Грибов"), SetPVarInt(playerid,"Arobsklad",0);
+			if(get_invent4(playerid, 112, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Водки\n\n{cccccc}1 Таблетка = 1 бутылка Водки"), SetPVarInt(playerid,"Arobsklad",0);
+			if(get_invent4(playerid, 6, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Пустой Таблетки\n\n{cccccc}1 Таблетка = 1 Пустая Таблетка"), SetPVarInt(playerid,"Arobsklad",0);
+        	
+
+			new getQuan, getLimit;
+		    i_limit(playerid, GetPVarInt(playerid,"Arobsklad")+164, getQuan, getLimit);
+		    if(getQuan+1 > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этих патронов: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store), SetPVarInt(playerid,"Arobsklad",0);
+		    
+			new fpick;
+		    if(GetPVarInt(playerid,"Arobsklad") == 16) fpick = 180;
+		    
+		    new put_inva = GiveThingPlayer(playerid, fpick, 1, 1, 0, 0, 0, 9999);
+   			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
+   			
+   			TakeInvent(playerid, 7, 10, 0, 999); // Отнимаем палладий 12 гр.
+            TakeInvent(playerid, 112, 1, 0, 999); // Отнимаем палладий 12 гр.
+            TakeInvent(playerid, 6, 1, 0, 999); // Отнимаем палладий 12 гр.
+		 	GameTextForPlayer(playerid," ", 3000, 3);
+		 	PlayerPlaySound(playerid,6401,0,0,0);
+		 	ShowDialog(playerid, 1700, 0, "{ff9000}Стол для варки", "{cccccc}Отлично! {99ff66}Вы сварили таблетку!", "Ок", "");
+		 	
+		 	SetPVarInt(playerid,"Arobsklad",0);
+		 	update_ability(playerid, 3, 10);
+		 	/*if(PlayerInfo[playerid][pAchieve][86] == 0) AchievePlayer(playerid, 86, 1);
+		 	if(PlayerInfo[playerid][pAchieve][101] == 0)
+			{
+			    new quan_eammo[4];
+			    quan_eammo[0] = get_invent(playerid, 64, 0);
+			    quan_eammo[1] = get_invent(playerid, 65, 0);
+			    quan_eammo[2] = get_invent(playerid, 66, 0);
+			    quan_eammo[3] = get_invent(playerid, 67, 0);
+		 		if(quan_eammo[0]+quan_eammo[1]+quan_eammo[2]+quan_eammo[3] >= 100) AchievePlayer(playerid, 101, 1);
+ 			}*/
+		}
+	 	Aftextdraw[playerid] = current_tick;
+ 	}
+ 	return 1;
 }
