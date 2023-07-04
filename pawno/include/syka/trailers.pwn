@@ -594,14 +594,14 @@ stock Pump_Pill(playerid)
 		{
 			RemovePlayerAttachedObject(playerid,1), ClearAnim(playerid), ClearAnimations(playerid), Dei[playerid] = 0, TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), SetPVarInt(playerid,"oryjtemp", 0);
 
-			if(get_drugs(playerid, 7) < 10) return ErrorMessage(playerid, "{FF6347}У вас не хватает Грибов\n\n{cccccc}1 Таблетка = 10 штук Грибов"), SetPVarInt(playerid,"Arobsklad",0);
+			if(get_invent3(playerid, 6, 1) < 10) return ErrorMessage(playerid, "{FF6347}У вас не хватает Грибов\n\n{cccccc}1 Таблетка = 10 штук Грибов"), SetPVarInt(playerid,"Arobsklad",0);
 			if(get_invent4(playerid, 112, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Водки\n\n{cccccc}1 Таблетка = 1 бутылка Водки"), SetPVarInt(playerid,"Arobsklad",0);
-			if(get_invent4(playerid, 6, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Пустой Таблетки\n\n{cccccc}1 Таблетка = 1 Пустая Таблетка"), SetPVarInt(playerid,"Arobsklad",0);
+			if(get_invent4(playerid, 5, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Пустой Таблетки\n\n{cccccc}1 Таблетка = 1 Пустая Таблетка"), SetPVarInt(playerid,"Arobsklad",0);
         	
 
 			new getQuan, getLimit;
-		    i_limit(playerid, GetPVarInt(playerid,"Arobsklad")+164, getQuan, getLimit);
-		    if(getQuan+1 > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этих патронов: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store), SetPVarInt(playerid,"Arobsklad",0);
+		    i_limit(playerid, 180, getQuan, getLimit);
+		    if(getQuan+1 > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этих Таблеток: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store), SetPVarInt(playerid,"Arobsklad",0);
 		    
 			new fpick;
 		    if(GetPVarInt(playerid,"Arobsklad") == 16) fpick = 180;
@@ -609,9 +609,9 @@ stock Pump_Pill(playerid)
 		    new put_inva = GiveThingPlayer(playerid, fpick, 1, 1, 0, 0, 0, 9999);
    			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
    			
-   			TakeInvent(playerid, 7, 10, 0, 999); // Отнимаем палладий 12 гр.
+   			TakeInvent(playerid, 6, 10, 0, 999); // Отнимаем палладий 12 гр.
             TakeInvent(playerid, 112, 1, 0, 999); // Отнимаем палладий 12 гр.
-            TakeInvent(playerid, 6, 1, 0, 999); // Отнимаем палладий 12 гр.
+            TakeInvent(playerid, 5, 1, 0, 999); // Отнимаем палладий 12 гр.
 		 	GameTextForPlayer(playerid," ", 3000, 3);
 		 	PlayerPlaySound(playerid,6401,0,0,0);
 		 	ShowDialog(playerid, 1700, 0, "{ff9000}Стол для варки", "{cccccc}Отлично! {99ff66}Вы сварили таблетку!", "Ок", "");
