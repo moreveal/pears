@@ -48,7 +48,7 @@ enum gInfo
 	gMaxRanks // Максимальное количество рангов
 };
 new OrganInfo[35][gInfo];
-new RankOrg[35][22][34];
+new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
 
 stock get_maxrank(g) // Получаем максимальное количество рангов в организации
 {
@@ -92,7 +92,7 @@ function LoadOrgan()
 	new time = GetTickCount();
 	new rows, idx,strFromFile2[256],atext[14], btext[14], ctext[14], dtext[14], etext[14], ftext[14], string[34];
 	cache_get_row_count(rows);
-	for(new f; f<rows; ++f)
+	for(new f; f < MAX_ORG; ++f)
 	{
 		cache_get_value_name_int(f, "frakid", idx);
 		cache_get_value_name_int(f, "lave", OrganInfo[idx][glave]);
@@ -149,28 +149,11 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "SCbug", OrganInfo[idx][gSCbug]);
 		cache_get_value_name_int(f, "SanCbug", OrganInfo[idx][gSanCbug]);
 		cache_get_value_name_int(f, "Rejim2", OrganInfo[idx][gRejim2]);
-		cache_get_value_name(f, "rank1", RankOrg[idx][0], 34);
-		cache_get_value_name(f, "rank2", RankOrg[idx][1], 34);
-		cache_get_value_name(f, "rank3", RankOrg[idx][2], 34);
-		cache_get_value_name(f, "rank4", RankOrg[idx][3], 34);
-		cache_get_value_name(f, "rank5", RankOrg[idx][4], 34);
-		cache_get_value_name(f, "rank6", RankOrg[idx][5], 34);
-		cache_get_value_name(f, "rank7", RankOrg[idx][6], 34);
-		cache_get_value_name(f, "rank8", RankOrg[idx][7], 34);
-		cache_get_value_name(f, "rank9", RankOrg[idx][8], 34);
-		cache_get_value_name(f, "rank10", RankOrg[idx][9], 34);
-		cache_get_value_name(f, "rank11", RankOrg[idx][10], 34);
-		cache_get_value_name(f, "rank12", RankOrg[idx][11], 34);
-		cache_get_value_name(f, "rank13", RankOrg[idx][12], 34);
-		cache_get_value_name(f, "rank14", RankOrg[idx][13], 34);
-		cache_get_value_name(f, "rank15", RankOrg[idx][14], 34);
-		cache_get_value_name(f, "rank16", RankOrg[idx][15], 34);
-		cache_get_value_name(f, "rank17", RankOrg[idx][16], 34);
-		cache_get_value_name(f, "rank18", RankOrg[idx][17], 34);
-		cache_get_value_name(f, "rank19", RankOrg[idx][18], 34);
-		cache_get_value_name(f, "rank20", RankOrg[idx][19], 34);
-		cache_get_value_name(f, "rank21", RankOrg[idx][20], 34);
-		cache_get_value_name(f, "rank22", RankOrg[idx][21], 34);
+
+		for(new i = 0; i < MAX_RANK_ORG; i++)
+    	{
+			format(string,sizeof(string),"rank%d", i), cache_get_value_name(f, string, RankOrg[idx][i], MAX_NAME_LENGTH);
+		}
 
 		cache_get_value_name_int(f, "capt0", OrganInfo[idx][gCapture][0]);
 		cache_get_value_name_int(f, "capt1", OrganInfo[idx][gCapture][1]);
@@ -281,6 +264,7 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "skinrank17", OrganInfo[idx][gSkinRank][17]);
 		cache_get_value_name_int(f, "skinrank18", OrganInfo[idx][gSkinRank][18]);
 		cache_get_value_name_int(f, "skinrank19", OrganInfo[idx][gSkinRank][19]);
+		cache_get_value_name_int(f, "gMaxRanks", OrganInfo[idx][gMaxRanks]);
 		if(idx == 13 || idx == 14 || idx == 15 || idx == 16)
 		{
 			if(OrganInfo[idx][gMap] >= 1)
@@ -410,5 +394,658 @@ function gunsklad(playerid)
 		}
 		else ErrorMessage(playerid, "{FF6347}У вас в руках нет ящика");
 	}
+	return 1;
+}
+
+
+// lmenu
+CMD:omenu(playerid) return cmd_lmenu(playerid);
+CMD:lmenu(playerid)
+{
+	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Ваш персонаж участвует в экспедиции NASA");
+	new g = fraction(playerid);
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+
+	PlayerPlaySound(playerid,1150,0,0,0);
+	showDialogOrganizationMenu(playerid);
+	return 1;
+}
+stock showDialogOrganizationMenu(playerid)
+{
+	for(new i = 0; i < 200; i++) List[i][playerid] = 0;
+	DP[0][playerid] = 0;
+	DP[1][playerid] = fraction(playerid);
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
+	format(line,sizeof(line), detail_lmenu(playerid, 2)), strcat(lines,line); // Участники Online
+	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // Участники Offline
+	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // Статус набора
+	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // Переводы на счет
+	format(line,sizeof(line), detail_lmenu(playerid, 7)), strcat(lines,line); // Названия рангов
+	format(line,sizeof(line), detail_lmenu(playerid, 15)), strcat(lines,line); // Количество рангов
+	format(line,sizeof(line), detail_lmenu(playerid, 8)), strcat(lines,line); // Лог
+	format(line,sizeof(line), detail_lmenu(playerid, 10)), strcat(lines,line); // Черный список
+	if(IsAGang(playerid) || IsAMafia(playerid))
+	{
+	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
+	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
+	}
+	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
+	if(PlayerInfo[playerid][pLeader] >= 1)
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
+		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
+		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
+	}
+	format(store,sizeof(store),"{cccccc}Меню: %s", fraklastName[DP[1][playerid]]);
+	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	return 1;
+}
+stock detail_lmenu(playerid, detail)
+{
+    List[DP[0][playerid]][playerid] = detail;
+    DP[0][playerid] += 1;
+	new text[50], g = DP[1][playerid];
+	if(detail == 1) text = "{999999}Об организации..\t";
+	else if(detail == 2) text = "\n{cccccc}Участники {99ff66}Online\t";
+	else if(detail == 3) text = "\n{cccccc}Участники {FF6347}Offline\t";
+	else if(detail == 4)
+	{
+		if(OrganInfo[g][gapt] == 1) text = "\n{cccccc}Набор \t{99ff66}[ Открыт ]";
+ 		else if(OrganInfo[g][gapt] == 0) text = "\n{cccccc}Набор \t{FF6347}[ Закрыт ]";
+	}
+	else if(detail == 5)
+	{
+		if(OrganInfo[g][gCash] == 1) text = "\n{cccccc}Счёт \t{99ff66}[ Открыт ]";
+ 		else if(OrganInfo[g][gCash] == 0) text = "\n{cccccc}Счёт \t{FF6347}[ Закрыт ]";
+	}
+	else if(detail == 6) text = "\n{cccccc}Дипломатия\t";
+	else if(detail == 7) text = "\n{cccccc}Названия рангов\t";
+	else if(detail == 8) text = "\n{cccccc}Лог\t";
+	else if(detail == 9) text = "\n{cccccc}Управление гаражем\t";
+	else if(detail == 10) text = "\n{cccccc}Черный список\t";
+	else if(detail == 11) text = "\n{ff9000}Права доступа\t";
+	else if(detail == 12) text = "\n{ff9000}Настройки склада\t";
+	else if(detail == 13) text = "\n{ff9000}Настройки оплаты\t";
+	else if(detail == 14) text = "\n{cccccc}Подфракции\t";
+	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}Количество рангов\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
+	return text;
+}
+stock open_detail_lmenu(playerid, detail)
+{
+	if(detail == 1) infoorg(playerid, fraction(playerid));
+	else if(detail == 2) cmd_members(playerid);
+	else if(detail == 3) cmd_membersoff(playerid);
+	else if(detail == 4) cmd_nabor(playerid);
+	else if(detail == 5)
+	{
+    	new g = fraction(playerid);
+    	new string[94];
+		if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][4]) return format(string,sizeof(string),"[ Мысли ]: Управление банковским счётом организации [ %d+ Ранг ]",OrganInfo[g][gAcc][4]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
+    	if(OrganInfo[fraction(playerid)][gCash] == 1) OrganInfo[fraction(playerid)][gCash] = 0;
+		else if(OrganInfo[fraction(playerid)][gCash] == 0) OrganInfo[fraction(playerid)][gCash] = 1;
+		OrganInfo[fraction(playerid)][gUpdate] = 1;
+		showDialogOrganizationMenu(playerid);
+    }
+    else if(detail == 6) cmd_dip(playerid);
+	else if(detail == 7) rank_organization(playerid, fraction(playerid));
+	else if(detail == 8)
+	{
+	    new g = fraction(playerid);
+	    new string[94];
+	    if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][6]) return format(string,sizeof(string),"[ Мысли ]: Я не могу выполнить это действие [ %d+ Ранг ]",OrganInfo[g][gAcc][6]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
+		logorg(playerid, g);
+	}
+	else if(detail == 9) cmd_cac(playerid);
+	else if(detail == 10) BL[playerid] = fraction(playerid), cmd_blacklist(playerid);
+	else if(detail == 11) cmd_oac(playerid);
+	else if(detail == 12) cmd_gac(playerid);
+	else if(detail == 13) cmd_jac(playerid);
+	else if(detail == 14) cmd_alldiv(playerid);
+	else if(detail == 15)
+	{
+		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
+		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
+	}
+	return 1;
+}
+
+stock rank_organization(playerid, g)
+{
+	if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][5]) return format(store,sizeof(store),"[ Мысли ]: Я не могу изменять названия рангов [ %d+ Ранг ]",OrganInfo[g][gAcc][5]), ErrorText(playerid, store), showDialogOrganizationMenu(playerid);
+
+	DP[1][playerid] = g;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	for(new i = 0; i < get_maxrank(g); i++)
+	{
+		format(line,sizeof(line),"{ff9000}%d. {cccccc}%s\n",i+1 ,RankOrg[g][i]), strcat(lines,line);
+	}
+
+	format(store,sizeof(store),"{ff9000}Названия Рангов {cccccc}[%s]", AbbName[g]);
+	ShowDialog(playerid,1006,DIALOG_STYLE_LIST,store,lines,"Выбрать","Отмена");
+   	return 1;
+}
+
+stock dialogCase_Organization(playerid, dialogid, response, listitem, const inputtext[])
+{
+	if(dialogid == 615) // lmenu
+	{
+	    if(response)
+	    {
+			if(listitem < 0 || listitem > 199) return 1;
+			open_detail_lmenu(playerid, List[listitem][playerid]);
+        }
+	}
+	if(dialogid == 1006) // Названия рангов
+	{
+	    new g = DP[1][playerid]; // ID Организации
+		if(response)
+		{
+		    new nrank = get_maxrank(g);
+			if(listitem < 0 || listitem > nrank) return format(store, sizeof(store), "{FF6347}Максимальное количество рангов: %d",nrank), ErrorMessage(playerid, store);
+			DP[0][playerid] = listitem; // Ранг
+ 			format(store, sizeof(store), "{cccccc}Введите название для {ff9000}%d ранга",listitem+1);
+ 			ShowDialog(playerid,1007,DIALOG_STYLE_INPUT,"{ff9000}Названия Рангов",store,"Принять","Отмена");
+		}
+		else showDialogOrganizationMenu(playerid);
+	}
+	if(dialogid == 1007)
+	{
+		new g = DP[1][playerid];
+		if(response)
+		{
+			new rankId = DP[0][playerid];
+			if(!strlen(inputtext)) return rank_organization(playerid, g);
+			if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Хм... я пытаюсь указать в названии какие-то каракули... [ Запрещённый Символ ]"), rank_organization(playerid, g);
+			if(strlen(inputtext) < 3 || strlen(inputtext) >= MAX_NAME_LENGTH) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Название должно быть не больше 30-ти и не меньше 3-ёх символов.."), rank_organization(playerid, g);
+			PlayerPlaySound(playerid,6401,0,0,0);
+            OrgLog(g, "rank", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", rankId+1, inputtext);
+            strmid(RankOrg[g][rankId], inputtext, 0, 34, 255);
+   			rank_organization(playerid, g);
+   			SaveRank(g, rankId);
+		}
+		else rank_organization(playerid, g);
+	}
+	if(dialogid == 1331) // Количество рангов
+	{
+		if(response)
+		{
+			new input;
+			new g = fraction(playerid);
+
+			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogOrganizationMenu(playerid);
+			if(input > MAX_RANK_ORG || input < 2) return format(store,sizeof(store),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_ORG), ErrorText(playerid, store), showDialogOrganizationMenu(playerid);
+
+			if(OrganInfo[g][gMaxRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogOrganizationMenu(playerid);
+			OrganInfo[g][gMaxRanks] = input;
+			mysql_SaveOrganization(g, "pp_organization", "gMaxRanks", OrganInfo[g][gMaxRanks]);
+			PlayerPlaySound(playerid, 6401, 0, 0, 0);
+			showDialogOrganizationMenu(playerid);
+			OrgLog(g, "ranks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, "");
+		}
+		else showDialogOrganizationMenu(playerid);
+	}
+	return 1;
+}
+
+stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // Сохраняем одну строку в базу
+{
+	format(store_query, sizeof(store_query), "UPDATE `%s` SET `%s` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
+	query_empty(pearsq_2, store_query);
+	return 1;
+}
+
+stock SaveRank(orgId, rankId)
+{
+	new nameRank[MAX_NAME_LENGTH];
+	mysql_escape_string(RankOrg[orgId][rankId], nameRank, sizeof(nameRank));
+	format(store_query, sizeof(store_query), "UPDATE `pp_organization` SET `rank%d` = '%s' WHERE `frakid` = '%d'", rankId, nameRank, orgId);
+	query_empty(pearsq_2, store_query);
+	return 1;
+}
+
+stock SaveAllRanks(orgId)
+{
+	new nameRank[MAX_NAME_LENGTH];
+	mysql_escape_string(RankOrg[orgId][0], nameRank, sizeof(nameRank));
+	format(big_query,sizeof(big_query),"UPDATE `pp_organization` SET `rank0` = '%s'", nameRank);
+
+	for(new i = 0; i < MAX_RANK_ORG; i++) 
+	{
+		mysql_escape_string(RankOrg[orgId][i], nameRank, sizeof(nameRank));
+		format(big_query,sizeof(big_query),"%s, `rank%d` = '%s'", big_query, i, nameRank);
+	}
+    format(big_query,sizeof(big_query),"%s WHERE `frakid` = '%d'", big_query, orgId);
+	query_empty(pearsq_2, big_query);
+}
+
+stock ReloadRank(playerid, g) // Сброс названий рангов
+{
+	if(g == 1)
+	{
+		strmid(RankOrg[g][14], "Шеф Полиции LS", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 15;
+	}
+	else if(g == 2)
+	{
+		strmid(RankOrg[g][13], "Директор FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Заместитель директора FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Инспектор FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Глава академии FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Глава NSB", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Глава CID", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Глава DEA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Секретный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Старший специальный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Специальный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старший агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Федеральный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Младший агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажёр", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 14;
+	}
+	else if(g == 3)
+	{
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Генерал СВ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Генерал-лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генерал-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Первый лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Второй лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Сержант-майор СВ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Команд-сержант-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Первый сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Сержант 1 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Штаб-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Капрал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Рядовой", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Рядовой-рекрут", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 20;
+	}
+	else if(g == 4)
+	{
+		strmid(RankOrg[g][11], "Декан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Зам. Декана", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Мед. Специалист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Младший Мед. Специалист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Лектор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Хирург", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Психиатр", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Терапевт", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Реаниматолог", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Парамедик EMT-B", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Парамедик CFR", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Интерн", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 12;
+	}
+	else if(g == 5)
+	{
+		strmid(RankOrg[g][9], "Godfather", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Consigliere", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Persone di Onore", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Veterano", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Caporegime", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Sotto Capo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Guerra Soldier", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Cavalli Soldier", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Castello Soldier", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Antonelli Soldier", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 6)
+	{
+		strmid(RankOrg[g][9], "Shubo-sha", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Migiude", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Seji", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Dangan", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Kira", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Senshi", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Benri-ya", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Chujitsuna", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Sentoki", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Shoshinsha", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 7)
+	{
+		strmid(RankOrg[g][21], "Президент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][20], "Вице-президент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][19], "Государственный Секретарь", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Министр Финансов", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Министр Обороны", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генеральный Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Министр Внутренней Безопасности", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Министр Образования", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Министр Здравоохранения", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Главный Судья", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Судья", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Федеральный Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Адвокат", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Спикер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Конгрессмен", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Директор Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Зам. Директора Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Агент Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Водитель", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Секретарь", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Клерк", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 22;
+	}
+	else if(g == 8)
+	{
+		strmid(RankOrg[g][10], "Директор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Зам. Директора", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Управляющий", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Почётный Агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Профессионал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Спец. Агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Агент №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Киллер №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Наёмник №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Убийца №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажер №", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 11;
+	}
+	else if(g == 9)
+	{
+		strmid(RankOrg[g][9], "Директор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Зам. Директора", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный Редактор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Редактор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Корреспондент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Журналист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Ведущий Новостей", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Папарацци", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Водитель- оператор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажёр", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 10)
+	{
+		strmid(RankOrg[g][9], "Xiansheng", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Laoban", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Zuoyoushou", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Jingli", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Shulian", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Dangdi", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Kekao", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Fei", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Zhanxin", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Guowai", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 11)
+	{
+		strmid(RankOrg[g][14], "Шеф Полиции SF", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 15;
+	}
+	else if(g == 12)
+	{
+		strmid(RankOrg[g][9], "Авторитет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Аристократ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Вор в законе", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Вор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Жиган", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Вышибала", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Фраер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Бандит", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Щипач", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Шнырь", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 13)
+	{
+		strmid(RankOrg[g][9], "Ringleader", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Big Brother", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Authority", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Enemy of the people", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Gangster", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Killer", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Street Wolf", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Bully", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Small", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Nigga", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 14)
+	{
+		strmid(RankOrg[g][9], "Gold Lord", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Right Hand", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Great", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Mad Dog", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Daring", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Crazy Man", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Skilled", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Offender", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Weak", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Newbie", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 15)
+	{
+		strmid(RankOrg[g][9], "Padre", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Subjefe", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Adjunto", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Autoridad", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Soldado", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Muchachos", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Hermano", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Amigo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Primerizo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Novato", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 16)
+	{
+		strmid(RankOrg[g][9], "El Fuerte", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Mejor Amigo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Derecho", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Local", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Asesino", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Companero", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Amigo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Sazonado", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Principiante", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Criado", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 17)
+	{
+		strmid(RankOrg[g][9], "Padre", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Fuerte", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Estrenador", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Amigo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Latino", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Estimado", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Ordinarjo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Novato", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Estranjo", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Raro", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 18)
+	{
+		strmid(RankOrg[g][9], "Al-Sheikh", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Hubal", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Kibar", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Mas-Ula", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Shahid", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Ierahabi", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "El-Ebon", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Rok-Ik", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Paratur", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Muntode", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 19)
+	{
+		strmid(RankOrg[g][9], "Глава Стритрейсеров", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Pro Racer", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Неуловимый", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Профи", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Pro Дрифтер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Дрифтер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Уличный Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Начинающий Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Механик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Новичок", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 20)
+	{
+		strmid(RankOrg[g][9], "Король Дорог", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Байкер-Авторитет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Викинг", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Умелец", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Байкер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Бывалый", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Знаток", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Любитель", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Новичок", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 10;
+	}
+	else if(g == 21)
+	{
+		strmid(RankOrg[g][14], "Шеф Полиции LV", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 15;
+	}
+	else if(g == 22)
+	{
+		strmid(RankOrg[g][14], "Командир", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Зам. Командира", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Старший Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Младший Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Старший Прапорщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Прапорщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старший Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Младший Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажер", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 15;
+	}
+	/*else if(g == 26) // SAFD
+	{
+		strmid(RankOrg[g][11], "Декан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Пожарный шеф", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Зам. пожарного шефа", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Командир батальона", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Инструктор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Следователь по поджогам", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Инженер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Пожарный III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Пожарный II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Пожарный I", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 12;
+	}*/
+	/*else if(g == 31) // ВВС
+	{
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Генерал ВВС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Генерал-лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генерал-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Первый лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Второй лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Главный мастер-сержант ВВС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Главный мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Старший мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Техник-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Штаб-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Рядовой авиации", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Рядовой-рекрут авиации", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 20;
+	}*/
+	/*else if(g == 33) // ВМС
+	{
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Адмирал ВМС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Вице-адмирал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Контр-адмирал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Капитан флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Лейтенант-коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Лейтенант флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Младший лейтенант флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Энсин", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Главный мастер-старшина ВМС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Главный мастер-старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Первый главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Старшина 1 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старшина 2 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Старшина 3 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Матрос", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Матрос-рекрут", 0, MAX_NAME_LENGTH, 255);
+		OrganInfo[g][gMaxRanks] = 20;
+	}*/
+	OrganInfo[g][gUpdRank] = 1;
+	mysql_SaveOrganization(g, "pp_organization", "gMaxRanks", OrganInfo[g][gMaxRanks]);
+	OrgLog(g, "rrank", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 	return 1;
 }

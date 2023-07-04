@@ -1207,16 +1207,16 @@ stock get_qara(playerid, fpick) // Второй параметр предмет�
 }
 stock get_drugs(playerid, stat) // Поиск веществ
 {
-	new kolvo = 0;
+	new quan = 0;
 	for(new i = 0; i < 40; i++)
 	{
-	    if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInvenType][i] == 0) kolvo ++;
+	    if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInvenType][i] == 0) quan ++;
 	    if(i < 20)
 		{
-			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenQuan][i] >= 1 && PlayerInfo[playerid][pMarkInvenType][i] == 0) kolvo ++;
+			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenQuan][i] >= 1 && PlayerInfo[playerid][pMarkInvenType][i] == 0) quan ++;
 		}
 	}
-	return kolvo;
+	return quan;
 }
 stock set_para(playerid, fpick, para) // Установка параметра предмета
 {

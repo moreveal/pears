@@ -15,13 +15,12 @@ DP[5] - номер страницы в divmembersoff
 */
 
 #define MAX_DIVISION_ORG 10 // Количество подфракций
-#define MAX_NAME_DIVISION_LENGTH 31 // Длинна названий в дивизиях (Если указано 31, значит максимальное количество символов 30, всегда -1 слот)
 #define MAX_NAME_DIVISION_ABBREVIATION_LENGTH 11 // Длинна аббревиатуры
 
 enum divInfo
 {
     divRanks, //  Количество рангов
-    divName[MAX_NAME_DIVISION_LENGTH], // Название
+    divName[MAX_NAME_LENGTH], // Название
     divAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], // Аббревиатура
     Float:divSpawnPos[4], // Позиция спавна
     divSpawnWorld, // Вирт мир спавна
@@ -30,7 +29,7 @@ enum divInfo
 	divColorVeh[2] // Цвет транспорта (0 и 1) - у транспорта цвет, это число (id)
 };
 new DivisionInfo[MAX_ORG][MAX_DIVISION_ORG][divInfo];
-new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_DIVISION_LENGTH]; // Названия рангов
+new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH]; // Названия рангов
 
 
 // Список всех подфракций (Меню для лидера)
@@ -505,7 +504,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			if(listitem == 6) // Название
 			{
-				format(store,sizeof(store),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_DIVISION_LENGTH-1);
+				format(store,sizeof(store),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_LENGTH-1);
 				ShowDialog(playerid,1317,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
 			}
 			if(listitem == 7) // Абреввиатура
@@ -567,13 +566,13 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_DIVISION_LENGTH-1), ErrorText(playerid, store), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, store), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
 			new i = DP[2][playerid]; // Получаем id подфракции
 
-			format(DivisionInfo[g][i][divName], MAX_NAME_DIVISION_LENGTH, "%s", inputtext);
+			format(DivisionInfo[g][i][divName], MAX_NAME_LENGTH, "%s", inputtext);
 
 			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
@@ -649,7 +648,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(listitem < 0 || listitem >= MAX_RANK_ORG) return 0;
 			DP[3][playerid] = listitem; // Сохраняем id выбранного ранга
 
-			format(store,sizeof(store),"{cccccc}Введите название %d ранга [1 - %d символов]", listitem + 1, MAX_NAME_DIVISION_LENGTH-1);
+			format(store,sizeof(store),"{cccccc}Введите название %d ранга [1 - %d символов]", listitem + 1, MAX_NAME_LENGTH-1);
 			ShowDialog(playerid,1321,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
 		}
 		else showDialogMenuDivision(playerid);
@@ -659,14 +658,14 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogSettingDivisionRank(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_DIVISION_LENGTH-1), ErrorText(playerid, store), showDialogSettingDivisionRank(playerid);
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, store), showDialogSettingDivisionRank(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingDivisionRank(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
 			new i = DP[2][playerid]; // Получаем id подфракции
 			new r = DP[3][playerid]; // Получаем id ранга
 
-			format(DivisionRankName[g][i][r], MAX_NAME_DIVISION_LENGTH, "%s", inputtext);
+			format(DivisionRankName[g][i][r], MAX_NAME_LENGTH, "%s", inputtext);
 
 			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r + 1, inputtext);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
@@ -922,7 +921,7 @@ stock racDivisionSetting(playerid, g, i , readRac)
 stock DivisionSave(g, i) // Сохраняем в базу (моментальное сохранение при любом изменении)
 {
     // Экранируем текстовые строки (Для защиты от sql инъекций)
-    new escapeName[MAX_NAME_DIVISION_LENGTH], escapeAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], escapeColorHex[7];
+    new escapeName[MAX_NAME_LENGTH], escapeAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], escapeColorHex[7];
 	mysql_escape_string(DivisionInfo[g][i][divName], escapeName, sizeof(escapeName));
     mysql_escape_string(DivisionInfo[g][i][divAbbreviation], escapeAbbreviation, sizeof(escapeAbbreviation));
 	mysql_escape_string(DivisionInfo[g][i][divColorHex], escapeColorHex, sizeof(escapeColorHex));
@@ -945,7 +944,7 @@ stock DivisionSave(g, i) // Сохраняем в базу (моментальн
 stock DivisionSaveRankName(g, i, r) // Сохраняем название ранга в базу (моментальное сохранение)
 {
 	// Экранируем текстовые строки (Для защиты от sql инъекций)
-    new escapeRankName[MAX_NAME_DIVISION_LENGTH];
+    new escapeRankName[MAX_NAME_LENGTH];
 	mysql_escape_string(DivisionRankName[g][i][r], escapeRankName, sizeof(escapeRankName));
 
     // Формируем запросы в переменную
@@ -968,7 +967,7 @@ function LoadDivision() // Загрузка из базы
 		cache_get_value_name_int(f, "divid", i); // Получаем id подфракции
 
     	cache_get_value_name_int(f, "divRanks", DivisionInfo[g][i][divRanks]);
-		cache_get_value_name(f, "divName", DivisionInfo[g][i][divName], MAX_NAME_DIVISION_LENGTH);
+		cache_get_value_name(f, "divName", DivisionInfo[g][i][divName], MAX_NAME_LENGTH);
 		cache_get_value_name(f, "divAbbreviation", DivisionInfo[g][i][divAbbreviation], MAX_NAME_DIVISION_ABBREVIATION_LENGTH);
 		cache_get_value_name_float(f, "divSpawnPos0", DivisionInfo[g][i][divSpawnPos][0]);
 		cache_get_value_name_float(f, "divSpawnPos1", DivisionInfo[g][i][divSpawnPos][1]);
@@ -977,8 +976,8 @@ function LoadDivision() // Загрузка из базы
 		cache_get_value_name_int(f, "divSpawnWorld", DivisionInfo[g][i][divSpawnWorld]);
 		cache_get_value_name_int(f, "divSpawnInterior", DivisionInfo[g][i][divSpawnInterior]);
 		cache_get_value_name(f, "divColorHex", DivisionInfo[g][i][divColorHex], 7);
-		cache_get_value_name_int(f, "divColorVeh0", DivisionInfo[g][i][divColorHex][0]);
-		cache_get_value_name_int(f, "divColorVeh1", DivisionInfo[g][i][divColorHex][1]);
+		cache_get_value_name_int(f, "divColorVeh0", DivisionInfo[g][i][divColorVeh][0]);
+		cache_get_value_name_int(f, "divColorVeh1", DivisionInfo[g][i][divColorVeh][1]);
 
 		// Если нет никакого цвета у подфракции, присвоим серенький
 		if(!strcmp(DivisionInfo[g][i][divColorHex],"0",true)) format(DivisionInfo[g][i][divColorHex],7,"cccccc");
@@ -992,7 +991,7 @@ function LoadDivision() // Загрузка из базы
 			for(new r = 0; r < load_max_rank; r++)
 			{
 				format(store,sizeof(store),"divRankName%d",r);
-				cache_get_value_name(f, store, DivisionRankName[g][i][r], MAX_NAME_DIVISION_LENGTH);
+				cache_get_value_name(f, store, DivisionRankName[g][i][r], MAX_NAME_LENGTH);
 			}
 		}
 	}

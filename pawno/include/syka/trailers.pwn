@@ -581,7 +581,7 @@ stock Pump_Pill(playerid)
 	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
 	if(interval > 300)
 	{
-		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 3));
+		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 7));
 		if(!IsPlayerInRangeOfPoint(playerid,3.0,Job_X[playerid], Job_Y[playerid], Job_Z[playerid]))
 		{
 			SetPVarInt(playerid,"oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0), ClearAnimations(playerid), TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), PlayerPlaySound(playerid,4203,0,0,0);
