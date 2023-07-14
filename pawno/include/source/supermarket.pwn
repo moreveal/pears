@@ -1,3 +1,4 @@
+
 new Float:SupermarketItemPos[][] =
 {
 	{ 1105.087158, -1372.597167, 1401.845336 }, // 0 Парашют
@@ -23,24 +24,31 @@ new Float:SupermarketItemPos[][] =
 	{ 1131.505126, -1372.518798, 1402.124633 } // 20 Свадебный торт
 };
 
+#define MAX_BIZ_ITEMSUPERMARKET 21
+/* 
+	После /reloadbiz товары занимают пустые слоты bProduct, но у супермаркета каждый товар имеет физическую позицию и лежит на полке
+	Поэтому добавив товары в супермаркете, им нужно давать позицию в SupermarketItemPos
+*/
+
 new Text3D: BizSM[14][MAX_BIZ_ITEM]; // 3D Текст Продукции Супермаркета
 
-stock UpdateSupermarketLabel(b)
+stock UpdateSupermarketLabel_S(b)
 {
-	for(new i = 0; i < MAX_BIZ_ITEM; i++)
+	for(new i = 0; i < MAX_BIZ_ITEMSUPERMARKET; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
-		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1,store);
+		format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1, store);
 	}
 }
-stock CreateSupermarketLabel(b)
+stock CreateSupermarketLabel_S(b)
 {
-    for(new i = 0; i < MAX_BIZ_ITEM; i++)
+    for(new i = 0; i < MAX_BIZ_ITEMSUPERMARKET; i++)
 	{
-	    format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
-		BizSM[b-13][i] = CreateDynamic3DTextLabel(store,-1,SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
+		format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{333333}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+		BizSM[b-13][i] = CreateDynamic3DTextLabel(store, -1, SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
 	}
 }
+
 CMD:supermarket(playerid) // Взять тележку
 {
 	if(IsPlayerInRangeOfPoint(playerid,2.0,1113.8209,-1384.0480,1401.7142) && GetPlayerInterior(playerid) == 206 && GetPlayerVirtualWorld(playerid) >= 1)
@@ -205,7 +213,7 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 	else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 	SendClientMessage(playerid, COLOR_GREY, store);
-	UpdateSupermarketLabel(b);
+	UpdateSupermarketLabel_S(b);
 	return 1;
 }
 stock putshopcarts(playerid, item, stat, &fquan) //  Помещаем предмет в переменные тележки
@@ -247,7 +255,7 @@ stock Svalilizsm(playerid) // Удаляем тележку
      	OnlineInfo[playerid][oShopPrice] = 0;
 		SetPVarInt(playerid,"svzyal",0);
 		BizzInfo[b][bUpdate] = 1;
-		UpdateSupermarketLabel(b);
+		UpdateSupermarketLabel_S(b);
 		SetPVarInt(playerid,"sbussines",0);
 	}
 	return 1;
@@ -287,7 +295,7 @@ stock addiction(playerid, item)
 		if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 		else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
 		SendClientMessage(playerid, COLOR_GREY, store);
-		UpdateSupermarketLabel(b);
+		UpdateSupermarketLabel_S(b);
     }
  	return 1;
 }

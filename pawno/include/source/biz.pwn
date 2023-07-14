@@ -130,6 +130,7 @@ stock maxQuanThingProduct(thingId, thingType) // Подсчет максимал
 		else if(thingId >= 27 && thingId <= 30) maxQuan = 10000; // Патроны
 		else maxQuan = 1000; 
 	}
+	else if(thingType == 5) maxQuan = 30; // Транспорт
 	else maxQuan = 1000; 
 	return maxQuan;
 }
@@ -271,6 +272,22 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 462, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // Fagio
 	}
+
+	else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Ависалоны, Салоны Катеров
+	{
+		new slot;
+		for(new v = 400; v < MAX_VEHICLE_ID; v++)
+		{
+			if(slot >= MAX_BIZ_ITEM) break; // Останавливаем цикл, если слотов больше нет
+
+			if(ForBizVehicleClassAndType(b, GetVehicleType(v), GetVehicleClass(v)))
+			{
+				BizzInfo[b][bProduct][slot] = v, BizzInfo[b][bTypeProduct][slot] = 5, yes[slot] = true;
+				slot ++;
+			}
+		}
+	}
+
 	else if(b >= 93 && b <= 102) // Клубы
 	{
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 14, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // пиво
@@ -355,22 +372,26 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     {
         if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && (yes[i] || stat == 1))
         {
+			// Выставляем Стоимость
             if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
+			else if(BizzInfo[b][bTypeProduct][i] == 5) getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
             
+			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
 			{
 				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]);
 			}
 			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
-            yesUpdate = true;
+
+			yesUpdate = true;
         }
     }
     if(yesUpdate)
 	{
 	    if(b <= 12) UpdateFillLabel(b);
-	    if(b >= 13 && b <= 26) UpdateSupermarketLabel(b);
+	    if(b >= 13 && b <= 26) UpdateSupermarketLabel_S(b);
 		SaveBizzProduct(b);
 	}
 	return 1;
@@ -383,7 +404,7 @@ stock getThingPriceGos(thingId, thingType)
 	else if(thingType == 2) price = GetPriceGosAccessory(thingId);
 	else if(thingType == 3) price = SkinGos[thingId];
 //	else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
-	else if(thingType == 5) price = VehGos[thingId];
+	else if(thingType == 5) price = VehGos[thingId-400];
 	return price;
 }
 stock pricebiz(playerid, b)
@@ -660,7 +681,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 				else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[thingId]+gunPrice[thingId]/2, bizUpdate = true;
 			}
     	}
-    	if(b >= 13 && b <= 26) UpdateSupermarketLabel(b);
+    	if(b >= 13 && b <= 26) UpdateSupermarketLabel_S(b);
     	SaveBizzProduct(b);
     }
 	if(b >= 173 && b <= 182) // Магазины с Одеждой
@@ -800,7 +821,21 @@ stock SaveBizzProduct(idx)
 {
 	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item0` = '%d', `Price0` = '%d', `Product0` = '%d', `TypeProduct0` = '%d', `Ware0` = '%d'",
 	BizzInfo[idx][bItem][0], BizzInfo[idx][bPrice][0], BizzInfo[idx][bProduct][0], BizzInfo[idx][bTypeProduct][0], BizzInfo[idx][bWare][0]);
-	for(new i = 1; i < MAX_BIZ_ITEM; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
+	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
+	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
+	query_empty(pearsq, big_query);
+
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item20` = '%d', `Price20` = '%d', `Product20` = '%d', `TypeProduct20` = '%d', `Ware20` = '%d'",
+	BizzInfo[idx][bItem][20], BizzInfo[idx][bPrice][20], BizzInfo[idx][bProduct][20], BizzInfo[idx][bTypeProduct][20], BizzInfo[idx][bWare][20]);
+	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
+	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
+	query_empty(pearsq, big_query);
+
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item40` = '%d', `Price40` = '%d', `Product40` = '%d', `TypeProduct40` = '%d', `Ware40` = '%d'",
+	BizzInfo[idx][bItem][40], BizzInfo[idx][bPrice][40], BizzInfo[idx][bProduct][40], BizzInfo[idx][bTypeProduct][40], BizzInfo[idx][bWare][40]);
+	for(new i = 41; i < MAX_BIZ_ITEM; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
 	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
     format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
 	query_empty(pearsq, big_query);
