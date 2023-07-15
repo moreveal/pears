@@ -1,8 +1,17 @@
 
 #define MAX_DRAW_VEHICLESHOP 19 // Количество текстдравов в меню
 
+
 new PlayerText:VehicleShopDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // Переменные для хранения текстдравов (Создаваемые)
-new bool:DrawVehicleShop[MAX_REALPLAYERS]; // Статус текстдравов
+enum vsInfo
+{
+    vsVehicleID, // Переменная, для хранения id транспорта при просмотре в автосалоне
+    vsModel, // id модели транспорта в автосалоне
+    bool:vsVehicleLoad, // Статус создан ли транспорт в автосалоне
+    bool:vsTextDrawLoad, // Статус, загружены ли текстдравы автосалона
+    vsColor[2] // Цвета транспорта
+}
+new VehShopInfo[MAX_REALPLAYERS][vsInfo];
 
 
 CMD:testcar(playerid) // VREMENNO
@@ -12,8 +21,61 @@ CMD:testcar(playerid) // VREMENNO
 	return 1;
 }
 
+stock changeColor_VehicleShop(playerid, slot) // Меняем цвет транспорта с учётом текстдрава
+{
+    ChangeVehicleColor(VehShopInfo[playerid][vsVehicleID], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1]);
+
+    if(slot == 0)
+    {
+        new hexColor[11];
+        format(hexColor,sizeof(hexColor),"%sFF", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]]);
+        new color = HexToInt(hexColor);
+
+        PlayerTextDrawColor(playerid, VehicleShopDraw[17][playerid], color);
+        PlayerTextDrawShow(playerid, VehicleShopDraw[17][playerid]);
+    }
+    return 1;
+}
+stock destroyVehicle_VehicleShop(playerid)
+{
+    if(VehShopInfo[playerid][vsVehicleLoad] == false) return 0;
+
+    ACDestroyVehicle(VehShopInfo[playerid][vsVehicleID]);
+    VehShopInfo[playerid][vsVehicleLoad] = false;
+    return 1;
+}
+stock createVehicle_VehicleShop(playerid, bizId, productId)
+{
+    new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
+
+    if(modelId < 400 || modelId > MAX_VEHICLE_ID
+    || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
+
+    // Создаём транспорт
+    VehShopInfo[playerid][vsModel] = modelId;
+    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, 1337.6630,1570.6387,10.6414,154.5664, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0);
+    SetVehicleVirtualWorld(VehShopInfo[playerid][vsVehicleID], playerid + 1);
+    LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 191);
+    VehShopInfo[playerid][vsVehicleLoad] = true;
+
+    // Название
+    format(store,sizeof(store),"%s", vehName[modelId]);
+    PlayerTextDrawSetString(playerid, VehicleShopDraw[7][playerid], store);
+    PlayerTextDrawShow(playerid, VehicleShopDraw[7][playerid]);
+
+    // Цена
+    format(store,sizeof(store),"%d$", price);
+    PlayerTextDrawSetString(playerid, VehicleShopDraw[8][playerid], store);
+    PlayerTextDrawShow(playerid, VehicleShopDraw[8][playerid]);
+
+    if(BizzInfo[bizId][bItem][productId] > 0) PlayerTextDrawHide(playerid, VehicleShopDraw[9][playerid]);
+    else PlayerTextDrawShow(playerid, VehicleShopDraw[0][playerid]);
+    return 1;
+}
 stock closeMenu_VehicleShop(playerid)
 {
+    destroyVehicle_VehicleShop(playerid); // Удаляем транспорт
+
     ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*",""); // Сбрасываем диалоговые окна
     destroyDraw_VehicleShop(playerid); // Удаляем текстдравы
     OnlineInfo[playerid][oShowInterface] = 0;
@@ -39,6 +101,10 @@ stock showMenu_VehicleShop(playerid, bizId) // Открываем меню ав�
     createDraw_VehicleShop(playerid); // Создаём текстдравы
     TP[0][playerid] = bizId; // Записываем id бизнеса, из которого смотрим транспорт
 
+    // Сбрасываем цвета транспорта
+    VehShopInfo[playerid][vsColor][0] = 1;
+    VehShopInfo[playerid][vsColor][1] = 1;
+
     // Записываем координаты
     savePositionPlayerForMenu(playerid);
 
@@ -56,10 +122,11 @@ stock showMenu_VehicleShop(playerid, bizId) // Открываем меню ав�
     }
 
     // Отображаем текстдравы
-    for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++)
-    {
-        PlayerTextDrawShow(playerid, VehicleShopDraw[i][playerid]);
-    }
+    for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++) PlayerTextDrawShow(playerid, VehicleShopDraw[i][playerid]);
+
+    // Создаём транспорт из первого слота
+    createVehicle_VehicleShop(playerid, bizId, 0);
+
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
 
@@ -68,7 +135,7 @@ stock showMenu_VehicleShop(playerid, bizId) // Открываем меню ав�
 }
 stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
 {
-    if(!DrawVehicleShop[playerid]) return 0; // Если текстдравы не созданы, возвращаем 0
+    if(VehShopInfo[playerid][vsTextDrawLoad] == false) return 0; // Если текстдравы не созданы, возвращаем 0
 
     for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++)
     {
@@ -76,12 +143,90 @@ stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
         PlayerTextDrawDestroy(playerid, VehicleShopDraw[i][playerid]);
     }
 
-    DrawVehicleShop[playerid] = false;
+    VehShopInfo[playerid][vsTextDrawLoad] = false;
     return 1;
 }
+stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Кликаем по текстдравам
+{
+    if(playertextid == VehicleShopDraw[17][playerid]) // Цвет транспорта
+    {
+        PlayerPlaySound(playerid,17803,0,0,0);
+        showDialogVehicleShopColor(playerid);
+    }
+    return 1;
+}
+stock showDialogVehicleShopColor(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"Первый Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]], VehShopInfo[playerid][vsColor][0]), strcat(lines,line);
+    format(line,sizeof(line),"\nВторой Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][1]], VehShopInfo[playerid][vsColor][1]), strcat(lines,line);
+    ShowDialog(playerid,1332,DIALOG_STYLE_TABLIST,"{ff9000}*",lines,"Выбрать","Выход");
+    return 1;
+}
+stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const inputtext[])
+{
+    if(dialogid == 1332) // Цвет транспорта
+    {
+        if(listitem < 0 || listitem > 1) return 0;
+        if(response)
+        {
+            DP[4][playerid] = listitem;
+			ShowDialog(playerid,1333,DIALOG_STYLE_TABLIST,"{ff9000}*","{cccccc}Свой Цвет {ff9000}>>\n{33ccff}Голубой\n{00cc66}Зелёный\n{ffcc00}Жёлтый\n{ff3333}Красный\n{333333}Чёрный\n{ffffff}Белый","Выбрать","Назад");
+        }
+    }
+    if(dialogid == 1333)
+    {
+        if(response)
+        {
+            if(listitem == 0)
+            {
+			    DP[4][playerid] = listitem;
+			    ShowDialog(playerid,1334,DIALOG_STYLE_INPUT,"{ff9000}*","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
+            }
+
+            if(listitem >= 1 && listitem <= 6)
+            {
+                if(VehShopInfo[playerid][vsVehicleLoad] == false) return 0;
+
+                new color, slot = DP[4][playerid];
+                if(listitem == 1) color = 135;
+                if(listitem == 2) color = 137;
+                if(listitem == 3) color = 6;
+                if(listitem == 4) color = 3;
+                if(listitem == 5) color = 0;
+                if(listitem == 6) color = 1;
+
+                PlayerPlaySound(playerid,1134,0,0,0);
+                VehShopInfo[playerid][vsColor][slot] = color;
+                changeColor_VehicleShop(playerid, slot);
+            }
+        }
+        else showDialogVehicleShopColor(playerid);
+    }
+    if(dialogid == 1334)
+	{
+		if(response)
+		{
+            if(VehShopInfo[playerid][vsVehicleLoad] == false) return 0;
+			new color;
+			if(sscanf(inputtext, "i", color)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу");
+			if(color > MAX_COLOR_VEHICLE || color < 0) return format(store,sizeof(store),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE), ErrorText(playerid, store);
+
+            new slot = DP[4][playerid];
+			if(VehShopInfo[playerid][vsColor][slot] == color) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже выбран");
+            
+            PlayerPlaySound(playerid,1134,0,0,0);
+            VehShopInfo[playerid][vsColor][slot] = color;
+            changeColor_VehicleShop(playerid, slot);
+		}
+		else showDialogVehicleShopColor(playerid);
+	}
+    return 1;
+}
+
 stock createDraw_VehicleShop(playerid) // Создаём текстдравы
 {
-    if(DrawVehicleShop[playerid]) return 0; // Если эти текстдравы уже созданы, возвращаем 0
+    if(VehShopInfo[playerid][vsTextDrawLoad] == true) return 0; // Если эти текстдравы уже созданы, возвращаем 0
 
     VehicleShopDraw[0][playerid] = CreatePlayerTextDraw(playerid, 299.333282, 348.444519, "ld_beat:chit"); // кнопка влево
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[0][playerid], 0.000000, 0.000000);
@@ -303,7 +448,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[18][playerid], 1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[18][playerid], 1);
 
-    DrawVehicleShop[playerid] = true;
+    VehShopInfo[playerid][vsTextDrawLoad] = true;
     return 1;
 }
 stock ForBizVehicleClassAndType(b, vehicleType, vehicleClass) // Расчитываем бизнесы салона, по типу и классу транспорта

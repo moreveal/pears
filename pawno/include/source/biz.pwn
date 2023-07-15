@@ -376,7 +376,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
             if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
-			else if(BizzInfo[b][bTypeProduct][i] == 5) getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
+			else if(BizzInfo[b][bTypeProduct][i] == 5) BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
             
 			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
