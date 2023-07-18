@@ -414,15 +414,16 @@ stock pricebiz(playerid, b)
 	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
 	new lol[84], quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 93 && b <= 102 || b >= 103 && b <= 122 || b >= 123 && b <= 132 || b >= 133 && b <= 142 
-	|| b >= 42 && b <= 76 || b >= 153 && b <= 162) // Прайс автоматгенерация
+
+	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 42 && b <= 76 || b >= 77 && b <= 92 || b >= 93 && b <= 102 || b >= 103 && b <= 122 
+	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 153 && b <= 162) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
 			List[i][playerid] = 0;
 			if (BizzInfo[b][bProduct][i] == 0) break;
 			List[quan][playerid] = i;
-			format(line,sizeof(line),"{cccccc}%s \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
+			format(line,sizeof(line),"{cccccc}%s \t {99FF66}%d$\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0),BizzInfo[b][bPrice][i]), strcat(lines,line);
 			quan++;
 		}		
 	}
@@ -435,6 +436,7 @@ stock pricebiz(playerid, b)
 		return 1;
 	}
 	else return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя настраивать стоимость товаров и услуг"), mybiz(playerid, b);
+
 	format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
 	return 1;
@@ -667,11 +669,15 @@ stock SendBizMessage(b, const string[]) // Сообщение в чат семь
 stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 {
     new bool:bizUpdate;
-    if(b >= 1 && b <= 12) // Заправки
+
+	// Заправки
+    if(b >= 1 && b <= 12)
     {
         BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
     }
-    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142) // Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
+
+	// Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
+    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142)
     {
         for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -684,7 +690,35 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     	if(b >= 13 && b <= 26) UpdateSupermarketLabel_S(b);
     	SaveBizzProduct(b);
     }
-	if(b >= 173 && b <= 182) // Магазины с Одеждой
+
+	// Аренда Транспорта
+    else if(b >= 42 && b <= 76)
+    {
+        for(new i = 0; i < MAX_BIZ_ITEM; i++)
+    	{
+    		if(BizzInfo[b][bProduct][i] == thingId && BizzInfo[b][bTypeProduct][i] == thingType)
+			{
+				BizzInfo[b][bPrice][i] = (VehGos[thingId-400]/10)/2;
+				SaveBizzProductItem(b, i), bizUpdate = true;
+			}
+    	}
+    }
+
+	// Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+    else if(b >= 77 && b <= 92)
+    {
+        for(new i = 0; i < MAX_BIZ_ITEM; i++)
+    	{
+    		if(BizzInfo[b][bProduct][i] == thingId && BizzInfo[b][bTypeProduct][i] == thingType)
+			{
+				BizzInfo[b][bPrice][i] = (VehGos[thingId-400]*2) - VehGos[thingId-400]/2; // 3/4 от гос. стоимости
+				SaveBizzProductItem(b, i), bizUpdate = true;
+			}
+    	}
+    }
+
+	// Магазины с Одеждой
+	if(b >= 173 && b <= 182)
 	{
 	    new bn = b-173;
 	    for(new gs = 0; gs < 50; gs++) // Прокатываем цикл по слотам с одеждой
@@ -698,6 +732,22 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], BizzInfo[b][bSost], BizzInfo[b][bVlad], store);
 	}
 	return 1;
+}
+stock isPlayersWatchProductBiz(b, slot)
+{
+	new bool:yesPlayer;
+	if(b >= 77 && b <= 92) // Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+	{
+		foreach(Player,i)
+		{
+			if(OnlineInfo[i][oShowInterface] == 16 && TP[0][i] == b && TP[1][i] == slot)
+			{
+				yesPlayer = true;
+				break;
+			}
+		}
+	}
+	return yesPlayer;
 }
 stock putshop(b, item, thingType, quan) // Кладём товары в Магазины с Одеждой во время доставки
 {
