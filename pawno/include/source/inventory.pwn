@@ -200,6 +200,17 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСП
 	return 1;
 }
 
+CMD:gthingunix(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту команду без надобности, она не учитывает кучу условий для разных предметов)
+{
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
+    if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Кол-во, UNIX ]");
+    new unix = gettime();
+    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+    new put_inva = GiveThingPlayer(params[0], params[1], params[2], unix+params[3], 0, 0, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+	return 1;
+}
+
 stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1) return 0;
@@ -1363,9 +1374,10 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 		else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Кофе
 		else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Спранк стакан
 		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+1209600; // Sprunk Банка
-		else if(thingId == 127 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Ролл
-		else if(thingId == 141 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // ХОТЕ ДОГЕ
+		else if(thingId == 127 && para == 0) quan = SetSatiety(thingId, quan), para = unix+86400; // Ролл
+		else if(thingId == 141 && para == 0) quan = SetSatiety(thingId, quan), para = unix+86400; // ХОТЕ ДОГЕ
 		else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Свадебный торт (Время до испорченности + количество)
+		else if(thingId == 166 && para == 0) quan = SetSatiety(thingId, quan), para = unix+86400; // Пицца
 		else
 		{
 		    if(quan == 0) quan = GetFullThingQuan(thingId);
@@ -1412,8 +1424,6 @@ stock GetFullThingQuan(thingId)
 	else if(thingId == 121) quan = 4; // Кофе
 	else if(thingId == 124) quan = 4; // Спранк стакан
 	else if(thingId == 120) quan = 4; // Sprunk Банка
-	else if(thingId == 127) quan = 4; // Ролл
-	else if(thingId == 141) quan = 4; // ХОТЕ ДОГЕ
 	else quan = 1;
 	return quan;
 }
