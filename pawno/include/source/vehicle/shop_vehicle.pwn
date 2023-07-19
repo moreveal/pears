@@ -30,6 +30,10 @@ stock closeTestDrive_VehicleShop(playerid)
     new b = TP[0][playerid];
     new s = TP[1][playerid];
 
+    new Float:sl[3];
+	GetPlayerPos(playerid, sl[0], sl[1], sl[2]);
+	PPSetPlayerPos(playerid, sl[0], sl[1], sl[2]+1);
+    
     destroyVehicle_VehicleShop(playerid);
     showMenu_VehicleShop(playerid, b, s);
     return 1;

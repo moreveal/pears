@@ -12,7 +12,7 @@ static Float:RentTruckPoint[3][3] = { // Координаты аренды гр�
 	{2248.7615,2790.5532,10.8203} // 2 Гос. склад
 };
 
-#define MAX_RENT_TRUCK_VEHICLES 6
+#define MAX_RENT_TRUCK_VEHICLES 7
 new RentTruckVehicleModel[] = //  ID Аренды грузового транспорта
 {
     499, // Benson
@@ -20,7 +20,8 @@ new RentTruckVehicleModel[] = //  ID Аренды грузового транс�
     456, // Yankee
     403, // Linerunner
     514, // Tanker
-    515 // Roadtrain
+    515, // Roadtrain
+	443 // Packer
 };
 
 stock DynamicPickupRent()
