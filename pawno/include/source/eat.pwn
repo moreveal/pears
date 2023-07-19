@@ -131,6 +131,10 @@ stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQ
 	else if(thingId == 172) // Апельсиновый сок
 	{
 		ing1 = 101, ingQuan1 = 3; // Апельсин
+	}	
+	else if(thingId == 173) // Яблочный сок
+	{
+		ing1 = 100, ingQuan1 = 3; // Яблачко
 	}
 	return 1;
 }
@@ -143,15 +147,16 @@ stock SetSatiety(thingId, &fquan) //
     {
 		if(ingId[i] > 0)
 		{
-			if(ingId[i] == 1) fquan += 1;
-			else if(ingId[i] == 102) fquan += 2;
-			else if(ingId[i] == 104) fquan += 1;
-			else if(ingId[i] == 120) fquan += 4;
-			else if(ingId[i] == 121) fquan += 2;
-			else if(ingId[i] == 168) fquan += 8;
-			else if(ingId[i] == 174) fquan += 2;
-			else if(ingId[i] == 179) fquan += 2;
-			else if(ingId[i] == 101) fquan += 1;
+			if(ingId[i] == 1) fquan += 1*ingQuan[i];
+			else if(ingId[i] == 102) fquan += 2*ingQuan[i];
+			else if(ingId[i] == 104) fquan += 1*ingQuan[i];
+			else if(ingId[i] == 120) fquan += 4*ingQuan[i];
+			else if(ingId[i] == 121) fquan += 2*ingQuan[i];
+			else if(ingId[i] == 168) fquan += 8*ingQuan[i];
+			else if(ingId[i] == 174) fquan += 2*ingQuan[i];
+			else if(ingId[i] == 179) fquan += 2*ingQuan[i];
+			else if(ingId[i] == 101) fquan += 3*ingQuan[i];
+			else if(ingId[i] == 100) fquan += 3*ingQuan[i];
 		}
 	}
 	return 1;
@@ -185,8 +190,11 @@ stock takeWarePlayer(playerid, thingId) // Забираем предмет из 
 	for(new i = 0; i < 6; i++)
     {
 		if(ingId[i] > 0)
-		{
-			TakeInvent(playerid, ingId[i], 1, 0, 999);
+		{	
+			for(new t = 0; t < ingQuan[i]; t++)
+			{
+				TakeInvent(playerid, ingId[i], 1, 0, 999);
+			}
 		}
 	}
 	return 1;
@@ -194,14 +202,16 @@ stock takeWarePlayer(playerid, thingId) // Забираем предмет из 
 
 stock CookingHome(playerid)
 {	
-	new thingId;
+	new thingId, quan = 0;
 	if (GetPVarInt(playerid,"Arobsklad") == 17) thingId = 166;
 	else if (GetPVarInt(playerid,"Arobsklad") == 18) thingId = 172;
+	new unix = gettime();
 	new current_tick = GetTickCount();
 	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
 	if(interval > 300)
 	{
-		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 3));
+		//SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 3));
+		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*10);
 		if(!IsPlayerInRangeOfPoint(playerid,3.0,Job_X[playerid], Job_Y[playerid], Job_Z[playerid]))
 		{
 			SetPVarInt(playerid,"oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0), ClearAnimations(playerid), TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), PlayerPlaySound(playerid,4203,0,0,0);
@@ -215,13 +225,15 @@ stock CookingHome(playerid)
 			RemovePlayerAttachedObject(playerid,1), ClearAnim(playerid), ClearAnimations(playerid), Dei[playerid] = 0, TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), SetPVarInt(playerid,"oryjtemp", 0);
 
 			if(checkHaveWarePlayer(playerid,thingId)) return ErrorMessage(playerid, "{FF6347}Блин блинский... \nУ меня нет всех ингредиентов для приготовления этого блюда");
-			new put_inva = GiveThingPlayer(playerid, thingId, 0, gettime()+86400, 0, 0, 0, 9999);
+			SetSatiety(thingId, quan);
+			printf("%d",quan);
+			new put_inva = GiveThingPlayer(playerid, thingId, quan, unix+86400, 0, 0, 0, 9999);
 			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
 			
 			takeWarePlayer(playerid, thingId);
 			GameTextForPlayer(playerid," ", 3000, 3);
 			PlayerPlaySound(playerid,6401,0,0,0);
-			ShowDialog(playerid, 1700, 0, "{ff9000}Плита", "{cccccc}Отлично! {99ff66}Вы сделали %s", "Ок", "");
+			ShowDialog(playerid, 1700, 0, "{ff9000}Плита", "{cccccc}Отлично! {99ff66}Готовка завершена", "Ок", "");
 			
 			SetPVarInt(playerid,"Arobsklad",0);
 		}

@@ -63,6 +63,7 @@ stock PressCookObjectHandler(playerid)
         format(lines,sizeof(lines),""); // Очищаем Lines
         format(line,sizeof(line),"{ff9000}Пицца\n"), strcat(lines,line);
         format(line,sizeof(line),"{ff9000}Апельсиновый сок\n"), strcat(lines,line);
+        format(line,sizeof(line),"{ff9000}Яблочный сок\n"), strcat(lines,line);
         ShowDialog(playerid,1393,DIALOG_STYLE_LIST,"{ff9000}Плита",lines,"Выбор","Отмена");
       }
       break;
