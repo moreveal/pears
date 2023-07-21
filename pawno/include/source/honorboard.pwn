@@ -1,100 +1,124 @@
-function Call_HB(playerid, g)
+function Call_myHB(playerid)
 {
-	new rows, datad1[24], datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond, quan;
+	new rows, datad1[24], datad4,datad2[14], str[64],sctring[6400], quan;
 	cache_get_row_count(rows);
 	format(str,sizeof(str),"{cccccc}Доска почета\t \n"), strcat(sctring,str);
 	for(new i = 0; i < rows; i++)
 	{
 	    cache_get_value_name_int(i, "playerid", List[quan][playerid]);
 	    quan ++;
-	    cache_get_value_name(i, "player", datad1, 24);
-	    cache_get_value_name_int(i, "term", datad4);
-		stamp2datetime(datad4, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-
-		format(str, sizeof(str), "%s \t До %02d.%02d.%d \n", datad1, tday, tmonth, tyear), strcat(sctring,str);
+	    cache_get_value_name(i, "playerName", datad1, 24);
+	    cache_get_value_name_int(i, "org", datad4);
+		if(datad4 == 1) datad2 = "LSPD";
+		else if(datad4 == 2) datad2 = "FBI";
+		else if(datad4 == 3) datad2 = "NGSA";
+		else if(datad4 == 4) datad2 = "ASGH";
+		else if(datad4 == 5) datad2 = "LCN";
+		else if(datad4 == 6) datad2 = "YM";
+		else if(datad4 == 7) datad2 = "Правительство";
+		else if(datad4 == 8) datad2 = "ICA";
+		else if(datad4 == 9) datad2 = "CNN";
+		else if(datad4 == 10) datad2 = "TM";
+		else if(datad4 == 11) datad2 = "SFPD";
+		else if(datad4 == 12) datad2 = "RM";
+		else if(datad4 == 13) datad2 = "Groove Street";
+		else if(datad4 == 14) datad2 = "Ballas Gang";
+		else if(datad4 == 15) datad2 = "Vagos Gang";
+		else if(datad4 == 15) datad2 = "Aztec Gang";
+		else if(datad4 == 18) datad2 = "AM";
+		else if(datad4 == 22) datad2 = "SWAT";
+		format(str, sizeof(str), "%s \t %s\n", datad2,datad1), strcat(sctring,str);
 	}
-	ShowDialog(playerid,1210,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Черный Список",sctring,"Выбрать","Выход");
+	ShowDialog(playerid,1742,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Доска Почета",sctring,"Выбрать","Выход");
 	return 1;
 }
-CMD:blacklist(playerid)
+CMD:myhonorboard(playerid)
 {
     Login[2][playerid] = 0, stop_dialog(playerid);
-	if(BL[playerid] > 0) g = BL[playerid];
-    if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-    if(g == 28)
-    {
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[3][gAcc][23]) return format(store,sizeof(store),"{FF6347}Добавлять в черный список можно с %d ранга",OrganInfo[3][gAcc][23]), ErrorMessage(playerid, store);
-	}
-	else if(g == 34)
-	{
-	    if(PlayerInfo[playerid][pRank] < OrganInfo[gw][gAcc][41] && PlayerInfo[playerid][pSoska] == 0) return format(store, sizeof(store), "{FF6347}У вас нет доступа к внесению в чёрный список О.Ц. {FF6347}[ %d+ Ранг ]", OrganInfo[gw][gAcc][41]), ErrorMessage(playerid, store);
-	}
-	else if(g != 28 && g != 30)
-	{
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][23]) return format(store,sizeof(store),"{FF6347}Добавлять в черный список можно с %d ранга",OrganInfo[g][gAcc][23]), ErrorMessage(playerid, store);
-	}
-	DP[0][playerid] = g;
-	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка черного списка...","*","");
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
 	new string[101];
-	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' AND `term` > '%d' ORDER BY `term` LIMIT 30", g, gettime());
-	mysql_tquery(pearsq, string, "Call_HB", "d", playerid);
+	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
+	mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
 	return 1;
 }
-CMD:inbl(playerid, const params[])
+CMD:honorboard(playerid)
 {
-    new g = fraction(playerid);
-    new gw = g;
-	if(BL[playerid] > 0) g = BL[playerid];
-    if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-    if(g == 28)
-    {
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[3][gAcc][23]) return format(store,sizeof(store),"{FF6347}Добавлять в черный список можно с %d ранга",OrganInfo[3][gAcc][23]), ErrorMessage(playerid, store);
-	}
-	else if(g == 34)
+    Login[2][playerid] = 0, stop_dialog(playerid);
+	new g = fraction(playerid);
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка фракционной Доски Почета...","*","");
+	new string[101];
+	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' ORDER BY `unix` LIMIT 70", g);
+	mysql_tquery(pearsq, string, "Call_frakHB", "dd", playerid,g);
+	return 1;
+}
+function Call_frakHB(playerid, g)
+{
+	new rows, datad1[24], datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond, quan;
+	cache_get_row_count(rows);
+	for(new i = 0; i < rows; i++)
 	{
-	    if(PlayerInfo[playerid][pRank] < OrganInfo[gw][gAcc][41] && PlayerInfo[playerid][pSoska] == 0) return format(store, sizeof(store), "{FF6347}У вас нет доступа к внесению в чёрный список О.Ц. {FF6347}[ %d+ Ранг ]", OrganInfo[gw][gAcc][41]), ErrorMessage(playerid, store);
+	    cache_get_value_name_int(i, "playerid", List[quan][playerid]);
+	    quan ++;
+	    cache_get_value_name(i, "playerName", datad1, 24);
+	    cache_get_value_name_int(i, "Unix", datad4);
+		stamp2datetime(datad4, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+		format(str, sizeof(str), "%s \tЗанесен: %02d.%02d.%d \n", datad1, tday, tmonth, tyear), strcat(sctring,str);
 	}
-	else if(g != 28 && g != 30)
+	ShowDialog(playerid,1389,DIALOG_STYLE_TABLIST,"{ff9000}Доска Почета",sctring,"Выбрать","Выход");
+	return 1;
+}
+function is_a_hb(playerid, g, const tmp[])
+{
+    new rows;
+	cache_get_row_count(rows);
+	if(rows)
 	{
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][23]) return format(store,sizeof(store),"{FF6347}Добавлять в черный список можно с %d ранга",OrganInfo[g][gAcc][23]), ErrorMessage(playerid, store);
+	    new datad;
+	    cache_get_value_name_int(0, "Unix", datad);
+	    if(datad < gettime()) info_hb(playerid, g, tmp);
 	}
-    new tmp[24], term, bailed, reason[64];
-    if(sscanf(params, "s[24]iis[64]", tmp, term, bailed, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Занести в черный список [ /inbl ID Срок Залог Причина ]");
-    if(term < 1 || term > 1000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Срок не меньше 1 дня и не больше 1000 дней"), PlayerPlaySound(playerid,4203,0,0,0);
-    if(bailed < 0 || bailed > 100000000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Залог не меньше 0 и не больше 100кк [ 0 - досрочный выход невозможен ]"), PlayerPlaySound(playerid,4203,0,0,0);
-    new para = ReturnUser(tmp, 1);
+	return 1;
+}
+CMD:inhb(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 15) return ErrorMessage(playerid, "{FF6347}Вы не ответственный Администратор");
+	new tmpName[24], g;
+    if(sscanf(params, "s[24]i",tmpName,g)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Занести человека в Доску Почета [ NickName, ID орг.]");
+	if(g < 1 || g > 24) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID организации не меньше 1 и не больше 24"), PlayerPlaySound(playerid,4203,0,0,0);
+    new unix = gettime();
+	new tmpTPlayerID = PlayerInfo[playerid][pID];
+	new para = ReturnUser(tmpName, 1);
+	new tmpPlayerID = PlayerInfo[para][pID];
     if(IsPlayerConnected(para))
     {
-	  	format(store,sizeof(store),"SELECT * FROM `blacklist` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
-      	mysql_tquery(pearsq, store, "in_blacklist", "dsdddsdd", playerid, PlayerInfo[para][pName], para, term, bailed, reason, g, 1);
+	  	format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
+      	mysql_tquery(pearsq, store, "in_honorboard", "dddsdsd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
     else
     {
-        if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-        format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-		mysql_tquery(pearsq, store, "get_inblacklist", "dsdddsdd", playerid, tmp, para, term, bailed, reason, g, 0);
+        if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		mysql_tquery(pearsq, store, "get_inhonorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
 	return 1;
 }
-stock info_bl(playerid, g, const tmp[], stat)
+stock info_hb(playerid, g, const tmp[])
 {
-    new datad1[24], datad2[24], datad3[24], datad4, datad5, string[256];
-    cache_get_value_name(0, "player", datad1, 24);
-    cache_get_value_name(0, "reason", datad2, 24);
-    cache_get_value_name(0, "sender", datad3, 24);
-    cache_get_value_name_int(0, "term", datad4);
-    cache_get_value_name_int(0, "bailed", datad5);
+    new datad1, datad2[24], datad3, datad4[24],datad5, datad6, string[256];
+    cache_get_value_name_int(0, "playerid", datad1);
+    cache_get_value_name(0, "playerName", datad2, 24);
+    cache_get_value_name_int(0, "Tplayerid", datad3);
+	cache_get_value_name(0, "TplayerName", datad4, 24);
+    cache_get_value_name_int(0, "org", datad5);
+    cache_get_value_name_int(0, "unix", datad6);
     new tyear, tmonth, tday, thour, tminute, tsecond;
-	stamp2datetime(datad4, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-	if(stat == 0) format(string,sizeof(string),"{FF6347}%s в черном списке %s под именем: %s\n\nЗанес: %s | Залог: %d$\nПричина: %s\n{cccccc}До: %02d.%02d.%d %02d:%02d", tmp, frakeasyName[g], datad1, datad3, datad5 ,datad2, tday, tmonth, tyear, thour, tminute), ErrorMessage(playerid, string);
-	else
-	{
-		format(string,sizeof(string),"{FF6347}%s | Черный список %s\n\nЗанес: %s | Залог: %d$\nПричина: %s\n{cccccc}До: %02d.%02d.%d %02d:%02d", datad1, frakeasyName[g], datad3, datad5 ,datad2, tday, tmonth, tyear, thour, tminute);
-		ShowDialog(playerid,1213,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"Ок","");
-	}
+	stamp2datetime(datad5, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+	format(string,sizeof(string),"{FF6347}%s в Доске почета %s под именем: %s\n\nЗанес: %s |  [%02d.%02d.%d %02d:%02d]", tmp, frakeasyName[g], datad1, datad3, datad5 ,datad2, tday, tmonth, tyear, thour, tminute), ErrorMessage(playerid, string);
 	return 1;
 }
-function get_inblacklist(playerid, const tmp[], para, term, bailed, const reason[], g, stat)
+function get_inhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -102,94 +126,71 @@ function get_inblacklist(playerid, const tmp[], para, term, bailed, const reason
 	{
 	    new plaid;
 	    cache_get_value_name_int(0, "id", plaid);
-	    format(store,sizeof(store),"SELECT * FROM `blacklist` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
-      	mysql_tquery(pearsq, store, "in_blacklist", "dsdddsdd", playerid, tmp, plaid, term, bailed, reason, g, stat);
+	    format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
+      	mysql_tquery(pearsq, store, "in_honorboard", "dddsdsd", playerid, g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
 	}
-	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует [ %s ]", tmp), ErrorMessage(playerid, store);
+	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует [ %s ]", tmpName), ErrorMessage(playerid, store);
 	return 1;
 }
-function in_blacklist(playerid, const tmp[], para, term, bailed, const reason[], g, stat)
+function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
 {
-    new rows;
+    new rows,query[512];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(playerid >= 0) info_bl(playerid, g, tmp, 0);
+		if(plaid >= 0) info_hb(plaid, g, tmpName);
 	}
 	else
 	{
-	    new plaid, plaip[24], unix = gettime(), query[512], name[24], admid, admip[24];
-	    if(playerid >= 0) format(name, sizeof(name),"%s",PlayerInfo[playerid][pName]), admid = PlayerInfo[playerid][pID], format(admip, sizeof(admip),"%s", PlayerInfo[playerid][pPlaIP]);
-	    else if(playerid == -1) format(name, sizeof(name),"Сервер"), admid = 0, format(admip, sizeof(admip)," ");
-	    
-	    if(stat == 1)
+		if(OnlineInfo[plaid][oLogged] == 1)
 		{
-			plaid = PlayerInfo[para][pID], format(plaip, 24, PlayerInfo[para][pPlaIP]);
-			if(OnlineInfo[para][oLogged] == 1)
-			{
-				format(query, sizeof(query),"{FF6347}[ %s ]: поместил вас в черный список %s {FF6347}на %d дней | {ffcc66}Причина: %s\n",name, frakName[g], term, reason);
-   				SendClientMessage(para, COLOR_GREY, query);
-   				if(playerid >= 0) format(query, sizeof(query),"\n{FF6347}%s поместил вас в черный список %s {FF6347}на %d дней\n\n{ffcc66}Причина: %s\n", name, frakName[g], term, reason), ShowDialog(para,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
-		    	PlayerPlaySound(para, 31202, 0,0,0);
-		    	if(PlayerInfo[para][pDrawVisible][2] == false) PlayerTextDrawShow(para, PlayerSiteDraw[2][para]);
-			}
+			format(query, sizeof(query),"{FF6347}[ %s ]: поместил вас в Доску Почета %s\n",tmpTName, frakName[g]);
+			SendClientMessage(plaid, COLOR_GREY, query);
+			if(playerid >= 0) format(query, sizeof(query),"\n{FF6347}%s поместил вас в Доску Почета %s\n", tmpTName, frakName[g]), ShowDialog(plaid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
+			PlayerPlaySound(plaid, 31202, 0,0,0);
+			if(PlayerInfo[plaid][pDrawVisible][2] == false) PlayerTextDrawShow(plaid, PlayerSiteDraw[2][plaid]);
 		}
-	    else plaid = para, format(plaip, 24, " ");
 	    if(playerid >= 0)
 	    {
 		    PlayerPlaySound(playerid, 6401, 0,0,0);
-		    SendClientMessagef(playerid, COLOR_GREY,"{ffcc66}Вы занесли {FF6347}%s {ffcc66}в черный список %s {ffcc66}на %d дней | {FF6347}Причина: %s",tmp,frakName[g],term,reason);
-		    format(query, sizeof(query),"\n{cccccc}Вы занесли %s в черный список %s {cccccc}на %d дней\n{FF6347}Залог: %d$\nПричина: %s",tmp,frakName[g],term,bailed,reason);
+		    SendClientMessagef(playerid, COLOR_GREY,"{ffcc66}Вы занесли {FF6347}%s {ffcc66}в Доску Почета %s",tmpName,frakName[g]);
+		    format(query, sizeof(query),"\n{cccccc}Вы занесли %s в Доску почета %s",tmpName,frakName[g]);
 			ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
 		}
-        format(query, sizeof(query), "INSERT INTO `blacklist` (`org`, `playerid`, `player`, `playerip`, `unix`, `term`, `reason`, `bailed`, `senderid`, `sender`, `senderip`) VALUES ( '%d', '%d', '%s', '%s', '%d', '%d', '%s', '%d', '%d', '%s', '%s' )",
-    	g, plaid, tmp, plaip, unix, unix+(86400*term), reason, bailed, admid, name, admip);
+        format(query, sizeof(query), "INSERT INTO `honorboard` (`org`, `playerid`, `playerName`, `Tplayerid`, `TplayerName`, `unix`) VALUES ( '%d', '%d', '%s', '%d', '%s', '%d' )",
+    	g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
     	mysql_tquery(pearsq, query, "", "");
     	
-    	format(query, sizeof(query), "Вы занесены в чёрный список %s на %d дней. Причина: %s", frakeasyName[g], term, reason);
-		notify(admid, name, plaid, tmp, query);
+    	format(query, sizeof(query), "Вы занесены в Доску почета %s", frakeasyName[g]);
+		notify(tmpTPlayerID, tmpTName, plaid, tmpName, query);
 		
-		if(g == 28) format(query, sizeof(query), "ЧС %s | Причина: %s", frakeasyName[g], reason), OrgLog(3, "inbl", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, tmp, plaip, term, query);
-		else if(g == 30) format(query, sizeof(query), "ЧС %s | Причина: %s", frakeasyName[g], reason), AdminLog("inbl", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, tmp, plaip, term, query);
-		else format(query, sizeof(query), "ЧС %s | Причина: %s", frakeasyName[g], reason), OrgLog(g, "inbl", admid, name, admip, plaid, tmp, plaip, term, query);
+		format(query, sizeof(query), "Занес в ДП %s", frakeasyName[g]), OrgLog(g, "inhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
 	}
 	return 1;
 }
-CMD:outbl(playerid, const params[])
+CMD:outhb(playerid, const params[])
 {
-    new g = fraction(playerid);
-    new gw = g;
-	if(BL[playerid] > 0) g = BL[playerid];
-    if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-	if(g == 28)
-    {
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[3][gAcc][24]) return format(store,sizeof(store),"{FF6347}Выносить из черного списка можно с %d ранга",OrganInfo[3][gAcc][24]), ErrorMessage(playerid, store);
-	}
-	else if(g == 34)
-	{
-	    if(PlayerInfo[playerid][pRank] < OrganInfo[gw][gAcc][42] && PlayerInfo[playerid][pSoska] == 0) return format(store, sizeof(store), "{FF6347}У вас нет доступа к исключению из чёрного списка О.Ц. {FF6347}[ %d+ Ранг ]", OrganInfo[gw][gAcc][42]), ErrorMessage(playerid, store);
-	}
-	else if(g != 28 && g != 30)
-	{
-    	if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][24]) return format(store,sizeof(store),"{FF6347}Выносить из черного списка можно с %d ранга",OrganInfo[g][gAcc][24]), ErrorMessage(playerid, store);
-	}
-    new tmp[24];
-    if(sscanf(params, "s[24]", tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вынести из чёрного списка [ /outbl ID ]");
-    new para = ReturnUser(tmp, 1);
+	new tmpName[24], g;
+    if(sscanf(params, "s[24]i",tmpName,g)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вынести человека в Доску Почета [ NickName, ID орг.]");
+	if(g < 1 || g > 24) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID организации не меньше 1 и не больше 24"), PlayerPlaySound(playerid,4203,0,0,0);
+    new unix = gettime();
+	new tmpTPlayerID = PlayerInfo[playerid][pID], tmpTName = PlayerInfo[playerid][pName];
+	new para = ReturnUser(tmpName, 1);
+	new tmpPlayerID = PlayerInfo[para][pID];
     if(IsPlayerConnected(para))
     {
-	  	format(store,sizeof(store),"SELECT * FROM `blacklist` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
-      	mysql_tquery(pearsq, store, "out_blacklist", "dsddd", playerid, PlayerInfo[para][pName], para, g, 1);
+	  	format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
+      	mysql_tquery(pearsq, store, "out_honorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix);
     }
     else
     {
-        if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-        format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-		mysql_tquery(pearsq, store, "get_outblacklist", "dsddd", playerid, tmp, para, g, 0);
+        if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		mysql_tquery(pearsq, store, "get_outhonorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix);
     }
 	return 1;
 }
-function get_outblacklist(playerid, const tmp[], para, g, stat)
+function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -197,46 +198,38 @@ function get_outblacklist(playerid, const tmp[], para, g, stat)
 	{
 	    new plaid;
 	    cache_get_value_name_int(0, "id", plaid);
-	    format(store,sizeof(store),"SELECT * FROM `blacklist` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
-      	mysql_tquery(pearsq, store, "out_blacklist", "dsddd", playerid, tmp, plaid, g, stat);
+	    format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
+      	mysql_tquery(pearsq, store, "out_honorboard", "dsdd", playerid, tmpName, plaid, g);
 	}
-	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует [ %s ]", tmp), ErrorMessage(playerid, store);
+	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует [ %s ]", tmpName), ErrorMessage(playerid, store);
 	return 1;
 }
-function out_blacklist(playerid, const tmp[], para, g, stat)
+function out_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
 {
-    new rows;
+    new rows,query[512];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-	    new plaid, plaip[24], query[256];
-	    if(stat == 1)
+		if(OnlineInfo[plaid][oLogged] == 1)
 		{
-		    plaid = PlayerInfo[para][pID], format(plaip, 24, PlayerInfo[para][pPlaIP]);
-		    if(OnlineInfo[para][oLogged] == 1)
-			{
-	    		if(OnlineInfo[para][oListenRadioPears] == 0) StopAudioStreamForPlayer(para), PlayAudioStreamForPlayer(para, "https://pears-project.ru/music/hallelujah.mp3");
-	    		format(query, sizeof(query),"{99ff66}[ %s ]: {cccccc}вынес вас из черного списка %s\n",PlayerInfo[playerid][pName], frakName[g]);
-   				SendClientMessage(para, COLOR_GREY, query);
-   				format(query, sizeof(query),"\n{99ff66}%s {cccccc}вынес вас из черного списка %s\n", PlayerInfo[playerid][pName], frakName[g]);
-		    	ShowDialog(para,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
-		    	if(PlayerInfo[para][pDrawVisible][2] == false) PlayerTextDrawShow(para, PlayerSiteDraw[2][para]);
- 			}
+			if(OnlineInfo[plaid][oListenRadioPears] == 0) StopAudioStreamForPlayer(plaid), PlayAudioStreamForPlayer(plaid, "https://pears-project.ru/music/hallelujah.mp3");
+			format(query, sizeof(query),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",PlayerInfo[playerid][pName], frakName[g]);
+			SendClientMessage(plaid, COLOR_GREY, query);
+			format(query, sizeof(query),"\n{99ff66}%s {cccccc}вынес вас из доски почета %s\n", PlayerInfo[playerid][pName], frakName[g]);
+			ShowDialog(plaid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
+			if(PlayerInfo[plaid][pDrawVisible][2] == false) PlayerTextDrawShow(plaid, PlayerSiteDraw[2][plaid]);
 		}
-		else plaid = para, format(plaip, 24, " ");
 		PlayerPlaySound(playerid, 6401, 0,0,0);
-	    SendClientMessagef(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из черного списка",tmp,frakName[g]);
-	    format(query, sizeof(query),"\n{cccccc}Вы вынесли %s из черного списка %s",tmp,frakName[g]);
+	    SendClientMessagef(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета",tmpName,frakName[g]);
+	    format(query, sizeof(query),"\n{cccccc}Вы вынесли %s из доски почета %s",tmpName,frakName[g]);
 		ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
-	    format(query,sizeof(query),"DELETE FROM `blacklist` WHERE `playerid`='%d' AND `org`='%d'", plaid, g), query_empty(pearsq, query);
+	    format(query,sizeof(query),"DELETE FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g), query_empty(pearsq, query);
 	    
-	    format(query, sizeof(query), "Вас вынесли из черного списка %s", frakeasyName[g]);
-		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], plaid, tmp, query);
+	    format(query, sizeof(query), "Вас вынесли из доски почета %s", frakeasyName[g]);
+		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], plaid, tmpName, query);
 	
-	    if(g == 28) format(query, sizeof(query), "Вынес из чс %s", frakeasyName[g]), OrgLog(3, "outbl", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, tmp, plaip, 0, query);
-		else if(g == 30) format(query, sizeof(query), "Вынес из чс %s", frakeasyName[g]), AdminLog("outbl", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, tmp, plaip, 0, query);
-		else format(query, sizeof(query), "Вынес из чс %s", frakeasyName[g]), OrgLog(g, "outbl", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, tmp, plaip, 0, query);
+		format(query, sizeof(query), "вынес с ДП %s", frakeasyName[g]), OrgLog(g, "outhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
 	}
-	else format(store,sizeof(store),"{FF6347}%s не находится в черном списке %s",tmp,frakeasyName[g]), ErrorMessage(playerid, store);
+	else format(store,sizeof(store),"{FF6347}%s не находится в доске почета %s",tmpName,frakeasyName[g]), ErrorMessage(playerid, store);
 	return 1;
 }
