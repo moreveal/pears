@@ -276,6 +276,8 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 
 	else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Ависалоны, Салоны Катеров
 	{
+		for(new s = 0; s < MAX_BIZ_ITEM; s++) BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
+
 		new slot;
 		for(new v = 400; v < MAX_VEHICLE_ID; v++)
 		{

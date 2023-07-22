@@ -9,17 +9,19 @@ enum vsInfo
     bool:vsVehicleLoad, // Статус создан ли транспорт в автосалоне
     bool:vsTextDrawLoad, // Статус, загружены ли текстдравы автосалона
     vsColor[2], // Цвета транспорта
-    bool:vsTest // Test Drive Статус
+    bool:vsTest, // Test Drive Статус
+    vsTimer // Таймер, перезагружающий камеру (Bug Fix)
 }
 new VehShopInfo[MAX_REALPLAYERS][vsInfo];
 
 
-CMD:testcar(playerid) // VREMENNO
+CMD:testcar(playerid, const params[]) // VREMENNO
 {
 	if(server != 0) return 1;
+    if(sscanf(params, "i",params[0])) return ErrorMessage(playerid, "{FF6347}/testcar 77 - 92");
 
     TP[1][playerid] = 0;
-	showMenu_VehicleShop(playerid, 77, -1);
+	showMenu_VehicleShop(playerid, params[0], -1);
 	return 1;
 }
 
@@ -30,10 +32,6 @@ stock closeTestDrive_VehicleShop(playerid)
     new b = TP[0][playerid];
     new s = TP[1][playerid];
 
-    new Float:sl[3];
-	GetPlayerPos(playerid, sl[0], sl[1], sl[2]);
-	PPSetPlayerPos(playerid, sl[0], sl[1], sl[2]+1);
-    
     destroyVehicle_VehicleShop(playerid);
     showMenu_VehicleShop(playerid, b, s);
     return 1;
@@ -116,10 +114,6 @@ stock right_VehicleShop(playerid) // Следующий транспорт (Ли
 
     destroyVehicle_VehicleShop(playerid);
     createVehicle_VehicleShop(playerid, b, TP[1][playerid]);
-
-    // Фикс камеры при перелистывании (Камера в сампе бывает багается)
-    InterpolateCameraPos(playerid, 1330.292724, 1566.204101, 11.441653, 1330.292724, 1566.204101, 11.441653, 1000);
-    InterpolateCameraLookAt(playerid, 1334.468139, 1568.908325, 10.938600, 1334.468139, 1568.908325, 10.938600, 1000);
     return 1;
 }
 stock changeColor_VehicleShop(playerid, slot) // Меняем цвет транспорта с учётом текстдрава
@@ -153,8 +147,13 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
 
     // Создаём транспорт
+    new Float:pos[4];
+    new class = GetVehicleClass(modelId);
+    TP[2][playerid] = class;
+    if(class <= 4) pos[0] = 1337.6630, pos[1] = 1570.6387, pos[2] = 10.6414, pos[3] = 154.5664;
+    else if(class >= 5) pos[0] = 1316.2491, pos[1] = 1575.4805, pos[2] = 11.5481, pos[3] = 180.1429;
     VehShopInfo[playerid][vsModel] = modelId;
-    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, 1337.6630,1570.6387,10.6414,154.5664, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0);
+    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0);
     SetVehicleVirtualWorld(VehShopInfo[playerid][vsVehicleID], playerid + 1);
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 191);
     VehShopInfo[playerid][vsVehicleLoad] = true;
@@ -215,29 +214,49 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
 
     createDraw_VehicleShop(playerid); // Создаём текстдравы
 
-    // Кидаем в интерьер и ставим камеру
-    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
-    {
-        S_SetPlayerVirtualWorld(playerid, playerid + 1, 191);
-        SetPlayerInterior(playerid, 191);
-
-        InterpolateCameraPos(playerid, 1330.292724, 1566.204101, 11.441653, 1330.292724, 1566.204101, 11.441653, 1000);
-        InterpolateCameraLookAt(playerid, 1334.468139, 1568.908325, 10.938600, 1334.468139, 1568.908325, 10.938600, 1000);
-
-        PPSetPlayerPos(playerid, 1325.2312,1563.8182,10.8662);
-        SetPlayerFacingAngle(playerid, 302.9293);
-    }
-
     // Отображаем текстдравы
     for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++) PlayerTextDrawShow(playerid, VehicleShopDraw[i][playerid]);
 
     // Создаём транспорт из первого слота
     createVehicle_VehicleShop(playerid, bizId, slot);
 
+    // Ставим игрока на позицию
+    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
+    {
+        S_SetPlayerVirtualWorld(playerid, playerid + 1, 191);
+        SetPlayerInterior(playerid, 191);
+
+        PPSetPlayerPos(playerid, 1325.2312,1563.8182,10.8662);
+        SetPlayerFacingAngle(playerid, 302.9293);
+    }
+
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
-
     OnlineInfo[playerid][oShowInterface] = 16; // Записываем id открытого меню
+
+    // Отображением камеры
+    new class = GetVehicleClass(VehShopInfo[playerid][vsModel]);
+    TP[2][playerid] = class;
+    loadCam_VehicleShop(playerid);
+
+    VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 300, false, "d", playerid); // Bug Fix Камеры
+    return 1;
+}
+function loadCam_VehicleShop(playerid)
+{
+    if(OnlineInfo[playerid][oShowInterface] != 16) return 0;
+
+    new class = TP[2][playerid];
+    if(class <= 4)
+    {
+        InterpolateCameraPos(playerid, 1330.292724, 1566.204101, 11.441653, 1330.292724, 1566.204101, 11.441653, 1000);
+        InterpolateCameraLookAt(playerid, 1334.468139, 1568.908325, 10.938600, 1334.468139, 1568.908325, 10.938600, 1000);
+    }
+    else if(class >= 5)
+    {
+        InterpolateCameraPos(playerid, 1324.793701, 1565.077514, 11.338315, 1324.793701, 1565.077514, 11.338315, 2000);
+        InterpolateCameraLookAt(playerid, 1321.078002, 1568.421386, 11.225045, 1321.078002, 1568.421386, 11.225045, 2000);
+    }
     return 1;
 }
 
@@ -672,11 +691,12 @@ stock GetVehicleClass(m)
     else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579) class = 4;
 
     // Special Class (5) - Грузовая и Спец Техника
-    else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 431 || m == 437 || m == 440 || m == 443 || m == 455 || m == 456
+    else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
     || m == 459 || m == 478 || m == 482 || m == 498 || m == 499 || m == 508 || m == 514 || m == 515 || m == 578) class = 5;
 
     // Unique Class (6) - Уникальный Транспорт
-    else if(m == 423 || m == 424 || m == 434 || m == 442 || m == 444 || m == 457 || m == 473 || m == 476 || m == 481 || m == 483
+    else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
+    || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
     || m == 573 || m == 588) class = 6;
 
