@@ -1,35 +1,17 @@
 function Call_myHB(playerid)
 {
-	new rows, datad1[24], datad4,datad2[14], str[64],sctring[6400], quan;
+	new rows, datad1[24], datad4, str[64],sctring[6400], quan;
 	cache_get_row_count(rows);
 	format(str,sizeof(str),"{cccccc}Доска почета\t \n"), strcat(sctring,str);
 	for(new i = 0; i < rows; i++)
 	{
-	    cache_get_value_name_int(i, "playerid", List[quan][playerid]);
-	    quan ++;
 	    cache_get_value_name(i, "playerName", datad1, 24);
 	    cache_get_value_name_int(i, "org", datad4);
-		if(datad4 == 1) datad2 = "LSPD";
-		else if(datad4 == 2) datad2 = "FBI";
-		else if(datad4 == 3) datad2 = "NGSA";
-		else if(datad4 == 4) datad2 = "ASGH";
-		else if(datad4 == 5) datad2 = "LCN";
-		else if(datad4 == 6) datad2 = "YM";
-		else if(datad4 == 7) datad2 = "Правительство";
-		else if(datad4 == 8) datad2 = "ICA";
-		else if(datad4 == 9) datad2 = "CNN";
-		else if(datad4 == 10) datad2 = "TM";
-		else if(datad4 == 11) datad2 = "SFPD";
-		else if(datad4 == 12) datad2 = "RM";
-		else if(datad4 == 13) datad2 = "Groove Street";
-		else if(datad4 == 14) datad2 = "Ballas Gang";
-		else if(datad4 == 15) datad2 = "Vagos Gang";
-		else if(datad4 == 15) datad2 = "Aztec Gang";
-		else if(datad4 == 18) datad2 = "AM";
-		else if(datad4 == 22) datad2 = "SWAT";
-		format(str, sizeof(str), "%s \t %s\n", datad2,datad1), strcat(sctring,str);
+		List[quan][playerid] = datad4;
+		quan ++;
+		format(str, sizeof(str), "%s \t %s\n", frakeasyName[datad4],datad1), strcat(sctring,str);
 	}
-	ShowDialog(playerid,1742,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Доска Почета",sctring,"Выбрать","Выход");
+	ShowDialog(playerid,1388,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Доска Почета",sctring,"Выбрать","Выход");
 	return 1;
 }
 CMD:myhonorboard(playerid)
@@ -48,18 +30,17 @@ CMD:honorboard(playerid)
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка фракционной Доски Почета...","*","");
 	new string[101];
-	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' ORDER BY `unix` LIMIT 70", g);
+	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' ORDER BY `Unix` LIMIT 70", g);
 	mysql_tquery(pearsq, string, "Call_frakHB", "dd", playerid,g);
 	return 1;
 }
 function Call_frakHB(playerid, g)
 {
-	new rows, datad1[24], datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond, quan;
+	new rows, datad1[24], datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond;
 	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
-	    cache_get_value_name_int(i, "playerid", List[quan][playerid]);
-	    quan ++;
+	    cache_get_value_name_int(i, "playerid", List[i][playerid]);
 	    cache_get_value_name(i, "playerName", datad1, 24);
 	    cache_get_value_name_int(i, "Unix", datad4);
 		stamp2datetime(datad4, tyear, tmonth, tday, thour, tminute, tsecond, 3);
@@ -75,9 +56,7 @@ function is_a_hb(playerid, g, const tmp[])
 	cache_get_row_count(rows);
 	if(rows)
 	{
-	    new datad;
-	    cache_get_value_name_int(0, "Unix", datad);
-	    if(datad < gettime()) info_hb(playerid, g, tmp);
+	    info_hb(playerid, g);
 	}
 	return 1;
 }
@@ -90,9 +69,9 @@ CMD:inhb(playerid, const params[])
     new unix = gettime();
 	new tmpTPlayerID = PlayerInfo[playerid][pID];
 	new para = ReturnUser(tmpName, 1);
-	new tmpPlayerID = PlayerInfo[para][pID];
     if(IsPlayerConnected(para))
     {
+		new tmpPlayerID = PlayerInfo[para][pID];
 	  	format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
       	mysql_tquery(pearsq, store, "in_honorboard", "dddsdsd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
@@ -100,11 +79,11 @@ CMD:inhb(playerid, const params[])
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
-		mysql_tquery(pearsq, store, "get_inhonorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, PlayerInfo[playerid][pName], unix);
+		mysql_tquery(pearsq, store, "get_inhonorboard", "ddsdsd", playerid, g,tmpName, tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
 	return 1;
 }
-stock info_hb(playerid, g, const tmp[])
+stock info_hb(playerid, g)
 {
     new datad1, datad2[24], datad3, datad4[24],datad5, datad6, string[256];
     cache_get_value_name_int(0, "playerid", datad1);
@@ -112,13 +91,14 @@ stock info_hb(playerid, g, const tmp[])
     cache_get_value_name_int(0, "Tplayerid", datad3);
 	cache_get_value_name(0, "TplayerName", datad4, 24);
     cache_get_value_name_int(0, "org", datad5);
-    cache_get_value_name_int(0, "unix", datad6);
+    cache_get_value_name_int(0, "Unix", datad6);
     new tyear, tmonth, tday, thour, tminute, tsecond;
-	stamp2datetime(datad5, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-	format(string,sizeof(string),"{FF6347}%s в Доске почета %s под именем: %s\n\nЗанес: %s |  [%02d.%02d.%d %02d:%02d]", tmp, frakeasyName[g], datad1, datad3, datad5 ,datad2, tday, tmonth, tyear, thour, tminute), ErrorMessage(playerid, string);
+	stamp2datetime(datad6, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+	format(string,sizeof(string),"{FF6347}В Доске почета %s\nПод именем: %s [ %d ]\nЗанес: %s [ %d ] |  [%02d.%02d.%d %02d:%02d]",frakeasyName[g], datad2, datad1, datad4,datad3, tday, tmonth, tyear, thour, tminute);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff0000}*",string,"*","");
 	return 1;
 }
-function get_inhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
+function get_inhonorboard(playerid, g, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -138,7 +118,7 @@ function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const t
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(plaid >= 0) info_hb(plaid, g, tmpName);
+		if(plaid >= 0) info_hb(plaid, g);
 	}
 	else
 	{
@@ -157,7 +137,7 @@ function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const t
 		    format(query, sizeof(query),"\n{cccccc}Вы занесли %s в Доску почета %s",tmpName,frakName[g]);
 			ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
 		}
-        format(query, sizeof(query), "INSERT INTO `honorboard` (`org`, `playerid`, `playerName`, `Tplayerid`, `TplayerName`, `unix`) VALUES ( '%d', '%d', '%s', '%d', '%s', '%d' )",
+        format(query, sizeof(query), "INSERT INTO `honorboard` (`org`, `playerid`, `playerName`, `Tplayerid`, `TplayerName`, `Unix`) VALUES ( '%d', '%d', '%s', '%d', '%s', '%d' )",
     	g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
     	mysql_tquery(pearsq, query, "", "");
     	
@@ -176,9 +156,9 @@ CMD:outhb(playerid, const params[])
     new unix = gettime();
 	new tmpTPlayerID = PlayerInfo[playerid][pID], tmpTName = PlayerInfo[playerid][pName];
 	new para = ReturnUser(tmpName, 1);
-	new tmpPlayerID = PlayerInfo[para][pID];
     if(IsPlayerConnected(para))
     {
+		new tmpPlayerID = PlayerInfo[para][pID];
 	  	format(store,sizeof(store),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
       	mysql_tquery(pearsq, store, "out_honorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix);
     }
@@ -186,7 +166,7 @@ CMD:outhb(playerid, const params[])
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
-		mysql_tquery(pearsq, store, "get_outhonorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix);
+		mysql_tquery(pearsq, store, "get_outhonorboard", "ddsdsd", playerid, g, tmpName, tmpTPlayerID, tmpTName, unix);
     }
 	return 1;
 }

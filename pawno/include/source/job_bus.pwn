@@ -75,14 +75,14 @@ CMD:allbusstation(playerid)
 {
 	if(PlayerInfo[playerid][pLeader] == 7 || PlayerInfo[playerid][pMember] == 7)
 	{
-		if(bsrows < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В данный момент не установлено ни одной Остановки"), cmd_overhear(playerid);
+		if(bsrows < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В данный момент не установлено ни одной Остановки"), cmd_allbusstation(playerid);
 		new str[34],sctring[3400], listid = 0;
-		for(new cam = 0; cam < MAX_BUSSTATION; cam++)
+		for(new bss = 0; bss < MAX_BUSSTATION; bss++)
 			{
-			if(BusStationInfo[cam][bsActive] >= 1)
+			if(BusStationInfo[bss][bsActive] >= 1)
 				{
-					format(str,sizeof(str),"[%d] {cccccc}%s\n",listid+1,BusStationInfo[cam][bsName]), strcat(sctring,str);
-					List[listid][playerid] = cam;
+					format(str,sizeof(str),"[%d] {cccccc}%s\n",listid+1,BusStationInfo[bss][bsName]), strcat(sctring,str);
+					List[listid][playerid] = bss;
 					listid ++;
 				}
 			}
