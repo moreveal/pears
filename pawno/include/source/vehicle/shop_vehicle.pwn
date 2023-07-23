@@ -54,25 +54,28 @@ stock openTestDrive_VehicleShop(playerid)
 
     Gas[VehShopInfo[playerid][vsVehicleID]] = 100; // Топливо максимальное количество
 
-    if(IsACar(VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel])) // Авто
+    new modelId = VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel];
+    if(IsACar(modelId)) // Авто
     {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6282,1217.3895,11.1916);
+        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6282,1217.3895,11.0);
         SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
     }
-    else if(IsAMoto(VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel])) // Мото
+    else if(IsAMoto(modelId)) // Мото
     {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.4413,1215.6592,10.3921);
+        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.4413,1215.6592,10.0);
         SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
     }
-    else if(IsAPlane(VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel])) // Авиа
+    else if(IsABoat(modelId) || modelId == 460) // Катер и Skimmer
     {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6621,1236.6989,10.7365);
-        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
-    }
-    else if(IsABoat(VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel])) // Катер
-    {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 2435.5557,483.9736,0.3791);
+        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 2435.5557,483.9736,2.0);
         SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 270.0);
+    }
+    else if(IsAPlane(modelId)) // Авиа
+    {
+        new Float:plus;
+        if(modelId == 553) plus = 2.0; // Большой самолёты, требуется координата Z по выше
+        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6621,1236.6989,11.0 + plus);
+        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
     }
 
     Protect_PutPlayerInVehicle(playerid, VehShopInfo[playerid][vsVehicleID], 0); // Садим в транспорт
@@ -147,15 +150,31 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
 
     // Создаём транспорт
-    new Float:pos[4];
-    new class = GetVehicleClass(modelId);
-    TP[2][playerid] = class;
-    if(class <= 4) pos[0] = 1337.6630, pos[1] = 1570.6387, pos[2] = 10.6414, pos[3] = 154.5664;
-    else if(class >= 5) pos[0] = 1316.2491, pos[1] = 1575.4805, pos[2] = 11.5481, pos[3] = 180.1429;
+    new Float:pos[4], interiorId;
+    new type = GetVehicleType(modelId);
+    if(type == 1 || type == 2) // Авто и Мото
+    {
+        interiorId = 191;
+        new class = GetVehicleClass(modelId);
+        TP[2][playerid] = class;
+        if(class <= 4) pos[0] = 1337.6630, pos[1] = 1570.6387, pos[2] = 10.6414, pos[3] = 154.5664;
+        else if(class >= 5) pos[0] = 1316.2491, pos[1] = 1575.4805, pos[2] = 11.5481, pos[3] = 180.1429;
+    }
+    else if(type == 4 || type == 5) // Вертолёты и Самолёты
+    {
+        interiorId = 190;
+        if(type == 4) pos[0] = 1547.9121, pos[1] = 1579.5526, pos[2] = 11.5170, pos[3] = 357.8251; // Вертолёты
+        else
+        {
+            if(modelId == 519) pos[0] = 1547.6863, pos[1] = 1580.7811, pos[2] = 11.7588, pos[3] = 358.6555; // Shamal
+            else if(modelId == 553) pos[0] = 1547.9331, pos[1] = 1579.3274, pos[2] = 12.1786, pos[3] = 359.3345; // Nevada
+            else pos[0] = 1547.6884, pos[1] = 1581.3282, pos[2] = 11.7980, pos[3] = 359.6021; // Dodo and other
+        }
+    }
     VehShopInfo[playerid][vsModel] = modelId;
     VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0);
     SetVehicleVirtualWorld(VehShopInfo[playerid][vsVehicleID], playerid + 1);
-    LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 191);
+    LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], interiorId);
     VehShopInfo[playerid][vsVehicleLoad] = true;
 
     // Название
@@ -229,6 +248,14 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
         PPSetPlayerPos(playerid, 1325.2312,1563.8182,10.8662);
         SetPlayerFacingAngle(playerid, 302.9293);
     }
+    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
+    {
+        S_SetPlayerVirtualWorld(playerid, playerid + 1, 190);
+        SetPlayerInterior(playerid, 190);
+
+        PPSetPlayerPos(playerid, 1573.1488,1603.1798,10.8403);
+        SetPlayerFacingAngle(playerid, 132.9289);
+    }
 
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
@@ -239,23 +266,32 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     TP[2][playerid] = class;
     loadCam_VehicleShop(playerid);
 
-    VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 300, false, "d", playerid); // Bug Fix Камеры
+    VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 500, false, "d", playerid); // Bug Fix Камеры
     return 1;
 }
 function loadCam_VehicleShop(playerid)
 {
     if(OnlineInfo[playerid][oShowInterface] != 16) return 0;
 
+    new bizId = TP[0][playerid];
     new class = TP[2][playerid];
-    if(class <= 4)
+    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
     {
-        InterpolateCameraPos(playerid, 1330.292724, 1566.204101, 11.441653, 1330.292724, 1566.204101, 11.441653, 1000);
-        InterpolateCameraLookAt(playerid, 1334.468139, 1568.908325, 10.938600, 1334.468139, 1568.908325, 10.938600, 1000);
+        if(class <= 4)
+        {
+            InterpolateCameraPos(playerid, 1330.292724, 1566.204101, 11.441653, 1330.292724, 1566.204101, 11.441653, 1000);
+            InterpolateCameraLookAt(playerid, 1334.468139, 1568.908325, 10.938600, 1334.468139, 1568.908325, 10.938600, 1000);
+        }
+        else if(class >= 5)
+        {
+            InterpolateCameraPos(playerid, 1324.793701, 1565.077514, 11.338315, 1324.793701, 1565.077514, 11.338315, 2000);
+            InterpolateCameraLookAt(playerid, 1321.078002, 1568.421386, 11.225045, 1321.078002, 1568.421386, 11.225045, 2000);
+        }
     }
-    else if(class >= 5)
+    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
     {
-        InterpolateCameraPos(playerid, 1324.793701, 1565.077514, 11.338315, 1324.793701, 1565.077514, 11.338315, 2000);
-        InterpolateCameraLookAt(playerid, 1321.078002, 1568.421386, 11.225045, 1321.078002, 1568.421386, 11.225045, 2000);
+        InterpolateCameraPos(playerid, 1564.415893, 1597.437255, 11.052239, 1564.415893, 1597.437255, 11.052239, 1000);
+        InterpolateCameraLookAt(playerid, 1561.107910, 1593.689208, 11.149888, 1561.107910, 1593.689208, 11.149888, 1000);
     }
     return 1;
 }
@@ -673,7 +709,7 @@ stock GetVehicleClass(m)
     // Premium Class (1) - Премиум
     if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
-    || m == 560 || m == 562 || m == 565 || m == 577 || m == 580 || m == 586) class = 1;
+    || m == 560 || m == 562 || m == 565 || m == 580 || m == 586) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -698,7 +734,7 @@ stock GetVehicleClass(m)
     else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
-    || m == 573 || m == 588) class = 6;
+    || m == 573 || m == 577 || m == 588 || m == 592) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
