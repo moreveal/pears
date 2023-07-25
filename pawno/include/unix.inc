@@ -1,22 +1,16 @@
 stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpchour)
 {
-    gpchour -= 3;       
+    gpchour -= 0;       
     new seconds_in_day = 86400;
     new seconds_in_hour = 3600;
     new seconds_in_minute = 60;
 
-    // Р Р°СЃС‡РµС‚ РєРѕР»РёС‡РµСЃС‚РІР° РґРЅРµР№ СЃ Unix СЌРїРѕС…Рё
     new days = unixtime / seconds_in_day;
-
-    // Р Р°СЃС‡РµС‚ РѕСЃС‚Р°РІС€РёС…СЃСЏ СЃРµРєСѓРЅРґ РїРѕСЃР»Рµ РїРѕР»РЅС‹С… РґРЅРµР№
     new remaining_seconds = unixtime % seconds_in_day;
-
-    // Р Р°СЃС‡РµС‚ РіРѕРґР°
-    new current_year = 1970; // РќР°С‡Р°Р»СЊРЅС‹Р№ РіРѕРґ Unix СЌРїРѕС…Рё
+    new current_year = 1970;
 
     while (days >= 365)
     {
-        // РЈС‡РёС‚С‹РІР°РµРј РІРёСЃРѕРєРѕСЃРЅС‹Рµ РіРѕРґС‹
         if (IsLeapYear(current_year))
         {
             if (days >= 366)
@@ -34,8 +28,7 @@ stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpc
         }
     }
 
-    // Р Р°СЃС‡РµС‚ РјРµСЃСЏС†Р° Рё РґРЅСЏ
-    month = 1; // РЇРЅРІР°СЂСЊ
+    month = 1;
     day = 1;
 
     while (days > 0)
@@ -60,7 +53,6 @@ stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpc
         }
     }
 
-    // Р Р°СЃС‡РµС‚ С‡Р°СЃРѕРІ, РјРёРЅСѓС‚ Рё СЃРµРєСѓРЅРґ
     hour = remaining_seconds / seconds_in_hour;
     remaining_seconds %= seconds_in_hour;
 
