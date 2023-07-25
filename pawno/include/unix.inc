@@ -5,18 +5,18 @@ stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpc
     new seconds_in_hour = 3600;
     new seconds_in_minute = 60;
 
-    // Расчет количества дней с Unix эпохи
+    // Р Р°СЃС‡РµС‚ РєРѕР»РёС‡РµСЃС‚РІР° РґРЅРµР№ СЃ Unix СЌРїРѕС…Рё
     new days = unixtime / seconds_in_day;
 
-    // Расчет оставшихся секунд после полных дней
+    // Р Р°СЃС‡РµС‚ РѕСЃС‚Р°РІС€РёС…СЃСЏ СЃРµРєСѓРЅРґ РїРѕСЃР»Рµ РїРѕР»РЅС‹С… РґРЅРµР№
     new remaining_seconds = unixtime % seconds_in_day;
 
-    // Расчет года
-    new current_year = 1970; // Начальный год Unix эпохи
+    // Р Р°СЃС‡РµС‚ РіРѕРґР°
+    new current_year = 1970; // РќР°С‡Р°Р»СЊРЅС‹Р№ РіРѕРґ Unix СЌРїРѕС…Рё
 
     while (days >= 365)
     {
-        // Учитываем високосные годы
+        // РЈС‡РёС‚С‹РІР°РµРј РІРёСЃРѕРєРѕСЃРЅС‹Рµ РіРѕРґС‹
         if (IsLeapYear(current_year))
         {
             if (days >= 366)
@@ -34,8 +34,8 @@ stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpc
         }
     }
 
-    // Расчет месяца и дня
-    month = 1; // Январь
+    // Р Р°СЃС‡РµС‚ РјРµСЃСЏС†Р° Рё РґРЅСЏ
+    month = 1; // РЇРЅРІР°СЂСЊ
     day = 1;
 
     while (days > 0)
@@ -60,7 +60,7 @@ stock stamp2datetime(unixtime, &year, &month, &day, &hour, &minute, &second, gpc
         }
     }
 
-    // Расчет часов, минут и секунд
+    // Р Р°СЃС‡РµС‚ С‡Р°СЃРѕРІ, РјРёРЅСѓС‚ Рё СЃРµРєСѓРЅРґ
     hour = remaining_seconds / seconds_in_hour;
     remaining_seconds %= seconds_in_hour;
 

@@ -1,5 +1,6 @@
 
 #define MAX_ACC 100 // Максимальное количество команд по правам доступа у организаций
+#define MAX_ORDERESCORT 10 // Максимальное количество заказов в ЭСкорте
 
 enum gInfo
 {
@@ -45,7 +46,11 @@ enum gInfo
 	gSkin[20], // ID Скина
 	gSkinPrice[20], // Стоимость Скина
 	gSkinRank[20], // С какого ранга доступен скин
-	gMaxRanks // Максимальное количество рангов
+	gMaxRanks, // Максимальное количество рангов
+	gOrder[MAX_ORDERESCORT], // Заказ
+	gOrderQuan[MAX_ORDERESCORT], // Заказ кол-во.
+	gOrderType[MAX_ORDERESCORT], // Заказ тип.
+	gOrderStatus, // Статус заказа
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -274,6 +279,13 @@ function LoadOrgan()
 				mysql_tquery(pearsq, strFromFile2, "call_loadmap", "ddd", -1, idx, OrganInfo[idx][gMap]);
 			}
 		}
+		for(new i = 0; i < MAX_ORDERESCORT; i++)
+    	{
+			format(string,sizeof(string),"Order%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrder][i]);
+			format(string,sizeof(string),"OrderQuan%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrderQuan][i]);
+			format(string,sizeof(string),"OrderType%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrderType][i]);
+		}
+		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
 	}
 	UpdateHonor(1), UpdateHonor(2);
 	OrganInfo[0][gstat2] = 0;
