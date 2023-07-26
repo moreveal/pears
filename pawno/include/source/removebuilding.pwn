@@ -4,7 +4,13 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 546 удалённх объектов
+ 	// 550 удалённх объектов
+
+	// Сервис Самолётов и Вертолётов LV
+	RemoveBuildingForPlayer(playerid, 8253, 1278.020, 1324.250, 13.750, 0.250);
+	RemoveBuildingForPlayer(playerid, 8252, 1278.020, 1324.250, 13.750, 0.250);
+	RemoveBuildingForPlayer(playerid, 8251, 1278.300, 1361.449, 13.750, 0.250);
+	RemoveBuildingForPlayer(playerid, 8127, 1278.300, 1361.449, 13.750, 0.250);
 
     // Порт SF (Аренда, Сервис, Салон Катеров)
     RemoveBuildingForPlayer(playerid, 1232, -1486.3281, 680.3906, 8.8047, 0.25);
