@@ -84,6 +84,7 @@ stock openTestDrive_VehicleShop(playerid)
     SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
     return 1;
 }
+
 stock left_VehicleShop(playerid) // Предыдущий транспорт (Листаем влево)
 {
     new b = TP[0][playerid];

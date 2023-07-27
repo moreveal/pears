@@ -4,7 +4,16 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 550 удалённх объектов
+ 	// 554 удалённх объектов
+
+	// Сервис Самолётов и Вертолётов LS
+	RemoveBuildingForPlayer(playerid, 3625, 1961.449, -2216.169, 14.984, 0.250);
+	RemoveBuildingForPlayer(playerid, 3769, 1961.449, -2216.169, 14.984, 0.250);
+	RemoveBuildingForPlayer(playerid, 3664, 1960.699, -2236.429, 19.281, 0.250);
+	RemoveBuildingForPlayer(playerid, 3629, 1921.640, -2206.389, 18.882, 0.250);
+	RemoveBuildingForPlayer(playerid, 3672, 1921.640, -2206.389, 18.882, 0.250);
+	RemoveBuildingForPlayer(playerid, 1412, 1959.900, -2227.449, 13.726, 0.250);
+	RemoveBuildingForPlayer(playerid, 1412, 1965.170, -2227.409, 13.757, 0.250);
 
 	// Сервис Самолётов и Вертолётов LV
 	RemoveBuildingForPlayer(playerid, 8253, 1278.020, 1324.250, 13.750, 0.250);
@@ -440,13 +449,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 3976, 1571.601, -1675.750, 35.679, 0.250);
 	RemoveBuildingForPlayer(playerid, 1536, 1555.9297, -1677.1250, 15.1797, 0.25);
 	RemoveBuildingForPlayer(playerid, 1536, 1555.8906, -1674.1094, 15.1797, 0.25);
-    //--------------------------------------------------------------------------
-	//------------------------[ ВУЗ Аэропорт Удалённые ]------------------------
-    RemoveBuildingForPlayer(playerid, 5031, 2037.0469, -2313.5469, 18.7109, 0.25);
-	RemoveBuildingForPlayer(playerid, 1412, 1975.7266, -2227.4141, 13.7578, 0.25);
-	RemoveBuildingForPlayer(playerid, 1290, 1979.6797, -2207.8438, 18.4219, 0.25);
-	RemoveBuildingForPlayer(playerid, 1308, 1983.8047, -2224.1641, 12.7500, 0.25);
-	RemoveBuildingForPlayer(playerid, 1290, 2010.3984, -2207.6172, 18.4219, 0.25);
     //--------------------------------------------------------------------------
 	//--------------------------[ Мафиозный Корабль ]---------------------------
 	RemoveBuildingForPlayer(playerid, 10793, -1604.0391, 22.7266, 35.5703, 0.25);
