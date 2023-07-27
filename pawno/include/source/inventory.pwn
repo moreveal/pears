@@ -1752,3 +1752,13 @@ stock sklad_limit(thingId, thingType, &getLimit) // Проверяем лими�
     else getLimit = 1000; // На случай ошибки, остальные предметы лимит 1к
 	return 1;
 }
+
+stock get_sklad(g, thingId, thingType) // Поиск при добавлении нового предмета
+{
+	new quan = 0;
+	for(new inva = 0; inva < 20; inva++)
+	{
+		if(OrganInfo[g][gInvent][inva] == thingId && OrganInfo[g][gInvType][inva] == thingType) quan += OrganInfo[g][gInv][inva];
+	}
+	return quan;
+}

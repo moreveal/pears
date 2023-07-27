@@ -51,6 +51,7 @@ enum gInfo
 	gOrderQuan[MAX_ORDERESCORT], // Заказ кол-во.
 	gOrderType[MAX_ORDERESCORT], // Заказ тип.
 	gOrderStatus, // Статус заказа
+	gDeliveryOrder, // Статус доставки
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -286,6 +287,7 @@ function LoadOrgan()
 			format(string,sizeof(string),"OrderType%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrderType][i]);
 		}
 		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
+		OrganInfo[idx][gDeliveryOrder] =-1;
 	}
 	UpdateHonor(1), UpdateHonor(2);
 	OrganInfo[0][gstat2] = 0;
@@ -444,6 +446,7 @@ stock showDialogOrganizationMenu(playerid)
 	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
 	}
 	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
+	format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
@@ -482,17 +485,18 @@ stock detail_lmenu(playerid, detail)
 	else if(detail == 13) text = "\n{ff9000}Настройки оплаты\t";
 	else if(detail == 14) text = "\n{cccccc}Подфракции\t";
 	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}Количество рангов\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
+	else if(detail == 16) text = "\n{cccccc}Заказ Боеприпасов\t";
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
-{
+{	
+	new g = fraction(playerid);
 	if(detail == 1) infoorg(playerid, fraction(playerid));
 	else if(detail == 2) cmd_members(playerid);
 	else if(detail == 3) cmd_membersoff(playerid);
 	else if(detail == 4) cmd_nabor(playerid);
 	else if(detail == 5)
 	{
-    	new g = fraction(playerid);
     	new string[94];
 		if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][4]) return format(string,sizeof(string),"[ Мысли ]: Управление банковским счётом организации [ %d+ Ранг ]",OrganInfo[g][gAcc][4]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
     	if(OrganInfo[fraction(playerid)][gCash] == 1) OrganInfo[fraction(playerid)][gCash] = 0;
@@ -504,7 +508,6 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 7) rank_organization(playerid, fraction(playerid));
 	else if(detail == 8)
 	{
-	    new g = fraction(playerid);
 	    new string[94];
 	    if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][6]) return format(string,sizeof(string),"[ Мысли ]: Я не могу выполнить это действие [ %d+ Ранг ]",OrganInfo[g][gAcc][6]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
 		logorg(playerid, g);
@@ -520,6 +523,7 @@ stock open_detail_lmenu(playerid, detail)
 		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
 		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
 	}
+	else if(detail == 16) OrderEscort(playerid,g);
 	return 1;
 }
 
