@@ -153,13 +153,21 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     // Создаём транспорт
     new Float:pos[4], interiorId;
     new type = GetVehicleType(modelId);
+    new class = GetVehicleClass(modelId);
+    TP[2][playerid] = class;
+
     if(type == 1 || type == 2) // Авто и Мото
     {
         interiorId = 191;
-        new class = GetVehicleClass(modelId);
-        TP[2][playerid] = class;
         if(class <= 4) pos[0] = 1337.6630, pos[1] = 1570.6387, pos[2] = 10.6414, pos[3] = 154.5664;
         else if(class >= 5) pos[0] = 1316.2491, pos[1] = 1575.4805, pos[2] = 11.5481, pos[3] = 180.1429;
+    }
+    else if(type == 3) // Катера (Лодки)
+    {
+        interiorId = 0;
+        if(bizId == 90) pos[0] = 2634.9102, pos[1] = -2320.7798, pos[2] = 1.0, pos[3] = 360.0; // LS
+        else if(bizId == 91) pos[0] = -1464.1099, pos[1] = 740.3231, pos[2] = 1.0, pos[3] = 270.0; // SF
+        else if(bizId == 92) pos[0] = 2388.7817, pos[1] = 533.4385, pos[2] = 1.0, pos[3] = 180.0; // LV
     }
     else if(type == 4 || type == 5) // Вертолёты и Самолёты
     {
@@ -257,6 +265,15 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
         PPSetPlayerPos(playerid, 1573.1488,1603.1798,10.8403);
         SetPlayerFacingAngle(playerid, 132.9289);
     }
+    else if(bizId >= 90 && bizId <= 92) // Салоны Катеров
+    {
+        S_SetPlayerVirtualWorld(playerid, playerid + 1, 0);
+        SetPlayerInterior(playerid, 0);
+
+        if(bizId == 90) PPSetPlayerPos(playerid, 2603.0642,-2323.0300,1.8984), SetPlayerFacingAngle(playerid, 270.0);
+        else if(bizId == 91) PPSetPlayerPos(playerid, -1484.0221,757.7109,7.2423), SetPlayerFacingAngle(playerid, 176.8678);
+        else if(bizId == 92) PPSetPlayerPos(playerid, 2349.5464,522.8445,1.7969), SetPlayerFacingAngle(playerid, 273.1955);
+    }
 
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
@@ -293,6 +310,21 @@ function loadCam_VehicleShop(playerid)
     {
         InterpolateCameraPos(playerid, 1564.415893, 1597.437255, 11.052239, 1564.415893, 1597.437255, 11.052239, 1000);
         InterpolateCameraLookAt(playerid, 1561.107910, 1593.689208, 11.149888, 1561.107910, 1593.689208, 11.149888, 1000);
+    }
+    else if(bizId == 90) // Салон Катеров LS
+    {
+        InterpolateCameraPos(playerid, 2620.168945, -2300.133300, 1.827390, 2620.168945, -2300.133300, 1.827390, 1000);
+        InterpolateCameraLookAt(playerid, 2623.240234, -2304.076416, 1.960187, 2623.240234, -2304.076416, 1.960187, 1000);
+    }
+    else if(bizId == 91) // Салон Катеров SF
+    {
+        InterpolateCameraPos(playerid, -1445.834228, 752.435607, 1.804146, -1445.834228, 752.435607, 1.804146, 1000);
+        InterpolateCameraLookAt(playerid, -1449.700805, 749.277587, 1.526945, -1449.700805, 749.277587, 1.526945, 1000);
+    }
+    else if(bizId == 92) // Салон Катеров LV
+    {
+        InterpolateCameraPos(playerid, 2401.330078, 514.935241, 2.140674, 2401.330078, 514.935241, 2.140674, 1000);
+        InterpolateCameraLookAt(playerid, 2398.289550, 518.904052, 2.082082, 2398.289550, 518.904052, 2.082082, 1000);
     }
     return 1;
 }
