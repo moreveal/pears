@@ -1,7 +1,18 @@
-new BoxStat,BoxStatLV,BoxStatLS,BoxStatSF,BoxStatIn,BoxStatLVIn,BoxStatLSIn,BoxStatSFIn, train[2]; // Общее количество ящиков
-//train[1] = PP_AddStaticVehicleEx(538,156.6340,1267.5927,22.7441,247,1,1, 500,0);
+new BoxStat,BoxStatLV,BoxStatLS,BoxStatSF, train; // Общее количество ящиков
 
+static Float:StationTrain[3][3] = { // Координаты станции поезда
+	{1390.6432,2638.9263,11.3906}, // 0 LV
+	{1798.0410,-1949.7764,13.5469}, // 1 LS
+	{1798.0410,-1949.7764,13.5469} // 2 SF
+};
 
+stock IsAStationTrainPos(playerid)
+{
+    if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[1][0],StationTrain[1][1],StationTrain[1][2])
+	|| IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[2][0],StationTrain[2][1],StationTrain[2][2])) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER
+	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
+	return 0;
+}
 stock OrderEscort(playerid, g)
 {
 	DP[4][playerid] = g;
@@ -278,7 +289,8 @@ stock GoTrainToStation(playerid)
 {
 	new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
-	if(model != 433) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в поезде");
+	if(model != 537) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в поезде");
+	if(BoxStat != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не все ящики находятся в поезде.");
 	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 3) 
 	{
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Ожидайте пока все усядутся и трогайтесь!");
@@ -297,15 +309,40 @@ stock GoTrainToStation(playerid)
 	return 1;
 }
 
+stock GoPutIsTrain(playerid)
+{
+	new veh = GetPlayerVehicleID(playerid);
+	new model = GetVehicleModel(veh);
+	if(model != 537) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в Поезде");
+	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 4)
+	{
+		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Производите разгрузку и садитесь в спец.транспорт");
+		SetPVarInt(playerid,"delivery_frak_status",5);
+		if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2])))
+		{
+			BoxStatLV += 20;
+		}
+		else if ((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[1][0],StationTrain[1][1],StationTrain[1][2])))
+		{
+			BoxStatLS += 20;
+		}
+		else if ((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[2][0],StationTrain[2][1],StationTrain[2][2])))
+		{
+			BoxStatSF += 20;
+		}
+	}
+	return 1;
+}
+
 stock GoEscortToBaseFrak(playerid)
 {
 	new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
-	if(model != 433) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в поезде");
-	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 4)
+	if(model != 433) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в спец.транспорте");
+	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 5)
 	{
-		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к зданию %s",frakeasyName[GetPVarInt(playerid,"delivery_frak")]);
-		SetPVarInt(playerid,"delivery_frak_status",5);
+		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к зданию указанному в GPS");
+		SetPVarInt(playerid,"delivery_frak_status",6);
 		if (GetPVarInt(playerid,"delivery_frak") == 1)
 		{
 			CreateGps(playerid,1555.5037,-1675.6438,16.1953, 0, 0, 5.0);
@@ -336,7 +373,21 @@ stock GoEscortToBaseFrak(playerid)
 			SendClientMessage(playerid,COLOR_WHITE," {0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}SWAT {ffffff}отмечен на карте");
 		}
 	}
+	return 1;
 }
+
+/*
+stock ARobTrain(playerid)
+{
+	foreach(Player,i)
+	{
+		if (OnlineInfo[i][oLogged] == 0) continue;
+		if(PlayerInfo[i][pMember] == 3 ||PlayerInfo[i][pLeader] == 3)
+		{
+			if(IsPlayerInRangeOfPoint(playerid,100.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2]))
+		}
+	}
+}*/
 
 CMD:ngsaescort(playerid,const params[])
 {
@@ -345,7 +396,6 @@ CMD:ngsaescort(playerid,const params[])
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать статус доставки [ Номер процесса,FRAK (2,21,22,1,7,11) ]");
 	SetPVarInt(playerid,"delivery_frak_status",params[0]);
 	SetPVarInt(playerid,"delivery_frak",params[1]);
-	BoxStat = 20;
 	}
 	return 1;
 }

@@ -1530,7 +1530,7 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
 }
 stock NotGiveThing(i, type)
 {
-	if(type == 0 && (i == 10 || i == 11 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63)
+	if(type == 0 && (i == 10 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63)
 	|| type == 1 && (i == 34)) return 1;
 	return 0;
 }

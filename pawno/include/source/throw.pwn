@@ -103,7 +103,10 @@ stock use_throw(playerid, inva, useinva)
 			return 1;
 		}
 	}
-	
+	if(fpick == 11 && ThrowInfo[t][tBombPlant] == true)
+	{
+		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
+	} 
     i_resetveshi(playerid);
 	i_resettabs(playerid);
 	Veshi[playerid] = 0;
@@ -270,7 +273,8 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent) // Устанавливаем новый предмет на землю
 {
 	new noobject, gee;
-	if(fpick >= 128 && fpick <= 138) time = 1200;
+	if(fpick >= 128 && fpick <= 138 && thingType == 0) time = 1200;
+	if(fpick == 11 && thingType == 0) time = 1200;
 	if(fpick == 42 && type == 1) time = -1;
 	for(new g = 0; g < MAX_THROW; g++)
 	{
@@ -295,6 +299,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			ThrowInfo[g][tUseplayer] = 0;
 			ThrowInfo[g][tType] = thingType;
 			ThrowInfo[g][tPack] = thingPack;
+			if (fpick == 11 && para >=59 ) ThrowInfo[g][tBombPlant] = true;
 			if(playerid != -1)
 			{
 			    ThrowInfo[g][tPlayerid] = PlayerInfo[playerid][pID];
@@ -316,6 +321,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 stock DestroyThrow(t) // Удаляем предмет с земли
 {
  	if(ThrowInfo[t][tObjectStat] == 1) ThrowInfo[t][tObjectStat] = 0, DestroyDynamicObject(ThrowInfo[t][tObject]);
+	ThrowInfo[t][tBombPlant] = false;
  	ThrowInfo[t][tUseplayer] = 0;
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;
