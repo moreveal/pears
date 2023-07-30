@@ -287,7 +287,7 @@ function LoadOrgan()
 			format(string,sizeof(string),"OrderType%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrderType][i]);
 		}
 		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
-		OrganInfo[idx][gDeliveryOrder] =-1;
+		OrganInfo[idx][gDeliveryOrder] = -1;
 	}
 	UpdateHonor(1), UpdateHonor(2);
 	OrganInfo[0][gstat2] = 0;
@@ -523,7 +523,11 @@ stock open_detail_lmenu(playerid, detail)
 		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
 		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
 	}
-	else if(detail == 16) OrderEscort(playerid,g);
+	else if(detail == 16){
+		if (g == 3){
+			orderfrak(playerid);
+		} else OrderEscort(playerid,g);
+	}
 	return 1;
 }
 
