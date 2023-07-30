@@ -1,0 +1,8 @@
+.vscode/
+logs/
+pawno/
+sscanf/
+server.cfg
+server_log.txt
+svlog.txt
+*/*.amx
