@@ -1,7 +1,0 @@
-LIBRARY	"SSCANF"
-EXPORTS
-	Supports
-	Load
-	Unload
-	AmxLoad
-	AmxUnload
