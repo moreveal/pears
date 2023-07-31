@@ -93,7 +93,7 @@ stock CreateRuinsAndExplosion(t) // Взрываем бомбу и создаё�
     DestroyThrow(t); // Удаляем бомбу
 
     // Вокруг бомбы объекты (0, 1 и т.д.)
-    RuinsInfo[r][boObject][0] = CreateDynamicObject(3931, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2], 0, 0, 0,RuinsInfo[r][boWorld], RuinsInfo[r][boInterior], -1, 100.00, 100.00);
+    RuinsInfo[r][boObject][0] = CreateDynamicObject(901, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2], 0, 0, 0,RuinsInfo[r][boWorld], RuinsInfo[r][boInterior], -1, 200.00, 200.00);
     RuinsInfo[r][boObjectStat][0] = 11; // 10 раз уебать по камню + 1 для удаления его (Поскольку 0 - камня нет)
     
     RuinsInfo[r][boStat] = 1; // Статус - развалины лежат
@@ -103,12 +103,14 @@ stock CreateRuinsAndExplosion(t) // Взрываем бомбу и создаё�
 
 stock IsARuins(playerid)
 {
-    if(IsAPointRuins(playerid, 100) >= 0)
+    new Float:dist;
+    if (WatchSpeed[playerid] > 175) dist = 400;
+    else if (WatchSpeed[playerid] > 150) dist = 350;
+    else if (WatchSpeed[playerid] >= 100) dist = 200;
+    else if (WatchSpeed[playerid] < 100) dist = 150;
+    if (IsAPointRuins(playerid,dist) >= 0) 
     {
-        new vehid = GetPlayerVehicleID(playerid);
-        new Float:spa[3];
-        GetVehicleVelocity(vehid,spa[0],spa[1],spa[2]);
-        SetVehicleVelocity(vehid,0, 0, 0);
+        Protect_PutPlayerInVehicle(playerid, train, 1);
     }
     return 1;
 }

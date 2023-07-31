@@ -1,11 +1,34 @@
 new BoxStat,BoxStatLV,BoxStatLS,BoxStatSF, train; // Общее количество ящиков
+stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
+{
+    new Float:angle,Float:distance;
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), 1, x, distance, z);
+    distance = distance/2 + 50;
+	GetVehiclePos(vehicleid, x, y, z);
+	GetVehicleZAngle(vehicleid, angle);
+    x += (distance * floatsin(-angle+180, degrees));
+    y += (distance * floatcos(-angle+180, degrees));
+    return 1;
+}
 
 static Float:StationTrain[3][3] = { // Координаты станции поезда
-	{1390.6432,2638.9263,11.3906}, // 0 LV
-	{1798.0410,-1949.7764,13.5469}, // 1 LS
-	{1798.0410,-1949.7764,13.5469} // 2 SF
+	{2864.7500,1308.7200,12.3495}, // 0 LV
+	{1776.9491,-1953.8057,15.0995}, // 1 LS
+	{-1944.3595,115.9928,27.2245} // 2 SF
 };
 
+static Float:StationTrainGoEscort[3][3] = { // Координаты станции поезда
+	{2856.7761,1229.0349,10.8984}, // 0 LV
+	{1777.7351,-1936.8763,13.5507}, // 1 LS
+	{-1985.2375,190.4366,27.6875} // 2 SF
+};
+stock IsAStationTrainPosGoEscort(playerid)
+{
+    if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[0][0],StationTrainGoEscort[0][1],StationTrainGoEscort[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[1][0],StationTrainGoEscort[1][1],StationTrainGoEscort[1][2])
+	|| IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[2][0],StationTrainGoEscort[2][1],StationTrainGoEscort[2][2])) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER
+	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
+	return 0;
+}
 stock IsAStationTrainPos(playerid)
 {
     if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[1][0],StationTrain[1][1],StationTrain[1][2])
@@ -237,6 +260,8 @@ stock NGSAWorkToTrain(playerid, status)
 {
 	if(PlayerInfo[playerid][pMember] == 3)
 	{
+		new Float:Boot[3];
+		GetCoordTrain(train,Boot[0],Boot[1],Boot[2]);
 		if(IsPlayerInAnyVehicle(playerid)) return 1;
 		if(Hand[playerid] > 0 || Hold[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня руки заняты");
 		if (status == 0)
@@ -247,19 +272,22 @@ stock NGSAWorkToTrain(playerid, status)
   		} 
 		else if (status == 1)
 		{
+			if(!IsPlayerInRangeOfPoint(playerid,5.0,Boot[0],Boot[1],Boot[2])) return ErrorMessage(playerid, "{FF6347}Поезда нет на данной станции");
 			if(BoxStatLV < 1) return ErrorMessage(playerid, "{FF6347}В поезде больше нет ящиков");
 			if(MG151[playerid] == 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня в руках ящик, который нужно отнести в машину");
 			BoxStatLV -= 1;
 		}
 		else if (status == 2)
 		{
+			if(!IsPlayerInRangeOfPoint(playerid,5.0,Boot[0],Boot[1],Boot[2])) return ErrorMessage(playerid, "{FF6347}Поезда нет на данной станции");
 			if(BoxStatLS < 1) return ErrorMessage(playerid, "{FF6347}В поезде больше нет ящиков");
 			if(MG151[playerid] == 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня в руках ящик, который нужно отнести в машину");
 			BoxStatLS -= 1;
 		}
 		else if (status == 3)
 		{
-			if(BoxStatSF < 1) return ErrorMessage(playerid, "{FF6347}В поезде больше нет ящиков");
+			if(!IsPlayerInRangeOfPoint(playerid,5.0,Boot[0],Boot[1],Boot[2])) return ErrorMessage(playerid, "{FF6347}Поезда нет на данной станции");
+		    if(BoxStatSF < 1) return ErrorMessage(playerid, "{FF6347}В поезде больше нет ящиков");
 			if(MG151[playerid] == 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня в руках ящик, который нужно отнести в машину");
 			BoxStatSF -= 1;
 		}
@@ -275,6 +303,13 @@ stock NGSAWorkToTrainPut(playerid)
 {
 	if(PlayerInfo[playerid][pMember] == 3)
 	{
+		if(BoxStat > 0)
+		{
+			new Float:Boot[3];
+			GetCoordTrain(train,Boot[0],Boot[1],Boot[2]);
+			printf("%f,%f,%f",Boot[0],Boot[1],Boot[2]);
+			if(!IsPlayerInRangeOfPoint(playerid,10.0,Boot[0]-4,Boot[1],Boot[2])) return ErrorMessage(playerid, "{FF6347}Поезда нет на данной станции");
+		}
 		if(IsPlayerInAnyVehicle(playerid)) return 1;
 		if(MG151[playerid] != 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня в руках нет ящика с боеприпасами");
 		PPP15[playerid] = 0, MG151[playerid] = 0, Hand[playerid] = 0;
@@ -294,15 +329,16 @@ stock GoTrainToStation(playerid)
 	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 3) 
 	{
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Ожидайте пока все усядутся и трогайтесь!");
+		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По прибытию на станцию необходимо погудеть!");
 		SetPVarInt(playerid,"delivery_frak_status",4);
 		if (GetPVarInt(playerid,"delivery_frak") == 2 || GetPVarInt(playerid,"delivery_frak") == 21 || GetPVarInt(playerid,"delivery_frak") == 22){
-			CreateGps(playerid, 1390.6432,2638.9263,11.3906, 0, 0, 10.0); // Указать корды куда следовать.
+			CreateGps(playerid, 2864.7500,1308.7200,12.3495, 0, 0, 10.0); 
 		}
 		else if (GetPVarInt(playerid,"delivery_frak") == 1){
-			CreateGps(playerid, 1798.0410,-1949.7764,13.5469, 0, 0, 10.0); // Указать корды куда следовать.
+			CreateGps(playerid, 1776.9491,-1953.8057,15.0995, 0, 0, 10.0);
 		}
 		else if (GetPVarInt(playerid,"delivery_frak") == 7 || GetPVarInt(playerid,"delivery_frak") == 11){
-			CreateGps(playerid, 1798.0410,-1949.7764,13.5469, 0, 0, 10.0); // Указать корды куда следовать.
+			CreateGps(playerid, -1944.3595,115.9928,27.2245, 0, 0, 10.0);
 		}
 	} 
 	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не выполняю доставку боеприпасов");
@@ -388,7 +424,6 @@ stock ARobTrain(playerid)
 		}
 	}
 }*/
-
 CMD:ngsaescort(playerid,const params[])
 {
 	if(PlayerInfo[playerid][pSoska] >= 20)
