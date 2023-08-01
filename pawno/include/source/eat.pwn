@@ -204,10 +204,11 @@ stock takeWarePlayer(playerid, thingId) // Забираем предмет из 
 stock CookingHome(playerid)
 {	
 	new thingId, quan = 0;
-	if (GetPVarInt(playerid,"Arobsklad") == 17) thingId = 166;
-	else if (GetPVarInt(playerid,"Arobsklad") == 18) thingId = 172;
-	else if (GetPVarInt(playerid,"Arobsklad") == 19) thingId = 173;
+	if (GetPVarInt(playerid,"Arobsklad") == 20) thingId = 166;
+	else if (GetPVarInt(playerid,"Arobsklad") == 21) thingId = 172;
+	else if (GetPVarInt(playerid,"Arobsklad") == 22) thingId = 173;
 	else return ErrorMessage(playerid, "{FF6347}Шакал на Филине допустил где-то ошибку"), SetPVarInt(playerid,"Arobsklad",0);
+	
 	new unix = gettime();
 	new current_tick = GetTickCount();
 	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);

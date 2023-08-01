@@ -36,9 +36,10 @@ stock IsAStationTrainPos(playerid)
 	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
 	return 0;
 }
-stock OrderEscort(playerid, g)
+stock OrderEscort(playerid, frak)
 {
-	DP[4][playerid] = g;
+	DP[4][playerid] = frak;
+	new g = fraction(playerid);
 	new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"{cccccc}Счет фракции {99ff66}%d$ [%s] \t \t \n", OrganInfo[g][glave], get_k(OrganInfo[g][glave])), strcat(lines,line);
@@ -183,7 +184,7 @@ stock SaveEscortOrder(idx, ord)
 {
 	if(ord >= 0 && ord <= 10)
 	{
-		format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `newid` = '%d'", ord, OrganInfo[idx][gOrder][ord], ord, OrganInfo[idx][gOrderQuan][ord], ord, OrganInfo[idx][gOrderType][ord], idx);
+		format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `frakid` = '%d'", ord, OrganInfo[idx][gOrder][ord], ord, OrganInfo[idx][gOrderQuan][ord], ord, OrganInfo[idx][gOrderType][ord], idx);
 		query_empty(pearsq_2, big_query);
 	}
   	return 1;
@@ -246,6 +247,9 @@ stock LoadOrderEscortTrain(playerid)
 	if(model != 433) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Barracks)");
 	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 2) 
 	{
+		format(store, sizeof(store), "** NGSA начинает грузить боеприпасы в поезд для %s **", frakeasyName[GetPVarInt(playerid,"delivery_frak")]);
+		SendGangMessage(COLOR_ALLDEPT, store);
+        SendMafiaMessage(COLOR_ALLDEPT, store);
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Садитесь в поезд и ожидайте загрузку Боеприпасов в поезд");
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Как все ящики будут загружены вы сможете тронуться(необходимо погудеть перед отправкой)");
 		SetPVarInt(playerid,"delivery_frak_status",3);
@@ -307,7 +311,6 @@ stock NGSAWorkToTrainPut(playerid)
 		{
 			new Float:Boot[3];
 			GetCoordTrain(train,Boot[0],Boot[1],Boot[2]);
-			printf("%f,%f,%f",Boot[0],Boot[1],Boot[2]);
 			if(!IsPlayerInRangeOfPoint(playerid,10.0,Boot[0]-4,Boot[1],Boot[2])) return ErrorMessage(playerid, "{FF6347}Поезда нет на данной станции");
 		}
 		if(IsPlayerInAnyVehicle(playerid)) return 1;
@@ -328,6 +331,9 @@ stock GoTrainToStation(playerid)
 	if(BoxStat != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не все ящики находятся в поезде.");
 	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 3) 
 	{
+		format(store, sizeof(store), "** NGSA начинает движение на поезде к вокзалу. Они доставляют боеприпасы для %s **", frakeasyName[GetPVarInt(playerid,"delivery_frak")]);
+		SendGangMessage(COLOR_ALLDEPT, store);
+        SendMafiaMessage(COLOR_ALLDEPT, store);
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Ожидайте пока все усядутся и трогайтесь!");
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По прибытию на станцию необходимо погудеть!");
 		SetPVarInt(playerid,"delivery_frak_status",4);
@@ -352,6 +358,9 @@ stock GoPutIsTrain(playerid)
 	if(model != 537) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сижу в Поезде");
 	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 4)
 	{
+		format(store, sizeof(store), "** NGSA прибыли на вокзал. Они разгружают поезд, и после напрявятся к зданию %s **", frakeasyName[GetPVarInt(playerid,"delivery_frak")]);
+		SendGangMessage(COLOR_ALLDEPT, store);
+        SendMafiaMessage(COLOR_ALLDEPT, store);
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Производите разгрузку и садитесь в спец.транспорт");
 		SetPVarInt(playerid,"delivery_frak_status",5);
 		if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2])))
@@ -408,6 +417,49 @@ stock GoEscortToBaseFrak(playerid)
 			CreateGps(playerid,2388.9980,2466.0085,10.8203, 0, 0, 5.0);
 			SendClientMessage(playerid,COLOR_WHITE," {0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}SWAT {ffffff}отмечен на карте");
 		}
+	}
+	return 1;
+}
+
+stock CanselEscortToFrak(playerid,g)
+{
+	if(OrganInfo[g][gOrderStatus] == 0) return ErrorMessage(playerid, "{FF6347}В этот бизнес не оформлен заказ товаров");
+	new frakid = GetPVarInt(playerid,"delivery_frak");
+	if(g != frakid) return ErrorMessage(playerid, "{FF6347}Вы не оформляли доставку для этого бизнеса");
+	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 6)
+	{
+		new payOrders;
+		// Распределяем товары из заказа в биз
+		for(new i = 0; i < MAX_ORDERESCORT; i++)
+		{
+			if(OrganInfo[g][gOrder][i] > 0)
+			{
+				putsklad(g, OrganInfo[g][gOrder][i],OrganInfo[g][gOrderQuan][i],0, OrganInfo[g][gOrderType][i],0);
+				payOrders += getThingPriceGos( OrganInfo[g][gOrder][i],  OrganInfo[g][gOrderType][i]) * OrganInfo[g][gOrderQuan][i];
+				OrganInfo[g][gOrder][i] = 0;
+				OrganInfo[g][gOrderQuan][i] = 0;
+			}
+		}
+
+		// Изменяем переменные игрока
+		SetPVarInt(playerid,"delivery_biz",0);
+		//paysalary(playerid, BizzInfo[b][bDeliveryPay], 0);
+		//MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", BizzInfo[b][bDeliveryPay], "Зарплата Дальнобойщик");
+
+		// Изменяем переменные биза
+		OrganInfo[g][glave] -= payOrders;
+		OrganInfo[g][gDeliveryOrder] = -1;
+		SaveOrgan(g);
+		//BizLog("order", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, 0, "Доставил товары");
+
+		OrganInfo[3][glave] +=payOrders;
+		SaveOrgan(3);
+		// Удаляем объект с транспорта
+		PP_SetVehicleToRespawn(train);
+		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поздравляем с успешной доставкой");
+
+		// Ачивка
+		//if(PlayerInfo[playerid][pAchieve][119] == 0) AchievePlayer(playerid, 119, 1);
 	}
 	return 1;
 }

@@ -375,7 +375,7 @@ function gunsklad(playerid)
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
 			    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 			
-			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType); // Кладём предмет
+			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType,1); // Кладём предмет
 				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места [ Лимит ]");
 
 				InHandClear(playerid);

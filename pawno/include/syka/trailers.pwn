@@ -574,6 +574,7 @@ CMD:kakish(playerid)
 			if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7 || Dei[playerid] > 0 || OnlineInfo[playerid][oInHandThing][0] > 0 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки или выполняется действие [Предмет или оружие]");
 			new str[64],sctring[704];
 			format(str,sizeof(str),"{ff9000}Таблетка\n"), strcat(sctring,str);
+            format(str,sizeof(str),"{ff9000}Деталь бомбы\n"), strcat(sctring,str);
 			ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Изготовительный Стол",sctring,"Выбор","Отмена");
 		}
 	}
@@ -581,13 +582,17 @@ CMD:kakish(playerid)
 	return 1;
 }
 
-stock Pump_Pill(playerid)
+stock UseHimLab(playerid)
 {
+    new thingId;
+    if (GetPVarInt(playerid,"Arobsklad") == 16) thingId = 180;
+	else if (GetPVarInt(playerid,"Arobsklad") == 17) thingId = 182;
+	else return ErrorMessage(playerid, "{FF6347}Шакал на Филине допустил где-то ошибку"), SetPVarInt(playerid,"Arobsklad",0);
 	new current_tick = GetTickCount();
 	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
 	if(interval > 300)
 	{
-		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 3));
+		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*get_ability(playerid, 7));
 		if(!IsPlayerInRangeOfPoint(playerid,3.0,Job_X[playerid], Job_Y[playerid], Job_Z[playerid]))
 		{
 			SetPVarInt(playerid,"oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0), ClearAnimations(playerid), TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), PlayerPlaySound(playerid,4203,0,0,0);
@@ -598,29 +603,66 @@ stock Pump_Pill(playerid)
 	 	ApplyAnimation(playerid,"OTB","betslp_loop",2.0, 1, 0, 0, 0, 0);
 	 	if(GetPVarInt(playerid,"oryjtemp") >= 100)
 		{
+            new watchslot = get_watch(playerid);
 			RemovePlayerAttachedObject(playerid,1), ClearAnim(playerid), ClearAnimations(playerid), Dei[playerid] = 0, TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), SetPVarInt(playerid,"oryjtemp", 0);
-
-			if(get_invent3(playerid, 6, 1) < 10) return ErrorMessage(playerid, "{FF6347}У вас не хватает Грибов\n\n{cccccc}1 Таблетка = 10 штук Грибов"), SetPVarInt(playerid,"Arobsklad",0);
-			if(get_invent4(playerid, 112, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Водки\n\n{cccccc}1 Таблетка = 100мл из бутылки Водки"), SetPVarInt(playerid,"Arobsklad",0);
-			if(get_invent4(playerid, 5, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Пустой Таблетки\n\n{cccccc}1 Таблетка = 1 Пустая Таблетка"), SetPVarInt(playerid,"Arobsklad",0);
-        	
-
-			new getQuan, getLimit;
-		    i_limit(playerid, 180, getQuan, getLimit);
-		    if(getQuan+1 > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этих Таблеток: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store), SetPVarInt(playerid,"Arobsklad",0);
+            if (GetPVarInt(playerid,"Arobsklad") == 16){
+			    if(get_invent3(playerid, 6, 1) < 10) return ErrorMessage(playerid, "{FF6347}У вас не хватает Грибов\n\n{cccccc}1 Таблетка = 10 штук Грибов"), SetPVarInt(playerid,"Arobsklad",0);
+			    if(get_invent4(playerid, 112, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Водки\n\n{cccccc}1 Таблетка = 100мл из бутылки Водки"), SetPVarInt(playerid,"Arobsklad",0);
+			    if(get_invent4(playerid, 5, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Пустой Таблетки\n\n{cccccc}1 Таблетка = 1 Пустая Таблетка"), SetPVarInt(playerid,"Arobsklad",0);
+            } 
+            else if (GetPVarInt(playerid,"Arobsklad") == 17)
+            {
+                if(get_invent4(playerid, 181, 0) < 3) return ErrorMessage(playerid, "{FF6347}У вас не хватает Изоленты\n\n{cccccc}1 Деталь бомбы = 3 изоленты"), SetPVarInt(playerid,"Arobsklad",0);
+			    if(get_invent4(playerid, 60, 0) < 40) return ErrorMessage(playerid, "{FF6347}У вас не хватает Палладия\n\n{cccccc}1 Деталь бомбы = 40 Палладия"), SetPVarInt(playerid,"Arobsklad",0);
+			    if(get_invent4(playerid, 61, 0) < 50) return ErrorMessage(playerid, "{FF6347}У вас не хватает Гелия 3\n\n{cccccc}1 Деталь бомбы = 50 Гелия"), SetPVarInt(playerid,"Arobsklad",0);
+                if(watchslot < 0) return ErrorMessage(playerid, "{FF6347}У вас нет часов\n\n{cccccc}1 Деталь бомбы = 1 часы"), SetPVarInt(playerid,"Arobsklad",0);
+            }	    
 		    
-			new fpick;
-		    if(GetPVarInt(playerid,"Arobsklad") == 16) fpick = 180;
-		    
-		    new put_inva = GiveThingPlayer(playerid, fpick, 1, 1, 0, 0, 0, 9999);
-   			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
-   			
-   			TakeInvent(playerid, 6, 10, 0, 999); // Отнимаем Грибы свежие
-            TakeInvent(playerid, 112, 1, 0, 999); // Отнимаем Водку 100 мл
-            TakeInvent(playerid, 5, 1, 0, 999); // Отнимаем пустая таблетка
+
+   			if (GetPVarInt(playerid,"Arobsklad") == 16)
+            {
+                new put_inva = GiveThingPlayer(playerid, thingId, 1, 1, 0, 0, 0, 9999);
+   			    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
+                TakeInvent(playerid, 6, 10, 0, 999); // Отнимаем Грибы свежие
+                TakeInvent(playerid, 112, 1, 0, 999); // Отнимаем Водку 100 мл
+                TakeInvent(playerid, 5, 1, 0, 999); // Отнимаем пустая таблетка
+                ShowDialog(playerid, 1700, 0, "{ff9000}Стол для варки", "{cccccc}Отлично! {99ff66}Вы сварили таблетку!", "Ок", "");
+            }
+            else if (GetPVarInt(playerid,"Arobsklad") == 17)
+            {
+                if (get_ability(playerid, 8) < 5)
+                {
+                    switch(random(2))
+                    {
+                        case 0:
+                        {
+                            TakeInvent(playerid, 181, 3, 0, 999); // Отнимаем изоленту
+                            TakeInvent(playerid, 60, 40, 0, 999); // Отнимаем паладий
+                            TakeInvent(playerid, 61, 50, 0, 999); // Отнимаем гелий
+                            i_del(playerid,watchslot); // Отнимаем часы
+                            ErrorMessage(playerid, "{FF6347}У вас не получилось сделать бомбу"), SetPVarInt(playerid,"Arobsklad",0);
+                        } 
+                        case 1:
+                        {
+                            TakeInvent(playerid, 181, 3, 0, 999); // Отнимаем изоленту
+                            TakeInvent(playerid, 60, 40, 0, 999); // Отнимаем паладий
+                            TakeInvent(playerid, 61, 50, 0, 999); // Отнимаем гелий
+                            i_del(playerid,watchslot); // Отнимаем часы
+                            new put_inva = GiveThingPlayer(playerid, thingId, 1, 1, 0, 0, 0, 9999);
+   			                if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
+                            SuccessMessage(playerid, "{FF6347}Вы изготовили деталь бомбы"), SetPVarInt(playerid,"Arobsklad",0);
+                        }
+                    }
+                } 
+                else 
+                {
+                    new put_inva = GiveThingPlayer(playerid, thingId, 1, 1, 0, 0, 0, 9999);
+   			        if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"), SetPVarInt(playerid,"Arobsklad",0);
+                }
+            }
 		 	GameTextForPlayer(playerid," ", 3000, 3);
 		 	PlayerPlaySound(playerid,6401,0,0,0);
-		 	ShowDialog(playerid, 1700, 0, "{ff9000}Стол для варки", "{cccccc}Отлично! {99ff66}Вы сварили таблетку!", "Ок", "");
+		 	
 		 	
 		 	SetPVarInt(playerid,"Arobsklad",0);
 		 	update_ability(playerid, 7, 10);

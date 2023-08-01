@@ -188,3 +188,81 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
     }
     return 1;
 }
+
+CMD:bomba(playerid)
+{
+	if(!IsPlayerInRangeOfPoint(playerid,1.0,-628.8907,2632.4429,2104.9768)) return 1;
+	if(PlayerInfo[playerid][pMember] != 18 && PlayerInfo[playerid][pLeader] != 18) return ErrorMessage(playerid, "{FF6347}Вы не участник Arabian Mafia");
+	if(get_invent(playerid, 10, 0) >= 1) return ErrorMessage(playerid, "{FF6347}У вас есть пояс со взрывчаткой [ Вы не можете сейчас взять бомбу ]");
+	if(get_invent(playerid, 11, 0) >= 1) return ErrorMessage(playerid, "{FF6347}У вас уже есть бомба");
+    if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7 || Dei[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа заняты руки");	
+
+    if(get_invent4(playerid, 182, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Изоленты\n\n{cccccc}1 Бомба  = 1 изоленты");
+    if(get_invent4(playerid, 181, 0) < 3) return ErrorMessage(playerid, "{FF6347}У вас не хватает Деталий бомбы\n\n{cccccc}1 Бомба  = 3 детали бомбы");
+    if(get_invent4(playerid, 19, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Веревки\n\n{cccccc}1 Бомба = 1 веревка");
+    if(get_invent4(playerid, 13, 0) < 3) return ErrorMessage(playerid, "{FF6347}У вас не хватает Отмычек\n\n{cccccc}1 Бомба  = 3 отмычки");
+
+    Dei[playerid] = 7, PlayerPlaySound(playerid,5601,0,0,0);
+    ApplyAnimation(playerid,"OTB","betslp_loop",2.0, 1, 0, 0, 0, 0);
+    GetPlayerPos(playerid, Job_X[playerid], Job_Y[playerid], Job_Z[playerid]);
+    SetPVarInt(playerid,"oryjtemp", 0);
+    SetPVarInt(playerid,"Arobsklad", 30);
+    TextDrawShowForPlayer(playerid, MindDraw[3]);
+    if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");
+    else if(Device[playerid] == 1) PlayerTextDrawSetString(playerid, HintButton, "H");
+    PlayerTextDrawShow(playerid, HintButton);
+    GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~0/100"), 5000, 3);
+    RemovePlayerAttachedObject(playerid,1);
+    SetPlayerAttachedObject(playerid, 1, 19583, 6, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
+	return 1;
+}
+
+stock ArabianCraft(playerid)
+{
+    new thingId;
+    if (GetPVarInt(playerid,"Arobsklad") == 30) thingId = 11;
+	else return ErrorMessage(playerid, "{FF6347}Шакал на Филине допустил где-то ошибку"), SetPVarInt(playerid,"Arobsklad",0);
+    new current_tick = GetTickCount();
+	new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
+	if(interval > 300)
+	{
+		SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1*5);
+		if(!IsPlayerInRangeOfPoint(playerid,3.0,Job_X[playerid], Job_Y[playerid], Job_Z[playerid]))
+		{
+			SetPVarInt(playerid,"oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0), ClearAnimations(playerid), TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), PlayerPlaySound(playerid,4203,0,0,0);
+			Dei[playerid] = 7, GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~Вы отошли стола"), 5000, 3), RemovePlayerAttachedObject(playerid,1);
+		}
+        
+		new string[58];
+		format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/100"),GetPVarInt(playerid,"oryjtemp")), GameTextForPlayer(playerid,string, 1500, 3);
+		ApplyAnimation(playerid,"OTB","betslp_loop",2.0, 1, 0, 0, 0, 0);
+		if(GetPVarInt(playerid,"oryjtemp") >= 100)
+		{
+			RemovePlayerAttachedObject(playerid,1), ClearAnim(playerid), ClearAnimations(playerid), Dei[playerid] = 0, TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton), SetPVarInt(playerid,"oryjtemp", 0);
+
+			if(get_invent4(playerid, 182, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Изоленты\n\n{cccccc}1 Бомба  = 1 изоленты");
+			if(get_invent4(playerid, 181, 0) < 3) return ErrorMessage(playerid, "{FF6347}У вас не хватает Деталий бомбы\n\n{cccccc}1 Бомба  = 3 детали бомбы");
+			if(get_invent4(playerid, 19, 0) < 1) return ErrorMessage(playerid, "{FF6347}У вас не хватает Веревки\n\n{cccccc}1 Бомба = 1 веревка");
+			if(get_invent4(playerid, 13, 0) < 3) return ErrorMessage(playerid, "{FF6347}У вас не хватает Отмычек\n\n{cccccc}1 Бомба  = 3 отмычки");
+
+			new put_inva = GiveThingPlayer(playerid, thingId, 1, 0, 0, 0, 0, 9999);
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+			
+			TakeInvent(playerid, 182, 1, 0, 999); 
+            TakeInvent(playerid, 181, 1, 0, 999); 
+            TakeInvent(playerid, 181, 1, 0, 999); 
+            TakeInvent(playerid, 181, 1, 0, 999); 
+			TakeInvent(playerid, 19, 1, 0, 999); 
+            TakeInvent(playerid, 13, 3, 0, 999);
+
+  			format(lines,sizeof(lines),""); // Очищаем Lines
+  			format(line,sizeof(line),"{808000}Вы изготовили бомбу!"), strcat(lines,line);
+  			format(line,sizeof(line),"\n{cccccc}Для того, чтобы активировать её нажмите на неё два раза в инвентаре."), strcat(lines,line);
+			ShowDialog(playerid,1995,DIALOG_STYLE_MSGBOX,"{808000}Arabian Mafia",lines,"*","");
+			
+			SetPVarInt(playerid,"Arobsklad",0);
+		}
+		Aftextdraw[playerid] = current_tick;
+	}
+    return 1;
+}

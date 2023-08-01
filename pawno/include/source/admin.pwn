@@ -28,7 +28,7 @@ CMD:givemats(playerid, const params[])
 	
 		if(yes == 1)
 		{
-		    new put_inva = putsklad(params[0], params[1], params[3], 0, params[2]); // Кладём предмет
+		    new put_inva = putsklad(params[0], params[1], params[3], 0, params[2],1); // Кладём предмет
 			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места");
 
 			format(store, sizeof(store), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
