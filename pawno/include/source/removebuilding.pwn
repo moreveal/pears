@@ -6,6 +6,10 @@ stock DeleteObject(playerid)
  	
  	// 554 удалённх объектов
 
+	// Правительство Улица (08.08.23)
+	RemoveBuildingForPlayer(playerid, 10525, -2784.6328, 375.6094, 21.5781, 0.25);
+	RemoveBuildingForPlayer(playerid, 10377, -2784.6328, 375.6094, 21.5781, 0.25);
+
 	// Сервис Самолётов и Вертолётов LS
 	RemoveBuildingForPlayer(playerid, 3625, 1961.449, -2216.169, 14.984, 0.250);
 	RemoveBuildingForPlayer(playerid, 3769, 1961.449, -2216.169, 14.984, 0.250);

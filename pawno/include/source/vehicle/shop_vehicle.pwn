@@ -1,5 +1,5 @@
 
-#define MAX_DRAW_VEHICLESHOP 19 // Количество текстдравов в меню
+#define MAX_DRAW_VEHICLESHOP 17 // Количество текстдравов в меню
 
 new PlayerText:VehicleShopDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // Переменные для хранения текстдравов (Создаваемые)
 enum vsInfo
@@ -130,8 +130,8 @@ stock changeColor_VehicleShop(playerid, slot) // Меняем цвет тран�
         format(hexColor,sizeof(hexColor),"%sFF", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]]);
         new color = HexToInt(hexColor);
 
-        PlayerTextDrawColor(playerid, VehicleShopDraw[17][playerid], color);
-        PlayerTextDrawShow(playerid, VehicleShopDraw[17][playerid]);
+        PlayerTextDrawColor(playerid, VehicleShopDraw[15][playerid], color);
+        PlayerTextDrawShow(playerid, VehicleShopDraw[15][playerid]);
     }
     return 1;
 }
@@ -287,6 +287,7 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 500, false, "d", playerid); // Bug Fix Камеры
     return 1;
 }
+
 function loadCam_VehicleShop(playerid)
 {
     if(OnlineInfo[playerid][oShowInterface] != 16) return 0;
@@ -345,13 +346,13 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
         PlayerPlaySound(playerid,17803,0,0,0);
         right_VehicleShop(playerid);
     }
-    if(playertextid == VehicleShopDraw[15][playerid]) // Test Drive
+    if(playertextid == VehicleShopDraw[13][playerid]) // Test Drive
     {
         PlayerPlaySound(playerid,17803,0,0,0);
         PlayerPlaySound(playerid,30800,0,0,0);
         openTestDrive_VehicleShop(playerid);
     }
-    if(playertextid == VehicleShopDraw[17][playerid]) // Цвет транспорта
+    if(playertextid == VehicleShopDraw[15][playerid]) // Цвет транспорта
     {
         PlayerPlaySound(playerid,17803,0,0,0);
         showDialogVehicleShopColor(playerid);
@@ -592,11 +593,11 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[12][playerid], 3);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[12][playerid], 1);
 
-    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 542.666809, 348.295745, "ld_beat:chit");// управление бизнесом
+    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 52.666648, 246.155670, "ld_beat:chit"); // Тест драйв
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[13][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[13][playerid], 57.000003, 68.859268);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[13][playerid], 50.666675, 60.977802);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[13][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[13][playerid], 168429055);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[13][playerid], 80);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[13][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[13][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[13][playerid], 4);
@@ -604,67 +605,41 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[13][playerid], 19134);
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[13][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 554.333496, 367.111053, "LD_SPAC:white"); // управление бизнесом (иконка)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[14][playerid], 0.048333, 0.622222);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[14][playerid], 33.666702, 29.866668);
+    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 64.666687, 257.185028, "LD_SPAC:white"); // Тест драйв (иконка)
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[14][playerid], 0.009333, 0.149333);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[14][playerid], 27.999990, 35.259262);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[14][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[14][playerid], -1);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[14][playerid], 110);
     PlayerTextDrawUseBox(playerid, VehicleShopDraw[14][playerid], true);
     PlayerTextDrawBoxColor(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[14][playerid], 5);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[14][playerid], 1274);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[14][playerid], 0.000000, 0.000000, 180.000000, 1.000000);
+    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[14][playerid], 2485);
+    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[14][playerid], 0.000000, 0.000000, -50.000000, 1.000000);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[14][playerid], 0);
 
-    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 52.666648, 246.155670, "ld_beat:chit"); // Тест драйв
+    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 179.999847, 312.036651, "ld_beat:chit"); // Кнопка цвет (она будет менять цвет в зависимости от цвета авто в меню выбора)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[15][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[15][playerid], 50.666675, 60.977802);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[15][playerid], 22.999996, 26.962993);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[15][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[15][playerid], 80);
+    new hexColor[11];
+    format(hexColor,sizeof(hexColor),"%sFF", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]]);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[15][playerid], HexToInt(hexColor));
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[15][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[15][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[15][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[15][playerid], true);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[15][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[15][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[16][playerid] = CreatePlayerTextDraw(playerid, 64.666687, 257.185028, "LD_SPAC:white"); // Тест драйв (иконка)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[16][playerid], 0.009333, 0.149333);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[16][playerid], 27.999990, 35.259262);
-    PlayerTextDrawAlignment(playerid, VehicleShopDraw[16][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[16][playerid], 110);
-    PlayerTextDrawUseBox(playerid, VehicleShopDraw[16][playerid], true);
-    PlayerTextDrawBoxColor(playerid, VehicleShopDraw[16][playerid], 0);
+    VehicleShopDraw[16][playerid] = CreatePlayerTextDraw(playerid, 191.333358, 338.244262, "COLOR"); // Надпись Цвет
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[16][playerid], 0.131333, 0.633481);
+    PlayerTextDrawAlignment(playerid, VehicleShopDraw[16][playerid], 2);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[16][playerid], 2021161110);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[16][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[16][playerid], 0);
-    PlayerTextDrawFont(playerid, VehicleShopDraw[16][playerid], 5);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[16][playerid], 2485);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[16][playerid], 0.000000, 0.000000, -50.000000, 1.000000);
-    PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[16][playerid], 0);
-
-    VehicleShopDraw[17][playerid] = CreatePlayerTextDraw(playerid, 179.999847, 312.036651, "ld_beat:chit"); // Кнопка цвет (она будет менять цвет в зависимости от цвета авто в меню выбора)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[17][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[17][playerid], 22.999996, 26.962993);
-    PlayerTextDrawAlignment(playerid, VehicleShopDraw[17][playerid], 1);
-    new hexColor[11];
-    format(hexColor,sizeof(hexColor),"%sFF", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]]);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[17][playerid], HexToInt(hexColor));
-    PlayerTextDrawSetShadow(playerid, VehicleShopDraw[17][playerid], 0);
-    PlayerTextDrawSetOutline(playerid, VehicleShopDraw[17][playerid], 0);
-    PlayerTextDrawFont(playerid, VehicleShopDraw[17][playerid], 4);
-    PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[17][playerid], true);
-
-    VehicleShopDraw[18][playerid] = CreatePlayerTextDraw(playerid, 191.333358, 338.244262, "COLOR"); // Надпись Цвет
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[18][playerid], 0.131333, 0.633481);
-    PlayerTextDrawAlignment(playerid, VehicleShopDraw[18][playerid], 2);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[18][playerid], 2021161110);
-    PlayerTextDrawSetShadow(playerid, VehicleShopDraw[18][playerid], 0);
-    PlayerTextDrawSetOutline(playerid, VehicleShopDraw[18][playerid], 0);
-    PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[18][playerid], 51);
-    PlayerTextDrawFont(playerid, VehicleShopDraw[18][playerid], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleShopDraw[18][playerid], 1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[16][playerid], 51);
+    PlayerTextDrawFont(playerid, VehicleShopDraw[16][playerid], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleShopDraw[16][playerid], 1);
 
     VehShopInfo[playerid][vsTextDrawLoad] = true;
     return 1;

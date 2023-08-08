@@ -16,15 +16,19 @@
 - Убираю стандартный редактор текстур из редактора интерьеров домов и бизнесов
 - Нужно учитывать класс и тип планировки при загрузке интерьера и его публикации
 
+- При загрузке интерьера и включённом отображении лейблов - отображать сразу все лейблы на объектах (/loadmap)
+
 Редактор текстур:
 - Сделать поиск по ID
 - Сделать поиск по названию или названию библиотеки
 - Сделать добавление текстур в избранное
 - Отображение слотов текстур на объекте в виде текстдравов справа
-
 */
 
-
+#define MAX_TEXT_OBJECT_LENGTH 124 // Максимальное количество символов текст на объекте
+#define MAX_OBJECT_TEXTURES 38 // Максимальное количество текстур на объекте
+#define         MAX_MATERIALS               16
+#define         MAX_TEXT_LENGTH             129
 
 enum peoEnum // Enum отвечающий за личный редактор объектов
 {
@@ -194,6 +198,76 @@ stock CreateObjectPeoInterior(playerid, peoId, modelId, slotId, Float:x, Float:y
     if(slotId > 0)
     {
         if(peoInfo[playerid][peoObjectLabelStatus]) create3dtextLabel(playerid, slotId); // 3d label ставим, если включено отображение
+    }
+    return 1;
+}
+
+CMD:loadtobiz(playerid, const params[])
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить интерьер из личного редактора в бизнес [ /loadtobiz ID Бизнеса ]");
+    LoadInteriorToBiz(playerid, params[0]);
+    return 1;
+}
+stock LoadInteriorToBiz(playerid, b)
+{
+    new peoId = GetPlayerVirtualWorld(playerid)-4000;
+
+    // Переменные для хранения информации об объекте
+    new Float:pos[6];
+    new modelid;
+    new txdname[32];
+    new texturename[32];
+    new materialcolor;
+
+    new text[MAX_TEXT_LENGTH];
+    new materialsize;
+    new fontface[12];
+    new fontsize;
+    new bold;
+    new fontcolor;
+    new backcolor, textalignment;
+    new yestext;
+
+    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    {
+        // Удаляем текущие объекты из бизнеса
+        if(BizzInfo[b][bOmodel][i] > 0) DestroyDynamicObject(BizzInfo[b][bObject][i]);
+
+        if(peoInfo[peoId][peoObject][i] == 0)  continue;
+
+        // Получаем инфу об объекте
+        GetDynamicObjectPos(peoInfo[peoId][peoObject][i], pos[0], pos[1], pos[2]);
+        GetDynamicObjectRot(peoInfo[peoId][peoObject][i], pos[3], pos[4], pos[5]);
+        
+        
+        // Создаём объект
+        BizzInfo[b][bOmodel][i] = peoInfo[peoId][peoModel][i];
+        BizzInfo[b][bOx][i] = pos[0];
+        BizzInfo[b][bOy][i] = pos[1];
+        BizzInfo[b][bOz][i] = pos[2];
+        BizzInfo[b][bOrx][i] = pos[3];
+        BizzInfo[b][bOry][i] = pos[4];
+        BizzInfo[b][bOrz][i] = pos[5];
+        BizzInfo[b][bObject][i] = CreateDynamicObject(BizzInfo[b][bOmodel][i], BizzInfo[b][bOx][i], BizzInfo[b][bOy][i], BizzInfo[b][bOz][i], BizzInfo[b][bOrx][i], BizzInfo[b][bOry][i], BizzInfo[b][bOrz][i], b+3000, 90, -1, 100.00, 100.00);
+
+        // загрузка текстур и текста
+        for(new m = 0; m < MAX_MATERIALS; m++)
+        {
+            GetDynamicObjectMaterial(peoInfo[peoId][peoObject][i], m, modelid, txdname, texturename, materialcolor);
+            if(modelid > 0) 
+            {
+                SetDynamicObjectMaterial(BizzInfo[b][bObject][i], m, modelid, txdname, texturename, materialcolor);
+                modelid = 0;
+            }
+
+            yestext = GetDynamicObjectMaterialText(peoInfo[peoId][peoObject][i], m, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+            if(yestext) 
+            {
+                SetDynamicObjectMaterialText(BizzInfo[b][bObject][i], m, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+                yestext = 0;
+            }
+        }
     }
     return 1;
 }
@@ -408,6 +482,27 @@ CMD:clone(playerid)
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
     if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Выберите объект, чтобы его клонировать [ /sel ]");
     CloneObjectPersonalEditor(playerid, peoInfo[playerid][peoSelObject]);
+    return 1;
+}
+
+CMD:mtset(playerid, const params[])
+{
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
+    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Выберите объект, чтобы изменить текстуру [ /sel ]");
+    if(sscanf(params, "ii", params[0], params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить текстуру [ /mtset Слот Текстуры ID Текстуры ]");
+    if(params[0] < 0 || params[0] >= MAX_OBJECT_TEXTURES) return format(store,sizeof(store),"{FF6347}Слот текстуры не меньше 0 и не больше %d", MAX_OBJECT_TEXTURES - 1), ErrorMessage(playerid, store);
+    if(params[1] <= 0 || params[1] > 9064) return ErrorMessage(playerid, "{FF6347}ID текстуры не меньше 1 и не больше 9064");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    new peoId = GetPlayerVirtualWorld(playerid)-4000;
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+    new getSlotId = peoInfo[playerid][peoSelObject];
+    if(peoInfo[peoId][peoModel][getSlotId] == 0) return ErrorMessage(playerid, "{FF6347}Этого объекта не существует");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][getSlotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+
+    SetDynamicObjectMaterial(peoInfo[peoId][peoObject][getSlotId], params[0], ObjectTextures[params[1]][TModel], ObjectTextures[params[1]][TXDName], ObjectTextures[params[1]][TextureName], 0x00000000);
+    PlayerPlaySound(playerid,1084,0,0,0);
     return 1;
 }
 
@@ -932,8 +1027,6 @@ CMD:loadmap(playerid)
     return 1;
 }
 
-#define         MAX_MATERIALS               16
-#define         MAX_TEXT_LENGTH             129
 static DBStatement:loadstmt;
 
 enum OBJECTINFO
@@ -966,6 +1059,58 @@ enum OBJECTINFO
 	oAttachedVehicle,                           // Vehicle object is attached to
     Float:oDD                                   // Draw distance
 }
+
+stock const FontSizes[] = {
+	OBJECT_MATERIAL_SIZE_32x32,
+	OBJECT_MATERIAL_SIZE_64x32,
+	OBJECT_MATERIAL_SIZE_64x64,
+	OBJECT_MATERIAL_SIZE_128x32,
+	OBJECT_MATERIAL_SIZE_128x64,
+	OBJECT_MATERIAL_SIZE_128x128,
+	OBJECT_MATERIAL_SIZE_256x32,
+	OBJECT_MATERIAL_SIZE_256x64,
+	OBJECT_MATERIAL_SIZE_256x128,
+	OBJECT_MATERIAL_SIZE_256x256,
+	OBJECT_MATERIAL_SIZE_512x64,
+	OBJECT_MATERIAL_SIZE_512x128,
+	OBJECT_MATERIAL_SIZE_512x256,
+	OBJECT_MATERIAL_SIZE_512x512
+};
+stock const FontNames[][] = {
+	"Arial",
+	"Courier New",
+	"Webdings",
+	"Wingdings",
+	"GTAWEAPON3",
+	"Calibri",
+	"Engravers MT",
+	"Quartz MS",
+	"Segoe Keycaps",
+	"Fixedsys",
+    "Wingdings 2",
+    "Wingdings 3",
+    "Comic Sans MS",
+    "Georgia",
+    "Impact",
+    "Lucida Console",
+    "Lucida Sans Unicode",
+    "Palatino Linotype",
+    "Tahoma",
+    "Times New Roman",
+    "Trebuchet MS",
+    "Verdana",
+    "Symbol",
+    "Monotype Corsiva",
+    "Mistral",
+    "Garamond",
+    "Franklin Gothic Medium",
+    "Century Gothic",
+    "Arial Narrow",
+    "Segoe UI",
+    "Segoe Script",
+    "Palatino Linotype",
+    "Arial Black"
+};
 
 new DB:EditMap;
 
@@ -1033,12 +1178,24 @@ stock sqlite_LoadMapObjects(playerid)
                 peoInfo[playerid][peoObject][i] = CreateDynamicObject(peoInfo[playerid][peoModel][i], peoInfo[playerid][peoX][i], peoInfo[playerid][peoY][i], peoInfo[playerid][peoZ][i], peoInfo[playerid][peoRX][i], peoInfo[playerid][peoRY][i], peoInfo[playerid][peoRZ][i], playerid+4000, 90, -1, 100.00, 100.00);
                 peoInfo[playerid][peoQuanObjects] ++;
 
+                // текст на объекте
+                if(tmpobject[ousetext])
+				{
+                    // Сюда нужны проверки на:
+                    // - валидность символов (текста)
+                    // - валидность размеров шрифта, и каждой переменной
+                    // - валидность кодировки Hex Цветов
+
+                    format(store,sizeof(store),"%s", tmpobject[oObjectText]);
+                    SetDynamicObjectMaterialText(peoInfo[playerid][peoObject][i], 0, store, FontSizes[tmpobject[oFontSize]], FontNames[tmpobject[oFontFace]], tmpobject[oTextFontSize], tmpobject[oFontBold], tmpobject[oFontColor], tmpobject[oBackColor], tmpobject[oAlignment]);
+                }
+
+                // загрузка текстур
                 for(new m = 0; m < MAX_MATERIALS; m++)
                 {
-                    peoTexture[playerid][i][m] = tmpobject[oTexIndex][m];
-                    if(peoTexture[playerid][i][m] > 0) // Натягиваем текстуру
+                    if(tmpobject[oTexIndex][m] > 0) // Натягиваем текстуру
                     {
-                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[peoTexture[playerid][i][m]][TModel], ObjectTextures[peoTexture[playerid][i][m]][TXDName], ObjectTextures[peoTexture[playerid][i][m]][TextureName], 0x00000000);
+                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[tmpobject[oTexIndex][m]][TModel], ObjectTextures[tmpobject[oTexIndex][m]][TXDName], ObjectTextures[tmpobject[oTexIndex][m]][TextureName], tmpobject[oColorIndex][m]);
                     }
                 }
                 count++;

@@ -1,6 +1,6 @@
-#define MAX_TEXTURE_OBJECT 38 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ
+#define MAX_TEXTURE_OBJECT 38 // Максимальное количество текстур на объекте
 
-enum zInfo //  Enum РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° СЂРµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ
+enum zInfo //  Enum отвечающий за редактор текстур
 {
 	zStat,
 	Float:zRotation,
@@ -29,18 +29,18 @@ enum zInfo //  Enum РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° СЂР
 };
 new MenuInfo[MAX_REALPLAYERS][zInfo];
 
-//new PlayerText:PlayerTextureEditorDraw[16][MAX_REALPLAYERS]; // РўРµРєСЃС‚РґСЂР°РІС‹ СЂРµРґР°РєС‚РѕСЂР° С‚РµРєСЃС‚СѓСЂ
+//new PlayerText:PlayerTextureEditorDraw[16][MAX_REALPLAYERS]; // Текстдравы редактора текстур
 
-stock ObjectToTexture(playerid, i) // РћС‚РїСЂР°РІР»СЏРµРј РѕР±СЉРµРєС‚ РЅР° СЂРµС‚РµРєСЃС‚СѓСЂ (Р”РѕРј, Р‘РёР·РЅРµСЃ, Р›РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ)
+stock ObjectToTexture(playerid, i) // Отправляем объект на ретекстур (Дом, Бизнес, Личный редактор)
 {
-	Texture[playerid] = 1; // Р РµС‚РµРєСЃС‚СѓСЂ РѕР±СЉРµРєС‚Р°
-	MenuInfo[playerid][zObject] = i; // ID РѕР±СЉРµРєС‚Р° РІРЅСѓС‚СЂРё СЃРёСЃС‚РµРјС‹, РєРѕС‚РѕСЂРѕР№ РѕРЅ РїСЂРёРЅР°РґР»РµР¶РёС‚
-	MenuInfo[playerid][zChange] = 0; // РљРѕР»РёС‡РµСЃС‚РІРѕ РёР·РјРµРЅРµРЅРёР№
+	Texture[playerid] = 1; // Ретекстур объекта
+	MenuInfo[playerid][zObject] = i; // ID объекта внутри системы, которой он принадлежит
+	MenuInfo[playerid][zChange] = 0; // Количество изменений
 	if(MenuInfo[playerid][zDom] > 0) DomInfo[MenuInfo[playerid][zDom]][dStio][i] = 1;
 	else if(MenuInfo[playerid][zBiz] > 0) BizzInfo[MenuInfo[playerid][zBiz]][bStioInt][i] = 1;
 	return 1;
 }
-stock RemoveObjectToTexture(playerid) // РЎРЅРёРјР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂРµРґР°РєС‚РёСЂСѓРµРјРѕРј РѕР±СЉРµРєС‚Рµ
+stock RemoveObjectToTexture(playerid) // Снимаем информацию о редактируемом объекте
 {
 	if(MenuInfo[playerid][zObject] >= 0)
 	{

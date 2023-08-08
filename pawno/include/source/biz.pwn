@@ -1,3 +1,11 @@
+
+#define MAX_BIZ_TYPE 24
+
+new cityName[][] =
+{
+    "Los Santos", "San Fierro", "Las Venturas"
+};
+
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
 	new quan;
