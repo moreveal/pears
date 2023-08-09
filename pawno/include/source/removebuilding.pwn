@@ -4,7 +4,7 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 554 удалённх объектов
+ 	// 575 удалённх объектов
 
 	// Правительство Улица (08.08.23)
 	RemoveBuildingForPlayer(playerid, 10525, -2784.6328, 375.6094, 21.5781, 0.25);
@@ -87,10 +87,6 @@ stock DeleteObject(playerid)
 	//--------------------------[ Доска Почёта Гетто ]--------------------------
  	RemoveBuildingForPlayer(playerid, 1226, 2250.4688, -1753.5625, 16.4219, 0.25);
  	//--------------------------------------------------------------------------
-	//----------------------------[ Заправка SF-4 ]-----------------------------
- 	RemoveBuildingForPlayer(playerid, 18548, -1560.6719, -2728.3984, 47.7422, 0.25);
-	RemoveBuildingForPlayer(playerid, 1522, -1562.5234, -2732.1406, 47.7266, 0.25);
-	RemoveBuildingForPlayer(playerid, 18282, -1560.6719, -2728.3984, 47.7422, 0.25);
  	//--------------------------------------------------------------------------
 	//----------------------------[ Штраф Стоянка ]-----------------------------
  	RemoveBuildingForPlayer(playerid, 7227, 2232.257, 2017.609, 11.203, 0.250);
@@ -381,44 +377,74 @@ stock DeleteObject(playerid)
     //--------------------------------------------------------------------------
 	//------------------------------[ Заправки ]---------------------------------
 	// ---- LS 1
-    RemoveBuildingForPlayer(playerid, 5535, 1918.8516, -1776.3281, 16.9766, 0.25);
-	RemoveBuildingForPlayer(playerid, 1524, 1910.1641, -1779.6641, 18.7500, 0.25);
-	RemoveBuildingForPlayer(playerid, 1412, 1917.3203, -1797.4219, 13.8125, 0.25);
-	RemoveBuildingForPlayer(playerid, 1412, 1927.8516, -1797.4219, 13.8125, 0.25);
-	RemoveBuildingForPlayer(playerid, 1412, 1922.5859, -1797.4219, 13.8125, 0.25);
-	RemoveBuildingForPlayer(playerid, 5681, 1921.4844, -1778.9141, 18.5781, 0.25);
-	RemoveBuildingForPlayer(playerid, 5409, 1918.8516, -1776.3281, 16.9766, 0.25);
-	RemoveBuildingForPlayer(playerid, 1676, 1941.6563, -1778.4531, 14.1406, 0.25);
-	RemoveBuildingForPlayer(playerid, 1676, 1941.6563, -1774.3125, 14.1406, 0.25);
-	RemoveBuildingForPlayer(playerid, 955, 1928.7344, -1772.4453, 12.9453, 0.25);
-	RemoveBuildingForPlayer(playerid, 1676, 1941.6563, -1771.3438, 14.1406, 0.25);
-	RemoveBuildingForPlayer(playerid, 1676, 1941.6563, -1767.2891, 14.1406, 0.25);
-	// ---- LS 2
-	RemoveBuildingForPlayer(playerid, 6430, 121.0313, -1580.4063, 10.4688, 0.25);
-	// ---- SF 1
-	RemoveBuildingForPlayer(playerid, 11281, -1680.6016, 417.9453, 8.8125, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1685.9688, 409.6406, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 10789, -1680.6016, 417.9453, 8.8125, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1679.3594, 403.0547, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1681.8281, 413.7813, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1532, -1677.0078, 431.9297, 6.1797, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1675.2188, 407.1953, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1676.5156, 419.1172, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1669.9063, 412.5313, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1672.1328, 423.5000, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 1686, -1665.5234, 416.9141, 6.3828, 0.25);
-	RemoveBuildingForPlayer(playerid, 11417, -1650.6328, 423.1641, 11.0547, 0.25);
-	// ---- SF 2
-	RemoveBuildingForPlayer(playerid, 11162, -2111.2578, 11.0625, 37.3906, 0.25);
-	RemoveBuildingForPlayer(playerid, 11163, -2110.8281, -27.3594, 36.9766, 0.25);
-	RemoveBuildingForPlayer(playerid, 11092, -2110.8281, -27.3594, 36.9766, 0.25);
-	RemoveBuildingForPlayer(playerid, 11102, -2102.9297, -16.0547, 36.4844, 0.25);
-	RemoveBuildingForPlayer(playerid, 11093, -2111.2578, 11.0625, 37.3906, 0.25);
-	// ---- LV 2
-	RemoveBuildingForPlayer(playerid, 7118, 2263.1250, 2391.5469, 9.8203, 0.25);
-	RemoveBuildingForPlayer(playerid, 647, 2240.9453, 2401.6797, 11.5391, 0.25);
-	RemoveBuildingForPlayer(playerid, 1532, 2248.4297, 2395.7656, 9.8047, 0.25);
-	RemoveBuildingForPlayer(playerid, 6946, 2263.1250, 2391.5469, 9.8203, 0.25);
+    RemoveBuildingForPlayer(playerid, 1676, 1941.660, -1771.339, 14.140, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, 1941.660, -1774.310, 14.140, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, 1941.660, -1778.449, 14.140, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, 1941.660, -1767.290, 14.140, 0.250);
+	RemoveBuildingForPlayer(playerid, 5409, 1918.849, -1776.329, 16.976, 0.250);
+	RemoveBuildingForPlayer(playerid, 5535, 1918.849, -1776.329, 16.976, 0.250);
+	RemoveBuildingForPlayer(playerid, 1524, 1910.160, -1779.660, 18.750, 0.250);
+	RemoveBuildingForPlayer(playerid, 5681, 1921.479, -1778.910, 18.578, 0.250);
+	// ---- LS-SF 2
+	RemoveBuildingForPlayer(playerid, 1676, -92.101, -1161.790, 2.960, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, -85.242, -1165.030, 2.632, 0.250);
+	RemoveBuildingForPlayer(playerid, 17064, -75.468, -1174.550, 0.875, 0.250);
+	RemoveBuildingForPlayer(playerid, 17065, -90.195, -1169.670, 5.312, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, -90.140, -1176.630, 2.632, 0.250);
+	RemoveBuildingForPlayer(playerid, 1676, -97.070, -1173.750, 3.031, 0.250);
+	RemoveBuildingForPlayer(playerid, 17066, -86.875, -1207.239, 1.687, 0.250);
+	RemoveBuildingForPlayer(playerid, 1438, -84.242, -1180.270, 0.851, 0.250);
+	RemoveBuildingForPlayer(playerid, 1438, -77.421, -1165.550, 1.023, 0.250);
+	RemoveBuildingForPlayer(playerid, 1438, -109.164, -1181.339, 1.671, 0.250);
+	RemoveBuildingForPlayer(playerid, 1440, -103.688, -1172.579, 2.265, 0.250);
+	// ---- SF 3
+	RemoveBuildingForPlayer(playerid, 10789, -1680.599, 417.945, 8.812, 0.250);
+	RemoveBuildingForPlayer(playerid, 11281, -1680.599, 417.945, 8.812, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1665.520, 416.914, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1669.910, 412.531, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1675.219, 407.195, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1679.359, 403.054, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1685.969, 409.640, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1681.829, 413.781, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1676.520, 419.117, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1686, -1672.130, 423.500, 6.382, 0.250);
+	RemoveBuildingForPlayer(playerid, 1532, -1677.010, 431.929, 6.179, 0.250);
+	RemoveBuildingForPlayer(playerid, 11384, -1659.180, 423.414, 6.265, 0.250);
+	// ---- SF 4
+	RemoveBuildingForPlayer(playerid, 11093, -2111.260, 11.062, 37.390, 0.250);
+	RemoveBuildingForPlayer(playerid, 11162, -2111.260, 11.062, 37.390, 0.250);
+	RemoveBuildingForPlayer(playerid, 11092, -2110.830, -27.359, 36.976, 0.250);
+	RemoveBuildingForPlayer(playerid, 11163, -2110.830, -27.359, 36.976, 0.250);
+	RemoveBuildingForPlayer(playerid, 11102, -2102.929, -16.054, 36.484, 0.250);
+	// ---- LV 5
+	RemoveBuildingForPlayer(playerid, 9169, 2117.129, 923.445, 12.921, 0.250);
+	RemoveBuildingForPlayer(playerid, 9170, 2117.129, 923.445, 12.921, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2109.050, 914.718, 11.257, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2114.909, 914.718, 11.257, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2120.820, 914.718, 11.257, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2120.820, 925.507, 11.257, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2114.909, 925.507, 11.257, 0.250);
+	RemoveBuildingForPlayer(playerid, 3465, 2109.050, 925.507, 11.257, 0.250);
+	// ---- LV 6
+	RemoveBuildingForPlayer(playerid, 6946, 2263.129, 2391.550, 9.820, 0.250);
+	RemoveBuildingForPlayer(playerid, 7118, 2263.129, 2391.550, 9.820, 0.250);
+	RemoveBuildingForPlayer(playerid, 1532, 2248.429, 2395.770, 9.804, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 2240.949, 2401.679, 11.539, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 2265.179, 2401.229, 11.539, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 2275.040, 2401.219, 11.539, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 2275.840, 2396.760, 11.539, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 2275.489, 2379.120, 11.539, 0.250);
+	// ---- LV 7
+	RemoveBuildingForPlayer(playerid, 6919, 2808.070, 2002.520, 13.117, 0.250);
+	RemoveBuildingForPlayer(playerid, 7164, 2808.070, 2002.520, 13.117, 0.250);
+	RemoveBuildingForPlayer(playerid, 7223, 2807.159, 2006.459, 11.468, 0.250);
+	// ---- LS 8
+	RemoveBuildingForPlayer(playerid, 1226, 1526.839, -2190.379, 16.312, 0.250);
+	// ---- SF 11
+	RemoveBuildingForPlayer(playerid, 18282, -1560.670, -2728.399, 47.742, 0.250);
+	RemoveBuildingForPlayer(playerid, 18548, -1560.670, -2728.399, 47.742, 0.250);
+	RemoveBuildingForPlayer(playerid, 1522, -1562.520, -2732.139, 47.726, 0.250);
+	RemoveBuildingForPlayer(playerid, 18285, -1535.469, -2749.770, 47.687, 0.250);
     //--------------------------------------------------------------------------
 	//-----------------------------[ Археология ]-------------------------------
 	RemoveBuildingForPlayer(playerid, 16021, -312.937, 1780.979, 41.437, 0.250);
