@@ -158,16 +158,24 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
     {
         if(response)
 		{
-            new b = DP[3][playerid];
-            inserttodelete(playerid, b);
+            new id = DP[3][playerid];
+            if(listitem < 0 || listitem > 2) return ErrorMessage(playerid, "Брат, куда лезишь?");
+            if (listitem >= 0 && listitem <= 1) return inserttodelete(playerid, id);
+            else deltradecrypto(id);
         }
     }
     else if(dialogid == 1374) // Покупка по заявке
     {
         if(response)
 		{
-            new b = DP[3][playerid];
-            inserttobuy(playerid, b);
+            new id = DP[3][playerid];
+            if(listitem < 0 || listitem > 5) return ErrorMessage(playerid, "Брат, куда лезишь?");
+            if (listitem >= 0 && listitem <= 3) return inserttobuy(playerid, id);
+            else 
+            {
+                	if(TradeCrypt[id][tcActive] == 1) gotobuycrypto(playerid,id);
+                    else if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id);
+            }
         }
     }
     return 1;
@@ -175,7 +183,6 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
 
 function OnPlayerTradeCrypto(id) {
     TradeCrypt[id][tcNewid] = cache_insert_id();
-    printf("%d",TradeCrypt[id][tcNewid]);
     return 1;
 }
 
@@ -206,14 +213,14 @@ stock GetFreeSlotTrade()
     return tradeid;
 }
 
-stock inserttodelete(playerid, b) // Удаление заказа
+stock inserttodelete(playerid, id) // Удаление заказа
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
 
-    format(line,sizeof(line),"{cccccc}Количество: \t{ffffff}%d", TradeCrypt[b][tcCount]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс: \t{ffffff}%d", TradeCrypt[b][tcCourse]), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Количество: \t{ffffff}%d", TradeCrypt[id][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс: \t{ffffff}%d", TradeCrypt[id][tcCourse]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Удалить заявку\t "), strcat(lines,line);
-    DP[3][playerid] = b;
+    DP[3][playerid] = id;
 	ShowDialog(playerid,1375,DIALOG_STYLE_TABLIST,"{cccccc}Ваша заявка",lines,"Выбрать","Отмена");
 	return 1;
 }
@@ -231,5 +238,147 @@ stock inserttobuy(playerid, b) // Покупка по заявки
     else if(TradeCrypt[b][tcActive] == 0)format(store,sizeof(store),"{cccccc}Заявка на продажу крипты");
     DP[3][playerid] = b;
 	ShowDialog(playerid,1374,DIALOG_STYLE_TABLIST,store,lines,"Купить","Отмена");
+	return 1;
+}
+
+stock deltradecrypto(id) // Удаляем заказ доставки товара в бизнесы
+{
+    TradeCrypt[id][tcCount] = 0;
+    TradeCrypt[id][tcCourse] = 0;
+    TradeCrypt[id][tcVlad] = 0;
+    TradeCrypt[id][tcName] = 0;
+    TradeCrypt[id][tcUnix] = 0;
+    savetradecrypto(id);
+}
+
+stock savetradecrypto(idx)
+{
+    format(big_query, sizeof(big_query), "DELETE FROM `pp_tradecrypto` WHERE `newid` = '%d'",TradeCrypt[idx][tcNewid]);
+    query_empty(pearsq, big_query);
+  	return 1;
+}
+
+stock gotobuycrypto(playerid,id)
+{
+    if (TradeCrypt[id][tcVlad] == 0) return ErrorMessage(playerid,"Данный запрос не активен");
+    new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
+    if(PlayerInfo[playerid][pDonateMoney] < TradeCrypt[id][tcCount]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня нет столько золота");
+    new para = ReturnUserID(TradeCrypt[id][tcVlad]);
+    if(IsPlayerConnected(para))
+    {
+        if(OnlineInfo[para][oLogged] == 0) return ErrorMessage(playerid,"Игрок не залогинился, дождитесь пока он авторизуется");
+        PlayerInfo[para][pDonateMoney] += TradeCrypt[id][tcCount];
+        mysql_save(playerid, 4);
+    }
+    else
+    {
+		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		mysql_tquery(pearsq, store, "get_tobuytradecrypto", "dddd", playerid, TradeCrypt[id][tcVlad],price,id);
+    }
+    oGivePlayerMoney(playerid, price);
+    PlayerInfo[playerid][pDonateMoney] -= TradeCrypt[id][tcCount];
+    mysql_save(playerid,4);
+    format(store,sizeof(store),"[ Мысли ]: Я продал %d крипты, за %d$",TradeCrypt[id][tcCount],price);
+    SendClientMessage(playerid, COLOR_GREY, store);
+	return 1;
+}
+
+stock gotosellcrypto(playerid,id)
+{
+    if (TradeCrypt[id][tcVlad] == 0) return ErrorMessage(playerid,"Данный запрос не активен");
+    new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
+    if(oGetPlayerMoney(playerid) < price) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне не хватает денег");
+    new para = ReturnUserID(TradeCrypt[id][tcVlad]);
+    if(IsPlayerConnected(para))
+    {
+        if(OnlineInfo[para][oLogged] == 0) return ErrorMessage(playerid,"Игрок не залогинился, дождитесь пока он авторизуется");
+        PlayerInfo[para][pAccount] += price;
+        mysql_save(playerid, 1);
+    }
+    else
+    {
+		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		mysql_tquery(pearsq, store, "get_toselltradecrypto", "dddd", playerid, TradeCrypt[id][tcVlad],price,id);
+    }
+    oGivePlayerMoney(playerid, -price);
+    PlayerInfo[playerid][pDonateMoney] += TradeCrypt[id][tcCount];
+    mysql_save(playerid,4);
+    format(store,sizeof(store),"[ Мысли ]: Я приобрел %d крипты, за %d$",TradeCrypt[id][tcCount],price);
+    SendClientMessage(playerid, COLOR_GREY, store);
+	return 1;
+}
+
+function get_toselltradecrypto(playerid, id,price)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    new plaid,moneyplayer;
+	    cache_get_value_name_int(0, "id", plaid);
+        cache_get_value_name_int(0, "Money", moneyplayer);
+	    format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id`='%d'", plaid);
+      	mysql_tquery(pearsq, store, "processbuyofflinetradecrypto", "ddddd", playerid, plaid,moneyplayer,price,id);
+	}
+	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует с данным трейдом"), ErrorMessage(playerid, store);
+	return 1;
+}
+
+function processbuyofflinetradecrypto(playerid, plaid,moneyplayer,price,id)
+{
+    new query[512],money;
+    money = price;
+    if(playerid >= 0)
+    {
+        PlayerPlaySound(playerid, 6401, 0,0,0);
+        format(query, sizeof(query),"\n{cccccc}Вы купили %d крипты у %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[plaid][pName],money);
+        ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
+    }
+    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Money`='%d' WHERE `id` = '%d'", moneyplayer + money , PlayerInfo[plaid][pID]);
+    query_empty(pearsq, big_query);
+    
+    format(query, sizeof(query), "У вас купили %d крипты. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
+    notify(PlayerInfo[plaid][pID], PlayerInfo[plaid][pName], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], query);
+    deltradecrypto(id);
+    
+    //format(query, sizeof(query), "Занес в ДП %s", frakeasyName[g]), OrgLog(g, "inhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
+
+	return 1;
+}
+
+function get_tobuytradecrypto(playerid, id,price)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    new plaid,donatemoneyplayer;
+	    cache_get_value_name_int(0, "id", plaid);
+        cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
+	    format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id`='%d'", plaid);
+      	mysql_tquery(pearsq, store, "processsellofflinetradecrypto", "ddddd", playerid, plaid,donatemoneyplayer,price,id);
+	}
+	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует с данным трейдом"), ErrorMessage(playerid, store);
+	return 1;
+}
+
+function processsellofflinetradecrypto(playerid, plaid,donatemoneyplayer,price,id)
+{
+    new query[512],money;
+    money = price;
+    if(playerid >= 0)
+    {
+        PlayerPlaySound(playerid, 6401, 0,0,0);
+        format(query, sizeof(query),"\n{cccccc}Вы продали %d крипты у %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[plaid][pName],money);
+        ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
+    }
+    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer, PlayerInfo[plaid][pID]);
+    query_empty(pearsq, big_query);
+    
+    format(query, sizeof(query), "Вам продали %d крипты. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
+    notify(PlayerInfo[plaid][pID], PlayerInfo[plaid][pName], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], query);
+    deltradecrypto(id);
+		
+		//format(query, sizeof(query), "Занес в ДП %s", frakeasyName[g]), OrgLog(g, "inhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
 	return 1;
 }
