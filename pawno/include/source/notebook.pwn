@@ -308,7 +308,7 @@ stock gotosellcrypto(playerid,id)
 	return 1;
 }
 
-function get_toselltradecrypto(playerid, id,price)
+function get_toselltradecrypto(playerid,plaidd, id,price)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -334,7 +334,7 @@ function processbuyofflinetradecrypto(playerid, plaid,moneyplayer,price,id)
         format(query, sizeof(query),"\n{cccccc}Вы купили %d крипты у %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[plaid][pName],money);
         ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
     }
-    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Money`='%d' WHERE `id` = '%d'", moneyplayer + money , PlayerInfo[plaid][pID]);
+    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Money`='%d' WHERE `id` = '%d'", moneyplayer + money , plaid);
     query_empty(pearsq, big_query);
     
     format(query, sizeof(query), "У вас купили %d крипты. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
@@ -357,6 +357,7 @@ function get_tobuytradecrypto(playerid, id,price)
         cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 	    format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id`='%d'", plaid);
       	mysql_tquery(pearsq, store, "processsellofflinetradecrypto", "ddddd", playerid, plaid,donatemoneyplayer,price,id);
+        printf("%d,%d",plaid,donatemoneyplayer)
 	}
 	else format(store,sizeof(store),"{FF6347}Такого аккаунта не существует с данным трейдом"), ErrorMessage(playerid, store);
 	return 1;
@@ -364,6 +365,7 @@ function get_tobuytradecrypto(playerid, id,price)
 
 function processsellofflinetradecrypto(playerid, plaid,donatemoneyplayer,price,id)
 {
+    printf("%d,%d",plaid,donatemoneyplayer)
     new query[512],money;
     money = price;
     if(playerid >= 0)
@@ -372,7 +374,7 @@ function processsellofflinetradecrypto(playerid, plaid,donatemoneyplayer,price,i
         format(query, sizeof(query),"\n{cccccc}Вы продали %d крипты у %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[plaid][pName],money);
         ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
     }
-    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer, PlayerInfo[plaid][pID]);
+    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer, plaid);
     query_empty(pearsq, big_query);
     
     format(query, sizeof(query), "Вам продали %d крипты. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
