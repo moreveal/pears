@@ -4,7 +4,47 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 575 удалённх объектов
+ 	// 559 удалённх объектов
+
+	// Автосервис LS 1
+	RemoveBuildingForPlayer(playerid, 1522, 1199.969, -917.640, 42.023, 0.250);
+	RemoveBuildingForPlayer(playerid, 6010, 1214.150, -913.445, 43.054, 0.250);
+	RemoveBuildingForPlayer(playerid, 5858, 1214.150, -913.445, 43.054, 0.250);
+	RemoveBuildingForPlayer(playerid, 5742, 1197.319, -899.210, 45.093, 0.250);
+	RemoveBuildingForPlayer(playerid, 5844, 1206.140, -900.976, 42.109, 0.250);
+
+	// Автосервис LS 2
+	RemoveBuildingForPlayer(playerid, 4019, 1777.839, -1773.910, 12.523, 0.250);
+	RemoveBuildingForPlayer(playerid, 4025, 1777.839, -1773.910, 12.523, 0.250);
+
+	// Автосервис LS 3
+	RemoveBuildingForPlayer(playerid, 6205, 954.273, -1720.800, 20.773, 0.250);
+	RemoveBuildingForPlayer(playerid, 6208, 954.273, -1720.800, 20.773, 0.250);
+	RemoveBuildingForPlayer(playerid, 729, 970.023, -1718.000, 11.320, 0.250);
+
+	// Автосервис SF 4
+	RemoveBuildingForPlayer(playerid, 10388, -2285.520, -157.108, 40.281, 0.250);
+	RemoveBuildingForPlayer(playerid, 10505, -2285.520, -157.108, 40.281, 0.250);
+	RemoveBuildingForPlayer(playerid, 1500, -2271.030, -156.727, 34.312, 0.250);
+
+	// Автосервис SF 5
+	RemoveBuildingForPlayer(playerid, 733, -2213.830, 997.453, 79.656, 0.250);
+
+	// Автосервис LV 7
+	RemoveBuildingForPlayer(playerid, 8300, 1542.650, 998.898, 12.867, 0.250);
+	RemoveBuildingForPlayer(playerid, 8301, 1542.650, 998.898, 12.867, 0.250);
+	RemoveBuildingForPlayer(playerid, 1438, 1543.369, 981.539, 9.812, 0.250);
+	RemoveBuildingForPlayer(playerid, 640, 1545.520, 1016.130, 10.515, 0.250);
+	RemoveBuildingForPlayer(playerid, 640, 1553.770, 1016.130, 10.515, 0.250);
+
+	// Автосервис LV 8
+	RemoveBuildingForPlayer(playerid, 7520, 1638.030, 2201.590, 10.132, 0.250);
+	RemoveBuildingForPlayer(playerid, 7690, 1638.030, 2201.590, 10.132, 0.250);
+	RemoveBuildingForPlayer(playerid, 1257, 1636.380, 2182.370, 11.093, 0.250);
+
+	// Автосервис LV 9
+	RemoveBuildingForPlayer(playerid, 8713, 2645.1797, 1210.9297, 18.5156, 0.25);
+	RemoveBuildingForPlayer(playerid, 8431, 2645.1797, 1210.9297, 18.5156, 0.25);
 
 	// Правительство Улица (08.08.23)
 	RemoveBuildingForPlayer(playerid, 10525, -2784.6328, 375.6094, 21.5781, 0.25);
@@ -322,22 +362,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 3419, -488.0313, -175.2734, 77.2109, 0.25);
 	RemoveBuildingForPlayer(playerid, 13004, -510.6719, -177.9141, 78.5703, 0.25);
     //--------------------------------------------------------------------------
-	//--------------------------[ Тюнинг Салон LS ]-----------------------------
-    RemoveBuildingForPlayer(playerid, 5858, 1214.1484, -913.4453, 43.0547, 0.25);
-	RemoveBuildingForPlayer(playerid, 6010, 1214.1484, -913.4453, 43.0547, 0.25);
-	RemoveBuildingForPlayer(playerid, 5742, 1197.3203, -899.2109, 45.0938, 0.25);
-	//--------------------------------------------------------------------------
-	//--------------------------[ Тюнинг Салон SF ]-----------------------------
-    RemoveBuildingForPlayer(playerid, 10505, -2285.5234, -157.1094, 40.2813, 0.25);
-	RemoveBuildingForPlayer(playerid, 10388, -2285.5234, -157.1094, 40.2813, 0.25);
-	RemoveBuildingForPlayer(playerid, 1500, -2271.0313, -156.7266, 34.3125, 0.25);
-	//--------------------------------------------------------------------------
-	//--------------------------[ Тюнинг Салон LV ]-----------------------------
-	RemoveBuildingForPlayer(playerid, 8300, 1542.6484, 998.8984, 12.8672, 0.25);
-	RemoveBuildingForPlayer(playerid, 8301, 1542.6484, 998.8984, 12.8672, 0.25);
-	RemoveBuildingForPlayer(playerid, 640, 1553.7656, 1016.1328, 10.5156, 0.25);
-	RemoveBuildingForPlayer(playerid, 640, 1545.5156, 1016.1328, 10.5156, 0.25);
-    //--------------------------------------------------------------------------
 	//----------------------------[ Ледовый Дворец ]----------------------------
     RemoveBuildingForPlayer(playerid, 11025, -2199.3281, 264.3281, 42.1953, 0.25);
 	RemoveBuildingForPlayer(playerid, 10973, -2199.3281, 264.3281, 42.1953, 0.25);
@@ -461,14 +485,6 @@ stock DeleteObject(playerid)
     RemoveBuildingForPlayer(playerid, 4606, 1825.0000, -1413.9297, 12.5547, 0.25);
 	RemoveBuildingForPlayer(playerid, 4594, 1825.0000, -1413.9297, 12.5547, 0.25);
     //--------------------------------------------------------------------------
-	//------------------------------[ Автосалон ]-------------------------------
-    RemoveBuildingForPlayer(playerid, 4025, 1777.8359, -1773.9063, 12.5234, 0.25);
-    RemoveBuildingForPlayer(playerid, 4070, 1719.7422, -1770.7813, 23.4297, 0.25);
-    RemoveBuildingForPlayer(playerid, 1531, 1724.7344, -1741.5000, 14.1016, 0.25);
-    RemoveBuildingForPlayer(playerid, 4215, 1777.5547, -1775.0391, 36.7500, 0.25);
-    RemoveBuildingForPlayer(playerid, 3986, 1719.7422, -1770.7813, 23.4297, 0.25);
-    RemoveBuildingForPlayer(playerid, 4019, 1777.8359, -1773.9063, 12.5234, 0.25);
-    //--------------------------------------------------------------------------
 	//--------------------------[ Оружейка Ghetto ]-----------------------------
     RemoveBuildingForPlayer(playerid, 17765, 2436.2188, -1788.5625, 15.0234, 0.25);
     RemoveBuildingForPlayer(playerid, 17523, 2436.2188, -1788.5625, 15.0234, 0.25);
@@ -487,17 +503,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 11329, -1552.4375, 74.3203, 17.0469, 0.25);
 	RemoveBuildingForPlayer(playerid, 11330, -1604.0391, 22.7266, 35.5703, 0.25);
 	RemoveBuildingForPlayer(playerid, 11331, -1550.8281, 75.9297, 7.0000, 0.25);
-    //--------------------------------------------------------------------------
-    //-------------------------[ Автомастерская Хенка ]-------------------------
-    RemoveBuildingForPlayer(playerid, 3645, 2069.6172, -1556.7031, 15.0625, 0.25);
-	RemoveBuildingForPlayer(playerid, 3645, 2070.7578, -1586.0156, 15.0625, 0.25);
-	RemoveBuildingForPlayer(playerid, 5633, 2089.3594, -1643.9297, 18.2188, 0.25);
-	RemoveBuildingForPlayer(playerid, 1524, 2074.1797, -1579.1484, 14.0313, 0.25);
-	RemoveBuildingForPlayer(playerid, 3644, 2070.7578, -1586.0156, 15.0625, 0.25);
-	RemoveBuildingForPlayer(playerid, 3644, 2069.6172, -1556.7031, 15.0625, 0.25);
-	// NEW NEW NEW
-	RemoveBuildingForPlayer(playerid, 6208, 954.2734, -1720.7969, 20.7734, 0.25);
-	RemoveBuildingForPlayer(playerid, 6205, 954.2734, -1720.7969, 20.7734, 0.25);
 //--------------------------------------------------------------------------
     //----------------------------[ Arabian Mafia Удалённые ]------------------------
     RemoveBuildingForPlayer(playerid, 1413, 2824.0938, -2131.1719, 11.0469, 0.25);
@@ -581,19 +586,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 698, -2041.8281, -2448.4063, 34.8125, 0.25);
 	RemoveBuildingForPlayer(playerid, 790, -2051.2813, -2316.8750, 34.7578, 0.25);
 	RemoveBuildingForPlayer(playerid, 18365, -2001.0313, -2388.0859, 38.4531, 0.25);
-    //--------------------------------------------------------------------------
-    //--------------------------------------------------------------------------
-    //----------------------------- Электростанция -----------------------------
-    RemoveBuildingForPlayer(playerid, 3683, 2739.9844, -2089.0547, 18.5000, 0.25);
-	RemoveBuildingForPlayer(playerid, 3683, 2739.9844, -2119.7891, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 3683, 2768.0469, -2104.4844, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 3683, 2794.8047, -2074.5156, 17.7578, 0.25);
-	RemoveBuildingForPlayer(playerid, 3683, 2766.5234, -2074.5156, 18.5000, 0.25);
-	RemoveBuildingForPlayer(playerid, 3636, 2739.9844, -2119.7891, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 3636, 2739.9844, -2089.0547, 18.5000, 0.25);
-	RemoveBuildingForPlayer(playerid, 3636, 2766.5234, -2074.5156, 18.5000, 0.25);
-	RemoveBuildingForPlayer(playerid, 3636, 2768.0469, -2104.4844, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 3636, 2794.8047, -2074.5156, 17.7578, 0.25);
 	//--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
     //------------------------------ Cosa Nostra -------------------------------

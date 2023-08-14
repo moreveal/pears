@@ -6,7 +6,6 @@ new Text3D:BotChat[MAX_BOTS];
 
 stock LoadBot()
 {
-	BotPears[0] = CreateActor(8, 944.2403,-1709.4430,13.5823,181.0545);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ LV 1 пїЅпїЅпїЅпїЅ
 	BotPears[1] = CreateActor(27, 2271.6897,2785.0352,10.8203,26.2866);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	BotPears[2] = CreateActor(133, 1617.7690,-1895.4532,13.8599,266.8432); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ LS
 	BotPears[3] = CreateActor(133, -1872.4868,-218.2040,18.6155,272.1465); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ SF
@@ -125,7 +124,6 @@ stock LoadBot()
     BotPears[102] = CreateActor(20, 378.3685,-67.6006,1001.5151,1.5899); // Burger Shot-1 Bot 6
     SetActorVirtualWorld(BotPears[102], 1);
 	BotPears[103] = CreateActor(161, -1631.7679,-2234.6997,31.4766,160.4179); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot 1
-	BotPears[104] = CreateActor(11, 1793.9835,-1772.1897,13.7935,90.5202); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1
 	BotPears[105] = CreateActor(40, 1776.7781,-1875.1967,13.5607,87.0187); // Sex Bot 1
 	BotPears[106] = CreateActor(37, 1775.8397,-1875.1381,13.5608,268.5027); // Sex Bot 2
 	BotPears[110] = CreateActor(276, 1154.4517,-1302.5990,898.1036,106.8008); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 8
@@ -503,112 +501,9 @@ stock LoadBot()
     BotPears[517] = CreateActor(140, 564.8656,-1809.2654,6.0625,280.8233); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	BotPears[518] = CreateActor(270, 2530.8591,-1664.4253,15.1665,171.8431); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Grove
 
-	LoadZoneBot();
 	BotInfo[107] = 0;
 	BotInfo[108] = 0;
 	LoadAnimBot(5000);
 	for(new i=0; i<MAX_BOTS; i++) SetActorInvulnerable(BotPears[i], 0);
-	return 1;
-}
-stock LoadZoneBot()
-{
-	new skini86[3],skini105[3],skini30[3],skini43[3],skini18[3],skini5[3],skini82[3],skini66[3],strFromFile2[128]; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 86
-	if(GZInfo[86][gFrakVlad] == 13) { skini86[0] = 106; skini86[1] = 107; skini86[2] = 105; } // Grove
-	else if(GZInfo[86][gFrakVlad] == 14) { skini86[0] = 104; skini86[1] = 102; skini86[2] = 103; } // Ballas
-	else if(GZInfo[86][gFrakVlad] == 15) { skini86[0] = 108; skini86[1] = 109; skini86[2] = 110; } // Vagos
-	else if(GZInfo[86][gFrakVlad] == 16) { skini86[0] = 115; skini86[1] = 116; skini86[2] = 114; } // Aztecas
-	else { skini86[0] = 7; skini86[1] = 6; skini86[2] = 2; } // Others
-	BotPears[446] = CreateActor(skini86[0], 1996.3341,-1282.9259,23.9696,354.1532); // 8 +3dtext
-	BotPears[447] = CreateActor(skini86[1], 1997.4559,-1282.0037,23.9761,102.2542); // 8
-	BotPears[448] = CreateActor(skini86[2], 1995.1650,-1281.5782,23.9791,239.1823); // 8
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[86][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[7],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 105
-	if(GZInfo[105][gFrakVlad] == 13) { skini105[0] = 106; skini105[1] = 107; skini105[2] = 105; } // Grove
-	else if(GZInfo[105][gFrakVlad] == 14) { skini105[0] = 104; skini105[1] = 102; skini105[2] = 103; } // Ballas
-	else if(GZInfo[105][gFrakVlad] == 15) { skini105[0] = 108; skini105[1] = 109; skini105[2] = 110; } // Vagos
-	else if(GZInfo[105][gFrakVlad] == 16) { skini105[0] = 115; skini105[1] = 116; skini105[2] = 114; } // Aztecas
-	else { skini105[0] = 7; skini105[1] = 6; skini105[2] = 2; } // Others
-	BotPears[449] = CreateActor(skini105[0], 2679.5576,-1095.1775,69.2969,358.0816); // 7 +3dtext
-	BotPears[450] = CreateActor(skini105[1], 2680.4319,-1094.5328,69.2969,107.5809); // 7
-	BotPears[451] = CreateActor(skini105[2], 2678.6653,-1094.3158,69.2969,222.5755); // 7
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[105][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[6],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 30
-	if(GZInfo[30][gFrakVlad] == 13) { skini30[0] = 106; skini30[1] = 107; skini30[2] = 105; } // Grove
-	else if(GZInfo[30][gFrakVlad] == 14) { skini30[0] = 104; skini30[1] = 102; skini30[2] = 103; } // Ballas
-	else if(GZInfo[30][gFrakVlad] == 15) { skini30[0] = 108; skini30[1] = 109; skini30[2] = 110; } // Vagos
-	else if(GZInfo[30][gFrakVlad] == 16) { skini30[0] = 115; skini30[1] = 116; skini30[2] = 114; } // Aztecas
-	else { skini30[0] = 7; skini30[1] = 6; skini30[2] = 2; } // Others
-	BotPears[452] = CreateActor(skini30[0], 2011.2177,-2098.1443,13.5469,181.8417); // 6 +3dtext
-	BotPears[453] = CreateActor(skini30[1], 2010.4384,-2099.5334,13.5469,317.8296); // 6
-	BotPears[454] = CreateActor(skini30[2], 2012.1031,-2099.4397,13.5469,56.2171); // 6
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[30][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[5],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 43
-	if(GZInfo[43][gFrakVlad] == 13) { skini43[0] = 106; skini43[1] = 107; skini43[2] = 105; } // Grove
-	else if(GZInfo[43][gFrakVlad] == 14) { skini43[0] = 104; skini43[1] = 102; skini43[2] = 103; } // Ballas
-	else if(GZInfo[43][gFrakVlad] == 15) { skini43[0] = 108; skini43[1] = 109; skini43[2] = 110; } // Vagos
-	else if(GZInfo[43][gFrakVlad] == 16) { skini43[0] = 115; skini43[1] = 116; skini43[2] = 114; } // Aztecas
-	else { skini43[0] = 7; skini43[1] = 6; skini43[2] = 2; } // Others
-	BotPears[455] = CreateActor(skini43[0], 2070.0815,-1775.6731,13.5574,271.9375); // 5 +3dtext
-	BotPears[456] = CreateActor(skini43[1], 2071.2263,-1776.0580,13.5583,72.5106); // 5
-	BotPears[457] = CreateActor(skini43[2], 2071.2371,-1774.4279,13.5563,142.0712); // 5
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[43][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[4],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 18
-	if(GZInfo[18][gFrakVlad] == 13) { skini18[0] = 106; skini18[1] = 107; skini18[2] = 105; } // Grove
-	else if(GZInfo[18][gFrakVlad] == 14) { skini18[0] = 104; skini18[1] = 102; skini18[2] = 103; } // Ballas
-	else if(GZInfo[18][gFrakVlad] == 15) { skini18[0] = 108; skini18[1] = 109; skini18[2] = 110; } // Vagos
-	else if(GZInfo[18][gFrakVlad] == 16) { skini18[0] = 115; skini18[1] = 116; skini18[2] = 114; } // Aztecas
-	else { skini18[0] = 7; skini18[1] = 6; skini18[2] = 2; } // Others
-	BotPears[458] = CreateActor(skini18[0], 2786.0500,-2058.2913,11.8466,359.9850); // 4 +3dtext
-	BotPears[459] = CreateActor(skini18[1], 2787.0562,-2057.2314,11.8190,123.8978); // 4
-	BotPears[460] = CreateActor(skini18[2], 2785.3157,-2057.2170,11.8667,230.4321); // 4
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[18][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[3],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 5
-	if(GZInfo[5][gFrakVlad] == 13) { skini5[0] = 106; skini5[1] = 107; skini5[2] = 105; } // Grove
-	else if(GZInfo[5][gFrakVlad] == 14) { skini5[0] = 104; skini5[1] = 102; skini5[2] = 103; } // Ballas
-	else if(GZInfo[5][gFrakVlad] == 15) { skini5[0] = 108; skini5[1] = 109; skini5[2] = 110; } // Vagos
-	else if(GZInfo[5][gFrakVlad] == 16) { skini5[0] = 115; skini5[1] = 116; skini5[2] = 114; } // Aztecas
-	else { skini5[0] = 7; skini5[1] = 6; skini5[2] = 2; } // Others
-	BotPears[461] = CreateActor(skini5[0], 2422.7034,-1773.7966,13.5391,91.1659); // 3 +3dtext
-	BotPears[462] = CreateActor(skini5[1], 2421.2622,-1773.1425,13.5391,242.9656); // 3
-	BotPears[463] = CreateActor(skini5[2], 2421.7178,-1774.9487,13.5391,346.6800); // 3
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[5][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[2],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 82
-	if(GZInfo[82][gFrakVlad] == 13) { skini82[0] = 106; skini82[1] = 107; skini82[2] = 105; } // Grove
-	else if(GZInfo[82][gFrakVlad] == 14) { skini82[0] = 104; skini82[1] = 102; skini82[2] = 103; } // Ballas
-	else if(GZInfo[82][gFrakVlad] == 15) { skini82[0] = 108; skini82[1] = 109; skini82[2] = 110; } // Vagos
-	else if(GZInfo[82][gFrakVlad] == 16) { skini82[0] = 115; skini82[1] = 116; skini82[2] = 114; } // Aztecas
-	else { skini82[0] = 7; skini82[1] = 6; skini82[2] = 2; } // Others
-	BotPears[464] = CreateActor(skini82[0], 2424.7566,-1225.2189,25.1862,178.5867); // 2 +3dtext
-	BotPears[465] = CreateActor(skini82[1], 2423.7466,-1226.0376,25.1161,297.7993); // 2
-	BotPears[466] = CreateActor(skini82[2], 2425.7302,-1226.6124,25.1281,45.2736); // 2
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[82][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[1],0xA9C4E4FF,strFromFile2);
-
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 66
-	if(GZInfo[66][gFrakVlad] == 13) { skini66[0] = 106; skini66[1] = 107; skini66[2] = 105; } // Grove
-	else if(GZInfo[66][gFrakVlad] == 14) { skini66[0] = 104; skini66[1] = 102; skini66[2] = 103; } // Ballas
-	else if(GZInfo[66][gFrakVlad] == 15) { skini66[0] = 108; skini66[1] = 109; skini66[2] = 110; } // Vagos
-	else if(GZInfo[66][gFrakVlad] == 16) { skini66[0] = 115; skini66[1] = 116; skini66[2] = 114; } // Aztecas
-	else { skini66[0] = 7; skini66[1] = 6; skini66[2] = 2; } // Others
-	BotPears[467] = CreateActor(skini66[0], 2440.3450,-1467.8866,24.0000,91.8160); // 1 +3dtext
-	BotPears[468] = CreateActor(skini66[1], 2439.4543,-1466.9581,24.0000,193.7951); // 1
-	BotPears[469] = CreateActor(skini66[2], 2439.3042,-1468.7391,24.0000,332.2900); // 1
-	format(strFromFile2,sizeof(strFromFile2),"{ff9000}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n{cccccc}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: %s",frakName[GZInfo[66][gFrakVlad]]);
-	UpdateDynamic3DTextLabelText(ZoneLabel[0],0xA9C4E4FF,strFromFile2);
-
-	LoadAnimBot(5001);
 	return 1;
 }
