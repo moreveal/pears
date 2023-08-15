@@ -279,11 +279,10 @@ stock godrink(playerid)
 	new alco, coffe, eat;
 	if(!IsPlayerInAnyVehicle(playerid) && NoAnim[playerid] == 0)
 	{
-		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 164) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 || HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
 		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0,0,0,0,0,0);
 	}
-	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119 || HoldStat[playerid] == 120 || HoldStat[playerid] == 121 || HoldStat[playerid] == 124
-	|| HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 139 || HoldStat[playerid] == 164)
+	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119 || HoldStat[playerid] == 120 || HoldStat[playerid] == 121 || HoldStat[playerid] == 124)
 	{
 	    new unix = gettime();
 		if(unix > HoldPara[playerid])
@@ -312,7 +311,7 @@ stock godrink(playerid)
     else
 	{
 	    around_player_audio(playerid, 32200, 0, 20.0);
-		EatPlayer(playerid, 10), eat = 1; // Хавчик
+		EatPlayer(playerid, 20), eat = 1; // Хавчик
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 2), alco = 10; // Пиво, Сидры, Пиво разливное
@@ -451,7 +450,7 @@ stock drink_eat(playerid, inva, fpick)
 	{
 	    if(fpick == 120 || fpick == 124) return ErrorMessage(playerid, "{FF6347}Sprunk нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из банки ]");
 	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}Кофе нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из кружки ]");
-	    if(fpick == 125 || fpick == 126 || fpick == 127) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
+	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
 	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}В вашем бокале ещё есть содержимое {cccccc}[ Допейте или поставьте бокал F ]");
 	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Эта бутылка пустая");
 	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
