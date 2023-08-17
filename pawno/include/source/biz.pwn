@@ -380,6 +380,15 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 
 		BizzInfo[b][bProduct][2] = 0, BizzInfo[b][bProduct][3] = 0; // (Сбросим предыдущую херню с исключением, чтобы не мешать формированию списка)
 	}
+	else if(b >= 183 && b <= 192) // Автосервисы
+	{
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 183, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
+    	if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 185, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // Диски
+    	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 186, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Гидравлика
+    	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 187, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Закись Азота
+		if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 188, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Деталь
+	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
         if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && (yes[i] || stat == 1))
@@ -428,7 +437,7 @@ stock pricebiz(playerid, b)
 	format(lines,sizeof(lines),""); // Очищаем Lines
 
 	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 42 && b <= 76 || b >= 77 && b <= 92 || b >= 93 && b <= 102 || b >= 103 && b <= 122 
-	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 153 && b <= 162) // Прайс автоматгенерация
+	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 153 && b <= 162 || b >= 183 && b <= 192) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -667,8 +676,9 @@ stock IsBizOrder(b)
     // Заправка, Супермаркет, Оружейный Магазин, Аптека
 	// Магазин с Техникой, Магазин Одежды
 	// Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+	// Автосервисы
     if(b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 77 && b <= 92 || b >= 93 && b <= 122 || b >= 123 && b <= 132
-	|| b >= 133 && b <= 142 || b >= 173 && b <= 182) return 1;
+	|| b >= 133 && b <= 142 || b >= 173 && b <= 193) return 1;
 	return 0;
 }
 stock SendBizMessage(b, const string[]) // Сообщение в чат семье, привязанной к бизнесу
@@ -690,7 +700,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     }
 
 	// Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
-    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142)
+    else if(b >= 13 && b <= 26 || b >= 27 && b <= 41|| b >= 93 && b <= 102 || b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 183 && b <= 192)
     {
         for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{

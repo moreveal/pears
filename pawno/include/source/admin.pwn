@@ -482,3 +482,10 @@ CMD:rvc(playerid)
     AdminLog("rvc", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 	return 1;
 }
+CMD:philinsalon(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 21) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+	format(store, sizeof(store), "{0088ff}ID Салона: %d", gAutosalon[playerid]);
+	SendClientMessage(playerid, COLOR_GREY, store);
+	return 1;
+}
