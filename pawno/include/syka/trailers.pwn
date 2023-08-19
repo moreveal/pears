@@ -45,6 +45,7 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
     new Float: doorX, Float: doorY, Float: doorZ;
     if (model == 3171) GetRelativePos(x, y, z, rx, ry, rz, (1153.9735 - 1155.514282), (-1412.2659 - -1411.623779), (13.6603 - 12.465091), doorX, doorY, doorZ);
     else if (model == 3172) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
+    else if (model == 3174) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
 
     format(store,sizeof(store),"SELECT * FROM pp_igroki WHERE id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
     mysql_tquery(pearsq, store, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
@@ -105,6 +106,7 @@ stock AttachTrailer(playerid, model, &vehicleid, &trailerid, &trailerobj)
     trailerobj = CreateDynamicObject(model, 0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0, 300.0);
     if (model == 3171) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.119, -1.900, -1.060, 0.000, 0.000, 178.698);
     else if (model == 3172) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 177.901);
+    else if (model == 3174) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 177.901);
     else {
         DestroyObject(trailerobj);
         return false;
@@ -266,8 +268,9 @@ CMD:trailer_attach(playerid)
         if (GetDistanceBetweenCoords3d(player_pos[0], player_pos[1], player_pos[2], trailerInfo[tid][tPos][0], trailerInfo[tid][tPos][1], trailerInfo[tid][tPos][2]) < 15.0) {
             UnloadPlacedTrailer(tid);
         } else return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я должен подъехать к моему размещенному трейлеру, чтобы прицепить его");
+    } else {
+        if(!IsPlayerInRangeOfPoint(playerid,5.0,-547.4172,-1018.2808,24.1529)) return 1;
     }
-
     // Удаляем трейлер, если он уже был прицеплен
     if (trailerInfo[tid][tAttached]) {
         new trailerid = GetVehicleTrailer(trailerInfo[tid][tAttached]);
@@ -318,27 +321,24 @@ CMD:trailer_place(playerid) {
 }
 
 // Команда для добавления трейлера игроку
-CMD:trailer_add(playerid, const params[]) {
-    new targetid, model;
-    if (sscanf(params, "ud", targetid, model)) {
-        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Выдать игроку трейлер: [ /trailer_add ID Model ]");
-        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Доступные типы: [3171] - Базовый | [3172] - Премиум");
-        return 1;
-    }
+stock trailer_add(playerid, model) {
+    new targetid;
+
     new tid = GetPlayerTrailerID(targetid);
     if (tid > -1) {
-        static const fmt_str[] = "[ Мысли ]: У этого игрока уже есть трейлер "COLOR_ORANGE_TEXT"[ №%d ]";
+        static const fmt_str[] = "[ Мысли ]: У вас уже есть трейлер "COLOR_ORANGE_TEXT"[ №%d ]";
         new str[sizeof fmt_str - 2 + 5];
         format(str, sizeof str, fmt_str, trailerInfo[tid][tID]);
         SendClientMessage(playerid, COLOR_GRAY, str);
         return 1;
     }
-    SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Трейлер выдан указанному игроку");
+    SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер");
     
     new infocreate = AddPlayerTrailer(targetid, model);
     if (infocreate == 0) ErrorMessage(playerid, "{FF6347}Трейлер не может быть создан [ Лимит: 1000 ]");
     return 1;
 }
+
 
 // Команда для удаления трейлера игрока
 CMD:trailer_delete(playerid, const params[]) {
@@ -451,6 +451,18 @@ stock VehicleOnPlayerDisconnect(playerid)
 			else KillTimer(trailerInfo[tid][tTimerID]);
 		}
 	}
+	return 1;
+}
+stock TrailerBuy(playerid){
+	format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"{cccccc}Название \t{99ff66}Цена\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Round Trailer\t{99ff66}1$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Mini Trailer\t{99ff66}2$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Middle Trailer\t{99ff66}3$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Big Trailer\t{99ff66}4$\n"), strcat(lines,line);
+
+	format(store,sizeof(store),"{cccccc}Покупка Трейлера");
+	ShowDialog(playerid,1395,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
 	return 1;
 }
 //_________________________________________________________
