@@ -1,6 +1,6 @@
 new buttonName[][] = // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
-    "пїЅпїЅпїЅ", "H"
+    "ПКМ", "H"
 };
 
 new MindTimer[MAX_REALPLAYERS];
@@ -63,7 +63,7 @@ stock CreateGlobalTextDrawMind()
 	TextDrawSetOutline(MindDraw[0], 0);
 	TextDrawFont(MindDraw[0], 4);
 
-	MindDraw[1] = TextDrawCreate(452.333404, 97.651802, "LD_POOL:ball"); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	MindDraw[1] = TextDrawCreate(452.333404, 97.651802, "LD_POOL:ball"); 
 	TextDrawLetterSize(MindDraw[1], 0.000000, 0.000000);
 	TextDrawTextSize(MindDraw[1], 21.666664, 26.133358);
 	TextDrawAlignment(MindDraw[1], 1);
@@ -72,7 +72,7 @@ stock CreateGlobalTextDrawMind()
 	TextDrawSetOutline(MindDraw[1], 0);
 	TextDrawFont(MindDraw[1], 4);
 
-	MindDraw[2] = TextDrawCreate(470.333404, 72.933288, "LD_POOL:ball"); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	MindDraw[2] = TextDrawCreate(470.333404, 72.933288, "LD_POOL:ball"); 
 	TextDrawLetterSize(MindDraw[2], 0.000000, 0.000000);
 	TextDrawTextSize(MindDraw[2], 14.666664, 17.422246);
 	TextDrawAlignment(MindDraw[2], 1);
@@ -107,7 +107,7 @@ stock CreateGlobalTextDrawHintButton()
 	return 1;
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+
 stock SuccessMessage(playerid, const string[])
 {
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*",string,"*",""), PlayerPlaySound(playerid,6401,0,0,0);

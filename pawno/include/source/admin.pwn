@@ -489,3 +489,36 @@ CMD:philinsalon(playerid)
 	SendClientMessage(playerid, COLOR_GREY, store);
 	return 1;
 }
+CMD:tp(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
+ 	{
+  		ShowDialog(playerid,75,DIALOG_STYLE_LIST,"{ff9000}Телепорты 1","Тихое Место\nАвтомеханик Хенк\nЛесопилка\nРыбацкая Бухта\nБаза Дальнобойщиков\nЦерковь\nЛавка Лесника\nЧиллиад\nАвтосалон\nГоспиталь\nОружейный Завод\nБанк\nЛуна\nNASA\nКвартиры (1)\nАрхеология\nОбразовательный Центр\nАвиасалон\nЛедовый Дворец","Выбрать","Отмена");
+    	return 1;
+    }
+   	return 1;
+}
+CMD:tp2(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
+	{
+		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nAlhambra\nPig Pen\nJizzy","Выбрать","Отмена");
+	}
+   	return 1;
+}
+CMD:tp3(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
+	{
+		ShowDialog(playerid,79,DIALOG_STYLE_LIST,"{ff9000}Телепорты 3","IKEA\nЛапландия\nГлавная Ёлка\nЦентр Обмена\nБизнес Центр\nШтраф Стоянка\nВход в Серверную SWAT\nНефтеперерабатывающий Завод\nГосударственный Склад\nРынок LS\nЧёрный Рынок\nСпермобанк\nКлининг LS\nКлининг SF\nКлининг LV\nТрейлерный парк\nИнкассаторы","Выбрать","Отмена");
+	}
+   	return 1;
+}
+CMD:spawns(playerid)
+{
+	if (PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
+ 	{
+  		ShowDialog(playerid,76,DIALOG_STYLE_LIST,"{0088ff}Телепорты по респам *[RP]Project*","Аэропорт LS\nLSPD\nArmy СВ\nArmy ВМС\nYakuza Mafia\nRussian Mafia\nGrove Street\nBallas Gang\nVagos Gang\nLos Aztecas\nArabian Mafia\nFBI\nПравительство\nCNN\nHitman Agency\nSWAT\nTriada Mafia\nГоспиталь LS\nПожарное Депо\nПсихушка\nSFPD\nCosa Nostra","Выбрать","Отмена");
+ 	}
+	return 1;
+}

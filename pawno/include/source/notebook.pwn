@@ -56,15 +56,15 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 format(lines,sizeof(lines),""); // Очищаем Lines
                 if(TradeCrypt[playerid][tcStatus] == 0)
                 {
-                    format(line,sizeof(line),"{cccccc}Введите кол.во крипты, которую хотите продать"), strcat(lines,line);
+                    format(line,sizeof(line),"{cccccc}Введите кол.во золота, которую хотите продать"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Мой Счёт: {FFCC00}%d PearsCoin [%s]", PlayerInfo[playerid][pDonateMoney],get_k(PlayerInfo[playerid][pDonateMoney])), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Продажа крипты {99ff66} [Сменить]"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{cccccc}Продажа золота {99ff66} [Сменить]"), strcat(lines,line);
                 }
                 else
                 {
-                    format(line,sizeof(line),"{cccccc}Введите кол.во крипты, которую хотите купить"), strcat(lines,line);
+                    format(line,sizeof(line),"{cccccc}Введите кол.во золота, которую хотите купить"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Мой Счёт: {FFCC00}%d PearsCoin [%s]", PlayerInfo[playerid][pDonateMoney],get_k(PlayerInfo[playerid][pDonateMoney])), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Скупка крипты {99ff66} [Сменить]"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{cccccc}Скупка золота {99ff66} [Сменить]"), strcat(lines,line);
                 }
 				ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST,"Создание запроса",lines,"выбрать","");
 			}
@@ -86,8 +86,8 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem < 0 || listitem > 2) return ErrorMessage(playerid,"Лист итем паленный какой-то");
             if(listitem == 0)
             {
-                if(TradeCrypt[playerid][tcStatus] == 0) ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"{ff9000}Трейд крипты","{cccccc}Чтобы {99ff66}продать {cccccc}крипту введите её количество\n\nНе меньше 1 и не больше 1000","Принять","Отмена");
-                else ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"{ff9000}Трейд крипты","{cccccc}Чтобы {FF6347}купить{cccccc} крипту введите её количество\n\nНе меньше 1 и не больше 1000","Принять","Отмена");
+                if(TradeCrypt[playerid][tcStatus] == 0) ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"{ff9000}Трейд золота","{cccccc}Чтобы {99ff66}продать {cccccc}золота введите его количество\n\nНе меньше 1 и не больше 1000","Принять","Отмена");
+                else ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"{ff9000}Трейд золота","{cccccc}Чтобы {FF6347}купить{cccccc} золото введите его количество\n\nНе меньше 1 и не больше 1000","Принять","Отмена");
             }
             else if(listitem == 1)
             {
@@ -112,10 +112,10 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(input < 10 || input > 1000) return ErrorMessage(playerid, "{FF6347}Количество не меньше 10 и не больше 1000");
             if(TradeCrypt[playerid][tcStatus] == 0)
             {
-                if(input > PlayerInfo[playerid][pDonateMoney]) return ErrorMessage(playerid, "{FF6347}У вас не такого количества крипты.");
+                if(input > PlayerInfo[playerid][pDonateMoney]) return ErrorMessage(playerid, "{FF6347}У вас нет такого количества золота.");
             }
             DP[4][playerid] = input;
-			ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"{ff9000}Трейд крипты","{cccccc}Введите курс за 1 единицу.\n\nНе меньше 1 и не больше 50000","Принять","Отмена");
+			ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"{ff9000}Трейд золота","{cccccc}Введите курс за 1 единицу.\n\nНе меньше 1$ и не больше 50000$","Принять","Отмена");
         }
     }
     else if(dialogid == 1376) //
@@ -124,7 +124,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         {
             new input = strval(inputtext);
             if(sscanf(inputtext, "i", input)) return ErrorMessage(playerid, "{FF6347}Чувачек чет с вводом не так");
-            if(input < 1 || input > 50000) return ErrorMessage(playerid, "{FF6347}Курс должен быть не меньше 1 и не больше 50000");
+            if(input < 1 || input > 50000) return ErrorMessage(playerid, "{FF6347}Курс должен быть не меньше 1$ и не больше 50000$");
             new donate = DP[4][playerid];
             if(IsALimitTradePlayer(playerid) >= 5) return ErrorMessage(playerid,"Нет личных свободных слотов для торговли [Лимит: 5]");
             new id = GetFreeSlotTrade();
@@ -234,8 +234,8 @@ stock inserttobuy(playerid, b) // Покупка по заявки
     format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", TradeCrypt[b][tcCount]), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Стоимость: \t{ffffff}%d", TradeCrypt[b][tcCourse]*TradeCrypt[b][tcCount]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Купить по данной заявки\t "), strcat(lines,line);
-	if(TradeCrypt[b][tcActive] == 1)format(store,sizeof(store),"{cccccc}Заявка на скупку крипты");
-    else if(TradeCrypt[b][tcActive] == 0)format(store,sizeof(store),"{cccccc}Заявка на продажу крипты");
+	if(TradeCrypt[b][tcActive] == 1)format(store,sizeof(store),"{cccccc}Заявка на скупку золота");
+    else if(TradeCrypt[b][tcActive] == 0)format(store,sizeof(store),"{cccccc}Заявка на продажу золота");
     DP[3][playerid] = b;
 	ShowDialog(playerid,1374,DIALOG_STYLE_TABLIST,store,lines,"Купить","Отмена");
 	return 1;
@@ -278,7 +278,7 @@ stock gotobuycrypto(playerid,id)
     oGivePlayerMoney(playerid, price);
     PlayerInfo[playerid][pDonateMoney] -= TradeCrypt[id][tcCount];
     mysql_save(playerid,4);
-    format(store,sizeof(store),"[ Мысли ]: Я продал %d крипты, за %d$",TradeCrypt[id][tcCount],price);
+    format(store,sizeof(store),"[ Мысли ]: Я продал %d золота, за %d$",TradeCrypt[id][tcCount],price);
     SendClientMessage(playerid, COLOR_GREY, store);
 	return 1;
 }
@@ -306,13 +306,13 @@ function processsellofflinetradecrypto(playerid, plaid,donatemoneyplayer,price,i
     if(playerid >= 0)
     {
         PlayerPlaySound(playerid, 6401, 0,0,0);
-        format(query, sizeof(query),"\n{cccccc}Вы продали %d крипты %s за %d$",TradeCrypt[id][tcCount],plaidName,money);
+        format(query, sizeof(query),"\n{cccccc}Вы продали %d золота. Купил %s за %d$",TradeCrypt[id][tcCount],plaidName,money);
         ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
     }
     format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + TradeCrypt[id][tcCount], plaid);
     query_empty(pearsq, big_query);
     
-    format(query, sizeof(query), "Вам продали %d крипты. Продал %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
+    format(query, sizeof(query), "Вам продали %d золота. Продал %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
     notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName],plaid, plaidName, query);
     deltradecrypto(id);
 		
@@ -340,7 +340,7 @@ stock gotosellcrypto(playerid,id)
     oGivePlayerMoney(playerid, -price);
     PlayerInfo[playerid][pDonateMoney] += TradeCrypt[id][tcCount];
     mysql_save(playerid,4);
-    format(store,sizeof(store),"[ Мысли ]: Я приобрел %d крипты, за %d$",TradeCrypt[id][tcCount],price);
+    format(store,sizeof(store),"[ Мысли ]: Я приобрел %d золота, за %d$",TradeCrypt[id][tcCount],price);
     SendClientMessage(playerid, COLOR_GREY, store);
 	return 1;
 }
@@ -369,13 +369,13 @@ function processbuyofflinetradecrypto(playerid, plaid,moneyplayer,price,id,const
     if(playerid >= 0)
     {
         PlayerPlaySound(playerid, 6401, 0,0,0);
-        format(query, sizeof(query),"\n{cccccc}Вы купили %d крипты у %s за %d$",TradeCrypt[id][tcCount],plaidName,money);
+        format(query, sizeof(query),"\n{cccccc}Вы купили %d золото у %s за %d$",TradeCrypt[id][tcCount],plaidName,money);
         ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
     }
     format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + money , plaid);
     query_empty(pearsq, big_query);
     
-    format(query, sizeof(query), "У вас купили %d крипты. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
+    format(query, sizeof(query), "У вас купили %d золото. Купил %s за %d$",TradeCrypt[id][tcCount],PlayerInfo[playerid][pName],money);
     notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName],plaid, plaidName, query);
     deltradecrypto(id);
     
