@@ -870,6 +870,7 @@ stock getSlotIngredientBusiness(thingId) // Получаем слот, кото�
 
 stock SaveBizz(b)
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	new f_str1[24],f_str2[34],f_str3[64],f_str4[64];
 	mysql_escape_string(BizzInfo[b][bVlad], f_str1, sizeof(f_str1));
 	mysql_escape_string(BizzInfo[b][bName], f_str2, sizeof(f_str2));
@@ -897,6 +898,7 @@ stock SaveBizz(b)
 }
 stock SaveBizzProduct(idx)
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item0` = '%d', `Price0` = '%d', `Product0` = '%d', `TypeProduct0` = '%d', `Ware0` = '%d'",
 	BizzInfo[idx][bItem][0], BizzInfo[idx][bPrice][0], BizzInfo[idx][bProduct][0], BizzInfo[idx][bTypeProduct][0], BizzInfo[idx][bWare][0]);
 	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", big_query,
@@ -921,6 +923,7 @@ stock SaveBizzProduct(idx)
 }
 stock SaveBizzProductItem(idx, i)
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d' WHERE `newid` = '%d'",
 	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i], idx);
 	query_empty(pearsq, big_query);
@@ -928,6 +931,7 @@ stock SaveBizzProductItem(idx, i)
 }
 stock SaveBizzOrder(idx, ord)
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	if(ord >= 0 && ord <= 49)
 	{
 		format(big_query, sizeof(big_query), "UPDATE `pp_bizz` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `newid` = '%d'", ord, BizzInfo[idx][bOrder][ord], ord, BizzInfo[idx][bOrderQuan][ord], ord, BizzInfo[idx][bOrderType][ord], idx);
@@ -937,6 +941,7 @@ stock SaveBizzOrder(idx, ord)
 }
 stock SaveBizzOrderAll(idx)
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `Order0` = '%d', `OrderQuan0` = '%d', `OrderType0` = '%d'",
 	BizzInfo[idx][bOrder][0], BizzInfo[idx][bOrderQuan][0], BizzInfo[idx][bOrderType][0]);
 	for(new i = 1; i < 50; i++) format(big_query,sizeof(big_query),"%s, `Order%d` = '%d', `OrderQuan%d` = '%d', `OrderType%d` = '%d'", big_query,

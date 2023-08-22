@@ -399,6 +399,7 @@ stock d_limit(d, thingId, &getQuan, &getLimit) // Проверяем лимит�
 }
 stock SaveOneTainik(idx, inva) // Сохраняем одну ячейку шкафа дома
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	format(big_query, sizeof(big_query), "UPDATE `pp_dom` SET `Invent%d`='%d',`Inv%d`='%d',`InvPara%d`='%d',`InvQara%d`='%d',`InvType%d`='%d',`InvPack%d`='%d' WHERE `Ids`='%d'",
 	inva,DomInfo[idx][dInvent][inva],inva,DomInfo[idx][dInv][inva],inva,DomInfo[idx][dInvPara][inva],inva,DomInfo[idx][dInvQara][inva],inva,DomInfo[idx][dInvType][inva],inva,DomInfo[idx][dInvPack][inva],idx);
 	query_empty(pearsq, big_query);
@@ -406,6 +407,7 @@ stock SaveOneTainik(idx, inva) // Сохраняем одну ячейку шк�
 }
 stock SaveDomAll(idx) // Сохранение всего шкафа по цилку
 {
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	format(big_query,sizeof(big_query),"UPDATE `pp_dom` SET `Invent0` = '%d', `Inv0` = '%d', `InvPara0` = '%d', `InvQara0` = '%d', `InvType0` = '%d', `InvPack0` = '%d'",
 	DomInfo[idx][dInvent][0], DomInfo[idx][dInv][0], DomInfo[idx][dInvPara][0], DomInfo[idx][dInvQara][0], DomInfo[idx][dInvType][0], DomInfo[idx][dInvPack][0]);
 	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvPara%d` = '%d', `InvQara%d` = '%d', `InvType%d` = '%d', `InvPack%d` = '%d'", big_query,

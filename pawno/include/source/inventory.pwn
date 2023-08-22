@@ -756,12 +756,9 @@ stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // Отоб
 				    yesFindModel = friskPick[item];
 					if(friskKol[item] == 1) // Количественный
 					{
-						new string[6];
+						new string[8];
 						format(string, sizeof(string), "%d", quan);
-						PlayerTextDrawSetString(playerid, PlaNestPickNum[cell][playerid], string);
-						if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[cell][playerid], 673720575);
-						else PlayerTextDrawColor(playerid, PlaNestPickNum[cell][playerid], -1);
-		  				PlayerTextDrawShow(playerid, PlaNestPickNum[cell][playerid]);
+						textPickInventory(playerid, cell, string);
 					}
 				}
 				if(thingType == 1) // Оружие
@@ -776,7 +773,13 @@ stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // Отоб
 				    }
 				}
 				if(thingType == 2) yesFindModel = item; // Аксессуары
-			 	if(thingType == 3) yesFindModel = item; // Одежда
+			 	if(thingType == 3) // Одежда
+				{
+					yesFindModel = GetModelSkin(playerid, item);
+					new string[8];
+					format(string, sizeof(string), "ID %d", item);
+					textPickInventory(playerid, cell, string);
+				}
 			}
 			if(OnlineInfo[playerid][oInventSelectLeft] == cell2) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle3]);
 			
@@ -872,10 +875,7 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 					if(friskKol[fpick] == 1) // Количественный
 					{
 						format(string, sizeof(string), "%d", fquan);
-						PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], string);
-						if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], 673720575);
-						else PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], -1);
-		  				PlayerTextDrawShow(playerid, PlaNestPickNum[inva][playerid]);
+						textPickInventory(playerid, inva, string);
 					}
 				}
 				if(thingType == 1) // Оружие
@@ -890,16 +890,18 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 				    }
 				}
 				if(thingType == 2) yesFindModel = fpick; // Аксессуары
-			 	if(thingType == 3) yesFindModel = fpick; // Одежда
+			 	if(thingType == 3) 
+				{
+					yesFindModel = GetModelSkin(playerid, fpick); // Одежда
+					format(string, sizeof(string), "ID %d", fpick);
+					textPickInventory(playerid, inva, string);
+				}
 				if(thingType == 4) yesFindModel = fpick; // Мебель
 			}
 			if(OnlineInfo[playerid][oShowInterfaceSklad] > 0 || OnlineInfo[playerid][oShowInterfaceRent] != 9999)
 			{
 				format(string, sizeof(string), "%d", fquan);
-	    		PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], string);
-	    		if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], 673720575);
-				else PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], -1);
-	    		PlayerTextDrawShow(playerid, PlaNestPickNum[inva][playerid]);
+				textPickInventory(playerid, inva, string);
 			}
 		}
 		if(OnlineInfo[playerid][oInventSelectRight] == inva2) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle3]);
@@ -914,6 +916,14 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 		
 		PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
 	}
+	return 1;
+}
+stock textPickInventory(playerid, inva, const text[])
+{
+	PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], text);
+	if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], 673720575);
+	else PlayerTextDrawColor(playerid, PlaNestPickNum[inva][playerid], -1);
+	PlayerTextDrawShow(playerid, PlaNestPickNum[inva][playerid]);
 	return 1;
 }
 //=================================
