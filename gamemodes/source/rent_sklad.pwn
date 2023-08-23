@@ -48,7 +48,7 @@ stock use_rent(playerid, wh, inva)
 
 	if(thingType == 0) // Количественные предметы до 1000 в один ящик
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 	    {
 	        DP[0][playerid] = inva;
 			format(store,sizeof(store),"{cccccc}Чтобы собрать ящик с {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1000",GetNameThing(1, fpick, thingType, 0));

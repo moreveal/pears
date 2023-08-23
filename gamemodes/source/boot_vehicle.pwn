@@ -5,7 +5,7 @@ stock use_boot(playerid, v, inva, useinva)
  	new Float:Boot[3], Float:Bonnet[3];
  	GetCoordBonnetVehicle(v, Bonnet[0], Bonnet[1], Bonnet[2]);
 	GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
-	if(IsABootFront(v)) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	if(IsABootFront(v))
 	{
 		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Bonnet[0], Bonnet[1], Bonnet[2])) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
 	}
@@ -50,7 +50,7 @@ stock use_boot(playerid, v, inva, useinva)
 	}
 	else if(thingType == 0 && thingPack == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
 		    format(store,sizeof(store),"{cccccc}пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ {ff9000}%s {cccccc}пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n\nпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
@@ -103,7 +103,7 @@ stock use_boot(playerid, v, inva, useinva)
 	
 	if(thingType == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
@@ -151,7 +151,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	    new quanThing;
 		if(thingType == 0)
 		{
-			if(friskKol[fpick] == 1)
+			if(CheckThingQuan(fpick) == 1)
 			{
 			    if(VehInfo[v][vInvent][binva] != 0 && VehInfo[v][vInvent][binva] != PlayerInfo[playerid][pInven][inva]) return ErrorMessage(playerid, "{FF6347}пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ"), i_resetveshi(playerid);
 			    if(thingPack == 0) quanThing = 1;
@@ -195,7 +195,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 	{
 	    if(thingType == 0) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		{
-		    if(friskKol[thingId] == 1) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
+		    if(CheckThingQuan(thingId) == 1) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
 		    {
 		        new find;
 		    	for(new i = 0; i < 20; i++)
@@ -221,7 +221,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 					}
 				}
 			}
-			else if(friskKol[thingId] == 0) // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			else if(CheckThingQuan(thingId) == 0) // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			{
 			    for(new i = 0; i < 20; i++)
 				{
@@ -467,7 +467,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 			if(thingType == 0) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			{
 			    yesFindModel = friskPick[fpick];
-				if(friskKol[fpick] == 1) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+				if(CheckThingQuan(fpick) == 1) // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				{
 					format(string, sizeof(string), "%d", fquan);
 					PlayerTextDrawSetString(playerid, PlaNestPickNum[inva][playerid], string);

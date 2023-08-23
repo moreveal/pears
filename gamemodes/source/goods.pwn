@@ -28,7 +28,7 @@ stock use_mygoods(playerid, inva, useinva) // Берём предмет  из с
 	// Забираем предмет из товаров
 	if(thingType == 0 && thingPack == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
 		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
@@ -70,7 +70,7 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	new quanThing;
 	if(thingType == 0) // Обычный предмет
 	{
-	    if(friskKol[fpick] == 1) // Предмет имеет количество
+	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
 		{
 		    if(thingPack == 0) quanThing = 1;
 		    new getQuan, getLimit;
@@ -127,7 +127,7 @@ stock use_goods(playerid, seller, inva)
 	
 	if(thingType == 0 && thingPack == 0)
 	{
-		if(friskKol[fpick] == 1)
+		if(CheckThingQuan(fpick) == 1)
 		{
 		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
 			format(store,sizeof(store),"{cccccc}Чтобы купить {ff9000}%s {cccccc}введите количество",GetNameThing(0, fpick, thingType, thingPack));
@@ -169,7 +169,7 @@ stock put_goods(playerid, inva, fpick, quan, binva)
 	new quanThing;
 	if(thingType == 0 && thingPack == 0)
 	{
-	    if(friskKol[fpick] == 1) quanThing = 1;
+	    if(CheckThingQuan(fpick) == 1) quanThing = 1;
 	}
 	if(quanThing == 1) take_away(playerid, quan, inva); // Отнимаем предмет (по количеству)
     else i_del(playerid, inva); // Отнимаем предмет (целиком)

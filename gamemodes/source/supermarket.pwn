@@ -94,7 +94,7 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 		             	// Обычный
 			            if(BizzInfo[b][bTypeProduct][item] == 0)
 						{
-						    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Если предмет имеет количество
+						    if(CheckThingQuan(BizzInfo[b][bProduct][item]) == 1) // Если предмет имеет количество
 			        		{
 			        		    new getQuan, getLimit;
 								i_limit(playerid, BizzInfo[b][bProduct][item], getQuan, getLimit);
@@ -273,7 +273,7 @@ stock addiction(playerid, item)
 	    
 	    if(BizzInfo[b][bTypeProduct][item] == 0)
 		{
-		    if(friskKol[BizzInfo[b][bProduct][item]] == 1) // Если предмет имеет количество
+		    if(CheckThingQuan(BizzInfo[b][bProduct][item]) == 1) // Если предмет имеет количество
     		{
     		    new getQuan, getLimit;
 				i_limit(playerid, BizzInfo[b][bProduct][item], getQuan, getLimit);

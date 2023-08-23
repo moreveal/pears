@@ -26,7 +26,7 @@ stock use_dom(playerid, dom, inva, useinva)
 	// Забираем предмет из дома
 	if(thingType == 0 && thingPack == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
 			format(store,sizeof(store),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
@@ -69,7 +69,7 @@ stock use_dom(playerid, dom, inva, useinva)
 	
 	if(thingType == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
@@ -114,7 +114,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	new quanThing;
 	if(thingType == 0)
 	{
-		if(friskKol[fpick] == 1)
+		if(CheckThingQuan(fpick) == 1)
 		{
 		    if(DomInfo[dom][dInvent][binva] != 0 && DomInfo[dom][dInvent][binva] != PlayerInfo[playerid][pInven][inva]) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята"), i_resetveshi(playerid);
 		    if(thingPack == 0) quanThing = 1;
@@ -155,7 +155,7 @@ stock PutThingDom(dom, thingId, quan, para, qara, thingType, thingPack, useinva)
 	{
 	    if(thingType == 0) // Обычный предмет
 		{
-		    if(friskKol[thingId] == 1) // Предмет имеет количество (Складывается в одну ячейку)
+		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
 		    {
 		        new find;
 		    	for(new i = 0; i < 80; i++)
@@ -181,7 +181,7 @@ stock PutThingDom(dom, thingId, quan, para, qara, thingType, thingPack, useinva)
 					}
 				}
 			}
-			else if(friskKol[thingId] == 0) // Объект не имеет количество
+			else if(CheckThingQuan(thingId) == 0) // Объект не имеет количество
 			{
 			    for(new i = 0; i < 80; i++)
 				{

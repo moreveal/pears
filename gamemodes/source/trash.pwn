@@ -523,7 +523,7 @@ stock use_trash(playerid, tra, inva, useinva)
 	if(thingType == 0 && thingPack == 0)
 	{
 	    DP[0][playerid] = inva;
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 			format(store,sizeof(store),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
 			ShowDialog(playerid,1136,DIALOG_STYLE_INPUT,"{ff9000}Мусорный Контейнер",store,"Принять","Отмена");
@@ -545,7 +545,7 @@ stock use_trash(playerid, tra, inva, useinva)
 	
 	if(thingType == 0)
 	{
-	    if(friskKol[fpick] == 1)
+	    if(CheckThingQuan(fpick) == 1)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
@@ -569,7 +569,7 @@ stock use_trash(playerid, tra, inva, useinva)
 stock give_trash(tra, fpick, fquan, fpara, fqara, thingType, thingPack)
 {
 	new plalit;
-	if(friskKol[fpick] == 0)
+	if(CheckThingQuan(fpick) == 0)
 	{
 		for(new inva = 0; inva < 20; inva++)
 		{
@@ -586,7 +586,7 @@ stock give_trash(tra, fpick, fquan, fpara, fqara, thingType, thingPack)
 			}
 		}
 	}
-	else if(friskKol[fpick] == 1)
+	else if(CheckThingQuan(fpick) == 1)
 	{
 	    new nashel;
 		for(new inva = 0; inva < 20; inva++)

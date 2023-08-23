@@ -94,7 +94,7 @@ stock use_throw(playerid, inva, useinva)
 	
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
 	{
-	    if(friskKol[fpick] == 1) // Предмет имеет количество
+	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
 		{
 		    DP[0][playerid] = inva;
 			Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
@@ -177,7 +177,7 @@ stock use_throw(playerid, inva, useinva)
 	{
 	    if(thingType == 0)
 		{
-		    if(friskKol[fpick] == 1)
+		    if(CheckThingQuan(fpick) == 1)
 			{
 				new getQuan, getLimit;
 	    		i_limit(playerid, fpick, getQuan, getLimit);
@@ -236,7 +236,7 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
   	{
   	    if(thingType == 0)
 		{
-		    if(friskKol[fpick] == 1) return GiveThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, A, 600);
+		    if(CheckThingQuan(fpick) == 1) return GiveThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, A, 600);
 		}
 		SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
   	}
