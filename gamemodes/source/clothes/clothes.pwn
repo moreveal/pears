@@ -182,8 +182,9 @@ stock TempSpawnPlayer(playerid)
     OnlineInfo[playerid][oSkinSpawn] = true; // Активируем не полный спавн
     
     GetPlayerPos(playerid, OnlineInfo[playerid][oSpawnTempPos][0], OnlineInfo[playerid][oSpawnTempPos][1], OnlineInfo[playerid][oSpawnTempPos][2]);
-    OnlineInfo[playerid][oSpawnTempPos][2] -= 0.5;
+	OnlineInfo[playerid][oSpawnTempPos][2] -= 0.5;
 	GetPlayerFacingAngle(playerid, OnlineInfo[playerid][oSpawnTempPos][3]);
+
 	OnlineInfo[playerid][oSpawnInt] = GetPlayerInterior(playerid);
 	OnlineInfo[playerid][oSpawnWorld] = GetPlayerVirtualWorld(playerid);
 	
@@ -195,23 +196,42 @@ stock TempSpawnPlayer(playerid)
 stock WeReturnToPosition(playerid)
 {
     PPSpawn[playerid] = false;
-    keep(playerid); // Подморозим, чтобы не провалился
-    S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
-    if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
-    SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-    // Возвращаем аксессуары
-    if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
-    if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
-    if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
-    if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
-    if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
+    if(Fractia[playerid] == 0) 
+    {
+        keep(playerid); // Подморозим, чтобы не провалился
+        S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
+        if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
+        SetPlayerToTeamColor(playerid); // Возвращаем цвет
+
+        // Возвращаем аксессуары
+        if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
+        if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
+        if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
+        if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
+        if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
+
+        ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
+    }
+    else
+    {
+        InterpolateCameraPos(playerid, 1538.850585, -1455.088989, 46.521511, 1538.850585, -1455.088989, 46.521511, 1000);
+	    InterpolateCameraLookAt(playerid, 1536.296020, -1450.861206, 45.747303, 1536.296020, -1450.861206, 45.747303, 1000);
+    }
 
     OnlineInfo[playerid][oSkinSpawn] = false; // Спавн завершён
-
-
-    ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
     return 1;
+}
+
+function loadDrop_Clothes(playerid)
+{
+	if(gSkafandr[playerid] == 0 && gFormavvs[playerid] == 0)
+	{
+		RemovePlayerAttachedObject(playerid, 5);
+		OnlineInfo[playerid][oTempSkin] = 0;
+		TempSpawnPlayer(playerid);
+	}
+	return 1;
 }
 
 // Снять одежду
@@ -244,4 +264,188 @@ stock isnaked(playerid)
 {
 	if(PlayerInfo[playerid][pModel] == 154 || PlayerInfo[playerid][pModel] == 18 || PlayerInfo[playerid][pModel] == 140 || PlayerInfo[playerid][pModel] == 139) return 1;
 	return 0;
+}
+
+
+// Магазин Одежды
+stock CreateClothesActor(playerid, skin)
+{
+    DestroyClothesActor(playerid);
+    OnlineInfo[playerid][oActorShop] = CreateDynamicActor(GetModelSkin(playerid, skin), 1536.977905, -1452.003784, 45.906265, 205.815200, true, 100.0, playerid+1, 0, playerid, 50.0, -1, 0);
+    return 1;
+}
+stock DestroyClothesActor(playerid)
+{
+    if(OnlineInfo[playerid][oActorShop] != INVALID_VARIABLE)
+    {
+        DestroyDynamicActor(OnlineInfo[playerid][oActorShop]);
+        OnlineInfo[playerid][oActorShop] = INVALID_VARIABLE;
+    }
+    return 1;
+}
+stock GoShmot(playerid, stat)
+{
+	PPSetPlayerPos(playerid, 1542.2922,-1451.5934,45.9063), SetPlayerFacingAngle(playerid, 36.3980);
+	S_SetPlayerVirtualWorld(playerid, playerid+1, 0);
+ 	SetPlayerInterior(playerid, 0);
+ 	TogglePlayerControllable(playerid, 0);
+	InterpolateCameraPos(playerid, 1540.998779, -1459.510864, 46.879333, 1538.850585, -1455.088989, 46.521511, 1000);
+	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
+	SelectColorDraw(playerid);
+	SetPVarInt(playerid, "SelectCharPlace", 0);
+	if(stat == 1)
+	{
+		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]);
+		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]), TextDrawShowForPlayer(playerid, DressDraw[5]);
+	    if(Fractia[playerid] == 100) // Магазин Одежды
+	    {
+	    	show_skin(playerid, 100, 0);
+	    	TextDrawShowForPlayer(playerid, DressDraw[10]), TextDrawShowForPlayer(playerid, DressDraw[11]);
+	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL [1/50]");
+			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
+	    }
+	    else if(Fractia[playerid] >= 1 && Fractia[playerid] <= 22) // Раздевалка в Организации
+		{
+		    new g = Fractia[playerid];
+			show_skin(playerid, g, 0);
+			if(g == 1) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "LSPD");
+			else if(g == 2) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "FBI");
+			else if(g == 3) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "NGSA");
+			else if(g == 4) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ASGH");
+			else if(g == 5) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "COSA NOSTRA");
+			else if(g == 6) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "YAKUZA");
+			else if(g == 7) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "GOVERMENT");
+			else if(g == 8) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ICA");
+			else if(g == 9) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CNN");
+			else if(g == 10) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "TRIADA");
+			else if(g == 11) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "SFPD");
+			else if(g == 12) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "RUSSIAN MAFIA");
+			else if(g == 13) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "GROVE STREET");
+			else if(g == 14) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "BALLAS GANG");
+			else if(g == 15) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "VAGOS GANG");
+			else if(g == 16) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "LOS AZTECAS");
+			else if(g == 18) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ARABIAN MAFIA");
+			else if(g == 21) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "LVPD");
+			else if(g == 22) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "SWAT");
+			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
+		}
+	}
+	else
+	{
+		Fractia[playerid] = 200;
+		show_skin(playerid, 200, 0);
+		TextDrawShowForPlayer(playerid, DressDraw[2]), TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]);
+		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]), TextDrawShowForPlayer(playerid, DressDraw[7]);
+		TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]);
+	}
+	return 1;
+}
+
+stock left_skin(playerid)
+{
+	PlayerPlaySound(playerid,17803,0,0,0);
+	new select = GetPVarInt(playerid, "SelectCharPlace"), g = Fractia[playerid];
+	if(g <= 22)
+	{
+		if(select >= 1) select --;
+		else
+		{
+			for(new gs = 19; gs > 0; gs--)
+			{
+				if(OrganInfo[g][gSkin][gs] > 0)
+				{
+					select = gs;
+					break;
+				}
+			}
+		}
+	}
+	else if(g == 100) // Магазин
+	{
+		if(select >= 1) select --;
+		else select = 49;
+	}
+	else if(g == 200)
+	{
+		if(select >= 1) select --;
+		else select = 2;
+	}
+	SetPVarInt(playerid, "SelectCharPlace", select);
+	show_skin(playerid, g, select);
+	return 1;
+}
+
+stock right_skin(playerid)
+{
+	PlayerPlaySound(playerid,17803,0,0,0);
+	new select = GetPVarInt(playerid, "SelectCharPlace"), g = Fractia[playerid];
+	if(g <= 22) // Организация
+	{
+		if(select <= 18)
+		{
+			select ++;
+			if(OrganInfo[g][gSkin][select] == 0) select = 0;
+		}
+		else select = 0;
+	}
+	else if(g == 100) // Магазин
+	{
+		if(select < 49) select ++;
+		else select = 0;
+	}
+	else if(g == 200) // Регистрация
+	{
+		if(select <= 1) select ++;
+		else select = 0;
+	}
+	SetPVarInt(playerid, "SelectCharPlace", select);
+	show_skin(playerid, g, select);
+	return 1;
+}
+
+stock ExitShmot(playerid)
+{
+	SetPVarInt(playerid, "SelectCharPlace",0);
+	keep(playerid);
+	PPSetPlayerPos(playerid, SkinX[playerid], SkinY[playerid], SkinZ[playerid]);
+ 	SetPlayerFacingAngle(playerid, SkinA[playerid]);
+  	S_SetPlayerVirtualWorld(playerid, SkinWorld[playerid], SkinInt[playerid]);
+   	SetPlayerInterior(playerid, SkinInt[playerid]);
+
+	SetCameraBehindPlayer(playerid);
+	CancelSelectTextDraw(playerid);
+
+	RemovePlayerAttachedObject(playerid,5);
+	DestroyClothesActor(playerid);
+	return 1;
+}
+
+stock CloseShmot(playerid)
+{
+	Fractia[playerid] = 0;
+	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
+	for(new t = 0; t < 12; t++) TextDrawHideForPlayer(playerid, DressDraw[t]);
+	for(new pt = 0; pt < 4; pt++) PlayerTextDrawHide(playerid, PlaDressDraw[pt]);
+	return 1;
+}
+
+stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
+{
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
+    if(interval < 800) return 0; // Блокируем, если игрок клацает часто на кнопку
+
+    if(clickedid == DressDraw[2]) // Выбор скина стрелка влево
+    {
+        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) left_skin(playerid);
+        else if(Fractia[playerid] == 300) left_akses(playerid);
+    }
+    if(clickedid == DressDraw[3]) // Выбор скина стрелка вправо
+    {
+        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) right_skin(playerid);
+        else if(Fractia[playerid] == 300) right_akses(playerid);
+    }
+
+    Aftextdraw[playerid] = current_tick;
+    return 1;
 }
