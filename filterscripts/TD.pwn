@@ -3,7 +3,7 @@
 Zamaroht's TextDraw Editor Version 1.0RC2.
 Designed for SA-MP 0.3.
 
-Author: Zamaroht (Nicol·s Laurito)
+Author: Zamaroht (Nicol–±s Laurito)
 
 Start of Development: 25 December 2009, 22:16 (GMT-3)
 End of Development: 01 January 2010, 23:31 (GMT-3)
@@ -3384,7 +3384,7 @@ stock ExportProject( playerid, type )
 	    case 7: // PlayerTextDraw by adri1.
 	    {
 	        fwrite(File, "// TextDraw developed using Zamaroht's Textdraw Editor 1.0\r\n\r\n");
-	        fwrite(File, "// The fuction `PlayerTextDraw¥ add by adri1\r\n");
+	        fwrite(File, "// The fuction `PlayerTextDraw“ë add by adri1\r\n");
 	        fwrite(File, "// On top of script:\r\n");
 	        for(new i; i < MAX_TEXTDRAWS; i++)
 	        {
@@ -3449,7 +3449,7 @@ stock ExportProject( playerid, type )
 
 			format(tmpstring, sizeof(tmpstring), "Project exported to %s.txt in scriptfiles directory.", CurrentProject);
 	        SendClientMessage(playerid, MSG_COLOR, tmpstring);
-	        SendClientMessage(playerid, MSG_COLOR, "Fuction `PlayerTextDraw¥ add by adri1");
+	        SendClientMessage(playerid, MSG_COLOR, "Fuction `PlayerTextDraw“ë add by adri1");
 	    }
 	}
 	fclose(File);

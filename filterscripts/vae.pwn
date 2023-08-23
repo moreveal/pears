@@ -41,7 +41,7 @@
   You can change how much you want the filterscript, leaving the credit to creator.
   RUS by ---===DeNi$===---
 
-///////Скачано с Server-Life.ru/////////////////////////////////////////////////////////////////////////////
+///////РЎРєР°С‡Р°РЅРѕ СЃ Server-Life.ru/////////////////////////////////////////////////////////////////////////////
 */
 
 #include "a_samp"
@@ -93,8 +93,8 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	if(!strcmp("/edit", cmd, true))
 	{
 	    tmp = strtok(cmdtext, idx);
-		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, CBLUE, "((ERROR)) Вы не в машине.");
-	    if(!strlen(tmp)) return SendClientMessage(playerid, CBLUE, "((Ошибка)) ИСпользовать: /edit [id объкта]");
+		if(!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, CBLUE, "((ERROR)) Р’С‹ РЅРµ РІ РјР°С€РёРЅРµ.");
+	    if(!strlen(tmp)) return SendClientMessage(playerid, CBLUE, "((РћС€РёР±РєР°)) РРЎРїРѕР»СЊР·РѕРІР°С‚СЊ: /edit [id РѕР±СЉРєС‚Р°]");
 	    if(player[playerid][timer] != -1) KillTimer(player[playerid][timer]);
 	    if(IsValidObject(player[playerid][obj])) DestroyObject(player[playerid][obj]);
 		
@@ -116,25 +116,25 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		}	
 		player[playerid][obj] = Obj;
 		new str[100];
-		format(str, 100, "| Редактируеться объект %d. Используйте KEY_LEFT, KEY_RIGHT and KEY_FIRE to adjust the offset's |", strval(tmp));
+		format(str, 100, "| Р РµРґР°РєС‚РёСЂСѓРµС‚СЊСЃСЏ РѕР±СЉРµРєС‚ %d. РСЃРїРѕР»СЊР·СѓР№С‚Рµ KEY_LEFT, KEY_RIGHT and KEY_FIRE to adjust the offset's |", strval(tmp));
 		SendClientMessage(playerid, CBLUE, str);
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/X{4E76B1} для регулировки оси X |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/Y{4E76B1} для регулировки оси Y |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/Z{4E76B1} для регулировки оси Z |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/RX{4E76B1} для регулировки оси RX |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/RY{4E76B1} для регулировки оси RY |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/RZ{4E76B1} для регулировки оси RZ |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/MODEL{4E76B1} изменить модель. |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/FREEZE{4E76B1} и {F40B74}/UNFREEZE{4E76B1} заморозить и разморозить себя |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/STOP{4E76B1} Закончить редактирование |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/SAVEOBJ{4E76B1} Сохранить \"editions.pwn\". |");
-		SendClientMessage(playerid, CBLUE, "| Используйте {F40B74}/PAGESIZE 15{4E76B1} Посмотреть все сообщения. |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/X{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё X |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/Y{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё Y |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/Z{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё Z |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/RX{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё RX |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/RY{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё RY |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/RZ{4E76B1} РґР»СЏ СЂРµРіСѓР»РёСЂРѕРІРєРё РѕСЃРё RZ |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/MODEL{4E76B1} РёР·РјРµРЅРёС‚СЊ РјРѕРґРµР»СЊ. |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/FREEZE{4E76B1} Рё {F40B74}/UNFREEZE{4E76B1} Р·Р°РјРѕСЂРѕР·РёС‚СЊ Рё СЂР°Р·РјРѕСЂРѕР·РёС‚СЊ СЃРµР±СЏ |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/STOP{4E76B1} Р—Р°РєРѕРЅС‡РёС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/SAVEOBJ{4E76B1} РЎРѕС…СЂР°РЅРёС‚СЊ \"editions.pwn\". |");
+		SendClientMessage(playerid, CBLUE, "| РСЃРїРѕР»СЊР·СѓР№С‚Рµ {F40B74}/PAGESIZE 15{4E76B1} РџРѕСЃРјРѕС‚СЂРµС‚СЊ РІСЃРµ СЃРѕРѕР±С‰РµРЅРёСЏ. |");
 	    return true;
 	}
 	if(!strcmp("/stop", cmd, true))
 	{
 	    KillTimer(player[playerid][timer]);
-	    return SendClientMessage(playerid, CBLUE, "Редактирование закончено.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РєРѕРЅС‡РµРЅРѕ.");
 	}
 	if(!strcmp("/saveobj", cmd, true))
 	{		
@@ -144,37 +144,37 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	    format(str, 200, "\r\nAttachObjectToVehicle(objectid, vehicleid, %f, %f, %f, %f, %f, %f); //Object Model: %d | %s", player[playerid][OffSetX], player[playerid][OffSetY], player[playerid][OffSetZ], player[playerid][OffSetRX], player[playerid][OffSetRY], player[playerid][OffSetRZ], player[playerid][objmodel], tmp);
 	    fwrite(file, str);
 	    fclose(file);
-	    return SendClientMessage(playerid, CBLUE, "Всё сохранено в \"editions.pwn\".");
+	    return SendClientMessage(playerid, CBLUE, "Р’СЃС‘ СЃРѕС…СЂР°РЅРµРЅРѕ РІ \"editions.pwn\".");
 	}	
 	if(!strcmp("/x", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatX;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси X.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё X.");
 	}
 	if(!strcmp("/y", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatY;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси Y.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё Y.");
 	}
 	if(!strcmp("/z", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatZ;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси Z.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё Z.");
 	}
 	if(!strcmp("/rx", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatRX;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси RX.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё RX.");
 	}
 	if(!strcmp("/ry", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatRY;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси RY.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё RY.");
 	}
 	if(!strcmp("/rz", cmd, true))
 	{
 	    player[playerid][EditStatus] = FloatRZ;
-	    return SendClientMessage(playerid, CBLUE, "Редактирование оси RZ.");
+	    return SendClientMessage(playerid, CBLUE, "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕСЃРё RZ.");
 	}
 
 	if(!strcmp("/model", cmd, true))
@@ -186,13 +186,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	if(!strcmp("/freeze", cmd, true))
 	{
         TogglePlayerControllable(playerid, false);
-		SendClientMessage(playerid, CBLUE, "Вы замороженны, используйте /unfreeze чтобы разморозить себя.");
+		SendClientMessage(playerid, CBLUE, "Р’С‹ Р·Р°РјРѕСЂРѕР¶РµРЅРЅС‹, РёСЃРїРѕР»СЊР·СѓР№С‚Рµ /unfreeze С‡С‚РѕР±С‹ СЂР°Р·РјРѕСЂРѕР·РёС‚СЊ СЃРµР±СЏ.");
 		return 1;
 	}
 	if(!strcmp("/unfreeze", cmd, true))
 	{
         TogglePlayerControllable(playerid, true);
-		SendClientMessage(playerid, CBLUE, "Вы размороженны.");
+		SendClientMessage(playerid, CBLUE, "Р’С‹ СЂР°Р·РјРѕСЂРѕР¶РµРЅРЅС‹.");
 		return 1;
 	}
 	return 0;

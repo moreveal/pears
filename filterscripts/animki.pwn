@@ -4,9 +4,9 @@
 //==============================================================================
 //===================[ FilterScript Mapping Pears Project ]=====================
 //==============================================================================
-//========================| Äàòà:          01.10.2014 |=========================
-//========================| Ìîä:        Pears Project |=========================
-//========================| Àâòîğ:         Vlad_Pears |=========================
+//========================| Ğ”Ğ°Ñ‚Ğ°:          01.10.2014 |=========================
+//========================| ĞœĞ¾Ğ´:        Pears Project |=========================
+//========================| ĞĞ²Ñ‚Ğ¾Ñ€:         Vlad_Pears |=========================
 //==============================================================================
 //==============================================================================
 //==============================================================================
@@ -27,20 +27,20 @@ public OnFilterScriptInit()
 }
 CMD:animhelp(playerid, params[])
 {
-	SendClientMessage(playerid, COLOR_GREEN,">/animped - Àíèìàöèè ïåøåõîäîâ./dance - Àíèìàöèÿ Òàíöåâ./handsup - Ïîäíÿòü ğóêè");
-	SendClientMessage(playerid, COLOR_GREEN,">Îñòàëüíûå àíèìàöèè: /animairport /animat /animbar /animball /animfire /animbeach");
+	SendClientMessage(playerid, COLOR_GREEN,">/animped - ĞĞ½Ğ¸Ğ¼Ğ°Ñ†Ğ¸Ğ¸ Ğ¿ĞµÑˆĞµÑ…Ğ¾Ğ´Ğ¾Ğ²./dance - ĞĞ½Ğ¸Ğ¼Ğ°Ñ†Ğ¸Ñ Ğ¢Ğ°Ğ½Ñ†ĞµĞ²./handsup - ĞŸĞ¾Ğ´Ğ½ÑÑ‚ÑŒ Ñ€ÑƒĞºĞ¸");
+	SendClientMessage(playerid, COLOR_GREEN,">ĞÑÑ‚Ğ°Ğ»ÑŒĞ½Ñ‹Ğµ Ğ°Ğ½Ğ¸Ğ¼Ğ°Ñ†Ğ¸Ğ¸: /animairport /animat /animbar /animball /animfire /animbeach");
 	SendClientMessage(playerid, COLOR_GREEN,">/animbp /animinf /animbiked /animbh /animfood /animbikelp /animms /animbikes /animcar");
 	SendClientMessage(playerid, COLOR_GREEN,">/animbikev /animbmx /animbikedbz /animchase /animbox /animbomber /animbsp /animcamera ");
 	SendClientMessage(playerid, COLOR_GREEN,">/animgym /animpara /animgangs /animlookers /animcarchat /animcasino /animbuddy /animbus");
 	SendClientMessage(playerid, COLOR_GREEN,">/animcarry /animintshop /animjst /animkart /animkissing /animknife /animlapdan /animdend");
 	SendClientMessage(playerid, COLOR_GREEN,">/animmedic /animmtb /animmusc /animotb /animpark /animsaw /animchoppa");
 	SendClientMessage(playerid, COLOR_GREEN,">/animclothes /animcoach /animcolt /animcopa /animcod /animcrack");
-	SendClientMessage(playerid, COLOR_GREEN,">/animhelp2 - Âòîğàÿ ×àñòü Êîìàíä Àíèìàöèé.");
+	SendClientMessage(playerid, COLOR_GREEN,">/animhelp2 - Ğ’Ñ‚Ğ¾Ñ€Ğ°Ñ Ğ§Ğ°ÑÑ‚ÑŒ ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´ ĞĞ½Ğ¸Ğ¼Ğ°Ñ†Ğ¸Ğ¹.");
 	return 1;
 }
 CMD:animhelp2(playerid, params[])
 {
-	SendClientMessage(playerid, COLOR_GREEN,">Âòîğàÿ ×àñòü Êîìàíä Àíèìàöèé:");
+	SendClientMessage(playerid, COLOR_GREEN,">Ğ’Ñ‚Ğ¾Ñ€Ğ°Ñ Ğ§Ğ°ÑÑ‚ÑŒ ĞšĞ¾Ğ¼Ğ°Ğ½Ğ´ ĞĞ½Ğ¸Ğ¼Ğ°Ñ†Ğ¸Ğ¹:");
 	SendClientMessage(playerid, COLOR_GREEN,">/animcrib /animdealer /animdildo /animdodge /animdozer  /animdrivebys /animfat");
 	SendClientMessage(playerid, COLOR_GREEN,">/animfightb /animfightc /animfightd /animfighte /animfinale /animfinale2 /animflamef");
 	SendClientMessage(playerid, COLOR_GREEN,">/animflowers /animghands /animfw /animghetto /animgog /animgraffity /animgreya /animgren");
@@ -57,7 +57,7 @@ CMD:animbar(playerid, params[])
 	new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 12) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbar [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbar [1-12]");
 		if(animationplayed == 1)
 		{
 			ApplyAnimation(playerid,"BAR","Barcustom_get",4.1,0,1,1,1,1);
@@ -85,7 +85,7 @@ CMD:animbar(playerid, params[])
 			ApplyAnimation(playerid,"BAR","BARman_idle",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbar [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbar [1-12]");
 	return 1;
 }
 CMD:animball(playerid, params[])
@@ -93,7 +93,7 @@ CMD:animball(playerid, params[])
 	new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animball [1-11]");
+		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animball [1-11]");
 		if(animationplayed == 1)
 		{
 			ApplyAnimation(playerid,"BASEBALL","Bat_1",4.1,0,1,1,1,1);
@@ -119,7 +119,7 @@ CMD:animball(playerid, params[])
 			ApplyAnimation(playerid,"BASEBALL","BAT_PART",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animball [1-11]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animball [1-11]");
 	return 1;
 }
 
@@ -128,7 +128,7 @@ CMD:animfire(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfire [1-13]");
+		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfire [1-13]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BD_FIRE","BD_Fire1",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -157,7 +157,7 @@ CMD:animfire(playerid, params[])
 		ApplyAnimation(playerid,"BD_FIRE","wash_up",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfire [1-13]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfire [1-13]");
 	return 1;
 }
 
@@ -166,7 +166,7 @@ CMD:animbeach(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbeach [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbeach [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BEACH","bather",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -179,7 +179,7 @@ CMD:animbeach(playerid, params[])
 		ApplyAnimation(playerid,"BEACH","SitnWait_loop_W",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbeach [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbeach [1-5]");
 	return 1;
 }
 
@@ -188,7 +188,7 @@ CMD:animinf(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animinf [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animinf [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BF_injection","BF_getin_LHS",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -199,7 +199,7 @@ CMD:animinf(playerid, params[])
 		ApplyAnimation(playerid,"BF_injection","BF_getout_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animinf [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animinf [1-4]");
 	return 1;
 }
 
@@ -208,7 +208,7 @@ CMD:animbiked(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbiked [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbiked [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKED","BIKEd_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -249,7 +249,7 @@ CMD:animbiked(playerid, params[])
 		ApplyAnimation(playerid,"BIKED","BIKEd_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbiked [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbiked [1-18]");
 	return 1;
 }
 
@@ -258,7 +258,7 @@ CMD:animbp(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbp [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbp [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"benchpress","gym_bp_celebrate",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -275,7 +275,7 @@ CMD:animbp(playerid, params[])
 		ApplyAnimation(playerid,"benchpress","gym_bp_up_smooth",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbp [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbp [1-7]");
 	return 1;
 }
 
@@ -284,7 +284,7 @@ CMD:animbh(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbh [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbh [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKEH","BIKEh_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -323,7 +323,7 @@ CMD:animbh(playerid, params[])
 		ApplyAnimation(playerid,"BIKEH","BIKEh_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbh [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbh [1-18]");
 	return 1;
 }
 
@@ -332,7 +332,7 @@ CMD:animms(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animms [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animms [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKEH","BIKEh_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -351,7 +351,7 @@ CMD:animms(playerid, params[])
 		ApplyAnimation(playerid,"BIKEH","BIKEh_getoffRHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animms [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animms [1-8]");
 	return 1;
 }
 
@@ -360,7 +360,7 @@ CMD:animfood(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 33) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfood [1-33]");
+		if(animationplayed < 1 || animationplayed > 33) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfood [1-33]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FOOD","EAT_Burger",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -429,7 +429,7 @@ CMD:animfood(playerid, params[])
 		ApplyAnimation(playerid,"FOOD","SHP_Tray_Return",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfood [1-33]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfood [1-33]");
 	return 1;
 }
 
@@ -438,7 +438,7 @@ CMD:animmss(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 41) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmss [1-41]");
+		if(animationplayed < 1 || animationplayed > 41) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmss [1-41]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"MISC","bitchslap",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -523,7 +523,7 @@ CMD:animmss(playerid, params[])
 		ApplyAnimation(playerid,"MISC","smlplane_door",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmss [1-41]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmss [1-41]");
 	return 1;
 }
 
@@ -532,7 +532,7 @@ CMD:animbikelp(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikelp [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikelp [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKELEAP","bk_blnce_in",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -553,7 +553,7 @@ CMD:animbikelp(playerid, params[])
 		ApplyAnimation(playerid,"BIKELEAP","truck_getin",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikelp [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikelp [1-9]");
 	return 1;
 }
 
@@ -562,7 +562,7 @@ CMD:animbikes(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikes [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikes [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKES","BIKEs_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -601,7 +601,7 @@ CMD:animbikes(playerid, params[])
 		ApplyAnimation(playerid,"BIKES","BIKEs_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikes [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikes [1-18]");
 	return 1;
 }
 
@@ -610,7 +610,7 @@ CMD:animbikev(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikev [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikev [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKEV","BIKEv_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -649,7 +649,7 @@ CMD:animbikev(playerid, params[])
 		ApplyAnimation(playerid,"BIKEV","BIKEv_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikev [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikev [1-18]");
 	return 1;
 }
 
@@ -658,7 +658,7 @@ CMD:animbmx(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbmx [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbmx [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BMX","BMX_back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -697,7 +697,7 @@ CMD:animbmx(playerid, params[])
 		ApplyAnimation(playerid,"BMX","BMX_still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbmx [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbmx [1-18]");
 	return 1;
 }
 CMD:animbikedbz(playerid, params[])
@@ -705,7 +705,7 @@ CMD:animbikedbz(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikedbz [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikedbz [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKE_DBZ","Pass_Driveby_BWD",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -716,7 +716,7 @@ CMD:animbikedbz(playerid, params[])
 		ApplyAnimation(playerid,"BIKE_DBZ","Pass_Driveby_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikedbz [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikedbz [1-4]");
 	return 1;
 }
 
@@ -725,7 +725,7 @@ CMD:animchase(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 25) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animchase [1-25]");
+		if(animationplayed < 1 || animationplayed > 25) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animchase [1-25]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"MD_CHASE","Carhit_Hangon",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -778,7 +778,7 @@ CMD:animchase(playerid, params[])
 		ApplyAnimation(playerid,"MD_CHASE","MD_HANG_Loop",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animchase [1-25]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animchase [1-25]");
 	return 1;
 }
 
@@ -787,7 +787,7 @@ CMD:animbox(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbox [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbox [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BOX","boxhipin",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -810,7 +810,7 @@ CMD:animbox(playerid, params[])
 		ApplyAnimation(playerid,"BOX","catch_box",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbox [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbox [1-10]");
 	return 1;
 }
 
@@ -819,7 +819,7 @@ CMD:animbomber(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbomber [1-6]");
+		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbomber [1-6]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BOMBER","BOM_Plant",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -834,7 +834,7 @@ CMD:animbomber(playerid, params[])
 		ApplyAnimation(playerid,"BOMBER","BOM_Plant_Loop",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbomber [1-6]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbomber [1-6]");
 	return 1;
 }
 
@@ -843,7 +843,7 @@ CMD:animbsp(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 41) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbsp [1-41]");
+		if(animationplayed < 1 || animationplayed > 41) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbsp [1-41]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BSKTBALL","BBALL_def_jump_shot",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -928,7 +928,7 @@ CMD:animbsp(playerid, params[])
 		ApplyAnimation(playerid,"BSKTBALL","BBALL_walk_start_O",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbsp [1-41]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbsp [1-41]");
 	return 1;
 }
 
@@ -937,7 +937,7 @@ CMD:animcamera(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcamera [1-14]");
+		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcamera [1-14]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CAMERA","camcrch_cmon",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -968,7 +968,7 @@ CMD:animcamera(playerid, params[])
 		ApplyAnimation(playerid,"CAMERA","picstnd_take",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcamera [1-14]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcamera [1-14]");
 	return 1;
 }
 
@@ -977,7 +977,7 @@ CMD:animgym(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 24) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgym [1-24]");
+		if(animationplayed < 1 || animationplayed > 24) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgym [1-24]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"GYMNASIUM","GYMshadowbox",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1028,7 +1028,7 @@ CMD:animgym(playerid, params[])
 		ApplyAnimation(playerid,"GYMNASIUM","Pedals_still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgym [1-24]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgym [1-24]");
 	return 1;
 }
 
@@ -1037,7 +1037,7 @@ CMD:animpara(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 22) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpara [1-22]");
+		if(animationplayed < 1 || animationplayed > 22) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpara [1-22]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PARACHUTE","FALL_skyDive",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1084,7 +1084,7 @@ CMD:animpara(playerid, params[])
 		ApplyAnimation(playerid,"PARACHUTE","PARA_steerR_O",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpara [1-22]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpara [1-22]");
 	return 1;
 }
 
@@ -1093,7 +1093,7 @@ CMD:animgangs(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 33) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgangs [1-22]");
+		if(animationplayed < 1 || animationplayed > 33) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgangs [1-22]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"GANGS","DEALER_DEAL",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1162,7 +1162,7 @@ CMD:animgangs(playerid, params[])
 		ApplyAnimation(playerid,"GANGS","smkcig_prtl_F",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgangs [1-22]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgangs [1-22]");
 	return 1;
 }
 
@@ -1171,7 +1171,7 @@ CMD:animlowrider(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 39) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlowrider [1-39]");
+		if(animationplayed < 1 || animationplayed > 39) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlowrider [1-39]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"LOWRIDER","F_smklean_loop",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1252,7 +1252,7 @@ CMD:animlowrider(playerid, params[])
 		ApplyAnimation(playerid,"LOWRIDER","Tap_hand",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlowrider [1-39]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlowrider [1-39]");
 	return 1;
 }
 
@@ -1261,7 +1261,7 @@ CMD:animlookers(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 25) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlookers [1-25]");
+		if(animationplayed < 1 || animationplayed > 25) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlookers [1-25]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"ON_LOOKERS","lkaround_in",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1322,7 +1322,7 @@ CMD:animlookers(playerid, params[])
 		ApplyAnimation(playerid,"ON_LOOKERS","wave_out",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlookers [1-25]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlookers [1-25]");
 	return 1;
 }
 
@@ -1331,7 +1331,7 @@ CMD:animcarchat(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 20) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcarchat [1-20]");
+		if(animationplayed < 1 || animationplayed > 20) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcarchat [1-20]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CAR_CHAT","carfone_in",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1374,7 +1374,7 @@ CMD:animcarchat(playerid, params[])
 		ApplyAnimation(playerid,"CAR_CHAT","car_talkm_out",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcarchat [1-20]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcarchat [1-20]");
 	return 1;
 }
 
@@ -1383,7 +1383,7 @@ CMD:animcasino(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 23) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcasino [1-23]");
+		if(animationplayed < 1 || animationplayed > 23) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcasino [1-23]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CASINO","cards_in",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1432,7 +1432,7 @@ CMD:animcasino(playerid, params[])
 		ApplyAnimation(playerid,"CASINO","wof",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcasino [1-23]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcasino [1-23]");
 	return 1;
 }
 
@@ -1441,7 +1441,7 @@ CMD:animbuddy(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbuddy [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbuddy [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BUDDY","buddy_crouchfire",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1454,7 +1454,7 @@ CMD:animbuddy(playerid, params[])
 		ApplyAnimation(playerid,"BUDDY","buddy_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbuddy [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbuddy [1-5]");
 	return 1;
 }
 
@@ -1463,7 +1463,7 @@ CMD:animbus(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbus [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbus [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BUS","BUS_close",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1484,7 +1484,7 @@ CMD:animbus(playerid, params[])
 		ApplyAnimation(playerid,"BUS","BUS_pullout_LHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbus [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbus [1-9]");
 	return 1;
 }
 
@@ -1493,7 +1493,7 @@ CMD:animcar(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcar [1-11]");
+		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcar [1-11]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CAR","Fixn_Car_Loop",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1518,7 +1518,7 @@ CMD:animcar(playerid, params[])
 		ApplyAnimation(playerid,"CAR","Tyd2car_TurnR",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcar [1-11]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcar [1-11]");
 	return 1;
 }
 
@@ -1527,7 +1527,7 @@ CMD:animcarry(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcarry [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcarry [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1544,7 +1544,7 @@ CMD:animcarry(playerid, params[])
 		ApplyAnimation(playerid,"CARRY","putdwn105",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcarry [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcarry [1-7]");
 	return 1;
 }
 
@@ -1553,7 +1553,7 @@ CMD:animintshop(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animintshop [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animintshop [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"INT_SHOP","shop_cashier",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1572,7 +1572,7 @@ CMD:animintshop(playerid, params[])
 		ApplyAnimation(playerid,"INT_SHOP","shop_shelf",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animintshop [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animintshop [1-8]");
 	return 1;
 }
 
@@ -1581,7 +1581,7 @@ CMD:animjst(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animjst [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animjst [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"JST_BUISNESS","girl_01",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1592,7 +1592,7 @@ CMD:animjst(playerid, params[])
 		ApplyAnimation(playerid,"JST_BUISNESS","smoke_01",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animjst [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animjst [1-4]");
 	return 1;
 }
 CMD:animkart(playerid, params[])
@@ -1600,7 +1600,7 @@ CMD:animkart(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animkart [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animkart [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"KART","KART_getin_LHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1611,7 +1611,7 @@ CMD:animkart(playerid, params[])
 		ApplyAnimation(playerid,"KART","KART_getout_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animkart [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animkart [1-4]");
 	return 1;
 }
 CMD:animkissing(playerid, params[])
@@ -1619,7 +1619,7 @@ CMD:animkissing(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animkissing [1-14]");
+		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animkissing [1-14]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"KISSING","BD_GF_Wave",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1649,7 +1649,7 @@ CMD:animkissing(playerid, params[])
 		}else if(animationplayed == 14) {
 		ApplyAnimation(playerid,"KISSING","Playa_Kiss_03",4.1,0,1,1,1,1); }
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animkissing [1-14]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animkissing [1-14]");
 	return 1;
 }
 CMD:animknife(playerid, params[])
@@ -1657,7 +1657,7 @@ CMD:animknife(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animknife [1-14]");
+		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animknife [1-14]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"KNIFE","KILL_Knife_Ped_Damage",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1688,7 +1688,7 @@ CMD:animknife(playerid, params[])
 		ApplyAnimation(playerid,"KNIFE","WEAPON_knifeidle",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animknife [1-14]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animknife [1-14]");
 	return 1;
 }
 CMD:animlapdan(playerid, params[])
@@ -1696,7 +1696,7 @@ CMD:animlapdan(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlapdan [1-6]");
+		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlapdan [1-6]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"LAPDAN1","LAPDAN_D",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1711,7 +1711,7 @@ CMD:animlapdan(playerid, params[])
 		ApplyAnimation(playerid,"LAPDAN3","LAPDAN_P",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animlapdan [1-6]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animlapdan [1-6]");
 	return 1;
 }
 CMD:animdend(playerid, params[])
@@ -1719,7 +1719,7 @@ CMD:animdend(playerid, params[])
 	new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdend [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdend [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"MD_END","END_SC1_PLY",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1738,7 +1738,7 @@ CMD:animdend(playerid, params[])
 		ApplyAnimation(playerid,"MD_END","END_SC2_SWE",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdend [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdend [1-8]");
 	return 1;
 }
 
@@ -1747,10 +1747,10 @@ CMD:animmedic(playerid, params[])
 	new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmedic [1]");
+		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmedic [1]");
 		if(animationplayed == 1) { ApplyAnimation(playerid,"MEDIC","CPR",4.1,0,1,1,1,1); }
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmedic [1]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmedic [1]");
 	return 1;
 }
 CMD:animmtb(playerid, params[])
@@ -1758,7 +1758,7 @@ CMD:animmtb(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmtb [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmtb [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"MTB","MTB_back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1797,7 +1797,7 @@ CMD:animmtb(playerid, params[])
 		ApplyAnimation(playerid,"MTB","MTB_still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmtb [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmtb [1-18]");
 	return 1;
 }
 CMD:animmusc(playerid, params[])
@@ -1805,7 +1805,7 @@ CMD:animmusc(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmusc [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmusc [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"MUSCULAR","MscleWalkst_armed",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1842,7 +1842,7 @@ CMD:animmusc(playerid, params[])
 		ApplyAnimation(playerid,"MUSCULAR","Musclewalk_rocket",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animmusc [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animmusc [1-17]");
 	return 1;
 }
 CMD:animotb(playerid, params[])
@@ -1850,7 +1850,7 @@ CMD:animotb(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animotb [1-11]");
+		if(animationplayed < 1 || animationplayed > 11) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animotb [1-11]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"OTB","betslp_in",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -1875,7 +1875,7 @@ CMD:animotb(playerid, params[])
 		ApplyAnimation(playerid,"OTB","wtchrace_win",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animotb [1-11]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animotb [1-11]");
 	return 1;
 }
 CMD:animpark(playerid, params[])
@@ -1885,7 +1885,7 @@ CMD:animpark(playerid, params[])
  	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpark [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpark [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"PARK","Tai_Chi_in",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -1895,7 +1895,7 @@ CMD:animpark(playerid, params[])
 			}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpark [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpark [1-3]");
 	return 1;
 }
 CMD:animpaul(playerid, params[])
@@ -1903,7 +1903,7 @@ CMD:animpaul(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpaul [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpaul [1-12]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PAULNMAC","Piss_in",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -1930,7 +1930,7 @@ CMD:animpaul(playerid, params[])
 		ApplyAnimation(playerid,"PAULNMAC","wank_out",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpaul [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpaul [1-12]");
 	return 1;
 }
 CMD:animsaw(playerid, params[])
@@ -1938,7 +1938,7 @@ CMD:animsaw(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsaw [1-10]");
+		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsaw [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CHAINSAW","CSAW_1",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -1961,7 +1961,7 @@ CMD:animsaw(playerid, params[])
 		ApplyAnimation(playerid,"CHAINSAW","WEAPON_csawlo",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsaw [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsaw [1-10]");
 	return 1;
 }
 CMD:animchoppa(playerid, params[])
@@ -1969,7 +1969,7 @@ CMD:animchoppa(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animchoppa [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animchoppa [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CHOPPA","CHOPPA_back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2008,7 +2008,7 @@ CMD:animchoppa(playerid, params[])
 		ApplyAnimation(playerid,"CHOPPA","CHOPPA_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animchoppa [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animchoppa [1-18]");
 	return 1;
 }
 
@@ -2017,7 +2017,7 @@ CMD:animclothes(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animclothes [1-13]");
+		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animclothes [1-13]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CLOTHES","CLO_Buy",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2046,7 +2046,7 @@ CMD:animclothes(playerid, params[])
 		ApplyAnimation(playerid,"CLOTHES","CLO_Pose_Watch",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animclothes [1-13]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animclothes [1-13]");
 	return 1;
 }
 CMD:animcoach(playerid, params[])
@@ -2054,7 +2054,7 @@ CMD:animcoach(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcoach [1-6]");
+		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcoach [1-6]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"COACH","COACH_inL",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2069,7 +2069,7 @@ CMD:animcoach(playerid, params[])
 		ApplyAnimation(playerid,"COACH","COACH_outR",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcoach [1-6]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcoach [1-6]");
 	return 1;
 }
 
@@ -2078,7 +2078,7 @@ CMD:animcolt(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcolt [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcolt [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"COLT45","2guns_crouchfire",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2095,7 +2095,7 @@ CMD:animcolt(playerid, params[])
 		ApplyAnimation(playerid,"COLT45","sawnoff_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcolt [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcolt [1-7]");
 	return 1;
 }
 CMD:animcopa(playerid, params[])
@@ -2103,7 +2103,7 @@ CMD:animcopa(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcopa [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcopa [1-12]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"COP_AMBIENT","Copbrowse_in",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2130,7 +2130,7 @@ CMD:animcopa(playerid, params[])
 		ApplyAnimation(playerid,"COP_AMBIENT","Coplook_watch",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcopa [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcopa [1-12]");
 	return 1;
 }
 CMD:animcod(playerid, params[])
@@ -2138,7 +2138,7 @@ CMD:animcod(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcod [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcod [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"COP_DVBYZ","COP_Dvby_B",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2149,7 +2149,7 @@ CMD:animcod(playerid, params[])
 		ApplyAnimation(playerid,"COP_DVBYZ","COP_Dvby_R",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcod [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcod [1-4]");
 	return 1;
 }
 CMD:animcrack(playerid, params[])
@@ -2157,7 +2157,7 @@ CMD:animcrack(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcrack [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcrack [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CRACK","Bbalbat_Idle_01",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2178,7 +2178,7 @@ CMD:animcrack(playerid, params[])
 		ApplyAnimation(playerid,"CRACK","crckidle3",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcrack [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcrack [1-9]");
 	return 1;
 }
 CMD:animcrib(playerid, params[])
@@ -2186,7 +2186,7 @@ CMD:animcrib(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcrib [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcrib [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"CRIB","CRIB_Console_Loop",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2199,7 +2199,7 @@ CMD:animcrib(playerid, params[])
 		ApplyAnimation(playerid,"CRIB","PED_Console_Win",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animcrib [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animcrib [1-5]");
 	return 1;
 }
 CMD:animdance(playerid, params[])
@@ -2207,7 +2207,7 @@ CMD:animdance(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
  	{
-		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdance [1-13]");
+		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdance [1-13]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DANCING","bd_clap",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2236,7 +2236,7 @@ CMD:animdance(playerid, params[])
 		ApplyAnimation(playerid,"DANCING","dnce_M_e",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdance [1-13]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdance [1-13]");
 	return 1;
 }
 CMD:animdealer(playerid, params[])
@@ -2244,7 +2244,7 @@ CMD:animdealer(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdealer [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdealer [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DEALER","DEALER_DEAL",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2261,7 +2261,7 @@ CMD:animdealer(playerid, params[])
 		ApplyAnimation(playerid,"DEALER","shop_pay",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdealer [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdealer [1-7]");
 	return 1;
 }
 CMD:animdildo(playerid, params[])
@@ -2269,7 +2269,7 @@ CMD:animdildo(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdildo [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdildo [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DILDO","DILDO_1",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2290,7 +2290,7 @@ CMD:animdildo(playerid, params[])
 		ApplyAnimation(playerid,"DILDO","DILDO_IDLE",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdildo [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdildo [1-9]");
 	return 1;
 }
 /*CMD:animdodge(playerid, params[])
@@ -2298,7 +2298,7 @@ CMD:animdildo(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdodge [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdodge [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DODGE","Cover_Dive_01",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2309,15 +2309,15 @@ CMD:animdildo(playerid, params[])
 		ApplyAnimation(playerid,"DODGE","Crush_Jump",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdodge [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdodge [1-4]");
 	return 1;
-}*/// Çàïğåù¸ííûå äåéñòâèÿ â àíèìêå ( ïîä çåìëş íûğÿåò )
+}*/// Ğ—Ğ°Ğ¿Ñ€ĞµÑ‰Ñ‘Ğ½Ğ½Ñ‹Ğµ Ğ´ĞµĞ¹ÑÑ‚Ğ²Ğ¸Ñ Ğ² Ğ°Ğ½Ğ¸Ğ¼ĞºĞµ ( Ğ¿Ğ¾Ğ´ Ğ·ĞµĞ¼Ğ»Ñ Ğ½Ñ‹Ñ€ÑĞµÑ‚ )
 CMD:animdozer(playerid, params[])
 {
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdozer [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdozer [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DOZER","DOZER_Align_LHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2338,7 +2338,7 @@ CMD:animdozer(playerid, params[])
 		ApplyAnimation(playerid,"DOZER","DOZER_pullout_LHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdozer [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdozer [1-9]");
 	return 1;
 }
 CMD:animdrivebys(playerid, params[])
@@ -2346,7 +2346,7 @@ CMD:animdrivebys(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdrivebys [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdrivebys [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"DRIVEBYS","Gang_DrivebyLHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2365,7 +2365,7 @@ CMD:animdrivebys(playerid, params[])
 		ApplyAnimation(playerid,"DRIVEBYS","Gang_DrivebyTop_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animdrivebys [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animdrivebys [1-8]");
 	return 1;
 }
 CMD:animfat(playerid, params[])
@@ -2373,7 +2373,7 @@ CMD:animfat(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 17) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfat [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfat [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FAT","FatIdle",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -2412,7 +2412,7 @@ CMD:animfat(playerid, params[])
 		ApplyAnimation(playerid,"FAT","IDLE_tired",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid, 0xFF0000FF,">Ïèøèòå /animfat [1-17]");
+	else SendClientMessage(playerid, 0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfat [1-17]");
 	return 1;
 }
 CMD:animfightb(playerid, params[])
@@ -2420,7 +2420,7 @@ CMD:animfightb(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightb [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightb [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FIGHT_B","FightB_1",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2443,7 +2443,7 @@ CMD:animfightb(playerid, params[])
 		ApplyAnimation(playerid,"FIGHT_B","HitB_3",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightb [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightb [1-10]");
 	return 1;
 }
 CMD:animfightc(playerid, params[])
@@ -2451,7 +2451,7 @@ CMD:animfightc(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 12) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightc [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightc [1-12]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FIGHT_C","FightC_1",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2478,7 +2478,7 @@ CMD:animfightc(playerid, params[])
 		ApplyAnimation(playerid,"FIGHT_C","HitC_3",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightc [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightc [1-12]");
 	return 1;
 }
 CMD:animfightd(playerid, params[])
@@ -2486,7 +2486,7 @@ CMD:animfightd(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightd [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightd [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FIGHT_D","FightD_1",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2509,7 +2509,7 @@ CMD:animfightd(playerid, params[])
 		ApplyAnimation(playerid,"FIGHT_D","HitD_3",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfightd [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfightd [1-10]");
 	return 1;
 }
 
@@ -2518,7 +2518,7 @@ CMD:animfighte(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfighte [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfighte [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FIGHT_E","FightKick",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2529,7 +2529,7 @@ CMD:animfighte(playerid, params[])
 		ApplyAnimation(playerid,"FIGHT_E","Hit_fightkick_B",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfighte [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfighte [1-4]");
 	return 1;
 }
 CMD:animfinale(playerid, params[])
@@ -2537,7 +2537,7 @@ CMD:animfinale(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 15) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfinale [1-15]");SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfinale [1-15]");
+		if(animationplayed < 1 || animationplayed > 15) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfinale [1-15]");SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfinale [1-15]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FINALE","FIN_Climb_In",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -2572,7 +2572,7 @@ CMD:animfinale(playerid, params[])
 		ApplyAnimation(playerid,"FINALE","FIN_Let_Go",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfinale [1-15]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfinale [1-15]");
 	return 1;
 }
 CMD:animfinale2(playerid, params[])
@@ -2580,7 +2580,7 @@ CMD:animfinale2(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfinale2 [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfinale2 [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FINALE2","FIN_Cop1_ClimbOut",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2599,7 +2599,7 @@ CMD:animfinale2(playerid, params[])
 		ApplyAnimation(playerid,"FINALE2","FIN_Switch_S",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfinale2 [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfinale2 [1-8]");
 	return 1;
 }
 CMD:animflamef(playerid, params[])
@@ -2607,12 +2607,12 @@ CMD:animflamef(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animflamef [1-1]");
+		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animflamef [1-1]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"FLAME","FLAME_fire",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animflamef [1-1]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animflamef [1-1]");
 	return 1;
 }
 CMD:animflowers(playerid, params[])
@@ -2622,7 +2622,7 @@ CMD:animflowers(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animflowers [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animflowers [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"Flowers","Flower_attack",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -2632,7 +2632,7 @@ CMD:animflowers(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animflowers [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animflowers [1-3]");
 	return 1;
 }
 CMD:animghands(playerid, params[])
@@ -2640,7 +2640,7 @@ CMD:animghands(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 20) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animghands [1-20]");
+		if(animationplayed < 1 || animationplayed > 20) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animghands [1-20]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"GHANDS","gsign1",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2683,7 +2683,7 @@ CMD:animghands(playerid, params[])
 		ApplyAnimation(playerid,"GHANDS","RHGsign5",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animghands [1-20]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animghands [1-20]");
 	return 1;
 }
 CMD:animfw(playerid, params[])
@@ -2691,7 +2691,7 @@ CMD:animfw(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfw [1-9]");
+		if(animationplayed < 1 || animationplayed > 9) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfw [1-9]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"Freeweights","gym_barbell",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2712,7 +2712,7 @@ CMD:animfw(playerid, params[])
 		ApplyAnimation(playerid,"Freeweights","gym_free_up_smooth",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animfw [1-9]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animfw [1-9]");
 	return 1;
 }
 CMD:animghetto(playerid, params[])
@@ -2720,7 +2720,7 @@ CMD:animghetto(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animghetto [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animghetto [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"GHETTO_DB","GDB_Car2_PLY",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2737,7 +2737,7 @@ CMD:animghetto(playerid, params[])
 		ApplyAnimation(playerid,"GHETTO_DB","GDB_Car_SWE",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animghetto [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animghetto [1-7]");
 	return 1;
 }
 CMD:animgog(playerid, params[])
@@ -2745,12 +2745,12 @@ CMD:animgog(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgog [1-1]");
+		if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgog [1-1]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"goggles","goggles_put_on",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgog [1-1]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgog [1-1]");
 	return 1;
 }
 CMD:animgraffity(playerid, params[])
@@ -2760,7 +2760,7 @@ CMD:animgraffity(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 2) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgraffity [1-2]");
+			if(animationplayed < 1 || animationplayed > 2) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgraffity [1-2]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"GRAFFITI","graffiti_Chkout",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -2768,7 +2768,7 @@ CMD:animgraffity(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgraffity [1-2]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgraffity [1-2]");
 	return 1;
 }
 CMD:animgreya(playerid, params[])
@@ -2778,7 +2778,7 @@ CMD:animgreya(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgreya [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgreya [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"GRAVEYARD","mrnF_loop",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -2788,7 +2788,7 @@ CMD:animgreya(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgreya [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgreya [1-3]");
 	return 1;
 }
 CMD:animgren(playerid, params[])
@@ -2798,7 +2798,7 @@ CMD:animgren(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgren [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgren [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"GRENADE","WEAPON_start_throw",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -2808,7 +2808,7 @@ CMD:animgren(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animgren [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animgren [1-3]");
 	return 1;
 }
 CMD:animhaircut(playerid, params[])
@@ -2816,7 +2816,7 @@ CMD:animhaircut(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animhaircut [1-13]");
+		if(animationplayed < 1 || animationplayed > 13) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animhaircut [1-13]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"HAIRCUTS","BRB_Beard_01",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2845,7 +2845,7 @@ CMD:animhaircut(playerid, params[])
 		ApplyAnimation(playerid,"HAIRCUTS","BRB_Sit_Out",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animhaircut [1-13]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animhaircut [1-13]");
 	return 1;
 }
 CMD:animheist(playerid, params[])
@@ -2853,7 +2853,7 @@ CMD:animheist(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animheist [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animheist [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"HEIST9","CAS_G2_GasKO",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2876,7 +2876,7 @@ CMD:animheist(playerid, params[])
 		ApplyAnimation(playerid,"HEIST9","Use_SwipeCard",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animheist [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animheist [1-10]");
 	return 1;
 }
 CMD:animinthouse(playerid, params[])
@@ -2884,7 +2884,7 @@ CMD:animinthouse(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animinthouse [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animinthouse [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"INT_HOUSE","BED_In_L",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2907,7 +2907,7 @@ CMD:animinthouse(playerid, params[])
 		ApplyAnimation(playerid,"INT_HOUSE","wash_up",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animinthouse [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animinthouse [1-10]");
 	return 1;
 }
 CMD:animintoffice(playerid, params[])
@@ -2915,7 +2915,7 @@ CMD:animintoffice(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animintoffice [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animintoffice [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"INT_OFFICE","FF_Dam_Fwd",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -2938,7 +2938,7 @@ CMD:animintoffice(playerid, params[])
 		ApplyAnimation(playerid,"INT_OFFICE","OFF_Sit_Watch",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animintoffice [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animintoffice [1-10]");
 	return 1;
 }
 CMD:animplayerdbf(playerid, params[])
@@ -2946,7 +2946,7 @@ CMD:animplayerdbf(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animplayerdbf [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animplayerdbf [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PLAYER_DVBYS","Plyr_DrivebyBwd",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2957,7 +2957,7 @@ CMD:animplayerdbf(playerid, params[])
 		ApplyAnimation(playerid,"PLAYER_DVBYS","Plyr_DrivebyRHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animplayerdbf [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animplayerdbf [1-4]");
 	return 1;
 }
 CMD:animplayidles(playerid, params[])
@@ -2965,7 +2965,7 @@ CMD:animplayidles(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animplayidles [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animplayidles [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PLAYIDLES","shift",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -2978,7 +2978,7 @@ CMD:animplayidles(playerid, params[])
 		ApplyAnimation(playerid,"PLAYIDLES","time",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animplayidles [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animplayidles [1-5]");
 	return 1;
 }
 CMD:animpolice(playerid, params[])
@@ -2986,7 +2986,7 @@ CMD:animpolice(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpolice [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpolice [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"POLICE","CopTraf_Away",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3009,7 +3009,7 @@ CMD:animpolice(playerid, params[])
 		ApplyAnimation(playerid,"POLICE","plc_drgbst_02",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpolice [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpolice [1-10]");
 	return 1;
 }
 CMD:animpool(playerid, params[])
@@ -3017,7 +3017,7 @@ CMD:animpool(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 21) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpool [1-21]");
+		if(animationplayed < 1 || animationplayed > 21) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpool [1-21]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"POOL","POOL_ChalkCue",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3062,7 +3062,7 @@ CMD:animpool(playerid, params[])
 		ApplyAnimation(playerid,"POOL","POOL_XLong_Start_O",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpool [1-21]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpool [1-21]");
 	return 1;
 }
 CMD:animpoor(playerid, params[])
@@ -3070,14 +3070,14 @@ CMD:animpoor(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 2) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpoor [1-2]");
+		if(animationplayed < 1 || animationplayed > 2) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpoor [1-2]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"POOR","WINWASH_Start",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
 		ApplyAnimation(playerid,"POOR","WINWASH_Wash2Beg",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpoor [1-2]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpoor [1-2]");
 	return 1;
 }
 CMD:animpython(playerid, params[])
@@ -3085,7 +3085,7 @@ CMD:animpython(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpython [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpython [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PYTHON","python_crouchfire",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3098,7 +3098,7 @@ CMD:animpython(playerid, params[])
 		ApplyAnimation(playerid,"PYTHON","python_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animpython [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animpython [1-5]");
 	return 1;
 }
 CMD:animquad(playerid, params[])
@@ -3106,7 +3106,7 @@ CMD:animquad(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animquad [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animquad [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"QUAD","QUAD_back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3143,7 +3143,7 @@ CMD:animquad(playerid, params[])
 		ApplyAnimation(playerid,"QUAD","QUAD_Right",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animquad [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animquad [1-17]");
 	return 1;
 }
 CMD:animquadbz(playerid, params[])
@@ -3151,7 +3151,7 @@ CMD:animquadbz(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animquadbz [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animquadbz [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"QUAD_DBZ","Pass_Driveby_BWD",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3162,7 +3162,7 @@ CMD:animquadbz(playerid, params[])
 		ApplyAnimation(playerid,"QUAD_DBZ","Pass_Driveby_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animquadbz [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animquadbz [1-4]");
 	return 1;
 }
 CMD:animrapping(playerid, params[])
@@ -3170,7 +3170,7 @@ CMD:animrapping(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrapping [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrapping [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"RAPPING","Laugh_01",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3189,7 +3189,7 @@ CMD:animrapping(playerid, params[])
 		ApplyAnimation(playerid,"RAPPING","RAP_C_Loop",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrapping [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrapping [1-8]");
 	return 1;
 }
 CMD:animrifle(playerid, params[])
@@ -3197,7 +3197,7 @@ CMD:animrifle(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrifle [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrifle [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"RIFLE","RIFLE_crouchfire",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3210,7 +3210,7 @@ CMD:animrifle(playerid, params[])
 		ApplyAnimation(playerid,"RIFLE","RIFLE_load",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrifle [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrifle [1-5]");
 	return 1;
 }
 CMD:animriot(playerid, params[])
@@ -3218,7 +3218,7 @@ CMD:animriot(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animriot [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animriot [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"RIOT","RIOT_ANGRY",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3235,7 +3235,7 @@ CMD:animriot(playerid, params[])
 		ApplyAnimation(playerid,"RIOT","RIOT_shout",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animriot [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animriot [1-7]");
 	return 1;
 }
 CMD:animrobbank(playerid, params[])
@@ -3243,7 +3243,7 @@ CMD:animrobbank(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrobbank [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrobbank [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"ROB_BANK","CAT_Safe_End",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3256,7 +3256,7 @@ CMD:animrobbank(playerid, params[])
 		ApplyAnimation(playerid,"ROB_BANK","SHP_HandsUp_Scr",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrobbank [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrobbank [1-5]");
 	return 1;
 }
 CMD:animrocket(playerid, params[])
@@ -3264,7 +3264,7 @@ CMD:animrocket(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrocket [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrocket [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"ROCKET","idle_rocket",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3277,7 +3277,7 @@ CMD:animrocket(playerid, params[])
 		ApplyAnimation(playerid,"ROCKET","WALK_start_rocket",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrocket [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrocket [1-5]");
 	return 1;
 }
 CMD:animrustler(playerid, params[])
@@ -3285,7 +3285,7 @@ CMD:animrustler(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrustler [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrustler [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"RUSTLER","Plane_align_LHS",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3298,7 +3298,7 @@ CMD:animrustler(playerid, params[])
 		ApplyAnimation(playerid,"RUSTLER","Plane_open",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animrustler [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animrustler [1-5]");
 	return 1;
 }
 CMD:animbikeds(playerid, params[])
@@ -3306,7 +3306,7 @@ CMD:animbikeds(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikeds [1-18]");
+		if(animationplayed < 1 || animationplayed > 18) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikeds [1-18]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"BIKED","BIKEd_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -3347,7 +3347,7 @@ CMD:animbikeds(playerid, params[])
 		ApplyAnimation(playerid,"BIKED","BIKEd_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbikeds [1-18]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbikeds [1-18]");
 	return 1;
 }
 CMD:animryder(playerid, params[])
@@ -3355,7 +3355,7 @@ CMD:animryder(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animryder [1-14]");
+		if(animationplayed < 1 || animationplayed > 14) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animryder [1-14]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"RYDER","RYD_Beckon_01",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -3386,7 +3386,7 @@ CMD:animryder(playerid, params[])
 		ApplyAnimation(playerid,"RYDER","Van_Throw",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animryder [1-14]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animryder [1-14]");
 	return 1;
 }
 CMD:animscrat(playerid, params[])
@@ -3394,7 +3394,7 @@ CMD:animscrat(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animscrat [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animscrat [1-12]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SCRATCHING","scdldlp",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3421,7 +3421,7 @@ CMD:animscrat(playerid, params[])
 		ApplyAnimation(playerid,"SCRATCHING","sc_rtol",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animscrat [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animscrat [1-12]");
 	return 1;
 }
 CMD:animshamal(playerid, params[])
@@ -3429,7 +3429,7 @@ CMD:animshamal(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshamal [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshamal [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SHAMAL","SHAMAL_align",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3440,7 +3440,7 @@ CMD:animshamal(playerid, params[])
 		ApplyAnimation(playerid,"SHAMAL","SHAMAL_open",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshamal [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshamal [1-4]");
 	return 1;
 }
 CMD:animshop(playerid, params[])
@@ -3448,7 +3448,7 @@ CMD:animshop(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 24) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshop [1-24]");
+		if(animationplayed < 1 || animationplayed > 24) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshop [1-24]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SHOP","ROB_2Idle",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3499,7 +3499,7 @@ CMD:animshop(playerid, params[])
 		ApplyAnimation(playerid,"SHOP","Smoke_RYD",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshop [1-24]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshop [1-24]");
 	return 1;
 }
 CMD:animshotgun(playerid, params[])
@@ -3509,7 +3509,7 @@ CMD:animshotgun(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshotgun [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshotgun [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"SHOTGUN","shotgun_crouchfire",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -3519,7 +3519,7 @@ CMD:animshotgun(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animshotgun [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animshotgun [1-3]");
 	return 1;
 }
 CMD:animskate(playerid, params[])
@@ -3529,7 +3529,7 @@ CMD:animskate(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animskate [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animskate [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"SKATE","skate_idle",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -3539,7 +3539,7 @@ CMD:animskate(playerid, params[])
 			}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animskate [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animskate [1-3]");
 	return 1;
 }
 CMD:animvortex(playerid, params[])
@@ -3547,7 +3547,7 @@ CMD:animvortex(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvortex [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvortex [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"VORTEX","CAR_jumpin_LHS",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3558,7 +3558,7 @@ CMD:animvortex(playerid, params[])
 		ApplyAnimation(playerid,"VORTEX","vortex_getout_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvortex [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvortex [1-4]");
 	return 1;
 }
 CMD:animtec(playerid, params[])
@@ -3566,7 +3566,7 @@ CMD:animtec(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtec [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtec [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"TEC","TEC_crouchfire",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3577,7 +3577,7 @@ CMD:animtec(playerid, params[])
 		ApplyAnimation(playerid,"TEC","TEC_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtec [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtec [1-4]");
 	return 1;
 }
 CMD:animtrain(playerid, params[])
@@ -3585,7 +3585,7 @@ CMD:animtrain(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtrain [1-4]");
+		if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtrain [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"TRAIN","tran_gtup",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3596,7 +3596,7 @@ CMD:animtrain(playerid, params[])
 		ApplyAnimation(playerid,"TRAIN","tran_stmb",4.1,0,1,1,1,1);
 		}*/
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtrain [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtrain [1-4]");
 	return 1;
 }
 CMD:animsil(playerid, params[])
@@ -3604,7 +3604,7 @@ CMD:animsil(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsil [1-4]");
+		if(animationplayed < 1 || animationplayed > 4) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsil [1-4]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SILENCED","CrouchReload",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -3615,7 +3615,7 @@ CMD:animsil(playerid, params[])
 		ApplyAnimation(playerid,"SILENCED","Silence_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsil [1-4]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsil [1-4]");
 	return 1;
 }
 CMD:animtattoo(playerid, params[])
@@ -3623,7 +3623,7 @@ CMD:animtattoo(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 56) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtattoo [1-56]");
+		if(animationplayed < 1 || animationplayed > 56) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtattoo [1-56]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"TATTOOS","TAT_ArmL_In_O",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3740,7 +3740,7 @@ CMD:animtattoo(playerid, params[])
 		ApplyAnimation(playerid,"TATTOOS","TAT_Sit_Out_T",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtattoo [1-56]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtattoo [1-56]");
 	return 1;
 }
 CMD:animsmoking(playerid, params[])
@@ -3748,7 +3748,7 @@ CMD:animsmoking(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 8) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsmoking [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsmoking [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SMOKING","F_smklean_loop",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3767,7 +3767,7 @@ CMD:animsmoking(playerid, params[])
 		ApplyAnimation(playerid,"SMOKING","M_smk_tap",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsmoking [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsmoking [1-8]");
 	return 1;
 }
 CMD:animsniper(playerid, params[])
@@ -3775,12 +3775,12 @@ CMD:animsniper(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 1) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsniper [1-1]");
+		if(animationplayed < 1 || animationplayed > 1) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsniper [1-1]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SNIPER","WEAPON_sniper",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsniper [1-1]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsniper [1-1]");
 	return 1;
 }
 CMD:animspray(playerid, params[])
@@ -3790,7 +3790,7 @@ CMD:animspray(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 2) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animspray [1-2]");
+			if(animationplayed < 1 || animationplayed > 2) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animspray [1-2]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -3798,7 +3798,7 @@ CMD:animspray(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animspray [1-2]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animspray [1-2]");
 	return 1;
 }
 CMD:animstrip(playerid, params[])
@@ -3806,7 +3806,7 @@ CMD:animstrip(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 20) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animstrip [1-20]");
+		if(animationplayed < 1 || animationplayed > 20) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animstrip [1-20]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"STRIP","PLY_CASH",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3849,7 +3849,7 @@ CMD:animstrip(playerid, params[])
 		ApplyAnimation(playerid,"STRIP","STR_Loop_C",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animstrip [1-20]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animstrip [1-20]");
 	return 1;
 }
 CMD:animbath(playerid, params[])
@@ -3857,7 +3857,7 @@ CMD:animbath(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 18) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbath [1-17]");
+		if(animationplayed < 1 || animationplayed > 18) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbath [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SUNBATHE","batherdown",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -3896,7 +3896,7 @@ CMD:animbath(playerid, params[])
 		ApplyAnimation(playerid,"SUNBATHE","SitnWait_out_W",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animbath [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animbath [1-17]");
 	return 1;
 }
 CMD:animsweet(playerid, params[])
@@ -3904,7 +3904,7 @@ CMD:animsweet(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 7) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsweet [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsweet [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SWEET","ho_ass_slapped",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3921,7 +3921,7 @@ CMD:animsweet(playerid, params[])
 		ApplyAnimation(playerid,"SWEET","Sweet_injuredloop",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsweet [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsweet [1-7]");
 	return 1;
 }
 CMD:animswim(playerid, params[])
@@ -3929,7 +3929,7 @@ CMD:animswim(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 7) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animswim [1-7]");
+		if(animationplayed < 1 || animationplayed > 7) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animswim [1-7]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SWIM","Swim_Breast",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3946,7 +3946,7 @@ CMD:animswim(playerid, params[])
 		ApplyAnimation(playerid,"SWIM","Swim_Under",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animswim [1-7]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animswim [1-7]");
 	return 1;
 }
 CMD:animsword(playerid, params[])
@@ -3954,7 +3954,7 @@ CMD:animsword(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 10) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsword [1-10]");
+		if(animationplayed < 1 || animationplayed > 10) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsword [1-10]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"SWORD","sword_1",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -3977,7 +3977,7 @@ CMD:animsword(playerid, params[])
 		ApplyAnimation(playerid,"SWORD","sword_part",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animsword [1-10]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animsword [1-10]");
 	return 1;
 }
 CMD:animtank(playerid, params[])
@@ -3985,7 +3985,7 @@ CMD:animtank(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 6) return SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtank [1-6]");
+		if(animationplayed < 1 || animationplayed > 6) return SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtank [1-6]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"TANK","TANK_align_LHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -4000,7 +4000,7 @@ CMD:animtank(playerid, params[])
 		ApplyAnimation(playerid,"TANK","TANK_open_LHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtank [1-6]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtank [1-6]");
 	return 1;
 }
 CMD:animtruck(playerid, params[])
@@ -4008,7 +4008,7 @@ CMD:animtruck(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtruck [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtruck [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"TRUCK","TRUCK_ALIGN_LHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -4045,7 +4045,7 @@ CMD:animtruck(playerid, params[])
 		ApplyAnimation(playerid,"TRUCK","TRUCK_Shuffle",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animtruck [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animtruck [1-17]");
 	return 1;
 }
 CMD:animuzi(playerid, params[])
@@ -4053,7 +4053,7 @@ CMD:animuzi(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animuzi [1-5]");
+		if(animationplayed < 1 || animationplayed > 5) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animuzi [1-5]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"UZI","UZI_crouchfire",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -4066,7 +4066,7 @@ CMD:animuzi(playerid, params[])
 		ApplyAnimation(playerid,"UZI","UZI_reload",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animuzi [1-5]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animuzi [1-5]");
 	return 1;
 }
 CMD:animvan(playerid, params[])
@@ -4074,7 +4074,7 @@ CMD:animvan(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvan [1-8]");
+		if(animationplayed < 1 || animationplayed > 8) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvan [1-8]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"VAN","VAN_close_back_LHS",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -4093,7 +4093,7 @@ CMD:animvan(playerid, params[])
 		ApplyAnimation(playerid,"VAN","VAN_open_back_RHS",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvan [1-8]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvan [1-8]");
 	return 1;
 }
 CMD:animvending(playerid, params[])
@@ -4101,7 +4101,7 @@ CMD:animvending(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvending [1-6]");
+		if(animationplayed < 1 || animationplayed > 6) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvending [1-6]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"VENDING","VEND_Drink2_P",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -4116,7 +4116,7 @@ CMD:animvending(playerid, params[])
 		ApplyAnimation(playerid,"VENDING","VEND_Use_pt2",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animvending [1-6]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animvending [1-6]");
 	return 1;
 }
 CMD:animway(playerid, params[])
@@ -4124,7 +4124,7 @@ CMD:animway(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animway [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animway [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"WAYFARER","WF_Back",4.1,0,1,1,1,1);
 		}else if(animationplayed == 1) {
@@ -4163,7 +4163,7 @@ CMD:animway(playerid, params[])
 		ApplyAnimation(playerid,"WAYFARER","WF_Still",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animway [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animway [1-17]");
 	return 1;
 }
 CMD:animweap(playerid, params[])
@@ -4171,7 +4171,7 @@ CMD:animweap(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animweap [1-17]");
+		if(animationplayed < 1 || animationplayed > 17) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animweap [1-17]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"WEAPONS","SHP_1H_Lift",4.1,0,1,1,1,1);
 		}else if(animationplayed == 2) {
@@ -4208,7 +4208,7 @@ CMD:animweap(playerid, params[])
 		ApplyAnimation(playerid,"WEAPONS","SHP_Tray_Pose",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animweap [1-17]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animweap [1-17]");
 	return 1;
 }
 CMD:animwuzi(playerid, params[])
@@ -4216,7 +4216,7 @@ CMD:animwuzi(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animwuzi [1-12]");
+		if(animationplayed < 1 || animationplayed > 12) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animwuzi [1-12]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"WUZI","CS_Dead_Guy",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -4243,7 +4243,7 @@ CMD:animwuzi(playerid, params[])
 		ApplyAnimation(playerid,"WUZI","Wuzi_Walk",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animwuzi [1-12]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animwuzi [1-12]");
 	return 1;
 }
 CMD:animat(playerid, params[])
@@ -4253,7 +4253,7 @@ CMD:animat(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animat [1-3]");
+			if(animationplayed < 1 || animationplayed > 3) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animat [1-3]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"Attractors","Stepsit_in",4.1,0,1,1,1,1);
 			} else if(animationplayed == 2) {
@@ -4263,7 +4263,7 @@ CMD:animat(playerid, params[])
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animat [1-3]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animat [1-3]");
 	return 1;
 }
 CMD:animairport(playerid, params[])
@@ -4273,13 +4273,13 @@ CMD:animairport(playerid, params[])
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
 		{
-			if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animairport [1]");
+			if(animationplayed < 1 || animationplayed > 1) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animairport [1]");
 			if(animationplayed == 1) {
 			ApplyAnimation(playerid,"AIRPORT","thrw_barl_thrw",4.1,0,1,1,1,1);
 		}
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animairport [1]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animairport [1]");
 	return 1;
 }
 CMD:animped(playerid, params[])
@@ -4287,7 +4287,7 @@ CMD:animped(playerid, params[])
     new animationplayed;
 	if (!sscanf(params, "i", animationplayed))
 	{
-		if(animationplayed < 1 || animationplayed > 295) SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animped [1-295]");
+		if(animationplayed < 1 || animationplayed > 295) SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animped [1-295]");
 		if(animationplayed == 1) {
 		ApplyAnimation(playerid,"PED","IDLE_CHAT",4.1,0,1,1,1,1);
 		} else if(animationplayed == 2) {
@@ -4878,6 +4878,6 @@ CMD:animped(playerid, params[])
 		ApplyAnimation(playerid,"PED","XPRESSscratch",4.1,0,1,1,1,1);
 		}
 	}
-	else SendClientMessage(playerid,0xFF0000FF,">Ïèøèòå /animped [1-295]");
+	else SendClientMessage(playerid,0xFF0000FF,">ĞŸĞ¸ÑˆĞ¸Ñ‚Ğµ /animped [1-295]");
 	return 1;
 }
