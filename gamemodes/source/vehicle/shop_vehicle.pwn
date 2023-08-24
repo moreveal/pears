@@ -249,31 +249,13 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     createVehicle_VehicleShop(playerid, bizId, slot);
 
     // Ставим игрока на позицию
-    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
-    {
-        S_SetPlayerVirtualWorld(playerid, playerid + 1, 191);
-        SetPlayerInterior(playerid, 191);
+    new Float:pos[4], world, interior;
+    GetPlayerVehicleShopPos(playerid, bizId, pos[0], pos[1], pos[2], pos[3], world, interior);
 
-        PPSetPlayerPos(playerid, 1325.2312,1563.8182,10.8662);
-        SetPlayerFacingAngle(playerid, 302.9293);
-    }
-    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
-    {
-        S_SetPlayerVirtualWorld(playerid, playerid + 1, 190);
-        SetPlayerInterior(playerid, 190);
-
-        PPSetPlayerPos(playerid, 1573.1488,1603.1798,10.8403);
-        SetPlayerFacingAngle(playerid, 132.9289);
-    }
-    else if(bizId >= 90 && bizId <= 92) // Салоны Катеров
-    {
-        S_SetPlayerVirtualWorld(playerid, playerid + 1, 0);
-        SetPlayerInterior(playerid, 0);
-
-        if(bizId == 90) PPSetPlayerPos(playerid, 2603.0642,-2323.0300,1.8984), SetPlayerFacingAngle(playerid, 270.0);
-        else if(bizId == 91) PPSetPlayerPos(playerid, -1484.0221,757.7109,7.2423), SetPlayerFacingAngle(playerid, 176.8678);
-        else if(bizId == 92) PPSetPlayerPos(playerid, 2349.5464,522.8445,1.7969), SetPlayerFacingAngle(playerid, 273.1955);
-    }
+    S_SetPlayerVirtualWorld(playerid, world, interior);
+    SetPlayerInterior(playerid, interior);
+    PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+    SetPlayerFacingAngle(playerid, pos[3]);
 
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
@@ -326,6 +308,33 @@ function loadCam_VehicleShop(playerid)
     {
         InterpolateCameraPos(playerid, 2401.330078, 514.935241, 2.140674, 2401.330078, 514.935241, 2.140674, 1000);
         InterpolateCameraLookAt(playerid, 2398.289550, 518.904052, 2.082082, 2398.289550, 518.904052, 2.082082, 1000);
+    }
+    return 1;
+}
+
+stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Float:a, &world, &interior)
+{
+    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
+    {
+        world = playerid + 1;
+        interior = 191;
+        x = 1325.2312, y = 1563.8182, z = 10.8662;
+        a = 302.9293;
+    }
+    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
+    {
+        world = playerid + 1;
+        interior = 190;
+        x = 1573.1488, y = 1603.1798, z = 10.8403;
+        a = 132.9289;
+    }
+    else if(bizId >= 90 && bizId <= 92) // Салоны Катеров
+    {
+        world = playerid + 1;
+        interior = 0;
+        if(bizId == 90) x = 2603.0642, y = -2323.0300, z = 1.8984, a = 270.0;
+        else if(bizId == 91) x = -1484.0221, y = 757.7109, z = 7.2423, a = 176.8678;
+        else if(bizId == 92) x = 2349.5464, y = 522.8445, z = 1.7969, a = 273.1955;
     }
     return 1;
 }

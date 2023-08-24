@@ -52,3 +52,14 @@ stock reloadVariableBizTermActor() // Сбрасываем переменные
         for(new t; t < MAX_TERMINAL_BIZ; ++t) BizTermActor[b][t] = INVALID_VARIABLE;
     }
 }
+
+stock LoadBizStaticActor()
+{
+    // Оружейные Магазины (27 - 41)
+    new minB, maxB;
+    bizTypeMin(2, minB, maxB);
+    for(new b = minB; b < maxB  + 1; ++b)
+    {
+        CreateDynamicActor(179, 1284.6154,1530.0483,10.8555,183.0609, true, 100.0, b, 225, -1, 100.0, -1, 0);
+    }
+}

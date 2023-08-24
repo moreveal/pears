@@ -197,27 +197,19 @@ stock WeReturnToPosition(playerid)
 {
     PPSpawn[playerid] = false;
 
-    if(Fractia[playerid] == 0) 
-    {
-        keep(playerid); // Подморозим, чтобы не провалился
-        S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
-        if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
-        SetPlayerToTeamColor(playerid); // Возвращаем цвет
+	keep(playerid); // Подморозим, чтобы не провалился
+	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
+	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
+	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-        // Возвращаем аксессуары
-        if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
-        if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
-        if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
-        if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
-        if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
+	// Возвращаем аксессуары
+	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
+	if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
+	if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
+	if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
+	if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
 
-        ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
-    }
-    else
-    {
-        InterpolateCameraPos(playerid, 1538.850585, -1455.088989, 46.521511, 1538.850585, -1455.088989, 46.521511, 1000);
-	    InterpolateCameraLookAt(playerid, 1536.296020, -1450.861206, 45.747303, 1536.296020, -1450.861206, 45.747303, 1000);
-    }
+	if(!VehShopInfo[playerid][vsTest]) ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
 
     OnlineInfo[playerid][oSkinSpawn] = false; // Спавн завершён
     return 1;
@@ -417,6 +409,8 @@ stock ExitShmot(playerid)
 
 	RemovePlayerAttachedObject(playerid,5);
 	DestroyClothesActor(playerid);
+
+	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5); // Возвращаем аксессуар в пятом слоте (Ибо примерка идёт на пятый слот)
 	return 1;
 }
 
