@@ -617,7 +617,7 @@ stock i_infofpick(playerid, fpick, inva, sels, fpara, thingType, thingPack) // �
 	    {
 			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "OѓE„ѓA");
 			else format(store, sizeof(store), "CLOTHES");
-			yesFindModel = fpick;
+			yesFindModel = GetModelSkin(playerid, fpick);
 		}
 		else if(thingType == 4) // Мебель
 	    {

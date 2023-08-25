@@ -52,7 +52,7 @@ stock GetModelSkin(playerid, s)
 {
     new skinId;
     if(IsPlayerSyncModels(playerid)) skinId = s; // Мод установлен
-    else skinId = GetSkinModelOriginal(playerid);
+    else skinId = GetSkinModelOriginal(s);
     return skinId;
 }
 
