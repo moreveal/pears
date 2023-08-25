@@ -203,7 +203,7 @@ stock use_throw(playerid, inva, useinva)
 	if(fpick >= 128 && fpick <= 138) in_hand_podnos(playerid, fpick, fquan, ThrowInfo[t][tPara], ThrowInfo[t][tQara]);
 	DestroyThrow(t);
 	updatethrowall(t);
-	around_player_audio(playerid, 5601, 0, 20.0);
+	around_player_audio(playerid, 5601, 0, 5.0);
 	return 1;
 }
 stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Кладём предмет на землю
