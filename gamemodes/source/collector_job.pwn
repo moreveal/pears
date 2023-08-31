@@ -186,11 +186,12 @@ stock CloseCollector(playerid)
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
 	PlayerInfo[playerid][pSalary] += BizzInfo[b][bDeliveryPay];
 	mysql_save(playerid,58);
-	BizzInfo[b][bDeliveryOrder] = -1;
-	BizzInfo[b][bItem][term] = 0, BizzInfo[b][bUpdate] = 1;
 	SetPVarInt(playerid,"job_collector",0);
 	SetPVarInt(playerid,"job_collector_term",0);
 	SetPVarInt(playerid,"job_collector_status",0);
-	SuccessMessage(playerid,"Работа завершена, поздравляем!\nВы можете сесть дальше в транспорт инкассаторов и продолжить работать(/checkterm)");
+	BizzInfo[b][bDeliveryOrder] = -1;
+	BizzInfo[b][bItem][term] = 0, BizzInfo[b][bUpdate] = 1;
+	SuccessMessage(playerid,"Деньги доставлены!\nВы можете сесть дальше в транспорт инкассаторов\n и продолжить работать(/checkterm)");
+	RemovePlayerAttachedObject(playerid,1);
 	return 1;
 }
