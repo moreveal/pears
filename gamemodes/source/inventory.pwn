@@ -115,7 +115,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (
 {
 	if(t >= 4 && t <= 9 || t >= 18 && t <= 20 || t == 25 || t >= 27 && t <= 30 || t == 41 || t == 46 || t == 47 || t == 55 || t == 60 || t == 61
 	|| t >= 64 && t <= 67 || t >= 71 && t <= 89 || t == 106 || t == 108 || t == 109 || t == 110 || t == 140 || t == 142 || t == 178 || t == 180
-	|| t == 181) return 1;
+	|| t == 181 ) return 1;
 	return 0;
 }
 
@@ -2191,7 +2191,7 @@ stock player_tile(playerid, inva)
 					else ErrorMessage(playerid, "{FF6347}У вас нет в руках винтовки");
 			   		return 1;
 			 	}
-				else if(fpick == 189) return opencase(playerid,fpara);
+				else if(fpick == 189) return opencase(playerid,fpara,inva);
 	 		}
 	 		
 	 		else if(thingType == 2) // Аксессуары

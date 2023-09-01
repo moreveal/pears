@@ -148,15 +148,15 @@ stock SetSatiety(thingId, &fquan) //
 		if(ingId[i] > 0)
 		{
 			if(ingId[i] == 1) fquan += 1*ingQuan[i];//хлеб
-			else if(ingId[i] == 102) fquan += 2*ingQuan[i];//Молоко
+			else if(ingId[i] == 102) fquan += 1*ingQuan[i];//Молоко
 			else if(ingId[i] == 104) fquan += 1*ingQuan[i];//Картошка
-			else if(ingId[i] == 120) fquan += 4*ingQuan[i];//Sprunk Банка
+			else if(ingId[i] == 120) fquan += 2*ingQuan[i];//Sprunk Банка
 			else if(ingId[i] == 121) fquan += 2*ingQuan[i];//Кофе
-			else if(ingId[i] == 168) fquan += 8*ingQuan[i];//мясо
-			else if(ingId[i] == 174) fquan += 2*ingQuan[i];//Овощи
-			else if(ingId[i] == 179) fquan += 2*ingQuan[i];//Мороженное
-			else if(ingId[i] == 101) fquan += 3*ingQuan[i];//апельсинка
-			else if(ingId[i] == 100) fquan += 3*ingQuan[i];//яблоко
+			else if(ingId[i] == 168) fquan += 5*ingQuan[i];//мясо
+			else if(ingId[i] == 174) fquan += 1*ingQuan[i];//Овощи
+			else if(ingId[i] == 179) fquan += 1*ingQuan[i];//Мороженное
+			else if(ingId[i] == 101) fquan += 2*ingQuan[i];//апельсинка
+			else if(ingId[i] == 100) fquan += 2*ingQuan[i];//яблоко
 		}
 	}
 	printf("Кусков:%d | Блюдо:%s", fquan, friskName[thingId]);
