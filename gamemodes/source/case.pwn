@@ -5,7 +5,8 @@ case 2..99 - Значит шанс равен 98%
 
 fpick - Оставляем ноль если выдаем предмет не в инвентарь
 quan - Оставляем один если выдаем один предмет.
-
+fpick 94 - Выдача голды человеку.
+oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 */
 
 stock opencase(playerid,para,slot)
@@ -14,17 +15,23 @@ stock opencase(playerid,para,slot)
     new fpick;
     new quan = 1;
     new thingType = 0;
+    new babki = 0;
+    new casename[20];
     if(para <= 0 || para >= 5) return ErrorMessage(playerid,"Слушай, кейс поломан, параметр не в границе массива");
     else if (para == 1)
     {
-        switch(random(10))
+        casename = "Кейс Новичков";
+        switch(random(51))
         {
-            case 0..4: fpick = 1;
-            case 5..9: fpick = 4, quan = 2;
+            case 0..4: fpick = 94;
+            case 5..14: fpick = 60, quan = 20;
+            case 15..34: babki = 100000;
+            case 35..50: fpick = 77, thingType = 3;
         }
     }
     else if (para == 2)
     {
+        casename = "Кейс Залpka";
         switch(random(10))
         {
             case 0..4: fpick = 1;
@@ -54,14 +61,36 @@ stock opencase(playerid,para,slot)
         if(put_inva == -1)
         {
             Throw(playerid, fpick, quan, 0, 0, thingType, 0);
-            format(store,sizeof(store),"{ffcc66}В кейсе был: %d %s. \nУ вас нет места в инвентаре и предмет упал на землю",quan, friskName[fpick]);
-            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+            if(thingType == 3)
+            {
+                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.\nУ вас нет места в инвентаре и предмет упал на землю",fpick);
+            }
+            else if(thingType == 0)
+            {
+                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s. \nУ вас нет места в инвентаре и предмет упал на землю",quan, friskName[fpick]);
+            }
+        }
+        else
+        {
+            if(thingType == 3)
+            {
+                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.",fpick);
+            }
+            else if(thingType == 0)
+            {
+                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s.",quan, friskName[fpick]);
+            }
         }
     } 
     else if(fpick == 0)
     {
-
+        if(babki > 0)
+        {
+            oGivePlayerMoney(playerid, babki);
+            format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе было: %d$.",babki);
+        }
     }
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,casename,store,"*","");
     return 1;   
 }
 

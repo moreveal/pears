@@ -201,8 +201,8 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 9: fpick = 19079, fpara = 1; // Попугай
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 35+20100, fpara = 0; // Муж
-   				else fpick = 216+20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 35, fpara = 0; // Муж
+   				else fpick = 216, fpara = 0; // Жен
    				thingType = 3;
 	        }
      	}
@@ -221,8 +221,8 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 9: fpick = 18846, fpara = 0; // Летающая тарелка 18846
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 165+20100, fpara = 0; // Муж
-   				else fpick = 141+20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 165, fpara = 0; // Муж
+   				else fpick = 141, fpara = 0; // Жен
    				thingType = 3;
 	        }
      	}
@@ -251,8 +251,8 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 9: fpick = 7093, fpara = 1; // Сердечко на спину
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 249+20100, fpara = 0; // Муж
-   				else fpick = 178+20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 249, fpara = 0; // Муж
+   				else fpick = 178, fpara = 0; // Жен
    				thingType = 3;
 	        }
      	}
@@ -271,8 +271,8 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 9: fpick = 19160, fpara = 0; // Каска на голову +
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 42+20100, fpara = 0; // Муж
-   				else fpick = 193+20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 42, fpara = 0; // Муж
+   				else fpick = 193, fpara = 0; // Жен
    				thingType = 3;
 	        }
      	}
@@ -291,8 +291,8 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 9: fpick = 2045, fpara = 1; // Бита с шипами
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 128+20100, fpara = 0; // Муж
-   				else fpick = 131+20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 128, fpara = 0; // Муж
+   				else fpick = 131, fpara = 0; // Жен
    				thingType = 3;
 	        }
      	}
