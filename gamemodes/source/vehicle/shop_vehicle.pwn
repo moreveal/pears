@@ -14,15 +14,55 @@ enum vsInfo
 }
 new VehShopInfo[MAX_REALPLAYERS][vsInfo];
 
-
-CMD:testcar(playerid, const params[]) // VREMENNO
+enum BUYCARENUM { Float:bcar_X, Float:bcar_Y, Float:bcar_Z, bcar_World, bcar_Int }
+new BuyCarPos[][BUYCARENUM] =
 {
-	if(server != 0) return 1;
-    if(sscanf(params, "i",params[0])) return ErrorMessage(playerid, "{FF6347}/testcar 77 - 92");
+    { -1656.8024,1210.3347,7.2500, 0, 0}, // 77
+    { 1350.0997,1588.4250,10.8269, 3078, 186}, // 78
+    { 1350.0997,1588.4250,10.8269, 3079, 186}, // 79
+    { -1953.7754,297.7653,35.4687, 0, 0}, // 80
+    { 1350.0997,1588.4250,10.8269, 3081, 186}, // 81
+    { 1350.0997,1588.4250,10.8269, 3082, 186}, // 82
+    { 1350.0997,1588.4250,10.8269, 3083, 186}, // 83
+    { 1350.0997,1588.4250,10.8269, 3084, 186}, // 84
+    { 1350.0997,1588.4250,10.8269, 3085, 186}, // 85
+    { 1350.0997,1588.4250,10.8269, 3086, 186}, // 86
+    { 1334.8636,1588.0709,10.8364, 3087, 185}, // 87
+    { 1334.8636,1588.0709,10.8364, 3088, 185}, // 88
+    { 1334.8636,1588.0709,10.8364, 3089, 185}, // 89
+    { 1357.2124,1584.3049,10.8461, 3090, 184}, // 90 // sf
+    { 1357.2124,1584.3049,10.8461, 3091, 184}, // 91 // ls
+    { 1357.2124,1584.3049,10.8461, 3092, 184} // 92 // lv
+};
 
-    TP[1][playerid] = 0;
-	showMenu_VehicleShop(playerid, params[0], -1);
-	return 1;
+/*stock buy_VehicleShop(playerid) // Покупаем личный транспорт в магазине
+{
+
+    return 1;
+}*/
+
+stock openMenu_VehicleShop(playerid)
+{
+    new b = -1;
+    for(new i = 0; i < sizeof(BuyCarPos); i++)
+    {
+        if(IsPlayerInRangeOfPoint(playerid,2.0,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z]) 
+        && GetPlayerVirtualWorld(playerid) == BuyCarPos[i][bcar_World]
+        && GetPlayerInterior(playerid) == BuyCarPos[i][bcar_Int])
+        {
+            b = i + 77;
+            break;
+        }
+
+    }
+
+    if(b >= 0)
+    {
+        TP[1][playerid] = 0;
+	    showMenu_VehicleShop(playerid, b, -1);
+        return 1;
+    }
+    else return 0;
 }
 
 stock closeTestDrive_VehicleShop(playerid)
@@ -165,8 +205,8 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     else if(type == 3) // Катера (Лодки)
     {
         interiorId = 0;
-        if(bizId == 90) pos[0] = 2634.9102, pos[1] = -2320.7798, pos[2] = 1.0, pos[3] = 360.0; // LS
-        else if(bizId == 91) pos[0] = -1464.1099, pos[1] = 740.3231, pos[2] = 1.0, pos[3] = 270.0; // SF
+        if(bizId == 90) pos[0] = -1464.1099, pos[1] = 740.3231, pos[2] = 1.0, pos[3] = 270.0; // SF
+        else if(bizId == 91) pos[0] = 2634.9102, pos[1] = -2320.7798, pos[2] = 1.0, pos[3] = 360.0; // LS
         else if(bizId == 92) pos[0] = 2388.7817, pos[1] = 533.4385, pos[2] = 1.0, pos[3] = 180.0; // LV
     }
     else if(type == 4 || type == 5) // Вертолёты и Самолёты
@@ -209,7 +249,7 @@ stock closeMenu_VehicleShop(playerid)
     OnlineInfo[playerid][oShowInterface] = 0;
 
     CancelSelectTextDraw(playerid); // Убираем мышку
-	TogglePlayerControllable(playerid, 1); // Unfreeze
+	keep(playerid); // Подмораживаем
 
     S_SetPlayerVirtualWorld(playerid, SpWorld[playerid], SpInt[playerid]);
     SetPlayerInterior(playerid, SpInt[playerid]);
@@ -294,15 +334,15 @@ function loadCam_VehicleShop(playerid)
         InterpolateCameraPos(playerid, 1564.415893, 1597.437255, 11.052239, 1564.415893, 1597.437255, 11.052239, 1000);
         InterpolateCameraLookAt(playerid, 1561.107910, 1593.689208, 11.149888, 1561.107910, 1593.689208, 11.149888, 1000);
     }
-    else if(bizId == 90) // Салон Катеров LS
-    {
-        InterpolateCameraPos(playerid, 2620.168945, -2300.133300, 1.827390, 2620.168945, -2300.133300, 1.827390, 1000);
-        InterpolateCameraLookAt(playerid, 2623.240234, -2304.076416, 1.960187, 2623.240234, -2304.076416, 1.960187, 1000);
-    }
-    else if(bizId == 91) // Салон Катеров SF
+    else if(bizId == 90) // Салон Катеров SF
     {
         InterpolateCameraPos(playerid, -1445.834228, 752.435607, 1.804146, -1445.834228, 752.435607, 1.804146, 1000);
         InterpolateCameraLookAt(playerid, -1449.700805, 749.277587, 1.526945, -1449.700805, 749.277587, 1.526945, 1000);
+    }
+    else if(bizId == 91) // Салон Катеров LS
+    {
+        InterpolateCameraPos(playerid, 2620.168945, -2300.133300, 1.827390, 2620.168945, -2300.133300, 1.827390, 1000);
+        InterpolateCameraLookAt(playerid, 2623.240234, -2304.076416, 1.960187, 2623.240234, -2304.076416, 1.960187, 1000);
     }
     else if(bizId == 92) // Салон Катеров LV
     {
@@ -332,8 +372,8 @@ stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Fl
     {
         world = playerid + 1;
         interior = 0;
-        if(bizId == 90) x = 2603.0642, y = -2323.0300, z = 1.8984, a = 270.0;
-        else if(bizId == 91) x = -1484.0221, y = 757.7109, z = 7.2423, a = 176.8678;
+        if(bizId == 90) x = -1484.0221, y = 757.7109, z = 7.2423, a = 176.8678;
+        else if(bizId == 91) x = 2603.0642, y = -2323.0300, z = 1.8984, a = 270.0;
         else if(bizId == 92) x = 2349.5464, y = 522.8445, z = 1.7969, a = 273.1955;
     }
     return 1;
@@ -354,6 +394,11 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
     {
         PlayerPlaySound(playerid,17803,0,0,0);
         right_VehicleShop(playerid);
+    }
+    if(playertextid == VehicleShopDraw[10][playerid]) // Buy
+    {
+        PlayerPlaySound(playerid,17803,0,0,0);
+        //buy_VehicleShop(playerid);
     }
     if(playertextid == VehicleShopDraw[13][playerid]) // Test Drive
     {
@@ -450,6 +495,33 @@ stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
     VehShopInfo[playerid][vsTextDrawLoad] = false;
     return 1;
 }
+stock DynamicPickupVehiceShop()
+{
+    for(new i = 0; i < sizeof(BuyCarPos); i++)
+    {
+        if(i <= 4) 
+        {
+            CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Автосалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+        }
+        else if(i >= 5 && i <= 9) 
+        {
+            CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Мотосалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+        }
+        else if(i >= 10 && i <= 12) 
+        {
+            CreateDynamicPickup(2511, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Авиасалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+        }
+        else if(i >= 13) 
+        {
+            CreateDynamicPickup(2484, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Салон Катеров\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+        }
+    }
+	return 1;
+}
 stock createDraw_VehicleShop(playerid) // Создаём текстдравы
 {
     if(VehShopInfo[playerid][vsTextDrawLoad] == true) return 0; // Если эти текстдравы уже созданы, возвращаем 0
@@ -515,7 +587,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], 4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 295.518463, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 295.918463, "ld_beat:chit"); // Левое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.688903);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], 1);
@@ -567,7 +639,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[9][playerid], 1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[9][playerid], 1);
 
-    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 168.333099, 357.496124, "ld_beat:chit"); // Фон кнопки купить
+    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 168.333099, 357.496124, "ld_beat:chit"); // Фон и сама кнопка купить
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[10][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[10][playerid], 52.999984, 64.711105);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[10][playerid], 1);
@@ -579,7 +651,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[10][playerid], 19134);
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[10][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 170.333175, 360.570312, "ld_beat:chit"); // Кнопка купить
+    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 170.333175, 360.570312, "ld_beat:chit"); // Типо кнопка купить
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[11][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[11][playerid], 48.666667, 58.074077);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[11][playerid], 1);

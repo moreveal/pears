@@ -1,41 +1,37 @@
 
-#define MAX_BIZ_WITH_ACTORS 10 // Количество бизнесов с ботами (Пока только ларьки с едой)
+#define MAX_BIZ_WITH_ACTORS 10
 
 new BizTermActor[MAX_BIZ_WITH_ACTORS][MAX_TERMINAL_BIZ];
 
-stock CreateTerminalActor(b, i) // b биз, i терминал
+stock CreateTerminalActor(b, i)
 {
-    new bizActorId = GetBizTermActorId(b); // Получаем порядковый id бота
+    new bizActorId = GetBizTermActorId(b);
 
-    // Если бот уже был создан, сперва удаляем его
     if(BizTermActor[bizActorId][i] != INVALID_VARIABLE)
     {
         DestroyDynamicActor(BizTermActor[bizActorId][i]);
         BizTermActor[bizActorId][i] = INVALID_VARIABLE;
     }
 
-    // Получаем номер терминала из номера бизнеса
     new br = numnrent(b);
 
-    // Получаем точку позади ларька
     new Float:pos[3];
 	reartobject(RentObject[br][i], 1.0, pos[0], pos[1], pos[2], RentPos_RZ[br][i]);
 
-    // Создаём бота
     BizTermActor[bizActorId][i] = CreateDynamicActor(205, pos[0], pos[1], pos[2], RentPos_RZ[br][i]-90, true, 100.0, 0, 0, -1, 200.0, -1, 0);
     return 1;
 }
 
 stock GetBizTermActorId(b)
 {
-    new bType = BizType(b), minB, maxB; // Получаем тип бизнеса
-    bizTypeMin(bType, minB, maxB); // Получаем диапазон id бизнеса по его типу
-    new bizActorId = b - minB; // Вычитаем первое число диапазона бизнеса (Пример: ларьки с едой начинаются с 153)
+    new bType = BizType(b), minB, maxB;
+    bizTypeMin(bType, minB, maxB);
+    new bizActorId = b - minB;
 
     return bizActorId;
 }
 
-stock reartobject(objectid, Float:distance, &Float:x, &Float:y, &Float:z, Float:rz) // Задняя часть объекта
+stock reartobject(objectid, Float:distance, &Float:x, &Float:y, &Float:z, Float:rz)
 {
 	new Float:rx,Float:ry;
     GetDynamicObjectPos(objectid,x,y,z);
@@ -45,7 +41,7 @@ stock reartobject(objectid, Float:distance, &Float:x, &Float:y, &Float:z, Float:
 	return 1;
 }
 
-stock reloadVariableBizTermActor() // Сбрасываем переменные
+stock reloadVariableBizTermActor()
 {
     for(new b; b < MAX_BIZ_WITH_ACTORS; ++b)
     {
@@ -55,11 +51,27 @@ stock reloadVariableBizTermActor() // Сбрасываем переменные
 
 stock LoadBizStaticActor()
 {
-    // Оружейные Магазины (27 - 41)
     new minB, maxB;
     bizTypeMin(2, minB, maxB);
     for(new b = minB; b < maxB  + 1; ++b)
     {
         CreateDynamicActor(179, 1284.6154,1530.0483,10.8555,183.0609, true, 100.0, b, 225, -1, 100.0, -1, 0);
     }
+
+    CreateDynamicActor(189, -1657.3358,1208.0765,7.2500,349.4227, true, 100.0, 0, 0, -1, 100.0, -1, 0); // 77 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3078, 186, -1, 100.0, -1, 0); // 78 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3079, 186, -1, 100.0, -1, 0); // 79 biz
+    CreateDynamicActor(189, -1952.1547,297.8515,35.4687,91.5685, true, 100.0, 0, 0, -1, 100.0, -1, 0); // 80 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3081, 186, -1, 100.0, -1, 0); // 81 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3082, 186, -1, 100.0, -1, 0); // 82 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3083, 186, -1, 100.0, -1, 0); // 83 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3084, 186, -1, 100.0, -1, 0); // 84 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3085, 186, -1, 100.0, -1, 0); // 85 biz
+    CreateDynamicActor(189, 1350.0996,1590.2234,10.8269,179.8917, true, 100.0, 3086, 186, -1, 100.0, -1, 0); // 86 biz
+    CreateDynamicActor(189, 1334.9167,1589.7815,10.8364,178.8344, true, 100.0, 3087, 185, -1, 100.0, -1, 0); // 87 biz avia
+    CreateDynamicActor(189, 1334.9167,1589.7815,10.8364,178.8344, true, 100.0, 3088, 185, -1, 100.0, -1, 0); // 88 biz avia
+    CreateDynamicActor(189, 1334.9167,1589.7815,10.8364,178.8344, true, 100.0, 3089, 185, -1, 100.0, -1, 0); // 89 biz avia
+    CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3090, 184, -1, 100.0, -1, 0); // 90 biz boat
+    CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3091, 184, -1, 100.0, -1, 0); // 91 biz boat
+    CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3092, 184, -1, 100.0, -1, 0); // 92 biz boat
 }

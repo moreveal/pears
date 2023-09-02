@@ -39,6 +39,7 @@ stock EnterBizDoor(playerid)
 
                 if(BizzInfo[b][bArest] > 0) return ErrorMessage(playerid, "{FF6347}Закрыто [Бизнес арестован]");
 
+                keep(playerid); // Подмораживаем
                 if(i <= 7) // Автосалоны, Мотосалоны
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 186), SetPlayerInterior(playerid, 186);
