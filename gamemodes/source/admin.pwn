@@ -99,7 +99,7 @@ CMD:mytug(playerid)
 	SendClientMessage(playerid, COLOR_GREY, str);
 	return 1;
 }
-CMD:tug(playerid)
+/*CMD:tug(playerid)
 {
 	new str[144];
 	new veh = LichCarID[playerid];
@@ -108,7 +108,7 @@ CMD:tug(playerid)
 	format(str,sizeof(str),"Моя личная тачка на прицепе у VEH ID: %d {00CC00}NEW",GetVehicleTrailer(veh));
 	SendClientMessage(playerid, COLOR_GREY, str);
 	return 1;
-}
+}*/
 CMD:mysql(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 10) return 1;
@@ -417,8 +417,8 @@ CMD:veh(playerid, const params[])
 	GetPlayerFacingAngle(playerid,A);
 	X=X+7.0*floatsin(-A,degrees);
     Y=Y+7.0*floatcos(-A,degrees);
-    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], 60000,0);
-    else CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z, A+180.0, params[1], params[2], 60000,0);
+    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], -1,0);
+    else CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z, A+180.0, params[1], params[2], -1,0);
 	LinkVehicleToInterior(CreatedCars[createid], GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
 	QuanCar ++;

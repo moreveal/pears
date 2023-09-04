@@ -13,7 +13,7 @@ stock use_boot(playerid, v, inva, useinva)
 	{
 		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Boot[0], Boot[1], Boot[2])) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
 	}
-	if((v == LichCarID[playerid] || v == LichMotoID[playerid]) && GetPlayerVip(playerid) > 0) {}
+	if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{
 		if(VehInfo[v][vCarLock] >= 1) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
@@ -129,7 +129,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем положить в багажник"), i_resetveshi(playerid);
     if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
-    if((v == LichCarID[playerid] || v == LichMotoID[playerid]) && GetPlayerVip(playerid) > 0) {}
+    if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{
 		if(VehInfo[v][vCarLock] >= 1) return ErrorMessage(playerid, "{FF6347}Транспорт заперт"), i_resetveshi(playerid);
@@ -507,7 +507,7 @@ stock SaveBoot(v) // Сохранение всего багажника по ц�
 {
     if(Cars[v] == 88 || Cars[v] == 99)
 	{
-		if(VehInfo[v][vDatabase] >= 1 && VehInfo[v][vDatabase] <= 5)
+		if(VehInfo[v][vDatabase] >= 1 && VehInfo[v][vDatabase] <= MAX_MYVEHICLE)
 		{
 			format(big_query,sizeof(big_query),"UPDATE `pp_cars` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', `InvenType1` = '%d', `InvenPack1` = '%d'",
 			VehInfo[v][vInvent][0], VehInfo[v][vInv][0], VehInfo[v][vInvPara][0], VehInfo[v][vInvQara][0], VehInfo[v][vInvType][0], VehInfo[v][vInvPack][0]);
@@ -525,7 +525,7 @@ stock SaveOneBoot(veh, inva) // Сохранение багажника тран
 {
     if(Cars[veh] == 88 || Cars[veh] == 99)
 	{
-		if(VehInfo[veh][vDatabase] >= 1 && VehInfo[veh][vDatabase] <= 5)
+		if(VehInfo[veh][vDatabase] >= 1 && VehInfo[veh][vDatabase] <= MAX_MYVEHICLE)
 		{
 			format(big_query, sizeof(big_query), "UPDATE `pp_cars` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `newid`='%d'",
 			inva+1,VehInfo[veh][vInvent][inva], inva+1,VehInfo[veh][vInv][inva], inva+1,VehInfo[veh][vInvPara][inva], inva+1,VehInfo[veh][vInvQara][inva], inva+1,VehInfo[veh][vInvType][inva], inva+1,VehInfo[veh][vInvPack][inva], VehInfo[veh][vNewid]);

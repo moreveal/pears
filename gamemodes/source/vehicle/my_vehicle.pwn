@@ -1,22 +1,44 @@
 
-static Float: BuyCarSF[14][4] = { // VREMENNO (Временные координаты спавна личного транспорта из старого автосалона)
-{1743.1609,-1774.2546,14.0621,178.9625},// 1
-{1738.0044,-1773.9302,13.9220,179.4771},// 2
-{1733.0316,-1773.3562,13.8849,179.3349},// 3
-{1727.9800,-1773.3547,13.8849,179.5265},// 4
-{1722.9865,-1773.4980,13.9131,180.1826},// 5
-{1718.1497,-1773.0480,13.9850,180.7015},// 6
-{1712.8995,-1773.2213,14.0601,179.3466},// 7
-{1743.1559,-1764.1346,13.9954,359.3128},// 8
-{1738.0193,-1764.0099,13.9218,0.3623},// 9
-{1733.0775,-1764.4828,13.8849,0.2678},// 10
-{1727.9294,-1765.2002,13.8873,359.8237},// 11
-{1722.8983,-1764.4045,13.9440,359.6460},// 12
-{1718.0519,-1764.2639,14.0181,358.1699},// 13
-{1712.8732,-1763.7744,14.1113,359.3566}// 14
-};
-
 new SellVeh[MAX_REALPLAYERS];
+
+stock checkAccessMyVehicle(playerid)
+{
+	new v = DP[2][playerid];
+	if(DP[1][playerid] == 1)
+	{
+		new slotId = DP[0][playerid] - 1;
+		if(slotId < 0 || slotId >= MAX_MYVEHICLE)
+		{
+			ErrorMessage(playerid, "{FF6347}Ошибка! неверный слот транспорта [checkAccessMyVehicle]");
+			if(v == 0 || v == 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не записан в слот [checkAccessMyVehicle]");
+			return 0;
+		}
+	}
+	else if(DP[1][playerid] == 2)
+	{
+		new unix = gettime();
+		if(unix > PlayerInfo[playerid][pKeyVeh][3])
+		{
+			ErrorMessage(playerid, "{FF6347}Закончилось время доступа к транспорту");
+			PlayerInfo[playerid][pKeyVeh][0] = 0;
+			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+			return 0;
+		}
+		if(PlayerInfo[playerid][pKeyVeh][0] == 0 || PlayerInfo[playerid][pKeyVehID] == 0)
+		{
+			ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт отсутствует [checkAccessMyVehicle]");
+			return 0;
+		}
+		new vehicleid = PlayerInfo[playerid][pKeyVehID];
+		if(VehInfo[vehicleid][vModel] != PlayerInfo[playerid][pKeyVeh][0] || VehInfo[vehicleid][vKey] != PlayerInfo[playerid][pID] 
+		|| VehInfo[vehicleid][vSost] != PlayerInfo[playerid][pKeyVeh][1])
+		{
+			ErrorMessage(playerid, "{FF6347}Ошибка! Неверный id транспорта или транспорт был отозван [checkAccessMyVehicle]");
+			return 0;
+		}
+	}
+	return 1;
+}
 
 CMD:insertcar(playerid)
 {
@@ -25,7 +47,7 @@ CMD:insertcar(playerid)
     	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
     	new vehicleid = GetPlayerVehicleID(playerid);
 		new modelka = GetVehicleModel(vehicleid);
-    	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID])
+    	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
     	{
 			if((IsPlayerInRangeOfPoint(playerid,10.0,2814.1458,-1456.9066,16.2500) || IsPlayerInRangeOfPoint(playerid,10.0,-2495.3384,374.9754,35.1194)
 			|| IsPlayerInRangeOfPoint(playerid,10.0,2464.9907,1633.5537,10.8203) || IsPlayerInRangeOfPoint(playerid,10.0,2246.3945,2042.6685,10.8203)) && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
@@ -147,9 +169,24 @@ CMD:car(playerid)
 		}
 	}
 
-	// Арендованный Транспорт
 	new unix = gettime();
 	new tyear, tmonth, tday, thour, tminute, tsecond;
+	stamp2datetime(PlayerInfo[playerid][pKeyVeh][3], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+	// Ключи от Транспорта
+	if(PlayerInfo[playerid][pKeyVeh][0] > 0 && PlayerInfo[playerid][pKeyVeh][3] > unix)
+	{
+		if(PlayerInfo[playerid][pKeyVehID] > 0)
+		{
+			format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", vehName[PlayerInfo[playerid][pKeyVeh][0]], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		}
+		else format(line,sizeof(line),"\n{cccccc}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", vehName[PlayerInfo[playerid][pKeyVeh][0]], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		List[quan][playerid] = 0;
+		ListParam[quan][playerid] = 3; // Ключи
+		quan ++;
+	}
+
+	// Арендованный Транспорт
 	for(new i = 0; i < 2; i++)
 	{
 		if(PlayerInfo[playerid][pRent][i] > unix)
@@ -176,19 +213,30 @@ stock GetPlayerQuanLoadVehicle(playerid)
 stock slcar(playerid, i)
 {
 	i --;
-	if(PlayerInfo[playerid][pMyVehID][i] == 0)
-	{
-		if(GetPlayerQuanLoadVehicle(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}Вы не можете загрузить три личных транспорта одновременно\n{cccccc}Уберите один загруженный транспорт на парковку");
-
-		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", vehName[PlayerInfo[playerid][pMyVeh][i]]);
-		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Личный Транспорт",store,"Да","Нет");
-		return 1;
-	}
 
 	new v, model;
-	v = PlayerInfo[playerid][pMyVehID][i];
-	if(i < 0 || i >= MAX_MYVEHICLE) return ErrorMessage(playerid, "{FF6347}Ошибка! неверный слот транспорта [slcar]");
-	if(v == 0 || v == 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не записан в слот [slcar]");
+	if(DP[1][playerid] == 1)
+	{
+		if(i < 0 || i >= MAX_MYVEHICLE) return ErrorMessage(playerid, "{FF6347}Ошибка! неверный слот транспорта [slcar]");
+		v = PlayerInfo[playerid][pMyVehID][i];
+		model = PlayerInfo[playerid][pMyVeh][i];
+		DP[2][playerid] = v;
+	}
+	else if(DP[1][playerid] == 2)
+	{
+		v = PlayerInfo[playerid][pKeyVehID];
+		model = PlayerInfo[playerid][pKeyVeh][0];
+		DP[2][playerid] = v;
+	}
+
+	if(v == 0)
+	{
+		if(DP[1][playerid] == 1 && GetPlayerQuanLoadVehicle(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}Вы не можете загрузить три личных транспорта одновременно\n{cccccc}Уберите один загруженный транспорт на парковку");
+
+		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", vehName[model]);
+		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+		return 1;
+	}
 
     model = GetVehicleModel(v);
     new str[100],sctring[500],qwer[44];
@@ -196,19 +244,29 @@ stock slcar(playerid, i)
 	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"{cccccc}Центральный Замок \t{99ff66}[ Открыт ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"{cccccc}Центральный Замок \t{FF6347}[ Закрыт ]\n"), strcat(sctring,str);
 	format(str,sizeof(str),"{cccccc}Найти\t\n"), strcat(sctring,str);
-	format(str,sizeof(str),"{cccccc}Дать Ключи\t\n"), strcat(sctring,str);
 	if(VehInfo[v][vAlarm] == 0) format(str,sizeof(str),"{cccccc}Сигнализация \t{FF6347}[ Off ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vAlarm] == 1) format(str,sizeof(str),"{cccccc}Сигнализация \t{99ff66}[ On ]\n"), strcat(sctring,str);
 	if(VehInfo[v][vEngine] == 0) format(str,sizeof(str),"{cccccc}Двигатель \t{FF6347}[ Off ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vEngine] == 1) format(str,sizeof(str),"{cccccc}Двигатель \t{99ff66}[ On ]\n"), strcat(sctring,str);
 	if(VehInfo[v][vLights] == 0) format(str,sizeof(str),"{cccccc}Фары \t{FF6347}[ Off ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vLights] == 1) format(str,sizeof(str),"{cccccc}Фары \t{99ff66}[ On ]\n"), strcat(sctring,str);
-	format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
 	format(str,sizeof(str),"{999999}П.Т.С.\t\n"), strcat(sctring,str);
-	if(VehInfo[v][vUpgrade] >= 1) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{99ff66}[ OK ]\n"), strcat(sctring,str);
-	else if(VehInfo[v][vUpgrade] == 0) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 100G ]\n"), strcat(sctring,str);
-	if(VehInfo[v][vSellcar] == 0) format(str,sizeof(str),"{99ff66}Выставить {cccccc}на Продажу\t\n"), strcat(sctring,str);
-	else format(str,sizeof(str),"{FF6347}Отменить {cccccc}Продажу\t\n"), strcat(sctring,str);
+
+	if(DP[1][playerid] == 2) // Ключи
+	{
+		format(str,sizeof(str),"{FF6347}Отдать ключи\t\n"), strcat(sctring,str);
+	}
+	else if(DP[1][playerid] == 1) // Личный
+	{
+		if(VehInfo[v][vKey] != 0 && VehInfo[v][vKeyUnix] > gettime()) format(str,sizeof(str),"{cccccc}Отозвать Ключи\t\n"), strcat(sctring,str);
+		else format(str,sizeof(str),"{cccccc}Дать Ключи\t\n"), strcat(sctring,str);
+
+		if(VehInfo[v][vUpgrade] >= 1) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{99ff66}[ OK ]\n"), strcat(sctring,str);
+		else if(VehInfo[v][vUpgrade] == 0) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 100G ]\n"), strcat(sctring,str);
+		if(VehInfo[v][vSellcar] == 0) format(str,sizeof(str),"{99ff66}Выставить {cccccc}на Продажу\t\n"), strcat(sctring,str);
+		else format(str,sizeof(str),"{FF6347}Отменить {cccccc}Продажу\t\n"), strcat(sctring,str);
+		format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
+	}
 
 	format(qwer,sizeof(qwer),"{ff9000}%s {cccccc}[%d] Личный",vehName[model], v);
 	ShowDialog(playerid,298,DIALOG_STYLE_TABLIST,qwer,sctring,"Выбрать","Отмена");
@@ -223,6 +281,7 @@ stock pts(p, v)
    	format(line,sizeof(line),"\n{cccccc}Модель №: {0088ff}%d",VehInfo[v][vModel]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Год изготовления: {cccccc}%d",VehInfo[v][vGod]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%s$ {555555}каждый PayDay",Procent(1, vehSumma[model])), strcat(lines,line);
 
    	if(VehInfo[v][vUpgrade] == 1) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {99ff66}установлен"), strcat(lines,line);
    	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {333333}отсутствует"), strcat(lines,line);
@@ -250,7 +309,7 @@ function LoadCar(playerid, dab, race_check)
 
 	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
-	new paramet[5], fine;
+	new paramet[6], fine;
 	cache_get_value_name_int(0, "finelien", fine);
 	cache_get_value_name_int(0, "sost", paramet[0]);
 
@@ -262,7 +321,12 @@ function LoadCar(playerid, dab, race_check)
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт арестован {FF6347}[ Подробности: Y >> GPS >> Транспорт >> Штраф Стоянка ]");
 			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Подробности: Y >> GPS >> Транспорт >> Штраф Стоянка");
 		}
-		else ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Владелец может узнать подробности ареста на штраф стоянке");
+		else 
+		{
+			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Владелец может узнать подробности ареста на штраф стоянке");
+			PlayerInfo[playerid][pKeyVeh][0] = 0;
+			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+		}
 		return 1;
 	}
 
@@ -274,22 +338,27 @@ function LoadCar(playerid, dab, race_check)
 	}
 	if(yescar > 0) // Такой транспорт уже на сервере
 	{
+		SetPVarInt(playerid,"stopload",0);
 		if(paramet[0] == PlayerInfo[playerid][pID])
 		{
-			Cars[yescar] = 88;
 			VehInfo[yescar][vIdvlad] = playerid;
 			VehInfo[yescar][vDatabase] = dab;
 			PlayerInfo[playerid][pMyVehID][dab - 1] = yescar;
 
-			SuccessMessage(playerid, "{99ff66}Ваш транспорт уже на сервере\n{cccccc}Возможно его кто-то использует\n[ Y >> Транспорт >> Название >> Найти ]");
+			SuccessMessage(playerid, "{99ff66}Ваш транспорт уже на сервере\n\n{cccccc}Возможно его кто-то использует\n[ Y >> Транспорт >> Название >> Найти ]");
 		}
 		else
 		{
-			KeyCarID[playerid] = yescar;
-
-			SuccessMessage(playerid, "{99ff66}Транспорт уже на сервере\n{cccccc}Возможно его кто-то использует\n[ Y >> Транспорт >> Название >> Найти ]");
+			if(VehInfo[yescar][vKey] != PlayerInfo[playerid][pID])
+			{
+				ErrorMessage(playerid, "{FF6347}Владелец отозвал ключи от транспорта");
+				PlayerInfo[playerid][pKeyVeh][0] = 0;
+				mysql_SavePlayer(playerid, "KeyVeh0", 0);
+				return 1;
+			}
+			PlayerInfo[playerid][pKeyVehID] = yescar;
+			SuccessMessage(playerid, "{99ff66}Транспорт уже на сервере\n\n{cccccc}Возможно его кто-то использует\n[ Y >> Транспорт >> Название >> Найти ]");
 		}
-		SetPVarInt(playerid,"stopload",0);
 	}
 	else
 	{
@@ -301,18 +370,31 @@ function LoadCar(playerid, dab, race_check)
 		cache_get_value_name_int(0, "vehcol1", paramet[2]);
 		cache_get_value_name_int(0, "vehcol2", paramet[3]);
 		cache_get_value_name_int(0, "arest", paramet[4]);
+		cache_get_value_name_int(0, "keyveh", paramet[5]);
 		if(paramet[0] != 0 && paramet[1] != 0 && paramet[4] == 0)
 		{
+			if(paramet[0] != PlayerInfo[playerid][pID] && paramet[5] != PlayerInfo[playerid][pID])
+			{
+				ErrorMessage(playerid, "{FF6347}Владелец отозвал ключи от транспорта");
+				PlayerInfo[playerid][pKeyVeh][0] = 0;
+				mysql_SavePlayer(playerid, "KeyVeh0", 0);
+				SetPVarInt(playerid,"stopload",0);
+				return 1;
+			}
 			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], 600,0); // Спавн через 10 минут неактивности
 
-			if(paramet[0] == PlayerInfo[playerid][pID]) // Личный
+			if(vehid == -1)
 			{
-				VehInfo[vehid][vIdvlad] = playerid;
-				PlayerInfo[playerid][pMyVehID][dab - 1] = vehid;
+				ErrorMessage(playerid, "{FF6347}Превышен лимит загруженных транспортных средств на сервере\n\n{cccccc}Пожалуйста, обратитесь к администрации для устранения этой проблемы [ /report ]");
+				SetPVarInt(playerid,"stopload",0);
+				return 1;
 			}
-			else KeyCarID[playerid] = vehid; // Ключи от транспорта
+
+			if(paramet[0] == PlayerInfo[playerid][pID]) PlayerInfo[playerid][pMyVehID][dab - 1] = vehid; // Личный
+			else PlayerInfo[playerid][pKeyVehID] = vehid; // Ключи от транспорта
 
 			Cars[vehid] = 88;
+			VehInfo[vehid][vIdvlad] = playerid;
 			VehInfo[vehid][vNewid] = newid;
 			VehInfo[vehid][vSost] = paramet[0];
 			VehInfo[vehid][vModel] = paramet[1];
@@ -322,6 +404,7 @@ function LoadCar(playerid, dab, race_check)
 			VehInfo[vehid][vKoordinatA] = kord[3];
 			VehInfo[vehid][vVehcol1] = paramet[2];
 			VehInfo[vehid][vVehcol2] = paramet[3];
+			VehInfo[vehid][vKey] = paramet[5];
 
 			cache_get_value_name(0, "numer", VehInfo[vehid][vNumer], 20);
 			cache_get_value_name_int(0, "arest", VehInfo[vehid][vArest]);
@@ -341,6 +424,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "benz2", Gelium[vehid]);
 			cache_get_value_name_int(0, "god", VehInfo[vehid][vGod]);
 			cache_get_value_name_int(0, "vehhp", VehInfo[vehid][vVehhp]);
+			cache_get_value_name_int(0, "keyunix", VehInfo[vehid][vKeyUnix]);
 			
 			for(new i = 0; i < 20; i++)
 			{
@@ -354,7 +438,6 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vUpgrade]);
 			cache_get_value_name_int(0, "nosell", VehInfo[vehid][vNosell]);
 			
-			VehInfo[vehid][vKey] = 9999;
 			VehInfo[vehid][vDatabase] = dab;
 			LoadTunning(vehid);
 
@@ -397,11 +480,8 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 	if(VehInfo[newcar][vSost] == PlayerInfo[playerid][pID]) // Личный Транспорт
 	{
 		new slot = VehInfo[newcar][vDatabase];
-		/*
-		if(PlayerInfo[playerid][pMyVehLoad] == 1 && PlayerInfo[playerid][pVehTax][0] > 0 || PlayerInfo[playerid][pMyVehLoad] == 2 && PlayerInfo[playerid][pVehTax][1] > 0
-		|| PlayerInfo[playerid][pMyVehLoad] == 3 && PlayerInfo[playerid][pVehTax][2] > 0 || PlayerInfo[playerid][pMyVehLoad] == 4 && PlayerInfo[playerid][pVehTax][3] > 0
-		|| PlayerInfo[playerid][pMyVehLoad] == 5 && PlayerInfo[playerid][pVehTax][4] > 0) return ErrorMessage(playerid, "{FF6347}Вам нужно оплатить налоги на транспорт [ Ноутбук >> Банк Online >> Налоги ]");
-		*/
+
+		if(PlayerInfo[playerid][pVehTax][slot - 1] > 0) return ErrorMessage(playerid, "{FF6347}Вам необходимо оплатить налоги на транспорт");
 		if(VehInfo[newcar][vNosell] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за Media Транспорт: {ff0000}Невозможно");
 		else
 		{
@@ -527,8 +607,15 @@ CMD:addcar(playerid, const params[])
         new freeSlot = GetPlayerFreeVehSlot(para1);
         if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
 
-        new car = 1 + random(10);
-        GiveCar(para1, freeSlot, vehid, BuyCarSF[car][0],BuyCarSF[car][1],BuyCarSF[car][2],BuyCarSF[car][3],nyche);
+
+		new posId, biz, Float:pos[4];
+		if(IsABoat(vehid)) biz = 90 + random(2), posId = random(4);
+		else if(IsAPlane(vehid)) biz = 87 + random(2), posId = random(7);
+		else if(IsAMoto(vehid)) biz = 82 + random(4), posId = random(7);
+		else biz = 77 + random(4), posId = random(7);
+
+		GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
+		GiveCar(para1, freeSlot, vehid, pos[0], pos[1], pos[2], pos[3],nyche, 1, 1);
         AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para1][pID], PlayerInfo[para1][pName], PlayerInfo[para1][pPlaIP], vehid, "");
         
         format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], vehName[vehid]);
@@ -545,13 +632,13 @@ CMD:addcar(playerid, const params[])
     }
 	return 1;
 }
-stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche)
+stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2)
 {
 	format(store, sizeof(store), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
-	mysql_tquery(pearsq, store, "Call_GiveCar", "dddffffd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche);
+	mysql_tquery(pearsq, store, "Call_GiveCar", "dddffffddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2);
 	return 1;
 }
-function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche)
+function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -560,7 +647,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCar (str_name: %s, slot: %d, carid: %d)", PlayerInfo[playerid][pName], slot, carid);
 
 		format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2023',`vehhp`='1000',`nosell`='%d'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, CreatePlatesVehicle(),nyche);
+		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2023',`vehhp`='1000',`nosell`='%d'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(),nyche);
 		query_empty(pearsq, big_query);
 
         // Сохраняем авто
@@ -599,8 +686,14 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
         if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
         cache_get_value_name_int(0, "id", datadid);
 
-    	new car = 1+random(10);
-	    GiveCarOffline(str_name, freeSlot, f_vehid, BuyCarSF[car][0],BuyCarSF[car][1],BuyCarSF[car][2],BuyCarSF[car][3],datadid,nyche);
+		new posId, biz, Float:pos[4];
+		if(IsABoat(f_vehid)) biz = 90 + random(2), posId = random(4);
+		else if(IsAPlane(f_vehid)) biz = 87 + random(2), posId = random(7);
+		else if(IsAMoto(f_vehid)) biz = 82 + random(4), posId = random(7);
+		else biz = 77 + random(4), posId = random(7);
+
+		GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
+		GiveCarOffline(str_name, freeSlot, f_vehid, pos[0], pos[1], pos[2], pos[3],datadid,nyche);
 	    AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", f_vehid, "");
 	    format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", str_name,vehName[f_vehid]);
 	    SendClientMessage(playerid, COLOR_GREY, store);

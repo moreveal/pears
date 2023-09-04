@@ -35,11 +35,22 @@ new BuyCarPos[][BUYCARENUM] =
     { 1357.2124,1584.3049,10.8461, 3092, 184} // 92 // lv
 };
 
-/*stock buy_VehicleShop(playerid) // Покупаем личный транспорт в магазине
-{
 
+stock buy_VehicleShop(playerid)
+{  
+    new bizId = TP[0][playerid];
+    new productId = TP[1][playerid];
+    new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
+
+    if(BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n\n{cccccc}Вы можете отправиться в другой автосалон или в центр обмена [ Y >> GPS >> Услуги >> Центр Обмена ]");
+    if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
+    if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+
+    PlayerPlaySound(playerid,40405,0,0,0);
+    format(store, sizeof(store), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", vehName[modelId], price, get_k(price));
+	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"пїЅпїЅ","пїЅпїЅпїЅ");
     return 1;
-}*/
+}
 
 stock openMenu_VehicleShop(playerid)
 {
@@ -124,7 +135,6 @@ stock openTestDrive_VehicleShop(playerid)
     SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
     return 1;
 }
-
 stock left_VehicleShop(playerid) // Предыдущий транспорт (Листаем влево)
 {
     new b = TP[0][playerid];
@@ -143,6 +153,7 @@ stock left_VehicleShop(playerid) // Предыдущий транспорт (Л�
     }
     else TP[1][playerid] --;
 
+    ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
     destroyVehicle_VehicleShop(playerid);
     createVehicle_VehicleShop(playerid, b, TP[1][playerid]);
     return 1;
@@ -156,6 +167,7 @@ stock right_VehicleShop(playerid) // Следующий транспорт (Ли
     else if(BizzInfo[b][bProduct][s + 1] == 0) TP[1][playerid] = 0; // Если в следующем слоте нет транспорта, показываем 0 слот
     else TP[1][playerid] ++;
 
+    ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
     destroyVehicle_VehicleShop(playerid);
     createVehicle_VehicleShop(playerid, b, TP[1][playerid]);
     return 1;
@@ -190,7 +202,7 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     if(modelId < 400 || modelId > MAX_VEHICLE_ID
     || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
 
-    // Создаём транспорт
+     // Создаём транспорт
     new Float:pos[4], interiorId;
     new type = GetVehicleType(modelId);
     new class = GetVehicleClass(modelId);
@@ -344,7 +356,7 @@ function loadCam_VehicleShop(playerid)
         InterpolateCameraPos(playerid, 2620.168945, -2300.133300, 1.827390, 2620.168945, -2300.133300, 1.827390, 1000);
         InterpolateCameraLookAt(playerid, 2623.240234, -2304.076416, 1.960187, 2623.240234, -2304.076416, 1.960187, 1000);
     }
-    else if(bizId == 92) // Салон Катеров LV
+    else if(bizId == 92) // Салоны Катеров
     {
         InterpolateCameraPos(playerid, 2401.330078, 514.935241, 2.140674, 2401.330078, 514.935241, 2.140674, 1000);
         InterpolateCameraLookAt(playerid, 2398.289550, 518.904052, 2.082082, 2398.289550, 518.904052, 2.082082, 1000);
@@ -372,6 +384,8 @@ stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Fl
     {
         world = playerid + 1;
         interior = 0;
+        if(bizId == 90) x = 2603.0642, y = -2323.0300, z = 1.8984, a = 270.0;
+        else if(bizId == 91) x = -1484.0221, y = 757.7109, z = 7.2423, a = 176.8678;
         if(bizId == 90) x = -1484.0221, y = 757.7109, z = 7.2423, a = 176.8678;
         else if(bizId == 91) x = 2603.0642, y = -2323.0300, z = 1.8984, a = 270.0;
         else if(bizId == 92) x = 2349.5464, y = 522.8445, z = 1.7969, a = 273.1955;
@@ -398,7 +412,7 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
     if(playertextid == VehicleShopDraw[10][playerid]) // Buy
     {
         PlayerPlaySound(playerid,17803,0,0,0);
-        //buy_VehicleShop(playerid);
+        buy_VehicleShop(playerid);
     }
     if(playertextid == VehicleShopDraw[13][playerid]) // Test Drive
     {
@@ -479,9 +493,44 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
 		}
 		else showDialogVehicleShopColor(playerid);
 	}
+    if(dialogid == 1341)
+	{
+        if(response)
+		{
+            new freeSlot = GetPlayerFreeVehSlot(playerid);
+            if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
+
+            new bizId = TP[0][playerid];
+            new productId = TP[1][playerid];
+            new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
+
+            if(BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n\n{cccccc}Вы можете отправиться в другой автосалон или в центр обмена [ Y >> GPS >> Услуги >> Центр Обмена ]");
+            if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
+            if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+
+            BizzInfo[bizId][bItem][productId] -= 1;
+            BizzInfo[bizId][bUpdate] = 1;
+
+            oGivePlayerMoney(playerid, -price);
+            format(store,sizeof(store),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", vehName[modelId]);
+            SendClientMessage(playerid, COLOR_GREY, store);
+            format(store,sizeof(store),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", vehName[modelId], price, get_k(price));
+            SuccessMessage(playerid, store);
+
+            new posId;
+            if(bizId >= 90 && bizId <= 92) posId = random(4);
+            else posId = random(7);
+
+            new Float:pos[4];
+            GetCoordBuyVehicle(bizId, posId, pos[0], pos[1], pos[2], pos[3]);
+            GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1]);
+
+            CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, vehSumma[modelId], "");
+            if(PlayerInfo[playerid][pAchieve][12] == 0) AchievePlayer(playerid, 12, 1);
+        }
+    }
     return 1;
 }
-
 stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
 {
     if(VehShopInfo[playerid][vsTextDrawLoad] == false) return 0; // Если текстдравы не созданы, возвращаем 0
@@ -833,4 +882,161 @@ stock GetVehicleClass(m)
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
+}
+
+static Float: BuyCar77[7][4] = {
+{-1630.7909,1289.8961,6.7233,133.9130},
+{-1634.4467,1293.3676,6.7226,135.1459},
+{-1638.0880,1296.9481,6.7203,134.9994},
+{-1641.8350,1300.3325,6.7160,134.3995},
+{-1645.1599,1304.0277,6.7132,134.1048},
+{-1648.7629,1307.6307,6.7155,133.6979},
+{-1655.9745,1314.6727,6.7232,134.3809}
+};
+static Float: BuyCar78[7][4] = {
+{532.0536,-1280.5724,16.9271,217.1556},
+{536.1943,-1277.5929,16.9260,217.2419},
+{540.1298,-1274.5122,16.9266,216.9094},
+{544.0961,-1271.4668,16.9310,217.2381},
+{548.2017,-1268.6083,16.9261,217.0673},
+{552.3049,-1265.5759,16.9260,217.4240},
+{527.5638,-1283.0762,16.9273,217.3314}
+};
+static Float: BuyCar79[7][4] = {
+{1062.1146,-1749.0371,13.1348,270.4561},
+{1062.5253,-1752.0280,13.1278,269.9294},
+{1062.5251,-1754.9524,13.1156,270.3059},
+{1062.4055,-1757.9939,13.1012,270.2939},
+{1062.4971,-1760.8866,13.0875,270.4417},
+{1062.4679,-1763.8151,13.0759,270.2054},
+{1062.5671,-1766.7223,13.0639,270.0496}
+};
+static Float: BuyCar80[7][4] = {
+{-1987.6846,275.6537,34.8600,268.7078},
+{-1988.0031,270.6844,34.8609,269.0689},
+{-1987.7682,265.6169,34.8637,269.4496},
+{-1987.9283,260.6807,34.8635,269.9476},
+{-1988.2604,255.7881,34.8561,270.1007},
+{-1989.2034,250.7520,34.8551,268.6367},
+{-1988.3507,245.7601,34.8561,269.8934}
+};
+static Float: BuyCar81[7][4] = {
+{2143.9771,1395.8309,11.4183,179.1647},
+{2135.9590,1395.8420,11.4251,180.2891},
+{2125.3210,1395.8994,11.4214,181.2749},
+{2117.7529,1396.7042,11.4230,179.1614},
+{2100.4199,1410.6488,11.4261,358.8225},
+{2109.0889,1410.5594,11.4263,359.4589},
+{2124.3748,1410.2053,11.4228,0.1071}
+};
+static Float: BuyCar82[7][4] = {
+{1132.0004,-932.6567,42.5154,1.4432},
+{1127.6670,-932.9992,42.5332,3.7311},
+{1123.0734,-933.2482,42.5812,2.5520},
+{1116.5576,-934.0265,42.6499,358.6103},
+{1110.3676,-934.1944,42.7139,358.8516},
+{1104.8970,-934.6085,42.6952,0.9331},
+{1099.7186,-935.0287,42.6253,4.2258}
+};
+static Float: BuyCar83[7][4] = {
+{403.7985,-1305.8121,14.4329,211.8875},
+{399.7332,-1307.5780,14.4045,205.1489},
+{398.3560,-1312.4043,14.3829,299.3748},
+{400.0142,-1315.1615,14.3839,297.7711},
+{401.9518,-1318.2799,14.3857,298.5741},
+{404.1087,-1322.2328,14.3862,298.5989},
+{406.0754,-1326.3326,14.3854,299.4590}
+};
+static Float: BuyCar84[7][4] = {
+{-1929.2098,584.6361,34.6552,181.2564},
+{-1932.4238,585.0105,34.6480,181.3788},
+{-1935.2765,584.6690,34.6512,179.5882},
+{-1938.3234,584.7221,34.6480,179.9484},
+{-1944.3535,584.7836,34.6534,180.4886},
+{-1947.3428,584.2746,34.6610,179.5666},
+{-1950.3081,585.1459,34.6457,178.7887}
+};
+static Float: BuyCar85[7][4] = {
+{2102.5063,2098.9026,10.3405,91.1212},
+{2102.6211,2095.5642,10.3403,89.2317},
+{2102.6328,2092.2688,10.3405,90.4166},
+{2102.4646,2089.0681,10.3406,91.9509},
+{2102.8884,2085.7156,10.3406,90.3522},
+{2102.5286,2082.4377,10.3404,89.4777},
+{2102.6335,2075.8909,10.3405,90.3599}
+};
+static Float: BuyCar86[7][4] = {
+{2007.6624,2444.8066,10.3402,91.9059},
+{2007.6847,2449.8921,10.3405,90.4368},
+{2007.7234,2455.0188,10.3404,90.6159},
+{2007.8347,2460.0581,10.3403,89.5767},
+{2007.8131,2465.0256,10.3405,89.6958},
+{2007.6920,2470.0945,10.3403,89.9302},
+{2007.7465,2475.1460,10.3406,90.3066}
+};
+static Float: BuyCar87[7][4] = {
+{1857.4624,-2458.1062,14.6,179.1131},
+{1814.8027,-2457.9297,14.6,179.0126},
+{1777.9696,-2459.0693,14.6,180.4165},
+{1727.0154,-2453.6843,14.6,178.2594},
+{1687.1891,-2459.4014,14.6,179.0270},
+{1642.0822,-2457.8945,14.6,180.6221},
+{1548.5597,-2454.3894,14.6,177.7081}
+};
+static Float: BuyCar88[7][4] = {
+{-1618.8235,-251.8537,15.2,44.1452},
+{-1586.4756,-231.1117,15.2,45.9489},
+{-1553.0936,-197.7317,15.2,45.1703},
+{-1522.8093,-159.8547,15.2,44.4027},
+{-1487.0886,-127.0891,15.2,45.0524},
+{-1451.6326,-94.5598,15.2,45.1878},
+{-1414.1816,-55.7258,15.2,45.0643}
+};
+static Float: BuyCar89[7][4] = {
+{1523.3040,1757.7288,12.0,91.6084},
+{1524.0583,1692.4083,12.0,91.5951},
+{1607.6578,1620.7478,12.0,179.9024},
+{1524.5178,1826.5345,12.0,91.4057},
+{1340.2269,1605.7284,12.0,270.6584},
+{1336.2020,1487.9166,12.0,270.3039},
+{1525.7253,1267.0033,12.0,359.6212}
+};
+static Float: BuyCar90[4][4] = {
+{-1460.5208,700.4496,1.0,270.0},
+{-1459.9456,719.3024,1.0,270.0},
+{-1458.9069,729.9988,1.0,270.0},
+{-1460.8375,740.2239,1.0,270.0}
+};
+static Float: BuyCar91[4][4] = {
+{2726.8130,-2299.0430,1.0,0.0},
+{2715.1313,-2298.6047,1.0,0.0},
+{2703.0364,-2299.2717,1.0,0.0},
+{2691.0002,-2298.9663,1.0,0.0}
+};
+static Float: BuyCar92[4][4] = {
+{2307.5518,531.0103,1.0,180.0},
+{2318.5366,530.5410,1.0,180.0},
+{2329.6873,530.6938,1.0,180.0},
+{2340.7705,529.8237,1.0,180.0}
+};
+
+stock GetCoordBuyVehicle(bizId, posId, &Float:x, &Float:y, &Float:z, &Float:a)
+{
+    if(bizId == 77) x = BuyCar77[posId][0], y = BuyCar77[posId][1], z = BuyCar77[posId][2], a = BuyCar77[posId][3];
+    else if(bizId == 78) x = BuyCar78[posId][0], y = BuyCar78[posId][1], z = BuyCar78[posId][2], a = BuyCar78[posId][3];
+    else if(bizId == 79) x = BuyCar79[posId][0], y = BuyCar79[posId][1], z = BuyCar79[posId][2], a = BuyCar79[posId][3];
+    else if(bizId == 80) x = BuyCar80[posId][0], y = BuyCar80[posId][1], z = BuyCar80[posId][2], a = BuyCar80[posId][3];
+    else if(bizId == 81) x = BuyCar81[posId][0], y = BuyCar81[posId][1], z = BuyCar81[posId][2], a = BuyCar81[posId][3];
+    else if(bizId == 82) x = BuyCar82[posId][0], y = BuyCar82[posId][1], z = BuyCar82[posId][2], a = BuyCar82[posId][3];
+    else if(bizId == 83) x = BuyCar83[posId][0], y = BuyCar83[posId][1], z = BuyCar83[posId][2], a = BuyCar83[posId][3];
+    else if(bizId == 84) x = BuyCar84[posId][0], y = BuyCar84[posId][1], z = BuyCar84[posId][2], a = BuyCar84[posId][3];
+    else if(bizId == 85) x = BuyCar85[posId][0], y = BuyCar85[posId][1], z = BuyCar85[posId][2], a = BuyCar85[posId][3];
+    else if(bizId == 86) x = BuyCar86[posId][0], y = BuyCar86[posId][1], z = BuyCar86[posId][2], a = BuyCar86[posId][3];
+    else if(bizId == 87) x = BuyCar87[posId][0], y = BuyCar87[posId][1], z = BuyCar87[posId][2], a = BuyCar87[posId][3];
+    else if(bizId == 88) x = BuyCar88[posId][0], y = BuyCar88[posId][1], z = BuyCar88[posId][2], a = BuyCar88[posId][3];
+    else if(bizId == 89) x = BuyCar89[posId][0], y = BuyCar89[posId][1], z = BuyCar89[posId][2], a = BuyCar89[posId][3];
+    else if(bizId == 90) x = BuyCar90[posId][0], y = BuyCar90[posId][1], z = BuyCar90[posId][2], a = BuyCar90[posId][3];
+    else if(bizId == 91) x = BuyCar91[posId][0], y = BuyCar91[posId][1], z = BuyCar91[posId][2], a = BuyCar91[posId][3];
+    else if(bizId == 92) x = BuyCar92[posId][0], y = BuyCar92[posId][1], z = BuyCar92[posId][2], a = BuyCar92[posId][3];
+    return 1;
 }

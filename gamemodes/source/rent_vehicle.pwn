@@ -103,7 +103,7 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 	GetPlayerFacingAngle(playerid,pos[3]);
 
 	new newcar;
-	newcar = PP_CreateVehicle(newcar,vehicleModel,pos[0],pos[1],pos[2],pos[3],color1,color2,300,0);
+	newcar = PP_CreateVehicle(newcar,vehicleModel,pos[0],pos[1],pos[2],pos[3],color1,color2,600,0);
 	Gas[newcar] = 100;
 	VehInfo[newcar][vAgetid] = playerid;
 	VehInfo[newcar][vRent] = unix+3600;
