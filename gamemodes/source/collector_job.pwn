@@ -120,7 +120,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				new unix = gettime();
 				if(PlayerInfo[playerid][pRent][0] > unix && PlayerInfo[playerid][pRent][1] > unix) return ErrorMessage(playerid, "{FF6347}У вас уже два арендованных транспорта [ Y >> Транспорт или /car ]");
 	            new model, newcar;
-            	if(listitem == 0) newcar = PP_CreateVehicle(newcar,428,1107.387, -1216.869, 17.804,1.1,6,1,600,0), model = 428;
+            	if(listitem == 0) newcar = PP_CreateVehicle(newcar,428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1), model = 428;
                 Gas[newcar] = 100;
 	   			VehInfo[newcar][vAgetid] = playerid;
 	   			VehInfo[newcar][vRent] = unix+3600;

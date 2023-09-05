@@ -381,7 +381,7 @@ function LoadCar(playerid, dab, race_check)
 				SetPVarInt(playerid,"stopload",0);
 				return 1;
 			}
-			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], 600,0); // Спавн через 10 минут неактивности
+			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], -1,0, 20); // Спавн через 10 минут неактивности
 
 			if(vehid == -1)
 			{

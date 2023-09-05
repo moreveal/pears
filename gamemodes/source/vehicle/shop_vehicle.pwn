@@ -233,7 +233,7 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
         }
     }
     VehShopInfo[playerid][vsModel] = modelId;
-    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0);
+    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0, -1);
     SetVehicleVirtualWorld(VehShopInfo[playerid][vsVehicleID], playerid + 1);
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], interiorId);
     VehShopInfo[playerid][vsVehicleLoad] = true;
@@ -636,9 +636,9 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], 4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 295.918463, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.018463, "ld_beat:chit"); // Левое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.688903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.488903);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], 1);
     PlayerTextDrawColor(playerid, VehicleShopDraw[5][playerid], 168429055);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[5][playerid], 0);
