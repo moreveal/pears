@@ -133,8 +133,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Хламидиоз {333333}[ Лекарство: Хламидиуберин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Хламидиоз {444444}[ Лекарство: Хламидиуберин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -148,8 +148,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Гонорея {333333}[ Лекарство: Гоногон ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Гонорея {444444}[ Лекарство: Гоногон ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -162,8 +162,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Сифилис {333333}[ Лекарство: Сифистоп ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Сифилис {444444}[ Лекарство: Сифистоп ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -178,8 +178,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Лучевая Болезнь {333333}[ Лекарство: Радиануклин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Лучевая Болезнь {444444}[ Лекарство: Радиануклин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -195,8 +195,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Перитонит Мочевого Пузыря {333333}[ Лекарство: Перитонин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Перитонит Мочевого Пузыря {444444}[ Лекарство: Перитонин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -211,8 +211,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Грибок Ногтей {333333}[ Лекарство: Грибкоубивин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Грибок Ногтей {444444}[ Лекарство: Грибкоубивин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -224,8 +224,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Дерматит {333333}[ Лекарство: Дерматитогон ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Дерматит {444444}[ Лекарство: Дерматитогон ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -239,8 +239,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Акне {333333}[ Лекарство: Акнестопин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Акне {444444}[ Лекарство: Акнестопин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -253,8 +253,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Порошковая Зависимость {333333}[ Лекарство: Порошкозаменин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Порошковая Зависимость {444444}[ Лекарство: Порошкозаменин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -268,8 +268,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Никотиновая Зависимость {333333}[ Лекарство: Никотиновый пластырь ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Никотиновая Зависимость {444444}[ Лекарство: Никотиновый пластырь ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -283,8 +283,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Алкоголизм {333333}[ Лекарство: Бухлозаменин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Алкоголизм {444444}[ Лекарство: Бухлозаменин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -299,8 +299,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Гастрит {333333}[ Лекарство: Гастритоуберин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Гастрит {444444}[ Лекарство: Гастритоуберин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -313,8 +313,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Язва {333333}[ Лекарство: Язвазаживин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Язва {444444}[ Лекарство: Язвазаживин ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -329,8 +329,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Простуда {333333}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Простуда {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -344,8 +344,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}ОРВИ {333333}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}ОРВИ {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -360,8 +360,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Грипп {333333}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Грипп {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -378,8 +378,8 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Covid-19 {333333}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{333333}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(str,sizeof(str),"\n\n{ff6666}Covid-19 {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
+				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
 			}
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
@@ -392,7 +392,7 @@ stock getmed(playerid, para1)
 		}
 		if(PlayerInfo[para1][pIllness][i] == 18 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Вампиризм
 		{
-			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(str,sizeof(str),"\n\n{ff6666}Вампиризм {333333}[ Лекарство: Неизвестно ]"), strcat(sctring,str);
+			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(str,sizeof(str),"\n\n{ff6666}Вампиризм {444444}[ Лекарство: Неизвестно ]"), strcat(sctring,str);
 			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
 			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
 			format(str,sizeof(str),"\n{cccccc}бледная кожа"), strcat(sctring,str);
@@ -403,7 +403,7 @@ stock getmed(playerid, para1)
 		}
 	}
 	if(stope == 0) format(str,sizeof(str),"\n{99ff66}Нет болезней и симптомов\n"), strcat(sctring,str);
-	if((PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) && agaest > 0) format(str,sizeof(str),"\n\n{333333}Определите болезнь на основе симптомов пациента\n"), strcat(sctring,str);
+	if((PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) && agaest > 0) format(str,sizeof(str),"\n\n{444444}Определите болезнь на основе симптомов пациента\n"), strcat(sctring,str);
     ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",sctring,"Назад","");
 	return 1;
 }

@@ -30,14 +30,14 @@ stock DynamicPickupRent()
     for(new i = 0; i < sizeof(RentBusPoint); i++)
     {
         CreateDynamicPickup(2485, 1, RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2], 0, 0);
-        CreateDynamic3DTextLabel("{ff9000}Транспорт Автобусного Депо\n{333333}[ ALT ]",-1,RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Транспорт Автобусного Депо\n{444444}[ ALT ]",-1,RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     }
 
     // Аренда грузовиков
     for(new i = 0; i < sizeof(RentTruckPoint); i++)
     {
         CreateDynamicPickup(2485, 1, RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2], 0, 0);
-        CreateDynamic3DTextLabel("{ff9000}Аренда Грузового Транспорта\n{333333}[ ALT ]",-1,RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Аренда Грузового Транспорта\n{444444}[ ALT ]",-1,RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     }
 	return 1;
 }
@@ -116,7 +116,7 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 	 	stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 	   	VehInfo[newcar][v3dstat] = 4000;
-		format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{333333}%s", thour, tminute, PlayerInfo[playerid][pName]);
+		format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
 	    VehLabel[newcar] = CreateDynamic3DTextLabel(store,0xfaf75c99,pos[0],pos[1],pos[2],15.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	}
 

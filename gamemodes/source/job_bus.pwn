@@ -65,7 +65,7 @@ CMD:busstation(playerid)
 	if(PlayerInfo[playerid][pLeader] == 7 || PlayerInfo[playerid][pMember] == 7)
 	{
 	    PlayerPlaySound(playerid,40405,0,0,0);
-		ShowDialog(playerid,1300,DIALOG_STYLE_INPUT,"{333333}Установка Остановки","{cccccc}Введите название для Остановки\n\n{333333}Примеры: Госпиталь, LSPD","Принять","Отмена");
+		ShowDialog(playerid,1300,DIALOG_STYLE_INPUT,"{444444}Установка Остановки","{cccccc}Введите название для Остановки\n\n{444444}Примеры: Госпиталь, LSPD","Принять","Отмена");
 	}
 	else SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я не сотрудник Правительства");
 	return 1;

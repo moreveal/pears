@@ -51,10 +51,10 @@ CMD:insertcar(playerid)
     	{
 			if((IsPlayerInRangeOfPoint(playerid,10.0,2814.1458,-1456.9066,16.2500) || IsPlayerInRangeOfPoint(playerid,10.0,-2495.3384,374.9754,35.1194)
 			|| IsPlayerInRangeOfPoint(playerid,10.0,2464.9907,1633.5537,10.8203) || IsPlayerInRangeOfPoint(playerid,10.0,2246.3945,2042.6685,10.8203)) && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
-			if((IsPlayerInRangeOfPoint(playerid,20.0,1983.2249,-2315.4692,13.5469) || IsPlayerInRangeOfPoint(playerid,20.0,-1475.9408,-156.5503,14.1484)
-			|| IsPlayerInRangeOfPoint(playerid,20.0,1330.5399,1341.7534,10.8203)) && (IsACar(modelka) || IsABoat(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}В аэропорту можно оставлять только аэротранспорт");
-			if((IsPlayerInRangeOfPoint(playerid,30.0,2317.8706,-2393.4094,3.0000) || IsPlayerInRangeOfPoint(playerid,30.0,-2947.4229,503.3807,2.4297)
-			|| IsPlayerInRangeOfPoint(playerid,30.0,2359.3020,523.5991,1.7969)) && (IsACar(modelka) || IsAPlane(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}К причалу можно швартовать только лодки и катера");
+			if((IsPlayerInRangeOfPoint(playerid,20.0,1932.8682,-2331.4783,13.5469) || IsPlayerInRangeOfPoint(playerid,20.0,-1242.0123,-433.4203,14.1440)
+			|| IsPlayerInRangeOfPoint(playerid,20.0,1339.0453,1497.9590,10.8203)) && (IsACar(modelka) || IsABoat(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}В аэропорту можно оставлять только аэротранспорт");
+			if((IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0) || IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)
+			|| IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) && (IsACar(modelka) || IsAPlane(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}К причалу можно швартовать только лодки и катера");
 			if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя доставать или парковать транспорт во время сделки");
 			if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Стоп! Дождитесь завершения загрузки личного транспорта");
 
@@ -64,9 +64,9 @@ CMD:insertcar(playerid)
 			ACDestroyVehicle(vehicleid);
     		PlayerPlaySound(playerid,1138,0,0,0);
 
-    		if(IsPlayerInRangeOfPoint(playerid,30.0,2317.8706,-2393.4094,3.0000)) PPSetPlayerPos(playerid,2317.8706,-2393.4094,3.0000);
-			else if(IsPlayerInRangeOfPoint(playerid,30.0,-2947.4229,503.3807,2.4297)) PPSetPlayerPos(playerid,-2947.4229,503.3807,2.4297);
-			else if(IsPlayerInRangeOfPoint(playerid,30.0,2359.3020,523.5991,1.7969)) PPSetPlayerPos(playerid,2359.3020,523.5991,1.7969);
+    		if(IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0)) PPSetPlayerPos(playerid,2685.9084,-2319.6357,3.0000), SetPlayerFacingAngle(playerid,6.4261);
+			else if(IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)) PPSetPlayerPos(playerid,-1480.8885,681.3235,1.4976), SetPlayerFacingAngle(playerid,0.0);
+			else if(IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) PPSetPlayerPos(playerid,2298.0408,529.1321,1.7944), SetPlayerFacingAngle(playerid,0.0);
     		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"поставил транспорт на парковку",COLOR_PURPLE,20.0,3000);
     		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"поставила транспорт на парковку",COLOR_PURPLE,20.0,3000);
 
@@ -284,7 +284,7 @@ stock pts(p, v)
 	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%s$ {555555}каждый PayDay",Procent(1, vehSumma[model])), strcat(lines,line);
 
    	if(VehInfo[v][vUpgrade] == 1) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {99ff66}установлен"), strcat(lines,line);
-   	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {333333}отсутствует"), strcat(lines,line);
+   	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {444444}отсутствует"), strcat(lines,line);
 
    	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",vehSumma[model]), strcat(lines,line);
 	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n",vehSumma[model]), strcat(lines,line);

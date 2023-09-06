@@ -125,7 +125,7 @@ CMD:divmembers(playerid)
 stock showDialogMembersDivision(playerid, org, div)
 {
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{333333}AFK"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}AFK"), strcat(lines,line);
 
 	new atext[10], btext[10], quan, rank, fineTime[24];
 	new year, month, day;
@@ -167,10 +167,10 @@ stock showDialogMembersDivision(playerid, org, div)
 
 		if(org == 8) // ICA
 		{
-			if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n%s {%s}%s %s{cccccc}\t%s [%d]\t{333333}%s", atext, btext, PlayerInfo[i][pName], PlayerInfo[i][pCallSign], DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
-			else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{333333}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+			if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n%s {%s}%s %s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, PlayerInfo[i][pName], PlayerInfo[i][pCallSign], DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+			else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
 		}
-		else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{333333}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+		else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
 		quan ++;
 	}
 
@@ -202,7 +202,7 @@ function call_membersdiv(playerid, org, div)
 
 	new playerLoad[6], playerName[24], rank, offTime[24], signName[24], btext[9];
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{333333}Последняя Активность"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}Последняя Активность"), strcat(lines,line);
 	
 	for(new i = 0; i < rows; i++)
 	{
@@ -235,10 +235,10 @@ function call_membersdiv(playerid, org, div)
 
 		if(org == 8) // ICA
 		{
-			if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n{%s}%s %s{cccccc}\t%s [%d]\t{333333}%s", btext, playerName, signName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
-			else format(line,sizeof(line),"\n{%s}%s{cccccc}\t%s [%d]\t{333333}%s", btext, signName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
+			if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n{%s}%s %s{cccccc}\t%s [%d]\t{444444}%s", btext, playerName, signName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
+			else format(line,sizeof(line),"\n{%s}%s{cccccc}\t%s [%d]\t{444444}%s", btext, signName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
 		}
-		else format(line,sizeof(line),"\n{%s}%s{cccccc}\t%s [%d]\t{333333}%s", btext, playerName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
+		else format(line,sizeof(line),"\n{%s}%s{cccccc}\t%s [%d]\t{444444}%s", btext, playerName, DivisionRankName[org-1][div-1][rank-1], rank, offTime), strcat(lines,line);
 
 		DP[4][playerid] = playerLoad[3];
 	}

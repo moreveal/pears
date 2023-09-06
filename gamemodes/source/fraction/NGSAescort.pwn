@@ -99,7 +99,7 @@ stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприп�
             List[quan][playerid] = i;
             ListParam[quan][playerid] = 0;
             quan ++;
-            format(line,sizeof(line),"\n{ff9000}%s {333333}| %s \t{333333}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 0, 0), getAmmoName(i), get_sklad(g,i,0), maxQuanThingProductEscort(0), getThingPriceGos(i, 0)), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%s {444444}| %s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 0, 0), getAmmoName(i), get_sklad(g,i,0), maxQuanThingProductEscort(0), getThingPriceGos(i, 0)), strcat(lines,line);
         }
     }
 
@@ -111,14 +111,14 @@ stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприп�
             List[quan][playerid] = i;
             ListParam[quan][playerid] = 1;
             quan ++;
-            format(line,sizeof(line),"\n{cccccc}%s \t{333333}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 1, 0), get_sklad(g, i, 1), maxQuanThingProductEscort(1), getThingPriceGos(i, 1)), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}%s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 1, 0), get_sklad(g, i, 1), maxQuanThingProductEscort(1), getThingPriceGos(i, 1)), strcat(lines,line);
         }
     }
 
     List[quan][playerid] = 19142;
     ListParam[quan][playerid] = 2;
     quan ++;
-    format(line,sizeof(line),"\n{ff9000}Бронежилет \t{333333}%d/%d \t{99ff66}%d$", get_sklad(g,19142,2), maxQuanThingProductEscort(2), getThingPriceGos(19142, 2)), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff9000}Бронежилет \t{444444}%d/%d \t{99ff66}%d$", get_sklad(g,19142,2), maxQuanThingProductEscort(2), getThingPriceGos(19142, 2)), strcat(lines,line);
     ShowDialog(playerid,1384,DIALOG_STYLE_TABLIST_HEADERS,"*",lines,"Выбор","Отмена");
     return 1;
 }

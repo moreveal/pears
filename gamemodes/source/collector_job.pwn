@@ -130,7 +130,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
                 VehInfo[newcar][v3dstat] = 4000;
-                format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{333333}%s", thour, tminute, PlayerInfo[playerid][pName]);
+                format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
                 VehLabel[newcar] = CreateDynamic3DTextLabel(store,0xfaf75c99, 1107.387, -1216.869, 17.804,1.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	   			Protect_PutPlayerInVehicle(playerid, newcar, 0);
 	   			CreateRent_Player(playerid, unix, newcar, 6, 100, model, 0, 0, 1107.387, -1216.869, 17.804,1);

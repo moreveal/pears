@@ -518,9 +518,9 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
     if(quanThing == 1) take_away(playerid, fquan, inva); // Отнимаем предмет (по количеству)
     else i_del(playerid, inva); // Отнимаем предмет (целиком)
 
-    format(store, sizeof(store), "[ Мысли ]: Я передал%s %s предмет: {333333}%s", gender(playerid), playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+    format(store, sizeof(store), "[ Мысли ]: Я передал%s %s предмет: {444444}%s", gender(playerid), playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
 	SendClientMessage(playerid, COLOR_GREY, store);
-	format(store, sizeof(store), "[ Мысли ]: %s передал%s мне предмет: {333333}%s", playername(playerid), gender(playerid), GetNameThing(0, fpick, thingType, thingPack));
+	format(store, sizeof(store), "[ Мысли ]: %s передал%s мне предмет: {444444}%s", playername(playerid), gender(playerid), GetNameThing(0, fpick, thingType, thingPack));
 	SendClientMessage(giveplayerid, COLOR_GREY, store);
 	format(store, sizeof(store), "* %s достаёт %s и передаёт %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
 	ProxDetector(20.0, playerid, store, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);

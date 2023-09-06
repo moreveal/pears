@@ -444,7 +444,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
         if(response)
         {
             DP[4][playerid] = listitem;
-			ShowDialog(playerid,1333,DIALOG_STYLE_TABLIST,"{ff9000}*","{cccccc}Свой Цвет {ff9000}>>\n{33ccff}Голубой\n{00cc66}Зелёный\n{ffcc00}Жёлтый\n{ff3333}Красный\n{333333}Чёрный\n{ffffff}Белый","Выбрать","Назад");
+			ShowDialog(playerid,1333,DIALOG_STYLE_TABLIST,"{ff9000}*","{cccccc}Свой Цвет {ff9000}>>\n{33ccff}Голубой\n{00cc66}Зелёный\n{ffcc00}Жёлтый\n{ff3333}Красный\n{444444}Чёрный\n{ffffff}Белый","Выбрать","Назад");
         }
     }
     if(dialogid == 1333)
@@ -551,22 +551,22 @@ stock DynamicPickupVehiceShop()
         if(i <= 4) 
         {
             CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Автосалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Автосалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 5 && i <= 9) 
         {
             CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Мотосалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Мотосалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 10 && i <= 12) 
         {
             CreateDynamicPickup(2511, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Авиасалон\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Авиасалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 13) 
         {
             CreateDynamicPickup(2484, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Салон Катеров\n{333333}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}Салон Катеров\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
     }
 	return 1;
