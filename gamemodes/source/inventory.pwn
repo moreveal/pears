@@ -818,8 +818,8 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 		 		PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
 		 		PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], 2485);
 				PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], 0.0, 0.0, 0.0, -1.0);
-				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 150); // 40
-			 	PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], 60);
+				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 80);
+			 	PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
 			 	PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
 		 	}
 			PlayerTextDrawHide(playerid, PlaNestPickNum[inva][playerid]);
@@ -843,13 +843,12 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 			}
 			else if(stat == 2)
 	 		{
-				PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 40);
 				PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
 				PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
 				PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
 				
 				if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], -226); // Если предмет оставил этот игрок
-				else PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 40); // Если предмет оставил хер знает кто
+				else PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 80); // Если предмет оставил хер знает кто
 			}
 			
 			if(thingPack == 1) yesFindModel = 19054; // Подарок

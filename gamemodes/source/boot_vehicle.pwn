@@ -443,8 +443,8 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		{
 			PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], 2485);
 			PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], 0.0, 0.0, 0.0, -1.0);
-			PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 150);
-			PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], 60);
+			PlayerTextDrawBackgroundColor(playerid, PlaNestPick[inva][playerid], 80);
+			PlayerTextDrawColor(playerid, PlaNestPick[inva][playerid], -1);
 			PlayerTextDrawBoxColor(playerid, PlaNestPick[inva][playerid], 0);
 			PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
 		}
