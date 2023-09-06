@@ -233,7 +233,7 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
         }
     }
     VehShopInfo[playerid][vsModel] = modelId;
-    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0, -1);
+    VehShopInfo[playerid][vsVehicleID] = PP_CreateVehicle(VehShopInfo[playerid][vsVehicleID] , modelId, pos[0],pos[1],pos[2],pos[3], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 9000, 0, -1, 0.0);
     SetVehicleVirtualWorld(VehShopInfo[playerid][vsVehicleID], playerid + 1);
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], interiorId);
     VehShopInfo[playerid][vsVehicleLoad] = true;

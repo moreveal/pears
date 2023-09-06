@@ -1973,7 +1973,7 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 21) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}С помощью рации вы можете разговаривать на волнах организаций [ /r /d /u ]","*",""), i_resetveshi(playerid);
 			 	else if(fpick == 22) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете продать мясо в лавке лесника [ Y >> GPS >> Работа >> Охота ]\n\n{ff9000}Или приготовить на костре и употребить в качестве еды [ Купите уголь и зажигалку в супермаркете ]","*",""), i_resetveshi(playerid);
 			 	else if(fpick == 23) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете надеть мешок на голову другого игрока [ /bag ]","*",""), i_resetveshi(playerid);
-			 	else if(fpick == 24) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Шашка таксиста используется для работы в такси","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 24) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Шашка таксиста используется для работы в такси {444444}[ /gotaxi в транспорте ]","*",""), i_resetveshi(playerid);
 			 	//else if(fpick == 25) // Деньги очкую добавлять в инвентарь
 			 	else if(fpick == 26) return ShowSmartfon(playerid); // Смартфон
 			 	else if(fpick == 31) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_ydo(playerid); // Удочка

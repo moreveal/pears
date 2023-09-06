@@ -381,7 +381,10 @@ function LoadCar(playerid, dab, race_check)
 				SetPVarInt(playerid,"stopload",0);
 				return 1;
 			}
-			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], -1,0, 20); // Спавн через 10 минут неактивности
+			cache_get_value_name_float(0, "health", VehInfo[vehid][vHealth]);
+			if(!VehInfo[vehid][vHealth]) VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
+			else if(VehInfo[vehid][vHealth] < 400.0) VehInfo[vehid][vHealth] = 400.0;
+			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], -1,0, 20, VehInfo[vehid][vHealth]); // Спавн через 10 минут неактивности
 
 			if(vehid == -1)
 			{
