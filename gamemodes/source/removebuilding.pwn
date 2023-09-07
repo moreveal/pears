@@ -16,6 +16,7 @@ stock DeleteObject(playerid)
 	// Автосервис LS 2
 	RemoveBuildingForPlayer(playerid, 4019, 1777.839, -1773.910, 12.523, 0.250);
 	RemoveBuildingForPlayer(playerid, 4025, 1777.839, -1773.910, 12.523, 0.250);
+	RemoveBuildingForPlayer(playerid, 4215, 1777.550, -1775.040, 36.750, 0.250);
 
 	// Автосервис LS 3
 	RemoveBuildingForPlayer(playerid, 6205, 954.273, -1720.800, 20.773, 0.250);

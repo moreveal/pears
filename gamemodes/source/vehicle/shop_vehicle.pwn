@@ -48,7 +48,7 @@ stock buy_VehicleShop(playerid)
 
     PlayerPlaySound(playerid,40405,0,0,0);
     format(store, sizeof(store), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", vehName[modelId], price, get_k(price));
-	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"пїЅпїЅ","пїЅпїЅпїЅ");
+	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
     return 1;
 }
 
@@ -498,7 +498,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
         if(response)
 		{
             new freeSlot = GetPlayerFreeVehSlot(playerid);
-            if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
+            if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет свободного слота для транспорта\n\n{cccccc}Вы можете приобрести до 20 слотов {ffcc00}[ Y >> Donate ]");
 
             new bizId = TP[0][playerid];
             new productId = TP[1][playerid];
@@ -636,9 +636,9 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], 4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.018463, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.118463, "ld_beat:chit"); // Левое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.488903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.188903);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], 1);
     PlayerTextDrawColor(playerid, VehicleShopDraw[5][playerid], 168429055);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[5][playerid], 0);

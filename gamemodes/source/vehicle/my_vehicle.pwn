@@ -1,6 +1,176 @@
 
 new SellVeh[MAX_REALPLAYERS];
 
+#define MAX_PARKING_POS 14
+
+new bool:ParkingBusy[MAX_PARKING_POS];
+new ParkingBusyTemp[MAX_PARKING_POS];
+
+static Float: ParkingPos[MAX_PARKING_POS][4] = {
+{-1630.7909,1289.8961,6.7233,133.9130},
+{-1634.4467,1293.3676,6.7226,135.1459},
+{-1638.0880,1296.9481,6.7203,134.9994},
+{-1641.8350,1300.3325,6.7160,134.3995},
+{-1645.1599,1304.0277,6.7132,134.1048},
+{-1648.7629,1307.6307,6.7155,133.6979},
+{-1655.9745,1314.6727,6.7232,134.3809},
+{532.0536,-1280.5724,16.9271,217.1556},
+{536.1943,-1277.5929,16.9260,217.2419},
+{540.1298,-1274.5122,16.9266,216.9094},
+{544.0961,-1271.4668,16.9310,217.2381},
+{548.2017,-1268.6083,16.9261,217.0673},
+{552.3049,-1265.5759,16.9260,217.4240},
+{527.5638,-1283.0762,16.9273,217.3314}
+};
+
+/*
+// car
+CreateDynamicObject(2114, 950.388854, -1706.210693, 13.973308, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 1210.486572, -913.241516, 43.370220, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 1784.199951, -1787.146240, 14.016786, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -2284.408935, -165.393066, 35.730281, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -2199.331298, 972.793395, 80.419982, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -2557.822509, 667.154357, 28.252510, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 1540.683349, 989.364868, 11.258984, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 1633.046630, 2199.819824, 11.279161, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 2645.016845, 1208.508178, 11.252993, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -1288.076782, 2700.420410, 50.498001, 0.000000, 0.000000, 0.000000);
+// avia
+CreateDynamicObject(2114, 1916.656616, -2218.220703, 14.038616, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -1305.269653, -478.098663, 14.663259, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 1335.117919, 1274.780395, 11.271109, 0.000000, 0.000000, 0.000000);
+// boat
+CreateDynamicObject(2114, 2679.039062, -2318.251953, 3.419997, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, -1476.260986, 694.360717, 1.947611, 0.000000, 0.000000, 0.000000);
+CreateDynamicObject(2114, 2299.353027, 523.798095, 2.214375, 0.000000, 0.000000, 0.000000);
+*/
+
+stock CallVehicleProgress(vehicleid)
+{
+	new parkingId = VehInfo[vehicleid][vCallParking] - 1;
+	if(IsAPlane(VehInfo[vehicleid][vModel])) // Доставка авиатранспорта
+	{
+
+	}
+	else if(IsABoat(VehInfo[vehicleid][vModel])) // Доставка катеров
+	{
+
+	}
+	else 
+	{
+		ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 3; // Занимаем это парковочное место на 3 минуты
+		ACSetVehiclePos(vehicleid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+		SetVehicleZAngle(vehicleid, ParkingPos[parkingId][3]);
+	}
+	SetVehicleVelocity(vehicleid, 0.1, 0.1, 0.0);
+	if(Gas[vehicleid] >= 5) Gas[vehicleid] -= 5;
+
+	LinkVehicleToInterior(vehicleid, 0);
+	SetVehicleVirtualWorld(vehicleid, 0);
+
+	SaveMyVehiclePos(vehicleid);
+	VehInfo[vehicleid][vTimerSpawn] = 20;
+	VehInfo[vehicleid][vNospawn] = 0;
+	VehInfo[vehicleid][vCallParking] = 0;
+
+	new playerid = VehInfo[vehicleid][vCallPlayerid];
+	if(IsOnline(playerid))
+	{
+		if(VehInfo[vehicleid][vSost] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID])
+		{
+			new Float:x,Float:y,Float:z;
+			GetVehiclePos(vehicleid, x, y, z), CreateGps(playerid,x, y, z, 0, 0, 10.0);
+			SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Ваш транспорт доставлен");
+		}
+	}
+	return 1;
+}
+stock FindCallVehicle(playerid, v, &Float:dist)
+{
+	new parkingId = -1;
+	if(IsAPlane(VehInfo[v][vModel])) // Доставка авиатранспорта
+	{
+
+	}
+	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
+	{
+		
+	}
+	else // Доставка всех остальных на парковки
+	{
+		new yescar;
+		for(new i = 0; i < 100; i++)
+		{
+			parkingId = FindParking(playerid, 0, MAX_PARKING_POS); // Ищем по всем парковкам ближайшую
+			yescar = GetVehicleNear(ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
+			if(yescar == 1) ParkingBusy[i] = true, ParkingBusyTemp[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
+			else break;
+		}
+
+		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+	}
+	return parkingId;
+}
+stock GetVehicleNear(Float:x, Float:y, Float:z)
+{
+	new yescar, Float:pos[3];
+	for(new v = 0; v < SKOKOCAROV; v++)
+	{
+		if(VehInfo[v][vModel] > 0)
+		{
+			if(GetVehicleInterior(v) > 0 || GetVehicleVirtualWorld(v) > 0) continue;
+
+			GetVehiclePos(v, pos[0], pos[1], pos[2]);
+			new Float:radius = GetDistanceBetweenPoints3D(x, y, z, pos[0], pos[1], pos[2]);
+			if(radius <= 3.0)
+			{
+				yescar = 1;
+				break;
+			}
+		}
+	}
+	return yescar;
+}
+stock FindParking(playerid, min, max) // Ищем точку парковки для авто и мото
+{
+	if(min < 0) min = 0;
+	if(max > MAX_PARKING_POS) max = MAX_PARKING_POS;
+
+	new Float:dist, Float:findpos, kakoi;
+	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[0][0], ParkingPos[0][1], ParkingPos[0][2]);
+	for(new i = min; i < max; i++)
+	{
+		if(ParkingBusy[i]) continue;
+
+		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2]);
+		if(findpos <= dist) dist = findpos, kakoi = i;
+	}
+	return kakoi;
+}
+stock TimeCallVehicle(metr)
+{
+	new time;
+	if(metr < 100) time = 30;
+	else if(metr >= 100 && metr < 300) time = 60;
+	else if(metr >= 300 && metr < 600) time = 90;
+	else if(metr >= 600 && metr < 900) time = 120;
+	else if(metr >= 900 && metr < 1200) time = 150;
+	else if(metr >= 1200 && metr < 1500) time = 180;
+	else if(metr >= 1500 && metr < 1800) time = 210;
+	else if(metr >= 1800 && metr < 2100) time = 240;
+	else if(metr >= 2100 && metr < 2400) time = 270;
+	else if(metr >= 2400 && metr < 2700) time = 300;
+	else if(metr >= 2700 && metr < 3000) time = 330;
+	else if(metr >= 3000 && metr < 3300) time = 360;
+	else if(metr >= 3300 && metr < 3600) time = 390;
+	else if(metr >= 3600 && metr < 3900) time = 420;
+	else if(metr >= 3900 && metr < 4200) time = 450;
+	else if(metr >= 4200 && metr < 4500) time = 480;
+	else if(metr >= 4500 && metr < 4800) time = 510;
+	else time = 540;
+	return time;
+}
+
 stock checkAccessMyVehicle(playerid)
 {
 	new v = DP[2][playerid];
@@ -240,7 +410,13 @@ stock slcar(playerid, i)
 
     model = GetVehicleModel(v);
     new str[100],sctring[500],qwer[44];
-	format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
+	if(VehInfo[v][vCallParking] == 0) format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
+	else 
+	{
+		new sek = VehInfo[v][vCallTimer]*30;
+		if(sek > 0) format(str,sizeof(str),"{ff9000}Отменить Доставку \t{cccccc}[Примерно: %s]\n", fine_time(sek)), strcat(sctring,str);
+		else format(str,sizeof(str),"{ff9000}Отменить Доставку \t{cccccc}[Меньше 30 секунд]\n"), strcat(sctring,str);
+	}
 	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"{cccccc}Центральный Замок \t{99ff66}[ Открыт ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"{cccccc}Центральный Замок \t{FF6347}[ Закрыт ]\n"), strcat(sctring,str);
 	format(str,sizeof(str),"{cccccc}Найти\t\n"), strcat(sctring,str);
