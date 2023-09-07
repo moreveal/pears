@@ -2,9 +2,17 @@
 new SellVeh[MAX_REALPLAYERS];
 
 #define MAX_PARKING_POS 14
+#define MAX_PARKING_POS_AVIA 75
+#define MAX_PARKING_POS_BOAT 44
 
 new bool:ParkingBusy[MAX_PARKING_POS];
 new ParkingBusyTemp[MAX_PARKING_POS];
+
+new bool:ParkingBusy_Avia[MAX_PARKING_POS_AVIA];
+new ParkingBusyTemp_Avia[MAX_PARKING_POS_AVIA];
+
+new bool:ParkingBusy_Boat[MAX_PARKING_POS_BOAT];
+new ParkingBusyTemp_Boat[MAX_PARKING_POS_BOAT];
 
 static Float: ParkingPos[MAX_PARKING_POS][4] = {
 {-1630.7909,1289.8961,6.7233,133.9130},
@@ -23,38 +31,242 @@ static Float: ParkingPos[MAX_PARKING_POS][4] = {
 {527.5638,-1283.0762,16.9273,217.3314}
 };
 
-/*
-// car
-CreateDynamicObject(2114, 950.388854, -1706.210693, 13.973308, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 1210.486572, -913.241516, 43.370220, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 1784.199951, -1787.146240, 14.016786, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -2284.408935, -165.393066, 35.730281, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -2199.331298, 972.793395, 80.419982, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -2557.822509, 667.154357, 28.252510, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 1540.683349, 989.364868, 11.258984, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 1633.046630, 2199.819824, 11.279161, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 2645.016845, 1208.508178, 11.252993, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -1288.076782, 2700.420410, 50.498001, 0.000000, 0.000000, 0.000000);
-// avia
-CreateDynamicObject(2114, 1916.656616, -2218.220703, 14.038616, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -1305.269653, -478.098663, 14.663259, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 1335.117919, 1274.780395, 11.271109, 0.000000, 0.000000, 0.000000);
-// boat
-CreateDynamicObject(2114, 2679.039062, -2318.251953, 3.419997, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, -1476.260986, 694.360717, 1.947611, 0.000000, 0.000000, 0.000000);
-CreateDynamicObject(2114, 2299.353027, 523.798095, 2.214375, 0.000000, 0.000000, 0.000000);
-*/
+static Float: ParkingPos_Avia[MAX_PARKING_POS_AVIA][4] = { // Парковки авиатранспорта
+// Аэропорт LS
+{1484.9705, -2457.0845, 15.9102, 180.0000},
+{1447.4705, -2457.0845, 15.9102, 180.0000},
+{1410.9705, -2457.0845, 15.9102, 180.0000},
+{2024.6227, -2624.6838, 15.9102, 0.0000},
+{1985.1227, -2624.6838, 15.9102, 0.0000},
+{1948.6227, -2624.6838, 15.9102, 0.0000},
+{1910.6227, -2624.6838, 15.9102, 0.0000},
+{1873.1227, -2624.6838, 15.9102, 0.0000},
+{1836.1227, -2624.6838, 15.9102, 0.0000},
+{1799.1227, -2624.6838, 15.9102, 0.0000},
+{1760.6227, -2624.6838, 15.9102, 0.0000},
+{1721.1227, -2624.6838, 15.9102, 0.0000},
+{1681.6227, -2624.6838, 15.9102, 0.0000},
+{1642.6227, -2624.6838, 15.9102, 0.0000},
+{1603.6227, -2624.6838, 15.9102, 0.0000},
+{1563.6227, -2624.6838, 15.9102, 0.0000},
+{1525.1227, -2624.6838, 15.9102, 0.0000},
+{1485.1227, -2624.6838, 15.9102, 0.0000},
+{1443.1227, -2624.6838, 15.9102, 0.0000},
+{2072.6228, -2624.6838, 15.9102, 0.0000},
+// Аэропорт SF
+{-1643.4525, -279.5267, 16.3477, 45.0000},
+{-1614.7032, -251.0967, 16.3477, 45.0000},
+{-1585.8682, -222.2699, 16.3477, 45.0000},
+{-1557.7203, -194.3840, 16.3477, 45.0000},
+{-1530.6443, -167.3196, 16.3477, 45.0000},
+{-1500.1067, -136.9877, 16.3477, 45.0000},
+{-1472.8480, -110.1375, 16.3477, 45.0000},
+{-1443.3676, -80.3332, 16.3477, 45.0000},
+{-1414.2977, -51.0506, 16.3477, 45.0000},
+{-1385.5145, -22.4456, 16.3477, 45.0000},
+{-1353.7977, 9.2019, 16.3477, 45.0000},
+{-1325.5396, 37.4293, 16.3477, 45.0000},
+{-1296.5555, 66.0195, 16.3477, 45.0000},
+{-1325.7190, -17.9561, 16.3477, 45.0000},
+{-1295.7560, 11.4689, 16.3477, 45.0000},
+{-1294.8219, -47.9764, 16.3477, 45.0000},
+{-1264.6608, -18.0183, 16.3477, 45.0000},
+{-1639.1007, -324.5634, 16.3477, 45.0000},
+{-1606.4260, -291.9571, 16.3477, 45.0000},
+{-1563.0540, -250.0020, 16.3477, 45.0000},
+// Аэропорт LV
+{1356.0406, 1537.1154, 13.0726, -90.0000},
+{1356.0406, 1574.1154, 13.0726, -90.0000},
+{1356.0555, 1608.6288, 13.0726, -90.0000},
+{1326.0406, 1608.6154, 13.0726, -90.0000},
+{1326.0406, 1574.1154, 13.0726, -90.0000},
+{1356.0406, 1683.6154, 13.0726, -90.0000},
+{1540.6125, 1838.9745, 13.0726, 90.0000},
+{1510.1125, 1838.9745, 13.0726, 90.0000},
+{1540.6125, 1801.4745, 13.0726, 90.0000},
+{1540.6125, 1764.4745, 13.0726, 90.0000},
+{1540.6125, 1726.9745, 13.0726, 90.0000},
+{1540.6125, 1689.4745, 13.0726, 90.0000},
+{1540.6125, 1651.9745, 13.0726, 90.0000},
+{1510.1125, 1800.9745, 13.0726, 90.0000},
+{1510.1125, 1764.9745, 13.0726, 90.0000},
+{1510.1125, 1726.9745, 13.0726, 90.0000},
+{1510.1125, 1689.4745, 13.0726, 90.0000},
+{1510.1125, 1651.9745, 13.0726, 90.0000},
+{1605.1676, 1624.6271, 13.0726, 180.0000},
+{1566.1676, 1624.6271, 13.0726, 180.0000},
+// Заброшенный аэропорт
+{209.3908, 2541.6150, 19.1402, 180.0000},
+{174.8908, 2541.6150, 19.1402, 180.0000},
+{139.3908, 2541.6150, 19.1402, 180.0000},
+{103.3908, 2541.6150, 19.1402, 180.0000},
+{66.3908, 2541.6150, 19.1402, 180.0000},
+{32.3908, 2541.6150, 19.1402, 180.0000},
+{-3.6092, 2541.6150, 19.1402, 180.0000},
+{-39.6092, 2541.6150, 19.1402, 180.0000},
+{-39.6092, 2463.1150, 19.1402, 0.0000},
+{-4.6092, 2463.1150, 19.1402, 0.0000},
+{32.8908, 2463.1150, 19.1402, 0.0000},
+{103.3908, 2463.1150, 19.1402, 0.0000},
+{157.3908, 2463.1150, 19.1402, 0.0000},
+{210.8908, 2463.1150, 19.1402, 0.0000},
+{264.3908, 2463.1150, 19.1402, 0.0000}
+};
+
+static Float: ParkingPos_Boat[MAX_PARKING_POS_BOAT][4] = { // Причалы катеров
+// LS
+{2726.9116, -2303.0518, 1.5000, 0.0000},
+{2714.9116, -2303.0518, 1.5000, 0.0000},
+{2703.4116, -2303.0518, 1.5000, 0.0000},
+{2690.9116, -2303.0518, 1.5000, 0.0000},
+{2668.3772, -2311.7397, 1.5000, 0.0000},
+{2656.0933, -2319.3896, 1.5000, 0.0000},
+{2645.0933, -2319.3896, 1.5000, 0.0000},
+{2635.0933, -2319.3896, 1.5000, 0.0000},
+{2542.8855, -2261.3569, 1.5000, 180.0000},
+{2502.2295, -2270.1262, 1.5000, 90.0000},
+{2530.1233, -2270.1421, 1.5000, 90.0000},
+{2324.4065, -2386.9875, 1.5000, 227.0000},
+{2322.6321, -2401.5669, 1.5000, 136.0000},
+{2302.5059, -2421.9861, 1.5000, 136.0000},
+{2353.3967, -2506.3201, 1.5000, 180.0000},
+{2353.5737, -2534.6211, 1.5000, 180.0000},
+// SF
+{-1463.5674, 691.2840, 1.5000, -90.0000},
+{-1463.7920, 708.9854, 1.5000, -90.0000},
+{-1463.7007, 701.5048, 1.5000, -90.0000},
+{-1463.7522, 719.3273, 1.5000, -90.0000},
+{-1463.6979, 729.8329, 1.5000, -90.0000},
+{-1463.9698, 740.2333, 1.5000, -90.0000},
+{-2232.1831, 2391.6943, 1.5000, 45.0000},
+{-2223.7400, 2400.2061, 1.5000, 45.0000},
+{-2212.6575, 2412.1704, 1.5000, 45.0000},
+{-2203.5713, 2421.2063, 1.5000, 45.0000},
+{-2232.9893, 2450.6367, 1.5000, 225.0000},
+{-2241.9817, 2441.4978, 1.5000, 225.0000},
+{-2252.8950, 2430.5632, 1.5000, 225.0000},
+{-2262.1548, 2421.5276, 1.5000, 225.0000},
+{-2941.2561, 496.6350, 1.5000, 0.0000},
+{-2953.5378, 496.6939, 1.5000, 0.0000},
+{-2969.2224, 496.5801, 1.5000, 0.0000},
+{-2982.2869, 496.6307, 1.5000, 0.0000},
+// LV
+{1617.2611, 587.3994, 1.5000, 180.0000},
+{1639.3760, 587.9316, 1.5000, 180.0000},
+{2307.7056, 534.5764, 1.5000, 180.0000},
+{2318.2935, 534.6050, 1.5000, 180.0000},
+{2329.7766, 534.3389, 1.5000, 180.0000},
+{2340.8132, 534.1666, 1.5000, 180.0000},
+{2378.7710, 534.2308, 1.5000, 180.0000},
+{2388.4099, 534.0532, 1.5000, 180.0000},
+{2363.7893, 515.6236, 1.5000, 90.0000},
+{2295.9702, 515.4971, 1.5000, 90.0000}
+};
+
+stock IsACallVehicle(playerid)
+{
+	if(IsPlayerInRangeOfPoint(playerid,2.0,950.388854, -1706.210693, 13.973308) || IsPlayerInRangeOfPoint(playerid,2.0,1210.486572, -913.241516, 43.370220)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,1784.199951, -1787.146240, 14.016786) || IsPlayerInRangeOfPoint(playerid,2.0,-2284.408935, -165.393066, 35.730281)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,-2199.331298, 972.793395, 80.419982) || IsPlayerInRangeOfPoint(playerid,2.0,-2557.822509, 667.154357, 28.252510)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,1540.683349, 989.364868, 11.258984) || IsPlayerInRangeOfPoint(playerid,2.0,1633.046630, 2199.819824, 11.279161)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,2645.016845, 1208.508178, 11.252993) || IsPlayerInRangeOfPoint(playerid,2.0,-1288.076782, 2700.420410, 50.498001)
+	// avia
+	|| IsPlayerInRangeOfPoint(playerid,2.0,1916.656616, -2218.220703, 14.038616) || IsPlayerInRangeOfPoint(playerid,2.0,-1305.269653, -478.098663, 14.663259)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,1335.117919, 1274.780395, 11.271109)
+	// boat
+	|| IsPlayerInRangeOfPoint(playerid,2.0,2679.039062, -2318.251953, 3.419997) || IsPlayerInRangeOfPoint(playerid,2.0,-1476.260986, 694.360717, 1.947611)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,2299.353027, 523.798095, 2.214375)) return 1;
+	return 0;
+}
+
+stock EvacuationVehicle(playerid)
+{
+	PlayerPlaySound(playerid,40405,0,0,0);
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"{cccccc}Загруженные транспортные средства\t "), strcat(lines,line);
+	new quan;
+	for(new i = 0; i < MAX_MYVEHICLE; i++)
+	{
+		List[i][playerid] = 0; // Очищаем листы
+		if(PlayerInfo[playerid][pMyVeh][i] > 0 && PlayerInfo[playerid][pMyVehID][i] > 0)
+		{
+			List[quan][playerid] = i;
+			ListParam[quan][playerid] = 1;
+			format(line,sizeof(line),"\n{ff9000}%d. %s \t {cccccc}[ID %d]", i + 1, vehName[PlayerInfo[playerid][pMyVeh][i]], PlayerInfo[playerid][pMyVehID][i]), strcat(lines,line);
+			quan ++;
+		}
+	}
+
+	// Ключи от Транспорта
+	if(PlayerInfo[playerid][pKeyVeh][0] > 0 && PlayerInfo[playerid][pKeyVeh][3] > gettime() && PlayerInfo[playerid][pKeyVehID] > 0)
+	{
+		format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}[ID %d]", vehName[PlayerInfo[playerid][pKeyVeh][0]], PlayerInfo[playerid][pKeyVehID]), strcat(lines,line);
+		List[quan][playerid] = 0;
+		ListParam[quan][playerid] = 2; // Ключи
+		quan ++;
+	}
+	ShowDialog(playerid,636,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Эвакуация Транспорта",lines,"Выбрать","Отмена");
+	return 1;
+}
+stock PlayerVehicleCall(playerid)
+{
+	new v = DP[2][playerid];
+
+	if(VehInfo[v][vCallParking] > 0)
+	{
+		format(store,sizeof(store),"{FF6347}Вы уверены, что хотите отменить доставку транспорта?");
+		ShowDialog(playerid,646,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+		return 1;
+	}
+
+	if(VehInfo[v][vNospawn] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас вызвать транспорт [ Он используется или с транспортом кто-то взаимодействует ]");
+	if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return ErrorMessage(playerid, "{FF6347}Вы не можете вызвать транспорт в здании или интерьере");
+	if(VehInfo[v][vSeat] > 0) return ErrorMessage(playerid, "{FF6347}В вашем транспорте кто-то сидит [ Нельзя вызвать, это будет считаться телепортом игрока ]");
+	if(PlayerInfo[playerid][pJailed] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете вызывать транспорт находясь в заключении или в больнице");
+	
+	new Float:vdist = GetVehicleDistanceFromPoint(v, Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid]);
+	if(vdist <= 100.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 100 метров ]");
+
+	if(IsTrailerAttachedToVehicle(v)) return ErrorMessage(playerid, "{FF6347}Нельзя вызвать транспорт с прицепом");
+	new towid = gettug(v);
+	if(towid > 0) return format(store, sizeof(store), "{FF6347}Вы не можете вызвать транспорт, его эвакуируют [ Транспорт ID: %d ]", towid), ErrorMessage(playerid, store);
+
+	new current_tick = GetTickCount();
+	new interval = GetTickDiff(current_tick, GetPVarInt(playerid,"afcar"));
+	if(interval < 3000) return ErrorMessage(playerid, "{FF6347}Пожалуйста подождите, нельзя так часто вызывать транспорт");
+	SetPVarInt(playerid,"afcar", Aftextdraw[playerid]);
+
+	new Float:dist;
+	new parkingId = FindCallVehicle(playerid, v, dist);
+	if(parkingId == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Нет свободных мест для доставки транспорта\n\n{cccccc}Сообщите администрации об этом [ /report ]");
+
+	new metr = floatround(dist, floatround_round);
+	DP[4][playerid] = parkingId;
+
+	VehInfo[v][vCallTimer] = TimeCallVehicle(metr) / 30;
+	VehInfo[v][vCallPlayerid] = playerid;
+
+	format(store,sizeof(store),"{cccccc}Ближайшая свободная парковка находится в {99ff66}%d {cccccc}метрах от вас\nВремя доставки: {ff9000}%s\n\n{ff9000}Хотите вызвать транспорт?", metr, fine_time(TimeCallVehicle(metr)));
+	ShowDialog(playerid,641,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+	return 1;
+}
 
 stock CallVehicleProgress(vehicleid)
 {
 	new parkingId = VehInfo[vehicleid][vCallParking] - 1;
 	if(IsAPlane(VehInfo[vehicleid][vModel])) // Доставка авиатранспорта
 	{
-
+		ParkingBusy_Avia[parkingId] = true, ParkingBusyTemp_Avia[parkingId] = 3; // Занимаем это парковочное место на 3 минуты
+		ACSetVehiclePos(vehicleid, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
+		SetVehicleZAngle(vehicleid, ParkingPos_Avia[parkingId][3]);
 	}
 	else if(IsABoat(VehInfo[vehicleid][vModel])) // Доставка катеров
 	{
-
+		ParkingBusy_Boat[parkingId] = true, ParkingBusyTemp_Boat[parkingId] = 3; // Занимаем это парковочное место на 3 минуты
+		ACSetVehiclePos(vehicleid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+		SetVehicleZAngle(vehicleid, ParkingPos_Boat[parkingId][3]);
 	}
 	else 
 	{
@@ -90,11 +302,29 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 	new parkingId = -1;
 	if(IsAPlane(VehInfo[v][vModel])) // Доставка авиатранспорта
 	{
+		new yescar;
+		for(new i = 0; i < MAX_PARKING_POS_AVIA; i++)
+		{
+			parkingId = FindParking_Avia(playerid, 0, MAX_PARKING_POS_AVIA); // Ищем по всем парковкам ближайшую
+			yescar = GetVehicleNear(ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
+			if(yescar == 1) ParkingBusy_Avia[i] = true, ParkingBusyTemp_Avia[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
+			else break;
+		}
 
+		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
 	{
-		
+		new yescar;
+		for(new i = 0; i < MAX_PARKING_POS_BOAT; i++)
+		{
+			parkingId = FindParking_Boat(playerid, 0, MAX_PARKING_POS_BOAT); // Ищем по всем парковкам ближайшую
+			yescar = GetVehicleNear(ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
+			if(yescar == 1) ParkingBusy_Boat[i] = true, ParkingBusyTemp_Boat[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
+			else break;
+		}
+
+		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
 	}
 	else // Доставка всех остальных на парковки
 	{
@@ -143,6 +373,38 @@ stock FindParking(playerid, min, max) // Ищем точку парковки д
 		if(ParkingBusy[i]) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2]);
+		if(findpos <= dist) dist = findpos, kakoi = i;
+	}
+	return kakoi;
+}
+stock FindParking_Avia(playerid, min, max)
+{
+	if(min < 0) min = 0;
+	if(max > MAX_PARKING_POS_AVIA) max = MAX_PARKING_POS_AVIA;
+
+	new Float:dist, Float:findpos, kakoi;
+	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[0][0], ParkingPos_Avia[0][1], ParkingPos_Avia[0][2]);
+	for(new i = min; i < max; i++)
+	{
+		if(ParkingBusy_Avia[i]) continue;
+
+		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2]);
+		if(findpos <= dist) dist = findpos, kakoi = i;
+	}
+	return kakoi;
+}
+stock FindParking_Boat(playerid, min, max)
+{
+	if(min < 0) min = 0;
+	if(max > MAX_PARKING_POS_BOAT) max = MAX_PARKING_POS_BOAT;
+
+	new Float:dist, Float:findpos, kakoi;
+	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[0][0], ParkingPos_Boat[0][1], ParkingPos_Boat[0][2]);
+	for(new i = min; i < max; i++)
+	{
+		if(ParkingBusy_Avia[i]) continue;
+
+		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2]);
 		if(findpos <= dist) dist = findpos, kakoi = i;
 	}
 	return kakoi;
