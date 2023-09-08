@@ -568,9 +568,22 @@ stock SaveMyVehiclePos(vehicleid) // Сохраняем позицию личн�
 {
 	GetVehicleZAngle(vehicleid, VehInfo[vehicleid][vKoordinatA]);
 	GetVehiclePos(vehicleid, VehInfo[vehicleid][vKoordinatX], VehInfo[vehicleid][vKoordinatY], VehInfo[vehicleid][vKoordinatZ]);
+
+	GetVehicleDamageStatus(vehicleid, VehInfo[vehicleid][vPanels], VehInfo[vehicleid][vDoors], VehInfo[vehicleid][vFara], VehInfo[vehicleid][vTires]);
 	return 1;
 }
 
+CMD:vehdamage(playerid)
+{
+	if(!IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+
+	new panels, vehdoors, vehlights, tires;
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	GetVehicleDamageStatus(vehicleid, panels, vehdoors, vehlights, tires);
+	SendClientMessagef(playerid, COLOR_GREY, "[ Мысли ]: vehicleid: %d, panels: %d, doors: %d, lights: %d, tires: %d", vehicleid, panels, vehdoors, vehlights, tires);
+	return 1;
+}
 CMD:car(playerid)
 {
 	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Ваш персонаж учавствует в экспедиции NASA");
@@ -878,15 +891,22 @@ function LoadCar(playerid, dab, race_check)
 			}
 			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vUpgrade]);
 			cache_get_value_name_int(0, "nosell", VehInfo[vehid][vNosell]);
-			
+			cache_get_value_name_int(0, "panels", VehInfo[vehid][vPanels]);
+			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
+			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);
+			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
+
 			VehInfo[vehid][vDatabase] = dab;
-			LoadTunning(vehid);
+			LoadTunning(vehid); // Загружаем тюнинг
 
 			LockCar(vehid,VehInfo[vehid][vCarLock]);
 			GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);
 			SetVehicleParamsEx(vehid, false, false, false, false, false, false, objective);
 			format(string, sizeof(string), "{111111}%s",VehInfo[vehid][vNumer]);
 			SetVehicleNumberPlate(vehid, string);
+
+			// Загружаем повреждения
+			UpdateVehicleDamageStatus(vehid, VehInfo[vehid][vPanels], VehInfo[vehid][vDoors], VehInfo[vehid][vFara], VehInfo[vehid][vTires]);
 
 			SuccessMessage(playerid, "{99ff66}Транспорт загружен");
 		}
