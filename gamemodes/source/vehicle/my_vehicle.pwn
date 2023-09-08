@@ -311,7 +311,7 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
 	{
@@ -324,7 +324,7 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
 	}
 	else // Доставка всех остальных на парковки
 	{
@@ -337,7 +337,7 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
 	}
 	return parkingId;
 }
@@ -402,7 +402,7 @@ stock FindParking_Boat(playerid, min, max)
 	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[0][0], ParkingPos_Boat[0][1], ParkingPos_Boat[0][2]);
 	for(new i = min; i < max; i++)
 	{
-		if(ParkingBusy_Avia[i]) continue;
+		if(ParkingBusy_Boat[i]) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2]);
 		if(findpos <= dist) dist = findpos, kakoi = i;
