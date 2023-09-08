@@ -636,9 +636,9 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], 4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.118463, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.318463, "ld_beat:chit"); // Левое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 69.188903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 68.288903);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], 1);
     PlayerTextDrawColor(playerid, VehicleShopDraw[5][playerid], 168429055);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[5][playerid], 0);
@@ -647,9 +647,9 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[5][playerid], 19134);
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[5][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 170.999816, 295.688934, "ld_beat:chit"); // Правое скругление меню
+    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 170.999816, 296.318463, "ld_beat:chit"); // Правое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[6][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[6][playerid], 50.333347, 69.688903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[6][playerid], 50.333347, 68.288903);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[6][playerid], 1);
     PlayerTextDrawColor(playerid, VehicleShopDraw[6][playerid], 168429055);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[6][playerid], 0);
