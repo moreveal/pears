@@ -760,9 +760,11 @@ function LoadCar(playerid, dab, race_check)
 
 	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
-	new paramet[6], fine;
+	new paramet[6], fine, bool:death;
 	cache_get_value_name_int(0, "finelien", fine);
 	cache_get_value_name_int(0, "sost", paramet[0]);
+	cache_get_value_name_int(0, "model", paramet[1]);
+	cache_get_value_name_bool(0, "death", death);
 
 	if(fine > 0)
 	{
@@ -777,6 +779,21 @@ function LoadCar(playerid, dab, race_check)
 			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Владелец может узнать подробности ареста на штраф стоянке");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
 			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+		}
+		return 1;
+	}
+	if(death)
+	{
+		SetPVarInt(playerid,"stopload",0);
+		if(IsAPlane(paramet[1]) || IsABoat(paramet[1]))
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+		}
+		else
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Автосервисы ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Автосервисы ]");
 		}
 		return 1;
 	}
@@ -813,7 +830,6 @@ function LoadCar(playerid, dab, race_check)
 	}
 	else
 	{
-		cache_get_value_name_int(0, "model", paramet[1]);
 		cache_get_value_name_float(0, "koordinatx", kord[0]);
 		cache_get_value_name_float(0, "koordinaty", kord[1]);
 		cache_get_value_name_float(0, "koordinatz", kord[2]);

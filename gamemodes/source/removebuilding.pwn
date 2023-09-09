@@ -4,7 +4,21 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 559 удалённх объектов
+ 	// 570 удалённх объектов
+
+	// Отель LV Аэропорт LV
+	RemoveBuildingForPlayer(playerid, 712, 1754.780, 1429.380, 18.953, 0.250);
+	RemoveBuildingForPlayer(playerid, 759, 1755.979, 1426.300, 9.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 759, 1754.040, 1432.189, 9.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 759, 1752.369, 1428.630, 9.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1753.060, 1403.160, 24.828, 0.250);
+	RemoveBuildingForPlayer(playerid, 620, 1753.689, 1415.300, 9.820, 0.250);
+	RemoveBuildingForPlayer(playerid, 759, 1752.670, 1405.540, 9.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 759, 1752.670, 1399.890, 9.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1754.780, 1362.660, 19.156, 0.250);
+	RemoveBuildingForPlayer(playerid, 1257, 1721.130, 1422.050, 10.875, 0.250);
+	RemoveBuildingForPlayer(playerid, 792, 1721.030, 1435.189, 9.835, 0.250);
+	RemoveBuildingForPlayer(playerid, 792, 1724.949, 1404.680, 9.835, 0.250);
 
 	// Автосервис LS 1
 	RemoveBuildingForPlayer(playerid, 1522, 1199.969, -917.640, 42.023, 0.250);
