@@ -179,10 +179,42 @@ stock IsACallVehicle(playerid)
 	return 0;
 }
 
-stock EvacuationVehicle(playerid)
+stock ServiceVehicle(playerid)
 {
 	PlayerPlaySound(playerid,40405,0,0,0);
 
+	new b;
+	if(IsPlayerInRangeOfPoint(playerid,2.0,950.388854, -1706.210693, 13.973308)) b = 183;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1210.486572, -913.241516, 43.370220)) b = 184;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1784.199951, -1787.146240, 14.016786)) b = 185;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-2284.408935, -165.393066, 35.730281)) b = 186;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-2199.331298, 972.793395, 80.419982)) b = 187;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-2557.822509, 667.154357, 28.252510)) b = 188;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1540.683349, 989.364868, 11.258984)) b = 189;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1633.046630, 2199.819824, 11.279161)) b = 190;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,2645.016845, 1208.508178, 11.252993)) b = 191;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-1288.076782, 2700.420410, 50.498001)) b = 192;
+	// avia
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1916.656616, -2218.220703, 14.038616)) b = 193;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-1305.269653, -478.098663, 14.663259)) b = 194;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,1335.117919, 1274.780395, 11.271109)) b = 195;
+	// boat
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,2679.039062, -2318.251953, 3.419997)) b = 197;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,-1476.260986, 694.360717, 1.947611)) b = 198;
+	else if(IsPlayerInRangeOfPoint(playerid,2.0,2299.353027, 523.798095, 2.214375)) b = 199;
+
+	if(b == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы далеко от терминала эвакуации транспорта");
+	DP[5][playerid] = b;
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"{FF6347}Восстановить {cccccc}уничтоженный транспорт\t{99ff66}%d$", BizzInfo[b][bPrice][0]*2), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc00}Эвакуировать {cccccc}транспорт\t"), strcat(lines,line);
+	ShowDialog(playerid,634,DIALOG_STYLE_TABLIST,"{ff9000}Транспорт",lines,"Выбрать","Отмена");
+	return 1;
+}
+stock EvacuationVehicle(playerid)
+{
 	format(lines,sizeof(lines),""); // Очищаем Lines
 
 	format(line,sizeof(line),"{cccccc}Загруженные транспортные средства\t "), strcat(lines,line);
@@ -591,9 +623,14 @@ CMD:car(playerid)
 	if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция");
 	if(MPGO[playerid] != 0 || CnnVed[playerid] >= 11 || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Сейчас нельзя управлять своим транспортом");
 	
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
 	PlayerPlaySound(playerid,1150,0,0,0);
+	DP[5][playerid] = 0;
+	showDialog_MyCar(playerid);
+	return 1;
+}
+stock showDialog_MyCar(playerid)
+{
+	format(lines,sizeof(lines),""); // Очищаем Lines
 	format(line,sizeof(line),"{cccccc}Название \t "), strcat(lines,line);
 
 	// Личный Транспорт
@@ -682,6 +719,8 @@ stock slcar(playerid, i)
 		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
 		return 1;
 	}
+
+	if(DP[5][playerid] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт не нужно восстанавливать");
 
     model = GetVehicleModel(v);
     new str[100],sctring[500],qwer[44];
@@ -785,17 +824,35 @@ function LoadCar(playerid, dab, race_check)
 	if(death)
 	{
 		SetPVarInt(playerid,"stopload",0);
-		if(IsAPlane(paramet[1]) || IsABoat(paramet[1]))
+		if(DP[5][playerid] > 0)
 		{
-			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
-			ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+			new b = DP[5][playerid];
+			if(BizzInfo[b][bItem][0] < 2) return ErrorMessage(playerid, "{FF6347}В этом бизнесе надостаточно товаров\n\n{cccccc}Вы можете отправиться в другой сервис");
+				
+			BizzInfo[b][bItem][0] -= 2, BizzInfo[b][bUpdate] = 1;
+			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][0]*2);
+			paybiz(b, BizzInfo[b][bPrice][0]*2);
+
+			death = false;
+
+			// Сохраняем авто
+			format(store,sizeof(store),"UPDATE `pp_cars` SET `death` = '%i' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
+			query_empty(pearsq, store);
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Автосервисы ]");
-			ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Автосервисы ]");
+			if(IsAPlane(paramet[1]) || IsABoat(paramet[1]))
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+			}
+			else
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Автосервисы ]");
+				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Автосервисы ]");
+			}
+			return 1;
 		}
-		return 1;
 	}
 
 	new Float:kord[4], vehid, newid, yescar, string[124];
@@ -913,6 +970,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
 
 			VehInfo[vehid][vDatabase] = dab;
+			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг
 
 			LockCar(vehid,VehInfo[vehid][vCarLock]);
