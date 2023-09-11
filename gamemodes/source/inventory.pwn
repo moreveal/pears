@@ -220,8 +220,8 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	new fpick, tab, inva = invatab-20, fpara, thingType, thingPack;
 	if(Tabs_Load[playerid] == 1) // Лавка Товаров
 	{
-	    tab = OnlineInfo[playerid][oShowInterfaceGoods];
-	    if(!IsOnline(tab)) return closetab(playerid);
+	    tab = OnlineInfo[playerid][oShowTabs];
+	    if(!IsOnline(tab)) return closetab(playerid, 1);
 		fpick = PlayerInfo[tab][pMarkInven][inva];
 		fpara = PlayerInfo[tab][pMarkInvenPara][inva];
 		thingType = PlayerInfo[tab][pMarkInvenType][inva];
@@ -229,7 +229,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	}
 	else if(Tabs_Load[playerid] == 2) // Дом
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceDom];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = DomInfo[tab][dInvent][inva];
 		fpara = DomInfo[tab][dInvPara][inva];
 		thingType = DomInfo[tab][dInvType][inva];
@@ -237,21 +237,21 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	}
 	else if(Tabs_Load[playerid] == 3) // Склад Организации
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceSklad];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = OrganInfo[tab][gInvent][inva];
 		thingType = OrganInfo[tab][gInvType][inva];
 		thingPack = 0;
 	}
 	else if(Tabs_Load[playerid] == 4) // Арендованный Склад
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceRent];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = WhInfo[tab][wInvent][inva];
 		thingType = WhInfo[tab][wInvType][inva];
 		thingPack = 0;
 	}
 	else if(Tabs_Load[playerid] == 5) // Багажник
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceVeh];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = VehInfo[tab][vInvent][inva];
 		fpara = VehInfo[tab][vInvPara][inva];
 		thingType = VehInfo[tab][vInvType][inva];
@@ -276,7 +276,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	}
 	else if(Tabs_Load[playerid] == 8) // Мусорный Контейнер
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceTrash];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = gTrash[inva][tab];
 		fpara = gTrashPara[inva][tab];
 		thingType = gTrashType[inva][tab];
@@ -284,7 +284,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	}
 	else if(Tabs_Load[playerid] == 9) // Биз
 	{
-		tab = OnlineInfo[playerid][oShowInterfaceBiz];
+		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = BizzInfo[tab][bInvent][inva];
 		fpara = BizzInfo[tab][bInvPara][inva];
 		thingType = BizzInfo[tab][bInvType][inva];
@@ -692,7 +692,7 @@ stock i_resettabs(p) // Сброс отображения выбранной я�
 {
 	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectRight] != 9999)
 	{
-	    if(OnlineInfo[p][oShowInterfaceGoods] != 9999 || OnlineInfo[p][oShowInterfaceDom] != 0 || OnlineInfo[p][oShowInterfaceBiz] != 0 || OnlineInfo[p][oShowInterfaceSklad] != 0 || OnlineInfo[p][oShowInterfaceRent] != 9999 || OnlineInfo[p][oShowInterfaceVeh] != 9999 || OnlineInfo[p][oShowInterfaceTrash] != 9999 || Tabs_Load[p] == 6 || Tabs_Load[p] == 7)
+	    if(Tabs_Load[p] > 0 && OnlineInfo[p][oShowTabs] != 9999)
 	    {
 	        new plusitem = 1000;
 			if(Pagetwo[p] == 0 && OnlineInfo[p][oInventSelectRight] >= 0 && OnlineInfo[p][oInventSelectRight] <= 19) plusitem = 20;
@@ -702,7 +702,7 @@ stock i_resettabs(p) // Сброс отображения выбранной я�
 
 			if(plusitem != 1000)
 			{
-				if(OnlineInfo[p][oShowInterfaceGoods] != 9999 || Tabs_Load[p] == 6) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], PlayerInfo[p][pStyle2]);
+				if(Tabs_Load[p] == 6) PlayerTextDrawBackgroundColor(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], PlayerInfo[p][pStyle2]);
 				else if(Tabs_Load[p] == 7)
 				{
 					new t = MyThrow[OnlineInfo[p][oInventSelectRight]][p];
@@ -890,7 +890,7 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 				}
 				if(thingType == 4) yesFindModel = fpick; // Мебель
 			}
-			if(OnlineInfo[playerid][oShowInterfaceSklad] > 0 || OnlineInfo[playerid][oShowInterfaceRent] != 9999)
+			if((Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999)
 			{
 				format(string, sizeof(string), "%d", fquan);
 				textPickInventory(playerid, inva, string);
@@ -1663,7 +1663,7 @@ stock use_sklad(playerid, wh, inva, useinva)
 }
 stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение предметов внутри инвентаря склада организации (с одной ячейки на другую)
 {
-	if(OnlineInfo[playerid][oShowInterfaceSklad] == wh)
+	if(OnlineInfo[playerid][oShowTabs] == wh)
 	{
 	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Перемещать предметы может только лидер"), i_resettabs(playerid);
 		if(OrganInfo[wh][gInvent][getinva] == 0) return i_resettabs(playerid);
@@ -1673,7 +1673,8 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение пр
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceSklad] != OnlineInfo[i][oShowInterfaceSklad]) continue;
+			if(Tabs_Load[i] != 3) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
@@ -1731,7 +1732,8 @@ stock putsklad(wh, pick, kol, fpara, thingType,checklimit)
  		OrganInfo[wh][gUpdate] = 1;
 	 	foreach(Player,i)
 		{
-			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceSklad] == wh) tilesklad(i, OrganInfo[wh][gInvent][put_inva], OrganInfo[wh][gInv][put_inva], put_inva, thingType);
+			if(Tabs_Load[i] != 3) continue;
+			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == wh) tilesklad(i, OrganInfo[wh][gInvent][put_inva], OrganInfo[wh][gInv][put_inva], put_inva, thingType);
 		}
 	}
 	return put_inva;
@@ -1752,7 +1754,8 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 	OrganInfo[g][gUpdate] = 1;
 	foreach(Player, i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceSklad] == g) tilesklad(i, OrganInfo[g][gInvent][dopinf], OrganInfo[g][gInv][dopinf], dopinf, OrganInfo[g][gInvType][dopinf]);
+		if(Tabs_Load[i] != 3) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == g) tilesklad(i, OrganInfo[g][gInvent][dopinf], OrganInfo[g][gInv][dopinf], dopinf, OrganInfo[g][gInvType][dopinf]);
 	}
 	return 1;
 }
@@ -1838,23 +1841,23 @@ stock player_tile(playerid, inva)
 			OnlineInfo[playerid][oInventSelectLeft] = inva;
 			if(Tabs_Load[playerid] == 2)
 			{
-				if(OnlineInfo[playerid][oShowInterfaceDom] > 0) return use_dom(playerid, OnlineInfo[playerid][oShowInterfaceDom], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+				if(OnlineInfo[playerid][oShowTabs] != 9999) return use_dom(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			}
 			else if(Tabs_Load[playerid] == 3)
 			{
-				if(OnlineInfo[playerid][oShowInterfaceSklad] > 0) return use_sklad(playerid, OnlineInfo[playerid][oShowInterfaceSklad], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+				if(OnlineInfo[playerid][oShowTabs] != 9999) return use_sklad(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			}
 			else if(Tabs_Load[playerid] == 4)
 			{
-				if(OnlineInfo[playerid][oShowInterfaceRent] != 9999) return use_rent(playerid, OnlineInfo[playerid][oShowInterfaceRent], OnlineInfo[playerid][oInventSelectRight]);
+				if(OnlineInfo[playerid][oShowTabs] != 9999) return use_rent(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight]);
 			}
 			else if(Tabs_Load[playerid] == 5)
 			{
-				if(OnlineInfo[playerid][oShowInterfaceVeh] != 9999) return use_boot(playerid, OnlineInfo[playerid][oShowInterfaceVeh], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+				if(OnlineInfo[playerid][oShowTabs] != 9999) return use_boot(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			}
 			else if(Tabs_Load[playerid] == 6) return use_mygoods(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			else if(Tabs_Load[playerid] == 7) return use_throw(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
-			else if(Tabs_Load[playerid] == 8) return use_trash(playerid, OnlineInfo[playerid][oShowInterfaceTrash], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+			else if(Tabs_Load[playerid] == 8) return use_trash(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			else i_resettabs(playerid);
 		}
 	}
@@ -1871,15 +1874,15 @@ stock player_tile(playerid, inva)
 			    new myinva = OnlineInfo[playerid][oInventSelectRight], myfpick;
 			    if(Tabs_Load[playerid] == 2)
 				{
-					if(OnlineInfo[playerid][oShowInterfaceDom] > 0) myfpick = DomInfo[OnlineInfo[playerid][oShowInterfaceDom]][dInvent][myinva];
+					if(OnlineInfo[playerid][oShowTabs] != 9999) myfpick = DomInfo[OnlineInfo[playerid][oShowTabs]][dInvent][myinva];
 				}
 				else if(Tabs_Load[playerid] == 3)
 				{
-					if(OnlineInfo[playerid][oShowInterfaceSklad] > 0) myfpick = OrganInfo[OnlineInfo[playerid][oShowInterfaceSklad]][gInvent][myinva];
+					if(OnlineInfo[playerid][oShowTabs] != 9999) myfpick = OrganInfo[OnlineInfo[playerid][oShowTabs]][gInvent][myinva];
 				}
 				else if(Tabs_Load[playerid] == 5)
 				{
-					if(OnlineInfo[playerid][oShowInterfaceVeh] != 9999) myfpick = VehInfo[OnlineInfo[playerid][oShowInterfaceVeh]][vInvent][myinva];
+					if(OnlineInfo[playerid][oShowTabs] != 9999) myfpick = VehInfo[OnlineInfo[playerid][oShowTabs]][vInvent][myinva];
 				}
 			    if(myfpick == 0 || myfpick != fpick) return i_resettabs(playerid), i_resetveshi(playerid);
 				if(thingType == 0 && thingPack == 0)
@@ -1888,21 +1891,21 @@ stock player_tile(playerid, inva)
 					{
 						if(Tabs_Load[playerid] == 2)
 						{
-							if(OnlineInfo[playerid][oShowInterfaceDom] > 0) return use_dom(playerid, OnlineInfo[playerid][oShowInterfaceDom], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_dom(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						}
 						else if(Tabs_Load[playerid] == 3)
 						{
-							if(OnlineInfo[playerid][oShowInterfaceSklad] > 0) return use_sklad(playerid, OnlineInfo[playerid][oShowInterfaceSklad], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_sklad(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						}
 						else if(Tabs_Load[playerid] == 5)
 						{
-							if(OnlineInfo[playerid][oShowInterfaceVeh] != 9999) return use_boot(playerid, OnlineInfo[playerid][oShowInterfaceVeh], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_boot(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						}
 						else if(Tabs_Load[playerid] == 6) return use_mygoods(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						else if(Tabs_Load[playerid] == 7) return use_throw(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						else if(Tabs_Load[playerid] == 8)
 						{
-							if(OnlineInfo[playerid][oShowInterfaceTrash] > 0) return use_trash(playerid, OnlineInfo[playerid][oShowInterfaceTrash], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_trash(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						}
 					}
 					else i_resetveshi(playerid);

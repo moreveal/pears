@@ -516,7 +516,7 @@ stock use_trash(playerid, tra, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
 	
-	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Вы далеко от мусорного контейнера"), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceTrash] = 9999, Tabs_Type[playerid] = 0;
+	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Вы далеко от мусорного контейнера"), closetab(playerid, 1);
 	
 	
 	// Забираем предмет из контейнера
@@ -620,7 +620,8 @@ stock give_trash(tra, fpick, fquan, fpara, fqara, thingType, thingPack)
 	if(trash_empty[tra] == 0) trash_empty[tra] = 1, name_trash(tra);
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceTrash] == tra) item_second(i, gTrash[plalit][tra], gTrashKol[plalit][tra], plalit, 0, gTrashPara[plalit][tra], gTrashType[plalit][tra], gTrashPack[plalit][tra], 0);
+		if(Tabs_Load[i] != 8) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == tra) item_second(i, gTrash[plalit][tra], gTrashKol[plalit][tra], plalit, 0, gTrashPara[plalit][tra], gTrashType[plalit][tra], gTrashPack[plalit][tra], 0);
 	}
 	return 1;
 }
@@ -673,7 +674,8 @@ stock TakeTrash(tra, stat, kolvo, thingType, dopinf)
 	if(quant == 0) trash_empty[tra] = 0, name_trash(tra);
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceTrash] == tra) item_second(i, gTrash[plalit][tra], gTrashKol[plalit][tra], plalit, 0, gTrashPara[plalit][tra], gTrashType[plalit][tra], gTrashPack[plalit][tra], 0);
+		if(Tabs_Load[i] != 8) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == tra) item_second(i, gTrash[plalit][tra], gTrashKol[plalit][tra], plalit, 0, gTrashPara[plalit][tra], gTrashType[plalit][tra], gTrashPack[plalit][tra], 0);
 	}
 	return 1;
 }

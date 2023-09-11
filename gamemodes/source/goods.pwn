@@ -2,7 +2,7 @@ stock showgoods(playerid, i)
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1 || howstun(playerid)) return 1;
 	i_tabs(playerid, 4, 1);
-	OnlineInfo[playerid][oShowInterfaceGoods] = i;
+	OnlineInfo[playerid][oShowTabs] = i;
 	Pagetwo[playerid] = 0;
 	for(new m = 0; m < 20; m++) item_second(playerid, PlayerInfo[i][pMarkInven][m], PlayerInfo[i][pMarkInvenQuan][m], m, 1, PlayerInfo[i][pMarkInvenPara][m], PlayerInfo[i][pMarkInvenType][m], PlayerInfo[i][pMarkInvenPack][m], 0);
 	return 1;
@@ -187,8 +187,9 @@ stock shift_goods(playerid, getinva, putinva)
 	{
 	    if(OnlineInfo[i][oLogged] == 0) continue;
 	    if(OnlineInfo[i][oShowInterface] != 1) continue;
-	    if(OnlineInfo[i][oShowInterfaceGoods] == 9999) continue;
-		if(playerid == OnlineInfo[i][oShowInterfaceGoods]) quanPlayer ++;
+		if(Tabs_Load[i] != 1) continue;
+	    if(OnlineInfo[i][oShowTabs] == 9999) continue;
+		if(playerid == OnlineInfo[i][oShowTabs]) quanPlayer ++;
 	}
 	if(quanPlayer >= 1)
 	{
@@ -246,7 +247,7 @@ stock updategoods(seller, inva)
 	{
 	    if(OnlineInfo[i][oLogged] == 0) continue;
 	    if(OnlineInfo[i][oShowInterface] != 1) continue;
-	    if(OnlineInfo[i][oShowInterfaceGoods] != 9999 && OnlineInfo[i][oShowInterfaceGoods] == seller || Tabs_Load[i] == 6 && i == seller) item_second(i, PlayerInfo[seller][pMarkInven][inva], PlayerInfo[seller][pMarkInvenQuan][inva], inva, 1, PlayerInfo[seller][pMarkInvenPara][inva], PlayerInfo[seller][pMarkInvenType][inva], PlayerInfo[seller][pMarkInvenPack][inva], 0);
+	    if(OnlineInfo[i][oShowTabs] != 9999 && OnlineInfo[i][oShowTabs] == seller || Tabs_Load[i] == 6 && i == seller) item_second(i, PlayerInfo[seller][pMarkInven][inva], PlayerInfo[seller][pMarkInvenQuan][inva], inva, 1, PlayerInfo[seller][pMarkInvenPara][inva], PlayerInfo[seller][pMarkInvenType][inva], PlayerInfo[seller][pMarkInvenPack][inva], 0);
 	}
 	return 1;
 }

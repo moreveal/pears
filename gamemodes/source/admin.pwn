@@ -52,7 +52,8 @@ CMD:delmats(playerid, const params[])
 		OrganInfo[params[0]][gUpdate] = 1;
 		foreach(Player,i)
 		{
-			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceSklad] > 0) tabs_close(i, 2), OnlineInfo[i][oShowInterfaceSklad] = 0, Tabs_Type[i] = 0;
+			if(Tabs_Load[i] != 3) continue;
+			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] != 9999) closetab(i, 1);
 		}
 		AdminLog("delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Очистил Склад");
 		OrgLog(params[0], "delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Очистил Склад");

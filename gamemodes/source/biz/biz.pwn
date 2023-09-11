@@ -507,7 +507,7 @@ stock use_biz(playerid, biz, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != BizzInfo[biz][bInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(IsPlayerInRangeOfPoint(playerid,200.0,BizzInfo[biz][bX], BizzInfo[biz][bY], BizzInfo[biz][bZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceBiz] = 0, Tabs_Type[playerid] = 0;
+	if(IsPlayerInRangeOfPoint(playerid,200.0,BizzInfo[biz][bX], BizzInfo[biz][bY], BizzInfo[biz][bZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), closetab(playerid, 1);
     new thingType = BizzInfo[biz][bInvType][inva];
     if(thingType == 4)
     {
@@ -534,7 +534,7 @@ stock use_biz(playerid, biz, inva, useinva)
 }
 stock shift_biz(playerid, b, getinva, putinva)
 {
-	if(OnlineInfo[playerid][oShowInterfaceBiz] > 0)
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(BizzInfo[b][bInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(BizzInfo[b][bInvent][putinva] != 0) return 1;
@@ -543,7 +543,8 @@ stock shift_biz(playerid, b, getinva, putinva)
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceBiz] != OnlineInfo[i][oShowInterfaceBiz]) continue;
+			if(Tabs_Load[i] != 9) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
@@ -656,7 +657,8 @@ stock put_thing_biz(b, thingId, quan, para, qara, thingType, i)
 	SaveSkladBiz(b, i);
 	foreach(Player,playerid)
 	{
-		if(OnlineInfo[playerid][oLogged] == 1 && OnlineInfo[playerid][oShowInterface] == 1 && OnlineInfo[playerid][oShowInterfaceBiz] == b) item_second(playerid, thingId, quan, i, 0, para, thingType, 0, 0);
+		if(Tabs_Load[i] != 9) continue;
+		if(OnlineInfo[playerid][oLogged] == 1 && OnlineInfo[playerid][oShowInterface] == 1 && OnlineInfo[playerid][oShowTabs] == b) item_second(playerid, thingId, quan, i, 0, para, thingType, 0, 0);
 	}
 	return i;
 }
@@ -688,7 +690,8 @@ stock TakeThingBiz(b, thingId, kolvo, thingType, inv) // Забираем из �
 	SaveSkladBiz(b, plalit);
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceBiz] == b) item_second(i, BizzInfo[b][bInvent][plalit], BizzInfo[b][bInv][plalit], plalit, 0, BizzInfo[b][bInvPara][plalit], BizzInfo[b][bInvType][plalit], BizzInfo[b][bInvPack][plalit], 0);
+		if(Tabs_Load[i] != 9) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == b) item_second(i, BizzInfo[b][bInvent][plalit], BizzInfo[b][bInv][plalit], plalit, 0, BizzInfo[b][bInvPara][plalit], BizzInfo[b][bInvType][plalit], BizzInfo[b][bInvPack][plalit], 0);
 	}
 	return 1;
 }

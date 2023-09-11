@@ -1,22 +1,22 @@
 stock use_boot(playerid, v, inva, useinva)
 {
- 	if(!IsABoot(v)) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
+ 	if(!IsABoot(v)) return closetab(playerid, 1);
  	
  	new Float:Boot[3], Float:Bonnet[3];
  	GetCoordBonnetVehicle(v, Bonnet[0], Bonnet[1], Bonnet[2]);
 	GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
 	if(IsABootFront(v)) // Багажник спереди
 	{
-		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Bonnet[0], Bonnet[1], Bonnet[2])) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
+		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Bonnet[0], Bonnet[1], Bonnet[2])) return closetab(playerid, 1);
 	}
 	else
 	{
-		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Boot[0], Boot[1], Boot[2])) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
+		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Boot[0], Boot[1], Boot[2])) return closetab(playerid, 1);
 	}
 	if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{
-		if(VehInfo[v][vCarLock] >= 1) return boot_close(playerid), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceVeh] = 9999, Tabs_Type[playerid] = 0;
+		if(VehInfo[v][vCarLock] >= 1) return closetab(playerid, 1);
 	}
 
  	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
@@ -120,6 +120,35 @@ stock use_boot(playerid, v, inva, useinva)
     format(store,sizeof(store),"Взял из %s: %s", vehName[VehInfo[v][vModel]], GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
 	return 1;
+}
+stock boot_close(playerid)
+{
+    if(OnlineInfo[playerid][oShowTabs] != 9999)
+    {
+		new kolka = 0;
+		foreach(Player, i)
+		{
+			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[playerid][oShowTabs] == OnlineInfo[i][oShowTabs] && Tabs_Load[i] == 5) kolka ++;
+		}
+	    if(kolka <= 1)
+	    {
+    		if(IsABootFront(OnlineInfo[playerid][oShowTabs])) // Морда
+    		{
+    			GetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, false, boot, objective);
+    		}
+    		else // Жопа
+    		{
+				GetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, false, objective);
+			}
+			VehInfo[OnlineInfo[playerid][oShowTabs]][vBoot] = 0;
+		}
+	}
+	PlayerTextDrawHide(playerid, PlaNestAct[0][playerid]);
+	PlayerTextDrawHide(playerid, PlaNestAct[1][playerid]);
+	OnlineInfo[playerid][oShowTabs] = 9999;
+   	return 1;
 }
 stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 {
@@ -276,7 +305,8 @@ stock put_thing_boot(v, thingId, quan, para, qara, thingType, thingPack, i)
 	if(thingId != 35) SaveOneBoot(v, i);
 	foreach(Player,x)
 	{
-		if(OnlineInfo[x][oLogged] == 1 && OnlineInfo[x][oShowInterface] == 1 && OnlineInfo[x][oShowInterfaceVeh] == v) item_second(x, thingId, VehInfo[v][vInv][i], i, 0, VehInfo[v][vInvPara][i], thingType, thingPack, 0);
+		if(Tabs_Load[x] != 5) continue;
+		if(OnlineInfo[x][oLogged] == 1 && OnlineInfo[x][oShowInterface] == 1 && OnlineInfo[x][oShowTabs] == v) item_second(x, thingId, VehInfo[v][vInv][i], i, 0, VehInfo[v][vInvPara][i], thingType, thingPack, 0);
 	}
 	return i;
 }
@@ -308,13 +338,14 @@ stock TakeBoot(veh, stat, kolvo, thingType, dopinf)
 	SaveOneBoot(veh, plalit);
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceVeh] == veh) item_second(i, VehInfo[veh][vInvent][plalit], VehInfo[veh][vInv][plalit], plalit, 0, VehInfo[veh][vInvPara][plalit], VehInfo[veh][vInvType][plalit], VehInfo[veh][vInvPack][plalit], 0);
+		if(Tabs_Load[i] != 5) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == veh) item_second(i, VehInfo[veh][vInvent][plalit], VehInfo[veh][vInv][plalit], plalit, 0, VehInfo[veh][vInvPara][plalit], VehInfo[veh][vInvType][plalit], VehInfo[veh][vInvPack][plalit], 0);
 	}
 	return 1;
 }
 stock mix_boot(playerid, v, getinva, putinva) // Смешивание предметов
 {
-	if(OnlineInfo[playerid][oShowInterfaceVeh] != 9999)
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(VehInfo[v][vInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(VehInfo[v][vInvent][putinva] != VehInfo[v][vInvent][getinva]) return i_resettabs(playerid);
@@ -323,7 +354,8 @@ stock mix_boot(playerid, v, getinva, putinva) // Смешивание предм
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceVeh] != OnlineInfo[i][oShowInterfaceVeh]) continue;
+			if(Tabs_Load[i] != 5) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
@@ -351,7 +383,7 @@ stock mix_boot(playerid, v, getinva, putinva) // Смешивание предм
 }
 stock shift_boot(playerid, v, getinva, putinva) // Перемещение предметов внутри багажника транспорта (с одной ячейки на другую)
 {
-	if(OnlineInfo[playerid][oShowInterfaceVeh] != 9999)
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(VehInfo[v][vInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(VehInfo[v][vInvent][putinva] != 0) return 1;
@@ -360,7 +392,8 @@ stock shift_boot(playerid, v, getinva, putinva) // Перемещение пре
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceVeh] != OnlineInfo[i][oShowInterfaceVeh]) continue;
+			if(Tabs_Load[i] != 5) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
@@ -533,21 +566,6 @@ stock SaveOneBoot(veh, inva) // Сохранение багажника тран
 		}
 	}
 	return 1;
-}
-stock IsABoot(carid) // Транспорт, у которых есть багажник
-{
-	new model=GetVehicleModel(carid);
-	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 413
-    || model == 415 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 429 || model == 433 || model == 434 || model == 436
-    || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 || model == 466 || model == 467
-    || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 483 || model == 489 || model == 490 || model == 491
-    || model == 492 || model == 494 || model == 495 || model == 496 || model == 498 || model == 500 || model == 502 || model == 503 || model == 504 || model == 505 || model == 506
-    || model == 507 || model == 516 || model == 517 || model == 518 || model == 526 || model == 527 || model == 528 || model == 529 || model == 533 || model == 534 || model == 535
-    || model == 536 || model == 540 || model == 541 || model == 542 || model == 543 || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551
-    || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 || model == 565 || model == 566
-    || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 || model == 596 || model == 597
-    || model == 598 || model == 599 || model == 600 || model == 601 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609){return 1;}
-	return 0;
 }
 stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимиты дома
 {

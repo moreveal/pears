@@ -3,7 +3,7 @@ stock use_dom(playerid, dom, inva, useinva)
     i_resettabs(playerid);
 	i_resetveshi(playerid);
 	
-	if(OnlineInfo[playerid][oShowInterfaceDom] != dom) return 1;
+	if(OnlineInfo[playerid][oShowTabs] != dom) return 1;
 	if(Veshi[playerid] >= 1) return 1;
 	if(gRedakt[playerid] >= 1 && gRedakt[playerid] <= 8) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
  		
@@ -12,7 +12,7 @@ stock use_dom(playerid, dom, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
 	}
 	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
-	&& !IsPlayerInRangeOfPoint(playerid,80.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), tabs_close(playerid, 2), OnlineInfo[playerid][oShowInterfaceDom] = 0, Tabs_Type[playerid] = 0;
+	&& !IsPlayerInRangeOfPoint(playerid,80.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
 		
 	new fpick = DomInfo[dom][dInvent][inva], fquan = DomInfo[dom][dInv][inva], thingType = DomInfo[dom][dInvType][inva], thingPack = DomInfo[dom][dInvPack][inva];
 	if(PlayerInfo[playerid][pDom] != dom)
@@ -93,7 +93,7 @@ stock use_dom(playerid, dom, inva, useinva)
 stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 {
 	new put_inva = -1;
-	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowInterfaceDom] == 0
+	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowTabs] == 9999
 	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return i_resetveshi(playerid);
 	if(gRedakt[playerid] >= 1 && gRedakt[playerid] <= 8) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
@@ -237,7 +237,8 @@ stock put_thing_dom(dom, thingId, quan, para, qara, thingType, thingPack, i)
 	SaveOneTainik(dom, i);
 	foreach(Player,x)
 	{
-		if(OnlineInfo[x][oLogged] == 1 && OnlineInfo[x][oShowInterface] == 1 && OnlineInfo[x][oShowInterfaceDom] == dom) item_second(x, thingId, DomInfo[dom][dInv][i], i, 0, DomInfo[dom][dInvPara][i], thingType, thingPack, 0);
+		if(Tabs_Load[x] != 2) continue;
+		if(OnlineInfo[x][oLogged] == 1 && OnlineInfo[x][oShowInterface] == 1 && OnlineInfo[x][oShowTabs] == dom) item_second(x, thingId, DomInfo[dom][dInv][i], i, 0, DomInfo[dom][dInvPara][i], thingType, thingPack, 0);
 	}
 	return i;
 }
@@ -269,7 +270,8 @@ stock TakeDom(dom, stat, kolvo, thingType, dopinf)
 	SaveOneTainik(dom, plalit);
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowInterfaceDom] == dom) item_second(i, DomInfo[dom][dInvent][plalit], DomInfo[dom][dInv][plalit], plalit, 0, DomInfo[dom][dInvPara][plalit], DomInfo[dom][dInvType][plalit], DomInfo[dom][dInvPack][plalit], 0);
+		if(Tabs_Load[i] != 2) continue;
+		if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == dom) item_second(i, DomInfo[dom][dInvent][plalit], DomInfo[dom][dInv][plalit], plalit, 0, DomInfo[dom][dInvPara][plalit], DomInfo[dom][dInvType][plalit], DomInfo[dom][dInvPack][plalit], 0);
 	}
 	return 1;
 }
@@ -285,7 +287,7 @@ stock CheckDom(dom)
 }
 stock mix_dom(playerid, d, getinva, putinva)
 {
-	if(OnlineInfo[playerid][oShowInterfaceDom] > 0)
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(DomInfo[d][dInvent][getinva] == 0) return i_resettabs(playerid);
 		if(DomInfo[d][dInvent][putinva] != DomInfo[d][dInvent][getinva]) return i_resettabs(playerid);
@@ -294,7 +296,8 @@ stock mix_dom(playerid, d, getinva, putinva)
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceDom] != OnlineInfo[i][oShowInterfaceDom]) continue;
+			if(Tabs_Load[i] != 2) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
@@ -325,7 +328,7 @@ stock mix_dom(playerid, d, getinva, putinva)
 }
 stock shift_dom(playerid, d, getinva, putinva) //  Перемещение предметов внутри инвентаря дома (с одной ячейки на другую)
 {
-	if(OnlineInfo[playerid][oShowInterfaceDom] > 0)
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(DomInfo[d][dInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(DomInfo[d][dInvent][putinva] != 0) return 1;
@@ -334,7 +337,8 @@ stock shift_dom(playerid, d, getinva, putinva) //  Перемещение пре
 		{
 		    if(OnlineInfo[i][oLogged] == 0) continue;
 		    if(OnlineInfo[i][oShowInterface] != 1) continue;
-		    if(OnlineInfo[playerid][oShowInterfaceDom] != OnlineInfo[i][oShowInterfaceDom]) continue;
+			if(Tabs_Load[i] != 2) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
 			quanPlayer ++;
 		}
 		if(quanPlayer >= 2)
