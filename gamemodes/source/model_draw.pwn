@@ -204,6 +204,11 @@ stock GetModelTextDraw(model, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 		case 1444: x = 0.0000, y = 0.0000, z = 30.0000, s = 1.2399;
 		case 19568: x = -30.0000, y = 0.0000, z = 156.0000, s = 1.0999;
 
+		// 11.09.23
+		case 19918: x = -14.0000, y = 0.0000, z = -26.0000, s = 1.2199;
+		case 19832: x = -16.0000, y = 0.0000, z = -26.0000, s = 1.1399;
+		case 3082: x = 0.0000, y = 0.0000, z = 0.0000, s = 1.3199;
+
 
 		default: x = 0.0, y = 0.0, z = 0.0, s = 1.0, findIt = 0;
 	}
@@ -244,7 +249,7 @@ CMD:editmodel(playerid, const params[])
     
     new Float:modelPos[4], findModel;
     GetModelTextDraw(params[0], modelPos[0], modelPos[1], modelPos[2], modelPos[3], findModel);
-    if(findModel == 1) return ErrorText(playerid, "{FF6347}Этот объект уже добавлен в общий stock и не нуждается в редактировании"), AccessorySetting(playerid, DP[3][playerid]);
+    if(findModel == 1) return ErrorText(playerid, "{FF6347}Этот объект уже добавлен в общий stock и не нуждается в редактировании");
 	
     GameTextForPlayer(playerid," ",1000,3);
 	DP[4][playerid] = 0;

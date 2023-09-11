@@ -414,10 +414,16 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 186, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // Гидравлика
     	if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 187, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // Закись Азота
 		if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 188, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Деталь
+		if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 190, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Ремонтный набор Мото
 	}
-	else if(b >= 193 && b <= 200) // Катера и Самолеты
+	else if(b >= 193 && b <= 195) // Сервис Авиатранспорта
 	{
-    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 183, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 191, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
+    	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
+	}
+	else if(b >= 197 && b <= 200) // Сервис Авиатранспорта
+	{
+    	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 192, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
