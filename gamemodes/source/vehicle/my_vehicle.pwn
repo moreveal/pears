@@ -3627,18 +3627,20 @@ stock PlayerVehicleCall(playerid)
 	if(interval < 3000) return ErrorMessage(playerid, "{FF6347}Пожалуйста подождите, нельзя так часто вызывать транспорт");
 	SetPVarInt(playerid,"afcar", Aftextdraw[playerid]);
 
-	new Float:dist;
-	new parkingId = FindCallVehicle(playerid, v, dist);
+	new Float:veh_dist, Float:dist;
+	new parkingId = FindCallVehicle(playerid, v, veh_dist, dist);
 	if(parkingId == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Нет свободных мест для доставки транспорта\n\n{cccccc}Сообщите администрации об этом [ /report ]");
 
+	new veh_metr = floatround(veh_dist, floatround_round);
 	new metr = floatround(dist, floatround_round);
 	DP[4][playerid] = parkingId;
 
-	VehInfo[v][vCallTimer] = TimeCallVehicle(metr) / 30;
+	VehInfo[v][vCallTimer] = TimeCallVehicle(veh_metr) / 30;
 	VehInfo[v][vCallPlayerid] = playerid;
 
-	format(store,sizeof(store),"{cccccc}Ближайшая свободная парковка находится в {99ff66}%d {cccccc}метрах от вас\nВремя доставки: {ff9000}%s\n\n{ff9000}Хотите вызвать транспорт?", metr, fine_time(TimeCallVehicle(metr)));
-	ShowDialog(playerid,641,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(lines,sizeof(lines),"{cccccc}Ближайшая свободная парковка находится в {99ff66}%d {cccccc}метрах от вас\nРасстояние от транспорта до парковки: {ff9000}%d метров\n{cccccc}Время доставки: {ff9000}%s\n\n{ff9000}Хотите вызвать транспорт?", metr, veh_metr, fine_time(TimeCallVehicle(veh_metr)));
+	ShowDialog(playerid,641,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",lines,"Да","Нет");
 	return 1;
 }
 
@@ -3686,7 +3688,7 @@ stock CallVehicleProgress(vehicleid)
 	}
 	return 1;
 }
-stock FindCallVehicle(playerid, v, &Float:dist)
+stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 {
 	new parkingId = -1;
 	if(IsAPlane(VehInfo[v][vModel])) // Доставка авиатранспорта
@@ -3700,7 +3702,11 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
+		if(parkingId >= 0) 
+		{
+			vdist = GetVehicleDistanceFromPoint(v, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
+			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
+		}
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
 	{
@@ -3713,7 +3719,11 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+		if(parkingId >= 0) 
+		{
+			vdist = GetVehicleDistanceFromPoint(v, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+		}
 	}
 	else // Доставка всех остальных на парковки
 	{
@@ -3726,7 +3736,11 @@ stock FindCallVehicle(playerid, v, &Float:dist)
 			else break;
 		}
 
-		if(parkingId >= 0) dist = GetVehicleDistanceFromPoint(v, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+		if(parkingId >= 0) 
+		{
+			vdist = GetVehicleDistanceFromPoint(v, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+		}
 	}
 	return parkingId;
 }
