@@ -4,7 +4,10 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 570 удалённх объектов
+ 	// 571 удалённх объектов
+
+	// Заборчик дамбы
+	RemoveBuildingForPlayer(playerid, 11623, -872.875, 1975.359, 59.585, 0.250);
 
 	// Отель LV Аэропорт LV
 	RemoveBuildingForPlayer(playerid, 712, 1754.780, 1429.380, 18.953, 0.250);

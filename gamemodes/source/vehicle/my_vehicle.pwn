@@ -3433,6 +3433,16 @@ static Float: ParkingPos_Boat[MAX_PARKING_POS_BOAT][4] = { // Причалы к�
 {2295.9702, 515.4971, 1.5000, 90.0000}
 };
 
+stock DynamicPickupParking()
+{
+	for(new i = 0; i < sizeof(ParkingPickup); i++)
+    {
+        CreateDynamicPickup(2485, 1, ParkingPickup[i][0],ParkingPickup[i][1],ParkingPickup[i][2], 0, 0);
+        CreateDynamic3DTextLabel("{ff9000}Парковка {444444}[Зона парковки 10 метров]\n\nCAPS LOCK (Гудок) {cccccc}- припарковать",-1,ParkingPickup[i][0],ParkingPickup[i][1],ParkingPickup[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+    }
+	return 1;
+}
+
 stock IsAServiceVehicleSop(playerid)
 {
 	new shopId;
@@ -3479,12 +3489,12 @@ stock ServiceVehicleShop(playerid)
 	return 1;
 }
 
-stock CheckService(playerid, v)
+stock CheckService(playerid, model)
 {
 	if(IsPlayerInRangeOfPoint(playerid,2.0,1916.656616, -2218.220703, 14.038616) || IsPlayerInRangeOfPoint(playerid,2.0,-1305.269653, -478.098663, 14.663259)
 	|| IsPlayerInRangeOfPoint(playerid,2.0,1335.117919, 1274.780395, 11.271109))
 	{
-		if(!IsAPlane(VehInfo[v][vModel]))
+		if(!IsAPlane(model))
 		{
 			ErrorMessage(playerid, "{FF6347}В этом сервисе обслуживается только авиатранспорт");
 			return 0;
@@ -3493,7 +3503,7 @@ stock CheckService(playerid, v)
 	else if(IsPlayerInRangeOfPoint(playerid,2.0,2679.039062, -2318.251953, 3.419997) || IsPlayerInRangeOfPoint(playerid,2.0,-1476.260986, 694.360717, 1.947611)
 	|| IsPlayerInRangeOfPoint(playerid,2.0,2299.353027, 523.798095, 2.214375))
 	{
-		if(!IsABoat(VehInfo[v][vModel]))
+		if(!IsABoat(model))
 		{
 			ErrorMessage(playerid, "{FF6347}В этом сервисе обслуживаются только катера и лодки");
 			return 0;
@@ -3505,8 +3515,8 @@ stock CheckService(playerid, v)
 	|| IsPlayerInRangeOfPoint(playerid,2.0,1540.683349, 989.364868, 11.258984) || IsPlayerInRangeOfPoint(playerid,2.0,1633.046630, 2199.819824, 11.279161)
 	|| IsPlayerInRangeOfPoint(playerid,2.0,2645.016845, 1208.508178, 11.252993) || IsPlayerInRangeOfPoint(playerid,2.0,-1288.076782, 2700.420410, 50.498001))
 	{
-		if(IsABoat(VehInfo[v][vModel])
-		|| IsAPlane(VehInfo[v][vModel]))
+		if(IsABoat(model)
+		|| IsAPlane(model))
 		{
 			ErrorMessage(playerid, "{FF6347}В этом сервисе обслуживаются автомобили и мототранспорт");
 			return 0;
@@ -3615,7 +3625,9 @@ stock PlayerVehicleCall(playerid)
 	if(VehInfo[v][vSeat] > 0) return ErrorMessage(playerid, "{FF6347}В вашем транспорте кто-то сидит [ Нельзя вызвать, это будет считаться телепортом игрока ]");
 	if(PlayerInfo[playerid][pJailed] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете вызывать транспорт находясь в заключении или в больнице");
 	
-	new Float:vdist = GetVehicleDistanceFromPoint(v, Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid]);
+	new Float:posic[3];
+	GetPlayerPos(playerid, posic[0], posic[1], posic[2]);
+	new Float:vdist = GetVehicleDistanceFromPoint(v, posic[0], posic[1], posic[2]);
 	if(vdist <= 100.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 100 метров ]");
 
 	if(IsTrailerAttachedToVehicle(v)) return ErrorMessage(playerid, "{FF6347}Нельзя вызвать транспорт с прицепом");
@@ -3706,6 +3718,7 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 		{
 			vdist = GetVehicleDistanceFromPoint(v, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
 			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]);
+			CreateGps(playerid, ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2], 0, 0, 10.0);
 		}
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
@@ -3723,6 +3736,7 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 		{
 			vdist = GetVehicleDistanceFromPoint(v, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
 			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]);
+			CreateGps(playerid, ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2], 0, 0, 10.0);
 		}
 	}
 	else // Доставка всех остальных на парковки
@@ -3740,6 +3754,7 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 		{
 			vdist = GetVehicleDistanceFromPoint(v, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
 			dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]);
+			CreateGps(playerid, ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2], 0, 0, 10.0);
 		}
 	}
 	return parkingId;
@@ -3877,38 +3892,36 @@ stock checkAccessMyVehicle(playerid)
 
 CMD:insertcar(playerid)
 {
-	if(IsAtPark(playerid))
+	new typeParking = IsAtPark(playerid);
+	if(typeParking == 0) return 0;
+
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
+	new vehicleid = GetPlayerVehicleID(playerid);
+	new modelka = GetVehicleModel(vehicleid);
+	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
 	{
-    	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
-    	new vehicleid = GetPlayerVehicleID(playerid);
-		new modelka = GetVehicleModel(vehicleid);
-    	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
-    	{
-			if((IsPlayerInRangeOfPoint(playerid,10.0,2814.1458,-1456.9066,16.2500) || IsPlayerInRangeOfPoint(playerid,10.0,-2495.3384,374.9754,35.1194)
-			|| IsPlayerInRangeOfPoint(playerid,10.0,2464.9907,1633.5537,10.8203) || IsPlayerInRangeOfPoint(playerid,10.0,2246.3945,2042.6685,10.8203)) && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
-			if((IsPlayerInRangeOfPoint(playerid,20.0,1932.8682,-2331.4783,13.5469) || IsPlayerInRangeOfPoint(playerid,20.0,-1242.0123,-433.4203,14.1440)
-			|| IsPlayerInRangeOfPoint(playerid,20.0,1339.0453,1497.9590,10.8203)) && (IsACar(modelka) || IsABoat(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}В аэропорту можно оставлять только аэротранспорт");
-			if((IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0) || IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)
-			|| IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) && (IsACar(modelka) || IsAPlane(modelka) || IsAMoto(modelka))) return ErrorMessage(playerid, "{FF6347}К причалу можно швартовать только лодки и катера");
-			if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя доставать или парковать транспорт во время сделки");
-			if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Стоп! Дождитесь завершения загрузки личного транспорта");
+		if(typeParking == 1 && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
+		if(typeParking == 2 && !IsAPlane(modelka)) return ErrorMessage(playerid, "{FF6347}В аэропорту можно оставлять только аэротранспорт");
+		if(typeParking == 3 && !IsABoat(modelka))  return ErrorMessage(playerid, "{FF6347}К причалу можно швартовать только лодки и катера");
+		
+		if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя доставать или парковать транспорт во время сделки");
+		if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Стоп! Дождитесь завершения загрузки личного транспорта");
 
-			SaveMyVehiclePos(vehicleid); // Сохраняем позицию транспорта
-    		SaveCar(vehicleid);
-    		SaveBoot(vehicleid);
-			ACDestroyVehicle(vehicleid);
-    		PlayerPlaySound(playerid,1138,0,0,0);
+		SaveMyVehiclePos(vehicleid); // Сохраняем позицию транспорта
+		SaveCar(vehicleid);
+		SaveBoot(vehicleid);
+		ACDestroyVehicle(vehicleid);
+		PlayerPlaySound(playerid,1138,0,0,0);
 
-    		if(IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0)) PPSetPlayerPos(playerid,2685.9084,-2319.6357,3.0000), SetPlayerFacingAngle(playerid,6.4261);
-			else if(IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)) PPSetPlayerPos(playerid,-1480.8885,681.3235,1.4976), SetPlayerFacingAngle(playerid,0.0);
-			else if(IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) PPSetPlayerPos(playerid,2298.0408,529.1321,1.7944), SetPlayerFacingAngle(playerid,0.0);
-    		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"поставил транспорт на парковку",COLOR_PURPLE,20.0,3000);
-    		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"поставила транспорт на парковку",COLOR_PURPLE,20.0,3000);
+		if(IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0)) PPSetPlayerPos(playerid,2685.9084,-2319.6357,3.0000), SetPlayerFacingAngle(playerid,6.4261);
+		else if(IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)) PPSetPlayerPos(playerid,-1480.8885,681.3235,1.4976), SetPlayerFacingAngle(playerid,0.0);
+		else if(IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) PPSetPlayerPos(playerid,2298.0408,529.1321,1.7944), SetPlayerFacingAngle(playerid,0.0);
+		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"поставил транспорт на парковку",COLOR_PURPLE,20.0,3000);
+		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"поставила транспорт на парковку",COLOR_PURPLE,20.0,3000);
 
-			SuccessMessage(playerid, "{99ff66}Транспорт отправлен на парковку\n\n{cccccc}Достать транспорт [ Y >> Транспорт ]\nПри извлечении, транспорт загрузится здесь");
-    	}
-    	else ErrorMessage(playerid, "{FF6347}Вы можете отправить на парковку только личный транспорт\n\n{cccccc}Примечание: Вы можете убирать транспорт, от которого у вас есть ключи");
+		SuccessMessage(playerid, "{99ff66}Транспорт отправлен на парковку\n\n{cccccc}Достать транспорт [ Y >> Транспорт ]\nПри извлечении, транспорт загрузится здесь");
 	}
+	else ErrorMessage(playerid, "{FF6347}Вы можете отправить на парковку только личный транспорт\n\n{ffcc66}Примечание: Вы можете убирать транспорт, от которого у вас есть ключи");
 	return 1;
 }
 
@@ -4089,7 +4102,7 @@ stock slcar(playerid, i)
 		// Проверка на тип транспорта при восстановлении
 		if(DP[5][playerid] > 0)
 		{
-			if(!CheckService(playerid, v)) return 0;
+			if(!CheckService(playerid, model)) return 0;
 		}
 
 		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", vehName[model]);
@@ -4176,7 +4189,7 @@ function LoadCar(playerid, dab, race_check)
 
 	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
-	new paramet[6], fine, bool:death;
+	new paramet[6], fine, bool:death, repair;
 	cache_get_value_name_int(0, "finelien", fine);
 	cache_get_value_name_int(0, "sost", paramet[0]);
 	cache_get_value_name_int(0, "model", paramet[1]);
@@ -4217,17 +4230,23 @@ function LoadCar(playerid, dab, race_check)
 		if(DP[5][playerid] > 0)
 		{
 			new b = DP[5][playerid];
-			if(BizzInfo[b][bItem][0] < 2) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недостаточно рем. комплектов для восстановления\n\n{cccccc}Вы можете отправиться в другой сервис");
+			new slot;
+			if(IsAMoto(paramet[1])) slot = 6;
+
+			if(BizzInfo[b][bItem][slot] < 2) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недостаточно рем. комплектов для восстановления\n\n{cccccc}Вы можете отправиться в другой сервис");
 				
-			BizzInfo[b][bItem][0] -= 2, BizzInfo[b][bUpdate] = 1;
-			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][0]*2);
-			paybiz(b, BizzInfo[b][bPrice][0]*2);
+			BizzInfo[b][bItem][slot] -= 2;
+			BizzInfo[b][bUpdate] = 1;
+			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]*2);
+			paybiz(b, BizzInfo[b][bPrice][slot]*2);
 
 			death = false;
 
 			// Сохраняем авто
 			format(store,sizeof(store),"UPDATE `pp_cars` SET `death` = '%i' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
 			query_empty(pearsq, store);
+
+			repair = 1;
 		}
 		else
 		{
@@ -4295,9 +4314,14 @@ function LoadCar(playerid, dab, race_check)
 				SetPVarInt(playerid,"stopload",0);
 				return 1;
 			}
-			cache_get_value_name_float(0, "health", VehInfo[vehid][vHealth]);
-			if(!VehInfo[vehid][vHealth]) VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
-			else if(VehInfo[vehid][vHealth] < 400.0) VehInfo[vehid][vHealth] = 400.0;
+			if(repair == 0)
+			{
+				cache_get_value_name_float(0, "health", VehInfo[vehid][vHealth]);
+				if(!VehInfo[vehid][vHealth]) VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
+				else if(VehInfo[vehid][vHealth] < 400.0) VehInfo[vehid][vHealth] = 400.0;
+			}
+			else VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
+			
 			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], -1,0, 20, VehInfo[vehid][vHealth]); // Спавн через 10 минут неактивности
 
 			if(vehid == -1)

@@ -1,18 +1,8 @@
 stock use_boot(playerid, v, inva, useinva)
 {
  	if(!IsABoot(v)) return closetab(playerid, 1);
- 	
- 	new Float:Boot[3], Float:Bonnet[3];
- 	GetCoordBonnetVehicle(v, Bonnet[0], Bonnet[1], Bonnet[2]);
-	GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
-	if(IsABootFront(v)) // Багажник спереди
-	{
-		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Bonnet[0], Bonnet[1], Bonnet[2])) return closetab(playerid, 1);
-	}
-	else
-	{
-		if(!IsPlayerInRangeOfPoint(playerid, 1.0, Boot[0], Boot[1], Boot[2])) return closetab(playerid, 1);
-	}
+	if(!GetVehicleNear_Boot(playerid, v)) return closetab(playerid, 1);
+
 	if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{
@@ -143,11 +133,12 @@ stock boot_close(playerid)
 				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, false, objective);
 			}
 			VehInfo[OnlineInfo[playerid][oShowTabs]][vBoot] = 0;
+			VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
 		}
+		OnlineInfo[playerid][oShowTabs] = 9999;
 	}
 	PlayerTextDrawHide(playerid, PlaNestAct[0][playerid]);
 	PlayerTextDrawHide(playerid, PlaNestAct[1][playerid]);
-	OnlineInfo[playerid][oShowTabs] = 9999;
    	return 1;
 }
 stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)

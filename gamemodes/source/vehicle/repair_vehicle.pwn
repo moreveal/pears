@@ -1,9 +1,42 @@
 
-#define MAX_DRAW_REPAIRVEHICLE 16
+#define MAX_DRAW_REPAIRVEHICLE 12
 
 new PlayerText:RepairVehicleDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // Переменные для хранения текстдравов (Создаваемые)
 
-CMD:testrepair(playerid)
+stock bonet_close(playerid)
+{
+    if(OnlineInfo[playerid][oShowTabs] != 9999)
+    {
+		new kolka = 0;
+		foreach(Player, i)
+		{
+			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[playerid][oShowTabs] == OnlineInfo[i][oShowTabs] && Tabs_Load[i] == 10) kolka ++;
+		}
+	    if(kolka <= 1)
+	    {
+    		if(IsABootFront(OnlineInfo[playerid][oShowTabs])) // Морда
+    		{
+    			GetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, false, objective);
+    		}
+    		else // Жопа
+    		{
+				GetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, false, boot, objective);
+			}
+			VehInfo[OnlineInfo[playerid][oShowTabs]][vBonnet] = 0;
+            VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
+		}
+        OnlineInfo[playerid][oShowTabs] = 9999;
+	}
+	PlayerTextDrawHide(playerid, PlaNestAct[0][playerid]);
+	PlayerTextDrawHide(playerid, PlaNestAct[1][playerid]);
+
+    destroyDraw_RepairVehicle(playerid); // Удаляем текстдравы ремонта
+   	return 1;
+}
+
+CMD:testrepair(playerid) // VREMENNO
 {
     if(OnlineInfo[playerid][oRepairVehDraw] == false) 
     {
@@ -21,6 +54,7 @@ stock showDraw_RepairVehicle(playerid)
     PlayerTextDrawShow(playerid, RepairVehicleDraw[1][playerid]);
     PlayerTextDrawShow(playerid, RepairVehicleDraw[2][playerid]);
     PlayerTextDrawShow(playerid, RepairVehicleDraw[3][playerid]);
+    PlayerTextDrawShow(playerid, RepairVehicleDraw[4][playerid]);
     return 1;
 }
 
@@ -79,18 +113,24 @@ stock posDraw_RepairVehicle(playerid)
     PlayerTextDrawTextSize(playerid, RepairVehicleDraw[1][playerid], draw1[0], draw1[1] * one[1]);
     PlayerTextDrawSetPos(playerid, RepairVehicleDraw[1][playerid], centr[0] - draw1[0] / 2, back_pos[1] + one[1] * 22);
 
-    // Размеры бара загрузки и фона кнопки ремонта
+    // Размеры бара загрузки, фона кнопки ремонта и кнопки ремонта
     new Float:size_bar_x = 30 * one[1];
     PlayerTextDrawTextSize(playerid, RepairVehicleDraw[2][playerid], size_bar_x, 7 * one[1]);
     new Float:fix_y, Float:size_fonbutton_x = 14 * one[1];
     FixTextDrawSquare_X(size_fonbutton_x, fix_y);
     PlayerTextDrawTextSize(playerid, RepairVehicleDraw[3][playerid], size_fonbutton_x, fix_y);
+    new Float:fix_y2, Float:size_button_x = 10 * one[1];
+    FixTextDrawSquare_X(size_button_x, fix_y2);
+    PlayerTextDrawTextSize(playerid, RepairVehicleDraw[4][playerid], size_button_x, fix_y2);
 
-    // Положение бара загрузки и фона кнопки ремонта
+    // Положение бара загрузки, фона кнопки ремонта и кнопки ремонта
     new Float:temp_x = centr[0] - ((size_bar_x) / 2) - ((size_fonbutton_x) / 2), Float:temp_y = back_pos[1] + one[1] * 65;
     PlayerTextDrawSetPos(playerid, RepairVehicleDraw[2][playerid], temp_x, temp_y);
     new Float:centr_bar = temp_y + (7 * one[1]) / 2;
     PlayerTextDrawSetPos(playerid, RepairVehicleDraw[3][playerid], temp_x + size_bar_x + size_fonbutton_x/6, centr_bar - fix_y/2);
+    new Float:fonbar_pos[2];
+    PlayerTextDrawGetPos(playerid, RepairVehicleDraw[3][playerid], fonbar_pos[0], fonbar_pos[1]); // Получаем координаты фона кнопки
+    PlayerTextDrawSetPos(playerid, RepairVehicleDraw[4][playerid], fonbar_pos[0] + size_fonbutton_x/2 - size_button_x/2, centr_bar - fix_y2/2);
     return 1;
 }
 
@@ -165,6 +205,7 @@ stock createDraw_RepairVehicle(playerid)
     PlayerTextDrawSetPreviewRot(playerid, RepairVehicleDraw[3][playerid], 0.000000, 0.000000, 0.000000, 1.000000);
 
     RepairVehicleDraw[4][playerid] = CreatePlayerTextDraw(playerid, 194.000061, 285.807403, "remont_button"); // Кнопка ремонта
+    PlayerTextDrawBackgroundColor(playerid, RepairVehicleDraw[4][playerid], 0);
     PlayerTextDrawLetterSize(playerid, RepairVehicleDraw[4][playerid], 0.012666, 0.149333);
     PlayerTextDrawTextSize(playerid, RepairVehicleDraw[4][playerid], 23.666654, 28.622215);
     PlayerTextDrawAlignment(playerid, RepairVehicleDraw[4][playerid], 1);
@@ -232,14 +273,14 @@ stock createDraw_RepairVehicle(playerid)
     PlayerTextDrawSetOutline(playerid, RepairVehicleDraw[10][playerid], 0);
     PlayerTextDrawFont(playerid, RepairVehicleDraw[10][playerid], 4);
 
-    RepairVehicleDraw[15][playerid] = CreatePlayerTextDraw(playerid, 161.666671, 277.437103, "ld_beat:down"); // Статус третьей полоски
-    PlayerTextDrawLetterSize(playerid, RepairVehicleDraw[15][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, RepairVehicleDraw[15][playerid], 9.333340, 11.199990);
-    PlayerTextDrawAlignment(playerid, RepairVehicleDraw[15][playerid], 1);
-    PlayerTextDrawColor(playerid, RepairVehicleDraw[15][playerid], -1);
-    PlayerTextDrawSetShadow(playerid, RepairVehicleDraw[15][playerid], 0);
-    PlayerTextDrawSetOutline(playerid, RepairVehicleDraw[15][playerid], 0);
-    PlayerTextDrawFont(playerid, RepairVehicleDraw[15][playerid], 4);
+    RepairVehicleDraw[11][playerid] = CreatePlayerTextDraw(playerid, 161.666671, 277.437103, "ld_beat:down"); // Статус третьей полоски
+    PlayerTextDrawLetterSize(playerid, RepairVehicleDraw[11][playerid], 0.000000, 0.000000);
+    PlayerTextDrawTextSize(playerid, RepairVehicleDraw[11][playerid], 9.333340, 11.199990);
+    PlayerTextDrawAlignment(playerid, RepairVehicleDraw[11][playerid], 1);
+    PlayerTextDrawColor(playerid, RepairVehicleDraw[11][playerid], -1);
+    PlayerTextDrawSetShadow(playerid, RepairVehicleDraw[11][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, RepairVehicleDraw[11][playerid], 0);
+    PlayerTextDrawFont(playerid, RepairVehicleDraw[11][playerid], 4);
 
     OnlineInfo[playerid][oRepairVehDraw] = true;
     posDraw_RepairVehicle(playerid);

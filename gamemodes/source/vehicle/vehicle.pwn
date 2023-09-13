@@ -54,6 +54,23 @@ stock PP_AddStaticVehicleEx(modelID, Float: spawn_X, Float: spawn_Y, Float: spaw
     return id;
 }
 
+stock veh_openbonnet(v)
+{
+	GetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, boot, objective);
+	if(IsABootFront(v)) SetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, true, objective);
+	else SetVehicleParamsEx(v, engine, lights, alarm, doors, true, boot, objective);
+	VehInfo[v][vBonnet] = 1;
+	VehInfo[v][vNospawn] = 1;
+}
+stock veh_openboot(v)
+{
+	GetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, boot, objective);
+	if(IsABootFront(v)) SetVehicleParamsEx(v, engine, lights, alarm, doors, true, boot, objective);
+	else SetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, true, objective);
+	VehInfo[v][vBoot] = 1;
+	VehInfo[v][vNospawn] = 1;
+}
+
 stock IsAPosBootOrBonet(playerid, &type)
 {
 	new vehicleid = -1;
@@ -78,14 +95,14 @@ stock IsAPosBootOrBonet(playerid, &type)
 			else if(IsAPlane(VehInfo[v][vModel]))
 			{
 				GetVehiclePos(v, pos_veh[0], pos_veh[1], pos_veh[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 5.0, pos_veh[0], pos_veh[1], pos_veh[2]))
+				if(IsPlayerInRangeOfPoint(playerid, 4.0, pos_veh[0], pos_veh[1], pos_veh[2]))
 				{
 					vehicleid = v;
                     type = 2;
 					break;
 				}
 			}
-			else if(IsACar(VehInfo[v][vModel]))
+			else
 			{
 				type = GetVehicleNear_Side(playerid, v);
                 if(type > 0)
@@ -127,6 +144,21 @@ stock GetVehicleNear_Boot(playerid, v) // Получаем инфу, стоим 
     else // Багажник сзади
     {
         GetCoordBootVehicle(v, pos_veh[0], pos_veh[1], pos_veh[2]);
+        if(IsPlayerInRangeOfPoint(playerid, 1.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
+    }
+	return 0;
+}
+stock GetVehicleNear_Bonet(playerid, v) // Получаем инфу, стоим ли мы у капота авто
+{
+    new Float:pos_veh[3];
+    if(IsABootFront(v)) // Багажник спереди
+    {
+        GetCoordBootVehicle(v, pos_veh[0], pos_veh[1], pos_veh[2]);
+        if(IsPlayerInRangeOfPoint(playerid, 1.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
+    }
+    else // Багажник сзади
+    {
+        GetCoordBonnetVehicle(v, pos_veh[0], pos_veh[1], pos_veh[2]);
         if(IsPlayerInRangeOfPoint(playerid, 1.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
     }
 	return 0;
