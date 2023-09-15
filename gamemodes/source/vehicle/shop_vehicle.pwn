@@ -395,10 +395,6 @@ stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Fl
 
 stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Кликаем по текстдравам
 {
-    new current_tick = GetTickCount();
-    new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
-    if(interval < 500) return 0; // Блокируем, если игрок клацает часто на кнопку
-
     if(playertextid == VehicleShopDraw[0][playerid]) // Left
     {
         PlayerPlaySound(playerid,17803,0,0,0);
@@ -425,7 +421,6 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
         PlayerPlaySound(playerid,17803,0,0,0);
         showDialogVehicleShopColor(playerid);
     }
-    Aftextdraw[playerid] = current_tick;
     return 1;
 }
 stock showDialogVehicleShopColor(playerid)
