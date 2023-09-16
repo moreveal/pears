@@ -16,23 +16,23 @@ stock TradeList(playerid)
 {
     new quan;
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{cccccc}Продажа/Скупка\tКоличество крипты\t{FF6347}Курс\t{99ff66}Суммарно"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Продажа/Скупка\tКоличество золота\t{FF6347}Курс\t{99ff66}Стоимость"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Создать запрос\t\t\t"), strcat(lines,line);
     for(new d; d < MAX_TRADECRYPT; d++)
     {
         if(TradeCrypt[d][tcVlad] == 0 ) continue;
         if(TradeCrypt[d][tcActive] == 0)
         {
-            format(line,sizeof(line),"\n{cccccc}№ %d. Продажа:\t%d\t{FF6347}%d\t{99ff66}%d", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}№ %d. Продажа:\t{FFCC00}%dG\t{FF6347}%d$\t{99ff66}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount]), strcat(lines,line);
         }
         else
         {
-            format(line,sizeof(line),"\n{cccccc}№ %d. Скупка:\t%d\t{FF6347}%d\t{99ff66}%d", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}№ %d. Скупка:\t{FFCC00}%dG\t{FF6347}%d$\t{99ff66}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount]), strcat(lines,line);
         }
         List[quan][playerid] = d;
 		quan ++;
     }
-    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,"Биржевые сделки",lines,"выбрать","");
+    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,"Биржевые сделки",lines,"Выбрать","Отмена");
 }
 
 CMD:ptrade(playerid)
@@ -53,20 +53,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         {
             if(listitem == 0)
 			{
-                format(lines,sizeof(lines),""); // Очищаем Lines
-                if(TradeCrypt[playerid][tcStatus] == 0)
-                {
-                    format(line,sizeof(line),"{cccccc}Введите кол.во золота, которую хотите продать"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Мой Счёт: {FFCC00}%d PearsCoin [%s]", PlayerInfo[playerid][pDonateMoney],get_k(PlayerInfo[playerid][pDonateMoney])), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Продажа золота {99ff66} [Сменить]"), strcat(lines,line);
-                }
-                else
-                {
-                    format(line,sizeof(line),"{cccccc}Введите кол.во золота, которую хотите купить"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Мой Счёт: {FFCC00}%d PearsCoin [%s]", PlayerInfo[playerid][pDonateMoney],get_k(PlayerInfo[playerid][pDonateMoney])), strcat(lines,line);
-                    format(line,sizeof(line),"\n{cccccc}Скупка золота {99ff66} [Сменить]"), strcat(lines,line);
-                }
-				ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST,"Создание запроса",lines,"выбрать","");
+                MyTradeSetting(playerid);
 			}
 			if(listitem >= 1 && listitem <= 50)
 			{
@@ -77,6 +64,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 
 			}
         }
+        else return cmd_ptrade(playerid);
     } 
     else if (dialogid == 1378) // 
     {
@@ -91,16 +79,12 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             }
             else if(listitem == 1)
             {
-                TradeList(playerid);
-            }
-            else if(listitem == 2)
-            {
                 if(TradeCrypt[playerid][tcStatus] == 0) TradeCrypt[playerid][tcStatus] = 1;
 				else TradeCrypt[playerid][tcStatus] = 0;
-                TradeList(playerid);
+                return MyTradeSetting(playerid);
             }
-            else return 1;
         }
+        else return cmd_ptrade(playerid);
     }
     else if(dialogid == 1377) //
     {
@@ -117,6 +101,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             DP[4][playerid] = input;
 			ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"{ff9000}Трейд золота","{cccccc}Введите курс за 1 единицу.\n\nНе меньше 1$ и не больше 50000$","Принять","Отмена");
         }
+        else return MyTradeSetting(playerid);
     }
     else if(dialogid == 1376) //
     {
@@ -153,6 +138,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             PlayerPlaySound(playerid,6401,0,0,0);
 			ShowDialog(playerid,1702,DIALOG_STYLE_MSGBOX, "Создание запроса","Запрос успешно создан!", "Ок", "");
         }
+        else return MyTradeSetting(playerid);
     }
     else if(dialogid == 1375) // Удаление заявки
     {
@@ -163,6 +149,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if (listitem >= 0 && listitem <= 1) return inserttodelete(playerid, id);
             else deltradecrypto(id);
         }
+        else return cmd_ptrade(playerid);
     }
     else if(dialogid == 1374) // Покупка по заявке
     {
@@ -177,10 +164,28 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                     else if(TradeCrypt[id][tcActive] == 0) gotosellcrypto(playerid,id);
             }
         }
+        else return cmd_ptrade(playerid);
     }
     return 1;
 }
 
+stock MyTradeSetting(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"{cccccc}Мой Счёт: {FFCC00}%dG", PlayerInfo[playerid][pDonateMoney]), strcat(lines,line);
+    if(TradeCrypt[playerid][tcStatus] == 0)
+    {
+        format(line,sizeof(line),"\n{cccccc}Введите кол.во золота, которое хотите продать"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Продажа золота {99ff66} [Сменить]"), strcat(lines,line);
+    }
+    else
+    {
+        format(line,sizeof(line),"\n{cccccc}Введите кол.во золота, которое хотите купить"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Скупка золота {99ff66} [Сменить]"), strcat(lines,line);
+    }
+    ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,"Создание запроса",lines,"Выбрать","Отмена");
+    return 1;
+}
 function OnPlayerTradeCrypto(id) {
     TradeCrypt[id][tcNewid] = cache_insert_id();
     return 1;
@@ -217,8 +222,8 @@ stock inserttodelete(playerid, id) // Удаление заказа
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
 
-    format(line,sizeof(line),"{cccccc}Количество: \t{ffffff}%d", TradeCrypt[id][tcCount]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс: \t{ffffff}%d", TradeCrypt[id][tcCourse]), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Количество: \t{FFCC00}%dG", TradeCrypt[id][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс: \t{99ff66}%d$", TradeCrypt[id][tcCourse]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Удалить заявку\t "), strcat(lines,line);
     DP[3][playerid] = id;
 	ShowDialog(playerid,1375,DIALOG_STYLE_TABLIST,"{cccccc}Ваша заявка",lines,"Выбрать","Отмена");
@@ -230,9 +235,9 @@ stock inserttobuy(playerid, b) // Покупка по заявки
     format(lines,sizeof(lines),""); // Очищаем Lines
 
     format(line,sizeof(line),"{cccccc}Продавец: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс: \t{ffffff}%d", TradeCrypt[b][tcCourse]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", TradeCrypt[b][tcCount]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Стоимость: \t{ffffff}%d", TradeCrypt[b][tcCourse]*TradeCrypt[b][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс: \t{99ff66}%d$", TradeCrypt[b][tcCourse]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Количество: \t{ffcc00}%dG", TradeCrypt[b][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Стоимость: \t{99ff66}%d$", TradeCrypt[b][tcCourse]*TradeCrypt[b][tcCount]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Купить по данной заявки\t "), strcat(lines,line);
 	if(TradeCrypt[b][tcActive] == 1)format(store,sizeof(store),"{cccccc}Заявка на скупку золота");
     else if(TradeCrypt[b][tcActive] == 0)format(store,sizeof(store),"{cccccc}Заявка на продажу золота");
