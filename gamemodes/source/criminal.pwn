@@ -20,12 +20,12 @@ CMD:yk(playerid) return cmd_criminal(playerid);
 CMD:uk(playerid) return cmd_criminal(playerid);
 CMD:criminal(playerid)
 {
-	CriminalCodeMenu(playerid);
+	CriminalCodeMenu(playerid, 0);
 	PlayerPlaySound(playerid,40405,0,0,0);
 	return 1;
 }
 
-stock CriminalCodeMenu(playerid) // Меню кодекса
+stock CriminalCodeMenu(playerid, inject) // Меню кодекса
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
 	format(line,sizeof(line),"Статья\tНазвание\tУровень Розыска / Штраф"), strcat(lines,line);
@@ -49,6 +49,14 @@ stock CriminalCodeMenu(playerid) // Меню кодекса
             strcat(lines,line);
         }
 	}
+    if(inject == 0)
+    {
+        DP[4][playerid] = 0;
+    }
+    else
+    {
+        DP[4][playerid] = 1;
+    }
     ShowDialog(playerid,1306,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Кодекс Правонарушений",lines,"Выбрать","Выход");
     return 1;
 }
@@ -141,7 +149,7 @@ stock ShowDialogCriminalCodeInfo(playerid, i)
 stock showDialogCriminalCode(playerid) // При возврате меню или выводе ошибки, открываем предыдущее меню
 {
     if(DP[1][playerid] == 1) CriminalCodeSetting(playerid, DP[0][playerid]); // Если доступ к редактированию имеется, значит открываем меню редактора статьи
-    else CriminalCodeMenu(playerid); // Если нет доступа, открываем просто список всех статей
+    else CriminalCodeMenu(playerid, 0); // Если нет доступа, открываем просто список всех статей
     return 1;
 }
 
@@ -191,5 +199,82 @@ public LoadCriminalCode()
         cache_get_value_name_int(f, "ccUserID", CriminalCodeInfo[f][ccUserID]);
 	}
 	printf("[MODE]: Кодекс Правонарушений [%d ms]", GetTickCount() - time);
+	return 1;
+}
+
+CMD:wanted(playerid, const params[])
+{
+	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1 || PlayerInfo[playerid][pSoska] >= 1)
+	{
+		if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
+		if(!sscanf(params, "i", params[0]))
+		{
+			new string[144];
+			if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети [ Я могу пробить по базе данных в компьютере ]");
+			if(PlayerInfo[params[0]][pCrimes] < 1 && ADUTY[params[0]] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Это не преступник [ Можно пробить по базе данных в компьютере ]");
+			format(string,sizeof(string),"{FFFF00} Подозреваемый: {FFFFFF}%s[%d]: {FFFF00}Розыск: {FF6347}%d [%s]",PlayerInfo[params[0]][pName],params[0],PlayerInfo[params[0]][pCrimes],PlayerInfo[params[0]][pBanReason]);
+			SendClientMessage(playerid, COLOR_GREY,string);
+		}
+		else
+		{
+			PlayerPlaySound(playerid,40405,0,0,0);
+			new str[100], sctring[7000], qwer[74], kol, year, month,day,quan;
+			getdate(year, month, day);
+			format(str,sizeof(str),"{cccccc}Имя\t{FF6347}Розыск\t{FF6347}Преступление\n"), strcat(sctring,str);
+			foreach(Player, i)
+			{
+				if(PlayerInfo[i][pCrimes] > 0 && ADUTY[i] == 0 && OnlineInfo[i][oLogged] == 1)
+                {
+                    format(str,sizeof(str),"{cccccc}%s[%d]\t{FF6347}%d\t{FF6347}%s\n",rpplayername(i),i,PlayerInfo[i][pCrimes],PlayerInfo[i][pBanReason]), strcat(sctring,str), kol++;
+                    List[quan][playerid] = i;
+                }
+            }
+			format(qwer,sizeof(qwer),"{ff9000}Преступники [%d] {99ff66}Online {cccccc}[%02d.%02d.%d]",kol,day,month,year);
+			ShowDialog(playerid,1342,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Ок","");
+		}
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не работаю в законной организации");
+	return 1;
+}
+
+function Call_Wanted(playeridID,targetplayerid,playerid)
+{
+	new datad1,datad2,datad3,unixDB, tyear, tmonth, tday, thour, tminute, tsecond,sctring[6400];
+    cache_get_value_name_int(0, "senderid", datad1);
+    cache_get_value_name_int(0, "playerid", datad2);
+    cache_get_value_name_int(0, "Unix", unixDB);
+    cache_get_value_name_int(0, "row", datad3);
+    stamp2datetime(unixDB, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+    printf("%d != %d",datad1,PlayerInfo[playerid][pID]);
+    if (datad1 != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"Вы не можете снять последнее обвинение\nОбвинение выдано другим человеком");
+    new unix = gettime();
+    if(unixDB+1200 < unix) return ErrorMessage(playerid,"Вы не можете снять последнее обвинение\nпрошло более 20 минут с момента выдачи обвинения");
+    if(PlayerInfo[targetplayerid][pCrimes] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У игрока нет розыска..");
+    if(PlayerInfo[targetplayerid][pCrimes] >= datad3)
+    {
+        PlayerInfo[targetplayerid][pCrimes] -= datad3;
+        format(sctring,sizeof(sctring),"UPDATE `pp_igroki` SET `Crimes` = '%d' WHERE `Name` = '%s'", PlayerInfo[targetplayerid][pCrimes], PlayerInfo[targetplayerid][pName]);
+        query_empty(pearsq, sctring);
+    }
+    SuccessMessage(playerid,"Было снято последнее обвинение");
+	return 1;
+}
+function Call_Wanted2(targetplayerid,playeridID)
+{
+	new rows, datad1[24],datad2,datad3[24],datad5, datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond;
+	cache_get_row_count(rows);
+    printf("%d",rows);
+	for(new i = 0; i < rows; i++)
+	{
+	    cache_get_value_name_int(i, "playerid", datad2);
+	    cache_get_value_name(i, "player", datad1, 24);
+        cache_get_value_name_int(i, "senderid", datad5);
+	    cache_get_value_name(i, "sender", datad3, 24);
+	    cache_get_value_name_int(i, "Unix", datad4);
+		stamp2datetime(datad4, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+		format(str, sizeof(str), "%s[%d] \tОбъявлен в розыск: %02d.%02d.%d.\tОбъявитель:%s[%d]\n", datad1,datad2,datad3,datad5, tday, tmonth, tyear), strcat(sctring,str);
+	}
+	ShowDialog(playeridID,13000,DIALOG_STYLE_TABLIST,"{ff9000}Доска Почета",sctring,"","Выход");
 	return 1;
 }

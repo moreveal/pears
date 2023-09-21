@@ -30,7 +30,10 @@ stock ShowFindZone(playerid, Float:x,Float:y)
 stock DestroyFindZone(playerid)
 {
   if(FindZone[playerid] == 0) return 0;
+  new number = FindZone[playerid];
+  FindZones[number-88] = 0;
   GangZoneDestroy(FindZone[playerid]);
+  FindZone[playerid] = 0;
   showGangZones(playerid);
   return 1;
 }
