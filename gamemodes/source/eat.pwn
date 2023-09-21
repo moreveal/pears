@@ -305,7 +305,11 @@ stock godrink(playerid)
 	// Жидкости
     if(HoldStat[playerid] == 14 || HoldStat[playerid] == 37 || HoldStat[playerid] >= 112 && HoldStat[playerid] <= 124 || HoldStat[playerid] == 139 || HoldStat[playerid] == 172 || HoldStat[playerid] == 173)
     {
-        if(PlayerInfo[playerid][pCap] >= 1) PlayerInfo[playerid][pCap] --;
+        if(PlayerInfo[playerid][pCap] >= 1) 
+		{
+			PlayerInfo[playerid][pCap] --;
+			if(PlayerInfo[playerid][pCap] <= 30) TextDrawShowForPlayer(playerid, PissDraw), TextDrawShowForPlayer(playerid, PissDraw2);
+		}
 		EatPlayer(playerid, 10), eat = 1;
     }
     else

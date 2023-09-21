@@ -202,6 +202,20 @@ public LoadCriminalCode()
 	return 1;
 }
 
+
+
+#define MAX_CRIME_PLAYER 10
+
+enum wantedInfo
+{
+    wanCrime[MAX_CRIME_PLAYER], // id статей
+    wanPoliceId[MAX_CRIME_PLAYER], // userid полицейского
+    wanUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
+    bool:wanLoad // Загрузка розыска из базы
+};
+new WantedInfo[MAX_REALPLAYERS][wantedInfo];
+new WantedPolice[MAX_REALPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
+
 CMD:wanted(playerid, const params[])
 {
 	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1 || PlayerInfo[playerid][pSoska] >= 1)
@@ -209,33 +223,165 @@ CMD:wanted(playerid, const params[])
 		if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
 		if(!sscanf(params, "i", params[0]))
 		{
-			new string[144];
 			if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети [ Я могу пробить по базе данных в компьютере ]");
 			if(PlayerInfo[params[0]][pCrimes] < 1 && ADUTY[params[0]] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Это не преступник [ Можно пробить по базе данных в компьютере ]");
-			format(string,sizeof(string),"{FFFF00} Подозреваемый: {FFFFFF}%s[%d]: {FFFF00}Розыск: {FF6347}%d [%s]",PlayerInfo[params[0]][pName],params[0],PlayerInfo[params[0]][pCrimes],PlayerInfo[params[0]][pBanReason]);
-			SendClientMessage(playerid, COLOR_GREY,string);
+			format(store,sizeof(store),"{FFFF00} Подозреваемый: {FFFFFF}%s[%d]: {FFFF00}Розыск: {FF6347}%d",PlayerInfo[params[0]][pName],params[0],PlayerInfo[params[0]][pCrimes]);
+			SendClientMessage(playerid, COLOR_GREY,store);
 		}
 		else
 		{
 			PlayerPlaySound(playerid,40405,0,0,0);
-			new str[100], sctring[7000], qwer[74], kol, year, month,day,quan;
+			new qwer[74], year, month,day,quan;
 			getdate(year, month, day);
-			format(str,sizeof(str),"{cccccc}Имя\t{FF6347}Розыск\t{FF6347}Преступление\n"), strcat(sctring,str);
+
+            format(lines,sizeof(lines),""); // Очищаем Lines
+			format(line,sizeof(line),"{cccccc}Имя\t{FF6347}Розыск\n"), strcat(lines,line);
 			foreach(Player, i)
 			{
+                List[i][playerid] = 0;
 				if(PlayerInfo[i][pCrimes] > 0 && ADUTY[i] == 0 && OnlineInfo[i][oLogged] == 1)
                 {
-                    format(str,sizeof(str),"{cccccc}%s[%d]\t{FF6347}%d\t{FF6347}%s\n",rpplayername(i),i,PlayerInfo[i][pCrimes],PlayerInfo[i][pBanReason]), strcat(sctring,str), kol++;
+                    format(line,sizeof(line),"{cccccc}%s[%d]\t{FF6347}%d\n",rpplayername(i),i,PlayerInfo[i][pCrimes]), strcat(lines,line);
                     List[quan][playerid] = i;
+                    quan ++;
                 }
             }
-			format(qwer,sizeof(qwer),"{ff9000}Преступники [%d] {99ff66}Online {cccccc}[%02d.%02d.%d]",kol,day,month,year);
-			ShowDialog(playerid,1342,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Ок","");
+			format(qwer,sizeof(qwer),"{ff9000}Преступники [%d] {99ff66}Online {cccccc}[%02d.%02d.%d]",quan,day,month,year);
+			ShowDialog(playerid,1342,DIALOG_STYLE_TABLIST_HEADERS,qwer,lines,"Ок","");
 		}
 	}
 	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не работаю в законной организации");
 	return 1;
 }
+
+stock ShowPlayerWanted(playerid, criminalid)
+{
+    if(!IsOnline(criminalid)) return ErrorMessage(playerid, "{FF6347}Ой.. кажется преступник вышел из игры");
+
+    DP[0][playerid] = criminalid;
+    new qwer[74], uk, quan;
+    new tyear, tmonth, tday, thour, tminute, tsecond;
+    format(lines,sizeof(lines),""); // Очищаем Lines
+			
+    format(line,sizeof(line),"{cccccc}Статья\t{cccccc}Название Статьи\t{cccccc}Полицейский\t{cccccc}Время выдачи\n"), strcat(lines,line);
+    for(new i = 0; i < MAX_CRIME_PLAYER; i++)
+    {
+        List[i][playerid] = 0;
+        if(WantedInfo[criminalid][wanCrime][i] == 0) continue;
+
+        uk = WantedInfo[criminalid][wanCrime][i] - 1;
+        stamp2datetime(WantedInfo[criminalid][wanUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+        format(line,sizeof(line),"{cccccc}%f\t{FF6347}%s\t{0066ff}%s\t{555555}%02d.%02d.%d %02d:%02d\n",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+        List[quan][playerid] = i;
+        quan ++;
+    }
+    format(qwer,sizeof(qwer),"{ff9000}Преступник %s[%d]",rpplayername(criminalid),criminalid);
+    ShowDialog(playerid,1343,DIALOG_STYLE_TABLIST_HEADERS,qwer,lines,"Ок","");
+    return 1;
+}
+
+stock ShowPlayerSettingWanted(playerid, i)
+{
+    new criminalid = DP[0][playerid];
+    if(!IsOnline(criminalid)) return ErrorMessage(playerid, "{FF6347}Ой.. кажется преступник вышел из игры");
+    if(WantedInfo[criminalid][wanCrime][i] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Статья пропала из дела");
+
+    DP[1][playerid] = i;
+    new uk = WantedInfo[criminalid][wanCrime][i] - 1, qwer[74];
+
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"{cccccc}%f\t{FF6347}%s\t{0066ff}%s",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i]), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}Изъять статью из дела"), strcat(lines,line);
+
+    format(qwer,sizeof(qwer),"{ff9000}Преступник %s[%d]",rpplayername(criminalid),criminalid);
+    ShowDialog(playerid,1344,DIALOG_STYLE_TABLIST_HEADERS,qwer,lines,"Ок","");
+    return 1;
+}
+
+stock ClearPlayerWantedArcticle(playerid, criminalid)
+{
+    if(!IsOnline(criminalid)) return ErrorMessage(playerid, "{FF6347}Ой.. кажется преступник вышел из игры");
+
+    new i = DP[1][playerid];
+    new uk = WantedInfo[criminalid][wanCrime][i] - 1;
+    if(WantedInfo[criminalid][wanCrime][i] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Статья пропала из дела");
+    if(WantedInfo[criminalid][wanPoliceId][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pSoska] <= 1
+    && PlayerInfo[playerid][pLeader] != 1 && PlayerInfo[playerid][pLeader] != 2 && PlayerInfo[playerid][pLeader] != 7 
+    && PlayerInfo[playerid][pLeader] != 11 && PlayerInfo[playerid][pLeader] != 21 
+    && PlayerInfo[playerid][pLeader] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту статью из дела\n\n{ffcc66}Статью может изъять только полицейский, который её выдал или лидер");
+
+    if(WantedInfo[criminalid][wanUnix][i] + 1200 < gettime() && PlayerInfo[playerid][pLeader] == 0 
+    && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять статью из дела\n\n{ffcc66}Статья была выдана больше 20 минут назад");
+
+    format(store,sizeof(store),"%f %s",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName]);
+    OrgLog(fraction(playerid), "clearsu", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[criminalid][pID], PlayerInfo[criminalid][pName], PlayerInfo[criminalid][pPlaIP], 0, store);
+
+    ClearPlayerWantedOne(criminalid, i);
+    ShowPlayerWanted(playerid, criminalid);
+    return 1;
+}
+
+stock ClearAllWantedPlayer(playerid)
+{
+    new quan;
+    for(new i = 0; i < MAX_CRIME_PLAYER; i++)
+	{
+        if(WantedInfo[playerid][wanCrime][i] == 0) continue;
+        ClearPlayerWantedOne(playerid, i);
+        quan ++;
+    }
+    return quan;
+}
+
+stock ClearPlayerWantedOne(playerid, i)
+{
+    WantedInfo[playerid][wanCrime][i] = 0;
+    WantedInfo[playerid][wanPoliceId][i] = 0;
+    WantedInfo[playerid][wanUnix][i] = 0;
+    format(WantedPolice[playerid][i], 24,"");
+
+    SaveWantedPlayer(playerid, i);
+    return 1;
+}
+
+stock SaveWantedPlayer(playerid, i)
+{
+    format(big_query,sizeof(big_query),"UPDATE `pp_wanted` SET `wanCrime%d`='%d', `wanPoliceId%d`='%d', `wanUnix%d`='%d', `WantedPolice%d`='%s' WHERE `id`='%d'", 
+    i, WantedInfo[playerid][wanCrime][i], 
+    i, WantedInfo[playerid][wanPoliceId][i], 
+    i, WantedInfo[playerid][wanUnix][i], 
+    i, WantedPolice[playerid][i], PlayerInfo[playerid][pID]);
+    query_empty(pearsq, big_query);
+    return 1;
+}
+function Call_loadwanted(playerid, race_check)
+{
+	new rows, string[24];
+	cache_get_row_count(rows);
+	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+
+	if(rows)
+	{
+        for(new i = 0; i < MAX_CRIME_PLAYER; i++)
+		{
+		    format(string, sizeof(string), "wanCrime%d", i);
+			cache_get_value_name_int(0, string, WantedInfo[playerid][wanCrime][i]);
+            format(string, sizeof(string), "wanPoliceId%d", i);
+			cache_get_value_name_int(0, string, WantedInfo[playerid][wanPoliceId][i]);
+            format(string, sizeof(string), "wanUnix%d", i);
+			cache_get_value_name_int(0, string, WantedInfo[playerid][wanUnix][i]);
+            format(string, sizeof(string), "WantedPolice%d", i);
+            cache_get_value_name(i, string, WantedPolice[playerid][i], 24);
+		}
+	}
+	else format(store, sizeof(store), "INSERT INTO `pp_wanted` SET `playerid` = '%d'", PlayerInfo[playerid][pID]), query_empty(pearsq, store);
+
+    WantedInfo[playerid][wanLoad] = false;
+	return 1;
+}
+
+
 
 function Call_Wanted(playeridID,targetplayerid,playerid)
 {
