@@ -692,7 +692,7 @@ stock i_resettabs(p) // Сброс отображения выбранной я�
 {
 	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectRight] != 9999)
 	{
-	    if(Tabs_Load[p] > 0 && OnlineInfo[p][oShowTabs] != 9999)
+	    if(Tabs_Load[p] > 0)
 	    {
 	        new plusitem = 1000;
 			if(Pagetwo[p] == 0 && OnlineInfo[p][oInventSelectRight] >= 0 && OnlineInfo[p][oInventSelectRight] <= 19) plusitem = 20;
@@ -2299,5 +2299,68 @@ stock player_tile(playerid, inva)
 			return 1;
 		}
 	}
+	return 1;
+}
+
+stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки под тип открытого меню
+{
+	new Float:pos_vklad_x, Float:pos_vklad_y;
+	new Float:size_vklad_x, Float:size_vklad_y;
+	PlayerTextDrawGetPos(playerid, PlaInventDraw[5][playerid], pos_vklad_x, pos_vklad_y);
+	PlayerTextDrawGetTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, size_vklad_y);
+
+	new Float:sized_y = PlayerInfo[playerid][pDrawSize_Y][6];
+	new Float:otstyp_y = 4.0+sized_y/8;
+
+	if(type == 0) // Все вкладки закрыты
+	{
+		new Float:temp_size_x, Float:temp_size_y;
+		PlayerTextDrawGetTextSize(playerid, PlaNestTabs[2][playerid], temp_size_x, temp_size_y);
+		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_size_y + otstyp_y*2);
+	}
+	else if(type == 2 || type == 9) // Дом, Бизнес
+	{
+		if(stat == 0) // Без нижней кнопки
+		{
+			new Float:temp_pos_x, Float:temp_pos_y;
+			PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
+			PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y);
+		}
+		else
+		{
+			new Float:temp_pos_x, Float:temp_pos_y;
+			new Float:temp_size_x, Float:temp_size_y;
+			PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
+			PlayerTextDrawGetTextSize(playerid, PlaInventDraw[4][playerid], temp_size_x, temp_size_y);
+
+			PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y + temp_size_y + otstyp_y);
+		}
+	}
+	else if(type == 1 || type == 6) // Товары, Мои Товары
+	{
+		new Float:temp_pos_x, Float:temp_pos_y;
+		PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
+		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y);
+	}
+	else if(type == 5) // Багажник
+	{
+		new Float:temp_pos_x, Float:temp_pos_y;
+		new Float:temp_size_x, Float:temp_size_y;
+		PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
+		PlayerTextDrawGetTextSize(playerid, PlaInventDraw[4][playerid], temp_size_x, temp_size_y);
+
+		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y + temp_size_y + otstyp_y);
+	}
+	else if(type == 3 || type == 4 || type == 7 || type == 8 || type == 10)
+	{
+		new Float:temp_pos_x, Float:temp_pos_y;
+		new Float:temp_size_x, Float:temp_size_y;
+		PlayerTextDrawGetPos(playerid, PlaInventDraw[6][playerid], temp_pos_x, temp_pos_y);
+		PlayerTextDrawGetTextSize(playerid, PlaInventDraw[6][playerid], temp_size_x, temp_size_y);
+
+		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y - pos_vklad_y + temp_size_y + otstyp_y);
+	}
+
+	PlayerTextDrawShow(playerid, PlaInventDraw[5][playerid]);
 	return 1;
 }
