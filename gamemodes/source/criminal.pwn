@@ -272,7 +272,7 @@ stock ShowPlayerWanted(playerid, criminalid)
         uk = WantedInfo[criminalid][wanCrime][i] - 1;
         stamp2datetime(WantedInfo[criminalid][wanUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 
-        format(line,sizeof(line),"{cccccc}%f\t{FF6347}%s\t{0066ff}%s\t{555555}%02d.%02d.%d %02d:%02d\n",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%.1f\t{FF6347}%s\t{0066ff}%s\t{555555}%02d.%02d.%d %02d:%02d\n",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
         List[quan][playerid] = i;
         quan ++;
     }
@@ -291,7 +291,7 @@ stock ShowPlayerSettingWanted(playerid, i)
     new uk = WantedInfo[criminalid][wanCrime][i] - 1, qwer[74];
 
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{cccccc}%f\t{FF6347}%s\t{0066ff}%s",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i]), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}%.1f\t{FF6347}%s\t{0066ff}%s",CriminalCodeInfo[uk][ccArcticle],CriminalCodeInfo[uk][ccName],WantedPolice[criminalid][i]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Изъять статью из дела"), strcat(lines,line);
 
     format(qwer,sizeof(qwer),"{ff9000}Преступник %s[%d]",rpplayername(criminalid),criminalid);
@@ -336,18 +336,31 @@ stock ClearAllWantedPlayer(playerid)
 
 stock ClearPlayerWantedOne(playerid, i)
 {
+    new statiya = WantedInfo[playerid][wanCrime][i];
+    new zv = CriminalCodeInfo[statiya-1][ccLevel];
+    new savezv = PlayerInfo[playerid][pCrimes];
+    PlayerInfo[playerid][pCrimes] = savezv - zv;
     WantedInfo[playerid][wanCrime][i] = 0;
     WantedInfo[playerid][wanPoliceId][i] = 0;
     WantedInfo[playerid][wanUnix][i] = 0;
     format(WantedPolice[playerid][i], 24,"");
-
+    if(PursuitTime[playerid] > 0)
+    {
+        Pursuit[i] = 9999;
+        PursuitTime[i] = 0;
+        TextDrawHideForPlayer(i, PursuitDraw[0]);
+        TextDrawHideForPlayer(i, PursuitDraw[1]);
+        TextDrawHideForPlayer(i, PursuitDraw[2]);
+        PlayerTextDrawHide(i, PursDraw1);
+    }
     SaveWantedPlayer(playerid, i);
+    SendClientMessage(i, COLOR_GREY, "{ff0000}[ POLICE ]: {0088ff}С вас была снята последняя статья в деле.");
     return 1;
 }
 
 stock SaveWantedPlayer(playerid, i)
 {
-    format(big_query,sizeof(big_query),"UPDATE `pp_wanted` SET `wanCrime%d`='%d', `wanPoliceId%d`='%d', `wanUnix%d`='%d', `WantedPolice%d`='%s' WHERE `id`='%d'", 
+    format(big_query,sizeof(big_query),"UPDATE `pp_wanted` SET `wanCrime%d`='%d', `wanPoliceId%d`='%d', `wanUnix%d`='%d', `WantedPolice%d`='%s' WHERE `newid`='%d'", 
     i, WantedInfo[playerid][wanCrime][i], 
     i, WantedInfo[playerid][wanPoliceId][i], 
     i, WantedInfo[playerid][wanUnix][i], 
@@ -375,7 +388,7 @@ function Call_loadwanted(playerid, race_check)
             cache_get_value_name(i, string, WantedPolice[playerid][i], 24);
 		}
 	}
-	else format(store, sizeof(store), "INSERT INTO `pp_wanted` SET `playerid` = '%d'", PlayerInfo[playerid][pID]), query_empty(pearsq, store);
+	else format(store, sizeof(store), "INSERT INTO `pp_wanted` SET `newid` = '%d'", PlayerInfo[playerid][pID]), query_empty(pearsq, store);
 
     WantedInfo[playerid][wanLoad] = false;
 	return 1;
