@@ -4440,11 +4440,11 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		}
 		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], vehSumma[VehInfo[newcar][vModel]]/10, "");
 		
-		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `newid` = '%d'", VehInfo[newcar][vNewid]);
-		query_empty(pearsq, store);
+		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
+        query_empty(pearsq, store);
 
-		PlayerInfo[playerid][pMyVeh][slot] = 0;
-		PlayerInfo[playerid][pMyVehID][slot] = 0;
+		PlayerInfo[playerid][pMyVeh][slot - 1] = 0;
+		PlayerInfo[playerid][pMyVehID][slot - 1] = 0;
 		
 		PlayerPlaySound(playerid,1138,0,0,0);
 		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"сдал транспорт в утиль",COLOR_PURPLE,20.0,3000);
@@ -4453,7 +4453,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		ACDestroyVehicle(newcar);
 
 		// Сохраняем авто
-  		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot, PlayerInfo[playerid][pID]);
+  		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
         query_empty(pearsq, store);
 
 		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), SetPlayerFacingAngle(playerid,270.0);

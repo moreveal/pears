@@ -172,7 +172,7 @@ stock ShowSkill(playerid, targetid)
 stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // Подбираем подарок для навыка
 {
     thingType = 2;
-    if(abilityID == 0) // Навык Рыбока
+    if(abilityID == 0) // Навык Рыбака
 	{
 	    switch(abilityStat)
 	    {
@@ -257,7 +257,7 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 	        }
      	}
 	}
-	else if(abilityID == 3) // Навык Инженера
+	else if(abilityID == 3 || abilityID == 8) // Навык Инженера, Автомеханика
 	{
 	    switch(abilityStat)
 	    {
@@ -364,4 +364,65 @@ stock getAbilityRealProgress(p, a) // Узнаем сколько нужно п�
 	else if(PlayerInfo[p][pAbilStat][a] == 10) realProgress = 80000;
 	else realProgress = 0;
 	return realProgress;
+}
+
+function Call_setability(playerid, stat, amount, str_name[])
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new datadid;
+		cache_get_value_name_int(0, "id", datadid);
+		if(stat == 3)
+		{
+			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Voennik` = '%d' WHERE `id` = '%d'", amount, datadid);
+			query_empty(pearsq, store_query);
+		}
+		else
+		{
+			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Ability%d` = '%d' WHERE `id` = '%d'", stat, amount, datadid);
+			query_empty(pearsq, store_query);
+		}
+		format(store, sizeof(store), "Вы изменили %s игроку %s Offline", abilityName[stat], str_name);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+
+		AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", amount, abilityName[stat]);
+	}
+	else format(store,sizeof(store),"[ Мысли ]: Такого аккаунта не существует {FF6347}[ %s ]",str_name), SendClientMessage(playerid,COLOR_GREY,store);
+	return 1;
+}
+CMD:setability(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    new tmp[24],giveplayerid,stat,amount;
+    if (sscanf(params, "s[24]ii", tmp,stat,amount))
+	{
+	    SendClientMessage(playerid, COLOR_GREY, "Изменить навык: /setability ID [номер навыка] [уровень]");
+		format(store, sizeof(store), "%d %s | %d %s | %d %s", 0, abilityName[0], 1, abilityName[1], 2, abilityName[2]);
+		SendClientMessage(playerid, COLOR_GREY, store);
+		format(store, sizeof(store), "%d %s | %d %s | %d %s", 3, abilityName[3], 4, abilityName[4], 5, abilityName[5]);
+		SendClientMessage(playerid, COLOR_GREY, store);
+		format(store, sizeof(store), "%d %s | %d %s | %d %s", 6, abilityName[6], 7, abilityName[7], 8, abilityName[8]);
+		SendClientMessage(playerid, COLOR_GREY, store);
+		return 1;
+	}
+	if(stat < 0 || stat >= MAX_ABILITY) return ErrorMessage(playerid, "{FF6347}Неверный id навыка");
+
+ 	giveplayerid = ReturnUser(tmp, 1);
+	if(!IsPlayerConnected(giveplayerid))
+	{
+		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		mysql_tquery(pearsq, store, "Call_setability", "ddds", playerid, stat, amount, tmp);
+		return 1;
+	}
+	PlayerInfo[giveplayerid][pAbility][stat] = amount;
+	update_ability(giveplayerid, stat, 1);
+
+	format(store, sizeof(store), "Вы изменили %s игроку %s", abilityName[stat], PlayerInfo[giveplayerid][pName]);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+
+	AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], amount, abilityName[stat]);
+	return 1;
 }
