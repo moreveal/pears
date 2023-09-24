@@ -1,16 +1,116 @@
 
 /*
 Как добавить новый кастомный скин на сервер?
-1. Добавить в stock AddCustomSkins новый AddCharSyncModel(Оригинальный скин, Новый ID)
+1. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 2. Добавить в stock IsASkinExisting новый ID скина
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
+
+Как добавить скин в магазин?
+1. Добавить в stock государственного склада (таким образом, владельцы магазинов смогут закупить новый скин и продавать в своём магазе)
 */
 
 stock AddCustomSkins()
 {
-	AddCharSyncModel(60, 312); // Пацанчик pearspeda
-	AddCharSyncModel(6, 313); // jason
-	AddCharSyncModel(91, 314); // pearspedb
+	// AddCarSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
+	AddCharSyncModel(60, 400); // pearspeda (Значит не 400, а 15500) male
+	AddCharSyncModel(233, 401); // pearspedb (Значит не 401, а 15501)
+	AddCharSyncModel(19, 402); // 15502 pearspedc male
+	AddCharSyncModel(59, 403); // 15503 pearspedd male
+	AddCharSyncModel(93, 404); // 15504, pearspede
+	AddCharSyncModel(19, 405); // 15505, pearspedf male
+	AddCharSyncModel(59, 406); // 15506, pearspedg male
+	AddCharSyncModel(125, 407); // 15507, pearspedh male
+	AddCharSyncModel(23, 408); // 15508, pearspedi male
+	AddCharSyncModel(21, 409); // 15509, pearspedj male
+	AddCharSyncModel(216, 410); // 15510, pearspedk
+	AddCharSyncModel(55, 411); // 15511, pearspedl
+	AddCharSyncModel(93, 412); // 15512, pearspedm
+	AddCharSyncModel(7, 413); // 15513, pearspedn male
+	AddCharSyncModel(125, 414); // 15514, pearspedo male
+	AddCharSyncModel(1, 415); // 15515, pearspedp male
+	AddCharSyncModel(248, 416); // 15516, pearspedq male
+	AddCharSyncModel(29, 417); // 15517, pearspedr male
+	AddCharSyncModel(121, 418); // 15518, pearspeds male
+	AddCharSyncModel(125, 419); // 15519, pearspedt male
+	AddCharSyncModel(240, 420); // 15520, pearspedu male
+	AddCharSyncModel(223, 421); // 15521, pearspedv male
+	AddCharSyncModel(28, 422); // 15522, pearspedw male
+	AddCharSyncModel(25, 423); // 15523, pearspedx male
+	AddCharSyncModel(150, 424); // 15524, pearspedy
+	AddCharSyncModel(237, 425); // 15525, pearspedz
+	AddCharSyncModel(93, 426); // 15526, pearspedaa
+	AddCharSyncModel(12, 427); // 15527, pearspedab
+	AddCharSyncModel(40, 428); // 15528, pearspedac
+	AddCharSyncModel(178, 429); // 15529, pearspedad
+	AddCharSyncModel(233, 430); // 15530, pearspedae
+	AddCharSyncModel(93, 431); // 15531, pearspedaf
+	AddCharSyncModel(226, 432); // 15532, pearspedag 
+	AddCharSyncModel(223, 433); // 15533, pearspedah
+	AddCharSyncModel(233, 434); // 15534, pearspedai
+	AddCharSyncModel(233, 435); // 15535, pearspedaj
+	AddCharSyncModel(233, 436); // 15536, pearspedak
+	AddCharSyncModel(93, 437); // 15537, pearspedal
+	AddCharSyncModel(233, 438); // 15538, pearspedam
+	AddCharSyncModel(223, 439); // 15539, pearspedan male
+	AddCharSyncModel(240, 440); // 15540, pearspedao male
+	AddCharSyncModel(126, 441); // 15541, pearspedap male
+	AddCharSyncModel(93, 442); // 15542, pearspedaq
+	AddCharSyncModel(240, 443); // 15543, pearspedar male
+	AddCharSyncModel(93, 444); // 15544, pearspedas
+	AddCharSyncModel(93, 445); // 15545, pearspedat
+	AddCharSyncModel(91, 446); // 15546, pearspedau
+	AddCharSyncModel(233, 447); // 15547, pearspedav
+	AddCharSyncModel(216, 448); // 15548, pearspedaw
+	AddCharSyncModel(216, 449); // 15549, pearspedax
+	AddCharSyncModel(93, 450); // 15550, pearspeday
+	AddCharSyncModel(240, 451); // 15551, pearspedaz male
+	AddCharSyncModel(180, 452); // 15552, pearspedba male
+	AddCharSyncModel(226, 453); // 15553, pearspedbb
+	AddCharSyncModel(60, 454); // 15554, pearspedbc male
+	AddCharSyncModel(257, 455); // 15555, pearspedbd
+	AddCharSyncModel(257, 456); // 15556, pearspedbe
+	AddCharSyncModel(41, 457); // 15557, pearspedbf
+	AddCharSyncModel(40, 458); // 15558, pearspedbg
+	AddCharSyncModel(233, 459); // 15559, pearspedbh
+	AddCharSyncModel(233, 460); // 15560, pearspedbi
+	AddCharSyncModel(93, 461); // 15561, pearspedbj
+	AddCharSyncModel(233, 462); // 15562, pearspedbk
+	AddCharSyncModel(98, 463); // 15563, pearspedbl male
+	AddCharSyncModel(98, 464); // 15564, pearspedbm male
+	AddCharSyncModel(98, 465); // 15565, pearspedbn male
+	AddCharSyncModel(98, 466); // 15566, pearspedbo male
+	AddCharSyncModel(112, 467); // 15567, pearspedbp male
+	AddCharSyncModel(127, 468); // 15568, pearspedbq male
+	AddCharSyncModel(127, 469); // 15569, pearspedbr male
+	AddCharSyncModel(240, 470); // 15570, pearspedbs male
+	AddCharSyncModel(240, 471); // 15571, pearspedbt male
+	AddCharSyncModel(240, 472); // 15572, pearspedbu male
+	AddCharSyncModel(45, 473); // 15573, pearspedbv male
+	AddCharSyncModel(91, 474); // 15574, pearspedbw
+	AddCharSyncModel(98, 475); // 15575, pearspedbx male
+	AddCharSyncModel(216, 476); // 15576, pearspedby
+	AddCharSyncModel(25, 477); // 15577, pearspedbz male
+	AddCharSyncModel(120, 478); // 15578, pearspedca male
+	AddCharSyncModel(179, 479); // 15579, pearspedcb male
+	AddCharSyncModel(233, 480); // 15580, pearspedcc
+	AddCharSyncModel(12, 481); // 15581, pearspedcd
+	AddCharSyncModel(40, 482); // 15582, pearspedce
+	AddCharSyncModel(85, 483); // 15583, pearspedcf
+	AddCharSyncModel(233, 484); // 15584, pearspedcg
+	AddCharSyncModel(233, 485); // 15585, pearspedct
+	AddCharSyncModel(233, 486); // 15586, pearspedch
+	AddCharSyncModel(12, 487); // 15587, pearspedci
+	AddCharSyncModel(217, 488); // 15588, pearspedcj male
+	AddCharSyncModel(12, 489); // 15589, pearspedck
+	AddCharSyncModel(7, 490); // 15590, pearspedcl male
+	AddCharSyncModel(93, 491); // 15591, pearspedcm
+	AddCharSyncModel(98, 492); // 15592, pearspedcn male
+	AddCharSyncModel(143, 493); // 15593, pearspedco male
+	AddCharSyncModel(93, 494); // 15594, pearspedcp
+	AddCharSyncModel(91, 495); // 15595, pearspedcq
+	AddCharSyncModel(40, 496); // 15596, pearspedcr
+	AddCharSyncModel(46, 497); // 15597, pearspedcs male
+
     return 1;
 }
 
@@ -18,7 +118,8 @@ stock AddCustomSkins()
 stock IsASkinExisting(s)
 {
     if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
-    || s >= 312 && s <= 314) return 1; // Кастомные скины пирса
+
+    || s >= 15500 && s <= 15597) return 1; // Кастомные скины пирса
     return 0;
 }
 
@@ -34,7 +135,10 @@ stock GetSkinSex(s)
  	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
 
 	// Кастомные
-	|| s == 312 || s == 313) return 0; // 0 - мужской скин
+	|| s == 15500 || s == 15502 || s == 15503 || s >= 15505 && s <= 15509 || s >= 15513 && s <= 15523
+	|| s == 15539 || s == 15540 || s == 15541 || s == 15543 || s == 15551 || s == 15552 || s == 15554
+	|| s >= 15563 && s <= 15573 || s == 15575 || s == 15577 || s == 15578 || s == 15579 || s == 15588
+	|| s == 15590 || s == 15592 || s == 15593 || s == 15597) return 0; // 0 - мужской скин
  	else return 1; // Все остальные 1, значит женские
 }
 
@@ -42,7 +146,11 @@ stock GetSkinSex(s)
 stock GetSkinPresentation(forplayerid, playerid)
 {
     new skinId;
-    if(IsPlayerSyncModels(forplayerid)) skinId = GetPlayerSyncSkin(playerid); // Если моды установлены, показываем модельку с учётом модов
+    if(IsPlayerSyncModels(forplayerid)) 
+	{
+		skinId = GetPlayerSyncSkin(playerid); // Если моды установлены, показываем модельку с учётом модов
+		if(skinId >= 400) skinId += 15100;
+	}
     else skinId = GetSkinOriginal(playerid); // Если моды НЕ установлены, показываем оригинальный скин
     return skinId;
 }
@@ -287,12 +395,14 @@ stock GoShmot(playerid, stat)
 	SetPVarInt(playerid, "SelectCharPlace", 0);
 	if(stat == 1)
 	{
-		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]);
-		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]), TextDrawShowForPlayer(playerid, DressDraw[5]);
+		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]); // Фон Меню
+		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]); // Влево
+		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]); // Вправо
+		TextDrawShowForPlayer(playerid, DressDraw[7]), TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]); // Select
 	    if(Fractia[playerid] == 100) // Магазин Одежды
 	    {
 	    	show_skin(playerid, 100, 0);
-	    	TextDrawShowForPlayer(playerid, DressDraw[10]), TextDrawShowForPlayer(playerid, DressDraw[11]);
+	    	TextDrawShowForPlayer(playerid, DressDraw[14]), TextDrawShowForPlayer(playerid, DressDraw[15]); // Список
 	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL [1/50]");
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 	    }
@@ -326,9 +436,11 @@ stock GoShmot(playerid, stat)
 	{
 		Fractia[playerid] = 200;
 		show_skin(playerid, 200, 0);
-		TextDrawShowForPlayer(playerid, DressDraw[2]), TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]);
-		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]), TextDrawShowForPlayer(playerid, DressDraw[7]);
-		TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]);
+		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]);
+		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]);
+		TextDrawShowForPlayer(playerid, DressDraw[7]), TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]);
+		TextDrawShowForPlayer(playerid, DressDraw[10]), TextDrawShowForPlayer(playerid, DressDraw[11]);
+		TextDrawShowForPlayer(playerid, DressDraw[12]), TextDrawShowForPlayer(playerid, DressDraw[13]);
 	}
 	return 1;
 }
@@ -418,7 +530,7 @@ stock CloseShmot(playerid)
 {
 	Fractia[playerid] = 0;
 	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
-	for(new t = 0; t < 12; t++) TextDrawHideForPlayer(playerid, DressDraw[t]);
+	for(new t = 0; t < 16; t++) TextDrawHideForPlayer(playerid, DressDraw[t]);
 	for(new pt = 0; pt < 4; pt++) PlayerTextDrawHide(playerid, PlaDressDraw[pt]);
 	return 1;
 }
@@ -429,12 +541,12 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
     new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
     if(interval < 800) return 0; // Блокируем, если игрок клацает часто на кнопку
 
-    if(clickedid == DressDraw[2]) // Выбор скина стрелка влево
+    if(clickedid == DressDraw[3]) // Выбор скина стрелка влево
     {
         if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) left_skin(playerid);
         else if(Fractia[playerid] == 300) left_akses(playerid);
     }
-    if(clickedid == DressDraw[3]) // Выбор скина стрелка вправо
+    if(clickedid == DressDraw[5]) // Выбор скина стрелка вправо
     {
         if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) right_skin(playerid);
         else if(Fractia[playerid] == 300) right_akses(playerid);

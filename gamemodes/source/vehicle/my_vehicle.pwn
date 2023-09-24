@@ -3606,6 +3606,8 @@ stock EvacuationVehicle(playerid)
 		ListParam[quan][playerid] = 2; // Ключи
 		quan ++;
 	}
+	
+	DP[3][playerid] = quan; // Записываем количество найденных тс
 	ShowDialog(playerid,636,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Эвакуация Транспорта",lines,"Выбрать","Отмена");
 	return 1;
 }
