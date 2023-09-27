@@ -80,6 +80,7 @@ stock ClosePatrool(playerid,g)
         PlayerInfo[p2][patroolID] == -1;
         SendClientMessage(p2,COLOR_GREY,string);
     }
+    return SuccessMessage(playerid,"Вы распустили патруль");
 }
 
 CMD:createpatrool(playerid, const params[])

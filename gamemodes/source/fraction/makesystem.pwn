@@ -5,12 +5,13 @@ enum mkInfo
     mkPlayerId, // playerid Создателя заявки
     mkWho, // Куда заявка. 0 нет вызова
     mkStatus, // проверка статуса
-    float:mkCord[3], // Корды
+    Float:mkCord[3], // Корды
 }
 new MakeInfo[MAX_MAKE][mkInfo];
 
 stock MakeCreate(playerid,whom)
 {
+    new string[70];
     if(MPGO[playerid] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я на мероприятии");
     if(CnnVed[playerid] >= 11) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я смотрю CNN Channel");
     if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
@@ -33,15 +34,15 @@ stock MakeCreate(playerid,whom)
     MakeInfo[findslot][mkWho] = whom;
     MakeInfo[findslot][mkStatus] = 1;
     new Float:X,Float:Y,Float:Z;
-    if(GetPlayerInterior(giveplayerid) != 0 || GetPlayerVirtualWorld(giveplayerid) != 0)
+    if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
     {
-        X = PlayerInfo[giveplayerid][find_X];
-        Y = PlayerInfo[giveplayerid][find_Y];
-        Z = PlayerInfo[giveplayerid][find_Z];
+        X = PlayerInfo[playerid][find_X];
+        Y = PlayerInfo[playerid][find_Y];
+        Z = PlayerInfo[playerid][find_Z];
     } 
     else 
     {
-      GetPlayerPos(giveplayerid, X,Y,Z);
+      GetPlayerPos(playerid, X,Y,Z);
     }
     MakeInfo[findslot][mkCord][0] = X;
     MakeInfo[findslot][mkCord][1] = Y;
@@ -54,12 +55,16 @@ stock MakeCreate(playerid,whom)
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Запрос выполнен. Ожидайте...");
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Не покидайте место вызова. Иначи получите штраф...");
-        SuccessMessage(playerid, "ОСТОРОЖНО\nЕсли вы покинете место вызова, вам могут выписать штраф!")
+        SuccessMessage(playerid, "ОСТОРОЖНО\nЕсли вы покинете место вызова, вам могут выписать штраф!");
         // Вот как всем ПД кинуть, или найти самый ближайший патруль и только им?
     }
     else if(whom == 2)
     {
-        MZ
+            if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я Доктор");
+        	SetPlayerChatBubble(playerid,"вызывает скорую помощь",COLOR_PURPLE,20.0,9000);
+			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {0066ff}[ Скорая Помощь ]");
+			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
+			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Запрос выполнен. Ожидайте...");
     }
     Make[0][playerid] = 300;
 }
@@ -71,9 +76,6 @@ stock CloseMake(playerid)
     MakeInfo[findslot][mkPlayerId] = -1;
     MakeInfo[findslot][mkWho] = 0;
     MakeInfo[findslot][mkStatus] = 0;
-    MakeInfo[findslot][mkCord][0] = 0.0;
-    MakeInfo[findslot][mkCord][1] = 0.0;
-    MakeInfo[findslot][mkCord][2] = 0.0;
     Make[0][playerid] = 0;
     if(IsPlayerConnected(playerid))
     {
@@ -85,7 +87,8 @@ stock CloseMake(playerid)
 
 stock TakeMake(playerid,number)
 {
-    MakeInfo[number][mkStatus] == 2;
+    MakeInfo[number][mkStatus] = 2;
+    Make[0][MakeInfo[number][mkPlayerId]] = 600;
     SendClientMessage(MakeInfo[number][mkPlayerId], COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб.");
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Получение координат GPS доступно через бортовой ПК.");
@@ -99,9 +102,17 @@ stock FindMake(playerid,number)
     }
     else return ErrorMessage(playerid,"Данный вызов нельзя отследить");
 }
-
-CMD:accaptmake(playerid,number)
+CMD:findmake(playerid,const params[])
 {
+    new number;
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /findmake ID ]");
+    FindMake(playerid,number);
+}
+
+CMD:acceptmake(playerid,const params[])
+{
+    new number;
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /accaptmake ID ]");
     new g = fraction(playerid);
     if(MakeInfo[number][mkWho] == 1)
     {
@@ -113,4 +124,5 @@ CMD:accaptmake(playerid,number)
         if(g != 3) return ErrorMessage(playerid,"Я не работаю в Мин.Здраве");
         TakeMake(playerid,number);
     }
+    return 1;
 }
