@@ -1,4 +1,4 @@
-#define MAX_MAKE 50 // Максимальное количество вызовов
+#define MAX_MAKE 100 // Максимальное количество вызовов
 
 enum mkInfo
 {
@@ -9,16 +9,41 @@ enum mkInfo
 }
 new MakeInfo[MAX_MAKE][mkInfo];
 
-stock MakeCreate(playerid,whom)
+new serviceName[][] =
 {
-    new string[70];
-    if(MPGO[playerid] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я на мероприятии");
-    if(CnnVed[playerid] >= 11) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я смотрю CNN Channel");
-    if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
-    if(howstun(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне плохо...");
-    if(GetPVarInt(playerid,"Boot") != 9999) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я в багажнике");
-    if(Sleep[playerid] >= 1 || SleepRP[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я сплю");
-    if(Make[0][playerid] >= 1) return format(string, sizeof(string), "[ Мысли ]: Я уже жду службы [ Через %d сек. ]", Make[0][playerid]), SendClientMessage(playerid, COLOR_GREY, string), cmd_phone(playerid);
+    "{cccccc}нет", "{0066ff}Полиция", "{6666ff}Скорая Помощь", "{6666ff}Пожарные 911", "{ffcc00}Такси"
+};
+new servicePlayerName[][] =
+{
+    "{cccccc}нет", "{0066ff}Полицейский", "{6666ff}Доктор", "{6666ff}Пожарный", "{ffcc00}Таксист"
+};
+
+stock SettingServiceMake(playerid)
+{
+    new s = OnlineInfo[playerid][oServiceMake][0]; // servie id
+    new mk = OnlineInfo[playerid][oServiceMake][2]; // make id
+
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    if(MakeInfo[mk][mkStatus] == 1)
+    {
+        format(line,sizeof(line),"{cccccc}Активный Вызов: %s {cccccc}| Ожидание до %s \t", serviceName[s], fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+        format(line,sizeof(line),"\n{FF6347}Отменить вызов \t"), strcat(lines,line);
+    }
+    else
+    {
+        new callid = MakeInfo[mk][mkPlayerId];
+        format(line,sizeof(line),"{cccccc}Активный Вызов: %s {cccccc}| {99ff66}Вызов Принят \t", serviceName[s]), strcat(lines,line);
+        if(IsOnline(callid)) format(line,sizeof(line),"\n%s: \t{cccccc}%s", servicePlayerName[s], PlayerInfo[callid][pName]), strcat(lines,line);
+        else format(line,sizeof(line),"\n%s: \t{cccccc}неизвестно", servicePlayerName[s]), strcat(lines,line);
+    }
+    ShowDialog(playerid,790,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Вызов служб",lines,"Выбрать","Отмена");
+    return 1;
+}
+
+stock MakeCreate(playerid, whom)
+{
+    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+
     new findslot = -1;
     for(new z = 0; z < MAX_MAKE; z++) 
     {
@@ -28,67 +53,65 @@ stock MakeCreate(playerid,whom)
             break;
         }
     }
-    if(findslot == -1) return ErrorMessage(playerid,"В данный момент 50 активных вызовов.");
-    PlayerInfo[playerid][makeID] = findslot;
-    MakeInfo[findslot][mkPlayerId] = playerid;
-    MakeInfo[findslot][mkWho] = whom;
-    MakeInfo[findslot][mkStatus] = 1;
-    new Float:X,Float:Y,Float:Z;
-    if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
-    {
-        X = PlayerInfo[playerid][find_X];
-        Y = PlayerInfo[playerid][find_Y];
-        Z = PlayerInfo[playerid][find_Z];
-    } 
-    else 
-    {
-      GetPlayerPos(playerid, X,Y,Z);
-    }
-    MakeInfo[findslot][mkCord][0] = X;
-    MakeInfo[findslot][mkCord][1] = Y;
-    MakeInfo[findslot][mkCord][2] = Z;
+    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент 50 активных вызовов\n\n{cccccc}Сообщите об этом администрации в [ /report ]");
+
     if(whom == 1)
     {
-        if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1 || PlayerInfo[playerid][pMember] == 11 || PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pLeader] == 21) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я полицейский");
+        if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1 
+            || PlayerInfo[playerid][pMember] == 11 || PlayerInfo[playerid][pLeader] == 11 
+            || PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pLeader] == 21) return ErrorMessage(playerid, "{FF6347}Вы сотрудник правоохранительных органов и не можете вызвать полицию");
         SetPlayerChatBubble(playerid,"вызывает полицию",COLOR_PURPLE,20.0,9000);
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {0066ff}[ Полиция ]");
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Запрос выполнен. Ожидайте...");
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Не покидайте место вызова. Иначи получите штраф...");
-        SuccessMessage(playerid, "ОСТОРОЖНО\nЕсли вы покинете место вызова, вам могут выписать штраф!");
+        SuccessMessage(playerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет {0066ff}полиция");
         // Вот как всем ПД кинуть, или найти самый ближайший патруль и только им?
     }
     else if(whom == 2)
     {
-            if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я Доктор");
-        	SetPlayerChatBubble(playerid,"вызывает скорую помощь",COLOR_PURPLE,20.0,9000);
-			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {0066ff}[ Скорая Помощь ]");
-			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
-			SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Запрос выполнен. Ожидайте...");
+        if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return ErrorMessage(playerid, "{FF6347}Вы работник ASGH и не можете вызвать скорую помощь");
+        SetPlayerChatBubble(playerid,"вызывает скорую помощь",COLOR_PURPLE,20.0,9000);
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {6666ff}[ Скорая Помощь ]");
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
+        SuccessMessage(playerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет {6666ff}скорая помощь");
     }
-    Make[0][playerid] = 300;
+    around_player_audio(playerid, 3600, 0, 5.0);
+
+    MakeInfo[findslot][mkPlayerId] = playerid;
+    MakeInfo[findslot][mkWho] = whom;
+    MakeInfo[findslot][mkStatus] = 1;
+
+    GetPlayerRealPos(playerid, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
+
+    OnlineInfo[playerid][oServiceMake][0] = whom; // servie id
+    OnlineInfo[playerid][oServiceMake][1] = 300;
+    OnlineInfo[playerid][oServiceMake][2] = findslot; // make id
+    return 1;
 }
 
 stock CloseMake(playerid)
 {
-    new findslot = PlayerInfo[playerid][makeID];
-    PlayerInfo[playerid][makeID] = -1;
+    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+
+    new findslot = OnlineInfo[playerid][oServiceMake][2];
+    OnlineInfo[playerid][oServiceMake][0] = 0;
+    OnlineInfo[playerid][oServiceMake][1] = 0;
+    OnlineInfo[playerid][oServiceMake][2] = 0;
     MakeInfo[findslot][mkPlayerId] = -1;
     MakeInfo[findslot][mkWho] = 0;
     MakeInfo[findslot][mkStatus] = 0;
-    Make[0][playerid] = 0;
     if(IsPlayerConnected(playerid))
     {
         SendClientMessage(playerid, COLOR_GREY, "[Мысли] Время активности вашего вызова истекло.");
         SendClientMessage(playerid, COLOR_GREY, "[Мысли] Если проблема актуально, наверное стоит сделать вызов по новой?");
         SuccessMessage(playerid, "Время активности вашего вызова истекло.\nЕсли проблема актуально, наверное стоит сделать вызов по новой?");
     }
+    return 1;
 }
 
 stock TakeMake(playerid,number)
 {
     MakeInfo[number][mkStatus] = 2;
-    Make[0][MakeInfo[number][mkPlayerId]] = 600;
+    OnlineInfo[playerid][oServiceMake][1] = 600;
     SendClientMessage(MakeInfo[number][mkPlayerId], COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб.");
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Получение координат GPS доступно через бортовой ПК.");
@@ -101,12 +124,15 @@ stock FindMake(playerid,number)
         ShowFindZone(playerid,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1]);
     }
     else return ErrorMessage(playerid,"Данный вызов нельзя отследить");
+    return 1;
 }
+
 CMD:findmake(playerid,const params[])
 {
     new number;
     if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /findmake ID ]");
     FindMake(playerid,number);
+    return 1;
 }
 
 CMD:acceptmake(playerid,const params[])
@@ -125,4 +151,27 @@ CMD:acceptmake(playerid,const params[])
         TakeMake(playerid,number);
     }
     return 1;
+}
+stock CallService(playerid, whom)
+{
+	if(OnlineInfo[playerid][oServiceMake][0] > 0)
+    {
+        new s = OnlineInfo[playerid][oServiceMake][0];
+        if(whom != OnlineInfo[playerid][oServiceMake][0]) return format(store,sizeof(store),"{FF6347}Вы уже вызвали %s\n\n{cccccc}К сожалению, вы не можете вызвать два сервиса одновременно", serviceName[s]), ErrorMessage(playerid, store);
+        SettingServiceMake(playerid);
+        return 1;
+    }
+	if(whom == 4)
+	{
+		ShowDialog(playerid,800,DIALOG_STYLE_MSGBOX,"{ff9000}Вызовы","\n{ff9000}Вы уверены, что хотите вызвать такси?\n\n{cccccc}Обязательно дождитесь таксиста после того, как он примет заказ {ff9000};)\n","Да","Нет");
+	}
+	else if(whom == 1)
+	{
+		ShowDialog(playerid,598,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {0066ff}полицию ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+	}
+	else if(whom == 2)
+	{
+		ShowDialog(playerid,791,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {6666ff}скорую помощь ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+	}
+	return 1;
 }

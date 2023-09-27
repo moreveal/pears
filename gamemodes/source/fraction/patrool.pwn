@@ -8,10 +8,9 @@ enum plInfo
 }
 new PatroolInfo[MAX_PATROOL][plInfo];
 
-stock CreatePatrool(playerid, p0, p1, p2, g)
+stock CreatePatrool(playerid, p0, p1, p2)
 {
-    if(g != 1 && g != 11 && g != 21) return ErrorMessage(playerid,"Вы не состоите в LSPD/SFPD/LVPD");
-    new findslot = -1;
+    new findslot = -1, findPlayer[3];
     for(new z = 0; z < MAX_PATROOL; z++) 
     {
         if(PatroolInfo[z][plGlav] == -1)
@@ -20,105 +19,204 @@ stock CreatePatrool(playerid, p0, p1, p2, g)
             break;
         }
     }
-    if(findslot == -1) return ErrorMessage(playerid,"В данный момент 50 патрульных машин.");
+    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент 50 патрульных машин");
     new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
-	if(model != 596 && model != 597 && model != 598 && model != 599) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Police Car)");
+	if(model != 596 && model != 597 && model != 598 && model != 599) return ErrorMessage(playerid,"{FF6347}Вы не на спец.транспорте (Police Car)");
 
-    PlayerInfo[playerid][patroolID] == findslot;
+    PlayerInfo[playerid][patroolID] = findslot;
     PatroolInfo[findslot][plGlav] = playerid;
     PatroolInfo[findslot][plStatus] = 0;
-    new string[70];
-    format(string,sizeof(string),"[ Мысли ]: Я вступил в патруль под руководством %s",PlayerInfo[playerid][pName]);
-    if (p0 != -1)
+
+    findPlayer[0] = p0;
+    findPlayer[1] = p1;
+    findPlayer[2] = p2;
+
+    new g;
+    for(new i = 0; i < 3; i ++)
     {
-        PatroolInfo[findslot][plCoop][0] = p0;
-        PlayerInfo[p0][patroolID] == findslot;
-        SendClientMessage(p0,COLOR_GREY,string);
+        if(findPlayer[i] >= 0)
+        {
+            g = fraction(findPlayer[i]);
+            if(g == 1 || g == 11 || g == 21)
+            {
+                PatroolInfo[findslot][plCoop][0] = findPlayer[i];
+                PlayerInfo[findPlayer[i]][patroolID] = findslot;
+                format(store,sizeof(store),"[ Мысли ]: Я вступил в патруль под руководством %s",PlayerInfo[playerid][pName]);
+                SendClientMessage(findPlayer[i],COLOR_GREY,store);
+            }
+        }
+        else PatroolInfo[findslot][plCoop][i] = -1;
     }
-    if (p1 != -1)
-    {
-        PatroolInfo[findslot][plCoop][1] = p1;
-        PlayerInfo[p1][patroolID] == findslot;
-        SendClientMessage(p1,COLOR_GREY,string);
-    }
-    if (p2 != -1)
-    {
-        PatroolInfo[findslot][plCoop][2] = p2;
-        PlayerInfo[p2][patroolID] == findslot;
-        SendClientMessage(p2,COLOR_GREY,string);
-    }
-    return SuccessMessage(playerid,"Я начал патруль");
+    return SuccessMessage(playerid,"{99ff66}Вы создали патруль");
 }
 
-stock ClosePatrool(playerid,g)
+stock ClosePatrool(playerid, stat)
 {
     new findslot = PlayerInfo[playerid][patroolID];
-    if(PatroolInfo[findslot][plGlav] != playerid) return ErrorMessage(playerid,"Я не глава патруля");
+    if(findslot == -1) return 0;
+
+    if(PatroolInfo[findslot][plGlav] != playerid)
+    {
+        for(new i = 0; i < 3; i ++)
+        {
+            if(PatroolInfo[findslot][plCoop][i] == playerid)
+            {
+                PatroolInfo[findslot][plCoop][i] = -1;
+                break;
+            }
+        }
+        PlayerInfo[playerid][patroolID] = -1;
+        if(stat == 0) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы покинули патруль","*","");
+        else if(stat == 1) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Глава патруля исключил вас из участия в патруле","*","");
+        return 1;
+    }
+
     PatroolInfo[findslot][plGlav] = -1;
     PatroolInfo[findslot][plStatus] = 0;
-    new p0 = PatroolInfo[findslot][plCoop][0];
-    new p1 = PatroolInfo[findslot][plCoop][1];
-    new p2 = PatroolInfo[findslot][plCoop][2];
-    new string[70];
-    format(string,sizeof(string),"[ Мысли ]: Руководитель %, распустил патруль",PlayerInfo[playerid][pName]);
-    if (p0 != -1)
+
+    for(new i = 0; i < 3; i ++)
     {
-        PatroolInfo[findslot][plCoop][0] = 0;
-        PlayerInfo[p0][patroolID] == -1;
-        SendClientMessage(p0,COLOR_GREY,string);
+        if(PatroolInfo[findslot][plCoop][i] >= 0)
+        {
+            PatroolInfo[findslot][plCoop][i] = -1;
+            if(IsOnline(PatroolInfo[findslot][plCoop][i]))
+            {
+                PlayerInfo[PatroolInfo[findslot][plCoop][i]][patroolID] = -1;
+                format(store,sizeof(store),"{ffcc66}Глава патруля {FF6347}%s {ffcc66}распустил патруль",PlayerInfo[playerid][pName]);
+                ShowDialog(PatroolInfo[findslot][plCoop][i],1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+
+                format(store,sizeof(store),"[ Мысли ]: Глава патруля %s распустил патруль",PlayerInfo[playerid][pName]);
+                SendClientMessage(PatroolInfo[findslot][plCoop][i],COLOR_GREY,store);
+            }
+        }
     }
-    if (p1 != -1)
-    {
-        PatroolInfo[findslot][plCoop][1] = p1;
-        PlayerInfo[p1][patroolID] == -1;
-        SendClientMessage(p1,COLOR_GREY,string);
-    }
-    if (p2 != -1)
-    {
-        PatroolInfo[findslot][plCoop][2] = p2;
-        PlayerInfo[p2][patroolID] == -1;
-        SendClientMessage(p2,COLOR_GREY,string);
-    }
-    return SuccessMessage(playerid,"Вы распустили патруль");
+    return 1;
 }
 
 CMD:createpatrool(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
-	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1
-	|| PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 11
-	|| PlayerInfo[playerid][pLeader] == 21 || PlayerInfo[playerid][pMember] == 21
-    || PlayerInfo[playerid][pLeader] == 22 || PlayerInfo[playerid][pMember] == 22)
+	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pMember] == 11
+	|| PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pMember] == 22)
 	{
-        new g = fraction(playerid);
-		if(sscanf(params, "s[144]s[144]s[144]", params[0], params[1], params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание патруля {ffcc00}[ /createpatrool ID ID ID]");
-		if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Слишком длинное имя [ Лимит 20 символов ]");
-  		new giveplayerid0 = ReturnUser(params[0]);
-        new giveplayerid1 = ReturnUser(params[1]);
-        new giveplayerid2 = ReturnUser(params[2]);
-        // Проверку на нуль какую-то чтоль сделать?
-  		//if(giveplayerid0 == playerid || giveplayerid1 == playerid|| giveplayerid2 == playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Зачем мне искать себя ?");
-    	if(IsPlayerConnected(giveplayerid0))
-    	{
-            CreatePatrool(playerid,giveplayerid0,giveplayerid1,giveplayerid2,g);
-		}
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу ехать один в патруль");
+		if(!sscanf(params, "s[144]s[144]s[144]", params[0], params[1], params[2]))
+        {
+            new giveplayerid0 = ReturnUser(params[0]);
+            new giveplayerid1 = ReturnUser(params[1]);
+            new giveplayerid2 = ReturnUser(params[2]);
+            if(!IsOnline(giveplayerid0) || !IsOnline(giveplayerid1) || !IsOnline(giveplayerid2)) return ErrorMessage(playerid, "{FF6347}Один из игроков не в сети");
+
+            if(!ProxDetectorS(10.0, playerid, giveplayerid0) 
+                || !ProxDetectorS(10.0, playerid, giveplayerid1) 
+                || !ProxDetectorS(10.0, playerid, giveplayerid2)) return ErrorMessage(playerid, "{FF6347}Один из игроков далеко от вас [ Не больше 10 метров ]");
+	
+
+            CreatePatrool(playerid,giveplayerid0,giveplayerid1,giveplayerid2);
+        }
+        else if(!sscanf(params, "s[144]s[144]", params[0], params[1]))
+        {
+            new giveplayerid0 = ReturnUser(params[0]);
+            new giveplayerid1 = ReturnUser(params[1]);
+            if(!IsOnline(giveplayerid0) || !IsOnline(giveplayerid1)) return ErrorMessage(playerid, "{FF6347}Один из игроков не в сети");
+
+            if(!ProxDetectorS(10.0, playerid, giveplayerid0) 
+                || !ProxDetectorS(10.0, playerid, giveplayerid1)) return ErrorMessage(playerid, "{FF6347}Один из игроков далеко от вас [ Не больше 10 метров ]");
+            
+            CreatePatrool(playerid,giveplayerid0,giveplayerid1,-1);
+        }
+        else if(!sscanf(params, "s[144]", params[0]))
+        {
+            new giveplayerid0 = ReturnUser(params[0]);
+            if(!IsOnline(giveplayerid0)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
+            
+            if(!ProxDetectorS(10.0, playerid, giveplayerid0)) return ErrorMessage(playerid, "{FF6347}Игрок далеко от вас [ Не больше 10 метров ]");
+
+            CreatePatrool(playerid,giveplayerid0,-1,-1);
+        }
+        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание патруля {ffcc00}[ /patrool ID ID ID]");
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать патруль");
+	else ErrorMessage(playerid, "{FF6347}Вы не можете создать патруль");
 	return 1;
 }
 
-CMD:closepatrool(playerid)
+CMD:invitepatrool(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
-	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1
-	|| PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 11
-	|| PlayerInfo[playerid][pLeader] == 21 || PlayerInfo[playerid][pMember] == 21)
+	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pMember] == 11
+	|| PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pMember] == 22)
 	{
-        new g = fraction(playerid);
-        ClosePatrool(playerid,g);
+        new findslot = PlayerInfo[playerid][patroolID];
+        if(findslot == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! У вас нет активного патруля");
+        if(PatroolInfo[findslot][plGlav] != playerid) return ErrorMessage(playerid, "{FF6347}Вы не глава патруля");
+
+        if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить в патруль [ /invitepatrool ID ]");
+        new giveplayerid = ReturnUser(params[0]);
+        if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
+        if(!ProxDetectorS(10.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок далеко от вас [ Не больше 10 метров ]");
+
+        new freeSlotP = -1;
+        for(new i = 0; i < 3; i++)
+        {
+            if(PatroolInfo[findslot][plCoop][i] == -1)
+            {
+                freeSlotP = i;
+                break;
+            }
+        }
+        if(freeSlotP == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! В вашем патруле нет свободных мест");
+
+
+        new g = fraction(giveplayerid);
+        if(g == 1 || g == 11 || g == 21)
+        {
+            PatroolInfo[findslot][plCoop][freeSlotP] = giveplayerid;
+            PlayerInfo[giveplayerid][patroolID] = findslot;
+            format(store,sizeof(store),"[ Мысли ]: %s поместил вас в свой патруль", PlayerInfo[playerid][pName]);
+            SendClientMessage(giveplayerid,COLOR_GREY,store);
+        }
+        else ErrorMessage(playerid, "{FF6347}Вы можете пригласить в патруль только сотрудника правоохранительных органов");
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать патруль");
+	else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	return 1;
+}
+
+CMD:patrool(playerid)
+{
+	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pMember] == 11
+	|| PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pMember] == 22)
+	{
+        SettingPatrool(playerid);
+    }
+    else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    return 1;
+}
+
+stock SettingPatrool(playerid)
+{
+    new findslot = PlayerInfo[playerid][patroolID];
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    if(findslot == -1)
+    {
+        format(line,sizeof(line),"{cccccc}Нет активного патруля \t"), strcat(lines,line);
+        format(line,sizeof(line),"\n{99ff66}Создать Патруль \t"), strcat(lines,line);
+    }
+    else
+    {
+        format(line,sizeof(line),"{cccccc}Глава Патруля: {ff9000}%s \t", PlayerInfo[PatroolInfo[findslot][plGlav]][pName]), strcat(lines,line);
+        if(PatroolInfo[findslot][plGlav] == playerid) format(line,sizeof(line),"\n{cccccc}Распустить Патруль \t"), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}Покинуть Патруль \t"), strcat(lines,line);
+
+        for(new i = 0; i < 3; i++)
+        {
+            if(PatroolInfo[findslot][plCoop][i] == -1)
+            {
+                format(line,sizeof(line),"\n{cccccc}Участник %d: нет \t{99ff66}Пригласить", i + 1), strcat(lines,line);
+            }
+            else
+            {
+                format(line,sizeof(line),"\n{cccccc}Участник %d: %s \t{FF6347}Исключить", i + 1, PlayerInfo[PatroolInfo[findslot][plCoop]][pName]), strcat(lines,line);
+            }
+        }
+    }
+    ShowDialog(playerid,802,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Патруль",lines,"*","");
+    return 1;
 }

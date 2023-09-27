@@ -89,16 +89,6 @@ stock LoadBot()
 	BotPears[60] = CreateActor(126, -2010.2117,1110.2968,53.2891,197.0067); // Russian Mafia Bot 3
 	BotPears[61] = CreateActor(112, -2009.2338,1108.3409,53.2891,35.0118); // Russian Mafia Bot 4
 	BotPears[62] = CreateActor(192, -2002.4238,1104.6166,53.2891,354.5681); // Russian Mafia Bot 5
-	BotPears[63] = CreateActor(220, -489.7464,2602.4995,53.9780,267.3839); // Arabian Mafia Bot 1
-	BotPears[64] = CreateActor(142, -503.2404,2586.7517,53.5704,6.2471); // Arabian Mafia Bot 2
-	BotPears[65] = CreateActor(220, -620.9092,2583.2419,2105.3840,178.0831); // Arabian Mafia Bot 3
-	SetActorVirtualWorld(BotPears[65], 18);
-	BotPears[66] = CreateActor(222, -635.4254,2628.1697,2104.9768,91.2262); // Arabian Mafia Bot 4
-	SetActorVirtualWorld(BotPears[66], 18);
-	BotPears[67] = CreateActor(221, -636.1757,2579.9343,2104.9768,227.1280); // Arabian Mafia Bot 5
-	SetActorVirtualWorld(BotPears[67], 18);
-	BotPears[68] = CreateActor(142, -634.8665,2578.5576,2104.9768,43.2623); // Arabian Mafia Bot 6
-	SetActorVirtualWorld(BotPears[68], 18);
 	//gotobiz 12
 	BotPears[69] = CreateActor(42, 64.2792,-190.6612,1.8092,268.1631); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 	BotPears[70] = CreateActor(50, 55.8918,-190.3604,1.8092,89.1813); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
@@ -591,12 +581,6 @@ stock LoadAnimBot(stat)
         case 60: ApplyActorAnimation(BotPears[60],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 3
         case 61: ApplyActorAnimation(BotPears[61],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 4
         case 62: ApplyActorAnimation(BotPears[62],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 5
-        case 63: ApplyActorAnimation(BotPears[63],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 1 [ Разговаривает ]
-        case 64: ApplyActorAnimation(BotPears[64],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 2
-        case 65: ApplyActorAnimation(BotPears[65],"BEACH","Lay_Bac_Loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 3
-        case 66: ApplyActorAnimation(BotPears[66],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Arabian Mafia Bot 4
-        case 67: ApplyActorAnimation(BotPears[67],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Arabian Mafia Bot 5
-        case 68: ApplyActorAnimation(BotPears[68],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Arabian Mafia Bot 6
         case 69: ApplyActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         case 70: ApplyActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         case 71: ApplyActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
@@ -821,12 +805,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[60],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 3
         ApplyActorAnimation(BotPears[61],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 4
         ApplyActorAnimation(BotPears[62],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 5
-        ApplyActorAnimation(BotPears[63],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 1 [ Разговаривает ]
-        ApplyActorAnimation(BotPears[64],"BEACH", "ParkSit_M_loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 2
-        ApplyActorAnimation(BotPears[65],"BEACH","Lay_Bac_Loop",4.1,1,0,0,0,0); // Arabian Mafia Bot 3
-        ApplyActorAnimation(BotPears[66],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Arabian Mafia Bot 4
-        ApplyActorAnimation(BotPears[67],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Arabian Mafia Bot 5
-        ApplyActorAnimation(BotPears[68],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Arabian Mafia Bot 6
         ApplyActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot

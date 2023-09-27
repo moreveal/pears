@@ -56,16 +56,10 @@ CMD:find(playerid, const params[])
         //if(ADUTY[giveplayerid] == 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
         //if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING && gSpectateID[giveplayerid] != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
         //if(GetPlayerColor(giveplayerid) == 0xFFFFFF00) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
+        
         new Float:X,Float:Y,Float:Z;
-        if(GetPlayerInterior(giveplayerid) != 0 || GetPlayerVirtualWorld(giveplayerid) != 0)
-        {
-          X = PlayerInfo[giveplayerid][find_X];
-          Y = PlayerInfo[giveplayerid][find_Y];
-        } 
-        else 
-        {
-          GetPlayerPos(giveplayerid, X,Y,Z);
-        }
+        GetPlayerRealPos(playerid, X, Y, Z);
+      
         new rand = random(12);
         switch(rand)
         {
@@ -88,4 +82,26 @@ CMD:find(playerid, const params[])
 	}
 	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу искать человека");
 	return 1;
+}
+
+stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
+{
+  if(GetPVarInt(playerid,"Boot") != 9999)
+  {
+    new vehicleid = GetPVarInt(playerid,"Boot");
+    GetVehiclePos(vehicleid, x, y, z);
+  }
+  else
+  {
+    if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0)
+    {
+      x = PlayerInfo[playerid][find_X];
+      y = PlayerInfo[playerid][find_Y];
+    } 
+    else 
+    {
+      GetPlayerPos(playerid, x, y, z);
+    }
+  }
+  return 1;
 }
