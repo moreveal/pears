@@ -18,6 +18,7 @@ stock CreateFindZone(Float:X, Float:Y)
   }
   return findz+88;
 }
+
 stock ShowFindZone(playerid, Float:x,Float:y)
 {
   FindZone[playerid] = CreateFindZone(x, y);
