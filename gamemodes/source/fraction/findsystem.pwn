@@ -117,3 +117,16 @@ stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
   }
   return 1;
 }
+stock FindRaion(playerid)
+{
+  new districtId;
+  for(new i;i < sizeof(gSAZones);i ++)
+  {
+    if(IsPlayerInCube(playerid, gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
+    {
+      districtId = i;
+      break;
+    }
+  }
+  return districtId;
+}

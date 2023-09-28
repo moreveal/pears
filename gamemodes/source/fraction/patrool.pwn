@@ -220,3 +220,29 @@ stock SettingPatrool(playerid)
     ShowDialog(playerid,802,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Патруль",lines,"*","");
     return 1;
 }
+
+stock PatroolList(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"\n№.Глава\tУчастников\tРайон\tФракция"), strcat(lines,line);
+    new quan, targetid,findraiontolist,kol;
+    new namezone;
+    for(new z = 0; z < MAX_PATROOL; z++) 
+    {
+        if(PatroolInfo[z][plGlav] != -1)
+        {
+            targetid = PatroolInfo[z][plGlav];
+            findraiontolist = FindRaion(targetid);
+            namezone = gSAZones[findraiontolist][zName];
+            for(new i = 0; i < 3; i++)
+            {
+                if(PatroolInfo[z][plCoop][i] != -1) kol++;
+            }
+            format(line,sizeof(line),"\n%d.%s\t%d\%s\%s", quan+1, rpplayername(targetid),kol,namezone,frakeasyName[targetid]), strcat(lines,line);
+            quan++;
+        }
+    }
+    if(quan == 0) return ErrorMessage(playerid,"{FF6347}В данный момент нет патрульных машин");
+    else ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список патрульных машин",lines,"*","");
+    return 1;
+}
