@@ -11,11 +11,11 @@ new MakeInfo[MAX_MAKE][mkInfo];
 
 new serviceName[][] =
 {
-    "{cccccc}нет", "{0066ff}Полиция", "{6666ff}Скорая Помощь", "{6666ff}Пожарные 911", "{ffcc00}Такси"
+    "{cccccc}нет", "{0066ff}Полиция", "{ff6666}Скорая Помощь", "{ff6666}Пожарные 911", "{ffcc00}Такси"
 };
 new servicePlayerName[][] =
 {
-    "{cccccc}нет", "{0066ff}Полицейский", "{6666ff}Доктор", "{6666ff}Пожарный", "{ffcc00}Таксист"
+    "{cccccc}нет", "{0066ff}Полицейский", "{ff6666}Доктор", "{ff6666}Пожарный", "{ffcc00}Таксист"
 };
 
 stock SettingServiceMake(playerid)
@@ -70,9 +70,9 @@ stock MakeCreate(playerid, whom)
     {
         if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return ErrorMessage(playerid, "{FF6347}Вы работник ASGH и не можете вызвать скорую помощь");
         SetPlayerChatBubble(playerid,"вызывает скорую помощь",COLOR_PURPLE,20.0,9000);
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {6666ff}[ Скорая Помощь ]");
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {ff6666}[ Скорая Помощь ]");
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
-        SuccessMessage(playerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет {6666ff}скорая помощь");
+        SuccessMessage(playerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет {ff6666}скорая помощь");
     }
     around_player_audio(playerid, 3600, 0, 5.0);
 
@@ -101,8 +101,8 @@ stock CloseMake(playerid)
     MakeInfo[findslot][mkStatus] = 0;
     if(IsPlayerConnected(playerid))
     {
-        SendClientMessage(playerid, COLOR_GREY, "[Мысли] Время активности вашего вызова истекло.");
-        SendClientMessage(playerid, COLOR_GREY, "[Мысли] Если проблема актуально, наверное стоит сделать вызов по новой?");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время активности вашего вызова истекло.");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Если проблема актуальна, наверное стоит сделать вызов по новой?");
         SuccessMessage(playerid, "Время активности вашего вызова истекло.\nЕсли проблема актуально, наверное стоит сделать вызов по новой?");
     }
     return 1;
@@ -121,9 +121,9 @@ stock FindMake(playerid,number)
 {
     if(MakeInfo[number][mkStatus] == 2)
     {
-        ShowFindZone(playerid,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1]);
+        CreateGps(playerid,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2], 0, 0, 50.0);
     }
-    else return ErrorMessage(playerid,"Данный вызов нельзя отследить");
+    else return ErrorMessage(playerid,"{FF6347}Ошибка! Данный вызов нельзя отследить");
     return 1;
 }
 
@@ -142,12 +142,12 @@ CMD:acceptmake(playerid,const params[])
     new g = fraction(playerid);
     if(MakeInfo[number][mkWho] == 1)
     {
-        if(g != 1 && g != 11 && g != 21 && g != 1) return ErrorMessage(playerid,"Я не работаю в LSPD/SFPD/LVPD");
+        if(g != 1 && g != 11 && g != 21 && g != 1) return ErrorMessage(playerid,"{FF6347}Вы не работаете в LSPD/SFPD/LVPD");
         TakeMake(playerid,number);
     }
     else if(MakeInfo[number][mkWho] == 2)
     {
-        if(g != 3) return ErrorMessage(playerid,"Я не работаю в Мин.Здраве");
+        if(g != 3) return ErrorMessage(playerid,"{FF6347}Вы не работаете в Мин.Здраве");
         TakeMake(playerid,number);
     }
     return 1;
@@ -171,7 +171,7 @@ stock CallService(playerid, whom)
 	}
 	else if(whom == 2)
 	{
-		ShowDialog(playerid,791,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {6666ff}скорую помощь ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+		ShowDialog(playerid,791,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {ff6666}скорую помощь ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
 	}
 	return 1;
 }

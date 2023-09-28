@@ -1,87 +1,99 @@
 #define MAX_FIND_ZONE 50
-new FindZones[MAX_FIND_ZONE];
+new zoneId[MAX_FIND_ZONE];
 new ZoneTimer[MAX_FIND_ZONE];
 
 new FindZone[MAX_REALPLAYERS];
 
-stock CreateFindZone(Float:X, Float:Y)
+stock CreateFindZone(playerid, Float:X, Float:Y)
 {
-  new findz;
+  new ability = get_ability(playerid, 9); // Навык детектива
+  new Float:zone;
+
+  if(ability >= 10) zone = 50;
+  else if(ability == 9) zone = 62;
+  else if(ability == 8) zone = 74;
+  else if(ability == 7) zone = 86;
+  else if(ability == 6) zone = 98;
+  else if(ability == 5) zone = 110;
+  else if(ability == 4) zone = 122;
+  else if(ability == 3) zone = 134;
+  else if(ability == 2) zone = 146;
+  else zone = 158;
+
+  new findz = -1;
   for(new z = 0; z < MAX_FIND_ZONE; z++) 
   {
-    if(FindZones[z] == 0)
+    if(zoneId[z] == 0)
     {
-      FindZones[z] = GangZoneCreate(X - 60.0, Y - 60.0, X + 60.0, Y + 60.0);
+      zoneId[z] = GangZoneCreate(X - zone, Y - zone, X + zone, Y + zone);
       findz = z;
       break;
     }
   }
-  return findz+88;
+  return findz;
 }
 
-stock ShowFindZone(playerid, Float:x,Float:y)
+stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y)
 {
-  FindZone[playerid] = CreateFindZone(x, y);
-  if(FindZone[playerid] == 0) return ErrorMessage(playerid, "Нельзя найти на данный момент человека, попробуйте позже");
+  FindZone[playerid] = CreateFindZone(playerid, x, y);
+  if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
+
   hideGangZones(playerid);
-  GangZoneShowForPlayer(playerid, FindZone[playerid], 0xff0000AA);
+  GangZoneShowForPlayer(playerid, zoneId[FindZone[playerid]], 0xff0000AA);
   ZoneTimer[playerid] = 12;
+
+  format(lines,sizeof(lines),""); // Очищаем Lines
+
+  format(line,sizeof(line),"{ffcc66}Поиск %s активирован\n{0088ff}Гражданин находится в области {FF6347}красной зоны {0088ff}на карте", rpplayername(giveplayerid)), strcat(lines,line);
+  format(line,sizeof(line), "\n\n{cccccc}Отображение зоны продлится в течении 12 секунд"), strcat(lines,line);
+  format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
+  SuccessMessage(playerid, lines);
+  PlayerPlaySound(playerid,6400,0,0,0);
+
+  update_ability(playerid, 9, 10 + random(5));
   return 1;
 }
 stock DestroyFindZone(playerid)
 {
-  if(FindZone[playerid] == 0) return 0;
+  if(FindZone[playerid] == -1) return 0;
+
   new number = FindZone[playerid];
-  FindZones[number-88] = 0;
-  GangZoneDestroy(FindZone[playerid]);
-  FindZone[playerid] = 0;
+  GangZoneDestroy(zoneId[number]);
+  zoneId[number] = 0;
+  FindZone[playerid] = -1;
   showGangZones(playerid);
   return 1;
 }
 
 CMD:find(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
-	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1 || PlayerInfo[playerid][pLeader] == 2 || PlayerInfo[playerid][pMember] == 2 || PlayerInfo[playerid][pLeader] == 3 || PlayerInfo[playerid][pMember] == 3 || PlayerInfo[playerid][pFbi] >= 1
-	|| PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8 || PlayerInfo[playerid][pLeader] == 4 || PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 11
-	|| PlayerInfo[playerid][pLeader] == 21 || PlayerInfo[playerid][pMember] == 21|| PlayerInfo[playerid][pLeader] == 22 || PlayerInfo[playerid][pMember] == 22)
-	{
-		if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Поиск человека {ffcc00}[ /find ID ]");
-		if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Слишком длинное имя [ Лимит 20 символов ]");
-  		new giveplayerid = ReturnUser(params[0]);
-  		// if(giveplayerid == playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Зачем мне искать себя ?");
-    	if(IsPlayerConnected(giveplayerid))
-    	{
-        if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "У вас активна зона поиска, дождитесь её окончания");
-        //if(ADUTY[giveplayerid] == 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
-        //if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING && gSpectateID[giveplayerid] != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
-        //if(GetPlayerColor(giveplayerid) == 0xFFFFFF00) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот человек в другом помещении, я не могу его найти");
-        
-        new Float:X,Float:Y,Float:Z;
-        GetPlayerRealPos(playerid, X, Y, Z);
-      
-        new rand = random(12);
-        switch(rand)
-        {
-          case 0: X+=10.0, Y-=10.0;
-          case 1: X-=10.0, Y+=10.0;
-          case 2: X+=10.0, Y+=10.0;
-          case 3: X-=10.0, Y-=10.0;
-          case 4: X+=20.0, Y-=10.0;
-          case 5: X-=20.0, Y+=10.0;
-          case 6: X+=20.0, Y+=10.0;
-          case 7: X-=20.0, Y-=10.0;
-          case 8: X+=10.0, Y-=20.0;
-          case 9: X-=10.0, Y+=20.0;
-          case 10: X+=10.0, Y+=20.0;
-          case 11: X-=10.0, Y-=20.0;
-        }
-        ShowFindZone(playerid, X, Y);
-		}
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю кого искать");
-	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу искать человека");
-	return 1;
+  if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1 || PlayerInfo[playerid][pLeader] == 2 || PlayerInfo[playerid][pMember] == 2 || PlayerInfo[playerid][pLeader] == 3 || PlayerInfo[playerid][pMember] == 3 || PlayerInfo[playerid][pFbi] >= 1
+  || PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8 || PlayerInfo[playerid][pLeader] == 4 || PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 11
+  || PlayerInfo[playerid][pLeader] == 21 || PlayerInfo[playerid][pMember] == 21|| PlayerInfo[playerid][pLeader] == 22 || PlayerInfo[playerid][pMember] == 22)
+  {
+    if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Поиск человека {ffcc00}[ /find ID ]");
+    if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Слишком длинное имя [ Лимит 20 символов ]");
+    new giveplayerid = ReturnUser(params[0]);
+    if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете искать себя");
+    if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не в сети, или ещё не залогинился");
+
+    if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+
+    new Float:X,Float:Y,Float:Z;
+    GetPlayerRealPos(giveplayerid, X, Y, Z);
+
+    new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
+    switch(random(4))
+    {
+      case 0: X += rand_x, Y += rand_y;
+      case 1: X -= rand_x, Y -= rand_y;
+      case 2: X += rand_x, Y -= rand_y;
+      case 3: X -= rand_x, Y += rand_y;
+    }
+    ShowFindZone(playerid, giveplayerid, X, Y);
+  }
+  else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
+  return 1;
 }
 
 stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)

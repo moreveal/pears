@@ -1,7 +1,7 @@
 
 new abilityName[][] = // Названия навыков
 {
-    "Навык Моряка", "Навык Космонавта", "Навык Сексуальности", "Навык Инженера", "Навык Охотника", "Навык Фермера", "Навык Взломщика", "Навык Химика", "Навык Автомеханика"
+    "Навык Моряка", "Навык Космонавта", "Навык Сексуальности", "Навык Инженера", "Навык Охотника", "Навык Фермера", "Навык Взломщика", "Навык Химика", "Навык Автомеханика", "Навык Детектива"
 };
 new skillLevelName[][] = // Названия уровня  навыков
 {
@@ -349,20 +349,19 @@ stock getability_max(abilityType) // Узнаём сколько нужно на
 	else if(abilityType >= 80000) pow = 80000;
 	return pow;
 }
-stock getAbilityRealProgress(p, a) // Узнаем сколько нужно прогресса на уровень навыка
+stock getAbilityRealProgress(level) // Узнаем сколько нужно прогресса на слещующий уровень навыка в зависимости от левела
 {
 	new realProgress;
-	if(PlayerInfo[p][pAbilStat][a] == 1) realProgress = 0;
-	else if(PlayerInfo[p][pAbilStat][a] == 2) realProgress = 1000;
-	else if(PlayerInfo[p][pAbilStat][a] == 3) realProgress = 5000;
-	else if(PlayerInfo[p][pAbilStat][a] == 4) realProgress = 10000;
-	else if(PlayerInfo[p][pAbilStat][a] == 5) realProgress = 15000;
-	else if(PlayerInfo[p][pAbilStat][a] == 6) realProgress = 20000;
-	else if(PlayerInfo[p][pAbilStat][a] == 7) realProgress = 30000;
-	else if(PlayerInfo[p][pAbilStat][a] == 8) realProgress = 40000;
-	else if(PlayerInfo[p][pAbilStat][a] == 9) realProgress = 60000;
-	else if(PlayerInfo[p][pAbilStat][a] == 10) realProgress = 80000;
-	else realProgress = 0;
+	if(level <= 1) realProgress = 0;
+	else if(level == 2) realProgress = 1000;
+	else if(level == 3) realProgress = 5000;
+	else if(level == 4) realProgress = 10000;
+	else if(level == 5) realProgress = 15000;
+	else if(level == 6) realProgress = 20000;
+	else if(level == 7) realProgress = 30000;
+	else if(level == 8) realProgress = 40000;
+	else if(level == 9) realProgress = 60000;
+	else realProgress = 80000;
 	return realProgress;
 }
 
@@ -376,15 +375,15 @@ function Call_setability(playerid, stat, amount, str_name[])
 		cache_get_value_name_int(0, "id", datadid);
 		if(stat == 3)
 		{
-			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Voennik` = '%d' WHERE `id` = '%d'", amount, datadid);
+			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Voennik` = '%d', `AbilStat2`='%d' WHERE `id` = '%d'", getAbilityRealProgress(amount), amount, datadid);
 			query_empty(pearsq, store_query);
 		}
 		else
 		{
-			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Ability%d` = '%d' WHERE `id` = '%d'", stat, amount, datadid);
+			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Ability%d` = '%d',`AbilStat%d`='%d' WHERE `id` = '%d'", stat, getAbilityRealProgress(amount), stat, amount, datadid);
 			query_empty(pearsq, store_query);
 		}
-		format(store, sizeof(store), "Вы изменили %s игроку %s Offline", abilityName[stat], str_name);
+		format(store, sizeof(store), "Вы изменили %s на %d уровень игроку %s Offline", abilityName[stat], amount, str_name);
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
 
 		AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", amount, abilityName[stat]);
@@ -399,15 +398,27 @@ CMD:setability(playerid, const params[])
     if (sscanf(params, "s[24]ii", tmp,stat,amount))
 	{
 	    SendClientMessage(playerid, COLOR_GREY, "Изменить навык: /setability ID [номер навыка] [уровень]");
-		format(store, sizeof(store), "%d %s | %d %s | %d %s", 0, abilityName[0], 1, abilityName[1], 2, abilityName[2]);
-		SendClientMessage(playerid, COLOR_GREY, store);
-		format(store, sizeof(store), "%d %s | %d %s | %d %s", 3, abilityName[3], 4, abilityName[4], 5, abilityName[5]);
-		SendClientMessage(playerid, COLOR_GREY, store);
-		format(store, sizeof(store), "%d %s | %d %s | %d %s", 6, abilityName[6], 7, abilityName[7], 8, abilityName[8]);
-		SendClientMessage(playerid, COLOR_GREY, store);
+
+		// Формируем подсказку
+		new row, quan;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+
+		for(new i = 0; i < MAX_ABILITY; i++)
+		{
+			row ++;
+			quan ++;
+			format(line,sizeof(line),"%d %s | ", i, abilityName[i]), strcat(lines,line);
+			if(row == 3 || quan == MAX_ABILITY)
+			{
+				row = 0;
+				SendClientMessage(playerid, COLOR_GREY, lines);
+				format(lines,sizeof(lines),"");
+			}
+		}
 		return 1;
 	}
 	if(stat < 0 || stat >= MAX_ABILITY) return ErrorMessage(playerid, "{FF6347}Неверный id навыка");
+	if(amount <= 0 || amount > 10) return ErrorMessage(playerid, "{FF6347}Уровень навыка не меньше 1 и не больше 10");
 
  	giveplayerid = ReturnUser(tmp, 1);
 	if(!IsPlayerConnected(giveplayerid))
@@ -417,10 +428,10 @@ CMD:setability(playerid, const params[])
 		mysql_tquery(pearsq, store, "Call_setability", "ddds", playerid, stat, amount, tmp);
 		return 1;
 	}
-	PlayerInfo[giveplayerid][pAbility][stat] = amount;
+	PlayerInfo[giveplayerid][pAbility][stat] = getAbilityRealProgress(amount);
 	update_ability(giveplayerid, stat, 1);
 
-	format(store, sizeof(store), "Вы изменили %s игроку %s", abilityName[stat], PlayerInfo[giveplayerid][pName]);
+	format(store, sizeof(store), "Вы изменили %s на %d уровень игроку %s", abilityName[stat], amount, PlayerInfo[giveplayerid][pName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
 
 	AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], amount, abilityName[stat]);
