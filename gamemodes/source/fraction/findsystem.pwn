@@ -3,6 +3,7 @@ new zoneId[MAX_FIND_ZONE];
 new ZoneTimer[MAX_FIND_ZONE];
 
 new FindZone[MAX_REALPLAYERS];
+new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
 {
@@ -38,9 +39,26 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y)
   FindZone[playerid] = CreateFindZone(playerid, x, y);
   if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
 
+  new unix = gettime();
+  if(FindCd[playerid] > unix) return format(store,sizeof(store), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix)), ErrorMessage(playerid, store);
+
   hideGangZones(playerid);
   GangZoneShowForPlayer(playerid, zoneId[FindZone[playerid]], 0xff0000AA);
   ZoneTimer[playerid] = 12;
+
+  new ability = get_ability(playerid, 9);
+  new cd;
+  if(ability >= 10) cd = 0;
+  else if(ability == 9) cd = 10;
+  else if(ability == 8) cd = 20;
+  else if(ability == 7) cd = 30;
+  else if(ability == 6) cd = 40;
+  else if(ability == 5) cd = 50;
+  else if(ability == 4) cd = 60;
+  else if(ability == 3) cd = 70;
+  else if(ability == 2) cd = 80;
+  else cd = 90;
+  FindCd[playerid] = unix + cd;
 
   format(lines,sizeof(lines),""); // Очищаем Lines
 
