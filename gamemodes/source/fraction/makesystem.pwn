@@ -175,3 +175,33 @@ stock CallService(playerid, whom)
 	}
 	return 1;
 }
+
+stock MakeList(playerid)
+{
+    new CopOrMin; // 1 - kop, 2 - MZ
+    if(IsACop(playerid)) CopOrMin = 1;
+    else CopOrMin = 2;
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"№ Вызвавший\tРайон\tВремя"), strcat(lines,line);
+    new quan, targetid,findraiontolist;
+    for(new z = 0; z < MAX_MAKE; z++) 
+    {
+        if(MakeInfo[z][mkStatus] == 1 && CopOrMin == 1 && MakeInfo[z][mkWho] == 1)
+        {
+            targetid = MakeInfo[z][mkPlayerId];
+            findraiontolist = FindRaion(targetid);
+            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            quan++;
+        }
+        else if(MakeInfo[z][mkStatus] == 1 && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
+        {
+            targetid = MakeInfo[z][mkPlayerId];
+            findraiontolist = FindRaion(targetid);
+            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            quan++;
+        }
+    }
+    if(quan == 0) return ErrorMessage(playerid,"{FF6347}В данный момент нет вызовов");
+    else ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список вызовов",lines,"Выбрать","Выход");
+    return 1;
+}
