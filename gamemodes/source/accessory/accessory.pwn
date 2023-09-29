@@ -126,6 +126,20 @@ stock AccessorySetting(playerid, i) // Меню настройки конкре�
 	return 1;
 }
 
+stock GetAccessory(modelId)
+{
+	new accId;
+	for(new i = 0; i < MAX_ACCESSORY; i++)
+	{
+		if(AccessoryInfo[i][acModel] == modelId)
+		{
+			accId = i;
+			break;
+		}
+	}
+	return accId;
+}
+
 stock CreateAccessory(modelId, stat, boneId) // Добавление нового аксессуара
 {
 	new accId = -1;
