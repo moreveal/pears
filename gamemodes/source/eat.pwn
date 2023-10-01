@@ -251,7 +251,7 @@ stock godrink(playerid)
 	if(HoldQuan[playerid] <= 1) return stopdrink(playerid), PlayerPlaySound(playerid,5601,0,0,0), RemovePlayerAttachedObject(playerid,1);
 	if(HoldStat[playerid] == 120)
 	{
-	    around_player_audio(playerid, 4604, 0, 5.0);
+	    around_player_audio(playerid, 4604, 0, 5.0, 0);
 	    PlayerInfo[playerid][pInven][HoldInva[playerid]] = 139;
 		PlayerInfo[playerid][pInvenPara][HoldInva[playerid]] = gettime()+172800;
 		HoldStat[playerid] = 139, HoldFrisk[playerid] = 139;
@@ -261,7 +261,7 @@ stock godrink(playerid)
 	}
 	if(HoldStat[playerid] == 126)
 	{
-	    around_player_audio(playerid, 20800, 0, 5.0);
+	    around_player_audio(playerid, 20800, 0, 5.0, 0);
 		PlayerInfo[playerid][pInven][HoldInva[playerid]] = 125;
 		HoldStat[playerid] = 125, HoldFrisk[playerid] = 125;
 		ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
@@ -314,7 +314,7 @@ stock godrink(playerid)
     }
     else
 	{
-	    around_player_audio(playerid, 32200, 0, 5.0);
+	    around_player_audio(playerid, 32200, 0, 5.0, 0);
 		EatPlayer(playerid, 20), eat = 1; // Хавчик
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
@@ -369,7 +369,7 @@ stock goeat_podnos(playerid)
 	if(ThrowInfo[t][tId] > 0 && HoldFrisk[playerid] == ThrowInfo[t][tId])
 	{
 	    ThrowInfo[t][tQuan] --;
-	    around_player_audio(playerid, 32200, 0, 5.0);
+	    around_player_audio(playerid, 32200, 0, 5.0, 0);
 	    EatPlayer(playerid, 20);
 	    format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+5~n~~y~%d/100"), PlayerInfo[playerid][pNeon]/10);
 		GameTextForPlayer(playerid,store,1800,3);

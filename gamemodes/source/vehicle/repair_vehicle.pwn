@@ -43,7 +43,7 @@ stock ClickTextDraw_RepairVehicle(playerid, PlayerText:playertextid)
             PPP15[playerid] = 6;
             CraftProcessTimer[playerid] = SetTimerEx("CraftProcess", 200, true, "d", playerid);
 
-            around_player_audio(playerid, 32000, 0, 5.0);
+            around_player_audio(playerid, 32000, 0, 5.0, 0);
             i_resetveshi(playerid);
         }
         return 1;
@@ -142,7 +142,7 @@ stock DoneProcessCraft(playerid, doneId)
             PlayerTextDrawShow(playerid, CraftProcessDraw[drawId + 1][playerid]);
         }
     }
-    if(Tabs_Load[playerid] == 10) around_player_audio(playerid, 32000, 0, 5.0);
+    if(Tabs_Load[playerid] == 10) around_player_audio(playerid, 32000, 0, 5.0, 0);
     else PlayerPlaySound(playerid,1150,0,0,0);
     return 1;
 }

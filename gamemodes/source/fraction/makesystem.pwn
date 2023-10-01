@@ -74,7 +74,7 @@ stock MakeCreate(playerid, whom)
         SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
         SuccessMessage(playerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет {ff6666}скорая помощь");
     }
-    around_player_audio(playerid, 3600, 0, 5.0);
+    around_player_audio(playerid, 3600, 0, 5.0, 0);
 
     MakeInfo[findslot][mkPlayerId] = playerid;
     MakeInfo[findslot][mkWho] = whom;
