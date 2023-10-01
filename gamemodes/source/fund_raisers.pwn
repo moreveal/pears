@@ -286,7 +286,7 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
     FundRaisersInfo[i][fundQuan] ++;
 
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%d$", inputtext), strcat(lines,line);
+    format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%s$", inputtext), strcat(lines,line);
 
     // Максимальное Пожертвование
     if(input > strval(FundRaisersInfo[i][fundMaxMoney]))
@@ -375,7 +375,7 @@ stock AreYouSureFundRaisersActive(playerid, i)
     FundRaisersInfo[i][fundUnix] = gettime();
     UpdateFundRaisers(i);
     SettingFundRaisers(playerid, i);
-    PlayerPlaySound(playerid,6400,0,0,0);
+    PlayerPlaySound(playerid,6401,0,0,0);
 
     format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundUnix`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundUnix], FundRaisersInfo[i][fundNewid]);
     query_empty(pearsq, store_query);
@@ -675,7 +675,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
 
             if(input[0] >= 1 && input[3] < 10000 || input[3] > 99000000) return ErrorMessage(playerid, "{FF6347}Сумма пожертвования, от которого доступен подарок, не меньше 10.000$ и не больше 99.000.000$");
 
-            if(input[0] >= 1)
+            if(input[0] >= 0)
             {
                 FundRaisersInfo[i][fundGift] = true;
                 FundRaisersInfo[i][fundGiftThingId][g] = input[1];
@@ -686,7 +686,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
 
             UpdateFundRaisers(i);
             SettingFundRaisersGift(playerid, i);
-            PlayerPlaySound(playerid,6400,0,0,0);
+            PlayerPlaySound(playerid,6401,0,0,0);
 
             format(store,sizeof(store),"%s (%s)", FundRaisersInfo[i][fundName], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0));
             AdminLog("fundgift", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, store);

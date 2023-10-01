@@ -4,7 +4,15 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 571 удалённх объектов
+ 	// 577 удалённх объектов
+
+	// Arabian Mafia Street
+	RemoveBuildingForPlayer(playerid, 7584, 1947.3828, 1916.1953, 78.1953, 0.25);
+	RemoveBuildingForPlayer(playerid, 7585, 1975.6484, 1892.0938, 16.5234, 0.25);
+	RemoveBuildingForPlayer(playerid, 7594, 1975.6484, 1892.0938, 16.5234, 0.25);
+	RemoveBuildingForPlayer(playerid, 7716, 1947.3828, 1916.1953, 78.1953, 0.25);
+	RemoveBuildingForPlayer(playerid, 7958, 2105.5156, 1916.2891, 14.8906, 0.25);
+	RemoveBuildingForPlayer(playerid, 7583, 2105.5156, 1916.2891, 14.8906, 0.25);
 
 	// Заборчик дамбы
 	RemoveBuildingForPlayer(playerid, 11623, -872.875, 1975.359, 59.585, 0.250);

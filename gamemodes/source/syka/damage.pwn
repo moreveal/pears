@@ -219,6 +219,9 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
                 // [ Удаляем броню из инвентаря ]
             }
         }
+
+        // Прерываем намаз
+        if(Namaz[playerid] >= 0) NamazEnd(playerid, 2);
     }
     
     // Возвращение NO_TEAM обоим игрокам
