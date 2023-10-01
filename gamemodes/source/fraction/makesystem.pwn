@@ -178,7 +178,7 @@ stock CallService(playerid, whom)
 
 stock MakeList(playerid)
 {
-    new CopOrMin; // 1 - kop, 2 - MZ
+    new CopOrMin = 0; // 1 - kop, 2 - MZ
     if(IsACop(playerid)) CopOrMin = 1;
     else CopOrMin = 2;
     format(lines,sizeof(lines),""); // Очищаем Lines
@@ -186,18 +186,28 @@ stock MakeList(playerid)
     new quan, targetid,findraiontolist;
     for(new z = 0; z < MAX_MAKE; z++) 
     {
-        if(MakeInfo[z][mkStatus] == 1 && CopOrMin == 1 && MakeInfo[z][mkWho] == 1)
+        if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 1 && MakeInfo[z][mkWho] == 1)
         {
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaion(targetid);
-            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
             quan++;
         }
-        else if(MakeInfo[z][mkStatus] == 1 && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
+        else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
         {
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaion(targetid);
-            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            quan++;
+        }
+        else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 0)
+        {
+            targetid = MakeInfo[z][mkPlayerId];
+            findraiontolist = FindRaion(targetid);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
             quan++;
         }
     }
