@@ -343,6 +343,7 @@ function loadDrop_Clothes(playerid)
 // Снять одежду
 stock player_undress(playerid)
 {
+	if(DeathInfo[playerid][deathStatus]) return 1;
     PlayerPlaySound(playerid,5601,0,0,0);
     TakeOffClothes(playerid);
     PlayerInfo[playerid][pModel2] = 0, PlayerInfo[playerid][pModel3] = 0;
