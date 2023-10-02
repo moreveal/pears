@@ -165,27 +165,17 @@ stock IsPlayerSyncModels(playerid)
 			GetPlayerSyncSkin
 		*/
 
-		stock GetPlayerSyncSkin(playerid)
+		stock GetPlayerSyncSkin(playerid) // +
 		{
 			if (!IsPlayerConnected(playerid))
 				return 0;
-			if(c_player_model_id[playerid] >= 15500) return c_player_model_id[playerid] - 15100;
-			else return c_player_model_id[playerid];
+			return c_player_model_id[playerid];
 		}
 
-		// Получаем id оригинального скина игрока
-		stock GetSkinOriginal(playerid)
+		stock GetSkinModelOriginal(s) // +
 		{
 			new skinId;
-			if(GetPlayerSyncSkin(playerid) > 311) skinId = c_custom_models[GetPlayerSyncSkin(playerid)]; // Если скин кастомный, возвращаем id оригинальной заменки
-			else skinId = GetPlayerSyncSkin(playerid); // Если скин обычный, возвращаем обычную модель
-			return skinId;
-		}
-
-		stock GetSkinModelOriginal(s)
-		{
-			new skinId;
-			if(s > 311) skinId = c_custom_models[s - 15100];
+			if(s > 311) skinId = c_custom_models[s];
 			else skinId = s;
 			return skinId;
 		}
@@ -242,30 +232,19 @@ stock IsPlayerSyncModels(playerid)
 
 	stock m_custom_sync_SetPlayerSkin(playerid, skinid)
 	{
-		new realskin = skinid;
-		if(skinid >= 15500) skinid -= 15100;
-
 		new
 			newid = skinid;
 
-		if (312 <= realskin < MAX_CUSTOM_MODEL_ID) {
+		if (312 <= skinid < MAX_CUSTOM_MODEL_ID) {
 			if (c_custom_models[skinid] != -1)
 				skinid = c_custom_models[skinid];
 			else
-			{
 				newid =
 				skinid = NO_CHAR_MODEL_FILE;
-			}
 		}
-
-		if(realskin >= 15500) 
-		{
-			skinid += 15100;
-			newid = skinid;
-		}
-
 		c_player_model_id[playerid] = newid;
 
+		if(skinid >= 313) skinid += 15187;
 		return SetPlayerSkin(playerid, skinid);
 	}
 	#if defined _ALS_SetPlayerSkin
@@ -282,30 +261,20 @@ stock IsPlayerSyncModels(playerid)
 
 	stock m_custom_sync_SetSpawnInfo(playerid, team, skin, Float:x, Float:y, Float:z, Float:rotation, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo)
 	{
-		new realskin = skin;
-		if(skin >= 15500) skin -= 15100;
-
 		new
 			newid = skin;
 
-		if (312 <= realskin < MAX_CUSTOM_MODEL_ID) {
+		if (312 <= skin < MAX_CUSTOM_MODEL_ID) {
 			if (c_custom_models[skin] != -1)
 				skin = c_custom_models[skin];
 			else
-			{
 				newid =
 				skin = NO_CHAR_MODEL_FILE;
-			}
 		}
-		if(realskin >= 15500) 
-		{
-			skin += 15100;
-			newid = skin;
-		}
-
 		c_team_model_id[team] =
 		c_player_model_id[playerid] = newid;
 
+		if(skin >= 313) skin += 15187;
 		return SetSpawnInfo(playerid, team, skin, x, y, z, rotation, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo);
 	}
 	#if defined _ALS_SetSpawnInfo
@@ -336,8 +305,8 @@ stock IsPlayerSyncModels(playerid)
 				modelid = NO_CHAR_MODEL_FILE;
 		}
 
-		new
-			actorid = CreateActor(modelid, X, Y, Z, Rotation);
+		if(modelid >= 313) modelid += 15187;
+		new actorid = CreateActor(modelid, X, Y, Z, Rotation);
 
 		if (actorid != INVALID_ACTOR_ID)
 			c_actor_model_id[actorid] = newid;
@@ -488,8 +457,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 		BS_ReadUint16(bs, wPlayerID);
 
-		if (312 <= c_player_model_id[wPlayerID] < MAX_CUSTOM_MODEL_ID) 
-		{
+		if (312 <= c_player_model_id[wPlayerID] < MAX_CUSTOM_MODEL_ID) {
 
 			static
 				offset;
@@ -498,17 +466,13 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, 24);
 
-			if (c_player_sync_models{playerid} == false)
-			{
-				new updateid;
-				if(c_player_model_id[wPlayerID] >= 15500) updateid = c_player_model_id[wPlayerID] -= 15100;
-				else updateid = c_player_model_id[wPlayerID];
-
-				BS_WriteUint32(bs, c_custom_models[updateid]);
-			}
+			if (c_player_sync_models{playerid} == false) BS_WriteUint32(bs, c_custom_models[c_player_model_id[wPlayerID]]); // No Launcher
 			else
-				BS_WriteUint32(bs, c_player_model_id[wPlayerID]);
-
+			{
+				new showModel = c_player_model_id[wPlayerID];
+				if(showModel >= 313) showModel += 15187;
+				BS_WriteUint32(bs, showModel);
+			}
 			BS_SetWriteOffset(bs, offset);
 
 			#if defined PR_SendRPC
@@ -538,16 +502,13 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, 8);
 
-			if (c_player_sync_models{playerid} == false)
+			if (c_player_sync_models{playerid} == false) BS_WriteInt32(bs, c_custom_models[c_team_model_id[byteTeam]]); // No Launcher
+			else 
 			{
-				new updateid;
-				if(c_team_model_id[byteTeam] >= 15500) updateid = c_team_model_id[byteTeam] - 15100;
-				else updateid = c_team_model_id[byteTeam];
-
-				BS_WriteInt32(bs, c_custom_models[updateid]);
+				new showModel = c_team_model_id[byteTeam];
+				if(showModel >= 313) showModel += 15187;
+				BS_WriteInt32(bs, showModel);
 			}
-			else
-				BS_WriteInt32(bs, c_team_model_id[byteTeam]);
 
 			BS_SetWriteOffset(bs, offset);
 
@@ -579,17 +540,13 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, 16);
 
-			if (c_player_sync_models{playerid} == false)
-			{
-				new updateid;
-				if(c_team_model_id[byteTeam] >= 15500) updateid = c_team_model_id[byteTeam] - 15100;
-				else updateid = c_team_model_id[byteTeam];
-
-				BS_WriteInt32(bs, c_custom_models[updateid]);
-			}
+			if (c_player_sync_models{playerid} == false) BS_WriteInt32(bs, c_custom_models[c_team_model_id[byteTeam]]); // No Launcher
 			else
-				BS_WriteInt32(bs, c_team_model_id[byteTeam]);
-
+			{
+				new showModel = c_team_model_id[byteTeam];
+				if(showModel >= 313) showModel += 15187;
+				BS_WriteInt32(bs, showModel);
+			}
 			BS_SetWriteOffset(bs, offset);
 
 			#if defined PR_SendRPC
@@ -627,17 +584,13 @@ public OnPlayerDisconnect(playerid, reason)
 				BS_SetWriteOffset(bs, 32);
 			#endif
 
-			if (c_player_sync_models{playerid} == false)
-			{
-				new updateid;
-				if(c_player_model_id[wPlayerID] >= 15500) updateid = c_player_model_id[wPlayerID] -= 15100;
-				else updateid = c_player_model_id[wPlayerID];
-
-				BS_WriteUint32(bs, c_custom_models[updateid]);
-			}
+			if (c_player_sync_models{playerid} == false) BS_WriteUint32(bs, c_custom_models[c_player_model_id[wPlayerID]]); // No Launcher
 			else
-				BS_WriteUint32(bs, c_player_model_id[wPlayerID]);
-
+			{
+				new showModel = c_player_model_id[wPlayerID];
+				if(showModel >= 313) showModel += 15187;
+				BS_WriteUint32(bs, showModel);
+			}
 			BS_SetWriteOffset(bs, offset);
 
 			#if defined PR_SendRPC
@@ -669,11 +622,13 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, 16);
 
-			if (c_player_sync_models{playerid} == false)
-				BS_WriteUint32(bs, c_custom_models[c_actor_model_id[wActorID]]);
+			if (c_player_sync_models{playerid} == false) BS_WriteUint32(bs, c_custom_models[c_actor_model_id[wActorID]]);
 			else
-				BS_WriteUint32(bs, c_actor_model_id[wActorID]);
-
+			{
+				new showModel = c_actor_model_id[wActorID];
+				if(showModel >= 313) showModel += 15187;
+				BS_WriteUint32(bs, showModel);
+			}
 			BS_SetWriteOffset(bs, offset);
 
 			#if defined PR_SendRPC

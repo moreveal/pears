@@ -12,104 +12,105 @@
 stock AddCustomSkins()
 {
 	// AddCarSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
-	AddCharSyncModel(60, 400); // pearspeda (Значит не 400, а 15500) male
-	AddCharSyncModel(233, 401); // pearspedb (Значит не 401, а 15501)
-	AddCharSyncModel(19, 402); // 15502 pearspedc male
-	AddCharSyncModel(59, 403); // 15503 pearspedd male
-	AddCharSyncModel(93, 404); // 15504, pearspede
-	AddCharSyncModel(19, 405); // 15505, pearspedf male
-	AddCharSyncModel(59, 406); // 15506, pearspedg male
-	AddCharSyncModel(125, 407); // 15507, pearspedh male
-	AddCharSyncModel(23, 408); // 15508, pearspedi male
-	AddCharSyncModel(21, 409); // 15509, pearspedj male
-	AddCharSyncModel(216, 410); // 15510, pearspedk
-	AddCharSyncModel(55, 411); // 15511, pearspedl
-	AddCharSyncModel(93, 412); // 15512, pearspedm
-	AddCharSyncModel(7, 413); // 15513, pearspedn male
-	AddCharSyncModel(125, 414); // 15514, pearspedo male
-	AddCharSyncModel(1, 415); // 15515, pearspedp male
-	AddCharSyncModel(248, 416); // 15516, pearspedq male
-	AddCharSyncModel(29, 417); // 15517, pearspedr male
-	AddCharSyncModel(121, 418); // 15518, pearspeds male
-	AddCharSyncModel(125, 419); // 15519, pearspedt male
-	AddCharSyncModel(240, 420); // 15520, pearspedu male
-	AddCharSyncModel(223, 421); // 15521, pearspedv male
-	AddCharSyncModel(28, 422); // 15522, pearspedw male
-	AddCharSyncModel(25, 423); // 15523, pearspedx male
-	AddCharSyncModel(150, 424); // 15524, pearspedy
-	AddCharSyncModel(237, 425); // 15525, pearspedz
-	AddCharSyncModel(93, 426); // 15526, pearspedaa
-	AddCharSyncModel(12, 427); // 15527, pearspedab
-	AddCharSyncModel(40, 428); // 15528, pearspedac
-	AddCharSyncModel(178, 429); // 15529, pearspedad
-	AddCharSyncModel(233, 430); // 15530, pearspedae
-	AddCharSyncModel(93, 431); // 15531, pearspedaf
-	AddCharSyncModel(226, 432); // 15532, pearspedag 
-	AddCharSyncModel(223, 433); // 15533, pearspedah
-	AddCharSyncModel(233, 434); // 15534, pearspedai
-	AddCharSyncModel(233, 435); // 15535, pearspedaj
-	AddCharSyncModel(233, 436); // 15536, pearspedak
-	AddCharSyncModel(93, 437); // 15537, pearspedal
-	AddCharSyncModel(233, 438); // 15538, pearspedam
-	AddCharSyncModel(223, 439); // 15539, pearspedan male
-	AddCharSyncModel(240, 440); // 15540, pearspedao male
-	AddCharSyncModel(126, 441); // 15541, pearspedap male
-	AddCharSyncModel(93, 442); // 15542, pearspedaq
-	AddCharSyncModel(240, 443); // 15543, pearspedar male
-	AddCharSyncModel(93, 444); // 15544, pearspedas
-	AddCharSyncModel(93, 445); // 15545, pearspedat
-	AddCharSyncModel(91, 446); // 15546, pearspedau
-	AddCharSyncModel(233, 447); // 15547, pearspedav
-	AddCharSyncModel(216, 448); // 15548, pearspedaw
-	AddCharSyncModel(216, 449); // 15549, pearspedax
-	AddCharSyncModel(93, 450); // 15550, pearspeday
-	AddCharSyncModel(240, 451); // 15551, pearspedaz male
-	AddCharSyncModel(180, 452); // 15552, pearspedba male
-	AddCharSyncModel(226, 453); // 15553, pearspedbb
-	AddCharSyncModel(60, 454); // 15554, pearspedbc male
-	AddCharSyncModel(257, 455); // 15555, pearspedbd
-	AddCharSyncModel(257, 456); // 15556, pearspedbe
-	AddCharSyncModel(41, 457); // 15557, pearspedbf
-	AddCharSyncModel(40, 458); // 15558, pearspedbg
-	AddCharSyncModel(233, 459); // 15559, pearspedbh
-	AddCharSyncModel(233, 460); // 15560, pearspedbi
-	AddCharSyncModel(93, 461); // 15561, pearspedbj
-	AddCharSyncModel(233, 462); // 15562, pearspedbk
-	AddCharSyncModel(98, 463); // 15563, pearspedbl male
-	AddCharSyncModel(98, 464); // 15564, pearspedbm male
-	AddCharSyncModel(98, 465); // 15565, pearspedbn male
-	AddCharSyncModel(98, 466); // 15566, pearspedbo male
-	AddCharSyncModel(112, 467); // 15567, pearspedbp male
-	AddCharSyncModel(127, 468); // 15568, pearspedbq male
-	AddCharSyncModel(127, 469); // 15569, pearspedbr male
-	AddCharSyncModel(240, 470); // 15570, pearspedbs male
-	AddCharSyncModel(240, 471); // 15571, pearspedbt male
-	AddCharSyncModel(240, 472); // 15572, pearspedbu male
-	AddCharSyncModel(45, 473); // 15573, pearspedbv male
-	AddCharSyncModel(91, 474); // 15574, pearspedbw
-	AddCharSyncModel(98, 475); // 15575, pearspedbx male
-	AddCharSyncModel(216, 476); // 15576, pearspedby
-	AddCharSyncModel(25, 477); // 15577, pearspedbz male
-	AddCharSyncModel(120, 478); // 15578, pearspedca male
-	AddCharSyncModel(179, 479); // 15579, pearspedcb male
-	AddCharSyncModel(233, 480); // 15580, pearspedcc
-	AddCharSyncModel(12, 481); // 15581, pearspedcd
-	AddCharSyncModel(40, 482); // 15582, pearspedce
-	AddCharSyncModel(85, 483); // 15583, pearspedcf
-	AddCharSyncModel(233, 484); // 15584, pearspedcg
-	AddCharSyncModel(233, 485); // 15585, pearspedct
-	AddCharSyncModel(233, 486); // 15586, pearspedch
-	AddCharSyncModel(12, 487); // 15587, pearspedci
-	AddCharSyncModel(217, 488); // 15588, pearspedcj male
-	AddCharSyncModel(12, 489); // 15589, pearspedck
-	AddCharSyncModel(7, 490); // 15590, pearspedcl male
-	AddCharSyncModel(93, 491); // 15591, pearspedcm
-	AddCharSyncModel(98, 492); // 15592, pearspedcn male
-	AddCharSyncModel(143, 493); // 15593, pearspedco male
-	AddCharSyncModel(93, 494); // 15594, pearspedcp
-	AddCharSyncModel(91, 495); // 15595, pearspedcq
-	AddCharSyncModel(40, 496); // 15596, pearspedcr
-	AddCharSyncModel(46, 497); // 15597, pearspedcs male
+	// Plus 15187
+	AddCharSyncModel(60, 313); // pearspeda (Значит не 313, а 15500) male
+	AddCharSyncModel(233, 314); // pearspedb (Значит не 314, а 15501)
+	AddCharSyncModel(19, 315); // 15502 pearspedc male
+	AddCharSyncModel(59, 316); // 15503 pearspedd male
+	AddCharSyncModel(93, 317); // 15504, pearspede
+	AddCharSyncModel(19, 318); // 15505, pearspedf male
+	AddCharSyncModel(59, 319); // 15506, pearspedg male
+	AddCharSyncModel(125, 320); // 15507, pearspedh male
+	AddCharSyncModel(23, 321); // 15508, pearspedi male
+	AddCharSyncModel(21, 322); // 15509, pearspedj male
+	AddCharSyncModel(216, 323); // 15510, pearspedk
+	AddCharSyncModel(55, 324); // 15511, pearspedl
+	AddCharSyncModel(93, 325); // 15512, pearspedm
+	AddCharSyncModel(7, 326); // 15513, pearspedn male
+	AddCharSyncModel(125, 327); // 15514, pearspedo male
+	AddCharSyncModel(1, 328); // 15515, pearspedp male
+	AddCharSyncModel(248, 329); // 15516, pearspedq male
+	AddCharSyncModel(29, 330); // 15517, pearspedr male
+	AddCharSyncModel(121, 331); // 15518, pearspeds male
+	AddCharSyncModel(125, 332); // 15519, pearspedt male
+	AddCharSyncModel(240, 333); // 15520, pearspedu male
+	AddCharSyncModel(223, 334); // 15521, pearspedv male
+	AddCharSyncModel(28, 335); // 15522, pearspedw male
+	AddCharSyncModel(25, 336); // 15523, pearspedx male
+	AddCharSyncModel(150, 337); // 15524, pearspedy
+	AddCharSyncModel(237, 338); // 15525, pearspedz
+	AddCharSyncModel(93, 339); // 15526, pearspedaa
+	AddCharSyncModel(12, 340); // 15527, pearspedab
+	AddCharSyncModel(40, 341); // 15528, pearspedac
+	AddCharSyncModel(178, 342); // 15529, pearspedad
+	AddCharSyncModel(233, 343); // 15530, pearspedae
+	AddCharSyncModel(93, 344); // 15531, pearspedaf
+	AddCharSyncModel(226, 345); // 15532, pearspedag 
+	AddCharSyncModel(223, 346); // 15533, pearspedah
+	AddCharSyncModel(233, 347); // 15534, pearspedai
+	AddCharSyncModel(233, 348); // 15535, pearspedaj
+	AddCharSyncModel(233, 349); // 15536, pearspedak
+	AddCharSyncModel(93, 350); // 15537, pearspedal
+	AddCharSyncModel(233, 351); // 15538, pearspedam
+	AddCharSyncModel(223, 352); // 15539, pearspedan male
+	AddCharSyncModel(240, 353); // 15540, pearspedao male
+	AddCharSyncModel(126, 354); // 15541, pearspedap male
+	AddCharSyncModel(93, 355); // 15542, pearspedaq
+	AddCharSyncModel(240, 356); // 15543, pearspedar male
+	AddCharSyncModel(93, 357); // 15544, pearspedas
+	AddCharSyncModel(93, 358); // 15545, pearspedat
+	AddCharSyncModel(91, 359); // 15546, pearspedau
+	AddCharSyncModel(233, 360); // 15547, pearspedav
+	AddCharSyncModel(216, 361); // 15548, pearspedaw
+	AddCharSyncModel(216, 362); // 15549, pearspedax
+	AddCharSyncModel(93, 363); // 15550, pearspeday
+	AddCharSyncModel(240, 364); // 15551, pearspedaz male
+	AddCharSyncModel(180, 365); // 15552, pearspedba male
+	AddCharSyncModel(226, 366); // 15553, pearspedbb
+	AddCharSyncModel(60, 367); // 15554, pearspedbc male
+	AddCharSyncModel(257, 368); // 15555, pearspedbd
+	AddCharSyncModel(257, 369); // 15556, pearspedbe
+	AddCharSyncModel(41, 370); // 15557, pearspedbf
+	AddCharSyncModel(40, 371); // 15558, pearspedbg
+	AddCharSyncModel(233, 372); // 15559, pearspedbh
+	AddCharSyncModel(233, 373); // 15560, pearspedbi
+	AddCharSyncModel(93, 374); // 15561, pearspedbj
+	AddCharSyncModel(233, 375); // 15562, pearspedbk
+	AddCharSyncModel(98, 376); // 15563, pearspedbl male
+	AddCharSyncModel(98, 377); // 15564, pearspedbm male
+	AddCharSyncModel(98, 378); // 15565, pearspedbn male
+	AddCharSyncModel(98, 379); // 15566, pearspedbo male
+	AddCharSyncModel(112, 380); // 15567, pearspedbp male
+	AddCharSyncModel(127, 381); // 15568, pearspedbq male
+	AddCharSyncModel(127, 382); // 15569, pearspedbr male
+	AddCharSyncModel(240, 383); // 15570, pearspedbs male
+	AddCharSyncModel(240, 384); // 15571, pearspedbt male
+	AddCharSyncModel(240, 385); // 15572, pearspedbu male
+	AddCharSyncModel(45, 386); // 15573, pearspedbv male
+	AddCharSyncModel(91, 387); // 15574, pearspedbw
+	AddCharSyncModel(98, 388); // 15575, pearspedbx male
+	AddCharSyncModel(216, 389); // 15576, pearspedby
+	AddCharSyncModel(25, 390); // 15577, pearspedbz male
+	AddCharSyncModel(120, 391); // 15578, pearspedca male
+	AddCharSyncModel(179, 392); // 15579, pearspedcb male
+	AddCharSyncModel(233, 393); // 15580, pearspedcc
+	AddCharSyncModel(12, 394); // 15581, pearspedcd
+	AddCharSyncModel(40, 395); // 15582, pearspedce
+	AddCharSyncModel(85, 396); // 15583, pearspedcf
+	AddCharSyncModel(233, 397); // 15584, pearspedcg
+	AddCharSyncModel(233, 398); // 15585, pearspedct
+	AddCharSyncModel(233, 399); // 15586, pearspedch
+	AddCharSyncModel(12, 400); // 15587, pearspedci
+	AddCharSyncModel(217, 401); // 15588, pearspedcj male
+	AddCharSyncModel(12, 402); // 15589, pearspedck
+	AddCharSyncModel(7, 403); // 15590, pearspedcl male
+	AddCharSyncModel(93, 404); // 15591, pearspedcm
+	AddCharSyncModel(98, 405); // 15592, pearspedcn male
+	AddCharSyncModel(143, 406); // 15593, pearspedco male
+	AddCharSyncModel(93, 407); // 15594, pearspedcp
+	AddCharSyncModel(91, 408); // 15595, pearspedcq
+	AddCharSyncModel(40, 409); // 15596, pearspedcr
+	AddCharSyncModel(46, 410); // 15597, pearspedcs male
 
     return 1;
 }
@@ -119,7 +120,7 @@ stock IsASkinExisting(s)
 {
     if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
 
-    || s >= 15500 && s <= 15597) return 1; // Кастомные скины пирса
+    || s >= 313 && s <= 410) return 1; // Кастомные скины пирса
     return 0;
 }
 
@@ -134,32 +135,37 @@ stock GetSkinSex(s)
  	|| s >= 234 && s <= 236 || s >= 239 && s <= 242 || s >= 247 && s <= 250 || s >= 252 && s <= 255 || s >= 258 && s <= 262 || s >= 264 && s <= 297
  	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
 
-	// Кастомные
-	|| s == 15500 || s == 15502 || s == 15503 || s >= 15505 && s <= 15509 || s >= 15513 && s <= 15523
-	|| s == 15539 || s == 15540 || s == 15541 || s == 15543 || s == 15551 || s == 15552 || s == 15554
-	|| s >= 15563 && s <= 15573 || s == 15575 || s == 15577 || s == 15578 || s == 15579 || s == 15588
-	|| s == 15590 || s == 15592 || s == 15593 || s == 15597) return 0; // 0 - мужской скин
+	// Кастомные -15187
+	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 15523
+	|| s == 336 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
+	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
+	|| s == 403 || s == 405 || s == 406 || s == 410) return 0; // 0 - мужской скин
  	else return 1; // Все остальные 1, значит женские
 }
 
-// Получаем id скина для другого игрока forplayerid
+// Получаем id скина для другого игрока forplayerid +
 stock GetSkinPresentation(forplayerid, playerid)
 {
     new skinId;
-    if(IsPlayerSyncModels(forplayerid)) 
+	new showModel = GetPlayerSyncSkin(playerid);
+    if(IsPlayerSyncModels(forplayerid)) // Если моды установлены
 	{
-		skinId = GetPlayerSyncSkin(playerid); // Если моды установлены, показываем модельку с учётом модов
-		if(skinId >= 400) skinId += 15100;
+		if(showModel >= 313) showModel += 15187;
+		skinId = showModel;
 	}
-    else skinId = GetSkinOriginal(playerid); // Если моды НЕ установлены, показываем оригинальный скин
+    else skinId = showModel; // Если моды НЕ установлены, показываем оригинальный скин
     return skinId;
 }
 
-// Получаем модель скина с учётом наличия модпака
+// Получаем модель скина с учётом наличия модпака +
 stock GetModelSkin(playerid, s)
 {
     new skinId;
-    if(IsPlayerSyncModels(playerid)) skinId = s; // Мод установлен
+    if(IsPlayerSyncModels(playerid)) // Мод установлен
+	{
+		if(s >= 313) s += 15187;
+		skinId = s;
+	}
     else skinId = GetSkinModelOriginal(s);
     return skinId;
 }
