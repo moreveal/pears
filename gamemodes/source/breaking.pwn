@@ -57,6 +57,11 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 	}
+	else if(type == 2) // Взламываем двигатель
+	{
+	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
+	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
+	}
 	return 1;
 }
 CMD:stopbreaking(playerid)
@@ -113,6 +118,23 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
 				LockCar(BreakingTypeID[playerid], 0);
 			}
+			else if(BreakingType[playerid] == 2)
+			{
+				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+				GetVehicleParamsEx(BreakingTypeID[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
+				SetVehicleParamsEx(BreakingTypeID[playerid], true, lights, alarm, doors, bonnet, boot, objective);
+				SetPlayerChatBubble(playerid,"запускает двигатель",COLOR_PURPLE,25.0,5000);
+				VehInfo[BreakingTypeID[playerid]][vEngine] = 1, CheckBenz(playerid);
+				new tmphour,tmpminute,tmpsecond;
+				gettime(tmphour, tmpminute, tmpsecond);
+				if(tmphour >= 20 || tmphour >= 0 && tmphour <= 6)
+				{
+					GetVehicleParamsEx(BreakingTypeID[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
+					SetVehicleParamsEx(BreakingTypeID[playerid], engine, true, alarm, doors, bonnet, boot, objective);
+					VehInfo[BreakingTypeID[playerid]][vLights] = 1;
+				}
+				UpdateVehEngine(playerid);
+			}
 			GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Взломано"),5000,3);
     	}
 	}
@@ -153,10 +175,14 @@ stock UpdateTextDrawBreakingScale(playerid) // Обновляем отображ
 }
 stock StopBreaking(playerid)
 {
-    ClearAnimations(playerid);
-    ClearAnim(playerid);
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
+    {
+		ClearAnimations(playerid);
+    	ClearAnim(playerid);
+	}
 	if(BreakingType[playerid] == 0) DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
 	else if(BreakingType[playerid] == 1) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+	else if(BreakingType[playerid] == 2) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
     ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","•","");
     GameTextForPlayer(playerid," ",8000,3);
     if(BreakingTimer[playerid]) KillTimer(BreakingTimer[playerid]);

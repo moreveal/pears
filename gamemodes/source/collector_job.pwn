@@ -189,6 +189,8 @@ stock CloseCollector(playerid)
 	SetPVarInt(playerid,"job_collector",0);
 	SetPVarInt(playerid,"job_collector_term",0);
 	SetPVarInt(playerid,"job_collector_status",0);
+	new br = numnrent(b);
+	UpdateLabelTerm(b,br,term);
 	BizzInfo[b][bDeliveryOrder] = -1;
 	BizzInfo[b][bItem][term] = 0, BizzInfo[b][bUpdate] = 1;
 	SuccessMessage(playerid,"Деньги доставлены!\nВы можете сесть дальше в транспорт инкассаторов\n и продолжить работать(/checkterm)");

@@ -34,7 +34,7 @@ stock CreateFindZone(playerid, Float:X, Float:Y)
   return findz;
 }
 
-stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y)
+stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
 {
   FindZone[playerid] = CreateFindZone(playerid, x, y);
   if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
@@ -47,7 +47,7 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y)
   ZoneTimer[playerid] = 12;
 
   new ability = get_ability(playerid, 9);
-  new cd;
+  new cd,string[150];
   if(ability >= 10) cd = 0;
   else if(ability == 9) cd = 10;
   else if(ability == 8) cd = 20;
@@ -67,7 +67,8 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y)
   format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
   SuccessMessage(playerid, lines);
   PlayerPlaySound(playerid,6400,0,0,0);
-
+  format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск %s, квадрат отмечен на GPS. Он в районе: %s",rpplayername(giveplayerid),gSAZones[findraiontolist][zName]);
+  SendClientMessage(playerid,COLOR_GREY,string);
   update_ability(playerid, 9, 10 + random(5));
   return 1;
 }
@@ -108,7 +109,8 @@ CMD:find(playerid, const params[])
       case 2: X += rand_x, Y -= rand_y;
       case 3: X -= rand_x, Y += rand_y;
     }
-    ShowFindZone(playerid, giveplayerid, X, Y);
+    new findraiontolist = FindRaion(giveplayerid);
+    ShowFindZone(playerid, giveplayerid, X, Y,findraiontolist);
   }
   else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
   return 1;
@@ -140,11 +142,25 @@ stock FindRaion(playerid)
   new districtId;
   for(new i;i < sizeof(gSAZones);i ++)
   {
-    if(IsPlayerInCube(playerid, gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
+    if(IsPlayerInCubeForFind(playerid, gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
     {
       districtId = i;
       break;
     }
   }
   return districtId;
+}
+
+stock IsPlayerInCubeForFind(playerid, Float:minx, Float:miny, Float:minz, Float:maxx, Float:maxy, Float:maxz)
+{
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	if(GetPlayerVirtualWorld(playerid) > 0)
+	{
+    x = PlayerInfo[playerid][find_X];
+    y = PlayerInfo[playerid][find_Y];
+    z = PlayerInfo[playerid][find_Z];
+	}
+   	if(x > minx && x < maxx && y > miny && y < maxy && z > minz && z < maxz) return 1;
+	return 0;
 }
