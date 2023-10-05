@@ -4210,8 +4210,9 @@ function LoadCar(playerid, dab, race_check)
 
 	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
-	new paramet[6], fine, bool:death, repair;
+	new paramet[6], sklad, fine, bool:death, repair;
 	cache_get_value_name_int(0, "finelien", fine);
+	cache_get_value_name_int(0, "Sklad", sklad);
 	cache_get_value_name_int(0, "sost", paramet[0]);
 	cache_get_value_name_int(0, "model", paramet[1]);
 	cache_get_value_name_bool(0, "death", death);
@@ -4228,6 +4229,23 @@ function LoadCar(playerid, dab, race_check)
 		else 
 		{
 			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Владелец может узнать подробности ареста на штраф стоянке");
+			PlayerInfo[playerid][pKeyVeh][0] = 0;
+			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+		}
+		return 1;
+	}
+	// Проверка на арестованный транспорт
+	if(sklad > 0)
+	{
+		SetPVarInt(playerid,"stopload",0);
+		if(paramet[0] == PlayerInfo[playerid][pID])
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт угнан {FF6347}[ Подробности: Y >> GPS >> Транспорт >> Подать в розыск ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Подробности: Y >> GPS >> Транспорт >> Подать в розыск");
+		}
+		else 
+		{
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Владелец может подать в розыск на транспорт");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
 			mysql_SavePlayer(playerid, "KeyVeh0", 0);
 		}
