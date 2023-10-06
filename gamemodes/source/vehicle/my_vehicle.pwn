@@ -4234,7 +4234,7 @@ function LoadCar(playerid, dab, race_check)
 		}
 		return 1;
 	}
-	// Проверка на арестованный транспорт
+	// Проверка на спизженный транспорт
 	if(sklad > 0)
 	{
 		SetPVarInt(playerid,"stopload",0);

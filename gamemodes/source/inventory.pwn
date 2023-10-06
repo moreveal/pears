@@ -1580,6 +1580,11 @@ stock IsArmor(i)
 	if(i == 19142) return 1;
 	return 0;
 }
+stock IsAOpenEbalo(i)
+{
+	if(i == 19801) return 1;
+	return 0;
+}
 stock PerishableThing(i, type) //  Проверка на портящиеся продукты
 {
     if(type == 0 && (i == 1 || i == 6 || i == 18 || i == 20 || i == 22 || i == 54 || i == 55 || i == 96 || i == 98 || i == 99 || i == 100 || i == 101 || i == 102

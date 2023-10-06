@@ -45,6 +45,7 @@ stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открывае�
 }
 stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дверь, которую взламываем
 {
+	PlayerInfo[playerid][pFixCamera] = 0;
     BreakingType[playerid] = type;
     BreakingTypeID[playerid] = breakingId;
 	if(type == 0) // Взламываем дом
@@ -56,11 +57,13 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	{
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
+		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
 	}
 	else if(type == 2) // Взламываем двигатель
 	{
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
+		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
 	}
 	return 1;
 }
