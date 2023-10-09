@@ -58,8 +58,8 @@ stock FindCarInWareHouse(playerid)
         crimeInfo[i][crmSenderID] = 0;
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я нашел угнанную машину. Нужно вернутся в участок и сообщить владельцу об этом!");
         SuccessMessage(playerid,"Вы нашли угнанную машину.\nНужно вернутся в участок и сдать дело.");
-        format(query, sizeof(query), "Ваш угнанный т/с [%s] был найден полицей, для получения доступа к нему явитесь в участок и оплатите работу",vehName[crimeInfo[i][crmTargetZalupaParam]]);
-        notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], query);
+        format(store, sizeof(store), "Ваш угнанный т/с [%s] был найден полицей, для получения доступа к нему явитесь в участок и оплатите работу",vehName[crimeInfo[i][crmTargetZalupaParam]]);
+        notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], store);
         SaveCrime(i);
     }
     else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}На этом складе нет нужного транспорта. Поищите на других складах","*","");

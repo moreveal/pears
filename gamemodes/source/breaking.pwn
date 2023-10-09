@@ -43,6 +43,18 @@ stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открывае�
 	BreakingTimer[playerid] = SetTimerEx("BreakingProcess", 100, true, "d", playerid,1); // Запускаем таймер для заполнения шкалы
 	return 1;
 }
+stock fine_dayshour(t)
+{
+	new string[44];
+	new days = t/86400;
+	new hour = (t - days*86400)/3600;
+	new tmin = (t - hour*3600)/60;
+
+	if(days > 0) format(string,sizeof(string),"%d дней, %d часов и %02d минут", days, hour, tmin);
+	else if(days == 0 && hour > 0) format(string,sizeof(string),"%d часов и %02d минут", hour, tmin);
+	else if(days == 0 && hour == 0) format(string,sizeof(string),"%02d минут", tmin);
+	return string;
+}
 stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дверь, которую взламываем
 {
 	PlayerInfo[playerid][pFixCamera] = 0;
@@ -51,6 +63,12 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	if(type == 0) // Взламываем дом
 	{
 	    if(DomInfo[breakingId][dBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Эту дверь уже кто-то взламывает");
+		if(DomInfo[breakingId][dTheft] > gettime())
+		{
+			format(store,sizeof(store),"{FF6347}Дом находится под наблюдением полиции.. не следует рисковать\n\n{cccccc}Повторное ограбление дома доступно через {FF6347}%s", fine_dayshour(DomInfo[breakingId][dTheft]-gettime()));
+			ErrorMessage(playerid, store);
+			return 1;
+		}
 	    DomInfo[breakingId][dBreaking] = PlayerInfo[playerid][pID];
 	}
 	else if(type == 1) // Взламываем дверь транспорта

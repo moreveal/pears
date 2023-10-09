@@ -174,31 +174,17 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	if(GetPlayerVirtualWorld(playerid) <= 0 || GetPlayerVirtualWorld(playerid) >= 15) return 1;
 	if(PPP15[playerid] != 4) return ErrorMessage(playerid, "{FF6347}Возьмите тележку возле кассы");
 
-	new b = GetPlayerVirtualWorld(playerid)+12, item;
+	new b = GetPlayerVirtualWorld(playerid)+12, item = -1;
 
-	if(IsPlayerInRangeOfPoint(playerid,1.0,1105.087158, -1372.597167, 1401.845336)) item = 0;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1101.706665, -1373.357910, 1401.545043)) item = 1;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1101.706665, -1370.817138, 1401.545043)) item = 2;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1111.009155, -1377.957885, 1401.935424)) item = 3;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1105.085937, -1375.336914, 1401.855346)) item = 4;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1101.726318, -1376.236572, 1401.855346)) item = 5;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1103.216796, -1369.375610, 1401.855346)) item = 6;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1106.046752, -1369.375610, 1401.855346)) item = 7;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1115.489379, -1374.966186, 1401.855346)) item = 8;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1115.489379, -1372.265869, 1401.855346)) item = 9;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1121.029907, -1373.405761, 1401.855346)) item = 10;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1121.029907, -1377.447631, 1401.855346)) item = 11;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1121.920776, -1378.028198, 1401.855346)) item = 12;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1110.919799, -1372.167480, 1401.855346)) item = 13;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1125.142456, -1372.837768, 1401.855346)) item = 14;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1117.922729, -1369.777587, 1401.454956)) item = 15;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1121.273315, -1369.777587, 1401.454956)) item = 16;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1110.982055, -1374.947509, 1401.855346)) item = 17;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1108.325073, -1378.018188, 1401.935424)) item = 18;
-	else if(IsPlayerInRangeOfPoint(playerid,1.0,1124.570190, -1378.077636, 1401.935424)) item = 19;
-	else if(IsPlayerInRangeOfPoint(playerid,1.5,1131.505126, -1372.518798, 1402.124633)) item = 20;
-
-
+	for(new i = 0; i < MAX_BIZ_ITEMSUPERMARKET; i++)
+	{
+		if(IsPlayerInRangeOfPoint(playerid,1.5,SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2]))
+		{
+			item = i;
+			break;
+		}
+	}
+	if(item == -1) return 1;
     if(BizzInfo[b][bItem][item] <= 0) return ErrorMessage(playerid, "{FF6347}В супермаркете нет этого товара в наличии");
     
     if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]) return format(store, sizeof(store), "{FF6347}На кассе вам не хватит %d$", OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]-oGetPlayerMoney(playerid)), ErrorMessage(playerid, store);
