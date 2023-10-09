@@ -51,15 +51,16 @@ stock FindCarInWareHouse(playerid)
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
     new world = GetPlayerVirtualWorld(playerid)-80;
     new i = PlayerInfo[playerid][pTheft]-1;
-    printf("%d,%d,%d",world,i,crimeInfo[i][crmSklad]);
     if(crimeInfo[i][crmSklad] == world)
     {   
         format(store,sizeof(store),"UPDATE `pp_cars` SET `Sklad` = '0' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
         query_empty(pearsq, store);
         crimeInfo[i][crmSenderID] = 0;
-        SaveCrime(i);
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я нашел угнанную машину. Нужно вернутся в участок и сообщить владельцу об этом!");
         SuccessMessage(playerid,"Вы нашли угнанную машину.\nНужно вернутся в участок и сдать дело.");
+        format(query, sizeof(query), "Ваш угнанный т/с [%s] был найден полицей, для получения доступа к нему явитесь в участок и оплатите работу",vehName[crimeInfo[i][crmTargetZalupaParam]]);
+        notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], query);
+        SaveCrime(i);
     }
     else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}На этом складе нет нужного транспорта. Поищите на других складах","*","");
     return 1;
@@ -124,7 +125,7 @@ stock InputCarToRent(playerid,wh,car)
 	if(WhInfo[wh][wStat] <= 0) return ErrorMessage(playerid, "{FF6347}Этот склад никем не арендован");
 	new string[144], g = fraction(playerid);
 	if(WhInfo[wh][wStat] != g) return format(string, sizeof(string), "{FF6347}Этот склад принадлежит %s", frakName[WhInfo[wh][wStat]]), ErrorMessage(playerid, string);
-	if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "Это мой личный транспорт\nЯ не могу его поместить на склад");
+	//if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "Это мой личный транспорт\nЯ не могу его поместить на склад");
     
 	PlayerPlaySound(playerid,40405,0,0,0);
 	new slot = -1;
@@ -175,9 +176,7 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
 
 stock SaveCrime(slot)
 {
-    format(big_query, sizeof(big_query), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',
-    `SenderName`='%s',`TargetID`='%d',`TargetName`='%s',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d' WHERE `newid`='%d'",crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],
-    crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmID]);
+    format(big_query, sizeof(big_query), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%s',`TargetID`='%d',`TargetName`='%s',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],crimeInfo[slot][crmID]);
     query_empty(pearsq, big_query);
 	return 1;
 }
