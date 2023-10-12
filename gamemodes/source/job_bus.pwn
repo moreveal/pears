@@ -151,5 +151,72 @@ stock busstationcreate(f)
 	BusStationInfo[f][bsObject] = CreateDynamicObject(1257, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ], BusStationInfo[f][bsCordRX], BusStationInfo[f][bsCordRY], BusStationInfo[f][bsCordRZ]);
 	SetDynamicObjectMaterial(BusStationInfo[f][bsObject], 0, 4552, "ammu_lan2", "sunsetammu2", 0x00000000);
 	SetDynamicObjectMaterial(BusStationInfo[f][bsObject], 1, 18065, "ab_sfammumain", "shelf_glas", 0x00000000);
-	
+	busstation_label[f] = CreateDynamic3DTextLabel(" ",-1,BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+	busstation_pickup[f] = CreateDynamicPickup(2485, 1, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],0,0);
+	UpdateBusStations(f);
+}
+
+CMD:scp(playerid)
+{
+	SaveCheckPoint(playerid,-1);
+	return 1;
+}
+
+CMD:scpa(playerid)
+{
+	ShowCheckPointAll(playerid);
+	return 1;
+}
+
+stock SaveCheckPoint(playerid, i)
+{
+	if(fraction(playerid) != 7) return ErrorMessage(playerid, "Я не сотрудник правительства");
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid, x,y,z);
+	new slot;
+	if (i == -1)
+	{
+		if(PlayerInfo[playerid][pCheckPointCount] == -1) slot = 0;
+		else slot = PlayerInfo[playerid][pCheckPointCount];
+	}
+	else
+	{
+		slot = i;
+	}
+	if(slot > 49) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
+	PlayerInfo[playerid][CheckPointX][slot] = x;
+	PlayerInfo[playerid][CheckPointY][slot] = y;
+	PlayerInfo[playerid][CheckPointZ][slot] = z;
+	PlayerInfo[playerid][pCheckPointCount] += 1;
+	return 1;
+}
+
+stock ShowCheckPointAll(playerid)
+{
+	format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"№ \tX\tY\tZ"), strcat(lines,line);
+    new quan;
+    for(new i = 0; i < 50; i++) 
+    {
+		if(PlayerInfo[playerid][CheckPointX][i] != 0.0 || PlayerInfo[playerid][CheckPointY][i] != 0.0)
+		{
+			format(line,sizeof(line),"\n%d. \t%f\t%f\t%f", quan+1,PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
+			quan++;
+		}
+    }
+    if(quan == 0) return ErrorMessage(playerid,"{FF6347}Вы не сохранили не один чекпоинт");
+    ShowDialog(playerid,1444,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов",lines,"Выбрать","Выход");
+	return 1;
+}
+stock ShowPlayerSettingCheckPoint(playerid,i)
+{
+	if(PlayerInfo[playerid][pCheckPointCount] == -1) return 0;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line),"\tX:%f\tY:%f\tZ:%f",PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
+	format(line,sizeof(line),"\nПерезаписать чекпоинт[На текущую позицию]\t\t\t"), strcat(lines,line);
+	format(line,sizeof(line),"\nПоказать позицию чекпоинта\t\t\t"), strcat(lines,line);
+	format(line,sizeof(line),"\nУдалить чекпоинт\t\t\t"), strcat(lines,line);
+	DP[0][playerid] = i;
+	ShowDialog(playerid,1445,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройка чекпоинта",lines,"Выбрать","Выход");
+	return 1;
 }
