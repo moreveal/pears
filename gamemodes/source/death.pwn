@@ -64,7 +64,8 @@ stock NoDeath(playerid)
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
     || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
-    || ADUTY[playerid] == 1) return 1;
+    || ADUTY[playerid] == 1
+    || computerClubPlayerInfo[playerid][ccpiInGame]) return 1;
     return 0;
 }
 

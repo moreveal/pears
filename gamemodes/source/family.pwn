@@ -343,3 +343,52 @@ stock FamilySaveRankName(f, r) //  Сохраняем название ранг�
     query_empty(pearsq, big_query);
 	return 1;
 }
+
+stock ColorFam1(f)
+{
+	new color[8];
+	if(FamilyInfo[f][fType] == 3) format(color, 8, "333333");
+    else format(color,8, "ffcc00");
+	return color;
+}
+stock ColorFam2(f)
+{
+	new color[8];
+	if(FamilyInfo[f][fType] == 3) format(color, 8, "950000");
+    else format(color, 8, "99cccc");
+	return color;
+}
+
+
+// Система чата в ВК
+new LastMessageID;
+
+stock CheckMessageFamilyChat()
+{
+	format(store_query,sizeof(store_query),"SELECT * FROM `family_chat_messages` WHERE `TYPE` = '1' AND `ID` > '%d'", LastMessageID);
+	mysql_tquery(pearsq_2, store_query, "Call_loadmessagefamily", "");
+	return 1;
+}
+
+function Call_loadmessagefamily()
+{
+	new rows;
+	cache_get_row_count(rows);
+	
+	if(rows)
+	{
+		new userName[24], message[144], famId;
+		for(new f; f < rows; ++f)
+		{
+			cache_get_value_name_int(f, "ID", LastMessageID);
+			cache_get_value_name_int(f, "FAMILY", famId);
+			cache_get_value_name(f, "NAME", userName, 24);
+			cache_get_value_name(f, "MESSAGE", message, 144);
+
+			format(store, sizeof(store), "[F] {%s}%s: {%s}(( %s ))", ColorFam1(famId), userName, ColorFam2(famId), message);
+			SendFamilyMessage(famId, 0x66ffffAA, store);
+		}
+	}
+	return 1;
+}
+

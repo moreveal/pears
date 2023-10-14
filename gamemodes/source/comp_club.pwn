@@ -272,7 +272,7 @@ stock ShowComputerClubGameRules(playerid, gameid) {
 }
 
 // Отображает меню создания сервера
-stock ShowComputerClubRoomCreate(playerid, gameid) {
+stock ShowComputerClubRoomCreate(playerid) {
     new name[64], password[64];
     new slotes = GetPVarInt(playerid, "ComputerClubRoomSlotes");
     GetPVarString(playerid, "ComputerClubRoomName", name, sizeof name);
@@ -1593,7 +1593,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
 }
 
 // Обработка смерти [ее вызов помещён в OnPlayerDeath]
-stock ComputerClubOnPlayerDeath(playerid, killerid, reason) {
+stock ComputerClubOnPlayerDeath(playerid, killerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom],
         teamid = computerClubPlayerInfo[playerid][ccpiTeam];
@@ -1673,7 +1673,7 @@ stock ComputerClubChangeMap(gameid, roomid, locationid) {
 }
 
 // Обработка ввода сообщений в чат [ее вызов помещен в OnPlayerText]
-stock ComputerClubOnPlayerText(playerid, const text[]) {
+stock ComputerClubOnPlayerText(playerid) {
     if (ComputerClubIsSpectate(playerid)) {
         SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я наблюдаю за игрой");
         return 0;
@@ -1697,7 +1697,7 @@ stock ComputerClubOnPlayerText(playerid, const text[]) {
 }
 
 // Обработка ввода команд [ее вызов помещен в OnPlayerCommandText]
-stock ComputerClubCommandReceived(playerid, const cmd[], const params[], flags) {
+/*stock ComputerClubCommandReceived(playerid, const cmd[], const params[], flags) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid < 0) return 1;
 
@@ -1709,7 +1709,7 @@ stock ComputerClubCommandReceived(playerid, const cmd[], const params[], flags) 
         }
     
     return 1;
-}
+}*/
 
 // Проверяет, является ли игрок хостом комнаты
 stock ComputerClubIsPlayerHost(playerid, gameid = -1, roomid = -1) {
@@ -1743,7 +1743,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                         case 0: ShowComputerClubGameRules(playerid, gameid);
                         case 1: {
                             SetPVarInt(playerid, "ComputerClubRoomSlotes", 10);
-                            ShowComputerClubRoomCreate(playerid, gameid);
+                            ShowComputerClubRoomCreate(playerid);
                         }
                         case 2, 3: {
                             SetPVarInt(playerid, "ComputerClubChooseWatchRoom", listitem == 3 ? 1 : 0);
@@ -1771,7 +1771,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                             GetPVarString(playerid, "ComputerClubRoomName", name, sizeof name);
                             GetPVarString(playerid, "ComputerClubRoomPassword", password, sizeof password);
 
-                            if (isnull(name)) return ShowComputerClubRoomCreate(playerid, gameid);
+                            if (isnull(name)) return ShowComputerClubRoomCreate(playerid);
 
                             new roomid = ComputerClubRoomCreate(playerid, gameid, name, password, slotes); // Создание комнаты
                             SetPVarInt(playerid, "ComputerClubSelectedRoom", roomid + 1);
@@ -1821,7 +1821,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             }
 
             if (!change)
-                ShowComputerClubRoomCreate(playerid, gameid);
+                ShowComputerClubRoomCreate(playerid);
             else
                 ShowComputerClubMenu(playerid);
         }
@@ -1848,7 +1848,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             }
 
             if (!change)
-                ShowComputerClubRoomCreate(playerid, gameid);
+                ShowComputerClubRoomCreate(playerid);
             else
                 ShowComputerClubMenu(playerid);
         }
@@ -1875,7 +1875,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             }
 
             if (!change)
-                ShowComputerClubRoomCreate(playerid, gameid);
+                ShowComputerClubRoomCreate(playerid);
             else
                 ShowComputerClubMenu(playerid);
         }

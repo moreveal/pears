@@ -280,13 +280,8 @@ stock commandF(playerid, typeCommand, const params[])
     if(FamilyInfo[f][fSost] == 0 || f >= MAX_FAMILY) return ErrorMessage(playerid, "{FF6347}Ошибка! Семья не создана или была удалена"), PlayerInfo[playerid][pFamily] = 0;
 
     new r = PlayerInfo[playerid][pFamrank];
-
-    new colorChat1[7], colorChat2[7];
-    if(FamilyInfo[f][fType] == 3) format(colorChat1, sizeof(colorChat1), "333333"), format(colorChat2, sizeof(colorChat2), "950000");
-    else format(colorChat1, sizeof(colorChat1), "ffcc00"), format(colorChat2, sizeof(colorChat2), "99cccc");
-
-    if(typeCommand == 0) format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}%s", FamilyRankName[f][r - 1], colorChat1, PlayerInfo[playerid][pName], playerid, colorChat2, params[0]);
-    else format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}(( %s ))", FamilyRankName[f][r - 1], colorChat1, PlayerInfo[playerid][pName], playerid, colorChat2, params[0]);
+    if(typeCommand == 0) format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}%s", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
+    else format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}(( %s ))", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
 	SendFamilyMessage(f, 0x66ffffAA, store);
 	return 1;
 }

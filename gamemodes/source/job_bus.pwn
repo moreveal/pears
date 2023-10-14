@@ -282,7 +282,36 @@ stock SaveNewRout(playerid,who,const Name[])
 		PlayerInfo[playerid][pCheckPointCount][z] = 0;
 	}
 	SaveRout(slot);
-	SuccessMessage(playerid,"{99ff66} Маршрут сохранен")
+	SuccessMessage(playerid,"{99ff66} Маршрут сохранен");
+	return 1;
+}
+
+function LoadRout()
+{
+	new time = GetTickCount();
+	new rows,string[34];
+	cache_get_row_count(rows);
+	for(new f; f<rows; ++f)
+	{
+    	cache_get_value_name_int(f, "newid", FullRout[f][brId]);
+    	cache_get_value_name_int(f, "status", FullRout[f][brStatus]);
+		cache_get_value_name_int(f, "type", FullRout[f][brType]);
+		cache_get_value_name(f, "brNameCreator", FullRout[f][brNameCreator],24);
+		cache_get_value_name(f, "brNameEditor", FullRout[f][brNameEditor],24);
+		cache_get_value_name(f, "brNameRout", FullRout[f][brNameRout],24);
+		cache_get_value_name_int(f, "brIDEditor", FullRout[f][brIdEditor]);
+    	cache_get_value_name_int(f, "brIDCreator", FullRout[f][brIdCreator]);
+		cache_get_value_name_int(f, "brUnixEditor", FullRout[f][brUnixEditor]);
+		cache_get_value_name_int(f, "brUnix", FullRout[f][brUnix]);
+		for(new i = 0; i < 60; i++)
+		{
+			format(string,sizeof(string),"brCordX%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordX]);
+			format(string,sizeof(string),"brCordY%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordY]);
+			format(string,sizeof(string),"brCordZ%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordZ]);
+		}
+	}
+	bsrows = rows;
+	printf("[MODE]: Автобусные Маршруты [%d Quan][%d ms]",rows,GetTickCount() - time);
 	return 1;
 }
 
@@ -293,24 +322,24 @@ stock SaveRout(slot)
 	// Формируем запросы в переменную
     format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `status` = '%d', `type` = '%d', `brNameCreator` = '%s', `brNameEditor` = '%s', `brNameRout` = '%s'",FullRout[slot][brStatus], FullRout[slot][brType],FullRout[slot][brNameCreator],FullRout[slot][brNameEditor], escapeName);
 
-    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], slot);
+    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], FullRout[f][brId]);
 
     // Отправляем запрос
     query_empty(pearsq, big_query);
 
 	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX0` = '%d', `brCordY0` = '%d', `brCordZ0` = '%d'",FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]);
 	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
 	query_empty(pearsq, big_query);
 
 	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX20` = '%d', `brCordY20` = '%d', `brCordZ20` = '%d'",FullRout[slot][brCordX][20], FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]);
 	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
 	query_empty(pearsq, big_query);
 
 	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%d', `brCordY40` = '%d', `brCordZ40` = '%d'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
 	for(new i = 41; i < 59; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
 	query_empty(pearsq, big_query);
 	return 1;
 }
@@ -363,7 +392,7 @@ stock ShowAllRout(playerid, type)
 	return 1;
 }
 
-stock SettingRout(playerid,number)
+stock SettingRout(playerid, number)
 {
 
 	return ErrorMessage(playerid,"ХУЙ СОСАМБА НЕ ДОДЕЛАЛ");
