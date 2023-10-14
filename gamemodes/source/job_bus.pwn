@@ -1,4 +1,5 @@
 #define MAX_OBJECTS_BUSSTATION 17 // Количество объектов остановки
+#define MAX_ROUT 50 // Количество маршрутов
 
 enum busstationInfo //  Переменные автобусных остановок
 {
@@ -18,6 +19,24 @@ enum busstationInfo //  Переменные автобусных останов
 	bsCity, // Город
 };
 new BusStationInfo[MAX_BUSSTATION][busstationInfo];
+
+enum routInfo //  Переменные автобусных остановок
+{
+    brId, // id в базе
+	brStatus, // активный ли Маршрут
+    brType, // Тип маршрута(0 правительство, 1 стриты)
+	brNameCreator[24], // Тип маршрута(0 правительство, 1 стриты)
+	brNameEditor[24], // Тип маршрута(0 правительство, 1 стриты)
+	brNameRout[40], // Тип маршрута(0 правительство, 1 стриты)
+	brIdCreator,
+	brIdEditor,
+	brUnix,
+	brUnixEditor,
+    Float:brCordX[60], // координаты автобусной остановки
+    Float:brCordY[60], // координаты автобусной остановки
+    Float:brCordZ[60] // координаты автобусной остановки
+};
+new FullRout[MAX_ROUT][routInfo];
 
 static Float:JobBusDepo[3][3] = { // Координаты работы в автобусном депо
 	{992.3076,-1343.8839,13.6369}, // 0 ls
@@ -168,26 +187,46 @@ CMD:scpa(playerid)
 	return 1;
 }
 
+CMD:showrout0(playerid)
+{
+	ShowAllRout(playerid, 0);
+	return 1;
+}
+
+CMD:showrout1(playerid)
+{
+	ShowAllRout(playerid, 1);
+	return 1;
+}
+
+
 stock SaveCheckPoint(playerid, i)
 {
 	if(fraction(playerid) != 7) return ErrorMessage(playerid, "Я не сотрудник правительства");
 	new Float:x,Float:y,Float:z;
 	GetPlayerPos(playerid, x,y,z);
-	new slot;
+	new slot = -1;
 	if (i == -1)
 	{
-		if(PlayerInfo[playerid][pCheckPointCount] == -1) slot = 0;
-		else slot = PlayerInfo[playerid][pCheckPointCount];
+		for(new za; za < 60; za++)
+		{
+			if(PlayerInfo[playerid][pCheckPointCount][za] == 0) 
+			{
+				slot = za;
+				break;
+			}
+		}
+		if(slot == -1) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
 	}
 	else
 	{
 		slot = i;
 	}
-	if(slot > 49) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
+	if(slot > 59) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
 	PlayerInfo[playerid][CheckPointX][slot] = x;
 	PlayerInfo[playerid][CheckPointY][slot] = y;
 	PlayerInfo[playerid][CheckPointZ][slot] = z;
-	PlayerInfo[playerid][pCheckPointCount] += 1;
+	PlayerInfo[playerid][pCheckPointCount][slot] = 1;
 	return 1;
 }
 
@@ -195,28 +234,138 @@ stock ShowCheckPointAll(playerid)
 {
 	format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"№ \tX\tY\tZ"), strcat(lines,line);
-    new quan;
-    for(new i = 0; i < 50; i++) 
+	format(line,sizeof(line),"\nСохранить маршрут\t\t\t"), strcat(lines,line);
+    for(new i = 0; i < 60; i++) 
     {
-		if(PlayerInfo[playerid][CheckPointX][i] != 0.0 || PlayerInfo[playerid][CheckPointY][i] != 0.0)
+		if(PlayerInfo[playerid][pCheckPointCount][i] == 1)
 		{
-			format(line,sizeof(line),"\n%d. \t%f\t%f\t%f", quan+1,PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
-			quan++;
+			format(line,sizeof(line),"\n%d. \t%f\t%f\t%f", i+1,PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
+		}
+		else if(PlayerInfo[playerid][pCheckPointCount][i] == 0)
+		{
+			format(line,sizeof(line),"\n{FF6347}%d.\t\t\t", i+1), strcat(lines,line);
 		}
     }
-    if(quan == 0) return ErrorMessage(playerid,"{FF6347}Вы не сохранили не один чекпоинт");
     ShowDialog(playerid,1444,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов",lines,"Выбрать","Выход");
 	return 1;
 }
+
+stock SaveNewRout(playerid,who,const Name[])
+{
+	new quan = -1;
+	new slot = -1;
+	for(new i = 0; i < 60; i++) 
+	{
+		if(PlayerInfo[playerid][pCheckPointCount][i] == 1) quan++;
+	}
+	if(quan < 20) return ErrorMessage(playerid,"{FF6347}В вашем маршруте меньше 20 чекпоинтов");
+	for(new i = 0; i < 50; i++) 
+	{
+		if(FullRout[i][brIdCreator] == 0)
+		{
+			slot = i;
+			break;
+		}
+	}
+	if(slot == -1) return ErrorMessage(playerid,"{FF6347}Не найденно свободного слота под маршрут. Обратитесь к администрации [/report]");
+	FullRout[slot][brType] = who;
+	format(FullRout[slot][brNameCreator], 24, "%s", rpplayername(playerid));
+	format(FullRout[slot][brNameRout], 40, "%s",Name);
+	for(new z = 0; z < 60; z++)
+	{
+		FullRout[slot][brCordX][z] = PlayerInfo[playerid][CheckPointX][z];
+		PlayerInfo[playerid][CheckPointX][z] = 0;
+		FullRout[slot][brCordY][z] = PlayerInfo[playerid][CheckPointY][z];
+		PlayerInfo[playerid][CheckPointY][z] = 0;
+		FullRout[slot][brCordZ][z] = PlayerInfo[playerid][CheckPointZ][z];
+		PlayerInfo[playerid][CheckPointZ][z] = 0;
+		PlayerInfo[playerid][pCheckPointCount][z] = 0;
+	}
+	SaveRout(slot);
+	SuccessMessage(playerid,"{99ff66} Маршрут сохранен")
+	return 1;
+}
+
+stock SaveRout(slot)
+{
+	new escapeName[40];
+	mysql_escape_string(FullRout[slot][brNameRout], escapeName, sizeof(escapeName));
+	// Формируем запросы в переменную
+    format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `status` = '%d', `type` = '%d', `brNameCreator` = '%s', `brNameEditor` = '%s', `brNameRout` = '%s'",FullRout[slot][brStatus], FullRout[slot][brType],FullRout[slot][brNameCreator],FullRout[slot][brNameEditor], escapeName);
+
+    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], slot);
+
+    // Отправляем запрос
+    query_empty(pearsq, big_query);
+
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX0` = '%d', `brCordY0` = '%d', `brCordZ0` = '%d'",FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]);
+	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+	query_empty(pearsq, big_query);
+
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX20` = '%d', `brCordY20` = '%d', `brCordZ20` = '%d'",FullRout[slot][brCordX][20], FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]);
+	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+	query_empty(pearsq, big_query);
+
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%d', `brCordY40` = '%d', `brCordZ40` = '%d'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
+	for(new i = 41; i < 59; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, slot);
+	query_empty(pearsq, big_query);
+	return 1;
+}
+
 stock ShowPlayerSettingCheckPoint(playerid,i)
 {
-	if(PlayerInfo[playerid][pCheckPointCount] == -1) return 0;
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"\tX:%f\tY:%f\tZ:%f",PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
-	format(line,sizeof(line),"\nПерезаписать чекпоинт[На текущую позицию]\t\t\t"), strcat(lines,line);
-	format(line,sizeof(line),"\nПоказать позицию чекпоинта\t\t\t"), strcat(lines,line);
-	format(line,sizeof(line),"\nУдалить чекпоинт\t\t\t"), strcat(lines,line);
+	format(line,sizeof(line),"Chekpont:%d         X:%f Y:%f Z:%f",PlayerInfo[playerid][pCheckPointCount][i],PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
+	format(line,sizeof(line),"\nПерезаписать чекпоинт[На текущую позицию]"), strcat(lines,line);
+	format(line,sizeof(line),"\nПоказать позицию чекпоинта"), strcat(lines,line);
+	format(line,sizeof(line),"\nУдалить чекпоинт"), strcat(lines,line);
 	DP[0][playerid] = i;
 	ShowDialog(playerid,1445,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройка чекпоинта",lines,"Выбрать","Выход");
 	return 1;
 }
+
+stock ShowAllRout(playerid, type)
+{
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
+	if(type == 0)
+	{
+		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования\tСтатус"), strcat(lines,line);
+		for(new i = 0; i < MAX_ROUT; i++) 
+		{
+			List[i][playerid] = 0;
+			stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			if(FullRout[i][brStatus] == 0)
+			{
+				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+			}
+			else if(FullRout[i][brStatus] == 1)
+			{
+				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+			}
+			quan++;
+			List[quan][playerid] = i;
+		}
+	}
+	else if(type == 1)
+	{
+		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования"), strcat(lines,line);
+		for(new i = 0; i < MAX_ROUT; i++) 
+		{
+			stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+		}
+	}
+    ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов",lines,"Выбрать","Выход");
+	return 1;
+}
+
+stock SettingRout(playerid,number)
+{
+
+	return ErrorMessage(playerid,"ХУЙ СОСАМБА НЕ ДОДЕЛАЛ");
+}
+
