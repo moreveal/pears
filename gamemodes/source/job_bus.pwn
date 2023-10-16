@@ -271,6 +271,7 @@ stock SaveNewRout(playerid,who,const Name[])
 	FullRout[slot][brType] = who;
 	format(FullRout[slot][brNameCreator], 24, "%s", rpplayername(playerid));
 	format(FullRout[slot][brNameRout], 40, "%s",Name);
+	FullRout[slot][brIdCreator] = PlayerInfo[playerid][pID];
 	for(new z = 0; z < 60; z++)
 	{
 		FullRout[slot][brCordX][z] = PlayerInfo[playerid][CheckPointX][z];
@@ -281,6 +282,7 @@ stock SaveNewRout(playerid,who,const Name[])
 		PlayerInfo[playerid][CheckPointZ][z] = 0;
 		PlayerInfo[playerid][pCheckPointCount][z] = 0;
 	}
+	FullRout[slot][brUnix] = gettime();
 	SaveRout(slot);
 	SuccessMessage(playerid,"{99ff66} Маршрут сохранен");
 	return 1;
@@ -322,24 +324,24 @@ stock SaveRout(slot)
 	// Формируем запросы в переменную
     format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `status` = '%d', `type` = '%d', `brNameCreator` = '%s', `brNameEditor` = '%s', `brNameRout` = '%s'",FullRout[slot][brStatus], FullRout[slot][brType],FullRout[slot][brNameCreator],FullRout[slot][brNameEditor], escapeName);
 
-    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], FullRout[f][brId]);
+    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], FullRout[slot][brId]);
 
     // Отправляем запрос
     query_empty(pearsq, big_query);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX0` = '%d', `brCordY0` = '%d', `brCordZ0` = '%d'",FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]);
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX0` = '%f', `brCordY0` = '%f', `brCordZ0` = '%f'",FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]);
+	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
 	query_empty(pearsq, big_query);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX20` = '%d', `brCordY20` = '%d', `brCordZ20` = '%d'",FullRout[slot][brCordX][20], FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]);
-	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX20` = '%f', `brCordY20` = '%f', `brCordZ20` = '%f'",FullRout[slot][brCordX][20], FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]);
+	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
 	query_empty(pearsq, big_query);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%d', `brCordY40` = '%d', `brCordZ40` = '%d'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
-	for(new i = 41; i < 59; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%d', `brCordY%d` = '%d', `brCordZ%d` = '%d'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[f][brId]);
+	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%f', `brCordY40` = '%f', `brCordZ40` = '%f'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
+	for(new i = 41; i < 59; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
 	query_empty(pearsq, big_query);
 	return 1;
 }
@@ -367,34 +369,64 @@ stock ShowAllRout(playerid, type)
 		{
 			List[i][playerid] = 0;
 			stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-			if(FullRout[i][brStatus] == 0)
+			if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 0)
 			{
 				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
 			}
-			else if(FullRout[i][brStatus] == 1)
+			else if(FullRout[i][brStatus] == 1  && FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 0)
 			{
 				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
 			}
 			quan++;
 			List[quan][playerid] = i;
 		}
+		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
 	}
 	else if(type == 1)
 	{
 		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования"), strcat(lines,line);
 		for(new i = 0; i < MAX_ROUT; i++) 
 		{
-			stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+			if(FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 1)
+			{
+				stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+				quan++;
+			}
 		}
+		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
 	}
     ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов",lines,"Выбрать","Выход");
 	return 1;
 }
 
-stock SettingRout(playerid, number)
+stock SettingRout(playerid, number, author)
 {
+	DP[0][playerid] = number;
+	if(author == 0)
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"\n%s %s Создан: [ %02d.%02d.%d %02d:%02d ]\n", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 
-	return ErrorMessage(playerid,"ХУЙ СОСАМБА НЕ ДОДЕЛАЛ");
+		stamp2datetime(FullRout[number][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"\n\n{555555}Редактировал"), strcat(lines,line);
+		format(line,sizeof(line),"\n{555555}%s [ %02d.%02d.%d %02d:%02d ]\n", FullRout[number][brNameEditor], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		ShowDialog(playerid,1448,DIALOG_STYLE_MSGBOX,"{ff9000}Маршрут",lines,"Загрузить себе","Назад");
+	}
+	else if(author == 1)
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"Маршрут:%s от %s Создан: [ %02d.%02d.%d %02d:%02d ]", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		format(line,sizeof(line),"\nПереименовать маршрут"), strcat(lines,line);
+		format(line,sizeof(line),"\nЗагрузить маршрут себе в чекпоинты"), strcat(lines,line);
+		format(line,sizeof(line),"\nОбновить маршрут(загрузит ваши текущие координаты в него)"), strcat(lines,line);
+		format(line,sizeof(line),"\nУдалить маршрут из базы"), strcat(lines,line);
+		ShowDialog(playerid,1449,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Загрузить себе","Назад");
+	}
+	return 1;
 }
 
