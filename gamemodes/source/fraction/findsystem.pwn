@@ -95,11 +95,15 @@ CMD:find(playerid, const params[])
     new giveplayerid = ReturnUser(params[0]);
     if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете искать себя");
     if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не в сети, или ещё не залогинился");
+    if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Этот игрок на мероприятии");
 
     if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Возможно, он участник экспедиции NASA");
 
     new Float:X,Float:Y,Float:Z;
     GetPlayerRealPos(giveplayerid, X, Y, Z);
+
+    if(X == 0.0 && Y == 0.0) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Игрок только зашёл на сервер и находится в неизвестной точке спавна");
 
     new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
     switch(random(4))
@@ -115,7 +119,13 @@ CMD:find(playerid, const params[])
   else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
   return 1;
 }
-
+stock WhiteFindPlayerPos(playerid, Float:x, Float:y, Float:z)
+{
+	PlayerInfo[playerid][find_X] = x;
+	PlayerInfo[playerid][find_Y] = y;
+	PlayerInfo[playerid][find_Z] = z;
+	return 1;
+}
 stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
 {
   if(GetPVarInt(playerid,"Boot") != 9999)
@@ -129,6 +139,7 @@ stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
     {
       x = PlayerInfo[playerid][find_X];
       y = PlayerInfo[playerid][find_Y];
+      z = PlayerInfo[playerid][find_Z];
     } 
     else 
     {
@@ -153,14 +164,14 @@ stock FindRaion(playerid)
 
 stock IsPlayerInCubeForFind(playerid, Float:minx, Float:miny, Float:minz, Float:maxx, Float:maxy, Float:maxz)
 {
-	new Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
-	if(GetPlayerVirtualWorld(playerid) > 0)
-	{
+  new Float:x, Float:y, Float:z;
+  GetPlayerPos(playerid, x, y, z);
+  if(GetPlayerVirtualWorld(playerid) > 0)
+  {
     x = PlayerInfo[playerid][find_X];
     y = PlayerInfo[playerid][find_Y];
     z = PlayerInfo[playerid][find_Z];
-	}
-   	if(x > minx && x < maxx && y > miny && y < maxy && z > minz && z < maxz) return 1;
-	return 0;
+  }
+  if(x > minx && x < maxx && y > miny && y < maxy && z > minz && z < maxz) return 1;
+  return 0;
 }

@@ -2,9 +2,6 @@
 enum deathInfo
 {
     bool:deathStatus, // Статус смерти
-    Float:deathPos[4], //  Точка смерти
-    deathInt, // int
-    deathWorld, // wolrd
     deathTime, // Время валяния на земле
     deathUnix, // unix предыдущей смерти
     bool:deathFall, // статус падения с высоты
@@ -19,15 +16,15 @@ stock SetPlayerDeath(playerid, reason)
     if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid);
     if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid);
 
-    GetPlayerPos(playerid,DeathInfo[playerid][deathPos][0],DeathInfo[playerid][deathPos][1],DeathInfo[playerid][deathPos][2]);
-	GetPlayerFacingAngle(playerid,DeathInfo[playerid][deathPos][3]);
+    GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+	GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
 
-    new Float:zpos;
-    CA_FindZ_For2DCoord(DeathInfo[playerid][deathPos][0],DeathInfo[playerid][deathPos][1], zpos);
-    DeathInfo[playerid][deathPos][2] = zpos + 1.0;
+    //new Float:zpos;
+    //CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1], zpos);
+    //PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
 
-    DeathInfo[playerid][deathWorld] = GetPlayerVirtualWorld(playerid);
-    DeathInfo[playerid][deathInt] = GetPlayerInterior(playerid);
+    PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+    PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
 
     new unix = gettime(), timeDeath, timeDeathTwo;
     DeathInfo[playerid][deathStatus] = true;
@@ -75,14 +72,14 @@ stock WeReturnToDeathPosition(playerid)
     PPSpawn[playerid] = false;
     NoAnim[playerid] = 1;
 
-	S_SetPlayerVirtualWorld(playerid, DeathInfo[playerid][deathWorld], DeathInfo[playerid][deathInt]), SetPlayerInterior(playerid, DeathInfo[playerid][deathInt]);
+	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-    //if(DeathInfo[playerid][deathReason] == 54) DeathInfo[playerid][deathPos][2] -= 1.4;
+    if(DeathInfo[playerid][deathReason] == 54) PlayerInfo[playerid][pLastPos][2] -= 1.4;
 
-    PPSetPlayerPos(playerid, DeathInfo[playerid][deathPos][0],DeathInfo[playerid][deathPos][1],DeathInfo[playerid][deathPos][2]);
-    SetPlayerFacingAngle(playerid, DeathInfo[playerid][deathPos][3]);
+    PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+    SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
 
 	// Возвращаем аксессуары
 	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
@@ -106,10 +103,10 @@ stock UpdateDeathProcess(playerid)
     format(string, sizeof(string), "без сознания [%s]", fine_time(DeathInfo[playerid][deathTime]));
     SetPlayerChatBubble(playerid,string, COLOR_LIGHTRED,20.0,1500);
 
-    if(!IsPlayerInRangeOfPoint(playerid,0.8,DeathInfo[playerid][deathPos][0],DeathInfo[playerid][deathPos][1],DeathInfo[playerid][deathPos][2]))
+    if(!IsPlayerInRangeOfPoint(playerid,0.8,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]))
     {
-        PPSetPlayerPos(playerid,DeathInfo[playerid][deathPos][0],DeathInfo[playerid][deathPos][1],DeathInfo[playerid][deathPos][2]);
-        SetPlayerFacingAngle(playerid, DeathInfo[playerid][deathPos][3]);
+        PPSetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+        SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
     }
     return 1;
 }

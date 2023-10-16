@@ -3,10 +3,215 @@
 
 new Text:SpawnChoiseDraw[MAX_SPAWNDRAWCHOISE];
 
-CMD:textdrawchoise(playerid)
+/*
+0 - Организация
+1 - Точка выхода
+2 - Family
+3 - Division
+4 - Home
+5 - Room
+6 - Family Home
+7 - Rent Home
+8 - Hotel
+*/
+
+stock SaveLastPlayerPosition(playerid)
 {
-    if(server != 0) return 1;
+    if(SetPosa[playerid] == 1 || MPGO[playerid] == 1 || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING
+        || OnlineInfo[playerid][oShowInterface] == 14 || OnlineInfo[playerid][oShowInterface] == 16
+        || VehShopInfo[playerid][vsTest] == true)
+    {
+        PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
+        PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
+        PlayerInfo[playerid][pLastPos][2] = SpZ[playerid];
+        PlayerInfo[playerid][pLastPos][3] = SpA[playerid];
+        PlayerInfo[playerid][pLastWorld] = SpInt[playerid];
+        PlayerInfo[playerid][pLastInt] = SpWorld[playerid];
+    }
+    else
+    {
+        GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+        GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
+
+        PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+        PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
+    }
+    return 1;
+}
+
+stock CloseSpawnChoise(playerid)
+{
+    Login[4][playerid] = 0;
+    OnlineInfo[playerid][oShowInterface] = 0;
+    for(new i = 0; i < MAX_SPAWNDRAWCHOISE; i++) TextDrawHideForPlayer(playerid, SpawnChoiseDraw[i]);
+    return 1;
+}
+
+stock GoSpawn(playerid)
+{
+    if(PlayerInfo[playerid][pTut] == 0) return GoGame(playerid); // Если игрок не завершил регистрацию
+
+    if(PlayerInfo[playerid][pJailed] > 0 
+        || PlayerInfo[playerid][pBkyrenie] >= 2 
+        || DeathInfo[playerid][deathStatus] == true
+        || PlayerInfo[playerid][pQwest] <= 6) return GoGame(playerid); // Если игроку нельзя выбирать спавн
+
+    ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
+    Login[4][playerid] = 1;
+
+    OnlineInfo[playerid][oShowInterface] = 17;
+    TextDrawHideForPlayer(playerid, NameServerDraw[0]), TextDrawHideForPlayer(playerid, NameServerDraw[1]);
     for(new i = 0; i < MAX_SPAWNDRAWCHOISE; i++) TextDrawShowForPlayer(playerid, SpawnChoiseDraw[i]);
+    SelectColorDraw(playerid);
+    return 1;
+}
+
+stock SelectSpawnChoise(playerid, spawnId)
+{
+    PlayerInfo[playerid][pSpawnchange] = spawnId;
+
+    if(IsPlayerSyncModels(playerid)) PlayerPlaySound(playerid, 4400, 0,0,0);
+    if(Login[4][playerid] == 1) GoGame(playerid); // Спавн при входе в игру
+    else // Через команду /spawnchange
+    {
+		SuccessMessage(playerid, "{cccccc}Вы изменили свой {99ff66}спавн");
+        CloseSpawnChoise(playerid);
+    }
+    return 1;
+}
+
+stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
+{
+    if(OnlineInfo[playerid][oNoClick]) return 1;
+
+    PlayerPlaySound(playerid,17803,0,0,0);
+
+    if(clickedid == SpawnChoiseDraw[0]) 
+    {
+        if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        SelectSpawnChoise(playerid, 1); // End Position
+    }
+    else if(clickedid == SpawnChoiseDraw[3]) // Organization
+    {
+        new g = fraction(playerid);
+        new i = PlayerInfo[playerid][pDivision][0];
+        if(g == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не стоит в организации\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(i > 0) // Есть подфракция
+        {
+            OnlineInfo[playerid][oNoClick] = true;
+            format(lines,sizeof(lines),""); // Очищаем Lines
+			format(line,sizeof(line),"%s", frakName[g]), strcat(lines,line);
+            format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g][i - 1][divColorHex], DivisionInfo[g][i - 1][divName]), strcat(lines,line);
+		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
+        }
+        else SelectSpawnChoise(playerid, 0);
+    }
+    else if(clickedid == SpawnChoiseDraw[6]) // Home
+    {
+        OnlineInfo[playerid][oNoClick] = true;
+        format(lines,sizeof(lines),""); // Очищаем Lines
+    
+        new quan;
+        if(PlayerInfo[playerid][pDom])
+        {
+            List[quan][playerid] = 4; // Home
+            ListParam[quan][playerid] = PlayerInfo[playerid][pDom];
+            quan ++;
+            format(line,sizeof(line),"{cccccc}Дом № {ff9000}%d\n", PlayerInfo[playerid][pDom]), strcat(lines,line);
+        }
+        if(PlayerInfo[playerid][pHouserent])
+        {
+            List[quan][playerid] = 7; // Rent Home
+            ListParam[quan][playerid] = PlayerInfo[playerid][pHouserent];
+            quan ++;
+            format(line,sizeof(line),"{cccccc}Арендованный Дом № {ff9000}%d\n", PlayerInfo[playerid][pHouserent]), strcat(lines,line);
+        }
+        if(PlayerInfo[playerid][pFamily])
+        {
+            new fam = PlayerInfo[playerid][pFamily];
+            if(FamilyInfo[fam][fDop5] && DomInfo[FamilyInfo[fam][fDop5]][dFam] == fam)
+            {
+                List[quan][playerid] = 6; // Family Home
+                ListParam[quan][playerid] = FamilyInfo[fam][fDop5];
+                quan ++;
+                format(line,sizeof(line),"{cccccc}Семейный Дом № {ff9000}%d\n", FamilyInfo[fam][fDop5]), strcat(lines,line);
+            }
+        }
+        if(PlayerInfo[playerid][pRoom])
+        {
+            List[quan][playerid] = 5;
+            ListParam[quan][playerid] = PlayerInfo[playerid][pRoom];
+            quan ++;
+            format(line,sizeof(line),"{cccccc}Квартира № {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
+        }
+
+        List[quan][playerid] = 8;
+        quan ++;
+        if(PlayerInfo[playerid][pKomnata] != 9999 && PlayerInfo[playerid][pKomnata] >= 1)
+      	{
+            if(PlayerInfo[playerid][pKomnataCity] == 2) format(line,sizeof(line),"{cccccc}Отель {ff9000}Las Venturas\n"), strcat(lines,line);
+            else format(line,sizeof(line),"{cccccc}Отель {ff9000}Los Santos\n"), strcat(lines,line);
+        }
+        else
+        {
+            if(PlayerInfo[playerid][pKomnataCity] == 2) format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Las Venturas\n"), strcat(lines,line);
+            else format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Los Santos\n"), strcat(lines,line);
+        }
+        ShowDialog(playerid,503,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
+    }
+    else if(clickedid == SpawnChoiseDraw[9]) // Family
+    {
+        if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет семьи\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        new f = PlayerInfo[playerid][pFamily];
+        if(FamilyInfo[f][fSost] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вашей семьи не существует\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(FamilyInfo[f][fStatusSpawn] == 0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+		if(FamilyInfo[f][fSpawnX] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+
+        SelectSpawnChoise(playerid, 2);
+    }
+    return 1;
+}
+
+stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
+{
+    if(dialogid == 502)
+    {
+        OnlineInfo[playerid][oNoClick] = false;
+        if(response)
+        {
+            if(listitem == 0) SelectSpawnChoise(playerid, 0);
+            else if(listitem == 1) 
+            {
+                new g = fraction(playerid);
+                new i = PlayerInfo[playerid][pDivision][0];
+
+                if(DivisionInfo[g][i][divSpawnPos][0] == 0.0) return ErrorMessage(playerid, "{FF6347}В подфракции не установлен отдельный спавн");
+                SelectSpawnChoise(playerid, 3);
+            }
+        }
+    }
+    if(dialogid == 503)
+    {
+        OnlineInfo[playerid][oNoClick] = false;
+        if(response)
+        {
+            if(listitem < 0 || listitem > 4) return 1;
+
+            new spawnId = List[listitem][playerid];
+            new numSpawn = ListParam[listitem][playerid];
+
+            if(spawnId == 4 || spawnId == 6 || spawnId == 7) // Dom
+            {
+                if(DomInfo[numSpawn][dArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот дом арестован\n\n{cccccc}Если это ваш дом, оплатите налоги для снятия ареста");
+            }
+            else if(spawnId == 5) // Room
+            {
+                if(RoomInfo[numSpawn][rArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот квартира арестована\n\n{cccccc}Если это ваша квартира, оплатите налоги для снятия ареста");
+            }
+
+            SelectSpawnChoise(playerid, spawnId);
+        }
+    }
     return 1;
 }
 
