@@ -321,7 +321,7 @@ function processsellofflinetradecrypto(playerid, plaid,donatemoneyplayer,price,i
     notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName],plaid, plaidName, query);
     deltradecrypto(id);
 		
-		//format(query, sizeof(query), "Занес в ДП %s", frakeasyName[g]), OrgLog(g, "inhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
+	//format(query, sizeof(query), "Занес в ДП %s", frakeasyName[g]), OrgLog(g, "inhb", tmpTPlayerID, tmpTName,PlayerInfo[tmpTPlayerID][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, query);
 	return 1;
 }
 

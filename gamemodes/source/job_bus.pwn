@@ -20,7 +20,7 @@ enum busstationInfo //  Переменные автобусных останов
 };
 new BusStationInfo[MAX_BUSSTATION][busstationInfo];
 
-enum routInfo //  Переменные автобусных остановок
+enum routInfo //  Переменные маршрутов
 {
     brId, // id в базе
 	brStatus, // активный ли Маршрут
@@ -57,16 +57,18 @@ stock DynamicPickupJobBus()
 
 stock IsAJobBusDepoPos(playerid)
 {
-    if((IsPlayerInRangeOfPoint(playerid,2.0,JobBusDepo[0][0],JobBusDepo[0][1],JobBusDepo[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,JobBusDepo[1][0],JobBusDepo[1][1],JobBusDepo[1][2])
-	|| IsPlayerInRangeOfPoint(playerid,2.0,JobBusDepo[2][0],JobBusDepo[2][1],JobBusDepo[2][2])) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT
-	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
+	for(new i; i < 3; i++)
+	{
+		if((IsPlayerInRangeOfPoint(playerid,2.0,JobBusDepo[i][0],JobBusDepo[i][1],JobBusDepo[i][2])) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT
+		&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return i+1;
+	}
 	return 0;
 }
 
-stock jobbus(playerid)
+stock jobbus(playerid,where)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
-	
+	DP[0][playerid] = where;	
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	
 	if(ServerInfo[53] == 9) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
@@ -177,7 +179,18 @@ stock busstationcreate(f)
 
 CMD:scp(playerid)
 {
-	SaveCheckPoint(playerid,-1);
+	new fam = PlayerInfo[playerid][pFamily];
+	if(fraction(playerid) != 7 || FamilyInfo[fam][fType] != 4) return ErrorMessage(playerid,"{ff6347} Вы не состоите в правительстве или Семье типа: Street Racers");
+	if(PlayerInfo[playerid][pSCP] == 0)
+	{
+		PlayerInfo[playerid][pSCP] = 1;
+		SuccessMessage(playerid,"Вы включили запись чекпоинтов на авто на CAPS LOCK");
+	}
+	else if(PlayerInfo[playerid][pSCP] == 1)
+	{
+		PlayerInfo[playerid][pSCP] = 0;
+		SuccessMessage(playerid,"Вы выключили запись чекпоинтов на авто на CAPS LOCK");
+	}
 	return 1;
 }
 
@@ -216,17 +229,18 @@ stock SaveCheckPoint(playerid, i)
 				break;
 			}
 		}
-		if(slot == -1) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
+		if(slot == -1) return ErrorMessage(playerid, "У меня нет свободного слота для точки маршрута");
 	}
 	else
 	{
 		slot = i;
 	}
-	if(slot > 59) return ErrorMessage(playerid, "У меня сохраненно больше 50 точек маршрута");
+	if(slot > 59) return ErrorMessage(playerid, "У меня нет свободного слота для точки маршрута");
 	PlayerInfo[playerid][CheckPointX][slot] = x;
 	PlayerInfo[playerid][CheckPointY][slot] = y;
 	PlayerInfo[playerid][CheckPointZ][slot] = z;
 	PlayerInfo[playerid][pCheckPointCount][slot] = 1;
+	SuccessMessage(playerid,"{99ff66}Чекпоинт сохранен!");
 	return 1;
 }
 
@@ -287,8 +301,8 @@ stock SaveNewRout(playerid,who,const Name[])
 	SuccessMessage(playerid,"{99ff66} Маршрут сохранен");
 	return 1;
 }
-
-function LoadRout()
+forward LoadRout(); // Загрузка из базы
+public LoadRout()
 {
 	new time = GetTickCount();
 	new rows,string[34];
@@ -307,12 +321,11 @@ function LoadRout()
 		cache_get_value_name_int(f, "brUnix", FullRout[f][brUnix]);
 		for(new i = 0; i < 60; i++)
 		{
-			format(string,sizeof(string),"brCordX%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordX]);
-			format(string,sizeof(string),"brCordY%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordY]);
-			format(string,sizeof(string),"brCordZ%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordZ]);
+			format(string,sizeof(string),"brCordX%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordX][i]);
+			format(string,sizeof(string),"brCordY%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordY][i]);
+			format(string,sizeof(string),"brCordZ%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordZ][i]);
 		}
 	}
-	bsrows = rows;
 	printf("[MODE]: Автобусные Маршруты [%d Quan][%d ms]",rows,GetTickCount() - time);
 	return 1;
 }
@@ -364,11 +377,12 @@ stock ShowAllRout(playerid, type)
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
 	if(type == 0)
 	{
-		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования\tСтатус"), strcat(lines,line);
+		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);
 		for(new i = 0; i < MAX_ROUT; i++) 
 		{
 			List[i][playerid] = 0;
-			stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			if(FullRout[i][brUnixEditor] > 0) stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			else if(FullRout[i][brUnixEditor] == 0) stamp2datetime(FullRout[i][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 			if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 0)
 			{
 				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
@@ -396,7 +410,7 @@ stock ShowAllRout(playerid, type)
 		}
 		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
 	}
-    ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов",lines,"Выбрать","Выход");
+    ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
 	return 1;
 }
 
@@ -430,3 +444,97 @@ stock SettingRout(playerid, number, author)
 	return 1;
 }
 
+stock CreateBusDriver(playerid)
+{
+	for(new i = 0; i < MAX_BUSDRIVER; i++)
+	{
+	    if(busdriverid[i] == 0)
+	    {
+	        busdriverid[i] = playerid+1;
+	        busdriverstat[i] = 0;
+	        getdriverstat[i] = 0;
+	        driverid[playerid] = i+1;
+	        break;
+	    }
+ 	}
+ 	busdrivers ++;
+    bus[playerid] = 0, bustime[playerid] = 0, busstation[playerid] = 0, busrout[playerid] = 0;
+	if(busroutetime > gettime())
+	{
+	    new string[254];
+		format(string,sizeof(string),"{FF6347}Следующий автобус может отправиться на маршрут через: %d секунд\n{cccccc}Необходимо, чтобы автобусы прибывали на остановки с интервалом\n\n{ff9000}Сядьте в автобус повторно немного позже, чтобы запустить маршрут!", busroutetime-gettime()), ErrorMessage(playerid, string);
+		return 1;
+	}
+	busroutetime = gettime()+60;
+	return 1;
+}
+stock ExitBusDriver(playerid)
+{
+	new i = driverid[playerid]-1;
+    busdriverid[i] = 0;
+    busdriverstat[i] = 0;
+    getdriverstat[i] = 0;
+	driverid[playerid] = 0;
+	bus[playerid] = 0, bustime[playerid] = gettime(), busstation[playerid] = 0, busrout[playerid] = -1;
+    if(busdrivers > 0) busdrivers --;
+    
+    SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), DisablePlayerRaceCheckpoint(playerid);
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
+	    new v = GetPlayerVehicleID(playerid);
+	    if(VehInfo[playerid][vModel] == 431 && VehInfo[v][v3dstat] == 7000) DestroyDynamic3DTextLabel(VehLabel[v]), VehInfo[v][v3dstat] = 0;
+	}
+	for(new sta = 1; sta < MAX_BUSSTATION; sta++) UpdateBusStations(sta);
+	return 1;
+}
+stock BusRouter(playerid, v)
+{
+    if(VehInfo[v][v3dstat] >= 1 && VehInfo[v][v3dstat] <= 900) return ErrorMessage(playerid, "{FF6347}Этот автобус сейчас в такси");
+	new slot = 0;
+	new r = bus[playerid];
+	if(r == 0)
+	{
+	    if(busdrivers >= MAX_BUSDRIVER && driverid[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Сейчас на дежурстве 30 водителей автобусов\n{cccccc}Вы можете дождаться свободное место или отправиться на другую работу");
+	    if(driverid[playerid] == 0) CreateBusDriver(playerid);
+	}
+	if(driverid[playerid] > 0) busdriverstat[driverid[playerid]-1] = 1;
+	DisablePlayerRaceCheckpoint(playerid);
+	if(r == 370) {}
+	else if(r == 59) SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],6.0);
+	else SetPlayerRaceCheckpoint(playerid,0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r+1], FullRout[slot][brCordY][r+1], FullRout[slot][brCordZ][r+1],6.0);
+	if(VehInfo[v][v3dstat] > 1) UpdateLabelBus(playerid, v);
+	else
+	{
+	    VehInfo[v][v3dstat] = 7000;
+		new Float:v_pos[3];
+		GetVehiclePos(v, v_pos[0],v_pos[1],v_pos[2]);
+		VehLabel[v] = CreateDynamic3DTextLabel(" ",-1,v_pos[0],v_pos[1],v_pos[2], 15.0, INVALID_PLAYER_ID, v);
+		UpdateLabelBus(playerid, v);
+	}
+	return 1;
+}
+
+stock ShowRoutCity(playerid, where)
+{
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line),"№ Маршрут\tВодителей"), strcat(lines,line);
+	new quan, Float:x,Float:y, Float:x2,Float:y2;
+	if(where == 2) x = -3000.0,y= 1623.0, x2 = 3000.0,y2=3000.0; // lv
+	else if(where == 1) x = -3000.0, y= -3000.0, x2 = -1236.0, y2 = 1623.0;//sf
+	else if(where == 0) x = -1236.0, y = -370.0, x2 = 3000.0, y2 = 598.0; //ls
+
+	for(new i; i < 50; i++)
+	{	
+		List[i][playerid] = 0;
+		if(IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,x2,y,y2) && FullRout[i][brStatus] == 1)
+		{
+			format(line,sizeof(line),"\n%d.%s\t ХЗ", quan+1,FullRout[i][brNameRout]), strcat(lines,line);
+			List[quan][playerid] = i;
+			quan ++;
+		}
+	}
+	if(quan > 0) ShowDialog(playerid,1450,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Выбрать","Закрыть");
+	else if (quan == 0) ErrorMessage(playerid,"В данном городе нет не одного маршрута автобуса! Обратитесь в правительство");
+	return 1;
+}

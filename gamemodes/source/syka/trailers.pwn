@@ -446,7 +446,7 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
     );
 	if (trailerInfo[id][tTable] == true) 
     {
-        trailerInfo[id][tt3DLabel] = CreateDynamic3DTextLabel("{ff9000}Химический Стол\n{cccccc}[ /kakish ]", 0xA9C4E4FF, 391.608337, -2089.791015, 899.472961, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,id+5000,0);
+        trailerInfo[id][tt3DLabel] = CreateDynamic3DTextLabel("{ff9000}Химический Стол\n{cccccc}[ /kakish ]", 0xA9C4E4FF, -2.6690,1566.0256,12.7616, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,id+5000,0);
     }
     trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(label_str, 0xA9C4E4FF, x, y, z, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,0,0);
     trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_OBJECT, x, y, z, 0, 0, .streamdistance = 100.0);
@@ -615,7 +615,7 @@ stock exittrailer(playerid)
 
 CMD:kakish(playerid)
 {
-	if(IsPlayerInRangeOfPoint(playerid,0.5,391.608337, -2089.791015, 899.472961))
+	if(IsPlayerInRangeOfPoint(playerid,0.5, -2.6690,1566.0256,12.7616))
 	{
 		if(!howstun(playerid))
 	 	{
