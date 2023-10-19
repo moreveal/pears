@@ -60,15 +60,14 @@ stock IsAJobBusDepoPos(playerid)
 	for(new i; i < 3; i++)
 	{
 		if((IsPlayerInRangeOfPoint(playerid,2.0,JobBusDepo[i][0],JobBusDepo[i][1],JobBusDepo[i][2])) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT
-		&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return i+1;
+		&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
 	}
 	return 0;
 }
 
-stock jobbus(playerid,where)
+stock jobbus(playerid)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
-	DP[0][playerid] = where;	
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	
 	if(ServerInfo[53] == 9) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
@@ -514,20 +513,27 @@ stock BusRouter(playerid, v)
 	return 1;
 }
 
-stock ShowRoutCity(playerid, where)
+stock IsPlayerCity(playerid)
 {
+  if(IsPlayerInSquare(playerid,-1236, -372, -133, 542) || IsPlayerInSquare(playerid,-133, -3000, 3000, 542)) return 1; // LS
+  else if(IsPlayerInSquare(playerid,-3000, -3000, -1236.015625, 1544) || IsPlayerInSquare(playerid,-1236.0625, -3000, -133.0625, -372)) return 2; // SF
+  else if(IsPlayerInSquare(playerid,-1236, 542, 3000, 3000) || IsPlayerInSquare(playerid,-3000, 1544, -1236, 3000)) return 3; // LV
+  return 1;
+}
 
+stock ShowRoutCity(playerid)
+{
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	format(line,sizeof(line),"№ Маршрут\tВодителей"), strcat(lines,line);
-	new quan, Float:x,Float:y, Float:x2,Float:y2;
-	if(where == 2) x = -3000.0,y= 1623.0, x2 = 3000.0,y2=3000.0; // lv
-	else if(where == 1) x = -3000.0, y= -3000.0, x2 = -1236.0, y2 = 1623.0;//sf
-	else if(where == 0) x = -1236.0, y = -370.0, x2 = 3000.0, y2 = 598.0; //ls
-
+	new quan, Float:x,Float:y, Float:x2,Float:y2,Float:x3,Float:y3,Float:x4,Float:y4;
+	if(IsPlayerCity(playerid) == 3) x = -1236,y= 542, x2 = 3000.0,y2=3000.0,x3 =-3000 , y3 =1544 ,x4 =-1236 , y4 =3000; // lv
+	else if(IsPlayerCity(playerid)  == 2) x = -3000.0, y= -3000.0, x2 = -1236.0, y2 = 1544.0,x3 = -1236.0625, y3 = -3000.0,x4 = -133.0625 ,y4= -372.0;//sf
+	else if(IsPlayerCity(playerid)  == 1) x = -1236.0, y = -372.0, x2 = -133.0, y2 = 542.0, x3 = -133.0625, y3 = -3000, x4 = 3000, y4 = 542; //ls
+	// СЮДА ФОРЕЧ
 	for(new i; i < 50; i++)
 	{	
 		List[i][playerid] = 0;
-		if(IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,x2,y,y2) && FullRout[i][brStatus] == 1)
+		if((IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,y,x2,y2) || IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x3,y3,x4,y4)) && FullRout[i][brStatus] == 1)
 		{
 			format(line,sizeof(line),"\n%d.%s\t ХЗ", quan+1,FullRout[i][brNameRout]), strcat(lines,line);
 			List[quan][playerid] = i;
@@ -535,6 +541,6 @@ stock ShowRoutCity(playerid, where)
 		}
 	}
 	if(quan > 0) ShowDialog(playerid,1450,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Выбрать","Закрыть");
-	else if (quan == 0) ErrorMessage(playerid,"В данном городе нет не одного маршрута автобуса! Обратитесь в правительство");
+	else if (quan == 0) ErrorMessage(playerid,"В этом городе нет ни одного маршрута автобуса! Обратитесь в правительство");
 	return 1;
 }
