@@ -72,9 +72,16 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 8713, 2645.1797, 1210.9297, 18.5156, 0.25);
 	RemoveBuildingForPlayer(playerid, 8431, 2645.1797, 1210.9297, 18.5156, 0.25);
 
-	// Правительство Улица (08.08.23)
+	// Правительство Улица (04.11.23)
+	RemoveBuildingForPlayer(playerid, 10524, -2706.2969, 439.2734, 12.7188, 0.25);
 	RemoveBuildingForPlayer(playerid, 10525, -2784.6328, 375.6094, 21.5781, 0.25);
+	RemoveBuildingForPlayer(playerid, 10638, -2779.8516, 378.2813, 4.7578, 0.25);
+	RemoveBuildingForPlayer(playerid, 10640, -2779.8516, 378.2813, 4.7578, 0.25);
 	RemoveBuildingForPlayer(playerid, 10377, -2784.6328, 375.6094, 21.5781, 0.25);
+	RemoveBuildingForPlayer(playerid, 669, -2761.7031, 449.3281, 3.5547, 0.25);
+	RemoveBuildingForPlayer(playerid, 669, -2752.6016, 434.4375, 3.5547, 0.25);
+	RemoveBuildingForPlayer(playerid, 1232, -2729.4297, 420.8594, 5.9688, 0.25);
+	RemoveBuildingForPlayer(playerid, 10379, -2706.2969, 439.2734, 12.7188, 0.25);
 
 	// Сервис Самолётов и Вертолётов LS
 	RemoveBuildingForPlayer(playerid, 3625, 1961.449, -2216.169, 14.984, 0.250);
@@ -416,14 +423,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 3297, 20.5391, 906.3594, 24.5938, 0.25);
 	RemoveBuildingForPlayer(playerid, 3242, 20.5391, 906.3594, 24.5938, 0.25);
 	RemoveBuildingForPlayer(playerid, 3285, 26.2188, 925.9063, 24.4844, 0.25);
-    //--------------------------------------------------------------------------
-	//----------------------------[ Правительство ]-----------------------------
-    RemoveBuildingForPlayer(playerid, 10319, -2722.5391, -341.7422, 34.5391, 0.25);
-	RemoveBuildingForPlayer(playerid, 10396, -2752.1016, -252.2422, 7.9766, 0.25);
-	RemoveBuildingForPlayer(playerid, 10397, -2752.1328, -252.2344, 10.0781, 0.25);
-	RemoveBuildingForPlayer(playerid, 640, -2733.4219, -333.0703, 6.8672, 0.25);
-	RemoveBuildingForPlayer(playerid, 10398, -2722.5391, -341.7422, 34.5391, 0.25);
-	RemoveBuildingForPlayer(playerid, 640, -2712.4141, -311.8125, 6.8672, 0.25);
     //--------------------------------------------------------------------------
 	//------------------------------[ Заправки ]---------------------------------
 	// ---- LS 1
