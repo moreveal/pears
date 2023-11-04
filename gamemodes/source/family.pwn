@@ -90,6 +90,7 @@ stock showDialogFamilyMenu(playerid)
 	format(line,sizeof(line),"\n{cccccc}Лог Семьи\t"), strcat(lines,line);
 	format(line,sizeof(line),"\n{ffcc00}Donate\t"), strcat(lines,line);
 	format(line,sizeof(line),"\n{999999}О семье..\t"), strcat(lines,line);
+	format(line,sizeof(line),"\n{999999}Система типов семьи\t"), strcat(lines,line);
 	if(PlayerInfo[playerid][pFamrank] >= FamilyInfo[f][fRanks]) format(line,sizeof(line),"\n{ff9000}Права Доступа\t"), strcat(lines,line);
 	ShowDialog(playerid,465,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Семья",lines,"Выбрать","Отмена");
     return 1;
