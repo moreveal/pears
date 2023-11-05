@@ -4,7 +4,7 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 577 удалённх объектов
+ 	// 585 удалённх объектов
 
 	// Arabian Mafia Street
 	RemoveBuildingForPlayer(playerid, 7584, 1947.3828, 1916.1953, 78.1953, 0.25);
@@ -72,7 +72,7 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 8713, 2645.1797, 1210.9297, 18.5156, 0.25);
 	RemoveBuildingForPlayer(playerid, 8431, 2645.1797, 1210.9297, 18.5156, 0.25);
 
-	// Правительство Улица (04.11.23)
+	// Правительство Улица (05.11.23)
 	RemoveBuildingForPlayer(playerid, 10524, -2706.2969, 439.2734, 12.7188, 0.25);
 	RemoveBuildingForPlayer(playerid, 10525, -2784.6328, 375.6094, 21.5781, 0.25);
 	RemoveBuildingForPlayer(playerid, 10638, -2779.8516, 378.2813, 4.7578, 0.25);
@@ -82,6 +82,8 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 669, -2752.6016, 434.4375, 3.5547, 0.25);
 	RemoveBuildingForPlayer(playerid, 1232, -2729.4297, 420.8594, 5.9688, 0.25);
 	RemoveBuildingForPlayer(playerid, 10379, -2706.2969, 439.2734, 12.7188, 0.25);
+	RemoveBuildingForPlayer(playerid, 669, -2761.7031, 449.3281, 3.5547, 0.25);
+	RemoveBuildingForPlayer(playerid, 1340, -2691.6797, 384.4922, 4.4844, 0.25);
 
 	// Сервис Самолётов и Вертолётов LS
 	RemoveBuildingForPlayer(playerid, 3625, 1961.449, -2216.169, 14.984, 0.250);

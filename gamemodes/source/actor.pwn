@@ -4,6 +4,14 @@ new BotPears[MAX_BOTS];
 new BotInfo[MAX_BOTS];
 new Text3D:BotChat[MAX_BOTS];
 
+stock LoadDynamicActor()
+{
+    CreateDynamicActor(163, -2777.3750,381.2728,6.164,182.8925, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 1)
+    CreateDynamicActor(164, -2801.6621,378.6697,6.164,181.7841, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 2)
+    CreateDynamicActor(150, -2793.0801,376.0515,6.164,270.1448, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Reseption Girl)
+    return 1;
+}
+
 stock LoadBot()
 {
 	BotPears[1] = CreateActor(27, 2271.6897,2785.0352,10.8203,26.2866);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
@@ -336,12 +344,6 @@ stock LoadBot()
     BotPears[307] = CreateActor(182,1410.1254,-139.7495,26.7904,227.4147); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     BotPears[308] = CreateActor(183,1411.6548,-140.8968,26.7904,52.2831); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     BotPears[309] = CreateActor(297,1415.3198,-125.3952,26.7904,85.1366); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-    BotPears[310] = CreateActor(163,1292.8673,-53.0409,1000.9422,183.6430); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[310], 234);
-    BotPears[311] = CreateActor(164,1304.5822,-65.5058,1000.9422,7.8614); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[311], 234);
-    BotPears[312] = CreateActor(150,1283.8494,-61.0814,1002.3203,270.9135); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[312], 234);
     BotPears[313] = CreateActor(147,-2046.6985,-988.4554,1651.6968,30.9710); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
     SetActorVirtualWorld(BotPears[313], 7);
     BotPears[314] = CreateActor(187,-2047.6536,-987.2053,1651.6968,215.5261); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
@@ -681,8 +683,6 @@ stock LoadAnimBot(stat)
         case 307: ApplyActorAnimation(BotPears[307],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Тюрьма Bot
         case 308: ApplyActorAnimation(BotPears[308],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
         case 309: ApplyActorAnimation(BotPears[309],"GYMNASIUM","gym_shadowbox",4.0,1,0,0,0,0); // Тюрьма Bot
-        case 310: ApplyActorAnimation(BotPears[310],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
-        case 311: ApplyActorAnimation(BotPears[311],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
         case 313: ApplyActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         case 314: ApplyActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         case 315: ApplyActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
@@ -905,8 +905,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[307],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Тюрьма Bot
         ApplyActorAnimation(BotPears[308],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
         ApplyActorAnimation(BotPears[309],"GYMNASIUM","gym_shadowbox",4.0,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[310],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
-        ApplyActorAnimation(BotPears[311],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
         ApplyActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         ApplyActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         ApplyActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot

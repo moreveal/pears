@@ -69,13 +69,16 @@ stock GoSpawn(playerid)
 stock SelectSpawnChoise(playerid, spawnId)
 {
     PlayerInfo[playerid][pSpawnchange] = spawnId;
+    OnlineInfo[playerid][oNoClick] = false;
 
     if(IsPlayerSyncModels(playerid)) PlayerPlaySound(playerid, 4400, 0,0,0);
+    else PlayerPlaySound(playerid,17803,0,0,0);
     if(Login[4][playerid] == 1) GoGame(playerid); // Спавн при входе в игру
     else // Через команду /spawnchange
     {
 		SuccessMessage(playerid, "{cccccc}Вы изменили свой {99ff66}спавн");
         CloseSpawnChoise(playerid);
+        CancelSelectTextDraw(playerid);
     }
     return 1;
 }
@@ -88,14 +91,14 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
 
     if(clickedid == SpawnChoiseDraw[0]) 
     {
-        if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
         SelectSpawnChoise(playerid, 1); // End Position
     }
     else if(clickedid == SpawnChoiseDraw[3]) // Organization
     {
         new g = fraction(playerid);
         new i = PlayerInfo[playerid][pDivision][0];
-        if(g == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не стоит в организации\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(g == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не стоит в организации\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
         if(i > 0) // Есть подфракция
         {
             OnlineInfo[playerid][oNoClick] = true;
@@ -161,11 +164,11 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
     }
     else if(clickedid == SpawnChoiseDraw[9]) // Family
     {
-        if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет семьи\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет семьи\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
         new f = PlayerInfo[playerid][pFamily];
-        if(FamilyInfo[f][fSost] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вашей семьи не существует\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
-        if(FamilyInfo[f][fStatusSpawn] == 0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
-		if(FamilyInfo[f][fSpawnX] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Дом >> Отель");
+        if(FamilyInfo[f][fSost] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вашей семьи не существует\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+        if(FamilyInfo[f][fStatusSpawn] == 0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+		if(FamilyInfo[f][fSpawnX] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
 
         SelectSpawnChoise(playerid, 2);
     }
@@ -324,7 +327,7 @@ stock CreateDrawSpawnChoise()
     TextDrawSetPreviewModel(SpawnChoiseDraw[7], 1273);
     TextDrawSetPreviewRot(SpawnChoiseDraw[7], 0.000000, 0.000000, 180.000000, 1.000000);
 
-    SpawnChoiseDraw[8] = TextDrawCreate(tempX + sizeX / 2, 268.0, "ѓOM");
+    SpawnChoiseDraw[8] = TextDrawCreate(tempX + sizeX / 2, 268.0, "„…‡’E");
     TextDrawLetterSize(SpawnChoiseDraw[8], 0.204666, 0.907259);
     TextDrawAlignment(SpawnChoiseDraw[8], 2);
     TextDrawColor(SpawnChoiseDraw[8], -1061109505);
