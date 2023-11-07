@@ -19,7 +19,7 @@ stock SaveLastPlayerPosition(playerid)
 {
     if(SetPosa[playerid] == 1 || MPGO[playerid] == 1 || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING
         || OnlineInfo[playerid][oShowInterface] == 14 || OnlineInfo[playerid][oShowInterface] == 16
-        || VehShopInfo[playerid][vsTest] == true)
+        || VehShopInfo[playerid][vsTest] == true || OnlineInfo[playerid][oShowInterface] == 18)
     {
         PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];

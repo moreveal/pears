@@ -111,7 +111,9 @@ stock AddCustomSkins()
 	AddCharSyncModel(91, 408); // 15595, pearspedcq
 	AddCharSyncModel(40, 409); // 15596, pearspedcr
 	AddCharSyncModel(46, 410); // 15597, pearspedcs male
-
+	AddCharSyncModel(40, 411); // 15598, pedaraba
+	AddCharSyncModel(221, 412); // 15599, pedarabb male
+	AddCharSyncModel(142, 413); // 15600, pedarabc male
     return 1;
 }
 
@@ -120,7 +122,7 @@ stock IsASkinExisting(s)
 {
     if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
 
-    || s >= 313 && s <= 410) return 1; // Кастомные скины пирса
+    || s >= 313 && s <= 413) return 1; // Кастомные скины пирса
     return 0;
 }
 
@@ -139,7 +141,7 @@ stock GetSkinSex(s)
 	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 15523
 	|| s == 336 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410) return 0; // 0 - мужской скин
+	|| s == 403 || s == 405 || s == 406 || s == 410 || s == 412 || s == 413) return 0; // 0 - мужской скин
  	else return 1; // Все остальные 1, значит женские
 }
 
@@ -400,6 +402,7 @@ stock GoShmot(playerid, stat)
 	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
 	SelectColorDraw(playerid);
 	SetPVarInt(playerid, "SelectCharPlace", 0);
+	OnlineInfo[playerid][oShowInterface] = 18;
 	if(stat == 1)
 	{
 		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]); // Фон Меню
@@ -535,6 +538,7 @@ stock ExitShmot(playerid)
 
 stock CloseShmot(playerid)
 {
+	OnlineInfo[playerid][oShowInterface] = 0;
 	Fractia[playerid] = 0;
 	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
 	for(new t = 0; t < 16; t++) TextDrawHideForPlayer(playerid, DressDraw[t]);
