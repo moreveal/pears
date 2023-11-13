@@ -904,6 +904,31 @@ stock getSlotIngredientBusiness(thingId) // Получаем слот, кото�
 	return slot;
 }
 
+stock partnerbiz(playerid, b) // Партнерство в бизнесе
+{
+	new quan;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	for(new i = 0; i < 10; i++)
+	{
+		List[i][playerid] = 0;
+		if(BizzInfo[b][bFamilyPartner][i] != 0)
+		{
+		    List[quan][playerid] = i;
+			quan ++;
+			format(line,sizeof(line),"{ff9000}%d. %s\n", quan, FamilyInfo[BizzInfo[b][bFamilyPartner][i]][fName]), strcat(lines,line);
+		}
+		else if(BizzInfo[b][bFamilyPartner][i] == 0)
+		{
+		    List[quan][playerid] = i;
+			quan ++;
+			format(line,sizeof(line),"{ff9000}%d. {cccccc}Пусто\n", quan), strcat(lines,line);
+		}
+	}
+	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1453,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	return 1;
+}
+
 stock SaveBizz(b)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
@@ -985,6 +1010,17 @@ stock SaveBizzOrderAll(idx)
 	BizzInfo[idx][bOrder][0], BizzInfo[idx][bOrderQuan][0], BizzInfo[idx][bOrderType][0]);
 	for(new i = 1; i < 50; i++) format(big_query,sizeof(big_query),"%s, `Order%d` = '%d', `OrderQuan%d` = '%d', `OrderType%d` = '%d'", big_query,
 	i, BizzInfo[idx][bOrder][i], i, BizzInfo[idx][bOrderQuan][i], i, BizzInfo[idx][bOrderType][i]);
+    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
+	query_empty(pearsq, big_query);
+	return 1;
+}
+stock SaveBizzPartner(idx)
+{
+	if(LIMITED_LOADING_SERVER >= 2) return 1;
+	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `parthner0` = '%d'",
+	BizzInfo[idx][bFamilyPartner][0]);
+	for(new i = 1; i < 10; i++) format(big_query,sizeof(big_query),"%s, `parthner%d` = '%d'", big_query,
+	i, BizzInfo[idx][bFamilyPartner][i]);
     format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
 	query_empty(pearsq, big_query);
 	return 1;

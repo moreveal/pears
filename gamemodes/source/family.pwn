@@ -52,6 +52,9 @@ enum fInfo
 	fVehCol[2],
 	fUpdate, // Параметр сохранения семьи
 	fType, // Тип семьи (0 обычная, 1 ОПГ, 2 Партии, 3 Секта, 4 Street Racers, 5 Bikers)
+	fParthnerMarket, // Бизнес партнеры Хот доги
+	fParthnerBenz, // Бизнес партнеры Хот доги
+	fParthnerService, // Бизнес партнеры Хот доги
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -275,6 +278,9 @@ public LoadFamily()
 		cache_get_value_name_int(f, "fbiz7", FamilyInfo[idx][fBiz][7]);
 		cache_get_value_name_int(f, "fbiz8", FamilyInfo[idx][fBiz][8]);
 		cache_get_value_name_int(f, "fbiz9", FamilyInfo[idx][fBiz][9]);
+		cache_get_value_name_int(f, "parthnerMarket", FamilyInfo[idx][fParthnerMarket]);
+		cache_get_value_name_int(f, "parthnerBenz", FamilyInfo[idx][fParthnerBenz]);
+		cache_get_value_name_int(f, "parthnerService", FamilyInfo[idx][fParthnerService]);
 		cache_get_value_name_int(f, "vehcol1", FamilyInfo[idx][fVehCol][0]);
 		cache_get_value_name_int(f, "vehcol2", FamilyInfo[idx][fVehCol][1]);
 		cache_get_value_name_int(f, "type", FamilyInfo[idx][fType]);
@@ -322,9 +328,9 @@ stock SaveFamily(idx)
 	FamilyInfo[idx][fBiz][0],FamilyInfo[idx][fBiz][1],FamilyInfo[idx][fBiz][2],FamilyInfo[idx][fBiz][3],FamilyInfo[idx][fBiz][4],
 	FamilyInfo[idx][fBiz][5],FamilyInfo[idx][fBiz][6],FamilyInfo[idx][fBiz][7],FamilyInfo[idx][fBiz][8],FamilyInfo[idx][fBiz][9]);
 	format(big_query, sizeof(big_query), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',\
-	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d' WHERE `id`='%d'", big_query,
+	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d',`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d' WHERE `id`='%d'", big_query,
 	FamilyInfo[idx][fSpawnX],FamilyInfo[idx][fSpawnY],FamilyInfo[idx][fSpawnZ],FamilyInfo[idx][fSpawnA],FamilyInfo[idx][fInt],FamilyInfo[idx][fWorld],FamilyInfo[idx][fStatusUch],FamilyInfo[idx][fStatusRank],FamilyInfo[idx][fStatusGarage],
-	FamilyInfo[idx][fStatusSpawn],FamilyInfo[idx][fDop1],FamilyInfo[idx][fDop2],FamilyInfo[idx][fDop3],FamilyInfo[idx][fDop4],FamilyInfo[idx][fDop5],FamilyInfo[idx][fMoney],FamilyInfo[idx][fAccoff],FamilyInfo[idx][fAccdip],FamilyInfo[idx][fLoss],FamilyInfo[idx][fVehCol][0],FamilyInfo[idx][fVehCol][1],FamilyInfo[idx][fType],
+	FamilyInfo[idx][fStatusSpawn],FamilyInfo[idx][fDop1],FamilyInfo[idx][fDop2],FamilyInfo[idx][fDop3],FamilyInfo[idx][fDop4],FamilyInfo[idx][fDop5],FamilyInfo[idx][fMoney],FamilyInfo[idx][fAccoff],FamilyInfo[idx][fAccdip],FamilyInfo[idx][fLoss],FamilyInfo[idx][fVehCol][0],FamilyInfo[idx][fVehCol][1],FamilyInfo[idx][fType],FamilyInfo[idx][fParthnerMarket],FamilyInfo[idx][fParthnerBenz],FamilyInfo[idx][fParthnerService],
 	idx);
 	query_empty(pearsq, big_query);
 	return true;
