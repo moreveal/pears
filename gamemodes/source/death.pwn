@@ -99,7 +99,7 @@ stock UpdateDeathProcess(playerid)
 
     new string[24];
     TogglePlayerControllable(playerid, 0);
-    ApplyAnimation(playerid,"CRACK","crckdeth2",4.1,0,1,1,1,1,1);
+    ApplyAnimation(playerid,"CRACK","crckidle2",3.0,0,1,1,1,1,1);
     format(string, sizeof(string), "без сознания [%s]", fine_time(DeathInfo[playerid][deathTime]));
     SetPlayerChatBubble(playerid,string, COLOR_LIGHTRED,20.0,1500);
 

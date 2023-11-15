@@ -97,11 +97,13 @@ stock ListCrime(playerid)
 stock IsPlayerRangeOfCamer(playerid)
 {
     if(IsHideEbalo(playerid)) return 0;
+    new Float:pos[3];
     for(new i; i < 100; i++)
     {
         if(CamInfo[i][cStat] > 0)
         {
-            if(IsPlayerInRangeOfPoint(playerid,100.0,CamInfo[i][cX],CamInfo[i][cY],CamInfo[i][cZ])) return 1;
+		    GetDynamicObjectPos(CamInfo[i][cObject], pos[0], pos[1], pos[2]);
+            if(IsPlayerInRangeOfPoint(playerid,100.0,pos[0], pos[1], pos[2])) return 1;
         }
     }
     return 0;

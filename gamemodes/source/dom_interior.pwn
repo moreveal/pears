@@ -1,17 +1,18 @@
 stock showDialogInteriorDom(playerid)
 {
     if(MenuInfo[playerid][zStat] > 0) return 1;
-    if(DP[0][playerid] == 0) ShowDialog(playerid,920,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Переместить Предмет]","{cccccc}Список {ff9000}>>\n{cccccc}Выбрать Предмет","Выбрать","Отмена");
-	else if(DP[0][playerid] == 1) ShowDialog(playerid,911,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Изменить Текстуры]","{cccccc}Список {ff9000}>>\n{cccccc}Выбрать Предмет","Выбрать","Отмена");
-	else if(DP[0][playerid] == 2) ShowDialog(playerid,921,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Убрать Предмет]","{cccccc}Список {ff9000}>>\n{cccccc}Выбрать Предмет","Выбрать","Отмена");
+    if(DP[0][playerid] == 0) ShowDialog(playerid,920,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Переместить Предмет]","{cccccc}Список {ff9000}>>","Выбрать","Отмена");
+	else if(DP[0][playerid] == 1) ShowDialog(playerid,911,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Изменить Текстуры]","{cccccc}Список {ff9000}>>","Выбрать","Отмена");
+	else if(DP[0][playerid] == 2) ShowDialog(playerid,921,DIALOG_STYLE_LIST,"{ff9000}Дом {cccccc}[Убрать Предмет]","{cccccc}Список {ff9000}>>","Выбрать","Отмена");
 	return 1;
 }
 
 stock setDomDefaultFrame(d) //  Ставим дефолтную планировку в дом
 {
 	DomInfo[d][dOmodel][0] = 14713;
-	GetCoordFrame(14713, DomInfo[d][dOx][0], DomInfo[d][dOy][0], DomInfo[d][dOz][0], DomInfo[d][dOrx][0], DomInfo[d][dOry][0], DomInfo[d][dOrz][0]);
-	DomInfo[d][dObject][0] = CreateDynamicObject(DomInfo[d][dOmodel][0], DomInfo[d][dOx][0], DomInfo[d][dOy][0], DomInfo[d][dOz][0], DomInfo[d][dOrx][0], DomInfo[d][dOry][0], DomInfo[d][dOrz][0], d+1000, 90, -1, 100.00, 100.00);
+	new Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
+	GetCoordFrame(14713, x, y, z, rx, ry, rz);
+	DomInfo[d][dObject][0] = CreateDynamicObject(DomInfo[d][dOmodel][0], x, y, z, rx, ry, rz, d+1000, 90, -1, 100.00, 100.00);
 	DomInfo[d][dEnterX] = 1387.4436, DomInfo[d][dEnterY] = -16.2143, DomInfo[d][dEnterZ] = 1000.8868, DomInfo[d][dEnterA] = 359.7609, DomInfo[d][dInterior] = 90;
 	DomInfo[d][dFrame] = DomInfo[d][dOmodel][0];
 	UpdateObject(d, 0);
@@ -22,7 +23,7 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 {
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
-	    if(DomInfo[dom][dOmodel][oba] >= 1) DestroyDynamicObject(DomInfo[dom][dObject][oba]), DomInfo[dom][dOmodel][oba] = 0, DomInfo[dom][dQara][oba] = 0, DelObject(dom, oba);
+	    if(DomInfo[dom][dOmodel][oba] >= 1) DestroyDynamicObject(DomInfo[dom][dObject][oba]), DomInfo[dom][dObject][oba] = 0, DomInfo[dom][dOmodel][oba] = 0, DomInfo[dom][dQara][oba] = 0, DelObject(dom, oba);
 	}
 	if(DomInfo[dom][dIncup] >= 1) DestroyDynamic3DTextLabel(IncupLabel[dom]), DomInfo[dom][dIncup] = 0;
 	if(DomInfo[dom][dIntoi] >= 1) DestroyDynamic3DTextLabel(IntoiLabel[dom]), DomInfo[dom][dIntoi] = 0;
@@ -51,7 +52,7 @@ forward LoadObject();
 public LoadObject() // Грузим объекты интерьера для дома
 {
 	new time = GetTickCount();
-	new rows, sla, nd;
+	new rows, sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
 	cache_get_row_count(rows);
 	for(new f; f<rows; ++f)
 	{
@@ -60,12 +61,12 @@ public LoadObject() // Грузим объекты интерьера для д�
     	cache_get_value_name_int(f, "user", DomInfo[nd][dUser][sla]);
     	cache_get_value_name_int(f, "model", DomInfo[nd][dOmodel][sla]);
     	cache_get_value_name_int(f, "qara", DomInfo[nd][dQara][sla]);
-		cache_get_value_name_float(f, "ox", DomInfo[nd][dOx][sla]);
-		cache_get_value_name_float(f, "oy", DomInfo[nd][dOy][sla]);
-		cache_get_value_name_float(f, "oz", DomInfo[nd][dOz][sla]);
-		cache_get_value_name_float(f, "orx", DomInfo[nd][dOrx][sla]);
-		cache_get_value_name_float(f, "ory", DomInfo[nd][dOry][sla]);
-		cache_get_value_name_float(f, "orz", DomInfo[nd][dOrz][sla]);
+		cache_get_value_name_float(f, "ox", x);
+		cache_get_value_name_float(f, "oy", y);
+		cache_get_value_name_float(f, "oz", z);
+		cache_get_value_name_float(f, "orx", rx);
+		cache_get_value_name_float(f, "ory", ry);
+		cache_get_value_name_float(f, "orz", rz);
 		cache_get_value_name_int(f, "idtext0", DomTexture[nd][sla][0]);
 		cache_get_value_name_int(f, "idtext1", DomTexture[nd][sla][1]);
 		cache_get_value_name_int(f, "idtext2", DomTexture[nd][sla][2]);
@@ -104,7 +105,7 @@ public LoadObject() // Грузим объекты интерьера для д�
 		cache_get_value_name_int(f, "idtext35", DomTexture[nd][sla][35]);
 		cache_get_value_name_int(f, "idtext36", DomTexture[nd][sla][36]);
 		cache_get_value_name_int(f, "idtext37", DomTexture[nd][sla][37]);
-  		if(DomInfo[nd][dOmodel][sla] >= 1) DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], DomInfo[nd][dOx][sla], DomInfo[nd][dOy][sla], DomInfo[nd][dOz][sla], DomInfo[nd][dOrx][sla], DomInfo[nd][dOry][sla], DomInfo[nd][dOrz][sla], nd+1000, 90, -1, 100.00, 100.00);
+  		if(DomInfo[nd][dOmodel][sla] >= 1) DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, nd+1000, 90, -1, 100.00, 100.00);
 		for(new t = 0; t < 38; t++)
 		{
 			if(DomTexture[nd][sla][t] >= 1)

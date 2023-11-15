@@ -7,7 +7,7 @@
 new Float:RentPos_X[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Y[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Z[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RX[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentObject[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
-new Text3D:RentLabel[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStio[MAX_BIZ_TERM][MAX_TERMINAL_BIZ]; // Позиция аренды и самого Объекта
+new Text3D:RentLabel[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ]; // Позиция аренды и самого Объекта
 new RentPickup[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], bool:RentPickupStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 
 
@@ -24,7 +24,7 @@ CMD:gototerm(playerid, const params[])
 	{
 	    if(params[1] < 1 || params[1] > 5) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер терминала не меньше 1 - 5");
 	    new br = numnrent(params[0]);
-	    if(RentStat[br][params[1]-1] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У бизнеса нет терминала под этим номером");
+	    if(RentStat[br][params[1]-1] <= 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У бизнеса нет терминала под этим номером");
 		PPSetPlayerPos(playerid,RentPos_X[br][params[1]-1],RentPos_Y[br][params[1]-1],RentPos_Z[br][params[1]-1]);
 		S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
 	}
@@ -515,19 +515,29 @@ stock use_biz(playerid, biz, inva, useinva)
 		new obid;
 		if(BizzInfo[biz][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом бизнесе не установлен каркас"), i_resettabs(playerid);
 		if(BizzInfo[biz][bSell]  >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься ремонтом интерьера во время продажи"), i_resettabs(playerid);
-		if(CheckObjectBiz(biz)) return ErrorMessage(playerid, "{FF6347}Лимит объектов мебели: 60"), i_resettabs(playerid);
+		if(CheckObjectBiz(biz)) return ErrorMessage(playerid, "{FF6347}Лимит объектов мебели"), i_resettabs(playerid);
+		
+		new slot = -1;
+		for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+		{
+			if(BizzInfo[biz][bOmodel][oba] == 0)
+			{
+				slot = oba;
+				break;
+			}
+		}
+		if(slot == -1) return ErrorMessage(playerid, "{FF6347}Лимит слотов для мебели в бизнесе"), i_resettabs(playerid);
+
 		obid = BizzInfo[biz][bInvent][inva], BizzInfo[biz][bInvent][inva] = 0, BizzInfo[biz][bInv][inva] = 0, BizzInfo[biz][bInvPara][inva] = 0, BizzInfo[biz][bInvQara][inva] = 0, BizzInfo[biz][bInvType][inva] = 0, BizzInfo[biz][bInvPack][inva] = 0;
-		SaveSkladBiz(biz, inva);
 		CloseFrisk(playerid);
+
       	new Float:f_pos[4];
 		frontme(playerid, 3.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-      	gRedakt[playerid] = 17;
-       	Vrobj[playerid] = CreateDynamicObject(obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
-       	Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-        Idobj[playerid] = obid;
-        gRedakt2[playerid] = 0;
-		EditDynamicObject(playerid, Vrobj[playerid]);
-		PlayerPlaySound(playerid,6400,0,0,0);
+		BizzInfo[biz][bObject][slot] = CreateDynamicObject(obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
+		BizzInfo[biz][bUser][slot] = playerid;
+		BizzInfo[biz][bQara][slot] = BizzInfo[biz][bInvQara][inva];
+		BizzInfo[biz][bOmodel][slot] = obid;
+		GoEditDynamicObject(playerid, 17, 0, biz, slot, BizzInfo[biz][bObject][slot], inva);
 		return 1;
 	}
 	return 1;
@@ -1024,4 +1034,14 @@ stock SaveBizzPartner(idx)
     format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, idx);
 	query_empty(pearsq, big_query);
 	return 1;
+}
+
+stock IsBizTerminal(b)
+{
+	if(b >= 42 && b <= 52 // Аренда Автомобилей (11)
+		|| b >= 62 && b <= 66 // Мотоциклов (5)
+		|| b >= 67 && b <= 76 // Скутеров (10)
+		|| b >= 153 && b <= 162 // Ларьки (10)
+		|| b >= 163 && b <= 172) return 1; // Банкоматы (10)
+	return 0;
 }

@@ -544,3 +544,11 @@ stock ShowRoutCity(playerid)
 	else if (quan == 0) ErrorMessage(playerid,"В этом городе нет ни одного маршрута автобуса! Обратитесь в правительство");
 	return 1;
 }
+stock showDialogMenuBusStation(playerid, cam)
+{
+	if(BusStationInfo[cam][bsActive] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этой остановки не существует"), cmd_allbusstation(playerid);
+	new lol[34];
+	format(lol,sizeof(lol),"{cccccc}%s", BusStationInfo[cam][bsName]);
+	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,lol,"{444444}Об остановке..\n{cccccc}Изменить Название\n{cccccc}Удалить {FF6347}остановку","Выбор","Отмена");
+	return 1;
+}

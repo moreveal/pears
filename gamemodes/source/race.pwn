@@ -120,19 +120,14 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                     else if(listitem == 4) objectid = 2754;
                     if(MPGO[playerid] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я на мероприятии..");
                     DP[0][playerid] = moving;
-                    new Float:X,Float:Y,Float:Z,Float:A;
-                    GetPlayerPos(playerid, X,Y,Z);
-                    GetPlayerFacingAngle(playerid,A);
-                    X=X+5.0*floatsin(-A,degrees);
-                    Y=Y+5.0*floatcos(-A,degrees);
-                    gRedakt[playerid] = 21+listitem;
-                    gRedakt3[playerid] = objectid;
-                    Vrobj[playerid] = CreateDynamicObject(objectid, X, Y, Z, 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 80.00, 80.00);
-                    Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-                    Idobj[playerid] = Vrobj[playerid];
-                    gRedakt2[playerid] = 0;
-                    EditDynamicObject(playerid, Vrobj[playerid]);
-                    PlayerPlaySound(playerid,6400,0,0,0);
+
+                    new Float:f_pos[4];
+                    frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+                    if(moving == 0) CreateEditPlayerObject(playerid, 21 + listitem, 0, 0, 0, objectid, f_pos[0], f_pos[1], f_pos[2]);
+                    else if(moving == 1)
+                    {
+                        GoEditDynamicObject(playerid, 21 + listitem, 1, 0, 0, RentObjectRace[listitem], 0);
+                    }
                 }
             }
         }
@@ -421,7 +416,7 @@ stock CreateLabelTermRace(br,objectid)
 stock UpdateLabelTermRace(br)
 {
 	new string[214];
-	if (br == 1) format(string,sizeof(string),"{ff9000}Ларек с едой {444444}\n {cccccc}[№ %d]\n\n[ ALT ]");
+	if (br == 1) format(string,sizeof(string),"{ff9000}Тележка с Хот Догами {444444}\n {cccccc}[№ %d]\n\n[ ALT ]");
 	else if (br == 2) format(string,sizeof(string),"{ff9000}Колонка бензина №\n {cccccc}[№ %d]\n\n[ ALT ]");
     else if (br == 3) format(string,sizeof(string),"{ff9000}Сервисная стойка № \n {cccccc}[№ %d]\n\n[ ALT ]");
     else if (br == 4) format(string,sizeof(string),"{ff9000}Терминал гонки № \n {cccccc}[№ %d]\n\n[ ALT ]");

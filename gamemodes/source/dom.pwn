@@ -5,14 +5,14 @@ stock use_dom(playerid, dom, inva, useinva)
 	
 	if(OnlineInfo[playerid][oShowTabs] != dom) return 1;
 	if(Veshi[playerid] >= 1) return 1;
-	if(gRedakt[playerid] >= 1 && gRedakt[playerid] <= 8) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
  		
 	if(useinva != 9999)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
 	}
 	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
-	&& !IsPlayerInRangeOfPoint(playerid,80.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
+	&& !IsPlayerInRangeOfPoint(playerid,100.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
 		
 	new fpick = DomInfo[dom][dInvent][inva], fquan = DomInfo[dom][dInv][inva], thingType = DomInfo[dom][dInvType][inva], thingPack = DomInfo[dom][dInvPack][inva];
 	if(PlayerInfo[playerid][pDom] != dom)
@@ -39,24 +39,31 @@ stock use_dom(playerid, dom, inva, useinva)
 		PlayerPlaySound(playerid,1052,0,0,0);
 		new obid;
 		if(DomInfo[dom][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В доме не установлена планировка");
-		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи");
-		if(CheckObject(dom)) return ErrorMessage(playerid, "{FF6347}Лимит объектов мебели: 60"), i_resettabs(playerid);
-		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи"), i_resettabs(playerid);
+		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resettabs(playerid);
+
+		new slot = -1;
+		for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+		{
+			if(DomInfo[dom][dOmodel][oba] == 0)
+			{
+				slot = oba;
+				break;
+			}
+		}
+		if(slot == -1) return ErrorMessage(playerid, "{FF6347}Лимит слотов для мебели в доме"), i_resettabs(playerid);
+
 		obid = DomInfo[dom][dInvent][inva], DomInfo[dom][dInvent][inva] = 0, DomInfo[dom][dInv][inva] = 0;
-		SaveOneTainik(dom, inva);
 		CloseFrisk(playerid);
-		new Float:obx, Float:oby, Float:obz, Float:oba;
-  		GetPlayerPos(playerid,obx, oby, obz);
-    	GetPlayerFacingAngle(playerid,oba);
-     	obx=obx+3.0*floatsin(-oba,degrees);
-      	oby=oby+3.0*floatcos(-oba,degrees);
-      	gRedakt[playerid] = 6;
-       	Vrobj[playerid] = CreateDynamicObject(obid, obx, oby, obz, 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
-       	Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-        Idobj[playerid] = obid;
-        gRedakt2[playerid] = 0;
-		EditDynamicObject(playerid, Vrobj[playerid]);
-		PlayerPlaySound(playerid,6400,0,0,0);
+
+		new Float:f_pos[4];
+		frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+		DomInfo[dom][dObject][slot] = CreateDynamicObject(obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
+		DomInfo[dom][dUser][slot] = playerid;
+		DomInfo[dom][dQara][slot] = DomInfo[dom][dInvQara][inva];
+		DomInfo[dom][dOmodel][slot] = obid;
+
+		GoEditDynamicObject(playerid, 6, 0, dom, slot, DomInfo[dom][dObject][slot], inva);
 		return 1;
 	}
 	
@@ -95,7 +102,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	new put_inva = -1;
 	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowTabs] == 9999
 	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return i_resetveshi(playerid);
-	if(gRedakt[playerid] >= 1 && gRedakt[playerid] <= 8) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
+	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
 	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
 	&& !IsPlayerInRangeOfPoint(playerid,80.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), i_resetveshi(playerid);
