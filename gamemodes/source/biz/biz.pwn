@@ -9,6 +9,7 @@ new Float:RentPos_RX[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentObject[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Text3D:RentLabel[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ]; // Позиция аренды и самого Объекта
 new RentPickup[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], bool:RentPickupStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
+new BizIcon[MAX_BIZ];
 
 
 new cityName[][] =
@@ -1044,4 +1045,28 @@ stock IsBizTerminal(b)
 		|| b >= 153 && b <= 162 // Ларьки (10)
 		|| b >= 163 && b <= 172) return 1; // Банкоматы (10)
 	return 0;
+}
+
+stock IsBizTransfer(b)
+{
+	if(b >= 13 && b <= 26 // Супермаркеты (14)
+		|| b >= 27 && b <= 41 // Оружейный магазин (15)
+		|| b >= 93 && b <= 102 // Клубы (10)
+		|| b >= 103 && b <= 117 // Закусочные (15)
+		|| b >= 123 && b <= 132 // Аптеки (10)
+		|| b >= 133 && b <= 142) return 1;  // Магазины с техникой (10)
+	return 0;
+}
+
+stock BizMapIcon(b)
+{
+	if(!IsBizTransfer(b)) return 0;
+	if(BizIcon[b]) DestroyDynamicMapIcon(BizIcon[b]), BizIcon[b] = 0;
+	if(BizType(b) == 1) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],38,0,-1,-1,-1,200.0);
+	else if(BizType(b) == 2) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],6,0,-1,-1,-1,200.0);
+	else if(BizType(b) == 12) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],48,0,-1,-1,-1,200.0);
+	else if(BizType(b) == 13) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],10,0,-1,-1,-1,200.0);
+	else if(BizType(b) == 15) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],22,0,-1,-1,-1,200.0);
+	else if(BizType(b) == 16) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],25,0,-1,-1,-1,200.0);
+	return 1;
 }

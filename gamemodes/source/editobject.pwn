@@ -212,13 +212,13 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     }
     else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
     {
-        new br = gRedakt[playerid] - 21;
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
 
         WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-        if(DP[0][playerid] == 0) RentObjectRace[br] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0), CreateLabelTermRace(br,modelid);
-        UpdateLabelTermRace(br);
+        RentObjectRace[oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        CreateLabelTermRace(oid,RentObjectRace[oid]);
+        UpdateLabelTermRace(oid);
     }
     return 1;
 }
@@ -459,9 +459,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}
         else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
         {
-            new br = gRedakt[playerid] - 21;
             WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-            UpdateLabelTermRace(br);
+            CreateLabelTermRace(oid,RentObjectRace[oid]);
+            UpdateLabelTermRace(oid);
         }
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);

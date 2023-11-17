@@ -1,16 +1,18 @@
 #define MAX_RACERS_POINT 1
 enum raceInfo
 {
-    raceStat, // Статус взрыва или бомбы
+    raceStat, // Статус гонки
     Float: racePosMarket[6], // Позиция Тележки
     Float: racePosBenz[6], // Позиция Бензика
     Float: racePosService[6], // Позиция Сервиса
     Float: racePosTerminal[6], // Позиция Терминала
+    raceMap, // Карта для гонки
     raceFamily, // Семья начавшего событие
     raceUnix, // Время на проведенную гонку
     racersCount[8], // Количество участников в гонке
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
+new RaceIcon[1];
 
 stock ShowStreetRacers(playerid,family)
 {
@@ -31,22 +33,36 @@ stock GoStreetRacers(playerid)
     new tyear, tmonth, tday, thour, tminute, tsecond;
     new unixsecond = gettime();
     format(lines,sizeof(lines),""); // Очищаем Lines
-    if(StreetRacers[0][raceUnix] > 0)
+    if(StreetRacers[0][raceStat] == 1 || StreetRacers[0][raceStat] == 2)
     {
         if(StreetRacers[0][raceFamily] == fId)
         {
-            stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-            format(line,sizeof(line),"Сходка Стритрейсеров. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
-            if(StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]"), strcat(lines,line);
-            else if(StreetRacers[0][racePosMarket][0] != 0.0 && StreetRacers[0][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]"), strcat(lines,line);
-            if(StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]"), strcat(lines,line);
-            else if(StreetRacers[0][racePosBenz][0] != 0.0 && StreetRacers[0][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]"), strcat(lines,line);
-            if(StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]"), strcat(lines,line);
-            else if(StreetRacers[0][racePosService][0] != 0.0 && StreetRacers[0][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]"), strcat(lines,line);
-            if(StreetRacers[0][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]"), strcat(lines,line);
-            else if(StreetRacers[0][racePosTerminal][0] != 0.0 && StreetRacers[0][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]"), strcat(lines,line);
-            ShowDialog(playerid,1452,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+            if(StreetRacers[0][raceStat] == 1)
+            {
+                stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+                format(line,sizeof(line),"Сходка Стритрейсеров. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+                format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
+                if(StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[0][racePosMarket][0] != 0.0 && StreetRacers[0][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[0][racePosBenz][0] != 0.0 && StreetRacers[0][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[0][racePosService][0] != 0.0 && StreetRacers[0][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[0][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[0][racePosTerminal][0] != 0.0 && StreetRacers[0][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]"), strcat(lines,line);
+                ShowDialog(playerid,1452,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+            }
+            else if(StreetRacers[0][raceStat] == 2)
+            {
+                stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+                format(line,sizeof(line),"Сходка Стритрейсеров. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+                format(line,sizeof(line),"\nНачать гонку"), strcat(lines,line);
+                if(StreetRacers[0][raceMap] == -1) format(line,sizeof(line),"\nКарта {FF6347}[Не выбрана]"), strcat(lines,line);
+                else if(StreetRacers[0][raceMap] > -1) format(line,sizeof(line),"\nКарта {99ff66}[Выбрана]"), strcat(lines,line);
+                format(line,sizeof(line),"\nСписок гонщиков"), strcat(lines,line);
+                format(line,sizeof(line),"\nЗакончить сходку"), strcat(lines,line);
+                ShowDialog(playerid,1461,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+            }
         }
         else if(StreetRacers[0][raceFamily] != fId)
         {
@@ -55,7 +71,7 @@ stock GoStreetRacers(playerid)
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Возможно мне стоит явится на неё и проявить себя!");
         }
     }
-    else if(StreetRacers[0][raceUnix] == 0)
+    else if(StreetRacers[0][raceStat] == 0)
     {
         format(line,sizeof(line),"\nНачать сходку Стрит Рейсоров?"), strcat(lines,line);
 		ShowDialog(playerid,1451,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
@@ -64,20 +80,34 @@ stock GoStreetRacers(playerid)
 
 stock CreatePartyStreet(playerid)
 {
-    if(StreetRacers[0][raceUnix] > 0) return ErrorMessage(playerid,"Кто-то уже начал сбор");
+    if(StreetRacers[0][raceUnix] > 0 || StreetRacers[0][raceStat] > 0) return ErrorMessage(playerid,"Кто-то уже начал сбор");
     StreetRacers[0][raceFamily] = PlayerInfo[playerid][pFamily];
     StreetRacers[0][raceStat] = 1;
     StreetRacers[0][raceUnix] = 7200;
+    SuccessMessage(playerid,"{66ff99}Вы начали подготовку к сходке СтритРейсеров");
+    return 1;
+}
+
+stock ReadyPartyStreet(playerid)
+{
+    StreetRacers[0][raceStat] = 2;
+    StreetRacers[0][raceUnix] = 7200;
+    StreetRacers[0][raceMap] = -1;
+    RaceIcon[0] = CreateDynamicMapIcon(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2],53,0,-1,-1,-1,200.0);
     for(new i; i < 8; i++)
     {
         StreetRacers[0][racersCount][i] = -1;   
     }
+    SuccessMessage(playerid,"{66ff99}Вы начали сходку СтритРейсеров");
     return 1;
 }
 
 stock ClosePartyStreet()
 {
+    if(RaceIcon[0]) DestroyDynamicMapIcon(RaceIcon[0]);
+    RaceIcon[0] = 0;
     StreetRacers[0][raceFamily] = -1;
+    StreetRacers[0][raceMap] = -1;
     StreetRacers[0][raceStat] = 0;
     StreetRacers[0][raceUnix] = 0;
     return 1;
@@ -99,6 +129,8 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 || (StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) 
                 || (StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) 
                 || (StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
+                ReadyPartyStreet(playerid);
+                GoStreetRacers(playerid);
             }
             if(listitem >= 1 && listitem <= 4)
             {   
@@ -123,10 +155,10 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 
                     new Float:f_pos[4];
                     frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-                    if(moving == 0) CreateEditPlayerObject(playerid, 21 + listitem, 0, 0, 0, objectid, f_pos[0], f_pos[1], f_pos[2]);
+                    if(moving == 0) CreateEditPlayerObject(playerid, 21 + listitem, 0, listitem -1, 0, objectid, f_pos[0], f_pos[1], f_pos[2]);
                     else if(moving == 1)
                     {
-                        GoEditDynamicObject(playerid, 21 + listitem, 1, 0, 0, RentObjectRace[listitem], 0);
+                        GoEditDynamicObject(playerid, 21 + listitem, 1, listitem - 1, 0, RentObjectRace[listitem -1], 0);
                     }
                 }
             }
@@ -387,39 +419,59 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
 }
 stock CreateLabelTermRace(br,objectid)
 {	
-	if(br == 1)
+    if(RentPickupRace[br]) DestroyDynamicPickup(RentPickupRace[br]);
+    if(RentLabelRace[br]) DestroyDynamic3DTextLabel(RentLabelRace[br]);
+    new Float:x,Float:y,Float:z;
+	if(br == 0)
 	{	
-		if(!RentPickupRace[0]) DestroyDynamicPickup(RentPickupRace[0]);
-		new Float:x,Float:y,Float:z;
-		frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosMarket][5]);
-		RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,x, y, z,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-		RentPickupRace[0] = CreateDynamicPickup(1546, 1, x, y, z, 0, 0);
+        frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosMarket][5]);
+		RentPickupRace[br] = CreateDynamicPickup(1546, 1, x, y, z, 0, 0);
 
 		// Ставим бота для ларька с едой (Создаётся и переустанавливается в одном стоке)
 		//CreateTerminalActorRace();
 	}
-	else if(br == 2)
+	else if(br == 1)
 	{
-		RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,StreetRacers[0][racePosBenz][1], StreetRacers[0][racePosBenz][2], StreetRacers[0][racePosBenz][3]+0.2,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+		frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosBenz][5]);
+        RentPickupRace[br] = CreateDynamicPickup(1650, 1, x, y, z, 0, 0);
 	}
+    else if(br == 2)
+	{
+		frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosService][5]);
+        z = z+0.5;
+        RentPickupRace[br] = CreateDynamicPickup(19627, 1, x, y, z, 0, 0);
+    }
     else if(br == 3)
 	{
-		RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,StreetRacers[0][racePosService][1], StreetRacers[0][racePosService][2], StreetRacers[0][racePosService][3]+0.2,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-	}
-    else if(br == 4)
-	{
-		RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,StreetRacers[0][racePosTerminal][1], StreetRacers[0][racePosTerminal][2], StreetRacers[0][racePosTerminal][3]+0.2,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-	}
+		backtobject(objectid,1.0,x,y,z,StreetRacers[0][racePosTerminal][5]);
+        RentPickupRace[br] = CreateDynamicPickup(1239, 1, x, y, z, 0, 0);
+    }
+    RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,x, y, z,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 	return 1;
 }
 
 stock UpdateLabelTermRace(br)
 {
+    new b = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerMarket];
+    new b1 = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerBenz];
+    new b2 = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerService];
 	new string[214];
-	if (br == 1) format(string,sizeof(string),"{ff9000}Тележка с Хот Догами {444444}\n {cccccc}[№ %d]\n\n[ ALT ]");
-	else if (br == 2) format(string,sizeof(string),"{ff9000}Колонка бензина №\n {cccccc}[№ %d]\n\n[ ALT ]");
-    else if (br == 3) format(string,sizeof(string),"{ff9000}Сервисная стойка № \n {cccccc}[№ %d]\n\n[ ALT ]");
-    else if (br == 4) format(string,sizeof(string),"{ff9000}Терминал гонки № \n {cccccc}[№ %d]\n\n[ ALT ]");
+	if (br == 0) 
+    {
+        format(string,sizeof(string),"{ff9000}Тележка с Хот Догами \n{444444}%s {cccccc}[№ %d]\n\n[ ALT ]",bizname(b),b);
+    }
+	else if (br == 1)
+    {
+        format(string,sizeof(string),"{ff9000}Колонка бензина \n{444444}%s {cccccc}[№ %d]\n\n[ ALT ]",bizname(b1),b1);
+    }
+    else if (br == 2)
+    {
+        format(string,sizeof(string),"{ff9000}Сервисная стойка \n{444444}%s {cccccc}[№ %d]\n\n[ ALT ]",bizname(b2),b2);
+    }
+    else if (br == 3) 
+    {
+        format(string,sizeof(string),"{ff9000}Терминал гонки {cccccc}\n[ ALT ]");
+    }
 	UpdateDynamic3DTextLabelText(RentLabelRace[br],0xA9C4E4FF,string);
 	return 1;
 }
@@ -458,4 +510,33 @@ stock RegisterToRace(playerid, number)
     }
     else return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
     return 1;
+}
+
+stock StreetRacersBusi(playerid, br)
+{
+	DP[0][playerid] = br;
+    if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция");
+    if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+    if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы находитесь в слежке");
+    format(lines,sizeof(lines),""); // Очищаем Lines
+	PlayerPlaySound(playerid,40405,0,0,0);
+    if(br >= 1 && br <= 12)
+    {
+        if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid,"{FF6347} Для заправки необходимо быть на транспорте");
+ 		new vehicle = GetPlayerVehicleID(playerid);
+ 		if(IsAVello(vehicle)) return ErrorMessage(playerid, "{FF6347}Велосипед нельзя заправить");
+ 		new fill = Gas[vehicle]+Gelium[vehicle];
+        if(fill >= 99) return ErrorMessage(playerid, "{FF6347}Транспорт не нужно заправлять [ Бак полон ]");
+        format(line, sizeof(line), "{ffffff}Сколько литров топлива вы хотите заправить?\n\n{cccccc}Стоимость 1 литра на этой заправке = {00cc00}%d$\n{cccccc}Для полного бака вам требуется: %d литров {99ff66}[%d$]",BizzInfo[br][bPrice][0],100-fill,(100-fill)*BizzInfo[br][bPrice][0]);
+   		ShowDialog(playerid,484,DIALOG_STYLE_INPUT,"{0088ff}Заправка",line,"Принять","Отмена");
+    }
+    else if(br >= 153 && br <= 162)
+	{
+		//ApplyDynamicActorAnimation(BizTermActor[GetBizTermActorId(b)][term], "PED","endchat_03",4.0,0,1,1,0,0); // Машет рукой
+		format(line,sizeof(line),"Товар\tСтоимость"), strcat(lines,line);
+	   	format(line,sizeof(line),"\n{ff9000}Хот-Дог\t{99ff66}%d$",BizzInfo[br][bPrice][0]), strcat(lines,line);
+		format(line,sizeof(line),"\n{ff9000}Sprunk\t{99ff66}%d$",BizzInfo[br][bPrice][1]), strcat(lines,line);
+		ShowDialog(playerid,648,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Ларек с едой",lines,"Выбрать","Выход"); // 1157
+	}
+	return 1;
 }
