@@ -749,7 +749,11 @@ CMD:block(playerid, const params[])
 CMD:slapper(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return 1;
-	if(!sscanf(params, "i",params[0])) kogofind = params[0];
+	if(!sscanf(params, "i",params[0])) 
+	{
+		kogofind = params[0];
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER) SetVehicleZAngle(GetPlayerVehicleID(playerid), 180.0);
+	}
 	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чек координат ID");
 	return 1;
 }

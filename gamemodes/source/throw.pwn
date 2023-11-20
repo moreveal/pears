@@ -187,6 +187,10 @@ stock use_throw(playerid, inva, useinva)
 	
 	    new tort_quan;
 		if(fpick == 38 || fpick == 122 || fpick == 123) tort_quan = 1; // Бокалы и Кружки
+		else if(fpick == 11) // Обезевреживаем бомбу, когда берём её с земли
+		{
+			if(ThrowInfo[t][tPara] > 0) ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0;
+		}
 		else tort_quan = fquan;
 
 		yesinva = GiveThingPlayer(playerid, fpick, tort_quan, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tType], ThrowInfo[t][tPack], useinva);
@@ -230,6 +234,13 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
  	GetPlayerPos(playerid, X, Y, Z), GetPlayerFacingAngle(playerid,A);
  	X=X+0.8*floatsin(-A,degrees);
   	Y=Y+0.8*floatcos(-A,degrees);
+
+	// Ставим бомбу
+	if(fpick == 11 && para >= 60)
+	{
+		new roadId = IsPosTrainRoad(X+herx, Y+hery, Z-0.8);
+		if(roadId >= 0) qara = roadId + 1;
+	}
   	
   	if(thingPack == 1 || thingPack == 2) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
   	else

@@ -214,6 +214,7 @@ stock MaxVehicleHealth(model)
     if(model == 428 || model == 470 || model == 528) maxhealth = 2000;
     else if(model == 427 || model == 433 || model == 425 || model == 548 || model == 601) maxhealth = 3000;
     else if(model == 432) maxhealth = 5000;
+	else if(model == 537 || model == 538) maxhealth = 10000; // train
     else maxhealth = 1000;
 	return maxhealth;
 }
@@ -445,6 +446,12 @@ stock IsAMoto(model)
 {
 	new type = GetVehicleType(model);
 	if(type == 2) return 1;
+	return 0;
+}
+
+stock IsATrain(model)
+{
+    if(model == 537 || model == 538 || model == 569 || model == 570 || model == 590) return 1;
 	return 0;
 }
 
