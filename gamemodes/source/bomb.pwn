@@ -10,7 +10,8 @@ enum boInfo
     boInterior, // Интерьер
     boObject[MAX_OBJECT_RUINS], // ID объектов после взрыва
     boProcess, // Статус руин
-    boTrainRoad // Лежат ли руины на жд путях
+    boTrainRoad, // Лежат ли руины на жд путях
+    Text3D:boRuinsLabel
 }
 new RuinsInfo[MAX_BOMB][boInfo];
 
@@ -18,6 +19,7 @@ new RuinsInfo[MAX_BOMB][boInfo];
 stock PlantBomb(playerid, time)
 {
     if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || HealthAC[playerid] <= 0) return 0;
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}Нельзя установить бомбу в помещении");
     if(IsAAntidm(playerid)) return ErrorMessage(playerid, "{FF6347}Вы находитесь в зелёной зоне");
     if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы на ринге");
     if(get_invent4(playerid, 11, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет бомбы");
@@ -72,8 +74,11 @@ stock CreateRuinsAndExplosion(t) // Взрываем бомбу и создаё�
     new r = -1;
     for(new i; i < MAX_BOMB; ++i)
 	{
-        if(RuinsInfo[i][boStat] == 1) continue;
-        r = i;
+        if(RuinsInfo[i][boStat] == 0)
+        {
+            r = i;
+            break;
+        }
     }
     if(r == -1) return 0;
     CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ], 7, 40);
@@ -95,6 +100,10 @@ stock CreateRuinsAndExplosion(t) // Взрываем бомбу и создаё�
 
     // Создаём объекты
     CreateObjectRuins(r, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2], RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]);
+
+
+    RuinsInfo[r][boRuinsLabel] = CreateDynamic3DTextLabel("{ff9000}Завалы после взрыва бомбы\n{cccccc}Убрать завалы - Кувалда в руках + ПКМ",
+        0xA9C4E4FF,RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]);
 
     RuinsInfo[r][boProcess] = 100; // Статус руин (Сколько раз по ним нужно долбить игрокам, чтобы расчистить)
     RuinsInfo[r][boStat] = 1; // Статус - развалины лежат
@@ -139,12 +148,12 @@ stock DestroyObjects(r)
 stock IsAPointRuins(playerid, Float:dist) // Находим ближайшие руины от бомбы
 {
     new ruinsId = -1;
-    for(new r; r < MAX_OBJECT_RUINS; ++r)
+    for(new r; r < MAX_BOMB; ++r)
 	{
         if(RuinsInfo[r][boStat] == 0) continue;
 
         if(IsPlayerInRangeOfPoint(playerid, dist, RuinsInfo[r][boPos][0], RuinsInfo[r][boPos][1], RuinsInfo[r][boPos][2])
-        && GetPlayerVirtualWorld(playerid) == RuinsInfo[r][boWorld] && GetPlayerInterior(playerid) == RuinsInfo[r][boInterior])
+            && GetPlayerVirtualWorld(playerid) == RuinsInfo[r][boWorld] && GetPlayerInterior(playerid) == RuinsInfo[r][boInterior])
         {
             ruinsId = r;
             break;
@@ -156,23 +165,29 @@ stock IsAPointRuins(playerid, Float:dist) // Находим ближайшие �
 stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
 {
     new current_tick = GetTickCount();
-    new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
-    if(interval < 500) return 0;
-    Aftextdraw[playerid] = current_tick;
+    new interval = GetTickDiff(current_tick, Afclick[playerid]);
+    if(interval < 800) return 0;
+    Afclick[playerid] = current_tick;
 
-    new r = IsAPointRuins(playerid, 5.0);
+    new r = IsAPointRuins(playerid, 3.0);
     if(r >= 0)
     {
+        if(Dei[playerid] != 4) return ErrorMessage(playerid, "{FF6347}У вас в руках нет кувалды [ Если завалы на ж/д путях, кувалда висит на поезде ]");
         if(RuinsInfo[r][boProcess] > 0)
         {   
             RuinsInfo[r][boProcess] --;
-            format(store, sizeof(store), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Pizdic: ~w~%d/100", RuinsInfo[r][boProcess]), GameTextForPlayer(playerid,store,2000,3);
+            format(store, sizeof(store), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/100", RuinsInfo[r][boProcess]);
+            GameTextForPlayer(playerid,store,2000,3);
             ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
 
             if(RuinsInfo[r][boProcess] == 0) // Завалы разгребли
             {
                 DestroyObjects(r);
                 RuinsInfo[r][boStat] = 0;
+                DestroyDynamic3DTextLabel(RuinsInfo[r][boRuinsLabel]);
+
+                Dei[playerid] = 0, RemovePlayerAttachedObject(playerid,1);
+                GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Done",2000,3);
 
                 // Сюда запуск поезда, если он остановился именно из-за этих руин
             }

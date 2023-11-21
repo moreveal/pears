@@ -126,7 +126,7 @@ public FCNPC_OnReachDestination(npcid)
             if(ruinsOnTrainRoad >= 0) // Нашли, спереди есть руины
             {
                 new pointsToRuins = ruinsOnTrainRoad - TrainRoadID; // Считаем точки до руин
-                if(pointsToRuins <= GetPointToStopTrain()) // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
+                if(pointsToRuins <= GetPointToStopTrain() - 4) // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
                 {
                     MoveStatus = 1;
 
