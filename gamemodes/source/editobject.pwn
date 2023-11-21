@@ -34,7 +34,7 @@ new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
  objectid - идентификатор объекта, который был создан ранее
  - Затем в OnPlayerEditDynamicObject под EDIT_RESPONSE_FINAL добавляем условия для соответствующей системы (лейблы там и т.д.)
 */
-stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x, Float:y, Float:z)
+stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     EditObjectInfo[playerid][editPlayerOrDynamic] = 0;
     gRedakt[playerid] = id;
@@ -42,7 +42,7 @@ stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x,
     EditObjectInfo[playerid][editOption] = option;
     EditObjectInfo[playerid][editSlot] = slot;
 
-    EditObjectInfo[playerid][editTempObject] = CreatePlayerObject(playerid, modelid, x, y, z, 0.0, 0.0, 0.0, 300.0);
+    EditObjectInfo[playerid][editTempObject] = CreatePlayerObject(playerid, modelid, x, y, z, rx, ry, rz, 300.0);
     EditPlayerObject(playerid, EditObjectInfo[playerid][editTempObject]);
     PlayerPlaySound(playerid,17000,0,0,0);
 	return 1;
@@ -188,9 +188,6 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         {
             if(BusStationInfo[ost][bsActive] == 0)
             {
-                BusStationInfo[ost][bsObject] = CreateDynamicObject(1257, x, y, z, rx, ry, rz,0,0);
-                SetDynamicObjectMaterial(BusStationInfo[ost][bsObject], 0, 4552, "ammu_lan2", "sunsetammu2", 0x00000000);
-                SetDynamicObjectMaterial(BusStationInfo[ost][bsObject], 1, 18065, "ab_sfammumain", "shelf_glas", 0x00000000);
                 BusStationInfo[ost][bsCordX] = x, BusStationInfo[ost][bsCordY] = y, BusStationInfo[ost][bsCordZ] = z;
                 BusStationInfo[ost][bsCordRX] = rx, BusStationInfo[ost][bsCordRY] = ry, BusStationInfo[ost][bsCordRZ] = rz;
                 BusStationInfo[ost][bsActive] = 1;
@@ -200,11 +197,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 BusStationInfo[ost][bsUnix] = gettime();
                 InsertBusStation(ost);
                 format(store,sizeof(store),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, store);
-                format(store,sizeof(store),"установил%s остановку", gender(playerid)), SendClientMessage(playerid, COLOR_GREY, store);
-
-                busstation_label[ost] = CreateDynamic3DTextLabel(" ",-1,BusStationInfo[ost][bsCordX], BusStationInfo[ost][bsCordY], BusStationInfo[ost][bsCordZ],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-                busstation_pickup[ost] = CreateDynamicPickup(2485, 1, BusStationInfo[ost][bsCordX], BusStationInfo[ost][bsCordY], BusStationInfo[ost][bsCordZ],0,0);
-                UpdateBusStations(ost);
+                format(store,sizeof(store),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, store, COLOR_PURPLE, 20.0, 3000);
+                busstationcreate(ost);
                 bsrows++;
                 break;
             }

@@ -1,4 +1,4 @@
-#define MAX_OBJECTS_BUSSTATION 17 // Количество объектов остановки
+#define MAX_OBJECTS_BUSSTATION 9 // Количество объектов остановки
 #define MAX_ROUT 50 // Количество маршрутов
 
 enum busstationInfo //  Переменные автобусных остановок
@@ -6,7 +6,7 @@ enum busstationInfo //  Переменные автобусных останов
     idbusstation, // id в базе
 	bsActive, // установлена ли остановка
     bsName[34], // название остановки
-	bsObject, // ID динамик объекта
+	bsObject[MAX_OBJECTS_BUSSTATION], // ID динамик объекта
     Float:bsCordX, // координаты автобусной остановки
     Float:bsCordY, // координаты автобусной остановки
     Float:bsCordZ, // координаты автобусной остановки
@@ -75,40 +75,32 @@ stock jobbus(playerid)
 	format(line,sizeof(line),"{0088ff}Как заработать? \t \n"), strcat(lines,line);
 	if(GetPVarInt(playerid,"job_stat") != 12) format(line,sizeof(line),"{ff9000}Начать Работу \t \n"), strcat(lines,line);
 	else if(GetPVarInt(playerid,"job_stat") == 12) format(line,sizeof(line),"{ff9000}Завершить Работу \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{99ff66}Получить Зарплату \t {00cc00}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
+	format(line,sizeof(line),"{99ff66}Получить Зарплату \t {99ff66}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
 	ShowDialog(playerid,1190,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Автобусное Депо",lines,"Выбор","Отмена");
 	return 1;
 }
 
-CMD:busstation(playerid)
-{	
-	if(PlayerInfo[playerid][pLeader] == 7 || PlayerInfo[playerid][pMember] == 7)
-	{
-	    PlayerPlaySound(playerid,40405,0,0,0);
-		ShowDialog(playerid,1300,DIALOG_STYLE_INPUT,"{444444}Установка Остановки","{cccccc}Введите название для Остановки\n\n{444444}Примеры: Госпиталь, LSPD","Принять","Отмена");
-	}
-	else SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я не сотрудник Правительства");
-	return 1;
-}
-
-CMD:allbusstation(playerid)
+CMD:busstop(playerid)
 {
 	if(PlayerInfo[playerid][pLeader] == 7 || PlayerInfo[playerid][pMember] == 7)
 	{
-		if(bsrows < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В данный момент не установлено ни одной Остановки"), cmd_allbusstation(playerid);
-		new str[34],sctring[3400], listid = 0;
+		new quan;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+
+		format(line,sizeof(line),"{ff9000}Добавить Остановку {99ff66}>>"), strcat(lines,line);
+		
 		for(new bss = 0; bss < MAX_BUSSTATION; bss++)
-			{
+		{
 			if(BusStationInfo[bss][bsActive] >= 1)
-				{
-					format(str,sizeof(str),"[%d] {cccccc}%s\n",listid+1,BusStationInfo[bss][bsName]), strcat(sctring,str);
-					List[listid][playerid] = bss;
-					listid ++;
-				}
+			{
+				format(line,sizeof(line),"\n%d. {cccccc}%s",quan+1,BusStationInfo[bss][bsName]), strcat(lines,line);
+				List[quan][playerid] = bss;
+				quan ++;
 			}
-		ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{cccccc}Остановки",sctring,"Выбрать","Отмена");
+		}
+		ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
 	}
-	else SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я не сотрудник Правительства"), stop_dialog(playerid);
+	else ErrorMessage(playerid, "{FF6347}Вы не работаете в Правительстве"), stop_dialog(playerid);
 	return 1;
 }
 
@@ -167,13 +159,57 @@ function Call_DelBusStation(idx)
 
 stock busstationcreate(f)
 {
-	// Объект остановка
-	BusStationInfo[f][bsObject] = CreateDynamicObject(1257, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ], BusStationInfo[f][bsCordRX], BusStationInfo[f][bsCordRY], BusStationInfo[f][bsCordRZ]);
-	SetDynamicObjectMaterial(BusStationInfo[f][bsObject], 0, 4552, "ammu_lan2", "sunsetammu2", 0x00000000);
-	SetDynamicObjectMaterial(BusStationInfo[f][bsObject], 1, 18065, "ab_sfammumain", "shelf_glas", 0x00000000);
+	new object_world = 17, object_int = 228; // Временно скрываем созданные объекты
+
+	BusStationInfo[f][bsObject][0] = CreateDynamicObject(1257, 1338.824340, 1567.324584, 11.124113, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][0], 0, 4552, "ammu_lan2", "sunsetammu1", 0x00000000);
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][0], 1, 18065, "ab_sfammumain", "shelf_glas", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][0], 0, 0);
+	BusStationInfo[f][bsObject][1] = CreateDynamicObject(19447, 1338.012084, 1567.185791, 9.763391, 0.000000, 90.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][1], 0, 8409, "gnhotel1", "ap_tarmac", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][1], 0, 0);
+	BusStationInfo[f][bsObject][2] = CreateDynamicObject(2388, 1336.756591, 1570.206909, 9.846875, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][2], 0, 19467, "speed_bumps", "speed_bump01", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][2], 0, 0);
+	BusStationInfo[f][bsObject][3] = CreateDynamicObject(2388, 1339.746215, 1564.995239, 9.846875, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][3], 0, 19467, "speed_bumps", "speed_bump01", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][3], 0, 0);
+	BusStationInfo[f][bsObject][4] = CreateDynamicObject(19483, 1337.679565, 1563.141113, 9.876096, -0.000015, -90.000000, -89.999954, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterialText(BusStationInfo[f][bsObject][4], 0, "BUS\nSTOP", 130, "Century Gothic", 70, 1, 0xFF888888, 0x00000000, 2);
+	gadd(BusStationInfo[f][bsObject][4], 0, 0);
+	BusStationInfo[f][bsObject][5] = CreateDynamicObject(19482, 1337.719116, 1563.443603, 9.874356, -0.000015, -90.000000, -89.999954, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterialText(BusStationInfo[f][bsObject][5], 0, "v", 130, "Webdings", 90, 1, 0xFF888888, 0x00000000, 1);
+	gadd(BusStationInfo[f][bsObject][5], 0, 0);
+	BusStationInfo[f][bsObject][6] = CreateDynamicObject(2388, 1336.756591, 1564.995239, 9.846875, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][6], 0, 19467, "speed_bumps", "speed_bump01", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][6], 0, 0);
+	BusStationInfo[f][bsObject][7] = CreateDynamicObject(2388, 1339.747070, 1570.206909, 9.846875, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][7], 0, 19467, "speed_bumps", "speed_bump01", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][7], 0, 0);
+	BusStationInfo[f][bsObject][8] = CreateDynamicObject(2388, 1336.756591, 1567.596069, 9.846875, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(BusStationInfo[f][bsObject][8], 0, 19467, "speed_bumps", "speed_bump01", 0x00000000);
+	gadd(BusStationInfo[f][bsObject][8], 0, 0);
+
+	// Смещаем координаты
+	TSInfo[tsOffset][0] = -0.572509;
+	TSInfo[tsOffset][1] = -0.650512;
+	TSInfo[tsOffset][2] = -0.680360;
+
+	// Расчитываем, куда ставить все объекты
+	MatrixDynamicObjectPos(0, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ], BusStationInfo[f][bsCordRX], BusStationInfo[f][bsCordRY], BusStationInfo[f][bsCordRZ]);
+
 	busstation_label[f] = CreateDynamic3DTextLabel(" ",-1,BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 	busstation_pickup[f] = CreateDynamicPickup(2485, 1, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],0,0);
 	UpdateBusStations(f);
+}
+
+stock DestroyObjectsBusStation(f)
+{
+	for(new i = 0; i < MAX_OBJECTS_BUSSTATION; i++)
+	{
+		if(IsValidDynamicObject(BusStationInfo[f][bsObject][i])) DestroyDynamicObject(BusStationInfo[f][bsObject][i]), BusStationInfo[f][bsObject][i] = 0;
+	}
+	return 1;
 }
 
 CMD:scp(playerid)
@@ -546,9 +582,34 @@ stock ShowRoutCity(playerid)
 }
 stock showDialogMenuBusStation(playerid, cam)
 {
-	if(BusStationInfo[cam][bsActive] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этой остановки не существует"), cmd_allbusstation(playerid);
-	new lol[34];
-	format(lol,sizeof(lol),"{cccccc}%s", BusStationInfo[cam][bsName]);
-	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,lol,"{444444}Об остановке..\n{cccccc}Изменить Название\n{cccccc}Удалить {FF6347}остановку","Выбор","Отмена");
+	if(BusStationInfo[cam][bsActive] == 0) return ErrorText(playerid,"[ Мысли ]: Остановки не существует"), cmd_busstop(playerid);
+	format(store,sizeof(store),"{ff9000}%s", BusStationInfo[cam][bsName]);
+	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,store,"{444444}Об остановке..\n{cccccc}Найти\n{cccccc}Изменить название\n{FF6347}Удалить","Выбор","Отмена");
+	return 1;
+}
+stock infoBusStation(playerid, cam)
+{
+	if(BusStationInfo[cam][bsActive] >= 1)
+	{
+		format(lines,sizeof(lines),""); // Очищаем Lines
+
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		stamp2datetime(BusStationInfo[cam][bsUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+	 	format(line,sizeof(line),"{cccccc}Остановка {ff9000}%s",BusStationInfo[cam][bsName]), strcat(lines,line);
+	 	format(line,sizeof(line),"\n\n{cccccc}Установил: {ff9000}%s",BusStationInfo[cam][bsPlayerName]), strcat(lines,line);
+	 	format(line,sizeof(line),"\n{cccccc}Дата и время установки: %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		ShowDialog(playerid,1303,DIALOG_STYLE_MSGBOX,"{ff9000}Автобусные Остановки",lines,"*","");
+	}
+	return 1;
+}
+
+CMD:gotobusstop(playerid, const params[])
+{	
+	if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепорт к остановке [ /gotobusstop ID ]");
+	if(params[0] < 1 || params[0] > 100) return ErrorMessage(playerid, "{FF6347}Номер не меньше 1 и не больше 100");
+	S_SetPlayerVirtualWorld(playerid, 0, 0);
+	SetPlayerInterior(playerid, 0);
+	PPSetPlayerPos(playerid, BusStationInfo[params[0] - 1][bsCordX], BusStationInfo[params[0] - 1][bsCordY], BusStationInfo[params[0] - 1][bsCordZ]);
 	return 1;
 }
