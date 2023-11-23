@@ -88,7 +88,7 @@ CMD:busstop(playerid)
 		format(lines,sizeof(lines),""); // Очищаем Lines
 
 		format(line,sizeof(line),"{ff9000}Добавить Остановку {99ff66}>>"), strcat(lines,line);
-		
+
 		for(new bss = 0; bss < MAX_BUSSTATION; bss++)
 		{
 			if(BusStationInfo[bss][bsActive] >= 1)
@@ -98,7 +98,7 @@ CMD:busstop(playerid)
 				quan ++;
 			}
 		}
-		ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
+				ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не работаете в Правительстве"), stop_dialog(playerid);
 	return 1;
@@ -159,6 +159,7 @@ function Call_DelBusStation(idx)
 
 stock busstationcreate(f)
 {
+	// Объект остановка
 	new object_world = 17, object_int = 228; // Временно скрываем созданные объекты
 
 	BusStationInfo[f][bsObject][0] = CreateDynamicObject(1257, 1338.824340, 1567.324584, 11.124113, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
@@ -237,13 +238,13 @@ CMD:scpa(playerid)
 
 CMD:showrout0(playerid)
 {
-	ShowAllRout(playerid, 0);
+	ShowAllRout(playerid, 0,0);
 	return 1;
 }
 
 CMD:showrout1(playerid)
 {
-	ShowAllRout(playerid, 1);
+	ShowAllRout(playerid, 1,0);
 	return 1;
 }
 
@@ -406,7 +407,7 @@ stock ShowPlayerSettingCheckPoint(playerid,i)
 	return 1;
 }
 
-stock ShowAllRout(playerid, type)
+stock ShowAllRout(playerid, type,class)
 {
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
@@ -445,7 +446,8 @@ stock ShowAllRout(playerid, type)
 		}
 		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
 	}
-    ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
+    if(class == 0) ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
+	else if(class == 1) ShowDialog(playerid,1462,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
 	return 1;
 }
 
@@ -587,6 +589,7 @@ stock showDialogMenuBusStation(playerid, cam)
 	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,store,"{444444}Об остановке..\n{cccccc}Найти\n{cccccc}Изменить название\n{FF6347}Удалить","Выбор","Отмена");
 	return 1;
 }
+
 stock infoBusStation(playerid, cam)
 {
 	if(BusStationInfo[cam][bsActive] >= 1)

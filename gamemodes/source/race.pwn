@@ -13,6 +13,7 @@ enum raceInfo
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
 new RaceIcon[1];
+new carRaceCheckpoint[MAX_REALPLAYERS],raceRout[MAX_REALPLAYERS];
 
 stock ShowStreetRacers(playerid,family)
 {
@@ -40,7 +41,7 @@ stock GoStreetRacers(playerid)
             if(StreetRacers[0][raceStat] == 1)
             {
                 stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-                format(line,sizeof(line),"Сходка Стритрейсеров. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+                format(line,sizeof(line),"Сходка StreetRacers. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
                 if(StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]"), strcat(lines,line);
                 else if(StreetRacers[0][racePosMarket][0] != 0.0 && StreetRacers[0][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]"), strcat(lines,line);
@@ -55,7 +56,7 @@ stock GoStreetRacers(playerid)
             else if(StreetRacers[0][raceStat] == 2)
             {
                 stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-                format(line,sizeof(line),"Сходка Стритрейсеров. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+                format(line,sizeof(line),"Сходка StreetRacers. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nНачать гонку"), strcat(lines,line);
                 if(StreetRacers[0][raceMap] == -1) format(line,sizeof(line),"\nКарта {FF6347}[Не выбрана]"), strcat(lines,line);
                 else if(StreetRacers[0][raceMap] > -1) format(line,sizeof(line),"\nКарта {99ff66}[Выбрана]"), strcat(lines,line);
@@ -76,6 +77,7 @@ stock GoStreetRacers(playerid)
         format(line,sizeof(line),"\nНачать сходку Стрит Рейсоров?"), strcat(lines,line);
 		ShowDialog(playerid,1451,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
     }
+    return 1;
 }
 
 stock CreatePartyStreet(playerid)
@@ -84,7 +86,7 @@ stock CreatePartyStreet(playerid)
     StreetRacers[0][raceFamily] = PlayerInfo[playerid][pFamily];
     StreetRacers[0][raceStat] = 1;
     StreetRacers[0][raceUnix] = 7200;
-    SuccessMessage(playerid,"{66ff99}Вы начали подготовку к сходке СтритРейсеров");
+    SuccessMessage(playerid,"{99ff66}Вы начали подготовку к сходке StreetRacers");
     return 1;
 }
 
@@ -98,13 +100,27 @@ stock ReadyPartyStreet(playerid)
     {
         StreetRacers[0][racersCount][i] = -1;   
     }
-    SuccessMessage(playerid,"{66ff99}Вы начали сходку СтритРейсеров");
+    SuccessMessage(playerid,"{99ff66}Вы начали сходку StreetRacers");
     return 1;
 }
 
 stock ClosePartyStreet()
 {
-    if(RaceIcon[0]) DestroyDynamicMapIcon(RaceIcon[0]);
+    for(new i; i < 4; i++)
+    {
+        DestroyDynamic3DTextLabel(RentLabelRace[i]);
+        RentLabelRace[i] = 0;
+        DestroyDynamicPickup(RentPickupRace[i]);
+        RentPickupRace[i] = 0;
+        DestroyDynamicObject(RentObjectRace[i]);
+        RentObjectRace[i] = 0;
+    }
+    for(new p; p < 8; p++)
+    {
+        raceRout[StreetRacers[0][racersCount][p]] = -1;
+        carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
+    }
+    if(RaceIcon[0] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
     RaceIcon[0] = 0;
     StreetRacers[0][raceFamily] = -1;
     StreetRacers[0][raceMap] = -1;
@@ -366,16 +382,59 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 RegisterToRace(playerid, listord);
             }
         }
+        else return GoStreetRacers(playerid);
     }
     else if(dialogid == 1460)
     {
         if(response)
 		{
             new number = DP[1][playerid];
-            if(StreetRacers[0][racersCount][number] == -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
+            if(StreetRacers[0][racersCount][number] != -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
             StreetRacers[0][racersCount][number] = playerid;
             SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
 		}
+        else return ListRegisterToRace(playerid);
+    }
+    else if(dialogid == 1461)
+    {
+        if(response)
+        {
+            if(listitem == 0)
+            {
+                format(line,sizeof(line),"\nВы уверены что хотите начать гонку?"), strcat(lines,line);
+		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");     
+            }
+            if(listitem == 1)
+            {
+                ShowAllRout(playerid,1,1);
+            }
+            if(listitem == 2)
+            {
+                ListRegisterToRace(playerid);
+            }
+            if(listitem == 3)
+            {
+                ClosePartyStreet();
+            }
+        }
+    }
+    else if(dialogid == 1462)
+    {
+        if(response)
+		{
+			if(listitem > 50 || listitem < 0) return 0;
+			new slot = List[listitem][playerid];
+			DP[0][playerid] = -1;
+			StreetRacers[0][raceMap] = slot;
+		}
+    }
+    else if(dialogid == 1464)
+    {
+        if(response)
+		{
+            StartRace(playerid);
+		}
+        else return GoStreetRacers(playerid);
     }
     return 1;
 }
@@ -462,7 +521,7 @@ stock UpdateLabelTermRace(br)
     }
 	else if (br == 1)
     {
-        format(string,sizeof(string),"{ff9000}Колонка бензина \n{444444}%s {cccccc}[№ %d]\n\n[ ALT ]",bizname(b1),b1);
+        format(string,sizeof(string),"{ff9000}Колонка бензина \n{444444}%s {cccccc}[№ %d]\n\n[ CAPS LOCK ]",bizname(b1),b1);
     }
     else if (br == 2)
     {
@@ -503,7 +562,18 @@ stock ListRegisterToRace(playerid)
 
 stock RegisterToRace(playerid, number)
 {
-    if(StreetRacers[0][racersCount][number] == -1)
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    new otmena = 0;
+    for(new i; i < 8; i++)
+    {
+        if(StreetRacers[0][racersCount][i] == playerid)
+        {
+            otmena = -1;
+            break;
+        }   
+    }
+    if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
+    if(StreetRacers[0][racersCount][number] == -1 && otmena != -1)
     {
         format(line,sizeof(line),"\nЗанять место в гонке?"), strcat(lines,line);
 		ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
@@ -539,4 +609,30 @@ stock StreetRacersBusi(playerid, br)
 		ShowDialog(playerid,648,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Ларек с едой",lines,"Выбрать","Выход"); // 1157
 	}
 	return 1;
+}
+
+stock CheckpointRaceRout(playerid)
+{
+	new slot = raceRout[playerid];
+	new r = carRaceCheckpoint[playerid];
+	DisablePlayerRaceCheckpoint(playerid);
+    if(r == 59) SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],6.0);
+	else SetPlayerRaceCheckpoint(playerid,0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r+1], FullRout[slot][brCordY][r+1], FullRout[slot][brCordZ][r+1],6.0);
+	return 1;
+}
+
+stock StartRace(playerid)
+{
+    new slot = StreetRacers[0][raceMap];
+    for(new i; i < 8; i++)
+    {
+        if(StreetRacers[0][racersCount][i] != -1)
+        {
+            raceRout[StreetRacers[0][racersCount][i]] = slot;
+            carRaceCheckpoint[StreetRacers[0][racersCount][i]] = 0;
+            SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],6.0);
+        }   
+    }
+    SuccessMessage(playerid,"{99ff66} Вы объявили старт гонке!");
+    return 1;
 }

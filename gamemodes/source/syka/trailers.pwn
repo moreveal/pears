@@ -21,7 +21,8 @@ enum e_TrailerInfo {
 	bool: tActive, // Статус существования в игровом мире
 	bool: tLocked, // Статус дверей
     bool: tTable, // Статус стола
-	tTimerID // Хранит идентификатор таймера для сохранения прицепа
+	tTimerID, // Хранит идентификатор таймера для сохранения прицепа
+    tBreaking // для взломчика плеерид храним
 }
 new trailerInfo[MAX_TRAILERS][e_TrailerInfo];
 
@@ -781,6 +782,10 @@ stock dialogCase_Trailer(playerid, dialogid, response)
     else if(dialogid == 1337)
    	{
    	    if(response) cmd_trailer_attach(playerid);
+    }
+    else if(dialogid == 1463)
+    {
+        if(response) CreateBreaking(playerid, 3, DP[0][playerid], 0);
     }
     return 1;
 }

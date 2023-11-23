@@ -83,6 +83,11 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
 	}
+	else if(type == 3) // Взламываем трейлер
+	{
+	    if(trailerInfo[breakingId][tBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер уже кто-то взламывает");
+	    trailerInfo[breakingId][tBreaking] = PlayerInfo[playerid][pID];
+	}
 	return 1;
 }
 CMD:stopbreaking(playerid)
@@ -156,6 +161,12 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				}
 				UpdateVehEngine(playerid);
 			}
+			else if(BreakingType[playerid] == 3)
+			{
+				trailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
+				trailerInfo[BreakingTypeID[playerid]][tLocked] = false;
+				SavePlayerTrailerInfo(BreakingTypeID[playerid]);
+			}
 			GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Взломано"),5000,3);
     	}
 	}
@@ -204,6 +215,7 @@ stock StopBreaking(playerid)
 	if(BreakingType[playerid] == 0) DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
 	else if(BreakingType[playerid] == 1) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
 	else if(BreakingType[playerid] == 2) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+	else if(BreakingType[playerid] == 3) trailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
     ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","•","");
     GameTextForPlayer(playerid," ",8000,3);
     if(BreakingTimer[playerid]) KillTimer(BreakingTimer[playerid]);
