@@ -1738,7 +1738,7 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение пр
 stock putsklad(wh, pick, kol, fpara, thingType,checklimit)
 {
 	new put_inva = -1, getLimit, bool:stopFind;
-	sklad_limit(pick, thingType, getLimit);
+	getLimit = sklad_limit(pick, thingType);
 	
 	for(new inva = 0; inva < 20; inva++)
 	{
@@ -1807,18 +1807,19 @@ stock SaveSklad(idx) // Сохранение всего склада орган�
 	query_empty(pearsq_2, big_query);
 	return 1;
 }
-stock sklad_limit(thingId, thingType, &getLimit) // Проверяем лимиты склада организации
+stock sklad_limit(thingId, thingType) // Проверяем лимиты склада организации
 {
+	new getLimit;
 	if(thingType == 0) // Обычные Предметы
 	{
 	    if(thingId >= 4 && thingId <= 8) getLimit = 10000; // Вещества
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 20000; // Патроны
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 10000; // Патроны
 	    else getLimit = 1000; // На случай ошибки, остальные предметы лимит 1к
  	}
-	else if(thingType == 1) getLimit = 500; // Оружие
+	else if(thingType == 1) getLimit = 100; // Оружие
     else if(thingType == 2) getLimit = 1000; // Каски и Бронежилеты (Аксессуары)
     else getLimit = 1000; // На случай ошибки, остальные предметы лимит 1к
-	return 1;
+	return getLimit;
 }
 
 stock get_sklad(g, thingId, thingType) // Поиск при добавлении нового предмета

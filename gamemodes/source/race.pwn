@@ -108,10 +108,12 @@ stock ClosePartyStreet()
 {
     for(new i; i < 4; i++)
     {
-        DestroyDynamic3DTextLabel(RentLabelRace[i]);
-        RentLabelRace[i] = 0;
-        DestroyDynamicPickup(RentPickupRace[i]);
-        RentPickupRace[i] = 0;
+        if(RentPickupRace[i])
+        {
+            DestroyDynamic3DTextLabel(RentLabelRace[i]);
+            DestroyDynamicPickup(RentPickupRace[i]);
+            RentPickupRace[i] = 0;
+        }
         DestroyDynamicObject(RentObjectRace[i]);
         RentObjectRace[i] = 0;
     }
@@ -478,8 +480,11 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
 }
 stock CreateLabelTermRace(br,objectid)
 {	
-    if(RentPickupRace[br]) DestroyDynamicPickup(RentPickupRace[br]);
-    if(RentLabelRace[br]) DestroyDynamic3DTextLabel(RentLabelRace[br]);
+    if(RentPickupRace[br]) 
+    {
+        DestroyDynamicPickup(RentPickupRace[br]);
+        DestroyDynamic3DTextLabel(RentLabelRace[br]);
+    }
     new Float:x,Float:y,Float:z;
 	if(br == 0)
 	{	

@@ -98,7 +98,7 @@ CMD:busstop(playerid)
 				quan ++;
 			}
 		}
-				ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
+		ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не работаете в Правительстве"), stop_dialog(playerid);
 	return 1;

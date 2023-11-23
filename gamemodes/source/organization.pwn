@@ -52,6 +52,7 @@ enum gInfo
 	gOrderType[MAX_ORDERESCORT], // Заказ тип.
 	gOrderStatus, // Статус заказа
 	gDeliveryOrder, // Статус доставки
+	gDeliveryPay, // Общая стоимость
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -287,6 +288,7 @@ function LoadOrgan()
 			format(string,sizeof(string),"OrderType%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gOrderType][i]);
 		}
 		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
+		cache_get_value_name_int(f, "gDeliveryPay", OrganInfo[idx][gDeliveryPay]);
 		OrganInfo[idx][gDeliveryOrder] = -1;
 	}
 	UpdateHonor(1), UpdateHonor(2);
@@ -428,30 +430,42 @@ stock showDialogOrganizationMenu(playerid)
 {
 	for(new i = 0; i < 200; i++) List[i][playerid] = 0;
 	DP[0][playerid] = 0;
-	DP[1][playerid] = fraction(playerid);
+	new g = fraction(playerid);
+	DP[1][playerid] = g;
 
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
+	if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18 || g == 13 || g == 14 || g == 15 || g == 16 || g == 17 || g == 19 || g == 20)
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
+ 	}
 	format(line,sizeof(line), detail_lmenu(playerid, 2)), strcat(lines,line); // Участники Online
 	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // Участники Offline
 	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // Статус набора
 	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // Переводы на счет
+	if(PlayerInfo[playerid][pLeader] >= 1)
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
+	}
 	format(line,sizeof(line), detail_lmenu(playerid, 7)), strcat(lines,line); // Названия рангов
 	format(line,sizeof(line), detail_lmenu(playerid, 15)), strcat(lines,line); // Количество рангов
 	format(line,sizeof(line), detail_lmenu(playerid, 8)), strcat(lines,line); // Лог
 	format(line,sizeof(line), detail_lmenu(playerid, 10)), strcat(lines,line); // Черный список
+
+	if(IsAGunSkladDepart(playerid)) // Только организации, у которых есть доступ к оружию на складе
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
+	}
+
 	if(IsAGang(playerid) || IsAMafia(playerid))
 	{
 	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
 	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
 	}
 	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
-	format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
 		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
-		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
 	}
 	format(store,sizeof(store),"{cccccc}Меню: %s", fraklastName[DP[1][playerid]]);
 	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
@@ -485,7 +499,11 @@ stock detail_lmenu(playerid, detail)
 	else if(detail == 13) text = "\n{ff9000}Настройки оплаты\t";
 	else if(detail == 14) text = "\n{cccccc}Подфракции\t";
 	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}Количество рангов\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
-	else if(detail == 16) text = "\n{cccccc}Заказ Боеприпасов\t";
+	else if(detail == 16) 
+	{
+		if(OrganInfo[g][gOrderStatus] == 1) format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t{99ff66}Active");
+		else format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t");
+	}
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -523,11 +541,7 @@ stock open_detail_lmenu(playerid, detail)
 		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
 		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
 	}
-	else if(detail == 16){
-		if (g == 3){
-			orderfrak(playerid);
-		} else OrderEscort(playerid,g);
-	}
+	else if(detail == 16) OrderEscort(playerid, g);
 	return 1;
 }
 

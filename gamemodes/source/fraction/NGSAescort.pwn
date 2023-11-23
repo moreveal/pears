@@ -48,10 +48,10 @@ stock OrderEscort(playerid, frak)
 	new g = fraction(playerid);
 	new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{cccccc}Счет фракции {99ff66}%d$ [%s] \t \t \n", OrganInfo[g][glave], get_k(OrganInfo[g][glave])), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Заказать боеприпасы {ff9000}>>\t \t \n"), strcat(lines,line);
-	if(OrganInfo[g][gOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
-	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Счет {99ff66}%d$ [%s] \t \t", OrganInfo[g][glave], get_k(OrganInfo[g][glave])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Заказать боеприпасы {ff9000}>>\t \t"), strcat(lines,line);
+	if(OrganInfo[g][gOrderStatus] == 0) format(line,sizeof(line),"\n{cccccc}Статус заказа \t {FF6347}Unactive \t"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}Статус заказа \t {99ff66}Active \t"), strcat(lines,line);
     for(new i = 0; i < MAX_ORDERESCORT; i++)
 	{
 		List[i][playerid] = 0;
@@ -61,21 +61,23 @@ stock OrderEscort(playerid, frak)
 		{
 		    List[quan][playerid] = i;
 			quan ++;
-			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, OrganInfo[g][gOrder][i], OrganInfo[g][gOrderType][i], 0), OrganInfo[g][gOrderQuan][i], getThingPriceGos(OrganInfo[g][gOrder][i], OrganInfo[g][gOrderType][i]) * OrganInfo[g][gOrderQuan][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%d. %s \t{cccccc}Количество: %d\t{9DF1B4}%d$\n", quan, GetNameThing(0, OrganInfo[g][gOrder][i], OrganInfo[g][gOrderType][i], 0), OrganInfo[g][gOrderQuan][i], getThingPriceGos(OrganInfo[g][gOrder][i], OrganInfo[g][gOrderType][i]) * OrganInfo[g][gOrderQuan][i]), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{ff9000}%s [%d]",frakeasyName[g], g);
+	format(store,sizeof(store),"{ff9000}%s",frakeasyName[g]);
 	ShowDialog(playerid,1380,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
 	return 1;
 }
 stock InsertOrderEscort(playerid, g, ord)
 {
+	if(OrganInfo[g][gOrderStatus] == 1) return ErrorText(playerid, "{FF6347}Вы не можете редактировать активный заказ"), OrderEscort(playerid, g);
+
     format(lines,sizeof(lines),""); // Очищаем Lines
 
 	format(line,sizeof(line),"{ff9000}%s \t", GetNameThing(0, OrganInfo[g][gOrder][ord], OrganInfo[g][gOrderType][ord], 0)), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", OrganInfo[g][gOrderQuan][ord]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Удалить\t "), strcat(lines,line);
-	format(store,sizeof(store),"{ff9000}%s [%d]",frakeasyName[g], g);
+	format(store,sizeof(store),"{ff9000}%s",frakeasyName[g]);
 	ShowDialog(playerid,1381,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
 	return 1;
 }
@@ -85,10 +87,8 @@ stock CreateOrderEscort(playerid, g, ord, thingId, thingType, thingPrice)
 	OrganInfo[g][gOrder][ord] = thingId;
 	OrganInfo[g][gOrderQuan][ord] = 1;
 	OrganInfo[g][gOrderType][ord] = thingType;
-	SaveEscortOrder(g, ord);
 	PlayerPlaySound(playerid,6401,0,0,0);
 	InsertOrderEscort(playerid, g, ord);
-	//BizLog("setorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, ord, GetNameThing(0, thingId, thingType,0));
 	return 1;
 }
 stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприпасов и оружия для законной организации
@@ -100,32 +100,33 @@ stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприп�
     // Обычные предметы
     for(new i = 0; i < INVENTER; i++)
   	{
-        if(IsSkladThing(i, 0))
+        if(IsSkladOrderDepartThing(i, 0))
         {
             List[quan][playerid] = i;
             ListParam[quan][playerid] = 0;
             quan ++;
-            format(line,sizeof(line),"\n{ff9000}%s {444444}| %s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 0, 0), getAmmoName(i), get_sklad(g,i,0), maxQuanThingProductEscort(0), getThingPriceGos(i, 0)), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%s {444444}| %s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 0, 0), getAmmoName(i), get_sklad(g,i,0), sklad_limit(i, 0), getThingPriceGos(i, 0)), strcat(lines,line);
         }
     }
 
     // Оружие
     for(new i = 0; i < 46; i++)
   	{
-        if(IsSkladThing(i, 1))
+        if(IsSkladOrderDepartThing(i, 1))
         {
             List[quan][playerid] = i;
             ListParam[quan][playerid] = 1;
             quan ++;
-            format(line,sizeof(line),"\n{cccccc}%s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 1, 0), get_sklad(g, i, 1), maxQuanThingProductEscort(1), getThingPriceGos(i, 1)), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}%s \t{444444}%d/%d \t{99ff66}%d$", GetNameThing(0, i, 1, 0), get_sklad(g, i, 1), sklad_limit(i, 1), getThingPriceGos(i, 1)), strcat(lines,line);
         }
     }
 
     List[quan][playerid] = 19142;
     ListParam[quan][playerid] = 2;
     quan ++;
-    format(line,sizeof(line),"\n{ff9000}Бронежилет \t{444444}%d/%d \t{99ff66}%d$", get_sklad(g,19142,2), maxQuanThingProductEscort(2), getThingPriceGos(19142, 2)), strcat(lines,line);
-    ShowDialog(playerid,1384,DIALOG_STYLE_TABLIST_HEADERS,"*",lines,"Выбор","Отмена");
+    format(line,sizeof(line),"\n{ff9000}Бронежилет \t{444444}%d/%d \t{99ff66}%d$", get_sklad(g,19142,2), sklad_limit(19142, 2), getThingPriceGos(19142, 2)), strcat(lines,line);
+    
+	ShowDialog(playerid,1384,DIALOG_STYLE_TABLIST_HEADERS,"*",lines,"Выбор","Отмена");
     return 1;
 }
 stock getAmmoName(thingId) // Получаем название оружия, для которого принадлежит тип патрона
@@ -138,16 +139,16 @@ stock getAmmoName(thingId) // Получаем название оружия, д
     else if(thingId == 30 || thingId == 67) name = "Винтовка";
     return name;
 }
-stock IsSkladThing(thingId, thingType)
+stock IsSkladOrderDepartThing(thingId, thingType)
 {
-    if(thingType == 0) // Обычный предмет
+    if(thingType == 0) // Обычный предмет (Патроны)
     {
         if(thingId == 27 || thingId == 28 || thingId == 29 || thingId == 30) return 1;
     }
-    if(thingType == 1) // Оружие
+    if(thingType == 1) // Оружие (Здесь перечисляется только оружие для законников)
     {
-        if(thingId == 24 || thingId == 25 || thingId == 26 || thingId == 30 || thingId == 31 || thingId == 33 
-        || thingId == 34 || thingId == 3 || thingId == 8) return 1;
+        if(thingId == 22 || thingId == 24 || thingId == 25 || thingId == 27 || thingId == 29 || thingId == 31 || thingId == 34 
+        || thingId == 3) return 1;
     }
     if(thingType == 2) // Аксессуар
     {
@@ -167,32 +168,26 @@ stock getThingHaveQuanOrderEscort(g, thingId, thingType)
 	}
 	return stop;
 }
-stock maxQuanThingProductEscort(thingType)
-{
-	new maxQuan;
-	if(thingType == 0)
-	{
-		maxQuan = 10000;
-	}
-	else maxQuan = 100; 
-	return maxQuan;
-}
 
 stock delproductEscort(g, ord) // Удаляем заказ доставки товара в бизнесы
 {
 	OrganInfo[g][gOrder][ord] = 0;
     OrganInfo[g][gOrderQuan][ord] = 0;
     OrganInfo[g][gOrderType][ord] = 0;
-    SaveEscortOrder(g, ord);
     Orders --;
 }
-stock SaveEscortOrder(idx, ord)
+stock SaveEscortOrder(idx)
 {
-	if(ord >= 0 && ord <= 10)
+	format(big_query,sizeof(big_query),"UPDATE `pp_organization` SET `Order0` = '%d', `OrderQuan0` = '%d', `OrderType0` = '%d'",
+	OrganInfo[idx][gOrder][0], OrganInfo[idx][gOrderQuan][0], OrganInfo[idx][gOrderType][0]);
+	for(new i = 1; i < 10; i++) 
 	{
-		format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `frakid` = '%d'", ord, OrganInfo[idx][gOrder][ord], ord, OrganInfo[idx][gOrderQuan][ord], ord, OrganInfo[idx][gOrderType][ord], idx);
-		query_empty(pearsq_2, big_query);
+		format(big_query,sizeof(big_query),"%s, `Order%d` = '%d', `OrderQuan%d` = '%d', `OrderType%d` = '%d'", big_query,
+			i, OrganInfo[idx][gOrder][i], i, OrganInfo[idx][gOrderQuan][i], i, OrganInfo[idx][gOrderType][i]);
 	}
+    format(big_query,sizeof(big_query),"%s , `OrderStatus` = '%d', `gDeliveryPay` = '%d' WHERE `frakid` = '%d'", big_query, 
+		OrganInfo[idx][gOrderStatus], OrganInfo[idx][gDeliveryPay], idx);
+	query_empty(pearsq_2, big_query);
   	return 1;
 }
 stock getFreeOrderSlotEscort(g)
@@ -211,22 +206,21 @@ stock getFreeOrderSlotEscort(g)
 
 stock orderfrak(playerid)
 {
+	if(fraction(playerid) != 3) return ErrorMessage(playerid, "{FF6347}Вы не состоите в NGSA");
 	new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(line,sizeof(line),"{cccccc}Фракция\n"), strcat(lines,line);
-	format(line,sizeof(line),"\n{FF6347}Отменить Доставку \t "), strcat(lines,line);
 	for(new g = 0; g < sizeof(OrganInfo); g++)
 	{
-		if(OrganInfo[g][gOrderStatus] == 1 && OrganInfo[g][gDeliveryOrder] == -1)
+		if(OrganInfo[g][gOrderStatus] == 1)
 		{
 			List[quan][playerid] = g;
 			quan ++;
-			format(line,sizeof(line),"\n{ff9000}[№ %d] %s", g, frakeasyName[g]), strcat(lines,line);
+			if(OrganInfo[g][gDeliveryOrder] >= 0) format(line,sizeof(line),"%s\t{cccccc}Оплата: {99ff66}%d$ {cccccc}[%s]\t {ff9000}Принят\n", frakName[g], OrganInfo[g][gDeliveryPay], get_k(OrganInfo[g][gDeliveryPay])), strcat(lines,line);
+			else if(OrganInfo[g][gDeliveryOrder] == -1) format(line,sizeof(line),"%s\t{cccccc}Оплата: {99ff66}%d$ {cccccc}[%s]\t\n", frakName[g], OrganInfo[g][gDeliveryPay], get_k(OrganInfo[g][gDeliveryPay])), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{cccccc}Доставка Боеприпасов");
-	ShowDialog(playerid,1385,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
-	PlayerPlaySound(playerid,40405,0,0,0);
+	if(quan <= 0) return ErrorMessage(playerid, "{FF6347}Нет активных заказов");
+	ShowDialog(playerid,1385,DIALOG_STYLE_TABLIST,"{cccccc}Доставка Боеприпасов",lines,"Выбрать","Отмена");
 	return 1;
 }
 

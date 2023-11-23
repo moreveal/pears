@@ -1,13 +1,12 @@
 
 CMD:givemats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предметы на склад [ /givemats Организация Предмет Тип Количество ]");
 	if(params[2] < 0 || params[2] > 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип предметов [ 0 Вещества и патроны, 1 Оружие, 2 Каска и броня ]");
-	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Организации 1 - 22 [ 29 Надзиратели, 33 ВМС ]");
 	if(params[3] < 1 || params[3] > 50000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 50.000");
 	
-	if(params[0] <= 22 || params[0] == 29 || params[0] == 33) // ID Организаций
+	if(params[0] >= 1 && params[0] <= 22)
 	{
 		new yes;
 	    if(params[2] == 0) // Обычные Предметы
@@ -17,13 +16,14 @@ CMD:givemats(playerid, const params[])
 	    }
 	    else if(params[2] == 1) // Оружие
 	    {
-	        if(params[1] >= 2 && params[1] <= 15 || params[1] == 24 || params[1] == 25 || params[1] == 27 || params[1] == 30 || params[1] == 31 || params[1] == 33 || params[1] == 34) yes = 1; // Только оружие
-	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Оружия [ 2-15, 24, 25, 27, 30, 31, 33, 34 ]");
+	        if(params[1] >= 2 && params[1] <= 15 || params[1] == 22 || params[1] == 24 || params[1] == 25 || params[1] == 26 || params[1] == 27 
+				|| params[1] == 28 || params[1] == 29 || params[1] == 30 || params[1] == 31 || params[1] == 32 || params[1] == 33 || params[1] == 34) yes = 1; // Только оружие
+	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Оружия [ 2-15, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ]");
 	    }
 	    else if(params[2] == 2) // Аксессуары
 	    {
-	        if(IsArmor(params[1]) || IsHelmet(params[1])) yes = 1;
-	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Аксессуаров [ 19142 Бронежилет, 19106 Каска ]");
+	        if(IsArmor(params[1])) yes = 1;
+	        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Аксессуаров [ 19142 Бронежилет ]");
 	    }
 	
 		if(yes == 1)
@@ -41,10 +41,9 @@ CMD:givemats(playerid, const params[])
 }
 CMD:delmats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить боеприпасы со склада [ /delmats ID Организации ]");
-	if(params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 22 [ 29 Надзиратели | 33 ВМС ]");
-	if(params[0] <= 22 || params[0] == 29 || params[0] == 33)
+	if(params[0] >= 1 && params[0] <= 22)
 	{
 		new string[144];
 	  	format(string, sizeof(string), " [ ADM ]: Админ %s очистил склад: %s",PlayerInfo[playerid][pName],frakName[params[0]]), ABroadCast(COLOR_ADM,string,1);
@@ -58,7 +57,7 @@ CMD:delmats(playerid, const params[])
 		AdminLog("delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Очистил Склад");
 		OrgLog(params[0], "delmats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Очистил Склад");
 	}
-	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такого значения нет..");
+	else ErrorMessage(playerid, "{FF6347}Организации под этим ID не существует");
 	return 1;
 }
 CMD:philin(playerid)
