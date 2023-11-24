@@ -9,9 +9,9 @@ enum deathInfo
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
-stock SetPlayerDeath(playerid, reason)
+stock SetPlayerDeath(playerid)
 {
-    if(NoDeath(playerid)) return 1;
+    if(NoDeath(playerid)) return 0;
 
     if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid);
     if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid);
@@ -28,7 +28,7 @@ stock SetPlayerDeath(playerid, reason)
 
     new unix = gettime(), timeDeath, timeDeathTwo;
     DeathInfo[playerid][deathStatus] = true;
-    DeathInfo[playerid][deathReason] = reason;
+    //DeathInfo[playerid][deathReason] = reason;
 
     if(server == 0) timeDeath = 20, timeDeathTwo = 30;
     else timeDeath = 180, timeDeathTwo = 300;
@@ -48,6 +48,8 @@ stock SetPlayerDeath(playerid, reason)
 
     format(line,sizeof(line),"\n\n{555555}Смерть, чаще чем один раз в час, увеличивает время ожидания"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
+
+    TempTake(playerid, 0);
     return 1;
 }
 
@@ -120,7 +122,6 @@ stock DeathEnd(playerid, stat)
 
     if(stat == 0) // Время вышло
     {
-        TempTake(playerid, 0);
         PlayerInfo[playerid][pJailed] = 4;
         PlayerInfo[playerid][pJailTime] = 600;
         gYda[playerid] = 2;
@@ -128,6 +129,7 @@ stock DeathEnd(playerid, stat)
     } 
     else if(stat == 1) // Вылечили
     {
+        TempGive(playerid);
         TogglePlayerControllable(playerid, 1);
         ClearAnim(playerid), ClearAnimations(playerid);
 	    ApplyAnimation(playerid,"PED","facanger",4.1,0,1,1,1,1,1);

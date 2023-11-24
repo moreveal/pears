@@ -142,7 +142,7 @@ stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
       y = PlayerInfo[playerid][find_Y];
       z = PlayerInfo[playerid][find_Z];
     } 
-    else 
+    else if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0)
     {
       GetPlayerPos(playerid, x, y, z);
     }

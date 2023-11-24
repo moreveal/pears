@@ -156,7 +156,7 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
             }
 			damage *= distance_coef; // Учитывание коэффициента дистанции
 
-            /*new string[144];
+            new string[144];
             format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
 			SendClientMessageToAll(COLOR_GREY, string);
 			if (distance_coef < 1.0) {
@@ -166,10 +166,10 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 					distance
 				);
 				SendClientMessageToAll(COLOR_GREY, string);
-			}*/
+			}
             if (armour_action > 0) { // Если бронежилет есть, и он подействовал на наносимый урон
-                //format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
-                //SendClientMessageToAll(COLOR_GREY, string);
+                format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
+                SendClientMessageToAll(COLOR_GREY, string);
                 damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
 
@@ -205,7 +205,7 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         }
         new Float: damage, Float: armour_breaking;
         GetPlayerDamageByWeaponId(playerid, damagedid, handler_weapon, bodypart, damage, armour_breaking);
-        TakePlayerHealth(damagedid, damage, handler_weapon);
+        TakePlayerHealth(damagedid, damage);
 
         new Float: armour;
         ACGetPlayerArmour(damagedid, armour);
@@ -234,15 +234,13 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
 }
 
 // Забирает у игрока указанное количество HP
-stock TakePlayerHealth(playerid, Float: amount, handler_weapon)
+stock TakePlayerHealth(playerid, Float: amount)
 {
 	if (amount < 0) return 0;
 	new Float: health,
 		Float: remains;
 	ACGetPlayerHealth(playerid, health);
 	remains = health - amount;
-
-    if(remains <= 0) SetPlayerDeath(playerid, handler_weapon); // Игрок умер
 
 	return ACSetPlayerHealth(playerid, remains < 0 ? 0.0 : remains);
 }

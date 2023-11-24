@@ -498,12 +498,12 @@ stock inserttobuy(playerid, b) // Покупка по заявки
 
     if(TradeCrypt[b][tcActive] == 0) 
     {
-        format(line,sizeof(line),"{cccccc}%d. Тип трейда {ffcc00}Продажа Gold", b + 1), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%d. Тип трейда {ffcc00}Продажа Gold\t", b + 1), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Продавец: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
     }
     else
     {
-        format(line,sizeof(line),"{cccccc}%d. Тип трейда {99ff66}Покупка Gold", b + 1), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%d. Тип трейда {99ff66}Покупка Gold\t", b + 1), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Покупатель: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
     }
     format(line,sizeof(line),"\n{cccccc}Количество: \t{ffcc00}%dG", TradeCrypt[b][tcCount]), strcat(lines,line);
