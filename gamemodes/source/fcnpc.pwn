@@ -12,6 +12,12 @@ new TrainMoved;
 new MoveStatus; // 0 Разгон, 1 Торможение
 new ruinsOnTrainRoad;
 
+stock IsANpcPlayer(id)
+{
+    if(id == npcarmyid) return 1;
+    return 0;
+}
+
 stock CreateNPC()
 {
     NpcArmy = FCNPC_Create("John");
@@ -188,7 +194,8 @@ stock TrainGearSet(stat)
         else if(TrainGear == 5) TrainGear = 4, speedTrain = -0.1730, speedGo = 0.9;
         else if(TrainGear == 4) TrainGear = 3, speedTrain = -0.0980, speedGo = 0.5;
         else if(TrainGear == 3) TrainGear = 2, speedTrain = -0.0600, speedGo = 0.3, TrainStoped = 1;
-        else if(TrainGear <= 2) TrainGear = 1, speedTrain = -0.0200, speedGo = 0.1, TrainStoped = 1;
+        else if(TrainGear == 2) TrainGear = 1, speedTrain = -0.0200, speedGo = 0.1, TrainStoped = 1;
+        else if(TrainGear == 1) TrainStoped = 1;
     }
     TrainGearDelay = 0;
 

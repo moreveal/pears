@@ -16,12 +16,11 @@ stock use_boot(playerid, v, inva, useinva)
 	}
 	if(fpick == 0) return 1;
 	
-	if(thingPack == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете взять мебель в руки или в инвентарь\n\nМебель можно перекладывать только в дом или в бизнес"), i_resettabs(playerid);
-	else if(thingPack == 2) // Если это ящик
+	if(thingType == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете взять мебель в руки или в инвентарь\n\nМебель можно перекладывать только в дом или в бизнес"), i_resettabs(playerid);
+	if(thingPack == 2 || thingPack == 4) // Если это ящик
 	{
 	    if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
 	    
-	    if(IsHelmet(fpick)) thingPara = 3; // Каска выдерживает 3 выстрела
         if(IsArmor(fpick)) thingPara = 100; // Броня 100 хп
 
         OnlineInfo[playerid][oInHandThing][0] = fpick; // ID Предмета
@@ -29,7 +28,7 @@ stock use_boot(playerid, v, inva, useinva)
         OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
         OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
         OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
-        OnlineInfo[playerid][oInHandThing][5] = 2; // Упаковка Ящик
+        OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка
 
 	    ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
 	    PPP15[playerid] = 3, RemovePlayerAttachedObject(playerid,1);
@@ -84,12 +83,11 @@ stock use_boot(playerid, v, inva, useinva)
 	
 	i_resettabs(playerid);
 	i_resetveshi(playerid);
-	// Проверка на наличие особых аксессуаров (Каска и Броня)
-	if(IsHelmet(fpick) && thingType == 2 && (PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick)) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
-	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	// Проверка на наличие особых аксессуаров (Броня)
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
 
 	// Проверка на одиночный предмет
-	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	
 	if(thingType == 0)
 	{
@@ -97,7 +95,7 @@ stock use_boot(playerid, v, inva, useinva)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
-    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store);
+    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, store);
  		}
 	}
 
@@ -422,7 +420,7 @@ stock shift_boot(playerid, v, getinva, putinva) // Перемещение пре
 }
 stock put_bootbox(playerid, v) // Кладём ящик в багажник
 {
-	if(OnlineInfo[playerid][oInHandThing][0] > 0 && OnlineInfo[playerid][oInHandThing][5] == 2)
+	if(OnlineInfo[playerid][oInHandThing][0] > 0 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4))
 	{
 	    new put_inva = PutThingBoot(v, OnlineInfo[playerid][oInHandThing][0], OnlineInfo[playerid][oInHandThing][1], OnlineInfo[playerid][oInHandThing][2], OnlineInfo[playerid][oInHandThing][3], OnlineInfo[playerid][oInHandThing][4], OnlineInfo[playerid][oInHandThing][5], 999);
 	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В багажнике нет места");
@@ -484,8 +482,9 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
 		
 		if(thingPack == 1) yesFindModel = 19054; // Подарок
-		else if(thingPack == 2) yesFindModel = 3014; // Ящик
+		else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик / Запечатанный Ящик
 		else if(thingPack == 3) yesFindModel = 2060; // Мешок
+		else if(thingPack == 5) yesFindModel = 19918; // Кейс
 		else if(thingPack == 0) // Без упаковки
 		{
 			if(thingType == 0) // Обычный предмет

@@ -53,6 +53,7 @@ enum gInfo
 	gOrderStatus, // Статус заказа
 	gDeliveryOrder, // Статус доставки
 	gDeliveryPay, // Общая стоимость
+	gTax // Стоимость доставки боеприпасов
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -289,7 +290,14 @@ function LoadOrgan()
 		}
 		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
 		cache_get_value_name_int(f, "gDeliveryPay", OrganInfo[idx][gDeliveryPay]);
+		cache_get_value_name_int(f, "gTax", OrganInfo[idx][gTax]);
 		OrganInfo[idx][gDeliveryOrder] = -1;
+
+		// NGSA
+		if(idx == 3)
+		{
+			if(OrganInfo[idx][gTax] == 0) OrganInfo[idx][gTax] = 100000;
+		}
 	}
 	UpdateHonor(1), UpdateHonor(2);
 	OrganInfo[0][gstat2] = 0;
@@ -359,6 +367,23 @@ function LoadOrgan()
 	return 1;
 }
 
+stock SaveOrgan(idx)
+{
+	format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
+	`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
+	OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
+	OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]);
+	format(big_query, sizeof(big_query), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  big_query,
+	orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]);
+	format(big_query, sizeof(big_query), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
+	`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", big_query,
+	OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
+	OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx);
+	query_empty(pearsq_2, big_query);
+	if(idx >= 1) SaveSklad(idx);
+	return 1;
+}
+
 // Склад организации
 function gunsklad(playerid)
 {
@@ -366,6 +391,7 @@ function gunsklad(playerid)
 	if(skladstat > 0)
 	{
 	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], fpara = OnlineInfo[playerid][oInHandThing][2], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
+		if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
 		if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 		{
 		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");

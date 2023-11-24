@@ -9,6 +9,7 @@ CMD:rentsklad(playerid)
 		    if(WhInfo[r][wStat] >= 1)
 			{
 			    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
+				if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
 				if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 				{
 					if(fpick == 34 && thingType == 1 && WhInfo[r][wStat] != 8 && WhInfo[r][wStat] != 22) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку");

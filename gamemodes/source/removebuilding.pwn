@@ -4,7 +4,10 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 585 удалённх объектов
+ 	// 586 удалённх объектов
+
+	// Train Station LS NGSA
+	RemoveBuildingForPlayer(playerid, 1226, 1774.760, -1931.310, 16.375, 0.250);
 
 	// Arabian Mafia Street
 	RemoveBuildingForPlayer(playerid, 7584, 1947.3828, 1916.1953, 78.1953, 0.25);

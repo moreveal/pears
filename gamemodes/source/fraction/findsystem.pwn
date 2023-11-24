@@ -95,6 +95,7 @@ CMD:find(playerid, const params[])
     new giveplayerid = ReturnUser(params[0]);
     if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете искать себя");
     if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не в сети, или ещё не залогинился");
+    if(IsANpcPlayer(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Это NPC");
     if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Этот игрок на мероприятии");
 
     if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");

@@ -37,7 +37,7 @@ stock use_throw(playerid, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
 	if(GetPVarInt(playerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете");
-	if(thingPack == 2) // Ящик с предметом
+	if(thingPack == 2 || thingPack == 4) // Ящик с предметом
 	{
 	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя");
 	    if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
@@ -87,10 +87,9 @@ stock use_throw(playerid, inva, useinva)
 	}
 	
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
-	if(IsHelmet(fpick) && thingType == 2 && (PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick)) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
-	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
 
-    if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+    if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
 	{
@@ -181,7 +180,7 @@ stock use_throw(playerid, inva, useinva)
 			{
 				new getQuan, getLimit;
 	    		i_limit(playerid, fpick, getQuan, getLimit);
-	    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, store);
+	    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, store);
 	 		}
 		}
 	
@@ -212,7 +211,7 @@ stock use_throw(playerid, inva, useinva)
 }
 stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Кладём предмет на землю
 {
-	if(fpick == 34 && thingType == 1 && (thingPack == 2 || thingPack == 3)) { } // Исключим падение снайперки, которая в ящике или в мешке
+	if(fpick == 34 && thingType == 1 && thingPack >= 1) { } // Исключим падение снайперки, которая в упаковке
 	else
 	{
 		if(NotGiveThing(fpick, thingType)) return 1; // Предметы которые нельзя передавать или выбрасывать
@@ -242,7 +241,7 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
 		if(roadId >= 0) qara = roadId + 1;
 	}
   	
-  	if(thingPack == 1 || thingPack == 2) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
+  	if(thingPack > 0) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
   	else
   	{
   	    if(thingType == 0)
@@ -354,7 +353,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	if(fpick == 0) return 1;
 	if(playerid != -1)
 	{
-		if(thingPack == 2)
+		if(thingPack == 2 || thingPack == 4)
 		{
 			RemovePlayerAttachedObject(playerid, 1);
 			PPP15[playerid] = 0;
@@ -364,7 +363,8 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 		if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
 	}
 	if(thingPack == 1) model = 3014, setgift = 1; // Подарок
-	else if(thingPack == 2)  model = 3014; // Ящик
+	else if(thingPack == 2 || thingPack == 4)  model = 3014; // Ящик
+	else if(thingPack == 5)  model = 19918; // Кейс
 	else
 	{
 	    if(thingType == 0) // Основные предметы
