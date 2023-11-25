@@ -90,9 +90,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
             SaveEditPlayerObject(playerid, GetPlayerObjectModel(playerid, objectid), fX, fY, fZ, fRotX, fRotY, fRotZ); // Save Object
             DestroyPlayerObject(playerid, objectid); // Delete Temp Object
 
-            Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
             gRedakt[playerid] = 0; // Редактор Off
-	        PlayerPlaySound(playerid,6401,0,0,0);
             CancelSelectTextDraw(playerid);
         }
     }
@@ -103,7 +101,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     new oid = EditObjectInfo[playerid][editOption];
-    //new slot = EditObjectInfo[playerid][editSlot];
+    new slot = EditObjectInfo[playerid][editSlot];
 
     if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
     {
@@ -149,6 +147,60 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
         }
     }
+    else if(gRedakt[playerid] == 10) // Перемещение Объектов Бизнеса (Улица)
+    {
+        if(slot == 0)
+        {
+            if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Вы установили вход в бизнес слишком близко к другому бизнесу [Отмена установки]"), CancelEdit(playerid);
+            if(bizsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес вашего типа [Отмена установки]"), CancelEdit(playerid);
+            if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Это место зарезервировано государством! [Отмена установки]"), CancelEdit(playerid);
+
+            new bcity = getbiz_city(oid);
+            if(bcity == 0
+                && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
+            if(bcity == 1
+                && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
+            if(bcity == 2
+                && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
+                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
+        }
+
+        new Float:object_pos[3];
+        GetDynamicObjectPos(BizzInfo[oid][bBizObject][slot], object_pos[0], object_pos[1], object_pos[2]);
+        new Float:distpos = GetDistancePoint(x, y, z, object_pos[0], object_pos[1], object_pos[2]);
+
+        if(IsValidDynamicObject(BizzInfo[oid][bBizObject][slot]))
+        {
+            SetDynamicObjectPos(BizzInfo[oid][bBizObject][slot], x, y, z);
+            SetDynamicObjectRot(BizzInfo[oid][bBizObject][slot], rx, ry, rz);
+        }
+
+        if(slot == 1)
+        {
+            GetDynamicObjectPos(BizzInfo[oid][bBizObject][0], object_pos[0], object_pos[1], object_pos[2]);
+            new Float:disttodoor = GetDistancePoint(x, y, z, object_pos[0], object_pos[1], object_pos[2]);
+            if(disttodoor >= 30.0) return ErrorMessage(playerid, "{FF6347}Вывеска слишком далеко от двери бизнеса [Отмена установки]"), CancelEdit(playerid);
+        }
+        else if(slot == 0)
+        {
+            DestroyDynamicPickup(BizPickup2[oid]);
+            if(BizzInfo[oid][bStat] == 2) BizzInfo[oid][bStat] = 1;
+            if(distpos >= 5)
+            {
+                BizzInfo[oid][bStat] = 1;
+                if(BizzInfo[oid][bLab] == 1) DestroyDynamicPickup(BizPickup[oid]), DestroyDynamic3DTextLabel(BizLabel[oid]), BizzInfo[oid][bLab] = 0;
+
+                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
+                format(store, sizeof(store), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /goverment ] {ffffff} **", oid);
+                SendRadioMessage(7, COLOR_ALLDEPT, store);
+            }
+            createdoor_biznes(oid);
+        }
+        SaveBizz(oid);
+        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], oid, 0, "Перенёс объект бизнеса");
+    }
     else if(gRedakt[playerid] == 11) // Установка Маппинга на респах банд
 	{
         new yes = -1;
@@ -178,6 +230,65 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             ObjectInfo[oid][gDumx] = x, ObjectInfo[oid][gDumy] = y, ObjectInfo[oid][gDumz] = z;
             DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
         }
+    }
+    else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // Перемещение и Установка Терминалов Бизнеса
+    {
+        new b = rentnumn(oid);
+        if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), CancelEdit(playerid);
+        if(IsBizTerminal(b))
+        {
+            if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес этого типа [Отмена установки]"), CancelEdit(playerid);
+        }
+
+        new bcity = getbiz_city(b);
+        if(bcity == 0
+            && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
+        if(bcity == 1
+            && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
+        if(bcity == 2
+            && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
+                || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
+
+        new Float:distpos = GetDistancePoint(x, y, z, RentPos_X[oid][slot], RentPos_Y[oid][slot], RentPos_Z[oid][slot]);
+    
+        if(gRedakt[playerid] == 13) // Переместили
+        {
+            if(IsValidDynamicObject(RentObject[oid][slot]))
+            {
+                SetDynamicObjectPos(RentObject[oid][slot], x, y, z);
+		        SetDynamicObjectRot(RentObject[oid][slot], rx, ry, rz);
+            }
+            if(RentStat[oid][slot] > 0) DestroyDynamic3DTextLabel(RentLabel[oid][slot]);
+        }
+        if(gRedakt[playerid] == 14 || distpos >= 5)
+        {
+            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), CancelEdit(playerid);
+            if(gRedakt[playerid] == 14)
+            {
+                RentObject[oid][slot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
+            }
+            RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
+            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
+            format(store, sizeof(store), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
+            SendRadioMessage(7, COLOR_ALLDEPT, store);
+        }
+
+        if(IsValidDynamicObject(RentObject[oid][slot]))
+        {
+            RentPos_X[oid][slot] = x;
+            RentPos_Y[oid][slot] = y;
+            RentPos_Z[oid][slot] = z;
+            RentPos_RX[oid][slot] = rx;
+            RentPos_RY[oid][slot] = ry;
+            RentPos_RZ[oid][slot] = rz;
+
+            CreateLabelTerm(oid, slot, RentObject[oid][slot]);
+            UpdateLabelTerm(b, oid, slot);
+        }
+        SaveBizzTerm(oid, slot);
+        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "Установил объект");
     }
     else if(gRedakt[playerid] == 19) // Установка Остановки
     {
@@ -214,6 +325,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         CreateLabelTermRace(oid,RentObjectRace[oid]);
         UpdateLabelTermRace(oid);
     }
+    Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
+    PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
 }
 
@@ -294,34 +407,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             UpdateObject(oid, slot);
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
-        else if(gRedakt[playerid] == 10) // Перемещение Объектов Бизнеса (Улица)
-        {
-            if(slot == 0)
-            {
-                if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Вы установили вход в бизнес слишком близко к другому бизнесу [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                if(bizsame(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес вашего типа [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Это место зарезервировано государством! [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                new bcity = getbiz_city(oid);
-                if((IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)) && bcity != 0) return ErrorMessage(playerid, "{FF6347}Бизнес зарегистрирован в другом городе [Нельзя установить в LS]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                else if((IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)) && bcity != 1) return ErrorMessage(playerid, "{FF6347}Бизнес зарегистрирован в другом городе [Нельзя установить в SF]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                else if((IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623)) && bcity != 2) return ErrorMessage(playerid, "{FF6347}Бизнес зарегистрирован в другом городе [Нельзя установить в LV]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            }
-
-            new Float:distpos = GetDistancePoint(x, y, z, oldX, oldY, oldZ);
-            if(slot == 0) 
-            {
-                DestroyDynamicPickup(BizPickup2[oid]);
-                if(BizzInfo[oid][bStat] == 2) BizzInfo[oid][bStat] = 1;
-                if(distpos >= 3)
-                {
-                    BizzInfo[oid][bStat] = 1;
-                    if(BizzInfo[oid][bLab] == 1) DestroyDynamicPickup(BizPickup[oid]), DestroyDynamic3DTextLabel(BizLabel[oid]), BizzInfo[oid][bLab] = 0;
-                }
-                createdoor_biznes(oid);
-            }
-            SaveBizz(oid);
-            BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], oid, 0, "Установил объект бизнеса");
-        }
         else if(gRedakt[playerid] == 12) // Установка Маппинга на респах банд
 		{
             if(!IsAGObjectInSquare(oid, x, y)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Объект за пределами территории... {ffcc00}[ Отмена Установки ]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
@@ -336,51 +421,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             ObjectInfo[oid][gStat][slot] = 1;
             UpdateGangObject(oid+13, OrganInfo[oid+13][gMap], slot);
             update_labelobject(oid, slot), OrgLog(oid+13, "eob", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ObjectInfo[oid][gOmodel][slot], "");
-		}
-        else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // Перемещение и Установка Терминалов Бизнеса
-		{
-            new b = rentnumn(oid);
-            if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            if(IsBizTerminal(b))
-            {
-                if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес этого типа [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            }
-
-            new bcity = getbiz_city(b);
-            if(bcity == 0
-                && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            if(bcity == 1
-                && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            if(bcity == 2
-                && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-
-            new Float:distpos = GetDistancePoint(x, y, z, RentPos_X[oid][slot], RentPos_Y[oid][slot], RentPos_Z[oid][slot]);
-            RentPos_X[oid][slot] = x;
-            RentPos_Y[oid][slot] = y;
-            RentPos_Z[oid][slot] = z;
-            RentPos_RX[oid][slot] = rx;
-            RentPos_RY[oid][slot] = ry;
-            RentPos_RZ[oid][slot] = rz;
-
-            if(gRedakt[playerid] == 13) // Переместили
-            {
-                if(RentStat[oid][slot] > 0) DestroyDynamic3DTextLabel(RentLabel[oid][slot]);
-            }
-            if(gRedakt[playerid] == 14 || distpos >= 5) 
-            {
-                RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
-                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-                format(store, sizeof(store), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
-   			    SendRadioMessage(7, COLOR_ALLDEPT, store);
-            }
-
-            CreateLabelTerm(oid, slot, RentObject[oid][slot]);
-            UpdateLabelTerm(b, oid, slot);
-            SaveBizzTerm(oid, slot);
-            BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "Установил объект");
 		}
         else if(gRedakt[playerid] == 15 || gRedakt[playerid] == 16) // Установка или перенос предмета IKEA
 		{
@@ -488,10 +528,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             {
                 if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
                 ObjectInfo[oid][gOmodel][slot] = 0;
-            }
-            else if(gRedakt[playerid] == 14) // Терминалы бизнесов
-            {
-                if(RentStat[oid][slot] > 0) RentObject[oid][slot] = 0, RentStat[oid][slot] = 0;
             }
             else if(gRedakt[playerid] == 15) // IKEA
             {

@@ -6,6 +6,9 @@ stock DeleteObject(playerid)
  	
  	// 586 удалённх объектов
 
+	// Train Station LV NGSA Area 51
+	RemoveBuildingForPlayer(playerid, 16774, 800.328, 1672.130, 5.875, 0.250);
+
 	// Train Station LS NGSA
 	RemoveBuildingForPlayer(playerid, 1226, 1774.760, -1931.310, 16.375, 0.250);
 

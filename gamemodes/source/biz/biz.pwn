@@ -1070,3 +1070,25 @@ stock BizMapIcon(b)
 	else if(BizType(b) == 16) BizIcon[b] = CreateDynamicMapIcon(BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ],25,0,-1,-1,-1,200.0);
 	return 1;
 }
+
+stock GpsBiz(playerid, bizType)
+{
+	DP[0][playerid] = bizType;
+	new minB, maxB;
+	bizTypeMin(bizType, minB, maxB);
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line),"{ff9000}Ближайший"), strcat(lines,line);
+
+	new quan;
+	for(new b = minB; b < maxB; b++) 
+	{
+		List[quan][playerid] = b;
+		quan ++;
+		format(line,sizeof(line),"\n{cccccc}№ %d %s", b, BizzInfo[b][bName]), strcat(lines,line);
+	}
+
+	format(store,sizeof(store),"{ff9000}GPS: %s", bizname(minB));
+	ShowDialog(playerid,1077,DIALOG_STYLE_LIST,store,lines,"Выбор","Назад");
+	return 1;
+}

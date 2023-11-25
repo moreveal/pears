@@ -274,7 +274,7 @@ stock LoadOrderEscort(playerid)
 	}
 	else
 	{
-		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отлично! Отправляйтесь к ЖД станции для погрузки БП на поезде (отмечено в GPS навигаторе)");
+		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отлично! Отправляйтесь на ЖД станцию для погрузки БП на поезде (отмечено в GPS навигаторе)");
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Не забудьте собрать людей для сопровождения, на вас могут напасть!");
 		OrganInfo[3][glave] -= OrganInfo[g][gDeliveryPay];
 		CreateGps(playerid, 137.91, 1289.1465, 21.3203, 0, 0, 10.0);

@@ -12,12 +12,6 @@ new TrainMoved;
 new MoveStatus; // 0 Разгон, 1 Торможение
 new ruinsOnTrainRoad;
 
-stock IsANpcPlayer(id)
-{
-    if(id == npcarmyid) return 1;
-    return 0;
-}
-
 stock CreateNPC()
 {
     NpcArmy = FCNPC_Create("John");
