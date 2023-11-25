@@ -2,6 +2,7 @@
 #define MAX_FAMILY 501 // Максимальное количество семей
 #define MAX_NAME_FAMILY_LENGTH 31 // Длинна названий в семьях (Если указано 31, значит максимальное количество символов 30, всегда -1 слот)
 #define MAX_RANK_FAMILY 30 // Максимальное количество рангов в семье
+#define MAX_CHECKPOINT 60 // Максимальное количество чекпоинтов
 
 enum fInfo
 {
@@ -55,6 +56,21 @@ enum fInfo
 	fParthnerMarket, // Бизнес партнеры Хот доги
 	fParthnerBenz, // Бизнес партнеры Хот доги
 	fParthnerService, // Бизнес партнеры Хот доги
+	fRout1X[60],
+	fRout1Y[60],
+	fRout1Z[60],
+	fRout2X[60],
+	fRout2Y[60],
+	fRout2Z[60],
+	fRout3X[60],
+	fRout3Y[60],
+	fRout3Z[60],
+	fRout4X[60],
+	fRout4Y[60],
+	fRout4Z[60],
+	fRout5X[60],
+	fRout5Y[60],
+	fRout5Z[60],
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -298,7 +314,30 @@ public LoadFamily()
 				cache_get_value_name(f, store, FamilyRankName[f][r], MAX_NAME_FAMILY_LENGTH);
 			}
 		}
-        else FamilyInfo[f][fRanks] = 10;
+		/*//Грузим маршруты
+		for(new i = 0; i < MAX_CHECKPOINT; i++)
+		{
+			format(string,sizeof(string),"race1CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1X][i]);
+			format(string,sizeof(string),"race1CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1Y][i]);
+			format(string,sizeof(string),"race1CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1Z][i]);
+
+			format(string,sizeof(string),"race2CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2X][i]);
+			format(string,sizeof(string),"race2CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2Y][i]);
+			format(string,sizeof(string),"race2CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2Z][i]);
+
+			format(string,sizeof(string),"race3CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3X][i]);
+			format(string,sizeof(string),"race3CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3Y][i]);
+			format(string,sizeof(string),"race3CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3Z][i]);
+
+			format(string,sizeof(string),"race4CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4X][i]);
+			format(string,sizeof(string),"race4CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4Y][i]);
+			format(string,sizeof(string),"race4CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4Z][i]);
+
+			format(string,sizeof(string),"race5CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5X][i]);
+			format(string,sizeof(string),"race5CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5Y][i]);
+			format(string,sizeof(string),"race5CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5Z][i]);
+		}
+		*/
 	}
 	Kolfam = rows;
 	printf("[MODE]: Семьи [%d Quan][%d ms]",rows,GetTickCount() - time);

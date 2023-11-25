@@ -197,7 +197,7 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
 stock GetPlayerTrailerID(playerid) {
     for (new i = 0; i < MAX_TRAILERS; i++) 
     {
-        if (trailerInfo[i][tOwnerID] == 0) break;
+        if (trailerInfo[i][tOwnerID] == 0) continue;
         if (trailerInfo[i][tOwnerID] == PlayerInfo[playerid][pID]) return i;
     }
     return -1;
@@ -358,7 +358,7 @@ CMD:trailer_place(playerid) {
 }
 
 // Команда для добавления трейлера игроку
-stock trailer_add(playerid, model) {
+stock trailer_add(playerid, model,trailer) {
     new targetid;
 
     new tid = GetPlayerTrailerID(targetid);
@@ -367,18 +367,38 @@ stock trailer_add(playerid, model) {
         new str[sizeof fmt_str - 2 + 5];
         format(str, sizeof str, fmt_str, trailerInfo[tid][tID]);
         SendClientMessage(playerid, COLOR_GRAY, str);
-        return 1;
+        return ErrorMessage(playerid,"{ff6347}У вас уже есть трейлер");
     }
-    SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер");
-    
-    new infocreate = AddPlayerTrailer(targetid, model);
-    if (infocreate == 0) ErrorMessage(playerid, "{FF6347}Трейлер не может быть создан [ Лимит: 1000 ]");
+    else if(tid == -1)
+    {
+        if(trailer == 0)
+        {
+            oGivePlayerMoney(playerid,-1000);
+        }
+        else if(trailer == 1)
+        {
+            oGivePlayerMoney(playerid,-1000);
+        }
+        else if(trailer == 2)
+        {
+            oGivePlayerMoney(playerid,-1000);
+        }
+        else if(trailer == 3)
+        {
+            oGivePlayerMoney(playerid,-1000);
+        }
+        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер");
+        
+        new infocreate = AddPlayerTrailer(targetid, model);
+        if (infocreate == 0) ErrorMessage(playerid, "{FF6347}Трейлер не может быть создан [ Лимит: 1000 ]");
+    }
     return 1;
 }
 
 
 // Команда для удаления трейлера игрока
 CMD:trailer_delete(playerid, const params[]) {
+    if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid,"Команда недоступна");
     new targetid;
     if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /trailer_delete ID ]");
     new tid = GetPlayerTrailerID(targetid);
@@ -391,6 +411,7 @@ CMD:trailer_delete(playerid, const params[]) {
 
 // Выгружает созданный в игровом мире трейлер
 CMD:trailer_unload(playerid, const params[]) {
+    if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid,"Команда недоступна");
     new tid;
     if (sscanf(params, "d", tid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Выгрузить трейлер [ /trailer_unload TrailerID ]");
     if (tid < 0 || tid > MAX_TRAILERS) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Указан некорректный номер трейлера");

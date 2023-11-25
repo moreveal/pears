@@ -5,3 +5,5 @@ server.cfg
 server_log.txt
 svlog.txt
 **/*.amx
+plugins/FCNPC.dll
+plugins/FCNPC.so

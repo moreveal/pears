@@ -10,10 +10,12 @@ enum raceInfo
     raceFamily, // Семья начавшего событие
     raceUnix, // Время на проведенную гонку
     racersCount[8], // Количество участников в гонке
+    raceTimer // Таймер отсчета для старта
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
 new RaceIcon[1];
 new carRaceCheckpoint[MAX_REALPLAYERS],raceRout[MAX_REALPLAYERS];
+
 
 stock ShowStreetRacers(playerid,family)
 {
@@ -395,7 +397,6 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             StreetRacers[0][racersCount][number] = playerid;
             SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
 		}
-        else return ListRegisterToRace(playerid);
     }
     else if(dialogid == 1461)
     {
@@ -403,16 +404,17 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
         {
             if(listitem == 0)
             {
+                format(lines,sizeof(lines),""); // Очищаем Lines
                 format(line,sizeof(line),"\nВы уверены что хотите начать гонку?"), strcat(lines,line);
 		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");     
             }
             if(listitem == 1)
             {
-                ShowAllRout(playerid,1,1);
+                ShowAllRout(playerid);
             }
             if(listitem == 2)
             {
-                ListRegisterToRace(playerid);
+                ListRegisterToRace(playerid,1);
             }
             if(listitem == 3)
             {
@@ -431,6 +433,41 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 		}
     }
     else if(dialogid == 1464)
+    {
+        if(response)
+		{
+            format(lines,sizeof(lines),""); // Очищаем Lines
+
+            format(line,sizeof(line),"\nВы уверены что хоитте начать гонку?"), strcat(lines,line);
+            format(line,sizeof(line),"\nВсе игроки заморозятся на 5 секунд, и будет дан отсчет до начала гонки"), strcat(lines,line);
+            ShowDialog(playerid,1467,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+		}
+        else return GoStreetRacers(playerid);
+    }
+    else if(dialogid == 1465)
+    {
+        if(response)
+        {
+            if(listitem < 0 || listitem > 9) return ErrorMessage(playerid,"{FF6347}Лист итем паленый броооооо");
+            {
+                new listord = List[listitem][playerid];
+                DP[1][playerid] = listord;
+                SettingRegisterToRace(playerid, listord);
+            }
+        }
+        else return ListRegisterToRace(playerid,1);
+    }
+    else if(dialogid == 1466)
+    {
+        if(response)
+		{
+            new target = DP[1][playerid];
+            ErrorMessage(StreetRacers[0][racersCount][target], "{FF6347}Вас исключили из участников гонки");
+            StreetRacers[0][racersCount][target] = -1;
+		}
+        else return ListRegisterToRace(playerid,1);
+    }
+    else if(dialogid == 1467)
     {
         if(response)
 		{
@@ -540,7 +577,7 @@ stock UpdateLabelTermRace(br)
 	return 1;
 }
 
-stock ListRegisterToRace(playerid)
+stock ListRegisterToRace(playerid, type)
 {
     new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
@@ -561,8 +598,21 @@ stock ListRegisterToRace(playerid)
 		}
 	}
 	format(store,sizeof(store),"{cccccc}Сходка StreetRacers");
-	ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	if(type == 0) ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+    else if(type == 1) ShowDialog(playerid,1465,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
 	return 1;
+}
+
+stock SettingRegisterToRace(playerid, number)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    if(StreetRacers[0][racersCount][number] != -1)
+    {
+        format(line,sizeof(line),"\nВыгнать игрока из списка участников?"), strcat(lines,line);
+		ShowDialog(playerid,1466,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+    }
+    else return ErrorMessage(playerid,"{FF6347} Слот пустой, выбирете другой");
+    return 1;
 }
 
 stock RegisterToRace(playerid, number)
@@ -620,6 +670,7 @@ stock CheckpointRaceRout(playerid)
 {
 	new slot = raceRout[playerid];
 	new r = carRaceCheckpoint[playerid];
+    PlayerPlaySound(playerid,1150,0,0,0);
 	DisablePlayerRaceCheckpoint(playerid);
     if(r == 59) SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],6.0);
 	else SetPlayerRaceCheckpoint(playerid,0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r+1], FullRout[slot][brCordY][r+1], FullRout[slot][brCordZ][r+1],6.0);
@@ -628,16 +679,60 @@ stock CheckpointRaceRout(playerid)
 
 stock StartRace(playerid)
 {
-    new slot = StreetRacers[0][raceMap];
     for(new i; i < 8; i++)
     {
         if(StreetRacers[0][racersCount][i] != -1)
         {
-            raceRout[StreetRacers[0][racersCount][i]] = slot;
-            carRaceCheckpoint[StreetRacers[0][racersCount][i]] = 0;
-            SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],6.0);
+            TogglePlayerControllable(StreetRacers[0][racersCount][i],0);
+            StreetRacers[0][raceTimer] = 5;
         }   
     }
-    SuccessMessage(playerid,"{99ff66} Вы объявили старт гонке!");
+    SuccessMessage(playerid,"{99ff66} Вы объявили начало гонке!");
+    return 1;
+}
+
+stock TimerToStart()
+{
+    StreetRacers[0][raceTimer]--;
+    if(StreetRacers[0][raceTimer] > 0)
+    {
+        for(new i; i < 8; i++)
+        {
+            if(StreetRacers[0][racersCount][i] != -1)
+            {
+                PlayerPlaySound(StreetRacers[0][racersCount][i],1056,0,0,0);
+                format(store,sizeof(store),"%d",StreetRacers[0][raceTimer]);
+                GameTextForPlayer(StreetRacers[0][racersCount][i], store, 2000, 6);
+            }
+        }
+    }
+    else if(StreetRacers[0][raceTimer] == 0)
+    {
+        new slot = StreetRacers[0][raceMap];
+        for(new i; i < 8; i++)
+        {
+            if(StreetRacers[0][racersCount][i] != -1)
+            {
+                TogglePlayerControllable(StreetRacers[0][racersCount][i],1);
+                PlayerPlaySound(StreetRacers[0][racersCount][i],3201,0,0,0);
+                GameTextForPlayer(StreetRacers[0][racersCount][i], "~g~ GO!", 2000, 6);
+                raceRout[StreetRacers[0][racersCount][i]] = slot;
+                carRaceCheckpoint[StreetRacers[0][racersCount][i]] = 0;
+                SetPlayerRaceCheckpoint(StreetRacers[0][racersCount][i],0,FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0],6.0);
+            }
+        } 
+    }
+}
+
+stock LeaveRace(playerid)
+{
+    for(new checking; checking < 8; checking++)
+	{
+		if(StreetRacers[0][racersCount][checking] == playerid)
+		{
+			StreetRacers[0][racersCount][checking] = -1;
+			break;
+		}
+	}
     return 1;
 }
