@@ -736,3 +736,51 @@ stock LeaveRace(playerid)
 	}
     return 1;
 }
+
+CMD:philinok(playerid)
+{
+    ebalo(playerid);
+    return 1;
+}
+
+stock ebalo(playerid)
+{
+    new fam = PlayerInfo[playerid][pFamily];
+    if(fam < 0) return 0;
+    new strocaX[480];
+    new strocaY[480];
+    new strocaZ[480];
+    for(new i = 0; i < 60; i++) 
+    {
+        FamilyInfo[fam][fRoudLoad1X][i] = PlayerInfo[playerid][CheckPointX][i];
+        FamilyInfo[fam][fRoudLoad1Y][i] = PlayerInfo[playerid][CheckPointY][i];
+        FamilyInfo[fam][fRoudLoad1Z][i] = PlayerInfo[playerid][CheckPointZ][i];
+	    format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][i]);
+        format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][i]);
+        format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][i]);
+    }
+
+    format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s' WHERE `id`='%d'",strocaX,strocaY,strocaZ, fam);
+	query_empty(pearsq, big_query);
+    return 1;
+}
+
+stock CheckFamRout(playerid)
+{
+    new fam = PlayerInfo[playerid][pFamily];
+    if(fam < 0) return 0;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"№ \tX\tY\tZ"), strcat(lines,line);
+    for(new i = 0; i < 60; i++) 
+    {
+		format(line,sizeof(line),"\n%d. \t%f\t%f\t%f", i+1,FamilyInfo[fam][fRoudLoad1X][i],FamilyInfo[fam][fRoudLoad1Y][i],FamilyInfo[fam][fRoudLoad1Z][i]), strcat(lines,line);
+    }
+    ShowDialog(playerid,1444,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов семейного маршрута",lines,"Выбрать","Выход");
+	return 1;
+}
+
+CMD:philinokcheck(playerid)
+{
+    CheckFamRout(playerid);
+    return 1;
+}

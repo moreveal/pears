@@ -56,26 +56,17 @@ enum fInfo
 	fParthnerMarket, // Бизнес партнеры Хот доги
 	fParthnerBenz, // Бизнес партнеры Хот доги
 	fParthnerService, // Бизнес партнеры Хот доги
-	fRout1X[60],
-	fRout1Y[60],
-	fRout1Z[60],
-	fRout2X[60],
-	fRout2Y[60],
-	fRout2Z[60],
-	fRout3X[60],
-	fRout3Y[60],
-	fRout3Z[60],
-	fRout4X[60],
-	fRout4Y[60],
-	fRout4Z[60],
-	fRout5X[60],
-	fRout5Y[60],
-	fRout5Z[60],
+	Float:fRoudLoad1X[60],
+	Float:fRoudLoad1Y[60],
+	Float:fRoudLoad1Z[60],
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
 new famuni[MAX_FAMILY][10];
 
+new FamRoutX[60][8];
+new FamRoutY[60][8];
+new FamRoutZ[60][8];
 new FamilyRankName[MAX_FAMILY][MAX_RANK_FAMILY][MAX_NAME_FAMILY_LENGTH]; // Названия рангов
 
 CMD:fam(playerid)
@@ -208,6 +199,9 @@ public LoadFamily()
 {
 	new time = GetTickCount();
 	new rows, load_max_rank;
+	new strocaX[480];
+	new strocaY[480];
+	new strocaZ[480];
 	cache_get_row_count(rows);
 	for(new f; f<rows; ++f)
 	{
@@ -300,6 +294,9 @@ public LoadFamily()
 		cache_get_value_name_int(f, "vehcol1", FamilyInfo[idx][fVehCol][0]);
 		cache_get_value_name_int(f, "vehcol2", FamilyInfo[idx][fVehCol][1]);
 		cache_get_value_name_int(f, "type", FamilyInfo[idx][fType]);
+		cache_get_value_name(f, "Rout1X", strocaX, 480);
+		cache_get_value_name(f, "Rout1Y", strocaY, 480);
+		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
    		if(FamilyInfo[idx][fMoney] < 0) FamilyInfo[idx][fMoney] = 0;
 
         // Получаем названия рангов
@@ -314,30 +311,16 @@ public LoadFamily()
 				cache_get_value_name(f, store, FamilyRankName[f][r], MAX_NAME_FAMILY_LENGTH);
 			}
 		}
-		/*//Грузим маршруты
-		for(new i = 0; i < MAX_CHECKPOINT; i++)
+		//Грузим маршруты
+		split(strocaX,FamRoutX,'_');
+		split(strocaY,FamRoutY,'_');
+		split(strocaZ,FamRoutZ,'_');
+		for(new i; i < 60; i++)
 		{
-			format(string,sizeof(string),"race1CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1X][i]);
-			format(string,sizeof(string),"race1CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1Y][i]);
-			format(string,sizeof(string),"race1CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout1Z][i]);
-
-			format(string,sizeof(string),"race2CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2X][i]);
-			format(string,sizeof(string),"race2CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2Y][i]);
-			format(string,sizeof(string),"race2CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout2Z][i]);
-
-			format(string,sizeof(string),"race3CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3X][i]);
-			format(string,sizeof(string),"race3CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3Y][i]);
-			format(string,sizeof(string),"race3CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout3Z][i]);
-
-			format(string,sizeof(string),"race4CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4X][i]);
-			format(string,sizeof(string),"race4CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4Y][i]);
-			format(string,sizeof(string),"race4CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout4Z][i]);
-
-			format(string,sizeof(string),"race5CordX%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5X][i]);
-			format(string,sizeof(string),"race5CordY%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5Y][i]);
-			format(string,sizeof(string),"race5CordZ%d", i), cache_get_value_name_float(f, string, FamilyInfo[idx][fRout5Z][i]);
+			FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
 		}
-		*/
 	}
 	Kolfam = rows;
 	printf("[MODE]: Семьи [%d Quan][%d ms]",rows,GetTickCount() - time);

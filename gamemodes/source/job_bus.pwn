@@ -216,7 +216,7 @@ stock DestroyObjectsBusStation(f)
 CMD:scp(playerid)
 {
 	new fam = PlayerInfo[playerid][pFamily];
-	if(fraction(playerid) != 7 || FamilyInfo[fam][fType] != 4) return ErrorMessage(playerid,"{ff6347} Вы не состоите в правительстве или Семье типа: Street Racers");
+	if(fraction(playerid) != 7 && FamilyInfo[fam][fType] != 4) return ErrorMessage(playerid,"{ff6347} Вы не состоите в правительстве или Семье типа: Street Racers");
 	if(PlayerInfo[playerid][pSCP] == 0)
 	{
 		PlayerInfo[playerid][pSCP] = 1;
@@ -238,13 +238,7 @@ CMD:scpa(playerid)
 
 CMD:showrout0(playerid)
 {
-	ShowAllRout(playerid, 0,0);
-	return 1;
-}
-
-CMD:showrout1(playerid)
-{
-	ShowAllRout(playerid, 1,0);
+	ShowAllRout(playerid);
 	return 1;
 }
 
@@ -355,7 +349,7 @@ public LoadRout()
     	cache_get_value_name_int(f, "brIDCreator", FullRout[f][brIdCreator]);
 		cache_get_value_name_int(f, "brUnixEditor", FullRout[f][brUnixEditor]);
 		cache_get_value_name_int(f, "brUnix", FullRout[f][brUnix]);
-		for(new i = 0; i < 60; i++)
+		for(new i = 0; i < MAX_CHECKPOINT; i++)
 		{
 			format(string,sizeof(string),"brCordX%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordX][i]);
 			format(string,sizeof(string),"brCordY%d", i), cache_get_value_name_float(f, string, FullRout[f][brCordY][i]);
@@ -389,7 +383,7 @@ stock SaveRout(slot)
 	query_empty(pearsq, big_query);
 
 	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%f', `brCordY40` = '%f', `brCordZ40` = '%f'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
-	for(new i = 41; i < 59; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
+	for(new i = 41; i < 60; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
     format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
 	query_empty(pearsq, big_query);
 	return 1;
@@ -407,47 +401,29 @@ stock ShowPlayerSettingCheckPoint(playerid,i)
 	return 1;
 }
 
-stock ShowAllRout(playerid, type,class)
+stock ShowAllRout(playerid)
 {
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
-	if(type == 0)
+	format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);
+	for(new i = 0; i < MAX_ROUT; i++) 
 	{
-		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);
-		for(new i = 0; i < MAX_ROUT; i++) 
+		List[i][playerid] = 0;
+		if(FullRout[i][brUnixEditor] > 0) stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		else if(FullRout[i][brUnixEditor] == 0) stamp2datetime(FullRout[i][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0)
 		{
-			List[i][playerid] = 0;
-			if(FullRout[i][brUnixEditor] > 0) stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-			else if(FullRout[i][brUnixEditor] == 0) stamp2datetime(FullRout[i][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-			if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 0)
-			{
-				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
-			}
-			else if(FullRout[i][brStatus] == 1  && FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 0)
-			{
-				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
-			}
-			quan++;
-			List[quan][playerid] = i;
+			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
 		}
-		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
-	}
-	else if(type == 1)
-	{
-		format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования"), strcat(lines,line);
-		for(new i = 0; i < MAX_ROUT; i++) 
+		else if(FullRout[i][brStatus] == 1  && FullRout[i][brIdCreator] != 0)
 		{
-			if(FullRout[i][brIdCreator] != 0 && FullRout[i][brType] == 1)
-			{
-				stamp2datetime(FullRout[i][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-				format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
-				quan++;
-			}
+			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
 		}
-		if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
+		List[quan][playerid] = i;
+		quan++;
 	}
-    if(class == 0) ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
-	else if(class == 1) ShowDialog(playerid,1462,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
+	if(quan == 0) return ErrorMessage(playerid,"Нет созданных маршрутов");
+    ShowDialog(playerid,1447,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов",lines,"Выбрать","Выход");
 	return 1;
 }
 
@@ -505,6 +481,7 @@ stock CreateBusDriver(playerid)
 	busroutetime = gettime()+60;
 	return 1;
 }
+
 stock ExitBusDriver(playerid)
 {
 	new i = driverid[playerid]-1;
@@ -524,6 +501,7 @@ stock ExitBusDriver(playerid)
 	for(new sta = 1; sta < MAX_BUSSTATION; sta++) UpdateBusStations(sta);
 	return 1;
 }
+
 stock BusRouter(playerid, v)
 {
     if(VehInfo[v][v3dstat] >= 1 && VehInfo[v][v3dstat] <= 900) return ErrorMessage(playerid, "{FF6347}Этот автобус сейчас в такси");
