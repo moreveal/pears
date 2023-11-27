@@ -10,6 +10,7 @@ enum raceInfo
     raceFamily, // Семья начавшего событие
     raceUnix, // Время на проведенную гонку
     racersCount[8], // Количество участников в гонке
+    racersCountWinner[8], // Список победителей
     raceTimer // Таймер отсчета для старта
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
@@ -101,6 +102,7 @@ stock ReadyPartyStreet(playerid)
     for(new i; i < 8; i++)
     {
         StreetRacers[0][racersCount][i] = -1;   
+        StreetRacers[0][racersCountWinner][i] = -1;
     }
     SuccessMessage(playerid,"{99ff66}Вы начали сходку StreetRacers");
     return 1;
@@ -124,6 +126,8 @@ stock ClosePartyStreet()
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
     }
+
+    
     if(RaceIcon[0] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
     RaceIcon[0] = 0;
     StreetRacers[0][raceFamily] = -1;
@@ -404,16 +408,19 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
         {
             if(listitem == 0)
             {
+                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
                 format(lines,sizeof(lines),""); // Очищаем Lines
                 format(line,sizeof(line),"\nВы уверены что хотите начать гонку?"), strcat(lines,line);
 		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");     
             }
             if(listitem == 1)
             {
+                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
                 ShowAllRout(playerid);
             }
             if(listitem == 2)
             {
+                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Список победителей можно посмотреть в терминале");
                 ListRegisterToRace(playerid,1);
             }
             if(listitem == 3)
@@ -618,22 +625,35 @@ stock SettingRegisterToRace(playerid, number)
 stock RegisterToRace(playerid, number)
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
-    new otmena = 0;
-    for(new i; i < 8; i++)
+    if(StreetRacers[0][raceStat] != 3)
     {
-        if(StreetRacers[0][racersCount][i] == playerid)
+        new otmena = 0;
+        for(new i; i < 8; i++)
         {
-            otmena = -1;
-            break;
-        }   
+            if(StreetRacers[0][racersCount][i] == playerid)
+            {
+                otmena = -1;
+                break;
+            }   
+        }
+        if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
+        if(StreetRacers[0][racersCount][number] == -1 && otmena != -1)
+        {
+            format(line,sizeof(line),"\nЗанять место в гонке?"), strcat(lines,line);
+            ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+        }
+        else return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
     }
-    if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
-    if(StreetRacers[0][racersCount][number] == -1 && otmena != -1)
+    else(StreetRacers[0][raceStat] == 3)
     {
-        format(line,sizeof(line),"\nЗанять место в гонке?"), strcat(lines,line);
-		ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+        new quan;
+        for(new i; i < 8; i++)
+        {
+            format(line,sizeof(line),"Позиция Имя победителя\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
+            format(line,sizeof(line),"{ff9000}%d. %s\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
+            ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход");
+        }
     }
-    else return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
     return 1;
 }
 
@@ -679,6 +699,7 @@ stock CheckpointRaceRout(playerid)
 
 stock StartRace(playerid)
 {
+    StreetRacers[0][raceStat] = 3;
     for(new i; i < 8; i++)
     {
         if(StreetRacers[0][racersCount][i] != -1)
@@ -736,6 +757,22 @@ stock LeaveRace(playerid)
 	}
     return 1;
 }
+stock RaceWinner(playerid)
+{
+    new winners,quan;
+    for(new checking; checking < 8; checking++)
+	{
+		if(StreetRacers[0][racersCountWinner][checking] == -1)
+		{
+			StreetRacers[0][racersCountWinner][checking] = playerid;
+			break;
+		}
+        quan++;
+	}
+    format(store,sizeof(store),"[ Мысли ]: Я завершил гонку на %d месте",quan+1);
+    SendClientMessage(playerid,COLOR_GREY,store);
+    return 1;
+}
 
 CMD:philinok(playerid)
 {
@@ -743,7 +780,7 @@ CMD:philinok(playerid)
     return 1;
 }
 
-stock ebalo(playerid)
+stock ebalo(playerid,slot)
 {
     new fam = PlayerInfo[playerid][pFamily];
     if(fam < 0) return 0;
@@ -775,7 +812,7 @@ stock CheckFamRout(playerid)
     {
 		format(line,sizeof(line),"\n%d. \t%f\t%f\t%f", i+1,FamilyInfo[fam][fRoudLoad1X][i],FamilyInfo[fam][fRoudLoad1Y][i],FamilyInfo[fam][fRoudLoad1Z][i]), strcat(lines,line);
     }
-    ShowDialog(playerid,1444,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов семейного маршрута",lines,"Выбрать","Выход");
+    ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список чекпоинтов семейного маршрута",lines,"Выбрать","Выход");
 	return 1;
 }
 
