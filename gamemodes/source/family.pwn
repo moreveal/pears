@@ -71,6 +71,9 @@ enum fInfo
 	Float:fRoudLoad5X[60],
 	Float:fRoudLoad5Y[60],
 	Float:fRoudLoad5Z[60],
+	fRoutIdEditor[5],
+	fRoutIdCreator[5],
+	fRoutUnix[5],
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -79,6 +82,8 @@ new famuni[MAX_FAMILY][10];
 new FamRoutX[60][8];
 new FamRoutY[60][8];
 new FamRoutZ[60][8];
+new FamilyRoutNameCreator[MAX_FAMILY][5][24];
+new FamilyRoutNameEditor[MAX_FAMILY][5][24];
 new FamilyRankName[MAX_FAMILY][MAX_RANK_FAMILY][MAX_NAME_FAMILY_LENGTH]; // Названия рангов
 
 CMD:fam(playerid)
@@ -309,6 +314,20 @@ public LoadFamily()
 		cache_get_value_name(f, "Rout1X", strocaX, 480);
 		cache_get_value_name(f, "Rout1Y", strocaY, 480);
 		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
+
+		for(new i; i < 5; i++)
+		{
+			format(store,sizeof(store),"routNameCreator%d",i+1);
+			cache_get_value_name(f, store, FamilyRoutNameCreator[idx][i], 24);
+			format(store,sizeof(store),"routNameEditor%d",i+1);
+			cache_get_value_name(f, store, FamilyRoutNameEditor[idx][i], 24);
+			format(store,sizeof(store),"routIdEditor%d",i+1);
+			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutIdEditor][i]);
+			format(store,sizeof(store),"routIdCreator%d",i+1);
+			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutIdCreator][i]);
+			format(store,sizeof(store),"routUnix%d",i+1);
+			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutUnix][i]);
+		}
    		if(FamilyInfo[idx][fMoney] < 0) FamilyInfo[idx][fMoney] = 0;
 
         // Получаем названия рангов
@@ -369,9 +388,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
 		//Грузим маршруты 4
-		cache_get_value_name(f, "Rout2X", strocaX, 480);
-		cache_get_value_name(f, "Rout2Y", strocaY, 480);
-		cache_get_value_name(f, "Rout2Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout4X", strocaX, 480);
+		cache_get_value_name(f, "Rout4Y", strocaY, 480);
+		cache_get_value_name(f, "Rout4Z", strocaZ, 480);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
@@ -385,9 +404,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
 		//Грузим маршруты 5
-		cache_get_value_name(f, "Rout2X", strocaX, 480);
-		cache_get_value_name(f, "Rout2Y", strocaY, 480);
-		cache_get_value_name(f, "Rout2Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout5X", strocaX, 480);
+		cache_get_value_name(f, "Rout5Y", strocaY, 480);
+		cache_get_value_name(f, "Rout5Z", strocaZ, 480);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');

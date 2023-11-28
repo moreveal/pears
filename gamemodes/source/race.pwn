@@ -28,7 +28,9 @@ stock ShowStreetRacers(playerid,family)
     else if(FamilyInfo[family][fParthnerBenz] != 0) format(line,sizeof(line),"\nПартнерство с заправкой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerBenz]), strcat(lines,line);
     if(FamilyInfo[family][fParthnerService] == 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {FF6347}[Отсутствует]"), strcat(lines,line);
     else if(FamilyInfo[family][fParthnerService] != 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerService]), strcat(lines,line);
+    format(line,sizeof(line),"\nСписок гоночных маршрутов семьи"), strcat(lines,line);
     ShowDialog(playerid,1457,DIALOG_STYLE_TABLIST,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+    return 1;
 }
 
 stock GoStreetRacers(playerid)
@@ -321,6 +323,10 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");                    
                 }
             }
+            if(listitem == 4)
+            {
+                ShowAllRoutRace(playerid,0);
+            }
 		}
 		else settingpartner(playerid,b,number);
     }
@@ -416,7 +422,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(listitem == 1)
             {
                 if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
-                ShowAllRout(playerid);
+                StreetRacers[0][raceMap] = 2;
             }
             if(listitem == 2)
             {
@@ -482,6 +488,270 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 		}
         else return GoStreetRacers(playerid);
     }
+    else if(dialogid == 1468)
+    {
+        new fam = PlayerInfo[playerid][pFamily];
+        if(response)
+        {
+        	if(listitem > 5 || listitem < 0) return 0;
+			new slot = List[listitem][playerid],who;
+			if(FamilyInfo[fam][fRoutIdCreator][slot] == PlayerInfo[playerid][pID]) who = 1;
+			SettingRoutRace(playerid,slot, who);
+		}
+        else return ShowStreetRacers(playerid,fam);
+    }
+    else if(dialogid == 1469)
+    {
+        if(response)
+        {
+            if(listitem > 5 || listitem < 0) return 0;
+			new slot = List[listitem][playerid];
+            SaveRoutRace(playerid,slot);
+		}
+    }
+    else if(dialogid == 1470)
+	{
+		if(response)
+		{	
+            new fam = PlayerInfo[playerid][pFamily];
+			new slot = DP[0][playerid];
+			if(slot == 0)
+            {
+                for(new z = 0; z < 60; z++)
+                {
+                    if(FamilyInfo[fam][fRoudLoad1X][z] != 0 && FamilyInfo[fam][fRoudLoad1X][z] != 0)
+                    {
+                        PlayerInfo[playerid][CheckPointX][z] = 0;
+                        PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad1X][z];
+                        PlayerInfo[playerid][CheckPointY][z] = 0;
+                        PlayerInfo[playerid][CheckPointY][z] = FamilyInfo[fam][fRoudLoad1Y][z];
+                        PlayerInfo[playerid][CheckPointZ][z] = 0;
+                        PlayerInfo[playerid][CheckPointZ][z] = FamilyInfo[fam][fRoudLoad1Z][z];
+                        PlayerInfo[playerid][pCheckPointCount][z] = 1;
+                    }
+                }
+            }
+            else if(slot == 1)
+            {
+                for(new z = 0; z < 60; z++)
+                {
+                    if(FamilyInfo[fam][fRoudLoad2X][z] != 0 && FamilyInfo[fam][fRoudLoad2X][z] != 0)
+                    {
+                        PlayerInfo[playerid][CheckPointX][z] = 0;
+                        PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad2X][z];
+                        PlayerInfo[playerid][CheckPointY][z] = 0;
+                        PlayerInfo[playerid][CheckPointY][z] = FamilyInfo[fam][fRoudLoad2Y][z];
+                        PlayerInfo[playerid][CheckPointZ][z] = 0;
+                        PlayerInfo[playerid][CheckPointZ][z] = FamilyInfo[fam][fRoudLoad2Z][z];
+                        PlayerInfo[playerid][pCheckPointCount][z] = 1;
+                    }
+                }
+            }
+            else if(slot == 2)
+            {
+                for(new z = 0; z < 60; z++)
+                {
+                    if(FamilyInfo[fam][fRoudLoad3X][z] != 0 && FamilyInfo[fam][fRoudLoad3X][z] != 0)
+                    {
+                        PlayerInfo[playerid][CheckPointX][z] = 0;
+                        PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad3X][z];
+                        PlayerInfo[playerid][CheckPointY][z] = 0;
+                        PlayerInfo[playerid][CheckPointY][z] = FamilyInfo[fam][fRoudLoad3Y][z];
+                        PlayerInfo[playerid][CheckPointZ][z] = 0;
+                        PlayerInfo[playerid][CheckPointZ][z] = FamilyInfo[fam][fRoudLoad3Z][z];
+                        PlayerInfo[playerid][pCheckPointCount][z] = 1;
+                    }
+                }
+            }
+            else if(slot == 3)
+            {
+                for(new z = 0; z < 60; z++)
+                {
+                    if(FamilyInfo[fam][fRoudLoad4X][z] != 0 && FamilyInfo[fam][fRoudLoad4X][z] != 0)
+                    {
+                        PlayerInfo[playerid][CheckPointX][z] = 0;
+                        PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad4X][z];
+                        PlayerInfo[playerid][CheckPointY][z] = 0;
+                        PlayerInfo[playerid][CheckPointY][z] = FamilyInfo[fam][fRoudLoad4Y][z];
+                        PlayerInfo[playerid][CheckPointZ][z] = 0;
+                        PlayerInfo[playerid][CheckPointZ][z] = FamilyInfo[fam][fRoudLoad4Z][z];
+                        PlayerInfo[playerid][pCheckPointCount][z] = 1;
+                    }
+                }       
+            }
+            else if(slot == 4)
+            {
+                for(new z = 0; z < 60; z++)
+                {
+                    if(FamilyInfo[fam][fRoudLoad5X][z] != 0 && FamilyInfo[fam][fRoudLoad5X][z] != 0)
+                    {
+                        PlayerInfo[playerid][CheckPointX][z] = 0;
+                        PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad5X][z];
+                        PlayerInfo[playerid][CheckPointY][z] = 0;
+                        PlayerInfo[playerid][CheckPointY][z] = FamilyInfo[fam][fRoudLoad5Y][z];
+                        PlayerInfo[playerid][CheckPointZ][z] = 0;
+                        PlayerInfo[playerid][CheckPointZ][z] = FamilyInfo[fam][fRoudLoad5Z][z];
+                        PlayerInfo[playerid][pCheckPointCount][z] = 1;
+                    }
+                }
+            }
+            SuccessMessage(playerid,"{99ff66}Маршрут успешно загружен [/scpa]");
+		}
+		else return 0;
+	}
+	else if(dialogid == 1471)
+	{
+		if(response)
+		{
+            new fam = PlayerInfo[playerid][pFamily];
+			new slot = DP[0][playerid];
+			if(slot == -1) return ErrorMessage(playerid,"Не удалось получить номер маршрута");
+			if(listitem == 0)
+			{
+				for(new z = 0; z < 60; z++)
+				{	
+					if(FullRout[slot][brCordX][z] != 0 && FullRout[slot][brCordY][z] != 0 && FullRout[slot][brCordZ][z] != 0)
+					{
+						PlayerInfo[playerid][CheckPointX][z] = 0;
+						PlayerInfo[playerid][CheckPointX][z] = FullRout[slot][brCordX][z];
+						PlayerInfo[playerid][CheckPointY][z] = 0;
+						PlayerInfo[playerid][CheckPointY][z] = FullRout[slot][brCordY][z];
+						PlayerInfo[playerid][CheckPointZ][z] = 0;
+						PlayerInfo[playerid][CheckPointZ][z] = FullRout[slot][brCordZ][z];
+						PlayerInfo[playerid][pCheckPointCount][z] = 1;
+					}
+				}
+				SuccessMessage(playerid,"{99ff66}Маршрут успешно загружен [/scpa]");
+			}
+			if(listitem == 1)
+			{
+                if(slot == 0)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                            PlayerInfo[playerid][CheckPointX][z] = 0;
+                            FamilyInfo[fam][fRoudLoad1X][z] = PlayerInfo[playerid][CheckPointX][z];
+                            PlayerInfo[playerid][CheckPointY][z] = 0;
+                            FamilyInfo[fam][fRoudLoad1Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                            PlayerInfo[playerid][CheckPointZ][z] = 0;
+                            FamilyInfo[fam][fRoudLoad1Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                            PlayerInfo[playerid][pCheckPointCount][z] = 0;
+                    }
+                }
+                else if(slot == 1)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                            PlayerInfo[playerid][CheckPointX][z] = 0;
+                            FamilyInfo[fam][fRoudLoad2X][z] = PlayerInfo[playerid][CheckPointX][z];
+                            PlayerInfo[playerid][CheckPointY][z] = 0;
+                            FamilyInfo[fam][fRoudLoad2Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                            PlayerInfo[playerid][CheckPointZ][z] = 0;
+                            FamilyInfo[fam][fRoudLoad2Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                            PlayerInfo[playerid][pCheckPointCount][z] = 0;
+                    }
+                }
+                else if(slot == 2)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                            PlayerInfo[playerid][CheckPointX][z] = 0;
+                            FamilyInfo[fam][fRoudLoad3X][z] = PlayerInfo[playerid][CheckPointX][z];
+                            PlayerInfo[playerid][CheckPointY][z] = 0;
+                            FamilyInfo[fam][fRoudLoad3Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                            PlayerInfo[playerid][CheckPointZ][z] = 0;
+                            FamilyInfo[fam][fRoudLoad3Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                            PlayerInfo[playerid][pCheckPointCount][z] = 0;
+                    }
+                }
+                else if(slot == 3)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                            PlayerInfo[playerid][CheckPointX][z] = 0;
+                            FamilyInfo[fam][fRoudLoad4X][z] = PlayerInfo[playerid][CheckPointX][z];
+                            PlayerInfo[playerid][CheckPointY][z] = 0;
+                            FamilyInfo[fam][fRoudLoad4Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                            PlayerInfo[playerid][CheckPointZ][z] = 0;
+                            FamilyInfo[fam][fRoudLoad4Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                            PlayerInfo[playerid][pCheckPointCount][z] = 0;
+                    }  
+                }
+                else if(slot == 4)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                            PlayerInfo[playerid][CheckPointX][z] = 0;
+                            FamilyInfo[fam][fRoudLoad5X][z] = PlayerInfo[playerid][CheckPointX][z];
+                            PlayerInfo[playerid][CheckPointY][z] = 0;
+                            FamilyInfo[fam][fRoudLoad5Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                            PlayerInfo[playerid][CheckPointZ][z] = 0;
+                            FamilyInfo[fam][fRoudLoad5Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                            PlayerInfo[playerid][pCheckPointCount][z] = 0;
+                    }
+                }
+				format(FullRout[slot][brNameEditor], 24, "%s", rpplayername(playerid));
+				FamilyInfo[fam][fRoutUnix][slot] = gettime();
+				FamilyInfo[fam][fRoutIdEditor][slot] = PlayerInfo[playerid][pID];
+				SaveRoutRace(playerid,slot);
+				SuccessMessage(playerid,"{99ff66} Маршрут обновлен");
+			}
+			if(listitem == 2)
+			{
+                if(slot == 0)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                        FamilyInfo[fam][fRoudLoad1X][z] = PlayerInfo[playerid][CheckPointX][z];
+                        FamilyInfo[fam][fRoudLoad1Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                        FamilyInfo[fam][fRoudLoad1Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                    }
+                }
+                else if(slot == 1)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                        FamilyInfo[fam][fRoudLoad2X][z] = PlayerInfo[playerid][CheckPointX][z];
+                        FamilyInfo[fam][fRoudLoad2Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                        FamilyInfo[fam][fRoudLoad2Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                    }
+                }
+                else if(slot == 2)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                        FamilyInfo[fam][fRoudLoad3X][z] = PlayerInfo[playerid][CheckPointX][z];
+                        FamilyInfo[fam][fRoudLoad3Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                        FamilyInfo[fam][fRoudLoad3Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                    }
+                }
+                else if(slot == 3)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                        FamilyInfo[fam][fRoudLoad4X][z] = PlayerInfo[playerid][CheckPointX][z];
+                        FamilyInfo[fam][fRoudLoad4Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                        FamilyInfo[fam][fRoudLoad4Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                    }
+                }
+                else if(slot == 4)
+                {
+                    for(new z = 0; z < 60; z++)
+                    {
+                        FamilyInfo[fam][fRoudLoad5X][z] = PlayerInfo[playerid][CheckPointX][z];
+                        FamilyInfo[fam][fRoudLoad5Y][z] = PlayerInfo[playerid][CheckPointY][z];
+                        FamilyInfo[fam][fRoudLoad5Z][z] = PlayerInfo[playerid][CheckPointZ][z];
+                    }
+                }
+				FamilyInfo[fam][fRoutIdCreator][slot] = 0;
+				FamilyInfo[fam][fRoutIdEditor][slot] = 0;
+                format(FamilyRoutNameEditor[fam][slot],24,"");
+                format(FamilyRoutNameCreator[fam][slot],24,"");
+				FamilyInfo[fam][fRoutUnix][slot] = 0;
+				SaveRoutRace(playerid,slot);
+			}
+		}
+	}
     return 1;
 }
 stock settingpartner(playerid, b, number) // Управление партнерством
@@ -644,14 +914,14 @@ stock RegisterToRace(playerid, number)
         }
         else return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
     }
-    else(StreetRacers[0][raceStat] == 3)
+    else if(StreetRacers[0][raceStat] == 3)
     {
         new quan;
         for(new i; i < 8; i++)
         {
             format(line,sizeof(line),"Позиция Имя победителя\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
             format(line,sizeof(line),"{ff9000}%d. %s\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
-            ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход");
+            ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход","");
         }
     }
     return 1;
@@ -694,6 +964,10 @@ stock CheckpointRaceRout(playerid)
 	DisablePlayerRaceCheckpoint(playerid);
     if(r == 59) SetPlayerRaceCheckpoint(playerid,1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],6.0);
 	else SetPlayerRaceCheckpoint(playerid,0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r+1], FullRout[slot][brCordY][r+1], FullRout[slot][brCordZ][r+1],6.0);
+    if(r == 61)
+    {
+        RaceWinner(playerid);
+    }
 	return 1;
 }
 
@@ -759,7 +1033,7 @@ stock LeaveRace(playerid)
 }
 stock RaceWinner(playerid)
 {
-    new winners,quan;
+    new quan;
     for(new checking; checking < 8; checking++)
 	{
 		if(StreetRacers[0][racersCountWinner][checking] == -1)
@@ -774,31 +1048,136 @@ stock RaceWinner(playerid)
     return 1;
 }
 
-CMD:philinok(playerid)
-{
-    ebalo(playerid);
-    return 1;
-}
-
-stock ebalo(playerid,slot)
+stock SaveRoutRace(playerid,slot)
 {
     new fam = PlayerInfo[playerid][pFamily];
     if(fam < 0) return 0;
     new strocaX[480];
     new strocaY[480];
     new strocaZ[480];
-    for(new i = 0; i < 60; i++) 
+    new quan;
+    if(FamilyInfo[fam][fRoutIdCreator][slot] == 0) 
     {
-        FamilyInfo[fam][fRoudLoad1X][i] = PlayerInfo[playerid][CheckPointX][i];
-        FamilyInfo[fam][fRoudLoad1Y][i] = PlayerInfo[playerid][CheckPointY][i];
-        FamilyInfo[fam][fRoudLoad1Z][i] = PlayerInfo[playerid][CheckPointZ][i];
-	    format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][i]);
-        format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][i]);
-        format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][i]);
+        format(FamilyRoutNameCreator[fam][slot],24,PlayerInfo[playerid][pName]);
+        FamilyInfo[fam][fRoutIdCreator][slot] = PlayerInfo[playerid][pID];
     }
-
-    format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s' WHERE `id`='%d'",strocaX,strocaY,strocaZ, fam);
-	query_empty(pearsq, big_query);
+    else if(FamilyInfo[fam][fRoutIdCreator][slot] != 0)
+    {
+        FamilyInfo[fam][fRoutIdEditor][slot] = PlayerInfo[playerid][pID];
+        format(FamilyRoutNameEditor[fam][slot],24,PlayerInfo[playerid][pName]);
+    }
+    FamilyInfo[fam][fRoutUnix][slot] = gettime();
+    if(slot == 0)
+    {
+        for(new i = 0; i < 60; i++) 
+        {
+            if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0) 
+            {
+                continue;
+            }
+            FamilyInfo[fam][fRoudLoad1X][quan] = PlayerInfo[playerid][CheckPointX][i];
+            FamilyInfo[fam][fRoudLoad1Y][quan] = PlayerInfo[playerid][CheckPointY][i];
+            FamilyInfo[fam][fRoudLoad1Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
+            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            quan++;
+        }
+        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
+        `routNameCreator1`='%s',`routNameEditor1`='%s',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
+        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
+	    query_empty(pearsq, big_query);
+    }
+    else if(slot == 1)
+    {
+        for(new i = 0; i < 60; i++) 
+        {
+            if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0) 
+            {
+                continue;
+            }
+            FamilyInfo[fam][fRoudLoad2X][quan] = PlayerInfo[playerid][CheckPointX][i];
+            FamilyInfo[fam][fRoudLoad2Y][quan] = PlayerInfo[playerid][CheckPointY][i];
+            FamilyInfo[fam][fRoudLoad2Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
+            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            quan++;
+        }
+        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
+        `routNameCreator2`='%s',`routNameEditor2`='%s',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
+        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
+	    query_empty(pearsq, big_query);
+    }
+    else if(slot == 2)
+    {
+        for(new i = 0; i < 60; i++) 
+        {
+            if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0) 
+            {
+                continue;
+            }
+            FamilyInfo[fam][fRoudLoad3X][quan] = PlayerInfo[playerid][CheckPointX][i];
+            FamilyInfo[fam][fRoudLoad3Y][quan] = PlayerInfo[playerid][CheckPointY][i];
+            FamilyInfo[fam][fRoudLoad3Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
+            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            quan++;
+        }
+        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
+        `routNameCreator3`='%s',`routNameEditor3`='%s',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
+        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
+	    query_empty(pearsq, big_query);
+    }
+    else if(slot == 3)
+    {
+        for(new i = 0; i < 60; i++) 
+        {
+            if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0) 
+            {
+                continue;
+            }
+            FamilyInfo[fam][fRoudLoad4X][quan] = PlayerInfo[playerid][CheckPointX][i];
+            FamilyInfo[fam][fRoudLoad4Y][quan] = PlayerInfo[playerid][CheckPointY][i];
+            FamilyInfo[fam][fRoudLoad4Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
+            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            quan++;
+        }
+        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
+        `routNameCreator4`='%s',`routNameEditor4`='%s',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
+        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
+        query_empty(pearsq, big_query);
+    }
+    else if(slot == 4)
+    {
+        for(new i = 0; i < 60; i++) 
+        {
+            if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0) 
+            {
+                continue;
+            }
+            FamilyInfo[fam][fRoudLoad5X][quan] = PlayerInfo[playerid][CheckPointX][i];
+            FamilyInfo[fam][fRoudLoad5Y][quan] = PlayerInfo[playerid][CheckPointY][i];
+            FamilyInfo[fam][fRoudLoad5Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
+            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            quan++;
+        }
+        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
+        `routNameCreator5`='%s',`routNameEditor5`='%s',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
+        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
+	    query_empty(pearsq, big_query);
+    }
+    SuccessMessage(playerid,"{99ff66}Маршрут успешно загружен");
     return 1;
 }
 
@@ -820,4 +1199,60 @@ CMD:philinokcheck(playerid)
 {
     CheckFamRout(playerid);
     return 1;
+}
+
+stock ShowAllRoutRace(playerid,type)
+{
+    new fam = PlayerInfo[playerid][pFamily];
+    if(fam < 0) return 0;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
+	format(line,sizeof(line),"№ Автор\tВремя редактирования/создания"), strcat(lines,line);
+	for(new i = 0; i < 5; i++) 
+	{
+		List[i][playerid] = 0;
+		stamp2datetime(FamilyInfo[fam][fRoutUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		if(FamilyInfo[fam][fRoutUnix][i] != 0)
+		{
+            format(line,sizeof(line),"\n%d.%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FamilyRoutNameCreator[fam][i],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+		}
+		else
+		{
+			format(line,sizeof(line),"\n%d.Пусто\t ", i+1), strcat(lines,line);
+        }
+        List[quan][playerid] = i;
+		quan++;
+	}
+    if(type == 0) ShowDialog(playerid,1468,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов Стритрейсеров",lines,"Выбрать","Выход");
+    else if(type == 1) ShowDialog(playerid,1469,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список маршрутов Стритрейсеров",lines,"Выбрать","Выход");
+	return 1;
+}
+
+stock SettingRoutRace(playerid, number, author)
+{
+    new fam = PlayerInfo[playerid][pFamily];
+	DP[0][playerid] = number;
+	if(author == 0)
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+		stamp2datetime(FamilyInfo[fam][fRoutUnix][number], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"\n%s Создан/отредактирован: [ %02d.%02d.%d %02d:%02d ]\n", FamilyRoutNameCreator[fam][number],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+
+		format(line,sizeof(line),"\n\n{555555}Редактировал"), strcat(lines,line);
+		format(line,sizeof(line),"\n{555555}%s\n", FamilyRoutNameEditor[fam][number]), strcat(lines,line);
+		ShowDialog(playerid,1470,DIALOG_STYLE_MSGBOX,"{ff9000}Маршрут",lines,"Загрузить","Назад");
+	}
+	else if(author == 1)
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		format(lines,sizeof(lines),""); // Очищаем Lines
+		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"Маршрут от: %s Создан: [ %02d.%02d.%d %02d:%02d ]", FamilyRoutNameCreator[fam][number],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		format(line,sizeof(line),"\nЗагрузить маршрут себе в чекпоинты"), strcat(lines,line);
+		format(line,sizeof(line),"\nОбновить маршрут(загрузит ваши текущие координаты в него)"), strcat(lines,line);
+		format(line,sizeof(line),"\nУдалить маршрут из базы"), strcat(lines,line);
+		ShowDialog(playerid,1471,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Загрузить","Назад");
+	}
+	return 1;
 }
