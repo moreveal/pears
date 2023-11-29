@@ -186,8 +186,6 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 forward PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart);
 public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
 {
-    SetPlayerTeam(playerid, NON_DAMAGE_TEAM);
-    SetPlayerTeam(damagedid, NON_DAMAGE_TEAM);
     // Убийство с ножа
     if (weaponid == WEAPON_KNIFE && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, 0, "df", damagedid, 0.0);
     // Обработка удара прикладом
@@ -223,13 +221,6 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         // Прерываем намаз
         if(Namaz[playerid] >= 0) NamazEnd(playerid, 2);
     }
-    
-    // Возвращение NO_TEAM обоим игрокам
-	if (PlayerInfo[playerid][pResetTeamTimer] != 0) KillTimer(PlayerInfo[playerid][pResetTeamTimer]);
-	PlayerInfo[playerid][pResetTeamTimer] = SetTimerEx("ResetTeam", 100, 0, "d", playerid);
-    if (PlayerInfo[damagedid][pResetTeamTimer] != 0) KillTimer(PlayerInfo[damagedid][pResetTeamTimer]);
-	PlayerInfo[damagedid][pResetTeamTimer] = SetTimerEx("ResetTeam", 100, 0, "d", damagedid);
-    // ---------------------------------
     return 1;
 }
 
@@ -261,7 +252,3 @@ stock TakePlayerArmour(playerid, Float: amount)
 // Отложенное присвоение урона (для использования в таймере)
 forward SetPlayerHealthTimer(playerid, Float: health);
 public SetPlayerHealthTimer(playerid, Float: health) return ACSetPlayerHealth(playerid, health);
-
-// Сбрасывает команду игроку
-forward ResetTeam(playerid);
-public ResetTeam(playerid) { return SetPlayerTeam(playerid, NO_TEAM); }

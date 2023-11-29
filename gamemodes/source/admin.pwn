@@ -403,7 +403,7 @@ CMD:veh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
     if(sscanf(params, "iii", params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт /veh Модель Цвет1 Цвет2");
-	if(params[0] < 400 || params[0] > 611) return ErrorMessage(playerid, "{FF6347}Модель транспорта не меньше 400 и не больше 611");
+	if(!IsAVehExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 613 и выше - кастомные авто)");
 	if(params[1] < 0 || params[1] > 255 || params[2] < 0 || params[2] > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
 	if(QuanCar >= MAX_MAPVEH) return format(store, sizeof(store), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, store);
     new createid = -1;
@@ -425,7 +425,7 @@ CMD:veh(playerid, const params[])
 	Cars[CreatedCars[createid]] = 9999;
 	Gas[CreatedCars[createid]] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
-	format(store, sizeof(store), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", vehName[params[0]], params[0], CreatedCars[createid]);
+	format(store, sizeof(store), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", GetVehicleName(params[0]), params[0], CreatedCars[createid]);
 	SendClientMessage(playerid, COLOR_GREY, store);
 	return 1;
 }

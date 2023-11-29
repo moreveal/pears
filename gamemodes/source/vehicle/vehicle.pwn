@@ -1,4 +1,21 @@
 
+// Проверка на доступный транспорт
+stock IsAVehExisting(v)
+{
+    if(v >= 400 && v <= 611 // Стандартный транспорт gta
+
+    || v >= 612 && v <= 1999) return 1; // Кастомный транспорт пирса
+    return 0;
+}
+
+stock GetVehicleName(v)
+{
+	new vehicleName[34];
+	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v]);
+	else format(vehicleName, sizeof(vehicleName), "Unknown");
+	return vehicleName;
+}
+
 stock PP_CreateVehicle(id, model,Float:x,Float:y,Float:z,Float:a, col1, col2, sek, siren, timerspawn, Float:health)
 {
 	if(QuantityVehicles + 1 >= SKOKOCAROV) return -1; // Лимит транспортных средств на серверах SAMP

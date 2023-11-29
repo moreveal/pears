@@ -1585,7 +1585,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         SetPlayerArmour(playerid, computerClubRoomInfo[gameid][roomid][ccriMaxArmor]);
 
         // Устанавливаем команду (игроки своей команды не будут получать урон)
-        SetPlayerTeam(playerid, computerClubPlayerInfo[playerid][ccpiTeam]);
+        //SetPlayerTeam(playerid, computerClubPlayerInfo[playerid][ccpiTeam]);
 
         return 0;
     }
