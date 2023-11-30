@@ -2274,6 +2274,13 @@ stock player_tile(playerid, inva)
 			 	}
 		 		else CreateOdet(playerid, fpick, inva);
 			}
+
+			else if(thingType == 5) // Транспорт
+			{
+				DP[0][playerid] = inva;
+				format(store,sizeof(store),"{cccccc}Вы уверены, что хотите распаковать {ff9000}%s ?", GetVehicleName(fpick));
+				ShowDialog(playerid,493,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+			}
 			/*
 			1 позвоночник
 			2 головы

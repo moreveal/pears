@@ -1,3 +1,5 @@
+
+#define MAX_GOLD_COURSE 10000 // Максимальный курс голды
 #define MAX_TRADECRYPT 1000
 enum TradeCryptInfo
 {
@@ -170,7 +172,8 @@ stock ShowDialogCreateTradeGold(playerid, create_page)
     }
     else if(create_page == 1)
     {
-        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда","{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше 50000$","Принять","Отмена");
+        format(store,sizeof(store),"{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше %d$", MAX_GOLD_COURSE);
+        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда",store,"Принять","Отмена");
     }
     return 1;
 }
@@ -193,12 +196,13 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem == 1)
             {
                 DP[0][playerid] = 0;
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1 и не больше 100.000 ]\n{ff9000}Пример: 10 100","Принять","Отмена");
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше 100.000$ ]\n{ff9000}Пример: 10 100","Принять","Отмена");
             }
             if(listitem == 2)
             {
                 DP[0][playerid] = 1;
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1 и не больше 100.000 ]\n{ff9000}Пример: 10 100","Принять","Отмена");
+                format(store,sizeof(store),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",store,"Принять","Отмена");
             }
             if(listitem == 3) // Сбросить Фильтр
             {
@@ -218,8 +222,8 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         {
             new input, input2;
             if(sscanf(inputtext, "ii", input, input2)) return TradeSorting(playerid);
-            if(input < 1 || input >= 100000
-                || input2 < 1 || input2 >= 100000) return TradeSorting(playerid);
+            if(input < 1 || input > MAX_GOLD_COURSE
+                || input2 < 1 || input2 > MAX_GOLD_COURSE) return TradeSorting(playerid);
 
             if(DP[0][playerid] == 0) // Количество
             {
@@ -320,7 +324,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         {
             new input = strval(inputtext);
             if(sscanf(inputtext, "i", input)) return MyTradeSetting(playerid), PlayerPlaySound(playerid,4203,0,0,0);
-            if(input < 1 || input > 50000) return ShowDialogCreateTradeGold(playerid, 1), PlayerPlaySound(playerid,4203,0,0,0);
+            if(input < 1 || input > MAX_GOLD_COURSE) return ShowDialogCreateTradeGold(playerid, 1), PlayerPlaySound(playerid,4203,0,0,0);
 
             new donate = DP[4][playerid];
             if(IsALimitTradePlayer(playerid) >= 5) return ErrorText(playerid, "{FF6347}Вы можете создать только 5 трейдов"), ShowDialogCreateTradeGold(playerid, 1);

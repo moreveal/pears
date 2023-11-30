@@ -4579,6 +4579,35 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 	return 1;
 }
 
+stock UnPackVehicle(playerid)
+{
+	new inva = DP[0][playerid];
+	new thingId = PlayerInfo[playerid][pInven][inva], thingType = PlayerInfo[playerid][pInvenType][inva];
+	if(thingType != 5) return ErrorMessage(playerid, "{FF6347}Опа! Ошибочка, это не транспорт");
+
+	new freeSlot = GetPlayerFreeVehSlot(playerid);
+    if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
+
+	i_del(playerid, inva);
+	SaveInvent(playerid, inva);
+
+	new posId, biz, Float:pos[4];
+	if(IsABoat(thingId)) biz = 90 + random(2), posId = random(4);
+	else if(IsAPlane(thingId)) biz = 87 + random(2), posId = random(7);
+	else if(IsAMoto(thingId)) biz = 82 + random(4), posId = random(7);
+	else biz = 77 + random(4), posId = random(7);
+
+	GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
+	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, 1, 1);
+
+	format(store,sizeof(store),"{99ff66}Вы распаковали новый транспорт {ff9000}%s\n\n{cccccc}Управление транспорт Y >> Транспорт или /car", GetVehicleName(thingId));
+	SuccessMessage(playerid, store);
+
+	format(store,sizeof(store),"[ Мысли ]: Я распаковал%s %s [ Y >> Транспорт или /car ]", gender(playerid), GetVehicleName(thingId));
+	SendClientMessage(playerid,COLOR_GREY,store);
+	return 1;
+}
+
 CMD:addcar(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 19 && PlayerInfo[playerid][pMedia] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");

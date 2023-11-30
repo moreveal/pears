@@ -69,7 +69,7 @@ stock PickupSoap(playerid) // Подбираем мыло
 
         format(store, sizeof(store), "поднял%s мыло с пола", gender(playerid));
         SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
-        ApplyAnimation(playerid,"CARRY","liftup",2.0,0,1,1,1,1);
+        ApplyAnimation(playerid,"CARRY","liftup",2.0,0,1,1,0,0);
         PlayerPlaySound(playerid, 5601, 0,0,0);
 
         HeLooksAtHowIPicksUpTheSoap(playerid);
@@ -83,14 +83,16 @@ new TextShowerChatMan[][] =
     "и резко отвёл взгляд", 
     "и облизнулся", 
     "и покраснел", 
-    "и прикрылся"
+    "и прикрылся",
+    "и положил руки на пах"
 };
 new TextShowerChatWoman[][] =
 {
     "и резко отвела взгляд", 
     "и облизнулась", 
     "и покраснела", 
-    "и прикрылась"
+    "и прикрылась",
+    "и положила руки на пах"
 };
 
 
@@ -135,7 +137,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
         {
             new watchSlot = random(quanWatch);
             new giveplayerid = watchPlayers[watchSlot] - 1;
-            new randText = random(4);
+            new randText = random(5);
 
             // Мысли
             format(store, sizeof(store), "[ Мысли ]: Я поднял%s мыло. %s посмотрел%s на меня %s", gender(playerid), rpplayername(giveplayerid), gender(giveplayerid), GenderTextShower(giveplayerid, randText));
