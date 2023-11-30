@@ -348,9 +348,18 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
-			FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
-			FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
+			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
+				FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
+				FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
+			}
+			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad1X][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad1Y][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad1Z][i] = 0.0;
+			}
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
@@ -364,9 +373,18 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			FamilyInfo[idx][fRoudLoad2X][i] = floatstr(FamRoutX[i]);
-			FamilyInfo[idx][fRoudLoad2Y][i] = floatstr(FamRoutY[i]);
-			FamilyInfo[idx][fRoudLoad2Z][i] = floatstr(FamRoutZ[i]);
+			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad2X][i] = floatstr(FamRoutX[i]);
+				FamilyInfo[idx][fRoudLoad2Y][i] = floatstr(FamRoutY[i]);
+				FamilyInfo[idx][fRoudLoad2Z][i] = floatstr(FamRoutZ[i]);
+			}
+			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad2X][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad2Y][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad2Z][i] = 0.0;
+			}
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
@@ -380,9 +398,18 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			FamilyInfo[idx][fRoudLoad3X][i] = floatstr(FamRoutX[i]);
-			FamilyInfo[idx][fRoudLoad3Y][i] = floatstr(FamRoutY[i]);
-			FamilyInfo[idx][fRoudLoad3Z][i] = floatstr(FamRoutZ[i]);
+			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad3X][i] = floatstr(FamRoutX[i]);
+				FamilyInfo[idx][fRoudLoad3Y][i] = floatstr(FamRoutY[i]);
+				FamilyInfo[idx][fRoudLoad3Z][i] = floatstr(FamRoutZ[i]);
+			}
+			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad3X][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad3Y][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad3Z][i] = 0.0;
+			}
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
@@ -396,9 +423,18 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			FamilyInfo[idx][fRoudLoad4X][i] = floatstr(FamRoutX[i]);
-			FamilyInfo[idx][fRoudLoad4Y][i] = floatstr(FamRoutY[i]);
-			FamilyInfo[idx][fRoudLoad4Z][i] = floatstr(FamRoutZ[i]);
+			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad4X][i] = floatstr(FamRoutX[i]);
+				FamilyInfo[idx][fRoudLoad4Y][i] = floatstr(FamRoutY[i]);
+				FamilyInfo[idx][fRoudLoad4Z][i] = floatstr(FamRoutZ[i]);
+			}
+			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad4X][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad4Y][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad4Z][i] = 0.0;
+			}
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
@@ -412,9 +448,18 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			FamilyInfo[idx][fRoudLoad5X][i] = floatstr(FamRoutX[i]);
-			FamilyInfo[idx][fRoudLoad5Y][i] = floatstr(FamRoutY[i]);
-			FamilyInfo[idx][fRoudLoad5Z][i] = floatstr(FamRoutZ[i]);
+			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad5X][i] = floatstr(FamRoutX[i]);
+				FamilyInfo[idx][fRoudLoad5Y][i] = floatstr(FamRoutY[i]);
+				FamilyInfo[idx][fRoudLoad5Z][i] = floatstr(FamRoutZ[i]);
+			}
+			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
+			{
+				FamilyInfo[idx][fRoudLoad5X][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad5Y][i] = 0.0;
+				FamilyInfo[idx][fRoudLoad5Z][i] = 0.0;
+			}
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX

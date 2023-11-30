@@ -7,3 +7,9 @@ svlog.txt
 **/*.amx
 plugins/FCNPC.dll
 plugins/FCNPC.so
+filterscripts/pearsmap.amx
+svlog.txt
+*.dll
+*.inc
+pawno/include/a_mysql.inc
+pawno/include/Pawn.RakNet.inc
