@@ -1,14 +1,12 @@
 
 new NpcArmy;
 new npcarmyid;
-new TrainRoadID;
+new TrainRoadID = 1442; // Точка, в которой появляется поезд
 new NextTrainRoadID;
 new Float:speedTrain;
 new Float:speedGo;
 new TrainStoped = 1;
-new TrainGear;
 new TrainGearDelay;
-new TrainMoved;
 new MoveStatus; // 0 Разгон, 1 Торможение
 new ruinsOnTrainRoad;
 
@@ -38,9 +36,17 @@ public FCNPC_OnUpdate(npcid)
 CMD:traingo(playerid)
 {
     if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
-    if(TrainStoped == 0) return ErrorMessage(playerid, "{FF6347}Дождитесь остановки поезда");
 
-    TrainGear = 0;
+    TrainStart();
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Движение поезда запущено","*","");
+    return 1;
+}
+
+function TrainStart()
+{
+    if(TrainMoved == 1) return 1;
+
+	TrainGear = 0;
     TrainGearSet(1);
 
     MoveStatus = 0;
@@ -50,9 +56,7 @@ CMD:traingo(playerid)
 
     FindNextTrainRoad();
     GoTrainRoad();
-
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Поихали","*","");
-    return 1;
+	return 1;
 }
 
 CMD:trainstop(playerid)
@@ -61,7 +65,7 @@ CMD:trainstop(playerid)
     if(MoveStatus == 1) return ErrorMessage(playerid, "{FF6347}Поезд уже останавливается");
     if(TrainStoped == 1) return ErrorMessage(playerid, "{FF6347}Дождитесь остановки поезда");
     MoveStatus = 1;
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}останавливаем поезд","*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Останавливаем поезд","*","");
     return 1;
 }
 // /npcgo -0.3150 1.7

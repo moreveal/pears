@@ -77,7 +77,7 @@ stock veh_openbonnet(v)
 	if(IsABootFront(v)) SetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, true, objective);
 	else SetVehicleParamsEx(v, engine, lights, alarm, doors, true, boot, objective);
 	VehInfo[v][vBonnet] = 1;
-	VehInfo[v][vNospawn] = 1;
+	if(VehInfo[v][vNospawn] != 2) VehInfo[v][vNospawn] = 1;
 }
 stock veh_openboot(v)
 {
@@ -85,7 +85,7 @@ stock veh_openboot(v)
 	if(IsABootFront(v)) SetVehicleParamsEx(v, engine, lights, alarm, doors, true, boot, objective);
 	else SetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, true, objective);
 	VehInfo[v][vBoot] = 1;
-	VehInfo[v][vNospawn] = 1;
+	if(VehInfo[v][vNospawn] != 2) VehInfo[v][vNospawn] = 1;
 }
 
 stock IsAPosBootOrBonet(playerid, &type)

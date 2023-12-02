@@ -1,9 +1,16 @@
-new BoxStat,BoxStatLV,BoxStatLS,BoxStatSF; // Общее количество ящиков
-new train;
-new train_object1, train_object2, train_object3;
+new BoxStat; // Общее количество ящиков
+new BoxInTrain; // Количество ящиков, погруженных в поезд
+
 new EscortStatus;
 new EscortOrganization;
 new EscortProcess;
+
+new train;
+new train_object1, train_object2, train_object3;
+new TrainMoved;
+new TrainGear;
+
+new ExitTrainSide; // Подсчёт стороны выхода из поезда
 
 #define MAX_POS_SIDE_TRAIN 14
 new Float:train_side_X[2][MAX_POS_SIDE_TRAIN], Float:train_side_Y[2][MAX_POS_SIDE_TRAIN], Float:train_side_Z[2][MAX_POS_SIDE_TRAIN];
@@ -20,31 +27,6 @@ stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координа
     return 1;
 }
 
-static Float:StationTrain[3][3] = { // Координаты станции поезда
-	{2864.7500,1308.7200,12.3495}, // 0 LV
-	{1776.9491,-1953.8057,15.0995}, // 1 LS
-	{-1944.3595,115.9928,27.2245} // 2 SF
-};
-
-static Float:StationTrainGoEscort[3][3] = { // Координаты станции поезда
-	{2856.7761,1229.0349,10.8984}, // 0 LV
-	{1777.7351,-1936.8763,13.5507}, // 1 LS
-	{-1985.2375,190.4366,27.6875} // 2 SF
-};
-stock IsAStationTrainPosGoEscort(playerid)
-{
-    if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[0][0],StationTrainGoEscort[0][1],StationTrainGoEscort[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[1][0],StationTrainGoEscort[1][1],StationTrainGoEscort[1][2])
-	|| IsPlayerInRangeOfPoint(playerid,2.0,StationTrainGoEscort[2][0],StationTrainGoEscort[2][1],StationTrainGoEscort[2][2])) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER
-	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
-	return 0;
-}
-stock IsAStationTrainPos(playerid)
-{
-    if((IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[0][0],StationTrain[0][1],StationTrain[0][2]) || IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[1][0],StationTrain[1][1],StationTrain[1][2])
-	|| IsPlayerInRangeOfPoint(playerid,2.0,StationTrain[2][0],StationTrain[2][1],StationTrain[2][2])) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER
-	&& GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) return 1;
-	return 0;
-}
 stock OrderEscort(playerid, frak)
 {
 	DP[4][playerid] = frak;
@@ -225,7 +207,7 @@ stock orderfrak(playerid)
 		}
 	}
 	if(quan <= 0) return ErrorMessage(playerid, "{FF6347}Нет активных заказов");
-	ShowDialog(playerid,1385,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Доставка Боеприпасов",lines,"Выбрать","Отмена");
+	ShowDialog(playerid,1385,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Доставка Боеприпасов",lines,"Принять","Отмена");
 	return 1;
 }
 
@@ -251,6 +233,7 @@ stock LoadOrderEscort(playerid)
 	}
 	if(stop) return ErrorMessage(playerid, "{FF6347}Уберите из багажника Barracks все лишние предметы");
 
+	BoxStat = 0;
 	for(new i = 0; i < MAX_ORDERESCORT; i++)
 	{
 		if(OrganInfo[g][gOrder][i] == 0) continue;
@@ -262,11 +245,12 @@ stock LoadOrderEscort(playerid)
 			VehInfo[v][vInvQara][i] = 0; // Статус краденного предмета
 			VehInfo[v][vInvType][i] = OrganInfo[g][gOrderType][i]; // Тип предмета
 			VehInfo[v][vInvPack][i] = 4; // Упаковка предмета
+			BoxStat ++; // Считаем ящики в текущей доставке
 		}
 	}
 
-	EscortStatus = 2;
-	VehInfo[v][vNospawn] = 1;
+	EscortStatus = 2; // 2 шаг - погрузили ящики в Barracks
+	VehInfo[v][vNospawn] = 2;
 
 	if(g == 3)
 	{
@@ -277,7 +261,7 @@ stock LoadOrderEscort(playerid)
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отлично! Отправляйтесь на ЖД станцию для погрузки БП на поезде (отмечено в GPS навигаторе)");
 		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Не забудьте собрать людей для сопровождения, на вас могут напасть!");
 		OrganInfo[3][glave] -= OrganInfo[g][gDeliveryPay];
-		CreateGps(playerid, 137.91, 1289.1465, 21.3203, 0, 0, 10.0);
+		CreateGps(playerid, 747.7584,1692.0493,7.1768, 0, 0, 10.0);
 
 		format(store, sizeof(store), "{ffffff}** {00C6FF}Конвой NGSA отправляется с боеприпасами для: %s **", frakeasyName[g]);
 		SendGangMessage(COLOR_ALLDEPT, store);
@@ -306,27 +290,85 @@ stock LoadOrderEscort(playerid)
 	return 1;
 }
 
-stock LoadOrderEscortTrain(playerid)
+stock PutBoxToTrain(playerid)
 {
-	new veh = GetPlayerVehicleID(playerid);
-	new model = GetVehicleModel(veh);
-	if(model != 433) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Barracks)");
-	if(GetPVarInt(playerid,"delivery_frak") >= 1 && GetPVarInt(playerid,"delivery_frak_status") == 2) 
+	if(EscortStatus == 0) return ErrorMessage(playerid, "{FF6347}Сейчас нет активной доставки боеприпасов\n\n{cccccc}На базе NGSA есть терминал с активными заказами для доставки");
+	new Float:pos[3];
+	GetVehiclePos(train, pos[0], pos[1], pos[2]);
+	new Float:dist = GetPlayerDistanceFromPoint(playerid, pos[0], pos[1], pos[2]);
+	if(dist >= 50) return ErrorMessage(playerid, "{FF6347}Поезда нет на станции\n\n{cccccc}Поезд самостоятельно прибудет на станцию после выполнения заказа");
+	if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Нельзя погрузить боеприпасы в движущийся поезд");
+
+	new result = put_bootbox(playerid, train);
+	if(result == 0) return 0;
+
+	BoxInTrain ++; // Считаем количество ящиков в поезде
+
+	// Все ящики загружены на поезд
+	if(BoxInTrain >= BoxStat)
 	{
-		format(store, sizeof(store), "** NGSA начинает грузить боеприпасы в поезд для %s **", frakeasyName[GetPVarInt(playerid,"delivery_frak")]);
-		SendGangMessage(COLOR_ALLDEPT, store);
-        SendMafiaMessage(COLOR_ALLDEPT, store);
-		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Садитесь в поезд и ожидайте загрузку Боеприпасов в поезд");
-		SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Как все ящики будут загружены вы сможете тронуться(необходимо погудеть перед отправкой)");
-		SetPVarInt(playerid,"delivery_frak_status",3);
-		BoxStat = 20;
-		CreateGps(playerid, 137.91, 1289.1465, 21.3203, 0, 0, 10.0); // Указать корды куда следовать.
-	} 
-	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не выполняю доставку боеприпасов");
+		EscortStatus = 3; // 3 шаг - погрузили ящики в поезд
+
+		// Запускаем таймер для начала движения поезда
+		SetTimer("TrainStart", 20000, false);
+
+		// Пишем сообщение всем армейцам, которые рядом тусуются
+		foreach(Player,i)
+		{
+			if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING) continue;
+			if(IsPlayerInRangeOfPoint(i,70.0, pos[0], pos[1], pos[2])) MessageTrainStartOnStation(i);
+		}
+	}
 	return 1;
 }
 
-stock NGSAWorkToTrain(playerid, status)
+stock MessageTrainStartOnStation(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"{336633}Внимание! Все боеприпасы загружены в поезд"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ F или Enter возле главного вагона ]"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 20 секунд"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+
+    SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Train ]: {ffcc66}По вагонам! Подойдите к главному вагону и сядьте в него [ F или Enter ]");
+	SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Train ]: {ffcc66}Поезд отправится через 20 секунд");
+    PlayerPlaySound(playerid,6401,0,0,0);
+    return 1;
+}
+
+stock EnterTrain(playerid)
+{
+	Protect_PutPlayerInVehicle(playerid, train, 4);
+	return 1;
+}
+
+stock ExitTrain(playerid)
+{
+	if(TrainGear >= 5) return ErrorMessage(playerid, "{FF6347}Вы не можете выйти из поезда на высокой скорости\n\n{cccccc}Дождитесь остановки поезда на станции или при обнаружении повреждения ж/д путей");
+
+	new Float:pos[4], Float:offset;
+	GetVehiclePos(train, pos[0], pos[1], pos[2]);
+	GetVehicleZAngle(train, pos[3]);
+
+	if(ExitTrainSide == 0)
+	{
+		offset = 1.7;
+		ExitTrainSide = 1;
+	}
+	else
+	{
+		offset = -1.7;
+		ExitTrainSide = 0;
+	}
+	pos[0] -= (offset * floatsin(-pos[3]+90, degrees));
+    pos[1] -= (offset * floatcos(-pos[3]+90, degrees));
+
+	PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+	return 1;
+}
+
+/*stock NGSAWorkToTrain(playerid, status)
 {
 	if(PlayerInfo[playerid][pMember] == 3)
 	{
@@ -387,9 +429,9 @@ stock NGSAWorkToTrainPut(playerid)
 		RemovePlayerAttachedObject(playerid,1);
 	} else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не состою в NGSA");
 	return 1;
-}
+}*/
 
-stock GoTrainToStation(playerid)
+/*stock GoTrainToStation(playerid)
 {
 	new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
@@ -415,9 +457,9 @@ stock GoTrainToStation(playerid)
 	} 
 	else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не выполняю доставку боеприпасов");
 	return 1;
-}
+}*/
 
-stock GoPutIsTrain(playerid)
+/*stock GoPutIsTrain(playerid)
 {
 	new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
@@ -443,9 +485,9 @@ stock GoPutIsTrain(playerid)
 		}
 	}
 	return 1;
-}
+}*/
 
-stock GoEscortToBaseFrak(playerid)
+/*stock GoEscortToBaseFrak(playerid)
 {
 	new veh = GetPlayerVehicleID(playerid);
 	new model = GetVehicleModel(veh);
@@ -485,9 +527,9 @@ stock GoEscortToBaseFrak(playerid)
 		}
 	}
 	return 1;
-}
+}*/
 
-stock CanselEscortToFrak(playerid,g)
+/*stock CanselEscortToFrak(playerid,g)
 {
 	if(OrganInfo[g][gOrderStatus] == 0) return ErrorMessage(playerid, "{FF6347}В этот бизнес не оформлен заказ товаров");
 	new frakid = GetPVarInt(playerid,"delivery_frak");
@@ -528,7 +570,7 @@ stock CanselEscortToFrak(playerid,g)
 		//if(PlayerInfo[playerid][pAchieve][119] == 0) AchievePlayer(playerid, 119, 1);
 	}
 	return 1;
-}
+}*/
 
 /*
 stock ARobTrain(playerid)
@@ -553,7 +595,7 @@ CMD:ngsaescort(playerid,const params[])
 	return 1;
 }
 
-stock IsPlayerNearbyHammerOnTrain(playerid) // Стоим вдоль бочины поезда
+stock IsPlayerNearbyOnTrain(playerid) // Стоим вдоль бочины поезда
 {
 	new yesFind;
 	for(new i = 0; i < MAX_POS_SIDE_TRAIN; i++)

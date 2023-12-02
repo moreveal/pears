@@ -7,21 +7,19 @@ new Text3D:soapLabel;
 CMD:checklook(playerid, const params[]) // VREMENNO
 {
     if(server != 0) return 1;
-    {
-        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Узнать на кого смотрит игрок [ /checklook ID ]");
-        if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его нет..");
-        new playerTarget = GetPlayerCameraTargetPlayer(params[0]);
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Узнать на кого смотрит игрок [ /checklook ID ]");
+    if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его нет..");
+    new playerTarget = GetPlayerCameraTargetPlayer(params[0]);
 
-        if(playerTarget == INVALID_PLAYER_ID)
-        {
-            format(store, sizeof(store), "[ Мысли ]: %s[%d] ни на кого не смотрит", PlayerInfo[params[0]][pName], params[0]);
-            SendClientMessage(playerid, COLOR_GREY, store);
-        }
-        else
-        {
-            format(store, sizeof(store), "[ Мысли ]: %s[%d] смотрит на %s[%d]", PlayerInfo[params[0]][pName], params[0], PlayerInfo[playerTarget][pName], playerTarget);
-            SendClientMessage(playerid, COLOR_GREY, store);
-        }
+    if(playerTarget == INVALID_PLAYER_ID)
+    {
+        format(store, sizeof(store), "[ Мысли ]: %s[%d] ни на кого не смотрит", PlayerInfo[params[0]][pName], params[0]);
+        SendClientMessage(playerid, COLOR_GREY, store);
+    }
+    else
+    {
+        format(store, sizeof(store), "[ Мысли ]: %s[%d] смотрит на %s[%d]", PlayerInfo[params[0]][pName], params[0], PlayerInfo[playerTarget][pName], playerTarget);
+        SendClientMessage(playerid, COLOR_GREY, store);
     }
     return 1;
 }
@@ -84,7 +82,7 @@ new TextShowerChatMan[][] =
     "и облизнулся", 
     "и покраснел", 
     "и прикрылся",
-    "и положил руки на пах"
+    "и положил руки себе на пах"
 };
 new TextShowerChatWoman[][] =
 {
@@ -92,9 +90,8 @@ new TextShowerChatWoman[][] =
     "и облизнулась", 
     "и покраснела", 
     "и прикрылась",
-    "и положила руки на пах"
+    "и положила руки себе на пах"
 };
-
 
 stock GenderTextShower(playerid, textId)
 {
@@ -117,7 +114,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             if(IsPlayerInSquare(i, 1020.423889, 2445.421142, 1028.551879, 2455.094238)) // Нашли всех, кто тоже в душе
             {
                 new playerTarget = GetPlayerCameraTargetPlayer(i);
-                if(playerTarget == playerid) watchPlayers[quanWatch] = i + 1, quanWatch ++; // Смотрит на меня
+                if(playerTarget == playerid && GetPVarInt(i,"afksystem") <= 3) watchPlayers[quanWatch] = i + 1, quanWatch ++; // Смотрит на меня
                 else nearPlayers[quanNear] = i + 1, quanNear ++; // Не смотрит
                 quanAll ++;
                 if(quanAll >= MAX_NEAR_PLAYERS_IN_SHOWER) break;
@@ -133,7 +130,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
     }
     else
     {
-        if(quanWatch > 0) // Есть те, кто смотрели
+        if(quanWatch > 0) // Есть те, кто смотрели+
         {
             new watchSlot = random(quanWatch);
             new giveplayerid = watchPlayers[watchSlot] - 1;
@@ -152,7 +149,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
             // Bubble
-            format(store, sizeof(store), "посмотрел%s на %s", gender(giveplayerid), rpplayername(playerid));
+            format(store, sizeof(store), "посмотрел%s на %s %s", gender(giveplayerid), rpplayername(playerid), GenderTextShower(giveplayerid, randText));
             SetPlayerChatBubble(giveplayerid,store,COLOR_PURPLE,20.0,5000);
 
             //Prox

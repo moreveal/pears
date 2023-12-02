@@ -293,7 +293,7 @@ stock bonet_close(playerid)
 				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, false, boot, objective);
 			}
 			VehInfo[OnlineInfo[playerid][oShowTabs]][vBonnet] = 0;
-            VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
+            if(VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] != 2) VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
 		}
         OnlineInfo[playerid][oShowTabs] = 9999;
 	}

@@ -4,7 +4,11 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 586 удалённх объектов
+ 	// 588 удалённх объектов
+
+	// FBI Street
+	RemoveBuildingForPlayer(playerid, 6873, 2053.020, 2403.219, 9.820, 0.250);
+	RemoveBuildingForPlayer(playerid, 6918, 2053.020, 2403.219, 9.820, 0.250);
 
 	// Train Station LV NGSA Area 51
 	RemoveBuildingForPlayer(playerid, 16774, 800.328, 1672.130, 5.875, 0.250);

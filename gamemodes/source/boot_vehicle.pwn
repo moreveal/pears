@@ -35,6 +35,12 @@ stock use_boot(playerid, v, inva, useinva)
 	    SetPlayerAttachedObject(playerid,1 , 3014, 6, 0.120000, 0.199448, -0.120000, 254.000000, 0.900000, 70.000000);
 	    i_resettabs(playerid);
 	    TakeBoot(v, fpick, fquan, thingType, inva);
+
+		// Если транспорт полностью залочен от спавна
+		if(VehInfo[v][vNospawn] == 2)
+		{
+			if(get_bootbox(v) <= 0) VehInfo[v][vNospawn] = 0; // Ящики кончились - отключаем блокировку спавна транспорта
+		}
 	    return 1;
 	}
 	else if(thingType == 0 && thingPack == 0)
@@ -131,7 +137,7 @@ stock boot_close(playerid)
 				SetVehicleParamsEx(OnlineInfo[playerid][oShowTabs], engine, lights, alarm, doors, bonnet, false, objective);
 			}
 			VehInfo[OnlineInfo[playerid][oShowTabs]][vBoot] = 0;
-			VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
+			if(VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] != 2) VehInfo[OnlineInfo[playerid][oShowTabs]][vNospawn] = 0;
 		}
 		OnlineInfo[playerid][oShowTabs] = 9999;
 	}
@@ -423,16 +429,24 @@ stock put_bootbox(playerid, v) // Кладём ящик в багажник
 	if(OnlineInfo[playerid][oInHandThing][0] > 0 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4))
 	{
 	    new put_inva = PutThingBoot(v, OnlineInfo[playerid][oInHandThing][0], OnlineInfo[playerid][oInHandThing][1], OnlineInfo[playerid][oInHandThing][2], OnlineInfo[playerid][oInHandThing][3], OnlineInfo[playerid][oInHandThing][4], OnlineInfo[playerid][oInHandThing][5], 999);
-	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В багажнике нет места");
+	    if(put_inva == -1)
+		{
+			ErrorMessage(playerid, "{FF6347}В транспорте нет места");
+			return 0;
+		}
 	    
 	    InHandClear(playerid);
-		SetPlayerChatBubble(playerid,"кладёт ящик в багажник",COLOR_PURPLE,20.0,3000);
+		SetPlayerChatBubble(playerid,"кладёт ящик в транспорт",COLOR_PURPLE,20.0,3000);
 		RemovePlayerAttachedObject(playerid,1), PPP15[playerid] = 0;
    		ClearAnimations(playerid);
    		ClearAnim(playerid);
    		PlayerPlaySound(playerid,1053,0,0,0);
 	}
-	else ErrorMessage(playerid, "{FF6347}У вас в руках нет ящика {cccccc}[ Открыть багажник: N >> Багажник ]");
+	else 
+	{
+		ErrorMessage(playerid, "{FF6347}У вас в руках нет ящика");
+		return 0;
+	}
 	return 1;
 }
 stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
@@ -589,6 +603,15 @@ stock get_boot2(v, stat, inva) // Поиск при вытаскивании п�
 		return VehInfo[v][vInv][inva];
 	}
 	else return -1;
+}
+stock get_bootbox(v) // Считаем количество ящиков в багажнике
+{
+	new quan;
+	for(new inva = 0; inva < 20; inva++)
+	{
+		if(VehInfo[v][vInvent][inva] > 0 && (VehInfo[v][vInvType][inva] == 2 || VehInfo[v][vInvType][inva] == 4)) quan ++;
+	}
+	return quan;
 }
 stock ClearBootVehcile(v, i)
 {
