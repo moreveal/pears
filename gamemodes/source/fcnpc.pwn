@@ -37,6 +37,11 @@ CMD:traingo(playerid)
 {
     if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
 
+    // VREMENNO
+    EscortOrganization = 1;
+    TrainRoadDestination = 717; // Station SF
+    //
+
     TrainStart();
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Движение поезда запущено","*","");
     return 1;
@@ -126,26 +131,34 @@ public FCNPC_OnReachDestination(npcid)
 
         if(MoveStatus == 0)
         {
-            ruinsOnTrainRoad = IsRuinsOnTrainRoad(); // Ищем руины бомбы на путях перед поездом
+            // Ищем остановку на нужной станции
+            if(TrainRoadID >= 100)
+            {
+                if(TrainRoadID < TrainRoadDestination)
+                {
+                    new pointsToStop = TrainRoadDestination - TrainRoadID;
+                    if(pointsToStop <= GetPointToStopTrain())
+                    {
+                        MoveStatus = 1;
+                    }
+                }
+            }
+            
+            // Ищем руины бомбы на путях перед поездом
+            ruinsOnTrainRoad = IsRuinsOnTrainRoad();
             if(ruinsOnTrainRoad >= 0) // Нашли, спереди есть руины
             {
                 new pointsToRuins = ruinsOnTrainRoad - TrainRoadID; // Считаем точки до руин
-                if(pointsToRuins <= GetPointToStopTrain() - 4) // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
+                if(pointsToRuins <= GetPointToStopTrain()) // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
                 {
                     MoveStatus = 1;
 
-                    // Пишем сообщение всем, кто едет на поезде
+                    // Пишем сообщение всем, кто едет в поезде
                     foreach(Player,i)
                     {
                         if(OnlineInfo[i][oLogged] == 0) continue;
-                        if(GetPlayerState(i) != PLAYER_STATE_ONFOOT) continue;
-
-                        new surf = GetPlayerSurfingVehicleID(i);
-                        if(surf != INVALID_VEHICLE_ID) // Сёрфим
-                        {
-                            new model = GetVehicleModel(surf);
-                            if(IsATrain(model)) MessageTrainStop(i);
-                        }
+                        if(!IsPlayerInAnyVehicle(i)) continue;
+                        if(train == GetPlayerVehicleID(i)) MessageTrainStop(i);
                     }
                 }
             }

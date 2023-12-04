@@ -4,6 +4,7 @@ new BoxInTrain; // Количество ящиков, погруженных в 
 new EscortStatus;
 new EscortOrganization;
 new EscortProcess;
+new TrainRoadDestination;
 
 new train;
 new train_object1, train_object2, train_object3;
@@ -14,6 +15,52 @@ new ExitTrainSide; // Подсчёт стороны выхода из поезд
 
 #define MAX_POS_SIDE_TRAIN 14
 new Float:train_side_X[2][MAX_POS_SIDE_TRAIN], Float:train_side_Y[2][MAX_POS_SIDE_TRAIN], Float:train_side_Z[2][MAX_POS_SIDE_TRAIN];
+
+static Float:EscortOrg[MAX_ORG][3] = { // Координаты точек доставки для организаций
+	{0.0, 0.0, 0.0}, // 0
+	{1528.2455,-1677.7496,5.8906}, // 1 lspd
+	{2113.4966,2398.8647,10.8281}, // 2 fbi
+	{227.3988,1819.1088,17.6556}, // 3 ngsa
+	{0.0, 0.0, 0.0}, // 4
+	{0.0, 0.0, 0.0}, // 5
+	{0.0, 0.0, 0.0}, // 6
+	{-2798.2131,414.9185,-4.1108}, // 7 goverment
+	{0.0, 0.0, 0.0}, // 8
+	{0.0, 0.0, 0.0}, // 9
+	{0.0, 0.0, 0.0}, // 10
+	{-1606.4393,676.3794,-5.2422}, // 11 sfpd
+	{0.0, 0.0, 0.0}, // 12
+	{0.0, 0.0, 0.0}, // 13
+	{0.0, 0.0, 0.0}, // 14
+	{0.0, 0.0, 0.0}, // 15
+	{0.0, 0.0, 0.0}, // 16
+	{0.0, 0.0, 0.0}, // 17
+	{0.0, 0.0, 0.0}, // 18
+	{0.0, 0.0, 0.0}, // 19
+	{0.0, 0.0, 0.0}, // 20
+	{0.0, 0.0, 0.0}, // 21 lvpd
+	{2484.6965,2486.3940,10.8203} // 22 swat
+};
+
+stock DynamicPickupNGSAEscort()
+{
+	for(new i = 0; i < MAX_ORG; i++)
+	{
+		if(EscortOrg[i][0] != 0.0 && EscortOrg[i][1] != 0.0 && EscortOrg[i][2] != 0.0)
+		{
+			CreateDynamicPickup(2900, 1, EscortOrg[i][0],EscortOrg[i][1],EscortOrg[i][2], 0, 0);
+			CreateDynamic3DTextLabel("{ff9000}Доставка Товаров\n{ffffff}[ {0088ff}CAPS LOCK (Гудок) - в транспорте {ffffff}]",-1,EscortOrg[i][0],EscortOrg[i][1],EscortOrg[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+		}
+	}
+	CreateDynamic3DTextLabel("{ff9000}Доставка Боеприпасов\n{444444}[ ALT ]",-1,250.921691, 1953.451171, 18.111639,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+
+	CreateDynamicPickup(3014, 1, 235.6362,1959.0876,17.6506, 0, 0); // Погрузка ящиков в Barracks для Доставки NGSA
+	CreateDynamic3DTextLabel("{ff9000}Склад Боеприпасов\n\n\n{0088ff}CAPS LOCK (Гудок) {cccccc}- погрузка боеприпасов для доставки",-1,235.6362,1959.0876,17.6506,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+	
+	CreateDynamicPickup(3014, 1, 747.7584,1692.0493,7.1768, 0, 0); // Погрузка ящиков в Train для Доставки NGSA
+	CreateDynamic3DTextLabel("{ff9000}Поезд\n{ffffff}ALT - погрузить ящик\n\n{cccccc}Возьмите ящики из багажника Barracks и погрузите их в поезд",-1,747.7584,1692.0493,7.1768,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+	return 1;
+}
 
 stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
 {
@@ -308,6 +355,19 @@ stock PutBoxToTrain(playerid)
 	if(BoxInTrain >= BoxStat)
 	{
 		EscortStatus = 3; // 3 шаг - погрузили ящики в поезд
+
+		if(EscortOrganization == 1) // LSPD
+		{
+			TrainRoadDestination = 716; // Station LS
+		}
+		else if(EscortOrganization == 2 || EscortOrganization == 21 || EscortOrganization == 22) // FBI, LVPD, SWAT
+		{
+			TrainRoadDestination = 1091; // Station LV
+		}
+		else if(EscortOrganization == 7 || EscortOrganization == 11) // Goverment, SFPD
+		{
+			TrainRoadDestination = 224; // Station SF
+		}
 
 		// Запускаем таймер для начала движения поезда
 		SetTimer("TrainStart", 20000, false);
