@@ -74,6 +74,8 @@ enum fInfo
 	fRoutIdEditor[5],
 	fRoutIdCreator[5],
 	fRoutUnix[5],
+	fInfluence, // Влияние в секте
+	fsUnixCNN, // Таймер на кд эфира
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -314,6 +316,8 @@ public LoadFamily()
 		cache_get_value_name(f, "Rout1X", strocaX, 480);
 		cache_get_value_name(f, "Rout1Y", strocaY, 480);
 		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
+		cache_get_value_name_int(f, "influence", FamilyInfo[idx][fInfluence]);
+		cache_get_value_name_int(f, "unixcnn", FamilyInfo[idx][fsUnixCNN]);
 
 		for(new i; i < 5; i++)
 		{
@@ -493,9 +497,9 @@ stock SaveFamily(idx)
 	FamilyInfo[idx][fBiz][0],FamilyInfo[idx][fBiz][1],FamilyInfo[idx][fBiz][2],FamilyInfo[idx][fBiz][3],FamilyInfo[idx][fBiz][4],
 	FamilyInfo[idx][fBiz][5],FamilyInfo[idx][fBiz][6],FamilyInfo[idx][fBiz][7],FamilyInfo[idx][fBiz][8],FamilyInfo[idx][fBiz][9]);
 	format(big_query, sizeof(big_query), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',\
-	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d',`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d' WHERE `id`='%d'", big_query,
+	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d',`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d',`influence`='%d' WHERE `id`='%d'", big_query,
 	FamilyInfo[idx][fSpawnX],FamilyInfo[idx][fSpawnY],FamilyInfo[idx][fSpawnZ],FamilyInfo[idx][fSpawnA],FamilyInfo[idx][fInt],FamilyInfo[idx][fWorld],FamilyInfo[idx][fStatusUch],FamilyInfo[idx][fStatusRank],FamilyInfo[idx][fStatusGarage],
-	FamilyInfo[idx][fStatusSpawn],FamilyInfo[idx][fDop1],FamilyInfo[idx][fDop2],FamilyInfo[idx][fDop3],FamilyInfo[idx][fDop4],FamilyInfo[idx][fDop5],FamilyInfo[idx][fMoney],FamilyInfo[idx][fAccoff],FamilyInfo[idx][fAccdip],FamilyInfo[idx][fLoss],FamilyInfo[idx][fVehCol][0],FamilyInfo[idx][fVehCol][1],FamilyInfo[idx][fType],FamilyInfo[idx][fParthnerMarket],FamilyInfo[idx][fParthnerBenz],FamilyInfo[idx][fParthnerService],
+	FamilyInfo[idx][fStatusSpawn],FamilyInfo[idx][fDop1],FamilyInfo[idx][fDop2],FamilyInfo[idx][fDop3],FamilyInfo[idx][fDop4],FamilyInfo[idx][fDop5],FamilyInfo[idx][fMoney],FamilyInfo[idx][fAccoff],FamilyInfo[idx][fAccdip],FamilyInfo[idx][fLoss],FamilyInfo[idx][fVehCol][0],FamilyInfo[idx][fVehCol][1],FamilyInfo[idx][fType],FamilyInfo[idx][fParthnerMarket],FamilyInfo[idx][fParthnerBenz],FamilyInfo[idx][fParthnerService],FamilyInfo[idx][fInfluence],
 	idx);
 	query_empty(pearsq, big_query);
 	return true;
