@@ -79,43 +79,48 @@ stock GiveSectRating(f, raiting) // Изменяем рейтинг
 /*
 Как используем теперь это?
 
+
 1. К примеру команда /invite:
 PlayerInfo[giveplayerid][pMember] = 1; // Выдали оргу
 PlayerInfo[giveplayerid][pRank] = 1; // Выдали ранг
 
 Какой был ранг? Никакой. Его только пригласили. Поэтому сразу даём рейтинг
-
 new raiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
 GiveSectRating(PlayerInfo[playerid][pFamily], raiting);
 Всё ебать. Две строки и больше нихуя
 Или ещё проще
 GiveSectRating(PlayerInfo[playerid][pFamily], GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
 
+
 2. Если увольняем
 GiveSectRating(PlayerInfo[playerid][pFamily], -GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
 Просто добавили минус к тому рейтингу, которые получаем
+
 
 3. Если меняем ранг /giverank
 Сначала узнаем сколько был старый ранг
 new oldRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
 Затем узнаём сколько новый ранг
 new newRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], input); // input - это новый ранг, который мы вводим в команду
-PlayerInfo[giveplayerid][pRank] = input; // После меняем ранг
 
-new raiting = newRaiting-oldRaiting; // Вот получили то количество очков, которое нужно передать для изменений
+new raiting = newRaiting-oldRaiting; // Вычисляем разницу
+
+Допустим повышаем
+new 10
+old 2
+10 - 2 = 8
+
+Или понижаем
+new 1
+old 15
+1 - 15 = -14
+
+Таким образом мы всегда получаем нужное число очков рейтинга, которое нужно применить
+Единственное только, очки за каждый ранг мы не можем потом редактировать
+Потому что если сначала 1 ранг (1) в lspd (10) был 11 очков, а потом вдруг стал 21 - будут ошибки в вычислении
+
 GiveSectRating(PlayerInfo[playerid][pFamily], raiting); // Ебашим.
-
-Работает в обе стороны, хоть повышаем, хоть понижаем
-К примеру был oldRaiting 5
-Выдаём newRaiting 10
-5 - 10 = -5
-Мы понизил чела и получили отрицательное число. Плюсуя их к рейтингу, они вычитаются
-
-Или наоборот
-oldRaiting 2
-newRaiting 10
-2 - 10 = 8
-Тут у нас в плюс получается 8 очков. Было уже когда то 2, добавяя к новому рангу получается 8
+PlayerInfo[giveplayerid][pRank] = input; // После меняем ранг
 
 Усё
 
