@@ -23,6 +23,7 @@ stock PlantBomb(playerid, time)
     if(IsAAntidm(playerid)) return ErrorMessage(playerid, "{FF6347}Вы находитесь в зелёной зоне");
     if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы на ринге");
     if(get_invent4(playerid, 11, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет бомбы");
+    if(IsANotMoney(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя установить бомбу на территории города");
     if(!IsCreateBomb(playerid)) return 0;
 
     if(time < 1 || time > 5) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 5 минут");

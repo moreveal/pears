@@ -19,28 +19,7 @@ stock use_boot(playerid, v, inva, useinva)
 	if(thingType == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете взять мебель в руки или в инвентарь\n\nМебель можно перекладывать только в дом или в бизнес"), i_resettabs(playerid);
 	if(thingPack == 2 || thingPack == 4) // Если это ящик
 	{
-	    if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
-	    
-        if(IsArmor(fpick)) thingPara = 100; // Броня 100 хп
-
-        OnlineInfo[playerid][oInHandThing][0] = fpick; // ID Предмета
-        OnlineInfo[playerid][oInHandThing][1] = fquan; // Количество
-        OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
-        OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
-        OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
-        OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка
-
-	    ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
-	    PPP15[playerid] = 3, RemovePlayerAttachedObject(playerid,1);
-	    SetPlayerAttachedObject(playerid,1 , 3014, 6, 0.120000, 0.199448, -0.120000, 254.000000, 0.900000, 70.000000);
-	    i_resettabs(playerid);
-	    TakeBoot(v, fpick, fquan, thingType, inva);
-
-		// Если транспорт полностью залочен от спавна
-		if(VehInfo[v][vNospawn] == 2)
-		{
-			if(get_bootbox(v) <= 0) VehInfo[v][vNospawn] = 0; // Ящики кончились - отключаем блокировку спавна транспорта
-		}
+	    TakeBootBox(playerid, v, inva);
 	    return 1;
 	}
 	else if(thingType == 0 && thingPack == 0)
@@ -115,6 +94,35 @@ stock use_boot(playerid, v, inva, useinva)
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
 	return 1;
 }
+
+stock TakeBootBox(playerid, v, inva)
+{
+	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
+	    
+	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
+	if(IsArmor(fpick)) thingPara = 100; // Броня 100 хп
+
+	OnlineInfo[playerid][oInHandThing][0] = fpick; // ID Предмета
+	OnlineInfo[playerid][oInHandThing][1] = fquan; // Количество
+	OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
+	OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
+	OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
+	OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка
+
+	ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
+	PPP15[playerid] = 3, RemovePlayerAttachedObject(playerid,1);
+	SetPlayerAttachedObject(playerid,1 , 3014, 6, 0.120000, 0.199448, -0.120000, 254.000000, 0.900000, 70.000000);
+	i_resettabs(playerid);
+	TakeBoot(v, fpick, fquan, thingType, inva);
+
+	// Если транспорт полностью залочен от спавна
+	if(VehInfo[v][vNospawn] == 2)
+	{
+		if(get_bootbox(v) <= 0) VehInfo[v][vNospawn] = 0; // Ящики кончились - отключаем блокировку спавна транспорта
+	}
+	return 1;
+}
+
 stock boot_close(playerid)
 {
     if(OnlineInfo[playerid][oShowTabs] != 9999)
@@ -217,7 +225,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 	
 	if(useinva == 999) // Не знаем в какую ячейку класть
 	{
-	    if(thingType == 0) // Обычный предмет
+	    if(thingType == 0 && thingPack == 0) // Обычный предмет
 		{
 		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
 		    {
@@ -435,6 +443,20 @@ stock put_bootbox(playerid, v) // Кладём ящик в багажник
 			return 0;
 		}
 	    
+		if(VehicleEscort > 0 && fraction(playerid) == 3 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4)
+			&& v != VehicleEscort && v != train)
+		{
+			ErrorMessage(playerid, "{FF6347}Вы не можете положить ящик в этот транспорт\n\n{cccccc}Ящики для доставки БП должны находиться в одном транспорте");
+			return 0;
+		}
+
+		// Если это Barracks и в руках у нас ящик, блокируем спавн транспорта
+		if(VehInfo[v][vModel] == 433 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4))
+		{
+			VehInfo[v][vNospawn] = 2;
+			VehicleEscort = v;
+		}
+
 	    InHandClear(playerid);
 		SetPlayerChatBubble(playerid,"кладёт ящик в транспорт",COLOR_PURPLE,20.0,3000);
 		RemovePlayerAttachedObject(playerid,1), PPP15[playerid] = 0;
@@ -449,6 +471,21 @@ stock put_bootbox(playerid, v) // Кладём ящик в багажник
 	}
 	return 1;
 }
+
+stock GetInvaBoxInBoot(v)
+{
+	new inva = -1;
+	for(new i = 0; i < 20; i++)
+	{
+		if(VehInfo[v][vInvent][i] > 0 && (VehInfo[v][vInvPack][i] == 2 || VehInfo[v][vInvPack][i] == 4))
+		{
+			inva = i;
+			break;
+		}
+	}
+	return inva;
+}
+
 stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 {
     inva = inva+20;

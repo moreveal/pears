@@ -513,3 +513,21 @@ stock IsAGangCar(model) // Транспорт для банд
   	|| model == 603) return 1;
 	return 0;
 }
+
+// Ищем транспорт в нужных нам координатах по модели
+stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
+{
+	new yes;
+	for(new v = 0; v < SKOKOCAROV; v++)
+	{
+		if(VehInfo[v][vModel] != model) continue;
+
+		new Float:dist = GetVehicleDistanceFromPoint(v, x, y, z);
+		if(dist <= radius)
+		{
+			yes = 1;
+			break;
+		}
+	}
+	return yes;
+}

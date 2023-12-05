@@ -33,13 +33,21 @@ public FCNPC_OnUpdate(npcid)
     return 1;
 }
 
+CMD:gettrainpoint(playerid)
+{
+    format(store,sizeof(store),"Train Point: %d", TrainRoadID);
+    SendClientMessage(playerid, -1, store);
+    return 1;
+}
+
 CMD:traingo(playerid)
 {
+    if(server != 0) return 0;
     if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
 
     // VREMENNO
-    EscortOrganization = 1;
-    TrainRoadDestination = 717; // Station SF
+    EscortOrganization = 11;
+    TrainRoadDestination = 224; // Station LS
     //
 
     TrainStart();
@@ -66,6 +74,7 @@ function TrainStart()
 
 CMD:trainstop(playerid)
 {
+    if(server != 0) return 0;
     if(TrainMoved == 0) return ErrorMessage(playerid, "{FF6347}Поезд стоит на месте");
     if(MoveStatus == 1) return ErrorMessage(playerid, "{FF6347}Поезд уже останавливается");
     if(TrainStoped == 1) return ErrorMessage(playerid, "{FF6347}Дождитесь остановки поезда");
@@ -241,7 +250,7 @@ stock MessageTrainStop(playerid)
     format(line,sizeof(line),"\n\n{336633}Защищайте груз любой ценой!"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-    SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Train ]: {ffcc66}Впереди обнаружено повреждение путей. Защищайте груз!");
+    SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Впереди обнаружено повреждение путей. Защищайте груз!");
     PlayerPlaySound(playerid,6001,0,0,0);
 
     SetTimerEx("around_audiostop", 5000, false, "dd", playerid, 6004); // Таймер на выключение сирены

@@ -1364,7 +1364,7 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 	
 	if(useinva == 9999 || -1) // Не знаем в какую ячейку класть
 	{
-	    if(thingType == 0) // Обычный предмет
+	    if(thingType == 0 && thingPack == 0) // Обычный предмет
 		{
 		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
 		    {
@@ -1753,7 +1753,7 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение пр
 	}
 	return 1;
 }
-stock putsklad(wh, pick, kol, fpara, thingType,checklimit)
+stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
 {
 	new put_inva = -1, getLimit, bool:stopFind;
 	getLimit = sklad_limit(pick, thingType);

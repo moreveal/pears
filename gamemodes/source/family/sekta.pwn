@@ -42,6 +42,85 @@ stock RaitingSekta(playerid)
     return 1;
 }
 
+stock GetRatingForRank(member, rank) // Получаем рейтинг по организации и рангу
+{
+    new raiting;
+    if(member == 1) // LSPD
+    {
+        if(rank == 1) raiting = 1;
+        else if(rank == 2) raiting = 2;
+        else raiting = rank; // Бла бла бла, все рейтинг = номер ранга
+
+        raiting += 10; // У LSPD + 10
+    }
+    else if(member == 13) // Grove Street
+    {
+        if(rank == 1) raiting = 1;
+        else if(rank == 2) raiting = 2;
+        else raiting = rank; // Бла бла бла, все рейтинг = номер ранга
+
+        raiting += 1; // У грувов за фраку + 1
+    }
+    // Продолжи под каждую фраку
+    return raiting;
+}
+
+stock GiveSectRating(f, raiting) // Изменяем рейтинг
+{
+    if(FamilyInfo[f][fSost] >= 1 && FamilyInfo[f][fType] == 3) // Семья существует и Тип секта
+    {
+        // Если raiting будет минусовым, он вычтется, даже несмотря на что, что я указал +=
+
+        FamilyInfo[f][fInfluence] += raiting;
+        // Сюда save update, всю хуйню сохранения
+    }
+    return 1;
+}
+/*
+Как используем теперь это?
+
+1. К примеру команда /invite:
+PlayerInfo[giveplayerid][pMember] = 1; // Выдали оргу
+PlayerInfo[giveplayerid][pRank] = 1; // Выдали ранг
+
+Какой был ранг? Никакой. Его только пригласили. Поэтому сразу даём рейтинг
+
+new raiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
+GiveSectRating(PlayerInfo[playerid][pFamily], raiting);
+Всё ебать. Две строки и больше нихуя
+Или ещё проще
+GiveSectRating(PlayerInfo[playerid][pFamily], GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
+
+2. Если увольняем
+GiveSectRating(PlayerInfo[playerid][pFamily], -GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
+Просто добавили минус к тому рейтингу, которые получаем
+
+3. Если меняем ранг /giverank
+Сначала узнаем сколько был старый ранг
+new oldRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
+Затем узнаём сколько новый ранг
+new newRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], input); // input - это новый ранг, который мы вводим в команду
+PlayerInfo[giveplayerid][pRank] = input; // После меняем ранг
+
+new raiting = newRaiting-oldRaiting; // Вот получили то количество очков, которое нужно передать для изменений
+GiveSectRating(PlayerInfo[playerid][pFamily], raiting); // Ебашим.
+
+Работает в обе стороны, хоть повышаем, хоть понижаем
+К примеру был oldRaiting 5
+Выдаём newRaiting 10
+5 - 10 = -5
+Мы понизил чела и получили отрицательное число. Плюсуя их к рейтингу, они вычитаются
+
+Или наоборот
+oldRaiting 2
+newRaiting 10
+2 - 10 = 8
+Тут у нас в плюс получается 8 очков. Было уже когда то 2, добавяя к новому рангу получается 8
+
+Усё
+
+*/
+
 stock SetRaitingSekta(f)
 {
     new raiting;
@@ -111,7 +190,7 @@ CMD:gnews(playerid, const params[])
     else if(SektaCNN[0] == -1)
     {
         SektaCNN[0] = fam;
-        Sekta[fam][sektaTimer] == 600;
+        Sekta[fam][sektaTimer] = 600;
         SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
         FamilyInfo[fam][fsUnixCNN] = gettime();
         FamilyInfo[fam][fUpdate] = 1;

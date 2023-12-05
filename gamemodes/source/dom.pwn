@@ -159,7 +159,7 @@ stock PutThingDom(dom, thingId, quan, para, qara, thingType, thingPack, useinva)
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
 	if(useinva == 999) // Не знаем в какую ячейку класть
 	{
-	    if(thingType == 0) // Обычный предмет
+	    if(thingType == 0 && thingPack == 0) // Обычный предмет
 		{
 		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
 		    {
