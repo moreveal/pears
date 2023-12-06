@@ -235,10 +235,14 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
   	Y=Y+0.8*floatcos(-A,degrees);
 
 	// Ставим бомбу
-	if(fpick == 11 && para >= 60)
+	if(fpick == 11 && para >= 10)
 	{
 		new roadId = IsPosTrainRoad(X+herx, Y+hery, Z-0.8);
-		if(roadId >= 0) qara = roadId + 1;
+		if(roadId >= 0) 
+		{
+			qara = roadId + 1;
+			if(!CheckTrainNearby(playerid, roadId, para)) return 0;
+		}
 	}
   	
   	if(thingPack > 0) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
@@ -309,7 +313,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			ThrowInfo[g][tUseplayer] = 0;
 			ThrowInfo[g][tType] = thingType;
 			ThrowInfo[g][tPack] = thingPack;
-			if (fpick == 11 && para >=59 ) ThrowInfo[g][tBombPlant] = true;
+			if (fpick == 11 && para >= 9 ) ThrowInfo[g][tBombPlant] = true;
 			if(playerid != -1)
 			{
 			    ThrowInfo[g][tPlayerid] = PlayerInfo[playerid][pID];

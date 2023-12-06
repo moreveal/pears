@@ -19,7 +19,8 @@ stock use_boot(playerid, v, inva, useinva)
 	if(thingType == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете взять мебель в руки или в инвентарь\n\nМебель можно перекладывать только в дом или в бизнес"), i_resettabs(playerid);
 	if(thingPack == 2 || thingPack == 4) // Если это ящик
 	{
-	    TakeBootBox(playerid, v, inva);
+	    TakeBootBox(playerid, v, inva, 0);
+		if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid);
 	    return 1;
 	}
 	else if(thingType == 0 && thingPack == 0)
@@ -95,7 +96,7 @@ stock use_boot(playerid, v, inva, useinva)
 	return 1;
 }
 
-stock TakeBootBox(playerid, v, inva)
+stock TakeBootBox(playerid, v, inva, rob)
 {
 	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
 	    
@@ -107,6 +108,8 @@ stock TakeBootBox(playerid, v, inva)
 	OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
 	OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
 	OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
+
+	if(thingPack == 4 && rob == 1) thingPack = 2; // Снимаем блокировку с ящика, если мы грабим поезд
 	OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка
 
 	ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
@@ -646,7 +649,7 @@ stock get_bootbox(v) // Считаем количество ящиков в ба
 	new quan;
 	for(new inva = 0; inva < 20; inva++)
 	{
-		if(VehInfo[v][vInvent][inva] > 0 && (VehInfo[v][vInvType][inva] == 2 || VehInfo[v][vInvType][inva] == 4)) quan ++;
+		if(VehInfo[v][vInvent][inva] > 0 && (VehInfo[v][vInvPack][inva] == 2 || VehInfo[v][vInvPack][inva] == 4)) quan ++;
 	}
 	return quan;
 }

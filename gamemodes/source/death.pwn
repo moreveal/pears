@@ -58,7 +58,8 @@ stock NoDeath(playerid)
     if(DeathInfo[playerid][deathStatus] // Уже мертв
     || PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
     || MPGO[playerid] > 0 // На мп
-    || Kapt[fraction(playerid)] > 0 || Zahvat[fraction(playerid)] > 0 // Капт, Порт
+    || Kapt[fraction(playerid)] > 0 && IsAGhetto(playerid) // Капт + На территории гетто
+    || Zahvat[fraction(playerid)] > 0 // Порт
     || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
     || peoInfo[playerid][peoInEditor] // personal editor

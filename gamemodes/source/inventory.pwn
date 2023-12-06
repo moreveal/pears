@@ -2022,7 +2022,7 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 10) return cmd_allahakbar(playerid), i_resetveshi(playerid); // Пояс со взрывчаткой
 			 	else if(fpick == 11)
 				{
-					ShowDialog(playerid,1335,DIALOG_STYLE_INPUT,"{ff9000}Бомба","\n{cccccc}Введите время, через которое бомба взорвётся [ 1 - 5 минут ]","Принять","Отмена");
+					ShowDialog(playerid,1335,DIALOG_STYLE_INPUT,"{ff9000}Бомба","\n{cccccc}Введите время, через которое бомба взорвётся [ 10 - 300 секунд ]","Принять","Отмена");
 					return 1;
 				}
 			 	else if(fpick == 13) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Верёвка нужна для того, чтобы кого-нибудь связать [ /tie ]","*",""), i_resetveshi(playerid);
