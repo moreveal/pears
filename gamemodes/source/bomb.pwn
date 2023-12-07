@@ -208,7 +208,11 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
                     {
                         if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING
                             || GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) continue;
-                        if(IsPlayerInRangeOfPoint(i,200.0, pos[0], pos[1], pos[2])) MessageTrainStartOnRuins(i);
+                        if(IsPlayerInRangeOfPoint(i,200.0, pos[0], pos[1], pos[2])) 
+                        {
+                            MessageTrainStartOnRuins(i);
+                            if(Dei[i] == 4) Dei[i] = 0, RemovePlayerAttachedObject(i,1);
+                        }
                     }
                 }
             }

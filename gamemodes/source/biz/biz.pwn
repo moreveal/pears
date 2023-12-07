@@ -33,6 +33,20 @@ CMD:gototerm(playerid, const params[])
 	return 1;
 }
 
+CMD:bizcity(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить город бизнеса [ /bizcity BizID 0 LS, 1 SF, 2 LV ]");
+	if(params[0] <= 0 || params[0] > 200) return ErrorMessage(playerid, "{FF6347}Номер бизнеса не меньше 1 и не больше 200");
+	if(params[1] > 2 || params[1] < 0) return ErrorMessage(playerid, "{FF6347}Города 0 - LS, 1 - SF, 2 - LV");
+
+	format(store, sizeof(store), " [ ADM ]: %s изменил город бизнеса № %d {cccccc}[%s]", PlayerInfo[playerid][pName],params[0],cityName[params[1]]);
+	ABroadCast(COLOR_ADM,store,1);
+	BizzInfo[params[0]][bCity] = params[1];
+	SaveBizzCity(params[0]);
+	return 1;
+}
+
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
 	new quan;
@@ -940,6 +954,15 @@ stock partnerbiz(playerid, b) // Партнерство в бизнесе
 	return 1;
 }
 
+stock SaveBizzCity(b)
+{
+	if(LIMITED_LOADING_SERVER >= 2) return true;
+
+	// Saving immediately
+	format(store,sizeof(store),"UPDATE `pp_bizz` SET `bCity` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bCity], b);
+	query_empty(pearsq, store);
+	return true;
+}
 stock SaveBizz(b)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;

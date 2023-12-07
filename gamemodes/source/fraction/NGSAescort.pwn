@@ -1637,7 +1637,7 @@ stock CreateTrainBox()
 
 		TrainBoxPos[0] = pos[0];
 		TrainBoxPos[1] = pos[1];
-		TrainBoxPos[2] = pos[2] - 1.6676;
+		TrainBoxPos[2] = pos[2] - 0.5;
 
 		TrainBoxPickup = CreateDynamicPickup(3014, 1, TrainBoxPos[0], TrainBoxPos[1], TrainBoxPos[2], 0, 0);
 		CreateDynamic3DTextLabel("{FF6347}Ограбление Поезда\n{ffffff}ALT - взять ящик",-1,TrainBoxPos[0], TrainBoxPos[1], TrainBoxPos[2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);

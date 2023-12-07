@@ -122,8 +122,9 @@ public FCNPC_OnReachDestination(npcid)
     {
         TrainMoved = 0;
         TrainGoing = 0;
-        FCNPC_SetVehicleTrainSpeed(NpcArmy, 0.0);
         FCNPC_Stop(NpcArmy);
+        FCNPC_SetVehicleTrainSpeed(NpcArmy, 0.0);
+        FCNPC_SetSpeed(NpcArmy, 0.0);
         FindPointSideTrain();
 
         if(ReasonToStopTrain > 0) CreateTrainBox();
@@ -171,7 +172,7 @@ public FCNPC_OnReachDestination(npcid)
                     // Считаем точки до руин
                     new pointsToRuins = GetPointToRuinsOnTrain(ruinsOnTrainRoad);
 
-                    if(pointsToRuins <= GetPointToStopTrain() + 4  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
+                    if(pointsToRuins <= GetPointToStopTrain() + 6  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
                         && pointsToRuins >= GetPointToStopTrain() / 2) // Но не меньше половины, ибо нахер нам стопать поезд, если руины появились перед еблом слишком резко
                     {
                         MoveStatus = 1;
