@@ -128,6 +128,9 @@ public FCNPC_OnReachDestination(npcid)
         FindPointSideTrain();
 
         if(ReasonToStopTrain > 0) CreateTrainBox();
+
+        DestroyObjectTrain();
+        CreateObjectTrain();
     }
     else
     {

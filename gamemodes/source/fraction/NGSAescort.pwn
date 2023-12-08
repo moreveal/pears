@@ -1656,6 +1656,33 @@ stock DestroyTrainBox()
 	return 1;
 }
 
+stock DestroyObjectTrain()
+{
+	if(train_object1) DestroyObject(train_object1);
+	if(train_object2) DestroyObject(train_object2);
+	if(train_object3) DestroyObject(train_object3);
+	return 1;
+}
+
+stock CreateObjectTrain()
+{
+	new Float:pos[3];
+	GetVehiclePos(train, pos[0], pos[1], pos[2]);
+
+	train_object1 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
+	SetObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+	train_object2 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
+	SetObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+	train_object3 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
+	SetObjectMaterial(train_object3, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object3, train + 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	return 1;
+}
+
 stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
 {
     new Float:angle,Float:distance;
@@ -2396,6 +2423,14 @@ stock UnloadBoxesToWarehouse(playerid)
 		BoxStat = 0;
 		EscortStatus = 0;
 		EscortOrganization = 0;
+
+		// Все армейцы, которые рядом тусуются
+		foreach(Player,i)
+		{
+			if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING
+				|| GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) continue;
+			if(IsPlayerInRangeOfPoint(i,70.0, EscortOrg[g][0],EscortOrg[g][1],EscortOrg[g][2])) DestroyGps(i);
+		}
 		return 1;
 	}
 	return 0;
@@ -2421,12 +2456,12 @@ stock MessageTrainStartOnStation(playerid)
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"{336633}Внимание! Поезд полностью загружен и готов к отправлению"), strcat(lines,line);
-	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ F или Enter возле главного вагона ]"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ Кнопка G возле главного вагона ]"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 20 секунд"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ F или Enter ]");
+	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ Кнопка G ]");
 	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 20 секунд");
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
@@ -2452,12 +2487,12 @@ stock MessageTrainStartOnRuins(playerid)
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"{336633}Завалы, после взрыва бомбы, устранены!"), strcat(lines,line);
-	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ F или Enter возле главного вагона ]"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ Кнопка G возле главного вагона ]"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}- Поезд отправится через 20 секунд"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ F или Enter ]");
+	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ Кнопка G ]");
 	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 20 секунд");
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
@@ -2465,32 +2500,51 @@ stock MessageTrainStartOnRuins(playerid)
 
 stock EnterTrain(playerid)
 {
+	new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, Afclick[playerid]);
+    if(interval < 1000)
+	{
+		ClearAnimations(playerid);
+		ErrorMessage(playerid, "{FF6347}Пожалуйста... не флудите");
+		SetCameraBehindPlayer(playerid);
+		return 0;
+	}
+	Afclick[playerid] = current_tick;
+
+	if(TrainGear >= 5)
+	{
+		ClearAnimations(playerid);
+		ErrorMessage(playerid, "{FF6347}Вы не можете сесть в поезд на высокой скорости");
+		SetCameraBehindPlayer(playerid);
+		return 0;
+	}
+	if(fraction(playerid) != 3)
+	{
+		ClearAnimations(playerid);
+		ErrorMessage(playerid, "{FF6347}Вы не состоите в NGSA");
+		SetCameraBehindPlayer(playerid);
+		return 0;
+	}
 	Protect_PutPlayerInVehicle(playerid, train, 4);
 	return 1;
 }
 
 stock ExitTrain(playerid)
 {
-	if(TrainGear >= 5) return ErrorMessage(playerid, "{FF6347}Вы не можете выйти из поезда на высокой скорости\n\n{cccccc}Дождитесь остановки поезда на станции или при обнаружении повреждения ж/д путей");
-
 	new Float:pos[4], Float:offset;
 	GetVehiclePos(train, pos[0], pos[1], pos[2]);
 	GetVehicleZAngle(train, pos[3]);
 
-	if(ExitTrainSide == 0)
-	{
-		offset = 1.7;
-		ExitTrainSide = 1;
-	}
-	else
-	{
-		offset = -1.7;
-		ExitTrainSide = 0;
-	}
+	if(ExitTrainSide == 0) offset = 1.7, ExitTrainSide = 1;
+	else offset = -1.7, ExitTrainSide = 0;
+
 	pos[0] -= (offset * floatsin(-pos[3]+90, degrees));
     pos[1] -= (offset * floatcos(-pos[3]+90, degrees));
 
-	PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+	//SendClientMessagef(playerid, -1, "%f, %f, %f", pos[0], pos[1], pos[2]);
+
+	//PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
+	SetCameraBehindPlayer(playerid);
 	return 1;
 }
 

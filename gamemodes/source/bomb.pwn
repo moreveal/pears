@@ -36,7 +36,7 @@ stock PlantBomb(playerid, time)
     if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
 
     PlayerPlaySound(playerid,25800,0,0,0);
-    format(store,sizeof(store),"{99ff66}Успешный успех. Бомба установлена и взорвётся через %d секунд", time);
+    format(store,sizeof(store),"{99ff66}Бомба установлена и взорвётся через %d секунд\n\n{cccccc}Отойдите как можно дальше, радиус взрыва более 50-ти метров", time);
     SuccessMessage(playerid, store);
     format(store,sizeof(store),"[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через %d секунд ]", gender(playerid), time);
     SendClientMessage(playerid, COLOR_GREY, store);
