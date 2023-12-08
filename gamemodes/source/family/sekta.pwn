@@ -1,11 +1,15 @@
 enum sektaInfo
 {
     sektaTimer, // Таймер CNN
+    sektaRiteStatus,// Статус обряда
+    sektaRiteUnix, // Кд на обряд
     Float:sektaPosAltar[6], // Позиция Тележки
 }
 new Sekta[MAX_FAMILY][sektaInfo];
 new SektaObject[MAX_FAMILY];
+new SektaMessage[1]; // Оповещание для фибов
 new SektaCNN[2]; // Ведется ли эфир сейчас // 0 семья кто ведет 1 кто ведет
+new SektaFind[1]; // Зона с финдом
 
 stock ShowSektaMenu(playerid,family)
 {
@@ -22,9 +26,10 @@ stock ShowSektaAltarMenu(playerid)
 {
     new fam = DP[0][Playerid];
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
-    if(Sekta[fam][sektaPosAltar][0] == 0.0 && Sekta[fam][sektaPosAltar][1] == 0.0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
-    else if(Sekta[fam][sektaPosAltar][0] != 0.0 && Sekta[fam][sektaPosAltar][1] != 0.0)format(line,sizeof(line),"\nАлтарь {99ff66}[ Установлен ]"), strcat(lines,line);
+    if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
+    if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
+    if(!SektaObject[fam] && Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
+    else if(SektaObject[fam] && Sekta[fam][sektaRiteStatus] == 0)format(line,sizeof(line),"\nАлтарь {99ff66}[ Установлен ]"), strcat(lines,line);
     ShowDialog(playerid,1473,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
@@ -42,90 +47,21 @@ stock RaitingSekta(playerid)
     return 1;
 }
 
-stock GetRatingForRank(member, rank) // Получаем рейтинг по организации и рангу
+stock RemoveMask(fam)
 {
-    new raiting;
-    if(member == 1) // LSPD
+    Sekta[fam][sektaRiteStatus] = 0;
+    Sekta[fam][sektaRiteUnix] = gettime();
+    FamilyInfo[fam][fInfluence] += 800;
+    foreach(Player,i)
     {
-        if(rank == 1) raiting = 1;
-        else if(rank == 2) raiting = 2;
-        else raiting = rank; // Бла бла бла, все рейтинг = номер ранга
-
-        raiting += 10; // У LSPD + 10
+        if(OnlineInfo[i][oLogged] == 0) continue;
+        if(PlayerInfo[i][pFamily] == fam)
+        {
+            RemovePlayerAttachedObject(i,3);
+            RemovePlayerAttachedObject(i,4);
+        }
     }
-    else if(member == 13) // Grove Street
-    {
-        if(rank == 1) raiting = 1;
-        else if(rank == 2) raiting = 2;
-        else raiting = rank; // Бла бла бла, все рейтинг = номер ранга
-
-        raiting += 1; // У грувов за фраку + 1
-    }
-    // Продолжи под каждую фраку
-    return raiting;
 }
-
-stock GiveSectRating(f, raiting) // Изменяем рейтинг
-{
-    if(FamilyInfo[f][fSost] >= 1 && FamilyInfo[f][fType] == 3) // Семья существует и Тип секта
-    {
-        // Если raiting будет минусовым, он вычтется, даже несмотря на что, что я указал +=
-
-        FamilyInfo[f][fInfluence] += raiting;
-        // Сюда save update, всю хуйню сохранения
-    }
-    return 1;
-}
-/*
-Как используем теперь это?
-
-
-1. К примеру команда /invite:
-PlayerInfo[giveplayerid][pMember] = 1; // Выдали оргу
-PlayerInfo[giveplayerid][pRank] = 1; // Выдали ранг
-
-Какой был ранг? Никакой. Его только пригласили. Поэтому сразу даём рейтинг
-new raiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
-GiveSectRating(PlayerInfo[playerid][pFamily], raiting);
-Всё ебать. Две строки и больше нихуя
-Или ещё проще
-GiveSectRating(PlayerInfo[playerid][pFamily], GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
-
-
-2. Если увольняем
-GiveSectRating(PlayerInfo[playerid][pFamily], -GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]));
-Просто добавили минус к тому рейтингу, которые получаем
-
-
-3. Если меняем ранг /giverank
-Сначала узнаем сколько был старый ранг
-new oldRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], PlayerInfo[giveplayerid][pRank]);
-Затем узнаём сколько новый ранг
-new newRaiting = GetRatingForRank(PlayerInfo[giveplayerid][pMember], input); // input - это новый ранг, который мы вводим в команду
-
-new raiting = newRaiting-oldRaiting; // Вычисляем разницу
-
-Допустим повышаем
-new 10
-old 2
-10 - 2 = 8
-
-Или понижаем
-new 1
-old 15
-1 - 15 = -14
-
-Таким образом мы всегда получаем нужное число очков рейтинга, которое нужно применить
-Единственное только, очки за каждый ранг мы не можем потом редактировать
-Потому что если сначала 1 ранг (1) в lspd (10) был 11 очков, а потом вдруг стал 21 - будут ошибки в вычислении
-
-GiveSectRating(PlayerInfo[playerid][pFamily], raiting); // Ебашим.
-PlayerInfo[giveplayerid][pRank] = input; // После меняем ранг
-
-Усё
-
-*/
-
 stock SetRaitingSekta(f)
 {
     new raiting;
@@ -175,30 +111,104 @@ stock SetRaitingSektaInFrak(playerid,frak,rank)
     mysql_save(playerid,9);
     return 1;
 }
-stock SektaCNNwork()
+stock SektaCNNZapus()
 {
-    new fam = SektaCNN[0];
-    new playerid = SektaCNN[1];
-    if(Sekta[fam][sektaTimer] > 600)
+    SektaCNN[0] = -1;
+    SektaCNN[1] = -1;
+    SektaMessage[0] = -1;
+}
+stock SektaCNNClose()
+{
+    FamilyInfo[SektaCNN[0]][fsUnixCNN] = gettime();
+    FamilyInfo[SektaCNN[0]][fInfluence] += 600-Sekta[SektaCNN[0]][sektaTimer];
+    FamilyInfo[SektaCNN[0]][fUpdate] = 1;
+    SektaCNN[0] = -1;
+    SektaCNN[1] = -1;
+    SektaMessage[0] = -1;
+    GangZoneDestroy(SektaFind[0]);
+    SektaFind[0] = -1;
+    foreach(Player,i)
     {
-        // всем фбрам опракинуть маркер на чела
+        if(OnlineInfo[i][oLogged] == 0) continue;
+        if(PlayerInfo[i][pMember] == 2 || PlayerInfo[i][pFbi] > 0)
+        {
+            showGangZones(i);
+        }
     }
+    return 1;
 }
 
+stock SektaCNNStart()
+{
+    Sekta[SektaCNN[0]][sektaTimer]-=30;
+    if(SektaFind[0] != -1) GangZoneDestroy(SektaFind[0]);
+    new fam = SektaCNN[0];
+    new playerid = SektaCNN[1];
+    new Float:x,Float:y,Float:z;
+    GetPlayerRealPos(playerid,x,y,z);
+    new zone;
+    if(Sekta[fam][sektaTimer] > 300)
+    {
+        zone = 1200;
+        if(SektaMessage[0] == -1) SektaMessage[0] = 0;
+    }
+    else if(Sekta[fam][sektaTimer] < 300)
+    {
+        zone = 500;
+        if(SektaMessage[0] == 1) SektaMessage[0] = 2;
+    }
+    new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
+    switch(random(4))
+    {
+      case 0: x += rand_x, y += rand_y;
+      case 1: x -= rand_x, y -= rand_y;
+      case 2: x += rand_x, y -= rand_y;
+      case 3: x -= rand_x, y += rand_y;
+    }
+    SektaFind[0] = GangZoneCreate(x - zone, y - zone, x + zone, y + zone);
+    return 1;
+}
+stock SektaCNNUpdate(i)
+{
+    if(PlayerInfo[i][pMember] == 2 || PlayerInfo[i][pFbi] > 0)
+    {
+        hideGangZones(i);
+        GangZoneShowForPlayer(i, SektaFind[0], 0xff0000AA);
+        if(SektaMessage[0] == 0)
+        {
+            SektaMessage[0] = 1;
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: Кто-то из секты начал вести эфир его надо найти");
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: На карте отмечена зона откуда ведется эфир");
+        }
+        else if(SektaMessage[0] == 2)
+        {
+            SektaMessage[0] = 3;
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: Зона поиска откуда ведется эфир стала меньше, надо поторопиться!");
+        }
+    }
+}
 CMD:gnews(playerid, const params[])
 {
 	new string[144];
 	if(isamute(playerid) == 1) return 1;
-	if(sscanf(params, "s[144]",params[0])) return  SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Новости CNN [ /gnews Текст ]");
+	if(sscanf(params, "s[144]",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Новости CNN [ /gnews Текст ]");
     new fam = PlayerInfo[playerid][pFamily];
+
+    if(FamilyInfo[fam][fsUnixCNN]+86400 > gettime())
+    {
+        new tyear, tmonth, tday, thour, tminute, tsecond;
+	    stamp2datetime(FamilyInfo[fam][fsUnixCNN]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+        format(store, sizeof(store),"{ff6457} Лимит: 1 эфир в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+        return ErrorMessage(playerid,store);
+    }
     if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}Какая-то секта уже ведет эфир!");
     else if(SektaCNN[0] == -1)
     {
         SektaCNN[0] = fam;
-        Sekta[fam][sektaTimer] = 600;
+        SektaCNN[1] = playerid;
+        Sekta[fam][sektaTimer] = 630;
         SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
-        FamilyInfo[fam][fsUnixCNN] = gettime();
-        FamilyInfo[fam][fUpdate] = 1;
+        SektaCNNStart();
     }
 	if(PlayerInfo[playerid][pFamrank] >= 9 && FamilyInfo[fam][fType] == 3)
 	{
@@ -230,7 +240,7 @@ CMD:gnews(playerid, const params[])
  	return 1;
 }
 
-stock dialogCase_Sekta(playerid, dialogid, response, listitem,const inputtext[])
+stock dialogCase_Sekta(playerid, dialogid, response, listitem)
 {
 	if(dialogid == 1472)
    	{
@@ -272,44 +282,93 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem,const inputtext[])
             {
                 if((Sekta[fam][sektaPosAltar][0] == 0.0 && Sekta[fam][sektaPosAltar][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
                 format(lines,sizeof(lines),""); // Очищаем Lines
-
-                format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
-                format(line,sizeof(line),"\nВсе игроки заморозятся на время, и будет заниматься выполнением обряда"), strcat(lines,line);
-                ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
+                if(Sekta[fam][sektaRiteStatus] == 0)
+                {                
+                    format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
+                    format(line,sizeof(line),"\nВсе игроки должны быть под эффектом грибов"), strcat(lines,line);
+                    ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
+                }
+                else
+                {
+                    format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
+                    format(line,sizeof(line),"\nВсе игроки должны быть под эффектом грибов"), strcat(lines,line);
+                    ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
+                }
             }
             if(listitem == 1)
             {
-                /*new moving;
+                new moving;
                 if(Sekta[fam][sektaPosAltar][0] == 0.0 && Sekta[fam][sektaPosAltar][1] == 0.0) moving = 0;
                 else if(Sekta[fam][sektaPosAltar][0] != 0.0 && Sekta[fam][sektaPosAltar][1] != 0.0) moving = 1;
                 DP[0][playerid] = moving;
 
                 new Float:f_pos[4];
                 frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-                if(moving == 0) CreateEditPlayerObject(playerid, 0, 0, 0, 0, 19527, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
+                if(moving == 0) CreateEditPlayerObject(playerid, 26, 0, 0, 0, 19527, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
                 else if(moving == 1)
                 {
-                    GoEditDynamicObject(playerid, 0, 1, 0, 0, SektaObject[fam], 0);
-                }*/
-                // ВЛАДИК ПОМАГИ
+                    GoEditDynamicObject(playerid, 26, 1, 0, 0, SektaObject[fam], 0);
+                }
             }
         }
         else ShowSektaMenu(playerid,fam);
     }
-    else if(dialogid == 1473)
+    else if(dialogid == 1474)
     {
         new fam = DP[0][playerid];
         if(response)
         {
+            if(Sekta[fam][sektaRiteUnix]+86400 > gettime())
+            {
+                new tyear, tmonth, tday, thour, tminute, tsecond;
+                stamp2datetime(Sekta[fam][sektaRiteUnix]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+                format(store, sizeof(store),"{ff6457} Лимит: 1 обряд в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+                return ErrorMessage(playerid,store);
+            }
+            if(Sekta[fam][sektaRiteStatus] == 1) return ErrorMessage(playerid,"{ff6347} Сейчас уже проходит обряд");
+            new quan,quanaccept,memberrite[50];
             foreach(Player,i)
             {
                 if(OnlineInfo[i][oLogged] == 0) continue;
-                if(IsPlayerInRangeOfPoint(i,20.0,Sekta[fam][sektaPosAltar][0],Sekta[fam][sektaPosAltar][1],Sekta[fam][sektaPosAltar][2]) || PlayerInfo[i][pFamily] == fam)
+                if(IsPlayerInRangeOfPoint(i,20.0,Sekta[fam][sektaPosAltar][0],Sekta[fam][sektaPosAltar][1],Sekta[fam][sektaPosAltar][2]) && PlayerInfo[i][pFamily] == fam)
                 {
-                    // Нужно анимку всем ебануть на минуту, и тыры пыры, я чет проебался с этим.
+                   quan++;
+                   if(quan >= 50)
+                   {
+                        ErrorMessage(playerid,"{ff6347} Слишком много участников для обряда");
+                        break;
+                   }
+                   if(Effect[i] == 3) 
+                   {
+                        memberrite[quanaccept] = i+1;
+                        quanaccept++;
+                   }
                 }
             }
+            if(quan >= 50) return 1;
+            if(quan == quanaccept)
+            {
+                for(new i;i < 50; i++)
+                {
+                    new selectplayerid = memberrite[i]-1;
+                    if(selectplayerid == -1) continue;
+                    if(IsPlayerInRangeOfPoint(selectplayerid,20.0,Sekta[fam][sektaPosAltar][0],Sekta[fam][sektaPosAltar][1],Sekta[fam][sektaPosAltar][2]) && PlayerInfo[selectplayerid][pFamily] == fam)
+                    {
+                        SetPlayerAttachedObject(selectplayerid, 3, 3461, 6, -0.079999, -0.008000, 0.315000, -172.200027, -158.500000, 0.000000, 0.344999, 0.379999, 0.424000, 0, 0); // Факел
+                        if(PlayerInfo[selectplayerid][pFamrank] >= FamilyInfo[fam][fRanks]-1)SetPlayerAttachedObject(selectplayerid, 4, 6865, 2, 0.000000, 0.000000, 0.000000, 0.000000, 82.999984, -141.599960, 0.149999, 0.168999, 0.135999, 0, 0); // Маска Лидера
+                        else SetPlayerAttachedObject(selectplayerid, 4, 11704, 2, 0.067000, 0.108000, -0.004999, 176.500030, 95.700019, -0.200000, 0.461000, 0.865000, 0.504000, 0, 0);
+                    }
+                }
+                Sekta[fam][sektaRiteStatus] = 1;
+            }
+            else return ErrorMessage(playerid,"{ff6347} Не все участники секты находятся под эффектом грибов");
         }
+        else ShowSektaAltarMenu(playerid);
+    }
+    else if(dialogid == 1475)
+    {
+        new fam = DP[0][playerid];
+        if(response) RemoveMask(fam), SuccessMessage(playerid, "{99ff66} Обряд завершён, возьмите приготовленную микстуру у алтаря.");
         else ShowSektaAltarMenu(playerid);
     }
     return 1;

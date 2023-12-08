@@ -325,6 +325,19 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         CreateLabelTermRace(oid,RentObjectRace[oid]);
         UpdateLabelTermRace(oid);
     }
+    else if(gRedakt[playerid] == 26) // Объекты для секты
+    {
+        new fam = PlayerInfo[playerid][pFamily];
+        new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
+        if(dist >= 30.0)
+        {
+            CancelEdit(playerid);
+            return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
+        }
+        Sekta[fam][sektaPosAltar][0] = x, Sekta[fam][sektaPosAltar][1] = y, Sekta[fam][sektaPosAltar][2] = z;
+        Sekta[fam][sektaPosAltar][3] = rx, Sekta[fam][sektaPosAltar][4] = ry, Sekta[fam][sektaPosAltar][5] = rz;
+        SektaObject[fam] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+    }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;

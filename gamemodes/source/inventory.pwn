@@ -2082,10 +2082,10 @@ stock player_tile(playerid, inva)
 		 		}
 		 		else if(fpick == 44) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_shovel(playerid); // Лопата
 		 		else if(fpick == 45) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_seamap(playerid); // Карта Моряка
-		 		else if(fpick == 46) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать морскую звезду на рыбацкой бухте {ff9000}[ Y >> GPS >> Прочее >> Рыбацкая Бухта ]"), i_resetveshi(playerid); // Морская Звезда
-		 		else if(fpick == 47) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать ракушку на рыбацкой бухте {ff9000}[ Y >> GPS >> Прочее >> Рыбацкая Бухта ]"), i_resetveshi(playerid); // Ракушка
+		 		else if(fpick == 46) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать морскую звезду на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Морская Звезда
+		 		else if(fpick == 47) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать ракушку на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
 		 		else if(fpick == 48) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_boat(playerid); // Надувная Лодка
-		 		else if(fpick == 49) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать сундук с сокровищами на рыбацкой бухте {ff9000}[ Y >> GPS >> Прочее >> Рыбацкая Бухта ]"), i_resetveshi(playerid); // Ракушка
+		 		else if(fpick == 49) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать сундук с сокровищами на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
 		 		else if(fpick == 50) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_trap(playerid); // Ловушка для Акул
 		 		else if(fpick == 51)
 			 	{
