@@ -57,16 +57,69 @@ stock dialogCase_Bomb(playerid, dialogid, response, const inputtext[])
     return 1;
 }
 
+CMD:gotoruins(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "i", params[0])) return format(store,sizeof(store),"[ Мысли ]: Телепорт к руинам от бомбы [ /gotoruins ID 0 - %d ]", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, store);
+    if(params[0] < 0 || params[0] >= MAX_BOMB) return format(store,sizeof(store),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, store);
+    
+    new r = params[0];
+    if(RuinsInfo[r][boStat] == 0) return ErrorMessage(playerid, "{FF6347}Руин под этим ID не существует");
+    S_SetPlayerVirtualWorld(playerid, RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]), SetPlayerInterior(playerid, RuinsInfo[r][boInterior]);
+	PPSetPlayerPos(playerid, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2]);
+    return 1;
+}
+
 stock IsCreateBomb(playerid) // Создаём бомбу
 {
     new quan;
-    for(new b; b < MAX_BOMB; ++b)
+
+    // Проверка на, рядом лежащие руины + считаем количество
+    new stopNearbyRuins;
+    for(new r; r < MAX_BOMB; ++r)
 	{
-        if(RuinsInfo[b][boStat] == 0) quan ++;
+        if(RuinsInfo[r][boStat] > 0)
+        {
+            if(IsPlayerInRangeOfPoint(playerid,200.0, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2]) 
+                && GetPlayerVirtualWorld(playerid) == RuinsInfo[r][boWorld] && GetPlayerInterior(playerid) == RuinsInfo[r][boInterior])
+            {
+                stopNearbyRuins = 1;
+                break;
+            }
+            quan ++;
+        }
     }
-    if(quan == 0)
+    if(stopNearbyRuins == 1)
     {
-        ErrorMessage(playerid, "{FF6347}Вы не можете установить новую бомбу [ Лимит 10 штук на сервере ]");
+        ErrorMessage(playerid, "{FF6347}Слишком близко к другой, взорвавшейся бомбе\n\n{cccccc}Расстояние не менее 200 метров");
+        return 0;
+    }
+
+    // Проверка на, рядом установленную бомбу + считаем количество
+    new stopNearbyPlant;
+    for(new g = 0; g < MAX_THROW; g++)
+	{
+		if(ThrowInfo[g][tId] == 11 && ThrowInfo[g][tType] == 0 && ThrowInfo[g][tBombPlant] == true) 
+        {
+            if(IsPlayerInRangeOfPoint(playerid,200.0, ThrowInfo[g][tX], ThrowInfo[g][tY], ThrowInfo[g][tZ]) 
+                && GetPlayerVirtualWorld(playerid) == ThrowInfo[g][tWorld] && GetPlayerInterior(playerid) == ThrowInfo[g][tInt])
+            {
+                stopNearbyPlant = 1;
+                break;
+            }
+            quan ++;
+        }
+    }
+    if(stopNearbyPlant == 1)
+    {
+        ErrorMessage(playerid, "{FF6347}Слишком близко к другой, установленной бомбе\n\n{cccccc}Расстояние не менее 200 метров");
+        return 0;
+    }
+
+    // Проверка на лимит бомб в данный момент
+    if(quan >= 10)
+    {
+        ErrorMessage(playerid, "{FF6347}Вы не можете установить новую бомбу\n\n{cccccc}На сервере взорвалось или установлено 10 бомб\nВы можете найти завалы от бомбы и устранить их, освободив слоты");
         return 0;
     }
     return 1;

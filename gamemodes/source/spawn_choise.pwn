@@ -25,8 +25,8 @@ stock SaveLastPlayerPosition(playerid)
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
         PlayerInfo[playerid][pLastPos][2] = SpZ[playerid];
         PlayerInfo[playerid][pLastPos][3] = SpA[playerid];
-        PlayerInfo[playerid][pLastWorld] = SpInt[playerid];
-        PlayerInfo[playerid][pLastInt] = SpWorld[playerid];
+        PlayerInfo[playerid][pLastWorld] = SpWorld[playerid];
+        PlayerInfo[playerid][pLastInt] = SpInt[playerid];
     }
     else
     {

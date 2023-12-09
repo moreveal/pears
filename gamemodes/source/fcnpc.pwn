@@ -1,7 +1,5 @@
 
 new NpcArmy;
-new npcarmyid;
-new TrainRoadID = 1442; // Точка, в которой появляется поезд
 new NextTrainRoadID;
 new Float:speedTrain;
 new Float:speedGo;
@@ -39,17 +37,16 @@ CMD:gettrainpoint(playerid) // VREMENNO
     return 1;
 }
 
-CMD:tostoptrain(playerid) // VREMENNO
-{
-    format(store, sizeof(store), "To Stop Train: %d point | This Train Point: %d | {FF6347}Stop Train Point %d", GetPointToStopTrain(), TrainRoadID, TrainRoadID + GetPointToStopTrain());
-    SendClientMessage(playerid, -1, store);
-    return 1;
-}
-
-CMD:traingo(playerid)
+CMD:traingo(playerid, const params[])
 {
     if(server != 0) return 0;
     if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
+
+    /*if(sscanf(params, "i", params[0])) return ErrorMessage(playerid, "{FF6347}/traingo TrainRoadDestination (В какую точку едем)");
+    if(TrainRoadID == params[0]) return ErrorMessage(playerid, "{FF6347}Поезд уже в этой точке");
+
+    if(BoxInTrain <= 0) BoxInTrain = 1; // Типо есть ящики
+    TrainRoadDestination = params[0]; // 311 SF, 807 LS, 1181 LV, 0 NGSA*/
 
     TrainStart();
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Движение поезда запущено","*","");
@@ -118,6 +115,10 @@ stock GoTrainRoad()
 
 public FCNPC_OnReachDestination(npcid)
 {
+    // Ставим поезд на новую позицию
+    SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
+    SetVehicleZAngle(train, TrainRoad[TrainRoadID][TrainRoad_A]);
+
     if(TrainStoped == 1)
     {
         TrainMoved = 0;
@@ -125,10 +126,18 @@ public FCNPC_OnReachDestination(npcid)
         FCNPC_Stop(NpcArmy);
         FCNPC_SetVehicleTrainSpeed(NpcArmy, 0.0);
         FCNPC_SetSpeed(NpcArmy, 0.0);
-        FindPointSideTrain();
 
         if(ReasonToStopTrain > 0) CreateTrainBox();
-
+        else
+        {
+            // Пишем сообщение всем, кто едет в поезде
+            foreach(Player,i)
+            {
+                if(OnlineInfo[i][oLogged] == 0) continue;
+                if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
+                    || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStopInfo(i);
+            }
+        }
         DestroyObjectTrain();
         CreateObjectTrain();
     }
@@ -152,18 +161,20 @@ public FCNPC_OnReachDestination(npcid)
 
         if(MoveStatus == 0)
         {
+            // Проверка наличия ящиков при движении
+            if(TrainRoadDestination != 0 && BoxInTrain <= 0) TrainRoadDestination = 0; // Если мы едет не на базу и в поезде нет ящиков - отправляем на базу
+
             // Ищем остановку на нужной станции
-            if(TrainRoadID >= 100)
+            new pointsToStop;
+            if(TrainRoadDestination == 0) pointsToStop = sizeof(TrainRoad) - TrainRoadID + 1;
+            else
             {
-                if(TrainRoadID < TrainRoadDestination)
-                {
-                    new pointsToStop = TrainRoadDestination - TrainRoadID;
-                    if(pointsToStop <= GetPointToStopTrain() + 4)
-                    {
-                        MoveStatus = 1;
-                        ReasonToStopTrain = 0;
-                    }
-                }
+                if(TrainRoadID < TrainRoadDestination) pointsToStop = TrainRoadDestination - TrainRoadID; 
+            }
+            if(pointsToStop <= GetPointToStopTrain() + 2)
+            {
+                MoveStatus = 1;
+                ReasonToStopTrain = 0;
             }
             
             // Ищем руины бомбы на путях перед поездом
@@ -178,6 +189,8 @@ public FCNPC_OnReachDestination(npcid)
                     if(pointsToRuins <= GetPointToStopTrain() + 6  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
                         && pointsToRuins >= GetPointToStopTrain() / 2) // Но не меньше половины, ибо нахер нам стопать поезд, если руины появились перед еблом слишком резко
                     {
+                        SetDynamicObjectMaterial(TrainLampObject, 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
+
                         MoveStatus = 1;
                         ReasonToStopTrain = ruinsOnTrainRoad + 1; // Тормозим по причине конкретного id руин
 
@@ -185,8 +198,8 @@ public FCNPC_OnReachDestination(npcid)
                         foreach(Player,i)
                         {
                             if(OnlineInfo[i][oLogged] == 0) continue;
-                            if(!IsPlayerInAnyVehicle(i)) continue;
-                            if(train == GetPlayerVehicleID(i)) MessageTrainStop(i);
+                            if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
+                                || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStop(i);
                         }
                     }
                 }
@@ -293,5 +306,11 @@ stock MessageTrainStop(playerid)
     PlayerPlaySound(playerid,6001,0,0,0);
 
     SetTimerEx("around_audiostop", 5000, false, "dd", playerid, 6004); // Таймер на выключение сирены
+    return 1;
+}
+
+stock MessageTrainStopInfo(playerid)
+{
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{336633}Поезд остановился\n{cccccc}Прямо сейчас вы можете выйти из поезда","*","");
     return 1;
 }

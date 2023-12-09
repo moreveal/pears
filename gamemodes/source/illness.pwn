@@ -407,6 +407,23 @@ stock getmed(playerid, para1)
     ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",sctring,"Назад","");
 	return 1;
 }
+
+stock InfectInfo(playerid)
+{
+	if(OnlineInfo[playerid][oMessageInfect] <= gettime())
+	{
+		OnlineInfo[playerid][oMessageInfect] = gettime() + 600; // 10 Минут Unix
+
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Я заболею если буду долго плавать в холодной воде");
+		format(lines,sizeof(lines),""); // Очищаем Lines
+		format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде и начинает простужаться"), strcat(lines,line);
+		format(line,sizeof(line),"\n{FF6347}Через 4 минуты пребывания в холодной воде персонаж заболеет"), strcat(lines,line);
+		format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+	}
+	return 1;
+}
+
 stock infectback(playerid)
 {
 	for(new i = 0; i < 5; i++)
@@ -435,7 +452,7 @@ stock infectback(playerid)
 		{
 			if(PlayerInfo[playerid][pIllnessProg][i] < 1000)
 			{
-				PlayerInfo[playerid][pIllnessProg][i] -= 10;
+				PlayerInfo[playerid][pIllnessProg][i] -= 4;
 				if(PlayerInfo[playerid][pIllnessProg][i] <= 0) PlayerInfo[playerid][pIllness][i] = 0, PlayerInfo[playerid][pIllnessStat][i] = 0, PlayerInfo[playerid][pIllnessProg][i] = 0;
 			}
 		}
@@ -460,6 +477,11 @@ stock infectback(playerid)
 	}
 	return 1;
 }
+stock ContagiousInfect(stat) // Заразные болезни
+{
+	if(stat == 14 || stat == 15 || stat == 16 || stat == 17) return 1;
+	return 0;
+}
 stock create_infect(playerid, stat, prog, i)
 {
 	PlayerInfo[playerid][pIllness][i] = stat;
@@ -469,7 +491,7 @@ stock create_infect(playerid, stat, prog, i)
 		PlayerInfo[playerid][pIllnessProg][i] = 2000;
 		if(zones_coldstat[playerid] == 0 && stat >= 14 && stat <= 17)
 		{
-			zones_cold[playerid] = CreateDynamicSphere(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], 5.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)), zones_coldstat[playerid] = stat;
+			zones_cold[playerid] = CreateDynamicSphere(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], 2.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)), zones_coldstat[playerid] = stat;
 			AttachDynamicAreaToPlayer(zones_cold[playerid], playerid, 0.0, 0.0, 0.0);
 		}
 	}
@@ -532,7 +554,7 @@ stock createcold(playerid)
 		{
 			if(zones_coldstat[playerid] == 0)
 			{
-				zones_cold[playerid] = CreateDynamicSphere(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], 5.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)), zones_coldstat[playerid] = PlayerInfo[playerid][pIllness][i];
+				zones_cold[playerid] = CreateDynamicSphere(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], 2.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid)), zones_coldstat[playerid] = PlayerInfo[playerid][pIllness][i];
 				AttachDynamicAreaToPlayer(zones_cold[playerid], playerid, 0.0, 0.0, 0.0);
 			}
 			break;
