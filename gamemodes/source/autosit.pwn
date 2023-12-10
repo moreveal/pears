@@ -119,6 +119,9 @@ stock PressSeatableObjectHandler(playerid)
   || GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
   || GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0;
 
+  // Позиции, где sit не будет работать
+  if(NoSit(playerid)) return 0;
+
   new Float: player_pos[3];
   GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
@@ -180,6 +183,15 @@ stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 	ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
 	SetTimerEx("sitload", 1500, 0, "d", playerid);
 	return 1;
+}
+
+stock NoSit(playerid) // Позиции, где sit работать не будет
+{
+	if(IsPlayerInRangeOfPoint(playerid,2.0,1302.9628,1606.5735,20.0563) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179)
+	{
+		return 1;
+	}
+	return 0;
 }
 
 stock sit(playerid)

@@ -1635,7 +1635,7 @@ stock DynamicPickupNGSAEscort()
 	CreateDynamic3DTextLabel("{555555}Взять {ff9000}Кувалду\n{cccccc}[ ALT ]",-1,1302.082031, 1604.352539, 20.266304,2.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,180,179);
 
 	CreateDynamicPickup(19132, 1, 1305.7756,1604.4343,19.7263, 180, 179); // Выход из Поезда
-	CreateDynamic3DTextLabel("{cccccc}Выйти {ff9000}F или Enter\n{555555}Выглянуть в Окно {ff9000}ALT",-1,1305.7756,1604.4343,19.7263,2.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,180,179); // Выход из Поезда
+	CreateDynamic3DTextLabel("{cccccc}Выйти {ff9000}ALT\n{555555}Выглянуть в Окно {ff9000}F или Enter",-1,1305.7756,1604.4343,19.7263,2.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,180,179); // Выход из Поезда
 	
 	new actorid = CreateDynamicActor(287, 1302.9628,1606.5735,20.0563,5.7746, true, 100.0, 180, 179, -1, 100.0, -1, 0);
 	ApplyDynamicActorAnimation(actorid, "PED","SEAT_idle", 4.0, 0,0,0,1,0);
@@ -1679,9 +1679,9 @@ stock DestroyTrainBox()
 
 stock DestroyObjectTrain()
 {
-	if(train_object1) DestroyObject(train_object1);
-	if(train_object2) DestroyObject(train_object2);
-	if(train_object3) DestroyObject(train_object3);
+	if(train_object1) DestroyDynamicObject(train_object1);
+	if(train_object2) DestroyDynamicObject(train_object2);
+	if(train_object3) DestroyDynamicObject(train_object3);
 	return 1;
 }
 
@@ -1690,17 +1690,20 @@ stock CreateObjectTrain()
 	new Float:pos[3];
 	GetVehiclePos(train, pos[0], pos[1], pos[2]);
 
-	train_object1 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
-	SetObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object1 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(train_object1, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetDynamicObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachDynamicObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	train_object2 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
-	SetObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object2 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(train_object2, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetDynamicObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachDynamicObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	train_object3 = CreateObject(3066, pos[0], pos[1], pos[2], 0.0, 0.0, 0.0);
-	SetObjectMaterial(train_object3, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachObjectToVehicle(train_object3, train + 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object3 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
+	SetDynamicObjectMaterial(train_object3, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetDynamicObjectMaterial(train_object3, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachDynamicObjectToVehicle(train_object3, train + 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	return 1;
 }
 
@@ -2592,7 +2595,7 @@ stock ExitTrain(playerid)
 
 	keep(playerid);
 	S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
-	PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]-1.5);
+	PPSetPlayerPos(playerid, pos[0], pos[1], TrainRoad[TrainRoadID][TrainRoad_Z]-1.0);
 	SetPlayerFacingAngle(playerid, pos[3]);
 	SetCameraBehindPlayer(playerid);
 	return 1;

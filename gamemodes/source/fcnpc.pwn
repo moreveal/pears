@@ -42,11 +42,11 @@ CMD:traingo(playerid, const params[])
     if(server != 0) return 0;
     if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
 
-    /*if(sscanf(params, "i", params[0])) return ErrorMessage(playerid, "{FF6347}/traingo TrainRoadDestination (В какую точку едем)");
+    if(sscanf(params, "i", params[0])) return ErrorMessage(playerid, "{FF6347}/traingo TrainRoadDestination (В какую точку едем)");
     if(TrainRoadID == params[0]) return ErrorMessage(playerid, "{FF6347}Поезд уже в этой точке");
 
     if(BoxInTrain <= 0) BoxInTrain = 1; // Типо есть ящики
-    TrainRoadDestination = params[0]; // 311 SF, 807 LS, 1181 LV, 0 NGSA*/
+    TrainRoadDestination = params[0]; // 311 SF, 807 LS, 1181 LV, 0 NGSA
 
     TrainStart();
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Движение поезда запущено","*","");
@@ -117,7 +117,6 @@ public FCNPC_OnReachDestination(npcid)
 {
     // Ставим поезд на новую позицию
     SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
-    //SetVehicleZAngle(train, TrainRoad[TrainRoadID][TrainRoad_A]);
 
     if(TrainStoped == 1)
     {
