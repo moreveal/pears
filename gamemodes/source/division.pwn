@@ -25,8 +25,8 @@ enum divInfo
     Float:divSpawnPos[4], // Позиция спавна
     divSpawnWorld, // Вирт мир спавна
     divSpawnInterior, // Интерьер спавна
-    divColorHex[7], // hex цвет
-	divColorVeh[2] // Цвет транспорта (0 и 1) - у транспорта цвет, это число (id)
+    divColorHex[7] // hex цвет
+	//divColorVeh[2] // Цвет транспорта (0 и 1) - у транспорта цвет, это число (id)
 };
 new DivisionInfo[MAX_ORG][MAX_DIVISION_ORG][divInfo];
 new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH]; // Названия рангов
@@ -100,8 +100,8 @@ stock showDialogMenuDivision(playerid)
 		if(DivisionInfo[g][i][divSpawnPos][0] == 0.0) format(line,sizeof(line),"\n{cccccc}Спавн \t{FF6347}[Не установлен]"), strcat(lines,line);
 		else format(line,sizeof(line),"\n{cccccc}Спавн \t{99ff66}[Установлен]"), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Цвет: \t{%s}||||||||||", DivisionInfo[g][i][divColorHex]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}1 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][0]], DivisionInfo[g][i][divColorVeh][0]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}2 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][1]], DivisionInfo[g][i][divColorVeh][1]), strcat(lines,line);
+		//format(line,sizeof(line),"\n{cccccc}1 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][0]], DivisionInfo[g][i][divColorVeh][0]), strcat(lines,line);
+		//format(line,sizeof(line),"\n{cccccc}2 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][1]], DivisionInfo[g][i][divColorVeh][1]), strcat(lines,line);
 		
 		if(PlayerInfo[playerid][pDivision][0] != i+1) format(line,sizeof(line),"\n{99ff66}Войти в подфракцию >> \t"), strcat(lines,line);
 		else format(line,sizeof(line),"\n{FF6347}Покинуть подфракцию >> \t"), strcat(lines,line);
@@ -180,7 +180,7 @@ stock showDialogMembersDivision(playerid, org, div)
 }
 stock divmembersoff(playerid)
 {
-	if(checkMysqlFlood(playerid)) return 0; // Антифлуд от частых запросов в базу
+	if(AntiFloodMysqlRequest(playerid, 10)) return 1;
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции {ff0000}Offline","{cccccc}Поиск участников...","*","");
 
 	new org = DP[1][playerid] + 1; // Получаем id организации
@@ -526,7 +526,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			{
 				ShowDialog(playerid,1323,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите Hex код цвета подфракции [6 Символов]\nПример: ff9000","Принять","Отмена");
 			}
-			if(listitem == 12) // Цвет Транспорта 1
+			/*if(listitem == 12) // Цвет Транспорта 1
 			{
 				DP[4][playerid] = 0; // слот цвета транспорта
 				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
@@ -535,8 +535,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			{
 				DP[4][playerid] = 1; // слот цвета транспорта
 				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
-			}
-			if(listitem == 14) // Войти в подфракцию
+			}*/
+			if(listitem == 12) // Войти в подфракцию
 			{
 				new i = DP[2][playerid]; // Получаем id подфракции
 				if(PlayerInfo[playerid][pDivision][0] == i + 1) return cmd_divleave(playerid);
@@ -743,7 +743,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1324) // Цвета транспорта
+	/*if(dialogid == 1324) // Цвета транспорта
 	{
 		if(response)
 		{
@@ -771,7 +771,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			OrgLog(g + 1, "divColorVeh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, store);
 		}
 		else showDialogMenuDivision(playerid);
-	}
+	}*/
 	if(dialogid == 1325) // Покинуть подфракцию
 	{
 		if(response)
@@ -894,7 +894,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 	{
 		if(response)
 		{
-			if(checkMysqlFlood(playerid)) return 0; // Антифлуд от частых запросов в базу
+			if(AntiFloodMysqlRequest(playerid, 10)) return 1;
 			ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции {ff0000}Offline","{cccccc}Поиск участников...","*","");
 
 			new org = DP[1][playerid] + 1; // Получаем id организации
@@ -932,9 +932,14 @@ stock DivisionSave(g, i) // Сохраняем в базу (моментальн
     DivisionInfo[g][i][divRanks], escapeName, escapeAbbreviation, DivisionInfo[g][i][divSpawnPos][0], DivisionInfo[g][i][divSpawnPos][1],
 	DivisionInfo[g][i][divSpawnPos][2], DivisionInfo[g][i][divSpawnPos][3]);
 
+	format(big_query,sizeof(big_query),"%s, `divSpawnWorld` = '%d', `divSpawnInterior` = '%d', `divColorHex` = '%s' WHERE `org`='%d' AND `divid`='%d'", big_query,
+    DivisionInfo[g][i][divSpawnWorld], DivisionInfo[g][i][divSpawnInterior], escapeColorHex, g, i);
+
+	/* Закоментил divColorVeh
     format(big_query,sizeof(big_query),"%s, `divSpawnWorld` = '%d', `divSpawnInterior` = '%d', `divColorHex` = '%s',\
 	`divColorVeh0` = '%d', `divColorVeh1` = '%d' WHERE `org`='%d' AND `divid`='%d'", big_query,
     DivisionInfo[g][i][divSpawnWorld], DivisionInfo[g][i][divSpawnInterior], escapeColorHex, DivisionInfo[g][i][divColorVeh][0], DivisionInfo[g][i][divColorVeh][1], g, i);
+	*/
 
     // Отправляем запрос
     query_empty(pearsq, big_query);
@@ -976,8 +981,8 @@ function LoadDivision() // Загрузка из базы
 		cache_get_value_name_int(f, "divSpawnWorld", DivisionInfo[g][i][divSpawnWorld]);
 		cache_get_value_name_int(f, "divSpawnInterior", DivisionInfo[g][i][divSpawnInterior]);
 		cache_get_value_name(f, "divColorHex", DivisionInfo[g][i][divColorHex], 7);
-		cache_get_value_name_int(f, "divColorVeh0", DivisionInfo[g][i][divColorVeh][0]);
-		cache_get_value_name_int(f, "divColorVeh1", DivisionInfo[g][i][divColorVeh][1]);
+		//cache_get_value_name_int(f, "divColorVeh0", DivisionInfo[g][i][divColorVeh][0]);
+		//cache_get_value_name_int(f, "divColorVeh1", DivisionInfo[g][i][divColorVeh][1]);
 
 		// Если нет никакого цвета у подфракции, присвоим серенький
 		if(!strcmp(DivisionInfo[g][i][divColorHex],"0",true)) format(DivisionInfo[g][i][divColorHex],7,"cccccc");

@@ -329,13 +329,7 @@ CMD:exportmodel(playerid)
 
 stock SaveEditModelTextDraw(playerid)
 {
-    SetPVarInt(playerid,"afmysql",GetPVarInt(playerid,"afmysql")+1);
-	if(GetPVarInt(playerid,"afmysql") >= 5)
-	{
-		SendClientMessage(playerid, COLOR_GREEN,"* Не флуди!");
-		ShowDialog(playerid,11001,DIALOG_STYLE_MSGBOX,"{ff0000}****  {FFFFFF}*[АнтиФлуд]*  {ff0000}****","{ff0000}******** {ffffff}Не флуди! {ff0000}********","•","");
-		return 1;
-	}
+    if(AntiFloodMysqlRequest(playerid, 5)) return 1;
 
     if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, store);
 

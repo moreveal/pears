@@ -620,42 +620,37 @@ stock ukshow(uk)
 
 CMD:su(playerid, const params[])
 {
-	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1)
-	{
-	    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
-		if(PlayerInfo[playerid][pMember] == 3 || PlayerInfo[playerid][pLeader] == 3) return ErrorMessage(playerid, "{FF6347}Бойцам национальной гвардии запрещено выдавать розыск");
-		new r = PlayerInfo[playerid][pRank], g = fraction(playerid), string[114];
-	    if(PlayerInfo[playerid][pFbi] > 0) r = PlayerInfo[playerid][pFbi], g = 2;
-	    if(r < OrganInfo[g][gAcc][32]) return format(string,sizeof(string),"{FF6347}Вы не можете выполнить это действие [ %d+ Ранг ]",OrganInfo[g][gAcc][32]), ErrorMessage(playerid, string);
-    	
-		new playa,tmp[121],article[4];
-        if(!sscanf(params, "s[121]s[4]", tmp, article)) // Указываем Ник и Номер статьи
-		{
-            if(!CheckWarningSu(playerid, tmp, playa)) return 1;
-			new findUk = -1;
-			for(new i = 0; i < MAX_CRIMINAL_CODE_ARTICLE; i++)
-			{
-				if(CriminalCodeInfo[i][ccType] == 0) continue;
-				if(strfind(CriminalCodeInfo[i][ccArcticle], article,true) != (-1))
-				{
-					findUk = i;
-					break;
-				}
-			}
+    new g = fraction(playerid);
+	if(!IsAFunctionOrganization(32, g, playerid) && PlayerInfo[playerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник правоохранительных органов");
+	if(!GetAccessRankOrg(playerid, g, 32, PlayerInfo[playerid][pFbi])) return 1;
 
-			if(findUk == -1) return ErrorMessage(playerid, "{FF6347}Номер статьи не найден");
-			if(CriminalCodeInfo[findUk][ccLevel] == 0) return ErrorMessage(playerid, "{FF6347}У этой статьи не предусмотрен уровень розыска");
-			SetPlayerCriminal(1,playa, playerid,CriminalCodeInfo[findUk][ccName],CriminalCodeInfo[findUk][ccLevel], findUk);
-		}
-		else if(!sscanf(params, "s[121]", tmp)) // Указываем только ник или ID
-		{
-			if(!CheckWarningSu(playerid, tmp, playa)) return 1;
-			DP[3][playerid] = playa;
-			CriminalCodeMenu(playerid, 1);
-		}
-        else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать розыск подозреваемому [ /su ID или Ник (Номер статьи - не обязательно) ]");
-	}
-	else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+    new playa,tmp[121],article[4];
+    if(!sscanf(params, "s[121]s[4]", tmp, article)) // Указываем Ник и Номер статьи
+    {
+        if(!CheckWarningSu(playerid, tmp, playa)) return 1;
+        new findUk = -1;
+        for(new i = 0; i < MAX_CRIMINAL_CODE_ARTICLE; i++)
+        {
+            if(CriminalCodeInfo[i][ccType] == 0) continue;
+            if(strfind(CriminalCodeInfo[i][ccArcticle], article,true) != (-1))
+            {
+                findUk = i;
+                break;
+            }
+        }
+
+        if(findUk == -1) return ErrorMessage(playerid, "{FF6347}Номер статьи не найден");
+        if(CriminalCodeInfo[findUk][ccLevel] == 0) return ErrorMessage(playerid, "{FF6347}У этой статьи не предусмотрен уровень розыска");
+        SetPlayerCriminal(1,playa, playerid,CriminalCodeInfo[findUk][ccName],CriminalCodeInfo[findUk][ccLevel], findUk);
+    }
+    else if(!sscanf(params, "s[121]", tmp)) // Указываем только ник или ID
+    {
+        if(!CheckWarningSu(playerid, tmp, playa)) return 1;
+        DP[3][playerid] = playa;
+        CriminalCodeMenu(playerid, 1);
+    }
+    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать розыск или штраф подозреваемому [ /su ID или Ник (Номер статьи - не обязательно) ]");
 	return 1;
 }
 stock CheckWarningSu(playerid, const tmp[], &playa)

@@ -15,7 +15,8 @@ enum gInfo
 	gapt,
 	gstat2,
 	gstat,
-	gAcc[MAX_ACC],
+	gAcc[MAX_ACC], // С какого ранга доступна функция или команда
+	gAccDiv[MAX_ACC], // Какая подфракция привязана к функции или команде
 	gBattle,
 	gInterval,
 	gInvent[20],
@@ -128,6 +129,8 @@ function LoadOrgan()
 		for(new i = 0; i < MAX_ACC; i++)
     	{
     	    format(string,sizeof(string),"acc%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gAcc][i]);
+			format(string,sizeof(string),"accdiv%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gAccDiv][i]);
+			if(OrganInfo[idx][gAcc][i] <= 0) OrganInfo[idx][gAcc][i] = MAX_RANK_ORG;
     	}
 		cache_get_value_name_int(f, "interval", OrganInfo[idx][gInterval]);
 		
@@ -477,7 +480,7 @@ stock showDialogOrganizationMenu(playerid)
 	format(line,sizeof(line), detail_lmenu(playerid, 8)), strcat(lines,line); // Лог
 	format(line,sizeof(line), detail_lmenu(playerid, 10)), strcat(lines,line); // Черный список
 
-	if(IsAGunSkladDepart(playerid)) // Только организации, у которых есть доступ к оружию на складе
+	if(IsAGunSkladDepart(g)) // Только организации, у которых есть доступ к оружию на складе
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
 	}
@@ -541,19 +544,17 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 4) cmd_nabor(playerid);
 	else if(detail == 5)
 	{
-    	new string[94];
-		if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][4]) return format(string,sizeof(string),"[ Мысли ]: Управление банковским счётом организации [ %d+ Ранг ]",OrganInfo[g][gAcc][4]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
-    	if(OrganInfo[fraction(playerid)][gCash] == 1) OrganInfo[fraction(playerid)][gCash] = 0;
-		else if(OrganInfo[fraction(playerid)][gCash] == 0) OrganInfo[fraction(playerid)][gCash] = 1;
-		OrganInfo[fraction(playerid)][gUpdate] = 1;
+		if(!GetAccessRankOrg(playerid, g, 4, NO_FBI)) return 1;
+    	if(OrganInfo[g][gCash] == 1) OrganInfo[g][gCash] = 0;
+		else if(OrganInfo[g][gCash] == 0) OrganInfo[g][gCash] = 1;
+		OrganInfo[g][gUpdate] = 1;
 		showDialogOrganizationMenu(playerid);
     }
     else if(detail == 6) cmd_dip(playerid);
 	else if(detail == 7) rank_organization(playerid, fraction(playerid));
 	else if(detail == 8)
 	{
-	    new string[94];
-	    if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][6]) return format(string,sizeof(string),"[ Мысли ]: Я не могу выполнить это действие [ %d+ Ранг ]",OrganInfo[g][gAcc][6]), ErrorText(playerid, string), showDialogOrganizationMenu(playerid);
+		if(!GetAccessRankOrg(playerid, g, 6, NO_FBI)) return 1;
 		logorg(playerid, g);
 	}
 	else if(detail == 9) cmd_cac(playerid);
@@ -564,6 +565,7 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 14) cmd_alldiv(playerid);
 	else if(detail == 15)
 	{
+		if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;
 		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
 		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
 	}
@@ -573,8 +575,7 @@ stock open_detail_lmenu(playerid, detail)
 
 stock rank_organization(playerid, g)
 {
-	if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][5]) return format(store,sizeof(store),"[ Мысли ]: Я не могу изменять названия рангов [ %d+ Ранг ]",OrganInfo[g][gAcc][5]), ErrorText(playerid, store), showDialogOrganizationMenu(playerid);
-
+	if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;
 	DP[1][playerid] = g;
 	format(lines,sizeof(lines),""); // Очищаем Lines
 

@@ -82,25 +82,25 @@ stock jobbus(playerid)
 
 CMD:busstop(playerid)
 {
-	if(PlayerInfo[playerid][pLeader] == 7 || PlayerInfo[playerid][pMember] == 7)
+	new g = fraction(playerid);
+	if(!IsAFunctionOrganization(61, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник Правительства");
+	if(!GetAccessRankOrg(playerid, g, 61, NO_FBI)) return 1;
+
+	new quan;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"{ff9000}Добавить Остановку {99ff66}>>"), strcat(lines,line);
+
+	for(new bss = 0; bss < MAX_BUSSTATION; bss++)
 	{
-		new quan;
-		format(lines,sizeof(lines),""); // Очищаем Lines
-
-		format(line,sizeof(line),"{ff9000}Добавить Остановку {99ff66}>>"), strcat(lines,line);
-
-		for(new bss = 0; bss < MAX_BUSSTATION; bss++)
+		if(BusStationInfo[bss][bsActive] >= 1)
 		{
-			if(BusStationInfo[bss][bsActive] >= 1)
-			{
-				format(line,sizeof(line),"\n%d. {cccccc}%s",quan+1,BusStationInfo[bss][bsName]), strcat(lines,line);
-				List[quan][playerid] = bss;
-				quan ++;
-			}
+			format(line,sizeof(line),"\n%d. {cccccc}%s",quan+1,BusStationInfo[bss][bsName]), strcat(lines,line);
+			List[quan][playerid] = bss;
+			quan ++;
 		}
-		ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
 	}
-	else ErrorMessage(playerid, "{FF6347}Вы не работаете в Правительстве"), stop_dialog(playerid);
+	ShowDialog(playerid,1301,DIALOG_STYLE_LIST,"{ff9000}Автобусные Остановки",lines,"Выбрать","Отмена");
 	return 1;
 }
 

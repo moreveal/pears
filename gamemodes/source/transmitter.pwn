@@ -180,7 +180,7 @@ stock commandD(playerid, typeCommand, const params[])
 
     if(IsAGangID(g)) // Банды
     {
-        if(PlayerInfo[playerid][pRank] < OrganInfo[g][gAcc][39]) return format(store,sizeof(store),"{FF6347}Вам не доступен общий канал рации [ %d+ Ранг ]",OrganInfo[g][gAcc][39]), ErrorMessage(playerid, store);
+	    if(!GetAccessRankOrg(playerid, g, 39, NO_FBI)) return 1;
     }        
 
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))

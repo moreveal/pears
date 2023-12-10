@@ -117,7 +117,7 @@ public FCNPC_OnReachDestination(npcid)
 {
     // Ставим поезд на новую позицию
     SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
-    SetVehicleZAngle(train, TrainRoad[TrainRoadID][TrainRoad_A]);
+    //SetVehicleZAngle(train, TrainRoad[TrainRoadID][TrainRoad_A]);
 
     if(TrainStoped == 1)
     {

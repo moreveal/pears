@@ -1718,6 +1718,9 @@ stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координа
 
 stock OrderEscort(playerid, frak)
 {
+	if(!IsAFunctionOrganization(1, frak, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту функцию\n\n{cccccc}Недоступно для вас или вашей организации");
+	if(!GetAccessRankOrg(playerid, frak, 1, NO_FBI)) return 1;
+
 	DP[4][playerid] = frak;
 	new g = fraction(playerid);
 	new quan;
@@ -1888,7 +1891,10 @@ stock getFreeOrderSlotEscort(g)
 
 stock orderfrak(playerid)
 {
-	if(fraction(playerid) != 3) return ErrorMessage(playerid, "{FF6347}Вы не состоите в NGSA");
+	new frak = fraction(playerid);
+	if(!IsAFunctionOrganization(51, frak, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не боец NGSA");
+	if(!GetAccessRankOrg(playerid, frak, 51, NO_FBI)) return 1;
+
 	new quan;
 	format(lines,sizeof(lines),""); // Очищаем Lines
 	format(line,sizeof(line),"{cccccc}Счёт NGSA: {99ff66}%d$ {cccccc}[%s]\t\t", OrganInfo[3][glave], get_k(OrganInfo[3][glave])), strcat(lines,line);
@@ -2584,6 +2590,7 @@ stock ExitTrain(playerid)
 	pos[0] -= (offset * floatsin(-pos[3]+180, degrees));
     pos[1] -= (offset * floatcos(-pos[3]+180, degrees));
 
+	keep(playerid);
 	S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
 	PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]-1.5);
 	SetPlayerFacingAngle(playerid, pos[3]);
@@ -2613,26 +2620,16 @@ stock OpenWindowTrain(playerid)
 	TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 
 	OnlineInfo[playerid][oWindowTrain] = train;
-
-	/*ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Выглядываем в окно поезда..","*","");
-	TextDrawShowForPlayer(playerid, Chernifon);
-	S_SetPlayerVirtualWorld(playerid, 0, 0);
-	SetPlayerInterior(playerid, 0);
-	TogglePlayerSpectating(playerid, 1);
-	PlayerSpectatePlayer(playerid, npcarmyid);
-	SetTimerEx("ResetSpecTrain", 1500, false, "d", playerid);*/
+	SetTimerEx("ResetSpecTrain", 2000, false, "d", playerid);
 	return 1;
 }
 
-/*function ResetSpecTrain(playerid) // Первый раз грузим слежку за поездом
+function ResetSpecTrain(playerid) // Перезапускаем слежку, в случае багули
 {
-	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
-	TextDrawHideForPlayer(playerid, Chernifon);
 	if(OnlineInfo[playerid][oWindowTrain] != train) return 1;
 	PlayerSpectateVehicle(playerid, train);
-	TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 	return 1;
-}*/
+}
 
 stock ExitWindowTrain(playerid)
 {

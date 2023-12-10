@@ -107,11 +107,10 @@ new GangZone[][GANGZONEENUM] =
 
 CMD:zahvat(playerid, const params[])
 {
-	// Проверки Игрока
-	if(!IsAGang(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не бандит");
 	new frakid = fraction(playerid);
+	if(!IsAFunctionOrganization(16, frakid, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не бандит");
+	if(!GetAccessRankOrg(playerid, frakid, 16, NO_FBI)) return 1;
 
-	if(PlayerInfo[playerid][pRank] < OrganInfo[frakid][gAcc][16]) return format(store,sizeof(store),"{FF6347}Вы не можете начинать захват территории [ %d+ Ранг ]",OrganInfo[frakid][gAcc][16]), ErrorMessage(playerid, store);
 	if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Вы в транспорте");
 	if(Zach[frakid] == 1) return ErrorMessage(playerid, "{FF6347}Сейчас нельзя начать захват территории, вашу банду зачищают");
 	if(OrganInfo[frakid][gstat2] == 1) return ErrorMessage(playerid, "{FF6347}Ваша банда временно закрыта администрацией [ Вероятно, отсутствует лидер ]");
@@ -251,9 +250,9 @@ CMD:sellgz(playerid, const params[])
 
 CMD:capture(playerid)
 {
-	if(!IsAGang(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник банды");
 	new frakid = fraction(playerid);
-	if(PlayerInfo[playerid][pRank] < OrganInfo[frakid][gAcc][16]) return format(store,sizeof(store),"{FF6347}Вы не можете управлять каптами [ %d+ Ранг ]",OrganInfo[frakid][gAcc][16]), ErrorMessage(playerid, store);
+	if(!IsAFunctionOrganization(16, frakid, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не бандит");
+	if(!GetAccessRankOrg(playerid, frakid, 16, NO_FBI)) return 1;
 	if(Kapt[frakid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изменять условия во время битвы за территорию");
 
 	PlayerPlaySound(playerid,40405,0,0,0);
