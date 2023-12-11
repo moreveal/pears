@@ -239,7 +239,7 @@ stock MaxVehicleHealth(model)
 stock IsVehicleOpen(playerid, v)
 {
 	if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) 
-	&& GetPlayerVip(playerid) > 0) return 1; // Личный или есть ключи + VIP
+		&& GetPlayerVip(playerid) > 0) return 1; // Личный или есть ключи + VIP
 	else
 	{
 		if(VehInfo[v][vCarLock] == 0) return 1; // Транспорт открыт

@@ -203,7 +203,7 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(!strlen(inputtext)) return cmd_bac(playerid);
 
 			new input = strval(inputtext);
-			if(input <= DP[0][playerid] || input > DP[1][playerid]) return format(store,sizeof(store),"[ Мысли ]: Значение не меньше %d и не больше %d", DP[0][playerid], DP[1][playerid]), ErrorText(playerid, store), cmd_bac(playerid);
+			if(input < DP[0][playerid] || input > DP[1][playerid]) return format(store,sizeof(store),"[ Мысли ]: Значение не меньше %d и не больше %d", DP[0][playerid], DP[1][playerid]), ErrorText(playerid, store), cmd_bac(playerid);
 
 			BizzInfo[b][bSetting][i] = input;
 			BizzInfo[b][bUpdate] = 1;

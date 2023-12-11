@@ -18,13 +18,13 @@ new PlayerText:BreakingScalePlayerDraw[24][MAX_REALPLAYERS]; // Текстдра
 
 stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открываем мини игру для взлома
 {
-	if(get_invent4(playerid, 19, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет отмычек\nY >> GPS >> Услуги >> Супермаркеты");
+	if(get_invent4(playerid, 19, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет отмычек\n{cccccc}Y >> GPS >> Услуги >> Супермаркеты");
     if(breakingDraw[playerid]) return ErrorMessage(playerid, "{FF6347}Вы уже взламываете замок");
     BreakingScaleStat[playerid] = 0.0;
     LoadBreakingType(playerid, type, breakingId);
     
     SetPlayerChatBubble(playerid,"достаёт отмычки и начинает взламывать замок",COLOR_PURPLE,20.0,3000);
-    ApplyAnimation(playerid,"COP_AMBIENT","Copbrowse_loop",4.0,0,1,1,1,1,1);
+    if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"COP_AMBIENT","Copbrowse_loop",4.0,0,1,1,1,1,1);
     
     if(hardLevel == 0) BreakingThickness[playerid] = -8.0, CreateBreakingDraw(playerid, 3);
     else if(hardLevel == 1) BreakingThickness[playerid] = -6.0, CreateBreakingDraw(playerid, 4);
@@ -92,7 +92,9 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 }
 CMD:stopbreaking(playerid)
 {
+	if(server != 0) return 0;
 	StopBreaking(playerid);
+	return 1;
 }
 forward BreakingProcess(playerid);
 public BreakingProcess(playerid) // Таймер заполнения шкалы
@@ -147,19 +149,7 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			else if(BreakingType[playerid] == 2)
 			{
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-				GetVehicleParamsEx(BreakingTypeID[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
-				SetVehicleParamsEx(BreakingTypeID[playerid], true, lights, alarm, doors, bonnet, boot, objective);
-				SetPlayerChatBubble(playerid,"запускает двигатель",COLOR_PURPLE,25.0,5000);
-				VehInfo[BreakingTypeID[playerid]][vEngine] = 1, CheckBenz(playerid);
-				new tmphour,tmpminute,tmpsecond;
-				gettime(tmphour, tmpminute, tmpsecond);
-				if(tmphour >= 20 || tmphour >= 0 && tmphour <= 6)
-				{
-					GetVehicleParamsEx(BreakingTypeID[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
-					SetVehicleParamsEx(BreakingTypeID[playerid], engine, true, alarm, doors, bonnet, boot, objective);
-					VehInfo[BreakingTypeID[playerid]][vLights] = 1;
-				}
-				UpdateVehEngine(playerid);
+				EngineStart(playerid, BreakingTypeID[playerid]);
 			}
 			else if(BreakingType[playerid] == 3)
 			{

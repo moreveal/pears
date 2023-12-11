@@ -37,6 +37,7 @@ stock SetPlayerDeath(playerid)
     else DeathInfo[playerid][deathTime] = timeDeath; // 3 min
     DeathInfo[playerid][deathUnix] = unix + 3600;
 
+    NoAnim[playerid] = 1;
     ShowInterfaceDeath(playerid);
     UpdateDeathProcess(playerid);
 
@@ -53,10 +54,26 @@ stock SetPlayerDeath(playerid)
     return 1;
 }
 
-stock NoDeath(playerid)
+stock NoDeath(playerid) // Не запускать систему смерти
 {
     if(DeathInfo[playerid][deathStatus] // Уже мертв
     || PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
+    || MPGO[playerid] > 0 // На мп
+    || Kapt[fraction(playerid)] > 0 && IsAGhetto(playerid) // Капт + На территории гетто
+    || Zahvat[fraction(playerid)] > 0 // Порт
+    || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
+    || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
+    || peoInfo[playerid][peoInEditor] // personal editor
+    || VehShopInfo[playerid][vsTest] // test drive
+    || ADUTY[playerid] == 1
+    || computerClubPlayerInfo[playerid][ccpiInGame]
+    || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1;
+    return 0;
+}
+
+stock NoHospital(playerid) // Не отправлять в госпиталь при смерти
+{
+    if(PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
     || MPGO[playerid] > 0 // На мп
     || Kapt[fraction(playerid)] > 0 && IsAGhetto(playerid) // Капт + На территории гетто
     || Zahvat[fraction(playerid)] > 0 // Порт

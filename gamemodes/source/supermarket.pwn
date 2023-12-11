@@ -138,7 +138,7 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 						
 						if(noBuy)
 						{
-							if(OnlineInfo[playerid][oShopPrice]-BizzInfo[b][bPrice][item] > 0) OnlineInfo[playerid][oShopPrice] -= BizzInfo[b][bPrice][item]; // Вычитаем из стоимости, только если не загоним вычет в минуса
+							if(OnlineInfo[playerid][oShopPrice]-BizzInfo[b][bPrice][item] >= 0) OnlineInfo[playerid][oShopPrice] -= BizzInfo[b][bPrice][item]; // Вычитаем из стоимости, только если не загоним вычет в минуса
 						    format(str,sizeof(str),"\n{cccccc}%s {FF6347}Не куплен - нет места", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), strcat(sctring,str);
 						}
 						else OnlineInfo[playerid][oShopCartsThing][i] = 0;

@@ -1679,9 +1679,9 @@ stock DestroyTrainBox()
 
 stock DestroyObjectTrain()
 {
-	if(train_object1) DestroyDynamicObject(train_object1);
-	if(train_object2) DestroyDynamicObject(train_object2);
-	if(train_object3) DestroyDynamicObject(train_object3);
+	if(train_object1) DestroyObject(train_object1);
+	if(train_object2) DestroyObject(train_object2);
+	if(train_object3) DestroyObject(train_object3);
 	return 1;
 }
 
@@ -1690,20 +1690,20 @@ stock CreateObjectTrain()
 	new Float:pos[3];
 	GetVehiclePos(train, pos[0], pos[1], pos[2]);
 
-	train_object1 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
-	SetDynamicObjectMaterial(train_object1, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
-	SetDynamicObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachDynamicObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object1 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
+	SetObjectMaterial(train_object1, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	train_object2 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
-	SetDynamicObjectMaterial(train_object2, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
-	SetDynamicObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachDynamicObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object2 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
+	SetObjectMaterial(train_object2, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	train_object3 = CreateDynamicObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00); 
-	SetDynamicObjectMaterial(train_object3, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
-	SetDynamicObjectMaterial(train_object3, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachDynamicObjectToVehicle(train_object3, train + 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	train_object3 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
+	SetObjectMaterial(train_object3, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
+	SetObjectMaterial(train_object3, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
+	AttachObjectToVehicle(train_object3, train + 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	return 1;
 }
 

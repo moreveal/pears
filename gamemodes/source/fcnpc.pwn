@@ -116,7 +116,7 @@ stock GoTrainRoad()
 public FCNPC_OnReachDestination(npcid)
 {
     // Ставим поезд на новую позицию
-    SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
+    if(TrainRoadID <= 290 || TrainRoadID >= 320) SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
 
     if(TrainStoped == 1)
     {

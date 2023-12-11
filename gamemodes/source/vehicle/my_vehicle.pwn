@@ -4289,14 +4289,19 @@ function LoadCar(playerid, dab, race_check)
 		}
 		else
 		{
-			if(IsAPlane(paramet[1]) || IsABoat(paramet[1]))
+			if(IsAPlane(paramet[1]))
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
-				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Обслуживание и Ремонт ]");
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт уничтожен {FF6347}[ Y >> GPS >> Транспорт >> Авиасервис ]");
+				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Авиасервис ]");
+			}
+			else if(IsABoat(paramet[1]))
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт уничтожен {FF6347}[ Y >> GPS >> Транспорт >> Сервис Катеров ]");
+				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Транспорт >> Сервис Катеров ]");
 			}
 			else
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт взорвался или утонул {FF6347}[ Y >> GPS >> Автосервисы ]");
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт уничтожен {FF6347}[ Y >> GPS >> Автосервисы ]");
 				ErrorMessage(playerid, "{FF6347}Транспорт уничтожен и его необходимо восстановить\n\n{cccccc}[ Y >> GPS >> Автосервисы ]");
 			}
 			return 1;
