@@ -463,6 +463,8 @@ stock showDialogOrganizationMenu(playerid)
 	DP[1][playerid] = g;
 
 	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line), "%s\t", frakName[DP[1][playerid]]), strcat(lines,line);
+
 	if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18 || g == 13 || g == 14 || g == 15 || g == 16 || g == 17 || g == 19 || g == 20)
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
@@ -496,8 +498,7 @@ stock showDialogOrganizationMenu(playerid)
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
 		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
 	}
-	format(store,sizeof(store),"{cccccc}Меню: %s", fraklastName[DP[1][playerid]]);
-	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST_HEADERS,"Меню Организации",lines,"Выбрать","Отмена");
 	return 1;
 }
 stock detail_lmenu(playerid, detail)
@@ -505,7 +506,7 @@ stock detail_lmenu(playerid, detail)
     List[DP[0][playerid]][playerid] = detail;
     DP[0][playerid] += 1;
 	new text[50], g = DP[1][playerid];
-	if(detail == 1) text = "{999999}Об организации..\t";
+	if(detail == 1) text = "\n{999999}Об организации..\t";
 	else if(detail == 2) text = "\n{cccccc}Участники {99ff66}Online\t";
 	else if(detail == 3) text = "\n{cccccc}Участники {FF6347}Offline\t";
 	else if(detail == 4)
