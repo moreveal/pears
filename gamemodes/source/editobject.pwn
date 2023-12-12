@@ -334,9 +334,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             CancelEdit(playerid);
             return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
-        Sekta[fam][sektaPosAltar][0] = x, Sekta[fam][sektaPosAltar][1] = y, Sekta[fam][sektaPosAltar][2] = z;
-        Sekta[fam][sektaPosAltar][3] = rx, Sekta[fam][sektaPosAltar][4] = ry, Sekta[fam][sektaPosAltar][5] = rz;
+        FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
+        FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
         SektaObject[fam] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        SektaObjectHealt[fam] = 1000;
+        SaveFamilySekta(fam);
     }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     PlayerPlaySound(playerid,6401,0,0,0);

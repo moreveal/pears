@@ -74,12 +74,20 @@ enum fInfo
 	fRoutIdEditor[5],
 	fRoutIdCreator[5],
 	fRoutUnix[5],
-	fInfluence, // Влияние в секте
+	fInfluence, // Влияние в секте ранги
+	fInfluenceTemp, // Временное влияние за эфиры и обряды.
 	fsUnixCNN, // Таймер на кд эфира
+	fsUnixRite, // Таймер на кд обряда
+	Float:fsAltarPos[6], // Позиция Тележки
+	fsAltarStatus, // статус алтаря
+	fsUnixAltar, // Восстановление алтаря
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
 new famuni[MAX_FAMILY][10];
+
+new SektaObject[MAX_FAMILY];
+new SektaObjectHealt[MAX_FAMILY];
 
 new FamRoutX[60][8];
 new FamRoutY[60][8];
@@ -318,7 +326,19 @@ public LoadFamily()
 		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
 		cache_get_value_name_int(f, "influence", FamilyInfo[idx][fInfluence]);
 		cache_get_value_name_int(f, "unixcnn", FamilyInfo[idx][fsUnixCNN]);
+		cache_get_value_name_int(f, "unixrite", FamilyInfo[idx][fsUnixRite]);
+		cache_get_value_name_int(f, "influenceTemp", FamilyInfo[idx][fInfluenceTemp]);
+		cache_get_value_name_float(f, "altarPosX", FamilyInfo[idx][fsAltarPos][0]);
+		cache_get_value_name_float(f, "altarPosY", FamilyInfo[idx][fsAltarPos][1]);
+		cache_get_value_name_float(f, "altarPosZ", FamilyInfo[idx][fsAltarPos][2]);
+		cache_get_value_name_float(f, "altarPosXR", FamilyInfo[idx][fsAltarPos][3]);
+		cache_get_value_name_float(f, "altarPosYR", FamilyInfo[idx][fsAltarPos][4]);
+		cache_get_value_name_float(f, "altarPosZR", FamilyInfo[idx][fsAltarPos][5]);
 
+		if(FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarStatus] > 1)
+		{
+			SektaObjectHealt[idx] = 1000;
+		}
 		for(new i; i < 5; i++)
 		{
 			format(store,sizeof(store),"routNameCreator%d",i+1);
