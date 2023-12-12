@@ -199,6 +199,43 @@ stock SektaCNNUpdate(i)
         }
     }
 }
+
+stock SektaEat(playerid,targetid)
+{
+    new atext[20];
+    DeathEnd(targetid,0);
+    switch(random(4))
+    {
+        case 0:
+        {
+            atext = "Сердце";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            EatPlayer(playerid, 40);
+            PlayerInfo[playerid][pMechSkill] = 1000;
+        }
+        case 1:
+        {
+            atext = "Печень";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            EatPlayer(playerid, 40);
+            PlayerInfo[playerid][pCap] = 100;
+        }
+        case 2:
+        {
+            atext = "Желудок";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            EatPlayer(playerid, -40);
+        }
+        case 3:
+        {
+            atext = "Легкие";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            EatPlayer(playerid, 40);
+        }
+    }
+    PlayerInfo[playerid][pInfoload] = 0, UpdatePotreb(playerid);
+}
+
 CMD:gnews(playerid, const params[])
 {
 	new string[144];
