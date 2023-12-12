@@ -237,7 +237,7 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
             GameTextForPlayer(playerid,store,2000,3);
             ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
 
-            if(RuinsInfo[r][boProcess] == 0) // Завалы разгребли
+            if(RuinsInfo[r][boProcess] <= 0) // Завалы разгребли
             {
                 DestroyObjects(r);
                 RuinsInfo[r][boStat] = 0;
