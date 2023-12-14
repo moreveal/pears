@@ -340,6 +340,20 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SektaObjectHealt[fam] = 1000;
         SaveFamilySekta(fam);
     }
+    else if(gRedakt[playerid] == 26) // Граффити
+    {
+        new grap = DP[0][playerid];
+        new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
+        if(dist >= 30.0)
+        {
+            CancelEdit(playerid);
+            return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
+        }
+        GraphitiInfo[grap][graphitiPos][0] = x, GraphitiInfo[grap][graphitiPos][1] = y, GraphitiInfo[grap][graphitiPos][2] = z;
+        GraphitiInfo[grap][graphitiPos][3] = rx, GraphitiInfo[grap][graphitiPos][4] = ry, GraphitiInfo[grap][graphitiPos][5] = rz;
+        GraphitiObject[grap] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        GraphitiUpdateElement(grap,modelid);
+    }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
