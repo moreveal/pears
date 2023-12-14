@@ -42,13 +42,8 @@ stock use_throw(playerid, inva, useinva)
 	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя");
 	    if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
 
-        OnlineInfo[playerid][oInHandThing][0] = fpick; //  ID Предмета
-        OnlineInfo[playerid][oInHandThing][1] = fquan; // Количество
-        OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
-        OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
-        OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
-        OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка Ящик
-	
+		GiveThingHand(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack);
+
 		ApplyAnimation(playerid,"CARRY","liftup",4.1,0,1,1,1,1); // Анимация поднять предмет
 		DestroyThrow(t);
 		updatethrowall(t);

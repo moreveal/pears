@@ -1,8 +1,80 @@
 #define MAX_BOTS 600  // пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅ. npc пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 new BotPears[MAX_BOTS];
-new BotInfo[MAX_BOTS];
-new Text3D:BotChat[MAX_BOTS];
+new PlayerText3D:BotTalk[MAX_REALPLAYERS]; // ID Label Text NPC
+new BotTalkTimer[MAX_REALPLAYERS]; // ID Timer Text NPC
+
+static const talk_anims_actor[][] = {
+"prtial_gngtlkA", "prtial_gngtlkB", "prtial_gngtlkC", "prtial_gngtlkD",
+"prtial_gngtlkE", "prtial_gngtlkF", "prtial_gngtlkG", "prtial_gngtlkH"
+};
+
+function SendActorMessage(playerid, stat,actorid,const text[])
+{
+	if(IsValidActor(actorid))
+	{
+		new Float:pos[3];
+		GetActorPos(actorid, pos[0], pos[1], pos[2]);
+		SetActorPos(actorid, pos[0], pos[1], pos[2]);
+
+        if(BotTalkTimer[playerid])
+        {
+            DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+            KillTimer(BotTalkTimer[playerid]);
+        }
+        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x008080FF, pos[0], pos[1], pos[2] + 1.2, 4.0);
+        BotTalkTimer[playerid] = SetTimerEx("ClearTextActor", 5000, false, "dd", playerid, actorid);
+
+        if(stat == 1) ApplyActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 1, 1, 1, 1, 1);
+	}
+	return 1;
+}
+
+function ClearTextActor(playerid, actorid)
+{
+    if(BotTalkTimer[playerid])
+    {
+        DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+        KillTimer(BotTalkTimer[playerid]);
+        BotTalkTimer[playerid] = 0;
+    }
+    LoadAnimBot(actorid);
+    return 1;
+}
+
+function SendDynamicActorMessage(actorid, playerid, const text[]) // Текст над бошкой NPC
+{
+	if(IsValidDynamicActor(actorid))
+	{
+		new Float:pos[3];
+		GetDynamicActorPos(actorid, pos[0], pos[1], pos[2]);
+
+        if(BotTalkTimer[playerid])
+        {
+            DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+            KillTimer(BotTalkTimer[playerid]);
+        }
+        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x008080FF, pos[0], pos[1], pos[2] + 1.2, 4.0);
+        BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4000, false, "dd", playerid, actorid);
+
+        ClearDynamicActorAnimations(actorid);
+        ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
+	}
+	return 1;
+}
+
+function ClearDynamicTextActor(playerid, actorid) // Удаляем текст над бошкой NPC
+{
+    if(BotTalkTimer[playerid])
+    {
+        DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+        KillTimer(BotTalkTimer[playerid]);
+        BotTalkTimer[playerid] = 0;
+    }
+
+    if(IsValidDynamicActor(actorid)) ClearDynamicActorAnimations(actorid);//, ApplyDynamicActorAnimation(actorid,"PED","facsurpm", 4.0, 1, 1, 1, 1, 0);
+    return 1;
+}
 
 stock LoadDynamicActor()
 {
@@ -531,8 +603,6 @@ stock LoadBot()
 	BotPears[518] = CreateActor(270, 2530.8591,-1664.4253,15.1665,171.8431); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Grove
 	BotPears[519] = CreateActor(270, 1089.5840,-1213.9564,18.0118,183.9828); // collector bot work
 
-	BotInfo[107] = 0;
-	BotInfo[108] = 0;
 	LoadAnimBot(5000);
 	for(new i=0; i<MAX_BOTS; i++) SetActorInvulnerable(BotPears[i], 0);
 

@@ -103,14 +103,8 @@ stock TakeBootBox(playerid, v, inva, rob)
 	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
 	if(IsArmor(fpick)) thingPara = 100; // Броня 100 хп
 
-	OnlineInfo[playerid][oInHandThing][0] = fpick; // ID Предмета
-	OnlineInfo[playerid][oInHandThing][1] = fquan; // Количество
-	OnlineInfo[playerid][oInHandThing][2] = thingPara; // Условности особые
-	OnlineInfo[playerid][oInHandThing][3] = thingQara; // Статус краденного
-	OnlineInfo[playerid][oInHandThing][4] = thingType; // Тип предмета
-
 	if(thingPack == 4 && rob == 1) thingPack = 2; // Снимаем блокировку с ящика, если мы грабим поезд
-	OnlineInfo[playerid][oInHandThing][5] = thingPack; // Упаковка
+	GiveThingHand(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack);
 
 	ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
 	PPP15[playerid] = 3, RemovePlayerAttachedObject(playerid,1);
