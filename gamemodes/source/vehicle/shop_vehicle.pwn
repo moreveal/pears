@@ -518,7 +518,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
 
             new Float:pos[4];
             GetCoordBuyVehicle(bizId, posId, pos[0], pos[1], pos[2], pos[3]);
-            GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1]);
+            GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 0, 0, 0);
 
             CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, vehSumma[modelId], "");
             if(PlayerInfo[playerid][pAchieve][12] == 0) AchievePlayer(playerid, 12, 1);

@@ -145,6 +145,11 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			{
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
 				LockCar(BreakingTypeID[playerid], 0);
+
+				if(QuestInfo[playerid][VehicleQuest] && QuestInfo[playerid][VehicleQuest] == BreakingTypeID[playerid] && PlayerInfo[playerid][pQuest][0] == 0)
+				{
+					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Дверь автомобиля взломана\n{ffcc66}Садитесь на кнопку F или Enter, чтобы взять пакет","*","");
+				}
 			}
 			else if(BreakingType[playerid] == 2)
 			{

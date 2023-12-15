@@ -33,7 +33,12 @@ stock SaveLastPlayerPosition(playerid)
         GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
         GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
 
-        PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+        // Если последняя точка в динамической зоне квеста и квест выполнен значит сохраняем вирт мир 0
+        if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot])
+        {
+            PlayerInfo[playerid][pLastWorld] = 0;
+        }
+        else PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
         PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
     }
     return 1;

@@ -319,14 +319,7 @@ stock godrink(playerid)
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 2), alco = 10; // Пиво, Сидры, Пиво разливное
-	else if(HoldStat[playerid] == 37)
-	{
-		Effect[playerid] = 5, EffectTime[playerid] += 20, infect(playerid, 11, 5), alco = 20; // Шампанское
-		if(IsANewYear() || PlayerInfo[playerid][pSoska] >= 22)
-		{
-			if(IsPlayerInRangeOfPoint(playerid, 80.0,719.0646,-3313.4468,2.7862) || IsPlayerInRangeOfPoint(playerid, 60.0,1282.9220,-1545.0332,13.2139)) doneqwest(playerid, 6);
-		}
-	}
+	else if(HoldStat[playerid] == 37) Effect[playerid] = 5, EffectTime[playerid] += 20, infect(playerid, 11, 5), alco = 20; // Шампанское
 	else if(HoldStat[playerid] == 112) Effect[playerid] = 5, EffectTime[playerid] += 40, infect(playerid, 11, 10), alco = 40; // Водка
 	else if(HoldStat[playerid] == 113) Effect[playerid] = 5, EffectTime[playerid] += 15, infect(playerid, 11, 5), alco = 15; // Вино
 	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) Effect[playerid] = 5, EffectTime[playerid] += 30, infect(playerid, 11, 10), alco = 30; // Виски, Коньяк, Брэнди

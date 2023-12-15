@@ -530,8 +530,6 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	format(store, sizeof(store), "* %s достаёт %s и передаёт %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
 	ProxDetector(20.0, playerid, store, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     PlayerPlaySound(playerid,1053,0,0,0), PlayerPlaySound(giveplayerid,1052,0,0,0);
-
-    if(thingPack == 1 && (IsANewYear() || PlayerInfo[playerid][pSoska] >= 22)) doneqwest(playerid, 4); // Если передали подарок
     
     SaveInvent(playerid, inva);
     SaveInvent(giveplayerid, put_inva);
@@ -2068,7 +2066,6 @@ stock player_tile(playerid, inva)
 					SetPlayerChatBubble(playerid,"достаёт и зажигает бенгальскую свечу",COLOR_PURPLE,20.0,3000);
 					SetPlayerAttachedObject(playerid, 1, 18717, 5, 0.126999, 0.222999, 1.338000, 173.000289, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // огонёк
 					SetPlayerAttachedObject(playerid, 2, 18644, 5, 0.117999, 0.034000, -0.001000, 0.000000, -1.699997, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // стержень
-					if(IsANewYear() || PlayerInfo[playerid][pSoska] >= 22) doneqwest(playerid, 9);
 					TakeInvent(playerid, fpick, 1, thingType, inva);
 					if(PlayerInfo[playerid][pAchieve][115] == 0) AchievePlayer(playerid, 115, 1);
 				}

@@ -4178,6 +4178,7 @@ stock pts(p, v)
 	new model = GetVehicleModel(v), vladid = VehInfo[v][vIdvlad];
 	format(lines,sizeof(lines),""); // Очищаем Lines
 
+	if(PlayerInfo[p][pSoska] > 0) format(line,sizeof(line),"\n{555555}DataBaseID: %d OwnerID: %d Slot: %d (Видит только админ)\n",VehInfo[v][vNewid], VehInfo[v][vSost], VehInfo[v][vDatabase]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",vehName[model],v), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Модель №: {0088ff}%d",VehInfo[v][vModel]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Год изготовления: {cccccc}%d",VehInfo[v][vGod]), strcat(lines,line);
@@ -4210,7 +4211,7 @@ function LoadCar(playerid, dab, race_check)
 
 	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
 
-	new paramet[6], sklad, fine, bool:death, repair;
+	new paramet[6], sklad, fine, bool:death, repair, Float:health;
 	cache_get_value_name_int(0, "finelien", fine);
 	cache_get_value_name_int(0, "Sklad", sklad);
 	cache_get_value_name_int(0, "sost", paramet[0]);
@@ -4226,7 +4227,7 @@ function LoadCar(playerid, dab, race_check)
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт арестован {FF6347}[ Подробности: Y >> GPS >> Транспорт >> Штраф Стоянка ]");
 			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Подробности: Y >> GPS >> Транспорт >> Штраф Стоянка");
 		}
-		else 
+		else
 		{
 			ErrorMessage(playerid, "{FF6347}Транспорт арестован!\n\n{cccccc}Владелец может узнать подробности ареста на штраф стоянке");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
@@ -4360,14 +4361,29 @@ function LoadCar(playerid, dab, race_check)
 			}
 			if(repair == 0)
 			{
-				cache_get_value_name_float(0, "health", VehInfo[vehid][vHealth]);
-				if(!VehInfo[vehid][vHealth]) VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
-				else if(VehInfo[vehid][vHealth] < 400.0) VehInfo[vehid][vHealth] = 400.0;
+				cache_get_value_name_float(0, "health", health);
+				if(!health) health = MaxVehicleHealth(paramet[1]);
+				else if(health < 400.0) health = 400.0;
 			}
-			else VehInfo[vehid][vHealth] = MaxVehicleHealth(paramet[1]);
+			else health = MaxVehicleHealth(paramet[1]);
 			
-			vehid = PP_CreateVehicle(vehid, paramet[1], kord[0],kord[1],kord[2],kord[3], paramet[2],paramet[3], -1,0, 20, VehInfo[vehid][vHealth]); // Спавн через 10 минут неактивности
+			new numer[20], benz, god, nyche;
+			cache_get_value_name(0, "numer", numer, 20);
+			cache_get_value_name_int(0, "benz", benz);
+			cache_get_value_name_int(0, "god", god);
+			cache_get_value_name_int(0, "nosell", nyche);
 
+			new world, interior;
+			// Если загружаем транспорт в зоне квеста (Помещаем транспорт в вирт мир и интерьер)
+			if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot] &&
+				(IsPosInCube(kord[0], kord[1], kord[2], 1346.014404, -1696.490600, 9.402812, 1389.085327, -1614.687255, 27.992818)
+				|| IsPosInCube(kord[0], kord[1], kord[2], 2097.350830, 2703.892822, 9.030303, 2145.809082, 2763.931640, 23.730318)))
+			{
+				world = GetPlayerVirtualWorld(playerid);
+				interior = GetPlayerInterior(playerid);
+			}
+
+			vehid = CreatePersonalVehicle(playerid, newid, dab, paramet[0], paramet[1], kord[0], kord[1], kord[2], kord[3], paramet[2], paramet[3], paramet[5], health, benz, god, numer, nyche, world, interior, false);
 			if(vehid == -1)
 			{
 				ErrorMessage(playerid, "{FF6347}Превышен лимит загруженных транспортных средств на сервере\n\n{cccccc}Пожалуйста, обратитесь к администрации для устранения этой проблемы [ /report ]");
@@ -4375,23 +4391,6 @@ function LoadCar(playerid, dab, race_check)
 				return 1;
 			}
 
-			if(paramet[0] == PlayerInfo[playerid][pID]) PlayerInfo[playerid][pMyVehID][dab - 1] = vehid; // Личный
-			else PlayerInfo[playerid][pKeyVehID] = vehid; // Ключи от транспорта
-
-			Cars[vehid] = 88;
-			VehInfo[vehid][vIdvlad] = playerid;
-			VehInfo[vehid][vNewid] = newid;
-			VehInfo[vehid][vSost] = paramet[0];
-			VehInfo[vehid][vModel] = paramet[1];
-			VehInfo[vehid][vKoordinatX] = kord[0];
-			VehInfo[vehid][vKoordinatY] = kord[1];
-			VehInfo[vehid][vKoordinatZ] = kord[2];
-			VehInfo[vehid][vKoordinatA] = kord[3];
-			VehInfo[vehid][vVehcol1] = paramet[2];
-			VehInfo[vehid][vVehcol2] = paramet[3];
-			VehInfo[vehid][vKey] = paramet[5];
-
-			cache_get_value_name(0, "numer", VehInfo[vehid][vNumer], 20);
 			cache_get_value_name_int(0, "arest", VehInfo[vehid][vArest]);
 			cache_get_value_name_int(0, "lock", VehInfo[vehid][vCarLock]);
 			cache_get_value_name_int(0, "comp1", VehInfo[vehid][vComp1]);
@@ -4405,10 +4404,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "comp9", VehInfo[vehid][vComp9]);
 			cache_get_value_name_int(0, "comp10", VehInfo[vehid][vComp10]);
 			cache_get_value_name_int(0, "comp11", VehInfo[vehid][vComp11]);
-			cache_get_value_name_int(0, "benz", Gas[vehid]);
 			cache_get_value_name_int(0, "benz2", Gelium[vehid]);
-			cache_get_value_name_int(0, "god", VehInfo[vehid][vGod]);
-			cache_get_value_name_int(0, "vehhp", VehInfo[vehid][vVehhp]);
 			cache_get_value_name_int(0, "keyunix", VehInfo[vehid][vKeyUnix]);
 			
 			for(new i = 0; i < 20; i++)
@@ -4421,21 +4417,16 @@ function LoadCar(playerid, dab, race_check)
 				format(string,sizeof(string),"InvenPack%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvPack][i]);
 			}
 			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vUpgrade]);
-			cache_get_value_name_int(0, "nosell", VehInfo[vehid][vNosell]);
+			
 			cache_get_value_name_int(0, "panels", VehInfo[vehid][vPanels]);
 			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
 			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
 
-			VehInfo[vehid][vDatabase] = dab;
 			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг
 
 			LockCar(vehid,VehInfo[vehid][vCarLock]);
-			GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(vehid, false, false, false, false, false, false, objective);
-			format(string, sizeof(string), "{111111}%s",VehInfo[vehid][vNumer]);
-			SetVehicleNumberPlate(vehid, string);
 
 			// Загружаем повреждения
 			UpdateVehicleDamageStatus(vehid, VehInfo[vehid][vPanels], VehInfo[vehid][vDoors], VehInfo[vehid][vFara], VehInfo[vehid][vTires]);
@@ -4445,6 +4436,52 @@ function LoadCar(playerid, dab, race_check)
 	}
 	SetPVarInt(playerid,"stopload",0);
 	return 1;
+}
+
+stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:y, Float:z, Float:a, col1, col2, keyid, Float:health, benz, yearveh, const numer[], nyche, world, interior, bool:firstLoad)
+{
+	new vehid;
+	vehid = PP_CreateVehicle(vehid, model, x,y,z,a, col1,col2, -1,0, 20, health); // Спавн через 10 минут неактивности
+
+	if(vehid == -1) return -1;
+
+	if(sostid == PlayerInfo[playerid][pID]) PlayerInfo[playerid][pMyVehID][dab - 1] = vehid; // Личный
+	else PlayerInfo[playerid][pKeyVehID] = vehid; // Ключи от транспорта
+
+	Cars[vehid] = 88;
+	VehInfo[vehid][vIdvlad] = playerid;
+	VehInfo[vehid][vNewid] = newid;
+	VehInfo[vehid][vSost] = sostid;
+	VehInfo[vehid][vModel] = model;
+	VehInfo[vehid][vKoordinatX] = x;
+	VehInfo[vehid][vKoordinatY] = y;
+	VehInfo[vehid][vKoordinatZ] = z;
+	VehInfo[vehid][vKoordinatA] = a;
+	VehInfo[vehid][vVehcol1] = col1;
+	VehInfo[vehid][vVehcol2] = col2;
+	VehInfo[vehid][vKey] = keyid;
+	VehInfo[vehid][vDatabase] = dab;
+	VehInfo[vehid][vNosell] = nyche;
+
+	format(VehInfo[vehid][vNumer], 20,"%s", numer);
+	Gas[vehid] = benz;
+	VehInfo[vehid][vGod] = yearveh;
+
+	GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehid, false, false, false, false, false, false, objective);
+
+	format(store, sizeof(store), "{111111}%s",VehInfo[vehid][vNumer]);
+	SetVehicleNumberPlate(vehid, store);
+
+	if(world != 0) SetVehicleVirtualWorld(vehid, world);
+	if(interior != 0) LinkVehicleToInterior(vehid, interior);
+
+	if(firstLoad == true) // При первой загрузке кладём в подарок: (Рем. Комплект)
+	{
+		VehInfo[vehid][vInvent][0] = 183;
+		VehInfo[vehid][vInv][0] = 1;
+	}
+	return vehid;
 }
 
 CMD:scrap(playerid)
@@ -4602,8 +4639,9 @@ stock UnPackVehicle(playerid)
 	else if(IsAMoto(thingId)) biz = 82 + random(4), posId = random(7);
 	else biz = 77 + random(4), posId = random(7);
 
+    new colorveh = 1 + random(254); // Color Vehicle
 	GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
-	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, 1, 1);
+	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, colorveh, colorveh, 0, 0, 0);
 
 	format(store,sizeof(store),"{99ff66}Вы распаковали новый транспорт {ff9000}%s\n\n{cccccc}Управление транспорт Y >> Транспорт или /car", GetVehicleName(thingId));
 	SuccessMessage(playerid, store);
@@ -4636,8 +4674,9 @@ CMD:addcar(playerid, const params[])
 		else if(IsAMoto(vehid)) biz = 82 + random(4), posId = random(7);
 		else biz = 77 + random(4), posId = random(7);
 
+		new colorveh = 1 + random(254); // Color Vehicle
 		GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
-		GiveCar(para1, freeSlot, vehid, pos[0], pos[1], pos[2], pos[3],nyche, 1, 1);
+		GiveCar(para1, freeSlot, vehid, pos[0], pos[1], pos[2], pos[3],nyche, colorveh, colorveh, 0, 0, 0);
         AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para1][pID], PlayerInfo[para1][pName], PlayerInfo[para1][pPlaIP], vehid, "");
         
         format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], vehName[vehid]);
@@ -4654,13 +4693,13 @@ CMD:addcar(playerid, const params[])
     }
 	return 1;
 }
-stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2)
+stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior)
 {
 	format(store, sizeof(store), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
-	mysql_tquery(pearsq, store, "Call_GiveCar", "dddffffddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2);
+	mysql_tquery(pearsq, store, "Call_GiveCar", "dddffffdddddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior);
 	return 1;
 }
-function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2)
+function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -4668,17 +4707,40 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 	{
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCar (str_name: %s, slot: %d, carid: %d)", PlayerInfo[playerid][pName], slot, carid);
 
-		format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2023',`vehhp`='1000',`nosell`='%d'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(),nyche);
-		query_empty(pearsq, big_query);
+		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
+
+		if(statusLoad == 1) // Сразу загружаем транспорт
+		{
+			// До GiverCar при statusLoad == 1, нужно проверять сколько сейчас уже загружено тс 
+			// if(GetPlayerQuanLoadVehicle(playerid) >= 2) Не грузить если два и больше уже загружено
+
+			format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
+			mysql_tquery(pearsq, big_query, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
+		}
+		else
+		{
+			format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
+			query_empty(pearsq, big_query);
+		}
 
         // Сохраняем авто
 		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
 		query_empty(pearsq, store);
-
-		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
 	}
 	return true;
+}
+
+function Call_OnLoadVehicle(playerid, sostid, dab, model, Float:x, Float:y, Float:z, Float:a, col1, col2, keyid, benz, yearveh, const numer[], nyche, world, interior)
+{
+	new newid = cache_insert_id();
+	CreatePersonalVehicle(playerid, newid, dab, sostid, model, x, y, z, a, col1, col2, keyid, 0, benz, yearveh, numer, nyche, world, interior, true);
+
+	printf("Call_OnLoadVehicle %s: %d, %d, %d", PlayerInfo[playerid][pName], newid, dab, sostid);
+	return 1;
 }
 
 function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
@@ -4741,7 +4803,7 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCarOffline (str_name: %s, slot: %d, carid: %d)", str_name, slot, carid);
 
 		format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2023',`vehhp`='1000',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f,CreatePlatesVehicle(),nyche);
+		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
 		query_empty(pearsq, big_query);
 
         // Сохраняем авто

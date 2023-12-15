@@ -91,42 +91,40 @@ stock veh_openboot(v)
 stock IsAPosBootOrBonet(playerid, &type)
 {
 	new vehicleid = -1;
-	if(GetPlayerVirtualWorld(playerid) == 0)
+	new Float:pos_veh[3];
+	for(new v = 0; v < SKOKOCAROV; v++)
 	{
-		new Float:pos_veh[3];
-		for(new v = 0; v < SKOKOCAROV; v++)
-		{
-            if(VehInfo[v][vModel] == 0) continue;
-			if(!IsVehicleOpen(playerid, v)) continue;
+		if(VehInfo[v][vModel] == 0) continue;
+		if(!IsVehicleOpen(playerid, v)) continue;
+		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
 
-			if(IsAMoto(VehInfo[v][vModel]) || IsABoat(VehInfo[v][vModel]))
+		if(IsAMoto(VehInfo[v][vModel]) || IsABoat(VehInfo[v][vModel]))
+		{
+			GetVehiclePos(v, pos_veh[0], pos_veh[1], pos_veh[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, pos_veh[0], pos_veh[1], pos_veh[2]))
 			{
-				GetVehiclePos(v, pos_veh[0], pos_veh[1], pos_veh[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 2.0, pos_veh[0], pos_veh[1], pos_veh[2]))
-				{
-					vehicleid = v;
-                    type = 2;
-					break;
-				}
+				vehicleid = v;
+				type = 2;
+				break;
 			}
-			else if(IsAPlane(VehInfo[v][vModel]))
+		}
+		else if(IsAPlane(VehInfo[v][vModel]))
+		{
+			GetVehiclePos(v, pos_veh[0], pos_veh[1], pos_veh[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 4.0, pos_veh[0], pos_veh[1], pos_veh[2]))
 			{
-				GetVehiclePos(v, pos_veh[0], pos_veh[1], pos_veh[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 4.0, pos_veh[0], pos_veh[1], pos_veh[2]))
-				{
-					vehicleid = v;
-                    type = 2;
-					break;
-				}
+				vehicleid = v;
+				type = 2;
+				break;
 			}
-			else
+		}
+		else
+		{
+			type = GetVehicleNear_Side(playerid, v);
+			if(type > 0)
 			{
-				type = GetVehicleNear_Side(playerid, v);
-                if(type > 0)
-                {
-					vehicleid = v;
-					break;
-				}
+				vehicleid = v;
+				break;
 			}
 		}
 	}
@@ -135,18 +133,16 @@ stock IsAPosBootOrBonet(playerid, &type)
 stock IsAPosBoot(playerid) // Ищем транспорт с багажником рядом
 {
 	new vehicleid;
-	if(GetPlayerVirtualWorld(playerid) == 0)
+	for(new v = 0; v < SKOKOCAROV; v++)
 	{
-		for(new v = 0; v < SKOKOCAROV; v++)
-		{
-            if(VehInfo[v][vModel] == 0) continue;
-			if(!IsVehicleOpen(playerid, v)) continue;
-            if(!IsABoot(v)) continue;
-			if(!GetVehicleNear_Boot(playerid, v)) continue;
+		if(VehInfo[v][vModel] == 0) continue;
+		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
+		if(!IsVehicleOpen(playerid, v)) continue;
+		if(!IsABoot(v)) continue;
+		if(!GetVehicleNear_Boot(playerid, v)) continue;
 
-			vehicleid = v;
-			break;
-		}
+		vehicleid = v;
+		break;
 	}
 	return vehicleid;
 }
@@ -208,18 +204,16 @@ stock GetVehicleNear_Side(playerid, v) // Получаем инфу, у како
 
 stock IsATrashBoot(playerid) // Позиция багажника в мусоровоза
 {
-	if(GetPlayerVirtualWorld(playerid) == 0)
+	new Float:Boot[3];
+	for(new v = 0; v < SKOKOCAROV; v++)
 	{
-		new Float:Boot[3];
-		for(new v = 0; v < SKOKOCAROV; v++)
+		if(VehInfo[v][vModel] != 408) continue;
+		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
+		
+		GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
+		if(IsPlayerInRangeOfPoint(playerid, 2.5, Boot[0], Boot[1], Boot[2]))
 		{
-		    if(VehInfo[v][vModel] != 408) continue;
-			
-			GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 2.5, Boot[0], Boot[1], Boot[2]))
-			{
-				return v;
-			}
+			return v;
 		}
 	}
 	return 0;

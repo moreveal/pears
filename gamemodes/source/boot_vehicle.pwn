@@ -48,23 +48,6 @@ stock use_boot(playerid, v, inva, useinva)
 			i_resettabs(playerid);
 			return 1;
 		}
-		else if(fpick == 36) // Новогодний подарок в багажнике (для квеста)
-       	{
-       	    if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
-       		ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
-        	SetPVarInt(playerid,"Arobsklad",11);
-        	SetPlayerAttachedObject(playerid, 1, 19054, 6, 0.013999, 0.184000, -0.201000, -100.799942, -9.799992, -11.000021, 0.333000, 0.306999, 0.322000, 0, 0);
-        	TakeBoot(v, fpick, fquan, thingType, inva);
-        	if(JobStat[playerid] >= 1)
-        	{
-        	    new randhouse = JobStat[playerid];
-        		SetPVarInt(playerid,"GP",1);
-				PlayerPlaySound(playerid,6400,0,0,0);
-        		SetPlayerCheckpoint(playerid,DomInfo[randhouse][dKoordinatX],DomInfo[randhouse][dKoordinatY],DomInfo[randhouse][dKoordinatZ],2.0);
-			}
-			i_resettabs(playerid);
-			return 1;
-		}
 	}
 	
 	i_resettabs(playerid);

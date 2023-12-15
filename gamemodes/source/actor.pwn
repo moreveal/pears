@@ -22,10 +22,10 @@ function SendActorMessage(playerid, stat,actorid,const text[])
             DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
             KillTimer(BotTalkTimer[playerid]);
         }
-        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x008080FF, pos[0], pos[1], pos[2] + 1.2, 4.0);
+        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.2, 4.0);
         BotTalkTimer[playerid] = SetTimerEx("ClearTextActor", 5000, false, "dd", playerid, actorid);
 
-        if(stat == 1) ApplyActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 1, 1, 1, 1, 1);
+        if(stat == 1) ApplyActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 1, 1);
 	}
 	return 1;
 }
@@ -54,10 +54,9 @@ function SendDynamicActorMessage(actorid, playerid, const text[]) // Текст 
             DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
             KillTimer(BotTalkTimer[playerid]);
         }
-        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x008080FF, pos[0], pos[1], pos[2] + 1.2, 4.0);
-        BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4000, false, "dd", playerid, actorid);
+        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 4.0);
+        BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
 
-        ClearDynamicActorAnimations(actorid);
         ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
 	}
 	return 1;
@@ -72,7 +71,7 @@ function ClearDynamicTextActor(playerid, actorid) // Удаляем текст �
         BotTalkTimer[playerid] = 0;
     }
 
-    if(IsValidDynamicActor(actorid)) ClearDynamicActorAnimations(actorid);//, ApplyDynamicActorAnimation(actorid,"PED","facsurpm", 4.0, 1, 1, 1, 1, 0);
+    if(IsValidDynamicActor(actorid)) ClearDynamicActorAnimations(actorid);
     return 1;
 }
 
@@ -573,13 +572,6 @@ stock LoadBot()
     SetActorVirtualWorld(BotPears[501], 11);
 	BotPears[502] = CreateActor(141,1631.0111,-2274.5208,13.5732,179.4451); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 	// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	if(IsACristmas())
-	{
-		BotPears[503] = CreateActor(194,741.2751,-3336.9570,3.1684,65.3740);
-		BotPears[504] = CreateActor(27,-2105.3413,-2241.7046,30.6250,167.9991);
-		BotPears[505] = CreateActor(153,-2097.3953,-2249.5237,30.6250,130.0855);
-		BotPears[506] = CreateActor(16,-2098.5735,-2250.3770,30.6250,305.5538);
-	}
 	BotPears[507] = CreateActor(141,1274.8622,-21.0276,1000.9254,89.6971); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Bot
     SetActorVirtualWorld(BotPears[507], 100);
     BotPears[508] = CreateActor(150,1274.8622,-23.4229,1000.9254,87.1905); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Bot
