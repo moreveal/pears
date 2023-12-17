@@ -151,10 +151,10 @@ stock QuestActorJone(playerid) // Начинаем взаимодействов�
             if(QuestInfo[playerid][ScriptQuest] == 1)
             {
                 SendDynamicActorMessage(QuestInfo[playerid][QuestBot], playerid, "Ну и где пакет? Делай свою работу");
-                PlayAudioStreamForPlayer(playerid, "https://pears.fun/sound/characters/jone/jone2.mp3",pos[0], pos[1], pos[2],5.0,true);
+                PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone2.mp3",pos[0], pos[1], pos[2],5.0,true);
                 return 1;
             }
-            PlayAudioStreamForPlayer(playerid, "https://pears.fun/sound/characters/jone/jone1.mp3",pos[0], pos[1], pos[2],5.0,true);
+            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone1.mp3",pos[0], pos[1], pos[2],5.0,true);
             StartScriptActor(playerid, 1);
         }
         else if(OnlineInfo[playerid][oInHandThing][0] == 196) // Принесли пакет (Квест выполнен)
@@ -165,7 +165,7 @@ stock QuestActorJone(playerid) // Начинаем взаимодействов�
             if(yesLoad == 0) SuccessMessage(playerid, "{99ff66}Вы выполнили задание и получили в подарок автомобиль\n{FF6347}Новый автомобиль не загружен, потому что у вас уже загружены транспортные средства\n\n{ff9000}Управление транспортом - Y >> Транспорт или /car");
             else SuccessMessage(playerid, "{99ff66}Вы выполнили задание и получили в подарок автомобиль\n\n{ff9000}Управление транспортом - Y >> Транспорт или /car");
 
-            PlayAudioStreamForPlayer(playerid, "https://pears.fun/sound/characters/jone/jone3.mp3",pos[0], pos[1], pos[2],5.0,true);
+            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",pos[0], pos[1], pos[2],5.0,true);
             StartScriptActor(playerid, 2);
 
             InHandClear(playerid);
