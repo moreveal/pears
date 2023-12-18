@@ -32,7 +32,6 @@ enum questInfo
     VehColorQuest, // Color ID Vehicle Quest
     ActorTimer, // Timer Actor Script
     ActorText, // Script ID Text Actor
-    PickupFirst, // Пикап 1
     Text3D:LabelFirst, // 3d text 1
     bool:ThingOne
 };
@@ -194,7 +193,7 @@ stock EnterVehicleQuest(playerid)
 
 stock MasterKeyQuest(playerid)
 {
-    if(IsPlayerInRangeOfPoint(playerid,1.5, 1365.7711,-1679.2744,13.5420) || IsPlayerInRangeOfPoint(playerid,1.5, 2124.6382,2712.0557,10.8203))
+    if(IsPlayerInRangeOfPoint(playerid,1.5, 1366.066772, -1679.641357, 13.546929) || IsPlayerInRangeOfPoint(playerid,1.5, 2124.882568, 2711.710449, 10.820312))
 	{
         if(QuestInfo[playerid][ThingOne] == true) return ErrorMessage(playerid, "{FF6347}Вы уже взяли отмычки");
         if(QuestInfo[playerid][ScriptQuest] == 2) return 1; // Все сценарии были отработаны
@@ -221,6 +220,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
 {
     if(PlayerInfo[playerid][pQuest][0] == 1) return 0; // Если квест уже пойден, не запускаем квест
     if(PursuitTime[playerid] >= 1) return 0; // Если преследует полиция, не запускаем квест
+    if(QuestInfo[playerid][QuestBot]) return 0; // Квест уже запущен
 
     if(QuanPlayerStartQuest >= MAX_PLAYERS_START_QUEST) return ErrorMessage(playerid, "{FF6347}В данный момент этот квест проходит большое количество игроков\n\n{cccccc}Извините.. мы не можем запустить этот квест для вас\nПриходите немного позже, когда количество игроков проходящих этот квест уменьшится");
     
@@ -255,8 +255,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
         QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehicleQuest], 546, 1362.8092,-1658.9130,13.1072,269.5840, color1, color2, -1, 0, -1, 0.0);
     
         // Master Keys
-        QuestInfo[playerid][PickupFirst] = CreateDynamicPickup(18644, 1, 1365.7711,-1679.2744,13.5420, playerid + 1, 0, playerid);
-        QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,1365.7711,-1679.2744,13.5420, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
+        QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,1366.066772, -1679.641357, 13.546929, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     }
     else if(zoneid == 1) // Las Venturas
     {
@@ -268,8 +267,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
         QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehicleQuest], 546, 2118.9817,2729.5417,10.5447,270.2156, color1, color2, -1, 0, -1, 0.0);
     
         // Master Keys
-        QuestInfo[playerid][PickupFirst] = CreateDynamicPickup(18644, 1, 2124.6382,2712.0557,10.8203, playerid + 1, 0, playerid);
-        QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,2124.6382,2712.0557,10.8203, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
+        QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,2124.882568, 2711.710449, 10.820312, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     }
 
     // Car Information
@@ -288,25 +286,31 @@ stock DestroyDetailsQuest(playerid)
         DestroyDynamicActor(QuestInfo[playerid][QuestBot]);
         DestroyDynamic3DTextLabel(QuestInfo[playerid][QuestBotLabel]);
         QuestInfo[playerid][QuestBot] = 0;
+
+        DestroyDynamic3DTextLabel(QuestInfo[playerid][LabelFirst]);
     }
     if(QuestInfo[playerid][VehicleQuest])
     {
         ACDestroyVehicle(QuestInfo[playerid][VehicleQuest]);
         QuestInfo[playerid][VehicleQuest] = 0;
     }
-    if(QuestInfo[playerid][PickupFirst])
-    {
-        DestroyDynamicPickup(QuestInfo[playerid][PickupFirst]);
-        DestroyDynamic3DTextLabel(QuestInfo[playerid][LabelFirst]);
-        QuestInfo[playerid][PickupFirst] = 0;
-    }
+    if(QuestInfo[playerid][ActorTimer]) KillTimer(QuestInfo[playerid][ActorTimer]);
     return 1;
 }
 
-stock ExitQuest(playerid) // Вышли из зоны квеста
+stock CloseQuestJone(playerid)
+{
+    DestroyDetailsQuest(playerid);
+    QuanPlayerStartQuest --;
+    return 1; 
+}
+
+stock ExitQuestJone(playerid) // Вышли из зоны квеста
 {
     if(QuestInfo[playerid][QuestBot])
     {
+        CloseQuestJone(playerid);
+
         if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
         {
             new vehicleid = GetPlayerVehicleID(playerid);
@@ -320,9 +324,6 @@ stock ExitQuest(playerid) // Вышли из зоны квеста
             S_SetPlayerVirtualWorld(playerid, 0, 0);
             SetPlayerInterior(playerid, 0);
         }
-
-        DestroyDetailsQuest(playerid);
-        QuanPlayerStartQuest --;
     }
     return 1;
 }

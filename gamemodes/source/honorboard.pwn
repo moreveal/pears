@@ -192,7 +192,6 @@ function out_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const 
 	{
 		if(OnlineInfo[plaid][oLogged] == 1)
 		{
-			if(OnlineInfo[plaid][oListenRadioPears] == 0) StopAudioStreamForPlayer(plaid), PlayAudioStreamForPlayer(plaid, "https://pears-project.ru/music/hallelujah.mp3");
 			format(query, sizeof(query),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",PlayerInfo[playerid][pName], frakName[g]);
 			SendClientMessage(plaid, COLOR_GREY, query);
 			format(query, sizeof(query),"\n{99ff66}%s {cccccc}вынес вас из доски почета %s\n", PlayerInfo[playerid][pName], frakName[g]);

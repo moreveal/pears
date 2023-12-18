@@ -44,7 +44,7 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
 	else if(PlayerInfo[p][pAbility][abilityId] >= 80000 && PlayerInfo[p][pAbilStat][abilityId] <= 9) yes = 1;
  	if(yes == 1)
  	{
- 		if(OnlineInfo[p][oListenRadioPears] == 0) PlayAudioStreamForPlayer(p, "https://pears-project.ru/music/upskill.mp3");
+ 		if(OnlineInfo[p][oListenRadioPears] == 0) PlayAudioStreamForPlayer(p, "https://pears-test.ru/sound/upskill.mp3");
  		if(PlayerInfo[p][pAbility][abilityId] >= 80000 && PlayerInfo[p][pAbilStat][abilityId] <= 9)
  		{
  			PlayerInfo[p][pAbilStat][abilityId] = 10;
