@@ -12,6 +12,7 @@ enum GzoneInfo
 new GZInfo[GZONES][GzoneInfo];
 
 // Координаты ганг зон
+new ZoneCapt; // ID Zone Quest в Los Santos
 enum GANGZONEENUM { Float:gzMinX, Float:gzMinY, Float:gzMaxX, Float:gzMaxY, defaultOrg }
 new GangZone[][GANGZONEENUM] =
 {
@@ -140,6 +141,7 @@ CMD:zahvat(playerid, const params[])
   			{
 				if(Zach[GZInfo[i][gFrakVlad]] == 1) return ErrorMessage(playerid, "{FF6347}Нельзя начать захват территории банды, которую зачищают законники");
 
+				CreateCaptZone(i); // Создаем куб для отключение болезний
 				CaptInfo[cCaptStat] = true; // Включаем капт в штате
 				CaptInfo[cTime] = 600;
 				CaptInfo[cZoneID] = i;
@@ -559,6 +561,7 @@ stock CheckGangZone() // Распределение результатов по 
 	CaptInfo[cCaptStat] = false;
 	CaptInfo[cCaptReset] = 10;
 	new g = CaptInfo[cZoneID], head, cbug;
+	DestroyDynamicCube(ZoneCapt);
 	foreach(Player,i)
 	{
 		if(OnlineInfo[i][oLogged] == 1)
@@ -566,6 +569,7 @@ stock CheckGangZone() // Распределение результатов по 
 			if(PlayerInfo[i][pMember] == CaptInfo[cAttack] || PlayerInfo[i][pLeader] == CaptInfo[cAttack]
 			|| PlayerInfo[i][pMember] == CaptInfo[cDefend] || PlayerInfo[i][pLeader] == CaptInfo[cDefend])
 			{
+				if(OnlineInfo[i][oActiviti] == 1) OnlineInfo[i][oActiviti] = 0;
 			    new org = fraction(i), nauniti;
 			    // Начисляем Юниты
 				new vremun = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];
@@ -1018,4 +1022,10 @@ stock GetGZColorF(fnumber)
         default: zx = 0xffffffAA; // Отсутствие параметра
     }
     return zx;
+}
+
+stock CreateCaptZone(i) // Создаём детали для квеста
+{
+    ZoneCapt = CreateDynamicCube(GangZone[i][gzMinX],GangZone[i][gzMinY], -5, GangZone[i][gzMaxX],GangZone[i][gzMaxY], 100, 0, 0);
+    return 1;
 }

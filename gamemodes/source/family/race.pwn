@@ -104,6 +104,7 @@ stock ReadyPartyStreet(playerid)
     StreetRacers[0][raceUnix] = 7200;
     StreetRacers[0][raceMap] = -1;
     RaceIcon[0] = CreateDynamicMapIcon(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2],53,0,-1,-1,-1,200.0);
+    dyn_zone_zzRace = CreateDynamicSphere(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 50, 0, 0);
     for(new i; i < 8; i++)
     {
         StreetRacers[0][racersCount][i] = -1;   
@@ -135,6 +136,7 @@ stock ClosePartyStreet()
 
     
     if(RaceIcon[0] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
+    DestroyDynamicArea(dyn_zone_zzRace);
     RaceIcon[0] = 0;
     StreetRacers[0][raceFamily] = -1;
     StreetRacers[0][raceMap] = -1;

@@ -204,15 +204,6 @@ stock LoadBot()
 	BotPears[89] = CreateActor(98,1282.6345,-40.7867,1000.9280,194.8844); // hotel lv boy talk 2
 	SetActorVirtualWorld(BotPears[89], 6);
 
-    BotPears[91] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot-1 Bot 1
-    SetActorVirtualWorld(BotPears[91], 1);
-    BotPears[92] = CreateActor(205, 376.3629,-61.4211,1001.5078,94.0476); // Burger Shot-1 Bot 2
-    SetActorVirtualWorld(BotPears[92], 1);
-    BotPears[93] = CreateActor(205, 378.3660,-57.4492,1001.5078,358.1901); // Burger Shot-1 Bot 3
-    SetActorVirtualWorld(BotPears[93], 1);
-    BotPears[94] = CreateActor(23, 369.3431,-61.7831,1001.5151,177.9983); // Burger Shot-1 Bot 4
-    SetActorVirtualWorld(BotPears[94], 1);
-
     BotPears[95] = CreateActor(155, 1593.5620,1445.5161,10.8726,91.1705); // aero lv
 	SetActorVirtualWorld(BotPears[95], 183);
 	BotPears[96] = CreateActor(71, 1570.0636,1425.1440,10.8726,0.6398); // aero lv
@@ -228,9 +219,6 @@ stock LoadBot()
 
 	BotPears[100] = CreateActor(68, 1327.8085,1585.8474,11.0259,271.6756); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ ]
 	SetActorVirtualWorld(BotPears[100], 195);
-	BotPears[101] = CreateActor(205, 377.9569,-65.8493,1001.5078,183.9751); // Burger Shot-1 Bot 5
-    SetActorVirtualWorld(BotPears[101], 1);
-    BotPears[102] = CreateActor(20, 378.3685,-67.6006,1001.5151,1.5899); // Burger Shot-1 Bot 6
     SetActorVirtualWorld(BotPears[102], 1);
 	BotPears[103] = CreateActor(161, -1631.7679,-2234.6997,31.4766,160.4179); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot 1
 	BotPears[105] = CreateActor(40, 1776.7781,-1875.1967,13.5607,87.0187); // Sex Bot 1
@@ -276,15 +264,7 @@ stock LoadBot()
 	SetActorVirtualWorld(BotPears[156], 255);
 	BotPears[157] = CreateActor(301, 1554.9736,-1661.7855,16.2218,309.0712); // LSPD Bot 10 ((144))
 	SetActorVirtualWorld(BotPears[157], 255);
-	BotPears[192] = CreateActor(96, 375.7525,-118.8693,1001.4995,0.3965); // Pizza Co Bot 1
-	SetActorVirtualWorld(BotPears[192], 1);
-	BotPears[193] = CreateActor(155, 373.6131,-117.2756,1001.4995,182.4215); // Pizza Co Bot 2
-	SetActorVirtualWorld(BotPears[193], 1);
-	BotPears[194] = CreateActor(155, 375.7129,-117.2748,1001.4922,180.2282); // Pizza Co Bot 3
-	SetActorVirtualWorld(BotPears[194], 1);
-	BotPears[195] = CreateActor(155, 376.5362,-113.7120,1001.4922,0.0000); // Pizza Co Bot 4
-	SetActorVirtualWorld(BotPears[195], 1);
-	BotPears[196] = CreateActor(155, 372.6896,-113.7299,1001.4922,353.4200); // Pizza Co Bot 5
+
 	SetActorVirtualWorld(BotPears[196], 1);
 	BotPears[197] = CreateActor(141, 1384.8610,1588.3568,10.8484,184.8581); // NASA Bot 1
 	SetActorVirtualWorld(BotPears[197], 230);
@@ -335,28 +315,7 @@ stock LoadBot()
 	SetActorVirtualWorld(BotPears[245], 198);
 	BotPears[250] = CreateActor(158, -35.4461,77.0759,3.1331,13.4866); // пїЅпїЅпїЅпїЅпїЅ Bot 1
 	SetActorVirtualWorld(BotPears[250], 228);
-	BotPears[260] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot Bot
-    SetActorVirtualWorld(BotPears[260], 2);
-    BotPears[261] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot Bot
-    SetActorVirtualWorld(BotPears[261], 3);
-    BotPears[262] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot Bot
-    SetActorVirtualWorld(BotPears[262], 4);
-    BotPears[263] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot Bot
-    SetActorVirtualWorld(BotPears[263], 5);
-    BotPears[264] = CreateActor(205, 375.8292,-65.8476,1001.5078,178.9384); // Burger Shot Bot
-    SetActorVirtualWorld(BotPears[264], 6);
-	BotPears[265] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[265], 1);
-    BotPears[266] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[266], 2);
-    BotPears[267] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[267], 3);
-    BotPears[268] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[268], 4);
-    BotPears[269] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[269], 5);
-    BotPears[270] = CreateActor(167, 368.9441,-4.4851,1001.8516,181.6134); // Cluckin Bell Bot
-    SetActorVirtualWorld(BotPears[270], 6);
+
     BotPears[271] = CreateActor(178, -103.6952,-24.2643,1000.7188,1.9498); // Sex Shop Bot
     SetActorVirtualWorld(BotPears[271], 1);
     BotPears[272] = CreateActor(178, -103.6952,-24.2643,1000.7188,1.9498); // Sex Shop Bot
@@ -658,14 +617,10 @@ stock LoadAnimBot(stat)
 		case 87: ApplyActorAnimation(BotPears[87],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
 		case 88: ApplyActorAnimation(BotPears[88],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
         case 89: ApplyActorAnimation(BotPears[89],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 91: ApplyActorAnimation(BotPears[91],"PED","woman_idlestance",4.1,1,0,0,0,0); // Burger Shot-1 Bot 1
-        case 92: ApplyActorAnimation(BotPears[92],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 2
-        case 93: ApplyActorAnimation(BotPears[93],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 3
-        case 94: ApplyActorAnimation(BotPears[94],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 4
+
         case 96: ApplyActorAnimation(BotPears[96],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 1
         case 97: ApplyActorAnimation(BotPears[97],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 2
-        case 101: ApplyActorAnimation(BotPears[101],"PED","woman_idlestance",4.1,1,0,0,0,0); // Burger Shot-1 Bot 5
-        case 102: ApplyActorAnimation(BotPears[102],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Burger Shot-1 Bot 6
+
         case 105: ApplyActorAnimation(BotPears[105],"BLOWJOBZ","BJ_STAND_LOOP_W",4,1,0,0,1,0); // Sex Bot 1
         case 106: ApplyActorAnimation(BotPears[106],"BLOWJOBZ","BJ_STAND_LOOP_P",4,1,0,0,1,0); // Sex Bot 2
         case 110: ApplyActorAnimation(BotPears[110],"BD_FIRE","wash_up",4.1,1,0,0,0,0);// Госпиталь Bot 8
@@ -880,14 +835,10 @@ stock LoadAnimBot(stat)
 		ApplyActorAnimation(BotPears[87],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
 		ApplyActorAnimation(BotPears[88],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
         ApplyActorAnimation(BotPears[89],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyActorAnimation(BotPears[91],"PED","woman_idlestance",4.1,1,0,0,0,0); // Burger Shot-1 Bot 1
-        ApplyActorAnimation(BotPears[92],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 2
-        ApplyActorAnimation(BotPears[93],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 3
-        ApplyActorAnimation(BotPears[94],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Burger Shot-1 Bot 4
+
         ApplyActorAnimation(BotPears[96],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 1
         ApplyActorAnimation(BotPears[97],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 2
-		ApplyActorAnimation(BotPears[101],"PED","woman_idlestance",4.1,1,0,0,0,0); // Burger Shot-1 Bot 5
-        ApplyActorAnimation(BotPears[102],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Burger Shot-1 Bot 6
+
         ApplyActorAnimation(BotPears[105],"BLOWJOBZ","BJ_STAND_LOOP_W",4,1,0,0,1,0); // Sex Bot 1
         ApplyActorAnimation(BotPears[106],"BLOWJOBZ","BJ_STAND_LOOP_P",4,1,0,0,1,0); // Sex Bot 2
         ApplyActorAnimation(BotPears[110],"BD_FIRE","wash_up",4.1,1,0,0,0,0);// Госпиталь Bot 8
@@ -910,9 +861,7 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[155],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 8
         ApplyActorAnimation(BotPears[156],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 9
         ApplyActorAnimation(BotPears[157],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 10
-        ApplyActorAnimation(BotPears[192],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Pizza Co Bot 1
-        ApplyActorAnimation(BotPears[195],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Pizza Co Bot 2
-        ApplyActorAnimation(BotPears[196],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Pizza Co Bot 3
+
         ApplyActorAnimation(BotPears[204],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Археология Bot 1
         ApplyActorAnimation(BotPears[207],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 1
         ApplyActorAnimation(BotPears[208],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 2

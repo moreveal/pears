@@ -7,6 +7,7 @@ enum graphitiEnum
     graphitiOrg, // номер организации
     graphitiStatus, // Статус 0 - не установлена, 1 установлена
     graphitiZone, // Зона где граффити
+    graphitiName[24], // Никнейм игрока.
 }
 new GraphitiInfo[GZONES][graphitiEnum];
 new GraphitiPos[6][8];
@@ -29,6 +30,7 @@ public LoadGraphiti()
         cache_get_value_name_int(f, "gorg", GraphitiInfo[f][graphitiOrg]);
         cache_get_value_name_int(f, "gStatus", GraphitiInfo[f][graphitiStatus]);
         cache_get_value_name(f, "gstring", stroca, 48);
+        cache_get_value_name(f, "gName", GraphitiInfo[f][graphitiName], 24);
         split(stroca,GraphitiPos,'_');
         for(new i;i<6;i++)
         {
@@ -68,25 +70,34 @@ stock ShowAllGraphiti(playerid)
 
 stock CreateGraphiti(playerid)
 {
+    if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return 0;
     new g = fraction(playerid),slot = -1,slotreset = -1;
     if(g != 13 && g != 14 && g != 15 && g !=16) return ErrorMessage(playerid,"{ff6347}Вы не участник банды");
     if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return ErrorMessage(playerid,"{ff6347}Граффити можно наносить только на улице");
     for(new i; i<GZONES;i++)
     {
-        if(IsPlayerInRangeOfPoint(playerid,5.0,GraphitiInfo[i][graphitiPos][0],GraphitiInfo[i][graphitiPos][1],GraphitiInfo[i][graphitiPos][2]) && GetZoneXYZ(GraphitiInfo[i][graphitiPos][0],GraphitiInfo[i][graphitiPos][1]) == GraphitiInfo[i][graphitiZone])
+        if(GraphitiInfo[i][graphitiStatus] == 0) continue;
+        printf("%d",i);
+        if(IsPlayerInRangeOfPoint(playerid,5.0,GraphitiInfo[i][graphitiPos][0],GraphitiInfo[i][graphitiPos][1],GraphitiInfo[i][graphitiPos][2]))
         {
+            printf("%d",i);
             slotreset = i;
             break;
         }
-        if(GraphitiInfo[i][graphitiStatus] != 0) continue;
-        slot = i;
-        break;
+    }
+    if(slotreset == -1)
+    {
+        for(new i; i<GZONES;i++)
+        {
+            if(GraphitiInfo[i][graphitiStatus] != 0) continue;
+            slot = i;
+            break;
+        }
     }
     if(slot == -1 && slotreset == -1) return ErrorMessage(playerid,"{ff6347}Нет свободных слотов для граффити. Найдите графити в этом квадрате и закрасте его или смойте бензином");
     else if(slot == -1 && slotreset != -1)
     {
         DP[0][playerid] = slotreset;
-        DP[1][playerid] = slotreset;
         if(GraphitiInfo[slotreset][graphitiUnix]+1800 > gettime()) return ErrorMessage(playerid,"{ff6347}Граффити недавно было создано, перекрасить его нельзя");
     }
     else if(slot != -1 && slotreset == -1)
@@ -154,8 +165,8 @@ stock GetZoneXYZ(Float:x,Float:y) // Получение территории в 
 stock SaveGraphiti(slot)
 {
     format(store,sizeof(store),"%.2f_%.2f_%.2f_%.2f_%.2f_%.2f",GraphitiInfo[slot][graphitiPos][0],GraphitiInfo[slot][graphitiPos][1], GraphitiInfo[slot][graphitiPos][2],GraphitiInfo[slot][graphitiPos][3],GraphitiInfo[slot][graphitiPos][4], GraphitiInfo[slot][graphitiPos][5]);
-    format(big_query, sizeof(big_query), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d' WHERE `gnewid`='%d'",
-    store,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],slot);
+    format(big_query, sizeof(big_query), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%s' WHERE `gnewid`='%d'",
+    store,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],GraphitiInfo[slot][graphitiName],slot);
     query_empty(pearsq, big_query);
 }
 
@@ -166,7 +177,7 @@ CMD:spray(playerid)
     {
    		RemovePlayerAttachedObject(playerid,1), Hold[playerid] = 0;
     	if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"PED","phone_out",4.0,0,1,1,0,0);
-  		SetPlayerChatBubble(playerid,"убирает балончик",COLOR_PURPLE,30.0,8000);
+  		SetPlayerChatBubble(playerid,"убирает балончик",COLOR_PURPLE,30.0,8000); 
 	}
 	else
 	{
@@ -181,6 +192,7 @@ CMD:spray(playerid)
 
 stock clearspray(playerid)
 {
+    if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return 0;
     new slot;
     for(new i;i<GZONES;i++)
     {
@@ -204,6 +216,7 @@ stock clearspray(playerid)
     TakeInvent(playerid, 9, 1, 0, 999); // Отнимаем 1 литр из канистры
     if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"SPRAYCAN","spraycan_full",3.0,0,1,1,0,0);
     PlayerPlaySound(playerid,20802,0,0,0);
+    SuccessMessage(playerid,"{99ff66}Вы успешно стерли граффити другой банды");
     SaveGraphiti(slot);
     return 1;
 }
