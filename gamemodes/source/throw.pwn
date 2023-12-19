@@ -209,7 +209,7 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
 	if(fpick == 34 && thingType == 1 && thingPack >= 1) { } // Исключим падение снайперки, которая в упаковке
 	else
 	{
-		if(NotGiveThing(fpick, thingType)) return 1; // Предметы которые нельзя передавать или выбрасывать
+		if(NotGiveThing(fpick, thingType, quan)) return 1; // Предметы которые нельзя передавать или выбрасывать
 	}
 	if(throwkol >= 1000) return 1;
 	throwkol ++;

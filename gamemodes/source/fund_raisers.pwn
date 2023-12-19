@@ -639,7 +639,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             {
                 if(input[1] <= 0 || input[1] >= INVENTER) return format(store,sizeof(store),"{FF6347}ID Предмета не меньше 1 и не больше %d", INVENTER), ErrorMessage(playerid, store);
                 if(input[2] < 0 || input[2] > 100) return ErrorMessage(playerid, "{FF6347}Количество для предмета не меньше 1 не больше 100");
-                if(NotGiveThing(input[1], 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя добавить");
+                if(NotGiveThing(input[1], 0, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя добавить");
             }
             else if(input[0] == 2) // Аксессуар
             {

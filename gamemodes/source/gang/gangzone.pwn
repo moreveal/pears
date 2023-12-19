@@ -561,7 +561,7 @@ stock CheckGangZone() // Распределение результатов по 
 	CaptInfo[cCaptStat] = false;
 	CaptInfo[cCaptReset] = 10;
 	new g = CaptInfo[cZoneID], head, cbug;
-	DestroyDynamicCube(ZoneCapt);
+	if(ZoneCapt) DestroyDynamicArea(ZoneCapt), ZoneCapt = 0;
 	foreach(Player,i)
 	{
 		if(OnlineInfo[i][oLogged] == 1)
@@ -1026,6 +1026,7 @@ stock GetGZColorF(fnumber)
 
 stock CreateCaptZone(i) // Создаём детали для квеста
 {
-    ZoneCapt = CreateDynamicCube(GangZone[i][gzMinX],GangZone[i][gzMinY], -5, GangZone[i][gzMaxX],GangZone[i][gzMaxY], 100, 0, 0);
+	if(ZoneCapt) DestroyDynamicArea(ZoneCapt);
+    ZoneCapt = CreateDynamicCube(GangZone[i][gzMinX] - 50.0,GangZone[i][gzMinY] - 50.0, -50.0, GangZone[i][gzMaxX] + 50.0,GangZone[i][gzMaxY] + 50.0, 200.0, 0, 0);
     return 1;
 }

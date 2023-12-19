@@ -115,7 +115,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	}
 	
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем убрать в дом"), i_resetveshi(playerid);
-	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 	
 	new quanThing;
 	if(thingType == 0)

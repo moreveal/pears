@@ -105,6 +105,8 @@ stock ClickCraftProcess(playerid)
         ClearCraftProcess(playerid);
         HideDrawCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы не попали в зелёную зону и провалили процесс");
+
+        ErrorMessageQuestProcess(playerid);
     }
     return 1;
 }
@@ -248,6 +250,8 @@ function CraftProcess(playerid)
         ClearCraftProcess(playerid);
         HideDrawCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы пропустили зелёную зону и провалили процесс");
+
+        ErrorMessageQuestProcess(playerid);
         return 1;
     }
 
@@ -265,8 +269,39 @@ function CraftProcess(playerid)
             if(ability >= 9) ACSetVehicleHealth(OnlineInfo[playerid][oShowTabs], 1000.0);
             else ACSetVehicleHealth(OnlineInfo[playerid][oShowTabs], 800.0);
             update_ability(playerid, 8, 15);
+
+            // Квест ремонт транспорта
+            if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[OnlineInfo[playerid][oShowTabs]][vModel]))
+            {
+                PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair6.mp3");
+                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Четко! Новый рем комплект можешь купить самостоятельно в любом автосервисе");
+                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Найди его в GPS навигаторе на своём смартфоне");
+                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё. До связи");
+
+                PlayerInfo[playerid][pQuest][4] = 1;
+                SaveQuest(playerid);
+            }
         }
 
+    }
+    return 1;
+}
+
+stock ErrorMessageQuestProcess(playerid)
+{
+    // Квест ремонт транспорта
+    if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[OnlineInfo[playerid][oShowTabs]][vModel]))
+    {
+        if(PlayerInfo[playerid][pSex] == 1) 
+        {
+            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair5.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое сообщение): Дружище, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
+        }
+        else 
+        {
+            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair55.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое сообщение): Продруга, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
+        }
     }
     return 1;
 }

@@ -10,13 +10,19 @@
 
 new StartQuestName[][] =
 {
-    "Взлом транспорта", 
-    "None"
+    "Паспортный контроль", 
+    "Поселиться в отеле",
+    "Привести себя в порядок",
+    "Взлом транспорта",
+    "Ремонт транспорта"
 };
 new StartQuestPresent[][] =
 {
-    "Транспорт", 
-    "None"
+    "",
+    "",
+    "Деньги",
+    "Транспорт",
+    ""
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -44,6 +50,16 @@ stock OnGameModeStartQuest() // Создаём детали для квеста
     return 1;
 }
 
+stock NoCompleteQuest(playerid, questId)
+{
+    if(questId == 0 && PlayerInfo[playerid][pQuest][questId] < 1) return 1; // Паспортный контроль
+    else if(questId == 1 && PlayerInfo[playerid][pQuest][questId] < 1) return 1; // Заселиться в отель
+    else if(questId == 2 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Привести себя в порядок
+    else if(questId == 3 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Взломать тачку
+    else if(questId == 4 && PlayerInfo[playerid][pQuest][questId] < 1) return 1; // Ремонт транспорта
+    return 0;
+}
+
 stock showDialogStartQuest(playerid)
 {
     format(lines,sizeof(lines),""); // Очищаем Lines
@@ -51,7 +67,7 @@ stock showDialogStartQuest(playerid)
     format(line,sizeof(line),"{cccccc}Квест\t{cccccc}Статус{cccccc}\tВознаграждение"), strcat(lines,line);
     for(new i = 0; i < MAX_QUEST; i++)
     {
-        if(PlayerInfo[playerid][pQuest][i] == 0) format(line,sizeof(line),"\n{ff9000}%d. %s\t{555555}Не выполнен\t{D9F26E}%s", i + 1, StartQuestName[i], StartQuestPresent[i]), strcat(lines,line);
+        if(NoCompleteQuest(playerid, i)) format(line,sizeof(line),"\n{ff9000}%d. %s\t{555555}Не выполнен\t{D9F26E}%s", i + 1, StartQuestName[i], StartQuestPresent[i]), strcat(lines,line);
         else format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}Выполнен\t{D9F26E}%s", i + 1, StartQuestName[i], StartQuestPresent[i]), strcat(lines,line);
     }
     ShowDialog(playerid,504,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Квесты",lines,"Выбор","Отмена");
@@ -173,7 +189,7 @@ stock QuestActorJone(playerid) // Начинаем взаимодействов�
             else if(IsPlayerInRangeOfPoint(playerid,5.0, 2121.7776,2709.5793,10.8203)) GiveCar(playerid, freeSlot, 546, 2118.9817,2729.5417,10.5447,270.2156, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
             // Выполнили квест 0
-            PlayerInfo[playerid][pQuest][0] = 1;
+            PlayerInfo[playerid][pQuest][3] = 3;
             SaveQuest(playerid);
         }
         return 1;
@@ -218,7 +234,7 @@ stock MasterKeyQuest(playerid)
 
 stock OpenStartQuest(playerid, zoneid) // Запускаем зону квеста
 {
-    if(PlayerInfo[playerid][pQuest][0] == 1) return 0; // Если квест уже пойден, не запускаем квест
+    if(!NoCompleteQuest(playerid, 3)) return 0; // Если квест уже пойден, не запускаем квест
     if(PursuitTime[playerid] >= 1) return 0; // Если преследует полиция, не запускаем квест
     if(QuestInfo[playerid][QuestBot]) return 0; // Квест уже запущен
 

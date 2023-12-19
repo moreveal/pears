@@ -190,7 +190,7 @@ stock SaveAccessory(i, stat) // Обновляем или добавляем с�
     mysql_escape_string(AccessoryInfo[i][acName], send_name, sizeof(send_name));
     
     if(stat == 1) format(big_query, sizeof(big_query), "UPDATE");
-    else format(big_query, sizeof(big_query), "INSERT INTO");
+    else if(stat == 0) format(big_query, sizeof(big_query), "INSERT INTO");
 
 	format(big_query, sizeof(big_query), "%s `accessory` SET `acModel`='%d',`acName`='%s',`acPrice`='%d',`acStatus`='%d',`acBone`='%d'",big_query,
 	AccessoryInfo[i][acModel], send_name, AccessoryInfo[i][acPrice], AccessoryInfo[i][acStatus], AccessoryInfo[i][acBone]);
@@ -200,13 +200,21 @@ stock SaveAccessory(i, stat) // Обновляем или добавляем с�
 	AccessoryInfo[i][acX],AccessoryInfo[i][acY],AccessoryInfo[i][acZ],AccessoryInfo[i][acrX],AccessoryInfo[i][acrY],AccessoryInfo[i][acrZ],
 	AccessoryInfo[i][acsX],AccessoryInfo[i][acsY],AccessoryInfo[i][acsZ]);
 	
-	if(stat == 1) format(big_query, sizeof(big_query), "%s  WHERE `newid` = '%d'", big_query, AccessoryInfo[i][acID]);
-	query_empty(pearsq, big_query);
-	
-	if(stat == 0) AccessoryInfo[i][acID] = cache_insert_id();
-	
+	if(stat == 1)
+	{
+		format(big_query, sizeof(big_query), "%s  WHERE `newid` = '%d'", big_query, AccessoryInfo[i][acID]);
+		query_empty(pearsq, big_query);
+	}
+	else if(stat == 0) mysql_tquery(pearsq, big_query, "Call_InsertAccessory", "d", i);
+
 	AccessoryInfo[i][acMysqlCheck] = false;
     return 1;
+}
+
+function Call_InsertAccessory(i)
+{
+	AccessoryInfo[i][acID] = cache_insert_id();
+	return 1;
 }
 
 stock GetNameAccessory(modelId)

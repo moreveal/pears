@@ -59,7 +59,7 @@ stock GoSpawn(playerid)
     if(PlayerInfo[playerid][pJailed] > 0 
         || PlayerInfo[playerid][pBkyrenie] >= 2 
         || DeathInfo[playerid][deathStatus] == true
-        || PlayerInfo[playerid][pQwest] <= 6) return GoGame(playerid); // Если игроку нельзя выбирать спавн
+        || PlayerInfo[playerid][pQuest][0] == 0) return GoGame(playerid); // Если игроку нельзя выбирать спавн
 
     ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
     Login[4][playerid] = 1;

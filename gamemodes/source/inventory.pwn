@@ -40,8 +40,8 @@ new fdrawName[][] = // Название Вещи
 	"ЂOKA‡","KPY„KA","SPRUNK","ЂYP‚EP","ЂYP‚EP","PO‡‡","HAЂOP_1","HAЂOP_2","HAЂOP_3","HAЂOP_4",
 	"HAЂOP_5","HAЂOP_6","HAЂOP_7","HAЂOP_8","HAЂOP_9","HAЂOP_10","HAЂOP_11","SPRUNK","KOC•K","XOЏ ѓO‚",
 	"C…‚APEЏA","C…‚APA","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K",
-	"YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","ЊPA‹A","‡…‰EH3…•","ЊPA‹A","‡…‰EH3…•","ѓЊ…‡OM","‡…‰EH3…•",
-	"‡…‰EH3…•","TOPT","KYCOK ЏOPЏA", "Њ…‰‰A", "Њ…‰‰A ѓOM.", "KYCOK Њ…‰‰‘", "M•CO ‹ YЊAK.", "C‘PO† CЏE†K", "„APEH‘† CЏE†K", "‡OMЏ…K X‡EЂA",
+	"YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","ЊPA‹A HA A‹ЏO","A‹…A ‡…‰EH3…•","ЊPA‹A HA KAЏEP","MOЏO ‡…‰EH3…•","ѓЊ…‡OM","‡…‰EH3…• HA OPY„…E 1",
+	"‡…‰EH3…• HA OPY„…E 2","TOPT","KYCOK ЏOPЏA", "Њ…‰‰A", "Њ…‰‰A ѓOM.", "KYCOK Њ…‰‰‘", "M•CO ‹ YЊAK.", "C‘PO† CЏE†K", "„APEH‘† CЏE†K", "‡OMЏ…K X‡EЂA",
 	"COK AЊE‡’C…H.", "COK •Ђ‡OЌ.", "O‹OЉ…", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "ЏOЊ‡…‹O", "MOPO„EHOE", "CЊ…ѓ‘", "…3O‡EHЏA",
 	"3AЊЌACЏ’ ЂOMЂ‘","PEM.KOMЊ‡EKЏ A‹ЏO","KPACKA ѓ‡• ЏPAHCЊOPЏA","ABTOMO6NLJHSE_DNCKN","FNDPABLNKA","3AKNCJ_A3OTA","DETALJ_TUHNHFA","KENC","PEM.KOMЊ‡EKЏ MOЏO","PEM.KOMЊ‡EKЏ A‹…A",
 	"PEM.KOMЊ‡EKЏ KAЏEPO‹","HAMA3‡‘K","P‘ЂKA", "KOPM ѓ‡• P‘ЂOK","ЊAKEЏ", "ЂA‡OHЌ…K C KPACKO†"
@@ -310,7 +310,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // Кладём предмет из инвентаря в другой
 		{
 		    new myinva = OnlineInfo[playerid][oInventSelectLeft], myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
-		    if(NotGiveThing(myfpick, myThingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 		    if(Tabs_Load[playerid] == 2) // Дом
 			{
 			    if(myThingType == 0 && myThingPack == 0)
@@ -444,7 +444,7 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}Нельзя продать упакованный предмет");
 	
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её продать");
-	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
 
 	if(giveplayerid == -1)
 	{
@@ -486,7 +486,7 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя передавать предметы во время покупок в супермаркете");
 	
 	// Проверка на особые предметы
-	if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её передать или убрать");
 
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
@@ -1609,9 +1609,9 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
   	|| i == 126 || i == 127 || i >= 128 && i <= 138 || i == 139 || i == 141 || i == 163 || i == 164)) return 1;
 	return 0;
 }
-stock NotGiveThing(i, type)
+stock NotGiveThing(i, type, quan)
 {
-	if(type == 0 && (i == 10 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63)
+	if(type == 0 && (i == 10 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63 || i == 156 && quan == 2)
 		|| type == 1 && (i == 34)
 		|| type == 5) return 1;
 	return 0;
@@ -1973,7 +1973,7 @@ stock player_tile(playerid, inva)
 			// Упаковываем подарок
 			if(Hold[playerid] == 4)
 			{
-			    if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
+			    if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
 			    if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет уже упакован");
 			    if(fpick == 51 || fpick == 63 || fpick >= 156 && fpick <= 162) return ErrorMessage(playerid, "{FF6347}Документы нельзя упаковать в подарок");
 			    
@@ -2091,7 +2091,7 @@ stock player_tile(playerid, inva)
 			 	    if(IsPlayerInRangeOfPoint(playerid,3.0,1739.9813,-2421.0430,13.5767) || IsPlayerInRangeOfPoint(playerid,3.0,1739.9819,-2425.4553,13.5767) || IsPlayerInRangeOfPoint(playerid,3.0,1739.9834,-2429.8330,13.5767)
 					|| IsPlayerInRangeOfPoint(playerid,3.0,1582.8757,1423.6699,10.8726) || IsPlayerInRangeOfPoint(playerid,3.0,1578.5564,1423.7529,10.8726) || IsPlayerInRangeOfPoint(playerid,3.0,1574.1172,1423.6882,10.8726))
 			 	    {
-			 	        if(PlayerInfo[playerid][pQwest] <= 6) dokaerols(playerid);
+			 	        if(NoCompleteQuest(playerid, 0)) dokaerols(playerid);
 			 	        else ErrorMessage(playerid, "{FF6347}Вы уже прошли паспортный контроль");
 			 	        return 1;
 			 	    }

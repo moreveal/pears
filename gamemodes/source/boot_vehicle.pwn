@@ -76,6 +76,14 @@ stock use_boot(playerid, v, inva, useinva)
 
     format(store,sizeof(store),"Взял из %s: %s", vehName[VehInfo[v][vModel]], GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
+
+
+	// Квест ремонт транспорта
+	if(NoCompleteQuest(playerid, 4) && fpick == 183 && IsACar(VehInfo[v][vModel]) && VehInfo[v][vHealth] <= 400.0)
+	{
+		PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair3.mp3");
+		SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Теперь подойди к капоту и открой его так-же как багажник");
+	}
 	return 1;
 }
 
@@ -140,7 +148,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	|| PlayerInfo[playerid][pInven][inva] <= 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return 1;
 	
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем положить в багажник"), i_resetveshi(playerid);
-    if(NotGiveThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+    if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
     if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{
