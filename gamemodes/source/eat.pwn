@@ -383,11 +383,11 @@ stock goeat_podnos(playerid)
 			updatethrowall(t);
 			Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0;
 			if(playerSeat[playerid]) TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
-			if(PlayerInfo[playerid][pQwest] == 16)
+			/*if(PlayerInfo[playerid][pQwest] == 16)
 			{
 				PlayerInfo[playerid][pQwest] = 17, mysql_save(playerid, 69);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чудесно! Ваш персонаж покушал\nВы можете купить с собой пару бургеров (по желаниию) и выйти на улицу","*","");
-			}
+			}*/
 	    }
 	}
 	return 1;

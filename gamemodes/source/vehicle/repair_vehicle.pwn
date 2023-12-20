@@ -295,12 +295,12 @@ stock ErrorMessageQuestProcess(playerid)
         if(PlayerInfo[playerid][pSex] == 1) 
         {
             PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair5.mp3");
-            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое сообщение): Дружище, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Дружище, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
         }
         else 
         {
             PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair55.mp3");
-            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое сообщение): Продруга, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Продруга, во время ремонта, нажимай на гаечный ключ, когда полоска будет на зелёной линии");
         }
     }
     return 1;

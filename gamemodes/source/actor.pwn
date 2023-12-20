@@ -2,6 +2,7 @@
 
 new BotPears[MAX_BOTS];
 new PlayerText3D:BotTalk[MAX_REALPLAYERS]; // ID Label Text NPC
+new bool:BotTalkStat[MAX_REALPLAYERS];
 new BotTalkTimer[MAX_REALPLAYERS]; // ID Timer Text NPC
 
 static const talk_anims_actor[][] = {
@@ -17,11 +18,10 @@ function SendActorMessage(playerid, stat,actorid,const text[])
 		GetActorPos(actorid, pos[0], pos[1], pos[2]);
 		SetActorPos(actorid, pos[0], pos[1], pos[2]);
 
-        if(BotTalkTimer[playerid])
-        {
-            DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
-            KillTimer(BotTalkTimer[playerid]);
-        }
+        if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+        if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]);
+
+        BotTalkStat[playerid] = true;
         BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.2, 4.0);
         BotTalkTimer[playerid] = SetTimerEx("ClearTextActor", 5000, false, "dd", playerid, actorid);
 
@@ -32,44 +32,41 @@ function SendActorMessage(playerid, stat,actorid,const text[])
 
 function ClearTextActor(playerid, actorid)
 {
-    if(BotTalkTimer[playerid])
-    {
-        DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
-        KillTimer(BotTalkTimer[playerid]);
-        BotTalkTimer[playerid] = 0;
-    }
+    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = false;
+    if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
     LoadAnimBot(actorid);
     return 1;
 }
 
-function SendDynamicActorMessage(actorid, playerid, const text[]) // Текст над бошкой NPC
+function SendDynamicActorMessage(actorid, playerid, const text[]) // Обычный текст над головой NPC
 {
-	if(IsValidDynamicActor(actorid))
-	{
-		new Float:pos[3];
-		GetDynamicActorPos(actorid, pos[0], pos[1], pos[2]);
-
-        if(BotTalkTimer[playerid])
-        {
-            DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
-            KillTimer(BotTalkTimer[playerid]);
-        }
-        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 4.0);
-        BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
-
-        ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
-	}
+	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 0, playerid, text);
 	return 1;
+}
+function SendDynamicActorScript(actorid, playerid, const text[]) // Текст для сценария
+{
+	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 1, playerid, text);
+	return 1;
+}
+stock MessageDynamicActor(actorid, status, playerid, const text[])
+{
+    new Float:pos[3];
+    GetDynamicActorPos(actorid, pos[0], pos[1], pos[2]);
+
+    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+    if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
+
+    BotTalkStat[playerid] = true;
+    BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 4.0);
+    if(status == 0) BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
+
+    ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
 }
 
 function ClearDynamicTextActor(playerid, actorid) // Удаляем текст над бошкой NPC
 {
-    if(BotTalkTimer[playerid])
-    {
-        DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
-        KillTimer(BotTalkTimer[playerid]);
-        BotTalkTimer[playerid] = 0;
-    }
+    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = false;
+    if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
 
     if(IsValidDynamicActor(actorid)) ClearDynamicActorAnimations(actorid);
     return 1;
@@ -131,7 +128,6 @@ stock LoadBot()
 	BotPears[31] = CreateActor(95, 995.3415,-1954.1554,12.8842,182.6652); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Bot 2 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ ]
 	BotPears[32] = CreateActor(150, 1276.9844,-46.5174,1000.9280,358.1093); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1 [ пїЅпїЅпїЅпїЅпїЅ ]
 	SetActorVirtualWorld(BotPears[32], 3);
-	BotPears[33] = CreateActor(170, 1589.9722,-2279.1296,13.5331,244.2788); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 2
 	BotPears[34] = CreateActor(96, 1613.8485,-2278.8977,13.5732,347.3431); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 3
 	BotPears[35] = CreateActor(97, 1614.2062,-2277.4736,13.5656,162.1847); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 4
     BotPears[36] = CreateActor(3, 1625.8187,-2295.5776,13.5372,128.6577); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 5 [ пїЅпїЅпїЅпїЅпїЅ ]
@@ -180,7 +176,6 @@ stock LoadBot()
     SetActorVirtualWorld(BotPears[74], 192);
     BotPears[75] = CreateActor(133, 1063.9913,2306.4170,11.0953,270.3401); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ LV
 
-	BotPears[76] = CreateActor(170, 1735.0012,1439.0845,10.8767,181.0116); // aero lv smoke
 	BotPears[77] = CreateActor(96, 1758.0946,1420.9188,10.8965,105.2076); // aero lv talk 1
 	BotPears[78] = CreateActor(97, 1756.4376,1420.4808,10.8965,280.8209); // aero lv talk 2
 	BotPears[80] = CreateActor(3, 1736.7946,1408.7692,10.8467,43.5901); // aero lv money
@@ -584,7 +579,6 @@ stock LoadAnimBot(stat)
         case 27: ApplyActorAnimation(BotPears[27],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 6
         case 28: ApplyActorAnimation(BotPears[28],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 7
         case 29: ApplyActorAnimation(BotPears[29],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 8
-        case 33: ApplyActorAnimation(BotPears[33],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // Вокзал Bot 2
         case 34: ApplyActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
         case 35: ApplyActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
         case 37: ApplyActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
@@ -607,7 +601,6 @@ stock LoadAnimBot(stat)
         case 69: ApplyActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         case 70: ApplyActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         case 71: ApplyActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-		case 76: ApplyActorAnimation(BotPears[76],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // aero lv smoke
 		case 77: ApplyActorAnimation(BotPears[77],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 1
         case 78: ApplyActorAnimation(BotPears[78],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 2
 		case 83: ApplyActorAnimation(BotPears[83],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
@@ -802,7 +795,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[27],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 6
         ApplyActorAnimation(BotPears[28],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 7
         ApplyActorAnimation(BotPears[29],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 8
-        ApplyActorAnimation(BotPears[33],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // Вокзал Bot 2
         ApplyActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
         ApplyActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
         ApplyActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
@@ -825,7 +817,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-		ApplyActorAnimation(BotPears[76],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // aero lv smoke
 		ApplyActorAnimation(BotPears[77],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 1
         ApplyActorAnimation(BotPears[78],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 2
 		ApplyActorAnimation(BotPears[83],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
