@@ -2124,18 +2124,20 @@ stock player_tile(playerid, inva)
 		 		else if(fpick == 96) return format(store, sizeof(store), "%d", inva), cmd_bloodvampire(playerid, store), i_resetveshi(playerid); // Бокал с кровью вампира
 		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // Кухонный нож
 		 		else if(fpick == 98) return format(store, sizeof(store), "%d", inva), cmd_useblood(playerid, store), i_resetveshi(playerid); // Бокал с обычной кровью
-		 		else if(fpick == 99) return format(store, sizeof(store), "%d", inva), cmd_eatbanana(playerid, store), i_resetveshi(playerid); // Банан
+		 		
+				/*else if(fpick == 99) return format(store, sizeof(store), "%d", inva), cmd_eatbanana(playerid, store), i_resetveshi(playerid); // Банан
 		 		else if(fpick == 100) return format(store, sizeof(store), "%d", inva), cmd_eatapple(playerid, store), i_resetveshi(playerid); // Яблоко
 		 		else if(fpick == 101) return format(store, sizeof(store), "%d", inva), cmd_eatorange(playerid, store), i_resetveshi(playerid); // Апельсин
 		 		else if(fpick == 102) return format(store, sizeof(store), "%d", inva), cmd_eatmilk(playerid, store), i_resetveshi(playerid); // Молоко
 		 		else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Тыкву можно продать в здании фермы","*",""), i_resetveshi(playerid); // Тыква
 		 		else if(fpick == 104) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Картошку можно продать в здании фермы","*",""), i_resetveshi(playerid); // Картошка
 		 		else if(fpick == 105) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Томат можно продать в здании фермы","*",""), i_resetveshi(playerid); // Томат
-		 		else if(fpick == 106) return seeds(playerid, 106), i_resetveshi(playerid); // Удобрение
+				*/
+		 		//else if(fpick == 106) return seeds(playerid, 106), i_resetveshi(playerid); // Удобрение
 		 		else if(fpick == 107) return format(store, sizeof(store), "%d", inva), cmd_bullsblood(playerid, store), i_resetveshi(playerid); // Бычья Кровь
-		 		else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // Семена тыквы
-		 		else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // Семена томатов
-		 		else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Рассада картошки
+		 		//else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // Семена тыквы
+		 		//else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // Семена томатов
+		 		//else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Рассада картошки
 		 		else if(fpick == 111)
 			 	{
 			 		ShowDialog(playerid,1207,DIALOG_STYLE_INPUT,"{ff9000}Игральные Кости","\n{cccccc}Введите {99ff66}сумму{cccccc}, на которую будете играть с другим игроком [1 - 10кк]\n\n{FF6347}Внимание!\nЕсли вы договоритесь с кем-либо играть на более крупные суммы -\nадминистрация не вмешается в случае если вас обманут\nНе рекомендуется выходить за рамки ограничений","Принять","Отмена"), i_resetveshi(playerid);
