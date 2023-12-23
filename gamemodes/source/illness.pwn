@@ -20,7 +20,7 @@ CMD:infect(p, const params[])
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Применить болезнь к игроку [ /infect ID 1-18 ]");
 	if(params[1] < 1 || params[1] > 18) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 18");
 	new result = infect(params[0], params[1], 2000);
-	if(result == 0) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Он недавно болел простудой и у него иммунитет");
+
 	if(result == -1) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Нет свободных слотов для болезни");
 	if(result == -2) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Он вампир и не может болеть");
 
@@ -111,8 +111,17 @@ CMD:remedy(playerid, const params[])
 		
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
-			format(string,sizeof(string),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь\n{99ff66}Проверьте мед. карту на наличие других болезней [ N ]", friskName[params[0]+71]);
-			SuccessMessage(playerid, string);
+			format(lines,sizeof(lines),""); // Очищаем Lines
+			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Проверьте мед карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
+
+			if(ContagiousInfect(illn))
+			{
+				format(line,sizeof(line),"\n\n{ff6666}Это была заразная болезнь и теперь у вас иммунитет на 30 дней"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Вас никто не сможет заразить в течении этого времени"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Однако, вы всё-равно можете заболеть если будете купаться в холодной воде"), strcat(lines,line);
+			}
+			SuccessMessage(playerid, lines);
 			if(PlayerInfo[playerid][pAchieve][14] == 0) AchievePlayer(playerid, 14, 1);
 		}
 		else
@@ -637,8 +646,6 @@ stock infect(playerid, stat, prog)
     if(getillness(playerid, 18) && PlayerInfo[playerid][pNeon] > 100) yes = -2;
 	else
     {
-		if(ContagiousInfect(stat) && PlayerInfo[playerid][pColdCD] > gettime()) return 0; // Ограничение на повторное заражение болезнями
-
 		for(new i = 0; i < 5; i++)
 		{
 			if(PlayerInfo[playerid][pIllness][i] == stat && PlayerInfo[playerid][pIllness][i] != 9 && PlayerInfo[playerid][pIllness][i] != 18)
