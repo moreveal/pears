@@ -566,10 +566,10 @@ stock CheckGangZone() // Распределение результатов по 
 	{
 		if(OnlineInfo[i][oLogged] == 1)
 		{
+			if(OnlineInfo[i][oActiviti] == 1) OnlineInfo[i][oActiviti] = 0;
 			if(PlayerInfo[i][pMember] == CaptInfo[cAttack] || PlayerInfo[i][pLeader] == CaptInfo[cAttack]
 			|| PlayerInfo[i][pMember] == CaptInfo[cDefend] || PlayerInfo[i][pLeader] == CaptInfo[cDefend])
 			{
-				if(OnlineInfo[i][oActiviti] == 1) OnlineInfo[i][oActiviti] = 0;
 			    new org = fraction(i), nauniti;
 			    // Начисляем Юниты
 				new vremun = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];

@@ -1438,6 +1438,9 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 		else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
 		else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Если выдаём Журнал PlayBoy
 		else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // Семена травы (Полный комплект)
+		else if(thingId == 96 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь вампира
+		else if(thingId == 98 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь человека
+		else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Бычья кровь
 		else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Кофе
 		else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+86400; // Спранк стакан
 		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+1209600; // Sprunk Банка

@@ -19,7 +19,11 @@ CMD:infect(p, const params[])
 	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Применить болезнь к игроку [ /infect ID 1-18 ]");
 	if(params[1] < 1 || params[1] > 18) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 18");
-	infect(params[0], params[1], 2000);
+	new result = infect(params[0], params[1], 2000);
+	if(result == 0) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Он недавно болел простудой и у него иммунитет");
+	if(result == -1) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Нет свободных слотов для болезни");
+	if(result == -2) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Он вампир и не может болеть");
+
 	if(params[1] == 18 && vampire[params[0]] == 0)
 	{
 		if(GetPlayerInterior(params[0]) == 0 && GetPlayerVirtualWorld(params[0]) == 0 && GetPlayerState(params[0]) == PLAYER_STATE_ONFOOT) burn_vampire(params[0], 1);
@@ -76,7 +80,7 @@ CMD:remedy(playerid, const params[])
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно посмотреть мои вещи [ Только через инвентарь - N ]");
 	new string[164];
-	if(PlayerInfo[playerid][pRemedy] > gettime()) return format(string,sizeof(string),"{FF6347}Вы недавно принимали лекарство [ Следующий приём не раньше чем через %d минут ]", (PlayerInfo[playerid][pRemedy]-gettime())/60), ErrorMessage(playerid, string);
+	if(PlayerInfo[playerid][pRemedy] > gettime()) return format(string,sizeof(string),"{FF6347}Вы недавно принимали лекарство\n{cccccc}Следующий приём не раньше чем через %s", fine_time(PlayerInfo[playerid][pRemedy]-gettime())), ErrorMessage(playerid, string);
 	if(gSkafandr[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы в скафандре");
 	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
 	if(!IsPlayerInAnyVehicle(playerid) && GetPlayerSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}Нельзя в движении");
@@ -104,7 +108,7 @@ CMD:remedy(playerid, const params[])
 		new medid = infectremedy(playerid, illn, 200);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
-		PlayerInfo[playerid][pRemedy] = gettime()+600;
+		
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
 			format(string,sizeof(string),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь\n{99ff66}Проверьте мед. карту на наличие других болезней [ N ]", friskName[params[0]+71]);
@@ -117,6 +121,7 @@ CMD:remedy(playerid, const params[])
 			format(string,sizeof(string),"{99ff66}Вы приняли лекарство {ff9000}%s\n{99ff66}Для полного выздоровления необходимо принять: {0088ff}%d таблеток", friskName[params[0]+71], floatround(ostmed, floatround_ceil));
 			SuccessMessage(playerid, string);
 		}
+		PlayerInfo[playerid][pRemedy] = gettime()+300;
 		mysql_save(playerid, 60);
 		update_illness(playerid, medid);
  	}
@@ -408,19 +413,148 @@ stock getmed(playerid, para1)
 	return 1;
 }
 
+stock InfoEatMessage(playerid, stat)
+{
+	if(OnlineInfo[playerid][oMessageInfect] <= gettime())
+	{
+		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 Минут Unix
+
+		format(lines,sizeof(lines),""); // Очищаем Lines
+
+		if(getillness(playerid, 18))
+		{
+			if(stat == 0) // Просто хотим кушать
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Меня мучает жажда [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет крови"), strcat(lines,line);
+				format(line,sizeof(line),"\n{684F7D}Срочно найдите кровь и выпейте её"), strcat(lines,line);
+			}
+			else if(stat == 1) // Пиздец
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я теряю силы.. Меня мучает жажда [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет крови"), strcat(lines,line);
+				format(line,sizeof(line),"\n{684F7D}Теперь усталость влияет на вас"), strcat(lines,line);
+			}
+		}
+		else
+		{
+			if(stat == 0) // Просто хотим кушать
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я хочу кушать [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет кушать"), strcat(lines,line);
+				format(line,sizeof(line),"\n{99ff66}Отправляйтесь в закусочную и купите еды"), strcat(lines,line);
+			}
+			else if(stat == 1) // Пиздец
+			{
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня болит животик.. Я сильно хочу кушать [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет кушать"), strcat(lines,line);
+				format(line,sizeof(line),"\n{FF6347}У вас начинает накапливаться болезнь"), strcat(lines,line);
+			}
+		}
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+
+		if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) SendMindMessage(playerid,"• xo¤y kyҐa¦©"," ");
+		else SendMindMessage(playerid,"I want to eat"," ");
+
+		Login[2][playerid] = 0;
+	}
+	return 1;
+}
+
+stock InfoPissMessage(playerid, stat)
+{
+	if(OnlineInfo[playerid][oMessagePiss] <= gettime())
+	{
+		OnlineInfo[playerid][oMessagePiss] = gettime() + 600; // 10 Минут Unix
+
+		format(lines,sizeof(lines),""); // Очищаем Lines
+
+		if(stat == 0) // Просто хотим сцать
+		{
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет в туалет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Отправляйтесь в туалет и воспользуйтесь им"), strcat(lines,line);
+			format(line,sizeof(line),"\n\n{cccccc}Не справляйте нужду при людях в открытую, это не культурно"), strcat(lines,line);
+		}
+		else if(stat == 1) // Пиздец
+		{
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет в туалет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Если вы не сходите в туалет, ваш персонаж обмочится"), strcat(lines,line);
+		}
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+
+		Login[2][playerid] = 0;
+	}
+	return 1;
+}
+
 stock InfectInfo(playerid)
 {
 	if(OnlineInfo[playerid][oMessageInfect] <= gettime())
 	{
 		OnlineInfo[playerid][oMessageInfect] = gettime() + 600; // 10 Минут Unix
 
-		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Я заболею если буду долго плавать в холодной воде");
-		format(lines,sizeof(lines),""); // Очищаем Lines
-		format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде и начинает простужаться"), strcat(lines,line);
-		format(line,sizeof(line),"\n{FF6347}Через 4 минуты пребывания в холодной воде персонаж заболеет"), strcat(lines,line);
-		format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
-		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+		if(getillness(playerid, 18))
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Но мне пофиг на ледяную воду");
+			format(lines,sizeof(lines),""); // Очищаем Lines
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде, но ему всё-равно"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Вы вампир и поэтому вам не страшны болезни"), strcat(lines,line);
+			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+		}
+		else
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Я заболею если буду долго плавать в холодной воде");
+			format(lines,sizeof(lines),""); // Очищаем Lines
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде и начинает простужаться"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Через 4 минуты пребывания в холодной воде персонаж заболеет"), strcat(lines,line);
+			format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
+			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+		}
+		Login[2][playerid] = 0;
 	}
+	return 1;
+}
+
+stock VampireInfo(playerid)
+{
+	format(lines,sizeof(lines),""); // Очищаем Lines
+	format(line,sizeof(line),"{684F7D}Как найти проклятие?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Откройте один из четырёх саркофагов в этой гробнице"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Проклятие может произойти случайно только с одним человеком раз в 4 часа"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Что даёт проклятие?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы никогда не заболеете другими, любыми болезнями"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Ваш персонаж никогда не устаёт и ему не нужен сон"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы НЕ сможете питаться обычной едой, от неё вас будет тошнить"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С 6:00 до 21:00 находясь на солнце вы будете сгорать и терять здоровье"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Как защититься от солнца?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Находиться в интерьерах или сидеть в транспорте"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Надеть скафандр космонавта в NASA"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Вы можете обратить другого игрока в вампира"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Приобретите нож в супермаркете и наполните бокал своей кровью"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы вампир, дайте выпить эту кровь другому игроку"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Как вам питаться?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}1. Вы можете выпить кровь у игрока без сознания, чтобы насытиться"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Для этого нокаутируйте игрока битой"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Затем зажмите Правую Кнопку Мыши и Кнопку ALT"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}2. Игрок может добровольно дать вам свою кровь"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С помощью ножа из супермаркете попросите игрока наполнить бокал своей кровью"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Эту кровь вы можете употребить в любой момент и насытиться"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}3. Употреблять кровь животных"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Приобретите на ферме бычью кровь и употребляйте её"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Как избавиться от проклятия?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Наденьте на себя аксессуар Распятие и вы вновь станете обычным человеком"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Найти аксессуар можно случано, открывая саркофаги в этой гробнице"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Распятие"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы носите распятие, вампир не сможет выпить вашу кровь"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы носите распятие, вы никогда не станете вампиром"), strcat(lines,line);
+
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{684F7D}Проклятие Фараонов",lines,"*","");
 	return 1;
 }
 
@@ -498,10 +632,13 @@ stock create_infect(playerid, stat, prog, i)
 }
 stock infect(playerid, stat, prog)
 {
-    if(getillness(playerid, 18) && PlayerInfo[playerid][pNeon] > 100) {}
+	new yes = -1;
+
+    if(getillness(playerid, 18) && PlayerInfo[playerid][pNeon] > 100) yes = -2;
 	else
     {
-		new yes;
+		if(ContagiousInfect(stat) && PlayerInfo[playerid][pColdCD] > gettime()) return 0; // Ограничение на повторное заражение болезнями
+
 		for(new i = 0; i < 5; i++)
 		{
 			if(PlayerInfo[playerid][pIllness][i] == stat && PlayerInfo[playerid][pIllness][i] != 9 && PlayerInfo[playerid][pIllness][i] != 18)
@@ -510,7 +647,7 @@ stock infect(playerid, stat, prog)
 				break;
 			}
 		}
-		if(yes == 0)
+		if(yes == -1)
 		{
 			for(new i = 0; i < 5; i++)
 			{
@@ -522,7 +659,7 @@ stock infect(playerid, stat, prog)
 			}
 		}
 	}
-	return 1;
+	return yes;
 }
 stock infectremedy(playerid, stat, prog)
 {
@@ -537,8 +674,13 @@ stock infectremedy(playerid, stat, prog)
 				PlayerInfo[playerid][pIllness][i] = 0;
 				PlayerInfo[playerid][pIllnessStat][i] = 0;
 				PlayerInfo[playerid][pIllnessProg][i] = 0;
-				if(stat >= 14 && stat <= 17 && zones_coldstat[playerid] == stat) DestroyDynamicArea(zones_cold[playerid]), zones_coldstat[playerid] = 0;
+				if(ContagiousInfect(stat) && zones_coldstat[playerid] == stat) DestroyDynamicArea(zones_cold[playerid]), zones_coldstat[playerid] = 0;
 				incold[playerid] = 0;
+
+				if(ContagiousInfect(stat))
+				{
+					PlayerInfo[playerid][pColdCD] = gettime() + 2592000;
+				}
 			}
 			medid = i;
 			break;
@@ -623,7 +765,16 @@ stock getdiagnosis(playerid, stat)
 }
 stock update_illness(playerid, stat)
 {
-    format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `id`='%d'", stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], PlayerInfo[playerid][pID]);
+	if(ContagiousInfect(stat))
+	{
+		format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d',`pColdCD`='%d' WHERE `id`='%d'", 
+		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], PlayerInfo[playerid][pColdCD], PlayerInfo[playerid][pID]);
+	}
+	else
+	{
+		format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `id`='%d'", 
+		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], PlayerInfo[playerid][pID]);
+	}
     query_empty(pearsq, big_query);
 	return 1;
 }
