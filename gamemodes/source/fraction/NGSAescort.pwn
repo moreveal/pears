@@ -1710,7 +1710,7 @@ stock CreateObjectTrain()
 stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
 {
     new Float:angle,Float:distance;
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), 1, x, distance, z);
+	GetVehicleModelInfo(GetVehModelOriginal(VehInfo[vehicleid][vModel]), 1, x, distance, z);
     distance = distance/2 + 50;
 	GetVehiclePos(vehicleid, x, y, z);
 	GetVehicleZAngle(vehicleid, angle);
@@ -1948,7 +1948,7 @@ stock CheckInSquareEscort(playerid, vehicleid)
 stock LoadOrderEscort(playerid)
 {
 	new v = GetPlayerVehicleID(playerid);
-	new model = GetVehicleModel(v);
+	new model = VehInfo[v][vModel];
 	if(model != 433) return ErrorMessage(playerid, "{FF6347}Используйте спец. транспорт Barracks для погрузки боеприпасов");
 	if(EscortStatus == 0) return ErrorMessage(playerid, "{FF6347}Нет активного заказа\n\n{cccccc}Перед ангаром стоит терминал оформления доставки");
 
@@ -2790,7 +2790,7 @@ stock WriteTrainRoad(playerid)
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
  	{
 		new vehicleid = GetPlayerVehicleID(playerid);
-		new model = GetVehicleModel(vehicleid);
+		new model = VehInfo[vehicleid][vModel];
 
 		if(model == 537)
 		{

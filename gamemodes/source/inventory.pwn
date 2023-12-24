@@ -1554,7 +1554,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 		else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
 		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"Одежда ID %d", thingId);
 		else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
-		else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s", vehName[thingId]);
+		else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s", GetVehicleName(thingId));
 	}
 	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный ящик, 5 кейс (помещается только 1 предмет и занимает 1 ячейку)
 	{
@@ -1573,7 +1573,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 			else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetNameAccessory(thingId));
 			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (Одежда ID %d)", hideName, thingId);
 			else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, object_name(thingId));
-			else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, vehName[thingId]);
+			else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetVehicleName(thingId));
 		}
 	}
 	return nameProduct;

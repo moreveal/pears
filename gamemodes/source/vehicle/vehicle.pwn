@@ -1,10 +1,136 @@
 
+/*
+Как добавить новый тс?
+1. Добавляем в AddCustomVehice заменку и следующий id
+2. Добавляем в IsAVehExisting новую цифру для создания транспорта
+3. Добавляем имя транспорта в GetVehicleName
+4. Добавляем в GetVehicleType (что это за тип транспорта)
+5. GetVehicleClass - класс авто
+6. IsABoot Есть ли у него багажник
+7. IsABootFront - если у тачки двигатель сзади
+8. IsA_Gen5, IsA_Gen10, IsA_Gen15 - сколько по дефолту слотов в багажнике
+9. IsATaxi - доступен ли транспорт работать в такси
+10. IsAZad - есть ли задние двери в транспорте
+
+*/
+
+new vehName[][] =
+{
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
+    "Landstalker", "Bravura", "Buffalo", "Linerunner", "Perrenial", "Sentinel", "Dumper", "Firetruck", "Trashmaster",
+    "Stretch", "Manana", "Infernus", "Voodoo", "Pony", "Mule", "Cheetah", "Ambulance", "Leviathan", "Moonbeam",
+    "Esperanto", "Taxi", "Washington", "Bobcat", "Whoopee", "BF Injection", "Hunter", "Premier", "Enforcer",
+    "Securicar", "Banshee", "Predator", "Bus", "Rhino", "Barracks", "Hotknife", "Trailer", "Previon", "Coach",
+    "Cabbie", "Stallion", "Rumpo", "RC Bandit", "Romero", "Packer", "Monster A", "Admiral", "Squalo", "Seasparrow",
+    "Pizzaboy", "Tram", "Trailer", "Turismo", "Speeder", "Reefer", "Tropic", "Flatbed", "Yankee", "Caddy", "Solair",
+    "Topfun Van", "Skimmer", "PCJ-600", "Faggio", "Freeway", "RC Baron", "RC Raider", "Glendale", "Oceanic",
+    "Sanchez", "Sparrow", "Patriot", "Quad", "Coastguard", "Dinghy", "Hermes", "Sabre", "Rustler", "ZR-350", "Walton",
+    "Regina", "Comet", "BMX", "Burrito", "Camper", "Marquis", "Baggage", "Dozer", "Maverick", "News Chopper", "Rancher",
+    "FBI Rancher", "Virgo", "Greenwood", "Jetmax", "Hotring", "Sandking", "Blista Compact", "Police Maverick",
+    "Boxville", "Benson", "Mesa", "RC Goblin", "Hotring Racer A", "Hotring Racer B", "Bloodring Banger", "Rancher",
+    "Super GT", "Elegant", "Journey", "Bike", "Mountain Bike", "Beagle", "Cropduster", "Stunt", "Tanker", "Roadtrain",
+    "Nebula", "Majestic", "Buccaneer", "Shamal", "Hydra", "FCR-900", "NRG-500", "HPV1000", "Cement Truck", "Tow Truck",
+    "Fortune", "Cadrona", "APC", "Willard", "Forklift", "Tractor", "Combine", "Feltzer", "Remington", "Slamvan",
+    "Blade", "Freight", "Streak", "Vortex", "Vincent", "Bullet", "Clover", "Sadler", "Firetruck", "Hustler", "Intruder",
+    "Primo", "Cargobob", "Tampa", "Sunrise", "Merit", "Utility", "Nevada", "Yosemite", "Windsor", "Monster B", "Monster C",
+    "Uranus", "Jester", "Sultan", "Stratum", "Elegy", "Raindance", "RC Tiger", "Flash", "Tahoma", "Savanna", "Bandito",
+    "Freight Flat", "Streak Carriage", "Kart", "Mower", "Dune", "Sweeper", "Broadway", "Tornado", "AT 400", "DFT 30",
+    "Huntley", "Stafford", "BF 400", "News Van", "Tug", "Trailer", "Emperor", "Wayfarer", "Euros", "Hotdog", "Club",
+    "Freight Box", "Trailer", "Andromada", "Dodo", "RC Cam", "Launch", "Police Car", "Police Car", "Police Car",
+    "Police Ranger", "Picador", "S.W.A.T", "Alpha", "Phoenix", "Glendale", "Sadler", "Luggage", "Luggage", "Stairs",
+    "Boxville", "Tiller", "Utility Trailer"
+};
+
+new vehSumma[] = // Гос цены на авто (Дефолтные)
+{
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    140000, 166000, 205000, 100, 60000, 95000, 2000, 1500, 100, // 400 - 408                          +
+    390000, 61000, 1150000, 74000, 43000, 44000, 850000, 100, 3500000, 45500,  // 409 - 418          +
+    86000, 90, 93000, 43000, 80, 125000, 777, 109000, 300, // 419 - 427                               +
+    250, 900000, 777, 75000, 777, 200, 250, 777, 89000, 65000, // 428 - 437                          +
+    70, 62000, 51000, 777, 64000, 100, 3900, 106000, 190000, 777, // 438 - 447                        +
+    14000, 777, 777, 800000, 77000, 59000, 159000, 70000, 65000, 19000, 63000, // 448 - 458          +
+    41000, 750000, 129000, 14000, 150000, 777, 777, 48000, 48000, // 459 - 467                        +
+    120000, 5500000, 250, 37000, 25000, 9000, 47000, 52000, 5800, 550000, 21000, // 468 - 478     +
+    27000, 85500, 2500, 42000, 34000, 86000, 13000, 150, 7800000, 7100000, 92000, // 479 - 489        +
+    190, 62000, 61000, 230000, 565000, 940000, 81500, 1900, // 490 - 497                              +
+    35000, 34000, 81500, 777, 533000, 535000, 167000, 102000, // 498 - 505                            +
+    650500, 101000, 45000, 1800, 3100, 2900000, 1900000, 1800000, 80, 80, // 506 - 515               +
+    71000, 76000, 77000, 4900, 777, 174000, 395000, 90, 47000, 40000, // 516 - 525                +
+    41000, 42000, 300, 37000, 15000, 19000, 23000, 113000, 123500, 158000, // 526 - 535               +
+    69500, 777, 777, 70, 81000, 1100000, 71500, 25000, 180, 181000, 54000, // 536 - 546               +
+    62200, 870000, 37000, 159000, 90000, 39000, 4200000, 63000, 155000, 3900, 3900, // 547 - 557      +
+    450000, 470000, 510000, 490000, 480000, 500, 777, 440000, 44000, 66000, 90, // 558 - 568          +
+    777, 777, 7500, 7300, 280, 16000, 39000, 48000, 3200000, 65000, // 569 - 578                       +
+    870000, 540000, 355000, 53000, 26000, 777, 83500, 141000, 145000, 40, 87500, // 579 - 589         +
+    777, 777, 777, 1000000, 777, 49000, 200, 200, 200, // 590 - 598                                   +
+    200, 42000, 1500, 91500, 89500, 29500, 27500, 777, 777, 777, // 599 - 608                          +
+    37000, 777, 777 // 609 - 611                                                                      +
+};
+
+new vehSpeed[] =
+{
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    179, 167, 212, 124, 151, 186, 125, 168, 113, // 400 - 408
+	179, 147, 252, 191, 125, 120, 218, 175, 0, 131, // 409 - 418
+	169, 164, 174, 159, 112, 153, 0, 197, 188, // 419 - 427
+	178, 229, 210, 148, 107, 125, 189, 0, 169, 179, // 428 - 437
+	162, 191, 154, 85, 158, 143, 125, 186, 0, 0, // 438 - 447
+	130, 205, 0, 220, 0, 0, 0, 179, 120, 108, 179, // 448 - 458
+	130, 205, 0, 220, 0, 0, 0, 179, 120, 108, 179, // 459 - 467
+	163, 0, 178, 125, 0, 0, 169, 196, 0, 212, 133, // 468 - 478
+	159, 209, 0, 178, 139, 0, 113, 72, 0, 0, 158, // 479 - 489
+	178, 169, 159, 0, 244, 200, 185, 0, // 490 - 497
+	122, 139, 159, 0, 244, 244, 196, 158, // 498 - 505
+	203, 188, 122, 450, 450, 0, 0, 0, 136, 161, // 506 - 515
+	178, 178, 186, 0, 0, 184, 195, 170, 148, 182, // 516 - 525
+	179, 169, 200, 169, 68, 79, 125, 190, 191, 179, // 526 - 535
+	196, 0, 0, 113, 169, 230, 187, 171, 168, 167, 169, // 536 - 546
+	162, 0, 174, 164, 179, 137, 0, 163, 179, 125, 125, // 547 - 557
+	177, 202, 192, 175, 202, 0, 0, 187, 181, 196, 166, // 558 - 568
+	0, 0, 105, 68, 125, 68, 179, 179, 0, 148, // 569 - 578
+	179, 173, 168, 154, 97, 0, 173, 155, 187, 122, 184, // 579 - 589
+	0, 0, 0, 0, 0, 0, 199, 199, 199, // 590 - 598
+	179, 171, 125, 192, 194, 167, 171, 0, 0, 0, // 599 - 608
+	122, 0, 0 // 609 - 611
+};
+
+stock AddCustomVehice() // Добавляем тс на карту
+{
+	AddVehicleSyncModel(411, 2000); // Lamborghini Murcielago
+	AddVehicleSyncModel(579, 2001); // BMW X6
+	return 1;
+}
+
 // Проверка на доступный транспорт
 stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 612 && v <= 1999) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2001) return 1; // Кастомный транспорт пирса
     return 0;
 }
 
@@ -12,15 +138,33 @@ stock GetVehicleName(v)
 {
 	new vehicleName[34];
 	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v]);
+	else if(v == 2000) format(vehicleName, sizeof(vehicleName), "Lamborghini Murcielago");
+	else if(v == 2001) format(vehicleName, sizeof(vehicleName), "BMW X6");
 	else format(vehicleName, sizeof(vehicleName), "Unknown");
 	return vehicleName;
+}
+
+stock GetVehiclePrice(v)
+{
+	new price;
+	if(v >= 400 && v <= 611) price = vehSumma[v];
+	else price = 1000000; // Все остальные
+	return price;
+}
+
+stock GetVehicleSpeedMax(v)
+{
+	new speed;
+	if(v >= 400 && v <= 611) speed = vehSpeed[v];
+	else speed = 200; // Все остальные
+	return speed;
 }
 
 stock PP_CreateVehicle(id, model,Float:x,Float:y,Float:z,Float:a, col1, col2, sek, siren, timerspawn, Float:health)
 {
 	if(QuantityVehicles + 1 >= SKOKOCAROV) return -1; // Лимит транспортных средств на серверах SAMP
 
-	id = CreateVehicle(model, x, y, z, a, col1, col2, sek, siren);
+	id = m_custom_sync_CreateVehicle(model, x, y, z, a, col1, col2, sek, siren);
 
 	LinkVehicleToInterior(id, 0);
 	SetVehicleVirtualWorld(id, 0);
@@ -48,7 +192,7 @@ stock PP_CreateVehicle(id, model,Float:x,Float:y,Float:z,Float:a, col1, col2, se
 
 stock PP_AddStaticVehicleEx(modelID, Float: spawn_X, Float: spawn_Y, Float: spawn_Z, Float: z_Angle, color1, color2, respawn_Delay, siren, Float:health)
 {
-    new id = AddStaticVehicleEx(modelID, spawn_X, spawn_Y, spawn_Z, z_Angle, color1, color2, respawn_Delay, siren);
+	new id = m_custom_sync_AddStaticVehEx(modelID, spawn_X, spawn_Y, spawn_Z, z_Angle, color1, color2, respawn_Delay, siren);
 
 	GetVehicleParamsEx(id, engine, lights, alarm, doors, bonnet, boot, objective);
    	SetVehicleParamsEx(id, false, false, false, false, false, false, objective);
@@ -266,7 +410,8 @@ stock GetVehicleType(model) // Получаем тип транспорта
     || model == 572 || model == 573 || model == 574 || model == 575 || model == 576 || model == 578 || model == 579
     || model == 580 || model == 582 || model == 583 || model == 585 || model == 587 || model == 588 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 600 || model == 601 || model == 602
-    || model == 603 || model == 604 || model == 605 || model == 609) type = 1;
+    || model == 603 || model == 604 || model == 605 || model == 609
+	|| model == 2000 || model == 2001) type = 1;
 
     // Мототранспорт (Требуется лицензия на мото транспорт) Moto
     else if(model == 448 || model == 461 || model == 462 || model == 463 || model == 468 || model == 471 || model == 521
@@ -295,7 +440,8 @@ stock GetVehicleClass(m)
     // Premium Class (1) - Премиум
     if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
-    || m == 560 || m == 562 || m == 565 || m == 580 || m == 586) class = 1;
+    || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
+	|| m == 2000 || m == 2001) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -334,7 +480,7 @@ stock GetVehicleClass(m)
 
 stock IsABoot(carid) // Транспорт, у которых есть багажник
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 413
     || model == 415 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 429 || model == 433 || model == 434 || model == 436
     || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 || model == 466 || model == 467
@@ -344,20 +490,22 @@ stock IsABoot(carid) // Транспорт, у которых есть бага�
     || model == 536 || model == 540 || model == 541 || model == 542 || model == 543 || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551
     || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 || model == 565 || model == 566
     || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 || model == 596 || model == 597
-    || model == 598 || model == 599 || model == 600 || model == 601 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609) return 1;
+    || model == 598 || model == 599 || model == 600 || model == 601 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609
+	|| model == 2000 || model == 2001) return 1;
 	return 0;
 }
 
 stock IsABootFront(carid)
 {
-	new model = GetVehicleModel(carid);
-	if(model == 415 || model == 424 || model == 451 || model == 483 || model == 486 || model == 541 || model == 568) return 1;
+	new model = VehInfo[carid][vModel];
+	if(model == 415 || model == 424 || model == 451 || model == 483 || model == 486 || model == 541 || model == 568
+	|| model == 2000) return 1;
 	return 0;
 }
 
 stock IsA_Gen5(carid) // 5 слотов в багажнике
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 415
     || model == 419 || model == 420 || model == 421 || model == 426 || model == 429 || model == 434 || model == 436 || model == 438 || model == 439 || model == 442 || model == 445
     || model == 451 || model == 458 || model == 466 || model == 467 || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 489
@@ -365,36 +513,38 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
     || model == 517 || model == 518 || model == 526 || model == 527 || model == 529 || model == 533 || model == 534 || model == 536 || model == 540 || model == 541 || model == 542
     || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551 || model == 555 || model == 558 || model == 559 || model == 560 || model == 561
     || model == 562 || model == 565 || model == 566 || model == 567 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589
-    || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604){return 1;}
+    || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604
+	|| model == 2000 || model == 2001) return 1;
 	return 0;
 }
 stock IsA_Gen10(carid) // 10 слотов в багажнике
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	if(model == 418 || model == 422 || model == 444 || model == 543 || model == 554 || model == 556 || model == 557 || model == 600 || model == 605){return 1;}
 	return 0;
 }
 stock IsA_Gen15(carid) // 15 слотов в багажнике
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	if(model == 413 || model == 414 || model == 440 || model == 459 || model == 478 || model == 482 || model == 498 || model == 499 || model == 609){return 1;}
 	return 0;
 }
 
 stock IsATaxi(carid) // Транспорт, который разрешён для работы в такси
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	if(model >= 400 && model <= 424 || model >= 426 && model <= 429 || model == 431 || model == 433 || model == 434 || model >= 436 && model <= 440 || model >= 442 && model <= 445
  	|| model == 447 || model == 448 || model == 451 || model >= 455 && model <= 463 || model >= 466 && model <= 471 || model == 474 || model == 475 || model >= 477 && model <= 480
  	|| model == 482 || model == 483 || model >= 487 && model <= 492 || model >= 494 && model <= 500 || model >= 502 && model <= 508 || model == 511 || model >= 514 && model <= 518
  	|| model >= 521 && model <= 529 || model >= 533 && model <= 536 || model >= 540 && model <= 552 || model >= 554 && model <= 563 || model >= 565 && model <= 567
- 	|| model >= 573 && model <= 576 || model >= 578 && model <= 582 || model >= 585 && model <= 589 || model == 593 || model >= 596 && model <= 605 || model == 609) return 1;
+ 	|| model >= 573 && model <= 576 || model >= 578 && model <= 582 || model >= 585 && model <= 589 || model == 593 || model >= 596 && model <= 605 || model == 609
+	|| model == 2000 || model == 2001) return 1;
 	return 0;
 }
 
 stock IsAVello(carid) // Велики
 {
-	new model = GetVehicleModel(carid);
+	new model = VehInfo[carid][vModel];
 	new type = GetVehicleType(model);
 	if(type == 6) return 1;
 	return 0;
@@ -406,7 +556,8 @@ stock IsAZad(model) // Транспорт с задними окнами
 	|| model == 445 || model == 458 || model == 466 || model == 467 || model == 470 || model == 479 || model == 490
  	|| model == 492 || model == 507 || model == 516 || model == 529 || model == 540 || model == 546 || model == 547
   	|| model == 550 || model == 551 || model == 560 || model == 561 || model == 566 || model == 579 || model == 580
-   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604) return 1;
+   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604 
+	|| model == 2001) return 1;
 	return 0;
 }
 

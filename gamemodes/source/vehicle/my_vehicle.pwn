@@ -3612,7 +3612,7 @@ stock EvacuationVehicle(playerid)
 		{
 			List[quan][playerid] = i;
 			ListParam[quan][playerid] = 1;
-			format(line,sizeof(line),"\n{ff9000}%d. %s \t {cccccc}[ID %d]", i + 1, vehName[PlayerInfo[playerid][pMyVeh][i]], PlayerInfo[playerid][pMyVehID][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%d. %s \t {cccccc}[ID %d]", i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i]), PlayerInfo[playerid][pMyVehID][i]), strcat(lines,line);
 			quan ++;
 		}
 	}
@@ -3620,7 +3620,7 @@ stock EvacuationVehicle(playerid)
 	// Ключи от Транспорта
 	if(PlayerInfo[playerid][pKeyVeh][0] > 0 && PlayerInfo[playerid][pKeyVeh][3] > gettime() && PlayerInfo[playerid][pKeyVehID] > 0)
 	{
-		format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}[ID %d]", vehName[PlayerInfo[playerid][pKeyVeh][0]], PlayerInfo[playerid][pKeyVehID]), strcat(lines,line);
+		format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}[ID %d]", GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), PlayerInfo[playerid][pKeyVehID]), strcat(lines,line);
 		List[quan][playerid] = 0;
 		ListParam[quan][playerid] = 2; // Ключи
 		quan ++;
@@ -3918,7 +3918,7 @@ CMD:insertcar(playerid)
 
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
 	new vehicleid = GetPlayerVehicleID(playerid);
-	new modelka = GetVehicleModel(vehicleid);
+	new modelka = VehInfo[vehicleid][vModel];
 	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
 	{
 		if(typeParking == 1 && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
@@ -3977,7 +3977,7 @@ CMD:buycar(playerid)
 		if(GetPlayerQuanLoadVehicle(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас загружено два личных транспортных средства\n{cccccc}Уберите один загруженный транспорт на парковку");
 		if(oGetPlayerMoney(playerid) < VehInfo[v][vSellcar]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 		DP[3][playerid] = v;
-		format(store, sizeof(store), "{cccccc}Вы уверены, что хотите купить {ff9000}%s [ID: %d] {cccccc}у %s[%d]?\n\nСтоимость: {99ff66}%d$ {cccccc}[ %s ]",vehName[VehInfo[v][vModel]], v, PlayerInfo[vladid][pName], vladid, VehInfo[v][vSellcar], get_k(VehInfo[v][vSellcar]));
+		format(store, sizeof(store), "{cccccc}Вы уверены, что хотите купить {ff9000}%s [ID: %d] {cccccc}у %s[%d]?\n\nСтоимость: {99ff66}%d$ {cccccc}[ %s ]",GetVehicleName(VehInfo[v][vModel]), v, PlayerInfo[vladid][pName], vladid, VehInfo[v][vSellcar], get_k(VehInfo[v][vSellcar]));
 		ShowDialog(playerid,1093,DIALOG_STYLE_MSGBOX,"{ff9000}Покупка Транспорта",store,"Да","Нет");
 	}
 	return 1;
@@ -4047,9 +4047,9 @@ stock showDialog_MyCar(playerid)
         {
 			if(PlayerInfo[playerid][pMyVehID][i] > 0)
 			{
-				format(line,sizeof(line),"\n{ff9000}%d. %s \t ", i + 1, vehName[PlayerInfo[playerid][pMyVeh][i]]), strcat(lines,line);
+				format(line,sizeof(line),"\n{ff9000}%d. %s \t ", i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i])), strcat(lines,line);
 			}
-			else format(line,sizeof(line),"\n{cccccc}%d. %s \t ", i + 1, vehName[PlayerInfo[playerid][pMyVeh][i]]), strcat(lines,line);
+			else format(line,sizeof(line),"\n{cccccc}%d. %s \t ", i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i])), strcat(lines,line);
 			List[quan][playerid] = i;
 			ListParam[quan][playerid] = 1; // Личный Транспорт
 			quan ++;
@@ -4065,9 +4065,9 @@ stock showDialog_MyCar(playerid)
 	{
 		if(PlayerInfo[playerid][pKeyVehID] > 0)
 		{
-			format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", vehName[PlayerInfo[playerid][pKeyVeh][0]], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
-		else format(line,sizeof(line),"\n{cccccc}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", vehName[PlayerInfo[playerid][pKeyVeh][0]], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		else format(line,sizeof(line),"\n{cccccc}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		List[quan][playerid] = 0;
 		ListParam[quan][playerid] = 3; // Ключи
 		quan ++;
@@ -4079,7 +4079,7 @@ stock showDialog_MyCar(playerid)
 		if(PlayerInfo[playerid][pRent][i] > unix)
 		{
 			stamp2datetime(PlayerInfo[playerid][pRent][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-			format(line,sizeof(line),"\n{0088ff}%s \t {cccccc}Аренда до %02d:%02d",vehName[PlayerInfo[playerid][pRentModel][i]], thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{0088ff}%s \t {cccccc}Аренда до %02d:%02d",GetVehicleName(PlayerInfo[playerid][pRentModel][i]), thour, tminute), strcat(lines,line);
 			List[quan][playerid] = i;
 			ListParam[quan][playerid] = 2; // Арендованный Транспорт
 			quan ++;
@@ -4126,14 +4126,14 @@ stock slcar(playerid, i)
 			if(!CheckService(playerid, model)) return 0;
 		}
 
-		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", vehName[model]);
+		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", GetVehicleName(model));
 		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
 		return 1;
 	}
 
 	if(DP[5][playerid] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт не нужно восстанавливать");
 
-    model = GetVehicleModel(v);
+    model = VehInfo[v][vModel];
     new str[100],sctring[500],qwer[44];
 	if(VehInfo[v][vCallParking] == 0) format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
 	else 
@@ -4169,27 +4169,27 @@ stock slcar(playerid, i)
 		format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
 	}
 
-	format(qwer,sizeof(qwer),"{ff9000}%s {cccccc}[%d] Личный",vehName[model], v);
+	format(qwer,sizeof(qwer),"{ff9000}%s {cccccc}[%d] Личный",GetVehicleName(model), v);
 	ShowDialog(playerid,298,DIALOG_STYLE_TABLIST,qwer,sctring,"Выбрать","Отмена");
 	return 1;
 }
 stock pts(p, v)
 {
-	new model = GetVehicleModel(v), vladid = VehInfo[v][vIdvlad];
+	new model = VehInfo[v][vModel], vladid = VehInfo[v][vIdvlad];
 	format(lines,sizeof(lines),""); // Очищаем Lines
 
 	if(PlayerInfo[p][pSoska] > 0) format(line,sizeof(line),"\n{555555}DataBaseID: %d OwnerID: %d Slot: %d (Видит только админ)\n",VehInfo[v][vNewid], VehInfo[v][vSost], VehInfo[v][vDatabase]), strcat(lines,line);
-   	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",vehName[model],v), strcat(lines,line);
+   	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",GetVehicleName(model),v), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Модель №: {0088ff}%d",VehInfo[v][vModel]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Год изготовления: {cccccc}%d",VehInfo[v][vGod]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, vehSumma[model])), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePrice(model))), strcat(lines,line);
 
    	if(VehInfo[v][vUpgrade] == 1) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {99ff66}установлен"), strcat(lines,line);
    	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {444444}отсутствует"), strcat(lines,line);
 
-   	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",vehSumma[model]), strcat(lines,line);
-	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n",vehSumma[model]), strcat(lines,line);
+   	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePrice(model)), strcat(lines,line);
+	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n"), strcat(lines,line);
 
 	for(new i = 0; i < 13; i++)
 	{
@@ -4495,7 +4495,7 @@ CMD:scrap(playerid)
 		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{ff0000}Внимание! {ffcc00}Это Media Транспорт и возврат денег невозможен","Да","Нет");
 		else
 		{
-			format(store,sizeof(store),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",vehSumma[GetVehicleModel(v)]/10);
+			format(store,sizeof(store),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePrice(VehInfo[v][vModel]) / 10);
 			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",store,"Да","Нет");
 		}
 	}
@@ -4515,11 +4515,11 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		if(VehInfo[newcar][vNosell] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за Media Транспорт: {ff0000}Невозможно");
 		else
 		{
-			oGivePlayerMoney(playerid, vehSumma[VehInfo[newcar][vModel]]/10);
-			format(store,sizeof(store),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]",vehSumma[VehInfo[newcar][vModel]]/10);
+			oGivePlayerMoney(playerid, GetVehiclePrice(VehInfo[newcar][vModel]) / 10);
+			format(store,sizeof(store),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePrice(VehInfo[newcar][vModel]) / 10);
 			SendClientMessage(playerid, COLOR_GREY, store);
 		}
-		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], vehSumma[VehInfo[newcar][vModel]]/10, "");
+		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePrice(VehInfo[newcar][vModel]) / 10, "");
 		
 		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
         query_empty(pearsq, store);
@@ -4679,9 +4679,9 @@ CMD:addcar(playerid, const params[])
 		GiveCar(para1, freeSlot, vehid, pos[0], pos[1], pos[2], pos[3],nyche, colorveh, colorveh, 0, 0, 0);
         AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para1][pID], PlayerInfo[para1][pName], PlayerInfo[para1][pPlaIP], vehid, "");
         
-        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], vehName[vehid]);
+        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], GetVehicleName(vehid));
         SendClientMessage(para1, COLOR_GREY, store);
-        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", PlayerInfo[para1][pName],vehName[vehid]);
+        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", PlayerInfo[para1][pName],GetVehicleName(vehid));
         SendClientMessage(playerid, COLOR_GREY, store);
     }
     else
@@ -4779,10 +4779,10 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
 		GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
 		GiveCarOffline(str_name, freeSlot, f_vehid, pos[0], pos[1], pos[2], pos[3],datadid,nyche);
 	    AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", f_vehid, "");
-	    format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", str_name,vehName[f_vehid]);
+	    format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", str_name,GetVehicleName(f_vehid));
 	    SendClientMessage(playerid, COLOR_GREY, store);
 
-	    format(store, sizeof(store), "Вам выдан %s", vehName[f_vehid]);
+	    format(store, sizeof(store), "Вам выдан %s", GetVehicleName(f_vehid));
 		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], datadid, str_name, store);
 	}
 	else format(store,sizeof(store),"[ Мысли ]: Такого аккаунта не существует [ {ff0000}%s {cccccc}]",str_name), SendClientMessage(playerid,COLOR_GREY,store);

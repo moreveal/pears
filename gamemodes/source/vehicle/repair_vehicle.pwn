@@ -372,7 +372,7 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
     PlayerPlaySound(playerid,40405,0,0,0);
     
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{ff9000}%s",vehName[VehInfo[vehicleid][vModel]]), strcat(lines,line);
+    format(line,sizeof(line),"{ff9000}%s",GetVehicleName(VehInfo[vehicleid][vModel])), strcat(lines,line);
     format(line,sizeof(line),"\n{ff9000}Состояние: {cccccc}%.0f Health\n", health), strcat(lines,line);
 
     for(new i = 0; i < 13; i++)

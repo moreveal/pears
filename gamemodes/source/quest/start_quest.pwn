@@ -16,7 +16,8 @@ new StartQuestName[][] =
     "Поселиться в отеле",
     "Привести себя в порядок",
     "Взлом транспорта",
-    "Ремонт транспорта"
+    "Ремонт транспорта",
+    "Археологические раскопки"
 };
 new StartQuestPresent[][] =
 {
@@ -24,7 +25,8 @@ new StartQuestPresent[][] =
     "",
     "Деньги",
     "Транспорт",
-    ""
+    "",
+    "Кейс"
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -67,6 +69,7 @@ stock NoCompleteQuest(playerid, questId)
     else if(questId == 2 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Привести себя в порядок
     else if(questId == 3 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Взломать тачку
     else if(questId == 4 && PlayerInfo[playerid][pQuest][questId] < 1) return 1; // Ремонт транспорта
+    else if(questId == 5 && PlayerInfo[playerid][pQuest][questId] < 2) return 1; // Археологические раскопки
     return 0;
 }
 
@@ -622,11 +625,11 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 {
     if(dialogid == 504)
 	{
-		if(response) 
+		if(response)
 		{
 			if(listitem < 0 || listitem >= MAX_QUEST) return 1;
 			if(NoCompleteQuest(playerid, listitem))
-			{   
+			{
                 DP[1][playerid] = listitem;
 				if(listitem == 0) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как пройти этот квест?\n\nПросто пройдите паспортный контроль в Аэропорту","Ок","");
 				else if(listitem == 1) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как пройти этот квест?\n\nОтправляйтесь в отель возле аэропорта и снимите номер в отеле","Ок","");
@@ -647,7 +650,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 			}
 			else ErrorText(playerid, "{FF6347}Вы прошли этот квест"), showDialogStartQuest(playerid, DP[0][playerid]);
 		}
-		else 
+		else
 		{
 			if(DP[0][playerid] == 1) cmd_quest(playerid);
 		}

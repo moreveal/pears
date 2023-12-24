@@ -74,7 +74,7 @@ stock use_boot(playerid, v, inva, useinva)
 
     SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
 
-    format(store,sizeof(store),"Взял из %s: %s", vehName[VehInfo[v][vModel]], GetNameThing(1, fpick, thingType, thingPack));
+    format(store,sizeof(store),"Взял из %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
 
 

@@ -47,7 +47,7 @@ stock buy_VehicleShop(playerid)
     if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 
     PlayerPlaySound(playerid,40405,0,0,0);
-    format(store, sizeof(store), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", vehName[modelId], price, get_k(price));
+    format(store, sizeof(store), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
 	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
     return 1;
 }
@@ -239,7 +239,7 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     VehShopInfo[playerid][vsVehicleLoad] = true;
 
     // Название
-    format(store,sizeof(store),"%s", vehName[modelId]);
+    format(store,sizeof(store),"%s", GetVehicleName(modelId));
     PlayerTextDrawSetString(playerid, VehicleShopDraw[7][playerid], store);
     PlayerTextDrawShow(playerid, VehicleShopDraw[7][playerid]);
 
@@ -507,9 +507,9 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             BizzInfo[bizId][bUpdate] = 1;
 
             oGivePlayerMoney(playerid, -price);
-            format(store,sizeof(store),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", vehName[modelId]);
+            format(store,sizeof(store),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
             SendClientMessage(playerid, COLOR_GREY, store);
-            format(store,sizeof(store),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", vehName[modelId], price, get_k(price));
+            format(store,sizeof(store),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
             SuccessMessage(playerid, store);
 
             new posId;
@@ -520,7 +520,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             GetCoordBuyVehicle(bizId, posId, pos[0], pos[1], pos[2], pos[3]);
             GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 0, 0, 0);
 
-            CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, vehSumma[modelId], "");
+            CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, GetVehiclePrice(modelId), "");
             if(PlayerInfo[playerid][pAchieve][12] == 0) AchievePlayer(playerid, 12, 1);
         }
     }

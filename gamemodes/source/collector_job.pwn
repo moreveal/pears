@@ -90,7 +90,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 			if(listitem >= 1 && listitem <= 50)
 			{
                 new veh = GetPlayerVehicleID(playerid);
-                new model = GetVehicleModel(veh);
+                new model = VehInfo[veh][vModel];
                 if(model != 428) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Securicar)");
                 new listterm = List[listitem-1][playerid];
                 new listord = ListParam[listitem-1][playerid];

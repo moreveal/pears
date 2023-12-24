@@ -206,7 +206,7 @@ CMD:reloadpriceveh(playerid)
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	for(new v = 0; v < 212; v++)
 	{
-		VehGos[v] = vehSumma[v+400];
+		VehGos[v] = GetVehiclePrice(VehInfo[v+400][vModel]);
 		SaveEconomy(v+400);
 	}
 	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
@@ -417,6 +417,7 @@ CMD:veh(playerid, const params[])
 	GetPlayerFacingAngle(playerid,A);
 	X=X+7.0*floatsin(-A,degrees);
     Y=Y+7.0*floatcos(-A,degrees);
+
     if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], -1,0, -1, 0.0);
     else CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z, A+180.0, params[1], params[2], -1,0, -1, 0.0);
 	LinkVehicleToInterior(CreatedCars[createid], GetPlayerInterior(playerid));

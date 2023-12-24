@@ -28,8 +28,8 @@ stock IsShootingWeapon(weaponid)
 // Бронежилет работает только на огнестрельное оружие**
 stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float: damage, &Float: armour_breaking)
 {
-    if (GetVehicleModel(GetPlayerVehicleID(damagedid)) == 432) return 0; // Если игрок находится в танке - отмена урона
-    if (GetVehicleModel(GetPlayerVehicleID(damagedid)) == 537) return 0; // Если игрок находится в поезде - отмена урона
+    if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 432) return 0; // Если игрок находится в танке - отмена урона
+    if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 537) return 0; // Если игрок находится в поезде - отмена урона
     if (GetPlayerState(playerid) == PLAYER_STATE_WASTED) return 0; // Если урон наносит мертвый игрок - отмена урона
     if (GetPVarInt(damagedid, "afksystem") >= 5) return 0; // Если игрок, по которому наносят урон, в AFK не менее 5 секунд - отмена урона
 	if (Iamzz[damagedid]) return 0;// Если игрок, по которому наносят урон, в зелёной зоне - отмена урона [вернуть]
