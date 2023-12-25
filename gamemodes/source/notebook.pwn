@@ -24,6 +24,28 @@ stock ClearSorting(playerid)
     OnlineInfo[playerid][oSorting][3] = 0; // 3 слой сортировки
     OnlineInfo[playerid][oSorting][4] = 0; // 3 слой сортировки
     OnlineInfo[playerid][oSorting][5] = 0; // 3 слой сортировки
+
+    format(OnlineInfo[playerid][oSortingName], 64, ""); 
+    return 1;
+}
+
+stock IsActiveSorting(playerid)
+{
+    if(OnlineInfo[playerid][oSorting][1] > 0 || OnlineInfo[playerid][oSorting][2] > 0 
+        || OnlineInfo[playerid][oSorting][3] > 0 || OnlineInfo[playerid][oSorting][4] > 0 
+        || OnlineInfo[playerid][oSorting][5] > 0
+        || strcmp(OnlineInfo[playerid][oSortingName], "0", true ) != 0) return 1;
+    return 0;
+}
+
+stock ReloadSorting(playerid, dialogid)
+{
+    if(IsActiveSorting(playerid))
+    {
+        ClearSorting(playerid);
+        PlayerPlaySound(playerid, 6801, 0,0,0);
+        OnlineInfo[playerid][oSorting][0] = dialogid;
+    }
     return 1;
 }
 
@@ -32,15 +54,15 @@ stock TradeSorting(playerid)
     format(lines,sizeof(lines),""); // Очищаем Lines
     format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
 
-    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ff9000}Все трейды\t\t"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 1) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{FFCC00}Продажа Gold\t\t"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 2) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{99ff66}Покупка Gold\t\t"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ffffff}Мои трейды\t\t"), strcat(lines,line);
+    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ff9000}Все трейды"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 1) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{FFCC00}Продажа Gold"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 2) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{99ff66}Покупка Gold"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ffffff}Мои трейды"), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Количество:\t{ffcc00}От %dG - До %dG\t\t", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %dG - До %dG\t\t", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Количество:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t\t\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
 
     ShowDialog(playerid,1386,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр Сделок",lines,"Выбрать","Назад");
     return 1;
@@ -72,8 +94,7 @@ stock TradeList(playerid, page)
     {
         format(line,sizeof(line),"\n{ff9000}Создать Трейд\t\t\t"), strcat(lines,line);
 
-        if(OnlineInfo[playerid][oSorting][1] > 0 || OnlineInfo[playerid][oSorting][2] > 0 || OnlineInfo[playerid][oSorting][3] > 0 || OnlineInfo[playerid][oSorting][4] > 0 
-            || OnlineInfo[playerid][oSorting][5] > 0) format(line,sizeof(line),"\n{cccccc}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
+        if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{cccccc}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
         else format(line,sizeof(line),"\n{cccccc}Фильтр\t\t\t"), strcat(lines,line);
     }
 
@@ -206,11 +227,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             }
             if(listitem == 3) // Сбросить Фильтр
             {
-                if(OnlineInfo[playerid][oSorting][1] == 0 && OnlineInfo[playerid][oSorting][2] == 0 && OnlineInfo[playerid][oSorting][3] == 0
-                    && OnlineInfo[playerid][oSorting][4] == 0 && OnlineInfo[playerid][oSorting][5] == 0) return TradeSorting(playerid);
-                ClearSorting(playerid);
-                PlayerPlaySound(playerid, 6801, 0,0,0);
-                OnlineInfo[playerid][oSorting][0] = 1379;
+                ReloadSorting(playerid, 1379);
                 TradeSorting(playerid);
             }
         }

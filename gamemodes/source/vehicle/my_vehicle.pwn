@@ -4134,7 +4134,7 @@ stock slcar(playerid, i)
 	if(DP[5][playerid] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт не нужно восстанавливать");
 
     model = VehInfo[v][vModel];
-    new str[100],sctring[500],qwer[44];
+    new str[100],sctring[500],qwer[124];
 	if(VehInfo[v][vCallParking] == 0) format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
 	else 
 	{
@@ -4183,12 +4183,13 @@ stock pts(p, v)
    	format(line,sizeof(line),"\n{cccccc}Модель №: {0088ff}%d",VehInfo[v][vModel]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Год изготовления: {cccccc}%d",VehInfo[v][vGod]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePrice(model))), strcat(lines,line);
+	if(Cars[v] == 88) format(line,sizeof(line),"\n{cccccc}Номер: {666666}%s", VehInfo[v][vNumer]), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePriceGos(model))), strcat(lines,line);
 
    	if(VehInfo[v][vUpgrade] == 1) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {99ff66}установлен"), strcat(lines,line);
    	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {444444}отсутствует"), strcat(lines,line);
 
-   	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePrice(model)), strcat(lines,line);
+   	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePriceGos(model)), strcat(lines,line);
 	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n"), strcat(lines,line);
 
 	for(new i = 0; i < 13; i++)
@@ -4470,7 +4471,7 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 	GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);
 	SetVehicleParamsEx(vehid, false, false, false, false, false, false, objective);
 
-	format(store, sizeof(store), "{111111}%s",VehInfo[vehid][vNumer]);
+	format(store, sizeof(store), "{222222}%s",VehInfo[vehid][vNumer]);
 	SetVehicleNumberPlate(vehid, store);
 
 	if(world != 0) SetVehicleVirtualWorld(vehid, world);
@@ -4495,7 +4496,7 @@ CMD:scrap(playerid)
 		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{ff0000}Внимание! {ffcc00}Это Media Транспорт и возврат денег невозможен","Да","Нет");
 		else
 		{
-			format(store,sizeof(store),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePrice(VehInfo[v][vModel]) / 10);
+			format(store,sizeof(store),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePriceGos(VehInfo[v][vModel]) / 10);
 			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",store,"Да","Нет");
 		}
 	}
@@ -4515,11 +4516,11 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		if(VehInfo[newcar][vNosell] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за Media Транспорт: {ff0000}Невозможно");
 		else
 		{
-			oGivePlayerMoney(playerid, GetVehiclePrice(VehInfo[newcar][vModel]) / 10);
-			format(store,sizeof(store),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePrice(VehInfo[newcar][vModel]) / 10);
+			oGivePlayerMoney(playerid, GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
+			format(store,sizeof(store),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
 			SendClientMessage(playerid, COLOR_GREY, store);
 		}
-		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePrice(VehInfo[newcar][vModel]) / 10, "");
+		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, "");
 		
 		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
         query_empty(pearsq, store);
@@ -4624,7 +4625,7 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 stock UnPackVehicle(playerid)
 {
 	new inva = DP[0][playerid];
-	new thingId = PlayerInfo[playerid][pInven][inva], thingType = PlayerInfo[playerid][pInvenType][inva];
+	new thingId = PlayerInfo[playerid][pInven][inva], thingQuan = PlayerInfo[playerid][pInvenQuan][inva], thingType = PlayerInfo[playerid][pInvenType][inva];
 	if(thingType != 5) return ErrorMessage(playerid, "{FF6347}Опа! Ошибочка, это не транспорт");
 
 	new freeSlot = GetPlayerFreeVehSlot(playerid);
@@ -4639,9 +4640,8 @@ stock UnPackVehicle(playerid)
 	else if(IsAMoto(thingId)) biz = 82 + random(4), posId = random(7);
 	else biz = 77 + random(4), posId = random(7);
 
-    new colorveh = 1 + random(254); // Color Vehicle
 	GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
-	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, colorveh, colorveh, 0, 0, 0);
+	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, thingQuan, thingQuan, 0, 0, 0);
 
 	format(store,sizeof(store),"{99ff66}Вы распаковали новый транспорт {ff9000}%s\n\n{cccccc}Управление транспорт Y >> Транспорт или /car", GetVehicleName(thingId));
 	SuccessMessage(playerid, store);
@@ -4659,7 +4659,7 @@ CMD:addcar(playerid, const params[])
 
     if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный, для продажи, транспорт
     else nyche = 0;
-    if(vehid > 609 || vehid < 400) return ErrorMessage(playerid, "{FF6347}ID Транспорта не меньше 400 и не больше 609");
+	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)");
     para1 = ReturnUser(tmp, 1);
     if(IsPlayerConnected(para1))
     {

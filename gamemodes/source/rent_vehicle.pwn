@@ -74,7 +74,7 @@ stock agettruck(playerid)
     {
         List[quan][playerid] = RentTruckVehicleModel[i];
         quan ++;
-        format(line,sizeof(line),"\n{ff9000}%s\t{99ff66}%d$\t{cccccc}1 Час",GetVehicleName(RentTruckVehicleModel[i]), VehGos[RentTruckVehicleModel[i]-400]/10), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}%s\t{99ff66}%d$\t{cccccc}1 Час",GetVehicleName(RentTruckVehicleModel[i]), GetVehiclePriceGos(RentTruckVehicleModel[i])/10), strcat(lines,line);
     }
     ShowDialog(playerid,1288,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аренда Грузового Транспорта",lines,"Выбрать","Назад");
 	return 1;

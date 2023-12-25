@@ -156,9 +156,10 @@ CMD:pricevehup(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Повысить цены транспортных средств [ /pricevehup Сумма ]");
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
-	for(new v = 0; v < 212; v++)
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
 	{
-		VehGos[v] += params[0], SaveEconomy(v+400);
+		VehGos[v] += params[0];
+		SaveVehiclePrice(v);
 	}
 	format(store, sizeof(store), " [ ADM ]: %s повысил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
 	AdminLog("pricevehup", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Повысил Цены");
@@ -169,9 +170,9 @@ CMD:pricevehdown(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Понизить цены транспортных средств [ /pricevehdown Сумма ]");
 	if(params[0] < 1 || params[0] > 1000000) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сумма не меньше 1$ и не больше 1.000.000$");
-	for(new v = 0; v < 212; v++)
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
 	{
-		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveEconomy(v+400);
+		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveVehiclePrice(v);
 	}
 	format(store, sizeof(store), " [ ADM ]: %s понизил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
 	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Понизил Цены");
@@ -204,10 +205,11 @@ CMD:reloadpricegun(playerid)
 CMD:reloadpriceveh(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new v = 0; v < 212; v++)
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
 	{
-		VehGos[v] = GetVehiclePrice(VehInfo[v+400][vModel]);
-		SaveEconomy(v+400);
+		if(v <= 211) VehGos[v] = vehSumma[v];
+		else VehGos[v] = vehSummaCustom[v - 212];
+		SaveVehiclePrice(v);
 	}
 	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
 	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
@@ -403,7 +405,7 @@ CMD:veh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
     if(sscanf(params, "iii", params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт /veh Модель Цвет1 Цвет2");
-	if(!IsAVehExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 613 и выше - кастомные авто)");
+	if(!IsAVehExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(params[1] < 0 || params[1] > 255 || params[2] < 0 || params[2] > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
 	if(QuanCar >= MAX_MAPVEH) return format(store, sizeof(store), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, store);
     new createid = -1;

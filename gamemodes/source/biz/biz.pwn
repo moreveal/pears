@@ -478,7 +478,7 @@ stock getThingPriceGos(thingId, thingType)
 	else if(thingType == 2) price = GetPriceGosAccessory(thingId);
 	else if(thingType == 3) price = SkinGos[thingId];
 //	else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", object_name(thingId));
-	else if(thingType == 5) price = VehGos[thingId-400];
+	else if(thingType == 5) price = GetVehiclePriceGos(thingId);
 	return price;
 }
 stock pricebiz(playerid, b)
@@ -788,7 +788,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     	{
     		if(BizzInfo[b][bProduct][i] == thingId && BizzInfo[b][bTypeProduct][i] == thingType)
 			{
-				BizzInfo[b][bPrice][i] = (VehGos[thingId-400]/10)/2;
+				BizzInfo[b][bPrice][i] = (GetVehiclePriceGos(thingId)/10)/2;
 				SaveBizzProductItem(b, i), bizUpdate = true;
 			}
     	}
@@ -801,7 +801,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
     	{
     		if(BizzInfo[b][bProduct][i] == thingId && BizzInfo[b][bTypeProduct][i] == thingType)
 			{
-				BizzInfo[b][bPrice][i] = (VehGos[thingId-400]*2) - VehGos[thingId-400]/2; // 3/4 от гос. стоимости
+				BizzInfo[b][bPrice][i] = (GetVehiclePriceGos(thingId)*2) - GetVehiclePriceGos(thingId)/2; // 3/4 от гос. стоимости
 				SaveBizzProductItem(b, i), bizUpdate = true;
 			}
     	}

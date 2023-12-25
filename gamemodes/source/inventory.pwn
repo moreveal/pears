@@ -113,7 +113,7 @@ new friskPick[] = // ID Модельки в Инвентаре (обычный �
     2684,19525,11739, 19571,19580,2702,19560,19582,19882,19883, // 162 - 171
     19563,19564,19572,1614,1616,1622,3465,19568, 1241,11747, // 172 - 181
 	3082,19921,365,0,0,0,0,19918,19921,19921, // 182 - 191
-	19921,2833,1599,19561,1575,365,1241 // 192 - 197
+	19921,2833,1599,19561,1575,365,1241 // 192 - 198
 };
 
 stock CheckThingQuan(t) // Имеет ли предмет количество (1 да, 0 нет)
@@ -640,13 +640,21 @@ stock i_infofpick(playerid, fpick, inva, sels, fpara, thingType, thingPack) // �
 			else format(store, sizeof(store), "FURNITURE");
 			yesFindModel = fpick;
 		}
+		else if(thingType == 5) // Транспорт
+	    {
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(store, sizeof(store), "ЏPAHCЊOPЏ");
+			else format(store, sizeof(store), "VEHICLE");
+			yesFindModel = fpick;
+		}
 	}
 	
 	if(yesFindModel > 0)
 	{
 	    new Float:modelPos[4], findIt;
-		GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+		GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 		PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[2][playerid], yesFindModel);
+
+		if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, PlaNestOthe[2][playerid], 1, 1);
 		PlayerTextDrawSetPreviewRot(playerid, PlaNestOthe[2][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 	}
 	
@@ -787,14 +795,16 @@ stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // Отоб
 					format(string, sizeof(string), "ID %d", item);
 					textPickInventory(playerid, cell, string);
 				}
+				if(thingType == 5) yesFindModel = GetVehModelOriginal(item); // Транспорт
 			}
 			if(OnlineInfo[playerid][oInventSelectLeft] == cell2) PlayerTextDrawBackgroundColor(playerid, PlaNestPick[cell][playerid], PlayerInfo[playerid][pStyle3]);
 			
 			if(yesFindModel > 0)
 			{
 			    new Float:modelPos[4], findIt;
-				GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+				GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 				PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[cell][playerid], yesFindModel);
+				if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, PlaNestPick[cell][playerid], quan, quan);
 				PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[cell][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 			}
 			
@@ -904,6 +914,7 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 					textPickInventory(playerid, inva, string);
 				}
 				if(thingType == 4) yesFindModel = fpick; // Мебель
+				if(thingType == 5) yesFindModel = GetVehModelOriginal(fpick); // Транспорт
 			}
 			if((Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999)
 			{
@@ -916,8 +927,9 @@ stock item_second(playerid, fpick, fquan, inva, stat, fpara, thingType, thingPac
 		if(yesFindModel > 0)
 		{
 		    new Float:modelPos[4], findIt;
-			GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+			GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 			PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], yesFindModel);
+			if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, PlaNestPick[inva][playerid], fquan, fquan);
 			PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 		}
 		
@@ -2141,7 +2153,6 @@ stock player_tile(playerid, inva)
 		 		//else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // Семена тыквы
 		 		//else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // Семена томатов
 		 		//else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Рассада картошки
-				
 		 		else if(fpick == 111)
 			 	{
 			 		ShowDialog(playerid,1207,DIALOG_STYLE_INPUT,"{ff9000}Игральные Кости","\n{cccccc}Введите {99ff66}сумму{cccccc}, на которую будете играть с другим игроком [1 - 10кк]\n\n{FF6347}Внимание!\nЕсли вы договоритесь с кем-либо играть на более крупные суммы -\nадминистрация не вмешается в случае если вас обманут\nНе рекомендуется выходить за рамки ограничений","Принять","Отмена"), i_resetveshi(playerid);

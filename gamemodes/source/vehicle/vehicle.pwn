@@ -3,29 +3,26 @@
 Как добавить новый тс?
 1. Добавляем в AddCustomVehice заменку и следующий id
 2. Добавляем в IsAVehExisting новую цифру для создания транспорта
-3. Добавляем имя транспорта в GetVehicleName
-4. Добавляем в GetVehicleType (что это за тип транспорта)
-5. GetVehicleClass - класс авто
-6. IsABoot Есть ли у него багажник
-7. IsABootFront - если у тачки двигатель сзади
-8. IsA_Gen5, IsA_Gen10, IsA_Gen15 - сколько по дефолту слотов в багажнике
-9. IsATaxi - доступен ли транспорт работать в такси
-10. IsAZad - есть ли задние двери в транспорте
+3. Добавляем имя транспорта в vehNameCustom[
+4. Добавляем гос стоимость в vehSummaCustom[
+5. Добавляем в GetVehicleType (что это за тип транспорта)
+6. GetVehicleClass - класс авто
+7. IsABoot Есть ли у него багажник
+8. IsABootFront - если у тачки двигатель сзади
+9. IsA_Gen5, IsA_Gen10, IsA_Gen15 - сколько по дефолту слотов в багажнике
+10. IsATaxi - доступен ли транспорт работать в такси
+11. IsAZad - есть ли задние двери в транспорте
 
+12. в Переменной VehGos[212 + 200 - количество слотов для кастомного транспорта в базе
 */
+
+new vehNameCustom[][] =
+{
+    "Lamborghini Murcielago", "BMW X6"
+};
 
 new vehName[][] =
 {
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
-    "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",
     "Landstalker", "Bravura", "Buffalo", "Linerunner", "Perrenial", "Sentinel", "Dumper", "Firetruck", "Trashmaster",
     "Stretch", "Manana", "Infernus", "Voodoo", "Pony", "Mule", "Cheetah", "Ambulance", "Leviathan", "Moonbeam",
     "Esperanto", "Taxi", "Washington", "Bobcat", "Whoopee", "BF Injection", "Hunter", "Premier", "Enforcer",
@@ -50,16 +47,13 @@ new vehName[][] =
     "Boxville", "Tiller", "Utility Trailer"
 };
 
+new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
+{
+    19000000,5000000
+};
+
 new vehSumma[] = // Гос цены на авто (Дефолтные)
 {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     140000, 166000, 205000, 100, 60000, 95000, 2000, 1500, 100, // 400 - 408                          +
     390000, 61000, 1150000, 74000, 43000, 44000, 850000, 100, 3500000, 45500,  // 409 - 418          +
     86000, 90, 93000, 43000, 80, 125000, 777, 109000, 300, // 419 - 427                               +
@@ -86,14 +80,6 @@ new vehSumma[] = // Гос цены на авто (Дефолтные)
 
 new vehSpeed[] =
 {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     179, 167, 212, 124, 151, 186, 125, 168, 113, // 400 - 408
 	179, 147, 252, 191, 125, 120, 218, 175, 0, 131, // 409 - 418
 	169, 164, 174, 159, 112, 153, 0, 197, 188, // 419 - 427
@@ -120,8 +106,8 @@ new vehSpeed[] =
 
 stock AddCustomVehice() // Добавляем тс на карту
 {
-	AddVehicleSyncModel(411, 2000); // Lamborghini Murcielago
-	AddVehicleSyncModel(579, 2001); // BMW X6
+	AddVehicleSyncModel(451, 2000); // Lamborghini Murcielago (Turismo)
+	AddVehicleSyncModel(579, 2001); // BMW X6 (Huntley)
 	return 1;
 }
 
@@ -137,27 +123,51 @@ stock IsAVehExisting(v)
 stock GetVehicleName(v)
 {
 	new vehicleName[34];
-	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v]);
-	else if(v == 2000) format(vehicleName, sizeof(vehicleName), "Lamborghini Murcielago");
-	else if(v == 2001) format(vehicleName, sizeof(vehicleName), "BMW X6");
-	else format(vehicleName, sizeof(vehicleName), "Unknown");
+	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v - 400]);
+	else if(v >= 2000) 
+	{
+		if(v - 2000 > sizeof(vehNameCustom)) format(vehicleName, sizeof(vehicleName), "Unknown");
+		else format(vehicleName, sizeof(vehicleName), "%s", vehNameCustom[v - 2000]);
+	}
 	return vehicleName;
 }
 
 stock GetVehiclePrice(v)
 {
 	new price;
-	if(v >= 400 && v <= 611) price = vehSumma[v];
-	else price = 1000000; // Все остальные
+	if(v >= 400 && v <= 611) price = vehSumma[v - 400];
+	else if(v >= 2000)
+	{
+		price = vehSummaCustom[v - 2000];
+	}
 	return price;
+}
+
+stock GetVehiclePriceGos(v)
+{
+	if(v >= 2000) v -= 1788;
+	else if(v >= 400 && v <= 611) v -= 400;
+	return VehGos[v];
 }
 
 stock GetVehicleSpeedMax(v)
 {
 	new speed;
-	if(v >= 400 && v <= 611) speed = vehSpeed[v];
-	else speed = 200; // Все остальные
+	if(v >= 400 && v <= 611) speed = vehSpeed[v - 400];
+	else speed = vehSpeed[GetVehModelOriginal(v) - 2000];
 	return speed;
+}
+
+stock GetVehicleModelSync(playerid, v) // Получаем модель транспорта с учётом наличия модпака +
+{
+    new vehId;
+    if(IsPlayerSyncModels(playerid)) // Мод установлен
+	{
+		if(v >= 612) v += 13066;
+		vehId = v;
+	}
+    else vehId = GetVehModelOriginal(v);
+    return vehId;
 }
 
 stock PP_CreateVehicle(id, model,Float:x,Float:y,Float:z,Float:a, col1, col2, sek, siren, timerspawn, Float:health)
@@ -675,4 +685,295 @@ stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
 		}
 	}
 	return yes;
+}
+
+stock vehprice(playerid, page) // Настройки гос. цен транспорта
+{
+	new max_line = 50, yesNext, activeSorting;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	DP[0][playerid] = 0; // Строки на текущей странице
+	if(page == 0)
+	{
+		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != 1066) ClearSorting(playerid);
+        OnlineInfo[playerid][oSorting][0] = 1066;
+
+		DP[1][playerid] = 0; // Страница
+        DP[5][playerid] = 0; // Последний list id
+	}
+
+	new minlist = 0;
+    if(page > 0) minlist = page * max_line;
+    if(minlist >= 211 + sizeof(vehNameCustom) + 1) DP[1][playerid] = 0, minlist = 0, page = 0; // Сбрасываем страницы, если последний лист максимальный или больше
+
+	format(line,sizeof(line),"{cccccc}Транспорт [Модель]\t{cccccc}Цена"), strcat(lines,line);
+
+	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t"), strcat(lines,line), activeSorting = 1;
+    else format(line,sizeof(line),"\n{ff9000}Фильтр\t"), strcat(lines,line);
+
+	for(new v = minlist; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	{
+		ShowLineVehPrice(playerid, v);
+
+		if(DP[0][playerid] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
+        {
+			yesNext = 1;
+            break;
+        }
+
+		if(CorrectVehicleList(v) >= 211 + sizeof(vehNameCustom) + 1 && activeSorting == 0) yesNext = 1; // Последний транспорт, отображаем Next Page
+	}
+	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t"), strcat(lines,line);
+    format(store,sizeof(store),"Гос Стоимость Транспорта [ Страница %d ]", page + 1);
+    ShowDialog(playerid,1066,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Выход");
+    return 1;
+}
+
+stock ShowLineVehPrice(playerid, v)
+{
+	new vehicleList = v;
+	v = CorrectVehicleList(vehicleList);
+
+	if(OnlineInfo[playerid][oSorting][1] > 0 
+		&& v != OnlineInfo[playerid][oSorting][1]) return 1; // Отображаем только фильтрованные id транспортных средств
+
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) {} // Фильтр по названию не включен
+	else
+	{
+		if(strfind(GetVehicleName(v), OnlineInfo[playerid][oSortingName] ,true) != -1) {} // Отображаем схожую строку
+		else return 1; // Отображаем только фильтрованные названия транспортных средств
+	}
+
+    List[DP[0][playerid]][playerid] = vehicleList;
+    DP[0][playerid] ++; // Подсчитываем строки
+
+	if(v >= 2000) // Custom
+	{
+    	format(line,sizeof(line),"\n{0088ff}%s {cccccc}[%d]\t{99ff66}%d$ {cccccc}[%s]",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]));
+	}
+	else
+	{
+    	format(line,sizeof(line),"\n{cccccc}%s [%d]\t{99ff66}%d$ {cccccc}[%s]",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]));
+	}
+	strcat(lines,line);
+    return 1;
+}
+
+stock VehPriceSorting(playerid)
+{
+    format(lines,sizeof(lines),""); // Очищаем Lines
+    format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
+
+    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Модель:\t{ff9000}Все"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}Модель:\t{99ff66}%d", OnlineInfo[playerid][oSorting][1]), strcat(lines,line);
+
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}Все"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}%s", OnlineInfo[playerid][oSortingName]), strcat(lines,line);
+
+    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
+
+    ShowDialog(playerid,1063,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр Сделок",lines,"Выбрать","Назад");
+    return 1;
+}
+
+stock SettingGosPriceVehicle(playerid, vehicleList)
+{
+	new v = CorrectVehicleList(vehicleList);
+
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"{cccccc}Введите гос. стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {99ff66}%d$ {cccccc}[%s]", VehGos[vehicleList], get_k(VehGos[vehicleList])), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Не меньше 1$ и не больше 900.000.000$"), strcat(lines,line);
+  	ShowDialog(playerid,1067,DIALOG_STYLE_INPUT,"Гос Стоимость Транспорта",lines,"Принять","Отмена");
+	return 1;
+}
+
+stock CorrectVehicleList(vehicleList)
+{
+	new v = vehicleList;
+	if(v >= 212) v += 1788;
+	else v += 400;
+	return v;
+}
+
+stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext[])
+{
+	if(dialogid == 1063) // Настройки фильтра
+	{
+        if(response)
+        {
+            if(listitem == 0)
+            {
+				ShowDialog(playerid,999,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите ID модели транспорта","Принять","Отмена");
+            }
+            if(listitem == 1)
+            {
+                ShowDialog(playerid,983,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите название транспорта \nМожно не полное название\n1 - 30 символов","Принять","Отмена");
+            }
+            if(listitem == 2) // Сбросить Фильтр
+            {
+				ReloadSorting(playerid, 1066);
+				VehPriceSorting(playerid);
+            }
+        }
+        else vehprice(playerid, 0);
+	}
+	else if(dialogid == 1066)
+	{
+		if(response)
+		{
+			if(listitem == 0) VehPriceSorting(playerid);
+
+			if(DP[0][playerid] > 0) // Есть строки на странице
+			{
+				if(listitem >= 1 && listitem <= DP[0][playerid]) // Отображаемые List
+				{
+					new vehicleList = List[listitem-1][playerid];
+					DP[3][playerid] = vehicleList;
+					SettingGosPriceVehicle(playerid, vehicleList);
+				}
+				else if(listitem == DP[0][playerid] + 1) DP[1][playerid] += 1, vehprice(playerid, DP[1][playerid]); // Следующая страница
+			}
+		}
+		else cmd_economy(playerid);
+	}
+	else if(dialogid == 1067)
+	{
+		if(response)
+		{
+			new input = strval(inputtext);
+			new vehicleList = DP[3][playerid];
+			if(input < 1 || input > 900000000) return ErrorText(playerid, "{FF6347}Не меньше 1$ и не больше 900.000.000$"), SettingGosPriceVehicle(playerid, vehicleList);
+			VehGos[vehicleList] = input;
+
+			new v = CorrectVehicleList(vehicleList);
+			PlayerPlaySound(playerid, 6401, 0,0,0);
+			SaveVehiclePrice(vehicleList);
+
+			format(store,sizeof(store),"[ Мысли ]: Гос. стоимость %s теперь составляет: {99ff66}%d$ [%s]", GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
+  			SendClientMessage(playerid,COLOR_GREY,store);
+  			format(store, sizeof(store), "[Правительство] %s изменяет гос. стоимость: %s {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
+  			SendDepartMessage(COLOR_ALLDEPT, store);
+
+  			vehprice(playerid, DP[1][playerid]);
+     		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
+
+			// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
+     		for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, v, 5, input);
+		}
+		else vehprice(playerid, DP[1][playerid]);
+	}
+	else if(dialogid == 999) // Фильтр по id модели
+	{
+        if(response)
+        {
+			new input = strval(inputtext);
+
+			if(!IsAVehExisting(input)) return ErrorText(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)"), VehPriceSorting(playerid);
+
+			OnlineInfo[playerid][oSorting][1] = input;
+            PlayerPlaySound(playerid,6401,0,0,0);
+            VehPriceSorting(playerid);
+        }
+        else VehPriceSorting(playerid);
+    }
+	else if(dialogid == 983) // Фильтр по названию
+	{
+        if(response)
+        {
+			if(!strlen(inputtext)) return ErrorText(playerid, "{FF6347}Вы ничего не ввели"), VehPriceSorting(playerid);
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 30) return ErrorText(playerid, "{FF6347}1 - 30 символов"), VehPriceSorting(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "{FF6347}Вы используете запрещённый символ"), VehPriceSorting(playerid);
+
+			format(OnlineInfo[playerid][oSortingName], 64,"%s", inputtext);
+            PlayerPlaySound(playerid,6401,0,0,0);
+            VehPriceSorting(playerid);
+        }
+        else VehPriceSorting(playerid);
+    }
+	return 1;
+}
+
+stock SaveVehiclePrice(idx)
+{
+	format(big_query, sizeof(big_query), "UPDATE `pp_economy` SET `v%d` = '%d' WHERE `newid` = '1'", idx, VehGos[idx]);
+	query_empty(pearsq, big_query);
+	return 1;
+}
+
+
+#define MAX_CUSTOM_LABEL 50
+new Text3D:CustomVehLabel[MAX_REALPLAYERS][MAX_CUSTOM_LABEL];
+new CustomLabelBusy[MAX_REALPLAYERS][MAX_CUSTOM_LABEL];
+
+stock GetFreeSlotCustomLabel(playerid) // Получаем свободные слот для лейбла
+{
+	new freeSlot = -1;
+	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
+	{
+		if(CustomLabelBusy[playerid][i] == 0)
+		{
+			freeSlot = i;
+			break;
+		}
+	}
+	return freeSlot;
+}
+
+stock GetThisSlotCustomLabel(playerid, vehicleid)
+{
+	new thisSlot = -1;
+	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
+	{
+		if(CustomLabelBusy[playerid][i] == vehicleid)
+		{
+			thisSlot = i;
+			break;
+		}
+	}
+	return thisSlot;
+}
+
+stock CreateCustomVehicleLabel(playerid, vehicleid)
+{
+	if(IsPlayerSyncModels(playerid)) return 1; // У игрока есть лаунчер
+
+	new freeSlot = GetFreeSlotCustomLabel(playerid);
+	if(freeSlot == -1) return 1; // Не нашли слот, ну и хуй с ними
+
+	new Float:X,Float:Y,Float:Z;
+	GetVehiclePos(vehicleid, X,Y,Z);
+	format(store, sizeof(store), "{0088ff}%s\n{666666}Доступен с лаунчером", GetVehicleName(VehInfo[vehicleid][vModel]));
+	CustomVehLabel[playerid][freeSlot] = CreateDynamic3DTextLabel(store, 0xA9C4E4FF, X,Y,Z, 10.0, INVALID_PLAYER_ID, vehicleid, 0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), playerid);
+	CustomLabelBusy[playerid][freeSlot] = vehicleid;
+	return 1;
+}
+
+stock DestroyCustomVehicleLabel(playerid, vehicleid)
+{
+	if(IsPlayerSyncModels(playerid)) return 1; // У игрока есть лаунчер
+
+	new thisSlot = GetThisSlotCustomLabel(playerid, vehicleid);
+	if(thisSlot == -1) return 1; // Не нашли слот, ну и хуй с ними
+
+	if(CustomLabelBusy[playerid][thisSlot] > 0) 
+	{
+		DestroyDynamic3DTextLabel(CustomVehLabel[playerid][thisSlot]);
+		CustomLabelBusy[playerid][thisSlot] = 0;
+	}
+	return 1;
+}
+
+stock DestroyAllCustomVehicleLabels(playerid)
+{
+	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
+	{
+		if(CustomLabelBusy[playerid][i] > 0)
+		{
+			DestroyDynamic3DTextLabel(CustomVehLabel[playerid][i]);
+			CustomLabelBusy[playerid][i] = 0;
+		}
+	}
+	return 1;
 }

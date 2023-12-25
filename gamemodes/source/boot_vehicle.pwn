@@ -550,14 +550,19 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 			    }
 			}
 			if(thingType == 2) yesFindModel = fpick; // Аксессуары
-		 	if(thingType == 3) yesFindModel = fpick; // Одежда
+			if(thingType == 3) 
+			{
+				yesFindModel = GetModelSkin(playerid, fpick); // Одежда
+				format(string, sizeof(string), "ID %d", fpick);
+				textPickInventory(playerid, inva, string);
+			}
 			if(thingType == 4) yesFindModel = fpick; // Мебель
 		}
 		
 		if(yesFindModel > 0)
 		{
 		    new Float:modelPos[4], findIt;
-			GetModelTextDraw(yesFindModel, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+			GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 			PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], yesFindModel);
 			PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 		}

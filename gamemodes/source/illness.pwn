@@ -138,8 +138,10 @@ CMD:remedy(playerid, const params[])
 }
 stock getmed(playerid, para1)
 {
-	new str[84],sctring[4800], stope, agaest;
-	format(str,sizeof(str),"\n{ff9000}Симптомы: %s[%d]",PlayerInfo[para1][pName], para1), strcat(sctring,str);
+	new stope, agaest;
+	format(lines,sizeof(lines),""); // Очищаем Lines
+
+	format(line,sizeof(line),"\n{ff9000}Симптомы: %s[%d]",PlayerInfo[para1][pName], para1), strcat(lines,line);
 	for(new i = 0; i < 5; i++)
 	{
 		new Float:ostmed = (PlayerInfo[para1][pIllnessProg][i]-1000)/200;
@@ -147,278 +149,299 @@ stock getmed(playerid, para1)
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Хламидиоз {444444}[ Лекарство: Хламидиуберин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Хламидиоз {444444}[ Лекарство: Хламидиуберин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			if(PlayerInfo[para1][pSex] == 1) format(str,sizeof(str),"\n{cccccc}выделения из мочеиспускательного канала"), strcat(sctring,str);
-			else format(str,sizeof(str),"\n{cccccc}выделения из влагалища"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}легкая боль при мочеиспускании"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-10 хп во время мочеиспускании"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[para1][pSex] == 1) format(line,sizeof(line),"\n{cccccc}выделения из мочеиспускательного канала"), strcat(lines,line);
+			else format(line,sizeof(line),"\n{cccccc}выделения из влагалища"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}легкая боль при мочеиспускании"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-10 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 2 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гонорея
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Гонорея {444444}[ Лекарство: Гоногон ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Гонорея {444444}[ Лекарство: Гоногон ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}гнойные выделения из уретры"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-20 хп во время мочеиспускании"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}гнойные выделения из уретры"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-20 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 3 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Сифилис
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Сифилис {444444}[ Лекарство: Сифистоп ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Сифилис {444444}[ Лекарство: Сифистоп ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}высыпания на коже"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}общая слабость и сонливость"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 4 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Лучевая Болезнь
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Лучевая Болезнь {444444}[ Лекарство: Радиануклин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Лучевая Болезнь {444444}[ Лекарство: Радиануклин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}общая слабость и сонливость"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тошнота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}головная боль"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боль в животе"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}высокая температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головная боль"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в животе"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высокая температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 5 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Перитонит мочевого пузыря
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Перитонит Мочевого Пузыря {444444}[ Лекарство: Перитонин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Перитонит Мочевого Пузыря {444444}[ Лекарство: Перитонин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тошнота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}сильная боль в низу живота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}недержание мочи"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сильная боль в низу живота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}недержание мочи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 6 && PlayerInfo[para1][pIllnessProg][i] > 1000) //  Грибок ногтей
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Грибок Ногтей {444444}[ Лекарство: Грибкоубивин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Грибок Ногтей {444444}[ Лекарство: Грибкоубивин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}зуд, жжение, покраснение, мелкие трещины в межпальцевом промежутке"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}зуд, жжение, покраснение, мелкие трещины в межпальцевом промежутке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 7 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Дерматит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Дерматит {444444}[ Лекарство: Дерматитогон ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Дерматит {444444}[ Лекарство: Дерматитогон ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}покраснение кожи"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}ощущение покалывания, жжения и зуда"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}небольшие высыпания"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}покраснение кожи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}ощущение покалывания, жжения и зуда"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}небольшие высыпания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 8 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Акне
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Акне {444444}[ Лекарство: Акнестопин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Акне {444444}[ Лекарство: Акнестопин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}высыпания на коже"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}угри"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}угри"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 9 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Порошковаяовая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Порошковая Зависимость {444444}[ Лекарство: Порошкозаменин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Порошковая Зависимость {444444}[ Лекарство: Порошкозаменин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}депрессия"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}сонливость, утомляемость"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная тяга к порошку"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}депрессия"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сонливость, утомляемость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная тяга к порошку"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 10 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Никотиновая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Никотиновая Зависимость {444444}[ Лекарство: Никотиновый пластырь ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Никотиновая Зависимость {444444}[ Лекарство: Никотиновый пластырь ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}головокружение"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}мышечная слабость"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тревога, беспокойство"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тяга к сигаретам"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головокружение"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}мышечная слабость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тревога, беспокойство"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тяга к сигаретам"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 11 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Алкоголизм
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Алкоголизм {444444}[ Лекарство: Бухлозаменин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Алкоголизм {444444}[ Лекарство: Бухлозаменин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}мутные и покрасневшие белки глаз"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}темные круги под глазами"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}морщины и отеки"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}одутловатое лицо"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тяга к алкоголю"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}мутные и покрасневшие белки глаз"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}темные круги под глазами"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}морщины и отеки"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}одутловатое лицо"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тяга к алкоголю"), strcat(lines,line);
 			stope = 1;
 		}
         if(PlayerInfo[para1][pIllness][i] == 12 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гастрит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Гастрит {444444}[ Лекарство: Гастритоуберин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Гастрит {444444}[ Лекарство: Гастритоуберин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боли в желудке"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тошнота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 13 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Язва
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Язва {444444}[ Лекарство: Язвазаживин ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Язва {444444}[ Лекарство: Язвазаживин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боли в желудке"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тошнота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}слабый пульс"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}слабый пульс"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 14 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Простуда
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Простуда {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Простуда {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}насморк"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}кашель"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждую минуту"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}кашель"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 15 && PlayerInfo[para1][pIllnessProg][i] > 1000) // ОРВИ
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}ОРВИ {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}ОРВИ {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}насморк"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боль в горле"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}озноб"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждую минуту"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}озноб"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 16 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Грипп
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Грипп {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Грипп {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}насморк"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боль в горле"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}головная боль"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}боль в суставах"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}тошнота"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждую минуту"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головная боль"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в суставах"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 17 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Covid 19
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(str,sizeof(str),"\n\n{ff6666}Covid-19 {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(sctring,str);
-				format(str,sizeof(str),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(sctring,str);
+				format(line,sizeof(line),"\n\n{ff6666}Covid-19 {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}повышенная температура тела"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}затрудненное дыхание"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}сухой кашель"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}общая слабость и сонливость"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}-2 хп каждую минуту"), strcat(sctring,str);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}затрудненное дыхание"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сухой кашель"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 18 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Вампиризм
 		{
-			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(str,sizeof(str),"\n\n{ff6666}Вампиризм {444444}[ Лекарство: Неизвестно ]"), strcat(sctring,str);
-			else format(str,sizeof(str),"\n"), strcat(sctring,str), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(str,sizeof(str),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}бледная кожа"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}реакция на ультрафиолет"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}отторжение пищи"), strcat(sctring,str);
-			format(str,sizeof(str),"\n{cccccc}жажда крови"), strcat(sctring,str);
+			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(line,sizeof(line),"\n\n{ff6666}Вампиризм {444444}[ Лекарство: Неизвестно ]"), strcat(lines,line);
+			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}бледная кожа"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}реакция на ультрафиолет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}отторжение пищи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жажда крови"), strcat(lines,line);
 			stope = 1;
 		}
 	}
-	if(stope == 0) format(str,sizeof(str),"\n{99ff66}Нет болезней и симптомов\n"), strcat(sctring,str);
-	if((PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) && agaest > 0) format(str,sizeof(str),"\n\n{444444}Определите болезнь на основе симптомов пациента\n"), strcat(sctring,str);
-    ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",sctring,"Назад","");
+	if(stope == 0) format(line,sizeof(line),"\n{99ff66}Нет болезней и симптомов"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{99ff66}Иммунитет на болезни, передающиеся воздушно-капельным путём:"), strcat(lines,line);
+	if(PlayerInfo[playerid][pColdCD] > 0 && PlayerInfo[playerid][pColdCD] > gettime())
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		stamp2datetime(PlayerInfo[playerid][pColdCD], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(line,sizeof(line),"\n{ffcc66}До %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+	}
+	else
+	{
+		format(line,sizeof(line),"\n{FF6347}Отсутствует"), strcat(lines,line);
+	}
+
+	if((PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) && agaest > 0) 
+	{
+		format(line,sizeof(line),"\n\n{444444}Определите болезнь на основе симптомов пациента\n"), strcat(lines,line);
+	}
+	else
+	{
+		format(line,sizeof(line),"\n{cccccc}Позволяет находиться рядом с болеющим игроком и не заразиться"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Получить иммунитет можно только переболев болезнью"), strcat(lines,line);
+	}
+    ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",lines,"Назад","");
 	return 1;
 }
 
