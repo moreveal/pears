@@ -156,11 +156,14 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 				if (bodypart > 4) damage *= 0.5;
             }
 			damage *= distance_coef; // Учитывание коэффициента дистанции
-            if(Effect[damagedid] == 2)
+            if(Effect[damagedid] == 6)
             {
                 damage *= 0.90;
             }
-
+            if(Effect[playerid] == 7)
+            {
+                damage *= 1.10;
+            }
             new string[144];
             format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
 			SendClientMessageToAll(COLOR_GREY, string);

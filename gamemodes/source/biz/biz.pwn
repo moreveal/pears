@@ -288,6 +288,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	    if(BizzInfo[b][bProduct][19] == 0 || stat == 1) BizzInfo[b][bProduct][19] = 97, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // Кухонный Нож
 	    if(BizzInfo[b][bProduct][20] == 0 || stat == 1) BizzInfo[b][bProduct][20] = 163, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // Свадебный Торт
 		if(BizzInfo[b][bProduct][21] == 0 || stat == 1) BizzInfo[b][bProduct][21] = 181, BizzInfo[b][bTypeProduct][21] = 0, yes[21] = true; // Изолента
+		if(BizzInfo[b][bProduct][22] == 0 || stat == 1) BizzInfo[b][bProduct][22] = 197, BizzInfo[b][bTypeProduct][22] = 0, yes[22] = true; // Балончик
 	}
 	else if(b >= 27 && b <= 41) // Оружейный Магазин
 	{

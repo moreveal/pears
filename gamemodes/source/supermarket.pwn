@@ -22,10 +22,11 @@ new Float:SupermarketItemPos[][] =
 	{ 1108.325073, -1378.018188, 1401.935424}, // 18 Зажигалка
 	{ 1124.570190, -1378.077636, 1401.935424 }, // 19 Кухонный нож
 	{ 1131.505126, -1372.518798, 1402.124633 }, // 20 Свадебный торт
-	{ 1103.220092, -1378.248413, 1401.914550 } // 21 Изолента
+	{ 1103.220092, -1378.248413, 1401.914550 }, // 21 Изолента
+	{ 1123.142456, -1372.837768, 1401.855346 } // 22 Баланчик
 };
 
-#define MAX_BIZ_ITEMSUPERMARKET 22
+#define MAX_BIZ_ITEMSUPERMARKET 23
 /* 
 	Как добавить новый товар в супермаркет?
 	1. Добавить в biz/biz.pwn stock LoadBusinessProduct - следующий предмет
@@ -80,6 +81,11 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 		{
 			if(GetPVarInt(playerid,"svzyal") >= 2)
 			{
+				new actor;
+				if(IsPlayerInRangeOfPoint(playerid,1.5,1110.2102,-1380.6837,1401.7142)) actor = 0;
+				else if(IsPlayerInRangeOfPoint(playerid,1.5,1109.0911,-1380.6733,1401.7142)) actor = 1;
+				else if(IsPlayerInRangeOfPoint(playerid,1.5,1104.6500,-1380.7075,1401.7142)) actor = 2;
+				else if(IsPlayerInRangeOfPoint(playerid,1.5,1103.5388,-1380.7046,1401.7142)) actor = 3;
           		if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
           		RemovePlayerAttachedObject(playerid,1);
           		PPP15[playerid] = 0;
@@ -162,6 +168,8 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 
             	// Ачивка за первую покупку
             	if(PlayerInfo[playerid][pAchieve][6] == 0) AchievePlayer(playerid, 6, 1);
+				new bworld = GetPlayerVirtualWorld(playerid);
+				ApplyDynamicActorAnimation(BizSMarketActor[bworld-1][actor], "DEALER","DRUGS_BUY",10.0,0,1,1,0,0); // Машет рукой
           	}
           	else ErrorMessage(playerid, "{FF6347}В вашей тележке ничего нет");
         }
