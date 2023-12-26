@@ -4423,6 +4423,8 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
 			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
+			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarm]);
+			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
 
 			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг

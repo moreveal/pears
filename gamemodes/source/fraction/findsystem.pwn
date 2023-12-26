@@ -105,7 +105,7 @@ CMD:find(playerid, const params[])
     GetPlayerRealPos(giveplayerid, X, Y, Z);
 
     if(X == 0.0 && Y == 0.0) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Игрок только зашёл на сервер и находится в неизвестной точке спавна");
-
+    
     new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
     switch(random(4))
     {
@@ -114,7 +114,7 @@ CMD:find(playerid, const params[])
       case 2: X += rand_x, Y -= rand_y;
       case 3: X -= rand_x, Y += rand_y;
     }
-    new findraiontolist = FindRaion(giveplayerid);
+    new findraiontolist = FindRaionPos(X,Y,Z);
     ShowFindZone(playerid, giveplayerid, X, Y,findraiontolist);
   }
   else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
@@ -153,12 +153,29 @@ stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
     }
     return 1;
 }
+
 stock FindRaion(playerid)
+{
+  new districtId;
+  new Float:X,Float:Y,Float:Z;
+  GetPlayerRealPos(playerid, X, Y, Z);
+  for(new i;i < sizeof(gSAZones);i ++)
+  {
+    if(IsPosInCube(X,Y,Z, gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
+    {
+      districtId = i;
+      break;
+    }
+  }
+  return districtId;
+}
+
+stock FindRaionPos(Float:x,Float:y,Float:z)
 {
   new districtId;
   for(new i;i < sizeof(gSAZones);i ++)
   {
-    if(IsPlayerInCubeForFind(playerid, gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
+    if(IsPosInCube(x,y,z,gSAZones[i][FindZonePos][0], gSAZones[i][FindZonePos][1], gSAZones[i][FindZonePos][2], gSAZones[i][FindZonePos][3], gSAZones[i][FindZonePos][4], gSAZones[i][FindZonePos][5]))
     {
       districtId = i;
       break;

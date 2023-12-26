@@ -253,16 +253,17 @@ stock PatroolList(playerid)
         if(PatroolInfo[z][plGlav] != -1)
         {
             targetid = PatroolInfo[z][plGlav];
+            new g = fraction(targetid);
             findraiontolist = FindRaion(targetid);
             for(new i = 0; i < 3; i++)
             {
                 if(PatroolInfo[z][plCoop][i] != -1) kol++;
             }
-            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),kol,gSAZones[findraiontolist][zName],fraklastName[targetid]), strcat(lines,line);
+            format(line,sizeof(line),"\n%d. %s\t%d\t%s\t%s", quan+1, rpplayername(targetid),kol,gSAZones[findraiontolist][zName],fraklastName[g]), strcat(lines,line);
             quan++;
         }
     }
     if(quan == 0) return ErrorMessage(playerid,"{FF6347}В данный момент нет патрульных машин");
-    else ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список патрульных машин",lines,"Выбрать","Выход");
+    else ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список патрульных машин",lines,"Выбрать","Выход");
     return 1;
 }

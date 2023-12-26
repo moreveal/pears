@@ -49,20 +49,19 @@ stock FindCarInWareHouse(playerid)
 {
     ClearAnimations(playerid);
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
-    new world = GetPlayerVirtualWorld(playerid)-80;
-    new i = PlayerInfo[playerid][pTheft]-1;
+    new world = GetPlayerVirtualWorld(playerid)-80, i;
+    if(PlayerInfo[playerid][pTheft] != 0) i = PlayerInfo[playerid][pTheft];
     if(crimeInfo[i][crmSklad] == world)
     {   
         format(store,sizeof(store),"UPDATE `pp_cars` SET `Sklad` = '0' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
         query_empty(pearsq, store);
         crimeInfo[i][crmSenderID] = 0;
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я нашел угнанную машину. Нужно вернутся в участок и сообщить владельцу об этом!");
         SuccessMessage(playerid,"Вы нашли угнанную машину.\nНужно вернутся в участок и сдать дело.");
         format(store, sizeof(store), "Ваш угнанный т/с [%s] был найден полицей, для получения доступа к нему явитесь в участок и оплатите работу",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], store);
         SaveCrime(i);
     }
-    else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}На этом складе нет нужного транспорта. Поищите на других складах","*","");
+    else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nНа этом складе нет нужного транспорта. Поищите на других складах","*","");
     return 1;
 }
 
@@ -146,6 +145,7 @@ stock InputCarToRent(playerid,wh,car)
 	mysql_tquery(pearsq, string, "CrimeCar", "ddddd", playerid,wh,car,slot, g_MysqlRaceCheck[playerid]);
 	return 1;
 }
+
 function CrimeCar(playerid,wh,car,slot,zalupa)
 {
 	if(g_MysqlRaceCheck[playerid] != zalupa) return Kick(playerid);
