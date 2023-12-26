@@ -55,10 +55,10 @@ stock OnGameModeStartQuest() // Создаём детали для квеста
     ZoneQuest2 = CreateDynamicCube(2097.350830, 2703.892822, 9.030303, 2145.809082, 2763.931640, 23.730318, -1, 0);
 
     ActorQuest1 = CreateDynamicActor(249, 1590.3958,-2278.8374,13.5328,270.2411, true, 100.0, 0, 0, -1, 100.0, -1, 0);
-    CreateDynamic3DTextLabel("{cccccc}Дрейк [ALT]",0xA9C4E4FF,1590.3958,-2278.8374,13.5328 + 1.0, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
+    CreateDynamic3DTextLabel("{cccccc}Дрейк [ALT]",0xA9C4E4FF,1590.3958,-2278.8374,13.5328 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
 
     ActorQuest2 = CreateDynamicActor(249, 1731.7189,1440.1394,10.8767,182.8204, true, 100.0, 0, 0, -1, 100.0, -1, 0);
-    CreateDynamic3DTextLabel("{cccccc}Дрейк [ALT]",0xA9C4E4FF,1731.7189,1440.1394,10.8767 + 1.0, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
+    CreateDynamic3DTextLabel("{cccccc}Дрейк [ALT]",0xA9C4E4FF,1731.7189,1440.1394,10.8767 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, 0, 0);
     return 1;
 }
 
@@ -278,7 +278,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     {
         // NPC
         QuestInfo[playerid][QuestBot] = CreateDynamicActor(44, 1364.35242, -1682.73926, 13.47850, 5.0, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
-        QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,1364.35242, -1682.73926, 13.47850 + 1.0, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
+        QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,1364.35242, -1682.73926, 13.47850 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle
         QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehicleQuest], 546, 1362.8092,-1658.9130,13.1072,269.5840, color1, color2, -1, 0, -1, 0.0);
@@ -290,7 +290,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     {
         // NPC
         QuestInfo[playerid][QuestBot] = CreateDynamicActor(44, 2121.7776,2709.5793,10.8203,357.4829, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
-        QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,2121.7776,2709.5793,10.8203 + 1.0, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
+        QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,2121.7776,2709.5793,10.8203 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle
         QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehicleQuest], 546, 2118.9817,2729.5417,10.5447,270.2156, color1, color2, -1, 0, -1, 0.0);

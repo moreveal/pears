@@ -22,7 +22,7 @@ function SendActorMessage(playerid, stat,actorid,const text[])
         if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]);
 
         BotTalkStat[playerid] = true;
-        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.2, 4.0);
+        BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.2, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
         BotTalkTimer[playerid] = SetTimerEx("ClearTextActor", 5000, false, "dd", playerid, actorid);
 
         if(stat == 1) ApplyActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 1, 1);
@@ -57,7 +57,7 @@ stock MessageDynamicActor(actorid, status, playerid, const text[])
     if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
 
     BotTalkStat[playerid] = true;
-    BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 4.0);
+    BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
     if(status == 0) BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
 
     ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
