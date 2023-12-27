@@ -18,7 +18,8 @@
 
 new vehNameCustom[][] =
 {
-    "Lamborghini Murcielago", "BMW X6", "Mercedes Benz E63S"
+    "Lamborghini Murcielago", "BMW M3 E46", "BMW M4 G82", "Mercedes S63", "McLaren 720s", "Hummer H2", "Nissan GT-R R35", 
+	"Lancer Evolution IX", "Audi A8", "Mercedes C63", "Nissan 350Z"
 };
 
 new vehName[][] =
@@ -49,7 +50,7 @@ new vehName[][] =
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
-    19000000,5000000,7000000
+    19000000,2500000,10000000,11000000,24000000,3500000,7000000,2500000,6000000,2800000,1400000
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
@@ -107,8 +108,16 @@ new vehSpeed[] =
 stock AddCustomVehice() // Добавляем тс на карту
 {
 	AddVehicleSyncModel(451, 2000); // Lamborghini Murcielago (Turismo)
-	AddVehicleSyncModel(579, 2001); // BMW X6 (Huntley)
-	AddVehicleSyncModel(560, 2002); // Mercedes Benz E63S (Sultan)
+	AddVehicleSyncModel(602, 2001); // BMW M3 E46 (Alpha)
+	AddVehicleSyncModel(415, 2002); // BMW M4 G82 (Cheetah)
+	AddVehicleSyncModel(494, 2003); // Mercedes Benz S63 Coupe (Hotring)
+	AddVehicleSyncModel(541, 2004); // McLaren 720 Spider (Bullet)
+	AddVehicleSyncModel(579, 2005); // Hummer H2 (Huntley)
+	AddVehicleSyncModel(503, 2006); // Nissan GT-R R35 (Hotrinb)
+	AddVehicleSyncModel(560, 2007); // Mitsubishi Lancer Evolution IX (Sultan)
+	AddVehicleSyncModel(507, 2008); // Audi A8 (Elegant)
+	AddVehicleSyncModel(551, 2009); // Mercedes Benz C63 W204 (Merit)
+	AddVehicleSyncModel(602, 2010); // Nissan 350Z (Alpha)
 	return 1;
 }
 
@@ -117,7 +126,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2002) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2011) return 1; // Кастомный транспорт пирса
     return 0;
 }
 
@@ -127,7 +136,7 @@ stock GetVehicleName(v)
 	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v - 400]);
 	else if(v >= 2000) 
 	{
-		if(v - 2000 > sizeof(vehNameCustom)) format(vehicleName, sizeof(vehicleName), "Unknown");
+		if(v - 2000 >= sizeof(vehNameCustom)) format(vehicleName, sizeof(vehicleName), "Unknown");
 		else format(vehicleName, sizeof(vehicleName), "%s", vehNameCustom[v - 2000]);
 	}
 	return vehicleName;
@@ -139,7 +148,8 @@ stock GetVehiclePrice(v)
 	if(v >= 400 && v <= 611) price = vehSumma[v - 400];
 	else if(v >= 2000)
 	{
-		price = vehSummaCustom[v - 2000];
+		if(v - 2000 >= sizeof(vehSummaCustom)) price = 0;
+		else price = vehSummaCustom[v - 2000];
 	}
 	return price;
 }
@@ -422,7 +432,8 @@ stock GetVehicleType(model) // Получаем тип транспорта
     || model == 580 || model == 582 || model == 583 || model == 585 || model == 587 || model == 588 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 600 || model == 601 || model == 602
     || model == 603 || model == 604 || model == 605 || model == 609
-	|| model == 2000 || model == 2001 || model == 2002) type = 1;
+	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2005 || model == 2006
+	|| model == 2007 || model == 2008 || model == 2009 || model == 2010) type = 1;
 
     // Мототранспорт (Требуется лицензия на мото транспорт) Moto
     else if(model == 448 || model == 461 || model == 462 || model == 463 || model == 468 || model == 471 || model == 521
@@ -452,13 +463,14 @@ stock GetVehicleClass(m)
     if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
     || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
-	|| m == 2000 || m == 2001 || m == 2002) class = 1;
+	|| m == 2000 || m == 2002 || m == 2003 || m == 2004) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
     || m == 461 || m == 463 || m == 468 || m == 469 || m == 471 || m == 480 || m == 484 || m == 487 || m == 491 || m == 496
     || m == 507 || m == 511 || m == 516 || m == 533 || m == 534 || m == 550 || m == 551 || m == 555 || m == 558 || m == 561
-    || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603) class = 2;
+    || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
+	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010) class = 2;
 
     // Economy Class (3) - Бомж
     else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
@@ -467,7 +479,8 @@ stock GetVehicleClass(m)
     || m == 575 || m == 576 || m == 593 || m == 595 || m == 600) class = 3;
 
     // Off-Road Class (4) - Внедорожник
-    else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579) class = 4;
+    else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
+	|| m == 2005) class = 4;
 
     // Special Class (5) - Грузовая и Спец Техника
     else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
@@ -502,7 +515,8 @@ stock IsABoot(carid) // Транспорт, у которых есть бага�
     || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 || model == 565 || model == 566
     || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 || model == 596 || model == 597
     || model == 598 || model == 599 || model == 600 || model == 601 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609
-	|| model == 2000 || model == 2001 || model == 2002) return 1;
+	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2005 || model == 2006 || model == 2007
+	|| model == 2008 || model == 2009 || model == 2010) return 1;
 	return 0;
 }
 
@@ -510,7 +524,7 @@ stock IsABootFront(carid)
 {
 	new model = VehInfo[carid][vModel];
 	if(model == 415 || model == 424 || model == 451 || model == 483 || model == 486 || model == 541 || model == 568
-	|| model == 2000) return 1;
+	|| model == 2000 || model == 2004) return 1;
 	return 0;
 }
 
@@ -525,13 +539,15 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
     || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551 || model == 555 || model == 558 || model == 559 || model == 560 || model == 561
     || model == 562 || model == 565 || model == 566 || model == 567 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604
-	|| model == 2000 || model == 2001 || model == 2002) return 1;
+	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2006 || model == 2007
+	|| model == 2008 || model == 2010) return 1;
 	return 0;
 }
 stock IsA_Gen10(carid) // 10 слотов в багажнике
 {
 	new model = VehInfo[carid][vModel];
-	if(model == 418 || model == 422 || model == 444 || model == 543 || model == 554 || model == 556 || model == 557 || model == 600 || model == 605){return 1;}
+	if(model == 418 || model == 422 || model == 444 || model == 543 || model == 554 || model == 556 || model == 557 || model == 600 || model == 605
+	|| model == 2005 || model == 2009) return 1;
 	return 0;
 }
 stock IsA_Gen15(carid) // 15 слотов в багажнике
@@ -549,7 +565,8 @@ stock IsATaxi(carid) // Транспорт, который разрешён дл
  	|| model == 482 || model == 483 || model >= 487 && model <= 492 || model >= 494 && model <= 500 || model >= 502 && model <= 508 || model == 511 || model >= 514 && model <= 518
  	|| model >= 521 && model <= 529 || model >= 533 && model <= 536 || model >= 540 && model <= 552 || model >= 554 && model <= 563 || model >= 565 && model <= 567
  	|| model >= 573 && model <= 576 || model >= 578 && model <= 582 || model >= 585 && model <= 589 || model == 593 || model >= 596 && model <= 605 || model == 609
-	|| model == 2000 || model == 2001 || model == 2002) return 1;
+	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2005 || model == 2006 || model == 2007
+	|| model == 2008 || model == 2009 || model == 2010) return 1;
 	return 0;
 }
 
@@ -567,8 +584,8 @@ stock IsAZad(model) // Транспорт с задними окнами
 	|| model == 445 || model == 458 || model == 466 || model == 467 || model == 470 || model == 479 || model == 490
  	|| model == 492 || model == 507 || model == 516 || model == 529 || model == 540 || model == 546 || model == 547
   	|| model == 550 || model == 551 || model == 560 || model == 561 || model == 566 || model == 579 || model == 580
-   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604 
-	|| model == 2001 || model == 2002) return 1;
+   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604
+	|| model == 2005 || model == 2007 || model == 2008 || model == 2009) return 1;
 	return 0;
 }
 

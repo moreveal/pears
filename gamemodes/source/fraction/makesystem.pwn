@@ -350,7 +350,7 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
         if(response)
         {
             if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Выбрана не правильная строка.");
-            new listselect = List[listitem][playerid],targetid,findraiontolist;
+            new listselect = List[listitem][playerid],findraiontolist;
             if(MakeInfo[listselect][mkStatus] == 2)
             {
                 format(store,sizeof(store),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));

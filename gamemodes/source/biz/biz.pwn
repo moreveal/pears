@@ -330,9 +330,23 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		for(new s = 0; s < MAX_BIZ_ITEM; s++) BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
 
 		new slot;
+
+		// Custom Vehicle
+		for(new v = 0; v < sizeof(vehNameCustom); v++)
+		{
+			if(slot >= MAX_BIZ_ITEM) break;
+
+			if(ForBizVehicleClassAndType(b, GetVehicleType(v + 2000), GetVehicleClass(v + 2000)))
+			{
+				BizzInfo[b][bProduct][slot] = v + 2000, BizzInfo[b][bTypeProduct][slot] = 5, yes[slot] = true;
+				slot ++;
+			}
+		}
+
+		// Обычный Транспорт
 		for(new v = 400; v < MAX_VEHICLE_ID; v++)
 		{
-			if(slot >= MAX_BIZ_ITEM) break; // Останавливаем цикл, если слотов больше нет
+			if(slot >= MAX_BIZ_ITEM) break;
 
 			if(ForBizVehicleClassAndType(b, GetVehicleType(v), GetVehicleClass(v)))
 			{

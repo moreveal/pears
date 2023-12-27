@@ -199,8 +199,7 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
 {
     new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
 
-    if(modelId < 400 || modelId > MAX_VEHICLE_ID
-    || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
+    if(modelId < 400 || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
 
      // Создаём транспорт
     new Float:pos[4], interiorId;
