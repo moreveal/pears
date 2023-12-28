@@ -447,7 +447,7 @@ stock getmed(playerid, para1)
 
 stock InfoEatMessage(playerid, stat)
 {
-	if(OnlineInfo[playerid][oMessageInfect] <= gettime())
+	if(OnlineInfo[playerid][oMessageEat] <= gettime())
 	{
 		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 Минут Unix
 

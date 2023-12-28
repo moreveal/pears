@@ -4163,7 +4163,7 @@ stock slcar(playerid, i)
 		else format(str,sizeof(str),"{cccccc}Дать Ключи\t\n"), strcat(sctring,str);
 
 		if(VehInfo[v][vUpgrade] >= 1) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{99ff66}[ OK ]\n"), strcat(sctring,str);
-		else if(VehInfo[v][vUpgrade] == 0) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 100G ]\n"), strcat(sctring,str);
+		else if(VehInfo[v][vUpgrade] == 0) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 490G ]\n"), strcat(sctring,str);
 		if(VehInfo[v][vSellcar] == 0) format(str,sizeof(str),"{99ff66}Выставить {cccccc}на Продажу\t\n"), strcat(sctring,str);
 		else format(str,sizeof(str),"{FF6347}Отменить {cccccc}Продажу\t\n"), strcat(sctring,str);
 		format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
