@@ -53,7 +53,7 @@ stock FindCarInWareHouse(playerid)
     if(PlayerInfo[playerid][pTheft] != 0) i = PlayerInfo[playerid][pTheft];
     if(crimeInfo[i][crmSklad] == world)
     {   
-        format(store,sizeof(store),"UPDATE `pp_cars` SET `Sklad` = '0' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
+        format(store,sizeof(store),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
         query_empty(pearsq, store);
         crimeInfo[i][crmSenderID] = 0;
         SuccessMessage(playerid,"Вы нашли угнанную машину.\nНужно вернутся в участок и сдать дело.");
@@ -126,7 +126,7 @@ stock InputCarToRent(playerid,wh,car)
 	if(WhInfo[wh][wStat] <= 0) return ErrorMessage(playerid, "{FF6347}Этот склад никем не арендован");
 	new string[144], g = fraction(playerid);
 	if(WhInfo[wh][wStat] != g) return format(string, sizeof(string), "{FF6347}Этот склад принадлежит %s", frakName[WhInfo[wh][wStat]]), ErrorMessage(playerid, string);
-	//if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "Это мой личный транспорт\nЯ не могу его поместить на склад");
+	if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "Это мой личный транспорт\nЯ не могу его поместить на склад");
     
 	PlayerPlaySound(playerid,40405,0,0,0);
 	new slot = -1;

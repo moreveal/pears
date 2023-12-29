@@ -169,6 +169,7 @@ stock TakeMake(playerid,number)
     MakeInfo[number][mkStatus] = 2;
     if(MakeInfo[number][mkWhoParam] == -1) OnlineInfo[MakeInfo[number][mkPlayerId]][oServiceMake][1] = 600,SendClientMessage(MakeInfo[number][mkPlayerId], COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб.");
     MakeInfo[number][mkWhoTakePlayer] = playerid;
+    MakeInfo[number][mkWho] = fraction(playerid);
     OnlineInfo[playerid][oTakeMake] = number;
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake ID вызова]");
@@ -200,7 +201,7 @@ stock FindMake(playerid,number)
                 new findraiontolist = FindRaionPos(X,Y,Z);
                 ShowFindZone(playerid, -1, X, Y,findraiontolist);
             }
-            else if(VehInfo[MakeInfo[number][mkWhoParam]][vAlarm] == 1 && VehInfo[MakeInfo[number][mkWhoParam]][vAlarmUnix]+604800 > gettime())
+            else
             {
                 if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
                 new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
@@ -214,7 +215,7 @@ stock FindMake(playerid,number)
             ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
         }
     }
-    else return ErrorMessage(playerid,"{FF6347}Ошибка! Данный вызов нельзя отследить");
+    else return ErrorMessage(playerid,"{FF6347}Ошибка! Данный вызов нельзя отследить. Он не принят или недоступен");
     return 1;
 }
 
@@ -356,17 +357,17 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
                 format(store,sizeof(store),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
                 ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"Информация о вызове",store,"Закрыть","");
             }
-            else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] != -1)
+            else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] == -1)
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
                 format(store,sizeof(store),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
                 ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",store,"Принять","Назад");
             }
-            else
+            else 
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
                 format(store,sizeof(store),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
-                ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"Информация о вызове",store,"Закрыть","");
+                ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",store,"Приянть","Назад");
             }
         }
     }

@@ -120,7 +120,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (
 {
 	if(t >= 4 && t <= 9 || t >= 18 && t <= 20 || t == 25 || t >= 27 && t <= 30 || t == 41 || t == 46 || t == 47 || t == 55 || t == 60 || t == 61
 	|| t >= 64 && t <= 67 || t >= 71 && t <= 89 || t == 106 || t == 108 || t == 109 || t == 110 || t == 140 || t == 142 || t == 178 || t == 180
-	|| t == 181 ) return 1;
+	|| t == 181 || t == 198) return 1;
 	return 0;
 }
 
@@ -2277,6 +2277,9 @@ stock player_tile(playerid, inva)
 				else if(fpick == 189) return opencase(playerid,fpara,inva);
 				else if(fpick == 193) return format(store, sizeof(store), "%d", inva), cmd_namaz(playerid, store), i_resetveshi(playerid); // Намазлык
 				else if(fpick == 197) return cmd_spray(playerid), i_resetveshi(playerid); // балончик
+				else if(fpick == 180) return usedrugs2(playerid,1), i_resetveshi(playerid); // Таблетка защиты
+				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // Таблетка Атаки
+
 	 		}
 	 		
 	 		else if(thingType == 2) // Аксессуары

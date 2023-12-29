@@ -4237,17 +4237,36 @@ function LoadCar(playerid, dab, race_check)
 		return 1;
 	}
 	// Проверка на спизженный транспорт
+	new newid;
+	cache_get_value_name_int(0, "newid", newid);
 	if(sklad > 0)
 	{
 		SetPVarInt(playerid,"stopload",0);
 		if(paramet[0] == PlayerInfo[playerid][pID])
 		{
-			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт угнан {FF6347}[ Подробности: Y >> GPS >> Транспорт >> Подать в розыск ]");
-			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Подробности: Y >> GPS >> Транспорт >> Подать в розыск");
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт угнан {FF6347}[ Обратитесь к копам: Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}[ Обратитесь к копам: Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
 		}
 		else 
 		{
 			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Владелец может подать в розыск на транспорт");
+			PlayerInfo[playerid][pKeyVeh][0] = 0;
+			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+		}
+		return 1;
+	}
+	else if(sklad == -1)
+	{
+		SetPVarInt(playerid,"stopload",0);
+		if(paramet[0] == PlayerInfo[playerid][pID])
+		{
+			DP[0][playerid] = newid;
+			format(store,sizeof(store), "Транспорт был угнан и его нашла полиция\n\n {FF6347}Необходимо оплатить: {66ff99}10.000$");
+			ShowDialog(playerid,1480,DIALOG_STYLE_MSGBOX,"{ff9000}Транспортное средство",store,"Оплатить","Отмена");
+		}
+		else 
+		{
+			ErrorMessage(playerid, "{FF6347}Транспорт в полиции!\n\n{cccccc}Владелец может оплатить услуги копов что бы вернуть доступ к транспорту.");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
 			mysql_SavePlayer(playerid, "KeyVeh0", 0);
 		}
@@ -4310,8 +4329,7 @@ function LoadCar(playerid, dab, race_check)
 		}
 	}
 
-	new Float:kord[4], vehid, newid, yescar, string[124];
-	cache_get_value_name_int(0, "newid", newid);
+	new Float:kord[4], vehid, yescar, string[124];
 	for(new car = 1; car < SKOKOCAROV; car++)
 	{
 		if(VehInfo[car][vNewid] == newid) yescar = car;
