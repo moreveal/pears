@@ -7,6 +7,12 @@ new TrainStoped = 1;
 new TrainGearDelay;
 new MoveStatus; // 0 Разгон, 1 Торможение
 
+stock IsARealNPC(playerid)
+{
+    if(playerid == npcarmyid) return 1;
+    return 0;
+}
+
 stock CreateNPC()
 {
     NpcArmy = FCNPC_Create("John");

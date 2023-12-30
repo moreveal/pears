@@ -160,7 +160,7 @@ stock PressSeatableObjectHandler(playerid)
     new result = GetDynamicObjectSeatPosition(current_object, x, y, z, a);
     if (result) {
       // Если модель объекта найдена и позиция определена - помещаем игрока на неё
-	  if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос [ Положите его на стол F ]");
+	  if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
 	  new status = sit(playerid);
 	  if(status > 0)
 	  {

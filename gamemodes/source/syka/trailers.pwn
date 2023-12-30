@@ -14,13 +14,11 @@ enum e_TrailerInfo {
 	tModel, // ID модели трейлера
 	Float: tPos[3], Float: tRot[3], Float: tPic[3], // Позиция в игровом мире
 	Text3D: t3DLabel, // Идентификатор 3д текста у входа
-    Text3D: tt3DLabel, // Идентификатор Стола
 	tEnterPickup, // Идентификатор иконки домика
 	tAttached, // ID транспорта, к которому прикреплен трейлер [0 - если не прикреплен]
 	tObject, // ID установленного объекта (если он стоит в игровом мире)
 	bool: tActive, // Статус существования в игровом мире
 	bool: tLocked, // Статус дверей
-    bool: tTable, // Статус стола
 	tTimerID, // Хранит идентификатор таймера для сохранения прицепа
     tBreaking // для взломчика плеерид храним
 }
@@ -87,14 +85,10 @@ stock UnloadPlacedTrailer(id)
     if (!IsValidDynamicObject(trailer_obj) || GetDynamicObjectModel(trailer_obj) != trailerInfo[id][tModel]) return 0;
     
     DestroyDynamicObject(trailer_obj);
-    if (trailerInfo[id][tTable] == true){
-        DestroyDynamic3DTextLabel(trailerInfo[id][tt3DLabel]);
-    }
     DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
     DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
 
     trailerInfo[id][tActive] = false;
-    trailerInfo[id][tTable] = false;
     SavePlayerTrailerInfo(id);
 
     return 1;
@@ -258,10 +252,10 @@ stock ShowTrailerMenu(playerid) {
     new tid = GetPlayerTrailerID(playerid);
     if (tid < 0) return 0;
 
-    static const fmt_str[] = "{ffffff}Отметить на карте\nДверь [ %s ]\nСтол для варки [ %s ]";
+    static const fmt_str[] = "{ffffff}Отметить на карте\nДверь [ %s ]";
     new str[sizeof fmt_str - 2 + 8 + 7 + 1 + 16 + 1 + 10];
     format(str, sizeof str, fmt_str, 
-        (trailerInfo[tid][tLocked] ? ("{ff3333}Закрыта{ffffff}") : ("{ffffff}Открыта")),(trailerInfo[tid][tTable] ? ("{ff3333}Спрятан{ffffff}") : ("{ffffff}Установлен"))
+        (trailerInfo[tid][tLocked] ? ("{ff3333}Закрыта{ffffff}") : ("{ffffff}Открыта"))
     );
 
     ShowDialog(playerid, 1390, DIALOG_STYLE_LIST,"Трейлер", str, "Ок", "Закрыть");
@@ -448,7 +442,6 @@ public UploadTrailers()
 		cache_get_value_name_float(i, "pic_z", trailerInfo[i][tPic][2]);
 		cache_get_value_name_bool(i, "active", trailerInfo[i][tActive]);
 		cache_get_value_name_bool(i, "locked", trailerInfo[i][tLocked]);
-        cache_get_value_name_bool(i, "stol", trailerInfo[i][tTable]);
 
 		if (trailerInfo[i][tActive]) PlaceTrailer(i, trailerInfo[i][tModel], trailerInfo[i][tPos][0], trailerInfo[i][tPos][1], trailerInfo[i][tPos][2], trailerInfo[i][tRot][0], trailerInfo[i][tRot][1], trailerInfo[i][tRot][2]);
 	}
@@ -466,10 +459,6 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
         number,
         owner_name
     );
-	if (trailerInfo[id][tTable] == true) 
-    {
-        trailerInfo[id][tt3DLabel] = CreateDynamic3DTextLabel("{ff9000}Химический Стол\n{cccccc}[ /kakish ]", 0xA9C4E4FF, -2.6690,1566.0256,12.7616, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,id+5000,0);
-    }
     trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(label_str, 0xA9C4E4FF, x, y, z, 12.5, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1,0,0);
     trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_OBJECT, x, y, z, 0, 0, .streamdistance = 100.0);
 	Streamer_SetIntData(STREAMER_TYPE_PICKUP, trailerInfo[id][tEnterPickup], STREAMER_EXTRA_TYPE_TRAILER_ENTER, id + 1);
@@ -479,14 +468,13 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
 
 stock SavePlayerTrailerInfo(id) {
     if (id < 0 || id > MAX_TRAILERS) return 0;
-    format(big_query, sizeof(big_query), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d, stol = %d WHERE id = %d",
+    format(big_query, sizeof(big_query), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d",
 	    trailerInfo[id][tOwnerID],
         trailerInfo[id][tPos][0], trailerInfo[id][tPos][1], trailerInfo[id][tPos][2],
         trailerInfo[id][tPic][0], trailerInfo[id][tPic][1], trailerInfo[id][tPic][2],
         trailerInfo[id][tRot][0], trailerInfo[id][tRot][1], trailerInfo[id][tRot][2],
         trailerInfo[id][tActive],
         trailerInfo[id][tLocked],
-        trailerInfo[id][tTable],
         trailerInfo[id][tID]);
 	query_empty(pearsq, big_query);
     return 1;
@@ -633,23 +621,6 @@ stock exittrailer(playerid)
     SetPlayerInterior(playerid,0);
     PPSetPlayerPos(playerid,trailerInfo[tid][tPic][0], trailerInfo[tid][tPic][1], trailerInfo[tid][tPic][2]+0.5);
     return 1;
-}
-
-CMD:kakish(playerid)
-{
-	if(IsPlayerInRangeOfPoint(playerid,0.5, -2.6690,1566.0256,12.7616))
-	{
-		if(!howstun(playerid))
-	 	{
-			if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7 || Dei[playerid] > 0 || OnlineInfo[playerid][oInHandThing][0] > 0 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки или выполняется действие [Предмет или оружие]");
-			new str[64],sctring[704];
-			format(str,sizeof(str),"{ff9000}Таблетка\n"), strcat(sctring,str);
-            format(str,sizeof(str),"{ff9000}Деталь бомбы\n"), strcat(sctring,str);
-			ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Изготовительный Стол",sctring,"Выбор","Отмена");
-		}
-	}
-	else ErrorMessage(playerid, "{FF6347}Вы должны быть у изготовительного стола\n[В интерьере трейлера!]");
-	return 1;
 }
 
 stock UseHimLab(playerid)
@@ -856,4 +827,11 @@ stock dialogCase_Trailer(playerid, dialogid, response)
         if(response) CreateBreaking(playerid, 3, DP[0][playerid], 0);
     }
     return 1;
+}
+
+stock IsAHimLab(playerid)
+{
+    if(IsPlayerInRangeOfPoint(playerid,1.5,-3.280344, 1566.091430, 12.861586) 
+        && GetPlayerInterior(playerid) == 187 && GetPlayerVirtualWorld(playerid) >= 5000 && GetPlayerVirtualWorld(playerid) <= 5999) return 1;
+    return 0;
 }
