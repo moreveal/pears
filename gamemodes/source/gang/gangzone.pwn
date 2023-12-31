@@ -578,11 +578,11 @@ stock CheckGangZone() // Распределение результатов по 
 				// Если война новая, очищаем сохранения старой войны
 				if(PlayerInfo[i][pMyWar] >= 1 && PlayerInfo[i][pMyWar] != ServerInfo[41])
 				{
-					for(new gp = 0; gp < 16; gp++) PlayerInfo[i][pGangCapt][gp] = 0;
+					for(new gp = 0; gp < MAX_GANG_CAPT_STATA; gp++) PlayerInfo[i][pGangCapt][gp] = 0;
 				}
 				PlayerInfo[i][pUnit] += nauniti;
 				PlayerInfo[i][pMyWar] = ServerInfo[41];
-				for(new gp2 = 0; gp2 < 16; gp2++)
+				for(new gp2 = 0; gp2 < MAX_GANG_CAPT_STATA; gp2++)
 				{
 					PlayerInfo[i][pGangCapt][gp2] += PlayerInfo[i][pGangTemp][gp2];
 					PlayerInfo[i][pGangAll][gp2] += PlayerInfo[i][pGangTemp][gp2];
