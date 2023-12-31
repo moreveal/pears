@@ -1,4 +1,10 @@
 
+/*
+Как добавить новый предмет для крафта? (Создание нового из других деталей)
+1. В stock GetThingForCraft прописываем зависимости для создания предмета
+2. В stock ClickTextDraw_CraftProcess находим меню Верстака, Кухонной Плиты или Хим Стола и добавляем новую строку
+*/
+
 #define MAX_DRAW_CRAFTPROCESS 22
 #define MAX_CRAFT_ITEM 5
 #define MAX_CRAFT_ITEM_QUAN 5
@@ -13,41 +19,67 @@ new bool:DoneGreen[MAX_REALPLAYERS][3];
 new CraftInvent[MAX_REALPLAYERS]; // Слот предмета в инвентаре
 new ThingNeed[MAX_REALPLAYERS]; // Какой id предмета требуется
 new CreateThingID[MAX_REALPLAYERS]; // Какой предмет создаём
+new CreateThingType[MAX_REALPLAYERS]; // Какой тип предмета создаём
 new InvaCraft[MAX_REALPLAYERS][MAX_CRAFT_ITEM]; // Из какого слота лежат предметы в ячейках для крафта
 new InvaCraftQuan[MAX_REALPLAYERS][MAX_CRAFT_ITEM][MAX_CRAFT_ITEM_QUAN]; // Из какого слота лежат предметы в ячейках для крафта
 
 // Зависимости для создания новых предметов (Крафт)
 stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3, &q3, &t3, &i4, &q4, &t4)
 {
-    if(thingId == 11) // Бомба
+    if(thingId == 11) // Бомба (Инженер)
     {
         i0 = 182, q0 = 3, t0 = 0; // Деталь Бомбы 3 Штуки
     }
-
-    else if(thingId == 64 || thingId == 65 || thingId == 66 || thingId == 67) // Exlosive Ammo (Взрывные патроны)
+    else if(thingId == 64) // Exlosive Ammo 20,8mm (Инженер)
     {
         i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
+        i1 = 27, q1 = 1, t1 = 0; // Ammo 20,8mm
     }
-
-    else if(thingId == 182) // Деталь Бомбы
+    else if(thingId == 65) // Exlosive Ammo 11,43mm (Инженер)
+    {
+        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
+        i1 = 28, q1 = 1, t1 = 0; // Ammo 11,43mm
+    }
+    else if(thingId == 66) // Exlosive Ammo 5,45mm (Инженер)
+    {
+        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
+        i1 = 29, q1 = 1, t1 = 0; // Ammo 5,45mm
+    }
+    else if(thingId == 67) // Ammo 45mm (Инженер)
+    {
+        i0 = 60, q0 = 12, t0 = 0; // Палладий 12 грамм
+        i1 = 30, q1 = 1, t1 = 0; // Ammo 45mm
+    }
+    else if(thingId == 182) // Деталь Бомбы (Инженер)
     {
         i0 = 181, q0 = 3, t0 = 0; // Изолента 3 Штуки
         i1 = 60, q1 = 40, t1 = 0; // Палладий 40 грамм
         i2 = 61, q2 = 50, t2 = 0; // Гелий 3 50 мл
     }
-
-    else if(thingId == 180) // Таблетка Защиты
+    else if(thingId == 180) // Таблетка Защиты (Химик)
     {
         i0 = 6, q0 = 20, t0 = 0; // Грибы 20 Штук
         i1 = 112, q1 = 1, t1 = 0; // Водка 1 Бутылка
         i2 = 5, q2 = 1, t2 = 0; // Оболочка Таблетки 1 шт
     }
-
-    else if(thingId == 198) // Таблетка Атаки
+    else if(thingId == 198) // Таблетка Атаки (Химик)
     {
         i0 = 6, q0 = 20, t0 = 0; // Грибы 40 Штук
         i1 = 112, q1 = 2, t1 = 0; // Водка 2 Бутылки
         i2 = 5, q2 = 1, t2 = 0; // Оболочка Таблетки 1 шт
+    }
+    else
+    {
+        new ingId[6], ingQuan[6];
+        new result = menuEatIngredient(thingId, ingId[0], ingId[1], ingId[2], ingId[3], ingId[4], ingId[5], ingQuan[0], ingQuan[1], ingQuan[2], ingQuan[3], ingQuan[4], ingQuan[5]);
+        if(result)
+        {
+            if(ingId[0] > 0) i0 = ingId[0], q0 = ingQuan[0], t0 = 0;
+            if(ingId[1] > 0) i1 = ingId[1], q1 = ingQuan[1], t1 = 0;
+            if(ingId[2] > 0) i2 = ingId[2], q2 = ingQuan[2], t2 = 0;
+            if(ingId[3] > 0) i3 = ingId[3], q3 = ingQuan[3], t3 = 0;
+            if(ingId[4] > 0) i4 = ingId[4], q4 = ingQuan[4], t4 = 0;
+        }
     }
 
     // Не используемые (На будущее, если потребуется 5 слотов под крафт)
@@ -93,6 +125,10 @@ stock PutThingCraft(playerid, slot)
         if(PlayerInfo[playerid][pInven][alreadyInva] == thingId && PlayerInfo[playerid][pInvenType][alreadyInva] == thingType) // Такой-же предмет, значит стакаем
         {
             if(CheckThingQuan(thingId) == 1 && thingType == 0) return ErrorMessage(playerid, "{FF6347}Вы уже положили этот предмет\n{cccccc}Необходимое количество будет изъято по окончанию процесса"), i_resetveshi(playerid);
+            else
+            {
+                if(GetInvaInCraftSlot(playerid, inva + 1)) return ErrorMessage(playerid, "{FF6347}Вы уже добавили этот предмет в одну из ячеек"), i_resetveshi(playerid);
+            }
             if(!PutSlot(playerid, slot, inva)) return 1;
         }
         else return ErrorMessage(playerid, "{FF6347}Этот слот занят другим предметом\n{cccccc}Вы можете складывать в одну ячейку только одинаковые предметы"), i_resetveshi(playerid);
@@ -128,7 +164,7 @@ stock PutSlot(playerid, slot, inva)
     return 1;
 }
 
-stock GetInvaInCraftSlot(playerid, inva)
+stock GetInvaInCraftSlot(playerid, inva) // Добавлен ли предмет из этого inva слота в ячейку крафта
 {
     new yes;
     for(new i = 0; i < MAX_CRAFT_ITEM_QUAN; i ++)
@@ -149,6 +185,121 @@ stock GetInvaInCraftSlot(playerid, inva)
         }
     }
     return yes;
+}
+
+stock CheckCraftReady(playerid)
+{
+    if((Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 12 || Tabs_Load[playerid] == 13)
+        && CreateThingID[playerid] > 0)
+    {
+        if(ClearCraftThingItems(playerid)) PlayerPlaySound(playerid,6801,0,0,0);
+        if(CraftProcessTimer[playerid] > 0)
+        {
+            ClearCraftProcess(playerid);
+            HideDrawCraftProcess(playerid);
+            ErrorMessage(playerid, "{FF6347}Вы переложили какие-то предметы и провалили процесс\n{cccccc}Не перекладывайте предметы до завершения крафта");
+        }
+    }
+    return 1;
+}
+
+stock GetFullThingForCraft(playerid, type_message) // Проверяем, все ли требуемые предметы лежат в слотах
+{
+    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
+    GetThingForCraft(CreateThingID[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    
+    new quan, noFull;
+    for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
+    {
+        if(craftId[i] > 0) // Есть требования
+        {
+            quan = GetThingInCraftSlot(playerid, craftId[i], craftType[i]);
+            if(craftQuan[i] > quan)
+            {
+                noFull = 1;
+                break;
+            }
+        }
+    }
+    if(noFull == 1)
+    {
+        new thingId = CreateThingID[playerid];
+        format(lines,sizeof(lines),""); // Очищаем Lines
+
+        if(type_message == 0)
+        {
+            format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
+            LineCraftInfo(thingId);
+            ErrorMessage(playerid, lines);
+        }
+        else if(type_message == 1) 
+        {
+            ClearCraftThingItems(playerid);
+            ErrorMessage(playerid, "{FF6347}Ошибка! Вы переложили какой-то предмет или его количество уменьшилось\n{cccccc}Не перекладывайте выбранные предметы до завершения крафта");
+        }
+        return 0;
+    }
+    return 1;
+}
+
+stock GetThingInCraftSlot(playerid, thingId, thingType) // Ищем предмет по слотам
+{
+    new inva, quan, inva_slot;
+    for(new i = 0; i < MAX_CRAFT_ITEM_QUAN; i ++)
+    {
+        if(InvaCraft[playerid][i] > 0)
+        {   
+            inva = InvaCraft[playerid][i] - 1;
+            if(PlayerInfo[playerid][pInven][inva] == thingId && PlayerInfo[playerid][pInvenType][inva] == thingType)
+            {
+                for(new it = 0; it < MAX_CRAFT_ITEM_QUAN; it ++)
+                {
+                    if(InvaCraftQuan[playerid][i][it] > 0)
+                    {
+                        inva_slot = InvaCraftQuan[playerid][i][it] - 1;
+                        if(PlayerInfo[playerid][pInven][inva_slot] == thingId && PlayerInfo[playerid][pInvenType][inva_slot] == thingType)
+                        {
+                            if(CheckThingQuan(thingId) == 1 && thingType == 0) quan += PlayerInfo[playerid][pInvenQuan][inva_slot];
+                            else quan ++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return quan;
+}
+
+stock TakeThingForCraft(playerid) // Собираем инфу о предметах, которые нужно забрать
+{
+    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
+    GetThingForCraft(CreateThingID[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    
+    for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
+    {
+        if(craftId[i] > 0) TakeThingInCraftSlot(playerid, craftId[i], craftType[i], craftQuan[i]);
+    }
+    return 1;
+}
+
+stock TakeThingInCraftSlot(playerid, thingId, thingType, thingQuan) // Забираем предметы по окончанию
+{
+    new inva, quan;
+    for(new i = 0; i < MAX_CRAFT_ITEM_QUAN; i ++)
+    {
+        if(InvaCraft[playerid][i] > 0)
+        {   
+            for(new it = 0; it < MAX_CRAFT_ITEM_QUAN; it ++)
+            {
+                if(InvaCraftQuan[playerid][i][it] > 0)
+                {
+                    inva = InvaCraftQuan[playerid][i][it] - 1;
+                    TakeInvent(playerid, thingId, thingQuan, thingType, inva);
+                }
+            }
+        }
+    }
+    return quan;
 }
 
 stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображение ячеек для крафта
@@ -202,13 +353,14 @@ stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображе
     return 1;
 }
 
-stock SelectThingCraft(playerid, thingId) // Выбрали предмет, который будем создавать
+stock SelectThingCraft(playerid, thingId, thingType) // Выбрали предмет, который будем создавать
 {
     PlayerPlaySound(playerid,1052,0,0,0);
     CreateThingID[playerid] = thingId;
+    CreateThingType[playerid] = thingType;
     
     format(lines,sizeof(lines),""); // Очищаем Lines
-    format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
+    format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
     LineCraftInfo(thingId);
     format(line,sizeof(line),"\n\n{cccccc}Выберите необходимые предметы в вашем инвентаре"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}А затем поместите их в свободные ячейки для создания"), strcat(lines,line);
@@ -316,7 +468,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
 
                 CraftInvent[playerid] = inva;
                 PPP15[playerid] = 6;
-                CraftProcessTimer[playerid] = SetTimerEx("CraftProcess", 200, true, "d", playerid);
+                CraftProcessTimer[playerid] = SetTimerEx("CraftProcess", 200, true, "dd", playerid, Tabs_Load[playerid]);
 
                 around_player_audio(playerid, 32000, 0, 5.0, 0);
                 i_resetveshi(playerid);
@@ -329,7 +481,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             {
                 new thingId = CreateThingID[playerid];
                 format(lines,sizeof(lines),""); // Очищаем Lines
-                format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
+                format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, CreateThingType[playerid], 0)), strcat(lines,line);
                 LineCraftInfo(thingId);
                 format(line,sizeof(line),"\n\n{FF6347}Хотите отменить создание этого предмета?"), strcat(lines,line);
                 ShowDialog(playerid,535,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"Да","Нет");
@@ -348,6 +500,12 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Деталь Бомбы"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
+                    }
+                    else
+                    {
+                        // Отсюда берём предмет, который будем не крафтить, а улучшать
+                        // - Чистить оружие оружейным маслом
+                        // - Улучшать качество стрельбы из оружия
                     }
                 }
                 else if(Tabs_Load[playerid] == 12) // Кухонная Плита
@@ -371,6 +529,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
     {
         if(CraftProcessTimer[playerid] == 0)
         {
+            i_resetveshi(playerid);
             format(lines,sizeof(lines),""); // Очищаем Lines
 
             if(Tabs_Load[playerid] == 10) // Двигатель
@@ -381,49 +540,63 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 format(line,sizeof(line),"\n\n{ffcc66}Нажимайте на кнопку с гаечным ключём в тот момент,\nкогда полоса загрузки находится на зелёной зоне"), strcat(lines,line);
                 ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Двигатель",lines,"*","");
             }
-            else if(Tabs_Load[playerid] == 11) // Верстак
+            else
             {
-                format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
+                if(CreateThingID[playerid] > 0) // Предмет уже выбран, значит запускаем крафт
+                {
+                    if(AntiFloodMysqlRequest(playerid, 1)) return 1;
+                    if(!GetFullThingForCraft(playerid, 0)) return 1;
 
-                format(line,sizeof(line),"\n\n{ff9000}Улучшение Предметов"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}1. Выберите {ff9000}предмет в инвентаре{444444}, который хотите улучшить"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}2. Затем нажмите на пустую область в кружочке"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
+                    ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
+                    ClearCraftProcess(playerid);
+                    CraftInvent[playerid] = 0;
+                    PPP15[playerid] = 6;
+                    CraftProcessTimer[playerid] = SetTimerEx("CraftProcess", 200, true, "dd", playerid, Tabs_Load[playerid]);
+                    return 1;
+                }
+                if(Tabs_Load[playerid] == 11) // Верстак
+                {
+                    format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
 
-                format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
-                ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Верстак",lines,"*","");
+                    format(line,sizeof(line),"\n\n{ff9000}Улучшение Предметов"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}1. Выберите {ff9000}предмет в инвентаре{444444}, который хотите улучшить"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}2. Затем нажмите на пустую область в кружочке"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
+
+                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Верстак",lines,"*","");
+                }
+                else if(Tabs_Load[playerid] == 12) // Кухонная Плита
+                {
+                    format(line,sizeof(line),"\n{ff9000}Готовка Еды"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}2. Выберите продукт, который хотите приготовить"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}3. Положите требуемые ингредиенты из инвентаря в пустые ячейки"), strcat(lines,line);
+
+                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Кухонная Плита",lines,"*","");
+                }
+                else if(Tabs_Load[playerid] == 13) // Химический Стол
+                {
+                    format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
+
+                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
+                }
             }
-            else if(Tabs_Load[playerid] == 12) // Кухонная Плита
-            {
-                format(line,sizeof(line),"\n{ff9000}Готовка Еды"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}2. Выберите продукт, который хотите приготовить"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}3. Положите требуемые ингредиенты из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
-                ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Кухонная Плита",lines,"*","");
-            }
-            else if(Tabs_Load[playerid] == 13) // Химический Стол
-            {
-                format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
-                ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
-            }
-            i_resetveshi(playerid);
             return 1;
         }
 
-        ClickCraftProcess(playerid);
+        ClickCraftProcess(playerid, Tabs_Load[playerid]);
         return 1;
     }
     if(playertextid >= CraftProcessDraw[12][playerid] && playertextid <= CraftProcessDraw[16][playerid]) // Ячейки для крафта
@@ -455,18 +628,19 @@ stock ClearCraftProcess(playerid)
     return 1;
 }
 
-stock ClickCraftProcess(playerid)
+stock ClickCraftProcess(playerid, tabs_load)
 {
     new Float:done_process = ProcessOne[playerid] * ProcessQuan[playerid];
     new Float:minx[3], Float:maxx[3];
     GetDiapasonCraft(playerid, minx[0], minx[1], minx[2], maxx[0], maxx[1], maxx[2]);
 
-
-    if(done_process >= minx[0] && done_process <= maxx[0] || done_process >= minx[1] && done_process <= maxx[1] || done_process >= minx[2] && done_process <= maxx[2]) 
+    if(done_process >= minx[0] && done_process <= maxx[0]
+        || done_process >= minx[1] && done_process <= maxx[1]
+        || done_process >= minx[2] && done_process <= maxx[2])
     {
-        if(DoneGreen[playerid][0] == false) DoneProcessCraft(playerid, 0);
-        else if(DoneGreen[playerid][1] == false) DoneProcessCraft(playerid, 1);
-        else if(DoneGreen[playerid][2] == false) DoneProcessCraft(playerid, 2);
+        if(DoneGreen[playerid][0] == false && done_process >= minx[0] && done_process <= maxx[0]) DoneProcessCraft(playerid, 0, tabs_load);
+        else if(DoneGreen[playerid][1] == false && done_process >= minx[1] && done_process <= maxx[1]) DoneProcessCraft(playerid, 1, tabs_load);
+        else if(DoneGreen[playerid][2] == false && done_process >= minx[2] && done_process <= maxx[2]) DoneProcessCraft(playerid, 2, tabs_load);
     }
     else
     {
@@ -474,7 +648,7 @@ stock ClickCraftProcess(playerid)
         HideDrawCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы не попали в зелёную зону и провалили процесс");
 
-        ErrorMessageQuestProcess(playerid);
+        if(tabs_load == 10) ErrorMessageQuestProcess(playerid); // Ремонт Двигателя
     }
     return 1;
 }
@@ -493,9 +667,12 @@ stock CheckCraftThing(playerid)
     return 1;
 }
 
-stock DoneProcessCraft(playerid, doneId)
+stock DoneProcessCraft(playerid, doneId, tabs_load)
 {
-    if(!CheckCraftThing(playerid)) return 1;
+    if(tabs_load == 10) // Ремонт Двигателя
+    {
+        if(!CheckCraftThing(playerid)) return 1;
+    }
 
     if(DoneGreen[playerid][doneId] == false)
     {
@@ -541,9 +718,13 @@ stock GetDiapasonCraft(playerid, &Float:minx0, &Float:minx1, &Float:minx2, &Floa
     return 1;
 }
 
-function CraftProcess(playerid)
+function CraftProcess(playerid, tabs_load)
 {
-    new Float:size_bar[2], ability = get_ability(playerid, 8);
+    new ability;
+    if(tabs_load == 10) ability = get_ability(playerid, 8); // Навык автомеханика Ремонт Двигателя
+    else ability = 1; // Во всех остальных крафтах скорость полоски не зависит от навыка (Только шанс успеха)
+
+    new Float:size_bar[2];
     PlayerTextDrawGetTextSize(playerid, CraftProcessDraw[8][playerid], size_bar[0], size_bar[1]);
 
     if(ProcessQuan[playerid] == 0) // Первый запуск
@@ -577,12 +758,18 @@ function CraftProcess(playerid)
         PlayerTextDrawSetPos(playerid, CraftProcessDraw[5][playerid], pos_green[0], pos_bar[1] - 1);
         PlayerTextDrawSetPos(playerid, CraftProcessDraw[6][playerid], pos_green[1], pos_bar[1] - 1);
         PlayerTextDrawSetPos(playerid, CraftProcessDraw[7][playerid], pos_green[2], pos_bar[1] - 1);
+
         // Размер галочек
         new Float:fix_y, Float:size_done_x = 20 * ProcessOne[playerid];
         FixTextDrawSquare_X(size_done_x, fix_y);
         PlayerTextDrawTextSize(playerid, CraftProcessDraw[9][playerid], size_done_x, fix_y);
         PlayerTextDrawTextSize(playerid, CraftProcessDraw[10][playerid], size_done_x, fix_y);
         PlayerTextDrawTextSize(playerid, CraftProcessDraw[11][playerid], size_done_x, fix_y);
+
+        // Внешний вид галочек
+        PlayerTextDrawSetString(playerid, CraftProcessDraw[9][playerid], "ld_beat:down");
+        PlayerTextDrawSetString(playerid, CraftProcessDraw[10][playerid], "ld_beat:down");
+        PlayerTextDrawSetString(playerid, CraftProcessDraw[11][playerid], "ld_beat:down");
 
         // Положение галочек
         PlayerTextDrawSetPos(playerid, CraftProcessDraw[9][playerid], (pos_green[0] + (size_green / 2)) - (size_done_x / 2), pos_bar[1] - fix_y * 1.5);
@@ -619,27 +806,28 @@ function CraftProcess(playerid)
         HideDrawCraftProcess(playerid);
         ErrorMessage(playerid, "{FF6347}Вы пропустили зелёную зону и провалили процесс");
 
-        ErrorMessageQuestProcess(playerid);
+        if(tabs_load == 10) ErrorMessageQuestProcess(playerid); // Ремонт Двигателя
         return 1;
     }
 
-    if(ProcessQuan[playerid] >= 200) 
+    if(ProcessQuan[playerid] >= 200)
     {
-        if(!CheckCraftThing(playerid)) return 1;
-
-        i_del(playerid, CraftInvent[playerid]); // Забираем предмет
         ClearCraftProcess(playerid);
         HideDrawCraftProcess(playerid);
-        SuccessMessage(playerid, "{99ff66}Выполнено!");
 
         if(Tabs_Load[playerid] == 10) // Ремонт Двигателя (Капот)
         {
-            if(ability >= 9) ACSetVehicleHealth(OnlineInfo[playerid][oShowTabs], 1000.0);
-            else ACSetVehicleHealth(OnlineInfo[playerid][oShowTabs], 800.0);
+            if(!CheckCraftThing(playerid)) return 1;
+
+            i_del(playerid, CraftInvent[playerid]); // Забираем предмет
+
+            new vehicleid = OnlineInfo[playerid][oShowTabs], minus = 10 - get_ability(playerid, 8);
+            new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel]) - (100 * minus);
+            ACSetVehicleHealth(vehicleid, health);
             update_ability(playerid, 8, 15);
 
             // Квест ремонт транспорта
-            if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[OnlineInfo[playerid][oShowTabs]][vModel]))
+            if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
             {
                 PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone_repair6.mp3");
                 SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Четко! Новый рем комплект можешь купить самостоятельно в любом автосервисе");
@@ -649,9 +837,107 @@ function CraftProcess(playerid)
                 PlayerInfo[playerid][pQuest][4] = 1;
                 SaveQuest(playerid);
             }
+
+            format(lines,sizeof(lines),""); // Очищаем Lines
+            format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel])), strcat(lines,line);
+            format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
+            SuccessMessage(playerid, lines);
+        }
+        else // Крафт
+        {
+            if(!GetFullThingForCraft(playerid, 1)) return 1; // Проверка, на месте ли все предметы и хватает ли их количества
+
+            // Создали новый предмет
+            if(CreateThingID[playerid] > 0) CreateThingAfterCraft(playerid);
         }
     }
     return 1;
+}
+
+stock CreateThingAfterCraft(playerid)
+{
+    new yes, ability;
+    if(Tabs_Load[playerid] == 11) ability = get_ability(playerid, 3); // Верстак (Инженер)
+    else if(Tabs_Load[playerid] == 13) ability = get_ability(playerid, 7); // Химический Стол (Химик)
+
+    if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13) // Расчитываем шанс
+    {
+        new chance = 2;
+        if(ability >= 3 && ability <= 4) chance = 3;
+        else if(ability >= 5 && ability <= 7) chance = 4;
+        else if(ability >= 8 && ability <= 9) chance = 5;
+        else if(ability >= 10) chance = 6;
+        switch(random(chance))
+        {
+            case 0: yes = 0;
+            default: yes = 1;
+        }
+    }
+    else yes = 1; // Кухонный Стол и все остальные
+
+    if(yes == 1) // Удачный шанс создания предмета
+    {
+	    if(CheckThingQuan(CreateThingID[playerid]) == 1) // Количественный предмет
+		{
+            new getQuan, getLimit;
+            i_limit(playerid, CreateThingID[playerid], getQuan, getLimit);
+            if(getQuan+1 > getLimit)
+            {
+                format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit);
+                ErrorMessage(playerid, store);
+                return 1;
+            }
+        }
+
+        new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], 1, 0, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
+	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В вашем инвентаре не хватает места");
+
+        SuccessMessage(playerid, "{99ff66}Выполнено!");
+    }
+    else // Проёба
+    {
+        PlayerPlaySound(playerid,31202,0,0,0);
+
+        format(lines,sizeof(lines),""); // Очищаем Lines
+        format(line,sizeof(line),"{FF6347}Потрачено..."), strcat(lines,line);
+        format(line,sizeof(line),"\n\n{FF6347}У вас не получилось создать %s", GetNameThing(0, CreateThingID[playerid], CreateThingType[playerid], 0)), strcat(lines,line);
+        format(line,sizeof(line),"\n{FF6347}Предметы, которые вы применяли, были использованы"), strcat(lines,line);
+        if(Tabs_Load[playerid] == 11) format(line,sizeof(line),"\n{cccccc}Чем выше навык инженера, тем вероятнее шанс успеха"), strcat(lines,line);
+        else if(Tabs_Load[playerid] == 13) format(line,sizeof(line),"\n{cccccc}Чем выше навык химика, тем вероятнее шанс успеха"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Навык пополняется, даже если вы потерпели неудачу"), strcat(lines,line);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+    }
+
+    if(Tabs_Load[playerid] == 11)
+    {
+        update_ability(playerid, 3, 10); // Пополняем навык
+
+        if(yes == 1 && IsAExplosiveAmmo(CreateThingID[playerid], CreateThingType[playerid])) // Ачивки, если создали взрывной патрон
+        {
+            if(PlayerInfo[playerid][pAchieve][86] == 0) AchievePlayer(playerid, 86, 1);
+            if(PlayerInfo[playerid][pAchieve][101] == 0)
+            {
+                new quan_eammo[4];
+                quan_eammo[0] = get_invent(playerid, 64, 0);
+                quan_eammo[1] = get_invent(playerid, 65, 0);
+                quan_eammo[2] = get_invent(playerid, 66, 0);
+                quan_eammo[3] = get_invent(playerid, 67, 0);
+                if(quan_eammo[0]+quan_eammo[1]+quan_eammo[2]+quan_eammo[3] >= 100) AchievePlayer(playerid, 101, 1);
+            }
+        }
+    }
+    else if(Tabs_Load[playerid] == 13) update_ability(playerid, 7, 10); // Пополняем навык
+
+    TakeThingForCraft(playerid); // Забираем предметы
+    ClearCraftThingItems(playerid);
+    return 1;
+}
+
+stock IsAExplosiveAmmo(thingId, thingType)
+{
+    if(thingId >= 64 && thingId <= 67 && thingType == 0) return 1;
+    return 0;
 }
 
 stock ErrorMessageQuestProcess(playerid)
@@ -709,6 +995,7 @@ stock bonet_close(playerid)
 stock showDraw_CraftProcess(playerid, type)
 {
     CreateThingID[playerid] = 0;
+    CreateThingType[playerid] = 0;
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++) 
     {
         InvaCraft[playerid][i] = 0;
@@ -730,9 +1017,26 @@ stock showDraw_CraftProcess(playerid, type)
     return 1;
 }
 
+stock ClearCraftThingItems(playerid)
+{
+    new quan;
+    for(new i = 0; i < MAX_CRAFT_ITEM; i ++) 
+    {
+        if(InvaCraft[playerid][i] > 0)
+        {
+            quan ++;
+            InvaCraft[playerid][i] = 0;
+            UpdateDrawInvaThing(playerid, i);
+            for(new it = 0; it < MAX_CRAFT_ITEM_QUAN; it ++) InvaCraftQuan[playerid][i][it] = 0;
+        }
+    }
+    return quan;
+}
+
 stock destroyDraw_CraftProcess(playerid)
 {
     CreateThingID[playerid] = 0;
+    CreateThingType[playerid] = 0;
     ClearCraftProcess(playerid);
 
     if(OnlineInfo[playerid][oCraftDraw] == false) return 0;
@@ -1129,8 +1433,6 @@ stock IsAVerstak(playerid)
 
 stock showworkbehch(playerid, v)
 {
-	if(!IsAVerstak(playerid) && !IsAHimLab(playerid)) return 0;
-
 	OnlineInfo[playerid][oShowTabs] = v;
 	i_tabs(playerid, 4, 1);
 

@@ -3433,13 +3433,13 @@ static Float: ParkingPos_Boat[MAX_PARKING_POS_BOAT][4] = { // Причалы к�
 {2295.9702, 515.4971, 1.5000, 90.0000}
 };
 
-new ParkingID = 800;
+/*new ParkingID = 0;
 stock ParkingCheckPos(playerid, stat)
 {
 	SendClientMessagef(playerid, -1, "%d", ParkingID);
 	PPSetPlayerPos(playerid, ParkingPos[ParkingID][0],ParkingPos[ParkingID][1],ParkingPos[ParkingID][2]);
 
-	if(stat == 0) 
+	if(stat == 0)
 	{
 		ParkingID ++;
 		if(ParkingID >= MAX_PARKING_POS) ParkingID = 0;
@@ -3450,7 +3450,7 @@ stock ParkingCheckPos(playerid, stat)
 		if(ParkingID < 0) ParkingID = MAX_PARKING_POS - 1;
 	}
 	return 1;
-}
+}*/
 
 stock DynamicPickupParking()
 {

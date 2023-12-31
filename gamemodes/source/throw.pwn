@@ -104,6 +104,7 @@ stock use_throw(playerid, inva, useinva)
     i_resetveshi(playerid);
 	i_resettabs(playerid);
 	Veshi[playerid] = 0;
+	
 	// Если предмет лежит на столе (Бутылка в руки)
 	if(ThrowInfo[t][tPutLocation] == 1 && (fpick >= 112 && fpick <= 121 || fpick == 14 || fpick == 37) && thingPack == 0)
 	{

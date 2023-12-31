@@ -7,7 +7,7 @@ new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
 {
-  new ability = get_ability(playerid, 9); // Навык детектива
+  new ability = get_ability(playerid, 9); // Навык сыщика
   new Float:zone;
 
   if(ability >= 10) zone = 50;

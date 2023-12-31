@@ -414,11 +414,11 @@ stock IsATrashBoot(playerid) // Позиция багажника в мусор�
 stock MaxVehicleHealth(model)
 {
 	new maxhealth;
-    if(model == 428 || model == 470 || model == 528) maxhealth = 2000;
-    else if(model == 427 || model == 433 || model == 425 || model == 548 || model == 601) maxhealth = 3000;
-    else if(model == 432) maxhealth = 5000;
+    if(model == 428 || model == 470 || model == 528) maxhealth = 3000;
+    else if(model == 427 || model == 433 || model == 425 || model == 548 || model == 601) maxhealth = 4000;
+    else if(model == 432) maxhealth = 6000;
 	else if(model == 537 || model == 538) maxhealth = 10000; // train
-    else maxhealth = 1000;
+    else maxhealth = 2000;
 	return maxhealth;
 }
 
