@@ -62,7 +62,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
             new Float:dist = GetPlayerDistanceFromPoint(playerid, fX, fY, fZ);
             if(dist >= 150.0)
             {
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[90],lines[800];
    	            format(line,sizeof(line),"{FF6347}Объект слишком далеко от вас"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{ff9000}Объект улетает далеко с этой ошибкой сразу после открытия редактора?"), strcat(lines,line);
                 format(line,sizeof(line),"\n{cccccc}- Не спешите"), strcat(lines,line);
@@ -100,6 +100,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 // Сохраняем результат редактирования (New System 14.11.2023)
 stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
+    new string[180];
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
 
@@ -121,8 +122,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		if(MapInfo[0][mapload] == 0) MapInfo[0][mapload] = 1, format(MapInfo[0][mapname], 64, "name");
 		ObjectMapLabelAll(0, objid);
 
-        format(store,sizeof(store),"CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
-        SendClientMessage(playerid, COLOR_GREY, store);
+        format(string,sizeof(string),"CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
+        SendClientMessagef(playerid, COLOR_GREY, string);
     }
     else if(gRedakt[playerid] == 9) // Установка Камер Слежения
 	{
@@ -140,7 +141,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 strmid(CamInfo[cam][cName], ListName[playerid], 0, strlen(ListName[playerid]), 24);
                 CamInfo[cam][cDate] = gettime();
                 InsertCam(cam);
-                format(store,sizeof(store),"[ Мысли ]: Камера установлена {ff9000}[ %s ]", CamInfo[cam][cName]), SendClientMessage(playerid, COLOR_GREY, store);
+                format(string,sizeof(string),"[ Мысли ]: Камера установлена {ff9000}[ %s ]", CamInfo[cam][cName]), SendClientMessage(playerid, COLOR_GREY, string);
                 if(PlayerInfo[playerid][pSex] == 1) SetPlayerChatBubble(playerid,"установил камеру слежения",COLOR_PURPLE,20.0,10000);
                 else SetPlayerChatBubble(playerid,"установила камеру слежения",COLOR_PURPLE,20.0,10000);
                 break;
@@ -193,8 +194,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 if(BizzInfo[oid][bLab] == 1) DestroyDynamicPickup(BizPickup[oid]), DestroyDynamic3DTextLabel(BizLabel[oid]), BizzInfo[oid][bLab] = 0;
 
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-                format(store, sizeof(store), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /goverment ] {ffffff} **", oid);
-                SendRadioMessage(7, COLOR_ALLDEPT, store);
+                format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /goverment ] {ffffff} **", oid);
+                SendRadioMessage(7, COLOR_ALLDEPT, string);
             }
             createdoor_biznes(oid);
         }
@@ -271,8 +272,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
             RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-            format(store, sizeof(store), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
-            SendRadioMessage(7, COLOR_ALLDEPT, store);
+            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
+            SendRadioMessage(7, COLOR_ALLDEPT, string);
         }
 
         if(IsValidDynamicObject(RentObject[oid][slot]))
@@ -307,8 +308,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 strmid(BusStationInfo[ost][bsName], ListName[playerid], 0, strlen(ListName[playerid]), 24);
                 BusStationInfo[ost][bsUnix] = gettime();
                 InsertBusStation(ost);
-                format(store,sizeof(store),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, store);
-                format(store,sizeof(store),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, store, COLOR_PURPLE, 20.0, 3000);
+                format(string,sizeof(string),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
+                format(string,sizeof(string),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
                 busstationcreate(ost);
                 bsrows++;
                 break;
@@ -413,7 +414,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 150.0)
         {
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[90],lines[800];
             format(line,sizeof(line),"{FF6347}Объект слишком далеко от вас"), strcat(lines,line);
             format(line,sizeof(line),"\n\n{ff9000}Объект улетает далеко с этой ошибкой сразу после открытия редактора?"), strcat(lines,line);
             format(line,sizeof(line),"\n{cccccc}- Не спешите"), strcat(lines,line);
@@ -485,7 +486,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             IkeaInfo[oid][iBuyZ] = z;
             if(gRedakt[playerid] == 15)
             {
-                format(store,sizeof(store),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid), SendClientMessage(playerid, COLOR_GREY, store);
+                new string[70];
+                format(string,sizeof(string),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid);
+                SendClientMessage(playerid, COLOR_GREY, string);
                 AdminLog("ikea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", IkeaInfo[oid][iModel], "IKEA");
             }
             if(gRedakt[playerid] == 16)

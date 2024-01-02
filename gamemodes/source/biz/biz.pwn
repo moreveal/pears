@@ -40,8 +40,9 @@ CMD:bizcity(playerid, const params[])
 	if(params[0] <= 0 || params[0] > 200) return ErrorMessage(playerid, "{FF6347}Номер бизнеса не меньше 1 и не больше 200");
 	if(params[1] > 2 || params[1] < 0) return ErrorMessage(playerid, "{FF6347}Города 0 - LS, 1 - SF, 2 - LV");
 
-	format(store, sizeof(store), " [ ADM ]: %s изменил город бизнеса № %d {cccccc}[%s]", PlayerInfo[playerid][pName],params[0],cityName[params[1]]);
-	ABroadCast(COLOR_ADM,store,1);
+	new string[90];
+	format(string, sizeof(string), " [ ADM ]: %s изменил город бизнеса № %d {cccccc}[%s]", PlayerInfo[playerid][pName],params[0],cityName[params[1]]);
+	ABroadCast(COLOR_ADM,string,1);
 	BizzInfo[params[0]][bCity] = params[1];
 	SaveBizzCity(params[0]);
 	return 1;
@@ -50,7 +51,7 @@ CMD:bizcity(playerid, const params[])
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
 	new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
 	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
@@ -68,19 +69,20 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,1054,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	new header[90];
+	format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1054,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
 	return 1;
 }
 stock insertorder(playerid, b, ord) // Управление заказом доставки товара
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
-
+    new line[90],lines[270];
 	format(line,sizeof(line),"{444444}Товар: {ff9000}%s \t", GetNameThing(0, BizzInfo[b][bOrder][ord], BizzInfo[b][bOrderType][ord], 0)), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Количество: \t{ffffff}%d", BizzInfo[b][bOrderQuan][ord]), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Удалить товар\t "), strcat(lines,line);
-	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,1058,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
+	new header[90];
+	format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1058,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
 	return 1;
 }
 stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
@@ -98,17 +100,18 @@ stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 }
 stock ShowOrderThing(playerid, b)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
 	if(b <= 12) // Заправка
 	{
+		new line[100],lines[100];
 		format(line,sizeof(line),"{ff9000}Топливо {cccccc}[10.000 Литров]\t {99ff66}[%d$]\n",getThingPriceGos(178, 0) * 10000), strcat(lines,line);
-		format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+		new header[90];
+		format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
 	}
 	else if(b >= 13 && b <= 41 || b >= 77 && b <= 92 || b >= 93 && b <= 162 || b >= 183 && b <= 200)
 	{
-		new lol[84], quan;
-
+		new quan;
+		new line[100],lines[4048];
 		format(line,sizeof(line),"Товар \t На складе \t Гос. стоимость\n"), strcat(lines,line);
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
 		{
@@ -126,14 +129,16 @@ stock ShowOrderThing(playerid, b)
 				format(line,sizeof(line),"{cccccc}%s \t {444444}%d/%d  \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bItem][i],maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]), getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])), strcat(lines,line);
 			}
 			quan++;
-		}		
-		format(lol,sizeof(lol),"{cccccc}Бизнеc {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Отмена");
+		}	
+		new header[90];	
+		format(header,sizeof(header),"{cccccc}Бизнеc {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
 	}
 	else if(b >= 173 && b <= 182) // Магазин Одежды
 	{
-		format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,store,"{ff9000}Одежда\n{ff9000}Аксессуары","Выбрать","Отмена");
+		new header[90];
+		format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1059,DIALOG_STYLE_TABLIST,header,"{ff9000}Одежда\n{ff9000}Аксессуары","Выбрать","Отмена");
 	}
 	return 1;
 }
@@ -503,7 +508,7 @@ stock pricebiz(playerid, b)
 	
 	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
 	new lol[84], quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[4048];
 
 	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 42 && b <= 76 || b >= 77 && b <= 92 || b >= 93 && b <= 102 || b >= 103 && b <= 122 
 	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 153 && b <= 162 || b >= 183 && b <= 200) // Прайс автоматгенерация
@@ -591,8 +596,9 @@ stock shift_biz(playerid, b, getinva, putinva)
 		}
 		if(quanPlayer >= 2)
 		{
-		    format(store, sizeof(store), "{FF6347}Склад бизнеса просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
-			ErrorMessage(playerid, store);
+			new string[90];
+		    format(string, sizeof(string), "{FF6347}Склад бизнеса просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			ErrorMessage(playerid, string);
 			i_resettabs(playerid);
 			return 1;
 		}
@@ -836,8 +842,9 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 	}
 	if(bizUpdate && BizzInfo[b][bSost] > 0) //  Если изменения для бизнеса были, отправляем все необходимые уведомления
 	{
-        format(store, sizeof(store), "Новая гос. стоимость %s [%d$]", GetNameThing(0, thingId, thingType, 0), input);
-		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], BizzInfo[b][bSost], BizzInfo[b][bVlad], store);
+		new string[80];
+        format(string, sizeof(string), "Новая гос. стоимость %s [%d$]", GetNameThing(0, thingId, thingType, 0), input);
+		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], BizzInfo[b][bSost], BizzInfo[b][bVlad], string);
 	}
 	return 1;
 }
@@ -951,7 +958,7 @@ stock getSlotIngredientBusiness(thingId) // Получаем слот, кото�
 stock partnerbiz(playerid, b) // Партнерство в бизнесе
 {
 	new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[90],lines[900];
 	for(new i = 0; i < 10; i++)
 	{
 		List[i][playerid] = 0;
@@ -968,8 +975,9 @@ stock partnerbiz(playerid, b) // Партнерство в бизнесе
 			format(line,sizeof(line),"{ff9000}%d. {cccccc}Пусто\n", quan), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,1453,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	new header[90];
+	format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1453,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
 	return 1;
 }
 
@@ -978,8 +986,9 @@ stock SaveBizzCity(b)
 	if(LIMITED_LOADING_SERVER >= 2) return true;
 
 	// Saving immediately
-	format(store,sizeof(store),"UPDATE `pp_bizz` SET `bCity` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bCity], b);
-	query_empty(pearsq, store);
+	new string_mysql[90];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `bCity` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bCity], b);
+	query_empty(pearsq, string_mysql);
 	return true;
 }
 stock SaveBizz(b)
@@ -1143,7 +1152,7 @@ stock GpsBiz(playerid, bizType)
 	new minB, maxB;
 	bizTypeMin(bizType, minB, maxB);
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[90],lines[4048];
 	format(line,sizeof(line),"{ff9000}Ближайший"), strcat(lines,line);
 
 	new quan;
@@ -1153,8 +1162,8 @@ stock GpsBiz(playerid, bizType)
 		quan ++;
 		format(line,sizeof(line),"\n{cccccc}№ %d %s", b, BizzInfo[b][bName]), strcat(lines,line);
 	}
-
-	format(store,sizeof(store),"{ff9000}GPS: %s", bizname(minB));
-	ShowDialog(playerid,1077,DIALOG_STYLE_LIST,store,lines,"Выбор","Назад");
+	new header[60];
+	format(header,sizeof(header),"{ff9000}GPS: %s", bizname(minB));
+	ShowDialog(playerid,1077,DIALOG_STYLE_LIST,header,lines,"Выбор","Назад");
 	return 1;
 }

@@ -10,8 +10,7 @@ CMD:rinfect(p, const params[])
 	if(vampire[params[0]] == 1) burn_vampire(params[0], 0);
 	incold[p] = 0;
 	SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Все болезни игрока очищены");
-	format(store, sizeof(store), " %s очистил все ваши болезни", PlayerInfo[p][pName]);
-	SendClientMessage(params[0], COLOR_LIGHTBLUE, store);
+	SendClientMessagef(params[0], COLOR_LIGHTBLUE, " %s очистил все ваши болезни", PlayerInfo[p][pName]);
 	return 1;
 }
 CMD:infect(p, const params[])
@@ -111,7 +110,7 @@ CMD:remedy(playerid, const params[])
 		
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
-			format(lines,sizeof(lines),""); // Очищаем Lines
+			new line[120],lines[600];
 			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
 			format(line,sizeof(line),"\n{99ff66}Проверьте мед карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
 
@@ -139,7 +138,7 @@ CMD:remedy(playerid, const params[])
 stock getmed(playerid, para1)
 {
 	new stope, agaest;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 
 	format(line,sizeof(line),"\n{ff9000}Симптомы: %s[%d]",PlayerInfo[para1][pName], para1), strcat(lines,line);
 	for(new i = 0; i < 5; i++)
@@ -451,8 +450,7 @@ stock InfoEatMessage(playerid, stat)
 	{
 		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 Минут Unix
 
-		format(lines,sizeof(lines),""); // Очищаем Lines
-
+		new line[70],lines[140];
 		if(getillness(playerid, 18))
 		{
 			if(stat == 0) // Просто хотим кушать
@@ -499,8 +497,7 @@ stock InfoPissMessage(playerid, stat)
 	{
 		OnlineInfo[playerid][oMessagePiss] = gettime() + 600; // 10 Минут Unix
 
-		format(lines,sizeof(lines),""); // Очищаем Lines
-
+		new line[80],lines[240];
 		if(stat == 0) // Просто хотим сцать
 		{
 			format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет в туалет"), strcat(lines,line);
@@ -528,7 +525,7 @@ stock InfectInfo(playerid)
 		if(getillness(playerid, 18))
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Но мне пофиг на ледяную воду");
-			format(lines,sizeof(lines),""); // Очищаем Lines
+			new line[100],lines[200];
 			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде, но ему всё-равно"), strcat(lines,line);
 			format(line,sizeof(line),"\n{FF6347}Вы вампир и поэтому вам не страшны болезни"), strcat(lines,line);
 			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
@@ -536,7 +533,7 @@ stock InfectInfo(playerid)
 		else
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Я заболею если буду долго плавать в холодной воде");
-			format(lines,sizeof(lines),""); // Очищаем Lines
+			new line[100],lines[300];
 			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде и начинает простужаться"), strcat(lines,line);
 			format(line,sizeof(line),"\n{FF6347}Через 4 минуты пребывания в холодной воде персонаж заболеет"), strcat(lines,line);
 			format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
@@ -549,7 +546,7 @@ stock InfectInfo(playerid)
 
 stock VampireInfo(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	format(line,sizeof(line),"{684F7D}Как найти проклятие?"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Откройте один из четырёх саркофагов в этой гробнице"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Проклятие может произойти случайно только с одним человеком раз в 4 часа"), strcat(lines,line);

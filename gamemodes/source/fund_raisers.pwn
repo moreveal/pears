@@ -66,7 +66,7 @@ stock ShowFundRaisers(playerid)
 
 stock MenuFundRaisers(playerid, i)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[80],lines[240];
     format(line,sizeof(line),"{cccccc}%s\t", FundRaisersInfo[i][fundName]), strcat(lines,line);
     format(line,sizeof(line),"\n{ff9000}Информация >>"), strcat(lines,line);
     format(line,sizeof(line),"\n{99ff66}Пожертвовать"), strcat(lines,line);
@@ -76,10 +76,8 @@ stock MenuFundRaisers(playerid, i)
 
 stock FundRaisers(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
-
+    new line[140],lines[4096];
     format(line,sizeof(line),"{cccccc}Название\tСобрано"), strcat(lines,line);
-
     for(new i = 0; i < MAX_FUND_RAISERS; i++) 
     {
         if(FundRaisersInfo[i][fundActive])
@@ -88,14 +86,14 @@ stock FundRaisers(playerid)
         }
         else format(line,sizeof(line),"\n{cccccc}%d. Добавить >>\t", i + 1), strcat(lines,line);
     }
-
-	format(store,sizeof(store),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
-	ShowDialog(playerid,1401,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Выход");
+    new header[60];
+	format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
+	ShowDialog(playerid,1401,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
 }
 
 stock SettingFundRaisers(playerid, i)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[900];
     format(line,sizeof(line),"{cccccc}Настройки Сбора\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{ff9000}Информация >>"), strcat(lines,line);
 
@@ -108,15 +106,15 @@ stock SettingFundRaisers(playerid, i)
     format(line,sizeof(line),"\n{cccccc}Позиция сбора >>\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{F4254F}Подарки при пожертвовании >> \t"), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Завершить сбор\t"), strcat(lines,line);
-
-    format(store,sizeof(store),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
-    ShowDialog(playerid,1402,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Выход");
+    new header[60];
+    format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
+    ShowDialog(playerid,1402,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
     return 1;
 }
 
 stock SettingFundRaisersGift(playerid, i)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[140],lines[4096];
 
     for(new g = 0; g < MAX_FUND_GIFT; g++) 
     {
@@ -135,7 +133,7 @@ stock InfoFundRaisers(playerid, i)
 {
     new tyear, tmonth, tday, thour, tminute, tsecond;
     stamp2datetime(FundRaisersInfo[i][fundUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[130],lines[4096];
 
     if(!FundRaisersInfo[i][fundName]) format(line,sizeof(line),"{FF6347}Название не заполнено"), strcat(lines,line);
     else format(line,sizeof(line),"{ff9000}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
@@ -176,11 +174,11 @@ stock InfoFundRaisers(playerid, i)
         format(line,sizeof(line),"\n{cccccc}- Вы НЕ можете получить повторно один и тот-же подарок"), strcat(lines,line);
     }
     else format(line,sizeof(line),"\n{555555}нет"), strcat(lines,line);
+    new header[60];
+    format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
 
-    format(store,sizeof(store),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
-
-    if(DP[2][playerid] == 1) ShowDialog(playerid,1403,DIALOG_STYLE_MSGBOX,store,lines,"Ок",""); // Настройки
-    else ShowDialog(playerid,1414,DIALOG_STYLE_MSGBOX,store,lines,"Ок",""); // Меню
+    if(DP[2][playerid] == 1) ShowDialog(playerid,1403,DIALOG_STYLE_MSGBOX,header,lines,"Ок",""); // Настройки
+    else ShowDialog(playerid,1414,DIALOG_STYLE_MSGBOX,header,lines,"Ок",""); // Меню
     return 1;
 }
 
@@ -197,7 +195,7 @@ stock UpdateFundRaisers(i)
     {
         FundRaisersInfo[i][fundPickup] = CreateDynamicPickup(19134, 1, FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2], 0, 0, -1, 100.0);
 
-        format(lines,sizeof(lines),""); // Очищаем Lines
+        new line[130],lines[1170];
         format(line,sizeof(line),"\n{ff9000}*** Сбор Средств ***"), strcat(lines,line);
         format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%s$ / {cccccc}%s$", fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
@@ -224,7 +222,7 @@ stock UpdateFundRaisers(i)
 function LoadFundRaisers()
 {
 	new time = GetTickCount();
-	new rows, i;
+	new rows, i, string[30];
 	cache_get_row_count(rows);
 	for(new f; f < rows; ++f)
 	{
@@ -248,14 +246,14 @@ function LoadFundRaisers()
         cache_get_value_name_bool(f, "fundGift", FundRaisersInfo[i][fundGift]);
         for(new g = 0; g < MAX_FUND_GIFT; g++) 
         {
-            format(store, sizeof(store),"fundGiftThingId%d", g);
-            cache_get_value_name_int(f, store, FundRaisersInfo[i][fundGiftThingId][g]);
-            format(store, sizeof(store),"fundGiftThingQuan%d", g);
-            cache_get_value_name_int(f, store, FundRaisersInfo[i][fundGiftThingQuan][g]);
-            format(store, sizeof(store),"fundGiftThingType%d", g);
-            cache_get_value_name_int(f, store, FundRaisersInfo[i][fundGiftThingType][g]);
-            format(store, sizeof(store),"fundGiftPrice%d", g);
-            cache_get_value_name_int(f, store, FundRaisersInfo[i][fundGiftPrice][g]);
+            format(string, sizeof(string),"fundGiftThingId%d", g);
+            cache_get_value_name_int(f, string, FundRaisersInfo[i][fundGiftThingId][g]);
+            format(string, sizeof(string),"fundGiftThingQuan%d", g);
+            cache_get_value_name_int(f, string, FundRaisersInfo[i][fundGiftThingQuan][g]);
+            format(string, sizeof(string),"fundGiftThingType%d", g);
+            cache_get_value_name_int(f, string, FundRaisersInfo[i][fundGiftThingType][g]);
+            format(string, sizeof(string),"fundGiftPrice%d", g);
+            cache_get_value_name_int(f, string, FundRaisersInfo[i][fundGiftPrice][g]);
         }
         if(FundRaisersInfo[i][fundActive]) QuanFundRaisers ++;
         UpdateFundRaisers(i);
@@ -285,7 +283,7 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
     format(FundRaisersInfo[i][fundMoney], 24, "%d", tempMoney);
     FundRaisersInfo[i][fundQuan] ++;
 
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[700];
     format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%s$", inputtext), strcat(lines,line);
 
     // Максимальное Пожертвование
@@ -359,9 +357,10 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
         SuccessMessage(playerid, lines);
         UpdateFundRaisers(i);
 
-        format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundMoney`='%s', `fundQuan`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundMoney], 
+        new string_mysql[140];
+        format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMoney`='%s', `fundQuan`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundMoney], 
             FundRaisersInfo[i][fundQuan], FundRaisersInfo[i][fundNewid]);
-        query_empty(pearsq, store_query);
+        query_empty(pearsq, string_mysql);
 
         MoneyLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, FundRaisersInfo[i][fundName]);
         FundLog(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], inputtext, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
@@ -378,8 +377,9 @@ stock AreYouSureFundRaisersActive(playerid, i)
     SettingFundRaisers(playerid, i);
     PlayerPlaySound(playerid,6401,0,0,0);
 
-    format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundUnix`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundUnix], FundRaisersInfo[i][fundNewid]);
-    query_empty(pearsq, store_query);
+    new string_mysql[140];
+    format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundUnix`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundUnix], FundRaisersInfo[i][fundNewid]);
+    query_empty(pearsq, string_mysql);
 
     AdminLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, FundRaisersInfo[i][fundName]);
     return 1;
@@ -411,8 +411,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                     FundRaisersInfo[i][fundActive] = false;
                     UpdateFundRaisers(i);
 
-                    format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundActive`='%i' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundNewid]);
-	                query_empty(pearsq, store_query);
+                    new string_mysql[140];
+                    format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundNewid]);
+	                query_empty(pearsq, string_mysql);
                 }
                 else
                 {
@@ -466,8 +467,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             UpdateFundRaisers(i);
             SettingFundRaisers(playerid, i);
 
-            format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundName`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
-	        query_empty(pearsq, store_query);
+            new string_mysql[140];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundName`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
+	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
     }
@@ -483,8 +485,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             format(FundRaisersInfo[i][fundText], 34, "%s", inputtext);
             SettingFundRaisers(playerid, i);
 
-            format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundText`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundText], FundRaisersInfo[i][fundNewid]);
-	        query_empty(pearsq, store_query);
+            new string_mysql[140];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundText`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundText], FundRaisersInfo[i][fundNewid]);
+	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
     }
@@ -505,8 +508,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             UpdateFundRaisers(i);
             SettingFundRaisers(playerid, i);
 
-            format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundRequired`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundNewid]);
-	        query_empty(pearsq, store_query);
+            new string_mysql[140];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundRequired`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundNewid]);
+	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
     }
@@ -524,9 +528,10 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             SettingFundRaisers(playerid, i);
             PlayerPlaySound(playerid,6400,0,0,0);
 
-            format(store_query, sizeof(store_query),"UPDATE `fund_raisers` SET `fundPos0`='%f', `fundPos1`='%f', `fundPos2`='%f' WHERE `fundNewid`='%d'", 
+            new string_mysql[160];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundPos0`='%f', `fundPos1`='%f', `fundPos2`='%f' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2], FundRaisersInfo[i][fundNewid]);
-	        query_empty(pearsq, store_query);
+	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
     }
@@ -539,7 +544,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             if(listitem == 0) DP[2][playerid] = 0, InfoFundRaisers(playerid, i);
             if(listitem == 1)
             {
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[90],lines[270];
                 format(line,sizeof(line),"{cccccc}Введите сумму, которую хотите пожертвовать на {ff9000}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{FF6347}100$ - 99.000.000$"), strcat(lines,line);
                 if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{99ff66}Посмотрите в информации о требованиях для получения подарка"), strcat(lines,line);
@@ -566,8 +571,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
            	if(aFloodFund[playerid] > unix) return ErrorMessage(playerid, "{FF6347}Пожалуйста, для повторного пожертвования, подождите 20 секунд");
             aFloodFund[playerid] = unix + 20;
 
-            format(store_query, sizeof(store_query), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
-		    mysql_tquery(pearsq_2, store_query, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
+            new string_mysql[180];
+            format(string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
+		    mysql_tquery(pearsq_2, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
         }
         else MenuFundRaisers(playerid, i);
     }
@@ -583,8 +589,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             QuanFundRaisers --;
             UpdateFundRaisers(i);
 
-            format(store,sizeof(store),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %d$", FundRaisersInfo[i][fundName],  fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired]));
-            SuccessMessage(playerid, store);
+            new string[140];
+            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %d$", FundRaisersInfo[i][fundName],  fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired]));
+            SuccessMessage(playerid, string);
 
             ClearFundLog(FundRaisersInfo[i][fundNewid]); // Очищаем лог пожертвований по этому сбору (В moneylog история остаётся)
 
@@ -637,15 +644,16 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                 return 1;
             }
 
+            new string[120];
             if(input[0] == 0) // Обычный Предмет 
             {
-                if(input[1] <= 0 || input[1] >= INVENTER) return format(store,sizeof(store),"{FF6347}ID Предмета не меньше 1 и не больше %d", INVENTER), ErrorMessage(playerid, store);
+                if(input[1] <= 0 || input[1] >= INVENTER) return format(string,sizeof(string),"{FF6347}ID Предмета не меньше 1 и не больше %d", INVENTER), ErrorMessage(playerid, string);
                 if(input[2] < 0 || input[2] > 100) return ErrorMessage(playerid, "{FF6347}Количество для предмета не меньше 1 не больше 100");
                 if(NotGiveThing(input[1], 0, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя добавить");
             }
             else if(input[0] == 2) // Аксессуар
             {
-                if(input[1] <= 320 || input[1] > MAX_OBJECT_MODEL_ID) return format(store,sizeof(store),"{FF6347}ID Аксессуара не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, store);
+                if(input[1] <= 320 || input[1] > MAX_OBJECT_MODEL_ID) return format(string,sizeof(string),"{FF6347}ID Аксессуара не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, string);
                 if(!GetAccessory(input[1])) return ErrorMessage(playerid, "{FF6347}Вы можете добавить аксессуар только из одобренного списка аксессуаров [ /accessory ]");
                 if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}Аксессуар в подарке может быть только один");
             }
@@ -690,8 +698,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             SettingFundRaisersGift(playerid, i);
             PlayerPlaySound(playerid,6401,0,0,0);
 
-            format(store,sizeof(store),"%s (%s)", FundRaisersInfo[i][fundName], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0));
-            AdminLog("fundgift", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, store);
+            format(string,sizeof(string),"%s (%s)", FundRaisersInfo[i][fundName], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0));
+            AdminLog("fundgift", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, string);
 
             new string_mysql[185 + 110];
             format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundGift`='%i', `fundGiftThingId%d`='%d', `fundGiftThingQuan%d`='%d',\
@@ -728,8 +736,9 @@ stock FundLog(senderid, const sender[], const senderip[], const quan[], const na
 
 stock ClearFundLog(fundid)
 {
-    format(store_query, sizeof(store_query),"DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
-	query_empty(pearsq_2, store_query);
+    new string_mysql[90];
+    format(string_mysql, sizeof(string_mysql),"DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
+	query_empty(pearsq_2, string_mysql);
     return 1;
 }
 

@@ -224,12 +224,15 @@ stock GetFullThingForCraft(playerid, type_message) // Проверяем, все
     if(noFull == 1)
     {
         new thingId = CreateThingID[playerid];
-        format(lines,sizeof(lines),""); // Очищаем Lines
-
         if(type_message == 0)
         {
+            new line[100],lines[1000];
             format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
-            LineCraftInfo(thingId);
+            format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
+            for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
+            {
+                if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
+            }
             ErrorMessage(playerid, lines);
         }
         else if(type_message == 1) 
@@ -344,8 +347,9 @@ stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображе
         }
         if(quanSlot >= 2)
         {
-            format(store,sizeof(store),"%d", quanSlot);
-            PlayerTextDrawSetString(playerid, CraftProcessDraw[i + MAX_CRAFT_ITEM][playerid], store);
+            new string[4];
+            format(string,sizeof(string),"%d", quanSlot);
+            PlayerTextDrawSetString(playerid, CraftProcessDraw[i + MAX_CRAFT_ITEM][playerid], string);
             PlayerTextDrawShow(playerid, CraftProcessDraw[i + MAX_CRAFT_ITEM][playerid]);
         }
     }
@@ -359,26 +363,20 @@ stock SelectThingCraft(playerid, thingId, thingType) // Выбрали пред�
     CreateThingID[playerid] = thingId;
     CreateThingType[playerid] = thingType;
     
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[1000];
     format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
-    LineCraftInfo(thingId);
+    format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
+    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
+    GetThingForCraft(thingId, craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+    for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
+    {
+        if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
+    }
     format(line,sizeof(line),"\n\n{cccccc}Выберите необходимые предметы в вашем инвентаре"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}А затем поместите их в свободные ячейки для создания"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
     UpdateDrawCraftThing(playerid, thingId);
-    return 1;
-}
-
-stock LineCraftInfo(thingId)
-{
-    new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
-    GetThingForCraft(thingId, craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
-    format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
-    for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
-    {
-        if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
-    }
     return 1;
 }
 
@@ -462,7 +460,14 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 else if(IsABoat(model)) ThingNeed[playerid] = 192;
                 else ThingNeed[playerid] = 183;
 
-                if(thingId != ThingNeed[playerid]) return format(store,sizeof(store),"{FF6347}Для ремонта этого транспорта требуется {cccccc}%s", friskName[ThingNeed[playerid]]), ErrorMessage(playerid, store), i_resetveshi(playerid);
+                if(thingId != ThingNeed[playerid])
+                {
+                    new string[90];
+                    format(string,sizeof(string),"{FF6347}Для ремонта этого транспорта требуется {cccccc}%s", friskName[ThingNeed[playerid]]);
+                    ErrorMessage(playerid, string);
+                    i_resetveshi(playerid);
+                    return 1;
+                }
 
                 ClearCraftProcess(playerid);
 
@@ -480,15 +485,21 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             if(CreateThingID[playerid] > 0) // Предмет уже выбран, решаем чё с ним делать (Отбой или чё)
             {
                 new thingId = CreateThingID[playerid];
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[100],lines[1000];
                 format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, CreateThingType[playerid], 0)), strcat(lines,line);
-                LineCraftInfo(thingId);
+                format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
+                new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
+                GetThingForCraft(thingId, craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
+                for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
+                {
+                    if(craftId[i] > 0) format(line,sizeof(line),"\n{0088ff}- %s | Количество: %d", GetNameThing(0, craftId[i], craftType[i], 0), craftQuan[i]), strcat(lines,line);
+                }
                 format(line,sizeof(line),"\n\n{FF6347}Хотите отменить создание этого предмета?"), strcat(lines,line);
                 ShowDialog(playerid,535,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"Да","Нет");
             }
             else
             {
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[100],lines[600];
                 if(Tabs_Load[playerid] == 11) // Верстак
                 {
                     if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Ничего не выбрано для улучшений, значит открываем меню создания
@@ -530,7 +541,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
         if(CraftProcessTimer[playerid] == 0)
         {
             i_resetveshi(playerid);
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[100],lines[1000];
 
             if(Tabs_Load[playerid] == 10) // Двигатель
             {
@@ -838,7 +849,7 @@ function CraftProcess(playerid, tabs_load)
                 SaveQuest(playerid);
             }
 
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[90],lines[270];
             format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
             format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel])), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
@@ -884,8 +895,9 @@ stock CreateThingAfterCraft(playerid)
             i_limit(playerid, CreateThingID[playerid], getQuan, getLimit);
             if(getQuan+1 > getLimit)
             {
-                format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit);
-                ErrorMessage(playerid, store);
+                new string[160];
+                format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit);
+                ErrorMessage(playerid, string);
                 return 1;
             }
         }
@@ -899,7 +911,7 @@ stock CreateThingAfterCraft(playerid)
     {
         PlayerPlaySound(playerid,31202,0,0,0);
 
-        format(lines,sizeof(lines),""); // Очищаем Lines
+        new line[90],lines[450];
         format(line,sizeof(line),"{FF6347}Потрачено..."), strcat(lines,line);
         format(line,sizeof(line),"\n\n{FF6347}У вас не получилось создать %s", GetNameThing(0, CreateThingID[playerid], CreateThingType[playerid], 0)), strcat(lines,line);
         format(line,sizeof(line),"\n{FF6347}Предметы, которые вы применяли, были использованы"), strcat(lines,line);
@@ -1056,7 +1068,7 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
     GetVehicleHealth(vehicleid, health);
     PlayerPlaySound(playerid,40405,0,0,0);
     
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[130],lines[2210];
     format(line,sizeof(line),"{ff9000}%s",GetVehicleName(VehInfo[vehicleid][vModel])), strcat(lines,line);
     format(line,sizeof(line),"\n{ff9000}Состояние: {cccccc}%.0f Health\n", health), strcat(lines,line);
 

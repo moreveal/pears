@@ -38,8 +38,7 @@
                 OnlineInfo[playerid][oOnBackThing][4] = 4;
                 OnlineInfo[playerid][oOnBackThing][5] = 3; // Упаковываем в мешок
                 SetPlayerAttachedObject(playerid, 2, 2060, 1, 0.076999, -0.155999, 0.000000, 91.999961, 0.000000, 0.000000, 0.610000, 0.649999, 0.664000, 0, 0);
-                format(store,sizeof(store),"{99ff66}Ай какой ты молодец, спёр мебель из дома\n\n{cccccc}Отнеси мешок на склад вашей организации, чтобы получить юниты");
-                SuccessMessage(playerid, store);
+                SuccessMessage(playerid, "{99ff66}Ай какой ты молодец, спёр мебель из дома\n\n{cccccc}Отнеси мешок на склад вашей организации, чтобы получить юниты");
             }
         }
     }

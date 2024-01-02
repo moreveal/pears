@@ -109,7 +109,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
         if(i > 0) // Есть подфракция
         {
             OnlineInfo[playerid][oNoClick] = true;
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[100],lines[200];
 			format(line,sizeof(line),"%s", frakName[g]), strcat(lines,line);
             format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g][i - 1][divColorHex], DivisionInfo[g][i - 1][divName]), strcat(lines,line);
 		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
@@ -119,7 +119,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
     else if(clickedid == SpawnChoiseDraw[6]) // Home
     {
         OnlineInfo[playerid][oNoClick] = true;
-        format(lines,sizeof(lines),""); // Очищаем Lines
+        new line[100],lines[400];
     
         new quan;
         if(PlayerInfo[playerid][pDom])

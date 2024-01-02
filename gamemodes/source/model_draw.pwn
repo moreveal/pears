@@ -244,8 +244,10 @@ CMD:editmodel(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду [ 10+ Adm ]");
     if(sscanf(params, "i",params[0])) return ErrorText(playerid, "{FF6347}/editmodel ID Модели объекта");
-    if(params[0] >= MAX_OBJECT_MODEL_ID || params[0] < 321) return format(store,sizeof(store),"{FF6347}ID Объекта не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, store);
-    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, store);
+
+	new string[120];
+    if(params[0] >= MAX_OBJECT_MODEL_ID || params[0] < 321) return format(string,sizeof(string),"{FF6347}ID Объекта не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, string);
+    if(editModelQuan >= MAX_EDITMODEL) return format(string,sizeof(string),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, string);
     
     // Закрываем использование компьютера или ноутбука
     if(Komputer[playerid] == 2) exitkomp(playerid, 2);
@@ -302,7 +304,7 @@ CMD:exportmodel(playerid)
 	new filename[64], quanExport;
 	format(filename, 64, "EditModel_%02d.%02d.%d_%02d %02d %02d.txt", day, month, year, hours, minuite, second); // Называем файл по дате и времени экспорта
 	
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	for(new i = 0; i < MAX_EDITMODEL; i++)
     {
         if(EditModelInfo[i][editModel] > 0)
@@ -327,8 +329,9 @@ CMD:exportmodel(playerid)
 	fwrite(File, lines); // Записываем все строки в файл
 	fclose(File); // Закрываем файл
 	
-	format(store,sizeof(store),"{99ff66}Экспортировано %d моделей\n{cccccc}Файл: %s", quanExport, filename);
-	SuccessMessage(playerid, store);
+	new string[140];
+	format(string,sizeof(string), "{99ff66}Экспортировано %d моделей\n{cccccc}Файл: %s", quanExport, filename);
+	SuccessMessage(playerid, string);
 	
 	AdminLog("exportmodel", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quanExport, "Экспортировал модели");
 	return 1;
@@ -338,7 +341,13 @@ stock SaveEditModelTextDraw(playerid)
 {
     if(AntiFloodMysqlRequest(playerid, 5)) return 1;
 
-    if(editModelQuan >= MAX_EDITMODEL) return format(store,sizeof(store),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL), ErrorMessage(playerid, store);
+    if(editModelQuan >= MAX_EDITMODEL)
+	{
+		new string[130];
+		format(string,sizeof(string),"{FF6347}Лимит отредактированных объектов %d\n{cccccc}Дождитесь когда разработчик перенесёт их в stock мода сервера", MAX_EDITMODEL);
+		ErrorMessage(playerid, string);
+		return 1;
+	}
 
 	new findIt = -1, noFind;
     for(new i = 0; i < MAX_EDITMODEL; i++)
@@ -687,7 +696,8 @@ stock UpdateShowPositionEditModelDraw(playerid)
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[0][playerid], editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
 	PlayerTextDrawShow(playerid, DynamicTextDraw[0][playerid]);
 
-	format(store,sizeof(store),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~X:%.2f, Y:%.2f, Z:%.2f, Zoom:%.2f", editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
-	GameTextForPlayer(playerid,store,8000,3);
+	new string[120];
+	format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~X:%.2f, Y:%.2f, Z:%.2f, Zoom:%.2f", editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
+	GameTextForPlayer(playerid,string,8000,3);
 	return 1;
 }

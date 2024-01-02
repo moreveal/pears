@@ -34,12 +34,13 @@ stock PlantBomb(playerid, time)
 
     TakeInvent(playerid, 11, 1, 0, 999);
     if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
-
     PlayerPlaySound(playerid,25800,0,0,0);
-    format(store,sizeof(store),"{99ff66}Бомба установлена и взорвётся через %d секунд\n\n{cccccc}Отойдите как можно дальше, радиус взрыва более 50-ти метров", time);
-    SuccessMessage(playerid, store);
-    format(store,sizeof(store),"[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через %d секунд ]", gender(playerid), time);
-    SendClientMessage(playerid, COLOR_GREY, store);
+
+    new string[140];
+    format(string,sizeof(string),"{99ff66}Бомба установлена и взорвётся через %d секунд\n\n{cccccc}Отойдите как можно дальше, радиус взрыва более 50-ти метров", time);
+    SuccessMessage(playerid, string);
+    format(string,sizeof(string),"[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через %d секунд ]", gender(playerid), time);
+    SendClientMessage(playerid, COLOR_GREY, string);
 	return 1;
 }
 
@@ -60,8 +61,10 @@ stock dialogCase_Bomb(playerid, dialogid, response, const inputtext[])
 CMD:gotoruins(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    if(sscanf(params, "i", params[0])) return format(store,sizeof(store),"[ Мысли ]: Телепорт к руинам от бомбы [ /gotoruins ID 0 - %d ]", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, store);
-    if(params[0] < 0 || params[0] >= MAX_BOMB) return format(store,sizeof(store),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, store);
+
+    new string[80];
+    if(sscanf(params, "i", params[0])) return format(string,sizeof(string),"[ Мысли ]: Телепорт к руинам от бомбы [ /gotoruins ID 0 - %d ]", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
+    if(params[0] < 0 || params[0] >= MAX_BOMB) return format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
     
     new r = params[0];
     if(RuinsInfo[r][boStat] == 0) return ErrorMessage(playerid, "{FF6347}Руин под этим ID не существует");
@@ -233,8 +236,10 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
         {   
             RuinsInfo[r][boProcess] --;
             if(PlayerInfo[playerid][pID] == 1) RuinsInfo[r][boProcess] -= 9; // Elon Musk
-            format(store, sizeof(store), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/200", RuinsInfo[r][boProcess]);
-            GameTextForPlayer(playerid,store,2000,3);
+
+            new string[50];
+            format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/200", RuinsInfo[r][boProcess]);
+            GameTextForPlayer(playerid,string,2000,3);
             ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
 
             if(RuinsInfo[r][boProcess] <= 0) // Завалы разгребли

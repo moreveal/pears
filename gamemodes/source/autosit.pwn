@@ -242,8 +242,9 @@ stock sit(playerid)
 					SetPlayerAttachedObject(playerid, 1, 19468, 1, -0.496000, 1.380000, 0.000000, 3.999999, 88.799995, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
 					if(DeiStat[playerid] < 20)
 					{
-						format(store,sizeof(store),"{ffcc66}Доить корову: {ff9000}%s", buttonName[Device[playerid]]);
-						ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•",store,"•","");
+						new string[60];
+						format(string,sizeof(string),"{ffcc66}Доить корову: {ff9000}%s", buttonName[Device[playerid]]);
+						ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 						DeiStat[playerid] = 0;
 					}
 				}

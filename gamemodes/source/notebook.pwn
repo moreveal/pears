@@ -51,7 +51,7 @@ stock ReloadSorting(playerid, dialogid)
 
 stock TradeSorting(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[600];
     format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
 
     if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ff9000}Все трейды"), strcat(lines,line);
@@ -73,7 +73,7 @@ stock TradeList(playerid, page)
     Login[2][playerid] = 1; // Блокируем кнопки ноутбука
 
     new max_line = 50, yes_next;
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[214],lines[4096];
 
     DP[0][playerid] = 0; // Строки на текущей странице
     if(page == 0)
@@ -101,6 +101,7 @@ stock TradeList(playerid, page)
     for(new d = minlist; d < MAX_TRADECRYPT; d++)
     {
         if(TradeCrypt[d][tcVlad] == 0) continue;
+        if(CheckSortingLineTrade(playerid, d)) continue;
 
         if(OnlineInfo[playerid][oSorting][1] == 0) // Отображаем все трейды
         {
@@ -126,12 +127,13 @@ stock TradeList(playerid, page)
         }
     }
     if(yes_next == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
-    format(store,sizeof(store),"Биржевые Сделки [ Страница %d ]", page + 1);
-    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Выход");
+    new header[60];
+    format(header,sizeof(header),"Биржевые Сделки [ Страница %d ]", page + 1);
+    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
     return 1;
 }
 
-stock ShowLineTrade(playerid, d)
+stock CheckSortingLineTrade(playerid, d)
 {
     // Сортировка по количеству
     if(OnlineInfo[playerid][oSorting][2] > 0) // От
@@ -152,6 +154,12 @@ stock ShowLineTrade(playerid, d)
     {
         if(TradeCrypt[d][tcCourse] > OnlineInfo[playerid][oSorting][5]) return 1; // Если число больше - пропускаем
     }
+    return 0;
+}
+
+stock ShowLineTrade(playerid, d)
+{
+    new line[180];
 
     // Подсчитываем строки
     List[DP[0][playerid]][playerid] = d;
@@ -165,7 +173,6 @@ stock ShowLineTrade(playerid, d)
     {
         format(line,sizeof(line),"\n{cccccc}%d. {99ff66}Покупка\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
     }
-    strcat(lines,line);
     return 1;
 }
 
@@ -193,8 +200,9 @@ stock ShowDialogCreateTradeGold(playerid, create_page)
     }
     else if(create_page == 1)
     {
-        format(store,sizeof(store),"{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше %d$", MAX_GOLD_COURSE);
-        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда",store,"Принять","Отмена");
+        new string[140];
+        format(string,sizeof(string),"{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше %d$", MAX_GOLD_COURSE);
+        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда",string,"Принять","Отмена");
     }
     return 1;
 }
@@ -222,8 +230,9 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem == 2)
             {
                 DP[0][playerid] = 1;
-                format(store,sizeof(store),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",store,"Принять","Отмена");
+                new string[210];
+                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",string,"Принять","Отмена");
             }
             if(listitem == 3) // Сбросить Фильтр
             {
@@ -307,7 +316,6 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
     {
         if(response)
         {
-            format(lines,sizeof(lines),""); // Очищаем Lines
             if(listitem == 0)
             {
                 if(TradeCrypt[playerid][tcStatus] == 0) TradeCrypt[playerid][tcStatus] = 1;
@@ -377,7 +385,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
 
             PlayerPlaySound(playerid,6401,0,0,0);
 
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[130],lines[1400];
             format(line,sizeof(line),"{99ff66}Трейд Создан!"), strcat(lines,line);
 
             format(line,sizeof(line),"\n\n{cccccc}Номер трейда: {ff9000}%d", id + 1), strcat(lines,line);
@@ -449,7 +457,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
 
 stock MyTradeSetting(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[130],lines[390];
     format(line,sizeof(line),"{cccccc}Мой Счёт: {FFCC00}%dG \t{cccccc}Банковский Счет: {99ff66}%d$ {cccccc}[%s]", PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pAccount], get_k(PlayerInfo[playerid][pAccount])), strcat(lines,line);
     if(TradeCrypt[playerid][tcStatus] == 0)
     {
@@ -498,7 +506,7 @@ stock GetFreeSlotTrade()
 
 stock inserttodelete(playerid, id) // Удаление заказа
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[500];
 
     if(TradeCrypt[id][tcActive] == 0) format(line,sizeof(line),"{cccccc}Тип трейда: \t{ffcc00}Продажа Gold"), strcat(lines,line);
     else format(line,sizeof(line),"{cccccc}Тип трейда: \t{99ff66}Покупка Gold"), strcat(lines,line);
@@ -517,7 +525,7 @@ stock inserttodelete(playerid, id) // Удаление заказа
 
 stock inserttobuy(playerid, b) // Покупка по заявки
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[600];
 
     if(TradeCrypt[b][tcActive] == 0) 
     {
@@ -579,18 +587,21 @@ stock gotobuycrypto(playerid,id)
     }
     else
     {
-		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
-		mysql_tquery(pearsq, store, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+        new string_mysql[80];
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, price);
     PlayerInfo[playerid][pDonateMoney] -= count;
     mysql_save(playerid,4);
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
-    format(store,sizeof(store),"[ Мысли ]: Я продал%s %d Gold, за %d$", gender(playerid), count, price);
-    SendClientMessage(playerid, COLOR_GREY, store);
-    format(store, sizeof(store),"{cccccc}Вы продали %d Gold %s за %d$",count, temp_name, price);
-    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", store, "Ок", "");
+
+    new string[100];
+    format(string,sizeof(string),"[ Мысли ]: Я продал%s %d Gold, за %d$", gender(playerid), count, price);
+    SendClientMessage(playerid, COLOR_GREY, string);
+    format(string, sizeof(string),"{cccccc}Вы продали %d Gold %s за %d$",count, temp_name, price);
+    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
@@ -604,14 +615,14 @@ function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
 	cache_get_row_count(rows);
 	if(rows)
 	{
-        new donatemoneyplayer;
+        new donatemoneyplayer, string[100];
         cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 
-        format(store_query,sizeof(store_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + price , userid);
-        query_empty(pearsq, store_query);
+        format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + price , userid);
+        query_empty(pearsq, string);
 
-        format(store, sizeof(store), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
-        notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, store);
+        format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);
 	}
@@ -638,18 +649,20 @@ stock gotosellcrypto(playerid,id)
     }
     else
     {
-		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
-		mysql_tquery(pearsq, store, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+        new string_mysql[80];
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, -price);
     PlayerInfo[playerid][pDonateMoney] += count;
     mysql_save(playerid,4);
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
-    format(store,sizeof(store),"[ Мысли ]: Я приобрел%s %d Gold, за %d$", gender(playerid), count, price);
-    SendClientMessage(playerid, COLOR_GREY, store);
-    format(store, sizeof(store),"{cccccc}Вы купили %d Gold у %s за %d$",count,temp_name,price);
-    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", store, "Ок", "");
+    new string[120];
+    format(string,sizeof(string),"[ Мысли ]: Я приобрел%s %d Gold, за %d$", gender(playerid), count, price);
+    SendClientMessage(playerid, COLOR_GREY, string);
+    format(string, sizeof(string),"{cccccc}Вы купили %d Gold у %s за %d$",count,temp_name,price);
+    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
@@ -663,14 +676,14 @@ function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
 	cache_get_row_count(rows);
 	if(rows)
 	{
-	    new moneyplayer;
+	    new moneyplayer, string[120];
         cache_get_value_name_int(0, "Account", moneyplayer);
 
-        format(store_query,sizeof(store_query),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + price , userid);
-        query_empty(pearsq, store_query);
+        format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + price , userid);
+        query_empty(pearsq, string);
 
-        format(store, sizeof(store), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
-        notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, store);
+        format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);
 	}
@@ -695,8 +708,9 @@ function LoadTradeCrypto()
 
         if(unix - TradeCrypt[f][tcUnix] >= 864000)
         {
-            format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[f][tcVlad]);
-		    mysql_tquery(pearsq, store, "Call_returncrypto", "dd", TradeCrypt[f][tcVlad], f);
+            new string_mysql[80];
+            format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[f][tcVlad]);
+		    mysql_tquery(pearsq, string_mysql, "Call_returncrypto", "dd", TradeCrypt[f][tcVlad], f);
         }
 	}
 	printf("[MODE]: Trade Gold [%d Quan][%d ms]",rows,GetTickCount() - time);
@@ -709,25 +723,26 @@ function Call_returncrypto(characterid, d)
     cache_get_row_count(rows);
     if(rows)
     {
+        new string[120];
         if(TradeCrypt[d][tcActive] == 0) // Продавал золото
         {
             new donatemoneyplayer;
             cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 
-            format(store_query,sizeof(store_query),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
-            query_empty(pearsq, store_query);
+            format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
+            query_empty(pearsq, string);
         }
         else // Покупал золото
         {
             new moneyplayer;
             cache_get_value_name_int(0, "Account", moneyplayer);
 
-            format(store_query,sizeof(store_query),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], characterid);
-            query_empty(pearsq, store_query);
+            format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], characterid);
+            query_empty(pearsq, string);
         }
 
-        format(store, sizeof(store), "Ваш Gold трейд № %d был удалён", d + 1);
-        notify(0, "", characterid, TradeCrypt[d][tcName], store);
+        format(string, sizeof(string), "Ваш Gold трейд № %d был удалён", d + 1);
+        notify(0, "", characterid, TradeCrypt[d][tcName], string);
     }
     deltradecrypto(d); // Удаляем трейд
     return 1;
@@ -760,8 +775,9 @@ stock CheckCancelCrypto(playerid, stat)
 
     if(quan > 0 && stat == 1)
     {
-        format(store, sizeof(store), "{0088ff}У вас удалены неактивные трейды в количестве %d {ffcc66}[ N >> Ноутбук >> Голд Трейд ]", quan);
-        SendClientMessage(playerid, COLOR_GREY, store);
+        new string[120];
+        format(string, sizeof(string), "{0088ff}У вас удалены неактивные трейды в количестве %d {ffcc66}[ N >> Ноутбук >> Голд Трейд ]", quan);
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
     return 1;
 }

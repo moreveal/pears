@@ -11,15 +11,16 @@ CMD:checklook(playerid, const params[]) // VREMENNO
     if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его нет..");
     new playerTarget = GetPlayerCameraTargetPlayer(params[0]);
 
+    new string[90];
     if(playerTarget == INVALID_PLAYER_ID)
     {
-        format(store, sizeof(store), "[ Мысли ]: %s[%d] ни на кого не смотрит", PlayerInfo[params[0]][pName], params[0]);
-        SendClientMessage(playerid, COLOR_GREY, store);
+        format(string, sizeof(string), "[ Мысли ]: %s[%d] ни на кого не смотрит", PlayerInfo[params[0]][pName], params[0]);
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
     else
     {
-        format(store, sizeof(store), "[ Мысли ]: %s[%d] смотрит на %s[%d]", PlayerInfo[params[0]][pName], params[0], PlayerInfo[playerTarget][pName], playerTarget);
-        SendClientMessage(playerid, COLOR_GREY, store);
+        format(string, sizeof(string), "[ Мысли ]: %s[%d] смотрит на %s[%d]", PlayerInfo[params[0]][pName], params[0], PlayerInfo[playerTarget][pName], playerTarget);
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
     return 1;
 }
@@ -32,8 +33,9 @@ stock PrisonShowerSoap(playerid) // Роняем мыло
         new fallSoap = random(2);
         if(fallSoap == 1) // Роняем мыло
         {
-            format(store, sizeof(store), "[ Мысли ]: Упс.. Я уронил%s мыло. Может поднять? [ ALT ]", gender(playerid));
-            SendClientMessage(playerid, COLOR_GREY, store);
+            new string[90];
+            format(string, sizeof(string), "[ Мысли ]: Упс.. Я уронил%s мыло. Может поднять? [ ALT ]", gender(playerid));
+            SendClientMessage(playerid, COLOR_GREY, string);
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Упс! Вы уронили мыло. Рискнёте поднять? [ ALT ]","*","");
             PlayerPlaySound(playerid, 6801, 0,0,0);
 
@@ -65,8 +67,9 @@ stock PickupSoap(playerid) // Подбираем мыло
         soapObject = 0;
         DestroyDynamic3DTextLabel(soapLabel);
 
-        format(store, sizeof(store), "поднял%s мыло с пола", gender(playerid));
-        SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
+        new string[60];
+        format(string, sizeof(string), "поднял%s мыло с пола", gender(playerid));
+        SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
         ApplyAnimation(playerid,"CARRY","liftup",2.0,0,1,1,0,0);
         PlayerPlaySound(playerid, 5601, 0,0,0);
 
@@ -122,10 +125,11 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
         }
     }
 
+    new string[180];
     if(quanAll == 0)
     {
-        format(store, sizeof(store), "[ Мысли ]: Я поднял%s мыло. Фух.. хорошо что рядом никого не было", gender(playerid));
-        SendClientMessage(playerid, COLOR_GREY, store);
+        format(string, sizeof(string), "[ Мысли ]: Я поднял%s мыло. Фух.. хорошо что рядом никого не было", gender(playerid));
+        SendClientMessage(playerid, COLOR_GREY, string);
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы подняли мыло и вам повезло. Рядом никого не было","*","");
     }
     else
@@ -137,11 +141,11 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             new randText = random(5);
 
             // Мысли
-            format(store, sizeof(store), "[ Мысли ]: Я поднял%s мыло. %s посмотрел%s на меня %s", gender(playerid), rpplayername(giveplayerid), gender(giveplayerid), GenderTextShower(giveplayerid, randText));
-            SendClientMessage(playerid, COLOR_GREY, store);
+            format(string, sizeof(string), "[ Мысли ]: Я поднял%s мыло. %s посмотрел%s на меня %s", gender(playerid), rpplayername(giveplayerid), gender(giveplayerid), GenderTextShower(giveplayerid, randText));
+            SendClientMessage(playerid, COLOR_GREY, string);
 
             // Диалог
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[90],lines[360];
             format(line,sizeof(line),"{ffcc66}Вы наклонились и подняли мыло с пола"), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Рядом стоял%s %s", gender(giveplayerid), rpplayername(giveplayerid)), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}%s посмотрел%s на вас %s", rpplayername(giveplayerid), gender(giveplayerid), GenderTextShower(giveplayerid, randText)), strcat(lines,line);
@@ -149,12 +153,12 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
             // Bubble
-            format(store, sizeof(store), "посмотрел%s на %s %s", gender(giveplayerid), rpplayername(playerid), GenderTextShower(giveplayerid, randText));
-            SetPlayerChatBubble(giveplayerid,store,COLOR_PURPLE,20.0,5000);
+            format(string, sizeof(string), "посмотрел%s на %s %s", gender(giveplayerid), rpplayername(playerid), GenderTextShower(giveplayerid, randText));
+            SetPlayerChatBubble(giveplayerid,string,COLOR_PURPLE,20.0,5000);
 
             //Prox
-            format(store, sizeof(store), "* %s посмотрел%s на %s %s", rpplayername(giveplayerid), gender(giveplayerid), rpplayername(playerid), GenderTextShower(giveplayerid, randText));
-		    ProxDetectorScream(20.0, giveplayerid, store, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+            format(string, sizeof(string), "* %s посмотрел%s на %s %s", rpplayername(giveplayerid), gender(giveplayerid), rpplayername(playerid), GenderTextShower(giveplayerid, randText));
+		    ProxDetectorScream(20.0, giveplayerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 
             if(PlayerInfo[playerid][pAchieve][126] == 0) AchievePlayer(playerid, 126, 1);
         }
@@ -164,11 +168,11 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             new giveplayerid = nearPlayers[nearSlot] - 1;
 
             // Мысли
-            format(store, sizeof(store), "[ Мысли ]: Я поднял%s мыло. %s был%s занят%s своими делами и не стал%s на меня смотреть", gender(playerid), rpplayername(giveplayerid), gender(giveplayerid), gender(giveplayerid), gender(giveplayerid));
-            SendClientMessage(playerid, COLOR_GREY, store);
+            format(string, sizeof(string), "[ Мысли ]: Я поднял%s мыло. %s был%s занят%s своими делами и не стал%s на меня смотреть", gender(playerid), rpplayername(giveplayerid), gender(giveplayerid), gender(giveplayerid), gender(giveplayerid));
+            SendClientMessage(playerid, COLOR_GREY, string);
 
             // Диалог
-            format(lines,sizeof(lines),""); // Очищаем Lines
+            new line[90],lines[360];
             format(line,sizeof(line),"{ffcc66}Вы наклонились и подняли мыло с пола"), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Рядом стоял%s %s", gender(giveplayerid), rpplayername(giveplayerid)), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}%s был%s занят%s своими делами и не стал%s на вас смотреть", rpplayername(giveplayerid), gender(giveplayerid), gender(giveplayerid), gender(giveplayerid)), strcat(lines,line);

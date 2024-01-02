@@ -119,13 +119,15 @@ CMD:zahvat(playerid, const params[])
 	gettime(tmphour, tmpminute, tmpsecond);
 	new unixtime = gettime();
 	if(tmphour >= 0 && tmphour < 10 && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью [ 00:00 - 10:00 ]");
-	if(FrakCD[frakid] > unixtime) return format(store,sizeof(store),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %d сек. ]",FrakCD[frakid]-unixtime), ErrorMessage(playerid, store);
+
+	new string[160];
+	if(FrakCD[frakid] > unixtime) return format(string,sizeof(string),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %d сек. ]",FrakCD[frakid]-unixtime), ErrorMessage(playerid, string);
 	new Float:Pos[3];
 	GetPlayerPos(playerid,Pos[0],Pos[1],Pos[2]);
 	if(Pos[2] >= 90.000) return  ErrorMessage(playerid, "{FF6347}Вы слишком высоко над городом");
 	if(Kapt[frakid] > 0) return ErrorMessage(playerid, "{FF6347}Ваша банда уже сражается за территорию");
-	if(CaptInfo[cCaptStat] == true) return format(store,sizeof(store),"{FF6347}В гетто происходит конфликт {cccccc}[ Капт закончится через: %d ]", CaptInfo[cTime]), ErrorMessage(playerid, store);
-	if(CaptInfo[cCaptReset] >= 1) return format(store,sizeof(store),"{FF6347}Сейчас... ещё немного {cccccc}[ Пауза после предыдущего капта: %d ]", CaptInfo[cCaptReset]), ErrorMessage(playerid, store);
+	if(CaptInfo[cCaptStat] == true) return format(string,sizeof(string),"{FF6347}В гетто происходит конфликт {cccccc}[ Капт закончится через: %d ]", CaptInfo[cTime]), ErrorMessage(playerid, string);
+	if(CaptInfo[cCaptReset] >= 1) return format(string,sizeof(string),"{FF6347}Сейчас... ещё немного {cccccc}[ Пауза после предыдущего капта: %d ]", CaptInfo[cCaptReset]), ErrorMessage(playerid, string);
 	
 	new findCapt;
 	for(new i = 0;i<GZONES;i++)
@@ -134,7 +136,7 @@ CMD:zahvat(playerid, const params[])
 		{
 			new etafraka = GZInfo[i][gFrakVlad];
 			if(etafraka == frakid) return ErrorMessage(playerid, "{FF6347}Вы не можете начать захват своей территории");
-			if(GZInfo[i][gCherez] > unixtime) return format(store,sizeof(store),"{FF6347}На этой территории совсем недавно была битва {cccccc}[ Осталось %d сек. ]",GZInfo[i][gCherez]-unixtime), ErrorMessage(playerid, store);
+			if(GZInfo[i][gCherez] > unixtime) return format(string,sizeof(string),"{FF6347}На этой территории совсем недавно была битва {cccccc}[ Осталось %d сек. ]",GZInfo[i][gCherez]-unixtime), ErrorMessage(playerid, string);
 			if(OrganInfo[etafraka][gstat2] == 1) return ErrorMessage(playerid, "{FF6347}Банда, которой принадлежит эта территория, временно закрыта [ Вероятно, у них нет лидера ]");
  			if(!IsPlayerInBandOnline(etafraka) && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете начать захват территории, которую некому защищать [ Участники Offline ]");
  			if(etafraka >= 1)
@@ -148,11 +150,11 @@ CMD:zahvat(playerid, const params[])
 				CaptInfo[cUnix] = unixtime;
 				Kapt[frakid] = GZInfo[i][gFrakVlad]; // Ставим противников
 				Kapt[GZInfo[i][gFrakVlad]] = frakid; // Ставим противников
-				format(store,sizeof(store),"{ff0000}[ GANG ZONE ]: Внимание! {ffffff}Вашу территорию атакует: %s",frakName[frakid]);
-  				SendRadioMessage(GZInfo[i][gFrakVlad],COLOR_LIGHTRED,store);
+				format(string,sizeof(string),"{ff0000}[ GANG ZONE ]: Внимание! {ffffff}Вашу территорию атакует: %s",frakName[frakid]);
+  				SendRadioMessage(GZInfo[i][gFrakVlad],COLOR_LIGHTRED,string);
   				SendRadioMessage(GZInfo[i][gFrakVlad],COLOR_LIGHTRED,"{ff0000}[ GANG ZONE ]: {ffffff}У вас есть 10 минут на то, чтобы отстоять свою зону!");
-    			format(store,sizeof(store),"{0088ff}[ GANG ZONE ]: {ffffff}%s начал захват территории %s",playername(playerid),frakName[GZInfo[i][gFrakVlad]]);
-     			SendRadioMessage(frakid,COLOR_LIGHTRED,store);
+    			format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s начал захват территории %s",playername(playerid),frakName[GZInfo[i][gFrakVlad]]);
+     			SendRadioMessage(frakid,COLOR_LIGHTRED,string);
       			SetPlayerChatBubble(playerid,"начинает захват территории",COLOR_PURPLE,35.0,10000);
       			CaptInfo[cAttack] = frakid; // ID Банды, которая атакует
       			CaptInfo[cCaptPresenceCD] = 30;
@@ -175,8 +177,8 @@ CMD:zahvat(playerid, const params[])
 				GZInfo[i][gBitva] = frakid;
 				ServerInfo[42] ++;
 				SaveServer(42);
-				format(store, sizeof(store), " [ ADM ]: %s[%d] начал капт № %d {FF8282}[ Проследите за соблюдением правил ]", PlayerInfo[playerid][pName], playerid, ServerInfo[42]);
-				ABroadCast(COLOR_ADM,store,1);
+				format(string, sizeof(string), " [ ADM ]: %s[%d] начал капт № %d {FF8282}[ Проследите за соблюдением правил ]", PlayerInfo[playerid][pName], playerid, ServerInfo[42]);
+				ABroadCast(COLOR_ADM,string,1);
 				OrgLog(frakid, "zahvat", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ServerInfo[42], "");
        			// Включаем режимы исходя из настроек
 				if(unixtime > OrganInfo[frakid][gSanCbug])
@@ -233,14 +235,15 @@ CMD:sellgz(playerid, const params[])
                 if(playerid == params[0]) return ErrorMessage(playerid, "{FF6347}Вы не можете передать территорию себе");
                 if(oGetPlayerMoney(params[0]) < params[1]) return ErrorMessage(playerid, "{FF6347}Покупателю не хватает денег");
 
-                format(store, sizeof(store), "{cccccc}[ Мысли ]: Я продаю эту территорию лидеру {99ff66}%s{cccccc}за {99ff66}%d$", playername(params[0]),params[1]);
-                SendClientMessage(playerid, COLOR_GREY, store);
+				new string[140];
+                format(string, sizeof(string), "{cccccc}[ Мысли ]: Я продаю эту территорию лидеру {99ff66}%s{cccccc}за {99ff66}%d$", playername(params[0]),params[1]);
+                SendClientMessage(playerid, COLOR_GREY, string);
 
                 DP[0][params[0]] = playerid;
                 DP[1][params[0]] = i;
                 DP[2][params[0]] = params[1];
-                format(store, sizeof(store), "{0088ff}%s{FFFFFF} предлагает вам купить эту территорию за {99ff66}%d$\n{FFFFFF}Купить ?",playername(playerid),params[1]);
-                ShowDialog(params[0],425,DIALOG_STYLE_MSGBOX,"{FFFFFF}* {0088ff}[ GANG ZONE ] {FFFFFF}*",store,"Да","Нет");
+                format(string, sizeof(string), "{0088ff}%s{FFFFFF} предлагает вам купить эту территорию за {99ff66}%d$\n{FFFFFF}Купить ?",playername(playerid),params[1]);
+                ShowDialog(params[0],425,DIALOG_STYLE_MSGBOX,"{FFFFFF}* {0088ff}[ GANG ZONE ] {FFFFFF}*",string,"Да","Нет");
 
                 break;
             }
@@ -363,10 +366,11 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				oGivePlayerMoney(playerid, -cena); // Снимаем бабло с покупателя
 				oGivePlayerMoney(giveplayerid, cena); // Даём бабло продавцу
 
-				format(store,sizeof(store),"{ff0000}[ GANG ZONE ]: {ffffff}Лидер %s купил территорию у %s {ffffff}за {00cc00}%d$",PlayerInfo[playerid][pName],frakName[PlayerInfo[giveplayerid][pLeader]],cena);
-				SendRadioMessage(PlayerInfo[playerid][pLeader],COLOR_LIGHTRED,store);
-				format(store,sizeof(store),"{0088ff}[ GANG ZONE ]: {ffffff}Лидер %s продал территорию банде %s {ffffff}за {00cc00}%d$",PlayerInfo[giveplayerid][pName],frakName[PlayerInfo[playerid][pLeader]],cena);
-				SendRadioMessage(PlayerInfo[giveplayerid][pLeader],COLOR_LIGHTRED,store);
+				new string[160];
+				format(string,sizeof(string),"{ff0000}[ GANG ZONE ]: {ffffff}Лидер %s купил территорию у %s {ffffff}за {99ff66}%d$",PlayerInfo[playerid][pName],frakName[PlayerInfo[giveplayerid][pLeader]],cena);
+				SendRadioMessage(PlayerInfo[playerid][pLeader],COLOR_LIGHTRED,string);
+				format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}Лидер %s продал территорию банде %s {ffffff}за {99ff66}%d$",PlayerInfo[giveplayerid][pName],frakName[PlayerInfo[playerid][pLeader]],cena);
+				SendRadioMessage(PlayerInfo[giveplayerid][pLeader],COLOR_LIGHTRED,string);
 
 				GangZoneShowForAll(gz,GetGZColorF(PlayerInfo[playerid][pLeader])); // Врубаем цвет новых владельцев
 				GZInfo[gz][gFrakVlad] = PlayerInfo[playerid][pLeader]; // Устанавливаем цифру новых владельцев
@@ -393,21 +397,22 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 
 			if(listitem == 0)
 			{
+				new string[160];
 				if(OrganInfo[frakid][gRejim2] == false)
 				{
 					new unixtime = gettime();
 					if(OrganInfo[frakid][gSanCbug] > unixtime) return ErrorText(playerid, "[ Мысли ]: Нельзя нападать с этим режимом [ Ограничение администрации ]"), cmd_capture(playerid);
 				    if(OrganInfo[frakid][gSCbug] == true) return ErrorText(playerid, "[ Мысли ]: Прошлая битва была с этим режимом. Нельзя повторно!"), cmd_capture(playerid);
 					OrganInfo[frakid][gRejim2] = true;
-					format(store,sizeof(store),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Активирован ]",PlayerInfo[playerid][pName]);
-  					SendRadioMessage(frakid,COLOR_GREY,store);
+					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Активирован ]",PlayerInfo[playerid][pName]);
+  					SendRadioMessage(frakid,COLOR_GREY,string);
   					OrgLog(frakid, "capture", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "+C: ON");
 				}
 				else if(OrganInfo[frakid][gRejim2] == true)
 				{
 					OrganInfo[frakid][gRejim2] = false;
-					format(store,sizeof(store),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Отключён ]",PlayerInfo[playerid][pName]);
-  					SendRadioMessage(frakid,COLOR_GREY,store);
+					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Отключён ]",PlayerInfo[playerid][pName]);
+  					SendRadioMessage(frakid,COLOR_GREY,string);
   					OrgLog(frakid, "capture", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "+C: OFF");
 				}
 			}
@@ -436,10 +441,12 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 			ServerInfo[41] ++;
 			SaveServer(41);
 			UpdateHonor(0),UpdateHonor(1),UpdateHonor(2);
-			format(store, sizeof(store), "{ffffff}** {ffffff}%s {00C6FF}сбросил все территории {cccccc}[ Подсчёт войны обновлён ] **",PlayerInfo[playerid][pName]);
-			SendGangMessage(COLOR_ALLDEPT, store);
-			format(store, sizeof(store), " [ ADM ]: %s сбросил все территории в гетто", PlayerInfo[playerid][pName]);
-            ABroadCast(COLOR_ADM,store,1);
+
+			new string[160];
+			format(string, sizeof(string), "{ffffff}** {ffffff}%s {00C6FF}сбросил все территории {cccccc}[ Подсчёт войны обновлён ] **",PlayerInfo[playerid][pName]);
+			SendGangMessage(COLOR_ALLDEPT, string);
+			format(string, sizeof(string), " [ ADM ]: %s сбросил все территории в гетто", PlayerInfo[playerid][pName]);
+            ABroadCast(COLOR_ADM,string,1);
 			AdminLog("reloadgz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 		}
 	}
@@ -848,19 +855,20 @@ stock InfoSendZone(g) // Оповещение в чат о результата�
 {
  	new zgang;
 	for(new z = 0; z < GZONES; z++) { if(GZInfo[z][gFrakVlad] == g) zgang ++; }
+	new string[160];
 	if(zgang >= GZONES)
 	{
-		format(store, sizeof(store), "** [%s] Под контролем %s {FF8282}%d территорий {ff9000}[ Короли Гетто ] {FF8282}**", AbbName[g], frakName[g], zgang);
-		SendGangMessage(COLOR_ALLDEPT, store);
-		format(store, sizeof(store), " [ ADM ]: Внимание! Всё гетто полностью захвачено %s {cccccc}[ Требуется сброс /reloadgz ]", frakName[g]);
-		ABroadCast(COLOR_ADM,store,1);
+		format(string, sizeof(string), "** [%s] Под контролем %s {FF8282}%d территорий {ff9000}[ Короли Гетто ] {FF8282}**", AbbName[g], frakName[g], zgang);
+		SendGangMessage(COLOR_ALLDEPT, string);
+		format(string, sizeof(string), " [ ADM ]: Внимание! Всё гетто полностью захвачено %s {cccccc}[ Требуется сброс /reloadgz ]", frakName[g]);
+		ABroadCast(COLOR_ADM,string,1);
 		OrganInfo[g][gCapture][0] ++;
 		OrgLog(g, "ghetto", 0, "", "", 0, "", "", 0, "Короли Гетто");
 	}
 	else
 	{
-		format(store, sizeof(store), "** [%s] Под контролем %s {FF8282}%d территорий **", AbbName[g], frakName[g], zgang);
-		SendGangMessage(COLOR_ALLDEPT, store);
+		format(string, sizeof(string), "** [%s] Под контролем %s {FF8282}%d территорий **", AbbName[g], frakName[g], zgang);
+		SendGangMessage(COLOR_ALLDEPT, string);
 	}
 	return 1;
 }

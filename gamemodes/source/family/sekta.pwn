@@ -12,7 +12,7 @@ new SektaActor[MAX_FAMILY]; // Актер у алтаря
 stock ShowSektaMenu(playerid,family)
 {
     DP[0][playerid] = family;
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[30],lines[90];
     format(line,sizeof(line),"Рейтинг влияния в штате"), strcat(lines,line);
     format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
     format(line,sizeof(line),"\nПроведения обряда"), strcat(lines,line);
@@ -23,7 +23,7 @@ stock ShowSektaMenu(playerid,family)
 stock ShowSektaAltarMenu(playerid)
 {
     new fam = DP[0][Playerid];
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[40],lines[120];
     if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
@@ -33,7 +33,7 @@ stock ShowSektaAltarMenu(playerid)
 
 stock RaitingSekta(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[60],lines[4048];
     format(line,sizeof(line),"№.Название\tВлияние"), strcat(lines,line);
     for(new i; i < MAX_FAMILY; i++)
     {
@@ -238,7 +238,7 @@ stock SektaEat(playerid,targetid)
 
 CMD:gnews(playerid, const params[])
 {
-	new string[144];
+	new string[220];
 	if(isamute(playerid) == 1) return 1;
 	if(sscanf(params, "s[144]",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Новости CNN [ /gnews Текст ]");
     new fam = PlayerInfo[playerid][pFamily];
@@ -247,8 +247,8 @@ CMD:gnews(playerid, const params[])
     {
         new tyear, tmonth, tday, thour, tminute, tsecond;
 	    stamp2datetime(FamilyInfo[fam][fsUnixCNN]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-        format(store, sizeof(store),"{ff6457} Лимит: 1 эфир в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
-        return ErrorMessage(playerid,store);
+        format(string, sizeof(string),"{ff6457} Лимит: 1 эфир в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+        return ErrorMessage(playerid,string);
     }
     if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}Какая-то секта уже ведет эфир!");
     else if(SektaCNN[0] == -1)
@@ -330,7 +330,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             if(listitem == 0)
             {
                 if((FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[60],lines[120];
                 if(Sekta[fam][sektaRiteStatus] == 0)
                 {                
                     format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
@@ -371,10 +371,11 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             {
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(FamilyInfo[fam][fsUnixRite]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-                format(store, sizeof(store),"{ff6457} Лимит: 1 обряд в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
-                return ErrorMessage(playerid,store);
+                new string[140];
+                format(string, sizeof(string),"{ff6457} Лимит: 1 обряд в день. Следующий обряд станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+                return ErrorMessage(playerid,string);
             }
-            if(Sekta[fam][sektaRiteStatus] == 1) return ErrorMessage(playerid,"{ff6347} Сейчас уже проходит обряд");
+            if(Sekta[fam][sektaRiteStatus] == 1) return ErrorMessage(playerid,"{ff6347}Сейчас уже проходит обряд");
             new quan,quanaccept,memberrite[50],checkingPlayerObject = -1;
             new Float:X,Float:Y,Float:Z,Float:A,world,int;
             foreach(Player,i)

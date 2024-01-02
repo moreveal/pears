@@ -86,14 +86,15 @@ stock use_throw(playerid, inva, useinva)
 
     if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	
+	new string[180];
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
 	{
 	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
 		{
 		    DP[0][playerid] = inva;
 			Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
-			format(store,sizeof(store),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,1094,DIALOG_STYLE_INPUT,"{ff9000}Выброшено",store,"Принять","Отмена");
+			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1094,DIALOG_STYLE_INPUT,"{ff9000}Выброшено",string,"Принять","Отмена");
 			return 1;
 		}
 	}
@@ -134,7 +135,7 @@ stock use_throw(playerid, inva, useinva)
 	// Взаимодействие с Подносом еды или Ноутбуком
 	if((fpick >= 128 && fpick <= 138 || fpick == 42) && thingType == 0 && thingPack == 0)
 	{
-	    if(ThrowInfo[t][tUseplayer] > 0 && ThrowInfo[t][tUseplayer] != playerid+1) return format(store,sizeof(store),"{FF6347}С этим предметом взаимодействует %s",PlayerInfo[ThrowInfo[t][tUseplayer]-1][pName]), ErrorMessage(playerid, store);
+	    if(ThrowInfo[t][tUseplayer] > 0 && ThrowInfo[t][tUseplayer] != playerid+1) return format(string,sizeof(string),"{FF6347}С этим предметом взаимодействует %s",PlayerInfo[ThrowInfo[t][tUseplayer]-1][pName]), ErrorMessage(playerid, string);
 		if(playerSeat[playerid])
 		{
 		    if(!IsPlayerInRangeOfPoint(playerid,2.0,ThrowInfo[t][tX],ThrowInfo[t][tY],ThrowInfo[t][tZ])) return ErrorMessage(playerid, "{FF6347}Этот предмет слишком далеко");
@@ -150,9 +151,9 @@ stock use_throw(playerid, inva, useinva)
 			else
 			{
 			    Hold[playerid] = 13, HoldFrisk[playerid] = fpick, HoldQuan[playerid] = fquan, HoldStat[playerid] = t, ThrowInfo[t][tUseplayer] = playerid+1;
-			    if(fpick >= 128 && fpick <= 138) format(store,sizeof(store),"{ffcc66}Вы начали взаимодействие с предметом: %s (%d кусков)\nЗакройте инвентарь (ESC), чтобы начать кушать {ff9000}[ Кушать: %s ]", friskName[fpick], fquan-1, buttonName[Device[playerid]]);
-				else format(store,sizeof(store),"{ffcc66}Вы начали взаимодействие с предметом: %s\nЗакройте инвентарь (ESC), чтобы использовать предмет {ff9000}[ Использовать: %s ]", friskName[fpick], buttonName[Device[playerid]]);
-    			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•",store,"•","");
+			    if(fpick >= 128 && fpick <= 138) format(string,sizeof(string),"{ffcc66}Вы начали взаимодействие с предметом: %s (%d кусков)\nЗакройте инвентарь (ESC), чтобы начать кушать {ff9000}[ Кушать: %s ]", friskName[fpick], fquan-1, buttonName[Device[playerid]]);
+				else format(string,sizeof(string),"{ffcc66}Вы начали взаимодействие с предметом: %s\nЗакройте инвентарь (ESC), чтобы использовать предмет {ff9000}[ Использовать: %s ]", friskName[fpick], buttonName[Device[playerid]]);
+    			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•",string,"•","");
 				TextDrawShowForPlayer(playerid, MindDraw[3]);
 				if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");
 				else if(Device[playerid] == 1) PlayerTextDrawSetString(playerid, HintButton, "H");
@@ -176,7 +177,7 @@ stock use_throw(playerid, inva, useinva)
 			{
 				new getQuan, getLimit;
 	    		i_limit(playerid, fpick, getQuan, getLimit);
-	    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, store);
+	    		if(getQuan+fquan > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, string);
 	 		}
 		}
 	
@@ -192,8 +193,8 @@ stock use_throw(playerid, inva, useinva)
 
 		if(ThrowInfo[t][tPutLocation] == 1 && fpick >= 112 && fpick <= 121 || fpick == 14 || fpick == 37) in_hand_eat(playerid, 3, fpick, fpick, fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]);
 
-		format(store,sizeof(store),"[ID %d] Взял: %s",t,GetNameThing(1, fpick, thingType, thingPack));
-		UserLog("took", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ThrowInfo[t][tPlayerid], ThrowInfo[t][tName], ThrowInfo[t][tIP], fquan, store);
+		format(string,sizeof(string),"[ID %d] Взял: %s",t,GetNameThing(1, fpick, thingType, thingPack));
+		UserLog("took", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ThrowInfo[t][tPlayerid], ThrowInfo[t][tName], ThrowInfo[t][tIP], fquan, string);
 	}
 	if(fpick == 38 || fpick == 122 || fpick == 123)
 	{
@@ -269,8 +270,9 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 				ThrowInfo[g][tType] = thingType;
 				ThrowInfo[g][tPack] = thingPack;
 
-			    format(store,sizeof(store),"[tID %d] Оставил: %s",g, GetNameThing(1, fpick, thingType, thingPack));
-			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, store);
+				new string[60];
+			    format(string,sizeof(string),"[tID %d] Оставил: %s",g, GetNameThing(1, fpick, thingType, thingPack));
+			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, string);
 				noobject = 1, gee = g;
 				break;
 			}
@@ -316,9 +318,10 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			    format(ThrowInfo[g][tName],24,"%s",PlayerInfo[playerid][pName]);
 			    format(ThrowInfo[g][tIP],24,"%s",PlayerInfo[playerid][pPlaIP]);
 
-			    if(fpick != frisk) format(store,sizeof(store),"[tID %d] Оставил: %s (%s)",g,GetNameThing(1, fpick, thingType, thingPack),GetNameThing(1, frisk, thingType, thingPack));
-			    else format(store,sizeof(store),"[tID %d] Оставил: %s", g, GetNameThing(1, fpick, thingType, thingPack));
-			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, store);
+				new string[80];
+			    if(fpick != frisk) format(string,sizeof(string),"[tID %d] Оставил: %s (%s)",g,GetNameThing(1, fpick, thingType, thingPack),GetNameThing(1, frisk, thingType, thingPack));
+			    else format(string,sizeof(string),"[tID %d] Оставил: %s", g, GetNameThing(1, fpick, thingType, thingPack));
+			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, string);
 			}
 			else if(playerid == -1) ThrowInfo[g][tPlayerid] = 0, format(ThrowInfo[g][tName], 24, "0"), format(ThrowInfo[g][tIP], 24, "0");
 			noobject = 1, gee = g;

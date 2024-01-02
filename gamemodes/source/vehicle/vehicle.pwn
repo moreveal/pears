@@ -739,7 +739,7 @@ stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
 stock vehprice(playerid, page) // Настройки гос. цен транспорта
 {
 	new max_line = 50, yesNext;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[160],lines[4096];
 
 	DP[0][playerid] = 0; // Строки на текущей странице
 	if(page == 0)
@@ -779,7 +779,7 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 	{
 		if(one == 0) DP[4][playerid] = v, one = 1; // Записывали первый vehicleList
 
-		ShowLineVehPrice(playerid, v);
+		if(CheckSortingLineVehPrice(playerid, v)) format(line,sizeof(line),"%s", ShowLineVehPrice(playerid, v)), strcat(lines,line);
 
 		if(DP[0][playerid] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
         {
@@ -794,16 +794,17 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 		}
 	}
 	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t"), strcat(lines,line);
-    format(store,sizeof(store),"Гос Стоимость Транспорта [ Страница %d ]", page + 1);
-    ShowDialog(playerid,1066,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Выход");
+	new header[60];
+    format(header,sizeof(header),"Гос Стоимость Транспорта [ Страница %d ]", page + 1);
+    ShowDialog(playerid,1066,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
     return 1;
 }
 
-stock ShowLineVehPrice(playerid, v)
+stock CheckSortingLineVehPrice(playerid, v)
 {
 	new vehicleList = v;
 	v = CorrectVehicleList(vehicleList);
-
+	
 	if(OnlineInfo[playerid][oSorting][1] > 0) // Фильтр по ID
 	{
 		new sortingID[14], vehicleID[14];
@@ -811,15 +812,23 @@ stock ShowLineVehPrice(playerid, v)
 		valstr(vehicleID, v);
 
 		if(strfind(vehicleID, sortingID, true) != -1) {} // Отображаем схожие ID
-		else return 1; // Отображаем только фильтрованные id транспортных средств
+		else return 0; // Отображаем только фильтрованные id транспортных средств
 	}
 
 	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) {} // Фильтр по названию не включен
 	else
 	{
 		if(strfind(GetVehicleName(v), OnlineInfo[playerid][oSortingName], true) != -1) {} // Отображаем схожую строку
-		else return 1; // Отображаем только фильтрованные названия транспортных средств
+		else return 0; // Отображаем только фильтрованные названия транспортных средств
 	}
+	return 1;
+}
+
+stock ShowLineVehPrice(playerid, v)
+{
+	new line[160];
+	new vehicleList = v;
+	v = CorrectVehicleList(vehicleList);
 
     List[DP[0][playerid]][playerid] = vehicleList;
     DP[0][playerid] ++; // Подсчитываем строки
@@ -833,13 +842,12 @@ stock ShowLineVehPrice(playerid, v)
 	{
     	format(line,sizeof(line),"\n{cccccc}%s [%d]\t{99ff66}%d$ {cccccc}[%s]",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]));
 	}
-	strcat(lines,line);
-    return 1;
+    return line;
 }
 
 stock VehPriceSorting(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[90],lines[360];
     format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
 
     if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Модель:\t{ff9000}Все"), strcat(lines,line);
@@ -857,9 +865,8 @@ stock VehPriceSorting(playerid)
 stock SettingGosPriceVehicle(playerid, vehicleList)
 {
 	new v = CorrectVehicleList(vehicleList);
-
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
+	
+	new line[90],lines[360];
 	format(line,sizeof(line),"{cccccc}Введите гос. стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {99ff66}%d$ {cccccc}[%s]", VehGos[vehicleList], get_k(VehGos[vehicleList])), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Не меньше 1$ и не больше 900.000.000$"), strcat(lines,line);
@@ -929,10 +936,11 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			PlayerPlaySound(playerid, 6401, 0,0,0);
 			SaveVehiclePrice(vehicleList);
 
-			format(store,sizeof(store),"[ Мысли ]: Гос. стоимость %s теперь составляет: {99ff66}%d$ [%s]", GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
-  			SendClientMessage(playerid,COLOR_GREY,store);
-  			format(store, sizeof(store), "[Правительство] %s изменяет гос. стоимость: %s {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
-  			SendDepartMessage(COLOR_ALLDEPT, store);
+			new string[180];
+			format(string,sizeof(string),"[ Мысли ]: Гос. стоимость %s теперь составляет: {99ff66}%d$ [%s]", GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
+  			SendClientMessage(playerid,COLOR_GREY,string);
+  			format(string, sizeof(string), "[Правительство] %s изменяет гос. стоимость: %s {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
+  			SendDepartMessage(COLOR_ALLDEPT, string);
 
   			vehprice(playerid, DP[1][playerid]);
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
@@ -1021,8 +1029,10 @@ stock CreateCustomVehicleLabel(playerid, vehicleid, Float:dist)
 
 	new Float:X,Float:Y,Float:Z;
 	GetVehiclePos(vehicleid, X,Y,Z);
-	format(store, sizeof(store), "{0088ff}%s\n{666666}Доступен с лаунчером", GetVehicleName(VehInfo[vehicleid][vModel]));
-	CustomVehLabel[playerid][freeSlot] = CreateDynamic3DTextLabel(store, 0xA9C4E4FF, X,Y,Z, dist, INVALID_PLAYER_ID, vehicleid, 0, -1, -1, playerid);
+
+	new string[100];
+	format(string, sizeof(string), "{0088ff}%s\n{666666}Доступен с лаунчером", GetVehicleName(VehInfo[vehicleid][vModel]));
+	CustomVehLabel[playerid][freeSlot] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, X,Y,Z, dist, INVALID_PLAYER_ID, vehicleid, 0, -1, -1, playerid);
 	CustomLabelBusy[playerid][freeSlot] = vehicleid;
 
 	if(dist >= 40.0) Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL); // Обновляем при большой дистанции, поскольку мы в Автосалоне

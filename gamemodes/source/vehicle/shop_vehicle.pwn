@@ -47,8 +47,9 @@ stock buy_VehicleShop(playerid)
     if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 
     PlayerPlaySound(playerid,40405,0,0,0);
-    format(store, sizeof(store), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
-	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+    new string[180];
+    format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
+	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
     return 1;
 }
 
@@ -237,14 +238,15 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], interiorId);
     VehShopInfo[playerid][vsVehicleLoad] = true;
 
+    new string[100];
     // Название
-    format(store,sizeof(store),"%s", GetVehicleName(modelId));
-    PlayerTextDrawSetString(playerid, VehicleShopDraw[7][playerid], store);
+    format(string,sizeof(string),"%s", GetVehicleName(modelId));
+    PlayerTextDrawSetString(playerid, VehicleShopDraw[7][playerid], string);
     PlayerTextDrawShow(playerid, VehicleShopDraw[7][playerid]);
 
     // Цена
-    format(store,sizeof(store),"%d$", price);
-    PlayerTextDrawSetString(playerid, VehicleShopDraw[8][playerid], store);
+    format(string,sizeof(string),"%d$", price);
+    PlayerTextDrawSetString(playerid, VehicleShopDraw[8][playerid], string);
     PlayerTextDrawShow(playerid, VehicleShopDraw[8][playerid]);
 
     if(BizzInfo[bizId][bItem][productId] > 0) PlayerTextDrawHide(playerid, VehicleShopDraw[9][playerid]);
@@ -424,7 +426,7 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
 }
 stock showDialogVehicleShopColor(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[80],lines[160];
     format(line,sizeof(line),"Первый Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]], VehShopInfo[playerid][vsColor][0]), strcat(lines,line);
     format(line,sizeof(line),"\nВторой Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][1]], VehShopInfo[playerid][vsColor][1]), strcat(lines,line);
     ShowDialog(playerid,1332,DIALOG_STYLE_TABLIST,"{ff9000}*",lines,"Выбрать","Выход");
@@ -476,7 +478,13 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             if(VehShopInfo[playerid][vsVehicleLoad] == false) return 0;
 			new color;
 			if(sscanf(inputtext, "i", color)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу");
-			if(color > MAX_COLOR_VEHICLE || color < 0) return format(store,sizeof(store),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE), ErrorText(playerid, store);
+			if(color > MAX_COLOR_VEHICLE || color < 0)
+            {
+                new string[70];
+                format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE);
+                ErrorText(playerid, string);
+                return 1;
+            }
 
             new slot = DP[4][playerid];
 			if(VehShopInfo[playerid][vsColor][slot] == color) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже выбран");
@@ -505,11 +513,12 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             BizzInfo[bizId][bItem][productId] -= 1;
             BizzInfo[bizId][bUpdate] = 1;
 
+            new string[200];
             oGivePlayerMoney(playerid, -price);
-            format(store,sizeof(store),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
-            SendClientMessage(playerid, COLOR_GREY, store);
-            format(store,sizeof(store),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
-            SuccessMessage(playerid, store);
+            format(string,sizeof(string),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
+            SendClientMessage(playerid, COLOR_GREY, string);
+            format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
+            SuccessMessage(playerid, string);
 
             new posId;
             if(bizId >= 90 && bizId <= 92) posId = random(4);

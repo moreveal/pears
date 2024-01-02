@@ -64,7 +64,7 @@ CMD:bac(playerid)
 	if(PlayerInfo[playerid][pBusiness] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет собственного бизнеса");
 
 	new b = PlayerInfo[playerid][pBusiness], quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[4048];
 
 	format(line,sizeof(line),"Настройка \t Значение"), strcat(lines,line);
 
@@ -98,8 +98,7 @@ CMD:bac(playerid)
 stock showDialogBizAccess(playerid, b, i)
 {
 	DP[2][playerid] = i;
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
+	new line[60],lines[180];
 	format(line,sizeof(line),"%s \t ", bizAccess[i]), strcat(lines,line);
 
 	if(BizzInfo[b][bAcc][i] == 0) format(line,sizeof(line),"\n{cccccc}Доступ: \t {99ff66}Владелец"), strcat(lines,line);
@@ -143,7 +142,7 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(ListParam[listitem][playerid] == 1)
 			{
 				new settingId = List[listitem-MAX_BIZ_ACCESS][playerid];
-				format(lines,sizeof(lines),""); // Очищаем Lines
+				new line[100],lines[200];
 
 				format(line,sizeof(line),"{cccccc}Введите значение для настройки: {ff9000}%s", bizSetting[settingId]), strcat(lines,line);
 				if(settingId == 0) 
@@ -188,8 +187,9 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			}
 			if(listitem == 1)
 			{
-				format(store,sizeof(store),"{cccccc}Введите ранг семьи, с которого будет доступно {ff9000}%s\n\n1 - %d Ранг", bizAccess[i], MAX_RANK_FAMILY);
-				ShowDialog(playerid,696,DIALOG_STYLE_INPUT,"{ff9000}Настройки Бизнеса",store,"Принять","Отмена");
+				new string[120];
+				format(string,sizeof(string),"{cccccc}Введите ранг семьи, с которого будет доступно {ff9000}%s\n\n1 - %d Ранг", bizAccess[i], MAX_RANK_FAMILY);
+				ShowDialog(playerid,696,DIALOG_STYLE_INPUT,"{ff9000}Настройки Бизнеса",string,"Принять","Отмена");
 			}
 		}
 		else cmd_bac(playerid);
@@ -203,7 +203,14 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(!strlen(inputtext)) return cmd_bac(playerid);
 
 			new input = strval(inputtext);
-			if(input < DP[0][playerid] || input > DP[1][playerid]) return format(store,sizeof(store),"[ Мысли ]: Значение не меньше %d и не больше %d", DP[0][playerid], DP[1][playerid]), ErrorText(playerid, store), cmd_bac(playerid);
+			if(input < DP[0][playerid] || input > DP[1][playerid])
+			{
+				new string[80];
+				format(string,sizeof(string),"[ Мысли ]: Значение не меньше %d и не больше %d", DP[0][playerid], DP[1][playerid]);
+				ErrorText(playerid, string);
+				cmd_bac(playerid);
+				return 1;
+			}
 
 			BizzInfo[b][bSetting][i] = input;
 			BizzInfo[b][bUpdate] = 1;
@@ -221,7 +228,14 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(!strlen(inputtext)) return showDialogBizAccess(playerid, b, i);
 
 			new input = strval(inputtext);
-			if(input <= 0 || input > MAX_RANK_FAMILY) return format(store,sizeof(store),"[ Мысли ]: Семейный ранг не меньше 1 и не больше %d", MAX_RANK_FAMILY), ErrorText(playerid, store), showDialogBizAccess(playerid, b, i);
+			if(input <= 0 || input > MAX_RANK_FAMILY)
+			{
+				new string[80];
+				format(string,sizeof(string),"[ Мысли ]: Семейный ранг не меньше 1 и не больше %d", MAX_RANK_FAMILY);
+				ErrorText(playerid, string);
+				showDialogBizAccess(playerid, b, i);
+				return 1;
+			}
 
 			BizzInfo[b][bAccRank][i] = input;
 			BizzInfo[b][bUpdate] = 1;

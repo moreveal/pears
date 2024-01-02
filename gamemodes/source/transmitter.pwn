@@ -28,9 +28,10 @@ stock checkTransmitterOrgMute(playerid) // Проверка мута рации 
 {
     if(PlayerInfo[playerid][pFmuteTime] >= 1)
 	{
-	    if(PlayerInfo[playerid][pFmuteTime] >= 61) format(store, sizeof(store), "{FF6347}У вас бан чата организации [ Осталось %d минут ]", PlayerInfo[playerid][pFmuteTime]/60);
-	 	else format(store, sizeof(store), "{FF6347}У вас бан чата организации [ Осталось %d секунд ]", PlayerInfo[playerid][pFmuteTime]);
-	 	ErrorMessage(playerid, store);
+        new string[90];
+	    if(PlayerInfo[playerid][pFmuteTime] >= 61) format(string, sizeof(string), "{FF6347}У вас бан чата организации [ Осталось %d минут ]", PlayerInfo[playerid][pFmuteTime]/60);
+	 	else format(string, sizeof(string), "{FF6347}У вас бан чата организации [ Осталось %d секунд ]", PlayerInfo[playerid][pFmuteTime]);
+	 	ErrorMessage(playerid, string);
 	    return 1;
 	}
     return 0;
@@ -118,11 +119,12 @@ stock commandR(playerid, typeCommand, const params[])
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviation(playerid));
     }
 
+    new string[240];
     if(IsADepartID(g)) // Законные организации
     {
-        if(typeCommand == 0) format(store, sizeof(store), "** %s%s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
-        else format(store, sizeof(store), "** %s%s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
-        SendRadioMessage(g, COLOR_WHITE, store);
+        if(typeCommand == 0) format(string, sizeof(string), "** %s%s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+        else format(string, sizeof(string), "** %s%s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+        SendRadioMessage(g, COLOR_WHITE, string);
     }
     else // Прочие организации
     {
@@ -131,9 +133,9 @@ stock commandR(playerid, typeCommand, const params[])
         if(PlayerInfo[playerid][pRank] >= maxRank-1) format(colorPlayerRac, sizeof(colorPlayerRac), "01C6FF");
         else format(colorPlayerRac, sizeof(colorPlayerRac), "F3F3F3");
 
-        if(typeCommand == 0) format(store, sizeof(store), "** %s%s %s: {%s}%s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), colorPlayerRac, params[0]);
-        else format(store, sizeof(store), "** %s%s %s: {%s}(( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), colorPlayerRac, params[0]);
-		SendRadioMessage(g, TEAM_AZTECAS_COLOR, store);
+        if(typeCommand == 0) format(string, sizeof(string), "** %s%s %s: {%s}%s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), colorPlayerRac, params[0]);
+        else format(string, sizeof(string), "** %s%s %s: {%s}(( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), colorPlayerRac, params[0]);
+		SendRadioMessage(g, TEAM_AZTECAS_COLOR, string);
     }
 	return 1;
 }
@@ -185,20 +187,21 @@ stock commandD(playerid, typeCommand, const params[])
 
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))
     {
+        new string[240];
         new maxRank = get_maxrank(g);
         if(PlayerInfo[playerid][pRank] >= maxRank-1) // Лидеры и Замы
         {
-            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
-            else format(store, sizeof(store), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            else format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         }
         else 
         {
-            if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s%s %s: %s **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
-            else format(store, sizeof(store), "** [%s] %s%s %s: (( %s )) **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s%s %s: %s **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
+            else format(string, sizeof(string), "** [%s] %s%s %s: (( %s )) **", AbbName[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         }
-        if(IsADepartID(g)) SendDepartMessage(COLOR_ALLDEPT, store);
-        else if(IsAGangID(g)) SendGangMessage(COLOR_ALLDEPT, store);
-        else if(IsAMafiaID(g)) SendMafiaMessage(COLOR_ALLDEPT, store);
+        if(IsADepartID(g)) SendDepartMessage(COLOR_ALLDEPT, string);
+        else if(IsAGangID(g)) SendGangMessage(COLOR_ALLDEPT, string);
+        else if(IsAMafiaID(g)) SendMafiaMessage(COLOR_ALLDEPT, string);
     }
 	return 1;
 }
@@ -240,11 +243,11 @@ stock commandI(playerid, typeCommand, const params[])
         format(nameRank,sizeof(nameRank), "%s", getNameRank(playerid));
     }
 
+    new string[240];
     g -= 1, i -= 1; // Исправления, для корректного получения названий переменных
-
-	if(typeCommand == 0) format(store, sizeof(store), "** [%s] %s %s: %s", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
-	else format(store, sizeof(store), "** [%s] %s %s: (( %s ))", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
-	SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
+	if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s %s: %s", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
+	else format(string, sizeof(string), "** [%s] %s %s: (( %s ))", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
+	SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
 	return 1;
 }
 
@@ -267,11 +270,12 @@ stock commandF(playerid, typeCommand, const params[])
     if(PlayerInfo[playerid][pTransmitterOff][3] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал семьи /f /fb [ Y >> Меню >> Настройки Чата ]");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации семьи /f или /fb текст");
 
+    new string[240];
     if(PlayerInfo[playerid][pRukzWorld] >= 1)
 	{
-        if(PlayerInfo[playerid][pRukzWorld] >= 61) format(store, sizeof(store), "{FF6347}У вас бан чата семьи [ Осталось %d минут ]", PlayerInfo[playerid][pRukzWorld]/60);
-        else format(store, sizeof(store), "{FF6347}У вас бан чата семьи [ Осталось %d секунд ]", PlayerInfo[playerid][pRukzWorld]);
-        ErrorMessage(playerid, store);
+        if(PlayerInfo[playerid][pRukzWorld] >= 61) format(string, sizeof(string), "{FF6347}У вас бан чата семьи [ Осталось %d минут ]", PlayerInfo[playerid][pRukzWorld]/60);
+        else format(string, sizeof(string), "{FF6347}У вас бан чата семьи [ Осталось %d секунд ]", PlayerInfo[playerid][pRukzWorld]);
+        ErrorMessage(playerid, string);
         return 1;
 	}
 	if(antiflood(playerid, params) == 1) return 1; // Антифлуд
@@ -280,9 +284,9 @@ stock commandF(playerid, typeCommand, const params[])
     if(FamilyInfo[f][fSost] == 0 || f >= MAX_FAMILY) return ErrorMessage(playerid, "{FF6347}Ошибка! Семья не создана или была удалена"), PlayerInfo[playerid][pFamily] = 0;
 
     new r = PlayerInfo[playerid][pFamrank];
-    if(typeCommand == 0) format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}%s", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
-    else format(store, sizeof(store), "[F] %s {%s}%s[%d]: {%s}(( %s ))", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
-	SendFamilyMessage(f, 0x66ffffAA, store);
+    if(typeCommand == 0) format(string, sizeof(string), "[F] %s {%s}%s[%d]: {%s}%s", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
+    else format(string, sizeof(string), "[F] %s {%s}%s[%d]: {%s}(( %s ))", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
+	SendFamilyMessage(f, 0x66ffffAA, string);
 	return 1;
 }
 

@@ -68,7 +68,7 @@ stock IsAJobBusDepoPos(playerid)
 stock jobbus(playerid)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[400];
 	
 	if(ServerInfo[53] == 9) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}Стандартная Оплата \t \n"), strcat(lines,line);
@@ -87,8 +87,7 @@ CMD:busstop(playerid)
 	if(!GetAccessRankOrg(playerid, g, 61, NO_FBI)) return 1;
 
 	new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
+	new line[214],lines[4096];
 	format(line,sizeof(line),"{ff9000}Добавить Остановку {99ff66}>>"), strcat(lines,line);
 
 	for(new bss = 0; bss < MAX_BUSSTATION; bss++)
@@ -283,7 +282,7 @@ stock SaveCheckPoint(playerid, i)
 
 stock ShowCheckPointAll(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
     format(line,sizeof(line),"№ \tX\tY\tZ"), strcat(lines,line);
 	format(line,sizeof(line),"\nСохранить маршрут\t\t\t"), strcat(lines,line);
     for(new i = 0; i < 60; i++) 
@@ -416,7 +415,7 @@ stock SaveRout(slot)
 
 stock ShowPlayerSettingCheckPoint(playerid,i)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[120],lines[480];
 	format(line,sizeof(line),"Chekpont:%d         X:%f Y:%f Z:%f",PlayerInfo[playerid][pCheckPointCount][i],PlayerInfo[playerid][CheckPointX][i],PlayerInfo[playerid][CheckPointY][i],PlayerInfo[playerid][CheckPointZ][i]), strcat(lines,line);
 	format(line,sizeof(line),"\nПерезаписать чекпоинт[На текущую позицию]"), strcat(lines,line);
 	format(line,sizeof(line),"\nПоказать позицию чекпоинта"), strcat(lines,line);
@@ -428,7 +427,7 @@ stock ShowPlayerSettingCheckPoint(playerid,i)
 
 stock ShowAllRout(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
 	format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);
 	for(new i = 0; i < MAX_ROUT; i++) 
@@ -458,7 +457,7 @@ stock SettingRout(playerid, number, author)
 	if(author == 0)
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
-		format(lines,sizeof(lines),""); // Очищаем Lines
+		new line[80],lines[240];
 		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		format(line,sizeof(line),"\n%s %s Создан: [ %02d.%02d.%d %02d:%02d ]\n", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 
@@ -470,12 +469,12 @@ stock SettingRout(playerid, number, author)
 	else if(author == 1)
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
-		format(lines,sizeof(lines),""); // Очищаем Lines
+		new line[80],lines[480];
 		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		format(line,sizeof(line),"Маршрут:%s от %s Создан: [ %02d.%02d.%d %02d:%02d ]", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		format(line,sizeof(line),"\nПереименовать маршрут"), strcat(lines,line);
 		format(line,sizeof(line),"\nЗагрузить маршрут себе в чекпоинты"), strcat(lines,line);
-		format(line,sizeof(line),"\nОбновить маршрут(загрузит ваши текущие координаты в него)"), strcat(lines,line);
+		format(line,sizeof(line),"\nОбновить маршрут (загрузит ваши текущие координаты в него)"), strcat(lines,line);
 		format(line,sizeof(line),"\nУдалить маршрут из базы"), strcat(lines,line);
 		ShowDialog(playerid,1449,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Загрузить себе","Назад");
 	}
@@ -564,7 +563,7 @@ stock IsPlayerCity(playerid)
 
 stock ShowRoutCity(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	format(line,sizeof(line),"№ Маршрут\tВодителей"), strcat(lines,line);
 	new quan, Float:x,Float:y, Float:x2,Float:y2,Float:x3,Float:y3,Float:x4,Float:y4;
 	if(IsPlayerCity(playerid) == 3) x = -1236,y= 542, x2 = 3000.0,y2=3000.0,x3 =-3000 , y3 =1544 ,x4 =-1236 , y4 =3000; // lv
@@ -588,8 +587,9 @@ stock ShowRoutCity(playerid)
 stock showDialogMenuBusStation(playerid, cam)
 {
 	if(BusStationInfo[cam][bsActive] == 0) return ErrorText(playerid,"[ Мысли ]: Остановки не существует"), cmd_busstop(playerid);
-	format(store,sizeof(store),"{ff9000}%s", BusStationInfo[cam][bsName]);
-	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,store,"{444444}Об остановке..\n{cccccc}Найти\n{cccccc}Изменить название\n{FF6347}Удалить","Выбор","Отмена");
+	new header[80];
+	format(header,sizeof(header),"{ff9000}%s", BusStationInfo[cam][bsName]);
+	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,header,"{444444}Об остановке..\n{cccccc}Найти\n{cccccc}Изменить название\n{FF6347}Удалить","Выбор","Отмена");
 	return 1;
 }
 
@@ -597,8 +597,7 @@ stock infoBusStation(playerid, cam)
 {
 	if(BusStationInfo[cam][bsActive] >= 1)
 	{
-		format(lines,sizeof(lines),""); // Очищаем Lines
-
+		new line[100],lines[300];
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 		stamp2datetime(BusStationInfo[cam][bsUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 	 	format(line,sizeof(line),"{cccccc}Остановка {ff9000}%s",BusStationInfo[cam][bsName]), strcat(lines,line);

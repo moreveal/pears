@@ -67,7 +67,7 @@ stock agettruck(playerid)
 {
     new quan;
     DP[2][playerid] = 0; // Аренда Грузовиков
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[1000];
 
     format(line,sizeof(line),"Транспорт\tСтоимость Аренды\tВремя Аренды"), strcat(lines,line);
     for(new i = 0; i < MAX_RENT_TRUCK_VEHICLES; i++)
@@ -116,8 +116,9 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 	 	stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 	   	VehInfo[newcar][v3dstat] = 4000;
-		format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
-	    VehLabel[newcar] = CreateDynamic3DTextLabel(store,0xfaf75c99,pos[0],pos[1],pos[2],15.0,INVALID_PLAYER_ID, newcar,0,0,0);
+		new string[80];
+		format(string,sizeof(string),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
+	    VehLabel[newcar] = CreateDynamic3DTextLabel(string,0xfaf75c99,pos[0],pos[1],pos[2],15.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	}
 
 	Protect_PutPlayerInVehicle(playerid, newcar, 0);

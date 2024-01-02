@@ -106,7 +106,7 @@ CMD:fam(playerid)
 stock showDialogFamilyMenu(playerid)
 {
     new f = PlayerInfo[playerid][pFamily];
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[100],lines[1700];
 
     format(line,sizeof(line),"%s\t", FamilyInfo[f][fName]), strcat(lines,line);
     if(Fame[playerid] == true) format(line,sizeof(line),"\n{cccccc}3D Название \t{99ff66}[ On ]"), strcat(lines,line);
@@ -117,7 +117,7 @@ stock showDialogFamilyMenu(playerid)
     format(line,sizeof(line),"\n{cccccc}Участники {FF6347}[ Offline ]\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Дипломатия"), strcat(lines,line);
 	if(FamilyInfo[f][fInvmon] == 0) format(line,sizeof(line),"\n{cccccc}Счёт Семьи {99ff66}[ %d$ ]\t[ Открыт ]",FamilyInfo[f][fMoney]), strcat(lines,line);
-	else if(FamilyInfo[f][fInvmon] == 1) format(line,sizeof(line),"{\ncccccc}Счёт Семьи {99ff66}[ %d$ ]\t{FF6347}[ Закрыт ]",FamilyInfo[f][fMoney]), strcat(lines,line);
+	else if(FamilyInfo[f][fInvmon] == 1) format(line,sizeof(line),"\n{cccccc}Счёт Семьи {99ff66}[ %d$ ]\t{FF6347}[ Закрыт ]",FamilyInfo[f][fMoney]), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Синхронизация с Домом\t"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Синхронизация с Бизнесом\t"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Название Семьи\t"), strcat(lines,line);
@@ -138,7 +138,14 @@ CMD:frank(playerid)
     if(checkFamilyPermission(playerid)) return 1; // Проверки разрешений семьи
 
     new f = PlayerInfo[playerid][pFamily];
-	if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccrank]) return format(store,sizeof(store),"[ Мысли ]: Я не могу изменять ранги [ %d+ Ранг ]",FamilyInfo[f][fAccrank]), ErrorText(playerid, store), showDialogFamilyMenu(playerid);
+	if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccrank])
+	{
+		new string[60];
+		format(string,sizeof(string),"[ Мысли ]: Я не могу изменять ранги [ %d+ Ранг ]",FamilyInfo[f][fAccrank]);
+		ErrorText(playerid, string);
+		showDialogFamilyMenu(playerid);
+		return 1;
+	}
 	if(FamilyInfo[f][fStatusRank] == 0) return ErrorText(playerid, "[ Мысли ]: В семье нельзя изменять названия рангов {ffcc00}[ /fam >> Donate ]"), showDialogFamilyMenu(playerid);
 	if(FamilyInfo[f][fRanks] <= 0) return ErrorText(playerid, "{cccccc}[ Мысли ]: Мне нужно указать количество рангов, прежде чем редактировать названия"), showDialogFamilyMenu(playerid);
 
@@ -149,7 +156,7 @@ CMD:frank(playerid)
 stock showDialogSettingFamilyRank(playerid)
 {
     new f = PlayerInfo[playerid][pFamily];
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[90],lines[4096];
     format(line,sizeof(line),"Ранг\tНазвание"), strcat(lines,line);
 
     for(new r = 0; r < FamilyInfo[f][fRanks]; r++)
@@ -170,8 +177,9 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
 			if(listitem < 0 || listitem >= MAX_RANK_FAMILY) return 0;
 			DP[0][playerid] = listitem; // Сохраняем id выбранного ранга
 
-			format(store,sizeof(store),"{cccccc}Введите название %d ранга [1 - %d символов]\n\n{333333}Вы можете использовать любые цветовые коды {cccccc}{ 0088ff } {333333}(Без пробелов)", listitem + 1, MAX_NAME_FAMILY_LENGTH-1);
-			ShowDialog(playerid,469,DIALOG_STYLE_INPUT,"{ff9000}Семья",store,"Принять","Отмена");
+			new string[160];
+			format(string,sizeof(string),"{cccccc}Введите название %d ранга [1 - %d символов]\n\n{333333}Вы можете использовать любые цветовые коды {cccccc}{ 0088ff } {333333}(Без пробелов)", listitem + 1, MAX_NAME_FAMILY_LENGTH-1);
+			ShowDialog(playerid,469,DIALOG_STYLE_INPUT,"{ff9000}Семья",string,"Принять","Отмена");
 		}
 		else showDialogFamilyMenu(playerid);
 	}
@@ -182,18 +190,20 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
             if(checkFamilyPermission(playerid)) return 1; // Проверки разрешений семьи
 
             if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogSettingFamilyRank(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_FAMILY_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_FAMILY_LENGTH-1), ErrorText(playerid, store), showDialogSettingFamilyRank(playerid);
+
+			new string[160];
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_FAMILY_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_FAMILY_LENGTH-1), ErrorText(playerid, string), showDialogSettingFamilyRank(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingFamilyRank(playerid);
 
             new f = PlayerInfo[playerid][pFamily];
             new r = DP[0][playerid];
             format(FamilyRankName[f][r], MAX_NAME_FAMILY_LENGTH, "%s", inputtext);
 
-            format(store, sizeof(store), "{66ffff}Family {ffcc00}%s изменил%s название %d ранга {cccccc}[ %s ]", PlayerInfo[playerid][pName], gender(playerid), r + 1, inputtext);
-      		SendFamilyMessage(PlayerInfo[playerid][pFamily], COLOR_YELLOW, store);
+            format(string, sizeof(string), "{66ffff}Family {ffcc00}%s изменил%s название %d ранга {cccccc}[ %s ]", PlayerInfo[playerid][pName], gender(playerid), r + 1, inputtext);
+      		SendFamilyMessage(PlayerInfo[playerid][pFamily], COLOR_YELLOW, string);
 
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r, inputtext);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r, inputtext);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogSettingFamilyRank(playerid); // Открываем меню настройки
@@ -225,7 +235,7 @@ stock checkFamilyPermission(playerid) // Проверки разрешений �
 public LoadFamily()
 {
 	new time = GetTickCount();
-	new rows, load_max_rank;
+	new rows, load_max_rank, string[30];
 	new strocaX[480];
 	new strocaY[480];
 	new strocaZ[480];
@@ -341,16 +351,16 @@ public LoadFamily()
 		}
 		for(new i; i < 5; i++)
 		{
-			format(store,sizeof(store),"routNameCreator%d",i+1);
-			cache_get_value_name(f, store, FamilyRoutNameCreator[idx][i], 24);
-			format(store,sizeof(store),"routNameEditor%d",i+1);
-			cache_get_value_name(f, store, FamilyRoutNameEditor[idx][i], 24);
-			format(store,sizeof(store),"routIdEditor%d",i+1);
-			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutIdEditor][i]);
-			format(store,sizeof(store),"routIdCreator%d",i+1);
-			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutIdCreator][i]);
-			format(store,sizeof(store),"routUnix%d",i+1);
-			cache_get_value_name_int(f, store, FamilyInfo[idx][fRoutUnix][i]);
+			format(string,sizeof(string),"routNameCreator%d",i+1);
+			cache_get_value_name(f, string, FamilyRoutNameCreator[idx][i], 24);
+			format(string,sizeof(string),"routNameEditor%d",i+1);
+			cache_get_value_name(f, string, FamilyRoutNameEditor[idx][i], 24);
+			format(string,sizeof(string),"routIdEditor%d",i+1);
+			cache_get_value_name_int(f, string, FamilyInfo[idx][fRoutIdEditor][i]);
+			format(string,sizeof(string),"routIdCreator%d",i+1);
+			cache_get_value_name_int(f, string, FamilyInfo[idx][fRoutIdCreator][i]);
+			format(string,sizeof(string),"routUnix%d",i+1);
+			cache_get_value_name_int(f, string, FamilyInfo[idx][fRoutUnix][i]);
 		}
    		if(FamilyInfo[idx][fMoney] < 0) FamilyInfo[idx][fMoney] = 0;
 
@@ -362,8 +372,8 @@ public LoadFamily()
 
 			for(new r = 0; r < load_max_rank; r++)
 			{
-				format(store,sizeof(store),"rank%d",r);
-				cache_get_value_name(f, store, FamilyRankName[f][r], MAX_NAME_FAMILY_LENGTH);
+				format(string,sizeof(string),"rank%d",r);
+				cache_get_value_name(f, string, FamilyRankName[f][r], MAX_NAME_FAMILY_LENGTH);
 			}
 		}
 		//Грузим маршруты 1
@@ -566,8 +576,9 @@ new LastMessageID;
 
 stock CheckMessageFamilyChat()
 {
-	format(store_query,sizeof(store_query),"SELECT * FROM `family_chat_messages` WHERE `TYPE` = '1' AND `ID` > '%d'", LastMessageID);
-	mysql_tquery(pearsq_2, store_query, "Call_loadmessagefamily", "");
+	new string_mysql[100];
+	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `family_chat_messages` WHERE `TYPE` = '1' AND `ID` > '%d'", LastMessageID);
+	mysql_tquery(pearsq_2, string_mysql, "Call_loadmessagefamily", "");
 	return 1;
 }
 
@@ -578,7 +589,7 @@ function Call_loadmessagefamily()
 	
 	if(rows)
 	{
-		new userName[24], message[144], famId;
+		new userName[24], message[144], famId, string[300];
 		for(new f; f < rows; ++f)
 		{
 			cache_get_value_name_int(f, "ID", LastMessageID);
@@ -586,8 +597,8 @@ function Call_loadmessagefamily()
 			cache_get_value_name(f, "NAME", userName, 24);
 			cache_get_value_name(f, "MESSAGE", message, 144);
 
-			format(store, sizeof(store), "[F] {%s}%s: {%s}(( %s ))", ColorFam1(famId), userName, ColorFam2(famId), message);
-			SendFamilyMessage(famId, 0x66ffffAA, store);
+			format(string, sizeof(string), "[F] {%s}%s: {%s}(( %s ))", ColorFam1(famId), userName, ColorFam2(famId), message);
+			SendFamilyMessage(famId, 0x66ffffAA, string);
 		}
 	}
 	return 1;

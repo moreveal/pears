@@ -412,9 +412,10 @@ function gunsklad(playerid)
 				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места [ Лимит ]");
 
 				InHandClear(playerid);
-				if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"[ Мысли ]: Я положил на склад {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
-				else format(store,sizeof(store),"[ Мысли ]: Я положила на склад {ff9000}%s | %d",GetNameThing(1, fpick, thingType, thingPack),fquan);
-    			SendClientMessage(playerid, COLOR_GREY, store);
+				
+				new string[120];
+				format(string,sizeof(string),"[ Мысли ]: Я положил%s на склад {ff9000}%s | %d", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
+    			SendClientMessage(playerid, COLOR_GREY, string);
 				OrgLog(skladstat, "putsklad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
 
 	   		    SetPlayerChatBubble(playerid,"кладёт ящик на склад",COLOR_PURPLE,20.0,3000);
@@ -430,8 +431,8 @@ function gunsklad(playerid)
 	   				if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0) kol = fquan; // Вещества, Патроны
 	   				else if(IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1) kol = fquan*1000; // Каска, Броня, Оружие
 	   				PlayerInfo[playerid][pUnit] += kol*OrganInfo[fraction(playerid)][gUnitStat][2];
-	   				format(store,sizeof(store),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[fraction(playerid)][gUnitStat][2]);
-	   				GameTextForPlayer(playerid,store,3000,3);
+	   				format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[fraction(playerid)][gUnitStat][2]);
+	   				GameTextForPlayer(playerid,string,3000,3);
 				}
 
 				// Выдаём ачивку, первый доставленный ящик
@@ -464,7 +465,7 @@ stock showDialogOrganizationMenu(playerid)
 	new g = fraction(playerid);
 	DP[1][playerid] = g;
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[4048];
 	format(line,sizeof(line), "%s\t", frakName[DP[1][playerid]]), strcat(lines,line);
 
 	if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18 || g == 13 || g == 14 || g == 15 || g == 16 || g == 17 || g == 19 || g == 20)
@@ -569,8 +570,10 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 15)
 	{
 		if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;
-		format(store,sizeof(store),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
-		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",store,"Принять","Отмена");
+
+		new string[80];
+		format(string,sizeof(string),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
+		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",string,"Принять","Отмена");
 	}
 	else if(detail == 16) OrderEscort(playerid, g);
 	return 1;
@@ -580,15 +583,15 @@ stock rank_organization(playerid, g)
 {
 	if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;
 	DP[1][playerid] = g;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[90],lines[2700];
 
 	for(new i = 0; i < get_maxrank(g); i++)
 	{
 		format(line,sizeof(line),"{ff9000}%d. {cccccc}%s\n",i+1 ,RankOrg[g][i]), strcat(lines,line);
 	}
-
-	format(store,sizeof(store),"{ff9000}Названия Рангов {cccccc}[%s]", AbbName[g]);
-	ShowDialog(playerid,1006,DIALOG_STYLE_LIST,store,lines,"Выбрать","Отмена");
+	new header[60];
+	format(header,sizeof(header),"{ff9000}Названия Рангов {cccccc}[%s]", AbbName[g]);
+	ShowDialog(playerid,1006,DIALOG_STYLE_LIST,header,lines,"Выбрать","Отмена");
    	return 1;
 }
 
@@ -607,11 +610,12 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 	    new g = DP[1][playerid]; // ID Организации
 		if(response)
 		{
+			new string[60];
 		    new nrank = get_maxrank(g);
-			if(listitem < 0 || listitem > nrank) return format(store, sizeof(store), "{FF6347}Максимальное количество рангов: %d",nrank), ErrorMessage(playerid, store);
+			if(listitem < 0 || listitem > nrank) return format(string, sizeof(string), "{FF6347}Максимальное количество рангов: %d",nrank), ErrorMessage(playerid, string);
 			DP[0][playerid] = listitem; // Ранг
- 			format(store, sizeof(store), "{cccccc}Введите название для {ff9000}%d ранга",listitem+1);
- 			ShowDialog(playerid,1007,DIALOG_STYLE_INPUT,"{ff9000}Названия Рангов",store,"Принять","Отмена");
+ 			format(string, sizeof(string), "{cccccc}Введите название для {ff9000}%d ранга",listitem+1);
+ 			ShowDialog(playerid,1007,DIALOG_STYLE_INPUT,"{ff9000}Названия Рангов",string,"Принять","Отмена");
 		}
 		else showDialogOrganizationMenu(playerid);
 	}
@@ -640,7 +644,14 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 			new g = fraction(playerid);
 
 			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogOrganizationMenu(playerid);
-			if(input > MAX_RANK_ORG || input < 2) return format(store,sizeof(store),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_ORG), ErrorText(playerid, store), showDialogOrganizationMenu(playerid);
+			if(input > MAX_RANK_ORG || input < 2)
+			{
+				new string[60];
+				format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_ORG);
+				ErrorText(playerid, string);
+				showDialogOrganizationMenu(playerid);
+				return 1;
+			}
 
 			if(OrganInfo[g][gMaxRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogOrganizationMenu(playerid);
 			OrganInfo[g][gMaxRanks] = input;
@@ -656,17 +667,19 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 
 stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // Сохраняем одну строку в базу
 {
-	format(store_query, sizeof(store_query), "UPDATE `%s` SET `%s` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
-	query_empty(pearsq_2, store_query);
+	new string_mysql[140];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `%s` SET `%s` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
+	query_empty(pearsq_2, string_mysql);
 	return 1;
 }
 
 stock SaveRank(orgId, rankId)
 {
+	new string_mysql[160];
 	new nameRank[MAX_NAME_LENGTH];
 	mysql_escape_string(RankOrg[orgId][rankId], nameRank, sizeof(nameRank));
-	format(store_query, sizeof(store_query), "UPDATE `pp_organization` SET `rank%d` = '%s' WHERE `frakid` = '%d'", rankId, nameRank, orgId);
-	query_empty(pearsq_2, store_query);
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `rank%d` = '%s' WHERE `frakid` = '%d'", rankId, nameRank, orgId);
+	query_empty(pearsq_2, string_mysql);
 	return 1;
 }
 

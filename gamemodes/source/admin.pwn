@@ -31,8 +31,9 @@ CMD:givemats(playerid, const params[])
 		    new put_inva = putsklad(params[0], params[1], params[3], 0, params[2],1); // Кладём предмет
 			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места");
 
-			format(store, sizeof(store), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
-			ABroadCast(COLOR_ADM,store,1);
+			new string[160];
+			format(string, sizeof(string), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
+			ABroadCast(COLOR_ADM,string,1);
 			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Положил на склад предметы");
 		}
 	}
@@ -135,7 +136,9 @@ CMD:stopmaf(playerid)
 	if(MafGz[0][mStat] == 0) return ErrorMessage(playerid, "{FF6347}В данный момент битва не ведётся");
 	MafGz[0][mStat] = 2;
 	CheckMafWar(0, 1);
-	format(store, sizeof(store), " [ ADM ]: %s завершил мафиозную войну", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s завершил мафиозную войну", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	return 1;
 }
 CMD:gotobiz(playerid, const params[])
@@ -161,7 +164,8 @@ CMD:pricevehup(playerid, const params[])
 		VehGos[v] += params[0];
 		SaveVehiclePrice(v);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s повысил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s повысил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("pricevehup", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Повысил Цены");
 	return 1;
 }
@@ -174,7 +178,8 @@ CMD:pricevehdown(playerid, const params[])
 	{
 		if(VehGos[v]-params[0] >= 1000) VehGos[v] -= params[0], SaveVehiclePrice(v);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s понизил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s понизил цены всех т.с. на %d$", PlayerInfo[playerid][pName],params[0]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("pricevehdown", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Понизил Цены");
 	return 1;
 }
@@ -186,7 +191,8 @@ CMD:reloadpricefrisk(playerid)
 		friskPrice[s] = friskDefault[s];
 		SavePriceFrisk(s);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все предметы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("reloadpricefrisk", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
@@ -198,7 +204,8 @@ CMD:reloadpricegun(playerid)
 		gunPrice[g] = gunDefault[g];
 		SavePriceGun(g);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на всё оружие", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("reloadpricegun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
@@ -211,7 +218,8 @@ CMD:reloadpriceveh(playerid)
 		else VehGos[v] = vehSummaCustom[v - 212];
 		SaveVehiclePrice(v);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все транспортные средства", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
@@ -223,7 +231,8 @@ CMD:reloadpriceskin(playerid)
 		SkinGos[s] = 10000;
 		SaveSkinEconomy(s);
 	}
-	format(store, sizeof(store), " [ ADM ]: %s сбросил гос. цены на все скины", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	new string[120];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все скины", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
 	AdminLog("reloadskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
@@ -407,7 +416,9 @@ CMD:veh(playerid, const params[])
     if(sscanf(params, "iii", params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт /veh Модель Цвет1 Цвет2");
 	if(!IsAVehExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(params[1] < 0 || params[1] > 255 || params[2] < 0 || params[2] > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
-	if(QuanCar >= MAX_MAPVEH) return format(store, sizeof(store), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, store);
+
+	new string[120];
+	if(QuanCar >= MAX_MAPVEH) return format(string, sizeof(string), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, string);
     new createid = -1;
     for(new i = 0; i < MAX_MAPVEH; i++)
 	{
@@ -428,8 +439,8 @@ CMD:veh(playerid, const params[])
 	Cars[CreatedCars[createid]] = 9999;
 	Gas[CreatedCars[createid]] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
-	format(store, sizeof(store), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", GetVehicleName(params[0]), params[0], CreatedCars[createid]);
-	SendClientMessage(playerid, COLOR_GREY, store);
+	format(string, sizeof(string), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", GetVehicleName(params[0]), params[0], CreatedCars[createid]);
+	SendClientMessage(playerid, COLOR_GREY, string);
 	return 1;
 }
 CMD:delveh(playerid, const params[])
@@ -453,8 +464,7 @@ CMD:delveh(playerid, const params[])
  	QuanCar --;
  	PlayerPlaySound(playerid,6801,0,0,0);
 	AdminLog("delveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
-	format(store, sizeof(store), "{0088ff}Транспорт ID %d {FF6347}удалён", params[0]);
-	SendClientMessage(playerid, COLOR_GREY, store);
+	SendClientMessagef(playerid, COLOR_GREY, "{0088ff}Транспорт ID %d {FF6347}удалён", params[0]);
 	return 1;
 }
 CMD:rvc(playerid)
@@ -466,15 +476,15 @@ CMD:rvc(playerid)
 	    if(CreatedCars[i] > 0) ACDestroyVehicle(CreatedCars[i]), CreatedCars[i] = 0;
  	}
     QuanCar = 0;
-    format(store, sizeof(store), " [ ADM ]: %s удалил весь созданный транспорт",PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,store,1);
+	new string[140];
+    format(string, sizeof(string), " [ ADM ]: %s удалил весь созданный транспорт",PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
     AdminLog("rvc", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 	return 1;
 }
 CMD:philinsalon(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 21) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
-	format(store, sizeof(store), "{0088ff}ID Салона: %d", gAutosalon[playerid]);
-	SendClientMessage(playerid, COLOR_GREY, store);
+	SendClientMessagef(playerid, COLOR_GREY, "{0088ff}ID Салона: %d", gAutosalon[playerid]);
 	return 1;
 }
 CMD:tp(playerid)

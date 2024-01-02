@@ -65,8 +65,9 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    if(DomInfo[breakingId][dBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Эту дверь уже кто-то взламывает");
 		if(DomInfo[breakingId][dTheft] > gettime())
 		{
-			format(store,sizeof(store),"{FF6347}Дом находится под наблюдением полиции.. не следует рисковать\n\n{cccccc}Повторное ограбление дома доступно через {FF6347}%s", fine_dayshour(DomInfo[breakingId][dTheft]-gettime()));
-			ErrorMessage(playerid, store);
+			new string[160];
+			format(string,sizeof(string),"{FF6347}Дом находится под наблюдением полиции.. не следует рисковать\n\n{cccccc}Повторное ограбление дома доступно через {FF6347}%s", fine_dayshour(DomInfo[breakingId][dTheft]-gettime()));
+			ErrorMessage(playerid, string);
 			return 1;
 		}
 	    DomInfo[breakingId][dBreaking] = PlayerInfo[playerid][pID];
@@ -116,8 +117,9 @@ public BreakingProcess(playerid) // Таймер заполнения шкалы
 		   	new mkey = get_and_take_invent(playerid, 19, 1); // Отнимаем отмычки при проёбе
 	    	if(mkey > 0)
 	    	{
-				format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~Отмычки: ~w~%d"), mkey-1);
-				GameTextForPlayer(playerid,store,8000,3);
+				new string[80];
+				format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~O¦ЇЁ¤kњ: ~w~%d", mkey-1);
+				GameTextForPlayer(playerid,string,8000,3);
 			}
 		}
 	}
@@ -172,8 +174,9 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 	{
 	    new mkey = get_and_take_invent(playerid, 19, 1);
 	    if(mkey <= 0) return StopBreaking(playerid), ErrorMessage(playerid, "{FF6347}У вас кончились отмычки");
-	    format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~Отмычки: ~w~%d"), mkey-1);
-		GameTextForPlayer(playerid,store,8000,3);
+		new string[80];
+	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~O¦ЇЁ¤kњ: ~w~%d", mkey-1);
+		GameTextForPlayer(playerid,string,8000,3);
 		PlayerPlaySound(playerid,43000,0,0,0);
 	}
 	return 1;

@@ -55,6 +55,8 @@ stock opencase(playerid,para,slot)
         }
     }
     TakeInvent(playerid, 189, 1, 0, slot);
+
+    new string[140];
     if(fpick > 0)
     {
         new put_inva = GiveThingPlayer(playerid, fpick, quan, 0,0, thingType, 0, 9999);
@@ -63,22 +65,22 @@ stock opencase(playerid,para,slot)
             Throw(playerid, fpick, quan, 0, 0, thingType, 0);
             if(thingType == 3)
             {
-                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.\nУ вас нет места в инвентаре и предмет упал на землю",fpick);
+                format(string,sizeof(string),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.\nУ вас нет места в инвентаре и предмет упал на землю",fpick);
             }
             else if(thingType == 0)
             {
-                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s. \nУ вас нет места в инвентаре и предмет упал на землю",quan, friskName[fpick]);
+                format(string,sizeof(string),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s. \nУ вас нет места в инвентаре и предмет упал на землю",quan, friskName[fpick]);
             }
         }
         else
         {
             if(thingType == 3)
             {
-                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.",fpick);
+                format(string,sizeof(string),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе была одежда: №%d.",fpick);
             }
             else if(thingType == 0)
             {
-                format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s.",quan, friskName[fpick]);
+                format(string,sizeof(string),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе был: %d %s.",quan, friskName[fpick]);
             }
         }
     } 
@@ -87,10 +89,10 @@ stock opencase(playerid,para,slot)
         if(babki > 0)
         {
             oGivePlayerMoney(playerid, babki);
-            format(store,sizeof(store),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе было: %d$.",babki);
+            format(string,sizeof(string),"{ff9900}ПОЗДРАВЛЯМБА!!!!\n{ffcc66}В кейсе было: %d$.",babki);
         }
     }
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,casename,store,"*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,casename,string,"*","");
     return 1;   
 }
 

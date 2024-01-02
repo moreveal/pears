@@ -76,8 +76,8 @@ stock NoCompleteQuest(playerid, questId)
 stock showDialogStartQuest(playerid, stat)
 {
     DP[0][playerid] = stat;
-    format(lines,sizeof(lines),""); // Очищаем Lines
 
+    new line[214],lines[4096];
     format(line,sizeof(line),"{cccccc}Квест\t{cccccc}Статус{cccccc}\tВознаграждение"), strcat(lines,line);
     for(new i = 0; i < MAX_QUEST; i++)
     {
@@ -446,22 +446,23 @@ CMD:clearquest(playerid, const params[])
     new giveplayerid = ReturnUser(tmp, 1);
     if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
 
+    new string[160];
     if(questid == 0)
     {
         for(new i = 0; i < MAX_QUEST; i++) PlayerInfo[giveplayerid][pQuest][i] = 0;
-        format(store, sizeof(store), " [ ADM ]: %s очистил %s все начальные квесты",PlayerInfo[playerid][pName] ,PlayerInfo[giveplayerid][pName]);
-        ABroadCast(COLOR_ADM,store,1);
-        format(store, sizeof(store), "* Администратор %s очистил все ваши начальные квесты", PlayerInfo[playerid][pName]);
-		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, store);
+        format(string, sizeof(string), " [ ADM ]: %s очистил %s все начальные квесты",PlayerInfo[playerid][pName] ,PlayerInfo[giveplayerid][pName]);
+        ABroadCast(COLOR_ADM,string,1);
+        format(string, sizeof(string), "* Администратор %s очистил все ваши начальные квесты", PlayerInfo[playerid][pName]);
+		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
         AdminLog("clearquest", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Очистил все начальные квесты");
     }
     else if(questid >= 1 && questid <= MAX_QUEST)
     {
         PlayerInfo[giveplayerid][pQuest][questid - 1] = 0;
-        format(store, sizeof(store), " [ ADM ]: %s очистил %s начальный квест id %d",PlayerInfo[playerid][pName] ,PlayerInfo[giveplayerid][pName], questid);
-        ABroadCast(COLOR_ADM,store,1);
-        format(store, sizeof(store), "* Администратор %s очистил ваш начальный квест id %d", PlayerInfo[playerid][pName], questid);
-		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, store);
+        format(string, sizeof(string), " [ ADM ]: %s очистил %s начальный квест id %d",PlayerInfo[playerid][pName] ,PlayerInfo[giveplayerid][pName], questid);
+        ABroadCast(COLOR_ADM,string,1);
+        format(string, sizeof(string), "* Администратор %s очистил ваш начальный квест id %d", PlayerInfo[playerid][pName], questid);
+		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
         AdminLog("clearquest", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], questid, "Очистил начальный квест");
     }
     else return ErrorMessage(playerid, "{FF6347}Квеста под этим id не существует");
@@ -493,7 +494,7 @@ stock SaveQuest(playerid) // Сохраняем информацию о квес
 
     // Сохраняем
     new string_mysql[400];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `id`='%d'", store_query, PlayerInfo[playerid][pID]);
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `id`='%d'", part, PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql); // 53 + 11 +
     return 1;
 }
@@ -640,7 +641,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 				else if(listitem == 3) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите отметить этот квест в своём GPS навигаторе?","Да","Нет");
 				else if(listitem == 4)
                 {
-                    format(lines,sizeof(lines),""); // Очищаем Lines
+                    new line[100],lines[500];
     	            format(line,sizeof(line),"{ffcc66}Как пройти этот квест?"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Этот квест запускается самостоятельно при выполнении необходимых условий"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Но если вам не терпится пройти его сейчас, вы можете выполнить следующие действия"), strcat(lines,line);

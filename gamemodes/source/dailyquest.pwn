@@ -8,7 +8,7 @@ stock dailyquest(playerid)
 {
 	if(PlayerInfo[playerid][pMember] >= 13 && PlayerInfo[playerid][pMember] <= 18) return ErrorMessage(playerid, "{FF6347}Вы не состоите в банде");
 	
-	format(lines,sizeof(lines),""); //  Очищаем Lines
+	new line[60],lines[120];
 	
 	if(PlayerInfo[playerid][pAchieve][124] == 0) 
 	{

@@ -39,8 +39,9 @@ stock CreatePatrool(playerid, p0, p1, p2)
             {
                 PatroolInfo[findslot][plCoop][i] = findPlayer[i];
                 PlayerInfo[findPlayer[i]][patroolID] = findslot;
-                format(store,sizeof(store),"[ Мысли ]: Я вступил в патруль под руководством %s",PlayerInfo[playerid][pName]);
-                SendClientMessage(findPlayer[i],COLOR_GREY,store);
+                new string[80];
+                format(string,sizeof(string),"[ Мысли ]: Я вступил в патруль под руководством %s",PlayerInfo[playerid][pName]);
+                SendClientMessage(findPlayer[i],COLOR_GREY,string);
             }
         }
         else PatroolInfo[findslot][plCoop][i] = -1;
@@ -84,11 +85,12 @@ stock ClosePatrool(playerid, stat)
             if(IsOnline(PatroolInfo[findslot][plCoop][i]))
             {
                 PlayerInfo[PatroolInfo[findslot][plCoop][i]][patroolID] = -1;
-                format(store,sizeof(store),"{ffcc66}Глава патруля {FF6347}%s {ffcc66}распустил патруль",PlayerInfo[playerid][pName]);
-                ShowDialog(PatroolInfo[findslot][plCoop][i],1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+                new string[80];
+                format(string,sizeof(string),"{ffcc66}Глава патруля {FF6347}%s {ffcc66}распустил патруль",PlayerInfo[playerid][pName]);
+                ShowDialog(PatroolInfo[findslot][plCoop][i],1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 
-                format(store,sizeof(store),"[ Мысли ]: Глава патруля %s распустил патруль",PlayerInfo[playerid][pName]);
-                SendClientMessage(PatroolInfo[findslot][plCoop][i],COLOR_GREY,store);
+                format(string,sizeof(string),"[ Мысли ]: Глава патруля %s распустил патруль",PlayerInfo[playerid][pName]);
+                SendClientMessage(PatroolInfo[findslot][plCoop][i],COLOR_GREY,string);
             }
             PatroolInfo[findslot][plCoop][i] = -1;
         }
@@ -185,15 +187,16 @@ CMD:invitepatrool(playerid, const params[])
         new g = fraction(giveplayerid);
         if(g == 1 || g == 11 || g == 21 || g == 22)
         {
+            new string[90];
             PatroolInfo[findslot][plCoop][freeSlotP] = giveplayerid;
             PlayerInfo[giveplayerid][patroolID] = findslot;
-            format(store,sizeof(store),"[ Мысли ]: %s пригласил вас в свой патруль", PlayerInfo[playerid][pName]);
-            SendClientMessage(giveplayerid,COLOR_GREY,store);
-            format(store,sizeof(store),"{99ff66}%s {ffcc66}пригласил вас в свой патруль",PlayerInfo[giveplayerid][pName]);
-            ShowDialog(giveplayerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+            format(string,sizeof(string),"[ Мысли ]: %s пригласил вас в свой патруль", PlayerInfo[playerid][pName]);
+            SendClientMessage(giveplayerid,COLOR_GREY,string);
+            format(string,sizeof(string),"{99ff66}%s {ffcc66}пригласил вас в свой патруль",PlayerInfo[giveplayerid][pName]);
+            ShowDialog(giveplayerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 
-            format(store,sizeof(store),"{ffcc66}Вы пригласили {99ff66}%s {ffcc66}в свой патруль",PlayerInfo[giveplayerid][pName]);
-            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+            format(string,sizeof(string),"{ffcc66}Вы пригласили {99ff66}%s {ffcc66}в свой патруль",PlayerInfo[giveplayerid][pName]);
+            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
         }
         else ErrorMessage(playerid, "{FF6347}Вы можете пригласить в патруль только сотрудника правоохранительных органов");
 	}
@@ -215,7 +218,7 @@ CMD:patrool(playerid)
 stock SettingPatrool(playerid)
 {
     new findslot = PlayerInfo[playerid][patroolID];
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[80],lines[480];
     if(findslot == -1)
     {
         format(line,sizeof(line),"{cccccc}Нет активного патруля \t"), strcat(lines,line);
@@ -245,7 +248,7 @@ stock SettingPatrool(playerid)
 
 stock PatroolList(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[60],lines[3000];
     format(line,sizeof(line),"№ Глава\tУчастников\tРайон\tФракция"), strcat(lines,line);
     new quan, targetid,findraiontolist,kol;
     for(new z = 0; z < MAX_PATROOL; z++) 

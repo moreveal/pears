@@ -58,8 +58,9 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
     else if (model == 3172) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
     else if (model == 3174) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
 
-    format(store,sizeof(store),"SELECT * FROM pp_igroki WHERE id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
-    mysql_tquery(pearsq, store, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
+    new string_mysql[80];
+    format(string_mysql,sizeof(string_mysql),"SELECT * FROM pp_igroki WHERE id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
+    mysql_tquery(pearsq, string_mysql, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
 
     // Сохранение позиции
     trailerInfo[id][tModel] = model;
@@ -501,16 +502,15 @@ stock VehicleOnPlayerDisconnect(playerid)
 	}
 	return 1;
 }
-stock TrailerBuy(playerid){
-	format(lines,sizeof(lines),""); // Очищаем Lines
+stock TrailerBuy(playerid)
+{
+	new line[80],lines[400];
     format(line,sizeof(line),"{cccccc}Название \t{99ff66}Цена\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Round Trailer\t{99ff66}1$\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Mini Trailer\t{99ff66}2$\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Middle Trailer\t{99ff66}3$\n"), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Big Trailer\t{99ff66}4$\n"), strcat(lines,line);
-
-	format(store,sizeof(store),"{cccccc}Покупка Трейлера");
-	ShowDialog(playerid,1395,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
+	ShowDialog(playerid,1395,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Покупка Трейлера",lines,"Выбрать","Отмена");
 	return 1;
 }
 //_________________________________________________________

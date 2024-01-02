@@ -261,20 +261,22 @@ stock godrink(playerid)
 	else if(HoldStat[playerid] == 112) Effect[playerid] = 5, EffectTime[playerid] += 40, infect(playerid, 11, 10), alco = 40; // Водка
 	else if(HoldStat[playerid] == 113) Effect[playerid] = 5, EffectTime[playerid] += 15, infect(playerid, 11, 5), alco = 15; // Вино
 	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) Effect[playerid] = 5, EffectTime[playerid] += 30, infect(playerid, 11, 10), alco = 30; // Виски, Коньяк, Брэнди
+	
+	new string[80];
 	if(alco > 0)
 	{
-		format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d сек"), alco, EffectTime[playerid]);
-		GameTextForPlayer(playerid,store,2500,3);
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d сек", alco, EffectTime[playerid]);
+		GameTextForPlayer(playerid,string,2500,3);
 	}
 	else if(coffe > 0)
 	{
-		format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100"), coffe/10, PlayerInfo[playerid][pMechSkill]/10);
-		GameTextForPlayer(playerid,store,2500,3);
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100", coffe/10, PlayerInfo[playerid][pMechSkill]/10);
+		GameTextForPlayer(playerid,string,2500,3);
 	}
 	else if(eat > 0)
 	{
-	    format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100"), eat, PlayerInfo[playerid][pNeon]/10);
-		GameTextForPlayer(playerid,store,2500,3);
+	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100", eat, PlayerInfo[playerid][pNeon]/10);
+		GameTextForPlayer(playerid,string,2500,3);
 	}
 	
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 37 || HoldStat[playerid] >= 112 && HoldStat[playerid] <= 119)
@@ -302,8 +304,9 @@ stock goeat_podnos(playerid)
 	    ThrowInfo[t][tQuan] --;
 	    around_player_audio(playerid, 32200, 0, 5.0, 0);
 	    EatPlayer(playerid, 20);
-	    format(store,sizeof(store),RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+5~n~~y~%d/100"), PlayerInfo[playerid][pNeon]/10);
-		GameTextForPlayer(playerid,store,1800,3);
+		new string[80];
+	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+5~n~~y~%d/100", PlayerInfo[playerid][pNeon]/10);
+		GameTextForPlayer(playerid,string,1800,3);
 		if(fpick == 134 || fpick == 135 || fpick == 136) // Если поднос с кофе
 		{
 			if(PlayerInfo[playerid][pMechSkill]+20 <= 1000) PlayerInfo[playerid][pMechSkill] += 20;
@@ -399,11 +402,12 @@ stock drink_eat(playerid, inva, fpick)
 		}
 		else PlayerInfo[playerid][pInvenQuan][inva] -= 3;
 	    HoldStat[playerid] = fpick;
-	    if(PlayerInfo[playerid][pSex] == 1) format(store,sizeof(store),"открыл бутылку и налил в бокал %s", friskName[fpick]);
-	    else format(store,sizeof(store),"открыла бутылку и налила в бокал %s", friskName[fpick]);
-	    SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,5000);
-	    format(store,sizeof(store),"{ffcc66}Вы налили в бокал %s {ff9000}[ Сделать глоток: %s ]", friskName[fpick], buttonName[Device[playerid]]);
-	    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+
+		new string[80];
+	    format(string,sizeof(string),"открыл%s бутылку и налил%s в бокал %s", gender(playerid), gender(playerid), friskName[fpick]);
+	    SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,5000);
+	    format(string,sizeof(string),"{ffcc66}Вы налили в бокал %s {ff9000}[ Сделать глоток: %s ]", friskName[fpick], buttonName[Device[playerid]]);
+	    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
         TextDrawShowForPlayer(playerid, MindDraw[3]);
 		if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");
 		else if(Device[playerid] == 1) PlayerTextDrawSetString(playerid, HintButton, "H");
@@ -424,18 +428,20 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
     HoldPara[playerid] = para, HoldQara[playerid] = qara;
     RemovePlayerAttachedObject(playerid,1);
     object_in_hand(playerid, friskPick[fpick]);
-    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141) format(store,sizeof(store),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
+
+	new string[140];
+    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
 	else if(fpick == 163)
 	{
-		format(store,sizeof(store),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*10);
+		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*10);
 		PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
 	}
 	else
 	{
-    	if(hold == 2) format(store,sizeof(store),"{ffcc66}Вы взяли в руки %s %s (%d мл.) {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], friskName[soder], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
-		else format(store,sizeof(store),"{ffcc66}Вы взяли в руки %s {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], buttonName[Device[playerid]]);
+    	if(hold == 2) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s %s (%d мл.) {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], friskName[soder], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
+		else format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], buttonName[Device[playerid]]);
 	}
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",store,"*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 	TextDrawShowForPlayer(playerid, MindDraw[3]);
 	if(fpick == 163) PlayerTextDrawSetString(playerid, HintButton, "F"), PlayerTextDrawShow(playerid, HintButton);
 	else
@@ -448,7 +454,7 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
 }
 stock in_hand_podnos(playerid, fpick, fquan, fpara, fqara)
 {
-    new string[314];
+    new string[320];
     PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
     RemovePlayerAttachedObject(playerid,1);
     object_in_hand(playerid, friskPick[fpick]), Hold[playerid] = 12;

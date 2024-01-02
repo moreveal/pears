@@ -45,7 +45,7 @@ public LoadGraphiti()
 
 stock ShowAllGraphiti(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[70],lines[4000];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan,g;
 	format(line,sizeof(line),"№Банда\tВремя редактирования/создания"), strcat(lines,line);
 	for(new i = 0; i < GZONES; i++) 
@@ -127,9 +127,9 @@ stock GraphitiUpdateElement(graphiti)
     backtobject(GraphitiObject[graphiti],1.0,x,y,z,GraphitiInfo[graphiti][graphitiPos][5]);
     GraphitiPickUp[graphiti] = CreateDynamicPickup(365,1,x,y,z,0,0);
 
-
-    format(store,sizeof(store),"{cccccc}Граффити банды\n %s\n\n{ff9000}[ Баллончик вруках + ALT ]",text);
-    GraphitiLabel[graphiti] = CreateDynamic3DTextLabel(store,0xA9C4E4FF,GraphitiInfo[graphiti][graphitiPos][0], GraphitiInfo[graphiti][graphitiPos][1], GraphitiInfo[graphiti][graphitiPos][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+    new string[90];
+    format(string,sizeof(string),"{cccccc}Граффити банды\n %s\n\n{ff9000}[ Баллончик вруках + ALT ]",text);
+    GraphitiLabel[graphiti] = CreateDynamic3DTextLabel(string,0xA9C4E4FF,GraphitiInfo[graphiti][graphitiPos][0], GraphitiInfo[graphiti][graphitiPos][1], GraphitiInfo[graphiti][graphitiPos][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
     return 1;
 }
 
@@ -170,7 +170,7 @@ stock SaveGraphiti(slot)
 
     new string_mysql[500];
     format(string_mysql, sizeof(string_mysql), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%s' WHERE `gnewid`='%d'",
-    store,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],GraphitiInfo[slot][graphitiName],slot);
+    part,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],GraphitiInfo[slot][graphitiName],slot);
     query_empty(pearsq, string_mysql); // 147 + 66 + 24 (237) + 150
 }
 
@@ -263,8 +263,10 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
                     new tyear, tmonth, tday, thour, tminute, tsecond;
 		            stamp2datetime(GraphitiInfo[listord][graphitiUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
                     new g = GraphitiInfo[listord][graphitiOrg];
-                    format(store,sizeof(store),"\n%d.%s\nБанда:%s\nДата создания:[ %02d.%02d.%d %02d:%02d ]", listord+1,PlayerInfo[GraphitiInfo[listord][graphitiPlayer]][pName],fraklastName[g],tyear, tmonth, tday, thour, tminute, tsecond);
-                    ShowDialog(playerid,1477,DIALOG_STYLE_MSGBOX,"{ff9000}Граффити",store,"Тп","Назад");
+
+                    new string[100];
+                    format(string,sizeof(string),"%d.%s\nБанда:%s\nДата создания:[ %02d.%02d.%d %02d:%02d ]", listord+1,PlayerInfo[GraphitiInfo[listord][graphitiPlayer]][pName],fraklastName[g],tyear, tmonth, tday, thour, tminute, tsecond);
+                    ShowDialog(playerid,1477,DIALOG_STYLE_MSGBOX,"{ff9000}Граффити",string,"Тп","Назад");
                 }
             }
         }

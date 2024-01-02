@@ -3,14 +3,13 @@ stock jobcollector(playerid)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
 	
-	format(lines,sizeof(lines),""); // Очищаем Lines
-	
+	new line[100],lines[400];
 	if(ServerInfo[53] == 9) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}Стандартная Оплата \t \n"), strcat(lines,line);
 	format(line,sizeof(line),"{0088ff}Как заработать? \t \n"), strcat(lines,line);
 	if(GetPVarInt(playerid,"job_stat") != 13) format(line,sizeof(line),"{ff9000}Начать Работу \t \n"), strcat(lines,line);
 	else if(GetPVarInt(playerid,"job_stat") == 13) format(line,sizeof(line),"{ff9000}Завершить Работу \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{99ff66}Получить Зарплату \t {00cc00}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
+	format(line,sizeof(line),"{99ff66}Получить Зарплату \t {99ff66}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
 	ShowDialog(playerid,1338,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Инкассаторы",lines,"Выбор","Отмена");
 	return 1;
 }
@@ -62,8 +61,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 					paysalary(playerid, pay, 0);
 					ApplyAnimation(playerid,"DEALER","shop_pay",4.0, 0, 0, 0, 0, 0);
 					MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PlayerInfo[playerid][pSalary], "Зарплата Инкассаторы");
-                    format(store,sizeof(store),"[ Мысли ]: Моя зарплата {99ff66}%d$", PlayerInfo[playerid][pSalary]);
-					SendClientMessage(playerid, COLOR_GREY, store);
+					SendClientMessagef(playerid, COLOR_GREY, "[ Мысли ]: Моя зарплата {99ff66}%d$", PlayerInfo[playerid][pSalary]);
 					SendActorMessage(playerid, 1,BotPears[5],"Отлично! Держи деньги");
 					PlayerInfo[playerid][pPlacement] = 0, PlayerInfo[playerid][pSalary] = 0, PlayerInfo[playerid][pSalarytwo] = 0;
 					mysql_save(playerid, 58);
@@ -130,8 +128,10 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
                 VehInfo[newcar][v3dstat] = 4000;
-                format(store,sizeof(store),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
-                VehLabel[newcar] = CreateDynamic3DTextLabel(store,0xfaf75c99, 1107.387, -1216.869, 17.804,1.0,INVALID_PLAYER_ID, newcar,0,0,0);
+
+				new string[90];
+                format(string,sizeof(string),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
+                VehLabel[newcar] = CreateDynamic3DTextLabel(string,0xfaf75c99, 1107.387, -1216.869, 17.804,1.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	   			Protect_PutPlayerInVehicle(playerid, newcar, 0);
 	   			CreateRent_Player(playerid, unix, newcar, 6, 100, model, 0, 0, 1107.387, -1216.869, 17.804,1);
 			}
@@ -144,7 +144,7 @@ CMD:checkterm(playerid)
 {
     if(PlayerInfo[playerid][pPlacement] == 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
 	new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[2000];
 
     format(line,sizeof(line),"{FF6347}Номер бизнеса\t Денег в терминале\tОплата "), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Отменить Доставку \t\t "), strcat(lines,line);

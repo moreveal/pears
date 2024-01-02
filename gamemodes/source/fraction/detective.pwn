@@ -53,12 +53,13 @@ stock FindCarInWareHouse(playerid)
     if(PlayerInfo[playerid][pTheft] != 0) i = PlayerInfo[playerid][pTheft];
     if(crimeInfo[i][crmSklad] == world)
     {   
-        format(store,sizeof(store),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
-        query_empty(pearsq, store);
+        new string[120];
+        format(string,sizeof(string),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
+        query_empty(pearsq, string);
         crimeInfo[i][crmSenderID] = 0;
-        SuccessMessage(playerid,"Вы нашли угнанную машину.\nНужно вернутся в участок и сдать дело.");
-        format(store, sizeof(store), "Ваш угнанный т/с [%s] был найден полицей, для получения доступа к нему явитесь в участок и оплатите работу",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
-        notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], store);
+        SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Нужно вернутся в участок и сдать дело");
+        format(string, sizeof(string), "Ваш угнанный %s был найден полицей",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
+        notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
         SaveCrime(i);
     }
     else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nНа этом складе нет нужного транспорта. Поищите на других складах","*","");
@@ -67,7 +68,7 @@ stock FindCarInWareHouse(playerid)
 
 stock ListCrime(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[120],lines[4048];
 	format(line,sizeof(line),"{cccccc}№.Тип\tПреступник\tПостродавший\tДата\tСтатус"), strcat(lines,line);
     new quan;
     new tyear, tmonth, tday, thour, tminute, tsecond;

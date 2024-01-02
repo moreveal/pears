@@ -29,8 +29,9 @@ stock use_dom(playerid, dom, inva, useinva)
 	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
-			format(store,sizeof(store),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,777,DIALOG_STYLE_INPUT,"{ff9000}Дом",store,"Принять","Отмена");
+			new string[120];
+			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,777,DIALOG_STYLE_INPUT,"{ff9000}Дом",string,"Принять","Отмена");
 			return 1;
 		}
 	}
@@ -73,13 +74,14 @@ stock use_dom(playerid, dom, inva, useinva)
 	// Проверка на одиночный предмет
 	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	
+	new string[160];
 	if(thingType == 0)
 	{
 	    if(CheckThingQuan(fpick) == 1)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
-    		if(getQuan+fquan > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, store);
+    		if(getQuan+fquan > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, string);
  		}
 	}
 	
@@ -89,11 +91,11 @@ stock use_dom(playerid, dom, inva, useinva)
     
     SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
     
-    format(store, sizeof(store), "Взял %s", GetNameThing(1, fpick, thingType, thingPack));
-	HouseLog(0, "wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, fquan, store);
+    format(string, sizeof(string), "Взял %s", GetNameThing(1, fpick, thingType, thingPack));
+	HouseLog(0, "wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, fquan, string);
 	
-    format(store,sizeof(store),"Взял %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
-	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
+    format(string,sizeof(string),"Взял %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
+	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	return 1;
 }
 stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
@@ -117,6 +119,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем убрать в дом"), i_resetveshi(playerid);
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 	
+	new string[100];
 	new quanThing;
 	if(thingType == 0)
 	{
@@ -129,8 +132,8 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 		    d_limit(dom, fpick, getQuan, getLimit);
 		    if(getQuan+fquan > getLimit)
 		    {
-		        format(store,sizeof(store),"{FF6347}В доме нет места\n\nЛимит для этого предмета: %d", getLimit);
-		        ErrorMessage(playerid, store);
+		        format(string,sizeof(string),"{FF6347}В доме нет места\n\nЛимит для этого предмета: %d", getLimit);
+		        ErrorMessage(playerid, string);
 				i_resetveshi(playerid);
 				i_resettabs(playerid);
 				return 1;
@@ -146,8 +149,8 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
  	else i_del(playerid, inva); // Отнимаем предмет (целиком)
  	SaveInvent(playerid, inva); // Сохраняем ячейку инвентаря игрока
 	
-	format(store,sizeof(store),"Положил в дом %d: %s", GetNameThing(1, fpick, thingType, thingPack));
-	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
+	format(string,sizeof(string),"Положил в дом %d: %s", GetNameThing(1, fpick, thingType, thingPack));
+	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	
 	i_resetveshi(playerid);
 	i_resettabs(playerid);
@@ -308,8 +311,9 @@ stock mix_dom(playerid, d, getinva, putinva)
 		}
 		if(quanPlayer >= 2)
 		{
-			format(store, sizeof(store), "{FF6347}Шкаф просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
-			ErrorMessage(playerid, store);
+			new string[80];
+			format(string, sizeof(string), "{FF6347}Шкаф просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			ErrorMessage(playerid, string);
 			i_resettabs(playerid);
 			return 1;
 		}
@@ -349,8 +353,9 @@ stock shift_dom(playerid, d, getinva, putinva) //  Перемещение пре
 		}
 		if(quanPlayer >= 2)
 		{
-			format(store, sizeof(store), "{FF6347}Шкаф просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
-			ErrorMessage(playerid, store);
+			new string[80];
+			format(string, sizeof(string), "{FF6347}Шкаф просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			ErrorMessage(playerid, string);
 			i_resettabs(playerid);
 			return 1;
 		}

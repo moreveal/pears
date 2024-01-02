@@ -39,18 +39,20 @@ new Text3D: BizSM[14][MAX_BIZ_ITEM]; // 3D Текст Продукции Суп�
 
 stock UpdateSupermarketLabel_S(b)
 {
+	new string[120];
 	for(new i = 0; i < MAX_BIZ_ITEMSUPERMARKET; i++)
 	{
-		format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{444444}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
-		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1, store);
+		format(string,sizeof(string),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{444444}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+		UpdateDynamic3DTextLabelText(BizSM[b-13][i],-1, string);
 	}
 }
 stock CreateSupermarketLabel_S(b)
 {
+	new string[120];
     for(new i = 0; i < MAX_BIZ_ITEMSUPERMARKET; i++)
 	{
-		format(store,sizeof(store),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{444444}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
-		BizSM[b-13][i] = CreateDynamic3DTextLabel(store, -1, SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
+		format(string,sizeof(string),"{ff9000}%s {99ff66}[%d$]\n{cccccc}[ ALT ]\n\n{444444}В наличии: %d шт.", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]);
+		BizSM[b-13][i] = CreateDynamic3DTextLabel(string, -1, SupermarketItemPos[i][0],SupermarketItemPos[i][1],SupermarketItemPos[i][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,b-12,206);
 	}
 }
 
@@ -195,7 +197,8 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	if(item == -1) return 1;
     if(BizzInfo[b][bItem][item] <= 0) return ErrorMessage(playerid, "{FF6347}В супермаркете нет этого товара в наличии");
     
-    if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]) return format(store, sizeof(store), "{FF6347}На кассе вам не хватит %d$", OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]-oGetPlayerMoney(playerid)), ErrorMessage(playerid, store);
+	new string[120];
+    if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]) return format(string, sizeof(string), "{FF6347}На кассе вам не хватит %d$", OnlineInfo[playerid][oShopPrice]+BizzInfo[b][bPrice][item]-oGetPlayerMoney(playerid)), ErrorMessage(playerid, string);
 
     new fquan;
     new put_i = putshopcarts(playerid, item, 0, fquan);
@@ -207,10 +210,10 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
 	PlayerPlaySound(playerid,1052,0,0,0);
 	OnlineInfo[playerid][oShopPrice] += BizzInfo[b][bPrice][item];
 
-	format(store, sizeof(store), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
-	if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-	else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-	SendClientMessage(playerid, COLOR_GREY, store);
+	format(string, sizeof(string), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
+	if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+	else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {cccccc}[ В тележке: %d шт. ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+	SendClientMessage(playerid, COLOR_GREY, string);
 	UpdateSupermarketLabel_S(b);
 	return 1;
 }
@@ -289,10 +292,11 @@ stock addiction(playerid, item)
 		PlayerPlaySound(playerid,1052,0,0,0);
 		OnlineInfo[playerid][oShopPrice] += BizzInfo[b][bPrice][item];
 
-		format(store, sizeof(store), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,store,COLOR_PURPLE,20.0,3000);
-		if(PlayerInfo[playerid][pSex] == 1) format(store, sizeof(store), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-		else format(store, sizeof(store), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-		SendClientMessage(playerid, COLOR_GREY, store);
+		new string[120];
+		format(string, sizeof(string), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
+		if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		SendClientMessage(playerid, COLOR_GREY, string);
 		UpdateSupermarketLabel_S(b);
     }
  	return 1;

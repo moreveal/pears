@@ -283,14 +283,14 @@ CMD:oac(playerid) // Меню настроек прав доступа
  	DP[1][playerid] = g;
 	for(new i = 0; i < 200; i++) List[i][playerid] = 0; // Очищаем list
 	
-    format(lines,sizeof(lines),""); // Очищаем Lines
-
+    new line[214],lines[4096];
     for(new i = 0; i < sizeof(accessRightName); i++)
     {
         if(IsAFunctionOrganization(i, g, playerid)) format(line,sizeof(line), detail_oac(playerid, i)), strcat(lines,line);
     }
-    format(store,sizeof(store),"{cccccc}Права Доступа: %s", fraklastName[g]);
-	ShowDialog(playerid,616,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+    new header[60];
+    format(header,sizeof(header),"{cccccc}Права Доступа: %s", fraklastName[g]);
+	ShowDialog(playerid,616,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
    	return 1;
 }
 
@@ -299,8 +299,7 @@ stock showDialogSettingAccessRight(playerid, accessId)
     DP[0][playerid] = accessId;
     new g = DP[1][playerid];
 
-    format(lines,sizeof(lines),""); // Очищаем Lines
-
+    new line[100],lines[400];
     format(line,sizeof(line), "{ff9000}%s \t", accessRightName[accessId]), strcat(lines,line);
     format(line,sizeof(line), "\n{cccccc}Ранг: \t{ff9000}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
     if(OrganInfo[g][gAccDiv][accessId] > 0) 
@@ -310,8 +309,9 @@ stock showDialogSettingAccessRight(playerid, accessId)
     }
     else format(line,sizeof(line), "\n{cccccc}Подфракция: \t{555555}нет"), strcat(lines,line);
 
-    format(store,sizeof(store),"{cccccc}Права Доступа: %s", fraklastName[g]);
-	ShowDialog(playerid,614,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Выбрать","Отмена");
+    new header[60];
+    format(header,sizeof(header),"{cccccc}Права Доступа: %s", fraklastName[g]);
+	ShowDialog(playerid,614,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
     return 1;
 }
 
@@ -326,17 +326,19 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
             new g = DP[1][playerid];
 
             if(OrganInfo[g][gAccDiv][accessId] == listitem) return ErrorText(playerid, "{FF6347}Эта настройка уже установлена"), showDialogSettingAccessRight(playerid, accessId);
+            
+            new string[140];
             if(listitem > 0)
             {
                 if(!strcmp(DivisionInfo[g - 1][listitem - 1][divName],"0",true)) return ErrorText(playerid, "{FF6347}Эта подфракция не настроена и не имеет названия"), showDialogSettingAccessRight(playerid, accessId);
 
-			    format(store,sizeof(store),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {%s}%s", accessRightName[accessId], DivisionInfo[g - 1][listitem - 1][divColorHex], DivisionInfo[g - 1][listitem - 1][divName]);
-			    SendClientMessage(playerid, COLOR_GREY, store);
+			    format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {%s}%s", accessRightName[accessId], DivisionInfo[g - 1][listitem - 1][divColorHex], DivisionInfo[g - 1][listitem - 1][divName]);
+			    SendClientMessage(playerid, COLOR_GREY, string);
             }
             else
             {
-                format(store,sizeof(store),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {555555}без подфракции", accessRightName[accessId]);
-			    SendClientMessage(playerid, COLOR_GREY, store);
+                format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {555555}без подфракции", accessRightName[accessId]);
+			    SendClientMessage(playerid, COLOR_GREY, string);
             }
             OrganInfo[g][gAccDiv][accessId] = listitem;
 			PlayerPlaySound(playerid,6401,0,0,0);
@@ -352,12 +354,13 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
 			new g = DP[1][playerid];
             if(listitem == 0)
             {
-			    format(store,sizeof(store),"{cccccc}Введите {ff9000}номер ранга{cccccc}, с которого будет доступна эта функция\n\n{ff9000}%s\nТекущий ранг: %d\n{cccccc}(1 - %d ранг)", accessRightName[DP[0][playerid]], OrganInfo[g][gAcc][DP[0][playerid]], get_maxrank(g));
-			    ShowDialog(playerid,617,DIALOG_STYLE_INPUT,"{cccccc}Права Доступа",store,"Принять","Отмена");
+                new string[180];
+			    format(string,sizeof(string),"{cccccc}Введите {ff9000}номер ранга{cccccc}, с которого будет доступна эта функция\n\n{ff9000}%s\nТекущий ранг: %d\n{cccccc}(1 - %d ранг)", accessRightName[DP[0][playerid]], OrganInfo[g][gAcc][DP[0][playerid]], get_maxrank(g));
+			    ShowDialog(playerid,617,DIALOG_STYLE_INPUT,"{cccccc}Права Доступа",string,"Принять","Отмена");
             }
             else if(listitem == 1)
             {
-                format(lines,sizeof(lines),""); // Очищаем Lines
+                new line[100],lines[1600];
                 format(line,sizeof(line),"ID\tНазвание\tАббревиатура"), strcat(lines,line);
 
                 format(line,sizeof(line),"\n{555555}Без подфракции"), strcat(lines,line);
@@ -389,10 +392,12 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
 			new g = DP[1][playerid];
 			if(!strlen(inputtext)) return cmd_oac(playerid);
 			new fr = strval(inputtext);
-			if(fr > get_maxrank(g) || fr < 1) return format(store,sizeof(store),"[ Мысли ]: Ранг не меньше 1 и не больше %d", get_maxrank(g)), ErrorText(playerid, store), showDialogSettingAccessRight(playerid, DP[0][playerid]);
+
+            new string[160];
+			if(fr > get_maxrank(g) || fr < 1) return format(string,sizeof(string),"[ Мысли ]: Ранг не меньше 1 и не больше %d", get_maxrank(g)), ErrorText(playerid, string), showDialogSettingAccessRight(playerid, DP[0][playerid]);
 			if(OrganInfo[g][gAcc][accessId] == listitem) return ErrorText(playerid, "{FF6347}Эта настройка уже установлена"), showDialogSettingAccessRight(playerid, accessId);
-            format(store,sizeof(store),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлены на {ff9000}%d+ Ранг", accessRightName[accessId], fr);
-			SendClientMessage(playerid, COLOR_GREY, store);
+            format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлены на {ff9000}%d+ Ранг", accessRightName[accessId], fr);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			OrganInfo[g][gAcc][accessId] = fr;
 			PlayerPlaySound(playerid,6401,0,0,0);
 			SaveOrganAccess(g, accessId);
@@ -429,8 +434,7 @@ stock GetAccessRankOrg(playerid, g, accessId, fbi) // Ответ с сообще
 {
 	if(!GetAccessRankOrgMay(playerid, g, accessId, fbi))
 	{
-        format(lines,sizeof(lines),""); // Очищаем Lines
-
+        new line[90],lines[360];
         format(line,sizeof(line),"{FF6347}Вам недоступна эта функция [ %s ]", accessRightName[accessId]), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Требуется ранг: {FF6347}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
         if(OrganInfo[g][gAccDiv][accessId] > 0)

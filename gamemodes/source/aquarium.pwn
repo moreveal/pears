@@ -90,15 +90,16 @@ stock PutFishInAquarium(aquaid, fishid)
 
 stock UpdateTextFish(aquaid, fishid)
 {
-    if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(store, sizeof(store), "%s\n{FF6347}Рыбка умерла", FishName[aquaid][fishid]);
+    new string[60];
+    if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string), "%s\n{FF6347}Рыбка умерла", FishName[aquaid][fishid]);
     else
     {
-        if(AquariumInfo[aquaid][aqFishSatiety][fishid] <= 10) format(store, sizeof(store), "%s\n{FF6347}Eat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]);
-        else format(store, sizeof(store), "%s\nEat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]);
+        if(AquariumInfo[aquaid][aqFishSatiety][fishid] <= 10) format(string, sizeof(string), "%s\n{FF6347}Eat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]);
+        else format(string, sizeof(string), "%s\nEat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]);
     }
 
-    if(fishid == 1) SetDynamicObjectMaterialText(AquariumInfo[aquaid][aqTextObject][fishid], 0, store, 140, "Arial", 65, 1, 0xFF999999, 0x00000000, 2);
-    else SetDynamicObjectMaterialText(AquariumInfo[aquaid][aqTextObject][fishid], 0, store, 140, "Arial", 65, 1, 0xFF999999, 0x00000000, 0);
+    if(fishid == 1) SetDynamicObjectMaterialText(AquariumInfo[aquaid][aqTextObject][fishid], 0, string, 140, "Arial", 65, 1, 0xFF999999, 0x00000000, 2);
+    else SetDynamicObjectMaterialText(AquariumInfo[aquaid][aqTextObject][fishid], 0, string, 140, "Arial", 65, 1, 0xFF999999, 0x00000000, 0);
     return 1;
 }
 
@@ -159,7 +160,7 @@ function FinishSwimFish(aquaid, fishid)
 
 stock AquariumMenu(playerid, aquaid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[70],lines[490];
     
     DP[0][playerid] = aquaid;
     format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Статус"), strcat(lines,line);
@@ -191,14 +192,14 @@ stock AquariumFish(playerid, aquaid, fishid)
     if(AquariumInfo[aquaid][aqFishStat][fishid] == 0 || AquariumInfo[aquaid][aqFishStat][fishid] == 2)
     {
         DP[2][playerid] = getThingPriceGos(194, 0);
-        if(AquariumInfo[aquaid][aqFishStat][fishid] == 0) format(store, sizeof(store),"{cccccc}Введите имя рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
-        else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(store, sizeof(store),"{cccccc}Введите имя новой рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
-		ShowDialog(playerid,498,DIALOG_STYLE_INPUT,"{ff9000}Аквариум",store,"Принять","Отмена");
+        new string[100];
+        if(AquariumInfo[aquaid][aqFishStat][fishid] == 0) format(string, sizeof(string),"{cccccc}Введите имя рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
+        else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string),"{cccccc}Введите имя новой рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
+		ShowDialog(playerid,498,DIALOG_STYLE_INPUT,"{ff9000}Аквариум",string,"Принять","Отмена");
     }
     else
     {
-        format(lines,sizeof(lines),""); // Очищаем Lines
-    
+        new line[70],lines[140];
         format(line,sizeof(line),"{ff9000}%s {cccccc}| Eat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Переименовать Рыбку >>"), strcat(lines,line);
         ShowDialog(playerid,497,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аквариум",lines,"Выбор","Отмена");
@@ -245,7 +246,13 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             {
                 new aquaid = DP[0][playerid];
                 if(AquariumInfo[aquaid][aqFeedFish] > 0) return ErrorMessage(playerid, "{FF6347}Рыбки уже кушают");
-                if(AquariumInfo[aquaid][aqCdFeed] > gettime()) return format(store, sizeof(store), "{FF6347}Рыбок кормили совсем недавно [ Покормить повторно можно будет через %s ]", fine_time(AquariumInfo[aquaid][aqCdFeed] - gettime())), ErrorMessage(playerid, store);
+                if(AquariumInfo[aquaid][aqCdFeed] > gettime())
+                {
+                    new string[120];
+                    format(string, sizeof(string), "{FF6347}Рыбок кормили совсем недавно\n{cccccc}Покормить повторно можно будет через %s", fine_time(AquariumInfo[aquaid][aqCdFeed] - gettime()));
+                    ErrorMessage(playerid, string);
+                    return 1;
+                }
 
                 new price = getThingPriceGos(195, 0);
                 if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}У вас не хватает денег");
@@ -289,8 +296,9 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             new price = DP[2][playerid];
             if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}У вас не хватает денег");
             
-            format(store,sizeof(store),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$", GetNameThing(0, 194, 0, 0), price);
-            SuccessMessage(playerid, store);
+            new string[100];
+            format(string,sizeof(string),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$", GetNameThing(0, 194, 0, 0), price);
+            SuccessMessage(playerid, string);
             oGivePlayerMoney(playerid, -price);
             putkazna(2, price);
             payanim(playerid, 0);
@@ -318,8 +326,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
                 if(DP[0][playerid] == 0 && PlayerInfo[playerid][pLeader] != 7 
                     && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Только лидер правительства или администратор может переименовать рыбку");
 
-                format(store, sizeof(store),"{cccccc}Введите новое имя рыбки [ 2 - 10 Символов ]");
-		        ShowDialog(playerid,496,DIALOG_STYLE_INPUT,"{ff9000}Аквариум",store,"Принять","Отмена");
+		        ShowDialog(playerid,496,DIALOG_STYLE_INPUT,"{ff9000}Аквариум","{cccccc}Введите новое имя рыбки [ 2 - 10 Символов ]","Принять","Отмена");
             }
         }
         else AquariumMenu(playerid, DP[0][playerid]);
@@ -334,8 +341,10 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             
             new aquaid = DP[0][playerid], fishid = DP[1][playerid];
             if(AquariumInfo[aquaid][aqFishStat][fishid] != 1) return ErrorMessage(playerid, "{FF6347}Рыбка умерла или её нет в аквариуме [ Купите новую ]");
-            format(store,sizeof(store),"{99ff66}Рыбка %s теперь имеет новое имя: {ff9000}%s", FishName[aquaid][fishid], inputtext);
-            SuccessMessage(playerid, store);
+
+            new string[100];
+            format(string,sizeof(string),"{99ff66}Рыбка %s теперь имеет новое имя: {ff9000}%s", FishName[aquaid][fishid], inputtext);
+            SuccessMessage(playerid, string);
 
             format(FishName[aquaid][fishid], 11, "%s", inputtext);
             UpdateTextFish(aquaid, fishid);
@@ -454,9 +463,10 @@ stock AquariumFishSatiety(aquaid)
             }
             else
             {
-                format(store_query, sizeof(store_query), "UPDATE `aquarium` SET `aqFishSatiety%d`='%d' WHERE `newid`='%d'",
+                new string_mysql[120];
+                format(string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishSatiety%d`='%d' WHERE `newid`='%d'",
                     fishid, AquariumInfo[aquaid][aqFishSatiety][fishid], AquariumInfo[aquaid][aqNewid]);
-                query_empty(pearsq, store_query);
+                query_empty(pearsq, string_mysql);
             }
         }
     }

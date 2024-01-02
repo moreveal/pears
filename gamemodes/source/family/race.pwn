@@ -23,7 +23,7 @@ new carRaceCheckpoint[MAX_REALPLAYERS],raceRout[MAX_REALPLAYERS];
 
 stock ShowStreetRacers(playerid,family)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[70],lines[350];
     format(line,sizeof(line),"Начать подготовку к сходке"), strcat(lines,line);
     if(FamilyInfo[family][fParthnerMarket] == 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {FF6347}[Отсутствует]"), strcat(lines,line);
     else if(FamilyInfo[family][fParthnerMarket] != 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerMarket]), strcat(lines,line);
@@ -41,11 +41,11 @@ stock GoStreetRacers(playerid)
     new fId = PlayerInfo[playerid][pFamily];
     new tyear, tmonth, tday, thour, tminute, tsecond;
     new unixsecond = gettime();
-    format(lines,sizeof(lines),""); // Очищаем Lines
     if(StreetRacers[0][raceStat] == 1 || StreetRacers[0][raceStat] == 2)
     {
         if(StreetRacers[0][raceFamily] == fId)
         {
+            new line[70],lines[490];
             if(StreetRacers[0][raceStat] == 1)
             {
                 stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
@@ -82,8 +82,7 @@ stock GoStreetRacers(playerid)
     }
     else if(StreetRacers[0][raceStat] == 0)
     {
-        format(line,sizeof(line),"\nНачать сходку Стрит Рейсоров?"), strcat(lines,line);
-		ShowDialog(playerid,1451,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+		ShowDialog(playerid,1451,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Начать сходку Стрит Рейсеров?","Да","Нет");
     }
     return 1;
 }
@@ -268,7 +267,6 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     }
     else if(dialogid == 1457)
     {
-        format(lines,sizeof(lines),""); // Очищаем Lines
         new fam = PlayerInfo[playerid][pFamily];
         if(response)
 		{
@@ -292,8 +290,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 else if(FamilyInfo[fam][fParthnerMarket] != 0)
                 {
                     DP[1][playerid] = listitem;
-                    format(line,sizeof(line),"\nРазорвать партнерство?"), strcat(lines,line);
-		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Расторгнуть партнерство?","Да","Нет");
                 }
             }
             if(listitem == 2)
@@ -308,8 +305,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 else if(FamilyInfo[fam][fParthnerBenz] != 0)
                 {
                     DP[1][playerid] = listitem;
-                    format(line,sizeof(line),"\nРазорвать партнерство?"), strcat(lines,line);
-		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Расторгнуть партнерство?","Да","Нет");
                 }
             }
             if(listitem == 3)
@@ -324,8 +320,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 else if(FamilyInfo[fam][fParthnerService] != 0)
                 {
                     DP[1][playerid] = listitem;
-                    format(line,sizeof(line),"\nРазорвать партнерство?"), strcat(lines,line);
-		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");                    
+		            ShowDialog(playerid,1458,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Расторгнуть партнерство?","Да","Нет");                    
                 }
             }
             if(listitem == 4)
@@ -419,9 +414,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(listitem == 0)
             {
                 if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
-                format(lines,sizeof(lines),""); // Очищаем Lines
-                format(line,sizeof(line),"\nВы уверены что хотите начать гонку?"), strcat(lines,line);
-		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");     
+		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Вы уверены что хотите начать гонку?","Да","Нет");     
             }
             if(listitem == 1)
             {
@@ -456,11 +449,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     {
         if(response)
 		{
-            format(lines,sizeof(lines),""); // Очищаем Lines
-
-            format(line,sizeof(line),"\nВы уверены что хотите начать гонку?"), strcat(lines,line);
-            format(line,sizeof(line),"\nВсе игроки заморозятся на 5 секунд, и будет дан отсчет до начала гонки"), strcat(lines,line);
-            ShowDialog(playerid,1467,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+            ShowDialog(playerid,1467,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Вы уверены что хотите начать гонку?\nВсе игроки заморозятся на 5 секунд, и будет дан отсчет до начала гонки","Да","Нет");
 		}
         else return GoStreetRacers(playerid);
     }
@@ -763,8 +752,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 }
 stock settingpartner(playerid, b, number) // Управление партнерством
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
-
+    new line[60],lines[180];
 	if(BizzInfo[b][bFamilyPartner][number] == 0) format(line,sizeof(line),"{444444}Партнерство с семьей: {ff9000}Пусто"), strcat(lines,line);
     else if(BizzInfo[b][bFamilyPartner][number] != 0) format(line,sizeof(line),"{444444}Партнерство с семьей: {ff9000}%s", FamilyInfo[BizzInfo[b][bFamilyPartner][number]][fName]), strcat(lines,line);
     format(line,sizeof(line),"\n{99ff66}Предложить партнерство "), strcat(lines,line);
@@ -790,11 +778,11 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
         DP[1][giveplayerid] = playerid;
         DP[2][giveplayerid] = number;
         DP[3][giveplayerid] = fam;
-        format(lines,sizeof(lines),""); // Очищаем Lines
+
+        new line[60],lines[180];
         format(line,sizeof(line),"{cccccc}Владелец бизнеса {ff9000}%s [%d]",bizname(b), b), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Предлагает вам заключить партнерство"), strcat(lines,line);
         format(line,sizeof(line),"\nВашей семьи с его бизнесом"), strcat(lines,line);
-
         ShowDialog(giveplayerid,1456,DIALOG_STYLE_MSGBOX,"{ff9000}Предложение о партнерстве",lines,"Принять","Отказать");
     }
 	return 1;
@@ -864,7 +852,7 @@ stock UpdateLabelTermRace(br)
 stock ListRegisterToRace(playerid, type)
 {
     new quan;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[50],lines[450];
 	for(new i = 0; i < 8; i++)
 	{
 		List[i][playerid] = 0;
@@ -881,19 +869,16 @@ stock ListRegisterToRace(playerid, type)
 			format(line,sizeof(line),"{ff9000}%d. {cccccc}Свободно\n", quan), strcat(lines,line);
 		}
 	}
-	format(store,sizeof(store),"{cccccc}Сходка StreetRacers");
-	if(type == 0) ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
-    else if(type == 1) ShowDialog(playerid,1465,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Отмена");
+	if(type == 0) ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
+    else if(type == 1) ShowDialog(playerid,1465,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
 	return 1;
 }
 
 stock SettingRegisterToRace(playerid, number)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
     if(StreetRacers[0][racersCount][number] != -1)
     {
-        format(line,sizeof(line),"\nВыгнать игрока из списка участников?"), strcat(lines,line);
-		ShowDialog(playerid,1466,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+		ShowDialog(playerid,1466,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Выгнать игрока из списка участников?","Да","Нет");
     }
     else return ErrorMessage(playerid,"{FF6347} Слот пустой, выбирете другой");
     return 1;
@@ -901,7 +886,6 @@ stock SettingRegisterToRace(playerid, number)
 
 stock RegisterToRace(playerid, number)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
     if(StreetRacers[0][raceStat] != 3)
     {
         new otmena = 0;
@@ -916,20 +900,19 @@ stock RegisterToRace(playerid, number)
         if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
         if(StreetRacers[0][racersCount][number] == -1 && otmena != -1)
         {
-            format(line,sizeof(line),"\nЗанять место в гонке?"), strcat(lines,line);
-            ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu",lines,"Да","Нет");
+            ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Занять место в гонке?","Да","Нет");
         }
-        else return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
+        else return ErrorMessage(playerid,"{FF6347}Слот занят, выберите другой");
     }
     else if(StreetRacers[0][raceStat] == 3)
     {
-        new quan;
+        new line[40],lines[360];
+        format(line,sizeof(line),"Позиция Имя победителя"), strcat(lines,line);
         for(new i; i < 8; i++)
         {
-            format(line,sizeof(line),"Позиция Имя победителя\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
-            format(line,sizeof(line),"{ff9000}%d. %s\n", quan+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
-            ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход","");
+            format(line,sizeof(line),"\n{ff9000}%d. %s", i+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
         }
+        ShowDialog(playerid,1742,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход","");
     }
     return 1;
 }
@@ -940,7 +923,6 @@ stock StreetRacersBusi(playerid, br)
     if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция");
     if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
     if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы находитесь в слежке");
-    format(lines,sizeof(lines),""); // Очищаем Lines
 	PlayerPlaySound(playerid,40405,0,0,0);
     if(br >= 1 && br <= 12)
     {
@@ -949,11 +931,13 @@ stock StreetRacersBusi(playerid, br)
  		if(IsAVello(vehicle)) return ErrorMessage(playerid, "{FF6347}Велосипед нельзя заправить");
  		new fill = Gas[vehicle]+Gelium[vehicle];
         if(fill >= 99) return ErrorMessage(playerid, "{FF6347}Транспорт не нужно заправлять [ Бак полон ]");
-        format(line, sizeof(line), "{ffffff}Сколько литров топлива вы хотите заправить?\n\n{cccccc}Стоимость 1 литра на этой заправке = {00cc00}%d$\n{cccccc}Для полного бака вам требуется: %d литров {99ff66}[%d$]",BizzInfo[br][bPrice][0],100-fill,(100-fill)*BizzInfo[br][bPrice][0]);
-   		ShowDialog(playerid,484,DIALOG_STYLE_INPUT,"{0088ff}Заправка",line,"Принять","Отмена");
+        new string[200];
+        format(string, sizeof(string), "{ffffff}Сколько литров топлива вы хотите заправить?\n\n{cccccc}Стоимость 1 литра на этой заправке = {99ff66}%d$\n{cccccc}Для полного бака вам требуется: %d литров {99ff66}[%d$]",BizzInfo[br][bPrice][0],100-fill,(100-fill)*BizzInfo[br][bPrice][0]);
+   		ShowDialog(playerid,484,DIALOG_STYLE_INPUT,"{0088ff}Заправка",string,"Принять","Отмена");
     }
     else if(br >= 153 && br <= 162)
 	{
+        new line[50],lines[150];
 		//ApplyDynamicActorAnimation(BizTermActor[GetBizTermActorId(b)][term], "PED","endchat_03",4.0,0,1,1,0,0); // Машет рукой
 		format(line,sizeof(line),"Товар\tСтоимость"), strcat(lines,line);
 	   	format(line,sizeof(line),"\n{ff9000}Хот-Дог\t{99ff66}%d$",BizzInfo[br][bPrice][0]), strcat(lines,line);
@@ -1040,9 +1024,10 @@ stock TimerToStart()
         {
             if(StreetRacers[0][racersCount][i] != -1)
             {
+                new string[4];
                 PlayerPlaySound(StreetRacers[0][racersCount][i],1056,0,0,0);
-                format(store,sizeof(store),"%d",StreetRacers[0][raceTimer]);
-                GameTextForPlayer(StreetRacers[0][racersCount][i], store, 2000, 6);
+                format(string,sizeof(string),"%d",StreetRacers[0][raceTimer]);
+                GameTextForPlayer(StreetRacers[0][racersCount][i], string, 2000, 6);
             }
         }
     }
@@ -1087,16 +1072,18 @@ stock RaceWinner(playerid)
 		}
         quan++;
 	}
-    format(store,sizeof(store),"[ Мысли ]: Я завершил гонку на %d месте",quan+1);
-    SendClientMessage(playerid,COLOR_GREY,store);
+
+    new string[100];
+    format(string,sizeof(string),"[ Мысли ]: Я завершил гонку на %d месте",quan+1);
+    SendClientMessage(playerid,COLOR_GREY,string);
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 0) continue;
         if(IsPlayerInRangeOfPoint(i,50.0,StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2])
          && GetPlayerVirtualWorld(i) == 0 && GetPlayerInterior(i) == 0 || OnlineInfo[i][oRacers] == 1)
         {
-            format(store,sizeof(store), " SMS от Оператора Гонки: {99ff33}Участник %s завершил гонку на %d месте",rpplayername(playerid),quan+1);
-            SendClientMessage(i,COLOR_YELLOW,store);
+            format(string,sizeof(string), " SMS от Оператора Гонки: {99ff33}Участник %s завершил гонку на %d месте",rpplayername(playerid),quan+1);
+            SendClientMessage(i,COLOR_YELLOW,string);
         }
     }
     StreetRacers[0][raceStat] = 2;
@@ -1246,7 +1233,7 @@ stock ShowAllRoutRace(playerid,type)
 {
     new fam = PlayerInfo[playerid][pFamily];
     if(fam < 0) return 0;
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[90],lines[540];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
 	format(line,sizeof(line),"№ Автор\tВремя редактирования/создания"), strcat(lines,line);
 	for(new i = 0; i < 5; i++) 
@@ -1277,7 +1264,7 @@ stock SettingRoutRace(playerid, number, author)
 	if(author == 0)
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
-		format(lines,sizeof(lines),""); // Очищаем Lines
+		new line[90],lines[270];
 		stamp2datetime(FamilyInfo[fam][fRoutUnix][number], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		format(line,sizeof(line),"\n%s Создан/отредактирован: [ %02d.%02d.%d %02d:%02d ]\n", FamilyRoutNameCreator[fam][number],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 
@@ -1288,7 +1275,7 @@ stock SettingRoutRace(playerid, number, author)
 	else if(author == 1)
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
-		format(lines,sizeof(lines),""); // Очищаем Lines
+		new line[90],lines[360];
 		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		format(line,sizeof(line),"Маршрут от: %s Создан: [ %02d.%02d.%d %02d:%02d ]", FamilyRoutNameCreator[fam][number],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		format(line,sizeof(line),"\nЗагрузить маршрут себе в чекпоинты"), strcat(lines,line);

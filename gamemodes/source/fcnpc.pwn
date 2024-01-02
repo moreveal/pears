@@ -38,8 +38,7 @@ public FCNPC_OnUpdate(npcid)
 
 CMD:gettrainpoint(playerid) // VREMENNO
 {
-    format(store,sizeof(store),"Train Point: %d", TrainRoadID);
-    SendClientMessage(playerid, -1, store);
+    SendClientMessagef(playerid, -1, "Train Point: %d", TrainRoadID);
     return 1;
 }
 
@@ -269,8 +268,9 @@ stock TrainGearSet(stat)
     }
     TrainGearDelay = 0;
 
-    format(store,sizeof(store),"машинист переключает поезд на %d передачу", TrainGear);
-	SetPlayerChatBubble(npcarmyid, store, COLOR_PURPLE, 30.0, 3000);
+    new string[50];
+    format(string,sizeof(string),"машинист переключает поезд на %d передачу", TrainGear);
+	SetPlayerChatBubble(npcarmyid, string, COLOR_PURPLE, 30.0, 3000);
     return 1;
 }
 
@@ -299,7 +299,7 @@ stock IsRuinsOnTrainRoad() // Ищем руины по пути поезда
 
 stock MessageTrainStop(playerid)
 {
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[90],lines[450];
     format(line,sizeof(line),"{FF6347}Внимание! {336633}Впереди обнаружено повреждение железнодорожных путей"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{cccccc}- Поезд плавно остановится перед препятствием"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}- Вы не можете продолжить движение, пока не устраните причину"), strcat(lines,line);

@@ -46,7 +46,7 @@ stock showDialogAllDivisions(playerid)
     new g = fraction(playerid) - 1;
 	DP[1][playerid] = g; // Сохраняем id организации
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[160],lines[1760];
     format(line,sizeof(line),"ID\tНазвание\tАббревиатура"), strcat(lines,line);
     for(new i = 0; i < MAX_DIVISION_ORG; i++)
 	{
@@ -76,8 +76,7 @@ stock showDialogMenuDivision(playerid)
 	new i = DP[2][playerid]; // Получаем id подфракции
 	DP[3][playerid] = 0; // Сбрасываем доступ к управлению
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
+	new line[120],lines[1680];
 	format(line,sizeof(line),"{cccccc}Информация\t"), strcat(lines,line);
 	format(line,sizeof(line),"\n{555555}Участники {99ff66}Online\t"), strcat(lines,line);
 
@@ -107,8 +106,9 @@ stock showDialogMenuDivision(playerid)
 		else format(line,sizeof(line),"\n{FF6347}Покинуть подфракцию >> \t"), strcat(lines,line);
 	}
 
-    format(store,sizeof(store),"{ff9000}Подфракция {%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-	ShowDialog(playerid,1316,DIALOG_STYLE_TABLIST,store,lines,"Выбрать","Выход");
+	new header[80];
+    format(header,sizeof(header),"{ff9000}Подфракция {%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+	ShowDialog(playerid,1316,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Выход");
 	return 1;
 }
 
@@ -124,7 +124,7 @@ CMD:divmembers(playerid)
 }
 stock showDialogMembersDivision(playerid, org, div)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}AFK"), strcat(lines,line);
 
 	new atext[10], btext[10], quan, rank, fineTime[24];
@@ -174,8 +174,9 @@ stock showDialogMembersDivision(playerid, org, div)
 		quan ++;
 	}
 
-	format(store,sizeof(store),"{cccccc}Участники {%s}%s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], quan ,day, month, year);
-   	ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"*","");
+	new header[140];
+	format(header,sizeof(header),"{cccccc}Участники {%s}%s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], quan ,day, month, year);
+   	ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"*","");
 	return 1;
 }
 stock divmembersoff(playerid)
@@ -188,10 +189,12 @@ stock divmembersoff(playerid)
 
 	DP[4][playerid] = 0;
 	DP[5][playerid] = 0;
-	format(store_query, sizeof(store_query), "SELECT * FROM `pp_igroki` WHERE \
-	`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
-	OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' LIMIT 40", div, org, div ,org);
-	mysql_tquery(pearsq, store_query, "call_membersdiv", "ddd", playerid, org, div);
+
+	new string_mysql[200];
+	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
+		`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
+		OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' LIMIT 40", div, org, div ,org);
+	mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
 	return 1;
 }
 function call_membersdiv(playerid, org, div)
@@ -201,7 +204,7 @@ function call_membersdiv(playerid, org, div)
 	cache_get_row_count(rows);
 
 	new playerLoad[6], playerName[24], rank, offTime[24], signName[24], btext[9];
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[214],lines[4096];
 	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}Последняя Активность"), strcat(lines,line);
 	
 	for(new i = 0; i < rows; i++)
@@ -245,11 +248,12 @@ function call_membersdiv(playerid, org, div)
 
 	if(rows > 0)
 	{
+		new header[140];
 		DP[5][playerid] ++;
-		format(store,sizeof(store),"{cccccc}Участники {%s}%s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], rows , day, month, year, DP[5][playerid]);
+		format(header,sizeof(header),"{cccccc}Участники {%s}%s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], rows , day, month, year, DP[5][playerid]);
 
-		if(rows >= 40) ShowDialog(playerid,1330,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"Далее","");
-		else ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,store,lines,"*","");
+		if(rows >= 40) ShowDialog(playerid,1330,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Далее","");
+		else ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"*","");
 	}
     else if(rows == 0) ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции","{cccccc}Участники Offline в подфракции не найдены","*","");
 	return 1;
@@ -275,16 +279,17 @@ CMD:divinvite(playerid, const params[])
 	if(PlayerInfo[giveplayerid][pDivision][0] > 0) return ErrorMessage(playerid, "{FF6347}Игрок уже находится в подфракции");
 	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 
+	new string[120];
 	// Записываем чела, которого приглашаем
-	format(store, sizeof(store), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+	format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName]);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 	PlayerPlaySound(playerid,40405,0,0,0);
 
 	// Записываем этому челу инфу, куда приглашаем и кто приглашает
 	DP[0][giveplayerid] = i;
 	DP[1][giveplayerid] = playerid;
-	format(store, sizeof(store), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
-	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",store,"Да","Нет");
+	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
 	PlayerPlaySound(giveplayerid,40405,0,0,0);
 
 	OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, DivisionInfo[g - 1][i - 1][divName]);
@@ -323,13 +328,14 @@ CMD:divuninvite(playerid, const params[])
 			if(fraction(giveplayerid) != 2) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 
+		new string[120];
 		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
-		format(store, sizeof(store), "* Вы исключили %s из %s по причине: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName], reason);
-		SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+		format(string, sizeof(string), "* Вы исключили %s из %s по причине: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName], reason);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
 		PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
-		format(store, sizeof(store), "* %s исключает вас из %s по причине: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName], reason);
-		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, store);
+		format(string, sizeof(string), "* %s исключает вас из %s по причине: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName], reason);
+		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 
 		// Исключаем
 		uninviteDivision(playerid, g);
@@ -340,9 +346,10 @@ CMD:divuninvite(playerid, const params[])
 	{
 		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
 
+		new string_mysql[80];
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
-		format(store, sizeof(store), "SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
-		mysql_tquery(pearsq, store, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
+		format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
+		mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
 	}
 	return 1;
 }
@@ -382,16 +389,11 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		mysql_SaveDivision(playerLoad[5], whichDiv, 0); // Сохраняем в базу
 
 		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
-		format(store, sizeof(store), "* Вы исключили %s из %s по причине: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
-		SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+		SendClientMessagef(playerid, COLOR_LIGHTBLUE, "* Вы исключили %s из %s по причине: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
 
 		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], playerLoad[5], str_name, "", i, reason);
 	}
-	else 
-	{
-		format(store, sizeof(store), "{FF6347}Игрока %s не существует [ Не найден ]", str_name);
-		ErrorMessage(playerid, store);
-	}
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
 stock uninviteDivision(playerid, outOrg) // Исключаем из подфракции Online
@@ -414,8 +416,9 @@ stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // Получаем инфор
 }
 stock mysql_SaveDivision(str_id, whichDiv, value)
 {
-	format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `id` = '%d'", whichDiv, value, str_id);
-	query_empty(pearsq, store_query);
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `id` = '%d'", whichDiv, value, str_id);
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 
@@ -429,8 +432,10 @@ CMD:divleave(playerid)
 
    	PlayerPlaySound(playerid,40405,0,0,0);
    	DP[5][playerid] = 0; // Сбрасываем счетчик уточнений
-   	format(store, sizeof(store), "{cccccc}Вы уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-	ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",store,"Да","Нет");
+
+	new string[140];
+   	format(string, sizeof(string), "{cccccc}Вы уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+	ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 	return 1;
 }
 
@@ -441,7 +446,7 @@ stock showDialogSettingDivisionRank(playerid) // Меню настройки н�
 
 	if(DivisionInfo[g][i][divRanks] <= 0) return ErrorText(playerid, "{cccccc}[ Мысли ]: Мне нужно указать количество рангов, прежде чем редактировать названия"), showDialogMenuDivision(playerid);
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[130],lines[4096];
     format(line,sizeof(line),"Названия рангов"), strcat(lines,line);
     for(new r = 0; r < DivisionInfo[g][i][divRanks]; r++)
 	{
@@ -454,7 +459,7 @@ stock showDialogSettingDivisionRank(playerid) // Меню настройки н�
 
 stock showDialogInfoDivision(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[50],lines[300];
 
 	format(line,sizeof(line),"\nКоманды:"), strcat(lines,line);
 	format(line,sizeof(line),"\n/div - меню подфракции"), strcat(lines,line);
@@ -502,20 +507,21 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 				if(DP[3][playerid] == 0) return 0; // Блокируем другие листы, если нет доступа (не отрисованный listitem могут вызвать внешними скриптами)
 			}
 
+			new string[160];
 			if(listitem == 6) // Название
 			{
-				format(store,sizeof(store),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_LENGTH-1);
-				ShowDialog(playerid,1317,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
+				format(string,sizeof(string),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_LENGTH-1);
+				ShowDialog(playerid,1317,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
 			if(listitem == 7) // Абреввиатура
 			{
-				format(store,sizeof(store),"{cccccc}Введите аббревиатуру подфракции [1 - %d символов]\n\n{555555}Она будет отображаться в /r, /d, /i чатах. Пример: [ABC]", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1);
-				ShowDialog(playerid,1318,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
+				format(string,sizeof(string),"{cccccc}Введите аббревиатуру подфракции [1 - %d символов]\n\n{555555}Она будет отображаться в /r, /d, /i чатах. Пример: [ABC]", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1);
+				ShowDialog(playerid,1318,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
 			if(listitem == 8) // Количество рангов
 			{
-				format(store,sizeof(store),"{cccccc}Введите количество рангов в подфракции [2 - %d рангов]\n\n{FF6347}Внимание! Максимальный ранг будет являться главой подфракции", get_maxrank(g+1));
-				ShowDialog(playerid,1319,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
+				format(string,sizeof(string),"{cccccc}Введите количество рангов в подфракции [2 - %d рангов]\n\n{FF6347}Внимание! Максимальный ранг будет являться главой подфракции", get_maxrank(g+1));
+				ShowDialog(playerid,1319,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
 			if(listitem == 9) showDialogSettingDivisionRank(playerid); // Названия рангов
 			if(listitem == 10) // Спавн
@@ -550,8 +556,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 				// Включаем рацию в доступ
 				racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
 
-				format(store, sizeof(store), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g][i][divName]);
-				SendClientMessage(playerid, COLOR_GREY, store);
+				format(string, sizeof(string), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g][i][divName]);
+				SendClientMessage(playerid, COLOR_GREY, string);
 
 				showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
 			}
@@ -566,7 +572,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, store), showDialogMenuDivision(playerid);
+			new string[100];
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
@@ -574,10 +581,10 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divName], MAX_NAME_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s название подфракции: %s", gender(playerid), inputtext);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название подфракции: %s", gender(playerid), inputtext);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
@@ -592,7 +599,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_ABBREVIATION_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1), ErrorText(playerid, store), showDialogMenuDivision(playerid);
+
+			new string[100];
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_ABBREVIATION_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
@@ -600,10 +609,10 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divAbbreviation], MAX_NAME_DIVISION_ABBREVIATION_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s аббревиатуру подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s аббревиатуру подфракции: %s", gender(playerid), inputtext);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s аббревиатуру подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s аббревиатуру подфракции: %s", gender(playerid), inputtext);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
@@ -622,22 +631,24 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			new i = DP[2][playerid]; // Получаем id подфракции
 
 			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
-			if(input > get_maxrank(g+1) || input < 2) return format(store,sizeof(store),"[ Мысли ]: Не меньше 2 и не больше %d рангов", get_maxrank(g+1)), ErrorText(playerid, store), showDialogMenuDivision(playerid);
+
+			new string[100];
+			if(input > get_maxrank(g+1) || input < 2) return format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", get_maxrank(g+1)), ErrorText(playerid, string), showDialogMenuDivision(playerid);
 
 			if(DivisionInfo[g][i][divRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divRanks] = input;
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s количество рангов: %d.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), input);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s количество рангов в подфракции: %d", gender(playerid), input);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s количество рангов: %d.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), input);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s количество рангов в подфракции: %d", gender(playerid), input);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
 			DivisionSave(g, i); // Сохраняем
 
-			format(store,sizeof(store),"%d Рангов", input);
-			OrgLog(g + 1, "divRanks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, store);
+			format(string,sizeof(string),"%d Рангов", input);
+			OrgLog(g + 1, "divRanks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -648,8 +659,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(listitem < 0 || listitem >= MAX_RANK_ORG) return 0;
 			DP[3][playerid] = listitem; // Сохраняем id выбранного ранга
 
-			format(store,sizeof(store),"{cccccc}Введите название %d ранга [1 - %d символов]", listitem + 1, MAX_NAME_LENGTH-1);
-			ShowDialog(playerid,1321,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",store,"Принять","Отмена");
+			new string[90];
+			format(string,sizeof(string),"{cccccc}Введите название %d ранга [1 - %d символов]", listitem + 1, MAX_NAME_LENGTH-1);
+			ShowDialog(playerid,1321,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -658,7 +670,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogSettingDivisionRank(playerid);
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(store,sizeof(store),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, store), showDialogSettingDivisionRank(playerid);
+
+			new string[100];
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogSettingDivisionRank(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingDivisionRank(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
@@ -667,17 +681,17 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionRankName[g][i][r], MAX_NAME_LENGTH, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r + 1, inputtext);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r + 1, inputtext);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r + 1, inputtext);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r + 1, inputtext);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogSettingDivisionRank(playerid); // Открываем меню настройки подфракции
 			DivisionSaveRankName(g, i, r); // Сохраняем
 
-			format(store,sizeof(store),"%d. %s", r + 1, inputtext);
-			OrgLog(g + 1, "divRankName", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, store);
+			format(string,sizeof(string),"%d. %s", r + 1, inputtext);
+			OrgLog(g + 1, "divRankName", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogSettingDivisionRank(playerid);
 	}
@@ -704,10 +718,11 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		    DivisionInfo[g][i][divSpawnInterior] = GetPlayerInterior(playerid);
 		    DivisionInfo[g][i][divSpawnWorld] = GetPlayerVirtualWorld(playerid);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s установил%s новый спавн.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid));
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я установил%s новый спавн для %s", gender(playerid), DivisionInfo[g][i][divName]);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			new string[120];
+			format(string, sizeof(string), "** [%s] Руководитель %s установил%s новый спавн.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid));
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я установил%s новый спавн для %s", gender(playerid), DivisionInfo[g][i][divName]);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
@@ -730,10 +745,11 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			format(DivisionInfo[g][i][divColorHex], 7, "%s", inputtext);
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет {%s}%s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s цвет подфракции {%s}%s", gender(playerid), inputtext, DivisionInfo[g][i][divName]);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			new string[120];
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s цвет {%s}%s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s цвет подфракции {%s}%s", gender(playerid), inputtext, DivisionInfo[g][i][divName]);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
@@ -749,7 +765,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		{
 			new input;
 			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
-			if(input > MAX_COLOR_VEHICLE || input < 0) return format(store,sizeof(store),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE), ErrorText(playerid, store), showDialogMenuDivision(playerid);
+
+			new string[120];
+			if(input > MAX_COLOR_VEHICLE || input < 0) return format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE), ErrorText(playerid, string), showDialogMenuDivision(playerid);
 
 			new g = DP[1][playerid]; // Получаем id организации
 			new i = DP[2][playerid]; // Получаем id подфракции
@@ -758,17 +776,17 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(DivisionInfo[g][i][divColorVeh][s] == input) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже указан"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divColorVeh][s] = input;
 
-			format(store, sizeof(store), "** [%s] Руководитель %s изменил%s цвет транспорта {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), VehicleColoursTableHex[input], input);
-			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, store);
-			format(store, sizeof(store), "[ Мысли ]: Я изменил%s цвет транспорта в подфракции {%s}[ ID: %d ]", gender(playerid), VehicleColoursTableHex[input], input);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s цвет транспорта {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), VehicleColoursTableHex[input], input);
+			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s цвет транспорта в подфракции {%s}[ ID: %d ]", gender(playerid), VehicleColoursTableHex[input], input);
+			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
 			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
 			DivisionSave(g, i); // Сохраняем
 
-			format(store,sizeof(store),"ID: %d Slot: %d", input, s);
-			OrgLog(g + 1, "divColorVeh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, store);
+			format(string,sizeof(string),"ID: %d Slot: %d", input, s);
+			OrgLog(g + 1, "divColorVeh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}*/
@@ -782,14 +800,15 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(PlayerInfo[playerid][pLeader] >= 1
 			|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g + 1)-1) goLeave = 1;
 			
+			new string[120];
 			if(goLeave == 1 || DP[5][playerid] == 4) // Да, увольняемся
 			{
 				uninviteDivision(playerid, 0);
 
-				format(store,sizeof(store),"{99ff66}Готово! Вы покинули подфракцию %s", DivisionInfo[g][i][divName]);
-				SuccessMessage(playerid, store);
-				format(store, sizeof(store), "[ Мысли ]: Я покинул%s подфракцию %s", gender(playerid), DivisionInfo[g][i][divName]);
-				SendClientMessage(playerid, COLOR_GREY, store);
+				format(string,sizeof(string),"{99ff66}Готово! Вы покинули подфракцию %s", DivisionInfo[g][i][divName]);
+				SuccessMessage(playerid, string);
+				format(string, sizeof(string), "[ Мысли ]: Я покинул%s подфракцию %s", gender(playerid), DivisionInfo[g][i][divName]);
+				SendClientMessage(playerid, COLOR_GREY, string);
 
 				if(goLeave == 0) OrgLog(g + 1, "divleave", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, "");
 				return 1;
@@ -798,26 +817,26 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(DP[5][playerid] == 0)
 			{
 				DP[5][playerid] = 1;
-   				format(store, sizeof(store), "{cccccc}Вы точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",store,"Да","Нет");
+   				format(string, sizeof(string), "{cccccc}Вы точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 1)
 			{
 				DP[5][playerid] = 2;
-   				format(store, sizeof(store), "{cccccc}Вы точно точно точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",store,"Да","Нет");
+   				format(string, sizeof(string), "{cccccc}Вы точно точно точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 2)
 			{
 				DP[5][playerid] = 3;
-   				format(store, sizeof(store), "{cccccc}Прям точнее точного хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",store,"Да","Нет");
+   				format(string, sizeof(string), "{cccccc}Прям точнее точного хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 3)
 			{
 				DP[5][playerid] = 4;
-   				format(store, sizeof(store), "{cccccc}Всё всё... Последний раз, просто уточнить. Вы покидаете {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",store,"Да","Нет");
+   				format(string, sizeof(string), "{cccccc}Всё всё... Последний раз, просто уточнить. Вы покидаете {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 		}
 		else showDialogMenuDivision(playerid);
@@ -830,6 +849,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		new i = DP[0][playerid];
 		if(g == 0) return 0;
 
+		new string[120];
 		if(response)
 		{
 			PlayerInfo[playerid][pDivision][0] = i + 1;
@@ -841,16 +861,16 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			// Включаем рацию в доступ
 			racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
 
-			format(store, sizeof(store), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g - 1][i - 1][divName]);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			format(string, sizeof(string), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g - 1][i - 1][divName]);
+			SendClientMessage(playerid, COLOR_GREY, string);
 
 
 			PlayerPlaySound(playerid, 6401, 0, 0, 0); // Done
 			if(IsOnline(giveplayerid) && ProxDetectorS(10.0, playerid, giveplayerid))
 			{
 				PlayerPlaySound(giveplayerid, 6401, 0, 0, 0); // Done
-				format(store, sizeof(store), "* %s принимает приглашение и вступает в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
-				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, store);
+				format(string, sizeof(string), "* %s принимает приглашение и вступает в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 			}
 		}
 		else
@@ -859,8 +879,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(IsOnline(giveplayerid) && ProxDetectorS(10.0, playerid, giveplayerid))
 			{
 				PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
-				format(store, sizeof(store), "* %s отказывается от вашего предложения вступить в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
-				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, store);
+				format(string, sizeof(string), "* %s отказывается от вашего предложения вступить в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 			}
 		}
 	}
@@ -872,8 +892,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
           	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			format(store, sizeof(store), "%s", inputtext);
-            cmd_divinvite(playerid, store);
+			new string[30];
+			format(string, sizeof(string), "%s", inputtext);
+            cmd_divinvite(playerid, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -885,8 +906,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
           	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			format(store, sizeof(store), "%s", inputtext);
-            cmd_divuninvite(playerid, store);
+			new string[30];
+			format(string, sizeof(string), "%s", inputtext);
+            cmd_divuninvite(playerid, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -900,10 +922,11 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			new org = DP[1][playerid] + 1; // Получаем id организации
 			new div = DP[2][playerid] + 1; // Получаем id подфракции
 
-			format(store_query, sizeof(store_query), "SELECT * FROM `pp_igroki` WHERE \
+			new string_mysql[260];
+			format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
 				`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' AND `id`>'%d' \
 				OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' AND `id`>'%d' LIMIT 40", div, org, DP[4][playerid], div ,org, DP[4][playerid]);
-			mysql_tquery(pearsq, store_query, "call_membersdiv", "ddd", playerid, org, div);
+			mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -959,7 +982,7 @@ stock DivisionSaveRankName(g, i, r) // Сохраняем название ра�
 function LoadDivision() // Загрузка из базы
 {
 	new time = GetTickCount(); // Записываем текущий tick (чтобы узнать время загрузки в ms)
-	new rows, g, i, load_max_rank;
+	new rows, g, i, load_max_rank, string[20];
 	cache_get_row_count(rows); // Получаем количество найденных строк
 	for(new f = 0; f < rows; f++)
 	{
@@ -990,8 +1013,8 @@ function LoadDivision() // Загрузка из базы
 
 			for(new r = 0; r < load_max_rank; r++)
 			{
-				format(store,sizeof(store),"divRankName%d",r);
-				cache_get_value_name(f, store, DivisionRankName[g][i][r], MAX_NAME_LENGTH);
+				format(string,sizeof(string),"divRankName%d",r);
+				cache_get_value_name(f, string, DivisionRankName[g][i][r], MAX_NAME_LENGTH);
 			}
 		}
 	}

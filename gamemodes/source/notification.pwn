@@ -26,12 +26,14 @@ public SendMindMessage(playerid, const text[], const texttwo[])
 	TextDrawShowForPlayer(playerid, MindDraw[1]);
 	TextDrawShowForPlayer(playerid, MindDraw[2]);
 
-	format(store, sizeof(store), "%s",text);
-	PlayerTextDrawSetString(playerid, MindDraw1, store);
+
+	new string[140];
+	format(string, sizeof(string), "%s",text);
+	PlayerTextDrawSetString(playerid, MindDraw1, string);
 	PlayerTextDrawShow(playerid, MindDraw1);
 
-	format(store, sizeof(store), "%s",texttwo);
-	PlayerTextDrawSetString(playerid, MindDraw2, store);
+	format(string, sizeof(string), "%s",texttwo);
+	PlayerTextDrawSetString(playerid, MindDraw2, string);
 	PlayerTextDrawShow(playerid, MindDraw2);
 	return 1;
 }

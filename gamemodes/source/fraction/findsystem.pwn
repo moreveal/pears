@@ -39,15 +39,21 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   FindZone[playerid] = CreateFindZone(playerid, x, y);
   if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
 
+  new string[160];
   new unix = gettime();
-  if(FindCd[playerid] > unix) return format(store,sizeof(store), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix)), ErrorMessage(playerid, store);
+  if(FindCd[playerid] > unix)
+  {
+    format(string,sizeof(string), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix));
+    ErrorMessage(playerid, string);
+    return 1;
+  }
 
   hideGangZones(playerid);
   GangZoneShowForPlayer(playerid, zoneId[FindZone[playerid]], 0xff0000AA);
   ZoneTimer[playerid] = 12;
 
   new ability = get_ability(playerid, 9);
-  new cd,string[150];
+  new cd;
   if(ability >= 10) cd = 0;
   else if(ability == 9) cd = 10;
   else if(ability == 8) cd = 20;
@@ -60,8 +66,7 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   else cd = 90;
   FindCd[playerid] = unix + cd;
 
-  format(lines,sizeof(lines),""); // Очищаем Lines
-
+  new line[140],lines[420];
   format(line,sizeof(line),"{ffcc66}Поиск %s активирован\n{0088ff}Гражданин находится в области {FF6347}красной зоны {0088ff}на карте", rpplayername(giveplayerid)), strcat(lines,line);
   format(line,sizeof(line), "\n\n{cccccc}Отображение зоны продлится в течении 12 секунд"), strcat(lines,line);
   format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);

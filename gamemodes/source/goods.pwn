@@ -32,8 +32,9 @@ stock use_mygoods(playerid, inva, useinva) // Берём предмет  из с
 		{
 		    DP[0][playerid] = inva;
 		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
-			format(store,sizeof(store),"{cccccc}Чтобы переложить {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,1104,DIALOG_STYLE_INPUT,"{ff9000}Торговля",store,"Принять","Отмена");
+			new string[130];
+			format(string,sizeof(string),"{cccccc}Чтобы переложить {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1104,DIALOG_STYLE_INPUT,"{ff9000}Торговля",string,"Принять","Отмена");
 			return 1;
 		}
 	}
@@ -65,6 +66,7 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
 	
+	new string[160];
 	// Проверка на лимиты количественного предмета
 	new quanThing;
 	if(thingType == 0) // Обычный предмет
@@ -76,8 +78,8 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 		    i_limit(playerid, fpick, getQuan, getLimit);
 		    if(getQuan+fquan > getLimit)
 		    {
-		        format(store,sizeof(store),"{FF6347}У меня нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit);
-		        ErrorMessage(playerid, store);
+		        format(string,sizeof(string),"{FF6347}У меня нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit);
+		        ErrorMessage(playerid, string);
 				i_resetveshi(playerid);
 				i_resettabs(playerid);
 				return 1;
@@ -102,8 +104,8 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	// Если предмет имеет количество, мы умножаем стоимость
 	if(quanThing == 1) price = price*fquan;
 
-    format(store,sizeof(store),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$ [%s]", GetNameThing(0, fpick, thingType, thingPack), price, get_k(price));
-	SuccessMessage(playerid, store);
+    format(string,sizeof(string),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$ [%s]", GetNameThing(0, fpick, thingType, thingPack), price, get_k(price));
+	SuccessMessage(playerid, string);
 	oGivePlayerMoney(playerid, -price);
 	oGivePlayerMoney(seller, price);
 	payanim(playerid, 0); // Анимация передачи денег с появление бабла в руках
@@ -111,8 +113,8 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	SaveInvent(playerid, put_inva);
     updategoods(seller, inva);
     
-    format(store,sizeof(store),"Купил: %s [%d$]",GetNameThing(1, fpick, thingType, thingPack), price);
-	UserLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], fquan, store);
+    format(string,sizeof(string),"Купил: %s [%d$]",GetNameThing(1, fpick, thingType, thingPack), price);
+	UserLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], fquan, string);
     
     if(PlayerInfo[seller][pAchieve][22] == 0) AchievePlayer(seller, 22, 1);
 	if(PlayerInfo[playerid][pAchieve][23] == 0) AchievePlayer(playerid, 23, 1);
@@ -124,20 +126,21 @@ stock use_goods(playerid, seller, inva)
     if(fpick == 0) return i_resettabs(playerid);
 	if(PlayerInfo[seller][pMarkPrice][inva] == 0) return ErrorMessage(playerid, "{FF6347}Этот товар не продаётся [ Не установлена цена ]"), i_resettabs(playerid);
 	
+	new string[140];
 	if(thingType == 0 && thingPack == 0)
 	{
 		if(CheckThingQuan(fpick) == 1)
 		{
 		    Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
-			format(store,sizeof(store),"{cccccc}Чтобы купить {ff9000}%s {cccccc}введите количество",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,1106,DIALOG_STYLE_INPUT,"{ff9000}Торговля",store,"Принять","Отмена");
+			format(string,sizeof(string),"{cccccc}Чтобы купить {ff9000}%s {cccccc}введите количество",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1106,DIALOG_STYLE_INPUT,"{ff9000}Торговля",string,"Принять","Отмена");
 			return 1;
 		}
 	}
 	DP[0][playerid] = 0;
 	Veshi[playerid] = OnlineInfo[playerid][oInventSelectRight];
-	format(store,sizeof(store),"{cccccc}Вы уверены, что хотите купить {ff9000}%s {cccccc}за {99ff66}%d$ [%s] {cccccc}?",GetNameThing(0, fpick, thingType, thingPack), PlayerInfo[seller][pMarkPrice][inva], get_k(PlayerInfo[seller][pMarkPrice][inva]));
-	ShowDialog(playerid,1107,DIALOG_STYLE_MSGBOX,"{ff9000}Торговля",store,"Да","Нет");
+	format(string,sizeof(string),"{cccccc}Вы уверены, что хотите купить {ff9000}%s {cccccc}за {99ff66}%d$ [%s] {cccccc}?",GetNameThing(0, fpick, thingType, thingPack), PlayerInfo[seller][pMarkPrice][inva], get_k(PlayerInfo[seller][pMarkPrice][inva]));
+	ShowDialog(playerid,1107,DIALOG_STYLE_MSGBOX,"{ff9000}Торговля",string,"Да","Нет");
 	return 1;
 }
 stock put_goods(playerid, inva, fpick, quan, binva)
@@ -192,8 +195,9 @@ stock shift_goods(playerid, getinva, putinva)
 	}
 	if(quanPlayer >= 1)
 	{
-		format(store, sizeof(store), "{FF6347}Ваши товары просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer);
-		ErrorMessage(playerid, store);
+		new string[90];
+		format(string, sizeof(string), "{FF6347}Ваши товары просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer);
+		ErrorMessage(playerid, string);
 		i_resettabs(playerid);
 		return 1;
 	}

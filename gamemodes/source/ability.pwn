@@ -15,15 +15,17 @@ new skillName[][] = // Названия навыков
 stock mysql_save_ability(playerid, abilityId) // Сохраняем навык в базу
 {
 	if(!IsOnline(playerid)) return 1;
+
+	new string_mysql[120];
 	if(abilityId == 2)
 	{
-		format(store, sizeof(store),"UPDATE `pp_igroki` SET `Voennik`='%d',`AbilStat2`='%d' WHERE `id`='%d'", PlayerInfo[playerid][pAbility][2], PlayerInfo[playerid][pAbilStat][2], PlayerInfo[playerid][pID]);
-		query_empty(pearsq, store);
+		format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik`='%d',`AbilStat2`='%d' WHERE `id`='%d'", PlayerInfo[playerid][pAbility][2], PlayerInfo[playerid][pAbilStat][2], PlayerInfo[playerid][pID]);
+		query_empty(pearsq, string_mysql);
 	}
 	else
 	{
-		format(store, sizeof(store),"UPDATE `pp_igroki` SET `Ability%d`='%d',`AbilStat%d`='%d' WHERE `id`='%d'", abilityId, PlayerInfo[playerid][pAbility][abilityId], abilityId, PlayerInfo[playerid][pAbilStat][abilityId], PlayerInfo[playerid][pID]);
-    	query_empty(pearsq, store);
+		format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d`='%d',`AbilStat%d`='%d' WHERE `id`='%d'", abilityId, PlayerInfo[playerid][pAbility][abilityId], abilityId, PlayerInfo[playerid][pAbilStat][abilityId], PlayerInfo[playerid][pID]);
+    	query_empty(pearsq, string_mysql);
  	}
     return 1;
 }
@@ -45,20 +47,22 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
  	if(yes == 1)
  	{
  		if(OnlineInfo[p][oListenRadioPears] == 0) PlayAudioStreamForPlayer(p, "https://pears-test.ru/sound/upskill.mp3");
+
+		new string[140];
  		if(PlayerInfo[p][pAbility][abilityId] >= 80000 && PlayerInfo[p][pAbilStat][abilityId] <= 9)
  		{
  			PlayerInfo[p][pAbilStat][abilityId] = 10;
- 			format(store,sizeof(store),"{0088ff}[ Навык ]: {99ff66}%s максимальный! Вы лучший в своём деле! {ff9000}[ 10 ]", abilityName[abilityId]);
-			SendClientMessage(p, COLOR_GREY, store);
-			format(store,sizeof(store),"{99ff66}%s максимальный! Вы лучший в своём деле!", abilityName[abilityId]);
-			SuccessMessage(p, store);
+ 			format(string,sizeof(string),"{0088ff}[ Навык ]: {99ff66}%s максимальный! Вы лучший в своём деле! {ff9000}[ 10 ]", abilityName[abilityId]);
+			SendClientMessage(p, COLOR_GREY, string);
+			format(string,sizeof(string),"{99ff66}%s максимальный! Вы лучший в своём деле!", abilityName[abilityId]);
+			SuccessMessage(p, string);
 		}
 		else
 		{
-		    format(store,sizeof(store),"{0088ff}[ Навык ]: {ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
-			SendClientMessage(p, COLOR_GREY, store);
-			format(store,sizeof(store),"{ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
-			SuccessMessage(p, store);
+		    format(string,sizeof(string),"{0088ff}[ Навык ]: {ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
+			SendClientMessage(p, COLOR_GREY, string);
+			format(string,sizeof(string),"{ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
+			SuccessMessage(p, string);
 		}
 		new fpick, fpara, thingType;
 		AbilityGiveGift(p, abilityId, PlayerInfo[p][pAbilStat][abilityId], fpick, fpara, thingType);
@@ -371,24 +375,24 @@ function Call_setability(playerid, stat, amount, str_name[])
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		new datadid;
+		new datadid, string_mysql[120];
 		cache_get_value_name_int(0, "id", datadid);
 		if(stat == 3)
 		{
-			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Voennik` = '%d', `AbilStat2`='%d' WHERE `id` = '%d'", getAbilityRealProgress(amount), amount, datadid);
-			query_empty(pearsq, store_query);
+			format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik` = '%d', `AbilStat2`='%d' WHERE `id` = '%d'", getAbilityRealProgress(amount), amount, datadid);
+			query_empty(pearsq, string_mysql);
 		}
 		else
 		{
-			format(store_query, sizeof(store_query),"UPDATE `pp_igroki` SET `Ability%d` = '%d',`AbilStat%d`='%d' WHERE `id` = '%d'", stat, getAbilityRealProgress(amount), stat, amount, datadid);
-			query_empty(pearsq, store_query);
+			format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d` = '%d',`AbilStat%d`='%d' WHERE `id` = '%d'", stat, getAbilityRealProgress(amount), stat, amount, datadid);
+			query_empty(pearsq, string_mysql);
 		}
-		format(store, sizeof(store), "Вы изменили %s на %d уровень игроку %s Offline", abilityName[stat], amount, str_name);
-		SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+		format(string_mysql, sizeof(string_mysql), "Вы изменили %s на %d уровень игроку %s Offline", abilityName[stat], amount, str_name);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, string_mysql);
 
 		AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", amount, abilityName[stat]);
 	}
-	else format(store,sizeof(store),"[ Мысли ]: Такого аккаунта не существует {FF6347}[ %s ]",str_name), SendClientMessage(playerid,COLOR_GREY,store);
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
 CMD:setability(playerid, const params[])
@@ -401,7 +405,7 @@ CMD:setability(playerid, const params[])
 
 		// Формируем подсказку
 		new row, quan;
-		format(lines,sizeof(lines),""); // Очищаем Lines
+		new line[214],lines[2000];
 
 		for(new i = 0; i < MAX_ABILITY; i++)
 		{
@@ -424,15 +428,18 @@ CMD:setability(playerid, const params[])
 	if(!IsPlayerConnected(giveplayerid))
 	{
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-		mysql_tquery(pearsq, store, "Call_setability", "ddds", playerid, stat, amount, tmp);
+
+		new string_mysql[80];
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		mysql_tquery(pearsq, string_mysql, "Call_setability", "ddds", playerid, stat, amount, tmp);
 		return 1;
 	}
 	PlayerInfo[giveplayerid][pAbility][stat] = getAbilityRealProgress(amount);
 	update_ability(giveplayerid, stat, 1);
 
-	format(store, sizeof(store), "Вы изменили %s на %d уровень игроку %s", abilityName[stat], amount, PlayerInfo[giveplayerid][pName]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, store);
+	new string[80];
+	format(string, sizeof(string), "Вы изменили %s на %d уровень игроку %s", abilityName[stat], amount, PlayerInfo[giveplayerid][pName]);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
 	AdminLog("setability", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], amount, abilityName[stat]);
 	return 1;

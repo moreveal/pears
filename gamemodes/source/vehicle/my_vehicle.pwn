@@ -3488,9 +3488,7 @@ stock IsAServiceVehicleSop(playerid)
 stock ServiceVehicleShop(playerid)
 {
 	new b = DP[4][playerid];
-
-	format(lines,sizeof(lines),""); // Очищаем Lines
-	    
+	new line[80],lines[240];
 	format(line,sizeof(line),"{cccccc}Товар\tСтоимость\tНаличие"), strcat(lines,line);
 
 	new i = 0;
@@ -3592,8 +3590,7 @@ stock ServiceVehicle(playerid)
 	if(b == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы далеко от терминала эвакуации транспорта");
 	DP[5][playerid] = b;
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
-
+	new line[100],lines[200];
 	format(line,sizeof(line),"{FF6347}Восстановить {cccccc}уничтоженный транспорт\t{99ff66}%d$", BizzInfo[b][bPrice][0]*2), strcat(lines,line);
 	format(line,sizeof(line),"\n{ffcc00}Эвакуировать {cccccc}транспорт\t"), strcat(lines,line);
 	ShowDialog(playerid,634,DIALOG_STYLE_TABLIST,"{ff9000}Транспорт",lines,"Выбрать","Отмена");
@@ -3601,7 +3598,7 @@ stock ServiceVehicle(playerid)
 }
 stock EvacuationVehicle(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[70],lines[1600];
 
 	format(line,sizeof(line),"{cccccc}Загруженные транспортные средства\t "), strcat(lines,line);
 	new quan;
@@ -3634,12 +3631,7 @@ stock PlayerVehicleCall(playerid)
 {
 	new v = DP[2][playerid];
 
-	if(VehInfo[v][vCallParking] > 0)
-	{
-		format(store,sizeof(store),"{FF6347}Вы уверены, что хотите отменить доставку транспорта?");
-		ShowDialog(playerid,646,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
-		return 1;
-	}
+	if(VehInfo[v][vCallParking] > 0) return ShowDialog(playerid,646,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт","{FF6347}Вы уверены, что хотите отменить доставку транспорта?","Да","Нет");
 
 	if(VehInfo[v][vNospawn] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас вызвать транспорт [ Он используется или с транспортом кто-то взаимодействует ]");
 	if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return ErrorMessage(playerid, "{FF6347}Вы не можете вызвать транспорт в здании или интерьере");
@@ -3653,7 +3645,13 @@ stock PlayerVehicleCall(playerid)
 
 	if(IsTrailerAttachedToVehicle(v)) return ErrorMessage(playerid, "{FF6347}Нельзя вызвать транспорт с прицепом");
 	new towid = gettug(v);
-	if(towid > 0) return format(store, sizeof(store), "{FF6347}Вы не можете вызвать транспорт, его эвакуируют [ Транспорт ID: %d ]", towid), ErrorMessage(playerid, store);
+	if(towid > 0)
+	{
+		new string[90];
+		format(string, sizeof(string), "{FF6347}Вы не можете вызвать транспорт, его эвакуируют [ Транспорт ID: %d ]", towid);
+		ErrorMessage(playerid, string);
+		return 1;
+	}
 
 	new current_tick = GetTickCount();
 	new interval = GetTickDiff(current_tick, GetPVarInt(playerid,"afcar"));
@@ -3671,9 +3669,9 @@ stock PlayerVehicleCall(playerid)
 	VehInfo[v][vCallTimer] = TimeCallVehicle(veh_metr) / 30;
 	VehInfo[v][vCallPlayerid] = playerid;
 
-	format(lines,sizeof(lines),""); // Очищаем Lines
-	format(lines,sizeof(lines),"{cccccc}Ближайшая свободная парковка находится в {99ff66}%d {cccccc}метрах от вас\nРасстояние от транспорта до парковки: {ff9000}%d метров\n{cccccc}Время доставки: {ff9000}%s\n\n{ff9000}Хотите вызвать транспорт?", metr, veh_metr, fine_time(TimeCallVehicle(veh_metr)));
-	ShowDialog(playerid,641,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",lines,"Да","Нет");
+	new string[300];
+	format(string,sizeof(string),"{cccccc}Ближайшая свободная парковка находится в {99ff66}%d {cccccc}метрах от вас\nРасстояние от транспорта до парковки: {ff9000}%d метров\n{cccccc}Время доставки: {ff9000}%s\n\n{ff9000}Хотите вызвать транспорт?", metr, veh_metr, fine_time(TimeCallVehicle(veh_metr)));
+	ShowDialog(playerid,641,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
 	return 1;
 }
 
@@ -3977,8 +3975,10 @@ CMD:buycar(playerid)
 		if(GetPlayerQuanLoadVehicle(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас загружено два личных транспортных средства\n{cccccc}Уберите один загруженный транспорт на парковку");
 		if(oGetPlayerMoney(playerid) < VehInfo[v][vSellcar]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 		DP[3][playerid] = v;
-		format(store, sizeof(store), "{cccccc}Вы уверены, что хотите купить {ff9000}%s [ID: %d] {cccccc}у %s[%d]?\n\nСтоимость: {99ff66}%d$ {cccccc}[ %s ]",GetVehicleName(VehInfo[v][vModel]), v, PlayerInfo[vladid][pName], vladid, VehInfo[v][vSellcar], get_k(VehInfo[v][vSellcar]));
-		ShowDialog(playerid,1093,DIALOG_STYLE_MSGBOX,"{ff9000}Покупка Транспорта",store,"Да","Нет");
+
+		new string[180];
+		format(string, sizeof(string), "{cccccc}Вы уверены, что хотите купить {ff9000}%s [ID: %d] {cccccc}у %s[%d]?\n\nСтоимость: {99ff66}%d$ {cccccc}[ %s ]",GetVehicleName(VehInfo[v][vModel]), v, PlayerInfo[vladid][pName], vladid, VehInfo[v][vSellcar], get_k(VehInfo[v][vSellcar]));
+		ShowDialog(playerid,1093,DIALOG_STYLE_MSGBOX,"{ff9000}Покупка Транспорта",string,"Да","Нет");
 	}
 	return 1;
 }
@@ -4035,7 +4035,7 @@ CMD:car(playerid)
 }
 stock showDialog_MyCar(playerid)
 {
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[100],lines[2400];
 	format(line,sizeof(line),"{cccccc}Название \t "), strcat(lines,line);
 
 	// Личный Транспорт
@@ -4126,8 +4126,9 @@ stock slcar(playerid, i)
 			if(!CheckService(playerid, model)) return 0;
 		}
 
-		format(store, sizeof(store), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", GetVehicleName(model));
-		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",store,"Да","Нет");
+		new string[140];
+		format(string, sizeof(string), "{ff9000}Вы хотите загрузить %s?\n\n{cccccc}Транспорт появится там, где его оставили последний раз", GetVehicleName(model));
+		ShowDialog(playerid,652,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
 		return 1;
 	}
 
@@ -4176,7 +4177,7 @@ stock slcar(playerid, i)
 stock pts(p, v)
 {
 	new model = VehInfo[v][vModel], vladid = VehInfo[v][vIdvlad];
-	format(lines,sizeof(lines),""); // Очищаем Lines
+	new line[80],lines[1840];
 
 	if(PlayerInfo[p][pSoska] > 0) format(line,sizeof(line),"\n{555555}DataBaseID: %d OwnerID: %d Slot: %d (Видит только админ)\n",VehInfo[v][vNewid], VehInfo[v][vSost], VehInfo[v][vDatabase]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",GetVehicleName(model),v), strcat(lines,line);
@@ -4261,8 +4262,9 @@ function LoadCar(playerid, dab, race_check)
 		if(paramet[0] == PlayerInfo[playerid][pID])
 		{
 			DP[0][playerid] = newid;
-			format(store,sizeof(store), "Транспорт был угнан и его нашла полиция\n\n {FF6347}Необходимо оплатить: {66ff99}10.000$");
-			ShowDialog(playerid,1480,DIALOG_STYLE_MSGBOX,"{ff9000}Транспортное средство",store,"Оплатить","Отмена");
+			new string[120];
+			format(string,sizeof(string), "Транспорт был угнан и его нашла полиция\n\n {FF6347}Необходимо оплатить: {66ff99}10.000$");
+			ShowDialog(playerid,1480,DIALOG_STYLE_MSGBOX,"{ff9000}Транспортное средство",string,"Оплатить","Отмена");
 		}
 		else 
 		{
@@ -4303,8 +4305,9 @@ function LoadCar(playerid, dab, race_check)
 			death = false;
 
 			// Сохраняем авто
-			format(store,sizeof(store),"UPDATE `pp_cars` SET `death` = '%i' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
-			query_empty(pearsq, store);
+			new string_mysql[120];
+			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET `death` = '%i' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
+			query_empty(pearsq, string_mysql);
 
 			repair = 1;
 		}
@@ -4491,8 +4494,9 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 	GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);
 	SetVehicleParamsEx(vehid, false, false, false, false, false, false, objective);
 
-	format(store, sizeof(store), "{222222}%s",VehInfo[vehid][vNumer]);
-	SetVehicleNumberPlate(vehid, store);
+	new string[60];
+	format(string, sizeof(string), "{222222}%s",VehInfo[vehid][vNumer]);
+	SetVehicleNumberPlate(vehid, string);
 
 	if(world != 0) SetVehicleVirtualWorld(vehid, world);
 	if(interior != 0) LinkVehicleToInterior(vehid, interior);
@@ -4516,8 +4520,9 @@ CMD:scrap(playerid)
 		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{ff0000}Внимание! {ffcc00}Это Media Транспорт и возврат денег невозможен","Да","Нет");
 		else
 		{
-			format(store,sizeof(store),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePriceGos(VehInfo[v][vModel]) / 10);
-			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",store,"Да","Нет");
+			new string[160];
+			format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePriceGos(VehInfo[v][vModel]) / 10);
+			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
 		}
 	}
 	return 1;
@@ -4537,13 +4542,15 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		else
 		{
 			oGivePlayerMoney(playerid, GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
-			format(store,sizeof(store),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
-			SendClientMessage(playerid, COLOR_GREY, store);
+			new string[90];
+			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
+			SendClientMessage(playerid, COLOR_GREY, string);
 		}
 		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, "");
 		
-		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
-        query_empty(pearsq, store);
+		new string_mysql[100];
+		format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
+        query_empty(pearsq, string_mysql);
 
 		PlayerInfo[playerid][pMyVeh][slot - 1] = 0;
 		PlayerInfo[playerid][pMyVehID][slot - 1] = 0;
@@ -4555,8 +4562,8 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		ACDestroyVehicle(newcar);
 
 		// Сохраняем авто
-  		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
-        query_empty(pearsq, store);
+  		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
+        query_empty(pearsq, string_mysql);
 
 		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), SetPlayerFacingAngle(playerid,270.0);
 		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), SetPlayerFacingAngle(playerid,90.0);
@@ -4573,19 +4580,20 @@ CMD:delcar(playerid, const params[])
 	if(sscanf(params, "s[24]i", tmp,slot)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Удалить личный транспорт [ /delcar ID Слот ]");
 	if(slot > MAX_MYVEHICLE || slot < 1) return ErrorMessage(playerid, "{FF6347}Номер слота не меньше 1 и не больше 20");
 
+	new string_mysql[100];
 	para1 = ReturnUser(tmp, 1);
 	if(IsPlayerConnected(para1))
  	{
  	    if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
-		format(store,sizeof(store),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
-        mysql_tquery(pearsq, store, "Call_delcar", "dsdd", playerid, PlayerInfo[para1][pName], PlayerInfo[para1][pID], slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
+        mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, PlayerInfo[para1][pName], PlayerInfo[para1][pID], slot);
 	}
 	else
 	{
 	    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-		mysql_tquery(pearsq, store, "Call_delcaroff", "dsd", playerid, tmp, slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		mysql_tquery(pearsq, string_mysql, "Call_delcaroff", "dsd", playerid, tmp, slot);
 	 }
 	return 1;
 }
@@ -4596,15 +4604,16 @@ function Call_delcaroff(playerid, str_name[], slot)
 	if(rows)
 	{
 		cache_get_value_name_int(0, "id", datadid);
-		format(store,sizeof(store),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
-		mysql_tquery(pearsq, store, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
+		new string_mysql[120];
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
+		mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
 	}
-	else format(store,sizeof(store),"[ Мысли ]: Такого аккаунта не существует %s ",str_name), SendClientMessage(playerid,COLOR_GREY,store);
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
 function Call_delcar(playerid, str_name[], str_id, slot)
 {
-	new rows;
+	new rows, string[120];
 	cache_get_row_count(rows);
 	if(rows)
 	{
@@ -4615,14 +4624,14 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 			if(datad1 == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете удалить этот транспорт [ Только созданный через медиа ]");
 		}
 
-		format(store,sizeof(store),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", str_id, slot);
-        query_empty(pearsq, store);
-		format(store, sizeof(store), " [ ADM ]: %s удалил транспорт игрока %s [ Слот: %d ]",PlayerInfo[playerid][pName],str_name, slot);
-  		ABroadCast(COLOR_ADM,store,1);
+		format(string,sizeof(string),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", str_id, slot);
+        query_empty(pearsq, string);
+		format(string, sizeof(string), " [ ADM ]: %s удалил транспорт игрока %s [ Слот: %d ]",PlayerInfo[playerid][pName],str_name, slot);
+  		ABroadCast(COLOR_ADM,string,1);
 
         // Сохраняем авто
-  		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, str_id);
-        query_empty(pearsq, store);
+  		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, str_id);
+        query_empty(pearsq, string);
 
     	// Если чувак оказался Online
     	new para1 = ReturnUser(str_name, 1);
@@ -4638,7 +4647,7 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 	    }
 	    AdminLog("delcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], str_id, str_name, "", slot, "");
 	}
-	else format(store,sizeof(store),"[ Мысли ]: У %s отсутствует личный транспорт в слоте %d",str_name, slot), SendClientMessage(playerid,COLOR_GREY,store);
+	else format(string,sizeof(string),"[ Мысли ]: У %s отсутствует личный транспорт в слоте %d",str_name, slot), SendClientMessage(playerid,COLOR_GREY,string);
 	return 1;
 }
 
@@ -4663,11 +4672,12 @@ stock UnPackVehicle(playerid)
 	GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
 	GiveCar(playerid, freeSlot, thingId, pos[0], pos[1], pos[2], pos[3], 0, thingQuan, thingQuan, 0, 0, 0);
 
-	format(store,sizeof(store),"{99ff66}Вы распаковали новый транспорт {ff9000}%s\n\n{cccccc}Управление транспорт Y >> Транспорт или /car", GetVehicleName(thingId));
-	SuccessMessage(playerid, store);
+	new string[160];
+	format(string,sizeof(string),"{99ff66}Вы распаковали новый транспорт {ff9000}%s\n\n{cccccc}Управление транспорт Y >> Транспорт или /car", GetVehicleName(thingId));
+	SuccessMessage(playerid, string);
 
-	format(store,sizeof(store),"[ Мысли ]: Я распаковал%s %s [ Y >> Транспорт или /car ]", gender(playerid), GetVehicleName(thingId));
-	SendClientMessage(playerid,COLOR_GREY,store);
+	format(string,sizeof(string),"[ Мысли ]: Я распаковал%s %s [ Y >> Транспорт или /car ]", gender(playerid), GetVehicleName(thingId));
+	SendClientMessage(playerid,COLOR_GREY,string);
 	return 1;
 }
 
@@ -4699,24 +4709,27 @@ CMD:addcar(playerid, const params[])
 		GiveCar(para1, freeSlot, vehid, pos[0], pos[1], pos[2], pos[3],nyche, colorveh, colorveh, 0, 0, 0);
         AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para1][pID], PlayerInfo[para1][pName], PlayerInfo[para1][pPlaIP], vehid, "");
         
-        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], GetVehicleName(vehid));
-        SendClientMessage(para1, COLOR_GREY, store);
-        format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", PlayerInfo[para1][pName],GetVehicleName(vehid));
-        SendClientMessage(playerid, COLOR_GREY, store);
+		new string[180];
+        format(string, sizeof(string), "{0088ff}[ {ffcc66}Server {0088ff}] {ffcc66}%s {ffffff}выдал вам %s [ Y >> Транспорт ]", PlayerInfo[playerid][pName], GetVehicleName(vehid));
+        SendClientMessage(para1, COLOR_GREY, string);
+        format(string, sizeof(string), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", PlayerInfo[para1][pName],GetVehicleName(vehid));
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
     else
     {
         if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-        format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-        mysql_tquery(pearsq, store, "Call_addcaradmin", "dsdd", playerid, tmp, vehid, nyche);
+		new string_mysql[120];
+        format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+        mysql_tquery(pearsq, string_mysql, "Call_addcaradmin", "dsdd", playerid, tmp, vehid, nyche);
         return 1;
     }
 	return 1;
 }
 stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior)
 {
-	format(store, sizeof(store), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
-	mysql_tquery(pearsq, store, "Call_GiveCar", "dddffffdddddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior);
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
+	mysql_tquery(pearsq, string_mysql, "Call_GiveCar", "dddffffdddddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior);
 	return 1;
 }
 function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior)
@@ -4751,8 +4764,8 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		}
 
         // Сохраняем авто
-		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
-		query_empty(pearsq, store);
+		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
+		query_empty(pearsq, string_mysql);
 	}
 	return true;
 }
@@ -4773,13 +4786,14 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
 	if(rows)
 	{
         new vehID[MAX_MYVEHICLE], bool:vehFreeSlot[MAX_MYVEHICLE], freeSlot = -1, datadid;
+		new string[160];
 
         for(new i = 0; i < MAX_MYVEHICLE; i++)
 	    {
-            format(store,sizeof(store),"MyVeh%d",i);
-	  		cache_get_value_name_int(0, store, vehID[i]);
-			format(store,sizeof(store),"MyVehSlot%d",i);
-	  		cache_get_value_name_bool(0, store, vehFreeSlot[i]);
+            format(string,sizeof(string),"MyVeh%d",i);
+	  		cache_get_value_name_int(0, string, vehID[i]);
+			format(string,sizeof(string),"MyVehSlot%d",i);
+	  		cache_get_value_name_bool(0, string, vehFreeSlot[i]);
 
             if(i <= 1) // Первые два, не нуждаются в покупке слота
             {
@@ -4802,13 +4816,13 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
 		GetCoordBuyVehicle(biz, posId, pos[0], pos[1], pos[2], pos[3]);
 		GiveCarOffline(str_name, freeSlot, f_vehid, pos[0], pos[1], pos[2], pos[3],datadid,nyche);
 	    AdminLog("addcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], datadid, str_name, "", f_vehid, "");
-	    format(store, sizeof(store), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", str_name,GetVehicleName(f_vehid));
-	    SendClientMessage(playerid, COLOR_GREY, store);
+	    format(string, sizeof(string), "{0088ff}[ {ffcc66}Server {0088ff}] {ffffff}Вы создали личный транспорт игроку {ffcc66}%s {0088ff}%s", str_name,GetVehicleName(f_vehid));
+	    SendClientMessage(playerid, COLOR_GREY, string);
 
-	    format(store, sizeof(store), "Вам выдан %s", GetVehicleName(f_vehid));
-		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], datadid, str_name, store);
+	    format(string, sizeof(string), "Вам выдан %s", GetVehicleName(f_vehid));
+		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], datadid, str_name, string);
 	}
-	else format(store,sizeof(store),"[ Мысли ]: Такого аккаунта не существует [ {ff0000}%s {cccccc}]",str_name), SendClientMessage(playerid,COLOR_GREY,store);
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return true;
 }
 function GiveCarOffline(str_name[], slot, carid, Float:x, Float:y, Float:z, Float:f, ploid, nyche)
@@ -4883,6 +4897,7 @@ CMD:rslot(playerid, const params[])
  	giveplayerid = ReturnUser(tmp, 1);
 	if(PlayerInfo[playerid][pSoska] >= 20)
 	{
+		new string[160];
  		if(IsPlayerConnected(giveplayerid))
    		{
     		if(OnlineInfo[giveplayerid][oLogged] == 0) return SendClientMessage(playerid, COLOR_GREY, "   Игрок не залогинился!!!");
@@ -4890,18 +4905,18 @@ CMD:rslot(playerid, const params[])
 		    if(vslot > MAX_MYVEHICLE || vslot < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер слота не меньше 1 и не больше 20");
 
 			PlayerInfo[giveplayerid][pMyVeh][vslot - 1] = 0;
-			format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, PlayerInfo[giveplayerid][pName]);
-			query_empty(pearsq, store);
+			format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, PlayerInfo[giveplayerid][pName]);
+			query_empty(pearsq, string);
 
-  	    	format(store, sizeof(store), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",PlayerInfo[giveplayerid][pName],vslot);
-   	    	SendClientMessage(playerid, COLOR_WHITE, store);
+  	    	format(string, sizeof(string), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",PlayerInfo[giveplayerid][pName],vslot);
+   	    	SendClientMessage(playerid, COLOR_WHITE, string);
     	    PlayerPlaySound(giveplayerid,6401,0,0,0);
 		}
 		else
 		{
   			if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: /rslot Lol_Lolkin");
-  			format(store,sizeof(store),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
-  			mysql_tquery(pearsq, store, "Call_resetslot", "dsd", playerid, tmp, vslot);
+  			format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+  			mysql_tquery(pearsq, string, "Call_resetslot", "dsd", playerid, tmp, vslot);
   			return 1;
 		}
 	}
@@ -4914,16 +4929,13 @@ function Call_resetslot(playerid, str_name[],vslot)
 	cache_get_row_count(rows);
 	if(rows)
 	{
-   		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, str_name);
-    	query_empty(pearsq, store);
-	    format(store, sizeof(store), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",str_name,vslot);
-	    SendClientMessage(playerid, COLOR_WHITE, store);
+		new string[140];
+   		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, str_name);
+    	query_empty(pearsq, string);
+	    format(string, sizeof(string), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",str_name,vslot);
+	    SendClientMessage(playerid, COLOR_WHITE, string);
 	}
-	else
-    {
-        format(store,sizeof(store),"{cccccc}[ Мысли ]: Такого аккаунта не существует [ {ff0000}%s {cccccc}]",str_name);
-        SendClientMessage(playerid,COLOR_GREY,store);
-    }
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return true;
 }
 

@@ -41,7 +41,7 @@ stock SetPlayerDeath(playerid)
     ShowInterfaceDeath(playerid);
     UpdateDeathProcess(playerid);
 
-    format(lines,sizeof(lines),""); // Очищаем Lines
+    new line[130],lines[520];
    	format(line,sizeof(line),"{FF6347}Ваш персонаж получил тяжёлую травму"), strcat(lines,line);
 	if(server == 0) format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s {555555}(Время уменьшено для тестового сервера)", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
     else format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);

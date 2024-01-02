@@ -518,15 +518,15 @@ stock use_trash(playerid, tra, inva, useinva)
 	
 	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Вы далеко от мусорного контейнера"), closetab(playerid, 1);
 	
-	
+	new string[160];
 	// Забираем предмет из контейнера
 	if(thingType == 0 && thingPack == 0)
 	{
 	    DP[0][playerid] = inva;
 	    if(CheckThingQuan(fpick) == 1)
 		{
-			format(store,sizeof(store),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,1136,DIALOG_STYLE_INPUT,"{ff9000}Мусорный Контейнер",store,"Принять","Отмена");
+			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1136,DIALOG_STYLE_INPUT,"{ff9000}Мусорный Контейнер",string,"Принять","Отмена");
 			return 1;
 		}
 		if(fpick == 68) return ErrorMessage(playerid, "{FF6347}Нелья взять мусор из контейнера"), i_resettabs(playerid);
@@ -548,7 +548,7 @@ stock use_trash(playerid, tra, inva, useinva)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
-    		if(getQuan+fqara > getLimit) return format(store,sizeof(store),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, store);
+    		if(getQuan+fqara > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, string);
  		}
 	}
 
@@ -561,8 +561,8 @@ stock use_trash(playerid, tra, inva, useinva)
 
     SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
 
-    format(store,sizeof(store),"Взял %d: %s", tra, GetNameThing(1, fpick, thingType, thingPack));
-	UserLog("gtrash", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, store);
+    format(string,sizeof(string),"Взял %d: %s", tra, GetNameThing(1, fpick, thingType, thingPack));
+	UserLog("gtrash", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	return 1;
 }
 stock give_trash(tra, fpick, fquan, fpara, fqara, thingType, thingPack)
