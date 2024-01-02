@@ -104,32 +104,31 @@ CMD:busstop(playerid)
 	return 1;
 }
 
-function Call_getidBusStation(idx)
-{
-	new rows;
-	cache_get_row_count(rows);
-	if(rows) cache_get_value_name_int(0, "idbusstation", BusStationInfo[idx][idbusstation]);
-	return 1;
-}
 
+function Call_getidBusStation(idx) {
+    BusStationInfo[idx][idbusstation] = cache_insert_id();
+    return 1;
+}
 stock InsertBusStation(idx)
 {
-	new f_str1[24], f_str2[34], string[144];
+	new f_str1[24], f_str2[34];
 	mysql_escape_string(BusStationInfo[idx][bsPlayerName], f_str1, sizeof(f_str1));
 	mysql_escape_string(BusStationInfo[idx][bsName], f_str2, sizeof(f_str2));
-	format(big_query, sizeof(big_query), "INSERT INTO `pp_busstation` SET `bsActive`='%d',`bsVlad`='%d',`bsPlayerName`='%s',`bsName`='%s',`bsUnix`='%d',`bsCordX`='%f',`bsCordY`='%f',`bsCordZ`='%f',`bsCordRX`='%f',`bsCordRY`='%f',`bsCordRZ`='%f'",
-	BusStationInfo[idx][bsActive],BusStationInfo[idx][bsVlad],f_str1,f_str2,BusStationInfo[idx][bsUnix],BusStationInfo[idx][bsCordX],BusStationInfo[idx][bsCordY],BusStationInfo[idx][bsCordZ],BusStationInfo[idx][bsCordRX],BusStationInfo[idx][bsCordRY],BusStationInfo[idx][bsCordRZ]);
-	query_empty(pearsq, big_query);
-	format(string,sizeof(string),"SELECT * FROM `pp_busstation` WHERE `bsUnix`='%d' AND `bsVlad`='%d'",BusStationInfo[idx][bsUnix],BusStationInfo[idx][bsVlad]);
-	mysql_tquery(pearsq, string, "Call_getidBusStation", "d", idx);
+
+	new string_mysql[500];
+	format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_busstation` SET `bsActive`='%d',`bsVlad`='%d',`bsPlayerName`='%s',`bsName`='%s',`bsUnix`='%d',\
+		`bsCordX`='%f',`bsCordY`='%f',`bsCordZ`='%f',`bsCordRX`='%f',`bsCordRY`='%f',`bsCordRZ`='%f'",
+	BusStationInfo[idx][bsActive],BusStationInfo[idx][bsVlad],f_str1,f_str2,BusStationInfo[idx][bsUnix],BusStationInfo[idx][bsCordX],BusStationInfo[idx][bsCordY],
+	BusStationInfo[idx][bsCordZ],BusStationInfo[idx][bsCordRX],BusStationInfo[idx][bsCordRY],BusStationInfo[idx][bsCordRZ]); // 208 + 33 + 24 + 34 + 120
+	mysql_tquery(pearsq, string_mysql, "Call_getidBusStation", "d", idx); // 419
 	return 1;
 }
 
 stock UpdateBusStation(idx)
 {
-	new f_str[84];
-	format(f_str, sizeof(f_str), "SELECT * FROM `pp_busstation` WHERE `idbusstation` = '%d'", BusStationInfo[idx][idbusstation]);
-	mysql_tquery(pearsq, f_str, "Call_UpdateBusStation", "d", idx);
+	new string_mysql[58 + 11];
+	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_busstation` WHERE `idbusstation` = '%d'", BusStationInfo[idx][idbusstation]);
+	mysql_tquery(pearsq, string_mysql, "Call_UpdateBusStation", "d", idx);
 	return 1;
 }
 function Call_UpdateBusStation(idx)
@@ -141,19 +140,27 @@ function Call_UpdateBusStation(idx)
 		new f_str1[24], f_str2[34];
 		mysql_escape_string(BusStationInfo[idx][bsPlayerName], f_str1, sizeof(f_str1));
 		mysql_escape_string(BusStationInfo[idx][bsName], f_str2, sizeof(f_str2));
-		format(big_query, sizeof(big_query), "UPDATE `pp_busstation` SET `bsACtive`='%d',`bsVlad`='%d',`bsPlayerName`='%s',`bsName`='%s',`bsUnix`='%d',`bsCordX`='%f',`bsCordY`='%f',`bsCordZ`='%f',`bsCordRX`='%f',`bsCordRY`='%f',",
-		BusStationInfo[idx][bsActive],BusStationInfo[idx][bsVlad],f_str1,f_str2,BusStationInfo[idx][bsUnix],BusStationInfo[idx][bsCordX],BusStationInfo[idx][bsCordY],BusStationInfo[idx][bsCordZ],BusStationInfo[idx][bsCordRX],BusStationInfo[idx][bsCordRY]);
-		format(big_query, sizeof(big_query), "%s`bsCordRZ`='%f' WHERE `idbusstation` = '%d'", big_query,
-		BusStationInfo[idx][bsCordRZ],BusStationInfo[idx][idbusstation]);
-		query_empty(pearsq, big_query);
+
+		new string_mysql[500];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_busstation` SET `bsACtive`='%d',`bsVlad`='%d',`bsPlayerName`='%s',`bsName`='%s',`bsUnix`='%d',\
+		`bsCordX`='%f',`bsCordY`='%f',`bsCordZ`='%f',`bsCordRX`='%f',`bsCordRY`='%f',`bsCordRZ`='%f' WHERE `idbusstation` = '%d'",
+		BusStationInfo[idx][bsActive],BusStationInfo[idx][bsVlad],f_str1,f_str2,BusStationInfo[idx][bsUnix],BusStationInfo[idx][bsCordX],BusStationInfo[idx][bsCordY],
+		BusStationInfo[idx][bsCordZ],BusStationInfo[idx][bsCordRX],BusStationInfo[idx][bsCordRY],BusStationInfo[idx][bsCordRZ],
+		BusStationInfo[idx][idbusstation]); // 231 + 44 + 24 + 34 + 120
+		query_empty(pearsq, string_mysql);
 	}
 	return 1;
 }
 function Call_DelBusStation(idx)
 {
-	new rows, f_str[84];
+	new rows;
 	cache_get_row_count(rows);
-	if(rows) format(f_str,sizeof(f_str),"DELETE FROM `pp_busstation` WHERE `idbusstation` = '%d'",BusStationInfo[idx][idbusstation]), query_empty(pearsq, f_str);
+	if(rows) 
+	{
+		new string_mysql[56 + 11];
+		format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_busstation` WHERE `idbusstation` = '%d'",BusStationInfo[idx][idbusstation]);
+		query_empty(pearsq, string_mysql);
+	}
 	return 1;
 }
 
@@ -364,28 +371,46 @@ stock SaveRout(slot)
 {
 	new escapeName[40];
 	mysql_escape_string(FullRout[slot][brNameRout], escapeName, sizeof(escapeName));
+
+	new string_mysql[3600];
 	// Формируем запросы в переменную
-    format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `status` = '%d', `type` = '%d', `brNameCreator` = '%s', `brNameEditor` = '%s', `brNameRout` = '%s'",FullRout[slot][brStatus], FullRout[slot][brType],FullRout[slot][brNameCreator],FullRout[slot][brNameEditor], escapeName);
+    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rout` SET `status` = '%d', `type` = '%d', `brNameCreator` = '%s', `brNameEditor` = '%s', `brNameRout` = '%s',",
+		FullRout[slot][brStatus], FullRout[slot][brType],FullRout[slot][brNameCreator],FullRout[slot][brNameEditor], escapeName); // 121 + 22 + 24 + 24 + 40
+    format(string_mysql,sizeof(string_mysql),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", string_mysql,
+		FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], FullRout[slot][brId]); // 107 + 55
+    query_empty(pearsq, string_mysql); // 393
 
-    format(big_query,sizeof(big_query),"%s, `brIDEditor` = '%d', `brIDCreator` = '%d', `brUnixEditor` = '%d', `brUnix` = '%d' WHERE `newid` = '%d'", big_query,FullRout[slot][brIdEditor],FullRout[slot][brIdCreator], FullRout[slot][brUnixEditor], FullRout[slot][brUnix], FullRout[slot][brId]);
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rout` SET `brCordX0` = '%f', `brCordY0` = '%f', `brCordZ0` = '%f'",FullRout[slot][brCordX][0], 
+	FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]); // 77 + 60
+	for(new i = 1; i < 20; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", string_mysql,i, FullRout[slot][brCordX][i], 
+		i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]); // 63 + 33 + 60
+	}
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, FullRout[slot][brId]); // 24 + 11
+	query_empty(pearsq, string_mysql);
 
-    // Отправляем запрос
-    query_empty(pearsq, big_query);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX0` = '%f', `brCordY0` = '%f', `brCordZ0` = '%f'",FullRout[slot][brCordX][0], FullRout[slot][brCordY][0], FullRout[slot][brCordZ][0]);
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
-	query_empty(pearsq, big_query);
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rout` SET `brCordX20` = '%f', `brCordY20` = '%f', `brCordZ20` = '%f'",FullRout[slot][brCordX][20], 
+	FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]); // 80 + 60
+	for(new i = 21; i < 40; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", string_mysql,i, FullRout[slot][brCordX][i], 
+		i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]); // 64 + 33 + 60
+	}
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, FullRout[slot][brId]); // 24 + 11
+	query_empty(pearsq, string_mysql);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX20` = '%f', `brCordY20` = '%f', `brCordZ20` = '%f'",FullRout[slot][brCordX][20], FullRout[slot][brCordY][20], FullRout[slot][brCordZ][20]);
-	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
-	query_empty(pearsq, big_query);
 
-	format(big_query,sizeof(big_query),"UPDATE `pp_rout` SET `brCordX40` = '%f', `brCordY40` = '%f', `brCordZ40` = '%f'",FullRout[slot][brCordX][40], FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]);
-	for(new i = 41; i < 60; i++) format(big_query,sizeof(big_query),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", big_query,i, FullRout[slot][brCordX][i], i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, FullRout[slot][brId]);
-	query_empty(pearsq, big_query);
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rout` SET `brCordX40` = '%f', `brCordY40` = '%f', `brCordZ40` = '%f'",FullRout[slot][brCordX][40], 
+	FullRout[slot][brCordY][40], FullRout[slot][brCordZ][40]); // 80 + 60
+	for(new i = 41; i < 60; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `brCordX%d` = '%f', `brCordY%d` = '%f', `brCordZ%d` = '%f'", string_mysql,i, FullRout[slot][brCordX][i], 
+		i, FullRout[slot][brCordY][i], i, FullRout[slot][brCordZ][i]); // 64 + 33 + 60
+	}
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, FullRout[slot][brId]); // 24 + 11
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 

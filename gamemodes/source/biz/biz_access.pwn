@@ -235,30 +235,32 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 
 stock SaveBizzAccess(b)
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `acc0` = '%d', `accrank0` = '%d'",
-	BizzInfo[b][bAcc][0], BizzInfo[b][bAccRank][0]);
+	new string_mysql[1400];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `acc0` = '%d', `accrank0` = '%d'",
+	BizzInfo[b][bAcc][0], BizzInfo[b][bAccRank][0]); // 54 + 22
 
 	for(new i = 1; i < MAX_BIZ_ACCESS; i++) 
 	{
-		format(big_query,sizeof(big_query),"%s, `acc%d` = '%d', `accrank%d` = '%d'", big_query,
-		i, BizzInfo[b][bAcc][i], i, BizzInfo[b][bAccRank][i]);
+		format(string_mysql,sizeof(string_mysql),"%s, `acc%d` = '%d', `accrank%d` = '%d'", string_mysql,
+		i, BizzInfo[b][bAcc][i], i, BizzInfo[b][bAccRank][i]); // 39 + 22 + 4 (1300)
 	}
 
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, b);
-	query_empty(pearsq, big_query);
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, b); // 24 + 11
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 
 stock SaveBizzSetting(b)
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_bizz` SET `setting0` = '%d'", BizzInfo[b][bSetting][0]);
+	new string_mysql[1400];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `setting0` = '%d'", BizzInfo[b][bSetting][0]);
 
 	for(new i = 1; i < MAX_BIZ_SETTING; i++) 
 	{
-		format(big_query,sizeof(big_query),"%s, `setting%d` = '%d'", big_query, i, BizzInfo[b][bSetting][i]);
+		format(string_mysql,sizeof(string_mysql),"%s, `setting%d` = '%d'", string_mysql, i, BizzInfo[b][bSetting][i]);
 	}
 
-    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, b);
-	query_empty(pearsq, big_query);
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, b);
+	query_empty(pearsq, string_mysql);
 	return 1;
 }

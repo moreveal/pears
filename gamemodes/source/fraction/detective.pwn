@@ -178,7 +178,8 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
 
 stock SaveCrime(slot)
 {
-    format(big_query, sizeof(big_query), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%s',`TargetID`='%d',`TargetName`='%s',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],crimeInfo[slot][crmID]);
-    query_empty(pearsq, big_query);
+    new string_mysql[400];
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%s',`TargetID`='%d',`TargetName`='%s',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],crimeInfo[slot][crmID]);
+    query_empty(pearsq, string_mysql); // 205 + 99 + 24 + 24 (352)
 	return 1;
 }

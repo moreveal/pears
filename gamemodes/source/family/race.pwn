@@ -1125,6 +1125,8 @@ stock SaveRoutRace(playerid,slot,status)
         }
         FamilyInfo[fam][fRoutUnix][slot] = gettime();
     }
+
+    new string_mysql[2600];
     if(slot == 0)
     {
         for(new i = 0; i < 60; i++) 
@@ -1141,11 +1143,11 @@ stock SaveRoutRace(playerid,slot,status)
             format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
             quan++;
         }
-        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
         `routNameCreator1`='%s',`routNameEditor1`='%s',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
-        strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
-        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
-	    query_empty(pearsq, big_query);
+        strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+        FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam); // 199 + 480 + 480 + 480 + 24 + 24 + 44
+	    query_empty(pearsq, string_mysql);
     }
     else if(slot == 1)
     {
@@ -1163,11 +1165,11 @@ stock SaveRoutRace(playerid,slot,status)
             format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
             quan++;
         }
-        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
         `routNameCreator2`='%s',`routNameEditor2`='%s',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
         strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
         FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
-	    query_empty(pearsq, big_query);
+	    query_empty(pearsq, string_mysql);
     }
     else if(slot == 2)
     {
@@ -1185,11 +1187,11 @@ stock SaveRoutRace(playerid,slot,status)
             format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
             quan++;
         }
-        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
         `routNameCreator3`='%s',`routNameEditor3`='%s',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
         strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
         FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
-	    query_empty(pearsq, big_query);
+	    query_empty(pearsq, string_mysql);
     }
     else if(slot == 3)
     {
@@ -1207,11 +1209,11 @@ stock SaveRoutRace(playerid,slot,status)
             format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
             quan++;
         }
-        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
         `routNameCreator4`='%s',`routNameEditor4`='%s',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
         strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
         FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
-        query_empty(pearsq, big_query);
+        query_empty(pearsq, string_mysql);
     }
     else if(slot == 4)
     {
@@ -1229,11 +1231,11 @@ stock SaveRoutRace(playerid,slot,status)
             format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
             quan++;
         }
-        format(big_query, sizeof(big_query), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
         `routNameCreator5`='%s',`routNameEditor5`='%s',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
         strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
         FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
-	    query_empty(pearsq, big_query);
+	    query_empty(pearsq, string_mysql);
     }
     SuccessMessage(playerid,"{99ff66}Маршрут успешно загружен");
     return 1;

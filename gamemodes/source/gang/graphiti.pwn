@@ -164,10 +164,14 @@ stock GetZoneXYZ(Float:x,Float:y) // Получение территории в 
 
 stock SaveGraphiti(slot)
 {
-    format(store,sizeof(store),"%.2f_%.2f_%.2f_%.2f_%.2f_%.2f",GraphitiInfo[slot][graphitiPos][0],GraphitiInfo[slot][graphitiPos][1], GraphitiInfo[slot][graphitiPos][2],GraphitiInfo[slot][graphitiPos][3],GraphitiInfo[slot][graphitiPos][4], GraphitiInfo[slot][graphitiPos][5]);
-    format(big_query, sizeof(big_query), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%s' WHERE `gnewid`='%d'",
+    new part[150];
+    format(part,sizeof(part),"%.2f_%.2f_%.2f_%.2f_%.2f_%.2f",GraphitiInfo[slot][graphitiPos][0],GraphitiInfo[slot][graphitiPos][1], 
+    GraphitiInfo[slot][graphitiPos][2],GraphitiInfo[slot][graphitiPos][3],GraphitiInfo[slot][graphitiPos][4], GraphitiInfo[slot][graphitiPos][5]); // 30 + 120
+
+    new string_mysql[500];
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%s' WHERE `gnewid`='%d'",
     store,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],GraphitiInfo[slot][graphitiName],slot);
-    query_empty(pearsq, big_query);
+    query_empty(pearsq, string_mysql); // 147 + 66 + 24 (237) + 150
 }
 
 CMD:spray(playerid)

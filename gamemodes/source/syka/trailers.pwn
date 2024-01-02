@@ -468,15 +468,17 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
 
 stock SavePlayerTrailerInfo(id) {
     if (id < 0 || id > MAX_TRAILERS) return 0;
-    format(big_query, sizeof(big_query), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d",
+
+    new string_mysql[500];
+    format(string_mysql, sizeof(string_mysql), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d",
 	    trailerInfo[id][tOwnerID],
         trailerInfo[id][tPos][0], trailerInfo[id][tPos][1], trailerInfo[id][tPos][2],
         trailerInfo[id][tPic][0], trailerInfo[id][tPic][1], trailerInfo[id][tPic][2],
         trailerInfo[id][tRot][0], trailerInfo[id][tRot][1], trailerInfo[id][tRot][2],
         trailerInfo[id][tActive],
         trailerInfo[id][tLocked],
-        trailerInfo[id][tID]);
-	query_empty(pearsq, big_query);
+        trailerInfo[id][tID]); // 197 + 44 + 180
+	query_empty(pearsq, string_mysql);
     return 1;
 }
 

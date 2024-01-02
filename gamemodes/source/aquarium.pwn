@@ -427,9 +427,10 @@ stock SaveAquarium(aquaid, fishid)
     new f_str[11];
 	mysql_escape_string(FishName[aquaid][fishid], f_str, sizeof(f_str));
 
-    format(big_query, sizeof(big_query), "UPDATE `aquarium` SET `aqFishStat%d`='%d',`aqFishSatiety%d`='%d',`FishName%d`='%s' WHERE `newid`='%d'",
+    new string_mysql[102 + 66 + 11];
+    format(string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishStat%d`='%d',`aqFishSatiety%d`='%d',`FishName%d`='%s' WHERE `newid`='%d'",
         fishid, AquariumInfo[aquaid][aqFishStat][fishid], fishid, AquariumInfo[aquaid][aqFishSatiety][fishid], fishid, f_str, AquariumInfo[aquaid][aqNewid]);
-    query_empty(pearsq, big_query);
+    query_empty(pearsq, string_mysql);
 	return 1;
 }
 

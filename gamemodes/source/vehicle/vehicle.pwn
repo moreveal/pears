@@ -973,8 +973,9 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 
 stock SaveVehiclePrice(idx)
 {
-	format(big_query, sizeof(big_query), "UPDATE `pp_economy` SET `v%d` = '%d' WHERE `newid` = '1'", idx, VehGos[idx]);
-	query_empty(pearsq, big_query);
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `v%d` = '%d' WHERE `newid` = '1'", idx, VehGos[idx]);
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 

@@ -992,8 +992,9 @@ function LoadGangZone() // Грузим зоны из базы
 
 stock SaveGangZone(idx) // Сохраняем зону
 {
-    format(big_query, sizeof(big_query), "UPDATE `pp_zones` SET `FrakVlad`='%d', `data` = NOW() WHERE `id` = '%d'", GZInfo[idx][gFrakVlad], idx);
-    query_empty(pearsq, big_query);
+	new string_mysql[180];
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_zones` SET `FrakVlad`='%d', `data` = NOW() WHERE `id` = '%d'", GZInfo[idx][gFrakVlad], idx);
+    query_empty(pearsq, string_mysql); // 72 + 22
     return 1;
 }
 

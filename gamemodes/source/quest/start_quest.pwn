@@ -471,10 +471,11 @@ CMD:clearquest(playerid, const params[])
 
 stock LoadPlayerQuest(playerid)
 {
-    cache_get_value_name(0, "Quest", store_query, sizeof(store_query)); // Берём из бд строку
+    new string_mysql[200];
+    cache_get_value_name(0, "Quest", string_mysql, sizeof(string_mysql)); // Берём из бд строку
 
 	new arrCoords[MAX_QUEST][MAX_QUEST * 2];
-	split(store_query, arrCoords, ','); // Делим её
+	split(string_mysql, arrCoords, ','); // Делим её
 
     for(new i = 0; i < MAX_QUEST; i++) PlayerInfo[playerid][pQuest][i] = strval(arrCoords[i]); // Записываем в переменные
     return 1;
@@ -483,15 +484,17 @@ stock LoadPlayerQuest(playerid)
 stock SaveQuest(playerid) // Сохраняем информацию о квестах
 {
     // Записываем переменные в одну строку
+    new part[200];
     for(new i = 0; i < MAX_QUEST; i++)
     {
-        if(i == 0) format(store_query,sizeof(store_query),"%d", PlayerInfo[playerid][pQuest][i]);
-        else format(store_query,sizeof(store_query),"%s,%d", store_query, PlayerInfo[playerid][pQuest][i]);
+        if(i == 0) format(part,sizeof(part),"%d", PlayerInfo[playerid][pQuest][i]);
+        else format(part,sizeof(part),"%s,%d", part, PlayerInfo[playerid][pQuest][i]);
     }
 
     // Сохраняем
-    format(big_query, sizeof(big_query), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `id`='%d'", store_query, PlayerInfo[playerid][pID]);
-    query_empty(pearsq, big_query);
+    new string_mysql[400];
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `id`='%d'", store_query, PlayerInfo[playerid][pID]);
+    query_empty(pearsq, string_mysql); // 53 + 11 +
     return 1;
 }
 

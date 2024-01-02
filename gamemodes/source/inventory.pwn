@@ -1480,26 +1480,42 @@ stock GetFullThingQuan(thingId)
 }
 stock SaveInventAll(playerid) // Сохранение всего инвентаря по цилку
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', `InvenType1` = '%d', `InvenPack1` = '%d'",
-	PlayerInfo[playerid][pInven][0], PlayerInfo[playerid][pInvenQuan][0], PlayerInfo[playerid][pInvenPara][0], PlayerInfo[playerid][pInvenQara][0], PlayerInfo[playerid][pInvenType][0], PlayerInfo[playerid][pInvenPack][0]);
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', `InvenPack%d` = '%d'", big_query,
-	i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
-	query_empty(pearsq, big_query);
+	new string_mysql[4300];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', \
+	`InvenType1` = '%d', `InvenPack1` = '%d'",
+	PlayerInfo[playerid][pInven][0], PlayerInfo[playerid][pInvenQuan][0], PlayerInfo[playerid][pInvenPara][0], PlayerInfo[playerid][pInvenQara][0], 
+	PlayerInfo[playerid][pInvenType][0], PlayerInfo[playerid][pInvenPack][0]); // 146 + 66
+	for(new i = 1; i < 20; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', \
+		`InvenPack%d` = '%d'", string_mysql,
+		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
+		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
+	}
+	format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+	query_empty(pearsq, string_mysql);
 	
-	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Inven21` = '%d', `InvenKol21` = '%d', `InvenPara21` = '%d', `InvenQara21` = '%d', `InvenType21` = '%d', `InvenPack21` = '%d'",
-	PlayerInfo[playerid][pInven][20], PlayerInfo[playerid][pInvenQuan][20], PlayerInfo[playerid][pInvenPara][20], PlayerInfo[playerid][pInvenQara][20], PlayerInfo[playerid][pInvenType][20], PlayerInfo[playerid][pInvenPack][20]);
-	for(new i = 21; i < 40; i++) format(big_query,sizeof(big_query),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', `InvenPack%d` = '%d'", big_query,
-	i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
-	query_empty(pearsq, big_query);
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Inven21` = '%d', `InvenKol21` = '%d', `InvenPara21` = '%d', `InvenQara21` = '%d', \
+	`InvenType21` = '%d', `InvenPack21` = '%d'",
+	PlayerInfo[playerid][pInven][20], PlayerInfo[playerid][pInvenQuan][20], PlayerInfo[playerid][pInvenPara][20], PlayerInfo[playerid][pInvenQara][20], 
+	PlayerInfo[playerid][pInvenType][20], PlayerInfo[playerid][pInvenPack][20]); // 153 + 66
+	for(new i = 21; i < 40; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', \
+		`InvenPack%d` = '%d'", string_mysql,
+		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
+		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
+	}
+	format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 stock SaveInvent(playerid, i) // Сохранение одной ячейки инвентаря
 {
-	format(big_query, sizeof(big_query), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `id`='%d'",
+	new string_mysql[148 + 143];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `id`='%d'",
 	i+1,PlayerInfo[playerid][pInven][i],i+1,PlayerInfo[playerid][pInvenQuan][i],i+1,PlayerInfo[playerid][pInvenPara][i],i+1,PlayerInfo[playerid][pInvenQara][i],i+1,PlayerInfo[playerid][pInvenType][i],i+1,PlayerInfo[playerid][pInvenPack][i],PlayerInfo[playerid][pID]);
-	query_empty(pearsq, big_query);
+	query_empty(pearsq, string_mysql);
     return 1;
 }
 stock NumberSmartfonPlayer(playerid) // Устанавливаем номер телефона игроку, исходя из уже существующих
@@ -1796,14 +1812,18 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 }
 stock SaveSklad(idx) // Сохранение всего склада организации по циклу
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_organization` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvPara0` = '%d'",
-	OrganInfo[idx][gInvent][0], OrganInfo[idx][gInv][0], OrganInfo[idx][gInvType][0], OrganInfo[idx][gInvPara][0]);
+	new string_mysql[2900];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_organization` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvPara0` = '%d'",
+	OrganInfo[idx][gInvent][0], OrganInfo[idx][gInv][0], OrganInfo[idx][gInvType][0], OrganInfo[idx][gInvPara][0]); // 99 + 44
 
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvPara%d` = '%d'", big_query,
-	i, OrganInfo[idx][gInvent][i], i, OrganInfo[idx][gInv][i], i, OrganInfo[idx][gInvType][i], i, OrganInfo[idx][gInvPara][i]);
+	for(new i = 1; i < 20; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvPara%d` = '%d'", string_mysql,
+		i, OrganInfo[idx][gInvent][i], i, OrganInfo[idx][gInv][i], i, OrganInfo[idx][gInvType][i], i, OrganInfo[idx][gInvPara][i]); // 78 + 44 + 8 (2600)
+	}
 
-    format(big_query,sizeof(big_query),"%s WHERE `frakid` = '%d'", big_query, idx);
-	query_empty(pearsq_2, big_query);
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `frakid` = '%d'", string_mysql, idx); // 25 + 11
+	query_empty(pearsq_2, string_mysql);
 	return 1;
 }
 stock sklad_limit(thingId, thingType) // Проверяем лимиты склада организации

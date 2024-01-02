@@ -4729,22 +4729,25 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 
 		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
 
+		new string_mysql[800];
 		if(statusLoad == 1) // Сразу загружаем транспорт
 		{
 			// До GiverCar при statusLoad == 1, нужно проверять сколько сейчас уже загружено тс 
 			// if(GetPlayerQuanLoadVehicle(playerid) >= 2) Не грузить если два и больше уже загружено
 
-			format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+			format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
-				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
-			mysql_tquery(pearsq, big_query, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
+				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
+				CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche); // 291 + 66 + 80 + 24 (461)
+			mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
 		}
 		else
 		{
-			format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+			format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
-				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
-			query_empty(pearsq, big_query);
+				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
+				CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
+			query_empty(pearsq, string_mysql);
 		}
 
         // Сохраняем авто
@@ -4810,8 +4813,9 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
 }
 function GiveCarOffline(str_name[], slot, carid, Float:x, Float:y, Float:z, Float:f, ploid, nyche)
 {
-	format(store, sizeof(store), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", ploid, slot + 1);
-	mysql_tquery(pearsq, store, "Call_GiveCarOffline", "sddffffdd", str_name, slot, carid, Float:x,Float:y,Float:z,Float:f,ploid,nyche);
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", ploid, slot + 1);
+	mysql_tquery(pearsq, string_mysql, "Call_GiveCarOffline", "sddffffdd", str_name, slot, carid, Float:x,Float:y,Float:z,Float:f,ploid,nyche);
 	return 1;
 }
 function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Float:f,ploid,nyche)
@@ -4822,13 +4826,14 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 	{
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCarOffline (str_name: %s, slot: %d, carid: %d)", str_name, slot, carid);
 
-		format(big_query, sizeof(big_query), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+		new string_mysql[600];
+		format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
-		query_empty(pearsq, big_query);
+		query_empty(pearsq, string_mysql); // 249 + 44 + 80 + 24 (407)
 
         // Сохраняем авто
-		format(store,sizeof(store),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id` = '%d'",slot, carid, ploid);
-		query_empty(pearsq, store);
+		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id` = '%d'",slot, carid, ploid);
+		query_empty(pearsq, string_mysql);
 	}
 	return 1;
 }

@@ -449,39 +449,32 @@ stock GetAccessRankOrg(playerid, g, accessId, fbi) // Ответ с сообще
 
 stock SaveOrganAccess(idx, accid)
 {
-	format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `acc%d`='%d', `accdiv%d`='%d' WHERE `frakid`='%d'", accid, OrganInfo[idx][gAcc][accid], accid, OrganInfo[idx][gAccDiv][accid], idx);
-	query_empty(pearsq_2, big_query);
+    new string_mysql[79 + 55];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `acc%d`='%d', `accdiv%d`='%d' WHERE `frakid`='%d'", accid, OrganInfo[idx][gAcc][accid], accid, OrganInfo[idx][gAccDiv][accid], idx);
+	query_empty(pearsq_2, string_mysql);
 	return true;
 }
 
 stock SaveOrganAccessAll(idx)
 {
-  format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `acc0`='%d',`acc1`='%d',\
-  `acc2`='%d',`acc3`='%d',`acc4`='%d',`acc5`='%d',`acc6`='%d',`acc7`='%d',`acc8`='%d',`acc9`='%d',",OrganInfo[idx][gAcc][0],OrganInfo[idx][gAcc][1],
-  OrganInfo[idx][gAcc][2],OrganInfo[idx][gAcc][3],OrganInfo[idx][gAcc][4],OrganInfo[idx][gAcc][5],OrganInfo[idx][gAcc][6],OrganInfo[idx][gAcc][7],OrganInfo[idx][gAcc][8],OrganInfo[idx][gAcc][9]);
-  format(big_query, sizeof(big_query), "%s`acc10`='%d',`acc11`='%d',`acc12`='%d',`acc13`='%d',`acc14`='%d',`acc15`='%d',`acc16`='%d',`acc17`='%d',`acc18`='%d',\
-  `acc19`='%d',`acc20`='%d',`acc21`='%d',`acc22`='%d',`acc23`='%d',",  big_query,
-  OrganInfo[idx][gAcc][10],OrganInfo[idx][gAcc][11],OrganInfo[idx][gAcc][12],OrganInfo[idx][gAcc][13],OrganInfo[idx][gAcc][14],OrganInfo[idx][gAcc][15],OrganInfo[idx][gAcc][16],OrganInfo[idx][gAcc][17],
-  OrganInfo[idx][gAcc][18],OrganInfo[idx][gAcc][19],OrganInfo[idx][gAcc][20],OrganInfo[idx][gAcc][21],OrganInfo[idx][gAcc][22],OrganInfo[idx][gAcc][23]);
-  format(big_query, sizeof(big_query), "%s`acc24`='%d',`acc25`='%d',`acc26`='%d',`acc27`='%d',`acc28`='%d',`acc29`='%d',`acc30`='%d',`acc31`='%d',`acc32`='%d',\
-  `acc33`='%d',`acc34`='%d',`acc35`='%d',`acc36`='%d',`acc37`='%d',`acc38`='%d',`acc39`='%d',`acc40`='%d',`acc41`='%d',`acc42`='%d',`acc43`='%d',",  big_query,
-  OrganInfo[idx][gAcc][24],OrganInfo[idx][gAcc][25],OrganInfo[idx][gAcc][26],OrganInfo[idx][gAcc][27],OrganInfo[idx][gAcc][28],OrganInfo[idx][gAcc][29],OrganInfo[idx][gAcc][30],OrganInfo[idx][gAcc][31],OrganInfo[idx][gAcc][32],
-  OrganInfo[idx][gAcc][33],OrganInfo[idx][gAcc][34],OrganInfo[idx][gAcc][35],OrganInfo[idx][gAcc][36],OrganInfo[idx][gAcc][37],OrganInfo[idx][gAcc][38],OrganInfo[idx][gAcc][39],OrganInfo[idx][gAcc][40],OrganInfo[idx][gAcc][41],
-  OrganInfo[idx][gAcc][42],OrganInfo[idx][gAcc][43]);
-  format(big_query, sizeof(big_query), "%s`acc44`='%d',`acc45`='%d',`acc46`='%d',`acc47`='%d',`acc48`='%d',`acc49`='%d',`acc50`='%d',`acc51`='%d',`acc52`='%d',\
-  `acc53`='%d',`acc54`='%d',`acc55`='%d',`acc56`='%d',`acc57`='%d',`acc58`='%d',`acc59`='%d',`acc60`='%d',`acc61`='%d',`acc62`='%d',`acc63`='%d',",  big_query,
-  OrganInfo[idx][gAcc][44],OrganInfo[idx][gAcc][45],OrganInfo[idx][gAcc][46],OrganInfo[idx][gAcc][47],OrganInfo[idx][gAcc][48],OrganInfo[idx][gAcc][49],OrganInfo[idx][gAcc][50],OrganInfo[idx][gAcc][51],OrganInfo[idx][gAcc][52],
-  OrganInfo[idx][gAcc][53],OrganInfo[idx][gAcc][54],OrganInfo[idx][gAcc][55],OrganInfo[idx][gAcc][56],OrganInfo[idx][gAcc][57],OrganInfo[idx][gAcc][58],OrganInfo[idx][gAcc][59],OrganInfo[idx][gAcc][60],OrganInfo[idx][gAcc][61],
-  OrganInfo[idx][gAcc][62],OrganInfo[idx][gAcc][63]);
-  format(big_query, sizeof(big_query), "%s`acc64`='%d',`acc65`='%d',`acc66`='%d',`acc67`='%d',`acc68`='%d',`acc69`='%d',`acc70`='%d',`acc71`='%d',`acc72`='%d',\
-  `acc73`='%d',`acc74`='%d',`acc75`='%d',`acc76`='%d',`acc77`='%d',`acc78`='%d',`acc79`='%d',`acc80`='%d',`acc81`='%d',`acc82`='%d',`acc83`='%d',",  big_query,
-  OrganInfo[idx][gAcc][64],OrganInfo[idx][gAcc][65],OrganInfo[idx][gAcc][66],OrganInfo[idx][gAcc][67],OrganInfo[idx][gAcc][68],OrganInfo[idx][gAcc][69],OrganInfo[idx][gAcc][70],OrganInfo[idx][gAcc][71],OrganInfo[idx][gAcc][72],
-  OrganInfo[idx][gAcc][73],OrganInfo[idx][gAcc][74],OrganInfo[idx][gAcc][75],OrganInfo[idx][gAcc][76],OrganInfo[idx][gAcc][77],OrganInfo[idx][gAcc][78],OrganInfo[idx][gAcc][79],OrganInfo[idx][gAcc][80],OrganInfo[idx][gAcc][81],
-  OrganInfo[idx][gAcc][82],OrganInfo[idx][gAcc][83]);
-  format(big_query, sizeof(big_query), "%s`acc84`='%d',`acc85`='%d',`acc86`='%d',`acc87`='%d',`acc88`='%d',`acc89`='%d',`acc90`='%d',`acc91`='%d',`acc92`='%d',`acc93`='%d',`acc94`='%d',`acc95`='%d',`acc96`='%d',\
-  `acc97`='%d',`acc98`='%d',`acc99`='%d' WHERE `frakid`='%d'", big_query,
-  OrganInfo[idx][gAcc][84],OrganInfo[idx][gAcc][85],OrganInfo[idx][gAcc][86],OrganInfo[idx][gAcc][87],OrganInfo[idx][gAcc][88],OrganInfo[idx][gAcc][89],OrganInfo[idx][gAcc][90],OrganInfo[idx][gAcc][91],
-  OrganInfo[idx][gAcc][92],OrganInfo[idx][gAcc][93],OrganInfo[idx][gAcc][94],OrganInfo[idx][gAcc][95],OrganInfo[idx][gAcc][96],OrganInfo[idx][gAcc][97],OrganInfo[idx][gAcc][98],OrganInfo[idx][gAcc][99],idx);
-  query_empty(pearsq_2, big_query);
-  return true;
+    new string_mysql[2600];
+
+    // Первая часть
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
+    for(new i = 0; i < 60; i++)
+    {
+        format(string_mysql, sizeof(string_mysql), "%s`acc%d`='%d'%s", string_mysql, i, OrganInfo[idx][gAcc][i], (i < 59 ? "," : " "));
+    }
+    format(string_mysql, sizeof(string_mysql), "%sWHERE `frakid`='%d'", string_mysql, idx);
+    query_empty(pearsq_2, string_mysql);
+
+    // Вторая часть
+    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
+    for(new i = 60; i < MAX_ACC; i++) 
+    {
+        format(string_mysql, sizeof(string_mysql), "%s`acc%d`='%d'%s", string_mysql, i, OrganInfo[idx][gAcc][i], (i < MAX_ACC-1 ? "," : " "));
+    }
+    format(string_mysql, sizeof(string_mysql), "%sWHERE `frakid`='%d'", string_mysql, idx);
+    query_empty(pearsq_2, string_mysql);
+    return true;
 }

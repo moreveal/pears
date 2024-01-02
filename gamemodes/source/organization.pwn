@@ -372,17 +372,19 @@ function LoadOrgan()
 
 stock SaveOrgan(idx)
 {
-	format(big_query, sizeof(big_query), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
+	new string_mysql[1200];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
 	`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
 	OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
-	OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]);
-	format(big_query, sizeof(big_query), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  big_query,
-	orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]);
-	format(big_query, sizeof(big_query), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
-	`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", big_query,
+	OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],
+	OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]); // 235 + 154
+	format(string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  string_mysql,
+	orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]); // 133 + 110
+	format(string_mysql, sizeof(string_mysql), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
+	`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", string_mysql,
 	OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
-	OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx);
-	query_empty(pearsq_2, big_query);
+	OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx); // 201 + 154
+	query_empty(pearsq_2, string_mysql); // 987
 	if(idx >= 1) SaveSklad(idx);
 	return 1;
 }
@@ -672,15 +674,17 @@ stock SaveAllRanks(orgId)
 {
 	new nameRank[MAX_NAME_LENGTH];
 	mysql_escape_string(RankOrg[orgId][0], nameRank, sizeof(nameRank));
-	format(big_query,sizeof(big_query),"UPDATE `pp_organization` SET `rank0` = '%s'", nameRank);
+
+	new string_mysql[2000];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_organization` SET `rank0` = '%s'", nameRank); // 44 + 31
 
 	for(new i = 0; i < MAX_RANK_ORG; i++) 
 	{
 		mysql_escape_string(RankOrg[orgId][i], nameRank, sizeof(nameRank));
-		format(big_query,sizeof(big_query),"%s, `rank%d` = '%s'", big_query, i, nameRank);
+		format(string_mysql,sizeof(string_mysql),"%s, `rank%d` = '%s'", string_mysql, i, nameRank); // 20 + 2 + 31
 	}
-    format(big_query,sizeof(big_query),"%s WHERE `frakid` = '%d'", big_query, orgId);
-	query_empty(pearsq_2, big_query);
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `frakid` = '%d'", string_mysql, orgId); // 25 + 11
+	query_empty(pearsq_2, string_mysql);
 }
 
 stock ReloadRank(playerid, g) // Сброс названий рангов

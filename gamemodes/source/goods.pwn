@@ -215,20 +215,31 @@ stock shift_goods(playerid, getinva, putinva)
 }
 stock SaveMarkAll(playerid) // Сохранение всего раздела торговли по цилку
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_igroki` SET `Mark0` = '%d', `MarkKol0` = '%d', `MarkPara0` = '%d', `MarkQara0` = '%d', `MarkType0` = '%d', `MarkPack0` = '%d', `MarkPrice0` = '%d'",
-	PlayerInfo[playerid][pMarkInven][0], PlayerInfo[playerid][pMarkInvenQuan][0], PlayerInfo[playerid][pMarkInvenPara][0], PlayerInfo[playerid][pMarkInvenQara][0], PlayerInfo[playerid][pMarkInvenType][0], PlayerInfo[playerid][pMarkInvenPack][0], PlayerInfo[playerid][pMarkPrice][0]);
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Mark%d` = '%d', `MarkKol%d` = '%d', `MarkPara%d` = '%d', `MarkQara%d` = '%d', `MarkType%d` = '%d', `MarkPack%d` = '%d', `MarkPrice%d` = '%d'", big_query,
-	i, PlayerInfo[playerid][pMarkInven][i], i, PlayerInfo[playerid][pMarkInvenQuan][i], i, PlayerInfo[playerid][pMarkInvenPara][i], i, PlayerInfo[playerid][pMarkInvenQara][i], i, PlayerInfo[playerid][pMarkInvenType][i], i, PlayerInfo[playerid][pMarkInvenPack][i], i, PlayerInfo[playerid][pMarkPrice][i]);
-    format(big_query,sizeof(big_query),"%s WHERE `id` = '%d'", big_query, PlayerInfo[playerid][pID]);
-	query_empty(pearsq, big_query);
+	new string_mysql[4000];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Mark0` = '%d', `MarkKol0` = '%d', `MarkPara0` = '%d', `MarkQara0` = '%d', \
+		`MarkType0` = '%d', `MarkPack0` = '%d', `MarkPrice0` = '%d'",
+	PlayerInfo[playerid][pMarkInven][0], PlayerInfo[playerid][pMarkInvenQuan][0], PlayerInfo[playerid][pMarkInvenPara][0], PlayerInfo[playerid][pMarkInvenQara][0], 
+	PlayerInfo[playerid][pMarkInvenType][0], PlayerInfo[playerid][pMarkInvenPack][0], PlayerInfo[playerid][pMarkPrice][0]); // 163 + 77
+	for(new i = 1; i < 20; i++) 
+	{
+		format(string_mysql,sizeof(string_mysql),"%s, `Mark%d` = '%d', `MarkKol%d` = '%d', `MarkPara%d` = '%d', `MarkQara%d` = '%d', `MarkType%d` = '%d', \
+			`MarkPack%d` = '%d', `MarkPrice%d` = '%d'", string_mysql,
+		i, PlayerInfo[playerid][pMarkInven][i], i, PlayerInfo[playerid][pMarkInvenQuan][i], i, PlayerInfo[playerid][pMarkInvenPara][i], 
+		i, PlayerInfo[playerid][pMarkInvenQara][i], i, PlayerInfo[playerid][pMarkInvenType][i], i, PlayerInfo[playerid][pMarkInvenPack][i], 
+		i, PlayerInfo[playerid][pMarkPrice][i]); // 152 + 44 (3920)
+	}
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
 stock SaveMark(playerid, i)
 {
-	format(big_query, sizeof(big_query), "UPDATE `pp_igroki` SET `Mark%d`='%d',`MarkKol%d`='%d',`MarkPara%d`='%d',`MarkQara%d`='%d',`MarkPrice%d`='%d',`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `id`='%d'",
+	new string_mysql[166 + 165];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Mark%d`='%d',`MarkKol%d`='%d',`MarkPara%d`='%d',`MarkQara%d`='%d',`MarkPrice%d`='%d',\
+		`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `id`='%d'",
 	i,PlayerInfo[playerid][pMarkInven][i],i,PlayerInfo[playerid][pMarkInvenQuan][i],i,PlayerInfo[playerid][pMarkInvenPara][i],i,PlayerInfo[playerid][pMarkInvenQara][i],
 	i,PlayerInfo[playerid][pMarkPrice][i],i,PlayerInfo[playerid][pMarkInvenType][i],i,PlayerInfo[playerid][pMarkInvenPack][i],PlayerInfo[playerid][pID]);
-	query_empty(pearsq, big_query);
+	query_empty(pearsq, string_mysql);
     return 1;
 }
 stock IsAUpdateM(playerid)

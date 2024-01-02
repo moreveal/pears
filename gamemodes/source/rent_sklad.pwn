@@ -165,14 +165,15 @@ stock TakeRentwh(wh, stat, kolvo, thingType, dopinf)
 }
 stock SaveRent(idx) // Сохранение всего арендованного склада по циклу
 {
-	format(big_query,sizeof(big_query),"UPDATE `pp_rentwh` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvQara0` = '%d'",
-	WhInfo[idx][wInvent][0], WhInfo[idx][wInv][0], WhInfo[idx][wInvType][0], WhInfo[idx][wInvQara][0]);
+	new string_mysql[2800];
+	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rentwh` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvQara0` = '%d'",
+	WhInfo[idx][wInvent][0], WhInfo[idx][wInv][0], WhInfo[idx][wInvType][0], WhInfo[idx][wInvQara][0]); // 93 + 44
 
-	for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvQara%d` = '%d'", big_query,
-	i, WhInfo[idx][wInvent][i], i, WhInfo[idx][wInv][i], i, WhInfo[idx][wInvType][i], i, WhInfo[idx][wInvQara][i]);
+	for(new i = 1; i < 20; i++) format(string_mysql,sizeof(string_mysql),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvQara%d` = '%d'", string_mysql,
+	i, WhInfo[idx][wInvent][i], i, WhInfo[idx][wInv][i], i, WhInfo[idx][wInvType][i], i, WhInfo[idx][wInvQara][i]); // 78 + 44 + 8 (2600)
 
-    format(big_query,sizeof(big_query),"%s WHERE `Ids` = '%d'", big_query, idx);
-	query_empty(pearsq, big_query);
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `Ids` = '%d'", string_mysql, idx); // 22 + 11
+	query_empty(pearsq, string_mysql); // 2 770
 	return 1;
 }
 stock rentwh_limit(thingId, thingType, &getLimit) // Проверяем лимиты склада организации

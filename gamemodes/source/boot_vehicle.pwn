@@ -572,31 +572,51 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 }
 stock SaveBoot(v) // Сохранение всего багажника по цилку
 {
-    if(Cars[v] == 88 || Cars[v] == 99)
+    if(Cars[v] == 88)
 	{
 		if(VehInfo[v][vDatabase] >= 1 && VehInfo[v][vDatabase] <= MAX_MYVEHICLE)
 		{
-			format(big_query,sizeof(big_query),"UPDATE `pp_cars` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', `InvenType1` = '%d', `InvenPack1` = '%d'",
-			VehInfo[v][vInvent][0], VehInfo[v][vInv][0], VehInfo[v][vInvPara][0], VehInfo[v][vInvQara][0], VehInfo[v][vInvType][0], VehInfo[v][vInvPack][0]);
+			new string_mysql[3000];
 
-			for(new i = 1; i < 20; i++) format(big_query,sizeof(big_query),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', `InvenPack%d` = '%d'", big_query,
-			i+1, VehInfo[v][vInvent][i], i+1, VehInfo[v][vInv][i], i+1, VehInfo[v][vInvPara][i], i+1, VehInfo[v][vInvQara][i], i+1, VehInfo[v][vInvType][i], i+1, VehInfo[v][vInvPack][i]);
+			// Первая часть
+			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET ");
+			for(new i = 0; i < 9; i++)
+			{
+				format(string_mysql,sizeof(string_mysql),"%s `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', \
+					`InvenType%d` = '%d', `InvenPack%d` = '%d'%s", string_mysql,
+				i+1, VehInfo[v][vInvent][i], i+1, VehInfo[v][vInv][i], i+1, VehInfo[v][vInvPara][i], i+1, 
+				VehInfo[v][vInvQara][i], i+1, VehInfo[v][vInvType][i], i+1, VehInfo[v][vInvPack][i], (i < 8 ? "," : " ")); // 271
+			}
+		    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, VehInfo[v][vNewid]);
+			query_empty(pearsq, string_mysql);
 
-		    format(big_query,sizeof(big_query),"%s WHERE `newid` = '%d'", big_query, VehInfo[v][vNewid]);
-			query_empty(pearsq, big_query);
+			// Вторая часть
+			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET ");
+			for(new i = 9; i < 20; i++)
+			{
+				format(string_mysql,sizeof(string_mysql),"%s `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', \
+					`InvenType%d` = '%d', `InvenPack%d` = '%d'%s", string_mysql,
+				i+1, VehInfo[v][vInvent][i], i+1, VehInfo[v][vInv][i], i+1, VehInfo[v][vInvPara][i], i+1, 
+				VehInfo[v][vInvQara][i], i+1, VehInfo[v][vInvType][i], i+1, VehInfo[v][vInvPack][i], (i < 19 ? "," : " ")); // 271
+			}
+		    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, VehInfo[v][vNewid]);
+			query_empty(pearsq, string_mysql);
 		}
 	}
 	return 1;
 }
 stock SaveOneBoot(veh, inva) // Сохранение багажника транспорта
 {
-    if(Cars[veh] == 88 || Cars[veh] == 99)
+    if(Cars[veh] == 88)
 	{
 		if(VehInfo[veh][vDatabase] >= 1 && VehInfo[veh][vDatabase] <= MAX_MYVEHICLE)
 		{
-			format(big_query, sizeof(big_query), "UPDATE `pp_cars` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `newid`='%d'",
-			inva+1,VehInfo[veh][vInvent][inva], inva+1,VehInfo[veh][vInv][inva], inva+1,VehInfo[veh][vInvPara][inva], inva+1,VehInfo[veh][vInvQara][inva], inva+1,VehInfo[veh][vInvType][inva], inva+1,VehInfo[veh][vInvPack][inva], VehInfo[veh][vNewid]);
-			query_empty(pearsq, big_query);
+			new string_mysql[149 + 143];
+			format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',\
+				`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `newid`='%d'",
+			inva+1,VehInfo[veh][vInvent][inva], inva+1,VehInfo[veh][vInv][inva], inva+1,VehInfo[veh][vInvPara][inva], inva+1,VehInfo[veh][vInvQara][inva], 
+			inva+1,VehInfo[veh][vInvType][inva], inva+1,VehInfo[veh][vInvPack][inva], VehInfo[veh][vNewid]);
+			query_empty(pearsq, string_mysql);
 		}
 	}
 	return 1;

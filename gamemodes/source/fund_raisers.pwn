@@ -296,11 +296,12 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
         format(FundRaisersInfo[i][fundMaxPlayerName], 24, "%s", PlayerInfo[playerid][pName]);
         FundRaisersInfo[i][fundMaxUnix] = unix;
 
-        format(big_query, sizeof(big_query),"UPDATE `fund_raisers` SET `fundMaxMoney`='%s', `fundMaxPlayerid`='%d',\
+        new string_mysql[153 + 24 + 24 + 33];
+        format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMaxMoney`='%s', `fundMaxPlayerid`='%d',\
             `fundMaxPlayerName`='%s', `fundMaxUnix`='%d' WHERE `fundNewid`='%d'", 
             FundRaisersInfo[i][fundMaxMoney], FundRaisersInfo[i][fundMaxPlayerid], FundRaisersInfo[i][fundMaxPlayerName], 
             FundRaisersInfo[i][fundMaxUnix], FundRaisersInfo[i][fundNewid]);
-        query_empty(pearsq, big_query);
+        query_empty(pearsq, string_mysql);
 
         format(line,sizeof(line),"\n{ff9000}Ого! Вы сделали максимальное пожертвование!"), strcat(lines,line);
     }
@@ -596,12 +597,13 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             FundRaisersInfo[i][fundGift] = false;
             for(new g = 0; g < MAX_FUND_GIFT; g++) FundRaisersInfo[i][fundGiftThingId][g] = 0;
 
-            format(big_query, sizeof(big_query),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%s', `fundText`='%s', `fundMoney`='%s', `fundQuan`='0',\
+            new string_mysql[500];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%s', `fundText`='%s', `fundMoney`='%s', `fundQuan`='0',\
                 `fundRequired`='%s', `fundGift`='%i', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundText], 
                 FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundGift], 
-                FundRaisersInfo[i][fundNewid]);
-            query_empty(pearsq, big_query);
+                FundRaisersInfo[i][fundNewid]); // 263 + 33 + 44 + 84 + 24 + 24
+            query_empty(pearsq, string_mysql); // 445
 
             AdminLog("closefund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, FundRaisersInfo[i][fundName]);
         }
@@ -691,12 +693,13 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             format(store,sizeof(store),"%s (%s)", FundRaisersInfo[i][fundName], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0));
             AdminLog("fundgift", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, store);
 
-            format(big_query, sizeof(big_query),"UPDATE `fund_raisers` SET `fundGift`='%i', `fundGiftThingId%d`='%d', `fundGiftThingQuan%d`='%d',\
+            new string_mysql[185 + 110];
+            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundGift`='%i', `fundGiftThingId%d`='%d', `fundGiftThingQuan%d`='%d',\
             `fundGiftThingType%d`='%d', `fundGiftPrice%d`='%d' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundGift], g, FundRaisersInfo[i][fundGiftThingId][g], g, FundRaisersInfo[i][fundGiftThingQuan][g], 
                 g, FundRaisersInfo[i][fundGiftThingType][g], g, FundRaisersInfo[i][fundGiftPrice][g],
                 FundRaisersInfo[i][fundNewid]);
-            query_empty(pearsq, big_query);
+            query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisersGift(playerid, i);
     }
@@ -715,10 +718,12 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
 stock FundLog(senderid, const sender[], const senderip[], const quan[], const name[], fundid)
 {
 	new unix = gettime();
-    format(big_query, sizeof(big_query), "INSERT INTO `fund_logs`\
+
+    new string_mysql[300];
+    format(string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
 	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%s','%s','%s','%s','%d','%d')",
     senderid, sender, senderip, quan, name, fundid, unix);
-	mysql_tquery(pearsq_2, big_query, "", "");
+	mysql_tquery(pearsq_2, string_mysql, "", "");
 }
 
 stock ClearFundLog(fundid)

@@ -400,9 +400,11 @@ public LoadEditModelTextDraw()
 
 stock SaveEditModel(i) // Обновляем или добавляем строку об аксессуаре
 {
-	format(big_query, sizeof(big_query), "UPDATE `editModel` SET `editModel`='%d',`editPos0`='%f',`editPos1`='%f',`editPos2`='%f',`editPos3`='%f'  WHERE `newid` = '%d'",
-	EditModelInfo[i][editModel], EditModelInfo[i][editPos][0], EditModelInfo[i][editPos][1], EditModelInfo[i][editPos][2], EditModelInfo[i][editPos][3], EditModelInfo[i][editId]);
-	query_empty(pearsq, big_query);
+	new string_mysql[300];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `editModel` SET `editModel`='%d',`editPos0`='%f',`editPos1`='%f',`editPos2`='%f',`editPos3`='%f'  WHERE `newid` = '%d'",
+	EditModelInfo[i][editModel], EditModelInfo[i][editPos][0], EditModelInfo[i][editPos][1], EditModelInfo[i][editPos][2], EditModelInfo[i][editPos][3], 
+	EditModelInfo[i][editId]); // 126 + 22 + 80
+	query_empty(pearsq, string_mysql); // 228
     return 1;
 }
 

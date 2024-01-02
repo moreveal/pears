@@ -189,23 +189,24 @@ stock SaveAccessory(i, stat) // Обновляем или добавляем с�
 	new send_name[34];
     mysql_escape_string(AccessoryInfo[i][acName], send_name, sizeof(send_name));
     
-    if(stat == 1) format(big_query, sizeof(big_query), "UPDATE");
-    else if(stat == 0) format(big_query, sizeof(big_query), "INSERT INTO");
+	new string_mysql[600];
+    if(stat == 1) format(string_mysql, sizeof(string_mysql), "UPDATE");
+    else if(stat == 0) format(string_mysql, sizeof(string_mysql), "INSERT INTO"); // 12
 
-	format(big_query, sizeof(big_query), "%s `accessory` SET `acModel`='%d',`acName`='%s',`acPrice`='%d',`acStatus`='%d',`acBone`='%d'",big_query,
-	AccessoryInfo[i][acModel], send_name, AccessoryInfo[i][acPrice], AccessoryInfo[i][acStatus], AccessoryInfo[i][acBone]);
+	format(string_mysql, sizeof(string_mysql), "%s `accessory` SET `acModel`='%d',`acName`='%s',`acPrice`='%d',`acStatus`='%d',`acBone`='%d'",string_mysql,
+	AccessoryInfo[i][acModel], send_name, AccessoryInfo[i][acPrice], AccessoryInfo[i][acStatus], AccessoryInfo[i][acBone]); // 93 + 44 + 34
 	
-	format(big_query,sizeof(big_query),"%s, `acX` = '%f', `acY` = '%f', `acZ` = '%f', `acrX` = '%f', `acrY` = '%f', `acrZ` = '%f',\
-	`acsX` = '%f', `acsY` = '%f', `acsZ` = '%f'", big_query,
+	format(string_mysql,sizeof(string_mysql),"%s, `acX` = '%f', `acY` = '%f', `acZ` = '%f', `acrX` = '%f', `acrY` = '%f', `acrZ` = '%f',\
+	`acsX` = '%f', `acsY` = '%f', `acsZ` = '%f'", string_mysql,
 	AccessoryInfo[i][acX],AccessoryInfo[i][acY],AccessoryInfo[i][acZ],AccessoryInfo[i][acrX],AccessoryInfo[i][acrY],AccessoryInfo[i][acrZ],
-	AccessoryInfo[i][acsX],AccessoryInfo[i][acsY],AccessoryInfo[i][acsZ]);
+	AccessoryInfo[i][acsX],AccessoryInfo[i][acsY],AccessoryInfo[i][acsZ]); // 138 + 180
 	
 	if(stat == 1)
 	{
-		format(big_query, sizeof(big_query), "%s  WHERE `newid` = '%d'", big_query, AccessoryInfo[i][acID]);
-		query_empty(pearsq, big_query);
+		format(string_mysql, sizeof(string_mysql), "%s  WHERE `newid` = '%d'", string_mysql, AccessoryInfo[i][acID]); // 25 + 11
+		query_empty(pearsq, string_mysql); // 537
 	}
-	else if(stat == 0) mysql_tquery(pearsq, big_query, "Call_InsertAccessory", "d", i);
+	else if(stat == 0) mysql_tquery(pearsq, string_mysql, "Call_InsertAccessory", "d", i);
 
 	AccessoryInfo[i][acMysqlCheck] = false;
     return 1;
