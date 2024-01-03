@@ -419,6 +419,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 85, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Колдрекс
     	if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 86, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // Терафлю
     	if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 87, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // Анвимакс
+		if(BizzInfo[b][bProduct][18] == 0 || stat == 1) BizzInfo[b][bProduct][18] = 5, BizzInfo[b][bTypeProduct][18] = 0, yes[18] = true; // Оболочка таблетки
 	}
 	else if(b >= 133 && b <= 142) // Магазины с Техникой
 	{

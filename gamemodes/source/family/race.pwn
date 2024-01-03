@@ -112,7 +112,12 @@ stock ReadyPartyStreet(playerid)
     SuccessMessage(playerid,"{99ff66}Вы начали сходку StreetRacers");
     return 1;
 }
-
+CMD:closerace(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] <= 3) ErrorMessage(playerid,"{FF6347}Закончить сходку предварительно могут только Админ 4+ лвла");
+    ClosePartyStreet;
+    return 1;
+}
 stock ClosePartyStreet()
 {
     for(new i; i < 4; i++)
@@ -128,9 +133,9 @@ stock ClosePartyStreet()
     }
     for(new p; p < 8; p++)
     {
+        OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
-        OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
     }
 
     
