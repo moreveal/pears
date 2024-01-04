@@ -115,7 +115,7 @@ stock ReadyPartyStreet(playerid)
 CMD:closerace(playerid)
 {
     if(PlayerInfo[playerid][pSoska] <= 3) ErrorMessage(playerid,"{FF6347}Закончить сходку предварительно могут только Админ 4+ лвла");
-    ClosePartyStreet;
+    ClosePartyStreet();
     return 1;
 }
 stock ClosePartyStreet()

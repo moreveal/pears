@@ -81,10 +81,6 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
             if(ingId[4] > 0) i4 = ingId[4], q4 = ingQuan[4], t4 = 0;
         }
     }
-
-    // Не используемые (На будущее, если потребуется 5 слотов под крафт)
-    i3 = 0, q3 = 0, t3 = 0;
-    i4 = 0, q4 = 0, t4 = 0;
     return 1;
 }
 
@@ -1435,11 +1431,18 @@ stock createDraw_CraftProcess(playerid, type)
 
 stock IsAVerstak(playerid)
 {
-    if(IsPlayerInRangeOfPoint(playerid,1.5,2490.801025, -1703.421997, 2074.027832) && GetPlayerInterior(playerid) == 212 && GetPlayerVirtualWorld(playerid) == 212 
-    || IsPlayerInRangeOfPoint(playerid,1.5,2473.290771, -2024.834960, 2052.320800) && GetPlayerInterior(playerid) == 213 && GetPlayerVirtualWorld(playerid) == 213
-	|| IsPlayerInRangeOfPoint(playerid,1.5,2252.442871, -1466.458496, 2089.403564) && GetPlayerInterior(playerid) == 214 && GetPlayerVirtualWorld(playerid) == 214 
-    || IsPlayerInRangeOfPoint(playerid,1.5,1685.440063, -2092.027587, 2091.805908) && GetPlayerInterior(playerid) == 215 && GetPlayerVirtualWorld(playerid) == 215
-	|| IsPlayerInRangeOfPoint(playerid,2.0,1395.275878, 1826.201904, 10.886253) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18) return 1;
+    if(IsPlayerInRangeOfPoint(playerid,1.0,2490.801025, -1703.421997, 2074.027832) && GetPlayerInterior(playerid) == 212 && GetPlayerVirtualWorld(playerid) == 212 
+    || IsPlayerInRangeOfPoint(playerid,1.0,2473.290771, -2024.834960, 2052.320800) && GetPlayerInterior(playerid) == 213 && GetPlayerVirtualWorld(playerid) == 213
+	|| IsPlayerInRangeOfPoint(playerid,1.0,2252.442871, -1466.458496, 2089.403564) && GetPlayerInterior(playerid) == 214 && GetPlayerVirtualWorld(playerid) == 214 
+    || IsPlayerInRangeOfPoint(playerid,1.0,1685.440063, -2092.027587, 2091.805908) && GetPlayerInterior(playerid) == 215 && GetPlayerVirtualWorld(playerid) == 215
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1395.275878, 1826.201904, 10.886253) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18
+    || IsPlayerInRangeOfPoint(playerid,1.0,1040.2181,2415.4434,10.8461) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 174 // тюрьма
+    || IsPlayerInRangeOfPoint(playerid,1.0,1040.2181,2420.9497,10.8461) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 174 // тюрьма
+    || IsPlayerInRangeOfPoint(playerid,1.0,1040.2181,2426.5640,10.8461) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 174 // тюрьма
+    || IsPlayerInRangeOfPoint(playerid,1.0,1043.7130,2426.6699,10.8461) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 174 // тюрьма
+    || IsPlayerInRangeOfPoint(playerid,1.0,1043.7130,2421.0825,10.8461) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 174 // тюрьма
+    ) return 1;
+
     return 0;
 }
 

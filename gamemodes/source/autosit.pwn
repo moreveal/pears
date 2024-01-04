@@ -187,7 +187,8 @@ stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 
 stock NoSit(playerid) // Позиции, где sit работать не будет
 {
-	if(IsPlayerInRangeOfPoint(playerid,2.0,1302.9628,1606.5735,20.0563) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179)
+	if(IsPlayerInRangeOfPoint(playerid,2.0,1302.9628,1606.5735,20.0563) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179 // Поезд (место машиниста)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,975.0098,2420.8489,10.8503) && GetPlayerVirtualWorld(playerid) == 178 && GetPlayerInterior(playerid) == 0) // Тюрьма (1 Этаж Холл)
 	{
 		return 1;
 	}

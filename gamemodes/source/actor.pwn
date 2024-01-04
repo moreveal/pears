@@ -319,56 +319,6 @@ stock LoadBot()
     SetActorVirtualWorld(BotPears[273], 3);
     BotPears[274] = CreateActor(178, -103.6952,-24.2643,1000.7188,1.9498); // Sex Shop Bot
     SetActorVirtualWorld(BotPears[274], 4);
-    BotPears[275] = CreateActor(301,1461.7512,-92.3984,26.7904,316.2536); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[276] = CreateActor(302,1473.8959,-88.8228,26.7904,151.1254); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[277] = CreateActor(288,1473.4253,-89.7908,26.7904,330.2359); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[278] = CreateActor(301,1517.2401,-29.4957,26.7835,131.0954); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[279] = CreateActor(281,-1954.7623,2344.0791,1549.6833,179.2847); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[279], 36);
-    BotPears[280] = CreateActor(283,-1952.8025,2370.2859,1549.6833,177.7180); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[280], 36);
-    BotPears[281] = CreateActor(268,-1940.0203,2382.6238,1549.6833,270.7734); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[281], 37);
-    BotPears[282] = CreateActor(268,-1945.2432,2389.0210,1549.6833,0.7008); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[282], 37);
-    BotPears[283] = CreateActor(288,615.3415,-540.1636,1492.0072,3.2988); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    SetActorVirtualWorld(BotPears[283], 36);
-    BotPears[284] = CreateActor(28,1431.5796,-132.3715,26.7904,37.8463); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[285] = CreateActor(30,1410.6948,-119.8417,26.7904,277.6937); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[286] = CreateActor(42,1427.3776,-115.7589,26.7904,20.0096); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[287] = CreateActor(268,1426.8988,-114.0483,26.7904,194.5379); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[288] = CreateActor(48,1421.5983,-145.5395,27.8694,36.9531); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[289] = CreateActor(67,1424.7656,-144.2773,28.1855,36.9531); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[290] = CreateActor(28,1405.3990,-125.5751,26.7904,358.7261); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[291] = CreateActor(25,1406.2046,-123.9625,26.7904,125.0006); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[292] = CreateActor(21,1404.6963,-123.8337,26.7904,210.8548); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot
-    BotPears[293] = CreateActor(281,-1943.1350,2379.3757,1549.6833,176.0008); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot otb 37 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[293], 37);
-    BotPears[294] = CreateActor(283,-1933.6089,2379.3655,1549.6833,0.2191); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot otb 37 пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[294], 37);
-    BotPears[295] = CreateActor(280,-1948.9519,2381.6292,1549.6833,186.0274); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[295], 36);
-    BotPears[296] = CreateActor(288,605.9303,-549.1145,1492.0072,270.5513); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[296], 36);
-    BotPears[297] = CreateActor(300,636.8461,-544.0811,1492.0072,333.7004); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅ 1 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ 2 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[297], 36);
-    BotPears[298] = CreateActor(301,637.6428,-542.6046,1492.0072,146.0353); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅ 2 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ 1 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[298], 36);
-    BotPears[299] = CreateActor(297,609.4335,-529.0662,1496.1713,180.3573); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ otb 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[299], 36);
-    BotPears[300] = CreateActor(261,-1950.0703,2340.0571,1549.6833,150.4520); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 1 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ 2 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[300], 36);
-    BotPears[301] = CreateActor(259,-1950.6799,2338.4812,1549.6833,333.1270); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 2 пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ 1 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[301], 36);
-    BotPears[302] = CreateActor(267,-1948.5565,2350.3408,1549.6833,99.5464); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 36 пїЅпїЅпїЅ
-    SetActorVirtualWorld(BotPears[302], 36);
-    BotPears[303] = CreateActor(248,1429.9197,-107.2486,26.7904,132.3054); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-    BotPears[304] = CreateActor(247,1420.6920,-129.9727,26.7904,189.1877); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ  пїЅпїЅпїЅпїЅпїЅ
-    BotPears[305] = CreateActor(206,1419.7673,-131.7033,26.7904,320.7889); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-    BotPears[306] = CreateActor(242,1421.5477,-131.0888,26.7904,65.1299); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ otb пїЅпїЅпїЅпїЅпїЅ
-    BotPears[307] = CreateActor(182,1410.1254,-139.7495,26.7904,227.4147); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-    BotPears[308] = CreateActor(183,1411.6548,-140.8968,26.7904,52.2831); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
-    BotPears[309] = CreateActor(297,1415.3198,-125.3952,26.7904,85.1366); // пїЅпїЅпїЅпїЅпїЅпїЅ Bot пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     BotPears[313] = CreateActor(147,-2046.6985,-988.4554,1651.6968,30.9710); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
     SetActorVirtualWorld(BotPears[313], 7);
     BotPears[314] = CreateActor(187,-2047.6536,-987.2053,1651.6968,215.5261); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
@@ -660,39 +610,6 @@ stock LoadAnimBot(stat)
         case 238: ApplyActorAnimation(BotPears[238],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 18
         case 241: ApplyActorAnimation(BotPears[241],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
         case 242: ApplyActorAnimation(BotPears[242],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        case 275: ApplyActorAnimation(BotPears[275],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);// Тюрьма Bot
-        case 276: ApplyActorAnimation(BotPears[276],"PED","IDLE_CHAT",4.1,1,0,0,0,0);  // Тюрьма Bot
-        case 277: ApplyActorAnimation(BotPears[277],"PED","IDLE_CHAT",4.1,1,0,0,0,0);  // Тюрьма Bot
-        case 278: ApplyActorAnimation(BotPears[278],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 279: ApplyActorAnimation(BotPears[279],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 280: ApplyActorAnimation(BotPears[280],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 282: ApplyActorAnimation(BotPears[282],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 283: ApplyActorAnimation(BotPears[283],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 284: ApplyActorAnimation(BotPears[284],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 285: ApplyActorAnimation(BotPears[285],"GANGS","leanIDLE",4.1,0,1,1,1,1); // Тюрьма Bot
-        case 286: ApplyActorAnimation(BotPears[286],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 287: ApplyActorAnimation(BotPears[287],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 288: ApplyActorAnimation(BotPears[288],"BEACH", "ParkSit_M_loop", 4.0, 1, 0, 0, 0, 0); // Тюрьма Bot
-        case 289: ApplyActorAnimation(BotPears[289],"BEACH", "ParkSit_M_loop", 4.0, 1, 0, 0, 0, 0); // Тюрьма Bot
-        case 290: ApplyActorAnimation(BotPears[290],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 291: ApplyActorAnimation(BotPears[291],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 293: ApplyActorAnimation(BotPears[293],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 294: ApplyActorAnimation(BotPears[294],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 295: ApplyActorAnimation(BotPears[295],"SMOKING","M_smk_loop",4.1,1,0,0,0,0);// Тюрьма Bot
-        case 296: ApplyActorAnimation(BotPears[296],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 297: ApplyActorAnimation(BotPears[297],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 298: ApplyActorAnimation(BotPears[298],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 299: ApplyActorAnimation(BotPears[299],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 300: ApplyActorAnimation(BotPears[300],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 301: ApplyActorAnimation(BotPears[301],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 302: ApplyActorAnimation(BotPears[302],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 303: ApplyActorAnimation(BotPears[303],"GANGS","leanIDLE",4.1,0,1,1,1,1);// Тюрьма Bot
-        case 304: ApplyActorAnimation(BotPears[304],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 305: ApplyActorAnimation(BotPears[305],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 306: ApplyActorAnimation(BotPears[306],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 307: ApplyActorAnimation(BotPears[307],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 308: ApplyActorAnimation(BotPears[308],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        case 309: ApplyActorAnimation(BotPears[309],"GYMNASIUM","gym_shadowbox",4.0,1,0,0,0,0); // Тюрьма Bot
         case 313: ApplyActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         case 314: ApplyActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         case 315: ApplyActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
@@ -874,39 +791,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[238],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 18
         ApplyActorAnimation(BotPears[241],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
         ApplyActorAnimation(BotPears[242],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        ApplyActorAnimation(BotPears[275],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);// Тюрьма Bot
-        ApplyActorAnimation(BotPears[276],"PED","IDLE_CHAT",4.1,1,0,0,0,0);  // Тюрьма Bot
-        ApplyActorAnimation(BotPears[277],"PED","IDLE_CHAT",4.1,1,0,0,0,0);  // Тюрьма Bot
-        ApplyActorAnimation(BotPears[278],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[279],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[280],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[282],"BD_FIRE","wash_up",4.1,1,0,0,0,0); // Тюрьма Bot
-  		ApplyActorAnimation(BotPears[283],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[284],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[285],"GANGS","leanIDLE",4.1,0,1,1,1,1); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[286],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[287],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[288],"BEACH", "ParkSit_M_loop", 4.0, 1, 0, 0, 0, 0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[289],"BEACH", "ParkSit_M_loop", 4.0, 1, 0, 0, 0, 0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[290],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[291],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[293],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[294],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[295],"SMOKING","M_smk_loop",4.1,1,0,0,0,0);// Тюрьма Bot
-        ApplyActorAnimation(BotPears[296],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[297],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[298],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[299],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[300],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[301],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[302],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[303],"GANGS","leanIDLE",4.1,0,1,1,1,1);// Тюрьма Bot
-        ApplyActorAnimation(BotPears[304],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[305],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[306],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[307],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[308],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Тюрьма Bot
-        ApplyActorAnimation(BotPears[309],"GYMNASIUM","gym_shadowbox",4.0,1,0,0,0,0); // Тюрьма Bot
         ApplyActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         ApplyActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
         ApplyActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot

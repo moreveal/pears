@@ -352,8 +352,7 @@ function LoadOrgan()
     RingText[2] = CreateDynamic3DTextLabel("{ff9000}Ринг {ffcc33}Vagos Gang {cccccc}[ ALT ]",0xA9C4E4FF,2249.1777,-1461.2014,24.0497,10.0);
     RingText[3] = CreateDynamic3DTextLabel("{ff9000}Ринг {00ffff}Los Aztecas {cccccc}[ ALT ]",0xA9C4E4FF,1711.5629,-2087.6062,13.5469,10.0);
     RingText[4] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}MMA {cccccc}[ ALT ]",0xA9C4E4FF,-1381.4384,83.0507,2044.1340,10.0);
-    RingText[5] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}Тюрьма {cccccc}[ ALT ]",0xA9C4E4FF,1411.0948,-133.2543,26.7904,10.0);
-    RingText[6] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}Тюрьма {cccccc}[ ALT ]",0xA9C4E4FF,1402.0885,-122.4158,26.7904,10.0);
+    RingText[5] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}Тюрьма {cccccc}[ ALT ]",0xA9C4E4FF,1000.7909,2439.7969,10.8716,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
     RuletText[0] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1011.979858, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 0
     RuletText[1] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1017.982482, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 1
     RuletText[2] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1023.986572, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 2
