@@ -89,9 +89,6 @@ new famuni[MAX_FAMILY][10];
 new SektaObject[MAX_FAMILY];
 new SektaObjectHealt[MAX_FAMILY];
 
-new FamRoutX[60][8];
-new FamRoutY[60][8];
-new FamRoutZ[60][8];
 new FamilyRoutNameCreator[MAX_FAMILY][5][24];
 new FamilyRoutNameEditor[MAX_FAMILY][5][24];
 new FamilyRankName[MAX_FAMILY][MAX_RANK_FAMILY][MAX_NAME_FAMILY_LENGTH]; // Названия рангов
@@ -236,12 +233,15 @@ public LoadFamily()
 {
 	new time = GetTickCount();
 	new rows, load_max_rank, string[30];
-	new strocaX[480];
-	new strocaY[480];
-	new strocaZ[480];
 	cache_get_row_count(rows);
 	for(new f; f<rows; ++f)
 	{
+		new strocaX[480];
+		new strocaY[480];
+		new strocaZ[480];
+		new FamRoutX[60][8];
+		new FamRoutY[60][8];
+		new FamRoutZ[60][8];
 		new idx;
 		cache_get_value_name_int(f, "id", idx);
 		cache_get_value_name_int(f, "id", FamilyInfo[idx][fIds]);
@@ -331,9 +331,6 @@ public LoadFamily()
 		cache_get_value_name_int(f, "vehcol1", FamilyInfo[idx][fVehCol][0]);
 		cache_get_value_name_int(f, "vehcol2", FamilyInfo[idx][fVehCol][1]);
 		cache_get_value_name_int(f, "type", FamilyInfo[idx][fType]);
-		cache_get_value_name(f, "Rout1X", strocaX, 480);
-		cache_get_value_name(f, "Rout1Y", strocaY, 480);
-		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
 		cache_get_value_name_int(f, "influence", FamilyInfo[idx][fInfluence]);
 		cache_get_value_name_int(f, "unixcnn", FamilyInfo[idx][fsUnixCNN]);
 		cache_get_value_name_int(f, "unixrite", FamilyInfo[idx][fsUnixRite]);
@@ -377,27 +374,21 @@ public LoadFamily()
 			}
 		}
 		//Грузим маршруты 1
+		cache_get_value_name(f, "Rout1X", strocaX, 480);
+		cache_get_value_name(f, "Rout1Y", strocaY, 480);
+		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
-				FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
-				FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
-			}
-			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad1X][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad1Y][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad1Z][i] = 0.0;
-			}
+			FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
+		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
+		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 2
 		cache_get_value_name(f, "Rout2X", strocaX, 480);
 		cache_get_value_name(f, "Rout2Y", strocaY, 480);
@@ -407,22 +398,13 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad2X][i] = floatstr(FamRoutX[i]);
-				FamilyInfo[idx][fRoudLoad2Y][i] = floatstr(FamRoutY[i]);
-				FamilyInfo[idx][fRoudLoad2Z][i] = floatstr(FamRoutZ[i]);
-			}
-			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad2X][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad2Y][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad2Z][i] = 0.0;
-			}
+			FamilyInfo[idx][fRoudLoad2X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad2Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad2Z][i] = floatstr(FamRoutZ[i]);
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
+		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
+		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 3
 		cache_get_value_name(f, "Rout3X", strocaX, 480);
 		cache_get_value_name(f, "Rout3Y", strocaY, 480);
@@ -432,22 +414,13 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad3X][i] = floatstr(FamRoutX[i]);
-				FamilyInfo[idx][fRoudLoad3Y][i] = floatstr(FamRoutY[i]);
-				FamilyInfo[idx][fRoudLoad3Z][i] = floatstr(FamRoutZ[i]);
-			}
-			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad3X][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad3Y][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad3Z][i] = 0.0;
-			}
+			FamilyInfo[idx][fRoudLoad3X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad3Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad3Z][i] = floatstr(FamRoutZ[i]);
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
+		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
+		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 4
 		cache_get_value_name(f, "Rout4X", strocaX, 480);
 		cache_get_value_name(f, "Rout4Y", strocaY, 480);
@@ -457,22 +430,13 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad4X][i] = floatstr(FamRoutX[i]);
-				FamilyInfo[idx][fRoudLoad4Y][i] = floatstr(FamRoutY[i]);
-				FamilyInfo[idx][fRoudLoad4Z][i] = floatstr(FamRoutZ[i]);
-			}
-			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad4X][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad4Y][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad4Z][i] = 0.0;
-			}
+			FamilyInfo[idx][fRoudLoad4X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad4Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad4Z][i] = floatstr(FamRoutZ[i]);
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
+		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
+		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 5
 		cache_get_value_name(f, "Rout5X", strocaX, 480);
 		cache_get_value_name(f, "Rout5Y", strocaY, 480);
@@ -482,22 +446,13 @@ public LoadFamily()
 		split(strocaZ,FamRoutZ,'_');
 		for(new i; i < 60; i++)
 		{
-			if(floatstr(FamRoutX[i]) != 0.0 && floatstr(FamRoutX[i]) != 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad5X][i] = floatstr(FamRoutX[i]);
-				FamilyInfo[idx][fRoudLoad5Y][i] = floatstr(FamRoutY[i]);
-				FamilyInfo[idx][fRoudLoad5Z][i] = floatstr(FamRoutZ[i]);
-			}
-			else if(floatstr(FamRoutX[i]) == 0.0 && floatstr(FamRoutX[i]) == 0.0)
-			{
-				FamilyInfo[idx][fRoudLoad5X][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad5Y][i] = 0.0;
-				FamilyInfo[idx][fRoudLoad5Z][i] = 0.0;
-			}
+			FamilyInfo[idx][fRoudLoad5X][i] = floatstr(FamRoutX[i]);
+			FamilyInfo[idx][fRoudLoad5Y][i] = floatstr(FamRoutY[i]);
+			FamilyInfo[idx][fRoudLoad5Z][i] = floatstr(FamRoutZ[i]);
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaY,sizeof(strocaX),""); // Очищаем strocaX
-		format(strocaZ,sizeof(strocaX),""); // Очищаем strocaX
+		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
+		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 	}
 	Kolfam = rows;
 	printf("[MODE]: Семьи [%d Quan][%d ms]",rows,GetTickCount() - time);

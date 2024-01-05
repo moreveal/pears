@@ -133,6 +133,7 @@ stock ClosePartyStreet()
     }
     for(new p; p < 8; p++)
     {
+        if(StreetRacers[0][racersCount][p] == -1) continue;
         OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
@@ -520,7 +521,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 for(new z = 0; z < 60; z++)
                 {
-                    if(FamilyInfo[fam][fRoudLoad1X][z] != 0 && FamilyInfo[fam][fRoudLoad1X][z] != 0)
+                    if(FamilyInfo[fam][fRoudLoad1X][z] != 0 && FamilyInfo[fam][fRoudLoad1Y][z] != 0)
                     {
                         PlayerInfo[playerid][CheckPointX][z] = 0;
                         PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad1X][z];
@@ -536,7 +537,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 for(new z = 0; z < 60; z++)
                 {
-                    if(FamilyInfo[fam][fRoudLoad2X][z] != 0 && FamilyInfo[fam][fRoudLoad2X][z] != 0)
+                    if(FamilyInfo[fam][fRoudLoad2X][z] != 0 && FamilyInfo[fam][fRoudLoad2Y][z] != 0)
                     {
                         PlayerInfo[playerid][CheckPointX][z] = 0;
                         PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad2X][z];
@@ -552,7 +553,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 for(new z = 0; z < 60; z++)
                 {
-                    if(FamilyInfo[fam][fRoudLoad3X][z] != 0 && FamilyInfo[fam][fRoudLoad3X][z] != 0)
+                    if(FamilyInfo[fam][fRoudLoad3X][z] != 0 && FamilyInfo[fam][fRoudLoad3Y][z] != 0)
                     {
                         PlayerInfo[playerid][CheckPointX][z] = 0;
                         PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad3X][z];
@@ -568,7 +569,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 for(new z = 0; z < 60; z++)
                 {
-                    if(FamilyInfo[fam][fRoudLoad4X][z] != 0 && FamilyInfo[fam][fRoudLoad4X][z] != 0)
+                    if(FamilyInfo[fam][fRoudLoad4X][z] != 0 && FamilyInfo[fam][fRoudLoad4Y][z] != 0)
                     {
                         PlayerInfo[playerid][CheckPointX][z] = 0;
                         PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad4X][z];
@@ -584,7 +585,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 for(new z = 0; z < 60; z++)
                 {
-                    if(FamilyInfo[fam][fRoudLoad5X][z] != 0 && FamilyInfo[fam][fRoudLoad5X][z] != 0)
+                    if(FamilyInfo[fam][fRoudLoad5X][z] != 0 && FamilyInfo[fam][fRoudLoad5Y][z] != 0)
                     {
                         PlayerInfo[playerid][CheckPointX][z] = 0;
                         PlayerInfo[playerid][CheckPointX][z] = FamilyInfo[fam][fRoudLoad5X][z];
@@ -1130,9 +1131,18 @@ stock SaveRoutRace(playerid,slot,status)
             FamilyInfo[fam][fRoudLoad1X][quan] = PlayerInfo[playerid][CheckPointX][i];
             FamilyInfo[fam][fRoudLoad1Y][quan] = PlayerInfo[playerid][CheckPointY][i];
             FamilyInfo[fam][fRoudLoad1Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
-            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
-            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
-            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            if(i == 0)
+            {
+                format(strocaX,sizeof(strocaX),"%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
+            else
+            {
+                format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
             quan++;
         }
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
@@ -1152,9 +1162,18 @@ stock SaveRoutRace(playerid,slot,status)
             FamilyInfo[fam][fRoudLoad2X][quan] = PlayerInfo[playerid][CheckPointX][i];
             FamilyInfo[fam][fRoudLoad2Y][quan] = PlayerInfo[playerid][CheckPointY][i];
             FamilyInfo[fam][fRoudLoad2Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
-            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
-            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
-            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            if(i == 0)
+            {
+                format(strocaX,sizeof(strocaX),"%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
+            else
+            {
+                format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
             quan++;
         }
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
@@ -1174,9 +1193,18 @@ stock SaveRoutRace(playerid,slot,status)
             FamilyInfo[fam][fRoudLoad3X][quan] = PlayerInfo[playerid][CheckPointX][i];
             FamilyInfo[fam][fRoudLoad3Y][quan] = PlayerInfo[playerid][CheckPointY][i];
             FamilyInfo[fam][fRoudLoad3Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
-            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
-            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
-            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            if(i == 0)
+            {
+                format(strocaX,sizeof(strocaX),"%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
+            else
+            {
+                format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
             quan++;
         }
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
@@ -1196,9 +1224,18 @@ stock SaveRoutRace(playerid,slot,status)
             FamilyInfo[fam][fRoudLoad4X][quan] = PlayerInfo[playerid][CheckPointX][i];
             FamilyInfo[fam][fRoudLoad4Y][quan] = PlayerInfo[playerid][CheckPointY][i];
             FamilyInfo[fam][fRoudLoad4Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
-            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
-            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
-            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            if(i == 0)
+            {
+                format(strocaX,sizeof(strocaX),"%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
+            else
+            {
+                format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
             quan++;
         }
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
@@ -1218,9 +1255,18 @@ stock SaveRoutRace(playerid,slot,status)
             FamilyInfo[fam][fRoudLoad5X][quan] = PlayerInfo[playerid][CheckPointX][i];
             FamilyInfo[fam][fRoudLoad5Y][quan] = PlayerInfo[playerid][CheckPointY][i];
             FamilyInfo[fam][fRoudLoad5Z][quan] = PlayerInfo[playerid][CheckPointZ][i];
-            format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
-            format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
-            format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            if(i == 0)
+            {
+                format(strocaX,sizeof(strocaX),"%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
+            else
+            {
+                format(strocaX,sizeof(strocaX),"%s_%.2f",strocaX,PlayerInfo[playerid][CheckPointX][quan]);
+                format(strocaY,sizeof(strocaY),"%s_%.2f",strocaY,PlayerInfo[playerid][CheckPointY][quan]);
+                format(strocaZ,sizeof(strocaZ),"%s_%.2f",strocaZ,PlayerInfo[playerid][CheckPointZ][quan]);
+            }
             quan++;
         }
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
