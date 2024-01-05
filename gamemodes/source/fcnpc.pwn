@@ -1,4 +1,5 @@
 
+// Army Train
 new NpcArmy;
 new NextTrainRoadID;
 new Float:speedTrain;
@@ -7,22 +8,148 @@ new TrainStoped = 1;
 new TrainGearDelay;
 new MoveStatus; // 0 Разгон, 1 Торможение
 
+// Prison Bus
+new NpcPrisonLS;
+new npcprisonid_ls;
+new prisonbus_LS; // Тюремный Автобус
+new PrisonBusRouteLS;
+
+new NpcPrisonSF;
+new npcprisonid_sf;
+new prisonbus_SF; // Тюремный Автобус
+new PrisonBusRouteSF;
+
 stock IsARealNPC(playerid)
 {
-    if(playerid == npcarmyid) return 1;
+    if(playerid == npcarmyid 
+        || playerid == npcprisonid_ls
+        || playerid == npcprisonid_sf) return 1;
+    return 0;
+}
+stock IsAVehicleNPC(vehicleid) // Транспорт, который запрещено мочить
+{
+    if(vehicleid == train
+        || vehicleid == prisonbus_LS
+        || vehicleid == prisonbus_SF) return 1;
     return 0;
 }
 
 stock CreateNPC()
 {
+    // Первый NPC
     NpcArmy = FCNPC_Create("John");
     npcarmyid = GetMaxPlayers() - 1; // id бота
     FCNPC_Spawn(NpcArmy, 287, 53.8143,1275.7471,16.7148);
     SetPlayerColor(npcarmyid, 0x336633FF);
     FCNPC_SetInvulnerable(NpcArmy, true); // Неубиваемый
     FCNPC_PutInVehicle(NpcArmy, train, 0);
+
+    // Второй NPC
+    NpcPrisonLS = FCNPC_Create("Tim");
+    npcprisonid_ls = GetMaxPlayers() - 2; // id бота
+    FCNPC_Spawn(NpcPrisonLS, 310, 1541.5563,-1652.7074,13.5574);
+    SetPlayerColor(npcprisonid_ls, 0x0066ffFF);
+    FCNPC_SetInvulnerable(NpcPrisonLS, true); // Неубиваемый
+    FCNPC_PutInVehicle(NpcPrisonLS, prisonbus_LS, 0);
+
+    // Третий NPC
+    NpcPrisonSF = FCNPC_Create("Bert");
+    npcprisonid_sf = GetMaxPlayers() - 3; // id бота
+    FCNPC_Spawn(NpcPrisonSF, 310, -1582.6615,678.2233,7.1875);
+    SetPlayerColor(npcprisonid_sf, 0x122faaFF);
+    FCNPC_SetInvulnerable(NpcPrisonSF, true); // Неубиваемый
+    FCNPC_PutInVehicle(NpcPrisonSF, prisonbus_SF, 0);
     return 1;
 }
+
+CMD:gotim(playerid)
+{
+    PrisonBusRouteLS = 0;
+    GetVehicleParamsEx(prisonbus_LS, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(prisonbus_LS, true, true, alarm, doors, bonnet, boot, objective);
+
+    FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls1");
+    return 1;
+}
+
+CMD:gobert(playerid)
+{
+    PrisonBusRouteSF = 0;
+    GetVehicleParamsEx(prisonbus_SF, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(prisonbus_SF, true, true, alarm, doors, bonnet, boot, objective);
+
+    FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf1");
+    return 1;
+}
+
+public FCNPC_OnFinishPlayback(npcid)
+{
+    if(npcid == NpcPrisonLS)
+    {
+        if(PrisonBusRouteLS == 0)
+        {
+            PrisonBusRouteLS = 1;
+            MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls2");
+        }
+        else if(PrisonBusRouteLS == 1)
+        {
+            PrisonBusRouteLS = 2;
+            MoveDynamicObject(Vorota[2], 901.646667, 2447.422851, 7.121364, 1.5), Statvorota[36] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls3");
+        }
+        else if(PrisonBusRouteLS == 2)
+        {
+            PrisonBusRouteLS = 0;
+            SetTimerEx("ComeBackPrison", 10000, false, "dd", npcid, prisonbus_LS); // Таймер для возврата автобуса на место
+            SuccessMessage(0, "{99ff66}Пиехали");
+            // Сюда добавим сток высаживания заключённых из автобуса
+        }
+    }
+    else if(npcid == NpcPrisonSF)
+    {
+        if(PrisonBusRouteSF == 0)
+        {
+            PrisonBusRouteSF = 1;
+            MoveDynamicObject(Vorota[23], -1701.8699, 675.8107, 25.6501, 2), MoveDynamicObject(Vorota[111], -1701.8699, 687.5685, 25.6501, 2), Statvorota[51] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf2");
+        }
+        else if(PrisonBusRouteSF == 1)
+        {
+            PrisonBusRouteSF = 2;
+            MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls2");
+        }
+        else if(PrisonBusRouteSF == 2)
+        {
+            PrisonBusRouteSF = 3;
+            MoveDynamicObject(Vorota[2], 901.646667, 2447.422851, 7.121364, 1.5), Statvorota[36] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls3");
+        }
+        else if(PrisonBusRouteSF == 3)
+        {
+            PrisonBusRouteSF = 0;
+            SetTimerEx("ComeBackPrison", 10000, false, "dd", npcid, prisonbus_SF); // Таймер для возврата автобуса на место
+            SuccessMessage(0, "{99ff66}Пиехали");
+            // Сюда добавим сток высаживания заключённых из автобуса
+        }
+    }
+    return 1;
+}
+function ComeBackPrison(npcid, vehicleid)
+{
+    ReloadVehicleNPC(vehicleid);
+    FCNPC_PutInVehicle(npcid, vehicleid, 0);
+    return 1;
+}
+stock ReloadVehicleNPC(vehicleid)
+{
+    PP_SetVehicleToRespawn(vehicleid);
+    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
+    return 1;
+}
+
 
 public FCNPC_OnUpdate(npcid)
 {
@@ -120,98 +247,101 @@ stock GoTrainRoad()
 
 public FCNPC_OnReachDestination(npcid)
 {
-    // Ставим поезд на новую позицию
-    if(TrainRoadID <= 290 || TrainRoadID >= 320) SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
-
-    if(TrainStoped == 1)
+    if(npcid == NpcArmy)
     {
-        TrainMoved = 0;
-        TrainGoing = 0;
-        FCNPC_Stop(NpcArmy);
-        FCNPC_SetVehicleTrainSpeed(NpcArmy, 0.0);
-        FCNPC_SetSpeed(NpcArmy, 0.0);
+        // Ставим поезд на новую позицию
+        if(TrainRoadID <= 290 || TrainRoadID >= 320) SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
 
-        if(ReasonToStopTrain > 0) CreateTrainBox();
-        else
+        if(TrainStoped == 1)
         {
-            // Пишем сообщение всем, кто едет в поезде
-            foreach(Player,i)
-            {
-                if(OnlineInfo[i][oLogged] == 0) continue;
-                if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
-                    || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStopInfo(i);
-            }
-        }
-        DestroyObjectTrain();
-        CreateObjectTrain();
-    }
-    else
-    {
-        if(MoveStatus == 0) // Разгоняем поезд
-        {
-            TrainGearDelay ++;
-            if(TrainGear == 1 || TrainGear == 2
-                ||TrainGear == 3 && TrainGearDelay >= 1
-                || TrainGear == 4 && TrainGearDelay >= 2
-                || TrainGear == 5 && TrainGearDelay >= 4
-                || TrainGear == 6 && TrainGearDelay >= 6
-                || TrainGear == 7 && TrainGearDelay >= 8
-                || TrainGear == 8 && TrainGearDelay >= 10) TrainGearSet(1);
-        }
-        else if(MoveStatus == 1) // Тормозим поезд
-        {
-            TrainGearSet(0);
-        }
+            TrainMoved = 0;
+            TrainGoing = 0;
+            FCNPC_Stop(NpcArmy);
+            FCNPC_SetVehicleTrainSpeed(NpcArmy, 0.0);
+            FCNPC_SetSpeed(NpcArmy, 0.0);
 
-        if(MoveStatus == 0)
-        {
-            // Проверка наличия ящиков при движении
-            if(TrainRoadDestination != 0 && BoxInTrain <= 0) TrainRoadDestination = 0; // Если мы едет не на базу и в поезде нет ящиков - отправляем на базу
-
-            // Ищем остановку на нужной станции
-            new pointsToStop;
-            if(TrainRoadDestination == 0) pointsToStop = sizeof(TrainRoad) - TrainRoadID + 1;
+            if(ReasonToStopTrain > 0) CreateTrainBox();
             else
             {
-                if(TrainRoadID < TrainRoadDestination) pointsToStop = TrainRoadDestination - TrainRoadID; 
-            }
-            if(pointsToStop <= GetPointToStopTrain() + 2)
-            {
-                MoveStatus = 1;
-                ReasonToStopTrain = 0;
-            }
-            
-            // Ищем руины бомбы на путях перед поездом
-            if(BoxInTrain > 0 && server > 0 || server == 0) // Только если в поезде есть ящики (Если нет, нам насрать на развалины, поезд должен вернуться to NGSA Station)
-            {
-                new ruinsOnTrainRoad = IsRuinsOnTrainRoad();
-                if(ruinsOnTrainRoad >= 0) // Нашли, спереди есть руины
+                // Пишем сообщение всем, кто едет в поезде
+                foreach(Player,i)
                 {
-                    // Считаем точки до руин
-                    new pointsToRuins = GetPointToRuinsOnTrain(ruinsOnTrainRoad);
+                    if(OnlineInfo[i][oLogged] == 0) continue;
+                    if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
+                        || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStopInfo(i);
+                }
+            }
+            DestroyObjectTrain();
+            CreateObjectTrain();
+        }
+        else
+        {
+            if(MoveStatus == 0) // Разгоняем поезд
+            {
+                TrainGearDelay ++;
+                if(TrainGear == 1 || TrainGear == 2
+                    ||TrainGear == 3 && TrainGearDelay >= 1
+                    || TrainGear == 4 && TrainGearDelay >= 2
+                    || TrainGear == 5 && TrainGearDelay >= 4
+                    || TrainGear == 6 && TrainGearDelay >= 6
+                    || TrainGear == 7 && TrainGearDelay >= 8
+                    || TrainGear == 8 && TrainGearDelay >= 10) TrainGearSet(1);
+            }
+            else if(MoveStatus == 1) // Тормозим поезд
+            {
+                TrainGearSet(0);
+            }
 
-                    if(pointsToRuins <= GetPointToStopTrain() + 6  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
-                        && pointsToRuins >= GetPointToStopTrain() / 2) // Но не меньше половины, ибо нахер нам стопать поезд, если руины появились перед еблом слишком резко
+            if(MoveStatus == 0)
+            {
+                // Проверка наличия ящиков при движении
+                if(TrainRoadDestination != 0 && BoxInTrain <= 0) TrainRoadDestination = 0; // Если мы едет не на базу и в поезде нет ящиков - отправляем на базу
+
+                // Ищем остановку на нужной станции
+                new pointsToStop;
+                if(TrainRoadDestination == 0) pointsToStop = sizeof(TrainRoad) - TrainRoadID + 1;
+                else
+                {
+                    if(TrainRoadID < TrainRoadDestination) pointsToStop = TrainRoadDestination - TrainRoadID; 
+                }
+                if(pointsToStop <= GetPointToStopTrain() + 2)
+                {
+                    MoveStatus = 1;
+                    ReasonToStopTrain = 0;
+                }
+                
+                // Ищем руины бомбы на путях перед поездом
+                if(BoxInTrain > 0 && server > 0 || server == 0) // Только если в поезде есть ящики (Если нет, нам насрать на развалины, поезд должен вернуться to NGSA Station)
+                {
+                    new ruinsOnTrainRoad = IsRuinsOnTrainRoad();
+                    if(ruinsOnTrainRoad >= 0) // Нашли, спереди есть руины
                     {
-                        SetDynamicObjectMaterial(TrainLampObject, 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
+                        // Считаем точки до руин
+                        new pointsToRuins = GetPointToRuinsOnTrain(ruinsOnTrainRoad);
 
-                        MoveStatus = 1;
-                        ReasonToStopTrain = ruinsOnTrainRoad + 1; // Тормозим по причине конкретного id руин
-
-                        // Пишем сообщение всем, кто едет в поезде
-                        foreach(Player,i)
+                        if(pointsToRuins <= GetPointToStopTrain() + 6  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
+                            && pointsToRuins >= GetPointToStopTrain() / 2) // Но не меньше половины, ибо нахер нам стопать поезд, если руины появились перед еблом слишком резко
                         {
-                            if(OnlineInfo[i][oLogged] == 0) continue;
-                            if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
-                                || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStop(i);
+                            SetDynamicObjectMaterial(TrainLampObject, 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
+
+                            MoveStatus = 1;
+                            ReasonToStopTrain = ruinsOnTrainRoad + 1; // Тормозим по причине конкретного id руин
+
+                            // Пишем сообщение всем, кто едет в поезде
+                            foreach(Player,i)
+                            {
+                                if(OnlineInfo[i][oLogged] == 0) continue;
+                                if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 179 
+                                    || OnlineInfo[i][oWindowTrain] > 0) MessageTrainStop(i);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        FindNextTrainRoad();
-        GoTrainRoad();
+            FindNextTrainRoad();
+            GoTrainRoad();
+        }
     }
     return 1;
 }
