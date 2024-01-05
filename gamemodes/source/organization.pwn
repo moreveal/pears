@@ -403,7 +403,7 @@ function gunsklad(playerid)
 			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SWAT]");
 			if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 			{
-			    if(thingType == 1) fpara = 300000;
+			    if(thingType == 1) fpara = 100000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
 			    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 			
