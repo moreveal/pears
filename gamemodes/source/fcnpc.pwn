@@ -13,11 +13,13 @@ new NpcPrisonLS;
 new npcprisonid_ls;
 new prisonbus_LS; // Тюремный Автобус
 new PrisonBusRouteLS;
+new TimerPrisonBusLS;
 
 new NpcPrisonSF;
 new npcprisonid_sf;
 new prisonbus_SF; // Тюремный Автобус
 new PrisonBusRouteSF;
+new TimerPrisonBusSF;
 
 stock IsARealNPC(playerid)
 {
@@ -64,21 +66,19 @@ stock CreateNPC()
 
 CMD:gotim(playerid)
 {
-    PrisonBusRouteLS = 0;
-    GetVehicleParamsEx(prisonbus_LS, engine, lights, alarm, doors, bonnet, boot, objective);
-	SetVehicleParamsEx(prisonbus_LS, true, true, alarm, doors, bonnet, boot, objective);
+    if(server != 0) return 0;
 
-    FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls1");
+    if(PrisonBusRouteLS > 0) return ErrorMessage(playerid, "{FF6347}Этот автобус уже едет");
+    PrisonGo(NpcPrisonLS, prisonbus_LS);
     return 1;
 }
 
 CMD:gobert(playerid)
 {
-    PrisonBusRouteSF = 0;
-    GetVehicleParamsEx(prisonbus_SF, engine, lights, alarm, doors, bonnet, boot, objective);
-	SetVehicleParamsEx(prisonbus_SF, true, true, alarm, doors, bonnet, boot, objective);
+    if(server != 0) return 0;
 
-    FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf1");
+    if(PrisonBusRouteSF > 0) return ErrorMessage(playerid, "{FF6347}Этот автобус уже едет");
+    PrisonGo(NpcPrisonSF, prisonbus_SF);
     return 1;
 }
 
@@ -86,60 +86,117 @@ public FCNPC_OnFinishPlayback(npcid)
 {
     if(npcid == NpcPrisonLS)
     {
-        if(PrisonBusRouteLS == 0)
+        if(PrisonBusRouteLS == 1)
         {
-            PrisonBusRouteLS = 1;
+            PrisonBusRouteLS = 2;
+            MoveDynamicObject(Vorota[88], 1546.0299, -1624.0844, 14.3144, 2), MoveDynamicObject(Vorota[89], 1546.0299, -1636.8300, 14.3144, 2), Statvorota[13] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls0");
+        }
+        if(PrisonBusRouteLS == 2)
+        {
+            PrisonBusRouteLS = 3;
             MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;
             FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls2");
         }
-        else if(PrisonBusRouteLS == 1)
+        else if(PrisonBusRouteLS == 3)
         {
-            PrisonBusRouteLS = 2;
+            PrisonBusRouteLS = 4;
             MoveDynamicObject(Vorota[2], 901.646667, 2447.422851, 7.121364, 1.5), Statvorota[36] = 10;
             FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls3");
         }
-        else if(PrisonBusRouteLS == 2)
+        else if(PrisonBusRouteLS == 4)
         {
             PrisonBusRouteLS = 0;
-            SetTimerEx("ComeBackPrison", 10000, false, "dd", npcid, prisonbus_LS); // Таймер для возврата автобуса на место
-            SuccessMessage(0, "{99ff66}Пиехали");
-            // Сюда добавим сток высаживания заключённых из автобуса
+            SetTimerEx("ComeBackPrisonBus", 10000, false, "dd", npcid, prisonbus_LS); // Таймер для возврата автобуса на место
+            ExitPrisonersFromBus(prisonbus_LS);
         }
     }
     else if(npcid == NpcPrisonSF)
     {
-        if(PrisonBusRouteSF == 0)
-        {
-            PrisonBusRouteSF = 1;
-            MoveDynamicObject(Vorota[23], -1701.8699, 675.8107, 25.6501, 2), MoveDynamicObject(Vorota[111], -1701.8699, 687.5685, 25.6501, 2), Statvorota[51] = 10;
-            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf2");
-        }
-        else if(PrisonBusRouteSF == 1)
+        if(PrisonBusRouteSF == 1)
         {
             PrisonBusRouteSF = 2;
-            MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;
-            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls2");
+            MoveDynamicObject(Vorota[23], -1701.8699, 675.8107, 25.6501, 2), MoveDynamicObject(Vorota[111], -1701.8699, 687.5685, 25.6501, 2), Statvorota[51] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf2");
         }
         else if(PrisonBusRouteSF == 2)
         {
             PrisonBusRouteSF = 3;
-            MoveDynamicObject(Vorota[2], 901.646667, 2447.422851, 7.121364, 1.5), Statvorota[36] = 10;
-            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls3");
+            MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls2");
         }
         else if(PrisonBusRouteSF == 3)
         {
+            PrisonBusRouteSF = 4;
+            MoveDynamicObject(Vorota[2], 901.646667, 2447.422851, 7.121364, 1.5), Statvorota[36] = 10;
+            FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_ls3");
+        }
+        else if(PrisonBusRouteSF == 4)
+        {
             PrisonBusRouteSF = 0;
-            SetTimerEx("ComeBackPrison", 10000, false, "dd", npcid, prisonbus_SF); // Таймер для возврата автобуса на место
-            SuccessMessage(0, "{99ff66}Пиехали");
-            // Сюда добавим сток высаживания заключённых из автобуса
+            SetTimerEx("ComeBackPrisonBus", 10000, false, "dd", npcid, prisonbus_SF); // Таймер для возврата автобуса на место
+            ExitPrisonersFromBus(prisonbus_SF);
         }
     }
     return 1;
 }
-function ComeBackPrison(npcid, vehicleid)
+function ComeBackPrisonBus(npcid, vehicleid) // Возвращаем автобус на место
 {
     ReloadVehicleNPC(vehicleid);
     FCNPC_PutInVehicle(npcid, vehicleid, 0);
+
+    // Оповещение всем, кто сидит в КПЗ
+    new line[70],lines[140];
+    format(line,sizeof(line),"{ff9000}Тюремный Автобус готов доставить вас в Областную Тюрьму"), strcat(lines,line);
+    format(line,sizeof(line),"{ffcc66}Подойдите и нажмите красную кнопку"), strcat(lines,line);
+
+    foreach(Player,i)
+	{
+        if(GetPVarInt(i,"afksystem") >= 5) continue;
+        if(PlayerInfo[i][pJailTime] <= 600) continue;
+        if(vehicleid == prisonbus_LS && PlayerInfo[i][pJailed] == 3 // КПЗ LS
+            || vehicleid == prisonbus_SF && PlayerInfo[i][pJailed] == 9) // КПЗ SF
+        {
+            ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+            SendClientMessage(i, COLOR_GREY,"[ Мысли ]: Что мне тут делать? Я могу отправиться в областную тюрьму");
+        }
+    }
+    return 1;
+}
+function PrisonGo(npcid, vehicleid) // Запускаем автобус
+{
+    if(vehicleid == prisonbus_LS)
+    {
+        TimerPrisonBusLS = 0;
+        PrisonBusRouteLS = 1;
+        GetVehicleParamsEx(prisonbus_LS, engine, lights, alarm, doors, bonnet, boot, objective);
+	    SetVehicleParamsEx(prisonbus_LS, true, true, alarm, doors, bonnet, boot, objective);
+
+        FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls1");
+    }
+    else if(vehicleid == prisonbus_SF)
+    {
+        TimerPrisonBusSF = 0;
+        PrisonBusRouteSF = 1;
+        GetVehicleParamsEx(prisonbus_SF, engine, lights, alarm, doors, bonnet, boot, objective);
+	    SetVehicleParamsEx(prisonbus_SF, true, true, alarm, doors, bonnet, boot, objective);
+
+        FCNPC_StartPlayingPlayback(NpcPrisonSF, "prison_sf1");
+    }
+    return 1;
+}
+stock ExitPrisonersFromBus(vehicleid)
+{
+    foreach(Player,i)
+	{
+        if(PlayerInfo[i][pJailed] == 0) continue;
+        if(IsPlayerInAnyVehicle(i) && GetPlayerVehicleID(i) == vehicleid)
+        {
+            PlayerInfo[i][pJailed] = 1;
+            PPSpawnPlayer(i);
+            SuccessMessage(i, "{99ff66}Вас конвоировали в областную тюрьму San Andreas");
+        }
+    }
     return 1;
 }
 stock ReloadVehicleNPC(vehicleid)
@@ -439,8 +496,7 @@ stock MessageTrainStop(playerid)
 
     SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Впереди обнаружено повреждение путей. Защищайте груз!");
     PlayerPlaySound(playerid,6001,0,0,0);
-
-    SetTimerEx("around_audiostop", 5000, false, "dd", playerid, 6004); // Таймер на выключение сирены
+    StopAudio(playerid, 4, 6004); // Офаем звук через 4 сек
     return 1;
 }
 

@@ -140,8 +140,11 @@ stock DeathEnd(playerid, stat)
 
     if(stat == 0) // Время вышло
     {
-        PlayerInfo[playerid][pJailed] = 4;
-        PlayerInfo[playerid][pJailTime] = 600;
+        if(PlayerInfo[playerid][pJailed] == 0) // Только если не сидим уже в тюрьме
+        {
+            PlayerInfo[playerid][pJailed] = 4;
+            PlayerInfo[playerid][pJailTime] = 600;
+        }
         gYda[playerid] = 2;
   	    PPSpawnPlayer(playerid);
     } 

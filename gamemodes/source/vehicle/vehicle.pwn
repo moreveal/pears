@@ -625,6 +625,14 @@ stock IsAZad(model) // Транспорт с задними окнами
 	return 0;
 }
 
+stock IsABus(model)
+{
+	if(model == 431 || model == 437 
+		|| GetVehModelOriginal(model) == 431
+		|| GetVehModelOriginal(model) == 437) return 1;
+	return 0;
+}
+
 stock IsACar(model) // Авто
 {
 	new type = GetVehicleType(model);

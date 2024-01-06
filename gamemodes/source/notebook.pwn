@@ -103,21 +103,12 @@ stock TradeList(playerid, page)
         if(TradeCrypt[d][tcVlad] == 0) continue;
         if(CheckSortingLineTrade(playerid, d)) continue;
 
-        if(OnlineInfo[playerid][oSorting][1] == 0) // Отображаем все трейды
+        if(OnlineInfo[playerid][oSorting][1] == 0 // Отображаем все трейды
+            || OnlineInfo[playerid][oSorting][1] == 1 && TradeCrypt[d][tcActive] == 0 // Отображаем только продажу голды
+            || OnlineInfo[playerid][oSorting][1] == 2 && TradeCrypt[d][tcActive] == 1 // Отображаем только покупку голды
+            || OnlineInfo[playerid][oSorting][1] == 3 && TradeCrypt[d][tcVlad] == PlayerInfo[playerid][pID]) // Отображаем только мои трейды
         {
-            ShowLineTrade(playerid, d);
-        }
-        else if(OnlineInfo[playerid][oSorting][1] == 1) // Отображаем только продажу голды
-        {
-            if(TradeCrypt[d][tcActive] == 0) ShowLineTrade(playerid, d);
-        }
-        else if(OnlineInfo[playerid][oSorting][1] == 2) // Отображаем только покупку голды
-        {
-            if(TradeCrypt[d][tcActive] == 1) ShowLineTrade(playerid, d);
-        }
-        else if(OnlineInfo[playerid][oSorting][1] == 3) // Отображаем только мои трейды
-        {
-            if(TradeCrypt[d][tcVlad] == PlayerInfo[playerid][pID]) ShowLineTrade(playerid, d);
+            format(line,sizeof(line),"%s", ShowLineTrade(playerid, d)), strcat(lines,line);
         }
 
         if(DP[0][playerid] >= max_line)
@@ -136,30 +127,18 @@ stock TradeList(playerid, page)
 stock CheckSortingLineTrade(playerid, d)
 {
     // Сортировка по количеству
-    if(OnlineInfo[playerid][oSorting][2] > 0) // От
-    {
-        if(TradeCrypt[d][tcCount] < OnlineInfo[playerid][oSorting][2]) return 1; // Если число меньше - пропускаем
-    }
-    if(OnlineInfo[playerid][oSorting][3] > 0) // До
-    {
-        if(TradeCrypt[d][tcCount] > OnlineInfo[playerid][oSorting][3]) return 1; // Если число больше - пропускаем
-    }
+    if(OnlineInfo[playerid][oSorting][2] > 0 && TradeCrypt[d][tcCount] < OnlineInfo[playerid][oSorting][2]) return 1; // От Если число меньше - пропускаем
+    if(OnlineInfo[playerid][oSorting][3] > 0 && TradeCrypt[d][tcCount] > OnlineInfo[playerid][oSorting][3]) return 1; // До Если число больше - пропускаем
 
     // Сортировка по курсу
-    if(OnlineInfo[playerid][oSorting][4] > 0) // От
-    {
-        if(TradeCrypt[d][tcCourse] < OnlineInfo[playerid][oSorting][4]) return 1; // Если число меньше - пропускаем
-    }
-    if(OnlineInfo[playerid][oSorting][5] > 0) // До
-    {
-        if(TradeCrypt[d][tcCourse] > OnlineInfo[playerid][oSorting][5]) return 1; // Если число больше - пропускаем
-    }
+    if(OnlineInfo[playerid][oSorting][4] > 0 && TradeCrypt[d][tcCourse] < OnlineInfo[playerid][oSorting][4]) return 1; // От Если число меньше - пропускаем
+    if(OnlineInfo[playerid][oSorting][5] > 0 && TradeCrypt[d][tcCourse] > OnlineInfo[playerid][oSorting][5]) return 1; // До Если число больше - пропускаем
     return 0;
 }
 
 stock ShowLineTrade(playerid, d)
 {
-    new line[180];
+    new line[214];
 
     // Подсчитываем строки
     List[DP[0][playerid]][playerid] = d;
@@ -173,7 +152,7 @@ stock ShowLineTrade(playerid, d)
     {
         format(line,sizeof(line),"\n{cccccc}%d. {99ff66}Покупка\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
     }
-    return 1;
+    return line;
 }
 
 CMD:ptrade(playerid)
