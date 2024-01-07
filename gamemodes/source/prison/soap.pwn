@@ -28,7 +28,7 @@ CMD:checklook(playerid, const params[]) // VREMENNO
 stock PrisonShowerSoap(playerid) // Роняем мыло
 {
     if(soapObject) return 1;
-    if(IsPlayerInSquare(playerid, 1020.423889, 2445.421142, 1028.551879, 2455.094238) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 180)
+    if(IsPlayerInSquare(playerid, 1020.423889, 2445.421142, 1028.551879, 2455.094238) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_LAUNDY && GetPlayerInterior(playerid) == INT_PRISON_LAUNDY)
     {
         new fallSoap = random(2);
         if(fallSoap == 1) // Роняем мыло
@@ -112,7 +112,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
         if(i == playerid) continue;
         if(OnlineInfo[i][oLogged] == 0) continue;
         if(GetPlayerState(i) != PLAYER_STATE_ONFOOT) continue;
-        if(GetPlayerVirtualWorld(i) == 180 && GetPlayerInterior(i) == 180) // Prison Laundy
+        if(GetPlayerVirtualWorld(i) == WORLD_PRISON_LAUNDY && GetPlayerInterior(i) == INT_PRISON_LAUNDY) // Prison Laundy
         {
             if(IsPlayerInSquare(i, 1020.423889, 2445.421142, 1028.551879, 2455.094238)) // Нашли всех, кто тоже в душе
             {
