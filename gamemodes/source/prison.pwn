@@ -10,6 +10,12 @@ new PrisonTabloObject[2]; // id объектов табло оповещения
 new OpenBlock[2]; // Какая часть тюрьмы сейчас доступна для посещения
 new BlockDoorPrison[3]; // Двери внутри тюрьмы (Блоки)
 new BlockDoorPrisonStatus[3]; // Статус дверей тюрьмы (блоки)
+new PrisonPoster[MAX_CELL_PRISON];
+new PrisonSand[MAX_CELL_PRISON];
+new PrisonBeton[MAX_CELL_PRISON];
+new PrisonBetonHP[MAX_CELL_PRISON];
+new PrisonSandStatus[MAX_CELL_PRISON];
+new PrisonPosterStatus[MAX_CELL_PRISON];
 
 stock ReopenPrison(side) // Каждые 10 минут переключаем стороны блоков
 {
@@ -461,72 +467,108 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
 }
 
 
+stock PrisonMovingPoster(number)
+{
+    if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number);
+    else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number);
+    return 1;
+}
 
-/*
-Создай объекты плаката, бетона и песка - в том же месте в моде, где я поставил создание дверей. Например ищи по Kpz[0] = 
+CMD:movingbeton(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 20) return 0;
+    new moving,number;
+    sscanf(params, "ii",number,moving);
+    PrisonMovingBeton(number,moving*75,moving*75);
+    PrisonBetonHP[number]-=moving*75;
+    return 1;
+}
 
-Плакат смещаем с помощью SetDynamicObjectPos в другую точку
-// Тут стартовые позиции плакатов, где они и должны висеть
-new object_world = WORLD_PRISON_CELLS, object_int = INT_PRISON_CELLS;
-tmpobjid = CreateDynamicObject(2587, 1056.074340, 2435.324707, 11.373860, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); // plakat_camera1
-tmpobjid = CreateDynamicObject(2587, 1049.342407, 2435.324707, 11.413865, 0.000000, -0.000007, 179.999954, object_world, object_int, -1, 300.00, 300.00); // plakat_camera2
-tmpobjid = CreateDynamicObject(2587, 1042.610839, 2435.324707, 11.413865, 0.000000, -0.000014, 179.999908, object_world, object_int, -1, 300.00, 300.00); // plakat_camera3
-tmpobjid = CreateDynamicObject(2587, 1035.878173, 2435.324707, 11.413865, 0.000000, -0.000022, 179.999862, object_world, object_int, -1, 300.00, 300.00); // plakat_camera4
-tmpobjid = CreateDynamicObject(2587, 1035.864746, 2461.499755, 11.413865, 0.000000, 0.000007, -0.000014, object_world, object_int, -1, 300.00, 300.00); // plakat_camera5
-tmpobjid = CreateDynamicObject(2587, 1042.597290, 2461.499755, 11.413865, 0.000000, 0.000000, -0.000060, object_world, object_int, -1, 300.00, 300.00); // plakat_camera6
-tmpobjid = CreateDynamicObject(2587, 1049.328857, 2461.499755, 11.413865, 0.000000, -0.000007, -0.000105, object_world, object_int, -1, 300.00, 300.00); // plakat_camera7
-tmpobjid = CreateDynamicObject(2587, 1056.061523, 2461.499755, 11.413865, 0.000000, -0.000014, -0.000151, object_world, object_int, -1, 300.00, 300.00); // plakat_camera8
+stock PrisonMovingDownPoster(number)
+{
+    if(number == 0) SetDynamicObjectPos(PrisonPoster[number],1057.385375, 2435.324707, 11.073853);
+    if(number == 1) SetDynamicObjectPos(PrisonPoster[number],1050.642700, 2435.324707, 11.073857);
+    if(number == 2) SetDynamicObjectPos(PrisonPoster[number],1043.931396, 2435.324707, 11.073857);
+    if(number == 3) SetDynamicObjectPos(PrisonPoster[number],1037.208251, 2435.324707, 11.083859);
+    if(number == 4) SetDynamicObjectPos(PrisonPoster[number],1034.543579, 2461.499755, 11.083859);
+    if(number == 5) SetDynamicObjectPos(PrisonPoster[number],1041.306152, 2461.499755, 11.083861);
+    if(number == 6) SetDynamicObjectPos(PrisonPoster[number],1048.008422, 2461.499755, 11.083857);
+    if(number == 7) SetDynamicObjectPos(PrisonPoster[number],1054.750854, 2461.499755, 11.083860);
+    return 1;
+}
 
-// Тут координаты куда плакаты нужно ставить, когда мы их снимаем со стены
-tmpobjid = CreateDynamicObject(2587, 1057.385375, 2435.324707, 11.073853, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); // plakat_camera1
-tmpobjid = CreateDynamicObject(2587, 1050.642700, 2435.324707, 11.073857, 0.000000, -0.000007, 179.999954, object_world, object_int, -1, 300.00, 300.00); // plakat_camera2
-tmpobjid = CreateDynamicObject(2587, 1043.931396, 2435.324707, 11.073857, 0.000000, -0.000021, 179.999862, object_world, object_int, -1, 300.00, 300.00); // plakat_camera3
-tmpobjid = CreateDynamicObject(2587, 1037.208251, 2435.324707, 11.083859, 0.000000, -0.000022, 179.999862, object_world, object_int, -1, 300.00, 300.00); // plakat_camera4
-tmpobjid = CreateDynamicObject(2587, 1034.543579, 2461.499755, 11.083859, 0.000000, 0.000007, -0.000014, object_world, object_int, -1, 300.00, 300.00); // plakat_camera5
-tmpobjid = CreateDynamicObject(2587, 1041.306152, 2461.499755, 11.083861, -0.000000, 0.000007, -0.000060, object_world, object_int, -1, 300.00, 300.00); // plakat_camera6
-tmpobjid = CreateDynamicObject(2587, 1048.008422, 2461.499755, 11.083857, 0.000000, -0.000007, -0.000105, object_world, object_int, -1, 300.00, 300.00); // plakat_camera7
-tmpobjid = CreateDynamicObject(2587, 1054.750854, 2461.499755, 11.083860, 0.000000, -0.000014, -0.000151, object_world, object_int, -1, 300.00, 300.00); // plakat_camera8
+stock PrisonMovingBackPoster(number)
+{
+    if(number == 0) SetDynamicObjectPos(PrisonPoster[number], 1056.074340, 2435.324707, 11.373860);
+	if(number == 1) SetDynamicObjectPos(PrisonPoster[number], 1049.342407, 2435.324707, 11.413865);
+	if(number == 2) SetDynamicObjectPos(PrisonPoster[number], 1042.610839, 2435.324707, 11.413865);
+	if(number == 3) SetDynamicObjectPos(PrisonPoster[number], 1035.878173, 2435.324707, 11.413865);
+	if(number == 4) SetDynamicObjectPos(PrisonPoster[number], 1035.864746, 2461.499755, 11.413865);
+	if(number == 5) SetDynamicObjectPos(PrisonPoster[number], 1042.597290, 2461.499755, 11.413865);
+	if(number == 6) SetDynamicObjectPos(PrisonPoster[number], 1049.328857, 2461.499755, 11.413865);
+	if(number == 7) SetDynamicObjectPos(PrisonPoster[number], 1056.061523, 2461.499755, 11.413865);
+    return 1;
+}
 
+stock PrisonMovingBeton(number,degree,sand)
+{
+    if(number == 0) SetDynamicObjectPos(PrisonBeton[number],1056.106689, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1055.898559, 2434.780029, 4.45+(sand*0.001));
+    if(number == 1) SetDynamicObjectPos(PrisonBeton[number],1049.374145, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1049.177124, 2434.780029, 4.45+(sand*0.001));
+    if(number == 2) SetDynamicObjectPos(PrisonBeton[number],1042.642578, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1042.404785, 2434.780029, 4.45+(sand*0.001));
+    if(number == 3) SetDynamicObjectPos(PrisonBeton[number],1035.909912, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1035.724365, 2434.780029, 4.45+(sand*0.001));
+    if(number == 4) SetDynamicObjectPos(PrisonBeton[number],1035.833007, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1036.041137, 2462.044433, 4.45+(sand*0.001));
+    if(number == 5) SetDynamicObjectPos(PrisonBeton[number],1042.565551, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1042.762573, 2462.044433, 4.45+(sand*0.001));
+    if(number == 6) SetDynamicObjectPos(PrisonBeton[number],1049.297119, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1049.534912, 2462.044433, 4.45+(sand*0.001));
+    if(number == 7) SetDynamicObjectPos(PrisonBeton[number],1056.029785, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1056.215332, 2462.044433, 4.45+(sand*0.001));
+    return 1;
+}
 
-Бетон внутри стены сдвигаем по Y координате (Когда долбим стену монтировкой)
-2434.759033 - это дефолтная позиция левых камер (1 - 4)
-2434.338623 - это позиция, когда бетона уже не видно, значит всю дырку раздолбили
-tmpobjid = CreateDynamicObject(2068, 1056.106689, 2434.759033, 12.263865, 90.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // beton_camera1 (y sdvig)
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1049.374145, 2434.759033, 12.263865, 89.999992, 89.999992, -89.999992, object_world, object_int, -1, 300.00, 300.00); // beton_camera2
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1042.642578, 2434.759033, 12.263865, 89.999992, 89.999992, -89.999977, object_world, object_int, -1, 300.00, 300.00); // beton_camera3
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1035.909912, 2434.759033, 12.263865, 89.999992, 90.000000, -89.999969, object_world, object_int, -1, 300.00, 300.00); // beton_camera4
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
+stock PrisonEditingBeton(playerid,number)
+{
+    if(PrisonPosterStatus[number] == 0) return 0;
+    new mod,string[60];
+    PrisonBetonHP[number]--;
+    mod = PrisonBetonHP[number] % 75;
+    if(mod != 0)
+    {
+        format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Бетон: ~w~%d/3000"),PrisonBetonHP[number]);
+	 	GameTextForPlayer(playerid,string, 1500, 3);
+        ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
+    }
+    else
+    {
+        new count;
+        count = 40-(PrisonBetonHP[number]/75);
+        PrisonSandStatus[number]++;
+        PrisonMovingBeton(number,count,PrisonSandStatus[number]);
+        format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Бетон: ~w~%d/3000"),PrisonBetonHP[number]);
+	 	GameTextForPlayer(playerid,string, 1500, 3);
+        SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Чёрт, тут много песка, нужно бы убрать его метлой!");
+        ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
+    }
+    return 1;
+}
 
-2462.065429 - это дефолтная позиция правых камер (5 - 8)
-2462.495894 - позиция, когда бетона не видно
-tmpobjid = CreateDynamicObject(2068, 1035.833007, 2462.065429, 12.263865, 89.999992, 224.971710, -44.971794, object_world, object_int, -1, 300.00, 300.00); // beton_camera5
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1042.565551, 2462.065429, 12.263865, 89.999992, 224.950515, -44.950569, object_world, object_int, -1, 300.00, 300.00); // beton_camera6
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1049.297119, 2462.065429, 12.263865, 89.999992, 224.934020, -44.934055, object_world, object_int, -1, 300.00, 300.00); // beton_camera7
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(2068, 1056.029785, 2462.065429, 12.263865, 89.999992, 224.934020, -44.934055, object_world, object_int, -1, 300.00, 300.00); // beton_camera8
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
+stock IsABeton(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) != WORLD_PRISON_CELLS || GetPlayerVirtualWorld(playerid) != INT_PRISON_CELLS) return -1;
+    if(IsPlayerInRangeOfPoint(playerid,2.0,1056.106689, 2434.759033, 12.263865)) return 0;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1049.374145, 2434.759033, 12.263865)) return 1;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1042.642578, 2434.759033, 12.263865)) return 2;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1035.909912, 2434.759033, 12.263865)) return 3;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1035.833007, 2462.065429, 12.263865)) return 4;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1042.565551, 2462.065429, 12.263865)) return 5;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1049.297119, 2462.065429, 12.263865)) return 6;
+    else if(IsPlayerInRangeOfPoint(playerid,2.0,1056.029785, 2462.065429, 12.263865)) return 7;
+    else return -1;
+}
 
-
-Песок под поднимаем из под пола по Z координате. И опускаем обратно, когда моем пол шваброй
-tmpobjid = CreateDynamicObject(16302, 1055.898559, 2434.780029, 4.45, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // sand_camera1 (min 4.45) (max 4.85) plus 0.001 (do 0.40)
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1049.177124, 2434.780029, 4.45, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // sand_camera2
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1042.404785, 2434.780029, 4.45, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // sand_camera3
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1035.724365, 2434.780029, 4.45, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // sand_camera4
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1036.041137, 2462.044433, 4.45, 0.000000, -0.000007, 179.999847, object_world, object_int, -1, 300.00, 300.00); // sand_camera5
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1042.762573, 2462.044433, 4.45, 0.000000, -0.000007, 179.999847, object_world, object_int, -1, 300.00, 300.00); // sand_camera6
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1049.534912, 2462.044433, 4.45, 0.000000, -0.000007, 179.999847, object_world, object_int, -1, 300.00, 300.00); // sand_camera7
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-tmpobjid = CreateDynamicObject(16302, 1056.215332, 2462.044433, 4.45, 0.000000, -0.000007, 179.999847, object_world, object_int, -1, 300.00, 300.00); // sand_camera8
-SetDynamicObjectMaterial(tmpobjid, 0, 10755, "airportrminl_sfse", "ws_rotten_concrete1", 0x00000000);
-*/
+stock PrisonClearSand(playerid,number)
+{
+    if(GetPlayerVirtualWorld(playerid) != WORLD_PRISON_CELLS || GetPlayerVirtualWorld(playerid) != INT_PRISON_CELLS) return -1;
+    if(PrisonSandStatus[number] == 0) return 0;
+    PrisonSandStatus[number] = 0;
+    ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
+    SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я убрал песок, надо вернуть швабру на место!");
+    return 1;
+}
