@@ -12,12 +12,18 @@
 9. stock IsA_Gen5, IsA_Gen10, IsA_Gen15 - сколько по дефолту слотов в багажнике
 10. stock IsATaxi - доступен ли транспорт работать в такси [ВСЕ >= 2000]
 11. stock IsAZad - есть ли задние двери в транспорте
-
-12. в Переменной VehGos[212 + 200 - количество слотов для кастомного транспорта в базе (200)
-13. в Переменной VehGold[212 + 200] - количество слотов для кастомного в базе (200)
-14. new VehBuy[212 + 200]; // Подсчет покупок транспорта за вирты
-15. new VehBuyGold[212 + 200]; // Подсчет покупок транспорта за голду
+12. Добавляем в define MAX_VEHICLE_CUSTOM (в целом там сейчас с запасом до 200)
 */
+
+#define MAX_VEHICLE_CUSTOM 200 // Кастомный транспорт
+
+new VehGos[212 + MAX_VEHICLE_CUSTOM]; // Стоимости транспорта
+new VehGold[212 + MAX_VEHICLE_CUSTOM]; // Gold стоимости транспорта
+new bool:vehgoldUpdate; // Нужно ли сохранять gold стоимость
+new VehBuy[212 + MAX_VEHICLE_CUSTOM]; // Подсчет покупок транспорта за вирты
+new bool:vehbuyUpdate;
+new VehBuyGold[212 + MAX_VEHICLE_CUSTOM]; // Подсчет покупок транспорта за голду
+new bool:vehbuyGoldUpdate;
 
 new vehNameCustom[][] =
 {
@@ -1161,6 +1167,29 @@ stock DestroyAllCustomVehicleLabels(playerid)
 			DestroyDynamic3DTextLabel(CustomVehLabel[playerid][i]);
 			CustomLabelBusy[playerid][i] = 0;
 		}
+	}
+	return 1;
+}
+
+function LoadGosVeh()
+{
+	new time = GetTickCount();
+	new rows,stra[5];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+		{
+			format(stra,sizeof(stra),"v%d",v);
+			cache_get_value_name_int(0, stra, VehGos[v]);
+
+			if(VehGos[v] == 0)
+			{
+				if(v <= 211) VehGos[v] = vehSumma[v];
+				else VehGos[v] = vehSummaCustom[v - 212];
+			}
+		}
+		printf("[MODE]: Стоимость Транспорта [%d ms]",GetTickCount() - time);
 	}
 	return 1;
 }

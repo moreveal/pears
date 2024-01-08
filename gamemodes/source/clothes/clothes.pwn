@@ -2,17 +2,68 @@
 /*
 Как добавить новый кастомный скин на сервер?
 1. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
-2. Добавить в stock IsASkinExisting новый ID скина
+2. Увеличить define MAX_SKIN_CUSTOM
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
 
 Как добавить скин в магазин?
 1. Добавить в stock государственного склада (таким образом, владельцы магазинов смогут закупить новый скин и продавать в своём магазе)
 */
 
+#define MAX_SKIN_CUSTOM 103
+
+new SkinGos[312 + MAX_SKIN_CUSTOM]; // Стоимости скинов
+new SkinGold[312 + MAX_SKIN_CUSTOM]; // Gold стоимости скинов
+new SkinBuy[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скинов за вирты
+new SkinBuyGold[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скинов за голду
+new SkinSale[312 + MAX_SKIN_CUSTOM]; // Доступен ли скин для продажи
+
+new skinNameAll[][] =
+{
+    "Сиджей", "The Truth", "Maccer", "Andre", "Mini Bear", "Big Bear", "Emmet", "Taxi Driver", "Janitor", // 0 - 8
+    "Normal Ped", "Old Woman", "Casino croupier", "Rich Woman", "Street Girl", "Normal Ped", "Mr.Whittaker", "Airport Worker", "Businessman", "Beach Visitor", // 9 - 18
+    "DJ", "Rich Guy", "Normal Ped", "Normal Ped", "BMXer", "M.D. Bodyguard", "M.D. Bodyguard", "Construction Worker", "Drug Dealer", // 19 - 28
+    "Drug Dealer", "Drug Dealer", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Gardener", "Golfer", "Golfer", "Normal Ped", // 29 - 38
+    "Normal Ped", "Normal Ped", "Normal Ped", "Jethro", "Normal Ped", "Normal Ped", "Beach Visitor", "Normal Ped", "Normal Ped", "Normal Ped", // 39 - 48
+    "Da Nang", "Mechanic", "Mountain Biker", "Mountain Biker", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Oriental Ped", "Oriental Ped", "Normal Ped", // 49 - 59
+    "Normal Ped", "Pilot", "Colonel Fuhrberger", "Prostitute", "Prostitute", "Kendl Johnson", "Pool Player", "Pool Player", "Preacher", // 60 - 68
+    "Normal Ped", "Scientist", "Security Guard", "Hippy", "Hippy", "Unknown", "Prostitute", "Stewardess", "Homeless", "Homeless", "Homeless", // 69 - 79
+    "Boxer", "Boxer", "Black Elvis", "White Elvis", "Blue Elvis", "Prostitute", "Ryder Mask", "Stripper", "Normal Ped", "Normal Ped", "Jogger", // 80 - 90
+    "Rich Woman", "Rollerskater", "Normal Ped", "Normal Ped", "Normal Ped", "Jogger", "Lifeguard", "Normal Ped", // 91 - 98
+    "Rollerskater", "Biker", "Normal Ped", "Balla", "Balla", "Balla", "Grove", "Grove", // 99 - 106
+    "Grove", "Vagos", "Vagos", "Vagos", "Russian Mafia", "Russian Mafia", "Russian Mafia", "Aztecas", "Aztecas", "Aztecas", // 107 - 116
+    "Triad", "Triad", "Johhny Sindacco", "Triad Boss", "Da Nang Boy", "Da Nang Boy", "Da Nang Boy", "The Mafia", "The Mafia", "The Mafia", // 117 - 126
+    "The Mafia", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Homeless", "Homeless", "Normal Ped", // 127 - 136
+    "Homeless", "Beach Visitor", "Beach Visitor", "Beach Visitor", "Businesswoman", "Taxi Driver", "Crack Maker", "Crack Maker", "Crack Maker", "Crack Maker", "Businessman", // 137 - 147
+    "Businesswoman", "Big Smoke Armored", "Businesswoman", "Normal Ped", "Prostitute", "Construction Worker", "Beach Visitor", "Pizza Worker", "Barber", "Hillbilly", "Farmer", // 148 - 158
+    "Hillbilly", "Hillbilly", "Farmer", "Hillbilly", "Black Bouncer", "White Bouncer", "White MIB agent", "Black MIB agent", "Cluckin' Bell Worker", "Chilli Dog Vendor", "Normal Ped", // 159 - 169
+    "Normal Ped", "Blackjack Dealer", "Casino croupier", "Rifa", "Rifa", "Rifa", "Barber", "Barber", "Whore", "Ammunation", // 170 - 179
+    "Tattoo Artist", "Punk", "Cab Driver", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Businessman", "Normal Ped", "Valet", "Barbara Schternvart", // 180 - 190
+    "Helena Wankstein", "Michelle Cannes", "Katie Zhan", "Millie Perkins", "Denise Robinson", "Farm Inhabitan", "Hillbill", "Farm Inhabitan", "Farm Inhabitan", // 191 - 199
+    "Hillbilly", "Farmer", "Farmer", "Karate Teacher", "Karate Teacher", "Burger Shot Cashier", "Cab Driver", "Prostitute", "Su Xi Mu", "Noodle Vendor", // 200 - 209 
+    "School Instructor", "Shop Staff", "Homeless", "Weird old man", "Maria Latore", "Normal Ped", "Normal Ped", "Shop Staff", "Normal Ped", "Rich Woman", // 210 - 219
+	"Cab Driver", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Normal Ped", "Oriental Businessman", "Oriental Ped", "Oriental Ped", // 220 - 229
+	"Homeless", "Normal Ped", "Normal Ped", "Normal Ped", "Cab Driver", "Normal Ped", "Normal Ped", "Prostitute", "Prostitute", "Homeless", // 230 - 239
+	"The D.A", "Afro-American", "Mexican", "Prostitute", "Stripper", "Prostitute", "Stripper", "Biker", "Biker", "Pimp", // 240 - 249
+	"Normal Ped", "Lifeguard", "Naked Valet", "Bus Driver", "Biker Drug Dealer", "Chauffeu", "Stripper", "Stripper", "Heckler", "Heckler", // 250 - 259
+	"Construction Worker", "Cab driver", "Cab driver", "Normal Ped", "Clown", "Frank Tenpenny", "Eddie Pulaski", "Jimmy Hernandez", "Dwayne", "Big Smoke", // 260 - 269
+	"Sweet", "Ryder", "Mafia Boss", "T-Bone Mendez", "Paramedic", "Paramedic", "Paramedic", "Firefighter", "Firefighter", "Firefighter", // 270 - 279
+	"Police Officer", "Police Officer", "Police Officer", "County Sheriff", "Motorbike Cop", "Special Forces", "Federal Agent", "Army", "Desert Sheriff", "Zero", // 280 - 289
+	"Ken Rosenberg", "Kent Paul", "Cesar Vialpando", "OG Loc", "Wu Zi Mu", "Michael Toreno", "Jizzy", "Madd Dogg", "Catalina", "Claude", // 290 - 299
+	"Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Police Officer", "Paramedic", "Police Officer", // 300 - 309
+	"Country Sheriff", "Desert Sheriff" // 310 - 311
+};
+
 stock AddCustomSkins()
 {
 	// AddCarSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
-	// Plus 15187
+	// Plus 15188
+
+	// Сюда нужен 312 скин в сборку
+	// Заменить 415 скин - он дерьмище ебучее
+	// Добавить новых скинов копов
+	// Добавить скинов арабов (там были у меня какие-то отложены для них)
+	// В целом добавить ещё скинов
+
 	AddCharSyncModel(60, 313); // pearspeda (Значит не 313, а 15500) male
 	AddCharSyncModel(233, 314); // pearspedb (Значит не 314, а 15501)
 	AddCharSyncModel(19, 315); // 15502 pearspedc male
@@ -124,7 +175,7 @@ stock IsASkinExisting(s)
 {
     if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
 
-    || s >= 313 && s <= 415) return 1; // Кастомные скины пирса
+    || s >= 312 && s <= 312 + MAX_SKIN_CUSTOM) return 1; // Кастомные скины пирса
     return 0;
 }
 
@@ -139,13 +190,21 @@ stock GetSkinSex(s)
  	|| s >= 234 && s <= 236 || s >= 239 && s <= 242 || s >= 247 && s <= 250 || s >= 252 && s <= 255 || s >= 258 && s <= 262 || s >= 264 && s <= 297
  	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
 
-	// Кастомные -15187
+	// Кастомные -15188
 	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 15523
 	|| s == 336 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s == 412 || s == 413 || s == 414
 	|| s == 415) return 0; // 0 - мужской скин
  	else return 1; // Все остальные 1, значит женские
+}
+
+stock GetSkinName(skin)
+{
+	new skinName[34];
+	if(skin >= sizeof(skinNameAll)) format(skinName, sizeof(skinName), "Одежда");
+	else format(skinName, sizeof(skinName), "%s", skinNameAll[skin]);
+	return skinName;
 }
 
 // Получаем id скина для другого игрока forplayerid +
@@ -155,7 +214,7 @@ stock GetSkinPresentation(forplayerid, playerid)
 	new showModel = GetPlayerSyncSkin(playerid);
     if(IsPlayerSyncModels(forplayerid)) // Если моды установлены
 	{
-		if(showModel >= 313) showModel += 15187;
+		if(showModel >= 312) showModel += 15188;
 		skinId = showModel;
 	}
     else skinId = showModel; // Если моды НЕ установлены, показываем оригинальный скин
@@ -168,7 +227,7 @@ stock GetModelSkin(playerid, s)
     new skinId;
     if(IsPlayerSyncModels(playerid)) // Мод установлен
 	{
-		if(s >= 313) s += 15187;
+		if(s >= 312) s += 15188;
 		skinId = s;
 	}
     else skinId = GetSkinModelOriginal(s);
@@ -353,7 +412,6 @@ function loadDrop_Clothes(playerid)
 // Снять одежду
 stock player_undress(playerid)
 {
-	if(DeathInfo[playerid][deathStatus]) return 1;
     PlayerPlaySound(playerid,5601,0,0,0);
     TakeOffClothes(playerid);
     PlayerInfo[playerid][pModel2] = 0, PlayerInfo[playerid][pModel3] = 0;
@@ -573,4 +631,111 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
 
     Aftextdraw[playerid] = current_tick;
     return 1;
+}
+
+stock skinprice(playerid, page) // Настройки гос. цен одежды
+{
+	new max_line = 40, yesNext;
+	new line[214],lines[4096];
+
+	DP[0][playerid] = 0; // Строки на текущей странице
+	if(page == 0)
+	{
+		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != 1075) ClearSorting(playerid);
+        OnlineInfo[playerid][oSorting][0] = 1075;
+
+		DP[1][playerid] = 0; // Страница
+		DP[2][playerid] = 0; // Последний list на странице
+		DP[4][playerid] = 0; // Первый list на странице
+		DP[5][playerid] = 0; // Информация о последней странице
+	}
+
+	new minlist = 0, thisPage;
+    if(page > 0)
+	{
+		if(page == DP[1][playerid]) minlist = DP[4][playerid], thisPage = 1; // Если открывается та-же самая страница, показываем первый list
+		else minlist = DP[2][playerid] + 1; // В другом случае открываем последний list (+ 1 для следующей страницы)
+		DP[1][playerid] = page;
+	}
+
+    if((minlist >= 312 + MAX_SKIN_CUSTOM || DP[5][playerid] == 1) && thisPage == 0) // Сбрасываем страницы, если последний лист максимальный или больше
+	{
+		DP[1][playerid] = 0; // Страница
+		DP[2][playerid] = 0; // Последний list на странице
+		DP[4][playerid] = 0; // Первый list на странице
+		DP[5][playerid] = 0; // Информация о последней странице
+		minlist = 0, page = 0;
+	}
+
+	format(line,sizeof(line),"{cccccc}Одежда [ID]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
+	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ff9000}Фильтр\t\t\t"), strcat(lines,line);
+
+	new one;
+	for(new s = minlist; s < 312 + MAX_SKIN_CUSTOM; s++)
+	{
+		if(s == 0 || s == 74) continue; // Пропускаем косячные скины
+
+		if(one == 0) DP[4][playerid] = s, one = 1; // Записывали первый list
+
+		if(CheckSortingLineSkinPrice(playerid, s)) format(line,sizeof(line),"%s", ShowLineSkinPrice(playerid, s)), strcat(lines,line);
+
+		if(DP[0][playerid] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
+        {
+			yesNext = 1;
+            break;
+        }
+
+		if(s >= 312 + MAX_SKIN_CUSTOM && page > 0)
+		{
+			yesNext = 1; // Последний транспорт, отображаем Next Page
+			DP[5][playerid] = 1; // Записываем, что эта страница была последней
+		}
+	}
+	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
+	new header[60];
+    format(header,sizeof(header),"Гос Стоимость Одежды [ Страница %d ]", page + 1);
+    ShowDialog(playerid,1075,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+    return 1;
+}
+
+stock CheckSortingLineSkinPrice(playerid, s)
+{
+	if(OnlineInfo[playerid][oSorting][1] > 0) // Фильтр по ID
+	{
+		new sortingID[14], skinId[14];
+		valstr(sortingID, OnlineInfo[playerid][oSorting][1]);
+		valstr(skinId, s);
+
+		if(strfind(skinId, sortingID, true) != -1) {} // Отображаем схожие ID
+		else return 0; // Отображаем только фильтрованные id транспортных средств
+	}
+
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) {} // Фильтр по названию не включен
+	else
+	{
+		if(strfind(GetSkinName(s), OnlineInfo[playerid][oSortingName], true) != -1) {} // Отображаем схожую строку
+		else return 0; // Отображаем только фильтрованные названия транспортных средств
+	}
+	return 1;
+}
+
+stock ShowLineSkinPrice(playerid, s)
+{
+	new line[214], atext[7], btext[7];
+
+    List[DP[0][playerid]][playerid] = s;
+    DP[0][playerid] ++; // Подсчитываем строки
+	DP[2][playerid] = s;
+
+	// Custom or default
+	if(s >= 312) atext = "0088ff";
+	else atext = "cccccc";
+
+	// Available for sale
+	if(SkinSale[s]) btext = "99ff66";
+	else btext = "cccccc";
+
+    format(line,sizeof(line),"\n{%s}%s {cccccc}[%d]\t{%s}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d", atext, GetSkinName(s), s, btext, SkinGos[s], get_k(SkinGos[s]), SkinGold[s], SkinBuy[s], SkinBuyGold[s]);
+    return line;
 }
