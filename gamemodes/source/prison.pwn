@@ -272,8 +272,14 @@ stock StopPrisonAlarm() // Выключаем режим тревоги в тю�
     if(PrisonAlarm == 0) return 1;
 
     PrisonAlarm = 0;
+
+    // Красную лампу вырубаем
     SetDynamicObjectMaterial(PrisonAlarmObject[0], 0, 11751, "enexmarkers", "enexmarker4-2", 0x00FFFFFF);
     SetDynamicObjectMaterial(PrisonAlarmObject[1], 0, 11751, "enexmarkers", "enexmarker4-2", 0x00FFFFFF);
+
+    // Надпись на табло офаем
+    SetDynamicObjectMaterialText(PrisonTabloObject[0], 0, " ", 130, "Arial", 27, 1, 0xFFAAAAAA, 0x00000000, 1);
+    SetDynamicObjectMaterialText(PrisonTabloObject[1], 0, " ", 130, "Arial", 27, 1, 0xFFAAAAAA, 0x00000000, 1);
     return 1;
 }
 stock UpdateTabloPrisonInfo(side, plusmin) // Обновляем инфу на табло

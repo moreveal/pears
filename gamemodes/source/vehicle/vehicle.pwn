@@ -13,7 +13,10 @@
 10. stock IsATaxi - доступен ли транспорт работать в такси [ВСЕ >= 2000]
 11. stock IsAZad - есть ли задние двери в транспорте
 
-12. в Переменной VehGos[212 + 200 - количество слотов для кастомного транспорта в базе
+12. в Переменной VehGos[212 + 200 - количество слотов для кастомного транспорта в базе (200)
+13. в Переменной VehGold[212 + 200] - количество слотов для кастомного в базе (200)
+14. new VehBuy[212 + 200]; // Подсчет покупок транспорта за вирты
+15. new VehBuyGold[212 + 200]; // Подсчет покупок транспорта за голду
 */
 
 new vehNameCustom[][] =
@@ -187,6 +190,13 @@ stock GetVehiclePriceGos(v)
 	if(v >= 2000) v -= 1788;
 	else if(v >= 400 && v <= 611) v -= 400;
 	return VehGos[v];
+}
+
+stock GetVehiclePriceGold(v)
+{
+	if(v >= 2000) v -= 1788;
+	else if(v >= 400 && v <= 611) v -= 400;
+	return VehGold[v];
 }
 
 stock GetVehicleSpeedMax(v)
@@ -752,7 +762,7 @@ stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
 stock vehprice(playerid, page) // Настройки гос. цен транспорта
 {
 	new max_line = 50, yesNext;
-	new line[160],lines[4096];
+	new line[214],lines[4096];
 
 	DP[0][playerid] = 0; // Строки на текущей странице
 	if(page == 0)
@@ -783,9 +793,9 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 		minlist = 0, page = 0;
 	}
 
-	format(line,sizeof(line),"{cccccc}Транспорт [Модель]\t{cccccc}Цена"), strcat(lines,line);
-	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{ff9000}Фильтр\t"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Транспорт [Модель]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
+	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ff9000}Фильтр\t\t\t"), strcat(lines,line);
 
 	new one;
 	for(new v = minlist; v < 211 + sizeof(vehNameCustom) + 1; v++)
@@ -806,7 +816,7 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 			DP[5][playerid] = 1; // Записываем, что эта страница была последней
 		}
 	}
-	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t"), strcat(lines,line);
+	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
 	new header[60];
     format(header,sizeof(header),"Гос Стоимость Транспорта [ Страница %d ]", page + 1);
     ShowDialog(playerid,1066,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
@@ -839,7 +849,7 @@ stock CheckSortingLineVehPrice(playerid, v)
 
 stock ShowLineVehPrice(playerid, v)
 {
-	new line[160];
+	new line[214];
 	new vehicleList = v;
 	v = CorrectVehicleList(vehicleList);
 
@@ -849,11 +859,11 @@ stock ShowLineVehPrice(playerid, v)
 
 	if(v >= 2000) // Custom
 	{
-    	format(line,sizeof(line),"\n{0088ff}%s {cccccc}[%d]\t{99ff66}%d$ {cccccc}[%s]",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]));
+    	format(line,sizeof(line),"\n{0088ff}%s {cccccc}[%d]\t{99ff66}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
 	}
 	else
 	{
-    	format(line,sizeof(line),"\n{cccccc}%s [%d]\t{99ff66}%d$ {cccccc}[%s]",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]));
+    	format(line,sizeof(line),"\n{cccccc}%s [%d]\t{99ff66}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
 	}
     return line;
 }
@@ -871,19 +881,20 @@ stock VehPriceSorting(playerid)
 
     format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
 
-    ShowDialog(playerid,1063,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр Сделок",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1063,DIALOG_STYLE_TABLIST_HEADERS,"Гос Стоимость Транспорта",lines,"Выбрать","Назад");
     return 1;
 }
 
 stock SettingGosPriceVehicle(playerid, vehicleList)
 {
 	new v = CorrectVehicleList(vehicleList);
-	
-	new line[90],lines[360];
-	format(line,sizeof(line),"{cccccc}Введите гос. стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
-	format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {99ff66}%d$ {cccccc}[%s]", VehGos[vehicleList], get_k(VehGos[vehicleList])), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}Не меньше 1$ и не больше 900.000.000$"), strcat(lines,line);
-  	ShowDialog(playerid,1067,DIALOG_STYLE_INPUT,"Гос Стоимость Транспорта",lines,"Принять","Отмена");
+
+	new line[120],lines[360];
+    if(v >= 2000) format(line,sizeof(line),"{0088ff}%s\t", GetVehicleName(v)), strcat(lines,line);
+	else format(line,sizeof(line),"{cccccc}%s\t", GetVehicleName(v)), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Стоимость:\t{99ff66}%d$ {cccccc}[%s]", VehGos[vehicleList], get_k(VehGos[vehicleList])), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Gold:\t{ffcc00}%dG", VehGold[vehicleList]), strcat(lines,line);
+    ShowDialog(playerid,1086,DIALOG_STYLE_TABLIST_HEADERS,"Гос Стоимость Транспорта",lines,"Выбрать","Назад");
 	return 1;
 }
 
@@ -954,14 +965,13 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
   			SendClientMessage(playerid,COLOR_GREY,string);
   			format(string, sizeof(string), "[Правительство] %s изменяет гос. стоимость: %s {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
   			SendDepartMessage(COLOR_ALLDEPT, string);
-
-  			vehprice(playerid, DP[1][playerid]);
+			SettingGosPriceVehicle(playerid, DP[3][playerid]);
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
 
 			// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
      		for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, v, 5, input);
 		}
-		else vehprice(playerid, DP[1][playerid]);
+		else SettingGosPriceVehicle(playerid, DP[3][playerid]);
 	}
 	else if(dialogid == 999) // Фильтр по id модели
 	{
@@ -989,6 +999,57 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
         }
         else VehPriceSorting(playerid);
     }
+	else if(dialogid == 1086)
+	{
+		if(response)
+		{
+			new vehicleList = DP[3][playerid];
+			new v = CorrectVehicleList(vehicleList);
+			if(listitem == 0)
+			{
+				new line[100],lines[300];
+				format(line,sizeof(line),"{cccccc}Введите гос. стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {99ff66}%d$ {cccccc}[%s]", VehGos[vehicleList], get_k(VehGos[vehicleList])), strcat(lines,line);
+				format(line,sizeof(line),"\n{cccccc}Не меньше 1$ и не больше 900.000.000$"), strcat(lines,line);
+				ShowDialog(playerid,1067,DIALOG_STYLE_INPUT,"Гос Стоимость Транспорта",lines,"Принять","Отмена");
+			}
+			else if(listitem == 1)
+			{
+				new line[100],lines[300];
+				format(line,sizeof(line),"{cccccc}Введите Gold стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {ffcc00}%dG", VehGold[vehicleList]), strcat(lines,line);
+				format(line,sizeof(line),"\n{cccccc}Не меньше 1G и не больше 100.000G"), strcat(lines,line);
+				ShowDialog(playerid,1133,DIALOG_STYLE_INPUT,"Гос Стоимость Транспорта",lines,"Принять","Отмена");
+			}
+		}
+		else vehprice(playerid, DP[1][playerid]);
+	}
+	else if(dialogid == 1133)
+	{
+		if(response)
+		{
+			new vehicleList = DP[3][playerid];
+			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
+			new input = strval(inputtext);
+			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 1G и не больше 100.000G"), SettingGosPriceVehicle(playerid, vehicleList);
+			VehGold[vehicleList] = input;
+
+			new v = CorrectVehicleList(vehicleList);
+			PlayerPlaySound(playerid, 6401, 0,0,0);
+
+			// vehgoldUpdate = true;
+			SaveVehicleGold();
+
+			new string[180];
+			format(string,sizeof(string),"[ Мысли ]: Gold стоимость %s теперь составляет: {ffcc00}%dG", GetVehicleName(v), VehGold[vehicleList]);
+  			SendClientMessage(playerid,COLOR_GREY,string);
+  			SettingGosPriceVehicle(playerid, DP[3][playerid]);
+
+			format(string,sizeof(string),"%dG %s", input, GetVehicleName(v));
+			AdminLog("vehgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", v, string);
+		}
+		else SettingGosPriceVehicle(playerid, DP[3][playerid]);
+	}
 	return 1;
 }
 
@@ -998,6 +1059,30 @@ stock SaveVehiclePrice(idx)
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `v%d` = '%d' WHERE `newid` = '1'", idx, VehGos[idx]);
 	query_empty(pearsq, string_mysql);
 	return 1;
+}
+
+stock SaveVehicleGold()
+{
+    new string_mysql[4096];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehGold` = '%s' WHERE `newid` = '1'", StringifyArray(VehGold, sizeof(VehGold)));
+	query_empty(pearsq, string_mysql);
+    return 1;
+}
+
+stock SaveVehicleBuy()
+{
+    new string_mysql[4096];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehBuy` = '%s' WHERE `newid` = '1'", StringifyArray(VehBuy, sizeof(VehBuy)));
+	query_empty(pearsq, string_mysql);
+    return 1;
+}
+
+stock SaveVehicleBuyGold()
+{
+    new string_mysql[4096];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehBuyGold` = '%s' WHERE `newid` = '1'", StringifyArray(VehBuyGold, sizeof(VehBuyGold)));
+	query_empty(pearsq, string_mysql);
+    return 1;
 }
 
 

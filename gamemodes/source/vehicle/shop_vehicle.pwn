@@ -1,5 +1,5 @@
 
-#define MAX_DRAW_VEHICLESHOP 17 // Количество текстдравов в меню
+#define MAX_DRAW_VEHICLESHOP 16 // Количество текстдравов в меню
 
 new PlayerText:VehicleShopDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // Переменные для хранения текстдравов (Создаваемые)
 enum vsInfo
@@ -37,19 +37,45 @@ new BuyCarPos[][BUYCARENUM] =
 
 
 stock buy_VehicleShop(playerid)
-{  
+{
+    new typeBuy = DP[0][playerid];  
     new bizId = TP[0][playerid];
     new productId = TP[1][playerid];
     new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
+    new gold = GetVehiclePriceGold(modelId);
 
-    if(BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n\n{cccccc}Вы можете отправиться в другой автосалон или в центр обмена [ Y >> GPS >> Услуги >> Центр Обмена ]");
+    if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n{cccccc}Вы можете оплатить транспорт золотом\n{cccccc}При таком способе оплаты наличие не требуется");
     if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
-    if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+    if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+    if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
 
     PlayerPlaySound(playerid,40405,0,0,0);
-    new string[180];
-    format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
+    new string[230];
+    if(typeBuy == 0) 
+    {
+        format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
+    }
+    else if(typeBuy == 1)
+    {
+        if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Транспорт не продаётся за Gold");
+        format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {ffcc00}%dG\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), gold);
+    }
 	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
+    return 1;
+}
+
+stock showDialogBuyVehicle(playerid)
+{
+    new bizId = TP[0][playerid];
+    new productId = TP[1][playerid];
+    new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId], gold = GetVehiclePriceGold(modelId);
+
+    new line[140],lines[420];
+    format(line,sizeof(line),"{ff9000}Как хотите оплатить покупку?\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{99ff66}Деньги\t{99ff66}%d$ {cccccc}[%s]", price, get_k(price)), strcat(lines,line);
+    if(gold > 0) format(line,sizeof(line),"\n{ffcc00}Золото\t{ffcc00}%dG", gold), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ffcc00}Золото\t{cccccc}No gold"), strcat(lines,line);
+    ShowDialog(playerid,1352,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}*",lines,"Выбрать","Выход");
     return 1;
 }
 
@@ -249,8 +275,20 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     PlayerTextDrawSetString(playerid, VehicleShopDraw[8][playerid], string);
     PlayerTextDrawShow(playerid, VehicleShopDraw[8][playerid]);
 
-    if(BizzInfo[bizId][bItem][productId] > 0) PlayerTextDrawHide(playerid, VehicleShopDraw[9][playerid]);
-    else PlayerTextDrawShow(playerid, VehicleShopDraw[0][playerid]);
+    // Gold Цена
+    new gold = GetVehiclePriceGold(modelId);
+    if(gold > 0) 
+    {
+        format(string,sizeof(string),"%dG", gold);
+        PlayerTextDrawColor(playerid, VehicleShopDraw[9][playerid], -4456193);
+    }
+    else 
+    {
+        format(string,sizeof(string),"No_gold");
+        PlayerTextDrawColor(playerid, VehicleShopDraw[9][playerid], -1061109505);
+    }
+    PlayerTextDrawSetString(playerid, VehicleShopDraw[9][playerid], string);
+    PlayerTextDrawShow(playerid, VehicleShopDraw[9][playerid]);
     return 1;
 }
 stock closeMenu_VehicleShop(playerid)
@@ -409,7 +447,7 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Клика
     if(playertextid == VehicleShopDraw[10][playerid]) // Buy
     {
         PlayerPlaySound(playerid,17803,0,0,0);
-        buy_VehicleShop(playerid);
+        showDialogBuyVehicle(playerid);
     }
     if(playertextid == VehicleShopDraw[13][playerid]) // Test Drive
     {
@@ -502,23 +540,41 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             new freeSlot = GetPlayerFreeVehSlot(playerid);
             if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет свободного слота для транспорта\n\n{cccccc}Вы можете приобрести до 20 слотов {ffcc00}[ Y >> Donate ]");
 
+            new typeBuy = DP[0][playerid];
             new bizId = TP[0][playerid];
             new productId = TP[1][playerid];
             new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
+            new gold = GetVehiclePriceGold(modelId);
 
-            if(BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n\n{cccccc}Вы можете отправиться в другой автосалон или в центр обмена [ Y >> GPS >> Услуги >> Центр Обмена ]");
+            if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n{cccccc}Вы можете оплатить транспорт золотом\n{cccccc}При таком способе оплаты наличие не требуется");
             if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
-            if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-
-            BizzInfo[bizId][bItem][productId] -= 1;
-            BizzInfo[bizId][bUpdate] = 1;
+            if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+            if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
 
             new string[200];
-            oGivePlayerMoney(playerid, -price);
+            if(typeBuy == 0)
+            {
+                BizzInfo[bizId][bItem][productId] -= 1;
+                BizzInfo[bizId][bUpdate] = 1;
+                format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
+                SuccessMessage(playerid, string);
+                oGivePlayerMoney(playerid, -price);
+                CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, price, "Money");
+            }
+            else if(typeBuy == 1)
+            {
+                if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Транспорт не продаётся за Gold");
+                format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {ffcc00}%dG\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), gold);
+                SuccessMessage(playerid, string);
+                PlayerInfo[playerid][pDonateMoney] -= gold;
+                mysql_save(playerid, 4);
+                CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, gold, "Gold");
+
+                format(string,sizeof(string),"Veh %d", modelId);
+                DonateLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, string);
+            }
             format(string,sizeof(string),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
             SendClientMessage(playerid, COLOR_GREY, string);
-            format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
-            SuccessMessage(playerid, string);
 
             new posId;
             if(bizId >= 90 && bizId <= 92) posId = random(4);
@@ -527,13 +583,40 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             new Float:pos[4];
             GetCoordBuyVehicle(bizId, posId, pos[0], pos[1], pos[2], pos[3]);
             GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 0, 0, 0);
-
-            CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, price, "");
             if(PlayerInfo[playerid][pAchieve][12] == 0) AchievePlayer(playerid, 12, 1);
+
+            GiveQuanBuyVehicle(modelId, typeBuy); // Подсчитываем покупки транспорта
+        }
+    }
+    if(dialogid == 1352)
+	{
+        if(response)
+        {
+            if(listitem == 0)
+            {
+                DP[0][playerid] = 0;
+                buy_VehicleShop(playerid);
+            }
+            if(listitem == 1)
+            {
+                DP[0][playerid] = 1;
+                buy_VehicleShop(playerid);
+            }
         }
     }
     return 1;
 }
+
+stock GiveQuanBuyVehicle(v, typeBuy)
+{
+	if(v >= 2000) v -= 1788;
+	else if(v >= 400 && v <= 611) v -= 400;
+
+    if(typeBuy == 0) VehBuy[v] ++, vehbuyUpdate = true;
+    else if(typeBuy == 1) VehBuyGold[v] ++, vehbuyGoldUpdate = true;
+    return 1;
+}
+
 stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
 {
     if(VehShopInfo[playerid][vsTextDrawLoad] == false) return 0; // Если текстдравы не созданы, возвращаем 0
@@ -578,23 +661,21 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
 {
     if(VehShopInfo[playerid][vsTextDrawLoad] == true) return 0; // Если эти текстдравы уже созданы, возвращаем 0
 
-    VehicleShopDraw[0][playerid] = CreatePlayerTextDraw(playerid, 299.333282, 348.444519, "ld_beat:chit"); // кнопка влево
+    VehicleShopDraw[0][playerid] = CreatePlayerTextDraw(playerid, 291.333404, 344.222290, "ld_beat:chit"); // кнопка влево
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[0][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[0][playerid], 60.333343, 74.666694);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[0][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[0][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[0][playerid], 80);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[0][playerid], 421075380);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[0][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[0][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[0][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[0][playerid], true);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[0][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[0][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[1][playerid] = CreatePlayerTextDraw(playerid, 307.333312, 362.962829, "LD_SPAC:white"); // кнопка влево (иконка)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[1][playerid], 0.011333, 0.319407);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[1][playerid], 39.333309, 45.629642);
+    VehicleShopDraw[1][playerid] = CreatePlayerTextDraw(playerid, 302.000000, 358.400054, "LD_SPAC:white"); // кнопка влево (иконка)
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[1][playerid], 0.021666, 0.265481);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[1][playerid], 36.333328, 48.533309);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[1][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[1][playerid], 110);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[1][playerid], 190);
     PlayerTextDrawUseBox(playerid, VehicleShopDraw[1][playerid], true);
     PlayerTextDrawBoxColor(playerid, VehicleShopDraw[1][playerid], 0);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[1][playerid], 0);
@@ -604,65 +685,59 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[1][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[1][playerid], 0);
 
-    VehicleShopDraw[2][playerid] = CreatePlayerTextDraw(playerid, 374.666625, 348.444519, "ld_beat:chit"); // кнопка вправо
+    VehicleShopDraw[2][playerid] = CreatePlayerTextDraw(playerid, 372.333526, 344.222290, "ld_beat:chit"); // кнопка вправо
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[2][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[2][playerid], 60.333343, 74.666694);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[2][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[2][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[2][playerid], 80);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[2][playerid], 421075380);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[2][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[2][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[2][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[2][playerid], true);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[2][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[2][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[3][playerid] = CreatePlayerTextDraw(playerid, 387.666717, 362.962829, "LD_SPAC:white"); // кнопка вправо (иконка)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[3][playerid], 0.011333, 0.319407);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[3][playerid], 39.333309, 45.629642);
+    VehicleShopDraw[3][playerid] = CreatePlayerTextDraw(playerid, 388.333343, 358.400054, "LD_SPAC:white"); // кнопка вправо (иконка)
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[3][playerid], 0.021666, 0.265481);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[3][playerid], 36.333328, 48.533309);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[3][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[3][playerid], 110);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[3][playerid], 190);
     PlayerTextDrawUseBox(playerid, VehicleShopDraw[3][playerid], true);
     PlayerTextDrawBoxColor(playerid, VehicleShopDraw[3][playerid], 0);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[3][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[3][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[3][playerid], 5);
     PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[3][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[3][playerid], 0.000000, -90.000000, 90.000000, 1.000000);
+    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[3][playerid], 0.000000, -90.000000, -90.000000, 1.000000);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[3][playerid], 0);
 
-    VehicleShopDraw[4][playerid] = CreatePlayerTextDraw(playerid, 79.333274, 306.963226, "LD_SPAC:white"); // Фон меню
+    VehicleShopDraw[4][playerid] = CreatePlayerTextDraw(playerid, 72.666656, 280.414825, "LD_SPAC:white"); // Фон меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[4][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[4][playerid], 116.333374, 46.459289);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[4][playerid], 110.666702, 63.051860);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[4][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[4][playerid], 168429055);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[4][playerid], 421075455);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], 4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 55.333297, 296.318463, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 32.666690, 265.822296, "ld_beat:chit"); // Левое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 50.333347, 68.288903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 78.000022, 92.088874);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[5][playerid], 168429055);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[5][playerid], 421075455);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[5][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[5][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[5][playerid], 4);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[5][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[5][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 170.999816, 296.318463, "ld_beat:chit"); // Правое скругление меню
+    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 145.666748, 265.822296, "ld_beat:chit"); // Правое скругление меню
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[6][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[6][playerid], 50.333347, 68.288903);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[6][playerid], 78.000022, 92.088874);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[6][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[6][playerid], 168429055);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[6][playerid], 421075455);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[6][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[6][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[6][playerid], 4);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[6][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[6][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[7][playerid] = CreatePlayerTextDraw(playerid, 85.000015, 314.014831, "Bloodring_Banger"); // Название
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[7][playerid], 0.302666, 1.309629);
+    VehicleShopDraw[7][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 289.540618, "Cadillac_Fleetwood"); // Название
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[7][playerid], 0.290333, 1.280593);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[7][playerid], 1);
     PlayerTextDrawColor(playerid, VehicleShopDraw[7][playerid], -1061109505);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[7][playerid], 0);
@@ -671,90 +746,84 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[7][playerid], 1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[7][playerid], 1);
 
-    VehicleShopDraw[8][playerid] = CreatePlayerTextDraw(playerid, 85.000007, 331.363067, "100000000$"); // Ценник
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[8][playerid], 0.302666, 1.309629);
+    VehicleShopDraw[8][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 308.792602, "100000000$"); // Ценник
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[8][playerid], 0.290333, 1.280593);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[8][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[8][playerid], 1353989375);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[8][playerid], 1238057215);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[8][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[8][playerid], 1);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[8][playerid], 51);
     PlayerTextDrawFont(playerid, VehicleShopDraw[8][playerid], 1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[8][playerid], 1);
 
-    VehicleShopDraw[9][playerid] = CreatePlayerTextDraw(playerid, 196.999984, 293.859313, "HEЏ ‹ HA‡…Ќ……!"); // Нет в наличии
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[9][playerid], 0.207999, 0.898963);
-    PlayerTextDrawAlignment(playerid, VehicleShopDraw[9][playerid], 3);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[9][playerid], -282906369);
-    PlayerTextDrawSetShadow(playerid, VehicleShopDraw[9][playerid], 1);
-    PlayerTextDrawSetOutline(playerid, VehicleShopDraw[9][playerid], 0);
+    VehicleShopDraw[9][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 322.236633, "No_gold"); // GOLD
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[9][playerid], 0.290333, 1.280593);
+    PlayerTextDrawAlignment(playerid, VehicleShopDraw[9][playerid], 1);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[9][playerid], -4456193); // -1061109505
+    PlayerTextDrawUseBox(playerid, VehicleShopDraw[9][playerid], true);
+    PlayerTextDrawBoxColor(playerid, VehicleShopDraw[9][playerid], 0);
+    PlayerTextDrawSetShadow(playerid, VehicleShopDraw[9][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, VehicleShopDraw[9][playerid], 1);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[9][playerid], 51);
     PlayerTextDrawFont(playerid, VehicleShopDraw[9][playerid], 1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[9][playerid], 1);
 
-    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 168.333099, 357.496124, "ld_beat:chit"); // Фон и сама кнопка купить
+    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 188.666839, 343.977874, "ld_beat:chit"); // Фон и сама кнопка купить
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[10][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[10][playerid], 52.999984, 64.711105);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[10][playerid], 62.666683, 75.081443);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[10][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[10][playerid], 168429055);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[10][playerid], 421075455);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[10][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[10][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[10][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[10][playerid], true);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[10][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[10][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 170.333175, 360.570312, "ld_beat:chit"); // Типо кнопка купить
+    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 191.666702, 347.466735, "ld_beat:chit"); // Типо кнопка купить
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[11][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[11][playerid], 48.666667, 58.074077);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[11][playerid], 56.666698, 68.029541);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[11][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[11][playerid], 916677887);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[11][playerid], 1052659199);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[11][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[11][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[11][playerid], 4);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[11][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[11][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[12][playerid] = CreatePlayerTextDraw(playerid, 194.333297, 383.874176, "BUY"); // Надпись купить
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[12][playerid], 0.252666, 1.122964);
+    VehicleShopDraw[12][playerid] = CreatePlayerTextDraw(playerid, 219.333312, 374.163024, "BUY"); // Надпись купить
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[12][playerid], 0.414666, 1.512889);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[12][playerid], 2);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[12][playerid], 255796479);
-    PlayerTextDrawUseBox(playerid, VehicleShopDraw[12][playerid], true);
-    PlayerTextDrawBoxColor(playerid, VehicleShopDraw[12][playerid], 0);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[12][playerid], 659827199);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[12][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[12][playerid], 0);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[12][playerid], 51);
     PlayerTextDrawFont(playerid, VehicleShopDraw[12][playerid], 3);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[12][playerid], 1);
 
-    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 52.666648, 246.155670, "ld_beat:chit"); // Тест драйв
+    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 7.666769, 208.333358, "ld_beat:chit"); // Тест драйв
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[13][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[13][playerid], 50.666675, 60.977802);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[13][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[13][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[13][playerid], 80);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[13][playerid], 421075380);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[13][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[13][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[13][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[13][playerid], true);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[13][playerid], 19134);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[13][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
 
-    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 64.666687, 257.185028, "LD_SPAC:white"); // Тест драйв (иконка)
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[14][playerid], 0.009333, 0.149333);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[14][playerid], 27.999990, 35.259262);
+    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 24.666648, 226.903671, "LD_SPAC:white"); // Тест драйв (иконка)
+    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[14][playerid], 0.019333, 0.170074);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[14][playerid], 30.666662, 38.577793);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[14][playerid], 1);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[14][playerid], 110);
+    PlayerTextDrawColor(playerid, VehicleShopDraw[14][playerid], 170);
     PlayerTextDrawUseBox(playerid, VehicleShopDraw[14][playerid], true);
     PlayerTextDrawBoxColor(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawSetShadow(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[14][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[14][playerid], 5);
     PlayerTextDrawSetPreviewModel(playerid, VehicleShopDraw[14][playerid], 2485);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[14][playerid], 0.000000, 0.000000, -50.000000, 1.000000);
+    PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[14][playerid], 0.000000, 0.000000, -55.000000, 1.000000);
     PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[14][playerid], 0);
 
-    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 179.999847, 312.036651, "ld_beat:chit"); // Кнопка цвет (она будет менять цвет в зависимости от цвета авто в меню выбора)
+    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 171.666809, 293.200012, "ld_beat:chit"); // Кнопка цвет (она будет менять цвет в зависимости от цвета авто в меню выбора)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[15][playerid], 0.000000, 0.000000);
-    PlayerTextDrawTextSize(playerid, VehicleShopDraw[15][playerid], 22.999996, 26.962993);
+    PlayerTextDrawTextSize(playerid, VehicleShopDraw[15][playerid], 31.000032, 37.333328);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[15][playerid], 1);
     new hexColor[11];
     format(hexColor,sizeof(hexColor),"%sFF", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]]);
@@ -763,16 +832,6 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[15][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[15][playerid], 4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[15][playerid], true);
-
-    VehicleShopDraw[16][playerid] = CreatePlayerTextDraw(playerid, 191.333358, 338.244262, "COLOR"); // Надпись Цвет
-    PlayerTextDrawLetterSize(playerid, VehicleShopDraw[16][playerid], 0.131333, 0.633481);
-    PlayerTextDrawAlignment(playerid, VehicleShopDraw[16][playerid], 2);
-    PlayerTextDrawColor(playerid, VehicleShopDraw[16][playerid], 2021161110);
-    PlayerTextDrawSetShadow(playerid, VehicleShopDraw[16][playerid], 0);
-    PlayerTextDrawSetOutline(playerid, VehicleShopDraw[16][playerid], 0);
-    PlayerTextDrawBackgroundColor(playerid, VehicleShopDraw[16][playerid], 51);
-    PlayerTextDrawFont(playerid, VehicleShopDraw[16][playerid], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleShopDraw[16][playerid], 1);
 
     VehShopInfo[playerid][vsTextDrawLoad] = true;
     return 1;
