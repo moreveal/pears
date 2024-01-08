@@ -1092,54 +1092,18 @@ stock SaveVehicleBuyGold()
 }
 
 
-#define MAX_CUSTOM_LABEL 50
-new Text3D:CustomVehLabel[MAX_REALPLAYERS][MAX_CUSTOM_LABEL];
-new CustomLabelBusy[MAX_REALPLAYERS][MAX_CUSTOM_LABEL];
-
-stock GetFreeSlotCustomLabel(playerid) // Получаем свободные слот для лейбла
-{
-	new freeSlot = -1;
-	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
-	{
-		if(CustomLabelBusy[playerid][i] == 0)
-		{
-			freeSlot = i;
-			break;
-		}
-	}
-	return freeSlot;
-}
-
-stock GetThisSlotCustomLabel(playerid, vehicleid)
-{
-	new thisSlot = -1;
-	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
-	{
-		if(CustomLabelBusy[playerid][i] == vehicleid)
-		{
-			thisSlot = i;
-			break;
-		}
-	}
-	return thisSlot;
-}
+new PlayerText3D:CustomVehLabel[MAX_REALPLAYERS][SKOKOCAROV];
+new bool:CustomLabelBusy[MAX_REALPLAYERS][SKOKOCAROV];
 
 stock CreateCustomVehicleLabel(playerid, vehicleid, Float:dist)
 {
 	if(IsPlayerSyncModels(playerid)) return 1; // У игрока есть лаунчер
-
-	new freeSlot = GetFreeSlotCustomLabel(playerid);
-	if(freeSlot == -1) return 1; // Не нашли слот, ну и хуй с ними
-
-	new Float:X,Float:Y,Float:Z;
-	GetVehiclePos(vehicleid, X,Y,Z);
+	if(CustomLabelBusy[playerid][vehicleid] == true) return 1;
 
 	new string[100];
 	format(string, sizeof(string), "{0088ff}%s\n{666666}Доступен с лаунчером", GetVehicleName(VehInfo[vehicleid][vModel]));
-	CustomVehLabel[playerid][freeSlot] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, X,Y,Z, dist, INVALID_PLAYER_ID, vehicleid, 0, -1, -1, playerid);
-	CustomLabelBusy[playerid][freeSlot] = vehicleid;
-
-	if(dist >= 40.0) Streamer_Update(playerid, STREAMER_TYPE_3D_TEXT_LABEL); // Обновляем при большой дистанции, поскольку мы в Автосалоне
+	CustomVehLabel[playerid][vehicleid] = CreatePlayer3DTextLabel(playerid, string, 0xA9C4E4FF, 0.0,0.0,0.0 + 0.2, dist, INVALID_PLAYER_ID, vehicleid, 0);
+	CustomLabelBusy[playerid][vehicleid] = true;
 	return 1;
 }
 
@@ -1147,25 +1111,22 @@ stock DestroyCustomVehicleLabel(playerid, vehicleid)
 {
 	if(IsPlayerSyncModels(playerid)) return 1; // У игрока есть лаунчер
 
-	new thisSlot = GetThisSlotCustomLabel(playerid, vehicleid);
-	if(thisSlot == -1) return 1; // Не нашли слот, ну и хуй с ними
-
-	if(CustomLabelBusy[playerid][thisSlot] > 0)
+	if(CustomLabelBusy[playerid][vehicleid] == true)
 	{
-		DestroyDynamic3DTextLabel(CustomVehLabel[playerid][thisSlot]);
-		CustomLabelBusy[playerid][thisSlot] = 0;
+		DeletePlayer3DTextLabel(playerid, CustomVehLabel[playerid][vehicleid]);
+		CustomLabelBusy[playerid][vehicleid] = false;
 	}
 	return 1;
 }
 
 stock DestroyAllCustomVehicleLabels(playerid)
 {
-	for(new i = 0; i < MAX_CUSTOM_LABEL; i++)
+	for(new i = 0; i < SKOKOCAROV; i++)
 	{
-		if(CustomLabelBusy[playerid][i] > 0)
+		if(CustomLabelBusy[playerid][i] == true)
 		{
-			DestroyDynamic3DTextLabel(CustomVehLabel[playerid][i]);
-			CustomLabelBusy[playerid][i] = 0;
+			DeletePlayer3DTextLabel(playerid, CustomVehLabel[playerid][i]);
+			CustomLabelBusy[playerid][i] = false;
 		}
 	}
 	return 1;
