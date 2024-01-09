@@ -223,19 +223,6 @@ CMD:reloadpriceveh(playerid)
 	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
-CMD:reloadpriceskin(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new s = 0; s < 312; s++)
-	{
-		SkinGos[s] = 10000;
-		SaveSkinEconomy(s);
-	}
-	new string[120];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил гос. цены на все скины", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
-	AdminLog("reloadskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
-	return 1;
-}
 CMD:reloadbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
