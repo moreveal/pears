@@ -591,7 +591,7 @@ stock CreatePlayerTicket(playerid, mentid, zv, uk)
     {
         PlayerInfo[playerid][pAmmos11] += CriminalCodeInfo[uk][ccFine];
         WantedInfo[playerid][wanTicketCrime][slotUk] = uk + 1;
-        WantedInfo[playerid][wanTicketPoliceId][slotUk] = PlayerInfo[mentid][pID];
+        if(mentid != -1) WantedInfo[playerid][wanTicketPoliceId][slotUk] = PlayerInfo[mentid][pID];
         WantedInfo[playerid][wanTicketUnix][slotUk] = gettime();
         format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[mentid][pName]);
         SaveTicketPlayer(playerid, slotUk);
@@ -696,13 +696,13 @@ stock SetPlayerCriminal(stat,playerid,zakonnik,const reason[],zv, uk) // 0 - р�
 				break;
 			}
 		}
-        if(CriminalCodeInfo[uk][ccFine] != 0) CreatePlayerTicket(playerid, zakonnik, zv, uk);
+        if(CriminalCodeInfo[uk][ccFine] != 0 && zakonnik != -1) CreatePlayerTicket(playerid, zakonnik, zv, uk);
         if(slotUk >= 0 && CriminalCodeInfo[uk][ccLevel] != 0)
 		{
 			WantedInfo[playerid][wanCrime][slotUk] = uk + 1;
-			WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
+			if(zakonnik != -1) WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
 			WantedInfo[playerid][wanUnix][slotUk] = gettime();
-			format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
+			if(zakonnik != -1) format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
 			SaveWantedPlayer(playerid, slotUk);
 
 			if(PlayerInfo[playerid][pCrimes]+zv > 50) PlayerInfo[playerid][pCrimes] = 50;
@@ -727,10 +727,17 @@ stock SetPlayerCriminal(stat,playerid,zakonnik,const reason[],zv, uk) // 0 - р�
 			}
 
 			// Врубаем Pursuit
-			CreatePlayerPursuit(playerid, zakonnik);
+			if(zakonnik != -1)
+            {
+                CreatePlayerPursuit(playerid, zakonnik);
 
-			OrgLog(fraction(zakonnik), "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][ccLevel], CriminalCodeInfo[uk][ccName]);
-		}
+			    OrgLog(fraction(zakonnik), "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][ccLevel], CriminalCodeInfo[uk][ccName]);
+            }
+            else
+            {
+                // suda log
+            }
+        }
 		else return ErrorMessage(playerid, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
 	}
 	return slotUk;

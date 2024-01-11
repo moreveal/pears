@@ -24,7 +24,7 @@ public LoadGraphiti()
 	cache_get_row_count(rows);
 	for(new f; f<rows; ++f)
 	{
-    	cache_get_value_name_int(f, "newid", GraphitiInfo[f][graphitiID]);
+    	cache_get_value_name_int(f, "gnewid", GraphitiInfo[f][graphitiID]);
     	cache_get_value_name_int(f, "gunix", GraphitiInfo[f][graphitiUnix]);
 		cache_get_value_name_int(f, "gplayernumber", GraphitiInfo[f][graphitiPlayer]);
         cache_get_value_name_int(f, "gorg", GraphitiInfo[f][graphitiOrg]);

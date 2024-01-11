@@ -467,8 +467,12 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
 }
 
 
-stock PrisonMovingPoster(number)
+stock PrisonMovingPoster(playerid,number)
 {
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, a_flood[2][playerid]);
+    a_flood[2][playerid] = current_tick;
+    if(interval < 500) return 0;
     if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number);
     else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number);
     return 1;
@@ -479,7 +483,8 @@ CMD:movingbeton(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 20) return 0;
     new moving,number;
     sscanf(params, "ii",number,moving);
-    PrisonMovingBeton(number,moving*75,moving*75);
+    PrisonMovingBeton(number,moving*75);
+    PrisonMovingSand(number,moving*75);
     PrisonBetonHP[number]-=moving*75;
     return 1;
 }
@@ -510,22 +515,40 @@ stock PrisonMovingBackPoster(number)
     return 1;
 }
 
-stock PrisonMovingBeton(number,degree,sand)
+stock PrisonMovingBeton(number,degree)
 {
-    if(number == 0) SetDynamicObjectPos(PrisonBeton[number],1056.106689, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1055.898559, 2434.780029, 4.45+(sand*0.001));
-    if(number == 1) SetDynamicObjectPos(PrisonBeton[number],1049.374145, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1049.177124, 2434.780029, 4.45+(sand*0.001));
-    if(number == 2) SetDynamicObjectPos(PrisonBeton[number],1042.642578, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1042.404785, 2434.780029, 4.45+(sand*0.001));
-    if(number == 3) SetDynamicObjectPos(PrisonBeton[number],1035.909912, 2434.759033-(degree*0.001051025), 12.263865),SetDynamicObjectPos(PrisonSand[number],1035.724365, 2434.780029, 4.45+(sand*0.001));
-    if(number == 4) SetDynamicObjectPos(PrisonBeton[number],1035.833007, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1036.041137, 2462.044433, 4.45+(sand*0.001));
-    if(number == 5) SetDynamicObjectPos(PrisonBeton[number],1042.565551, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1042.762573, 2462.044433, 4.45+(sand*0.001));
-    if(number == 6) SetDynamicObjectPos(PrisonBeton[number],1049.297119, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1049.534912, 2462.044433, 4.45+(sand*0.001));
-    if(number == 7) SetDynamicObjectPos(PrisonBeton[number],1056.029785, 2462.065429+(degree*0.0010761625), 12.263865),SetDynamicObjectPos(PrisonSand[number],1056.215332, 2462.044433, 4.45+(sand*0.001));
+    if(number == 0) SetDynamicObjectPos(PrisonBeton[number],1056.106689, 2434.759033-(degree*0.001051025), 12.263865);
+    if(number == 1) SetDynamicObjectPos(PrisonBeton[number],1049.374145, 2434.759033-(degree*0.001051025), 12.263865);
+    if(number == 2) SetDynamicObjectPos(PrisonBeton[number],1042.642578, 2434.759033-(degree*0.001051025), 12.263865);
+    if(number == 3) SetDynamicObjectPos(PrisonBeton[number],1035.909912, 2434.759033-(degree*0.001051025), 12.263865);
+    if(number == 4) SetDynamicObjectPos(PrisonBeton[number],1035.833007, 2462.065429+(degree*0.0010761625), 12.263865);
+    if(number == 5) SetDynamicObjectPos(PrisonBeton[number],1042.565551, 2462.065429+(degree*0.0010761625), 12.263865);
+    if(number == 6) SetDynamicObjectPos(PrisonBeton[number],1049.297119, 2462.065429+(degree*0.0010761625), 12.263865);
+    if(number == 7) SetDynamicObjectPos(PrisonBeton[number],1056.029785, 2462.065429+(degree*0.0010761625), 12.263865);
+    return 1;
+}
+
+stock PrisonMovingSand(number,sand)
+{
+    if(number == 0) SetDynamicObjectPos(PrisonSand[number],1055.898559, 2434.780029, 4.45+(sand*0.001));
+    if(number == 1) SetDynamicObjectPos(PrisonSand[number],1049.177124, 2434.780029, 4.45+(sand*0.001));
+    if(number == 2) SetDynamicObjectPos(PrisonSand[number],1042.404785, 2434.780029, 4.45+(sand*0.001));
+    if(number == 3) SetDynamicObjectPos(PrisonSand[number],1035.724365, 2434.780029, 4.45+(sand*0.001));
+    if(number == 4) SetDynamicObjectPos(PrisonSand[number],1036.041137, 2462.044433, 4.45+(sand*0.001));
+    if(number == 5) SetDynamicObjectPos(PrisonSand[number],1042.762573, 2462.044433, 4.45+(sand*0.001));
+    if(number == 6) SetDynamicObjectPos(PrisonSand[number],1049.534912, 2462.044433, 4.45+(sand*0.001));
+    if(number == 7) SetDynamicObjectPos(PrisonSand[number],1056.215332, 2462.044433, 4.45+(sand*0.001));
     return 1;
 }
 
 stock PrisonEditingBeton(playerid,number)
 {
     if(PrisonPosterStatus[number] == 0) return 0;
+    if(PrisonBetonHP[number] <= 0) return 0;
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, a_flood[2][playerid]);
+    a_flood[2][playerid] = current_tick;
+    if(interval < 500) return 0;
     new mod,string[60];
     PrisonBetonHP[number]--;
     mod = PrisonBetonHP[number] % 75;
@@ -540,7 +563,8 @@ stock PrisonEditingBeton(playerid,number)
         new count;
         count = 40-(PrisonBetonHP[number]/75);
         PrisonSandStatus[number]++;
-        PrisonMovingBeton(number,count,PrisonSandStatus[number]);
+        PrisonMovingBeton(number,count);
+        PrisonMovingSand(number,PrisonSandStatus[number]);
         format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Бетон: ~w~%d/3000"),PrisonBetonHP[number]);
 	 	GameTextForPlayer(playerid,string, 1500, 3);
         SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Чёрт, тут много песка, нужно бы убрать его метлой!");
@@ -568,7 +592,52 @@ stock PrisonClearSand(playerid,number)
     if(GetPlayerVirtualWorld(playerid) != WORLD_PRISON_CELLS || GetPlayerVirtualWorld(playerid) != INT_PRISON_CELLS) return -1;
     if(PrisonSandStatus[number] == 0) return 0;
     PrisonSandStatus[number] = 0;
+    PrisonMovingSand(number,PrisonSandStatus[number]);
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
     SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я убрал песок, надо вернуть швабру на место!");
+    return 1;
+}
+
+stock PrisonEscape(playerid)
+{
+    SetPlayerCriminal(0,playerid, -1,"Побег из тюрьмы",6, 0);
+    return 1;
+}
+
+stock PrisonGivePipe(playerid)
+{
+    if(PlayerInfo[playerid][pPrisonPipeUnix]+1800 > gettime()) 
+    {
+        new line[100];
+        format(line,sizeof(line),"\n{ff6347} Трубу можно брать раз в 30 минут. Следующую можно взять через %s",fine_time(PlayerInfo[playerid][pPrisonPipeUnix]+1800-gettime()));
+        return ErrorMessage(playerid,line);
+    }
+    new put_inva = GiveThingPlayer(playerid, 201, 1, 0, 0, 0, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+    PlayerInfo[playerid][pPrisonPipeUnix] = gettime();
+    new string[86];
+    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonPipeUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonPipeUnix], PlayerInfo[playerid][pID]);
+    query_empty(pearsq, string);
+    SuccessMessage(playerid,"{66ff99}Вы взяли трубу, из неё вы можете сделать монтировку на станке");
+    ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
+    return 1;
+}
+
+stock PrisonGiveSpoon(playerid)
+{
+    if(PlayerInfo[playerid][pPrisonSpoonUnix]+1800 > gettime()) 
+    {
+        new line[100];
+        format(line,sizeof(line),"\n{ff6347} Вилку можно брать раз в 30 минут. Следующую можно взять через %s",fine_time(PlayerInfo[playerid][pPrisonSpoonUnix]+1800-gettime()));
+        return ErrorMessage(playerid,line);
+    }
+    new put_inva = GiveThingPlayer(playerid, 202, 1, 0, 0, 0, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+    PlayerInfo[playerid][pPrisonSpoonUnix] = gettime();
+    new string[86];
+    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
+    query_empty(pearsq, string);
+    SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");
+    ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
     return 1;
 }

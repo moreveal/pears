@@ -72,6 +72,10 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
     {
         i0 = 201, q0 = 1, t0 = 0; // Труба
     }
+    else if(thingId == 19) // отмычка
+    {
+        i0 = 202, q0 = 1, t0 = 0; // вилка
+    }
     else
     {
         new ingId[6], ingQuan[6];
@@ -499,7 +503,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             }
             else
             {
-                new line[100],lines[700];
+                new line[100],lines[800];
                 if(Tabs_Load[playerid] == 11) // Верстак
                 {
                     if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Ничего не выбрано для улучшений, значит открываем меню создания
@@ -511,6 +515,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Деталь Бомбы"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Монтировка"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
                     }
                     else

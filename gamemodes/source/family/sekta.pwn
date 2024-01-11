@@ -26,7 +26,9 @@ stock ShowSektaAltarMenu(playerid)
     new line[40],lines[120];
     if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
-    if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
+    if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nАлтарь {66ff99}[ Установлен ]"), strcat(lines,line);
+    else if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
+    if(FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nМетка к Алатарю"), strcat(lines,line);
     ShowDialog(playerid,1473,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
@@ -358,6 +360,10 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                 {
                     GoEditDynamicObject(playerid, 26, 1, 0, 0, SektaObject[fam], 0);
                 }
+            }
+            if(listitem == 2)
+            {
+                CreateGps(playerid,FamilyInfo[fam][fsAltarPos][0],FamilyInfo[fam][fsAltarPos][1],FamilyInfo[fam][fsAltarPos][2], 0, 0, 5.0);
             }
         }
         else ShowSektaMenu(playerid,fam);
