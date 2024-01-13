@@ -50,6 +50,7 @@ stock FindCarInWareHouse(playerid)
     ClearAnimations(playerid);
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
     new world = GetPlayerVirtualWorld(playerid)-80, i;
+    new g = fraction(playerid);
     if(PlayerInfo[playerid][pTheft] != 0) i = PlayerInfo[playerid][pTheft];
     if(crimeInfo[i][crmSklad] == world)
     {   
@@ -60,6 +61,11 @@ stock FindCarInWareHouse(playerid)
         SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Нужно вернутся в участок и сдать дело");
         format(string, sizeof(string), "Ваш угнанный %s был найден полицей",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
+        OrganInfo[g][glave] += 5000;
+        new stirngg[50];
+        format(stirngg, sizeof(stirngg), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+5000"), GameTextForPlayer(playerid,stirngg,3000,3);
+        PlayerInfo[playerid][pUnit] += 5000;
+        mysql_save(playerid, 41);
         SaveCrime(i);
     }
     else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nНа этом складе нет нужного транспорта. Поищите на других складах","*","");
@@ -157,6 +163,7 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
 		ErrorMessage(playerid, "{FF6347}Ошибка! Владелец транспорта не найден\n\n{cccccc}Обратитесь к администрации [ /report ]");
 		return 0;
 	}
+    new g = fraction(playerid);
 	cache_get_value_name(0, "Name", tempname, 24);
 	format(crimeInfo[slot][crmTargetName], 24, "%s", tempname); // Записываем имя чела
     format(crimeInfo[slot][crmSenderName], 24, "%s", PlayerInfo[playerid][pName]); // Записываем имя чела
@@ -170,6 +177,11 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmSklad] = wh+1;
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
+    OrganInfo[g][glave] += 5000;
+    new stirngg[50];
+    format(stirngg, sizeof(stirngg), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+5000"), GameTextForPlayer(playerid,stirngg,3000,3);
+    PlayerInfo[playerid][pUnit] += 5000;
+    mysql_save(playerid, 41);
 	SaveCar(car);
     SaveCrime(slot);
 	ACDestroyVehicle(car);

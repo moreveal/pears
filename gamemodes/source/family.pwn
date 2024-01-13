@@ -341,10 +341,12 @@ public LoadFamily()
 		cache_get_value_name_float(f, "altarPosXR", FamilyInfo[idx][fsAltarPos][3]);
 		cache_get_value_name_float(f, "altarPosYR", FamilyInfo[idx][fsAltarPos][4]);
 		cache_get_value_name_float(f, "altarPosZR", FamilyInfo[idx][fsAltarPos][5]);
+		cache_get_value_name_int(f, "altarStatus", FamilyInfo[idx][fsAltarStatus]);
 
-		if(FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarStatus] > 1)
+		if(FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarStatus] > 0)
 		{
 			SektaObjectHealt[idx] = 1000;
+			SektaObject[idx] = CreateDynamicObject(19527, FamilyInfo[idx][fsAltarPos][0], FamilyInfo[idx][fsAltarPos][1], FamilyInfo[idx][fsAltarPos][2], FamilyInfo[idx][fsAltarPos][3], FamilyInfo[idx][fsAltarPos][4], FamilyInfo[idx][fsAltarPos][5],0,0);
 		}
 		for(new i; i < 5; i++)
 		{

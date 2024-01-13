@@ -337,6 +337,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         }
         FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
         FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
+        FamilyInfo[fam][fsAltarStatus] = 1; 
         SektaObject[fam] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
         SektaObjectHealt[fam] = 1000;
         SaveFamilySekta(fam);
@@ -552,6 +553,16 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             CreateLabelTermRace(oid,RentObjectRace[oid]);
             UpdateLabelTermRace(oid);
         }
+        else if(gRedakt[playerid] == 26) // Алтарь
+		{
+            new fam = PlayerInfo[playerid][pFamily];
+            FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
+            FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
+            FamilyInfo[fam][fsAltarStatus] = 1; 
+            SektaObject[fam] = CreateDynamicObject(19527, x, y, z, rx, ry, rz,0,0);
+            SektaObjectHealt[fam] = 1000;
+            SaveFamilySekta(fam);
+		}
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
         gRedakt[playerid] = 0; // Редактор Off

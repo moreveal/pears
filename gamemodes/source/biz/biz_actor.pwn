@@ -5,6 +5,7 @@ new BizTermActor[MAX_BIZ_WITH_ACTORS][MAX_TERMINAL_BIZ];
 new BizAptekaActor[MAX_BIZ_WITH_ACTORS];
 new BizSMarketActor[13][4];
 new BizTehnikaActor[MAX_BIZ_WITH_ACTORS];
+new BizBankActor[MAX_BIZ_WITH_ACTORS][4];
 
 stock CreateTerminalActor(b, i)
 {
@@ -98,5 +99,17 @@ stock LoadBizStaticActor()
     for(new b = 0; b < 10; ++b)
     {
         BizTehnikaActor[b] = CreateDynamicActor(240, 1997.6824,1565.4247,1564.1647,90.0208, true, 100.0, b, 207, -1, 100.0, -1, 0);
+    }
+
+    for(new b = 0; b < 10; ++b)
+    {
+        BizBankActor[b][0] = CreateDynamicActor(11, 1355.7312,1568.8884,1560.8462,90.0000, true, 100.0, b+3163, 188, -1, 100.0, -1, 0);
+        BizBankActor[b][1] = CreateDynamicActor(59, 1356.0292,1566.7098,1561.3649,90.0000, true, 100.0, b+3163, 188, -1, 100.0, -1, 0);
+        BizBankActor[b][2] = CreateDynamicActor(11, 1355.7627,1564.5460,1560.8721,90.0000, true, 100.0, b+3163, 188, -1, 100.0, -1, 0);
+        BizBankActor[b][3] = CreateDynamicActor(59, 1355.9939,1562.4127,1561.3649,90.0000, true, 100.0, b+3163, 188, -1, 100.0, -1, 0);
+        for(new i; i < 4; i++)
+        {
+            ApplyDynamicActorAnimation(BizBankActor[b][i],"PED","SEAT_down",4.0,0,1,1,0,0);
+        }
     }
 }

@@ -92,3 +92,12 @@ stock EnterBizDoor(playerid)
     }
     return yes;
 }
+
+stock BankDoorMoving(playerid)
+{
+    if(GetPVarInt(playerid,"job_stat") == 13 || PlayerInfo[playerid][pSoska] > 1)
+    {
+        if(DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] == 0) DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] = 1,MoveDynamicObject(DoorBank[GetPlayerVirtualWorld(playerid)-3163],1349.905395, 1558.781127, 1559.846191,1.5);
+        else if(DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] == 1) DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] = 0,MoveDynamicObject(DoorBank[GetPlayerVirtualWorld(playerid)-3163],1351.405395, 1558.781127, 1559.846191,1.5);
+    }
+}

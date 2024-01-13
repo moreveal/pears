@@ -26,9 +26,9 @@ stock ShowSektaAltarMenu(playerid)
     new line[40],lines[120];
     if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
+    format(line,sizeof(line),"\nМетка к Алатарю"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nАлтарь {66ff99}[ Установлен ]"), strcat(lines,line);
     else if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
-    if(FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nМетка к Алатарю"), strcat(lines,line);
     ShowDialog(playerid,1473,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
@@ -179,6 +179,7 @@ stock SektaKillAltar(fam)
     }
     SektaObject[fam] = 0;
     FamilyInfo[fam][fInfluenceTemp] -= 2000;
+    FamilyInfo[fam][fsAltarStatus] = 0;
     SaveFamilySekta(fam);
     return 1;
 }
@@ -346,7 +347,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                     ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
                 }
             }
-            if(listitem == 1)
+            if(listitem == 2)
             {
                 new moving;
                 if(FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0) moving = 0;
@@ -361,7 +362,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                     GoEditDynamicObject(playerid, 26, 1, 0, 0, SektaObject[fam], 0);
                 }
             }
-            if(listitem == 2)
+            if(listitem == 1)
             {
                 CreateGps(playerid,FamilyInfo[fam][fsAltarPos][0],FamilyInfo[fam][fsAltarPos][1],FamilyInfo[fam][fsAltarPos][2], 0, 0, 5.0);
             }
@@ -451,8 +452,8 @@ stock SaveFamilySekta(idx)
 {
     new string_mysql[500];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `influence`='%d',`influenceTemp`='%d',`unixcnn`='%d',`unixrite`='%d',`altarPosX`='%.2f',`altarPosY`='%.2f',`altarPosZ`='%.2f',`altarPosXR`='%.2f',`altarPosYR`='%.2f',`altarPosZR`='%.2f',\
-	`unixAltar`='%d' WHERE `id`='%d'",
+	`unixAltar`='%d',`altarStatus`='%d' WHERE `id`='%d'",
 	FamilyInfo[idx][fInfluence],FamilyInfo[idx][fInfluenceTemp],FamilyInfo[idx][fsUnixCNN],FamilyInfo[idx][fsUnixRite],FamilyInfo[idx][fsAltarPos][0],FamilyInfo[idx][fsAltarPos][1],FamilyInfo[idx][fsAltarPos][2],FamilyInfo[idx][fsAltarPos][3],FamilyInfo[idx][fsAltarPos][4],FamilyInfo[idx][fsAltarPos][5],
-	FamilyInfo[idx][fsUnixAltar],idx); // 246 + 66 + 120 (432)
+	FamilyInfo[idx][fsUnixAltar],FamilyInfo[idx][fsAltarStatus],idx); // 246 + 66 + 120 (432)
 	query_empty(pearsq, string_mysql);
 }
