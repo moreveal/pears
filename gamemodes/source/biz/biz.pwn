@@ -213,13 +213,14 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем колич
 	new quan;
 	if(b >= 173 && b <= 182) // Магазины с одеждой
 	{
+		new bn = b-173;
 		if(thingType == 2) // Аксессуары
 		{
 			for(new as = 0; as < 100; as++)
 			{
-				if(AksesItem[b][as] == thingId)
+				if(AksesItem[bn][as] == thingId)
 				{
-					quan = AksesQuan[b][as];
+					quan = AksesQuan[bn][as];
 					break;
 				}
 			}
@@ -228,9 +229,9 @@ stock getThingQuanItemBizz(b, thingId, thingType) // Получаем колич
 		{
 			for(new as = 0; as < 50; as++)
 			{
-				if(StoreItem[b][as] == thingId)
+				if(StoreItem[bn][as] == thingId)
 				{
-					quan = StoreQuan[b][as];
+					quan = StoreQuan[bn][as];
 					break;
 				}
 			}

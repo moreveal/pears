@@ -29,6 +29,40 @@ stock ClearSorting(playerid)
     return 1;
 }
 
+stock LoadPageSorting(playerid, dialogid, maxList, &minlist, &page, &thisPage)
+{
+    OnlineInfo[playerid][oDialogMenu][0] = 0; // Строки на текущей странице
+    OnlineInfo[playerid][oDialogMenu][6] = dialogid;
+	if(page == 0)
+	{
+		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != dialogid) ClearSorting(playerid);
+        OnlineInfo[playerid][oSorting][0] = dialogid;
+
+		OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
+		OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
+		OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
+		OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+	}
+
+	minlist = 0;
+    if(page > 0)
+	{
+		if(page == OnlineInfo[playerid][oDialogMenu][1]) minlist = OnlineInfo[playerid][oDialogMenu][4], thisPage = 1; // Если открывается та-же самая страница, показываем первый list
+		else minlist = OnlineInfo[playerid][oDialogMenu][2] + 1; // В другом случае открываем последний list (+ 1 для следующей страницы)
+		OnlineInfo[playerid][oDialogMenu][1] = page;
+	}
+
+    if((minlist >= maxList || OnlineInfo[playerid][oDialogMenu][5] == 1) && thisPage == 0) // Сбрасываем страницы, если последний лист максимальный или больше
+	{
+		OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
+		OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
+		OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
+		OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+		minlist = 0, page = 0;
+	}
+    return 1;
+}
+
 stock IsActiveSorting(playerid)
 {
     if(OnlineInfo[playerid][oSorting][1] > 0 || OnlineInfo[playerid][oSorting][2] > 0 
@@ -46,6 +80,23 @@ stock ReloadSorting(playerid, dialogid)
         PlayerPlaySound(playerid, 6801, 0,0,0);
         OnlineInfo[playerid][oSorting][0] = dialogid;
     }
+    return 1;
+}
+
+stock DialogMenuSorting(playerid)
+{
+	new line[90],lines[360];
+    format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
+
+    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}ID:\t{ff9000}Все"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}ID:\t{99ff66}%d", OnlineInfo[playerid][oSorting][1]), strcat(lines,line);
+
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}Все"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}%s", OnlineInfo[playerid][oSortingName]), strcat(lines,line);
+
+    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
+
+    ShowDialog(playerid,982,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр",lines,"Выбрать","Назад");
     return 1;
 }
 
@@ -430,6 +481,59 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             }
         }
         else TradeList(playerid, DP[1][playerid]);
+    }
+
+    // Настройки фильтра в меню
+    else if(dialogid == 982)
+	{
+        if(response)
+        {
+            if(listitem == 0)
+            {
+				ShowDialog(playerid,980,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите ID","Принять","Отмена");
+            }
+            if(listitem == 1)
+            {
+                ShowDialog(playerid,972,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите название\nМожно неполное название\n1 - 30 символов","Принять","Отмена");
+            }
+            if(listitem == 2) // Сбросить Фильтр
+            {
+				ReloadSorting(playerid,  OnlineInfo[playerid][oDialogMenu][6]);
+				DialogMenuSorting(playerid);
+            }
+        }
+        else 
+		{
+			if(OnlineInfo[playerid][oDialogMenu][6] == 1075) skinprice(playerid, 0); // Возвращаем в меню настроек гос. цен
+			else if(OnlineInfo[playerid][oDialogMenu][6] == 1089) showDialogFittingRoomSkin(playerid, 0); // Возвращаем в меню примерочной
+			else if(OnlineInfo[playerid][oDialogMenu][6] == 1066) vehprice(playerid, 0); // Возвращаем в меню настроек гос. цен транспорта
+		}
+	}
+	else if(dialogid == 980) // Фильтр по id
+	{
+        if(response)
+        {
+			new input = strval(inputtext);
+			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}Не меньше 1 и не больше 10.000"), DialogMenuSorting(playerid);
+			OnlineInfo[playerid][oSorting][1] = input;
+            PlayerPlaySound(playerid,6401,0,0,0);
+            DialogMenuSorting(playerid);
+        }
+        else DialogMenuSorting(playerid);
+    }
+	else if(dialogid == 972) // Фильтр по названию
+	{
+        if(response)
+        {
+			if(!strlen(inputtext)) return ErrorText(playerid, "{FF6347}Вы ничего не ввели"), DialogMenuSorting(playerid);
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 30) return ErrorText(playerid, "{FF6347}1 - 30 символов"), DialogMenuSorting(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "{FF6347}Вы используете запрещённый символ"), DialogMenuSorting(playerid);
+
+			format(OnlineInfo[playerid][oSortingName], 64,"%s", inputtext);
+            PlayerPlaySound(playerid,6401,0,0,0);
+            DialogMenuSorting(playerid);
+        }
+        else DialogMenuSorting(playerid);
     }
     return 1;
 }

@@ -767,37 +767,11 @@ stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
 
 stock vehprice(playerid, page) // Настройки гос. цен транспорта
 {
-	new max_line = 50, yesNext;
+	new max_line = 50, yesNext, minlist, thisPage;
 	new line[214],lines[4096];
 
-	DP[0][playerid] = 0; // Строки на текущей странице
-	if(page == 0)
-	{
-		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != 1066) ClearSorting(playerid);
-        OnlineInfo[playerid][oSorting][0] = 1066;
-
-		DP[1][playerid] = 0; // Страница
-		DP[2][playerid] = 0; // Последний vehicleList на странице
-		DP[4][playerid] = 0; // Первый vehicleList на странице
-		DP[5][playerid] = 0; // Информация о последней странице
-	}
-
-	new minlist = 0, thisPage;
-    if(page > 0)
-	{
-		if(page == DP[1][playerid]) minlist = DP[4][playerid], thisPage = 1; // Если открывается та-же самая страница, показываем первый vehicleList
-		else minlist = DP[2][playerid] + 1; // В другом случае открываем последний vehicleList (+ 1 для следующей страницы)
-		DP[1][playerid] = page;
-	}
-
-    if((minlist >= 211 + sizeof(vehNameCustom) + 1 || DP[5][playerid] == 1) && thisPage == 0) // Сбрасываем страницы, если последний лист максимальный или больше
-	{
-		DP[1][playerid] = 0; // Страница
-		DP[2][playerid] = 0; // Последний vehicleList на странице
-		DP[4][playerid] = 0; // Первый vehicleList на странице
-		DP[5][playerid] = 0; // Информация о последней странице
-		minlist = 0, page = 0;
-	}
+	// Настраиваем отображение фильтров и страниц
+	LoadPageSorting(playerid, 1066, 211 + sizeof(vehNameCustom) + 1, minlist, page, thisPage);
 
 	format(line,sizeof(line),"{cccccc}Транспорт [Модель]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
 	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
@@ -806,20 +780,20 @@ stock vehprice(playerid, page) // Настройки гос. цен трансп
 	new one;
 	for(new v = minlist; v < 211 + sizeof(vehNameCustom) + 1; v++)
 	{
-		if(one == 0) DP[4][playerid] = v, one = 1; // Записывали первый vehicleList
+		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = v, one = 1; // Записывали первый vehicleList
 
 		if(CheckSortingLineVehPrice(playerid, v)) format(line,sizeof(line),"%s", ShowLineVehPrice(playerid, v)), strcat(lines,line);
 
-		if(DP[0][playerid] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
+		if(OnlineInfo[playerid][oDialogMenu][0] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
         {
 			yesNext = 1;
             break;
         }
 
-		if(v >= 211 + sizeof(vehNameCustom) && page > 0)
+		if(v > 211 + sizeof(vehNameCustom) + 1 && page > 0)
 		{
 			yesNext = 1; // Последний транспорт, отображаем Next Page
-			DP[5][playerid] = 1; // Записываем, что эта страница была последней
+			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
 		}
 	}
 	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
@@ -859,9 +833,9 @@ stock ShowLineVehPrice(playerid, v)
 	new vehicleList = v;
 	v = CorrectVehicleList(vehicleList);
 
-    List[DP[0][playerid]][playerid] = vehicleList;
-    DP[0][playerid] ++; // Подсчитываем строки
-	DP[2][playerid] = vehicleList;
+    List[OnlineInfo[playerid][oDialogMenu][0]][playerid] = vehicleList;
+    OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
+	OnlineInfo[playerid][oDialogMenu][2] = vehicleList;
 
 	if(v >= 2000) // Custom
 	{
@@ -872,23 +846,6 @@ stock ShowLineVehPrice(playerid, v)
     	format(line,sizeof(line),"\n{cccccc}%s [%d]\t{99ff66}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d",GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
 	}
     return line;
-}
-
-stock VehPriceSorting(playerid)
-{
-	new line[90],lines[360];
-    format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
-
-    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Модель:\t{ff9000}Все"), strcat(lines,line);
-	else format(line,sizeof(line),"\n{cccccc}Модель:\t{99ff66}%d", OnlineInfo[playerid][oSorting][1]), strcat(lines,line);
-
-	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}Все"), strcat(lines,line);
-	else format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}%s", OnlineInfo[playerid][oSortingName]), strcat(lines,line);
-
-    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
-
-    ShowDialog(playerid,1063,DIALOG_STYLE_TABLIST_HEADERS,"Гос Стоимость Транспорта",lines,"Выбрать","Назад");
-    return 1;
 }
 
 stock SettingGosPriceVehicle(playerid, vehicleList)
@@ -914,41 +871,21 @@ stock CorrectVehicleList(vehicleList)
 
 stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext[])
 {
-	if(dialogid == 1063) // Настройки фильтра
-	{
-        if(response)
-        {
-            if(listitem == 0)
-            {
-				ShowDialog(playerid,999,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите ID модели транспорта","Принять","Отмена");
-            }
-            if(listitem == 1)
-            {
-                ShowDialog(playerid,983,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите название транспорта \nМожно не полное название\n1 - 30 символов","Принять","Отмена");
-            }
-            if(listitem == 2) // Сбросить Фильтр
-            {
-				ReloadSorting(playerid, 1066);
-				VehPriceSorting(playerid);
-            }
-        }
-        else vehprice(playerid, 0);
-	}
-	else if(dialogid == 1066)
+	if(dialogid == 1066)
 	{
 		if(response)
 		{
-			if(listitem == 0) VehPriceSorting(playerid);
+			if(listitem == 0) DialogMenuSorting(playerid);
 
-			if(DP[0][playerid] > 0) // Есть строки на странице
+			if(OnlineInfo[playerid][oDialogMenu][0] > 0) // Есть строки на странице
 			{
-				if(listitem >= 1 && listitem <= DP[0][playerid]) // Отображаемые List
+				if(listitem >= 1 && listitem <= OnlineInfo[playerid][oDialogMenu][0]) // Отображаемые List
 				{
 					new vehicleList = List[listitem-1][playerid];
-					DP[3][playerid] = vehicleList;
+					OnlineInfo[playerid][oDialogMenu][3] = vehicleList;
 					SettingGosPriceVehicle(playerid, vehicleList);
 				}
-				else if(listitem == DP[0][playerid] + 1) vehprice(playerid, DP[1][playerid] + 1); // Следующая страница
+				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
 			}
 		}
 		else cmd_economy(playerid);
@@ -958,7 +895,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 		if(response)
 		{
 			new input = strval(inputtext);
-			new vehicleList = DP[3][playerid];
+			new vehicleList = OnlineInfo[playerid][oDialogMenu][3];
 			if(input < 1 || input > 900000000) return ErrorText(playerid, "{FF6347}Не меньше 1$ и не больше 900.000.000$"), SettingGosPriceVehicle(playerid, vehicleList);
 			VehGos[vehicleList] = input;
 
@@ -971,45 +908,19 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
   			SendClientMessage(playerid,COLOR_GREY,string);
   			format(string, sizeof(string), "[Правительство] %s изменяет гос. стоимость: %s {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetVehicleName(v), VehGos[vehicleList], get_k(VehGos[vehicleList]));
   			SendDepartMessage(COLOR_ALLDEPT, string);
-			SettingGosPriceVehicle(playerid, DP[3][playerid]);
+			SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, GetVehicleName(v));
 
 			// Сбрасываем ценники в Бизнесах: Все Аренды Транспорта, Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
      		for(new b = 42; b < 92; b++) ResetBizzPriceItem(playerid, b, v, 5, input);
 		}
-		else SettingGosPriceVehicle(playerid, DP[3][playerid]);
+		else SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
-	else if(dialogid == 999) // Фильтр по id модели
-	{
-        if(response)
-        {
-			new input = strval(inputtext);
-			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}Не меньше 1 и не больше 10000 (400 - 612, 2000 и выше - кастомные авто)"), VehPriceSorting(playerid);
-			OnlineInfo[playerid][oSorting][1] = input;
-            PlayerPlaySound(playerid,6401,0,0,0);
-            VehPriceSorting(playerid);
-        }
-        else VehPriceSorting(playerid);
-    }
-	else if(dialogid == 983) // Фильтр по названию
-	{
-        if(response)
-        {
-			if(!strlen(inputtext)) return ErrorText(playerid, "{FF6347}Вы ничего не ввели"), VehPriceSorting(playerid);
-			if(strlen(inputtext) < 1 || strlen(inputtext) > 30) return ErrorText(playerid, "{FF6347}1 - 30 символов"), VehPriceSorting(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "{FF6347}Вы используете запрещённый символ"), VehPriceSorting(playerid);
-
-			format(OnlineInfo[playerid][oSortingName], 64,"%s", inputtext);
-            PlayerPlaySound(playerid,6401,0,0,0);
-            VehPriceSorting(playerid);
-        }
-        else VehPriceSorting(playerid);
-    }
 	else if(dialogid == 1086)
 	{
 		if(response)
 		{
-			new vehicleList = DP[3][playerid];
+			new vehicleList = OnlineInfo[playerid][oDialogMenu][3];
 			new v = CorrectVehicleList(vehicleList);
 			if(listitem == 0)
 			{
@@ -1028,13 +939,13 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 				ShowDialog(playerid,1133,DIALOG_STYLE_INPUT,"Гос Стоимость Транспорта",lines,"Принять","Отмена");
 			}
 		}
-		else vehprice(playerid, DP[1][playerid]);
+		else vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
 	}
 	else if(dialogid == 1133)
 	{
 		if(response)
 		{
-			new vehicleList = DP[3][playerid];
+			new vehicleList = OnlineInfo[playerid][oDialogMenu][3];
 			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
 			new input = strval(inputtext);
 			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 1G и не больше 100.000G"), SettingGosPriceVehicle(playerid, vehicleList);
@@ -1049,12 +960,12 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			new string[180];
 			format(string,sizeof(string),"[ Мысли ]: Gold стоимость %s теперь составляет: {ffcc00}%dG", GetVehicleName(v), VehGold[vehicleList]);
   			SendClientMessage(playerid,COLOR_GREY,string);
-  			SettingGosPriceVehicle(playerid, DP[3][playerid]);
+  			SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 
 			format(string,sizeof(string),"%dG %s", input, GetVehicleName(v));
 			AdminLog("vehgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", v, string);
 		}
-		else SettingGosPriceVehicle(playerid, DP[3][playerid]);
+		else SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
 	return 1;
 }

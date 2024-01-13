@@ -1,6 +1,7 @@
 
 #define MAX_ACC 100 // Максимальное количество команд по правам доступа у организаций
 #define MAX_ORDERESCORT 10 // Максимальное количество заказов в ЭСкорте
+#define MAX_SKIN_ORGANIZATION 30 
 
 enum gInfo
 {
@@ -44,9 +45,9 @@ enum gInfo
 	gCash, // Счет организации (открыт или нет)
 	gCarAcc[10], // Права доступа к транспорту
 	gMap, // ID Загруженной карты
-	gSkin[20], // ID Скина
-	gSkinPrice[20], // Стоимость Скина
-	gSkinRank[20], // С какого ранга доступен скин
+	gSkin[MAX_SKIN_ORGANIZATION], // ID Скина
+	gSkinPrice[MAX_SKIN_ORGANIZATION], // Стоимость Скина
+	gSkinRank[MAX_SKIN_ORGANIZATION], // С какого ранга доступен скин
 	gMaxRanks, // Максимальное количество рангов
 	gOrder[MAX_ORDERESCORT], // Заказ
 	gOrderQuan[MAX_ORDERESCORT], // Заказ кол-во.

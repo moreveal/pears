@@ -217,7 +217,9 @@ stock godrink(playerid)
 	new alco, coffe, eat;
 	if(!IsPlayerInAnyVehicle(playerid) && NoAnim[playerid] == 0)
 	{
-		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 || HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163
+			|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 
+			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
 		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0,0,0,0,0,0);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119 || HoldStat[playerid] == 120 || HoldStat[playerid] == 121 || HoldStat[playerid] == 124)
