@@ -29,3 +29,10 @@
 // Тюрьма рабочая зона prison working
 #define WORLD_PRISON_WORKING 180
 #define INT_PRISON_WORKING 174
+
+
+//==================================================
+// Трейлер Интерьер
+
+#define WORLD_TRAILER -1
+#define INT_TRAILER 187

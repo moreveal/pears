@@ -508,7 +508,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            if(get_invent2(playerid, 19, 0) == 0) return ErrorMessage(playerid,"{ff6347} У вас нет отмычек [Вы можете сделать их на станке из вилки]");
+            if(get_invent2(playerid, 19, 0) == 0) return ErrorMessage(playerid,"{ff6347} У вас нет отмычек\n{cccccc}Вы можете сделать их на станке из вилки");
             CreateBreaking(playerid, 4, DP[0][playerid], 0);
         }
     }
@@ -532,8 +532,8 @@ stock PrisonMovingPoster(playerid,number)
 	    SuccessMessage(playerid, "{99ff66}Вы закрыли дырку в стене и предотвратили побег");
     }
 
-    if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number);
-    else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number);
+    if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number), PlayerPlaySound(playerid,5601,0,0,0);
+    else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number), PlayerPlaySound(playerid,5602,0,0,0);
     return 1;
 }
 
@@ -725,4 +725,431 @@ stock PrisonGiveSpoon(playerid)
     SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");
     ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
     return 1;
+}
+
+stock IsAPrisonBedTable(playerid) // Получаем id прикроватного столика в тюряге
+{
+    if(GetPlayerVirtualWorld(playerid) != WORLD_PRISON_CELLS || GetPlayerVirtualWorld(playerid) != INT_PRISON_CELLS) return -1;
+	if(IsPlayerInRangeOfPoint(playerid,1.0,1057.384277, 2435.860351, 10.385841)) return 0;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1054.723022, 2435.860351, 10.385841)) return 1;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1050.653198, 2435.860351, 10.385841)) return 2;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1047.991943, 2435.860351, 10.385841)) return 3;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1043.912353, 2435.860351, 10.385841)) return 4;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1041.251098, 2435.860351, 10.385841)) return 5;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1037.192138, 2435.860351, 10.385841)) return 6;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1034.530883, 2435.860351, 10.385841)) return 7;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1034.530883, 2460.949951, 10.385841)) return 8;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1037.192138, 2460.949951, 10.385841)) return 9;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1041.251098, 2460.949951, 10.385841)) return 10;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1043.912353, 2460.949951, 10.385841)) return 11;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1047.991943, 2460.949951, 10.385841)) return 12;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1050.653198, 2460.949951, 10.385841)) return 13;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1054.723022, 2460.949951, 10.385841)) return 14;
+	else if(IsPlayerInRangeOfPoint(playerid,1.0,1057.384277, 2460.949951, 10.385841)) return 15;
+    return -1;
+}
+
+stock showprisontable(playerid, i) // Открываем меню прикроватного столика
+{
+	if(OnlineInfo[playerid][oShowInterface] != 1 || howstun(playerid)) return 1;
+	if(PlayerInfo[playerid][pJailed] == 0 && PrisonAlarm == 0) return ErrorMessage(playerid, "{FF6347}Прикроватный столик могут открывать только заключённые\n{cccccc}Вы можете открыть столик только во время тревоги");
+
+    if(OnlineInfo[playerid][oPrisonTableMessage] == false)
+	{
+		OnlineInfo[playerid][oPrisonTableMessage] = true;
+        new line[100],lines[400];
+        format(line,sizeof(line),"{ff9000}Тумба"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ffcc66}- Надзиратели могут обыскать эту тумбу только во время тюремной тревоги"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ffcc66}- Предметы, которые положили вы, не смогут взять другие заключённые"), strcat(lines,line);
+        format(line,sizeof(line),"\n{FF6347}Внимание! После перезагрузки сервера все предметы исчезнут"), strcat(lines,line);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+	}
+
+	OnlineInfo[playerid][oShowTabs] = i;
+	i_tabs(playerid, 4, 1);
+	for(new inva = 0; inva < MAX_PRISON_TABLE_SLOTS; inva++) item_second(playerid, PrisonTableInfo[i][ptInvent][inva], PrisonTableInfo[i][ptInv][inva], inva, 0, PrisonTableInfo[i][ptInvPara][inva], PrisonTableInfo[i][ptInvType][inva], PrisonTableInfo[i][ptInvPack][inva], 0);
+	return 1;
+}
+
+stock use_prisontable(playerid, i, inva, useinva)
+{
+    i_resettabs(playerid);
+	i_resetveshi(playerid);
+	
+	if(OnlineInfo[playerid][oShowTabs] != i) return 1;
+	if(Veshi[playerid] >= 1) return 1;
+	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+ 		
+	if(useinva != 9999)
+	{
+ 		if(PlayerInfo[playerid][pInven][useinva] != PrisonTableInfo[i][ptInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+	}
+    if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
+
+    if(IsACop(playerid) && PlayerInfo[playerid][pJailed] == 0) {}
+    else
+    {
+        if(PrisonTableInfo[i][ptInvPlayer][inva] > 0 && PrisonTableInfo[i][ptInvPlayer][inva] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Это чужой предмет и вы не можете его взять\n\n{cccccc}Предметы, которые положил другой игрок, невозможно взять"), i_resettabs(playerid);
+    }
+
+	new thingId = PrisonTableInfo[i][ptInvent][inva];
+    new thingQuan = PrisonTableInfo[i][ptInv][inva];
+    new thingPara = PrisonTableInfo[i][ptInvPara][inva];
+    new thingQara = PrisonTableInfo[i][ptInvQara][inva];
+    new thingType = PrisonTableInfo[i][ptInvType][inva];
+    new thingPack = PrisonTableInfo[i][ptInvPack][inva];
+	
+	// Забираем предмет из дома
+	if(thingType == 0 && thingPack == 0)
+	{
+	    if(CheckThingQuan(thingId) == 1)
+		{
+		    DP[0][playerid] = inva;
+			new string[120];
+			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, thingId, thingType, thingPack));
+			ShowDialog(playerid,939,DIALOG_STYLE_INPUT,"{ff9000}Тумба",string,"Принять","Отмена");
+			return 1;
+		}
+	}
+	
+	// Проверка на наличие особых аксессуаров (Каска и Броня)
+	if(IsArmor(thingId) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
+	
+	// Проверка на одиночный предмет
+	if(JustOneThingInventory(thingId, thingType) && get_invent(playerid, thingId, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
+	
+	new string[160];
+	if(thingType == 0)
+	{
+	    if(CheckThingQuan(thingId) == 1)
+		{
+			new getQuan, getLimit;
+    		i_limit(playerid, thingId, getQuan, getLimit);
+    		if(getQuan + thingQuan > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, string);
+ 		}
+	}
+	
+	new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, useinva);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+    TakePrisonTable(i, thingId, thingQuan, thingType, inva);
+    
+    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
+	
+    format(string,sizeof(string),"Взял %d: %s", i, GetNameThing(1, thingId, thingType, thingPack));
+	UserLog("gtable", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingQuan, string);
+	return 1;
+}
+
+stock TakePrisonTable(i, thingId, thingQuan, thingType, dopinf)
+{
+	new plalit;
+	if(dopinf == 999)
+	{
+		for(new inva = 0; inva < 80; inva++)
+		{
+			if(PrisonTableInfo[i][ptInvent][inva] == thingId && PrisonTableInfo[i][ptInvType][inva] == thingType)
+			{
+				if(PrisonTableInfo[i][ptInv][inva]-thingQuan <= 0) 
+                {
+                    PrisonTableInfo[i][ptInvent][inva] = 0;
+                    PrisonTableInfo[i][ptInv][inva] = 0;
+                    PrisonTableInfo[i][ptInvPara][inva] = 0;
+                    PrisonTableInfo[i][ptInvQara][inva] = 0;
+                    PrisonTableInfo[i][ptInvType][inva] = 0;
+                    PrisonTableInfo[i][ptInvPack][inva] = 0;
+                    PrisonTableInfo[i][ptInvPlayer][inva] = 0;
+                }
+				else PrisonTableInfo[i][ptInv][inva] -= thingQuan;
+				plalit = inva;
+				break;
+			}
+		}
+	}
+	else
+	{
+		if(PrisonTableInfo[i][ptInvent][dopinf] == thingId && PrisonTableInfo[i][ptInvType][dopinf] == thingType)
+		{
+			if(PrisonTableInfo[i][ptInv][dopinf]-thingQuan <= 0) 
+            {
+                PrisonTableInfo[i][ptInvent][dopinf] = 0;
+                PrisonTableInfo[i][ptInv][dopinf] = 0;
+                PrisonTableInfo[i][ptInvPara][dopinf] = 0;
+                PrisonTableInfo[i][ptInvQara][dopinf] = 0;
+                PrisonTableInfo[i][ptInvType][dopinf] = 0;
+                PrisonTableInfo[i][ptInvPack][dopinf] = 0;
+                PrisonTableInfo[i][ptInvPlayer][dopinf] = 0;
+            }
+			else PrisonTableInfo[i][ptInv][dopinf] -= thingQuan;
+		}
+		plalit = dopinf;
+	}
+	foreach(Player,p)
+	{
+		if(Tabs_Load[p] != 14) continue;
+		if(OnlineInfo[p][oLogged] == 1 && OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oShowTabs] == i) item_second(p, PrisonTableInfo[i][ptInvent][plalit], PrisonTableInfo[i][ptInv][plalit], plalit, 0, PrisonTableInfo[i][ptInvPara][plalit], PrisonTableInfo[i][ptInvType][plalit], PrisonTableInfo[i][ptInvPack][plalit], 0);
+	}
+	return 1;
+}
+
+stock get_prisontable(pt, thingId, thingType) // Поиск предмета в тумбе
+{
+	new quan = 0;
+	for(new i = 0; i < MAX_PRISON_TABLE_SLOTS; i++)
+	{
+		if(PrisonTableInfo[pt][ptInvent][i] == thingId 
+            && PrisonTableInfo[pt][ptInv][i] > 0 
+            && PrisonTableInfo[pt][ptInvType][i] == thingType) quan += PrisonTableInfo[pt][ptInv][i];
+	}
+	return quan;
+}
+
+stock pt_limit(pt, thingId, &getQuan, &getLimit) // Проверяем лимиты тумбы в тюрьме
+{
+	new lim[INVENTER];
+	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
+	lim[8] = 100, lim[19] = 1000, lim[41] = 1000, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
+	lim[4] = 100000, lim[5] = 100000, lim[6] = 100000, lim[7] = 100000, lim[9] = 20, lim[18] = 10000, lim[20] = 10000, lim[27] = 50000, lim[28] = 50000, lim[29] = 50000, lim[30] = 50000;
+	lim[46] = 1000, lim[47] = 1000, lim[55] = 100, lim[60] = 1000, lim[61] = 500, lim[64] = 10000, lim[65] = 10000, lim[66] = 10000, lim[67] = 10000, lim[71] = 1000;
+	lim[72] = 1000, lim[73] = 1000, lim[74] = 1000, lim[75] = 1000, lim[76] = 1000, lim[77] = 1000, lim[78] = 1000, lim[79] = 1000, lim[80] = 1000, lim[81] = 1000;
+	lim[82] = 1000, lim[83] = 1000, lim[84] = 1000, lim[85] = 1000, lim[86] = 1000, lim[87] = 1000, lim[88] = 1000, lim[89] = 10000, lim[106] = 1000, lim[108] = 1000, lim[109] = 1000, lim[110] = 1000;
+	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[198] = 1000;
+
+    getQuan = get_prisontable(pt, thingId, 0);
+    getLimit = lim[thingId];
+	return 1;
+}
+
+stock put_prisontable(playerid, inva, i, thingId, thingQuan, binva, thingType, thingPack)
+{
+	new put_inva = -1;
+	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowTabs] == 9999
+	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != thingId || PlayerInfo[playerid][pInvenQuan][inva] < thingQuan) return i_resetveshi(playerid);
+	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
+	
+	if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
+	
+	if(thingId == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем убрать в тумбу"), i_resetveshi(playerid);
+	if(NotGiveThing(thingId, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+	
+	new string[100];
+	new quanThing;
+	if(thingType == 0)
+	{
+		if(CheckThingQuan(thingId) == 1)
+		{
+		    if(PrisonTableInfo[i][ptInvent][binva] != 0 && PrisonTableInfo[i][ptInvent][binva] != PlayerInfo[playerid][pInven][inva]) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята"), i_resetveshi(playerid);
+		    if(thingPack == 0) quanThing = 1;
+		    if(PlayerInfo[playerid][pInvenQuan][inva] < thingQuan) return ErrorMessage(playerid, "{FF6347}У вас нет такого количества в этой ячейке"), i_resetveshi(playerid);
+		    new getQuan, getLimit;
+		    pt_limit(i, thingId, getQuan, getLimit);
+		    if(getQuan+thingQuan > getLimit)
+		    {
+		        format(string,sizeof(string),"{FF6347}В тумбе нет места\n\nЛимит для этого предмета: %d", getLimit);
+		        ErrorMessage(playerid, string);
+				i_resetveshi(playerid);
+				i_resettabs(playerid);
+				return 1;
+		    }
+		}
+	}
+	if(PrisonTableInfo[i][ptInvent][binva] > 0 && quanThing == 0) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята"), i_resetveshi(playerid);
+	
+	put_inva = put_thing_prisontable(i, playerid, thingId, thingQuan, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], thingType, thingPack, binva);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В доме нет места"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+	
+	if(quanThing == 1) take_away(playerid, thingQuan, inva); // Отнимаем предмет (по количеству)
+ 	else i_del(playerid, inva); // Отнимаем предмет (целиком)
+ 	SaveInvent(playerid, inva); // Сохраняем ячейку инвентаря игрока
+	
+    format(string,sizeof(string),"Положил %d: %s", i, GetNameThing(1, thingId, thingType, thingPack));
+	UserLog("ptable", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingQuan, string);
+	
+	i_resetveshi(playerid);
+	i_resettabs(playerid);
+	return put_inva;
+}
+stock PutThingPrisonTable(pt, playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, useinva) // Кладём предмет в тумбу
+{
+    new inva = -1;
+	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
+	if(useinva == 999) // Не знаем в какую ячейку класть
+	{
+	    if(thingType == 0 && thingPack == 0) // Обычный предмет
+		{
+		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
+		    {
+		        new find;
+		    	for(new i = 0; i < MAX_PRISON_TABLE_SLOTS; i++)
+				{
+					if(PrisonTableInfo[pt][ptInvent][i] == thingId && PrisonTableInfo[pt][ptInvType][i] == thingType && PrisonTableInfo[pt][ptInvPack][i] == thingPack) // Ищем тот, где уже предмет лежит
+					{
+					    inva = i;
+		  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+		  				find = 1;
+			   			break;
+					}
+				}
+				if(find == 0) // Если не нашли, ищем пустую
+				{
+					for(new i = 0; i < MAX_PRISON_TABLE_SLOTS; i++)
+					{
+						if(PrisonTableInfo[pt][ptInvent][i] == 0) // Ищем пустую ячейку
+						{
+						    inva = i;
+			  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+				   			break;
+						}
+					}
+				}
+			}
+			else if(CheckThingQuan(thingId) == 0) // Объект не имеет количество
+			{
+			    for(new i = 0; i < MAX_PRISON_TABLE_SLOTS; i++)
+				{
+					if(PrisonTableInfo[pt][ptInvent][i] == 0) // Ищем пустую ячейку
+					{
+					    inva = i;
+		  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, i);
+			   			break;
+					}
+				}
+			}
+		}
+		else // Все остальные предметы не имеют количества или возможности складываться в одну ячейку
+		{
+		    for(new i = 0; i < MAX_PRISON_TABLE_SLOTS; i++)
+			{
+				if(PrisonTableInfo[pt][ptInvent][i] == 0) // Ищем пустую ячейку
+				{
+				    inva = i;
+	  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, i);
+		   			break;
+				}
+			}
+		}
+	}
+	else inva = put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, useinva); // Знаем в какую ячейку класть
+	return inva;
+}
+
+stock put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, i)
+{
+	if(PrisonTableInfo[pt][ptInvent][i] != 0 && PrisonTableInfo[pt][ptInvent][i] != thingId) return -1; // Защита от ошибки, на всякий случай
+
+	PrisonTableInfo[pt][ptInvent][i] = thingId; // Ставим предмет в слот
+	PrisonTableInfo[pt][ptInv][i] += thingQuan; // Ставим количество в слот
+
+	// (Техника сломана или нет, Одежда какой организации принадлежит, Unix время свежести продуктов, Изношенность оружия, Прнадлежность лицензии к ID игрока, Тип крепления аксессуара)
+	if(PerishableThing(thingId, thingType)) // Проверка на портящиеся продукты - у них используется Unix (Добавляя испорченный продукт к свежему, портиться должно всё)
+	{
+	    if(PrisonTableInfo[pt][ptInvPara][i] > 0)
+		{
+			if(PrisonTableInfo[pt][ptInvPara][i] > thingPara) PrisonTableInfo[pt][ptInvPara][i] = thingPara;
+		}
+		else PrisonTableInfo[pt][ptInvPara][i] = thingPara;
+	}
+	else PrisonTableInfo[pt][ptInvPara][i] = thingPara;
+	PrisonTableInfo[pt][ptInvQara][i] = thingQara; // Статус краденного предмета
+	PrisonTableInfo[pt][ptInvType][i] = thingType; // Тип предмета
+	PrisonTableInfo[pt][ptInvPack][i] = thingPack; // Упаковка предмета
+    PrisonTableInfo[pt][ptInvPlayer][i] = PlayerInfo[playerid][pID];
+	
+	foreach(Player,x)
+	{
+		if(Tabs_Load[x] != 14) continue;
+		if(OnlineInfo[x][oLogged] == 1 && OnlineInfo[x][oShowInterface] == 1 && OnlineInfo[x][oShowTabs] == pt) item_second(x, thingId, PrisonTableInfo[pt][ptInv][i], i, 0, PrisonTableInfo[pt][ptInvPara][i], thingType, thingPack, 0);
+	}
+	return i;
+}
+
+stock shift_prisontable(playerid, pt, getinva, putinva) //  Перемещение предметов внутри инвентаря (с одной ячейки на другую)
+{
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
+	{
+		if(PrisonTableInfo[pt][ptInvent][getinva] == 0) return i_resettabs(playerid);
+		else if(PrisonTableInfo[pt][ptInvent][putinva] != 0) return 1;
+        if(PrisonTableInfo[pt][ptInvPlayer][getinva] > 0 && PrisonTableInfo[pt][ptInvPlayer][getinva] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Это не ваш предмет и вы не можете его перекладывать"), i_resettabs(playerid);
+		if(PrisonTableInfo[pt][ptInvPlayer][putinva] > 0 && PrisonTableInfo[pt][ptInvPlayer][putinva] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Это не ваш предмет и вы не можете его перекладывать"), i_resettabs(playerid);
+
+        new quanPlayer;
+		foreach(Player,i)
+		{
+		    if(OnlineInfo[i][oLogged] == 0) continue;
+		    if(OnlineInfo[i][oShowInterface] != 1) continue;
+			if(Tabs_Load[i] != 14) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
+			quanPlayer ++;
+		}
+		if(quanPlayer >= 2)
+		{
+			new string[80];
+			format(string, sizeof(string), "{FF6347}Тумбу просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			ErrorMessage(playerid, string);
+			i_resettabs(playerid);
+			return 1;
+		}
+		PrisonTableInfo[pt][ptInvent][putinva] = PrisonTableInfo[pt][ptInvent][getinva];
+		PrisonTableInfo[pt][ptInv][putinva] = PrisonTableInfo[pt][ptInv][getinva];
+		PrisonTableInfo[pt][ptInvPara][putinva] = PrisonTableInfo[pt][ptInvPara][getinva];
+		PrisonTableInfo[pt][ptInvQara][putinva] = PrisonTableInfo[pt][ptInvQara][getinva];
+		PrisonTableInfo[pt][ptInvType][putinva] = PrisonTableInfo[pt][ptInvType][getinva];
+		PrisonTableInfo[pt][ptInvPack][putinva] = PrisonTableInfo[pt][ptInvPack][getinva];
+        PrisonTableInfo[pt][ptInvPlayer][putinva] = PrisonTableInfo[pt][ptInvPlayer][getinva];
+		PrisonTableInfo[pt][ptInvent][getinva] = 0;
+		PrisonTableInfo[pt][ptInv][getinva] = 0;
+		PrisonTableInfo[pt][ptInvPara][getinva] = 0;
+		PrisonTableInfo[pt][ptInvQara][getinva] = 0;
+		PrisonTableInfo[pt][ptInvType][getinva] = 0;
+		PrisonTableInfo[pt][ptInvPack][getinva] = 0;
+        PrisonTableInfo[pt][ptInvPlayer][getinva] = 0;
+		i_resettabs(playerid);
+		item_second(playerid, 0, 0, getinva, 0, 0, 0, 0, 0);
+		item_second(playerid, PrisonTableInfo[pt][ptInvent][putinva], PrisonTableInfo[pt][ptInv][putinva], putinva, 0, PrisonTableInfo[pt][ptInvPara][putinva], PrisonTableInfo[pt][ptInvType][putinva], PrisonTableInfo[pt][ptInvPack][putinva], 0);
+	}
+	return 1;
+}
+
+stock mix_prisontable(playerid, pt, getinva, putinva)
+{
+	if(OnlineInfo[playerid][oShowTabs] != 9999)
+	{
+		if(PrisonTableInfo[pt][ptInvent][getinva] == 0) return i_resettabs(playerid);
+		if(PrisonTableInfo[pt][ptInvent][putinva] != PrisonTableInfo[pt][ptInvent][getinva]) return i_resettabs(playerid);
+        if(PrisonTableInfo[pt][ptInvPlayer][getinva] != PrisonTableInfo[pt][ptInvPlayer][putinva]) return i_resettabs(playerid);
+
+		new quanPlayer;
+		foreach(Player,i)
+		{
+		    if(OnlineInfo[i][oLogged] == 0) continue;
+		    if(OnlineInfo[i][oShowInterface] != 1) continue;
+			if(Tabs_Load[i] != 14) continue;
+		    if(OnlineInfo[playerid][oShowTabs] != OnlineInfo[i][oShowTabs]) continue;
+			quanPlayer ++;
+		}
+		if(quanPlayer >= 2)
+		{
+			new string[80];
+			format(string, sizeof(string), "{FF6347}Тумбу просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			ErrorMessage(playerid, string);
+			i_resettabs(playerid);
+			return 1;
+		}
+		PrisonTableInfo[pt][ptInv][putinva] += PrisonTableInfo[pt][ptInv][getinva];
+		if(PrisonTableInfo[pt][ptInvPara][putinva] > PrisonTableInfo[pt][ptInvPara][getinva]) PrisonTableInfo[pt][ptInvPara][putinva] = PrisonTableInfo[pt][ptInvPara][getinva];
+		PrisonTableInfo[pt][ptInvQara][putinva] = PrisonTableInfo[pt][ptInvQara][getinva];
+		PrisonTableInfo[pt][ptInvType][putinva] = PrisonTableInfo[pt][ptInvType][getinva];
+		PrisonTableInfo[pt][ptInvPack][putinva] = PrisonTableInfo[pt][ptInvPack][getinva];
+        PrisonTableInfo[pt][ptInvPlayer][putinva] = PrisonTableInfo[pt][ptInvPlayer][getinva];
+		PrisonTableInfo[pt][ptInvent][getinva] = 0;
+		PrisonTableInfo[pt][ptInv][getinva] = 0;
+		PrisonTableInfo[pt][ptInvPara][getinva] = 0;
+		PrisonTableInfo[pt][ptInvQara][getinva] = 0;
+		PrisonTableInfo[pt][ptInvType][getinva] = 0;
+		PrisonTableInfo[pt][ptInvPack][getinva] = 0;
+        PrisonTableInfo[pt][ptInvPlayer][getinva] = 0;
+		i_resettabs(playerid);
+		item_second(playerid, PrisonTableInfo[pt][ptInvent][getinva], PrisonTableInfo[pt][ptInvent][getinva], getinva, 0, PrisonTableInfo[pt][ptInvPara][getinva], PrisonTableInfo[pt][ptInvType][getinva], PrisonTableInfo[pt][ptInvPack][getinva], 0);
+		item_second(playerid, PrisonTableInfo[pt][ptInvent][putinva], PrisonTableInfo[pt][ptInv][putinva], putinva, 0, PrisonTableInfo[pt][ptInvPara][putinva], PrisonTableInfo[pt][ptInvType][putinva], PrisonTableInfo[pt][ptInvPack][putinva], 0);
+	}
+	return 1;
 }

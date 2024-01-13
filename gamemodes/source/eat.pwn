@@ -170,16 +170,17 @@ stock SetSatiety(thingId, &fquan) //
 			if(ingId[i] == 1) fquan += 1*ingQuan[i];//хлеб
 			else if(ingId[i] == 102) fquan += 1*ingQuan[i];//Молоко
 			else if(ingId[i] == 104) fquan += 1*ingQuan[i];//Картошка
-			else if(ingId[i] == 120) fquan += 2*ingQuan[i];//Sprunk Банка
-			else if(ingId[i] == 121) fquan += 2*ingQuan[i];//Кофе
-			else if(ingId[i] == 168) fquan += 5*ingQuan[i];//мясо
+			else if(ingId[i] == 120) fquan += 1*ingQuan[i];//Sprunk Банка
+			else if(ingId[i] == 121) fquan += 1*ingQuan[i];//Кофе
+			else if(ingId[i] == 168) fquan += 2*ingQuan[i];//мясо
 			else if(ingId[i] == 174) fquan += 1*ingQuan[i];//Овощи
 			else if(ingId[i] == 179) fquan += 1*ingQuan[i];//Мороженное
-			else if(ingId[i] == 101) fquan += 2*ingQuan[i];//апельсинка
-			else if(ingId[i] == 100) fquan += 2*ingQuan[i];//яблоко
+			else if(ingId[i] == 101) fquan += 1*ingQuan[i];//апельсинка
+			else if(ingId[i] == 100) fquan += 1*ingQuan[i];//яблоко
 		}
 	}
-	printf("Кусков:%d | Блюдо:%s", fquan, friskName[thingId]);
+	fquan ++;
+	// printf("Кусков:%d | Блюдо:%s", fquan, friskName[thingId]);
 	return 1;
 }
 
@@ -255,7 +256,7 @@ stock godrink(playerid)
     else
 	{
 	    around_player_audio(playerid, 32200, 0, 5.0, 0);
-		EatPlayer(playerid, 20), eat = 1; // Хавчик
+		EatPlayer(playerid, 70), eat = 7; // Хавчик
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 2), alco = 10; // Пиво, Сидры, Пиво разливное
@@ -432,10 +433,10 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
     object_in_hand(playerid, friskPick[fpick]);
 
 	new string[140];
-    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
+    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
 	else if(fpick == 163)
 	{
-		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*10);
+		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*100);
 		PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
 	}
 	else

@@ -17,6 +17,7 @@
 // 8. v_limit - лимиты багажника (сколько помещается)
 // 9. d_limit - лимиты дома (сколько помещается)
 // 10. i_limit - лимиты инвентаря (сколько помещается)
+// 11. pt_limit - лимиты тумбы в тюрьме
 
 #define INVENTER 204 // Максимальный ID (обычный предмет)
 
@@ -185,6 +186,19 @@ new friskGun[] = // ID Модельки Оружия в Инвентарях
 };
 new gunPrice[48];
 
+#define MAX_PRISON_TABLE 16
+#define MAX_PRISON_TABLE_SLOTS 20
+enum prisTableInfo
+{
+	ptInvent[MAX_PRISON_TABLE_SLOTS],
+	ptInv[MAX_PRISON_TABLE_SLOTS],
+	ptInvPara[MAX_PRISON_TABLE_SLOTS],
+	ptInvQara[MAX_PRISON_TABLE_SLOTS],
+	ptInvType[MAX_PRISON_TABLE_SLOTS],
+	ptInvPack[MAX_PRISON_TABLE_SLOTS],
+	ptInvPlayer[MAX_PRISON_TABLE_SLOTS]
+};
+new PrisonTableInfo[MAX_PRISON_TABLE][prisTableInfo];
 
 new Page[MAX_REALPLAYERS]; // Какая страница открыта в инвентаре
 new Pagetwo[MAX_REALPLAYERS]; // Какая страница открыта во второй вкладке инвентаря
@@ -296,6 +310,15 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 		thingType = BizzInfo[tab][bInvType][inva];
 		thingPack = BizzInfo[tab][bInvPack][inva];
 	}
+	else if(Tabs_Load[playerid] == 14) // Тумба
+	{
+		tab = OnlineInfo[playerid][oShowTabs];
+		fpick = PrisonTableInfo[tab][ptInvent][inva];
+		fpara = PrisonTableInfo[tab][ptInvPara][inva];
+		thingType = PrisonTableInfo[tab][ptInvType][inva];
+		thingPack = PrisonTableInfo[tab][ptInvPack][inva];
+	}
+	
 	
 	if(fpick == 0) // Если клацаем по пустой ячейке
 	{
@@ -309,6 +332,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 				else if(Tabs_Load[playerid] == 5) shift_boot(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 				else if(Tabs_Load[playerid] == 6) shift_goods(playerid, OnlineInfo[playerid][oInventSelectRight], inva);
 				else if(Tabs_Load[playerid] == 9) shift_biz(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+				else if(Tabs_Load[playerid] == 14) shift_prisontable(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 				else i_resettabs(playerid);
 			}
 		}
@@ -363,6 +387,20 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 			    if(put_invent == -1) return ErrorMessage(playerid, "{FF6347}В разделе товаров нет места"), i_resetveshi(playerid);
 			}
 			else if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}На склад бизнеса нельзя класть обычные предметы\n\n{cccccc}Только мебель из IKEA или багажника автомобиля"), i_resetveshi(playerid);
+			else if(Tabs_Load[playerid] == 14) // Тумба
+			{
+			    if(myThingType == 0 && myThingPack == 0)
+			    {
+			        if(CheckThingQuan(myfpick) == 1)
+			        {
+			            OnlineInfo[playerid][oInventSelectRight] = inva;
+						format(string,sizeof(string),"{cccccc}Чтобы положить в тумбу {ff9000}%s {cccccc}введите количество\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						return 1;
+			        }
+			    }
+			    put_prisontable(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
+			}
 			else i_resetveshi(playerid);
 		}
 	}
@@ -397,8 +435,13 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 						else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n\n{cccccc}Только ящики с оружием и аммуницией"), i_resetveshi(playerid); // Склады
 						else if(Tabs_Load[playerid] == 5) // Багажник
 						{
-							format(string,sizeof(string),"{cccccc}Чтобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",friskName[myfpick]);
+							format(string,sizeof(string),"{cccccc}Чтобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
 							ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						}
+						else if(Tabs_Load[playerid] == 14) // Тумба
+						{
+							format(string,sizeof(string),"{cccccc}Чтобы положить в тумбу {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+							ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
 						}
 			        }
 			        else i_resetveshi(playerid);
@@ -417,6 +460,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 			else if(Tabs_Load[playerid] == 7) return use_throw(playerid, inva, 9999);
 			else if(Tabs_Load[playerid] == 8) return use_trash(playerid, tab, inva, 9999);
 			else if(Tabs_Load[playerid] == 9) return use_biz(playerid, tab, inva, 9999);
+			else if(Tabs_Load[playerid] == 14) return use_prisontable(playerid, tab, inva, 9999);
 		}
 		else if(OnlineInfo[playerid][oInventSelectRight] != 9999 && OnlineInfo[playerid][oInventSelectRight] != inva)
 		{
@@ -424,6 +468,8 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 		    new tabfpick, tabType, tabPack;
 			if(Tabs_Load[playerid] == 2) tabfpick = DomInfo[tab][dInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = DomInfo[tab][dInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = DomInfo[tab][dInvPack][OnlineInfo[playerid][oInventSelectRight]]; // Дом
 			else if(Tabs_Load[playerid] == 5) tabfpick = VehInfo[tab][vInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]]; // Багажник
+			else if(Tabs_Load[playerid] == 14) tabfpick = PrisonTableInfo[tab][ptInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]]; // Тумба
+			
 			if(tabfpick > 0 && fpick == tabfpick)
 			{
 			    if(tabType == 0 && tabPack == 0) // Только обычные предметы
@@ -432,6 +478,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 					{
 						if(Tabs_Load[playerid] == 2) return mix_dom(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 						else if(Tabs_Load[playerid] == 5) return mix_boot(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
+						else if(Tabs_Load[playerid] == 14) return mix_prisontable(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 					}
 				}
 			}
@@ -1419,18 +1466,19 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 		else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Яблочный
 		else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Вишневый
 		else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Пиво Разливное
-		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+1209600; // Sprunk Банка
+		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+2592000; // Sprunk Банка
 		else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Кофе
 		else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Спранк стакан
 		else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер
 		else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер (Хз второй)
 		else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ролл
+		else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
 		else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk Открытая банка
 		else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // ХОТЕ ДОГЕ
 		else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Свадебный торт (Время до испорченности + количество)
 		else if(thingId == 164 && para == 0) SetSatiety(thingId, quan), para = unix+259200; // Кусок торта
-		else if(thingId == 165 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Пицца
-		else if(thingId == 166 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Пицца Домашняя
+		else if(thingId == 165 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца
+		else if(thingId == 166 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца Домашняя
 		else if(thingId == 167 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Кусок пиццы
 		else if(thingId == 168 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Мясо в упаковке
 		else if(thingId == 169 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Сырой стейк
@@ -1485,9 +1533,9 @@ stock GetFullThingQuan(thingId)
 	else if(thingId == 163) quan = 21; // Свадебный торт
 	else if(thingId == 165) quan = 7; // Пицца
 	else if(thingId == 166) quan = 7; // Пицца Домашняя
+	else if(thingId == 120) quan = 4; // Sprunk Банка
 	else if(thingId == 121) quan = 4; // Кофе
 	else if(thingId == 124) quan = 4; // Спранк стакан
-	else if(thingId == 120) quan = 4; // Sprunk Банка
 	else quan = 1;
 	return quan;
 }
@@ -1629,7 +1677,8 @@ stock NotGiveThing(i, type, quan)
 }
 stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем лимиты инвентаря
 {
-	new lim[INVENTER], pow = get_power(playerid);
+	new lim[INVENTER], pow = 1;
+	pow = get_power(playerid);
 	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
 	lim[8] = 2, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100*pow, lim[5] = 100*pow, lim[6] = 100*pow, lim[7] = 100*pow, lim[9] = 20, lim[18] = 100*pow, lim[20] = 10*pow, lim[27] = 100*pow, lim[28] = 100*pow, lim[29] = 100*pow, lim[30] = 100*pow;
@@ -1931,6 +1980,10 @@ stock player_tile(playerid, inva)
 			else if(Tabs_Load[playerid] == 6) return use_mygoods(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			else if(Tabs_Load[playerid] == 7) return use_throw(playerid, OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 			else if(Tabs_Load[playerid] == 8) return use_trash(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+			else if(Tabs_Load[playerid] == 14)
+			{
+				if(OnlineInfo[playerid][oShowTabs] != 9999) return use_prisontable(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+			}
 			else i_resettabs(playerid);
 		}
 	}
@@ -1979,6 +2032,10 @@ stock player_tile(playerid, inva)
 						else if(Tabs_Load[playerid] == 8)
 						{
 							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_trash(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
+						}
+						else if(Tabs_Load[playerid] == 14)
+						{
+							if(OnlineInfo[playerid][oShowTabs] != 9999) return use_prisontable(playerid, OnlineInfo[playerid][oShowTabs], OnlineInfo[playerid][oInventSelectRight], OnlineInfo[playerid][oInventSelectLeft]);
 						}
 					}
 					else i_resetveshi(playerid);

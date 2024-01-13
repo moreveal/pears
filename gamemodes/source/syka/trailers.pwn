@@ -687,6 +687,6 @@ stock dialogCase_Trailer(playerid, dialogid, response)
 stock IsAHimLab(playerid)
 {
     if(IsPlayerInRangeOfPoint(playerid,1.5,-3.280344, 1566.091430, 12.861586) 
-        && GetPlayerInterior(playerid) == 187 && GetPlayerVirtualWorld(playerid) >= 5000 && GetPlayerVirtualWorld(playerid) <= 5999) return 1;
+        && GetPlayerInterior(playerid) == INT_TRAILER && GetPlayerVirtualWorld(playerid) >= 5000 && GetPlayerVirtualWorld(playerid) <= 5999) return 1;
     return 0;
 }

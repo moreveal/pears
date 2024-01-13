@@ -327,7 +327,7 @@ stock TakeBoot(veh, stat, kolvo, thingType, dopinf)
 		}
 		plalit = dopinf;
 	}
-	SaveOneBoot(veh, plalit);
+	if(stat != 35) SaveOneBoot(veh, plalit);
 	foreach(Player,i)
 	{
 		if(Tabs_Load[i] != 5) continue;
