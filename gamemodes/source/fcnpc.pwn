@@ -92,7 +92,7 @@ public FCNPC_OnFinishPlayback(npcid)
             MoveDynamicObject(Vorota[88], 1546.0299, -1624.0844, 14.3144, 2), MoveDynamicObject(Vorota[89], 1546.0299, -1636.8300, 14.3144, 2), Statvorota[13] = 10;
             FCNPC_StartPlayingPlayback(NpcPrisonLS, "prison_ls0");
         }
-        if(PrisonBusRouteLS == 2)
+        else if(PrisonBusRouteLS == 2)
         {
             PrisonBusRouteLS = 3;
             MoveDynamicObject(Vorota[0], 901.646667, 2405.245605, 7.121364, 1.5), Statvorota[35] = 10;

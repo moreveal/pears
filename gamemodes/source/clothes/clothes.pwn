@@ -1044,6 +1044,55 @@ stock BackOnClothes(playerid)
 	return 1;
 }
 
+stock IsAClothesNearby(playerid)
+{
+	if(GetPlayerVirtualWorld(playerid) >= 173 && GetPlayerVirtualWorld(playerid) <= 182 
+	&& (IsPlayerInRangeOfPoint(playerid,1.0,202.8426,-107.7787,1005.1328)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,199.0932,-162.7284,1000.5234)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,210.8270,-127.6644,1003.5152)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,197.9495,-40.3282,1001.8047)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,210.9073,-4.5470,1001.2109)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,145.9741,-83.2575,1001.8047))) return 1;
+	return 0;
+}
+
+stock IsAGoldClothesNearby(playerid)
+{
+	if(GetPlayerVirtualWorld(playerid) >= 173 && GetPlayerVirtualWorld(playerid) <= 182 
+	&& (IsPlayerInRangeOfPoint(playerid,1.0,212.5430,-107.8574,1005.1328)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,209.6027,-162.7853,1000.5234)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,216.0805,-132.9592,1003.5078)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,208.5516,-45.2005,1001.8047)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,213.2845,-4.5177,1001.2109)
+		|| IsPlayerInRangeOfPoint(playerid,1.0,169.7810,-83.5137,1001.8120))) return 1;
+	return 0;
+}
+
+// Одежда
+stock IsAShmot(playerid)
+{
+ 	if(IsPlayerInRangeOfPoint(playerid,1.0,2496.0188,-1695.8295,2073.9805) && GetPlayerVirtualWorld(playerid) == 212 && GetPlayerInterior(playerid) == 212 // Grove
+	|| IsPlayerInRangeOfPoint(playerid,1.0,2488.1748,-2021.3531,2052.2808) && GetPlayerVirtualWorld(playerid) == 213 && GetPlayerInterior(playerid) == 213 // Ballas
+	|| IsPlayerInRangeOfPoint(playerid,1.0,2261.6941,-1459.2672,2089.4438) && GetPlayerVirtualWorld(playerid) == 214 && GetPlayerInterior(playerid) == 214 // Vagos
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1684.0817,-2098.6365,2091.8000) && GetPlayerVirtualWorld(playerid) == 215 && GetPlayerInterior(playerid) == 215 // Aztecas
+	|| IsPlayerInRangeOfPoint(playerid,1.0,2607.8682,918.0507,1551.0000) // Department Раздевалка
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1383.1306,-1.3530,1000.9217) && GetPlayerVirtualWorld(playerid) == 9 && GetPlayerInterior(playerid) == 5 // Госпиталь
+ 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1507.6846,1957.5139,1357.0326) && GetPlayerVirtualWorld(playerid) == 5 && GetPlayerInterior(playerid) == 1 // Cosa Nostra
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1374.8009,719.3740,2112.2515) && GetPlayerVirtualWorld(playerid) == 6 && GetPlayerInterior(playerid) == 1 // Yakuza Mafia
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // Правительство
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-506.7065,-87.0514,964.8114) && GetPlayerVirtualWorld(playerid) == 8 && GetPlayerInterior(playerid) == 8 // Hitman Agency
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-1760.2249,799.6393,137.4583) // CNN
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-1997.9194,1110.0148,1018.6735) && GetPlayerVirtualWorld(playerid) == 12 && GetPlayerInterior(playerid) == 1 // Russian Mafia
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-1928.6663,906.0461,1402.0776) && GetPlayerVirtualWorld(playerid) == 10 && GetPlayerInterior(playerid) == 10 // Triada Mafia
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1393.0143,1821.3657,10.8662) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18 // Arabian Mafia
+	|| IsAClothesNearby(playerid)
+	|| IsAGoldClothesNearby(playerid)) // Магаз одежды
+    {
+		return 1;
+	}
+	return 0;
+}
+
 function LoadGosSkin()
 {
 	new rows, time = GetTickCount();

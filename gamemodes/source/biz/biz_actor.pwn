@@ -109,7 +109,7 @@ stock LoadBizStaticActor()
         BizBankActor[b][3] = CreateDynamicActor(59, 1355.9939,1562.4127,1561.3649,90.0000, true, 100.0, b+3163, 188, -1, 100.0, -1, 0);
         for(new i; i < 4; i++)
         {
-            ApplyDynamicActorAnimation(BizBankActor[b][i],"PED","SEAT_down",4.0,0,1,1,0,0);
+            ApplyDynamicActorAnimation(BizBankActor[b][i], "PED","SEAT_idle", 4.0, 0,0,0,1,0);
         }
     }
 }

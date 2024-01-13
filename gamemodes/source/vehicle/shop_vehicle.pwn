@@ -96,6 +96,9 @@ stock openMenu_VehicleShop(playerid)
 
     if(b >= 0)
     {
+         // Записываем позицию игрока
+	    savePositionPlayerForMenu(playerid);
+
         TP[1][playerid] = 0;
 	    showMenu_VehicleShop(playerid, b, -1);
         return 1;

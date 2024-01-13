@@ -6,6 +6,8 @@ new KpzDoorStatus[MAX_CELL_PRISON]; // статус дверей
 new KpzDoorStatusBreaking[MAX_CELL_PRISON]; // Статус взлома дверей
 new OpenCells[2]; // какая сторона камер открыта
 new PrisonAlarm; // Статус тревоги в тюрьме
+new PrisonAlarmCD; // Кд для запуска тревоги
+new PrisonAlarmTime; // Время для автоматического отключения тревоги
 new PrisonAlarmObject[2]; // id объектов красной лампы тревоги
 new PrisonTabloObject[2]; // id объектов табло оповещения в тюрьме
 new OpenBlock[2]; // Какая часть тюрьмы сейчас доступна для посещения
@@ -229,11 +231,31 @@ stock BreakingOrOpenPrisonCell(playerid, cell) // Открываем дверь 
     return 1;
 }
 
+stock TimePrisonAlarm()
+{
+    PrisonAlarmTime --;
+    if(PrisonAlarmTime <= 0) StopPrisonAlarm();
+    return 1;
+}
 
-stock CreatePrisonAlarm() // Запускаем режим тревоги в тюрьме
+stock CreatePrisonAlarm(playerid, status) // Запускаем режим тревоги в тюрьме
 {
     if(PrisonAlarm == 1) return 1;
 
+    if(status == 1) // Ручной запуск тревоги
+    {
+        new unix = gettime();
+        if(PrisonAlarmCD > unix)
+        {
+            new string[70];
+            format(string,sizeof(string),"{FF6347}Ручной запуск тревоги возможен только через %s", fine_time(PrisonAlarmCD - unix));
+            ErrorText(playerid, string);
+            return 0;
+        }
+        PrisonAlarmCD = unix + 1800;
+    }
+
+    PrisonAlarmTime = 600; // 10 минуту на отключение тревоги
     PrisonAlarm = 1; // По этой переменной будем смотреть, включён режим тревоги или нет (Для доступа к обыску тумбочек)
     SetDynamicObjectMaterial(PrisonAlarmObject[0], 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
     SetDynamicObjectMaterial(PrisonAlarmObject[1], 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
@@ -465,7 +487,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
         {
             if(listitem == 0)
             {
-                if(PrisonAlarm == 0) CreatePrisonAlarm();
+                if(PrisonAlarm == 0) CreatePrisonAlarm(playerid, 1);
                 else 
                 {
                     StopPrisonAlarm();
@@ -496,16 +518,20 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
 
 stock PrisonMovingPoster(playerid,number)
 {
-    if(IsACop(playerid)) 
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, Afclick[playerid]);
+    if(interval < 500) return 0;
+    Afclick[playerid] = current_tick;
+
+    if(IsACop(playerid) && PlayerInfo[playerid][pJailed] == 0)
     {
+        if(PrisonPosterStatus[number] == 0 && PrisonSandStatus[number] == 0) return ErrorMessage(playerid,"{ff6347}Нет никаких следов попытки побега\n{cccccc}Постер висит на стене, на полу всё чисто");
         PrisonMovingBackPoster(number);
         PrisonBetonHP[number] = 3000;
-        PrisonMovingBeton(number,0);
+        PrisonMovingBeton(number, 0);
+	    SuccessMessage(playerid, "{99ff66}Вы закрыли дырку в стене и предотвратили побег");
     }
-    new current_tick = GetTickCount();
-    new interval = GetTickDiff(current_tick, a_flood[2][playerid]);
-    a_flood[2][playerid] = current_tick;
-    if(interval < 500) return 0;
+
     if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number);
     else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number);
     return 1;
@@ -513,7 +539,7 @@ stock PrisonMovingPoster(playerid,number)
 
 CMD:movingbeton(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return 0;
+    if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;
     new moving,number;
     sscanf(params, "ii",number,moving);
     PrisonMovingBeton(number,moving*75);
@@ -578,30 +604,34 @@ stock PrisonEditingBeton(playerid,number)
 {
     if(PrisonPosterStatus[number] == 0) return 0;
     if(PrisonBetonHP[number] <= 0) return 0;
+
     new current_tick = GetTickCount();
-    new interval = GetTickDiff(current_tick, a_flood[2][playerid]);
-    a_flood[2][playerid] = current_tick;
+    new interval = GetTickDiff(current_tick, Afclick[playerid]);
     if(interval < 500) return 0;
+    Afclick[playerid] = current_tick;
+
     new mod,string[60];
     PrisonBetonHP[number]--;
     mod = PrisonBetonHP[number] % 75;
-    if(mod != 0)
-    {
-        format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Бетон: ~w~%d/3000"),PrisonBetonHP[number]);
-	 	GameTextForPlayer(playerid,string, 1500, 3);
-        ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
-    }
-    else
+
+    SetPlayerChatBubble(playerid,"ударяет по стене монтировкой",COLOR_PURPLE,10.0,2000);
+    if(mod == 0)
     {
         new count;
         count = 40-(PrisonBetonHP[number]/75);
         PrisonSandStatus[number]++;
         PrisonMovingBeton(number,count);
         PrisonMovingSand(number,PrisonSandStatus[number]);
-        format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Бетон: ~w~%d/3000"),PrisonBetonHP[number]);
-	 	GameTextForPlayer(playerid,string, 1500, 3);
         SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Чёрт, тут много песка, нужно бы убрать его метлой!");
-        ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
+    }
+    format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Ђe¦o®: ~w~%d/3000",PrisonBetonHP[number]);
+	GameTextForPlayer(playerid,string, 1500, 3);
+    ApplyAnimation(playerid,"PED","FightA_M",2.0,0,0,0,0,0,1);
+
+    if(PrisonBetonHP[number] <= 0)
+    {
+        SuccessMessage(playerid, "{99ff66}Вы продолбили дырку в стене и можете сбежать из тюрьмы [ ALT ]");
+        SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Свободаааа! Теперь я могу сбежать [ ALT ]");
     }
     return 1;
 }
@@ -633,17 +663,29 @@ stock PrisonClearSand(playerid,number)
 
 stock PrisonEscape(playerid)
 {
-    if(PlayerInfo[playerid][pJailed] > 0) return 0;
+    if(PlayerInfo[playerid][pJailed] == 0) return ErrorMessage(playerid, "{FF6347}Вы не заключённый");
+
+    // Сюда счётчик на побег только двух игроков в одну дырку
     new cell = IsABeton(playerid);
     PrisonMovingBackPoster(cell);
     PrisonBetonHP[cell] = 3000;
     PrisonMovingBeton(cell,0);
-    CreatePrisonAlarm();
+
+    PlayerInfo[playerid][pJailed] = 0;
+    PlayerInfo[playerid][pJailTime] = 0;
+
+    new string_mysql[90];
+    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Jailed`='0', `JailTime`='0' WHERE `id`='%d'", PlayerInfo[playerid][pID]);
+    query_empty(pearsq, string_mysql);
+
     keep(playerid);
-    PPSetPlayerPos(playerid,233.1846,1874.0150,929.6272);
-    S_SetPlayerVirtualWorld(playerid,241,0), SetPlayerInterior(playerid,241);
-    SetPlayerFacingAngle(playerid,327.5);
-    SetPlayerCriminal(0,playerid, -1,"Побег из тюрьмы",6, 0);
+    PPSetPlayerPos(playerid,299.2186,2164.9827,942.0348);
+    S_SetPlayerVirtualWorld(playerid,241,241), SetPlayerInterior(playerid,241);
+    SetPlayerFacingAngle(playerid,173.2588);
+    SetPlayerCriminal(playerid, -1, CriminalCodeInfo[0][ccName], CriminalCodeInfo[0][ccLevel], 0);
+    SuccessMessage(playerid, "{99ff66}Вы сбежали из тюрьмы");
+
+    CreatePrisonAlarm(playerid, 0);
     return 1;
 }
 
@@ -658,7 +700,7 @@ stock PrisonGivePipe(playerid)
     new put_inva = GiveThingPlayer(playerid, 201, 1, 0, 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonPipeUnix] = gettime();
-    new string[86];
+    new string[90];
     format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonPipeUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonPipeUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли трубу, из неё вы можете сделать монтировку на станке");
@@ -677,7 +719,7 @@ stock PrisonGiveSpoon(playerid)
     new put_inva = GiveThingPlayer(playerid, 202, 1, 0, 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonSpoonUnix] = gettime();
-    new string[86];
+    new string[90];
     format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");

@@ -17,9 +17,15 @@ new Text:SpawnChoiseDraw[MAX_SPAWNDRAWCHOISE];
 
 stock SaveLastPlayerPosition(playerid)
 {
-    if(SetPosa[playerid] == 1 || MPGO[playerid] == 1 || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING
-        || OnlineInfo[playerid][oShowInterface] == 14 || OnlineInfo[playerid][oShowInterface] == 16
-        || VehShopInfo[playerid][vsTest] == true || OnlineInfo[playerid][oShowInterface] == 18)
+    if(SetPosa[playerid] == 1 
+        || MPGO[playerid] == 1 // На мероприятии
+        || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING // В слежке (спеке)
+        || OnlineInfo[playerid][oShowInterface] == 14 
+        || OnlineInfo[playerid][oShowInterface] == 16 // Меню салонов транспорта
+        || VehShopInfo[playerid][vsTest] == true // Тестдрайв
+        || OnlineInfo[playerid][oShowInterface] == 18
+        || gAutosalon[playerid] > 0 // В автосервисе
+        || Fractia[playerid] > 0) // В выборе одежды
     {
         PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
