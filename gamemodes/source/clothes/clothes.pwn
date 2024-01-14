@@ -919,7 +919,11 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) showDialogFittingRoomSkin(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
 			}
 		}
-		else showFittingRoom(playerid);
+		else 
+		{
+			if(DP[4][playerid] == 0) showFittingRoom(playerid); // В примерочной
+			else ShowOrderThing(playerid, DP[4][playerid]); // В меню бизнеса
+		}
 	}
 	return 1;
 }
@@ -929,7 +933,7 @@ stock OpenListClothes(playerid, list)
 	new b = DP[4][playerid];
 	if(b > 0) // Открыли в меню бизнеса (Значит тут мы заказываем его)
 	{
-
+		AddThingToOrder(playerid, b, list, 3); // biz, thingId, thingType
 		return 1;
 	}
 	else

@@ -98,6 +98,35 @@ stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 	BizLog("setorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, ord, GetNameThing(0, thingId, thingType,0));
 	return 1;
 }
+stock AddThingToOrder(playerid, b, thingId, thingType)
+{
+	if(BizzInfo[b][bDeliveryOrder] >= 0) return ErrorText(playerid, "{FF6347}Нельзя добавить товар, доставку выполняет дальнобойщик"), productbiz(playerid, b);
+	
+	new ordId = getFreeOrderSlot(b);
+	if(ordId == -1) return ErrorText(playerid, "{FF6347}Нет свободных слотов для заказа товаров [ Лимит: 50 ]"), productbiz(playerid, b);
+
+	new orderQuan = getThingHaveQuanOrder(b, thingId, thingType);
+	if(orderQuan > 0) return ErrorText(playerid, "{FF6347}Этот товар уже добавлен для доставки [ Вы можете указать количество ]"), productbiz(playerid, b);
+
+	// Получаем максимальное количество для этого предмета
+	new maxQuan = maxQuanThingProduct(thingId, thingType);
+
+	// Проверка на лимиты
+	new realQuan = getThingQuanItemBizz(b, thingId, thingType); // Получаем количество товаров уже в бизнесе
+
+	if(realQuan+1 > maxQuan)
+	{
+		new string[60];
+		format(string, sizeof(string), "{FF6347}Нет места для этого товара. Лимит: %d", maxQuan);
+		ErrorText(playerid, string);
+		productbiz(playerid, b);
+		return 1;
+	}
+
+	new thingPrice = getThingPriceGos(thingId, thingType) + getPayOrderDelivery(b); // Вычисляем стоимость товара и стоимость доставки по километражу
+	createorder(playerid, b, ordId, thingId, thingType, thingPrice);
+	return 1;
+}
 stock ShowOrderThing(playerid, b)
 {
 	if(b <= 12) // Заправка
