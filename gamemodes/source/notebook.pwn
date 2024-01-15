@@ -23,6 +23,7 @@ new TradeCryptLog[MAX_TRADECRYPTLOG][TradeCryptInfoLog];
 new AfloodCrypto[MAX_REALPLAYERS];
 new BankTabloObject[4];
 new tclArifmetik;
+new tclArifmetikAllGold;
 
 stock ClearSorting(playerid)
 {
@@ -888,7 +889,7 @@ stock UpdateLabelBank()
     format(string,sizeof(string), "1G = {99FF66}%d$", tclArifmetik);
     SetDynamicObjectMaterialText(BankTabloObject[1], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
     SetDynamicObjectMaterialText(BankTabloObject[3], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
-    format(string,sizeof(string), "0G");
+    format(string,sizeof(string), "%dG",tclArifmetikAllGold);
     SetDynamicObjectMaterialText(BankTabloObject[0], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
     SetDynamicObjectMaterialText(BankTabloObject[2], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
 }
@@ -918,4 +919,33 @@ CMD:cryptolog(playerid)
     mysql_tquery(pearsq_2, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Высчитываем курс
     UpdateLabelBank();
     return 1;
+}
+
+CMD:goldturnover(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
+	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{cccccc}Поиск игроков...","*","");
+	mysql_tquery(pearsq, "SELECT * FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1' ORDER BY `Online` DESC LIMIT 30", "Call_turnovergold", "d", playerid);
+	return 1;
+}
+
+function Call_turnovergold(playerid)
+{
+    new time = GetTickCount();
+	new rows, gold, goldchips;
+	new year, month,day;
+    tclArifmetikAllGold = 0;
+	getdate(year, month, day);
+	cache_get_row_count(rows);
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_value_name_int(i, "Ammo8",gold);
+		cache_get_value_name_int(i, "DonateMoney", goldchips);
+		tclArifmetikAllGold += gold + goldchips;
+	}
+    printf("[MODE]: AllGoldLog [%d Quan][%d ms]. Count = %d",rows,GetTickCount() - time,tclArifmetikAllGold);
+    if(playerid != -1) ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{66ff99}Загружено. Итоги уже на таблице в банке!","*","");
+    UpdateLabelBank();
+	return 1;
 }

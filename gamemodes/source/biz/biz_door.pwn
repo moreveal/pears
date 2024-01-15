@@ -97,6 +97,10 @@ stock BankDoorMoving(playerid)
 {
     if(GetPVarInt(playerid,"job_stat") == 13 || PlayerInfo[playerid][pSoska] > 1)
     {
+        new current_tick = GetTickCount();
+        new interval = GetTickDiff(current_tick, Afclick[playerid]);
+        if(interval < 500) return ErrorMessage(playerid, "{FF6347}Пожалуйста.. не флудите\n{cccccc}Повторите попытку через несколько секунд");
+        Afclick[playerid] = current_tick;
         if(DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] == 0) DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] = 1,Statvorota[GetPlayerVirtualWorld(playerid)-3163+130] = 5,MoveDynamicObject(DoorBank[GetPlayerVirtualWorld(playerid)-3163],1351.405395, 1558.781127, 1559.846191,1.5);
         else return 0;
     }

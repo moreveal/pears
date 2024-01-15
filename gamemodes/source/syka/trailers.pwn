@@ -342,6 +342,8 @@ CMD:trailer_place(playerid) {
         if (trailerInfo[tid][tModel] == 3171) PlaceTrailer(tid, trailerInfo[tid][tModel], trailer_pos[0] - 0.119, trailer_pos[1] - 1.900, trailer_pos[2] - 1.060, 0.0, 0.0, trailer_pos[3] + 178.698);
         // 3168 middle
         else if (trailerInfo[tid][tModel] == 3172) PlaceTrailer(tid, trailerInfo[tid][tModel], trailer_pos[0] - 0.178, trailer_pos[1] - 3.511, trailer_pos[2] - 1.000, 0.0, 0.0, trailer_pos[3] + 177.901);
+        else if (trailerInfo[tid][tModel] == 3174) PlaceTrailer(tid, trailerInfo[tid][tModel], trailer_pos[0] - 0.178, trailer_pos[1] - 3.511, trailer_pos[2] - 1.000, 0.0, 0.0, trailer_pos[3] + 177.901);
+        else if (trailerInfo[tid][tModel] == 3168) PlaceTrailer(tid, trailerInfo[tid][tModel], trailer_pos[0] - 0.178, trailer_pos[1] - 3.511, trailer_pos[2] - 1.000, 0.0, 0.0, trailer_pos[3] + 177.901);
         
         ACDestroyVehicle(trailerid);
         SavePlayerTrailerInfo(tid);
