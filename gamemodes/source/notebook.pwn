@@ -1,6 +1,7 @@
 
 #define MAX_GOLD_COURSE 10000 // Максимальный курс голды
 #define MAX_TRADECRYPT 1000
+#define MAX_TRADECRYPTLOG 20
 enum TradeCryptInfo
 {
     tcNewid, // id в базе
@@ -13,8 +14,15 @@ enum TradeCryptInfo
     tcUnix, // unix
 };
 new TradeCrypt[MAX_TRADECRYPT][TradeCryptInfo];
+enum TradeCryptInfoLog
+{
+	tclCourse, // Курс за еденицу
+};
+new TradeCryptLog[MAX_TRADECRYPTLOG][TradeCryptInfoLog];
 
 new AfloodCrypto[MAX_REALPLAYERS];
+new BankTabloObject[4];
+new tclArifmetik;
 
 stock ClearSorting(playerid)
 {
@@ -632,7 +640,7 @@ stock inserttobuy(playerid, b) // Покупка по заявки
 	return 1;
 }
 
-stock deltradecrypto(id) // Удаляем заказ доставки товара в бизнесы
+stock deltradecrypto(id) 
 {
     TradeCrypt[id][tcCount] = 0;
     TradeCrypt[id][tcCourse] = 0;
@@ -688,7 +696,7 @@ stock gotobuycrypto(playerid,id)
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
-    // Сюда добавить DonateLog
+    CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
 	return 1;
 }
 
@@ -749,7 +757,7 @@ stock gotosellcrypto(playerid,id)
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
-    // Сюда добавить DonateLog
+    CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
 	return 1;
 }
 
@@ -862,5 +870,52 @@ stock CheckCancelCrypto(playerid, stat)
         format(string, sizeof(string), "{0088ff}У вас удалены неактивные трейды в количестве %d {ffcc66}[ N >> Ноутбук >> Голд Трейд ]", quan);
         SendClientMessage(playerid, COLOR_GREY, string);
     }
+    return 1;
+}
+
+stock CryptoLog(status, const nameplayer[],playerID, senderpID, const namesender[], const senderip[], const playerip[], countsell, countcourse)
+{
+	new query[364], unix = gettime();
+    format(query, sizeof(query), "INSERT INTO `crypto_log`\
+	(`tradecryptoSenderID`,`tradecryptoPlayerID`,`tradecryptoPlayerName`,`tradecryptoSenderName`,`tradecryptoPlayerIP`,`tradecryptoSenderIP`,`tradecryptoStatus`,`tradecryptoCount`,`tradecryptoCourse`,`tradecryptoUnix`) VALUES ('%d','%d','%s','%s','%s','%s','%d','%d','%d','%d')",
+    senderpID, playerID, nameplayer, namesender, playerip, senderip,status, countsell, countcourse, unix);
+	mysql_tquery(pearsq_2, query, "", "");
+}
+
+stock UpdateLabelBank()
+{
+    new string[34];
+    format(string,sizeof(string), "1G = {99FF66}%d$", tclArifmetik);
+    SetDynamicObjectMaterialText(BankTabloObject[1], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
+    SetDynamicObjectMaterialText(BankTabloObject[3], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
+    format(string,sizeof(string), "0G");
+    SetDynamicObjectMaterialText(BankTabloObject[0], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
+    SetDynamicObjectMaterialText(BankTabloObject[2], 0, string, 130, "Arial", 50, 1, 0xFFFFCC00, 0x00000000, 0);
+}
+
+function LoadCryptoLog()
+{
+	new time = GetTickCount();
+	new rows,rowslast;
+	cache_get_row_count(rows);
+    if(rows > 20) rowslast = rows - 20;
+    else rowslast = 0;
+	for(new f=rowslast,i; f<rows; ++f,i++)
+	{
+		cache_get_value_name_int(f, "tradecryptoCourse", TradeCryptLog[i][tclCourse]);
+        tclArifmetik += TradeCryptLog[i][tclCourse];
+	}
+    if(rows > 20) tclArifmetik /= 20;
+    else tclArifmetik /= rows;
+	printf("[MODE]: Trade Gold Log [%d Quan][%d ms]. Course = %d",rows,GetTickCount() - time,tclArifmetik);
+    UpdateLabelBank();
+	return 1;
+}
+
+CMD:cryptolog(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;      
+    mysql_tquery(pearsq_2, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Высчитываем курс
+    UpdateLabelBank();
     return 1;
 }

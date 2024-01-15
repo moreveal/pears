@@ -210,6 +210,7 @@ stock godrink(playerid)
 		return 1;
 	}
 	if(HoldStat[playerid] == 163) return ErrorMessage(playerid, "{FF6347}Свадебный торт нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
+	if(HoldStat[playerid] == 166) return ErrorMessage(playerid, "{FF6347}Домашнюю пиццу нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
 	if(Hold[playerid] == 3 && HoldStat[playerid] > 0)
 	{
 	    if(PlayerInfo[playerid][pInven][HoldInva[playerid]] == HoldStat[playerid]) PlayerInfo[playerid][pInvenQuan][HoldInva[playerid]] --;
@@ -220,7 +221,7 @@ stock godrink(playerid)
 	{
 		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163
 			|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 
-			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89 || HoldStat[playerid] == 166|| HoldStat[playerid] == 167) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
 		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0,0,0,0,0,0);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119 || HoldStat[playerid] == 120 || HoldStat[playerid] == 121 || HoldStat[playerid] == 124)
@@ -391,7 +392,7 @@ stock drink_eat(playerid, inva, fpick)
 	{
 	    if(fpick == 120 || fpick == 124) return ErrorMessage(playerid, "{FF6347}Sprunk нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из банки ]");
 	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}Кофе нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из кружки ]");
-	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
+	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
 	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}В вашем бокале ещё есть содержимое {cccccc}[ Допейте или поставьте бокал F ]");
 	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Эта бутылка пустая");
 	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
@@ -433,8 +434,8 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
     object_in_hand(playerid, friskPick[fpick]);
 
 	new string[140];
-    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
-	else if(fpick == 163)
+    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141 || fpick == 167) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
+	else if(fpick == 163 || fpick == 166)
 	{
 		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*100);
 		PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
@@ -446,7 +447,7 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
 	}
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 	TextDrawShowForPlayer(playerid, MindDraw[3]);
-	if(fpick == 163) PlayerTextDrawSetString(playerid, HintButton, "F"), PlayerTextDrawShow(playerid, HintButton);
+	if(fpick == 163 || fpick == 166) PlayerTextDrawSetString(playerid, HintButton, "F"), PlayerTextDrawShow(playerid, HintButton);
 	else
 	{
 		if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");

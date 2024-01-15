@@ -113,15 +113,22 @@ stock use_throw(playerid, inva, useinva)
 	}
 
 	// Отрезаем Кусочек Торта
-	if(fpick == 163 && thingType == 0 && thingPack == 0 && Hold[playerid] == 14 && HoldFrisk[playerid] == 97)
+	if(fpick == 163 || fpick == 166 && thingType == 0 && thingPack == 0 && Hold[playerid] == 14 && HoldFrisk[playerid] == 97)
 	{
-		new put_inva = GiveThingPlayer(playerid, 164, 3, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tType], ThrowInfo[t][tPack], useinva); // 164 торт, 3 количество кусь
+		new put_inva = GiveThingPlayer(playerid, fpick+1, 3, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tType], ThrowInfo[t][tPack], useinva); // 164 торт, 3 количество кусь
 		if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 		Hold[playerid] = 0, HoldFrisk[playerid] = 0, HoldStat[playerid] = 0, HoldQuan[playerid] = 0, HoldInva[playerid] = 0, HoldPara[playerid] = 0, HoldQara[playerid] = 0;
-	    SetPlayerChatBubble(playerid,"отрезает кусочек торта",COLOR_PURPLE,20.0,3000);
-	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
-	    RemovePlayerAttachedObject(playerid,1);
-	    in_hand_eat(playerid, 3, 164, 164, 3, put_inva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]); // Выдаём сразу в руки
+		if(fpick == 163)
+		{
+			SetPlayerChatBubble(playerid,"отрезает кусочек торта",COLOR_PURPLE,20.0,3000);
+		}
+		else if(fpick == 166)
+		{
+			SetPlayerChatBubble(playerid,"отрезает кусочек пиццы",COLOR_PURPLE,20.0,3000);
+		}
+		ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
+		RemovePlayerAttachedObject(playerid,1);
+		in_hand_eat(playerid, 3, fpick+1, fpick+1, 3, put_inva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]); // Выдаём сразу в руки
 	    PlayerPlaySound(playerid,5600,0,0,0);
 	    ThrowInfo[t][tQuan] -= 1;
 	    if(ThrowInfo[t][tQuan] <= 1)

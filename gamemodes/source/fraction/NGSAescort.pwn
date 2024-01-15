@@ -1766,7 +1766,7 @@ stock InsertOrderEscort(playerid, g, ord)
 
 stock CreateOrderEscort(playerid, g, ord, thingId, thingType, thingPrice)
 {
-	if(OrganInfo[g][glave] < thingPrice) return ErrorText(playerid, "{FF6347}На депозите бизнеса недостаточно средств"), OrderEscort(playerid, g);
+	if(OrganInfo[g][glave] < thingPrice) return ErrorText(playerid, "{FF6347}На банке организации недостаточно средств"), OrderEscort(playerid, g);
 	OrganInfo[g][gOrder][ord] = thingId;
 	OrganInfo[g][gOrderQuan][ord] = 1;
 	OrganInfo[g][gOrderType][ord] = thingType;

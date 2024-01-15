@@ -2224,7 +2224,7 @@ stock player_tile(playerid, inva)
 		 		else if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 121 || fpick == 124 || fpick == 125 ||
 				fpick == 139 || fpick == 164 || fpick == 172 || fpick == 166 || fpick == 173 || fpick == 1 || fpick == 54 ||
 				fpick == 55 || fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 || fpick == 104 || fpick == 126 ||
-				fpick == 127 || fpick == 141 || fpick == 163) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
+				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
 				else if(fpick == 144) return cmd_pdd(playerid), i_resetveshi(playerid);
 		 		else if(fpick >= 145 && fpick <= 155)
 			 	{

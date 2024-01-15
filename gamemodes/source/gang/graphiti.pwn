@@ -77,10 +77,8 @@ stock CreateGraphiti(playerid)
     for(new i; i<GZONES;i++)
     {
         if(GraphitiInfo[i][graphitiStatus] == 0) continue;
-        printf("%d",i);
         if(IsPlayerInRangeOfPoint(playerid,5.0,GraphitiInfo[i][graphitiPos][0],GraphitiInfo[i][graphitiPos][1],GraphitiInfo[i][graphitiPos][2]))
         {
-            printf("%d",i);
             slotreset = i;
             break;
         }

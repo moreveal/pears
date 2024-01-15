@@ -6,6 +6,7 @@ new BizAptekaActor[MAX_BIZ_WITH_ACTORS];
 new BizSMarketActor[13][4];
 new BizTehnikaActor[MAX_BIZ_WITH_ACTORS];
 new BizBankActor[MAX_BIZ_WITH_ACTORS][4];
+new BizClothesActor[15];
 
 stock CreateTerminalActor(b, i)
 {
@@ -112,4 +113,20 @@ stock LoadBizStaticActor()
             ApplyDynamicActorAnimation(BizBankActor[b][i], "PED","SEAT_idle", 4.0, 0,0,0,1,0);
         }
     }
+
+    BizClothesActor[0] = CreateDynamicActor(93,208.8246,-98.7054,1005.2578,177.9428, true, 100.0, 182, 15, -1, 100.0, -1, 0);
+    BizClothesActor[1] = CreateDynamicActor(93,206.3100,-98.7052,1005.2578,178.7574, true, 100.0, 182, 15, -1, 100.0, -1, 0);
+    BizClothesActor[2] = CreateDynamicActor(93,159.7952,-81.1915,1001.8047,180.4281, true, 100.0, 180, 18, -1, 100.0, -1, 0);
+    BizClothesActor[3] = CreateDynamicActor(93,162.8142,-81.1918,1001.8047,180.4281, true, 100.0, 180, 18, -1, 100.0, -1, 0);
+    BizClothesActor[4] = CreateDynamicActor(93,203.2695,-41.6711,1001.8047,177.9427, true, 100.0, 181, 1, -1, 100.0, -1, 0);
+    BizClothesActor[5] = CreateDynamicActor(93,207.0535,-127.8052,1003.5078,179.5719, true, 100.0, 179, 3, -1, 100.0, -1, 0);
+    BizClothesActor[6] = CreateDynamicActor(93,204.4043,-157.8300,1000.5234,180.2245, true, 100.0, 178, 14, -1, 100.0, -1, 0);
+    BizClothesActor[7] = CreateDynamicActor(93,204.8537,-8.2923,1001.2109,268.7989, true, 100.0, 177, 5, -1, 100.0, -1, 0);
+    BizClothesActor[8] = CreateDynamicActor(93,204.8514,-8.2400,1001.2109,272.4646, true, 100.0, 176, 5, -1, 100.0, -1, 0);
+    BizClothesActor[9] = CreateDynamicActor(93,159.7009,-81.1918,1001.8120,178.7574, true, 100.0, 175, 18, -1, 100.0, -1, 0);
+    BizClothesActor[10] = CreateDynamicActor(93,162.8424,-81.1918,1001.8047,177.7392, true, 100.0, 175, 18, -1, 100.0, -1, 0);
+    BizClothesActor[11] = CreateDynamicActor(93,206.2991,-98.7047,1005.2578,182.4229, true, 100.0, 174, 15, -1, 100.0, -1, 0);
+    BizClothesActor[12] = CreateDynamicActor(93,208.7682,-98.7050,1005.2578,182.0156, true, 100.0, 174, 15, -1, 100.0, -1, 0);
+    BizClothesActor[13] = CreateDynamicActor(93,206.4495,-98.7045,1005.2578,178.3500, true, 100.0, 173, 15, -1, 100.0, -1, 0);
+    BizClothesActor[14] = CreateDynamicActor(93,208.7266,-98.7051,1005.2578,178.3500, true, 100.0, 173, 15, -1, 100.0, -1, 0);
 }

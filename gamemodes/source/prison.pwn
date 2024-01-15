@@ -512,6 +512,14 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
             CreateBreaking(playerid, 4, DP[0][playerid], 0);
         }
     }
+    else if(dialogid == 1482)
+    {
+        if(response)
+        {
+            if(listitem < 0 || listitem > 200) return ErrorMessage(playerid,"{ff6743}Ошибка выбора строки");
+            ShowPlayerWanted(playerid, List[listitem][playerid]);
+        }
+    }
     return 1;
 }
 
@@ -542,8 +550,8 @@ CMD:movingbeton(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;
     new moving,number;
     sscanf(params, "ii",number,moving);
-    PrisonMovingBeton(number,moving*75);
-    PrisonMovingSand(number,moving*75);
+    PrisonMovingBeton(number,moving);
+    PrisonMovingSand(number,moving);
     PrisonBetonHP[number]-=moving*75;
     return 1;
 }
