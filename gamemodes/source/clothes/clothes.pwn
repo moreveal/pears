@@ -18,6 +18,8 @@ new SkinBuy[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скино�
 new SkinBuyGold[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скинов за голду
 new SkinSale[312 + MAX_SKIN_CUSTOM]; // Доступен ли скин для продажи
 new bool:skinsaleUpdate;
+new bool:skinbuyUpdate;
+new bool:skinbuyGoldUpdate;
 
 new skinNameAll[][] =
 {
@@ -566,8 +568,8 @@ stock left_skin(playerid)
 	}
 	else if(g == 200) // Регистрация
 	{
-		if(select >= 1) select --;
-		else select = 2;
+		if(select <= 0) select = MAX_SKIN_REG - 1;
+		else select --;
 	}
 	SetPVarInt(playerid, "SelectCharPlace", select);
 	show_skin(playerid, g, select, 1);
@@ -594,8 +596,8 @@ stock right_skin(playerid)
 	}
 	else if(g == 200) // Регистрация
 	{
-		if(select <= 1) select ++;
-		else select = 0;
+		if(select >= MAX_SKIN_REG - 1) select = 0;
+		else select ++;
 	}
 	else if(g == 400) // Gold Магазин
 	{
@@ -1073,6 +1075,7 @@ stock buy_SkinShop(playerid)
 	if(GetSkinSex(skin) == 1 && PlayerInfo[playerid][pSex] == 1) return ErrorMessage(playerid, "{FF6347}Вы не можете купить женскую одежду");
 	else if(GetSkinSex(skin) == 0 && PlayerInfo[playerid][pSex] == 2) return ErrorMessage(playerid, "{FF6347}Вы не можете купить мужскую одежду");
 
+	new gold = SkinGold[skin];
 	new string[144], yesBuy;
 	if(g >= 1 && g <= 22)
 	{
@@ -1083,6 +1086,8 @@ stock buy_SkinShop(playerid)
 	else if(g == 100 || g == 400)
 	{
 		if(StoreQuan[b][sel] <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
+		if(DP[0][playerid] == 0 && price <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена стоимость");
+		if(DP[0][playerid] == 1 && gold <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена gold стоимость");
 		g = 0;
 		yesBuy = 1;
 	}
@@ -1109,6 +1114,8 @@ stock buy_SkinShop(playerid)
 				oGivePlayerMoney(playerid, -price);
 				format(string, sizeof(string),"Одежда ID: %d", skin);
 				MoneyLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
+
+				GiveQuanBuySkin(skin, 0);
 			}
 
 			if(g >= 1 && g <= 22)
@@ -1135,7 +1142,6 @@ stock buy_SkinShop(playerid)
 		}
 		else if(DP[0][playerid] == 1)
 		{
-			new gold = SkinGold[skin];
 			if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Эта одежда не продаётся за Gold");
 			if(PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
 			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
@@ -1149,6 +1155,8 @@ stock buy_SkinShop(playerid)
             DonateLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -gold, string);
 			PlayerInfo[playerid][pDonateMoney] -= gold;
             mysql_save(playerid, 4);
+
+			GiveQuanBuySkin(skin, 0);
 		}
 	}
 	return 1;
@@ -1213,6 +1221,13 @@ stock FindPreviousGoldSkin(find)
         }
     }
     return findSkin;
+}
+
+stock GiveQuanBuySkin(s, typeBuy)
+{
+    if(typeBuy == 0) SkinBuy[s] ++, skinbuyUpdate = true;
+    else if(typeBuy == 1) SkinBuyGold[s] ++, skinbuyGoldUpdate = true;
+    return 1;
 }
 
 stock IsAClothesNearby(playerid)
@@ -1306,6 +1321,34 @@ function LoadSaleSkin()
 	return 1;
 }
 
+function LoadSkinBuy()
+{
+	new rows, time = GetTickCount();
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new string[4096];
+		cache_get_value_name(0, "SkinBuy", string, sizeof(string));
+		ParseStringToArray(string, SkinBuy, sizeof(SkinBuy));
+		printf("[MODE]: Подсчёт покупок скинов [%d ms]", GetTickCount() - time);
+	}
+	return 1;
+}
+
+function LoadSkinBuyGold()
+{
+	new rows, time = GetTickCount();
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new string[4096];
+		cache_get_value_name(0, "SkinBuyGold", string, sizeof(string));
+		ParseStringToArray(string, SkinBuyGold, sizeof(SkinBuyGold));
+		printf("[MODE]: Подсчёт gold покупок скинов [%d ms]", GetTickCount() - time);
+	}
+	return 1;
+}
+
 stock SaveSkinEconomy()
 {
 	new string_mysql[4096];
@@ -1328,4 +1371,20 @@ stock SaveSkinSale()
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinSale` = '%s' WHERE `newid` = '1'", StringifyArray(SkinSale, sizeof(SkinSale)));
 	query_empty(pearsq, string_mysql);
 	return 1;
+}
+
+stock SaveSkinBuy()
+{
+    new string_mysql[4096];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinBuy` = '%s' WHERE `newid` = '1'", StringifyArray(SkinBuy, sizeof(SkinBuy)));
+	query_empty(pearsq, string_mysql);
+    return 1;
+}
+
+stock SaveSkinBuyGold()
+{
+    new string_mysql[4096];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinBuyGold` = '%s' WHERE `newid` = '1'", StringifyArray(SkinBuyGold, sizeof(SkinBuyGold)));
+	query_empty(pearsq, string_mysql);
+    return 1;
 }
