@@ -926,7 +926,7 @@ CMD:goldturnover(playerid)
 	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{cccccc}Поиск игроков...","*","");
-	mysql_tquery(pearsq, "SELECT * FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1' ORDER BY `Online` DESC LIMIT 30", "Call_turnovergold", "d", playerid);
+	mysql_tquery(pearsq, "SELECT * FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1'", "Call_turnovergold", "d", playerid);
 	return 1;
 }
 

@@ -190,6 +190,7 @@ stock GetSkinSex(s)
  	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
 
 	// Кастомные -15188
+	|| s == 312
 	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 15523
 	|| s == 336 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
@@ -479,6 +480,7 @@ stock GoShmot(playerid, stat)
 	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
 	SelectColorDraw(playerid);
 	SetPVarInt(playerid, "SelectCharPlace", 0);
+	SetPVarInt(playerid, "SkinLave", 0);
 	OnlineInfo[playerid][oShowInterface] = 18;
 	if(stat == 1)
 	{
@@ -488,15 +490,21 @@ stock GoShmot(playerid, stat)
 		TextDrawShowForPlayer(playerid, DressDraw[7]), TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]); // Select
 	    if(Fractia[playerid] == 100) // Магазин Одежды
 	    {
-	    	show_skin(playerid, 100, 0);
+	    	show_skin(playerid, 100, 0, 0);
 	    	TextDrawShowForPlayer(playerid, DressDraw[14]), TextDrawShowForPlayer(playerid, DressDraw[15]); // Список
 	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL [1/50]");
+			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
+	    }
+		else if(Fractia[playerid] == 400) //Gold Shop
+	    {
+	    	show_skin(playerid, 400, 0, 0);
+	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL");
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 	    }
 	    else if(Fractia[playerid] >= 1 && Fractia[playerid] <= 22) // Раздевалка в Организации
 		{
 		    new g = Fractia[playerid];
-			show_skin(playerid, g, 0);
+			show_skin(playerid, g, 0, 0);
 			if(g == 1) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "LSPD");
 			else if(g == 2) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "FBI");
 			else if(g == 3) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "NGSA");
@@ -519,10 +527,10 @@ stock GoShmot(playerid, stat)
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 		}
 	}
-	else
+	else // При регистрации
 	{
 		Fractia[playerid] = 200;
-		show_skin(playerid, 200, 0);
+		show_skin(playerid, 200, 0, 0);
 		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]);
 		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]);
 		TextDrawShowForPlayer(playerid, DressDraw[7]), TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]);
@@ -556,13 +564,13 @@ stock left_skin(playerid)
 		if(select >= 1) select --;
 		else select = 49;
 	}
-	else if(g == 200)
+	else if(g == 200) // Регистрация
 	{
 		if(select >= 1) select --;
 		else select = 2;
 	}
 	SetPVarInt(playerid, "SelectCharPlace", select);
-	show_skin(playerid, g, select);
+	show_skin(playerid, g, select, 1);
 	return 1;
 }
 
@@ -589,8 +597,12 @@ stock right_skin(playerid)
 		if(select <= 1) select ++;
 		else select = 0;
 	}
+	else if(g == 400) // Gold Магазин
+	{
+		select ++;
+	}
 	SetPVarInt(playerid, "SelectCharPlace", select);
-	show_skin(playerid, g, select);
+	show_skin(playerid, g, select, 0);
 	return 1;
 }
 
@@ -619,7 +631,7 @@ stock CloseShmot(playerid)
 	Fractia[playerid] = 0;
 	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
 	for(new t = 0; t < 16; t++) TextDrawHideForPlayer(playerid, DressDraw[t]);
-	for(new pt = 0; pt < 4; pt++) PlayerTextDrawHide(playerid, PlaDressDraw[pt]);
+	for(new pt = 0; pt < 5; pt++) PlayerTextDrawHide(playerid, PlaDressDraw[pt]);
 	return 1;
 }
 
@@ -631,12 +643,12 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
 
     if(clickedid == DressDraw[3]) // Выбор скина стрелка влево
     {
-        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) left_skin(playerid);
+        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200 || Fractia[playerid] == 400) left_skin(playerid);
         else if(Fractia[playerid] == 300) left_akses(playerid);
     }
     if(clickedid == DressDraw[5]) // Выбор скина стрелка вправо
     {
-        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200) right_skin(playerid);
+        if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200 || Fractia[playerid] == 400) right_skin(playerid);
         else if(Fractia[playerid] == 300) right_akses(playerid);
     }
 
@@ -1046,6 +1058,159 @@ stock BackOnClothes(playerid)
 
 	TryOnClothes(playerid, findSkin, 2);
 	return 1;
+}
+
+stock buy_SkinShop(playerid)
+{
+	if(Fractia[playerid] == 0) return 1;
+
+	new g = Fractia[playerid], sel = GetPVarInt(playerid, "SelectCharPlace"), skin, price, srank, b = Bid[playerid]-173;
+	if(g >= 1 && g <= 22) skin = OrganInfo[g][gSkin][sel], price = OrganInfo[g][gSkinPrice][sel], srank = OrganInfo[g][gSkinRank][sel];
+	else if(g == 100) skin = StoreItem[b][sel], price = StorePrice[b][sel];
+	else if(g == 400) skin = GetPVarInt(playerid, "SkinLave");
+
+	if(skin == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В слоте нет одежды");
+	if(GetSkinSex(skin) == 1 && PlayerInfo[playerid][pSex] == 1) return ErrorMessage(playerid, "{FF6347}Вы не можете купить женскую одежду");
+	else if(GetSkinSex(skin) == 0 && PlayerInfo[playerid][pSex] == 2) return ErrorMessage(playerid, "{FF6347}Вы не можете купить мужскую одежду");
+
+	new string[144], yesBuy;
+	if(g >= 1 && g <= 22)
+	{
+		if(g != fraction(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете носить эту одежду [ Другая организация ]");
+		if(PlayerInfo[playerid][pRank] < srank) return format(string, sizeof(string),"{FF6347}Эта одежда доступна с %d ранга", srank), ErrorMessage(playerid, string);
+		yesBuy = 1;
+	}
+	else if(g == 100 || g == 400)
+	{
+		if(StoreQuan[b][sel] <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
+		g = 0;
+		yesBuy = 1;
+	}
+
+	if(yesBuy)
+	{
+		if(DP[0][playerid] == 0)
+		{
+			if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+
+			PlayerPlaySound(playerid,6401,0,0,0);
+			if(price == 0)
+			{
+				if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string),"[ Мысли ]: Я взял одежду {ff9000}[ID: %d]", skin), SendClientMessage(playerid, COLOR_GREY, string);
+				else format(string, sizeof(string),"[ Мысли ]: Я взяла одежду {ff9000}[ID: %d]", skin), SendClientMessage(playerid, COLOR_GREY, string);
+			}
+			else
+			{
+				format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {99ff66}%d$ {ff9000}[ID: %d]", gender(playerid), price, skin);
+				SendClientMessage(playerid, COLOR_GREY, string);
+				oGivePlayerMoney(playerid, -price);
+				format(string, sizeof(string),"Одежда ID: %d", skin);
+				MoneyLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
+			}
+
+			if(g >= 1 && g <= 22)
+			{
+				OrganInfo[g][glave] += price, OrganInfo[g][gUpdate] = 1;
+			}
+			else if(g == 100)
+			{
+				paybiz(Bid[playerid], price);
+				StoreQuan[b][sel] -= 1;
+				if(StoreQuan[b][sel] <= 0)
+				{
+					StoreItem[b][sel] = 0, StorePrice[b][sel] = 0;
+					foreach(Player,i)
+					{
+						if(Fractia[i] != 100) continue;
+						if(GetPVarInt(i, "SelectCharPlace") != sel) continue;
+						show_skin(i, 100, sel, 0);
+						if(i != playerid)  ErrorMessage(i, "{FF6347}Внимание! Кто-то только что купил последнюю одежду, которую вы просматривали");
+					}
+				}
+				SaveBizzStore(b, sel);
+			}
+		}
+		else if(DP[0][playerid] == 1)
+		{
+			new gold = SkinGold[skin];
+			if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Эта одежда не продаётся за Gold");
+			if(PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
+			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+
+			PlayerPlaySound(playerid,6401,0,0,0);
+			format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {ffcc00}%dG {ff9000}[ID: %d]", gender(playerid), gold, skin);
+			SendClientMessage(playerid, COLOR_GREY, string);
+			format(string, sizeof(string),"Одежда ID: %d", skin);
+            DonateLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -gold, string);
+			PlayerInfo[playerid][pDonateMoney] -= gold;
+            mysql_save(playerid, 4);
+		}
+	}
+	return 1;
+}
+
+stock FindNextGoldSkin(find)
+{
+    new findSkin = -1; // Инициализируем переменную значением, указывающим на "не найдено"
+
+    // Первый проход: ищем скин после значения 'find'
+    for(new s = find + 1; s < 312 + MAX_SKIN_CUSTOM; s++)
+    {
+        if(s == 0 || s == 74) continue;
+        if(SkinSale[s] == 1 && SkinGold[s] > 0)
+        {
+            findSkin = s;
+            break;
+        }
+    }
+
+    // Если скин не найден в первом проходе, делаем второй проход от начала
+    if(findSkin == -1)
+    {
+        for(new s = 0; s <= find; s++)
+        {
+            if(s == 0 || s == 74) continue;
+            if(SkinSale[s] == 1 && SkinGold[s] > 0)
+            {
+                findSkin = s;
+                break;
+            }
+        }
+    }
+    return findSkin;
+}
+stock FindPreviousGoldSkin(find)
+{
+    new findSkin = -1; // Инициализация переменной значением "не найдено"
+
+    // Первый проход: ищем скин перед значением 'find'
+    for(new s = find - 1; s >= 0; s--)
+    {
+        if(s == 0 || s == 74) continue;
+        if(SkinSale[s] == 1 && SkinGold[s] > 0)
+        {
+            findSkin = s;
+            break;
+        }
+    }
+
+    // Если скин не найден в первом проходе, делаем второй проход от конца
+    if(findSkin == -1)
+    {
+        for(new s = 312 + MAX_SKIN_CUSTOM - 1; s > find; s--)
+        {
+            if(s == 0 || s == 74) continue;
+            if(SkinSale[s] == 1 && SkinGold[s] > 0)
+            {
+                findSkin = s;
+                break;
+            }
+        }
+    }
+    return findSkin;
 }
 
 stock IsAClothesNearby(playerid)

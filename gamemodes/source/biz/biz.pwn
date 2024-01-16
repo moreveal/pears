@@ -151,7 +151,7 @@ stock ShowOrderThing(playerid, b)
 				List[quan][playerid] = i;
 				format(line,sizeof(line),"{cccccc}%s \t {444444}%d/%d \t {99FF66}[%d$]\n",GetNameThing(0, BizzInfo[b][bWare][i], 0, 0), BizzInfo[b][bItem][i],maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]), getThingPriceGos(BizzInfo[b][bWare][i], 0)), strcat(lines,line);
 			}
-			else 
+			else
 			{
 				if (BizzInfo[b][bProduct][i] == 0) break;
 				List[quan][playerid] = i;
