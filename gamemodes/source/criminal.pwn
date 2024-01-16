@@ -217,7 +217,7 @@ CMD:wanted(playerid, const params[])
 			foreach(Player, i)
 			{
                 List[i][playerid] = 0;
-				if(PlayerInfo[i][pCrimes] > 0 && ADUTY[i] == 0 && OnlineInfo[i][oLogged] == 1)
+				if(PlayerInfo[i][pCrimes] > 0 && ADUTY[i] == 0 && OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pJailed] == 0)
                 {
                     format(line,sizeof(line),"{cccccc}%s[%d]\t{FF6347}%d\n",rpplayername(i),i,PlayerInfo[i][pCrimes]), strcat(lines,line);
                     List[quan][playerid] = i;
@@ -687,8 +687,11 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk) // 0 - розы
 	new slotUk = -1;
 	if(OnlineInfo[playerid][oLogged] == 1)
 	{
-		if(WantedInfo[playerid][wanLoad] == true) return ErrorMessage(playerid, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
-		if(PlayerInfo[playerid][pJailed] != 0) return ErrorMessage(playerid, "{FF6347}Подозреваемый уже находится в заключении");
+        if(zakonnik >= 0)
+        {
+		    if(WantedInfo[playerid][wanLoad] == true) return ErrorMessage(zakonnik, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
+		    if(PlayerInfo[playerid][pJailed] != 0) return ErrorMessage(zakonnik, "{FF6347}Подозреваемый уже находится в заключении");
+        }
 
 		for(new i = 0; i < MAX_CRIME_PLAYER; i++)
 		{
@@ -736,7 +739,11 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk) // 0 - розы
 			    OrgLog(fraction(zakonnik), "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][ccLevel], CriminalCodeInfo[uk][ccName]);
             }
         }
-		else return ErrorMessage(playerid, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
+		else
+        {
+            if(zakonnik >= 0) ErrorMessage(zakonnik, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
+            return 1;
+        }
 	}
 	return slotUk;
 }

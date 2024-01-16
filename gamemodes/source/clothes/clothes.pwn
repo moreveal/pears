@@ -1095,6 +1095,7 @@ stock buy_SkinShop(playerid)
 			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
 			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
+			SaveInvent(playerid, put_inva);
 			PlayerPlaySound(playerid,6401,0,0,0);
 			if(price == 0)
 			{
@@ -1140,6 +1141,7 @@ stock buy_SkinShop(playerid)
 			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
 			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
+			SaveInvent(playerid, put_inva);
 			PlayerPlaySound(playerid,6401,0,0,0);
 			format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {ffcc00}%dG {ff9000}[ID: %d]", gender(playerid), gold, skin);
 			SendClientMessage(playerid, COLOR_GREY, string);

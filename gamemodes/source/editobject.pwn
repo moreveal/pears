@@ -344,39 +344,39 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     }
     else if(gRedakt[playerid] == 27) // Граффити
     {
-        new grap = DP[0][playerid];
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 10.0)
         {
             CancelEdit(playerid);
             return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
-        if(GraphitiInfo[grap][graphitiStatus] == 1)
-        {
-            DestroyDynamicObject(GraphitiObject[grap]);
-            DestroyDynamicPickup(GraphitiPickUp[grap]);
-            DestroyDynamic3DTextLabel(GraphitiLabel[grap]);
-        }
-        if(GetZoneXYZ(x,y) == -1)
+        new zone = GetZoneXYZ(x,y);
+        if(zone == -1)
         {
             CancelEdit(playerid);
             return ErrorMessage(playerid, "{FF6347}Граффити не в территории гетто [Отмена установки]");
         }
-        if(GetZoneXYZ(x,y) != GetZone(playerid))
+        if(GraphitiInfo[zone][graphitiStatus] == 1)
         {
             CancelEdit(playerid);
-            return ErrorMessage(playerid, "{FF6347}Граффити не в том квадрате в которым находитесь вы [Отмена установки]");
+            return ErrorMessage(playerid, "{FF6347}Ошибка! В этой зоне уже нанесено граффити");
         }
-        GraphitiInfo[grap][graphitiPos][0] = x, GraphitiInfo[grap][graphitiPos][1] = y, GraphitiInfo[grap][graphitiPos][2] = z;
-        GraphitiInfo[grap][graphitiPos][3] = rx, GraphitiInfo[grap][graphitiPos][4] = ry, GraphitiInfo[grap][graphitiPos][5] = rz;
-        GraphitiInfo[grap][graphitiOrg] = fraction(playerid);
-        GraphitiInfo[grap][graphitiUnix] = gettime();
-        GraphitiInfo[grap][graphitiStatus] = 1;
-        GraphitiInfo[grap][graphitiZone] = GetZoneXYZ(x,y);
-        GraphitiInfo[grap][graphitiPlayer] = PlayerInfo[playerid][pID];
-        GraphitiInfo[grap][graphitiName] = PlayerInfo[playerid][pName];
-        GraphitiUpdateElement(grap);
-        SaveGraphiti(grap);
+        if(GraphitiInfo[zone][graphitiStatus] == 1)
+        {
+            DestroyDynamicObject(GraphitiObject[zone]);
+            DestroyDynamicPickup(GraphitiPickUp[zone]);
+            DestroyDynamic3DTextLabel(GraphitiLabel[zone]);
+        }
+        GraphitiInfo[zone][graphitiPos][0] = x, GraphitiInfo[zone][graphitiPos][1] = y, GraphitiInfo[zone][graphitiPos][2] = z;
+        GraphitiInfo[zone][graphitiPos][3] = rx, GraphitiInfo[zone][graphitiPos][4] = ry, GraphitiInfo[zone][graphitiPos][5] = rz;
+        GraphitiInfo[zone][graphitiOrg] = fraction(playerid);
+        GraphitiInfo[zone][graphitiUnix] = gettime();
+        GraphitiInfo[zone][graphitiStatus] = 1;
+        GraphitiInfo[zone][graphitiZone] = zone;
+        GraphitiInfo[zone][graphitiPlayer] = PlayerInfo[playerid][pID];
+        GraphitiInfo[zone][graphitiName] = PlayerInfo[playerid][pName];
+        GraphitiUpdateElement(zone);
+        SaveGraphiti(zone);
         ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0,0,1,1,0,0);
     }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);

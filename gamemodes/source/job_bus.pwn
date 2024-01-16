@@ -427,6 +427,10 @@ stock ShowPlayerSettingCheckPoint(playerid,i)
 
 stock ShowAllRout(playerid)
 {
+	new g = fraction(playerid);
+	if(!IsAFunctionOrganization(61, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник Правительства");
+	if(!GetAccessRankOrg(playerid, g, 61, NO_FBI)) return 1;
+
 	new line[214],lines[4096];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
 	format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);

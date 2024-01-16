@@ -54,7 +54,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 		    	}
 		    	if(listitem == 2)
 				{
-					if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
+					if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
 					if(PlayerInfo[playerid][pSalary] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не выполнили работу");
 					new pay = PlayerInfo[playerid][pSalary];
 					if(ServerInfo[53] == 9) pay += pay/4;
@@ -184,6 +184,7 @@ stock CloseCollector(playerid)
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
+	PlayerInfo[playerid][pPlacement] = 13;
 	PlayerInfo[playerid][pSalary] += BizzInfo[b][bDeliveryPay];
 	mysql_save(playerid,58);
 	SetPVarInt(playerid,"job_collector",0);
