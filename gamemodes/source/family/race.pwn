@@ -279,14 +279,14 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(listitem < 0 || listitem > 4) return 0;
             if(listitem == 0)
             {
-                if(PlayerInfo[playerid][pFamrank] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
+                if(PlayerInfo[playerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
                 if(FamilyInfo[fam][fParthnerBenz] == 0 || FamilyInfo[fam][fParthnerMarket] == 0 || FamilyInfo[fam][fParthnerService] == 0) return ErrorMessage(playerid, "{FF6347}Нужно что бы все партнерства были заключены");
                 if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid, "{FF6347}Сейчас идет гонка");
                 GoStreetRacers(playerid);
             }
             if(listitem == 1)
             {
-                if(PlayerInfo[playerid][pFamrank] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
+                if(PlayerInfo[playerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
                 if(FamilyInfo[fam][fParthnerMarket] == 0)
                 {
                     ErrorMessage(playerid,"{FF6347}У семьи нет партнера данного типа.\n Возможно стоит связаться с владельцем одного из бизнесов");
@@ -301,7 +301,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             }
             if(listitem == 2)
             {
-                if(PlayerInfo[playerid][pFamrank] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
+                if(PlayerInfo[playerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
                 if(FamilyInfo[fam][fParthnerBenz] == 0)
                 {
                     ErrorMessage(playerid,"{FF6347}У семьи нет партнера данного типа.\n Возможно стоит связаться с владельцем одного из бизнесов");
@@ -316,7 +316,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             }
             if(listitem == 3)
             {
-                if(PlayerInfo[playerid][pFamrank] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
+                if(PlayerInfo[playerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
                 if(FamilyInfo[fam][fParthnerService] == 0)
                 {
                     ErrorMessage(playerid,"{FF6347}У семьи нет партнера данного типа.\n Возможно стоит связаться с владельцем одного из бизнесов");
@@ -774,8 +774,8 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
         if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
 
         if(!ProxDetectorS(10.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок далеко от вас [ Не больше 10 метров ]");
-        if(PlayerInfo[giveplayerid][pFamrank] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок не глава семьи и не может принять предложение");
         new fam = PlayerInfo[giveplayerid][pFamily];
+        if(PlayerInfo[giveplayerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок не глава семьи и не может принять предложение");
         if(b >= 1 && b <= 12 && FamilyInfo[fam][fParthnerBenz] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");
         else if(b >= 153 && b <= 162 && FamilyInfo[fam][fParthnerMarket] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");
         else if(b >= 183 && b <= 192 && FamilyInfo[fam][fParthnerService] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");

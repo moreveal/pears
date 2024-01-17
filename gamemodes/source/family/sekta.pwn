@@ -262,7 +262,7 @@ CMD:gnews(playerid, const params[])
         SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
         SektaCNNStart();
     }
-	if(PlayerInfo[playerid][pFamrank] >= 9 && FamilyInfo[fam][fType] == 3)
+	if(PlayerInfo[playerid][pFamrank] >= FamilyInfo[fam][fRanks] - 1 && FamilyInfo[fam][fType] == 3)
 	{
 		new newcar = GetPlayerVehicleID(playerid);
 		if(newcar >= cnncar[0] && newcar <= cnncar[1] || IsPlayerInRangeOfPoint(playerid,5.0,-1750.7061,801.5389,137.4583) || Cars[newcar] == 9)
