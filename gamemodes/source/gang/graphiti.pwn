@@ -215,13 +215,12 @@ stock MenuGraffity(playerid, zone)
 
 stock gospray(playerid)
 {
-    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid,"{ff6347}Вы не можете нанести граффити в помещении");
-
     new g = fraction(playerid);
-    if(g != 13 && g != 14 && g != 15 && g != 16) return ErrorMessage(playerid,"{ff6347}Вы не участник банды");
+    if(g != 13 && g != 14 && g != 15 && g != 16) return ErrorMessage(playerid,"{ff6347}Стереть или нанести граффити могут только участники банды");
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid,"{ff6347}Вы не можете стереть или нанести граффити в помещении");
 
     new zone = GetZone(playerid);
-    if(zone == -1) return ErrorMessage(playerid,"{ff6347}Нанести граффити можно только в гетто");
+    if(zone == -1) return ErrorMessage(playerid,"{ff6347}Нанести или стереть граффити можно только в гетто");
 
     if(GraphitiInfo[zone][graphitiStatus] == 1)
     {
@@ -232,8 +231,8 @@ stock gospray(playerid)
         }
         else
         {
-            if(GraphitiInfo[zone][graphitiOrg] == g) ErrorMessage(playerid,"{ff6347}В этом квадрате уже нанесено граффити вашей банды");
-            else ErrorMessage(playerid,"{ff6347}В этом квадрате уже нанесено граффити чужой банды\n{cccccc}Вы можете найти граффити, стереть его или перекрасить");
+            if(GraphitiInfo[zone][graphitiOrg] == g) ErrorMessage(playerid,"{ff6347}В этом квадрате нанесено граффити вашей банды");
+            else ErrorMessage(playerid,"{ff6347}В этом квадрате нанесено граффити чужой банды\n{cccccc}Вы можете найти граффити, стереть его или перекрасить");
         }
         return 1;
     }
