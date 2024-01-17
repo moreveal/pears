@@ -441,11 +441,11 @@ stock ShowAllRout(playerid)
 		else if(FullRout[i][brUnixEditor] == 0) stamp2datetime(FullRout[i][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0)
 		{
-			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		else if(FullRout[i][brStatus] == 1  && FullRout[i][brIdCreator] != 0)
 		{
-			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		List[quan][playerid] = i;
 		quan++;

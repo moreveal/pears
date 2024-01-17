@@ -358,8 +358,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         }
         if(GraphitiInfo[zone][graphitiStatus] == 1)
         {
-            CancelEdit(playerid);
-            return ErrorMessage(playerid, "{FF6347}Ошибка! В этой зоне уже нанесено граффити");
+            if(GraphitiInfo[zone][graphitiUnix]+1800 > gettime())
+            {
+                CancelEdit(playerid);
+                return ErrorMessage(playerid, "{FF6347}Ошибка! В этой зоне уже нанесено граффити");
+            }
         }
         if(GraphitiInfo[zone][graphitiStatus] == 1)
         {
@@ -367,6 +370,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             DestroyDynamicPickup(GraphitiPickUp[zone]);
             DestroyDynamic3DTextLabel(GraphitiLabel[zone]);
         }
+        else QuanGraffity ++;
         GraphitiInfo[zone][graphitiPos][0] = x, GraphitiInfo[zone][graphitiPos][1] = y, GraphitiInfo[zone][graphitiPos][2] = z;
         GraphitiInfo[zone][graphitiPos][3] = rx, GraphitiInfo[zone][graphitiPos][4] = ry, GraphitiInfo[zone][graphitiPos][5] = rz;
         GraphitiInfo[zone][graphitiOrg] = fraction(playerid);
@@ -374,10 +378,14 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         GraphitiInfo[zone][graphitiStatus] = 1;
         GraphitiInfo[zone][graphitiZone] = zone;
         GraphitiInfo[zone][graphitiPlayer] = PlayerInfo[playerid][pID];
-        GraphitiInfo[zone][graphitiName] = PlayerInfo[playerid][pName];
+        format(GraphitiInfo[zone][graphitiName], 24,"%s", PlayerInfo[playerid][pName]);
+        TakeInvent(playerid, 197, 1, 0, 999); // Отнимаем 1 из баллончика с краской (чтобы он не был бесконечным)
         GraphitiUpdateElement(zone);
         SaveGraphiti(zone);
         ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0,0,1,1,0,0);
+        SetPlayerChatBubble(playerid,"наносит граффити",COLOR_PURPLE,20.0,4000);
+
+        around_player_audio(playerid, 1134, 0, 5.0, 0);
     }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     PlayerPlaySound(playerid,6401,0,0,0);

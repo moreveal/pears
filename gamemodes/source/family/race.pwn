@@ -1293,7 +1293,7 @@ stock ShowAllRoutRace(playerid,type)
 		stamp2datetime(FamilyInfo[fam][fRoutUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		if(FamilyInfo[fam][fRoutUnix][i] != 0)
 		{
-            format(line,sizeof(line),"\n%d.%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FamilyRoutNameCreator[fam][i],tyear, tmonth, tday, thour, tminute, tsecond), strcat(lines,line);
+            format(line,sizeof(line),"\n%d.%s\t[ %02d.%02d.%d %02d:%02d ]", i+1,FamilyRoutNameCreator[fam][i],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		else
 		{

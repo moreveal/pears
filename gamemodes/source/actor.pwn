@@ -2,7 +2,7 @@
 
 new BotPears[MAX_BOTS];
 new PlayerText3D:BotTalk[MAX_REALPLAYERS]; // ID Label Text NPC
-new bool:BotTalkStat[MAX_REALPLAYERS];
+new BotTalkStat[MAX_REALPLAYERS];
 new BotTalkTimer[MAX_REALPLAYERS]; // ID Timer Text NPC
 
 static const talk_anims_actor[][] = {
@@ -18,10 +18,10 @@ function SendActorMessage(playerid, stat,actorid,const text[])
 		GetActorPos(actorid, pos[0], pos[1], pos[2]);
 		SetActorPos(actorid, pos[0], pos[1], pos[2]);
 
-        if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+        if(BotTalkStat[playerid] > 0) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
         if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]);
 
-        BotTalkStat[playerid] = true;
+        BotTalkStat[playerid] = actorid;
         BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.2, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
         BotTalkTimer[playerid] = SetTimerEx("ClearTextActor", 5000, false, "dd", playerid, actorid);
 
@@ -32,7 +32,7 @@ function SendActorMessage(playerid, stat,actorid,const text[])
 
 function ClearTextActor(playerid, actorid)
 {
-    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = false;
+    if(BotTalkStat[playerid] > 0) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = 0;
     if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
     LoadAnimBot(actorid);
     return 1;
@@ -53,10 +53,10 @@ stock MessageDynamicActor(actorid, status, playerid, const text[])
     new Float:pos[3];
     GetDynamicActorPos(actorid, pos[0], pos[1], pos[2]);
 
-    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
+    if(BotTalkStat[playerid] > 0) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]);
     if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
 
-    BotTalkStat[playerid] = true;
+    BotTalkStat[playerid] = actorid;
     BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 1);
     if(status == 0) BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
 
@@ -65,7 +65,7 @@ stock MessageDynamicActor(actorid, status, playerid, const text[])
 
 function ClearDynamicTextActor(playerid, actorid) // Удаляем текст над бошкой NPC
 {
-    if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = false;
+    if(BotTalkStat[playerid] > 0) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = 0;
     if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
 
     if(IsValidDynamicActor(actorid)) ClearDynamicActorAnimations(actorid);

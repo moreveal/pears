@@ -151,7 +151,7 @@ function NextScriptActor(playerid, scriptid, actorid, maxScript) // Обрабо
 
     if(QuestInfo[playerid][ActorText] >= maxScript) // Последняя реплика
     {
-        if(BotTalkStat[playerid] == true) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = false;
+        if(BotTalkStat[playerid] > 0) DeletePlayer3DTextLabel(playerid, BotTalk[playerid]), BotTalkStat[playerid] = 0;
         if(BotTalkTimer[playerid]) KillTimer(BotTalkTimer[playerid]), BotTalkTimer[playerid] = 0;
 
         if(QuestInfo[playerid][ActorTimer]) KillTimer(QuestInfo[playerid][ActorTimer]), QuestInfo[playerid][ActorTimer] = 0;
