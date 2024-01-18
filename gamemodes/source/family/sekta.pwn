@@ -246,6 +246,7 @@ CMD:gnews(playerid, const params[])
 	if(sscanf(params, "s[144]",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Новости CNN [ /gnews Текст ]");
     new fam = PlayerInfo[playerid][pFamily];
 
+    if(PlayerInfo[playerid][pTransmitterOff][9] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен этот чат\n{cccccc}Y >> Меню >> Настройки Чата");
     if(FamilyInfo[fam][fsUnixCNN]+86400 > gettime())
     {
         new tyear, tmonth, tday, thour, tminute, tsecond;

@@ -119,8 +119,7 @@ stock showDialogFamilyMenu(playerid)
     format(line,sizeof(line),"%s\t", FamilyInfo[f][fName]), strcat(lines,line);
     if(Fame[playerid] == true) format(line,sizeof(line),"\n{cccccc}3D Название \t{99ff66}[ On ]"), strcat(lines,line);
     else if(Fame[playerid] == false) format(line,sizeof(line),"\n{cccccc}3D Название \t{FF6347}[ Off ]"), strcat(lines,line);
-    if(Chat[1][playerid] == false) format(line,sizeof(line),"\n{cccccc}Рация Семьи \t{99ff66}[ On ]"), strcat(lines,line);
-    else if(Chat[1][playerid] == true) format(line,sizeof(line),"\n{cccccc}Рация Семьи \t{FF6347}[ Off ]"), strcat(lines,line);
+    format(line, sizeof(line), "\n{cccccc}Рация Семьи \t%s", PlayerInfo[playerid][pTransmitterOff][3] ? "{FF6347}[ Off ]" : "{99ff66}[ On ]");strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Участники {99ff66}[ Online ]\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Участники {FF6347}[ Offline ]\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Дипломатия"), strcat(lines,line);

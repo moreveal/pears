@@ -721,8 +721,8 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk) // 0 - розы
 
 			foreach (Player, i)
 			{
-				if(OnlineInfo[i][oLogged] == 0) continue;
-				if(GetPVarInt(i,"Racmessage") == 0) continue;
+				if(OnlineInfo[i][oLogged] == 0
+                    || PlayerInfo[i][pTransmitterOff][5] == true) continue;
 				if(IsACop(i) || PlayerInfo[i][pFbi] >= 1)
 				{
 					if(zakonnik != -1) format(string, sizeof(string), "[%s]: Преступление: [%s], Подозреваемый: [%s], Ур. розыска: [%d]",PlayerInfo[zakonnik][pName],reason,rpplayername(playerid),zv);

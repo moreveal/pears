@@ -549,7 +549,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
 
 				// Включаем отображение рации /i
-				PlayerInfo[playerid][pTransmitterOff][2] = false;
+				if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;
 
 				// Включаем рацию в доступ
 				racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
@@ -854,7 +854,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
 
 			// Включаем отображение рации /i
-			PlayerInfo[playerid][pTransmitterOff][2] = false;
+			if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;
 
 			// Включаем рацию в доступ
 			racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
