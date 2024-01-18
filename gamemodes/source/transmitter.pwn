@@ -1,3 +1,16 @@
+
+/* Как добавить новый канал или рацию в настройку?
+1. Плюсуем дефайн MAX_TRANSMITTER
+2. Добавляем название рации в TransmitterName
+3. Топаем в stock MenuSettingTransmitter и с него начинаем по цепочке редактировать всё что необходимо
+*/
+
+new TransmitterName[][] =
+{
+    "Рация /r /rb", "Рация /d /db /u /ub", "Рация /i /ib", "Рация /f /fb", "Действия Администрации", "Волна Преступлений", "Чат Администрации /a",
+    "Чат Медиа /y"
+};
+
 stock checkTransmitterPermission(playerid) // Проверки разрешений рации (чтобы не дублировать одну и ту-же херню в каждую команду)
 {
 	if(PlayerInfo[playerid][pBkyrenie] >= 2)
@@ -450,3 +463,197 @@ function SendFamilyMessage(f, color, const string[])
 		if(PlayerInfo[i][pFamily] == f) SendClientMessage(i, color, string);
 	}
 }
+
+stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
+{
+    if(dialogid == 490)
+    {
+        if(response)
+        {
+            if(listitem < 0 || listitem >= sizeof(TransmitterName)) return 1;
+            DP[0][playerid] = listitem;
+            MenuSettingTransmitter(playerid, listitem);
+        }
+        else cmd_mm(playerid);
+    }
+    else if(dialogid == 491)
+    {
+        if(response)
+        {
+            new tid = DP[0][playerid];
+            if(listitem == 0)
+            {
+                if(PlayerInfo[playerid][pTransmitterOff][tid] == false) PlayerInfo[playerid][pTransmitterOff][tid] = true;
+                else PlayerInfo[playerid][pTransmitterOff][tid] = false;
+                MenuSettingTransmitter(playerid, tid);
+            }
+            else if(listitem == 1) SettingChannelTransmitter(playerid, tid);
+        }
+        else SettingTransmitter(playerid);
+    }
+    else if(dialogid == 506)
+    {
+        new tid = DP[0][playerid];
+        if(response)
+        {
+            if(listitem < 0 || listitem >= MAX_ORG) return 1;
+            new g = List[listitem][playerid];
+            if(g == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Не получен id организации");
+
+            if(tid == 0) // "Рация /r /rb"
+            {
+                PlayerInfo[playerid][pRacOrg][0] = g;
+                PlayerInfo[playerid][pRacOrg][1] = g;
+            }
+            else if(tid == 1) // "Рация /d /db /u /ub"
+            {
+                PlayerInfo[playerid][pRacDep][0] = g;
+                PlayerInfo[playerid][pRacDep][1] = g;
+            }
+            MenuSettingTransmitter(playerid, tid);
+            PlayerPlaySound(playerid,6401,0,0,0);
+        }
+        else MenuSettingTransmitter(playerid, tid);
+    }
+    return 1;
+}
+
+stock SettingTransmitter(playerid)
+{
+    new line[214],lines[2096];
+
+    format(line,sizeof(line),"Каналы"), strcat(lines,line);
+    for(new i = 0; i < sizeof(TransmitterName); i++)
+    {
+        format(line,sizeof(line),"\n{ff9000}%s",TransmitterName[i]), strcat(lines,line);
+    }
+    ShowDialog(playerid,490,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Чата",lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock MenuSettingTransmitter(playerid, tid)
+{
+    new line[214],lines[2096];
+    format(line,sizeof(line),"{ff9000}%s", TransmitterName[tid]), strcat(lines,line);
+
+    if(PlayerInfo[playerid][pTransmitterOff][tid] == false) format(line,sizeof(line),"\n{cccccc}Статус: {99ff66}[ On ]"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}Статус: {FF6347}[ Off ]"), strcat(lines,line);
+
+    if(tid == 0) // "Рация /r /rb"
+    {
+        new g = PlayerInfo[playerid][pRacOrg][0];
+        format(line,sizeof(line),"\n{cccccc}Канал: %s", frakeasyName[g]), strcat(lines,line);
+    }
+    else if(tid == 1) // "Рация /d /db /u /ub"
+    {
+        new g = PlayerInfo[playerid][pRacDep][0];
+        format(line,sizeof(line),"\n{cccccc}Канал: %s", frakeasyName[g]), strcat(lines,line);
+    }
+    else if(tid == 2) // "Рация /i /ib"
+    {
+        new g = PlayerInfo[playerid][pRacDiv][0];
+        new i = PlayerInfo[playerid][pRacDiv][1];
+        format(line,sizeof(line),"\n{cccccc}Канал: %s {%s}[ %s ]", frakeasyName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
+    }
+    ShowDialog(playerid,491,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock SettingChannelTransmitter(playerid, tid)
+{
+    new line[214], lines[2096], quan;
+    format(line,sizeof(line),"{ff9000}%s", TransmitterName[tid]), strcat(lines,line);
+
+    if(tid == 0) // "Рация /r /rb"
+    {
+        for(new g = 1; g < MAX_ORG; g++)
+        {
+            List[g][playerid] = 0;
+            if(IsAllowedTransmitterR(playerid, g)) 
+            {
+                format(line,sizeof(line),"\n%s", frakeasyName[g]), strcat(lines,line);
+                List[quan][playerid] = g;
+                quan ++;
+            }
+        }
+    }
+    else if(tid == 1) // "Рация /d /db /u /ub"
+    {
+        for(new g = 1; g < MAX_ORG; g++)
+        {
+            List[g][playerid] = 0;
+            if(IsAllowedTransmitterD(playerid, g)) 
+            {
+                format(line,sizeof(line),"\n%s", frakeasyName[g]), strcat(lines,line);
+                List[quan][playerid] = g;
+                quan ++;
+            }
+        }
+    }
+    ShowDialog(playerid,506,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock IsAllowedTransmitterR(playerid, g)
+{
+    if(PlayerInfo[playerid][pSoska] >= 1) // Админам доступны каналы всех организаций
+    {
+        if(g >= 1 && g <= MAX_ORG) return 1;
+    }
+    else if(PlayerInfo[playerid][pFbi] > 0) // FBI под прикрытием, своя и FBI
+    {
+        if(g == 2 || PlayerInfo[playerid][pMember] == g) return 1;
+    }
+    else if(PlayerInfo[playerid][pMember] == 7) // Правительству все законные организации
+    {
+        if(GetAccessRankOrgMay(playerid, PlayerInfo[playerid][pMember], 55, NO_FBI))
+        {
+            if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 9 || g == 11 || g == 21 || g == 22) return 1;
+        }
+    }
+    else // Всем прочим только организация, в которой игрок состоит
+    {
+        if(PlayerInfo[playerid][pMember] == g) return 1;
+    }
+    return 0;
+}
+
+stock IsAllowedTransmitterD(playerid, g)
+{
+    if(PlayerInfo[playerid][pSoska] >= 1) // Админам доступны каналы всех организаций
+    {
+        if(g >= 1 && g <= MAX_ORG) return 1;
+    }
+    else if(PlayerInfo[playerid][pFbi] > 0) // FBI под прикрытием, своя и FBI
+    {
+        if(g == 2 || PlayerInfo[playerid][pMember] == g) return 1;
+    }
+    else // Всем прочим только организация, в которой игрок состоит
+    {
+        if(PlayerInfo[playerid][pMember] == g) return 1;
+    }
+    return 0;
+}
+/*
+pRacOrg[2], // Чтение рации организации (1 - возможность написать в рацию)
+	pRacDep[2], // Чтение рации общей (1 - возможность написать в рацию)
+	pRacDiv[3], // Чтение рации подфракции (2 - возможность написать в рацию)
+    
+new TransmitterName[][] =
+{
+    "Рация /r /rb", "Рация /d /db /u /ub", "Рация /i /ib", "Рация /f /fb", "Действия Администрации", "Волна Преступлений", "Чат Администрации /a",
+    "Чат Медиа /y"
+};
+
+stock SettingTransmitter(playerid)
+{
+    new line[214],lines[2096];
+
+    format(line,sizeof(line),"Каналы"), strcat(lines,line);
+    for(new i = 0; i < sizeof(TransmitterName); i++)
+    {
+        format(line,sizeof(line),"\n{ff9000}%s",TransmitterName[i]), strcat(lines,line);
+    }
+    ShowDialog(playerid,490,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");
+    return 1;
+}*/
