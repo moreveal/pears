@@ -373,8 +373,11 @@ stock NextHourandMinute(plusmin, &tmphour, &tmpminute, &nexthour, &nextmin)
 }
 stock showDialogMenuPrison(playerid)
 {
-    if(!IsAPolice(fraction(playerid))) return ErrorMessage(playerid, "{FF6347}Управление тюрьмой доступно только полицейским");
     if(PlayerInfo[playerid][pJailed] > 0) return ErrorMessage(playerid, "{FF6347}Управление тюрьмой недоступно заключённым");
+    new g = fraction(playerid);
+	if(!IsAFunctionOrganization(72, g, playerid) && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать терминал управления тюрьмой");
+	if(!GetAccessRankOrg(playerid, g, 72, NO_FBI) && PlayerInfo[playerid][pSoska] == 0) return 1;
+
     new line[80],lines[80];
     format(line, sizeof(line), "{cccccc}Режим Тревоги \t%s", PrisonAlarm == 0 ? "{FF6347}[ Off ]" : "{99ff66}[ On ]"), strcat(lines, line);
     format(line, sizeof(line), "\n{555555}Команды >> \t"), strcat(lines, line);

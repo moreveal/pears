@@ -81,7 +81,7 @@ stock GoSpawn(playerid)
 
 stock SelectSpawnChoise(playerid, spawnId)
 {
-    PlayerInfo[playerid][pSpawnchange] = spawnId;
+    PlayerInfo[playerid][pSelectspawn] = spawnId;
     OnlineInfo[playerid][oNoClick] = false;
 
     if(IsPlayerSyncModels(playerid)) PlayerPlaySound(playerid, 4400, 0,0,0);
@@ -92,6 +92,9 @@ stock SelectSpawnChoise(playerid, spawnId)
 		SuccessMessage(playerid, "{cccccc}Вы изменили свой {99ff66}спавн");
         CloseSpawnChoise(playerid);
         CancelSelectTextDraw(playerid);
+        PlayerInfo[playerid][pSpawnchange] = spawnId;
+        PlayerInfo[playerid][pSelectspawn] = spawnId;
+        mysql_save(playerid, 29);
     }
     return 1;
 }
@@ -104,6 +107,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
 
     if(clickedid == SpawnChoiseDraw[0]) 
     {
+        if(OnlineInfo[playerid][oLogged] == 1) return ErrorMessage(playerid, "{FF6347}Последнюю позицию можно выбрать только при входе на сервер");
         if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
         SelectSpawnChoise(playerid, 1); // End Position
     }
@@ -120,7 +124,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g][i - 1][divColorHex], DivisionInfo[g][i - 1][divName]), strcat(lines,line);
 		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
         }
-        else SelectSpawnChoise(playerid, 0);
+        else SelectSpawnChoise(playerid, 8);
     }
     else if(clickedid == SpawnChoiseDraw[6]) // Home
     {
@@ -161,7 +165,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             format(line,sizeof(line),"{cccccc}Квартира № {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
         }
 
-        List[quan][playerid] = 8;
+        List[quan][playerid] = 0;
         quan ++;
         if(PlayerInfo[playerid][pKomnata] != 9999 && PlayerInfo[playerid][pKomnata] >= 1)
       	{
@@ -195,7 +199,7 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
         OnlineInfo[playerid][oNoClick] = false;
         if(response)
         {
-            if(listitem == 0) SelectSpawnChoise(playerid, 0);
+            if(listitem == 0) SelectSpawnChoise(playerid, 8);
             else if(listitem == 1) 
             {
                 new g = fraction(playerid);
