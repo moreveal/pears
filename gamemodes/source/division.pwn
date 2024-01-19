@@ -66,6 +66,7 @@ CMD:division(playerid)
 	DP[1][playerid] = fraction(playerid)-1;
 	DP[2][playerid] = PlayerInfo[playerid][pDivision][0]-1;
 
+	DP[6][playerid] = 0;
     PlayerPlaySound(playerid,1150,0,0,0);
     showDialogMenuDivision(playerid);
 	return 1;
@@ -112,13 +113,20 @@ stock showDialogMenuDivision(playerid)
 }
 
 // Список участников подфракции
-CMD:dmembers(playerid) return cmd_divmembers(playerid);
-CMD:divmembers(playerid)
+CMD:dmembers(playerid, const params[]) return cmd_divmembers(playerid, params);
+CMD:divmembers(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pDivision][0] == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
 	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
-    showDialogMembersDivision(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0]);
+	new i;
+	if(!sscanf(params, "i", params[0]))
+	{
+		if(params[0] < 0 || params[0] >= MAX_DIVISION_ORG) return 1;
+		i = params[0];
+	}
+	else i = PlayerInfo[playerid][pDivision][0];
+	if(i == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! ID подфракции не может быть 0");
+    showDialogMembersDivision(playerid, fraction(playerid), i);
 	return 1;
 }
 stock showDialogMembersDivision(playerid, org, div)
@@ -132,45 +140,44 @@ stock showDialogMembersDivision(playerid, org, div)
 
 	foreach(Player,i)
 	{
-		if(OnlineInfo[i][oLogged] == 0) continue; // Не залогинился
-		if(PlayerInfo[i][pMember] != org && PlayerInfo[i][pLeader] != org) continue; // Не в организации
-		if(PlayerInfo[i][pDivision][0] != div && PlayerInfo[i][pDivision][1] != div) continue; // Не в подфракции
-
-		rank = PlayerInfo[i][pRank];
-
-		// Получаем информацию о рации (Включена или нет)
-		if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";
-		else atext = "{00ff66}*";
-
-		// Получаем информацию о главе подфракции
-		if(PlayerInfo[i][pFbi] == 0)
+		if(OnlineInfo[i][oLogged] == 1 
+			&& (PlayerInfo[i][pMember] == org && PlayerInfo[i][pDivision][0] == div || org == 2 && PlayerInfo[i][pFbi] > 0 && PlayerInfo[i][pDivision][1] == div))
 		{
-			if(rank >= DivisionInfo[org-1][div-1][divRanks]) format(btext,sizeof(btext),"%s", DivisionInfo[org-1][div-1][divColorHex]);
-			else btext = "cccccc";
-		}
+			rank = PlayerInfo[i][pRank];
 
-		// Получаем информацию о FBI под прикрытием
-		if(org == 2)
-		{
-			if(PlayerInfo[i][pFbi] > 0)
+			// Получаем информацию о рации (Включена или нет)
+			if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";
+			else atext = "{00ff66}*";
+
+			// Получаем информацию о главе подфракции
+			if(PlayerInfo[i][pFbi] == 0)
 			{
-				btext = "333333";
-				rank = PlayerInfo[i][pFbi];
+				if(rank >= DivisionInfo[org-1][div-1][divRanks]) format(btext,sizeof(btext),"%s", DivisionInfo[org-1][div-1][divColorHex]);
+				else btext = "cccccc";
 			}
-		}
 
-		// Записываем инфу об AFK
-		if(GetPVarInt(i,"afksystem") > 8) format(fineTime,sizeof(fineTime),"%s", fine_time(GetPVarInt(i,"afksystem")));
-		else format(fineTime,sizeof(fineTime),"");
+			// Получаем информацию о FBI под прикрытием
+			if(org == 2)
+			{
+				if(PlayerInfo[i][pFbi] > 0)
+				{
+					btext = "333333";
+					rank = PlayerInfo[i][pFbi];
+				}
+			}
 
+			// Записываем инфу об AFK
+			if(GetPVarInt(i,"afksystem") > 8) format(fineTime,sizeof(fineTime),"%s", fine_time(GetPVarInt(i,"afksystem")));
+			else format(fineTime,sizeof(fineTime),"");
 
-		if(org == 8) // ICA
-		{
-			if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n%s {%s}%s %s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, PlayerInfo[i][pName], PlayerInfo[i][pCallSign], DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+			if(org == 8) // ICA
+			{
+				if(PlayerInfo[playerid][pRank] >= OrganInfo[8][gAcc][40]) format(line,sizeof(line),"\n%s {%s}%s %s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, PlayerInfo[i][pName], PlayerInfo[i][pCallSign], DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+				else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+			}
 			else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
+			quan ++;
 		}
-		else format(line,sizeof(line),"\n%s {%s}%s{cccccc}\t%s [%d]\t{444444}%s", atext, btext, getPlayerNameTransmitter(i), DivisionRankName[org-1][div-1][rank-1], rank, fineTime), strcat(lines,line);
-		quan ++;
 	}
 
 	new header[140];
@@ -192,7 +199,7 @@ stock divmembersoff(playerid)
 	new string_mysql[200];
 	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
 		`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
-		OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' LIMIT 40", div, org, div ,org);
+		OR `Division1` = '%d' AND `Fbi` > '0' AND `Online` = '0' LIMIT 40", div, org, div);
 	mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
 	return 1;
 }
@@ -308,7 +315,7 @@ CMD:divuninvite(playerid, const params[])
 	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid, reason[24];
-	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID ]");
+	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID Причина ]");
 
 	if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ Мысли ]: Имя не меньше 1 и не больше 24 символов");
 	if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ Мысли ]: Причина не меньше 1 и не больше 24 символов");
@@ -324,7 +331,7 @@ CMD:divuninvite(playerid, const params[])
 		}
 		else 
 		{
-			if(fraction(giveplayerid) != 2) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+			if(fraction(giveplayerid) != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 
 		new string[120];
@@ -337,7 +344,7 @@ CMD:divuninvite(playerid, const params[])
 		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 
 		// Исключаем
-		uninviteDivision(playerid, g);
+		uninviteDivision(giveplayerid, g);
 
 		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, reason);
 	}
@@ -378,7 +385,7 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		}
 		else
 		{
-			if(playerLoad[2] != 2 && playerLoad[3] != 2) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+			if(playerLoad[2] != g && playerLoad[3] != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 
 		new whichDiv, outOrg;
@@ -479,17 +486,27 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		{
 			if(listitem < 0 || listitem >= MAX_DIVISION_ORG) return 0;
 			DP[2][playerid] = listitem; // Сохраняем id выбранной подфракции
+
+			DP[6][playerid] = -228;
 			showDialogMenuDivision(playerid);
 		}
+		else showDialogOrganizationMenu(playerid);
 	}
 	if(dialogid == 1316) // Меню настройки подфракции
 	{
 		if(response)
 		{
-			new g = DP[1][playerid];
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
-			if(listitem == 0) showDialogInfoDivision(playerid);
-			if(listitem == 1) cmd_divmembers(playerid);
+			if(listitem == 0) return showDialogInfoDivision(playerid);
+
+			new string[160];
+			if(listitem == 1) 
+			{
+				format(string,sizeof(string),"%d", i + 1);
+				cmd_divmembers(playerid, string);
+			}
 			if(listitem == 2) divmembersoff(playerid);
 			if(listitem == 3)
 			{
@@ -504,8 +521,6 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			{
 				if(DP[3][playerid] == 0) return 0; // Блокируем другие листы, если нет доступа (не отрисованный listitem могут вызвать внешними скриптами)
 			}
-
-			new string[160];
 			if(listitem == 5) // Название
 			{
 				format(string,sizeof(string),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_LENGTH-1);
@@ -542,7 +557,6 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			}*/
 			if(listitem == 11) // Войти в подфракцию
 			{
-				new i = DP[2][playerid]; // Получаем id подфракции
 				if(PlayerInfo[playerid][pDivision][0] == i + 1) return cmd_divleave(playerid);
 
 				PlayerInfo[playerid][pDivision][0] = i + 1;
@@ -560,9 +574,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 				showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
 			}
 		}
-		else 
+		else
 		{
-			if(PlayerInfo[playerid][pLeader] > 0) showDialogAllDivisions(playerid);
+			if(PlayerInfo[playerid][pLeader] > 0 && DP[6][playerid] == -228) showDialogAllDivisions(playerid);
 		}
 	}
 	if(dialogid == 1317) // Название

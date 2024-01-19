@@ -289,8 +289,8 @@ stock exitsit(playerid, stat)
 		{
 			new sitid = SitPlayer[playerid]-1;
 
-			// FBI Прослушка
-			if(sitid >= 174 && sitid <= 186) SetPVarInt(playerid,"komp", -1), SetPVarInt(playerid,"komp2", -1);
+			// FBI Прослушка Off
+			SetPVarInt(playerid,"komp", -1), SetPVarInt(playerid,"komp2", -1);
 			
 			// Дойка Коров
 			if(sitid >= 0 && sitid <= 17 && Dei[playerid] == 13) RemovePlayerAttachedObject(playerid, 1), SetPlayerAttachedObject(playerid, 1, 19468, 6, 0.325999, -0.114999, 0.019000, 99.999977, -103.299972, 1.999999, 1.000000, 1.000000, 1.000000, 0, 0);

@@ -595,6 +595,167 @@ stock rank_organization(playerid, g)
    	return 1;
 }
 
+// New members
+CMD:members(playerid)
+{
+    new g = fraction(playerid);
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+
+	PlayerPlaySound(playerid,40405,0,0,0);
+	new str[214], sctring[4096], quan;
+	
+	format(str, sizeof(str), "{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{444444}AFK\n"), strcat(sctring, str);
+
+	foreach(Player, i)
+	{
+		if(isPlayerEligible(i, g))
+		{
+			formatPlayerInfo(str, sizeof(str), i, g);
+			strcat(sctring, str);
+			quan ++;
+		}
+	}
+
+	new qwer[100];
+	new year, month, day;
+	getdate(year, month, day);
+	format(qwer, sizeof(qwer), "{cccccc}Участники %s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", frakName[g], quan, day, month, year);
+	ShowDialog(playerid, 706, DIALOG_STYLE_TABLIST_HEADERS, qwer, sctring, "Ок", "");
+    return 1;
+}
+
+stock formatPlayerInfo(str[], size, playerid, g)
+{
+    new atext[10], btext[8], afkStatus[24] = "";
+
+    // Формируем статус AFK
+    if(GetPVarInt(playerid, "afksystem") >= 2) format(afkStatus, sizeof(afkStatus), "%s", fine_time(GetPVarInt(playerid, "afksystem")));
+
+    // Проверяем статус трансмиттера игрока
+    atext = PlayerInfo[playerid][pTransmitterOff][0] ? "{FF6347}*" : "{00ff66}*";
+
+    // Определяем цвет для вывода в зависимости от роли игрока
+    btext = PlayerInfo[playerid][pLeader] > 0 ? "0088ff" : "cccccc";
+
+    // Форматируем информацию об игроке
+    if(PlayerInfo[playerid][pFbi] > 0)
+    {
+        format(str, size, "\n%s {%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", atext, btext, getPlayerNameTransmitter(playerid), 
+			getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]), PlayerInfo[playerid][pFbi], afkStatus);
+    }
+    else
+    {
+        format(str, size, "\n%s {%s}%s{cccccc}\t%s [%d]\t%d\t{444444}%s", atext, btext, getPlayerNameTransmitter(playerid), getNameRank(playerid), 
+			PlayerInfo[playerid][pRank], PlayerInfo[playerid][pVig], afkStatus);
+    }
+}
+
+stock isPlayerEligible(playerid, g)
+{
+    // Проверяем, что игрок онлайн
+    if(OnlineInfo[playerid][oLogged] == 0)
+        return 0;
+
+    // Проверяем принадлежность к фракции
+    if(PlayerInfo[playerid][pMember] == g)
+        return 1;
+
+    // Дополнительные условия для специфических фракций или ролей
+    // Например, для FBI или других специальных групп
+    if(g == 2 && PlayerInfo[playerid][pFbi] > 0)
+        return 1;
+
+    // По умолчанию возвращаем false, если ни одно условие не выполнено
+    return 0;
+}
+
+// New members offline
+CMD:membersoff(playerid)
+{
+	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	new string[144], g = fraction(playerid), needg;
+	if(!GetAccessRankOrg(playerid, g, 0, NO_FBI)) return 1;
+	
+	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Организации {ff0000}Offline","{cccccc}Поиск участников...","*","");
+	
+	needg = g;
+	DP[2][playerid] = 0;
+	DP[0][playerid] = needg;
+	if(needg == 2) format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);
+	else format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `Member` = '%d' AND `Online` = '0' LIMIT 40", needg);
+	mysql_tquery(pearsq, string, "Call_mem", "dd", playerid, needg);
+	return 1;
+}
+
+function Call_mem(playerid, g)
+{
+    if(!GetAccessRankOrg(playerid, g, 0, NO_FBI)) return 1;
+
+    new rows, str[214], sctring[4096], datad1[24], datad4[24], datad2, datad3, kol, qwer[144], datad5, datad6, datad7, btext[8], Division0, Division1;
+	new bool:singTransmitter, SingName[24];
+    cache_get_row_count(rows);
+
+    if(rows == 0)
+    {
+        ShowDialog(playerid, 706, DIALOG_STYLE_MSGBOX, "{ff9000}Участники Организации", "{cccccc}Участники Offline в организации не найдены", "*", "");
+        return 1;
+    }
+
+    format(str,sizeof(str),"{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{cccccc}Последняя Активность\n"), strcat(sctring,str);
+	
+    for(new i = 0; i < rows; i++)
+    {
+        cache_get_value_name(i, "Name", datad1, sizeof(datad1));
+        cache_get_value_name_int(i, "Rank", datad2);
+        cache_get_value_name_int(i, "Vig", datad3);
+        cache_get_value_name(i, "Offtime", datad4, sizeof(datad4));
+        cache_get_value_name_int(i, "id", datad5);
+        cache_get_value_name_int(i, "Fbi", datad6);
+        cache_get_value_name_int(i, "Leader", datad7);
+		cache_get_value_name_int(i, "Division0", Division0);
+		cache_get_value_name_int(i, "Division1", Division1);
+		cache_get_value_name_int(i, "SignTransmitter", singTransmitter);
+		cache_get_value_name(i, "CallSign", SingName, 24);
+
+        btext = datad7 > 0 ? "0088ff" : "cccccc";
+        formatPlayerInfoOff(str, sizeof(str), datad1, datad2, datad3, datad4, datad6, btext, g, Division0, Division1, singTransmitter, SingName);
+        strcat(sctring, str);
+
+        kol++;
+        DP[1][playerid] = datad5;
+    }
+
+	new year, month, day;
+    getdate(year, month, day);
+	DP[2][playerid] ++; // Считаем страницы
+	if(kol >= 40)
+	{
+		format(qwer,sizeof(qwer),"{ff9000}Участники %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", frakName[g],kol, day,month,year, DP[2][playerid]);
+		ShowDialog(playerid,855,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Далее","");
+	}
+	else
+	{
+		format(qwer,sizeof(qwer),"{ff9000}Участники %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", frakName[g],kol, day,month,year, DP[2][playerid]);
+		ShowDialog(playerid,706,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Ок","");
+	}
+    return 1;
+}
+
+stock formatPlayerInfoOff(str[], size, const name[], rank, vig, offtime[], fbi, const btext[], g, Division0, Division1, bool:singTransmitter, const SingName[])
+{
+    if(fbi > 0)
+    {
+        format(str, size, "\n{%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", btext, 
+			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName) , getNameRankOrganization(2, Division1, fbi), rank, offtime);
+    }
+    else
+    {
+        format(str, size, "\n{%s}%s{cccccc}\t%s [%d]\t%d\t{444444}%s", btext, 
+			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName), getNameRankOrganization(g, Division0, rank), rank, vig, offtime);
+    }
+}
+
 stock dialogCase_Organization(playerid, dialogid, response, listitem, const inputtext[])
 {
 	if(dialogid == 615) // lmenu
