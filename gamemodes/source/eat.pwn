@@ -307,9 +307,10 @@ stock goeat_podnos(playerid)
 	{
 	    ThrowInfo[t][tQuan] --;
 	    around_player_audio(playerid, 32200, 0, 5.0, 0);
-	    EatPlayer(playerid, 20);
+		new quanEat = 7;
+	    EatPlayer(playerid, quanEat * 10);
 		new string[80];
-	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+5~n~~y~%d/100", PlayerInfo[playerid][pNeon]/10);
+	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100", quanEat, PlayerInfo[playerid][pNeon]/10);
 		GameTextForPlayer(playerid,string,1800,3);
 		if(fpick == 134 || fpick == 135 || fpick == 136) // Если поднос с кофе
 		{

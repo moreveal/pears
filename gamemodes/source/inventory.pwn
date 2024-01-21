@@ -925,10 +925,12 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 			yesFindModel = friskGun[thingId];
 			if(thingPara <= 0 && (sels == 0 || sels == 1 || sels == 2 || sels == 5 || sels == 6 || sels == 7 || sels == 8))
 			{
-				if(thingId == 25 || thingId == 26 || thingId == 27) yesFindModel = 2034;
-				else if(thingId == 22 || thingId == 24) yesFindModel = 2034;
-				else if(thingId == 30 || thingId == 31) yesFindModel = 2035;
-				else if(thingId == 33 || thingId == 34) yesFindModel = 2036;
+				new weaponType = WeaponAmmoType(thingId);
+				if(weaponType == 1) yesFindModel = 2034; // Дробовики
+				else if(weaponType == 2) yesFindModel = 2034; // Пистолеты
+				else if(weaponType == 3) yesFindModel = 2044; // Пистолеты-Пулемёты
+				else if(weaponType == 4) yesFindModel = 2035; // Автомат
+				else if(weaponType == 5) yesFindModel = 2036; // Дробовик
 			}
 		}
 		if(thingType == 2) yesFindModel = thingId; // Аксессуары
@@ -2245,10 +2247,12 @@ stock player_tile(playerid, inva)
 		 		}
 		 		else if(fpick >= 156 && fpick <= 161) return format(string, sizeof(string), "{ffcc66}Документы: %s\n{cccccc}Показать документы другому игроку возможно только через паспорт [ /pas ]", friskName[fpick]), ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*",""), i_resetveshi(playerid);
 		 		else if(fpick >= 175 && fpick <= 177) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Домашняя сигнализация [ Поместите в инвентарь дома для установки ]","*",""), i_resetveshi(playerid);
-		 		else if(fpick == 27)
+		 		
+				else if(fpick == 27)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][3] == 25 || ProtectInfo[playerid][prWeapon][3] == 26 || ProtectInfo[playerid][prWeapon][3] == 27) && ProtectInfo[playerid][prAmmo][3] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
+			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 20,8mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Дробовикам","Принять","Отмена");
@@ -2259,7 +2263,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 28)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][2] == 22 || ProtectInfo[playerid][prWeapon][2] == 24) && ProtectInfo[playerid][prAmmo][2] >= 1)
+			 		if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
+						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Пистолетам","Принять","Отмена");
@@ -2270,7 +2275,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 29)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][5] == 30 || ProtectInfo[playerid][prWeapon][5] == 31) && ProtectInfo[playerid][prAmmo][5] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
+			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 5,45mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Автоматам","Принять","Отмена");
@@ -2281,7 +2287,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 30)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][6] == 33 || ProtectInfo[playerid][prWeapon][6] == 34) && ProtectInfo[playerid][prAmmo][6] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
+			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 45mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Винтовкам","Принять","Отмена");
@@ -2292,7 +2299,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 64)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][3] == 25 || ProtectInfo[playerid][prWeapon][3] == 26 || ProtectInfo[playerid][prWeapon][3] == 27) && ProtectInfo[playerid][prAmmo][3] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
+			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 20,8mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Дробовикам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
@@ -2303,7 +2311,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 65)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][2] == 22 || ProtectInfo[playerid][prWeapon][2] == 24) && ProtectInfo[playerid][prAmmo][2] >= 1)
+					if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
+						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Пистолетам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
@@ -2314,7 +2323,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 66)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][5] == 30 || ProtectInfo[playerid][prWeapon][5] == 31) && ProtectInfo[playerid][prAmmo][5] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
+			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 5,45mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Автоматам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
@@ -2325,7 +2335,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 67)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
-			 		if((ProtectInfo[playerid][prWeapon][6] == 33 || ProtectInfo[playerid][prWeapon][6] == 34) && ProtectInfo[playerid][prAmmo][6] >= 1)
+					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
+			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 45mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Винтовкам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
@@ -2400,40 +2411,39 @@ stock player_tile(playerid, inva)
 					PlayerPlaySound(playerid, 36401, 0,0,0);
 		 	        return 1;
 		 	    }
-		 	    else if(weapon == 25 || weapon == 26 || weapon == 27) // Дробовик (Ammo 20,8mm)
+
+				new weaponType = WeaponAmmoType(weapon);
+				if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Оружие испорчено"), i_resetveshi(playerid);
+		 	    if(weaponType == 1) // Дробовик (Ammo 20,8mm)
 				{
-				    if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Дробовик испорчен"), i_resetveshi(playerid);
 					if(get_invent4(playerid, 27, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к дробовику [ Ammo 20,8mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
 					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
 					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
 				}
-				else if(weapon == 22 || weapon == 24) // Дробовик (Ammo 11,43mm)
+				else if(weaponType == 2 || weaponType == 3) // Пистолет или Пистолет-Пулемёт (Ammo 11,43mm)
 				{
-				    if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Пистолет испорчен"), i_resetveshi(playerid);
 					if(get_invent4(playerid, 28, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к пистолету [ Ammo 11,43mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
 					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
 					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
 				}
-				else if(weapon == 30 || weapon == 31) // Автомат (Ammo 5,45mm)
+				else if(weaponType == 4) // Автомат (Ammo 5,45mm)
 				{
-				    if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Автомат испорчен"), i_resetveshi(playerid);
 					if(get_invent4(playerid, 29, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к автомату [ Ammo 5,45mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
 					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
 					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
 				}
-				else if(weapon == 33 || weapon == 34) // Винтовка (Ammo 45mm)
+				else if(weaponType == 5) // Винтовка (Ammo 45mm)
 				{
-				    if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Винтовка испорчена"), i_resetveshi(playerid);
 					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к винтовке [ Ammo 45mm ]"), i_resetveshi(playerid);
 					if(weapon == 34)
 					{
-						if(PlayerInfo[playerid][pLeader] != 8 && PlayerInfo[playerid][pMember] != 8 && PlayerInfo[playerid][pLeader] != 22 && PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать снайперскую винтовку\n\n{cccccc}Только для ICA, SWAT"), i_resetveshi(playerid);
+						if(PlayerInfo[playerid][pLeader] != 8 && PlayerInfo[playerid][pMember] != 8 && PlayerInfo[playerid][pLeader] != 22 && PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SWAT"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;

@@ -487,14 +487,13 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         else if(gRedakt[playerid] == 15 || gRedakt[playerid] == 16) // Установка или перенос предмета IKEA
 		{
             new mworl = GetPlayerVirtualWorld(playerid), mint = GetPlayerInterior(playerid);
-
-            format(IkeaInfo[oid][iName], 24, "%s", object_name(IkeaInfo[oid][iModel]));
-            IkeaInfo[oid][iQuantextures] = object_material(IkeaInfo[oid][iModel]);
             IkeaInfo[oid][iBuyX] = x;
             IkeaInfo[oid][iBuyY] = y;
             IkeaInfo[oid][iBuyZ] = z;
             if(gRedakt[playerid] == 15)
             {
+                format(IkeaInfo[oid][iName], 24, "%s", object_name(IkeaInfo[oid][iModel]));
+                IkeaInfo[oid][iQuantextures] = object_material(IkeaInfo[oid][iModel]);
                 new string[70];
                 format(string,sizeof(string),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid);
                 SendClientMessage(playerid, COLOR_GREY, string);

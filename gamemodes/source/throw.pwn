@@ -393,11 +393,13 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	    {
 		    if(fpara <= 0) // Изношенное оружие в хлам
 		    {
-		    	if(fpick == 25 || fpick == 26 || fpick == 27) model = 2034;
-		    	else if(fpick == 22 || fpick == 24) model = 2034;
-		    	else if(fpick == 30 || fpick == 31) model = 2035;
-		        else if(fpick == 33 || fpick == 34) model = 2036;
-		        else model = friskGun[fpick];
+				new weaponType = WeaponAmmoType(fpick);
+				if(weaponType == 1) model = 2034; // Дробовики
+				else if(weaponType == 2) model = 2034; // Пистолеты
+				else if(weaponType == 3) model = 2044; // Пистолеты-Пулемёты
+				else if(weaponType == 4) model = 2035; // Автомат
+				else if(weaponType == 5) model = 2036; // Дробовик
+				else model = friskGun[fpick];
 		    }
 		    else model = friskGun[fpick];
 	    }

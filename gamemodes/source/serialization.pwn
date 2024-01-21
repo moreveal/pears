@@ -2,21 +2,23 @@
 // Сериализация в строку
 stock StringifyArray(const array[], size) 
 {
-    new string[4096];
+    static string[4096];
+    string[0] = '\0'; // Обнуляем строку перед использованием
     new length = 0;
 
-    // Использование функции strcat для более эффективной конкатенации
     for (new i = 0; i < size; i++) 
     {
         new numString[12];
         format(numString, sizeof(numString), "%d", array[i]);
         
-        strcat(string, numString, sizeof(string) - length);
-        length += strlen(numString);
+        if (length + strlen(numString) < sizeof(string)) {
+            strcat(string, numString);
+            length += strlen(numString);
+        }
 
-        if (i < size - 1) 
+        if (i < size - 1 && length < sizeof(string) - 1) 
         {
-            strcat(string, ",", sizeof(string) - length);
+            strcat(string, ",");
             length++;
         }
     }

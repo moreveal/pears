@@ -546,10 +546,13 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 			    yesFindModel = friskGun[fpick];
 			    if(fpara <= 0)
 			    {
-			    	if(fpick == 25 || fpick == 26 || fpick == 27) yesFindModel = 2034;
-			    	else if(fpick == 22 || fpick == 24) yesFindModel = 2034;
-			    	else if(fpick == 30 || fpick == 31) yesFindModel = 2035;
-			        else if(fpick == 33 || fpick == 34) yesFindModel = 2036;
+					new weaponType = WeaponAmmoType(fpick);
+					if(weaponType == 1) yesFindModel = 2034; // Дробовики
+					else if(weaponType == 2) yesFindModel = 2034; // Пистолеты
+					else if(weaponType == 3) yesFindModel = 2044; // Пистолеты-Пулемёты
+					else if(weaponType == 4) yesFindModel = 2035; // Автомат
+					else if(weaponType == 5) yesFindModel = 2036; // Дробовик
+					else yesFindModel = friskGun[fpick];
 			    }
 			}
 			if(thingType == 2) yesFindModel = fpick; // Аксессуары

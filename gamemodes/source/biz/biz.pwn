@@ -338,9 +338,10 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 30, BizzInfo[b][bTypeProduct][7] = 1, yes[7] = true; // AK-47
     	if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 31, BizzInfo[b][bTypeProduct][8] = 1, yes[8] = true; // M4
     	if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 33, BizzInfo[b][bTypeProduct][9] = 1, yes[9] = true; // Винтовка
-    	if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 19106, BizzInfo[b][bTypeProduct][10] = 2, yes[10] = true; // Каска
-		if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 22, BizzInfo[b][bTypeProduct][11] = 1, yes[11] = true; // Colt
-		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 29, BizzInfo[b][bTypeProduct][12] = 1, yes[11] = true; // MP5
+		if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 22, BizzInfo[b][bTypeProduct][10] = 1, yes[10] = true; // Colt
+		if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 29, BizzInfo[b][bTypeProduct][11] = 1, yes[11] = true; // MP5
+		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 28, BizzInfo[b][bTypeProduct][12] = 1, yes[12] = true; // Uzi
+		if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 32, BizzInfo[b][bTypeProduct][13] = 1, yes[13] = true; // Tec 9
 	}
 	else if(b >= 42 && b <= 52) // Аренда Автомобилей
 	{
