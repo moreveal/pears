@@ -1,39 +1,4 @@
 
-// Вырезать из базы старые переменные:
-/*
-cache_get_value_name_int(0, "g1", temp_weap[1]);
- 		cache_get_value_name_int(0, "g2", temp_weap[2]);
- 		cache_get_value_name_int(0, "g3", temp_weap[3]);
- 		cache_get_value_name_int(0, "g4", temp_weap[4]);
- 		cache_get_value_name_int(0, "g5", temp_weap[5]);
- 		cache_get_value_name_int(0, "g6", temp_weap[6]);
- 		cache_get_value_name_int(0, "g10", temp_weap[10]);
-
-		cache_get_value_name_int(0, "w1", temp_ammo[1]);
-		cache_get_value_name_int(0, "w2", temp_ammo[2]);
-		cache_get_value_name_int(0, "w3", temp_ammo[3]);
-		cache_get_value_name_int(0, "w4", temp_ammo[4]);
-		cache_get_value_name_int(0, "w5", temp_ammo[5]);
-		cache_get_value_name_int(0, "w6", temp_ammo[6]);
-		cache_get_value_name_int(0, "w10", temp_ammo[10]);
-		cache_get_value_name_int(0, "e2", ProtectInfo[playerid][prExplosive][2]);
-		cache_get_value_name_int(0, "e3", ProtectInfo[playerid][prExplosive][3]);
-		cache_get_value_name_int(0, "e5", ProtectInfo[playerid][prExplosive][5]);
-		cache_get_value_name_int(0, "e6", ProtectInfo[playerid][prExplosive][6]);
-		cache_get_value_name_int(0, "d2", temp_det[2]);
-		cache_get_value_name_int(0, "d3", temp_det[3]);
-		cache_get_value_name_int(0, "d5", temp_det[5]);
-		cache_get_value_name_int(0, "d6", temp_det[6]);
-		cache_get_value_name_int(0, "q1", temp_qet[1]);
-		cache_get_value_name_int(0, "q2", temp_qet[2]);
-		cache_get_value_name_int(0, "q3", temp_qet[3]);
-		cache_get_value_name_int(0, "q4", temp_qet[4]);
-		cache_get_value_name_int(0, "q5", temp_qet[5]);
-		cache_get_value_name_int(0, "q6", temp_qet[6]);
-		cache_get_value_name_int(0, "q10", temp_qet[10]);
-        */
-
-
 stock NoTempTakeWeapon(weaponid) // Оружие, которое не нужно временно отнимать
 {
     if(weaponid == 23 // Пистолет с глушителем (Электрошокер)

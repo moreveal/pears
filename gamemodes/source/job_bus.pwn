@@ -206,7 +206,9 @@ stock busstationcreate(f)
 	// Расчитываем, куда ставить все объекты
 	MatrixDynamicObjectPos(0, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ], BusStationInfo[f][bsCordRX], BusStationInfo[f][bsCordRY], BusStationInfo[f][bsCordRZ]);
 
-	busstation_label[f] = CreateDynamic3DTextLabel("{ff9000}Информационное табло {cccccc}\n[ ALT ]",-1,BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+	new string[94];
+	format(string,sizeof(string),"{ff9000}Автобусная Остановка № %d {cccccc}\n[ ALT ]", f + 1);
+	busstation_label[f] = CreateDynamic3DTextLabel(string,-1,BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 	busstation_pickup[f] = CreateDynamicPickup(2485, 1, BusStationInfo[f][bsCordX], BusStationInfo[f][bsCordY], BusStationInfo[f][bsCordZ],0,0);
 }
 
@@ -440,11 +442,10 @@ stock ShowAllRout(playerid)
 {
 	new g = fraction(playerid);
 	if(!IsAFunctionOrganization(61, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник Правительства");
-	if(!GetAccessRankOrg(playerid, g, 61, NO_FBI)) return 1;
 
 	new line[214],lines[4096];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan;
-	format(line,sizeof(line),"№ Название\tАвтор\tВремя редактирования/создания\tСтатус"), strcat(lines,line);
+	format(line,sizeof(line),"№ Название\tАвтор\tПоследнее Изменение\tСтатус"), strcat(lines,line);
 	for(new i = 0; i < MAX_ROUT; i++) 
 	{
 		List[i][playerid] = 0;
@@ -452,11 +453,11 @@ stock ShowAllRout(playerid)
 		else if(FullRout[i][brUnixEditor] == 0) stamp2datetime(FullRout[i][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 		if(FullRout[i][brStatus] == 0 && FullRout[i][brIdCreator] != 0)
 		{
-			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%d. %s\t{cccccc}%s\t{666666}%02d.%02d.%d %02d:%02d\t{FF6347}Неактивен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		else if(FullRout[i][brStatus] == 1  && FullRout[i][brIdCreator] != 0)
 		{
-			format(line,sizeof(line),"\n%d.%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%d. %s\t{cccccc}%s\t{666666}%02d.%02d.%d %02d:%02d\t{99ff66}Активен", i+1,FullRout[i][brNameRout],FullRout[i][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		List[quan][playerid] = i;
 		quan++;
@@ -474,19 +475,22 @@ stock SettingRout(playerid, number, author)
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 		new line[80],lines[240];
 		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-		format(line,sizeof(line),"\n%s %s Создан: [ %02d.%02d.%d %02d:%02d ]\n", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		format(line,sizeof(line),"{ff9000}%s %s", FullRout[number][brNameRout], FullRout[number][brNameCreator]), strcat(lines,line);
 
 		stamp2datetime(FullRout[number][brUnixEditor], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-		format(line,sizeof(line),"\n\n{555555}Редактировал"), strcat(lines,line);
-		format(line,sizeof(line),"\n{555555}%s [ %02d.%02d.%d %02d:%02d ]\n", FullRout[number][brNameEditor], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-		ShowDialog(playerid,1448,DIALOG_STYLE_MSGBOX,"{ff9000}Маршрут",lines,"Загрузить себе","Назад");
+		format(line,sizeof(line),"\n{ffcc66}Последние Изменения:"), strcat(lines,line);
+		format(line,sizeof(line),"\n{666666}%s", FullRout[number][brNameEditor]), strcat(lines,line);
+		format(line,sizeof(line),"\n{666666}%s %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+
+		format(line,sizeof(line),"\n\n{ffcc66}Вы можете загрузить чекпоинты этого маршрута на свой аккаунт"), strcat(lines,line);
+		format(line,sizeof(line),"\n{ffcc66}для дальнейшего редактирования [ /scp /scpa ]"), strcat(lines,line);
+		format(line,sizeof(line),"\n\n{ff9000}Хотите загрузить чекпоинты маршрута?"), strcat(lines,line);
+		ShowDialog(playerid,1448,DIALOG_STYLE_MSGBOX,"{ff9000}Маршрут",lines,"Да","Нет");
 	}
 	else if(author == 1)
 	{
-		new tyear, tmonth, tday, thour, tminute, tsecond;
 		new line[90],lines[630];
-		stamp2datetime(FullRout[number][brUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-		format(line,sizeof(line),"Маршрут:%s от %s Создан: [ %02d.%02d.%d %02d:%02d ]", FullRout[number][brNameRout], FullRout[number][brNameCreator],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		format(line,sizeof(line),"{ff9000}%s", FullRout[number][brNameRout]), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Переименовать маршрут"), strcat(lines,line);
 		format(line,sizeof(line),"\nЗагрузить маршрут себе в чекпоинты"), strcat(lines,line);
 		format(line,sizeof(line),"\nОбновить маршрут (загрузит ваши текущие координаты в него)"), strcat(lines,line);
@@ -504,8 +508,7 @@ stock CreateBusDriver(playerid)
 	    if(busdriverid[i] == 0)
 	    {
 	        busdriverid[i] = playerid+1;
-	        busdriverstat[i] = 0;
-	        getdriverstat[i] = 0;
+	        busdriverstat[i] = 1;
 	        driverid[playerid] = i+1;
 	        break;
 	    }
@@ -527,10 +530,9 @@ stock ExitBusDriver(playerid)
 	new i = driverid[playerid];
     busdriverid[i] = 0;
     busdriverstat[i] = 0;
-    getdriverstat[i] = 0;
 	driverid[playerid] = 0;
 	bus[playerid] = 0, bustime[playerid] = gettime(), busstation[playerid] = 0;
-    if(busdrivers[busrout[playerid]-1] > 0) busdrivers[busrout[playerid]-1]--;
+    if(busdrivers[busrout[playerid]] > 0) busdrivers[busrout[playerid]]--;
     
     SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), DisablePlayerRaceCheckpoint(playerid);
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -550,12 +552,11 @@ stock BusRouterEnd(playerid)
 		bus[playerid] = 0;
 		bustime[playerid] = gettime();
 		busstation[playerid] = 0;
-		if(driverid[playerid] > 0) getdriverstat[driverid[playerid]-1] = 0;
 		DisablePlayerRaceCheckpoint(playerid);
 		if(VehInfo[v][v3dstat] == 7000) UpdateLabelBus(playerid, v);
 		PlayerInfo[playerid][pPlacement] = 10;
 		new zp;
-		if(ServerInfo[63] <= 0) zp = 100;
+		if(ServerInfo[63] <= 0) zp = 10;
 		else zp = ServerInfo[63];
 		new Float:distance;
 		for(new i; i< MAX_CHECKPOINT; i++)
