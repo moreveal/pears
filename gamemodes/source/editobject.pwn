@@ -103,6 +103,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     new string[180];
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
+    new type = EditObjectInfo[playerid][editType];
 
     if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
     {
@@ -338,7 +339,15 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
         FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
         FamilyInfo[fam][fsAltarStatus] = 1; 
-        SektaObject[fam] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        if(type == 0)
+        {
+            SektaObject[fam] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        }
+        else
+        {
+            SetDynamicObjectPos(SektaObject[fam], x, y, z);
+            SetDynamicObjectRot(SektaObject[fam], rx, ry, rz);
+        }
         SektaObjectHealt[fam] = 1000;
         SaveFamilySekta(fam);
     }
@@ -450,6 +459,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
         new oid = EditObjectInfo[playerid][editOption];
         new slot = EditObjectInfo[playerid][editSlot];
+        //new type = EditObjectInfo[playerid][editType];
 
         // Условности разных систем при сохранении установки или перемещения объекта
         if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
@@ -560,16 +570,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             CreateLabelTermRace(oid,RentObjectRace[oid]);
             UpdateLabelTermRace(oid);
         }
-        else if(gRedakt[playerid] == 26) // Алтарь
-		{
-            new fam = PlayerInfo[playerid][pFamily];
-            FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
-            FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
-            FamilyInfo[fam][fsAltarStatus] = 1; 
-            SektaObject[fam] = CreateDynamicObject(19527, x, y, z, rx, ry, rz,0,0);
-            SektaObjectHealt[fam] = 1000;
-            SaveFamilySekta(fam);
-		}
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
         gRedakt[playerid] = 0; // Редактор Off
@@ -581,6 +581,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 	{
         new oid = EditObjectInfo[playerid][editOption];
         new slot = EditObjectInfo[playerid][editSlot];
+        //new type = EditObjectInfo[playerid][editType];
 
         if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
         {

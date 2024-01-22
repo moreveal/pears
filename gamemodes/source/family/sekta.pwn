@@ -22,7 +22,7 @@ stock ShowSektaMenu(playerid,family)
 
 stock ShowSektaAltarMenu(playerid)
 {
-    new fam = DP[0][Playerid];
+    new fam = DP[0][playerid];
     new line[40],lines[120];
     if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
     if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
@@ -351,17 +351,13 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             if(listitem == 2)
             {
                 new moving;
-                if(FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0) moving = 0;
+                if(FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0) moving = 1;
                 else if(FamilyInfo[fam][fsAltarPos][0] != 0.0 && FamilyInfo[fam][fsAltarPos][1] != 0.0) moving = 1;
                 DP[0][playerid] = moving;
 
                 new Float:f_pos[4];
                 frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-                if(moving == 0) CreateEditPlayerObject(playerid, 26, 0, 0, 0, 19527, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
-                else if(moving == 1)
-                {
-                    GoEditDynamicObject(playerid, 26, 1, 0, 0, SektaObject[fam], 0);
-                }
+                CreateEditPlayerObject(playerid, 26, moving, 0, 0, 19527,f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
             }
             if(listitem == 1)
             {

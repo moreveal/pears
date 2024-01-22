@@ -1,8 +1,3 @@
-// Система установки трейлеров (построек)
-// Основная часть кода выполнена в этом файле, но отдельные части, для соответствия структуре мода, помещены в различные паблики/колбеки
-// Также используется кастомные функции по типу GetDistanceBetweenCoords3d(), их можно найти с помощью [ Ctrl + Shift + F ]
-
-// [ Требуется доработать вход в трейлер - само определение трейлера уже сделано () ]
 
 #define STREAMER_EXTRA_TYPE_TRAILER_ENTER	E_STREAMER_CUSTOM(3)
 #define PI 3.14159265358979323846
@@ -114,8 +109,8 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
         trailerobj = CreateDynamicObject(model, 0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0, 300.0);
         if (model == 3171) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.119, -1.900, -1.060, 0.000, 0.000, 178.698); // Mini (2)
         else if (model == 3168) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 177.901); // Middle (3)
-        else if (model == 3172) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 177.901); // Big (4)
-        else if (model == 3174) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 177.901); // Round (1)
+        else if (model == 3172) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 3.901); // Big (4)
+        else if (model == 3174) AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.178, -3.511, -1.000, 0.000, 0.000, 3.901); // Round (1)
     }
     else return false;
 
