@@ -9,7 +9,7 @@ enum deathInfo
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
-stock SetPlayerDeath(playerid)
+stock SetPlayerDeath(playerid, reason)
 {
     if(NoDeath(playerid)) return 0;
 
@@ -28,11 +28,9 @@ stock SetPlayerDeath(playerid)
 
     new unix = gettime(), timeDeath, timeDeathTwo;
     DeathInfo[playerid][deathStatus] = true;
-    //DeathInfo[playerid][deathReason] = reason;
+    DeathInfo[playerid][deathReason] = reason;
 
-    if(server == 0) timeDeath = 20, timeDeathTwo = 30;
-    else timeDeath = 180, timeDeathTwo = 300;
-
+    timeDeath = 180, timeDeathTwo = 300;
     if(DeathInfo[playerid][deathUnix] >= unix) DeathInfo[playerid][deathTime] = timeDeathTwo; // 5 min
     else DeathInfo[playerid][deathTime] = timeDeath; // 3 min
     DeathInfo[playerid][deathUnix] = unix + 3600;
@@ -43,9 +41,9 @@ stock SetPlayerDeath(playerid)
 
     new line[130],lines[520];
    	format(line,sizeof(line),"{FF6347}Ваш персонаж получил тяжёлую травму"), strcat(lines,line);
-	if(server == 0) format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s {555555}(Время уменьшено для тестового сервера)", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}В течении ожидания к вам может прибыть скорая помощь, чтобы вылечить вас"), strcat(lines,line);
+    if(PlayerInfo[playerid][pSoska] > 0) format(line,sizeof(line),"\n{ff9000}Для администрации: /hp"), strcat(lines,line);
 
     format(line,sizeof(line),"\n\n{555555}Смерть, чаще чем один раз в час, увеличивает время ожидания"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
@@ -65,8 +63,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
     || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
-    || ADUTY[playerid] == 1
-    || computerClubPlayerInfo[playerid][ccpiInGame]
+    || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
     || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1;
     return 0;
 }
@@ -96,7 +93,7 @@ stock WeReturnToDeathPosition(playerid)
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-    if(DeathInfo[playerid][deathReason] == 54) PlayerInfo[playerid][pLastPos][2] -= 1.4;
+    if(DeathInfo[playerid][deathReason] == 54) PlayerInfo[playerid][pLastPos][2] -= 1.0;
 
     PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
     SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
