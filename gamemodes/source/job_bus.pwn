@@ -685,7 +685,6 @@ stock CheckingBusStationInRout(rout)
 			{
 				if(BusStationInfo[i][bsRouts][slot] != 0) continue;
 				BusStationInfo[i][bsRouts][slot] = rout+1;
-				printf("ON BUS: %d | Checkpoint: %d",i,r);
 				break;
 			}
 			break;
@@ -703,7 +702,6 @@ stock DeactivBusStationInRout(rout)
 			if(FullRout[rout][brCordX][slot] == 0.0 && FullRout[rout][brCordY][slot] == 0.0) break;
 			if(BusStationInfo[i][bsRouts][slot] == 0) continue;
 			BusStationInfo[i][bsRouts][slot] = 0;
-			printf("OFF:%d",i,slot);
 			break;
 		}
 	}

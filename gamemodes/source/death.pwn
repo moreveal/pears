@@ -47,7 +47,7 @@ stock SetPlayerDeath(playerid, reason)
 
     format(line,sizeof(line),"\n\n{555555}Смерть, чаще чем один раз в час, увеличивает время ожидания"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
-
+    AutoMakeCreate(2,2,playerid);
     TempTake(playerid, 0);
     return 1;
 }
@@ -167,5 +167,76 @@ stock UpdateDeathDrawProcess(playerid)
     format(string, sizeof(string), "%s", fine_time(DeathInfo[playerid][deathTime]));
     PlayerTextDrawSetString(playerid, DeathDraw1, string);
     PlayerTextDrawShow(playerid, DeathDraw1);
+    return 1;
+}
+
+stock UseRevival(playerid,targetid)
+{
+    if(DeathInfo[targetid][deathStatus] == false) return 0;
+    new Float:x,Float:y,Float:z;
+    GetPlayerPos(targetid,x,y,z);
+    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
+    if(fraction(playerid) == 4)
+    {
+        new wheretakemoney;
+        if(PlayerInfo[targetid][pMoney] > friskPrice[8]*3) wheretakemoney = 0;
+        else if(PlayerInfo[targetid][pAccount] > friskPrice[8]*3) wheretakemoney = 1;
+        else
+        {
+            new string[65];
+            format(string,sizeof(string),"У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
+            ErrorMessage(playerid,"У пациента недостаточно средств для реанимации");
+            ErrorMessage(targetid,string);
+            return 1;
+        }
+        if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= friskPrice[8]*3;
+        else PlayerInfo[targetid][pAccount] -= friskPrice[8]*3;
+        mysql_save(targetid,0);
+    }
+    
+    TakeInvent(playerid,8,1,0,999);
+    OnlineInfo[targetid][oTimerAnimationRevival] = 5;
+    ApplyAnimation(playerid,"MEDIC","CPR",4.0,0,1,1,0,0);
+    update_ability(playerid, 10, 10 + random(5));
+    return 1;
+}
+
+stock FindTargetRevival(playerid)
+{
+    new Float:x,Float:y,Float:z;
+    GetPlayerPos(playerid,x,y,z);
+    new otmena = -1;
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 0) continue;
+        if(DeathInfo[i][deathStatus] == false) continue;
+        if(IsPlayerInRangeOfPoint(i,1.0,x,y,z))
+        {
+            Moiplayer[playerid] = i;
+            otmena = 1;
+            break;
+        }
+    }
+    if(otmena == -1) return ErrorMessage(playerid,"{ff6347}В радиусе 1 метра нет нуждающегося в реанимации человека.");
+    else AcceptRevial(playerid);
+    return 1;
+}
+
+stock AcceptRevial(playerid)
+{
+    if(fraction(playerid) == 4)
+    {
+        new string[80];
+        format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
+        Moiplayer[Moiplayer[playerid]] = playerid;
+        SuccessMessage(playerid,"{66ff99}Вы отправили запрос на лечение. Ожидайте...");
+        keep(playerid);
+        ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_TABLIST,"{ff9000}Лечение",string,"Принять","Отклонить");
+    }
+    else
+    {
+        if(get_ability(playerid, 10) < 2) return ErrorMessage(playerid, "{FF6347}Для поднятия человека аптечкой нужен 2 уровень навыка [ Медик ]");
+        UseRevival(playerid,Moiplayer[playerid]);
+    }
     return 1;
 }

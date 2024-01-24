@@ -62,6 +62,7 @@ stock AutoMakeCreate(whom,type,id)
 
     if(type == 0) GetVehiclePos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
     if(type == 1) MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX],MakeInfo[findslot][mkCord][1]=DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2]=DomInfo[id][dKoordinatZ];
+    if(type == 2) GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
     MessageMake(findslot);
     return 1;
 }
@@ -73,13 +74,24 @@ stock MessageMake(number)
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 0) continue;
-        if(PlayerInfo[i][patroolID] == -1) continue;
-        if(IsPlayerInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
+        if(MakeInfo[number][mkWho] == 1)
         {
-            if(MakeInfo[number][mkWhoType] == 2) format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Сработала сигнализация в доме в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-            else if(MakeInfo[number][mkWhoType] == 1) format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Сработала сигнализация в машине в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-            else format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
-            SendClientMessage(i,COLOR_YELLOW,string);
+            if(PlayerInfo[i][patroolID] == -1) continue;
+            if(IsPlayerInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
+            {
+                if(MakeInfo[number][mkWhoType] == 2) format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Сработала сигнализация в доме в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                else if(MakeInfo[number][mkWhoType] == 1) format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Сработала сигнализация в машине в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                else format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
+                SendClientMessage(i,COLOR_YELLOW,string);
+            }
+        }
+        else if(MakeInfo[number][mkWho] == 2 && fraction(i) == 4)
+        {
+            if(IsPlayerInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
+            {
+                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS от Дистпетчера: {99ff33}Человек в тяжелом состояние в районе: %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                SendClientMessage(i,COLOR_YELLOW,string);
+            }
         }
     }
 }
@@ -308,6 +320,12 @@ stock CallService(playerid, whom)
 	return 1;
 }
 
+CMD:makelist(playerid)
+{
+    if(fraction(playerid) != 4) return 0;
+    else return MakeList(playerid);
+}
+
 stock MakeList(playerid)
 {
     new CopOrMin = 0; // 1 - kop, 2 - MZ
@@ -332,8 +350,8 @@ stock MakeList(playerid)
         {
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
             quan++;
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 0)

@@ -2093,7 +2093,7 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 5) return ErrorMessage(playerid,"Это таблетка пустышка"), i_resetveshi(playerid); // Спиды
 			 	else if(fpick == 6) return cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
 			 	else if(fpick == 7) return cmd_usedrugs4(playerid), i_resetveshi(playerid); // Порошок
-			 	else if(fpick == 8) return cmd_usemed(playerid), i_resetveshi(playerid); // Аптечка
+			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // Аптечка
 			 	else if(fpick == 9)
 				{
 					if(Dei[playerid] == 1003) return cmd_molotov(playerid), i_resetveshi(playerid); // Создаём коктейль молотова
