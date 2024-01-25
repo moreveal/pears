@@ -476,7 +476,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 return 1;
             }
             SaveOneTainik(oid, EditObjectInfo[playerid][editDopOption]);
-            UpdateObject(oid, slot);
+            UpdateObject(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
         else if(gRedakt[playerid] == 12) // Установка Маппинга на респах банд

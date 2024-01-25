@@ -165,9 +165,16 @@ stock PressSeatableObjectHandler(playerid)
 	  if(status > 0)
 	  {
 		playerSeat[playerid] = true;
+		
       	PPSetPlayerPos(playerid, x, y, player_pos[2]);
+
+		new Text3D:tempLabel = Create3DTextLabel("  ", 0x008080FF, x, y, player_pos[2], 200.0, GetPlayerVirtualWorld(playerid), 0); // VREMENNO
+
       	SetPlayerFacingAngle(playerid, a);
 	  	sit_Active(playerid, x, y, player_pos[2], a);
+
+		Update3DTextLabelText(tempLabel, 0xFFFFFFFF, "   ");
+		Delete3DTextLabel(tempLabel);
 		break;
 	  }
     }

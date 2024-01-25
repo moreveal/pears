@@ -543,6 +543,12 @@ stock GetRelativePos(Float: x, Float: y, Float: z, Float: rx, Float: ry, Float: 
     return 1;
 }
 
+// Получаем вирт мир динамического объекта
+stock GetDynamicObjectVirtualWorld(objectid) return Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_WORLD_ID);
+
+// Получаем интерьер динамического объекта
+stock GetDynamicObjectInterior(objectid) return Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_INTERIOR_ID);
+
 // Получаем модель динамического объекта
 stock GetDynamicObjectModel(objectid) return Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
 
