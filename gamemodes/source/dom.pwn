@@ -1,3 +1,18 @@
+
+stock getFreeSlotObjectDom(dom)
+{
+	new slot = -1;
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(DomInfo[dom][dOmodel][oba] == 0)
+		{
+			slot = oba;
+			break;
+		}
+	}
+	return slot;
+}
+
 stock use_dom(playerid, dom, inva, useinva)
 {
     i_resettabs(playerid);
@@ -11,8 +26,9 @@ stock use_dom(playerid, dom, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
 	}
-	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
-	&& !IsPlayerInRangeOfPoint(playerid,100.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
+
+	new finddom = IsAWardrobeDom(playerid);
+	if(dom != finddom) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
 		
 	new fpick = DomInfo[dom][dInvent][inva], fquan = DomInfo[dom][dInv][inva], thingType = DomInfo[dom][dInvType][inva], thingPack = DomInfo[dom][dInvPack][inva];
 	if(PlayerInfo[playerid][pDom] != dom)
@@ -26,6 +42,7 @@ stock use_dom(playerid, dom, inva, useinva)
 	// Забираем предмет из дома
 	if(thingType == 0 && thingPack == 0)
 	{
+		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять предметы из дома на улице\n{cccccc}На улице вы можете устанавливать только объекты из шкафа");
 	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
@@ -37,37 +54,30 @@ stock use_dom(playerid, dom, inva, useinva)
 	}
 	else if(thingType == 4) // Мебель
 	{
-		PlayerPlaySound(playerid,1052,0,0,0);
-		new obid;
+		new obid = DomInfo[dom][dInvent][inva];
 		if(DomInfo[dom][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В доме не установлена планировка");
-		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи"), i_resettabs(playerid);
-		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resettabs(playerid);
+		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи");
+		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
 
-		new slot = -1;
-		for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
 		{
-			if(DomInfo[dom][dOmodel][oba] == 0)
-			{
-				slot = oba;
-				break;
-			}
+			if(!getIkeaObjectStreet(obid)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя устанавливать на улице");
 		}
-		if(slot == -1) return ErrorMessage(playerid, "{FF6347}Лимит слотов для мебели в доме"), i_resettabs(playerid);
+		if(getFreeSlotObjectDom(dom) == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
+		if(DomInfo[dom][dInv][inva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает");
 
-		obid = DomInfo[dom][dInvent][inva], DomInfo[dom][dInvent][inva] = 0, DomInfo[dom][dInv][inva] = 0;
+		PlayerPlaySound(playerid,1052,0,0,0);
+		DomInfo[dom][dInv][inva] = 1000; // Блокируем возможность забрать предмет из инвентаря
 		CloseFrisk(playerid);
 
 		new Float:f_pos[4];
 		frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-		DomInfo[dom][dObject][slot] = CreateDynamicObject(obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
-		DomInfo[dom][dUser][slot] = playerid;
-		DomInfo[dom][dQara][slot] = DomInfo[dom][dInvQara][inva];
-		DomInfo[dom][dOmodel][slot] = obid;
-
-		GoEditDynamicObject(playerid, 6, 0, dom, slot, DomInfo[dom][dObject][slot], inva);
+		CreateEditPlayerObject(playerid, 6, 0, dom, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
 		return 1;
 	}
 	
+	if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)  return ErrorMessage(playerid, "{FF6347}Вы не можете взять предметы из дома на улице\n{cccccc}На улице вы можете устанавливать только объекты из шкафа");
+
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
 	
@@ -106,7 +116,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
 	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
-	&& !IsPlayerInRangeOfPoint(playerid,80.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), i_resetveshi(playerid);
+	&& !IsPlayerInRangeOfPoint(playerid,200.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Зайдите в дом, чтобы положить предмет"), i_resetveshi(playerid);
 	
 	if(PlayerInfo[playerid][pDom] != dom)
 	{

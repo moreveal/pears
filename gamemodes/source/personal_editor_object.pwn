@@ -98,7 +98,7 @@ stock showDialogAllObjectsPeo(playerid, targetid)
 	    if(peoInfo[targetid][peoModel][i] > 0)
 	    {
 	        if(i == 0) format(line,sizeof(line),"\n{cccccc}%d. Планировка \t {99ff66}%d$", i, getFrameObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
-	        else format(line,sizeof(line),"\n{cccccc}%d. %d (%s) \t {99ff66}%d$", i, peoInfo[targetid][peoModel][i], object_name(peoInfo[targetid][peoModel][i]), getIkeaObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
+	        else format(line,sizeof(line),"\n{cccccc}%d. %d (%s) \t {99ff66}%d$", i, peoInfo[targetid][peoModel][i], getIkeaObjectName(peoInfo[targetid][peoModel][i]), getIkeaObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
 		}
 		else format(line,sizeof(line),"\n{cccccc}%d. ... \t ",i), strcat(lines,line);
 	}

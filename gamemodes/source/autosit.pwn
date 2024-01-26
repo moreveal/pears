@@ -169,6 +169,7 @@ stock PressSeatableObjectHandler(playerid)
       	PPSetPlayerPos(playerid, x, y, player_pos[2]);
 
 		new Text3D:tempLabel = Create3DTextLabel("  ", 0x008080FF, x, y, player_pos[2], 200.0, GetPlayerVirtualWorld(playerid), 0); // VREMENNO
+		Attach3DTextLabelToPlayer(tempLabel, playerid, 0.0, 0.0, 2.0);
 
       	SetPlayerFacingAngle(playerid, a);
 	  	sit_Active(playerid, x, y, player_pos[2], a);

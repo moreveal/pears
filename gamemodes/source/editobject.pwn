@@ -79,6 +79,9 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
 
         if(response == EDIT_RESPONSE_CANCEL) 
         {
+            // Сбрасываем блокировку объекта в инвентаре при установке мебели
+            if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
+
             DestroyPlayerObject(playerid, objectid);
             gRedakt[playerid] = 0; // Редактор Off
             PlayerPlaySound(playerid,31200,0,0,0);
@@ -95,6 +98,14 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
         }
     }
 	return 1;
+}
+
+stock CancelCreateObjectDom(playerid, model)
+{
+    new oid = EditObjectInfo[playerid][editOption];
+    new slot = EditObjectInfo[playerid][editSlot];
+    if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // Сбрасываем блокировку объекта
+    return 1;
 }
 
 // Сохраняем результат редактирования (New System 14.11.2023)
@@ -125,6 +136,27 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 
         format(string,sizeof(string),"CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
         SendClientMessagef(playerid, COLOR_GREY, string);
+    }
+    else if(gRedakt[playerid] == 6) // Установка мебели в доме
+    {
+        new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
+        new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
+        if(dist > 200.0 && distStreet > 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома"), CancelEdit(playerid);
+        
+        new findSlot = getFreeSlotObjectDom(oid);
+        if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов"), CancelEdit(playerid);
+
+        DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
+        SaveOneTainik(oid, slot);
+
+        DomInfo[oid][dObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
+		DomInfo[oid][dUser][findSlot] = PlayerInfo[playerid][pID];
+		DomInfo[oid][dQara][findSlot] = DomInfo[oid][dInvQara][slot];
+		DomInfo[oid][dOmodel][findSlot] = modelid;
+        UpdateObject(oid, findSlot, true, false); // Обновляем только расположение (текстуры не обновляем)
+
+        Update3DLabelDom(oid, findSlot);
+        if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
     }
     else if(gRedakt[playerid] == 9) // Установка Камер Слежения
 	{
@@ -468,14 +500,15 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         }
         else if(gRedakt[playerid] == 6) // Установка мебели в доме
 		{
-            if(!IsPlayerInRangeOfPoint(playerid, 100.0, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]))
+            new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
+            new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
+            if(dist > 200.0 && distStreet > 30.0)
             {
-                ErrorMessage(playerid, "{FF6347}Вы покинули интерьер дома");
-                ErrorText(playerid, "[ Мысли ]: Я далеко от интерьера дома");
+                ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
-            SaveOneTainik(oid, EditObjectInfo[playerid][editDopOption]);
+            Update3DLabelDom(oid, slot);
             UpdateObject(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
@@ -586,19 +619,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
         {
             // Условности разных систем при отмене создания
-            if(gRedakt[playerid] == 6) // Установка мебели в доме
-            {
-                DomInfo[oid][dOmodel][slot] = 0;
-                DomInfo[oid][dObject][slot] = 0;
-                new modelid = GetDynamicObjectModel(EditObjectInfo[playerid][editObjectid]);
-                new putResult = PutThingDom(oid, modelid, 1, 0, DomInfo[oid][dQara][slot], 4, 0, 999);
-                if(putResult == -1)
-                {
-                    ErrorMessage(playerid, "{FF6347}В доме нет места\n\n{cccccc}Объект мебели пришлось выбросить");
-                    ErrorText(playerid, "[ Мысли ]: В доме нет места, объект мебели пришлось выбросить");
-                }
-            }
-            else if(gRedakt[playerid] == 11) // Объект на респе Банд
+            if(gRedakt[playerid] == 11) // Объект на респе Банд
             {
                 if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
                 ObjectInfo[oid][gOmodel][slot] = 0;
