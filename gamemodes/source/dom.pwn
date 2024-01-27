@@ -310,6 +310,8 @@ stock mix_dom(playerid, d, getinva, putinva)
 	{
 		if(DomInfo[d][dInvent][getinva] == 0) return i_resettabs(playerid);
 		if(DomInfo[d][dInvent][putinva] != DomInfo[d][dInvent][getinva]) return i_resettabs(playerid);
+		if(GetPlayerInterior(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете перекладывать предметы в доме на улице"), i_resettabs(playerid);
+
 		new quanPlayer;
 		foreach(Player,i)
 		{
@@ -352,6 +354,9 @@ stock shift_dom(playerid, d, getinva, putinva) //  Перемещение пре
 	{
 		if(DomInfo[d][dInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(DomInfo[d][dInvent][putinva] != 0) return 1;
+		if(GetPlayerInterior(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете перекладывать предметы в доме на улице"), i_resettabs(playerid);
+		if(DomInfo[d][dInvType][getinva] == 4 && DomInfo[d][dInv][getinva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает"), i_resettabs(playerid);
+
 		new quanPlayer;
 		foreach(Player,i)
 		{
