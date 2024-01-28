@@ -13,6 +13,23 @@ stock getFreeSlotObjectDom(dom)
 	return slot;
 }
 
+stock getObjectStreetDom(dom)
+{
+	new quan;
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(DomInfo[dom][dOmodel][oba] > 0)
+		{
+			if(GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba]) == 0
+				&& GetDynamicObjectInterior(DomInfo[dom][dObject][oba]) == 0)
+			{
+				quan ++;
+			}
+		}
+	}
+	return quan;
+}
+
 stock use_dom(playerid, dom, inva, useinva)
 {
     i_resettabs(playerid);
@@ -62,6 +79,7 @@ stock use_dom(playerid, dom, inva, useinva)
 		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
 		{
 			if(!getIkeaObjectStreet(obid)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя устанавливать на улице");
+			if(getObjectStreetDom(dom) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице");
 		}
 		if(getFreeSlotObjectDom(dom) == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
 		if(DomInfo[dom][dInv][inva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает");
@@ -115,8 +133,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return i_resetveshi(playerid);
 	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
-	if(!IsPlayerInRangeOfPoint(playerid,1.5,DomInfo[dom][dCupX], DomInfo[dom][dCupY], DomInfo[dom][dCupZ])
-	&& !IsPlayerInRangeOfPoint(playerid,200.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Зайдите в дом, чтобы положить предмет"), i_resetveshi(playerid);
+	if(!IsPlayerInRangeOfPoint(playerid,200.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Зайдите в дом, чтобы положить предмет"), i_resetveshi(playerid);
 	
 	if(PlayerInfo[playerid][pDom] != dom)
 	{

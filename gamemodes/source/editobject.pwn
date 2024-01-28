@@ -145,6 +145,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         
         new findSlot = getFreeSlotObjectDom(oid);
         if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов"), CancelEdit(playerid);
+        if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице"), CancelEdit(playerid);
 
         DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
         SaveOneTainik(oid, slot);

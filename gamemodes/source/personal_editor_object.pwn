@@ -940,6 +940,7 @@ stock DestroyPeoInterior(playerid) // Удаляем загруженный ин
 
 CMD:loadeditor(playerid) // Входим в личный редактор
 {
+    if(server != 0) return ErrorMessage(playerid, "{FF6347}Доступно только на тестовом сервере");
     if(PlayerInfo[playerid][pSoska] <= 0)
     {
 	    // if(!IsPlayerInRangeOfPoint(playerid, 2.0, 228.0, 228.0, 228.0)) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в шоуруме");
