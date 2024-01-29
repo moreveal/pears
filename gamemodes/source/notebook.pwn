@@ -680,7 +680,7 @@ stock gotobuycrypto(playerid,id)
     else
     {
         new string_mysql[80];
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, price);
@@ -710,7 +710,7 @@ function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
         new donatemoneyplayer, string[100];
         cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 
-        format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + price , userid);
+        format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + price , userid);
         query_empty(pearsq, string);
 
         format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
@@ -742,7 +742,7 @@ stock gotosellcrypto(playerid,id)
     else
     {
         new string_mysql[80];
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[id][tcVlad]);
+		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, -price);
@@ -771,7 +771,7 @@ function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
 	    new moneyplayer, string[120];
         cache_get_value_name_int(0, "Account", moneyplayer);
 
-        format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + price , userid);
+        format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `user_id` = '%d'", moneyplayer + price , userid);
         query_empty(pearsq, string);
 
         format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
@@ -801,7 +801,7 @@ function LoadTradeCrypto()
         if(unix - TradeCrypt[f][tcUnix] >= 864000)
         {
             new string_mysql[80];
-            format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", TradeCrypt[f][tcVlad]);
+            format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[f][tcVlad]);
 		    mysql_tquery(pearsq, string_mysql, "Call_returncrypto", "dd", TradeCrypt[f][tcVlad], f);
         }
 	}
@@ -821,7 +821,7 @@ function Call_returncrypto(characterid, d)
             new donatemoneyplayer;
             cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 
-            format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
+            format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
             query_empty(pearsq, string);
         }
         else // Покупал золото
@@ -829,7 +829,7 @@ function Call_returncrypto(characterid, d)
             new moneyplayer;
             cache_get_value_name_int(0, "Account", moneyplayer);
 
-            format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `id` = '%d'", moneyplayer + TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], characterid);
+            format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `user_id` = '%d'", moneyplayer + TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], characterid);
             query_empty(pearsq, string);
         }
 

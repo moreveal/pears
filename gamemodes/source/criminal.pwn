@@ -486,7 +486,7 @@ stock SaveTicketPlayer(playerid, i)
     i, WantedPolice[playerid][i], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
 
-    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ammo11` = '%d' WHERE `id` = '%d'", PlayerInfo[playerid][pAmmos11], PlayerInfo[playerid][pID]);
+    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ammo11` = '%d' WHERE `user_id` = '%d'", PlayerInfo[playerid][pAmmos11], PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -501,7 +501,7 @@ stock SaveWantedPlayer(playerid, i)
     i, WantedPolice[playerid][i], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
 
-    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Crimes` = '%d' WHERE `id` = '%d'", PlayerInfo[playerid][pCrimes], PlayerInfo[playerid][pID]);
+    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Crimes` = '%d' WHERE `user_id` = '%d'", PlayerInfo[playerid][pCrimes], PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);
     return 1;
 }

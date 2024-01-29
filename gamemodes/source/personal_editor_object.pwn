@@ -765,7 +765,7 @@ public Call_checkname_loadinterior(playerid, race_check, str_name[])
     if(!rows) return ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 
     new userId;
-    cache_get_value_name_int(0, "id", userId);
+    cache_get_value_name_int(0, "user_id", userId);
 
     goloadInterior(playerid, userId, str_name);
     return 1;
@@ -795,7 +795,7 @@ stock goloadInterior(playerid, userId, str_name[]) // Начинаем загр�
     peoInfo[playerid][peoStatusLoad] = true;
     peoInfo[playerid][peoCreatorId] = userId;
 
-    format(string,sizeof(string),"SELECT * FROM `pp_peo_information` WHERE `userId` = '%d'", userId);
+    format(string,sizeof(string),"SELECT * FROM `pp_peo_information` WHERE `user_id` = '%d'", userId);
 	mysql_tquery(pearsq, string, "Call_loadinterior_information", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
     return 1;
 }
@@ -817,7 +817,7 @@ public Call_loadinterior_information(playerid, race_check, userId, str_name[]) /
 
     // После загрузки информации о интерьере, начинаем грузить его объекты
     new string_mysql[100];
-    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_peo_objects` WHERE `userId` = '%d'", userId);
+    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_peo_objects` WHERE `user_id` = '%d'", userId);
 	mysql_tquery(pearsq, string_mysql, "Call_loadinterior_object", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
     return 1;
 }

@@ -107,7 +107,7 @@ function get_inhonorboard(playerid, g, const tmpName[], tmpTPlayerID,const tmpTN
 	if(rows)
 	{
 	    new plaid;
-	    cache_get_value_name_int(0, "id", plaid);
+	    cache_get_value_name_int(0, "user_id", plaid);
 		new string_mysql[100];
 	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
       	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsd", playerid, g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
@@ -182,7 +182,7 @@ function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayer
 	if(rows)
 	{
 	    new plaid;
-	    cache_get_value_name_int(0, "id", plaid);
+	    cache_get_value_name_int(0, "user_id", plaid);
 		new string_mysql[120];
 	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
       	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dsdd", playerid, tmpName, plaid, g);

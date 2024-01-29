@@ -232,7 +232,7 @@ stock SaveMarkAll(playerid) // Сохранение всего раздела т
 		i, PlayerInfo[playerid][pMarkInvenQara][i], i, PlayerInfo[playerid][pMarkInvenType][i], i, PlayerInfo[playerid][pMarkInvenPack][i], 
 		i, PlayerInfo[playerid][pMarkPrice][i]); // 152 + 44 (3920)
 	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -240,7 +240,7 @@ stock SaveMark(playerid, i)
 {
 	new string_mysql[166 + 165];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Mark%d`='%d',`MarkKol%d`='%d',`MarkPara%d`='%d',`MarkQara%d`='%d',`MarkPrice%d`='%d',\
-		`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `id`='%d'",
+		`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `user_id`='%d'",
 	i,PlayerInfo[playerid][pMarkInven][i],i,PlayerInfo[playerid][pMarkInvenQuan][i],i,PlayerInfo[playerid][pMarkInvenPara][i],i,PlayerInfo[playerid][pMarkInvenQara][i],
 	i,PlayerInfo[playerid][pMarkPrice][i],i,PlayerInfo[playerid][pMarkInvenType][i],i,PlayerInfo[playerid][pMarkInvenPack][i],PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);

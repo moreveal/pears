@@ -1556,7 +1556,7 @@ stock SaveInventAll(playerid) // Сохранение всего инвента�
 		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
 		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
 	}
-	format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+	format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
 	query_empty(pearsq, string_mysql);
 	
 	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Inven21` = '%d', `InvenKol21` = '%d', `InvenPara21` = '%d', `InvenQara21` = '%d', \
@@ -1570,14 +1570,14 @@ stock SaveInventAll(playerid) // Сохранение всего инвента�
 		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
 		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
 	}
-	format(string_mysql,sizeof(string_mysql),"%s WHERE `id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
+	format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
 stock SaveInvent(playerid, i) // Сохранение одной ячейки инвентаря
 {
 	new string_mysql[148 + 143];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `id`='%d'",
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `user_id`='%d'",
 	i+1,PlayerInfo[playerid][pInven][i],i+1,PlayerInfo[playerid][pInvenQuan][i],i+1,PlayerInfo[playerid][pInvenPara][i],i+1,PlayerInfo[playerid][pInvenQara][i],i+1,PlayerInfo[playerid][pInvenType][i],i+1,PlayerInfo[playerid][pInvenPack][i],PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);
     return 1;

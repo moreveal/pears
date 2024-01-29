@@ -23,7 +23,7 @@ stock InfoObjectDom(playerid, dom, oba)
 	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 
     new string[144];
-	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", DomInfo[dom][dUser][oba]);
+	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", DomInfo[dom][dUser][oba]);
 	mysql_tquery(pearsq, string, "call_io", "dddd", playerid, DomInfo[dom][dUser][oba], dom, oba);
 	return 1;
 }

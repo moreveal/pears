@@ -148,7 +148,7 @@ stock InputCarToRent(playerid,wh,car)
 	if(slot == -1) return ErrorMessage(playerid, "{FF6347} Не найден свободный слот преступления. Сообщите администрации!");
     if(GetPVarInt(playerid,"stopload") >= 1) return 1;
     SetPVarInt(playerid,"stopload",1);
-	format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `id` = '%d'", VehInfo[car][vSost]);
+	format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", VehInfo[car][vSost]);
 	mysql_tquery(pearsq, string, "CrimeCar", "ddddd", playerid,wh,car,slot, g_MysqlRaceCheck[playerid]);
 	return 1;
 }

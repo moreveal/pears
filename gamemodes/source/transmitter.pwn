@@ -942,7 +942,7 @@ stock SaveTransmitterOff(playerid)
 {
     PlayerInfo[playerid][pTransmitterUpdate] = false;
 	new string_mysql[2096];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `pTransmitterOff` = '%s' WHERE `id` = '%d'", StringifyArray(PlayerInfo[playerid][pTransmitterOff], MAX_TRANSMITTER), PlayerInfo[playerid][pID]);
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `pTransmitterOff` = '%s' WHERE `user_id` = '%d'", StringifyArray(PlayerInfo[playerid][pTransmitterOff], MAX_TRANSMITTER), PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }

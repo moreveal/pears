@@ -686,7 +686,7 @@ stock PrisonEscape(playerid)
     PlayerInfo[playerid][pJailTime] = 0;
 
     new string_mysql[90];
-    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Jailed`='0', `JailTime`='0' WHERE `id`='%d'", PlayerInfo[playerid][pID]);
+    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Jailed`='0', `JailTime`='0' WHERE `user_id`='%d'", PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
 
     keep(playerid);
@@ -712,7 +712,7 @@ stock PrisonGivePipe(playerid)
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonPipeUnix] = gettime();
     new string[90];
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonPipeUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonPipeUnix], PlayerInfo[playerid][pID]);
+    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonPipeUnix` = '%d' WHERE `user_id` = '%d'",PlayerInfo[playerid][pPrisonPipeUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли трубу, из неё вы можете сделать монтировку на станке");
     ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
@@ -731,7 +731,7 @@ stock PrisonGiveSpoon(playerid)
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonSpoonUnix] = gettime();
     new string[90];
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
+    format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `user_id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");
     ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);

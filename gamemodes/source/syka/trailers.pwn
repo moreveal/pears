@@ -54,7 +54,7 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
     else if (model == 3174) GetRelativePos(x, y, z, rx, ry, rz, (298.9278 - 300.657226), (-1716.3157 - -1715.170776), (7.0998 - 5.904612), doorX, doorY, doorZ);
 
     new string_mysql[80];
-    format(string_mysql,sizeof(string_mysql),"SELECT * FROM pp_igroki WHERE id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
+    format(string_mysql,sizeof(string_mysql),"SELECT * FROM pp_igroki WHERE `user_id` = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
     mysql_tquery(pearsq, string_mysql, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
 
     // Сохранение позиции

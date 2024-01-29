@@ -30,7 +30,7 @@ stock UpdateOdet(playerid, sl)
 	new string_mysql[600];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Odet%d`='%d',`Odet_X%d`='%f',`Odet_Y%d`='%f',`Odet_Z%d`='%f',\
 	`Odet_rX%d`='%f',`Odet_rY%d`='%f',`Odet_rZ%d`='%f',`Odet_sX%d`='%f',`Odet_sY%d`='%f',`Odet_sZ%d`='%f',`OdetPara%d`='%d',\
-	`OdetQara%d`='%d',`OdetBone%d`='%d' WHERE `id`='%d'",
+	`OdetQara%d`='%d',`OdetBone%d`='%d' WHERE `user_id`='%d'",
 	mysl,PlayerInfo[playerid][pOdet][sl],mysl,PlayerInfo[playerid][pOdet_X][sl],mysl,PlayerInfo[playerid][pOdet_Y][sl],mysl,PlayerInfo[playerid][pOdet_Z][sl],
 	mysl,PlayerInfo[playerid][pOdet_rX][sl],mysl,PlayerInfo[playerid][pOdet_rY][sl],mysl,PlayerInfo[playerid][pOdet_rZ][sl],
 	mysl,PlayerInfo[playerid][pOdet_sX][sl],mysl,PlayerInfo[playerid][pOdet_sY][sl],mysl,PlayerInfo[playerid][pOdet_sZ][sl],mysl,PlayerInfo[playerid][pOdetPara][sl],mysl,PlayerInfo[playerid][pOdetQara][sl],
@@ -61,7 +61,7 @@ stock UpdateAllOdet(playerid)
         mysl,PlayerInfo[playerid][pOdet_sX][i],mysl,PlayerInfo[playerid][pOdet_sY][i],mysl,PlayerInfo[playerid][pOdet_sZ][i],mysl,PlayerInfo[playerid][pOdetPara][i],mysl,PlayerInfo[playerid][pOdetQara][i],
         mysl,PlayerInfo[playerid][pOdetBone][i]); // 234 + 26 + 44 + 180 (2420)
     }
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `id`='%d'", string_mysql, PlayerInfo[playerid][pID]); // 19 + 11
+    format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id`='%d'", string_mysql, PlayerInfo[playerid][pID]); // 19 + 11
 	query_empty(pearsq, string_mysql);
     return 1;
 }

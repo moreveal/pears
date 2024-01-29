@@ -219,7 +219,7 @@ function call_membersdiv(playerid, org, div)
 		cache_get_value_name_int(i, "Rank", playerLoad[0]);
 		cache_get_value_name_int(i, "Fbi", playerLoad[1]);
 		cache_get_value_name_int(i, "Member", playerLoad[2]);
-		cache_get_value_name_int(i, "id", playerLoad[3]);
+		cache_get_value_name_int(i, "user_id", playerLoad[3]);
 		cache_get_value_name(i, "Offtime", offTime, 24);
 		cache_get_value_name(i, "CallSign", signName, 24);
 
@@ -376,7 +376,7 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		cache_get_value_name_int(0, "Member", playerLoad[2]);
 		cache_get_value_name_int(0, "Leader", playerLoad[3]);
 		cache_get_value_name_int(0, "Fbi", playerLoad[4]);
-		cache_get_value_name_int(0, "id", playerLoad[5]);
+		cache_get_value_name_int(0, "user_id", playerLoad[5]);
 
 		if(playerLoad[0] != i && playerLoad[1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");
 		if(g == 2)
@@ -423,7 +423,7 @@ stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // Получаем инфор
 stock mysql_SaveDivision(str_id, whichDiv, value)
 {
 	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `id` = '%d'", whichDiv, value, str_id);
+	format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `user_id` = '%d'", whichDiv, value, str_id);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -936,8 +936,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			new string_mysql[260];
 			format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
-				`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' AND `id`>'%d' \
-				OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' AND `id`>'%d' LIMIT 40", div, org, DP[4][playerid], div ,org, DP[4][playerid]);
+				`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' \
+				OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' LIMIT 40", div, org, DP[4][playerid], div ,org, DP[4][playerid]);
 			mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
 		}
 		else showDialogMenuDivision(playerid);

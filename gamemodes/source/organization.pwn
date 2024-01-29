@@ -710,7 +710,7 @@ function Call_mem(playerid, g)
         cache_get_value_name_int(i, "Rank", datad2);
         cache_get_value_name_int(i, "Vig", datad3);
         cache_get_value_name(i, "Offtime", datad4, sizeof(datad4));
-        cache_get_value_name_int(i, "id", datad5);
+        cache_get_value_name_int(i, "user_id", datad5);
         cache_get_value_name_int(i, "Fbi", datad6);
         cache_get_value_name_int(i, "Leader", datad7);
 		cache_get_value_name_int(i, "Division0", Division0);

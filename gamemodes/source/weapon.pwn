@@ -185,7 +185,7 @@ stock SaveGun(playerid)
         ArrayToString(TempUpdate[playerid], upgradeString, MAX_WEAPON_SLOTS);
     }
 
-    format(string_mysql, sizeof(string_mysql), "UPDATE pp_igroki SET Weapon='%s', Ammo='%s', EAmmo='%s', WeapDet='%s', WeapQet='%s', WeapUpgrade='%s', Beret='%d' WHERE id=%d",
+    format(string_mysql, sizeof(string_mysql), "UPDATE pp_igroki SET `Weapon`='%s', `Ammo`='%s', `EAmmo`='%s', `WeapDet`='%s', `WeapQet`='%s', `WeapUpgrade`='%s', `Beret`='%d' WHERE `user_id` = %d",
            weaponString, ammoString, explosiveString, detString, qetString, upgradeString, PlayerInfo[playerid][pBeret], PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string_mysql);
     return 1;

@@ -4562,7 +4562,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		ACDestroyVehicle(newcar);
 
 		// Сохраняем авто
-  		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
+  		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
         query_empty(pearsq, string_mysql);
 
 		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), SetPlayerFacingAngle(playerid,270.0);
@@ -4603,7 +4603,7 @@ function Call_delcaroff(playerid, str_name[], slot)
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		cache_get_value_name_int(0, "id", datadid);
+		cache_get_value_name_int(0, "user_id", datadid);
 		new string_mysql[120];
 		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
 		mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
@@ -4630,7 +4630,7 @@ function Call_delcar(playerid, str_name[], str_id, slot)
   		ABroadCast(COLOR_ADM,string,1);
 
         // Сохраняем авто
-  		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `id` = '%d'", slot - 1, str_id);
+  		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, str_id);
         query_empty(pearsq, string);
 
     	// Если чувак оказался Online
@@ -4764,7 +4764,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		}
 
         // Сохраняем авто
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
+		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
 		query_empty(pearsq, string_mysql);
 	}
 	return true;
@@ -4805,7 +4805,7 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
             }
         }
         if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
-        cache_get_value_name_int(0, "id", datadid);
+        cache_get_value_name_int(0, "user_id", datadid);
 
 		new posId, biz, Float:pos[4];
 		if(IsABoat(f_vehid)) biz = 90 + random(2), posId = random(4);
@@ -4846,7 +4846,7 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 		query_empty(pearsq, string_mysql); // 249 + 44 + 80 + 24 (407)
 
         // Сохраняем авто
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `id` = '%d'",slot, carid, ploid);
+		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id` = '%d'",slot, carid, ploid);
 		query_empty(pearsq, string_mysql);
 	}
 	return 1;
