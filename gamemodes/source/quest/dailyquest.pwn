@@ -44,7 +44,8 @@ enum dailyquestInfo
     daiQuanNeed[MAX_DAILY_QUEST_PLAYER], // Необходимо выполнить (количество повторений)
     daiQuan[MAX_DAILY_QUEST_PLAYER], // Выполнено повторений
     bool:daiStatus[MAX_DAILY_QUEST_PLAYER], // Статус выполненого задания
-    daiDay // Номер дня, в который необходимо выполнить текущие задания
+    daiDay, // Номер дня, в который необходимо выполнить текущие задания
+    bool:daiLoaded, // Статус загрузки из базы данных
 }
 new DailyInfo[MAX_REALPLAYERS][dailyquestInfo];
 
@@ -154,7 +155,7 @@ stock SelectUniqueDailyForSlot(playerid, slot) {
 
 stock CreateDaily(playerid, forced) 
 {
-    if(DailyInfo[playerid][daiDay] == getdate() && !forced) return 0; // Если день тот-же и мы не перезапускаем квесты, тогда игнорим
+    if(DailyInfo[playerid][daiDay] == getdate() && forced == 0) return 0; // Если день тот-же и мы не перезапускаем квесты, тогда игнорим
 
     for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
     {
@@ -164,6 +165,8 @@ stock CreateDaily(playerid, forced)
             CreateDailySlotForPlayer(playerid, i, dailyid);
         }
     }
+
+    SaveDailyQuests(playerid);
     return 1;
 }
 
@@ -203,6 +206,8 @@ stock CreateDailySlotForPlayer(playerid, slot, dailyid) // Записываем 
 
 stock showDialogDailyQuest(playerid)
 {
+    if(DailyInfo[playerid][daiLoaded] == false) return ErrorMessage(playerid, "{FF6347}Квесты не загрузились на ваш аккаунт\n{cccccc}Подождите немного, пока ваш аккаунт полность загрузится :)");
+
     new line[214], lines[4096], quan;
     format(line,sizeof(line),"{cccccc}Задание\t{cccccc}Статус"), strcat(lines,line);
 
@@ -251,5 +256,73 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
         }
         else cmd_quest(playerid);
     }
+    return 1;
+}
+
+function OnPlayerQuestsLoad(playerid)
+{
+    new rows, string[128];
+    cache_get_row_count(rows);
+    if(rows)
+    {
+        for (new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++)
+        {
+            format(string, sizeof(string), "daiID_%d", i);
+            cache_get_value_name_int(0, string, DailyInfo[playerid][daiID][i]);
+
+            format(string, sizeof(string), "daiQuanNeed_%d", i);
+            cache_get_value_name_int(0, string, DailyInfo[playerid][daiQuanNeed][i]);
+
+            format(string, sizeof(string), "daiQuan_%d", i);
+            cache_get_value_name_int(0, string, DailyInfo[playerid][daiQuan][i]);
+
+            format(string, sizeof(string), "daiStatus_%d", i);
+            cache_get_value_name_bool(0, string, DailyInfo[playerid][daiStatus][i]);
+        }
+        cache_get_value_name_int(0, "daiDay", DailyInfo[playerid][daiDay]);
+    }
+    DailyInfo[playerid][daiLoaded] = true;
+
+    // Создаём ежедневные задания
+	CreateDaily(playerid, 0);
+    return 1;
+}
+
+stock SaveDailyQuests(playerid)
+{
+    new string_mysql[800], part[240];
+
+    // Начальная часть запроса с daiDay
+    format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_quests` (user_id, daiDay");
+
+    // Добавляем названия остальных столбцов
+    for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
+    {
+        format(part, sizeof(part), ", daiID_%d, daiQuanNeed_%d, daiQuan_%d, daiStatus_%d", i, i, i, i);
+        strcat(string_mysql, part);
+    }
+
+    // Добавляем значения для daiDay и user_id
+    format(part, sizeof(part), ") VALUES (%d, %d", PlayerInfo[playerid][pID], DailyInfo[playerid][daiDay]);
+    strcat(string_mysql, part);
+
+    // Добавляем значения для остальных столбцов
+    for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
+    {
+        format(part, sizeof(part), ", %d, %d, %d, %d", DailyInfo[playerid][daiID][i], DailyInfo[playerid][daiQuanNeed][i], DailyInfo[playerid][daiQuan][i], DailyInfo[playerid][daiStatus][i]);
+        strcat(string_mysql, part);
+    }
+
+    // Добавляем ON DUPLICATE KEY UPDATE с упрощенными значениями
+    strcat(string_mysql, ") ON DUPLICATE KEY UPDATE daiDay = VALUES(daiDay)");
+
+    for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
+    {
+        format(part, sizeof(part), ", daiID_%d = VALUES(daiID_%d), daiQuanNeed_%d = VALUES(daiQuanNeed_%d), daiQuan_%d = VALUES(daiQuan_%d), daiStatus_%d = VALUES(daiStatus_%d)", i, i, i, i, i, i, i, i);
+        strcat(string_mysql, part);
+    }
+
+    // Отправляем запрос в базу данных
+    mysql_tquery(pearsq, string_mysql, "", "");
     return 1;
 }
