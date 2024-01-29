@@ -129,7 +129,7 @@ stock CreateTexture(playerid) // Сохраняем текстуры на объ
 			if(MenuInfo[playerid][zChange] > 0)
 			{
 				if(nd > 0) UpdateObject(nd, oba, false, true); // Обновляем только текстуры
-				else UpdateObjectBiz(b, oba);
+				else UpdateObjectBiz(b, oba, false, true);
 			}
 		}
 		MenuInfo[playerid][zChange] = 0;
@@ -601,7 +601,7 @@ stock ClickTextDraw_TextureEditor(playerid, PlayerText:playertextid)
 	{
 		if(MenuInfo[playerid][zObject] >= 0)
 		{
-			DP[1][playerid] = 1;
+			DP[1][playerid] = 4;
 			if(MenuInfo[playerid][zDom] > 0) ShowAllObject(playerid, MenuInfo[playerid][zDom], DP[1][playerid]);
 			else ShowAllObjectBiz(playerid, MenuInfo[playerid][zBiz], DP[1][playerid]);
 		}

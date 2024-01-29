@@ -16,6 +16,34 @@ stock EditObjectDom(playerid, dom, oba)
 	return 1;
 }
 
+stock InfoObjectDom(playerid, dom, oba)
+{
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
+	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+
+    new string[144];
+	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `id` = '%d'", DomInfo[dom][dUser][oba]);
+	mysql_tquery(pearsq, string, "call_io", "dddd", playerid, DomInfo[dom][dUser][oba], dom, oba);
+	return 1;
+}
+function call_io(playerid, userid, dom, oba)
+{
+	new rows, datad[24];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Пока искали аккаунт, объект уже был удалён");
+		cache_get_value_name(0, "Name", datad, 24);
+
+		new string[80];
+		format(string,sizeof(string),"{ffcccc}[ Map ]: ID Объекта %d | Model %d | Редактировал %s", oba, DomInfo[dom][dOmodel][oba], datad);
+		SendClientMessage(playerid, COLOR_GREY, string);
+	}
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
+	return 1;
+}
+
 stock EditTextureDom(playerid, dom, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");

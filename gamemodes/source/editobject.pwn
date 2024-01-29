@@ -77,16 +77,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
             }
         }
 
-        if(response == EDIT_RESPONSE_CANCEL) 
-        {
-            // Сбрасываем блокировку объекта в инвентаре при установке мебели
-            if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
-
-            DestroyPlayerObject(playerid, objectid);
-            gRedakt[playerid] = 0; // Редактор Off
-            PlayerPlaySound(playerid,31200,0,0,0);
-            //CancelSelectTextDraw(playerid);
-        }
+        if(response == EDIT_RESPONSE_CANCEL) CancelEditPlayerObject(playerid);
 
         if(response == EDIT_RESPONSE_FINAL)
 		{
@@ -98,14 +89,6 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
         }
     }
 	return 1;
-}
-
-stock CancelCreateObjectDom(playerid, model)
-{
-    new oid = EditObjectInfo[playerid][editOption];
-    new slot = EditObjectInfo[playerid][editSlot];
-    if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // Сбрасываем блокировку объекта
-    return 1;
 }
 
 // Сохраняем результат редактирования (New System 14.11.2023)
@@ -145,8 +128,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         
         new findSlot = getFreeSlotObjectDom(oid);
         if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов"), CancelEdit(playerid);
-        if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице"), CancelEdit(playerid);
-
+        if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+		{
+            if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице"), CancelEdit(playerid);
+        }
+        
         DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
         SaveOneTainik(oid, slot);
 
@@ -565,7 +551,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 return 1;
             }
             SaveSkladBiz(oid, EditObjectInfo[playerid][editDopOption]);
-            UpdateObjectBiz(oid, slot);
+            UpdateObjectBiz(oid, slot, true, false);
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
         else if(gRedakt[playerid] == 18) // Перемещение Мебель в Бизнесе
@@ -578,7 +564,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 return 1;
             }
             BizzInfo[oid][bUser][slot] = playerid;
-            UpdateObjectBiz(oid, slot);
+            UpdateObjectBiz(oid, slot, true, false);
 		}
         else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // Установка или перенос предмета в Личном Редакторе
 		{
@@ -719,9 +705,34 @@ stock CloseEditObject(playerid)
 {
     if(gRedakt[playerid] > 0 && gRedakt[playerid] != 31 && gRedakt[playerid] != 32)
 	{
-		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) CancelEdit(playerid);
+		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) 
+        {
+            CancelEdit(playerid);
+            CancelEditPlayerObject(playerid);
+        }
 		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
 		gRedakt[playerid] = 0;
 	}
+    return 1;
+}
+
+stock CancelEditPlayerObject(playerid)
+{
+    new objectid = EditObjectInfo[playerid][editTempObject];
+    // Сбрасываем блокировку объекта в инвентаре при установке мебели
+    if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
+
+    DestroyPlayerObject(playerid, objectid);
+    gRedakt[playerid] = 0; // Редактор Off
+    PlayerPlaySound(playerid,31200,0,0,0);
+    //CancelSelectTextDraw(playerid);
+    return 1;
+}
+
+stock CancelCreateObjectDom(playerid, model)
+{
+    new oid = EditObjectInfo[playerid][editOption];
+    new slot = EditObjectInfo[playerid][editSlot];
+    if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // Сбрасываем блокировку объекта
     return 1;
 }
