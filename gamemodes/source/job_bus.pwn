@@ -66,6 +66,20 @@ stock IsAJobBusDepoPos(playerid)
 	return 0;
 }
 
+stock FindBusDep(playerid) // Ищем ближайшее автобусное депо
+{
+	new Float:dist, Float:findpos, kakoi, quan;
+	dist = GetPlayerDistanceFromPoint(playerid, JobBusDepo[0][0], JobBusDepo[0][1], JobBusDepo[0][2]);
+	for(new i = 0; i < 3; i++)
+	{
+		quan ++;
+		findpos = GetPlayerDistanceFromPoint(playerid, JobBusDepo[i][0], JobBusDepo[i][1], JobBusDepo[i][2]);
+		if(findpos <= dist) dist = findpos, kakoi = i;
+	}
+	CreateGps(playerid, JobBusDepo[kakoi][0], JobBusDepo[kakoi][1], JobBusDepo[kakoi][2], 0, 0, 5.0);
+	return 1;
+}
+
 stock jobbus(playerid)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
@@ -574,6 +588,9 @@ stock BusRouterEnd(playerid)
 		mysql_save(playerid, 58);
 		SetVehicleVelocity(v, 0.0, 0.0, 0.0);
 		if(PlayerInfo[playerid][pAchieve][100] == 0) AchievePlayer(playerid, 100, 1);
+
+		// Работать водителем автобуса
+		CompletingDaily(playerid, 21, 1);
 	}
 	return 1;
 }

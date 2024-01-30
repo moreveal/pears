@@ -338,8 +338,9 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 	// Завершение транзакции
 	mysql_query(pearsq, "COMMIT;");
 
-	DeleteInteractionDom(dom);
-    SaveDom(dom);
+    DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
+	DeleteInteractionDom(dom); // Отключаем взаимодействие в доме
+    SaveDom(dom); // Сохраняем дом
     HouseLog(0, "rdomobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "Удалил всю мебель");
 	return 1;
 }
@@ -369,6 +370,7 @@ stock ClearAllObject(playerid, dom) // Убираем все объекты в �
 	// Завершение транзакции
 	mysql_query(pearsq, "COMMIT;");
 
+    DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
 	DeleteInteractionDom(dom);
     SaveDom(dom);
     HouseLog(0, "clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "Убрал мебель");

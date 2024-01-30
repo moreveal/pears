@@ -52,3 +52,12 @@ stock ClosePlayer3DLabelAll(playerid) // Удаляем все лейблы дл
     LabelsInfo[playerid][labelType] = 0;
     return 1;
 }
+
+stock DeleteAll3DLabel(id, type) // Удаляем все лейблы разом для игрока, у которого они отображаются
+{
+    foreach(Player,i)
+	{
+        if(LabelsInfo[i][labelCreate] == id && LabelsInfo[i][labelType] == type) ClosePlayer3DLabelAll(i);
+    }
+    return 1;
+}
