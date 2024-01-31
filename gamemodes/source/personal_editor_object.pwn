@@ -204,6 +204,7 @@ stock CreateObjectPeoInterior(playerid, peoId, modelId, slotId, Float:x, Float:y
 CMD:loadtobiz(playerid, const params[])
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить интерьер из личного редактора в бизнес [ /loadtobiz ID Бизнеса ]");
     LoadInteriorToBiz(playerid, params[0]);
     return 1;
@@ -214,10 +215,6 @@ stock LoadInteriorToBiz(playerid, b)
 
     // Переменные для хранения информации об объекте
     new Float:pos[6];
-    new modelid;
-    new txdname[32];
-    new texturename[32];
-    new materialcolor;
 
     new text[MAX_TEXT_LENGTH];
     new materialsize;
@@ -227,6 +224,11 @@ stock LoadInteriorToBiz(playerid, b)
     new fontcolor;
     new backcolor, textalignment;
     new yestext;
+
+    new quan, quanTextures;
+
+    // Начало транзакции
+	mysql_query(pearsq, "START TRANSACTION;");
 
     for(new i = 0; i < MAX_OBJECT_INT; i++)
     {
@@ -242,15 +244,19 @@ stock LoadInteriorToBiz(playerid, b)
         // Создаём объект
         BizzInfo[b][bOmodel][i] = peoInfo[peoId][peoModel][i];
         BizzInfo[b][bObject][i] = CreateDynamicObject(BizzInfo[b][bOmodel][i], pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], b+3000, 90, -1, 100.00, 100.00);
+        BizzInfo[b][bQara][i] = 0;
+        BizzInfo[b][bUser][i] = PlayerInfo[playerid][pID];
 
         // загрузка текстур и текста
-        for(new m = 0; m < MAX_MATERIALS; m++)
+        for(new m = 0; m < MAX_OBJECT_TEXTURES; m++)
         {
+            new modelid, txdname[44], texturename[44], materialcolor;
             GetDynamicObjectMaterial(peoInfo[peoId][peoObject][i], m, modelid, txdname, texturename, materialcolor);
-            if(modelid > 0) 
+            if(modelid > 0)
             {
                 SetDynamicObjectMaterial(BizzInfo[b][bObject][i], m, modelid, txdname, texturename, materialcolor);
                 modelid = 0;
+                quanTextures ++;
             }
 
             yestext = GetDynamicObjectMaterialText(peoInfo[peoId][peoObject][i], m, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
@@ -260,7 +266,18 @@ stock LoadInteriorToBiz(playerid, b)
                 yestext = 0;
             }
         }
+
+        UpdateObjectBiz(b, i, true, true); // Сохраняем сразу в базу
+        quan ++;
     }
+
+    // Завершение транзакции
+	mysql_query(pearsq, "COMMIT;");
+
+    new string[144];
+    format(string, sizeof(string), "{99ff66}Вы установили интерьер из личного редактора в бизнес № %d\nКоличество объектов: %d\nКоличество текстур: %d", b, quan, quanTextures);
+    SuccessMessage(playerid, string);
+	BizLog("loadtobiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, 0, "Установил интерьер");
     return 1;
 }
 
@@ -282,7 +299,20 @@ stock useAvailableInterior(playerid, propId, typeProperty)
 
     DestroyPeoInterior(playerid); // Удаляем все объекты
 
-    new txtId;
+    new modelid;
+    new txdname[32];
+    new texturename[32];
+    new materialcolor;
+
+    new text[MAX_TEXT_LENGTH];
+    new materialsize;
+    new fontface[12];
+    new fontsize;
+    new bold;
+    new fontcolor;
+    new backcolor, textalignment;
+    new yestext;
+
     // Грузим объекты из дома
     if(typeProperty == 0)
     {
@@ -299,10 +329,18 @@ stock useAvailableInterior(playerid, propId, typeProperty)
 
                 for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
                 {
-                    if(DomTexture[propId][i][t] > 0)
+                    GetDynamicObjectMaterial(DomInfo[propId][dObject][i], i, modelid, txdname, texturename, materialcolor);
+                    if(modelid > 0)
                     {
-                        txtId = DomTexture[propId][i][t];
-                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], t, ObjectTextures[txtId][TModel], ObjectTextures[txtId][TXDName], ObjectTextures[txtId][TextureName], 0x00000000);
+                        SetDynamicObjectMaterial(DomInfo[propId][dObject][i], i, modelid, txdname, texturename, materialcolor);
+                        modelid = 0;
+                    }
+
+                    yestext = GetDynamicObjectMaterialText(DomInfo[propId][dObject][i], i, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+                    if(yestext)
+                    {
+                        SetDynamicObjectMaterialText(DomInfo[propId][dObject][i], i, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+                        yestext = 0;
                     }
                 }
             }
@@ -324,10 +362,18 @@ stock useAvailableInterior(playerid, propId, typeProperty)
 
                 for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
                 {
-                    if(BizzTexture[propId][i][t] > 0)
+                    GetDynamicObjectMaterial(BizzInfo[propId][bObject][i], t, modelid, txdname, texturename, materialcolor);
+                    if(modelid > 0) 
                     {
-                        txtId = BizzTexture[propId][i][t];
-                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], t, ObjectTextures[txtId][TModel], ObjectTextures[txtId][TXDName], ObjectTextures[txtId][TextureName], 0x00000000);
+                        SetDynamicObjectMaterial(BizzInfo[propId][bObject][i], t, modelid, txdname, texturename, materialcolor);
+                        modelid = 0;
+                    }
+
+                    yestext = GetDynamicObjectMaterialText(BizzInfo[propId][bObject][i], t, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+                    if(yestext) 
+                    {
+                        SetDynamicObjectMaterialText(BizzInfo[propId][bObject][i], t, text, materialsize, fontface, fontsize, bold, fontcolor, backcolor, textalignment);
+                        yestext = 0;
                     }
                 }
             }

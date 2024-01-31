@@ -26,6 +26,7 @@ stock InfoObjectDomBiz(playerid, type, id, oba)
 
 	if(model == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(object)) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(userid == 0) return ErrorMessage(playerid, "{FF6347}У объекта нет создателя\n{cccccc}Он был создан системой");
 
     new string[144];
 	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
@@ -202,11 +203,6 @@ stock DelObject(d, obid) // Удаляем объект из дома
 	new string_mysql[120];
 	format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_objects` WHERE `newid` = '%d'", DomInfo[d][dNewid][obid]);
 	query_empty(pearsq, string_mysql);
-
-	for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
-	{
-		if(DomTexture[d][obid][t] != 0) DomTexture[d][obid][t] = 0;
-	}
 	return 1;
 }
 
@@ -216,9 +212,9 @@ stock UpdateObject(d, obid, bool:updatePosition, bool:updateTextures) // Обн�
     if(LIMITED_LOADING_SERVER >= 2) return 1;
     if(d < 0 || d >= MAX_DOM || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
 
-    if(updatePosition) UpdateObjectPosition(d, obid); // Только расположение и общая инфа
-    else if(updateTextures) UpdateObjectTextures(d, obid); // Только текстуры
-    else if(updatePosition && updateTextures)  UpdateObjectPositionAndTextures(d, obid); // Полное обновление
+    if(updatePosition == true && updateTextures == true) UpdateObjectPositionAndTextures(d, obid);
+    else if(updatePosition == true && updateTextures == false) UpdateObjectPosition(d, obid);
+    else if(updatePosition == false && updateTextures == true) UpdateObjectTextures(d, obid);
     return 1;
 }
 
@@ -262,11 +258,17 @@ stock BuildTextureString(type, d, obid, string:output[], outputsize)
     // Формирование части запроса для каждой текстуры
     for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++)
     {
-		new textureid;
-		if(type == 0) textureid = DomTexture[d][obid][i]; // Собираем строку для объектов в доме
-		else if(type == 1) textureid = BizzTexture[d][obid][i]; // Собираем строку для объектов в бизнесе
+		new objectid, texture_string[100];
+		if(type == 0) objectid = DomInfo[d][dObject][obid];
+        else if(type == 1) objectid = BizzInfo[d][bObject][obid];
 
-        format(string_texture_part, sizeof(string_texture_part), "`t%d` = '%d'", i, textureid);
+        new modelid, txdname[32], texturename[32], materialcolor;
+        GetDynamicObjectMaterial(objectid, i, modelid, txdname, texturename, materialcolor);
+
+        if(modelid == 0) format(texture_string, sizeof(texture_string), "0");
+        else format(texture_string, sizeof(texture_string), "%d,%s,%s,%d", modelid, txdname, texturename, materialcolor);
+
+        format(string_texture_part, sizeof(string_texture_part), "`t%d` = '%s'", i, texture_string);
         strcat(output, string_texture_part, outputsize);
 
         if(i < MAX_TEXTURES_ON_OBJECTS - 1) strcat(output, ", ", outputsize); // Добавляем запятую после каждой текстуры, кроме последней
@@ -281,7 +283,7 @@ stock UpdateObjectTextures(d, obid)
     if(DomInfo[d][dNewid][obid] != 0) // Только если объект существует в базе
     {
         new string_mysql[3200];
-        new texture_update_string[1600];
+        new texture_update_string[3000];
 
         // Собираем строку обновления текстур
         BuildTextureString(0, d, obid, texture_update_string, sizeof(texture_update_string));
@@ -304,8 +306,8 @@ stock UpdateObjectPositionAndTextures(d, obid)
     GetDynamicObjectPos(DomInfo[d][dObject][obid], pos[0], pos[1], pos[2]);
     GetDynamicObjectRot(DomInfo[d][dObject][obid], rot[0], rot[1], rot[2]);
 
-    new string_mysql[3200];
-    new texture_update_string[1600];
+    new string_mysql[3600];
+    new texture_update_string[3000];
 
     // Собираем строку обновления текстур
     BuildTextureString(0, d, obid, texture_update_string, sizeof(texture_update_string));
@@ -452,24 +454,62 @@ function LoadObject() // Грузим объекты интерьера для �
             DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
 
             // Получение и применение текстур к объекту
+            new tempQuanTextures = LoadTexturesOnObject(nd, sla, f, 1);
+            quanAllTextures += tempQuanTextures;
+
+            // Грузим старые текстуры в переменную
+            //if(server != 0)
+            //{
             for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
             {
                 new textureId;
                 new string_field[10];
-                format(string_field, sizeof(string_field), "t%d", t); // Создаем имя поля (например, "t0", "t1", ...)
+                format(string_field, sizeof(string_field), "st%d", t); // Создаем имя поля (например, "t0", "t1", ...)
                 cache_get_value_name_int(f, string_field, textureId); // Получаем значение текстуры
 
-                if(textureId != 0)
-                {
-					quanAllTextures ++;
-                    DomTexture[nd][sla][t] = textureId;
-                    SetDynamicObjectMaterial(DomInfo[nd][dObject][sla], t, ObjectTextures[textureId][TModel], ObjectTextures[textureId][TXDName], ObjectTextures[textureId][TextureName], 0x00000000);
-                }
+                if(textureId != 0) DomTexture[nd][sla][t] = textureId;
             }
+            //}
         }
     }
     printf("[MODE]: Объекты Домов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
     return 1;
+}
+
+stock LoadTexturesOnObject(nd, sla, f, type)
+{
+    new quanAllTextures;
+    // Получение и применение текстур к объекту
+    for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
+    {
+        new texture_string[100];
+        new string[6];
+
+        format(string, sizeof(string), "t%d", t);
+        cache_get_value_name(f, string, texture_string, sizeof(texture_string));
+
+        if (texture_string[0] != '\0' && strcmp(texture_string, "0") != 0) // Строка не пустая
+        {
+            new parsedData[4][44];
+            ParseMixedString(texture_string, parsedData, sizeof(parsedData));
+            new modelid = strval(parsedData[0]);
+
+            if(modelid > 0)
+            {
+                new txdname[32];
+                new texturename[32];
+                new materialcolor;
+
+                format(txdname, sizeof(txdname), "%s", parsedData[1]);
+                format(texturename, sizeof(texturename), "%s", parsedData[2]);
+                materialcolor = strval(parsedData[3]);
+                quanAllTextures ++;
+                if(type == 1) SetDynamicObjectMaterial(DomInfo[nd][dObject][sla], t, modelid, txdname, texturename, materialcolor);
+                else if(type == 2) SetDynamicObjectMaterial(BizzInfo[nd][bObject][sla], t, modelid, txdname, texturename, materialcolor);
+            }
+        }
+    }
+    return quanAllTextures;
 }
 
 
@@ -495,12 +535,12 @@ CMD:reloadtexture(playerid)
 				new yesUpdate;
 				for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
 				{
+                    // Замена ID текстуры с дальнейшим сохранением
 					new oldTextureId = DomTexture[d][obid][t] - 1;
 					if(oldTextureId >= 0)
 					{
 						yesUpdate ++;
 
-						// Поиск соответствующей новой текстуры
 						new newTextureId = FindNewTextureId(oldTextureId);
 
 						printf("d: %d, obid: %d, dOmodel: %d, t: %d, oldTextureId %d ( %s, %s ), newTextureId %d ( %s, %s )", d, obid, 
@@ -509,7 +549,19 @@ CMD:reloadtexture(playerid)
 					
 						DomTexture[d][obid][t] = newTextureId;
 						SetDynamicObjectMaterial(DomInfo[d][dObject][obid], t, ObjectTextures[newTextureId][TModel], ObjectTextures[newTextureId][TXDName], ObjectTextures[newTextureId][TextureName], 0x00000000);
-					}
+                    }
+
+                    // Переброс текстур в новую систему сохранения
+                    /*new textid = DomTexture[d][obid][t];
+					if(textid > 0)
+					{
+						yesUpdate ++;
+                        printf("d: %d, obid: %d, dOmodel: %d, t: %d, oldTextureId %d ( %s, %s )", d, obid, 
+							DomInfo[d][dOmodel][obid], t, textid, 
+							ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName]);
+					
+						SetDynamicObjectMaterial(DomInfo[d][dObject][obid], t, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName], 0x00000000);   
+                    }*/
 				}
 				if(yesUpdate > 0)
 				{

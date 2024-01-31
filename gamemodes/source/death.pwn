@@ -64,7 +64,8 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
-    || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1;
+    ||  IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
+    || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1; // В воде
     return 0;
 }
 
