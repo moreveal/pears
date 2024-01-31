@@ -329,7 +329,6 @@ stock CompletingDaily(playerid, dailyid, quan)
             break;
         }
     }
-
     if(yesComplete) // Задание было выполнено, ищем есть ли ещё задания сегодня
     {
         new string[150];

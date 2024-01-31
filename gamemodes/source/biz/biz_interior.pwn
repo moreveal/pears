@@ -1,4 +1,163 @@
 
+stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
+{
+	// Начало транзакции
+	mysql_query(pearsq, "START TRANSACTION;");
+
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+	    if(BizzInfo[biz][bOmodel][oba] >= 1)
+        {
+            if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
+            {
+                new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
+                if(resultPut >= 0)
+                {
+                    DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
+                    DelObjectBiz(biz, oba);
+                    ClearVariableObjectBiz(biz, oba);
+                }
+            }
+        }
+	}
+
+	// Завершение транзакции
+	mysql_query(pearsq, "COMMIT;");
+
+    DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
+    BizLog("clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Убрал мебель");
+	return 1;
+}
+
+stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
+{
+	// Начало транзакции
+	mysql_query(pearsq, "START TRANSACTION;");
+
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
+        {
+            DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
+            DelObjectBiz(biz, oba);
+            ClearVariableObjectBiz(biz, oba);
+        }
+	}
+
+	// Завершение транзакции
+	mysql_query(pearsq, "COMMIT;");
+
+    DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
+    BizLog("rbizobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Удалил всю мебель");
+	return 1;
+}
+
+stock EditObjectBiz(playerid, biz, oba)
+{
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+
+	new Float:ob[3];
+    GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
+  	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+
+	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
+    if(Komputer[playerid] == 2) exitkomp(playerid, 2);
+	GoEditDynamicObject(playerid, 17, 1, biz, oba, BizzInfo[biz][bObject][oba], 0);
+	return 1;
+}
+
+stock DeleteObjectBiz(playerid, biz, oba)
+{
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+
+    new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
+    if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре бизнеса нет места");
+    DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
+    DelObjectBiz(biz, oba);
+    ClearVariableObjectBiz(biz, oba);
+    PlayerPlaySound(playerid,17001,0,0,0);
+
+    Delete3DLabelDomBiz(biz, oba, 2);
+	return 1;
+}
+
+stock EditTextureBiz(playerid, biz, oba)
+{
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+
+	new Float:ob[3];
+    GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
+  	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+
+    if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
+    if(Komputer[playerid] == 2) exitkomp(playerid, 2);
+
+    Create3DMenu(playerid, 1, biz);
+    Show3DMenu(playerid);
+    RemoveObjectToTexture(playerid);
+    ObjectToTexture(playerid, oba);
+    NameTexture(playerid);
+
+    // Перезапускаем меню со слотами на объекте
+    if(DrawTextdrawEditor[playerid] == true)
+    {
+        CloseDraw3DMenu(playerid);
+        ShowDraw3DMenu(playerid);
+    }
+	return 1;
+}
+
+stock ClearVariableObjectBiz(biz, oba)
+{
+    BizzInfo[biz][bNewid][oba] = 0;
+    BizzInfo[biz][bObject][oba] = 0;
+    BizzInfo[biz][bOmodel][oba] = 0;
+    BizzInfo[biz][bQara][oba] = 0;
+    BizzInfo[biz][bUser][oba] = 0;
+}
+
+stock getFreeSlotObjectBiz(biz)
+{
+	new slot = -1;
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] == 0)
+		{
+			slot = oba;
+			break;
+		}
+	}
+	return slot;
+}
+
+stock getObjectStreetBiz(biz)
+{
+	new quan;
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] > 0)
+		{
+			if(GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba]) == 0
+				&& GetDynamicObjectInterior(BizzInfo[biz][bObject][oba]) == 0)
+			{
+				quan ++;
+			}
+		}
+	}
+	return quan;
+}
+
 stock DelObjectBiz(b, obid) // Удаляем объект из biza
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
@@ -113,26 +272,6 @@ stock UpdateObjectPosAndTextureBiz(b, obid)
         mysql_tquery(pearsq, string_mysql);
     }
     return 1;
-}
-
-stock ClearVariableObjectBiz(b, oba)
-{
-    BizzInfo[b][bNewid][oba] = 0;
-    BizzInfo[b][bObject][oba] = 0;
-    BizzInfo[b][bOmodel][oba] = 0;
-    BizzInfo[b][bQara][oba] = 0;
-    BizzInfo[b][bUser][oba] = 0;
-}
-
-stock CheckObjectBiz(b) // Проверяем есть ли свободные слоты для установки объекта мебели
-{
-	new quan;
-	for(new i = 0; i < MAX_OBJECT_INT; i++)
-	{
-		if(BizzInfo[b][bOmodel][i] > 0) quan ++;
-	}
-	if(quan >= MAX_OBJECT_INT) return 1;
-	return 0;
 }
 
 function LoadObjectBiz() // Грузим объекты бизнесов

@@ -142,7 +142,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		DomInfo[oid][dOmodel][findSlot] = modelid;
         UpdateObject(oid, findSlot, true, false); // Обновляем только расположение (текстуры не обновляем)
 
-        Update3DLabelDom(oid, findSlot);
+        Update3DLabelDomBiz(oid, findSlot, 1);
         if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
     }
     else if(gRedakt[playerid] == 9) // Установка Камер Слежения
@@ -310,6 +310,31 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         }
         SaveBizzTerm(oid, slot);
         BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "Установил объект");
+    }
+    else if(gRedakt[playerid] == 17) // Установка мебели в бизнесе
+    {
+        new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
+        new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
+        if(dist > 200.0 && distStreet > 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса"), CancelEdit(playerid);
+        
+        new findSlot = getFreeSlotObjectBiz(oid);
+        if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов"), CancelEdit(playerid);
+        if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+		{
+            if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице"), CancelEdit(playerid);
+        }
+        
+        BizzInfo[oid][bInvent][slot] = 0, BizzInfo[oid][bInv][slot] = 0; // Удаляем предмет из бизнеса
+        SaveSkladBiz(oid, slot);
+
+        BizzInfo[oid][bObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
+		BizzInfo[oid][bUser][findSlot] = PlayerInfo[playerid][pID];
+		BizzInfo[oid][bQara][findSlot] = BizzInfo[oid][bInvQara][slot];
+		BizzInfo[oid][bOmodel][findSlot] = modelid;
+        UpdateObjectBiz(oid, findSlot, true, false); // Обновляем только расположение (текстуры не обновляем)
+
+        Update3DLabelDomBiz(oid, findSlot, 2);
+        if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
     }
     else if(gRedakt[playerid] == 19) // Установка Остановки
     {
@@ -495,7 +520,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
-            Update3DLabelDom(oid, slot);
+            DomInfo[oid][dUser][slot] = PlayerInfo[playerid][pID];
+            Update3DLabelDomBiz(oid, slot, 1);
             UpdateObject(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
@@ -541,31 +567,21 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             UpdateLabelIkea(oid);
 		}
-        else if(gRedakt[playerid] == 17) // Установка Мебель в Бизнес
+        else if(gRedakt[playerid] == 17) // Перемещение Мебель в Бизнесе
 		{
-            if(!IsPlayerInRangeOfPoint(playerid, 200.0, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]))
+            new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
+            new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
+            if(dist > 200.0 && distStreet > 30.0)
             {
-                ErrorMessage(playerid, "{FF6347}Вы покинули интерьер бизнеса");
-                ErrorText(playerid, "[ Мысли ]: Я далеко от интерьера бизнеса");
+                ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
-            SaveSkladBiz(oid, EditObjectInfo[playerid][editDopOption]);
-            UpdateObjectBiz(oid, slot, true, false);
+            BizzInfo[oid][bUser][slot] = PlayerInfo[playerid][pID];
+            Update3DLabelDomBiz(oid, slot, 2);
+            UpdateObjectBiz(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
-        else if(gRedakt[playerid] == 18) // Перемещение Мебель в Бизнесе
-		{
-            if(!IsPlayerInRangeOfPoint(playerid, 200.0, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]))
-            {
-                ErrorMessage(playerid, "{FF6347}Вы покинули интерьер бизнеса");
-                ErrorText(playerid, "[ Мысли ]: Я далеко от интерьера бизнеса");
-                CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-                return 1;
-            }
-            BizzInfo[oid][bUser][slot] = playerid;
-            UpdateObjectBiz(oid, slot, true, false);
-		}
         else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // Установка или перенос предмета в Личном Редакторе
 		{
             new prewSel = peoInfo[oid][peoSelObject]; // Получаем ID предыдущего выбранного объекта
@@ -721,6 +737,7 @@ stock CancelEditPlayerObject(playerid)
     new objectid = EditObjectInfo[playerid][editTempObject];
     // Сбрасываем блокировку объекта в инвентаре при установке мебели
     if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
+    else if(gRedakt[playerid] == 17 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectBiz(playerid, GetPlayerObjectModel(playerid, objectid));
 
     DestroyPlayerObject(playerid, objectid);
     gRedakt[playerid] = 0; // Редактор Off
@@ -734,5 +751,13 @@ stock CancelCreateObjectDom(playerid, model)
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
     if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // Сбрасываем блокировку объекта
+    return 1;
+}
+
+stock CancelCreateObjectBiz(playerid, model)
+{
+    new oid = EditObjectInfo[playerid][editOption];
+    new slot = EditObjectInfo[playerid][editSlot];
+    if(model != 0 && BizzInfo[oid][bInvent][slot] == model) BizzInfo[oid][bInv][slot] = 1; // Сбрасываем блокировку объекта
     return 1;
 }

@@ -11,33 +11,42 @@ stock EditObjectDom(playerid, dom, oba)
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
 		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
 
-	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid);
+	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
 	GoEditDynamicObject(playerid, 6, 1, dom, oba, DomInfo[dom][dObject][oba], 0);
 	return 1;
 }
 
-stock InfoObjectDom(playerid, dom, oba)
+stock InfoObjectDomBiz(playerid, type, id, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+
+    new model, object, userid;
+    if(type == 1) model = DomInfo[id][dOmodel][oba], object = DomInfo[id][dObject][oba], userid = DomInfo[id][dUser][oba];
+    else if(type == 2) model = BizzInfo[id][bOmodel][oba], object = BizzInfo[id][bObject][oba], userid = BizzInfo[id][bUser][oba];
+
+	if(model == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
+	if(!IsValidDynamicObject(object)) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 
     new string[144];
-	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", DomInfo[dom][dUser][oba]);
-	mysql_tquery(pearsq, string, "call_io", "dddd", playerid, DomInfo[dom][dUser][oba], dom, oba);
+	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
+	mysql_tquery(pearsq, string, "call_io", "ddddd", playerid, userid, id, oba, type);
 	return 1;
 }
-function call_io(playerid, userid, dom, oba)
+function call_io(playerid, userid, id, oba, type)
 {
 	new rows, datad[24];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Пока искали аккаунт, объект уже был удалён");
+        new model;
+        if(type == 1) model = DomInfo[id][dOmodel][oba];
+        else if(type == 2) model = BizzInfo[id][bOmodel][oba];
+
+		if(model == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Пока искали аккаунт, объект уже был удалён");
 		cache_get_value_name(0, "Name", datad, 24);
 
 		new string[80];
-		format(string,sizeof(string),"{ffcccc}[ Map ]: ID Объекта %d | Model %d | Редактировал %s", oba, DomInfo[dom][dOmodel][oba], datad);
+		format(string,sizeof(string),"{ffcccc}[ Map ]: ID Объекта %d | Model %d | Редактировал %s", oba, model, datad);
 		SendClientMessage(playerid, COLOR_GREY, string);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -87,32 +96,32 @@ stock DeleteObjectDom(playerid, dom, oba)
     ClearVariableObjectDom(dom, oba);
     PlayerPlaySound(playerid,17001,0,0,0);
 
-    Delete3DLabelDom(dom, oba);
+    Delete3DLabelDomBiz(dom, oba, 1);
 	return 1;
 }
 
-stock Update3DLabelDom(dom, obid)
+stock Update3DLabelDomBiz(id, obid, type)
 {
-    if(dom == 0) return 1;
+    if(id == 0) return 1;
 
     foreach(Player,i)
 	{
-        if(LabelsInfo[i][labelCreate] == dom && LabelsInfo[i][labelType] == 1)
+        if(LabelsInfo[i][labelCreate] == id && LabelsInfo[i][labelType] == type)
         {
             if(LabelsInfo[i][labelStatus][obid] != 0) DeleteForPlayer3DLabel(i, obid);
-            CreateAndShow3DLabelDom(i, dom, obid);
+            CreateAndShow3DLabelDomBiz(i, id, obid, type);
         }
     }
     return 1;
 }
 
-stock Delete3DLabelDom(dom, obid)
+stock Delete3DLabelDomBiz(id, obid, type)
 {
-    if(dom == 0) return 1;
+    if(id == 0) return 1;
 
     foreach(Player,i)
 	{
-        if(LabelsInfo[i][labelCreate] == dom && LabelsInfo[i][labelType] == 1)
+        if(LabelsInfo[i][labelCreate] == id && LabelsInfo[i][labelType] == type)
         {
             if(LabelsInfo[i][labelStatus][obid] != 0) DeleteForPlayer3DLabel(i, obid);
         }
@@ -120,25 +129,34 @@ stock Delete3DLabelDom(dom, obid)
     return 1;
 }
 
-stock ShowForPlayer3DLabelDom(playerid, dom) // Показываем лейблы на объектах в доме
+stock ShowForPlayer3DLabelDomBiz(playerid, i, type) // Показываем лейблы на объектах в доме или бизах
 {
     for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
-	    if(DomInfo[dom][dOmodel][oba] >= 1) CreateAndShow3DLabelDom(playerid, dom, oba);
+        new model;
+        if(type == 1) model = DomInfo[i][dOmodel][oba];
+        else if(type == 2) model = BizzInfo[i][bOmodel][oba];
+
+	    if(model >= 1) CreateAndShow3DLabelDomBiz(playerid, i, oba, type);
 	}
-    LabelsInfo[playerid][labelCreate] = dom; // Отображение лейблов запущено
-    LabelsInfo[playerid][labelType] = 1; // Type 1 - Дом
+    LabelsInfo[playerid][labelCreate] = i; // Отображение лейблов запущено
+    LabelsInfo[playerid][labelType] = type; // 1 Дом, 2 Бизнес
     return 1;
 }
 
-stock CreateAndShow3DLabelDom(playerid, dom, oba)
+stock CreateAndShow3DLabelDomBiz(playerid, i, oba, type)
 {
     new string[80];
     new Float:pos[3];
-    GetDynamicObjectPos(DomInfo[dom][dObject][oba], pos[0], pos[1], pos[2]);
+    new model, objectid;
+
+    if(type == 1) model = DomInfo[i][dOmodel][oba], objectid = DomInfo[i][dObject][oba];
+    else if(type == 2) model = BizzInfo[i][bOmodel][oba], objectid = BizzInfo[i][bObject][oba];
+
+    GetDynamicObjectPos(objectid, pos[0], pos[1], pos[2]);
     CreateForPlayer3DLabel(playerid, oba, pos[0], pos[1], pos[2]);
 
-    format(string,sizeof(string),"{cccccc}ID: {555555}%d {cccccc}| Model: {555555}%d", oba, DomInfo[dom][dOmodel][oba]);
+    format(string,sizeof(string),"{cccccc}ID: {555555}%d {cccccc}| Model: {555555}%d", oba, model);
     UpdateForPlayer3DLabel(playerid, oba, string);
     return 1;
 }
@@ -148,7 +166,7 @@ stock showDialogInteriorDom(playerid)
     if(MenuInfo[playerid][zStat] > 0) return 1;
 
     new d = DP[4][playerid];
-    if(!IsANearWardrobeDom(playerid, d)) return ErrorMessage(playerid, "{FF6347}Вы не в интерьере или далеко от дома"), Login[2][playerid] = 0;
+    if(!IsANearWardrobeDom(playerid, d)) return ErrorMessage(playerid, "{FF6347}Вы не в интерьере или далеко от дома");
     if(DomInfo[d][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом доме нельзя изменять интерьер{cccccc}Установите планировку");
     if(DomInfo[d][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя ремонтировать дом во время продажи");
 

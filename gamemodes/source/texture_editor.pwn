@@ -53,7 +53,9 @@ CMD:texture(playerid, const params[])
 
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ретекстур объекта /texture ID объекта");
 	if(LabelsInfo[playerid][labelCreate] == 0) return ErrorMessage(playerid, "{FF6347}Активируйте отображение 3D Лейблов на объектах\n{cccccc}Для домов: /dedit >> 3D Лейблы\n{cccccc}Для бизнесов: /bedit >> 3D Лейблы");
+	
 	if(LabelsInfo[playerid][labelCreate] > 0 && LabelsInfo[playerid][labelType] == 1) return EditTextureDom(playerid, LabelsInfo[playerid][labelCreate], params[0]);
+	else if(LabelsInfo[playerid][labelCreate] > 0 && LabelsInfo[playerid][labelType] == 2) return EditTextureBiz(playerid, LabelsInfo[playerid][labelCreate], params[0]);
 	return 1;
 }
 

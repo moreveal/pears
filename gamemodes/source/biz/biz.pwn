@@ -571,6 +571,7 @@ stock pricebiz(playerid, b)
 	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
 	return 1;
 }
+
 stock use_biz(playerid, biz, inva, useinva)
 {
     if(Veshi[playerid] >= 1) return i_resettabs(playerid);
@@ -579,47 +580,47 @@ stock use_biz(playerid, biz, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != BizzInfo[biz][bInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(IsPlayerInRangeOfPoint(playerid,200.0,BizzInfo[biz][bX], BizzInfo[biz][bY], BizzInfo[biz][bZ])) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), closetab(playerid, 1);
+	if(!IsANearWardrobeBiz(playerid, biz)) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), closetab(playerid, 1);
+
     new thingType = BizzInfo[biz][bInvType][inva];
     if(thingType == 4)
     {
      	PlayerPlaySound(playerid,1052,0,0,0);
-		new obid;
+		new obid = BizzInfo[biz][bInvent][inva];
 		if(BizzInfo[biz][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом бизнесе не установлен каркас"), i_resettabs(playerid);
 		if(BizzInfo[biz][bSell]  >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься ремонтом интерьера во время продажи"), i_resettabs(playerid);
-		if(CheckObjectBiz(biz)) return ErrorMessage(playerid, "{FF6347}Лимит объектов мебели"), i_resettabs(playerid);
-		
-		new slot = -1;
-		for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
-		{
-			if(BizzInfo[biz][bOmodel][oba] == 0)
-			{
-				slot = oba;
-				break;
-			}
-		}
-		if(slot == -1) return ErrorMessage(playerid, "{FF6347}Лимит слотов для мебели в бизнесе"), i_resettabs(playerid);
 
-		obid = BizzInfo[biz][bInvent][inva], BizzInfo[biz][bInvent][inva] = 0, BizzInfo[biz][bInv][inva] = 0, BizzInfo[biz][bInvPara][inva] = 0, BizzInfo[biz][bInvQara][inva] = 0, BizzInfo[biz][bInvType][inva] = 0, BizzInfo[biz][bInvPack][inva] = 0;
+		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+		{
+			if(!getIkeaObjectStreet(obid)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя устанавливать на улице");
+			if(getObjectStreetBiz(biz) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
+		}
+		if(getFreeSlotObjectBiz(biz) == -1) return ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
+		if(BizzInfo[biz][bInv][inva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает");
+
+		PlayerPlaySound(playerid,1052,0,0,0);
+		BizzInfo[biz][bInv][inva] = 1000; // Блокируем возможность забрать предмет из инвентаря
 		CloseFrisk(playerid);
 
-      	new Float:f_pos[4];
-		frontme(playerid, 3.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-		BizzInfo[biz][bObject][slot] = CreateDynamicObject(obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 100.00, 100.00);
-		BizzInfo[biz][bUser][slot] = playerid;
-		BizzInfo[biz][bQara][slot] = BizzInfo[biz][bInvQara][inva];
-		BizzInfo[biz][bOmodel][slot] = obid;
-		GoEditDynamicObject(playerid, 17, 0, biz, slot, BizzInfo[biz][bObject][slot], inva);
+		new Float:f_pos[4];
+		frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+		CreateEditPlayerObject(playerid, 17, 0, biz, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
 		return 1;
 	}
+
+	if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)  return ErrorMessage(playerid, "{FF6347}Вы не можете взять предметы из бизнеса на улице\n{cccccc}На улице вы можете устанавливать только объекты");
 	return 1;
 }
+
 stock shift_biz(playerid, b, getinva, putinva)
 {
 	if(OnlineInfo[playerid][oShowTabs] != 9999)
 	{
 		if(BizzInfo[b][bInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(BizzInfo[b][bInvent][putinva] != 0) return 1;
+		if(GetPlayerInterior(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете перекладывать предметы в бизнесе на улице"), i_resettabs(playerid);
+		if(BizzInfo[b][bInvType][getinva] == 4 && BizzInfo[b][bInv][getinva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает"), i_resettabs(playerid);
+
 		new quanPlayer;
 		foreach(Player,i)
 		{
