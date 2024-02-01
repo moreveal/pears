@@ -206,6 +206,9 @@ CMD:loadtobiz(playerid, const params[])
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
     if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить интерьер из личного редактора в бизнес [ /loadtobiz ID Бизнеса ]");
+    if(params[0] <= 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Неверный ID бизнеса");
+    if(!IsABizInteriorFrame(params[0])) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недоступна система интерьеров");
+    if(IsAJizzyBiz(params[0])) return ErrorMessage(playerid, "{FF6347}В этот бизнес нельзя установить интерьер\n{cccccc}Пример: Бизнес Jizzy имеет собственный каркас из нескольких частей");
     LoadInteriorToBiz(playerid, params[0]);
     return 1;
 }
@@ -1243,55 +1246,104 @@ stock sqlite_LoadMapObjects(playerid)
     stmt_bind_result_field(loadstmt, 20, DB::TYPE_STRING, tmpobject[oNote], 64);
     stmt_bind_result_field(loadstmt, 21, DB::TYPE_FLOAT, tmpobject[oDD]);
 
+    new bool:stopLoad;
 	// Execute query
     new count;
     if(stmt_execute(loadstmt))
     {
-        // Удаляем все объекты, которые были созданы
-        for(new ob = 0; ob < MAX_OBJECT_INT; ob++)
-        {
-            if(peoInfo[playerid][peoModel][ob] > 0) 
-            {
-                if(IsValidDynamicObject(peoInfo[playerid][peoObject][ob])) DestroyDynamicObject(peoInfo[playerid][peoObject][ob]);
-            }
-        }
 
+        /*
+        new quanObject;
         while(stmt_fetch_row(loadstmt))
         {
             if(i < MAX_OBJECT_INT)
             {
-                peoInfo[playerid][peoModel][i] = tmpobject[oModel];
-                peoInfo[playerid][peoX][i] = tmpobject[oPositionX];
-                peoInfo[playerid][peoY][i] = tmpobject[oPositionY];
-                peoInfo[playerid][peoZ][i] = tmpobject[oPositionZ];
-                peoInfo[playerid][peoRX][i] = tmpobject[oPositionRX];
-                peoInfo[playerid][peoRY][i] = tmpobject[oPositionRY];
-                peoInfo[playerid][peoRZ][i] = tmpobject[oPositionRZ];
-                peoInfo[playerid][peoObject][i] = CreateDynamicObject(peoInfo[playerid][peoModel][i], peoInfo[playerid][peoX][i], peoInfo[playerid][peoY][i], peoInfo[playerid][peoZ][i], peoInfo[playerid][peoRX][i], peoInfo[playerid][peoRY][i], peoInfo[playerid][peoRZ][i], playerid+4000, 90, -1, 100.00, 100.00);
-                peoInfo[playerid][peoQuanObjects] ++;
-
-                // текст на объекте
-                if(tmpobject[ousetext])
-				{
-                    // Сюда нужны проверки на:
-                    // - валидность символов (текста)
-                    // - валидность размеров шрифта, и каждой переменной
-                    // - валидность кодировки Hex Цветов
-
-                    new string[90];
-                    format(string,sizeof(string),"%s", tmpobject[oObjectText]);
-                    SetDynamicObjectMaterialText(peoInfo[playerid][peoObject][i], 0, string, FontSizes[tmpobject[oFontSize]], FontNames[tmpobject[oFontFace]], tmpobject[oTextFontSize], tmpobject[oFontBold], tmpobject[oFontColor], tmpobject[oBackColor], tmpobject[oAlignment]);
+                if(tmpobject[oFontSize] < 0 || tmpobject[oFontSize] > 13)
+                {
+                    stopLoad = true;
+                    ErrorMessage(playerid, "{FF6347}Ошибка FontSize\n{cccccc}На одном из объектов невалидный размер шрифта");
+                    break;
                 }
 
-                // загрузка текстур
-                for(new m = 0; m < MAX_MATERIALS; m++)
+                if(tmpobject[oFontFace] < 0 || tmpobject[oFontFace] > 32)
                 {
-                    if(tmpobject[oTexIndex][m] > 0) // Натягиваем текстуру
+                    stopLoad = true;
+                    ErrorMessage(playerid, "{FF6347}Ошибка FontFace\n{cccccc}На одном из объектов невалидный шрифт");
+                    break;
+                }
+
+                if(tmpobject[oModel] == 0)
+                {
+                    stopLoad = true;
+                    ErrorMessage(playerid, "{FF6347}Ошибка Object Model\n{cccccc}Один из объектов имеет невалидный id модели");
+                    break;
+                }
+
+                if(quanObject == 0)
+                {
+                    new Float:object_pos[6];
+                    GetCoordFrame(tmpobject[oModel], object_pos[0], object_pos[1], object_pos[2], object_pos[3], object_pos[4], object_pos[5]);
+                    if(object_pos[0] == 0.0 && object_pos[1] == 0.0)
                     {
-                        SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[tmpobject[oTexIndex][m]][TModel], ObjectTextures[tmpobject[oTexIndex][m]][TXDName], ObjectTextures[tmpobject[oTexIndex][m]][TextureName], tmpobject[oColorIndex][m]);
+                        stopLoad = true;
+                        ErrorMessage(playerid, "{FF6347}Ошибка планировки\n{cccccc}0 ID объекта должен быть планировкой, одобренной системой сервера");
+                        break;
+                    }
+                    new Float:distobject = GetDistancePoint(object_pos[0], object_pos[1], object_pos[2],tmpobject[oPositionX],tmpobject[oPositionY],tmpobject[oPositionZ]);
+                    if(distobject > 1.0)
+                    {
+                        stopLoad = true;
+                        ErrorMessage(playerid, "{FF6347}Ошибка местоположения интерьера\n{cccccc}0 ID объекта должен располагаться в одобренной системой позиции");
+                        break;
                     }
                 }
-                count++;
+                quanObject ++;
+            }
+        }*/
+
+        if(stopLoad == false)
+        {
+            // Удаляем все объекты, которые были созданы
+            for(new ob = 0; ob < MAX_OBJECT_INT; ob++)
+            {
+                if(peoInfo[playerid][peoModel][ob] > 0) 
+                {
+                    if(IsValidDynamicObject(peoInfo[playerid][peoObject][ob])) DestroyDynamicObject(peoInfo[playerid][peoObject][ob]);
+                }
+            }
+
+            while(stmt_fetch_row(loadstmt))
+            {
+                if(i < MAX_OBJECT_INT)
+                {
+                    peoInfo[playerid][peoModel][i] = tmpobject[oModel];
+                    peoInfo[playerid][peoX][i] = tmpobject[oPositionX];
+                    peoInfo[playerid][peoY][i] = tmpobject[oPositionY];
+                    peoInfo[playerid][peoZ][i] = tmpobject[oPositionZ];
+                    peoInfo[playerid][peoRX][i] = tmpobject[oPositionRX];
+                    peoInfo[playerid][peoRY][i] = tmpobject[oPositionRY];
+                    peoInfo[playerid][peoRZ][i] = tmpobject[oPositionRZ];
+                    peoInfo[playerid][peoObject][i] = CreateDynamicObject(peoInfo[playerid][peoModel][i], peoInfo[playerid][peoX][i], peoInfo[playerid][peoY][i], peoInfo[playerid][peoZ][i], peoInfo[playerid][peoRX][i], peoInfo[playerid][peoRY][i], peoInfo[playerid][peoRZ][i], playerid+4000, 90, -1, 100.00, 100.00);
+                    peoInfo[playerid][peoQuanObjects] ++;
+
+                    // текст на объекте
+                    if(tmpobject[ousetext])
+                    {
+                        new string[90];
+                        format(string,sizeof(string),"%s", tmpobject[oObjectText]);
+                        SetDynamicObjectMaterialText(peoInfo[playerid][peoObject][i], 0, string, FontSizes[tmpobject[oFontSize]], FontNames[tmpobject[oFontFace]], tmpobject[oTextFontSize], tmpobject[oFontBold], tmpobject[oFontColor], tmpobject[oBackColor], tmpobject[oAlignment]);
+                    }
+
+                    // загрузка текстур
+                    for(new m = 0; m < MAX_MATERIALS; m++)
+                    {
+                        if(tmpobject[oTexIndex][m] > 0) // Натягиваем текстуру
+                        {
+                            SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[tmpobject[oTexIndex][m]][TModel], ObjectTextures[tmpobject[oTexIndex][m]][TXDName], ObjectTextures[tmpobject[oTexIndex][m]][TextureName], tmpobject[oColorIndex][m]);
+                        }
+                    }
+                    count++;
+                }
             }
         }
 		stmt_close(loadstmt);
@@ -1299,8 +1351,11 @@ stock sqlite_LoadMapObjects(playerid)
     }
 	stmt_close(loadstmt);
 
-    new string[90];
-    format(string,sizeof(string),"{444444}Маппинг с интерьером загружен {A86CFB}[Объектов: %d]", count);
-    SuccessMessage(playerid, string);
+    if(stopLoad == false)
+    {
+        new string[90];
+        format(string,sizeof(string),"{444444}Маппинг с интерьером загружен {A86CFB}[Объектов: %d]", count);
+        SuccessMessage(playerid, string);
+    }
     return 0;
 }

@@ -199,8 +199,16 @@ stock DeleteObjectBiz(playerid, biz, oba)
 
     if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя перемещать объекты планировки");
 
-    new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
-    if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре бизнеса нет места");
+    new model = BizzInfo[biz][bOmodel][oba];
+    if(!NoInventoryFurnitureObject(model))
+    {
+        new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
+        if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре бизнеса нет места");
+    }
+    else
+    {
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект был полностью удалён\n{cccccc}Система не позволяет сохранять этот объект в инвентаре","*","");
+    }
     DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
     DelObjectBiz(biz, oba);
     ClearVariableObjectBiz(biz, oba);
@@ -346,7 +354,10 @@ stock UpdateObjectTexturesBiz(b, obid)
         new texture_update_string[3000];
 
         // Собираем строку обновления текстур
-        BuildTextureString(1, b, obid, texture_update_string, sizeof(texture_update_string));
+        BuildTextureString(2, b, obid, texture_update_string, sizeof(texture_update_string));
+
+        //new text_material_string[600];
+        //BuildTextString(2, b, obid, text_material_string);
 
         // Формирование запроса
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects_biz` SET %s WHERE `newid` = '%d'", 
@@ -366,11 +377,14 @@ stock UpdateObjectPosAndTextureBiz(b, obid)
     GetDynamicObjectPos(BizzInfo[b][bObject][obid], pos[0], pos[1], pos[2]);
     GetDynamicObjectRot(BizzInfo[b][bObject][obid], rot[0], rot[1], rot[2]);
 
-    new string_mysql[3600];
+    new string_mysql[3800];
     new texture_update_string[3000];
 
     // Собираем строку обновления текстур
-    BuildTextureString(1, b, obid, texture_update_string, sizeof(texture_update_string));
+    BuildTextureString(2, b, obid, texture_update_string, sizeof(texture_update_string));
+
+    //new text_material_string[600];
+    //BuildTextString(2, b, obid, text_material_string);
 
     if(BizzInfo[b][bNewid][obid] == 0) // Если объекта нет в базе
     {
@@ -396,6 +410,7 @@ function LoadObjectBiz() // Грузим объекты бизнесов
     new time = GetTickCount();
     new rows, sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
     new world, interior, quanAllTextures;
+    new ousetextL, oFontFaceL[64], oFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL, oTextFontSizeL, oObjectTextL[64];
     cache_get_row_count(rows);
 
     for(new f = 0; f < rows; ++f)
@@ -415,6 +430,15 @@ function LoadObjectBiz() // Грузим объекты бизнесов
         cache_get_value_name_float(f, "orx", rx);
         cache_get_value_name_float(f, "ory", ry);
         cache_get_value_name_float(f, "orz", rz);
+        cache_get_value_name_int(f, "ousetext", ousetextL);
+        cache_get_value_name(f, "oFontFace", oFontFaceL, 64);
+        cache_get_value_name_int(f, "oFontSize", oFontSizeL);
+        cache_get_value_name_int(f, "oFontBold", oFontBoldL);
+        cache_get_value_name_int(f, "oFontColor", oFontColorL);
+        cache_get_value_name_int(f, "oBackColor", oBackColorL);
+        cache_get_value_name_int(f, "oAlignment", oAlignmentL);
+        cache_get_value_name_int(f, "oTextFontSize", oTextFontSizeL);
+        cache_get_value_name(f, "oObjectText", oObjectTextL, 64);
 
         if(BizzInfo[nd][bOmodel][sla] >= 1) 
         {
@@ -424,6 +448,11 @@ function LoadObjectBiz() // Грузим объекты бизнесов
 
             // Создание объекта
             BizzInfo[nd][bObject][sla] = CreateDynamicObject(BizzInfo[nd][bOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
+
+            if(ousetextL)
+            {
+                SetDynamicObjectMaterialText(BizzInfo[nd][bObject][sla], 0, oObjectTextL, oFontSizeL, oFontFaceL, oTextFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL);
+            }
 
             // Получение и применение текстур к объекту
             new tempQuanTextures = LoadTexturesOnObject(nd, sla, f, 2);

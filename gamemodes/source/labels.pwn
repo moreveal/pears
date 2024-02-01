@@ -61,3 +61,43 @@ stock DeleteAll3DLabel(id, type) // Удаляем все лейблы разо�
     }
     return 1;
 }
+
+stock CheckLabelsNearby(playerid)
+{
+    new type = LabelsInfo[playerid][labelType];
+    new id = LabelsInfo[playerid][labelCreate];
+    new world = GetPlayerVirtualWorld(playerid), interior = GetPlayerInterior(playerid);
+
+    new bool:yesClose;
+    if(type == 1) // Лейблы домов
+    {
+        if(world == 0 && interior == 0) 
+        {
+            if(!IsPlayerInRangeOfPoint(playerid,50.0, DomInfo[id][dKoordinatX], DomInfo[id][dKoordinatY], DomInfo[id][dKoordinatZ])) yesClose = true;
+        }
+        else if(world == id + 1000)
+        {
+		    if(!IsPlayerInRangeOfPoint(playerid,200.0, DomInfo[id][dEnterX], DomInfo[id][dEnterY], DomInfo[id][dEnterZ])) yesClose = true;
+        }
+        else yesClose = true;
+    }
+    else if(type == 2) // Лейблы бизов
+    {
+        if(world == 0 && interior == 0) 
+        {
+            if(!IsPlayerInRangeOfPoint(playerid,50.0, BizzInfo[id][bEnterX],BizzInfo[id][bEnterY],BizzInfo[id][bEnterZ])) yesClose = true;
+        }
+        else if(world == id + 3000)
+        {
+		    if(!IsPlayerInRangeOfPoint(playerid,200.0, BizzInfo[id][bInteriorX], BizzInfo[id][bInteriorY], BizzInfo[id][bInteriorZ])) yesClose = true;
+        }
+        else yesClose = true;
+    }
+
+    if(yesClose)
+    {
+        ClosePlayer3DLabelAll(playerid);
+        ErrorMessage(playerid, "{FF6347}Отображение 3D Лейблов было отключено\n{cccccc}Вы далеко отошли от редактируемых объектов");
+    }
+    return 1;
+}

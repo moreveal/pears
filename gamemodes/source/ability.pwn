@@ -64,6 +64,7 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
 			format(string,sizeof(string),"{ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
 			SuccessMessage(p, string);
 		}
+
 		new fpick, fpara, thingType;
 		AbilityGiveGift(p, abilityId, PlayerInfo[p][pAbilStat][abilityId], fpick, fpara, thingType);
 		if(fpick > 0)
@@ -180,7 +181,7 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 	{
 	    switch(abilityStat)
 	    {
-			case 2: fpick = 18632, fpara = 1; // Удочка
+			/*case 2: fpick = 18632, fpara = 1; // Удочка
 			case 3: fpick = 2484, fpara = 1; // Игрушка
 			case 4: fpick = 2782, fpara = 1; // Ракушка
 			case 5: // Рыбки
@@ -192,8 +193,7 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 				}
 			}
 			case 6: fpick = 902, fpara = 1; // Морская Звезда
-			case 7: fpick = 19085, fpara = 0; // Повязка на Глаз
-			case 8: // Сёрфы
+			case 7: // Сёрфы
 			{
 				switch(random(3))
         		{
@@ -201,42 +201,46 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 					case 1: fpick = 2405, fpara = 1;
 					case 2: fpick = 2406, fpara = 1;
 				}
-			}
-			case 9: fpick = 19079, fpara = 1; // Попугай
+			}*/
+			// case 8: fpick = 19079, fpara = 1; // Попугай
+			case 9: fpick = 19085, fpara = 0; // Повязка на Глаз
 	        case 10: // Одежда
 	        {
 	        	if(PlayerInfo[p][pSex] == 1) fpick = 35, fpara = 0; // Муж
    				else fpick = 216, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
-	else if(abilityID == 1)
+	else if(abilityID == 1) // Навык Космонавта
 	{
 	    switch(abilityStat)
 	    {
-	        case 2: fpick = 1010, fpara = 1; // Кислородный баллон
-			case 3: fpick = 3070, fpara = 0; // Очки ночного видения 3070
-			case 4: fpick = 2977, fpara = 1; // Box с материалом на спине 2977
-			case 5: fpick = 3791, fpara = 1; // Бокс с антенной на спину 3791
-			case 6: fpick = 2976, fpara = 1; // Зелёная жижа 2976
-			case 7: fpick = 2238, fpara = 1; // Лава лампа 2238
-			case 8: fpick = 2511, fpara = 1; // Самолётик 2511
-			case 9: fpick = 18846, fpara = 0; // Летающая тарелка 18846
+	        /*case 2: fpick = 1010, fpara = 1; // Кислородный баллон
+			case 3: fpick = 2977, fpara = 1; // Box с материалом на спине 2977
+			case 4: fpick = 3791, fpara = 1; // Бокс с антенной на спину 3791
+			case 5: fpick = 2976, fpara = 1; // Зелёная жижа 2976
+			case 6: fpick = 2238, fpara = 1; // Лава лампа 2238
+			case 7: fpick = 2511, fpara = 1; // Самолётик 2511
+			case 8: fpick = 18846, fpara = 0; // Летающая тарелка 18846
+			*/
+			case 9: fpick = 3070, fpara = 0; // Очки ночного видения 3070
 	        case 10: // Одежда
 	        {
 	        	if(PlayerInfo[p][pSex] == 1) fpick = 165, fpara = 0; // Муж
    				else fpick = 141, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
     else if(abilityID == 2) // Навык Сексуальности
 	{
 	    switch(abilityStat)
 	    {
-	        case 2: fpick = 19086, fpara = 1; // Фаллос Бензопила
-			case 3: fpick = 30010, fpara = 0; // Фаллоимитатор Оружие
+	        /*case 2: fpick = 19086, fpara = 1; // Фаллос Бензопила
+			case 3: fpick = 10, thingType = 1; // Фаллоимитатор Оружие
 			case 4: // Яйцо на плече
 			{
 				switch(random(5))
@@ -249,29 +253,32 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 				}
 			}
 			case 5: fpick = 7392, fpara = 1; // Ногатёлка на спине (Мадама)
-			case 6: fpick = 19163, fpara = 0; // Кожаная маска
-			case 7: fpick = 1240, fpara = 1; // Сердечко на груди
-			case 8: fpick = 14666, fpara = 1; // Фалоиммитаторы на спину
-			case 9: fpick = 7093, fpara = 1; // Сердечко на спину
+			case 6: fpick = 1240, fpara = 1; // Сердечко на груди
+			case 7: fpick = 14666, fpara = 1; // Фалоиммитаторы на спину
+			case 8: fpick = 7093, fpara = 1; // Сердечко на спину*/
+			case 9: fpick = 19163, fpara = 0; // Кожаная маска
 	        case 10: // Одежда
 	        {
 	        	if(PlayerInfo[p][pSex] == 1) fpick = 249, fpara = 0; // Муж
    				else fpick = 178, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
 	else if(abilityID == 3 || abilityID == 8) // Навык Инженера, Автомеханика
 	{
 	    switch(abilityStat)
 	    {
-	        case 2: fpick = 19627, fpara = 1; // Гаечный Ключ на Спину
+	        /*case 2: fpick = 19627, fpara = 1; // Гаечный Ключ на Спину
 			case 3: fpick = 19622, fpara = 1; // Швабра на спину
 			case 4: fpick = 19631, fpara = 1; // Кувалда на Спину
-			case 5: fpick = 19904, fpara = 1; // Желетка
-			case 6: fpick = 18633, fpara = 1; // Баллонный Ключ на спину
-			case 7: fpick = 18634, fpara = 1; // Монтировка на Спину
-			case 8: fpick = 18635, fpara = 1; // Обычный Молоток на спину
+			case 5: fpick = 18633, fpara = 1; // Баллонный Ключ на спину
+			case 6: fpick = 18634, fpara = 1; // Монтировка на Спину
+			case 7: fpick = 18635, fpara = 1; // Обычный Молоток на спину
+			*/
+
+			case 8: fpick = 19904, fpara = 1; // Желетка
 			case 9: fpick = 19160, fpara = 0; // Каска на голову +
 	        case 10: // Одежда
 	        {
@@ -279,12 +286,14 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
    				else fpick = 193, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
 	else if(abilityID == 4) // Навык Охотника
 	{
 	    switch(abilityStat)
 	    {
+			/*
 	        case 2: fpick = 804, fpara = 0; // Кустик
 			case 3: fpick = 1828, fpara = 1; // Тигренок
 			case 4: fpick = 19314, fpara = 0; // Рога
@@ -293,32 +302,36 @@ stock AbilityGiveGift(p, abilityID, abilityStat, &fpick, &fpara, &thingType) // 
 			case 7: fpick = 2806, fpara = 1; // Мяско
 			case 8: fpick = 19559, fpara = 1; // Рюкзак
 			case 9: fpick = 2045, fpara = 1; // Бита с шипами
+			*/
 	        case 10: // Одежда
 	        {
 	        	if(PlayerInfo[p][pSex] == 1) fpick = 128, fpara = 0; // Муж
    				else fpick = 131, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
 	else if(abilityID == 5) // Навык Фермера
 	{
 	    switch(abilityStat)
 	    {
-	        case 2: fpick = 18890, fpara = 1; // Грабли
+	        /*case 2: fpick = 18890, fpara = 1; // Грабли
 	        case 3: fpick = 19578, fpara = 1; // Бананчик
 	        case 4: fpick = 19468, fpara = 0; // Ведро
 	        case 5: fpick = 19094, fpara = 0; // Шапка Бургер +
 	        case 6: fpick = 19569, fpara = 1; // Молочко
 	        case 7: fpick = 19320, fpara = 0; // Тыковка +
-	        case 8: fpick = 2590, fpara = 1; // Коса +
+	        case 8: fpick = 2590, fpara = 1; // Коса +*/
+
 	        case 9: fpick = 19553, fpara = 0; // Шляпа +
 	        case 10: // Одежда
 	        {
-	        	if(PlayerInfo[p][pSex] == 1) fpick = 162 + 20100, fpara = 0; // Муж
-   				else fpick = 157 + 20100, fpara = 0; // Жен
+	        	if(PlayerInfo[p][pSex] == 1) fpick = 162, fpara = 0; // Муж
+   				else fpick = 157, fpara = 0; // Жен
    				thingType = 3;
 	        }
+			default: fpick = 0;
      	}
 	}
 	return 1;
