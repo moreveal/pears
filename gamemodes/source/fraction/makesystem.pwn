@@ -62,7 +62,7 @@ stock AutoMakeCreate(whom,type,id)
 
     if(type == 0) GetVehiclePos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
     if(type == 1) MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX],MakeInfo[findslot][mkCord][1]=DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2]=DomInfo[id][dKoordinatZ];
-    if(type == 2) GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
+    if(type == 2) GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]),MakeInfo[findslot][mkPlayerId] = id;
     MessageMake(findslot);
     return 1;
 }

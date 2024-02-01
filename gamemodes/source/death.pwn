@@ -153,6 +153,7 @@ stock DeathEnd(playerid, stat)
         ClearAnim(playerid), ClearAnimations(playerid);
 	    ApplyAnimation(playerid,"PED","facanger",4.1,0,1,1,1,1,1);
     }
+    AutoCloseMake(playerid);
     return 1;
 }
 
@@ -227,16 +228,16 @@ stock AcceptRevial(playerid)
 {
     if(fraction(playerid) == 4)
     {
-        new string[80];
+        new string[160];
         format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
         Moiplayer[Moiplayer[playerid]] = playerid;
-        SuccessMessage(playerid,"{66ff99}Вы отправили запрос на лечение. Ожидайте...");
+        format(string,sizeof(string),"{66ff99}Вы отправили запрос на лечение. Ожидайте...",rpplayername(Moiplayer[playerid]));
         keep(playerid);
         ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_TABLIST,"{ff9000}Лечение",string,"Принять","Отклонить");
     }
     else
     {
-        if(get_ability(playerid, 10) < 2) return ErrorMessage(playerid, "{FF6347}Для поднятия человека аптечкой нужен 2 уровень навыка [ Медик ]");
+        if(get_ability(playerid, 10) < 2 && !IsACop(playerid)) return ErrorMessage(playerid, "{FF6347}Для поднятия человека аптечкой нужен 2 уровень навыка [ Медик ]");
         UseRevival(playerid,Moiplayer[playerid]);
     }
     return 1;

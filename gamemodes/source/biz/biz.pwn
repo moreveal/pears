@@ -1052,10 +1052,10 @@ stock SaveBizz(b)
 	
 	format(string_mysql, sizeof(string_mysql), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',\
 	`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%s',`Stat`='%d',`StatReason`='%s',`Taxday`='%d',\
-	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d' WHERE `newid`='%d'", string_mysql,
+	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d',`bMafiaSchet`='%d' WHERE `newid`='%d'", string_mysql,
 	BizzInfo[b][bMafia],BizzInfo[b][bBablo],BizzInfo[b][bSchet],BizzInfo[b][bSell],BizzInfo[b][bPastime],BizzInfo[b][bMafunix],BizzInfo[b][bTaxes],
 	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], f_str3, BizzInfo[b][bStat], f_str4, BizzInfo[b][bTaxday], 
-	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus], b); // 292 + 187 + 64
+	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus],BizzInfo[b][bMafiaSchet], b); // 292 + 187 + 64+29
 	query_empty(pearsq, string_mysql); // 1819
 
 	SaveBizzAccess(b);
