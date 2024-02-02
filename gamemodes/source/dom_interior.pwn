@@ -2,6 +2,7 @@
 stock EditObjectDom(playerid, dom, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
 	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
@@ -19,6 +20,7 @@ stock EditObjectDom(playerid, dom, oba)
 stock InfoObjectDomBiz(playerid, type, id, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Нельзя посмотреть информацию планировки");
 
     new model, object, userid;
     if(type == 1) model = DomInfo[id][dOmodel][oba], object = DomInfo[id][dObject][oba], userid = DomInfo[id][dUser][oba];
@@ -86,6 +88,7 @@ stock EditTextureDom(playerid, dom, oba)
 stock DeleteObjectDom(playerid, dom, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
 	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
@@ -182,7 +185,6 @@ stock showDialogInteriorDom(playerid)
 
     new d = DP[4][playerid];
     if(!IsANearWardrobeDom(playerid, d)) return ErrorMessage(playerid, "{FF6347}Вы не в интерьере или далеко от дома");
-    if(DomInfo[d][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом доме нельзя изменять интерьер{cccccc}Установите планировку");
     if(DomInfo[d][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя ремонтировать дом во время продажи");
 
     if(DP[0][playerid] == 0) DP[1][playerid] = 2; // Переместить объект интерьера дома

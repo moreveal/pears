@@ -2269,7 +2269,7 @@ stock player_tile(playerid, inva)
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Пистолетам","Принять","Отмена");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета");
+					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета или пистолета пулемёта");
 			   		return 1;
 			 	}
 			 	else if(fpick == 29)
@@ -2317,7 +2317,7 @@ stock player_tile(playerid, inva)
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
 						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Пистолетам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета");
+					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета или пистолета пулемёта");
 			   		return 1;
 			 	}
 			 	else if(fpick == 66)

@@ -417,12 +417,14 @@ stock showDialogMenuKonvoi(playerid, konvoiId)
 }
 stock GetPrisonBusLocation(konvoiId)
 {
-    new vehicleid;
-    if(konvoiId == 1) vehicleid = prisonbus_LS; // LS
-    else if(konvoiId == 2) vehicleid = prisonbus_SF; // SF
-
-    if(IsVehicleInRangeOfPoint(vehicleid, 10.0, 1601.9800,-1618.8779,13.6866)
-        || IsVehicleInRangeOfPoint(vehicleid, 10.0, -1577.3424,679.9330,7.3882)) return vehicleid; // Автобусы на месте
+    if(konvoiId == 1) 
+    {
+        if(PrisonBusRouteLS == 0) return prisonbus_LS; // Автобус на месте
+    }
+    else if(konvoiId == 2) 
+    {
+        if(PrisonBusRouteSF == 0) return prisonbus_SF; // Автобус на месте
+    }
     return 0;
 }
 

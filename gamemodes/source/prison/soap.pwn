@@ -98,7 +98,7 @@ new TextShowerChatWoman[][] =
 
 stock GenderTextShower(playerid, textId)
 {
-    new text[22];
+    new text[30];
     if(PlayerInfo[playerid][pSex] == 1) format(text, sizeof(text), "%s", TextShowerChatMan[textId]);
     else format(text, sizeof(text), "%s", TextShowerChatWoman[textId]);
     return text;
@@ -125,7 +125,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
         }
     }
 
-    new string[180];
+    new string[200];
     if(quanAll == 0)
     {
         format(string, sizeof(string), "[ Мысли ]: Я поднял%s мыло. Фух.. хорошо что рядом никого не было", gender(playerid));
@@ -145,7 +145,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             SendClientMessage(playerid, COLOR_GREY, string);
 
             // Диалог
-            new line[90],lines[360];
+            new line[100],lines[400];
             format(line,sizeof(line),"{ffcc66}Вы наклонились и подняли мыло с пола"), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Рядом стоял%s %s", gender(giveplayerid), rpplayername(giveplayerid)), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}%s посмотрел%s на вас %s", rpplayername(giveplayerid), gender(giveplayerid), GenderTextShower(giveplayerid, randText)), strcat(lines,line);
@@ -172,7 +172,7 @@ stock HeLooksAtHowIPicksUpTheSoap(playerid)
             SendClientMessage(playerid, COLOR_GREY, string);
 
             // Диалог
-            new line[90],lines[360];
+            new line[100],lines[400];
             format(line,sizeof(line),"{ffcc66}Вы наклонились и подняли мыло с пола"), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Рядом стоял%s %s", gender(giveplayerid), rpplayername(giveplayerid)), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}%s был%s занят%s своими делами и не стал%s на вас смотреть", rpplayername(giveplayerid), gender(giveplayerid), gender(giveplayerid), gender(giveplayerid)), strcat(lines,line);

@@ -10,6 +10,8 @@ enum editObjectInfoEnum
     editSlot, // Slot редактируемого объекта в разных системах
     editObjectid, // ID объекта, если редактируется DynamicObject
     editDopOption, // Дополнительная переменная для хранения информации
+    editOne, // Начало процесса редактирования
+    Float:editOldPos[6], // Координаты прежней позиции объекта
 };
 new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
 
@@ -57,6 +59,8 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
     {
         if(!IsValidPlayerObject(playerid, objectid)) return 1;
 
+        if(response == EDIT_RESPONSE_CANCEL) CancelEditPlayerObject(playerid);
+
         if(response == EDIT_RESPONSE_UPDATE)
         {
             new Float:dist = GetPlayerDistanceFromPoint(playerid, fX, fY, fZ);
@@ -72,12 +76,10 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
                 format(line,sizeof(line),"\n{cccccc}- Проблема всего-лишь в залипании курсора"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{cccccc}Успехов в маппинге :)"), strcat(lines,line);
                 ErrorMessage(playerid, lines);
-                CancelEdit(playerid);
+                CancelEditable(playerid);
                 return 1;
             }
         }
-
-        if(response == EDIT_RESPONSE_CANCEL) CancelEditPlayerObject(playerid);
 
         if(response == EDIT_RESPONSE_FINAL)
 		{
@@ -124,13 +126,29 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     {
         new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
-        if(dist > 200.0 && distStreet > 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома"), CancelEdit(playerid);
+        if(dist > 200.0 && distStreet > 30.0)
+        {
+            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
+            CancelEditable(playerid);
+            return 1;
+        }
         
         new findSlot = getFreeSlotObjectDom(oid);
-        if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов"), CancelEdit(playerid);
+        if(findSlot == -1)
+        {
+            ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
+            CancelEditable(playerid);
+            return 1;
+        }
+
         if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
 		{
-            if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице"), CancelEdit(playerid);
+            if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET)
+            {
+                ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице");
+                CancelEditable(playerid);
+                return 1;
+            }
         }
         
         DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
@@ -315,13 +333,29 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     {
         new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
-        if(dist > 200.0 && distStreet > 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса"), CancelEdit(playerid);
+        if(dist > 200.0 && distStreet > 30.0)
+        {
+            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
+            CancelEditable(playerid);
+            return 1;
+        }
         
         new findSlot = getFreeSlotObjectBiz(oid);
-        if(findSlot == -1) return ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов"), CancelEdit(playerid);
+        if(findSlot == -1)
+        {
+            ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
+            CancelEditable(playerid);
+            return 1;
+        }
+
         if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
 		{
-            if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице"), CancelEdit(playerid);
+            if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET)
+            {
+                ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
+                CancelEditable(playerid);
+                return 1;
+            }
         }
         
         BizzInfo[oid][bInvent][slot] = 0, BizzInfo[oid][bInv][slot] = 0; // Удаляем предмет из бизнеса
@@ -454,6 +488,7 @@ stock GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
     EditObjectInfo[playerid][editSlot] = slot;
     EditObjectInfo[playerid][editObjectid] = objectid;
     EditObjectInfo[playerid][editDopOption] = dopoption; // Save Slot Invent
+    EditObjectInfo[playerid][editOne] = 0;
 
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_EDITABLE_DYNAMIC_OBJECT, 1); // Editable Dynamic Object
     EditDynamicObject(playerid, objectid);
@@ -463,13 +498,17 @@ stock GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
 
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	if(!IsValidDynamicObject(objectid)) return 0;
 	if(OnlineInfo[playerid][oLogged] == 0) return 0;
+    if(!IsValidDynamicObject(objectid)) return 0;
 
-    // Save old position object
-    new Float:oldX, Float:oldY, Float:oldZ, Float:oldRotX, Float:oldRotY, Float:oldRotZ;
-    GetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], oldX, oldY, oldZ);
-    GetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], oldRotX, oldRotY, oldRotZ);
+    if(EditObjectInfo[playerid][editOne] == 0)
+    {
+        EditObjectInfo[playerid][editOne] = 1;
+        GetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][0], EditObjectInfo[playerid][editOldPos][1], EditObjectInfo[playerid][editOldPos][2]);
+        GetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][3], EditObjectInfo[playerid][editOldPos][4], EditObjectInfo[playerid][editOldPos][5]);
+    }
+
+    if(response == EDIT_RESPONSE_CANCEL) CancelDynamicEditable(playerid);
 
     if(response == EDIT_RESPONSE_UPDATE)
     {
@@ -612,67 +651,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		PlayerPlaySound(playerid,6401,0,0,0);
         CancelSelectTextDraw(playerid);
     }
-
-    if(response == EDIT_RESPONSE_CANCEL)
-	{
-        new oid = EditObjectInfo[playerid][editOption];
-        new slot = EditObjectInfo[playerid][editSlot];
-        //new type = EditObjectInfo[playerid][editType];
-
-        if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
-        {
-            // Условности разных систем при отмене создания
-            if(gRedakt[playerid] == 11) // Объект на респе Банд
-            {
-                if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
-                ObjectInfo[oid][gOmodel][slot] = 0;
-            }
-            else if(gRedakt[playerid] == 15) // IKEA
-            {
-                IkeaInfo[oid][iModel] = 0;
-                IkeaInfo[oid][iObject] = 0;
-                if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
-            }
-            else if(gRedakt[playerid] == 17) // Мебель в Бизнесе
-            {
-                BizzInfo[oid][bOmodel][slot] = 0;
-                BizzInfo[oid][bObject][slot] = 0;
-                new modelid = GetDynamicObjectModel(EditObjectInfo[playerid][editObjectid]);
-                new putResult = PutThingBiz(oid, modelid, 1, 0, BizzInfo[oid][bQara][slot], 4, 999);
-                if(putResult == -1)
-                {
-                    ErrorMessage(playerid, "{FF6347}На складе бизнеса нет места\n\n{cccccc}Объект мебели пришлось выбросить");
-                    ErrorText(playerid, "[ Мысли ]: На складе бизнеса нет места, объект мебели пришлось выбросить");
-                }
-            }
-            else if(gRedakt[playerid] == 20) // Личный Редактор
-            {
-                peoInfo[oid][peoModel][slot] = 0;
-                peoInfo[oid][peoObject][slot] = 0;
-            }
-
-            DestroyDynamicObject(EditObjectInfo[playerid][editObjectid]);
-        }
-        else // Перемещение Объекта (Возвращаем на позицию при отмене)
-        {
-            if(objectid != EditObjectInfo[playerid][editObjectid])
-            {
-                new Float:real_oldX, Float:real_oldY, Float:real_oldZ, Float:real_oldRotX, Float:real_oldRotY, Float:real_oldRotZ;
-                GetDynamicObjectPos(objectid, real_oldX, real_oldY, real_oldZ);
-                GetDynamicObjectRot(objectid, real_oldRotX, real_oldRotY, real_oldRotZ);
-                SetDynamicObjectPos(objectid, real_oldX, real_oldY, real_oldZ);
-	            SetDynamicObjectRot(objectid, real_oldRotX, real_oldRotY, real_oldRotZ);
-            }
-            SetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], oldX, oldY, oldZ);
-	        SetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], oldRotX, oldRotY, oldRotZ);
-
-            Streamer_SetIntData(STREAMER_TYPE_OBJECT, EditObjectInfo[playerid][editObjectid], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Теперь объект никто не редактирует
-        }
-
-        gRedakt[playerid] = 0; // Редактор Off
-        PlayerPlaySound(playerid,31200,0,0,0);
-        CancelSelectTextDraw(playerid);
-    }
     return 1;
 }
 
@@ -723,8 +701,8 @@ stock CloseEditObject(playerid)
 	{
 		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) 
         {
-            CancelEdit(playerid);
             CancelEditPlayerObject(playerid);
+            CancelEdit(playerid);
         }
 		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
 		gRedakt[playerid] = 0;
@@ -732,17 +710,36 @@ stock CloseEditObject(playerid)
     return 1;
 }
 
+stock CancelEditable(playerid)
+{
+    if(gRedakt[playerid] == 0) return 1;
+
+    new objectid = EditObjectInfo[playerid][editTempObject];
+    UnblockEditObject(playerid, objectid);
+    CancelEdit(playerid);
+    return 1;
+}
+
 stock CancelEditPlayerObject(playerid)
 {
-    new objectid = EditObjectInfo[playerid][editTempObject];
-    // Сбрасываем блокировку объекта в инвентаре при установке мебели
-    if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
-    else if(gRedakt[playerid] == 17 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectBiz(playerid, GetPlayerObjectModel(playerid, objectid));
+    if(gRedakt[playerid] == 0) return 1;
 
-    DestroyPlayerObject(playerid, objectid);
+    new objectid = EditObjectInfo[playerid][editTempObject];
+    if(objectid >= 0) 
+    {
+        UnblockEditObject(playerid, objectid);
+        DestroyPlayerObject(playerid, objectid);
+        EditObjectInfo[playerid][editTempObject] = -1;
+    }
     gRedakt[playerid] = 0; // Редактор Off
     PlayerPlaySound(playerid,31200,0,0,0);
-    //CancelSelectTextDraw(playerid);
+    return 1;
+}
+
+stock UnblockEditObject(playerid, objectid)
+{
+    if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
+    else if(gRedakt[playerid] == 17 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectBiz(playerid, GetPlayerObjectModel(playerid, objectid));
     return 1;
 }
 
@@ -759,5 +756,48 @@ stock CancelCreateObjectBiz(playerid, model)
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
     if(model != 0 && BizzInfo[oid][bInvent][slot] == model) BizzInfo[oid][bInv][slot] = 1; // Сбрасываем блокировку объекта
+    return 1;
+}
+
+stock CancelDynamicEditable(playerid)
+{
+    if(gRedakt[playerid] == 0) return 1;
+
+    new oid = EditObjectInfo[playerid][editOption];
+    new slot = EditObjectInfo[playerid][editSlot];
+    //new type = EditObjectInfo[playerid][editType];
+
+    if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
+    {
+        // Условности разных систем при отмене создания
+        if(gRedakt[playerid] == 11) // Объект на респе Банд
+        {
+            if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
+            ObjectInfo[oid][gOmodel][slot] = 0;
+        }
+        else if(gRedakt[playerid] == 15) // IKEA
+        {
+            IkeaInfo[oid][iModel] = 0;
+            IkeaInfo[oid][iObject] = 0;
+            if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
+        }
+        else if(gRedakt[playerid] == 20) // Личный Редактор
+        {
+            peoInfo[oid][peoModel][slot] = 0;
+            peoInfo[oid][peoObject][slot] = 0;
+        }
+
+        DestroyDynamicObject(EditObjectInfo[playerid][editObjectid]);
+    }
+    else // Перемещение Объекта (Возвращаем на позицию при отмене)
+    {
+        SetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][0], EditObjectInfo[playerid][editOldPos][1], EditObjectInfo[playerid][editOldPos][2]);
+        SetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][3], EditObjectInfo[playerid][editOldPos][4], EditObjectInfo[playerid][editOldPos][5]);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, EditObjectInfo[playerid][editObjectid], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Теперь объект никто не редактирует
+    }
+
+    gRedakt[playerid] = 0; // Редактор Off
+    PlayerPlaySound(playerid,31200,0,0,0);
+    CancelSelectTextDraw(playerid);
     return 1;
 }

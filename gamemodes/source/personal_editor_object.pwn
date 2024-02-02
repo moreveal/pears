@@ -286,15 +286,6 @@ stock LoadInteriorToBiz(playerid, b)
 
 stock useAvailableInterior(playerid, propId, typeProperty)
 {
-    if(typeProperty == 0)
-    {
-        if(DomInfo[propId][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В доме нет интерьера с планировкой");
-    }
-    else if(typeProperty == 1)
-    {
-        if(BizzInfo[propId][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В бизнесе нет интерьера с планировкой");
-    }
-
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
     if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
     if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование объекта");

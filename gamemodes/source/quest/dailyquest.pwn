@@ -407,7 +407,7 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
             if(listitem == 0) // Информация о Ежедневных Заданиях
             {
                 new line[90],lines[990];
-                format(line,sizeof(line),"{ffcc66}Что такое еждневные задания?"), strcat(lines,line);
+                format(line,sizeof(line),"{ffcc66}Что такое ежедневные задания?"), strcat(lines,line);
                 format(line,sizeof(line),"\n{cccccc}- Это небольшие действия, которые нужно выполнить, чтобы получить кейс"), strcat(lines,line);
                 format(line,sizeof(line),"\n{cccccc}- Большинство заданий связано со стандартными работами"), strcat(lines,line);
                 format(line,sizeof(line),"\n{cccccc}- Однако, иногда вам могут попадаться уникальные задания"), strcat(lines,line);

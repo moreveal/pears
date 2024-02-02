@@ -11,13 +11,11 @@ new MoveStatus; // 0 Разгон, 1 Торможение
 // Prison Bus
 new NpcPrisonLS;
 new npcprisonid_ls;
-new prisonbus_LS; // Тюремный Автобус
 new PrisonBusRouteLS;
 new TimerPrisonBusLS;
 
 new NpcPrisonSF;
 new npcprisonid_sf;
-new prisonbus_SF; // Тюремный Автобус
 new PrisonBusRouteSF;
 new TimerPrisonBusSF;
 

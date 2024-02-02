@@ -44,8 +44,7 @@ stock use_dom(playerid, dom, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
 	}
 
-	new finddom = IsAWardrobeDom(playerid);
-	if(dom != finddom) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
+	if(!IsANearWardrobeDom(playerid, dom)) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
 		
 	new fpick = DomInfo[dom][dInvent][inva], fquan = DomInfo[dom][dInv][inva], thingType = DomInfo[dom][dInvType][inva], thingPack = DomInfo[dom][dInvPack][inva];
 	if(PlayerInfo[playerid][pDom] != dom)
@@ -72,7 +71,6 @@ stock use_dom(playerid, dom, inva, useinva)
 	else if(thingType == 4) // Мебель
 	{
 		new obid = DomInfo[dom][dInvent][inva];
-		if(DomInfo[dom][dFrame] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В доме не установлена планировка");
 		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи");
 		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
 

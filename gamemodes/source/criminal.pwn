@@ -407,15 +407,7 @@ stock ClearPlayerWantedArcticle(playerid, criminalid)
     ClearPlayerWantedOne(criminalid, i);
     ShowPlayerWanted(playerid, criminalid);
 
-    if(PursuitTime[criminalid] > 0 && PlayerInfo[criminalid][pCrimes] == 0)
-    {
-        Pursuit[criminalid] = 9999;
-        PursuitTime[criminalid] = 0;
-        TextDrawHideForPlayer(criminalid, PursuitDraw[0]);
-        TextDrawHideForPlayer(criminalid, PursuitDraw[1]);
-        TextDrawHideForPlayer(criminalid, PursuitDraw[2]);
-        PlayerTextDrawHide(criminalid, PursDraw1);
-    }
+    if(PursuitTime[criminalid] > 0 && PlayerInfo[criminalid][pCrimes] == 0) DestroyPursuit(criminalid);
 
     if(PlayerInfo[playerid][pSoska] > 0) SendClientMessage(criminalid, COLOR_GREY, "{ff0000}[ POLICE ]: {0088ff}Администратор удалил статью из вашего дела");
     else SendClientMessage(criminalid, COLOR_GREY, "{ff0000}[ POLICE ]: {0088ff}С вас была снята статья в деле");
@@ -574,6 +566,17 @@ stock CreatePlayerPursuit(playerid, mentid)
 		    SendClientMessagef(mentid, COLOR_GREY, "{0066ff}[ POLICE ]: {abcdef}Преследование {0066ff}%s {abcdef}активировано", playername(playerid));
         }
     }
+    return 1;
+}
+
+stock DestroyPursuit(playerid)
+{
+    Pursuit[playerid] = 9999;
+    PursuitTime[playerid] = 0;
+    TextDrawHideForPlayer(playerid, PursuitDraw[0]);
+    TextDrawHideForPlayer(playerid, PursuitDraw[1]);
+    TextDrawHideForPlayer(playerid, PursuitDraw[2]);
+    PlayerTextDrawHide(playerid, PursDraw1);
     return 1;
 }
 

@@ -28,11 +28,13 @@ stock IsShootingWeapon(weaponid)
 // Бронежилет работает только на огнестрельное оружие**
 stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float: damage, &Float: armour_breaking)
 {
-    if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 432) return 0; // Если игрок находится в танке - отмена урона
-    if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 537) return 0; // Если игрок находится в поезде - отмена урона
-    if (GetPlayerState(playerid) == PLAYER_STATE_WASTED) return 0; // Если урон наносит мертвый игрок - отмена урона
-    if (GetPVarInt(damagedid, "afksystem") >= 5) return 0; // Если игрок, по которому наносят урон, в AFK не менее 5 секунд - отмена урона
-	if (Iamzz[damagedid]) return 0;// Если игрок, по которому наносят урон, в зелёной зоне - отмена урона [вернуть]
+    if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 432  // Если игрок находится в танке
+        || VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 537  // Если игрок находится в поезде
+        || GetPlayerState(playerid) == PLAYER_STATE_WASTED // Если урон наносит мертвый игрок
+        || GetPVarInt(damagedid, "afksystem") >= 5 // Если игрок, по которому наносят урон, в AFK не менее 5 секунд
+        || Iamzz[damagedid] // Если игрок, по которому наносят урон, в зелёной зоне
+        || IsPlayerInVehicle(damagedid, prisonbus_LS) || IsPlayerInVehicle(damagedid, prisonbus_SF) // Если игрок в тюремном автобусе
+    ) return 0;
 
     // Характеристики оружия по WeaponID
 	enum e_WeaponProperties {
@@ -164,8 +166,9 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
             {
                 damage *= 1.10;
             }
-            new string[144];
-            format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
+
+            new string[40];
+            /*format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
 			SendClientMessageToAll(COLOR_GREY, string);
 			if (distance_coef < 1.0) {
 				format(string, sizeof string, "Урон был скорректирован с учетом дистанции: [%0.2f -> %0.2f] (%0.3f метров)", 
@@ -174,12 +177,15 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 					distance
 				);
 				SendClientMessageToAll(COLOR_GREY, string);
-			}
+			}*/
             if (armour_action > 0) { // Если бронежилет есть, и он подействовал на наносимый урон
-                format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
-                SendClientMessageToAll(COLOR_GREY, string);
+                //format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
+                //SendClientMessageToAll(COLOR_GREY, string);
                 damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
+
+            format(string, sizeof string, "-%d HP", damage);
+            SetPlayerChatBubble(playerid, string, COLOR_RED, 45.0, 4000);
 
 			if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid))
             {
