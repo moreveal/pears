@@ -587,7 +587,6 @@ stock use_biz(playerid, biz, inva, useinva)
     {
      	PlayerPlaySound(playerid,1052,0,0,0);
 		new obid = BizzInfo[biz][bInvent][inva];
-		if(BizzInfo[biz][bFrame] == 0) return ErrorMessage(playerid, "{FF6347}В этом бизнесе не установлен каркас"), i_resettabs(playerid);
 		if(BizzInfo[biz][bSell]  >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься ремонтом интерьера во время продажи"), i_resettabs(playerid);
 
 		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
