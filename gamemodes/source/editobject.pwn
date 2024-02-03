@@ -496,6 +496,13 @@ stock GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
 	return 1;
 }
 
+stock EditForSeat(playerid, objectid)
+{
+    EditDynamicObject(playerid, objectid);
+    EditObjectInfo[playerid][editObjectid] = objectid;
+    return 1;
+}
+
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	if(OnlineInfo[playerid][oLogged] == 0) return 0;

@@ -322,8 +322,8 @@ stock UpdateObjectPositionBiz(b, obid)
     new string_mysql[1000];
     if(BizzInfo[b][bNewid][obid] == 0) // Если объекта нет в базе
     {
-        format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_objects_biz` (`biz`, `slot`, `user`, `model`, `qara`, `world`, `interior`, `ox`, `oy`, `oz`, `orx`, `ory`, `orz`) \
-            VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f')",
+        format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_objects_biz` SET `biz`='%d', `slot`='%d', `user`='%d', `model`='%d', `qara`='%d', `world`='%d', `interior`='%d',\
+            `ox`='%f', `oy`='%f', `oz`='%f', `orx`='%f', `ory`='%f', `orz`='%f'",
                 b, obid, BizzInfo[b][bUser][obid], BizzInfo[b][bOmodel][obid], BizzInfo[b][bQara][obid], GetDynamicObjectVirtualWorld(BizzInfo[b][bObject][obid]), 
                 GetDynamicObjectInterior(BizzInfo[b][bObject][obid]), pos[0], pos[1], pos[2], rot[0], rot[1], rot[2]);
         mysql_tquery(pearsq, string_mysql, "Call_InsertObjectBiz", "dd", b, obid);
@@ -352,18 +352,18 @@ stock UpdateObjectTexturesBiz(b, obid)
 
     if(BizzInfo[b][bNewid][obid] != 0) // Только если объект существует в базе
     {
-        new string_mysql[3200];
-        new texture_update_string[3000];
+        new string_mysql[3800];
+        new texture_update_string[3600];
 
         // Собираем строку обновления текстур
         BuildTextureString(2, b, obid, texture_update_string, sizeof(texture_update_string));
 
-        //new text_material_string[600];
-        //BuildTextString(2, b, obid, text_material_string);
+        new text_material_string[600];
+        BuildTextString(2, b, obid, text_material_string);
 
         // Формирование запроса
-        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects_biz` SET %s WHERE `newid` = '%d'", 
-            texture_update_string, BizzInfo[b][bNewid][obid]);
+        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects_biz` SET %s %s WHERE `newid` = '%d'", 
+            texture_update_string, text_material_string, BizzInfo[b][bNewid][obid]);
 
         query_empty(pearsq, string_mysql);
     }
@@ -379,29 +379,29 @@ stock UpdateObjectPosAndTextureBiz(b, obid)
     GetDynamicObjectPos(BizzInfo[b][bObject][obid], pos[0], pos[1], pos[2]);
     GetDynamicObjectRot(BizzInfo[b][bObject][obid], rot[0], rot[1], rot[2]);
 
-    new string_mysql[3800];
-    new texture_update_string[3000];
+    new string_mysql[4200];
+    new texture_update_string[3600];
 
     // Собираем строку обновления текстур
     BuildTextureString(2, b, obid, texture_update_string, sizeof(texture_update_string));
 
-    //new text_material_string[600];
-    //BuildTextString(2, b, obid, text_material_string);
+    new text_material_string[600];
+    BuildTextString(2, b, obid, text_material_string);
 
     if(BizzInfo[b][bNewid][obid] == 0) // Если объекта нет в базе
     {
-        format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_objects_biz` (`biz`, `slot`, `user`, `model`, `qara`, `world`, `interior`, `ox`, `oy`, `oz`, `orx`, `ory`, `orz`, %s) \
-        VALUES ('%d', '%d', '%d', '%d', '%d', '%d', '%d', '%f', '%f', '%f', '%f', '%f', '%f', %s)",
-        texture_update_string, b, obid, BizzInfo[b][bUser][obid], BizzInfo[b][bOmodel][obid], BizzInfo[b][bQara][obid], GetDynamicObjectVirtualWorld(BizzInfo[b][bObject][obid]), 
-        GetDynamicObjectInterior(BizzInfo[b][bObject][obid]), pos[0], pos[1], pos[2], rot[0], rot[1], rot[2], texture_update_string);
+        format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_objects_biz` SET  `biz`='%d', `slot`='%d', `user`='%d', `model`='%d', `qara`='%d', `world`='%d', `interior`='%d', \
+        `ox`='%f', `oy`='%f', `oz`='%f', `orx`='%f', `ory`='%f', `orz`='%f', %s  %s",
+        b, obid, BizzInfo[b][bUser][obid], BizzInfo[b][bOmodel][obid], BizzInfo[b][bQara][obid], GetDynamicObjectVirtualWorld(BizzInfo[b][bObject][obid]), 
+        GetDynamicObjectInterior(BizzInfo[b][bObject][obid]), pos[0], pos[1], pos[2], rot[0], rot[1], rot[2], texture_update_string, text_material_string);
         mysql_tquery(pearsq, string_mysql, "Call_InsertObjectBiz", "dd", b, obid);
     }
     else // Если объект уже существует в базе
     {
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects_biz` SET `user` = '%d', `model` = '%d', `qara` = '%d', `world` = '%d', `interior` = '%d', \
-        `ox` = '%f', `oy` = '%f', `oz` = '%f', `orx` = '%f', `ory` = '%f', `orz` = '%f', %s WHERE `newid` = '%d'",
+        `ox` = '%f', `oy` = '%f', `oz` = '%f', `orx` = '%f', `ory` = '%f', `orz` = '%f', %s  %s WHERE `newid` = '%d'",
         BizzInfo[b][bUser][obid], BizzInfo[b][bOmodel][obid], BizzInfo[b][bQara][obid], GetDynamicObjectVirtualWorld(BizzInfo[b][bObject][obid]), 
-        GetDynamicObjectInterior(BizzInfo[b][bObject][obid]), pos[0], pos[1], pos[2], rot[0], rot[1], rot[2], texture_update_string, BizzInfo[b][bNewid][obid]);
+        GetDynamicObjectInterior(BizzInfo[b][bObject][obid]), pos[0], pos[1], pos[2], rot[0], rot[1], rot[2], texture_update_string, text_material_string, BizzInfo[b][bNewid][obid]);
         mysql_tquery(pearsq, string_mysql);
     }
     return 1;

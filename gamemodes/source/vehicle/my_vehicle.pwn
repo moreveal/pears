@@ -3917,7 +3917,7 @@ CMD:insertcar(playerid)
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
 	new vehicleid = GetPlayerVehicleID(playerid);
 	new modelka = VehInfo[vehicleid][vModel];
-	if(VehInfo[vehicleid][vStat] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
+	if(VehInfo[vehicleid][vSost] == PlayerInfo[playerid][pID] || VehInfo[vehicleid][vKey] == PlayerInfo[playerid][pID] && VehInfo[vehicleid][vKeyUnix] > gettime())
 	{
 		if(typeParking == 1 && (IsAPlane(modelka) || IsABoat(modelka))) return ErrorMessage(playerid, "{FF6347}На эту парковку можно ставить только автомобиль или мотоцикл");
 		if(typeParking == 2 && !IsAPlane(modelka)) return ErrorMessage(playerid, "{FF6347}В аэропорту можно оставлять только аэротранспорт");

@@ -89,7 +89,7 @@ static const pressSeatObjects[][e_pressSeatObjects] = {
 	{ 2310, {90.0, 0.6, 0.0, 0.0} },
 	{ 2776, {-180.0, 0.6, 0.0, 0.0} },
 	{ 2777, {-180.0, 0.6, 0.0, 0.0} },
-	{ 2309, {0.0, 0.65, 0.0, 0.0} },
+	{ 2309, {0.0442, 0.6750, -0.0131, 0.9900} },
 	{ 2096, {-180.0, 0.45, 0.0, -0.2} },
 	{ 2788, {90.0, 0.6, 0.0, -0.15} },
 	{ 2807, {90.0, 0.6, 0.0, -0.15} },
@@ -415,7 +415,7 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 		GetSeatPosition(model_index, seat_index, baseZ, verticalDistance, horizontalDistance, upDistance);
 
 		new Float: cur_x, Float: cur_y, Float: cur_z, Float: cur_a;
-		GetSeatPositionCoords(objectid, baseZ, verticalDistance, horizontalDistance, cur_x, cur_y, cur_a);
+		GetSeatPositionCoords(objectid, baseZ, verticalDistance, horizontalDistance, cur_x, cur_y, cur_z, cur_a);
 
 		// Узнаем, занято ли место кем-то другим
 		foreach (new id : Player) {
@@ -448,13 +448,14 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 }
 
 // Получает координаты сидения по его относительной информации
-stock GetSeatPositionCoords(objectid, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, &Float: x, &Float: y, &Float: a) {
+stock GetSeatPositionCoords(objectid, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, &Float: x, &Float: y, &Float:z, &Float: a) {
 	new Float: object_pos[4];
 	GetDynamicObjectPos(objectid, object_pos[0], object_pos[1], object_pos[2]);
 	Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_R_Z, object_pos[3]);
 
 	a = baseZ + object_pos[3];
 	CalculateOffsetPosition(object_pos[0], object_pos[1], a, verticalDistance, horizontalDistance, x, y);
+	z = object_pos[2];
 }
 
 // Получает позицию, в которой нужно применить анимацию, чтобы ровно сесть
@@ -497,12 +498,10 @@ stock PressSeatableObjectHandler(playerid)
 		
 		// Если рядом есть пикап - прекращаем обработку
 		if (distance >= 2.05) break;
-		else return 1;
+		else return 0;
 	}
 
-  
-
-  // Получаем ближайшие к игроку динамические объекты
+  	// Получаем ближайшие к игроку динамические объекты
 	new objects[5];
 	new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
 	for (new i = 0; i < objects_count; i++) {
@@ -516,11 +515,14 @@ stock PressSeatableObjectHandler(playerid)
 		// Установка нужной позиции и анимации игроку (если объект является стулом)
 		new Float: x, Float: y, Float: z, Float: a;
 		new result = GetDynamicObjectSeatPosition(playerid,current_object, x, y, z, a);
-		if (result) {
-			if (GetPlayerDistanceFromPoint(playerid, x, y, z) > 1.25) break;
+		if (result) 
+		{
+			if (GetPlayerDistanceFromPoint(playerid, x, y, z) > 1.40) break;
+
+			printf("PressSeatableObjectHandler %s current_object: %d", PlayerInfo[playerid][pName], current_object); // VREMENNO
 
 			// Если игрок не в той стороне, куда "смотрит" сидение - отменяем
-			static const Float: side_detect_sensitive = 0.15; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны
+			static const Float: side_detect_sensitive = 0.20; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны
 			new Float: dirX = floatsin(a, degrees),
 				Float: dirY = floatcos(a, degrees);
 
@@ -546,11 +548,11 @@ stock PressSeatableObjectHandler(playerid)
 
 				Update3DTextLabelText(tempLabel, 0xFFFFFFFF, "   ");
 				Delete3DTextLabel(tempLabel);
-				break;
+				return 1;
 			}
 		}
 	}
-	return 1;
+	return 0;
 }
 
 stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
@@ -636,7 +638,7 @@ stock sit(playerid)
 				if(Lesson[playerid] == 0)
 				{
 					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно взять нужный учебник из инвентаря, чтобы начать обучение");
-					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•","{ffcc66}Откройте инвентарь и кликните два раза по нужному учебнику, чтобы начать обучение\n\n{cccccc}Если у вас нет учебника - возьмите его в библиотеке","•","");
+					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Откройте инвентарь и кликните два раза по нужному учебнику, чтобы начать обучение\n\n{cccccc}Если у вас нет учебника - возьмите его в библиотеке","*","");
 				}
 				else ShowDialog(playerid,1227,DIALOG_STYLE_MSGBOX,"{ff9000}Образовательный Центр","\n{ff9000}Вы уверены, что хотите начать экзамен?\n","Да","Нет");
 			}
@@ -712,22 +714,33 @@ stock ShowNewSeatMenu(playerid) {
 
 	new dialog_text[512] = " \t \n";
 
-	strcat(dialog_text, "{FFCC00}• {ffffff}Добавить новое место");
+	strcat(dialog_text, "{FFCC00}* {ffffff}Добавить новое место");
 
 	for (new i = 0; i < min(GetNewSeatsCount(playerid), MAX_SEAT_OBJECT_POSITIONS); i++)
 		format(dialog_text, sizeof dialog_text, "%s\n{ffffff}  - Место %d:\t{99ff66}Установлено", dialog_text, i + 1);
 
-	strcat(dialog_text, "\n{FFCC00}• {FF6347}Отмена добавления объекта\n{FFCC00}• {99ff66}Сохранить и выйти");
+	strcat(dialog_text, "\n{FFCC00}* {FF6347}Отмена добавления объекта\n{FFCC00}* {99ff66}Сохранить и выйти");
 
-	return ShowPlayerDialog(playerid, 1485, DIALOG_STYLE_TABLIST_HEADERS, "{cbcbcb}Редактирование сидений", dialog_text, "Выбор", "Закрыть");
+	return ShowDialog(playerid, 1485, DIALOG_STYLE_TABLIST_HEADERS, "{cbcbcb}Редактирование сидений", dialog_text, "Выбор", "Закрыть");
 }
 
 CMD:newseat(playerid) {
 	if (newSeatObjects[playerid][nssModel] <= 0) {
-		ShowPlayerDialog(playerid, 1484, DIALOG_STYLE_INPUT, " ", "{ffffff}Объект с указанной моделью появится рядом с вашим персонажем\nВы не должны применять к объекту какое-либо вращение или перемещать его по осям X/Y\n\n{ffffff}Укажите {ff9000}ID модели{ffffff} необходимого объекта:", "Продолжить", "Отмена");
+		ShowDialog(playerid, 1484, DIALOG_STYLE_INPUT, " ", "{ffffff}Объект с указанной моделью появится рядом с вашим персонажем\nВы не должны применять к объекту какое-либо вращение или перемещать его по осям X/Y\n\n{ffffff}Укажите {ff9000}ID модели{ffffff} необходимого объекта:", "Продолжить", "Отмена");
 	} else {
 		ShowNewSeatMenu(playerid);
 	}
+	return 1;
+}
+
+CMD:ebalo180(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 1) return 0;
+	new Float:a;
+	GetPlayerFacingAngle(playerid,a);
+	SetPlayerFacingAngle(playerid,a+180);
+
+	ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
 	return 1;
 }
 
@@ -749,7 +762,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			return 1;
 		}
 		SetPVarInt(playerid, "EditNewSeatObj", 1);
-		EditDynamicObject(playerid, objectid);
+		EditForSeat(playerid, objectid);
 	}
 
 	if(dialogid == 1485)
@@ -761,29 +774,29 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 		if (listitem == 0) {
 			if (seats_count >= MAX_SEAT_OBJECT_POSITIONS) {
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				return ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы добавили максимальное количество сидений", "Закрыть", "");
+				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы добавили максимальное количество сидений", "Закрыть", "");
 			}
 
 			SetNewSeatPositionByPlayer(playerid, seats_count);
 
-			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно добавлена", "Ок", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно добавлена", "Ок", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		} else if (listitem <= seats_count) {
 			new seat_index = listitem - 1;
 			SetNewSeatPositionByPlayer(playerid, seat_index);
 
-			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно заменена текущим положением вашего персонажа", "Закрыть", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно заменена текущим положением вашего персонажа", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		} else if (listitem == seats_count + 1) {
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
 			memset(newSeatObjects[playerid], 0);
 
-			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы отменили добавление объекта", "Закрыть", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы отменили добавление объекта", "Закрыть", "");
 			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 		} else if (listitem == seats_count + 2) {
 			if (seats_count <= 0) {
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				return ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы не добавили ни одного сидения", "Закрыть", "");
+				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы не добавили ни одного сидения", "Закрыть", "");
 			}
 
 			new log_str[512];
@@ -797,25 +810,18 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			}
 			log_str[strlen(log_str) - 2] = EOS;
 
-			new lane[120];
-			format(lane,sizeof(lane), "Seat Info: { %d, %s }", newSeatObjects[playerid][nssModel], log_str);
+			new lane[180];
+			format(lane,sizeof(lane), "{ %d, %s }", newSeatObjects[playerid][nssModel], log_str);
 			SendClientMessage(playerid, COLOR_GREEN, lane);
+
+			printf("{ %d, %s }", newSeatObjects[playerid][nssModel], log_str);
 
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
 			memset(newSeatObjects[playerid], 0);
 
-			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		}
 	}
-	return 1;
-}
-
-CMD:ebalo180(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 1) return 0;
-	new Float:a;
-	GetPlayerFacingAngle(playerid,a);
-	SetPlayerFacingAngle(playerid,a+180);
 	return 1;
 }

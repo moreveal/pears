@@ -220,7 +220,7 @@ stock gospray(playerid)
     if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid,"{ff6347}Вы не можете стереть или нанести граффити в помещении");
 
     new zone = GetZone(playerid);
-    if(zone == -1) return ErrorMessage(playerid,"{ff6347}Нанести или стереть граффити можно только в гетто");
+    if(zone == -1) return ErrorMessage(playerid,"{ff6347}Нанести или стереть граффити можно только на территории капта\n{cccccc}Примечение: на респах банд квадрат капта намеренно отсутствует");
 
     if(GraphitiInfo[zone][graphitiStatus] == 1)
     {
