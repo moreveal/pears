@@ -502,7 +502,7 @@ stock PressSeatableObjectHandler(playerid)
 	}
 
   	// Получаем ближайшие к игроку динамические объекты
-	new objects[5];
+	new objects[10];
 	new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
 	for (new i = 0; i < objects_count; i++) {
 		// Перебираем каждый объект
@@ -514,15 +514,11 @@ stock PressSeatableObjectHandler(playerid)
 
 		// Установка нужной позиции и анимации игроку (если объект является стулом)
 		new Float: x, Float: y, Float: z, Float: a;
-		new result = GetDynamicObjectSeatPosition(playerid,current_object, x, y, z, a);
+		new result = GetDynamicObjectSeatPosition(playerid, current_object, x, y, z, a);
 		if (result) 
 		{
-			if (GetPlayerDistanceFromPoint(playerid, x, y, z) > 1.40) break;
-
-			printf("PressSeatableObjectHandler %s current_object: %d", PlayerInfo[playerid][pName], current_object); // VREMENNO
-
 			// Если игрок не в той стороне, куда "смотрит" сидение - отменяем
-			static const Float: side_detect_sensitive = 0.20; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны
+			static const Float: side_detect_sensitivity = 0.25; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны [0.25 - по умолчанию]
 			new Float: dirX = floatsin(a, degrees),
 				Float: dirY = floatcos(a, degrees);
 
@@ -530,7 +526,7 @@ stock PressSeatableObjectHandler(playerid)
 				Float: vecToPlayerY = player_pos[1] - y;
 
 			new Float: dotProduct = dirX * vecToPlayerX + dirY * vecToPlayerY;
-			if (dotProduct < -side_detect_sensitive || dotProduct > side_detect_sensitive) break;
+			if (dotProduct < -side_detect_sensitivity || dotProduct > side_detect_sensitivity) break;
 			
 			// Если модель объекта найдена и позиция определена - помещаем игрока на неё
 			if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
