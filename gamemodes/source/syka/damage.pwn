@@ -184,8 +184,8 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
                 damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
 
-            format(string, sizeof string, "-%d HP", damage);
-            SetPlayerChatBubble(playerid, string, COLOR_RED, 45.0, 4000);
+            format(string, sizeof string, "-%.0f HP", damage);
+            SetPlayerChatBubble(damagedid, string, COLOR_RED, 45.0, 4000);
 
 			if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid))
             {
@@ -200,6 +200,13 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
 forward PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart);
 public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
 {
+    // Простейший блок урона от читера
+    new slot = Protect_Slot(weaponid);
+    if(slot > 0)
+    {
+        if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return 0;
+    }
+
     // Убийство с ножа
     if (weaponid == WEAPON_KNIFE && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, 0, "df", damagedid, 0.0);
     // Обработка удара прикладом
