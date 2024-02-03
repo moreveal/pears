@@ -2247,7 +2247,8 @@ stock player_tile(playerid, inva)
 		 		}
 		 		else if(fpick >= 156 && fpick <= 161) return format(string, sizeof(string), "{ffcc66}Документы: %s\n{cccccc}Показать документы другому игроку возможно только через паспорт [ /pas ]", friskName[fpick]), ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*",""), i_resetveshi(playerid);
 		 		else if(fpick >= 175 && fpick <= 177) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Домашняя сигнализация [ Поместите в инвентарь дома для установки ]","*",""), i_resetveshi(playerid);
-		 		
+		 		else if(fpick == 181) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Изолента используется в крафтах [ Подробнее можно узнать на верстаке ]","*","");
+				else if(fpick == 168) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Мясо в упакове используется в крафтах [ Подробнее можно узнать на кухонной плите ]","*","");
 				else if(fpick == 27)
 			 	{
 			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");

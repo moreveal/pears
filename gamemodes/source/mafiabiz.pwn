@@ -29,7 +29,7 @@ stock InfoMafiaBiz(playerid, b)
  	format(str,sizeof(str),"\n\n{444444}Бизнес {ff9000}%s [%d]", bizname(b), b), strcat(sctring,str);
  	format(str,sizeof(str),"\n\n{cccccc}Владелец: %s",BizzInfo[b][bVlad]), strcat(sctring,str);
     format(str,sizeof(str),"\n{cccccc}Под контролем: %s", frakName[BizzInfo[b][bMafia]]), strcat(sctring,str);
- 	format(str,sizeof(str),"\n{cccccc}Доля с дохода за крышевание: 10%"), strcat(sctring,str);
+ 	format(str,sizeof(str),"\n{cccccc}Доля с дохода за крышевание: {ffffff}10%"), strcat(sctring,str);
     format(str,sizeof(str),"\n{cccccc}Денег в бизнесе: {44ff99}%d$",BizzInfo[b][bMafiaSchet]), strcat(sctring,str);
  	if(BizzInfo[b][bMafunix] >= 1) format(str,sizeof(str),"\n{cccccc}Дата и время захвата: [ %02d.%02d.%d %02d:%02d ]\n\n", tday, tmonth, tyear, thour, tminute), strcat(sctring,str);
  	else format(str,sizeof(str),"\n{cccccc}Дата и время захвата: {ffffff}Передан администрацией\n\n"), strcat(sctring,str);
@@ -40,7 +40,7 @@ stock TakeMoneyMafiaBiz(playerid,b)
 {
     new g = fraction(playerid);
     if(BizzInfo[b][bMafia] != g) return ErrorMessage(playerid,"{ff6347}Ваша мафия не крышует этот бизнес");
-    if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}В сейфе банка ненакопилось 10.000$, вернитесь позже.\nПосмотреть деньги на счете бизнеса можно командой [ /mafiabiz ]");
+    if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}В сейфе бизнеса ненакопилось 10.000$, вернитесь позже.\nПосмотреть деньги на счете бизнеса можно командой [ /mafiabiz ]");
     OrganInfo[g][glave] += BizzInfo[b][bMafiaSchet];
     BizzInfo[b][bMafiaSchet] = 0;
     BizzInfo[b][bUpdate] = 1;

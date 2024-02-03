@@ -508,6 +508,25 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         GetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][3], EditObjectInfo[playerid][editOldPos][4], EditObjectInfo[playerid][editOldPos][5]);
     }
 
+    if (GetPVarInt(playerid, "EditNewSeatObj") > 0) {
+		if (response == EDIT_RESPONSE_FINAL) {
+			SetDynamicObjectPos(objectid, x, y, z);
+			SetDynamicObjectRot(objectid, rx, ry, rz);
+
+			new modelid = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+
+			newSeatObjects[playerid][nssModel] = modelid;
+			newSeatObjects[playerid][nssObject] = objectid;
+
+			DeletePVar(playerid, "EditNewSeatObj");
+		} else if (response == EDIT_RESPONSE_CANCEL) {
+			DestroyDynamicObject(objectid);
+			SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Я отменил установку объекта");
+
+			DeletePVar(playerid, "EditNewSeatObj");
+		}
+	}
+
     if(response == EDIT_RESPONSE_CANCEL) CancelDynamicEditable(playerid);
 
     if(response == EDIT_RESPONSE_UPDATE)

@@ -343,9 +343,8 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                 }
                 else
                 {
-                    format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
-                    format(line,sizeof(line),"\nВсе игроки должны быть под эффектом грибов"), strcat(lines,line);
-                    ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
+                    format(line,sizeof(line),"\nВы уверены что хотите закончить обряд?"), strcat(lines,line);
+                    ShowDialog(playerid,1475,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
                 }
             }
             if(listitem == 2)
@@ -438,7 +437,9 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
         {
             DestroyDynamicActor(SektaActor[fam]);
             RemoveMask(fam);
-            SuccessMessage(playerid, "{99ff66} Обряд завершён, возьмите приготовленную микстуру у алтаря.");
+            SuccessMessage(playerid, "{99ff66} Обряд завершён, возьмите приготовленную таблетки у алтаря.");
+            SetThrow(-1, 180, 180, 1, 1, 0, 0, 0, 0, 0, FamilyInfo[fam][fsAltarPos][0], FamilyInfo[fam][fsAltarPos][1]-2.066, FamilyInfo[fam][fsAltarPos][2]+0.674, 0.0, 0.0, 0.0, 600, 0, 0);
+            SetThrow(-1, 198, 198, 1, 1, 0, 0, 0, 0, 0, FamilyInfo[fam][fsAltarPos][0], FamilyInfo[fam][fsAltarPos][1]-2.066, FamilyInfo[fam][fsAltarPos][2]+0.674, 0.0, 0.0, 0.0, 600, 0, 0);
         }
         else ShowSektaAltarMenu(playerid);
     }

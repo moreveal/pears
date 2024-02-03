@@ -320,11 +320,7 @@ stock CallService(playerid, whom)
 	return 1;
 }
 
-CMD:makelist(playerid)
-{
-    if(fraction(playerid) != 4) return 0;
-    else return MakeList(playerid);
-}
+
 
 stock MakeList(playerid)
 {

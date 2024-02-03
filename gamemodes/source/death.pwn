@@ -197,7 +197,7 @@ stock UseRevival(playerid,targetid)
     }
     
     TakeInvent(playerid,8,1,0,999);
-    OnlineInfo[targetid][oTimerAnimationRevival] = 5;
+    OnlineInfo[targetid][oTimerAnimationRevival] = 7;
     ApplyAnimation(playerid,"MEDIC","CPR",4.0,0,1,1,0,0);
     update_ability(playerid, 10, 10 + random(5));
     return 1;
@@ -237,7 +237,16 @@ stock AcceptRevial(playerid)
     }
     else
     {
-        if(get_ability(playerid, 10) < 2 && !IsACop(playerid)) return ErrorMessage(playerid, "{FF6347}Для поднятия человека аптечкой нужен 2 уровень навыка [ Медик ]");
+        if(get_ability(playerid, 10) < 2 && !IsACop(playerid))
+        {
+            new stro[90],sctringo[450];
+            format(stro,sizeof(stro),"\n{ff9000}Информация по системе реанимации:"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n\n\n{cccccc}- Для лечения человека вам нужна аптечка"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- А так же 2 уровень навыка Медик или же быть участником ПД или МЗ"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Каждая реанимация добавляет определенное количество очков в скилл"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Для повышения навыка требуется трудоустроиться в ПД или МЗ"), strcat(sctringo,stro);
+            ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
+        }
         UseRevival(playerid,Moiplayer[playerid]);
     }
     return 1;

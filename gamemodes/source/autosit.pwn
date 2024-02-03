@@ -1,68 +1,128 @@
 // Переносит координаты на указанную дистанцию и направление от указанной точки
 stock GetXYInFrontOfPoint(&Float:x, &Float:y, Float:angle, Float:dist) {
-    x += (dist * floatsin(-angle, degrees));
-    y += (dist * floatcos(-angle, degrees));
+	x += (dist * floatsin(-angle, degrees));
+	y += (dist * floatcos(-angle, degrees));
 	return 1;
 }
 
+// Получает координаты, применяя смещение по вертикали и горизонтали
+stock CalculateOffsetPosition(Float: x, Float: y, Float: angle, Float: verticalDistance, Float: horizontalDistance, &Float: newX, &Float: newY) {
+	newX = x + (verticalDistance * floatsin(-angle, degrees)) + (horizontalDistance * floatcos(-angle, degrees));
+	newY = y + (verticalDistance * floatcos(-angle, degrees)) - (horizontalDistance * floatsin(-angle, degrees));
+
+	return 1;
+}
+
+// Получает смещение по вертикали и горизонтали по паре координат и углу "лицевой" стороны
+stock GetOffsetPosition(Float: x, Float: y, Float: parentX, Float: parentY, Float: angle, &Float: distanceVertical, &Float: distanceHorizontal) {
+	new Float: deltaX = x - parentX,
+		Float: deltaY = y - parentY;
+
+	distanceHorizontal = deltaX * floatcos(angle, degrees) + deltaY * floatsin(angle, degrees);
+	distanceVertical = (deltaX * floatsin(angle, degrees) - deltaY * floatcos(angle, degrees)) * -1.0;
+
+	return 1;
+}
+
+#define MAX_SEAT_OBJECT_POSITIONS 10 // Максимальное количество сидений у одного объекта
+
+// Хранит относительные координаты каждой из позиций для сидения определенного объекта
+static enum e_pressSeatObjectsPositions {
+	Float: sopBaseZ, // Базовое вращение по Z (что возвращает GetPlayerFacingAngle если смотреть в сторону, вперед от сидения, при указанном вращении 0.0)
+	Float: sopVerticalDistance, // Дистанция для вертикального направления относительно объекта (вперед - назад)
+	Float: sopHorizontalDistance, // Дистанция для горизонтального направления относительно объекта (влево - вправо)
+	Float: sopUpDistance // Смещение позиции сидения по высоте, относительно объекта
+};
+
+enum e_newSeatObjects {
+	nssModel, // ID модели добавляемого стула
+	nssObject, // ID созданного объекта
+
+	// Сидения
+	Float: nssSeat1[e_pressSeatObjectsPositions],
+	Float: nssSeat2[e_pressSeatObjectsPositions],
+	Float: nssSeat3[e_pressSeatObjectsPositions],
+	Float: nssSeat4[e_pressSeatObjectsPositions],
+	Float: nssSeat5[e_pressSeatObjectsPositions],
+	Float: nssSeat6[e_pressSeatObjectsPositions],
+	Float: nssSeat7[e_pressSeatObjectsPositions],
+	Float: nssSeat8[e_pressSeatObjectsPositions],
+	Float: nssSeat9[e_pressSeatObjectsPositions],
+	Float: nssSeat10[e_pressSeatObjectsPositions]
+};
+new newSeatObjects[MAX_PLAYERS][e_newSeatObjects];
+
 // Информация о каждой модели объекта, на который можно садиться
 static enum e_pressSeatObjects {
-	soModel, //  Модель
-	Float: soBaseZ, // Базовое вращение по Z (что возвращает GetPlayerFacingAngle если смотреть в ту сторону, куда смотрит объект, при указанном вращении 0.0)
-	Float: soFrontDistance, // Дистанция, на которую перемещается игрок вперЄд от объекта (определяется опытным путем, начать стоит с ~0.6)
-	Float: soSideDistance, // Дистанция, на которую игрок передвигается вбок, относительно объекта (почти всегда 0.0)
-	Float: soUpDistance // Дистанция, на которую игрок передвигается в высоту, относительно объекта (почти всегда 0.0) 
+	soModel, // Модель
+
+	// Информация о каждом из возможных сидений
+	Float: soSeat1[e_pressSeatObjectsPositions],
+	Float: soSeat2[e_pressSeatObjectsPositions],
+	Float: soSeat3[e_pressSeatObjectsPositions],
+	Float: soSeat4[e_pressSeatObjectsPositions],
+	Float: soSeat5[e_pressSeatObjectsPositions],
+	Float: soSeat6[e_pressSeatObjectsPositions],
+	Float: soSeat7[e_pressSeatObjectsPositions],
+	Float: soSeat8[e_pressSeatObjectsPositions],
+	Float: soSeat9[e_pressSeatObjectsPositions],
+	Float: soSeat10[e_pressSeatObjectsPositions]
 };
+
 static const pressSeatObjects[][e_pressSeatObjects] = {
-	{1663, -180.0, 0.65, 0.0, -0.15},
-	{1671, -180.0, 0.6, 0.0, 0.0},
-	{19994, -180.0, 0.6, 0.0, 0.0},
-	{1721, 0.0, 0.7, 0.0, 0.0},
-	{1722, 0.0, 0.7, 0.0, 0.0},
-	{2356, 0.0, 0.55, 0.0, 0.0},
-	{2639, 0.0, 0.55, 0.0, 0.0},
-	{1714, -180.0, 0.7, 0.0, 0.0},
-	{1715, -180.0, 0.7, 0.0, 0.0},
-	{19999, -180.0, 0.6, 0.0, 0.0},
-	{1810, -180.0, 0.35, 0.22, 0.4550},
-	{19996, -180.0, 0.6, 0.0, -0.2},
-	{2121, -180.0, 0.6, 0.0, 0.0},
-	{1720, -180.0, 0.48, 0.0, -0.2},
-	{2122, 90.0, 0.6, 0.0, 0.0},
-	{2293, 0.0, 0.6, 0.0, 0.0},
-	{2310, 90.0, 0.6, 0.0, 0.0},
-	{2776, -180.0, 0.6, 0.0, 0.0},
-	{2777, -180.0, 0.6, 0.0, 0.0},
-	{2309, 0.0, 0.65, 0.0, 0.0},
-	{2096, -180.0, 0.45, 0.0, -0.2},
-	{2788, 90.0, 0.6, 0.0, -0.15},
-	{2807, 90.0, 0.6, 0.0, -0.15},
-	{1729, -180.0, 0.6, 0.0, -0.2},
-	{2079, 90.0, 0.6, 0.0, 0.0},
-	{1746, 0.0, 0.6, 0.0, -0.2},
-	{2123, 90.0, 0.6, 0.0, 0.0},
-	{2120, 90.0, 0.6, 0.0, 0.0},
-	{2636, 90.0, 0.55, 0.0, 0.0},
-	{1811, 90.0, 0.6, 0.0, 0.05},
-	{1711, -180.0, 0.6, -0.2, -0.2},
-	{2724, -180.0, 0.6, 0.0, -0.03},
-	{11734, -180.0, 0.6, 0.0, 0.0},
-	{1735, -180.0, 0.6, 0.0, 0.0},
-	{2124, 90.0, 0.6, 0.0, 0.35},
-	{2343, -90.0, 0.6, 0.0, 0.0},
-	{11685, -180.0, 0.6, 0.0, 0.0},
-	{1739, 90.0, 0.6, 0.0, 0.0},
-	{11684, -90.0, 0.6, 0.0, -0.05},
-	{1705, -180.0, 0.7, -0.5, -0.3},
-	{1704, -180.0, 0.7, -0.5, -0.3},
-	{1724, -180.0, 0.7, -0.5, -0.3},
-	{1727, -180.0, 0.7, -0.5, -0.3},
-	{1708, -180.0, 0.7, -0.5, -0.3},
-	{2748, -180.0, 0.7, 0.0, -0.5},
-	{11683, -180.0, 0.7, 0.0, -0.25},
-	{11682, 90.0, 0.65, 0.0, -0.2},
-	{1562, -180.0, 0.65, 0.0, -0.33},
-	{1806, 0.0, 0.6, 0.04, 0.0}
+	{ 1663, {-180.0, 0.65, 0.0, -0.15} },
+	{ 1671, {-180.0, 0.6, 0.0, 0.0} },
+	{ 19994, {-180.0, 0.6, 0.0, 0.0} },
+	{ 1721, {0.0, 0.7, 0.0, 0.0} },
+	{ 1722, {0.0, 0.7, 0.0, 0.0} },
+	{ 2356, {0.0, 0.55, 0.0, 0.0} },
+	{ 2639, {0.0, 0.55, 0.0, 0.0} },
+	{ 1714, {-180.0, 0.7, 0.0, 0.0} },
+	{ 1715, {-180.0, 0.7, 0.0, 0.0} },
+	{ 19999, {-180.0, 0.6, 0.0, 0.0} },
+	{ 1810, {-180.0, 0.35, 0.22, 0.4550} },
+	{ 19996, {-180.0, 0.6, 0.0, -0.2} },
+	{ 2121, {-180.0, 0.6, 0.0, 0.0} },
+	{ 1720, {-180.0, 0.48, 0.0, -0.2} },
+	{ 2122, {90.0, 0.6, 0.0, 0.0} },
+	{ 2293, {0.0, 0.6, 0.0, 0.0} },
+	{ 2310, {90.0, 0.6, 0.0, 0.0} },
+	{ 2776, {-180.0, 0.6, 0.0, 0.0} },
+	{ 2777, {-180.0, 0.6, 0.0, 0.0} },
+	{ 2309, {0.0, 0.65, 0.0, 0.0} },
+	{ 2096, {-180.0, 0.45, 0.0, -0.2} },
+	{ 2788, {90.0, 0.6, 0.0, -0.15} },
+	{ 2807, {90.0, 0.6, 0.0, -0.15} },
+	{ 1729, {-180.0, 0.6, 0.0, -0.2} },
+	{ 2079, {90.0, 0.6, 0.0, 0.0} },
+	{ 1746, {0.0, 0.6, 0.0, -0.2} },
+	{ 2123, {90.0, 0.6, 0.0, 0.0} },
+	{ 2120, {90.0, 0.6, 0.0, 0.0} },
+	{ 2636, {90.0, 0.55, 0.0, 0.0} },
+	{ 1811, {90.0, 0.6, 0.0, 0.05} },
+	{ 1711, {-180.0, 0.6, -0.2, -0.2} },
+	{ 2724, {-180.0, 0.6, 0.0, -0.03} },
+	{ 11734, {-180.0, 0.6, 0.0, 0.0} },
+	{ 1735, {-180.0, 0.6, 0.0, 0.0} },
+	{ 2124, {90.0, 0.6, 0.0, 0.35} },
+	{ 2343, {-90.0, 0.6, 0.0, 0.0} },
+	{ 11682, {180.0, 0.65, 0.1, -0.2} },
+	{ 11683, {-180.0, 0.7, 0.0, -0.25} },
+	{ 11684, {180.0, 0.6, -0.2, -0.05} },
+	{ 11685, {-180.0, 0.6, 0.0, 0.0} },
+	{ 1739, {90.0, 0.6, 0.0, 0.0} },
+	{ 1705, {-180.0, 0.7, -0.5, -0.3} },
+	{ 1704, {-180.0, 0.7, -0.5, -0.3} },
+	{ 1724, {-180.0, 0.7, -0.5, -0.3} },
+	{ 1727, {-180.0, 0.7, -0.5, -0.3} },
+	{ 1759, {180.0, 0.5, -0.54, -0.3} },
+	{ 1708, {-180.0, 0.7, -0.5, -0.3} },
+	{ 2748, {-180.0, 0.7, 0.0, -0.5} },
+	{ 1562, {-180.0, 0.65, 0.0, -0.33} },
+	{ 1806, {0.0, 0.6, 0.04, 0.0} },
+	{ 1280, {84.3671, 0.7014, 0.8402, 0.6529}, {88.0426, 0.7014, 0.0648, 0.6788}, {90.6319, 0.7014, -0.8924, 0.6786} },
+	{ 1723, {180.0, 0.6582, -1.5635, 1.0184}, {180.0, 0.6582, -0.3607, 1.0120} },
+	{ 1726, {177.6443, 0.5849, -1.4945, 1.0193}, {177.9239, 0.5849, -0.4574, 1.0138} }
 };
 
 new bool:playerSeat[MAX_REALPLAYERS];
@@ -76,7 +136,329 @@ stock IsPressSeatDynamicObject(modelid) {
 	return false;
 }
 
-stock GetDynamicObjectSeatPosition(objectid, &Float: x, &Float: y, &Float: z, &Float: a) {
+// Получает информацию о сидении модели объекта по числовому индексу
+stock GetSeatPosition(model_index, seat_index, &Float: baseZ, &Float: verticalDistance, &Float: horizontalDistance, &Float: upDistance) {
+	switch(seat_index) {
+		case 0:
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat1][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat1][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat1][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat1][sopUpDistance];
+		}
+		case 1: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat2][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat2][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat2][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat2][sopUpDistance];
+		}
+		case 2: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat3][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat3][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat3][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat3][sopUpDistance];
+		}
+		case 3: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat4][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat4][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat4][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat4][sopUpDistance];
+		}
+		case 4: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat5][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat5][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat5][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat5][sopUpDistance];
+		}
+		case 5: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat6][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat6][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat6][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat6][sopUpDistance];
+		}
+		case 6: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat7][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat7][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat7][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat7][sopUpDistance];
+		}
+		case 7: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat8][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat8][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat8][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat8][sopUpDistance];
+		}
+		case 8: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat9][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat9][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat9][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat9][sopUpDistance];
+		}
+		case 9: 
+		{	
+			baseZ = pressSeatObjects[model_index][soSeat10][sopBaseZ];
+			verticalDistance = pressSeatObjects[model_index][soSeat10][sopVerticalDistance];
+			horizontalDistance = pressSeatObjects[model_index][soSeat10][sopHorizontalDistance];
+			upDistance = pressSeatObjects[model_index][soSeat10][sopUpDistance];
+		}
+		default: return false;
+	}
+
+	return true;
+}
+// Получает информацию о сидении добавляемой модели объекта по числовому индексу
+stock GetNewSeatPosition(playerid, seat_index, &Float: baseZ, &Float: verticalDistance, &Float: horizontalDistance, &Float: upDistance) {
+	switch(seat_index) {
+		case 0:
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat1][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat1][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat1][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat1][sopUpDistance];
+		}
+		case 1: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat2][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat2][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat2][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat2][sopUpDistance];
+		}
+		case 2: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat3][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat3][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat3][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat3][sopUpDistance];
+		}
+		case 3: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat4][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat4][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat4][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat4][sopUpDistance];
+		}
+		case 4: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat5][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat5][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat5][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat5][sopUpDistance];
+		}
+		case 5: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat6][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat6][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat6][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat6][sopUpDistance];
+		}
+		case 6: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat7][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat7][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat7][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat7][sopUpDistance];
+		}
+		case 7: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat8][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat8][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat8][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat8][sopUpDistance];
+		}
+		case 8: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat9][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat9][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat9][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat9][sopUpDistance];
+		}
+		case 9: 
+		{	
+			baseZ = newSeatObjects[playerid][nssSeat10][sopBaseZ];
+			verticalDistance = newSeatObjects[playerid][nssSeat10][sopVerticalDistance];
+			horizontalDistance = newSeatObjects[playerid][nssSeat10][sopHorizontalDistance];
+			upDistance = newSeatObjects[playerid][nssSeat10][sopUpDistance];
+		}
+		default: return false;
+	}
+
+	return true;
+}
+
+// Присваивает информацию о сидении добавляемой модели объекта по числовому индексу
+stock SetNewSeatPosition(playerid, seat_index, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance) {
+	switch (seat_index) {
+		case 0: {
+			newSeatObjects[playerid][nssSeat1][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat1][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat1][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat1][sopUpDistance] = upDistance;
+		}
+		case 1: {
+			newSeatObjects[playerid][nssSeat2][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat2][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat2][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat2][sopUpDistance] = upDistance;
+		}
+		case 2: {
+			newSeatObjects[playerid][nssSeat3][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat3][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat3][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat3][sopUpDistance] = upDistance;
+		}
+		case 3: {
+			newSeatObjects[playerid][nssSeat4][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat4][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat4][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat4][sopUpDistance] = upDistance;
+		}
+		case 4: {
+			newSeatObjects[playerid][nssSeat5][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat5][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat5][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat5][sopUpDistance] = upDistance;
+		}
+		case 5: {
+			newSeatObjects[playerid][nssSeat6][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat6][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat6][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat6][sopUpDistance] = upDistance;
+		}
+		case 6: {
+			newSeatObjects[playerid][nssSeat7][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat7][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat7][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat7][sopUpDistance] = upDistance;
+		}
+		case 7: {
+			newSeatObjects[playerid][nssSeat8][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat8][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat8][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat8][sopUpDistance] = upDistance;
+		}
+		case 8: {
+			newSeatObjects[playerid][nssSeat9][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat9][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat9][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat9][sopUpDistance] = upDistance;
+		}
+		case 9: {
+			newSeatObjects[playerid][nssSeat10][sopBaseZ] = baseZ;
+			newSeatObjects[playerid][nssSeat10][sopVerticalDistance] = verticalDistance;
+			newSeatObjects[playerid][nssSeat10][sopHorizontalDistance] = horizontalDistance;
+			newSeatObjects[playerid][nssSeat10][sopUpDistance] = upDistance;
+		}
+	}
+}
+
+stock SetNewSeatPositionByPlayer(playerid, seat_index) {
+	new Float: object_x, Float: object_y, Float: object_z;
+	GetDynamicObjectPos(newSeatObjects[playerid][nssObject], object_x, object_y, object_z);
+
+	new Float: player_x, Float: player_y, Float: player_z, Float: angle;
+	GetPlayerPos(playerid, player_x, player_y, player_z);
+	GetPlayerFacingAngle(playerid, angle);
+	
+	new Float: verticalDistance, Float: horizontalDistance;
+	GetOffsetPosition(player_x, player_y, object_x, object_y, angle, verticalDistance, horizontalDistance);
+
+	SetNewSeatPosition(playerid, seat_index, angle, verticalDistance, horizontalDistance, player_z - object_z);
+	
+	return 1;
+}
+
+stock GetNewSeatsCount(playerid) {
+	new count = 0;
+	for (new i = 0; i < MAX_SEAT_OBJECT_POSITIONS; i++) {
+		new Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance;
+		GetNewSeatPosition(playerid, i, baseZ, verticalDistance, horizontalDistance, upDistance);
+
+		if (baseZ == 0.0 && verticalDistance == 0.0 && horizontalDistance == 0.0 && upDistance == 0.0)
+			break;
+
+		count++;
+	}
+
+	return count;
+}
+
+stock GetSeatsCount(model_index) {
+	new count = 0;
+	for (new i = 0; i < MAX_SEAT_OBJECT_POSITIONS; i++) {
+		new Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance;
+		GetSeatPosition(model_index, i, baseZ, verticalDistance, horizontalDistance, upDistance);
+
+		if (baseZ == 0.0 && verticalDistance == 0.0 && horizontalDistance == 0.0 && upDistance == 0.0)
+			break;
+
+		count++;
+	}
+	return count;
+}
+
+// Возвращает координаты ближайшего к игроку сидения у модели объекта
+stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float: y, &Float: z, &Float: a) {
+	new Float: min_distance = 1000.0;
+	new bool: seats_occupied[MAX_SEAT_OBJECT_POSITIONS];
+
+	new closest_seat_index = -1;
+	for(new seat_index = 0; seat_index < min(GetSeatsCount(model_index), MAX_SEAT_OBJECT_POSITIONS); seat_index++) {
+		new Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance;
+		GetSeatPosition(model_index, seat_index, baseZ, verticalDistance, horizontalDistance, upDistance);
+
+		new Float: cur_x, Float: cur_y, Float: cur_z, Float: cur_a;
+		GetSeatPositionCoords(objectid, baseZ, verticalDistance, horizontalDistance, cur_x, cur_y, cur_a);
+
+		// Узнаем, занято ли место кем-то другим
+		foreach (new id : Player) {
+			new Float: cur_player_x, Float: cur_player_y, Float: cur_player_z;
+			GetPlayerPos(id, cur_player_x, cur_player_y, cur_player_z);
+		
+			if (IsPlayerInRangeOfPoint(id, 0.01, cur_x, cur_y, cur_player_z)) {
+				seats_occupied[seat_index] = true;
+				break;
+			}
+		}
+
+		new Float: distance = GetPlayerDistanceFromPoint(playerid, cur_x, cur_y, cur_z);
+		if (distance < min_distance) {
+			closest_seat_index = seat_index;
+			min_distance = distance;
+
+			x = cur_x;
+			y = cur_y;
+			z = cur_z;
+			a = cur_a;
+		}
+	}
+
+	// Не сажаем игрока, если ближайшее к нему место занято кем-то другим
+	if (seats_occupied[closest_seat_index])
+		return -1;
+
+	return closest_seat_index;
+}
+
+// Получает координаты сидения по его относительной информации
+stock GetSeatPositionCoords(objectid, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, &Float: x, &Float: y, &Float: a) {
+	new Float: object_pos[4];
+	GetDynamicObjectPos(objectid, object_pos[0], object_pos[1], object_pos[2]);
+	Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_R_Z, object_pos[3]);
+
+	a = baseZ + object_pos[3];
+	CalculateOffsetPosition(object_pos[0], object_pos[1], a, verticalDistance, horizontalDistance, x, y);
+}
+
+// Получает позицию, в которой нужно применить анимацию, чтобы ровно сесть
+stock GetDynamicObjectSeatPosition(playerid, objectid, &Float: x, &Float: y, &Float: z, &Float: a) {
 	if (!IsValidDynamicObject(objectid)) return false;
 
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
@@ -84,27 +466,9 @@ stock GetDynamicObjectSeatPosition(objectid, &Float: x, &Float: y, &Float: z, &F
 		new curmodel = _:pressSeatObjects[i][soModel];
 
 		if (model == curmodel) {
-			new Float: object_pos[4];
-			GetDynamicObjectPos(objectid, object_pos[0], object_pos[1], object_pos[2]);
-			Streamer_GetFloatData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_R_Z, object_pos[3]);
-			
-			// Вычисляем нужную позицию
-			new Float: pos[4];
-			pos[0] = object_pos[0], pos[1] = object_pos[1];
-
-			GetXYInFrontOfPoint(pos[0], pos[1], object_pos[3] - 90.0, -pressSeatObjects[i][soSideDistance]); // X, Y
-			pos[2] = object_pos[2] + pressSeatObjects[i][soUpDistance]; // Z
-			pos[3] = pressSeatObjects[i][soBaseZ] + object_pos[3]; // Angle
-
-			GetXYInFrontOfPoint(pos[0], pos[1], pos[3], pressSeatObjects[i][soFrontDistance]);
-
-			// Заполняем переданные параметры
-			x = pos[0];
-			y = pos[1];
-			z = pos[2];
-			a = pos[3];
-
-			return true;
+			new seat_index = GetClosestSeatPosition(playerid, objectid, i, x, y, z, a);
+			if (seat_index >= 0)
+				return true;
 		}
 	}
 
@@ -113,74 +477,80 @@ stock GetDynamicObjectSeatPosition(objectid, &Float: x, &Float: y, &Float: z, &F
 
 stock PressSeatableObjectHandler(playerid) 
 {
+  	// В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
+	if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
+	|| GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
+	|| GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0;
 
-  // В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
-  if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
-  || GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
-  || GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0;
+	// Позиции, где sit не будет работать
+	if(NoSit(playerid)) return 0;
 
-  // Позиции, где sit не будет работать
-  if(NoSit(playerid)) return 0;
+	new Float: player_pos[3];
+	GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
-  new Float: player_pos[3];
-  GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
-
-  // Узнаем есть ли рядом пикапы и отменяем посадку, если да (чтобы не было конфликтов со входами и т.п.)
-  new pickups[1];
-  new pickups_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_PICKUP, pickups), sizeof pickups);
-  for (new i = 0; i < pickups_count; i++) {
-    new Float: distance;
-   	Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_PICKUP, pickups[i], distance);
-    
-    // Если рядом есть пикап - прекращаем обработку
-    if (distance >= 2.05) {
-		break;
-		} else return 1;
-  }
+	// Узнаем есть ли рядом пикапы и отменяем посадку, если да (чтобы не было конфликтов со входами и т.п.)
+	new pickups[1];
+	new pickups_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_PICKUP, pickups), sizeof pickups);
+	for (new i = 0; i < pickups_count; i++) {
+		new Float: distance;
+		Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_PICKUP, pickups[i], distance);
+		
+		// Если рядом есть пикап - прекращаем обработку
+		if (distance >= 2.05) break;
+		else return 1;
+	}
 
   
 
   // Получаем ближайшие к игроку динамические объекты
-  new objects[5];
-  // Функция Streamer_GetAllVisibleItems возвращает количество динамических элементов, которые находятся в зоне стрима игрока и помещает их ID в массив (objects)
-  // Но это количество не учитывает то, что в массиве может не хватить для них места, поэтому я использую макрос min, который вернёт 3 (sizeof objects), если количество объектов больше
-  new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
-  for (new i = 0; i < objects_count; i++) {
-    // Перебираем каждый объект
-    new current_object = objects[i];
+	new objects[5];
+	new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
+	for (new i = 0; i < objects_count; i++) {
+		// Перебираем каждый объект
+		new current_object = objects[i];
 
-    // Функция Streamer_GetAllVisibleItems возвращает уже отсортированный по дистанции список, т.е. если один из объектов при последовательном прохождении
-   // цикла находится дальше, чем требуется - то все остальные объекты тоже, поэтому можно не пропускать один объект, а прервать цикл вовсе 
-    new Float: distance;
-    Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
-    if (distance > 2.50) break;
+		new Float: distance;
+		Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
+		if (distance > 2.50) break;
 
-    // Установка нужной позиции и анимации игроку (если объект является стулом)
-    new Float: x, Float: y, Float: z, Float: a;
-    new result = GetDynamicObjectSeatPosition(current_object, x, y, z, a);
-    if (result) {
-      // Если модель объекта найдена и позиция определена - помещаем игрока на неё
-	  if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
-	  new status = sit(playerid);
-	  if(status > 0)
-	  {
-		playerSeat[playerid] = true;
-		
-      	PPSetPlayerPos(playerid, x, y, player_pos[2]);
+		// Установка нужной позиции и анимации игроку (если объект является стулом)
+		new Float: x, Float: y, Float: z, Float: a;
+		new result = GetDynamicObjectSeatPosition(playerid,current_object, x, y, z, a);
+		if (result) {
+			if (GetPlayerDistanceFromPoint(playerid, x, y, z) > 1.25) break;
 
-		new Text3D:tempLabel = Create3DTextLabel("  ", 0x008080FF, x, y, player_pos[2], 200.0, GetPlayerVirtualWorld(playerid), 0); // VREMENNO
-		Attach3DTextLabelToPlayer(tempLabel, playerid, 0.0, 0.0, 2.0);
+			// Если игрок не в той стороне, куда "смотрит" сидение - отменяем
+			static const Float: side_detect_sensitive = 0.15; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны
+			new Float: dirX = floatsin(a, degrees),
+				Float: dirY = floatcos(a, degrees);
 
-      	SetPlayerFacingAngle(playerid, a);
-	  	sit_Active(playerid, x, y, player_pos[2], a);
+			new Float: vecToPlayerX = player_pos[0] - x,
+				Float: vecToPlayerY = player_pos[1] - y;
 
-		Update3DTextLabelText(tempLabel, 0xFFFFFFFF, "   ");
-		Delete3DTextLabel(tempLabel);
-		break;
-	  }
-    }
-  }
-  return 1;
+			new Float: dotProduct = dirX * vecToPlayerX + dirY * vecToPlayerY;
+			if (dotProduct < -side_detect_sensitive || dotProduct > side_detect_sensitive) break;
+			
+			// Если модель объекта найдена и позиция определена - помещаем игрока на неё
+			if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
+			new status = sit(playerid);
+			if(status > 0)
+			{
+				playerSeat[playerid] = true;
+				
+				PPSetPlayerPos(playerid, x, y, player_pos[2]);
+
+				new Text3D:tempLabel = Create3DTextLabel("  ", 0x008080FF, x, y, player_pos[2], 200.0, GetPlayerVirtualWorld(playerid), 0); // VREMENNO
+
+				SetPlayerFacingAngle(playerid, a);
+				sit_Active(playerid, x, y, player_pos[2], a);
+
+				Update3DTextLabelText(tempLabel, 0xFFFFFFFF, "   ");
+				Delete3DTextLabel(tempLabel);
+				break;
+			}
+		}
+	}
+	return 1;
 }
 
 stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
@@ -337,18 +707,115 @@ stock exitsit(playerid, stat)
 	return 1;
 }
 
-CMD:createseat(playerid, const params[]) {
-	if(server != 0) return 0;
-	new modelid;
-	if (sscanf(params, "d", modelid)) return SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Создание стула [ /createseat ModelID ]");
-	if (!IsPressSeatDynamicObject(modelid)) return SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Модель этого объекта не поддерживается");
-	new Float: player_pos[4];
-	GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
-	GetPlayerFacingAngle(playerid, player_pos[3]);
-	GetXYInFrontOfPoint(player_pos[0], player_pos[1], player_pos[3], 1.0);
-	new object = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
-	SetPVarInt(playerid, "EditSeatObj", 1);
-	EditDynamicObject(playerid, object);
+stock ShowNewSeatMenu(playerid) {
+	if (newSeatObjects[playerid][nssModel] <= 0) return 0;
+
+	new dialog_text[512] = " \t \n";
+
+	strcat(dialog_text, "{FFCC00}• {ffffff}Добавить новое место");
+
+	for (new i = 0; i < min(GetNewSeatsCount(playerid), MAX_SEAT_OBJECT_POSITIONS); i++)
+		format(dialog_text, sizeof dialog_text, "%s\n{ffffff}  - Место %d:\t{99ff66}Установлено", dialog_text, i + 1);
+
+	strcat(dialog_text, "\n{FFCC00}• {FF6347}Отмена добавления объекта\n{FFCC00}• {99ff66}Сохранить и выйти");
+
+	return ShowPlayerDialog(playerid, 1485, DIALOG_STYLE_TABLIST_HEADERS, "{cbcbcb}Редактирование сидений", dialog_text, "Выбор", "Закрыть");
+}
+
+CMD:newseat(playerid) {
+	if (newSeatObjects[playerid][nssModel] <= 0) {
+		ShowPlayerDialog(playerid, 1484, DIALOG_STYLE_INPUT, " ", "{ffffff}Объект с указанной моделью появится рядом с вашим персонажем\nВы не должны применять к объекту какое-либо вращение или перемещать его по осям X/Y\n\n{ffffff}Укажите {ff9000}ID модели{ffffff} необходимого объекта:", "Продолжить", "Отмена");
+	} else {
+		ShowNewSeatMenu(playerid);
+	}
 	return 1;
 }
 
+stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const inputtext[]) {
+	if(dialogid == 1484)
+	{
+		if (!response) return 1;
+		new modelid = strval(inputtext);
+
+		// Создание объекта
+		new Float: player_pos[4];
+		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
+		GetPlayerFacingAngle(playerid, player_pos[3]);
+		GetXYInFrontOfPoint(player_pos[0], player_pos[1], player_pos[3], 2.0);
+
+		new objectid = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
+		if (objectid == INVALID_OBJECT_ID) {
+			SendClientMessage(playerid, 0xCCCCCC, "[ Мысли ]: Не удалось создать объект");
+			return 1;
+		}
+		SetPVarInt(playerid, "EditNewSeatObj", 1);
+		EditDynamicObject(playerid, objectid);
+	}
+
+	if(dialogid == 1485)
+	{
+		if (!response) return 1;
+
+		new seats_count = GetNewSeatsCount(playerid);
+		
+		if (listitem == 0) {
+			if (seats_count >= MAX_SEAT_OBJECT_POSITIONS) {
+				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
+				return ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы добавили максимальное количество сидений", "Закрыть", "");
+			}
+
+			SetNewSeatPositionByPlayer(playerid, seats_count);
+
+			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно добавлена", "Ок", "");
+			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
+		} else if (listitem <= seats_count) {
+			new seat_index = listitem - 1;
+			SetNewSeatPositionByPlayer(playerid, seat_index);
+
+			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно заменена текущим положением вашего персонажа", "Закрыть", "");
+			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
+		} else if (listitem == seats_count + 1) {
+			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
+			memset(newSeatObjects[playerid], 0);
+
+			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы отменили добавление объекта", "Закрыть", "");
+			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
+		} else if (listitem == seats_count + 2) {
+			if (seats_count <= 0) {
+				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
+				return ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы не добавили ни одного сидения", "Закрыть", "");
+			}
+
+			new log_str[512];
+			for (new i = 0; i < min(seats_count, MAX_SEAT_OBJECT_POSITIONS); i++) {
+				new Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance;
+				GetNewSeatPosition(playerid, i, baseZ, verticalDistance, horizontalDistance, upDistance);
+
+				format(log_str, sizeof log_str, "%s{%.04f, %.04f, %.04f, %.04f}, ", log_str,
+					baseZ, verticalDistance, horizontalDistance, upDistance
+				);
+			}
+			log_str[strlen(log_str) - 2] = EOS;
+
+			new lane[120];
+			format(lane,sizeof(lane), "Seat Info: { %d, %s }", newSeatObjects[playerid][nssModel], log_str);
+			SendClientMessage(playerid, COLOR_GREEN, lane);
+
+			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
+			memset(newSeatObjects[playerid], 0);
+
+			ShowPlayerDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
+			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
+		}
+	}
+	return 1;
+}
+
+CMD:ebalo180(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 1) return 0;
+	new Float:a;
+	GetPlayerFacingAngle(playerid,a);
+	SetPlayerFacingAngle(playerid,a+180);
+	return 1;
+}
