@@ -476,6 +476,26 @@ stock GetDynamicObjectSeatPosition(playerid, objectid, &Float: x, &Float: y, &Fl
 	return false;
 }
 
+stock IsAMusicObject(playerid, model)
+{
+	if(model == 2232)
+	{
+		printf("музичка работаит"); // это удалить
+		// Сюда суем диалоговое окно в которое засунем ссылку на музыку
+		/*
+		foreach (Player, i)
+		{
+			if(IsPlayerInRangeOfPoint(i,300.0,X, Y, Z))
+			{
+				if(OnlineInfo[i][oListenRadioPears] == 0) PlayAudioStreamForPlayer(i, inputtext,X, Y, Z,30.0,true);
+			}
+		}
+		*/
+		return 1;
+	}
+	return 0;
+}
+
 stock PressSeatableObjectHandler(playerid) 
 {
   	// В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
@@ -511,6 +531,8 @@ stock PressSeatableObjectHandler(playerid)
 		new Float: distance;
 		Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
 		if (distance > 2.50) break;
+
+		if(IsAMusicObject(playerid, GetDynamicObjectModel(current_object))) return 1;
 
 		// Установка нужной позиции и анимации игроку (если объект является стулом)
 		new Float: x, Float: y, Float: z, Float: a;

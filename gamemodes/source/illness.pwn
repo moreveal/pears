@@ -552,7 +552,7 @@ stock VampireInfo(playerid)
 	format(line,sizeof(line),"\n{cccccc}- Проклятие может произойти случайно только с одним человеком раз в 4 часа"), strcat(lines,line);
 
 	format(line,sizeof(line),"\n\n{684F7D}Что даёт проклятие?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Вы никогда не заболеете другими, любыми болезнями"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы никогда не заболеете любыми другими болезнями"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Ваш персонаж никогда не устаёт и ему не нужен сон"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Вы НЕ сможете питаться обычной едой, от неё вас будет тошнить"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- С 6:00 до 21:00 находясь на солнце вы будете сгорать и терять здоровье"), strcat(lines,line);
