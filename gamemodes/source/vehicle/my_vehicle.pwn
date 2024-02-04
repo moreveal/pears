@@ -4003,8 +4003,16 @@ stock DestroyMyVehicles(playerid)
 
 stock SaveMyVehiclePos(vehicleid) // Сохраняем позицию личного транспорта
 {
-	GetVehicleZAngle(vehicleid, VehInfo[vehicleid][vKoordinatA]);
-	GetVehiclePos(vehicleid, VehInfo[vehicleid][vKoordinatX], VehInfo[vehicleid][vKoordinatY], VehInfo[vehicleid][vKoordinatZ]);
+	new Float:pos[4];
+	GetVehiclePos(vehicleid,pos[0],pos[1],pos[2]);
+	GetVehicleZAngle(vehicleid,pos[3]);
+
+    if(!IsValidFloat(pos[0]) || !IsValidFloat(pos[1]) || !IsValidFloat(pos[2]) || !IsValidFloat(pos[3])) return false;
+
+	VehInfo[vehicleid][vKoordinatX] = pos[0];
+	VehInfo[vehicleid][vKoordinatY] = pos[1];
+	VehInfo[vehicleid][vKoordinatZ] = pos[2];
+	VehInfo[vehicleid][vKoordinatA] = pos[3];
 
 	GetVehicleDamageStatus(vehicleid, VehInfo[vehicleid][vPanels], VehInfo[vehicleid][vDoors], VehInfo[vehicleid][vFara], VehInfo[vehicleid][vTires]);
 	return 1;

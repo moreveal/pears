@@ -3,10 +3,12 @@
 
 stock DeleteObject(playerid)
 {
-
-	RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 1746.7566,1421.5625,10.8467, 160.0); // Аэро LV
-	RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 1030.7181,2445.2124,10.8873, 200.0); // Тюрьма
-	RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 2532.3433,661.9187,10.8381, 80.0); // VIP Дома в LV (у причала)
+	if(IsPlayerSyncModels(playerid))
+	{
+		RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 1746.7566,1421.5625,10.8467, 160.0); // Аэро LV
+		RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 1030.7181,2445.2124,10.8873, 200.0); // Тюрьма
+		RemoveBuildingForPlayer(playerid, REMOVE_GRASS, 2532.3433,661.9187,10.8381, 80.0); // VIP Дома в LV (у причала)
+	}
 
     new year, month,day;
  	getdate(year, month, day);

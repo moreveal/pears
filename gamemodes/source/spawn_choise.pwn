@@ -36,8 +36,16 @@ stock SaveLastPlayerPosition(playerid)
     }
     else
     {
-        GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-        GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
+        new Float:pos[4];
+        GetPlayerPos(playerid,pos[0],pos[1],pos[2]);
+        GetPlayerFacingAngle(playerid,pos[3]);
+
+        if(!IsValidFloat(pos[0]) || !IsValidFloat(pos[1]) || !IsValidFloat(pos[2]) || !IsValidFloat(pos[3])) return false;
+
+        PlayerInfo[playerid][pLastPos][0] = pos[0];
+        PlayerInfo[playerid][pLastPos][1] = pos[1];
+        PlayerInfo[playerid][pLastPos][2] = pos[2];
+        PlayerInfo[playerid][pLastPos][3] = pos[3];
 
         // Если последняя точка в динамической зоне квеста и квест выполнен значит сохраняем вирт мир 0
         if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot])
