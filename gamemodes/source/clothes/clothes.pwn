@@ -90,13 +90,13 @@ stock AddCustomSkins()
 	AddCharSyncModel(25, 336); // 15524, pearspedx male
 	AddCharSyncModel(150, 337); // 15525, pearspedy
 	AddCharSyncModel(237, 338); // 15526, pearspedz
-	AddCharSyncModel(93, 339); // 15527, pearspedaa
+	AddCharSyncModel(131, 339); // 15527, pearspedaa
 	AddCharSyncModel(12, 340); // 15528, pearspedab
 	AddCharSyncModel(40, 341); // 15529, pearspedac
 	AddCharSyncModel(178, 342); // 15530, pearspedad
 	AddCharSyncModel(233, 343); // 15531, pearspedae
 	AddCharSyncModel(93, 344); // 15532, pearspedaf
-	AddCharSyncModel(226, 345); // 15533, pearspedag 
+	AddCharSyncModel(157, 345); // 15533, pearspedag 
 	AddCharSyncModel(223, 346); // 15534, pearspedah
 	AddCharSyncModel(233, 347); // 15535, pearspedai
 	AddCharSyncModel(233, 348); // 15536, pearspedaj
@@ -154,7 +154,7 @@ stock AddCustomSkins()
 	AddCharSyncModel(12, 400); // 15588, pearspedci
 	AddCharSyncModel(217, 401); // 15589, pearspedcj male
 	AddCharSyncModel(12, 402); // 15590, pearspedck
-	AddCharSyncModel(7, 403); // 15591, pearspedcl male
+	AddCharSyncModel(59, 403); // 15591, pearspedcl male
 	AddCharSyncModel(93, 404); // 15592, pearspedcm
 	AddCharSyncModel(98, 405); // 15593, pearspedcn male
 	AddCharSyncModel(143, 406); // 15594, pearspedco male
@@ -193,12 +193,10 @@ stock GetSkinSex(s)
 
 	// Кастомные -15188
 	|| s == 312
-	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 15523
-	|| s == 336 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
+	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 336
+	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410 || s == 412 || s == 413 || s == 414
-	|| s == 415 || s == 416 || s == 417 || s == 418 || s == 419 || s == 420 || s == 421
-	|| s == 422 || s == 423 || s == 424 || s == 425) return 0; // 0 - мужской скин
+	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s == 425) return 0; // 0 - мужской скин
  	else return 1; // Все остальные 1, значит женские
 }
 

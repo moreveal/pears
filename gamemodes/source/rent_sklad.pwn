@@ -8,7 +8,9 @@ CMD:rentsklad(playerid)
 	    {
 		    if(WhInfo[r][wStat] >= 1)
 			{
-			    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
+			    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1];
+				new thingQara = OnlineInfo[playerid][oInHandThing][3], thingType = OnlineInfo[playerid][oInHandThing][4];
+				new thingPack = OnlineInfo[playerid][oInHandThing][5];
 				if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
 				if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 				{
@@ -30,6 +32,9 @@ CMD:rentsklad(playerid)
 			       	    PPP15[playerid] = 0;
 			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
 			       	    PlayerPlaySound(playerid,6401,0,0,0);
+
+						// Выдаём юниты
+	       	    		GiveUnitForBox(playerid, fpick, thingType, fquan, thingQara);
        	    		}
        	    		else ErrorMessage(playerid, "{FF6347}Содержимое ящика в моих руках, не может храниться на этом складе");
 				}
@@ -114,7 +119,7 @@ stock putrentwh(wh, pick, kol, thingType)
 	{
 		if(WhInfo[wh][wInvent][inva] == pick && WhInfo[wh][wInvType][inva] == thingType)
 		{
-		    if(OrganInfo[wh][gInv][inva]+kol > getLimit) // Встроенная проверка на лимит
+		    if(WhInfo[wh][wInv][inva]+kol > getLimit) // Встроенная проверка на лимит
 		    {
 		        stopFind = true;
 		    }

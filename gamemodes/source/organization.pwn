@@ -395,7 +395,9 @@ function gunsklad(playerid)
 	new skladstat = IsAGunSklad(playerid);
 	if(skladstat > 0)
 	{
-	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1], fpara = OnlineInfo[playerid][oInHandThing][2], thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
+	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1];
+		new fpara = OnlineInfo[playerid][oInHandThing][2], thingQara = OnlineInfo[playerid][oInHandThing][3];
+		new thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
 		if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
 		if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 		{
@@ -425,15 +427,7 @@ function gunsklad(playerid)
 	       	    PlayerPlaySound(playerid,6401,0,0,0);
 
 	       	    // Выдаём юниты
-	       	    if(OrganInfo[fraction(playerid)][gUnitStat][2] > 0)
-	   			{
-	   			    new kol;
-	   				if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0) kol = fquan; // Вещества, Патроны
-	   				else if(IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1) kol = fquan*1000; // Каска, Броня, Оружие
-	   				PlayerInfo[playerid][pUnit] += kol*OrganInfo[fraction(playerid)][gUnitStat][2];
-	   				format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[fraction(playerid)][gUnitStat][2]);
-	   				GameTextForPlayer(playerid,string,3000,3);
-				}
+	       	    GiveUnitForBox(playerid, fpick, thingType, fquan, thingQara);
 
 				// Выдаём ачивку, первый доставленный ящик
 				if(PlayerInfo[playerid][pAchieve][99] == 0) AchievePlayer(playerid, 99, 1);
@@ -445,6 +439,24 @@ function gunsklad(playerid)
 	return 1;
 }
 
+stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
+{
+	if(thingQara != 0) return 1; // Если ящик был собран с арендованного склада (Не выдаём юниты)
+
+	new g = fraction(playerid);
+	if(OrganInfo[g][gUnitStat][2] > 0)
+	{
+		new kol;
+		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
+		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
+		PlayerInfo[playerid][pUnit] += kol*OrganInfo[g][gUnitStat][2];
+
+		new string[80];
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[g][gUnitStat][2]);
+		GameTextForPlayer(playerid,string,3000,3);
+	}
+	return 1;
+}
 
 // lmenu
 CMD:omenu(playerid) return cmd_lmenu(playerid);

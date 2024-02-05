@@ -236,14 +236,23 @@ stock LoadInteriorToBiz(playerid, b)
     for(new i = 0; i < MAX_OBJECT_INT; i++)
     {
         // Удаляем текущие объекты из бизнеса
-        if(BizzInfo[b][bOmodel][i] > 0) DestroyDynamicObject(BizzInfo[b][bObject][i]);
+        if(BizzInfo[b][bOmodel][i] > 0) 
+        {
+            DestroyDynamicObject(BizzInfo[b][bObject][i]);
+            if(peoInfo[peoId][peoObject][i] == 0 || peoInfo[peoId][peoModel][i] == 0) DelObjectBiz(b, i); // Удаляем только если не перезаписываем
+        }
 
-        if(peoInfo[peoId][peoObject][i] == 0)  continue;
+        if(peoInfo[peoId][peoObject][i] == 0 || peoInfo[peoId][peoModel][i] == 0)  continue;
 
         // Получаем инфу об объекте
         GetDynamicObjectPos(peoInfo[peoId][peoObject][i], pos[0], pos[1], pos[2]);
         GetDynamicObjectRot(peoInfo[peoId][peoObject][i], pos[3], pos[4], pos[5]);
         
+        if(i == 0)
+        {
+            BizzInfo[b][bFrame] = peoInfo[peoId][peoModel][i]; // Записываем Frame для 0 ID объекта
+        }
+
         // Создаём объект
         BizzInfo[b][bOmodel][i] = peoInfo[peoId][peoModel][i];
         BizzInfo[b][bObject][i] = CreateDynamicObject(BizzInfo[b][bOmodel][i], pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], b+3000, 90, -1, 100.00, 100.00);
@@ -276,6 +285,8 @@ stock LoadInteriorToBiz(playerid, b)
 
     // Завершение транзакции
 	mysql_query(pearsq, "COMMIT;");
+
+    SaveBizz(b);
 
     new string[144];
     format(string, sizeof(string), "{99ff66}Вы установили интерьер из личного редактора в бизнес № %d\nКоличество объектов: %d\nКоличество текстур: %d", b, quan, quanTextures);
@@ -970,6 +981,7 @@ stock DestroyPeoInterior(playerid) // Удаляем загруженный ин
             {
                 if(i > 0) DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][i]);
                 DestroyDynamicObject(peoInfo[playerid][peoObject][i]);
+                peoInfo[playerid][peoObject][i] = 0;
             }
             peoInfo[playerid][peoModel][i] = 0;
             for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++) peoTexture[playerid][i][t] = 0;
@@ -1299,7 +1311,12 @@ stock sqlite_LoadMapObjects(playerid)
             {
                 if(peoInfo[playerid][peoModel][ob] > 0) 
                 {
-                    if(IsValidDynamicObject(peoInfo[playerid][peoObject][ob])) DestroyDynamicObject(peoInfo[playerid][peoObject][ob]);
+                    if(IsValidDynamicObject(peoInfo[playerid][peoObject][ob])) 
+                    {
+                        DestroyDynamicObject(peoInfo[playerid][peoObject][ob]);
+                        peoInfo[playerid][peoObject][ob] = 0;
+                        peoInfo[playerid][peoModel][ob] = 0;
+                    }
                 }
             }
 
