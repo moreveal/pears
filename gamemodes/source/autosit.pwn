@@ -520,7 +520,7 @@ stock PressSeatableObjectHandler(playerid)
 		if (result) 
 		{
 			// Если игрок не в той стороне, куда "смотрит" сидение - отменяем
-			static const Float: side_detect_sensitivity = 0.25; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны [0.25 - по умолчанию]
+			static const Float: side_detect_sensitivity = 0.20; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны [0.25 - по умолчанию]
 			new Float: dirX = floatsin(a, degrees),
 				Float: dirY = floatcos(a, degrees);
 
@@ -837,6 +837,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 		if(response)
 		{
+			if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
 			new urlvalid = strfind(inputtext,".mp3");
 			if(urlvalid == -1)
 			{

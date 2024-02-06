@@ -3,93 +3,117 @@
 #endif
 #define _sampvoice_included
 
-#define SV_VERSION      11
+// Types
+// ------------------------------------------------------------
 
-#define SV_NULL         0
-#define SV_INFINITY     -1
-#define SV_FALSE        false
-#define SV_TRUE         true
-
-enum SV_PARAMETER
-{
-    SV_PARAMETER_FREQUENCY = 1,
-    SV_PARAMETER_VOLUME    = 2,
-    SV_PARAMETER_PANNING   = 3,
-    SV_PARAMETER_EAXMIX    = 4,
-    SV_PARAMETER_SRC       = 8
-}
-
-#define SV_PTR:
 #define SV_STR:
 #define SV_INT:
 #define SV_UINT:
-#define SV_FLOAT:       Float:
-#define SV_BOOL:        bool:
-#define SV_VOID:        void:
+#define SV_FLOAT: Float:
+#define SV_BOOL:  bool:
+#define SV_VOID:  void:
+#define SV_ANY:   any:
 
-#define SV_STREAM:      SV_PTR:
-#define SV_GSTREAM:     SV_PTR:
-#define SV_LSTREAM:     SV_PTR:
-#define SV_LPSTREAM:    SV_PTR:
-#define SV_SLSTREAM:    SV_PTR:
-#define SV_DLSTREAM:    SV_PTR:
-#define SV_EFFECT:      SV_PTR:
+// Constants
+// ------------------------------------------------------------
 
-native SV_VOID:SvDebug(SV_BOOL:mode);
-native SV_VOID:SvInit(SV_UINT:bitrate);
-native SV_UINT:SvGetVersion(SV_UINT:playerid);
+#define SV_TRUE  true
+#define SV_FALSE false
+#define SV_NONE  -1
 
-native SV_BOOL:SvHasMicro(SV_UINT:playerid);
-native SV_BOOL:SvStartRecord(SV_UINT:playerid);
-native SV_BOOL:SvStopRecord(SV_UINT:playerid);
-native SV_BOOL:SvAddKey(SV_UINT:playerid, SV_UINT:keyid);
-native SV_BOOL:SvHasKey(SV_UINT:playerid, SV_UINT:keyid);
-native SV_BOOL:SvRemoveKey(SV_UINT:playerid, SV_UINT:keyid);
-native SV_VOID:SvRemoveAllKeys(SV_UINT:playerid);
-native SV_BOOL:SvMutePlayerStatus(SV_UINT:playerid);
-native SV_VOID:SvMutePlayerEnable(SV_UINT:playerid);
-native SV_VOID:SvMutePlayerDisable(SV_UINT:playerid);
+// [Macros] Version Maker
+// ------------------------------------------------------------
 
-native SV_GSTREAM:SvCreateGStream(SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_LPSTREAM:SvCreateSLStreamAtPoint(SV_FLOAT:distance, SV_FLOAT:posx, SV_FLOAT:posy, SV_FLOAT:posz, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_SLSTREAM:SvCreateSLStreamAtVehicle(SV_FLOAT:distance, SV_UINT:vehicleid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_SLSTREAM:SvCreateSLStreamAtPlayer(SV_FLOAT:distance, SV_UINT:playerid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_SLSTREAM:SvCreateSLStreamAtObject(SV_FLOAT:distance, SV_UINT:objectid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_LPSTREAM:SvCreateDLStreamAtPoint(SV_FLOAT:distance, SV_UINT:maxplayers, SV_FLOAT:posx, SV_FLOAT:posy, SV_FLOAT:posz, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_DLSTREAM:SvCreateDLStreamAtVehicle(SV_FLOAT:distance, SV_UINT:maxplayers, SV_UINT:vehicleid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_DLSTREAM:SvCreateDLStreamAtPlayer(SV_FLOAT:distance, SV_UINT:maxplayers, SV_UINT:playerid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_DLSTREAM:SvCreateDLStreamAtObject(SV_FLOAT:distance, SV_UINT:maxplayers, SV_UINT:objectid, SV_UINT:color = SV_NULL, const SV_STR:name[] = "");
-native SV_VOID:SvUpdateDistanceForLStream(SV_LSTREAM:lstream, SV_FLOAT:distance);
-native SV_VOID:SvUpdatePositionForLPStream(SV_LPSTREAM:lpstream, SV_FLOAT:posx, SV_FLOAT:posy, SV_FLOAT:posz);
-native SV_BOOL:SvAttachListenerToStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_BOOL:SvHasListenerInStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_BOOL:SvDetachListenerFromStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_VOID:SvDetachAllListenersFromStream(SV_STREAM:stream);
-native SV_BOOL:SvAttachSpeakerToStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_BOOL:SvHasSpeakerInStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_BOOL:SvDetachSpeakerFromStream(SV_STREAM:stream, SV_UINT:playerid);
-native SV_VOID:SvDetachAllSpeakersFromStream(SV_STREAM:stream);
-native SV_VOID:SvStreamParameterSet(SV_STREAM:stream, SV_PARAMETER:parameter, SV_FLOAT:value);
-native SV_VOID:SvStreamParameterReset(SV_STREAM:stream, SV_PARAMETER:parameter);
-native SV_BOOL:SvStreamParameterHas(SV_STREAM:stream, SV_PARAMETER:parameter);
-native SV_FLOAT:SvStreamParameterGet(SV_STREAM:stream, SV_PARAMETER:parameter);
-native SV_VOID:SvStreamParameterSlideFromTo(SV_STREAM:stream, SV_PARAMETER:parameter, SV_FLOAT:startvalue, SV_FLOAT:endvalue, SV_UINT:time);
-native SV_VOID:SvStreamParameterSlideTo(SV_STREAM:stream, SV_PARAMETER:parameter, SV_FLOAT:endvalue, SV_UINT:time);
-native SV_VOID:SvStreamParameterSlide(SV_STREAM:stream, SV_PARAMETER:parameter, SV_FLOAT:deltavalue, SV_UINT:time);
-native SV_VOID:SvDeleteStream(SV_STREAM:stream);
+#define SvMakeVersion(%0,%1,%2) (((%0) << 24) | (((%1) & 0xFF) << 16) | ((%2) & 0xFFFF))
 
-native SV_EFFECT:SvEffectCreateChorus(SV_INT:priority, SV_FLOAT:wetdrymix, SV_FLOAT:depth, SV_FLOAT:feedback, SV_FLOAT:frequency, SV_UINT:waveform, SV_FLOAT:delay, SV_UINT:phase);
-native SV_EFFECT:SvEffectCreateCompressor(SV_INT:priority, SV_FLOAT:gain, SV_FLOAT:attack, SV_FLOAT:release, SV_FLOAT:threshold, SV_FLOAT:ratio, SV_FLOAT:predelay);
-native SV_EFFECT:SvEffectCreateDistortion(SV_INT:priority, SV_FLOAT:gain, SV_FLOAT:edge, SV_FLOAT:posteqcenterfrequency, SV_FLOAT:posteqbandwidth, SV_FLOAT:prelowpasscutoff);
-native SV_EFFECT:SvEffectCreateEcho(SV_INT:priority, SV_FLOAT:wetdrymix, SV_FLOAT:feedback, SV_FLOAT:leftdelay, SV_FLOAT:rightdelay, SV_BOOL:pandelay);
-native SV_EFFECT:SvEffectCreateFlanger(SV_INT:priority, SV_FLOAT:wetdrymix, SV_FLOAT:depth, SV_FLOAT:feedback, SV_FLOAT:frequency, SV_UINT:waveform, SV_FLOAT:delay, SV_UINT:phase);
-native SV_EFFECT:SvEffectCreateGargle(SV_INT:priority, SV_UINT:ratehz, SV_UINT:waveshape);
-native SV_EFFECT:SvEffectCreateI3dl2reverb(SV_INT:priority, SV_INT:room, SV_INT:roomhf, SV_FLOAT:roomrollofffactor, SV_FLOAT:decaytime, SV_FLOAT:decayhfratio, SV_INT:reflections, SV_FLOAT:reflectionsdelay, SV_INT:reverb, SV_FLOAT:reverbdelay, SV_FLOAT:diffusion, SV_FLOAT:density, SV_FLOAT:hfreference);
-native SV_EFFECT:SvEffectCreateParameq(SV_INT:priority, SV_FLOAT:center, SV_FLOAT:bandwidth, SV_FLOAT:gain);
-native SV_EFFECT:SvEffectCreateReverb(SV_INT:priority, SV_FLOAT:ingain, SV_FLOAT:reverbmix, SV_FLOAT:reverbtime, SV_FLOAT:highfreqrtratio);
-native SV_VOID:SvEffectAttachStream(SV_EFFECT:effect, SV_STREAM:stream);
-native SV_VOID:SvEffectDetachStream(SV_EFFECT:effect, SV_STREAM:stream);
-native SV_VOID:SvEffectDelete(SV_EFFECT:effect);
+// [Macros] Target Makers (for SvSetTarget)
+// ------------------------------------------------------------
 
-forward SV_VOID:OnPlayerActivationKeyPress(SV_UINT:playerid, SV_UINT:keyid);
-forward SV_VOID:OnPlayerActivationKeyRelease(SV_UINT:playerid, SV_UINT:keyid);
+#define SvMakeVehicle(%0) ((1 << 14) | ((%0) & 0x3FFF))
+#define  SvMakePlayer(%0) ((2 << 14) | ((%0) & 0x3FFF))
+#define  SvMakeObject(%0) ((3 << 14) | ((%0) & 0x3FFF))
+
+// [Constants] Current Version
+// ------------------------------------------------------------
+
+#define SV_VERSION SvMakeVersion(4,0,0)
+
+// [Enumerations] Filters
+// ------------------------------------------------------------
+
+enum SV_FILTER
+{
+    SV_CHORUS,
+    SV_COMPRESSOR,
+    SV_DISTORTION,
+    SV_ECHO,
+    SV_FLANGER,
+    SV_GARGLE,
+    SV_I3DL2REVERB,
+    SV_PARAMEQ,
+    SV_REVERB
+}
+
+// [Functions] Debug
+// ------------------------------------------------------------
+
+native SV_VOID:SvEnableDebug();
+native SV_VOID:SvDisableDebug();
+native SV_BOOL:SvCheckDebug();
+
+// [Functions] Player
+// ------------------------------------------------------------
+
+native SV_UINT:SvGetVersion(SV_UINT:player);
+native SV_BOOL:SvHasMicro(SV_UINT:player);
+
+native SV_BOOL:SvEnableListener(SV_UINT:player);
+native SV_BOOL:SvDisableListener(SV_UINT:player);
+native SV_BOOL:SvCheckListener(SV_UINT:player);
+
+native SV_BOOL:SvEnableSpeaker(SV_UINT:player, SV_UINT:/*channels*/...);
+native SV_BOOL:SvDisableSpeaker(SV_UINT:player, SV_UINT:/*channels*/...);
+native SV_BOOL:SvCheckSpeaker(SV_UINT:player, SV_UINT:/*channels*/...);
+
+native SV_BOOL:SvAttachStream(SV_UINT:player, SV_UINT:stream, SV_UINT:/*channels*/...);
+native SV_BOOL:SvDetachStream(SV_UINT:player, SV_UINT:stream, SV_UINT:/*channels*/...);
+native SV_BOOL:SvHasStream(SV_UINT:player, SV_UINT:stream, SV_UINT:/*channels*/...);
+
+native SV_BOOL:SvSetKey(SV_UINT:player, SV_UINT:key, SV_UINT:/*channels*/...);
+native SV_UINT:SvGetKey(SV_UINT:player, SV_UINT:channel);
+
+native SV_BOOL:SvPlay(SV_UINT:player, SV_UINT:/*channels*/...);
+native SV_BOOL:SvStop(SV_UINT:player, SV_UINT:/*channels*/...);
+
+// [Functions] Stream
+// ------------------------------------------------------------
+
+native SV_UINT:SvCreateStream(SV_FLOAT:distance = 0.0);
+
+native SV_BOOL:SvEnableTransiter(SV_UINT:stream);
+native SV_BOOL:SvDisableTransiter(SV_UINT:stream);
+native SV_BOOL:SvCheckTransiter(SV_UINT:stream);
+
+native SV_BOOL:SvAttachListener(SV_UINT:stream, SV_UINT:player);
+native SV_BOOL:SvDetachListener(SV_UINT:stream, SV_UINT:player);
+native SV_BOOL:SvHasListener(SV_UINT:stream, SV_UINT:player);
+
+native SV_VOID:SvSetVolume(SV_UINT:stream, SV_FLOAT:volume);
+native SV_VOID:SvSetPanning(SV_UINT:stream, SV_FLOAT:panning);
+native SV_VOID:SvSetDistance(SV_UINT:stream, SV_FLOAT:distance);
+native SV_VOID:SvSetPosition(SV_UINT:stream, SV_FLOAT:x, SV_FLOAT:y, SV_FLOAT:z);
+native SV_VOID:SvSetTarget(SV_UINT:stream, SV_UINT:target);
+native SV_VOID:SvSetEffect(SV_UINT:stream, SV_UINT:effect);
+native SV_VOID:SvSetIcon(SV_UINT:stream, const SV_STR:icon[]);
+
+native SV_VOID:SvDeleteStream(SV_UINT:stream);
+
+// [Functions] Effect
+// ------------------------------------------------------------
+
+native SV_UINT:SvCreateEffect();
+
+native SV_BOOL:SvAppendFilter(SV_UINT:effect, SV_FILTER:filter, SV_INT:priority, SV_ANY:/*parameters*/...);
+native SV_VOID:SvRemoveFilter(SV_UINT:effect, SV_FILTER:filter, SV_INT:priority);
+
+native SV_VOID:SvDeleteEffect(SV_UINT:effect);
