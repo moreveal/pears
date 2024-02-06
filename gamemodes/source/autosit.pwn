@@ -476,27 +476,7 @@ stock GetDynamicObjectSeatPosition(playerid, objectid, &Float: x, &Float: y, &Fl
 	return false;
 }
 
-stock IsAMusicObject(playerid, model)
-{
-	if(model == 2232)
-	{
-		printf("музичка работаит"); // это удалить
-		// Сюда суем диалоговое окно в которое засунем ссылку на музыку
-		/*
-		foreach (Player, i)
-		{
-			if(IsPlayerInRangeOfPoint(i,300.0,X, Y, Z))
-			{
-				if(OnlineInfo[i][oListenRadioPears] == 0) PlayAudioStreamForPlayer(i, inputtext,X, Y, Z,30.0,true);
-			}
-		}
-		*/
-		return 1;
-	}
-	return 0;
-}
-
-stock PressSeatableObjectHandler(playerid) 
+stock PressSeatableObjectHandler(playerid)
 {
   	// В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
 	if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
@@ -727,6 +707,16 @@ stock exitsit(playerid, stat)
 	return 1;
 }
 
+stock IsAMusicObject(playerid, model)
+{
+	if(model == 2232)
+	{
+		ShowDialog(playerid, 1487, DIALOG_STYLE_INPUT, "Включение музыки", "{ffffff}Ссылка обязательно должна начинаться на [ {ff6347}https:// {ffffff}], а оканчиваться на [ {ff6347}.ogg или .mp3 {ffffff}]\nМузыка будет играть у точки магнитофона и чем дальше от него тем тише. Радиус музыки 30 метров\n\n{ffffff}Укажите {ff9000}Ссылку{ffffff} на трек:", "Продолжить", "Отмена");
+		return 1;
+	}
+	return 0;
+}
+
 stock ShowNewSeatMenu(playerid) {
 	if (newSeatObjects[playerid][nssModel] <= 0) return 0;
 
@@ -839,6 +829,40 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 
 			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
+		}
+	}
+	if(dialogid == 1487)
+	{
+		new Float: player_pos[3];
+		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
+		if(response)
+		{
+			new urlvalid = strfind(inputtext,".mp3");
+			if(urlvalid == -1)
+			{
+				urlvalid = urlvalid = strfind(inputtext,"https://");
+				if(urlvalid > 1 || urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка должна начинатся на https://");
+				urlvalid = strfind(inputtext,".ogg");
+				if(urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка на трек обязательно должена иметь в ссылке формат .mp3 или .ogg");
+			}
+			SuccessMessage(playerid,"{44ff99}Вы поставили трек. Если он не играет значит вы допустили ошибку в ссылке, или у вас в настройках выключен звук Радио.");
+			foreach (Player, i)
+			{
+				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]))
+				{
+					if(OnlineInfo[i][oListenRadioPears] == 0) PlayAudioStreamForPlayer(i,inputtext,player_pos[0], player_pos[1], player_pos[2],30.0,true);
+				}
+			}
+		}
+		else
+		{
+			foreach (Player, i)
+			{
+				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]))
+				{
+					if(OnlineInfo[i][oListenRadioPears] == 0) StopAudioStreamForPlayer(i);
+				}
+			}
 		}
 	}
 	return 1;

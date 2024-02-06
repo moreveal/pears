@@ -51,7 +51,8 @@ stock FindCarInWareHouse(playerid)
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
     new world = GetPlayerVirtualWorld(playerid)-80, i;
     new g = fraction(playerid);
-    if(PlayerInfo[playerid][pTheft] != 0) i = PlayerInfo[playerid][pTheft];
+    if(PlayerInfo[playerid][pTheft] != -1) i = PlayerInfo[playerid][pTheft];
+    if(i == 0) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nВ нем было несколько подозрительных машин, но вы не взяли заявку на угон. Возьмите заявку и повторите проверку","*","");
     if(crimeInfo[i][crmSklad] == world)
     {   
         new string[120];
@@ -96,6 +97,7 @@ stock ListCrime(playerid)
         List[quan][playerid] = i;
         quan ++;
 	}
+    if(quan == 0) return ErrorMessage(playerid, "{FF6347}Нет никаких совершенных преступлений");
     ShowDialog(playerid,1351,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список Преступлений",lines,"Выбрать","Отмена");
     return 1;
 }
