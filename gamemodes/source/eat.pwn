@@ -142,8 +142,8 @@ stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQ
 	}
 	else if(thingId == 166) // Пицца Домашняя
 	{
-		ing1 = 1, ingQuan1 = 1; // Хлеб
-		ing2 = 168, ingQuan2 = 1; // Мясо
+		ing1 = 1, ingQuan1 = 3; // Хлеб
+		ing2 = 168, ingQuan2 = 3; // Мясо
 		return 1;
 	}
 	else if(thingId == 172) // Апельсиновый сок
@@ -386,6 +386,7 @@ stock drink_eat(playerid, inva, fpick)
 	    Hold[playerid] = 0, HoldStat[playerid] = 0, HoldQuan[playerid] = 0, PlayerPlaySound(playerid,5601,0,0,0), RemovePlayerAttachedObject(playerid,1);
      	ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
      	TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton);
+		if(!IsPlayerInAnyVehicle(playerid) && PPP15[playerid] == 7)PPP15[playerid] = 0, ClearAnimations(playerid), ClearAnim(playerid);
 		return 1;
 	}
 	if(Dei[playerid] > 0 || Hold[playerid] > 0 && Hold[playerid] != 2 || Hand[playerid] > 0 || GetPlayerWeapon(playerid) > 1) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");

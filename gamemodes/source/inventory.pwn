@@ -1534,7 +1534,7 @@ stock GetFullThingQuan(thingId)
 	else if(thingId == 88) quan = 5; // Семена травы
 	else if(thingId == 163) quan = 21; // Свадебный торт
 	else if(thingId == 165) quan = 7; // Пицца
-	else if(thingId == 166) quan = 7; // Пицца Домашняя
+	else if(thingId == 166) quan = 10; // Пицца Домашняя
 	else if(thingId == 120) quan = 4; // Sprunk Банка
 	else if(thingId == 121) quan = 4; // Кофе
 	else if(thingId == 124) quan = 4; // Спранк стакан

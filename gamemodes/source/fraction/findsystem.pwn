@@ -72,7 +72,7 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
   SuccessMessage(playerid, lines);
   PlayerPlaySound(playerid,6400,0,0,0);
-  format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск %s, квадрат отмечен на GPS. Он в районе: %s",rpplayername(giveplayerid),gSAZones[findraiontolist][zName]);
+  format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск {FFD700}%s{cccccc}, квадрат отмечен на GPS. Он в районе: {FFD700}%s.",rpplayername(giveplayerid),gSAZones[findraiontolist][zName]);
   SendClientMessage(playerid,COLOR_GREY,string);
   update_ability(playerid, 9, 10 + random(5));
   return 1;

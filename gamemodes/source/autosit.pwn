@@ -711,7 +711,7 @@ stock IsAMusicObject(playerid, model)
 {
 	if(model == 2232)
 	{
-		ShowDialog(playerid, 1487, DIALOG_STYLE_INPUT, "Включение музыки", "{ffffff}Ссылка обязательно должна начинаться на [ {ff6347}https:// {ffffff}], а оканчиваться на [ {ff6347}.ogg или .mp3 {ffffff}]\nМузыка будет играть у точки магнитофона и чем дальше от него тем тише. Радиус музыки 30 метров\n\n{ffffff}Укажите {ff9000}Ссылку{ffffff} на трек:", "Продолжить", "Отмена");
+		ShowDialog(playerid, 1488, DIALOG_STYLE_TABLIST, "Магнитофон", "{ffffff}Включить трек\nВыключить трек", "Выбор", "Отмена");
 		return 1;
 	}
 	return 0;
@@ -833,8 +833,9 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 	}
 	if(dialogid == 1487)
 	{
-		new Float: player_pos[3];
+		new Float: player_pos[3],world,int;
 		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
+		world = GetPlayerVirtualWorld(playerid), int = GetPlayerInterior(playerid);
 		if(response)
 		{
 			if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
@@ -849,19 +850,29 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			SuccessMessage(playerid,"{44ff99}Вы поставили трек. Если он не играет значит вы допустили ошибку в ссылке, или у вас в настройках выключен звук Радио.");
 			foreach (Player, i)
 			{
-				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]))
+				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]) && world == GetPlayerVirtualWorld(i) && int == GetPlayerInterior(i))
 				{
 					if(OnlineInfo[i][oListenRadioPears] == 0) PlayAudioStreamForPlayer(i,inputtext,player_pos[0], player_pos[1], player_pos[2],30.0,true);
 				}
 			}
 		}
-		else
+	}
+	if(dialogid == 1488)
+	{
+		if(response)
 		{
-			foreach (Player, i)
+			if(listitem == 0) ShowDialog(playerid, 1487, DIALOG_STYLE_INPUT, "Включение музыки", "{ffffff}Ссылка обязательно должна начинаться на [ {ff6347}https:// {ffffff}], а оканчиваться на [ {ff6347}.ogg или .mp3 {ffffff}]\nМузыка будет играть у точки магнитофона и чем дальше от него тем тише. Радиус музыки 30 метров\n\n{ffffff}Укажите {ff9000}Ссылку{ffffff} на трек:", "Продолжить", "Отмена");
+			if(listitem == 1)
 			{
-				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]))
+				new Float: player_pos[3],world,int;
+				GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
+				world = GetPlayerVirtualWorld(playerid), int = GetPlayerInterior(playerid);
+				foreach (Player, i)
 				{
-					if(OnlineInfo[i][oListenRadioPears] == 0) StopAudioStreamForPlayer(i);
+					if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]) && world == GetPlayerVirtualWorld(i) && int == GetPlayerInterior(i))
+					{
+						if(OnlineInfo[i][oListenRadioPears] == 0) StopAudioStreamForPlayer(i);
+					}
 				}
 			}
 		}
