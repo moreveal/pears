@@ -695,7 +695,7 @@ stock PrisonEscape(playerid)
     PPSetPlayerPos(playerid,299.2186,2164.9827,942.0348);
     S_SetPlayerVirtualWorld(playerid,241,241), SetPlayerInterior(playerid,241);
     SetPlayerFacingAngle(playerid,173.2588);
-    SetPlayerCriminal(playerid, -1, CriminalCodeInfo[0][ccName], CriminalCodeInfo[0][ccLevel], 0);
+    SetPlayerCriminal(playerid, -1, CriminalCodeInfo[0][0][ccName], CriminalCodeInfo[0][0][ccLevel], 0, 0);
     SuccessMessage(playerid, "{99ff66}Вы сбежали из тюрьмы");
 
     CreatePrisonAlarm(playerid, 0);

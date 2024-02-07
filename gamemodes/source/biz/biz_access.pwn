@@ -66,6 +66,7 @@ CMD:bac(playerid)
 	new b = PlayerInfo[playerid][pBusiness], quan;
 	new line[100],lines[4048];
 
+	DP[4][playerid] = b;
 	format(line,sizeof(line),"Настройка \t Значение"), strcat(lines,line);
 
 	// Права доступа бизнеса
@@ -144,6 +145,7 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 				new settingId = List[listitem-MAX_BIZ_ACCESS][playerid];
 				new line[100],lines[200];
 
+				DP[2][playerid] = settingId;
 				format(line,sizeof(line),"{cccccc}Введите значение для настройки: {ff9000}%s", bizSetting[settingId]), strcat(lines,line);
 				if(settingId == 0) 
 				{
