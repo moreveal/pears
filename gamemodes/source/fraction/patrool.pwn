@@ -192,7 +192,7 @@ CMD:invitepatrool(playerid, const params[])
             PlayerInfo[giveplayerid][patroolID] = findslot;
             format(string,sizeof(string),"[ Мысли ]: %s пригласил вас в свой патруль", PlayerInfo[playerid][pName]);
             SendClientMessage(giveplayerid,COLOR_GREY,string);
-            format(string,sizeof(string),"{99ff66}%s {ffcc66}пригласил вас в свой патруль",PlayerInfo[giveplayerid][pName]);
+            format(string,sizeof(string),"{99ff66}%s {ffcc66}пригласил вас в свой патруль",PlayerInfo[playerid][pName]);
             ShowDialog(giveplayerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 
             format(string,sizeof(string),"{ffcc66}Вы пригласили {99ff66}%s {ffcc66}в свой патруль",PlayerInfo[giveplayerid][pName]);
