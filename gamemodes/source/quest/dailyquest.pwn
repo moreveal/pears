@@ -342,9 +342,9 @@ stock CompletingDaily(playerid, dailyid, quan)
         {
             DailyInfo[playerid][daiFull] = true;
 
-            new thingId, thingQuan, thingType, thingPack;
-            CreateCasePlayer(thingId, thingQuan, thingType, thingPack);
-            new plit = GiveThingPlayer(playerid, thingId, thingQuan, 0, 0, thingType, thingPack, 9999);
+            new thingId, thingQuan, thingType, thingPara, thingPack;
+            CreateCasePlayer(thingId, thingQuan, thingType, thingPara, thingPack);
+            new plit = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
             if(plit == -1)
             {
                 Throw(playerid, thingId, thingQuan, 0, 0, thingType, thingPack);
