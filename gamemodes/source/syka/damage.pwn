@@ -34,6 +34,8 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
         || GetPVarInt(damagedid, "afksystem") >= 5 // Если игрок, по которому наносят урон, в AFK не менее 5 секунд
         || Iamzz[damagedid] // Если игрок, по которому наносят урон, в зелёной зоне
         || IsPlayerInVehicle(damagedid, prisonbus_LS) || IsPlayerInVehicle(damagedid, prisonbus_SF) // Если игрок в тюремном автобусе
+        || weaponid == 23 // Это будет всегда электрошокер
+        || HealthAC[playerid] <= 0.0 // Хп уже на нуле
     ) return 0;
 
     // Характеристики оружия по WeaponID
@@ -167,7 +169,7 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
                 damage *= 1.10;
             }
 
-            new string[40];
+            //new string[40];
             /*format(string, sizeof string, "Игрок %s[%d] нанес %0.2f урона игроку %s[%d]", PlayerInfo[playerid][pName], playerid, damage, PlayerInfo[damagedid][pName], damagedid);
 			SendClientMessageToAll(COLOR_GREY, string);
 			if (distance_coef < 1.0) {
@@ -184,12 +186,11 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
                 damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
 
-            format(string, sizeof string, "-%.0f HP", damage);
-            SetPlayerChatBubble(damagedid, string, COLOR_RED, 45.0, 4000);
-
-			if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid))
+            // Скилл силы
+            if((weaponid == 0 || weaponid == 1) && box[playerid] == 0 && ProxDetectorS(3.0, playerid, damagedid)) 
             {
-                 CaptTakeHealth(playerid, damagedid, damage);
+                new Float:power = get_power(playerid);
+                damage += power;
             }
             return 1;
         }
@@ -239,8 +240,17 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
             }
         }
 
+        new string[20];
+        format(string, sizeof string, "-%.0f HP", damage);
+        SetPlayerChatBubble(damagedid, string, COLOR_RED, 45.0, 4000);
+
+        // Считаем урон на капте
+		if(IsAZoneCapt(playerid) && IsAZoneCapt(damagedid)) CaptTakeHealth(playerid, damagedid, damage);
+
         // Прерываем намаз
         if(Namaz[playerid] >= 0) NamazEnd(playerid, 2);
+
+        if(HealthAC[damagedid] <= 0 && PlayerDeath[damagedid] == 0) FruitPlayerDeath(damagedid, playerid, weaponid);
     }
     return 1;
 }

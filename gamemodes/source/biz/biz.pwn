@@ -1191,7 +1191,7 @@ stock GpsBiz(playerid, bizType)
 	format(line,sizeof(line),"{ff9000}Ближайший"), strcat(lines,line);
 
 	new quan;
-	for(new b = minB; b < maxB; b++) 
+	for(new b = minB; b < maxB + 1; b++) 
 	{
 		List[quan][playerid] = b;
 		quan ++;
