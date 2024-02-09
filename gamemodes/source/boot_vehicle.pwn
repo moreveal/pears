@@ -224,7 +224,9 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 					if(VehInfo[v][vInvent][i] == thingId && VehInfo[v][vInvType][i] == thingType) // Ищем тот, где уже предмет лежит
 					{
 					    inva = i;
-		  				put_thing_boot(v, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+						new updateQara;
+						if(thingPack > 0) updateQara = qara;
+		  				put_thing_boot(v, thingId, quan, para, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 		  				find = 1;
 			   			break;
 					}
@@ -236,7 +238,9 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 						if(VehInfo[v][vInvent][i] == 0) // Ищем пустую ячейку
 						{
 						    inva = i;
-			  				put_thing_boot(v, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+							new updateQara;
+							if(thingPack > 0) updateQara = qara;
+			  				put_thing_boot(v, thingId, quan, para, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 				   			break;
 						}
 					}

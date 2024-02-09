@@ -558,7 +558,7 @@ stock PressSeatableObjectHandler(playerid)
 			
 			// Если модель объекта найдена и позиция определена - помещаем игрока на неё
 			if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
-			new status = sit(playerid);
+			new status = sit(playerid, x, y, player_pos[2]);
 			if(status > 0)
 			{
 				playerSeat[playerid] = true;
@@ -599,7 +599,7 @@ stock NoSit(playerid) // Позиции, где sit работать не буд
 	return 0;
 }
 
-stock sit(playerid)
+stock sit(playerid, Float:x, Float:y, Float:z)
 {
 	new status = 1;
 	if(SitPlayer[playerid] == 0 && HealthAC[playerid] >= 1 && Stun[0][playerid] == 0 && Stun[2][playerid] == 0 && Stun[3][playerid] == 0 && !IsPlayerInAnyVehicle(playerid)
@@ -609,7 +609,9 @@ stock sit(playerid)
 		new sitid = 0, mw = GetPlayerVirtualWorld(playerid), mi = GetPlayerInterior(playerid);
 		for(new s = 0; s < sizeof(SitPos); ++s)
 		{
-			if(IsPlayerInRangeOfPoint(playerid,0.7, SitPos[s][SitPos_X], SitPos[s][SitPos_Y], SitPos[s][SitPos_Z])
+			new Float:dist = GetDistancePoint(x, y, z, SitPos[s][SitPos_X], SitPos[s][SitPos_Y], SitPos[s][SitPos_Z]);
+
+			if(dist <= 0.4
 			&& (SitPos[s][SitWorld] >= 0 && mw == SitPos[s][SitWorld] || SitPos[s][SitWorld] <= -1)
 			&& (SitPos[s][SitInt] >= 0 && mi == SitPos[s][SitInt] || SitPos[s][SitInt] <= -1) && SitID[s] == 0)
 			{
@@ -617,6 +619,8 @@ stock sit(playerid)
 				break;
 			}
 		}
+
+		new joinDesk;
 		if(sitid > 0)
 		{
 			new sid = sitid-1, kassit, minussid;
@@ -671,12 +675,13 @@ stock sit(playerid)
 			SitPlayer[playerid] = sitid;
 
 			// Стулья в комнате казино для игры в карты
-			if(kassit > 0) join_player_desk(playerid, kassit-1, sid-minussid);
+			if(kassit > 0) joinDesk = join_player_desk(playerid, kassit-1, sid-minussid);
 
 			if(readsit == 1) SendClientMessagef(playerid, COLOR_GREY, "%d", sid);
 		}
-		TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 
+		// Отображаем подсказку, только если игрок не сел за игровой стол в карты
+		if(joinDesk == 0) TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 	}
 	return status;
 }

@@ -997,7 +997,9 @@ stock PutThingPrisonTable(pt, playerid, thingId, thingQuan, thingPara, thingQara
 					if(PrisonTableInfo[pt][ptInvent][i] == thingId && PrisonTableInfo[pt][ptInvType][i] == thingType && PrisonTableInfo[pt][ptInvPack][i] == thingPack) // Ищем тот, где уже предмет лежит
 					{
 					    inva = i;
-		  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+                        new updateQara;
+						if(thingPack > 0) updateQara = thingQara;
+		  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 		  				find = 1;
 			   			break;
 					}
@@ -1009,7 +1011,9 @@ stock PutThingPrisonTable(pt, playerid, thingId, thingQuan, thingPara, thingQara
 						if(PrisonTableInfo[pt][ptInvent][i] == 0) // Ищем пустую ячейку
 						{
 						    inva = i;
-			  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+                            new updateQara;
+						    if(thingPack > 0) updateQara = thingQara;
+			  				put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 				   			break;
 						}
 					}
