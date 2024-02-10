@@ -197,9 +197,7 @@ stock PutThingDom(dom, thingId, quan, para, qara, thingType, thingPack, useinva)
 					if(DomInfo[dom][dInvent][i] == thingId && DomInfo[dom][dInvType][i] == thingType && DomInfo[dom][dInvPack][i] == thingPack) // Ищем тот, где уже предмет лежит
 					{
 					    inva = i;
-						new updateQara;
-						if(thingPack > 0) updateQara = qara;
-		  				put_thing_dom(dom, thingId, quan, para, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+		  				put_thing_dom(dom, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 		  				find = 1;
 			   			break;
 					}
@@ -211,9 +209,7 @@ stock PutThingDom(dom, thingId, quan, para, qara, thingType, thingPack, useinva)
 						if(DomInfo[dom][dInvent][i] == 0) // Ищем пустую ячейку
 						{
 						    inva = i;
-							new updateQara;
-							if(thingPack > 0) updateQara = qara;
-			  				put_thing_dom(dom, thingId, quan, para, updateQara, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+			  				put_thing_dom(dom, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
 				   			break;
 						}
 					}
@@ -253,7 +249,7 @@ stock put_thing_dom(dom, thingId, quan, para, qara, thingType, thingPack, i)
 {
 	if(DomInfo[dom][dInvent][i] != 0 && DomInfo[dom][dInvent][i] != thingId) return -1; // Защита от ошибки, на всякий случай
 
-	if(DomInfo[dom][dSost] > 0 && qara == DomInfo[dom][dSost]) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+	if(DomInfo[dom][dSost] > 0 && qara == DomInfo[dom][dSost] && thingPack == 0) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
 
 	DomInfo[dom][dInvent][i] = thingId; // Ставим предмет в слот
 	DomInfo[dom][dInv][i] += quan; // Ставим количество в слот

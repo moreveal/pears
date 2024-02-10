@@ -13,8 +13,8 @@ stock SetPlayerDeath(playerid, reason)
 {
     if(NoDeath(playerid)) return 0;
 
-    if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid);
-    if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid);
+    // Отключаем процесс разных систем после смерти
+    PlayerDeathSystems(playerid);
 
     GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
 	GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
