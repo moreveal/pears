@@ -11,6 +11,9 @@ oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 #define MAX_CASE_ITEM 10 // Максимальное количество слотов в кейсе
 #define MAC_CASES 1 // Максимальное количество типов Кейсов
 
+new ThingVehiclecaseGift[212 + MAX_VEHICLE_CUSTOM];
+new ThingVehicleQuan;
+
 /*enum caseInfo
 {
     caseId, // кейс ID
@@ -41,6 +44,19 @@ stock IsThingClotheNotVariable(i)
 stock IsThingGunNotVariable(i)
 {
     if(i == 0 || i == 1 || i == 2 || i == 7 || i == 9 || i >= 15 && i <= 21 || i == 23 || i == 26 || i == 34 || i >= 34) return 0;
+    return 1;
+}
+
+stock CreateVehicleGift()
+{
+    for(new i =1; i < 212; i++)
+    {
+        if(GetVehicleClass(i+400) >= 1 && GetVehicleClass(i+400) <= 4 && GetVehicleType(i+400) == 1  && GetVehicleType(i+400) == 2) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+    }
+    for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
+    {
+        if(GetVehicleClass(i+2000) >= 1 && GetVehicleClass(i+2000) <= 4 && GetVehicleType(i+2000) == 1  && GetVehicleType(i+2000) == 2) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+    }
     return 1;
 }
 
@@ -116,17 +132,8 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
     }
     else if(thingType == 5)
     {
-        new ThingIDcaseGift[212 + MAX_VEHICLE_CUSTOM];
-        for(new i =1; i < 212; i++)
-        {
-            if(GetVehicleClass(i+400) >= 1 && GetVehicleClass(i+400) <= 4 && GetVehicleType(i+400) == 1  && GetVehicleType(i+400) == 2) ThingIDcaseGift[quan] = i+400, quan ++;
-        }
-        for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
-        {
-            if(GetVehicleClass(i+2000) >= 1 && GetVehicleClass(i+2000) <= 4 && GetVehicleType(i+2000) == 1  && GetVehicleType(i+2000) == 2) ThingIDcaseGift[quan] = i+2000, quan ++;
-        }
-        new thingTemp = random(quan);
-        thingId = ThingIDcaseGift[thingTemp];
+        new thingTemp = random(ThingVehicleQuan);
+        thingId = ThingVehiclecaseGift[thingTemp];
         thingQuan = 1;
     }
 

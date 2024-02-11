@@ -1,6 +1,6 @@
 
 #define STREAMER_EXTRA_TYPE_TRAILER_ENTER	E_STREAMER_CUSTOM(3)
-#define MAX_TRAILERS 5000 // Максимальное количество трейлеров
+#define MAX_TRAILERS 1000 // Максимальное количество трейлеров
 
 // Минимальный и максимальный виртуальный мир для трейлеров
 #define MIN_TRAILER_WORLD 5000
@@ -205,20 +205,36 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
 }
 
 // Получает ID трейлера в массиве trailerInfo
-stock GetPlayerTrailerID(playerid) {
+stock GetPlayerTrailerID(playerid) 
+{
+    new trailerid = -1;
     for (new i = 0; i < MAX_TRAILERS; i++) 
     {
         if (trailerInfo[i][tOwnerID] == 0) continue;
-        if (trailerInfo[i][tOwnerID] == PlayerInfo[playerid][pID]) return i;
+        if (trailerInfo[i][tOwnerID] == PlayerInfo[playerid][pID])
+        {
+            trailerid = i;
+            break;
+        }
     }
-    return -1;
+    return trailerid;
 }
 
 // Создает новый трейлер указанного типа и присваивает его указанному игроку
-stock AddPlayerTrailer(playerid, model) {
-    if (GetPlayerTrailerID(playerid) > -1) return false;
+stock AddPlayerTrailer(playerid, model) 
+{
+    new tid = GetPlayerTrailerID(playerid);
+    if (tid > -1)
+    {
+        new string[60];
+        format(string,sizeof(string),"{ff6347}У вас уже есть трейлер [ № %d ]", trailerInfo[tid][tID]);
+        ErrorMessage(playerid, string);
+        return false;
+    }
 
-    for (new id = 0; id < MAX_TRAILERS; id++) {
+    new result;
+    for (new id = 0; id < MAX_TRAILERS; id++) 
+    {
         if (trailerInfo[id][tOwnerID] == 0)
         {
             trailerInfo[id][tModel] = model;
@@ -228,11 +244,12 @@ stock AddPlayerTrailer(playerid, model) {
             new query_string[sizeof fmt_str - 2 + 9 - 2 + 9];
             mysql_format(pearsq, query_string, sizeof query_string, fmt_str, trailerInfo[id][tOwnerID], trailerInfo[id][tModel]);
             mysql_tquery(pearsq, query_string, "OnPlayerTrailerCreate", "d", id);
-            return true;
+            result = 1;
+            break;
         }
     }
 
-    return false;
+    return result;
 }
 
 // Удаляет трейлер, принадлежавший игроку
@@ -372,39 +389,27 @@ CMD:placetrailer(playerid) {
 //alias:placetrailer("trailer_place")
 
 // Покупка трейлера
-stock trailer_add(playerid, model, trailer) {
-    new targetid;
-
-    new tid = GetPlayerTrailerID(targetid);
-    if (tid > -1) {
-        new string[45];
-        format(string,sizeof(string),"{ff6347}У вас уже есть трейлер [ № %d ]", trailerInfo[tid][tID]);
-        return ErrorMessage(playerid, string);
-    }
-    else if(tid == -1)
+stock trailer_add(playerid, model, trailer) 
+{
+    new money;
+    if(trailer == 0) money = 200000;
+    else if(trailer == 1) money = 250000;
+    else if(trailer == 2) money = 300000;
+    else if(trailer == 3) money = 400000;
+    new infocreate = AddPlayerTrailer(playerid, model);
+    if (infocreate == 0) 
     {
-        if(trailer == 0)
-        {
-            oGivePlayerMoney(playerid,-200000);
-        }
-        else if(trailer == 1)
-        {
-            oGivePlayerMoney(playerid,-250000);
-        }
-        else if(trailer == 2)
-        {
-            oGivePlayerMoney(playerid,-300000);
-        }
-        else if(trailer == 3)
-        {
-            oGivePlayerMoney(playerid,-400000);
-        }
-        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер");
-        
-        new infocreate = AddPlayerTrailer(targetid, model);
         new string[55];
         format(string,sizeof(string),"{FF6347}Трейлер не может быть создан [ Лимит: %d ]", MAX_TRAILERS);
-        if (infocreate == 0) ErrorMessage(playerid, string);
+        ErrorMessage(playerid, string);
+    }
+    else
+    {
+        if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+        oGivePlayerMoney(playerid,-money);
+        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
+        SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");
+ 	    CreateGps(playerid,-547.4172, -1018.2808, 24.1529, 0, 0, 10.0);
     }
     return 1;
 }
@@ -413,14 +418,16 @@ stock trailer_add(playerid, model, trailer) {
 CMD:deletetrailer(playerid, const params[]) {
     if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid,"Команда недоступна");
     new targetid;
-    if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /trailer_delete ID ]");
-    new tid = GetPlayerTrailerID(targetid);
-    if (tid < 0) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: У этого игрока нет трейлера");
-    new stirng[80];
-    format(stirng,sizeof(stirng),"[ Мысли ]: Я забрал трейлер у игрока %s[%d]", rpplayername(targetid), targetid);
-    SendClientMessage(playerid, COLOR_GRAY, stirng);
+    if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /deletetrailer ID ]");
 
-    DeletePlayerTrailer(targetid);
+    new result = DeletePlayerTrailer(targetid);
+    if(result)
+    {
+        new stirng[80];
+        format(stirng,sizeof(stirng),"[ Мысли ]: Я забрал трейлер у игрока %s[%d]", rpplayername(targetid), targetid);
+        SendClientMessage(playerid, COLOR_GRAY, stirng);
+    }
+    else SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: У этого игрока нет трейлера");
     return 1;
 }
 //alias:deletetrailer("dtrailer", "deltrailer")
@@ -481,7 +488,7 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
     new string[90];
     format(string,sizeof(string),"{cccccc}Трейлер "COLOR_ORANGE_TEXT"№%d\n"COLOR_WHITE_TEXT"Владелец: "COLOR_ORANGE_TEXT"%s", number, owner_name);
     trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, x, y, z, 12.5, .testlos = 1, .worldid = 0, .interiorid = 0);
-    trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_OBJECT, x, y, z, 0, 0, .streamdistance = 100.0);
+    trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_PICKUP, x, y, z, 0, 0, .streamdistance = 100.0);
 	Streamer_SetIntData(STREAMER_TYPE_PICKUP, trailerInfo[id][tEnterPickup], STREAMER_EXTRA_TYPE_TRAILER_ENTER, id + 1);
 	return 1;
 }
