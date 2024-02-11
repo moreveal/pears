@@ -1,29 +1,3 @@
-// Переносит координаты на указанную дистанцию и направление от указанной точки
-stock GetXYInFrontOfPoint(&Float:x, &Float:y, Float:angle, Float:dist) {
-	x += (dist * floatsin(-angle, degrees));
-	y += (dist * floatcos(-angle, degrees));
-	return 1;
-}
-
-// Получает координаты, применяя смещение по вертикали и горизонтали
-stock CalculateOffsetPosition(Float: x, Float: y, Float: angle, Float: verticalDistance, Float: horizontalDistance, &Float: newX, &Float: newY) {
-	newX = x + (verticalDistance * floatsin(-angle, degrees)) + (horizontalDistance * floatcos(-angle, degrees));
-	newY = y + (verticalDistance * floatcos(-angle, degrees)) - (horizontalDistance * floatsin(-angle, degrees));
-
-	return 1;
-}
-
-// Получает смещение по вертикали и горизонтали по паре координат и углу "лицевой" стороны
-stock GetOffsetPosition(Float: x, Float: y, Float: parentX, Float: parentY, Float: angle, &Float: distanceVertical, &Float: distanceHorizontal) {
-	new Float: deltaX = x - parentX,
-		Float: deltaY = y - parentY;
-
-	distanceHorizontal = deltaX * floatcos(angle, degrees) + deltaY * floatsin(angle, degrees);
-	distanceVertical = (deltaX * floatsin(angle, degrees) - deltaY * floatcos(angle, degrees)) * -1.0;
-
-	return 1;
-}
-
 #define MAX_SEAT_OBJECT_POSITIONS 10 // Максимальное количество сидений у одного объекта
 
 // Хранит относительные координаты каждой из позиций для сидения определенного объекта
