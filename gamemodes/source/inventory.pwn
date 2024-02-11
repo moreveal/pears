@@ -693,7 +693,7 @@ stock i_infofpick(playerid, fpick, inva, sels, fpara, thingType, thingPack) // �
 	if(yesFindModel > 0)
 	{
 	    new Float:modelPos[4], findIt;
-		GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+		GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 		PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[2][playerid], yesFindModel);
 
 		if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, PlaNestOthe[2][playerid], 1, 1);
@@ -878,14 +878,14 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 		}
 		
 		yesFindModel = GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, Tabs_Load[playerid]);
-		if(thingType == 0) // Обычный предмет
+		if(thingType == 0 && thingPack == 0) // Обычный предмет
 		{
 			if(CheckThingQuan(thingId) == 1) // Количественный
 			{
 				format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
 			}
 		}
-		else if(thingType == 3) // Одежда (Отображаем ID)
+		else if(thingType == 3 && thingPack == 0) // Одежда (Отображаем ID)
 		{
 			format(string, sizeof(string), "ID %d", thingId), textPickInventory(playerid, inva, string);
 		}
@@ -900,9 +900,9 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 	if(yesFindModel > 0)
 	{
 		new Float:modelPos[4], findIt;
-		GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+		GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 		PlayerTextDrawSetPreviewModel(playerid, textdraw, yesFindModel);
-		if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, textdraw, thingQuan, thingQuan);
+		if(thingType == 5 && thingPack == 0) PlayerTextDrawSetPreviewVehCol(playerid, textdraw, thingQuan, thingQuan);
 		PlayerTextDrawSetPreviewRot(playerid, textdraw, modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 	}
 	
@@ -1465,6 +1465,11 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 		else if(thingId == 104 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Картошка
 		else if(thingId == 105 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Томат
 		else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Бычья кровь
+		else if(thingId == 112 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+		else if(thingId == 113 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+		else if(thingId == 114 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+		else if(thingId == 115 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+		else if(thingId == 116 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
 		else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Яблочный
 		else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Вишневый
 		else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Пиво Разливное
@@ -1528,10 +1533,18 @@ stock GetFullThingQuan(thingId)
     else if(thingId == 14) quan = 6; // Пиво
     else if(thingId == 16) quan = 50; // Пачка сигарет
     else if(thingId == 19) quan = 5; // Отмычки
-	else if(thingId == 37) quan = 15; // Шампанское
+	else if(thingId == 37) quan = 11; // Шампанское
 	else if(thingId == 41) quan = 5; // Бенгальские свечи 
 	else if(thingId == 62) quan = 1; // PlayBoy
 	else if(thingId == 88) quan = 5; // Семена травы
+	else if(thingId == 112) quan = 11; // // бухло
+	else if(thingId == 113) quan = 11; // // бухло
+	else if(thingId == 114) quan = 11; // // бухло
+	else if(thingId == 115) quan = 11; // // бухло
+	else if(thingId == 116) quan = 11; // // бухло
+	else if(thingId == 117) quan = 6; // // бухло
+	else if(thingId == 118) quan = 6; // // бухло
+	else if(thingId == 119) quan = 6; // // бухло
 	else if(thingId == 163) quan = 21; // Свадебный торт
 	else if(thingId == 165) quan = 7; // Пицца
 	else if(thingId == 166) quan = 10; // Пицца Домашняя

@@ -1,10 +1,15 @@
 //  Координаты отображения аксессуара в текстдраве
-stock GetModelTextDraw(model, thingType, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
+stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z, &Float:s, &findIt)
 {
     findIt = 1;
-	if(thingType == 5) // Транспорт
+	if(thingType == 5 && thingPack == 0) // Транспорт
 	{
 		x = -12.0000, y = 0.0000, z = -22.0000, s = 0.9200;
+	}
+	else if(thingPack == 5)
+	{
+		if(model == 19918) x = -14.0000, y = 0.0000, z = -26.0000, s = 1.2199;
+		return 1;
 	}
 	else if(thingType == 0 || thingType == 1 || thingType == 2 || thingType == 3 || thingType == 4) // Обычный предмет или Аксессуары
 	{
@@ -259,7 +264,7 @@ CMD:editmodel(playerid, const params[])
     if(OnlineInfo[playerid][oShowInterface] > 0 && OnlineInfo[playerid][oShowInterface] != 15) return ErrorMessage(playerid, "{FF6347}Закройте открытое меню [ Инвентарь, меню покупок, смартфон и так далее ]");
     
     new Float:modelPos[4], findModel;
-    GetModelTextDraw(params[0], 0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findModel);
+    GetModelTextDraw(params[0], 0,0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findModel);
     if(findModel == 1) return ErrorText(playerid, "{FF6347}Этот объект уже добавлен в общий stock и не нуждается в редактировании");
 	
     GameTextForPlayer(playerid," ",1000,3);

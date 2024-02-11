@@ -568,7 +568,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		if(yesFindModel > 0)
 		{
 		    new Float:modelPos[4], findIt;
-			GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+			GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 			PlayerTextDrawSetPreviewModel(playerid, PlaNestPick[inva][playerid], yesFindModel);
 			PlayerTextDrawSetPreviewRot(playerid, PlaNestPick[inva][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 		}

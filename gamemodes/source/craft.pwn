@@ -338,7 +338,7 @@ stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображе
         if(yesFindModel > 0)
         {
             new Float:modelPos[4], findIt;
-            GetModelTextDraw(yesFindModel, thingType, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+            GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
             PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[i][playerid], yesFindModel);
             if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, CraftProcessDraw[i][playerid], thingQuan, thingQuan);
             PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[i][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
@@ -430,7 +430,7 @@ stock UpdateDrawCraftThing(playerid, thingId) // Обновляем отобра
         PlayerTextDrawColor(playerid, CraftProcessDraw[1][playerid], -1);
         PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], friskPick[thingId]);
         new Float:modelPos[4], findIt;
-		GetModelTextDraw(friskPick[thingId], 0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+		GetModelTextDraw(friskPick[thingId], 0,0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
         PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[1][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
     }
 

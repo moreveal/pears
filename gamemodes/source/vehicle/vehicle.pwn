@@ -25,6 +25,11 @@ new bool:vehbuyUpdate;
 new VehBuyGold[212 + MAX_VEHICLE_CUSTOM]; // Подсчет покупок транспорта за голду
 new bool:vehbuyGoldUpdate;
 
+new vehClassName[][] =
+{
+    "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Goverment"
+};
+
 new vehNameCustom[][] =
 {
     "Lambo Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
@@ -506,6 +511,7 @@ stock GetVehicleClass(m)
     new class;
 
     // Premium Class (1) - Премиум
+	
     if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
     || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
