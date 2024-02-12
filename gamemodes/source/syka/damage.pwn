@@ -214,6 +214,8 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return 0;
     }
 
+    if(BeginnerDamage(playerid, damagedid)) return 1;
+
     // Убийство с ножа
     if (weaponid == WEAPON_KNIFE && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, 0, "df", damagedid, 0.0);
     // Обработка удара прикладом
@@ -292,3 +294,30 @@ stock TakePlayerArmour(playerid, Float: amount)
 // Отложенное присвоение урона (для использования в таймере)
 forward SetPlayerHealthTimer(playerid, Float: health);
 public SetPlayerHealthTimer(playerid, Float: health) return ACSetPlayerHealth(playerid, health);
+
+stock BeginnerDamage(playerid, damagedid) // Защита от дма новичков
+{
+	if(PlayerInfo[damagedid][pConnectTime] <= 2 // Играл 2 часа и меньше
+		 && MPGO[damagedid] == 0 // Не на мероприятии
+		 && ADMS[damagedid] <= 4) // Защита от урона активна
+	{
+		new string[160];
+		if(ADMS[playerid] <= 4)
+		{
+			ADMS[playerid] ++;
+			format(string, sizeof(string), "{FF6347}%s новичок и находится под защитой Anti DM\n\n{cccccc}Вы не сможете сейчас его убить или ранить", rpplayername(damagedid));
+		}
+		else
+		{
+			format(string, sizeof(string), "{FF6347}%s новичок и находится под защитой Anti DM\n\n{ffcc66}Вы заморожены на 20 секунд за попытки повредить другому игроку", rpplayername(damagedid));
+			SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы были заморожены на 20 секунд {ffcc66}Причина: попытки навредить другому новичку");
+
+			TogglePlayerControllable(playerid,0);
+			Stopeee[playerid] = 1;
+			Stopee[playerid] = 30;
+		}
+		ErrorMessage(playerid, string);
+		return 1;
+	}
+	return 0;
+}

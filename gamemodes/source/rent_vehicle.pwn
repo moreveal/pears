@@ -147,3 +147,47 @@ stock CreateRent_Player(playerid, unix, newcar, color, benz, model, biz, item, F
 	else if(sl == 1)  mysql_save(playerid, 65);
 	return 1;
 }
+
+stock DestroyRentVehicle(playerid, slot)
+{
+	if(PlayerInfo[playerid][pRentVeh][slot] > 0)
+	{
+		new v = PlayerInfo[playerid][pRentVeh][slot];
+		if(VehInfo[v][vModel] != 0 && VehInfo[v][vAgetid] == playerid && VehInfo[v][vAgetid] != 9999 && VehInfo[v][vRent] > 0) 
+		{
+			if(gAutosalon[playerid] == 0) GetVehiclePosRent(v);
+			ACDestroyVehicle(v);
+		}
+	}
+	return 1;
+}
+
+stock UpdateRentVehicle(playerid, vehicleid, slot)
+{
+	if(PlayerInfo[playerid][pRentVeh][slot] > 0)
+	{
+		if(VehInfo[vehicleid][vAgetid] == playerid 
+			&& VehInfo[vehicleid][vAgetid] != 9999 
+			&& VehInfo[vehicleid][vRent] > 0) 
+		{
+			SaveRentVehiclePos(playerid, vehicleid, slot);
+			PlayerInfo[playerid][pRentBenz][slot] = Gas[vehicleid];
+		}
+	}
+	return 1;
+}
+
+stock SaveRentVehiclePos(playerid, vehicleid, sl)
+{
+	new Float:pos[4];
+	GetVehiclePos(vehicleid,pos[0],pos[1],pos[2]);
+	GetVehicleZAngle(vehicleid,pos[3]);
+
+    if(!IsValidFloat(pos[0]) || !IsValidFloat(pos[1]) || !IsValidFloat(pos[2]) || !IsValidFloat(pos[3])) return false;
+
+	PlayerInfo[playerid][pRent_X][sl] = pos[0];
+	PlayerInfo[playerid][pRent_Y][sl] = pos[1];
+	PlayerInfo[playerid][pRent_Z][sl] = pos[2];
+	PlayerInfo[playerid][pRent_A][sl] = pos[3];
+	return 1;
+}

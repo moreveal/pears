@@ -705,6 +705,12 @@ stock IsAMoto(model)
 	return 0;
 }
 
+stock IsAScooter(model)
+{
+	if(model == 462) return 1;
+	return 0;
+}
+
 stock IsATrain(model)
 {
     if(model == 537 || model == 538 || model == 569 || model == 570 || model == 590) return 1;
