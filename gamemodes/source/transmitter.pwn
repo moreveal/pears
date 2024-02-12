@@ -245,7 +245,7 @@ stock commandR(playerid, typeCommand, const params[])
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации организации /r или /rb текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
-	if(antiflood(playerid, params) == 1) return 1; // Антифлуд
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
@@ -307,7 +307,7 @@ stock commandD(playerid, typeCommand, const params[])
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий канал организаций /d /u или /db /ub текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
-	if(antiflood(playerid, params) == 1) return 1; // Антифлуд
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
@@ -373,7 +373,7 @@ stock commandI(playerid, typeCommand, const params[])
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации подфракции /i или /ib текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
-	if(antiflood(playerid, params) == 1) return 1; // Антифлуд
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
@@ -422,7 +422,7 @@ stock commandF(playerid, typeCommand, const params[])
         ErrorMessage(playerid, string);
         return 1;
 	}
-	if(antiflood(playerid, params) == 1) return 1; // Антифлуд
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new f = PlayerInfo[playerid][pFamily];
     if(FamilyInfo[f][fSost] == 0 || f >= MAX_FAMILY) return ErrorMessage(playerid, "{FF6347}Ошибка! Семья не создана или была удалена"), PlayerInfo[playerid][pFamily] = 0;

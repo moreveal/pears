@@ -1314,7 +1314,9 @@ function LoadSaleSkin()
 		new string[4096];
 		cache_get_value_name(0, "SkinSale", string, sizeof(string));
 		ParseStringToArray(string, SkinSale, sizeof(SkinSale));
-		printf("[MODE]: Доступ скинов в магазинах [%d ms]", GetTickCount() - time);
+
+		new quan = CreateSkinGiftCase();
+		printf("[MODE]: Доступ скинов в магазинах [В подарках: %d скинов] [%d ms]", quan, GetTickCount() - time);
 	}
 	return 1;
 }

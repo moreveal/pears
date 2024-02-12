@@ -4,7 +4,7 @@ stock jobcollector(playerid)
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
 	
 	new line[100],lines[400];
-	if(ServerInfo[53] == 9) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
+	if(ServerInfo[53] == 10) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}Стандартная Оплата \t \n"), strcat(lines,line);
 	format(line,sizeof(line),"{0088ff}Как заработать? \t \n"), strcat(lines,line);
 	if(GetPVarInt(playerid,"job_stat") != 13) format(line,sizeof(line),"{ff9000}Начать Работу \t \n"), strcat(lines,line);
@@ -150,7 +150,7 @@ stock CreateTermCollector(playerid, whrom, term)
 }
 CMD:checkterm(playerid)
 {
-    if(PlayerInfo[playerid][pPlacement] == 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
+    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
 	new quan;
 	new line[100],lines[2000];
 
@@ -223,7 +223,7 @@ stock FindBankFromCollector(playerid)
 			}
 		}
 	}
-	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслуженны\n\n{cccccc}Пожалуйста подождите, деньги в банкоматах скоро появятся\nили отправляйтесь на другую работу.");
+	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслуженны\n\n{cccccc}Пожалуйста подождите, деньги в банкоматах появляются когд\nими пользуются граждане штата");
 
 	CreateTermCollector(playerid,137+biz,kakoi+1);
 	new string[200];

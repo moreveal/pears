@@ -117,6 +117,21 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
     {
         if(OnlineInfo[playerid][oLogged] == 1) return ErrorMessage(playerid, "{FF6347}Последнюю позицию можно выбрать только при входе на сервер");
         if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+
+        if(IsAGang(playerid))
+        {
+            new g = fraction(playerid);
+            if(Kapt[g] > 0 && ZoneCapt)
+            {
+                if(IsPointInDynamicArea(ZoneCapt, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
+                {
+                    ErrorMessage(playerid, "{FF6347}Вы не можете сейчас выбрать последнюю точку\n{cccccc}Она находится на территории активного капта вашей банды");
+                    return 1;
+                }
+            }
+        }
+
+
         SelectSpawnChoise(playerid, 1); // End Position
     }
     else if(clickedid == SpawnChoiseDraw[3]) // Organization
@@ -137,7 +152,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
     else if(clickedid == SpawnChoiseDraw[6]) // Home
     {
         OnlineInfo[playerid][oNoClick] = true;
-        new line[100],lines[400];
+        new line[100],lines[500];
     
         new quan;
         if(PlayerInfo[playerid][pDom])
@@ -171,6 +186,13 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             ListParam[quan][playerid] = PlayerInfo[playerid][pRoom];
             quan ++;
             format(line,sizeof(line),"{cccccc}Квартира № {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
+        }
+        if(PlayerInfo[playerid][pTrailer])
+        {
+            List[quan][playerid] = 9;
+            ListParam[quan][playerid] = PlayerInfo[playerid][pTrailer] - 1;
+            quan ++;
+            format(line,sizeof(line),"{cccccc}Трейлер № {ff9000}%d\n", PlayerInfo[playerid][pTrailer]), strcat(lines,line);
         }
 
         List[quan][playerid] = 0;
@@ -236,7 +258,11 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
             {
                 if(RoomInfo[numSpawn][rArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот квартира арестована\n\n{cccccc}Если это ваша квартира, оплатите налоги для снятия ареста");
             }
-
+            else if(spawnId == 9) // Trailer
+            {
+                if(trailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+            }
+            
             SelectSpawnChoise(playerid, spawnId);
         }
     }

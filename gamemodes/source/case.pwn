@@ -14,6 +14,9 @@ oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 new ThingVehiclecaseGift[212 + MAX_VEHICLE_CUSTOM];
 new ThingVehicleQuan;
 
+new ThingSkincaseGift[312 + MAX_SKIN_CUSTOM];
+new ThingSkinQuan;
+
 /*enum caseInfo
 {
     caseId, // кейс ID
@@ -47,17 +50,33 @@ stock IsThingGunNotVariable(i)
     return 1;
 }
 
-stock CreateVehicleGift()
+stock CreateGiftCase()
 {
-    for(new i =1; i < 212; i++)
+    // Собираем обычный транспорт
+    for(new i; i < 212; i++)
     {
-        if(GetVehicleClass(i+400) >= 1 && GetVehicleClass(i+400) <= 4 && GetVehicleType(i+400) == 1  && GetVehicleType(i+400) == 2) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+        new vehclass = GetVehicleClass(i+400);
+        new vetype = GetVehicleType(i+400);
+        if(vehclass >= 1 && vehclass <= 4 && (vetype == 1 || vetype == 2)) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
     }
+
+    // Собираем кастомный транспорт
     for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
     {
-        if(GetVehicleClass(i+2000) >= 1 && GetVehicleClass(i+2000) <= 4 && GetVehicleType(i+2000) == 1  && GetVehicleType(i+2000) == 2) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+        new vehclass = GetVehicleClass(i+2000);
+        new vetype = GetVehicleType(i+2000);
+        if(vehclass >= 1 && vehclass <= 4 && (vetype == 1 || vetype == 2)) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
     }
     return 1;
+}
+
+stock CreateSkinGiftCase() // Собираем скины
+{
+    for(new i; i < 312 + MAX_SKIN_CUSTOM; i++)
+    {
+        if(SkinSale[i] == 1) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
+    }
+    return ThingSkinQuan;
 }
 
 // Рандомайзер для создания кейса
@@ -71,14 +90,14 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
     // ВАЖНО! Не класть еду в кейсы, чтобы она там по unix не портилась нахрен
     if(zaglushka == 0)
     {
-        switch(random(11))
+        switch(random(10))
         {
             case 0: thingType = 0; // Обычный предмет
-            case 1: thingType = 1; // оружие
-            case 2: thingType = 0; // Акс 2(временно 0)
+            case 1: thingType = 1; // Оружие
+            //case 2: thingType = 0; // Акс 2(временно 0)
             case 3: thingType = 3; // Одежда
             case 4: thingType = 5; // Транспорт
-            case 5..10: thingType = 0; // ПОДКРУТКА обычный предмет
+            default: thingType = 0; // ПОДКРУТКА обычный предмет
         }
     }
     new quan;
@@ -87,8 +106,12 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
         new ThingIDcaseGift[sizeof(friskName)];
         for(new i = 1; i < sizeof(friskName); i++)
         {
-            if(IsThingNotVariable(i) && !NotGiveThing(i, thingType, 1)
-            && !CheckThingQuan(i) && !PerishableThing(i,0)) ThingIDcaseGift[quan] = i, quan ++;
+            if(IsThingNotVariable(i) // Запрещённые предметы для кейса
+                && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
+                && !DocumentThing(i, thingType) // Документы
+                && !CheckThingQuan(i) // Количественные предметы
+                && !PerishableThing(i,0) // Портящиеся предметы
+                ) ThingIDcaseGift[quan] = i, quan ++;
         }
         new thingTemp = random(quan);
         thingId = ThingIDcaseGift[thingTemp];
@@ -119,24 +142,19 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
         thingPara = AccessoryInfo[ThingIDcaseGift[thingTemp]][acBone];
         thingQuan = 1;
     }
-    else if(thingType == 3)
+    else if(thingType == 3) // Список собирается при запуске сервера
     {
-        new ThingIDcaseGift[312 + MAX_SKIN_CUSTOM];
-        for(new i; i < 312 + MAX_SKIN_CUSTOM; i++)
-        {
-            if(SkinSale[i] == 1) ThingIDcaseGift[quan] = i, quan ++;
-        }
-        new thingTemp = random(quan);
-        thingId = ThingIDcaseGift[thingTemp];
+        new thingTemp = random(ThingSkinQuan);
+        thingId = ThingSkincaseGift[thingTemp];
         thingQuan = 1;
     }
-    else if(thingType == 5)
+    else if(thingType == 5) // Список собирается при запуске сервера
     {
         new thingTemp = random(ThingVehicleQuan);
         thingId = ThingVehiclecaseGift[thingTemp];
-        thingQuan = 1;
+        new colorveh = 1 + random(254); // Color Vehicle
+        thingQuan = colorveh;
     }
-
 
     thingPack = 5; // Не трогаем
     return 1;
@@ -151,6 +169,18 @@ CMD:givecase(playerid, const params[])
     CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
     new put_inva = GiveThingPlayer(params[0], thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+    new string[120];
+    format(string, sizeof(string), "* Вы выдали %s кейс", PlayerInfo[params[0]][pName]);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
+
+    if(params[0] != playerid)
+    {
+        format(string, sizeof(string), "* Администратор %s выдал вам кейс", PlayerInfo[playerid][pName]);
+	    SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
+    }
+
+    AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "Рандомный кейс");
 	return 1;
 }
 

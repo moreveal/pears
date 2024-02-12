@@ -34,7 +34,7 @@ new vehNameCustom[][] =
 {
     "Lambo Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
 	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M6",
-	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW M4 F82", "BMW X5M", "VW Gold", "Cadillac Fleetwood", "Dodge Charger",
+	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW M4 F82", "BMW X5M", "VW Golf", "Cadillac Fleetwood", "Dodge Charger",
 	"Dodge Super Bee", "Ford GT", "Lamba Aventador", "Mercedes GLE 350", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
 	"Shelby GT 500", "Supra MK5", "Toyota GT AE86","Prison Bus"
 };
@@ -146,7 +146,7 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(602, 2016); // Audi RS5	(Alpha)						LQ
 	AddVehicleSyncModel(602, 2017);	// BMW M4 F82 (Alpha)					LQ
 	AddVehicleSyncModel(579, 2018); // BMW X5M (Huntley)					LQ			(Дерьмово выглядит)
-	AddVehicleSyncModel(589, 2019);	// VW Gold	(Club)						MQ
+	AddVehicleSyncModel(589, 2019);	// VW Golf	(Club)						MQ
 	AddVehicleSyncModel(421, 2020); // Cadillac Fleetwood (Washing)			MQ
 	AddVehicleSyncModel(560, 2021);	// Dodge Charger (Sultan)				LQ			(Дерьмово выглядит)
 	AddVehicleSyncModel(475, 2022);	// Dodge Super Bee (Sabre)				MQ

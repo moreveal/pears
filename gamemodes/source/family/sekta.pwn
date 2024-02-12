@@ -238,7 +238,6 @@ stock SektaEat(playerid,targetid)
     }
     PlayerInfo[playerid][pInfoload] = 0, UpdatePotreb(playerid);
 }
-
 CMD:gnews(playerid, const params[])
 {
 	new string[220];
@@ -254,35 +253,23 @@ CMD:gnews(playerid, const params[])
         format(string, sizeof(string),"{ff6457} Лимит: 1 эфир в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
         return ErrorMessage(playerid,string);
     }
-    if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}Какая-то секта уже ведет эфир!");
-    else if(SektaCNN[0] == -1)
-    {
-        SektaCNN[0] = fam;
-        SektaCNN[1] = playerid;
-        Sekta[fam][sektaTimer] = 630;
-        SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
-        SektaCNNStart();
-    }
+
 	if(PlayerInfo[playerid][pFamrank] >= FamilyInfo[fam][fRanks] - 1 && FamilyInfo[fam][fType] == 3)
 	{
 		new newcar = GetPlayerVehicleID(playerid);
 		if(newcar >= cnncar[0] && newcar <= cnncar[1] || IsPlayerInRangeOfPoint(playerid,5.0,-1750.7061,801.5389,137.4583) || Cars[newcar] == 9)
 		{
-			//=====[ Anti Flood ]=====
-			if(checkflood(playerid, params[0]))
-			{
-				if(Acheck[playerid] >= 1)
-				{
-				 	SendClientMessage(playerid, COLOR_LIGHTRED, "Большое количество повторяющегося текста приводит к кровотечению из глаз");
-					SendClientMessage(playerid, COLOR_LIGHTRED, "Пожалуйста... не флудите. Мы заботимся о вас [Code 0138]"), PlayerPlaySound(playerid,4203,0,0,0);
-					Achtim[playerid] = 4;
-					return 1;
-		  		}
-		  		else Acheck[playerid] ++;
-		   	}
-			else Acheck[playerid] = 0;
-			iflood(playerid, params[0]);
-			//========================
+            if(AntiFloodText(playerid, params[0])) return 1;
+
+            if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}Какая-то секта уже ведет эфир!");
+            else if(SektaCNN[0] == -1)
+            {
+                SektaCNN[0] = fam;
+                SektaCNN[1] = playerid;
+                Sekta[fam][sektaTimer] = 630;
+                SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
+                SektaCNNStart();
+            }
 			format(string, sizeof(string), "{FFFFFF}* CNN * Сектант: {AA8C00}%s *", params[0]);
 			OOCNews(COLOR_GREY,string);
 			if(PlayerInfo[playerid][pSoska]==0 && PlayerInfo[playerid][pLeader]==0)PlayerInfo[playerid][pWorked1]++;

@@ -231,7 +231,7 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         }
         new Float: damage, Float: armour_breaking;
         GetPlayerDamageByWeaponId(playerid, damagedid, handler_weapon, bodypart, damage, armour_breaking);
-        new result = TakePlayerHealth(damagedid, damage);
+        new resultDeath = TakePlayerHealth(damagedid, damage);
 
         new Float: armour;
         ACGetPlayerArmour(damagedid, armour);
@@ -258,7 +258,7 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
             // Прерываем намаз
             if(Namaz[playerid] >= 0) NamazEnd(playerid, 2);
 
-            if((HealthAC[damagedid] <= 0 || result == 1) && PlayerDeath[damagedid] == 0) FruitPlayerDeath(damagedid, playerid, weaponid);
+            if((HealthAC[damagedid] <= 0 || resultDeath == 1) && PlayerDeath[damagedid] == 0) FruitPlayerDeath(damagedid, playerid, weaponid, resultDeath);
         }
     }
     return 1;
