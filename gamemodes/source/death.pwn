@@ -207,6 +207,8 @@ stock UseRevival(playerid,targetid)
     OnlineInfo[targetid][oTimerAnimationRevival] = 7;
     ApplyAnimation(playerid,"MEDIC","CPR",4.0,0,1,1,0,0);
     update_ability(playerid, 10, 10 + random(5));
+
+    around_player_audio(playerid, 5204, 0, 10.0, 1);
     return 1;
 }
 
