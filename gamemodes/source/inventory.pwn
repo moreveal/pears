@@ -1436,6 +1436,75 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 	else inva = put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, useinva); // Знаем в какую ячейку класть
 	return inva;
 }
+
+stock ThingParameters(playerid, thingId, &quan, &para)
+{
+	new unix = gettime();
+	if(thingId == 1 && para == 0) quan = GetFullThingQuan(thingId), para = unix+432000; // Хлеб (Время до испорченности)
+	else if(thingId == 6 && para == 0)
+	{
+		if(quan == 0) quan = GetFullThingQuan(thingId);
+		para = unix+604800; // Грибы
+	}
+	else if(thingId == 14 && para == 0) quan = GetFullThingQuan(thingId), para = unix+7776000; // Пиво (Время до испорченности + количество)
+	else if(thingId == 16 && quan == 0) quan = GetFullThingQuan(thingId); // Пачка сигарет (Полный комплект)
+	else if(thingId == 18 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Наживка
+	else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // Отмычки (Полный комплект)
+	else if(thingId == 20 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Рыба
+	else if(thingId == 22 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Мясо
+	else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // Смартфон (Номер телефона)
+	else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // Шампанское (Количество)
+	else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
+	else if(thingId == 48 && para == 0) para = 100; // Надувная лодка (даём ей 100 литров бенза)
+	else if(thingId == 54 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареное Мясо
+	else if(thingId == 55 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареная Рыба
+	else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Если выдаём Журнал PlayBoy
+	else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // Семена травы (Полный комплект)
+	else if(thingId == 96 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь вампира
+	else if(thingId == 98 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь человека
+	else if(thingId == 99 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Банан
+	else if(thingId == 100 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Яблоко
+	else if(thingId == 101 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Апельсин
+	else if(thingId == 102 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Молоко
+	else if(thingId == 103 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Тыква
+	else if(thingId == 104 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Картошка
+	else if(thingId == 105 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Томат
+	else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Бычья кровь
+	else if(thingId == 112 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+	else if(thingId == 113 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+	else if(thingId == 114 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+	else if(thingId == 115 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+	else if(thingId == 116 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
+	else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Яблочный
+	else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Вишневый
+	else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Пиво Разливное
+	else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+2592000; // Sprunk Банка
+	else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Кофе
+	else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Спранк стакан
+	else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер
+	else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер (Хз второй)
+	else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ролл
+	else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
+	else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk Открытая банка
+	else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // ХОТЕ ДОГЕ
+	else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Свадебный торт (Время до испорченности + количество)
+	else if(thingId == 164 && para == 0) SetSatiety(thingId, quan), para = unix+259200; // Кусок торта
+	else if(thingId == 165 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца
+	else if(thingId == 166 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца Домашняя
+	else if(thingId == 167 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Кусок пиццы
+	else if(thingId == 168 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Мясо в упаковке
+	else if(thingId == 169 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Сырой стейк
+	else if(thingId == 170 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Жареный стейк
+	else if(thingId == 171 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ломтик хлеба
+	else if(thingId == 172 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // А. Сок
+	else if(thingId == 173 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Я. Сок
+	else if(thingId == 174 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Овощи
+	else
+	{
+		if(quan == 0) quan = GetFullThingQuan(thingId);
+	}
+	return 1;
+}
 stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i)
 {
 	if(PlayerInfo[playerid][pInven][i] != 0 && PlayerInfo[playerid][pInven][i] != thingId) return -1; // Защита от ошибки, на всякий случай
@@ -1445,70 +1514,7 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
     // Выдача особых предметов
     if(thingType == 0) // Обычные предметы
     {
-        new unix = gettime();
-        if(thingId == 1 && para == 0) quan = GetFullThingQuan(thingId), para = unix+432000; // Хлеб (Время до испорченности)
-		else if(thingId == 6 && para == 0)
-		{
-			if(quan == 0) quan = GetFullThingQuan(thingId);
-			para = unix+604800; // Грибы
-		}
-        else if(thingId == 14 && para == 0) quan = GetFullThingQuan(thingId), para = unix+7776000; // Пиво (Время до испорченности + количество)
-        else if(thingId == 16 && quan == 0) quan = GetFullThingQuan(thingId); // Пачка сигарет (Полный комплект)
-		else if(thingId == 18 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Наживка
-        else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // Отмычки (Полный комплект)
-		else if(thingId == 20 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Рыба
-		else if(thingId == 22 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Мясо
-		else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // Смартфон (Номер телефона)
-		else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // Шампанское (Количество)
-		else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
-		else if(thingId == 48 && para == 0) para = 100; // Надувная лодка (даём ей 100 литров бенза)
-		else if(thingId == 54 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареное Мясо
-		else if(thingId == 55 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареная Рыба
-		else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Если выдаём Журнал PlayBoy
-		else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // Семена травы (Полный комплект)
-		else if(thingId == 96 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь вампира
-		else if(thingId == 98 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь человека
-		else if(thingId == 99 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Банан
-		else if(thingId == 100 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Яблоко
-		else if(thingId == 101 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Апельсин
-		else if(thingId == 102 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Молоко
-		else if(thingId == 103 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Тыква
-		else if(thingId == 104 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Картошка
-		else if(thingId == 105 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Томат
-		else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Бычья кровь
-		else if(thingId == 112 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-		else if(thingId == 113 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-		else if(thingId == 114 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-		else if(thingId == 115 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-		else if(thingId == 116 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-		else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Яблочный
-		else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Вишневый
-		else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Пиво Разливное
-		else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+2592000; // Sprunk Банка
-		else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Кофе
-		else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Спранк стакан
-		else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер
-		else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер (Хз второй)
-		else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ролл
-		else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
-		else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk Открытая банка
-		else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // ХОТЕ ДОГЕ
-		else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Свадебный торт (Время до испорченности + количество)
-		else if(thingId == 164 && para == 0) SetSatiety(thingId, quan), para = unix+259200; // Кусок торта
-		else if(thingId == 165 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца
-		else if(thingId == 166 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца Домашняя
-		else if(thingId == 167 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Кусок пиццы
-		else if(thingId == 168 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Мясо в упаковке
-		else if(thingId == 169 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Сырой стейк
-		else if(thingId == 170 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Жареный стейк
-		else if(thingId == 171 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ломтик хлеба
-		else if(thingId == 172 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // А. Сок
-		else if(thingId == 173 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Я. Сок
-		else if(thingId == 174 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Овощи
-		else
-		{
-		    if(quan == 0) quan = GetFullThingQuan(thingId);
-		}
+        ThingParameters(playerid, thingId, quan, para);
 	}
 	else if(thingType == 2) // Аксессуары с особыми возможностями
     {
