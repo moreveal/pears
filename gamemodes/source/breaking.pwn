@@ -218,6 +218,7 @@ stock UpdateTextDrawBreakingScale(playerid) // Обновляем отображ
 }
 stock StopBreaking(playerid)
 {
+	//if(QuestInfo[playerid][ThingOne] == true && QuestInfo[playerid][ScriptQuest] != 2 && get_invent4(playerid, 19, 0) <= 0) QuestInfo[playerid][ThingOne] = false;
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
     {
 		ClearAnimations(playerid);
