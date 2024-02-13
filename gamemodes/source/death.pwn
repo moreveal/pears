@@ -11,7 +11,15 @@ new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
 stock SetPlayerDeath(playerid, reason)
 {
-    if(NoDeath(playerid)) return 0;
+    new bool:nodeath;
+    if(NoDeath(playerid)) nodeath = true;
+
+    if(nodeath == true)
+    {
+        //SendClientMessageToAllf(-1, "SetPlayerDeath %d (reason %d) {ff0000}nodeath system", playerid, reason);
+        return 0;
+    }
+    //else SendClientMessageToAllf(-1, "SetPlayerDeath %d (reason %d)", playerid, reason);
 
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
@@ -87,7 +95,6 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
 // Возвращаем позицию игрока после спавна для смерти
 stock WeReturnToDeathPosition(playerid)
 {
-    PPSpawn[playerid] = false;
     NoAnim[playerid] = 1;
 
 	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);

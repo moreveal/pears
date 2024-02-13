@@ -296,11 +296,11 @@ CMD:rasformbiz(playerid)
   	new string[128];
 	format(string, sizeof(string), " [ ADM ]: Админ %s расформировал все бизнесы для мафий",PlayerInfo[playerid][pName]);
 	ABroadCast(COLOR_ADM,string,1);
-	SendRadioMessage(5,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(6,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(10,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(12,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
-	SendRadioMessage(18,COLOR_LIGHTRED,"{ff9000}[ Mafia War ]: {ffffff}Администрация расформировала все бизнесы");
+	SendRadioMessage(5,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: {ffcc66}Администрация расформировала все бизнесы");
+	SendRadioMessage(6,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: {ffcc66}Администрация расформировала все бизнесы");
+	SendRadioMessage(10,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: {ffcc66}Администрация расформировала все бизнесы");
+	SendRadioMessage(12,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: {ffcc66}Администрация расформировала все бизнесы");
+	SendRadioMessage(18,COLOR_LIGHTRED,"{0088ff}[ Mafia War ]: {ffcc66}Администрация расформировала все бизнесы");
 	AdminLog("rasformbiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
 	return 1;
 }
@@ -317,7 +317,7 @@ CMD:bizmaf(playerid, const params[])
   	BizzInfo[params[1]][bMafunix] = 0;
   	if(BizzInfo[params[1]][bLab] == 1) UpdateBizLabel(params[1], BizzInfo[params[1]][bLab]);
   	SaveBizz(params[1]);
-	format(string,sizeof(string),"{ff9000}[ Mafia War ]: {ffffff}Администрация передала %s под ваш контроль",bizname(params[1]));
+	format(string,sizeof(string),"{0088ff}[ Mafia War ]: {ffcc66}Администрация передала %s под ваш контроль",bizname(params[1]));
 	SendRadioMessage(params[0],COLOR_LIGHTRED,string);
 	return 1;
 }

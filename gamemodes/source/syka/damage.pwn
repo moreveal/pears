@@ -248,7 +248,7 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
             }
         }
 
-        if(damage >= 0.1) // Если дамаг вообще нанесли
+        if(damage > 0) // Если дамаг вообще нанесли
         {
             new string[20];
             format(string, sizeof string, "-%.1f HP", damage);
@@ -260,7 +260,11 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
             // Прерываем намаз
             if(Namaz[playerid] >= 0) NamazEnd(playerid, 2);
 
-            if((HealthAC[damagedid] <= 0 || resultDeath == 1) && PlayerDeath[damagedid] == 0) FruitPlayerDeath(damagedid, playerid, weaponid, resultDeath);
+            if(HealthAC[damagedid] <= 0 || resultDeath == 1)
+            {
+                FruitPlayerDeath(damagedid, playerid, weaponid, resultDeath);
+                //SendClientMessageToAllf(-1, "DamageHandler %d (health %.2f) resultDeath %d", damagedid, HealthAC[damagedid], resultDeath);
+            }
         }
     }
     return 1;
@@ -309,7 +313,7 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма нович
 		}
 		else
 		{
-			format(string, sizeof(string), "{FF6347}%s новичок и находится под защитой Anti DM\n\n{ffcc66}Вы заморожены на 20 секунд за попытки повредить другому игроку", rpplayername(damagedid));
+			format(string, sizeof(string), "{FF6347}%s новичок и находится под защитой Anti DM\n\n{ffcc66}Вы заморожены на 20 секунд за попытки повредить другого игрока", rpplayername(damagedid));
 			SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы были заморожены на 20 секунд {ffcc66}Причина: попытки навредить другому новичку");
 
 			TogglePlayerControllable(playerid,0);
@@ -319,5 +323,12 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма нович
 		ErrorMessage(playerid, string);
 		return 1;
 	}
+
+    else if(PlayerInfo[playerid][pConnectTime] <= 2
+        && MPGO[playerid] == 0
+        && ADMS[playerid] <= 4)
+    {
+        if(ADMS[playerid] <= 4) ADMS[playerid] ++;
+    }
 	return 0;
 }

@@ -131,6 +131,19 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             }
         }
 
+        if(IsAMafia(playerid))
+        {
+            new g = fraction(playerid);
+            if(MafGz[0][mStat] > 0 && MafGz[0][mZone] > 0
+                && (MafGz[0][mNapad] == g || MafGz[0][mZashita] == g))
+            {
+                if(IsPointInDynamicArea(MafGz[0][mZone], PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
+                {
+                    ErrorMessage(playerid, "{FF6347}Вы не можете сейчас выбрать последнюю точку\n{cccccc}Она находится на территории активной стрелы вашей мафии");
+                    return 1;
+                }
+            }
+        }
 
         SelectSpawnChoise(playerid, 1); // End Position
     }

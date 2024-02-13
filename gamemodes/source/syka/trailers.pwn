@@ -136,7 +136,7 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
         case 3168: AttachDynamicObjectToVehicle(trailerobj, trailerid, -0.122, -4.363, -1.000, 0.000, -0.099, 180.000);
 
         default: {
-            DestroyObject(trailerobj);
+            DestroyDynamicObject(trailerobj);
             return false;
         }
     }
@@ -150,6 +150,15 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
     return true;
 }
 
+stock DetachTrailer(tid)
+{
+    if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
+    trailerInfo[tid][tAttached] = 0;
+    if(trailerInfo[tid][tObject] > 0) DestroyDynamicObject(trailerInfo[tid][tObject]), trailerInfo[tid][tObject] = 0;
+    if(trailerInfo[tid][tVehicle] > 0) ACDestroyVehicle(trailerInfo[tid][tVehicle]), trailerInfo[tid][tVehicle] = 0;
+    return 1;
+}
+
 // Для отложенного вызова прикрепления прицепа
 forward AttachTrailerToVehicleDelay(trailerid, vehicleid);
 public AttachTrailerToVehicleDelay(trailerid, vehicleid) { AttachTrailerToVehicle(trailerid, vehicleid); }
@@ -159,7 +168,9 @@ forward PlayerTrailerTimer(vehicleid, trailerid, tid);
 public PlayerTrailerTimer(vehicleid, trailerid, tid) {
     if (!IsValidVehicle(vehicleid) || !IsValidVehicle(trailerid)) {
         trailerInfo[tid][tAttached] = 0;
-        return KillTimer(trailerInfo[tid][tTimerID]);
+        KillTimer(trailerInfo[tid][tTimerID]);
+        trailerInfo[tid][tTimerID] = 0;
+        return 1;
     }
     
     static Float: safe_health = 1000.0;
@@ -215,11 +226,16 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
 // Получает ID трейлера в массиве trailerInfo
 stock GetPlayerTrailerID(playerid) 
 {
+    return PlayerInfo[playerid][pTrailer] - 1;
+
+    /*
     if(PlayerInfo[playerid][pTrailer] == 0) return -1;
 
     new tid = PlayerInfo[playerid][pTrailer] - 1;
     if(trailerInfo[tid][tOwnerID] == PlayerInfo[playerid][pID]) return tid;
+
     return -1;
+    */
 }
 
 // Создает новый трейлер указанного типа и присваивает его указанному игроку
@@ -284,6 +300,7 @@ stock DeleteTrailerFromWorld(tid)
     if (trailerInfo[tid][tTimerID] > 0) 
     {
         KillTimer(trailerInfo[tid][tTimerID]);
+        trailerInfo[tid][tTimerID] = 0;
         if (trailerInfo[tid][tVehicle] > 0)
         {
             DestroyDynamicObject(trailerInfo[tid][tObject]);
@@ -359,8 +376,8 @@ CMD:attachtrailer(playerid)
     // Удаляем трейлер, если он уже был прицеплен
     if (trailerInfo[tid][tAttached]) 
     {
-        if (trailerInfo[tid][tVehicle] > 0) ACDestroyVehicle(trailerInfo[tid][tVehicle]);
-        KillTimer(trailerInfo[tid][tTimerID]);
+        if (trailerInfo[tid][tVehicle] > 0) ACDestroyVehicle(trailerInfo[tid][tVehicle]), trailerInfo[tid][tVehicle] = 0;
+        if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
     }
 
     // Создаем трейлер, цепляя его к автомобилю
@@ -370,9 +387,8 @@ CMD:attachtrailer(playerid)
     trailerInfo[tid][tAttached] = vehicleid;
     trailerInfo[tid][tObject] = trailerobj;
     trailerInfo[tid][tVehicle] = trailerid;
-    Cars[trailerid] = 2001 + tid;
+    VehInfo[vehicleid][vTrailerID] = tid + 1;
     trailerInfo[tid][tTimerID] = SetTimerEx("PlayerTrailerTimer", 1000, 1, "ddd", vehicleid, trailerid, tid);
-
     return 1;
 }
 //alias:attachtrailer("trailer_attach")
@@ -394,7 +410,7 @@ CMD:placetrailer(playerid) {
         if(VehInfo[vehicleid][vEngine] == 1) return ErrorMessage(playerid, "{FF6347}Заглушите двигатель вашего транспорта");
 
         // Отсоединяем трейлер от автомобиля
-        KillTimer(trailerInfo[tid][tTimerID]);
+        if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
 
         // Размещаем объект трейлера в игровом мире
         new Float: trailerX, Float: trailerY, Float: trailerZ, Float: trailerRX, Float: trailerRY, Float: trailerRZ;
@@ -413,6 +429,8 @@ CMD:placetrailer(playerid) {
         SavePlayerTrailerInfo(tid);
 
         SuccessMessage(playerid, "{99ff66}Трейлер установлен!\n{cccccc}Теперь он будет находиться здесь.");
+
+        VehInfo[vehicleid][vTrailerID] = 0;
     }
 
     return 1;
@@ -422,6 +440,7 @@ CMD:placetrailer(playerid) {
 // Покупка трейлера
 stock trailer_add(playerid, model, trailer) 
 {
+    if(PlayerInfo[playerid][pTrailer] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть трейлер");
     new money;
     if(trailer == 0) money = 200000;
     else if(trailer == 1) money = 250000;

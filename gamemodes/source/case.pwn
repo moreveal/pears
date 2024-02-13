@@ -30,11 +30,13 @@ new OpenCase[MAC_CASES][caseInfo];*/
 
 stock IsThingNotVariable(i)
 {
-    if(i == 7  || i == 6 || i == 10 || i == 11 || i == 12 || i == 15 || i == 25 || i == 26 || i == 33 || i == 34 || i == 35  || i == 36  || i == 43 || i == 51 
-    || i == 56 || i == 57 || i == 58 || i == 59 || i == 63 || i == 68 || i == 69 || i == 106 || i == 108 || i == 109 || i == 110 || i == 111 
-    || i >= 125 && i <= 138 || i == 11 || i >= 142 && i <= 160 || i == 171 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
-    || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 || i == 200 || i == 203 || i == 20 || i == 22 || i == 55 || i == 54 || i == 89 || i >= 99 && i <= 105 
-    || i == 120 || i == 123 || i == 141 || i >= 163 && i <= 174) return 0;
+    if(i == 7  || i == 6 || i == 10 || i == 11 || i == 12 || i == 15 || i == 20 || i == 22 || i == 25 || i == 26 || i == 33 || i == 34 || i == 35  || i == 36  
+    || i == 43 || i == 48 || i == 51 || i == 54 || i == 55
+    || i == 56 || i == 57 || i == 58 || i == 59 || i == 63 || i == 68 || i == 69 || i == 89 || i == 96 || i >= 99 && i <= 105  || i == 106 
+    || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
+    || i >= 128 && i <= 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
+    || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
+    || i == 200 || i == 203) return 0;
     return 1;
 }
 
@@ -90,13 +92,13 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
     // ВАЖНО! Не класть еду в кейсы, чтобы она там по unix не портилась нахрен
     if(zaglushka == 0)
     {
-        switch(random(10))
+        switch(random(12))
         {
             case 0: thingType = 0; // Обычный предмет
             case 1: thingType = 1; // Оружие
             //case 2: thingType = 0; // Акс 2(временно 0)
-            case 3: thingType = 3; // Одежда
-            case 4: thingType = 5; // Транспорт
+            case 3, 4: thingType = 3; // Одежда
+            case 5: thingType = 5; // Транспорт
             default: thingType = 0; // ПОДКРУТКА обычный предмет
         }
     }
@@ -110,7 +112,8 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
                 && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
                 && !DocumentThing(i, thingType) // Документы
                 && !CheckThingQuan(i) // Количественные предметы
-                && !PerishableThing(i,0) // Портящиеся предметы
+                && !JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
+                //&& !PerishableThing(i,0) // Портящиеся предметы
                 ) ThingIDcaseGift[quan] = i, quan ++;
         }
         new thingTemp = random(quan);

@@ -269,7 +269,7 @@ stock godrink(playerid)
 	new string[80];
 	if(alco > 0)
 	{
-		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d сек", alco, EffectTime[playerid]);
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d cek", alco, EffectTime[playerid]);
 		GameTextForPlayer(playerid,string,2500,3);
 	}
 	else if(coffe > 0)

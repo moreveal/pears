@@ -403,7 +403,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                         else SetPlayerAttachedObject(selectplayerid, 4, 11704, 2, 0.067000, 0.108000, -0.004999, 176.500030, 95.700019, -0.200000, 0.461000, 0.865000, 0.504000, 0, 0);
                     }
                 }
-                SektaActor[fam] = CreateDynamicActor(GetSkinPresentation(playerid,checkingPlayerObject), X,Y,Z,A, true, 100.0, world, int, -1, 100.0, -1, 0);
+                SektaActor[fam] = CreateDynamicActor(GetSkinModelOriginal(PlayerInfo[checkingPlayerObject][pModel]), X,Y,Z,A, true, 100.0, world, int, -1, 100.0, -1, 0);
                 ApplyDynamicActorAnimation(SektaActor[fam],"CRACK", "crckdeth2", 4.0, 1, 0, 0, 0, 0);
                 DeathEnd(checkingPlayerObject,0);
                 Sekta[fam][sektaRiteStatus] = 1;

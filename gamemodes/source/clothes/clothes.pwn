@@ -227,7 +227,7 @@ stock GetSkinPresentation(forplayerid, playerid)
 		if(showModel >= 312) showModel += 15188;
 		skinId = showModel;
 	}
-    else skinId = showModel; // Если моды НЕ установлены, показываем оригинальный скин
+    else skinId = GetSkinModelOriginal(showModel); // Если моды НЕ установлены, показываем оригинальный скин
     return skinId;
 }
 
@@ -242,6 +242,28 @@ stock GetModelSkin(playerid, s)
 	}
     else skinId = GetSkinModelOriginal(s);
     return skinId;
+}
+
+stock GetPlayerModelSkinOriginal(playerid) // Получаем оригинальный скин игрока
+{
+	new showModel = GetPlayerSyncSkin(playerid);
+	new skinId = GetSkinModelOriginal(showModel);
+	return skinId;
+}
+
+CMD:getskin(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Получить информацию о скине игрока [ /getskin ID ]");	
+
+	new showModel = GetPlayerSyncSkin(params[0]);
+	new skinId = GetSkinModelOriginal(showModel);
+
+	new string[100];
+	format(string, sizeof(string), " %s SkinID: %d SkinOriginal: %d", PlayerInfo[params[0]][pName], showModel, skinId);
+	SendClientMessage(playerid, COLOR_WHITE, string);
+	return 1;
 }
 
 CMD:setskin(playerid, const params[]) // Сменить активную одежду игрока
@@ -388,8 +410,6 @@ stock TempSpawnPlayer(playerid)
 // Возвращаем позицию игрока после временного спавна
 stock WeReturnToPosition(playerid)
 {
-    PPSpawn[playerid] = false;
-
 	keep(playerid); // Подморозим, чтобы не провалился
 	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
