@@ -418,13 +418,22 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 
 		new Float: cur_x, Float: cur_y, Float: cur_z, Float: cur_a;
 		GetSeatPositionCoords(objectid, baseZ, verticalDistance, horizontalDistance, cur_x, cur_y, cur_z, cur_a);
-
+		new Float: cur_player_x2, Float: cur_player_y2, Float: cur_player_z2;
+		GetPlayerPos(playerid,cur_player_x2,cur_player_y2,cur_player_z2);
 		// Узнаем, занято ли место кем-то другим
 		foreach (new id : Player) {
 			new Float: cur_player_x, Float: cur_player_y, Float: cur_player_z;
 			GetPlayerPos(id, cur_player_x, cur_player_y, cur_player_z);
 		
 			if (IsPlayerInRangeOfPoint(id, 0.01, cur_x, cur_y, cur_player_z)) {
+				seats_occupied[seat_index] = true;
+				break;
+			}
+		}
+		for(new i; i < MAX_REALPLAYERS; i++)
+		{
+			if(CompGameActor[i] == 0) continue;
+			if(IsActorInRangeOfPoint(CompGameActor[i], 0.05, cur_x, cur_y, cur_player_z2)) {
 				seats_occupied[seat_index] = true;
 				break;
 			}
@@ -541,13 +550,9 @@ stock PressSeatableObjectHandler(playerid)
 				
 				PPSetPlayerPos(playerid, x, y, player_pos[2]);
 
-				new Text3D:tempLabel = Create3DTextLabel("  ", 0x008080FF, x, y, player_pos[2], 200.0, GetPlayerVirtualWorld(playerid), 0); // VREMENNO
-
 				SetPlayerFacingAngle(playerid, a);
 				sit_Active(playerid, x, y, player_pos[2], a);
 
-				Update3DTextLabelText(tempLabel, 0xFFFFFFFF, "   ");
-				Delete3DTextLabel(tempLabel);
 				return 1;
 			}
 		}

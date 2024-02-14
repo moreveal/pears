@@ -4,6 +4,8 @@ new BotPears[MAX_BOTS];
 new PlayerText3D:BotTalk[MAX_REALPLAYERS]; // ID Label Text NPC
 new BotTalkStat[MAX_REALPLAYERS];
 new BotTalkTimer[MAX_REALPLAYERS]; // ID Timer Text NPC
+new CompGameActor[MAX_REALPLAYERS]; // Актер у ноута
+new Text3D: CompGameText[MAX_REALPLAYERS]; // текст у ноута
 
 static const talk_anims_actor[][] = {
 "prtial_gngtlkA", "prtial_gngtlkB", "prtial_gngtlkC", "prtial_gngtlkD",
@@ -48,6 +50,30 @@ function SendDynamicActorScript(actorid, playerid, const text[]) // Текст �
 	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 1, playerid, text);
 	return 1;
 }
+
+stock CreateActorComp(playerid)
+{
+    if(CompGameActor[playerid] == 1) return 0;
+    new string[70];
+    format(string,sizeof(string),"{ff9000}%s[%d]\n{0088ff}Играет в игру",rpplayername(playerid),playerid);
+    new Float:f_pos[4];
+    backme(playerid, 0.6, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+    CompGameText[playerid] = CreateDynamic3DTextLabel(string,0xA9C4E4FF,f_pos[0],f_pos[1],f_pos[2]+0.6,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,SpWorld[playerid],SpInt[playerid]);
+    CompGameActor[playerid] = CreateDynamicActor(GetSkinModelOriginal(PlayerInfo[playerid][pModel]), SpX[playerid],SpY[playerid],SpZ[playerid],SpA[playerid], true, 100.0, SpWorld[playerid], SpInt[playerid], -1, 100.0, -1, 0);
+    ApplyDynamicActorAnimation(CompGameActor[playerid], "PED","SEAT_idle", 4.0, 0,0,0,1,0);
+    return 1;
+}
+
+stock DeleteActorComp(playerid)
+{
+    if(CompGameActor[playerid] == 0) return 0;
+    DestroyDynamic3DTextLabel(CompGameText[playerid]);
+    DestroyDynamicActor(CompGameActor[playerid]);
+    CompGameActor[playerid] = 0;
+    return 1;
+}
+
+
 stock MessageDynamicActor(actorid, status, playerid, const text[])
 {
     new Float:pos[3];

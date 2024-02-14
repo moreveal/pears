@@ -17,7 +17,7 @@ new Text:SpawnChoiseDraw[MAX_SPAWNDRAWCHOISE];
 
 stock SaveLastPlayerPosition(playerid)
 {
-    if(SetPosa[playerid] == 1 
+    if(SetPosa[playerid] > 0 
         || MPGO[playerid] == 1 // На мероприятии
         || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING // В слежке (спеке)
         || OnlineInfo[playerid][oShowInterface] == 14 

@@ -679,13 +679,15 @@ stock ComputerClubSaveConnectPosition(playerid) {
     GetPlayerFacingAngle(playerid, computerClubPlayerInfo[playerid][ccpiConnectPos][3]);
     computerClubPlayerInfo[playerid][ccpiConnectWorld] = GetPlayerVirtualWorld(playerid);
     computerClubPlayerInfo[playerid][ccpiConnectInterior] = GetPlayerInterior(playerid);
-    savePositionPlayerForMenu(playerid);
 }
 
 // Подключает игрока к нужному серверу
 stock ComputerClubRoomJoin(playerid, gameid, roomid) {
     // Отправляем на спавн, где будет выдано нужное оружие и т.п.
     TempTake(playerid,0);
+    savePositionPlayerForMenu(playerid);
+    CreateActorComp(playerid);
+    exitsit(playerid,2);
     PPSpawnPlayer(playerid);
 
     // Сообщение о коннекте
@@ -717,7 +719,6 @@ stock ComputerClubRoomJoin(playerid, gameid, roomid) {
     if (gameid == _:COMPUTER_GAME_TDM) {
         if (!computerClubRoomInfo[gameid][roomid][ccriStarted]) TextDrawShowForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
     }
-
     return 1;
 }
 
@@ -968,10 +969,10 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
 
         ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_HOST); // Делаем игру неактивной (дожидается возвращения хоста, ставки возвращаются и т.п.)
     }
-
+    DeleteActorComp(playerid);
     // Спавн на том месте, где он зашел в игру
     //new models = PlayerInfo[playerid][pModel];
-    SetPosa[playerid] = 1;
+    SetPosa[playerid] = 2;
     //m_custom_sync_SetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
     //SetPlayerVirtualWorld(playerid, connect_world); SetPlayerInterior(playerid, connect_interior);
@@ -996,7 +997,6 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
 
     // Убирание текстдрава разминки
     TextDrawHideForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
-    
     return 1;   
 }
 
