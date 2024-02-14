@@ -324,7 +324,7 @@ stock DeleteTrailerFromDB(tid)
     UpdateTrailerPlayer(0, trailerInfo[tid][tOwnerID]);
 
     // Очищаем информацию о трейлере
-    memset(trailerInfo[tid], 0);
+    for(new e_TrailerInfo:i; i < e_TrailerInfo; ++i) trailerInfo[tid][i] = 0;
     return 1;
 }
 

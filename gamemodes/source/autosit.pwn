@@ -804,7 +804,8 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		} else if (listitem == seats_count + 1) {
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
-			memset(newSeatObjects[playerid], 0);
+
+			for(new e_newSeatObjects:i; i < e_newSeatObjects; ++i) newSeatObjects[playerid][i] = 0;
 
 			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы отменили добавление объекта", "Закрыть", "");
 			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
@@ -832,7 +833,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			printf("{ %d, %s }", newSeatObjects[playerid][nssModel], log_str);
 
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
-			memset(newSeatObjects[playerid], 0);
+			for(new e_newSeatObjects:i; i < e_newSeatObjects; ++i) newSeatObjects[playerid][i] = 0;
 
 			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);

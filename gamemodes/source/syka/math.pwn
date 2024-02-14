@@ -76,7 +76,7 @@ stock Float: fmod(Float:x, Float:y) return x - (floatround(x / y, floatround_flo
 #define random_range(%0,%1) random(%1-%0+1) + %0
 
 // Чистка Enum
-stock memset(array[], val, size = sizeof array)
+/*stock memset(array[], val, size = sizeof array)
 {
     #pragma unused array, val
     static
@@ -100,4 +100,4 @@ stock memset(array[], val, size = sizeof array)
     #emit fill 1                        // 4
     #emit zero.pri
     #emit retn
-}
+}*/

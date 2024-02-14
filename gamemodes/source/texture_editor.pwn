@@ -179,8 +179,8 @@ stock ClearTexturesEditorVariable(playerid, i)
 stock ClearTexturesEditorVariableSave(playerid, i)
 {
 	zTxtSaveModel[playerid][i] = 0;
-	memset(zTxtSaveTxd[playerid][i], 0, 32);
-	memset(zTxtSaveTexture[playerid][i], 0, 32);
+	zTxtSaveTxd[playerid][i][0] = EOS;
+	zTxtSaveTexture[playerid][i][0] = EOS;
 	zTxtSaveMaterial[playerid][i] = 0;
 }
 
