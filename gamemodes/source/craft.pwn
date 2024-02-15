@@ -1446,6 +1446,7 @@ stock IsAVerstak(playerid)
 	|| IsPlayerInRangeOfPoint(playerid,1.0,2252.442871, -1466.458496, 2089.403564) && GetPlayerInterior(playerid) == 214 && GetPlayerVirtualWorld(playerid) == 214 
     || IsPlayerInRangeOfPoint(playerid,1.0,1685.440063, -2092.027587, 2091.805908) && GetPlayerInterior(playerid) == 215 && GetPlayerVirtualWorld(playerid) == 215
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1395.275878, 1826.201904, 10.886253) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18
+    || IsPlayerInRangeOfPoint(playerid,1.0,1532.1577,1337.9738,12.7373) && GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6561,2489.6909,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6563,2495.2856,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6584,2500.8748,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма

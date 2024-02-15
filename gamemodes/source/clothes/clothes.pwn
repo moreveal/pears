@@ -1282,7 +1282,8 @@ stock IsAShmot(playerid)
 	|| IsPlayerInRangeOfPoint(playerid,1.0,2607.8682,918.0507,1551.0000) // Department Раздевалка
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1383.1306,-1.3530,1000.9217) && GetPlayerVirtualWorld(playerid) == 9 && GetPlayerInterior(playerid) == 5 // Госпиталь
  	|| IsPlayerInRangeOfPoint(playerid,1.0,-1507.6846,1957.5139,1357.0326) && GetPlayerVirtualWorld(playerid) == 5 && GetPlayerInterior(playerid) == 1 // Cosa Nostra
-	|| IsPlayerInRangeOfPoint(playerid,1.0,1374.8009,719.3740,2112.2515) && GetPlayerVirtualWorld(playerid) == 6 && GetPlayerInterior(playerid) == 1 // Yakuza Mafia
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1539.6632,1319.2186,16.0415) 
+		&& GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL // Yakuza Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // Правительство
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-506.7065,-87.0514,964.8114) && GetPlayerVirtualWorld(playerid) == 8 && GetPlayerInterior(playerid) == 8 // Hitman Agency
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1760.2249,799.6393,137.4583) // CNN

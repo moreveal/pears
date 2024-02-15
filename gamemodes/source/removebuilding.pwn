@@ -14,7 +14,7 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 588 удалённх объектов
+ 	// 596 удалённх объектов
 
 	// FBI Street
 	RemoveBuildingForPlayer(playerid, 6873, 2053.020, 2403.219, 9.820, 0.250);
@@ -375,24 +375,32 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 1350, 902.070, 2403.620, 9.812, 0.250);
  	//--------------------------------------------------------------------------
 	//----------------------------[ Yakuza Mafia ]------------------------------
- 	RemoveBuildingForPlayer(playerid, 710, 1402.0859, 785.1172, 25.5469, 0.25);
-	RemoveBuildingForPlayer(playerid, 710, 1402.5469, 762.4453, 25.1406, 0.25);
-	RemoveBuildingForPlayer(playerid, 710, 1402.0859, 737.8828, 25.5469, 0.25);
-	RemoveBuildingForPlayer(playerid, 710, 1402.0859, 716.0313, 25.5469, 0.25);
-	RemoveBuildingForPlayer(playerid, 710, 1402.0859, 690.7266, 25.5469, 0.25);
-	RemoveBuildingForPlayer(playerid, 710, 1402.6172, 668.3828, 25.5469, 0.25);
-	RemoveBuildingForPlayer(playerid, 8145, 1493.9297, 751.0156, 20.9141, 0.25);
-	RemoveBuildingForPlayer(playerid, 8146, 1544.6172, 676.2109, 20.5156, 0.25);
-	RemoveBuildingForPlayer(playerid, 8285, 1477.3906, 730.5938, 10.8594, 0.25);
-	RemoveBuildingForPlayer(playerid, 8286, 1477.3906, 730.5938, 10.8594, 0.25);
-	RemoveBuildingForPlayer(playerid, 8287, 1477.3906, 730.5938, 10.8594, 0.25);
-	RemoveBuildingForPlayer(playerid, 1294, 1338.9844, 715.0938, 14.2734, 0.25);
-	RemoveBuildingForPlayer(playerid, 1294, 1355.5781, 682.1016, 14.2734, 0.25);
-	RemoveBuildingForPlayer(playerid, 1294, 1355.7500, 744.9063, 14.2969, 0.25);
-	RemoveBuildingForPlayer(playerid, 673, 1402.6016, 673.0469, 9.3203, 0.25);
-	RemoveBuildingForPlayer(playerid, 673, 1453.7969, 736.9609, 9.7031, 0.25);
-	RemoveBuildingForPlayer(playerid, 8131, 1544.6172, 676.2109, 20.5156, 0.25);
-	RemoveBuildingForPlayer(playerid, 8130, 1493.9297, 751.0156, 20.9141, 0.25);
+ 	RemoveBuildingForPlayer(playerid, 8130, 1493.930, 751.015, 20.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 8145, 1493.930, 751.015, 20.914, 0.250);
+	RemoveBuildingForPlayer(playerid, 8131, 1544.619, 676.210, 20.515, 0.250);
+	RemoveBuildingForPlayer(playerid, 8146, 1544.619, 676.210, 20.515, 0.250);
+	RemoveBuildingForPlayer(playerid, 8132, 1436.589, 673.257, 12.429, 0.250);
+	RemoveBuildingForPlayer(playerid, 8133, 1377.380, 730.617, 10.242, 0.250);
+	RemoveBuildingForPlayer(playerid, 8144, 1377.380, 730.617, 10.242, 0.250);
+	RemoveBuildingForPlayer(playerid, 673, 1453.800, 736.960, 9.703, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1473.280, 671.226, 19.460, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1489.550, 672.500, 19.421, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1506.500, 672.500, 19.351, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1553.439, 675.828, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1555.479, 710.500, 19.335, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1553.930, 729.351, 19.437, 0.250);
+	RemoveBuildingForPlayer(playerid, 712, 1553.930, 746.906, 19.437, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1537.000, 792.125, 25.109, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1517.060, 795.195, 24.984, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1492.589, 794.539, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1466.420, 794.539, 25.148, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1440.260, 794.539, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.089, 785.117, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.550, 762.445, 25.140, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.089, 737.882, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.089, 716.031, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.089, 690.726, 25.546, 0.250);
+	RemoveBuildingForPlayer(playerid, 710, 1402.619, 668.382, 25.546, 0.250);
  	//--------------------------------------------------------------------------
 	//----------------------------[ Главная Ёлка ]------------------------------
  	if(month == 12 || month == 1)

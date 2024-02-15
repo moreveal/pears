@@ -141,14 +141,6 @@ stock LoadBot()
 	BotPears[56] = CreateActor(50, -1565.6212,-2740.8579,48.7373,59.4913); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 	BotPears[57] = CreateActor(151, -1555.9618,-2737.3997,48.5721,235.5593); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 
-	BotPears[22] = CreateActor(123, 1460.6874,660.9774,10.8203,185.5546); // Yakuza Mafia Bot 1
-	BotPears[23] = CreateActor(118, 1509.5968,755.5034,11.0234,175.3727); // Yakuza Mafia Bot 2
-	BotPears[24] = CreateActor(117, 1514.0986,755.4178,11.0234,184.6377); // Yakuza Mafia Bot 3
-	BotPears[25] = CreateActor(122, 1520.8297,755.5728,11.0234,178.6217); // Yakuza Mafia Bot 4
-	BotPears[26] = CreateActor(186, 1520.5500,750.6175,11.0234,176.3129); // Yakuza Mafia Bot 5
-	BotPears[27] = CreateActor(208, 1513.8164,750.4470,11.0234,181.0129); // Yakuza Mafia Bot 6
-	BotPears[28] = CreateActor(120, 1506.3950,750.5110,11.0234,179.6969); // Yakuza Mafia Bot 7
-	BotPears[29] = CreateActor(49, 1515.8894,738.4565,11.0234,358.9152); // Yakuza Mafia Bot 8
 	BotPears[30] = CreateActor(6, 1380.1854,-5.4021,1000.9713,257.5052); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Bot 1 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ]
 	SetActorVirtualWorld(BotPears[30], 219);
 	BotPears[31] = CreateActor(95, 995.3415,-1954.1554,12.8842,182.6652); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Bot 2 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ ]
@@ -547,14 +539,6 @@ stock LoadAnimBot(stat)
         case 19: ApplyActorAnimation(BotPears[19],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         case 20: ApplyActorAnimation(BotPears[20],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
         case 21: ApplyActorAnimation(BotPears[21],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 22: ApplyActorAnimation(BotPears[22],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 1 [ Разговаривает ]
-        case 23: ApplyActorAnimation(BotPears[23],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 2
-        case 24: ApplyActorAnimation(BotPears[24],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 3
-        case 25: ApplyActorAnimation(BotPears[25],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 4
-        case 26: ApplyActorAnimation(BotPears[26],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 5
-        case 27: ApplyActorAnimation(BotPears[27],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 6
-        case 28: ApplyActorAnimation(BotPears[28],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 7
-        case 29: ApplyActorAnimation(BotPears[29],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 8
         case 34: ApplyActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
         case 35: ApplyActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
         case 37: ApplyActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
@@ -730,14 +714,6 @@ stock LoadAnimBot(stat)
         ApplyActorAnimation(BotPears[19],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[20],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
         ApplyActorAnimation(BotPears[21],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyActorAnimation(BotPears[22],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 1 [ Разговаривает ]
-        ApplyActorAnimation(BotPears[23],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 2
-        ApplyActorAnimation(BotPears[24],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 3
-        ApplyActorAnimation(BotPears[25],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 4
-        ApplyActorAnimation(BotPears[26],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 5
-        ApplyActorAnimation(BotPears[27],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 6
-        ApplyActorAnimation(BotPears[28],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 7
-        ApplyActorAnimation(BotPears[29],"PARK","Tai_Chi_Loop",4.1,1,0,0,0,0); // Yakuza Mafia Bot 8
         ApplyActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
         ApplyActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
         ApplyActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6

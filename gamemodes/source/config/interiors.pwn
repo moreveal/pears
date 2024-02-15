@@ -36,3 +36,9 @@
 
 #define WORLD_TRAILER -1
 #define INT_TRAILER 187
+
+//==================================================
+// Yakuza 1 Этаж Интерьер
+
+#define WORLD_YAKUZA_1LVL 173
+#define INT_YAKUZA_1LVL 6
