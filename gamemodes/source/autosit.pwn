@@ -552,6 +552,7 @@ stock PressSeatableObjectHandler(playerid)
 				PPSetPlayerPos(playerid, x, y, player_pos[2]);
 
 				SetPlayerFacingAngle(playerid, a);
+
 				sit_Active(playerid, x, y, player_pos[2], a);
 
 				return 1;

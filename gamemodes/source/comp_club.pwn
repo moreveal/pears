@@ -316,7 +316,7 @@ stock ShowComputerClubSetTeamSize(playerid) {
     if (gameid < 0) return 0;
 
     new dialog_text[180];
-    format(dialog_text, sizeof dialog_text, "{ffffff}Укажите максимальное количество игроков в одной команде:\n\n{cccccc}Минимальное количество участников в команде для этой комнаты: {ff9000}%d", ComputerClubGetMinimalTeamSize(gameid, roomid));
+    format(dialog_text, sizeof dialog_text, "{ffffff}Укажите максимальное количество игроков в одной команде:\n\n{cccccc}Максимальное количество участников в команде для этой комнаты: {ff9000}%d", ComputerClubGetMaxTeamSize(gameid, roomid));
     
     return ShowDialog(playerid, 1437, DIALOG_STYLE_INPUT, "Изменение размера команд", dialog_text, "Принять", "Назад");
 }
@@ -418,7 +418,7 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
         // Выбор типа оружия (основное/вторичное) + вывод текущих
         SetPVarInt(playerid, "ComputerClubSetWeaponType", 2);
 
-        static dialog_headers[8][] = {"Холодное оружие", "Пистолет", "Дробовик", "Пистолет-пулемёт", "Штурмовая винтовка", "Снайперская винтовка", "Тяжелое оружие", "Метательное оружие"};
+        static dialog_headers[8][] = {"Холодное оружие", "Пистолет", "Дробовик", "Пистолет-пулемёт", "Штурмовая винтовка", "Винтовка", "Тяжелое оружие", "Метательное оружие"};
         for (new i = 0; i < 8; i++) {
             new weapon_name_str[100];
             new weapon_id = computerClubRoomInfo[gameid][roomid][ccriWeapons][i];
@@ -633,7 +633,7 @@ stock ComputerClubGetTeamCount(gameid, roomid) {
 }
 
 // Узнает минимальный размер для команды в указанной комнате
-stock ComputerClubGetMinimalTeamSize(gameid, roomid) {
+stock ComputerClubGetMaxTeamSize(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     
     return _:(computerClubRoomInfo[gameid][roomid][ccriSlotes] / ComputerClubGetTeamCount(gameid, roomid)) + 1;
@@ -660,7 +660,7 @@ stock ComputerClubRoomCreate(hostid, gameid, const name[], const password[], slo
             computerClubTeamInfo[gameid][roomid][0] = "{FF0000}Красные";
             computerClubTeamInfo[gameid][roomid][1] = "{0088FF}Синие";
 
-            computerClubRoomInfo[gameid][roomid][ccriTeamSize] = ComputerClubGetMinimalTeamSize(gameid, roomid);
+            computerClubRoomInfo[gameid][roomid][ccriTeamSize] = ComputerClubGetMaxTeamSize(gameid, roomid);
 
             computerClubRoomInfo[gameid][roomid][ccriWeapons][COMPUTER_CLUB_WS_ASSAULT] = WEAPON_M4;
             computerClubRoomInfo[gameid][roomid][ccriWeaponsAmmo][COMPUTER_CLUB_WS_ASSAULT] = 350;
@@ -687,7 +687,6 @@ stock ComputerClubRoomJoin(playerid, gameid, roomid) {
     TempTake(playerid,0);
     savePositionPlayerForMenu(playerid);
     CreateActorComp(playerid);
-    exitsit(playerid,2);
     PPSpawnPlayer(playerid);
 
     // Сообщение о коннекте
@@ -719,6 +718,7 @@ stock ComputerClubRoomJoin(playerid, gameid, roomid) {
     if (gameid == _:COMPUTER_GAME_TDM) {
         if (!computerClubRoomInfo[gameid][roomid][ccriStarted]) TextDrawShowForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
     }
+    exitsit(playerid,2);
     return 1;
 }
 
@@ -772,7 +772,7 @@ stock ShowComputerClubChooseTeam(playerid, gameid, bool: before_connection = fal
         return ComputerClubRoomJoin(playerid, gameid, roomid);
     
     SetPVarInt(playerid, "ComputerClubChooseTeamBC", before_connection ? 1 : 0);
-    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Выбор команды", dialog_text, "Выбор", "Выход");
+    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Выбор команды", dialog_text, "Выбор", !before_connection ? "Назад" : "");
 }
 
 // Отображает диалог выбора карты
@@ -969,7 +969,9 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
 
         ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_HOST); // Делаем игру неактивной (дожидается возвращения хоста, ставки возвращаются и т.п.)
     }
+
     DeleteActorComp(playerid);
+
     // Спавн на том месте, где он зашел в игру
     //new models = PlayerInfo[playerid][pModel];
     SetPosa[playerid] = 2;
@@ -978,15 +980,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     //SetPlayerVirtualWorld(playerid, connect_world); SetPlayerInterior(playerid, connect_interior);
 
     // Завершение игры при выходе последнего оставшегося в команде участника
-    new same_team_players_count = 0;
-    foreach (new id : Player) {
-        new player_game = GetPlayerActiveComputerGame(id),
-            player_room = computerClubPlayerInfo[id][ccpiRoom],
-            player_team = computerClubPlayerInfo[id][ccpiTeam];
-
-        if (player_game == gameid && player_room == roomid && teamid == player_team)
-            same_team_players_count++;
-    }
+    new same_team_players_count = ComputerClubGetPlayersCount(gameid, roomid, teamid);
     switch (e_ComputerClubGames: gameid) {
         case COMPUTER_GAME_TDM: {
             if (same_team_players_count < 1)
@@ -997,6 +991,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
 
     // Убирание текстдрава разминки
     TextDrawHideForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
+    
     return 1;   
 }
 
@@ -1011,12 +1006,14 @@ stock ComputerClubRoomMessage(gameid, roomid, color, const message[]) {
 }
 
 // Получает количество игроков в комнате
-stock ComputerClubGetPlayersCount(gameid, roomid) {
+stock ComputerClubGetPlayersCount(gameid, roomid, teamid = -1) {
     new count = 0;
-    foreach (new playerid : Player) {
-        if (!computerClubPlayerInfo[playerid][ccpiInGame]) continue;
+    foreach (new id : Player) {
+        new player_game = GetPlayerActiveComputerGame(id),
+            player_room = computerClubPlayerInfo[id][ccpiRoom],
+            player_team = computerClubPlayerInfo[id][ccpiTeam];
 
-        if (_:computerClubPlayerInfo[playerid][ccpiID] == gameid && _:computerClubPlayerInfo[playerid][ccpiRoom] == roomid)
+        if (player_game == gameid && player_room == roomid && (teamid == player_team || teamid == -1))
             count++;
     }
     return count;
@@ -1637,8 +1634,17 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
 
                 // Отображение спека за убийцей в течение двух секунд
                 if (killerid != INVALID_PLAYER_ID) {
-                    ComputerClubSpectatePlayer(playerid, killerid);
-                    
+                    new Float: killerX, Float: killerY, Float: killerZ, Float: killerA;
+                    GetPlayerPos(killerid, killerX, killerY, killerZ);
+                    GetPlayerFacingAngle(killerid, killerA);
+
+                    new Float: cameraX = killerX, Float: cameraY = killerY, Float: cameraZ = killerZ + 1.5;
+                    GetXYInFrontOfPoint(cameraX, cameraY, killerA, 10.0);
+
+                    TogglePlayerSpectating(playerid, 1);
+                    InterpolateCameraPos(playerid, cameraX, cameraY, cameraZ, cameraX, cameraY, cameraZ, 2000);
+                    InterpolateCameraLookAt(playerid, killerX, killerY, killerZ, killerX, killerY, killerZ, 2000);
+
                     static const text_fmt[] = "~r~KILLED BY %s";
                     new text[sizeof text_fmt - 2 + MAX_PLAYER_NAME];
                     format(text, sizeof text, text_fmt, PlayerInfo[killerid][pName]);
@@ -1874,30 +1880,32 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
         }
         case 1421: {
             new bool: change = bool: GetPVarInt(playerid, "ComputerClubChange");
-            DeletePVar(playerid, "ComputerClubChange");
+			DeletePVar(playerid, "ComputerClubChange");
 
-            if (change && !ComputerClubIsPlayerHost(playerid)) return 0;
+			if (change && !ComputerClubIsPlayerHost(playerid)) return 0;
 
-            new gameid = change ? GetPlayerActiveComputerGame(playerid) : GetPVarInt(playerid, "ComputerClubSelectedGame") - 1;
-            if (gameid > -1) {
-                if (response) {
-                    new slotes;
-                    if (!sscanf(inputtext, "d", slotes)) {
-                        if (slotes > 1000) return ShowComputerClubSetSlotes(playerid, change);
+			new gameid = change ? GetPlayerActiveComputerGame(playerid) : GetPVarInt(playerid, "ComputerClubSelectedGame") - 1;
+			if (gameid > -1) {
+				if (response) {
+					new slotes;
+					if (!sscanf(inputtext, "d", slotes)) {
+						if (slotes > 1000) return ShowComputerClubSetSlotes(playerid, change);
 
-                        if (!change) SetPVarInt(playerid, "ComputerClubRoomSlotes", slotes);
-                        else {
-                            new roomid = computerClubPlayerInfo[playerid][ccpiRoom];
-                            computerClubRoomInfo[gameid][roomid][ccriSlotes] = slotes;
-                        }
-                    }
-                }
-            }
+						if (!change) SetPVarInt(playerid, "ComputerClubRoomSlotes", slotes);
+						else {
+							new roomid = computerClubPlayerInfo[playerid][ccpiRoom];
+							computerClubRoomInfo[gameid][roomid][ccriSlotes] = slotes;
 
-            if (!change)
-                ShowComputerClubRoomCreate(playerid);
-            else
-                ShowComputerClubMenu(playerid);
+							computerClubRoomInfo[gameid][roomid][ccriTeamSize] = min(computerClubRoomInfo[gameid][roomid][ccriTeamSize], ComputerClubGetMaxTeamSize(gameid, roomid));
+						}
+					}
+				}
+			}
+
+			if (!change)
+				ShowComputerClubRoomCreate(playerid);
+			else
+				ShowComputerClubMenu(playerid);
         }
         case 1437: {
             new gameid = GetPlayerActiveComputerGame(playerid);
@@ -1905,10 +1913,10 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
             if (response && gameid > -1) {
                 new size;
-                if (sscanf(inputtext, "d", size) || size < ComputerClubGetMinimalTeamSize(gameid, roomid))
+                if (sscanf(inputtext, "d", size) || size < ComputerClubGetMaxTeamSize(gameid, roomid))
                 {
                     new string[75];
-                    format(string,sizeof(string),"[ Мысли ]: Минимальное количество участников должно быть {ff6347}%d",ComputerClubGetMinimalTeamSize(gameid, roomid));
+                    format(string,sizeof(string),"[ Мысли ]: Минимальное количество участников должно быть {ff6347}%d",ComputerClubGetMaxTeamSize(gameid, roomid));
       				SendClientMessage(playerid,COLOR_GREY,string);
                     return ShowComputerClubSetTeamSize(playerid);
                 }
@@ -2160,8 +2168,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             // Если игрок выбрал команду
             if (response) 
             {
-                if (gameid > -1) 
-                {
+                if (gameid > -1) {
                     if (computerClubRoomInfo[gameid][roomid][ccriStarted])
                         return SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы не можете изменить команду при активной игре");
 
@@ -2189,11 +2196,14 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                     DeletePVar(playerid, "ComputerClubSelectedGame"); DeletePVar(playerid, "ComputerClubSelectedRoom");
 
                     if(Komputer[playerid] == 1 || Komputer[playerid] == 2) closecomp(playerid), CancelSelectTextDraw(playerid);
-                    SuccessMessage(playerid,"{44ff99} Вы успешно присоединились к серверу. Для управления используйте [ /compclub ]");
+                    SuccessMessage(playerid,"{44ff99} Вы успешно присоединились к серверу. Для управления используйте кнопку [ N ]");
                     return 1;
                 }
             }
-            else ShowComputerClubMenu(playerid);
+            // Если esc вновь показываем диалог выбора тимы
+            else ShowComputerClubChooseTeam(playerid, computerClubPlayerInfo[playerid][ccpiID], .before_connection = true);
+
+            ShowComputerClubMenu(playerid);
         }
         case 1434: {
             if (!response) return ShowComputerClubMenu(playerid);
@@ -2333,18 +2343,23 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             }
         }
         case 1426: {
-            if (!response || !ComputerClubIsPlayerHost(playerid)) return ShowComputerClubMenu(playerid);
-            
-            new gameid = GetPlayerActiveComputerGame(playerid),
-                roomid = computerClubPlayerInfo[playerid][ccpiRoom];
-            
-            // Если хост запускает игру, но у него самого нет денег на оплату ставки - выводим соответствующую ошибку
-            new room_bet = computerClubRoomInfo[gameid][roomid][ccriBet];
-            if (!computerClubRoomInfo[gameid][roomid][ccriStarted] && room_bet > 0 && PlayerInfo[playerid][pMoney] < room_bet)
-                return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{cd5700}Ошибка", "{cccccc}Вы не можете начать игру {cd5700}[ Недостаточно наличных для оплаты ставки ]", "Закрыть", "");
-            
-            // Меняем статус игры
-            ComputerClubSetRoomState(gameid, roomid, !computerClubRoomInfo[gameid][roomid][ccriStarted], COMPUTER_CLUB_ROOM_HOST);
+			if (!response || !ComputerClubIsPlayerHost(playerid)) return ShowComputerClubMenu(playerid);
+			
+			new gameid = GetPlayerActiveComputerGame(playerid),
+				roomid = computerClubPlayerInfo[playerid][ccpiRoom],
+				host_teamid = computerClubPlayerInfo[playerid][ccpiTeam];
+			
+			// Если хост запускает игру, но у него самого нет денег на оплату ставки - выводим соответствующую ошибку
+			new room_bet = computerClubRoomInfo[gameid][roomid][ccriBet];
+			if (!computerClubRoomInfo[gameid][roomid][ccriStarted] && room_bet > 0 && PlayerInfo[playerid][pMoney] < room_bet)
+				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}Ошибка", "{cccccc}Вы не можете начать игру {cd5700}[ Недостаточно наличных для оплаты ставки ]", "Закрыть", "");
+			
+			// Если все игроки состоят в одной команде - выводим ошибку
+			if (ComputerClubGetPlayersCount(gameid, roomid, host_teamid) == ComputerClubGetPlayersCount(gameid, roomid))
+				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}Ошибка", "{cccccc}Вы не можете начать игру {cd5700}[ Нет участников во второй команде ]", "Закрыть", "");
+
+			// Меняем статус игры
+			ComputerClubSetRoomState(gameid, roomid, !computerClubRoomInfo[gameid][roomid][ccriStarted], COMPUTER_CLUB_ROOM_HOST);
         }
         case 1443: {
             if (!response) return false;
