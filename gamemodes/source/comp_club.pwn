@@ -1,9 +1,10 @@
 #define COMPUTER_CLUB_GAMES_AMOUNT 1 // Количество существующих игр
 #define COMPUTER_CLUB_MAX_ROOMS 500 // Максимальное количество комнат для одной игры
-#define COMPUTER_CLUB_LOCATIONS_AMOUNT 3 // Количество существующих локаций (все игры вместе)
+#define COMPUTER_CLUB_LOCATIONS_AMOUNT 4 // Количество существующих локаций (все игры вместе)
 #define COMPUTER_CLUB_MAX_GAME_LOCATIONS 10 // Максимальное количество локаций у одной игры
 #define COMPUTER_CLUB_MAX_LOCATION_SPAWNS 5 // Максимальное количество точек спавна на локации
-#define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный инт комп клуба
+#define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный ворлд комп клуба
+#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MAX_ROOMS + COMPUTER_CLUB_MIN_WORLD // Максимальный ворлд клуба
 
 #define COMPUTER_CLUB_MAX_TEAMS 2 // Максимальное количество команд (Создано только для удобства, поддержки 3+ команд нет)
 new Text: computer_club_TD[1]; // Компьютерный клуб
@@ -35,12 +36,13 @@ enum e_ComputerClubWeaponSlotes {
 
 enum e_ComputerClubLocationInfo {
     ccliName[64], // Название
-    ccliWorld, ccliInterior // Виртуальный мир, интерьер
+    ccliInterior // Виртуальный мир, интерьер
 };
 new computerClubLocationInfo[COMPUTER_CLUB_LOCATIONS_AMOUNT][e_ComputerClubLocationInfo] = {
-    {"TDM Локация 1",0,0},
-    {"TDM Локация 2",0,0},
-    {"Тестовая локация",0,0}
+    {"TDM Локация 1", 0},
+    {"TDM Локация 2", 0},
+    {"Луна", 221},
+    {"Марс", 222}
 };
 
 // Информация о спавнах для каждой локации (порядок тот же, что и у локаций)
@@ -65,9 +67,18 @@ new computerClubLocationSpawn[COMPUTER_CLUB_LOCATIONS_AMOUNT][COMPUTER_CLUB_MAX_
         {},
         {}
     },
+    // Луна
     {
+        { {12.5819,2946.9397,957.2476,359.8550}, 1}, // 1 команда
+        { {19.6597,3038.2612,957.2476,180.9401}, 2}, // 2 команда
         {},
         {},
+        {}
+    },
+    // Марс
+    {
+        { {1437.2999,2449.1462,1457.2476,76.1354}, 1}, // 1 команда
+        { {1338.8302,2499.8142,1457.2399,273.2004}, 2}, // 2 команда
         {},
         {},
         {}
@@ -79,7 +90,7 @@ enum e_ComputerClubGameInfo {
     ccgiLocations[COMPUTER_CLUB_MAX_GAME_LOCATIONS] // Доступные этой игре локации
 };
 new computerClubGameInfo[COMPUTER_CLUB_GAMES_AMOUNT][e_ComputerClubGameInfo] = {
-    {"TDM", {0, 1}}
+    {"TDM", {0, 1, 2, 3}}
     //{"CopChase", {2}},
     //{"CargoRaids", {2}}
 };
@@ -772,7 +783,7 @@ stock ShowComputerClubChooseTeam(playerid, gameid, bool: before_connection = fal
         return ComputerClubRoomJoin(playerid, gameid, roomid);
     
     SetPVarInt(playerid, "ComputerClubChooseTeamBC", before_connection ? 1 : 0);
-    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Выбор команды", dialog_text, "Выбор", !before_connection ? "Назад" : "");
+    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Выбор команды", dialog_text, "Выбор", "Выход");
 }
 
 // Отображает диалог выбора карты
@@ -1446,7 +1457,7 @@ stock ComputerClubPayin(gameid, roomid) {
                 continue;
             }
 
-            oGivePlayerMoney(id, PlayerInfo[id][pMoney] - room_bet);
+            oGivePlayerMoney(id, -room_bet);
             computerClubRoomInfo[gameid][roomid][ccriTotalBet] += room_bet;
 
             // Оповещение о принятии ставки
@@ -1499,7 +1510,7 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
                 PPSpawnPlayer(id); // Спавним игрока (выдача оружия и все остальное есть в обработчике спавна)
             } else {
                 if (has_bet && reason == COMPUTER_CLUB_ROOM_HOST) { // Если игра со ставкой, но завершена досрочно хостом
-                    oGivePlayerMoney(id, PlayerInfo[id][pMoney] + room_bet); // Возвращаем размер ставки игроку назад
+                    oGivePlayerMoney(id, room_bet); // Возвращаем размер ставки игроку назад
                     
                     // Оповещение о возврате ставки
                     static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~$%d";
@@ -1746,12 +1757,6 @@ stock ComputerClubIsPlayerHost(playerid, gameid = -1, roomid = -1) {
     }
     return (computerClubRoomInfo[gameid][roomid][ccriHostID] == PlayerInfo[playerid][pID]);
 }
-
-CMD:compclub(playerid) {
-    ShowComputerClubMenu(playerid);
-    return 1;
-}
-
 
 stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtext[])
 {
@@ -2201,9 +2206,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 }
             }
             // Если esc вновь показываем диалог выбора тимы
-            else ShowComputerClubChooseTeam(playerid, computerClubPlayerInfo[playerid][ccpiID], .before_connection = true);
-
-            ShowComputerClubMenu(playerid);
+            else ShowComputerClubMenu(playerid);
         }
         case 1434: {
             if (!response) return ShowComputerClubMenu(playerid);

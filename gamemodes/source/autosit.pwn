@@ -419,22 +419,24 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 
 		new Float: cur_x, Float: cur_y, Float: cur_z, Float: cur_a;
 		GetSeatPositionCoords(objectid, baseZ, verticalDistance, horizontalDistance, cur_x, cur_y, cur_z, cur_a);
-		new Float: cur_player_x2, Float: cur_player_y2, Float: cur_player_z2;
-		GetPlayerPos(playerid,cur_player_x2,cur_player_y2,cur_player_z2);
+
+		new Float: cur_player_x, Float: cur_player_y, Float: cur_player_z;
+		GetPlayerPos(playerid, cur_player_x, cur_player_y, cur_player_z);
+
 		// Узнаем, занято ли место кем-то другим
-		foreach (new id : Player) {
-			new Float: cur_player_x, Float: cur_player_y, Float: cur_player_z;
-			GetPlayerPos(id, cur_player_x, cur_player_y, cur_player_z);
+		for(new id = 0; id < MAX_REALPLAYERS; id++)
+		{
+			if(OnlineInfo[id][oLogged] == 0) continue;
 		
-			if (IsPlayerInRangeOfPoint(id, 0.01, cur_x, cur_y, cur_player_z)) {
+			if (IsPlayerInRangeOfPoint(id, 0.01, cur_x, cur_y, cur_player_z)) 
+			{
 				seats_occupied[seat_index] = true;
 				break;
 			}
-		}
-		for(new i; i < MAX_REALPLAYERS; i++)
-		{
-			if(CompGameActor[i] == 0) continue;
-			if(IsActorInRangeOfPoint(CompGameActor[i], 0.05, cur_x, cur_y, cur_player_z2)) {
+
+			if(CompGameActor[id] == 0) continue;
+			if(IsDynamicActorInRangeOfPoint(CompGameActor[id], 0.05, cur_x, cur_y, cur_player_z)) 
+			{
 				seats_occupied[seat_index] = true;
 				break;
 			}
@@ -567,8 +569,12 @@ stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 	SetPVarInt(playerid, "antifsit", 3);
 	Job_X[playerid] = x, Job_Y[playerid] = y, Job_Z[playerid] = z, Job_A[playerid] = a;
 	NoAnim[playerid] = 1;
-	ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
-	SetTimerEx("sitload", 1500, 0, "d", playerid);
+	if(OnlineInfo[playerid][oKeepSit] == 0) 
+	{
+		ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
+		SetTimerEx("sitload", 1500, 0, "d", playerid);
+	}
+	else ApplyAnimation(playerid,"PED","SEAT_idle",4.0,0,0,0,1,0,1);
 	return 1;
 }
 

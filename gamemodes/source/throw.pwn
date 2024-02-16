@@ -84,7 +84,14 @@ stock use_throw(playerid, inva, useinva)
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
 
-    if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
+    if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0)
+	{
+		if(fpick >= 128 && fpick <= 138 || fpick == 42) // Если предметы с взаимодействием
+		{
+			if(ThrowInfo[t][tPutLocation] == 0) return ErrorMessage(playerid, "{FF6347}Этот предмет лежит на полу и он уже есть в вашем инвентаре\n{ffcc66}Если вы хотите начать взаимодействие с предметом, положите его на стол\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
+		}
+		else return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
+	}
 	
 	new string[180];
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
