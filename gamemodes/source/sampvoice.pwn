@@ -5,9 +5,15 @@
 new SV_UINT:adm_stream = SV_NONE;
 new SV_UINT:lstream[MAX_REALPLAYERS] = { SV_NONE, ... };
 
+CMD:testmusic(playerid)
+{
+    play_music(playerid);
+    return 1;
+}
+
 stock SampvoiceInitializationMode()
 {
-    //SvEnableDebug(); // Режим отладки Sampvoice
+    SvEnableDebug(); // Режим отладки Sampvoice
 
     adm_stream = SvCreateStream();
 
@@ -54,6 +60,9 @@ stock SampvoiceAttachAdmin(playerid)
         SvAttachStream(playerid, adm_stream, ADMIN_CHANNEL);
         SvAttachListener(adm_stream, playerid);
         SvSetIcon(adm_stream, "speaker");
+
+        SvEnableSpeaker(playerid, ADMIN_CHANNEL);
+        SvEnableListener(playerid);
     }
     return 1;
 }

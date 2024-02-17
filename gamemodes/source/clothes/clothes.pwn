@@ -284,10 +284,15 @@ CMD:setskin(playerid, const params[]) // Сменить активную оде�
 	PlayerInfo[giveplayerid][pModel3] = 0;
 
 	new string[90];
-	format(string, sizeof(string), "Администратор %s изменил вашу одежду", PlayerInfo[playerid][pName]);
-	SendClientMessage(giveplayerid, COLOR_WHITE, string);
+	if(giveplayerid != playerid)
+	{
+		format(string, sizeof(string), "Администратор %s изменил вашу одежду", PlayerInfo[playerid][pName]);
+		SendClientMessage(giveplayerid, COLOR_WHITE, string);
+	}
 	format(string, sizeof(string), "Вы изменили %s одежду на ID %d (Общий Доступ)", PlayerInfo[giveplayerid][pName],params[1]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
+
+	//m_custom_sync_SetPlayerSkin(giveplayerid, PlayerInfo[giveplayerid][pModel]);
 
     OnlineInfo[giveplayerid][oTempSkin] = 0;
 	TempSpawnPlayer(giveplayerid);

@@ -4,7 +4,7 @@
 new soapObject;
 new Text3D:soapLabel;
 
-CMD:checklook(playerid, const params[]) // VREMENNO
+CMD:checklook(playerid, const params[])
 {
     if(server != 0) return 1;
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Узнать на кого смотрит игрок [ /checklook ID ]");

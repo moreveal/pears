@@ -876,9 +876,10 @@ stock CheckCancelCrypto(playerid, stat)
 
 stock CryptoLog(status, const nameplayer[],playerID, senderpID, const namesender[], const senderip[], const playerip[], countsell, countcourse)
 {
-	new query[364], unix = gettime();
+	new query[500], unix = gettime();
     format(query, sizeof(query), "INSERT INTO `crypto_log`\
-	(`tradecryptoSenderID`,`tradecryptoPlayerID`,`tradecryptoPlayerName`,`tradecryptoSenderName`,`tradecryptoPlayerIP`,`tradecryptoSenderIP`,`tradecryptoStatus`,`tradecryptoCount`,`tradecryptoCourse`,`tradecryptoUnix`) VALUES ('%d','%d','%s','%s','%s','%s','%d','%d','%d','%d')",
+	    (`tradecryptoSenderID`,`tradecryptoPlayerID`,`tradecryptoPlayerName`,`tradecryptoSenderName`,`tradecryptoPlayerIP`,`tradecryptoSenderIP`,\
+        `tradecryptoStatus`,`tradecryptoCount`,`tradecryptoCourse`,`tradecryptoUnix`) VALUES ('%d','%d','%s','%s','%s','%s','%d','%d','%d','%d')",
     senderpID, playerID, nameplayer, namesender, playerip, senderip,status, countsell, countcourse, unix);
 	mysql_tquery(pearsq_2, query, "", "");
 }

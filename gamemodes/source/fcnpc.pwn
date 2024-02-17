@@ -205,7 +205,6 @@ stock ReloadVehicleNPC(vehicleid)
     return 1;
 }
 
-
 public FCNPC_OnUpdate(npcid)
 {
     if(GetPlayerState(npcid) == PLAYER_STATE_DRIVER)
@@ -215,12 +214,6 @@ public FCNPC_OnUpdate(npcid)
 		GetVehicleHealth(vehicleid, vhp);
         if(vhp < maxhp) VehInfo[vehicleid][vHealth] = maxhp, SetVehicleHealth(vehicleid, maxhp);
     }
-    return 1;
-}
-
-CMD:gettrainpoint(playerid) // VREMENNO
-{
-    SendClientMessagef(playerid, -1, "Train Point: %d", TrainRoadID);
     return 1;
 }
 

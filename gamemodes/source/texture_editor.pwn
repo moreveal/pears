@@ -238,7 +238,7 @@ stock Create3DMenu(playerid, stat, dom) // Создаём 3D Menu выбора �
 		NextLineX = floatcos(plapos[3],degrees)+0.05*floatcos(plapos[3],degrees);
 		NextLineY = floatsin(plapos[3],degrees)+0.05*floatsin(plapos[3],degrees);
 
-		SetPaletteTexture(playerid, 0); // VREMENNO (запускаем при открытии стандартную палитру)
+		SetFirstItemsTexture(playerid); // Определяем id первой текстуры в палитре (если не отсортированные, значит 0 не показываем)
 		// Создаём объекты для палитры текстур
 		for(new b = 0; b < 12; b++)
 		{
@@ -296,10 +296,16 @@ stock GetFirstItems(playerid)
 	else return 0;
 }
 
+stock SetFirstItemsTexture(playerid)
+{
+	MenuInfo[playerid][zItems] = GetFirstItems(playerid);
+	return 1;
+}
+
 stock SetPaletteTexture(playerid, status)
 {
 	MenuInfo[playerid][zLibraryStatus] = status; // Устанавливаем статус палитры
-	MenuInfo[playerid][zItems] = GetFirstItems(playerid); // Сбрасываем подсчёт последней отображаемой текстуры
+	SetFirstItemsTexture(playerid); // Сбрасываем подсчёт последней отображаемой текстуры
 	MenuInfo[playerid][zList] = 0; // Сбрасываем страницы с текстурами
 	return 1;
 }

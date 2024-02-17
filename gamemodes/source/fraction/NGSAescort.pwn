@@ -2649,7 +2649,7 @@ stock ExitWindowTrain(playerid)
 }
 
 /*new puttrainpos;
-stock postrainroad(playerid) // VREMENNO
+stock postrainroad(playerid)
 {
 	if(server != 0) return 1; 
 	new string[20];
