@@ -2,6 +2,8 @@
 new SV_GSTREAM:adm_stream = SV_NULL;
 new SV_LSTREAM:lstream[MAX_REALPLAYERS] = { SV_NULL, ... };
 
+// https://pears-test.ru/sound/music/test.mp3
+
 stock Sampvoice3InitializationMode()
 {
     //SvDebug(SV_TRUE);
@@ -28,9 +30,9 @@ stock Sampvoice3InitializationPlayer(playerid) // Запускаем игрок�
     {
         PlayerInfo[playerid][pVoice] = true;
 
-        if(!lstream[playerid]) 
+        if(!lstream[playerid])
         {
-            SvAddKey(playerid, 0x5A);
+            SvAddKey(playerid, 0x42);
             new string[4];
             format(string, sizeof(string), "L");
             lstream[playerid] = SvCreateDLStreamAtPlayer(30.0, SV_INFINITY, playerid, -1, string); //lstream[p] = SvCreateDLStreamAtPlayer(40.0, SV_INFINITY, p, 0xffffffff, "L");
@@ -47,7 +49,7 @@ stock Sampvoice3AttachAdmin(playerid)
     if (adm_stream != SV_NULL)
     {
         gAvoi[playerid] = true;
-        SvAddKey(playerid, 0x42);
+        SvAddKey(playerid, 0x5A);
 		if(adm_stream) SvAttachListenerToStream(adm_stream, playerid);
     }
     return 1;
@@ -62,7 +64,7 @@ stock Sampvoice3DestroyPlayer(playerid) // Отключаем игроку sampv
     {
         if(gAvoi[playerid] == true)
 	    {
-            if(adm_stream) gAvoi[playerid] = false, SvDetachListenerFromStream(adm_stream, playerid), SvRemoveKey(playerid, 0x42);
+            if(adm_stream) gAvoi[playerid] = false, SvDetachListenerFromStream(adm_stream, playerid), SvRemoveKey(playerid, 0x5A);
         }
     }
     return 1;
@@ -76,33 +78,30 @@ public SV_VOID:OnPlayerActivationKeyPress(SV_UINT:playerid,SV_UINT:keyid)
 	    if((IsPlayerInRangeOfPoint(playerid, AreaVRad[0], AreaV_X[0], AreaV_Y[0], AreaV_Z[0]) && AreaVStat[0] 
 		|| IsPlayerInRangeOfPoint(playerid, AreaVRad[1], AreaV_X[1], AreaV_Y[1], AreaV_Z[1]) && AreaVStat[1]
 		|| IsPlayerInRangeOfPoint(playerid, AreaVRad[2], AreaV_X[2], AreaV_Y[2], AreaV_Z[2]) && AreaVStat[2]) && PlayerInfo[playerid][pSoska] == 0) net = 1;
-		if(keyid == 0x5A && lstream[playerid] && HealthAC[playerid] > 0 && net == 0)
+		if(keyid == 0x42)
 		{
-			SvAttachSpeakerToStream(lstream[playerid], playerid);
+			if(lstream[playerid] 
+                && HealthAC[playerid] > 0 
+                && net == 0 
+                && DeathInfo[playerid][deathStatus] == false) SvAttachSpeakerToStream(lstream[playerid], playerid);
 		}
-		if(gAvoi[playerid] == true)
-		{
-			if(keyid == 0x42 && adm_stream)
-			{
-				SvAttachSpeakerToStream(adm_stream, playerid);
-			}
-		}
+        else if(keyid == 0x5A)
+        {
+            if(gAvoi[playerid] == true && adm_stream) SvAttachSpeakerToStream(adm_stream, playerid);
+        }
 	}
 	else isamute(playerid);
 }
 
 public SV_VOID:OnPlayerActivationKeyRelease(SV_UINT:playerid,SV_UINT:keyid)
 {
-	if(PlayerInfo[playerid][pMuteTime] == 0)
-	{
-        if(keyid == 0x5A && lstream[playerid])
-        {
-            SvDetachSpeakerFromStream(lstream[playerid], playerid);
-        }
+    if(keyid == 0x42)
+    {
+        if(lstream[playerid]) SvDetachSpeakerFromStream(lstream[playerid], playerid);
+    }
 
-        if(keyid == 0x42 && adm_stream)
-        {
-            SvDetachSpeakerFromStream(adm_stream, playerid);
-        }
-	}
+    else if(keyid == 0x5A)
+    {
+        if(adm_stream) SvDetachSpeakerFromStream(adm_stream, playerid);
+    }
 }

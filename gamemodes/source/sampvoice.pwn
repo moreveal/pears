@@ -5,12 +5,6 @@
 new SV_UINT:adm_stream = SV_NONE;
 new SV_UINT:lstream[MAX_REALPLAYERS] = { SV_NONE, ... };
 
-CMD:testmusic(playerid)
-{
-    play_music(playerid);
-    return 1;
-}
-
 stock SampvoiceInitializationMode()
 {
     SvEnableDebug(); // Режим отладки Sampvoice
