@@ -24,6 +24,9 @@ stock IsShootingWeapon(weaponid)
     return 0;
 }
 
+new TickDamagePlayer[MAX_REALPLAYERS]; // Записываем для интервалов между дамагами
+new BulletDamagePlayer[MAX_REALPLAYERS] = { -1, ... }; // Игрок совершил высрел в bullet sync
+
 // Получает урон, наносимый оружием, а также наносимое бронежилету повреждение
 // Бронежилет работает только на огнестрельное оружие**
 stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float: damage, &Float: armour_breaking)
@@ -204,9 +207,66 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
     return 0;
 }
 
+static s_MaxWeaponShootRate[] = 
+{
+    230, // 0 - Fist
+    230, // 1 - Brass knuckles
+    230, // 2 - Golf club
+    230, // 3 - Nitestick
+    230, // 4 - Knife
+    230, // 5 - Bat
+    230, // 6 - Shovel
+    230, // 7 - Pool cue
+    230, // 8 - Katana
+    30, // 9 - Chainsaw
+    230, // 10 - Dildo
+    230, // 11 - Dildo 2
+    230, // 12 - Vibrator
+    230, // 13 - Vibrator 2
+    230, // 14 - Flowers
+    230, // 15 - Cane
+    0, // 16 - Grenade
+    0, // 17 - Teargas
+    0, // 18 - Molotov
+    90, // 19 - Vehicle M4 (custom)
+    20, // 20 - Vehicle minigun (custom)
+    0, // 21 - Vehicle rocket (custom)
+    140, // 22 - Colt 45
+    100, // 23 - Silenced
+    100, // 24 - Deagle
+    700, // 25 - Shotgun
+    100, // 26 - Sawed-off
+    100, // 27 - Spas
+    50, // 28 - UZI
+    70, // 29 - MP5
+    70, // 30 - AK47
+    70, // 31 - M4
+    60, // 32 - Tec9
+    700, // 33 - Cuntgun
+    800, // 34 - Sniper
+    700, // 35 - Rocket launcher
+    700, // 36 - Heatseeker
+    20, // 37 - Flamethrower
+    10, // 38 - Minigun
+    0, // 39 - Satchel
+    0, // 40 - Detonator
+    10, // 41 - Spraycan
+    10, // 42 - Fire extinguisher
+    0, // 43 - Camera
+    0, // 44 - Night vision
+    0, // 45 - Infrared
+    0, // 46 - Parachute
+    0, // 47 - Fake pistol
+    400 // 48 - Pistol whip (custom)
+};
+
 forward PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart);
 public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
 {
+    // Защита от дамага с выстреливающего оружия без отправки пули
+    if(IsShootingWeapon(weaponid) && BulletDamagePlayer[playerid] != weaponid) return false;
+    BulletDamagePlayer[playerid] = -1;
+
     // Простейший блок урона от читера
     new slot = Protect_Slot(weaponid);
     if(slot > 0)
@@ -214,7 +274,30 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return 0;
     }
 
+    // Защита для новичков
     if(BeginnerDamage(playerid, damagedid)) return 1;
+
+    // Защита от дамага без интервалов
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, TickDamagePlayer[playerid]);
+    if(weaponid == 24) // Deagle
+    {
+        new g = fraction(playerid);
+        if(ChutC[g] != 0 || GoC[g] != 0 || Shooting[playerid] > 0) // +C Доступен
+        {
+             if(interval < 20) return false;
+        }
+        else 
+        {
+             if(interval < s_MaxWeaponShootRate[weaponid]) return false;
+        }
+    }
+    else
+    {
+         if(interval < s_MaxWeaponShootRate[weaponid]) return false;
+    }
+    TickDamagePlayer[playerid] = current_tick;
+
 
     // Убийство с ножа
     if (weaponid == WEAPON_KNIFE && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, 0, "df", damagedid, 0.0);

@@ -62,7 +62,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 					ApplyAnimation(playerid,"DEALER","shop_pay",4.0, 0, 0, 0, 0, 0);
 					MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PlayerInfo[playerid][pSalary], "Зарплата Инкассаторы");
 					SendClientMessagef(playerid, COLOR_GREY, "[ Мысли ]: Моя зарплата {99ff66}%d$", PlayerInfo[playerid][pSalary]);
-					SendActorMessage(playerid, 1,BotPears[5],"Отлично! Держи деньги");
+					SendDynamicActorMessage(playerid, BotPears[5],"Отлично! Держи деньги");
 					PlayerInfo[playerid][pPlacement] = 0, PlayerInfo[playerid][pSalary] = 0;
 					mysql_save(playerid, 58);
 				}

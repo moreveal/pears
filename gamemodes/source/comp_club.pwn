@@ -3,11 +3,12 @@
 #define COMPUTER_CLUB_LOCATIONS_AMOUNT 4 // Количество существующих локаций (все игры вместе)
 #define COMPUTER_CLUB_MAX_GAME_LOCATIONS 10 // Максимальное количество локаций у одной игры
 #define COMPUTER_CLUB_MAX_LOCATION_SPAWNS 5 // Максимальное количество точек спавна на локации
-#define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный ворлд комп клуба
-#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MAX_ROOMS + COMPUTER_CLUB_MIN_WORLD // Максимальный ворлд клуба
+#define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный виртуальный мир клуба
+#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MIN_WORLD + (COMPUTER_CLUB_GAMES_AMOUNT * COMPUTER_CLUB_MAX_ROOMS) // Максимальный виртуальный мир клуба
 
 #define COMPUTER_CLUB_MAX_TEAMS 2 // Максимальное количество команд (Создано только для удобства, поддержки 3+ команд нет)
 new Text: computer_club_TD[1]; // Компьютерный клуб
+
 #define COMPUTER_CLUB_WARMUP_TD computer_club_TD[0]
 
 enum e_ComputerClubGames {
@@ -1571,11 +1572,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         new teamid = computerClubPlayerInfo[playerid][ccpiTeam];
         new locationid = computerClubRoomInfo[gameid][roomid][ccriLocation];
 
-        new virtual_world_str[10];
-        format(virtual_world_str, sizeof virtual_world_str, "%d%d", gameid, roomid + 1);
-
-
-        S_SetPlayerVirtualWorld(playerid, COMPUTER_CLUB_MIN_WORLD + strval(virtual_world_str),computerClubLocationInfo[locationid][ccliInterior]);
+        S_SetPlayerVirtualWorld(playerid, COMPUTER_CLUB_MIN_WORLD + (gameid * roomid),computerClubLocationInfo[locationid][ccliInterior]);
         SetPlayerInterior(playerid,computerClubLocationInfo[locationid][ccliInterior]);
         
         computerClubPlayerInfo[playerid][ccpiIsDead] = false;
