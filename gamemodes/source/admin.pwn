@@ -661,6 +661,7 @@ CMD:getinvest(playerid, const params[])
 		{
 			if(params[0] > 1000000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не больше 1.000.000$ и не меньше 1$");
 		}
+		if(checksimvol(params[1])) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
 		if(ServerInfo[32] < params[0]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В общаке администрации нет столько денег");
 		if(strlen(params[1]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Максимальное количество символов: 20");
 		new string[144];
@@ -684,6 +685,7 @@ CMD:getgold(playerid, const params[])
 	if(params[0] > 10000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не больше 10000 и не меньше 1");
 	if(ServerInfo[33] < params[0]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В общаке администрации нет столько золота");
 	if(strlen(params[1]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Максимальное количество символов: 20");
+	if(checksimvol(params[1])) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
 	new string[144];
 	ServerInfo[33] -= params[0];
 	SaveServer(33);

@@ -292,7 +292,7 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
              if(interval < s_MaxWeaponShootRate[weaponid]) return false;
         }
     }
-    else
+    else if(weaponid <= sizeof(s_MaxWeaponShootRate))
     {
          if(interval < s_MaxWeaponShootRate[weaponid]) return false;
     }

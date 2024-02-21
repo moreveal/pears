@@ -1057,7 +1057,7 @@ stock get_clothes(playerid) // Поиск, есть ли у игрока оде�
 		{
 			if(PlayerInfo[playerid][pSex] == 1) // Man
 			{
-				if(GetSkinSex(PlayerInfo[playerid][pInven][i]) == 0)
+				if(GetSkinSex(PlayerInfo[playerid][pInven][i]) == 1)
 				{
 					yesSKin = 1;
 					break;
@@ -1065,7 +1065,7 @@ stock get_clothes(playerid) // Поиск, есть ли у игрока оде�
 			}
 			else // Woman
 			{
-				if(GetSkinSex(PlayerInfo[playerid][pInven][i]) == 1)
+				if(GetSkinSex(PlayerInfo[playerid][pInven][i]) == 2)
 				{
 					yesSKin = 1;
 					break;

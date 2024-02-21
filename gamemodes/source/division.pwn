@@ -319,6 +319,7 @@ CMD:divuninvite(playerid, const params[])
 
 	if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ Мысли ]: Имя не меньше 1 и не больше 24 символов");
 	if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ Мысли ]: Причина не меньше 1 и не больше 24 символов");
+	if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
 
 	giveplayerid = ReturnUser(playerName);
 	if(IsPlayerConnected(giveplayerid))
