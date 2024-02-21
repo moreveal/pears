@@ -4,7 +4,7 @@
 #define COMPUTER_CLUB_MAX_GAME_LOCATIONS 10 // Максимальное количество локаций у одной игры
 #define COMPUTER_CLUB_MAX_LOCATION_SPAWNS 5 // Максимальное количество точек спавна на локации
 #define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный виртуальный мир клуба
-#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MIN_WORLD + (COMPUTER_CLUB_GAMES_AMOUNT * COMPUTER_CLUB_MAX_ROOMS) // Максимальный виртуальный мир клуба
+#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MIN_WORLD + (COMPUTER_CLUB_GAMES_AMOUNT + 1) * (COMPUTER_CLUB_MAX_ROOMS + 1) // Максимальный виртуальный мир клуба
 
 #define COMPUTER_CLUB_MAX_TEAMS 2 // Максимальное количество команд (Создано только для удобства, поддержки 3+ команд нет)
 new Text: computer_club_TD[1]; // Компьютерный клуб
@@ -1572,7 +1572,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         new teamid = computerClubPlayerInfo[playerid][ccpiTeam];
         new locationid = computerClubRoomInfo[gameid][roomid][ccriLocation];
 
-        S_SetPlayerVirtualWorld(playerid, COMPUTER_CLUB_MIN_WORLD + (gameid * roomid),computerClubLocationInfo[locationid][ccliInterior]);
+        S_SetPlayerVirtualWorld(playerid, COMPUTER_CLUB_MIN_WORLD + (gameid + 1) * (roomid + 1),computerClubLocationInfo[locationid][ccliInterior]);
         SetPlayerInterior(playerid,computerClubLocationInfo[locationid][ccliInterior]);
         
         computerClubPlayerInfo[playerid][ccpiIsDead] = false;
@@ -1584,9 +1584,10 @@ stock ComputerClubOnPlayerSpawn(playerid) {
 
         new spawnid = ComputerClubGetRandomSpawn(locationid, teamid);
         new Float: x, Float: y, Float: z, Float: a; ComputerClubGetSpawnInfo(locationid, spawnid, x, y, z, a);
-        SetPlayerPos(playerid, x, y, z); SetPlayerFacingAngle(playerid, a);
+
         new models = PlayerInfo[playerid][pModel];
         m_custom_sync_SetSpawnInfo(playerid, teamid, models, x, y, z, a, 0, 0, 0, 0, 0, 0);
+        PPSetPlayerPos(playerid, x, y, z), SetPlayerFacingAngle(playerid, a);
 
         SetCameraBehindPlayer(playerid);
         SetPlayerColor(playerid, nick_color);

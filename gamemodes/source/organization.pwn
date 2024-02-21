@@ -616,7 +616,7 @@ CMD:members(playerid)
 	PlayerPlaySound(playerid,40405,0,0,0);
 	new str[214], sctring[4096], quan;
 	
-	format(str, sizeof(str), "{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{444444}AFK\n"), strcat(sctring, str);
+	format(str, sizeof(str), "{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{444444}AFK"), strcat(sctring, str);
 
 	foreach(Player, i)
 	{
@@ -650,7 +650,7 @@ stock formatPlayerInfo(str[], size, playerid, g)
     btext = PlayerInfo[playerid][pLeader] > 0 ? "0088ff" : "cccccc";
 
     // Форматируем информацию об игроке
-    if(PlayerInfo[playerid][pFbi] > 0)
+    if(PlayerInfo[playerid][pFbi] > 0 && g == 2)
     {
         format(str, size, "\n%s {%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", atext, btext, getPlayerNameTransmitter(playerid), 
 			getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]), PlayerInfo[playerid][pFbi], afkStatus);
@@ -756,7 +756,7 @@ function Call_mem(playerid, g)
 
 stock formatPlayerInfoOff(str[], size, const name[], rank, vig, offtime[], fbi, const btext[], g, Division0, Division1, bool:singTransmitter, const SingName[])
 {
-    if(fbi > 0)
+    if(fbi > 0 && g == 2)
     {
         format(str, size, "\n{%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", btext, 
 			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName) , getNameRankOrganization(2, Division1, fbi), rank, offtime);

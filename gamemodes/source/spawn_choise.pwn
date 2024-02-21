@@ -25,7 +25,8 @@ stock SaveLastPlayerPosition(playerid)
         || VehShopInfo[playerid][vsTest] == true // Тестдрайв
         || OnlineInfo[playerid][oShowInterface] == 18
         || gAutosalon[playerid] > 0 // В автосервисе
-        || Fractia[playerid] > 0) // В выборе одежды
+        || Fractia[playerid] > 0  // В выборе одежды
+        || computerClubPlayerInfo[playerid][ccpiInGame] == true) // В комп клубе
     {
         PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];

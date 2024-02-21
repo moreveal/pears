@@ -99,12 +99,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	}
 	return 1;
 }
-CMD:stopbreaking(playerid)
-{
-	if(server != 0) return 0;
-	StopBreaking(playerid);
-	return 1;
-}
+
 forward BreakingProcess(playerid);
 public BreakingProcess(playerid) // Таймер заполнения шкалы
 {
@@ -117,9 +112,11 @@ public BreakingProcess(playerid) // Таймер заполнения шкалы
 		}
 		else // Шкала добралась до верхней позиции. Взлом проёбан
 		{
-		    StopBreaking(playerid);
-		   	ErrorMessage(playerid, "{FF6347}У вас не получилось взломать замок");
 		   	new mkey = get_and_take_invent(playerid, 19, 1); // Отнимаем отмычки при проёбе
+			StopBreaking(playerid);
+		   	ErrorMessage(playerid, "{FF6347}У вас не получилось взломать замок");
+			if(QuestInfo[playerid][ThingOne] == true && QuestInfo[playerid][ScriptQuest] != 2) QuestInfo[playerid][ThingOne] = false;
+
 	    	if(mkey > 0)
 	    	{
 				new string[80];
@@ -183,7 +180,12 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 	else // Не попал в зелёную зону клика (Red)
 	{
 	    new mkey = get_and_take_invent(playerid, 19, 1);
-	    if(mkey <= 0) return StopBreaking(playerid), ErrorMessage(playerid, "{FF6347}У вас кончились отмычки");
+	    if(mkey <= 0) 
+		{
+			StopBreaking(playerid), ErrorMessage(playerid, "{FF6347}У вас кончились отмычки");
+			if(QuestInfo[playerid][ThingOne] == true && QuestInfo[playerid][ScriptQuest] != 2) QuestInfo[playerid][ThingOne] = false;
+			return 1;
+		}
 		new string[80];
 	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~O¦ЇЁ¤kњ: ~w~%d", mkey-1);
 		GameTextForPlayer(playerid,string,8000,3);
@@ -218,7 +220,6 @@ stock UpdateTextDrawBreakingScale(playerid) // Обновляем отображ
 }
 stock StopBreaking(playerid)
 {
-	//if(QuestInfo[playerid][ThingOne] == true && QuestInfo[playerid][ScriptQuest] != 2 && get_invent4(playerid, 19, 0) <= 0) QuestInfo[playerid][ThingOne] = false;
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
     {
 		ClearAnimations(playerid);

@@ -243,6 +243,10 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
 
 			if(FamilyInfo[f][fRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), cmd_fam(playerid);
 			FamilyInfo[f][fRanks] = input;
+			FamilyInfo[f][fUpdate] = 1;
+
+			PlayerInfo[playerid][pFamrank] = input;
+			mysql_save(playerid, 13);
 
 			format(string, sizeof(string), "{66ffff}Family {ffcc00}%s изменил%s количество рангов в семье {cccccc}[ %d ]", PlayerInfo[playerid][pName], gender(playerid), input);
       		SendFamilyMessage(PlayerInfo[playerid][pFamily], COLOR_YELLOW, string);

@@ -276,7 +276,7 @@ CMD:gnews(playerid, const params[])
 		}
 		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не в Студии или Транспорте CNN");
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Только для участников Секты");
+	else ErrorMessage(playerid, "{FF6347}Эфир секты может начинать только глава семьи или его заместитель");
  	return 1;
 }
 

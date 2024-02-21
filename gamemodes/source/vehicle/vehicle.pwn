@@ -711,6 +711,12 @@ stock IsAScooter(model)
 	return 0;
 }
 
+stock IsARC(model)
+{
+    if(model == 441 || model == 464 || model == 465 || model == 501 || model == 564 | model == 594) return 1;
+	return 0;
+}
+
 stock IsATrain(model)
 {
     if(model == 537 || model == 538 || model == 569 || model == 570 || model == 590) return 1;
