@@ -213,12 +213,12 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
         quan ++;
         if(PlayerInfo[playerid][pKomnata] != 9999 && PlayerInfo[playerid][pKomnata] >= 1)
       	{
-            if(PlayerInfo[playerid][pKomnataCity] == 2) format(line,sizeof(line),"{cccccc}Отель {ff9000}Las Venturas\n"), strcat(lines,line);
+            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}Отель {ff9000}Las Venturas\n"), strcat(lines,line);
             else format(line,sizeof(line),"{cccccc}Отель {ff9000}Los Santos\n"), strcat(lines,line);
         }
         else
         {
-            if(PlayerInfo[playerid][pKomnataCity] == 2) format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Las Venturas\n"), strcat(lines,line);
+            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Las Venturas\n"), strcat(lines,line);
             else format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Los Santos\n"), strcat(lines,line);
         }
         ShowDialog(playerid,503,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");

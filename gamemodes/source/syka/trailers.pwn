@@ -24,7 +24,7 @@ enum e_TrailerInfo {
 	Text3D: t3DLabel, // Идентификатор 3д текста у входа
 	tEnterPickup, // Идентификатор иконки домика
 	tAttached, // ID транспорта водителя - к нему прикреплен трейлер
-	tObject, // ID установленного объекта (если он стоит в игровом мире)
+	tObject, // ID объекта (и для аттача, и если трейлер уже установлен)
     tVehicle, // ID невидимого транспорта, к которому прикреплен объект трейлера
 	bool: tActive, // Статус существования в игровом мире
 	bool: tLocked, // Статус дверей
@@ -146,7 +146,7 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
     if (!IsValidVehicle(vehicleid) || !IsValidVehicle(trailerid)) {
         // На случай, если уничтожилась только машина водителя, уничтожаем и трейлер
         trailerInfo[tid][tVehicle] = 0;
-        if (GetVehicleModel(trailerid) == TRAILER_INVISIBLE_VEH_MODEL) DestroyVehicle(trailerid);
+        if (GetVehicleModel(trailerid) == TRAILER_INVISIBLE_VEH_MODEL) DestroyPlayerTrailer(tid);
 
         trailerInfo[tid][tAttached] = 0;
         KillTimer(trailerInfo[tid][tTimerID]);
@@ -247,10 +247,9 @@ stock UpdateTrailerPlayer(trailer, user_id)
     return 1;
 }
 
-// Удаляет трейлер, принадлежавший игроку
+// Удаляет трейлер
 stock DeleteTrailer(tid) {
     if (tid < 0 || tid > MAX_TRAILERS) return 0;
-    if (trailerInfo[tid][tOwnerID] < 1) return 0;
 
     ClearTrailerFromAccount(tid); // Удаляем трейлер с аккаунта игрока (если он вдруг онлайн)
     UnloadAttachedTrailer(tid); // На случай если трейлер прямо сейчас прикреплен к авто игрока - открепляем, удаляем
@@ -262,17 +261,10 @@ stock DeleteTrailer(tid) {
 // Выгружает трейлер, прикрепленный к автомобилю
 stock UnloadAttachedTrailer(tid)
 {
-    if (!trailerInfo[tid][tAttached]) return 0;
+    if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
+    trailerInfo[tid][tAttached] = 0;
 
-    if (trailerInfo[tid][tTimerID] > 0) {
-        KillTimer(trailerInfo[tid][tTimerID]);
-        trailerInfo[tid][tTimerID] = 0;
-    }
-    
-    if (trailerInfo[tid][tVehicle] > 0) {
-        ACDestroyVehicle(trailerInfo[tid][tVehicle]);
-        trailerInfo[tid][tVehicle] = 0;
-    }
+    DestroyPlayerTrailer(tid);
 
     return 1;
 }
@@ -386,6 +378,54 @@ stock IsAHimLab(playerid)
     return 0;
 }
 
+stock TrailerOnPlayerDisconnect(playerid) {
+    // Узнаем, есть ли у игрока трейлер
+    new tid = GetPlayerTrailerID(playerid);
+    if (tid < 0) return 1;
+
+    // Открепляем и выгружаем трейлер, если он был прикреплен к какому-либо автомобилю
+    UnloadAttachedTrailer(tid);
+
+    return 1;
+}
+
+// Удаляет невидимый автомобиль, к которому приаттачен объект трейлера + удаляет этот объект для избежания багов (когда создается авто с тем же ID и на нем оказывается аттач)
+stock DestroyPlayerTrailer(tid) {
+    new trailerid = trailerInfo[tid][tVehicle];
+
+    if (trailerid > 0) {
+        if(trailerInfo[tid][tObject] > 0) DestroyDynamicObject(trailerInfo[tid][tObject]), trailerInfo[tid][tObject] = 0;
+        ACDestroyVehicle(trailerid);
+    }
+}
+
+// Покупка трейлера
+stock trailer_add(playerid, model, trailer) 
+{
+    if(PlayerInfo[playerid][pTrailer] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть трейлер");
+    new money;
+    if(trailer == 0) money = 200000;
+    else if(trailer == 1) money = 250000;
+    else if(trailer == 2) money = 300000;
+    else if(trailer == 3) money = 400000;
+    new infocreate = AddPlayerTrailer(playerid, model);
+    if (infocreate == 0) 
+    {
+        new string[55];
+        format(string,sizeof(string),"{FF6347}Трейлер не может быть создан [ Лимит: %d ]", MAX_TRAILERS);
+        ErrorMessage(playerid, string);
+    }
+    else
+    {
+        if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+        oGivePlayerMoney(playerid,-money);
+        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
+        SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");
+ 	    CreateGps(playerid,-547.4172, -1018.2808, 24.1529, 0, 0, 10.0);
+    }
+    return 1;
+}
+
 // Команда для телепорта к трейлеру
 CMD:trailer(playerid, const params[])
 {
@@ -432,7 +472,7 @@ CMD:attachtrailer(playerid)
         if(!IsPlayerInRangeOfPoint(playerid, 8.0, -547.4172, -1018.2808, 24.1529)) return ErrorMessage(playerid, "{FF6347}Прикрепить трейлер можно только в трейлерном парке\n{cccccc}[ Y >> GPS >> Недвижимость >> Трейлерный Парк ]");
     }
 
-    // Удаляем трейлер, если он уже был прицеплен
+    // Выгружаем трейлер, если он уже был прицеплен
     UnloadAttachedTrailer(tid);
 
     // Создаем трейлер, цепляя его к автомобилю
@@ -447,17 +487,6 @@ CMD:attachtrailer(playerid)
     return 1;
 }
 //alias:attachtrailer("trailer_attach")
-
-stock TrailerOnPlayerDisconnect(playerid) {
-    // Узнаем, есть ли у игрока трейлер
-    new tid = GetPlayerTrailerID(playerid);
-    if (tid < 0) return 1;
-
-    // Открепляем и выгружаем трейлер, если он был прикреплен к какому-либо автомобилю
-    if (trailerInfo[tid][tAttached]) UnloadAttachedTrailer(tid);
-
-    return 1;
-}
 
 // Команда для размещения в игровом мире прицепленного трейлера
 CMD:placetrailer(playerid) {
@@ -492,7 +521,7 @@ CMD:placetrailer(playerid) {
         }
 
         // Уничтожаем невидимый автомобиль, к которому прикреплен объект трейлера
-        if(trailerInfo[tid][tVehicle] > 0) ACDestroyVehicle(trailerInfo[tid][tVehicle]), trailerInfo[tid][tVehicle] = 0;
+        DestroyPlayerTrailer(tid);
 
         SavePlayerTrailerInfo(tid);
 
@@ -504,33 +533,6 @@ CMD:placetrailer(playerid) {
     return 1;
 }
 //alias:placetrailer("trailer_place")
-
-// Покупка трейлера
-stock trailer_add(playerid, model, trailer) 
-{
-    if(PlayerInfo[playerid][pTrailer] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть трейлер");
-    new money;
-    if(trailer == 0) money = 200000;
-    else if(trailer == 1) money = 250000;
-    else if(trailer == 2) money = 300000;
-    else if(trailer == 3) money = 400000;
-    new infocreate = AddPlayerTrailer(playerid, model);
-    if (infocreate == 0) 
-    {
-        new string[55];
-        format(string,sizeof(string),"{FF6347}Трейлер не может быть создан [ Лимит: %d ]", MAX_TRAILERS);
-        ErrorMessage(playerid, string);
-    }
-    else
-    {
-        if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-        oGivePlayerMoney(playerid,-money);
-        SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
-        SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");
- 	    CreateGps(playerid,-547.4172, -1018.2808, 24.1529, 0, 0, 10.0);
-    }
-    return 1;
-}
 
 // Команда для удаления трейлера по ID
 CMD:deletetrailer(playerid, const params[]) {

@@ -462,6 +462,8 @@ function LoadObjectBiz() // Грузим объекты бизнесов
         }
     }
     printf("[MODE]: Объекты Бизнесов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
+
+    Launch5(); // Открываем сервер и загружаем NPC
     return 1;
 }
 

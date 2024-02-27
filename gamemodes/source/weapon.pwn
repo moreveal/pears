@@ -74,8 +74,13 @@ stock TempTake(playerid, stat) // Временно забираем оружие
 
 stock TempGive(playerid) // Возвращаем временно лишённое оружие
 {
-	if(PlayerInfo[playerid][pBeret] >= 1 && PlayerInfo[playerid][pJailed] == 0 && !Iamzz[playerid] && MPGO[playerid] == 0
-		&& Tir[0][playerid] == 0 && PlayerInfo[playerid][pBkyrenie] <= 1)
+	if(PlayerInfo[playerid][pBeret] >= 1 // Есть временное лишение
+        && PlayerInfo[playerid][pJailed] == 0 // Не в заключении
+        && !Iamzz[playerid] // Не в зз
+        && MPGO[playerid] == 0 // Не на мп
+		&& Tir[0][playerid] == 0 // Не в тире
+        && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
+        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) // Не за рулём
 	{
 		Protect_DeleteGuns(playerid, 1);
 		for(new i = 0; i < MAX_WEAPON_SLOTS; i++)

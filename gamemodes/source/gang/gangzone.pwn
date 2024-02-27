@@ -951,13 +951,25 @@ stock IsACapt(playerid) // Проверка, находится ли игрок 
 stock IsAGhetto(playerid) // Проверка, находится ли игрок на территории гетто
 {
     new yesGhetto;
-	for(new g = 0; g < GZONES; g++)
+
+	// На улице респ банд (там нет каптов, но они считаются территорией гетто)
+	if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
+		&& IsPlayerInSquare(playerid, 2416, -1740, 2562, -1603) // Grove
+		&& IsPlayerInSquare(playerid, 2178, -1502, 2324, -1365) // Ballas
+		&& IsPlayerInSquare(playerid, 2404, -2060, 2560, -1923) // Vagos
+		&& IsPlayerInSquare(playerid, 1651, -2160, 1968, -2012) // Aztecas
+	) yesGhetto = 1;
+
+	if(yesGhetto == 0)
 	{
-		if(IsPlayerInSquare(playerid,GangZone[g][gzMinX],GangZone[g][gzMinY],GangZone[g][gzMaxX],GangZone[g][gzMaxY]))
-        {
-            yesGhetto = 1;
-            break;
-        }
+		for(new g = 0; g < GZONES; g++)
+		{
+			if(IsPlayerInSquare(playerid,GangZone[g][gzMinX],GangZone[g][gzMinY],GangZone[g][gzMaxX],GangZone[g][gzMaxY]))
+			{
+				yesGhetto = 1;
+				break;
+			}
+		}
 	}
     return yesGhetto;
 }

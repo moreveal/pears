@@ -4,7 +4,6 @@ enum deathInfo
     bool:deathStatus, // Статус смерти
     deathTime, // Время валяния на земле
     deathUnix, // unix предыдущей смерти
-    bool:deathFall, // статус падения с высоты
     deathReason // id причина смерти
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
@@ -34,15 +33,21 @@ stock SetPlayerDeath(playerid, reason)
     PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
     PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
 
-    new unix = gettime(), timeDeath, timeDeathTwo;
+    new unix = gettime();
     DeathInfo[playerid][deathStatus] = true;
     DeathInfo[playerid][deathReason] = reason;
 
-    timeDeath = 180, timeDeathTwo = 300;
+    new timeDeath = 180, timeDeathTwo = 300;
     if(DeathInfo[playerid][deathUnix] >= unix) DeathInfo[playerid][deathTime] = timeDeathTwo; // 5 min
     else DeathInfo[playerid][deathTime] = timeDeath; // 3 min
     DeathInfo[playerid][deathUnix] = unix + 3600;
 
+    ShowPlayerDeath(playerid);
+    return 1;
+}
+
+stock ShowPlayerDeath(playerid)
+{
     NoAnim[playerid] = 1;
     ShowInterfaceDeath(playerid);
     UpdateDeathProcess(playerid);
@@ -55,6 +60,7 @@ stock SetPlayerDeath(playerid, reason)
 
     format(line,sizeof(line),"\n\n{555555}Смерть, чаще чем один раз в час, увеличивает время ожидания"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
+
     AutoMakeCreate(2,2,playerid);
     TempTake(playerid, 0);
     return 1;
@@ -106,15 +112,8 @@ stock WeReturnToDeathPosition(playerid)
     PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
     SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
 
-	// Возвращаем аксессуары
-	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
-	if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
-    if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
-	if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
-	if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
-
     UpdateDeathProcess(playerid);
-    ACSetPlayerHealth(playerid, 10.0);
+    ACSetPlayerHealth(playerid, 90.0);
     return 1;
 }
 
@@ -138,6 +137,8 @@ stock UpdateDeathProcess(playerid)
 
 stock DeathEnd(playerid, stat)
 {
+    if(!IsOnline(playerid)) return 1; // Проверка на online игрока
+
     DeathInfo[playerid][deathStatus] = false;
     for(new i = 0; i < 9; i++) TextDrawHideForPlayer(playerid, DeathDraw[i]);
     PlayerTextDrawHide(playerid, DeathDraw1);
@@ -193,8 +194,8 @@ stock UseRevival(playerid,targetid)
         else
         {
             new string[65];
-            format(string,sizeof(string),"У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
-            ErrorMessage(playerid,"У пациента недостаточно средств для реанимации");
+            format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
+            ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
             ErrorMessage(targetid,string);
             return 1;
         }

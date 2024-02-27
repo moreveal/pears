@@ -1,4 +1,8 @@
 
+//#define MAX_CONNECT_FCNPC 3 // Максимальное количество постоянно загруженных NPC
+
+//new quanConnectNPC;
+
 // Army Train
 new NpcArmy;
 new NextTrainRoadID;
@@ -59,6 +63,19 @@ stock CreateNPC()
     SetPlayerColor(npcprisonid_sf, 0x122faaFF);
     FCNPC_SetInvulnerable(NpcPrisonSF, true); // Неубиваемый
     FCNPC_PutInVehicle(NpcPrisonSF, prisonbus_SF, 0);
+
+    print("[MODE]: FCNPC_Create");
+    return 1;
+}
+
+public FCNPC_OnCreate(npcid) // Вызывается при создании NPC
+{
+    /*quanConnectNPC ++;
+    if(quanConnectNPC >= MAX_CONNECT_FCNPC) // Все NPC загрузились
+    {
+        SendRconCommand("password 5ye5ynsfbjey4TBFgg"); // Возвращаем пароль, чтобы игроки не заходили лишний раз
+        print("[MODE]: FCNPC_Create");
+    }*/
     return 1;
 }
 
