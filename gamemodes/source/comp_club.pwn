@@ -550,6 +550,14 @@ stock ShowComputerClubRoomEdit(playerid, gameid, roomid) {
     return ShowDialog(playerid, 1422, DIALOG_STYLE_TABLIST, "Меню сервера", dialog_text, "Выбор", "Закрыть");
 }
 
+stock ComputerClubIsPlayerCbugActive(playerid)
+{
+    new gameid = GetPlayerActiveComputerGame(playerid),
+        roomid = computerClubPlayerInfo[playerid][ccpiRoom];
+    if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
+    return computerClubRoomInfo[gameid][roomid][ccriTDMShootMode];
+}
+
 // Выдает оружие комнаты игроку
 stock ComputerClubSetPlayerWeapons(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),

@@ -318,7 +318,6 @@ stock key_TrailerAttach(playerid) // Нажатие на H / CAPS LOCK
     {
         // Трейлеры
         new tid = GetPlayerTrailerID(playerid);
-        if (tid < 0) return 0;
 
         new vehicleid = GetPlayerVehicleID(playerid);
         if (!vehicleid) return 0;
@@ -328,11 +327,13 @@ stock key_TrailerAttach(playerid) // Нажатие на H / CAPS LOCK
         {
             if(IsPlayerInRangeOfPoint(playerid, 8.0, -547.4172, -1018.2808, 24.1529)) // Крепим в трейлерном парке
             {
+                if(PlayerInfo[playerid][pTrailer] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет трейлера\n{cccccc}Вы можете приобрести его рядышком :)");
                 PlayerPlaySound(playerid, 40405, 0, 0, 0);
                 ShowDialog(playerid, 1337, DIALOG_STYLE_MSGBOX, "{ff9000}Трейлер", "{cccccc}Вы уверены, что хотите {99ff66}прикрепить трейлер {cccccc}к автомобилю?", "Да", "Нет");
             }
             else // Крепим рядом с трейлером (Поиск своего трейлера воткнуть сюда)
             {
+                if (tid < 0) return 0;
                 if (trailerInfo[tid][tActive])
                 {
                     if(IsPlayerInRangeOfPoint(playerid, 15.0, trailerInfo[tid][tPic][0], trailerInfo[tid][tPic][1], trailerInfo[tid][tPic][2]))
@@ -345,6 +346,7 @@ stock key_TrailerAttach(playerid) // Нажатие на H / CAPS LOCK
         }
         else // Есть трейлер
         {
+            if (tid < 0) return 0;
             if (trailerInfo[tid][tAttached] != vehicleid) return 0;
 
             PlayerPlaySound(playerid, 40405, 0, 0, 0);
@@ -497,7 +499,7 @@ CMD:placetrailer(playerid) {
     if (tid < 0) return 0;
     
     if (trailerInfo[tid][tAttached] == vehicleid && GetPlayerState(playerid) == PLAYER_STATE_DRIVER) {
-        new trailerid = GetVehicleTrailer(vehicleid);
+        new trailerid = trailerInfo[tid][tVehicle];
         if (trailerid < 1) return 0;
 
         if(IsPlayerInRangeOfPoint(playerid, 50.0, -547.4172, -1018.2808, 24.1529)) return ErrorMessage(playerid, "{FF6347}Нельзя установить трейлер на территории трейлерного парка");
@@ -521,7 +523,7 @@ CMD:placetrailer(playerid) {
         }
 
         // Уничтожаем невидимый автомобиль, к которому прикреплен объект трейлера
-        DestroyPlayerTrailer(tid);
+        ACDestroyVehicle(trailerid);
 
         SavePlayerTrailerInfo(tid);
 

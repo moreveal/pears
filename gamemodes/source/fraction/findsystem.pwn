@@ -202,3 +202,25 @@ stock IsPlayerInCubeForFind(playerid, Float:minx, Float:miny, Float:minz, Float:
   if(x > minx && x < maxx && y > miny && y < maxy && z > minz && z < maxz) return 1;
   return 0;
 }
+
+stock IsPlayerRealPosInRangeOfPoint(playerid, Float:radius, Float:get_x, Float:get_y, Float:get_z)
+{
+  new Float:x, Float:y, Float:z;
+  GetPlayerPos(playerid, x, y, z);
+  if(GetPlayerVirtualWorld(playerid) > 0)
+  {
+    x = PlayerInfo[playerid][find_X];
+    y = PlayerInfo[playerid][find_Y];
+    z = PlayerInfo[playerid][find_Z];
+  }
+    
+  // Вычисляем расстояние от игрока до заданной точки
+  new Float:distance = GetDistanceBetweenCoords3d(x, y, z, get_x, get_y, get_z);
+    
+  // Проверяем, находится ли игрок в заданном радиусе
+  if(distance <= radius)
+  {
+    return true;
+  }
+  return false;
+}

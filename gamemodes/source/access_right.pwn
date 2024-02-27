@@ -246,7 +246,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
         // /news", // 64 Вещать в общий чат [CNN]
         // /channel", // 65 Телеканал [CNN]
         // /live", // 66 Интервью [CNN]
-        if(g == 4)  return 1;
+        if(g == 9)  return 1;
     }
     else if(accessId >= 67 && accessId <= 71)
     {

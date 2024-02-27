@@ -158,7 +158,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             OnlineInfo[playerid][oNoClick] = true;
             new line[100],lines[200];
 			format(line,sizeof(line),"%s", frakName[g]), strcat(lines,line);
-            format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g][i - 1][divColorHex], DivisionInfo[g][i - 1][divName]), strcat(lines,line);
+            format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divName]), strcat(lines,line);
 		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
         }
         else SelectSpawnChoise(playerid, 8);
@@ -249,7 +249,7 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
                 new g = fraction(playerid);
                 new i = PlayerInfo[playerid][pDivision][0];
 
-                if(DivisionInfo[g][i][divSpawnPos][0] == 0.0) return ErrorMessage(playerid, "{FF6347}В подфракции не установлен отдельный спавн");
+                if(DivisionInfo[g - 1][i - 1][divSpawnPos][0] == 0.0) return ErrorMessage(playerid, "{FF6347}В подфракции не установлен отдельный спавн");
                 SelectSpawnChoise(playerid, 3);
             }
         }

@@ -3850,23 +3850,23 @@ stock TimeCallVehicle(metr)
 {
 	new time;
 	if(metr < 100) time = 30;
-	else if(metr >= 100 && metr < 300) time = 60;
-	else if(metr >= 300 && metr < 600) time = 90;
-	else if(metr >= 600 && metr < 900) time = 120;
-	else if(metr >= 900 && metr < 1200) time = 150;
-	else if(metr >= 1200 && metr < 1500) time = 180;
-	else if(metr >= 1500 && metr < 1800) time = 210;
-	else if(metr >= 1800 && metr < 2100) time = 240;
-	else if(metr >= 2100 && metr < 2400) time = 270;
-	else if(metr >= 2400 && metr < 2700) time = 300;
-	else if(metr >= 2700 && metr < 3000) time = 330;
-	else if(metr >= 3000 && metr < 3300) time = 360;
-	else if(metr >= 3300 && metr < 3600) time = 390;
-	else if(metr >= 3600 && metr < 3900) time = 420;
-	else if(metr >= 3900 && metr < 4200) time = 450;
-	else if(metr >= 4200 && metr < 4500) time = 480;
-	else if(metr >= 4500 && metr < 4800) time = 510;
-	else time = 540;
+	else if(metr >= 100 && metr < 300) time = 50;
+	else if(metr >= 300 && metr < 600) time = 70;
+	else if(metr >= 600 && metr < 900) time = 90;
+	else if(metr >= 900 && metr < 1200) time = 110;
+	else if(metr >= 1200 && metr < 1500) time = 130;
+	else if(metr >= 1500 && metr < 1800) time = 150;
+	else if(metr >= 1800 && metr < 2100) time = 170;
+	else if(metr >= 2100 && metr < 2400) time = 190;
+	else if(metr >= 2400 && metr < 2700) time = 210;
+	else if(metr >= 2700 && metr < 3000) time = 230;
+	else if(metr >= 3000 && metr < 3300) time = 250;
+	else if(metr >= 3300 && metr < 3600) time = 270;
+	else if(metr >= 3600 && metr < 3900) time = 290;
+	else if(metr >= 3900 && metr < 4200) time = 310;
+	else if(metr >= 4200 && metr < 4500) time = 330;
+	else if(metr >= 4500 && metr < 4800) time = 350;
+	else time = 370;
 	return time;
 }
 
@@ -4463,7 +4463,8 @@ function LoadCar(playerid, dab, race_check)
 			// Загружаем повреждения
 			UpdateVehicleDamageStatus(vehid, VehInfo[vehid][vPanels], VehInfo[vehid][vDoors], VehInfo[vehid][vFara], VehInfo[vehid][vTires]);
 
-			SuccessMessage(playerid, "{99ff66}Транспорт загружен");
+			format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
+			SuccessMessage(playerid, string);
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);

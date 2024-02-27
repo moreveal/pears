@@ -713,7 +713,7 @@ stock IsAScooter(model)
 
 stock IsARC(model)
 {
-    if(model == 441 || model == 464 || model == 465 || model == 501 || model == 564 | model == 594) return 1;
+    if(model == 441 || model == 464 || model == 465 || model == 501 || model == 564 || model == 594) return 1;
 	return 0;
 }
 
