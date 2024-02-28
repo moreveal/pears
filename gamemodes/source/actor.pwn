@@ -53,7 +53,7 @@ function SendDynamicActorScript(actorid, playerid, const text[]) // Текст �
 
 stock CreateActorComp(playerid)
 {
-    if(CompGameActor[playerid] == 1) return 0;
+    if(CompGameActor[playerid] > 0) return 0;
     new string[70];
     format(string,sizeof(string),"{ff9000}%s[%d]\n{0088ff}Играет в игру",rpplayername(playerid),playerid);
     new Float:f_pos[4];
@@ -61,6 +61,7 @@ stock CreateActorComp(playerid)
     CompGameText[playerid] = CreateDynamic3DTextLabel(string,0xA9C4E4FF,f_pos[0],f_pos[1],f_pos[2]+0.6,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,SpWorld[playerid],SpInt[playerid]);
     CompGameActor[playerid] = CreateDynamicActor(PlayerInfo[playerid][pModel], SpX[playerid],SpY[playerid],SpZ[playerid],SpA[playerid], true, 100.0, SpWorld[playerid], SpInt[playerid], -1, 100.0, -1, 0);
     ApplyDynamicActorAnimation(CompGameActor[playerid], "PED","SEAT_idle", 4.0, 0,0,0,1,0);
+    OnlineInfo[playerid][oBotInteraction] = CompGameActor[playerid];
     return 1;
 }
 
@@ -70,6 +71,7 @@ stock DeleteActorComp(playerid)
     DestroyDynamic3DTextLabel(CompGameText[playerid]);
     DestroyDynamicActor(CompGameActor[playerid]);
     CompGameActor[playerid] = 0;
+    OnlineInfo[playerid][oBotInteraction] = 0;
     return 1;
 }
 

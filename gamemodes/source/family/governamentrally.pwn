@@ -1,5 +1,6 @@
 #define RALLY_MAX_POINT 300000
 #define RALLY_STATIC_POINT 150000
+#define PARTIES_MEMBERS 30
 
 
 enum rallygov
@@ -11,14 +12,26 @@ enum rallygov
     rallyType, // Тип для авто системы
 }
 new RallyInfo[1][rallygov];
+
+enum partie
+{
+    partieUnix, // Статус митинга.
+    partieFam[10], // Количество очков.
+    partieSlots[10], // Количество очков.
+}
+new PartieInfo[1][partie];
 new RallyTabloObject[4];
+new SenatVote[3];
+new VotePickup[1];
+new Text3D:VoteLabel[1];
 new VoteTableObject;
 new dyn_zone_zzGov;
 
 stock StartRally(playerid)
 {
     
-    if(RallyInfo[0][rallyUnix]+430000 > gettime() && OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0)
+    //if(RallyInfo[0][rallyUnix]+430000 > gettime() && OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0) // расскоментить после тестов
+    if(OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0)
     {
         new tyear, tmonth, tday, thour, tminute, tsecond;
         stamp2datetime(RallyInfo[0][rallyUnix]+430000, tyear, tmonth, tday, thour, tminute, tsecond, 3);
@@ -79,9 +92,9 @@ stock CreateRally(playerid,type)
 {
     if(RallyInfo[0][rallyStatus] != 0) return ErrorMessage(playerid,"{ff6347}Кто-то уже начал митинг!");
     RallyInfo[0][rallyStatus] = 1;
-    if(type == 2) format(RallyInfo[0][rallyInfo], 24, "%s",ListName[playerid]);
-    if(type == 1) format(RallyInfo[0][rallyInfo], 24, "Отстранение всего Сената");
-    if(type == 0) format(RallyInfo[0][rallyInfo], 23, "Отстранение Губернатора");
+    if(type == 2) format(RallyInfo[0][rallyInfo], 25, "%s",ListName[playerid]);
+    if(type == 1) format(RallyInfo[0][rallyInfo], 25, "Отстранение всего Сената");
+    if(type == 0) format(RallyInfo[0][rallyInfo], 25, "Отстранение Губернатора");
     RallyInfo[0][rallyType] = type;
     RallyInfo[0][rallyPoint] = RALLY_STATIC_POINT;
     RallyInfo[0][rallyUnix] = gettime();
@@ -121,8 +134,8 @@ stock GoToRally(playerid,status)
 stock SetRallyPoint(playerid)
 {
     if(RallyInfo[0][rallyPoint] >= RALLY_MAX_POINT) CloseRally(-1);
-    if(OnlineInfo[playerid][oRally] == 1) RallyInfo[0][rallyPoint] += 10000;
-    else if(OnlineInfo[playerid][oRally] == 2) RallyInfo[0][rallyPoint] -= 10000;
+    if(OnlineInfo[playerid][oRally] == 1) RallyInfo[0][rallyPoint] += 10;
+    else if(OnlineInfo[playerid][oRally] == 2) RallyInfo[0][rallyPoint] -= 10;
     else return 0;
     return 1;
 }
@@ -171,6 +184,18 @@ stock dialogCase_Governament(playerid, dialogid, response, listitem, const input
         {
             if(ViborInfo[vfunk1] == 0) return cmd_vote(playerid), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Необходимо заполнить: Название");
             if(ViborFunk[0] == 0 || ViborFunk[1] == 0) return cmd_vote(playerid), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Необходимо добавить минимум 2-ух Кандидатов");
+            for(new gop = 0;gop<10;gop++)
+		    {	
+                new fam = strval(ViborName[gop]);
+                
+                if(ViborFunk[gop] == 1 && (fam < 1 || fam > 500) && listitem == 1) return ErrorMessage(playerid,"{ff6347}Ошибка, для сената нужно указывать номер семьи от 1 до 500");
+                if(ViborFunk[gop] == 1 && (FamilyInfo[fam][fSost] == 0 || FamilyInfo[fam][fType] != 2))
+                {
+                    new string[50];
+                    format(string,sizeof(string),"{ff6347}Ошибка, в слоте %d не партия", gop+1);
+                    return ErrorMessage(playerid,string);
+                } 
+            }
             OOCOff(COLOR_GREY,""); // Пропуск строки
             new str[128];
             format(str, sizeof(str), "{ffffff}     Уважаемые жители штата! Открыты: {ff9000}[ %s ]",ViborInfo[vname]);
@@ -185,6 +210,7 @@ stock dialogCase_Governament(playerid, dialogid, response, listitem, const input
             ViborInfo[vfunk2] = gettime() + 259200;
             UpdateVoteTableObject();
             SaveVibor();
+            CreateVoteInfoPickup();
         }
     }
     return 1;
@@ -267,6 +293,56 @@ public LoadRally()
 	return 1;
 }
 
+public LoadParties()
+{
+	new time = GetTickCount();
+	new rows;
+    new string[30];
+	cache_get_row_count(rows);
+	for(new f; f<rows; ++f)
+	{
+        cache_get_value_name_int(f, "partiesUnix", PartieInfo[0][partieUnix]);
+        if(PartieInfo[0][partieUnix]+259200 < gettime())
+        {
+            for(new i;i < 10; i++)
+            {
+                format(string,sizeof(string),"partiesFam%d",i);
+                cache_get_value_name_int(f, string, PartieInfo[0][partieFam][i]);
+                format(string,sizeof(string),"partiesSlots%d",i);
+                cache_get_value_name_int(f, string, PartieInfo[0][partieSlots][i]);
+            }
+        }
+    }
+	printf("[MODE]: Parties [%d Quan][%d ms]",rows,GetTickCount() - time);
+	return 1;
+}
+
+stock SaveParties()
+{
+    new string[800];
+    format(string, sizeof(string), "UPDATE `pp_parties` SET `partiesUnix` = '%d',`partiesFam0` = '%d',`partiesSlots0` = '%d',\
+    `partiesFam1` = '%d',`partiesSlots1` = '%d',\
+    `partiesFam2` = '%d',`partiesSlots2` = '%d',\
+    `partiesFam3` = '%d',`partiesSlots3` = '%d',\
+    `partiesFam4` = '%d',`partiesSlots4` = '%d',\
+    `partiesFam5` = '%d',`partiesSlots5` = '%d',\
+    `partiesFam6` = '%d',`partiesSlots6` = '%d',\
+    `partiesFam7` = '%d',`partiesSlots7` = '%d',\
+    `partiesFam8` = '%d',`partiesSlots8` = '%d',\
+    `partiesFam9` = '%d',`partiesSlots9` = '%d' WHERE `newid` = '1'", PartieInfo[0][partieUnix],PartieInfo[0][partieFam][0],PartieInfo[0][partieSlots][0],
+    PartieInfo[0][partieFam][1],PartieInfo[0][partieSlots][1],
+    PartieInfo[0][partieFam][2],PartieInfo[0][partieSlots][2],
+    PartieInfo[0][partieFam][3],PartieInfo[0][partieSlots][3],
+    PartieInfo[0][partieFam][4],PartieInfo[0][partieSlots][4],
+    PartieInfo[0][partieFam][5],PartieInfo[0][partieSlots][5],
+    PartieInfo[0][partieFam][6],PartieInfo[0][partieSlots][6],
+    PartieInfo[0][partieFam][7],PartieInfo[0][partieSlots][7],
+    PartieInfo[0][partieFam][8],PartieInfo[0][partieSlots][8],
+    PartieInfo[0][partieFam][9],PartieInfo[0][partieSlots][9]), query_empty(pearsq, string);
+    return 1;
+}
+
+
 stock CreateVoteAfterRally(type)
 {
     format(ViborInfo[vname], 24, "%s",RallyInfo[0][rallyInfo]);
@@ -306,6 +382,7 @@ stock CreateVoteAfterRally(type)
     ViborInfo[vkakoi] ++;
     UpdateVoteTableObject();
     SaveVibor();
+    CreateVoteInfoPickup();
 }
 
 stock SelectVoteAfterRally()
@@ -324,18 +401,40 @@ stock SelectVoteAfterRally()
     new str[164],set,string[100];
     format(str, sizeof(str), "{ffffff}     Завершено голосование за: {ff9000}[ %s ]",ViborInfo[vname]);
     OOCOff(COLOR_GREY,str);
-    if(v1 > v2 && v1 > v3 && v1 > v4 && v1 > v5 && v1 > v6 && v1 > v7 && v1 > v8 && v1 > v9 && v1 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[0],ViborGol[0]),set = 0;
-    else if(v2 > v1 && v2 > v3 && v2 > v4 && v2 > v5 && v2 > v6 && v2 > v7 && v2 > v8 && v2 > v9 && v2 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[1],ViborGol[1]),set = 1;
-    else if(v3 > v2 && v3 > v1 && v3 > v4 && v3 > v5 && v3 > v6 && v3 > v7 && v3 > v8 && v3 > v9 && v3 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[2],ViborGol[2]),set = 2;
-    else if(v4 > v2 && v4 > v3 && v4 > v1 && v4 > v5 && v4 > v6 && v4 > v7 && v4 > v8 && v4 > v9 && v4 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[3],ViborGol[3]),set = 3;
-    else if(v5 > v2 && v5 > v3 && v5 > v4 && v5 > v1 && v5 > v6 && v5 > v7 && v5 > v8 && v5 > v9 && v5 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[4],ViborGol[4]),set = 4;
-    else if(v6 > v2 && v6 > v3 && v6 > v4 && v6 > v5 && v6 > v1 && v6 > v7 && v6 > v8 && v6 > v9 && v6 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[5],ViborGol[5]),set = 5;
-    else if(v7 > v2 && v7 > v3 && v7 > v4 && v7 > v5 && v7 > v6 && v7 > v1 && v7 > v8 && v7 > v9 && v7 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[6],ViborGol[6]),set = 6;
-    else if(v8 > v2 && v8 > v3 && v8 > v4 && v8 > v5 && v8 > v6 && v8 > v7 && v8 > v1 && v8 > v9 && v8 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[7],ViborGol[7]),set = 7;
-    else if(v9 > v2 && v9 > v3 && v9 > v4 && v9 > v5 && v9 > v6 && v9 > v7 && v9 > v8 && v9 > v1 && v9 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[8],ViborGol[8]),set = 8;
-    else if(v10 > v2 && v10 > v3 && v10 > v4 && v10 > v5 && v10 > v6 && v10 > v7 && v10 > v8 && v10 > v9 && v10 > v1) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[9],ViborGol[9]),set = 9;
-    else OOCOff(COLOR_GREY,"{ffffff}     Исход выборов не установлен!");
-    OOCOff(COLOR_GREY,str);
+    format(str, sizeof(str), " ");
+    if(ViborInfo[vstat] == 2)
+    {
+        new slots[10];
+        new summvote = v1+v2+v3+v4+v5+v6+v7+v8+v9+v10;
+        for(new number;number<10;number++)
+        {
+            if(ViborFunk[number] == 1)
+            {
+                if(ViborGol[number] > 0)
+                {
+                    slots[number] = floatround(float(ViborGol[number])/float(summvote)*float(PARTIES_MEMBERS),floatround_round);
+                    format(str, sizeof(str), "{ffffff}     {0088ff}[ %s {0088ff}] {cccccc}%d мандатов",FamilyInfo[strval(ViborName[number])][fName],slots[number]);
+                    OOCOff(COLOR_GREY, str);
+                }
+            }
+        }
+    }
+    else
+    {
+        if(v1 > v2 && v1 > v3 && v1 > v4 && v1 > v5 && v1 > v6 && v1 > v7 && v1 > v8 && v1 > v9 && v1 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[0],ViborGol[0]),set = 0;
+        else if(v2 > v1 && v2 > v3 && v2 > v4 && v2 > v5 && v2 > v6 && v2 > v7 && v2 > v8 && v2 > v9 && v2 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[1],ViborGol[1]),set = 1;
+        else if(v3 > v2 && v3 > v1 && v3 > v4 && v3 > v5 && v3 > v6 && v3 > v7 && v3 > v8 && v3 > v9 && v3 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[2],ViborGol[2]),set = 2;
+        else if(v4 > v2 && v4 > v3 && v4 > v1 && v4 > v5 && v4 > v6 && v4 > v7 && v4 > v8 && v4 > v9 && v4 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[3],ViborGol[3]),set = 3;
+        else if(v5 > v2 && v5 > v3 && v5 > v4 && v5 > v1 && v5 > v6 && v5 > v7 && v5 > v8 && v5 > v9 && v5 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[4],ViborGol[4]),set = 4;
+        else if(v6 > v2 && v6 > v3 && v6 > v4 && v6 > v5 && v6 > v1 && v6 > v7 && v6 > v8 && v6 > v9 && v6 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[5],ViborGol[5]),set = 5;
+        else if(v7 > v2 && v7 > v3 && v7 > v4 && v7 > v5 && v7 > v6 && v7 > v1 && v7 > v8 && v7 > v9 && v7 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[6],ViborGol[6]),set = 6;
+        else if(v8 > v2 && v8 > v3 && v8 > v4 && v8 > v5 && v8 > v6 && v8 > v7 && v8 > v1 && v8 > v9 && v8 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[7],ViborGol[7]),set = 7;
+        else if(v9 > v2 && v9 > v3 && v9 > v4 && v9 > v5 && v9 > v6 && v9 > v7 && v9 > v8 && v9 > v1 && v9 > v10) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[8],ViborGol[8]),set = 8;
+        else if(v10 > v2 && v10 > v3 && v10 > v4 && v10 > v5 && v10 > v6 && v10 > v7 && v10 > v8 && v10 > v9 && v10 > v1) format(str, sizeof(str), "{ffffff}     Итог: {0088ff}[ %s ] {cccccc}%d голосов",ViborName[9],ViborGol[9]),set = 9;
+        else OOCOff(COLOR_GREY,"{ffffff}     Исход выборов не установлен!");
+        OOCOff(COLOR_GREY, str);
+    }
+    OOCOff(COLOR_GREY,""); // Пропуск строки
     if(ViborInfo[vstat] == 4)
     {
         new otmena = -1;
@@ -369,6 +468,15 @@ stock SelectVoteAfterRally()
         }
         format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Division0` = '1' AND `Member` = '7' AND `Division1` > '0'"); // Распускаем сенат
         mysql_tquery(pearsq, string, "Call_dismissalSenat", "");
+        for(new gop = 0;gop<10;gop++)
+        {
+            if(PartieInfo[0][partieFam][gop] > 0) 
+            {
+                PartieInfo[0][partieFam][gop] = 0;
+                PartieInfo[0][partieSlots][gop] = 0;
+            }
+        }
+        SaveParties();
     }
     else if(ViborInfo[vstat] == 3)
     {
@@ -376,18 +484,58 @@ stock SelectVoteAfterRally()
         format(stringlog,sizeof(stringlog),"Голосование за: %s. Итог: %s.",ViborInfo[vname],ViborName[set]);
         OrgLog(7, "voting", 0, "", " ", 0, "", "", 0, stringlog);
     }
+    else if(ViborInfo[vstat] == 2)
+    {
+        new slots[10],summvote;
+        summvote = v1+v2+v3+v4+v5+v6+v7+v8+v9+v10;
+        PartieInfo[0][partieUnix] = gettime();
+        for(new number;number<10;number++)
+        {
+            if(ViborFunk[number] == 1)
+            {
+                if(ViborGol[number] > 0)
+                {
+                    slots[number] = floatround(float(ViborGol[number])/float(summvote)*float(PARTIES_MEMBERS),floatround_round);
+                }
+                else slots[number] = 0;
+            }
+        }
+        for(new gop = 0;gop<10;gop++)
+        {
+            if(ViborFunk[gop] == 1) 
+            {
+                PartieInfo[0][partieFam][gop] = strval(ViborName[gop]);
+                PartieInfo[0][partieSlots][gop] = slots[gop];
+                new notifystring[60];
+                format(notifystring, sizeof(notifystring), "Ваша партия победила в выборах и получила %d мест в сенате",slots[gop]);
+                notify(0, "",FamilyInfo[strval(ViborName[gop])][fOwner], FamilyInfo[strval(ViborName[gop])][fOsn], notifystring);
+            }
+        }
+        SaveParties();
+    }
     ViborInfo[vstat] = 0; // Закрываем
     for(new gop = 0;gop<10;gop++)
     {
-        format(string, sizeof(string), " ");
-        strmid(ViborName[gop], string, 0, strlen(string), 255);
-        ViborFunk[gop] = 0;
+        if(ViborFunk[gop] == 1)
+        {
+            format(string, sizeof(string), " ");
+            strmid(ViborName[gop], string, 0, strlen(string), 255);
+            ViborFunk[gop] = 0;
+        }
     }
     UpdateVoteTableObject();
     SaveVibor();
+    DeleteVoteInfoPickup();
     return 1;
 }
 
+CMD:setvote(playerid,const params[])
+{
+    new number,count;
+    sscanf(params, "ii",number,count);
+    ViborGol[number] = count;
+    return 1;
+}
 
 forward Call_dismissalGover();
 public Call_dismissalGover()
@@ -421,4 +569,68 @@ public Call_dismissalSenat()
         OrgLog(7, "DismissalAfterRally", userid, nickname, " ", 0, "", "", 0, "Уволен по голосованию после митинга");
 	}
 	return 1;
+}
+
+stock CreateVoteInfoPickup()
+{
+    if(ViborInfo[vstat] != 2) return 0;
+    VotePickup[0] = CreateDynamicPickup(1239, 1, -2785.5371, 369.4818, 6.1440, 189, 0);
+    VoteLabel[0] = CreateDynamic3DTextLabel("{ff9000}Подробная информация о выборах\n{cccccc}[ ALT ]",-1,-2785.5371, 369.4818, 6.1440,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,189,0);
+    return 1;
+}
+
+stock DeleteVoteInfoPickup()
+{
+    if(VotePickup[0] == 0) return 0;
+    DestroyDynamicPickup(VotePickup[0]);
+    DestroyDynamic3DTextLabel(VoteLabel[0]);
+    VotePickup[0] = 0;
+    return 1;
+}
+
+stock ShowVoteInfo(playerid)
+{
+    if(ViborInfo[vstat] == 0) return 0;
+    new str[120],sctring[1200];
+    if(ViborInfo[vstat] == 2)
+    {
+        for(new gop = 0;gop<10;gop++)
+		{	
+            if(ViborFunk[gop] == 1) format(str,sizeof(str),"\n{0088ff}%d. {ffffff}%s {ffffff}[ {cccccc}Глава: {cccccc}%s{ffffff}]",gop+1,FamilyInfo[strval(ViborName[gop])][fName],FamilyInfo[strval(ViborName[gop])][fOsn]), strcat(sctring,str);
+        }
+    }
+    ShowDialog(playerid,11111,DIALOG_STYLE_LIST,"{0088ff}Подробная информация о кандидатах",sctring,"Выбор","Отмена");
+    return 1;
+}
+
+stock gopasport(playerid)
+{
+	new line[50],lines[200];
+	format(line,sizeof(line),"{ff9000}Получить Паспорт"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Возраст"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Пол"), strcat(lines,line);
+	format(line,sizeof(line),"\n{FF6347}Развестись"), strcat(lines,line);
+	if(PartieInfo[0][partieUnix]+259200 > gettime())
+	{
+		for(new gop = 0;gop<10;gop++)
+		{
+			if(PartieInfo[0][partieFam][gop] == PlayerInfo[playerid][pFamily] && FamilyInfo[PlayerInfo[playerid][pFamily]][fType] == 2 && PartieInfo[0][partieSlots][gop] > 0) 
+			{
+				format(line,sizeof(line),"\n{cccccc}Получить сенаторский мандат [ Мест: %d ]",PartieInfo[0][partieSlots][gop]), strcat(lines,line);
+				break;
+			}
+		}
+	}
+	ShowDialog(playerid,1072,DIALOG_STYLE_TABLIST,"{ff9000}Паспортный Стол",lines,"Выбрать","Отмена");
+	return 1;
+}
+
+stock GoVoteSenat(playerid,type)
+{
+    if(type == 0) SenatVote[0] += 1;
+    else if(type == 1) SenatVote[1] += 1;
+    else if(type == 2) SenatVote[2] += 1;
+    else if(type == 3) SenatVote[0] =0, SenatVote[1]=0, SenatVote[2]=0;
+    // update object
+    return 1;
 }
