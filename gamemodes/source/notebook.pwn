@@ -38,19 +38,26 @@ stock ClearSorting(playerid)
     return 1;
 }
 
+stock ClearDialogMenu(playerid)
+{
+    OnlineInfo[playerid][oDialogMenu][0] = 0; // Строки на текущей странице
+    OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
+    OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
+    OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
+    OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+    return 1;
+}
+
 stock LoadPageSorting(playerid, dialogid, maxList, &minlist, &page, &thisPage)
 {
     OnlineInfo[playerid][oDialogMenu][0] = 0; // Строки на текущей странице
     OnlineInfo[playerid][oDialogMenu][6] = dialogid;
+    OnlineInfo[playerid][oDialogMenu][7] = 0; // Подсчет глав или заголовкок на странице
 	if(page == 0)
 	{
 		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != dialogid) ClearSorting(playerid);
         OnlineInfo[playerid][oSorting][0] = dialogid;
-
-		OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
-		OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
-		OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
-		OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+        ClearDialogMenu(playerid);
 	}
 
 	minlist = 0;
@@ -63,10 +70,7 @@ stock LoadPageSorting(playerid, dialogid, maxList, &minlist, &page, &thisPage)
 
     if((minlist >= maxList || OnlineInfo[playerid][oDialogMenu][5] == 1) && thisPage == 0) // Сбрасываем страницы, если последний лист максимальный или больше
 	{
-		OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
-		OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
-		OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
-		OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+		ClearDialogMenu(playerid);
 		minlist = 0, page = 0;
 	}
     return 1;

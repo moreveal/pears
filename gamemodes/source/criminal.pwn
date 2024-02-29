@@ -21,7 +21,7 @@ CMD:yk(playerid) return cmd_criminal(playerid);
 CMD:uk(playerid) return cmd_criminal(playerid);
 CMD:criminal(playerid)
 {
-	CriminalCodeMenu(playerid, 0);
+	CriminalCodeMenu(playerid, 0, 0);
 	PlayerPlaySound(playerid,40405,0,0,0);
 	return 1;
 }
@@ -54,11 +54,16 @@ stock GetFreeSubentry(i)
     return pi;
 }
 
-stock CriminalCodeMenu(playerid, inject) // Меню кодекса
+stock CriminalCodeMenu(playerid, inject, page) // Меню кодекса
 {
+    new max_line = 8, minlist, thisPage, yesNext;
+
     new line[214],lines[4096];
 	format(line,sizeof(line),"Статья\tНазвание\tРозыск\tШтраф"), strcat(lines,line);
 	
+    // Настраиваем отображение фильтров и страниц
+	LoadPageSorting(playerid, 1306, MAX_CRIMINAL_CODE_ARTICLE, minlist, page, thisPage);
+
     new quan;
     if(inject == 0)
     {   
@@ -72,11 +77,14 @@ stock CriminalCodeMenu(playerid, inject) // Меню кодекса
         DP[4][playerid] = 1;
     }
 
+    new one;
     new textCrime[4], textFine[24];
-    for(new i = 0; i < MAX_CRIMINAL_CODE_ARTICLE; i++)
+    for(new i = minlist; i < MAX_CRIMINAL_CODE_ARTICLE; i++)
 	{
         if(CriminalCodeInfo[i][0][ccStatus] == true) // Только если основная статья существует
         {
+		    if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = i, one = 1; // Записывали первый list
+            
             for(new p = 0; p < MAX_CRIMINAL_CODE_SUBENTRY; p++)
 	        {
                 if(CriminalCodeInfo[i][p][ccStatus] == false) continue;
@@ -90,11 +98,31 @@ stock CriminalCodeMenu(playerid, inject) // Меню кодекса
                 if(CriminalCodeInfo[i][p][ccFine] > 0) format(textFine,sizeof(textFine),"%d$", CriminalCodeInfo[i][p][ccFine]);
                 else format(textFine,sizeof(textFine)," ");
 
-                format(line,sizeof(line),"\n%s%s\t%s\t{FF6347}%s\t{FF6347}%s", ukshow(p), CriminalCodeInfo[i][p][ccArcticle], CriminalCodeInfo[i][p][ccName], textCrime, textFine);
+                format(line,sizeof(line),"\n%s%s\t%s%s\t{FF6347}%s\t{FF6347}%s", ukshow(p), CriminalCodeInfo[i][p][ccArcticle], ukshow(p), CriminalCodeInfo[i][p][ccName], textCrime, textFine);
                 strcat(lines,line);
+
+                OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
+            }
+
+            OnlineInfo[playerid][oDialogMenu][7] ++; // Подсчитываем главы
+            OnlineInfo[playerid][oDialogMenu][2] = i;
+
+            if(OnlineInfo[playerid][oDialogMenu][7] >= max_line) // Сбрасываем дальнейший вывод глав, если дошли до лимита на странице
+            {
+                yesNext = 1;
+                break;
+            }
+            if(page > 0 
+                && (i > MAX_CRIMINAL_CODE_ARTICLE // Последняя доступна глава
+                    || i < MAX_CRIMINAL_CODE_ARTICLE && CriminalCodeInfo[i + 1][0][ccStatus] == true)) // Последняя заполненная глава
+            {
+                yesNext = 1; // Последний транспорт, отображаем Next Page
+                OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
             }
         }
 	}
+
+	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
     ShowDialog(playerid,1306,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Кодекс Правонарушений",lines,"Выбрать","Выход");
     return 1;
 }
@@ -173,7 +201,7 @@ stock ShowDialogCriminalCodeInfo(playerid, i, p)
 stock showDialogCriminalCode(playerid) // При возврате меню или выводе ошибки, открываем предыдущее меню
 {
     if(DP[1][playerid] == 1) CriminalCodeSetting(playerid, DP[0][playerid], DP[2][playerid]); // Если доступ к редактированию имеется, значит открываем меню редактора статьи
-    else CriminalCodeMenu(playerid, 0); // Если нет доступа, открываем просто список всех статей
+    else CriminalCodeMenu(playerid, 0, OnlineInfo[playerid][oDialogMenu][1]); // Если нет доступа, открываем просто список всех статей
     return 1;
 }
 
@@ -792,7 +820,7 @@ CMD:su(playerid, const params[])
     {
         if(!CheckWarningSu(playerid, tmp, playa)) return 1;
         DP[3][playerid] = playa;
-        CriminalCodeMenu(playerid, 1);
+        CriminalCodeMenu(playerid, 1, 0);
     }
     else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать розыск или штраф подозреваемому [ /su ID или Ник (Номер статьи - не обязательно) ]");
 	return 1;

@@ -1,3 +1,5 @@
+#define STREAMER_ACTOR_PLAYER_ID   E_STREAMER_CUSTOM(5)
+
 #define MAX_BOTS 600  // пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅ. npc пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 new BotPears[MAX_BOTS];
@@ -62,6 +64,8 @@ stock CreateActorComp(playerid)
     CompGameActor[playerid] = CreateDynamicActor(PlayerInfo[playerid][pModel], SpX[playerid],SpY[playerid],SpZ[playerid],SpA[playerid], true, 100.0, SpWorld[playerid], SpInt[playerid], -1, 100.0, -1, 0);
     ApplyDynamicActorAnimation(CompGameActor[playerid], "PED","SEAT_idle", 4.0, 0,0,0,1,0);
     OnlineInfo[playerid][oBotInteraction] = CompGameActor[playerid];
+
+    Streamer_SetIntData(STREAMER_TYPE_ACTOR, CompGameActor[playerid], STREAMER_ACTOR_PLAYER_ID, playerid);
     return 1;
 }
 

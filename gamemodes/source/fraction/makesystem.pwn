@@ -89,7 +89,7 @@ stock MessageMake(number)
         {
             if(IsPlayerRealPosInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
             {
-                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Человек в тяжелом состояние в районе: %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Человек в тяжелом состоянии в районе: %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
                 else format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
                 SendClientMessage(i,COLOR_YELLOW,string);
             }

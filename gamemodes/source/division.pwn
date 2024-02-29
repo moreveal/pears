@@ -865,7 +865,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		new string[120];
 		if(response)
 		{
-			PlayerInfo[playerid][pDivision][0] = i + 1;
+			PlayerInfo[playerid][pDivision][0] = i;
 			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
 
 			// Включаем отображение рации /i

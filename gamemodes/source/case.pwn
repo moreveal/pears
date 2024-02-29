@@ -92,7 +92,7 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
     // ВАЖНО! Не класть еду в кейсы, чтобы она там по unix не портилась нахрен
     if(zaglushka == 0)
     {
-        switch(random(12))
+        switch(random(13))
         {
             case 0: thingType = 0; // Обычный предмет
             case 1: thingType = 1; // Оружие

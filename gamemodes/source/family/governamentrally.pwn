@@ -29,16 +29,14 @@ new dyn_zone_zzGov;
 
 stock StartRally(playerid)
 {
-    
-    //if(RallyInfo[0][rallyUnix]+430000 > gettime() && OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0) // расскоментить после тестов
-    if(OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0)
+    /*if(OnlineInfo[playerid][oRally] == 0 && RallyInfo[0][rallyStatus] == 0)
     {
         new tyear, tmonth, tday, thour, tminute, tsecond;
         stamp2datetime(RallyInfo[0][rallyUnix]+430000, tyear, tmonth, tday, thour, tminute, tsecond, 3);
         new string[50];
         format(string,sizeof(string),"Митинг станет доступен: %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
         return ErrorMessage(playerid,string);
-    }
+    }*/
     new line[46],lines[130];
     if(RallyInfo[0][rallyStatus] != 0 && OnlineInfo[playerid][oRally] == 0)
     {
