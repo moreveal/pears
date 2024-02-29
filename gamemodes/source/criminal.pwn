@@ -5,7 +5,7 @@
 enum criminalInfo
 {
     ccID, // newid в базе данных
-	ccArcticle[4], // Номер статьи (возможность указать плавающую точку, типо 1.1 и т.д.)
+	ccArcticle[8], // Номер статьи (возможность указать плавающую точку, типо 1.1 и т.д.)
     bool:ccStatus, // Существует статья или нет
 	ccName[31], // Название статьи
 	ccLevel, // Уровень розыска статьи
@@ -276,7 +276,7 @@ stock PutSubentryLoad(f, i, p, bool:status)
 {
     CriminalCodeInfo[i][p][ccStatus] = status;
     cache_get_value_name_int(f, "newid", CriminalCodeInfo[i][p][ccID]);
-    cache_get_value_name(f, "ccArcticle", CriminalCodeInfo[i][p][ccArcticle], 4);
+    cache_get_value_name(f, "ccArcticle", CriminalCodeInfo[i][p][ccArcticle], 8);
     cache_get_value_name(f, "ccName", CriminalCodeInfo[i][p][ccName], 31);
     cache_get_value_name_int(f, "ccLevel", CriminalCodeInfo[i][p][ccLevel]);
     cache_get_value_name_int(f, "ccFine", CriminalCodeInfo[i][p][ccFine]);
@@ -794,8 +794,8 @@ CMD:su(playerid, const params[])
 	if(!GetAccessRankOrg(playerid, g, 32, PlayerInfo[playerid][pFbi])) return 1;
 
     if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
-    new playa,tmp[121],article[4];
-    if(!sscanf(params, "s[121]s[4]", tmp, article)) // Указываем Ник и Номер статьи
+    new playa,tmp[121],article[8];
+    if(!sscanf(params, "s[121]s[8]", tmp, article)) // Указываем Ник и Номер статьи
     {
         if(!CheckWarningSu(playerid, tmp, playa)) return 1;
         new findUk = -1, findP;

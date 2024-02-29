@@ -34,7 +34,8 @@ stock ProcessHealthPlayer(playerid)
             PlayerInfo[playerid][pRanentors] = 0;
             TextDrawHideForPlayer(playerid, PearsDraw[0]);
 
-            if(OnlineInfo[playerid][oHealthThing] == 70) // Только если лечим бинтами
+            // Если лечим бинтами
+            if(OnlineInfo[playerid][oHealthThing] == 70)
             {
                 // Все эффекты off
                 Effect[playerid] = 0;
@@ -45,6 +46,22 @@ stock ProcessHealthPlayer(playerid)
                 PearsWeather(playerid), PearsTime(playerid);
 
                 PoliceStick[0][playerid] = 0; // Количества ударов тупым предметом сбрасываем
+            }
+
+            //  Лечим порошком
+            else if(OnlineInfo[playerid][oHealthThing] == 7)
+            {
+                Effect[playerid] = 4;
+                EffectTime[playerid] += 30;
+                PearsWeather(playerid), PearsTime(playerid);
+                if(IsAZoneCapt(playerid))
+                {
+                    new org = fraction(playerid);
+                    if(CaptInfo[cAttack] == org) CaptInfo[cLogDrugA][3] ++;
+                    if(CaptInfo[cDefend] == org) CaptInfo[cLogDrugD][3] ++;
+                    PlayerInfo[playerid][pGangTemp][10] ++;
+                }
+                infect(playerid, 9, 1);
             }
 		}
 	}
