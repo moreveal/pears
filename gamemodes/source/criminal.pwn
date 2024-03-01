@@ -1,5 +1,5 @@
 
-#define MAX_CRIMINAL_CODE_ARTICLE 50 // Максимальный набор статьей в кодексе
+#define MAX_CRIMINAL_CODE_ARTICLE 80 // Максимальный набор статьей в кодексе
 #define MAX_CRIMINAL_CODE_SUBENTRY 20 // Максимальное количество статей в наборе
 
 enum criminalInfo
@@ -114,7 +114,7 @@ stock CriminalCodeMenu(playerid, inject, page) // Меню кодекса
             }
             if(page > 0 
                 && (i > MAX_CRIMINAL_CODE_ARTICLE // Последняя доступна глава
-                    || i < MAX_CRIMINAL_CODE_ARTICLE && CriminalCodeInfo[i + 1][0][ccStatus] == true)) // Последняя заполненная глава
+                    || i < MAX_CRIMINAL_CODE_ARTICLE && CriminalCodeInfo[i + 1][0][ccStatus] == false)) // Последняя заполненная глава
             {
                 yesNext = 1; // Последний транспорт, отображаем Next Page
                 OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
