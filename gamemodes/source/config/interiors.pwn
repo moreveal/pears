@@ -42,3 +42,9 @@
 
 #define WORLD_YAKUZA_1LVL 173
 #define INT_YAKUZA_1LVL 6
+
+//==================================================
+// Правительство Суд
+
+#define WORLD_GOVJUDGE 172
+#define INT_GOVJUDGE 0
