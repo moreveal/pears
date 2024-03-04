@@ -4254,11 +4254,11 @@ function LoadCar(playerid, dab, race_check)
 		if(paramet[0] == PlayerInfo[playerid][pID])
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт угнан {FF6347}[ Обратитесь к копам: Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
-			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}[ Обратитесь к копам: Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\nПолицейские найдут его в любом случае, рано или поздно, это их обязанность\nВы можете обратится в Полицейский Департамент, что бы ускорить процесс возврата транспорта за доп.плату\n\n{cccccc}[ Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
 		}
 		else 
 		{
-			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Владелец может подать в розыск на транспорт");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Транспорт уже ищут полицейские");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
 			mysql_SavePlayer(playerid, "KeyVeh0", 0);
 		}

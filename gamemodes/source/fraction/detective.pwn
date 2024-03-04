@@ -49,10 +49,10 @@ stock FindCarInWareHouse(playerid)
 {
     ClearAnimations(playerid);
     ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
-    new world = GetPlayerVirtualWorld(playerid)-80, i;
+    new world = GetPlayerVirtualWorld(playerid)-80, i =-1;
     new g = fraction(playerid);
     if(PlayerInfo[playerid][pTheft] != -1) i = PlayerInfo[playerid][pTheft];
-    if(i == 0) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nВ нем было несколько подозрительных машин, но вы не взяли заявку на угон. Возьмите заявку и повторите проверку","*","");
+    if(i == -1) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nВ нем было несколько подозрительных машин, но вы не взяли заявку на угон.\n\nВозьмите заявку и повторите проверку","*","");
     if(crimeInfo[i][crmSklad] == world)
     {   
         new string[120];
@@ -76,9 +76,10 @@ stock FindCarInWareHouse(playerid)
 stock ListCrime(playerid)
 {
     new line[120],lines[4048];
-	format(line,sizeof(line),"{cccccc}№.Тип\tПреступник\tПостродавший\tДата\tСтатус"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}№.Тип\tПреступник\tПостродавший[Дата]\tСтатус"), strcat(lines,line);
     new quan;
     new tyear, tmonth, tday, thour, tminute, tsecond;
+    format(line,sizeof(line),"\n{ff6347}Отказаться от заявки\t\t\t"), strcat(lines,line);
 	for(new i = 0; i < MAX_CRIME; i++)
 	{
 		List[i][playerid] = 0; // Очищаем листы
@@ -86,13 +87,13 @@ stock ListCrime(playerid)
         stamp2datetime(crimeInfo[i][crmUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
         if(crimeInfo[i][crmType] == 0)
         {   
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен\t%s[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
         }
         else if(crimeInfo[i][crmType] == 1)
         {
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s\t[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
         }
         List[quan][playerid] = i;
         quan ++;

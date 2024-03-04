@@ -241,9 +241,10 @@ stock AcceptRevial(playerid)
         new string[160];
         format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
         Moiplayer[Moiplayer[playerid]] = playerid;
-        format(string,sizeof(string),"{66ff99}Вы отправили запрос на лечение. Ожидайте...",rpplayername(Moiplayer[playerid]));
+        ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
+        format(string,sizeof(string),"{66ff99}Вы отправили запрос на лечение %s. Ожидайте...",rpplayername(Moiplayer[playerid]));
         keep(playerid);
-        ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_TABLIST,"{ff9000}Лечение",string,"Принять","Отклонить");
+        SuccessMessage(playerid,string);
     }
     else
     {
