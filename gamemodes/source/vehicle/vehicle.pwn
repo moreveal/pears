@@ -161,6 +161,38 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(558, 2031); // Toyota GT AE86 (Uranus)				LQ
 	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)						LQ
 	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)			MQ
+	AddVehicleSyncModel(533, 2034); // Bentley Cabriolet (Feltzer)
+	AddVehicleSyncModel(502, 2035); // BMW E30	(Hotring Racer A)
+	AddVehicleSyncModel(548, 2036); // Arm Cargo (cargobob)
+	AddVehicleSyncModel(490, 2037); // Chevrolet Silverado (fbirancher)
+	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
+	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
+	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
+	AddVehicleSyncModel(528, 2041); // Truck SWAT (fbitruck)
+	AddVehicleSyncModel(494, 2042); // Ferrari F1 (hotring)
+	AddVehicleSyncModel(426, 2043); // Crown Vic (Premier)
+	AddVehicleSyncModel(426, 2044); // Crown Vic Dep (Premier)
+	AddVehicleSyncModel(490, 2045); // Expedition (fbirancher)
+	AddVehicleSyncModel(490, 2046); // Explorer Dep (fbirancher)
+	AddVehicleSyncModel(490, 2047); // Explorer Police (fbirancher)
+	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
+	AddVehicleSyncModel(503, 2049); // Mustang Corch (hotrinb)
+	AddVehicleSyncModel(500, 2050); // Jeep Wrangler (mesa)
+	AddVehicleSyncModel(551, 2051); // Lexus LS400 (merit)
+	AddVehicleSyncModel(602, 2052); // Lexus RCF (alpha)
+	AddVehicleSyncModel(477, 2053); // Mazda RX7 (zr350)
+	AddVehicleSyncModel(560, 2054); // Mercedes EQS 580 (sultan)
+	AddVehicleSyncModel(482, 2055); // Mercedes Sprinter (Burrito)
+	AddVehicleSyncModel(482, 2056); // Mercedes Vito (Burrito)
+	AddVehicleSyncModel(560, 2057); // Mercedes E63 (sultan)
+	AddVehicleSyncModel(559, 2058); // Mitsu Eclipse (jester)
+	AddVehicleSyncModel(558, 2059); // Silvia S14 (uranus)
+	AddVehicleSyncModel(470, 2060); // Hummer H1 (patriot)
+	AddVehicleSyncModel(475, 2061); // Plymouth Hemi Cuda (sabre)
+	AddVehicleSyncModel(420, 2062); // Camry Taxi (taxi)
+	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
+	AddVehicleSyncModel(492, 2064); // Vaz 2107 (greenwoo)
+	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
 	return 1;
 }
 
@@ -169,7 +201,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2033) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2065) return 1; // Кастомный транспорт пирса
     return 0;
 }
 
