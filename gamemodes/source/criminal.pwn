@@ -685,11 +685,11 @@ stock CreatePlayerPursuit(playerid, mentid)
 
     SendClientMessage(playerid, COLOR_GREY, "{0066ff}[ POLICE ]: {abcdef}Вас преследует полиция. Не выходите из игры во время преследования!");
 
-    new line[110],lines[330];
+    /*new line[110],lines[330];
     format(line,sizeof(line),"{0066ff}Вас преследует полиция!"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ffcc66}Если вы выйдете из игры во время преследования, вы автоматически отправитесь в тюрьму"), strcat(lines,line);
     format(line,sizeof(line),"\n{ffcc66}Вы можете сдаться полиции или попытаться избежать ареста"), strcat(lines,line);
-	ShowDialog(playerid,1982,DIALOG_STYLE_MSGBOX,"{0066ff}POLICE",lines,"*","");
+	ShowDialog(playerid,1982,DIALOG_STYLE_MSGBOX,"{0066ff}POLICE",lines,"*","");*/
 
     TextDrawShowForPlayer(playerid, PursuitDraw[0]);
     TextDrawShowForPlayer(playerid, PursuitDraw[1]);
@@ -901,15 +901,18 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk, p)
 			if(zakonnik != -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason,PlayerInfo[zakonnik][pName],zv);
 			else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]",reason,zv);
 			SendClientMessage(playerid, COLOR_GREY, string);
+            ErrorMessage(playerid,"{ffcc00}Вас пытается задержать полиция!\n\n{cccccc}Вы совершили престулпение и сейчас вас пытаются задержать\nВы можете попытать\nВ случае если вы сдадитесь добровольно, в суде это зачтется\n\nДля добровольной сдачи у вас есть {ff6743}15{cccccc} секунд:\n- Нажмите кнопку [ H ] находясь пешком.\n- На момент выполнения анимации не совершайте никаких действий");
+			OnlineInfo[playerid][oUnixAcceptWanted] = 15;
+            Moiplayer[playerid] = zakonnik;
 
-			foreach (Player, i)
+            foreach (Player, i)
 			{
 				if(OnlineInfo[i][oLogged] == 0
                     || PlayerInfo[i][pTransmitterOff][5] == true) continue;
 				if(IsACop(i) || PlayerInfo[i][pFbi] >= 1)
 				{
-					if(zakonnik != -1) format(string, sizeof(string), "[%s]: Преступление: [%s], Подозреваемый: [%s], Ур. розыска: [%d]",PlayerInfo[zakonnik][pName],reason,rpplayername(playerid),zv);
-					else format(string, sizeof(string), "[Аноним]: Преступление: [%s], Подозреваемый: [%s], Ур. розыска: [%d]",reason,rpplayername(playerid),zv);
+					if(zakonnik != -1) format(string, sizeof(string), "[DEP]: По заявлению %s[%d], %s[%d] обвиняется в %s. {FF6347}Ур. розыска: [%d]",PlayerInfo[zakonnik][pName],zakonnik,rpplayername(playerid),playerid,reason,zv);
+					else format(string, sizeof(string), "[DEP]: По заявлению Анонима, %s[%d] обвиняется в %s. {FF6347}Ур. розыска: [%d]",rpplayername(playerid),playerid,reason,zv);
 					SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, string);
 				}
 			}
@@ -924,4 +927,15 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk, p)
         }
 	}
 	return slotUk;
+}
+
+stock AcceptWanted(playerid)
+{
+    NoAnim[playerid] = 1;
+    TogglePlayerControllable(playerid, false);
+    ApplyAnimation(playerid,"ROB_BANK","SHP_HandsUp_Scr",4.1,0,1,1,1,1,1);
+    new string[115];
+    format(string,sizeof(string),"{abcdef}[ HQ ]: Обвиняемый {FFFFFF}%s[%d] {abcdef}принял предложение сдаться добровольно.",rpplayername(playerid),playerid);
+    SendClientMessage(Moiplayer[playerid],COLOR_GREY,string);
+    return 1;
 }

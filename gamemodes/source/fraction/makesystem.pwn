@@ -425,6 +425,7 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
                 ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
             }
         }
+        else return cmd_mdc(playerid);
     }
     if(dialogid == 1479)
     {

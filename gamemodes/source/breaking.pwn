@@ -85,7 +85,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
-		AutoMakeCreate(1,0,breakingId);
+		if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] != 1) AutoMakeCreate(1,0,breakingId);
 	}
 	else if(type == 3) // Взламываем трейлер
 	{
@@ -94,7 +94,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	}
 	else if(type == 4) // Взламываем камеру в тюрьме
 	{
-	    if(KpzDoorStatusBreaking[breakingId] > 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер уже кто-то взламывает");
+	    if(KpzDoorStatusBreaking[breakingId] > 0) return ErrorMessage(playerid, "{FF6347}Эту камеру уже кто-то взламывает");
 	    KpzDoorStatusBreaking[breakingId] = PlayerInfo[playerid][pID];
 	}
 	return 1;
@@ -151,6 +151,7 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			else if(BreakingType[playerid] == 1)
 			{
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+				VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 1;
 				LockCar(BreakingTypeID[playerid], 0);
 
 				if(QuestInfo[playerid][VehicleQuest] && QuestInfo[playerid][VehicleQuest] == BreakingTypeID[playerid] && NoCompleteQuest(playerid, 3))
@@ -161,6 +162,8 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			else if(BreakingType[playerid] == 2)
 			{
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+				if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] == 1)VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 3;
+				else VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 2;
 				EngineStart(playerid, BreakingTypeID[playerid]);
 			}
 			else if(BreakingType[playerid] == 3)
