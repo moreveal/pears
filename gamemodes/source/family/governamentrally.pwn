@@ -21,7 +21,8 @@ enum partie
 }
 new PartieInfo[1][partie];
 new RallyTabloObject[4];
-new SenatVote[3];
+//new SenateTabloObject[4];
+//new SenatVote[3];
 new VotePickup[1];
 new Text3D:VoteLabel[1];
 new VoteTableObject;
@@ -37,11 +38,11 @@ stock StartRally(playerid)
         format(string,sizeof(string),"Митинг станет доступен: %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
         return ErrorMessage(playerid,string);
     }*/
-    new line[46],lines[130];
+    new line[73],lines[146];
     if(RallyInfo[0][rallyStatus] != 0 && OnlineInfo[playerid][oRally] == 0)
     {
-        format(line,sizeof(line),"{cccccc}Взять {44ff99}зеленый{cccccc} флажок"), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Взять {ff6347}красный{cccccc} флажок"), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}Взять {44ff99}зеленый{cccccc} флажок [Поддерживание голосования]"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Взять {ff6347}красный{cccccc} флажок [Против голосования]"), strcat(lines,line);
         ShowDialog(playerid,1492,DIALOG_STYLE_TABLIST,"Участие в Митинге",lines,"Выбрать","Отмена");
     }
     else if(RallyInfo[0][rallyStatus] == 0)
@@ -83,6 +84,26 @@ CMD:voteclose(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 14) return 0;
     SelectVoteAfterRally();
+    return 1;
+}
+
+CMD:sharpvoteclose(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 14) return 0;
+    ViborInfo[vstat] = 0; // Закрываем
+    new string[5];
+    for(new gop = 0;gop<10;gop++)
+    {
+        if(ViborFunk[gop] == 1)
+        {
+            format(string, sizeof(string), " ");
+            strmid(ViborName[gop], string, 0, strlen(string), 255);
+            ViborFunk[gop] = 0;
+        }
+    }
+    UpdateVoteTableObject();
+    SaveVibor();
+    DeleteVoteInfoPickup();
     return 1;
 }
 
@@ -147,7 +168,7 @@ stock dialogCase_Governament(playerid, dialogid, response, listitem, const input
             if(listitem > 2 || listitem < 0) return 0;
             if(listitem == 2)
             {
-                ShowDialog(playerid,1491,DIALOG_STYLE_INPUT,"{ff9000}Напишите назвиние митинга","{cccccc}Введите краткое название для митинга {ff9000}[ Лимит: 20 Символов ]\n\n{cccccc}Пример: Отмена нового закана №32","Принять","Отмена");
+                ShowDialog(playerid,1491,DIALOG_STYLE_INPUT,"{ff9000}Напишите назвиние митинга","{cccccc}Введите краткое название для митинга {ff9000}[ Лимит: 20 Символов ]\n\n{cccccc}Пример: Отмена закона №32","Принять","Отмена");
             }
             else if(listitem == 1 || listitem == 0)
             {
@@ -623,12 +644,50 @@ stock gopasport(playerid)
 	return 1;
 }
 
-stock GoVoteSenat(playerid,type)
+/*stock GoVoteSenat(playerid)
 {
-    if(type == 0) SenatVote[0] += 1;
-    else if(type == 1) SenatVote[1] += 1;
-    else if(type == 2) SenatVote[2] += 1;
-    else if(type == 3) SenatVote[0] =0, SenatVote[1]=0, SenatVote[2]=0;
-    // update object
+    if(type == 0) SenatVote[0] += 1,SenateTableObject(1);
+    else if(type == 1) SenatVote[1] += 1,SenateTableObject(1);
+    else if(type == 2) SenatVote[2] += 1,SenateTableObject(1);
+    else if(type == 3) 
+    {
+        SenatVote[0] =0, SenatVote[1]=0, SenatVote[2]=0,SenateTableObject(0);
+        foreach(Player,i)
+        {
+            if(OnlineInfo[i][oLogged] == 0) continue;
+            if(PlayerInfo[i][pLeader] != 7 && PlayerInfo[i][pMember] != 7 && PlayerInfo[i][pDivision][0] != 1) continue;
+            else OnlineInfo[i][oSenatVote] = 0;
+        }
+    }
     return 1;
 }
+
+CMD:senatvote(playerid,const params[])
+{
+    if(OnlineInfo[playerid][oSenatVote] > 0) return ErrorMessage(playerid,"{ff6347}Я уже отдал свой голос");
+    new number;
+    sscanf(params, "i",number);
+    if(number < 1 || number > 3) return 0;
+    GoVoteSenat(number);
+    OnlineInfo[playerid][oSenatVote] = 1;
+    return 1;
+}
+stock SenateTableObject(type)
+{
+    new string[34];
+    if(type == 1)
+    {
+        format(string,sizeof(string), "%d / %d / %d", RallyInfo[0][rallyPoint],RALLY_MAX_POINT);
+        SetDynamicObjectMaterialText(SenateTabloObject[0], 0, "э", 130, "Wingdings", 80, 0, 0xFFFF3545, 0x00000000, 1);
+        SetDynamicObjectMaterialText(SenateTabloObject[1], 0, string, 130, "Arial", 30, 1, 0xFFFF3545, 0x00000000, 0);
+        SetDynamicObjectMaterialText(SenateTabloObject[2], 0, string, 130, "Arial", 20, 1, 0xFFFF3545, 0x00000000, 0);
+        SetDynamicObjectMaterialText(SenateTabloObject[3], 0, "ю", 130, "Wingdings", 80, 0, 0xFFFF3545, 0x00000000, 1);
+    }
+    else
+    {
+        SetDynamicObjectMaterialText(SenateTabloObject[0], 0, " ", 130, "Wingdings", 80, 0, 0xFFFF3545, 0x00000000, 1);
+        SetDynamicObjectMaterialText(SenateTabloObject[1], 0, " ", 130, "Arial", 30, 1, 0xFFFF3545, 0x00000000, 0);
+        SetDynamicObjectMaterialText(SenateTabloObject[2], 0, " ", 130, "Arial", 20, 1, 0xFFFF3545, 0x00000000, 0);
+        SetDynamicObjectMaterialText(SenateTabloObject[3], 0, " ", 130, "Arial", 21, 1, 0xFFFF3545, 0x00000000, 0);
+    }
+}*/
