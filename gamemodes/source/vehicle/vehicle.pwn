@@ -36,7 +36,7 @@ new vehNameCustom[][] =
 	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M6",
 	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW M4 F82", "BMW X5M", "VW Golf", "Cadillac Fleetwood", "Dodge Charger",
 	"Dodge Super Bee", "Ford GT", "Lamba Aventador", "Mercedes GLE 350", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
-	"Shelby GT 500", "Supra MK5", "Toyota GT AE86","Prison Bus"
+	"Shelby GT 500", "Supra MK5", "Toyota GT AE86", "Prison Bus", "Mercedes AMG GT63"
 };
 
 new vehName[][] =
@@ -70,7 +70,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     19000000,900000,10000000,11000000,400000,3500000,7000000,2500000,1100000,2800000, // 2000 - 2009
 	1400000,5000000,3000000,4000000,9000000,4200000,10000000,6000000,2500000,400000, // 2010 - 2019
 	2500000,1400000,7000000,4000000,90000000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
-	5000000,1200000,1300000 // 2030 - 2031
+	5000000,1200000,1300000,15000000 // 2030 - 2033
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
@@ -159,7 +159,8 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(402, 2029);	// Shelby GT 500 (Buffalo)				LQ
 	AddVehicleSyncModel(562, 2030); // Supra MK5 (Elegy)					LQ
 	AddVehicleSyncModel(558, 2031); // Toyota GT AE86 (Uranus)				LQ
-	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)					LQ
+	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)						LQ
+	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)			MQ
 	return 1;
 }
 
@@ -168,7 +169,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2032) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2033) return 1; // Кастомный транспорт пирса
     return 0;
 }
 
@@ -515,7 +516,7 @@ stock GetVehicleClass(m)
     if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
     || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
-	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024) class = 1;
+	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -596,7 +597,7 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
 	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2006 || model == 2007
 	|| model == 2008 || model == 2009 || model == 2010 || model == 2012 || model == 2013 || model == 2016 || model == 2017
 	|| model == 2019 || model == 2020 || model == 2021 || model == 2022 || model == 2023 || model == 2024 || model == 2026
-	|| model == 2027 || model == 2028 || model == 2029 || model == 2030 || model == 2031) return 1;
+	|| model == 2027 || model == 2028 || model == 2029 || model == 2030 || model == 2031 || model == 2033) return 1;
 	return 0;
 }
 stock IsA_Gen10(carid) // 10 слотов в багажнике
@@ -643,7 +644,7 @@ stock IsAZad(model) // Транспорт с задними окнами
   	|| model == 550 || model == 551 || model == 560 || model == 561 || model == 566 || model == 579 || model == 580
    	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604
 	|| model == 2005 || model == 2007 || model == 2008 || model == 2009 || model == 2011 || model == 2012 || model == 2014
-	|| model == 2015 || model == 2018 || model == 2020 || model == 2021 || model == 2025) return 1;
+	|| model == 2015 || model == 2018 || model == 2020 || model == 2021 || model == 2025 || model == 2033) return 1;
 	return 0;
 }
 
