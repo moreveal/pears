@@ -46,6 +46,14 @@ stock ProcessHealthPlayer(playerid)
                 PearsWeather(playerid), PearsTime(playerid);
 
                 PoliceStick[0][playerid] = 0; // Количества ударов тупым предметом сбрасываем
+
+                if(IsAZoneCapt(playerid))
+                {
+                    new org = fraction(playerid);
+                    if(CaptInfo[cAttack] == org) CaptInfo[cLogMedA] ++;
+                    if(CaptInfo[cDefend] == org) CaptInfo[cLogMedD] ++;
+                    PlayerInfo[playerid][pGangTemp][6] ++;
+                }
             }
 
             //  Лечим порошком

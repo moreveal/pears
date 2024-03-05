@@ -567,7 +567,7 @@ stock CheckGangZone() // Распределение результатов по 
 {
 	CaptInfo[cCaptStat] = false;
 	CaptInfo[cCaptReset] = 10;
-	new g = CaptInfo[cZoneID], head, cbug;
+	new g = CaptInfo[cZoneID], head, cbug, saveKills, playerwin = -1;
 	if(ZoneCapt) DestroyDynamicArea(ZoneCapt), ZoneCapt = 0;
 	foreach(Player,i)
 	{
@@ -578,21 +578,28 @@ stock CheckGangZone() // Распределение результатов по 
 			|| PlayerInfo[i][pMember] == CaptInfo[cDefend] || PlayerInfo[i][pLeader] == CaptInfo[cDefend])
 			{
 			    new org = fraction(i), nauniti;
-			    // Начисляем Юниты
-				new vremun = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];
-				if(OrganInfo[org][gUnitStat][0] >= 1) nauniti += vremun*OrganInfo[org][gUnitStat][0];
+				new tempKills = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];
+
+				// Ищем игрока с наибольшим количеством килов
+				if(saveKills == 0) saveKills = tempKills, playerwin = i; // Записываем первого чувака
+				else if(saveKills > 0 && tempKills > saveKills) saveKills = tempKills, playerwin = i; // Перезаписываем, если у следующего чувака килов больше
+
+				// Начисляем Юниты
+				if(OrganInfo[org][gUnitStat][0] >= 1) nauniti += tempKills*OrganInfo[org][gUnitStat][0];
 				if(OrganInfo[org][gUnitStat][1] >= 1) nauniti += PlayerInfo[i][pGangTemp][4]*OrganInfo[org][gUnitStat][1];
+
 				// Если война новая, очищаем сохранения старой войны
 				if(PlayerInfo[i][pMyWar] >= 1 && PlayerInfo[i][pMyWar] != ServerInfo[41])
 				{
 					for(new gp = 0; gp < MAX_GANG_CAPT_STATA; gp++) PlayerInfo[i][pGangCapt][gp] = 0;
 				}
-				PlayerInfo[i][pUnit] += nauniti;
+				if(nauniti > 0) PlayerInfo[i][pUnit] += nauniti;
 				PlayerInfo[i][pMyWar] = ServerInfo[41];
 				for(new gp2 = 0; gp2 < MAX_GANG_CAPT_STATA; gp2++)
 				{
 					PlayerInfo[i][pGangCapt][gp2] += PlayerInfo[i][pGangTemp][gp2];
 					PlayerInfo[i][pGangAll][gp2] += PlayerInfo[i][pGangTemp][gp2];
+
 					PlayerInfo[i][pGangTemp][gp2] = 0;
 				}
 				SavePlayerCapt(i);
@@ -601,6 +608,9 @@ stock CheckGangZone() // Распределение результатов по 
 			if(gVidga[i] == true) DelUpdate(i), ClearDeathBox(i, 5);
 		}
 	}
+
+	if(playerwin >= 0 && saveKills > 0) GiftFromCapt(playerwin, saveKills);
+
 	TopKiller(); // Формируем Топ
   	Kapt[CaptInfo[cAttack]] = 0;
  	Kapt[CaptInfo[cDefend]] = 0;
@@ -849,6 +859,30 @@ stock CheckGangZone() // Распределение результатов по 
 		}
   	}
   	return 1;
+}
+
+stock GiftFromCapt(playerid, kills)
+{
+	switch(random(2))
+	{
+		case 0:
+		{
+			new thingId, thingQuan, thingType, thingPara, thingPack;
+    		CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
+    		new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    		if(put_inva == -1)
+			{
+				Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+			}
+			else SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок");
+
+			new string[144];
+			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %s убийств и получил кейс в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);
+			SendGangMessage(COLOR_ALLDEPT, string);
+		}
+	}
+	return 1;
 }
 
 stock InfoSendZone(g) // Оповещение в чат о результатах количества территорий банды
