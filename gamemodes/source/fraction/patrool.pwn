@@ -267,6 +267,6 @@ stock PatroolList(playerid)
         }
     }
     if(quan == 0) return ErrorMessage(playerid,"{FF6347}В данный момент нет патрульных машин");
-    else ShowDialog(playerid,1491,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список патрульных машин",lines,"Выбрать","Выход");
+    else ShowDialog(playerid,1495,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список патрульных машин",lines,"Выбрать","Выход");
     return 1;
 }

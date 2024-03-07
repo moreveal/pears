@@ -292,10 +292,6 @@ CMD:closemake(playerid,const params[])
     if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
     if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
     number--;
-    if(PlayerInfo[playerid][pSoska] == 22)
-    {
-        CloseMake(playerid,number);
-    }
     if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{FF6347}Данный вызов не принят что бы его завершить.");
     if(MakeInfo[number][mkWhoParam] != -1 && MakeInfo[number][mkWhoType] == 1)
     {

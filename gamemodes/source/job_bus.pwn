@@ -257,7 +257,7 @@ CMD:scp(playerid)
 	else if(PlayerInfo[playerid][pSCP] == 1)
 	{
 		PlayerInfo[playerid][pSCP] = 0;
-		SuccessMessage(playerid,"Вы выключили запись чекпоинтов на авто на CAPS LOCK");
+		SuccessMessage(playerid,"{ff9000}Вы выключили запись чекпоинтов на авто на CAPS LOCK");
 	}
 	return 1;
 }
@@ -277,7 +277,7 @@ CMD:showrout0(playerid)
 
 stock SaveCheckPoint(playerid, i)
 {
-	if(fraction(playerid) != 7) return ErrorMessage(playerid, "Я не сотрудник правительства");
+	if(fraction(playerid) != 7 && FamilyInfo[PlayerInfo[playerid][pFamily]][fType] != 4) return ErrorMessage(playerid,"{ff6347} Вы не состоите в правительстве или Семье типа: Street Racers");
 	new Float:x,Float:y,Float:z;
 	GetPlayerPos(playerid, x,y,z);
 	new slot = -1;

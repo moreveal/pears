@@ -287,12 +287,12 @@ public LoadFamily()
 	cache_get_row_count(rows);
 	for(new f; f<rows; ++f)
 	{
-		new strocaX[480];
-		new strocaY[480];
-		new strocaZ[480];
-		new FamRoutX[60][8];
-		new FamRoutY[60][8];
-		new FamRoutZ[60][8];
+		new strocaX[600];
+		new strocaY[600];
+		new strocaZ[600];
+		new FamRoutX[60][9];
+		new FamRoutY[60][9];
+		new FamRoutZ[60][9];
 		new idx;
 		cache_get_value_name_int(f, "id", idx);
 		cache_get_value_name_int(f, "id", FamilyInfo[idx][fIds]);
@@ -428,9 +428,9 @@ public LoadFamily()
 		}
 
 		//Грузим маршруты 1
-		cache_get_value_name(f, "Rout1X", strocaX, 480);
-		cache_get_value_name(f, "Rout1Y", strocaY, 480);
-		cache_get_value_name(f, "Rout1Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout1X", strocaX, 600);
+		cache_get_value_name(f, "Rout1Y", strocaY, 600);
+		cache_get_value_name(f, "Rout1Z", strocaZ, 600);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
@@ -444,9 +444,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 2
-		cache_get_value_name(f, "Rout2X", strocaX, 480);
-		cache_get_value_name(f, "Rout2Y", strocaY, 480);
-		cache_get_value_name(f, "Rout2Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout2X", strocaX, 600);
+		cache_get_value_name(f, "Rout2Y", strocaY, 600);
+		cache_get_value_name(f, "Rout2Z", strocaZ, 600);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
@@ -460,9 +460,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 3
-		cache_get_value_name(f, "Rout3X", strocaX, 480);
-		cache_get_value_name(f, "Rout3Y", strocaY, 480);
-		cache_get_value_name(f, "Rout3Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout3X", strocaX, 600);
+		cache_get_value_name(f, "Rout3Y", strocaY, 600);
+		cache_get_value_name(f, "Rout3Z", strocaZ, 600);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
@@ -476,9 +476,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 4
-		cache_get_value_name(f, "Rout4X", strocaX, 480);
-		cache_get_value_name(f, "Rout4Y", strocaY, 480);
-		cache_get_value_name(f, "Rout4Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout4X", strocaX, 600);
+		cache_get_value_name(f, "Rout4Y", strocaY, 600);
+		cache_get_value_name(f, "Rout4Z", strocaZ, 600);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
@@ -492,9 +492,9 @@ public LoadFamily()
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
 		format(strocaZ,sizeof(strocaZ),""); // Очищаем strocaX
 		//Грузим маршруты 5
-		cache_get_value_name(f, "Rout5X", strocaX, 480);
-		cache_get_value_name(f, "Rout5Y", strocaY, 480);
-		cache_get_value_name(f, "Rout5Z", strocaZ, 480);
+		cache_get_value_name(f, "Rout5X", strocaX, 600);
+		cache_get_value_name(f, "Rout5Y", strocaY, 600);
+		cache_get_value_name(f, "Rout5Z", strocaZ, 600);
 		split(strocaX,FamRoutX,'_');
 		split(strocaY,FamRoutY,'_');
 		split(strocaZ,FamRoutZ,'_');
