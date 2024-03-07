@@ -137,6 +137,7 @@ stock ClosePartyStreet()
         OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
+        StreetRacers[0][racersCountWinner][p] = -1;
     }
 
     StreetRacers[0][racePosMarket][0] = 0.0, StreetRacers[0][racePosMarket][1] = 0.0;
@@ -1019,6 +1020,12 @@ stock LeaveRace(playerid)
 	}
     return 1;
 }
+CMD:stoprace(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] == 0) return 0;
+    StreetRacers[0][raceStat] = 2;
+    return 1;
+}
 stock RaceWinner(playerid)
 {
     new quan;
@@ -1045,7 +1052,13 @@ stock RaceWinner(playerid)
             SendClientMessage(i,COLOR_YELLOW,string);
         }
     }
-    StreetRacers[0][raceStat] = 2;
+    new quanrace,quanwin;
+    for(new checking; checking < 8; checking++)
+	{
+		if(StreetRacers[0][racersCount][checking] != -1) quanrace++;
+        if(StreetRacers[0][racersCountWinner][checking] != -1) quanwin++;
+	}
+    if(quanrace == quanwin) StreetRacers[0][raceStat] = 2;
     return 1;
 }
 
