@@ -14,7 +14,9 @@ enum raceInfo
     raceUnix, // Время на проведенную гонку
     racersCount[8], // Количество участников в гонке
     racersCountWinner[8], // Список победителей
-    raceTimer // Таймер отсчета для старта
+    raceTimer, // Таймер отсчета для старта
+    racePoints, // Количество поинтов в гонке
+    racePlace[8] // Места в гонке
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
 new RaceIcon[1];
@@ -482,8 +484,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 		{
             new target = DP[1][playerid];
             ErrorMessage(StreetRacers[0][racersCount][target], "{FF6347}Вас исключили из участников гонки");
-            OnlineInfo[StreetRacers[0][racersCount][target]][oRacers] = 0;
-            StreetRacers[0][racersCount][target] = -1;
+            LeaveRace(target);
 		}
         else return ListRegisterToRace(playerid,1);
     }
@@ -915,10 +916,12 @@ stock CheckpointRaceRout(playerid)
     if(r >= 59) return RaceWinner(playerid);
     else
     {
-        if(StreetRacers[0][raceCordX][r] != 0.0 && StreetRacers[0][raceCordY][r] != 0.0 && StreetRacers[0][raceCordX][r+1] == 0.0 && StreetRacers[0][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r],6.0);
-	    else if(StreetRacers[0][raceCordX][r+1] != 0.0 && StreetRacers[0][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,0,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r+1], StreetRacers[0][raceCordY][r+1], StreetRacers[0][raceCordZ][r+1],6.0);
+        if(StreetRacers[0][raceCordX][r] != 0.0 && StreetRacers[0][raceCordY][r] != 0.0 && StreetRacers[0][raceCordX][r+1] == 0.0 && StreetRacers[0][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r],7.0);
+	    else if(StreetRacers[0][raceCordX][r+1] != 0.0 && StreetRacers[0][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,0,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r+1], StreetRacers[0][raceCordY][r+1], StreetRacers[0][raceCordZ][r+1],7.0);
         else if(StreetRacers[0][raceCordX][r] == 0.0 && StreetRacers[0][raceCordY][r] == 0.0) return RaceWinner(playerid);
     }
+
+    UpdatePointRace(0, playerid);
 	return 1;
 }
 
@@ -935,8 +938,14 @@ stock StartRace(playerid)
         }   
     }
     new fam = StreetRacers[0][raceFamily];
+
+    StreetRacers[0][racePoints] = 0;
     for(new i; i < 60; i++)
     {
+        StreetRacers[0][raceCordX][i] = 0.0;
+        StreetRacers[0][raceCordY][i] = 0.0;
+        StreetRacers[0][raceCordZ][i] = 0.0;
+
         if(StreetRacers[0][raceMap] == 0)
         {
             StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad1X][i];
@@ -967,11 +976,15 @@ stock StartRace(playerid)
             StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad5Y][i];
             StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad5Z][i];
         }
+
+        if(StreetRacers[0][raceCordX][i] != 0.0 && StreetRacers[0][raceCordY][i] != 0.0) StreetRacers[0][racePoints] ++;
     }
     StreetRacers[0][raceCordX][60] = 0.0;
     StreetRacers[0][raceCordY][60] = 0.0;
     StreetRacers[0][raceCordZ][60] = 0.0;
     SuccessMessage(playerid,"{99ff66} Вы объявили начало гонке!");
+
+    UpdatePointRace(0, -1);
     return 1;
 }
 
@@ -1018,6 +1031,8 @@ stock LeaveRace(playerid)
 			break;
 		}
 	}
+
+    DestroyRaceDrawForPlayer(playerid);
     return 1;
 }
 CMD:stoprace(playerid)
@@ -1058,7 +1073,9 @@ stock RaceWinner(playerid)
 		if(StreetRacers[0][racersCount][checking] != -1) quanrace++;
         if(StreetRacers[0][racersCountWinner][checking] != -1) quanwin++;
 	}
-    if(quanrace == quanwin) StreetRacers[0][raceStat] = 2;
+    if(quanrace <= quanwin) StreetRacers[0][raceStat] = 2;
+
+    DestroyRaceDrawForPlayer(playerid);
     return 1;
 }
 
@@ -1088,6 +1105,10 @@ stock SaveRoutRace(playerid,slot,status)
         {
             for(new i = 0; i < 60; i++) 
             {
+                FamilyInfo[fam][fRoudLoad1X][i] = 0;
+                FamilyInfo[fam][fRoudLoad1Y][i] = 0; 
+                FamilyInfo[fam][fRoudLoad1Z][i] = 0; 
+
                 if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0.0) 
                 {
                     continue;
@@ -1120,6 +1141,10 @@ stock SaveRoutRace(playerid,slot,status)
         {
             for(new i = 0; i < 60; i++) 
             {
+                FamilyInfo[fam][fRoudLoad2X][i] = 0;
+                FamilyInfo[fam][fRoudLoad2Y][i] = 0; 
+                FamilyInfo[fam][fRoudLoad2Z][i] = 0; 
+
                 if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0.0) 
                 {
                     continue;
@@ -1152,6 +1177,10 @@ stock SaveRoutRace(playerid,slot,status)
         {
             for(new i = 0; i < 60; i++) 
             {
+                FamilyInfo[fam][fRoudLoad3X][i] = 0;
+                FamilyInfo[fam][fRoudLoad3Y][i] = 0; 
+                FamilyInfo[fam][fRoudLoad3Z][i] = 0; 
+
                 if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0.0) 
                 {
                     continue;
@@ -1184,6 +1213,10 @@ stock SaveRoutRace(playerid,slot,status)
         {
             for(new i = 0; i < 60; i++) 
             {
+                FamilyInfo[fam][fRoudLoad4X][i] = 0;
+                FamilyInfo[fam][fRoudLoad4Y][i] = 0; 
+                FamilyInfo[fam][fRoudLoad4Z][i] = 0; 
+
                 if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0.0) 
                 {
                     continue;
@@ -1216,6 +1249,10 @@ stock SaveRoutRace(playerid,slot,status)
         {
             for(new i = 0; i < 60; i++) 
             {
+                FamilyInfo[fam][fRoudLoad5X][i] = 0;
+                FamilyInfo[fam][fRoudLoad5Y][i] = 0; 
+                FamilyInfo[fam][fRoudLoad5Z][i] = 0; 
+
                 if(PlayerInfo[playerid][CheckPointX][i] == 0.0 && PlayerInfo[playerid][CheckPointY][i] == 0.0) 
                 {
                     continue;
@@ -1403,4 +1440,216 @@ stock SettingRoutRace(playerid, number, author)
 		ShowDialog(playerid,1471,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Маршрут",lines,"Загрузить","Назад");
 	}
 	return 1;
+}
+
+#define MAX_PLACE_RACE 8 // участники в гонке
+#define MAX_DRAW_RACE 4 // текстдравы гонок
+new PlayerText:PlayerRaceDraw[MAX_DRAW_RACE][MAX_REALPLAYERS]; // Текстдравы Гонки
+new bool:DrawRace[MAX_REALPLAYERS];
+
+stock UpdatePointRace(raceid, playerid)
+{
+    new string[3000];
+    FindPlaceRacePlayer(playerid, StreetRacers[0][racersCount], string);
+    UpdateRaceDrawForAllPlayers(raceid, string); // Обновляем строку всем участникам
+    return 1;
+}
+stock FindPlaceRacePlayer(playerid, racers[], text[])
+{
+    new line[30], lines[3000];
+
+    new playerCheckpoint = carRaceCheckpoint[playerid];
+    for (new i = 0; i < MAX_PLACE_RACE; i++)
+    {
+        // Находим игрока, взявшего чекпоинт в racers[]
+        if (racers[i] == playerid) 
+        {
+            // Начиная с текущей позиции игрока идем назад по массиву,
+            // чтобы найти, нужно ли его переместить выше по списку
+            for (new j = i; j > 0; j--)
+            {
+                if(racers[j-1] == -1) continue;
+                if (carRaceCheckpoint[racers[j-1]] < playerCheckpoint)
+                {
+                    // Меняем местами, если игрок впереди имеет меньшее значение чекпоинта
+                    new temp = racers[j];
+                    racers[j] = racers[j-1];
+                    racers[j-1] = temp;
+
+                    format(line,sizeof(line),"%d._%s~n~", j + 1, PlayerInfo[racers[j]][pName]), strcat(lines,line);
+                }
+                else
+                {
+                    // Если мы нашли игрока с большим или равным числом чекпоинтов, останавливаемся
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    // Передаём сформированные строки в text
+    format(text, 3000, "%s", lines);
+    return 1;
+}
+
+/*stock FINDEBUCHEEGOVNO(playerid, place, getplayerid)
+{
+    new pointpidora, savepidora;
+	for(new i = 0; i < MAX_PLACE_RACE; ++i)
+	{
+        if(StreetRacers[0][racersCount][i] == -1) continue;
+        new giveplayerid = StreetRacers[0][racersCount][i];
+
+        if(!IsOnline(giveplayerid)) continue;
+
+	    quan ++;
+	    pointpidora = carRaceCheckpoint[giveplayerid];
+	    if(pointpidora > savepidora)
+        {
+            savepidora = pointpidora;
+        }
+	}
+}*/
+
+stock UpdateRaceDrawForAllPlayers(raceid, const string[])
+{
+    for(new p; p < MAX_PLACE_RACE; p++)
+    {
+        if(StreetRacers[raceid][racersCount][p] == -1) continue;
+        new giveplayerid = StreetRacers[raceid][racersCount][p];
+        if(IsOnline(giveplayerid))
+        {
+            UpdateRaceDrawForPlayer(giveplayerid, string);
+        }
+    }
+    return 1;
+}
+
+/*stock FindPlaceRacePlayer(giveplayerid, text[])
+{
+    new playerid[MAX_PLACE_RACE] = {-1, ...};
+
+    new line[30], lines[3000];
+    new i, j, temp;
+    for (i = 0; i < MAX_PLACE_RACE - 1; i++) 
+    {
+        for (j = 0; j < MAX_PLACE_RACE - i - 1; j++) 
+        {
+            new giveplayerid = StreetRacers[0][racersCount][j];
+            if(giveplayerid == -1) continue;
+
+            if (carRaceCheckpoint[playerid[j]] < carRaceCheckpoint[playerid[j + 1]]) {
+                temp = playerid[j];
+                playerid[j] = playerid[j + 1];
+                playerid[j + 1] = temp;
+            } else if (carRaceCheckpoint[playerid[j]] == carRaceCheckpoint[playerid[j + 1]] &&
+                       playerid[j] > playerid[j + 1]) {
+                temp = playerid[j];
+                playerid[j] = playerid[j + 1];
+                playerid[j + 1] = temp;
+            }
+
+            format(line,sizeof(line),"%d._%s~n~", j + 1, PlayerInfo[playerid[j]][pName]), strcat(lines,line);
+        }
+    }
+
+    // Передаём сформированные строки в text
+    format(text, 3000, "%s", lines);
+    return 1;
+}*/
+
+stock UpdateRaceDrawForPlayer(playerid, const text[])
+{
+    if(DrawRace[playerid] == false) // Если текстдравов не было, создаём
+    {
+        CreateRaceDrawForPlayer(playerid);
+        ShowRaceDrawForPlayer(playerid);
+    }
+
+	PlayerTextDrawSetString(playerid, PlayerRaceDraw[0][playerid], text);
+    PlayerTextDrawShow(playerid, PlayerRaceDraw[0][playerid]); 
+
+    UpdatePointRaceForPlayer(0, playerid);
+    return 1;
+}
+
+stock ShowRaceDrawForPlayer(playerid)
+{
+    PlayerTextDrawShow(playerid, PlayerRaceDraw[1][playerid]); // Иконка гонки
+    PlayerTextDrawShow(playerid, PlayerRaceDraw[2][playerid]); // Заголовок
+    PlayerTextDrawShow(playerid, PlayerRaceDraw[3][playerid]); // Количество собранных чекпоинтов
+    return 1;
+}
+
+stock UpdatePointRaceForPlayer(gameid, playerid)
+{
+    new string[20];
+    format(string,sizeof(string),"%d/%d", carRaceCheckpoint[playerid], StreetRacers[gameid][racePoints]);
+    PlayerTextDrawSetString(playerid, PlayerRaceDraw[3][playerid], string);
+    PlayerTextDrawShow(playerid, PlayerRaceDraw[3][playerid]);
+    return 1;
+}
+
+stock CreateRaceDrawForPlayer(playerid)
+{
+    if(DrawRace[playerid] == true) return 1;
+
+    PlayerRaceDraw[0][playerid] = CreatePlayerTextDraw(playerid, 18.333337, 215.703750, "1._Wwwwwwwwwww_Wwwwwwwwwww~n~2._Wwwwwwwwwww_Wwwwwwwwwww");
+    PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[0][playerid], 0.182666, 1.027556);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawColor(playerid, PlayerRaceDraw[0][playerid], COLOR_TEXTDRAW_GREY);
+    PlayerTextDrawUseBox(playerid, PlayerRaceDraw[0][playerid], true);
+    PlayerTextDrawBoxColor(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[0][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawBackgroundColor(playerid, PlayerRaceDraw[0][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[0][playerid], 1);
+
+    PlayerRaceDraw[1][playerid] = CreatePlayerTextDraw(playerid, 17.333335, 198.281509, "hud:radar_flag");
+    PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[1][playerid], 0.005000, 0.066370);
+    PlayerTextDrawTextSize(playerid, PlayerRaceDraw[1][playerid], 9.333318, 11.614809);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[1][playerid], 1);
+    PlayerTextDrawColor(playerid, PlayerRaceDraw[1][playerid], -1);
+    PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[1][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[1][playerid], 0);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[1][playerid], 4);
+
+    PlayerRaceDraw[2][playerid] = CreatePlayerTextDraw(playerid, 33.666656, 199.111114, "PEARS_RACE");
+    PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[2][playerid], 0.321666, 1.193483);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[2][playerid], 1);
+    PlayerTextDrawColor(playerid, PlayerRaceDraw[2][playerid], -5963521);
+    PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[2][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[2][playerid], 1);
+    PlayerTextDrawBackgroundColor(playerid, PlayerRaceDraw[2][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[2][playerid], 3);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[2][playerid], 1);
+
+    PlayerRaceDraw[3][playerid] = CreatePlayerTextDraw(playerid, 110.333328, 199.281494, "10/60");
+    PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[3][playerid], 0.321666, 1.193483);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[3][playerid], 1);
+    PlayerTextDrawColor(playerid, PlayerRaceDraw[3][playerid], -1523963137);
+    PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[3][playerid], 0);
+    PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[3][playerid], 1);
+    PlayerTextDrawBackgroundColor(playerid, PlayerRaceDraw[3][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[3][playerid], 3);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[3][playerid], 1);
+
+    DrawRace[playerid] = true;
+    return 1;
+}
+
+stock DestroyRaceDrawForPlayer(playerid)
+{
+    if(DrawRace[playerid] == false) return 1;
+
+    for(new i = 0; i < MAX_DRAW_RACE; i++)
+    {
+        PlayerTextDrawHide(playerid, PlayerRaceDraw[i][playerid]);
+        PlayerTextDrawDestroy(playerid, PlayerRaceDraw[i][playerid]);
+    }
+
+    DrawRace[playerid] = false;
+    return 1;
 }

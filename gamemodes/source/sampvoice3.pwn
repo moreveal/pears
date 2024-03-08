@@ -6,7 +6,7 @@ new SV_LSTREAM:lstream[MAX_REALPLAYERS] = { SV_NULL, ... };
 
 stock Sampvoice3InitializationMode()
 {
-    //SvDebug(SV_TRUE);
+    SvDebug(SV_TRUE);
 
     new string[4];
     format(string, sizeof(string), "A");
