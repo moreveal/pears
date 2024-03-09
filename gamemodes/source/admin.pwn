@@ -535,6 +535,13 @@ CMD:readhit(playerid)
 	else SetPVarInt(playerid,"Readhit",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {FF6347}Отключён");
   	return 1;
 }
+CMD:rvanka(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(GetPVarInt(playerid,"Readrvanka") == 0) SetPVarInt(playerid,"Readrvanka",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {99ff66}Активирован");
+	else SetPVarInt(playerid,"Readrvanka",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {FF6347}Отключён");
+  	return 1;
+}
 CMD:setbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
@@ -814,8 +821,8 @@ CMD:protect(playerid)
        	else if(protect[7] == 1) format(str,sizeof(str),"{cccccc}Защита от ошибочного кика на спавне {ff0000}[Off]\n"),strcat(sctring,str);
        	if(protect[8] == 0) format(str,sizeof(str),"{cccccc}Invalid Spawn {00cc00}[On]\n"),strcat(sctring,str);
        	else if(protect[8] == 1) format(str,sizeof(str),"{cccccc}Invalid Spawn {ff0000}[Off]\n"),strcat(sctring,str);
-       	if(protect[9] == 0) format(str,sizeof(str),"{cccccc}Air Slap Vehicle Update {00cc00}[On]\n"),strcat(sctring,str);
-       	else if(protect[9] == 1) format(str,sizeof(str),"{cccccc}Air Slap Vehicle Update {ff0000}[Off]\n"),strcat(sctring,str);
+       	if(protect[9] == 0) format(str,sizeof(str),"{cccccc}Rvanka Vehicle Update {00cc00}[On]\n"),strcat(sctring,str);
+       	else if(protect[9] == 1) format(str,sizeof(str),"{cccccc}Rvanka Vehicle Update {ff0000}[Off]\n"),strcat(sctring,str);
        	if(protect[10] == 0) format(str,sizeof(str),"{cccccc}Teleport Player Reset Pos {00cc00}[On]\n"),strcat(sctring,str);
        	else if(protect[10] == 1) format(str,sizeof(str),"{cccccc}Teleport Player Reset Pos {ff0000}[Off]\n"),strcat(sctring,str);
        	if(protect[12] == 0) format(str,sizeof(str),"{cccccc}Fly (warning) {99ff66}[On]\n"),strcat(sctring,str);
