@@ -208,7 +208,7 @@ stock dialogCase_Governament(playerid, dialogid, response, listitem, const input
                 new fam = strval(ViborName[gop]);
                 
                 if(ViborFunk[gop] == 1 && (fam < 1 || fam > 500) && listitem == 1) return ErrorMessage(playerid,"{ff6347}Ошибка, для сената нужно указывать номер семьи от 1 до 500");
-                if(ViborFunk[gop] == 1 && (FamilyInfo[fam][fSost] == 0 || FamilyInfo[fam][fType] != 2))
+                if(ViborFunk[gop] == 1 && (FamilyInfo[fam][fSost] == 0 || FamilyInfo[fam][fType] != 2) && listitem == 1)
                 {
                     new string[50];
                     format(string,sizeof(string),"{ff6347}Ошибка, в слоте %d не партия", gop+1);

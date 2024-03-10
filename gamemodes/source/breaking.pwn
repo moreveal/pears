@@ -78,6 +78,13 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
+		if(VehInfo[breakingId][vAlarm] > 0)
+		{
+			VehInfo[breakingId][vAlarmSound] = 10;
+			if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/auto2.mp3");
+			GetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, boot, objective);
+			SetVehicleParamsEx(v, engine, lights, true, doors, bonnet, boot, objective);
+		}
 		AutoMakeCreate(1,0,breakingId);
 	}
 	else if(type == 2) // Взламываем двигатель

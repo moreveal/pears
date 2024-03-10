@@ -466,14 +466,14 @@ stock ClearPlayerTicketArcticle(playerid, criminalid)
     new i = DP[1][playerid];
     new uk = WantedInfo[criminalid][wanTicketCrime][i] - 1;
     new p = WantedInfo[criminalid][wanTicketSubentry][i];
-    if(WantedInfo[criminalid][wanTicketCrime][i] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Штраф пропала из дела");
+    if(WantedInfo[criminalid][wanTicketCrime][i] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Штраф пропал из дела");
     if(WantedInfo[criminalid][wanTicketPoliceId][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pSoska] <= 1
     && PlayerInfo[playerid][pLeader] != 1 && PlayerInfo[playerid][pLeader] != 2 && PlayerInfo[playerid][pLeader] != 7 
     && PlayerInfo[playerid][pLeader] != 11 && PlayerInfo[playerid][pLeader] != 21 
-    && PlayerInfo[playerid][pLeader] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту штраф из дела\n\n{ffcc66}Штраф может изъять только полицейский, который её выдал или лидер");
+    && PlayerInfo[playerid][pLeader] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять этот штраф из дела\n\n{ffcc66}Штраф может изъять только полицейский, который её выдал или лидер");
 
     if(WantedInfo[criminalid][wanUnix][i] + 1200 < gettime() && PlayerInfo[playerid][pLeader] == 0 
-    && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять статью из дела\n\n{ffcc66}Штраф была выдана больше 20 минут назад");
+    && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять штраф из дела\n\n{ffcc66}Штраф была выдана больше 20 минут назад");
 
     new string[80];
     format(string,sizeof(string),"%s %s", CriminalCodeInfo[uk][p][ccArcticle],CriminalCodeInfo[uk][p][ccName]);

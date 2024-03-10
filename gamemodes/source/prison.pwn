@@ -683,7 +683,7 @@ stock PrisonEscape(playerid)
     PrisonMovingBackPoster(cell);
     PrisonBetonHP[cell] = 3000;
     PrisonMovingBeton(cell,0);
-
+    if(Dei[playerid] == 2) Dei[playerid] = 0, RemovePlayerAttachedObject(playerid,1), PlayerPlaySound(playerid,5601,0,0,0);
     PlayerInfo[playerid][pJailed] = 0;
     PlayerInfo[playerid][pJailTime] = 0;
 

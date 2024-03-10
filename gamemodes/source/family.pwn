@@ -439,6 +439,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
+			format(FamRoutX[i],9,"0");
+			format(FamRoutY[i],9,"0");
+			format(FamRoutZ[i],9,"0");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
@@ -455,6 +458,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad2X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad2Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad2Z][i] = floatstr(FamRoutZ[i]);
+			format(FamRoutX[i],9," ");
+			format(FamRoutY[i],9," ");
+			format(FamRoutZ[i],9," ");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
@@ -471,6 +477,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad3X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad3Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad3Z][i] = floatstr(FamRoutZ[i]);
+			format(FamRoutX[i],9," ");
+			format(FamRoutY[i],9," ");
+			format(FamRoutZ[i],9," ");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
@@ -487,6 +496,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad4X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad4Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad4Z][i] = floatstr(FamRoutZ[i]);
+			format(FamRoutX[i],9," ");
+			format(FamRoutY[i],9," ");
+			format(FamRoutZ[i],9," ");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX
@@ -503,6 +515,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad5X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad5Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad5Z][i] = floatstr(FamRoutZ[i]);
+			format(FamRoutX[i],9," ");
+			format(FamRoutY[i],9," ");
+			format(FamRoutZ[i],9," ");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX

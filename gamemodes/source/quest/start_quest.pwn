@@ -236,7 +236,7 @@ stock MasterKeyQuest(playerid)
 
         PlayerPlaySound(playerid,5600,0,0,0);
 		ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы взяли отмычки\n{0088ff}Подойдите к машине и нажмите кнпоку ALT, чтобы взломать дверь","*","");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы взяли отмычки\n{0088ff}Подойдите к машине и нажмите кнпоку ALT, чтобы взломать дверь\n\nКак провести успешный взлом?\n-Жмем ALT рядом с машиной.\n-Соглашаемся на взлом\n-Следим за заполняющейся полоской и жмем на ключ когда полоска\nбудет в районе зеленой зоны\n-Успешно поподаем в зеленую зону 3 раза и все, машина взломана!","*","");
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно подойти к машине и взломать дверь [ Кнопка ALT ]");
 
         QuestInfo[playerid][ThingOne] = true;

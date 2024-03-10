@@ -4154,8 +4154,8 @@ stock slcar(playerid, i)
 	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"{cccccc}Центральный Замок \t{99ff66}[ Открыт ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"{cccccc}Центральный Замок \t{FF6347}[ Закрыт ]\n"), strcat(sctring,str);
 	format(str,sizeof(str),"{cccccc}Найти\t\n"), strcat(sctring,str);
-	//if(VehInfo[v][vAlarm] == 0) format(str,sizeof(str),"{cccccc}Сигнализация \t{FF6347}[ Off ]\n"), strcat(sctring,str);
-	//else if(VehInfo[v][vAlarm] == 1) format(str,sizeof(str),"{cccccc}Сигнализация \t{99ff66}[ On ]\n"), strcat(sctring,str);
+	if(VehInfo[v][vAlarm] == 0) format(str,sizeof(str),"{cccccc}Сигнализация \t{FF6347}[ Off ]\n"), strcat(sctring,str);
+	else if(VehInfo[v][vAlarm] == 1) format(str,sizeof(str),"{cccccc}Сигнализация \t{99ff66}[ On ]\n"), strcat(sctring,str);
 	if(VehInfo[v][vEngine] == 0) format(str,sizeof(str),"{cccccc}Двигатель \t{FF6347}[ Off ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vEngine] == 1) format(str,sizeof(str),"{cccccc}Двигатель \t{99ff66}[ On ]\n"), strcat(sctring,str);
 	if(VehInfo[v][vLights] == 0) format(str,sizeof(str),"{cccccc}Фары \t{FF6347}[ Off ]\n"), strcat(sctring,str);

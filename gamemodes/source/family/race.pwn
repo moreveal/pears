@@ -144,6 +144,9 @@ stock ClosePartyStreet()
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
         StreetRacers[0][racersCountWinner][p] = -1;
+        DisablePlayerRaceCheckpoint(StreetRacers[0][racersCount][p]);
+        DestroyRaceDrawForPlayer(StreetRacers[0][racersCount][p]);
+        StreetRacers[0][racersCount][p] = -1;
     }
 
     StreetRacers[0][racePosMarket][0] = 0.0, StreetRacers[0][racePosMarket][1] = 0.0;
@@ -1041,6 +1044,16 @@ CMD:stoprace(playerid)
 {
     if(PlayerInfo[playerid][pSoska] == 0) return 0;
     StreetRacers[0][raceStat] = 2;
+    for(new p; p < 8; p++)
+    {
+        if(StreetRacers[0][racersCount][p] == -1) continue;
+        OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
+        raceRout[StreetRacers[0][racersCount][p]] = -1;
+        carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
+        StreetRacers[0][racersCountWinner][p] = -1;
+        DisablePlayerRaceCheckpoint(playerid);
+        DestroyRaceDrawForPlayer(playerid);
+    }
     return 1;
 }
 stock RaceWinner(playerid)
@@ -1494,7 +1507,6 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
                     racers[j] = racers[j-1];
                     racers[j-1] = temp;
 
-                    format(line,sizeof(line),"%d._%s~n~", j + 1, PlayerInfo[racers[j]][pName]), strcat(lines,line);
                 }
                 else
                 {
@@ -1505,30 +1517,15 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
             break;
         }
     }
-
+    for (new i = 0; i < MAX_PLACE_RACE; i++)
+    {
+        if(racers[i] != -1) format(line,sizeof(line),"%d._%s~n~", i + 1, PlayerInfo[racers[i]][pName]), strcat(lines,line);
+    }
     // Передаём сформированные строки в text
     format(text, 3000, "%s", lines);
     return 1;
 }
 
-/*stock FINDEBUCHEEGOVNO(playerid, place, getplayerid)
-{
-    new pointpidora, savepidora;
-	for(new i = 0; i < MAX_PLACE_RACE; ++i)
-	{
-        if(StreetRacers[0][racersCount][i] == -1) continue;
-        new giveplayerid = StreetRacers[0][racersCount][i];
-
-        if(!IsOnline(giveplayerid)) continue;
-
-	    quan ++;
-	    pointpidora = carRaceCheckpoint[giveplayerid];
-	    if(pointpidora > savepidora)
-        {
-            savepidora = pointpidora;
-        }
-	}
-}*/
 
 stock UpdateRaceDrawForAllPlayers(raceid, const string[])
 {

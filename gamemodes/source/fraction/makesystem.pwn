@@ -204,8 +204,10 @@ stock TakeMake(playerid,number)
     MakeInfo[number][mkWhoTakePlayer] = playerid;
     MakeInfo[number][mkWho] = CopOrMin;
     OnlineInfo[playerid][oTakeMake] = number;
+    new line[80];
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
-    SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake ID вызова]");
+    format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]);
+    SendClientMessage(playerid, COLOR_GREY, line);
 }
 
 stock FindMake(playerid,number)
