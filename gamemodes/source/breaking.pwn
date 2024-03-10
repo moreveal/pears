@@ -80,10 +80,10 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
 		if(VehInfo[breakingId][vAlarm] > 0)
 		{
-			VehInfo[breakingId][vAlarmSound] = 10;
+			VehInfo[breakingId][vAlarmSound] = 20;
 			if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/auto2.mp3");
-			GetVehicleParamsEx(v, engine, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(v, engine, lights, true, doors, bonnet, boot, objective);
+			GetVehicleParamsEx(breakingId, engine, lights, alarm, doors, bonnet, boot, objective);
+			SetVehicleParamsEx(breakingId, engine, lights, true, doors, bonnet, boot, objective);
 		}
 		AutoMakeCreate(1,0,breakingId);
 	}

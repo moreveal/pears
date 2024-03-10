@@ -112,8 +112,9 @@ stock ReadyPartyStreet(playerid)
     dyn_zone_zzRace = CreateDynamicSphere(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 50, 0, 0);
     for(new i; i < 8; i++)
     {
-        StreetRacers[0][racersCount][i] = -1;   
+        StreetRacers[0][racersCount][i] = -1;
         StreetRacers[0][racersCountWinner][i] = -1;
+        StreetRacers[0][racePlace][i] = -1;   
     }
     SuccessMessage(playerid,"{99ff66}Вы начали сходку StreetRacers");
     return 1;
@@ -147,6 +148,7 @@ stock ClosePartyStreet()
         DisablePlayerRaceCheckpoint(StreetRacers[0][racersCount][p]);
         DestroyRaceDrawForPlayer(StreetRacers[0][racersCount][p]);
         StreetRacers[0][racersCount][p] = -1;
+        StreetRacers[0][racePlace][p] = -1;   
     }
 
     StreetRacers[0][racePosMarket][0] = 0.0, StreetRacers[0][racePosMarket][1] = 0.0;
@@ -422,8 +424,9 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
         if(response)
 		{
             new number = DP[1][playerid];
-            if(StreetRacers[0][racersCount][number] != -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выбирете другой");
+            if(StreetRacers[0][racersCount][number] != -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выберите другой");
             StreetRacers[0][racersCount][number] = playerid;
+            StreetRacers[0][racePlace][number] = playerid;
             SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
 		}
     }
@@ -943,9 +946,8 @@ stock StartRace(playerid)
             StreetRacers[0][raceTimer] = 5;
         }   
     }
-    UpdatePointRaceStart(0);
-    new fam = StreetRacers[0][raceFamily];
 
+    new fam = StreetRacers[0][raceFamily];
     StreetRacers[0][racePoints] = 0;
     for(new i; i < 60; i++)
     {
@@ -990,6 +992,8 @@ stock StartRace(playerid)
     StreetRacers[0][raceCordY][60] = 0.0;
     StreetRacers[0][raceCordZ][60] = 0.0;
     SuccessMessage(playerid,"{99ff66} Вы объявили начало гонке!");
+
+    UpdatePointRace(0, playerid);
     return 1;
 }
 
@@ -1033,8 +1037,9 @@ stock LeaveRace(playerid)
 		{
             OnlineInfo[playerid][oRacers] = 0;
 			StreetRacers[0][racersCount][checking] = -1;
-			break;
 		}
+
+        if(StreetRacers[0][racePlace][checking] == playerid) StreetRacers[0][racePlace][checking] = -1;
 	}
 
     DestroyRaceDrawForPlayer(playerid);
@@ -1047,12 +1052,13 @@ CMD:stoprace(playerid)
     for(new p; p < 8; p++)
     {
         if(StreetRacers[0][racersCount][p] == -1) continue;
+        DisablePlayerRaceCheckpoint(StreetRacers[0][racersCount][p]);
+        DestroyRaceDrawForPlayer(StreetRacers[0][racersCount][p]);
+
         OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
         raceRout[StreetRacers[0][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
         StreetRacers[0][racersCountWinner][p] = -1;
-        DisablePlayerRaceCheckpoint(playerid);
-        DestroyRaceDrawForPlayer(playerid);
     }
     return 1;
 }
@@ -1069,7 +1075,7 @@ stock RaceWinner(playerid)
         quan++;
 	}
 
-    new string[100];
+    new string[120];
     format(string,sizeof(string),"[ Мысли ]: Я завершил гонку на %d месте",quan+1);
     SendClientMessage(playerid,COLOR_GREY,string);
     foreach(Player,i)
@@ -1088,9 +1094,11 @@ stock RaceWinner(playerid)
 		if(StreetRacers[0][racersCount][checking] != -1) quanrace++;
         if(StreetRacers[0][racersCountWinner][checking] != -1) quanwin++;
 	}
-    if(quanrace <= quanwin) StreetRacers[0][raceStat] = 2;
-
-    DestroyRaceDrawForPlayer(playerid);
+    if(quanrace <= quanwin) 
+    {
+        StreetRacers[0][raceStat] = 2;
+        DestroyRaceDrawForPlayer(playerid);
+    }
     return 1;
 }
 
@@ -1464,8 +1472,9 @@ new bool:DrawRace[MAX_REALPLAYERS];
 
 stock UpdatePointRace(raceid, playerid)
 {
-    new string[3000];
-    FindPlaceRacePlayer(playerid, StreetRacers[0][racersCount], string);
+    new string[400];
+    FindPlaceRacePlayer(playerid, StreetRacers[0][racePlace], string);
+
     if(isnull(string))
     {
         UpdatePointRaceForPlayer(0,playerid);
@@ -1474,19 +1483,10 @@ stock UpdatePointRace(raceid, playerid)
     else UpdateRaceDrawForAllPlayers(raceid, string); // Обновляем строку всем участникам
     return 1;
 }
-stock UpdatePointRaceStart(raceid)
-{
-    new line[30], lines[3000];
-    for (new i = 0; i < MAX_PLACE_RACE; i++)
-    {
-        if(StreetRacers[0][racersCount][i] != -1) format(line,sizeof(line),"%d._%s~n~", i + 1, PlayerInfo[StreetRacers[0][racersCount][i]][pName]), strcat(lines,line);
-    }
-    UpdateRaceDrawForAllPlayers(raceid, lines); // Обновляем строку всем участникам
-    return 1;
-}
+
 stock FindPlaceRacePlayer(playerid, racers[], text[])
 {
-    new line[30], lines[3000];
+    new line[40], lines[400];
 
     new playerCheckpoint = carRaceCheckpoint[playerid];
     for (new i = 0; i < MAX_PLACE_RACE; i++)
@@ -1500,38 +1500,44 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
             {
                 if(j-1 < 0) continue;
                 if(racers[j-1] == -1) continue;
+
                 if (carRaceCheckpoint[racers[j-1]] < playerCheckpoint)
                 {
                     // Меняем местами, если игрок впереди имеет меньшее значение чекпоинта
                     new temp = racers[j];
                     racers[j] = racers[j-1];
                     racers[j-1] = temp;
-
                 }
-                else
+                /*else
                 {
                     // Если мы нашли игрока с большим или равным числом чекпоинтов, останавливаемся
                     break;
-                }
+                }*/
             }
             break;
         }
     }
+
+    new quan;
     for (new i = 0; i < MAX_PLACE_RACE; i++)
     {
-        if(racers[i] != -1) format(line,sizeof(line),"%d._%s~n~", i + 1, PlayerInfo[racers[i]][pName]), strcat(lines,line);
+        if(racers[i] != -1)
+        {
+            quan ++;
+            format(line,sizeof(line),"%d._%s~n~", quan, PlayerInfo[racers[i]][pName]), strcat(lines,line);
+        }
     }
     // Передаём сформированные строки в text
-    format(text, 3000, "%s", lines);
+    format(text, 400, "%s", lines);
     return 1;
 }
-
 
 stock UpdateRaceDrawForAllPlayers(raceid, const string[])
 {
     for(new p; p < MAX_PLACE_RACE; p++)
     {
-        if(StreetRacers[raceid][racersCount][p] == -1) continue;
+        if(StreetRacers[raceid][racersCount][p] == -1
+            && StreetRacers[raceid][racersCountWinner][p] == -1) continue;
         new giveplayerid = StreetRacers[raceid][racersCount][p];
         if(IsOnline(giveplayerid))
         {
@@ -1540,39 +1546,6 @@ stock UpdateRaceDrawForAllPlayers(raceid, const string[])
     }
     return 1;
 }
-
-/*stock FindPlaceRacePlayer(giveplayerid, text[])
-{
-    new playerid[MAX_PLACE_RACE] = {-1, ...};
-
-    new line[30], lines[3000];
-    new i, j, temp;
-    for (i = 0; i < MAX_PLACE_RACE - 1; i++) 
-    {
-        for (j = 0; j < MAX_PLACE_RACE - i - 1; j++) 
-        {
-            new giveplayerid = StreetRacers[0][racersCount][j];
-            if(giveplayerid == -1) continue;
-
-            if (carRaceCheckpoint[playerid[j]] < carRaceCheckpoint[playerid[j + 1]]) {
-                temp = playerid[j];
-                playerid[j] = playerid[j + 1];
-                playerid[j + 1] = temp;
-            } else if (carRaceCheckpoint[playerid[j]] == carRaceCheckpoint[playerid[j + 1]] &&
-                       playerid[j] > playerid[j + 1]) {
-                temp = playerid[j];
-                playerid[j] = playerid[j + 1];
-                playerid[j + 1] = temp;
-            }
-
-            format(line,sizeof(line),"%d._%s~n~", j + 1, PlayerInfo[playerid[j]][pName]), strcat(lines,line);
-        }
-    }
-
-    // Передаём сформированные строки в text
-    format(text, 3000, "%s", lines);
-    return 1;
-}*/
 
 stock UpdateRaceDrawForPlayer(playerid, const text[])
 {
@@ -1666,19 +1639,5 @@ stock DestroyRaceDrawForPlayer(playerid)
     }
 
     DrawRace[playerid] = false;
-    return 1;
-}
-
-CMD:startrace(playerid)
-{
-    for(new i =0; i < MAX_PLACE_RACE; i++)
-    {
-        StreetRacers[0][racersCount][i] = -1;
-    }
-    StreetRacers[0][raceMap] = 0;
-    StreetRacers[0][racersCount][0] = playerid;
-    StreetRacers[0][raceFamily] = 5;
-    StartRace(playerid);
-    UpdatePointRaceStart(0);
     return 1;
 }

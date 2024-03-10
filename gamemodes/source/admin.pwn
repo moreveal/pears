@@ -112,22 +112,10 @@ CMD:mytug(playerid)
 }*/
 CMD:mysql(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 10) return 1;
-	mysql_tquery(pearsq,"SET NAMES 'cp1251'", "", "");
- 	mysql_tquery(pearsq,"SET CHARACTER SET 'cp1251'", "", "");
- 	//mysql_tquery(pearsq, "SET NAMES 'utf8'", "", "");
- 	//mysql_tquery(pearsq, "SET CHARACTER SET 'utf8'", "", "");
- 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кодировка основной базы переустановлена");
-    return true;
-}
-CMD:mysql2(playerid)
-{
-	if(PlayerInfo[playerid][pSoska] < 10) return 1;
-	mysql_tquery(pearsq_2,"SET NAMES 'cp1251'", "", "");
- 	mysql_tquery(pearsq_2,"SET CHARACTER SET 'cp1251'", "", "");
- 	//mysql_tquery(pearsq, "SET NAMES 'utf8'", "", "");
- 	//mysql_tquery(pearsq, "SET CHARACTER SET 'utf8'", "", "");
- 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кодировка второй базы переустановлена");
+	new stats[300];
+	mysql_stat(stats, sizeof(stats), pearsq);
+
+	printf("%s\n", stats);
     return true;
 }
 CMD:stopmaf(playerid)

@@ -384,7 +384,7 @@ stock ClearVariableObjectDom(dom, oba)
 stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодействие
 {
 	// Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
@@ -397,7 +397,7 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 	}
 
 	// Завершение транзакции
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
     DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
 	DeleteInteractionDom(dom); // Отключаем взаимодействие в доме
@@ -409,7 +409,7 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 stock ClearAllObject(playerid, dom) // Убираем все объекты в дом отключаем взаимодействие
 {
 	// Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
@@ -429,7 +429,7 @@ stock ClearAllObject(playerid, dom) // Убираем все объекты в �
 	}
 
 	// Завершение транзакции
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
     DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
 	DeleteInteractionDom(dom);
@@ -589,7 +589,7 @@ CMD:reloadtexture(playerid)
 
 	stopReload = 1;
 	// Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
 
 	for(new d = 0; d < MAX_DOM; d++)
 	{
@@ -637,7 +637,7 @@ CMD:reloadtexture(playerid)
 	}
 
 	// Завершение транзакции
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
 	stopReload = 2;
 	return 1;

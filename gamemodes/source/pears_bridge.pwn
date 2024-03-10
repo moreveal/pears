@@ -18,3 +18,40 @@ stock AddPearsBridgeEvent(const eventId[], const JsonNode:data) {
     mysql_tquery(pearsq_3, string_mysql, "", "");
     return 1;
 }
+
+stock UpdateSqlProperties() // Сохраняем инфу о сервере в базу (для синхры)
+{
+    new string_mysql[1024];
+    format(string_mysql, sizeof(string_mysql), "INSERT INTO properties ( name, value ) VALUES \
+        ('players', '%d'), \
+        ('maxPlayers',  '%d'), \
+        ('password',  '%s'), \
+        ('lastUpdate', '%d') \
+        ON DUPLICATE KEY UPDATE value = VALUES(value)", OrganInfo[0][gstat2], GetMaxPlayers(), serverPass, gettime());
+    mysql_tquery(pearsq_3, string_mysql, "", "");
+    return 1;
+}
+
+stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
+{
+    mysql_tquery(pearsq_3, "START TRANSACTION;");
+
+    mysql_tquery(pearsq_3, "TRUNCATE `online_players`"); 
+
+    new string_mysql[400];
+    foreach(Player,i)
+	{
+        format(string_mysql, sizeof(string_mysql), "INSERT INTO online_players ( playerId, name, accountId, score, ping ) VALUES \
+            ('%d', '%s', '%d', '%d', '%d')", 
+            i, 
+            PlayerInfo[i][pName], 
+            PlayerInfo[i][pID], 
+            (OnlineInfo[i][oLogged] == 0) ? 0 : PlayerInfo[i][pLevel], // Использование тернарного оператора здесь
+            GetPlayerPing(i));
+
+        mysql_tquery(pearsq_3, string_mysql);
+    }
+
+    mysql_tquery(pearsq_3, "COMMIT;");
+    return 1;
+}

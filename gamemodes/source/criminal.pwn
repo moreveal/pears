@@ -537,7 +537,7 @@ stock ClearPlayerWantedArcticle(playerid, criminalid)
 
 stock ClearAllWantedPlayer(playerid)
 {
-    mysql_query(pearsq, "START TRANSACTION;");
+    mysql_query(pearsq, "START TRANSACTION;", false);
     new quan;
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
 	{
@@ -545,7 +545,7 @@ stock ClearAllWantedPlayer(playerid)
         ClearPlayerWantedOne(playerid, i);
         quan ++;
     }
-    mysql_query(pearsq, "COMMIT;");
+    mysql_query(pearsq, "COMMIT;", false);
 
     PlayerInfo[playerid][pCrimes] = 0;
     return quan;
@@ -553,7 +553,7 @@ stock ClearAllWantedPlayer(playerid)
 
 stock ClearAllTicketPlayer(playerid)
 {
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
     new quan;
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
 	{
@@ -561,7 +561,7 @@ stock ClearAllTicketPlayer(playerid)
         ClearPlayerTicketOne(playerid, i);
         quan ++;
     }
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
     PlayerInfo[playerid][pAmmos11] = 0;
     return quan;
@@ -585,7 +585,7 @@ stock ClearPlayerWantedOne(playerid, i)
 stock ClearPlayerTicketOne(playerid, i)
 {
     new uk = WantedInfo[playerid][wanTicketCrime][i];
-    new p = WantedInfo[playerid][wanTicketCrime][i];
+    new p = WantedInfo[playerid][wanTicketSubentry][i];
 
     if(PlayerInfo[playerid][pAmmos11] - CriminalCodeInfo[uk-1][p][ccFine] <= 0) PlayerInfo[playerid][pAmmos11] = 0; 
     else PlayerInfo[playerid][pAmmos11] -= CriminalCodeInfo[uk-1][p][ccFine];
@@ -858,7 +858,7 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk, p)
 
         if(zakonnik != -1)
         {
-            if(CriminalCodeInfo[uk][p][ccLevel] == 0 && CriminalCodeInfo[uk][p][ccFine] == 0) return ErrorMessage(zakonnik, "{FF6347}У загловока статьи нет розыска или штрафа");
+            if(CriminalCodeInfo[uk][p][ccLevel] == 0 && CriminalCodeInfo[uk][p][ccFine] == 0) return ErrorMessage(zakonnik, "{FF6347}У заголовка статьи нет розыска или штрафа");
         }
 
 		for(new i = 0; i < MAX_CRIME_PLAYER; i++)

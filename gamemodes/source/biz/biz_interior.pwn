@@ -69,7 +69,7 @@ stock ReloadFrameBiz(b)
         }
 
         // Начало транзакции
-		mysql_query(pearsq, "START TRANSACTION;");
+		mysql_query(pearsq, "START TRANSACTION;", false);
 
         UpdateObjectBiz(b, 0, true, true);
         UpdateObjectBiz(b, 1, true, true);
@@ -81,7 +81,7 @@ stock ReloadFrameBiz(b)
         UpdateObjectBiz(b, 7, true, true);
 
         // Завершение транзакции
-		mysql_query(pearsq, "COMMIT;");
+		mysql_query(pearsq, "COMMIT;", false);
 
         // Записываем модель 0 каркаса
         BizzInfo[b][bFrame] = BizzInfo[b][bOmodel][0];
@@ -120,7 +120,7 @@ stock IsAJizzyBiz(b)
 stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
 {
 	// Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
@@ -140,7 +140,7 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	}
 
 	// Завершение транзакции
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
     DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
     BizLog("clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Убрал мебель");
@@ -150,7 +150,7 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 {
 	// Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;");
+	mysql_query(pearsq, "START TRANSACTION;", false);
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
@@ -163,7 +163,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 	}
 
 	// Завершение транзакции
-	mysql_query(pearsq, "COMMIT;");
+	mysql_query(pearsq, "COMMIT;", false);
 
     DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
     BizLog("rbizobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Удалил всю мебель");

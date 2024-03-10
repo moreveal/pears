@@ -70,12 +70,7 @@ stock CreateNPC()
 
 public FCNPC_OnCreate(npcid) // Вызывается при создании NPC
 {
-    /*quanConnectNPC ++;
-    if(quanConnectNPC >= MAX_CONNECT_FCNPC) // Все NPC загрузились
-    {
-        SendRconCommand("password 5ye5ynsfbjey4TBFgg"); // Возвращаем пароль, чтобы игроки не заходили лишний раз
-        print("[MODE]: FCNPC_Create");
-    }*/
+
     return 1;
 }
 

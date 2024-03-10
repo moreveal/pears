@@ -23,7 +23,7 @@ stock ProtectWeaponClear(playerid, i)
 {
     ProtectInfo[playerid][prWeapon][i] = 0;
     ProtectInfo[playerid][prAmmo][i] = 0;
-    ProtectInfo[playerid][prExplosive][i] = 0;
+    //ProtectInfo[playerid][prExplosive][i] = 0;
     ProtectInfo[playerid][prDet][i] = 0;
     ProtectInfo[playerid][prQet][i] = 0;
     ProtectInfo[playerid][prUpgrade][i] = 0;
@@ -78,7 +78,6 @@ stock TempGive(playerid) // Возвращаем временно лишённо
         && PlayerInfo[playerid][pJailed] == 0 // Не в заключении
         && !Iamzz[playerid] // Не в зз
         && MPGO[playerid] == 0 // Не на мп
-		&& Tir[0][playerid] == 0 // Не в тире
         && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
         && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) // Не за рулём
 	{

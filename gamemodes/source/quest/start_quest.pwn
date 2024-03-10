@@ -519,19 +519,22 @@ stock QuestCallMessage(i)
     }
     else if(GetPVarInt(i,"qweststat") == 4)
     {
-            SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Дельце не трудное и за него ты получишь вознаграждение");
-            SetPVarInt(i,"qweststat",5), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Дельце не трудное и за него ты получишь вознаграждение");
+        SetPVarInt(i,"qweststat",5), SetPVarInt(i,"qwesttime",3);
     }
     else if(GetPVarInt(i,"qweststat") == 5)
     {
-            SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приезжай. Я скину тебе в навигатор точку GPS");
-            SetPVarInt(i,"qweststat",6), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приезжай. Я скину тебе в навигатор точку GPS");
+        SetPVarInt(i,"qweststat",6), SetPVarInt(i,"qwesttime",3);
+
+        PlayerInfo[i][pQuest][3] = 1; // Джоне нам позвонил первый раз
+        SaveQuest(i);
     }
     else if(GetPVarInt(i,"qweststat") == 6)
     {
-            SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
-            hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
-            SetPVarInt(i,"qweststat",7), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
+        hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
+        SetPVarInt(i,"qweststat",7), SetPVarInt(i,"qwesttime",4);
     }
     else if(GetPVarInt(i,"qweststat") == 7)
     {	
@@ -543,9 +546,6 @@ stock QuestCallMessage(i)
 
         ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*","{99ff66}Добавлена точка в GPS навигатор","*","");
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-
-        PlayerInfo[i][pQuest][3] = 1; // Джоне нам позвонил первый раз
-        SaveQuest(i);
 
         // Запускаем подсказку о передвижении по серверу
         if(IsPlayerInRangeOfPoint(i,200.0,1613.4502,-2292.7754,13.5331) && GetPlayerVirtualWorld(i) == 0) SetPVarInt(i,"qweststat",9), SetPVarInt(i,"qwesttime",4);
@@ -584,15 +584,14 @@ stock QuestCallMessage(i)
     {
         SendClientMessage(i, COLOR_YELLOW,"Джоне (телефон): Давай, я жду тебя");
         SetPVarInt(i,"qweststat",14), SetPVarInt(i,"qwesttime",2);
+        PlayerInfo[i][pQuest][3] = 2; // Джоне нам позвонил второй раз
+        SaveQuest(i);
     }
     else if(GetPVarInt(i,"qweststat") == 14)
     {
         SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
         hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-
-        PlayerInfo[i][pQuest][3] = 2; // Джоне нам позвонил второй раз
-        SaveQuest(i);
+        SetPVarInt(i,"qweststat",7), SetPVarInt(i,"qwesttime",4);
     }
 
     // Ремон Транспорта (Квест от Джоне)

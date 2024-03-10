@@ -1,6 +1,6 @@
 function Call_myHB(playerid)
 {
-	new rows, datad1[24], datad4, str[64],sctring[6400], quan;
+	new rows, datad1[24], datad4, str[80],sctring[4096], quan;
 	cache_get_row_count(rows);
 	format(str,sizeof(str),"{cccccc}Доска почета\t \n"), strcat(sctring,str);
 	for(new i = 0; i < rows; i++)
@@ -36,7 +36,7 @@ CMD:honorboard(playerid)
 }
 function Call_frakHB(playerid, g)
 {
-	new rows, datad1[24], datad4, str[64],sctring[6400], tyear, tmonth, tday, thour, tminute, tsecond;
+	new rows, datad1[24], datad4, str[80],sctring[4096], tyear, tmonth, tday, thour, tminute, tsecond;
 	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
