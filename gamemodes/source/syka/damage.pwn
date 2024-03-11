@@ -67,15 +67,15 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, weaponid, bodypart, &Float:
         {WEAPON_BAT, {30, 30}, {10, 15} },
         {WEAPON_KATANA, {30, 30}, {20, 30}, {100, 100} },
 		// огнестрел
-		{WEAPON_COLT45, {10, 30}, {7, 15}, {17, 35} },
-		{WEAPON_SILENCED, {10, 30}, {6, 13}, {19, 26} },
-		{WEAPON_DEAGLE, {13, 30}, {30, 46}, {46, 63} },
-		{WEAPON_SHOTGUN, {5, 40}, {7, 50}, {44, 58} },
-		{WEAPON_SAWEDOFF, {5, 35}, {5, 29}, {30, 37} },
-        {WEAPON_SHOTGSPA, {5, 40}, {6, 37}, {38, 45} },
-        {WEAPON_TEC9, {35, 105}, {2, 3}, {2, 4} },
-		{WEAPON_UZI, {10, 30}, {2, 3}, {2, 4} },
-        {WEAPON_MP5, {10, 30}, {8, 8}, {9, 12} },
+		{WEAPON_COLT45, {20, 60}, {7, 15}, {17, 35} },
+		{WEAPON_SILENCED, {20, 60}, {6, 13}, {19, 26} },
+		{WEAPON_DEAGLE, {30, 60}, {30, 46}, {46, 63} },
+		{WEAPON_SHOTGUN, {10, 80}, {7, 50}, {44, 58} },
+		{WEAPON_SAWEDOFF, {10, 70}, {5, 29}, {30, 37} },
+        {WEAPON_SHOTGSPA, {10, 80}, {6, 37}, {38, 45} },
+        {WEAPON_TEC9, {20, 60}, {5, 8}, {10, 12} },
+		{WEAPON_UZI, {20, 60}, {5, 8}, {10, 12} },
+        {WEAPON_MP5, {20, 60}, {8, 10}, {12, 14} },
 		{WEAPON_AK47, {30, 70}, {10, 12}, {12, 16} },
         {WEAPON_M4, {30, 90}, {9, 11}, {11, 14} },
         {WEAPON_RIFLE, {100, 100}, {20, 35}, {40, 50} },
@@ -316,23 +316,23 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         }
         new Float: damage, Float: armour_breaking;
         GetPlayerDamageByWeaponId(playerid, damagedid, handler_weapon, bodypart, damage, armour_breaking);
-        new resultDeath = TakePlayerHealth(damagedid, damage);
-
-        new Float: armour;
-        ACGetPlayerArmour(damagedid, armour);
-        if (armour > 0.0) {
-            // Забираем броню
-            TakePlayerArmour(damagedid, armour_breaking);
-            // Если броня закончилась
-            ACGetPlayerArmour(damagedid, armour);
-            if (armour <= 0.0) {
-                // [ Удаляем аттач брони, если он есть ]
-                // [ Удаляем броню из инвентаря ]
-            }
-        }
 
         if(damage > 0) // Если дамаг вообще нанесли
         {
+            new resultDeath = TakePlayerHealth(damagedid, damage);
+
+            new Float: armour;
+            ACGetPlayerArmour(damagedid, armour);
+            if (armour > 0.0) {
+                // Забираем броню
+                TakePlayerArmour(damagedid, armour_breaking);
+                // Если броня закончилась
+                ACGetPlayerArmour(damagedid, armour);
+                if (armour <= 0.0) {
+                    // [ Удаляем аттач брони, если он есть ]
+                    // [ Удаляем броню из инвентаря ]
+                }
+            }
             new string[20];
             format(string, sizeof string, "-%.1f HP", damage);
             SetPlayerChatBubble(damagedid, string, COLOR_RED, 45.0, 4000);
