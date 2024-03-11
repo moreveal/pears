@@ -1572,46 +1572,160 @@ stock GetFullThingQuan(thingId)
 	else quan = 1;
 	return quan;
 }
-stock SaveInventAll(playerid) // Сохранение всего инвентаря по цилку
+
+// Сохраняем весь инвентарь
+stock SaveInventAll(playerid, bool:transaction = true)
 {
-	new string_mysql[4300];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Inven1` = '%d', `InvenKol1` = '%d', `InvenPara1` = '%d', `InvenQara1` = '%d', \
-	`InvenType1` = '%d', `InvenPack1` = '%d'",
-	PlayerInfo[playerid][pInven][0], PlayerInfo[playerid][pInvenQuan][0], PlayerInfo[playerid][pInvenPara][0], PlayerInfo[playerid][pInvenQara][0], 
-	PlayerInfo[playerid][pInvenType][0], PlayerInfo[playerid][pInvenPack][0]); // 146 + 66
-	for(new i = 1; i < 20; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', \
-		`InvenPack%d` = '%d'", string_mysql,
-		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
-		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
-	}
-	format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
-	query_empty(pearsq, string_mysql);
-	
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Inven21` = '%d', `InvenKol21` = '%d', `InvenPara21` = '%d', `InvenQara21` = '%d', \
-	`InvenType21` = '%d', `InvenPack21` = '%d'",
-	PlayerInfo[playerid][pInven][20], PlayerInfo[playerid][pInvenQuan][20], PlayerInfo[playerid][pInvenPara][20], PlayerInfo[playerid][pInvenQara][20], 
-	PlayerInfo[playerid][pInvenType][20], PlayerInfo[playerid][pInvenPack][20]); // 153 + 66
-	for(new i = 21; i < 40; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', `InvenType%d` = '%d', \
-		`InvenPack%d` = '%d'", string_mysql,
-		i+1, PlayerInfo[playerid][pInven][i], i+1, PlayerInfo[playerid][pInvenQuan][i], i+1, PlayerInfo[playerid][pInvenPara][i], 
-		i+1, PlayerInfo[playerid][pInvenQara][i], i+1, PlayerInfo[playerid][pInvenType][i], i+1, PlayerInfo[playerid][pInvenPack][i]); // 135 + 55 + 10 (4000)
-	}
-	format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
-	query_empty(pearsq, string_mysql);
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < MAX_INVEN; i++) SaveInvent(playerid, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
-stock SaveInvent(playerid, i) // Сохранение одной ячейки инвентаря
+
+stock CreateJsonInvent(playerid, i, &JsonNode:node)
 {
-	new string_mysql[200 + 143];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `user_id`='%d'",
-	i+1,PlayerInfo[playerid][pInven][i],i+1,PlayerInfo[playerid][pInvenQuan][i],i+1,PlayerInfo[playerid][pInvenPara][i],i+1,PlayerInfo[playerid][pInvenQara][i],i+1,PlayerInfo[playerid][pInvenType][i],i+1,PlayerInfo[playerid][pInvenPack][i],PlayerInfo[playerid][pID]);
-	query_empty(pearsq, string_mysql);
-    return 1;
+	if(PlayerInfo[playerid][pInven][i] == 0) 
+	{
+		node = JSON_INVALID_NODE;
+		return 1;
+	}
+
+	node = JSON_Object(
+		"id", JSON_Int(PlayerInfo[playerid][pInven][i]),
+		"quan", JSON_Int(PlayerInfo[playerid][pInvenQuan][i]),
+		"para", JSON_Int(PlayerInfo[playerid][pInvenPara][i]),
+		"qara", JSON_Int(PlayerInfo[playerid][pInvenQara][i]),
+		"type", JSON_Int(PlayerInfo[playerid][pInvenType][i]),
+		"pack", JSON_Int(PlayerInfo[playerid][pInvenPack][i])
+	);
+	return 1;
 }
+
+// Сохраняем одну ячейку инвентаря
+stock SaveInvent(playerid, i)
+{
+	new JsonNode:node;
+	CreateJsonInvent(playerid, i, node);
+	SaveInventByUserID(PlayerInfo[playerid][pID], i, node);
+	return 1;
+}
+
+stock SaveInventByUserID(user_id, i, JsonNode:node, bool:isMark = false)
+{
+	if(node == JSON_INVALID_NODE)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_inventory` SET `%s_slot_%d`= NULL WHERE `user_id` = '%d'", (isMark ? "m" : "i"), i, user_id);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_inventory` SET `%s_slot_%d`= '%e' WHERE `user_id` = '%d'",
+			(isMark ? "m" : "i"), i, string_json, user_id);
+			mysql_tquery(pearsq, string_mysql);
+		}
+	}
+	return 1;
+}
+
+// Запрос для загрузки инвентаря
+function OnPlayerInventoryLoad(playerid, race_check)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
+		OnPlayerLoadInventory(playerid);
+		printf("OnPlayerLoadInventory(%s) Инвентарь Найден", PlayerInfo[playerid][pName]);
+	}
+	return 1;
+}
+
+// Новый сток загрузки инвентаря
+stock OnPlayerLoadInventory(playerid)
+{
+	new string[20];
+	for(new i = 0; i < MAX_INVEN; i++)
+	{
+		new bool:is_null;
+		format(string, sizeof(string), "i_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", PlayerInfo[playerid][pInven][i]);
+				JSON_GetInt(node, "quan", PlayerInfo[playerid][pInvenQuan][i]);
+				JSON_GetInt(node, "para", PlayerInfo[playerid][pInvenPara][i]);
+				JSON_GetInt(node, "qara", PlayerInfo[playerid][pInvenQara][i]);
+				JSON_GetInt(node, "type", PlayerInfo[playerid][pInvenType][i]);
+				JSON_GetInt(node, "pack", PlayerInfo[playerid][pInvenPack][i]);
+
+				//new slotLol[512];
+				//JSON_GetString(node, "lol", slotLol);
+			}
+		}
+	}
+
+	for(new i = 0; i < MAX_MARK; i++)
+	{
+		new bool:is_null;
+		format(string, sizeof(string), "m_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", PlayerInfo[playerid][pMarkInven][i]);
+				JSON_GetInt(node, "quan", PlayerInfo[playerid][pMarkInvenQuan][i]);
+				JSON_GetInt(node, "para", PlayerInfo[playerid][pMarkInvenPara][i]);
+				JSON_GetInt(node, "qara", PlayerInfo[playerid][pMarkInvenQara][i]);
+				JSON_GetInt(node, "type", PlayerInfo[playerid][pMarkInvenType][i]);
+				JSON_GetInt(node, "pack", PlayerInfo[playerid][pMarkInvenPack][i]);
+				JSON_GetInt(node, "price", PlayerInfo[playerid][pMarkPrice][i]);
+			}
+		}
+	}
+	return 1;
+}
+
+stock OnPlayerFriskOffline(playerid)
+{
+	new string_mysql[100];
+	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `%s` WHERE `user_id` = '%d'", 
+		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
+	mysql_tquery(pearsq, string_mysql, "Call_frisk", "ds", playerid, ListName[playerid]);
+	return 1;
+}
+
+stock OnPlayerTakeOffline(playerid)
+{
+	new string_mysql[100];
+	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `%s` WHERE `user_id` = '%d'", 
+		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
+	mysql_tquery(pearsq, string_mysql, "Call_takefrisk", "dsd", playerid, ListName[playerid], ListInva[DP[3][playerid]][playerid]);
+	return 1;
+}
+
 stock NumberSmartfonPlayer(playerid) // Устанавливаем номер телефона игроку, исходя из уже существующих
 {
     if(ServerInfo[54] <= 0) ServerInfo[54] = 500000; // Если в конфиге нет номера телефона

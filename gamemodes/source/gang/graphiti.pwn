@@ -259,7 +259,7 @@ stock ClearAllGraffity(playerid)
     if(QuanGraffity <= 0) return ErrorMessage(playerid,"{ff6347}На сервере нет ни одного граффити");
 
     // Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;", false);
+	mysql_tquery(pearsq, "START TRANSACTION;");
 
     new quan;
     for(new g = 0; g < GZONES; g++)
@@ -285,7 +285,7 @@ stock ClearAllGraffity(playerid)
 	ABroadCast(COLOR_ADM,string,1);
 
     // Завершение транзакции
-	mysql_query(pearsq, "COMMIT;", false);
+	mysql_tquery(pearsq, "COMMIT;");
 
     AdminLog("cleargraffity", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Удалил все граффити");
     return 1;

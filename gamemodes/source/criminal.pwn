@@ -537,7 +537,7 @@ stock ClearPlayerWantedArcticle(playerid, criminalid)
 
 stock ClearAllWantedPlayer(playerid)
 {
-    mysql_query(pearsq, "START TRANSACTION;", false);
+    mysql_tquery(pearsq, "START TRANSACTION;");
     new quan;
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
 	{
@@ -545,7 +545,7 @@ stock ClearAllWantedPlayer(playerid)
         ClearPlayerWantedOne(playerid, i);
         quan ++;
     }
-    mysql_query(pearsq, "COMMIT;", false);
+    mysql_tquery(pearsq, "COMMIT;");
 
     PlayerInfo[playerid][pCrimes] = 0;
     return quan;
@@ -553,7 +553,7 @@ stock ClearAllWantedPlayer(playerid)
 
 stock ClearAllTicketPlayer(playerid)
 {
-	mysql_query(pearsq, "START TRANSACTION;", false);
+	mysql_tquery(pearsq, "START TRANSACTION;");
     new quan;
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
 	{
@@ -561,7 +561,7 @@ stock ClearAllTicketPlayer(playerid)
         ClearPlayerTicketOne(playerid, i);
         quan ++;
     }
-	mysql_query(pearsq, "COMMIT;", false);
+	mysql_tquery(pearsq, "COMMIT;");
 
     PlayerInfo[playerid][pAmmos11] = 0;
     return quan;

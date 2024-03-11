@@ -231,7 +231,7 @@ stock LoadInteriorToBiz(playerid, b)
     new quan, quanTextures;
 
     // Начало транзакции
-	mysql_query(pearsq, "START TRANSACTION;", false);
+	mysql_tquery(pearsq, "START TRANSACTION;");
 
     for(new i = 0; i < MAX_OBJECT_INT; i++)
     {
@@ -284,7 +284,7 @@ stock LoadInteriorToBiz(playerid, b)
     }
 
     // Завершение транзакции
-	mysql_query(pearsq, "COMMIT;", false);
+	mysql_tquery(pearsq, "COMMIT;");
 
     SaveBizz(b);
 

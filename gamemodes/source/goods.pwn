@@ -217,35 +217,49 @@ stock shift_goods(playerid, getinva, putinva)
 	item_second(playerid, PlayerInfo[playerid][pMarkInven][putinva], PlayerInfo[playerid][pMarkInvenQuan][putinva], putinva, 1, PlayerInfo[playerid][pMarkInvenPara][putinva], PlayerInfo[playerid][pMarkInvenType][putinva], PlayerInfo[playerid][pMarkInvenPack][putinva], 0);
 	return 1;
 }
-stock SaveMarkAll(playerid) // Сохранение всего раздела торговли по цилку
+
+// Сохраняем весь инвентарь
+stock SaveMarkAll(playerid, bool:transaction = true)
 {
-	new string_mysql[4000];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Mark0` = '%d', `MarkKol0` = '%d', `MarkPara0` = '%d', `MarkQara0` = '%d', \
-		`MarkType0` = '%d', `MarkPack0` = '%d', `MarkPrice0` = '%d'",
-	PlayerInfo[playerid][pMarkInven][0], PlayerInfo[playerid][pMarkInvenQuan][0], PlayerInfo[playerid][pMarkInvenPara][0], PlayerInfo[playerid][pMarkInvenQara][0], 
-	PlayerInfo[playerid][pMarkInvenType][0], PlayerInfo[playerid][pMarkInvenPack][0], PlayerInfo[playerid][pMarkPrice][0]); // 163 + 77
-	for(new i = 1; i < 20; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Mark%d` = '%d', `MarkKol%d` = '%d', `MarkPara%d` = '%d', `MarkQara%d` = '%d', `MarkType%d` = '%d', \
-			`MarkPack%d` = '%d', `MarkPrice%d` = '%d'", string_mysql,
-		i, PlayerInfo[playerid][pMarkInven][i], i, PlayerInfo[playerid][pMarkInvenQuan][i], i, PlayerInfo[playerid][pMarkInvenPara][i], 
-		i, PlayerInfo[playerid][pMarkInvenQara][i], i, PlayerInfo[playerid][pMarkInvenType][i], i, PlayerInfo[playerid][pMarkInvenPack][i], 
-		i, PlayerInfo[playerid][pMarkPrice][i]); // 152 + 44 (3920)
-	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `user_id` = '%d'", string_mysql, PlayerInfo[playerid][pID]); // 21 + 11
-	query_empty(pearsq, string_mysql);
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < MAX_MARK; i++) SaveMark(playerid, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
+
+stock CreateJsonMark(playerid, i, &JsonNode:node)
+{
+	if(PlayerInfo[playerid][pMarkInven][i] == 0) 
+	{
+		node = JSON_INVALID_NODE;
+		return 1;
+	}
+
+	node = JSON_Object(
+		"id", JSON_Int(PlayerInfo[playerid][pMarkInven][i]),
+		"quan", JSON_Int(PlayerInfo[playerid][pMarkInvenQuan][i]),
+		"para", JSON_Int(PlayerInfo[playerid][pMarkInvenPara][i]),
+		"qara", JSON_Int(PlayerInfo[playerid][pMarkInvenQara][i]),
+		"type", JSON_Int(PlayerInfo[playerid][pMarkInvenType][i]),
+		"pack", JSON_Int(PlayerInfo[playerid][pMarkInvenPack][i]),
+		"price", JSON_Int(PlayerInfo[playerid][pMarkPrice][i])
+	);
+	return 1;
+}
+
+// Сохраняем одну ячейку товаров
 stock SaveMark(playerid, i)
 {
-	new string_mysql[166 + 165];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Mark%d`='%d',`MarkKol%d`='%d',`MarkPara%d`='%d',`MarkQara%d`='%d',`MarkPrice%d`='%d',\
-		`MarkType%d`='%d',`MarkPack%d`='%d' WHERE `user_id`='%d'",
-	i,PlayerInfo[playerid][pMarkInven][i],i,PlayerInfo[playerid][pMarkInvenQuan][i],i,PlayerInfo[playerid][pMarkInvenPara][i],i,PlayerInfo[playerid][pMarkInvenQara][i],
-	i,PlayerInfo[playerid][pMarkPrice][i],i,PlayerInfo[playerid][pMarkInvenType][i],i,PlayerInfo[playerid][pMarkInvenPack][i],PlayerInfo[playerid][pID]);
-	query_empty(pearsq, string_mysql);
-    return 1;
+	new JsonNode:node;
+	CreateJsonMark(playerid, i, node);
+	SaveInventByUserID(PlayerInfo[playerid][pID], i, node, true);
+	return 1;
 }
+
 stock IsAUpdateM(playerid)
 {
 	new up = 0;

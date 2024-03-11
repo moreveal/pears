@@ -1085,3 +1085,19 @@ stock CreateCaptZone(i) // Создаём детали для квеста
     ZoneCapt = CreateDynamicCube(GangZone[i][gzMinX] - 50.0,GangZone[i][gzMinY] - 50.0, -50.0, GangZone[i][gzMaxX] + 50.0,GangZone[i][gzMaxY] + 50.0, 200.0, 0, 0);
     return 1;
 }
+
+stock OnLoadPlayerCapt(playerid) // Загружаем капты
+{
+	new line[100],lines[2000];
+    format(line,sizeof(line),"MyWar"), strcat(lines,line);
+	for(new idx = 0; idx < MAX_GANG_CAPT_STATA; idx++) 
+	{
+    	format(line,sizeof(line),", GangCapt%d", idx), strcat(lines,line);
+		format(line,sizeof(line),", GangAll%d", idx), strcat(lines,line);
+	}
+
+	new string_mysql[3000];
+	format(string_mysql, sizeof(string_mysql), "SELECT %s FROM `pp_igroki` WHERE `user_id`='%d'", lines, PlayerInfo[playerid][pID]);
+	mysql_pquery(pearsq, string_mysql, "LoadPlayerCapt", "dd", playerid, g_MysqlRaceCheck[playerid]);
+	return 1;
+}
