@@ -1,4 +1,4 @@
-#define MAX_RACERS_POINT 10
+
 #if defined isnull
 	#undef isnull
 #endif
