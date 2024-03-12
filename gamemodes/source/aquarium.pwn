@@ -160,6 +160,7 @@ function FinishSwimFish(aquaid, fishid)
 
 stock AquariumMenu(playerid, aquaid)
 {
+    if(aquaid >= MAX_AQUARIUM) return 1;
     new line[70],lines[490];
     
     DP[0][playerid] = aquaid;
