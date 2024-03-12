@@ -401,9 +401,9 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
 
         WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-        RentObjectRace[oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
-        CreateLabelTermRace(oid,RentObjectRace[oid]);
-        UpdateLabelTermRace(oid);
+        RentObjectRace[DP[0][playerid]][oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
+        UpdateLabelTermRace(oid,DP[0][playerid]);
     }
     else if(gRedakt[playerid] == 26) // Объекты для секты
     {
@@ -669,8 +669,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
         {
             WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-            CreateLabelTermRace(oid,RentObjectRace[oid]);
-            UpdateLabelTermRace(oid);
+            CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
+            UpdateLabelTermRace(oid,DP[0][playerid]);
         }
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
@@ -683,41 +683,42 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
 stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
+    new slot = DP[0][playerid];
     if(gRedakt[playerid] == 22)
     {
-        StreetRacers[0][racePosMarket][0] = x;
-        StreetRacers[0][racePosMarket][1] = y;
-        StreetRacers[0][racePosMarket][2] = z;
-        StreetRacers[0][racePosMarket][3] = rx;
-        StreetRacers[0][racePosMarket][4] = ry;
-        StreetRacers[0][racePosMarket][5] = rz;
+        StreetRacers[slot][racePosMarket][0] = x;
+        StreetRacers[slot][racePosMarket][1] = y;
+        StreetRacers[slot][racePosMarket][2] = z;
+        StreetRacers[slot][racePosMarket][3] = rx;
+        StreetRacers[slot][racePosMarket][4] = ry;
+        StreetRacers[slot][racePosMarket][5] = rz;
     }
     else if(gRedakt[playerid] == 23)
     {
-        StreetRacers[0][racePosBenz][0] = x;
-        StreetRacers[0][racePosBenz][1] = y;
-        StreetRacers[0][racePosBenz][2] = z;
-        StreetRacers[0][racePosBenz][3] = rx;
-        StreetRacers[0][racePosBenz][4] = ry;
-        StreetRacers[0][racePosBenz][5] = rz;
+        StreetRacers[slot][racePosBenz][0] = x;
+        StreetRacers[slot][racePosBenz][1] = y;
+        StreetRacers[slot][racePosBenz][2] = z;
+        StreetRacers[slot][racePosBenz][3] = rx;
+        StreetRacers[slot][racePosBenz][4] = ry;
+        StreetRacers[slot][racePosBenz][5] = rz;
     }
     else if(gRedakt[playerid] == 24)
     {
-        StreetRacers[0][racePosService][0] = x;
-        StreetRacers[0][racePosService][1] = y;
-        StreetRacers[0][racePosService][2] = z;
-        StreetRacers[0][racePosService][3] = rx;
-        StreetRacers[0][racePosService][4] = ry;
-        StreetRacers[0][racePosService][5] = rz;
+        StreetRacers[slot][racePosService][0] = x;
+        StreetRacers[slot][racePosService][1] = y;
+        StreetRacers[slot][racePosService][2] = z;
+        StreetRacers[slot][racePosService][3] = rx;
+        StreetRacers[slot][racePosService][4] = ry;
+        StreetRacers[slot][racePosService][5] = rz;
     }
     else if(gRedakt[playerid] == 25)
     {
-        StreetRacers[0][racePosTerminal][0] = x;
-        StreetRacers[0][racePosTerminal][1] = y;
-        StreetRacers[0][racePosTerminal][2] = z;
-        StreetRacers[0][racePosTerminal][3] = rx;
-        StreetRacers[0][racePosTerminal][4] = ry;
-        StreetRacers[0][racePosTerminal][5] = rz;
+        StreetRacers[slot][racePosTerminal][0] = x;
+        StreetRacers[slot][racePosTerminal][1] = y;
+        StreetRacers[slot][racePosTerminal][2] = z;
+        StreetRacers[slot][racePosTerminal][3] = rx;
+        StreetRacers[slot][racePosTerminal][4] = ry;
+        StreetRacers[slot][racePosTerminal][5] = rz;
     }
     return 1;
 }

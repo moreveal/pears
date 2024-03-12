@@ -81,6 +81,7 @@ enum fInfo
 	Float:fsAltarPos[6], // Позиция Тележки
 	fsAltarStatus, // статус алтаря
 	fsUnixAltar, // Восстановление алтаря
+	fStreetRacersID, // Статус гонки есть или нет.
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -413,7 +414,7 @@ public LoadFamily()
 			cache_get_value_name_int(f, string, FamilyInfo[idx][fRoutUnix][i]);
 		}
    		if(FamilyInfo[idx][fMoney] < 0) FamilyInfo[idx][fMoney] = 0;
-
+		FamilyInfo[idx][fStreetRacersID] = -1;
         // Получаем названия рангов
 		if(FamilyInfo[idx][fRanks] > 0)
 		{

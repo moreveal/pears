@@ -1,4 +1,4 @@
-#define MAX_RACERS_POINT 1
+#define MAX_RACERS_POINT 10
 #if defined isnull
 	#undef isnull
 #endif
@@ -23,22 +23,26 @@ enum raceInfo
     racePlace[8] // Места в гонке
 }
 new StreetRacers[MAX_RACERS_POINT][raceInfo];
-new RaceIcon[1];
+new RaceIcon[MAX_RACERS_POINT];
 new carRaceCheckpoint[MAX_REALPLAYERS],raceRout[MAX_REALPLAYERS];
 
 
 stock ShowStreetRacers(playerid,family)
 {
-    new line[70],lines[350];
-    format(line,sizeof(line),"Начать подготовку к сходке"), strcat(lines,line);
-    if(FamilyInfo[family][fParthnerMarket] == 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {FF6347}[Отсутствует]"), strcat(lines,line);
-    else if(FamilyInfo[family][fParthnerMarket] != 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerMarket]), strcat(lines,line);
-    if(FamilyInfo[family][fParthnerBenz] == 0) format(line,sizeof(line),"\nПартнерство с заправкой. {FF6347}[Отсутствует]"), strcat(lines,line);
-    else if(FamilyInfo[family][fParthnerBenz] != 0) format(line,sizeof(line),"\nПартнерство с заправкой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerBenz]), strcat(lines,line);
-    if(FamilyInfo[family][fParthnerService] == 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {FF6347}[Отсутствует]"), strcat(lines,line);
-    else if(FamilyInfo[family][fParthnerService] != 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerService]), strcat(lines,line);
-    format(line,sizeof(line),"\nСписок гоночных маршрутов семьи"), strcat(lines,line);
-    ShowDialog(playerid,1457,DIALOG_STYLE_TABLIST,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+    if(FamilyInfo[family][fStreetRacersID] == -1)
+    {
+        new line[70],lines[350];
+        format(line,sizeof(line),"Начать подготовку к сходке"), strcat(lines,line);
+        if(FamilyInfo[family][fParthnerMarket] == 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {FF6347}[Отсутствует]"), strcat(lines,line);
+        else if(FamilyInfo[family][fParthnerMarket] != 0) format(line,sizeof(line),"\nПартнерство с Ларьком с Едой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerMarket]), strcat(lines,line);
+        if(FamilyInfo[family][fParthnerBenz] == 0) format(line,sizeof(line),"\nПартнерство с заправкой. {FF6347}[Отсутствует]"), strcat(lines,line);
+        else if(FamilyInfo[family][fParthnerBenz] != 0) format(line,sizeof(line),"\nПартнерство с заправкой. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerBenz]), strcat(lines,line);
+        if(FamilyInfo[family][fParthnerService] == 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {FF6347}[Отсутствует]"), strcat(lines,line);
+        else if(FamilyInfo[family][fParthnerService] != 0) format(line,sizeof(line),"\nПартнерство с Автосервисом. {99ff66}[Бизнес № %d]", FamilyInfo[family][fParthnerService]), strcat(lines,line);
+        format(line,sizeof(line),"\nСписок гоночных маршрутов семьи"), strcat(lines,line);
+        ShowDialog(playerid,1457,DIALOG_STYLE_TABLIST,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
+    }
+    else return GoStreetRacers(playerid);
     return 1;
 }
 
@@ -47,74 +51,77 @@ stock GoStreetRacers(playerid)
     new fId = PlayerInfo[playerid][pFamily];
     new tyear, tmonth, tday, thour, tminute, tsecond;
     new unixsecond = gettime();
-    if(StreetRacers[0][raceStat] == 1 || StreetRacers[0][raceStat] == 2)
+    new slot = FamilyInfo[fId][fStreetRacersID];
+    if(slot != -1)
     {
-        if(StreetRacers[0][raceFamily] == fId)
+        if(StreetRacers[slot][raceFamily] == fId)
         {
             new line[70],lines[490];
-            if(StreetRacers[0][raceStat] == 1)
+            if(StreetRacers[slot][raceStat] == 1)
             {
-                stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+                stamp2datetime(StreetRacers[slot][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
                 format(line,sizeof(line),"Сходка StreetRacers. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
-                if(StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]"), strcat(lines,line);
-                else if(StreetRacers[0][racePosMarket][0] != 0.0 && StreetRacers[0][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]"), strcat(lines,line);
-                if(StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]"), strcat(lines,line);
-                else if(StreetRacers[0][racePosBenz][0] != 0.0 && StreetRacers[0][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]"), strcat(lines,line);
-                if(StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]"), strcat(lines,line);
-                else if(StreetRacers[0][racePosService][0] != 0.0 && StreetRacers[0][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]"), strcat(lines,line);
-                if(StreetRacers[0][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]"), strcat(lines,line);
-                else if(StreetRacers[0][racePosTerminal][0] != 0.0 && StreetRacers[0][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[slot][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[slot][racePosMarket][0] != 0.0 && StreetRacers[slot][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[slot][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[slot][racePosBenz][0] != 0.0 && StreetRacers[slot][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[slot][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[slot][racePosService][0] != 0.0 && StreetRacers[slot][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]"), strcat(lines,line);
+                if(StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[slot][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]"), strcat(lines,line);
+                else if(StreetRacers[slot][racePosTerminal][0] != 0.0 && StreetRacers[slot][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]"), strcat(lines,line);
                 ShowDialog(playerid,1452,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
             }
-            else if(StreetRacers[0][raceStat] > 1)
+            else if(StreetRacers[slot][raceStat] > 1)
             {
-                stamp2datetime(StreetRacers[0][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+                stamp2datetime(StreetRacers[slot][raceUnix]+unixsecond, tyear, tmonth, tday, thour, tminute, tsecond, 3);
                 format(line,sizeof(line),"Сходка StreetRacers. Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nНачать гонку"), strcat(lines,line);
-                if(StreetRacers[0][raceMap] == -1) format(line,sizeof(line),"\nКарта {FF6347}[Не выбрана]"), strcat(lines,line);
-                else if(StreetRacers[0][raceMap] > -1) format(line,sizeof(line),"\nКарта {99ff66}[Выбрана]"), strcat(lines,line);
+                if(StreetRacers[slot][raceMap] == -1) format(line,sizeof(line),"\nКарта {FF6347}[Не выбрана]"), strcat(lines,line);
+                else if(StreetRacers[slot][raceMap] > -1) format(line,sizeof(line),"\nКарта {99ff66}[Выбрана]"), strcat(lines,line);
                 format(line,sizeof(line),"\nСписок гонщиков"), strcat(lines,line);
+                format(line,sizeof(line),"\nЗакончить гонку"), strcat(lines,line);
                 format(line,sizeof(line),"\nЗакончить сходку"), strcat(lines,line);
                 ShowDialog(playerid,1461,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
             }
         }
-        else if(StreetRacers[0][raceFamily] != fId)
+        else if(StreetRacers[slot][raceFamily] != fId)
         {
-            CreateGps(playerid,StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 0, 0, 5.0);
+            CreateGps(playerid,StreetRacers[slot][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 0, 0, 5.0);
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сейчас уже активна сходка StreetRacers");
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Возможно мне стоит явится на неё и проявить себя!");
         }
     }
-    else if(StreetRacers[0][raceStat] == 0)
+    else
     {
 		ShowDialog(playerid,1451,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Начать сходку Стрит Рейсеров?","Да","Нет");
     }
     return 1;
 }
 
-stock CreatePartyStreet(playerid)
+stock CreatePartyStreet(playerid,slot)
 {
-    if(StreetRacers[0][raceUnix] > 0 || StreetRacers[0][raceStat] > 0) return ErrorMessage(playerid,"{FF6347}Кто-то уже начал сбор");
-    StreetRacers[0][raceFamily] = PlayerInfo[playerid][pFamily];
-    StreetRacers[0][raceStat] = 1;
-    StreetRacers[0][raceUnix] = 7200;
+    if(StreetRacers[slot][raceUnix] > 0 || StreetRacers[slot][raceStat] > 0) return ErrorMessage(playerid,"{FF6347}Кто-то уже начал сбор");
+    FamilyInfo[PlayerInfo[playerid][pFamily]][fStreetRacersID] = slot;
+    StreetRacers[slot][raceFamily] = PlayerInfo[playerid][pFamily];
+    StreetRacers[slot][raceStat] = 1;
+    StreetRacers[slot][raceUnix] = 7200;
     SuccessMessage(playerid,"{99ff66}Вы начали подготовку к сходке StreetRacers");
     return 1;
 }
 
-stock ReadyPartyStreet(playerid)
+stock ReadyPartyStreet(playerid,slot)
 {
-    StreetRacers[0][raceStat] = 2;
-    StreetRacers[0][raceUnix] = 7200;
-    StreetRacers[0][raceMap] = -1;
-    RaceIcon[0] = CreateDynamicMapIcon(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2],53,0,-1,-1,-1,200.0);
-    dyn_zone_zzRace = CreateDynamicSphere(StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 50, 0, 0);
+    StreetRacers[slot][raceStat] = 2;
+    StreetRacers[slot][raceUnix] = 7200;
+    StreetRacers[slot][raceMap] = -1;
+    RaceIcon[slot] = CreateDynamicMapIcon(StreetRacers[slot][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2],53,0,-1,-1,-1,200.0);
+    dyn_zone_zzRace[slot] = CreateDynamicSphere(StreetRacers[slot][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 50, 0, 0);
     for(new i; i < 8; i++)
     {
-        StreetRacers[0][racersCount][i] = -1;
-        StreetRacers[0][racersCountWinner][i] = -1;
-        StreetRacers[0][racePlace][i] = -1;   
+        StreetRacers[slot][racersCount][i] = -1;
+        StreetRacers[slot][racersCountWinner][i] = -1;
+        StreetRacers[slot][racePlace][i] = -1;   
     }
     SuccessMessage(playerid,"{99ff66}Вы начали сходку StreetRacers");
     return 1;
@@ -122,80 +129,104 @@ stock ReadyPartyStreet(playerid)
 CMD:closerace(playerid)
 {
     if(PlayerInfo[playerid][pSoska] <= 3) ErrorMessage(playerid,"{FF6347}Закончить сходку предварительно могут только Админ 4+ лвла");
-    ClosePartyStreet();
+    new fId = PlayerInfo[playerid][pFamily];
+    new slot = FamilyInfo[fId][fStreetRacersID];
+    ClosePartyStreet(slot);
     return 1;
 }
-stock ClosePartyStreet()
+stock ClosePartyStreet(slot)
 {
     for(new i; i < 4; i++)
     {
-        if(RentPickupRace[i])
+        if(RentPickupRace[slot][i])
         {
-            DestroyDynamic3DTextLabel(RentLabelRace[i]);
-            DestroyDynamicPickup(RentPickupRace[i]);
-            RentPickupRace[i] = 0;
+            DestroyDynamic3DTextLabel(RentLabelRace[slot][i]);
+            DestroyDynamicPickup(RentPickupRace[slot][i]);
+            RentPickupRace[slot][i] = 0;
         }
-        DestroyDynamicObject(RentObjectRace[i]);
-        RentObjectRace[i] = 0;
+        DestroyDynamicObject(RentObjectRace[slot][i]);
+        RentObjectRace[slot][i] = 0;
     }
     for(new p; p < 8; p++)
     {
-        if(StreetRacers[0][racersCount][p] == -1) continue;
-        OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
-        raceRout[StreetRacers[0][racersCount][p]] = -1;
-        carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
-        StreetRacers[0][racersCountWinner][p] = -1;
-        DisablePlayerRaceCheckpoint(StreetRacers[0][racersCount][p]);
-        DestroyRaceDrawForPlayer(StreetRacers[0][racersCount][p]);
-        StreetRacers[0][racersCount][p] = -1;
-        StreetRacers[0][racePlace][p] = -1;   
+        if(StreetRacers[slot][racersCount][p] == -1) continue;
+        OnlineInfo[StreetRacers[slot][racersCount][p]][oRacers] = 0;
+        raceRout[StreetRacers[slot][racersCount][p]] = -1;
+        carRaceCheckpoint[StreetRacers[slot][racersCount][p]] = -1;
+        StreetRacers[slot][racersCountWinner][p] = -1;
+        DisablePlayerRaceCheckpoint(StreetRacers[slot][racersCount][p]);
+        DestroyRaceDrawForPlayer(StreetRacers[slot][racersCount][p]);
+        StreetRacers[slot][racersCount][p] = -1;
+        StreetRacers[slot][racePlace][p] = -1;   
     }
 
-    StreetRacers[0][racePosMarket][0] = 0.0, StreetRacers[0][racePosMarket][1] = 0.0;
-    StreetRacers[0][racePosBenz][0] = 0.0, StreetRacers[0][racePosBenz][1] = 0.0;
-    StreetRacers[0][racePosService][0] = 0.0, StreetRacers[0][racePosService][1] = 0.0;
-    StreetRacers[0][racePosTerminal][0] = 0.0, StreetRacers[0][racePosTerminal][1] = 0.0;
+    StreetRacers[slot][racePosMarket][0] = 0.0, StreetRacers[0][racePosMarket][1] = 0.0;
+    StreetRacers[slot][racePosBenz][0] = 0.0, StreetRacers[0][racePosBenz][1] = 0.0;
+    StreetRacers[slot][racePosService][0] = 0.0, StreetRacers[0][racePosService][1] = 0.0;
+    StreetRacers[slot][racePosTerminal][0] = 0.0, StreetRacers[0][racePosTerminal][1] = 0.0;
     
-    if(RaceIcon[0] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
-    DestroyDynamicArea(dyn_zone_zzRace);
-    RaceIcon[0] = 0;
-    StreetRacers[0][raceFamily] = -1;
-    StreetRacers[0][raceMap] = -1;
-    StreetRacers[0][raceStat] = 0;
-    StreetRacers[0][raceUnix] = 0;
+    if(RaceIcon[slot] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
+    DestroyDynamicArea(dyn_zone_zzRace[slot]);
+    RaceIcon[slot] = 0;
+    StreetRacers[slot][raceFamily] = -1;
+    StreetRacers[slot][raceMap] = -1;
+    StreetRacers[slot][raceStat] = 0;
+    StreetRacers[slot][raceUnix] = 0;
     return 1;
 }
 
 stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 {
+
 	if(dialogid == 1451)
    	{
-   	    if(response) CreatePartyStreet(playerid);
+   	    if(response) {
+            new slot = -1;
+            for (new i; i < MAX_RACERS_POINT; i++)
+            {
+                if(StreetRacers[i][raceStat] != 0) continue;
+                slot = i;
+                break;
+            }
+            if(slot == -1) return ErrorMessage(playerid, "{ff6347}Все слоты для сходок заняты, попробуйте позже или явитесь на активную сходку");
+            CreatePartyStreet(playerid,slot);
+        }
     }
     else if(dialogid == 1452)
    	{
    	    if(response)
         {
+            new fId = PlayerInfo[playerid][pFamily];
+            new slot = FamilyInfo[fId][fStreetRacersID];
             if(listitem == 0)
             {
-                if((StreetRacers[0][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) 
-                || (StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) 
-                || (StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) 
-                || (StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
-                ReadyPartyStreet(playerid);
+                if((StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) 
+                || (StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) 
+                || (StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) 
+                || (StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
+                ReadyPartyStreet(playerid,slot);
                 GoStreetRacers(playerid);
             }
             if(listitem >= 1 && listitem <= 4)
             {   
+                new otmena;
+                for(new i; i < MAX_RACERS_POINT; i++)
+                {
+                    if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid,100.0,StreetRacers[i][racePosTerminal][0],StreetRacers[i][racePosTerminal][1],StreetRacers[i][racePosTerminal][2])) otmena = -1;
+                    else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid,100.0,StreetRacers[i][racePosBenz][0],StreetRacers[i][racePosBenz][1],StreetRacers[i][racePosBenz][2])) otmena = -1;
+                    else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid, 100.0, StreetRacers[i][racePosService][0],StreetRacers[i][racePosService][1],StreetRacers[i][racePosService][2])) otmena = -1;
+                    else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid, 100.0, StreetRacers[i][racePosMarket][0],StreetRacers[i][racePosMarket][1],StreetRacers[i][racePosMarket][2])) otmena = -1;
+                }
+                if(otmena == -1) return ErrorMessage(playerid,"{ff6347}Увы, но кто-то рядом уже готовится к гонке!");
                 new moving;
-                if(StreetRacers[0][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0 && listitem == 1) moving = 0;
-                else if(StreetRacers[0][racePosMarket][0] != 0.0 && StreetRacers[0][racePosMarket][1] != 0.0 && listitem == 1) moving = 1;
-                if(StreetRacers[0][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0 && listitem == 2) moving = 0;
-                else if(StreetRacers[0][racePosBenz][0] != 0.0 && StreetRacers[0][racePosBenz][1] != 0.0 && listitem == 2) moving = 1;
-                if(StreetRacers[0][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0 && listitem == 3) moving = 0;
-                else if(StreetRacers[0][racePosService][0] != 0.0 && StreetRacers[0][racePosService][1] != 0.0 && listitem == 3) moving = 1;
-                if(StreetRacers[0][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0 && listitem == 4) moving = 0;
-                else if(StreetRacers[0][racePosTerminal][0] != 0.0 && StreetRacers[0][racePosTerminal][1] != 0.0 && listitem == 4) moving = 1;
+                if(StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[slot][racePosMarket][1] == 0.0 && listitem == 1) moving = 0;
+                else if(StreetRacers[slot][racePosMarket][0] != 0.0 && StreetRacers[slot][racePosMarket][1] != 0.0 && listitem == 1) moving = 1;
+                if(StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[slot][racePosBenz][1] == 0.0 && listitem == 2) moving = 0;
+                else if(StreetRacers[slot][racePosBenz][0] != 0.0 && StreetRacers[slot][racePosBenz][1] != 0.0 && listitem == 2) moving = 1;
+                if(StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[slot][racePosService][1] == 0.0 && listitem == 3) moving = 0;
+                else if(StreetRacers[slot][racePosService][0] != 0.0 && StreetRacers[slot][racePosService][1] != 0.0 && listitem == 3) moving = 1;
+                if(StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[slot][racePosTerminal][1] == 0.0 && listitem == 4) moving = 0;
+                else if(StreetRacers[slot][racePosTerminal][0] != 0.0 && StreetRacers[slot][racePosTerminal][1] != 0.0 && listitem == 4) moving = 1;
                 if(moving == 0 || moving == 1)
                 {
                     new objectid;
@@ -204,14 +235,14 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                     else if(listitem == 3) objectid = 19903;
                     else if(listitem == 4) objectid = 2754;
                     if(MPGO[playerid] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я на мероприятии..");
-                    DP[0][playerid] = moving;
+                    DP[0][playerid] = slot;
 
                     new Float:f_pos[4];
                     frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
                     if(moving == 0) CreateEditPlayerObject(playerid, 21 + listitem, 0, listitem -1, 0, objectid, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
                     else if(moving == 1)
                     {
-                        GoEditDynamicObject(playerid, 21 + listitem, 1, listitem - 1, 0, RentObjectRace[listitem -1], 0);
+                        GoEditDynamicObject(playerid, 21 + listitem, 1, listitem - 1, 0, RentObjectRace[slot][listitem -1], 0);
                     }
                 }
             }
@@ -297,7 +328,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 if(PlayerInfo[playerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вы не глава семьи и не можете управлять данным мероприятием");
                 if(FamilyInfo[fam][fParthnerBenz] == 0 || FamilyInfo[fam][fParthnerMarket] == 0 || FamilyInfo[fam][fParthnerService] == 0) return ErrorMessage(playerid, "{FF6347}Нужно что бы все партнерства были заключены");
-                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid, "{FF6347}Сейчас идет гонка");
+                //if(StreetRacers[slot][raceStat] == 3) return ErrorMessage(playerid, "{FF6347}Сейчас идет гонка");
                 GoStreetRacers(playerid);
             }
             if(listitem == 1)
@@ -415,7 +446,9 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             {
                 new listord = List[listitem][playerid];
                 DP[1][playerid] = listord;
-                RegisterToRace(playerid, listord);
+                new slot = DP[4][playerid];
+                if(listitem == 8) return LeaveRace(playerid,slot);
+                RegisterToRace(playerid, listord,slot);
             }
         }
     }
@@ -423,10 +456,12 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     {
         if(response)
 		{
+            new slot = DP[4][playerid];
             new number = DP[1][playerid];
-            if(StreetRacers[0][racersCount][number] != -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выберите другой");
-            StreetRacers[0][racersCount][number] = playerid;
-            StreetRacers[0][racePlace][number] = playerid;
+            if(StreetRacers[slot][racersCount][number] != -1) return ErrorMessage(playerid,"{FF6347} Слот занят, выберите другой");
+            StreetRacers[slot][racersCount][number] = playerid;
+            StreetRacers[slot][racePlace][number] = playerid;
+            OnlineInfo[playerid][oStreetRaceSlot] = slot+1;
             SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
 		}
     }
@@ -434,24 +469,30 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     {
         if(response)
         {
+            new fId = PlayerInfo[playerid][pFamily];
+            new slot = FamilyInfo[fId][fStreetRacersID];
             if(listitem == 0)
             {
-                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
+                if(StreetRacers[slot][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Сейчас уже идет сходка");
 		        ShowDialog(playerid,1464,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Вы уверены что хотите начать гонку?","Да","Нет");     
             }
             if(listitem == 1)
             {
-                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Можно провести только одну гонку за сходку");
+                if(StreetRacers[slot][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Нельзя сменить карту во время гонки");
                 ShowAllRoutRace(playerid,2);
             }
             if(listitem == 2)
             {
-                if(StreetRacers[0][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Список победителей можно посмотреть в терминале");
-                ListRegisterToRace(playerid,1);
+                if(StreetRacers[slot][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Список победителей можно посмотреть в терминале");
+                ListRegisterToRace(playerid,1,slot);
             }
             if(listitem == 3)
             {
-                ClosePartyStreet();
+                stoprace(slot);
+            }
+            if(listitem == 4)
+            {
+                ClosePartyStreet(slot);
             }
         }
     }
@@ -460,11 +501,12 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
         if(response)
 		{
 			if(listitem > 5 || listitem < 0) return 0;
-			new slot = List[listitem][playerid];
+			new slots = List[listitem][playerid];
             new fam = PlayerInfo[playerid][pFamily];
-            if(FamilyInfo[fam][fRoutIdCreator][slot] == 0) return ErrorMessage(playerid,"{ff4367}Маршрут пустой");
+            new slot = FamilyInfo[fam][fStreetRacersID];
+            if(FamilyInfo[fam][fRoutIdCreator][slots] == 0) return ErrorMessage(playerid,"{ff4367}Маршрут пустой");
 			DP[0][playerid] = -1;
-			StreetRacers[0][raceMap] = slot;
+			StreetRacers[slot][raceMap] = slots;
             SuccessMessage(playerid,"{99ff66}Вы успешно выбрали карту для гонки");
 		}
     }
@@ -490,19 +532,23 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     }
     else if(dialogid == 1466)
     {
+        new fam = PlayerInfo[playerid][pFamily];
+        new target = DP[1][playerid];
+        new idrace = FamilyInfo[fam][fStreetRacersID];
         if(response)
 		{
-            new target = DP[1][playerid];
-            ErrorMessage(StreetRacers[0][racersCount][target], "{FF6347}Вас исключили из участников гонки");
-            LeaveRace(target);
+            ErrorMessage(StreetRacers[idrace][racersCount][target], "{FF6347}Вас исключили из участников гонки");
+            LeaveRace(target,idrace);
 		}
-        else return ListRegisterToRace(playerid,1);
+        else return ListRegisterToRace(playerid,1,idrace);
     }
     else if(dialogid == 1467)
     {
         if(response)
 		{
-            StartRace(playerid);
+            new fam = PlayerInfo[playerid][pFamily];
+            new idrace = FamilyInfo[fam][fStreetRacersID];
+            StartRace(playerid,idrace);
 		}
         else return GoStreetRacers(playerid);
     }
@@ -758,47 +804,47 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
     }
 	return 1;
 }
-stock CreateLabelTermRace(br,objectid)
+stock CreateLabelTermRace(br,objectid,idrace)
 {	
-    if(RentPickupRace[br]) 
+    if(RentPickupRace[idrace][br]) 
     {
-        DestroyDynamicPickup(RentPickupRace[br]);
-        DestroyDynamic3DTextLabel(RentLabelRace[br]);
+        DestroyDynamicPickup(RentPickupRace[idrace][br]);
+        DestroyDynamic3DTextLabel(RentLabelRace[idrace][br]);
     }
     new Float:x,Float:y,Float:z;
 	if(br == 0)
 	{	
-        frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosMarket][5]);
-		RentPickupRace[br] = CreateDynamicPickup(1546, 1, x, y, z, 0, 0);
+        frontobject(objectid,1.0,x,y,z,StreetRacers[idrace][racePosMarket][5]);
+		RentPickupRace[idrace][br] = CreateDynamicPickup(1546, 1, x, y, z, 0, 0);
 
 		// Ставим бота для ларька с едой (Создаётся и переустанавливается в одном стоке)
 		//CreateTerminalActorRace();
 	}
 	else if(br == 1)
 	{
-		frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosBenz][5]);
-        RentPickupRace[br] = CreateDynamicPickup(1650, 1, x, y, z, 0, 0);
+		frontobject(objectid,1.0,x,y,z,StreetRacers[idrace][racePosBenz][5]);
+        RentPickupRace[idrace][br] = CreateDynamicPickup(1650, 1, x, y, z, 0, 0);
 	}
     else if(br == 2)
 	{
-		frontobject(objectid,1.0,x,y,z,StreetRacers[0][racePosService][5]);
+		frontobject(objectid,1.0,x,y,z,StreetRacers[idrace][racePosService][5]);
         z = z+0.5;
-        RentPickupRace[br] = CreateDynamicPickup(19627, 1, x, y, z, 0, 0);
+        RentPickupRace[idrace][br] = CreateDynamicPickup(19627, 1, x, y, z, 0, 0);
     }
     else if(br == 3)
 	{
-		backtobject(objectid,1.0,x,y,z,StreetRacers[0][racePosTerminal][5]);
-        RentPickupRace[br] = CreateDynamicPickup(1239, 1, x, y, z, 0, 0);
+		backtobject(objectid,1.0,x,y,z,StreetRacers[idrace][racePosTerminal][5]);
+        RentPickupRace[idrace][br] = CreateDynamicPickup(1239, 1, x, y, z, 0, 0);
     }
-    RentLabelRace[br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,x, y, z,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+    RentLabelRace[idrace][br] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,x, y, z,8.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 	return 1;
 }
 
-stock UpdateLabelTermRace(br)
+stock UpdateLabelTermRace(br,idrace)
 {
-    new b = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerMarket];
-    new b1 = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerBenz];
-    new b2 = FamilyInfo[StreetRacers[0][raceFamily]][fParthnerService];
+    new b = FamilyInfo[StreetRacers[idrace][raceFamily]][fParthnerMarket];
+    new b1 = FamilyInfo[StreetRacers[idrace][raceFamily]][fParthnerBenz];
+    new b2 = FamilyInfo[StreetRacers[idrace][raceFamily]][fParthnerService];
 	new string[214];
 	if (br == 0) 
     {
@@ -816,30 +862,32 @@ stock UpdateLabelTermRace(br)
     {
         format(string,sizeof(string),"{ff9000}Терминал гонки {cccccc}\n[ ALT ]");
     }
-	UpdateDynamic3DTextLabelText(RentLabelRace[br],0xA9C4E4FF,string);
+	UpdateDynamic3DTextLabelText(RentLabelRace[idrace][br],0xA9C4E4FF,string);
 	return 1;
 }
 
-stock ListRegisterToRace(playerid, type)
+stock ListRegisterToRace(playerid, type,idrace)
 {
     new quan;
-	new line[50],lines[450];
+	new line[50],lines[500];
 	for(new i = 0; i < 8; i++)
 	{
 		List[i][playerid] = 0;
-		if(StreetRacers[0][racersCount][i] != -1)
+		if(StreetRacers[idrace][racersCount][i] != -1)
 		{
 		    List[quan][playerid] = i;
 			quan ++;
 			format(line,sizeof(line),"{ff9000}%d. %s\n", quan, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
 		}
-		else if(StreetRacers[0][racersCount][i] == -1)
+		else if(StreetRacers[idrace][racersCount][i] == -1)
 		{
 		    List[quan][playerid] = i;
 			quan ++;
 			format(line,sizeof(line),"{ff9000}%d. {cccccc}Свободно\n", quan), strcat(lines,line);
 		}
 	}
+    format(line,sizeof(line),"{ff6347}Отменить регистрацию\n", quan), strcat(lines,line);
+    DP[4][playerid] = idrace;
 	if(type == 0) ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
     else if(type == 1) ShowDialog(playerid,1465,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
 	return 1;
@@ -847,7 +895,9 @@ stock ListRegisterToRace(playerid, type)
 
 stock SettingRegisterToRace(playerid, number)
 {
-    if(StreetRacers[0][racersCount][number] != -1)
+    new fam = PlayerInfo[playerid][pFamily];
+    new idrace = FamilyInfo[fam][fStreetRacersID];
+    if(StreetRacers[idrace][racersCount][number] != -1)
     {
 		ShowDialog(playerid,1466,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Выгнать игрока из списка участников?","Да","Нет");
     }
@@ -855,33 +905,34 @@ stock SettingRegisterToRace(playerid, number)
     return 1;
 }
 
-stock RegisterToRace(playerid, number)
+stock RegisterToRace(playerid, number,idrace)
 {
-    if(StreetRacers[0][raceStat] != 3)
+    if(StreetRacers[idrace][raceStat] != 3)
     {
-        new otmena = 0;
+        new otmena;
         for(new i; i < 8; i++)
         {
-            if(StreetRacers[0][racersCount][i] == playerid)
+            if(StreetRacers[idrace][racersCount][i] == playerid)
             {
                 otmena = -1;
                 break;
             }   
         }
         if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
-        if(StreetRacers[0][racersCount][number] == -1 && otmena != -1)
+        if(OnlineInfo[playerid][oStreetRaceSlot]-1 >= 0 && OnlineInfo[playerid][oStreetRaceSlot]-1 != idrace) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в другой сходке на гонку");
+        if(StreetRacers[idrace][racersCount][number] == -1 && otmena != -1)
         {
             ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Занять место в гонке?","Да","Нет");
         }
         else return ErrorMessage(playerid,"{FF6347}Слот занят, выберите другой");
     }
-    else if(StreetRacers[0][raceStat] == 3)
+    else if(StreetRacers[idrace][raceStat] == 3)
     {
         new line[40],lines[360];
         format(line,sizeof(line),"Позиция Имя победителя"), strcat(lines,line);
         for(new i; i < 8; i++)
         {
-            format(line,sizeof(line),"\n{ff9000}%d. %s", i+1, rpplayername(StreetRacers[0][racersCount][i])), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%d. %s", i+1, rpplayername(StreetRacers[idrace][racersCount][i])), strcat(lines,line);
         }
         ShowDialog(playerid,1742,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выход","");
     }
@@ -920,156 +971,168 @@ stock StreetRacersBusi(playerid, br)
 
 stock CheckpointRaceRout(playerid)
 {
+    new idrace = OnlineInfo[playerid][oStreetRaceSlot]-1;
 	new r = carRaceCheckpoint[playerid];
     PlayerPlaySound(playerid,1150,0,0,0);
 	DisablePlayerRaceCheckpoint(playerid);
-    if(r >= 59) return RaceWinner(playerid);
+    if(r >= 59) return RaceWinner(playerid,idrace);
     else
     {
-        if(StreetRacers[0][raceCordX][r] != 0.0 && StreetRacers[0][raceCordY][r] != 0.0 && StreetRacers[0][raceCordX][r+1] == 0.0 && StreetRacers[0][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r],7.0);
-	    else if(StreetRacers[0][raceCordX][r+1] != 0.0 && StreetRacers[0][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,0,StreetRacers[0][raceCordX][r], StreetRacers[0][raceCordY][r], StreetRacers[0][raceCordZ][r], StreetRacers[0][raceCordX][r+1], StreetRacers[0][raceCordY][r+1], StreetRacers[0][raceCordZ][r+1],7.0);
-        else if(StreetRacers[0][raceCordX][r] == 0.0 && StreetRacers[0][raceCordY][r] == 0.0) return RaceWinner(playerid);
+        if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
+	    else if(StreetRacers[idrace][raceCordX][r+1] != 0.0 && StreetRacers[idrace][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,0,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r+1], StreetRacers[idrace][raceCordY][r+1], StreetRacers[idrace][raceCordZ][r+1],7.0);
+        else if(StreetRacers[idrace][raceCordX][r] == 0.0 && StreetRacers[idrace][raceCordY][r] == 0.0) return RaceWinner(playerid,idrace);
     }
-    UpdatePointRace(0, playerid);
+    UpdatePointRace(idrace, playerid);
 	return 1;
 }
 
-stock StartRace(playerid)
+stock StartRace(playerid,idrace)
 {
-    StreetRacers[0][raceStat] = 3;
+    StreetRacers[idrace][raceStat] = 3;
     for(new i; i < 8; i++)
     {
-        if(StreetRacers[0][racersCount][i] != -1)
+        if(StreetRacers[idrace][racersCount][i] != -1)
         {
-            OnlineInfo[StreetRacers[0][racersCount][i]][oRacers] = 1;
-            TogglePlayerControllable(StreetRacers[0][racersCount][i],0);
-            StreetRacers[0][raceTimer] = 5;
+            OnlineInfo[StreetRacers[idrace][racersCount][i]][oRacers] = 1;
+            OnlineInfo[StreetRacers[idrace][racersCount][i]][oStreetRaceSlot] = idrace+1;
+            TogglePlayerControllable(StreetRacers[idrace][racersCount][i],0);
+            StreetRacers[idrace][raceTimer] = 5;
         }   
     }
 
-    new fam = StreetRacers[0][raceFamily];
-    StreetRacers[0][racePoints] = 0;
+    new fam = StreetRacers[idrace][raceFamily];
+    StreetRacers[idrace][racePoints] = 0;
     for(new i; i < 60; i++)
     {
-        StreetRacers[0][raceCordX][i] = 0.0;
-        StreetRacers[0][raceCordY][i] = 0.0;
-        StreetRacers[0][raceCordZ][i] = 0.0;
+        StreetRacers[idrace][raceCordX][i] = 0.0;
+        StreetRacers[idrace][raceCordY][i] = 0.0;
+        StreetRacers[idrace][raceCordZ][i] = 0.0;
 
-        if(StreetRacers[0][raceMap] == 0)
+        if(StreetRacers[idrace][raceMap] == 0)
         {
-            StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad1X][i];
-            StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad1Y][i];
-            StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad1Z][i];
+            StreetRacers[idrace][raceCordX][i] = FamilyInfo[fam][fRoudLoad1X][i];
+            StreetRacers[idrace][raceCordY][i] = FamilyInfo[fam][fRoudLoad1Y][i];
+            StreetRacers[idrace][raceCordZ][i] = FamilyInfo[fam][fRoudLoad1Z][i];
         }
-        else if(StreetRacers[0][raceMap] == 1)
+        else if(StreetRacers[idrace][raceMap] == 1)
         {
-            StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad2X][i];
-            StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad2Y][i];
-            StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad2Z][i];
+            StreetRacers[idrace][raceCordX][i] = FamilyInfo[fam][fRoudLoad2X][i];
+            StreetRacers[idrace][raceCordY][i] = FamilyInfo[fam][fRoudLoad2Y][i];
+            StreetRacers[idrace][raceCordZ][i] = FamilyInfo[fam][fRoudLoad2Z][i];
         }
-        else if(StreetRacers[0][raceMap] == 2)
+        else if(StreetRacers[idrace][raceMap] == 2)
         {
-            StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad3X][i];
-            StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad3Y][i];
-            StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad3Z][i];
+            StreetRacers[idrace][raceCordX][i] = FamilyInfo[fam][fRoudLoad3X][i];
+            StreetRacers[idrace][raceCordY][i] = FamilyInfo[fam][fRoudLoad3Y][i];
+            StreetRacers[idrace][raceCordZ][i] = FamilyInfo[fam][fRoudLoad3Z][i];
         }
-        else if(StreetRacers[0][raceMap] == 3)
+        else if(StreetRacers[idrace][raceMap] == 3)
         {
-            StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad4X][i];
-            StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad4Y][i];
-            StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad4Z][i];
+            StreetRacers[idrace][raceCordX][i] = FamilyInfo[fam][fRoudLoad4X][i];
+            StreetRacers[idrace][raceCordY][i] = FamilyInfo[fam][fRoudLoad4Y][i];
+            StreetRacers[idrace][raceCordZ][i] = FamilyInfo[fam][fRoudLoad4Z][i];
         }
-        else if(StreetRacers[0][raceMap] == 4)
+        else if(StreetRacers[idrace][raceMap] == 4)
         {
-            StreetRacers[0][raceCordX][i] = FamilyInfo[fam][fRoudLoad5X][i];
-            StreetRacers[0][raceCordY][i] = FamilyInfo[fam][fRoudLoad5Y][i];
-            StreetRacers[0][raceCordZ][i] = FamilyInfo[fam][fRoudLoad5Z][i];
+            StreetRacers[idrace][raceCordX][i] = FamilyInfo[fam][fRoudLoad5X][i];
+            StreetRacers[idrace][raceCordY][i] = FamilyInfo[fam][fRoudLoad5Y][i];
+            StreetRacers[idrace][raceCordZ][i] = FamilyInfo[fam][fRoudLoad5Z][i];
         }
 
-        if(StreetRacers[0][raceCordX][i] != 0.0 && StreetRacers[0][raceCordY][i] != 0.0) StreetRacers[0][racePoints] ++;
+        if(StreetRacers[idrace][raceCordX][i] != 0.0 && StreetRacers[idrace][raceCordY][i] != 0.0) StreetRacers[idrace][racePoints] ++;
     }
-    StreetRacers[0][raceCordX][60] = 0.0;
-    StreetRacers[0][raceCordY][60] = 0.0;
-    StreetRacers[0][raceCordZ][60] = 0.0;
+    StreetRacers[idrace][raceCordX][60] = 0.0;
+    StreetRacers[idrace][raceCordY][60] = 0.0;
+    StreetRacers[idrace][raceCordZ][60] = 0.0;
     SuccessMessage(playerid,"{99ff66} Вы объявили начало гонке!");
 
-    UpdatePointRace(0, playerid);
+    UpdatePointRace(idrace, playerid);
     return 1;
 }
 
-stock TimerToStart()
+stock TimerToStart(idrace)
 {
-    StreetRacers[0][raceTimer]--;
-    if(StreetRacers[0][raceTimer] > 0)
+    StreetRacers[idrace][raceTimer]--;
+    if(StreetRacers[idrace][raceTimer] > 0)
     {
         for(new i; i < 8; i++)
         {
-            if(StreetRacers[0][racersCount][i] != -1)
+            if(StreetRacers[idrace][racersCount][i] != -1)
             {
                 new string[4];
-                PlayerPlaySound(StreetRacers[0][racersCount][i],1056,0,0,0);
+                PlayerPlaySound(StreetRacers[idrace][racersCount][i],1056,0,0,0);
                 format(string,sizeof(string),"%d",StreetRacers[0][raceTimer]);
-                GameTextForPlayer(StreetRacers[0][racersCount][i], string, 2000, 6);
+                GameTextForPlayer(StreetRacers[idrace][racersCount][i], string, 2000, 6);
             }
         }
     }
-    else if(StreetRacers[0][raceTimer] == 0)
+    else if(StreetRacers[idrace][raceTimer] == 0)
     {
         for(new i; i < 8; i++)
         {
-            if(StreetRacers[0][racersCount][i] != -1)
+            if(StreetRacers[idrace][racersCount][i] != -1)
             {
-                TogglePlayerControllable(StreetRacers[0][racersCount][i],1);
-                PlayerPlaySound(StreetRacers[0][racersCount][i],3201,0,0,0);
-                GameTextForPlayer(StreetRacers[0][racersCount][i], "~g~ GO!", 2000, 6);
-                carRaceCheckpoint[StreetRacers[0][racersCount][i]] = 0;
-                SetPlayerRaceCheckpoint(StreetRacers[0][racersCount][i],0,StreetRacers[0][raceCordX][0], StreetRacers[0][raceCordY][0], StreetRacers[0][raceCordZ][0],StreetRacers[0][raceCordX][1],StreetRacers[0][raceCordY][1],StreetRacers[0][raceCordZ][1],6.0);
+                TogglePlayerControllable(StreetRacers[idrace][racersCount][i],1);
+                PlayerPlaySound(StreetRacers[idrace][racersCount][i],3201,0,0,0);
+                GameTextForPlayer(StreetRacers[idrace][racersCount][i], "~g~ GO!", 2000, 6);
+                carRaceCheckpoint[StreetRacers[idrace][racersCount][i]] = 0;
+                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],0,StreetRacers[0][raceCordX][0], StreetRacers[0][raceCordY][0], StreetRacers[0][raceCordZ][0],StreetRacers[0][raceCordX][1],StreetRacers[0][raceCordY][1],StreetRacers[0][raceCordZ][1],6.0);
             }
         } 
     }
 }
 
-stock LeaveRace(playerid)
+stock LeaveRace(playerid,idrace)
 {
     for(new checking; checking < 8; checking++)
 	{
-		if(StreetRacers[0][racersCount][checking] == playerid)
+		if(StreetRacers[idrace][racersCount][checking] == playerid)
 		{
             OnlineInfo[playerid][oRacers] = 0;
-			StreetRacers[0][racersCount][checking] = -1;
+			StreetRacers[idrace][racersCount][checking] = -1;
+            OnlineInfo[playerid][oStreetRaceSlot] = 0;
 		}
 
-        if(StreetRacers[0][racePlace][checking] == playerid) StreetRacers[0][racePlace][checking] = -1;
+        if(StreetRacers[idrace][racePlace][checking] == playerid) StreetRacers[idrace][racePlace][checking] = -1;
 	}
 
     DestroyRaceDrawForPlayer(playerid);
     return 1;
 }
-CMD:stoprace(playerid)
+CMD:stoprace(playerid,const params[])
 {
+    new idrace;
+    if(sscanf(params, "i", idrace)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепорт к остановке [ /stoprace ID гонки ]");
+	if(idrace < 1 || idrace > 10) return ErrorMessage(playerid, "{FF6347}Номер не меньше 1 и не больше 10");
     if(PlayerInfo[playerid][pSoska] == 0) return 0;
-    StreetRacers[0][raceStat] = 2;
+    stoprace(idrace);
+    return 1;
+}
+stock stoprace(idrace)
+{
+    StreetRacers[idrace][raceStat] = 2;
     for(new p; p < 8; p++)
     {
-        if(StreetRacers[0][racersCount][p] == -1) continue;
-        DisablePlayerRaceCheckpoint(StreetRacers[0][racersCount][p]);
-        DestroyRaceDrawForPlayer(StreetRacers[0][racersCount][p]);
+        if(StreetRacers[idrace][racersCount][p] == -1) continue;
+        DisablePlayerRaceCheckpoint(StreetRacers[idrace][racersCount][p]);
+        DestroyRaceDrawForPlayer(StreetRacers[idrace][racersCount][p]);
 
-        OnlineInfo[StreetRacers[0][racersCount][p]][oRacers] = 0;
-        raceRout[StreetRacers[0][racersCount][p]] = -1;
-        carRaceCheckpoint[StreetRacers[0][racersCount][p]] = -1;
-        StreetRacers[0][racersCountWinner][p] = -1;
+        OnlineInfo[StreetRacers[idrace][racersCount][p]][oRacers] = 0;
+        raceRout[StreetRacers[idrace][racersCount][p]] = -1;
+        carRaceCheckpoint[StreetRacers[idrace][racersCount][p]] = 0;
+        StreetRacers[idrace][racersCountWinner][p] = -1;
     }
     return 1;
 }
-stock RaceWinner(playerid)
+
+stock RaceWinner(playerid,idrace)
 {
     new quan;
     for(new checking; checking < 8; checking++)
 	{
-		if(StreetRacers[0][racersCountWinner][checking] == -1)
+		if(StreetRacers[idrace][racersCountWinner][checking] == -1)
 		{
-			StreetRacers[0][racersCountWinner][checking] = playerid;
+			StreetRacers[idrace][racersCountWinner][checking] = playerid;
 			break;
 		}
         quan++;
@@ -1081,7 +1144,7 @@ stock RaceWinner(playerid)
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 0) continue;
-        if(IsPlayerInRangeOfPoint(i,50.0,StreetRacers[0][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2])
+        if(IsPlayerInRangeOfPoint(i,50.0,StreetRacers[idrace][racePosTerminal][0],StreetRacers[idrace][racePosTerminal][1],StreetRacers[idrace][racePosTerminal][2])
          && GetPlayerVirtualWorld(i) == 0 && GetPlayerInterior(i) == 0 || OnlineInfo[i][oRacers] == 1)
         {
             format(string,sizeof(string), " SMS от Оператора Гонки: {99ff33}Участник %s завершил гонку на %d месте",rpplayername(playerid),quan+1);
@@ -1091,13 +1154,13 @@ stock RaceWinner(playerid)
     new quanrace,quanwin;
     for(new checking; checking < 8; checking++)
 	{
-		if(StreetRacers[0][racersCount][checking] != -1) quanrace++;
-        if(StreetRacers[0][racersCountWinner][checking] != -1) quanwin++;
+		if(StreetRacers[idrace][racersCount][checking] != -1) quanrace++;
+        if(StreetRacers[idrace][racersCountWinner][checking] != -1) quanwin++;
 	}
     if(quanrace <= quanwin) 
     {
-        StreetRacers[0][raceStat] = 2;
-        DestroyRaceDrawForPlayer(playerid);
+        StreetRacers[idrace][raceStat] = 2;
+        stoprace(idrace);
     }
     return 1;
 }
@@ -1470,7 +1533,7 @@ stock SettingRoutRace(playerid, number, author)
 new PlayerText:PlayerRaceDraw[MAX_DRAW_RACE][MAX_REALPLAYERS]; // Текстдравы Гонки
 new bool:DrawRace[MAX_REALPLAYERS];
 
-stock UpdatePointRace(raceid, playerid)
+stock UpdatePointRace(idrace, playerid)
 {
     new string[400];
     FindPlaceRacePlayer(playerid, StreetRacers[0][racePlace], string);
@@ -1480,7 +1543,7 @@ stock UpdatePointRace(raceid, playerid)
         UpdatePointRaceForPlayer(0,playerid);
         return 1;
     }
-    else UpdateRaceDrawForAllPlayers(raceid, string); // Обновляем строку всем участникам
+    else UpdateRaceDrawForAllPlayers(idrace, string); // Обновляем строку всем участникам
     return 1;
 }
 
@@ -1532,13 +1595,13 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
     return 1;
 }
 
-stock UpdateRaceDrawForAllPlayers(raceid, const string[])
+stock UpdateRaceDrawForAllPlayers(idrace, const string[])
 {
     for(new p; p < MAX_PLACE_RACE; p++)
     {
-        if(StreetRacers[raceid][racersCount][p] == -1
-            && StreetRacers[raceid][racersCountWinner][p] == -1) continue;
-        new giveplayerid = StreetRacers[raceid][racersCount][p];
+        if(StreetRacers[idrace][racersCount][p] == -1
+            && StreetRacers[idrace][racersCountWinner][p] == -1) continue;
+        new giveplayerid = StreetRacers[idrace][racersCount][p];
         if(IsOnline(giveplayerid))
         {
             UpdateRaceDrawForPlayer(giveplayerid, string);
@@ -1557,8 +1620,8 @@ stock UpdateRaceDrawForPlayer(playerid, const text[])
 
 	PlayerTextDrawSetString(playerid, PlayerRaceDraw[0][playerid], text);
     PlayerTextDrawShow(playerid, PlayerRaceDraw[0][playerid]); 
-
-    UpdatePointRaceForPlayer(0, playerid);
+    new idrace = OnlineInfo[playerid][oStreetRaceSlot]-1;
+    UpdatePointRaceForPlayer(idrace, playerid);
     return 1;
 }
 
@@ -1570,10 +1633,10 @@ stock ShowRaceDrawForPlayer(playerid)
     return 1;
 }
 
-stock UpdatePointRaceForPlayer(gameid, playerid)
+stock UpdatePointRaceForPlayer(idrace, playerid)
 {
     new string[20];
-    format(string,sizeof(string),"%d/%d", carRaceCheckpoint[playerid], StreetRacers[gameid][racePoints]);
+    format(string,sizeof(string),"%d/%d", carRaceCheckpoint[playerid], StreetRacers[idrace][racePoints]);
     PlayerTextDrawSetString(playerid, PlayerRaceDraw[3][playerid], string);
     PlayerTextDrawShow(playerid, PlayerRaceDraw[3][playerid]);
     return 1;
