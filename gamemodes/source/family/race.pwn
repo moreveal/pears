@@ -151,6 +151,7 @@ stock ClosePartyStreet(slot)
     {
         if(StreetRacers[slot][racersCount][p] == -1) continue;
         OnlineInfo[StreetRacers[slot][racersCount][p]][oRacers] = 0;
+        OnlineInfo[StreetRacers[slot][racersCount][p]][oStreetRaceSlot] = 0;
         raceRout[StreetRacers[slot][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[slot][racersCount][p]] = -1;
         StreetRacers[slot][racersCountWinner][p] = -1;
@@ -1122,6 +1123,7 @@ stock stoprace(idrace)
         DestroyRaceDrawForPlayer(StreetRacers[idrace][racersCount][p]);
 
         OnlineInfo[StreetRacers[idrace][racersCount][p]][oRacers] = 0;
+        OnlineInfo[StreetRacers[idrace][racersCount][p]][oStreetRaceSlot] = 0;
         raceRout[StreetRacers[idrace][racersCount][p]] = -1;
         carRaceCheckpoint[StreetRacers[idrace][racersCount][p]] = 0;
         StreetRacers[idrace][racersCountWinner][p] = -1;
