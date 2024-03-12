@@ -115,8 +115,8 @@ stock ReadyPartyStreet(playerid,slot)
     StreetRacers[slot][raceStat] = 2;
     StreetRacers[slot][raceUnix] = 7200;
     StreetRacers[slot][raceMap] = -1;
-    RaceIcon[slot] = CreateDynamicMapIcon(StreetRacers[slot][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2],53,0,-1,-1,-1,200.0);
-    dyn_zone_zzRace[slot] = CreateDynamicSphere(StreetRacers[slot][racePosTerminal][0],StreetRacers[0][racePosTerminal][1],StreetRacers[0][racePosTerminal][2], 50, 0, 0);
+    RaceIcon[slot] = CreateDynamicMapIcon(StreetRacers[slot][racePosTerminal][0],StreetRacers[slot][racePosTerminal][1],StreetRacers[slot][racePosTerminal][2],53,0,-1,-1,-1,200.0);
+    dyn_zone_zzRace[slot] = CreateDynamicSphere(StreetRacers[slot][racePosTerminal][0],StreetRacers[slot][racePosTerminal][1],StreetRacers[slot][racePosTerminal][2], 50, 0, 0);
     for(new i; i < 8; i++)
     {
         StreetRacers[slot][racersCount][i] = -1;
@@ -165,8 +165,9 @@ stock ClosePartyStreet(slot)
     StreetRacers[slot][racePosService][0] = 0.0, StreetRacers[0][racePosService][1] = 0.0;
     StreetRacers[slot][racePosTerminal][0] = 0.0, StreetRacers[0][racePosTerminal][1] = 0.0;
     
-    if(RaceIcon[slot] != 0) DestroyDynamicMapIcon(RaceIcon[0]);
+    if(RaceIcon[slot] != 0) DestroyDynamicMapIcon(RaceIcon[slot]);
     DestroyDynamicArea(dyn_zone_zzRace[slot]);
+    FamilyInfo[StreetRacers[slot][raceFamily]][fStreetRacersID] = -1;
     RaceIcon[slot] = 0;
     StreetRacers[slot][raceFamily] = -1;
     StreetRacers[slot][raceMap] = -1;
@@ -212,12 +213,13 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 new otmena;
                 for(new i; i < MAX_RACERS_POINT; i++)
                 {
+                    if(slot == i) continue;
                     if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid,100.0,StreetRacers[i][racePosTerminal][0],StreetRacers[i][racePosTerminal][1],StreetRacers[i][racePosTerminal][2])) otmena = -1;
                     else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid,100.0,StreetRacers[i][racePosBenz][0],StreetRacers[i][racePosBenz][1],StreetRacers[i][racePosBenz][2])) otmena = -1;
                     else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid, 100.0, StreetRacers[i][racePosService][0],StreetRacers[i][racePosService][1],StreetRacers[i][racePosService][2])) otmena = -1;
                     else if(GetPlayerVirtualWorld(playerid) == 0 && IsPlayerInRangeOfPoint(playerid, 100.0, StreetRacers[i][racePosMarket][0],StreetRacers[i][racePosMarket][1],StreetRacers[i][racePosMarket][2])) otmena = -1;
                 }
-                if(otmena == -1) return ErrorMessage(playerid,"{ff6347}Увы, но кто-то рядом уже готовится к гонке!");
+                if(otmena == -1) return ErrorMessage(playerid,"{ff6347}Увы, но кто-то рядом уже готовится к гонке!\nСходка занимает радиус 100 метров");
                 new moving;
                 if(StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[slot][racePosMarket][1] == 0.0 && listitem == 1) moving = 0;
                 else if(StreetRacers[slot][racePosMarket][0] != 0.0 && StreetRacers[slot][racePosMarket][1] != 0.0 && listitem == 1) moving = 1;
@@ -1076,7 +1078,7 @@ stock TimerToStart(idrace)
                 PlayerPlaySound(StreetRacers[idrace][racersCount][i],3201,0,0,0);
                 GameTextForPlayer(StreetRacers[idrace][racersCount][i], "~g~ GO!", 2000, 6);
                 carRaceCheckpoint[StreetRacers[idrace][racersCount][i]] = 0;
-                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],0,StreetRacers[0][raceCordX][0], StreetRacers[0][raceCordY][0], StreetRacers[0][raceCordZ][0],StreetRacers[0][raceCordX][1],StreetRacers[0][raceCordY][1],StreetRacers[0][raceCordZ][1],6.0);
+                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],0,StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0], StreetRacers[idrace][raceCordZ][0],StreetRacers[idrace][raceCordX][1],StreetRacers[idrace][raceCordY][1],StreetRacers[idrace][raceCordZ][1],6.0);
             }
         } 
     }
@@ -1255,7 +1257,7 @@ stock SaveRoutRace(playerid,slot,status)
             }
             format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
             `routNameCreator2`='%s',`routNameEditor2`='%s',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
-            strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+            strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
         }
@@ -1291,7 +1293,7 @@ stock SaveRoutRace(playerid,slot,status)
             }
             format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
             `routNameCreator3`='%s',`routNameEditor3`='%s',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
-            strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+            strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
         }
@@ -1327,7 +1329,7 @@ stock SaveRoutRace(playerid,slot,status)
             }
             format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
             `routNameCreator4`='%s',`routNameEditor4`='%s',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
-            strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+            strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
         }
@@ -1363,7 +1365,7 @@ stock SaveRoutRace(playerid,slot,status)
             }
             format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
             `routNameCreator5`='%s',`routNameEditor5`='%s',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
-            strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
+            strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
         }
