@@ -106,7 +106,7 @@ stock CreatePartyStreet(playerid,slot)
     StreetRacers[slot][raceFamily] = PlayerInfo[playerid][pFamily];
     StreetRacers[slot][raceStat] = 1;
     StreetRacers[slot][raceUnix] = 7200;
-    SuccessMessage(playerid,"{99ff66}Вы начали подготовку к сходке StreetRacers");
+    PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
 }
 
@@ -191,7 +191,9 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             }
             if(slot == -1) return ErrorMessage(playerid, "{ff6347}Все слоты для сходок заняты, попробуйте позже или явитесь на активную сходку");
             CreatePartyStreet(playerid,slot);
+            GoStreetRacers(playerid);
         }
+        else ShowStreetRacers(playerid, PlayerInfo[playerid][pFamily]);
     }
     else if(dialogid == 1452)
    	{
@@ -1105,9 +1107,9 @@ CMD:stoprace(playerid,const params[])
 {
     new idrace;
     if(sscanf(params, "i", idrace)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепорт к остановке [ /stoprace ID гонки ]");
-	if(idrace < 1 || idrace > 10) return ErrorMessage(playerid, "{FF6347}Номер не меньше 1 и не больше 10");
+	if(idrace < 1 || idrace > MAX_RACERS_POINT) return ErrorMessage(playerid, "{FF6347}Номер не меньше 1 и не больше 20");
     if(PlayerInfo[playerid][pSoska] == 0) return 0;
-    stoprace(idrace);
+    stoprace(idrace-1);
     return 1;
 }
 stock stoprace(idrace)
@@ -1538,11 +1540,11 @@ new bool:DrawRace[MAX_REALPLAYERS];
 stock UpdatePointRace(idrace, playerid)
 {
     new string[400];
-    FindPlaceRacePlayer(playerid, StreetRacers[0][racePlace], string);
+    FindPlaceRacePlayer(playerid, StreetRacers[idrace][racePlace], string);
 
     if(isnull(string))
     {
-        UpdatePointRaceForPlayer(0,playerid);
+        UpdatePointRaceForPlayer(idrace,playerid);
         return 1;
     }
     else UpdateRaceDrawForAllPlayers(idrace, string); // Обновляем строку всем участникам
@@ -1705,4 +1707,18 @@ stock DestroyRaceDrawForPlayer(playerid)
 
     DrawRace[playerid] = false;
     return 1;
+}
+
+stock GetRaceArea(areaid)
+{
+	new bool:yes;
+	for(new b; b<MAX_RACERS_POINT; b++)
+	{
+		if(areaid == dyn_zone_zzRace[b])
+		{
+			yes = true;
+			break;
+		}
+	}
+	return yes;
 }
