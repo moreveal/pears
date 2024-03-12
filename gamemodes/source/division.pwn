@@ -268,7 +268,7 @@ function call_membersdiv(playerid, org, div)
 CMD:divin(playerid, const params[]) return cmd_divinvite(playerid, params);
 CMD:divinvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Безопасность ]");
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
 
 	new g = fraction(playerid);
 	new i = PlayerInfo[playerid][pDivision][0];
@@ -306,7 +306,7 @@ CMD:divkick(playerid, const params[]) return cmd_divuninvite(playerid, params);
 CMD:divun(playerid, const params[]) return cmd_divuninvite(playerid, params);
 CMD:divuninvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Безопасность ]");
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
 
 	new g = fraction(playerid);
 	new i = PlayerInfo[playerid][pDivision][0];

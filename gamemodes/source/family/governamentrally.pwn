@@ -461,6 +461,7 @@ stock SelectVoteAfterRally()
         {
             if(PlayerInfo[i][pLeader] == 7 && PlayerInfo[i][pMember] == 7)
             {
+                UnmakeleaderPlayerBridge(PlayerInfo[i][pID], PlayerInfo[i][pLeader], PlayerInfo[i][pRank]);
                 PlayerInfo[i][pLeader] = 0;
                 Uninvivte(i,0);
                 otmena = 1;
@@ -480,6 +481,7 @@ stock SelectVoteAfterRally()
         {
             if(PlayerInfo[i][pMember] == 7 && PlayerInfo[i][pDivision] == 1)
             {
+                UnmakeleaderPlayerBridge(PlayerInfo[i][pID], PlayerInfo[i][pLeader], PlayerInfo[i][pRank]);
                 PlayerInfo[i][pLeader] = 0;
                 Uninvivte(i,0);
                 OrgLog(7, "DismissalAfterRally", PlayerInfo[i][pID], PlayerInfo[i][pName], PlayerInfo[i][pPlaIP], 0, "", "", 0, "Уволен по голосованию после митинга");
