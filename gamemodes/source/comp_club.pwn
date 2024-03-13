@@ -187,7 +187,7 @@ stock ComputerClubSpectatorRoomExit(playerid) {
     new models = PlayerInfo[playerid][pModel];
     PlayerPlaySound(playerid, 30800, 0.0, 0.0, 0.0);
     new Float: connect_pos[4]; connect_pos[0] = computerClubPlayerInfo[playerid][ccpiConnectPos][0]; connect_pos[1] = computerClubPlayerInfo[playerid][ccpiConnectPos][1]; connect_pos[2] = computerClubPlayerInfo[playerid][ccpiConnectPos][2]; connect_pos[3] = computerClubPlayerInfo[playerid][ccpiConnectPos][3]; 
-    m_custom_sync_SetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
+    ProtectSetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
 
     ComputerClubSetSpectateMode(playerid, false);
 
@@ -995,7 +995,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     // Спавн на том месте, где он зашел в игру
     //new models = PlayerInfo[playerid][pModel];
     SetPosa[playerid] = 2;
-    //m_custom_sync_SetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
+    //ProtectSetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
     //SetPlayerVirtualWorld(playerid, connect_world); SetPlayerInterior(playerid, connect_interior);
 
@@ -1346,7 +1346,9 @@ stock ComputerClubSpectatePlayer(playerid, id) {
     new world = GetPlayerVirtualWorld(id),
         interior = GetPlayerInterior(id);
 
-    TogglePlayerSpectating(playerid, 1);
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(id, x, y, z);
+    PPOpenSpectating(playerid, x, y, z);
     SetPlayerVirtualWorld(playerid, world);
     SetPlayerInterior(playerid, interior);
     PlayerSpectatePlayer(playerid, id);
@@ -1594,7 +1596,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         new Float: x, Float: y, Float: z, Float: a; ComputerClubGetSpawnInfo(locationid, spawnid, x, y, z, a);
 
         new models = PlayerInfo[playerid][pModel];
-        m_custom_sync_SetSpawnInfo(playerid, teamid, models, x, y, z, a, 0, 0, 0, 0, 0, 0);
+        ProtectSetSpawnInfo(playerid, teamid, models, x, y, z, a, 0, 0, 0, 0, 0, 0);
         PPSetPlayerPos(playerid, x, y, z), SetPlayerFacingAngle(playerid, a);
 
         SetCameraBehindPlayer(playerid);
@@ -1658,7 +1660,7 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
                     new Float: cameraX = killerX, Float: cameraY = killerY, Float: cameraZ = killerZ + 1.5;
                     GetXYInFrontOfPoint(cameraX, cameraY, killerA, 10.0);
 
-                    TogglePlayerSpectating(playerid, 1);
+                    PPOpenSpectating(playerid, cameraX, cameraY, cameraZ);
                     InterpolateCameraPos(playerid, cameraX, cameraY, cameraZ, cameraX, cameraY, cameraZ, 2000);
                     InterpolateCameraLookAt(playerid, killerX, killerY, killerZ, killerX, killerY, killerZ, 2000);
 

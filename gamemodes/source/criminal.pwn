@@ -635,7 +635,7 @@ function Call_loadwanted(playerid, race_check)
 {
 	new rows, string[24];
 	cache_get_row_count(rows);
-	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+	if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
 	if(rows)
 	{

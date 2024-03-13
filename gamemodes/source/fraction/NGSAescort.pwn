@@ -2619,13 +2619,16 @@ stock OpenWindowTrain(playerid)
 	SpInt[playerid] = GetPlayerInterior(playerid);
 	SpWorld[playerid] = GetPlayerVirtualWorld(playerid);
 
+	OnlineInfo[playerid][oWindowTrain] = train;
 	S_SetPlayerVirtualWorld(playerid, 0, 0);
 	SetPlayerInterior(playerid, 0);
-	TogglePlayerSpectating(playerid, 1);
+
+	new Float:x, Float:y, Float:z;
+	GetVehiclePos(train, x, y, z);
+	PPOpenSpectating(playerid, x, y, z);
 	PlayerSpectateVehicle(playerid, train);
 	TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 
-	OnlineInfo[playerid][oWindowTrain] = train;
 	SetTimerEx("ResetSpecTrain", 2000, false, "d", playerid);
 	return 1;
 }

@@ -368,7 +368,7 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid); // Защита от супермедленного ответа
+		if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid); // Защита от супермедленного ответа
 
 		// Грузим необходимую информацию об игроке
 		new playerLoad[6];

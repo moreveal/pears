@@ -812,7 +812,7 @@ public Call_checkname_loadinterior(playerid, race_check, str_name[])
 {
     new rows;
     cache_get_row_count(rows);
-    if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
     if(!rows) return ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 
     new userId;
@@ -857,7 +857,7 @@ public Call_loadinterior_information(playerid, race_check, userId, str_name[]) /
     new rows;
 	cache_get_row_count(rows);
     if(!rows) return ErrorMessage(playerid, "{FF6347}Интерьера не существует"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
-    if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
     cache_get_value_name_int(0, "newid", peoInfo[playerid][peoNewid]); // ID Интерьера в личном редакторе
     cache_get_value_name(0, "peoName", peoInfo[playerid][peoName], 34);
@@ -879,7 +879,7 @@ public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Г�
 	new rows;
 	cache_get_row_count(rows);
     if(!rows) return ErrorMessage(playerid, "{FF6347}В интерьере нет объектов"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
-    if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
     
     new slotId, string[6];
 	for(new f; f < rows; ++f) // Цикл для всех найденных объектов игрока

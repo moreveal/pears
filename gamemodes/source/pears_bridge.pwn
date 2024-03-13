@@ -1,6 +1,8 @@
 
 stock UpdateSqlProperties() // Сохраняем инфу о сервере в базу (для синхры)
 {
+    // if(server == 0) return 0; // VREMENNO koment
+
     new string_mysql[1024];
     format(string_mysql, sizeof(string_mysql), "INSERT INTO properties ( name, value ) VALUES \
         ('players', '%d'), \
@@ -14,6 +16,8 @@ stock UpdateSqlProperties() // Сохраняем инфу о сервере в 
 
 stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
 {
+    // if(server == 0) return 0; // VREMENNO koment
+
     mysql_tquery(pearsq_3, "START TRANSACTION;");
 
     mysql_tquery(pearsq_3, "TRUNCATE `online_players`"); 

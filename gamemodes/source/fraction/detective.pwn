@@ -158,7 +158,7 @@ stock InputCarToRent(playerid,wh,car)
 
 function CrimeCar(playerid,wh,car,slot,zalupa)
 {
-	if(g_MysqlRaceCheck[playerid] != zalupa) return Kick(playerid);
+	if(g_MysqlRaceCheck[playerid] != zalupa) return Kickx(playerid);
 	new rows,tempname[24];
 	cache_get_row_count(rows);
 	if(!rows)

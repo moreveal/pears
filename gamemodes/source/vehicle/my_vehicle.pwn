@@ -3911,7 +3911,8 @@ stock checkAccessMyVehicle(playerid)
 
 CMD:insertcar(playerid)
 {
-	new typeParking = IsAtPark(playerid);
+	new parkingDomID;
+	new typeParking = IsAtPark(playerid, parkingDomID);
 	if(typeParking == 0) return 0;
 
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Вам нужно быть за рулём транспорта");
@@ -4219,7 +4220,7 @@ function LoadCar(playerid, dab, race_check)
 		return 0;
 	}
 
-	if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+	if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
 	new paramet[6], sklad, fine, bool:death, repair, Float:health;
 	cache_get_value_name_int(0, "finelien", fine);

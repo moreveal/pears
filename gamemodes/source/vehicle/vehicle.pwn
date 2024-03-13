@@ -766,6 +766,12 @@ stock IsAScooter(model)
 	return 0;
 }
 
+stock IsAEnforcer(model)
+{
+	if(model == 427 || model == 2040) return 1;
+	return 0;
+}
+
 stock IsARC(model)
 {
     if(model == 441 || model == 464 || model == 465 || model == 501 || model == 564 || model == 594) return 1;

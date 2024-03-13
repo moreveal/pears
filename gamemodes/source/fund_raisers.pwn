@@ -268,7 +268,7 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
 {
     new rows;
 	cache_get_row_count(rows);
-    if(g_MysqlRaceCheck[playerid] != race_check) return Kick(playerid);
+    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
     new unix = gettime();
     new input = strval(inputtext);

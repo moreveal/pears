@@ -321,7 +321,7 @@ stock showDialogSettingAccessRight(playerid, accessId)
 
     new header[60];
     format(header,sizeof(header),"{cccccc}Права Доступа: %s", fraklastName[g]);
-	ShowDialog(playerid,614,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
+	ShowDialog(playerid,612,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
     return 1;
 }
 
@@ -357,7 +357,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
         }
         else showDialogSettingAccessRight(playerid, accessId);
     }
-    else if(dialogid == 614)
+    else if(dialogid == 612)
     {
         if(response)
         {

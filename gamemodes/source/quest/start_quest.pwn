@@ -250,6 +250,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     if(!NoCompleteQuest(playerid, 3)) return 0; // Если квест уже пойден, не запускаем квест
     if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");
     if(QuestInfo[playerid][QuestBot]) return 0; // Квест уже запущен
+    if(get_invent2(playerid, 156, 0) <= 0) return 0; // нет водительских прав
 
     if(QuanPlayerStartQuest >= MAX_PLAYERS_START_QUEST) return ErrorMessage(playerid, "{FF6347}В данный момент этот квест проходит большое количество игроков\n\n{cccccc}Извините.. мы не можем запустить этот квест для вас\nПриходите немного позже, когда количество игроков проходящих этот квест уменьшится");
     
