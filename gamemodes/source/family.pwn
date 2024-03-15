@@ -203,7 +203,7 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
 
 			new string[160];
           	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_FAMILY_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_FAMILY_LENGTH-1), ErrorText(playerid, string), showDialogSettingFamilyRank(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingFamilyRank(playerid);
+           	if(checksimvolfam(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingFamilyRank(playerid);
 
             new f = PlayerInfo[playerid][pFamily];
             new r = DP[0][playerid];

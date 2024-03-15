@@ -196,8 +196,8 @@ stock divmembersoff(playerid)
 	DP[4][playerid] = 0;
 	DP[5][playerid] = 0;
 
-	new string_mysql[200];
-	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
+	new string_mysql[330];
+	format(string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
 		`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
 		OR `Division1` = '%d' AND `Fbi` > '0' AND `Online` = '0' LIMIT 40", div, org, div);
 	mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
@@ -353,9 +353,9 @@ CMD:divuninvite(playerid, const params[])
 	{
 		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
 
-		new string_mysql[80];
+		new string_mysql[160];
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
-		format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
+		format(string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
 		mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
 	}
 	return 1;
@@ -935,8 +935,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			new org = DP[1][playerid] + 1; // Получаем id организации
 			new div = DP[2][playerid] + 1; // Получаем id подфракции
 
-			new string_mysql[260];
-			format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE \
+			new string_mysql[330];
+			format(string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
 				`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' \
 				OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' LIMIT 40", div, org, DP[4][playerid], div ,org, DP[4][playerid]);
 			mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);

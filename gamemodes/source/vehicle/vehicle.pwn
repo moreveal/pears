@@ -447,13 +447,19 @@ stock GetVehicleNear_Side(playerid, v) // Получаем инфу, у како
         {
             if(IsABoot(v)) sideId = 1; // Багажник
         }
-        else if(IsPlayerInRangeOfPoint(playerid, 1.0, boot_veh[0], boot_veh[1], boot_veh[2])) sideId = 2; // Капот
+        else if(IsPlayerInRangeOfPoint(playerid, 1.0, boot_veh[0], boot_veh[1], boot_veh[2])) 
+		{
+			if(!IsANoEngine(VehInfo[v][vModel])) sideId = 2; // Капот
+		}
 	}
 	else // Багажник сзади
 	{
         GetCoordBonnetVehicle(v, bonet_veh[0], bonet_veh[1], bonet_veh[2]);
         GetCoordBootVehicle(v, boot_veh[0], boot_veh[1], boot_veh[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 1.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) sideId = 2; // Капот
+		if(IsPlayerInRangeOfPoint(playerid, 1.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) 
+		{
+			if(!IsANoEngine(VehInfo[v][vModel])) sideId = 2; // Капот
+		}
         else if(IsPlayerInRangeOfPoint(playerid, 1.0, boot_veh[0], boot_veh[1], boot_veh[2]))
         {
             if(IsABoot(v)) sideId = 1; // Багажник
@@ -611,23 +617,24 @@ stock IsABoot(carid) // Транспорт, у которых есть бага�
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 413
     || model == 415 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 429 || model == 433 || model == 434 || model == 436
     || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 || model == 466 || model == 467
-    || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 483 || model == 489 || model == 490 || model == 491
+    || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 489 || model == 490 || model == 491
     || model == 492 || model == 494 || model == 495 || model == 496 || model == 498 || model == 500 || model == 502 || model == 503 || model == 504 || model == 505 || model == 506
     || model == 507 || model == 516 || model == 517 || model == 518 || model == 526 || model == 527 || model == 528 || model == 529 || model == 533 || model == 534 || model == 535
     || model == 536 || model == 540 || model == 541 || model == 542 || model == 543 || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551
     || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 || model == 565 || model == 566
     || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 || model == 596 || model == 597
-    || model == 598 || model == 599 || model == 600 || model == 601 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609
+    || model == 598 || model == 599 || model == 600 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609
 	|| model >= 2000 && model <= 2031 || model >= 2033 && model <= 2035
-	|| model >= 2037 && model <= 2065) return 1;
+	|| model >= 2037 && model <= 2041 || model >= 2043 && model <= 2065) return 1;
 	return 0;
 }
 
 stock IsABootFront(carid)
 {
 	new model = VehInfo[carid][vModel];
-	if(model == 415 || model == 424 || model == 451 || model == 483 || model == 486 || model == 541 || model == 568
-	|| model == 2000 || model == 2023 || model == 2024 || model == 2028) return 1;
+	if(model == 415 || model == 424 || model == 437 || model == 451 || model == 483 || model == 486 || model == 530 || model == 532 
+	|| model == 541 || model == 568 || model == 588 || model == 601
+	|| model == 2000 || model == 2023 || model == 2024 || model == 2028 || model == 2041) return 1;
 	return 0;
 }
 
@@ -775,6 +782,14 @@ stock IsAEnforcer(model)
 stock IsARC(model)
 {
     if(model == 441 || model == 464 || model == 465 || model == 501 || model == 564 || model == 594) return 1;
+	return 0;
+}
+
+stock IsANoEngine(model)
+{
+	if(model == 435 || model == 441 || model == 450 || model == 464 || model == 465 || model == 509 || model == 510 
+	|| model == 564 || model == 584 || model == 590 || model == 591 || model == 594
+	|| model == 606 || model == 607 || model == 608 || model == 610 || model == 611) return 1;
 	return 0;
 }
 

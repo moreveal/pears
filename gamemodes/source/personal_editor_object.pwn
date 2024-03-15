@@ -933,7 +933,7 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерье�
                 if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Вы не правильно указали никнейм\nЕсли вы указали ID, значит игрок Offline");
                 DP[0][playerid] = 0; // Поиск игрока
                 DialogLoadInterior(playerid);
-                format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
+                format(string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
                 mysql_tquery(pearsq, string, "Call_checkname_loadinterior", "dds", playerid, g_MysqlRaceCheck[playerid], playerName);
             }
             return 1;

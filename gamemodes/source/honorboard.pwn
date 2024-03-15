@@ -80,7 +80,7 @@ CMD:inhb(playerid, const params[])
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
 		mysql_tquery(pearsq, string_mysql, "get_inhonorboard", "ddsdsd", playerid, g,tmpName, tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
 	return 1;
@@ -170,7 +170,7 @@ CMD:outhb(playerid, const params[])
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
 		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "ddsdsd", playerid, g, tmpName, tmpTPlayerID, tmpTName, unix);
     }
 	return 1;

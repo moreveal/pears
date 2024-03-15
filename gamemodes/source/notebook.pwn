@@ -683,8 +683,8 @@ stock gotobuycrypto(playerid,id)
     }
     else
     {
-        new string_mysql[80];
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
+        new string_mysql[90];
+		format(string_mysql,sizeof(string_mysql),"SELECT DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, price);
@@ -745,8 +745,8 @@ stock gotosellcrypto(playerid,id)
     }
     else
     {
-        new string_mysql[80];
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
+        new string_mysql[90];
+		format(string_mysql,sizeof(string_mysql),"SELECT Account FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
     }
     oGivePlayerMoney(playerid, -price);
@@ -804,8 +804,8 @@ function LoadTradeCrypto()
 
         if(unix - TradeCrypt[f][tcUnix] >= 864000)
         {
-            new string_mysql[80];
-            format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[f][tcVlad]);
+            new string_mysql[90];
+            format(string_mysql,sizeof(string_mysql),"SELECT DonateMoney, Account FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[f][tcVlad]);
 		    mysql_tquery(pearsq, string_mysql, "Call_returncrypto", "dd", TradeCrypt[f][tcVlad], f);
         }
 	}
@@ -931,7 +931,7 @@ CMD:goldturnover(playerid)
 	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{cccccc}Поиск игроков...","*","");
-	mysql_tquery(pearsq, "SELECT * FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1'", "Call_turnovergold", "d", playerid);
+	mysql_tquery(pearsq, "SELECT DonateMoney, Ammo8 FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1'", "Call_turnovergold", "d", playerid);
 	return 1;
 }
 

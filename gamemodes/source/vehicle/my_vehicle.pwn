@@ -4591,19 +4591,19 @@ CMD:delcar(playerid, const params[])
 	if(sscanf(params, "s[24]i", tmp,slot)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Удалить личный транспорт [ /delcar ID Слот ]");
 	if(slot > MAX_MYVEHICLE || slot < 1) return ErrorMessage(playerid, "{FF6347}Номер слота не меньше 1 и не больше 20");
 
-	new string_mysql[100];
+	new string_mysql[120];
 	para1 = ReturnUser(tmp, 1);
 	if(IsPlayerConnected(para1))
  	{
  	    if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT sost, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
         mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, PlayerInfo[para1][pName], PlayerInfo[para1][pID], slot);
 	}
 	else
 	{
 	    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
 		mysql_tquery(pearsq, string_mysql, "Call_delcaroff", "dsd", playerid, tmp, slot);
 	 }
 	return 1;
@@ -4616,7 +4616,7 @@ function Call_delcaroff(playerid, str_name[], slot)
 	{
 		cache_get_value_name_int(0, "user_id", datadid);
 		new string_mysql[120];
-		format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT sost, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
 		mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -4926,7 +4926,7 @@ CMD:rslot(playerid, const params[])
 		else
 		{
   			if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: /rslot Lol_Lolkin");
-  			format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+  			format(string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
   			mysql_tquery(pearsq, string, "Call_resetslot", "dsd", playerid, tmp, vslot);
   			return 1;
 		}

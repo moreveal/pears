@@ -471,7 +471,7 @@ stock SelectVoteAfterRally()
         }
         if(otmena == -1)
         {
-            format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Leader` = '7' AND `Member` = '7'"); // Убиваем губера
+            format(string,sizeof(string),"SELECT user_id, Name FROM `pp_igroki` WHERE `Leader` = '7' AND `Member` = '7'"); // Убиваем губера
             mysql_tquery(pearsq, string, "Call_dismissalGover", "");
         }
     }
@@ -487,7 +487,7 @@ stock SelectVoteAfterRally()
                 OrgLog(7, "DismissalAfterRally", PlayerInfo[i][pID], PlayerInfo[i][pName], PlayerInfo[i][pPlaIP], 0, "", "", 0, "Уволен по голосованию после митинга");
             }
         }
-        format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Division0` = '1' AND `Member` = '7' AND `Division1` > '0'"); // Распускаем сенат
+        format(string,sizeof(string),"SELECT user_id, Name FROM `pp_igroki` WHERE `Division0` = '1' AND `Member` = '7' AND `Division1` > '0'"); // Распускаем сенат
         mysql_tquery(pearsq, string, "Call_dismissalSenat", "");
         for(new gop = 0;gop<10;gop++)
         {
@@ -568,7 +568,7 @@ public Call_dismissalGover()
 	    new userid,nickname[24];
 		cache_get_value_name_int(0, "user_id", userid);
         cache_get_value_name(0, "Name", nickname,24);
-        format(f_str,sizeof(f_str),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", nickname);
+        format(f_str,sizeof(f_str),"SELECT user_id, Soska, Member, Leader, Rank, Fbi, Family FROM `pp_igroki` WHERE `Name` = '%s'", nickname);
 		mysql_tquery(pearsq, f_str, "Call_uninvite", "dss", -1, nickname,"Снят по голосованию после митинга");
         OrgLog(7, "DismissalAfterRally", userid, nickname, " ", 0, "", "", 0, "Снят по голосованию после митинга");
 	}
@@ -585,7 +585,7 @@ public Call_dismissalSenat()
 	    new userid,nickname[24];
 		cache_get_value_name_int(0, "user_id", userid);
         cache_get_value_name(0, "Name", nickname,24);
-        format(f_str,sizeof(f_str),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", nickname);
+        format(f_str,sizeof(f_str),"SELECT user_id, Soska, Member, Leader, Rank, Fbi, Family FROM `pp_igroki` WHERE `Name` = '%s'", nickname);
 		mysql_tquery(pearsq, f_str, "Call_uninvite", "dss", -1, nickname,"Снят по голосованию после митинга");
         OrgLog(7, "DismissalAfterRally", userid, nickname, " ", 0, "", "", 0, "Уволен по голосованию после митинга");
 	}

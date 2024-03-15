@@ -685,7 +685,7 @@ stock isPlayerEligible(playerid, g)
 CMD:membersoff(playerid)
 {
 	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-	new string[144], g = fraction(playerid), needg;
+	new g = fraction(playerid), needg;
 	if(!GetAccessRankOrg(playerid, g, 0, NO_FBI)) return 1;
 	
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
@@ -694,8 +694,12 @@ CMD:membersoff(playerid)
 	needg = g;
 	DP[2][playerid] = 0;
 	DP[0][playerid] = needg;
-	if(needg == 2) format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);
-	else format(string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `Member` = '%d' AND `Online` = '0' LIMIT 40", needg);
+
+	new string[240];
+	if(needg == 2) format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
+		FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);
+	else format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
+		FROM `pp_igroki` WHERE `Member` = '%d' AND `Online` = '0' LIMIT 40", needg);
 	mysql_tquery(pearsq, string, "Call_mem", "dd", playerid, needg);
 	return 1;
 }

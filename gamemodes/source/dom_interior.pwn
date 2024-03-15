@@ -31,7 +31,7 @@ stock InfoObjectDomBiz(playerid, type, id, oba)
     if(userid == 0) return ErrorMessage(playerid, "{FF6347}У объекта нет создателя\n{cccccc}Он был создан системой");
 
     new string[144];
-	format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
+	format(string,sizeof(string),"SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
 	mysql_tquery(pearsq, string, "call_io", "ddddd", playerid, userid, id, oba, type);
 	return 1;
 }
