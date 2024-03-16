@@ -98,14 +98,16 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
 
     if(AnticheatInfo[playerid][achWarnings] > 0) // Если варнинг уже был, перекидываем историю на строку ниже
     {
-        for(new i = CHEAT_HISTORY; i > 0; i--)
+        for(new i = CHEAT_HISTORY - 1; i > 0; i--)
         {
             if(AnticheatInfo[playerid][achTrigger][i - 1] > 0)
             {
-                AnticheatInfo[playerid][achTrigger][i] = AnticheatInfo[playerid][achTrigger][i - 1];
-                AnticheatInfo[playerid][achPing][i] = AnticheatInfo[playerid][achPing][i - 1];
-                AnticheatInfo[playerid][achUnix][i] = AnticheatInfo[playerid][achUnix][i - 1];
-                AnticheatInfo[playerid][achLoss][i] = AnticheatInfo[playerid][achLoss][i - 1];
+                new tempi = i;
+                if(i - 1 <= 0) tempi = 0;
+                AnticheatInfo[playerid][achTrigger][tempi] = AnticheatInfo[playerid][achTrigger][i - 1];
+                AnticheatInfo[playerid][achPing][tempi] = AnticheatInfo[playerid][achPing][i - 1];
+                AnticheatInfo[playerid][achUnix][tempi] = AnticheatInfo[playerid][achUnix][i - 1];
+                AnticheatInfo[playerid][achLoss][tempi] = AnticheatInfo[playerid][achLoss][i - 1];
             }
         }
     }

@@ -1,6 +1,6 @@
 #define MAX_FIND_ZONE 50
 new zoneId[MAX_FIND_ZONE];
-new ZoneTimer[MAX_FIND_ZONE];
+new ZoneTimer[MAX_REALPLAYERS];
 
 new FindZone[MAX_REALPLAYERS];
 new FindCd[MAX_REALPLAYERS];

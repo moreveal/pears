@@ -44,8 +44,6 @@ stock DynamicPickupRent()
 
 stock agetbus(playerid)
 {
-    if(busdrivers[busrout[playerid]] >= MAX_BUSDRIVER) return ErrorMessage(playerid, "{FF6347}Сейчас на дежурстве 30 водителей автобусов [ Приходите на работу немного позже ]");
-    
     if(IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[0][0],RentBusPoint[0][1],RentBusPoint[0][2])) DP[0][playerid] = 0;
     else if(IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[1][0],RentBusPoint[1][1],RentBusPoint[1][2])) DP[0][playerid] = 1;
     else if(IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[2][0],RentBusPoint[2][1],RentBusPoint[2][2])) DP[0][playerid] = 2;
