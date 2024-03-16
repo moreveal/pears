@@ -1115,12 +1115,12 @@ stock buy_SkinShop(playerid)
 			PlayerPlaySound(playerid,6401,0,0,0);
 			if(price == 0)
 			{
-				if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string),"[ Мысли ]: Я взял одежду {ff9000}[ID: %d]", skin), SendClientMessage(playerid, COLOR_GREY, string);
-				else format(string, sizeof(string),"[ Мысли ]: Я взяла одежду {ff9000}[ID: %d]", skin), SendClientMessage(playerid, COLOR_GREY, string);
+				if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string),"[ Мысли ]: Я взял одежду {ff9000}[ID: %d] (Одежда в инвентаре)", skin), SendClientMessage(playerid, COLOR_GREY, string);
+				else format(string, sizeof(string),"[ Мысли ]: Я взяла одежду {ff9000}[ID: %d] (Одежда в инвентаре)", skin), SendClientMessage(playerid, COLOR_GREY, string);
 			}
 			else
 			{
-				format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {99ff66}%d$ {ff9000}[ID: %d]", gender(playerid), price, skin);
+				format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {99ff66}%d$ {ff9000}[ID: %d] (Одежда в инвентаре)", gender(playerid), price, skin);
 				SendClientMessage(playerid, COLOR_GREY, string);
 				oGivePlayerMoney(playerid, -price);
 				format(string, sizeof(string),"Одежда ID: %d", skin);
@@ -1160,7 +1160,7 @@ stock buy_SkinShop(playerid)
 
 			SaveInvent(playerid, put_inva);
 			PlayerPlaySound(playerid,6401,0,0,0);
-			format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {ffcc00}%dG {ff9000}[ID: %d]", gender(playerid), gold, skin);
+			format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {ffcc00}%dG {ff9000}[ID: %d] (Одежда в инвентаре)", gender(playerid), gold, skin);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			format(string, sizeof(string),"Одежда ID: %d", skin);
             DonateLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -gold, string);

@@ -99,109 +99,132 @@ stock TempGive(playerid) // Возвращаем временно лишённо
 	return 1;
 }
 
-stock LoadWeapon(playerid)
+// Новый сток загрузки оружия игрока
+stock OnPlayerLoadWeapon(playerid)
 {
-    new string[200];
-    new temp_weap[MAX_WEAPON_SLOTS], temp_ammo[MAX_WEAPON_SLOTS], temp_det[MAX_WEAPON_SLOTS], temp_qet[MAX_WEAPON_SLOTS], temp_upd[MAX_WEAPON_SLOTS];
+	new string[20];
+	for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
+	{
+		new bool:is_null;
+		format(string, sizeof(string), "gun_%d", i);
+		cache_is_value_name_null(0, string, is_null);
 
-    // Оружие
-	cache_get_value_name(0, "Weapon", string, sizeof(string));
-	ParseStringToArray(string, temp_weap, MAX_WEAPON_SLOTS);
-
-    // Патроны
-	cache_get_value_name(0, "Ammo", string, sizeof(string));
-	ParseStringToArray(string, temp_ammo, MAX_WEAPON_SLOTS);
-
-    // Взрывные Патроны
-	cache_get_value_name(0, "EAmmo", string, sizeof(string));
-	ParseStringToArray(string, ProtectInfo[playerid][prExplosive], MAX_WEAPON_SLOTS);
-
-    // Изношенность оружия
-	cache_get_value_name(0, "WeapDet", string, sizeof(string));
-	ParseStringToArray(string, temp_det, MAX_WEAPON_SLOTS);
-
-    // Краденное оружие
-	cache_get_value_name(0, "WeapQet", string, sizeof(string));
-	ParseStringToArray(string, temp_qet, MAX_WEAPON_SLOTS);
-
-    // Улучшения оружия
-	cache_get_value_name(0, "WeapUpgrade", string, sizeof(string));
-	ParseStringToArray(string, temp_upd, MAX_WEAPON_SLOTS);
-
-    if(PlayerInfo[playerid][pBeret] == 0) // Нет лишения
-    {
-        for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
+		if(is_null == false)
 		{
-            if(temp_weap[i] > 0 && temp_ammo[i] > 0)
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+
+            if(PlayerInfo[playerid][pBeret] == 0) // Нет лишения
             {
-                ProtectInfo[playerid][prWeapon][i] = temp_weap[i];
-                ProtectInfo[playerid][prAmmo][i] = temp_ammo[i];
-                ProtectInfo[playerid][prDet][i] = temp_det[i];
-                ProtectInfo[playerid][prQet][i] = temp_qet[i];
-                ProtectInfo[playerid][prUpgrade][i] = temp_upd[i];
+                if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+                {
+                    JSON_GetInt(node, "weap", ProtectInfo[playerid][prWeapon][i]);
+                    JSON_GetInt(node, "ammo", ProtectInfo[playerid][prAmmo][i]);
+                    JSON_GetInt(node, "emmo", ProtectInfo[playerid][prExplosive][i]);
+                    JSON_GetInt(node, "det", ProtectInfo[playerid][prDet][i]);
+                    JSON_GetInt(node, "qet", ProtectInfo[playerid][prQet][i]);
+                    JSON_GetInt(node, "upg", ProtectInfo[playerid][prUpgrade][i]);
+                }
             }
-        }
-    }
-    else // Временное лишения
-    {
-        for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
-		{
-            if(temp_weap[i] > 0 && temp_ammo[i] > 0)
+            else
             {
-                TempWeapon[playerid][i] = temp_weap[i];
-                TempAmmo[playerid][i] = temp_ammo[i];
-                TempDet[playerid][i] = temp_det[i];
-                TempQet[playerid][i] = temp_qet[i];
-                TempUpdate[playerid][i] = temp_upd[i];
+                if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+                {
+                    JSON_GetInt(node, "weap", TempWeapon[playerid][i]);
+                    JSON_GetInt(node, "ammo", TempAmmo[playerid][i]);
+                    JSON_GetInt(node, "emmo", ProtectInfo[playerid][prExplosive][i]);
+                    JSON_GetInt(node, "det", TempDet[playerid][i]);
+                    JSON_GetInt(node, "qet", TempQet[playerid][i]);
+                    JSON_GetInt(node, "upg", TempUpdate[playerid][i]);
+                }
             }
-        }
-    }
+		}
+	}
+	return 1;
+}
+
+stock SaveGun(playerid, bool:transaction = true)
+{
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < MAX_WEAPON_SLOTS; i++) SaveOneGun(playerid, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
+	return 1;
+}
+
+stock SaveOneGun(playerid, i)
+{
+    new JsonNode:node;
+	CreateJsonWeapon(playerid, i, node);
+	SaveOneGunByUserID(PlayerInfo[playerid][pID], i, node);
     return 1;
 }
 
-stock SaveGun(playerid)
+stock CreateJsonWeapon(playerid, i, &JsonNode:node)
 {
-    new string_mysql[2096];
-
-    new weaponString[256];
-    new ammoString[256];
-    new detString[256];
-    new qetString[256];
-    new explosiveString[256];
-    new upgradeString[256];
-
-    // Формируем строки для каждого атрибута
-    ArrayToString(ProtectInfo[playerid][prExplosive], explosiveString, MAX_WEAPON_SLOTS);
     if(PlayerInfo[playerid][pBeret] == 0)
 	{
-        ArrayToString(ProtectInfo[playerid][prWeapon], weaponString, MAX_WEAPON_SLOTS);
-        ArrayToString(ProtectInfo[playerid][prAmmo], ammoString, MAX_WEAPON_SLOTS);
-        ArrayToString(ProtectInfo[playerid][prDet], detString, MAX_WEAPON_SLOTS);
-        ArrayToString(ProtectInfo[playerid][prQet], qetString, MAX_WEAPON_SLOTS);
-        ArrayToString(ProtectInfo[playerid][prUpgrade], upgradeString, MAX_WEAPON_SLOTS);
-    }
-    else 
-    {
-        ArrayToString(TempWeapon[playerid], weaponString, MAX_WEAPON_SLOTS);
-        ArrayToString(TempAmmo[playerid], ammoString, MAX_WEAPON_SLOTS);
-        ArrayToString(TempDet[playerid], detString, MAX_WEAPON_SLOTS);
-        ArrayToString(TempQet[playerid], qetString, MAX_WEAPON_SLOTS);
-        ArrayToString(TempUpdate[playerid], upgradeString, MAX_WEAPON_SLOTS);
-    }
-
-    format(string_mysql, sizeof(string_mysql), "UPDATE pp_igroki SET `Weapon`='%s', `Ammo`='%s', `EAmmo`='%s', `WeapDet`='%s', `WeapQet`='%s', `WeapUpgrade`='%s', `Beret`='%d' WHERE `user_id` = %d",
-           weaponString, ammoString, explosiveString, detString, qetString, upgradeString, PlayerInfo[playerid][pBeret], PlayerInfo[playerid][pID]);
-	query_empty(pearsq, string_mysql);
-    return 1;
-}
-
-stock ArrayToString(const array[], dest[], maxsize) {
-    for (new i = 0; i < maxsize; i++) {
-        new temp[16];
-        format(temp, sizeof(temp), "%d", array[i]);
-        strcat(dest, temp, 256);
-        if (i < maxsize - 1) {
-            strcat(dest, ",", 256);
+        if(ProtectInfo[playerid][prWeapon][i] == 0) 
+        {
+            node = JSON_INVALID_NODE;
+            return 1;
+        }
+        else
+        {
+            node = JSON_Object(
+                "weap", JSON_Int(ProtectInfo[playerid][prWeapon][i]),
+                "ammo", JSON_Int(ProtectInfo[playerid][prAmmo][i]),
+                "emmo", JSON_Int(ProtectInfo[playerid][prExplosive][i]),
+                "det", JSON_Int(ProtectInfo[playerid][prDet][i]),
+                "qet", JSON_Int(ProtectInfo[playerid][prQet][i]),
+                "upg", JSON_Int(ProtectInfo[playerid][prUpgrade][i])
+            );
         }
     }
+    else
+    {
+        if(TempWeapon[playerid][i] == 0) 
+        {
+            node = JSON_INVALID_NODE;
+            return 1;
+        }
+        else
+        {
+            node = JSON_Object(
+                "weap", JSON_Int(TempWeapon[playerid][i]),
+                "ammo", JSON_Int(TempAmmo[playerid][i]),
+                "emmo", JSON_Int(ProtectInfo[playerid][prExplosive][i]),
+                "det", JSON_Int(TempDet[playerid][i]),
+                "qet", JSON_Int(TempQet[playerid][i]),
+                "upg", JSON_Int(TempUpdate[playerid][i])
+            );
+        }
+    }
+	return 1;
+}
+
+stock SaveOneGunByUserID(user_id, i, JsonNode:node)
+{
+    if(node == JSON_INVALID_NODE)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `gun_%d`= NULL WHERE `user_id` = '%d'", i, user_id);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+        new string_json[512];
+        if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+        {
+            new string_mysql[640];
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `gun_%d`= '%e' WHERE `user_id` = '%d'", i, string_json, user_id);
+            mysql_tquery(pearsq, string_mysql);
+        }
+    }
+    return 1;
 }

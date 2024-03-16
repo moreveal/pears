@@ -546,7 +546,7 @@ stock GetVehicleType(model) // Получаем тип транспорта
 
     // Вертолёты (Требуется лицензия на вертолёт) Helicopter
     else if(model == 417 || model == 425 || model == 447 || model == 469 || model == 487 || model == 488 || model == 497 
-    || model == 548 || model == 563) type = 4;
+    || model == 548 || model == 563 || model == 2036) type = 4;
 
     // Самолёты (Требуется лицензия на самолёт) Plane
     else if(model == 460 || model == 476 || model == 511 || model == 512 || model == 513 || model == 519 || model == 520 

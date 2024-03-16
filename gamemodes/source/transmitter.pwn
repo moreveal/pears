@@ -938,11 +938,54 @@ stock IsAllowedTransmitterD(playerid, g)
     return 0;
 }
 
+// Новый сток загрузки настроек рации
+stock OnPlayerLoadTransmitter(playerid)
+{
+    new bool:is_null;
+    cache_is_value_name_null(0, "pTransmitter", is_null);
+
+    if(is_null == false)
+    {
+        new string_json[512];
+        cache_get_value_name(0, "pTransmitter", string_json, 512);
+
+        new JsonNode:node = JSON_INVALID_NODE;
+        if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+        {
+            for(new i = 0; i < MAX_TRANSMITTER; i++)
+	        {
+                new string[6];
+                format(string, sizeof(string), "t%d", i);
+                JSON_GetBool(node, string, PlayerInfo[playerid][pTransmitterOff][i]);
+            }
+        }
+    }
+	return 1;
+}
+
 stock SaveTransmitterOff(playerid)
 {
     PlayerInfo[playerid][pTransmitterUpdate] = false;
-	new string_mysql[2096];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `pTransmitterOff` = '%s' WHERE `user_id` = '%d'", StringifyArray(PlayerInfo[playerid][pTransmitterOff], MAX_TRANSMITTER), PlayerInfo[playerid][pID]);
-	query_empty(pearsq, string_mysql);
+
+    new JsonNode:node = JSON_Object(
+		"t0", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][0]),
+        "t1", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][1]),
+        "t2", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][2]),
+        "t3", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][3]),
+        "t4", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][4]),
+        "t5", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][5]),
+        "t6", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][6]),
+        "t7", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][7]),
+        "t8", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][8]),
+        "t9", JSON_Bool(PlayerInfo[playerid][pTransmitterOff][9])
+	);
+
+    new string_json[512];
+    if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+    {
+        new string_mysql[640];
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `pTransmitter`= '%e' WHERE `user_id` = '%d'", string_json, PlayerInfo[playerid][pID]);
+        mysql_tquery(pearsq, string_mysql);
+    }
 	return 1;
 }

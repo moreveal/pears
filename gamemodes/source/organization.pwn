@@ -695,6 +695,8 @@ CMD:membersoff(playerid)
 	DP[2][playerid] = 0;
 	DP[0][playerid] = needg;
 
+	if(needg >= MAX_ORG) return ErrorMessage(playerid, "{FF6347}Ошибка! Неверный ID организации");
+
 	new string[240];
 	if(needg == 2) format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
 		FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);

@@ -91,6 +91,12 @@ stock dialogCase_Anticheat(playerid, dialogid, response, listitem)
     return 1;
 }
 
+CMD:trig(playerid)
+{
+    TriggerCheat(playerid, 0);
+    return 1;
+}
+
 stock TriggerCheat(playerid, cheatid) // Записываем триггер в список
 {
     AnticheatTriggers[playerid][cheatid] ++; // Считаем количество триггеров на конкретный чит
@@ -100,15 +106,11 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
     {
         for(new i = CHEAT_HISTORY - 1; i > 0; i--)
         {
-            if(AnticheatInfo[playerid][achTrigger][i - 1] > 0)
-            {
-                new tempi = i;
-                if(i - 1 <= 0) tempi = 0;
-                AnticheatInfo[playerid][achTrigger][tempi] = AnticheatInfo[playerid][achTrigger][i - 1];
-                AnticheatInfo[playerid][achPing][tempi] = AnticheatInfo[playerid][achPing][i - 1];
-                AnticheatInfo[playerid][achUnix][tempi] = AnticheatInfo[playerid][achUnix][i - 1];
-                AnticheatInfo[playerid][achLoss][tempi] = AnticheatInfo[playerid][achLoss][i - 1];
-            }
+            if(AnticheatInfo[playerid][achTrigger][i - 1] == 0) continue;
+            AnticheatInfo[playerid][achTrigger][i] = AnticheatInfo[playerid][achTrigger][i - 1];
+            AnticheatInfo[playerid][achPing][i] = AnticheatInfo[playerid][achPing][i - 1];
+            AnticheatInfo[playerid][achUnix][i] = AnticheatInfo[playerid][achUnix][i - 1];
+            AnticheatInfo[playerid][achLoss][i] = AnticheatInfo[playerid][achLoss][i - 1];
         }
     }
 
