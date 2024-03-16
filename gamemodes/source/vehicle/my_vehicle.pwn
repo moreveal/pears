@@ -4192,7 +4192,10 @@ stock pts(p, v)
    	format(line,sizeof(line),"\n{cccccc}Марка ТС: {0088ff}%s [ID: %d]",GetVehicleName(model),v), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Модель №: {0088ff}%d",VehInfo[v][vModel]), strcat(lines,line);
    	format(line,sizeof(line),"\n{cccccc}Год изготовления: {cccccc}%d",VehInfo[v][vGod]), strcat(lines,line);
-   	format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
+   	if(vladid < MAX_REALPLAYERS) 
+	{
+		if(IsOnline(vladid)) format(line,sizeof(line),"\n{cccccc}Владелец: {0088ff}%s[%d]",PlayerInfo[vladid][pName],vladid), strcat(lines,line);
+	}
 	if(Cars[v] == 88) format(line,sizeof(line),"\n{cccccc}Номер: {666666}%s", VehInfo[v][vNumer]), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePriceGos(model))), strcat(lines,line);
 

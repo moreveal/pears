@@ -131,6 +131,7 @@ CMD:closerace(playerid)
     if(PlayerInfo[playerid][pSoska] <= 3) ErrorMessage(playerid,"{FF6347}Закончить сходку предварительно могут только Админ 4+ лвла");
     new fId = PlayerInfo[playerid][pFamily];
     new slot = FamilyInfo[fId][fStreetRacersID];
+    if(slot == -1) return ErrorMessage(playerid,"{FF6347}Ваша семья не проводит гонку");
     ClosePartyStreet(slot);
     return 1;
 }
@@ -1618,6 +1619,8 @@ stock UpdateRaceDrawForAllPlayers(idrace, const string[])
 
 stock UpdateRaceDrawForPlayer(playerid, const text[])
 {
+    if(OnlineInfo[playerid][oStreetRaceSlot] == 0) return 1; // Если не зареган на гонку, игнорим
+
     if(DrawRace[playerid] == false) // Если текстдравов не было, создаём
     {
         CreateRaceDrawForPlayer(playerid);

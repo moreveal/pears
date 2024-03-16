@@ -555,6 +555,7 @@ CMD:movingbeton(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;
     new moving,number;
     sscanf(params, "ii",number,moving);
+    if(number < 0 || number >= 8) return 1;
     PrisonMovingBeton(number,moving);
     PrisonMovingSand(number,moving);
     PrisonBetonHP[number]-=moving*75;
