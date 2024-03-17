@@ -981,7 +981,7 @@ stock CheckpointRaceRout(playerid)
 	new r = carRaceCheckpoint[playerid];
     PlayerPlaySound(playerid,1150,0,0,0);
 	DisablePlayerRaceCheckpoint(playerid);
-    if(r >= 59) return RaceWinner(playerid,idrace);
+    if(r >= 60) return RaceWinner(playerid,idrace);
     else
     {
         if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
