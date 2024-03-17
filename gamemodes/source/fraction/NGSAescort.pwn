@@ -7,7 +7,10 @@ new BoxInTrain; // Количество ящиков, погруженных в 
 
 new EscortStatus;
 new EscortOrganization;
+
+#if defined FCNPC_LOAD
 new TrainRoadDestination;
+#endif
 
 new train_object1, train_object2, train_object3;
 new TrainMoved;
@@ -1896,6 +1899,7 @@ stock getFreeOrderSlotEscort(g)
 
 stock orderfrak(playerid)
 {
+	#if defined FCNPC_LOAD
 	new frak = fraction(playerid);
 	if(!IsAFunctionOrganization(51, frak, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не боец NGSA");
 	if(!GetAccessRankOrg(playerid, frak, 51, NO_FBI)) return 1;
@@ -1916,6 +1920,9 @@ stock orderfrak(playerid)
 	}
 	if(quan <= 0) return ErrorMessage(playerid, "{FF6347}Нет активных заказов");
 	ShowDialog(playerid,1385,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Доставка Боеприпасов",lines,"Принять","Отмена");
+	#else
+	ErrorMessage(playerid, "{FF6347}Доставка боеприпасов временно недоступна");
+	#endif
 	return 1;
 }
 
@@ -2033,9 +2040,13 @@ stock LoadOrderEscort(playerid)
 
 stock TrainSetting(playerid)
 {
+	#if defined FCNPC_LOAD
 	if(fraction(playerid) != 3) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к поезду\n{cccccc}Только для NGSA");
 
 	ShowDialog(playerid,1373,DIALOG_STYLE_TABLIST,"Поезд","{cccccc}Запустить Поезд","Выбрать","Отмена");
+	#else
+	ErrorMessage(playerid, "{FF6347}Доставка боеприпасов временно недоступна");
+	#endif
 	return 1;
 }
 
@@ -2147,9 +2158,12 @@ stock GoTrain(playerid)
 	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
 
 	EscortStatus = 4; // 4 шаг - запустили поезд
+
+	#if defined FCNPC_LOAD
 	if(EscortOrganization == 1) TrainRoadDestination = 807; // Station LS
 	else if(EscortOrganization == 2 || EscortOrganization == 21 || EscortOrganization == 22) TrainRoadDestination = 1180; // Station LV
 	else if(EscortOrganization == 7 || EscortOrganization == 11) TrainRoadDestination = 311; // Station SF
+	#endif
 
 	// Запускаем таймер для начала движения поезда
 	TrainGoing = 1;
@@ -2260,7 +2274,10 @@ stock TakeABoxFromTrain(playerid)
 	{
 		EscortStatus = 5; // 5 шаг - все ящики достали из поезда
 
+		#if defined FCNPC_LOAD
 		TrainRoadDestination = 0; // Отправляем поезд to Station NGSA
+		#endif
+
 		// Запускаем таймер для начала движения поезда
 		TrainGoing = 1;
 		SetTimer("TrainStart", 10000, false);
@@ -2698,6 +2715,7 @@ stock GetIDTrainOnRoad()
 	return trainRoadId;
 }
 
+#if defined FCNPC_LOAD
 stock CheckTrainNearby(playerid, roadId, para)
 {
 	if(TrainMoved == 1) // Поезд едет
@@ -2730,6 +2748,7 @@ stock CheckTrainNearby(playerid, roadId, para)
 	}
 	return 1;
 }
+#endif
 
 stock IsATrainStation(playerid)
 {

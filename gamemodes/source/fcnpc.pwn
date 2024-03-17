@@ -23,18 +23,9 @@ new npcprisonid_sf;
 new PrisonBusRouteSF;
 new TimerPrisonBusSF;
 
-stock IsARealNPC(playerid)
+stock IsAVehicleNPC(vehicleid)
 {
-    if(playerid == npcarmyid 
-        || playerid == npcprisonid_ls
-        || playerid == npcprisonid_sf) return 1;
-    return 0;
-}
-stock IsAVehicleNPC(vehicleid) // Транспорт, который запрещено мочить
-{
-    if(vehicleid == train
-        || vehicleid == prisonbus_LS
-        || vehicleid == prisonbus_SF) return 1;
+    if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train) return 1;
     return 0;
 }
 

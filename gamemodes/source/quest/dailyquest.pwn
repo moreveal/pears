@@ -272,6 +272,7 @@ stock CreateDaily(playerid, forced)
 {
     if(DailyInfo[playerid][daiDay] == getdate() && forced == 0) return 0; // Если день тот-же и мы не перезапускаем квесты, тогда игнорим
 
+    print("[pizdos] SelectUniqueDailyForSlot"); // VREMENNO
     for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
     {
         new dailyid = SelectUniqueDailyForSlot(playerid, i);
@@ -280,6 +281,7 @@ stock CreateDaily(playerid, forced)
             CreateDailySlotForPlayer(playerid, i, dailyid);
         }
     }
+    print("[pizdos] SelectUniqueDailyForSlot OK"); // VREMENNO
 
     DailyInfo[playerid][daiFull] = false; // Сбрасываем статус выполненных заданий
     DailyInfo[playerid][daiDay] = getdate(); // записываем сегодняшний день

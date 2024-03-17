@@ -408,13 +408,20 @@ stock showDialogMenuKonvoi(playerid, konvoiId)
     new line[50],lines[150];
     DP[0][playerid] = konvoiId;
 
+    #if defined FCNPC_LOAD
 	if(GetPrisonBusLocation(konvoiId)) format(line,sizeof(line),"{cccccc}Автобус: {99ff66}Ожидает отправления"), strcat(lines,line);
     else format(line,sizeof(line),"{cccccc}Автобус: {FF6347}Выполняет конвой"), strcat(lines,line);
+    #else 
+    format(line,sizeof(line),"{cccccc}Автобус: {FF6347}Конвой временно недоступен"), strcat(lines,line);
+    #endif
+
 	format(line,sizeof(line),"\n{ff9000}Отправиться в Областную Тюрьму >>"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Что такое конвой? {ff9000}>>"), strcat(lines,line);
 	ShowDialog(playerid,532,DIALOG_STYLE_TABLIST_HEADERS,"Конвой",lines,"Выбрать","Выход");
     return 1;
 }
+
+#if defined FCNPC_LOAD
 stock GetPrisonBusLocation(konvoiId)
 {
     if(konvoiId == 1) 
@@ -427,6 +434,7 @@ stock GetPrisonBusLocation(konvoiId)
     }
     return 0;
 }
+#endif
 
 stock dialogCase_Prison(playerid, dialogid, response, listitem)
 {
@@ -434,11 +442,13 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            new konvoiId = DP[0][playerid];
             if(listitem == 0)
             {
                 if(PlayerInfo[playerid][pJailTime] <= 600) return ErrorMessage(playerid, "{FF6347}Ваш срок заключения меньше 10 минут\n{cccccc}Нет необходимости конвоировать вас в областную тюрьму");
                 
+                #if defined FCNPC_LOAD
+                
+                new konvoiId = DP[0][playerid];
                 new vehicleid = GetPrisonBusLocation(konvoiId);
                 if(!vehicleid) return ErrorMessage(playerid, "{FF6347}Тюремный автобус в данный момент выполняет конвой\n{cccccc}Пожалуйста, подождите. Он прибудет обратно примерно через 10 минут");
 
@@ -471,6 +481,9 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Садитесь в тюремный автобус\n\n{FF6347}Внимание! {ffcc66}Если вы выйдете из автобуса, то вернётесь обратно в КПЗ!","*","");
                 SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Мне нужно сесть в автобус [ Отправление через 30 секунд ]");
                 SetCameraBehindPlayer(playerid);
+                #else 
+                ErrorMessage(playerid, "{FF6347}Тюремный автобус временно недоступен");
+                #endif
             }
             if(listitem == 1)
             {

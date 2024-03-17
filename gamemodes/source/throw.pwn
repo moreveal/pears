@@ -252,7 +252,9 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
 		if(roadId >= 0) 
 		{
 			qara = roadId + 1;
+			#if defined FCNPC_LOAD
 			if(!CheckTrainNearby(playerid, roadId, para)) return 0;
+			#endif
 		}
 	}
   	
