@@ -82,11 +82,6 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 		{
 			if(GetPVarInt(playerid,"svzyal") >= 2)
 			{
-				new actor;
-				if(IsPlayerInRangeOfPoint(playerid,1.5,1110.2102,-1380.6837,1401.7142)) actor = 0;
-				else if(IsPlayerInRangeOfPoint(playerid,1.5,1109.0911,-1380.6733,1401.7142)) actor = 1;
-				else if(IsPlayerInRangeOfPoint(playerid,1.5,1104.6500,-1380.7075,1401.7142)) actor = 2;
-				else if(IsPlayerInRangeOfPoint(playerid,1.5,1103.5388,-1380.7046,1401.7142)) actor = 3;
           		if(oGetPlayerMoney(playerid) < OnlineInfo[playerid][oShopPrice]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
           		RemovePlayerAttachedObject(playerid,1);
           		PPP15[playerid] = 0;
@@ -169,8 +164,6 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
 
             	// Ачивка за первую покупку
             	if(PlayerInfo[playerid][pAchieve][6] == 0) AchievePlayer(playerid, 6, 1);
-				new bworld = GetPlayerVirtualWorld(playerid);
-				ApplyDynamicActorAnimation(BizSMarketActor[bworld-1][actor], "DEALER","DRUGS_BUY",10.0,0,1,1,0,0); // Машет рукой
           	}
           	else ErrorMessage(playerid, "{FF6347}В вашей тележке ничего нет");
         }

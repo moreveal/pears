@@ -3,7 +3,6 @@
 
 new BizTermActor[MAX_BIZ_WITH_ACTORS][MAX_TERMINAL_BIZ];
 new BizAptekaActor[MAX_BIZ_WITH_ACTORS];
-new BizSMarketActor[13][4];
 new BizTehnikaActor[MAX_BIZ_WITH_ACTORS];
 new BizBankActor[MAX_BIZ_WITH_ACTORS][4];
 new BizClothesActor[15];
@@ -79,16 +78,6 @@ stock LoadBizStaticActor()
     CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3090, 184, -1, 100.0, -1, 0); // 90 biz boat
     CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3091, 184, -1, 100.0, -1, 0); // 91 biz boat
     CreateDynamicActor(189, 1355.3701,1584.2448,10.8461,274.7623, true, 100.0, 3092, 184, -1, 100.0, -1, 0); // 92 biz boat
-
-
-    //Supermarket;
-    for(new b = 0; b < 13; ++b)
-    {
-        BizSMarketActor[b][0] = CreateDynamicActor(189, 1111.9116,-1380.5073,1401.7142,92.4125, true, 100.0, b+1, 206, -1, 100.0, -1, 0);
-        BizSMarketActor[b][1] = CreateDynamicActor(189, 1107.3895,-1380.6812,1401.7142,270.3970, true, 100.0, b+1, 206, -1, 100.0, -1, 0);
-        BizSMarketActor[b][2] = CreateDynamicActor(189, 1106.3508,-1380.6312,1401.7142,90.4179, true, 100.0, b+1, 206, -1, 100.0, -1, 0);
-        BizSMarketActor[b][3] = CreateDynamicActor(189, 1101.8390,-1380.6248,1401.7142,270.2352, true, 100.0, b+1, 206, -1, 100.0, -1, 0);
-    }
 
     // Apteka
     for(new b = 0; b < 10; ++b)
