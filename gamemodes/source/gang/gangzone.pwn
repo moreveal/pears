@@ -328,7 +328,7 @@ CMD:reloadgz(playerid)
 }
 CMD:setgz(playerid, const params[])
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить территорию [ /setgz ID Фракции ]");
 	if(params[0] > 16 || params[0] < 13) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 13 и не больше 16");
 	for(new i = 0; i < GZONES; i++)

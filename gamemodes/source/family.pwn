@@ -143,6 +143,21 @@ stock showDialogFamilyMenu(playerid)
     return 1;
 }
 
+CMD:familytype(playerid, const params[])
+{
+    new fam,type;
+    if(PlayerInfo[playerid][pSoska] >= 15)
+    {
+      if(!sscanf(params, "ii",fam,type))
+	  {
+		FamilyInfo[fam][fType] = type;
+		FamilyInfo[fam][fUpdate] = 1;
+      }
+	  else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить семейный ранг [ /familytype IDFam type(3 секта, 4 стриты,2 партия) ]");
+    }
+	return 1;
+}
+
 CMD:frank(playerid)
 {
     if(checkFamilyPermission(playerid)) return 1; // Проверки разрешений семьи

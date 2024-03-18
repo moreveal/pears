@@ -206,7 +206,7 @@ stock TakeMake(playerid,number)
     OnlineInfo[playerid][oTakeMake] = number;
     new line[80];
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
-    format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]);
+    format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]+1);
     SendClientMessage(playerid, COLOR_GREY, line);
 }
 

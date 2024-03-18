@@ -4909,7 +4909,7 @@ CMD:rslot(playerid, const params[])
 	new giveplayerid,tmp[24],vslot;
 	if(sscanf(params, "s[24]i", tmp,vslot)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить багнутое авто из stats [ /rslot ID Слот ]");
  	giveplayerid = ReturnUser(tmp, 1);
-	if(PlayerInfo[playerid][pSoska] >= 20)
+	if(PlayerInfo[playerid][pSoska] >= 14)
 	{
 		new string[160];
  		if(IsPlayerConnected(giveplayerid))

@@ -441,7 +441,7 @@ CMD:clearqwest(playerid)
 
 CMD:clearquest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 15) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     new tmp[24],questid;
 	if(sscanf(params, "s[24]i",tmp,questid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Очистить начальный квест игрока [ /clearquest ID Квест (0 - все квесты) ]");
     new giveplayerid = ReturnUser(tmp, 1);

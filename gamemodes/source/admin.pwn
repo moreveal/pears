@@ -294,7 +294,7 @@ CMD:rasformbiz(playerid)
 }
 CMD:bizmaf(playerid, const params[])
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_LEADER)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить бизнес мафии [ /bizmaf ID Фракции № Бизнеса ]");
 	if(params[0] != 5 && params[0] != 6 && params[0] != 10 && params[0] != 12 && params[0] != 18) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Только номер мафии [ 5,6,10,12,18 ]");
 	if(params[1] > 200 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Бизнес не меньше 1 и не больше 200");

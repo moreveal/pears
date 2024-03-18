@@ -165,7 +165,7 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
 
 CMD:givecase(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
+    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс в инвентарь [ /givecase ID ]");
     
     new thingId, thingQuan, thingType, thingPara, thingPack;
