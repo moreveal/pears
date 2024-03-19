@@ -1,7 +1,7 @@
 
 #define MAX_ACCESSORY 1000 // Максимальное количество аксессуаров для игроков
 
-enum acInfo
+enum accessorInfo
 {
 	acID, // ID В базе данных
 	acModel, // Модель Аксессуара
@@ -21,7 +21,7 @@ enum acInfo
 	bool:acUpdate, // Статус сохранения в базу (раз в минуту проверка)
 	bool:acMysqlCheck // Запрет на повторный запрос в базу, пока от предыдущего не пришел ответ
 };
-new AccessoryInfo[MAX_ACCESSORY][acInfo];
+new AccessoryInfo[MAX_ACCESSORY][accessorInfo];
 new AccessoryQuan;
 
 new AccessoryEditSkin;

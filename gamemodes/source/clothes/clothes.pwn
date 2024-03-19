@@ -1365,50 +1365,40 @@ function LoadSkinBuyGold()
 
 stock SaveSkinEconomy()
 {
-	print("[pizdos] SaveSkinEconomy"); // VREMENNO
 	new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinGos` = '%s' WHERE `newid` = '1'", StringifyArray(SkinGos, sizeof(SkinGos)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveSkinEconomy OK"); // VREMENNO
 	return 1;
 }
 
 stock SaveSkinGold()
 {
-	print("[pizdos] SaveSkinGold"); // VREMENNO
 	new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinGold` = '%s' WHERE `newid` = '1'", StringifyArray(SkinGold, sizeof(SkinGold)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveSkinGold OK"); // VREMENNO
 	return 1;
 }
 
 stock SaveSkinSale()
 {
-	print("[pizdos] SaveSkinSale"); // VREMENNO
 	new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinSale` = '%s' WHERE `newid` = '1'", StringifyArray(SkinSale, sizeof(SkinSale)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveSkinSale OK"); // VREMENNO
 	return 1;
 }
 
 stock SaveSkinBuy()
 {
-	print("[pizdos] SaveSkinBuy"); // VREMENNO
     new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinBuy` = '%s' WHERE `newid` = '1'", StringifyArray(SkinBuy, sizeof(SkinBuy)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveSkinBuy OK"); // VREMENNO
     return 1;
 }
 
 stock SaveSkinBuyGold()
 {
-	print("[pizdos] SaveSkinBuyGold"); // VREMENNO
     new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_skinprice` SET `SkinBuyGold` = '%s' WHERE `newid` = '1'", StringifyArray(SkinBuyGold, sizeof(SkinBuyGold)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveSkinBuyGold OK"); // VREMENNO
     return 1;
 }

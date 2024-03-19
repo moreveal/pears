@@ -263,6 +263,15 @@ static s_MaxWeaponShootRate[] =
 forward PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart);
 public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
 {
+    // Кикаем падлюку, если при нанесении дамага его тима странная
+    if(GetPlayerTeam(playerid) != 2)
+    {
+        SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [PlayerDamage].");
+        ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff0000}****  {FFFFFF}*[Protect Project]*  {ff0000}****","{ff0000}******** {ffffff}Вы были кикнуты по подозрению в читерстве [PlayerDamage] {ff0000}********","*","");
+        Kickx(playerid);
+        return false;
+    }
+
     // Защита от дамага с выстреливающего оружия без отправки пули
     if(IsShootingWeapon(weaponid) && BulletDamagePlayer[playerid] != weaponid) return false;
     BulletDamagePlayer[playerid] = -1;

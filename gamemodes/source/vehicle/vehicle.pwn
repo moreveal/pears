@@ -1074,31 +1074,25 @@ stock SaveVehiclePrice(idx)
 
 stock SaveVehicleGold()
 {
-	print("[pizdos] SaveVehicleGold"); // VREMENNO
     new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehGold` = '%s' WHERE `newid` = '1'", StringifyArray(VehGold, sizeof(VehGold)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveVehicleGold OK"); // VREMENNO
     return 1;
 }
 
 stock SaveVehicleBuy()
 {
-	print("[pizdos] SaveVehicleBuy"); // VREMENNO
     new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehBuy` = '%s' WHERE `newid` = '1'", StringifyArray(VehBuy, sizeof(VehBuy)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveVehicleBuy OK"); // VREMENNO
     return 1;
 }
 
 stock SaveVehicleBuyGold()
 {
-	print("[pizdos] SaveVehicleBuyGold"); // VREMENNO
     new string_mysql[4096];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_economy` SET `VehBuyGold` = '%s' WHERE `newid` = '1'", StringifyArray(VehBuyGold, sizeof(VehBuyGold)));
 	query_empty(pearsq, string_mysql);
-	print("[pizdos] SaveVehicleBuyGold OK"); // VREMENNO
     return 1;
 }
 
