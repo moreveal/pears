@@ -672,6 +672,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
             UpdateLabelTermRace(oid,DP[0][playerid]);
         }
+        else if(gRedakt[playerid] == 28) // редачим трейлер
+        {
+            PlaceTrailer(EditObjectInfo[playerid][editOption], trailerInfo[EditObjectInfo[playerid][editOption]][tModel],  x,  y,  z,  rx,  ry, rz);
+        }
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
         gRedakt[playerid] = 0; // Редактор Off

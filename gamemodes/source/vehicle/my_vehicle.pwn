@@ -4904,6 +4904,18 @@ stock GetPlayerVehicleSlot(playerid)
 	return quanSlot;
 }
 
+stock AutomobileInteraction(playerid)
+{
+	new v = DP[0][playerid];
+   	new str[100],sctring[200];
+   	format(str,sizeof(str),"{ff9000}%s {555555}| Model %d ID %d\t ",GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vModel], v), strcat(sctring,str);
+	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"\n{cccccc}Двери \t {99ff66}[ Open ]"), strcat(sctring,str);
+   	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"\n{cccccc}Двери \t {FF6347}[ Close ]"), strcat(sctring,str);
+	format(str,sizeof(str),"\n{cccccc}Заправить машину\t"), strcat(sctring,str);
+	ShowDialog(playerid,66,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Управление Транспортом",sctring,"Выбор","Отмена");
+	return 1;
+}
+
 CMD:rslot(playerid, const params[])
 {
 	new giveplayerid,tmp[24],vslot;

@@ -283,9 +283,10 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 if(BizzInfo[b][bFamilyPartner][listord] != 0)
                 {
                     new fam = BizzInfo[b][bFamilyPartner][listord];
-                    if(b >= 1 && b <= 12) FamilyInfo[fam][fParthnerBenz] = b;
-                    else if(b >= 153 && b <= 162) FamilyInfo[fam][fParthnerMarket] = b;
-                    else if(b >= 183 && b <= 192) FamilyInfo[fam][fParthnerService] = b;
+                    if(b >= 1 && b <= 12) FamilyInfo[fam][fParthnerBenz] = 0;
+                    else if(b >= 153 && b <= 162) FamilyInfo[fam][fParthnerMarket] = 0;
+                    else if(b >= 183 && b <= 192) FamilyInfo[fam][fParthnerService] = 0;
+                    BizzInfo[b][bFamilyPartner][listord] = 0;
                     SaveBizzPartner(b);
                     SaveFamily(fam);
                 }

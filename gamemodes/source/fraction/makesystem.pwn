@@ -207,6 +207,7 @@ stock TakeMake(playerid,number)
     new line[80];
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
     format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]+1);
+    format(line,sizeof(line)," {AFAFAF}По призду на место не забудьте закрыть вызов. [/closemake %d]", OnlineInfo[playerid][oTakeMake]+1);
     SendClientMessage(playerid, COLOR_GREY, line);
 }
 
@@ -301,17 +302,17 @@ CMD:closemake(playerid,const params[])
         GetVehiclePos(MakeInfo[number][mkWhoParam],x,y,z);
         if(VehInfo[MakeInfo[number][mkWhoParam]][vAlarm] == 2 && VehInfo[MakeInfo[number][mkWhoParam]][vAlarmUnix]+604800 > gettime())
         {
-            if(!IsPlayerInRangeOfPoint(playerid,50.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+            if(!IsPlayerInRangeOfPoint(playerid,80.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
         }
         else
         {
-            if(!IsPlayerInRangeOfPoint(playerid,50.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+            if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
         }
         CloseMake(playerid,number);
     }
     if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который никто не принял");
     if(MakeInfo[number][mkWhoTakePlayer] != playerid && MakeInfo[number][mkWhoTakePlayer] != -1) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который принял другой человек");
-    if(!IsPlayerInRangeOfPoint(playerid,50.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+    if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
     CloseMake(playerid,number);
     return 1;
 }

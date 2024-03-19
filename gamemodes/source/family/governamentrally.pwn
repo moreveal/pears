@@ -227,6 +227,11 @@ stock dialogCase_Governament(playerid, dialogid, response, listitem, const input
             ViborInfo[vkakoi] ++;
             ViborInfo[vfunk3] = gettime();
             ViborInfo[vfunk2] = gettime() + 259200;
+            new tyear, tmonth, tday, thour, tminute, tsecond;
+            stamp2datetime(ViborInfo[vfunk3], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+            format(ViborInfo[vdatanach],sizeof(ViborInfo[vdatanach]),"%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+            stamp2datetime(ViborInfo[vfunk2], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+            format(ViborInfo[vdatakon],sizeof(ViborInfo[vdatakon]),"%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
             UpdateVoteTableObject();
             SaveVibor();
             CreateVoteInfoPickup();

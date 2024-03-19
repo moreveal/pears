@@ -274,8 +274,8 @@ stock ShowTrailerMenu(playerid) {
     new tid = GetPlayerTrailerID(playerid);
     if (tid < 0) return 0;
 
-    static const fmt_str[] = COLOR_WHITE_TEXT"Отметить на карте\nДверь [ %s "COLOR_WHITE_TEXT"]";
-    new str[sizeof fmt_str - 2 + 8 + 7 + 1];
+    static const fmt_str[] = COLOR_WHITE_TEXT"Отметить на карте\nДверь [ %s "COLOR_WHITE_TEXT"]\nРедактировать позицию";
+    new str[sizeof fmt_str - 2 + 8 + 7 + 1 + 23];
     format(str, sizeof str, fmt_str,
         (trailerInfo[tid][tLocked] ? (COLOR_RED_TEXT"Закрыта") : (COLOR_GREEN_TEXT"Открыта"))
     );
