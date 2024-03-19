@@ -4440,24 +4440,16 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "comp11", VehInfo[vehid][vComp11]);
 			cache_get_value_name_int(0, "benz2", Gelium[vehid]);
 			cache_get_value_name_int(0, "keyunix", VehInfo[vehid][vKeyUnix]);
-			
-			for(new i = 0; i < 20; i++)
-			{
-				format(string,sizeof(string),"Inven%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvent][i]);
-				format(string,sizeof(string),"InvenKol%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInv][i]);
-				format(string,sizeof(string),"InvenPara%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvPara][i]);
-				format(string,sizeof(string),"InvenQara%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvQara][i]);
-				format(string,sizeof(string),"InvenType%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvType][i]);
-				format(string,sizeof(string),"InvenPack%d", i+1), cache_get_value_name_int(0, string, VehInfo[vehid][vInvPack][i]);
-			}
 			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vUpgrade]);
-			
 			cache_get_value_name_int(0, "panels", VehInfo[vehid][vPanels]);
 			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
 			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
 			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarm]);
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
+
+			// Загружаем содержимое багажника
+			OnPlayerLoadVehicle(vehid);
 
 			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг
@@ -4472,6 +4464,34 @@ function LoadCar(playerid, dab, race_check)
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);
+	return 1;
+}
+
+stock OnPlayerLoadVehicle(vehid)
+{
+	for(new i = 0; i < 20; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "v_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", VehInfo[vehid][vInvent][i]);
+				JSON_GetInt(node, "quan", VehInfo[vehid][vInv][i]);
+				JSON_GetInt(node, "para", VehInfo[vehid][vInvPara][i]);
+				JSON_GetInt(node, "qara", VehInfo[vehid][vInvQara][i]);
+				JSON_GetInt(node, "type", VehInfo[vehid][vInvType][i]);
+				JSON_GetInt(node, "pack", VehInfo[vehid][vInvPack][i]);
+			}
+		}
+	}
 	return 1;
 }
 
@@ -4755,26 +4775,32 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCar (str_name: %s, slot: %d, carid: %d)", PlayerInfo[playerid][pName], slot, carid);
 
 		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
-
 		new string_mysql[800];
-		if(statusLoad == 1) // Сразу загружаем транспорт
-		{
-			// До GiverCar при statusLoad == 1, нужно проверять сколько сейчас уже загружено тс 
-			// if(GetPlayerQuanLoadVehicle(playerid) >= 2) Не грузить если два и больше уже загружено
 
-			format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
-				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-				CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche); // 291 + 66 + 80 + 24 (461)
-			mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
-		}
-		else
+		new JsonNode:node;
+		CreateJsonBoot(node, 183, 1, 0, 0, 0, 0);
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
 		{
-			format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-				`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
-				`Inven1`='183',`InvenKol1`='1'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-				CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche);
-			query_empty(pearsq, string_mysql);
+			if(statusLoad == 1) // Сразу загружаем транспорт
+			{
+				// До GiverCar при statusLoad == 1, нужно проверять сколько сейчас уже загружено тс 
+				// if(GetPlayerQuanLoadVehicle(playerid) >= 2) Не грузить если два и больше уже загружено
+
+				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
+					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
+				mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
+			}
+			else
+			{
+				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
+					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json);
+				query_empty(pearsq, string_mysql);
+			}
 		}
 
         // Сохраняем авто
@@ -4911,7 +4937,7 @@ stock AutomobileInteraction(playerid)
    	format(str,sizeof(str),"{ff9000}%s {555555}| Model %d ID %d\t ",GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vModel], v), strcat(sctring,str);
 	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"\n{cccccc}Двери \t {99ff66}[ Open ]"), strcat(sctring,str);
    	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"\n{cccccc}Двери \t {FF6347}[ Close ]"), strcat(sctring,str);
-	format(str,sizeof(str),"\n{cccccc}Заправить машину\t"), strcat(sctring,str);
+	format(str,sizeof(str),"\n{cccccc}Заправить Транспорт\t"), strcat(sctring,str);
 	ShowDialog(playerid,66,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Управление Транспортом",sctring,"Выбор","Отмена");
 	return 1;
 }

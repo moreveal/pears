@@ -576,57 +576,66 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 	PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
 	return 1;
 }
-stock SaveBoot(v) // Сохранение всего багажника по цилку
+
+stock SaveBoot(playerid, bool:transaction = true)
 {
-    if(Cars[v] == 88)
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < 20; i++) SaveOneBoot(playerid, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
+	return 1;
+}
+
+stock CreateJsonBoot(&JsonNode:node, thingId, thingQuan, thingPara, thingQara, thingType, thingPack)
+{
+	if(thingId == 0)
 	{
-		if(VehInfo[v][vDatabase] >= 1 && VehInfo[v][vDatabase] <= MAX_MYVEHICLE)
+		node = JSON_INVALID_NODE;
+		return 1;
+	}
+	node = JSON_Object(
+		"id", JSON_Int(thingId),
+		"quan", JSON_Int(thingQuan),
+		"para", JSON_Int(thingPara),
+		"qara", JSON_Int(thingQara),
+		"type", JSON_Int(thingType),
+		"pack", JSON_Int(thingPack)
+	);
+	return 1;
+}
+
+stock SaveOneBoot(vehid, i)
+{
+	new JsonNode:node;
+	CreateJsonBoot(node, VehInfo[vehid][vInvent][i], VehInfo[vehid][vInv][i], VehInfo[vehid][vInvPara][i], VehInfo[vehid][vInvQara][i], VehInfo[vehid][vInvType][i], VehInfo[vehid][vInvPack][i]);
+	SaveBootByNewid(VehInfo[vehid][vNewid], i, node);
+	return 1;
+}
+
+stock SaveBootByNewid(newid, i, JsonNode:node)
+{
+	if(node == JSON_INVALID_NODE)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `v_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
 		{
-			new string_mysql[3000];
-
-			// Первая часть
-			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET ");
-			for(new i = 0; i < 9; i++)
-			{
-				format(string_mysql,sizeof(string_mysql),"%s `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', \
-					`InvenType%d` = '%d', `InvenPack%d` = '%d'%s", string_mysql,
-				i+1, VehInfo[v][vInvent][i], i+1, VehInfo[v][vInv][i], i+1, VehInfo[v][vInvPara][i], i+1, 
-				VehInfo[v][vInvQara][i], i+1, VehInfo[v][vInvType][i], i+1, VehInfo[v][vInvPack][i], (i < 8 ? "," : " ")); // 271
-			}
-		    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, VehInfo[v][vNewid]);
-			query_empty(pearsq, string_mysql);
-
-			// Вторая часть
-			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET ");
-			for(new i = 9; i < 20; i++)
-			{
-				format(string_mysql,sizeof(string_mysql),"%s `Inven%d` = '%d', `InvenKol%d` = '%d', `InvenPara%d` = '%d', `InvenQara%d` = '%d', \
-					`InvenType%d` = '%d', `InvenPack%d` = '%d'%s", string_mysql,
-				i+1, VehInfo[v][vInvent][i], i+1, VehInfo[v][vInv][i], i+1, VehInfo[v][vInvPara][i], i+1, 
-				VehInfo[v][vInvQara][i], i+1, VehInfo[v][vInvType][i], i+1, VehInfo[v][vInvPack][i], (i < 19 ? "," : " ")); // 271
-			}
-		    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, VehInfo[v][vNewid]);
-			query_empty(pearsq, string_mysql);
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `v_slot_%d`= '%e' WHERE `newid` = '%d'", i, string_json, newid);
+			mysql_tquery(pearsq, string_mysql);
 		}
 	}
 	return 1;
 }
-stock SaveOneBoot(veh, inva) // Сохранение багажника транспорта
-{
-    if(Cars[veh] == 88)
-	{
-		if(VehInfo[veh][vDatabase] >= 1 && VehInfo[veh][vDatabase] <= MAX_MYVEHICLE)
-		{
-			new string_mysql[149 + 143];
-			format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `Inven%d`='%d',`InvenKol%d`='%d',`InvenPara%d`='%d',`InvenQara%d`='%d',\
-				`InvenType%d`='%d',`InvenPack%d`='%d' WHERE `newid`='%d'",
-			inva+1,VehInfo[veh][vInvent][inva], inva+1,VehInfo[veh][vInv][inva], inva+1,VehInfo[veh][vInvPara][inva], inva+1,VehInfo[veh][vInvQara][inva], 
-			inva+1,VehInfo[veh][vInvType][inva], inva+1,VehInfo[veh][vInvPack][inva], VehInfo[veh][vNewid]);
-			query_empty(pearsq, string_mysql);
-		}
-	}
-	return 1;
-}
+
 stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимиты дома
 {
 	new lim[INVENTER];
