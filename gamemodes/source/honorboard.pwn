@@ -75,7 +75,7 @@ CMD:inhb(playerid, const params[])
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
 	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
-      	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix);
+      	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsdd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix,para);
     }
     else
     {
@@ -115,23 +115,23 @@ function get_inhonorboard(playerid, g, const tmpName[], tmpTPlayerID,const tmpTN
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
-function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
+function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix,targetid)
 {
     new rows,query[512];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(plaid >= 0) info_hb(plaid, g);
+		if(targetid >= 0) info_hb(targetid, g);
 	}
 	else
 	{
-		if(OnlineInfo[plaid][oLogged] == 1)
+		if(OnlineInfo[targetid][oLogged] == 1)
 		{
 			format(query, sizeof(query),"{FF6347}[ %s ]: поместил вас в Доску Почета %s\n",tmpTName, frakName[g]);
 			SendClientMessage(plaid, COLOR_GREY, query);
 			if(playerid >= 0) format(query, sizeof(query),"\n{FF6347}%s поместил вас в Доску Почета %s\n", tmpTName, frakName[g]), ShowDialog(plaid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
 			PlayerPlaySound(plaid, 31202, 0,0,0);
-			if(PlayerInfo[plaid][pDrawVisible][2] == false) PlayerTextDrawShow(plaid, PlayerSiteDraw[2][plaid]);
+			if(PlayerInfo[targetid][pDrawVisible][2] == false) PlayerTextDrawShow(targetid, PlayerSiteDraw[2][targetid]);
 		}
 	    if(playerid >= 0)
 	    {
@@ -165,17 +165,17 @@ CMD:outhb(playerid, const params[])
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
 	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
-      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix);
+      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix,para);
     }
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
-		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "ddsdsd", playerid, g, tmpName, tmpTPlayerID, tmpTName, unix);
+		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "ddsdsd", playerid, g, tmpName, tmpTPlayerID, tmpTName, unix,para);
     }
 	return 1;
 }
-function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
+function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix,target)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -185,24 +185,24 @@ function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayer
 	    cache_get_value_name_int(0, "user_id", plaid);
 		new string_mysql[120];
 	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
-      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dsdd", playerid, tmpName, plaid, g);
+      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dsddd", playerid, tmpName, plaid, g,target);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
-function out_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix)
+function out_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix,target)
 {
     new rows, string[160];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(OnlineInfo[plaid][oLogged] == 1)
+		if(OnlineInfo[target][oLogged] == 1)
 		{
 			format(string, sizeof(string),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",PlayerInfo[playerid][pName], frakName[g]);
-			SendClientMessage(plaid, COLOR_GREY, string);
+			SendClientMessage(target, COLOR_GREY, string);
 			format(string, sizeof(string),"{99ff66}%s {cccccc}вынес вас из доски почета %s", PlayerInfo[playerid][pName], frakName[g]);
-			ShowDialog(plaid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", string,"*","");
-			if(PlayerInfo[plaid][pDrawVisible][2] == false) PlayerTextDrawShow(plaid, PlayerSiteDraw[2][plaid]);
+			ShowDialog(target,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", string,"*","");
+			if(PlayerInfo[target][pDrawVisible][2] == false) PlayerTextDrawShow(target, PlayerSiteDraw[2][target]);
 		}
 		PlayerPlaySound(playerid, 6401, 0,0,0);
 	    SendClientMessagef(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета",tmpName,frakName[g]);
