@@ -652,8 +652,11 @@ stock shift_biz(playerid, b, getinva, putinva)
 		i_resettabs(playerid);
 		item_second(playerid, 0, 0, getinva, 0, 0, 0, 0, 0);
 		item_second(playerid, BizzInfo[b][bInvent][putinva], BizzInfo[b][bInv][putinva], putinva, 0, BizzInfo[b][bInvPara][putinva], BizzInfo[b][bInvType][putinva], BizzInfo[b][bInvPack][putinva], 0);
+		
+		mysql_tquery(pearsq, "START TRANSACTION;");
 		SaveSkladBiz(b, getinva);
 		SaveSkladBiz(b, putinva);
+		mysql_tquery(pearsq, "COMMIT;");
 	}
 	return 1;
 }
@@ -778,15 +781,37 @@ stock TakeThingBiz(b, thingId, kolvo, thingType, inv) // Забираем из �
 	}
 	return 1;
 }
-stock SaveSkladBiz(idx, i) // Сохраняем ячейку склада бизнеса
+
+stock SaveSkladBiz(idx, i)
 {
-	new string_mysql[400];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Invent%d`='%d',`Inv%d`='%d',`InvPara%d`='%d',`InvQara%d`='%d',`InvType%d`='%d',`InvPack%d`='%d' WHERE `newid`='%d'",
-	i,BizzInfo[idx][bInvent][i],i,BizzInfo[idx][bInv][i],i,BizzInfo[idx][bInvPara][i],i,BizzInfo[idx][bInvQara][i],i,BizzInfo[idx][bInvType][i],
-	i,BizzInfo[idx][bInvPack][i],idx); // 137 + 77 + 12 (226)
-	query_empty(pearsq, string_mysql);
+	if(BizzInfo[idx][bInvent][i] == 0)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `b_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new JsonNode:node = JSON_Object(
+			"id", JSON_Int(BizzInfo[idx][bInvent][i]),
+			"quan", JSON_Int(BizzInfo[idx][bInv][i]),
+			"para", JSON_Int(BizzInfo[idx][bInvPara][i]),
+			"qara", JSON_Int(BizzInfo[idx][bInvQara][i]),
+			"type", JSON_Int(BizzInfo[idx][bInvType][i]),
+			"pack", JSON_Int(BizzInfo[idx][bInvPack][i])
+		);
+
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `b_slot_%d`= '%e' WHERE `newid` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq, string_mysql);
+		}
+	}
 	return 1;
 }
+
 stock delproduct(b, ord) // Удаляем заказ доставки товара в бизнесы
 {
 	BizzInfo[b][bOrder][ord] = 0;
@@ -1061,77 +1086,171 @@ stock SaveBizz(b)
 	SaveBizzSetting(b);
 	return true;
 }
-stock SaveBizzProduct(idx)
+stock SaveBizzProduct(idx, bool:transaction = true)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 
-	new string_mysql[4000];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `Item0` = '%d', `Price0` = '%d', `Product0` = '%d', `TypeProduct0` = '%d', `Ware0` = '%d'",
-	BizzInfo[idx][bItem][0], BizzInfo[idx][bPrice][0], BizzInfo[idx][bProduct][0], BizzInfo[idx][bTypeProduct][0], BizzInfo[idx][bWare][0]);
-	for(new i = 1; i < 20; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", string_mysql,
-		i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
-	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx);
-	query_empty(pearsq, string_mysql);
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `Item20` = '%d', `Price20` = '%d', `Product20` = '%d', `TypeProduct20` = '%d', `Ware20` = '%d'",
-	BizzInfo[idx][bItem][20], BizzInfo[idx][bPrice][20], BizzInfo[idx][bProduct][20], BizzInfo[idx][bTypeProduct][20], BizzInfo[idx][bWare][20]);
-	for(new i = 21; i < 40; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", string_mysql,
-		i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]);
-	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx);
-	query_empty(pearsq, string_mysql);
+	for(new i = 0; i < MAX_BIZ_ITEM; i++) SaveBizzProductItem(idx, i);
 
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `Item40` = '%d', `Price40` = '%d', `Product40` = '%d', `TypeProduct40` = '%d', `Ware40` = '%d'",
-	BizzInfo[idx][bItem][40], BizzInfo[idx][bPrice][40], BizzInfo[idx][bProduct][40], BizzInfo[idx][bTypeProduct][40], BizzInfo[idx][bWare][40]); // 116 + 55
-	for(new i = 41; i < MAX_BIZ_ITEM; i++) 
-	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d'", string_mysql,
-		i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], i, BizzInfo[idx][bWare][i]); // 99 + 10 + 55 (164)
-	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx); // 24 + 11
-	query_empty(pearsq, string_mysql);
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
 stock SaveBizzProductItem(idx, i)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 
-	new string_mysql[300];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `Item%d` = '%d', `Price%d` = '%d', `Product%d` = '%d', `TypeProduct%d` = '%d', `Ware%d` = '%d' WHERE `newid` = '%d'",
-	i, BizzInfo[idx][bItem][i], i, BizzInfo[idx][bPrice][i], i, BizzInfo[idx][bProduct][i], i, BizzInfo[idx][bTypeProduct][i], 
-	i, BizzInfo[idx][bWare][i], idx); // 137 + 66 + 10 (213)
-	query_empty(pearsq, string_mysql);
+	if(BizzInfo[idx][bProduct][i] == 0 && BizzInfo[idx][bWare][i] == 0) // Слот пустой, тогда NULL
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `p_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new JsonNode:node = JSON_Object(
+			"item", JSON_Int(BizzInfo[idx][bItem][i]),
+			"price", JSON_Int(BizzInfo[idx][bPrice][i]),
+			"product", JSON_Int(BizzInfo[idx][bProduct][i]),
+			"typeprod", JSON_Int(BizzInfo[idx][bTypeProduct][i]),
+			"ware", JSON_Int(BizzInfo[idx][bWare][i])
+		);
+
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `p_slot_%d`= '%e' WHERE `newid` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq, string_mysql);
+		}
+	}
 	return 1;
 }
-stock SaveBizzOrder(idx, ord)
+
+stock OnLoadBizzProduct(idx)
 {
-	if(LIMITED_LOADING_SERVER >= 2) return 1;
-	if(ord >= 0 && ord <= 49)
+	for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
-		new string_mysql[200];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Order%d`='%d',`OrderQuan%d`='%d',`OrderType%d`='%d' WHERE `newid` = '%d'", ord, BizzInfo[idx][bOrder][ord], ord, BizzInfo[idx][bOrderQuan][ord], ord, BizzInfo[idx][bOrderType][ord], idx);
-		query_empty(pearsq, string_mysql); // 95 + 44 + 6 (145)
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "p_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "item", BizzInfo[idx][bItem][i]);
+				JSON_GetInt(node, "price", BizzInfo[idx][bPrice][i]);
+				JSON_GetInt(node, "product", BizzInfo[idx][bProduct][i]);
+				JSON_GetInt(node, "typeprod", BizzInfo[idx][bTypeProduct][i]);
+				JSON_GetInt(node, "ware", BizzInfo[idx][bWare][i]);
+			}
+		}
 	}
-  	return 1;
+	return 1;
 }
-stock SaveBizzOrderAll(idx)
+
+stock OnLoadBizzInvent(idx)
+{
+	for(new i = 0; i < 80; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "b_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", BizzInfo[idx][bInvent][i]);
+				JSON_GetInt(node, "quan", BizzInfo[idx][bInv][i]);
+				JSON_GetInt(node, "para", BizzInfo[idx][bInvPara][i]);
+				JSON_GetInt(node, "qara", BizzInfo[idx][bInvQara][i]);
+				JSON_GetInt(node, "type", BizzInfo[idx][bInvType][i]);
+				JSON_GetInt(node, "pack", BizzInfo[idx][bInvPack][i]);
+			}
+		}
+	}
+	return 1;
+}
+
+stock OnLoadBizzOrder(idx)
+{
+	for(new i = 0; i < 50; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "o_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", BizzInfo[idx][bOrder][i]);
+				JSON_GetInt(node, "quan", BizzInfo[idx][bOrderQuan][i]);
+				JSON_GetInt(node, "type", BizzInfo[idx][bOrderType][i]);
+			}
+		}
+	}
+	return 1;
+}
+
+stock SaveBizzOrder(idx, i)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 
-	new string_mysql[5400];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `Order0` = '%d', `OrderQuan0` = '%d', `OrderType0` = '%d'",
-	BizzInfo[idx][bOrder][0], BizzInfo[idx][bOrderQuan][0], BizzInfo[idx][bOrderType][0]); // 79 + 33
-	for(new i = 1; i < 50; i++) format(string_mysql,sizeof(string_mysql),"%s, `Order%d` = '%d', `OrderQuan%d` = '%d', `OrderType%d` = '%d'", string_mysql,
-	i, BizzInfo[idx][bOrder][i], i, BizzInfo[idx][bOrderQuan][i], i, BizzInfo[idx][bOrderType][i]); // 65 + 33 + 6 (104)
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx); // 24 + 11
-	query_empty(pearsq, string_mysql);
+	if(BizzInfo[idx][bOrder][i] == 0) // Слот пустой, тогда NULL
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `o_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new JsonNode:node = JSON_Object(
+			"id", JSON_Int(BizzInfo[idx][bOrder][i]),
+			"quan", JSON_Int(BizzInfo[idx][bOrderQuan][i]),
+			"type", JSON_Int(BizzInfo[idx][bOrderType][i])
+		);
+
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `o_slot_%d`= '%e' WHERE `newid` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq, string_mysql);
+		}
+	}
+  	return 1;
+}
+
+stock SaveBizzOrderAll(idx, bool:transaction = true)
+{
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < 50; i++) SaveBizzOrder(idx, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
+
 stock SaveBizzPartner(idx)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;

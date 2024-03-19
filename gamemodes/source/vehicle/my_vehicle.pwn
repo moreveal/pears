@@ -4449,7 +4449,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
 
 			// Загружаем содержимое багажника
-			OnPlayerLoadVehicle(vehid);
+			OnLoadVehicle(vehid);
 
 			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг
@@ -4467,7 +4467,7 @@ function LoadCar(playerid, dab, race_check)
 	return 1;
 }
 
-stock OnPlayerLoadVehicle(vehid)
+stock OnLoadVehicle(vehid)
 {
 	for(new i = 0; i < 20; i++)
 	{
