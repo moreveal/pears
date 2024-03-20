@@ -49,7 +49,6 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
         SetDynamicObjectPos(trailerInfo[id][tObject], x, y, z);
         SetDynamicObjectRot(trailerInfo[id][tObject], rx, ry, rz);
     } else trailerInfo[id][tObject] = CreateDynamicObject(trailerInfo[id][tModel], x, y, z, rx, ry, rz, 0, 0);
-
     // Размещение входа    
     new Float: doorX, Float: doorY, Float: doorZ;
     switch (model) {
@@ -85,7 +84,6 @@ stock UnloadPlacedTrailer(id)
     
     new trailer_obj = objects[0];
     if (!IsValidDynamicObject(trailer_obj) || GetDynamicObjectModel(trailer_obj) != trailerInfo[id][tModel]) return 0;
-    
     DestroyDynamicObject(trailer_obj);
     DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
     DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
@@ -594,6 +592,7 @@ stock exittrailer(playerid)
 forward UploadTrailers();
 public UploadTrailers()
 {
+    new string_mysql[80];
     new time = GetTickCount();
 	for (new i = 0; i < cache_num_rows(); i++) {
 		cache_get_value_name_int(i, "id", trailerInfo[i][tID]);
@@ -610,7 +609,8 @@ public UploadTrailers()
 		cache_get_value_name_float(i, "pic_z", trailerInfo[i][tPic][2]);
 		cache_get_value_name_bool(i, "active", trailerInfo[i][tActive]);
 		cache_get_value_name_bool(i, "locked", trailerInfo[i][tLocked]);
-
+        format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `pTrailer` = '%d' WHERE `user_id` = '%d'", i+1, trailerInfo[i][tOwnerID]);
+        query_empty(pearsq, string_mysql);
 		if (trailerInfo[i][tActive]) PlaceTrailer(i, trailerInfo[i][tModel], trailerInfo[i][tPos][0], trailerInfo[i][tPos][1], trailerInfo[i][tPos][2], trailerInfo[i][tRot][0], trailerInfo[i][tRot][1], trailerInfo[i][tRot][2]);
 	}
     printf("[MODE]: Трейлеры [%d ms]",GetTickCount() - time);
@@ -622,6 +622,11 @@ public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
 	new owner_name[MAX_PLAYER_NAME + 1], number = id+1;
 	cache_get_value_name(0, "Name", owner_name);
     new string[90];
+    if(trailerInfo[id][tEnterPickup] != 0)
+    {
+        DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
+        DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
+    }
     format(string,sizeof(string),"{cccccc}Трейлер "COLOR_ORANGE_TEXT"№%d\n"COLOR_WHITE_TEXT"Владелец: "COLOR_ORANGE_TEXT"%s", number, owner_name);
     trailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, x, y, z, 12.5, .testlos = 1, .worldid = 0, .interiorid = 0);
     trailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_PICKUP, x, y, z, 0, 0, .streamdistance = 100.0);
