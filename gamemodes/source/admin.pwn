@@ -48,8 +48,15 @@ CMD:delmats(playerid, const params[])
 	{
 		new string[144];
 	  	format(string, sizeof(string), " [ ADM ]: Админ %s очистил склад: %s",PlayerInfo[playerid][pName],frakName[params[0]]), ABroadCast(COLOR_ADM,string,1);
-	   	for(new inva = 0; inva < 20; inva++) OrganInfo[params[0]][gInvent][inva] = 0, OrganInfo[params[0]][gInv][inva]= 0, OrganInfo[params[0]][gInvType][inva]= 0, OrganInfo[params[0]][gInvPara][inva]= 0;
-		OrganInfo[params[0]][gUpdate] = 1;
+	   	for(new inva = 0; inva < 20; inva++) 
+		{
+			OrganInfo[params[0]][gInvent][inva] = 0;
+			OrganInfo[params[0]][gInv][inva] = 0;
+			OrganInfo[params[0]][gInvType][inva] = 0;
+			OrganInfo[params[0]][gInvPara][inva] = 0;
+			OrganInfo[params[0]][gInvUpdate][inva] = true;
+		}
+		OrganInfo[params[0]][gUpdateSklad] = 1;
 		foreach(Player,i)
 		{
 			if(Tabs_Load[i] != 3) continue;

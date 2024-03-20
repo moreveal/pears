@@ -1955,10 +1955,14 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение пр
 		OrganInfo[wh][gInv][putinva] = OrganInfo[wh][gInv][getinva];
 		OrganInfo[wh][gInvType][putinva] = OrganInfo[wh][gInvType][getinva];
 		OrganInfo[wh][gInvPara][putinva] = OrganInfo[wh][gInvPara][getinva];
+		OrganInfo[wh][gInvUpdate][putinva] = true;
+
 		OrganInfo[wh][gInvent][getinva] = 0;
 		OrganInfo[wh][gInv][getinva] = 0;
 		OrganInfo[wh][gInvType][getinva] = 0;
 		OrganInfo[wh][gInvPara][getinva] = 0;
+		OrganInfo[wh][gInvUpdate][getinva] = true;
+
 		i_resettabs(playerid);
 		item_second(playerid, 0, 0, getinva, 0, 0, 0, 0, 0);
 		item_second(playerid, OrganInfo[wh][gInvent][putinva], OrganInfo[wh][gInv][putinva], putinva, 0, 300000, OrganInfo[wh][gInvType][putinva], 0, 0);
@@ -1996,7 +2000,8 @@ stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
  	}
  	if(put_inva >= 0)
  	{
- 		OrganInfo[wh][gUpdate] = 1;
+		OrganInfo[wh][gInvUpdate][put_inva] = true;
+		OrganInfo[wh][gUpdateSklad] = 1;
 	 	foreach(Player,i)
 		{
 			if(Tabs_Load[i] != 3) continue;
@@ -2018,7 +2023,9 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 		}
 		else OrganInfo[g][gInv][dopinf] -= quan;
 	}
-	OrganInfo[g][gUpdate] = 1;
+
+	OrganInfo[g][gInvUpdate][dopinf] = true;
+	OrganInfo[g][gUpdateSklad] = 1;
 	foreach(Player, i)
 	{
 		if(Tabs_Load[i] != 3) continue;
@@ -2026,22 +2033,50 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 	}
 	return 1;
 }
-stock SaveSklad(idx) // Сохранение всего склада организации по циклу
+stock SaveSklad(idx, bool:transaction = true) // Сохранение всего склада организации по циклу
 {
-	new string_mysql[2900];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_organization` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvPara0` = '%d'",
-	OrganInfo[idx][gInvent][0], OrganInfo[idx][gInv][0], OrganInfo[idx][gInvType][0], OrganInfo[idx][gInvPara][0]); // 99 + 44
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq_2, "START TRANSACTION;");
 
-	for(new i = 1; i < 20; i++) 
+	for(new i = 0; i < 20; i++) 
 	{
-		format(string_mysql,sizeof(string_mysql),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvPara%d` = '%d'", string_mysql,
-		i, OrganInfo[idx][gInvent][i], i, OrganInfo[idx][gInv][i], i, OrganInfo[idx][gInvType][i], i, OrganInfo[idx][gInvPara][i]); // 78 + 44 + 8 (2600)
+		if(OrganInfo[idx][gInvUpdate][i] == true) SaveSkladOne(idx, i);
 	}
 
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `frakid` = '%d'", string_mysql, idx); // 25 + 11
-	query_empty(pearsq_2, string_mysql);
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq_2, "COMMIT;");
 	return 1;
 }
+
+stock SaveSkladOne(idx, i)
+{
+	if(OrganInfo[idx][gInvent][i] == 0)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= NULL WHERE `frakid` = '%d'", i, idx);
+		mysql_tquery(pearsq_2, string_mysql);
+	}
+	else
+	{
+		new JsonNode:node = JSON_Object(
+			"id", JSON_Int(OrganInfo[idx][gInvent][i]),
+			"quan", JSON_Int(OrganInfo[idx][gInv][i]),
+			"para", JSON_Int(OrganInfo[idx][gInvPara][i]),
+			"type", JSON_Int(OrganInfo[idx][gInvType][i])
+		);
+
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= '%e' WHERE `frakid` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq_2, string_mysql);
+		}
+	}
+	OrganInfo[idx][gInvUpdate][i] = false;
+	return 1;
+}
+
 stock sklad_limit(thingId, thingType) // Проверяем лимиты склада организации
 {
 	new getLimit;

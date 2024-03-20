@@ -24,6 +24,7 @@ enum gInfo
 	gInv[20],
 	gInvType[20],
 	gInvPara[20],
+	bool:gInvUpdate[20],
 	gUpdate,
 	gUpdateSklad,
 	gUpdRank, // Статус обновления рангов
@@ -97,6 +98,32 @@ stock get_maxrank(g) // Получаем максимальное количес
 	return numr;
 }
 
+stock OnLoadOrganInvent(idx)
+{
+	for(new i = 0; i < 20; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "g_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", OrganInfo[idx][gInvent][i]);
+				JSON_GetInt(node, "quan", OrganInfo[idx][gInv][i]);
+				JSON_GetInt(node, "para", OrganInfo[idx][gInvPara][i]);
+				JSON_GetInt(node, "type", OrganInfo[idx][gInvType][i]);
+			}
+		}
+	}
+	return 1;
+}
+
 function LoadOrgan()
 {
 	new time = GetTickCount();
@@ -135,13 +162,9 @@ function LoadOrgan()
     	}
 		cache_get_value_name_int(f, "interval", OrganInfo[idx][gInterval]);
 		
-		for(new i = 0; i < 20; i++)
-    	{
-    	    format(string,sizeof(string),"Invent%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gInvent][i]);
-    	    format(string,sizeof(string),"Inv%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gInv][i]);
-    	    format(string,sizeof(string),"InvType%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gInvType][i]);
-    	    format(string,sizeof(string),"InvPara%d", i), cache_get_value_name_int(f, string, OrganInfo[idx][gInvPara][i]);
-    	}
+		// Загружаем склад организации
+		OnLoadOrganInvent(idx);
+
 		for(new x = 0; x < 20; x++)
     	{
 			format(atext,sizeof(atext),"gustat%d",x);
@@ -385,7 +408,6 @@ stock SaveOrgan(idx)
 	OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
 	OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx); // 201 + 154
 	query_empty(pearsq_2, string_mysql); // 987
-	if(idx >= 1) SaveSklad(idx);
 	return 1;
 }
 

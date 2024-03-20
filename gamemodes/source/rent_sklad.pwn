@@ -99,10 +99,14 @@ stock shift_rent(playerid, wh, getinva, putinva) // Перемещение пр�
 		WhInfo[wh][wInv][putinva] = WhInfo[wh][wInv][getinva];
 		WhInfo[wh][wInvType][putinva] = WhInfo[wh][wInvType][getinva];
 		WhInfo[wh][wInvQara][putinva] = WhInfo[wh][wInvQara][getinva];
+		WhInfo[wh][wInvUpdate][putinva] = true;
+
 		WhInfo[wh][wInvent][getinva] = 0;
 		WhInfo[wh][wInv][getinva] = 0;
 		WhInfo[wh][wInvType][getinva] = 0;
 		WhInfo[wh][wInvQara][getinva] = 0;
+		WhInfo[wh][wInvUpdate][getinva] = true;
+
 		i_resettabs(playerid);
 		item_second(playerid, 0, 0, getinva, 0, 0, 0, 0, 0);
 		item_second(playerid, WhInfo[wh][wInvent][putinva], WhInfo[wh][wInv][putinva], putinva, 0, 300000, WhInfo[wh][wInvType][putinva], 0, 0);
@@ -141,6 +145,7 @@ stock putrentwh(wh, pick, kol, thingType)
  	}
  	if(put_inva >= 0)
  	{
+		WhInfo[wh][wInvUpdate][put_inva] = true;
  		WhInfo[wh][wUpdate] = 1;
 	 	foreach(Player,i)
 		{
@@ -163,6 +168,7 @@ stock TakeRentwh(wh, stat, kolvo, thingType, dopinf)
 		}
 		else WhInfo[wh][wInv][dopinf] -= kolvo;
 	}
+	WhInfo[wh][wInvUpdate][dopinf] = true;
 	WhInfo[wh][wUpdate] = 1;
 	foreach(Player, i)
 	{
@@ -171,19 +177,77 @@ stock TakeRentwh(wh, stat, kolvo, thingType, dopinf)
 	}
 	return 1;
 }
-stock SaveRent(idx) // Сохранение всего арендованного склада по циклу
+
+stock OnLoadRentInvent(idx)
 {
-	new string_mysql[2800];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_rentwh` SET `Invent0` = '%d', `Inv0` = '%d', `InvType0` = '%d', `InvQara0` = '%d'",
-	WhInfo[idx][wInvent][0], WhInfo[idx][wInv][0], WhInfo[idx][wInvType][0], WhInfo[idx][wInvQara][0]); // 93 + 44
+	for(new i = 0; i < 20; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "r_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
 
-	for(new i = 1; i < 20; i++) format(string_mysql,sizeof(string_mysql),"%s, `Invent%d` = '%d', `Inv%d` = '%d', `InvType%d` = '%d', `InvQara%d` = '%d'", string_mysql,
-	i, WhInfo[idx][wInvent][i], i, WhInfo[idx][wInv][i], i, WhInfo[idx][wInvType][i], i, WhInfo[idx][wInvQara][i]); // 78 + 44 + 8 (2600)
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
 
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `Ids` = '%d'", string_mysql, idx); // 22 + 11
-	query_empty(pearsq, string_mysql); // 2 770
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", WhInfo[idx][wInvent][i]);
+				JSON_GetInt(node, "quan", WhInfo[idx][wInv][i]);
+				JSON_GetInt(node, "qara", WhInfo[idx][wInvQara][i]);
+				JSON_GetInt(node, "type", WhInfo[idx][wInvType][i]);
+			}
+		}
+	}
 	return 1;
 }
+
+stock SaveRent(idx, bool:transaction = true) // Сохранение всего арендованного склада по циклу
+{
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < 20; i++) 
+	{
+		if(WhInfo[idx][wInvUpdate][i] == true) SaveRentOne(idx, i);
+	}
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
+	return 1;
+}
+
+stock SaveRentOne(idx, i)
+{
+	WhInfo[idx][wInvUpdate][i] = false;
+	if(WhInfo[idx][wInvent][i] == 0)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_rentwh` SET `r_slot_%d`= NULL WHERE `Ids` = '%d'", i, idx);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new JsonNode:node = JSON_Object(
+			"id", JSON_Int(WhInfo[idx][wInvent][i]),
+			"quan", JSON_Int(WhInfo[idx][wInv][i]),
+			"qara", JSON_Int(WhInfo[idx][wInvQara][i]),
+			"type", JSON_Int(WhInfo[idx][wInvType][i])
+		);
+
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_rentwh` SET `r_slot_%d`= '%e' WHERE `Ids` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq, string_mysql);
+		}
+	}
+	return 1;
+}
+
 stock rentwh_limit(thingId, thingType, &getLimit) // Проверяем лимиты склада организации
 {
 	if(thingType == 0) // Обычные Предметы
