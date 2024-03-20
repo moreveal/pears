@@ -249,8 +249,8 @@ stock LoadBot()
 	BotPears[228] = CreateDynamicActor(50, -2105.5925,-8.6365,35.5099,199.8531);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 8 sf-2
 	BotPears[229] = CreateDynamicActor(151, -2113.7688,-3.1075,35.3447,358.4013);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 9 sf-2
 	//gotobiz 2
-	BotPears[230] = CreateDynamicActor(42, -86.4611,-1176.7148,2.8050,150.6032);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 10 ls-2
-	BotPears[231] = CreateDynamicActor(50, -82.1471,-1170.0570,2.8050,335.3078);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 11 ls-2
+	BotPears[230] = CreateDynamicActor(42, -85.7890,-1176.9122,2.8050,152.9876);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 10 ls-2
+	BotPears[231] = CreateDynamicActor(50, -82.8375,-1169.9406,2.8050,9.4796);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 11 ls-2
 	BotPears[232] = CreateDynamicActor(151, -77.7439,-1178.6635,2.6398,153.0467);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 12 ls-2
 	//gotobiz 5
 	BotPears[233] = CreateDynamicActor(42, 2113.4683,941.9081,11.0156,2.3508);// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 13 lv-1
@@ -469,8 +469,8 @@ stock LoadAnimBot(stat)
 		case 227: ApplyDynamicActorAnimation(BotPears[227],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 7
         case 228: ApplyDynamicActorAnimation(BotPears[228],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 8
         case 229: ApplyDynamicActorAnimation(BotPears[229],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 9
-        case 230: ApplyDynamicActorAnimation(BotPears[230],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 10
-        case 231: ApplyDynamicActorAnimation(BotPears[231],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 11
+        case 230: ApplyDynamicActorAnimation(BotPears[230],"SMOKING","M_smklean_loop",4.1,0,1,1,1,1); // Заправщик Bot 10
+        case 231: ApplyDynamicActorAnimation(BotPears[231],"SMOKING","M_smklean_loop",4.1,0,1,1,1,1); // Заправщик Bot 11
         case 232: ApplyDynamicActorAnimation(BotPears[232],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 12
         case 233: ApplyDynamicActorAnimation(BotPears[233],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 13
         case 234: ApplyDynamicActorAnimation(BotPears[234],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 14

@@ -217,12 +217,13 @@ stock AddPlayerTrailer(playerid, model)
     {
         if (trailerInfo[id][tOwnerID] == 0)
         {
+            trailerInfo[id][tID] = id;
             trailerInfo[id][tModel] = model;
             trailerInfo[id][tOwnerID] = PlayerInfo[playerid][pID];
             // Сохранение в базу данных
-            static const fmt_str[] = "INSERT INTO trailers (owner, model) VALUES (%d, %d)";
+            static const fmt_str[] = "INSERT INTO trailers (id, owner, model) VALUES (%d, %d, %d)";
             new query_string[sizeof fmt_str - 2 + 9 - 2 + 9];
-            mysql_format(pearsq, query_string, sizeof query_string, fmt_str, trailerInfo[id][tOwnerID], trailerInfo[id][tModel]);
+            mysql_format(pearsq, query_string, sizeof query_string, fmt_str, id, trailerInfo[id][tOwnerID], trailerInfo[id][tModel]);
             mysql_tquery(pearsq, query_string, "OnPlayerTrailerCreate", "d", id);
 
             // Сохраняем трейлер в аккаунт игроку
@@ -539,17 +540,7 @@ CMD:deletetrailer(playerid, const params[]) {
     if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Команда недоступна");
     new trailerid;
     if (sscanf(params, "d", trailerid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /deletetrailer ID трейлера ]");
-
-    // Находим tid по номеру трейлера в базе
-    new tid = -1;
-    for (new id = 0; id < MAX_TRAILERS; id++) {
-        if (trailerInfo[id][tID] == trailerid) {
-            tid = id;
-            break;
-        }
-    }
-
-    if (DeleteTrailer(tid)) SendClientMessagef(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер №%d", trailerid);
+    if (DeleteTrailer(trailerid)) SendClientMessagef(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер №%d", trailerid);
     else SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Указанного трейлера не существует");
     return 1;
 }
@@ -592,26 +583,26 @@ stock exittrailer(playerid)
 forward UploadTrailers();
 public UploadTrailers()
 {
-    new string_mysql[80];
     new time = GetTickCount();
-	for (new i = 0; i < cache_num_rows(); i++) {
-		cache_get_value_name_int(i, "id", trailerInfo[i][tID]);
-		cache_get_value_name_int(i, "owner", trailerInfo[i][tOwnerID]);
-		cache_get_value_name_int(i, "model", trailerInfo[i][tModel]);
-		cache_get_value_name_float(i, "pos_x", trailerInfo[i][tPos][0]);
-		cache_get_value_name_float(i, "pos_y", trailerInfo[i][tPos][1]);
-		cache_get_value_name_float(i, "pos_z", trailerInfo[i][tPos][2]);
-		cache_get_value_name_float(i, "rot_x", trailerInfo[i][tRot][0]);
-		cache_get_value_name_float(i, "rot_y", trailerInfo[i][tRot][1]);
-		cache_get_value_name_float(i, "rot_z", trailerInfo[i][tRot][2]);
-        cache_get_value_name_float(i, "pic_x", trailerInfo[i][tPic][0]);
-		cache_get_value_name_float(i, "pic_y", trailerInfo[i][tPic][1]);
-		cache_get_value_name_float(i, "pic_z", trailerInfo[i][tPic][2]);
-		cache_get_value_name_bool(i, "active", trailerInfo[i][tActive]);
-		cache_get_value_name_bool(i, "locked", trailerInfo[i][tLocked]);
-        format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `pTrailer` = '%d' WHERE `user_id` = '%d'", i+1, trailerInfo[i][tOwnerID]);
-        query_empty(pearsq, string_mysql);
-		if (trailerInfo[i][tActive]) PlaceTrailer(i, trailerInfo[i][tModel], trailerInfo[i][tPos][0], trailerInfo[i][tPos][1], trailerInfo[i][tPos][2], trailerInfo[i][tRot][0], trailerInfo[i][tRot][1], trailerInfo[i][tRot][2]);
+	for (new i = 0; i < cache_num_rows(); i++) 
+    {
+        new t;
+		cache_get_value_name_int(i, "id", t);
+        trailerInfo[t][tID] = t;
+		cache_get_value_name_int(i, "owner", trailerInfo[t][tOwnerID]);
+		cache_get_value_name_int(i, "model", trailerInfo[t][tModel]);
+		cache_get_value_name_float(i, "pos_x", trailerInfo[t][tPos][0]);
+		cache_get_value_name_float(i, "pos_y", trailerInfo[t][tPos][1]);
+		cache_get_value_name_float(i, "pos_z", trailerInfo[t][tPos][2]);
+		cache_get_value_name_float(i, "rot_x", trailerInfo[t][tRot][0]);
+		cache_get_value_name_float(i, "rot_y", trailerInfo[t][tRot][1]);
+		cache_get_value_name_float(i, "rot_z", trailerInfo[t][tRot][2]);
+        cache_get_value_name_float(i, "pic_x", trailerInfo[t][tPic][0]);
+		cache_get_value_name_float(i, "pic_y", trailerInfo[t][tPic][1]);
+		cache_get_value_name_float(i, "pic_z", trailerInfo[t][tPic][2]);
+		cache_get_value_name_bool(i, "active", trailerInfo[t][tActive]);
+		cache_get_value_name_bool(i, "locked", trailerInfo[t][tLocked]);
+		if (trailerInfo[t][tActive]) PlaceTrailer(t, trailerInfo[t][tModel], trailerInfo[t][tPos][0], trailerInfo[t][tPos][1], trailerInfo[t][tPos][2], trailerInfo[t][tRot][0], trailerInfo[t][tRot][1], trailerInfo[t][tRot][2]);
 	}
     printf("[MODE]: Трейлеры [%d ms]",GetTickCount() - time);
 	return 1;
