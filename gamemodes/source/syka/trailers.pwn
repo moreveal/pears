@@ -260,12 +260,12 @@ stock DeleteTrailer(tid) {
 }
 
 // Выгружает трейлер, прикрепленный к автомобилю
-stock UnloadAttachedTrailer(tid)
+stock UnloadAttachedTrailer(tid, bool:nodel = false)
 {
     if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
     trailerInfo[tid][tAttached] = 0;
 
-    DestroyPlayerTrailer(tid);
+    DestroyPlayerTrailer(tid, nodel);
 
     return 1;
 }
@@ -381,7 +381,8 @@ stock IsAHimLab(playerid)
     return 0;
 }
 
-stock TrailerOnPlayerDisconnect(playerid) {
+stock TrailerOnPlayerDisconnect(playerid) 
+{
     // Узнаем, есть ли у игрока трейлер
     new tid = GetPlayerTrailerID(playerid);
     if (tid < 0) return 1;
@@ -393,12 +394,13 @@ stock TrailerOnPlayerDisconnect(playerid) {
 }
 
 // Удаляет невидимый автомобиль, к которому приаттачен объект трейлера + удаляет этот объект для избежания багов (когда создается авто с тем же ID и на нем оказывается аттач)
-stock DestroyPlayerTrailer(tid) {
+stock DestroyPlayerTrailer(tid, bool:nodel = false) 
+{
     new trailerid = trailerInfo[tid][tVehicle];
-
-    if (trailerid > 0) {
+    if (trailerid > 0) 
+    {
         if(trailerInfo[tid][tObject] > 0) DestroyDynamicObject(trailerInfo[tid][tObject]), trailerInfo[tid][tObject] = 0;
-        ACDestroyVehicle(trailerid);
+        if(nodel == true) ACDestroyVehicle(trailerid);
     }
 }
 
