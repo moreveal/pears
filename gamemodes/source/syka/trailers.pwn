@@ -400,7 +400,7 @@ stock DestroyPlayerTrailer(tid, bool:nodel = false)
     if (trailerid > 0) 
     {
         if(trailerInfo[tid][tObject] > 0) DestroyDynamicObject(trailerInfo[tid][tObject]), trailerInfo[tid][tObject] = 0;
-        if(nodel == true) ACDestroyVehicle(trailerid);
+        if(nodel == false) ACDestroyVehicle(trailerid);
     }
 }
 
