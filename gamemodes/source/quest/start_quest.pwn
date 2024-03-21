@@ -810,7 +810,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 				else CreateGps(playerid, 1364.35242, -1682.73926, 13.47850, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе","*","");
             }
-            if(questId == 7)
+            if(questId == 6)
             {
                 CreateGps(playerid,-338.6526,1730.2946,42.9321, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе\nПо прибытию нужно будет поговорить с Брюсом","*","");
