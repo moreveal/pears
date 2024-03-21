@@ -17,7 +17,8 @@ new StartQuestName[][] =
     "Привести себя в порядок",
     "Взлом транспорта",
     "Ремонт транспорта",
-    "Археологические раскопки"
+    "Археологические раскопки",
+    "Отдых в клубе"
 };
 new StartQuestPresent[][] =
 {
@@ -26,7 +27,8 @@ new StartQuestPresent[][] =
     "Деньги",
     "Транспорт",
     "",
-    "Кейс"
+    "Кейс",
+    ""
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -268,7 +270,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     if(PlayerInfo[playerid][pQuest][5] == 0)
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         StartScriptActor(playerid, 8, BotPears[47]);
         if(!get_invent4(playerid,44,0) || !get_invent4(playerid,90,0) || !get_invent4(playerid,13,0)) PlayerInfo[playerid][pQuest][5] = 1;
         else PlayerInfo[playerid][pQuest][5] = 2;
@@ -276,84 +278,84 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     }
     else if(PlayerInfo[playerid][pQuest][5] == 1)
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Ну и чего? Говорю: зайди в вагончик, купи монтировку, верёвку, лопату и не беси меня");
         CreateGps(playerid, -333.0125,1724.6714,42.7950, 0, 0, 5.0);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 2)
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         StartScriptActor(playerid, 9, BotPears[47]);
         PlayerInfo[playerid][pQuest][5] = 3;
         CreateGps(playerid, -293.3882,1827.2743,43.5926, 0, 0, 5.0);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 3)
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Прохлаждаешься? Иди работай!");
     }
     else if(PlayerInfo[playerid][pQuest][5] == 4 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
         if(PlayerInfo[playerid][pSex] == 1)
         {
-            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+            //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашёл что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
         }
         else
         {
-            PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+            //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашёлла что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
         }
         SaveQuest(playerid);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 5 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Эй черенок. Неси все ценности в вагончик и получишь свою оплату");
     }
     else if(PlayerInfo[playerid][pQuest][5] == 6)
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Ну.. молодчага. Не хочешь сходить в лабиринт и испытать удачу там? Подойди ко мне поболтаем");
         PlayerInfo[playerid][pQuest][5] = 7;
     }
     else if(PlayerInfo[playerid][pQuest][5] == 7)
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         StartScriptActor(playerid, 10, BotPears[47]);
         CreateGps(playerid, -355.7389,1848.3289,46.5077, 0, 0, 5.0);
         PlayerInfo[playerid][pQuest][5] = 8;
     }
     else if((PlayerInfo[playerid][pQuest][5] == 9 || PlayerInfo[playerid][pQuest][5] == 8) && IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Ну иди уже, не стой над душой");
     }
     else if(PlayerInfo[playerid][pQuest][5] == 9 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Вижу ты в лабиринте. Твоя задача: найти отсюда второй выход и по возможности собрать всё ценное");
         PlayerInfo[playerid][pQuest][5] = 10;
     }
     else if(PlayerInfo[playerid][pQuest][5] == 10 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Давай, неси сюда, всё что найдено!");
         PlayerInfo[playerid][pQuest][5] = 11;
         SaveQuest(playerid);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 11 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Подойди ко мне, у меня для тебя сюрприз");
         PlayerInfo[playerid][pQuest][5] = 12;
         SaveQuest(playerid);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 12)
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Держи кейсик, в нем подарочек, ну а теперь вали делай дела черенок");
         new thingId, thingQuan, thingType, thingPara, thingPack;
         CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
@@ -364,7 +366,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     }
     else
     {
-        PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Черенок, иди работай");
     }
     return 1;
