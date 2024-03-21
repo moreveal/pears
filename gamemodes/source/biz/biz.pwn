@@ -1062,10 +1062,10 @@ stock SaveBizz(b)
 
 	new string_mysql[2000];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Vlad`='%s',`Level`='%d',`Sost`='%d',`Data`='%d',`Freeze`='%d',`Arest`='%d',`Fam`='%d',`Intorval`='%d',\
-	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',",f_str1,
+	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',`BizShluha`='%d',`BizShluhaX`='%f',`BizShluhaY`='%f',`BizShluhaZ`='%f',",f_str1,
 	BizzInfo[b][bLevel], BizzInfo[b][bSost], BizzInfo[b][bData], BizzInfo[b][bFreeze], BizzInfo[b][bArest], BizzInfo[b][bFam], BizzInfo[b][bInterval],
 	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], f_str2, BizzInfo[b][bBar], BizzInfo[b][bBarX], BizzInfo[b][bBarY], 
-	BizzInfo[b][bBarZ]); // 259 + 110 + 24 + 120 + 34
+	BizzInfo[b][bBarZ],BizzInfo[b][bShluha], BizzInfo[b][bShluhaCord][0], BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2]); // 259 + 110 + 24 + 120 + 34 + 72
 
 	format(string_mysql, sizeof(string_mysql), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
 	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`Frame`='%d',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',`bZZ` ='%d',",string_mysql,
@@ -1080,7 +1080,7 @@ stock SaveBizz(b)
 	BizzInfo[b][bMafia],BizzInfo[b][bBablo],BizzInfo[b][bSchet],BizzInfo[b][bSell],BizzInfo[b][bPastime],BizzInfo[b][bMafunix],BizzInfo[b][bTaxes],
 	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], f_str3, BizzInfo[b][bStat], f_str4, BizzInfo[b][bTaxday], 
 	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus],BizzInfo[b][bMafiaSchet], b); // 292 + 187 + 64+29
-	query_empty(pearsq, string_mysql); // 1819
+	query_empty(pearsq, string_mysql); // 1891
 
 	SaveBizzAccess(b);
 	SaveBizzSetting(b);
@@ -1324,7 +1324,7 @@ stock GpsBiz(playerid, bizType)
 
 stock CreateGreenZoneBiz(b)
 {
-	if(BizzInfo[b][bBar] == 0) return 0;
+	if(BizzInfo[b][bZZ] == 1) return 0;
 	dyn_zone_zzBiz[b] = CreateDynamicSphere(BizzInfo[b][bBarX],BizzInfo[b][bBarY],BizzInfo[b][bBarZ], 50, 3000+b, BizzInfo[b][bInterior]);
 	BizzInfo[b][bZZ] = 1;
 	BizzInfo[b][bUpdate] = 1;
@@ -1351,4 +1351,30 @@ stock GetBizArea(areaid)
 		}
 	}
 	return yes;
+}
+
+stock CreateShluha(idx)
+{
+	new string[70];
+    format(string,sizeof(string),"{ff9000}Проститутка\n{44ff99}Цена 200$\n{cccccc}[ ALT ]");
+	BizShluha[idx] = CreateDynamicActor(369, BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2],180, true, 100.0, 3000+idx, BizzInfo[idx][bInterior], -1, 100.0, -1, 0);
+	BizShluhaLabel[idx] = CreateDynamic3DTextLabel(string,-1,BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2],3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,3000+idx, BizzInfo[idx][bInterior]); 
+	return 1;
+}
+
+stock BotSex(playerid,b)
+{
+	if(BizShluhaStatus[b] == 1) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
+	if(OnlineInfo[playerid][oSexBot] > 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
+	SetPlayerFacingAngle(giveplayerid,180+a);
+	SetPlayerPos(giveplayerid,X,Y,Z);
+	ApplyAnimation(giveplayerid,"BLOWJOBZ","BJ_STAND_LOOP_W",4,0,0,0,1,0,1);
+	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4,0,0,0,1,0,1);
+	Sex[playerid] = 3;
+	Sex[giveplayerid] = 3;
+	SetPVarInt(giveplayerid,"Infect",0);
+	if(PlayerInfo[giveplayerid][pSex] == 1) SetPlayerAttachedObject(giveplayerid, 1, 19086, 1, -0.078000, 0.119999, 0.008999, 95.299903, 86.899986, 0.299999, 0.328000, 0.481999, 0.494000, 0, 0);
+	GetPlayerPos(giveplayerid, Job_X[giveplayerid], Job_Y[giveplayerid], Job_Z[giveplayerid]);
+	new string[124];
+	format(string,sizeof(string),"[ Мысли ]: Мне нужно расслабиться {ff33ff}%s {cccccc}доставит мне удовольствие", playername(playerid)), SendClientMessage(giveplayerid, COLOR_GREY, string);
 }
