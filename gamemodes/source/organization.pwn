@@ -38,7 +38,7 @@ enum gInfo
 	Text3D:gGuLabel[20],
 	gGuPickup[20],
 	gGuOccup[20],
-	bool:gSCbug, // Последняя битва был ли +C Bug
+	bool:gSCbug, // Переключатель режима кастомного дамага
 	gSanCbug, // Санкция от админов на +C баг
 	bool:gRejim2, // Включён ли режим +C баг
 	gCapture[13], // Общая стата каптов

@@ -227,7 +227,7 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
             format(string, sizeof(string), "{66ffff}Family {ffcc00}%s изменил%s название %d ранга {cccccc}[ %s ]", PlayerInfo[playerid][pName], gender(playerid), r + 1, inputtext);
       		SendFamilyMessage(PlayerInfo[playerid][pFamily], COLOR_YELLOW, string);
 
-			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r, inputtext);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r + 1, inputtext);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			

@@ -120,7 +120,7 @@ stock GetDailyQuanMinMax(dailyid, &minQuan, &maxQuan) // Диапазон кол
         // Рыбалка
         case 1: minQuan = 50, maxQuan = 250; // Ловить Рыбу (в килограммах)
         case 2: minQuan = 1, maxQuan = 3; // Ловить Акулу
-        case 3: minQuan = 3, maxQuan = 10; // Собрать морские звёзды
+        case 3: minQuan = 1, maxQuan = 3; // Собрать морские звёзды
         case 4: minQuan = 1, maxQuan = 3; // Собрать ракушки
         // Спермобанк ЕСТЬ ТРЕБОВАНИЕ
         case 5: minQuan = 1, maxQuan = 2; // Сдать семя (Количество раз)

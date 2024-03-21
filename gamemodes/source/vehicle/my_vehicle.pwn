@@ -3724,13 +3724,14 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	new parkingId = -1;
 	if(IsAPlane(VehInfo[v][vModel])) // Доставка авиатранспорта
 	{
-		new yescar;
 		for(new i = 0; i < MAX_PARKING_POS_AVIA; i++)
 		{
 			parkingId = FindParking_Avia(playerid, 0, MAX_PARKING_POS_AVIA); // Ищем по всем парковкам ближайшую
-			yescar = GetVehicleNear(ParkingPos_Avia[parkingId][0], ParkingPos_Avia[parkingId][1], ParkingPos_Avia[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
-			if(yescar == 1) ParkingBusy_Avia[i] = true, ParkingBusyTemp_Avia[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
-			else break;
+			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
+			{
+				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
+				break;
+			}
 		}
 
 		if(parkingId >= 0) 
@@ -3742,13 +3743,14 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
 	{
-		new yescar;
 		for(new i = 0; i < MAX_PARKING_POS_BOAT; i++)
 		{
 			parkingId = FindParking_Boat(playerid, 0, MAX_PARKING_POS_BOAT); // Ищем по всем парковкам ближайшую
-			yescar = GetVehicleNear(ParkingPos_Boat[parkingId][0], ParkingPos_Boat[parkingId][1], ParkingPos_Boat[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
-			if(yescar == 1) ParkingBusy_Boat[i] = true, ParkingBusyTemp_Boat[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
-			else break;
+			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
+			{
+				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
+				break;
+			}
 		}
 
 		if(parkingId >= 0) 
@@ -3760,13 +3762,14 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	}
 	else // Доставка всех остальных на парковки
 	{
-		new yescar;
 		for(new i = 0; i < 100; i++)
 		{
 			parkingId = FindParking(playerid, 0, MAX_PARKING_POS); // Ищем по всем парковкам ближайшую
-			yescar = GetVehicleNear(ParkingPos[parkingId][0], ParkingPos[parkingId][1], ParkingPos[parkingId][2]); // Смотрим, есть ли транспорт на этом парковочном месте
-			if(yescar == 1) ParkingBusy[i] = true, ParkingBusyTemp[i] = 10; // Если в этой точке стоит транспорт, занимаем позицию на 10 минут
-			else break;
+			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
+			{
+				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
+				break;
+			}
 		}
 
 		if(parkingId >= 0) 
@@ -3803,11 +3806,12 @@ stock FindParking(playerid, min, max) // Ищем точку парковки д
 	if(min < 0) min = 0;
 	if(max > MAX_PARKING_POS) max = MAX_PARKING_POS;
 
-	new Float:dist, Float:findpos, kakoi;
+	new Float:dist, Float:findpos, kakoi = -1;
 	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos[0][0], ParkingPos[0][1], ParkingPos[0][2]);
 	for(new i = min; i < max; i++)
 	{
-		if(ParkingBusy[i]) continue;
+		if(ParkingBusy[i] == true) continue;
+		if(GetVehicleNear(ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2]);
 		if(findpos <= dist) dist = findpos, kakoi = i;
@@ -3819,11 +3823,12 @@ stock FindParking_Avia(playerid, min, max)
 	if(min < 0) min = 0;
 	if(max > MAX_PARKING_POS_AVIA) max = MAX_PARKING_POS_AVIA;
 
-	new Float:dist, Float:findpos, kakoi;
+	new Float:dist, Float:findpos, kakoi = -1;
 	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[0][0], ParkingPos_Avia[0][1], ParkingPos_Avia[0][2]);
 	for(new i = min; i < max; i++)
 	{
 		if(ParkingBusy_Avia[i]) continue;
+		if(GetVehicleNear(ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2]);
 		if(findpos <= dist) dist = findpos, kakoi = i;
@@ -3835,11 +3840,12 @@ stock FindParking_Boat(playerid, min, max)
 	if(min < 0) min = 0;
 	if(max > MAX_PARKING_POS_BOAT) max = MAX_PARKING_POS_BOAT;
 
-	new Float:dist, Float:findpos, kakoi;
+	new Float:dist, Float:findpos, kakoi = -1;
 	dist = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[0][0], ParkingPos_Boat[0][1], ParkingPos_Boat[0][2]);
 	for(new i = min; i < max; i++)
 	{
 		if(ParkingBusy_Boat[i]) continue;
+		if(GetVehicleNear(ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2]);
 		if(findpos <= dist) dist = findpos, kakoi = i;

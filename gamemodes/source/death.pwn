@@ -4,9 +4,38 @@ enum deathInfo
     bool:deathStatus, // Статус смерти
     deathTime, // Время валяния на земле
     deathUnix, // unix предыдущей смерти
-    deathReason // id причина смерти
+    deathReason, // id причина смерти
+    bool:deathCut // сокращённое время смерти
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
+
+CMD:deathcut(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "Вы не можете использовать эту команду");
+    if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Изменить время для реанимации [ /deathcut ID ]");
+    if(!IsOnline(params[0])) return ErrorMessage(playerid, "Игрока нет в сети");
+
+    new string[100];
+    if(DeathInfo[params[0]][deathCut] == false) 
+    {
+        DeathInfo[params[0]][deathCut] = true;
+        format(string, sizeof(string), "Вы включили сокращённое время для реанимации игроку %s", PlayerInfo[params[0]][pName]);
+	    SendClientMessage(playerid, COLOR_WHITE, string);
+    }
+    else 
+    {
+        DeathInfo[params[0]][deathCut] = false;
+        format(string, sizeof(string), "Вы отключили сокращённое время для реанимации игроку %s", PlayerInfo[params[0]][pName]);
+	    SendClientMessage(playerid, COLOR_WHITE, string);
+    }
+
+    if(params[0] != playerid)
+    {
+        format(string, sizeof(string), "Администратор %s изменил ваше время для реанимации", PlayerInfo[playerid][pName]);
+        SendClientMessage(params[0], COLOR_WHITE, string);
+    }
+    return 1;
+}
 
 stock SetPlayerDeath(playerid, reason)
 {
@@ -38,6 +67,8 @@ stock SetPlayerDeath(playerid, reason)
     DeathInfo[playerid][deathReason] = reason;
 
     new timeDeath = 180, timeDeathTwo = 300;
+    if(DeathInfo[playerid][deathCut] == true) timeDeath = 10, timeDeathTwo = 10;
+    
     if(DeathInfo[playerid][deathUnix] >= unix) DeathInfo[playerid][deathTime] = timeDeathTwo; // 5 min
     else DeathInfo[playerid][deathTime] = timeDeath; // 3 min
     DeathInfo[playerid][deathUnix] = unix + 3600;

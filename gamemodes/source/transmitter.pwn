@@ -241,7 +241,7 @@ stock commandR(playerid, typeCommand, const params[])
     writeRac = PlayerInfo[playerid][pRacOrg][1]; // Возможность написать в подключённый канал рации
 
     if(PlayerInfo[playerid][pTransmitterOff][0] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал организации /r /rb [ Y >> Меню >> Настройки Чата ]");
-    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу организации");
+    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу организации\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации организации /r или /rb текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
@@ -303,7 +303,7 @@ stock commandD(playerid, typeCommand, const params[])
     writeRac = PlayerInfo[playerid][pRacDep][1]; // Возможность написать в подключённый канал рации
 
     if(PlayerInfo[playerid][pTransmitterOff][1] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен общий канал /d /db /u /ub [ Y >> Меню >> Настройки Чата ]");
-    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к общему каналу");
+    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к общему каналу\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий канал организаций /d /u или /db /ub текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
@@ -369,7 +369,7 @@ stock commandI(playerid, typeCommand, const params[])
     writeRac = PlayerInfo[playerid][pRacDiv][2]; // Возможность написать в подключённый канал рации
 
     if(PlayerInfo[playerid][pTransmitterOff][2] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал подфракции /i /ib [ Y >> Меню >> Настройки Чата ]");
-    if(writeRac == 0 || g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу подфракции");
+    if(writeRac == 0 || g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу подфракции\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации подфракции /i или /ib текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации

@@ -17,6 +17,7 @@ stock GetDynamicObjectModel(objectid) return Streamer_GetIntData(STREAMER_TYPE_O
 
 // Данные о трейлерах
 enum e_TrailerInfo {
+    tNewid, // id в таблице
 	tID, // ID трейлера
 	tOwnerID, // ID аккаунта владельца
 	tModel, // ID модели трейлера
@@ -220,6 +221,7 @@ stock AddPlayerTrailer(playerid, model)
             trailerInfo[id][tID] = id;
             trailerInfo[id][tModel] = model;
             trailerInfo[id][tOwnerID] = PlayerInfo[playerid][pID];
+
             // Сохранение в базу данных
             static const fmt_str[] = "INSERT INTO trailers (id, owner, model) VALUES (%d, %d, %d)";
             new query_string[sizeof fmt_str - 2 + 9 - 2 + 9];
@@ -589,6 +591,7 @@ public UploadTrailers()
         new t;
 		cache_get_value_name_int(i, "id", t);
         trailerInfo[t][tID] = t;
+        cache_get_value_name_int(i, "newid", trailerInfo[t][tNewid]);
 		cache_get_value_name_int(i, "owner", trailerInfo[t][tOwnerID]);
 		cache_get_value_name_int(i, "model", trailerInfo[t][tModel]);
 		cache_get_value_name_float(i, "pos_x", trailerInfo[t][tPos][0]);
@@ -643,7 +646,7 @@ stock SavePlayerTrailerInfo(id) {
 
 // При создании нового трейлера в базе данных
 function OnPlayerTrailerCreate(id) {
-    trailerInfo[id][tID] = cache_insert_id();
+    trailerInfo[id][tNewid] = cache_insert_id();
     return 1;
 }
 

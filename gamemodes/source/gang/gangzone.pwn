@@ -178,17 +178,13 @@ CMD:zahvat(playerid, const params[])
 				format(string, sizeof(string), " [ ADM ]: %s[%d] начал капт № %d {FF8282}[ Проследите за соблюдением правил ]", PlayerInfo[playerid][pName], playerid, ServerInfo[42]);
 				ABroadCast(COLOR_ADM,string,1);
 				OrgLog(frakid, "zahvat", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ServerInfo[42], "");
-       			// Включаем режимы исходя из настроек
-				if(unixtime > OrganInfo[frakid][gSanCbug])
-				{
-       				if(OrganInfo[frakid][gRejim2] == true)
-	   				{
-	   					if(OrganInfo[frakid][gSCbug] == false) GoC[frakid] = 1, GoC[GZInfo[i][gFrakVlad]] = 1, CaptInfo[cCbug] = 1;//, OrganInfo[frakid][gSCbug] = true;
-	   					else OrganInfo[frakid][gSCbug] = false;
-   					}
-   					else OrganInfo[frakid][gSCbug] = false;
-				}
-				else OrganInfo[frakid][gSCbug] = false;
+       			
+				// Включаем режимы исходя из настроек
+       			if(OrganInfo[frakid][gRejim2] == true) GoC[frakid] = 1, GoC[GZInfo[i][gFrakVlad]] = 1, CaptInfo[cCbug] = 1;
+				else GoC[frakid] = 0, GoC[GZInfo[i][gFrakVlad]] = 0, CaptInfo[cCbug] = 0;
+
+				if(OrganInfo[frakid][gSCbug] == true) GoDamage[frakid] = 1, GoDamage[GZInfo[i][gFrakVlad]] = 1;
+				else GoDamage[frakid] = 0, GoDamage[GZInfo[i][gFrakVlad]] = 0;
 
 				foreach(Player,x)
 				{
@@ -269,16 +265,11 @@ CMD:capture(playerid)
 	}
 	else
 	{
-		if(OrganInfo[frakid][gSCbug] == false)
-		{
-			if(OrganInfo[frakid][gRejim2] == false) format(str,sizeof(str),"{cccccc}+C {FF6347}[ Off ]\n"), strcat(sctring,str);
-			else if(OrganInfo[frakid][gRejim2] == true) format(str,sizeof(str),"{cccccc}+C {99ff66}[ On ]\n"), strcat(sctring,str);
-		}
-		else if(OrganInfo[frakid][gSCbug] == true)
-		{
-			if(OrganInfo[frakid][gRejim2] == false) format(str,sizeof(str),"{cccccc}+C {FF6347}[ Off ] {ffcc00}[Использовался]\n"), strcat(sctring,str);
-			else if(OrganInfo[frakid][gRejim2] == true) format(str,sizeof(str),"{cccccc}+C {99ff66}[ On ] {ffcc00}[Использовался]\n"), strcat(sctring,str);
-		}
+		if(OrganInfo[frakid][gRejim2] == false) format(str,sizeof(str),"{cccccc}+C {FF6347}[ Off ]\n"), strcat(sctring,str);
+		else if(OrganInfo[frakid][gRejim2] == true) format(str,sizeof(str),"{cccccc}+C {99ff66}[ On ]\n"), strcat(sctring,str);
+
+		if(OrganInfo[frakid][gSCbug] == false) format(str,sizeof(str),"{cccccc}Кастомный Дамаг {99ff66}[ On ]\n"), strcat(sctring,str);
+		else format(str,sizeof(str),"{FF6347}Кастомный Дамаг {99ff66}[ Off ]\n"), strcat(sctring,str);
 	}
 	ShowDialog(playerid,841,DIALOG_STYLE_LIST,"{ff9000}Capture",sctring,"Выбор","Отмена");
 	return 1;
@@ -400,7 +391,6 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				{
 					new unixtime = gettime();
 					if(OrganInfo[frakid][gSanCbug] > unixtime) return ErrorText(playerid, "[ Мысли ]: Нельзя нападать с этим режимом [ Ограничение администрации ]"), cmd_capture(playerid);
-				    if(OrganInfo[frakid][gSCbug] == true) return ErrorText(playerid, "[ Мысли ]: Прошлая битва была с этим режимом. Нельзя повторно!"), cmd_capture(playerid);
 					OrganInfo[frakid][gRejim2] = true;
 					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Активирован ]",PlayerInfo[playerid][pName]);
   					SendRadioMessage(frakid,COLOR_GREY,string);
@@ -412,6 +402,24 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Отключён ]",PlayerInfo[playerid][pName]);
   					SendRadioMessage(frakid,COLOR_GREY,string);
   					OrgLog(frakid, "capture", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "+C: OFF");
+				}
+			}
+			if(listitem == 1)
+			{
+				new string[160];
+				if(OrganInfo[frakid][gSCbug] == false)
+				{
+					OrganInfo[frakid][gSCbug] = true;
+					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s отключил кастомный дамаг для капта",PlayerInfo[playerid][pName]);
+  					SendRadioMessage(frakid,COLOR_GREY,string);
+  					OrgLog(frakid, "capture", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Damage: Off");
+				}
+				else if(OrganInfo[frakid][gSCbug] == true)
+				{
+					OrganInfo[frakid][gSCbug] = false;
+					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s включил кастомный дамаг для капта",PlayerInfo[playerid][pName]);
+  					SendRadioMessage(frakid,COLOR_GREY,string);
+  					OrgLog(frakid, "capture", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Damage: On");
 				}
 			}
 			OrganInfo[frakid][gUpdate] = 1;

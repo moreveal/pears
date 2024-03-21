@@ -236,6 +236,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	PlayerPlaySound(playerid,17803,0,0,0);
 	if(LoadPick[playerid] != 9999) return reset_aksess_tile(playerid); // Сбрасываем выбранные аксесуары
 	if(LoadGun[playerid] != 9999) return reset_gun_tile(playerid); // Сбрасываем выбранное оружие
+	if(OnlineInfo[playerid][oShowTabs] == 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Вкладка с выбранным предметом закрылась");
 	
 	new fpick, tab, inva = invatab-20, fpara, thingQuan, thingType, thingPack;
 	if(Tabs_Load[playerid] == 1) // Лавка Товаров
@@ -1728,7 +1729,7 @@ stock OnPlayerTakeOffline(playerid)
 
 stock NumberSmartfonPlayer(playerid) // Устанавливаем номер телефона игроку, исходя из уже существующих
 {
-    if(ServerInfo[54] <= 0) ServerInfo[54] = 500000; // Если в конфиге нет номера телефона
+    if(ServerInfo[54] <= 0) ServerInfo[54] = 9000000; // Если в конфиге нет номера телефона
 	ServerInfo[54] += 1;
 	PlayerInfo[playerid][pDrugPerk] = ServerInfo[54];
 	SaveServer(54);
