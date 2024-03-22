@@ -3724,14 +3724,10 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	new parkingId = -1;
 	if(IsAPlane(VehInfo[v][vModel])) // Доставка авиатранспорта
 	{
-		for(new i = 0; i < MAX_PARKING_POS_AVIA; i++)
+		parkingId = FindParking_Avia(playerid, 0, MAX_PARKING_POS_AVIA); // Ищем по всем парковкам ближайшую
+		if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
 		{
-			parkingId = FindParking_Avia(playerid, 0, MAX_PARKING_POS_AVIA); // Ищем по всем парковкам ближайшую
-			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
-			{
-				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
-				break;
-			}
+			ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
 		}
 
 		if(parkingId >= 0) 
@@ -3743,14 +3739,10 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	}
 	else if(IsABoat(VehInfo[v][vModel])) // Доставка катеров
 	{
-		for(new i = 0; i < MAX_PARKING_POS_BOAT; i++)
+		parkingId = FindParking_Boat(playerid, 0, MAX_PARKING_POS_BOAT); // Ищем по всем парковкам ближайшую
+		if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
 		{
-			parkingId = FindParking_Boat(playerid, 0, MAX_PARKING_POS_BOAT); // Ищем по всем парковкам ближайшую
-			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
-			{
-				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
-				break;
-			}
+			ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
 		}
 
 		if(parkingId >= 0) 
@@ -3762,14 +3754,10 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 	}
 	else // Доставка всех остальных на парковки
 	{
-		for(new i = 0; i < 100; i++)
+		parkingId = FindParking(playerid, 0, MAX_PARKING_POS); // Ищем по всем парковкам ближайшую
+		if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
 		{
-			parkingId = FindParking(playerid, 0, MAX_PARKING_POS); // Ищем по всем парковкам ближайшую
-			if(parkingId >= 0) // Занимаем эту позицию на 10 минут в любом случае
-			{
-				ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
-				break;
-			}
+			ParkingBusy[parkingId] = true, ParkingBusyTemp[parkingId] = 10;
 		}
 
 		if(parkingId >= 0) 
@@ -3855,24 +3843,24 @@ stock FindParking_Boat(playerid, min, max)
 stock TimeCallVehicle(metr)
 {
 	new time;
-	if(metr < 100) time = 30;
-	else if(metr >= 100 && metr < 300) time = 50;
-	else if(metr >= 300 && metr < 600) time = 70;
-	else if(metr >= 600 && metr < 900) time = 90;
-	else if(metr >= 900 && metr < 1200) time = 110;
-	else if(metr >= 1200 && metr < 1500) time = 130;
-	else if(metr >= 1500 && metr < 1800) time = 150;
-	else if(metr >= 1800 && metr < 2100) time = 170;
-	else if(metr >= 2100 && metr < 2400) time = 190;
-	else if(metr >= 2400 && metr < 2700) time = 210;
-	else if(metr >= 2700 && metr < 3000) time = 230;
-	else if(metr >= 3000 && metr < 3300) time = 250;
-	else if(metr >= 3300 && metr < 3600) time = 270;
-	else if(metr >= 3600 && metr < 3900) time = 290;
-	else if(metr >= 3900 && metr < 4200) time = 310;
-	else if(metr >= 4200 && metr < 4500) time = 330;
-	else if(metr >= 4500 && metr < 4800) time = 350;
-	else time = 370;
+	if(metr < 100) time = 10;
+	else if(metr >= 100 && metr < 300) time = 20;
+	else if(metr >= 300 && metr < 600) time = 30;
+	else if(metr >= 600 && metr < 900) time = 40;
+	else if(metr >= 900 && metr < 1200) time = 50;
+	else if(metr >= 1200 && metr < 1500) time = 60;
+	else if(metr >= 1500 && metr < 1800) time = 70;
+	else if(metr >= 1800 && metr < 2100) time = 80;
+	else if(metr >= 2100 && metr < 2400) time = 90;
+	else if(metr >= 2400 && metr < 2700) time = 100;
+	else if(metr >= 2700 && metr < 3000) time = 110;
+	else if(metr >= 3000 && metr < 3300) time = 120;
+	else if(metr >= 3300 && metr < 3600) time = 130;
+	else if(metr >= 3600 && metr < 3900) time = 140;
+	else if(metr >= 3900 && metr < 4200) time = 150;
+	else if(metr >= 4200 && metr < 4500) time = 160;
+	else if(metr >= 4500 && metr < 4800) time = 170;
+	else time = 180;
 	return time;
 }
 

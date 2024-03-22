@@ -1367,7 +1367,7 @@ stock BotSex(playerid,b)
 	if(!IsPlayerInRangeOfPoint(playerid,1.0, BizzInfo[b][bShluhaCord][0],BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2])) return 0;
 	if(BizShluhaStatus[b] == 1) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(OnlineInfo[playerid][oSexBot] > 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
-	if(oGetPlayerMoney(playerid) < 200) return format(string, sizeof(string), "[ Мысли ]: Мне не хватает 200$"), SendClientMessage(playerid, COLOR_GREY, string);
+	if(oGetPlayerMoney(playerid) < 200) return ErrorMessage(playerid,"{ff6347}Вам не хватает денег [ 200$ ]");
 	new days, hour, minute, second, unix = gettime(), string[84];
 	getunix(PlayerInfo[playerid][pSexBreak]-unix, days, hour, minute, second);
 	if(PlayerInfo[playerid][pSexBreak] > unix) return format(string, sizeof(string), "{FF6347}Вы не можете так часто [ Через %02d мин. %02d сек. ]", minute, second), ErrorMessage(playerid, string);
