@@ -1374,7 +1374,7 @@ stock BotSex(playerid,b)
 	oGivePlayerMoney(playerid, -200);
 	paybiz(b, 200);
 	OnlineInfo[playerid][oSexBot] = b, BizShluhaStatus[b] = playerid;
-	InputProcess[playerid] = 20;
+	InputProcess[playerid] = 0;
 	new Float:a;
 	GetPlayerFacingAngle(playerid, a);
 	SetDynamicActorFacingAngle(BizShluha[b], a+180.0);
