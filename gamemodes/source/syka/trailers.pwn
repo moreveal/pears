@@ -413,6 +413,7 @@ stock trailer_add(playerid, model, trailer)
     else if(trailer == 1) money = 250000;
     else if(trailer == 2) money = 300000;
     else if(trailer == 3) money = 400000;
+    if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     new infocreate = AddPlayerTrailer(playerid, model);
     if (infocreate == 0) 
     {
@@ -422,7 +423,6 @@ stock trailer_add(playerid, model, trailer)
     }
     else
     {
-        if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
         oGivePlayerMoney(playerid,-money);
         SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
         SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");

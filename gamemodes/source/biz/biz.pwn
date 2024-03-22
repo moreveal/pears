@@ -1364,17 +1364,33 @@ stock CreateShluha(idx)
 
 stock BotSex(playerid,b)
 {
+	if(!IsPlayerInRangeOfPoint(playerid,1.0, BizzInfo[b][bShluhaCord][0],BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2])) return 0;
 	if(BizShluhaStatus[b] == 1) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(OnlineInfo[playerid][oSexBot] > 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
-	SetPlayerFacingAngle(giveplayerid,180+a);
-	SetPlayerPos(giveplayerid,X,Y,Z);
-	ApplyAnimation(giveplayerid,"BLOWJOBZ","BJ_STAND_LOOP_W",4,0,0,0,1,0,1);
-	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4,0,0,0,1,0,1);
+	if(oGetPlayerMoney(playerid) < 200) return format(string, sizeof(string), "[ Мысли ]: Мне не хватает 200$"), SendClientMessage(playerid, COLOR_GREY, string);
+	new days, hour, minute, second, unix = gettime(), string[84];
+	getunix(PlayerInfo[playerid][pSexBreak]-unix, days, hour, minute, second);
+	if(PlayerInfo[playerid][pSexBreak] > unix) return format(string, sizeof(string), "{FF6347}Вы не можете так часто [ Через %02d мин. %02d сек. ]", minute, second), ErrorMessage(playerid, string);
+	oGivePlayerMoney(playerid, -200);
+	paybiz(b, 200);
+	OnlineInfo[playerid][oSexBot] = b, BizShluhaStatus[b] = playerid;
+	InputProcess[playerid] = 20;
+	new Float:a;
+	GetPlayerFacingAngle(playerid, a);
+	SetDynamicActorFacingAngle(BizShluha[b], a+180.0);
+	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W",4.0,0,0,1,0,1);
+	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4.0,0,0,1,0,1);
 	Sex[playerid] = 3;
-	Sex[giveplayerid] = 3;
-	SetPVarInt(giveplayerid,"Infect",0);
-	if(PlayerInfo[giveplayerid][pSex] == 1) SetPlayerAttachedObject(giveplayerid, 1, 19086, 1, -0.078000, 0.119999, 0.008999, 95.299903, 86.899986, 0.299999, 0.328000, 0.481999, 0.494000, 0, 0);
-	GetPlayerPos(giveplayerid, Job_X[giveplayerid], Job_Y[giveplayerid], Job_Z[giveplayerid]);
-	new string[124];
-	format(string,sizeof(string),"[ Мысли ]: Мне нужно расслабиться {ff33ff}%s {cccccc}доставит мне удовольствие", playername(playerid)), SendClientMessage(giveplayerid, COLOR_GREY, string);
+	SexPlayerid[playerid] = 5555;
+	SetPVarInt(playerid,"Infect",0);
+	if(PlayerInfo[playerid][pSex] == 1) SetPlayerAttachedObject(playerid, 1, 19086, 1, -0.078000, 0.119999, 0.008999, 95.299903, 86.899986, 0.299999, 0.328000, 0.481999, 0.494000, 0, 0);
+	PlayerTextDrawShow(playerid, InputDraw1);
+	PlayerTextDrawShow(playerid, InputDraw2);
+	TextDrawShowForPlayer(playerid, InputDraw[1]);
+	procesbar2(playerid, 0);
+	ShowInput(playerid);
+	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
+	SetPVarInt(playerid, "sekas", 10);
+	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid,1);
+	return 1;
 }

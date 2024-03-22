@@ -72,6 +72,7 @@ stock NoCompleteQuest(playerid, questId)
     else if(questId == 3 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Взломать тачку
     else if(questId == 4 && PlayerInfo[playerid][pQuest][questId] < 1) return 1; // Ремонт транспорта
     else if(questId == 5 && PlayerInfo[playerid][pQuest][questId] < 13) return 1; // Археологические раскопки
+    else if(questId == 6 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Археологические раскопки
     return 0;
 }
 
@@ -355,6 +356,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     }
     else if(PlayerInfo[playerid][pQuest][5] == 12)
     {
+        if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
         //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Держи кейсик, в нем подарочек, ну а теперь вали делай дела черенок");
         new thingId, thingQuan, thingType, thingPara, thingPack;
@@ -366,9 +368,43 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     }
     else
     {
+        if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
         //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Черенок, иди работай");
     }
+    return 1;
+}
+
+stock QuestActorJoneSeks(playerid) // Начинаем взаимодействовать с NPC квеста Археалогия
+{
+    printf("%d",PlayerInfo[playerid][pQuest][6]);
+    if(!NoCompleteQuest(playerid, 6)) return 0; // Если квест уже пойден, не запускаем квест
+    if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");
+    if(QuestInfo[playerid][ScriptQuest] == 4) return 1; // Все сценарии были отработаны
+    if(PlayerInfo[playerid][pQuest][6] == 1)
+    {
+        new b = GetPlayerVirtualWorld(playerid)-3000;
+        if(BizzInfo[b][bShluha] == 0) return ErrorMessage(playerid,"{ff6347}В данном клубе к сожалению нет проститутки, нужно поехать и найте клуб с проституткой!\n\nДля этого [ Y > GPS > Развлечениея > Клубы]");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вам нужно подойти к проститутке. После нажать ALT рядом с ней.\n\n{0088ff}Далее будет миниигра где нужно нажимать на кнопки Y или H или N\nОни будут появляться на экране в шкале","*","");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно снять проститутку");
+        CreateGps(playerid, BizzInfo[b][bShluhaCord][0],BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2], 0, 0, 5.0);
+    }
+    else if(PlayerInfo[playerid][pQuest][6] == 2)
+    {
+        new b = GetPlayerVirtualWorld(playerid)-3000;
+        SuccessMessage(playerid,"{44ff99}Вы закончили дела, вы можете покинуть клуб и отправится дальше по квесту");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Так-с, дела сделаны, яйца пусты, надо идти отсюда");
+        CreateGps(playerid, BizzInfo[b][bInteriorX], BizzInfo[b][bInteriorY], BizzInfo[b][bInteriorZ], 0, 0, 5.0);
+        PlayerInfo[playerid][pQuest][6] = 3;
+    }
+    else if(PlayerInfo[playerid][pQuest][6] == 3)
+    {
+        //PlayAudioStreamForPlayer(playerid, "https://pears-test.ru/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мммм.... Какая-то странная боль в члене...");
+        PlayerInfo[playerid][pQuest][6] = 4;
+        SetPVarInt(playerid,"qweststat",22), SetPVarInt(playerid,"qwesttime",20);
+    }
+    SaveQuest(playerid);
     return 1;
 }
 
@@ -758,7 +794,37 @@ stock QuestCallMessage(i)
     }
     else if(GetPVarInt(i,"qweststat") == 19)
     {
-        
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Так, ты там наверное закончил с археалогией, думаю тебе стоит отдохнуть.");
+        SetPVarInt(i,"qweststat",20), SetPVarInt(i,"qwesttime",3);
+    }
+    else if(GetPVarInt(i,"qweststat") == 20)
+    {
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Поезжай в любой клуб, сними девочку и расслабся");
+        SetPVarInt(i,"qweststat",21), SetPVarInt(i,"qwesttime",2);
+    }
+    else if(GetPVarInt(i,"qweststat") == 21)
+    {
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Я тебе еще звякну после того как отдохнешь");
+        PlayerInfo[i][pQuest][6] = 1;
+        GpsBiz(i, 12);
+        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+    }
+
+    // Джонни мед.карта
+    else if(GetPVarInt(i,"qweststat") == 22)
+    {
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ну что, как расслабился? Забыл спросить, ты надеюсь был с презиками?");
+        SetPVarInt(i,"qweststat",23), SetPVarInt(i,"qwesttime",3);
+    }
+    else if(GetPVarInt(i,"qweststat") == 23)
+    {
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): По твоим тяжелым вздохам все понятно...");
+        SetPVarInt(i,"qweststat",24), SetPVarInt(i,"qwesttime",3);
+    }
+    else if(GetPVarInt(i,"qweststat") == 24)
+    {
+        SendClientMessage(i, COLOR_YELLOW,"Филин (голосовое): А продолжение квеста вы увидите уже на открытие сервера!");
+        //SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Бегом дуй в больницу, а то твой прибор отвалится. Заодно получишь мед.карту.");
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
     }
     return 1;
@@ -789,7 +855,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                     ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"Ок","");
                 }
                 else if(listitem == 5) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите отметить этот квест в своём GPS навигаторе?","Да","Нет");
-				
+				else if(listitem == 6) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите запустить квест?","Да","Нет");
 				else ErrorText(playerid, "{FF6347}Подробная информация об этом квесте не заполнена"), showDialogStartQuest(playerid, DP[0][playerid]);
 			}
 			else ErrorText(playerid, "{FF6347}Вы прошли этот квест"), showDialogStartQuest(playerid, DP[0][playerid]);
@@ -810,10 +876,15 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 				else CreateGps(playerid, 1364.35242, -1682.73926, 13.47850, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе","*","");
             }
-            if(questId == 6)
+            if(questId == 5)
             {
                 CreateGps(playerid,-338.6526,1730.2946,42.9321, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе\nПо прибытию нужно будет поговорить с Брюсом","*","");
+            }
+            if(questId == 6)
+            {
+                SuccessMessage(playerid,"{44ff99}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
+                ShowQwest(playerid,6);
             }
             else showDialogStartQuest(playerid, DP[0][playerid]);
         }
