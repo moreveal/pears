@@ -3799,10 +3799,13 @@ stock FindParking(playerid, min, max) // Ищем точку парковки д
 	for(new i = min; i < max; i++)
 	{
 		if(ParkingBusy[i] == true) continue;
-		if(GetVehicleNear(ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2]);
-		if(findpos <= dist) dist = findpos, kakoi = i;
+		if(findpos <= dist) 
+		{
+			if(GetVehicleNear(ParkingPos[i][0], ParkingPos[i][1], ParkingPos[i][2])) continue;
+			dist = findpos, kakoi = i;
+		}
 	}
 	return kakoi;
 }
@@ -3816,10 +3819,13 @@ stock FindParking_Avia(playerid, min, max)
 	for(new i = min; i < max; i++)
 	{
 		if(ParkingBusy_Avia[i]) continue;
-		if(GetVehicleNear(ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2]);
-		if(findpos <= dist) dist = findpos, kakoi = i;
+		if(findpos <= dist) 
+		{
+			if(GetVehicleNear(ParkingPos_Avia[i][0], ParkingPos_Avia[i][1], ParkingPos_Avia[i][2])) continue;
+			dist = findpos, kakoi = i;
+		}
 	}
 	return kakoi;
 }
@@ -3833,10 +3839,13 @@ stock FindParking_Boat(playerid, min, max)
 	for(new i = min; i < max; i++)
 	{
 		if(ParkingBusy_Boat[i]) continue;
-		if(GetVehicleNear(ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2])) continue;
 
 		findpos = GetPlayerDistanceFromPoint(playerid, ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2]);
-		if(findpos <= dist) dist = findpos, kakoi = i;
+		if(findpos <= dist) 
+		{
+			if(GetVehicleNear(ParkingPos_Boat[i][0], ParkingPos_Boat[i][1], ParkingPos_Boat[i][2])) continue;
+			dist = findpos, kakoi = i;
+		}
 	}
 	return kakoi;
 }
@@ -4225,6 +4234,13 @@ function LoadCar(playerid, dab, race_check)
 	cache_get_value_name_int(0, "sost", paramet[0]);
 	cache_get_value_name_int(0, "model", paramet[1]);
 	cache_get_value_name_bool(0, "death", death);
+
+	if(!IsAVehExisting(paramet[1]))
+	{
+		ErrorMessage(playerid, "{FF6347}Неверный ID транспорта\n\n{cccccc}Пожалуйста, обратитесь к администрации для устранения этой проблемы [ /report ]");
+		SetPVarInt(playerid,"stopload",0);
+		return 0;
+	}
 
 	// Проверка на арестованный транспорт
 	if(fine > 0)

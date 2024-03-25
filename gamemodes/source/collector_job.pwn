@@ -111,7 +111,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 		{
 			if(IsPlayerInRangeOfPoint(playerid,3.0,1107.387, -1216.869, 17.804))
 			{
-			    if(listitem > 1 || listitem < 0) return 1;
+			    if(listitem >= 1 || listitem < 0) return 1;
 				if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя арендовать транспорт сидя в транспорте");
 				if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет водительских прав [ Y >> GPS >> Образовательный Центр ]");
 				if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid, "{FF6347}Зайдите в будку и начните дежурство, прежде чем брать транспорт");
@@ -128,6 +128,8 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 	   			Cars[newcar] = 53;
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+				ReloadVehicleLabel(newcar); // Перезагружаем лейбл на тс
                 VehInfo[newcar][v3dstat] = 4000;
 
 				new string[90];

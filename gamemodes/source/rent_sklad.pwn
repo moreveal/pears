@@ -178,18 +178,18 @@ stock TakeRentwh(wh, stat, kolvo, thingType, dopinf)
 	return 1;
 }
 
-stock OnLoadRentInvent(idx)
+stock OnLoadRentInvent(idx, f)
 {
 	for(new i = 0; i < 20; i++)
 	{
 		new string[20], bool:is_null;
 		format(string, sizeof(string), "r_slot_%d", i);
-		cache_is_value_name_null(0, string, is_null);
+		cache_is_value_name_null(f, string, is_null);
 
 		if(is_null == false)
 		{
 			new string_json[512];
-			cache_get_value_name(0, string, string_json, 512);
+			cache_get_value_name(f, string, string_json, 512);
 
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 

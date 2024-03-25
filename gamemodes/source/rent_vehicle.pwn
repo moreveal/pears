@@ -113,6 +113,8 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 	 	stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+		ReloadVehicleLabel(newcar); // Перезагружаем лейбл на тс
 	   	VehInfo[newcar][v3dstat] = 4000;
 		new string[80];
 		format(string,sizeof(string),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);

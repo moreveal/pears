@@ -614,6 +614,8 @@ stock BusRouter(playerid, v)
 	if(VehInfo[v][v3dstat] > 1) UpdateLabelBus(playerid, v);
 	else
 	{
+		ReloadVehicleLabel(v); // Перезагружаем лейбл на тс
+		
 	    VehInfo[v][v3dstat] = 7000;
 		new Float:v_pos[3];
 		GetVehiclePos(v, v_pos[0],v_pos[1],v_pos[2]);

@@ -1130,18 +1130,18 @@ stock SaveBizzProductItem(idx, i)
 	return 1;
 }
 
-stock OnLoadBizzProduct(idx)
+stock OnLoadBizzProduct(idx, f)
 {
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
 	{
 		new string[20], bool:is_null;
 		format(string, sizeof(string), "p_slot_%d", i);
-		cache_is_value_name_null(0, string, is_null);
+		cache_is_value_name_null(f, string, is_null);
 
 		if(is_null == false)
 		{
 			new string_json[512];
-			cache_get_value_name(0, string, string_json, 512);
+			cache_get_value_name(f, string, string_json, 512);
 
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
@@ -1157,18 +1157,18 @@ stock OnLoadBizzProduct(idx)
 	return 1;
 }
 
-stock OnLoadBizzInvent(idx)
+stock OnLoadBizzInvent(idx, f)
 {
 	for(new i = 0; i < 80; i++)
 	{
 		new string[20], bool:is_null;
 		format(string, sizeof(string), "b_slot_%d", i);
-		cache_is_value_name_null(0, string, is_null);
+		cache_is_value_name_null(f, string, is_null);
 
 		if(is_null == false)
 		{
 			new string_json[512];
-			cache_get_value_name(0, string, string_json, 512);
+			cache_get_value_name(f, string, string_json, 512);
 
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
@@ -1185,18 +1185,18 @@ stock OnLoadBizzInvent(idx)
 	return 1;
 }
 
-stock OnLoadBizzOrder(idx)
+stock OnLoadBizzOrder(idx, f)
 {
 	for(new i = 0; i < 50; i++)
 	{
 		new string[20], bool:is_null;
 		format(string, sizeof(string), "o_slot_%d", i);
-		cache_is_value_name_null(0, string, is_null);
+		cache_is_value_name_null(f, string, is_null);
 
 		if(is_null == false)
 		{
 			new string_json[512];
-			cache_get_value_name(0, string, string_json, 512);
+			cache_get_value_name(f, string, string_json, 512);
 
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 

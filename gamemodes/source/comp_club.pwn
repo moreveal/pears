@@ -1614,6 +1614,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         // Устанавливаем команду (игроки своей команды не будут получать урон)
         //SetPlayerTeam(playerid, computerClubPlayerInfo[playerid][ccpiTeam]);
 
+        SetPlayerTeam(playerid, 2);
         return 0;
     }
     return 1;
