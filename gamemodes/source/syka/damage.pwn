@@ -345,6 +345,9 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         return false;
     }
 
+    // Блокируем урон по NPC
+    if(IsPlayerNPC(damagedid)) return false;
+
     // Защита от дамага с выстреливающего оружия без отправки пули
     if(IsShootingWeapon(weaponid) && BulletDamagePlayer[playerid] != weaponid) return false;
     BulletDamagePlayer[playerid] = -1;
@@ -467,9 +470,10 @@ public SetPlayerHealthTimer(playerid, Float: health) return ACSetPlayerHealth(pl
 
 stock BeginnerDamage(playerid, damagedid) // Защита от дма новичков
 {
-	if(PlayerInfo[damagedid][pConnectTime] <= 2 // Играл 2 часа и меньше
-		 && MPGO[damagedid] == 0 // Не на мероприятии
-		 && ADMS[damagedid] <= 4) // Защита от урона активна
+	if(!IsPlayerNPC(damagedid) // Игрок не NPC
+        && PlayerInfo[damagedid][pConnectTime] <= 2 // Играл 2 часа и меньше
+	    && MPGO[damagedid] == 0 // Не на мероприятии
+	    && ADMS[damagedid] <= 4) // Защита от урона активна
 	{
 		new string[160];
 		if(ADMS[playerid] <= 4)

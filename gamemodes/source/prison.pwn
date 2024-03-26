@@ -396,6 +396,7 @@ stock IsAKonvoiMenu(playerid)
             && GetPlayerVirtualWorld(playerid) == 208 && GetPlayerInterior(playerid) == 0) return 2; // SFPD
     return 0;
 }
+
 stock PrisonKonvoi(playerid, konvoiId)
 {
     if(PlayerInfo[playerid][pJailed] != 3 && PlayerInfo[playerid][pJailed] != 9 && server > 0 // Разные проверки для основного и тестового сервера
@@ -403,17 +404,14 @@ stock PrisonKonvoi(playerid, konvoiId)
     showDialogMenuKonvoi(playerid, konvoiId);
     return 1;
 }
+
 stock showDialogMenuKonvoi(playerid, konvoiId)
 {
     new line[50],lines[150];
     DP[0][playerid] = konvoiId;
 
-    #if defined FCNPC_LOAD
 	if(GetPrisonBusLocation(konvoiId)) format(line,sizeof(line),"{cccccc}Автобус: {99ff66}Ожидает отправления"), strcat(lines,line);
     else format(line,sizeof(line),"{cccccc}Автобус: {FF6347}Выполняет конвой"), strcat(lines,line);
-    #else 
-    format(line,sizeof(line),"{cccccc}Автобус: {FF6347}Конвой временно недоступен"), strcat(lines,line);
-    #endif
 
 	format(line,sizeof(line),"\n{ff9000}Отправиться в Областную Тюрьму >>"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Что такое конвой? {ff9000}>>"), strcat(lines,line);
@@ -421,20 +419,18 @@ stock showDialogMenuKonvoi(playerid, konvoiId)
     return 1;
 }
 
-#if defined FCNPC_LOAD
 stock GetPrisonBusLocation(konvoiId)
 {
     if(konvoiId == 1) 
     {
-        if(PrisonBusRouteLS == 0) return prisonbus_LS; // Автобус на месте
+        if(NPCInfo[0][npcStart] == false) return prisonbus_LS; // Автобус на месте
     }
     else if(konvoiId == 2) 
     {
-        if(PrisonBusRouteSF == 0) return prisonbus_SF; // Автобус на месте
+        if(NPCInfo[1][npcStart] == false) return prisonbus_SF; // Автобус на месте
     }
     return 0;
 }
-#endif
 
 stock dialogCase_Prison(playerid, dialogid, response, listitem)
 {
@@ -446,8 +442,6 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
             {
                 if(PlayerInfo[playerid][pJailTime] <= 600) return ErrorMessage(playerid, "{FF6347}Ваш срок заключения меньше 10 минут\n{cccccc}Нет необходимости конвоировать вас в областную тюрьму");
                 
-                #if defined FCNPC_LOAD
-                
                 new konvoiId = DP[0][playerid];
                 new vehicleid = GetPrisonBusLocation(konvoiId);
                 if(!vehicleid) return ErrorMessage(playerid, "{FF6347}Тюремный автобус в данный момент выполняет конвой\n{cccccc}Пожалуйста, подождите. Он прибудет обратно примерно через 10 минут");
@@ -458,7 +452,11 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
 
                 if(vehicleid == prisonbus_LS)
                 {
-                    if(!TimerPrisonBusLS && PrisonBusRouteLS == 0) TimerPrisonBusLS = SetTimerEx("PrisonGo", 30000, false, "dd", NpcPrisonLS, prisonbus_LS);
+                    if(!TimerPrisonBusLS) 
+                    {
+                        if(!IsVehicleInRangeOfPoint(prisonbus_LS, 8.0, 1601.9716,-1618.8732,13.7368)) PP_SetVehicleToRespawn(prisonbus_LS);
+                        TimerPrisonBusLS = SetTimerEx("PrisonGo", 30000, false, "d", prisonbus_LS);
+                    }
                     switch(random(3))
                     {
                         case 0: PPSetPlayerPos(playerid,1604.8387,-1611.0654,13.5175);
@@ -469,7 +467,11 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 }
                 else if(vehicleid == prisonbus_SF)
                 {
-                    if(!TimerPrisonBusSF && PrisonBusRouteSF == 0) TimerPrisonBusSF = SetTimerEx("PrisonGo", 30000, false, "dd", NpcPrisonSF, prisonbus_SF);
+                    if(!TimerPrisonBusSF) 
+                    {
+                        if(!IsVehicleInRangeOfPoint(prisonbus_SF, 8.0, -1577.3430,679.9337,7.4451)) PP_SetVehicleToRespawn(prisonbus_SF);
+                        TimerPrisonBusSF = SetTimerEx("PrisonGo", 30000, false, "d", prisonbus_SF);
+                    }
                     switch(random(3))
                     {
                         case 0: PPSetPlayerPos(playerid,-1580.0209,686.4322,7.1875);
@@ -481,9 +483,6 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Садитесь в тюремный автобус\n\n{FF6347}Внимание! {ffcc66}Если вы выйдете из автобуса, то вернётесь обратно в КПЗ!","*","");
                 SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Мне нужно сесть в автобус [ Отправление через 30 секунд ]");
                 SetCameraBehindPlayer(playerid);
-                #else 
-                ErrorMessage(playerid, "{FF6347}Тюремный автобус временно недоступен");
-                #endif
             }
             if(listitem == 1)
             {
@@ -727,7 +726,7 @@ stock PrisonGivePipe(playerid)
     new put_inva = GiveThingPlayer(playerid, 201, 1, 0, 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonPipeUnix] = gettime();
-    new string[90];
+    new string[100];
     format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonPipeUnix` = '%d' WHERE `user_id` = '%d'",PlayerInfo[playerid][pPrisonPipeUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли трубу, из неё вы можете сделать монтировку на станке");
@@ -746,7 +745,7 @@ stock PrisonGiveSpoon(playerid)
     new put_inva = GiveThingPlayer(playerid, 202, 1, 0, 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
     PlayerInfo[playerid][pPrisonSpoonUnix] = gettime();
-    new string[90];
+    new string[100];
     format(string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `user_id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
     SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");

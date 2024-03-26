@@ -100,10 +100,7 @@ CMD:find(playerid, const params[])
     new giveplayerid = ReturnUser(params[0]);
     if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете искать себя");
     if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не в сети, или ещё не залогинился");
-
-    #if defined FCNPC_LOAD
     if(IsARealNPC(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Это NPC");
-    #endif
 
     if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Этот игрок на мероприятии");
 
