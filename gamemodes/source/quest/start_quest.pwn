@@ -479,7 +479,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
     }
     else if(PlayerInfo[playerid][pQuest][8] == 3)
     {
-        SetPVarInt(i,"qweststat",30), SetPVarInt(i,"qwesttime",30);
+        SetPVarInt(playerid,"qweststat",30), SetPVarInt(playerid,"qwesttime",30);
         PlayerInfo[playerid][pQuest][8] = 4;
     }
     SaveQuest(playerid);

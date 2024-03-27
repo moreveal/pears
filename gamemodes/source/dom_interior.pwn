@@ -516,18 +516,18 @@ function LoadObject(stat) // Грузим объекты интерьера дл
             quanAllTextures += tempQuanTextures;
 
             // Грузим старые текстуры в переменную
-            //if(server != 0)
-            //{
-            for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
+            if(server > 0)
             {
-                new textureId;
-                new string_field[10];
-                format(string_field, sizeof(string_field), "st%d", t); // Создаем имя поля (например, "t0", "t1", ...)
-                cache_get_value_name_int(f, string_field, textureId); // Получаем значение текстуры
+                for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
+                {
+                    new textureId;
+                    new string_field[10];
+                    format(string_field, sizeof(string_field), "st%d", t); // Создаем имя поля (например, "t0", "t1", ...)
+                    cache_get_value_name_int(f, string_field, textureId); // Получаем значение текстуры
 
-                if(textureId != 0) DomTexture[nd][sla][t] = textureId;
+                    if(textureId != 0) DomTexture[nd][sla][t] = textureId;
+                }
             }
-            //}
         }
     }
     printf("[MODE]: Объекты Домов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
