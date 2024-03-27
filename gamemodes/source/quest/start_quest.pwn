@@ -20,7 +20,8 @@ new StartQuestName[][] =
     "Археологические раскопки",
     "Отдых в клубе",
     "Последствия от клуба",
-    "Знакомство с едой"
+    "Знакомство с едой",
+    "Знакомство с ноутбуком"
 };
 new StartQuestPresent[][] =
 {
@@ -32,7 +33,8 @@ new StartQuestPresent[][] =
     "Кейс",
     "",
     "",
-    ""
+    "",
+    "Золото"
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -79,6 +81,7 @@ stock NoCompleteQuest(playerid, questId)
     else if(questId == 6 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Секас
     else if(questId == 7 && PlayerInfo[playerid][pQuest][questId] < 5) return 1; // Мед.карта и лечение болезни
     else if(questId == 8 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Хавка
+    else if(questId == 9 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Хавка
     return 0;
 }
 
@@ -439,12 +442,13 @@ stock QuestActorJoneMed(playerid) // Начинаем взаимодейство
     else if(PlayerInfo[playerid][pQuest][7] == 2)
     {
         StartScriptActor(playerid, 11, BotPears[416]);
+        update_illness(playerid, 0);
         PlayerInfo[playerid][pQuest][7] = 3;
     }
     else if(PlayerInfo[playerid][pQuest][7] == 3)
     {
         if(GetPlayerVirtualWorld(playerid) == 0) FindAptek(playerid);
-        else if(GetPlayerVirtualWorld(playerid) >= 3123 && GetPlayerVirtualWorld(playerid) >= 3132){
+        else if(GetPlayerVirtualWorld(playerid) >= 123 && GetPlayerVirtualWorld(playerid) >= 132){
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно купить Хламидиуберин");
             SuccessMessage(playerid,"Подойдите к кассе и купите таблетки Хламидиуберин");
         }
@@ -481,6 +485,33 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
     {
         SetPVarInt(playerid,"qweststat",30), SetPVarInt(playerid,"qwesttime",30);
         PlayerInfo[playerid][pQuest][8] = 4;
+    }
+    SaveQuest(playerid);
+    return 1;
+}
+
+stock QuestActorJoneNotebook(playerid) // Начинаем взаимодействовать с NPC квеста Археалогия
+{
+    if(!NoCompleteQuest(playerid, 9)) return 0; // Если квест уже пойден, не запускаем квест
+    if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");
+    if(QuestInfo[playerid][ScriptQuest] == 4) return 1; // Все сценарии были отработаны
+    new b = GetPlayerVirtualWorld(playerid)-3000;
+    if(PlayerInfo[playerid][pQuest][9] == 1)
+    {
+        SuccessMessage(playerid,"{44ff99}Подойдите к кассе и закажите себе набор с едой");
+        CreateGps(playerid, BizzInfo[b][bBarX],BizzInfo[b][bBarY],BizzInfo[b][bBarZ], 0, 0, 5.0);
+    }
+    else if(PlayerInfo[playerid][pQuest][9] == 2)
+    {
+        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: Вы купили набор с едой, вам нужно подойти к столу и положить его на стол [ F ]");
+        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: После я должен сесть на диван/стул [ ALT ] открыть инвентарь [ N ]");
+        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: После открыть вкладку [ Рядом ] кликнуть по набору два раза и начать кушать кликая [ ПКМ ]");
+        PlayerInfo[playerid][pQuest][9] = 3;
+    }
+    else if(PlayerInfo[playerid][pQuest][9] == 3)
+    {
+        SetPVarInt(playerid,"qweststat",30), SetPVarInt(playerid,"qwesttime",30);
+        PlayerInfo[playerid][pQuest][9] = 4;
     }
     SaveQuest(playerid);
     return 1;
@@ -969,6 +1000,20 @@ stock QuestCallMessage(i)
         SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Да и в целом с ним много приколов, так что давай, двигай на работу. Заработай примерно 100.000$");
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
     }
+    else if(GetPVarInt(i,"qweststat") == 35)
+    {
+        //SendClientMessage(i, COLOR_YELLOW,"Филин (голосовое): А продолжение квеста вы увидите уже на открытие сервера!");
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Молодец, я вижу у тебя достаточно денег. Я тебе в GPS скинул координаты магазина техники");
+        SetPVarInt(i,"qweststat",36), SetPVarInt(i,"qwesttime",4);
+    }
+    else if(GetPVarInt(i,"qweststat") == 36)
+    {
+        //SendClientMessage(i, COLOR_YELLOW,"Филин (голосовое): А продолжение квеста вы увидите уже на открытие сервера!");
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Езжай в него, как купишь ноутбук я тебе объясню как им пользоваться!");
+        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        FindTehshop(i);
+        PlayerInfo[i][pQuest][9] = 1;
+    }
     return 1;
 }
 
@@ -1001,6 +1046,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                 else if(listitem == 7 && NoCompleteQuest(playerid, 6)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили прошлый квест!");
                 else if(listitem == 7) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите запустить квест?","Да","Нет");
                 else if(listitem == 8) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите запустить квест?","Да","Нет");
+                else if(listitem == 9) ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Хотите запустить квест?","Да","Нет");
 				else ErrorText(playerid, "{FF6347}Подробная информация об этом квесте не заполнена"), showDialogStartQuest(playerid, DP[0][playerid]);
 			}
 			else ErrorText(playerid, "{FF6347}Вы прошли этот квест"), showDialogStartQuest(playerid, DP[0][playerid]);
@@ -1054,6 +1100,20 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
             {
                 SuccessMessage(playerid,"{44ff99}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
                 SetPVarInt(playerid,"qweststat",25), SetPVarInt(playerid,"qwesttime",3);
+            }
+            if(questId == 9)
+            {
+                if(PlayerInfo[playerid][pMoney] < 100000) return ErrorMessage(playerid,"{ff6347}У вас на руках недостаточно денег для запуска квеста.");
+                if(get_invent4(playerid,42,0) > 0) 
+                {
+                    SuccessMessage(playerid,"{44ff99}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
+                    SetPVarInt(playerid,"qweststat",35), SetPVarInt(playerid,"qwesttime",3);
+                }
+                else
+                {
+                    PlayerInfo[playerid][pQuest][9] = 2;
+                    QuestActorJoneNotebook(playerid);
+                }
             }
             else showDialogStartQuest(playerid, DP[0][playerid]);
         }
