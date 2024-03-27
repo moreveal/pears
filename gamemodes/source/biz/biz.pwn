@@ -1364,8 +1364,9 @@ stock CreateShluha(idx)
 
 stock BotSex(playerid,b)
 {
+	if(BizzInfo[b][bShluha] == 0) return 0;
 	if(!IsPlayerInRangeOfPoint(playerid,1.0, BizzInfo[b][bShluhaCord][0],BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2])) return 0;
-	if(BizShluhaStatus[b] == 1) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
+	if(BizShluhaStatus[b] >= 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(OnlineInfo[playerid][oSexBot] > 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(oGetPlayerMoney(playerid) < 200) return ErrorMessage(playerid,"{ff6347}Вам не хватает денег [ 200$ ]");
 	new days, hour, minute, second, unix = gettime(), string[84];
@@ -1375,10 +1376,11 @@ stock BotSex(playerid,b)
 	paybiz(b, 200);
 	OnlineInfo[playerid][oSexBot] = b, BizShluhaStatus[b] = playerid;
 	InputProcess[playerid] = 0;
-	new Float:a;
-	GetPlayerFacingAngle(playerid, a);
-	SetDynamicActorFacingAngle(BizShluha[b], a+180.0);
-	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W",4.0,0,0,1,0,1);
+	new Float:x,Float:y,Float:z,Float:a;
+	DynamicActorfrontme(BizShluha[b],0.5,x,y,z,a);
+	PPSetPlayerPos(playerid,x,y,z);
+	SetPlayerFacingAngle(playerid,a-180);
+	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W", 4.0, 0,0,0,1,0);
 	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4.0,0,0,1,0,1);
 	Sex[playerid] = 3;
 	SexPlayerid[playerid] = 5555;

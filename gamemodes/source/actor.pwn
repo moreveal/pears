@@ -104,6 +104,16 @@ function ClearDynamicTextActor(playerid, actorid) // Удаляем текст �
     return 1;
 }
 
+	stock DynamicActorfrontme(actorid, Float:distance, &Float:x, &Float:y, &Float:z, &Float:a)
+{
+	if(!IsValidDynamicActor(actorid)) return 0;
+    GetDynamicActorPos(actorid, x,y,z);
+	GetDynamicActorFacingAngle(actorid,a);
+	x=x+distance*floatsin(-a,degrees);
+	y=y+distance*floatcos(-a,degrees);
+	return 1;
+}
+
 stock LoadDynamicActor()
 {
     CreateDynamicActor(163, -2777.3750,381.2728,6.164,182.8925, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 1)
@@ -314,7 +324,7 @@ stock LoadBot()
 	BotPears[413] = CreateDynamicActor(71, 1395.8878,-16.0300,1000.9217,271.3257, true, 100.0, 5); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 23
 	BotPears[414] = CreateDynamicActor(274, 1400.1345,-21.4354,1000.9217,253.0776, true, 100.0, 5); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 24
 	BotPears[415] = CreateDynamicActor(272, 1401.3024,-21.7337,1000.9217,71.9927, true, 100.0, 5); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 25
-	BotPears[416] = CreateDynamicActor(70, 1377.5765,-21.8737,1000.9217,51.2186, true, 100.0, 6); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 26
+	BotPears[416] = CreateDynamicActor(70, 1377.5765,-21.8737,1000.9217,51.2186, true, 100.0, 6); // Доктор мз Bot 26
 	BotPears[417] = CreateDynamicActor(276, 1386.7156,-13.8015,1000.9217,9.9520, true, 100.0, 5); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 27
 	BotPears[418] = CreateDynamicActor(259, 1386.1909,-12.0045,1000.9219,195.7369, true, 100.0, 5); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 28
 	BotPears[419] = CreateDynamicActor(308, 1218.2460,-1352.8877,2001.0491,178.0994, true, 100.0, 4); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1

@@ -325,6 +325,7 @@ stock goeat_podnos(playerid)
 		}
 		if(ThrowInfo[t][tQuan] <= 1)
 	    {
+			if(PlayerInfo[playerid][pQuest][8] == 3) QuestActorJoneHavka(playerid);
 	        DestroyThrow(t);
 			updatethrowall(t);
 			Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0;
