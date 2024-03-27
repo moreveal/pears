@@ -462,85 +462,122 @@ stock CheckObject(dom) // Проверяем есть ли свободные с
 	return 0;
 }
 
-function LoadObject(stat) // Грузим объекты интерьера для дома
+function LoadObject(stat, typeLoad) // Грузим объекты интерьера для дома
 {
     new time = GetTickCount();
-    new rows, sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
-    new world, interior, quanAllTextures;
-    new ousetextL, oFontFaceL[64], oFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL, oTextFontSizeL, oObjectTextL[64];
+    new rows;
+    new quanAllTextures;
+    
     cache_get_row_count(rows);
 
     for(new f = 0; f < rows; ++f)
     {
-        // Загрузка данных объекта
-        cache_get_value_name_int(f, "slot", sla);
-        cache_get_value_name_int(f, "dom", nd);
-        cache_get_value_name_int(f, "newid", DomInfo[nd][dNewid][sla]);
-        cache_get_value_name_int(f, "user", DomInfo[nd][dUser][sla]);
-        cache_get_value_name_int(f, "model", DomInfo[nd][dOmodel][sla]);
-        cache_get_value_name_int(f, "qara", DomInfo[nd][dQara][sla]);
-        cache_get_value_name_int(f, "world", world);
-        cache_get_value_name_int(f, "interior", interior);
-        cache_get_value_name_float(f, "ox", x);
-        cache_get_value_name_float(f, "oy", y);
-        cache_get_value_name_float(f, "oz", z);
-        cache_get_value_name_float(f, "orx", rx);
-        cache_get_value_name_float(f, "ory", ry);
-        cache_get_value_name_float(f, "orz", rz);
-        cache_get_value_name_int(f, "ousetext", ousetextL);
-        cache_get_value_name(f, "oFontFace", oFontFaceL, 64);
-        cache_get_value_name_int(f, "oFontSize", oFontSizeL);
-        cache_get_value_name_int(f, "oFontBold", oFontBoldL);
-        cache_get_value_name_int(f, "oFontColor", oFontColorL);
-        cache_get_value_name_int(f, "oBackColor", oBackColorL);
-        cache_get_value_name_int(f, "oAlignment", oAlignmentL);
-        cache_get_value_name_int(f, "oTextFontSize", oTextFontSizeL);
-        cache_get_value_name(f, "oObjectText", oObjectTextL, 64);
+        new temptextures;
+        if(typeLoad == 0) temptextures = OldLoadObjectDom(f);
+        //else if(typeLoad == 1) temptextures = NewLoadObjectDom(f);
 
-        if(DomInfo[nd][dOmodel][sla] >= 1) 
-        {
-            // Обработка world и interior
-            //if(world == 0) world = nd + 1000;
-            //if(interior == 0) interior = 90;
-
-            // Создание объекта
-            DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
-
-            if(ousetextL)
-            {
-                SetDynamicObjectMaterialText(DomInfo[nd][dObject][sla], 0, oObjectTextL, oFontSizeL, oFontFaceL, oTextFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL);
-            }
-
-            // Получение и применение текстур к объекту
-            new tempQuanTextures = LoadTexturesOnObject(nd, sla, f, 1);
-            quanAllTextures += tempQuanTextures;
-
-            // Грузим старые текстуры в переменную
-            if(server > 0)
-            {
-                for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
-                {
-                    new textureId;
-                    new string_field[10];
-                    format(string_field, sizeof(string_field), "st%d", t); // Создаем имя поля (например, "t0", "t1", ...)
-                    cache_get_value_name_int(f, string_field, textureId); // Получаем значение текстуры
-
-                    if(textureId != 0) DomTexture[nd][sla][t] = textureId;
-                }
-            }
-        }
+        quanAllTextures += temptextures;
     }
     printf("[MODE]: Объекты Домов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
 
-    if(stat == 0) // 1 - 500
+    if(stat == 0) Launch3(); // Грузим теперь следующие 501 - 1000
+    else if(stat == 1) Launch6(); // Грузим объекты бизов (После бизов сервер откроется и загрузятся NPC)
+    return 1;
+}
+
+/*stock NewLoadObjectDom(f)
+{
+    new sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
+    new ousetextL, oFontFaceL[64], oFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL, oTextFontSizeL, oObjectTextL[64];
+    new world, interior;
+
+    cache_get_value_name_int(f, "dom", nd);
+    cache_get_value_name_int(f, "slot", sla);
+    cache_get_value_name_int(f, "newid", DomInfo[nd][dNewid][sla]);
+
+    new string_json[4096];
+	cache_get_value_name(f, "data", string_json, sizeof(string_json));
+
+    new JsonNode:node = JSON_INVALID_NODE;
+    if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
     {
-        Launch3(); // Грузим теперь следующие 501 - 1000
-    }
-    else if(stat == 1) // 501 - 1000
-    {
-        Launch6(); // Грузим объекты бизов (После бизов сервер откроется и загрузятся NPC)
+        JSON_GetInt(node, "user", DomInfo[nd][dUser][sla]);
+        JSON_GetInt(node, "model", DomInfo[nd][dOmodel][sla]);
+        JSON_GetInt(node, "qara", DomInfo[nd][dQara][sla]);
+        JSON_GetInt(node, "world", world);
+        JSON_GetInt(node, "interior", interior);
+
+        //new slotLol[512];
+        //JSON_GetString(node, "lol", slotLol);
     }
     return 1;
+}*/
+
+stock OldLoadObjectDom(f)
+{
+    new sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
+    new ousetextL, oFontFaceL[64], oFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL, oTextFontSizeL, oObjectTextL[64];
+    new world, interior;
+
+    // Загрузка данных объекта
+    cache_get_value_name_int(f, "slot", sla);
+    cache_get_value_name_int(f, "dom", nd);
+    cache_get_value_name_int(f, "newid", DomInfo[nd][dNewid][sla]);
+    cache_get_value_name_int(f, "user", DomInfo[nd][dUser][sla]);
+    cache_get_value_name_int(f, "model", DomInfo[nd][dOmodel][sla]);
+    cache_get_value_name_int(f, "qara", DomInfo[nd][dQara][sla]);
+    cache_get_value_name_int(f, "world", world);
+    cache_get_value_name_int(f, "interior", interior);
+    cache_get_value_name_float(f, "ox", x);
+    cache_get_value_name_float(f, "oy", y);
+    cache_get_value_name_float(f, "oz", z);
+    cache_get_value_name_float(f, "orx", rx);
+    cache_get_value_name_float(f, "ory", ry);
+    cache_get_value_name_float(f, "orz", rz);
+    cache_get_value_name_int(f, "ousetext", ousetextL);
+    cache_get_value_name(f, "oFontFace", oFontFaceL, 64);
+    cache_get_value_name_int(f, "oFontSize", oFontSizeL);
+    cache_get_value_name_int(f, "oFontBold", oFontBoldL);
+    cache_get_value_name_int(f, "oFontColor", oFontColorL);
+    cache_get_value_name_int(f, "oBackColor", oBackColorL);
+    cache_get_value_name_int(f, "oAlignment", oAlignmentL);
+    cache_get_value_name_int(f, "oTextFontSize", oTextFontSizeL);
+    cache_get_value_name(f, "oObjectText", oObjectTextL, 64);
+
+    new quanAllTextures;
+    if(DomInfo[nd][dOmodel][sla] >= 1) 
+    {
+        // Обработка world и interior
+        //if(world == 0) world = nd + 1000;
+        //if(interior == 0) interior = 90;
+
+        // Создание объекта
+        DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
+
+        if(ousetextL)
+        {
+            SetDynamicObjectMaterialText(DomInfo[nd][dObject][sla], 0, oObjectTextL, oFontSizeL, oFontFaceL, oTextFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL);
+        }
+
+        // Получение и применение текстур к объекту
+        new tempQuanTextures = LoadTexturesOnObject(nd, sla, f, 1);
+        quanAllTextures += tempQuanTextures;
+
+        // Грузим старые текстуры в переменную
+        if(server > 0)
+        {
+            for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
+            {
+                new textureId;
+                new string_field[10];
+                format(string_field, sizeof(string_field), "st%d", t); // Создаем имя поля (например, "t0", "t1", ...)
+                cache_get_value_name_int(f, string_field, textureId); // Получаем значение текстуры
+
+                if(textureId != 0) DomTexture[nd][sla][t] = textureId;
+            }
+        }
+    }
+    return quanAllTextures;
 }
 
 stock LoadTexturesOnObject(nd, sla, f, type)
