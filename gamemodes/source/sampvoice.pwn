@@ -7,7 +7,7 @@ new SV_UINT:lstream[MAX_REALPLAYERS] = { SV_NONE, ... };
 
 stock SampvoiceInitializationMode()
 {
-    SvEnableDebug(); // Р РµР¶РёРј РѕС‚Р»Р°РґРєРё Sampvoice
+    SvEnableDebug(); // Режим отладки Sampvoice
 
     adm_stream = SvCreateStream();
 
@@ -25,13 +25,13 @@ stock SampvoiceExitMode()
     return 1;
 }
 
-stock SampvoiceInitializationPlayer(playerid) // Р—Р°РїСѓСЃРєР°РµРј РёРіСЂРѕРєСѓ sampvoice
+stock SampvoiceInitializationPlayer(playerid) // Запускаем игроку sampvoice
 {
-    if(SvGetVersion(playerid) == 0) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}РџР»Р°РіРёРЅ РіРѕР»РѕСЃРѕРІРѕРіРѕ С‡Р°С‚Р° РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ");
-    else if(SvHasMicro(playerid) == SV_FALSE) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}РњРёРєСЂРѕС„РѕРЅ РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅ");
+    if(SvGetVersion(playerid) == 0) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}Плагин голосового чата не установлен");
+    else if(SvHasMicro(playerid) == SV_FALSE) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}Микрофон не обнаружен");
     else
     {
-        if ((lstream[playerid] = SvCreateStream(40.0)) != SV_NONE) // Р§Р°С‚ СЂСЏРґРѕРј СЃ РёРіСЂРѕРєР°РјРё
+        if ((lstream[playerid] = SvCreateStream(40.0)) != SV_NONE) // Чат рядом с игроками
         {
             PlayerInfo[playerid][pVoice] = true;
             SvSetKey(playerid, 0x5A, LOCAL_CHANNEL); // Z key
@@ -61,19 +61,19 @@ stock SampvoiceAttachAdmin(playerid)
     return 1;
 }
 
-stock SampvoiceStopPlayer(playerid) // РћС‚РєР»СЋС‡Р°РµРј РёРіСЂРѕРєСѓ sampvoice (РЅР°РїСЂРёРјРµСЂ РІС‹РґР°Р»Рё РјСѓС‚, С‡С‚РѕР±С‹ РѕРЅ РЅРµ РјРѕРі РїСЂРѕРґРѕР»Р¶Р°С‚СЊ РіРѕРІРѕСЂРёС‚СЊ)
+stock SampvoiceStopPlayer(playerid) // Отключаем игроку sampvoice (например выдали мут, чтобы он не мог продолжать говорить)
 {
     if(PlayerInfo[playerid][pVoice] == false) return 0;
     SvDisableSpeaker(playerid, LOCAL_CHANNEL);
     return 1;
 }
 
-stock SampvoiceDestroyPlayer(playerid) // РћС‚РєР»СЋС‡Р°РµРј РёРіСЂРѕРєСѓ sampvoice РїСЂРё РІС‹С…РѕРґРµ РёР· РёРіСЂС‹
+stock SampvoiceDestroyPlayer(playerid) // Отключаем игроку sampvoice при выходе из игры
 {
     if(PlayerInfo[playerid][pVoice] == false) return 0;
     PlayerInfo[playerid][pVoice] = false;
 
-    if(lstream[playerid]) // РЈРґР°Р»СЏРµРј Р»РёС‡РЅС‹Р№ РїРѕС‚РѕРє
+    if(lstream[playerid]) // Удаляем личный поток
     {
         SvDeleteStream(lstream[playerid]);
         lstream[playerid] = SV_NONE;
