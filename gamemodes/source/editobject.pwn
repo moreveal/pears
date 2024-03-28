@@ -3,38 +3,38 @@
 
 enum editObjectInfoEnum
 {
-    editPlayerOrDynamic, // 0 Player, 1 Dynamic (РљР°РєСѓСЋ СЃРёСЃС‚РµРјСѓ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РёСЃРїРѕР»СЊР·СѓРµРј - 0 РІСЂРµРјРµРЅРЅС‹Р№ РѕР±СЉРµРєС‚ New System, 1 РїРѕСЃС‚РѕСЏРЅРЅС‹Р№ Old)
-    editType, // РўРёРї: РЎРѕР·РґР°РЅРёРµ 0 РёР»Рё РџРµСЂРµРјРµС‰РµРЅРёРµ 1
-    editTempObject, // ID Р’СЂРµРјРµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
-    editOption, // ID РґРѕРјР° РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ СЂРµРєС‚РёСЂСѓРµРј РѕР±СЉРµРєС‚ РёР»Рё id Р±РёР·РЅРµСЃР° (Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё)
-    editSlot, // Slot СЂРµРґР°РєС‚РёСЂСѓРµРјРѕРіРѕ РѕР±СЉРµРєС‚Р° РІ СЂР°Р·РЅС‹С… СЃРёСЃС‚РµРјР°С…
-    editObjectid, // ID РѕР±СЉРµРєС‚Р°, РµСЃР»Рё СЂРµРґР°РєС‚РёСЂСѓРµС‚СЃСЏ DynamicObject
-    editDopOption, // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё
-    editOne, // РќР°С‡Р°Р»Рѕ РїСЂРѕС†РµСЃСЃР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
-    Float:editOldPos[6], // РљРѕРѕСЂРґРёРЅР°С‚С‹ РїСЂРµР¶РЅРµР№ РїРѕР·РёС†РёРё РѕР±СЉРµРєС‚Р°
+    editPlayerOrDynamic, // 0 Player, 1 Dynamic (Какую систему редактирования используем - 0 временный объект New System, 1 постоянный Old)
+    editType, // Тип: Создание 0 или Перемещение 1
+    editTempObject, // ID Временного объекта
+    editOption, // ID дома для которого ректируем объект или id бизнеса (Дополнительная переменная для хранения информации)
+    editSlot, // Slot редактируемого объекта в разных системах
+    editObjectid, // ID объекта, если редактируется DynamicObject
+    editDopOption, // Дополнительная переменная для хранения информации
+    editOne, // Начало процесса редактирования
+    Float:editOldPos[6], // Координаты прежней позиции объекта
 };
 new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
 
-// РќР°С‡РёРЅР°РµРј СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р° (New System 14.11.2023)
-/* РРЅСЃС‚СЂСѓРєС†РёСЏ
+// Начинаем редактирование объекта (New System 14.11.2023)
+/* Инструкция
 
-- Р•СЃР»Рё РјС‹ С…РѕС‚РёРј СЃРѕР·РґР°С‚СЊ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚ РґР»СЏ СЃРµСЂРІРµСЂР° РІ Р»СЋР±СѓСЋ СЃРёСЃС‚РµРјСѓ, РёСЃРїРѕР»СЊР·СѓРµРј: CreateEditPlayerObject
- id РќРѕРјРµСЂ gRedakt (31 Рё 32 РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РќР•Р›Р¬Р—РЇ!)
- type 0 СЃРѕР·РґР°С‘Рј РѕР±СЉРµРєС‚, 1 РїРµСЂРµРјРµС‰Р°РµРј СѓР¶Рµ СЃРѕР·РґР°РЅРЅС‹Р№ СЂР°РЅРµРµ
- option РґРѕРї РёРЅС„РѕСЂРјР°С†РёСЏ, РЅР°РїСЂРёРјРµСЂ РЅРѕРјРµСЂ РґРѕРјР° РёР»Рё Р±РёР·РЅРµСЃР°
- slot СЃР»РѕС‚ РґР»СЏ РѕР±СЉРµРєС‚Р°, РІ Рє РїСЂРёРјРµСЂСѓ РІ С‚РѕРј Р¶Рµ РґРѕРјРµ
- modelid РјРѕРґРµР»СЊ РѕР±СЉРµРєС‚Р°
- РґР°Р»СЊС€Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹
- - Р—Р°С‚РµРј РІ stock SaveEditPlayerObject РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ gRedakt РїРѕ СЃРїРёСЃРєСѓ СЃ СѓСЃР»РѕРІРёСЏРјРё РґР»СЏ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµР№ СЃРёСЃС‚РµРјС‹
- Р’РЎРЃ
+- Если мы хотим создать новый объект для сервера в любую систему, используем: CreateEditPlayerObject
+ id Номер gRedakt (31 и 32 использовать НЕЛЬЗЯ!)
+ type 0 создаём объект, 1 перемещаем уже созданный ранее
+ option доп информация, например номер дома или бизнеса
+ slot слот для объекта, в к примеру в том же доме
+ modelid модель объекта
+ дальше координаты
+ - Затем в stock SaveEditPlayerObject добавляем новый gRedakt по списку с условиями для соответствующей системы
+ ВСЁ
 
- - Р•СЃР»Рё С…РѕС‚РёРј РѕС‚СЂРµРґР°С‡РёС‚СЊ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ РѕР±СЉРµРєС‚, РёСЃРїРѕР»СЊР·СѓРµРј: GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
- id РЅРѕРјРµСЂ gRedakt (31 Рё 32 РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РќР•Р›Р¬Р—РЇ!)
- type 0 СЃРѕР·РґР°С‘Рј, 1 РїРµСЂРµРјРµС‰Р°РµРј
- option РґРѕРї РёРЅС„РѕСЂРјР°С†РёСЏ, РЅР°РїСЂРёРјРµСЂ РЅРѕРјРµСЂ РґРѕРјР° РёР»Рё Р±РёР·РЅРµСЃР°
- slot СЃР»РѕС‚ РґР»СЏ РѕР±СЉРµРєС‚Р°, РІ Рє РїСЂРёРјРµСЂСѓ РІ С‚РѕРј Р¶Рµ РґРѕРјРµ
- objectid - РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РѕР±СЉРµРєС‚Р°, РєРѕС‚РѕСЂС‹Р№ Р±С‹Р» СЃРѕР·РґР°РЅ СЂР°РЅРµРµ
- - Р—Р°С‚РµРј РІ OnPlayerEditDynamicObject РїРѕРґ EDIT_RESPONSE_FINAL РґРѕР±Р°РІР»СЏРµРј СѓСЃР»РѕРІРёСЏ РґР»СЏ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµР№ СЃРёСЃС‚РµРјС‹ (Р»РµР№Р±Р»С‹ С‚Р°Рј Рё С‚.Рґ.)
+ - Если хотим отредачить уже существующий объект, используем: GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
+ id номер gRedakt (31 и 32 использовать НЕЛЬЗЯ!)
+ type 0 создаём, 1 перемещаем
+ option доп информация, например номер дома или бизнеса
+ slot слот для объекта, в к примеру в том же доме
+ objectid - идентификатор объекта, который был создан ранее
+ - Затем в OnPlayerEditDynamicObject под EDIT_RESPONSE_FINAL добавляем условия для соответствующей системы (лейблы там и т.д.)
 */
 stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
@@ -50,11 +50,11 @@ stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x,
 	return 1;
 }
 
-public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ)
+public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:response, Float:fX, Float:fY, Float:fZ, Float:fRotX, Float:fRotY, Float:fRotZ)
 {
     if(OnlineInfo[playerid][oLogged] == 0) return 0;
 
-    // Only PlayerObject (Р РµРґР°РєС‚РёСЂСѓРµС‚СЃСЏ РІСЂРµРјРµРЅРЅС‹Р№ РѕР±СЉРµРєС‚, РєРѕС‚РѕСЂС‹Р№ Р±С‹Р» СЃРѕР·РґР°РЅ С‚РѕР»СЊРєРѕ РґР»СЏ РёРіСЂРѕРєР°)
+    // Only PlayerObject (Редактируется временный объект, который был создан только для игрока)
     if(playerobject)
     {
         if(!IsValidPlayerObject(playerid, objectid)) return 1;
@@ -67,14 +67,14 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
             if(dist >= 150.0)
             {
                 new line[90],lines[800];
-   	            format(line,sizeof(line),"{FF6347}РћР±СЉРµРєС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ"), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{ff9000}РћР±СЉРµРєС‚ СѓР»РµС‚Р°РµС‚ РґР°Р»РµРєРѕ СЃ СЌС‚РѕР№ РѕС€РёР±РєРѕР№ СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РѕС‚РєСЂС‹С‚РёСЏ СЂРµРґР°РєС‚РѕСЂР°?"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- РќРµ СЃРїРµС€РёС‚Рµ"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- РЎРµР№С‡Р°СЃ Р·Р°РєСЂРѕР№С‚Рµ СЌС‚Рѕ РѕРєРЅРѕ Рё Р·Р°С‚РµРј РїРѕРІС‚РѕСЂРёС‚Рµ СѓСЃС‚Р°РЅРѕРІРєСѓ РѕР±СЉРµРєС‚Р°"), strcat(lines,line);
-                format(line,sizeof(line),"\n{FF6347}- Р’Р°Р¶РЅРѕ! РќРµ С€РµРІРµР»РёС‚Рµ РјС‹С€РєРѕР№, РєРѕРіРґР° РѕС‚РєСЂРѕРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚Р° РїРѕРІС‚РѕСЂРЅРѕ"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Р—Р°С‚РµРј РїСЂРѕСЃС‚Рѕ РЅР°Р¶РјРёС‚Рµ Р›РµРІСѓСЋ РљРЅРѕРїРєСѓ РњС‹С€Рё, С‡С‚РѕР±С‹ РїРѕСЏРІРёР»СЃСЏ РєСѓСЂСЃРѕСЂ"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- РџСЂРѕР±Р»РµРјР° РІСЃРµРіРѕ-Р»РёС€СЊ РІ Р·Р°Р»РёРїР°РЅРёРё РєСѓСЂСЃРѕСЂР°"), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{cccccc}РЈСЃРїРµС…РѕРІ РІ РјР°РїРїРёРЅРіРµ :)"), strcat(lines,line);
+   	            format(line,sizeof(line),"{FF6347}Объект слишком далеко от вас"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{ff9000}Объект улетает далеко с этой ошибкой сразу после открытия редактора?"), strcat(lines,line);
+                format(line,sizeof(line),"\n{cccccc}- Не спешите"), strcat(lines,line);
+                format(line,sizeof(line),"\n{cccccc}- Сейчас закройте это окно и затем повторите установку объекта"), strcat(lines,line);
+                format(line,sizeof(line),"\n{FF6347}- Важно! Не шевелите мышкой, когда откроете редактор объекта повторно"), strcat(lines,line);
+                format(line,sizeof(line),"\n{cccccc}- Затем просто нажмите Левую Кнопку Мыши, чтобы появился курсор"), strcat(lines,line);
+                format(line,sizeof(line),"\n{cccccc}- Проблема всего-лишь в залипании курсора"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{cccccc}Успехов в маппинге :)"), strcat(lines,line);
                 ErrorMessage(playerid, lines);
                 CancelEditable(playerid);
                 return 1;
@@ -86,14 +86,14 @@ public OnPlayerEditObject(playerid, playerobject, objectid, response, Float:fX, 
             SaveEditPlayerObject(playerid, GetPlayerObjectModel(playerid, objectid), fX, fY, fZ, fRotX, fRotY, fRotZ); // Save Object
             DestroyPlayerObject(playerid, objectid); // Delete Temp Object
 
-            gRedakt[playerid] = 0; // Р РµРґР°РєС‚РѕСЂ Off
+            gRedakt[playerid] = 0; // Редактор Off
             CancelSelectTextDraw(playerid);
         }
     }
 	return 1;
 }
 
-// РЎРѕС…СЂР°РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ (New System 14.11.2023)
+// Сохраняем результат редактирования (New System 14.11.2023)
 stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     new string[180];
@@ -101,7 +101,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     new slot = EditObjectInfo[playerid][editSlot];
     //new type = EditObjectInfo[playerid][editType];
 
-    if(gRedakt[playerid] == 3) // РЎРѕР·РґР°РЅРёРµ РёР»Рё РџРµСЂРµРјРµС‰РµРЅРёРµ Map РћР±СЉРµРєС‚Р° (РђРґРјРёРЅСЃРєР°СЏ РЎРёСЃС‚РµРјР°)
+    if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
     {
         new objid = -1;
 	    for(new i = 0; i < MAX_MAPOBJECT; i++)
@@ -112,7 +112,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 				break;
 			}
 	    }
-	    if(objid == -1) return ErrorMessage(playerid, "{FF6347}Р›РёРјРёС‚ РєРѕР»РёС‡РµСЃС‚РІР° РѕР±СЉРµРєС‚РѕРІ РґР»СЏ РѕРґРЅРѕР№ РєР°СЂС‚С‹"), CancelEdit(playerid);
+	    if(objid == -1) return ErrorMessage(playerid, "{FF6347}Лимит количества объектов для одной карты"), CancelEdit(playerid);
 
         MapInfo[0][mapobject][objid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
 		MapInfo[0][quanobject] ++;
@@ -120,15 +120,15 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		ObjectMapLabelAll(0, objid);
 
         format(string,sizeof(string),"CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
-        SendClientMessagef(playerid, COLOR_GREY, string);
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
-    else if(gRedakt[playerid] == 6) // РЈСЃС‚Р°РЅРѕРІРєР° РјРµР±РµР»Рё РІ РґРѕРјРµ
+    else if(gRedakt[playerid] == 6) // Установка мебели в доме
     {
         new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
         if(dist > 200.0 && distStreet > 30.0)
         {
-            ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµРіРѕ РґРѕРјР°\n{cccccc}РЈСЃС‚Р°РЅРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РЅРµ РґР°Р»СЊС€Рµ 30 РјРµС‚СЂРѕРІ РѕС‚ РґРѕРјР°");
+            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
             CancelEditable(playerid);
             return 1;
         }
@@ -136,7 +136,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new findSlot = getFreeSlotObjectDom(oid);
         if(findSlot == -1)
         {
-            ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј РґРѕРјРµ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ СЃР»РѕС‚С‹ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё РѕР±СЉРµРєС‚РѕРІ");
+            ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
             CancelEditable(playerid);
             return 1;
         }
@@ -145,27 +145,27 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		{
             if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET)
             {
-                ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј РґРѕРјРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРјРµС‚РѕРІ РЅР° СѓР»РёС†Рµ");
+                ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице");
                 CancelEditable(playerid);
                 return 1;
             }
         }
         
-        DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // РЈРґР°Р»СЏРµРј РїСЂРµРґРјРµС‚ РёР· РґРѕРјР°
+        DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
         SaveOneTainik(oid, slot);
 
         DomInfo[oid][dObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
 		DomInfo[oid][dUser][findSlot] = PlayerInfo[playerid][pID];
 		DomInfo[oid][dQara][findSlot] = DomInfo[oid][dInvQara][slot];
 		DomInfo[oid][dOmodel][findSlot] = modelid;
-        UpdateObject(oid, findSlot); // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ (С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РѕР±РЅРѕРІР»СЏРµРј)
+        UpdateObject(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
 
         Update3DLabelDomBiz(oid, findSlot, 1);
         if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
     }
-    else if(gRedakt[playerid] == 9) // РЈСЃС‚Р°РЅРѕРІРєР° РљР°РјРµСЂ РЎР»РµР¶РµРЅРёСЏ
+    else if(gRedakt[playerid] == 9) // Установка Камер Слежения
 	{
-        if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Р›РёРјРёС‚ РєР°РјРµСЂ СЃР»РµР¶РµРЅРёСЏ"), CancelEdit(playerid);
+        if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Лимит камер слежения"), CancelEdit(playerid);
         camerafbi ++;
         for(new cam = 0; cam < sizeof(CamInfo); cam++)
         {
@@ -179,31 +179,31 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 strmid(CamInfo[cam][cName], ListName[playerid], 0, strlen(ListName[playerid]), 24);
                 CamInfo[cam][cDate] = gettime();
                 InsertCam(cam);
-                format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РљР°РјРµСЂР° СѓСЃС‚Р°РЅРѕРІР»РµРЅР° {ff9000}[ %s ]", CamInfo[cam][cName]), SendClientMessage(playerid, COLOR_GREY, string);
-                if(PlayerInfo[playerid][pSex] == 1) SetPlayerChatBubble(playerid,"СѓСЃС‚Р°РЅРѕРІРёР» РєР°РјРµСЂСѓ СЃР»РµР¶РµРЅРёСЏ",COLOR_PURPLE,20.0,10000);
-                else SetPlayerChatBubble(playerid,"СѓСЃС‚Р°РЅРѕРІРёР»Р° РєР°РјРµСЂСѓ СЃР»РµР¶РµРЅРёСЏ",COLOR_PURPLE,20.0,10000);
+                format(string,sizeof(string),"[ Мысли ]: Камера установлена {ff9000}[ %s ]", CamInfo[cam][cName]), SendClientMessage(playerid, COLOR_GREY, string);
+                if(PlayerInfo[playerid][pSex] == 1) SetPlayerChatBubble(playerid,"установил камеру слежения",COLOR_PURPLE,20.0,10000);
+                else SetPlayerChatBubble(playerid,"установила камеру слежения",COLOR_PURPLE,20.0,10000);
                 break;
             }
         }
     }
-    else if(gRedakt[playerid] == 10) // РџРµСЂРµРјРµС‰РµРЅРёРµ РћР±СЉРµРєС‚РѕРІ Р‘РёР·РЅРµСЃР° (РЈР»РёС†Р°)
+    else if(gRedakt[playerid] == 10) // Перемещение Объектов Бизнеса (Улица)
     {
         if(slot == 0)
         {
-            if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓСЃС‚Р°РЅРѕРІРёР»Рё РІС…РѕРґ РІ Р±РёР·РЅРµСЃ СЃР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґСЂСѓРіРѕРјСѓ Р±РёР·РЅРµСЃСѓ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
-            if(bizsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Р’ СЂР°РґРёСѓСЃРµ 200 РјРµС‚СЂРѕРІ СѓР¶Рµ РµСЃС‚СЊ Р±РёР·РЅРµСЃ РІР°С€РµРіРѕ С‚РёРїР° [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
-            if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РјРµСЃС‚Рѕ Р·Р°СЂРµР·РµСЂРІРёСЂРѕРІР°РЅРѕ РіРѕСЃСѓРґР°СЂСЃС‚РІРѕРј! [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+            if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Вы установили вход в бизнес слишком близко к другому бизнесу [Отмена установки]"), CancelEdit(playerid);
+            if(bizsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес вашего типа [Отмена установки]"), CancelEdit(playerid);
+            if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Это место зарезервировано государством! [Отмена установки]"), CancelEdit(playerid);
 
             new bcity = getbiz_city(oid);
             if(bcity == 0
                 && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє LS [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
             if(bcity == 1
                 && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє SF [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
             if(bcity == 2
                 && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє LV [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
         }
 
         new Float:object_pos[3];
@@ -220,7 +220,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         {
             GetDynamicObjectPos(BizzInfo[oid][bBizObject][0], object_pos[0], object_pos[1], object_pos[2]);
             new Float:disttodoor = GetDistancePoint(x, y, z, object_pos[0], object_pos[1], object_pos[2]);
-            if(disttodoor >= 30.0) return ErrorMessage(playerid, "{FF6347}Р’С‹РІРµСЃРєР° СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РґРІРµСЂРё Р±РёР·РЅРµСЃР° [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+            if(disttodoor >= 30.0) return ErrorMessage(playerid, "{FF6347}Вывеска слишком далеко от двери бизнеса [Отмена установки]"), CancelEdit(playerid);
         }
         else if(slot == 0)
         {
@@ -231,16 +231,16 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 BizzInfo[oid][bStat] = 1;
                 if(BizzInfo[oid][bLab] == 1) DestroyDynamicPickup(BizPickup[oid]), DestroyDynamic3DTextLabel(BizLabel[oid]), BizzInfo[oid][bLab] = 0;
 
-                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћР±СЉРµРєС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅ\n\nРўРµРїРµСЂСЊ, РµРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕ РѕРґРѕР±СЂРёС‚СЊ СЃРѕС‚СЂСѓРґРЅРёРєР°Рј РџСЂР°РІРёС‚РµР»СЊСЃС‚РІР°\nРџРѕСЃР»Рµ СЂР°СЃСЃРјРѕС‚СЂРµРЅРёСЏ Р·Р°СЏРІР»РµРЅРёСЏ РІС‹ РїРѕР»СѓС‡РёС‚Рµ СѓРІРµРґРѕРјР»РµРЅРёРµ","*","");
-                format(string, sizeof(string), "{FFFFFF}** {00C6FF}Р‘РёР·РЅРµСЃ в„– %d С‚СЂРµР±СѓРµС‚ РѕРґРѕР±СЂРµРЅРёСЏ РѕС‚РєСЂС‹С‚РёСЏ {cccccc}[ /goverment ] {ffffff} **", oid);
+                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
+                format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /goverment ] {ffffff} **", oid);
                 SendRadioMessage(7, COLOR_ALLDEPT, string);
             }
             createdoor_biznes(oid);
         }
         SaveBizz(oid);
-        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], oid, 0, "РџРµСЂРµРЅС‘СЃ РѕР±СЉРµРєС‚ Р±РёР·РЅРµСЃР°");
+        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], oid, 0, "Перенёс объект бизнеса");
     }
-    else if(gRedakt[playerid] == 11) // РЈСЃС‚Р°РЅРѕРІРєР° РњР°РїРїРёРЅРіР° РЅР° СЂРµСЃРїР°С… Р±Р°РЅРґ
+    else if(gRedakt[playerid] == 11) // Установка Маппинга на респах банд
 	{
         new yes = -1;
         for(new oba = 0; oba < 200; oba++)
@@ -251,8 +251,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 break;
             }
         }
-        if(yes == -1)  return ErrorMessage(playerid, "{FF6347}Р›РёРјРёС‚ РѕР±СЉРµРєС‚РѕРІ РЅР° СЂРµСЃРїРµ"), CancelEdit(playerid);
-        if(!IsAGObjectInSquare(oid, x, y)) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚ Р·Р° РїСЂРµРґРµР»Р°РјРё С‚РµСЂСЂРёС‚РѕСЂРёРё РІР°С€РµР№ СЂРµСЃРїС‹"), CancelEdit(playerid);
+        if(yes == -1)  return ErrorMessage(playerid, "{FF6347}Лимит объектов на респе"), CancelEdit(playerid);
+        if(!IsAGObjectInSquare(oid, x, y)) return ErrorMessage(playerid, "{FF6347}Объект за пределами территории вашей респы"), CancelEdit(playerid);
 
         ObjectInfo[oid][gOmodel][yes] = modelid;
 		ObjectInfo[oid][gObject][yes] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
@@ -267,32 +267,32 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             if(ObjectInfo[oid][gDumStat] == 1) DestroyDynamic3DTextLabel(DumLabel[oid]);
             ObjectInfo[oid][gDumStat] = 1;
             ObjectInfo[oid][gDumx] = x, ObjectInfo[oid][gDumy] = y, ObjectInfo[oid][gDumz] = z;
-            DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Р“Р°РЅС‚РµР»Рё \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+            DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
         }
     }
-    else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // РџРµСЂРµРјРµС‰РµРЅРёРµ Рё РЈСЃС‚Р°РЅРѕРІРєР° РўРµСЂРјРёРЅР°Р»РѕРІ Р‘РёР·РЅРµСЃР°
+    else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // Перемещение и Установка Терминалов Бизнеса
     {
         new b = rentnumn(oid);
-        if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}РЎР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґСЂСѓРіРѕРјСѓ С‚РµСЂРјРёРЅР°Р»Сѓ РёР»Рё С‚РµР»РµР¶РєРµ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+        if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), CancelEdit(playerid);
         if(IsBizTerminal(b))
         {
-            if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Р’ СЂР°РґРёСѓСЃРµ 200 РјРµС‚СЂРѕРІ СѓР¶Рµ РµСЃС‚СЊ Р±РёР·РЅРµСЃ СЌС‚РѕРіРѕ С‚РёРїР° [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+            if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес этого типа [Отмена установки]"), CancelEdit(playerid);
         }
 
         new bcity = getbiz_city(b);
         if(bcity == 0
             && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
-                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє LS [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
         if(bcity == 1
             && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє SF [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
         if(bcity == 2
             && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Р‘РёР·РЅРµСЃ РїСЂРёРІСЏР·Р°РЅ Рє LV [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
 
         new Float:distpos = GetDistancePoint(x, y, z, RentPos_X[oid][slot], RentPos_Y[oid][slot], RentPos_Z[oid][slot]);
     
-        if(gRedakt[playerid] == 13) // РџРµСЂРµРјРµСЃС‚РёР»Рё
+        if(gRedakt[playerid] == 13) // Переместили
         {
             if(IsValidDynamicObject(RentObject[oid][slot]))
             {
@@ -303,14 +303,14 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         }
         if(gRedakt[playerid] == 14 || distpos >= 5)
         {
-            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РљС‚Рѕ-С‚Рѕ СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІРёР» СЌС‚РѕС‚ С‚РµСЂРјРёРЅР°Р» РёР»Рё С‚РµР»РµР¶РєСѓ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), CancelEdit(playerid);
             if(gRedakt[playerid] == 14)
             {
                 RentObject[oid][slot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
             }
-            RentStat[oid][slot] = 2; // РЈСЃС‚Р°РЅРѕРІРёР»Рё (РўСЂРµР±СѓРµРј РѕРґРѕР±СЂРµРЅРёРµ РІ СѓСЃС‚Р°РЅРѕРІРєРµ)
-            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћР±СЉРµРєС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅ\n\nРўРµРїРµСЂСЊ, РµРіРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ, РЅРµРѕР±С…РѕРґРёРјРѕ РѕРґРѕР±СЂРёС‚СЊ СЃРѕС‚СЂСѓРґРЅРёРєР°Рј РџСЂР°РІРёС‚РµР»СЊСЃС‚РІР°\nРџРѕСЃР»Рµ СЂР°СЃСЃРјРѕС‚СЂРµРЅРёСЏ Р·Р°СЏРІР»РµРЅРёСЏ РІС‹ РїРѕР»СѓС‡РёС‚Рµ СѓРІРµРґРѕРјР»РµРЅРёРµ","*","");
-            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Р‘РёР·РЅРµСЃ в„– %d С‚СЂРµР±СѓРµС‚ РѕРґРѕР±СЂРµРЅРёСЏ С‚РµСЂРјРёРЅР°Р»Р° {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
+            RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
+            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
+            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
             SendRadioMessage(7, COLOR_ALLDEPT, string);
         }
 
@@ -327,15 +327,15 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             UpdateLabelTerm(b, oid, slot);
         }
         SaveBizzTerm(oid, slot);
-        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "РЈСЃС‚Р°РЅРѕРІРёР» РѕР±СЉРµРєС‚");
+        BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "Установил объект");
     }
-    else if(gRedakt[playerid] == 17) // РЈСЃС‚Р°РЅРѕРІРєР° РјРµР±РµР»Рё РІ Р±РёР·РЅРµСЃРµ
+    else if(gRedakt[playerid] == 17) // Установка мебели в бизнесе
     {
         new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
         if(dist > 200.0 && distStreet > 30.0)
         {
-            ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµРіРѕ Р±РёР·РЅРµСЃР°\n{cccccc}РЈСЃС‚Р°РЅРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РЅРµ РґР°Р»СЊС€Рµ 30 РјРµС‚СЂРѕРІ РѕС‚ Р±РёР·РЅРµСЃР°");
+            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
             CancelEditable(playerid);
             return 1;
         }
@@ -343,7 +343,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new findSlot = getFreeSlotObjectBiz(oid);
         if(findSlot == -1)
         {
-            ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ Р·Р°РєРѕРЅС‡РёР»РёСЃСЊ СЃР»РѕС‚С‹ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё РѕР±СЉРµРєС‚РѕРІ");
+            ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
             CancelEditable(playerid);
             return 1;
         }
@@ -352,29 +352,29 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		{
             if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET)
             {
-                ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРјРµС‚РѕРІ РЅР° СѓР»РёС†Рµ");
+                ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
                 CancelEditable(playerid);
                 return 1;
             }
         }
         
-        BizzInfo[oid][bInvent][slot] = 0, BizzInfo[oid][bInv][slot] = 0; // РЈРґР°Р»СЏРµРј РїСЂРµРґРјРµС‚ РёР· Р±РёР·РЅРµСЃР°
+        BizzInfo[oid][bInvent][slot] = 0, BizzInfo[oid][bInv][slot] = 0; // Удаляем предмет из бизнеса
         SaveSkladBiz(oid, slot);
 
         BizzInfo[oid][bObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
 		BizzInfo[oid][bUser][findSlot] = PlayerInfo[playerid][pID];
 		BizzInfo[oid][bQara][findSlot] = BizzInfo[oid][bInvQara][slot];
 		BizzInfo[oid][bOmodel][findSlot] = modelid;
-        UpdateObjectBiz(oid, findSlot); // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ (С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РѕР±РЅРѕРІР»СЏРµРј)
+        UpdateObjectBiz(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
 
         Update3DLabelDomBiz(oid, findSlot, 2);
         if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
     }
-    else if(gRedakt[playerid] == 19) // РЈСЃС‚Р°РЅРѕРІРєР° РћСЃС‚Р°РЅРѕРІРєРё
+    else if(gRedakt[playerid] == 19) // Установка Остановки
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
-        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}РћСЃС‚Р°РЅРѕРІРєР° СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
-        if(bsrows >= 100) return ErrorMessage(playerid, "{FF6347}Р’ С€С‚Р°С‚Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ 100 РѕСЃС‚Р°РЅРѕРІРѕРє [Р›РёРјРёС‚]"), CancelEdit(playerid);
+        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Остановка слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
+        if(bsrows >= 100) return ErrorMessage(playerid, "{FF6347}В штате установлено 100 остановок [Лимит]"), CancelEdit(playerid);
         for(new ost = 0; ost < MAX_BUSSTATION; ost++)
         {
             if(BusStationInfo[ost][bsActive] == 0)
@@ -387,32 +387,32 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 strmid(BusStationInfo[ost][bsName], ListName[playerid], 0, strlen(ListName[playerid]), 24);
                 BusStationInfo[ost][bsUnix] = gettime();
                 InsertBusStation(ost);
-                format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РћСЃС‚Р°РЅРѕРІРєР° СѓСЃС‚Р°РЅРѕРІР»РµРЅР° {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
-                format(string,sizeof(string),"СѓСЃС‚Р°РЅРѕРІРёР»%s РѕСЃС‚Р°РЅРѕРІРєСѓ", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
+                format(string,sizeof(string),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
+                format(string,sizeof(string),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
                 busstationcreate(ost);
                 bsrows++;
                 break;
             }
         }
     }
-    else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // РћР±СЉРµРєС‚С‹ РґР»СЏ СЃС‚СЂРёС‚РѕРІ
+    else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
-        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]"), CancelEdit(playerid);
+        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
 
         WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
         RentObjectRace[DP[0][playerid]][oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
         CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
         UpdateLabelTermRace(oid,DP[0][playerid]);
     }
-    else if(gRedakt[playerid] == 26) // РћР±СЉРµРєС‚С‹ РґР»СЏ СЃРµРєС‚С‹
+    else if(gRedakt[playerid] == 26) // Объекты для секты
     {
         new fam = PlayerInfo[playerid][pFamily];
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0)
         {
             CancelEdit(playerid);
-            return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]");
+            return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
         FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
         FamilyInfo[fam][fsAltarPos][3] = rx, FamilyInfo[fam][fsAltarPos][4] = ry, FamilyInfo[fam][fsAltarPos][5] = rz;
@@ -430,26 +430,26 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SektaObjectHealt[fam] = 1000;
         SaveFamilySekta(fam);
     }
-    else if(gRedakt[playerid] == 27) // Р“СЂР°С„С„РёС‚Рё
+    else if(gRedakt[playerid] == 27) // Граффити
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 10.0)
         {
             CancelEdit(playerid);
-            return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]");
+            return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
         new zone = GetZoneXYZ(x,y);
         if(zone == -1)
         {
             CancelEdit(playerid);
-            return ErrorMessage(playerid, "{FF6347}Р“СЂР°С„С„РёС‚Рё РЅРµ РІ С‚РµСЂСЂРёС‚РѕСЂРёРё РіРµС‚С‚Рѕ [РћС‚РјРµРЅР° СѓСЃС‚Р°РЅРѕРІРєРё]");
+            return ErrorMessage(playerid, "{FF6347}Граффити не в территории гетто [Отмена установки]");
         }
         if(GraphitiInfo[zone][graphitiStatus] == 1)
         {
             if(GraphitiInfo[zone][graphitiUnix]+1800 > gettime())
             {
                 CancelEdit(playerid);
-                return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р’ СЌС‚РѕР№ Р·РѕРЅРµ СѓР¶Рµ РЅР°РЅРµСЃРµРЅРѕ РіСЂР°С„С„РёС‚Рё");
+                return ErrorMessage(playerid, "{FF6347}Ошибка! В этой зоне уже нанесено граффити");
             }
         }
         if(GraphitiInfo[zone][graphitiStatus] == 1)
@@ -467,11 +467,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         GraphitiInfo[zone][graphitiZone] = zone;
         GraphitiInfo[zone][graphitiPlayer] = PlayerInfo[playerid][pID];
         format(GraphitiInfo[zone][graphitiName], 24,"%s", PlayerInfo[playerid][pName]);
-        TakeInvent(playerid, 197, 1, 0, 999); // РћС‚РЅРёРјР°РµРј 1 РёР· Р±Р°Р»Р»РѕРЅС‡РёРєР° СЃ РєСЂР°СЃРєРѕР№ (С‡С‚РѕР±С‹ РѕРЅ РЅРµ Р±С‹Р» Р±РµСЃРєРѕРЅРµС‡РЅС‹Рј)
+        TakeInvent(playerid, 197, 1, 0, 999); // Отнимаем 1 из баллончика с краской (чтобы он не был бесконечным)
         GraphitiUpdateElement(zone);
         SaveGraphiti(zone);
         ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0,0,1,1,0,0);
-        SetPlayerChatBubble(playerid,"РЅР°РЅРѕСЃРёС‚ РіСЂР°С„С„РёС‚Рё",COLOR_PURPLE,20.0,4000);
+        SetPlayerChatBubble(playerid,"наносит граффити",COLOR_PURPLE,20.0,4000);
 
         around_player_audio(playerid, 1134, 0, 5.0, 0);
     }
@@ -529,7 +529,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			DeletePVar(playerid, "EditNewSeatObj");
 		} else if (response == EDIT_RESPONSE_CANCEL) {
 			DestroyDynamicObject(objectid);
-			SendClientMessage(playerid, 0xCBCBCBFF, "[ РњС‹СЃР»Рё ]: РЇ РѕС‚РјРµРЅРёР» СѓСЃС‚Р°РЅРѕРІРєСѓ РѕР±СЉРµРєС‚Р°");
+			SendClientMessage(playerid, 0xCBCBCBFF, "[ Мысли ]: Я отменил установку объекта");
 
 			DeletePVar(playerid, "EditNewSeatObj");
 		}
@@ -543,25 +543,25 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         if(dist >= 150.0)
         {
             new line[90],lines[800];
-            format(line,sizeof(line),"{FF6347}РћР±СЉРµРєС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ"), strcat(lines,line);
-            format(line,sizeof(line),"\n\n{ff9000}РћР±СЉРµРєС‚ СѓР»РµС‚Р°РµС‚ РґР°Р»РµРєРѕ СЃ СЌС‚РѕР№ РѕС€РёР±РєРѕР№ СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РѕС‚РєСЂС‹С‚РёСЏ СЂРµРґР°РєС‚РѕСЂР°?"), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}- РќРµ СЃРїРµС€РёС‚Рµ"), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}- РЎРµР№С‡Р°СЃ Р·Р°РєСЂРѕР№С‚Рµ СЌС‚Рѕ РѕРєРЅРѕ Рё Р·Р°С‚РµРј РїРѕРІС‚РѕСЂРёС‚Рµ СѓСЃС‚Р°РЅРѕРІРєСѓ РѕР±СЉРµРєС‚Р°"), strcat(lines,line);
-            format(line,sizeof(line),"\n{FF6347}- Р’Р°Р¶РЅРѕ! РќРµ С€РµРІРµР»РёС‚Рµ РјС‹С€РєРѕР№, РєРѕРіРґР° РѕС‚РєСЂРѕРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚Р° РїРѕРІС‚РѕСЂРЅРѕ"), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}- Р—Р°С‚РµРј РїСЂРѕСЃС‚Рѕ РЅР°Р¶РјРёС‚Рµ Р›РµРІСѓСЋ РљРЅРѕРїРєСѓ РњС‹С€Рё, С‡С‚РѕР±С‹ РїРѕСЏРІРёР»СЃСЏ РєСѓСЂСЃРѕСЂ"), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}- РџСЂРѕР±Р»РµРјР° РІСЃРµРіРѕ-Р»РёС€СЊ РІ Р·Р°Р»РёРїР°РЅРёРё РєСѓСЂСЃРѕСЂР°"), strcat(lines,line);
-            format(line,sizeof(line),"\n\n{cccccc}РЈСЃРїРµС…РѕРІ РІ РјР°РїРїРёРЅРіРµ :)"), strcat(lines,line);
+            format(line,sizeof(line),"{FF6347}Объект слишком далеко от вас"), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{ff9000}Объект улетает далеко с этой ошибкой сразу после открытия редактора?"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}- Не спешите"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}- Сейчас закройте это окно и затем повторите установку объекта"), strcat(lines,line);
+            format(line,sizeof(line),"\n{FF6347}- Важно! Не шевелите мышкой, когда откроете редактор объекта повторно"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}- Затем просто нажмите Левую Кнопку Мыши, чтобы появился курсор"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}- Проблема всего-лишь в залипании курсора"), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{cccccc}Успехов в маппинге :)"), strcat(lines,line);
             ErrorMessage(playerid, lines);
             CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
             return 1;
         }
 
-        if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР° СЂРµРґР°РєС‚РѕСЂР° РѕР±СЉРµРєС‚РѕРІ"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+        if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}Ошибка редактора объектов"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
     }
 
     if(response == EDIT_RESPONSE_FINAL)
 	{
-        if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР° СЂРµРґР°РєС‚РѕСЂР° РѕР±СЉРµРєС‚РѕРІ"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+        if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}Ошибка редактора объектов"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
 
         SetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], x, y, z);
 		SetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], rx, ry, rz);
@@ -571,42 +571,42 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         new slot = EditObjectInfo[playerid][editSlot];
         //new type = EditObjectInfo[playerid][editType];
 
-        // РЈСЃР»РѕРІРЅРѕСЃС‚Рё СЂР°Р·РЅС‹С… СЃРёСЃС‚РµРј РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё СѓСЃС‚Р°РЅРѕРІРєРё РёР»Рё РїРµСЂРµРјРµС‰РµРЅРёСЏ РѕР±СЉРµРєС‚Р°
-        if(gRedakt[playerid] == 3) // РЎРѕР·РґР°РЅРёРµ РёР»Рё РџРµСЂРµРјРµС‰РµРЅРёРµ Map РћР±СЉРµРєС‚Р° (РђРґРјРёРЅСЃРєР°СЏ РЎРёСЃС‚РµРјР°)
+        // Условности разных систем при сохранении установки или перемещения объекта
+        if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
         {
             ObjectMapLabelAll(1, slot);
         }
-        else if(gRedakt[playerid] == 6) // РЈСЃС‚Р°РЅРѕРІРєР° РјРµР±РµР»Рё РІ РґРѕРјРµ
+        else if(gRedakt[playerid] == 6) // Установка мебели в доме
 		{
             new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
             new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
             if(dist > 200.0 && distStreet > 30.0)
             {
-                ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµРіРѕ РґРѕРјР°\n{cccccc}РЈСЃС‚Р°РЅРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РЅРµ РґР°Р»СЊС€Рµ 30 РјРµС‚СЂРѕРІ РѕС‚ РґРѕРјР°");
+                ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
             DomInfo[oid][dUser][slot] = PlayerInfo[playerid][pID];
             Update3DLabelDomBiz(oid, slot, 1);
-            UpdateObject(oid, slot); // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ (С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РѕР±РЅРѕРІР»СЏРµРј)
+            UpdateObject(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
-        else if(gRedakt[playerid] == 12) // РЈСЃС‚Р°РЅРѕРІРєР° РњР°РїРїРёРЅРіР° РЅР° СЂРµСЃРїР°С… Р±Р°РЅРґ
+        else if(gRedakt[playerid] == 12) // Установка Маппинга на респах банд
 		{
-            if(!IsAGObjectInSquare(oid, x, y)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћР±СЉРµРєС‚ Р·Р° РїСЂРµРґРµР»Р°РјРё С‚РµСЂСЂРёС‚РѕСЂРёРё... {ffcc00}[ РћС‚РјРµРЅР° РЈСЃС‚Р°РЅРѕРІРєРё ]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+            if(!IsAGObjectInSquare(oid, x, y)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Объект за пределами территории... {ffcc00}[ Отмена Установки ]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
             if(ObjectInfo[oid][gOmodel][slot] == 2915)
             {
                 if(ObjectInfo[oid][gDumStat] == 1) DestroyDynamic3DTextLabel(DumLabel[oid]);
                 ObjectInfo[oid][gDumStat] = 1;
                 ObjectInfo[oid][gDumx] = x, ObjectInfo[oid][gDumy] = y, ObjectInfo[oid][gDumz] = z;
-                DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Р“Р°РЅС‚РµР»Рё \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+                DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
             }
             ObjectInfo[oid][gUser][slot] = PlayerInfo[playerid][pID];
             ObjectInfo[oid][gStat][slot] = 1;
             UpdateGangObject(oid+13, OrganInfo[oid+13][gMap], slot);
             update_labelobject(oid, slot), OrgLog(oid+13, "eob", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ObjectInfo[oid][gOmodel][slot], "");
 		}
-        else if(gRedakt[playerid] == 15 || gRedakt[playerid] == 16) // РЈСЃС‚Р°РЅРѕРІРєР° РёР»Рё РїРµСЂРµРЅРѕСЃ РїСЂРµРґРјРµС‚Р° IKEA
+        else if(gRedakt[playerid] == 15 || gRedakt[playerid] == 16) // Установка или перенос предмета IKEA
 		{
             new mworl = GetPlayerVirtualWorld(playerid), mint = GetPlayerInterior(playerid);
             IkeaInfo[oid][iBuyX] = x;
@@ -617,7 +617,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 format(IkeaInfo[oid][iName], 24, "%s", object_name(IkeaInfo[oid][iModel]));
                 IkeaInfo[oid][iQuantextures] = object_material(IkeaInfo[oid][iModel]);
                 new string[70];
-                format(string,sizeof(string),"[ Server ]: РќР°СЃС‚СЂРѕР№С‚Рµ РїСЂРµРґРјРµС‚ РґР»СЏ РїСЂРѕРґР°Р¶Рё [ /ikea %d ]", oid);
+                format(string,sizeof(string),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid);
                 SendClientMessage(playerid, COLOR_GREY, string);
                 AdminLog("ikea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", IkeaInfo[oid][iModel], "IKEA");
             }
@@ -633,25 +633,25 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             UpdateLabelIkea(oid);
 		}
-        else if(gRedakt[playerid] == 17) // РџРµСЂРµРјРµС‰РµРЅРёРµ РњРµР±РµР»СЊ РІ Р‘РёР·РЅРµСЃРµ
+        else if(gRedakt[playerid] == 17) // Перемещение Мебель в Бизнесе
 		{
             new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
             new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
             if(dist > 200.0 && distStreet > 30.0)
             {
-                ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РІР°С€РµРіРѕ Р±РёР·РЅРµСЃР°\n{cccccc}РЈСЃС‚Р°РЅРѕРІРєР° РѕР±СЉРµРєС‚РѕРІ РґРѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РЅРµ РґР°Р»СЊС€Рµ 30 РјРµС‚СЂРѕРІ РѕС‚ Р±РёР·РЅРµСЃР°");
+                ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
             BizzInfo[oid][bUser][slot] = PlayerInfo[playerid][pID];
             Update3DLabelDomBiz(oid, slot, 2);
-            UpdateObjectBiz(oid, slot); // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ (С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РѕР±РЅРѕРІР»СЏРµРј)
+            UpdateObjectBiz(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
-        else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // РЈСЃС‚Р°РЅРѕРІРєР° РёР»Рё РїРµСЂРµРЅРѕСЃ РїСЂРµРґРјРµС‚Р° РІ Р›РёС‡РЅРѕРј Р РµРґР°РєС‚РѕСЂРµ
+        else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // Установка или перенос предмета в Личном Редакторе
 		{
-            new prewSel = peoInfo[oid][peoSelObject]; // РџРѕР»СѓС‡Р°РµРј ID РїСЂРµРґС‹РґСѓС‰РµРіРѕ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
-            peoInfo[oid][peoSelObject] = slot; // Р—Р°РїРёСЃС‹РІР°РµРј РІС‹Р±СЂР°РЅРЅС‹Р№ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚
+            new prewSel = peoInfo[oid][peoSelObject]; // Получаем ID предыдущего выбранного объекта
+            peoInfo[oid][peoSelObject] = slot; // Записываем выбранный новый объект
             peoInfo[oid][peoX][slot] = x;
             peoInfo[oid][peoY][slot] = y;
             peoInfo[oid][peoZ][slot] = z;
@@ -661,24 +661,24 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             if(gRedakt[playerid] == 20) peoInfo[oid][peoQuanObjects] ++;
             if(peoInfo[playerid][peoObjectLabelStatus])
             {
-                update3dtextLabelPos(playerid, slot); // РћР±РЅРѕРІР»СЏРµРј label РЅРѕРІРѕРіРѕ РѕР±СЉРµРєС‚Р°
-                if(peoInfo[oid][peoModel][prewSel] > 0) update3dtextLabel(playerid, prewSel); // РћР±РЅРѕРІР»СЏРµРј label РїСЂРµРґС‹РґСѓС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
+                update3dtextLabelPos(playerid, slot); // Обновляем label нового объекта
+                if(peoInfo[oid][peoModel][prewSel] > 0) update3dtextLabel(playerid, prewSel); // Обновляем label предыдущего объекта
             }
             peoInfo[oid][peoQuanUpdates] ++;
 		}
-        else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // РћР±СЉРµРєС‚С‹ РґР»СЏ СЃС‚СЂРёС‚РѕРІ
+        else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
         {
             WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
             CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
             UpdateLabelTermRace(oid,DP[0][playerid]);
         }
-        else if(gRedakt[playerid] == 28) // СЂРµРґР°С‡РёРј С‚СЂРµР№Р»РµСЂ
+        else if(gRedakt[playerid] == 28) // редачим трейлер
         {
             PlaceTrailer(EditObjectInfo[playerid][editOption], trailerInfo[EditObjectInfo[playerid][editOption]][tModel],  x,  y,  z,  rx,  ry, rz);
         }
 
         Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-        gRedakt[playerid] = 0; // Р РµРґР°РєС‚РѕСЂ Off
+        gRedakt[playerid] = 0; // Редактор Off
 		PlayerPlaySound(playerid,6401,0,0,0);
         CancelSelectTextDraw(playerid);
     }
@@ -763,7 +763,7 @@ stock CancelEditPlayerObject(playerid)
         DestroyPlayerObject(playerid, objectid);
         EditObjectInfo[playerid][editTempObject] = -1;
     }
-    gRedakt[playerid] = 0; // Р РµРґР°РєС‚РѕСЂ Off
+    gRedakt[playerid] = 0; // Редактор Off
     PlayerPlaySound(playerid,31200,0,0,0);
     return 1;
 }
@@ -779,7 +779,7 @@ stock CancelCreateObjectDom(playerid, model)
 {
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
-    if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // РЎР±СЂР°СЃС‹РІР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ РѕР±СЉРµРєС‚Р°
+    if(model != 0 && DomInfo[oid][dInvent][slot] == model) DomInfo[oid][dInv][slot] = 1; // Сбрасываем блокировку объекта
     return 1;
 }
 
@@ -787,7 +787,7 @@ stock CancelCreateObjectBiz(playerid, model)
 {
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
-    if(model != 0 && BizzInfo[oid][bInvent][slot] == model) BizzInfo[oid][bInv][slot] = 1; // РЎР±СЂР°СЃС‹РІР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ РѕР±СЉРµРєС‚Р°
+    if(model != 0 && BizzInfo[oid][bInvent][slot] == model) BizzInfo[oid][bInv][slot] = 1; // Сбрасываем блокировку объекта
     return 1;
 }
 
@@ -799,10 +799,10 @@ stock CancelDynamicEditable(playerid)
     new slot = EditObjectInfo[playerid][editSlot];
     //new type = EditObjectInfo[playerid][editType];
 
-    if(EditObjectInfo[playerid][editType] == 0) // РЎРѕР·РґР°РЅРёРµ РћР±СЉРµРєС‚Р° (РЈРґР°Р»СЏРµРј РїСЂРё РѕС‚РјРµРЅРµ)
+    if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
     {
-        // РЈСЃР»РѕРІРЅРѕСЃС‚Рё СЂР°Р·РЅС‹С… СЃРёСЃС‚РµРј РїСЂРё РѕС‚РјРµРЅРµ СЃРѕР·РґР°РЅРёСЏ
-        if(gRedakt[playerid] == 11) // РћР±СЉРµРєС‚ РЅР° СЂРµСЃРїРµ Р‘Р°РЅРґ
+        // Условности разных систем при отмене создания
+        if(gRedakt[playerid] == 11) // Объект на респе Банд
         {
             if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
             ObjectInfo[oid][gOmodel][slot] = 0;
@@ -813,7 +813,7 @@ stock CancelDynamicEditable(playerid)
             IkeaInfo[oid][iObject] = 0;
             if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
         }
-        else if(gRedakt[playerid] == 20) // Р›РёС‡РЅС‹Р№ Р РµРґР°РєС‚РѕСЂ
+        else if(gRedakt[playerid] == 20) // Личный Редактор
         {
             peoInfo[oid][peoModel][slot] = 0;
             peoInfo[oid][peoObject][slot] = 0;
@@ -821,14 +821,14 @@ stock CancelDynamicEditable(playerid)
 
         DestroyDynamicObject(EditObjectInfo[playerid][editObjectid]);
     }
-    else // РџРµСЂРµРјРµС‰РµРЅРёРµ РћР±СЉРµРєС‚Р° (Р’РѕР·РІСЂР°С‰Р°РµРј РЅР° РїРѕР·РёС†РёСЋ РїСЂРё РѕС‚РјРµРЅРµ)
+    else // Перемещение Объекта (Возвращаем на позицию при отмене)
     {
         SetDynamicObjectPos(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][0], EditObjectInfo[playerid][editOldPos][1], EditObjectInfo[playerid][editOldPos][2]);
         SetDynamicObjectRot(EditObjectInfo[playerid][editObjectid], EditObjectInfo[playerid][editOldPos][3], EditObjectInfo[playerid][editOldPos][4], EditObjectInfo[playerid][editOldPos][5]);
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, EditObjectInfo[playerid][editObjectid], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // РўРµРїРµСЂСЊ РѕР±СЉРµРєС‚ РЅРёРєС‚Рѕ РЅРµ СЂРµРґР°РєС‚РёСЂСѓРµС‚
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, EditObjectInfo[playerid][editObjectid], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Теперь объект никто не редактирует
     }
 
-    gRedakt[playerid] = 0; // Р РµРґР°РєС‚РѕСЂ Off
+    gRedakt[playerid] = 0; // Редактор Off
     PlayerPlaySound(playerid,31200,0,0,0);
     CancelSelectTextDraw(playerid);
     return 1;

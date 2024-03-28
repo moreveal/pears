@@ -9,10 +9,10 @@ enum npcInfo
 new NPCInfo[MAX_NPC_SAMP][npcInfo];
 new ConnectNpcQuan;
 
-// РџРѕРґРєР»СЋС‡Р°РµРј NPC
+// Подключаем NPC
 stock CreateNPCsamp()
 {
-    SendRconCommand("password 0"); // РЎРЅРёРјР°РµРј РїР°СЂРѕР»СЊ, С‡С‚РѕР±С‹ NPC РјРѕРіР»Рё РїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ
+    SendRconCommand("password 0"); // Снимаем пароль, чтобы NPC могли подключиться
 
     ConnectNPC("Tim", "prison_ls");
     ConnectNPC("Bert", "prison_sf");
@@ -21,20 +21,18 @@ stock CreateNPCsamp()
     return 1;
 }
 
-// РџСЂРѕС†РµСЃСЃ РїРѕРґРєР»СЋС‡РµРЅРёСЏ NPC
+// Процесс подключения NPC
 stock OnNpcConnect(playerid)
 {
     new ip_addr_npc[64+1];
     new ip_addr_server[64+1];
-    GetServerVarAsString("bind",ip_addr_server,64);
     GetPlayerIp(playerid,ip_addr_npc,64);
     
-    if(!strlen(ip_addr_server)) ip_addr_server = "127.0.0.1";
-    
+    ip_addr_server = "127.0.0.1";
     if(strcmp(ip_addr_npc,ip_addr_server,true) != 0) 
     {
         printf("NPC: Got a remote NPC connecting from %s and I'm kicking it.",ip_addr_npc);
-        Kick(playerid);
+        Kickx(playerid);
         return 0;
     }
 
@@ -44,24 +42,24 @@ stock OnNpcConnect(playerid)
 
     ConnectNpcQuan ++;
 
-    // РЎРїР°РІРЅРёРј (РІРЅСѓС‚СЂРё СЃС‚РѕРєР° СЃРЅР°С‡Р°Р»Р° РЅР°СЃС‚СЂР°РёРІР°РµРј СЃРїР°РІРЅ, РїРѕС‚РѕРј СЃРїР°РІРЅРёРј)
+    // Спавним (внутри стока сначала настраиваем спавн, потом спавним)
     PPSpawnPlayer(playerid);
 
-    // Р’СЃРµ РїРѕРґСЂСѓР±РёР»РёСЃСЊ, РІРѕР·РІСЂР°С‰Р°РµРј РїР°СЂРѕР»СЊ
-    if(ConnectNpcQuan >= MAX_NPC_SAMP && (server > 0 || serverType == 1)) SendRconCommand("password 5ye5ynsfbjey4TBFgg");
+    // Все подрубились, возвращаем пароль
+    if(ConnectNpcQuan >= MAX_NPC_SAMP && (server > 0 || serverType == 1)) SetPearsPassword();
     return 1;
 }
 
-// РќР°СЃС‚СЂР°РёРІР°РµРј СЃРїР°РІРЅ РґР»СЏ NPC
+// Настраиваем спавн для NPC
 stock SetNpcSpawn(playerid)
 {
-    // Р’РѕРґРёС‚РµР»СЊ С‚СЋСЂРµРјРЅРѕРіРѕ Р°РІС‚РѕР±СѓСЃР° LS
+    // Водитель тюремного автобуса LS
     if(IsNameNpc(playerid, "Tim"))
     {
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 1599.4426,-1607.5927,13.4568,180.0, 0, 0, 0, 0, 0, 0);
     }
 
-    // Р’РѕРґРёС‚РµР»СЊ С‚СЋСЂРµРјРЅРѕРіРѕ Р°РІС‚РѕР±СѓСЃР° SF
+    // Водитель тюремного автобуса SF
     else if(IsNameNpc(playerid, "Bert"))
     {
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], -1584.4108,678.7656,7.1875,180.0, 0, 0, 0, 0, 0, 0);
@@ -69,13 +67,13 @@ stock SetNpcSpawn(playerid)
     return 1;
 }
 
-// Р§Рµ РґРµР»Р°РµРј СЃ Р±РѕС‚РѕРј РїРѕСЃР»Рµ СЃРїР°РІРЅР°
+// Че делаем с ботом после спавна
 stock OnNpcSpawn(playerid)
 {
     PlayerInfo[playerid][pModel2] = 0;
     PlayerInfo[playerid][pModel3] = 0;
 
-    // Р’РѕРґРёС‚РµР»СЊ С‚СЋСЂРµРјРЅРѕРіРѕ Р°РІС‚РѕР±СѓСЃР° LS
+    // Водитель тюремного автобуса LS
     if(IsNameNpc(playerid, "Tim"))
     {
         PlayerInfo[playerid][pModel] = 310;
@@ -90,7 +88,7 @@ stock OnNpcSpawn(playerid)
         SetPlayerColor(playerid, COLOR_LSPD);
     }
 
-    // Р’РѕРґРёС‚РµР»СЊ С‚СЋСЂРµРјРЅРѕРіРѕ Р°РІС‚РѕР±СѓСЃР° SF
+    // Водитель тюремного автобуса SF
     else if(IsNameNpc(playerid, "Bert"))
     {
         PlayerInfo[playerid][pModel] = 310;
@@ -129,7 +127,7 @@ stock StartNpc(playerid)
     return 1;
 }
 
-// РџСЂРѕРІРµСЂРєР° РїРѕ РёРјРµРЅРё
+// Проверка по имени
 stock IsNameNpc(playerid, const name[])
 {
     if(IsPlayerNPC(playerid))
@@ -146,7 +144,7 @@ CMD:gotim(playerid)
 {
     if(server != 0) return 0;
 
-    if(!StartNpc(NPCInfo[0][npcID])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ NPC СѓР¶Рµ Р·Р°РїСѓС‰РµРЅ РёР»Рё РѕРЅ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚");
+    if(!StartNpc(NPCInfo[0][npcID])) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }
 
@@ -154,7 +152,7 @@ CMD:gobert(playerid)
 {
     if(server != 0) return 0;
 
-    if(!StartNpc(NPCInfo[1][npcID])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ NPC СѓР¶Рµ Р·Р°РїСѓС‰РµРЅ РёР»Рё РѕРЅ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚");
+    if(!StartNpc(NPCInfo[1][npcID])) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }
 

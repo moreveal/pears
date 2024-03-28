@@ -3,95 +3,95 @@ new vampire[MAX_REALPLAYERS];
 
 CMD:rinfect(p, const params[])
 {
-	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈРґР°Р»РёС‚СЊ РІСЃРµ Р±РѕР»РµР·РЅРё [ /rinfect ID ]");
+	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Удалить все болезни [ /rinfect ID ]");
 	for(new i = 0; i < 5; i++) PlayerInfo[params[0]][pIllness][i] = 0, PlayerInfo[params[0]][pIllnessStat][i] = 0, PlayerInfo[params[0]][pIllnessProg][i] = 0;
 	if(zones_coldstat[params[0]] > 0) DestroyDynamicArea(zones_cold[params[0]]), zones_coldstat[params[0]] = 0;
 	if(vampire[params[0]] == 1) burn_vampire(params[0], 0);
 	incold[p] = 0;
-	SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЃРµ Р±РѕР»РµР·РЅРё РёРіСЂРѕРєР° РѕС‡РёС‰РµРЅС‹");
-	SendClientMessagef(params[0], COLOR_LIGHTBLUE, " %s РѕС‡РёСЃС‚РёР» РІСЃРµ РІР°С€Рё Р±РѕР»РµР·РЅРё", PlayerInfo[p][pName]);
+	SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Все болезни игрока очищены");
+	SendClientMessage(params[0], COLOR_LIGHTBLUE, " %s очистил все ваши болезни", PlayerInfo[p][pName]);
 	return 1;
 }
 CMD:infect(p, const params[])
 {
-	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЌС‚Рѕ СЃРґРµР»Р°С‚СЊ");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРјРµРЅРёС‚СЊ Р±РѕР»РµР·РЅСЊ Рє РёРіСЂРѕРєСѓ [ /infect ID 1-18 ]");
-	if(params[1] < 1 || params[1] > 18) return SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 18");
+	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Применить болезнь к игроку [ /infect ID 1-18 ]");
+	if(params[1] < 1 || params[1] > 18) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 18");
 	new result = infect(params[0], params[1], 2000);
 
-	if(result == -1) return ErrorMessage(p, "{FF6347}РРіСЂРѕРє РЅРµ Р±С‹Р» Р·Р°СЂР°Р¶С‘РЅ Р±РѕР»РµР·РЅСЊСЋ\n{cccccc}РќРµС‚ СЃРІРѕР±РѕРґРЅС‹С… СЃР»РѕС‚РѕРІ РґР»СЏ Р±РѕР»РµР·РЅРё");
-	if(result == -2) return ErrorMessage(p, "{FF6347}РРіСЂРѕРє РЅРµ Р±С‹Р» Р·Р°СЂР°Р¶С‘РЅ Р±РѕР»РµР·РЅСЊСЋ\n{cccccc}РћРЅ РІР°РјРїРёСЂ Рё РЅРµ РјРѕР¶РµС‚ Р±РѕР»РµС‚СЊ");
+	if(result == -1) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Нет свободных слотов для болезни");
+	if(result == -2) return ErrorMessage(p, "{FF6347}Игрок не был заражён болезнью\n{cccccc}Он вампир и не может болеть");
 
 	if(params[1] == 18 && vampire[params[0]] == 0)
 	{
 		if(GetPlayerInterior(params[0]) == 0 && GetPlayerVirtualWorld(params[0]) == 0 && GetPlayerState(params[0]) == PLAYER_STATE_ONFOOT) burn_vampire(params[0], 1);
 	}
-	SendClientMessage(p, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РРіСЂРѕРє Р·Р°СЂР°Р¶С‘РЅ Р±РѕР»РµР·РЅСЊСЋ");
+	SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Игрок заражён болезнью");
 	return 1;
 }
 CMD:diagnosis(playerid)
 {
-	if(PlayerInfo[playerid][pMember] != 4 && PlayerInfo[playerid][pLeader] != 4) return SendClientMessage(playerid, COLOR_GREY,"[ РњС‹СЃР»Рё ]: РЇ РЅРµ РґРѕРєС‚РѕСЂ Рё РЅРµ РјРѕРіСѓ РїРѕСЃС‚Р°РІРёС‚СЊ РґРёР°РіРЅРѕР·"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
-	if(GetPlayerInterior(playerid) != 5) return SendClientMessage(playerid, COLOR_GREY,"[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїРѕСЃС‚Р°РІРёС‚СЊ РґРёР°РіРЅРѕР· С‚РѕР»СЊРєРѕ РЅР°С…РѕРґСЏСЃСЊ РІ РіРѕСЃРїРёС‚Р°Р»Рµ"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
-	if(Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}РџРѕРїСЂРѕСЃРёС‚Рµ РїР°С†РёРµРЅС‚Р° РїРµСЂРµРґР°С‚СЊ РІР°Рј РµРіРѕ РјРµРґРёС†РёРЅСЃРєСѓСЋ РєР°СЂС‚Сѓ [ РРЅРІРµРЅС‚Р°СЂСЊ N РёР»Рё /med ]");
+	if(PlayerInfo[playerid][pMember] != 4 && PlayerInfo[playerid][pLeader] != 4) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не доктор и не могу поставить диагноз"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(GetPlayerInterior(playerid) != 5) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я могу поставить диагноз только находясь в госпитале"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}Попросите пациента передать вам его медицинскую карту [ Инвентарь N или /med ]");
 	new para1 = DeiStat[playerid];
-	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}РџР°С†РёРµРЅС‚ РєСѓРґР°-С‚Рѕ РґРµР»СЃСЏ [Р’С‹С€РµР» РёР· РёРіСЂС‹]"), cmd_remove(playerid);
-	if(para1 == playerid && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР±Рµ РїРѕСЃС‚Р°РІРёС‚СЊ РґРёР°РіРЅРѕР·");
-	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ РїР°С†РёРµРЅС‚Р°"), cmd_remove(playerid);
-	if(!illness(para1)) return SendClientMessage(playerid, COLOR_GREY,"[ РњС‹СЃР»Рё ]: РЈ РЅРµРіРѕ РЅРµС‚ РЅРёРєР°РєРёС… СЃРёРјРїС‚РѕРјРѕРІ"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), cmd_remove(playerid);
+	if(para1 == playerid && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете себе поставить диагноз");
+	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), cmd_remove(playerid);
+	if(!illness(para1)) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: У него нет никаких симптомов"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
 	new str[68],sctring[4800];
-	format(str,sizeof(str),"РҐР»Р°РјРёРґРёРѕР·"), strcat(sctring,str); // 1
-   	format(str,sizeof(str),"\nР“РѕРЅРѕСЂРµСЏ"), strcat(sctring,str); // 2
-   	format(str,sizeof(str),"\nРЎРёС„РёР»РёСЃ"), strcat(sctring,str); // 3
-   	format(str,sizeof(str),"\nР›СѓС‡РµРІР°СЏ Р‘РѕР»РµР·РЅСЊ"), strcat(sctring,str); // 4
-   	format(str,sizeof(str),"\nРџРµСЂРёС‚РѕРЅРёС‚ РњРѕС‡РµРІРѕРіРѕ РџСѓР·С‹СЂСЏ"), strcat(sctring,str); // 5
-   	format(str,sizeof(str),"\nР“СЂРёР±РѕРє РќРѕРіС‚РµР№"), strcat(sctring,str); // 6
-   	format(str,sizeof(str),"\nР”РµСЂРјР°С‚РёС‚"), strcat(sctring,str); // 7
-   	format(str,sizeof(str),"\nРђРєРЅРµ"), strcat(sctring,str); // 8
-   	format(str,sizeof(str),"\nРџРѕСЂРѕС€РєРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ"), strcat(sctring,str); // 9
-   	format(str,sizeof(str),"\nРќРёРєРѕС‚РёРЅРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ"), strcat(sctring,str); // 10
-   	format(str,sizeof(str),"\nРђР»РєРѕРіРѕР»РёР·Рј"), strcat(sctring,str); // 11
-   	format(str,sizeof(str),"\nР“Р°СЃС‚СЂРёС‚"), strcat(sctring,str); // 12
-   	format(str,sizeof(str),"\nРЇР·РІР°"), strcat(sctring,str); // 13
-   	format(str,sizeof(str),"\nРџСЂРѕСЃС‚СѓРґР°"), strcat(sctring,str); // 14
-   	format(str,sizeof(str),"\nРћР Р’Р"), strcat(sctring,str); // 15
-   	format(str,sizeof(str),"\nР“СЂРёРїРї"), strcat(sctring,str); // 16
+	format(str,sizeof(str),"Хламидиоз"), strcat(sctring,str); // 1
+   	format(str,sizeof(str),"\nГонорея"), strcat(sctring,str); // 2
+   	format(str,sizeof(str),"\nСифилис"), strcat(sctring,str); // 3
+   	format(str,sizeof(str),"\nЛучевая Болезнь"), strcat(sctring,str); // 4
+   	format(str,sizeof(str),"\nПеритонит Мочевого Пузыря"), strcat(sctring,str); // 5
+   	format(str,sizeof(str),"\nГрибок Ногтей"), strcat(sctring,str); // 6
+   	format(str,sizeof(str),"\nДерматит"), strcat(sctring,str); // 7
+   	format(str,sizeof(str),"\nАкне"), strcat(sctring,str); // 8
+   	format(str,sizeof(str),"\nПорошковая Зависимость"), strcat(sctring,str); // 9
+   	format(str,sizeof(str),"\nНикотиновая Зависимость"), strcat(sctring,str); // 10
+   	format(str,sizeof(str),"\nАлкоголизм"), strcat(sctring,str); // 11
+   	format(str,sizeof(str),"\nГастрит"), strcat(sctring,str); // 12
+   	format(str,sizeof(str),"\nЯзва"), strcat(sctring,str); // 13
+   	format(str,sizeof(str),"\nПростуда"), strcat(sctring,str); // 14
+   	format(str,sizeof(str),"\nОРВИ"), strcat(sctring,str); // 15
+   	format(str,sizeof(str),"\nГрипп"), strcat(sctring,str); // 16
    	format(str,sizeof(str),"\nCovid-19"), strcat(sctring,str); // 17
-   	format(str,sizeof(str),"\nР’Р°РјРїРёСЂРёР·Рј"), strcat(sctring,str); // 18
-	ShowDialog(playerid,1128,DIALOG_STYLE_LIST,"{ff6666}РџРѕСЃС‚Р°РІРёС‚СЊ Р”РёР°РіРЅРѕР·",sctring,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+   	format(str,sizeof(str),"\nВампиризм"), strcat(sctring,str); // 18
+	ShowDialog(playerid,1128,DIALOG_STYLE_LIST,"{ff6666}Поставить Диагноз",sctring,"Выбрать","Отмена");
 	return 1;
 }
 CMD:sym(playerid) return cmd_symptom(playerid);
 CMD:symptom(playerid)
 {
-	if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
-	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РІ СЃР»РµР¶РєРµ");
+	if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Вы в слежке");
 	new para1 = DeiStat[playerid];
-	if(para1 != playerid && Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}РџРѕРїСЂРѕСЃРёС‚Рµ РїР°С†РёРµРЅС‚Р° РїРµСЂРµРґР°С‚СЊ РІР°Рј РµРіРѕ РјРµРґРёС†РёРЅСЃРєСѓСЋ РєР°СЂС‚Сѓ [ РРЅРІРµРЅС‚Р°СЂСЊ N РёР»Рё /med ]");
-	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}РџР°С†РёРµРЅС‚ РєСѓРґР°-С‚Рѕ РґРµР»СЃСЏ [Р’С‹С€РµР» РёР· РёРіСЂС‹]"), cmd_remove(playerid);
-	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ РїР°С†РёРµРЅС‚Р°"), cmd_remove(playerid);
+	if(para1 != playerid && Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}Попросите пациента передать вам его медицинскую карту [ Инвентарь N или /med ]");
+	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), cmd_remove(playerid);
+	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), cmd_remove(playerid);
 	PlayerPlaySound(playerid,40405,0,0,0);
 	getmed(playerid, para1);
 	return 1;
 }
 CMD:remedy(playerid, const params[])
 {
-	if(OnlineInfo[playerid][oShowInterface] != 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РњРЅРµ РЅСѓР¶РЅРѕ РїРѕСЃРјРѕС‚СЂРµС‚СЊ РјРѕРё РІРµС‰Рё [ РўРѕР»СЊРєРѕ С‡РµСЂРµР· РёРЅРІРµРЅС‚Р°СЂСЊ - N ]");
+	if(OnlineInfo[playerid][oShowInterface] != 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно посмотреть мои вещи [ Только через инвентарь - N ]");
 	new string[164];
-	if(PlayerInfo[playerid][pRemedy] > gettime()) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµРґР°РІРЅРѕ РїСЂРёРЅРёРјР°Р»Рё Р»РµРєР°СЂСЃС‚РІРѕ\n{cccccc}РЎР»РµРґСѓСЋС‰РёР№ РїСЂРёС‘Рј РЅРµ СЂР°РЅСЊС€Рµ С‡РµРј С‡РµСЂРµР· %s", fine_time(PlayerInfo[playerid][pRemedy]-gettime())), ErrorMessage(playerid, string);
-	if(gSkafandr[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РІ СЃРєР°С„Р°РЅРґСЂРµ");
-	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
-	if(!IsPlayerInAnyVehicle(playerid) && GetPlayerSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РІ РґРІРёР¶РµРЅРёРё");
+	if(PlayerInfo[playerid][pRemedy] > gettime()) return format(string,sizeof(string),"{FF6347}Вы недавно принимали лекарство\n{cccccc}Следующий приём не раньше чем через %s", fine_time(PlayerInfo[playerid][pRemedy]-gettime())), ErrorMessage(playerid, string);
+	if(gSkafandr[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы в скафандре");
+	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+	if(!IsPlayerInAnyVehicle(playerid) && GetPlayerSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}Нельзя в движении");
 	if(!sscanf(params, "i", params[0]))
  	{
- 	    if(params[0] < 1 || params[0] > 16) return ErrorMessage(playerid, "{FF6347}РўР°РєРѕРіРѕ Р»РµРєР°СЂСЃС‚РІР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ [1-16]");
- 	    if(get_invent4(playerid, params[0]+71, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ С‚Р°РєРѕРіРѕ Р»РµРєР°СЂСЃС‚РІР°");
+ 	    if(params[0] < 1 || params[0] > 16) return ErrorMessage(playerid, "{FF6347}Такого лекарства не существует [1-16]");
+ 	    if(get_invent4(playerid, params[0]+71, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет такого лекарства");
  	    new illn;
  	    if(params[0] >= 14 && params[0] <= 17)
  	    {
- 	    	if(!getillness(playerid, 14) && !getillness(playerid, 15) && !getillness(playerid, 16) && !getillness(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р±РѕР»РµРµС‚Рµ, С‡С‚РѕР±С‹ РїСЂРёРЅРёРјР°С‚СЊ СЌС‚Рѕ Р»РµРєР°СЂСЃС‚РІРѕ");
- 			if(!getdiagnosis(playerid, 14) && !getdiagnosis(playerid, 15) && !getdiagnosis(playerid, 16) && !getdiagnosis(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Р›РµРєР°СЂСЃС‚РІР° РјРѕР¶РЅРѕ РїСЂРёРЅРёРјР°С‚СЊ С‚РѕР»СЊРєРѕ РїРѕ СЂРµС†РµРїС‚Сѓ РѕС‚ РІСЂР°С‡Р°");
+ 	    	if(!getillness(playerid, 14) && !getillness(playerid, 15) && !getillness(playerid, 16) && !getillness(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
+ 			if(!getdiagnosis(playerid, 14) && !getdiagnosis(playerid, 15) && !getdiagnosis(playerid, 16) && !getdiagnosis(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
  			if(getillness(playerid, 14)) illn = 14;
  			if(getillness(playerid, 15)) illn = 15;
  			if(getillness(playerid, 16)) illn = 16;
@@ -99,8 +99,8 @@ CMD:remedy(playerid, const params[])
 		}
 		else
 		{
-			if(!getillness(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р±РѕР»РµРµС‚Рµ, С‡С‚РѕР±С‹ РїСЂРёРЅРёРјР°С‚СЊ СЌС‚Рѕ Р»РµРєР°СЂСЃС‚РІРѕ");
-			if(!getdiagnosis(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Р›РµРєР°СЂСЃС‚РІР° РјРѕР¶РЅРѕ РїСЂРёРЅРёРјР°С‚СЊ С‚РѕР»СЊРєРѕ РїРѕ СЂРµС†РµРїС‚Сѓ РѕС‚ РІСЂР°С‡Р°");
+			if(!getillness(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
+			if(!getdiagnosis(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
 			illn = params[0];
 		}
 		TakeInvent(playerid, params[0]+71, 1, 0, 999);
@@ -111,14 +111,14 @@ CMD:remedy(playerid, const params[])
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
 			new line[120],lines[600];
-			format(line,sizeof(line),"{99ff66}Р’С‹ РїСЂРёРЅСЏР»Рё Р»РµРєР°СЂСЃС‚РІРѕ {ff9000}%s {99ff66}Рё РїРѕР»РЅРѕСЃС‚СЊСЋ РёР·Р»РµС‡РёР»Рё Р±РѕР»РµР·РЅСЊ", friskName[params[0]+71]), strcat(lines,line);
-			format(line,sizeof(line),"\n{99ff66}РџСЂРѕРІРµСЂСЊС‚Рµ РјРµРґ РєР°СЂС‚Сѓ РЅР° РЅР°Р»РёС‡РёРµ РґСЂСѓРіРёС… Р±РѕР»РµР·РЅРµР№ [ N - РРЅРІРµРЅС‚Р°СЂСЊ >> РњРµРґ РљР°СЂС‚Р° ]"), strcat(lines,line);
+			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Проверьте мед карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
 
 			if(ContagiousInfect(illn))
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р­С‚Рѕ Р±С‹Р»Р° Р·Р°СЂР°Р·РЅР°СЏ Р±РѕР»РµР·РЅСЊ Рё С‚РµРїРµСЂСЊ Сѓ РІР°СЃ РёРјРјСѓРЅРёС‚РµС‚ РЅР° 30 РґРЅРµР№"), strcat(lines,line);
-				format(line,sizeof(line),"\n{ffcc66}- Р’Р°СЃ РЅРёРєС‚Рѕ РЅРµ СЃРјРѕР¶РµС‚ Р·Р°СЂР°Р·РёС‚СЊ РІ С‚РµС‡РµРЅРёРё СЌС‚РѕРіРѕ РІСЂРµРјРµРЅРё"), strcat(lines,line);
-				format(line,sizeof(line),"\n{ffcc66}- РћРґРЅР°РєРѕ, РІС‹ РІСЃС‘-СЂР°РІРЅРѕ РјРѕР¶РµС‚Рµ Р·Р°Р±РѕР»РµС‚СЊ РµСЃР»Рё Р±СѓРґРµС‚Рµ РєСѓРїР°С‚СЊСЃСЏ РІ С…РѕР»РѕРґРЅРѕР№ РІРѕРґРµ"), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Это была заразная болезнь и теперь у вас иммунитет на 30 дней"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Вас никто не сможет заразить в течении этого времени"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Однако, вы всё-равно можете заболеть если будете купаться в холодной воде"), strcat(lines,line);
 			}
 			SuccessMessage(playerid, lines);
 			if(PlayerInfo[playerid][pAchieve][14] == 0) AchievePlayer(playerid, 14, 1);
@@ -126,7 +126,7 @@ CMD:remedy(playerid, const params[])
 		else
 		{
 			new Float:ostmed = (PlayerInfo[playerid][pIllnessProg][medid]-1000)/200;
-			format(string,sizeof(string),"{99ff66}Р’С‹ РїСЂРёРЅСЏР»Рё Р»РµРєР°СЂСЃС‚РІРѕ {ff9000}%s\n{99ff66}Р”Р»СЏ РїРѕР»РЅРѕРіРѕ РІС‹Р·РґРѕСЂРѕРІР»РµРЅРёСЏ РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРёРЅСЏС‚СЊ: {0088ff}%d С‚Р°Р±Р»РµС‚РѕРє", friskName[params[0]+71], floatround(ostmed, floatround_ceil));
+			format(string,sizeof(string),"{99ff66}Вы приняли лекарство {ff9000}%s\n{99ff66}Для полного выздоровления необходимо принять: {0088ff}%d таблеток", friskName[params[0]+71], floatround(ostmed, floatround_ceil));
 			SuccessMessage(playerid, string);
 		}
 		PlayerInfo[playerid][pRemedy] = gettime()+300;
@@ -140,307 +140,307 @@ stock getmed(playerid, para1)
 	new stope, agaest;
 	new line[214],lines[4096];
 
-	format(line,sizeof(line),"\n{ff9000}РЎРёРјРїС‚РѕРјС‹: %s[%d]",PlayerInfo[para1][pName], para1), strcat(lines,line);
+	format(line,sizeof(line),"\n{ff9000}Симптомы: %s[%d]",PlayerInfo[para1][pName], para1), strcat(lines,line);
 	for(new i = 0; i < 5; i++)
 	{
 		new Float:ostmed = (PlayerInfo[para1][pIllnessProg][i]-1000)/200;
-		if(PlayerInfo[para1][pIllness][i] == 1 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РҐР»Р°РјРёРґРёРѕР·
+		if(PlayerInfo[para1][pIllness][i] == 1 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Хламидиоз
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РҐР»Р°РјРёРґРёРѕР· {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РҐР»Р°РјРёРґРёСѓР±РµСЂРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Хламидиоз {444444}[ Лекарство: Хламидиуберин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			if(PlayerInfo[para1][pSex] == 1) format(line,sizeof(line),"\n{cccccc}РІС‹РґРµР»РµРЅРёСЏ РёР· РјРѕС‡РµРёСЃРїСѓСЃРєР°С‚РµР»СЊРЅРѕРіРѕ РєР°РЅР°Р»Р°"), strcat(lines,line);
-			else format(line,sizeof(line),"\n{cccccc}РІС‹РґРµР»РµРЅРёСЏ РёР· РІР»Р°РіР°Р»РёС‰Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р»РµРіРєР°СЏ Р±РѕР»СЊ РїСЂРё РјРѕС‡РµРёСЃРїСѓСЃРєР°РЅРёРё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-10 С…Рї РІРѕ РІСЂРµРјСЏ РјРѕС‡РµРёСЃРїСѓСЃРєР°РЅРёРё"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[para1][pSex] == 1) format(line,sizeof(line),"\n{cccccc}выделения из мочеиспускательного канала"), strcat(lines,line);
+			else format(line,sizeof(line),"\n{cccccc}выделения из влагалища"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}легкая боль при мочеиспускании"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-10 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 2 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р“РѕРЅРѕСЂРµСЏ
+		if(PlayerInfo[para1][pIllness][i] == 2 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гонорея
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р“РѕРЅРѕСЂРµСЏ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р“РѕРЅРѕРіРѕРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Гонорея {444444}[ Лекарство: Гоногон ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р¶Р¶РµРЅРёРµ Рё Р·СѓРґ РІРѕ РІСЂРµРјСЏ РјРѕС‡РµРёСЃРїСѓСЃРєР°РЅРёСЏ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РіРЅРѕР№РЅС‹Рµ РІС‹РґРµР»РµРЅРёСЏ РёР· СѓСЂРµС‚СЂС‹"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-20 С…Рї РІРѕ РІСЂРµРјСЏ РјРѕС‡РµРёСЃРїСѓСЃРєР°РЅРёРё"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}гнойные выделения из уретры"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-20 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 3 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РЎРёС„РёР»РёСЃ
+		if(PlayerInfo[para1][pIllness][i] == 3 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Сифилис
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РЎРёС„РёР»РёСЃ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РЎРёС„РёСЃС‚РѕРї ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Сифилис {444444}[ Лекарство: Сифистоп ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РІС‹СЃС‹РїР°РЅРёСЏ РЅР° РєРѕР¶Рµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р¶Р¶РµРЅРёРµ Рё Р·СѓРґ РІРѕ РІСЂРµРјСЏ РјРѕС‡РµРёСЃРїСѓСЃРєР°РЅРёСЏ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕР±С‰Р°СЏ СЃР»Р°Р±РѕСЃС‚СЊ Рё СЃРѕРЅР»РёРІРѕСЃС‚СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 4 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р›СѓС‡РµРІР°СЏ Р‘РѕР»РµР·РЅСЊ
+		if(PlayerInfo[para1][pIllness][i] == 4 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Лучевая Болезнь
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р›СѓС‡РµРІР°СЏ Р‘РѕР»РµР·РЅСЊ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р Р°РґРёР°РЅСѓРєР»РёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Лучевая Болезнь {444444}[ Лекарство: Радиануклин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕР±С‰Р°СЏ СЃР»Р°Р±РѕСЃС‚СЊ Рё СЃРѕРЅР»РёРІРѕСЃС‚СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РѕС€РЅРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РіРѕР»РѕРІРЅР°СЏ Р±РѕР»СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»СЊ РІ Р¶РёРІРѕС‚Рµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РІС‹СЃРѕРєР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-4 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головная боль"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в животе"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высокая температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 5 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РџРµСЂРёС‚РѕРЅРёС‚ РјРѕС‡РµРІРѕРіРѕ РїСѓР·С‹СЂСЏ
+		if(PlayerInfo[para1][pIllness][i] == 5 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Перитонит мочевого пузыря
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РџРµСЂРёС‚РѕРЅРёС‚ РњРѕС‡РµРІРѕРіРѕ РџСѓР·С‹СЂСЏ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РџРµСЂРёС‚РѕРЅРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Перитонит Мочевого Пузыря {444444}[ Лекарство: Перитонин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РѕС€РЅРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СЃРёР»СЊРЅР°СЏ Р±РѕР»СЊ РІ РЅРёР·Сѓ Р¶РёРІРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РЅРµРґРµСЂР¶Р°РЅРёРµ РјРѕС‡Рё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сильная боль в низу живота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}недержание мочи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 6 && PlayerInfo[para1][pIllnessProg][i] > 1000) //  Р“СЂРёР±РѕРє РЅРѕРіС‚РµР№
+		if(PlayerInfo[para1][pIllness][i] == 6 && PlayerInfo[para1][pIllnessProg][i] > 1000) //  Грибок ногтей
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р“СЂРёР±РѕРє РќРѕРіС‚РµР№ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р“СЂРёР±РєРѕСѓР±РёРІРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Грибок Ногтей {444444}[ Лекарство: Грибкоубивин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р·СѓРґ, Р¶Р¶РµРЅРёРµ, РїРѕРєСЂР°СЃРЅРµРЅРёРµ, РјРµР»РєРёРµ С‚СЂРµС‰РёРЅС‹ РІ РјРµР¶РїР°Р»СЊС†РµРІРѕРј РїСЂРѕРјРµР¶СѓС‚РєРµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}зуд, жжение, покраснение, мелкие трещины в межпальцевом промежутке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 7 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р”РµСЂРјР°С‚РёС‚
+		if(PlayerInfo[para1][pIllness][i] == 7 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Дерматит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р”РµСЂРјР°С‚РёС‚ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р”РµСЂРјР°С‚РёС‚РѕРіРѕРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Дерматит {444444}[ Лекарство: Дерматитогон ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРєСЂР°СЃРЅРµРЅРёРµ РєРѕР¶Рё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕС‰СѓС‰РµРЅРёРµ РїРѕРєР°Р»С‹РІР°РЅРёСЏ, Р¶Р¶РµРЅРёСЏ Рё Р·СѓРґР°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РЅРµР±РѕР»СЊС€РёРµ РІС‹СЃС‹РїР°РЅРёСЏ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}покраснение кожи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}ощущение покалывания, жжения и зуда"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}небольшие высыпания"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 8 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РђРєРЅРµ
+		if(PlayerInfo[para1][pIllness][i] == 8 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Акне
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РђРєРЅРµ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РђРєРЅРµСЃС‚РѕРїРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Акне {444444}[ Лекарство: Акнестопин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РІС‹СЃС‹РїР°РЅРёСЏ РЅР° РєРѕР¶Рµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СѓРіСЂРё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}угри"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 9 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РџРѕСЂРѕС€РєРѕРІР°СЏРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ
+		if(PlayerInfo[para1][pIllness][i] == 9 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Порошковаяовая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РџРѕСЂРѕС€РєРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РџРѕСЂРѕС€РєРѕР·Р°РјРµРЅРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Порошковая Зависимость {444444}[ Лекарство: Порошкозаменин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РґРµРїСЂРµСЃСЃРёСЏ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СЃРѕРЅР»РёРІРѕСЃС‚СЊ, СѓС‚РѕРјР»СЏРµРјРѕСЃС‚СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚СЏРіР° Рє РїРѕСЂРѕС€РєСѓ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}депрессия"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сонливость, утомляемость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная тяга к порошку"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 10 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РќРёРєРѕС‚РёРЅРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ
+		if(PlayerInfo[para1][pIllness][i] == 10 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Никотиновая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РќРёРєРѕС‚РёРЅРѕРІР°СЏ Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РќРёРєРѕС‚РёРЅРѕРІС‹Р№ РїР»Р°СЃС‚С‹СЂСЊ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Никотиновая Зависимость {444444}[ Лекарство: Никотиновый пластырь ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РіРѕР»РѕРІРѕРєСЂСѓР¶РµРЅРёРµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РјС‹С€РµС‡РЅР°СЏ СЃР»Р°Р±РѕСЃС‚СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚СЂРµРІРѕРіР°, Р±РµСЃРїРѕРєРѕР№СЃС‚РІРѕ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚СЏРіР° Рє СЃРёРіР°СЂРµС‚Р°Рј"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головокружение"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}мышечная слабость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тревога, беспокойство"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тяга к сигаретам"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 11 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РђР»РєРѕРіРѕР»РёР·Рј
+		if(PlayerInfo[para1][pIllness][i] == 11 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Алкоголизм
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РђР»РєРѕРіРѕР»РёР·Рј {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р‘СѓС…Р»РѕР·Р°РјРµРЅРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Алкоголизм {444444}[ Лекарство: Бухлозаменин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РјСѓС‚РЅС‹Рµ Рё РїРѕРєСЂР°СЃРЅРµРІС€РёРµ Р±РµР»РєРё РіР»Р°Р·"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РµРјРЅС‹Рµ РєСЂСѓРіРё РїРѕРґ РіР»Р°Р·Р°РјРё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РјРѕСЂС‰РёРЅС‹ Рё РѕС‚РµРєРё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕРґСѓС‚Р»РѕРІР°С‚РѕРµ Р»РёС†Рѕ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚СЏРіР° Рє Р°Р»РєРѕРіРѕР»СЋ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}мутные и покрасневшие белки глаз"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}темные круги под глазами"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}морщины и отеки"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}одутловатое лицо"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тяга к алкоголю"), strcat(lines,line);
 			stope = 1;
 		}
-        if(PlayerInfo[para1][pIllness][i] == 12 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р“Р°СЃС‚СЂРёС‚
+        if(PlayerInfo[para1][pIllness][i] == 12 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гастрит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р“Р°СЃС‚СЂРёС‚ {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: Р“Р°СЃС‚СЂРёС‚РѕСѓР±РµСЂРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Гастрит {444444}[ Лекарство: Гастритоуберин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»Рё РІ Р¶РµР»СѓРґРєРµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РѕС€РЅРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 13 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РЇР·РІР°
+		if(PlayerInfo[para1][pIllness][i] == 13 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Язва
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РЇР·РІР° {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РЇР·РІР°Р·Р°Р¶РёРІРёРЅ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Язва {444444}[ Лекарство: Язвазаживин ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»Рё РІ Р¶РµР»СѓРґРєРµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РѕС€РЅРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СЃР»Р°Р±С‹Р№ РїСѓР»СЊСЃ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-4 С…Рї РєР°Р¶РґС‹Рµ 30 СЃРµРєСѓРЅРґ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}слабый пульс"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 14 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РџСЂРѕСЃС‚СѓРґР°
+		if(PlayerInfo[para1][pIllness][i] == 14 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Простуда
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РџСЂРѕСЃС‚СѓРґР° {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РљРѕР»РґСЂРµРєСЃ, РўРµСЂР°С„Р»СЋ РёР»Рё РђРЅРІРёРјР°РєСЃ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Простуда {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РЅР°СЃРјРѕСЂРє"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РєР°С€РµР»СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}кашель"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 15 && PlayerInfo[para1][pIllnessProg][i] > 1000) // РћР Р’Р
+		if(PlayerInfo[para1][pIllness][i] == 15 && PlayerInfo[para1][pIllnessProg][i] > 1000) // ОРВИ
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}РћР Р’Р {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РљРѕР»РґСЂРµРєСЃ, РўРµСЂР°С„Р»СЋ РёР»Рё РђРЅРІРёРјР°РєСЃ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}ОРВИ {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РЅР°СЃРјРѕСЂРє"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»СЊ РІ РіРѕСЂР»Рµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕР·РЅРѕР±"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}озноб"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 16 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р“СЂРёРїРї
+		if(PlayerInfo[para1][pIllness][i] == 16 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Грипп
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Р“СЂРёРїРї {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РљРѕР»РґСЂРµРєСЃ, РўРµСЂР°С„Р»СЋ РёР»Рё РђРЅРІРёРјР°РєСЃ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Грипп {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РЅР°СЃРјРѕСЂРє"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»СЊ РІ РіРѕСЂР»Рµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РіРѕР»РѕРІРЅР°СЏ Р±РѕР»СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±РѕР»СЊ РІ СЃСѓСЃС‚Р°РІР°С…"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}С‚РѕС€РЅРѕС‚Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}головная боль"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}боль в суставах"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
 		if(PlayerInfo[para1][pIllness][i] == 17 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Covid 19
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
-				format(line,sizeof(line),"\n\n{ff6666}Covid-19 {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РљРѕР»РґСЂРµРєСЃ, РўРµСЂР°С„Р»СЋ РёР»Рё РђРЅРІРёРјР°РєСЃ ]"), strcat(lines,line);
-				format(line,sizeof(line),"\n{444444}Р›РµС‡РµРЅРёРµ: %d С‚Р°Р±Р»РµС‚РѕРє", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{ff6666}Covid-19 {444444}[ Лекарство: Колдрекс, Терафлю или Анвимакс ]"), strcat(lines,line);
+				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РїРѕРІС‹С€РµРЅРЅР°СЏ С‚РµРјРїРµСЂР°С‚СѓСЂР° С‚РµР»Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р·Р°С‚СЂСѓРґРЅРµРЅРЅРѕРµ РґС‹С…Р°РЅРёРµ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СЃСѓС…РѕР№ РєР°С€РµР»СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕР±С‰Р°СЏ СЃР»Р°Р±РѕСЃС‚СЊ Рё СЃРѕРЅР»РёРІРѕСЃС‚СЊ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}-2 С…Рї РєР°Р¶РґСѓСЋ РјРёРЅСѓС‚Сѓ"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}затрудненное дыхание"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}сухой кашель"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 18 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Р’Р°РјРїРёСЂРёР·Рј
+		if(PlayerInfo[para1][pIllness][i] == 18 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Вампиризм
 		{
-			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(line,sizeof(line),"\n\n{ff6666}Р’Р°РјРїРёСЂРёР·Рј {444444}[ Р›РµРєР°СЂСЃС‚РІРѕ: РќРµРёР·РІРµСЃС‚РЅРѕ ]"), strcat(lines,line);
+			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(line,sizeof(line),"\n\n{ff6666}Вампиризм {444444}[ Лекарство: Неизвестно ]"), strcat(lines,line);
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] РџСЂРѕРіСЂРµСЃСЃ: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р±Р»РµРґРЅР°СЏ РєРѕР¶Р°"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}СЂРµР°РєС†РёСЏ РЅР° СѓР»СЊС‚СЂР°С„РёРѕР»РµС‚"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}РѕС‚С‚РѕСЂР¶РµРЅРёРµ РїРёС‰Рё"), strcat(lines,line);
-			format(line,sizeof(line),"\n{cccccc}Р¶Р°Р¶РґР° РєСЂРѕРІРё"), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}бледная кожа"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}реакция на ультрафиолет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}отторжение пищи"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}жажда крови"), strcat(lines,line);
 			stope = 1;
 		}
 	}
-	if(stope == 0) format(line,sizeof(line),"\n{99ff66}РќРµС‚ Р±РѕР»РµР·РЅРµР№ Рё СЃРёРјРїС‚РѕРјРѕРІ"), strcat(lines,line);
+	if(stope == 0) format(line,sizeof(line),"\n{99ff66}Нет болезней и симптомов"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{99ff66}РРјРјСѓРЅРёС‚РµС‚ РЅР° Р±РѕР»РµР·РЅРё, РїРµСЂРµРґР°СЋС‰РёРµСЃСЏ РІРѕР·РґСѓС€РЅРѕ-РєР°РїРµР»СЊРЅС‹Рј РїСѓС‚С‘Рј:"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{99ff66}Иммунитет на болезни, передающиеся воздушно-капельным путём:"), strcat(lines,line);
 	if(PlayerInfo[playerid][pColdCD] > 0 && PlayerInfo[playerid][pColdCD] > gettime())
 	{
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 		stamp2datetime(PlayerInfo[playerid][pColdCD], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-		format(line,sizeof(line),"\n{ffcc66}Р”Рѕ %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		format(line,sizeof(line),"\n{ffcc66}До %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 	}
 	else
 	{
-		format(line,sizeof(line),"\n{FF6347}РћС‚СЃСѓС‚СЃС‚РІСѓРµС‚"), strcat(lines,line);
+		format(line,sizeof(line),"\n{FF6347}Отсутствует"), strcat(lines,line);
 	}
 
 	if((PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) && agaest > 0) 
 	{
-		format(line,sizeof(line),"\n\n{444444}РћРїСЂРµРґРµР»РёС‚Рµ Р±РѕР»РµР·РЅСЊ РЅР° РѕСЃРЅРѕРІРµ СЃРёРјРїС‚РѕРјРѕРІ РїР°С†РёРµРЅС‚Р°\n"), strcat(lines,line);
+		format(line,sizeof(line),"\n\n{444444}Определите болезнь на основе симптомов пациента\n"), strcat(lines,line);
 	}
 	else
 	{
-		format(line,sizeof(line),"\n{cccccc}РџРѕР·РІРѕР»СЏРµС‚ РЅР°С…РѕРґРёС‚СЊСЃСЏ СЂСЏРґРѕРј СЃ Р±РѕР»РµСЋС‰РёРј РёРіСЂРѕРєРѕРј Рё РЅРµ Р·Р°СЂР°Р·РёС‚СЊСЃСЏ"), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}РџРѕР»СѓС‡РёС‚СЊ РёРјРјСѓРЅРёС‚РµС‚ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РїРµСЂРµР±РѕР»РµРІ Р±РѕР»РµР·РЅСЊСЋ"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Позволяет находиться рядом с болеющим игроком и не заразиться"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Получить иммунитет можно только переболев болезнью"), strcat(lines,line);
 	}
-    ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}РћСЃРјРѕС‚СЂ РџР°С†РёРµРЅС‚Р°",lines,"РќР°Р·Р°Рґ","");
+    ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",lines,"Назад","");
 	return 1;
 }
 
@@ -448,42 +448,42 @@ stock InfoEatMessage(playerid, stat)
 {
 	if(OnlineInfo[playerid][oMessageEat] <= gettime())
 	{
-		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 РњРёРЅСѓС‚ Unix
+		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 Минут Unix
 
 		new line[70],lines[140];
 		if(getillness(playerid, 18))
 		{
-			if(stat == 0) // РџСЂРѕСЃС‚Рѕ С…РѕС‚РёРј РєСѓС€Р°С‚СЊ
+			if(stat == 0) // Просто хотим кушать
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РњРµРЅСЏ РјСѓС‡Р°РµС‚ Р¶Р°Р¶РґР° [ N - РРЅРІРµРЅС‚Р°СЂСЊ >> РЎС‹С‚РѕСЃС‚СЊ ]");
-				format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РєСЂРѕРІРё"), strcat(lines,line);
-				format(line,sizeof(line),"\n{684F7D}РЎСЂРѕС‡РЅРѕ РЅР°Р№РґРёС‚Рµ РєСЂРѕРІСЊ Рё РІС‹РїРµР№С‚Рµ РµС‘"), strcat(lines,line);
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Меня мучает жажда [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет крови"), strcat(lines,line);
+				format(line,sizeof(line),"\n{684F7D}Срочно найдите кровь и выпейте её"), strcat(lines,line);
 			}
-			else if(stat == 1) // РџРёР·РґРµС†
+			else if(stat == 1) // Пиздец
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ С‚РµСЂСЏСЋ СЃРёР»С‹.. РњРµРЅСЏ РјСѓС‡Р°РµС‚ Р¶Р°Р¶РґР° [ N - РРЅРІРµРЅС‚Р°СЂСЊ >> РЎС‹С‚РѕСЃС‚СЊ ]");
-				format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РєСЂРѕРІРё"), strcat(lines,line);
-				format(line,sizeof(line),"\n{684F7D}РўРµРїРµСЂСЊ СѓСЃС‚Р°Р»РѕСЃС‚СЊ РІР»РёСЏРµС‚ РЅР° РІР°СЃ"), strcat(lines,line);
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я теряю силы.. Меня мучает жажда [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет крови"), strcat(lines,line);
+				format(line,sizeof(line),"\n{684F7D}Теперь усталость влияет на вас"), strcat(lines,line);
 			}
 		}
 		else
 		{
-			if(stat == 0) // РџСЂРѕСЃС‚Рѕ С…РѕС‚РёРј РєСѓС€Р°С‚СЊ
+			if(stat == 0) // Просто хотим кушать
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ С…РѕС‡Сѓ РєСѓС€Р°С‚СЊ [ N - РРЅРІРµРЅС‚Р°СЂСЊ >> РЎС‹С‚РѕСЃС‚СЊ ]");
-				format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РєСѓС€Р°С‚СЊ"), strcat(lines,line);
-				format(line,sizeof(line),"\n{99ff66}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РІ Р·Р°РєСѓСЃРѕС‡РЅСѓСЋ Рё РєСѓРїРёС‚Рµ РµРґС‹"), strcat(lines,line);
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я хочу кушать [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет кушать"), strcat(lines,line);
+				format(line,sizeof(line),"\n{99ff66}Отправляйтесь в закусочную и купите еды"), strcat(lines,line);
 			}
-			else if(stat == 1) // РџРёР·РґРµС†
+			else if(stat == 1) // Пиздец
 			{
-				SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ РјРµРЅСЏ Р±РѕР»РёС‚ Р¶РёРІРѕС‚РёРє.. РЇ СЃРёР»СЊРЅРѕ С…РѕС‡Сѓ РєСѓС€Р°С‚СЊ [ N - РРЅРІРµРЅС‚Р°СЂСЊ >> РЎС‹С‚РѕСЃС‚СЊ ]");
-				format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РєСѓС€Р°С‚СЊ"), strcat(lines,line);
-				format(line,sizeof(line),"\n{FF6347}РЈ РІР°СЃ РЅР°С‡РёРЅР°РµС‚ РЅР°РєР°РїР»РёРІР°С‚СЊСЃСЏ Р±РѕР»РµР·РЅСЊ"), strcat(lines,line);
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня болит животик.. Я сильно хочу кушать [ N - Инвентарь >> Сытость ]");
+				format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет кушать"), strcat(lines,line);
+				format(line,sizeof(line),"\n{FF6347}У вас начинает накапливаться болезнь"), strcat(lines,line);
 			}
 		}
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-		if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) SendMindMessage(playerid,"вЂў xoВ¤y kyТђaВ¦В©"," ");
+		if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) SendMindMessage(playerid,"• xo¤y kyҐa¦©"," ");
 		else SendMindMessage(playerid,"I want to eat"," ");
 
 		Login[2][playerid] = 0;
@@ -495,19 +495,19 @@ stock InfoPissMessage(playerid, stat)
 {
 	if(OnlineInfo[playerid][oMessagePiss] <= gettime())
 	{
-		OnlineInfo[playerid][oMessagePiss] = gettime() + 600; // 10 РњРёРЅСѓС‚ Unix
+		OnlineInfo[playerid][oMessagePiss] = gettime() + 600; // 10 Минут Unix
 
 		new line[80],lines[240];
-		if(stat == 0) // РџСЂРѕСЃС‚Рѕ С…РѕС‚РёРј СЃС†Р°С‚СЊ
+		if(stat == 0) // Просто хотим сцать
 		{
-			format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РІ С‚СѓР°Р»РµС‚"), strcat(lines,line);
-			format(line,sizeof(line),"\n{99ff66}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РІ С‚СѓР°Р»РµС‚ Рё РІРѕСЃРїРѕР»СЊР·СѓР№С‚РµСЃСЊ РёРј"), strcat(lines,line);
-			format(line,sizeof(line),"\n\n{cccccc}РќРµ СЃРїСЂР°РІР»СЏР№С‚Рµ РЅСѓР¶РґСѓ РїСЂРё Р»СЋРґСЏС… РІ РѕС‚РєСЂС‹С‚СѓСЋ, СЌС‚Рѕ РЅРµ РєСѓР»СЊС‚СѓСЂРЅРѕ"), strcat(lines,line);
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет в туалет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Отправляйтесь в туалет и воспользуйтесь им"), strcat(lines,line);
+			format(line,sizeof(line),"\n\n{cccccc}Не справляйте нужду при людях в открытую, это не культурно"), strcat(lines,line);
 		}
-		else if(stat == 1) // РџРёР·РґРµС†
+		else if(stat == 1) // Пиздец
 		{
-			format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ С…РѕС‡РµС‚ РІ С‚СѓР°Р»РµС‚"), strcat(lines,line);
-			format(line,sizeof(line),"\n{FF6347}Р•СЃР»Рё РІС‹ РЅРµ СЃС…РѕРґРёС‚Рµ РІ С‚СѓР°Р»РµС‚, РІР°С€ РїРµСЂСЃРѕРЅР°Р¶ РѕР±РјРѕС‡РёС‚СЃСЏ"), strcat(lines,line);
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж хочет в туалет"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Если вы не сходите в туалет, ваш персонаж обмочится"), strcat(lines,line);
 		}
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
@@ -520,23 +520,23 @@ stock InfectInfo(playerid)
 {
 	if(OnlineInfo[playerid][oMessageInfect] <= gettime())
 	{
-		OnlineInfo[playerid][oMessageInfect] = gettime() + 600; // 10 РњРёРЅСѓС‚ Unix
+		OnlineInfo[playerid][oMessageInfect] = gettime() + 600; // 10 Минут Unix
 
 		if(getillness(playerid, 18))
 		{
-			SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р‘СЂСЂ.. С…РѕР»РѕРґРЅРѕ. РќРѕ РјРЅРµ РїРѕС„РёРі РЅР° Р»РµРґСЏРЅСѓСЋ РІРѕРґСѓ");
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Но мне пофиг на ледяную воду");
 			new line[100],lines[200];
-			format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РїР»Р°РІР°РµС‚ РІ С…РѕР»РѕРґРЅРѕР№ РІРѕРґРµ, РЅРѕ РµРјСѓ РІСЃС‘-СЂР°РІРЅРѕ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{FF6347}Р’С‹ РІР°РјРїРёСЂ Рё РїРѕСЌС‚РѕРјСѓ РІР°Рј РЅРµ СЃС‚СЂР°С€РЅС‹ Р±РѕР»РµР·РЅРё"), strcat(lines,line);
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде, но ему всё-равно"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Вы вампир и поэтому вам не страшны болезни"), strcat(lines,line);
 			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 		}
 		else
 		{
-			SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р‘СЂСЂ.. С…РѕР»РѕРґРЅРѕ. РЇ Р·Р°Р±РѕР»РµСЋ РµСЃР»Рё Р±СѓРґСѓ РґРѕР»РіРѕ РїР»Р°РІР°С‚СЊ РІ С…РѕР»РѕРґРЅРѕР№ РІРѕРґРµ");
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Я заболею если буду долго плавать в холодной воде");
 			new line[100],lines[300];
-			format(line,sizeof(line),"{ffcc66}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РїР»Р°РІР°РµС‚ РІ С…РѕР»РѕРґРЅРѕР№ РІРѕРґРµ Рё РЅР°С‡РёРЅР°РµС‚ РїСЂРѕСЃС‚СѓР¶Р°С‚СЊСЃСЏ"), strcat(lines,line);
-			format(line,sizeof(line),"\n{FF6347}Р§РµСЂРµР· 4 РјРёРЅСѓС‚С‹ РїСЂРµР±С‹РІР°РЅРёСЏ РІ С…РѕР»РѕРґРЅРѕР№ РІРѕРґРµ РїРµСЂСЃРѕРЅР°Р¶ Р·Р°Р±РѕР»РµРµС‚"), strcat(lines,line);
-			format(line,sizeof(line),"\n\n{99ff66}РџРѕРґСЃРєР°Р·РєР° :)\n{ffcc66}РЈРїРѕС‚СЂРµР±РёРІ Р°Р»РєРѕРіРѕР»СЊ РІС‹ СЃРјРѕР¶РµС‚Рµ РїР»Р°РІР°С‚СЊ Рё РЅРµ Р·Р°Р±РѕР»РµС‚СЊ"), strcat(lines,line);
+			format(line,sizeof(line),"{ffcc66}Ваш персонаж плавает в холодной воде и начинает простужаться"), strcat(lines,line);
+			format(line,sizeof(line),"\n{FF6347}Через 4 минуты пребывания в холодной воде персонаж заболеет"), strcat(lines,line);
+			format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
 			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 		}
 		Login[2][playerid] = 0;
@@ -547,43 +547,43 @@ stock InfectInfo(playerid)
 stock VampireInfo(playerid)
 {
 	new line[214],lines[4096];
-	format(line,sizeof(line),"{684F7D}РљР°Рє РЅР°Р№С‚Рё РїСЂРѕРєР»СЏС‚РёРµ?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РћС‚РєСЂРѕР№С‚Рµ РѕРґРёРЅ РёР· С‡РµС‚С‹СЂС‘С… СЃР°СЂРєРѕС„Р°РіРѕРІ РІ СЌС‚РѕР№ РіСЂРѕР±РЅРёС†Рµ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РџСЂРѕРєР»СЏС‚РёРµ РјРѕР¶РµС‚ РїСЂРѕРёР·РѕР№С‚Рё СЃР»СѓС‡Р°Р№РЅРѕ С‚РѕР»СЊРєРѕ СЃ РѕРґРЅРёРј С‡РµР»РѕРІРµРєРѕРј СЂР°Р· РІ 4 С‡Р°СЃР°"), strcat(lines,line);
+	format(line,sizeof(line),"{684F7D}Как найти проклятие?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Откройте один из четырёх саркофагов в этой гробнице"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Проклятие может произойти случайно только с одним человеком раз в 4 часа"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}Р§С‚Рѕ РґР°С‘С‚ РїСЂРѕРєР»СЏС‚РёРµ?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р’С‹ РЅРёРєРѕРіРґР° РЅРµ Р·Р°Р±РѕР»РµРµС‚Рµ Р»СЋР±С‹РјРё РґСЂСѓРіРёРјРё Р±РѕР»РµР·РЅСЏРјРё"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РЅРёРєРѕРіРґР° РЅРµ СѓСЃС‚Р°С‘С‚ Рё РµРјСѓ РЅРµ РЅСѓР¶РµРЅ СЃРѕРЅ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р’С‹ РќР• СЃРјРѕР¶РµС‚Рµ РїРёС‚Р°С‚СЊСЃСЏ РѕР±С‹С‡РЅРѕР№ РµРґРѕР№, РѕС‚ РЅРµС‘ РІР°СЃ Р±СѓРґРµС‚ С‚РѕС€РЅРёС‚СЊ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РЎ 6:00 РґРѕ 21:00 РЅР°С…РѕРґСЏСЃСЊ РЅР° СЃРѕР»РЅС†Рµ РІС‹ Р±СѓРґРµС‚Рµ СЃРіРѕСЂР°С‚СЊ Рё С‚РµСЂСЏС‚СЊ Р·РґРѕСЂРѕРІСЊРµ"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Что даёт проклятие?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы никогда не заболеете любыми другими болезнями"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Ваш персонаж никогда не устаёт и ему не нужен сон"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы НЕ сможете питаться обычной едой, от неё вас будет тошнить"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С 6:00 до 21:00 находясь на солнце вы будете сгорать и терять здоровье"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}РљР°Рє Р·Р°С‰РёС‚РёС‚СЊСЃСЏ РѕС‚ СЃРѕР»РЅС†Р°?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РќР°С…РѕРґРёС‚СЊСЃСЏ РІ РёРЅС‚РµСЂСЊРµСЂР°С… РёР»Рё СЃРёРґРµС‚СЊ РІ С‚СЂР°РЅСЃРїРѕСЂС‚Рµ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РќР°РґРµС‚СЊ СЃРєР°С„Р°РЅРґСЂ РєРѕСЃРјРѕРЅР°РІС‚Р° РІ NASA"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Как защититься от солнца?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Находиться в интерьерах или сидеть в транспорте"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Надеть скафандр космонавта в NASA"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}Р’С‹ РјРѕР¶РµС‚Рµ РѕР±СЂР°С‚РёС‚СЊ РґСЂСѓРіРѕРіРѕ РёРіСЂРѕРєР° РІ РІР°РјРїРёСЂР°"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РџСЂРёРѕР±СЂРµС‚РёС‚Рµ РЅРѕР¶ РІ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ Рё РЅР°РїРѕР»РЅРёС‚Рµ Р±РѕРєР°Р» СЃРІРѕРµР№ РєСЂРѕРІСЊСЋ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р•СЃР»Рё РІС‹ РІР°РјРїРёСЂ, РґР°Р№С‚Рµ РІС‹РїРёС‚СЊ СЌС‚Сѓ РєСЂРѕРІСЊ РґСЂСѓРіРѕРјСѓ РёРіСЂРѕРєСѓ"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Вы можете обратить другого игрока в вампира"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Приобретите нож в супермаркете и наполните бокал своей кровью"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы вампир, дайте выпить эту кровь другому игроку"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}РљР°Рє РІР°Рј РїРёС‚Р°С‚СЊСЃСЏ?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{ffcc66}1. Р’С‹ РјРѕР¶РµС‚Рµ РІС‹РїРёС‚СЊ РєСЂРѕРІСЊ Сѓ РёРіСЂРѕРєР° Р±РµР· СЃРѕР·РЅР°РЅРёСЏ, С‡С‚РѕР±С‹ РЅР°СЃС‹С‚РёС‚СЊСЃСЏ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р”Р»СЏ СЌС‚РѕРіРѕ РЅРѕРєР°СѓС‚РёСЂСѓР№С‚Рµ РёРіСЂРѕРєР° Р±РёС‚РѕР№"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р—Р°С‚РµРј Р·Р°Р¶РјРёС‚Рµ РџСЂР°РІСѓСЋ РљРЅРѕРїРєСѓ РњС‹С€Рё Рё РљРЅРѕРїРєСѓ ALT"), strcat(lines,line);
-	format(line,sizeof(line),"\n{ffcc66}2. РРіСЂРѕРє РјРѕР¶РµС‚ РґРѕР±СЂРѕРІРѕР»СЊРЅРѕ РґР°С‚СЊ РІР°Рј СЃРІРѕСЋ РєСЂРѕРІСЊ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РЎ РїРѕРјРѕС‰СЊСЋ РЅРѕР¶Р° РёР· СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ РїРѕРїСЂРѕСЃРёС‚Рµ РёРіСЂРѕРєР° РЅР°РїРѕР»РЅРёС‚СЊ Р±РѕРєР°Р» СЃРІРѕРµР№ РєСЂРѕРІСЊСЋ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р­С‚Сѓ РєСЂРѕРІСЊ РІС‹ РјРѕР¶РµС‚Рµ СѓРїРѕС‚СЂРµР±РёС‚СЊ РІ Р»СЋР±РѕР№ РјРѕРјРµРЅС‚ Рё РЅР°СЃС‹С‚РёС‚СЊСЃСЏ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{ffcc66}3. РЈРїРѕС‚СЂРµР±Р»СЏС‚СЊ РєСЂРѕРІСЊ Р¶РёРІРѕС‚РЅС‹С…"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РџСЂРёРѕР±СЂРµС‚РёС‚Рµ РЅР° С„РµСЂРјРµ Р±С‹С‡СЊСЋ РєСЂРѕРІСЊ Рё СѓРїРѕС‚СЂРµР±Р»СЏР№С‚Рµ РµС‘"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Как вам питаться?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}1. Вы можете выпить кровь у игрока без сознания, чтобы насытиться"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Для этого нокаутируйте игрока битой"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Затем зажмите Правую Кнопку Мыши и Кнопку ALT"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}2. Игрок может добровольно дать вам свою кровь"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С помощью ножа из супермаркете попросите игрока наполнить бокал своей кровью"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Эту кровь вы можете употребить в любой момент и насытиться"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ffcc66}3. Употреблять кровь животных"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Приобретите на ферме бычью кровь и употребляйте её"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}РљР°Рє РёР·Р±Р°РІРёС‚СЊСЃСЏ РѕС‚ РїСЂРѕРєР»СЏС‚РёСЏ?"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РќР°РґРµРЅСЊС‚Рµ РЅР° СЃРµР±СЏ Р°РєСЃРµСЃСЃСѓР°СЂ Р Р°СЃРїСЏС‚РёРµ Рё РІС‹ РІРЅРѕРІСЊ СЃС‚Р°РЅРµС‚Рµ РѕР±С‹С‡РЅС‹Рј С‡РµР»РѕРІРµРєРѕРј"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- РќР°Р№С‚Рё Р°РєСЃРµСЃСЃСѓР°СЂ РјРѕР¶РЅРѕ СЃР»СѓС‡Р°РЅРѕ, РѕС‚РєСЂС‹РІР°СЏ СЃР°СЂРєРѕС„Р°РіРё РІ СЌС‚РѕР№ РіСЂРѕР±РЅРёС†Рµ"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Как избавиться от проклятия?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Наденьте на себя аксессуар Распятие и вы вновь станете обычным человеком"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Найти аксессуар можно случано, открывая саркофаги в этой гробнице"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{684F7D}Р Р°СЃРїСЏС‚РёРµ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р•СЃР»Рё РІС‹ РЅРѕСЃРёС‚Рµ СЂР°СЃРїСЏС‚РёРµ, РІР°РјРїРёСЂ РЅРµ СЃРјРѕР¶РµС‚ РІС‹РїРёС‚СЊ РІР°С€Сѓ РєСЂРѕРІСЊ"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}- Р•СЃР»Рё РІС‹ РЅРѕСЃРёС‚Рµ СЂР°СЃРїСЏС‚РёРµ, РІС‹ РЅРёРєРѕРіРґР° РЅРµ СЃС‚Р°РЅРµС‚Рµ РІР°РјРїРёСЂРѕРј"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{684F7D}Распятие"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы носите распятие, вампир не сможет выпить вашу кровь"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Если вы носите распятие, вы никогда не станете вампиром"), strcat(lines,line);
 
-	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{684F7D}РџСЂРѕРєР»СЏС‚РёРµ Р¤Р°СЂР°РѕРЅРѕРІ",lines,"*","");
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{684F7D}Проклятие Фараонов",lines,"*","");
 	return 1;
 }
 
@@ -640,7 +640,7 @@ stock infectback(playerid)
 	}
 	return 1;
 }
-stock ContagiousInfect(stat) // Р—Р°СЂР°Р·РЅС‹Рµ Р±РѕР»РµР·РЅРё
+stock ContagiousInfect(stat) // Заразные болезни
 {
 	if(stat == 14 || stat == 15 || stat == 16 || stat == 17) return 1;
 	return 0;

@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build-normal",
+        "type": "shell",
+        "command": "${workspaceRoot}/qawno/pawncc.exe",
+        "args": ["'${fileBasename}'", "'-D${fileDirname}'", "'-;+'", "'-(+'", "'-d3'"],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "panel": "dedicated"
+        },
+        "problemMatcher": "$pawncc"
+      }
+    ]
+  }

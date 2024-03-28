@@ -1,19 +1,19 @@
 
-#define MAX_SEAT_OBJECT_POSITIONS 10 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРґРµРЅРёР№ Сѓ РѕРґРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+#define MAX_SEAT_OBJECT_POSITIONS 10 // Максимальное количество сидений у одного объекта
 
-// РҐСЂР°РЅРёС‚ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РєР°Р¶РґРѕР№ РёР· РїРѕР·РёС†РёР№ РґР»СЏ СЃРёРґРµРЅРёСЏ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+// Хранит относительные координаты каждой из позиций для сидения определенного объекта
 static enum e_pressSeatObjectsPositions {
-	Float: sopBaseZ, // Р‘Р°Р·РѕРІРѕРµ РІСЂР°С‰РµРЅРёРµ РїРѕ Z (С‡С‚Рѕ РІРѕР·РІСЂР°С‰Р°РµС‚ GetPlayerFacingAngle РµСЃР»Рё СЃРјРѕС‚СЂРµС‚СЊ РІ СЃС‚РѕСЂРѕРЅСѓ, РІРїРµСЂРµРґ РѕС‚ СЃРёРґРµРЅРёСЏ, РїСЂРё СѓРєР°Р·Р°РЅРЅРѕРј РІСЂР°С‰РµРЅРёРё 0.0)
-	Float: sopVerticalDistance, // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ РІРµСЂС‚РёРєР°Р»СЊРЅРѕРіРѕ РЅР°РїСЂР°РІР»РµРЅРёСЏ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РѕР±СЉРµРєС‚Р° (РІРїРµСЂРµРґ - РЅР°Р·Р°Рґ)
-	Float: sopHorizontalDistance, // Р”РёСЃС‚Р°РЅС†РёСЏ РґР»СЏ РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅРѕРіРѕ РЅР°РїСЂР°РІР»РµРЅРёСЏ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РѕР±СЉРµРєС‚Р° (РІР»РµРІРѕ - РІРїСЂР°РІРѕ)
-	Float: sopUpDistance // РЎРјРµС‰РµРЅРёРµ РїРѕР·РёС†РёРё СЃРёРґРµРЅРёСЏ РїРѕ РІС‹СЃРѕС‚Рµ, РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ РѕР±СЉРµРєС‚Р°
+	Float: sopBaseZ, // Базовое вращение по Z (что возвращает GetPlayerFacingAngle если смотреть в сторону, вперед от сидения, при указанном вращении 0.0)
+	Float: sopVerticalDistance, // Дистанция для вертикального направления относительно объекта (вперед - назад)
+	Float: sopHorizontalDistance, // Дистанция для горизонтального направления относительно объекта (влево - вправо)
+	Float: sopUpDistance // Смещение позиции сидения по высоте, относительно объекта
 };
 
 enum e_newSeatObjects {
-	nssModel, // ID РјРѕРґРµР»Рё РґРѕР±Р°РІР»СЏРµРјРѕРіРѕ СЃС‚СѓР»Р°
-	nssObject, // ID СЃРѕР·РґР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	nssModel, // ID модели добавляемого стула
+	nssObject, // ID созданного объекта
 
-	// РЎРёРґРµРЅРёСЏ
+	// Сидения
 	Float: nssSeat1[e_pressSeatObjectsPositions],
 	Float: nssSeat2[e_pressSeatObjectsPositions],
 	Float: nssSeat3[e_pressSeatObjectsPositions],
@@ -27,11 +27,11 @@ enum e_newSeatObjects {
 };
 new newSeatObjects[MAX_PLAYERS][e_newSeatObjects];
 
-// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєР°Р¶РґРѕР№ РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р°, РЅР° РєРѕС‚РѕСЂС‹Р№ РјРѕР¶РЅРѕ СЃР°РґРёС‚СЊСЃСЏ
+// Информация о каждой модели объекта, на который можно садиться
 static enum e_pressSeatObjects {
-	soModel, // РњРѕРґРµР»СЊ
+	soModel, // Модель
 
-	// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєР°Р¶РґРѕРј РёР· РІРѕР·РјРѕР¶РЅС‹С… СЃРёРґРµРЅРёР№
+	// Информация о каждом из возможных сидений
 	Float: soSeat1[e_pressSeatObjectsPositions],
 	Float: soSeat2[e_pressSeatObjectsPositions],
 	Float: soSeat3[e_pressSeatObjectsPositions],
@@ -130,7 +130,7 @@ static const pressSeatObjects[][e_pressSeatObjects] = {
 
 new bool:playerSeat[MAX_REALPLAYERS];
 
-// РћРїСЂРµРґРµР»СЏРµС‚, РѕС‚РЅРѕСЃРёС‚СЃСЏ Р»Рё РјРѕРґРµР»СЊ Рє С‚РѕРјСѓ РѕР±СЉРµРєС‚Сѓ, РЅР° РєРѕС‚РѕСЂРѕРј РјРѕР¶РЅРѕ СЃРёРґРµС‚СЊ РїРѕ РЅР°Р¶Р°С‚РёСЋ РєР»Р°РІРёС€Рё
+// Определяет, относится ли модель к тому объекту, на котором можно сидеть по нажатию клавиши
 stock IsPressSeatDynamicObject(modelid) {
 	for (new i = 0; i < sizeof pressSeatObjects; i++) {
 		if (pressSeatObjects[i][soModel] == modelid)
@@ -139,7 +139,7 @@ stock IsPressSeatDynamicObject(modelid) {
 	return false;
 }
 
-// РџРѕР»СѓС‡Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРёРґРµРЅРёРё РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р° РїРѕ С‡РёСЃР»РѕРІРѕРјСѓ РёРЅРґРµРєСЃСѓ
+// Получает информацию о сидении модели объекта по числовому индексу
 stock GetSeatPosition(model_index, seat_index, &Float: baseZ, &Float: verticalDistance, &Float: horizontalDistance, &Float: upDistance) {
 	switch(seat_index) {
 		case 0:
@@ -217,7 +217,7 @@ stock GetSeatPosition(model_index, seat_index, &Float: baseZ, &Float: verticalDi
 
 	return true;
 }
-// РџРѕР»СѓС‡Р°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРёРґРµРЅРёРё РґРѕР±Р°РІР»СЏРµРјРѕР№ РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р° РїРѕ С‡РёСЃР»РѕРІРѕРјСѓ РёРЅРґРµРєСЃСѓ
+// Получает информацию о сидении добавляемой модели объекта по числовому индексу
 stock GetNewSeatPosition(playerid, seat_index, &Float: baseZ, &Float: verticalDistance, &Float: horizontalDistance, &Float: upDistance) {
 	switch(seat_index) {
 		case 0:
@@ -296,7 +296,7 @@ stock GetNewSeatPosition(playerid, seat_index, &Float: baseZ, &Float: verticalDi
 	return true;
 }
 
-// РџСЂРёСЃРІР°РёРІР°РµС‚ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРёРґРµРЅРёРё РґРѕР±Р°РІР»СЏРµРјРѕР№ РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р° РїРѕ С‡РёСЃР»РѕРІРѕРјСѓ РёРЅРґРµРєСЃСѓ
+// Присваивает информацию о сидении добавляемой модели объекта по числовому индексу
 stock SetNewSeatPosition(playerid, seat_index, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, Float: upDistance) {
 	switch (seat_index) {
 		case 0: {
@@ -407,7 +407,7 @@ stock GetSeatsCount(model_index) {
 	return count;
 }
 
-// Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ Р±Р»РёР¶Р°Р№С€РµРіРѕ Рє РёРіСЂРѕРєСѓ СЃРёРґРµРЅРёСЏ Сѓ РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р°
+// Возвращает координаты ближайшего к игроку сидения у модели объекта
 stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float: y, &Float: z, &Float: a) {
 	new Float: min_distance = 1000.0;
 	new bool: seats_occupied[MAX_SEAT_OBJECT_POSITIONS];
@@ -423,7 +423,7 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 		new Float: cur_player_x, Float: cur_player_y, Float: cur_player_z;
 		GetPlayerPos(playerid, cur_player_x, cur_player_y, cur_player_z);
 
-		// РЈР·РЅР°РµРј, Р·Р°РЅСЏС‚Рѕ Р»Рё РјРµСЃС‚Рѕ РєРµРј-С‚Рѕ РґСЂСѓРіРёРј
+		// Узнаем, занято ли место кем-то другим
 		for(new id = 0; id < MAX_REALPLAYERS; id++)
 		{
 			if(OnlineInfo[id][oLogged] == 0) continue;
@@ -454,14 +454,14 @@ stock GetClosestSeatPosition(playerid, objectid, model_index, &Float: x, &Float:
 		}
 	}
 
-	// РќРµ СЃР°Р¶Р°РµРј РёРіСЂРѕРєР°, РµСЃР»Рё Р±Р»РёР¶Р°Р№С€РµРµ Рє РЅРµРјСѓ РјРµСЃС‚Рѕ Р·Р°РЅСЏС‚Рѕ РєРµРј-С‚Рѕ РґСЂСѓРіРёРј
+	// Не сажаем игрока, если ближайшее к нему место занято кем-то другим
 	if (seats_occupied[closest_seat_index])
 		return -1;
 
 	return closest_seat_index;
 }
 
-// РџРѕР»СѓС‡Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ СЃРёРґРµРЅРёСЏ РїРѕ РµРіРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
+// Получает координаты сидения по его относительной информации
 stock GetSeatPositionCoords(objectid, Float: baseZ, Float: verticalDistance, Float: horizontalDistance, &Float: x, &Float: y, &Float:z, &Float: a) {
 	new Float: object_pos[4];
 	GetDynamicObjectPos(objectid, object_pos[0], object_pos[1], object_pos[2]);
@@ -472,7 +472,7 @@ stock GetSeatPositionCoords(objectid, Float: baseZ, Float: verticalDistance, Flo
 	z = object_pos[2];
 }
 
-// РџРѕР»СѓС‡Р°РµС‚ РїРѕР·РёС†РёСЋ, РІ РєРѕС‚РѕСЂРѕР№ РЅСѓР¶РЅРѕ РїСЂРёРјРµРЅРёС‚СЊ Р°РЅРёРјР°С†РёСЋ, С‡С‚РѕР±С‹ СЂРѕРІРЅРѕ СЃРµСЃС‚СЊ
+// Получает позицию, в которой нужно применить анимацию, чтобы ровно сесть
 stock GetDynamicObjectSeatPosition(playerid, objectid, &Float: x, &Float: y, &Float: z, &Float: a) {
 	if (!IsValidDynamicObject(objectid)) return false;
 
@@ -492,34 +492,34 @@ stock GetDynamicObjectSeatPosition(playerid, objectid, &Float: x, &Float: y, &Fl
 
 stock PressSeatableObjectHandler(playerid)
 {
-  	// Р’ Ikea РѕС‚РєР»СЋС‡РµРЅРѕ СЃСЂР°Р±Р°С‚С‹РІР°РЅРёРµ РїСЂРёСЃР°Р¶РёРІР°РЅРёСЏ РЅР° СЃС‚СѓР» (Р§С‚РѕР±С‹ РЅР° ALT РёС… РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РєСѓРїРёС‚СЊ, Р° РЅРµ СЃР°РґРёС‚СЊСЃСЏ РЅР° РЅРёС…)
+  	// В Ikea отключено срабатывание присаживания на стул (Чтобы на ALT их можно было купить, а не садиться на них)
 	if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
 	|| GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
 	|| GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0;
 
-	// РџРѕР·РёС†РёРё, РіРґРµ sit РЅРµ Р±СѓРґРµС‚ СЂР°Р±РѕС‚Р°С‚СЊ
+	// Позиции, где sit не будет работать
 	if(NoSit(playerid)) return 0;
 
 	new Float: player_pos[3];
 	GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
-	// РЈР·РЅР°РµРј РµСЃС‚СЊ Р»Рё СЂСЏРґРѕРј РїРёРєР°РїС‹ Рё РѕС‚РјРµРЅСЏРµРј РїРѕСЃР°РґРєСѓ, РµСЃР»Рё РґР° (С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ РєРѕРЅС„Р»РёРєС‚РѕРІ СЃРѕ РІС…РѕРґР°РјРё Рё С‚.Рї.)
+	// Узнаем есть ли рядом пикапы и отменяем посадку, если да (чтобы не было конфликтов со входами и т.п.)
 	new pickups[1];
 	new pickups_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_PICKUP, pickups), sizeof pickups);
 	for (new i = 0; i < pickups_count; i++) {
 		new Float: distance;
 		Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_PICKUP, pickups[i], distance);
 		
-		// Р•СЃР»Рё СЂСЏРґРѕРј РµСЃС‚СЊ РїРёРєР°Рї - РїСЂРµРєСЂР°С‰Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+		// Если рядом есть пикап - прекращаем обработку
 		if (distance >= 2.05) break;
 		else return 0;
 	}
 
-  	// РџРѕР»СѓС‡Р°РµРј Р±Р»РёР¶Р°Р№С€РёРµ Рє РёРіСЂРѕРєСѓ РґРёРЅР°РјРёС‡РµСЃРєРёРµ РѕР±СЉРµРєС‚С‹
+  	// Получаем ближайшие к игроку динамические объекты
 	new objects[10];
 	new objects_count = min(Streamer_GetAllVisibleItems(playerid, STREAMER_TYPE_OBJECT, objects), sizeof objects);
 	for (new i = 0; i < objects_count; i++) {
-		// РџРµСЂРµР±РёСЂР°РµРј РєР°Р¶РґС‹Р№ РѕР±СЉРµРєС‚
+		// Перебираем каждый объект
 		new current_object = objects[i];
 
 		new Float: distance;
@@ -528,13 +528,13 @@ stock PressSeatableObjectHandler(playerid)
 
 		if(IsAMusicObject(playerid, GetDynamicObjectModel(current_object))) return 1;
 
-		// РЈСЃС‚Р°РЅРѕРІРєР° РЅСѓР¶РЅРѕР№ РїРѕР·РёС†РёРё Рё Р°РЅРёРјР°С†РёРё РёРіСЂРѕРєСѓ (РµСЃР»Рё РѕР±СЉРµРєС‚ СЏРІР»СЏРµС‚СЃСЏ СЃС‚СѓР»РѕРј)
+		// Установка нужной позиции и анимации игроку (если объект является стулом)
 		new Float: x, Float: y, Float: z, Float: a;
 		new result = GetDynamicObjectSeatPosition(playerid, current_object, x, y, z, a);
 		if (result) 
 		{
-			// Р•СЃР»Рё РёРіСЂРѕРє РЅРµ РІ С‚РѕР№ СЃС‚РѕСЂРѕРЅРµ, РєСѓРґР° "СЃРјРѕС‚СЂРёС‚" СЃРёРґРµРЅРёРµ - РѕС‚РјРµРЅСЏРµРј
-			static const Float: side_detect_sensitivity = 0.20; // Р§РµРј Р±РѕР»СЊС€Рµ - С‚РµРј РјРµРЅРµРµ С‚РѕС‡РЅС‹Рј Р±СѓРґРµС‚ РѕРїСЂРµРґРµР»РµРЅРёРµ СЃС‚РѕСЂРѕРЅС‹, РЅРѕ Р±РѕР»РµРµ С‡Р°С‰Рµ Р±СѓРґРµС‚ СЃСЂР°Р±Р°С‚С‹РІР°С‚СЊ РїСЂРёСЃРµРґР°РЅРёРµ СЃ РЅСѓР¶РЅРѕР№ СЃС‚РѕСЂРѕРЅС‹ [0.25 - РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ]
+			// Если игрок не в той стороне, куда "смотрит" сидение - отменяем
+			static const Float: side_detect_sensitivity = 0.20; // Чем больше - тем менее точным будет определение стороны, но более чаще будет срабатывать приседание с нужной стороны [0.25 - по умолчанию]
 			new Float: dirX = floatsin(a, degrees),
 				Float: dirY = floatcos(a, degrees);
 
@@ -544,8 +544,8 @@ stock PressSeatableObjectHandler(playerid)
 			new Float: dotProduct = dirX * vecToPlayerX + dirY * vecToPlayerY;
 			if (dotProduct < -side_detect_sensitivity || dotProduct > side_detect_sensitivity) break;
 			
-			// Р•СЃР»Рё РјРѕРґРµР»СЊ РѕР±СЉРµРєС‚Р° РЅР°Р№РґРµРЅР° Рё РїРѕР·РёС†РёСЏ РѕРїСЂРµРґРµР»РµРЅР° - РїРѕРјРµС‰Р°РµРј РёРіСЂРѕРєР° РЅР° РЅРµС‘
-			if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІ СЂСѓРєР°С… РїРѕРґРЅРѕСЃ\n{cccccc}РљРЅРѕРїРєР° F, С‡С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РµРіРѕ РЅР° СЃС‚РѕР»");
+			// Если модель объекта найдена и позиция определена - помещаем игрока на неё
+			if(Hold[playerid] == 12) return ErrorMessage(playerid, "{FF6347}У вас в руках поднос\n{cccccc}Кнопка F, чтобы положить его на стол");
 			new status = sit(playerid, x, y, player_pos[2]);
 			if(status > 0)
 			{
@@ -578,11 +578,11 @@ stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 	return 1;
 }
 
-stock NoSit(playerid) // РџРѕР·РёС†РёРё, РіРґРµ sit СЂР°Р±РѕС‚Р°С‚СЊ РЅРµ Р±СѓРґРµС‚
+stock NoSit(playerid) // Позиции, где sit работать не будет
 {
-	if(IsPlayerInRangeOfPoint(playerid,2.0,1302.9628,1606.5735,20.0563) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179 // РџРѕРµР·Рґ (РјРµСЃС‚Рѕ РјР°С€РёРЅРёСЃС‚Р°)
-	|| IsPlayerInRangeOfPoint(playerid,2.0,975.0098,2420.8489,10.8503) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_1LVL && GetPlayerInterior(playerid) == INT_PRISON_1LVL // РўСЋСЂСЊРјР° (1 Р­С‚Р°Р¶ РҐРѕР»Р»)
-	|| IsPlayerInRangeOfPoint(playerid,2.0,1377.5765,-21.8737,1000.9217)) // РњР— РґРѕРєС‚Р°СЂСЊ
+	if(IsPlayerInRangeOfPoint(playerid,2.0,1302.9628,1606.5735,20.0563) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179 // Поезд (место машиниста)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,975.0098,2420.8489,10.8503) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_1LVL && GetPlayerInterior(playerid) == INT_PRISON_1LVL // Тюрьма (1 Этаж Холл)
+	|| IsPlayerInRangeOfPoint(playerid,2.0,1377.5765,-21.8737,1000.9217)) // МЗ доктарь
 	{
 		return 1;
 	}
@@ -615,7 +615,7 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 		{
 			new sid = sitid-1, kassit, minussid;
 			
-			// РЎС‚СѓР»СЊСЏ РІ РєРѕРјРЅР°С‚Рµ РєР°Р·РёРЅРѕ РґР»СЏ РёРіСЂС‹ РІ РєР°СЂС‚С‹
+			// Стулья в комнате казино для игры в карты
 			if(sid >= 18 && sid <= 23) kassit = 1, minussid = 18;
 			else if(sid >= 24 && sid <= 29) kassit = 2, minussid = 24;
 			else if(sid >= 30 && sid <= 35) kassit = 3, minussid = 30;
@@ -628,11 +628,11 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 			else if(sid >= 72 && sid <= 75) kassit = 10, minussid = 72;
 			if(kassit > 0)
 			{
-				if(DeskInfo[kassit-1][Table] == 1) return ErrorMessage(playerid, "{FF6347}РЎС‚РѕР» Р·Р°РєСЂС‹С‚ Р»РёРґРµСЂРѕРј"), status = -1;
-				if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р—Р°РІРµСЂС€РёС‚Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РµРєСЃС‚РґСЂР°РІРѕРІ"), status = -1;
+				if(DeskInfo[kassit-1][Table] == 1) return ErrorMessage(playerid, "{FF6347}Стол закрыт лидером"), status = -1;
+				if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование текстдравов"), status = -1;
 			}
 
-			// Р”РѕР№РєР° РљРѕСЂРѕРІ
+			// Дойка Коров
 			if(sid >= 0 && sid <= 17)
 			{
 				if(Dei[playerid] == 13)
@@ -642,35 +642,35 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 					if(DeiStat[playerid] < 20)
 					{
 						new string[60];
-						format(string,sizeof(string),"{ffcc66}Р”РѕРёС‚СЊ РєРѕСЂРѕРІСѓ: {ff9000}%s", buttonName[Device[playerid]]);
+						format(string,sizeof(string),"{ffcc66}Доить корову: {ff9000}%s", buttonName[Device[playerid]]);
 						ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 						DeiStat[playerid] = 0;
 					}
 				}
-				else return ErrorMessage(playerid, "{FF6347}Р’РѕР·СЊРјРёС‚Рµ РІРµРґСЂРѕ Сѓ РІС…РѕРґР° РІ СЃР°СЂР°Р№"), status = -1;
+				else return ErrorMessage(playerid, "{FF6347}Возьмите ведро у входа в сарай"), status = -1;
 			}
-			// РћР±СЂР°Р·РѕРІР°С‚РµР»СЊРЅС‹Р№ Р¦РµРЅС‚СЂ
+			// Образовательный Центр
 			if(sid >= 78 && sid <= 101)
 			{
 				LessonQuest[playerid] = 0;
 				if(Lesson[playerid] == 0)
 				{
-					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РњРЅРµ РЅСѓР¶РЅРѕ РІР·СЏС‚СЊ РЅСѓР¶РЅС‹Р№ СѓС‡РµР±РЅРёРє РёР· РёРЅРІРµРЅС‚Р°СЂСЏ, С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ РѕР±СѓС‡РµРЅРёРµ");
-					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћС‚РєСЂРѕР№С‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ Рё РєР»РёРєРЅРёС‚Рµ РґРІР° СЂР°Р·Р° РїРѕ РЅСѓР¶РЅРѕРјСѓ СѓС‡РµР±РЅРёРєСѓ, С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ РѕР±СѓС‡РµРЅРёРµ\n\n{cccccc}Р•СЃР»Рё Сѓ РІР°СЃ РЅРµС‚ СѓС‡РµР±РЅРёРєР° - РІРѕР·СЊРјРёС‚Рµ РµРіРѕ РІ Р±РёР±Р»РёРѕС‚РµРєРµ","*","");
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно взять нужный учебник из инвентаря, чтобы начать обучение");
+					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Откройте инвентарь и кликните два раза по нужному учебнику, чтобы начать обучение\n\n{cccccc}Если у вас нет учебника - возьмите его в библиотеке","*","");
 				}
-				else ShowDialog(playerid,1227,DIALOG_STYLE_MSGBOX,"{ff9000}РћР±СЂР°Р·РѕРІР°С‚РµР»СЊРЅС‹Р№ Р¦РµРЅС‚СЂ","\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РЅР°С‡Р°С‚СЊ СЌРєР·Р°РјРµРЅ?\n","Р”Р°","РќРµС‚");
+				else ShowDialog(playerid,1227,DIALOG_STYLE_MSGBOX,"{ff9000}Образовательный Центр","\n{ff9000}Вы уверены, что хотите начать экзамен?\n","Да","Нет");
 			}
 
 			SitID[sid] = playerid+1;
 			SitPlayer[playerid] = sitid;
 
-			// РЎС‚СѓР»СЊСЏ РІ РєРѕРјРЅР°С‚Рµ РєР°Р·РёРЅРѕ РґР»СЏ РёРіСЂС‹ РІ РєР°СЂС‚С‹
+			// Стулья в комнате казино для игры в карты
 			if(kassit > 0) joinDesk = join_player_desk(playerid, kassit-1, sid-minussid);
 
-			if(readsit == 1) SendClientMessagef(playerid, COLOR_GREY, "%d", sid);
+			if(readsit == 1) SendClientMessage(playerid, COLOR_GREY, "%d", sid);
 		}
 
-		// РћС‚РѕР±СЂР°Р¶Р°РµРј РїРѕРґСЃРєР°Р·РєСѓ, С‚РѕР»СЊРєРѕ РµСЃР»Рё РёРіСЂРѕРє РЅРµ СЃРµР» Р·Р° РёРіСЂРѕРІРѕР№ СЃС‚РѕР» РІ РєР°СЂС‚С‹
+		// Отображаем подсказку, только если игрок не сел за игровой стол в карты
 		if(joinDesk == 0) TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 	}
 	return status;
@@ -688,22 +688,22 @@ stock exitsit(playerid, stat)
 		{
 			new sitid = SitPlayer[playerid]-1;
 
-			// FBI РџСЂРѕСЃР»СѓС€РєР° Off
+			// FBI Прослушка Off
 			SetPVarInt(playerid,"komp", -1), SetPVarInt(playerid,"komp2", -1);
 			
-			// Р”РѕР№РєР° РљРѕСЂРѕРІ
+			// Дойка Коров
 			if(sitid >= 0 && sitid <= 17 && Dei[playerid] == 13) RemovePlayerAttachedObject(playerid, 1), SetPlayerAttachedObject(playerid, 1, 19468, 6, 0.325999, -0.114999, 0.019000, 99.999977, -103.299972, 1.999999, 1.000000, 1.000000, 1.000000, 0, 0);
 			
-			// РњРµСЃС‚Рѕ РІ РєР°Р·РёРЅРѕ
+			// Место в казино
 			if(sitid >= 18 && sitid <= 77) leave_desk(playerid);
 			
-			// РћР±СѓС‡РµРЅРёРµ
+			// Обучение
 			if(sitid >= 78 && sitid <= 101)
 			{
 				if(Ash[playerid] > 0)
 				{
 					Ash[playerid] = 0, AshTime[playerid] = 0;
-					if(stat == 1) ErrorMessage(playerid, "{FF6347}Р’С‹ РІСЃС‚Р°Р»Рё РёР·-Р·Р° РїР°СЂС‚С‹ Рё РїСЂРµСЂРІР°Р»Рё РѕР±СѓС‡РµРЅРёРµ {cccccc}[ Р’С‹ РјРѕР¶РµС‚Рµ РїРѕРІС‚РѕСЂРёС‚СЊ РёР»Рё СѓР№С‚Рё Рё РІРµСЂРЅСѓС‚СЊСЃСЏ РІ Р»СЋР±РѕРµ РІСЂРµРјСЏ ]");
+					if(stat == 1) ErrorMessage(playerid, "{FF6347}Вы встали из-за парты и прервали обучение {cccccc}[ Вы можете повторить или уйти и вернуться в любое время ]");
 				}
 				if(AeroStat[playerid] > 0) DestroyPlayerObject(playerid, AeroObj[playerid]);
 				if(stat == 1) SetCameraBehindPlayer(playerid);
@@ -713,7 +713,7 @@ stock exitsit(playerid, stat)
 			SitPlayer[playerid] = 0;
 		}
 		
-		// Р’Р·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ Off
+		// Взаимодействие Off
 		if(Hold[playerid] == 13)
 		{
 			new t = HoldStat[playerid];
@@ -732,7 +732,7 @@ stock IsAMusicObject(playerid, model)
 {
 	if(model == 2232)
 	{
-		ShowDialog(playerid, 1488, DIALOG_STYLE_TABLIST, "РњР°РіРЅРёС‚РѕС„РѕРЅ", "{ffffff}Р’РєР»СЋС‡РёС‚СЊ С‚СЂРµРє\nР’С‹РєР»СЋС‡РёС‚СЊ С‚СЂРµРє", "Р’С‹Р±РѕСЂ", "РћС‚РјРµРЅР°");
+		ShowDialog(playerid, 1488, DIALOG_STYLE_TABLIST, "Магнитофон", "{ffffff}Включить трек\nВыключить трек", "Выбор", "Отмена");
 		return 1;
 	}
 	return 0;
@@ -743,19 +743,19 @@ stock ShowNewSeatMenu(playerid) {
 
 	new dialog_text[512] = " \t \n";
 
-	strcat(dialog_text, "{FFCC00}* {ffffff}Р”РѕР±Р°РІРёС‚СЊ РЅРѕРІРѕРµ РјРµСЃС‚Рѕ");
+	strcat(dialog_text, "{FFCC00}* {ffffff}Добавить новое место");
 
 	for (new i = 0; i < min(GetNewSeatsCount(playerid), MAX_SEAT_OBJECT_POSITIONS); i++)
-		format(dialog_text, sizeof dialog_text, "%s\n{ffffff}  - РњРµСЃС‚Рѕ %d:\t{99ff66}РЈСЃС‚Р°РЅРѕРІР»РµРЅРѕ", dialog_text, i + 1);
+		format(dialog_text, sizeof dialog_text, "%s\n{ffffff}  - Место %d:\t{99ff66}Установлено", dialog_text, i + 1);
 
-	strcat(dialog_text, "\n{FFCC00}* {FF6347}РћС‚РјРµРЅР° РґРѕР±Р°РІР»РµРЅРёСЏ РѕР±СЉРµРєС‚Р°\n{FFCC00}* {99ff66}РЎРѕС…СЂР°РЅРёС‚СЊ Рё РІС‹Р№С‚Рё");
+	strcat(dialog_text, "\n{FFCC00}* {FF6347}Отмена добавления объекта\n{FFCC00}* {99ff66}Сохранить и выйти");
 
-	return ShowDialog(playerid, 1485, DIALOG_STYLE_TABLIST_HEADERS, "{cbcbcb}Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЃРёРґРµРЅРёР№", dialog_text, "Р’С‹Р±РѕСЂ", "Р—Р°РєСЂС‹С‚СЊ");
+	return ShowDialog(playerid, 1485, DIALOG_STYLE_TABLIST_HEADERS, "{cbcbcb}Редактирование сидений", dialog_text, "Выбор", "Закрыть");
 }
 
 CMD:newseat(playerid) {
 	if (newSeatObjects[playerid][nssModel] <= 0) {
-		ShowDialog(playerid, 1484, DIALOG_STYLE_INPUT, " ", "{ffffff}РћР±СЉРµРєС‚ СЃ СѓРєР°Р·Р°РЅРЅРѕР№ РјРѕРґРµР»СЊСЋ РїРѕСЏРІРёС‚СЃСЏ СЂСЏРґРѕРј СЃ РІР°С€РёРј РїРµСЂСЃРѕРЅР°Р¶РµРј\nР’С‹ РЅРµ РґРѕР»Р¶РЅС‹ РїСЂРёРјРµРЅСЏС‚СЊ Рє РѕР±СЉРµРєС‚Сѓ РєР°РєРѕРµ-Р»РёР±Рѕ РІСЂР°С‰РµРЅРёРµ РёР»Рё РїРµСЂРµРјРµС‰Р°С‚СЊ РµРіРѕ РїРѕ РѕСЃСЏРј X/Y\n\n{ffffff}РЈРєР°Р¶РёС‚Рµ {ff9000}ID РјРѕРґРµР»Рё{ffffff} РЅРµРѕР±С…РѕРґРёРјРѕРіРѕ РѕР±СЉРµРєС‚Р°:", "РџСЂРѕРґРѕР»Р¶РёС‚СЊ", "РћС‚РјРµРЅР°");
+		ShowDialog(playerid, 1484, DIALOG_STYLE_INPUT, " ", "{ffffff}Объект с указанной моделью появится рядом с вашим персонажем\nВы не должны применять к объекту какое-либо вращение или перемещать его по осям X/Y\n\n{ffffff}Укажите {ff9000}ID модели{ffffff} необходимого объекта:", "Продолжить", "Отмена");
 	} else {
 		ShowNewSeatMenu(playerid);
 	}
@@ -779,7 +779,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 		if (!response) return 1;
 		new modelid = strval(inputtext);
 
-		// РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°
+		// Создание объекта
 		new Float: player_pos[4];
 		GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 		GetPlayerFacingAngle(playerid, player_pos[3]);
@@ -787,7 +787,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 
 		new objectid = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
 		if (objectid == INVALID_OBJECT_ID) {
-			SendClientMessage(playerid, 0xCCCCCC, "[ РњС‹СЃР»Рё ]: РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РѕР±СЉРµРєС‚");
+			SendClientMessage(playerid, 0xCCCCCC, "[ Мысли ]: Не удалось создать объект");
 			return 1;
 		}
 		SetPVarInt(playerid, "EditNewSeatObj", 1);
@@ -803,30 +803,30 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 		if (listitem == 0) {
 			if (seats_count >= MAX_SEAT_OBJECT_POSITIONS) {
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{FF6347}Р’С‹ РґРѕР±Р°РІРёР»Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРґРµРЅРёР№", "Р—Р°РєСЂС‹С‚СЊ", "");
+				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы добавили максимальное количество сидений", "Закрыть", "");
 			}
 
 			SetNewSeatPositionByPlayer(playerid, seats_count);
 
-			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{99ff66}РџРѕР·РёС†РёСЏ Р±С‹Р»Р° СѓСЃРїРµС€РЅРѕ РґРѕР±Р°РІР»РµРЅР°", "РћРє", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно добавлена", "Ок", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		} else if (listitem <= seats_count) {
 			new seat_index = listitem - 1;
 			SetNewSeatPositionByPlayer(playerid, seat_index);
 
-			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{99ff66}РџРѕР·РёС†РёСЏ Р±С‹Р»Р° СѓСЃРїРµС€РЅРѕ Р·Р°РјРµРЅРµРЅР° С‚РµРєСѓС‰РёРј РїРѕР»РѕР¶РµРЅРёРµРј РІР°С€РµРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р°", "Р—Р°РєСЂС‹С‚СЊ", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Позиция была успешно заменена текущим положением вашего персонажа", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		} else if (listitem == seats_count + 1) {
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
 
 			for(new e_newSeatObjects:i; i < e_newSeatObjects; ++i) newSeatObjects[playerid][i] = 0;
 
-			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{FF6347}Р’С‹ РѕС‚РјРµРЅРёР»Рё РґРѕР±Р°РІР»РµРЅРёРµ РѕР±СЉРµРєС‚Р°", "Р—Р°РєСЂС‹С‚СЊ", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы отменили добавление объекта", "Закрыть", "");
 			PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
 		} else if (listitem == seats_count + 2) {
 			if (seats_count <= 0) {
 				PlayerPlaySound(playerid, 1085, 0.0, 0.0, 0.0);
-				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{FF6347}Р’С‹ РЅРµ РґРѕР±Р°РІРёР»Рё РЅРё РѕРґРЅРѕРіРѕ СЃРёРґРµРЅРёСЏ", "Р—Р°РєСЂС‹С‚СЊ", "");
+				return ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{FF6347}Вы не добавили ни одного сидения", "Закрыть", "");
 			}
 
 			new log_str[512];
@@ -849,7 +849,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			DestroyDynamicObject(newSeatObjects[playerid][nssObject]);
 			for(new e_newSeatObjects:i; i < e_newSeatObjects; ++i) newSeatObjects[playerid][i] = 0;
 
-			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}РРЅС„РѕСЂРјР°С†РёСЏ", "{99ff66}Р”Р°РЅРЅС‹Рµ Рѕ РїРѕР·РёС†РёСЏС… Р±С‹Р»Рё РІС‹РІРµРґРµРЅС‹ РІ С‡Р°С‚!", "Р—Р°РєСЂС‹С‚СЊ", "");
+			ShowDialog(playerid, 11111, DIALOG_STYLE_MSGBOX, "{ffffff}Информация", "{99ff66}Данные о позициях были выведены в чат!", "Закрыть", "");
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
 		}
 	}
@@ -860,16 +860,16 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 		world = GetPlayerVirtualWorld(playerid), int = GetPlayerInterior(playerid);
 		if(response)
 		{
-			if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»");
+			if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
 			new urlvalid = strfind(inputtext,".mp3");
 			if(urlvalid == -1)
 			{
 				urlvalid = urlvalid = strfind(inputtext,"https://");
-				if(urlvalid > 1 || urlvalid == -1) return ErrorMessage(playerid,"{ff6347}РЎСЃС‹Р»РєР° РґРѕР»Р¶РЅР° РЅР°С‡РёРЅР°С‚СЃСЏ РЅР° https://");
+				if(urlvalid > 1 || urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка должна начинатся на https://");
 				urlvalid = strfind(inputtext,".ogg");
-				if(urlvalid == -1) return ErrorMessage(playerid,"{ff6347}РЎСЃС‹Р»РєР° РЅР° С‚СЂРµРє РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РґРѕР»Р¶РµРЅР° РёРјРµС‚СЊ РІ СЃСЃС‹Р»РєРµ С„РѕСЂРјР°С‚ .mp3 РёР»Рё .ogg");
+				if(urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка на трек обязательно должена иметь в ссылке формат .mp3 или .ogg");
 			}
-			SuccessMessage(playerid,"{44ff99}Р’С‹ РїРѕСЃС‚Р°РІРёР»Рё С‚СЂРµРє. Р•СЃР»Рё РѕРЅ РЅРµ РёРіСЂР°РµС‚ Р·РЅР°С‡РёС‚ РІС‹ РґРѕРїСѓСЃС‚РёР»Рё РѕС€РёР±РєСѓ РІ СЃСЃС‹Р»РєРµ, РёР»Рё Сѓ РІР°СЃ РІ РЅР°СЃС‚СЂРѕР№РєР°С… РІС‹РєР»СЋС‡РµРЅ Р·РІСѓРє Р Р°РґРёРѕ.");
+			SuccessMessage(playerid,"{44ff99}Вы поставили трек. Если он не играет значит вы допустили ошибку в ссылке, или у вас в настройках выключен звук Радио.");
 			foreach (Player, i)
 			{
 				if(IsPlayerInRangeOfPoint(i,300.0,player_pos[0], player_pos[1], player_pos[2]) && world == GetPlayerVirtualWorld(i) && int == GetPlayerInterior(i))
@@ -883,7 +883,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 	{
 		if(response)
 		{
-			if(listitem == 0) ShowDialog(playerid, 1487, DIALOG_STYLE_INPUT, "Р’РєР»СЋС‡РµРЅРёРµ РјСѓР·С‹РєРё", "{ffffff}РЎСЃС‹Р»РєР° РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РґРѕР»Р¶РЅР° РЅР°С‡РёРЅР°С‚СЊСЃСЏ РЅР° [ {ff6347}https:// {ffffff}], Р° РѕРєР°РЅС‡РёРІР°С‚СЊСЃСЏ РЅР° [ {ff6347}.ogg РёР»Рё .mp3 {ffffff}]\nРњСѓР·С‹РєР° Р±СѓРґРµС‚ РёРіСЂР°С‚СЊ Сѓ С‚РѕС‡РєРё РјР°РіРЅРёС‚РѕС„РѕРЅР° Рё С‡РµРј РґР°Р»СЊС€Рµ РѕС‚ РЅРµРіРѕ С‚РµРј С‚РёС€Рµ. Р Р°РґРёСѓСЃ РјСѓР·С‹РєРё 30 РјРµС‚СЂРѕРІ\n\n{ffffff}РЈРєР°Р¶РёС‚Рµ {ff9000}РЎСЃС‹Р»РєСѓ{ffffff} РЅР° С‚СЂРµРє:", "РџСЂРѕРґРѕР»Р¶РёС‚СЊ", "РћС‚РјРµРЅР°");
+			if(listitem == 0) ShowDialog(playerid, 1487, DIALOG_STYLE_INPUT, "Включение музыки", "{ffffff}Ссылка обязательно должна начинаться на [ {ff6347}https:// {ffffff}], а оканчиваться на [ {ff6347}.ogg или .mp3 {ffffff}]\nМузыка будет играть у точки магнитофона и чем дальше от него тем тише. Радиус музыки 30 метров\n\n{ffffff}Укажите {ff9000}Ссылку{ffffff} на трек:", "Продолжить", "Отмена");
 			if(listitem == 1)
 			{
 				new Float: player_pos[3],world,int;

@@ -1,41 +1,41 @@
 /*
-Р’Р°Р¶РЅРѕРµ РїРѕСЏСЃРЅРёРµРЅРёРµ!
-Р’ СЌС‚РѕРј pwn РјРЅРѕРіРѕ РіРґРµ РІ РїРѕР»СѓС‡РµРЅРёРё РёР»Рё РїРµСЂРµРґР°С‡Рµ РїРµСЂРµРјРµРЅРЅС‹С… РёРјРµРµС‚СЃСЏ +1 РёР»Рё -1, С‚.Рµ. РєР°РєРёРµ-С‚Рѕ РІС‹С‡РµС‚С‹
-РћСЂРіР°РЅРёР·Р°С†РёРё, СЌС‚Рѕ id РЅР°С‡РёРЅР°СЏ СЃ 1 Рё С‚Р°Рє РґР°Р»РµРµ, Р° РІРЅСѓС‚СЂРё РїРµСЂРµРјРµРЅРЅС‹С… РїРѕРґС„СЂР°РєС†РёР№ СЃС‡С‘С‚ РёРґС‘С‚ СЃ 0
-РџРѕСЌС‚РѕРјСѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РѕРіРѕ, РѕС‚РєСѓРґР° РјС‹ Р±РµСЂС‘Рј РїРµСЂРµРјРµРЅРЅСѓСЋ РёР»Рё РєСѓРґР° РјС‹ РµС‘ РїСЂРёРјРµРЅСЏРµРј, СЏ РґРµР»Р°СЋ -1 РёР»Рё +1
-РџРµСЂРµРјРµРЅРЅР°СЏ pDivision РЅРµ РјРѕР¶РµС‚ РёРјРµС‚СЊ 0 (0 Р·РЅР°С‡РёС‚ РЅРµС‚ РїРѕРґС„СЂР°РєС†РёРё), РїРѕСЌС‚РѕРјСѓ РµСЃР»Рё Р±РµСЂСѓ РѕС‚СЃСЋРґР°, С‚Рѕ РїР»СЋСЃСѓСЋ
-РџРµСЂРµРјРµРЅРЅР°СЏ pLeader pMember Рё С„СѓРЅРєС†РёСЏ ftaction(playerid) РЅРµ РјРѕРіСѓС‚ РёРјРµС‚СЊ 0 (0 Р·РЅР°С‡РёС‚ РЅРµС‚ РїРѕРґС„СЂР°РєС†РёРё), С‚Р°Рє-Р¶Рµ РїР»СЋСЃСѓРµРј
+Важное поясниение!
+В этом pwn много где в получении или передаче переменных имеется +1 или -1, т.е. какие-то вычеты
+Организации, это id начиная с 1 и так далее, а внутри переменных подфракций счёт идёт с 0
+Поэтому в зависимости от того, откуда мы берём переменную или куда мы её применяем, я делаю -1 или +1
+Переменная pDivision не может иметь 0 (0 значит нет подфракции), поэтому если беру отсюда, то плюсую
+Переменная pLeader pMember и функция ftaction(playerid) не могут иметь 0 (0 значит нет подфракции), так-же плюсуем
 
-DP[0] - РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ /lmenu
+DP[0] - используется в /lmenu
 DP[1] - id organization
 DP[2] - id division
-DP[3] - РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РґРѕСЃС‚СѓРїРµ Рє СѓРїСЂР°РІР»РµРЅРёСЋ РїРѕРґС„СЂР°РєС†РёРµР№
-DP[4] - СЃР»РѕС‚ С†РІРµС‚Р° РґР»СЏ С‚СЂР°РЅСЃРїРѕСЂС‚Р°, РїРѕСЃР»РµРґРЅРёР№ id РёРіСЂРѕРєР° РЅР° СЃС‚СЂР°РЅРёС†Р°С… divmembersoff
-DP[5] - РЅРѕРјРµСЂ СЃС‚СЂР°РЅРёС†С‹ РІ divmembersoff
+DP[3] - информация о доступе к управлению подфракцией
+DP[4] - слот цвета для транспорта, последний id игрока на страницах divmembersoff
+DP[5] - номер страницы в divmembersoff
 */
 
-#define MAX_DIVISION_ORG 10 // РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРґС„СЂР°РєС†РёР№
-#define MAX_NAME_DIVISION_ABBREVIATION_LENGTH 11 // Р”Р»РёРЅРЅР° Р°Р±Р±СЂРµРІРёР°С‚СѓСЂС‹
+#define MAX_DIVISION_ORG 10 // Количество подфракций
+#define MAX_NAME_DIVISION_ABBREVIATION_LENGTH 11 // Длинна аббревиатуры
 
 enum divInfo
 {
-    divRanks, //  РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
-    divName[MAX_NAME_LENGTH], // РќР°Р·РІР°РЅРёРµ
-    divAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], // РђР±Р±СЂРµРІРёР°С‚СѓСЂР°
-    Float:divSpawnPos[4], // РџРѕР·РёС†РёСЏ СЃРїР°РІРЅР°
-    divSpawnWorld, // Р’РёСЂС‚ РјРёСЂ СЃРїР°РІРЅР°
-    divSpawnInterior, // РРЅС‚РµСЂСЊРµСЂ СЃРїР°РІРЅР°
-    divColorHex[7] // hex С†РІРµС‚
-	//divColorVeh[2] // Р¦РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° (0 Рё 1) - Сѓ С‚СЂР°РЅСЃРїРѕСЂС‚Р° С†РІРµС‚, СЌС‚Рѕ С‡РёСЃР»Рѕ (id)
+    divRanks, //  Количество рангов
+    divName[MAX_NAME_LENGTH], // Название
+    divAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], // Аббревиатура
+    Float:divSpawnPos[4], // Позиция спавна
+    divSpawnWorld, // Вирт мир спавна
+    divSpawnInterior, // Интерьер спавна
+    divColorHex[7] // hex цвет
+	//divColorVeh[2] // Цвет транспорта (0 и 1) - у транспорта цвет, это число (id)
 };
 new DivisionInfo[MAX_ORG][MAX_DIVISION_ORG][divInfo];
-new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH]; // РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
+new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH]; // Названия рангов
 
 
-// РЎРїРёСЃРѕРє РІСЃРµС… РїРѕРґС„СЂР°РєС†РёР№ (РњРµРЅСЋ РґР»СЏ Р»РёРґРµСЂР°)
+// Список всех подфракций (Меню для лидера)
 CMD:alldiv(playerid)
 {
-	if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р»РёРґРµСЂ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Вы не лидер организации");
 
     PlayerPlaySound(playerid,1150,0,0,0);
     showDialogAllDivisions(playerid);
@@ -44,24 +44,24 @@ CMD:alldiv(playerid)
 stock showDialogAllDivisions(playerid)
 {
     new g = fraction(playerid) - 1;
-	DP[1][playerid] = g; // РЎРѕС…СЂР°РЅСЏРµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
+	DP[1][playerid] = g; // Сохраняем id организации
 
 	new line[160],lines[1760];
-    format(line,sizeof(line),"ID\tРќР°Р·РІР°РЅРёРµ\tРђР±Р±СЂРµРІРёР°С‚СѓСЂР°"), strcat(lines,line);
+    format(line,sizeof(line),"ID\tНазвание\tАббревиатура"), strcat(lines,line);
     for(new i = 0; i < MAX_DIVISION_ORG; i++)
 	{
         format(line,sizeof(line),"\n{ff9000}%d.\t{cccccc}{%s}%s\t%s", i+1, DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName], DivisionInfo[g][i][divAbbreviation]), strcat(lines,line);
     }
-	ShowDialog(playerid,1315,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РџРѕРґС„СЂР°РєС†РёРё",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
+	ShowDialog(playerid,1315,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Подфракции",lines,"Выбрать","Выход");
     return 1;
 }
 
-// РњРµРЅСЋ РїРѕРґС„СЂР°РєС†РёРё
+// Меню подфракции
 CMD:div(playerid) return cmd_division(playerid);
 CMD:division(playerid)
 {
-	if(PlayerInfo[playerid][pDivision][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РїРѕРґС„СЂР°РєС†РёРё");
-	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(PlayerInfo[playerid][pDivision][0] == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	DP[1][playerid] = fraction(playerid)-1;
 	DP[2][playerid] = PlayerInfo[playerid][pDivision][0]-1;
@@ -73,50 +73,50 @@ CMD:division(playerid)
 }
 stock showDialogMenuDivision(playerid)
 {
-	new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-	new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
-	DP[3][playerid] = 0; // РЎР±СЂР°СЃС‹РІР°РµРј РґРѕСЃС‚СѓРї Рє СѓРїСЂР°РІР»РµРЅРёСЋ
+	new g = DP[1][playerid]; // Получаем id организации
+	new i = DP[2][playerid]; // Получаем id подфракции
+	DP[3][playerid] = 0; // Сбрасываем доступ к управлению
 
 	new line[120],lines[1680];
-	format(line,sizeof(line),"{cccccc}РРЅС„РѕСЂРјР°С†РёСЏ\t"), strcat(lines,line);
-	format(line,sizeof(line),"\n{555555}РЈС‡Р°СЃС‚РЅРёРєРё {99ff66}Online\t"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Информация\t"), strcat(lines,line);
+	format(line,sizeof(line),"\n{555555}Участники {99ff66}Online\t"), strcat(lines,line);
 
-	// РќР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё РґР»СЏ Р»РёРґРµСЂРѕРІ, Р·Р°РјРѕРІ Рё РіР»Р°РІ РїРѕРґС„СЂР°РєС†РёРё
+	// Настройки подфракции для лидеров, замов и глав подфракции
 	if(PlayerInfo[playerid][pLeader] > 0 
 	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g+1)-1
 	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pRank] >= DivisionInfo[g][i][divRanks])
 	{
-		DP[3][playerid] = 1; // Р”Р°С‘Рј РґРѕСЃС‚СѓРї Рє СѓРїСЂР°РІР»РµРЅРёСЋ РїРѕРґС„СЂР°РєС†РёРµР№
+		DP[3][playerid] = 1; // Даём доступ к управлению подфракцией
 
-		format(line,sizeof(line),"\n{555555}РЈС‡Р°СЃС‚РЅРёРєРё {FF6347}Offline\t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{555555}РџСЂРёРіР»Р°СЃРёС‚СЊ\t"), strcat(lines,line);
-		format(line,sizeof(line),"\n{555555}РСЃРєР»СЋС‡РёС‚СЊ\t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{555555}Участники {FF6347}Offline\t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{555555}Пригласить\t"), strcat(lines,line);
+		format(line,sizeof(line),"\n{555555}Исключить\t"), strcat(lines,line);
 
-		format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}РђР±Р±СЂРµРІРёР°С‚СѓСЂР°: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divAbbreviation]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ: \t{555555}%d", DivisionInfo[g][i][divRanks]), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ {%s}>>\t", DivisionInfo[g][i][divColorHex]), strcat(lines,line);
-		if(DivisionInfo[g][i][divSpawnPos][0] == 0.0) format(line,sizeof(line),"\n{cccccc}РЎРїР°РІРЅ \t{FF6347}[РќРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ]"), strcat(lines,line);
-		else format(line,sizeof(line),"\n{cccccc}РЎРїР°РІРЅ \t{99ff66}[РЈСЃС‚Р°РЅРѕРІР»РµРЅ]"), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Р¦РІРµС‚: \t{%s}||||||||||", DivisionInfo[g][i][divColorHex]), strcat(lines,line);
-		//format(line,sizeof(line),"\n{cccccc}1 Р¦РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][0]], DivisionInfo[g][i][divColorVeh][0]), strcat(lines,line);
-		//format(line,sizeof(line),"\n{cccccc}2 Р¦РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][1]], DivisionInfo[g][i][divColorVeh][1]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Название: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Аббревиатура: \t{%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divAbbreviation]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Количество рангов: \t{555555}%d", DivisionInfo[g][i][divRanks]), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Названия рангов {%s}>>\t", DivisionInfo[g][i][divColorHex]), strcat(lines,line);
+		if(DivisionInfo[g][i][divSpawnPos][0] == 0.0) format(line,sizeof(line),"\n{cccccc}Спавн \t{FF6347}[Не установлен]"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{cccccc}Спавн \t{99ff66}[Установлен]"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Цвет: \t{%s}||||||||||", DivisionInfo[g][i][divColorHex]), strcat(lines,line);
+		//format(line,sizeof(line),"\n{cccccc}1 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][0]], DivisionInfo[g][i][divColorVeh][0]), strcat(lines,line);
+		//format(line,sizeof(line),"\n{cccccc}2 Цвет транспорта \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[DivisionInfo[g][i][divColorVeh][1]], DivisionInfo[g][i][divColorVeh][1]), strcat(lines,line);
 		
-		if(PlayerInfo[playerid][pDivision][0] != i+1) format(line,sizeof(line),"\n{99ff66}Р’РѕР№С‚Рё РІ РїРѕРґС„СЂР°РєС†РёСЋ >> \t"), strcat(lines,line);
-		else format(line,sizeof(line),"\n{FF6347}РџРѕРєРёРЅСѓС‚СЊ РїРѕРґС„СЂР°РєС†РёСЋ >> \t"), strcat(lines,line);
+		if(PlayerInfo[playerid][pDivision][0] != i+1) format(line,sizeof(line),"\n{99ff66}Войти в подфракцию >> \t"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{FF6347}Покинуть подфракцию >> \t"), strcat(lines,line);
 	}
 
 	new header[80];
-    format(header,sizeof(header),"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ {%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-	ShowDialog(playerid,1316,DIALOG_STYLE_TABLIST,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
+    format(header,sizeof(header),"{ff9000}Подфракция {%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+	ShowDialog(playerid,1316,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Выход");
 	return 1;
 }
 
-// РЎРїРёСЃРѕРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ РїРѕРґС„СЂР°РєС†РёРё
+// Список участников подфракции
 CMD:dmembers(playerid, const params[]) return cmd_divmembers(playerid, params);
 CMD:divmembers(playerid, const params[])
 {
-	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	new i;
 	if(!sscanf(params, "i", params[0]))
@@ -125,14 +125,14 @@ CMD:divmembers(playerid, const params[])
 		i = params[0];
 	}
 	else i = PlayerInfo[playerid][pDivision][0];
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! ID РїРѕРґС„СЂР°РєС†РёРё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ 0");
+	if(i == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! ID подфракции не может быть 0");
     showDialogMembersDivision(playerid, fraction(playerid), i);
 	return 1;
 }
 stock showDialogMembersDivision(playerid, org, div)
 {
 	new line[214],lines[4096];
-	format(line,sizeof(line),"{cccccc}РРјСЏ\t{cccccc}Р Р°РЅРі\t{444444}AFK"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}AFK"), strcat(lines,line);
 
 	new atext[10], btext[10], quan, rank, fineTime[24];
 	new year, month, day;
@@ -145,18 +145,18 @@ stock showDialogMembersDivision(playerid, org, div)
 		{
 			rank = PlayerInfo[i][pRank];
 
-			// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂР°С†РёРё (Р’РєР»СЋС‡РµРЅР° РёР»Рё РЅРµС‚)
+			// Получаем информацию о рации (Включена или нет)
 			if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";
 			else atext = "{00ff66}*";
 
-			// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РіР»Р°РІРµ РїРѕРґС„СЂР°РєС†РёРё
+			// Получаем информацию о главе подфракции
 			if(PlayerInfo[i][pFbi] == 0)
 			{
 				if(rank >= DivisionInfo[org-1][div-1][divRanks]) format(btext,sizeof(btext),"%s", DivisionInfo[org-1][div-1][divColorHex]);
 				else btext = "cccccc";
 			}
 
-			// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј
+			// Получаем информацию о FBI под прикрытием
 			if(org == 2)
 			{
 				if(PlayerInfo[i][pFbi] > 0)
@@ -166,7 +166,7 @@ stock showDialogMembersDivision(playerid, org, div)
 				}
 			}
 
-			// Р—Р°РїРёСЃС‹РІР°РµРј РёРЅС„Сѓ РѕР± AFK
+			// Записываем инфу об AFK
 			if(GetPVarInt(i,"afksystem") > 8) format(fineTime,sizeof(fineTime),"%s", fine_time(GetPVarInt(i,"afksystem")));
 			else format(fineTime,sizeof(fineTime),"");
 
@@ -181,17 +181,17 @@ stock showDialogMembersDivision(playerid, org, div)
 	}
 
 	new header[140];
-	format(header,sizeof(header),"{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё {%s}%s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], quan ,day, month, year);
+	format(header,sizeof(header),"{cccccc}Участники {%s}%s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], quan ,day, month, year);
    	ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"*","");
 	return 1;
 }
 stock divmembersoff(playerid)
 {
 	if(AntiFloodMysqlRequest(playerid, 10)) return 1;
-	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё РџРѕРґС„СЂР°РєС†РёРё {ff0000}Offline","{cccccc}РџРѕРёСЃРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ...","*","");
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции {ff0000}Offline","{cccccc}Поиск участников...","*","");
 
-	new org = DP[1][playerid] + 1; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-	new div = DP[2][playerid] + 1; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+	new org = DP[1][playerid] + 1; // Получаем id организации
+	new div = DP[2][playerid] + 1; // Получаем id подфракции
 
 	DP[4][playerid] = 0;
 	DP[5][playerid] = 0;
@@ -211,7 +211,7 @@ function call_membersdiv(playerid, org, div)
 
 	new playerLoad[6], playerName[24], rank, offTime[24], signName[24], btext[9];
 	new line[214],lines[4096];
-	format(line,sizeof(line),"{cccccc}РРјСЏ\t{cccccc}Р Р°РЅРі\t{444444}РџРѕСЃР»РµРґРЅСЏСЏ РђРєС‚РёРІРЅРѕСЃС‚СЊ"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Ранг\t{444444}Последняя Активность"), strcat(lines,line);
 	
 	for(new i = 0; i < rows; i++)
 	{
@@ -225,14 +225,14 @@ function call_membersdiv(playerid, org, div)
 
 		rank = playerLoad[0];
 
-		// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РіР»Р°РІРµ РїРѕРґС„СЂР°РєС†РёРё
+		// Получаем информацию о главе подфракции
 		if(playerLoad[1] == 0)
 		{
 			if(playerLoad[0] >= DivisionInfo[org-1][div-1][divRanks]) format(btext,sizeof(btext),"%s", DivisionInfo[org-1][div-1][divColorHex]);
 			else btext = "cccccc";
 		}
 
-		// РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј
+		// Получаем информацию о FBI под прикрытием
 		if(org == 2)
 		{
 			if(playerLoad[1] > 0)
@@ -256,46 +256,46 @@ function call_membersdiv(playerid, org, div)
 	{
 		new header[140];
 		DP[5][playerid] ++;
-		format(header,sizeof(header),"{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё {%s}%s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] РЎС‚СЂР°РЅРёС†Р° %d", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], rows , day, month, year, DP[5][playerid]);
+		format(header,sizeof(header),"{cccccc}Участники {%s}%s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", DivisionInfo[org-1][div-1][divColorHex], DivisionInfo[org-1][div-1][divName], rows , day, month, year, DP[5][playerid]);
 
-		if(rows >= 40) ShowDialog(playerid,1330,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р”Р°Р»РµРµ","");
+		if(rows >= 40) ShowDialog(playerid,1330,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Далее","");
 		else ShowDialog(playerid,1326,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"*","");
 	}
-    else if(rows == 0) ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё РџРѕРґС„СЂР°РєС†РёРё","{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё Offline РІ РїРѕРґС„СЂР°РєС†РёРё РЅРµ РЅР°Р№РґРµРЅС‹","*","");
+    else if(rows == 0) ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции","{cccccc}Участники Offline в подфракции не найдены","*","");
 	return 1;
 }
 
 CMD:divin(playerid, const params[]) return cmd_divinvite(playerid, params);
 CMD:divinvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµ РїСЂРёРІСЏР·Р°РЅ Google Authenticator [ Y >> РњРµРЅСЋ >> РђРєРєР°СѓРЅС‚ ]");
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
 
 	new g = fraction(playerid);
 	new i = PlayerInfo[playerid][pDivision][0];
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РїРѕРґС„СЂР°РєС†РёРё");
-	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Р”РѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РіР»Р°РІС‹ РїРѕРґС„СЂР°РєС†РёРё");
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(i == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid;
-	if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРіР»Р°СЃРёС‚СЊ РёРіСЂРѕРєР° РІ РїРѕРґС„СЂР°РєС†РёСЋ [ /divinvite ID ]");
+	if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить игрока в подфракцию [ /divinvite ID ]");
 
 	giveplayerid = ReturnUser(playerName);
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РЅР° СЃРµСЂРІРµСЂРµ");
-	if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Р’С‹ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РёРіСЂРѕРєР°");
-	if(PlayerInfo[giveplayerid][pDivision][0] > 0) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє СѓР¶Рµ РЅР°С…РѕРґРёС‚СЃСЏ РІ РїРѕРґС„СЂР°РєС†РёРё");
-	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
+	if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
+	if(PlayerInfo[giveplayerid][pDivision][0] > 0) return ErrorMessage(playerid, "{FF6347}Игрок уже находится в подфракции");
+	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 
 	new string[120];
-	// Р—Р°РїРёСЃС‹РІР°РµРј С‡РµР»Р°, РєРѕС‚РѕСЂРѕРіРѕ РїСЂРёРіР»Р°С€Р°РµРј
-	format(string, sizeof(string), "* Р’С‹ РѕС‚РїСЂР°РІРёР»Рё РїСЂРёРіР»Р°С€РµРЅРёРµ %s РЅР° РІСЃС‚СѓРїР»РµРЅРёРµ РІ %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName]);
+	// Записываем чела, которого приглашаем
+	format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 	PlayerPlaySound(playerid,40405,0,0,0);
 
-	// Р—Р°РїРёСЃС‹РІР°РµРј СЌС‚РѕРјСѓ С‡РµР»Сѓ РёРЅС„Сѓ, РєСѓРґР° РїСЂРёРіР»Р°С€Р°РµРј Рё РєС‚Рѕ РїСЂРёРіР»Р°С€Р°РµС‚
+	// Записываем этому челу инфу, куда приглашаем и кто приглашает
 	DP[0][giveplayerid] = i;
 	DP[1][giveplayerid] = playerid;
-	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, РїСЂРёРіР»Р°С€Р°РµС‚ РІР°СЃ РІ %s\n\n{33CCFF}Р’С‹ СЃРѕРіР»Р°СЃРЅС‹?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
-	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}РџСЂРёРіР»Р°С€РµРЅРёРµ",string,"Р”Р°","РќРµС‚");
+	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
 	PlayerPlaySound(giveplayerid,40405,0,0,0);
 
 	OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, DivisionInfo[g - 1][i - 1][divName]);
@@ -306,71 +306,71 @@ CMD:divkick(playerid, const params[]) return cmd_divuninvite(playerid, params);
 CMD:divun(playerid, const params[]) return cmd_divuninvite(playerid, params);
 CMD:divuninvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµ РїСЂРёРІСЏР·Р°РЅ Google Authenticator [ Y >> РњРµРЅСЋ >> РђРєРєР°СѓРЅС‚ ]");
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
 
 	new g = fraction(playerid);
 	new i = PlayerInfo[playerid][pDivision][0];
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РїРѕРґС„СЂР°РєС†РёРё");
-	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Р”РѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ РіР»Р°РІС‹ РїРѕРґС„СЂР°РєС†РёРё");
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(i == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid, reason[24];
-	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РСЃРєР»СЋС‡РёС‚СЊ СѓС‡Р°СЃС‚РЅРёРєР° РёР· РїРѕРґС„СЂР°РєС†РёРё [ /divuninvite ID РџСЂРёС‡РёРЅР° ]");
+	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID Причина ]");
 
-	if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РРјСЏ РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 24 СЃРёРјРІРѕР»РѕРІ");
-	if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РџСЂРёС‡РёРЅР° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 24 СЃРёРјРІРѕР»РѕРІ");
-	if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»\n{cccccc}РСЃРїРѕР»СЊР·СѓР№С‚Рµ, Р±СѓРєРІС‹ Рё С†РёС„СЂС‹");
+	if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ Мысли ]: Имя не меньше 1 и не больше 24 символов");
+	if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ Мысли ]: Причина не меньше 1 и не больше 24 символов");
+	if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
 
 	giveplayerid = ReturnUser(playerName);
 	if(IsPlayerConnected(giveplayerid))
  	{
-		if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ");
-		if(PlayerInfo[giveplayerid][pDivision][0] != i && PlayerInfo[giveplayerid][pDivision][1] != i) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РїРѕРґС„СЂР°РєС†РёРё");
+		if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
+		if(PlayerInfo[giveplayerid][pDivision][0] != i && PlayerInfo[giveplayerid][pDivision][1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");
 		if(g == 2)
 		{
-			if(fraction(giveplayerid) != 2 && PlayerInfo[giveplayerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+			if(fraction(giveplayerid) != 2 && PlayerInfo[giveplayerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 		else 
 		{
-			if(fraction(giveplayerid) != g) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+			if(fraction(giveplayerid) != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 
 		new string[120];
-		PlayerPlaySound(playerid, 6801, 0, 0, 0); // РћС‚РєР°Р·
-		format(string, sizeof(string), "* Р’С‹ РёСЃРєР»СЋС‡РёР»Рё %s РёР· %s РїРѕ РїСЂРёС‡РёРЅРµ: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName], reason);
+		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
+		format(string, sizeof(string), "* Вы исключили %s из %s по причине: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName], reason);
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
-		PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // РћС‚РєР°Р·
-		format(string, sizeof(string), "* %s РёСЃРєР»СЋС‡Р°РµС‚ РІР°СЃ РёР· %s РїРѕ РїСЂРёС‡РёРЅРµ: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName], reason);
+		PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
+		format(string, sizeof(string), "* %s исключает вас из %s по причине: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName], reason);
 		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 
-		// РСЃРєР»СЋС‡Р°РµРј
+		// Исключаем
 		uninviteDivision(giveplayerid, g);
 
 		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, reason);
 	}
 	else
 	{
-		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё [ РСЃРїРѕР»СЊР·СѓР№С‚Рµ РЅРёРєРЅРµР№Рј, С‡С‚РѕР±С‹ СѓРІРѕР»РёС‚СЊ Offline ]");
+		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
 
 		new string_mysql[160];
-		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}РџРѕРёСЃРє РёРіСЂРѕРєР°...","*","");
+		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
 		format(string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
 		mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
 	}
 	return 1;
 }
-function call_divuninvite(playerid, g, i, const str_name[], const reason[], race_check) // Offline РёСЃРєР»СЋС‡РµРЅРёРµ РёР· РїРѕРґС„СЂР°РєС†РёРё
+function call_divuninvite(playerid, g, i, const str_name[], const reason[], race_check) // Offline исключение из подфракции
 {
-	if(!IsOnline(playerid)) return 0; // Р•СЃР»Рё С‚РѕС‚, РєС‚Рѕ РїРѕСЃС‹Р»Р°Р» Р·Р°РїСЂРѕСЃ РІС‹С€РµР» РёР· РёРіСЂС‹
+	if(!IsOnline(playerid)) return 0; // Если тот, кто посылал запрос вышел из игры
 
 	new rows;
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid); // Р—Р°С‰РёС‚Р° РѕС‚ СЃСѓРїРµСЂРјРµРґР»РµРЅРЅРѕРіРѕ РѕС‚РІРµС‚Р°
+		if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid); // Защита от супермедленного ответа
 
-		// Р“СЂСѓР·РёРј РЅРµРѕР±С…РѕРґРёРјСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёРіСЂРѕРєРµ
+		// Грузим необходимую информацию об игроке
 		new playerLoad[6];
 		cache_get_value_name_int(0, "Division0", playerLoad[0]);
 		cache_get_value_name_int(0, "Division1", playerLoad[1]);
@@ -379,45 +379,45 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		cache_get_value_name_int(0, "Fbi", playerLoad[4]);
 		cache_get_value_name_int(0, "user_id", playerLoad[5]);
 
-		if(playerLoad[0] != i && playerLoad[1] != i) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РїРѕРґС„СЂР°РєС†РёРё");
+		if(playerLoad[0] != i && playerLoad[1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");
 		if(g == 2)
 		{
-			if(playerLoad[2] != 2 && playerLoad[3] != 2 && playerLoad[4] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+			if(playerLoad[2] != 2 && playerLoad[3] != 2 && playerLoad[4] == 0) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 		else
 		{
-			if(playerLoad[2] != g && playerLoad[3] != g) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ СЃРѕСЃС‚РѕРёС‚ РІ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+			if(playerLoad[2] != g && playerLoad[3] != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		}
 
 		new whichDiv, outOrg;
 		if(playerLoad[3] > 0) outOrg = playerLoad[3];
 		else outOrg = playerLoad[2];
-		uninviteDivisionKey(outOrg, playerLoad[4], whichDiv); // РС‰РµРј, РєР°РєСѓСЋ РїРѕРґС„СЂР°РєС†РёСЋ Р±СѓРґРµРј РѕС‡РёС‰Р°С‚СЊ
-		mysql_SaveDivision(playerLoad[5], whichDiv, 0); // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ
+		uninviteDivisionKey(outOrg, playerLoad[4], whichDiv); // Ищем, какую подфракцию будем очищать
+		mysql_SaveDivision(playerLoad[5], whichDiv, 0); // Сохраняем в базу
 
-		PlayerPlaySound(playerid, 6801, 0, 0, 0); // РћС‚РєР°Р·
-		SendClientMessagef(playerid, COLOR_LIGHTBLUE, "* Р’С‹ РёСЃРєР»СЋС‡РёР»Рё %s РёР· %s РїРѕ РїСЂРёС‡РёРЅРµ: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
+		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы исключили %s из %s по причине: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
 
 		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], playerLoad[5], str_name, "", i, reason);
 	}
-	else ErrorMessage(playerid, "{FF6347}РђРєРєР°СѓРЅС‚ РЅРµ РЅР°Р№РґРµРЅ");
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
-stock uninviteDivision(playerid, outOrg) // РСЃРєР»СЋС‡Р°РµРј РёР· РїРѕРґС„СЂР°РєС†РёРё Online
+stock uninviteDivision(playerid, outOrg) // Исключаем из подфракции Online
 {
 	new whichDiv;
-	uninviteDivisionKey(outOrg, PlayerInfo[playerid][pFbi], whichDiv); // РС‰РµРј, РєР°РєСѓСЋ РїРѕРґС„СЂР°РєС†РёСЋ Р±СѓРґРµРј РѕС‡РёС‰Р°С‚СЊ
-	PlayerInfo[playerid][pDivision][whichDiv] = 0; // РћС‡РёС‰Р°РµРј
-	mysql_SaveDivision(PlayerInfo[playerid][pID], whichDiv, 0); // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ
+	uninviteDivisionKey(outOrg, PlayerInfo[playerid][pFbi], whichDiv); // Ищем, какую подфракцию будем очищать
+	PlayerInfo[playerid][pDivision][whichDiv] = 0; // Очищаем
+	mysql_SaveDivision(PlayerInfo[playerid][pID], whichDiv, 0); // Сохраняем в базу
 
 	new getOrg, getDiv, getReadRac;
-	resetTransmitterDivisionKey(PlayerInfo[playerid][pDivision][0], fraction(playerid), getOrg, getDiv, getReadRac); // РС‰РµРј, РєР°РєСѓСЋ СЂР°С†РёСЋ РЅСѓР¶РЅРѕ РІС‹РєР»СЋС‡Р°С‚СЊ
-	racDivisionSetting(playerid, getOrg, getDiv, getReadRac); // РџРµСЂРµРєР»СЋС‡Р°РµРј
+	resetTransmitterDivisionKey(PlayerInfo[playerid][pDivision][0], fraction(playerid), getOrg, getDiv, getReadRac); // Ищем, какую рацию нужно выключать
+	racDivisionSetting(playerid, getOrg, getDiv, getReadRac); // Переключаем
 	return 1;
 }
-stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // РџРѕР»СѓС‡Р°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёСЃРєР»СЋС‡РµРЅРёРё РёР· РїРѕРґС„СЂР°РєС†РёРё
+stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // Получаем информацию об исключении из подфракции
 {
-	if(outOrg == 2 && fbi > 0) whichDiv = 1; // Р•СЃР»Рё С‡РµР» РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµ Рё СѓРІРѕР»СЊРЅСЏСЋС‚ РёР· FBI
+	if(outOrg == 2 && fbi > 0) whichDiv = 1; // Если чел под прикрытие и увольняют из FBI
 	else whichDiv = 0;
 	return 1;
 }
@@ -434,33 +434,33 @@ CMD:divleave(playerid)
 {
 	new g = fraction(playerid);
 	new i = PlayerInfo[playerid][pDivision][0] - 1;
-	if(PlayerInfo[playerid][pDivision][0] == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РїРѕРґС„СЂР°РєС†РёРё");
+	if(PlayerInfo[playerid][pDivision][0] == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
 	g -= 1;
 
    	PlayerPlaySound(playerid,40405,0,0,0);
-   	DP[5][playerid] = 0; // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‡РµС‚С‡РёРє СѓС‚РѕС‡РЅРµРЅРёР№
+   	DP[5][playerid] = 0; // Сбрасываем счетчик уточнений
 
 	new string[140];
-   	format(string, sizeof(string), "{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РїРѕРєРёРЅСѓС‚СЊ {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-	ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"Р”Р°","РќРµС‚");
+   	format(string, sizeof(string), "{cccccc}Вы уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+	ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 	return 1;
 }
 
-stock showDialogSettingDivisionRank(playerid) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РЅР°Р·РІР°РЅРёР№ СЂР°РЅРіРѕРІ РІ РїРѕРґС„СЂР°РєС†РёРё
+stock showDialogSettingDivisionRank(playerid) // Меню настройки названий рангов в подфракции
 {
-	new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-	new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+	new g = DP[1][playerid]; // Получаем id организации
+	new i = DP[2][playerid]; // Получаем id подфракции
 
-	if(DivisionInfo[g][i][divRanks] <= 0) return ErrorText(playerid, "{cccccc}[ РњС‹СЃР»Рё ]: РњРЅРµ РЅСѓР¶РЅРѕ СѓРєР°Р·Р°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ, РїСЂРµР¶РґРµ С‡РµРј СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РЅР°Р·РІР°РЅРёСЏ"), showDialogMenuDivision(playerid);
+	if(DivisionInfo[g][i][divRanks] <= 0) return ErrorText(playerid, "{cccccc}[ Мысли ]: Мне нужно указать количество рангов, прежде чем редактировать названия"), showDialogMenuDivision(playerid);
 
 	new line[130],lines[4096];
-    format(line,sizeof(line),"РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ"), strcat(lines,line);
+    format(line,sizeof(line),"Названия рангов"), strcat(lines,line);
     for(new r = 0; r < DivisionInfo[g][i][divRanks]; r++)
 	{
-		if(r == DivisionInfo[g][i][divRanks]-1) format(line,sizeof(line),"\n{ff9000}%d. %s", r+1, DivisionRankName[g][i][r]), strcat(lines,line); // Р Р°РЅРі СЂСѓРєРѕРІРѕРґРёС‚РµР»СЏ РїРѕРґС„СЂР°РєС†РёРё
-		else format(line,sizeof(line),"\n{ff9000}%d. {cccccc}%s", r+1, DivisionRankName[g][i][r]), strcat(lines,line); // РџСЂРѕС‡РёРµ СЂР°РЅРіРё
+		if(r == DivisionInfo[g][i][divRanks]-1) format(line,sizeof(line),"\n{ff9000}%d. %s", r+1, DivisionRankName[g][i][r]), strcat(lines,line); // Ранг руководителя подфракции
+		else format(line,sizeof(line),"\n{ff9000}%d. {cccccc}%s", r+1, DivisionRankName[g][i][r]), strcat(lines,line); // Прочие ранги
 	}
-	ShowDialog(playerid,1320,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
+	ShowDialog(playerid,1320,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Подфракция",lines,"Выбрать","Выход");
 	return 1;
 }
 
@@ -468,37 +468,37 @@ stock showDialogInfoDivision(playerid)
 {
 	new line[50],lines[350];
 
-	format(line,sizeof(line),"РљРѕРјР°РЅРґС‹:"), strcat(lines,line);
-	format(line,sizeof(line),"\n/div - РјРµРЅСЋ РїРѕРґС„СЂР°РєС†РёРё"), strcat(lines,line);
-	format(line,sizeof(line),"\n/dmembers - СѓС‡Р°СЃС‚РЅРёРєРё online"), strcat(lines,line);
-	format(line,sizeof(line),"\n/dleave - РїРѕРєРёРЅСѓС‚СЊ РїРѕРґС„СЂР°РєС†РёСЋ"), strcat(lines,line);
-	format(line,sizeof(line),"\n/divin - РїСЂРёРіР»Р°СЃРёС‚СЊ"), strcat(lines,line);
-	format(line,sizeof(line),"\n/divun - РёСЃРєР»СЋС‡РёС‚СЊ"), strcat(lines,line);
-	format(line,sizeof(line),"\n/i /ib - РєР°РЅР°Р» СЂР°С†РёРё"), strcat(lines,line);
-	ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",lines,"*","");
+	format(line,sizeof(line),"Команды:"), strcat(lines,line);
+	format(line,sizeof(line),"\n/div - меню подфракции"), strcat(lines,line);
+	format(line,sizeof(line),"\n/dmembers - участники online"), strcat(lines,line);
+	format(line,sizeof(line),"\n/dleave - покинуть подфракцию"), strcat(lines,line);
+	format(line,sizeof(line),"\n/divin - пригласить"), strcat(lines,line);
+	format(line,sizeof(line),"\n/divun - исключить"), strcat(lines,line);
+	format(line,sizeof(line),"\n/i /ib - канал рации"), strcat(lines,line);
+	ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",lines,"*","");
 	return 1;
 }
 
 stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtext[])
 {
-	if(dialogid == 1315) // РњРµРЅСЋ СЃРїРёСЃРєР° РїРѕРґС„СЂР°РєС†РёР№
+	if(dialogid == 1315) // Меню списка подфракций
 	{
 		if(response)
 		{
 			if(listitem < 0 || listitem >= MAX_DIVISION_ORG) return 0;
-			DP[2][playerid] = listitem; // РЎРѕС…СЂР°РЅСЏРµРј id РІС‹Р±СЂР°РЅРЅРѕР№ РїРѕРґС„СЂР°РєС†РёРё
+			DP[2][playerid] = listitem; // Сохраняем id выбранной подфракции
 
 			DP[6][playerid] = -228;
 			showDialogMenuDivision(playerid);
 		}
 		else showDialogOrganizationMenu(playerid);
 	}
-	if(dialogid == 1316) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
+	if(dialogid == 1316) // Меню настройки подфракции
 	{
 		if(response)
 		{
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
 			if(listitem == 0) return showDialogInfoDivision(playerid);
 
@@ -511,68 +511,68 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(listitem == 2) divmembersoff(playerid);
 			if(listitem == 3)
 			{
-				ShowDialog(playerid,1328,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’РІРµРґРёС‚Рµ {ff9000}id РёР»Рё РќРёРєРЅРµР№Рј {cccccc}РёРіСЂРѕРєР°, С‡С‚РѕР±С‹ {99ff66}РїСЂРёРіР»Р°СЃРёС‚СЊ {cccccc}РµРіРѕ РІ РїРѕРґС„СЂР°РєС†РёСЋ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				ShowDialog(playerid,1328,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите {ff9000}id или Никнейм {cccccc}игрока, чтобы {99ff66}пригласить {cccccc}его в подфракцию","Принять","Отмена");
 			}
 			if(listitem == 4)
 			{
-				ShowDialog(playerid,1329,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’РІРµРґРёС‚Рµ {ff9000}id РёР»Рё РќРёРєРЅРµР№Рј {cccccc}РёРіСЂРѕРєР°, С‡С‚РѕР±С‹ {FF6347}РёСЃРєР»СЋС‡РёС‚СЊ {cccccc}РµРіРѕ РёР· РїРѕРґС„СЂР°РєС†РёРё","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				ShowDialog(playerid,1329,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите {ff9000}id или Никнейм {cccccc}игрока, чтобы {FF6347}исключить {cccccc}его из подфракции","Принять","Отмена");
 			}
 
 			if(listitem >= 5)
 			{
-				if(DP[3][playerid] == 0) return 0; // Р‘Р»РѕРєРёСЂСѓРµРј РґСЂСѓРіРёРµ Р»РёСЃС‚С‹, РµСЃР»Рё РЅРµС‚ РґРѕСЃС‚СѓРїР° (РЅРµ РѕС‚СЂРёСЃРѕРІР°РЅРЅС‹Р№ listitem РјРѕРіСѓС‚ РІС‹Р·РІР°С‚СЊ РІРЅРµС€РЅРёРјРё СЃРєСЂРёРїС‚Р°РјРё)
+				if(DP[3][playerid] == 0) return 0; // Блокируем другие листы, если нет доступа (не отрисованный listitem могут вызвать внешними скриптами)
 			}
-			if(listitem == 5) // РќР°Р·РІР°РЅРёРµ
+			if(listitem == 5) // Название
 			{
-				format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РїРѕРґС„СЂР°РєС†РёРё [1 - %d СЃРёРјРІРѕР»РѕРІ]", MAX_NAME_LENGTH-1);
-				ShowDialog(playerid,1317,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				format(string,sizeof(string),"{cccccc}Введите название подфракции [1 - %d символов]", MAX_NAME_LENGTH-1);
+				ShowDialog(playerid,1317,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
-			if(listitem == 6) // РђР±СЂРµРІРІРёР°С‚СѓСЂР°
+			if(listitem == 6) // Абреввиатура
 			{
-				format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ Р°Р±Р±СЂРµРІРёР°С‚СѓСЂСѓ РїРѕРґС„СЂР°РєС†РёРё [1 - %d СЃРёРјРІРѕР»РѕРІ]\n\n{555555}РћРЅР° Р±СѓРґРµС‚ РѕС‚РѕР±СЂР°Р¶Р°С‚СЊСЃСЏ РІ /r, /d, /i С‡Р°С‚Р°С…. РџСЂРёРјРµСЂ: [ABC]", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1);
-				ShowDialog(playerid,1318,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				format(string,sizeof(string),"{cccccc}Введите аббревиатуру подфракции [1 - %d символов]\n\n{555555}Она будет отображаться в /r, /d, /i чатах. Пример: [ABC]", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1);
+				ShowDialog(playerid,1318,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
-			if(listitem == 7) // РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
+			if(listitem == 7) // Количество рангов
 			{
-				format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ РІ РїРѕРґС„СЂР°РєС†РёРё [2 - %d СЂР°РЅРіРѕРІ]\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°РЅРі Р±СѓРґРµС‚ СЏРІР»СЏС‚СЊСЃСЏ РіР»Р°РІРѕР№ РїРѕРґС„СЂР°РєС†РёРё", get_maxrank(g+1));
-				ShowDialog(playerid,1319,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				format(string,sizeof(string),"{cccccc}Введите количество рангов в подфракции [2 - %d рангов]\n\n{FF6347}Внимание! Максимальный ранг будет являться главой подфракции", get_maxrank(g+1));
+				ShowDialog(playerid,1319,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 			}
-			if(listitem == 8) showDialogSettingDivisionRank(playerid); // РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
-			if(listitem == 9) // РЎРїР°РІРЅ
+			if(listitem == 8) showDialogSettingDivisionRank(playerid); // Названия рангов
+			if(listitem == 9) // Спавн
 			{
-				ShowDialog(playerid,1322,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ {ff9000}СЌС‚Сѓ РїРѕР·РёС†РёСЋ {cccccc}РІ РєР°С‡РµСЃС‚РІРµ СЃРїР°РІРЅР° СѓС‡Р°СЃС‚РЅРёРєРѕРІ РїРѕРґС„СЂР°РєС†РёРё?\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РЈС‡РёС‚С‹РІР°Р№С‚Рµ, РІ РєР°РєСѓСЋ СЃС‚РѕСЂРѕРЅСѓ РїРѕРІС‘СЂРЅСѓС‚ РІР°С€ РїРµСЂСЃРѕРЅР°Р¶ Р»РёС†РѕРј, РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚","Р”Р°","РќРµС‚");
+				ShowDialog(playerid,1322,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция","{cccccc}Вы уверены, что хотите установить {ff9000}эту позицию {cccccc}в качестве спавна участников подфракции?\n\n{FF6347}Внимание! Учитывайте, в какую сторону повёрнут ваш персонаж лицом, в данный момент","Да","Нет");
 			}
-			if(listitem == 10) // Р¦РІРµС‚
+			if(listitem == 10) // Цвет
 			{
-				ShowDialog(playerid,1323,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’РІРµРґРёС‚Рµ Hex РєРѕРґ С†РІРµС‚Р° РїРѕРґС„СЂР°РєС†РёРё [6 РЎРёРјРІРѕР»РѕРІ]\nРџСЂРёРјРµСЂ: ff9000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				ShowDialog(playerid,1323,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите Hex код цвета подфракции [6 Символов]\nПример: ff9000","Принять","Отмена");
 			}
-			/*if(listitem == 11) // Р¦РІРµС‚ РўСЂР°РЅСЃРїРѕСЂС‚Р° 1
+			/*if(listitem == 11) // Цвет Транспорта 1
 			{
-				DP[4][playerid] = 0; // СЃР»РѕС‚ С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°
-				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’РІРµРґРёС‚Рµ id С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р° [0 - 255]\n\nРџРѕСЃРјРѕС‚СЂРµС‚СЊ, РєР°Рє РІС‹РіР»СЏРґСЏС‚ С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°, РјРѕР¶РЅРѕ РЅР° С„РѕСЂСѓРјРµ СЃРµСЂРІРµСЂР° pears-project.com","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				DP[4][playerid] = 0; // слот цвета транспорта
+				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
 			}
-			if(listitem == 12) // Р¦РІРµС‚ РўСЂР°РЅСЃРїРѕСЂС‚Р° 2
+			if(listitem == 12) // Цвет Транспорта 2
 			{
-				DP[4][playerid] = 1; // СЃР»РѕС‚ С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°
-				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ","{cccccc}Р’РІРµРґРёС‚Рµ id С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р° [0 - 255]\n\nРџРѕСЃРјРѕС‚СЂРµС‚СЊ, РєР°Рє РІС‹РіР»СЏРґСЏС‚ С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°, РјРѕР¶РЅРѕ РЅР° С„РѕСЂСѓРјРµ СЃРµСЂРІРµСЂР° pears-project.com","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+				DP[4][playerid] = 1; // слот цвета транспорта
+				ShowDialog(playerid,1324,DIALOG_STYLE_INPUT,"{ff9000}Подфракция","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
 			}*/
-			if(listitem == 11) // Р’РѕР№С‚Рё РІ РїРѕРґС„СЂР°РєС†РёСЋ
+			if(listitem == 11) // Войти в подфракцию
 			{
 				if(PlayerInfo[playerid][pDivision][0] == i + 1) return cmd_divleave(playerid);
 
 				PlayerInfo[playerid][pDivision][0] = i + 1;
-				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ
+				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
 
-				// Р’РєР»СЋС‡Р°РµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ СЂР°С†РёРё /i
+				// Включаем отображение рации /i
 				if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;
 
-				// Р’РєР»СЋС‡Р°РµРј СЂР°С†РёСЋ РІ РґРѕСЃС‚СѓРї
+				// Включаем рацию в доступ
 				racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
 
-				format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РўРµРїРµСЂСЊ СЏ РЅР°С…РѕР¶СѓСЃСЊ РІ РїРѕРґС„СЂР°РєС†РёРё %s {ff9000}[ /div ]", DivisionInfo[g][i][divName]);
+				format(string, sizeof(string), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g][i][divName]);
 				SendClientMessage(playerid, COLOR_GREY, string);
 
-				showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
+				showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
 			}
 		}
 		else
@@ -580,150 +580,150 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(PlayerInfo[playerid][pLeader] > 0 && DP[6][playerid] == -228) showDialogAllDivisions(playerid);
 		}
 	}
-	if(dialogid == 1317) // РќР°Р·РІР°РЅРёРµ
+	if(dialogid == 1317) // Название
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
 			new string[100];
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d СЃРёРјРІРѕР»РѕРІ", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
 			format(DivisionInfo[g][i][divName], MAX_NAME_LENGTH, "%s", inputtext);
 
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s РЅР°Р·РІР°РЅРёРµ РїРѕРґС„СЂР°РєС†РёРё: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s название подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s РЅР°Р·РІР°РЅРёРµ РїРѕРґС„СЂР°РєС†РёРё: %s", gender(playerid), inputtext);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название подфракции: %s", gender(playerid), inputtext);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
 			OrgLog(g + 1, "divName", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, inputtext);
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1318) // РђР±Р±СЂРµРІРёР°С‚СѓСЂР°
+	if(dialogid == 1318) // Аббревиатура
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
 
 			new string[100];
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_ABBREVIATION_LENGTH) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d СЃРёРјРІРѕР»РѕРІ", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_DIVISION_ABBREVIATION_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_DIVISION_ABBREVIATION_LENGTH-1), ErrorText(playerid, string), showDialogMenuDivision(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
 			format(DivisionInfo[g][i][divAbbreviation], MAX_NAME_DIVISION_ABBREVIATION_LENGTH, "%s", inputtext);
 
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s Р°Р±Р±СЂРµРІРёР°С‚СѓСЂСѓ РїРѕРґС„СЂР°РєС†РёРё: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s аббревиатуру подфракции: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s Р°Р±Р±СЂРµРІРёР°С‚СѓСЂСѓ РїРѕРґС„СЂР°РєС†РёРё: %s", gender(playerid), inputtext);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s аббревиатуру подфракции: %s", gender(playerid), inputtext);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
 			OrgLog(g + 1, "divAbbr", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, inputtext);
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1319) // РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
+	if(dialogid == 1319) // Количество рангов
 	{
 		if(response)
 		{
 			new input;
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
-			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
+			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
 
 			new string[100];
-			if(input > get_maxrank(g+1) || input < 2) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 2 Рё РЅРµ Р±РѕР»СЊС€Рµ %d СЂР°РЅРіРѕРІ", get_maxrank(g+1)), ErrorText(playerid, string), showDialogMenuDivision(playerid);
+			if(input > get_maxrank(g+1) || input < 2) return format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", get_maxrank(g+1)), ErrorText(playerid, string), showDialogMenuDivision(playerid);
 
-			if(DivisionInfo[g][i][divRanks] == input) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ СѓР¶Рµ СѓРєР°Р·Р°РЅРѕ"), showDialogMenuDivision(playerid);
+			if(DivisionInfo[g][i][divRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divRanks] = input;
 
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ: %d.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), input);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s количество рангов: %d.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), input);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ РІ РїРѕРґС„СЂР°РєС†РёРё: %d", gender(playerid), input);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s количество рангов в подфракции: %d", gender(playerid), input);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
-			format(string,sizeof(string),"%d Р Р°РЅРіРѕРІ", input);
+			format(string,sizeof(string),"%d Рангов", input);
 			OrgLog(g + 1, "divRanks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1320) // РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
+	if(dialogid == 1320) // Названия рангов
 	{
 		if(response)
 		{
 			if(listitem < 0 || listitem >= MAX_RANK_ORG) return 0;
-			DP[3][playerid] = listitem; // РЎРѕС…СЂР°РЅСЏРµРј id РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЂР°РЅРіР°
+			DP[3][playerid] = listitem; // Сохраняем id выбранного ранга
 
 			new string[90];
-			format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ %d СЂР°РЅРіР° [1 - %d СЃРёРјРІРѕР»РѕРІ]", listitem + 1, MAX_NAME_LENGTH-1);
-			ShowDialog(playerid,1321,DIALOG_STYLE_INPUT,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+			format(string,sizeof(string),"{cccccc}Введите название %d ранга [1 - %d символов]", listitem + 1, MAX_NAME_LENGTH-1);
+			ShowDialog(playerid,1321,DIALOG_STYLE_INPUT,"{ff9000}Подфракция",string,"Принять","Отмена");
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1321) // РќР°Р·РІР°РЅРёРµ СЂР°РЅРіРѕРІ
+	if(dialogid == 1321) // Название рангов
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogSettingDivisionRank(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogSettingDivisionRank(playerid);
 
 			new string[100];
-          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d СЃРёРјРІРѕР»РѕРІ", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogSettingDivisionRank(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogSettingDivisionRank(playerid);
+          	if(strlen(inputtext) < 1 || strlen(inputtext) >= MAX_NAME_LENGTH) return format(string,sizeof(string),"[ Мысли ]: Не меньше 1 и не больше %d символов", MAX_NAME_LENGTH-1), ErrorText(playerid, string), showDialogSettingDivisionRank(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogSettingDivisionRank(playerid);
 
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
-			new r = DP[3][playerid]; // РџРѕР»СѓС‡Р°РµРј id СЂР°РЅРіР°
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
+			new r = DP[3][playerid]; // Получаем id ранга
 
 			format(DivisionRankName[g][i][r], MAX_NAME_LENGTH, "%s", inputtext);
 
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s РЅР°Р·РІР°РЅРёРµ %d СЂР°РЅРіР°: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r + 1, inputtext);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s название %d ранга: %s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), r + 1, inputtext);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s РЅР°Р·РІР°РЅРёРµ %d СЂР°РЅРіР°: %s", gender(playerid), r + 1, inputtext);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s название %d ранга: %s", gender(playerid), r + 1, inputtext);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogSettingDivisionRank(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSaveRankName(g, i, r); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogSettingDivisionRank(playerid); // Открываем меню настройки подфракции
+			DivisionSaveRankName(g, i, r); // Сохраняем
 
 			format(string,sizeof(string),"%d. %s", r + 1, inputtext);
 			OrgLog(g + 1, "divRankName", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogSettingDivisionRank(playerid);
 	}
-	if(dialogid == 1322) // РЎРїР°РІРЅ
+	if(dialogid == 1322) // Спавн
 	{
 		if(response)
 		{
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
 			if(IsPlayerInSquare(playerid,-1739.7145, -103.8218,-1694.4082,-27.3040) 
-			|| IsPlayerInSquare(playerid,2401.7756,-2641.1243,2447.0828,-2564.6064)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚Рѕ РјРµСЃС‚Рѕ РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРЅРіР°СЂ РјР°С„РёРё ]"), showDialogMenuDivision(playerid);
+			|| IsPlayerInSquare(playerid,2401.7756,-2641.1243,2447.0828,-2564.6064)) return ErrorText(playerid, "[ Мысли ]: Это место недоступно [ Ангар мафии ]"), showDialogMenuDivision(playerid);
             if((IsPlayerInSquare(playerid,61.6997,1731.2677,426.7695,2141.7856) || IsPlayerInSquare(playerid,-1562.9559,259.8604,-1211.1649,501.0728)) && Protect_Z[playerid] >= -30.0 && Protect_Z[playerid] <= 40.0
 			|| GetPlayerInterior(playerid) == 241 && GetPlayerVirtualWorld(playerid) == 241 
-			|| GetPlayerInterior(playerid) == 242 && GetPlayerVirtualWorld(playerid) == 242) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚Рѕ РјРµСЃС‚Рѕ РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РўРµСЂСЂРёС‚РѕСЂРёСЏ NGSA ]"), showDialogMenuDivision(playerid);
-			if(MPGO[playerid] != 0) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅР° РјРµСЂРѕРїСЂРёСЏС‚РёРё"), showDialogMenuDivision(playerid);
+			|| GetPlayerInterior(playerid) == 242 && GetPlayerVirtualWorld(playerid) == 242) return ErrorText(playerid, "[ Мысли ]: Это место недоступно [ Территория NGSA ]"), showDialogMenuDivision(playerid);
+			if(MPGO[playerid] != 0) return ErrorText(playerid, "[ Мысли ]: Я на мероприятии"), showDialogMenuDivision(playerid);
 			if(IsAGangCapt(playerid))
 			{
-				if(CaptInfo[cCaptStat] == true) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РќРµ РјРѕРіСѓ РёР·РјРµРЅРёС‚СЊ РІРѕ РІСЂРµРјСЏ РєР°РїС‚Р°"), showDialogMenuDivision(playerid);
+				if(CaptInfo[cCaptStat] == true) return ErrorText(playerid, "[ Мысли ]: Не могу изменить во время капта"), showDialogMenuDivision(playerid);
 			}
 
 			GetPlayerPos(playerid, DivisionInfo[g][i][divSpawnPos][0], DivisionInfo[g][i][divSpawnPos][1], DivisionInfo[g][i][divSpawnPos][2]);
@@ -732,78 +732,78 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		    DivisionInfo[g][i][divSpawnWorld] = GetPlayerVirtualWorld(playerid);
 
 			new string[120];
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s СѓСЃС‚Р°РЅРѕРІРёР»%s РЅРѕРІС‹Р№ СЃРїР°РІРЅ.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid));
+			format(string, sizeof(string), "** [%s] Руководитель %s установил%s новый спавн.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid));
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ СѓСЃС‚Р°РЅРѕРІРёР»%s РЅРѕРІС‹Р№ СЃРїР°РІРЅ РґР»СЏ %s", gender(playerid), DivisionInfo[g][i][divName]);
+			format(string, sizeof(string), "[ Мысли ]: Я установил%s новый спавн для %s", gender(playerid), DivisionInfo[g][i][divName]);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
 			OrgLog(g + 1, "divSpawn", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, "");
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1323) // Р¦РІРµС‚ РїРѕРґС„СЂР°РєС†РёРё Hex
+	if(dialogid == 1323) // Цвет подфракции Hex
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) != 6) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РўРѕР»СЊРєРѕ 6 СЃРёРјРІРѕР»РѕРІ"), showDialogMenuDivision(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogMenuDivision(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) != 6) return ErrorText(playerid, "[ Мысли ]: Только 6 символов"), showDialogMenuDivision(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
 
 			format(DivisionInfo[g][i][divColorHex], 7, "%s", inputtext);
 
 			new string[120];
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s С†РІРµС‚ {%s}%s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s цвет {%s}%s.", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), inputtext, DivisionInfo[g][i][divName]);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s С†РІРµС‚ РїРѕРґС„СЂР°РєС†РёРё {%s}%s", gender(playerid), inputtext, DivisionInfo[g][i][divName]);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s цвет подфракции {%s}%s", gender(playerid), inputtext, DivisionInfo[g][i][divName]);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
 			OrgLog(g + 1, "divColorHex", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, inputtext);
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	/*if(dialogid == 1324) // Р¦РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°
+	/*if(dialogid == 1324) // Цвета транспорта
 	{
 		if(response)
 		{
 			new input;
-			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
+			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
 
 			new string[120];
-			if(input > MAX_COLOR_VEHICLE || input < 0) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 0 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_COLOR_VEHICLE), ErrorText(playerid, string), showDialogMenuDivision(playerid);
+			if(input > MAX_COLOR_VEHICLE || input < 0) return format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE), ErrorText(playerid, string), showDialogMenuDivision(playerid);
 
-			new g = DP[1][playerid]; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new i = DP[2][playerid]; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
-			new s = DP[4][playerid]; // РџРѕР»СѓС‡Р°РµРј СЃР»РѕС‚ С†РІРµС‚Р°
+			new g = DP[1][playerid]; // Получаем id организации
+			new i = DP[2][playerid]; // Получаем id подфракции
+			new s = DP[4][playerid]; // Получаем слот цвета
 
-			if(DivisionInfo[g][i][divColorVeh][s] == input) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚РѕС‚ С†РІРµС‚ СѓР¶Рµ СѓРєР°Р·Р°РЅ"), showDialogMenuDivision(playerid);
+			if(DivisionInfo[g][i][divColorVeh][s] == input) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже указан"), showDialogMenuDivision(playerid);
 			DivisionInfo[g][i][divColorVeh][s] = input;
 
-			format(string, sizeof(string), "** [%s] Р СѓРєРѕРІРѕРґРёС‚РµР»СЊ %s РёР·РјРµРЅРёР»%s С†РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), VehicleColoursTableHex[input], input);
+			format(string, sizeof(string), "** [%s] Руководитель %s изменил%s цвет транспорта {%s}[ ID: %d ]", DivisionInfo[g][i][divAbbreviation], getPlayerNameTransmitter(playerid), gender(playerid), VehicleColoursTableHex[input], input);
 			SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РёР·РјРµРЅРёР»%s С†РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° РІ РїРѕРґС„СЂР°РєС†РёРё {%s}[ ID: %d ]", gender(playerid), VehicleColoursTableHex[input], input);
+			format(string, sizeof(string), "[ Мысли ]: Я изменил%s цвет транспорта в подфракции {%s}[ ID: %d ]", gender(playerid), VehicleColoursTableHex[input], input);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			showDialogMenuDivision(playerid); // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґС„СЂР°РєС†РёРё
-			DivisionSave(g, i); // РЎРѕС…СЂР°РЅСЏРµРј
+			showDialogMenuDivision(playerid); // Открываем меню настройки подфракции
+			DivisionSave(g, i); // Сохраняем
 
 			format(string,sizeof(string),"ID: %d Slot: %d", input, s);
 			OrgLog(g + 1, "divColorVeh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}*/
-	if(dialogid == 1325) // РџРѕРєРёРЅСѓС‚СЊ РїРѕРґС„СЂР°РєС†РёСЋ
+	if(dialogid == 1325) // Покинуть подфракцию
 	{
 		if(response)
 		{
@@ -814,13 +814,13 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g + 1)-1) goLeave = 1;
 			
 			new string[120];
-			if(goLeave == 1 || DP[5][playerid] == 4) // Р”Р°, СѓРІРѕР»СЊРЅСЏРµРјСЃСЏ
+			if(goLeave == 1 || DP[5][playerid] == 4) // Да, увольняемся
 			{
 				uninviteDivision(playerid, 0);
 
-				format(string,sizeof(string),"{99ff66}Р“РѕС‚РѕРІРѕ! Р’С‹ РїРѕРєРёРЅСѓР»Рё РїРѕРґС„СЂР°РєС†РёСЋ %s", DivisionInfo[g][i][divName]);
+				format(string,sizeof(string),"{99ff66}Готово! Вы покинули подфракцию %s", DivisionInfo[g][i][divName]);
 				SuccessMessage(playerid, string);
-				format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РїРѕРєРёРЅСѓР»%s РїРѕРґС„СЂР°РєС†РёСЋ %s", gender(playerid), DivisionInfo[g][i][divName]);
+				format(string, sizeof(string), "[ Мысли ]: Я покинул%s подфракцию %s", gender(playerid), DivisionInfo[g][i][divName]);
 				SendClientMessage(playerid, COLOR_GREY, string);
 
 				if(goLeave == 0) OrgLog(g + 1, "divleave", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i + 1, "");
@@ -830,31 +830,31 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(DP[5][playerid] == 0)
 			{
 				DP[5][playerid] = 1;
-   				format(string, sizeof(string), "{cccccc}Р’С‹ С‚РѕС‡РЅРѕ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РїРѕРєРёРЅСѓС‚СЊ {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"Р”Р°","РќРµС‚");
+   				format(string, sizeof(string), "{cccccc}Вы точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 1)
 			{
 				DP[5][playerid] = 2;
-   				format(string, sizeof(string), "{cccccc}Р’С‹ С‚РѕС‡РЅРѕ С‚РѕС‡РЅРѕ С‚РѕС‡РЅРѕ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РїРѕРєРёРЅСѓС‚СЊ {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"Р”Р°","РќРµС‚");
+   				format(string, sizeof(string), "{cccccc}Вы точно точно точно уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 2)
 			{
 				DP[5][playerid] = 3;
-   				format(string, sizeof(string), "{cccccc}РџСЂСЏРј С‚РѕС‡РЅРµРµ С‚РѕС‡РЅРѕРіРѕ С…РѕС‚РёС‚Рµ РїРѕРєРёРЅСѓС‚СЊ {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"Р”Р°","РќРµС‚");
+   				format(string, sizeof(string), "{cccccc}Прям точнее точного хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 			else if(DP[5][playerid] == 3)
 			{
 				DP[5][playerid] = 4;
-   				format(string, sizeof(string), "{cccccc}Р’СЃС‘ РІСЃС‘... РџРѕСЃР»РµРґРЅРёР№ СЂР°Р·, РїСЂРѕСЃС‚Рѕ СѓС‚РѕС‡РЅРёС‚СЊ. Р’С‹ РїРѕРєРёРґР°РµС‚Рµ {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
-				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРґС„СЂР°РєС†РёСЏ",string,"Р”Р°","РќРµС‚");
+   				format(string, sizeof(string), "{cccccc}Всё всё... Последний раз, просто уточнить. Вы покидаете {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
+				ShowDialog(playerid,1325,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",string,"Да","Нет");
 			}
 		}
 		else showDialogMenuDivision(playerid);
 	}
-	if(dialogid == 1326) showDialogMenuDivision(playerid); // divmembers РёР»Рё РїСЂРѕСЃС‚Рѕ РІРѕР·РІСЂР°С‰Р°РµРј РјРµРЅСЋ
+	if(dialogid == 1326) showDialogMenuDivision(playerid); // divmembers или просто возвращаем меню
 	if(dialogid == 1327) // divinvite
 	{
 		new giveplayerid = DP[1][playerid];
@@ -866,15 +866,15 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			PlayerInfo[playerid][pDivision][0] = i;
-			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ
+			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
 
-			// Р’РєР»СЋС‡Р°РµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ СЂР°С†РёРё /i
+			// Включаем отображение рации /i
 			if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;
 
-			// Р’РєР»СЋС‡Р°РµРј СЂР°С†РёСЋ РІ РґРѕСЃС‚СѓРї
+			// Включаем рацию в доступ
 			racDivisionSetting(playerid, fraction(playerid), PlayerInfo[playerid][pDivision][0] , 1);
 
-			format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РўРµРїРµСЂСЊ СЏ РЅР°С…РѕР¶СѓСЃСЊ РІ РїРѕРґС„СЂР°РєС†РёРё %s {ff9000}[ /div ]", DivisionInfo[g - 1][i - 1][divName]);
+			format(string, sizeof(string), "[ Мысли ]: Теперь я нахожусь в подфракции %s {ff9000}[ /div ]", DivisionInfo[g - 1][i - 1][divName]);
 			SendClientMessage(playerid, COLOR_GREY, string);
 
 
@@ -882,17 +882,17 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(IsOnline(giveplayerid) && ProxDetectorS(10.0, playerid, giveplayerid))
 			{
 				PlayerPlaySound(giveplayerid, 6401, 0, 0, 0); // Done
-				format(string, sizeof(string), "* %s РїСЂРёРЅРёРјР°РµС‚ РїСЂРёРіР»Р°С€РµРЅРёРµ Рё РІСЃС‚СѓРїР°РµС‚ РІ %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+				format(string, sizeof(string), "* %s принимает приглашение и вступает в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
 				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 			}
 		}
 		else
 		{
-			PlayerPlaySound(playerid, 6801, 0, 0, 0); // РћС‚РєР°Р·
+			PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
 			if(IsOnline(giveplayerid) && ProxDetectorS(10.0, playerid, giveplayerid))
 			{
-				PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // РћС‚РєР°Р·
-				format(string, sizeof(string), "* %s РѕС‚РєР°Р·С‹РІР°РµС‚СЃСЏ РѕС‚ РІР°С€РµРіРѕ РїСЂРµРґР»РѕР¶РµРЅРёСЏ РІСЃС‚СѓРїРёС‚СЊ РІ %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+				PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
+				format(string, sizeof(string), "* %s отказывается от вашего предложения вступить в %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
 				SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
 			}
 		}
@@ -901,9 +901,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 24 СЃРёРјРІРѕР»РѕРІ"), showDialogMenuDivision(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogMenuDivision(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
 			new string[30];
 			format(string, sizeof(string), "%s", inputtext);
@@ -915,9 +915,9 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 	{
 		if(response)
 		{
-			if(!strlen(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogMenuDivision(playerid);
-          	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 24 СЃРёРјРІРѕР»РѕРІ"), showDialogMenuDivision(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ РЅР°РїРёСЃР°С‚СЊ РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), showDialogMenuDivision(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogMenuDivision(playerid);
+          	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
 			new string[30];
 			format(string, sizeof(string), "%s", inputtext);
@@ -930,10 +930,10 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			if(AntiFloodMysqlRequest(playerid, 10)) return 1;
-			ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё РџРѕРґС„СЂР°РєС†РёРё {ff0000}Offline","{cccccc}РџРѕРёСЃРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ...","*","");
+			ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Подфракции {ff0000}Offline","{cccccc}Поиск участников...","*","");
 
-			new org = DP[1][playerid] + 1; // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-			new div = DP[2][playerid] + 1; // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+			new org = DP[1][playerid] + 1; // Получаем id организации
+			new div = DP[2][playerid] + 1; // Получаем id подфракции
 
 			new string_mysql[330];
 			format(string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
@@ -954,15 +954,15 @@ stock racDivisionSetting(playerid, g, i , readRac)
 	return 1;
 }
 
-stock DivisionSave(g, i) // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ (РјРѕРјРµРЅС‚Р°Р»СЊРЅРѕРµ СЃРѕС…СЂР°РЅРµРЅРёРµ РїСЂРё Р»СЋР±РѕРј РёР·РјРµРЅРµРЅРёРё)
+stock DivisionSave(g, i) // Сохраняем в базу (моментальное сохранение при любом изменении)
 {
-    // Р­РєСЂР°РЅРёСЂСѓРµРј С‚РµРєСЃС‚РѕРІС‹Рµ СЃС‚СЂРѕРєРё (Р”Р»СЏ Р·Р°С‰РёС‚С‹ РѕС‚ sql РёРЅСЉРµРєС†РёР№)
+    // Экранируем текстовые строки (Для защиты от sql инъекций)
     new escapeName[MAX_NAME_LENGTH], escapeAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], escapeColorHex[7];
 	mysql_escape_string(DivisionInfo[g][i][divName], escapeName, sizeof(escapeName));
     mysql_escape_string(DivisionInfo[g][i][divAbbreviation], escapeAbbreviation, sizeof(escapeAbbreviation));
 	mysql_escape_string(DivisionInfo[g][i][divColorHex], escapeColorHex, sizeof(escapeColorHex));
 
-    // Р¤РѕСЂРјРёСЂСѓРµРј Р·Р°РїСЂРѕСЃС‹ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
+    // Формируем запросы в переменную
 	new string_mysql[500 + MAX_NAME_LENGTH + MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     format(string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRanks` = '%d', `divName` = '%s', `divAbbreviation` = '%s', `divSpawnPos0` = '%f',\
 	`divSpawnPos1` = '%f', `divSpawnPos2` = '%f', `divSpawnPos3` = '%f'",
@@ -972,35 +972,35 @@ stock DivisionSave(g, i) // РЎРѕС…СЂР°РЅСЏРµРј РІ Р±Р°Р·Сѓ (РјРѕРјРµРЅС‚Р°Р»СЊРЅ
 	format(string_mysql,sizeof(string_mysql),"%s, `divSpawnWorld` = '%d', `divSpawnInterior` = '%d', `divColorHex` = '%s' WHERE `org`='%d' AND `divid`='%d'", string_mysql,
     DivisionInfo[g][i][divSpawnWorld], DivisionInfo[g][i][divSpawnInterior], escapeColorHex, g, i); // 110 + 44 + 7
 
-    // РћС‚РїСЂР°РІР»СЏРµРј Р·Р°РїСЂРѕСЃ
+    // Отправляем запрос
     query_empty(pearsq, string_mysql); // 473
     return 1;
 }
 
-stock DivisionSaveRankName(g, i, r) // РЎРѕС…СЂР°РЅСЏРµРј РЅР°Р·РІР°РЅРёРµ СЂР°РЅРіР° РІ Р±Р°Р·Сѓ (РјРѕРјРµРЅС‚Р°Р»СЊРЅРѕРµ СЃРѕС…СЂР°РЅРµРЅРёРµ)
+stock DivisionSaveRankName(g, i, r) // Сохраняем название ранга в базу (моментальное сохранение)
 {
-	// Р­РєСЂР°РЅРёСЂСѓРµРј С‚РµРєСЃС‚РѕРІС‹Рµ СЃС‚СЂРѕРєРё (Р”Р»СЏ Р·Р°С‰РёС‚С‹ РѕС‚ sql РёРЅСЉРµРєС†РёР№)
+	// Экранируем текстовые строки (Для защиты от sql инъекций)
     new escapeRankName[MAX_NAME_LENGTH];
 	mysql_escape_string(DivisionRankName[g][i][r], escapeRankName, sizeof(escapeRankName));
 
-    // Р¤РѕСЂРјРёСЂСѓРµРј Р·Р°РїСЂРѕСЃС‹ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ
+    // Формируем запросы в переменную
 	new string_mysql[79 + 33 + MAX_NAME_LENGTH];
     format(string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRankName%d` = '%s' WHERE `org`='%d' AND `divid`='%d'", r, escapeRankName, g, i);
 
-    // РћС‚РїСЂР°РІР»СЏРµРј Р·Р°РїСЂРѕСЃ
+    // Отправляем запрос
     query_empty(pearsq, string_mysql);
 	return 1;
 }
 
-function LoadDivision() // Р—Р°РіСЂСѓР·РєР° РёР· Р±Р°Р·С‹
+function LoadDivision() // Загрузка из базы
 {
-	new time = GetTickCount(); // Р—Р°РїРёСЃС‹РІР°РµРј С‚РµРєСѓС‰РёР№ tick (С‡С‚РѕР±С‹ СѓР·РЅР°С‚СЊ РІСЂРµРјСЏ Р·Р°РіСЂСѓР·РєРё РІ ms)
+	new time = GetTickCount(); // Записываем текущий tick (чтобы узнать время загрузки в ms)
 	new rows, g, i, load_max_rank, string[20];
-	cache_get_row_count(rows); // РџРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РЅР°Р№РґРµРЅРЅС‹С… СЃС‚СЂРѕРє
+	cache_get_row_count(rows); // Получаем количество найденных строк
 	for(new f = 0; f < rows; f++)
 	{
-    	cache_get_value_name_int(f, "org", g); // РџРѕР»СѓС‡Р°РµРј id РѕСЂРіР°РЅРёР·Р°С†РёРё
-		cache_get_value_name_int(f, "divid", i); // РџРѕР»СѓС‡Р°РµРј id РїРѕРґС„СЂР°РєС†РёРё
+    	cache_get_value_name_int(f, "org", g); // Получаем id организации
+		cache_get_value_name_int(f, "divid", i); // Получаем id подфракции
 
     	cache_get_value_name_int(f, "divRanks", DivisionInfo[g][i][divRanks]);
 		cache_get_value_name(f, "divName", DivisionInfo[g][i][divName], MAX_NAME_LENGTH);
@@ -1015,10 +1015,10 @@ function LoadDivision() // Р—Р°РіСЂСѓР·РєР° РёР· Р±Р°Р·С‹
 		//cache_get_value_name_int(f, "divColorVeh0", DivisionInfo[g][i][divColorVeh][0]);
 		//cache_get_value_name_int(f, "divColorVeh1", DivisionInfo[g][i][divColorVeh][1]);
 
-		// Р•СЃР»Рё РЅРµС‚ РЅРёРєР°РєРѕРіРѕ С†РІРµС‚Р° Сѓ РїРѕРґС„СЂР°РєС†РёРё, РїСЂРёСЃРІРѕРёРј СЃРµСЂРµРЅСЊРєРёР№
+		// Если нет никакого цвета у подфракции, присвоим серенький
 		if(!strcmp(DivisionInfo[g][i][divColorHex],"0",true)) format(DivisionInfo[g][i][divColorHex],7,"cccccc");
 
-		// РџРѕР»СѓС‡Р°РµРј РЅР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
+		// Получаем названия рангов
 		if(DivisionInfo[g][i][divRanks] > 0)
 		{
 			load_max_rank = DivisionInfo[g][i][divRanks];
@@ -1031,6 +1031,6 @@ function LoadDivision() // Р—Р°РіСЂСѓР·РєР° РёР· Р±Р°Р·С‹
 			}
 		}
 	}
-	printf("[MODE]: РџРѕРґС„СЂР°РєС†РёРё [%d ms]", GetTickCount() - time);
+	printf("[MODE]: Подфракции [%d ms]", GetTickCount() - time);
 	return 1;
 }

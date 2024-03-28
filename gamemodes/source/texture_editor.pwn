@@ -1,8 +1,8 @@
-#define MAX_TEXTURE_OBJECT 38 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ
-#define MAX_TEXTURE_LIBRARY 200 // РўРµРєСЃС‚СѓСЂС‹ РёР·Р±СЂР°РЅРЅС‹Рµ РёР»Рё РІ РїРѕРёСЃРєРµ
-#define MAX_DRAW_TEXTURE_BUTTON 12 // РўРµРєСЃС‚РґСЂР°РІС‹ РѕСЃРЅРѕРІРЅРѕРіРѕ РјРµРЅСЋ
+#define MAX_TEXTURE_OBJECT 38 // Максимальное количество текстур на объекте
+#define MAX_TEXTURE_LIBRARY 200 // Текстуры избранные или в поиске
+#define MAX_DRAW_TEXTURE_BUTTON 12 // Текстдравы основного меню
 
-enum zInfo //  Enum РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° СЂРµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ
+enum zInfo //  Enum отвечающий за редактор текстур
 {
 	zStat,
 	Float:zRotation,
@@ -28,10 +28,10 @@ enum zInfo //  Enum РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° СЂРµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ
 	Float:zEditRZ,
 	zChange,
 	zDynamicObject, // ID dynamic object
-	zLibraryStatus, // РЎС‚Р°С‚СѓСЃ РєР°РєР°СЏ Р±РёР±Р»РёРѕС‚РµРєР° СЃ С‚РµРєСЃС‚СѓСЂР°РјРё СЃРµР№С‡Р°СЃ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ
-	zLibraryTexture[MAX_TEXTURE_LIBRARY], // РўРµРєСЃС‚СѓСЂС‹, Р·Р°РіСЂСѓР¶РµРЅРЅС‹Рµ РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ РёР»Рё РёР· РїРѕРёСЃРєР°
-	zLibraryQuan, // РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РіСЂСѓР¶РµРЅРЅС‹С… С‚РµРєСЃС‚СѓСЂ
-	zMaxTexturesOnObject // РњР°РєСЃ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ
+	zLibraryStatus, // Статус какая библиотека с текстурами сейчас отображается
+	zLibraryTexture[MAX_TEXTURE_LIBRARY], // Текстуры, загруженные из избранного или из поиска
+	zLibraryQuan, // Количество загруженных текстур
+	zMaxTexturesOnObject // Макс количество слотов текстур на объекте
 };
 new MenuInfo[MAX_REALPLAYERS][zInfo];
 
@@ -42,10 +42,10 @@ new zTxtSaveTxd[MAX_REALPLAYERS][MAX_TEXTURE_OBJECT][32];
 new zTxtSaveTexture[MAX_REALPLAYERS][MAX_TEXTURE_OBJECT][32];
 new zTxtSaveMaterial[MAX_REALPLAYERS][MAX_TEXTURE_OBJECT];
 
-new PlayerText:TextDrawTextureMenu[MAX_TEXTURES_ON_OBJECTS * 2][MAX_REALPLAYERS]; // РўРµРєСЃС‚РґСЂР°РІС‹ РјРµРЅСЋ СЂРµС‚РµРєСЃС‚СѓСЂР°
-new PlayerText:DrawTextureButton[MAX_DRAW_TEXTURE_BUTTON][MAX_REALPLAYERS]; // РљРЅРѕРїРєРё РјРµРЅСЋ СЂРµС‚РµРєСЃС‚СѓСЂР°
+new PlayerText:TextDrawTextureMenu[MAX_TEXTURES_ON_OBJECTS * 2][MAX_REALPLAYERS]; // Текстдравы меню ретекстура
+new PlayerText:DrawTextureButton[MAX_DRAW_TEXTURE_BUTTON][MAX_REALPLAYERS]; // Кнопки меню ретекстура
 
-new QuanTextures = sizeof(ObjectTextures); // Р—Р°РїРёСЃС‹РІР°РµРј РїРѕР»РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ РІ Р±РёР±Р»РёРѕС‚РµРєРµ
+new QuanTextures = sizeof(ObjectTextures); // Записываем полное количество текстур в библиотеке
 
 
 CMD:to(playerid, const params[]) return cmd_texture(playerid, params);
@@ -53,11 +53,11 @@ CMD:textureobject(playerid, const params[]) return cmd_texture(playerid, params)
 CMD:textur(playerid, const params[]) return cmd_texture(playerid, params);
 CMD:texture(playerid, const params[])
 {
-    if(Device[playerid] == 1) return ErrorMessage(playerid, "{FF6347}РќРµРґРѕСЃС‚СѓРїРЅРѕ РІРѕ РІСЂРµРјСЏ РёРіСЂС‹ РЅР° СЃРјР°СЂС‚С„РѕРЅРµ");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(Device[playerid] == 1) return ErrorMessage(playerid, "{FF6347}Недоступно во время игры на смартфоне");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
 
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р РµС‚РµРєСЃС‚СѓСЂ РѕР±СЉРµРєС‚Р° /texture ID РѕР±СЉРµРєС‚Р°");
-	if(LabelsInfo[playerid][labelCreate] == 0) return ErrorMessage(playerid, "{FF6347}РђРєС‚РёРІРёСЂСѓР№С‚Рµ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ 3D Р›РµР№Р±Р»РѕРІ РЅР° РѕР±СЉРµРєС‚Р°С…\n{cccccc}Р”Р»СЏ РґРѕРјРѕРІ: /dedit >> 3D Р›РµР№Р±Р»С‹\n{cccccc}Р”Р»СЏ Р±РёР·РЅРµСЃРѕРІ: /bedit >> 3D Р›РµР№Р±Р»С‹");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ретекстур объекта /texture ID объекта");
+	if(LabelsInfo[playerid][labelCreate] == 0) return ErrorMessage(playerid, "{FF6347}Активируйте отображение 3D Лейблов на объектах\n{cccccc}Для домов: /dedit >> 3D Лейблы\n{cccccc}Для бизнесов: /bedit >> 3D Лейблы");
 	
 	if(LabelsInfo[playerid][labelCreate] > 0 && LabelsInfo[playerid][labelType] == 1) return EditTextureDom(playerid, LabelsInfo[playerid][labelCreate], params[0]);
 	else if(LabelsInfo[playerid][labelCreate] > 0 && LabelsInfo[playerid][labelType] == 2) return EditTextureBiz(playerid, LabelsInfo[playerid][labelCreate], params[0]);
@@ -75,7 +75,7 @@ stock Show3DMenu(playerid)
 	if(gVidga[playerid] == true) DelUpdate(playerid);
   	if(gMifga[playerid] != 9999) DelMaf(playerid);
 
-  	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
+  	HidePlayerDialog(playerid);
   	TextDrawHideForPlayer(playerid, PissDraw), TextDrawHideForPlayer(playerid, PissDraw2);
 	gRedakt[playerid] = 0;
 	OnlineInfo[playerid][oShowInterface] = 19;
@@ -99,7 +99,7 @@ stock Close3DMenu(playerid)
 
 	CancelSelectTextDraw(playerid);
 	RemoveObjectToTexture(playerid);
-	ShowDialog(playerid,-1,DIALOG_STYLE_MSGBOX," "," ","*","");
+	HidePlayerDialog(playerid);
 	OnlineInfo[playerid][oShowInterface] = 0;
 
 	PearsWeather(playerid);
@@ -107,7 +107,7 @@ stock Close3DMenu(playerid)
 	return 1;
 }
 
-stock CreateTexture(playerid) // РЎРѕС…СЂР°РЅСЏРµРј С‚РµРєСЃС‚СѓСЂС‹ РЅР° РѕР±СЉРµРєС‚Рµ
+stock CreateTexture(playerid) // Сохраняем текстуры на объекте
 {
 	if(Texture[playerid] == 1 && MenuInfo[playerid][zStat] == 1)
 	{
@@ -118,7 +118,7 @@ stock CreateTexture(playerid) // РЎРѕС…СЂР°РЅСЏРµРј С‚РµРєСЃС‚СѓСЂС‹ РЅР° РѕР±СЉ
 	    if(nd > 0) DomInfo[nd][dUser][oba] = PlayerInfo[playerid][pID];
 		else BizzInfo[b][bUser][oba] = PlayerInfo[playerid][pID];
 		
-		if(nd > 0 || b > 0) // РЎРѕС…СЂР°РЅСЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё СЂРµРґР°РєС‚РёСЂРѕРІР°Р»Рё РѕР±СЉРµРєС‚ РІ РґРѕРјР° РёР»Рё Р±РёР·РЅРµСЃР°
+		if(nd > 0 || b > 0) // Сохраняем только если редактировали объект в дома или бизнеса
 		{
 			for(new t = 0; t < MAX_TEXTURE_OBJECT; t++)
 			{
@@ -126,7 +126,7 @@ stock CreateTexture(playerid) // РЎРѕС…СЂР°РЅСЏРµРј С‚РµРєСЃС‚СѓСЂС‹ РЅР° РѕР±СЉ
 			}
 			if(MenuInfo[playerid][zChange] > 0)
 			{
-				if(nd > 0) UpdateObject(nd, oba); // РћР±РЅРѕРІР»СЏРµРј С‚РѕР»СЊРєРѕ С‚РµРєСЃС‚СѓСЂС‹
+				if(nd > 0) UpdateObject(nd, oba); // Обновляем только текстуры
 				else UpdateObjectBiz(b, oba);
 			}
 		}
@@ -136,11 +136,11 @@ stock CreateTexture(playerid) // РЎРѕС…СЂР°РЅСЏРµРј С‚РµРєСЃС‚СѓСЂС‹ РЅР° РѕР±СЉ
 	return 1;
 }
 
-stock ObjectToTexture(playerid, slot) // РћС‚РїСЂР°РІР»СЏРµРј РѕР±СЉРµРєС‚ РЅР° СЂРµС‚РµРєСЃС‚СѓСЂ (Р”РѕРј, Р‘РёР·РЅРµСЃ, Р›РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ)
+stock ObjectToTexture(playerid, slot) // Отправляем объект на ретекстур (Дом, Бизнес, Личный редактор)
 {
-	Texture[playerid] = 1; // Р РµС‚РµРєСЃС‚СѓСЂ РѕР±СЉРµРєС‚Р°
-	MenuInfo[playerid][zObject] = slot; // ID РѕР±СЉРµРєС‚Р° РІРЅСѓС‚СЂРё СЃРёСЃС‚РµРјС‹, РєРѕС‚РѕСЂРѕР№ РѕРЅ РїСЂРёРЅР°РґР»РµР¶РёС‚
-	MenuInfo[playerid][zChange] = 0; // РљРѕР»РёС‡РµСЃС‚РІРѕ РёР·РјРµРЅРµРЅРёР№
+	Texture[playerid] = 1; // Ретекстур объекта
+	MenuInfo[playerid][zObject] = slot; // ID объекта внутри системы, которой он принадлежит
+	MenuInfo[playerid][zChange] = 0; // Количество изменений
 
 	new objectid;
 	if(MenuInfo[playerid][zDom] > 0) objectid = DomInfo[MenuInfo[playerid][zDom]][dObject][slot];
@@ -184,23 +184,23 @@ stock ClearTexturesEditorVariableSave(playerid, i)
 	zTxtSaveMaterial[playerid][i] = 0;
 }
 
-stock RemoveObjectToTexture(playerid) // РЎРЅРёРјР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЂРµРґР°РєС‚РёСЂСѓРµРјРѕРј РѕР±СЉРµРєС‚Рµ
+stock RemoveObjectToTexture(playerid) // Снимаем информацию о редактируемом объекте
 {
 	if(MenuInfo[playerid][zDynamicObject] > 0)
 	{
 		Streamer_SetIntData(STREAMER_TYPE_OBJECT, MenuInfo[playerid][zDynamicObject], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Editable Dynamic Object
 
-		// РћС‚РјРµРЅСЏРµРј РёР·РјРµРЅРµРЅРёСЏ, РµСЃР»Рё РѕРЅРё РЅРµ Р±С‹Р»Рё СЃРѕС…СЂР°РЅРµРЅС‹
+		// Отменяем изменения, если они не были сохранены
 		if(MenuInfo[playerid][zChange] > 0)
 		{
 			for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) 
 			{
-				// Р•СЃР»Рё С‚РµРєСЃС‚СѓСЂС‹ РёР·РЅР°С‡Р°Р»СЊРЅРѕ РЅРµ Р±С‹Р»Рѕ, Р° РїРѕС‚РѕРј РїРѕСЏРІРёР»Р°СЃСЊ - СЃС‚РёСЂР°РµРј
+				// Если текстуры изначально не было, а потом появилась - стираем
 				if(zTxtSaveModel[playerid][i] == 0 && zTxtModel[playerid][i] > 0)
 				{
 					RemoveDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i);
 				}
-				// Р•СЃР»Рё С‚РµРєСЃС‚СѓСЂР° РёР·РЅР°С‡Р°Р»СЊРЅРѕ Р±С‹Р»Р°, РІРѕР·РІСЂР°С‰Р°РµРј
+				// Если текстура изначально была, возвращаем
 				else if(zTxtSaveModel[playerid][i] > 0)
 				{
 					SetDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], i, zTxtSaveModel[playerid][i], zTxtSaveTxd[playerid][i], zTxtSaveTexture[playerid][i], zTxtSaveMaterial[playerid][i]);
@@ -212,15 +212,15 @@ stock RemoveObjectToTexture(playerid) // РЎРЅРёРјР°РµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ 
 	return 1;
 }
 
-stock Create3DMenu(playerid, stat, dom) // РЎРѕР·РґР°С‘Рј 3D Menu РІС‹Р±РѕСЂР° С‚РµРєСЃС‚СѓСЂ
+stock Create3DMenu(playerid, stat, dom) // Создаём 3D Menu выбора текстур
 {
 	if(MenuInfo[playerid][zStat] == 0)
 	{
-		// РќР°С…РѕРґРёРј РєРѕРѕСЂРґРёРЅР°С‚Сѓ РїРµСЂРµРґ Р»РёС†РѕРј
+		// Находим координату перед лицом
 		new Float:plapos[4];
     	frontme(playerid, 2.0, plapos[0], plapos[1], plapos[2], plapos[3]);
 
-		// РЎРјРµС‰Р°РµРј С‡СѓС‚СЊ-С‡СѓС‚СЊ РІР»РµРІРѕ
+		// Смещаем чуть-чуть влево
 		plapos[0] = plapos[0] + 1.0*floatsin(-plapos[3]-90,degrees);
 		plapos[1] = plapos[1] + 1.0*floatcos(-plapos[3]-90,degrees);
 
@@ -238,8 +238,8 @@ stock Create3DMenu(playerid, stat, dom) // РЎРѕР·РґР°С‘Рј 3D Menu РІС‹Р±РѕСЂР° С
 		NextLineX = floatcos(plapos[3],degrees)+0.05*floatcos(plapos[3],degrees);
 		NextLineY = floatsin(plapos[3],degrees)+0.05*floatsin(plapos[3],degrees);
 
-		SetFirstItemsTexture(playerid); // РћРїСЂРµРґРµР»СЏРµРј id РїРµСЂРІРѕР№ С‚РµРєСЃС‚СѓСЂС‹ РІ РїР°Р»РёС‚СЂРµ (РµСЃР»Рё РЅРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Рµ, Р·РЅР°С‡РёС‚ 0 РЅРµ РїРѕРєР°Р·С‹РІР°РµРј)
-		// РЎРѕР·РґР°С‘Рј РѕР±СЉРµРєС‚С‹ РґР»СЏ РїР°Р»РёС‚СЂС‹ С‚РµРєСЃС‚СѓСЂ
+		SetFirstItemsTexture(playerid); // Определяем id первой текстуры в палитре (если не отсортированные, значит 0 не показываем)
+		// Создаём объекты для палитры текстур
 		for(new b = 0; b < 12; b++)
 		{
 			if(b%4 == 0 && b != 0) lineindx++,binc+=4;
@@ -254,7 +254,7 @@ stock Create3DMenu(playerid, stat, dom) // РЎРѕР·РґР°С‘Рј 3D Menu РІС‹Р±РѕСЂР° С
 	return 1;
 }
 
-stock Destroy3DMenu(playerid) // РЈРґР°Р»СЏРµРј 3D Menu Р РµРґР°РєС‚РѕСЂР° РўРµРєСЃС‚СѓСЂ
+stock Destroy3DMenu(playerid) // Удаляем 3D Menu Редактора Текстур
 {
     if(Texture[playerid] == 1) RemoveObjectToTexture(playerid);
 	if(MenuInfo[playerid][zStat] == 1)
@@ -270,20 +270,20 @@ stock Destroy3DMenu(playerid) // РЈРґР°Р»СЏРµРј 3D Menu Р РµРґР°РєС‚РѕСЂР° РўРµР
 	return 1;
 }
 
-stock UpdatePalettePlayerObject(playerid, b) // РћР±РЅРѕРІР»СЏРµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚СѓСЂС‹ РІ СЏС‡РµР№РєРµ
+stock UpdatePalettePlayerObject(playerid, b) // Обновляем отображение текстуры в ячейке
 {
-	if(MenuInfo[playerid][zLoadPick][b] > 0) // Р•СЃС‚СЊ С‚РµРєСЃС‚СѓСЂР° РІ СЌС‚РѕРј СЃР»РѕС‚Рµ
+	if(MenuInfo[playerid][zLoadPick][b] > 0) // Есть текстура в этом слоте
 	{
 		new textid = MenuInfo[playerid][zLoadPick][b];
 
-		if(MenuInfo[playerid][zSelect] == b) { // Р’С‹Р±СЂР°РЅРЅСѓСЋ СЏС‡РµР№РєСѓ (РџРѕРґСЃРІРµС‡РёРІР°РµРј)
+		if(MenuInfo[playerid][zSelect] == b) { // Выбранную ячейку (Подсвечиваем)
 			SetPlayerObjectMaterial(playerid, MenuInfo[playerid][zPick][b], 0, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName], 0x00000000);
 		}
 		else {
 			SetPlayerObjectMaterial(playerid, MenuInfo[playerid][zPick][b], 0, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName], 0xFF999999);
 		}
 	}
-	else // РќРµС‚ С‚РµРєСЃС‚СѓСЂС‹, РґРµР»Р°РµРј СЃР»РѕС‚ РЅРµРІРёРґРёРјС‹Рј
+	else // Нет текстуры, делаем слот невидимым
 	{
 		SetPlayerObjectMaterial(playerid, MenuInfo[playerid][zPick][b], 0, ObjectTextures[8955][TModel], ObjectTextures[8955][TXDName], ObjectTextures[8955][TextureName], 0xFF999999);
 	}
@@ -304,9 +304,9 @@ stock SetFirstItemsTexture(playerid)
 
 stock SetPaletteTexture(playerid, status)
 {
-	MenuInfo[playerid][zLibraryStatus] = status; // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЃС‚Р°С‚СѓСЃ РїР°Р»РёС‚СЂС‹
-	SetFirstItemsTexture(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РїРѕРґСЃС‡С‘С‚ РїРѕСЃР»РµРґРЅРµР№ РѕС‚РѕР±СЂР°Р¶Р°РµРјРѕР№ С‚РµРєСЃС‚СѓСЂС‹
-	MenuInfo[playerid][zList] = 0; // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‚СЂР°РЅРёС†С‹ СЃ С‚РµРєСЃС‚СѓСЂР°РјРё
+	MenuInfo[playerid][zLibraryStatus] = status; // Устанавливаем статус палитры
+	SetFirstItemsTexture(playerid); // Сбрасываем подсчёт последней отображаемой текстуры
+	MenuInfo[playerid][zList] = 0; // Сбрасываем страницы с текстурами
 	return 1;
 }
 
@@ -338,7 +338,7 @@ stock Next3DBox(playerid)
 	return 1;
 }
 
-stock Show3DBox(playerid) // РћР±РЅРѕРІР»СЏРµРј СЏС‡РµР№РєРё
+stock Show3DBox(playerid) // Обновляем ячейки
 {
 	new maxQuan = GetMaxTextures(playerid);
 
@@ -350,10 +350,10 @@ stock Show3DBox(playerid) // РћР±РЅРѕРІР»СЏРµРј СЏС‡РµР№РєРё
 	}
 	MenuInfo[playerid][zList] ++;
 
-	if(MenuInfo[playerid][zSelect] == -1) Move3DBox(playerid, 0); // Р•СЃР»Рё РЅРёРєР°РєРѕР№ РЅРµ РІС‹Р±СЂР°РЅ, РѕС‚РѕР±СЂР°Р¶Р°РµРј 0
+	if(MenuInfo[playerid][zSelect] == -1) Move3DBox(playerid, 0); // Если никакой не выбран, отображаем 0
 	else 
 	{
-		if(MenuInfo[playerid][zLoadPick][MenuInfo[playerid][zSelect]] == 0) Move3DBox(playerid, 0); // Р•СЃР»Рё РІС‹Р±СЂР°РЅРЅС‹Р№ РїСѓСЃС‚РѕР№, РѕС‚РѕР±СЂР°Р¶Р°РµРј 0
+		if(MenuInfo[playerid][zLoadPick][MenuInfo[playerid][zSelect]] == 0) Move3DBox(playerid, 0); // Если выбранный пустой, отображаем 0
 	}
 
 	NameTexture(playerid);
@@ -383,11 +383,11 @@ stock NameTexture(playerid)
 		new textid = MenuInfo[playerid][zLoadPick][MenuInfo[playerid][zSelect]];
 		if(textid >= 0 && textid < QuanTextures)
 		{
-			new maxQuan = GetMaxTextures(playerid); // РџРѕР»РЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ
+			new maxQuan = GetMaxTextures(playerid); // Полное количество текстур
 
 			new dopPage;
-			new ostatok = maxQuan % 12; // Р•СЃС‚СЊ Р»Рё РѕСЃС‚Р°С‚РѕРє РїСЂРё РґРµР»РµРЅРёРё РЅР° 12 СЏС‡РµРµРє
-			if(ostatok > 0 || maxQuan < 12) dopPage = 1; // Р•СЃС‚СЊ РѕСЃС‚Р°С‚РѕРє РёР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ РјРµРЅСЊС€Рµ 12 (Р·РЅР°С‡РёС‚ РґРѕР±Р°РІР»СЏРµРј РѕРґРЅСѓ СЃС‚СЂР°РЅРёС†Сѓ РІ РѕС‚РѕР±СЂР°Р¶РµРЅРёРё)
+			new ostatok = maxQuan % 12; // Есть ли остаток при делении на 12 ячеек
+			if(ostatok > 0 || maxQuan < 12) dopPage = 1; // Есть остаток или количество текстур меньше 12 (значит добавляем одну страницу в отображении)
 
 			new string[100];
 			if(MenuInfo[playerid][zLibraryStatus] == 0) format(string, sizeof(string), "[%d/%d][Page: %d/%d] %d %s %s", textid, QuanTextures - 1, MenuInfo[playerid][zItems]/12, maxQuan/12, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName]);
@@ -413,7 +413,7 @@ stock GetMaxTextures(playerid)
 stock Go3DBox(playerid, stat)
 {
     new ab = MenuInfo[playerid][zSelect];
-	if(stat == 0) // Р’РІРµСЂС…
+	if(stat == 0) // Вверх
 	{
 		if(ab == -1) Move3DBox(playerid, 0);
 		else if(ab == 0) Move3DBox(playerid, 11);
@@ -429,7 +429,7 @@ stock Go3DBox(playerid, stat)
 		else if(ab == 10) Move3DBox(playerid, 9);
 		else if(ab == 11) Move3DBox(playerid, 10);
 	}
-	else if(stat == 1) // Р’РЅРёР·
+	else if(stat == 1) // Вниз
 	{
 		if(ab == -1) Move3DBox(playerid, 0);
 		else if(ab == 0) Move3DBox(playerid, 1);
@@ -448,14 +448,14 @@ stock Go3DBox(playerid, stat)
 	return 1;
 }
 
-stock Move3DBox(playerid, b) // РЎРјРµС‰Р°РµРј РІС‹Р±СЂР°РЅРЅСѓСЋ С‚РµРєСЃС‚СѓСЂСѓ
+stock Move3DBox(playerid, b) // Смещаем выбранную текстуру
 {
-	if(!MenuInfo[playerid][zLoadPick][b]) return 0; // РќРµ СЃРґРёРіР°РµРј РІС‹Р±РѕСЂ, РµСЃР»Рё РЅР° СЌС‚РѕР№ РёРєРѕРЅРєРµ РЅРµС‚ С‚РµРєСЃС‚СѓСЂС‹
+	if(!MenuInfo[playerid][zLoadPick][b]) return 0; // Не сдигаем выбор, если на этой иконке нет текстуры
 
 	new ab = MenuInfo[playerid][zSelect];
 	MenuInfo[playerid][zSelect] = b;
 
-	if(ab >= 0) // РџСЂРµРґС‹РґСѓС‰Р°СЏ РІС‹Р±СЂР°РЅРЅР°СЏ С‚РµРєСЃС‚СѓСЂР° (Р”РµР»Р°РµРј РµС‘ СЃРµСЂРѕР№)
+	if(ab >= 0) // Предыдущая выбранная текстура (Делаем её серой)
 	{
 		MovePlayerObject(playerid, MenuInfo[playerid][zPick][ab],MenuInfo[playerid][zPosX][ab],MenuInfo[playerid][zPosY][ab],MenuInfo[playerid][zPosZ][ab],1.2);
 		UpdatePalettePlayerObject(playerid, ab);
@@ -467,32 +467,32 @@ stock Move3DBox(playerid, b) // РЎРјРµС‰Р°РµРј РІС‹Р±СЂР°РЅРЅСѓСЋ С‚РµРєСЃС‚СѓСЂ
 	return 1;
 }
 
-stock ClearTextureObject(playerid, slot) // РЎРЅСЏС‚СЊ С‚РµРєСЃС‚СѓСЂСѓ СЃ РѕР±СЉРµРєС‚Р°
+stock ClearTextureObject(playerid, slot) // Снять текстуру с объекта
 {
 	if(MenuInfo[playerid][zDynamicObject] == 0) return 1;
-	if(zTxtModel[playerid][slot] == 0) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј СЃР»РѕС‚Рµ РЅРµС‚ С‚РµРєСЃС‚СѓСЂС‹");
+	if(zTxtModel[playerid][slot] == 0) return ErrorMessage(playerid, "{FF6347}В этом слоте нет текстуры");
 
-	RemoveDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], slot); // РЎРЅРёРјР°РµРј С‚РµРєСЃС‚СѓСЂСѓ СЃ РѕР±СЉРµРєС‚Р°
+	RemoveDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], slot); // Снимаем текстуру с объекта
 	ClearTexturesEditorVariable(playerid, slot);
-	MenuInfo[playerid][zChange] ++; // Р”РѕР±Р°РІР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РёР·РјРµРЅРµРЅРёР№
+	MenuInfo[playerid][zChange] ++; // Добавляем количество изменений
 	PlayerPlaySound(playerid,6801,0,0,0);
 
 	UpdateTextDraw3DMenu(playerid, slot);
 	return 1;
 }
 
-stock SelectTextureObject(playerid, slot) // Р’С‹Р±РёСЂР°РµРј СЃР»РѕС‚ С‚РµРєСЃС‚СѓСЂС‹
+stock SelectTextureObject(playerid, slot) // Выбираем слот текстуры
 {
 	if(MenuInfo[playerid][zDynamicObject] == 0) return 1;
 
 	PlayerPlaySound(playerid,17803,0,0,0);
-	PlayerTextDrawColor(playerid, TextDrawTextureMenu[MenuInfo[playerid][zTextid]][playerid], -1); // РњРµРЅСЏРµРј С†РІРµС‚ РїСЂРµРґС‹РґСѓС‰РµРіРѕ СЃР»РѕС‚Р°
+	PlayerTextDrawColour(playerid, TextDrawTextureMenu[MenuInfo[playerid][zTextid]][playerid], -1); // Меняем цвет предыдущего слота
 	PlayerTextDrawShow(playerid, TextDrawTextureMenu[MenuInfo[playerid][zTextid]][playerid]);
 	MenuInfo[playerid][zTextid] = slot;
-	PlayerTextDrawColor(playerid, TextDrawTextureMenu[slot][playerid], -5963521); // РњРµРЅСЏРµРј С†РІРµС‚ РЅРѕРІРѕРіРѕ СЃР»РѕС‚Р°
+	PlayerTextDrawColour(playerid, TextDrawTextureMenu[slot][playerid], -5963521); // Меняем цвет нового слота
 	PlayerTextDrawShow(playerid, TextDrawTextureMenu[slot][playerid]);
 
-	// Р•СЃР»Рё С‚РµРєСЃС‚СѓСЂР° РІС‹Р±СЂР°РЅР° Рё РІ СЃР»РѕС‚Рµ РїСѓСЃС‚Рѕ, СЃСЂР°Р·Сѓ РЅР°РґРµРІР°РµРј С‚РµРєСЃС‚СѓСЂСѓ Р±РµР· Р»РёС€РЅРµР№ РµР±Р°Р»С‹
+	// Если текстура выбрана и в слоте пусто, сразу надеваем текстуру без лишней ебалы
 	if(MenuInfo[playerid][zSelect] >= 0 && zTxtModel[playerid][slot] == 0) ApplyTextureObject(playerid);
 	return 1;
 }
@@ -503,11 +503,11 @@ stock ApplyTextureObject(playerid)
 	
 	new slot = MenuInfo[playerid][zTextid];
 	new selectTexture = MenuInfo[playerid][zSelect];
-	if(selectTexture == -1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІС‹Р±СЂР°Р»Рё С‚РµРєСЃС‚СѓСЂСѓ");
-	if(slot >= MenuInfo[playerid][zMaxTexturesOnObject]) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РЈ РѕР±СЉРµРєС‚Р° РЅРµС‚ СЌС‚РѕРіРѕ СЃР»РѕС‚Р° РґР»СЏ С‚РµРєСЃС‚СѓСЂС‹");
+	if(selectTexture == -1) return ErrorMessage(playerid, "{FF6347}Вы не выбрали текстуру");
+	if(slot >= MenuInfo[playerid][zMaxTexturesOnObject]) return ErrorMessage(playerid, "{FF6347}Ошибка! У объекта нет этого слота для текстуры");
 
 	new textid = MenuInfo[playerid][zLoadPick][selectTexture];
-	MenuInfo[playerid][zChange] ++; // Р”РѕР±Р°РІР»СЏРµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РёР·РјРµРЅРµРЅРёР№
+	MenuInfo[playerid][zChange] ++; // Добавляем количество изменений
 
 	SetDynamicObjectMaterial(MenuInfo[playerid][zDynamicObject], slot, ObjectTextures[textid][TModel], ObjectTextures[textid][TXDName], ObjectTextures[textid][TextureName], 0x00000000);
 	
@@ -522,12 +522,12 @@ stock FindTexture(playerid, const inputtext[])
 {
 	if(MenuInfo[playerid][zStat] == 0) return 1;
 
-	if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРёС‡РµРіРѕ РЅРµ РІРІРµР»Рё");
-	if(strlen(inputtext) < 3 || strlen(inputtext) > 30) return ErrorMessage(playerid, "{FF6347}3 - 30 СЃРёРјРІРѕР»РѕРІ");
-    if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»");
+	if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы ничего не ввели");
+	if(strlen(inputtext) < 3 || strlen(inputtext) > 30) return ErrorMessage(playerid, "{FF6347}3 - 30 символов");
+    if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
 
 	new typeSorting;
-	// Р•СЃР»Рё С‡РёСЃР»Р°, Р·РЅР°С‡РёС‚ РёС‰РµРј РїРѕ РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р°
+	// Если числа, значит ищем по модели объекта
 	if(IsNumeric(inputtext)) typeSorting = 1;
 
 	new findQuan, textid;
@@ -547,19 +547,19 @@ stock FindTexture(playerid, const inputtext[])
 	{
 		MenuInfo[playerid][zLibraryQuan] = findQuan;
 		new string[80];
-		format(string, sizeof(string), "{ffcc66}РџРѕРёСЃРє: %s\nРќР°Р№РґРµРЅРѕ %d С‚РµРєСЃС‚СѓСЂ\n\n{666666}Р›РёРјРёС‚ РїРѕРёСЃРєР°: %d", inputtext, findQuan, MAX_TEXTURE_LIBRARY);
+		format(string, sizeof(string), "{ffcc66}Поиск: %s\nНайдено %d текстур\n\n{666666}Лимит поиска: %d", inputtext, findQuan, MAX_TEXTURE_LIBRARY);
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 		SetPaletteTexture(playerid, 1);
 		Show3DBox(playerid);
 		Move3DBox(playerid, 0);
 	}
-	else ErrorMessage(playerid, "{FF6347}РўРµРєСЃС‚СѓСЂС‹ РЅРµ РЅР°Р№РґРµРЅС‹");
+	else ErrorMessage(playerid, "{FF6347}Текстуры не найдены");
 	return 1;
 }
 
 stock SortingTexture(typeSorting, i, const inputtext[], &textid)
 {
-	if(typeSorting == 0) // РџРѕ С‚РµРєСЃС‚Сѓ
+	if(typeSorting == 0) // По тексту
 	{
 		if(strfind(ObjectTextures[i][TXDName], inputtext, true) != -1
 			|| strfind(ObjectTextures[i][TextureName], inputtext, true) != -1
@@ -569,7 +569,7 @@ stock SortingTexture(typeSorting, i, const inputtext[], &textid)
 			return 1;
 		}
 	}
-	else if(typeSorting == 1) // РџРѕ С‡РёСЃР»Р°Рј
+	else if(typeSorting == 1) // По числам
 	{
 		new modeltextureID[32];
 		valstr(modeltextureID, ObjectTextures[i][TModel]);
@@ -586,7 +586,7 @@ stock SortingTexture(typeSorting, i, const inputtext[], &textid)
 stock ClearSortingTexture(playerid)
 {
 	if(MenuInfo[playerid][zStat] == 0) return 1;
-	if(MenuInfo[playerid][zLibraryStatus] == 0) return ErrorMessage(playerid, "{FF6347}РўРµРєСЃС‚СѓСЂС‹ РЅРµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅС‹");
+	if(MenuInfo[playerid][zLibraryStatus] == 0) return ErrorMessage(playerid, "{FF6347}Текстуры не отсортированы");
 
 	SetPaletteTexture(playerid, 0);
 	Show3DBox(playerid);
@@ -612,12 +612,12 @@ stock ClickTextDraw_TextureEditor(playerid, PlayerText:playertextid)
 		}
 	}
 
-	if(playertextid == DrawTextureButton[0][playerid]) // РџРѕРёСЃРє
+	if(playertextid == DrawTextureButton[0][playerid]) // Поиск
 	{
 		PlayerPlaySound(playerid,40405,0,0,0);
-		ShowDialog(playerid,910,DIALOG_STYLE_LIST,"{ff9000}РџРѕРёСЃРє РўРµРєСЃС‚СѓСЂ","{cccccc}РЎС‚СЂР°РЅРёС†Р°\n{cccccc}РќР°Р·РІР°РЅРёРµ\n{FF6347}РЎР±СЂРѕСЃРёС‚СЊ Р¤РёР»СЊС‚СЂ","Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
+		ShowDialog(playerid,910,DIALOG_STYLE_LIST,"{ff9000}Поиск Текстур","{cccccc}Страница\n{cccccc}Название\n{FF6347}Сбросить Фильтр","Выбор","Отмена");
 	}
-	else if(playertextid == DrawTextureButton[4][playerid]) // РћР±СЉРµРєС‚С‹
+	else if(playertextid == DrawTextureButton[4][playerid]) // Объекты
 	{
 		if(MenuInfo[playerid][zObject] >= 0)
 		{
@@ -628,7 +628,7 @@ stock ClickTextDraw_TextureEditor(playerid, PlayerText:playertextid)
 	}
 	else if(playertextid == DrawTextureButton[6][playerid]) // Save
 	{
-		if(MenuInfo[playerid][zChange] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІРЅРѕСЃРёР»Рё РёР·РјРµРЅРµРЅРёР№ РІ С‚РµРєСЃС‚СѓСЂС‹ РѕР±СЉРµРєС‚Р°");
+		if(MenuInfo[playerid][zChange] == 0) return ErrorMessage(playerid, "{FF6347}Вы не вносили изменений в текстуры объекта");
 		CreateTexture(playerid);
 	}
 	else if(playertextid == DrawTextureButton[8][playerid]) // Exit
@@ -639,7 +639,7 @@ stock ClickTextDraw_TextureEditor(playerid, PlayerText:playertextid)
 	return 1;
 }
 
-// РњРµРЅСЋ Р РµС‚РµРєСЃС‚СѓСЂР°
+// Меню Ретекстура
 stock ShowDraw3DMenu(playerid)
 {
 	if(MenuInfo[playerid][zDynamicObject] == 0) return 1;
@@ -704,13 +704,13 @@ stock CreateTextDraw3DMenu(playerid, objectid)
 		PlayerTextDrawLetterSize(playerid, TextDrawTextureMenu[i][playerid], 0.115333, 0.616889);
 		PlayerTextDrawTextSize(playerid, TextDrawTextureMenu[i][playerid], 160.0, 8.0);
 		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[i][playerid], 1);
-		if(MenuInfo[playerid][zTextid] == i) PlayerTextDrawColor(playerid, TextDrawTextureMenu[i][playerid], -5963521);
-		else PlayerTextDrawColor(playerid, TextDrawTextureMenu[i][playerid], -1);
+		if(MenuInfo[playerid][zTextid] == i) PlayerTextDrawColour(playerid, TextDrawTextureMenu[i][playerid], -5963521);
+		else PlayerTextDrawColour(playerid, TextDrawTextureMenu[i][playerid], -1);
 		PlayerTextDrawUseBox(playerid, TextDrawTextureMenu[i][playerid], true);
-		PlayerTextDrawBoxColor(playerid, TextDrawTextureMenu[i][playerid], 146);
+		PlayerTextDrawBoxColour(playerid, TextDrawTextureMenu[i][playerid], 146);
 		PlayerTextDrawSetShadow(playerid, TextDrawTextureMenu[i][playerid], 0);
 		PlayerTextDrawSetOutline(playerid, TextDrawTextureMenu[i][playerid], 1);
-		PlayerTextDrawBackgroundColor(playerid, TextDrawTextureMenu[i][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+		PlayerTextDrawBackgroundColour(playerid, TextDrawTextureMenu[i][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 		PlayerTextDrawFont(playerid, TextDrawTextureMenu[i][playerid], 1);
 		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[i][playerid], 1);
 		PlayerTextDrawSetSelectable(playerid, TextDrawTextureMenu[i][playerid], true);
@@ -720,20 +720,20 @@ stock CreateTextDraw3DMenu(playerid, objectid)
 		PlayerTextDrawLetterSize(playerid, TextDrawTextureMenu[x][playerid], 0.238333, 0.853333);
 		PlayerTextDrawTextSize(playerid, TextDrawTextureMenu[x][playerid], 12.333332, 7.8);
 		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[x][playerid], 1);
-		PlayerTextDrawColor(playerid, TextDrawTextureMenu[x][playerid], -16765441);
+		PlayerTextDrawColour(playerid, TextDrawTextureMenu[x][playerid], -16765441);
 		PlayerTextDrawUseBox(playerid, TextDrawTextureMenu[x][playerid], true);
-		PlayerTextDrawBoxColor(playerid, TextDrawTextureMenu[x][playerid], 0);
+		PlayerTextDrawBoxColour(playerid, TextDrawTextureMenu[x][playerid], 0);
 		PlayerTextDrawSetShadow(playerid, TextDrawTextureMenu[x][playerid], 0);
 		PlayerTextDrawSetOutline(playerid, TextDrawTextureMenu[x][playerid], -1);
-		PlayerTextDrawBackgroundColor(playerid, TextDrawTextureMenu[x][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+		PlayerTextDrawBackgroundColour(playerid, TextDrawTextureMenu[x][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 		PlayerTextDrawFont(playerid, TextDrawTextureMenu[x][playerid], 1);
 		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[x][playerid], 1);
 		PlayerTextDrawSetSelectable(playerid, TextDrawTextureMenu[x][playerid], true);
 
-		// РЎРјРµС‰Р°РµРј РїРѕР·РёС†РёСЋ РґР»СЏ СЃР»РµРґСѓСЋС‰РµР№ СЃС‚СЂРѕРєРё
+		// Смещаем позицию для следующей строки
 		slotpos_x -= offset_x;
 
-		// РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ РїРѕРґ С‚РµРєСЃС‚СѓСЂС‹
+		// Отображаем только определённое количество слотов под текстуры
 		if(i + 1 <= MenuInfo[playerid][zMaxTexturesOnObject])
 		{
 			PlayerTextDrawShow(playerid, TextDrawTextureMenu[i][playerid]);
@@ -746,131 +746,131 @@ stock CreateTextDraw3DMenu(playerid, objectid)
 stock CreateTextDrawTextureButton(playerid)
 {
 	new Float:tpos_x[5], Float:tpos_y = 400.0;
-	new Float:offset_x = 3.0; // Р Р°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ РєРІР°РґСЂР°С‚Р°РјРё
+	new Float:offset_x = 3.0; // Расстояние между квадратами
 
-	// Р Р°Р·РјРµСЂС‹ РєРІР°РґСЂР°С‚РѕРІ
+	// Размеры квадратов
 	new Float:fix_x = 36.0, Float:fix_y = 41.0;
 	//FixTextDrawSquare_X(Float:x, &Float:fix_y)(fix_x, fix_y);
 
-	// Р¦РІРµС‚ С‚РµРєСЃС‚Р° РІ РєРІР°РґСЂР°С‚Р°С…
+	// Цвет текста в квадратах
 	new colorText = COLOR_TEXTDRAW_GREY;
 	if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[playerid][pSty] == 11) colorText = COLOR_TEXTDRAW_BLACK;
 
 	tpos_x[0] = 176.0 + offset_x * 3;
-	DrawTextureButton[0][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0], tpos_y, "LD_SPAC:white"); // РљРЅРѕРїРєР° РџРѕРёСЃРє
+	DrawTextureButton[0][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0], tpos_y, "LD_SPAC:white"); // Кнопка Поиск
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[0][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[0][playerid], fix_x, fix_y);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[0][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[0][playerid], PlayerInfo[playerid][pStyle1]);
+	PlayerTextDrawColour(playerid, DrawTextureButton[0][playerid], PlayerInfo[playerid][pStyle1]);
 	PlayerTextDrawFont(playerid, DrawTextureButton[0][playerid], 4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[0][playerid], true);
 
-	DrawTextureButton[1][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0] + fix_x/2, tpos_y + fix_y/2 - 4.0, "РЉOвЂ¦CK"); // РџРѕРёСЃРє
+	DrawTextureButton[1][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0] + fix_x/2, tpos_y + fix_y/2 - 4.0, "ЊO…CK"); // Поиск
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[1][playerid], 0.181927, 0.871999);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[1][playerid], 2);
-	PlayerTextDrawColor(playerid, DrawTextureButton[1][playerid], colorText);
+	PlayerTextDrawColour(playerid, DrawTextureButton[1][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[1][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[1][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[1][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[1][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[1][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[1][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[1][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[1][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[1][playerid], 1);
 
 	tpos_x[1] = tpos_x[0] + fix_x + offset_x;
-	DrawTextureButton[2][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1], tpos_y, "LD_SPAC:white"); // РљРЅРѕРїРєР° РњРѕРё РўРµРєСЃС‚СѓСЂС‹
+	DrawTextureButton[2][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1], tpos_y, "LD_SPAC:white"); // Кнопка Мои Текстуры
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[2][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[2][playerid], fix_x, fix_y);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[2][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[2][playerid], PlayerInfo[playerid][pStyle1]);
+	PlayerTextDrawColour(playerid, DrawTextureButton[2][playerid], PlayerInfo[playerid][pStyle1]);
 	PlayerTextDrawFont(playerid, DrawTextureButton[2][playerid], 4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[2][playerid], true);
 
-	DrawTextureButton[3][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1] + fix_x/2, tpos_y + fix_y/2 - 8.0, "MOвЂ¦~n~РЏEKCРЏYPвЂ"); // РњРѕРё РўРµРєСЃС‚СѓСЂС‹
+	DrawTextureButton[3][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1] + fix_x/2, tpos_y + fix_y/2 - 8.0, "MO…~n~ЏEKCЏYP‘"); // Мои Текстуры
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[3][playerid], 0.181927, 0.871999);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[3][playerid], 2);
-	PlayerTextDrawColor(playerid, DrawTextureButton[3][playerid], colorText);
+	PlayerTextDrawColour(playerid, DrawTextureButton[3][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[3][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[3][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[3][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[3][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[3][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[3][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[3][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[3][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[3][playerid], 1);
 	
-	// tpos_x[2] = tpos_x[1] + fix_x + offset_x; // Р’СЂРµРјРµРЅРЅРѕ СѓР±РёСЂР°СЋ РєРЅРѕРїРєСѓ РњРѕРё РўРµРєСЃС‚СѓСЂС‹ (РЎРёСЃС‚РµРјР° РёР·Р±СЂР°РЅРЅС‹С… С‚РµРєСЃС‚СѓСЂ РЅРµ РіРѕС‚РѕРІР°)
+	// tpos_x[2] = tpos_x[1] + fix_x + offset_x; // Временно убираю кнопку Мои Текстуры (Система избранных текстур не готова)
 	tpos_x[2] = tpos_x[0] + fix_x + offset_x;
-	DrawTextureButton[4][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2], tpos_y, "LD_SPAC:white"); // РљРЅРѕРїРєР° РћР±СЉРµРєС‚С‹
+	DrawTextureButton[4][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2], tpos_y, "LD_SPAC:white"); // Кнопка Объекты
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[4][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[4][playerid], fix_x, fix_y);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[4][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[4][playerid], PlayerInfo[playerid][pStyle1]);
+	PlayerTextDrawColour(playerid, DrawTextureButton[4][playerid], PlayerInfo[playerid][pStyle1]);
 	PlayerTextDrawFont(playerid, DrawTextureButton[4][playerid], 4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[4][playerid], true);
 
-	DrawTextureButton[5][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2] + fix_x/2, tpos_y + fix_y/2 - 4.0, "OР‚С’EKРЏвЂ"); // РћР±СЉРµРєС‚С‹
+	DrawTextureButton[5][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2] + fix_x/2, tpos_y + fix_y/2 - 4.0, "OЂђEKЏ‘"); // Объекты
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[5][playerid], 0.181927, 0.871999);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[5][playerid], 2);
-	PlayerTextDrawColor(playerid, DrawTextureButton[5][playerid], colorText);
+	PlayerTextDrawColour(playerid, DrawTextureButton[5][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[5][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[5][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[5][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[5][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[5][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[5][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[5][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[5][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[5][playerid], 1);
 	
 	tpos_x[3] = tpos_x[2] + fix_x + offset_x;
-	DrawTextureButton[6][playerid] = CreatePlayerTextDraw(playerid, tpos_x[3], tpos_y, "LD_SPAC:white"); // РљРЅРѕРїРєР° Save
+	DrawTextureButton[6][playerid] = CreatePlayerTextDraw(playerid, tpos_x[3], tpos_y, "LD_SPAC:white"); // Кнопка Save
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[6][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[6][playerid], fix_x, fix_y);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[6][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[6][playerid], PlayerInfo[playerid][pStyle1]);
+	PlayerTextDrawColour(playerid, DrawTextureButton[6][playerid], PlayerInfo[playerid][pStyle1]);
 	PlayerTextDrawFont(playerid, DrawTextureButton[6][playerid], 4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[6][playerid], true);
 
 	DrawTextureButton[7][playerid] = CreatePlayerTextDraw(playerid, tpos_x[3] + fix_x/2, tpos_y + fix_y/2 - 4.0, "SAVE"); // Save
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[7][playerid], 0.181927, 0.871999);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[7][playerid], 2);
-	PlayerTextDrawColor(playerid, DrawTextureButton[7][playerid], colorText);
+	PlayerTextDrawColour(playerid, DrawTextureButton[7][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[7][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[7][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[7][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[7][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[7][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[7][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[7][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[7][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[7][playerid], 1);
 
 	tpos_x[4] = tpos_x[3] + fix_x + offset_x;
-	DrawTextureButton[8][playerid] = CreatePlayerTextDraw(playerid, tpos_x[4], tpos_y, "LD_SPAC:white"); // РљРЅРѕРїРєР° Exit
+	DrawTextureButton[8][playerid] = CreatePlayerTextDraw(playerid, tpos_x[4], tpos_y, "LD_SPAC:white"); // Кнопка Exit
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[8][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[8][playerid], fix_x, fix_y);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[8][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[8][playerid], PlayerInfo[playerid][pStyle1]);
+	PlayerTextDrawColour(playerid, DrawTextureButton[8][playerid], PlayerInfo[playerid][pStyle1]);
 	PlayerTextDrawFont(playerid, DrawTextureButton[8][playerid], 4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[8][playerid], true);
 
 	DrawTextureButton[9][playerid] = CreatePlayerTextDraw(playerid, tpos_x[4] + fix_x/2, tpos_y + fix_y/2 - 4.0, "EXIT"); // Exit
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[9][playerid], 0.181927, 0.871999);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[9][playerid], 2);
-	PlayerTextDrawColor(playerid, DrawTextureButton[9][playerid], colorText);
+	PlayerTextDrawColour(playerid, DrawTextureButton[9][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[9][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[9][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[9][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[9][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[9][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[9][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[9][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[9][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[9][playerid], 1);
 
-	DrawTextureButton[10][playerid] = CreatePlayerTextDraw(playerid, 482.666412, 370.0, "РЉKM_-_РЉokaСџaВ¦В©_Р‡РЃТђky~n~Y_-_вЂ№Сћepx~n~N_-_вЂ№В®СљСџ~n~Num_4_-_вЂ№С›eСћo~n~Num_6_-_вЂ№Р€paСћo~n~~y~ALT_-_РЉpСљР‡eВ®СљВ¦В©_В¦ekcВ¦ypy");
+	DrawTextureButton[10][playerid] = CreatePlayerTextDraw(playerid, 482.666412, 370.0, "ЊKM_-_Њokaџa¦©_ЇЁҐky~n~Y_-_‹ўepx~n~N_-_‹®њџ~n~Num_4_-_‹ћeўo~n~Num_6_-_‹Јpaўo~n~~y~ALT_-_ЊpњЇe®њ¦©_¦ekc¦ypy");
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[10][playerid], 0.329999, 1.305481);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[10][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_GREY);
+	PlayerTextDrawColour(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_GREY);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[10][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[10][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[10][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[10][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[10][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[10][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[10][playerid], 1);
 	PlayerTextDrawShow(playerid, DrawTextureButton[10][playerid]);
@@ -878,18 +878,18 @@ stock CreateTextDrawTextureButton(playerid)
 	DrawTextureButton[11][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0], tpos_y - 10.0, "Text"); // Name Texture and Pages
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[11][playerid], 0.209420, 0.881332);
 	PlayerTextDrawAlignment(playerid, DrawTextureButton[11][playerid], 1);
-	PlayerTextDrawColor(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_GREY);
+	PlayerTextDrawColour(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_GREY);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[11][playerid], true);
-	PlayerTextDrawBoxColor(playerid, DrawTextureButton[11][playerid], 0);
+	PlayerTextDrawBoxColour(playerid, DrawTextureButton[11][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[11][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[11][playerid], 1);
-	PlayerTextDrawBackgroundColor(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_STROKE_GREY);
+	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_STROKE_GREY);
 	PlayerTextDrawFont(playerid, DrawTextureButton[11][playerid], 1);
 	PlayerTextDrawSetProportional(playerid, DrawTextureButton[11][playerid], 1);
 
 	PlayerTextDrawShow(playerid, DrawTextureButton[0][playerid]);
 	PlayerTextDrawShow(playerid, DrawTextureButton[1][playerid]);
-	//PlayerTextDrawShow(playerid, DrawTextureButton[2][playerid]); // Р’СЂРµРјРµРЅРЅРѕ Р·Р°РєРѕРјРµРЅС‚РёР» РєРЅРѕРїРєСѓ РёР·Р±СЂР°РЅРЅС‹С… С‚РµРєСЃС‚СѓСЂ
+	//PlayerTextDrawShow(playerid, DrawTextureButton[2][playerid]); // Временно закоментил кнопку избранных текстур
 	//PlayerTextDrawShow(playerid, DrawTextureButton[3][playerid]);
 	PlayerTextDrawShow(playerid, DrawTextureButton[4][playerid]);
 	PlayerTextDrawShow(playerid, DrawTextureButton[5][playerid]);
