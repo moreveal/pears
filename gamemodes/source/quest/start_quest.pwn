@@ -497,7 +497,7 @@ stock QuestActorJoneNotebook(playerid) // Начинаем взаимодейс�
     if(!NoCompleteQuest(playerid, 9)) return 0; // Если квест уже пойден, не запускаем квест
     if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");
     if(QuestInfo[playerid][ScriptQuest] == 4) return 1; // Все сценарии были отработаны
-    new b = GetPlayerVirtualWorld(playerid)-3000;
+
     if(PlayerInfo[playerid][pQuest][9] == 1)
     {
         SuccessMessage(playerid,"{44ff99}Подойдите к кассе и ноутбук");

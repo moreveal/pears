@@ -1,4 +1,6 @@
 
+/*
+// Старая шляпа для установки каркасов в бизы
 CMD:reloadframebiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
@@ -109,7 +111,7 @@ stock ReloadFrameBiz(b)
 		}
 	}
 	return 0;
-}
+}*/
 
 stock IsAJizzyBiz(b)
 {
@@ -252,7 +254,7 @@ stock EditTextureBiz(playerid, biz, oba)
 
 stock ClearVariableObjectBiz(biz, oba)
 {
-    BizzInfo[biz][bNewid][oba] = 0;
+    //BizzInfo[biz][bNewid][oba] = 0;
     BizzInfo[biz][bObject][oba] = 0;
     BizzInfo[biz][bOmodel][oba] = 0;
     BizzInfo[biz][bQara][oba] = 0;

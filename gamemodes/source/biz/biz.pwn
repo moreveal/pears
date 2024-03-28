@@ -1068,10 +1068,10 @@ stock SaveBizz(b)
 	BizzInfo[b][bBarZ],BizzInfo[b][bShluha], BizzInfo[b][bShluhaCord][0], BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2]); // 259 + 110 + 24 + 120 + 34 + 72
 
 	format(string_mysql, sizeof(string_mysql), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
-	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`Frame`='%d',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',`bZZ` ='%d',",string_mysql,
+	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',`bZZ` ='%d',",string_mysql,
 	BizzInfo[b][bBizOX][0],BizzInfo[b][bBizOY][0],BizzInfo[b][bBizOZ][0],BizzInfo[b][bBizORX][0],BizzInfo[b][bBizORY][0],BizzInfo[b][bBizORZ][0],
 	BizzInfo[b][bBizOX][1],BizzInfo[b][bBizOY][1],BizzInfo[b][bBizOZ][1],BizzInfo[b][bBizORX][1],BizzInfo[b][bBizORY][1],BizzInfo[b][bBizORZ][1],BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],
-	BizzInfo[b][bEnterZ],BizzInfo[b][bEnterA],BizzInfo[b][bFrame], BizzInfo[b][bInteriorX], BizzInfo[b][bInteriorY], BizzInfo[b][bInteriorZ], BizzInfo[b][bInteriorA], 
+	BizzInfo[b][bEnterZ],BizzInfo[b][bEnterA], BizzInfo[b][bInteriorX], BizzInfo[b][bInteriorY], BizzInfo[b][bInteriorZ], BizzInfo[b][bInteriorA], 
 	BizzInfo[b][bInterior],BizzInfo[b][bZZ]); // 307 + 22 + 400 + 12
 	
 	format(string_mysql, sizeof(string_mysql), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',\

@@ -247,11 +247,6 @@ stock LoadInteriorToBiz(playerid, b)
         // Получаем инфу об объекте
         GetDynamicObjectPos(peoInfo[peoId][peoObject][i], pos[0], pos[1], pos[2]);
         GetDynamicObjectRot(peoInfo[peoId][peoObject][i], pos[3], pos[4], pos[5]);
-        
-        if(i == 0)
-        {
-            BizzInfo[b][bFrame] = peoInfo[peoId][peoModel][i]; // Записываем Frame для 0 ID объекта
-        }
 
         // Создаём объект
         BizzInfo[b][bOmodel][i] = peoInfo[peoId][peoModel][i];

@@ -9068,7 +9068,7 @@ new ObjectTextures[][TEXTUREDEF] =
 	{ 19076, "xmastree1", "goldplate" }
 };
 
-enum OLDTEXTUREDEF { OLDTModel, OLDTXDName[32], OLDTextureName[32], OLDTextureTag[32] }
+/*enum OLDTEXTUREDEF { OLDTModel, OLDTXDName[32], OLDTextureName[32], OLDTextureTag[32] }
 new OLDObjectTextures[][OLDTEXTUREDEF] =
 {
 	// Дерево
@@ -9705,4 +9705,4 @@ new OLDObjectTextures[][OLDTEXTUREDEF] =
 	{ 3925, "weemap", "skyclouds", "" },
 	{ 14738, "whorebar", "AH_blueceiling", "" },
 	{ 14526, "sweetsmain", "gb_binbag01" } // 626
-};
+};*/
