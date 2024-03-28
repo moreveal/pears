@@ -279,7 +279,7 @@ stock LoadInteriorToBiz(playerid, b)
             }
         }
 
-        UpdateObjectBiz(b, i, true, true); // Сохраняем сразу в базу
+        UpdateObjectBiz(b, i); // Сохраняем сразу в базу
         quan ++;
     }
 

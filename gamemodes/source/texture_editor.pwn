@@ -126,8 +126,8 @@ stock CreateTexture(playerid) // Сохраняем текстуры на объ
 			}
 			if(MenuInfo[playerid][zChange] > 0)
 			{
-				if(nd > 0) UpdateObject(nd, oba, false, true); // Обновляем только текстуры
-				else UpdateObjectBiz(b, oba, false, true);
+				if(nd > 0) UpdateObject(nd, oba); // Обновляем только текстуры
+				else UpdateObjectBiz(b, oba);
 			}
 		}
 		MenuInfo[playerid][zChange] = 0;

@@ -158,7 +158,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		DomInfo[oid][dUser][findSlot] = PlayerInfo[playerid][pID];
 		DomInfo[oid][dQara][findSlot] = DomInfo[oid][dInvQara][slot];
 		DomInfo[oid][dOmodel][findSlot] = modelid;
-        UpdateObject(oid, findSlot, true, false); // Обновляем только расположение (текстуры не обновляем)
+        UpdateObject(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
 
         Update3DLabelDomBiz(oid, findSlot, 1);
         if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
@@ -365,7 +365,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		BizzInfo[oid][bUser][findSlot] = PlayerInfo[playerid][pID];
 		BizzInfo[oid][bQara][findSlot] = BizzInfo[oid][bInvQara][slot];
 		BizzInfo[oid][bOmodel][findSlot] = modelid;
-        UpdateObjectBiz(oid, findSlot, true, false); // Обновляем только расположение (текстуры не обновляем)
+        UpdateObjectBiz(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
 
         Update3DLabelDomBiz(oid, findSlot, 2);
         if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
@@ -588,7 +588,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             DomInfo[oid][dUser][slot] = PlayerInfo[playerid][pID];
             Update3DLabelDomBiz(oid, slot, 1);
-            UpdateObject(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
+            UpdateObject(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
         else if(gRedakt[playerid] == 12) // Установка Маппинга на респах банд
@@ -645,7 +645,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             BizzInfo[oid][bUser][slot] = PlayerInfo[playerid][pID];
             Update3DLabelDomBiz(oid, slot, 2);
-            UpdateObjectBiz(oid, slot, true, false); // Обновляем только расположение (текстуры не обновляем)
+            UpdateObjectBiz(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
         else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // Установка или перенос предмета в Личном Редакторе
