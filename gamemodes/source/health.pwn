@@ -3,49 +3,49 @@ stock ProcessHealthPlayer(playerid)
 {
 	OnlineInfo[playerid][oHealthTime] --;
 
-	if(OnlineInfo[playerid][oHealthTime] == 0 // Время вышло
-		&& DeathInfo[playerid][deathStatus] == false // Чувак не в процессе смерти
-		&& HealthAC[playerid] > 0.0) // ХП имеется, значит не умер
+	if(OnlineInfo[playerid][oHealthTime] == 0 // Р’СЂРµРјСЏ РІС‹С€Р»Рѕ
+		&& DeathInfo[playerid][deathStatus] == false // Р§СѓРІР°Рє РЅРµ РІ РїСЂРѕС†РµСЃСЃРµ СЃРјРµСЂС‚Рё
+		&& HealthAC[playerid] > 0.0) // РҐРџ РёРјРµРµС‚СЃСЏ, Р·РЅР°С‡РёС‚ РЅРµ СѓРјРµСЂ
 	{
 		new bool:yesHealth;
-		if(OnlineInfo[playerid][oHealthInva] != 999) // Знаем слот предмета
+		if(OnlineInfo[playerid][oHealthInva] != 999) // Р—РЅР°РµРј СЃР»РѕС‚ РїСЂРµРґРјРµС‚Р°
 		{
             new inva = OnlineInfo[playerid][oHealthInva];
-			if(PlayerInfo[playerid][pInven][inva] == OnlineInfo[playerid][oHealthThing]) // Тот самый предмет
+			if(PlayerInfo[playerid][pInven][inva] == OnlineInfo[playerid][oHealthThing]) // РўРѕС‚ СЃР°РјС‹Р№ РїСЂРµРґРјРµС‚
             {
-			    TakeInvent(playerid, OnlineInfo[playerid][oHealthThing], 1, 0, inva); // Отнимаем
-                yesHealth = true; // Можно лечить
+			    TakeInvent(playerid, OnlineInfo[playerid][oHealthThing], 1, 0, inva); // РћС‚РЅРёРјР°РµРј
+                yesHealth = true; // РњРѕР¶РЅРѕ Р»РµС‡РёС‚СЊ
             }
 		}
-        else // Не знаем слот, значит удаляем в поиске
+        else // РќРµ Р·РЅР°РµРј СЃР»РѕС‚, Р·РЅР°С‡РёС‚ СѓРґР°Р»СЏРµРј РІ РїРѕРёСЃРєРµ
         {
             new result = TakeInvent(playerid, OnlineInfo[playerid][oHealthThing], 1, 0, 999);
-            if(result >= 0) yesHealth = true; // Можно лечить
+            if(result >= 0) yesHealth = true; // РњРѕР¶РЅРѕ Р»РµС‡РёС‚СЊ
         }
 
 		if(yesHealth == true)
 		{
-			ACSetPlayerHealth(playerid, HealthAC[playerid] + OnlineInfo[playerid][oHealthMed]); // Пополняем хп
+			ACSetPlayerHealth(playerid, HealthAC[playerid] + OnlineInfo[playerid][oHealthMed]); // РџРѕРїРѕР»РЅСЏРµРј С…Рї
 			new string[20];
 			format(string, sizeof string, "+%.1f HP", OnlineInfo[playerid][oHealthMed]);
 			SetPlayerChatBubble(playerid, string, COLOR_GREEN, 45.0, 4000);
 
-            // Старая система кровотечения off
+            // РЎС‚Р°СЂР°СЏ СЃРёСЃС‚РµРјР° РєСЂРѕРІРѕС‚РµС‡РµРЅРёСЏ off
             PlayerInfo[playerid][pRanentors] = 0;
             TextDrawHideForPlayer(playerid, PearsDraw[0]);
 
-            // Если лечим бинтами
+            // Р•СЃР»Рё Р»РµС‡РёРј Р±РёРЅС‚Р°РјРё
             if(OnlineInfo[playerid][oHealthThing] == 70)
             {
-                // Все эффекты off
+                // Р’СЃРµ СЌС„С„РµРєС‚С‹ off
                 Effect[playerid] = 0;
                 EffectTime[playerid] = 0;
                 SetPlayerDrunkLevel(playerid, 0);
 
-                // Погоду и время сбрасываем (Вдруг были эффекты)
+                // РџРѕРіРѕРґСѓ Рё РІСЂРµРјСЏ СЃР±СЂР°СЃС‹РІР°РµРј (Р’РґСЂСѓРі Р±С‹Р»Рё СЌС„С„РµРєС‚С‹)
                 PearsWeather(playerid), PearsTime(playerid);
 
-                PoliceStick[0][playerid] = 0; // Количества ударов тупым предметом сбрасываем
+                PoliceStick[0][playerid] = 0; // РљРѕР»РёС‡РµСЃС‚РІР° СѓРґР°СЂРѕРІ С‚СѓРїС‹Рј РїСЂРµРґРјРµС‚РѕРј СЃР±СЂР°СЃС‹РІР°РµРј
 
                 if(IsAZoneCapt(playerid))
                 {
@@ -56,7 +56,7 @@ stock ProcessHealthPlayer(playerid)
                 }
             }
 
-            //  Лечим порошком
+            //  Р›РµС‡РёРј РїРѕСЂРѕС€РєРѕРј
             else if(OnlineInfo[playerid][oHealthThing] == 7)
             {
                 Effect[playerid] = 4;
@@ -76,13 +76,13 @@ stock ProcessHealthPlayer(playerid)
 	return 1;
 }
 
-stock HealthPlayer(playerid, time, Float:health, inva, thingId) // Лечим
+stock HealthPlayer(playerid, time, Float:health, inva, thingId) // Р›РµС‡РёРј
 {
     if(OnlineInfo[playerid][oHealthTime] > 0) return 0;
 
-	OnlineInfo[playerid][oHealthTime] = time; // Время через которое игроку повысится хп
-	OnlineInfo[playerid][oHealthMed] = health; // Сколько хп повысится
-	OnlineInfo[playerid][oHealthInva] = inva; // Слот предмета
-    OnlineInfo[playerid][oHealthThing] = thingId; // ID предмета
+	OnlineInfo[playerid][oHealthTime] = time; // Р’СЂРµРјСЏ С‡РµСЂРµР· РєРѕС‚РѕСЂРѕРµ РёРіСЂРѕРєСѓ РїРѕРІС‹СЃРёС‚СЃСЏ С…Рї
+	OnlineInfo[playerid][oHealthMed] = health; // РЎРєРѕР»СЊРєРѕ С…Рї РїРѕРІС‹СЃРёС‚СЃСЏ
+	OnlineInfo[playerid][oHealthInva] = inva; // РЎР»РѕС‚ РїСЂРµРґРјРµС‚Р°
+    OnlineInfo[playerid][oHealthThing] = thingId; // ID РїСЂРµРґРјРµС‚Р°
 	return 1;
 }
