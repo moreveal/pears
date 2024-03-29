@@ -1,9 +1,9 @@
 
-// РЎРµСЂРёР°Р»РёР·Р°С†РёСЏ РІ СЃС‚СЂРѕРєСѓ
+// Сериализация в строку
 stock StringifyArray(const array[], size) 
 {
     static string[4096];
-    string[0] = '\0'; // РћР±РЅСѓР»СЏРµРј СЃС‚СЂРѕРєСѓ РїРµСЂРµРґ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј
+    string[0] = '\0'; // Обнуляем строку перед использованием
     new length = 0;
 
     for (new i = 0; i < size; i++) 
@@ -25,25 +25,25 @@ stock StringifyArray(const array[], size)
     return string;
 }
 
-// Р Р°Р·Р±РёСЂР°РµРј СЃС‚СЂРѕРєСѓ РЅР° СЃРёРјРІРѕР»С‹
+// Разбираем строку на символы
 stock ParseStringToArray(const inputString[], outputArray[], outputSize) 
 {
     new token[12];
     new tokenIndex = 0, arrayIndex = 0;
 
-    // РџСЂРѕС…РѕРґРёРј РїРѕ РєР°Р¶РґРѕРјСѓ СЃРёРјРІРѕР»Сѓ РІ СЃС‚СЂРѕРєРµ
+    // Проходим по каждому символу в строке
     for (new i = 0; inputString[i] != '\0' && arrayIndex < outputSize; i++) 
     {
         if (inputString[i] == ',' || inputString[i] == '\0') 
         {
-            token[tokenIndex] = '\0'; // Р—Р°РІРµСЂС€Р°РµРј С‚РµРєСѓС‰РёР№ С‚РѕРєРµРЅ
-            outputArray[arrayIndex] = strval(token); // РџСЂРµРѕР±СЂР°Р·СѓРµРј С‚РѕРєРµРЅ РІ С‡РёСЃР»Рѕ Рё СЃРѕС…СЂР°РЅСЏРµРј РІ РјР°СЃСЃРёРІ
-            arrayIndex ++; // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СЌР»РµРјРµРЅС‚Сѓ РјР°СЃСЃРёРІР°
-            tokenIndex = 0; // РЎР±СЂР°СЃС‹РІР°РµРј РёРЅРґРµРєСЃ С‚РѕРєРµРЅР° РґР»СЏ СЃР»РµРґСѓСЋС‰РµРіРѕ С‡РёСЃР»Р°
+            token[tokenIndex] = '\0'; // Завершаем текущий токен
+            outputArray[arrayIndex] = strval(token); // Преобразуем токен в число и сохраняем в массив
+            arrayIndex ++; // Переходим к следующему элементу массива
+            tokenIndex = 0; // Сбрасываем индекс токена для следующего числа
         } 
         else 
         {
-            token[tokenIndex++] = inputString[i]; // Р”РѕР±Р°РІР»СЏРµРј СЃРёРјРІРѕР» Рє С‚РµРєСѓС‰РµРјСѓ С‚РѕРєРµРЅСѓ
+            token[tokenIndex++] = inputString[i]; // Добавляем символ к текущему токену
         }
     }
 }

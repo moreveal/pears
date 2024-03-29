@@ -20,23 +20,23 @@ stock DynamicPickupEnterBizDoor()
 {
     for(new i = 0; i < sizeof(BizDoor); i++) CreateDynamicPickup(19132, 1, BizDoor[i][0],BizDoor[i][1],BizDoor[i][2], 0, 0);
 
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3077, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3078, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3079, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3080, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3081, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3082, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3083, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3084, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3085, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3086, 186); // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3077, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3078, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3079, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3080, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3081, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3082, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3083, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3084, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3085, 186); // Выход из Автосалона, Мотосалона
+    CreateDynamicPickup(19132, 1, 1346.2372,1575.5746,10.8269, 3086, 186); // Выход из Автосалона, Мотосалона
 
-    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3087, 185); // Р’С‹С…РѕРґ РёР· РђРІРёР°СЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3088, 185); // Р’С‹С…РѕРґ РёР· РђРІРёР°СЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3089, 185); // Р’С‹С…РѕРґ РёР· РђРІРёР°СЃР°Р»РѕРЅР°
-    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3090, 184); // Р’С‹С…РѕРґ РёР· РЎР°Р»РѕРЅР° РљР°С‚РµСЂРѕРІ
-    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3091, 184); // Р’С‹С…РѕРґ РёР· РЎР°Р»РѕРЅР° РљР°С‚РµСЂРѕРІ
-    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3092, 184); // Р’С‹С…РѕРґ РёР· РЎР°Р»РѕРЅР° РљР°С‚РµСЂРѕРІ
+    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3087, 185); // Выход из Авиасалона
+    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3088, 185); // Выход из Авиасалона
+    CreateDynamicPickup(19132, 1, 1335.4403,1574.2633,10.8364, 3089, 185); // Выход из Авиасалона
+    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3090, 184); // Выход из Салона Катеров
+    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3091, 184); // Выход из Салона Катеров
+    CreateDynamicPickup(19132, 1, 1363.6516,1578.4187,10.8461, 3092, 184); // Выход из Салона Катеров
 }
 
 stock EnterBizDoor(playerid)
@@ -49,22 +49,22 @@ stock EnterBizDoor(playerid)
             if(IsPlayerInRangeOfPoint(playerid,2.0,BizDoor[i][0],BizDoor[i][1],BizDoor[i][2]))
             {
                 b = i + 78;
-                if(i >= 2) b ++; // 80 Р±РёР·РЅРµСЃ РїСЂРѕРїСѓСЃРєР°РµС‚СЃСЏ, Сѓ РЅРµРіРѕ РЅРµС‚ РёРЅС‚РµСЂСЊРµСЂР°
+                if(i >= 2) b ++; // 80 бизнес пропускается, у него нет интерьера
 
-                if(BizzInfo[b][bArest] > 0) return ErrorMessage(playerid, "{FF6347}Р—Р°РєСЂС‹С‚Рѕ [Р‘РёР·РЅРµСЃ Р°СЂРµСЃС‚РѕРІР°РЅ]");
+                if(BizzInfo[b][bArest] > 0) return ErrorMessage(playerid, "{FF6347}Закрыто [Бизнес арестован]");
 
-                keep(playerid); // РџРѕРґРјРѕСЂР°Р¶РёРІР°РµРј
-                if(i <= 7) // РђРІС‚РѕСЃР°Р»РѕРЅС‹, РњРѕС‚РѕСЃР°Р»РѕРЅС‹
+                keep(playerid); // Подмораживаем
+                if(i <= 7) // Автосалоны, Мотосалоны
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 186), SetPlayerInterior(playerid, 186);
                     PPSetPlayerPos(playerid,1346.2616,1577.9895,10.8269), SetPlayerFacingAngle(playerid, 0.0);
                 }
-                else if(i >= 8 && i <= 10) // РђРІРёР°СЃР°Р»РѕРЅС‹
+                else if(i >= 8 && i <= 10) // Авиасалоны
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 185), SetPlayerInterior(playerid, 185);
                     PPSetPlayerPos(playerid,1335.5031,1576.4174,10.8364), SetPlayerFacingAngle(playerid, 0.0);
                 }
-                else if(i >= 11 && i <= 13) // РЎР°Р»РѕРЅС‹ РљР°С‚РµСЂРѕРІ
+                else if(i >= 11 && i <= 13) // Салоны Катеров
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 184), SetPlayerInterior(playerid, 184);
                     PPSetPlayerPos(playerid,1363.7249,1580.1615,10.8461), SetPlayerFacingAngle(playerid, 0.0);
@@ -79,7 +79,7 @@ stock EnterBizDoor(playerid)
     if(!yes && 
     (IsPlayerInRangeOfPoint(playerid,2.0,1346.2372,1575.5746,10.8269) && GetPlayerInterior(playerid) == 186
     || IsPlayerInRangeOfPoint(playerid,2.0,1335.4403,1574.2633,10.8364) && GetPlayerInterior(playerid) == 185
-    || IsPlayerInRangeOfPoint(playerid,2.0,1363.6516,1578.4187,10.8461) && GetPlayerInterior(playerid) == 184)) // Р’С‹С…РѕРґ РёР· РђРІС‚РѕСЃР°Р»РѕРЅР°, РњРѕС‚РѕСЃР°Р»РѕРЅР°, РђРІРёР°СЃР°Р»РѕРЅР°, РЎР°Р»РѕРЅР° РєР°С‚РµСЂРѕРІ
+    || IsPlayerInRangeOfPoint(playerid,2.0,1363.6516,1578.4187,10.8461) && GetPlayerInterior(playerid) == 184)) // Выход из Автосалона, Мотосалона, Авиасалона, Салона катеров
 	{
         b = GetPlayerVirtualWorld(playerid) - 3000;
         if(b >= 1)
@@ -113,7 +113,7 @@ stock BankDoorMoving(playerid)
     {
         new current_tick = GetTickCount();
         new interval = GetTickDiff(current_tick, Afclick[playerid]);
-        if(interval < 500) return ErrorMessage(playerid, "{FF6347}РџРѕР¶Р°Р»СѓР№СЃС‚Р°.. РЅРµ С„Р»СѓРґРёС‚Рµ\n{cccccc}РџРѕРІС‚РѕСЂРёС‚Рµ РїРѕРїС‹С‚РєСѓ С‡РµСЂРµР· РЅРµСЃРєРѕР»СЊРєРѕ СЃРµРєСѓРЅРґ");
+        if(interval < 500) return ErrorMessage(playerid, "{FF6347}Пожалуйста.. не флудите\n{cccccc}Повторите попытку через несколько секунд");
         Afclick[playerid] = current_tick;
         if(DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] == 0) DoorBankStatus[GetPlayerVirtualWorld(playerid)-3163] = 1,Statvorota[GetPlayerVirtualWorld(playerid)-3163+130] = 5,MoveDynamicObject(DoorBank[GetPlayerVirtualWorld(playerid)-3163],1351.405395, 1558.781127, 1559.846191,1.5);
         else return 0;

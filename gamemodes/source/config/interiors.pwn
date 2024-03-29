@@ -1,50 +1,50 @@
 
 //==================================================
-// РўСЋСЂСЊРјР° Prison
+// Тюрьма Prison
 
-// РўСЋСЂСЊРјР° РёРЅС‚РµСЂСЊРµСЂ РєР°РјРµСЂС‹ prison cells
+// Тюрьма интерьер камеры prison cells
 #define WORLD_PRISON_CELLS 181
 #define INT_PRISON_CELLS 181
 
-// РўСЋСЂСЊРјР° РёРЅС‚РµСЂСЊРµСЂ 1 СЌС‚Р°Р¶
+// Тюрьма интерьер 1 этаж
 #define WORLD_PRISON_1LVL 178
 #define INT_PRISON_1LVL 0
 
-// РўСЋСЂСЊРјР° РёРЅС‚РµСЂСЊРµСЂ 2 СЌС‚Р°Р¶
+// Тюрьма интерьер 2 этаж
 #define WORLD_PRISON_2LVL 180
 #define INT_PRISON_2LVL 177
 
-// РўСЋСЂСЊРјР° РёРЅС‚РµСЂСЊРµСЂ РїСЂР°С‡РµС‡РЅР°СЏ prison laundy
+// Тюрьма интерьер прачечная prison laundy
 #define WORLD_PRISON_LAUNDY 180
 #define INT_PRISON_LAUNDY 180
 
-// РўСЋСЂСЊРјР° РёР·РѕР»СЏС‚РѕСЂ РєР°СЂС†РµСЂ prison izol
+// Тюрьма изолятор карцер prison izol
 #define WORLD_PRISON_IZOL -1
 #define INT_PRISON_IZOL 176
 
-// РўСЋСЂСЊРјР° РєСѓС…РЅСЏ prison kitchen
+// Тюрьма кухня prison kitchen
 #define WORLD_PRISON_KITCHEN 180
 #define INT_PRISON_KITCHEN 175
 
-// РўСЋСЂСЊРјР° СЂР°Р±РѕС‡Р°СЏ Р·РѕРЅР° prison working
+// Тюрьма рабочая зона prison working
 #define WORLD_PRISON_WORKING 180
 #define INT_PRISON_WORKING 174
 
 
 //==================================================
-// РўСЂРµР№Р»РµСЂ РРЅС‚РµСЂСЊРµСЂ
+// Трейлер Интерьер
 
 #define WORLD_TRAILER -1
 #define INT_TRAILER 187
 
 //==================================================
-// Yakuza 1 Р­С‚Р°Р¶ РРЅС‚РµСЂСЊРµСЂ
+// Yakuza 1 Этаж Интерьер
 
 #define WORLD_YAKUZA_1LVL 173
 #define INT_YAKUZA_1LVL 6
 
 //==================================================
-// РџСЂР°РІРёС‚РµР»СЊСЃС‚РІРѕ РЎСѓРґ
+// Правительство Суд
 
 #define WORLD_GOVJUDGE 172
 #define INT_GOVJUDGE 0

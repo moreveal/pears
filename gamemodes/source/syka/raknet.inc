@@ -2,7 +2,7 @@ public OnIncomingRPC(playerid, rpcid, BitStream:bs)
 {
     switch (rpcid)
     {
-        case 115: // РџРѕР»СѓС‡РµРЅРёРµ Рё РЅР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР°
+        case 115: // Получение и нанесение урона
         {
             new bool: type, id, Float: damage, weaponid, bodypart;
             BS_ReadValue(bs,
@@ -13,7 +13,7 @@ public OnIncomingRPC(playerid, rpcid, BitStream:bs)
                 PR_UINT32, bodypart
             );
             if (type) {
-                // Р•СЃР»Рё СѓСЂРѕРЅ РїРѕР»СѓС‡РµРЅ РІСЃР»РµРґСЃС‚РІРёРµ РІР·СЂС‹РІР° - РѕС‚РїСЂР°РІРёС‚СЊ РµРіРѕ РЅР° РѕР±СЂР°Р±РѕС‚РєСѓ
+                // Если урон получен вследствие взрыва - отправить его на обработку
                 if (weaponid == 51) PlayerGiveDamageHandler(playerid, playerid, damage, weaponid, bodypart);
             }
         }

@@ -1,21 +1,21 @@
 /*
-РљР°Рє РґРѕР±Р°РІРёС‚СЊ РЅРѕРІСѓСЋ РєРѕРјР°РЅРґСѓ РёР»Рё С„СѓРЅРєС†РёСЋ РІ РїСЂР°РІР° РґРѕСЃС‚СѓРїР°?
-1. РќР°Р·РІР°РЅРёРµ РІ РєРѕРЅРµС† accessRightName (РЎРµР№С‡Р°СЃ РёС… РІ Р±Р°Р·Рµ РґРѕ 100 СЃР»РѕС‚РѕРІ)
-2. Р’ stock IsAFunctionOrganization РїРѕ accessId РєР°РєР°СЏ РѕСЂРіР°РЅРёР·Р°С†РёСЏ РјРѕР¶РµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ
-3. Р”РѕР±Р°РІР»СЏРµРј РїСЂРѕРІРµСЂРєСѓ IsAFunctionOrganization РІ С‚Сѓ РєРѕРјР°РЅРґСѓ РёР»Рё С„СѓРЅРєС†РёСЋ, РєРѕС‚РѕСЂСѓСЋ РјС‹ РґРѕР±Р°РІР»СЏРµРј (РЎРјРѕС‚СЂРёРј РїСЂРёРјРµСЂ РІ CMD:cac)
-4. Р”РѕР±Р°РІР»СЏРµРј РїСЂРѕРІРµСЂРєСѓ GetAccessRankOrg РІ С‚Сѓ РєРѕРјР°РЅРґСѓ РёР»Рё С„СѓРЅРєС†РёСЋ, РєРѕС‚РѕСЂСѓСЋ РјС‹ РґРѕР±Р°РІР»СЏРµРј (РЎРјРѕС‚СЂРёРј РїСЂРёРјРµСЂ РІ CMD:cac)
+Как добавить новую команду или функцию в права доступа?
+1. Название в конец accessRightName (Сейчас их в базе до 100 слотов)
+2. В stock IsAFunctionOrganization по accessId какая организация может использовать эту функцию
+3. Добавляем проверку IsAFunctionOrganization в ту команду или функцию, которую мы добавляем (Смотрим пример в CMD:cac)
+4. Добавляем проверку GetAccessRankOrg в ту команду или функцию, которую мы добавляем (Смотрим пример в CMD:cac)
 */
 
-new accessRightName[][] = // РљРѕРјР°РЅРґС‹ Рё РЅР°СЃС‚СЂРѕР№РєРё РІ РѕСЂРіР°РЅРёР·Р°С†РёРё
+new accessRightName[][] = // Команды и настройки в организации
 {
     "/membersoff", // 0
-    "Р—Р°РєР°Р· Р±РѕРµРїСЂРёРїР°СЃРѕРІ", // 1 [Department]
+    "Заказ боеприпасов", // 1 [Department]
     "/nabor", // 2
     "/dip", // 3
-    "РЎС‡РµС‚", // 4
-    "РќР°СЃС‚СЂРѕР№РєРё СЂР°РЅРіРѕРІ", // 5
-    "РџСЂРѕСЃРјРѕС‚СЂ Р»РѕРіР°", // 6
-    "Р“Р°СЂР°Р¶ РѕСЂРіР°РЅРёР·Р°С†РёРё", // 7
+    "Счет", // 4
+    "Настройки рангов", // 5
+    "Просмотр лога", // 6
+    "Гараж организации", // 7
 	"/invite", // 8
     "/uninvite", // 9
     "/giverank", // 10
@@ -26,19 +26,19 @@ new accessRightName[][] = // РљРѕРјР°РЅРґС‹ Рё РЅР°СЃС‚СЂРѕР№РєРё РІ РѕСЂРіР°РЅР
     "/dismiss", // 15
 	"/capture /zahvat", // 16
     "/cob /eob /dob /iob /3d", // 17
-    "/endorse", // 18 РІС‹РґР°С‚СЊ РґРѕСЃС‚СѓРї Рє РїРѕРјРµС‰РµРЅРёСЋ
-    "/omap СѓРїСЂР°РІР»РµРЅРёРµ РєР°СЂС‚Р°РјРё", // 19
+    "/endorse", // 18 выдать доступ к помещению
+    "/omap управление картами", // 19
     "/payment", // 20
-    "РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ СЃРєР»Р°Рґ", // 21
-    "РќР°СЃС‚СЂРѕР№РєРё РѕРґРµР¶РґС‹", // 22
-    "Р’РЅРµСЃРµРЅРёРµ РІ Р§РЎ", // 23
-    "РСЃРєР»СЋС‡РµРЅРёРµ РёР· Р§РЎ", // 24
+    "Арендованный склад", // 21
+    "Настройки одежды", // 22
+    "Внесение в ЧС", // 23
+    "Исключение из ЧС", // 24
     "/frisk /take", // 25
-	"/mafia", // 26 Р—Р°Р±РёС‚СЊ СЃС‚СЂРµР»Сѓ [Mafia]
+	"/mafia", // 26 Забить стрелу [Mafia]
     "/gov", // 27
     "/numbercar", // 28
-    "/gac РЅР°СЃС‚СЂРѕР№РєРё СЃРєР»Р°РґР°", // 29
-    "/camera", // 30 СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РєР°РјРµСЂСѓ СЃР»РµР¶РµРЅРёСЏ [FBI]
+    "/gac настройки склада", // 29
+    "/camera", // 30 установить камеру слежения [FBI]
     "/tracking", // 31
     "/su /pursuit", // 32
     "/lawyer", // 33
@@ -48,45 +48,45 @@ new accessRightName[][] = // РљРѕРјР°РЅРґС‹ Рё РЅР°СЃС‚СЂРѕР№РєРё РІ РѕСЂРіР°РЅР
     "/cuff /uncuff", // 37
     "/stun /unstun", // 38
     "/u /ub", // 39
-    "РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРјС‘РЅ", // 40
-	"Р’РЅРµСЃРµРЅРёРµ РІ Р§РЎ РћР±СЂ. Р¦РµРЅС‚СЂР°", // 41
-    "РСЃРєР»СЋС‡РµРЅРёРµ РёР· Р§РЎ РћР±СЂ. Р¦РµРЅС‚СЂР°", // 42
-    "/callsign", // 43 РР·РјРµРЅРёС‚СЊ РїРѕР·С‹РІРЅРѕР№ [ICA]
-    "/ram", // 44 Р’РѕР№С‚Рё РІ Р·Р°РєСЂС‹С‚С‹Р№ РґРѕРј
-    "/access /tank", // 45 Р Р°СЂРµС€РµРЅРёРµ РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚ РІ LSPD, SFPD, LVPD | Р”РѕСЃС‚СѓРї Рє С‚Р°РЅРєСѓ РІ NGSA
-    "/arestcar", // 46 Р°СЂРµСЃС‚РѕРІР°С‚СЊ Р»РёС‡РЅС‹Р№ С‚СЂР°РЅСЃРїРѕСЂС‚
-    "/assent", // 47 РІС‹РґР°С‚СЊ СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° СЃРїРµС†. Р·Р°РґР°РЅРёРµ (РЈРІР°Р» РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј) [FBI]
-    "/setcolor", // 48 РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С†РІРµС‚ РґСЂСѓРіРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё
-    "Р’РѕРµРЅРЅРѕ Р’РѕР·РґСѓС€РЅС‹Рµ РЎРёР»С‹", // 49 Р’РѕРµРЅРЅРѕ Р’РѕР·РґСѓС€РЅС‹Рµ РЎРёР»С‹ [NGSA]
-    "/psih", // 50 РћС‚РїСЂР°РІРёС‚СЊ РЅР° Р»РµС‡РµРЅРёРµ [ASGH]
-    "Р”РѕСЃС‚Р°РІРєР° Р‘РѕРµРїСЂРёРїР°СЃРѕРІ", // 51 [NGSA]
-    "/appoint", // 52 РќР°Р·РЅР°С‡РёС‚СЊ Р»РёРґРµСЂР° [Goverment]
-    "/suspend", // 53 РЎРЅСЏС‚СЊ Р»РёРґРµСЂР° [Goverment]
-    "/free", // 54 РЎРёСЃС‚РµРјР° РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ РїСЂРµСЃС‚СѓРїРЅРёРєРѕРІ (РђРґРІРѕРєР°С‚С‹) (Р’ Р±СѓРґСѓС‰РµРј СЃСѓРґСЊРё /judge) [Goverment]
-    "Р§С‚РµРЅРёРµ СЂР°С†РёР№", // 55 РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РІРѕР»РЅС‹ СЂР°С†РёРё РґСЂСѓРіРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё [Goverment]
-    "/debt /deprive", // 56 РќР°Р»РѕРіРѕРІС‹Рµ РґРѕР»Р¶РЅРёРєРё + РёР·СЉСЏС‚СЊ Р·Р°РґРѕР»Р¶РµРЅРЅРѕСЃС‚СЊ [Goverment]
-    "/arestdom", // 57 РђСЂРµСЃС‚РѕРІР°С‚СЊ РґРѕРј [Goverment]
-    "/arestbiz", // 58 РђСЂРµСЃС‚РѕРІР°С‚СЊ Р±РёР·РЅРµСЃ [Goverment]
-    "/arestroom", // 59 РђСЂРµСЃС‚РѕРІР°С‚СЊ РєРІР°СЂС‚РёСЂСѓ [Goverment]
-    "/acbiz /denybiz", // 60 РљРѕРЅС‚СЂРѕР»СЊ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏ Р±РёР·РЅРµСЃРѕРІ [Goverment]
-    "/busstop", // 61 РђРІС‚РѕР±СѓСЃРЅС‹Рµ РѕСЃС‚Р°РЅРѕРІРєРё + СЃСЋРґР° РјР°СЂС€СЂСѓС‚С‹ [Goverment]
-    "/minfin", // 62 РњРёРЅРёСЃС‚РµСЂСЃС‚РІРѕ Р¤РёРЅР°РЅСЃРѕРІ [Goverment]
-    "/mdc", // 63 Р‘Р°Р·Р° Р”Р°РЅРЅС‹С…
-    "/news", // 64 Р’РµС‰Р°С‚СЊ РІ РѕР±С‰РёР№ С‡Р°С‚ [CNN]
-    "/channel", // 65 РўРµР»РµРєР°РЅР°Р» [CNN]
-    "/live", // 66 РРЅС‚РµСЂРІСЊСЋ [CNN]
-    "/hmenu /contractas", // 67 Р”РѕСЃС‚СѓРї Рє РјРµРЅСЋ Р°РіРµРЅСЃС‚РІР° [ICA]
-    "/goc", // 68 РџСЂРёРЅСЏС‚СЊ РєРѕРЅС‚СЂР°РєС‚ [ICA]
-    "/givec", // 69 РџРѕСЂСѓС€РёС‚СЊ РєРѕРЅС‚СЂР°РєС‚ [ICA]
-    "/nametag", // 70 РћС‚РєР»СЋС‡РёС‚СЊ / Р’РєР»СЋС‡РёС‚СЊ РЅРёРєРЅРµР№Рј [ICA]
-    "/sign", // 71 РЎРјРµРЅРёС‚СЊ РёРјСЏ [ICA]
-    "РўСЋСЂСЊРјР°", // 72 РЎРёСЃС‚РµРјР° РўСЋСЂСЊРјС‹ [Police]
-    "Р’РѕРµРЅРЅРѕ РњРѕСЂСЃРєРѕР№ Р¤Р»РѕС‚" // 73 Р’РѕРµРЅРЅРѕ РњРѕСЂСЃРєРѕР№ Р¤Р»РѕС‚ [NGSA]
+    "Отображение имён", // 40
+	"Внесение в ЧС Обр. Центра", // 41
+    "Исключение из ЧС Обр. Центра", // 42
+    "/callsign", // 43 Изменить позывной [ICA]
+    "/ram", // 44 Войти в закрытый дом
+    "/access /tank", // 45 Рарешение на транспорт в LSPD, SFPD, LVPD | Доступ к танку в NGSA
+    "/arestcar", // 46 арестовать личный транспорт
+    "/assent", // 47 выдать разрешение на спец. задание (Увал под прикрытием) [FBI]
+    "/setcolor", // 48 использовать цвет другой организации
+    "Военно Воздушные Силы", // 49 Военно Воздушные Силы [NGSA]
+    "/psih", // 50 Отправить на лечение [ASGH]
+    "Доставка Боеприпасов", // 51 [NGSA]
+    "/appoint", // 52 Назначить лидера [Goverment]
+    "/suspend", // 53 Снять лидера [Goverment]
+    "/free", // 54 Система освобождения преступников (Адвокаты) (В будущем судьи /judge) [Goverment]
+    "Чтение раций", // 55 Использование волны рации другой организации [Goverment]
+    "/debt /deprive", // 56 Налоговые должники + изъять задолженность [Goverment]
+    "/arestdom", // 57 Арестовать дом [Goverment]
+    "/arestbiz", // 58 Арестовать бизнес [Goverment]
+    "/arestroom", // 59 Арестовать квартиру [Goverment]
+    "/acbiz /denybiz", // 60 Контроль расположения бизнесов [Goverment]
+    "/busstop", // 61 Автобусные остановки + сюда маршруты [Goverment]
+    "/minfin", // 62 Министерство Финансов [Goverment]
+    "/mdc", // 63 База Данных
+    "/news", // 64 Вещать в общий чат [CNN]
+    "/channel", // 65 Телеканал [CNN]
+    "/live", // 66 Интервью [CNN]
+    "/hmenu /contractas", // 67 Доступ к меню агенства [ICA]
+    "/goc", // 68 Принять контракт [ICA]
+    "/givec", // 69 Порушить контракт [ICA]
+    "/nametag", // 70 Отключить / Включить никнейм [ICA]
+    "/sign", // 71 Сменить имя [ICA]
+    "Тюрьма", // 72 Система Тюрьмы [Police]
+    "Военно Морской Флот" // 73 Военно Морской Флот [NGSA]
 };
 
-stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР° РєРѕРјР°РЅРґС‹ РёР»Рё С„СѓРЅРєС†РёРё РЅР° РѕСЂРіР°РЅРёР·Р°С†РёСЋ
+stock IsAFunctionOrganization(accessId, g, playerid) // Права доступа команды или функции на организацию
 {
-    if(accessId == 1) // 1 Р—Р°РєР°Р· Р±РѕРµРїСЂРёРїР°СЃРѕРІ // 1
+    if(accessId == 1) // 1 Заказ боеприпасов // 1
     {
         if(IsAGunSkladDepart(g)) return 1;
     }
@@ -94,7 +94,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР
     {
         if(IsAGang(playerid) || IsAMafia(playerid)) return 1;
     }
-    else if(accessId == 7) // Р“Р°СЂР°Р¶ РѕСЂРіР°РЅРёР·Р°С†РёРё // 7
+    else if(accessId == 7) // Гараж организации // 7
     {
         if(IsAGang(playerid) || IsAMafia(playerid)) return 1;
     }
@@ -106,15 +106,15 @@ stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР
     {
         if(IsAGang(playerid)) return 1;
     }
-    else if(accessId == 18) // /endorse // 18 РІС‹РґР°С‚СЊ РґРѕСЃС‚СѓРї Рє РїРѕРјРµС‰РµРЅРёСЋ
+    else if(accessId == 18) // /endorse // 18 выдать доступ к помещению
     {
         if(IsAUpdateMapOrganization(g)) return 1;
     }
-    else if(accessId == 19) // /omap СѓРїСЂР°РІР»РµРЅРёРµ РєР°СЂС‚Р°РјРё // 19
+    else if(accessId == 19) // /omap управление картами // 19
     {
         if(IsAGang(playerid)) return 1;
     }
-    else if(accessId == 21) // РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ СЃРєР»Р°Рґ // 21
+    else if(accessId == 21) // Арендованный склад // 21
     {
         if(IsAGang(playerid) || IsAMafia(playerid) || g == 8) return 1;
     }
@@ -122,7 +122,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР
     {
         if(IsAPoliceFunction(g) || g == 7) return 1;
     }
-    else if(accessId == 26) // /mafia", // 26 Р—Р°Р±РёС‚СЊ СЃС‚СЂРµР»Сѓ [Mafia]
+    else if(accessId == 26) // /mafia", // 26 Забить стрелу [Mafia]
     {
         if(IsAMafia(playerid))  return 1;
     }
@@ -134,7 +134,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР
     {
         if(IsAPolice(g))  return 1;
     }
-    else if(accessId == 30) // /camera", // 30 СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РєР°РјРµСЂСѓ СЃР»РµР¶РµРЅРёСЏ [FBI]
+    else if(accessId == 30) // /camera", // 30 установить камеру слежения [FBI]
     {
         if(g == 2)  return 1;
     }
@@ -174,94 +174,94 @@ stock IsAFunctionOrganization(accessId, g, playerid) // РџСЂР°РІР° РґРѕСЃС‚СѓРїР
     {
         if(IsAGang(playerid) || IsAMafia(playerid))  return 1;
     }
-    else if(accessId == 40) // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРјС‘РЅ Р’РјРµСЃС‚Рµ СЃ РїРѕР·С‹РІРЅС‹РјРё  // 40 [ICA]
+    else if(accessId == 40) // Отображение имён Вместе с позывными  // 40 [ICA]
     {
         if(g == 8)  return 1;
     }
-    else if(accessId == 41) // Р’РЅРµСЃРµРЅРёРµ РІ Р§РЎ РћР±СЂ. Р¦РµРЅС‚СЂР°", // 41
+    else if(accessId == 41) // Внесение в ЧС Обр. Центра", // 41
     {
         if(IsAPoliceFunction(g) || g == 7)  return 1;
     }
-    else if(accessId == 42) // РСЃРєР»СЋС‡РµРЅРёРµ РёР· Р§РЎ РћР±СЂ. Р¦РµРЅС‚СЂР°", // 42
+    else if(accessId == 42) // Исключение из ЧС Обр. Центра", // 42
     {
         if(IsAPoliceFunction(g) || g == 7)  return 1;
     }
-    else if(accessId == 43) // /callsign", // 43 РР·РјРµРЅРёС‚СЊ РїРѕР·С‹РІРЅРѕР№ [ICA]
+    else if(accessId == 43) // /callsign", // 43 Изменить позывной [ICA]
     {
         if(g == 8)  return 1;
     }
-    else if(accessId == 44) // /ram", // 44 Р’РѕР№С‚Рё РІ Р·Р°РєСЂС‹С‚С‹Р№ РґРѕРј
+    else if(accessId == 44) // /ram", // 44 Войти в закрытый дом
     {
         if(IsAPoliceFunction(g) || g == 7 || g == 4)  return 1;
     }
-    else if(accessId == 45) // /access /tank", // 45 Р Р°СЂРµС€РµРЅРёРµ РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚ РІ LSPD, SFPD, LVPD | Р”РѕСЃС‚СѓРї Рє С‚Р°РЅРєСѓ РІ NGSA
+    else if(accessId == 45) // /access /tank", // 45 Рарешение на транспорт в LSPD, SFPD, LVPD | Доступ к танку в NGSA
     {
         if(IsAPolice(g) || g == 3)  return 1;
     }
-    else if(accessId == 46) // /arestcar", // 46 Р°СЂРµСЃС‚РѕРІР°С‚СЊ Р»РёС‡РЅС‹Р№ С‚СЂР°РЅСЃРїРѕСЂС‚
+    else if(accessId == 46) // /arestcar", // 46 арестовать личный транспорт
     {
         if(IsAPolice(g) || g == 7 || g == 22)  return 1;
     }
-    else if(accessId == 47) // /assent", // 47 РІС‹РґР°С‚СЊ СЂР°Р·СЂРµС€РµРЅРёРµ РЅР° СЃРїРµС†. Р·Р°РґР°РЅРёРµ (РЈРІР°Р» РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј) [FBI]
+    else if(accessId == 47) // /assent", // 47 выдать разрешение на спец. задание (Увал под прикрытием) [FBI]
     {
         if(g == 2)  return 1;
     }
-    else if(accessId == 48) // /setcolor", // 48 РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С†РІРµС‚ РґСЂСѓРіРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё
+    else if(accessId == 48) // /setcolor", // 48 использовать цвет другой организации
     {
         if(g == 2 || g == 8 || g == 18)  return 1;
     }
-    else if(accessId == 49) // 49 Р’РѕРµРЅРЅРѕ Р’РѕР·РґСѓС€РЅС‹Рµ РЎРёР»С‹ [NGSA]
+    else if(accessId == 49) // 49 Военно Воздушные Силы [NGSA]
     {
         if(g == 3)  return 1;
     }
-    else if(accessId == 50) // /psih", // 50 РћС‚РїСЂР°РІРёС‚СЊ РЅР° Р»РµС‡РµРЅРёРµ [ASGH]
+    else if(accessId == 50) // /psih", // 50 Отправить на лечение [ASGH]
     {
         if(g == 4)  return 1;
     }
-    else if(accessId == 51) // Р”РѕСЃС‚Р°РІРєР° Р‘РѕРµРїСЂРёРїР°СЃРѕРІ" // 51 [NGSA]
+    else if(accessId == 51) // Доставка Боеприпасов" // 51 [NGSA]
     {
         if(g == 3)  return 1;
     }
     else if(accessId >= 52 && accessId <= 62)
     {
-        // /appoint", // 52 РќР°Р·РЅР°С‡РёС‚СЊ Р»РёРґРµСЂР° [Goverment]
-        // /suspend", // 53 РЎРЅСЏС‚СЊ Р»РёРґРµСЂР° [Goverment]
-        // /free", // 54 РЎРёСЃС‚РµРјР° РѕСЃРІРѕР±РѕР¶РґРµРЅРёСЏ РїСЂРµСЃС‚СѓРїРЅРёРєРѕРІ (РђРґРІРѕРєР°С‚С‹) (Р’ Р±СѓРґСѓС‰РµРј СЃСѓРґСЊРё /judge) [Goverment]
-        // Р§С‚РµРЅРёРµ СЂР°С†РёР№", // 55 РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РІРѕР»РЅС‹ СЂР°С†РёРё РґСЂСѓРіРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё [Goverment]
-        // /debt /deprive", // 56 РќР°Р»РѕРіРѕРІС‹Рµ РґРѕР»Р¶РЅРёРєРё + РёР·СЉСЏС‚СЊ Р·Р°РґРѕР»Р¶РµРЅРЅРѕСЃС‚СЊ [Goverment]
-        // /arestdom", // 57 РђСЂРµСЃС‚РѕРІР°С‚СЊ РґРѕРј [Goverment]
-        // /arestbiz", // 58 РђСЂРµСЃС‚РѕРІР°С‚СЊ Р±РёР·РЅРµСЃ [Goverment]
-        // /arestroom", // 59 РђСЂРµСЃС‚РѕРІР°С‚СЊ РєРІР°СЂС‚РёСЂСѓ [Goverment]
-        // /acbiz /denybiz", // 60 РљРѕРЅС‚СЂРѕР»СЊ СЂР°СЃРїРѕР»РѕР¶РµРЅРёСЏ Р±РёР·РЅРµСЃРѕРІ [Goverment]
-        // /busstop", // 61 РђРІС‚РѕР±СѓСЃРЅС‹Рµ РѕСЃС‚Р°РЅРѕРІРєРё + СЃСЋРґР° РјР°СЂС€СЂСѓС‚С‹ [Goverment]
-        // /minfin", // 62 РњРёРЅРёСЃС‚РµСЂСЃС‚РІРѕ Р¤РёРЅР°РЅСЃРѕРІ [Goverment]
+        // /appoint", // 52 Назначить лидера [Goverment]
+        // /suspend", // 53 Снять лидера [Goverment]
+        // /free", // 54 Система освобождения преступников (Адвокаты) (В будущем судьи /judge) [Goverment]
+        // Чтение раций", // 55 Использование волны рации другой организации [Goverment]
+        // /debt /deprive", // 56 Налоговые должники + изъять задолженность [Goverment]
+        // /arestdom", // 57 Арестовать дом [Goverment]
+        // /arestbiz", // 58 Арестовать бизнес [Goverment]
+        // /arestroom", // 59 Арестовать квартиру [Goverment]
+        // /acbiz /denybiz", // 60 Контроль расположения бизнесов [Goverment]
+        // /busstop", // 61 Автобусные остановки + сюда маршруты [Goverment]
+        // /minfin", // 62 Министерство Финансов [Goverment]
         if(g == 7)  return 1;
     }
-    else if(accessId == 63) // /mdc", // 63 Р‘Р°Р·Р° Р”Р°РЅРЅС‹С…
+    else if(accessId == 63) // /mdc", // 63 База Данных
     {
         if(IsAPoliceFunction(g) || g == 7)  return 1;
     }
     else if(accessId >= 64 && accessId <= 66)
     {
-        // /news", // 64 Р’РµС‰Р°С‚СЊ РІ РѕР±С‰РёР№ С‡Р°С‚ [CNN]
-        // /channel", // 65 РўРµР»РµРєР°РЅР°Р» [CNN]
-        // /live", // 66 РРЅС‚РµСЂРІСЊСЋ [CNN]
+        // /news", // 64 Вещать в общий чат [CNN]
+        // /channel", // 65 Телеканал [CNN]
+        // /live", // 66 Интервью [CNN]
         if(g == 9)  return 1;
     }
     else if(accessId >= 67 && accessId <= 71)
     {
-        // /hmenu", // 67 Р”РѕСЃС‚СѓРї Рє РјРµРЅСЋ Р°РіРµРЅСЃС‚РІР° [ICA]
-        // /goc", // 68 РџСЂРёРЅСЏС‚СЊ РєРѕРЅС‚СЂР°РєС‚ [ICA]
-        // /givehit", // 69 РџРѕСЂСѓС€РёС‚СЊ РєРѕРЅС‚СЂР°РєС‚ [ICA]
-        // /nametag", // 70 РћС‚РєР»СЋС‡РёС‚СЊ / Р’РєР»СЋС‡РёС‚СЊ РЅРёРєРЅРµР№Рј [ICA]
-        // /sign", // 71 РЎРјРµРЅРёС‚СЊ РёРјСЏ [ICA]
+        // /hmenu", // 67 Доступ к меню агенства [ICA]
+        // /goc", // 68 Принять контракт [ICA]
+        // /givehit", // 69 Порушить контракт [ICA]
+        // /nametag", // 70 Отключить / Включить никнейм [ICA]
+        // /sign", // 71 Сменить имя [ICA]
         if(g == 8)  return 1;
     }
-    else if(accessId == 72) // 72 РЎРёСЃС‚РµРјР° РўСЋСЂСЊРјС‹ [Police]
+    else if(accessId == 72) // 72 Система Тюрьмы [Police]
     {
         if(IsAPolice(g))  return 1;
     }
-    else if(accessId == 73) // 73 Р’РѕРµРЅРЅРѕ РњРѕСЂСЃРєРѕР№ Р¤Р»РѕС‚ [NGSA]
+    else if(accessId == 73) // 73 Военно Морской Флот [NGSA]
     {
         if(g == 3)  return 1;
     }
@@ -278,20 +278,20 @@ stock detail_oac(playerid, detail)
     if(OrganInfo[DP[1][playerid]][gAccDiv][detail] > 0)
     {
         new i = OrganInfo[DP[1][playerid]][gAccDiv][detail] - 1;
-        format(text, 84, "{cccccc}%s \t{ff9000}[ %d + Р Р°РЅРі ]\t{cccccc}%s\n", accessRightName[detail], OrganInfo[DP[1][playerid]][gAcc][detail], DivisionInfo[DP[1][playerid] - 1][i][divAbbreviation]);
+        format(text, 84, "{cccccc}%s \t{ff9000}[ %d + Ранг ]\t{cccccc}%s\n", accessRightName[detail], OrganInfo[DP[1][playerid]][gAcc][detail], DivisionInfo[DP[1][playerid] - 1][i][divAbbreviation]);
     }
-    else format(text, 84, "{cccccc}%s \t{ff9000}[ %d + Р Р°РЅРі ]\t\n", accessRightName[detail], OrganInfo[DP[1][playerid]][gAcc][detail]);
+    else format(text, 84, "{cccccc}%s \t{ff9000}[ %d + Ранг ]\t\n", accessRightName[detail], OrganInfo[DP[1][playerid]][gAcc][detail]);
 	return text;
 }
 
-CMD:oac(playerid) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕРµРє РїСЂР°РІ РґРѕСЃС‚СѓРїР°
+CMD:oac(playerid) // Меню настроек прав доступа
 {
-	if(PlayerInfo[playerid][pLeader] <= 0) return ErrorText(playerid, "{FF6347}Р’С‹ РЅРµ Р»РёРґРµСЂ РѕСЂРіР°РЅРёР·Р°С†РёРё"), showDialogOrganizationMenu(playerid);
+	if(PlayerInfo[playerid][pLeader] <= 0) return ErrorText(playerid, "{FF6347}Вы не лидер организации"), showDialogOrganizationMenu(playerid);
 
 	new g = PlayerInfo[playerid][pLeader];
     DP[0][playerid] = 0;
  	DP[1][playerid] = g;
-	for(new i = 0; i < 200; i++) List[i][playerid] = 0; // РћС‡РёС‰Р°РµРј list
+	for(new i = 0; i < 200; i++) List[i][playerid] = 0; // Очищаем list
 	
     new line[214],lines[4096];
     for(new i = 0; i < sizeof(accessRightName); i++)
@@ -299,8 +299,8 @@ CMD:oac(playerid) // РњРµРЅСЋ РЅР°СЃС‚СЂРѕРµРє РїСЂР°РІ РґРѕСЃС‚СѓРїР°
         if(IsAFunctionOrganization(i, g, playerid)) format(line,sizeof(line), detail_oac(playerid, i)), strcat(lines,line);
     }
     new header[60];
-    format(header,sizeof(header),"{cccccc}РџСЂР°РІР° Р”РѕСЃС‚СѓРїР°: %s", fraklastName[g]);
-	ShowDialog(playerid,616,DIALOG_STYLE_TABLIST,header,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+    format(header,sizeof(header),"{cccccc}Права Доступа: %s", fraklastName[g]);
+	ShowDialog(playerid,616,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
    	return 1;
 }
 
@@ -311,17 +311,17 @@ stock showDialogSettingAccessRight(playerid, accessId)
 
     new line[100],lines[400];
     format(line,sizeof(line), "{ff9000}%s \t", accessRightName[accessId]), strcat(lines,line);
-    format(line,sizeof(line), "\n{cccccc}Р Р°РЅРі: \t{ff9000}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
+    format(line,sizeof(line), "\n{cccccc}Ранг: \t{ff9000}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
     if(OrganInfo[g][gAccDiv][accessId] > 0) 
     {
         new i = OrganInfo[DP[1][playerid]][gAccDiv][accessId] - 1;
-        format(line,sizeof(line), "\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: \t{%s}%s", DivisionInfo[g - 1][i][divColorHex], DivisionInfo[g - 1][i][divAbbreviation]), strcat(lines,line);
+        format(line,sizeof(line), "\n{cccccc}Подфракция: \t{%s}%s", DivisionInfo[g - 1][i][divColorHex], DivisionInfo[g - 1][i][divAbbreviation]), strcat(lines,line);
     }
-    else format(line,sizeof(line), "\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: \t{555555}РЅРµС‚"), strcat(lines,line);
+    else format(line,sizeof(line), "\n{cccccc}Подфракция: \t{555555}нет"), strcat(lines,line);
 
     new header[60];
-    format(header,sizeof(header),"{cccccc}РџСЂР°РІР° Р”РѕСЃС‚СѓРїР°: %s", fraklastName[g]);
-	ShowDialog(playerid,612,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+    format(header,sizeof(header),"{cccccc}Права Доступа: %s", fraklastName[g]);
+	ShowDialog(playerid,612,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
     return 1;
 }
 
@@ -335,19 +335,19 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
             if(listitem < 0 || listitem > MAX_DIVISION_ORG) return 1;
             new g = DP[1][playerid];
 
-            if(OrganInfo[g][gAccDiv][accessId] == listitem) return ErrorText(playerid, "{FF6347}Р­С‚Р° РЅР°СЃС‚СЂРѕР№РєР° СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°"), showDialogSettingAccessRight(playerid, accessId);
+            if(OrganInfo[g][gAccDiv][accessId] == listitem) return ErrorText(playerid, "{FF6347}Эта настройка уже установлена"), showDialogSettingAccessRight(playerid, accessId);
             
             new string[140];
             if(listitem > 0)
             {
-                if(!strcmp(DivisionInfo[g - 1][listitem - 1][divName],"0",true)) return ErrorText(playerid, "{FF6347}Р­С‚Р° РїРѕРґС„СЂР°РєС†РёСЏ РЅРµ РЅР°СЃС‚СЂРѕРµРЅР° Рё РЅРµ РёРјРµРµС‚ РЅР°Р·РІР°РЅРёСЏ"), showDialogSettingAccessRight(playerid, accessId);
+                if(!strcmp(DivisionInfo[g - 1][listitem - 1][divName],"0",true)) return ErrorText(playerid, "{FF6347}Эта подфракция не настроена и не имеет названия"), showDialogSettingAccessRight(playerid, accessId);
 
-			    format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РџСЂР°РІР° [ {ff9000}%s {cccccc}] СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РЅР° {%s}%s", accessRightName[accessId], DivisionInfo[g - 1][listitem - 1][divColorHex], DivisionInfo[g - 1][listitem - 1][divName]);
+			    format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {%s}%s", accessRightName[accessId], DivisionInfo[g - 1][listitem - 1][divColorHex], DivisionInfo[g - 1][listitem - 1][divName]);
 			    SendClientMessage(playerid, COLOR_GREY, string);
             }
             else
             {
-                format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РџСЂР°РІР° [ {ff9000}%s {cccccc}] СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РЅР° {555555}Р±РµР· РїРѕРґС„СЂР°РєС†РёРё", accessRightName[accessId]);
+                format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {555555}без подфракции", accessRightName[accessId]);
 			    SendClientMessage(playerid, COLOR_GREY, string);
             }
             OrganInfo[g][gAccDiv][accessId] = listitem;
@@ -365,20 +365,20 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
             if(listitem == 0)
             {
                 new string[180];
-			    format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ {ff9000}РЅРѕРјРµСЂ СЂР°РЅРіР°{cccccc}, СЃ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅР° СЌС‚Р° С„СѓРЅРєС†РёСЏ\n\n{ff9000}%s\nРўРµРєСѓС‰РёР№ СЂР°РЅРі: %d\n{cccccc}(1 - %d СЂР°РЅРі)", accessRightName[DP[0][playerid]], OrganInfo[g][gAcc][DP[0][playerid]], get_maxrank(g));
-			    ShowDialog(playerid,617,DIALOG_STYLE_INPUT,"{cccccc}РџСЂР°РІР° Р”РѕСЃС‚СѓРїР°",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+			    format(string,sizeof(string),"{cccccc}Введите {ff9000}номер ранга{cccccc}, с которого будет доступна эта функция\n\n{ff9000}%s\nТекущий ранг: %d\n{cccccc}(1 - %d ранг)", accessRightName[DP[0][playerid]], OrganInfo[g][gAcc][DP[0][playerid]], get_maxrank(g));
+			    ShowDialog(playerid,617,DIALOG_STYLE_INPUT,"{cccccc}Права Доступа",string,"Принять","Отмена");
             }
             else if(listitem == 1)
             {
                 new line[100],lines[1600];
-                format(line,sizeof(line),"ID\tРќР°Р·РІР°РЅРёРµ\tРђР±Р±СЂРµРІРёР°С‚СѓСЂР°"), strcat(lines,line);
+                format(line,sizeof(line),"ID\tНазвание\tАббревиатура"), strcat(lines,line);
 
-                format(line,sizeof(line),"\n{555555}Р‘РµР· РїРѕРґС„СЂР°РєС†РёРё"), strcat(lines,line);
+                format(line,sizeof(line),"\n{555555}Без подфракции"), strcat(lines,line);
                 for(new i = 0; i < MAX_DIVISION_ORG; i++)
                 {
                     format(line,sizeof(line),"\n{ff9000}%d.\t{cccccc}{%s}%s", i+1, DivisionInfo[g - 1][i][divColorHex], DivisionInfo[g - 1][i][divName]), strcat(lines,line);
                 }
-                ShowDialog(playerid,613,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}РџСЂР°РІР° Р”РѕСЃС‚СѓРїР°",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
+                ShowDialog(playerid,613,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Права Доступа",lines,"Выбрать","Выход");
             }
         }
         else cmd_oac(playerid);
@@ -388,7 +388,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
    		if(response)
         {
             if(listitem < 0 || listitem > 199) return 1;
-			if(PlayerInfo[playerid][pLeader] <= 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р»РёРґРµСЂ РѕСЂРіР°РЅРёР·Р°С†РёРё"), showDialogOrganizationMenu(playerid);
+			if(PlayerInfo[playerid][pLeader] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не лидер организации"), showDialogOrganizationMenu(playerid);
 
             showDialogSettingAccessRight(playerid, List[listitem][playerid]);
         }
@@ -404,9 +404,9 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
 			new fr = strval(inputtext);
 
             new string[160];
-			if(fr > get_maxrank(g) || fr < 1) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: Р Р°РЅРі РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", get_maxrank(g)), ErrorText(playerid, string), showDialogSettingAccessRight(playerid, DP[0][playerid]);
-			if(OrganInfo[g][gAcc][accessId] == listitem) return ErrorText(playerid, "{FF6347}Р­С‚Р° РЅР°СЃС‚СЂРѕР№РєР° СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°"), showDialogSettingAccessRight(playerid, accessId);
-            format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РџСЂР°РІР° [ {ff9000}%s {cccccc}] СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РЅР° {ff9000}%d+ Р Р°РЅРі", accessRightName[accessId], fr);
+			if(fr > get_maxrank(g) || fr < 1) return format(string,sizeof(string),"[ Мысли ]: Ранг не меньше 1 и не больше %d", get_maxrank(g)), ErrorText(playerid, string), showDialogSettingAccessRight(playerid, DP[0][playerid]);
+			if(OrganInfo[g][gAcc][accessId] == listitem) return ErrorText(playerid, "{FF6347}Эта настройка уже установлена"), showDialogSettingAccessRight(playerid, accessId);
+            format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлены на {ff9000}%d+ Ранг", accessRightName[accessId], fr);
 			SendClientMessage(playerid, COLOR_GREY, string);
 			OrganInfo[g][gAcc][accessId] = fr;
 			PlayerPlaySound(playerid,6401,0,0,0);
@@ -418,7 +418,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
     return 1;
 }
 
-stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Р РµР·СѓР»СЊС‚Р°С‚ РґРѕСЃС‚СѓРїР°
+stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Результат доступа
 {
     new realOrg = g;
     new realRank = PlayerInfo[playerid][pRank];
@@ -428,33 +428,33 @@ stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Р РµР·СѓР»СЊС‚Р°С‚ РґРѕ
         realRank = PlayerInfo[playerid][pFbi];
     }
 
-    if(OrganInfo[realOrg][gAccDiv][accessId] > 0) // Р•СЃС‚СЊ РїРѕРґС„СЂР°РєС†РёСЏ Сѓ РєРѕРјР°РЅРґС‹
+    if(OrganInfo[realOrg][gAccDiv][accessId] > 0) // Есть подфракция у команды
     {
         if(PlayerInfo[playerid][pDivision][0] == OrganInfo[realOrg][gAccDiv][accessId]
-            && realRank >= OrganInfo[realOrg][gAcc][accessId]) return 1; // РРіСЂРѕРє РІ РїРѕРґС„СЂР°РєС†РёРё + СЂР°РЅРі СЃРѕРІРїР°РґР°РµС‚
+            && realRank >= OrganInfo[realOrg][gAcc][accessId]) return 1; // Игрок в подфракции + ранг совпадает
     }
     else
     {    
-        if(realRank >= OrganInfo[realOrg][gAcc][accessId]) return 1; // Р Р°РЅРі СЃРѕРІРїР°РґР°РµС‚
+        if(realRank >= OrganInfo[realOrg][gAcc][accessId]) return 1; // Ранг совпадает
     }
 	return 0;
 }
 
-stock GetAccessRankOrg(playerid, g, accessId, fbi) // РћС‚РІРµС‚ СЃ СЃРѕРѕР±С‰РµРЅРёРµРј
+stock GetAccessRankOrg(playerid, g, accessId, fbi) // Ответ с сообщением
 {
 	if(!GetAccessRankOrgMay(playerid, g, accessId, fbi))
 	{
         new line[90],lines[360];
-        format(line,sizeof(line),"{FF6347}Р’Р°Рј РЅРµРґРѕСЃС‚СѓРїРЅР° СЌС‚Р° С„СѓРЅРєС†РёСЏ [ %s ]", accessRightName[accessId]), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}РўСЂРµР±СѓРµС‚СЃСЏ СЂР°РЅРі: {FF6347}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
+        format(line,sizeof(line),"{FF6347}Вам недоступна эта функция [ %s ]", accessRightName[accessId]), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Требуется ранг: {FF6347}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
         if(OrganInfo[g][gAccDiv][accessId] > 0)
         {
             new i = OrganInfo[g][gAccDiv][accessId] - 1;
-            format(line,sizeof(line),"\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: {FF6347}%s [ID %d]", DivisionInfo[g - 1][i][divName], i + 1), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}Подфракция: {FF6347}%s [ID %d]", DivisionInfo[g - 1][i][divName], i + 1), strcat(lines,line);
         }
-        else format(line,sizeof(line),"\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: {555555}РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ"), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}Подфракция: {555555}не требуется"), strcat(lines,line);
 
-        format(line,sizeof(line),"\n\n{cccccc}РќР°СЃС‚СЂРѕР№РєРё РїСЂР°РІ РґРѕСЃС‚СѓРїР° РґРѕСЃС‚СѓРїРЅС‹ С‚РѕР»СЊРєРѕ Р»РёРґРµСЂСѓ РѕСЂРіР°РЅРёР·Р°С†РёРё"), strcat(lines,line);
+        format(line,sizeof(line),"\n\n{cccccc}Настройки прав доступа доступны только лидеру организации"), strcat(lines,line);
 		ErrorMessage(playerid, lines);
 		return 0;
 	}
@@ -473,7 +473,7 @@ stock SaveOrganAccessAll(idx)
 {
     new string_mysql[2600];
 
-    // РџРµСЂРІР°СЏ С‡Р°СЃС‚СЊ
+    // Первая часть
     format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
     for(new i = 0; i < 60; i++)
     {
@@ -482,7 +482,7 @@ stock SaveOrganAccessAll(idx)
     format(string_mysql, sizeof(string_mysql), "%sWHERE `frakid`='%d'", string_mysql, idx);
     query_empty(pearsq_2, string_mysql);
 
-    // Р’С‚РѕСЂР°СЏ С‡Р°СЃС‚СЊ
+    // Вторая часть
     format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
     for(new i = 60; i < MAX_ACC; i++) 
     {

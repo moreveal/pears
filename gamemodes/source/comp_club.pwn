@@ -277,6 +277,10 @@ stock ShowComputerClubGameRules(playerid, gameid) {
         case COMPUTER_GAME_COPCHASE: {
 
         }
+        default:
+        {
+
+        }
     }
 
     new dialog_title[8 + 64 + 1];
@@ -382,11 +386,9 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
         strcat(dialog_text, "{cccccc}Убрать\n");
         for (new i = 0; i < MAX_SLOT_WEAPONS; i++) {
             new weapon_id = available_ids[slotid][i];
-            if (weapon_id == 0)
-                break;
-
+            if (weapon_id == 0) break;
             new weapon_name[32];
-            GetWeaponName(weapon_id, weapon_name, sizeof weapon_name);
+            GetWeaponName(WEAPON:weapon_id, weapon_name, sizeof(weapon_name));
 
             format(dialog_text, sizeof dialog_text, "%s%s\n", dialog_text, weapon_name);
         }
@@ -418,7 +420,7 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
             }
 
         new weapon_name[32];
-        GetWeaponName(weapon_id, weapon_name, sizeof weapon_name);
+        GetWeaponName(WEAPON:weapon_id, weapon_name, sizeof(weapon_name));
         format(dialog_text, sizeof dialog_text, "{cccccc}Укажите количество патрон для выбранного оружия - %s (не более 1000):", weapon_name);
         return ShowDialog(playerid, 1441, DIALOG_STYLE_INPUT, "{cccccc}Количество патрон", dialog_text, "Принять", "Назад");
     } else {
@@ -438,7 +440,7 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
             if (weapon_id == 0) strcat(weapon_name_str, "{cccccc}-");
             else {
                 new weapon_name[64];
-                GetWeaponName(computerClubRoomInfo[gameid][roomid][ccriWeapons][i], weapon_name, sizeof weapon_name);
+                GetWeaponName(WEAPON:computerClubRoomInfo[gameid][roomid][ccriWeapons][i], weapon_name, sizeof(weapon_name));
 
                 format(weapon_name_str, sizeof weapon_name_str, "%s (%d)", weapon_name, computerClubRoomInfo[gameid][roomid][ccriWeaponsAmmo][i]);
             }
@@ -545,6 +547,7 @@ stock ShowComputerClubRoomEdit(playerid, gameid, roomid) {
                 "Случайно"
             );
         }
+        default:{}
     }
 
     return ShowDialog(playerid, 1422, DIALOG_STYLE_TABLIST, "Меню сервера", dialog_text, "Выбор", "Закрыть");
@@ -1006,6 +1009,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
             if (same_team_players_count < 1)
                 ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_EXIT, teamid);
         }
+        default:{}
     }
     if(Komputer[playerid] == 1 || Komputer[playerid] == 2) closecomp(playerid), CancelSelectTextDraw(playerid);
 
@@ -1682,6 +1686,7 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
             case COMPUTER_GAME_COPCHASE: {
 
             }
+            default:{}
         }
     }
 
@@ -2093,7 +2098,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                             return SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу изменять настройки уже начатой игры");
 
                         // Изменение настроек режима
-                        switch (e_ComputerClubGameInfo: gameid) {
+                        switch (e_ComputerClubGames: gameid) {
                             case COMPUTER_GAME_TDM: {
                                 if (listitem == 11) return ShowComputerClubChooseMap(playerid); // Смена карты
                                 else if (listitem == 12) return ShowComputerClubSetTeamSize(playerid); // Изменение размера команд
@@ -2106,6 +2111,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                             case COMPUTER_GAME_COPCHASE: {
                                 
                             }
+                            default:{}
                         }
                         return ShowComputerClubMenu(playerid);
                     }

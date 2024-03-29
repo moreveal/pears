@@ -22,10 +22,10 @@ stock Sampvoice3ExitMode()
     return 1;
 }
 
-stock Sampvoice3InitializationPlayer(playerid) // Р—Р°РїСѓСЃРєР°РµРј РёРіСЂРѕРєСѓ sampvoice
+stock Sampvoice3InitializationPlayer(playerid) // Запускаем игроку sampvoice
 {
-	if(!SvGetVersion(playerid)) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}РџР»Р°РіРёРЅ РіРѕР»РѕСЃРѕРІРѕРіРѕ С‡Р°С‚Р° РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ");
-	else if(!SvHasMicro(playerid)) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}РњРёРєСЂРѕС„РѕРЅ РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅ");
+	if(!SvGetVersion(playerid)) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}Плагин голосового чата не установлен");
+	else if(!SvHasMicro(playerid)) SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ SampVoice ]: {ffcc66}Микрофон не обнаружен");
 	else 
     {
         PlayerInfo[playerid][pVoice] = true;
@@ -55,7 +55,7 @@ stock Sampvoice3AttachAdmin(playerid)
     return 1;
 }
 
-stock Sampvoice3DestroyPlayer(playerid) // РћС‚РєР»СЋС‡Р°РµРј РёРіСЂРѕРєСѓ sampvoice РїСЂРё РІС‹С…РѕРґРµ РёР· РёРіСЂС‹
+stock Sampvoice3DestroyPlayer(playerid) // Отключаем игроку sampvoice при выходе из игры
 {
     if(PlayerInfo[playerid][pVoice] == false) return 0;
 

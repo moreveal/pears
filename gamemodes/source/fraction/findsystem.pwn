@@ -7,7 +7,7 @@ new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
 {
-  new ability = get_ability(playerid, 9); // РќР°РІС‹Рє СЃС‹С‰РёРєР°
+  new ability = get_ability(playerid, 9); // Навык сыщика
   new Float:zone;
 
   if(ability >= 10) zone = 50;
@@ -37,13 +37,13 @@ stock CreateFindZone(playerid, Float:X, Float:Y)
 stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
 {
   FindZone[playerid] = CreateFindZone(playerid, x, y);
-  if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РЅР°Р№С‚Рё РЅР° РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ С‡РµР»РѕРІРµРєР°, РїРѕРїСЂРѕР±СѓР№С‚Рµ РїРѕР·Р¶Рµ");
+  if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
 
   new string[160];
   new unix = gettime();
   if(FindCd[playerid] > unix)
   {
-    format(string,sizeof(string), "{FF6347}Р’С‹ РјРѕР¶РµС‚Рµ РїРѕРІС‚РѕСЂРЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїРѕРёСЃРє С‡РµСЂРµР· %s\n\n{cccccc}РћРіСЂР°РЅРёС‡РµРЅРёРµ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РјРµРЅСЊС€Рµ СЃ РїРѕРІС‹С€РµРЅРёРµРј РЅР°РІС‹РєР°", fine_time(FindCd[playerid] - unix));
+    format(string,sizeof(string), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix));
     ErrorMessage(playerid, string);
     return 1;
   }
@@ -67,12 +67,12 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   FindCd[playerid] = unix + cd;
 
   new line[140],lines[420];
-  format(line,sizeof(line),"{ffcc66}РџРѕРёСЃРє %s Р°РєС‚РёРІРёСЂРѕРІР°РЅ\n{0088ff}Р“СЂР°Р¶РґР°РЅРёРЅ РЅР°С…РѕРґРёС‚СЃСЏ РІ РѕР±Р»Р°СЃС‚Рё {FF6347}РєСЂР°СЃРЅРѕР№ Р·РѕРЅС‹ {0088ff}РЅР° РєР°СЂС‚Рµ", rpplayername(giveplayerid)), strcat(lines,line);
-  format(line,sizeof(line), "\n\n{cccccc}РћС‚РѕР±СЂР°Р¶РµРЅРёРµ Р·РѕРЅС‹ РїСЂРѕРґР»РёС‚СЃСЏ РІ С‚РµС‡РµРЅРёРё 12 СЃРµРєСѓРЅРґ"), strcat(lines,line);
-  format(line,sizeof(line), "\n{cccccc}Р Р°Р·РјРµСЂ Р·РѕРЅС‹ РїРѕРёСЃРєР° Р·Р°РІРёСЃРёС‚ РѕС‚ РІР°С€РµРіРѕ РЅР°РІС‹РєР° РґРµС‚РµРєС‚РёРІР°"), strcat(lines,line);
+  format(line,sizeof(line),"{ffcc66}Поиск %s активирован\n{0088ff}Гражданин находится в области {FF6347}красной зоны {0088ff}на карте", rpplayername(giveplayerid)), strcat(lines,line);
+  format(line,sizeof(line), "\n\n{cccccc}Отображение зоны продлится в течении 12 секунд"), strcat(lines,line);
+  format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
   SuccessMessage(playerid, lines);
   PlayerPlaySound(playerid,6400,0,0,0);
-  format(string,sizeof(string),"{cccccc}[ РњС‹СЃР»Рё ]: РЇ РЅР°С‡Р°Р» РїРѕРёСЃРє {FFD700}%s{cccccc}, РєРІР°РґСЂР°С‚ РѕС‚РјРµС‡РµРЅ РЅР° GPS. РћРЅ РІ СЂР°Р№РѕРЅРµ: {FFD700}%s.",rpplayername(giveplayerid),gSAZones[findraiontolist][zName]);
+  format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск {FFD700}%s{cccccc}, квадрат отмечен на GPS. Он в районе: {FFD700}%s.",rpplayername(giveplayerid),gSAZones[findraiontolist][zName]);
   SendClientMessage(playerid,COLOR_GREY,string);
   update_ability(playerid, 9, 10 + random(5));
   return 1;
@@ -95,22 +95,22 @@ CMD:find(playerid, const params[])
   || PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8 || PlayerInfo[playerid][pLeader] == 4 || PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 11 || PlayerInfo[playerid][pMember] == 11
   || PlayerInfo[playerid][pLeader] == 21 || PlayerInfo[playerid][pMember] == 21|| PlayerInfo[playerid][pLeader] == 22 || PlayerInfo[playerid][pMember] == 22)
   {
-    if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРёСЃРє С‡РµР»РѕРІРµРєР° {ffcc00}[ /find ID ]");
-    if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎР»РёС€РєРѕРј РґР»РёРЅРЅРѕРµ РёРјСЏ [ Р›РёРјРёС‚ 20 СЃРёРјРІРѕР»РѕРІ ]");
+    if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Поиск человека {ffcc00}[ /find ID ]");
+    if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Слишком длинное имя [ Лимит 20 символов ]");
     new giveplayerid = ReturnUser(params[0]);
-    if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРєР°С‚СЊ СЃРµР±СЏ");
-    if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅРµ РІ СЃРµС‚Рё, РёР»Рё РµС‰С‘ РЅРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ");
-    if(IsARealNPC(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ NPC");
+    if(giveplayerid == playerid && server > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете искать себя");
+    if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не в сети, или ещё не залогинился");
+    if(IsARealNPC(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Это NPC");
 
-    if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РёРіСЂРѕРє РЅР° РјРµСЂРѕРїСЂРёСЏС‚РёРё");
+    if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Этот игрок на мероприятии");
 
-    if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р°РєС‚РёРІРЅР° Р·РѕРЅР° РїРѕРёСЃРєР°, РґРѕР¶РґРёС‚РµСЃСЊ РµС‘ РѕРєРѕРЅС‡Р°РЅРёСЏ");
-    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}РЎРїСѓС‚РЅРёРєРё РЅРµ РјРѕРіСѓС‚ Р·Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ СЌС‚РѕРіРѕ РіСЂР°Р¶РґР°РЅРёРЅР°\n\n{cccccc}Р’РѕР·РјРѕР¶РЅРѕ, РѕРЅ СѓС‡Р°СЃС‚РЅРёРє СЌРєСЃРїРµРґРёС†РёРё NASA");
+    if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Возможно, он участник экспедиции NASA");
 
     new Float:X,Float:Y,Float:Z;
     GetPlayerRealPos(giveplayerid, X, Y, Z);
 
-    if(X == 0.0 && Y == 0.0) return ErrorMessage(playerid, "{FF6347}РЎРїСѓС‚РЅРёРєРё РЅРµ РјРѕРіСѓС‚ Р·Р°С„РёРєСЃРёСЂРѕРІР°С‚СЊ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ СЌС‚РѕРіРѕ РіСЂР°Р¶РґР°РЅРёРЅР°\n\n{cccccc}РРіСЂРѕРє С‚РѕР»СЊРєРѕ Р·Р°С€С‘Р» РЅР° СЃРµСЂРІРµСЂ Рё РЅР°С…РѕРґРёС‚СЃСЏ РІ РЅРµРёР·РІРµСЃС‚РЅРѕР№ С‚РѕС‡РєРµ СЃРїР°РІРЅР°");
+    if(X == 0.0 && Y == 0.0) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Игрок только зашёл на сервер и находится в неизвестной точке спавна");
     
     new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
     switch(random(4))
@@ -123,7 +123,7 @@ CMD:find(playerid, const params[])
     new findraiontolist = FindRaionPos(X,Y,Z);
     ShowFindZone(playerid, giveplayerid, X, Y,findraiontolist);
   }
-  else ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ\n\n{cccccc}РўРѕР»СЊРєРѕ РґР»СЏ СЃРѕС‚СЂСѓРґРЅРёРєРѕРІ РїСЂР°РІРѕРѕС…СЂР°РЅРёС‚РµР»СЊРЅС‹С… РѕСЂРіР°РЅРѕРІ");
+  else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
   return 1;
 }
 stock WhiteFindPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -135,24 +135,24 @@ stock WhiteFindPlayerPos(playerid, Float:x, Float:y, Float:z)
 }
 stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
 {
-    if(GetPVarInt(playerid,"Boot") != 9999) // Р’ Р±Р°РіР°Р¶РЅРёРєРµ
+    if(GetPVarInt(playerid,"Boot") != 9999) // В багажнике
     {
         new vehicleid = GetPVarInt(playerid,"Boot");
         GetVehiclePos(vehicleid, x, y, z);
     }
-    else if(IsPlayerInRangeOfPoint(playerid,30.0,1305.7756,1604.4343,19.7263) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179) // Р’ РїРѕРµР·РґРµ
+    else if(IsPlayerInRangeOfPoint(playerid,30.0,1305.7756,1604.4343,19.7263) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179) // В поезде
     {
         GetVehiclePos(train, x, y, z);
     }
     else 
     {
-        if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) // Р’ РёРЅС‚РµСЂСЊРµСЂРµ
+        if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) // В интерьере
         {
             x = PlayerInfo[playerid][find_X];
             y = PlayerInfo[playerid][find_Y];
             z = PlayerInfo[playerid][find_Z];
         } 
-        else if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) // РќР° СѓР»РёС†Рµ
+        else if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) // На улице
         {
             GetPlayerPos(playerid, x, y, z);
         }
@@ -215,10 +215,10 @@ stock IsPlayerRealPosInRangeOfPoint(playerid, Float:radius, Float:get_x, Float:g
     z = PlayerInfo[playerid][find_Z];
   }
     
-  // Р’С‹С‡РёСЃР»СЏРµРј СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ РёРіСЂРѕРєР° РґРѕ Р·Р°РґР°РЅРЅРѕР№ С‚РѕС‡РєРё
+  // Вычисляем расстояние от игрока до заданной точки
   new Float:distance = GetDistanceBetweenCoords3d(x, y, z, get_x, get_y, get_z);
     
-  // РџСЂРѕРІРµСЂСЏРµРј, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РёРіСЂРѕРє РІ Р·Р°РґР°РЅРЅРѕРј СЂР°РґРёСѓСЃРµ
+  // Проверяем, находится ли игрок в заданном радиусе
   if(distance <= radius)
   {
     return true;
