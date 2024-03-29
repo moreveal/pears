@@ -2553,7 +2553,7 @@ stock player_tile(playerid, inva)
 		 		if(PlayerInfo[playerid][pOdet][0] != 0 && PlayerInfo[playerid][pOdet][1] != 0 && PlayerInfo[playerid][pOdet][2] != 0 && PlayerInfo[playerid][pOdet][3] != 0 && PlayerInfo[playerid][pOdet][4] != 0) return ErrorMessage(playerid, "{FF6347}Вы уже надели 5 аксессуаров [ Лимит 5 ]"), i_resetveshi(playerid);
 		 		if(fpick == 11712)
 		 		{
-				 	if(getillness(playerid, 18)) DP[0][playerid] = inva, ShowDialog(playerid,1152,DIALOG_STYLE_MSGBOX,"{ff9000}Распятие","{99ff66}Вы уверены, что хотите надеть Распятие?\n\n{ff9000}Вы вампир! Надев распятие вы излечитесь от вампиризма","Да","Нет");
+				 	if(getillness(playerid, 18) >= 0) DP[0][playerid] = inva, ShowDialog(playerid,1152,DIALOG_STYLE_MSGBOX,"{ff9000}Распятие","{99ff66}Вы уверены, что хотите надеть Распятие?\n\n{ff9000}Вы вампир! Надев распятие вы излечитесь от вампиризма","Да","Нет");
 				 	else CreateOdet(playerid, fpick, inva);
 			 	}
 		 		else CreateOdet(playerid, fpick, inva);

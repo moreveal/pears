@@ -90,16 +90,17 @@ CMD:remedy(playerid, const params[])
  	    new illn;
  	    if(params[0] >= 14 && params[0] <= 17)
  	    {
- 	    	if(!getillness(playerid, 14) && !getillness(playerid, 15) && !getillness(playerid, 16) && !getillness(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
+ 	    	if(getillness(playerid, 14) == -1 && getillness(playerid, 15) == -1 
+				&& getillness(playerid, 16) == -1 && getillness(playerid, 17) == -1) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
  			if(!getdiagnosis(playerid, 14) && !getdiagnosis(playerid, 15) && !getdiagnosis(playerid, 16) && !getdiagnosis(playerid, 17)) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
- 			if(getillness(playerid, 14)) illn = 14;
- 			if(getillness(playerid, 15)) illn = 15;
- 			if(getillness(playerid, 16)) illn = 16;
- 			if(getillness(playerid, 17)) illn = 17;
+ 			if(getillness(playerid, 14) >= 0) illn = 14;
+ 			if(getillness(playerid, 15) >= 0) illn = 15;
+ 			if(getillness(playerid, 16) >= 0) illn = 16;
+ 			if(getillness(playerid, 17) >= 0) illn = 17;
 		}
 		else
 		{
-			if(!getillness(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
+			if(getillness(playerid, params[0]) == -1) return ErrorMessage(playerid, "{FF6347}Вы не болеете, чтобы принимать это лекарство");
 			if(!getdiagnosis(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
 			illn = params[0];
 		}
@@ -451,7 +452,7 @@ stock InfoEatMessage(playerid, stat)
 		OnlineInfo[playerid][oMessageEat] = gettime() + 600; // 10 Минут Unix
 
 		new line[70],lines[140];
-		if(getillness(playerid, 18))
+		if(getillness(playerid, 18) >= 0)
 		{
 			if(stat == 0) // Просто хотим кушать
 			{
@@ -522,7 +523,7 @@ stock InfectInfo(playerid)
 	{
 		OnlineInfo[playerid][oMessageInfect] = gettime() + 600; // 10 Минут Unix
 
-		if(getillness(playerid, 18))
+		if(getillness(playerid, 18) >= 0)
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Брр.. холодно. Но мне пофиг на ледяную воду");
 			new line[100],lines[200];
@@ -663,7 +664,7 @@ stock infect(playerid, stat, prog)
 {
 	new yes = -1;
 
-    if(getillness(playerid, 18) && PlayerInfo[playerid][pNeon] > 100) yes = -2;
+    if(getillness(playerid, 18) >= 0 && PlayerInfo[playerid][pNeon] > 100) yes = -2;
 	else
     {
 		for(new i = 0; i < 5; i++)
