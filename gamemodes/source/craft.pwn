@@ -318,14 +318,14 @@ stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображение ячеек для кра
 
     if(InvaCraft[playerid][slot] == 0) // Пусто
     {
-        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], 4);
+        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_FONT:4);
         PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[i][playerid], PlayerInfo[playerid][pStyle1]);
         PlayerTextDrawColour(playerid, CraftProcessDraw[i][playerid], PlayerInfo[playerid][pStyle1]);
         PlayerTextDrawBoxColour(playerid, CraftProcessDraw[i][playerid], 0);
     }
     else // Чё-то есть
     {
-        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], 5);
+        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_FONT:5);
         PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[i][playerid], PlayerInfo[playerid][pStyle1]);
         PlayerTextDrawColour(playerid, CraftProcessDraw[i][playerid], -1);
         PlayerTextDrawBoxColour(playerid, CraftProcessDraw[i][playerid], 0);
@@ -340,7 +340,7 @@ stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображение ячеек для кра
             new Float:modelPos[4], findIt;
             GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
             PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[i][playerid], yesFindModel);
-            if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, CraftProcessDraw[i][playerid], thingQuan, thingQuan);
+            if(thingType == 5) PlayerTextDrawSetPreviewVehicleColours(playerid, CraftProcessDraw[i][playerid], thingQuan, thingQuan);
             PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[i][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
         }
 
@@ -1080,9 +1080,9 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
 
     for(new i = 0; i < 13; i++)
     {
-        if(GetVehicleComponentInSlot(vehicleid, i) != 0)
+        if(GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i) != 0)
         {
-            format(line,sizeof(line),"\n{ff9000}* {cccccc}%s",detalName[GetVehicleComponentInSlot(vehicleid,i)]), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}* {cccccc}%s",detalName[GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i)]), strcat(lines,line);
         }
     }
 
@@ -1252,22 +1252,22 @@ stock createDraw_CraftProcess(playerid, type)
     CraftProcessDraw[0][playerid] = CreatePlayerTextDraw(playerid, 87.333267, 141.037063, "ld_beat:chit"); // Фон двигателя
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[0][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[0][playerid], 130.000015, 154.725921);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[0][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[0][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[0][playerid], 168430200);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[0][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[0][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[0][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[0][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[1][playerid] = CreatePlayerTextDraw(playerid, 113.000007, 164.266784, "dvigatel"); // Двигатель + кнопка
     PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[1][playerid], 0);
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[1][playerid], 0.024666, 0.265481);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[1][playerid], 78.666694, 91.259277);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[1][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[1][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawUseBox(playerid, CraftProcessDraw[1][playerid], true);
     PlayerTextDrawBoxColour(playerid, CraftProcessDraw[1][playerid], 0);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[1][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[1][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[1][playerid], 5);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[1][playerid], TEXT_DRAW_FONT:5);
     PlayerTextDrawSetSelectable(playerid, CraftProcessDraw[1][playerid], true);
 
     if(type == 0) // Ремонт Двигателя
@@ -1286,25 +1286,25 @@ stock createDraw_CraftProcess(playerid, type)
     CraftProcessDraw[2][playerid] = CreatePlayerTextDraw(playerid, 104.333343, 291.200012, "bar_fon"); // Фон бара загрузки
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[2][playerid], 0.016000, 0.223999);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[2][playerid], 82.333305, 17.837022);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[2][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[2][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[2][playerid], -1);
     PlayerTextDrawUseBox(playerid, CraftProcessDraw[2][playerid], true);
     PlayerTextDrawBoxColour(playerid, CraftProcessDraw[2][playerid], 0);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[2][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[2][playerid], 0);
     PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[2][playerid], 168429944);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[2][playerid], 5);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[2][playerid], TEXT_DRAW_FONT:5);
     PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[2][playerid], 2709);
     PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[2][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
     CraftProcessDraw[3][playerid] = CreatePlayerTextDraw(playerid, 188.333328, 278.755523, "ld_beat:chit"); // Фон кнопки ремонта
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[3][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[3][playerid], 36.000007, 42.725891);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[3][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[3][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[3][playerid], 168430200);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[3][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[3][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[3][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[3][playerid], TEXT_DRAW_FONT:4);
     PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[3][playerid], 3096);
     PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[3][playerid], 0.000000, 0.000000, 0.000000, 1.000000);
 
@@ -1312,13 +1312,13 @@ stock createDraw_CraftProcess(playerid, type)
     PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[4][playerid], 0);
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[4][playerid], 0.012666, 0.149333);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[4][playerid], 23.666654, 28.622215);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[4][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[4][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[4][playerid], -1);
     PlayerTextDrawUseBox(playerid, CraftProcessDraw[4][playerid], true);
     PlayerTextDrawBoxColour(playerid, CraftProcessDraw[4][playerid], 0);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[4][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[4][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[4][playerid], 5);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[4][playerid], TEXT_DRAW_FONT:5);
     PlayerTextDrawSetSelectable(playerid, CraftProcessDraw[4][playerid], true);
     if(type == 0) // Двигатель
     {
@@ -1334,65 +1334,65 @@ stock createDraw_CraftProcess(playerid, type)
     CraftProcessDraw[5][playerid] = CreatePlayerTextDraw(playerid, 118.666648, 291.614837, "LD_SPAC:white"); // Зелёная полоска 1
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[5][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[5][playerid], 3.000002, 17.422197);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[5][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[5][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[5][playerid], 13793535);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[5][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[5][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[5][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[5][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[6][playerid] = CreatePlayerTextDraw(playerid, 142.666595, 291.370361, "LD_SPAC:white"); // Зелёная полоска 2
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[6][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[6][playerid], 3.000002, 17.422197);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[6][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[6][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[6][playerid], 13793535);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[6][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[6][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[6][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[6][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[7][playerid] = CreatePlayerTextDraw(playerid, 164.666610, 291.125885, "LD_SPAC:white"); // Зелёная полоска 3
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[7][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[7][playerid], 3.000002, 17.422197);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[7][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[7][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[7][playerid], 13793535);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[7][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[7][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[7][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[7][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[8][playerid] = CreatePlayerTextDraw(playerid, 105.666664, 292.444458, "LD_SPAC:white"); // Бар загрузки
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[8][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[8][playerid], 53.333351, 15.348165);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[8][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[8][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[8][playerid], PlayerInfo[playerid][pStyle1]);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[8][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[8][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[8][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[8][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[9][playerid] = CreatePlayerTextDraw(playerid, 115.333335, 277.096405, "ld_beat:down"); // Статус первой полоски
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[9][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[9][playerid], 9.333340, 11.199990);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[9][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[9][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[9][playerid], -1);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[9][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[9][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[9][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[9][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[10][playerid] = CreatePlayerTextDraw(playerid, 139.333328, 277.266754, "ld_chat:thumbup"); // Статус второй полоски
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[10][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[10][playerid], 9.333340, 11.199990);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[10][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[10][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[10][playerid], -1);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[10][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[10][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[10][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[10][playerid], TEXT_DRAW_FONT:4);
 
     CraftProcessDraw[11][playerid] = CreatePlayerTextDraw(playerid, 161.666671, 277.437103, "ld_chat:thumbup"); // Статус третьей полоски
     PlayerTextDrawLetterSize(playerid, CraftProcessDraw[11][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[11][playerid], 9.333340, 11.199990);
-    PlayerTextDrawAlignment(playerid, CraftProcessDraw[11][playerid], 1);
+    PlayerTextDrawAlignment(playerid, CraftProcessDraw[11][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, CraftProcessDraw[11][playerid], -1);
     PlayerTextDrawSetShadow(playerid, CraftProcessDraw[11][playerid], 0);
     PlayerTextDrawSetOutline(playerid, CraftProcessDraw[11][playerid], 0);
-    PlayerTextDrawFont(playerid, CraftProcessDraw[11][playerid], 4);
+    PlayerTextDrawFont(playerid, CraftProcessDraw[11][playerid], TEXT_DRAW_FONT:4);
 
     // Кнопки предметов для крафта
     CraftProcessDraw[12][playerid] = CreatePlayerTextDraw(playerid, 146.666671, 138.963012, "LD_SPAC:white");
@@ -1404,14 +1404,14 @@ stock createDraw_CraftProcess(playerid, type)
 	{
         PlayerTextDrawLetterSize(playerid, CraftProcessDraw[i][playerid], 0.000000, 0.000000);
         PlayerTextDrawTextSize(playerid, CraftProcessDraw[i][playerid], 32.999992, 32.355594);
-        PlayerTextDrawAlignment(playerid, CraftProcessDraw[i][playerid], 1);
+        PlayerTextDrawAlignment(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_ALIGN:1);
         PlayerTextDrawColour(playerid, CraftProcessDraw[i][playerid], PlayerInfo[playerid][pStyle1]);
         PlayerTextDrawUseBox(playerid, CraftProcessDraw[i][playerid], true);
         PlayerTextDrawBoxColour(playerid, CraftProcessDraw[i][playerid], 0);
         PlayerTextDrawSetShadow(playerid, CraftProcessDraw[i][playerid], 0);
         PlayerTextDrawSetOutline(playerid, CraftProcessDraw[i][playerid], 0);
-        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], 4);
-        PlayerTextDrawSetProportional(playerid, CraftProcessDraw[i][playerid], 1);
+        PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_FONT:4);
+        PlayerTextDrawSetProportional(playerid, CraftProcessDraw[i][playerid], true);
         PlayerTextDrawSetSelectable(playerid, CraftProcessDraw[i][playerid], true);
     }
 
@@ -1424,14 +1424,14 @@ stock createDraw_CraftProcess(playerid, type)
 	for(new i = 17; i <= 21; i ++)
 	{
 		PlayerTextDrawLetterSize(playerid, CraftProcessDraw[i][playerid], 0.131666, 0.600296);
-		PlayerTextDrawAlignment(playerid, CraftProcessDraw[i][playerid], 1);
+		PlayerTextDrawAlignment(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_ALIGN:1);
 		if(PlayerInfo[playerid][pSty] == 6 || PlayerInfo[i][pSty] == 11) PlayerTextDrawColour(playerid, CraftProcessDraw[i][playerid], 673720575);
 		else PlayerTextDrawColour(playerid, CraftProcessDraw[i][playerid], -1);
 		PlayerTextDrawSetShadow(playerid, CraftProcessDraw[i][playerid], 0);
 		PlayerTextDrawSetOutline(playerid, CraftProcessDraw[i][playerid], 0);
 		PlayerTextDrawBackgroundColour(playerid, CraftProcessDraw[i][playerid], 51);
-		PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], 2);
-		PlayerTextDrawSetProportional(playerid, CraftProcessDraw[i][playerid], 1);
+		PlayerTextDrawFont(playerid, CraftProcessDraw[i][playerid], TEXT_DRAW_FONT:2);
+		PlayerTextDrawSetProportional(playerid, CraftProcessDraw[i][playerid], true);
 	}
 
     OnlineInfo[playerid][oCraftDraw] = true;

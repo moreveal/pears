@@ -18,9 +18,9 @@ stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
 {
     // if(server == 0) return 0; // VREMENNO koment
 
-    mysql_tquery(pearsq_3, "TRUNCATE `online_players`"); 
-
     mysql_tquery(pearsq_3, "START TRANSACTION;");
+
+    mysql_tquery(pearsq_3, "DELETE FROM `online_players`");
 
     new string_mysql[400];
     foreach(Player,i)

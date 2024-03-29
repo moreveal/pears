@@ -45,7 +45,7 @@ stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x,
     EditObjectInfo[playerid][editSlot] = slot;
 
     EditObjectInfo[playerid][editTempObject] = CreatePlayerObject(playerid, modelid, x, y, z, rx, ry, rz, 300.0);
-    EditPlayerObject(playerid, EditObjectInfo[playerid][editTempObject]);
+    BeginPlayerObjectEditing(playerid, EditObjectInfo[playerid][editTempObject]);
     PlayerPlaySound(playerid,17000,0,0,0);
 	return 1;
 }
@@ -112,7 +112,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 				break;
 			}
 	    }
-	    if(objid == -1) return ErrorMessage(playerid, "{FF6347}Лимит количества объектов для одной карты"), CancelEdit(playerid);
+	    if(objid == -1) return ErrorMessage(playerid, "{FF6347}Лимит количества объектов для одной карты"), EndObjectEditing(playerid);
 
         MapInfo[0][mapobject][objid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
 		MapInfo[0][quanobject] ++;
@@ -165,7 +165,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     }
     else if(gRedakt[playerid] == 9) // Установка Камер Слежения
 	{
-        if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Лимит камер слежения"), CancelEdit(playerid);
+        if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Лимит камер слежения"), EndObjectEditing(playerid);
         camerafbi ++;
         for(new cam = 0; cam < sizeof(CamInfo); cam++)
         {
@@ -190,20 +190,20 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     {
         if(slot == 0)
         {
-            if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Вы установили вход в бизнес слишком близко к другому бизнесу [Отмена установки]"), CancelEdit(playerid);
-            if(bizsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес вашего типа [Отмена установки]"), CancelEdit(playerid);
-            if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Это место зарезервировано государством! [Отмена установки]"), CancelEdit(playerid);
+            if(biznearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Вы установили вход в бизнес слишком близко к другому бизнесу [Отмена установки]"), EndObjectEditing(playerid);
+            if(bizsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес вашего типа [Отмена установки]"), EndObjectEditing(playerid);
+            if(bizdefault(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Это место зарезервировано государством! [Отмена установки]"), EndObjectEditing(playerid);
 
             new bcity = getbiz_city(oid);
             if(bcity == 0
                 && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), EndObjectEditing(playerid);
             if(bcity == 1
                 && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), EndObjectEditing(playerid);
             if(bcity == 2
                 && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
+                    || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), EndObjectEditing(playerid);
         }
 
         new Float:object_pos[3];
@@ -220,7 +220,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         {
             GetDynamicObjectPos(BizzInfo[oid][bBizObject][0], object_pos[0], object_pos[1], object_pos[2]);
             new Float:disttodoor = GetDistancePoint(x, y, z, object_pos[0], object_pos[1], object_pos[2]);
-            if(disttodoor >= 30.0) return ErrorMessage(playerid, "{FF6347}Вывеска слишком далеко от двери бизнеса [Отмена установки]"), CancelEdit(playerid);
+            if(disttodoor >= 30.0) return ErrorMessage(playerid, "{FF6347}Вывеска слишком далеко от двери бизнеса [Отмена установки]"), EndObjectEditing(playerid);
         }
         else if(slot == 0)
         {
@@ -251,8 +251,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 break;
             }
         }
-        if(yes == -1)  return ErrorMessage(playerid, "{FF6347}Лимит объектов на респе"), CancelEdit(playerid);
-        if(!IsAGObjectInSquare(oid, x, y)) return ErrorMessage(playerid, "{FF6347}Объект за пределами территории вашей респы"), CancelEdit(playerid);
+        if(yes == -1)  return ErrorMessage(playerid, "{FF6347}Лимит объектов на респе"), EndObjectEditing(playerid);
+        if(!IsAGObjectInSquare(oid, x, y)) return ErrorMessage(playerid, "{FF6347}Объект за пределами территории вашей респы"), EndObjectEditing(playerid);
 
         ObjectInfo[oid][gOmodel][yes] = modelid;
 		ObjectInfo[oid][gObject][yes] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
@@ -273,22 +273,22 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // Перемещение и Установка Терминалов Бизнеса
     {
         new b = rentnumn(oid);
-        if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), CancelEdit(playerid);
+        if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), EndObjectEditing(playerid);
         if(IsBizTerminal(b))
         {
-            if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес этого типа [Отмена установки]"), CancelEdit(playerid);
+            if(termsame(oid, x, y, z) && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}В радиусе 200 метров уже есть бизнес этого типа [Отмена установки]"), EndObjectEditing(playerid);
         }
 
         new bcity = getbiz_city(b);
         if(bcity == 0
             && (IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369)
-                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LS [Отмена установки]"), EndObjectEditing(playerid);
         if(bcity == 1
             && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, 1623, 3000, 3000) || IsPosInSquare(x, y, -1236, 597, 3000, 1623))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к SF [Отмена установки]"), EndObjectEditing(playerid);
         if(bcity == 2
             && (IsPosInSquare(x, y, -1236, -370, 3000, 598) || IsPosInSquare(x, y, 40, -3000, 3000, -369)
-                || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), CancelEdit(playerid);
+                || IsPosInSquare(x, y, -3000, -3000.0, -1236, 1623) || IsPosInSquare(x, y, -1236, -3000, 39, -369))) return ErrorMessage(playerid, "{FF6347}Бизнес привязан к LV [Отмена установки]"), EndObjectEditing(playerid);
 
         new Float:distpos = GetDistancePoint(x, y, z, RentPos_X[oid][slot], RentPos_Y[oid][slot], RentPos_Z[oid][slot]);
     
@@ -303,7 +303,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         }
         if(gRedakt[playerid] == 14 || distpos >= 5)
         {
-            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), CancelEdit(playerid);
+            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), EndObjectEditing(playerid);
             if(gRedakt[playerid] == 14)
             {
                 RentObject[oid][slot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
@@ -373,8 +373,8 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     else if(gRedakt[playerid] == 19) // Установка Остановки
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
-        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Остановка слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
-        if(bsrows >= 100) return ErrorMessage(playerid, "{FF6347}В штате установлено 100 остановок [Лимит]"), CancelEdit(playerid);
+        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Остановка слишком далеко от вас [Отмена установки]"), EndObjectEditing(playerid);
+        if(bsrows >= 100) return ErrorMessage(playerid, "{FF6347}В штате установлено 100 остановок [Лимит]"), EndObjectEditing(playerid);
         for(new ost = 0; ost < MAX_BUSSTATION; ost++)
         {
             if(BusStationInfo[ost][bsActive] == 0)
@@ -398,7 +398,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
-        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), CancelEdit(playerid);
+        if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), EndObjectEditing(playerid);
 
         WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
         RentObjectRace[DP[0][playerid]][oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
@@ -411,7 +411,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0)
         {
-            CancelEdit(playerid);
+            EndObjectEditing(playerid);
             return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
         FamilyInfo[fam][fsAltarPos][0] = x, FamilyInfo[fam][fsAltarPos][1] = y, FamilyInfo[fam][fsAltarPos][2] = z;
@@ -435,20 +435,20 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 10.0)
         {
-            CancelEdit(playerid);
+            EndObjectEditing(playerid);
             return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]");
         }
         new zone = GetZoneXYZ(x,y);
         if(zone == -1)
         {
-            CancelEdit(playerid);
+            EndObjectEditing(playerid);
             return ErrorMessage(playerid, "{FF6347}Граффити не в территории гетто [Отмена установки]");
         }
         if(GraphitiInfo[zone][graphitiStatus] == 1)
         {
             if(GraphitiInfo[zone][graphitiUnix]+1800 > gettime())
             {
-                CancelEdit(playerid);
+                EndObjectEditing(playerid);
                 return ErrorMessage(playerid, "{FF6347}Ошибка! В этой зоне уже нанесено граффити");
             }
         }
@@ -470,7 +470,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         TakeInvent(playerid, 197, 1, 0, 999); // Отнимаем 1 из баллончика с краской (чтобы он не был бесконечным)
         GraphitiUpdateElement(zone);
         SaveGraphiti(zone);
-        ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0,0,1,1,0,0);
+        ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0, false, true, true, false, false, SYNC_ALL);
         SetPlayerChatBubble(playerid,"наносит граффити",COLOR_PURPLE,20.0,4000);
 
         around_player_audio(playerid, 1134, 0, 5.0, 0);
@@ -734,7 +734,7 @@ stock CloseEditObject(playerid)
 		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) 
         {
             CancelEditPlayerObject(playerid);
-            CancelEdit(playerid);
+            EndObjectEditing(playerid);
         }
 		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
 		gRedakt[playerid] = 0;
@@ -748,7 +748,7 @@ stock CancelEditable(playerid)
 
     new objectid = EditObjectInfo[playerid][editTempObject];
     UnblockEditObject(playerid, objectid);
-    CancelEdit(playerid);
+    EndObjectEditing(playerid);
     return 1;
 }
 

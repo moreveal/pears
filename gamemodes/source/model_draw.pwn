@@ -433,128 +433,128 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	DynamicTextDraw[0][playerid] = CreatePlayerTextDraw(playerid, 247.500000, 149.333435, "LD_SPAC:white"); // Основной текстдрав
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[0][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[0][playerid], 135.312500, 150.110900);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[0][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[0][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[0][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[0][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[0][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[0][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[0][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[0][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[0][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[0][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[0][playerid], editModelId[playerid]);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[0][playerid], editModelPos[0][playerid], editModelPos[1][playerid], editModelPos[2][playerid], editModelPos[3][playerid]);
 	
 	DynamicTextDraw[1][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 305.500000, "LD_SPAC:white"); // Кнопка X
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[1][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[1][playerid], 28.750000, 32.277770);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[1][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[1][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[1][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[1][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[1][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[1][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[1][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[1][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[1][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[1][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[1][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[1][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[1][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
 	DynamicTextDraw[2][playerid] = CreatePlayerTextDraw(playerid, 263.125000, 311.500122, "X"); // Надпись X (Подсвечивается выбор оранжевым)
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[2][playerid], 0.611874, 2.008332);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[2][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[2][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[2][playerid], -5963521);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[2][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[2][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[2][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[2][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[2][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[2][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[2][playerid], true);
 
 	DynamicTextDraw[3][playerid] = CreatePlayerTextDraw(playerid, 277.875000, 305.500000, "LD_SPAC:white"); // Кнопка Y
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[3][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[3][playerid], 28.750000, 32.277770);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[3][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[3][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[3][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[3][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[3][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[3][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[3][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[3][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[3][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[3][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[3][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[3][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[3][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
 	DynamicTextDraw[4][playerid] = CreatePlayerTextDraw(playerid, 292.250000, 311.500122, "Y"); // Надпись Y
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[4][playerid], 0.611874, 2.008332);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[4][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[4][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[4][playerid], -1);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[4][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[4][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[4][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[4][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[4][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[4][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[4][playerid], true);
 
 	DynamicTextDraw[5][playerid] = CreatePlayerTextDraw(playerid, 308.500000, 305.500000, "LD_SPAC:white"); // Кнопка Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[5][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[5][playerid], 28.750000, 32.277770);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[5][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[5][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[5][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[5][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[5][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[5][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[5][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[5][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[5][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[5][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[5][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[5][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[5][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
 	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпсь Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[6][playerid], 0.611874, 2.008332);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[6][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[6][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[6][playerid], -1);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[6][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[6][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[6][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[6][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[6][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[6][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[6][playerid], true);
 
 	DynamicTextDraw[7][playerid] = CreatePlayerTextDraw(playerid, 338.812500, 305.500000, "LD_SPAC:white"); // Кнопка Zoom
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[7][playerid], 0.009687, 0.093333);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[7][playerid], 43.750000, 32.277770);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[7][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[7][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[7][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[7][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[7][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[7][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[7][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[7][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[7][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[7][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[7][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[7][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[7][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
 	DynamicTextDraw[8][playerid] = CreatePlayerTextDraw(playerid, 360.750000, 313.500122, "Zoom"); // Надпись Zoom
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[8][playerid], 0.339062, 1.495000);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[8][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[8][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[8][playerid], -1);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[8][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[8][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[8][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[8][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[8][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[8][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[8][playerid], true);
 
 	DynamicTextDraw[9][playerid] = CreatePlayerTextDraw(playerid, 254.062500, 344.944427, "LD_SPAC:white"); // Кнопка влево
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[9][playerid], 0.020625, 0.597222);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[9][playerid], 52.500000, 48.999996);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[9][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[9][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[9][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[9][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[9][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[9][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[9][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[9][playerid], 0);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[9][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[9][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[9][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[9][playerid], 19132);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[9][playerid], 0.000000, -90.000000, 90.000000, 1.000000);
@@ -562,14 +562,14 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	DynamicTextDraw[10][playerid] = CreatePlayerTextDraw(playerid, 324.125000, 344.944427, "LD_SPAC:white"); // Кнопка вправо
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[10][playerid], 0.020625, 0.597222);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[10][playerid], 52.500000, 48.999996);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[10][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[10][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[10][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[10][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[10][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[10][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[10][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[10][playerid], 0);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[10][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[10][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[10][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[10][playerid], 19132);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[10][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
@@ -577,14 +577,14 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	DynamicTextDraw[11][playerid] = CreatePlayerTextDraw(playerid, 247.812500, 120.0, "LD_SPAC:white"); // Кнопка Input
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[11][playerid], 0.017500, 0.171111);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[11][playerid], 65.312500, 24.111114);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[11][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[11][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[11][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[11][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[11][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[11][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[11][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[11][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[11][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[11][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[11][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[11][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[11][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
@@ -592,37 +592,37 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы редактора
 	DynamicTextDraw[12][playerid] = CreatePlayerTextDraw(playerid, 317.562500, 120.0, "LD_SPAC:white"); // Кнопка Save
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[12][playerid], 0.017500, 0.171111);
 	PlayerTextDrawTextSize(playerid, DynamicTextDraw[12][playerid], 65.312500, 24.111114);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[12][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[12][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[12][playerid], -1);
 	PlayerTextDrawUseBox(playerid, DynamicTextDraw[12][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DynamicTextDraw[12][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[12][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[12][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[12][playerid], 120);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[12][playerid], 5);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[12][playerid], TEXT_DRAW_FONT:5);
 	PlayerTextDrawSetSelectable(playerid, DynamicTextDraw[12][playerid], true);
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[12][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[12][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
 	DynamicTextDraw[13][playerid] = CreatePlayerTextDraw(playerid, 279.750000, 125.444572, "Input"); // Надпись Input
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[13][playerid], 0.296249, 1.308333);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[13][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[13][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[13][playerid], -5963521);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[13][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[13][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[13][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[13][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[13][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[13][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[13][playerid], true);
 
 	DynamicTextDraw[14][playerid] = CreatePlayerTextDraw(playerid, 350.437500, 125.444572, "Save"); // Надпись Save
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[14][playerid], 0.296249, 1.308333);
-	PlayerTextDrawAlignment(playerid, DynamicTextDraw[14][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DynamicTextDraw[14][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[14][playerid], 14706431);
 	PlayerTextDrawSetShadow(playerid, DynamicTextDraw[14][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DynamicTextDraw[14][playerid], 0);
 	PlayerTextDrawBackgroundColour(playerid, DynamicTextDraw[14][playerid], 51);
-	PlayerTextDrawFont(playerid, DynamicTextDraw[14][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[14][playerid], 1);
+	PlayerTextDrawFont(playerid, DynamicTextDraw[14][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DynamicTextDraw[14][playerid], true);
 	return 1;
 }
 stock ShowEditModelMenu(playerid) // Показываем меню редактора

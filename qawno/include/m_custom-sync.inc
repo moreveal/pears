@@ -282,7 +282,7 @@ stock IsPlayerSyncModels(playerid)
 		c_player_model_id[playerid] = newid;
 
 		if(skin >= 312) skin += 15188;
-		return SetSpawnInfo(playerid, team, skin, x, y, z, rotation, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo);
+		return SetSpawnInfo(playerid, team, skin, x, y, z, rotation, WEAPON:weapon1, weapon1_ammo, WEAPON:weapon2, weapon2_ammo, WEAPON:weapon3, weapon3_ammo);
 	}
 	#if defined _ALS_SetSpawnInfo
 		#undef SetSpawnInfo
@@ -380,7 +380,7 @@ stock IsPlayerSyncModels(playerid)
 		AddStaticVehicleEx
 	*/
 
-	stock m_custom_sync_AddStaticVehEx(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, color1, color2, respawn_delay, addsiren=0)
+	stock m_custom_sync_AddStaticVehEx(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, Float:z_angle, color1, color2, respawn_delay, bool:addsiren = false)
 	{
 		new
 			newid = modelid;
@@ -412,7 +412,7 @@ stock IsPlayerSyncModels(playerid)
 		CreateVehicle
 	*/
 
-	stock m_custom_sync_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren=0)
+	stock m_custom_sync_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, bool:addsiren = false)
 	{
 		new
 			newid = vehicletype;

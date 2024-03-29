@@ -4018,7 +4018,7 @@ stock SaveMyVehiclePos(vehicleid) // Сохраняем позицию личного транспорта
 	VehInfo[vehicleid][vKoordinatZ] = pos[2];
 	VehInfo[vehicleid][vKoordinatA] = pos[3];
 
-	GetVehicleDamageStatus(vehicleid, VehInfo[vehicleid][vPanels], VehInfo[vehicleid][vDoors], VehInfo[vehicleid][vFara], VehInfo[vehicleid][vTires]);
+	GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:VehInfo[vehicleid][vPanels], VEHICLE_DOOR_STATUS:VehInfo[vehicleid][vDoors], VEHICLE_LIGHT_STATUS:VehInfo[vehicleid][vFara], VEHICLE_TYRE_STATUS:VehInfo[vehicleid][vTires]);
 	return 1;
 }
 
@@ -4029,7 +4029,7 @@ CMD:vehdamage(playerid)
 	new panels, vehdoors, vehlights, tires;
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-	GetVehicleDamageStatus(vehicleid, panels, vehdoors, vehlights, tires);
+	GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:panels, VEHICLE_DOOR_STATUS:vehdoors, VEHICLE_LIGHT_STATUS:vehlights, VEHICLE_TYRE_STATUS:tires);
 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: vehicleid: %d, panels: %d, doors: %d, lights: %d, tires: %d", vehicleid, panels, vehdoors, vehlights, tires);
 	return 1;
 }
@@ -4210,7 +4210,7 @@ stock pts(p, v)
 
 	for(new i = 0; i < 13; i++)
 	{
-		if(GetVehicleComponentInSlot(v,i) != 0) format(line,sizeof(line),"\n{0088ff}* {cccccc}%s",detalName[GetVehicleComponentInSlot(v,i)]), strcat(lines,line);
+		if(GetVehicleComponentInSlot(v, CARMODTYPE:i) != 0) format(line,sizeof(line),"\n{0088ff}* {cccccc}%s",detalName[GetVehicleComponentInSlot(v, CARMODTYPE:i)]), strcat(lines,line);
 	}
 	format(line,sizeof(line),"\n"), strcat(lines,line);
 	ShowDialog(p,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Паспорт Транспортного Средства",lines,"*","");
@@ -4467,7 +4467,7 @@ function LoadCar(playerid, dab, race_check)
 			LockCar(vehid,VehInfo[vehid][vCarLock]);
 
 			// Загружаем повреждения
-			UpdateVehicleDamageStatus(vehid, VehInfo[vehid][vPanels], VehInfo[vehid][vDoors], VehInfo[vehid][vFara], VehInfo[vehid][vTires]);
+			UpdateVehicleDamageStatus(vehid, VEHICLE_PANEL_STATUS:VehInfo[vehid][vPanels], VEHICLE_DOOR_STATUS:VehInfo[vehid][vDoors], VEHICLE_LIGHT_STATUS:VehInfo[vehid][vFara], VEHICLE_TYRE_STATUS:VehInfo[vehid][vTires]);
 
 			format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
 			SuccessMessage(playerid, string);
@@ -4508,7 +4508,7 @@ stock OnLoadVehicle(vehid)
 stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:y, Float:z, Float:a, col1, col2, keyid, Float:health, benz, yearveh, const numer[], nyche, world, interior, bool:firstLoad)
 {
 	new vehid;
-	vehid = PP_CreateVehicle(vehid, model, x,y,z,a, col1,col2, -1,0, 20, health); // Спавн через 10 минут неактивности
+	vehid = PP_CreateVehicle(model, x,y,z,a, col1,col2, -1,0, 20, health); // Спавн через 10 минут неактивности
 
 	if(vehid == -1) return -1;
 

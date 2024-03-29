@@ -417,7 +417,7 @@ stock WeReturnToPosition(playerid)
 	if(PlayerInfo[playerid][pOdet][3] > 0) Odet(playerid, 8);
 	if(PlayerInfo[playerid][pOdet][4] > 0) Odet(playerid, 9);
 
-	if(!VehShopInfo[playerid][vsTest]) ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
+	if(!VehShopInfo[playerid][vsTest]) ApplyAnimation(playerid,"PED","Turn_R",4.0, false, true, true, false, false);
 
     OnlineInfo[playerid][oTempSpawn] = false; // Спавн завершён
     return 1;
@@ -441,7 +441,7 @@ stock player_undress(playerid)
     PlayerPlaySound(playerid,5601,0,0,0);
     TakeOffClothes(playerid);
     PlayerInfo[playerid][pModel2] = 0, PlayerInfo[playerid][pModel3] = 0;
-    ApplyAnimation(playerid,"PED","Turn_R",4.0,0,1,1,0,0);
+    ApplyAnimation(playerid,"PED","Turn_R",4.0, false, true, true, false, false);
     if(OnlineInfo[playerid][oShowInterface] == 1) PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[0][playerid], PlayerInfo[playerid][pModel]), PlayerTextDrawShow(playerid, PlaNestOthe[0][playerid]);
     
     if(PlayerInfo[playerid][pOdet][0] > 0) RemovePlayerAttachedObject(playerid, 5);
@@ -489,7 +489,7 @@ stock GoShmot(playerid, stat)
 	PPSetPlayerPos(playerid, 1542.2922,-1451.5934,45.9063), SetPlayerFacingAngle(playerid, 36.3980);
 	S_SetPlayerVirtualWorld(playerid, playerid+1, 0);
  	SetPlayerInterior(playerid, 0);
- 	TogglePlayerControllable(playerid, 0);
+ 	TogglePlayerControllable(playerid, false);
 	InterpolateCameraPos(playerid, 1540.998779, -1459.510864, 46.879333, 1538.850585, -1455.088989, 46.521511, 1000);
 	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
 	SelectColorDraw(playerid);

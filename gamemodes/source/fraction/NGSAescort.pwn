@@ -1713,7 +1713,7 @@ stock CreateObjectTrain()
 stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
 {
     new Float:angle,Float:distance;
-	GetVehicleModelInfo(GetVehModelOriginal(VehInfo[vehicleid][vModel]), 1, x, distance, z);
+	GetVehicleModelInfo(GetVehModelOriginal(VehInfo[vehicleid][vModel]), VEHICLE_MODEL_INFO_FRONTSEAT, x, distance, z);
     distance = distance/2 + 50;
 	GetVehiclePos(vehicleid, x, y, z);
 	GetVehicleZAngle(vehicleid, angle);
@@ -1810,7 +1810,7 @@ stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприпасов и оружия для 
 
     List[quan][playerid] = 19142;
     ListParam[quan][playerid] = 2;
-    quan ++;
+    // quan ++;
     format(line,sizeof(line),"\n{ff9000}Бронежилет \t{444444}%d/%d \t{99ff66}%d$", get_sklad(g,19142,2), sklad_limit(19142, 2), getThingPriceGos(19142, 2)), strcat(lines,line);
     
 	ShowDialog(playerid,1384,DIALOG_STYLE_TABLIST_HEADERS,"*",lines,"Выбор","Отмена");

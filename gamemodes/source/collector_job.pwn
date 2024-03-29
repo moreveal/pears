@@ -59,7 +59,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 					new pay = PlayerInfo[playerid][pSalary];
 					if(ServerInfo[53] == 9) pay += pay/4;
 					paysalary(playerid, pay, 0);
-					ApplyAnimation(playerid,"DEALER","shop_pay",4.0, 0, 0, 0, 0, 0);
+					ApplyAnimation(playerid,"DEALER","shop_pay",4.0, false, false, false, false, false);
 					MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PlayerInfo[playerid][pSalary], "Зарплата Инкассаторы");
 					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Моя зарплата {99ff66}%d$", PlayerInfo[playerid][pSalary]);
 					SendDynamicActorMessage(playerid, BotPears[5],"Отлично! Держи деньги");
@@ -118,7 +118,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				new unix = gettime();
 				if(PlayerInfo[playerid][pRent][0] > unix && PlayerInfo[playerid][pRent][1] > unix) return ErrorMessage(playerid, "{FF6347}У вас уже два арендованных транспорта [ Y >> Транспорт или /car ]");
 	            new model, newcar;
-            	if(listitem == 0) newcar = PP_CreateVehicle(newcar,428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1, 0.0), model = 428;
+            	if(listitem == 0) newcar = PP_CreateVehicle(428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1, 0.0), model = 428;
 				SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Если не устроил выданный банкомат [ /checkterm ]");
                 Gas[newcar] = 100;
 	   			VehInfo[newcar][vAgetid] = playerid;
@@ -191,7 +191,7 @@ stock CloseCollector(playerid)
 	new b = GetPlayerVirtualWorld(playerid)-3000;
 	new term = GetPVarInt(playerid,"job_collector_term")-1;
 	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в данный банк.");
-	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
+	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
 	PlayerInfo[playerid][pPlacement] = 13;

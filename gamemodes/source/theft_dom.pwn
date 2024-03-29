@@ -6,39 +6,39 @@
         if(Hold[playerid] == 1)
 		{
             new dom = GetPlayerVirtualWorld(playerid) - 1000;
-            if(dom == PlayerInfo[playerid][pDom]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РѕРіСЂР°Р±РёС‚СЊ СЃРІРѕР№ РґРѕРј");
-            if(dom == PlayerInfo[playerid][pHouserent]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РѕРіСЂР°Р±РёС‚СЊ РґРѕРј, РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕР¶РёРІР°РµС‚Рµ");
-            if(DomInfo[dom][dFam] >= 1 && PlayerInfo[playerid][pFamily] == DomInfo[dom][dFam]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РѕРіСЂР°Р±РёС‚СЊ РґРѕРј СЃРІРѕРµР№ СЃРµРјСЊРё");
-            if(!IsAGang(playerid) && !IsAMafia(playerid)) return ErrorMessage(playerid, "{FF6347}РЈРєСЂР°СЃС‚СЊ РјРµР±РµР»СЊ РјРѕР¶РµС‚ С‚РѕР»СЊРєРѕ СѓС‡Р°СЃС‚РЅРёРє РїСЂРµСЃС‚СѓРїРЅРѕР№ РіСЂСѓРїРїРёСЂРѕРІРєРё (Р‘Р°РЅРґР°, РњР°С„РёСЏ)");
-            if(OnlineInfo[playerid][oOnBackThing][0] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ СѓР¶Рµ РµСЃС‚СЊ РїСЂРµРґРјРµС‚ РІ РјРµС€РєРµ\n\n{cccccc}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РЅР° Р°СЂРµРЅРґРѕРІР°РЅРЅС‹Р№ СЃРєР»Р°Рґ СЃРІРѕРµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ СЋРЅРёС‚С‹");
-            if(DomInfo[dom][dTheftQuan] > 0 && DomInfo[dom][dTheft] < gettime()) return ErrorMessage(playerid, "{FF6347}Р—Р°РєРѕРЅС‡РёР»РѕСЃСЊ РІСЂРµРјСЏ Р°РєС‚РёРІРЅРѕРіРѕ РѕРіСЂР°Р±Р»РµРЅРёСЏ РёР»Рё РѕРіСЂР°Р±Р»РµРЅРёРµ РЅРµ РЅР°С‡Р°С‚Рѕ");
-            if(DomInfo[dom][dTheftQuan] >= 4) return ErrorMessage(playerid, "{FF6347}Р—Р° РѕРґРЅРѕ РѕРіСЂР°Р±Р»РµРЅРёРµ, РјРѕР¶РЅРѕ СѓРєСЂР°СЃС‚СЊ РЅРµ Р±РѕР»СЊС€Рµ 4-С‘С… РїСЂРµРґРјРµС‚РѕРІ РјРµР±РµР»Рё");
-            if(get_invent4(playerid, 23, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РјРµС€РєР°, РєСѓРґР° СЃРєР»Р°РґС‹РІР°С‚СЊ РЅР°РіСЂР°Р±Р»РµРЅРЅРѕРµ {cccccc}[ Y >> GPS >> РЈСЃР»СѓРіРё >> РЎСѓРїРµСЂРјР°СЂРєРµС‚ ]");
-            ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0,0,0,0,0,0,1);
-            findObject = FindTheftDomObject(playerid, dom); // РС‰РµРј РѕР±СЉРµРєС‚
+            if(dom == PlayerInfo[playerid][pDom]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить свой дом");
+            if(dom == PlayerInfo[playerid][pHouserent]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить дом, в котором проживаете");
+            if(DomInfo[dom][dFam] >= 1 && PlayerInfo[playerid][pFamily] == DomInfo[dom][dFam]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить дом своей семьи");
+            if(!IsAGang(playerid) && !IsAMafia(playerid)) return ErrorMessage(playerid, "{FF6347}Украсть мебель может только участник преступной группировки (Банда, Мафия)");
+            if(OnlineInfo[playerid][oOnBackThing][0] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть предмет в мешке\n\n{cccccc}Отправляйтесь на арендованный склад своей организации, чтобы получить юниты");
+            if(DomInfo[dom][dTheftQuan] > 0 && DomInfo[dom][dTheft] < gettime()) return ErrorMessage(playerid, "{FF6347}Закончилось время активного ограбления или ограбление не начато");
+            if(DomInfo[dom][dTheftQuan] >= 4) return ErrorMessage(playerid, "{FF6347}За одно ограбление, можно украсть не больше 4-ёх предметов мебели");
+            if(get_invent4(playerid, 23, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет мешка, куда складывать награбленное {cccccc}[ Y >> GPS >> Услуги >> Супермаркет ]");
+            ApplyAnimation(playerid,"PED","flee_lkaround_01",4.0, false, false, false, false, false);
+            findObject = FindTheftDomObject(playerid, dom); // Ищем объект
             if(findObject == -1)
             {
-                ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С€Р»Рё РїСЂРµРґРјРµС‚, РєРѕС‚РѕСЂС‹Р№ РјРѕР¶РЅРѕ СѓРєСЂР°СЃС‚СЊ РёР· РґРѕРјР°\nРџРѕРїСЂРѕР±СѓР№С‚Рµ РїРѕРёСЃРєР°С‚СЊ РІ РґСЂСѓРіРѕР№ РєРѕРјРЅР°С‚Рµ\n\n{cccccc}РЈРєСЂР°СЃС‚СЊ РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РїСЂРµРґРјРµС‚, РєРѕС‚РѕСЂС‹Р№ РїСЂРѕРґР°С‘С‚СЃСЏ РІ IKEA");
+                ErrorMessage(playerid, "{FF6347}Вы не нашли предмет, который можно украсть из дома\nПопробуйте поискать в другой комнате\n\n{cccccc}Украсть можно только предмет, который продаётся в IKEA");
             }
-            else // РќР°С€Р»Рё РїСЂРµРґРјРµС‚
+            else // Нашли предмет
             {
-                if(DomInfo[dom][dTheftCd] < gettime()) DomInfo[dom][dTheftCd] = gettime() + 604800; // Р—Р°РїРёСЃС‹РІР°РµРј РєРґ РЅР° РѕРіСЂР°Р±Р»РµРЅРёРµ РґРѕРјР°
-                if(DomInfo[dom][dTheft] < gettime()) // РћР±СЉСЏРІР»СЏРµРј РЅРѕРІРѕРµ РѕРіСЂР°Р±Р»РµРЅРёРµ
+                if(DomInfo[dom][dTheftCd] < gettime()) DomInfo[dom][dTheftCd] = gettime() + 604800; // Записываем кд на ограбление дома
+                if(DomInfo[dom][dTheft] < gettime()) // Объявляем новое ограбление
                 {
                     DomInfo[dom][dTheft] = gettime() + 300;
                     DomInfo[dom][dTheftQuan] = 0;
                 }
                 DomInfo[dom][dTheftQuan] ++;
-                ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0,0,1,1,0,0);
+                ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, true, true, false, false);
                 PlayerPlaySound(playerid,1053,0,0,0);
                 OnlineInfo[playerid][oOnBackThing][0] = GetDynamicObjectModel(DomInfo[dom][dObject][findObject]);
                 OnlineInfo[playerid][oOnBackThing][1] = 1;
-                OnlineInfo[playerid][oOnBackThing][2] = findObject; // Р—Р°РїРёСЃС‹РІР°РµРј РЅРѕРјРµСЂ РѕР±СЉРµРєС‚Р° РјРµР±РµР»Рё РІ СЃРёСЃС‚РµРјРµ
-                OnlineInfo[playerid][oOnBackThing][3] = dom; // РљСЂР°РґРµРЅС‹Р№ (Р·Р°РїРёСЃС‹РІР°РµРј РЅРѕРјРµСЂ РґРѕРјР°!)
+                OnlineInfo[playerid][oOnBackThing][2] = findObject; // Записываем номер объекта мебели в системе
+                OnlineInfo[playerid][oOnBackThing][3] = dom; // Краденый (записываем номер дома!)
                 OnlineInfo[playerid][oOnBackThing][4] = 4;
-                OnlineInfo[playerid][oOnBackThing][5] = 3; // РЈРїР°РєРѕРІС‹РІР°РµРј РІ РјРµС€РѕРє
+                OnlineInfo[playerid][oOnBackThing][5] = 3; // Упаковываем в мешок
                 SetPlayerAttachedObject(playerid, 2, 2060, 1, 0.076999, -0.155999, 0.000000, 91.999961, 0.000000, 0.000000, 0.610000, 0.649999, 0.664000, 0, 0);
-                SuccessMessage(playerid, "{99ff66}РђР№ РєР°РєРѕР№ С‚С‹ РјРѕР»РѕРґРµС†, СЃРїС‘СЂ РјРµР±РµР»СЊ РёР· РґРѕРјР°\n\n{cccccc}РћС‚РЅРµСЃРё РјРµС€РѕРє РЅР° СЃРєР»Р°Рґ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё, С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ СЋРЅРёС‚С‹");
+                SuccessMessage(playerid, "{99ff66}Ай какой ты молодец, спёр мебель из дома\n\n{cccccc}Отнеси мешок на склад вашей организации, чтобы получить юниты");
             }
         }
     }

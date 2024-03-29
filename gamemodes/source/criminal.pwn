@@ -933,7 +933,7 @@ stock AcceptWanted(playerid)
 {
     NoAnim[playerid] = 1;
     TogglePlayerControllable(playerid, false);
-    ApplyAnimation(playerid,"ROB_BANK","SHP_HandsUp_Scr",4.1,0,1,1,1,1,1);
+    ApplyAnimation(playerid,"ROB_BANK","SHP_HandsUp_Scr",4.1, false, true, true, true, true, SYNC_ALL);
     new string[115];
     format(string,sizeof(string),"{abcdef}[ HQ ]: Обвиняемый {FFFFFF}%s[%d] {abcdef}принял предложение сдаться добровольно.",rpplayername(playerid),playerid);
     SendClientMessage(Moiplayer[playerid],COLOR_GREY,string);

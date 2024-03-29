@@ -1,6 +1,6 @@
 
-#define MAX_ACC 100 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјР°РЅРґ РїРѕ РїСЂР°РІР°Рј РґРѕСЃС‚СѓРїР° Сѓ РѕСЂРіР°РЅРёР·Р°С†РёР№
-#define MAX_ORDERESCORT 10 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РєР°Р·РѕРІ РІ Р­РЎРєРѕСЂС‚Рµ
+#define MAX_ACC 100 // Максимальное количество команд по правам доступа у организаций
+#define MAX_ORDERESCORT 10 // Максимальное количество заказов в ЭСкорте
 #define MAX_SKIN_ORGANIZATION 30 
 
 enum gInfo
@@ -16,8 +16,8 @@ enum gInfo
 	gapt,
 	gstat2,
 	gstat,
-	gAcc[MAX_ACC], // РЎ РєР°РєРѕРіРѕ СЂР°РЅРіР° РґРѕСЃС‚СѓРїРЅР° С„СѓРЅРєС†РёСЏ РёР»Рё РєРѕРјР°РЅРґР°
-	gAccDiv[MAX_ACC], // РљР°РєР°СЏ РїРѕРґС„СЂР°РєС†РёСЏ РїСЂРёРІСЏР·Р°РЅР° Рє С„СѓРЅРєС†РёРё РёР»Рё РєРѕРјР°РЅРґРµ
+	gAcc[MAX_ACC], // С какого ранга доступна функция или команда
+	gAccDiv[MAX_ACC], // Какая подфракция привязана к функции или команде
 	gBattle,
 	gInterval,
 	gInvent[20],
@@ -27,8 +27,8 @@ enum gInfo
 	bool:gInvUpdate[20],
 	gUpdate,
 	gUpdateSklad,
-	gUpdRank, // РЎС‚Р°С‚СѓСЃ РѕР±РЅРѕРІР»РµРЅРёСЏ СЂР°РЅРіРѕРІ
-	gUpdSkin, // РЎС‚Р°С‚СѓСЃ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃРєРёРЅРѕРІ
+	gUpdRank, // Статус обновления рангов
+	gUpdSkin, // Статус обновления скинов
 	gGuardStat[20],
 	Float:gGu_X[20],
 	Float:gGu_Y[20],
@@ -38,30 +38,30 @@ enum gInfo
 	Text3D:gGuLabel[20],
 	gGuPickup[20],
 	gGuOccup[20],
-	bool:gSCbug, // РџРµСЂРµРєР»СЋС‡Р°С‚РµР»СЊ СЂРµР¶РёРјР° РєР°СЃС‚РѕРјРЅРѕРіРѕ РґР°РјР°РіР°
-	gSanCbug, // РЎР°РЅРєС†РёСЏ РѕС‚ Р°РґРјРёРЅРѕРІ РЅР° +C Р±Р°Рі
-	bool:gRejim2, // Р’РєР»СЋС‡С‘РЅ Р»Рё СЂРµР¶РёРј +C Р±Р°Рі
-	gCapture[13], // РћР±С‰Р°СЏ СЃС‚Р°С‚Р° РєР°РїС‚РѕРІ
-	gUnitStat[24], // РќР°СЃС‚СЂРѕР№РєРё СЋРЅРёС‚РѕРІ
-	gCash, // РЎС‡РµС‚ РѕСЂРіР°РЅРёР·Р°С†РёРё (РѕС‚РєСЂС‹С‚ РёР»Рё РЅРµС‚)
-	gCarAcc[10], // РџСЂР°РІР° РґРѕСЃС‚СѓРїР° Рє С‚СЂР°РЅСЃРїРѕСЂС‚Сѓ
-	gMap, // ID Р—Р°РіСЂСѓР¶РµРЅРЅРѕР№ РєР°СЂС‚С‹
-	gSkin[MAX_SKIN_ORGANIZATION], // ID РЎРєРёРЅР°
-	gSkinPrice[MAX_SKIN_ORGANIZATION], // РЎС‚РѕРёРјРѕСЃС‚СЊ РЎРєРёРЅР°
-	gSkinRank[MAX_SKIN_ORGANIZATION], // РЎ РєР°РєРѕРіРѕ СЂР°РЅРіР° РґРѕСЃС‚СѓРїРµРЅ СЃРєРёРЅ
-	gMaxRanks, // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
-	gOrder[MAX_ORDERESCORT], // Р—Р°РєР°Р·
-	gOrderQuan[MAX_ORDERESCORT], // Р—Р°РєР°Р· РєРѕР»-РІРѕ.
-	gOrderType[MAX_ORDERESCORT], // Р—Р°РєР°Р· С‚РёРї.
-	gOrderStatus, // РЎС‚Р°С‚СѓСЃ Р·Р°РєР°Р·Р°
-	gDeliveryOrder, // РЎС‚Р°С‚СѓСЃ РґРѕСЃС‚Р°РІРєРё
-	gDeliveryPay, // РћР±С‰Р°СЏ СЃС‚РѕРёРјРѕСЃС‚СЊ
-	gTax // РЎС‚РѕРёРјРѕСЃС‚СЊ РґРѕСЃС‚Р°РІРєРё Р±РѕРµРїСЂРёРїР°СЃРѕРІ
+	bool:gSCbug, // Переключатель режима кастомного дамага
+	gSanCbug, // Санкция от админов на +C баг
+	bool:gRejim2, // Включён ли режим +C баг
+	gCapture[13], // Общая стата каптов
+	gUnitStat[24], // Настройки юнитов
+	gCash, // Счет организации (открыт или нет)
+	gCarAcc[10], // Права доступа к транспорту
+	gMap, // ID Загруженной карты
+	gSkin[MAX_SKIN_ORGANIZATION], // ID Скина
+	gSkinPrice[MAX_SKIN_ORGANIZATION], // Стоимость Скина
+	gSkinRank[MAX_SKIN_ORGANIZATION], // С какого ранга доступен скин
+	gMaxRanks, // Максимальное количество рангов
+	gOrder[MAX_ORDERESCORT], // Заказ
+	gOrderQuan[MAX_ORDERESCORT], // Заказ кол-во.
+	gOrderType[MAX_ORDERESCORT], // Заказ тип.
+	gOrderStatus, // Статус заказа
+	gDeliveryOrder, // Статус доставки
+	gDeliveryPay, // Общая стоимость
+	gTax // Стоимость доставки боеприпасов
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
 
-stock get_maxrank(g) // РџРѕР»СѓС‡Р°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё
+stock get_maxrank(g) // Получаем максимальное количество рангов в организации
 {
 	new numr;
 	if(OrganInfo[g][gMaxRanks] > 0) numr = OrganInfo[g][gMaxRanks];
@@ -69,29 +69,29 @@ stock get_maxrank(g) // РџРѕР»СѓС‡Р°РµРј РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃ
 	{
 		switch(g)
 		{
-			case 1: numr = 15; // LSPD (15 Р Р°РЅРіРѕРІ)
-			case 2: numr = 14; // FBI (14 Р Р°РЅРіРѕРІ)
-			case 3, 31, 33: numr = 20; // Army (20 Р Р°РЅРіРѕРІ), Р’Р’РЎ, Р’РњР¤
-			case 4, 26: numr = 12; // ASGH (12 Р Р°РЅРіРѕРІ), РџРѕР¶Р°СЂРєР°
-			case 5: numr = 10; // Cosa Nostra (10 Р Р°РЅРіРѕРІ)
-			case 6: numr = 10; // Yakuza Mafia (10 Р Р°РЅРіРѕРІ)
-			case 7: numr = 22; // РџСЂР°РІРёС‚РµР»СЊСЃС‚РІРѕ (22 Р Р°РЅРіР°)
-			case 8: numr = 11; // Hitman Agency (11 Р Р°РЅРіРѕРІ)
-			case 9: numr = 10; // CNN (10 Р Р°РЅРіРѕРІ)
-			case 10: numr = 10; // Triafa Mafia (10 Р Р°РЅРіРѕРІ)
-			case 11: numr = 15; // SFPD (15 Р Р°РЅРіРѕРІ)
-			case 12: numr = 10; // Russian Mafia (10 Р Р°РЅРіРѕРІ)
-			case 13: numr = 10; // Grove Street (10 Р Р°РЅРіРѕРІ)
-			case 14: numr = 10; // Ballas Gang (10 Р Р°РЅРіРѕРІ)
-			case 15: numr = 10; // Vagos Gang (10 Р Р°РЅРіРѕРІ)
-			case 16: numr = 10; // Los Aztecas (10 Р Р°РЅРіРѕРІ)
-			case 17: numr = 10; // Rifa Gang (10 Р Р°РЅРіРѕРІ)
-			case 18: numr = 10; // Arabian Mafia (10 Р Р°РЅРіРѕРІ)
-			case 19: numr = 10; // Street Racers (10 Р Р°РЅРіРѕРІ)
-			case 20: numr = 10; // Bikers (10 Р Р°РЅРіРѕРІ)
-			case 21: numr = 15; // LVPD (15 Р Р°РЅРіРѕРІ)
-			case 22: numr = 15; // SWAT (15 Р Р°РЅРіРѕРІ)
-			case 32: numr = 6; // РЎРµРєС‚Р°
+			case 1: numr = 15; // LSPD (15 Рангов)
+			case 2: numr = 14; // FBI (14 Рангов)
+			case 3, 31, 33: numr = 20; // Army (20 Рангов), ВВС, ВМФ
+			case 4, 26: numr = 12; // ASGH (12 Рангов), Пожарка
+			case 5: numr = 10; // Cosa Nostra (10 Рангов)
+			case 6: numr = 10; // Yakuza Mafia (10 Рангов)
+			case 7: numr = 22; // Правительство (22 Ранга)
+			case 8: numr = 11; // Hitman Agency (11 Рангов)
+			case 9: numr = 10; // CNN (10 Рангов)
+			case 10: numr = 10; // Triafa Mafia (10 Рангов)
+			case 11: numr = 15; // SFPD (15 Рангов)
+			case 12: numr = 10; // Russian Mafia (10 Рангов)
+			case 13: numr = 10; // Grove Street (10 Рангов)
+			case 14: numr = 10; // Ballas Gang (10 Рангов)
+			case 15: numr = 10; // Vagos Gang (10 Рангов)
+			case 16: numr = 10; // Los Aztecas (10 Рангов)
+			case 17: numr = 10; // Rifa Gang (10 Рангов)
+			case 18: numr = 10; // Arabian Mafia (10 Рангов)
+			case 19: numr = 10; // Street Racers (10 Рангов)
+			case 20: numr = 10; // Bikers (10 Рангов)
+			case 21: numr = 15; // LVPD (15 Рангов)
+			case 22: numr = 15; // SWAT (15 Рангов)
+			case 32: numr = 6; // Секта
 			default: numr = 0;
 		}
 	}
@@ -162,7 +162,7 @@ function LoadOrgan()
     	}
 		cache_get_value_name_int(f, "interval", OrganInfo[idx][gInterval]);
 		
-		// Р—Р°РіСЂСѓР¶Р°РµРј СЃРєР»Р°Рґ РѕСЂРіР°РЅРёР·Р°С†РёРё
+		// Загружаем склад организации
 		OnLoadOrganInvent(idx, f);
 
 		for(new x = 0; x < 20; x++)
@@ -330,66 +330,66 @@ function LoadOrgan()
 	OrganInfo[0][gstat2] = 0;
     SaveOrgan(0);
 
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n\n{ffffff}[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[3][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n\n{ffffff}[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[0] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,329.3005,1913.6547,17.6566,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[1] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,342.7881,1952.4415,20.1840,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[2] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,342.7953,1987.6055,20.1840,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[3] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,318.1751,2072.9731,17.6446,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[4] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,278.6174,2002.4999,17.6406,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[2][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[2][gbenz]);
 	FrakiBenz[9] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,2112.4143,2374.6577,10.8203,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[2][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[2][gbenz]);
 	FrakiBenz[11] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,2101.6763,2423.8325,74.5786,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n\n{ffffff}[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n\n{ffffff}[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[5] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1400.3053,456.5131,7.1809,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[8] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1354.442749, 385.154052, 1.907501,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[10] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1354.441894, 349.254119, 1.907502,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[12] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1319.4836,493.9069,18.2344,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[20] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1256.6936,428.4373,24.7980,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
 	FrakiBenz[21] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1246.7941,439.3991,7.1875,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[1][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[1][gbenz]);
     FrakiBenz[15] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,1585.1392,-1680.3263,5.8970,7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[1][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[1][gbenz]);
     FrakiBenz[16] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,1568.0873,-1639.4658,28.4021,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[11][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[11][gbenz]);
     FrakiBenz[6] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1606.1071,732.9869,-5.2344,7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[11][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[11][gbenz]);
     FrakiBenz[7] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1631.6208,712.2404,49.0737,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Р—Р°РїСЂР°РІРёС‚СЊ Р¦РёСЃС‚РµСЂРЅСѓ - {0088ff}CAPS LOCK (Р“СѓРґРѕРє) {ffffff}]",OrganInfo[22][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[22][gbenz]);
     FrakiBenz[14] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,2499.1248,2487.4060,10.8203,7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}РўРѕРїР»РёРІРѕ {ffffff}[ {0088ff}%d Р». {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[22][gbenz]);
+    format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[22][gbenz]);
     FrakiBenz[17] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,2400.4456,2480.4775,69.6422,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 
-    RingText[0] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {00cc00}Grove Street {cccccc}[ ALT ]",0xA9C4E4FF,2523.2881,-1696.6648,13.5210,10.0);
-    RingText[1] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {9900cc}Ballas Gang {cccccc}[ ALT ]",0xA9C4E4FF,2510.6646,-1987.1370,13.5540,10.0);
-    RingText[2] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {ffcc33}Vagos Gang {cccccc}[ ALT ]",0xA9C4E4FF,2249.1777,-1461.2014,24.0497,10.0);
-    RingText[3] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {00ffff}Los Aztecas {cccccc}[ ALT ]",0xA9C4E4FF,1711.5629,-2087.6062,13.5469,10.0);
-    RingText[4] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {ff9000}MMA {cccccc}[ ALT ]",0xA9C4E4FF,-1381.4384,83.0507,2044.1340,10.0);
-    RingText[5] = CreateDynamic3DTextLabel("{ff9000}Р РёРЅРі {ff9000}РўСЋСЂСЊРјР° {cccccc}[ ALT ]",0xA9C4E4FF,1000.7909,2439.7969,10.8716,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-    RuletText[0] = CreateDynamic3DTextLabel("{ff9000}Р СѓР»РµС‚РєР°\n{cccccc}ALT - РРіСЂР°С‚СЊ\n{cccccc}ENTER - РІС‹Р№С‚Рё",-1,2182.339599, 1011.979858, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 0
-    RuletText[1] = CreateDynamic3DTextLabel("{ff9000}Р СѓР»РµС‚РєР°\n{cccccc}ALT - РРіСЂР°С‚СЊ\n{cccccc}ENTER - РІС‹Р№С‚Рё",-1,2182.339599, 1017.982482, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 1
-    RuletText[2] = CreateDynamic3DTextLabel("{ff9000}Р СѓР»РµС‚РєР°\n{cccccc}ALT - РРіСЂР°С‚СЊ\n{cccccc}ENTER - РІС‹Р№С‚Рё",-1,2182.339599, 1023.986572, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 2
+    RingText[0] = CreateDynamic3DTextLabel("{ff9000}Ринг {00cc00}Grove Street {cccccc}[ ALT ]",0xA9C4E4FF,2523.2881,-1696.6648,13.5210,10.0);
+    RingText[1] = CreateDynamic3DTextLabel("{ff9000}Ринг {9900cc}Ballas Gang {cccccc}[ ALT ]",0xA9C4E4FF,2510.6646,-1987.1370,13.5540,10.0);
+    RingText[2] = CreateDynamic3DTextLabel("{ff9000}Ринг {ffcc33}Vagos Gang {cccccc}[ ALT ]",0xA9C4E4FF,2249.1777,-1461.2014,24.0497,10.0);
+    RingText[3] = CreateDynamic3DTextLabel("{ff9000}Ринг {00ffff}Los Aztecas {cccccc}[ ALT ]",0xA9C4E4FF,1711.5629,-2087.6062,13.5469,10.0);
+    RingText[4] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}MMA {cccccc}[ ALT ]",0xA9C4E4FF,-1381.4384,83.0507,2044.1340,10.0);
+    RingText[5] = CreateDynamic3DTextLabel("{ff9000}Ринг {ff9000}Тюрьма {cccccc}[ ALT ]",0xA9C4E4FF,1000.7909,2439.7969,10.8716,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+    RuletText[0] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1011.979858, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 0
+    RuletText[1] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1017.982482, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 1
+    RuletText[2] = CreateDynamic3DTextLabel("{ff9000}Рулетка\n{cccccc}ALT - Играть\n{cccccc}ENTER - выйти",-1,2182.339599, 1023.986572, 992.618713,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,2001,55); // 2
     RuletObject[0] = CreateDynamicObject(1979, RuletPos[0][0], RuletPos[0][1], RuletPos[0][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (2)
 	RuletObject[1] = CreateDynamicObject(1979, RuletPos[1][0], RuletPos[1][1], RuletPos[1][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (1)
 	RuletObject[2] = CreateDynamicObject(1979, RuletPos[2][0], RuletPos[2][1], RuletPos[2][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (0)
 
-	DBLabel = CreateDynamic3DTextLabel("{ff9000}Р‘Р°Р·Р° Р”Р°РЅРЅС‹С… SWAT\n\n{cccccc}РЎС‚Р°С‚СѓСЃ: {99ff66}РђРєС‚РёРІРЅР°",-1,2466.4614,2546.1318,22.0781,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+	DBLabel = CreateDynamic3DTextLabel("{ff9000}База Данных SWAT\n\n{cccccc}Статус: {99ff66}Активна",-1,2466.4614,2546.1318,22.0781,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 	DBInfo[dbHacker] = -1;
-	load_ammosv(); // Р—Р°РіСЂСѓР¶Р°РµРј СЏС‰РёРєРё РЅР° СЃРєР»Р°Рґ NGSA
+	load_ammosv(); // Загружаем ящики на склад NGSA
 	dirtunix = gettime()+600;
 
-	printf("[MODE]: РћСЂРіР°РЅРёР·Р°С†РёРё [%d ms]",GetTickCount() - time);
+	printf("[MODE]: Организации [%d ms]",GetTickCount() - time);
 	return 1;
 }
 
@@ -411,7 +411,7 @@ stock SaveOrgan(idx)
 	return 1;
 }
 
-// РЎРєР»Р°Рґ РѕСЂРіР°РЅРёР·Р°С†РёРё
+// Склад организации
 function gunsklad(playerid)
 {
 	new skladstat = IsAGunSklad(playerid);
@@ -420,57 +420,57 @@ function gunsklad(playerid)
 	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1];
 		new fpara = OnlineInfo[playerid][oInHandThing][2], thingQara = OnlineInfo[playerid][oInHandThing][3];
 		new thingType = OnlineInfo[playerid][oInHandThing][4], thingPack = OnlineInfo[playerid][oInHandThing][5];
-		if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Р—Р°РїРµС‡Р°С‚Р°РЅРЅС‹Р№ СЏС‰РёРє РЅРµРІРѕР·РјРѕР¶РЅРѕ СЂР°СЃРїР°РєРѕРІР°С‚СЊ РЅР° СЃРєР»Р°РґРµ\n\n{cccccc}Р­С‚РѕС‚ СЏС‰РёРє Р·Р°С‰РёС‰С‘РЅ Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РґРѕСЃС‚Р°РІРєРё Р±РѕРµРїСЂРёРїР°СЃРѕРІ NGSA");
-		if(fpick > 0 && thingPack == 2) //  РљР»Р°РґС‘Рј РЇС‰РёРє
+		if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
+		if(fpick > 0 && thingPack == 2) //  Кладём Ящик
 		{
-		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}РќР° СЌС‚РѕРј СЃРєР»Р°РґРµ РЅРµР»СЊР·СЏ С…СЂР°РЅРёС‚СЊ РІРµС‰РµСЃС‚РІР°");
+		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
 
-			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}РќР° СЌС‚РѕРј СЃРєР»Р°РґРµ РЅРµР»СЊР·СЏ С…СЂР°РЅРёС‚СЊ СЃРЅР°Р№РїРµСЂСЃРєСѓСЋ РІРёРЅС‚РѕРІРєСѓ\n{cccccc}[РўРѕР»СЊРєРѕ РґР»СЏ ICA, SWAT]");
+			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SWAT]");
 			if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 			{
 			    if(thingType == 1) fpara = 100000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
 			    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 			
-			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType,1); // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚
-				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РќР° СЃРєР»Р°РґРµ РѕСЂРіР°РЅРёР·Р°С†РёРё, РґР»СЏ СЌС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°, РЅРµС‚ РјРµСЃС‚Р° [ Р›РёРјРёС‚ ]");
+			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType,1); // Кладём предмет
+				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места [ Лимит ]");
 
 				InHandClear(playerid);
 				
 				new string[120];
-				format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР»%s РЅР° СЃРєР»Р°Рґ {ff9000}%s | %d", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
+				format(string,sizeof(string),"[ Мысли ]: Я положил%s на склад {ff9000}%s | %d", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
     			SendClientMessage(playerid, COLOR_GREY, string);
 				OrgLog(skladstat, "putsklad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
 
-	   		    SetPlayerChatBubble(playerid,"РєР»Р°РґС‘С‚ СЏС‰РёРє РЅР° СЃРєР»Р°Рґ",COLOR_PURPLE,20.0,3000);
+	   		    SetPlayerChatBubble(playerid,"кладёт ящик на склад",COLOR_PURPLE,20.0,3000);
 	       	    RemovePlayerAttachedObject(playerid,1);
 	       	    PPP15[playerid] = 0;
-	       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
+	       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0, false, false, false, false, false, SYNC_ALL);
 	       	    PlayerPlaySound(playerid,6401,0,0,0);
 
-	       	    // Р’С‹РґР°С‘Рј СЋРЅРёС‚С‹
+	       	    // Выдаём юниты
 	       	    GiveUnitForBox(playerid, fpick, thingType, fquan, thingQara);
 
-				// Р’С‹РґР°С‘Рј Р°С‡РёРІРєСѓ, РїРµСЂРІС‹Р№ РґРѕСЃС‚Р°РІР»РµРЅРЅС‹Р№ СЏС‰РёРє
+				// Выдаём ачивку, первый доставленный ящик
 				if(PlayerInfo[playerid][pAchieve][99] == 0) AchievePlayer(playerid, 99, 1);
   	    	}
-			else ErrorMessage(playerid, "{FF6347}РЎРѕРґРµСЂР¶РёРјРѕРµ СЏС‰РёРєР° РІ СЂСѓРєР°С… РЅРµ РјРѕР¶РµС‚ С…СЂР°РЅРёС‚СЊСЃСЏ РЅР° СЌС‚РѕРј СЃРєР»Р°РґРµ");
+			else ErrorMessage(playerid, "{FF6347}Содержимое ящика в руках не может храниться на этом складе");
 		}
-		else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІ СЂСѓРєР°С… РЅРµС‚ СЏС‰РёРєР°");
+		else ErrorMessage(playerid, "{FF6347}У вас в руках нет ящика");
 	}
 	return 1;
 }
 
 stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 {
-	if(thingQara != 0) return 1; // Р•СЃР»Рё СЏС‰РёРє Р±С‹Р» СЃРѕР±СЂР°РЅ СЃ Р°СЂРµРЅРґРѕРІР°РЅРЅРѕРіРѕ СЃРєР»Р°РґР° (РќРµ РІС‹РґР°С‘Рј СЋРЅРёС‚С‹)
+	if(thingQara != 0) return 1; // Если ящик был собран с арендованного склада (Не выдаём юниты)
 
 	new g = fraction(playerid);
 	if(OrganInfo[g][gUnitStat][2] > 0)
 	{
 		new kol;
-		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Р’РµС‰РµСЃС‚РІР°, РџР°С‚СЂРѕРЅС‹
-		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // РљР°СЃРєР°, Р‘СЂРѕРЅСЏ, РћСЂСѓР¶РёРµ
+		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
+		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
 		PlayerInfo[playerid][pUnit] += kol*OrganInfo[g][gUnitStat][2];
 
 		new string[80];
@@ -484,9 +484,9 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 CMD:omenu(playerid) return cmd_lmenu(playerid);
 CMD:lmenu(playerid)
 {
-	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ СѓС‡Р°СЃС‚РІСѓРµС‚ РІ СЌРєСЃРїРµРґРёС†РёРё NASA");
+	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Ваш персонаж участвует в экспедиции NASA");
 	new g = fraction(playerid);
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	PlayerPlaySound(playerid,1150,0,0,0);
 	showDialogOrganizationMenu(playerid);
@@ -504,38 +504,38 @@ stock showDialogOrganizationMenu(playerid)
 
 	if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18 || g == 13 || g == 14 || g == 15 || g == 16 || g == 17 || g == 19 || g == 20)
 	{
-		format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // РРЅС„РѕСЂРјР°С†РёСЏ
+		format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
  	}
-	format(line,sizeof(line), detail_lmenu(playerid, 2)), strcat(lines,line); // РЈС‡Р°СЃС‚РЅРёРєРё Online
-	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // РЈС‡Р°СЃС‚РЅРёРєРё Offline
-	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // РЎС‚Р°С‚СѓСЃ РЅР°Р±РѕСЂР°
-	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // РџРµСЂРµРІРѕРґС‹ РЅР° СЃС‡РµС‚
+	format(line,sizeof(line), detail_lmenu(playerid, 2)), strcat(lines,line); // Участники Online
+	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // Участники Offline
+	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // Статус набора
+	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // Переводы на счет
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
-		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // РџРѕРґС„СЂР°РєС†РёРё
+		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
 	}
-	format(line,sizeof(line), detail_lmenu(playerid, 7)), strcat(lines,line); // РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
-	format(line,sizeof(line), detail_lmenu(playerid, 15)), strcat(lines,line); // РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
-	format(line,sizeof(line), detail_lmenu(playerid, 8)), strcat(lines,line); // Р›РѕРі
-	format(line,sizeof(line), detail_lmenu(playerid, 10)), strcat(lines,line); // Р§РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє
+	format(line,sizeof(line), detail_lmenu(playerid, 7)), strcat(lines,line); // Названия рангов
+	format(line,sizeof(line), detail_lmenu(playerid, 15)), strcat(lines,line); // Количество рангов
+	format(line,sizeof(line), detail_lmenu(playerid, 8)), strcat(lines,line); // Лог
+	format(line,sizeof(line), detail_lmenu(playerid, 10)), strcat(lines,line); // Черный список
 
-	if(IsAGunSkladDepart(g)) // РўРѕР»СЊРєРѕ РѕСЂРіР°РЅРёР·Р°С†РёРё, Сѓ РєРѕС‚РѕСЂС‹С… РµСЃС‚СЊ РґРѕСЃС‚СѓРї Рє РѕСЂСѓР¶РёСЋ РЅР° СЃРєР»Р°РґРµ
+	if(IsAGunSkladDepart(g)) // Только организации, у которых есть доступ к оружию на складе
 	{
-		format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Р—Р°РєР°Р· Р‘Рџ
+		format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
 	}
 
 	if(IsAGang(playerid) || IsAMafia(playerid))
 	{
-	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Р”РёРїР»РѕРјР°С‚РёСЏ
-	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // РЈРїСЂР°РІР»РµРЅРёРµ РіР°СЂР°Р¶РµРј
+	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
+	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
 	}
-	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // РќР°СЃС‚СЂРѕР№РєРё СЃРєР»Р°РґР°
+	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
-		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // РџСЂР°РІР° РґРѕСЃС‚СѓРїР°
-		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // РќР°СЃС‚СЂРѕР№РєРё РѕРїР»Р°С‚С‹
+		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
+		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
 	}
-	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST_HEADERS,"РњРµРЅСЋ РћСЂРіР°РЅРёР·Р°С†РёРё",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST_HEADERS,"Меню Организации",lines,"Выбрать","Отмена");
 	return 1;
 }
 stock detail_lmenu(playerid, detail)
@@ -543,33 +543,33 @@ stock detail_lmenu(playerid, detail)
     List[DP[0][playerid]][playerid] = detail;
     DP[0][playerid] += 1;
 	new text[50], g = DP[1][playerid];
-	if(detail == 1) text = "\n{999999}РћР± РѕСЂРіР°РЅРёР·Р°С†РёРё..\t";
-	else if(detail == 2) text = "\n{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё {99ff66}Online\t";
-	else if(detail == 3) text = "\n{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё {FF6347}Offline\t";
+	if(detail == 1) text = "\n{999999}Об организации..\t";
+	else if(detail == 2) text = "\n{cccccc}Участники {99ff66}Online\t";
+	else if(detail == 3) text = "\n{cccccc}Участники {FF6347}Offline\t";
 	else if(detail == 4)
 	{
-		if(OrganInfo[g][gapt] == 1) text = "\n{cccccc}РќР°Р±РѕСЂ \t{99ff66}[ РћС‚РєСЂС‹С‚ ]";
- 		else if(OrganInfo[g][gapt] == 0) text = "\n{cccccc}РќР°Р±РѕСЂ \t{FF6347}[ Р—Р°РєСЂС‹С‚ ]";
+		if(OrganInfo[g][gapt] == 1) text = "\n{cccccc}Набор \t{99ff66}[ Открыт ]";
+ 		else if(OrganInfo[g][gapt] == 0) text = "\n{cccccc}Набор \t{FF6347}[ Закрыт ]";
 	}
 	else if(detail == 5)
 	{
-		if(OrganInfo[g][gCash] == 1) text = "\n{cccccc}РЎС‡С‘С‚ \t{99ff66}[ РћС‚РєСЂС‹С‚ ]";
- 		else if(OrganInfo[g][gCash] == 0) text = "\n{cccccc}РЎС‡С‘С‚ \t{FF6347}[ Р—Р°РєСЂС‹С‚ ]";
+		if(OrganInfo[g][gCash] == 1) text = "\n{cccccc}Счёт \t{99ff66}[ Открыт ]";
+ 		else if(OrganInfo[g][gCash] == 0) text = "\n{cccccc}Счёт \t{FF6347}[ Закрыт ]";
 	}
-	else if(detail == 6) text = "\n{cccccc}Р”РёРїР»РѕРјР°С‚РёСЏ\t";
-	else if(detail == 7) text = "\n{cccccc}РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ\t";
-	else if(detail == 8) text = "\n{cccccc}Р›РѕРі\t";
-	else if(detail == 9) text = "\n{cccccc}РЈРїСЂР°РІР»РµРЅРёРµ РіР°СЂР°Р¶РµРј\t";
-	else if(detail == 10) text = "\n{cccccc}Р§РµСЂРЅС‹Р№ СЃРїРёСЃРѕРє\t";
-	else if(detail == 11) text = "\n{ff9000}РџСЂР°РІР° РґРѕСЃС‚СѓРїР°\t";
-	else if(detail == 12) text = "\n{ff9000}РќР°СЃС‚СЂРѕР№РєРё СЃРєР»Р°РґР°\t";
-	else if(detail == 13) text = "\n{ff9000}РќР°СЃС‚СЂРѕР№РєРё РѕРїР»Р°С‚С‹\t";
-	else if(detail == 14) text = "\n{cccccc}РџРѕРґС„СЂР°РєС†РёРё\t";
-	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
+	else if(detail == 6) text = "\n{cccccc}Дипломатия\t";
+	else if(detail == 7) text = "\n{cccccc}Названия рангов\t";
+	else if(detail == 8) text = "\n{cccccc}Лог\t";
+	else if(detail == 9) text = "\n{cccccc}Управление гаражем\t";
+	else if(detail == 10) text = "\n{cccccc}Черный список\t";
+	else if(detail == 11) text = "\n{ff9000}Права доступа\t";
+	else if(detail == 12) text = "\n{ff9000}Настройки склада\t";
+	else if(detail == 13) text = "\n{ff9000}Настройки оплаты\t";
+	else if(detail == 14) text = "\n{cccccc}Подфракции\t";
+	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}Количество рангов\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
 	else if(detail == 16) 
 	{
-		if(OrganInfo[g][gOrderStatus] == 1) format(text, sizeof(text), "\n{cccccc}Р—Р°РєР°Р· Р±РѕРµРїСЂРёРїР°СЃРѕРІ\t{99ff66}Active");
-		else format(text, sizeof(text), "\n{cccccc}Р—Р°РєР°Р· Р±РѕРµРїСЂРёРїР°СЃРѕРІ\t");
+		if(OrganInfo[g][gOrderStatus] == 1) format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t{99ff66}Active");
+		else format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t");
 	}
 	return text;
 }
@@ -606,8 +606,8 @@ stock open_detail_lmenu(playerid, detail)
 		if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;
 
 		new string[80];
-		format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё [2 - %d СЂР°РЅРіРѕРІ]", MAX_RANK_ORG);
-		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}РћСЂРіР°РЅРёР·Р°С†РёСЏ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+		format(string,sizeof(string),"{cccccc}Введите количество рангов в организации [2 - %d рангов]", MAX_RANK_ORG);
+		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",string,"Принять","Отмена");
 	}
 	else if(detail == 16) OrderEscort(playerid, g);
 	return 1;
@@ -624,8 +624,8 @@ stock rank_organization(playerid, g)
 		format(line,sizeof(line),"{ff9000}%d. {cccccc}%s\n",i+1 ,RankOrg[g][i]), strcat(lines,line);
 	}
 	new header[60];
-	format(header,sizeof(header),"{ff9000}РќР°Р·РІР°РЅРёСЏ Р Р°РЅРіРѕРІ {cccccc}[%s]", AbbName[g]);
-	ShowDialog(playerid,1006,DIALOG_STYLE_LIST,header,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+	format(header,sizeof(header),"{ff9000}Названия Рангов {cccccc}[%s]", AbbName[g]);
+	ShowDialog(playerid,1006,DIALOG_STYLE_LIST,header,lines,"Выбрать","Отмена");
    	return 1;
 }
 
@@ -633,12 +633,12 @@ stock rank_organization(playerid, g)
 CMD:members(playerid)
 {
     new g = fraction(playerid);
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	PlayerPlaySound(playerid,40405,0,0,0);
 	new str[214], sctring[4096], quan;
 	
-	format(str, sizeof(str), "{cccccc}РРјСЏ\t{cccccc}Р Р°РЅРі\t{FF6347}Р’С‹РіРѕРІРѕСЂС‹\t{444444}AFK"), strcat(sctring, str);
+	format(str, sizeof(str), "{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{444444}AFK"), strcat(sctring, str);
 
 	foreach(Player, i)
 	{
@@ -653,8 +653,8 @@ CMD:members(playerid)
 	new qwer[100];
 	new year, month, day;
 	getdate(year, month, day);
-	format(qwer, sizeof(qwer), "{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё %s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", frakName[g], quan, day, month, year);
-	ShowDialog(playerid, 706, DIALOG_STYLE_TABLIST_HEADERS, qwer, sctring, "РћРє", "");
+	format(qwer, sizeof(qwer), "{cccccc}Участники %s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", frakName[g], quan, day, month, year);
+	ShowDialog(playerid, 706, DIALOG_STYLE_TABLIST_HEADERS, qwer, sctring, "Ок", "");
     return 1;
 }
 
@@ -662,16 +662,16 @@ stock formatPlayerInfo(str[], size, playerid, g)
 {
     new atext[10], btext[8], afkStatus[24] = "";
 
-    // Р¤РѕСЂРјРёСЂСѓРµРј СЃС‚Р°С‚СѓСЃ AFK
+    // Формируем статус AFK
     if(GetPVarInt(playerid, "afksystem") >= 2) format(afkStatus, sizeof(afkStatus), "%s", fine_time(GetPVarInt(playerid, "afksystem")));
 
-    // РџСЂРѕРІРµСЂСЏРµРј СЃС‚Р°С‚СѓСЃ С‚СЂР°РЅСЃРјРёС‚С‚РµСЂР° РёРіСЂРѕРєР°
+    // Проверяем статус трансмиттера игрока
     atext = PlayerInfo[playerid][pTransmitterOff][0] ? "{FF6347}*" : "{00ff66}*";
 
-    // РћРїСЂРµРґРµР»СЏРµРј С†РІРµС‚ РґР»СЏ РІС‹РІРѕРґР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЂРѕР»Рё РёРіСЂРѕРєР°
+    // Определяем цвет для вывода в зависимости от роли игрока
     btext = PlayerInfo[playerid][pLeader] > 0 ? "0088ff" : "cccccc";
 
-    // Р¤РѕСЂРјР°С‚РёСЂСѓРµРј РёРЅС„РѕСЂРјР°С†РёСЋ РѕР± РёРіСЂРѕРєРµ
+    // Форматируем информацию об игроке
     if(PlayerInfo[playerid][pFbi] > 0 && g == 2)
     {
         format(str, size, "\n%s {%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", atext, btext, getPlayerNameTransmitter(playerid), 
@@ -686,38 +686,38 @@ stock formatPlayerInfo(str[], size, playerid, g)
 
 stock isPlayerEligible(playerid, g)
 {
-    // РџСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РёРіСЂРѕРє РѕРЅР»Р°Р№РЅ
+    // Проверяем, что игрок онлайн
     if(OnlineInfo[playerid][oLogged] == 0)
         return 0;
 
-    // РџСЂРѕРІРµСЂСЏРµРј РїСЂРёРЅР°РґР»РµР¶РЅРѕСЃС‚СЊ Рє С„СЂР°РєС†РёРё
+    // Проверяем принадлежность к фракции
     if(PlayerInfo[playerid][pMember] == g)
         return 1;
 
-    // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ СѓСЃР»РѕРІРёСЏ РґР»СЏ СЃРїРµС†РёС„РёС‡РµСЃРєРёС… С„СЂР°РєС†РёР№ РёР»Рё СЂРѕР»РµР№
-    // РќР°РїСЂРёРјРµСЂ, РґР»СЏ FBI РёР»Рё РґСЂСѓРіРёС… СЃРїРµС†РёР°Р»СЊРЅС‹С… РіСЂСѓРїРї
+    // Дополнительные условия для специфических фракций или ролей
+    // Например, для FBI или других специальных групп
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0)
         return 1;
 
-    // РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РІРѕР·РІСЂР°С‰Р°РµРј false, РµСЃР»Рё РЅРё РѕРґРЅРѕ СѓСЃР»РѕРІРёРµ РЅРµ РІС‹РїРѕР»РЅРµРЅРѕ
+    // По умолчанию возвращаем false, если ни одно условие не выполнено
     return 0;
 }
 
 // New members offline
 CMD:membersoff(playerid)
 {
-	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	new g = fraction(playerid), needg;
 	if(!GetAccessRankOrg(playerid, g, 0, NO_FBI)) return 1;
 	
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
-	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё РћСЂРіР°РЅРёР·Р°С†РёРё {ff0000}Offline","{cccccc}РџРѕРёСЃРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ...","*","");
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Участники Организации {ff0000}Offline","{cccccc}Поиск участников...","*","");
 	
 	needg = g;
 	DP[2][playerid] = 0;
 	DP[0][playerid] = needg;
 
-	if(needg >= MAX_ORG) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РќРµРІРµСЂРЅС‹Р№ ID РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(needg >= MAX_ORG) return ErrorMessage(playerid, "{FF6347}Ошибка! Неверный ID организации");
 
 	new string[240];
 	if(needg == 2) format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
@@ -738,11 +738,11 @@ function Call_mem(playerid, g)
 
     if(rows == 0)
     {
-        ShowDialog(playerid, 706, DIALOG_STYLE_MSGBOX, "{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё РћСЂРіР°РЅРёР·Р°С†РёРё", "{cccccc}РЈС‡Р°СЃС‚РЅРёРєРё Offline РІ РѕСЂРіР°РЅРёР·Р°С†РёРё РЅРµ РЅР°Р№РґРµРЅС‹", "*", "");
+        ShowDialog(playerid, 706, DIALOG_STYLE_MSGBOX, "{ff9000}Участники Организации", "{cccccc}Участники Offline в организации не найдены", "*", "");
         return 1;
     }
 
-    format(str,sizeof(str),"{cccccc}РРјСЏ\t{cccccc}Р Р°РЅРі\t{FF6347}Р’С‹РіРѕРІРѕСЂС‹\t{cccccc}РџРѕСЃР»РµРґРЅСЏСЏ РђРєС‚РёРІРЅРѕСЃС‚СЊ\n"), strcat(sctring,str);
+    format(str,sizeof(str),"{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{cccccc}Последняя Активность\n"), strcat(sctring,str);
 	
     for(new i = 0; i < rows; i++)
     {
@@ -768,16 +768,16 @@ function Call_mem(playerid, g)
 
 	new year, month, day;
     getdate(year, month, day);
-	DP[2][playerid] ++; // РЎС‡РёС‚Р°РµРј СЃС‚СЂР°РЅРёС†С‹
+	DP[2][playerid] ++; // Считаем страницы
 	if(kol >= 40)
 	{
-		format(qwer,sizeof(qwer),"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] РЎС‚СЂР°РЅРёС†Р° %d", frakName[g],kol, day,month,year, DP[2][playerid]);
-		ShowDialog(playerid,855,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Р”Р°Р»РµРµ","");
+		format(qwer,sizeof(qwer),"{ff9000}Участники %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", frakName[g],kol, day,month,year, DP[2][playerid]);
+		ShowDialog(playerid,855,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Далее","");
 	}
 	else
 	{
-		format(qwer,sizeof(qwer),"{ff9000}РЈС‡Р°СЃС‚РЅРёРєРё %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] РЎС‚СЂР°РЅРёС†Р° %d", frakName[g],kol, day,month,year, DP[2][playerid]);
-		ShowDialog(playerid,706,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"РћРє","");
+		format(qwer,sizeof(qwer),"{ff9000}Участники %s {FF6347}Offline: %d {ff9000}[%02d.%02d.%d] Страница %d", frakName[g],kol, day,month,year, DP[2][playerid]);
+		ShowDialog(playerid,706,DIALOG_STYLE_TABLIST_HEADERS,qwer,sctring,"Ок","");
 	}
     return 1;
 }
@@ -806,17 +806,17 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 			open_detail_lmenu(playerid, List[listitem][playerid]);
         }
 	}
-	if(dialogid == 1006) // РќР°Р·РІР°РЅРёСЏ СЂР°РЅРіРѕРІ
+	if(dialogid == 1006) // Названия рангов
 	{
-	    new g = DP[1][playerid]; // ID РћСЂРіР°РЅРёР·Р°С†РёРё
+	    new g = DP[1][playerid]; // ID Организации
 		if(response)
 		{
 			new string[60];
 		    new nrank = get_maxrank(g);
-			if(listitem < 0 || listitem > nrank) return format(string, sizeof(string), "{FF6347}РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ: %d",nrank), ErrorMessage(playerid, string);
-			DP[0][playerid] = listitem; // Р Р°РЅРі
- 			format(string, sizeof(string), "{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РґР»СЏ {ff9000}%d СЂР°РЅРіР°",listitem+1);
- 			ShowDialog(playerid,1007,DIALOG_STYLE_INPUT,"{ff9000}РќР°Р·РІР°РЅРёСЏ Р Р°РЅРіРѕРІ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+			if(listitem < 0 || listitem > nrank) return format(string, sizeof(string), "{FF6347}Максимальное количество рангов: %d",nrank), ErrorMessage(playerid, string);
+			DP[0][playerid] = listitem; // Ранг
+ 			format(string, sizeof(string), "{cccccc}Введите название для {ff9000}%d ранга",listitem+1);
+ 			ShowDialog(playerid,1007,DIALOG_STYLE_INPUT,"{ff9000}Названия Рангов",string,"Принять","Отмена");
 		}
 		else showDialogOrganizationMenu(playerid);
 	}
@@ -827,8 +827,8 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 		{
 			new rankId = DP[0][playerid];
 			if(!strlen(inputtext)) return rank_organization(playerid, g);
-			if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ СѓРєР°Р·Р°С‚СЊ РІ РЅР°Р·РІР°РЅРёРё РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]"), rank_organization(playerid, g);
-			if(strlen(inputtext) < 3 || strlen(inputtext) >= MAX_NAME_LENGTH) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќР°Р·РІР°РЅРёРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РЅРµ Р±РѕР»СЊС€Рµ 30-С‚Рё Рё РЅРµ РјРµРЅСЊС€Рµ 3-С‘С… СЃРёРјРІРѕР»РѕРІ.."), rank_organization(playerid, g);
+			if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Хм... я пытаюсь указать в названии какие-то каракули... [ Запрещённый Символ ]"), rank_organization(playerid, g);
+			if(strlen(inputtext) < 3 || strlen(inputtext) >= MAX_NAME_LENGTH) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Название должно быть не больше 30-ти и не меньше 3-ёх символов.."), rank_organization(playerid, g);
 			PlayerPlaySound(playerid,6401,0,0,0);
             OrgLog(g, "rank", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", rankId+1, inputtext);
             strmid(RankOrg[g][rankId], inputtext, 0, 34, 255);
@@ -837,24 +837,24 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 		}
 		else rank_organization(playerid, g);
 	}
-	if(dialogid == 1331) // РљРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ
+	if(dialogid == 1331) // Количество рангов
 	{
 		if(response)
 		{
 			new input;
 			new g = fraction(playerid);
 
-			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ"), showDialogOrganizationMenu(playerid);
+			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), showDialogOrganizationMenu(playerid);
 			if(input > MAX_RANK_ORG || input < 2)
 			{
 				new string[60];
-				format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 2 Рё РЅРµ Р±РѕР»СЊС€Рµ %d СЂР°РЅРіРѕРІ", MAX_RANK_ORG);
+				format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_ORG);
 				ErrorText(playerid, string);
 				showDialogOrganizationMenu(playerid);
 				return 1;
 			}
 
-			if(OrganInfo[g][gMaxRanks] == input) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°РЅРіРѕРІ СѓР¶Рµ СѓРєР°Р·Р°РЅРѕ"), showDialogOrganizationMenu(playerid);
+			if(OrganInfo[g][gMaxRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), showDialogOrganizationMenu(playerid);
 			OrganInfo[g][gMaxRanks] = input;
 			mysql_SaveOrganization(g, "pp_organization", "gMaxRanks", OrganInfo[g][gMaxRanks]);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
@@ -866,7 +866,7 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 	return 1;
 }
 
-stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // РЎРѕС…СЂР°РЅСЏРµРј РѕРґРЅСѓ СЃС‚СЂРѕРєСѓ РІ Р±Р°Р·Сѓ
+stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // Сохраняем одну строку в базу
 {
 	new string_mysql[140];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `%s` SET `%s` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
@@ -901,83 +901,83 @@ stock SaveAllRanks(orgId)
 	query_empty(pearsq_2, string_mysql);
 }
 
-stock ReloadRank(playerid, g) // РЎР±СЂРѕСЃ РЅР°Р·РІР°РЅРёР№ СЂР°РЅРіРѕРІ
+stock ReloadRank(playerid, g) // Сброс названий рангов
 {
 	if(g == 1)
 	{
-		strmid(RankOrg[g][14], "РЁРµС„ РџРѕР»РёС†РёРё LS", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РђСЃСЃРёСЃС‚РµРЅС‚ С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РџРѕРјРѕС‰РЅРёРє С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РљРѕРјРјР°РЅРґРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РЎРµСЂР¶Р°РЅС‚ II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РЎРµСЂР¶Р°РЅС‚ I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р”РµС‚РµРєС‚РёРІ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III+I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РљР°РґРµС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚СѓРґРµРЅС‚ Р°РєР°РґРµРјРёРё", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Шеф Полиции LS", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 15;
 	}
 	else if(g == 2)
 	{
-		strmid(RankOrg[g][13], "Р”РёСЂРµРєС‚РѕСЂ FBI", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "Р—Р°РјРµСЃС‚РёС‚РµР»СЊ РґРёСЂРµРєС‚РѕСЂР° FBI", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РРЅСЃРїРµРєС‚РѕСЂ FBI", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р“Р»Р°РІР° Р°РєР°РґРµРјРёРё FBI", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р“Р»Р°РІР° NSB", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "Р“Р»Р°РІР° CID", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р“Р»Р°РІР° DEA", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РЎРµРєСЂРµС‚РЅС‹Р№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РЎС‚Р°СЂС€РёР№ СЃРїРµС†РёР°Р»СЊРЅС‹Р№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РЎРїРµС†РёР°Р»СЊРЅС‹Р№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЎС‚Р°СЂС€РёР№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "Р¤РµРґРµСЂР°Р»СЊРЅС‹Р№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РњР»Р°РґС€РёР№ Р°РіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚Р°Р¶С‘СЂ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Директор FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Заместитель директора FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Инспектор FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Глава академии FBI", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Глава NSB", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Глава CID", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Глава DEA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Секретный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Старший специальный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Специальный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старший агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Федеральный агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Младший агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажёр", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 14;
 	}
 	else if(g == 3)
 	{
-		strmid(RankOrg[g][19], "Р“РµРЅРµСЂР°Р» NGSA", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][18], "Р“РµРЅРµСЂР°Р» РЎР’", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][17], "Р“РµРЅРµСЂР°Р»-Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][16], "Р“РµРЅРµСЂР°Р»-РјР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][15], "РџРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][14], "РџРѕРґРїРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РњР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РџРµСЂРІС‹Р№ Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р’С‚РѕСЂРѕР№ Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "РЎРµСЂР¶Р°РЅС‚-РјР°Р№РѕСЂ РЎР’", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РљРѕРјР°РЅРґ-СЃРµСЂР¶Р°РЅС‚-РјР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РњР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РџРµСЂРІС‹Р№ СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РЎРµСЂР¶Р°РЅС‚ 1 РєР»Р°СЃСЃР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РЁС‚Р°Р±-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЎРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РљР°РїСЂР°Р»", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "Р СЏРґРѕРІРѕР№", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "Р СЏРґРѕРІРѕР№-СЂРµРєСЂСѓС‚", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Генерал СВ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Генерал-лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генерал-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Первый лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Второй лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Сержант-майор СВ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Команд-сержант-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Первый сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Сержант 1 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Штаб-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Капрал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Рядовой", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Рядовой-рекрут", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 20;
 	}
 	else if(g == 4)
 	{
-		strmid(RankOrg[g][11], "Р”РµРєР°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р—Р°Рј. Р”РµРєР°РЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "РњРµРґ. РЎРїРµС†РёР°Р»РёСЃС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РњР»Р°РґС€РёР№ РњРµРґ. РЎРїРµС†РёР°Р»РёСЃС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р›РµРєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РҐРёСЂСѓСЂРі", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РџСЃРёС…РёР°С‚СЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РўРµСЂР°РїРµРІС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "Р РµР°РЅРёРјР°С‚РѕР»РѕРі", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РџР°СЂР°РјРµРґРёРє EMT-B", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РџР°СЂР°РјРµРґРёРє CFR", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РРЅС‚РµСЂРЅ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Декан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Зам. Декана", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Мед. Специалист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Младший Мед. Специалист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Лектор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Хирург", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Психиатр", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Терапевт", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Реаниматолог", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Парамедик EMT-B", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Парамедик CFR", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Интерн", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 12;
 	}
 	else if(g == 5)
@@ -1010,57 +1010,57 @@ stock ReloadRank(playerid, g) // РЎР±СЂРѕСЃ РЅР°Р·РІР°РЅРёР№ СЂР°РЅРіРѕРІ
 	}
 	else if(g == 7)
 	{
-		strmid(RankOrg[g][21], "РџСЂРµР·РёРґРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][20], "Р’РёС†Рµ-РїСЂРµР·РёРґРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][19], "Р“РѕСЃСѓРґР°СЂСЃС‚РІРµРЅРЅС‹Р№ РЎРµРєСЂРµС‚Р°СЂСЊ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][18], "РњРёРЅРёСЃС‚СЂ Р¤РёРЅР°РЅСЃРѕРІ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][17], "РњРёРЅРёСЃС‚СЂ РћР±РѕСЂРѕРЅС‹", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][16], "Р“РµРЅРµСЂР°Р»СЊРЅС‹Р№ РџСЂРѕРєСѓСЂРѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][15], "РњРёРЅРёСЃС‚СЂ Р’РЅСѓС‚СЂРµРЅРЅРµР№ Р‘РµР·РѕРїР°СЃРЅРѕСЃС‚Рё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][14], "РњРёРЅРёСЃС‚СЂ РћР±СЂР°Р·РѕРІР°РЅРёСЏ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РњРёРЅРёСЃС‚СЂ Р—РґСЂР°РІРѕРѕС…СЂР°РЅРµРЅРёСЏ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "Р“Р»Р°РІРЅС‹Р№ РЎСѓРґСЊСЏ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РЎСѓРґСЊСЏ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р¤РµРґРµСЂР°Р»СЊРЅС‹Р№ РџСЂРѕРєСѓСЂРѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "РџСЂРѕРєСѓСЂРѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РђРґРІРѕРєР°С‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РЎРїРёРєРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РљРѕРЅРіСЂРµСЃСЃРјРµРЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "Р”РёСЂРµРєС‚РѕСЂ РЎРµРєСЂРµС‚РЅРѕР№ РЎР»СѓР¶Р±С‹", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "Р—Р°Рј. Р”РёСЂРµРєС‚РѕСЂР° РЎРµРєСЂРµС‚РЅРѕР№ РЎР»СѓР¶Р±С‹", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РђРіРµРЅС‚ РЎРµРєСЂРµС‚РЅРѕР№ РЎР»СѓР¶Р±С‹", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "Р’РѕРґРёС‚РµР»СЊ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РЎРµРєСЂРµС‚Р°СЂСЊ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РљР»РµСЂРє", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][21], "Президент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][20], "Вице-президент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][19], "Государственный Секретарь", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Министр Финансов", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Министр Обороны", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генеральный Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Министр Внутренней Безопасности", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Министр Образования", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Министр Здравоохранения", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Главный Судья", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Судья", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Федеральный Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Прокурор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Адвокат", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Спикер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Конгрессмен", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Директор Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Зам. Директора Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Агент Секретной Службы", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Водитель", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Секретарь", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Клерк", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 22;
 	}
 	else if(g == 8)
 	{
-		strmid(RankOrg[g][10], "Р”РёСЂРµРєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р—Р°Рј. Р”РёСЂРµРєС‚РѕСЂР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РЈРїСЂР°РІР»СЏСЋС‰РёР№", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РџРѕС‡С‘С‚РЅС‹Р№ РђРіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РџСЂРѕС„РµСЃСЃРёРѕРЅР°Р»", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РЎРїРµС†. РђРіРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РђРіРµРЅС‚ в„–", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РљРёР»Р»РµСЂ в„–", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РќР°С‘РјРЅРёРє в„–", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РЈР±РёР№С†Р° в„–", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚Р°Р¶РµСЂ в„–", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Директор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Зам. Директора", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Управляющий", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Почётный Агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Профессионал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Спец. Агент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Агент №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Киллер №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Наёмник №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Убийца №", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажер №", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 11;
 	}
 	else if(g == 9)
 	{
-		strmid(RankOrg[g][9], "Р”РёСЂРµРєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "Р—Р°Рј. Р”РёСЂРµРєС‚РѕСЂР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р“Р»Р°РІРЅС‹Р№ Р РµРґР°РєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р РµРґР°РєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РљРѕСЂСЂРµСЃРїРѕРЅРґРµРЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "Р–СѓСЂРЅР°Р»РёСЃС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "Р’РµРґСѓС‰РёР№ РќРѕРІРѕСЃС‚РµР№", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РџР°РїР°СЂР°С†С†Рё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "Р’РѕРґРёС‚РµР»СЊ- РѕРїРµСЂР°С‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚Р°Р¶С‘СЂ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Директор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Зам. Директора", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный Редактор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Редактор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Корреспондент", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Журналист", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Ведущий Новостей", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Папарацци", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Водитель- оператор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажёр", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 10;
 	}
 	else if(g == 10)
@@ -1079,35 +1079,35 @@ stock ReloadRank(playerid, g) // РЎР±СЂРѕСЃ РЅР°Р·РІР°РЅРёР№ СЂР°РЅРіРѕРІ
 	}
 	else if(g == 11)
 	{
-		strmid(RankOrg[g][14], "РЁРµС„ РџРѕР»РёС†РёРё SF", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РђСЃСЃРёСЃС‚РµРЅС‚ С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РџРѕРјРѕС‰РЅРёРє С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РљРѕРјРјР°РЅРґРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РЎРµСЂР¶Р°РЅС‚ II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РЎРµСЂР¶Р°РЅС‚ I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р”РµС‚РµРєС‚РёРІ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III+I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РљР°РґРµС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚СѓРґРµРЅС‚ Р°РєР°РґРµРјРёРё", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Шеф Полиции SF", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 15;
 	}
 	else if(g == 12)
 	{
-		strmid(RankOrg[g][9], "РђРІС‚РѕСЂРёС‚РµС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РђСЂРёСЃС‚РѕРєСЂР°С‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р’РѕСЂ РІ Р·Р°РєРѕРЅРµ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р’РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "Р–РёРіР°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "Р’С‹С€РёР±Р°Р»Р°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "Р¤СЂР°РµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "Р‘Р°РЅРґРёС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "Р©РёРїР°С‡", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЁРЅС‹СЂСЊ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Авторитет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Аристократ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Вор в законе", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Вор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Жиган", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Вышибала", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Фраер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Бандит", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Щипач", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Шнырь", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 10;
 	}
 	else if(g == 13)
@@ -1196,132 +1196,132 @@ stock ReloadRank(playerid, g) // РЎР±СЂРѕСЃ РЅР°Р·РІР°РЅРёР№ СЂР°РЅРіРѕРІ
 	}
 	else if(g == 19)
 	{
-		strmid(RankOrg[g][9], "Р“Р»Р°РІР° РЎС‚СЂРёС‚СЂРµР№СЃРµСЂРѕРІ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Глава Стритрейсеров", 0, MAX_NAME_LENGTH, 255);
 		strmid(RankOrg[g][8], "Pro Racer", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РќРµСѓР»РѕРІРёРјС‹Р№", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РџСЂРѕС„Рё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "Pro Р”СЂРёС„С‚РµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "Р”СЂРёС„С‚РµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЈР»РёС‡РЅС‹Р№ Р“РѕРЅС‰РёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РќР°С‡РёРЅР°СЋС‰РёР№ Р“РѕРЅС‰РёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РњРµС…Р°РЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РќРѕРІРёС‡РѕРє", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Неуловимый", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Профи", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Pro Дрифтер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Дрифтер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Уличный Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Начинающий Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Механик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Новичок", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 10;
 	}
 	else if(g == 20)
 	{
-		strmid(RankOrg[g][9], "РљРѕСЂРѕР»СЊ Р”РѕСЂРѕРі", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "Р‘Р°Р№РєРµСЂ-РђРІС‚РѕСЂРёС‚РµС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р’РёРєРёРЅРі", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РЈРјРµР»РµС†", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "Р‘Р°Р№РєРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "Р“РѕРЅС‰РёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "Р‘С‹РІР°Р»С‹Р№", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "Р—РЅР°С‚РѕРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "Р›СЋР±РёС‚РµР»СЊ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РќРѕРІРёС‡РѕРє", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Король Дорог", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Байкер-Авторитет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Викинг", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Умелец", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Байкер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Гонщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Бывалый", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Знаток", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Любитель", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Новичок", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 10;
 	}
 	else if(g == 21)
 	{
-		strmid(RankOrg[g][14], "РЁРµС„ РџРѕР»РёС†РёРё LV", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РђСЃСЃРёСЃС‚РµРЅС‚ С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РџРѕРјРѕС‰РЅРёРє С€РµС„Р° РїРѕР»РёС†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РљРѕРјРјР°РЅРґРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РЎРµСЂР¶Р°РЅС‚ II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РЎРµСЂР¶Р°РЅС‚ I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р”РµС‚РµРєС‚РёРІ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III+I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё III", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РћС„РёС†РµСЂ РїРѕР»РёС†РёРё I", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РљР°РґРµС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚СѓРґРµРЅС‚ Р°РєР°РґРµРјРёРё", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Шеф Полиции LV", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Ассистент шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Помощник шефа полиции", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Сержант II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Сержант I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Детектив", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Офицер полиции III+I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Офицер полиции III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Офицер полиции II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Офицер полиции I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Кадет", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Студент академии", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 15;
 	}
 	else if(g == 22)
 	{
-		strmid(RankOrg[g][14], "РљРѕРјР°РЅРґРёСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "Р—Р°Рј. РљРѕРјР°РЅРґРёСЂР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РџРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РџРѕРґРїРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "РњР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РЎС‚Р°СЂС€РёР№ Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РњР»Р°РґС€РёР№ Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РЎС‚Р°СЂС€РёР№ РџСЂР°РїРѕСЂС‰РёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РџСЂР°РїРѕСЂС‰РёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЎС‚Р°СЂС€РёР№ РЎРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РЎРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РњР»Р°РґС€РёР№ РЎРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РЎС‚Р°Р¶РµСЂ", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Командир", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Зам. Командира", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Старший Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Младший Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Старший Прапорщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Прапорщик", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старший Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Младший Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Стажер", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 15;
 	}
 	/*else if(g == 26) // SAFD
 	{
-		strmid(RankOrg[g][11], "Р”РµРєР°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "РџРѕР¶Р°СЂРЅС‹Р№ С€РµС„", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р—Р°Рј. РїРѕР¶Р°СЂРЅРѕРіРѕ С€РµС„Р°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "РљРѕРјР°РЅРґРёСЂ Р±Р°С‚Р°Р»СЊРѕРЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "Р›РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РРЅСЃС‚СЂСѓРєС‚РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РЎР»РµРґРѕРІР°С‚РµР»СЊ РїРѕ РїРѕРґР¶РѕРіР°Рј", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РРЅР¶РµРЅРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РџРѕР¶Р°СЂРЅС‹Р№ III", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РџРѕР¶Р°СЂРЅС‹Р№ II", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РџРѕР¶Р°СЂРЅС‹Р№ I", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Декан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Пожарный шеф", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Зам. пожарного шефа", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Командир батальона", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Инструктор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Следователь по поджогам", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Инженер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Пожарный III", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Пожарный II", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Пожарный I", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 12;
 	}*/
-	/*else if(g == 31) // Р’Р’РЎ
+	/*else if(g == 31) // ВВС
 	{
-		strmid(RankOrg[g][19], "Р“РµРЅРµСЂР°Р» NGSA", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][18], "Р“РµРЅРµСЂР°Р» Р’Р’РЎ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][17], "Р“РµРЅРµСЂР°Р»-Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][16], "Р“РµРЅРµСЂР°Р»-РјР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][15], "РџРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][14], "РџРѕРґРїРѕР»РєРѕРІРЅРёРє", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "РњР°Р№РѕСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "РљР°РїРёС‚Р°РЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РџРµСЂРІС‹Р№ Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р’С‚РѕСЂРѕР№ Р»РµР№С‚РµРЅР°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р“Р»Р°РІРЅС‹Р№ РјР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚ Р’Р’РЎ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "Р“Р»Р°РІРЅС‹Р№ РјР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р“Р»Р°РІРЅС‹Р№ РјР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РЎС‚Р°СЂС€РёР№ РјР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "РњР°СЃС‚РµСЂ-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РўРµС…РЅРёРє-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЁС‚Р°Р±-СЃРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РЎРµСЂР¶Р°РЅС‚", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "Р СЏРґРѕРІРѕР№ Р°РІРёР°С†РёРё", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "Р СЏРґРѕРІРѕР№-СЂРµРєСЂСѓС‚ Р°РІРёР°С†РёРё", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Генерал ВВС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Генерал-лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Генерал-майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Полковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Подполковник", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Майор", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Капитан", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Первый лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Второй лейтенант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Главный мастер-сержант ВВС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Главный мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Старший мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Мастер-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Техник-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Штаб-сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Сержант", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Рядовой авиации", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Рядовой-рекрут авиации", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 20;
 	}*/
-	/*else if(g == 33) // Р’РњРЎ
+	/*else if(g == 33) // ВМС
 	{
-		strmid(RankOrg[g][19], "Р“РµРЅРµСЂР°Р» NGSA", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][18], "РђРґРјРёСЂР°Р» Р’РњРЎ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][17], "Р’РёС†Рµ-Р°РґРјРёСЂР°Р»", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][16], "РљРѕРЅС‚СЂ-Р°РґРјРёСЂР°Р»", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][15], "РљР°РїРёС‚Р°РЅ С„Р»РѕС‚Р°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][14], "РљРѕРјРјР°РЅРґРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][13], "Р›РµР№С‚РµРЅР°РЅС‚-РєРѕРјРјР°РЅРґРµСЂ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][12], "Р›РµР№С‚РµРЅР°РЅС‚ С„Р»РѕС‚Р°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][11], "РњР»Р°РґС€РёР№ Р»РµР№С‚РµРЅР°РЅС‚ С„Р»РѕС‚Р°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][10], "Р­РЅСЃРёРЅ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][9], "Р“Р»Р°РІРЅС‹Р№ РјР°СЃС‚РµСЂ-СЃС‚Р°СЂС€РёРЅР° Р’РњРЎ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][8], "Р“Р»Р°РІРЅС‹Р№ РјР°СЃС‚РµСЂ-СЃС‚Р°СЂС€РёРЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][7], "Р“Р»Р°РІРЅС‹Р№ СЃС‚Р°СЂС€РёРЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][6], "РџРµСЂРІС‹Р№ РіР»Р°РІРЅС‹Р№ СЃС‚Р°СЂС€РёРЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][5], "Р“Р»Р°РІРЅС‹Р№ СЃС‚Р°СЂС€РёРЅР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][4], "РЎС‚Р°СЂС€РёРЅР° 1 РєР»Р°СЃСЃР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][3], "РЎС‚Р°СЂС€РёРЅР° 2 РєР»Р°СЃСЃР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][2], "РЎС‚Р°СЂС€РёРЅР° 3 РєР»Р°СЃСЃР°", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][1], "РњР°С‚СЂРѕСЃ", 0, MAX_NAME_LENGTH, 255);
-		strmid(RankOrg[g][0], "РњР°С‚СЂРѕСЃ-СЂРµРєСЂСѓС‚", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][19], "Генерал NGSA", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][18], "Адмирал ВМС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][17], "Вице-адмирал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][16], "Контр-адмирал", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][15], "Капитан флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][14], "Коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][13], "Лейтенант-коммандер", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][12], "Лейтенант флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][11], "Младший лейтенант флота", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][10], "Энсин", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][9], "Главный мастер-старшина ВМС", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][8], "Главный мастер-старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][7], "Главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][6], "Первый главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][5], "Главный старшина", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][4], "Старшина 1 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][3], "Старшина 2 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][2], "Старшина 3 класса", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][1], "Матрос", 0, MAX_NAME_LENGTH, 255);
+		strmid(RankOrg[g][0], "Матрос-рекрут", 0, MAX_NAME_LENGTH, 255);
 		OrganInfo[g][gMaxRanks] = 20;
 	}*/
 	OrganInfo[g][gUpdRank] = 1;

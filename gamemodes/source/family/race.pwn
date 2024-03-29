@@ -985,8 +985,8 @@ stock CheckpointRaceRout(playerid)
     if(r >= 60) return RaceWinner(playerid,idrace);
     else
     {
-        if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,1,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
-	    else if(StreetRacers[idrace][raceCordX][r+1] != 0.0 && StreetRacers[idrace][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,0,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r+1], StreetRacers[idrace][raceCordY][r+1], StreetRacers[idrace][raceCordZ][r+1],7.0);
+        if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:1,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
+	    else if(StreetRacers[idrace][raceCordX][r+1] != 0.0 && StreetRacers[idrace][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:0,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r+1], StreetRacers[idrace][raceCordY][r+1], StreetRacers[idrace][raceCordZ][r+1],7.0);
         else if(StreetRacers[idrace][raceCordX][r] == 0.0 && StreetRacers[idrace][raceCordY][r] == 0.0) return RaceWinner(playerid,idrace);
     }
     UpdatePointRace(idrace, playerid);
@@ -1002,7 +1002,7 @@ stock StartRace(playerid,idrace)
         {
             OnlineInfo[StreetRacers[idrace][racersCount][i]][oRacers] = 1;
             OnlineInfo[StreetRacers[idrace][racersCount][i]][oStreetRaceSlot] = idrace+1;
-            TogglePlayerControllable(StreetRacers[idrace][racersCount][i],0);
+            TogglePlayerControllable(StreetRacers[idrace][racersCount][i], false);
             StreetRacers[idrace][raceTimer] = 5;
         }   
     }
@@ -1079,11 +1079,11 @@ stock TimerToStart(idrace)
         {
             if(StreetRacers[idrace][racersCount][i] != -1)
             {
-                TogglePlayerControllable(StreetRacers[idrace][racersCount][i],1);
+                TogglePlayerControllable(StreetRacers[idrace][racersCount][i], true);
                 PlayerPlaySound(StreetRacers[idrace][racersCount][i],3201,0,0,0);
                 GameTextForPlayer(StreetRacers[idrace][racersCount][i], "~g~ GO!", 2000, 6);
                 carRaceCheckpoint[StreetRacers[idrace][racersCount][i]] = 0;
-                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],0,StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0], StreetRacers[idrace][raceCordZ][0],StreetRacers[idrace][raceCordX][1],StreetRacers[idrace][raceCordY][1],StreetRacers[idrace][raceCordZ][1],6.0);
+                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],CP_TYPE:0,StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0], StreetRacers[idrace][raceCordZ][0],StreetRacers[idrace][raceCordX][1],StreetRacers[idrace][raceCordY][1],StreetRacers[idrace][raceCordZ][1],6.0);
             }
         } 
     }
@@ -1658,44 +1658,44 @@ stock CreateRaceDrawForPlayer(playerid)
 
     PlayerRaceDraw[0][playerid] = CreatePlayerTextDraw(playerid, 18.333337, 215.703750, "1._Wwwwwwwwwww_Wwwwwwwwwww~n~2._Wwwwwwwwwww_Wwwwwwwwwww");
     PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[0][playerid], 0.182666, 1.027556);
-    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[0][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, PlayerRaceDraw[0][playerid], COLOR_TEXTDRAW_GREY);
     PlayerTextDrawUseBox(playerid, PlayerRaceDraw[0][playerid], true);
     PlayerTextDrawBoxColour(playerid, PlayerRaceDraw[0][playerid], 1);
     PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[0][playerid], 0);
     PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[0][playerid], 1);
     PlayerTextDrawBackgroundColour(playerid, PlayerRaceDraw[0][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-    PlayerTextDrawFont(playerid, PlayerRaceDraw[0][playerid], 1);
-    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[0][playerid], 1);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[0][playerid], TEXT_DRAW_FONT:1);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[0][playerid], true);
 
     PlayerRaceDraw[1][playerid] = CreatePlayerTextDraw(playerid, 17.333335, 198.281509, "hud:radar_flag");
     PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[1][playerid], 0.005000, 0.066370);
     PlayerTextDrawTextSize(playerid, PlayerRaceDraw[1][playerid], 9.333318, 11.614809);
-    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[1][playerid], 1);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[1][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, PlayerRaceDraw[1][playerid], -1);
     PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[1][playerid], 0);
     PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[1][playerid], 0);
-    PlayerTextDrawFont(playerid, PlayerRaceDraw[1][playerid], 4);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[1][playerid], TEXT_DRAW_FONT:4);
 
     PlayerRaceDraw[2][playerid] = CreatePlayerTextDraw(playerid, 33.666656, 199.111114, "PEARS_RACE");
     PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[2][playerid], 0.321666, 1.193483);
-    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[2][playerid], 1);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[2][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, PlayerRaceDraw[2][playerid], -5963521);
     PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[2][playerid], 0);
     PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[2][playerid], 1);
     PlayerTextDrawBackgroundColour(playerid, PlayerRaceDraw[2][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-    PlayerTextDrawFont(playerid, PlayerRaceDraw[2][playerid], 3);
-    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[2][playerid], 1);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[2][playerid], TEXT_DRAW_FONT:3);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[2][playerid], true);
 
     PlayerRaceDraw[3][playerid] = CreatePlayerTextDraw(playerid, 110.333328, 199.281494, "10/60");
     PlayerTextDrawLetterSize(playerid, PlayerRaceDraw[3][playerid], 0.321666, 1.193483);
-    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[3][playerid], 1);
+    PlayerTextDrawAlignment(playerid, PlayerRaceDraw[3][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, PlayerRaceDraw[3][playerid], -1523963137);
     PlayerTextDrawSetShadow(playerid, PlayerRaceDraw[3][playerid], 0);
     PlayerTextDrawSetOutline(playerid, PlayerRaceDraw[3][playerid], 1);
     PlayerTextDrawBackgroundColour(playerid, PlayerRaceDraw[3][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-    PlayerTextDrawFont(playerid, PlayerRaceDraw[3][playerid], 3);
-    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[3][playerid], 1);
+    PlayerTextDrawFont(playerid, PlayerRaceDraw[3][playerid], TEXT_DRAW_FONT:3);
+    PlayerTextDrawSetProportional(playerid, PlayerRaceDraw[3][playerid], true);
 
     DrawRace[playerid] = true;
     return 1;

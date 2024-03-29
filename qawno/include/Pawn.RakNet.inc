@@ -1038,11 +1038,7 @@
 
         stock PR_SendPacketToPlayerStream(BitStream:bs, playerid, PR_PacketPriority:priority = PR_HIGH_PRIORITY, PR_PacketReliability:reliability = PR_RELIABLE_ORDERED, orderingchannel = 0)
         {
-            #if defined foreach
             foreach (new i : Player) {
-            #else
-            for (new i = GetPlayerPoolSize(); i >= 0; i--) {
-            #endif
                 if (!IsPlayerStreamedIn(i, playerid)) {
                     continue;
                 }
@@ -1053,11 +1049,7 @@
 
         stock PR_SendRPCToPlayerStream(BitStream:bs, playerid, rpcid, PR_PacketPriority:priority = PR_HIGH_PRIORITY, PR_PacketReliability:reliability = PR_RELIABLE_ORDERED, orderingchannel = 0)
         {
-            #if defined foreach
             foreach (new i : Player) {
-            #else
-            for (new i = GetPlayerPoolSize(); i >= 0; i--) {
-            #endif
                 if (!IsPlayerStreamedIn(i, playerid)) {
                     continue;
                 }
@@ -1068,11 +1060,7 @@
 
         stock PR_SendPacketToVehicleStream(BitStream:bs, vehicleid, excludedplayerid = INVALID_PLAYER_ID, PR_PacketPriority:priority = PR_HIGH_PRIORITY, PR_PacketReliability:reliability = PR_RELIABLE_ORDERED, orderingchannel = 0)
         {
-            #if defined foreach
             foreach (new i : Player) {
-            #else
-            for (new i = GetPlayerPoolSize(); i >= 0; i--) {
-            #endif
                 if (i == excludedplayerid || !IsVehicleStreamedIn(vehicleid, i)) {
                     continue;
                 }
@@ -1083,11 +1071,7 @@
 
         stock PR_SendRPCToVehicleStream(BitStream:bs, vehicleid, rpcid, excludedplayerid = INVALID_PLAYER_ID, PR_PacketPriority:priority = PR_HIGH_PRIORITY, PR_PacketReliability:reliability = PR_RELIABLE_ORDERED, orderingchannel = 0)
         {
-            #if defined foreach
             foreach (new i : Player) {
-            #else
-            for (new i = GetPlayerPoolSize(); i >= 0; i--) {
-            #endif
                 if (i == excludedplayerid || !IsVehicleStreamedIn(vehicleid, i)) {
                     continue;
                 }

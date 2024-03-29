@@ -1,16 +1,16 @@
 
- #define MAX_BOMB 10 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РІР·СЂС‹РІРѕРІ РёР»Рё Р°РєС‚РёРІРЅС‹С… Р±РѕРјР±
- #define MAX_OBJECT_RUINS 7 // РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉРµРєС‚РѕРІ РїРѕСЃР»Рµ РІР·СЂС‹РІР°
+ #define MAX_BOMB 10 // Максимальное количество взрывов или активных бомб
+ #define MAX_OBJECT_RUINS 7 // Количество объектов после взрыва
 
 enum boInfo
 {
-    boStat, // РЎС‚Р°С‚СѓСЃ РІР·СЂС‹РІР° РёР»Рё Р±РѕРјР±С‹
-    Float: boPos[3], // РџРѕР·РёС†РёСЏ РІР·СЂС‹РІР°
-    boWorld, // Р’РёСЂС‚ РјРёСЂ
-    boInterior, // РРЅС‚РµСЂСЊРµСЂ
-    boObject[MAX_OBJECT_RUINS], // ID РѕР±СЉРµРєС‚РѕРІ РїРѕСЃР»Рµ РІР·СЂС‹РІР°
-    boProcess, // РЎС‚Р°С‚СѓСЃ СЂСѓРёРЅ
-    boTrainRoad, // Р›РµР¶Р°С‚ Р»Рё СЂСѓРёРЅС‹ РЅР° Р¶Рґ РїСѓС‚СЏС…
+    boStat, // Статус взрыва или бомбы
+    Float: boPos[3], // Позиция взрыва
+    boWorld, // Вирт мир
+    boInterior, // Интерьер
+    boObject[MAX_OBJECT_RUINS], // ID объектов после взрыва
+    boProcess, // Статус руин
+    boTrainRoad, // Лежат ли руины на жд путях
     Text3D:boRuinsLabel
 }
 new RuinsInfo[MAX_BOMB][boInfo];
@@ -19,34 +19,34 @@ new RuinsInfo[MAX_BOMB][boInfo];
 stock PlantBomb(playerid, time)
 {
     if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT || HealthAC[playerid] <= 0) return 0;
-    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РѕРјР±Сѓ РІ РїРѕРјРµС‰РµРЅРёРё");
-    if(IsAAntidm(playerid)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ Р·РµР»С‘РЅРѕР№ Р·РѕРЅРµ");
-    if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР° СЂРёРЅРіРµ");
-    if(get_invent4(playerid, 11, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ Р±РѕРјР±С‹");
-    if(IsATrainStation(playerid)) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РѕРјР±Сѓ РЅР° Р¶РµР»РµР·РЅРѕРґРѕСЂРѕР¶РЅРѕР№ СЃС‚Р°РЅС†РёРё\n{cccccc}РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р±РѕРјР±Сѓ РіРґРµ-С‚Рѕ РІ Р»РµСЃСѓ, Р·Р° РіРѕСЂРѕРґРѕРј");
-    if(IsANotMoney(playerid)) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р±РѕРјР±Сѓ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёРё РіРѕСЂРѕРґР°\n{cccccc}РЈСЃС‚Р°РЅРѕРІРёС‚Рµ Р±РѕРјР±Сѓ РіРґРµ-С‚Рѕ РІ Р»РµСЃСѓ, Р·Р° РіРѕСЂРѕРґРѕРј");
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}Нельзя установить бомбу в помещении");
+    if(IsAAntidm(playerid)) return ErrorMessage(playerid, "{FF6347}Вы находитесь в зелёной зоне");
+    if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы на ринге");
+    if(get_invent4(playerid, 11, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет бомбы");
+    if(IsATrainStation(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя установить бомбу на железнодорожной станции\n{cccccc}Установите бомбу где-то в лесу, за городом");
+    if(IsANotMoney(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя установить бомбу на территории города\n{cccccc}Установите бомбу где-то в лесу, за городом");
     if(!IsCreateBomb(playerid)) return 0;
 
-    if(time < 10 || time > 300) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 10 Рё РЅРµ Р±РѕР»СЊС€Рµ 300 СЃРµРєСѓРЅРґ");
+    if(time < 10 || time > 300) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 10 и не больше 300 секунд");
 
-    new result = Throw(playerid, 11, 1, time, 0, 0, 0); // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚ РЅР° Р·РµРјР»СЋ
+    new result = Throw(playerid, 11, 1, time, 0, 0, 0); // Кладём предмет на землю
     if(!result) return 1;
 
     TakeInvent(playerid, 11, 1, 0, 999);
-    if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, 0, 0, 0, 0, 0);
+    if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false, SYNC_ALL);
     PlayerPlaySound(playerid,25800,0,0,0);
 
     new string[140];
-    format(string,sizeof(string),"{99ff66}Р‘РѕРјР±Р° СѓСЃС‚Р°РЅРѕРІР»РµРЅР° Рё РІР·РѕСЂРІС‘С‚СЃСЏ С‡РµСЂРµР· %d СЃРµРєСѓРЅРґ\n\n{cccccc}РћС‚РѕР№РґРёС‚Рµ РєР°Рє РјРѕР¶РЅРѕ РґР°Р»СЊС€Рµ, СЂР°РґРёСѓСЃ РІР·СЂС‹РІР° Р±РѕР»РµРµ 50-С‚Рё РјРµС‚СЂРѕРІ", time);
+    format(string,sizeof(string),"{99ff66}Бомба установлена и взорвётся через %d секунд\n\n{cccccc}Отойдите как можно дальше, радиус взрыва более 50-ти метров", time);
     SuccessMessage(playerid, string);
-    format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ СѓСЃС‚Р°РЅРѕРІРёР»%s Р±РѕРјР±Сѓ {0088ff}[ Р’Р·СЂС‹РІ РїСЂРѕРёР·РѕР№РґС‘С‚ С‡РµСЂРµР· %d СЃРµРєСѓРЅРґ ]", gender(playerid), time);
+    format(string,sizeof(string),"[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через %d секунд ]", gender(playerid), time);
     SendClientMessage(playerid, COLOR_GREY, string);
 	return 1;
 }
 
 stock dialogCase_Bomb(playerid, dialogid, response, const inputtext[])
 {
-	if(dialogid == 1335) // РЈСЃС‚Р°РЅРѕРІРєР° С‚Р°Р№РјРµСЂР° Р±РѕРјР±С‹
+	if(dialogid == 1335) // Установка таймера бомбы
 	{
         if(response)
         {
@@ -60,24 +60,24 @@ stock dialogCase_Bomb(playerid, dialogid, response, const inputtext[])
 
 CMD:gotoruins(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new string[80];
-    if(sscanf(params, "i", params[0])) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РўРµР»РµРїРѕСЂС‚ Рє СЂСѓРёРЅР°Рј РѕС‚ Р±РѕРјР±С‹ [ /gotoruins ID 0 - %d ]", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
-    if(params[0] < 0 || params[0] >= MAX_BOMB) return format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 0 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
+    if(sscanf(params, "i", params[0])) return format(string,sizeof(string),"[ Мысли ]: Телепорт к руинам от бомбы [ /gotoruins ID 0 - %d ]", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
+    if(params[0] < 0 || params[0] >= MAX_BOMB) return format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_BOMB - 1), SendClientMessage(playerid, COLOR_GREY, string);
     
     new r = params[0];
-    if(RuinsInfo[r][boStat] == 0) return ErrorMessage(playerid, "{FF6347}Р СѓРёРЅ РїРѕРґ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(RuinsInfo[r][boStat] == 0) return ErrorMessage(playerid, "{FF6347}Руин под этим ID не существует");
     S_SetPlayerVirtualWorld(playerid, RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]), SetPlayerInterior(playerid, RuinsInfo[r][boInterior]);
 	PPSetPlayerPos(playerid, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2]);
     return 1;
 }
 
-stock IsCreateBomb(playerid) // РЎРѕР·РґР°С‘Рј Р±РѕРјР±Сѓ
+stock IsCreateBomb(playerid) // Создаём бомбу
 {
     new quan;
 
-    // РџСЂРѕРІРµСЂРєР° РЅР°, СЂСЏРґРѕРј Р»РµР¶Р°С‰РёРµ СЂСѓРёРЅС‹ + СЃС‡РёС‚Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ
+    // Проверка на, рядом лежащие руины + считаем количество
     new stopNearbyRuins;
     for(new r; r < MAX_BOMB; ++r)
 	{
@@ -94,11 +94,11 @@ stock IsCreateBomb(playerid) // РЎРѕР·РґР°С‘Рј Р±РѕРјР±Сѓ
     }
     if(stopNearbyRuins == 1)
     {
-        ErrorMessage(playerid, "{FF6347}РЎР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґСЂСѓРіРѕР№, РІР·РѕСЂРІР°РІС€РµР№СЃСЏ Р±РѕРјР±Рµ\n\n{cccccc}Р Р°СЃСЃС‚РѕСЏРЅРёРµ РЅРµ РјРµРЅРµРµ 200 РјРµС‚СЂРѕРІ");
+        ErrorMessage(playerid, "{FF6347}Слишком близко к другой, взорвавшейся бомбе\n\n{cccccc}Расстояние не менее 200 метров");
         return 0;
     }
 
-    // РџСЂРѕРІРµСЂРєР° РЅР°, СЂСЏРґРѕРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅСѓСЋ Р±РѕРјР±Сѓ + СЃС‡РёС‚Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ
+    // Проверка на, рядом установленную бомбу + считаем количество
     new stopNearbyPlant;
     for(new g = 0; g < MAX_THROW; g++)
 	{
@@ -115,20 +115,20 @@ stock IsCreateBomb(playerid) // РЎРѕР·РґР°С‘Рј Р±РѕРјР±Сѓ
     }
     if(stopNearbyPlant == 1)
     {
-        ErrorMessage(playerid, "{FF6347}РЎР»РёС€РєРѕРј Р±Р»РёР·РєРѕ Рє РґСЂСѓРіРѕР№, СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕР№ Р±РѕРјР±Рµ\n\n{cccccc}Р Р°СЃСЃС‚РѕСЏРЅРёРµ РЅРµ РјРµРЅРµРµ 200 РјРµС‚СЂРѕРІ");
+        ErrorMessage(playerid, "{FF6347}Слишком близко к другой, установленной бомбе\n\n{cccccc}Расстояние не менее 200 метров");
         return 0;
     }
 
-    // РџСЂРѕРІРµСЂРєР° РЅР° Р»РёРјРёС‚ Р±РѕРјР± РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚
+    // Проверка на лимит бомб в данный момент
     if(quan >= 10)
     {
-        ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РЅРѕРІСѓСЋ Р±РѕРјР±Сѓ\n\n{cccccc}РќР° СЃРµСЂРІРµСЂРµ РІР·РѕСЂРІР°Р»РѕСЃСЊ РёР»Рё СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ 10 Р±РѕРјР±\nР’С‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё Р·Р°РІР°Р»С‹ РѕС‚ Р±РѕРјР±С‹ Рё СѓСЃС‚СЂР°РЅРёС‚СЊ РёС…, РѕСЃРІРѕР±РѕРґРёРІ СЃР»РѕС‚С‹");
+        ErrorMessage(playerid, "{FF6347}Вы не можете установить новую бомбу\n\n{cccccc}На сервере взорвалось или установлено 10 бомб\nВы можете найти завалы от бомбы и устранить их, освободив слоты");
         return 0;
     }
     return 1;
 }
 
-stock CreateRuinsAndExplosion(t) // Р’Р·СЂС‹РІР°РµРј Р±РѕРјР±Сѓ Рё СЃРѕР·РґР°С‘Рј СЂСѓРёРЅС‹
+stock CreateRuinsAndExplosion(t) // Взрываем бомбу и создаём руины
 {
     new r = -1;
     for(new i; i < MAX_BOMB; ++i)
@@ -146,32 +146,32 @@ stock CreateRuinsAndExplosion(t) // Р’Р·СЂС‹РІР°РµРј Р±РѕРјР±Сѓ Рё СЃРѕР·РґР°С‘Р
 	CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY]-2 , ThrowInfo[t][tZ], 7, 40);
 	CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY]+2 , ThrowInfo[t][tZ], 7, 40);
 
-    // Р—Р°РїРёСЃС‹РІР°РµРј С‚РѕС‡РєСѓ РІР·СЂС‹РІР°, РґР»СЏ СЃРѕР·РґР°РЅРёСЏ СЂСѓРёРЅ
+    // Записываем точку взрыва, для создания руин
     RuinsInfo[r][boPos][0] = ThrowInfo[t][tX];
     RuinsInfo[r][boPos][1] = ThrowInfo[t][tY];
     RuinsInfo[r][boPos][2] = ThrowInfo[t][tZ];
     RuinsInfo[r][boWorld] = ThrowInfo[t][tWorld];
     RuinsInfo[r][boInterior] = ThrowInfo[t][tInt];
 
-    if(ThrowInfo[t][tQara] > 0) RuinsInfo[r][boTrainRoad] = ThrowInfo[t][tQara] - 1; // Р‘РѕРјР±Р° РЅР° Р¶Рґ РїСѓС‚СЏС…
+    if(ThrowInfo[t][tQara] > 0) RuinsInfo[r][boTrainRoad] = ThrowInfo[t][tQara] - 1; // Бомба на жд путях
 
-    DestroyThrow(t); // РЈРґР°Р»СЏРµРј Р±РѕРјР±Сѓ
+    DestroyThrow(t); // Удаляем бомбу
 
-    // РЎРѕР·РґР°С‘Рј РѕР±СЉРµРєС‚С‹
+    // Создаём объекты
     CreateObjectRuins(r, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2], RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]);
 
 
-    RuinsInfo[r][boRuinsLabel] = CreateDynamic3DTextLabel("{ff9000}Р—Р°РІР°Р»С‹ РїРѕСЃР»Рµ РІР·СЂС‹РІР° Р±РѕРјР±С‹\n{cccccc}РЈР±СЂР°С‚СЊ Р·Р°РІР°Р»С‹ - РљСѓРІР°Р»РґР° РІ СЂСѓРєР°С… + РџРљРњ",
+    RuinsInfo[r][boRuinsLabel] = CreateDynamic3DTextLabel("{ff9000}Завалы после взрыва бомбы\n{cccccc}Убрать завалы - Кувалда в руках + ПКМ",
         0xA9C4E4FF,RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]);
 
-    RuinsInfo[r][boProcess] = 200; // РЎС‚Р°С‚СѓСЃ СЂСѓРёРЅ (РЎРєРѕР»СЊРєРѕ СЂР°Р· РїРѕ РЅРёРј РЅСѓР¶РЅРѕ РґРѕР»Р±РёС‚СЊ РёРіСЂРѕРєР°Рј, С‡С‚РѕР±С‹ СЂР°СЃС‡РёСЃС‚РёС‚СЊ)
-    RuinsInfo[r][boStat] = 1; // РЎС‚Р°С‚СѓСЃ - СЂР°Р·РІР°Р»РёРЅС‹ Р»РµР¶Р°С‚
+    RuinsInfo[r][boProcess] = 200; // Статус руин (Сколько раз по ним нужно долбить игрокам, чтобы расчистить)
+    RuinsInfo[r][boStat] = 1; // Статус - развалины лежат
     return 1;
 }
 
 stock CreateObjectRuins(r, Float:x, Float:y, Float:z, world, int)
 {
-    new object_world = 17, object_int = 228; // Р’СЂРµРјРµРЅРЅРѕ СЃРєСЂС‹РІР°РµРј СЃРѕР·РґР°РЅРЅС‹Рµ РѕР±СЉРµРєС‚С‹
+    new object_world = 17, object_int = 228; // Временно скрываем созданные объекты
     RuinsInfo[r][boObject][0] = CreateDynamicObject(807, 1338.224121, 1570.133666, 9.930312, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
     SetDynamicObjectMaterial(RuinsInfo[r][boObject][0], 0, 10765, "airportgnd_sfse", "coasty_bit3_sfe", 0x00000000);
     gadd(RuinsInfo[r][boObject][0], world, int);
@@ -204,7 +204,7 @@ stock DestroyObjects(r)
     return 1;
 }
 
-stock IsAPointRuins(playerid, Float:dist) // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РёРµ СЂСѓРёРЅС‹ РѕС‚ Р±РѕРјР±С‹
+stock IsAPointRuins(playerid, Float:dist) // Находим ближайшие руины от бомбы
 {
     new ruinsId = -1;
     for(new r; r < MAX_BOMB; ++r)
@@ -221,7 +221,7 @@ stock IsAPointRuins(playerid, Float:dist) // РќР°С…РѕРґРёРј Р±Р»РёР¶Р°Р№С€РёРµ С
     return ruinsId;
 }
 
-stock PressCleanUpRuins(playerid) // РќР°Р¶РёРјР°РµРј РЅР° РєРЅРѕРїРєСѓ PKM
+stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
 {
     new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, Afclick[playerid]);
@@ -231,7 +231,7 @@ stock PressCleanUpRuins(playerid) // РќР°Р¶РёРјР°РµРј РЅР° РєРЅРѕРїРєСѓ PKM
     new r = IsAPointRuins(playerid, 3.0);
     if(r >= 0)
     {
-        if(Dei[playerid] != 4) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІ СЂСѓРєР°С… РЅРµС‚ РєСѓРІР°Р»РґС‹ [ Р•СЃР»Рё Р·Р°РІР°Р»С‹ РЅР° Р¶/Рґ РїСѓС‚СЏС…, РєСѓРІР°Р»РґР° РІРёСЃРёС‚ РЅР° РїРѕРµР·РґРµ ]");
+        if(Dei[playerid] != 4) return ErrorMessage(playerid, "{FF6347}У вас в руках нет кувалды [ Если завалы на ж/д путях, кувалда висит на поезде ]");
         if(RuinsInfo[r][boProcess] > 0)
         {   
             RuinsInfo[r][boProcess] --;
@@ -240,9 +240,9 @@ stock PressCleanUpRuins(playerid) // РќР°Р¶РёРјР°РµРј РЅР° РєРЅРѕРїРєСѓ PKM
             new string[50];
             format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~%d/200", RuinsInfo[r][boProcess]);
             GameTextForPlayer(playerid,string,2000,3);
-            ApplyAnimation(playerid,"SWORD","sword_4",2.0,0,0,0,0,0,1);
+            ApplyAnimation(playerid,"SWORD","sword_4",2.0, false, false, false, false, false);
 
-            if(RuinsInfo[r][boProcess] <= 0) // Р—Р°РІР°Р»С‹ СЂР°Р·РіСЂРµР±Р»Рё
+            if(RuinsInfo[r][boProcess] <= 0) // Завалы разгребли
             {
                 DestroyObjects(r);
                 RuinsInfo[r][boStat] = 0;
@@ -251,17 +251,17 @@ stock PressCleanUpRuins(playerid) // РќР°Р¶РёРјР°РµРј РЅР° РєРЅРѕРїРєСѓ PKM
                 Dei[playerid] = 0, RemovePlayerAttachedObject(playerid,1);
                 GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Done",2000,3);
 
-                // РџРѕРµР·Рґ СЃС‚РѕРёС‚ РїРѕ РїСЂРёС‡РёРЅРµ СЌС‚РёС… СЂСѓРёРЅ
+                // Поезд стоит по причине этих руин
                 if(TrainMoved == 0 && ReasonToStopTrain > 0)
                 {
                     new Float:pos[3];
 	                GetVehiclePos(train, pos[0], pos[1], pos[2]);
 
-                    // Р—Р°РїСѓСЃРєР°РµРј С‚Р°Р№РјРµСЂ РґР»СЏ РЅР°С‡Р°Р»Р° РґРІРёР¶РµРЅРёСЏ РїРѕРµР·РґР°
+                    // Запускаем таймер для начала движения поезда
                     TrainGoing = 1;
                     SetTimer("TrainStart", 20000, false);
 
-                    // РџРёС€РµРј СЃРѕРѕР±С‰РµРЅРёРµ РІСЃРµРј Р°СЂРјРµР№С†Р°Рј, РєРѕС‚РѕСЂС‹Рµ СЂСЏРґРѕРј С‚СѓСЃСѓСЋС‚СЃСЏ
+                    // Пишем сообщение всем армейцам, которые рядом тусуются
                     foreach(Player,i)
                     {
                         if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING

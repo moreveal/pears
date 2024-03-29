@@ -106,7 +106,7 @@ CMD:remedy(playerid, const params[])
 		TakeInvent(playerid, params[0]+71, 1, 0, 999);
 		new medid = infectremedy(playerid, illn, 200);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
-		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
@@ -763,7 +763,7 @@ stock getinfect(playerid, stat)
 }
 stock getillness(playerid, stat)
 {
-	new stope;
+	new stope = -1;
 	for(new i = 0; i < 5; i++)
 	{
 		if(PlayerInfo[playerid][pIllness][i] == stat && PlayerInfo[playerid][pIllnessProg][i] >= 1000)

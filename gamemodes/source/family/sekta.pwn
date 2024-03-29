@@ -1,22 +1,22 @@
 enum sektaInfo
 {
-    sektaTimer, // РўР°Р№РјРµСЂ CNN
-    sektaRiteStatus,// РЎС‚Р°С‚СѓСЃ РѕР±СЂСЏРґР°
+    sektaTimer, // Таймер CNN
+    sektaRiteStatus,// Статус обряда
 }
 new Sekta[MAX_FAMILY][sektaInfo];
-new SektaMessage[1]; // РћРїРѕРІРµС‰Р°РЅРёРµ РґР»СЏ С„РёР±РѕРІ
-new SektaCNN[2]; // Р’РµРґРµС‚СЃСЏ Р»Рё СЌС„РёСЂ СЃРµР№С‡Р°СЃ // 0 СЃРµРјСЊСЏ РєС‚Рѕ РІРµРґРµС‚ 1 РєС‚Рѕ РІРµРґРµС‚
-new SektaFind[1]; // Р—РѕРЅР° СЃ С„РёРЅРґРѕРј
-new SektaActor[MAX_FAMILY]; // РђРєС‚РµСЂ Сѓ Р°Р»С‚Р°СЂСЏ
+new SektaMessage[1]; // Оповещание для фибов
+new SektaCNN[2]; // Ведется ли эфир сейчас // 0 семья кто ведет 1 кто ведет
+new SektaFind[1]; // Зона с финдом
+new SektaActor[MAX_FAMILY]; // Актер у алтаря
 
 stock ShowSektaMenu(playerid,family)
 {
     DP[0][playerid] = family;
     new line[30],lines[90];
-    format(line,sizeof(line),"Р РµР№С‚РёРЅРі РІР»РёСЏРЅРёСЏ РІ С€С‚Р°С‚Рµ"), strcat(lines,line);
-    format(line,sizeof(line),"\nРћР±СЉСЏРІРёС‚СЊ СЃР±РѕСЂ"), strcat(lines,line);
-    format(line,sizeof(line),"\nРџСЂРѕРІРµРґРµРЅРёСЏ РѕР±СЂСЏРґР°"), strcat(lines,line);
-    ShowDialog(playerid,1472,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
+    format(line,sizeof(line),"Рейтинг влияния в штате"), strcat(lines,line);
+    format(line,sizeof(line),"\nОбъявить сбор"), strcat(lines,line);
+    format(line,sizeof(line),"\nПроведения обряда"), strcat(lines,line);
+    ShowDialog(playerid,1472,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
 
@@ -24,25 +24,25 @@ stock ShowSektaAltarMenu(playerid)
 {
     new fam = DP[0][playerid];
     new line[40],lines[120];
-    if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"РќР°С‡Р°С‚СЊ РїСЂРѕРІРµРґРµРЅРёРµ РѕР±СЂСЏРґР°"), strcat(lines,line);
-    if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Р—Р°РєРѕРЅС‡РёС‚СЊ РѕР±СЂСЏРґ"), strcat(lines,line);
-    format(line,sizeof(line),"\nРњРµС‚РєР° Рє РђР»Р°С‚Р°СЂСЋ"), strcat(lines,line);
-    if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nРђР»С‚Р°СЂСЊ {66ff99}[ РЈСЃС‚Р°РЅРѕРІР»РµРЅ ]"), strcat(lines,line);
-    else if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] == 0) format(line,sizeof(line),"\nРђР»С‚Р°СЂСЊ {FF6347}[ РќРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ ]"), strcat(lines,line);
-    ShowDialog(playerid,1473,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
+    if(Sekta[fam][sektaRiteStatus] == 0) format(line,sizeof(line),"Начать проведение обряда"), strcat(lines,line);
+    if(Sekta[fam][sektaRiteStatus] == 1) format(line,sizeof(line),"Закончить обряд"), strcat(lines,line);
+    format(line,sizeof(line),"\nМетка к Алатарю"), strcat(lines,line);
+    if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] > 0) format(line,sizeof(line),"\nАлтарь {66ff99}[ Установлен ]"), strcat(lines,line);
+    else if(Sekta[fam][sektaRiteStatus] == 0 && FamilyInfo[fam][fsAltarStatus] == 0) format(line,sizeof(line),"\nАлтарь {FF6347}[ Не установлен ]"), strcat(lines,line);
+    ShowDialog(playerid,1473,DIALOG_STYLE_TABLIST,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
 
 stock RaitingSekta(playerid)
 {
     new line[60],lines[4048];
-    format(line,sizeof(line),"в„–.РќР°Р·РІР°РЅРёРµ\tР’Р»РёСЏРЅРёРµ"), strcat(lines,line);
+    format(line,sizeof(line),"№.Название\tВлияние"), strcat(lines,line);
     for(new i; i < MAX_FAMILY; i++)
     {
         if(FamilyInfo[i][fType] != 3) continue;
         format(line,sizeof(line),"\n%d.%s\t{FF6347}%d", i+1,FamilyInfo[i][fName],SetRaitingSekta(i)), strcat(lines,line);
     }
-    ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{FF6347}Sekta Menu",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
+    ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
     return 1;
 }
 
@@ -192,13 +192,13 @@ stock SektaCNNUpdate(i)
         if(SektaMessage[0] == 0)
         {
             SektaMessage[0] = 1;
-            SendClientMessage(i, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљС‚Рѕ-С‚Рѕ РёР· СЃРµРєС‚С‹ РЅР°С‡Р°Р» РІРµСЃС‚Рё СЌС„РёСЂ РµРіРѕ РЅР°РґРѕ РЅР°Р№С‚Рё");
-            SendClientMessage(i, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќР° РєР°СЂС‚Рµ РѕС‚РјРµС‡РµРЅР° Р·РѕРЅР° РѕС‚РєСѓРґР° РІРµРґРµС‚СЃСЏ СЌС„РёСЂ");
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: Кто-то из секты начал вести эфир его надо найти");
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: На карте отмечена зона откуда ведется эфир");
         }
         else if(SektaMessage[0] == 2)
         {
             SektaMessage[0] = 3;
-            SendClientMessage(i, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—РѕРЅР° РїРѕРёСЃРєР° РѕС‚РєСѓРґР° РІРµРґРµС‚СЃСЏ СЌС„РёСЂ СЃС‚Р°Р»Р° РјРµРЅСЊС€Рµ, РЅР°РґРѕ РїРѕС‚РѕСЂРѕРїРёС‚СЊСЃСЏ!");
+            SendClientMessage(i, COLOR_GREY, "[ Мысли ]: Зона поиска откуда ведется эфир стала меньше, надо поторопиться!");
         }
     }
 }
@@ -211,28 +211,28 @@ stock SektaEat(playerid,targetid)
     {
         case 0:
         {
-            atext = "РЎРµСЂРґС†Рµ";
-            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            atext = "Сердце";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false, SYNC_ALL);
             EatPlayer(playerid, 40);
             PlayerInfo[playerid][pMechSkill] = 1000;
         }
         case 1:
         {
-            atext = "РџРµС‡РµРЅСЊ";
-            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            atext = "Печень";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false, SYNC_ALL);
             EatPlayer(playerid, 40);
             PlayerInfo[playerid][pCap] = 100;
         }
         case 2:
         {
-            atext = "Р–РµР»СѓРґРѕРє";
-            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            atext = "Желудок";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false, SYNC_ALL);
             EatPlayer(playerid, -40);
         }
         case 3:
         {
-            atext = "Р›РµРіРєРёРµ";
-            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
+            atext = "Легкие";
+            ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false, SYNC_ALL);
             EatPlayer(playerid, 40);
         }
     }
@@ -242,15 +242,15 @@ CMD:gnews(playerid, const params[])
 {
 	new string[220];
 	if(isamute(playerid) == 1) return 1;
-	if(sscanf(params, "s[144]",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќРѕРІРѕСЃС‚Рё CNN [ /gnews РўРµРєСЃС‚ ]");
+	if(sscanf(params, "s[144]",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Новости CNN [ /gnews Текст ]");
     new fam = PlayerInfo[playerid][pFamily];
 
-    if(PlayerInfo[playerid][pTransmitterOff][9] == true) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІС‹РєР»СЋС‡РµРЅ СЌС‚РѕС‚ С‡Р°С‚\n{cccccc}Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°");
+    if(PlayerInfo[playerid][pTransmitterOff][9] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен этот чат\n{cccccc}Y >> Меню >> Настройки Чата");
     if(FamilyInfo[fam][fsUnixCNN]+86400 > gettime())
     {
         new tyear, tmonth, tday, thour, tminute, tsecond;
 	    stamp2datetime(FamilyInfo[fam][fsUnixCNN]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-        format(string, sizeof(string),"{ff6457} Р›РёРјРёС‚: 1 СЌС„РёСЂ РІ РґРµРЅСЊ. РЎР»РµРґСѓСЋС‰РёР№ СЌС„РёСЂ СЃС‚Р°РЅРµС‚ РґРѕСЃС‚СѓРїРµРЅ %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+        format(string, sizeof(string),"{ff6457} Лимит: 1 эфир в день. Следующий эфир станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
         return ErrorMessage(playerid,string);
     }
 
@@ -261,22 +261,22 @@ CMD:gnews(playerid, const params[])
 		{
             if(AntiFloodText(playerid, params[0])) return 1;
 
-            if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}РљР°РєР°СЏ-С‚Рѕ СЃРµРєС‚Р° СѓР¶Рµ РІРµРґРµС‚ СЌС„РёСЂ!");
+            if(SektaCNN[0] != fam && SektaCNN[0] != -1) return ErrorMessage(playerid,"{FF6347}Какая-то секта уже ведет эфир!");
             else if(SektaCNN[0] == -1)
             {
                 SektaCNN[0] = fam;
                 SektaCNN[1] = playerid;
                 Sekta[fam][sektaTimer] = 630;
-                SuccessMessage(playerid,"{66ff99} Р’С‹ СѓСЃРїРµС€РЅРѕ РЅР°С‡Р°Р»Рё РІРµСЃС‚Рё СЌС„РёСЂ, РІР°СЃ СѓР¶Рµ РёС‰СѓС‚ FBI Сѓ РІР°СЃ РµСЃС‚СЊ 10 РјРёРЅСѓС‚");
+                SuccessMessage(playerid,"{66ff99} Вы успешно начали вести эфир, вас уже ищут FBI у вас есть 10 минут");
                 SektaCNNStart();
             }
-			format(string, sizeof(string), "{FFFFFF}* CNN * РЎРµРєС‚Р°РЅС‚: {AA8C00}%s *", params[0]);
+			format(string, sizeof(string), "{FFFFFF}* CNN * Сектант: {AA8C00}%s *", params[0]);
 			OOCNews(COLOR_GREY,string);
 			if(PlayerInfo[playerid][pSoska]==0 && PlayerInfo[playerid][pLeader]==0)PlayerInfo[playerid][pWorked1]++;
 		}
-		else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РІ РЎС‚СѓРґРёРё РёР»Рё РўСЂР°РЅСЃРїРѕСЂС‚Рµ CNN");
+		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не в Студии или Транспорте CNN");
 	}
-	else ErrorMessage(playerid, "{FF6347}Р­С„РёСЂ СЃРµРєС‚С‹ РјРѕР¶РµС‚ РЅР°С‡РёРЅР°С‚СЊ С‚РѕР»СЊРєРѕ РіР»Р°РІР° СЃРµРјСЊРё РёР»Рё РµРіРѕ Р·Р°РјРµСЃС‚РёС‚РµР»СЊ");
+	else ErrorMessage(playerid, "{FF6347}Эфир секты может начинать только глава семьи или его заместитель");
  	return 1;
 }
 
@@ -293,8 +293,8 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             }
             else if(listitem == 1)
             {
-                if(GetPVarInt(playerid,"Boot") != 9999) return ErrorMessage(playerid,"{FF6347}РЇ РІ Р±Р°РіР°Р¶РЅРёРєРµ");
-                if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р§РµРіРѕ, Р±Р»РёРЅ ?! РЇ РЅРµ РЅР° Р·РµРјР»Рµ");
+                if(GetPVarInt(playerid,"Boot") != 9999) return ErrorMessage(playerid,"{FF6347}Я в багажнике");
+                if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
                 new Float:x,Float:y,Float:z;
                 GetPlayerRealPos(playerid,x,y,z);
                 foreach(Player,i)
@@ -320,18 +320,18 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
         {
             if(listitem == 0)
             {
-                if((FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Р’С‹ РґРѕР»Р¶РЅС‹ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЃРµ С„РёР·РёС‡РёСЃРєРёРµ РѕР±СЉРµРєС‚С‹!");
+                if((FamilyInfo[fam][fsAltarPos][0] == 0.0 && FamilyInfo[fam][fsAltarPos][1] == 0.0)) return ErrorMessage(playerid,"{FF6347}Вы должны установить все физичиские объекты!");
                 new line[60],lines[120];
                 if(Sekta[fam][sektaRiteStatus] == 0)
                 {                
-                    format(line,sizeof(line),"\nР’С‹ СѓРІРµСЂРµРЅС‹ С‡С‚Рѕ С…РѕС‚РёС‚Рµ РЅР°С‡Р°С‚СЊ РѕР±СЂСЏРґ?"), strcat(lines,line);
-                    format(line,sizeof(line),"\nР’СЃРµ РёРіСЂРѕРєРё РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РїРѕРґ СЌС„С„РµРєС‚РѕРј РіСЂРёР±РѕРІ"), strcat(lines,line);
-                    ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Р”Р°","РќРµС‚");
+                    format(line,sizeof(line),"\nВы уверены что хотите начать обряд?"), strcat(lines,line);
+                    format(line,sizeof(line),"\nВсе игроки должны быть под эффектом грибов"), strcat(lines,line);
+                    ShowDialog(playerid,1474,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
                 }
                 else
                 {
-                    format(line,sizeof(line),"\nР’С‹ СѓРІРµСЂРµРЅС‹ С‡С‚Рѕ С…РѕС‚РёС‚Рµ Р·Р°РєРѕРЅС‡РёС‚СЊ РѕР±СЂСЏРґ?"), strcat(lines,line);
-                    ShowDialog(playerid,1475,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Р”Р°","РќРµС‚");
+                    format(line,sizeof(line),"\nВы уверены что хотите закончить обряд?"), strcat(lines,line);
+                    ShowDialog(playerid,1475,DIALOG_STYLE_MSGBOX,"{FF6347}Sekta Menu",lines,"Да","Нет");
                 }
             }
             if(listitem == 2)
@@ -357,10 +357,10 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(FamilyInfo[fam][fsUnixRite]+86400, tyear, tmonth, tday, thour, tminute, tsecond, 3);
                 new string[140];
-                format(string, sizeof(string),"{ff6457} Р›РёРјРёС‚: 1 РѕР±СЂСЏРґ РІ РґРµРЅСЊ. РЎР»РµРґСѓСЋС‰РёР№ РѕР±СЂСЏРґ СЃС‚Р°РЅРµС‚ РґРѕСЃС‚СѓРїРµРЅ %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
+                format(string, sizeof(string),"{ff6457} Лимит: 1 обряд в день. Следующий обряд станет доступен %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute);
                 return ErrorMessage(playerid,string);
             }
-            if(Sekta[fam][sektaRiteStatus] == 1) return ErrorMessage(playerid,"{ff6347}РЎРµР№С‡Р°СЃ СѓР¶Рµ РїСЂРѕС…РѕРґРёС‚ РѕР±СЂСЏРґ");
+            if(Sekta[fam][sektaRiteStatus] == 1) return ErrorMessage(playerid,"{ff6347}Сейчас уже проходит обряд");
             new quan,quanaccept,memberrite[50],checkingPlayerObject = -1;
             new Float:X,Float:Y,Float:Z,Float:A,world,int;
             foreach(Player,i)
@@ -378,7 +378,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                    quan++;
                    if(quan >= 50)
                    {
-                        ErrorMessage(playerid,"{ff6347} РЎР»РёС€РєРѕРј РјРЅРѕРіРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РґР»СЏ РѕР±СЂСЏРґР°");
+                        ErrorMessage(playerid,"{ff6347} Слишком много участников для обряда");
                         break;
                    }
                    if(Effect[i] == 3) 
@@ -389,7 +389,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                 }
             }
             if(quan >= 50) return 1;
-            if(checkingPlayerObject == -1) return ErrorMessage(playerid,"{ff6347}Р СЏРґРѕРј СЃ Р°Р»С‚Р°СЂРµРј РЅРµС‚ СЃРІСЏР·Р°РЅРЅРѕР№ Р¶РµСЂС‚РІС‹");
+            if(checkingPlayerObject == -1) return ErrorMessage(playerid,"{ff6347}Рядом с алтарем нет связанной жертвы");
             if(quan == quanaccept)
             {
                 for(new i;i < 50; i++)
@@ -398,8 +398,8 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                     if(selectplayerid == -1) continue;
                     if(IsPlayerInRangeOfPoint(selectplayerid,20.0,FamilyInfo[fam][fsAltarPos][0],FamilyInfo[fam][fsAltarPos][1],FamilyInfo[fam][fsAltarPos][2]) && PlayerInfo[selectplayerid][pFamily] == fam)
                     {
-                        SetPlayerAttachedObject(selectplayerid, 3, 3461, 6, -0.079999, -0.008000, 0.315000, -172.200027, -158.500000, 0.000000, 0.344999, 0.379999, 0.424000, 0, 0); // Р¤Р°РєРµР»
-                        if(PlayerInfo[selectplayerid][pFamrank] >= FamilyInfo[fam][fRanks]-1)SetPlayerAttachedObject(selectplayerid, 4, 6865, 2, 0.000000, 0.000000, 0.000000, 0.000000, 82.999984, -141.599960, 0.149999, 0.168999, 0.135999, 0, 0); // РњР°СЃРєР° Р›РёРґРµСЂР°
+                        SetPlayerAttachedObject(selectplayerid, 3, 3461, 6, -0.079999, -0.008000, 0.315000, -172.200027, -158.500000, 0.000000, 0.344999, 0.379999, 0.424000, 0, 0); // Факел
+                        if(PlayerInfo[selectplayerid][pFamrank] >= FamilyInfo[fam][fRanks]-1)SetPlayerAttachedObject(selectplayerid, 4, 6865, 2, 0.000000, 0.000000, 0.000000, 0.000000, 82.999984, -141.599960, 0.149999, 0.168999, 0.135999, 0, 0); // Маска Лидера
                         else SetPlayerAttachedObject(selectplayerid, 4, 11704, 2, 0.067000, 0.108000, -0.004999, 176.500030, 95.700019, -0.200000, 0.461000, 0.865000, 0.504000, 0, 0);
                     }
                 }
@@ -408,7 +408,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
                 DeathEnd(checkingPlayerObject,0);
                 Sekta[fam][sektaRiteStatus] = 1;
             }
-            else return ErrorMessage(playerid,"{ff6347} РќРµ РІСЃРµ СѓС‡Р°СЃС‚РЅРёРєРё СЃРµРєС‚С‹ РЅР°С…РѕРґСЏС‚СЃСЏ РїРѕРґ СЌС„С„РµРєС‚РѕРј РіСЂРёР±РѕРІ");
+            else return ErrorMessage(playerid,"{ff6347} Не все участники секты находятся под эффектом грибов");
         }
         else ShowSektaAltarMenu(playerid);
     }
@@ -419,7 +419,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
         {
             DestroyDynamicActor(SektaActor[fam]);
             RemoveMask(fam);
-            SuccessMessage(playerid, "{99ff66} РћР±СЂСЏРґ Р·Р°РІРµСЂС€С‘РЅ, РІРѕР·СЊРјРёС‚Рµ РїСЂРёРіРѕС‚РѕРІР»РµРЅРЅСѓСЋ С‚Р°Р±Р»РµС‚РєРё Сѓ Р°Р»С‚Р°СЂСЏ.");
+            SuccessMessage(playerid, "{99ff66} Обряд завершён, возьмите приготовленную таблетки у алтаря.");
             SetThrow(-1, 180, 180, 1, 1, 0, 0, 0, 0, 0, FamilyInfo[fam][fsAltarPos][0], FamilyInfo[fam][fsAltarPos][1]-2.066, FamilyInfo[fam][fsAltarPos][2]+0.674, 0.0, 0.0, 0.0, 600, 0, 0);
             SetThrow(-1, 198, 198, 1, 1, 0, 0, 0, 0, 0, FamilyInfo[fam][fsAltarPos][0], FamilyInfo[fam][fsAltarPos][1]-2.066, FamilyInfo[fam][fsAltarPos][2]+0.674, 0.0, 0.0, 0.0, 600, 0, 0);
         }

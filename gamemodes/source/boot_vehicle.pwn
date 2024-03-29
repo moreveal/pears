@@ -89,7 +89,7 @@ stock use_boot(playerid, v, inva, useinva)
 
 stock TakeBootBox(playerid, v, inva, rob)
 {
-	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
+	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
 	    
 	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
 	if(IsArmor(fpick)) thingPara = 100; // Броня 100 хп
@@ -97,7 +97,7 @@ stock TakeBootBox(playerid, v, inva, rob)
 	if(thingPack == 4 && rob == 1) thingPack = 2; // Снимаем блокировку с ящика, если мы грабим поезд
 	GiveThingHand(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack);
 
-	ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
+	ApplyAnimation(playerid,"CARRY","crry_prtial",4.1, true, true, true, true, true);
 	PPP15[playerid] = 3, RemovePlayerAttachedObject(playerid,1);
 	SetPlayerAttachedObject(playerid,1 , 3014, 6, 0.120000, 0.199448, -0.120000, 254.000000, 0.900000, 70.000000);
 	i_resettabs(playerid);
@@ -510,9 +510,9 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 			PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], 80);
 			PlayerTextDrawColour(playerid, PlaNestPick[inva][playerid], -1);
 			PlayerTextDrawBoxColour(playerid, PlaNestPick[inva][playerid], 0);
-			PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+			PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], TEXT_DRAW_FONT:5);
 		}
-	 	else if(blocker == 0) PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 4);
+	 	else if(blocker == 0) PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], TEXT_DRAW_FONT:4);
 	 	PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
 	}
 	else
@@ -521,7 +521,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
 		PlayerTextDrawColour(playerid, PlaNestPick[inva][playerid], -1);
 		PlayerTextDrawBoxColour(playerid, PlaNestPick[inva][playerid], 0);
-		PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], 5);
+		PlayerTextDrawFont(playerid, PlaNestPick[inva][playerid], TEXT_DRAW_FONT:5);
 		
 		if(thingPack == 1) yesFindModel = 19054; // Подарок
 		else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик / Запечатанный Ящик

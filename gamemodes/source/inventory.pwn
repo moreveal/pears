@@ -711,7 +711,7 @@ stock i_infofpick(playerid, fpick, thingQuan, inva, sels, fpara, thingType, thin
 		GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 		PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[2][playerid], yesFindModel);
 
-		if(thingType == 5) PlayerTextDrawSetPreviewVehCol(playerid, PlaNestOthe[2][playerid], thingQuan, thingQuan);
+		if(thingType == 5) PlayerTextDrawSetPreviewVehicleColours(playerid, PlaNestOthe[2][playerid], thingQuan, thingQuan);
 		PlayerTextDrawSetPreviewRot(playerid, PlaNestOthe[2][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 	}
 	
@@ -842,21 +842,21 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 	{
 		if(stat == 0) // Основные вкладки
 		{
-			PlayerTextDrawFont(playerid, textdraw, 4);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:4);
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
 			PlayerTextDrawColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
 		}
 		else if(stat == 1) // Раздел торговли
 		{
-			PlayerTextDrawFont(playerid, textdraw, 4);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:4);
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle2]);
 			PlayerTextDrawColour(playerid, textdraw, PlayerInfo[playerid][pStyle2]);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
 		}
 		else if(stat == 2) // Рядом
 		{
-			PlayerTextDrawFont(playerid, textdraw, 5);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 			PlayerTextDrawSetPreviewModel(playerid, textdraw, 2485);
 			PlayerTextDrawSetPreviewRot(playerid, textdraw, 0.0, 0.0, 0.0, -1.0);
 			PlayerTextDrawBackgroundColour(playerid, textdraw, 80);
@@ -873,20 +873,20 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
 			PlayerTextDrawColour(playerid, textdraw, -1);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
-			PlayerTextDrawFont(playerid, textdraw, 5);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 		}
 		else if(stat == 1)
 		{
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle2]);
 			PlayerTextDrawColour(playerid, textdraw, -1);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
-			PlayerTextDrawFont(playerid, textdraw, 5);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 		}
 		else if(stat == 2)
 		{
 			PlayerTextDrawColour(playerid, textdraw, -1);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
-			PlayerTextDrawFont(playerid, textdraw, 5);
+			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 			
 			if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColour(playerid, textdraw, -226); // Если предмет оставил этот игрок
 			else PlayerTextDrawBackgroundColour(playerid, textdraw, 80); // Если предмет оставил хер знает кто
@@ -917,7 +917,7 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 		new Float:modelPos[4], findIt;
 		GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
 		PlayerTextDrawSetPreviewModel(playerid, textdraw, yesFindModel);
-		if(thingType == 5 && thingPack == 0) PlayerTextDrawSetPreviewVehCol(playerid, textdraw, thingQuan, thingQuan);
+		if(thingType == 5 && thingPack == 0) PlayerTextDrawSetPreviewVehicleColours(playerid, textdraw, thingQuan, thingQuan);
 		PlayerTextDrawSetPreviewRot(playerid, textdraw, modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
 	}
 	
@@ -1834,8 +1834,8 @@ stock NotGiveThing(i, type, quan)
 }
 stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем лимиты инвентаря
 {
-	new lim[INVENTER], pow = 1;
-	pow = get_power(playerid);
+	new lim[INVENTER];
+	new pow = get_power(playerid);
 	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
 	lim[8] = 2, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100*pow, lim[5] = 100*pow, lim[6] = 100*pow, lim[7] = 100*pow, lim[9] = 20, lim[18] = 100*pow, lim[20] = 10*pow, lim[27] = 100*pow, lim[28] = 100*pow, lim[29] = 100*pow, lim[30] = 100*pow;

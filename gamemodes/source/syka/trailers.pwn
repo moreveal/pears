@@ -107,7 +107,7 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
     new Float:vehicleX,Float:vehicleY,Float:vehicleA, Float: trailer_car_distance = 3.5; // Расстояние от автомобиля игрока до невидимого транспорта
     GetXYInFrontOfPoint(vehicleX, vehicleY, vehicleA - 180.0, trailer_car_distance);
 
-    trailerid = PP_CreateVehicle(trailerid, TRAILER_INVISIBLE_VEH_MODEL,player_pos[0], player_pos[1], player_pos[2] - 10.0, 0.0, 0, 0, 600, 0, -1, 2000.0);
+    trailerid = PP_CreateVehicle(TRAILER_INVISIBLE_VEH_MODEL,player_pos[0], player_pos[1], player_pos[2] - 10.0, 0.0, 0, 0, 600, 0, -1, 2000.0);
     SetVehicleVirtualWorld(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
     LinkVehicleToInterior(trailerid, TRAILER_INVISIBLE_VEH_INTERIOR);
 
@@ -128,7 +128,7 @@ stock AttachTrailer(playerid, model, vehicleid, &trailerid, &trailerobj)
     SetVehicleVirtualWorld(trailerid, 0);
 
     // Закрепляем трейлер за автомобилем
-    SetTimerEx("AttachTrailerToVehicleDelay", 950, 0, "dd", trailerid, vehicleid);
+    SetTimerEx("AttachTrailerToVehicleDelay", 950, false, "dd", trailerid, vehicleid);
 
     SuccessMessage(playerid, "{99ff66}Трейлер прикреплён к вашему автомобилю\n{cccccc}Установить - {ff9000}[ H / CAPS LOCK ]\n\n{cccccc}Управляйте транспортом с прицепом осторожно.\nСоблюдайте правила дорожного движения.");
     return true;
@@ -488,7 +488,7 @@ CMD:attachtrailer(playerid)
     trailerInfo[tid][tObject] = trailerobj;
     trailerInfo[tid][tVehicle] = trailerid;
     VehInfo[vehicleid][vTrailerID] = tid + 1;
-    trailerInfo[tid][tTimerID] = SetTimerEx("PlayerTrailerTimer", 1000, 1, "ddd", vehicleid, trailerid, tid);
+    trailerInfo[tid][tTimerID] = SetTimerEx("PlayerTrailerTimer", 1000, true, "ddd", vehicleid, trailerid, tid);
     return 1;
 }
 //alias:attachtrailer("trailer_attach")

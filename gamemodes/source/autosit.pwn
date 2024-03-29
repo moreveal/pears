@@ -571,10 +571,10 @@ stock sit_Active(playerid, Float:x, Float:y, Float:z, Float:a)
 	NoAnim[playerid] = 1;
 	if(OnlineInfo[playerid][oKeepSit] == 0) 
 	{
-		ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
-		SetTimerEx("sitload", 1500, 0, "d", playerid);
+		ApplyAnimation(playerid,"PED","SEAT_down",4.0, false, false, false, true, false, SYNC_ALL);
+		SetTimerEx("sitload", 1500, false, "d", playerid);
 	}
-	else ApplyAnimation(playerid,"PED","SEAT_idle",4.0,0,0,0,1,0,1);
+	else ApplyAnimation(playerid,"PED","SEAT_idle",4.0, false, false, false, true, false, SYNC_ALL);
 	return 1;
 }
 
@@ -591,7 +591,6 @@ stock NoSit(playerid) // Позиции, где sit работать не будет
 
 stock sit(playerid, Float:x, Float:y, Float:z)
 {
-	new status = 1;
 	if(SitPlayer[playerid] == 0 && HealthAC[playerid] >= 1 && Stun[0][playerid] == 0 && Stun[2][playerid] == 0 && Stun[3][playerid] == 0 && !IsPlayerInAnyVehicle(playerid)
 	&& GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
 	{
@@ -628,8 +627,16 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 			else if(sid >= 72 && sid <= 75) kassit = 10, minussid = 72;
 			if(kassit > 0)
 			{
-				if(DeskInfo[kassit-1][Table] == 1) return ErrorMessage(playerid, "{FF6347}Стол закрыт лидером"), status = -1;
-				if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование текстдравов"), status = -1;
+				if(DeskInfo[kassit-1][Table] == 1) 
+				{
+					ErrorMessage(playerid, "{FF6347}Стол закрыт лидером");
+					return -1;
+				}
+				if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0)
+				{
+					ErrorMessage(playerid, "{FF6347}Завершите редактирование текстдравов");
+					return -1;
+				}
 			}
 
 			// Дойка Коров
@@ -647,7 +654,11 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 						DeiStat[playerid] = 0;
 					}
 				}
-				else return ErrorMessage(playerid, "{FF6347}Возьмите ведро у входа в сарай"), status = -1;
+				else
+				{
+					ErrorMessage(playerid, "{FF6347}Возьмите ведро у входа в сарай");
+					return -1;
+				}
 			}
 			// Образовательный Центр
 			if(sid >= 78 && sid <= 101)
@@ -673,7 +684,7 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 		// Отображаем подсказку, только если игрок не сел за игровой стол в карты
 		if(joinDesk == 0) TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
 	}
-	return status;
+	return 1;
 }
 stock exitsit(playerid, stat)
 {
@@ -681,7 +692,7 @@ stock exitsit(playerid, stat)
 	{
 		if(playerSeat[playerid]) playerSeat[playerid] = false;
 		NoAnim[playerid] = 0;
-	    if(stat == 1) ApplyAnimation(playerid,"PED","SEAT_up",4.0,0,0,0,0,0,1);
+	    if(stat == 1) ApplyAnimation(playerid,"PED","SEAT_up",4.0, false, false, false, false, false, SYNC_ALL);
 	    if(stat == 2) ClearAnimations(playerid);
 
 		if(SitPlayer[playerid] >= 1)
@@ -769,7 +780,7 @@ CMD:ebalo180(playerid)
 	GetPlayerFacingAngle(playerid,a);
 	SetPlayerFacingAngle(playerid,a+180);
 
-	ApplyAnimation(playerid,"PED","SEAT_down",4.0,0,0,0,1,0,1);
+	ApplyAnimation(playerid,"PED","SEAT_down",4.0, false, false, false, true, false, SYNC_ALL);
 	return 1;
 }
 
@@ -864,7 +875,7 @@ stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const input
 			new urlvalid = strfind(inputtext,".mp3");
 			if(urlvalid == -1)
 			{
-				urlvalid = urlvalid = strfind(inputtext,"https://");
+				urlvalid = strfind(inputtext,"https://");
 				if(urlvalid > 1 || urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка должна начинатся на https://");
 				urlvalid = strfind(inputtext,".ogg");
 				if(urlvalid == -1) return ErrorMessage(playerid,"{ff6347}Ссылка на трек обязательно должена иметь в ссылке формат .mp3 или .ogg");

@@ -1,159 +1,159 @@
 
 /*
-1- РҐР»РµР±
-102 - РњРѕР»РѕРєРѕ
-104 - РљР°СЂС‚РѕС€РєР°
-120 - Sprunk Р‘Р°РЅРєР°
-121 - РљРѕС„Рµ
-168 - РњСЏСЃРѕ
-174 - РћРІРѕС‰Рё
-179 - РњРѕСЂРѕР¶РµРЅРЅРѕРµ
+1- Хлеб
+102 - Молоко
+104 - Картошка
+120 - Sprunk Банка
+121 - Кофе
+168 - Мясо
+174 - Овощи
+179 - Мороженное
 
 */
 
-// РџРѕР»СѓС‡РµРЅРёРµ РёРЅРіСЂРµРґРёРµРЅС‚РѕРІ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РµРґС‹
+// Получение ингредиентов для создания еды
 stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQuan1, &ingQuan2, &ingQuan3, &ingQuan4, &ingQuan5, &ingQuan6)
 {
-	if(thingId == 121) // РљРѕС„Рµ
+	if(thingId == 121) // Кофе
 	{
-		ing1 = 121, ingQuan1 = 1; // РљРѕС„Рµ
-		ing2 = 102, ingQuan2 = 1; // РњРѕР»РѕРєРѕ
+		ing1 = 121, ingQuan1 = 1; // Кофе
+		ing2 = 102, ingQuan2 = 1; // Молоко
 		return 1;
 	}
-	else if(thingId == 124 || thingId == 120) // Sprunk РЎС‚Р°РєР°РЅ РёР»Рё Sprunk Р‘Р°РЅРєР°
+	else if(thingId == 124 || thingId == 120) // Sprunk Стакан или Sprunk Банка
 	{
-		ing1 = 120, ingQuan1 = 1; // Sprunk Р‘Р°РЅРєР°
+		ing1 = 120, ingQuan1 = 1; // Sprunk Банка
 		return 1;
 	}
-	else if(thingId == 125 || thingId == 126) // Р‘СѓСЂРіРµСЂ (126 - РІ СѓРїР°РєРѕРІРєРµ)
+	else if(thingId == 125 || thingId == 126) // Бургер (126 - в упаковке)
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 1; // РћРІРѕС‰Рё
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
+		ing3 = 174, ingQuan3 = 1; // Овощи
 		return 1;
 	}
-	else if(thingId == 127) // Р РѕР»Р»
+	else if(thingId == 127) // Ролл
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 1; // РћРІРѕС‰Рё
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
+		ing3 = 174, ingQuan3 = 1; // Овощи
 		return 1;
 	}
-	else if(thingId == 128) // РќР°Р±РѕСЂ 1
+	else if(thingId == 128) // Набор 1
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 1; // РћРІРѕС‰Рё
-		ing4 = 120, ingQuan4 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing5 = 179, ingQuan5 = 1; // РњРѕСЂРѕР¶РµРЅРѕРµ
-		ing6 = 104, ingQuan6 = 1; // РљР°СЂС‚РѕС€РєР°
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
+		ing3 = 174, ingQuan3 = 1; // Овощи
+		ing4 = 120, ingQuan4 = 1; // Sprunk Банка
+		ing5 = 179, ingQuan5 = 1; // Мороженое
+		ing6 = 104, ingQuan6 = 1; // Картошка
 		return 1;
 	}
-	else if(thingId == 129) // РќР°Р±РѕСЂ 2
+	else if(thingId == 129) // Набор 2
 	{
-		ing1 = 168, ingQuan1 = 1; // РњСЏСЃРѕ
-		ing2 = 120, ingQuan2 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing3 = 179, ingQuan3 = 1; // РњРѕСЂРѕР¶РµРЅРѕРµ
+		ing1 = 168, ingQuan1 = 1; // Мясо
+		ing2 = 120, ingQuan2 = 1; // Sprunk Банка
+		ing3 = 179, ingQuan3 = 1; // Мороженое
 		return 1;
 	}
-	else if(thingId == 130) // РќР°Р±РѕСЂ 3
+	else if(thingId == 130) // Набор 3
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 1; // РћРІРѕС‰Рё
-		ing4 = 120, ingQuan4 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing5 = 179, ingQuan5 = 1; // РњРѕСЂРѕР¶РµРЅРѕРµ
-		ing6 = 104, ingQuan6 = 1; // РљР°СЂС‚РѕС€РєР°
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
+		ing3 = 174, ingQuan3 = 1; // Овощи
+		ing4 = 120, ingQuan4 = 1; // Sprunk Банка
+		ing5 = 179, ingQuan5 = 1; // Мороженое
+		ing6 = 104, ingQuan6 = 1; // Картошка
 		return 1;
 	}
-	else if(thingId == 131) // РќР°Р±РѕСЂ 4
+	else if(thingId == 131) // Набор 4
 	{
-		ing1 = 168, ingQuan1 = 1; // РњСЏСЃРѕ
-		ing2 = 120, ingQuan2 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing3 = 104, ingQuan3 = 1; // РљР°СЂС‚РѕС€РєР°
+		ing1 = 168, ingQuan1 = 1; // Мясо
+		ing2 = 120, ingQuan2 = 1; // Sprunk Банка
+		ing3 = 104, ingQuan3 = 1; // Картошка
 		return 1;
 	}
-	else if(thingId == 132) // РќР°Р±РѕСЂ 5
+	else if(thingId == 132) // Набор 5
 	{
-		ing1 = 1, ingQuan1 = 2; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 2; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 2; // РћРІРѕС‰Рё
-		ing4 = 120, ingQuan4 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing5 = 104, ingQuan5 = 1; // РљР°СЂС‚РѕС€РєР°
+		ing1 = 1, ingQuan1 = 2; // Хлеб
+		ing2 = 168, ingQuan2 = 2; // Мясо
+		ing3 = 174, ingQuan3 = 2; // Овощи
+		ing4 = 120, ingQuan4 = 1; // Sprunk Банка
+		ing5 = 104, ingQuan5 = 1; // Картошка
 		return 1;
 	}
-	else if(thingId == 133) // РќР°Р±РѕСЂ 6
+	else if(thingId == 133) // Набор 6
 	{
-		ing1 = 1, ingQuan1 = 2; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 4; // РњСЏСЃРѕ
-		ing3 = 174, ingQuan3 = 2; // РћРІРѕС‰Рё
-		ing4 = 120, ingQuan4 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing5 = 104, ingQuan5 = 1; // РљР°СЂС‚РѕС€РєР°
+		ing1 = 1, ingQuan1 = 2; // Хлеб
+		ing2 = 168, ingQuan2 = 4; // Мясо
+		ing3 = 174, ingQuan3 = 2; // Овощи
+		ing4 = 120, ingQuan4 = 1; // Sprunk Банка
+		ing5 = 104, ingQuan5 = 1; // Картошка
 		return 1;
 	}
-	else if(thingId == 134) // РќР°Р±РѕСЂ 7
+	else if(thingId == 134) // Набор 7
 	{
-		ing1 = 1, ingQuan1 = 2; // РҐР»РµР±
-		ing2 = 121, ingQuan2 = 1; // РљРѕС„Рµ
-		ing3 = 102, ingQuan3 = 1; // РњРѕР»РѕРєРѕ
+		ing1 = 1, ingQuan1 = 2; // Хлеб
+		ing2 = 121, ingQuan2 = 1; // Кофе
+		ing3 = 102, ingQuan3 = 1; // Молоко
 		return 1;
 	}
-	else if(thingId == 135) // РќР°Р±РѕСЂ 8
+	else if(thingId == 135) // Набор 8
 	{
-		ing1 = 1, ingQuan1 = 9; // РҐР»РµР±
-		ing2 = 121, ingQuan2 = 1; // РљРѕС„Рµ
-		ing3 = 102, ingQuan3 = 1; // РњРѕР»РѕРєРѕ
+		ing1 = 1, ingQuan1 = 9; // Хлеб
+		ing2 = 121, ingQuan2 = 1; // Кофе
+		ing3 = 102, ingQuan3 = 1; // Молоко
 		return 1;
 	}
-	else if(thingId == 136) // РќР°Р±РѕСЂ 9
+	else if(thingId == 136) // Набор 9
 	{
-		ing1 = 1, ingQuan1 = 5; // РҐР»РµР±
-		ing2 = 121, ingQuan2 = 1; // РљРѕС„Рµ
-		ing3 = 102, ingQuan3 = 1; // РњРѕР»РѕРєРѕ
+		ing1 = 1, ingQuan1 = 5; // Хлеб
+		ing2 = 121, ingQuan2 = 1; // Кофе
+		ing3 = 102, ingQuan3 = 1; // Молоко
 		return 1;
 	}
-	else if(thingId == 137) // РќР°Р±РѕСЂ 10
+	else if(thingId == 137) // Набор 10
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 174, ingQuan2 = 2; // РћРІРѕС‰Рё
-		ing3 = 168, ingQuan3 = 1; // РњСЏСЃРѕ
-		ing4 = 120, ingQuan4 = 1; // Sprunk Р‘Р°РЅРєР°
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 174, ingQuan2 = 2; // Овощи
+		ing3 = 168, ingQuan3 = 1; // Мясо
+		ing4 = 120, ingQuan4 = 1; // Sprunk Банка
 		return 1;
 	}
-	else if(thingId == 138) // РќР°Р±РѕСЂ 11
+	else if(thingId == 138) // Набор 11
 	{
-		ing1 = 168, ingQuan1 = 1; // РњСЏСЃРѕ
-		ing2 = 174, ingQuan2 = 1; // РћРІРѕС‰Рё
-		ing3 = 120, ingQuan3 = 1; // Sprunk Р‘Р°РЅРєР°
-		ing4 = 179, ingQuan4 = 1; // РњРѕСЂРѕР¶РµРЅРѕРµ
+		ing1 = 168, ingQuan1 = 1; // Мясо
+		ing2 = 174, ingQuan2 = 1; // Овощи
+		ing3 = 120, ingQuan3 = 1; // Sprunk Банка
+		ing4 = 179, ingQuan4 = 1; // Мороженое
 		return 1;
 	}
-	else if(thingId == 141) // РҐРѕС‚ Р”РѕРі
+	else if(thingId == 141) // Хот Дог
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
 		return 1;
 	}
-	else if(thingId == 165) // РџРёС†С†Р°
+	else if(thingId == 165) // Пицца
 	{
-		ing1 = 1, ingQuan1 = 1; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 1; // РњСЏСЃРѕ
+		ing1 = 1, ingQuan1 = 1; // Хлеб
+		ing2 = 168, ingQuan2 = 1; // Мясо
 		return 1;
 	}
-	else if(thingId == 166) // РџРёС†С†Р° Р”РѕРјР°С€РЅСЏСЏ
+	else if(thingId == 166) // Пицца Домашняя
 	{
-		ing1 = 1, ingQuan1 = 3; // РҐР»РµР±
-		ing2 = 168, ingQuan2 = 3; // РњСЏСЃРѕ
+		ing1 = 1, ingQuan1 = 3; // Хлеб
+		ing2 = 168, ingQuan2 = 3; // Мясо
 		return 1;
 	}
-	else if(thingId == 172) // РђРїРµР»СЊСЃРёРЅРѕРІС‹Р№ СЃРѕРє
+	else if(thingId == 172) // Апельсиновый сок
 	{
-		ing1 = 101, ingQuan1 = 3; // РђРїРµР»СЊСЃРёРЅ
+		ing1 = 101, ingQuan1 = 3; // Апельсин
 		return 1;
 	}	
-	else if(thingId == 173) // РЇР±Р»РѕС‡РЅС‹Р№ СЃРѕРє
+	else if(thingId == 173) // Яблочный сок
 	{
-		ing1 = 100, ingQuan1 = 3; // РЇР±Р»Р°С‡РєРѕ
+		ing1 = 100, ingQuan1 = 3; // Яблачко
 		return 1;
 	}
 	return 0;
@@ -167,26 +167,26 @@ stock SetSatiety(thingId, &fquan) //
     {
 		if(ingId[i] > 0)
 		{
-			if(ingId[i] == 1) fquan += 1*ingQuan[i];//С…Р»РµР±
-			else if(ingId[i] == 102) fquan += 1*ingQuan[i];//РњРѕР»РѕРєРѕ
-			else if(ingId[i] == 104) fquan += 1*ingQuan[i];//РљР°СЂС‚РѕС€РєР°
-			else if(ingId[i] == 120) fquan += 1*ingQuan[i];//Sprunk Р‘Р°РЅРєР°
-			else if(ingId[i] == 121) fquan += 1*ingQuan[i];//РљРѕС„Рµ
-			else if(ingId[i] == 168) fquan += 2*ingQuan[i];//РјСЏСЃРѕ
-			else if(ingId[i] == 174) fquan += 1*ingQuan[i];//РћРІРѕС‰Рё
-			else if(ingId[i] == 179) fquan += 1*ingQuan[i];//РњРѕСЂРѕР¶РµРЅРЅРѕРµ
-			else if(ingId[i] == 101) fquan += 1*ingQuan[i];//Р°РїРµР»СЊСЃРёРЅРєР°
-			else if(ingId[i] == 100) fquan += 1*ingQuan[i];//СЏР±Р»РѕРєРѕ
+			if(ingId[i] == 1) fquan += 1*ingQuan[i];//хлеб
+			else if(ingId[i] == 102) fquan += 1*ingQuan[i];//Молоко
+			else if(ingId[i] == 104) fquan += 1*ingQuan[i];//Картошка
+			else if(ingId[i] == 120) fquan += 1*ingQuan[i];//Sprunk Банка
+			else if(ingId[i] == 121) fquan += 1*ingQuan[i];//Кофе
+			else if(ingId[i] == 168) fquan += 2*ingQuan[i];//мясо
+			else if(ingId[i] == 174) fquan += 1*ingQuan[i];//Овощи
+			else if(ingId[i] == 179) fquan += 1*ingQuan[i];//Мороженное
+			else if(ingId[i] == 101) fquan += 1*ingQuan[i];//апельсинка
+			else if(ingId[i] == 100) fquan += 1*ingQuan[i];//яблоко
 		}
 	}
 	fquan ++;
-	// printf("РљСѓСЃРєРѕРІ:%d | Р‘Р»СЋРґРѕ:%s", fquan, friskName[thingId]);
+	// printf("Кусков:%d | Блюдо:%s", fquan, friskName[thingId]);
 	return 1;
 }
 
 stock godrink(playerid)
 {
-	if(Hold[playerid] == 2 && HoldQuan[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ Р±РѕРєР°Р» РїСѓСЃС‚ [ РќР°Р»РµР№С‚Рµ РІ РЅРµРіРѕ РІС‹РїРёРІРєСѓ N ]");
+	if(Hold[playerid] == 2 && HoldQuan[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Ваш бокал пуст [ Налейте в него выпивку N ]");
 	if(HoldQuan[playerid] <= 1) return stopdrink(playerid), PlayerPlaySound(playerid,5601,0,0,0), RemovePlayerAttachedObject(playerid,1);
 	if(HoldStat[playerid] == 120)
 	{
@@ -194,8 +194,8 @@ stock godrink(playerid)
 	    PlayerInfo[playerid][pInven][HoldInva[playerid]] = 139;
 		PlayerInfo[playerid][pInvenPara][HoldInva[playerid]] = gettime()+172800;
 		HoldStat[playerid] = 139, HoldFrisk[playerid] = 139;
-		ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
-  		SetPlayerChatBubble(playerid,"РѕС‚РєСЂС‹РІР°РµС‚ Р±Р°РЅРєСѓ sprunk",COLOR_PURPLE,30.0,5000);
+		ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
+  		SetPlayerChatBubble(playerid,"открывает банку sprunk",COLOR_PURPLE,30.0,5000);
 		return 1;
 	}
 	if(HoldStat[playerid] == 126)
@@ -203,14 +203,14 @@ stock godrink(playerid)
 	    around_player_audio(playerid, 20800, 0, 5.0, 0);
 		PlayerInfo[playerid][pInven][HoldInva[playerid]] = 125;
 		HoldStat[playerid] = 125, HoldFrisk[playerid] = 125;
-		ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
-  		SetPlayerChatBubble(playerid,"СЂР°СЃРїР°РєРѕРІС‹РІР°РµС‚ Р±СѓСЂРіРµСЂ",COLOR_PURPLE,30.0,5000);
+		ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
+  		SetPlayerChatBubble(playerid,"распаковывает бургер",COLOR_PURPLE,30.0,5000);
   		RemovePlayerAttachedObject(playerid,1);
     	object_in_hand(playerid, friskPick[125]);
 		return 1;
 	}
-	if(HoldStat[playerid] == 163) return ErrorMessage(playerid, "{FF6347}РЎРІР°РґРµР±РЅС‹Р№ С‚РѕСЂС‚ РЅСѓР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ РЅР° СЃС‚РѕР» Рё СЂРµР·Р°С‚СЊ РєСѓС…РѕРЅРЅС‹Рј РЅРѕР¶РѕРј [ РљРЅРѕРїРєР° F ]");
-	if(HoldStat[playerid] == 166) return ErrorMessage(playerid, "{FF6347}Р”РѕРјР°С€РЅСЋСЋ РїРёС†С†Сѓ РЅСѓР¶РЅРѕ РїРѕСЃС‚Р°РІРёС‚СЊ РЅР° СЃС‚РѕР» Рё СЂРµР·Р°С‚СЊ РєСѓС…РѕРЅРЅС‹Рј РЅРѕР¶РѕРј [ РљРЅРѕРїРєР° F ]");
+	if(HoldStat[playerid] == 163) return ErrorMessage(playerid, "{FF6347}Свадебный торт нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
+	if(HoldStat[playerid] == 166) return ErrorMessage(playerid, "{FF6347}Домашнюю пиццу нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
 	if(Hold[playerid] == 3 && HoldStat[playerid] > 0)
 	{
 	    if(PlayerInfo[playerid][pInven][HoldInva[playerid]] == HoldStat[playerid]) PlayerInfo[playerid][pInvenQuan][HoldInva[playerid]] --;
@@ -221,8 +221,8 @@ stock godrink(playerid)
 	{
 		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163
 			|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 
-			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89 || HoldStat[playerid] == 166|| HoldStat[playerid] == 167) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1,0,0,0,0,0);
-		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0,0,0,0,0,0);
+			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89 || HoldStat[playerid] == 166|| HoldStat[playerid] == 167) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
+		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0, false, false, false, false, false);
 	}
 	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119 || HoldStat[playerid] == 120 || HoldStat[playerid] == 121 || HoldStat[playerid] == 124)
 	{
@@ -244,7 +244,7 @@ stock godrink(playerid)
 	}
 	
 	HoldQuan[playerid] --;
-	// Р–РёРґРєРѕСЃС‚Рё
+	// Жидкости
     if(HoldStat[playerid] == 14 || HoldStat[playerid] == 37 || HoldStat[playerid] >= 112 && HoldStat[playerid] <= 124 || HoldStat[playerid] == 139 || HoldStat[playerid] == 172 || HoldStat[playerid] == 173)
     {
         if(PlayerInfo[playerid][pCap] >= 1) 
@@ -257,14 +257,14 @@ stock godrink(playerid)
     else
 	{
 	    around_player_audio(playerid, 32200, 0, 5.0, 0);
-		EatPlayer(playerid, 70), eat = 7; // РҐР°РІС‡РёРє
+		EatPlayer(playerid, 70), eat = 7; // Хавчик
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
-	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 10), alco = 10; // РџРёРІРѕ, РЎРёРґСЂС‹, РџРёРІРѕ СЂР°Р·Р»РёРІРЅРѕРµ
-	else if(HoldStat[playerid] == 37) Effect[playerid] = 5, EffectTime[playerid] += 20, infect(playerid, 11, 10), alco = 20; // РЁР°РјРїР°РЅСЃРєРѕРµ
-	else if(HoldStat[playerid] == 112) Effect[playerid] = 5, EffectTime[playerid] += 40, infect(playerid, 11, 20), alco = 40; // Р’РѕРґРєР°
-	else if(HoldStat[playerid] == 113) Effect[playerid] = 5, EffectTime[playerid] += 15, infect(playerid, 11, 10), alco = 15; // Р’РёРЅРѕ
-	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) Effect[playerid] = 5, EffectTime[playerid] += 30, infect(playerid, 11, 20), alco = 30; // Р’РёСЃРєРё, РљРѕРЅСЊСЏРє, Р‘СЂСЌРЅРґРё
+	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 10), alco = 10; // Пиво, Сидры, Пиво разливное
+	else if(HoldStat[playerid] == 37) Effect[playerid] = 5, EffectTime[playerid] += 20, infect(playerid, 11, 10), alco = 20; // Шампанское
+	else if(HoldStat[playerid] == 112) Effect[playerid] = 5, EffectTime[playerid] += 40, infect(playerid, 11, 20), alco = 40; // Водка
+	else if(HoldStat[playerid] == 113) Effect[playerid] = 5, EffectTime[playerid] += 15, infect(playerid, 11, 10), alco = 15; // Вино
+	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) Effect[playerid] = 5, EffectTime[playerid] += 30, infect(playerid, 11, 20), alco = 30; // Виски, Коньяк, Брэнди
 	
 	new string[80];
 	if(alco > 0)
@@ -287,7 +287,7 @@ stock godrink(playerid)
 	{
 	    PearsTime(playerid);
 		PearsWeather(playerid);
-		// РЎРёР»СЊРЅРѕ РїСЊСЏРЅС‹Р№ - Р±Р»СЋС‘С‚
+		// Сильно пьяный - блюёт
 		if(EffectTime[playerid] > 1000)
 		{
 		    switch(random(5))
@@ -312,7 +312,7 @@ stock goeat_podnos(playerid)
 		new string[80];
 	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100", quanEat, PlayerInfo[playerid][pNeon]/10);
 		GameTextForPlayer(playerid,string,1800,3);
-		if(fpick == 134 || fpick == 135 || fpick == 136) // Р•СЃР»Рё РїРѕРґРЅРѕСЃ СЃ РєРѕС„Рµ
+		if(fpick == 134 || fpick == 135 || fpick == 136) // Если поднос с кофе
 		{
 			if(PlayerInfo[playerid][pMechSkill]+20 <= 1000) PlayerInfo[playerid][pMechSkill] += 20;
 			else PlayerInfo[playerid][pMechSkill] = 1000;
@@ -333,7 +333,7 @@ stock goeat_podnos(playerid)
 			/*if(PlayerInfo[playerid][pQwest] == 16)
 			{
 				PlayerInfo[playerid][pQwest] = 17, mysql_save(playerid, 69);
-				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р§СѓРґРµСЃРЅРѕ! Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РїРѕРєСѓС€Р°Р»\nР’С‹ РјРѕР¶РµС‚Рµ РєСѓРїРёС‚СЊ СЃ СЃРѕР±РѕР№ РїР°СЂСѓ Р±СѓСЂРіРµСЂРѕРІ (РїРѕ Р¶РµР»Р°РЅРёРёСЋ) Рё РІС‹Р№С‚Рё РЅР° СѓР»РёС†Сѓ","*","");
+				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чудесно! Ваш персонаж покушал\nВы можете купить с собой пару бургеров (по желаниию) и выйти на улицу","*","");
 			}*/
 	    }
 	}
@@ -344,14 +344,14 @@ stock glass(playerid, fpick, inva)
 {
 	if(Hold[playerid] == 0)
  	{
- 	    if(Hold[playerid] > 0 || Hand[playerid] > 0 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё [РџСЂРµРґРјРµС‚, РґРµР№СЃС‚РІРёРµ РёР»Рё РѕСЂСѓР¶РёРµ]");
+ 	    if(Hold[playerid] > 0 || Hand[playerid] > 0 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет, действие или оружие]");
  	    new model;
  	    if(fpick == 38) model = 19819;
  	    else if(fpick == 122) model = 19818;
  	    Eat[playerid] = 0;
- 	    PlayerPlaySound(playerid,5600,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
+ 	    PlayerPlaySound(playerid,5600,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
   		RemovePlayerAttachedObject(playerid,1), SetPlayerAttachedObject(playerid, 1, model, 6, 0.108999, 0.033000, 0.031000, 9.500002, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
-  		SetPlayerChatBubble(playerid,"Р±РµСЂС‘С‚ РІ СЂСѓРєРё Р±РѕРєР°Р»",COLOR_PURPLE,30.0,8000);
+  		SetPlayerChatBubble(playerid,"берёт в руки бокал",COLOR_PURPLE,30.0,8000);
   		HoldNoinvent[playerid] = 0;
   		Hold[playerid] = 2, HoldFrisk[playerid] = fpick, HoldStat[playerid] = fpick, HoldQuan[playerid] = 1, HoldInva[playerid] = inva;
     }
@@ -359,9 +359,9 @@ stock glass(playerid, fpick, inva)
     {
         if(HoldStat[playerid] > 0) TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton);
         Hold[playerid] = 0, HoldFrisk[playerid] = 0, HoldStat[playerid] = 0, HoldQuan[playerid] = 0, HoldInva[playerid] = -1;
-        PlayerPlaySound(playerid,5601,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
+        PlayerPlaySound(playerid,5601,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
    		RemovePlayerAttachedObject(playerid,1);
-    	SetPlayerChatBubble(playerid,"СѓР±РёСЂР°РµС‚ Р±РѕРєР°Р»",COLOR_PURPLE,30.0,8000);
+    	SetPlayerChatBubble(playerid,"убирает бокал",COLOR_PURPLE,30.0,8000);
 	}
 	return 1;
 }
@@ -374,31 +374,31 @@ stock stopdrink(playerid)
 }
 stock drink_eat(playerid, inva, fpick)
 {
-	if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓС‡Р°СЃС‚РЅРёРє Р±РѕСЏ РЅР° СЂРёРЅРіРµ");
-	if(PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7) return ErrorMessage(playerid, "{FF6347}Р’С‹ РїР°С†РёРµРЅС‚ РіРѕСЃРїРёС‚Р°Р»СЏ");
-	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
+	if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы участник боя на ринге");
+	if(PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7) return ErrorMessage(playerid, "{FF6347}Вы пациент госпиталя");
+	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
 	if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 119)
 	{
-	    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓС‡Р°СЃРЅРёРє СЌРєСЃРїРµРґРёС†РёРё NASA [ Р’Р°Рј Р·Р°РїСЂРµС‰РµРЅРѕ СѓРїРѕС‚СЂРµР±Р»СЏС‚СЊ Р°Р»РєРѕРіРѕР»СЊ ]");
-	    if(fraction(playerid) == 18) return ErrorMessage(playerid, "{FF6347}Р’Р°С€Р° СЂРµР»РёРіРёСЏ РЅРµ РїРѕР·РІРѕР»СЏРµС‚ СѓРїРѕС‚СЂРµР±Р»СЏС‚СЊ Р°Р»РєРѕРіРѕР»СЊ [Arabian Mafia]");
+	    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Вы учасник экспедиции NASA [ Вам запрещено употреблять алкоголь ]");
+	    if(fraction(playerid) == 18) return ErrorMessage(playerid, "{FF6347}Ваша религия не позволяет употреблять алкоголь [Arabian Mafia]");
 	}
 	if(Hold[playerid] == 3)
 	{
 	    Hold[playerid] = 0, HoldStat[playerid] = 0, HoldQuan[playerid] = 0, PlayerPlaySound(playerid,5601,0,0,0), RemovePlayerAttachedObject(playerid,1);
-     	ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
+     	ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
      	TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton);
 		if(!IsPlayerInAnyVehicle(playerid) && PPP15[playerid] == 7)PPP15[playerid] = 0, ClearAnimations(playerid), ClearAnim(playerid);
 		return 1;
 	}
-	if(Dei[playerid] > 0 || Hold[playerid] > 0 && Hold[playerid] != 2 || Hand[playerid] > 0 || GetPlayerWeapon(playerid) > 1) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё [РџСЂРµРґРјРµС‚ РёР»Рё РѕСЂСѓР¶РёРµ]");
+	if(Dei[playerid] > 0 || Hold[playerid] > 0 && Hold[playerid] != 2 || Hand[playerid] > 0 || GetPlayerWeapon(playerid) > WEAPON:1) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
 	if(Hold[playerid] == 2)
 	{
-	    if(fpick == 120 || fpick == 124) return ErrorMessage(playerid, "{FF6347}Sprunk РЅРµР»СЊР·СЏ РЅР°Р»РёС‚СЊ РІ Р±РѕРєР°Р» {cccccc}[ РЈР±РµСЂРёС‚Рµ Р±РѕРєР°Р» Рё РїРµР№С‚Рµ РЅР°РїРёС‚РѕРє РёР· Р±Р°РЅРєРё ]");
-	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}РљРѕС„Рµ РЅРµР»СЊР·СЏ РЅР°Р»РёС‚СЊ РІ Р±РѕРєР°Р» {cccccc}[ РЈР±РµСЂРёС‚Рµ Р±РѕРєР°Р» Рё РїРµР№С‚Рµ РЅР°РїРёС‚РѕРє РёР· РєСЂСѓР¶РєРё ]");
-	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё [РџСЂРµРґРјРµС‚ РёР»Рё РѕСЂСѓР¶РёРµ]");
-	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµРј Р±РѕРєР°Р»Рµ РµС‰С‘ РµСЃС‚СЊ СЃРѕРґРµСЂР¶РёРјРѕРµ {cccccc}[ Р”РѕРїРµР№С‚Рµ РёР»Рё РїРѕСЃС‚Р°РІСЊС‚Рµ Р±РѕРєР°Р» F ]");
-	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚Р° Р±СѓС‚С‹Р»РєР° РїСѓСЃС‚Р°СЏ");
-	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0,0,1,1,0,0);
+	    if(fpick == 120 || fpick == 124) return ErrorMessage(playerid, "{FF6347}Sprunk нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из банки ]");
+	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}Кофе нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из кружки ]");
+	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
+	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}В вашем бокале ещё есть содержимое {cccccc}[ Допейте или поставьте бокал F ]");
+	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Эта бутылка пустая");
+	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
 	    HoldPara[playerid] = PlayerInfo[playerid][pInvenPara][inva], HoldQara[playerid] = PlayerInfo[playerid][pInvenQara][inva];
 	    if(PlayerInfo[playerid][pInvenQuan][inva]-3 >= 0) HoldQuan[playerid] += 3;
 	    else HoldQuan[playerid] = PlayerInfo[playerid][pInvenQuan][inva];
@@ -411,9 +411,9 @@ stock drink_eat(playerid, inva, fpick)
 	    HoldStat[playerid] = fpick;
 
 		new string[80];
-	    format(string,sizeof(string),"РѕС‚РєСЂС‹Р»%s Р±СѓС‚С‹Р»РєСѓ Рё РЅР°Р»РёР»%s РІ Р±РѕРєР°Р» %s", gender(playerid), gender(playerid), friskName[fpick]);
+	    format(string,sizeof(string),"открыл%s бутылку и налил%s в бокал %s", gender(playerid), gender(playerid), friskName[fpick]);
 	    SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,5000);
-	    format(string,sizeof(string),"{ffcc66}Р’С‹ РЅР°Р»РёР»Рё РІ Р±РѕРєР°Р» %s {ff9000}[ РЎРґРµР»Р°С‚СЊ РіР»РѕС‚РѕРє: %s ]", friskName[fpick], buttonName[Device[playerid]]);
+	    format(string,sizeof(string),"{ffcc66}Вы налили в бокал %s {ff9000}[ Сделать глоток: %s ]", friskName[fpick], buttonName[Device[playerid]]);
 	    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
         TextDrawShowForPlayer(playerid, MindDraw[3]);
 		if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");
@@ -423,7 +423,7 @@ stock drink_eat(playerid, inva, fpick)
 	else
 	{
 	    in_hand_eat(playerid, 3, fpick, fpick, PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], 0);
-	    PlayerPlaySound(playerid,5600,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0,0,1,1,0,0);
+	    PlayerPlaySound(playerid,5600,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
 	}
 	return 1;
 }
@@ -437,16 +437,16 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
     object_in_hand(playerid, friskPick[fpick]);
 
 	new string[140];
-    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141 || fpick == 167) format(string,sizeof(string),"{ffcc66}Р’С‹ РІР·СЏР»Рё РІ СЂСѓРєРё %s (%d РіСЂ.) {ff9000}[ РљСѓС€Р°С‚СЊ: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
+    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141 || fpick == 167) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
 	else if(fpick == 163 || fpick == 166)
 	{
-		format(string,sizeof(string),"{ffcc66}Р’С‹ РІР·СЏР»Рё РІ СЂСѓРєРё %s (%d РіСЂ.) {ff9000}[ РџРѕСЃС‚Р°РІСЊС‚Рµ РЅР° СЃС‚РѕР» F Рё РїРѕСЂРµР¶СЊС‚Рµ РєСѓС…РѕРЅРЅС‹Рј РЅРѕР¶РѕРј ]", friskName[fpick], (HoldQuan[playerid]-1)*100);
-		PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
+		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*100);
+		PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1, true, true, true, true, true);
 	}
 	else
 	{
-    	if(hold == 2) format(string,sizeof(string),"{ffcc66}Р’С‹ РІР·СЏР»Рё РІ СЂСѓРєРё %s %s (%d РјР».) {ff9000}[ РЎРґРµР»Р°С‚СЊ РіР»РѕС‚РѕРє: %s ]\n{cccccc}РџРѕСЃС‚Р°РІРёС‚СЊ РЅР° СЃС‚РѕР» РёР»Рё РїРѕР»: РљРЅРѕРїРєР° F", friskName[fpick], friskName[soder], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
-		else format(string,sizeof(string),"{ffcc66}Р’С‹ РІР·СЏР»Рё РІ СЂСѓРєРё %s {ff9000}[ РЎРґРµР»Р°С‚СЊ РіР»РѕС‚РѕРє: %s ]\n{cccccc}РџРѕСЃС‚Р°РІРёС‚СЊ РЅР° СЃС‚РѕР» РёР»Рё РїРѕР»: РљРЅРѕРїРєР° F", friskName[fpick], buttonName[Device[playerid]]);
+    	if(hold == 2) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s %s (%d мл.) {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], friskName[soder], (HoldQuan[playerid]-1)*10, buttonName[Device[playerid]]);
+		else format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s {ff9000}[ Сделать глоток: %s ]\n{cccccc}Поставить на стол или пол: Кнопка F", friskName[fpick], buttonName[Device[playerid]]);
 	}
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
 	TextDrawShowForPlayer(playerid, MindDraw[3]);
@@ -462,7 +462,7 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
 stock in_hand_podnos(playerid, fpick, fquan, fpara, fqara)
 {
     new string[320];
-    PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1,1,1,1,1,1);
+    PPP15[playerid] = 7, ApplyAnimation(playerid,"CARRY","crry_prtial",4.1, true, true, true, true, true);
     RemovePlayerAttachedObject(playerid,1);
     object_in_hand(playerid, friskPick[fpick]), Hold[playerid] = 12;
     HoldNoinvent[playerid] = 1;
@@ -470,7 +470,7 @@ stock in_hand_podnos(playerid, fpick, fquan, fpara, fqara)
     HoldInva[playerid] = -1;
     HoldPara[playerid] = fpara, HoldQara[playerid] = fqara;
     Eat[playerid] = 0;
-    format(string,sizeof(string),"{99ff66}РЈ РІР°СЃ РІ СЂСѓРєР°С… %s\n\n{ff9000}РљР°Рє РєСѓС€Р°С‚СЊ?\n{cccccc}1. РџРѕР»РѕР¶РёС‚Рµ РїРѕРґРЅРѕСЃ РЅР° СЃС‚РѕР» [ РљРЅРѕРїРєР° - F ]\n2. РЎСЏРґСЊС‚Рµ РЅР° СЃС‚СѓР» СЂСЏРґРѕРј СЃ РїРѕРґРЅРѕСЃРѕРј [ РљРЅРѕРїРєР° - ALT ]\n3. РћС‚РєСЂРѕР№С‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ Рё РІС‹Р±РµСЂРёС‚Рµ РІ СЂР°Р·РґРµР»Рµ << Р СЏРґРѕРј >> РІР°С€ РїРѕРґРЅРѕСЃ\n4. Р’Р°С€ РїРѕРґРЅРѕСЃ Р±СѓРґРµС‚ РѕС‚РјРµС‡РµРЅ Р±РµР»С‹Рј С„РѕРЅРѕРј, РІ РѕС‚Р»РёС‡РёРё РѕС‚ РґСЂСѓРіРёС…", friskName[HoldStat[playerid]]);
+    format(string,sizeof(string),"{99ff66}У вас в руках %s\n\n{ff9000}Как кушать?\n{cccccc}1. Положите поднос на стол [ Кнопка - F ]\n2. Сядьте на стул рядом с подносом [ Кнопка - ALT ]\n3. Откройте инвентарь и выберите в разделе << Рядом >> ваш поднос\n4. Ваш поднос будет отмечен белым фоном, в отличии от других", friskName[HoldStat[playerid]]);
 	SuccessMessage(playerid, string);
 	return 1;
 }

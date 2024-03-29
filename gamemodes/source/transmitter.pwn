@@ -1,56 +1,56 @@
 
-/* РљР°Рє РґРѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ РєР°РЅР°Р» РёР»Рё СЂР°С†РёСЋ РІ РЅР°СЃС‚СЂРѕР№РєСѓ?
-1. РџР»СЋСЃСѓРµРј РґРµС„Р°Р№РЅ MAX_TRANSMITTER
-2. Р”РѕР±Р°РІР»СЏРµРј РЅР°Р·РІР°РЅРёРµ СЂР°С†РёРё РІ TransmitterName
-3. РўРѕРїР°РµРј РІ stock MenuSettingTransmitter Рё СЃ РЅРµРіРѕ РЅР°С‡РёРЅР°РµРј РїРѕ С†РµРїРѕС‡РєРµ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РІСЃС‘ С‡С‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
+/* Как добавить новый канал или рацию в настройку?
+1. Плюсуем дефайн MAX_TRANSMITTER
+2. Добавляем название рации в TransmitterName
+3. Топаем в stock MenuSettingTransmitter и с него начинаем по цепочке редактировать всё что необходимо
 */
 
 new TransmitterName[][] =
 {
-    "Р Р°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С†РёРё /r /rb", "Р Р°С†РёСЏ /d /db /u /ub", "Р Р°С†РёСЏ РїРѕРґС„СЂР°РєС†РёРё /i /ib", "Р Р°С†РёСЏ СЃРµРјСЊРё /f /fb", "Р”РµР№СЃС‚РІРёСЏ РђРґРјРёРЅРёСЃС‚СЂР°С†РёРё", // 0 - 4
-    "Р’РѕР»РЅР° РџСЂРµСЃС‚СѓРїР»РµРЅРёР№", "Р§Р°С‚ РђРґРјРёРЅРёСЃС‚СЂР°С†РёРё /a", "Р§Р°С‚ РњРµРґРёР° /y", "РћР±С‰РёРµ РћР±СЉСЏРІР»РµРЅРёСЏ /ao /o /oo /gov", "РќРѕРІРѕСЃС‚Рё CNN /news /live" // 5 - 9
+    "Рация организации /r /rb", "Рация /d /db /u /ub", "Рация подфракции /i /ib", "Рация семьи /f /fb", "Действия Администрации", // 0 - 4
+    "Волна Преступлений", "Чат Администрации /a", "Чат Медиа /y", "Общие Объявления /ao /o /oo /gov", "Новости CNN /news /live" // 5 - 9
 };
 
-stock checkTransmitterPermission(playerid) // РџСЂРѕРІРµСЂРєРё СЂР°Р·СЂРµС€РµРЅРёР№ СЂР°С†РёРё (С‡С‚РѕР±С‹ РЅРµ РґСѓР±Р»РёСЂРѕРІР°С‚СЊ РѕРґРЅСѓ Рё С‚Сѓ-Р¶Рµ С…РµСЂРЅСЋ РІ РєР°Р¶РґСѓСЋ РєРѕРјР°РЅРґСѓ)
+stock checkTransmitterPermission(playerid) // Проверки разрешений рации (чтобы не дублировать одну и ту-же херню в каждую команду)
 {
 	if(PlayerInfo[playerid][pBkyrenie] >= 2)
 	{
-		ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РЅР°С…РѕРґРёС‚СЃСЏ РІ РєРѕСЃРјРѕСЃРµ");
+		ErrorMessage(playerid, "{FF6347}Ваш персонаж находится в космосе");
 		return 1;
 	}
 	if(get_invent4(playerid, 21, 0) <= 0)
 	{
-		ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЂР°С†РёРё [ Y >> GPS >> РЈСЃР»СѓРіРё >> РњР°РіР°Р·РёРЅС‹ СЃ РўРµС…РЅРёРєРѕР№ ]");
+		ErrorMessage(playerid, "{FF6347}У вас нет рации [ Y >> GPS >> Услуги >> Магазины с Техникой ]");
 		return 1;
 	}
 	if(get_para(playerid, 21) == 1) 
 	{
-		ErrorMessage(playerid, "{FF6347}Р’Р°С€Р° СЂР°С†РёСЏ СЃР»РѕРјР°РЅР° [ Y >> GPS >> РЈСЃР»СѓРіРё >> РњР°РіР°Р·РёРЅС‹ СЃ РўРµС…РЅРёРєРѕР№ ]");
+		ErrorMessage(playerid, "{FF6347}Ваша рация сломана [ Y >> GPS >> Услуги >> Магазины с Техникой ]");
 		return 1;
 	}
 	if(Sleep[playerid] >= 1 || SleepRP[playerid] >= 1)
 	{
-		ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ СЃРїРёС‚");
+		ErrorMessage(playerid, "{FF6347}Ваш персонаж спит");
 		return 1;
 	}
 	if(isamute(playerid) == 1) return 1;
 	return 0;
 }
 
-stock checkTransmitterOrgMute(playerid) // РџСЂРѕРІРµСЂРєР° РјСѓС‚Р° СЂР°С†РёРё РѕСЂРіР°РЅРёР·Р°С†РёРё
+stock checkTransmitterOrgMute(playerid) // Проверка мута рации организации
 {
     if(PlayerInfo[playerid][pFmuteTime] >= 1)
 	{
         new string[90];
-	    if(PlayerInfo[playerid][pFmuteTime] >= 61) format(string, sizeof(string), "{FF6347}РЈ РІР°СЃ Р±Р°РЅ С‡Р°С‚Р° РѕСЂРіР°РЅРёР·Р°С†РёРё [ РћСЃС‚Р°Р»РѕСЃСЊ %d РјРёРЅСѓС‚ ]", PlayerInfo[playerid][pFmuteTime]/60);
-	 	else format(string, sizeof(string), "{FF6347}РЈ РІР°СЃ Р±Р°РЅ С‡Р°С‚Р° РѕСЂРіР°РЅРёР·Р°С†РёРё [ РћСЃС‚Р°Р»РѕСЃСЊ %d СЃРµРєСѓРЅРґ ]", PlayerInfo[playerid][pFmuteTime]);
+	    if(PlayerInfo[playerid][pFmuteTime] >= 61) format(string, sizeof(string), "{FF6347}У вас бан чата организации [ Осталось %d минут ]", PlayerInfo[playerid][pFmuteTime]/60);
+	 	else format(string, sizeof(string), "{FF6347}У вас бан чата организации [ Осталось %d секунд ]", PlayerInfo[playerid][pFmuteTime]);
 	 	ErrorMessage(playerid, string);
 	    return 1;
 	}
     return 0;
 }
 
-stock resetPlayerTransmitter(playerid) // РЎР±СЂР°СЃС‹РІР°РµРј С‡С‚РµРЅРёРµ СЂР°С†РёР№
+stock resetPlayerTransmitter(playerid) // Сбрасываем чтение раций
 {
     new g = fraction(playerid);
     if(g == 0)
@@ -77,15 +77,15 @@ stock resetPlayerTransmitter(playerid) // РЎР±СЂР°СЃС‹РІР°РµРј С‡С‚РµРЅРёРµ СЂР°
     }
     return 1;
 }
-stock resetTransmitterDivisionKey(div0, playerOrg, &getOrg, &getDiv, &getReadRac) // РџРѕР»СѓС‡Р°РµРј РёРЅС„Сѓ Рѕ С‚РѕРј, С‡С‚Рѕ РґРµР»Р°РµРј СЃ СЂР°С†РёРµР№ /i
+stock resetTransmitterDivisionKey(div0, playerOrg, &getOrg, &getDiv, &getReadRac) // Получаем инфу о том, что делаем с рацией /i
 {
-	if(div0 > 0 && playerOrg > 0) // Р•СЃР»Рё Сѓ РёРіСЂРѕРєР° РµСЃС‚СЊ РѕСЂРіР°РЅРёР·Р°С†РёСЏ Рё РїРѕРґС„СЂР°РєС†РёСЏ
+	if(div0 > 0 && playerOrg > 0) // Если у игрока есть организация и подфракция
 	{
 		getOrg = playerOrg;
 		getDiv = div0;
 		getReadRac = 1;
 	}
-	else // Р•СЃР»Рё РЅРµС‚, РґРѕСЃС‚СѓРї Рє /i РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РІС‹РєР»СЋС‡РµРЅ
+	else // Если нет, доступ к /i должен быть выключен
 	{
 		getOrg = 0;
 		getDiv = 0;
@@ -96,48 +96,48 @@ stock resetTransmitterDivisionKey(div0, playerOrg, &getOrg, &getDiv, &getReadRac
 
 stock PermissionTracking(playerid, giveplayerid)
 {
-	if(MPGO[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР° РјРµСЂРѕРїСЂРёСЏС‚РёРё");
-	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РїРµС€РєРѕРј");
-	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕРµР¶РµС‚ РїСЂРёРєСЂРµРїРёС‚СЊ Р¶СѓС‡РѕРє Рє СЃРµР±Рµ");
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё");
-	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(3.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ РёРіСЂРѕРєР°");
-	if(IsPlayerInAnyVehicle(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р“СЂР°Р¶РґР°РЅРёРЅ РІ С‚СЂР°РЅСЃРїРѕСЂС‚Рµ");
+	if(MPGO[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы на мероприятии");
+	if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Ваш персонаж должен быть пешком");
+	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Вы не моежет прикрепить жучок к себе");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(3.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Вы далеко от игрока");
+	if(IsPlayerInAnyVehicle(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Гражданин в транспорте");
     return 0;
 }
 
 CMD:tracking(playerid, const params[])
 {
     new g = fraction(playerid);
-	if(!IsAFunctionOrganization(31, g, playerid) && PlayerInfo[playerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р°РіРµРЅС‚ FBI");
+	if(!IsAFunctionOrganization(31, g, playerid) && PlayerInfo[playerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Вы не агент FBI");
 	if(!GetAccessRankOrg(playerid, 2, 31, PlayerInfo[playerid][pFbi])) return 1;
 
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р–СѓС‡РѕРє РґР»СЏ РїСЂРѕСЃР»СѓС€РєРё [ /tacking ID ]");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Жучок для прослушки [ /tacking ID ]");
     if(PermissionTracking(playerid, params[0])) return 1;
 	PlayerPlaySound(playerid,40405,0,0,0);
 	DP[0][playerid] = params[0];
-	ShowDialog(playerid,958,DIALOG_STYLE_LIST,"{cccccc}РЎРёСЃС‚РµРјР° РЎР»РµР¶РµРЅРёСЏ FBI","{ff9000}Р–СѓС‡РѕРє РЅР° РЎРјР°СЂС‚С„РѕРЅ\n{0088ff}Р–СѓС‡РѕРє РЅР° Р Р°С†РёСЋ","Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
+	ShowDialog(playerid,958,DIALOG_STYLE_LIST,"{cccccc}Система Слежения FBI","{ff9000}Жучок на Смартфон\n{0088ff}Жучок на Рацию","Выбрать","Отмена");
 	return 1;
 }
 
 CMD:force(playerid, const params[])
 {
 	new frakid = fraction(playerid);
-	if(frakid == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЃРѕСЃС‚РѕРёС‚Рµ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё");
+	if(frakid == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	if(!GetAccessRankOrg(playerid, frakid, 14, NO_FBI)) return 1;
-	if(PlayerInfo[playerid][pGoogle] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµ РїСЂРёРІСЏР·Р°РЅ Google Authenticator");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ РїРѕРґС‡РёРЅС‘РЅРЅРѕРјСѓ [ /force ID ]");
-	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё");
-	if(PlayerInfo[params[0]][pLeader] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ Р»РёРґРµСЂСѓ");
-	if(frakid != PlayerInfo[params[0]][pMember]) return ErrorMessage(playerid, "{FF6347}РћРЅ РЅРµ СЃРѕСЃС‚РѕРёС‚ СЃ РІР°РјРё РІ РѕРґРЅРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё");
-	if(playerid == params[0]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР±Рµ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ");
-	if(PlayerInfo[params[0]][pRank] >= PlayerInfo[playerid][pRank]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ С‚РѕР»СЊРєРѕ РїРѕРґС‡РёРЅС‘РЅРЅРѕРјСѓ");
-	if(PlayerInfo[params[0]][pTransmitterOff][0] == false) return ErrorMessage(playerid, "{FF6347}РЈ РЅРµРіРѕ РІРєР»СЋС‡РµРЅР° СЂР°С†РёСЏ");
+	if(PlayerInfo[playerid][pGoogle] == 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принудительно включить рацию подчинённому [ /force ID ]");
+	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+	if(PlayerInfo[params[0]][pLeader] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете принудительно включить рацию лидеру");
+	if(frakid != PlayerInfo[params[0]][pMember]) return ErrorMessage(playerid, "{FF6347}Он не состоит с вами в одной организации");
+	if(playerid == params[0]) return ErrorMessage(playerid, "{FF6347}Вы не можете себе принудительно включить рацию");
+	if(PlayerInfo[params[0]][pRank] >= PlayerInfo[playerid][pRank]) return ErrorMessage(playerid, "{FF6347}Вы можете принудительно включить рацию только подчинённому");
+	if(PlayerInfo[params[0]][pTransmitterOff][0] == false) return ErrorMessage(playerid, "{FF6347}У него включена рация");
 	PlayerInfo[params[0]][pTransmitterOff][0] = false;
     PlayerInfo[params[0]][pTransmitterUpdate] = true;
 	new string[90];
- 	format(string, sizeof(string), "Р’С‹ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёР»Рё СЂР°С†РёСЋ %s",PlayerInfo[params[0]][pName]);
+ 	format(string, sizeof(string), "Вы принудительно включили рацию %s",PlayerInfo[params[0]][pName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-	format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: {0088ff}%s {cccccc}РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёР» РјРѕСЋ СЂР°С†РёСЋ",PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), "[ Мысли ]: {0088ff}%s {cccccc}принудительно включил мою рацию",PlayerInfo[playerid][pName]);
 	SendClientMessage(params[0], COLOR_GREY, string);
     PlayerPlaySound(playerid,6400,0,0,0);
 	PlayerPlaySound(params[0],6400,0,0,0);
@@ -146,20 +146,20 @@ CMD:force(playerid, const params[])
 
 CMD:famforce(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЃРµРјСЊРё\n{cccccc}Р—РІСѓС‡РёС‚ РїРµС‡Р°Р»СЊРЅРѕ ;(");
+	if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет семьи\n{cccccc}Звучит печально ;(");
 	new f = PlayerInfo[playerid][pFamily], string[144];
-	if(FamilyInfo[f][fSost] == 0) return SendClientMessage(playerid, COLOR_GREY, "РћС€РёР±РєР°! [ Code: 3039 ]"), PlayerPlaySound(playerid,4203,0,0,0), PlayerInfo[playerid][pFamily] = 0;
-    if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccfamfo]) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ СѓС‡Р°СЃС‚РЅРёРєСѓ СЃРµРјСЊРё [ %d+ Р Р°РЅРі ]",FamilyInfo[f][fAccfamfo]), ErrorMessage(playerid, string);
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ СѓС‡Р°СЃС‚РЅРёРєСѓ СЃРµРјСЊРё [ /famforce ID ]");
-	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё");
-	if(PlayerInfo[playerid][pFamily] != PlayerInfo[params[0]][pFamily]) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РЅРµ СѓС‡Р°СЃС‚РЅРёРє РІР°С€РµР№ СЃРµРјСЊРё");
-	if(PlayerInfo[params[0]][pFamrank] >= PlayerInfo[playerid][pFamrank]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РјРѕР¶РµС‚Рµ РІРєР»СЋС‡РёС‚СЊ СЂР°С†РёСЋ С‚РѕР»СЊРєРѕ РјР»Р°РґС€РёРј РїРѕ СЂР°РЅРіСѓ");
-	if(PlayerInfo[params[0]][pTransmitterOff][3] == false) return ErrorMessage(playerid, "{FF6347}РЈ СЌС‚РѕРіРѕ СѓС‡Р°СЃС‚РЅРёРєР° СЃРµРјСЊРё РІРєР»СЋС‡РµРЅР° СЂР°С†РёСЏ");
+	if(FamilyInfo[f][fSost] == 0) return SendClientMessage(playerid, COLOR_GREY, "Ошибка! [ Code: 3039 ]"), PlayerPlaySound(playerid,4203,0,0,0), PlayerInfo[playerid][pFamily] = 0;
+    if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccfamfo]) return format(string,sizeof(string),"{FF6347}Вы не можете включить рацию участнику семьи [ %d+ Ранг ]",FamilyInfo[f][fAccfamfo]), ErrorMessage(playerid, string);
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принудительно включить рацию участнику семьи [ /famforce ID ]");
+	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+	if(PlayerInfo[playerid][pFamily] != PlayerInfo[params[0]][pFamily]) return ErrorMessage(playerid, "{FF6347}Это не участник вашей семьи");
+	if(PlayerInfo[params[0]][pFamrank] >= PlayerInfo[playerid][pFamrank]) return ErrorMessage(playerid, "{FF6347}Вы можете включить рацию только младшим по рангу");
+	if(PlayerInfo[params[0]][pTransmitterOff][3] == false) return ErrorMessage(playerid, "{FF6347}У этого участника семьи включена рация");
 	PlayerInfo[params[0]][pTransmitterOff][3] = false;
     PlayerInfo[params[0]][pTransmitterUpdate] = true;
-	format(string, sizeof(string), "Р’С‹ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёР»Рё СЂР°С†РёСЋ %s",PlayerInfo[params[0]][pName]);
+	format(string, sizeof(string), "Вы принудительно включили рацию %s",PlayerInfo[params[0]][pName]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: {0088ff}%s {cccccc}РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РІРєР»СЋС‡РёР» РјРѕСЋ СЃРµРјРµР№РЅСѓСЋ СЂР°С†РёСЋ",PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), "[ Мысли ]: {0088ff}%s {cccccc}принудительно включил мою семейную рацию",PlayerInfo[playerid][pName]);
 	SendClientMessage(params[0], COLOR_GREY, string);
 	PlayerPlaySound(playerid,6400,0,0,0);
 	PlayerPlaySound(params[0],6400,0,0,0);
@@ -168,9 +168,9 @@ CMD:famforce(playerid, const params[])
 
 CMD:y(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРµРґРёР° РїР°СЂС‚РЅС‘СЂ");
-	if(PlayerInfo[playerid][pTransmitterOff][7] == true) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІС‹РєР»СЋС‡РµРЅ С‡Р°С‚ РјРµРґРёР°\n{cccccc}Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р§Р°С‚ РјРµРґРёР° /y С‚РµРєСЃС‚");
+	if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вы не медиа партнёр");
+	if(PlayerInfo[playerid][pTransmitterOff][7] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен чат медиа\n{cccccc}Y >> Меню >> Настройки Чата");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чат медиа /y текст");
 	new string[144];
 	format(string, sizeof(string), "{444444}[ Media ] {ff6699}%s[%d]: {66cc66}%s", PlayerInfo[playerid][pName], playerid, params[0]);
 	SendMediaMessage(COLOR_GREY, string);
@@ -182,25 +182,25 @@ CMD:o(playerid, const params[])
 	if(noooc == 1 || PlayerInfo[playerid][pSoska] >= 2 || PlayerInfo[playerid][pDjpears] >= 4)
 	{
 		if(isamute(playerid) == 1) return 1;
-		if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІС‹РєР»СЋС‡РµРЅ СЌС‚РѕС‚ С‡Р°С‚\n{cccccc}Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°");
-		if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћР±С‰РёР№ С‡Р°С‚ [ /o С‚РµРєСЃС‚ ]");
+		if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен этот чат\n{cccccc}Y >> Меню >> Настройки Чата");
+		if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий чат [ /o текст ]");
 		
 		new string[160];
 		format(string, sizeof(string), "{0088ff}(( %s[%d]: {FFFFFF}%s {0088ff}))",PlayerInfo[playerid][pName],playerid, params[0]);
 		OOCOff(COLOR_GREY,string);
     }
-    else ErrorMessage(playerid, "{FF6347}РћР±С‰РёР№ С‡Р°С‚ РѕС‚РєР»СЋС‡С‘РЅ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРµР№ СЃРµСЂРІРµСЂР°");
+    else ErrorMessage(playerid, "{FF6347}Общий чат отключён администрацией сервера");
 	return 1;
 }
 
 CMD:oo(playerid, const params[])
 {
-    if(noooc2 == 0) return ErrorMessage(playerid, "{FF6347}РћР±С‰РёР№ С‡Р°С‚ РѕС‚РєР»СЋС‡С‘РЅ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРµР№ СЃРµСЂРІРµСЂР°");
-    if(PlayerInfo[playerid][pLevel] <= 2) return ErrorMessage(playerid, "{FF6347}РЎРѕРѕР±С‰РµРЅРёСЏ РІ РѕР±С‰РёР№ С‡Р°С‚ РјРѕР¶РЅРѕ РѕС‚РїСЂР°РІР»СЏС‚СЊ С‚РѕР»СЊРєРѕ СЃ 3 СѓСЂРѕРІРЅСЏ");
-    if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІС‹РєР»СЋС‡РµРЅ СЌС‚РѕС‚ С‡Р°С‚\n{cccccc}Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°");
-    if(GetPVarInt(playerid,"antiflood") > 0) return ErrorMessage(playerid, "{FF6347}РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ.. РћС‚РїСЂР°РІРёС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ РјРѕР¶РЅРѕ РѕРґРёРЅ СЂР°Р· РІ 30 СЃРµРєСѓРЅРґ");
+    if(noooc2 == 0) return ErrorMessage(playerid, "{FF6347}Общий чат отключён администрацией сервера");
+    if(PlayerInfo[playerid][pLevel] <= 2) return ErrorMessage(playerid, "{FF6347}Сообщения в общий чат можно отправлять только с 3 уровня");
+    if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен этот чат\n{cccccc}Y >> Меню >> Настройки Чата");
+    if(GetPVarInt(playerid,"antiflood") > 0) return ErrorMessage(playerid, "{FF6347}Пожалуйста подождите.. Отправить сообщение можно один раз в 30 секунд");
     if(isamute(playerid) == 1) return 1;
-	if (sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћР±С‰РёР№ С‡Р°С‚ [ /oo С‚РµРєСЃС‚ ]");
+	if (sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий чат [ /oo текст ]");
 
     new string[160];
 	format(string, sizeof(string), "{FFFFFF}(( {cccccc}%s[%d]: %s {FFFFFF}))",PlayerInfo[playerid][pName],playerid, params[0]);
@@ -211,9 +211,9 @@ CMD:oo(playerid, const params[])
 
 CMD:ao(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 2) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
-    if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РІС‹РєР»СЋС‡РµРЅ СЌС‚РѕС‚ С‡Р°С‚\n{cccccc}Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р§Р°С‚ РЅРѕРІРѕСЃС‚РµР№ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё [ /ao С‚РµРєСЃС‚ ]");
+    if(PlayerInfo[playerid][pSoska] < 2) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pTransmitterOff][8] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен этот чат\n{cccccc}Y >> Меню >> Настройки Чата");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чат новостей администрации [ /ao текст ]");
 
     new string[160];
 	format(string, sizeof(string), "{ff9000}* [ADM] %s[%d]: {FF0000}%s {0088ff}*", PlayerInfo[playerid][pName], playerid, params[0]);
@@ -221,7 +221,7 @@ CMD:ao(playerid, const params[])
 	return 1;
 }
 
-// РљРѕРјР°РЅРґС‹ /r Рё /rb (Р Р°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С†РёР№) - Р Р°Р±РѕС‚Р°РµС‚ РґР»СЏ РІСЃРµС… РѕСЂРіР°РЅРёР·Р°С†РёР№ Рё СѓС‡РёС‚С‹РІР°РµС‚ РїСЂРёРєСЂС‹С‚РёРµРј FBI (РџРµСЂРµРєР»СЋС‡Р°РµС‚СЃСЏ РІ /mm)
+// Команды /r и /rb (Рация организаций) - Работает для всех организаций и учитывает прикрытием FBI (Переключается в /mm)
 CMD:r(playerid, const params[])
 {
 	commandR(playerid, 0, params);
@@ -234,40 +234,40 @@ CMD:rb(playerid, const params[])
 }
 stock commandR(playerid, typeCommand, const params[])
 {
-	if(checkTransmitterPermission(playerid)) return 1; // РџСЂРѕРІРµСЂРєРё СЂР°Р·СЂРµС€РµРЅРёР№ СЂР°С†РёРё
+	if(checkTransmitterPermission(playerid)) return 1; // Проверки разрешений рации
 
     new g, writeRac;
-    g = PlayerInfo[playerid][pRacOrg][0]; // РћСЂРіР°РЅРёР·Р°С†РёСЏ
-    writeRac = PlayerInfo[playerid][pRacOrg][1]; // Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РЅР°РїРёСЃР°С‚СЊ РІ РїРѕРґРєР»СЋС‡С‘РЅРЅС‹Р№ РєР°РЅР°Р» СЂР°С†РёРё
+    g = PlayerInfo[playerid][pRacOrg][0]; // Организация
+    writeRac = PlayerInfo[playerid][pRacOrg][1]; // Возможность написать в подключённый канал рации
 
-    if(PlayerInfo[playerid][pTransmitterOff][0] == true) return ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµР№ СЂР°С†РёРё РІС‹РєР»СЋС‡РµРЅ РєР°РЅР°Р» РѕСЂРіР°РЅРёР·Р°С†РёРё /r /rb [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РґРѕСЃС‚СѓРїР° Рє РєР°РЅР°Р»Сѓ РѕСЂРіР°РЅРёР·Р°С†РёРё\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РЅР°СЃС‚СЂРѕРёС‚СЊ РєР°РЅР°Р»С‹ СЂР°С†РёРё [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљР°РЅР°Р» СЂР°С†РёРё РѕСЂРіР°РЅРёР·Р°С†РёРё /r РёР»Рё /rb С‚РµРєСЃС‚");
+    if(PlayerInfo[playerid][pTransmitterOff][0] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал организации /r /rb [ Y >> Меню >> Настройки Чата ]");
+    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу организации\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации организации /r или /rb текст");
 
-    if(checkTransmitterOrgMute(playerid)) return 1; // РџСЂРѕРІРµСЂРєР° РјСѓС‚Р° СЂР°С†РёРё РѕСЂРіР°РЅРёР·Р°С†РёРё
-	if(AntiFloodText(playerid, params)) return 1; // РђРЅС‚РёС„Р»СѓРґ
+    if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
-    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј РІ СЃРІРѕС‘Рј С‡Р°С‚Рµ
+    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
-    else // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі РѕСЂРіР°РЅРёР·Р°С†РёРё СЃ СѓС‡С‘С‚РѕРј РїРѕРґС„СЂР°РєС†РёРё
+    else // Получаем ранг организации с учётом подфракции
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRank(playerid));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviation(playerid));
     }
 
     new string[240];
-    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}Р’ %s Сѓ РІР°С€РµРіРѕ СЂР°РЅРіР° РЅРµС‚ РЅР°Р·РІР°РЅРёСЏ\n{cccccc}РћР±СЂР°С‚РёС‚РµСЃСЊ Рє Р»РёРґРµСЂСѓ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё РёР»Рё Рє Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё", frakeasyName[g]), ErrorMessage(playerid, string);
-    if(IsADepartID(g)) // Р—Р°РєРѕРЅРЅС‹Рµ РѕСЂРіР°РЅРёР·Р°С†РёРё
+    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}В %s у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g]), ErrorMessage(playerid, string);
+    if(IsADepartID(g)) // Законные организации
     {
         if(typeCommand == 0) format(string, sizeof(string), "** %s%s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         else format(string, sizeof(string), "** %s%s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         SendRadioMessage(g, COLOR_WHITE, string);
     }
-    else // РџСЂРѕС‡РёРµ РѕСЂРіР°РЅРёР·Р°С†РёРё
+    else // Прочие организации
     {
         new colorPlayerRac[7];
         new maxRank = get_maxrank(g);
@@ -281,7 +281,7 @@ stock commandR(playerid, typeCommand, const params[])
 	return 1;
 }
 
-// РљРѕРјР°РЅРґС‹ /d /db /u /ub (Р Р°С†РёСЏ РґРµРїР°СЂС‚Р°РјРµРЅС‚Р° Рё СЃРѕСЋР·Р° Р±Р°РЅРґ РјР°С„РёР№) - Р Р°Р±РѕС‚Р°РµС‚ РґР»СЏ РІСЃРµС… РѕСЂРіР°РЅРёР·Р°С†РёР№ Рё СѓС‡РёС‚С‹РІР°РµС‚ РїСЂРёРєСЂС‹С‚РёРµРј FBI (РџРµСЂРµРєР»СЋС‡Р°РµС‚СЃСЏ РІ /mm)
+// Команды /d /db /u /ub (Рация департамента и союза банд мафий) - Работает для всех организаций и учитывает прикрытием FBI (Переключается в /mm)
 CMD:u(playerid, const params[]) return cmd_d(playerid, params);
 CMD:d(playerid, const params[])
 {
@@ -296,34 +296,34 @@ CMD:db(playerid, const params[])
 }
 stock commandD(playerid, typeCommand, const params[])
 {
-	if(checkTransmitterPermission(playerid)) return 1; // РџСЂРѕРІРµСЂРєРё СЂР°Р·СЂРµС€РµРЅРёР№ СЂР°С†РёРё
+	if(checkTransmitterPermission(playerid)) return 1; // Проверки разрешений рации
 
     new g, writeRac;
-    g = PlayerInfo[playerid][pRacDep][0]; // РћСЂРіР°РЅРёР·Р°С†РёСЏ
-    writeRac = PlayerInfo[playerid][pRacDep][1]; // Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РЅР°РїРёСЃР°С‚СЊ РІ РїРѕРґРєР»СЋС‡С‘РЅРЅС‹Р№ РєР°РЅР°Р» СЂР°С†РёРё
+    g = PlayerInfo[playerid][pRacDep][0]; // Организация
+    writeRac = PlayerInfo[playerid][pRacDep][1]; // Возможность написать в подключённый канал рации
 
-    if(PlayerInfo[playerid][pTransmitterOff][1] == true) return ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµР№ СЂР°С†РёРё РІС‹РєР»СЋС‡РµРЅ РѕР±С‰РёР№ РєР°РЅР°Р» /d /db /u /ub [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РґРѕСЃС‚СѓРїР° Рє РѕР±С‰РµРјСѓ РєР°РЅР°Р»Сѓ\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РЅР°СЃС‚СЂРѕРёС‚СЊ РєР°РЅР°Р»С‹ СЂР°С†РёРё [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћР±С‰РёР№ РєР°РЅР°Р» РѕСЂРіР°РЅРёР·Р°С†РёР№ /d /u РёР»Рё /db /ub С‚РµРєСЃС‚");
+    if(PlayerInfo[playerid][pTransmitterOff][1] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен общий канал /d /db /u /ub [ Y >> Меню >> Настройки Чата ]");
+    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к общему каналу\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий канал организаций /d /u или /db /ub текст");
 
-    if(checkTransmitterOrgMute(playerid)) return 1; // РџСЂРѕРІРµСЂРєР° РјСѓС‚Р° СЂР°С†РёРё РѕСЂРіР°РЅРёР·Р°С†РёРё
-	if(AntiFloodText(playerid, params)) return 1; // РђРЅС‚РёС„Р»СѓРґ
+    if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
-    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј РІ СЃРІРѕС‘Рј С‡Р°С‚Рµ
+    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
-    else // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі РѕСЂРіР°РЅРёР·Р°С†РёРё СЃ СѓС‡С‘С‚РѕРј РїРѕРґС„СЂР°РєС†РёРё
+    else // Получаем ранг организации с учётом подфракции
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRank(playerid));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviation(playerid));
     }
 
     new string[240];
-    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}Р’ %s Сѓ РІР°С€РµРіРѕ СЂР°РЅРіР° РЅРµС‚ РЅР°Р·РІР°РЅРёСЏ\n{cccccc}РћР±СЂР°С‚РёС‚РµСЃСЊ Рє Р»РёРґРµСЂСѓ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё РёР»Рё Рє Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё", frakeasyName[g]), ErrorMessage(playerid, string);
-    if(IsAGangID(g)) // Р‘Р°РЅРґС‹
+    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}В %s у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g]), ErrorMessage(playerid, string);
+    if(IsAGangID(g)) // Банды
     {
 	    if(!GetAccessRankOrg(playerid, g, 39, NO_FBI)) return 1;
     }        
@@ -331,7 +331,7 @@ stock commandD(playerid, typeCommand, const params[])
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))
     {
         new maxRank = get_maxrank(g);
-        if(PlayerInfo[playerid][pRank] >= maxRank-1) // Р›РёРґРµСЂС‹ Рё Р—Р°РјС‹
+        if(PlayerInfo[playerid][pRank] >= maxRank-1) // Лидеры и Замы
         {
             if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
             else format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
@@ -348,7 +348,7 @@ stock commandD(playerid, typeCommand, const params[])
 	return 1;
 }
 
-// РљРѕРјР°РЅРґС‹ /i Рё /ib (Р Р°С†РёСЏ РїРѕРґС„СЂР°РєС†РёР№) - Р Р°Р±РѕС‚Р°РµС‚ РґР»СЏ РІСЃРµС… РѕСЂРіР°РЅРёР·Р°С†РёР№ Рё СѓС‡РёС‚С‹РІР°РµС‚ РїСЂРёРєСЂС‹С‚РёРµРј FBI (РџРµСЂРµРєР»СЋС‡Р°РµС‚СЃСЏ РІ /mm)
+// Команды /i и /ib (Рация подфракций) - Работает для всех организаций и учитывает прикрытием FBI (Переключается в /mm)
 CMD:i(playerid, const params[])
 {
 	commandI(playerid, 0, params);
@@ -361,41 +361,41 @@ CMD:ib(playerid, const params[])
 }
 stock commandI(playerid, typeCommand, const params[])
 {
-	if(checkTransmitterPermission(playerid)) return 1; // РџСЂРѕРІРµСЂРєРё СЂР°Р·СЂРµС€РµРЅРёР№ СЂР°С†РёРё
+	if(checkTransmitterPermission(playerid)) return 1; // Проверки разрешений рации
 
     new g, i, writeRac;
-    g = PlayerInfo[playerid][pRacDiv][0]; // РћСЂРіР°РЅРёР·Р°С†РёСЏ
-    i = PlayerInfo[playerid][pRacDiv][1]; // РџРѕРґС„СЂР°РєС†РёСЏ
-    writeRac = PlayerInfo[playerid][pRacDiv][2]; // Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РЅР°РїРёСЃР°С‚СЊ РІ РїРѕРґРєР»СЋС‡С‘РЅРЅС‹Р№ РєР°РЅР°Р» СЂР°С†РёРё
+    g = PlayerInfo[playerid][pRacDiv][0]; // Организация
+    i = PlayerInfo[playerid][pRacDiv][1]; // Подфракция
+    writeRac = PlayerInfo[playerid][pRacDiv][2]; // Возможность написать в подключённый канал рации
 
-    if(PlayerInfo[playerid][pTransmitterOff][2] == true) return ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµР№ СЂР°С†РёРё РІС‹РєР»СЋС‡РµРЅ РєР°РЅР°Р» РїРѕРґС„СЂР°РєС†РёРё /i /ib [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-    if(writeRac == 0 || g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РґРѕСЃС‚СѓРїР° Рє РєР°РЅР°Р»Сѓ РїРѕРґС„СЂР°РєС†РёРё\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РЅР°СЃС‚СЂРѕРёС‚СЊ РєР°РЅР°Р»С‹ СЂР°С†РёРё [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљР°РЅР°Р» СЂР°С†РёРё РїРѕРґС„СЂР°РєС†РёРё /i РёР»Рё /ib С‚РµРєСЃС‚");
+    if(PlayerInfo[playerid][pTransmitterOff][2] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал подфракции /i /ib [ Y >> Меню >> Настройки Чата ]");
+    if(writeRac == 0 || g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к каналу подфракции\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации подфракции /i или /ib текст");
 
-    if(checkTransmitterOrgMute(playerid)) return 1; // РџСЂРѕРІРµСЂРєР° РјСѓС‚Р° СЂР°С†РёРё РѕСЂРіР°РЅРёР·Р°С†РёРё
-	if(AntiFloodText(playerid, params)) return 1; // РђРЅС‚РёС„Р»СѓРґ
+    if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new nameRank[MAX_NAME_LENGTH];
-    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј РІ СЃРІРѕС‘Рј С‡Р°С‚Рµ
+    if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
     }
-    else // РџРѕР»СѓС‡Р°РµРј СЂР°РЅРі РѕСЂРіР°РЅРёР·Р°С†РёРё СЃ СѓС‡С‘С‚РѕРј РїРѕРґС„СЂР°РєС†РёРё
+    else // Получаем ранг организации с учётом подфракции
     {
         format(nameRank,sizeof(nameRank), "%s", getNameRank(playerid));
     }
 
     new string[240];
-    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}Р’ %s [%s] Сѓ РІР°С€РµРіРѕ СЂР°РЅРіР° РЅРµС‚ РЅР°Р·РІР°РЅРёСЏ\n{cccccc}РћР±СЂР°С‚РёС‚РµСЃСЊ Рє Р»РёРґРµСЂСѓ РІР°С€РµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё РёР»Рё Рє Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё", frakeasyName[g], DivisionInfo[g][i][divAbbreviation]), ErrorMessage(playerid, string);
+    if(!strcmp(nameRank,"0",true)) return format(string, sizeof(string), "{FF6347}В %s [%s] у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g], DivisionInfo[g][i][divAbbreviation]), ErrorMessage(playerid, string);
 
-    g -= 1, i -= 1; // РСЃРїСЂР°РІР»РµРЅРёСЏ, РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїРѕР»СѓС‡РµРЅРёСЏ РЅР°Р·РІР°РЅРёР№ РїРµСЂРµРјРµРЅРЅС‹С…
+    g -= 1, i -= 1; // Исправления, для корректного получения названий переменных
 	if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s %s: %s", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
 	else format(string, sizeof(string), "** [%s] %s %s: (( %s ))", DivisionInfo[g][i][divAbbreviation], nameRank, getPlayerNameTransmitter(playerid), params[0]);
 	SendDivisionMessage(g + 1, i + 1, COLOR_DIVISION_CHAT, string);
 	return 1;
 }
 
-// РљРѕРјР°РЅРґС‹ /f Рё /fb (Р Р°С†РёСЏ СЃРµРјСЊРё)
+// Команды /f и /fb (Рация семьи)
 CMD:f(playerid, const params[])
 {
 	commandF(playerid, 0, params);
@@ -408,24 +408,24 @@ CMD:fb(playerid, const params[])
 }
 stock commandF(playerid, typeCommand, const params[])
 {
-    if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЃРµРјСЊРё");
-	if(checkTransmitterPermission(playerid)) return 1; // РџСЂРѕРІРµСЂРєРё СЂР°Р·СЂРµС€РµРЅРёР№ СЂР°С†РёРё
+    if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет семьи");
+	if(checkTransmitterPermission(playerid)) return 1; // Проверки разрешений рации
 
-    if(PlayerInfo[playerid][pTransmitterOff][3] == true) return ErrorMessage(playerid, "{FF6347}Р’ РІР°С€РµР№ СЂР°С†РёРё РІС‹РєР»СЋС‡РµРЅ РєР°РЅР°Р» СЃРµРјСЊРё /f /fb [ Y >> РњРµРЅСЋ >> РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р° ]");
-	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РљР°РЅР°Р» СЂР°С†РёРё СЃРµРјСЊРё /f РёР»Рё /fb С‚РµРєСЃС‚");
+    if(PlayerInfo[playerid][pTransmitterOff][3] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал семьи /f /fb [ Y >> Меню >> Настройки Чата ]");
+	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Канал рации семьи /f или /fb текст");
 
     new string[240];
     if(PlayerInfo[playerid][pRukzWorld] >= 1)
 	{
-        if(PlayerInfo[playerid][pRukzWorld] >= 61) format(string, sizeof(string), "{FF6347}РЈ РІР°СЃ Р±Р°РЅ С‡Р°С‚Р° СЃРµРјСЊРё [ РћСЃС‚Р°Р»РѕСЃСЊ %d РјРёРЅСѓС‚ ]", PlayerInfo[playerid][pRukzWorld]/60);
-        else format(string, sizeof(string), "{FF6347}РЈ РІР°СЃ Р±Р°РЅ С‡Р°С‚Р° СЃРµРјСЊРё [ РћСЃС‚Р°Р»РѕСЃСЊ %d СЃРµРєСѓРЅРґ ]", PlayerInfo[playerid][pRukzWorld]);
+        if(PlayerInfo[playerid][pRukzWorld] >= 61) format(string, sizeof(string), "{FF6347}У вас бан чата семьи [ Осталось %d минут ]", PlayerInfo[playerid][pRukzWorld]/60);
+        else format(string, sizeof(string), "{FF6347}У вас бан чата семьи [ Осталось %d секунд ]", PlayerInfo[playerid][pRukzWorld]);
         ErrorMessage(playerid, string);
         return 1;
 	}
-	if(AntiFloodText(playerid, params)) return 1; // РђРЅС‚РёС„Р»СѓРґ
+	if(AntiFloodText(playerid, params)) return 1; // Антифлуд
 
     new f = PlayerInfo[playerid][pFamily];
-    if(FamilyInfo[f][fSost] == 0 || f >= MAX_FAMILY) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РЎРµРјСЊСЏ РЅРµ СЃРѕР·РґР°РЅР° РёР»Рё Р±С‹Р»Р° СѓРґР°Р»РµРЅР°"), PlayerInfo[playerid][pFamily] = 0;
+    if(FamilyInfo[f][fSost] == 0 || f >= MAX_FAMILY) return ErrorMessage(playerid, "{FF6347}Ошибка! Семья не создана или была удалена"), PlayerInfo[playerid][pFamily] = 0;
 
     new r = PlayerInfo[playerid][pFamrank];
     if(typeCommand == 0) format(string, sizeof(string), "[F] %s {%s}%s[%d]: {%s}%s", FamilyRankName[f][r - 1], ColorFam1(f), PlayerInfo[playerid][pName], playerid, ColorFam2(f), params[0]);
@@ -434,27 +434,27 @@ stock commandF(playerid, typeCommand, const params[])
 	return 1;
 }
 
-stock getNameRank(playerid) // РџРѕР»СѓС‡Р°РµРј РѕР±С‰РµРµ РЅР°Р·РІР°РЅРёРµ СЂР°РЅРіР°
+stock getNameRank(playerid) // Получаем общее название ранга
 {
     new nameRank[MAX_NAME_LENGTH];
     new g = fraction(playerid);
 
-    if(g == 0 && PlayerInfo[playerid][pSoska] > 0) format(nameRank,sizeof(nameRank), "РђРґРјРёРЅ");
+    if(g == 0 && PlayerInfo[playerid][pSoska] > 0) format(nameRank,sizeof(nameRank), "Админ");
     else if(g > 0) format(nameRank,sizeof(nameRank), getNameRankOrganization(g, PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pRank]));
     else format(nameRank,sizeof(nameRank), "None");
     return nameRank;
 }
-stock getNameRankOrganization(g, i, r) // РџРѕР»СѓС‡Р°РµРј РЅР°Р·РІР°РЅРёРµ СЂР°РЅРіР° РІРЅСѓС‚СЂРё РѕСЂРіР°РЅРёР·Р°С†РёРё (СЃ СѓС‡С‘С‚РѕРј РїРѕРґС„СЂР°РєС†РёРё)
+stock getNameRankOrganization(g, i, r) // Получаем название ранга внутри организации (с учётом подфракции)
 {
     new nameRank[MAX_NAME_LENGTH];
-    if(i > 0)  // Р•СЃР»Рё СЃРѕСЃС‚РѕРёС‚ РІ РїРѕРґС„СЂР°РєС†РёРё
+    if(i > 0)  // Если состоит в подфракции
     {
-        g -= 1, i -= 1, r -= 1; // РСЃРїСЂР°РІР»РµРЅРёСЏ, РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїРѕР»СѓС‡РµРЅРёСЏ РЅР°Р·РІР°РЅРёР№ РїРµСЂРµРјРµРЅРЅС‹С…
+        g -= 1, i -= 1, r -= 1; // Исправления, для корректного получения названий переменных
         format(nameRank,sizeof(nameRank), DivisionRankName[g][i][r]);
     }
     else
     {
-        r -= 1; // РСЃРїСЂР°РІР»РµРЅРёСЏ, РґР»СЏ РєРѕСЂСЂРµРєС‚РЅРѕРіРѕ РїРѕР»СѓС‡РµРЅРёСЏ РЅР°Р·РІР°РЅРёР№ РїРµСЂРµРјРµРЅРЅС‹С…
+        r -= 1; // Исправления, для корректного получения названий переменных
         format(nameRank,sizeof(nameRank), RankOrg[g][r]);
     }
     return nameRank;
@@ -475,57 +475,57 @@ stock getNameAbbreviationOrganization(playerid, g, typeFbi)
     if(i >= 0) format(nameAbb, sizeof(nameAbb), "[%s] ", DivisionInfo[g - 1][i][divAbbreviation]);
     return nameAbb;
 }
-stock getPlayerNameTransmitter(playerid) // РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅРё РґР»СЏ СЂР°С†РёР№ /i /ib /f /fb
+stock getPlayerNameTransmitter(playerid) // Получение имени для раций /i /ib /f /fb
 {
     new PlayerName[24];
 	if(PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8) // ICA
 	{
-		if(PlayerInfo[playerid][pSignTransmitter] == false) format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid); // Р’РєР»СЋС‡РµРЅРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµРј РёРјРµРЅРё
-		else format(PlayerName,sizeof(PlayerName), "%s", PlayerInfo[playerid][pCallSign]);  // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРјРµРЅРё РІС‹РєР»СЋС‡РµРЅРѕ, Р·РЅР°С‡РёС‚ РІСЃРµРіРґР° РІРёРґРЅРѕ С‚РѕР»СЊРєРѕ Р·РІР°РЅРёРµ (РїРѕР·С‹РІРЅРѕР№)
+		if(PlayerInfo[playerid][pSignTransmitter] == false) format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid); // Включено отображением имени
+		else format(PlayerName,sizeof(PlayerName), "%s", PlayerInfo[playerid][pCallSign]);  // Отображение имени выключено, значит всегда видно только звание (позывной)
 	}
 	else format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid);
 	return PlayerName;
 }
 
-stock getPlayerNameTransmitterOffline(g, bool:singStatus, const playerName[], const signName[]) // РџРѕР»СѓС‡РµРЅРёРµ РёРјРµРЅРё offline РґР»СЏ СЂР°С†РёР№ /i /ib /f /fb
+stock getPlayerNameTransmitterOffline(g, bool:singStatus, const playerName[], const signName[]) // Получение имени offline для раций /i /ib /f /fb
 {
     new PlayerName[24];
 	if(g == 8) // ICA
 	{
-		if(singStatus == false) format(PlayerName,sizeof(PlayerName), "%s", playerName); // Р’РєР»СЋС‡РµРЅРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµРј РёРјРµРЅРё
-		else format(PlayerName,sizeof(PlayerName), "%s", signName);  // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РёРјРµРЅРё РІС‹РєР»СЋС‡РµРЅРѕ, Р·РЅР°С‡РёС‚ РІСЃРµРіРґР° РІРёРґРЅРѕ С‚РѕР»СЊРєРѕ Р·РІР°РЅРёРµ (РїРѕР·С‹РІРЅРѕР№)
+		if(singStatus == false) format(PlayerName,sizeof(PlayerName), "%s", playerName); // Включено отображением имени
+		else format(PlayerName,sizeof(PlayerName), "%s", signName);  // Отображение имени выключено, значит всегда видно только звание (позывной)
 	}
 	else format(PlayerName,sizeof(PlayerName), "%s", playerName);
 	return PlayerName;
 }
 
-stock IsADepartID(g) // РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° Р·Р°РєРѕРЅРЅС‹С… РѕСЂРіР°РЅРёР·Р°С†РёР№, РєРѕС‚РѕСЂС‹Рµ РІРёРґСЏС‚ /d С‡Р°С‚ РґРµРїР°СЂС‚Р°РјРµРЅС‚Р°
+stock IsADepartID(g) // Получение списка законных организаций, которые видят /d чат департамента
 {
     if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 9 || g == 11 || g == 21 || g == 22) return 1;
     return 0;
 }
-stock IsAGangID(g) // РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° Р±Р°РЅРґ, РєРѕС‚РѕСЂС‹Рµ РІРёРґСЏС‚ /d РёР»Рё /u РѕР±С‰РёР№ С‡Р°С‚
+stock IsAGangID(g) // Получение списка банд, которые видят /d или /u общий чат
 {
     if(g == 13 || g == 14 || g == 15 || g == 16 || g == 17) return 1;
     return 0;
 }
-stock IsAMafiaID(g) // РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РјР°С„РёР№, РєРѕС‚РѕСЂС‹Рµ РІРёРґСЏС‚ /d РёР»Рё /u РѕР±С‰РёР№ С‡Р°С‚
+stock IsAMafiaID(g) // Получение списка мафий, которые видят /d или /u общий чат
 {
     if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18) return 1;
     return 0;
 }
 
-function SendRadioMessage(g, color, const string[]) // Р§Р°С‚ РѕСЂРіР°РЅРёР·Р°С†РёРё (РљС‚Рѕ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ)
+function SendRadioMessage(g, color, const string[]) // Чат организации (Кто будет видеть отправленное сообщение)
 {
     if(g > 0)
 	{
 		foreach (Player, i)
 		{
-			if(OnlineInfo[i][oLogged] == 0 // РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pTransmitterOff][0] == true) continue; // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
+			if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
+                || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+                || PlayerInfo[i][pTransmitterOff][0] == true) continue; // Канал выключен - игнорим
 
-			if(PlayerInfo[i][pRacOrg][0] == g || GetPVarInt(i, "komp2") == g) // РџРѕРєР°Р·С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚РµРј, РєС‚Рѕ С‡РёС‚Р°РµС‚ СЌС‚Сѓ СЂР°С†РёСЋ (РќРµ РІР°Р¶РЅРѕ, РєР°РєРёРј РѕР±СЂР°Р·РѕРј РѕРЅ РµС‘ С‡РёС‚Р°РµС‚)
+			if(PlayerInfo[i][pRacOrg][0] == g || GetPVarInt(i, "komp2") == g) // Показываем только тем, кто читает эту рацию (Не важно, каким образом он её читает)
 			{
 				SendClientMessage(i, color, string);
 			}
@@ -533,66 +533,66 @@ function SendRadioMessage(g, color, const string[]) // Р§Р°С‚ РѕСЂРіР°РЅРёР·Р°С†
 	}
 }
 
-function SendDepartMessage(color, const string[]) // РћР±С‰РёР№ С‡Р°С‚ РґРµРїР°СЂС‚Р°РјРµРЅС‚Р° (РљС‚Рѕ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ)
+function SendDepartMessage(color, const string[]) // Общий чат департамента (Кто будет видеть отправленное сообщение)
 {
     foreach (Player, i)
     {
-        if(OnlineInfo[i][oLogged] == 0 // РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pTransmitterOff][1] == true // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pRacDep][0] == 0) continue; // РќРµ С‡РёС‚Р°РµРј РЅРёРєР°РєСѓСЋ СЂР°С†РёСЋ - РёРіРЅРѕСЂРёРј
+        if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
+                || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+                || PlayerInfo[i][pTransmitterOff][1] == true // Канал выключен - игнорим
+                || PlayerInfo[i][pRacDep][0] == 0) continue; // Не читаем никакую рацию - игнорим
 
-        if(IsADepartID(PlayerInfo[i][pRacDep][0]) || IsADepartID(GetPVarInt(i, "komp2"))) // РџРѕРєР°Р·С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚РµРј, РєС‚Рѕ С‡РёС‚Р°РµС‚ СЌС‚Сѓ СЂР°С†РёСЋ (РќРµ РІР°Р¶РЅРѕ, РєР°РєРёРј РѕР±СЂР°Р·РѕРј РѕРЅ РµС‘ С‡РёС‚Р°РµС‚)
+        if(IsADepartID(PlayerInfo[i][pRacDep][0]) || IsADepartID(GetPVarInt(i, "komp2"))) // Показываем только тем, кто читает эту рацию (Не важно, каким образом он её читает)
         {
             SendClientMessage(i, color, string);
         }
     }
 }
 
-function SendGangMessage(color, const string[]) // РћР±С‰РёР№ С‡Р°С‚ Р±Р°РЅРґ (РљС‚Рѕ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ)
+function SendGangMessage(color, const string[]) // Общий чат банд (Кто будет видеть отправленное сообщение)
 {
     foreach (Player, i)
     {
-        if(OnlineInfo[i][oLogged] == 0 // РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pTransmitterOff][1] == true // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pRacDep][0] == 0) continue; // РќРµ С‡РёС‚Р°РµРј РЅРёРєР°РєСѓСЋ СЂР°С†РёСЋ - РёРіРЅРѕСЂРёРј
+        if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
+                || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+                || PlayerInfo[i][pTransmitterOff][1] == true // Канал выключен - игнорим
+                || PlayerInfo[i][pRacDep][0] == 0) continue; // Не читаем никакую рацию - игнорим
 
-        if(IsAGangID(PlayerInfo[i][pRacDep][0]) || IsAGangID(GetPVarInt(i, "komp2"))) // РџРѕРєР°Р·С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚РµРј, РєС‚Рѕ С‡РёС‚Р°РµС‚ СЌС‚Сѓ СЂР°С†РёСЋ (РќРµ РІР°Р¶РЅРѕ, РєР°РєРёРј РѕР±СЂР°Р·РѕРј РѕРЅ РµС‘ С‡РёС‚Р°РµС‚)
+        if(IsAGangID(PlayerInfo[i][pRacDep][0]) || IsAGangID(GetPVarInt(i, "komp2"))) // Показываем только тем, кто читает эту рацию (Не важно, каким образом он её читает)
         {
             SendClientMessage(i, color, string);
         }
     }
 }
 
-function SendMafiaMessage(color, const string[]) // РћР±С‰РёР№ С‡Р°С‚ РјР°С„РёР№ (РљС‚Рѕ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ)
+function SendMafiaMessage(color, const string[]) // Общий чат мафий (Кто будет видеть отправленное сообщение)
 {
     foreach (Player, i)
     {
-        if(OnlineInfo[i][oLogged] == 0 // РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pTransmitterOff][1] == true // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pRacDep][0] == 0) continue; // РќРµ С‡РёС‚Р°РµРј РЅРёРєР°РєСѓСЋ СЂР°С†РёСЋ - РёРіРЅРѕСЂРёРј
+        if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
+                || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+                || PlayerInfo[i][pTransmitterOff][1] == true // Канал выключен - игнорим
+                || PlayerInfo[i][pRacDep][0] == 0) continue; // Не читаем никакую рацию - игнорим
 
-        if(IsAMafiaID(PlayerInfo[i][pRacDep][0]) || IsAMafiaID(GetPVarInt(i, "komp2"))) // РџРѕРєР°Р·С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚РµРј, РєС‚Рѕ С‡РёС‚Р°РµС‚ СЌС‚Сѓ СЂР°С†РёСЋ (РќРµ РІР°Р¶РЅРѕ, РєР°РєРёРј РѕР±СЂР°Р·РѕРј РѕРЅ РµС‘ С‡РёС‚Р°РµС‚)
+        if(IsAMafiaID(PlayerInfo[i][pRacDep][0]) || IsAMafiaID(GetPVarInt(i, "komp2"))) // Показываем только тем, кто читает эту рацию (Не важно, каким образом он её читает)
         {
             SendClientMessage(i, color, string);
         }
     }
 }
 
-function SendDivisionMessage(g, div, color, const string[]) // Р§Р°С‚ РїРѕРґС„СЂР°РєС†РёРё (РљС‚Рѕ Р±СѓРґРµС‚ РІРёРґРµС‚СЊ РѕС‚РїСЂР°РІР»РµРЅРЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ)
+function SendDivisionMessage(g, div, color, const string[]) // Чат подфракции (Кто будет видеть отправленное сообщение)
 {
 	if(g > 0)
 	{
 		foreach (Player, i)
 		{
-			if(OnlineInfo[i][oLogged] == 0 //  РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pTransmitterOff][2] == true // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
-                || PlayerInfo[i][pRacDiv][0] == 0 || PlayerInfo[i][pRacDiv][1] == 0) continue; // РќРµ С‡РёС‚Р°РµРј РЅРёРєР°РєСѓСЋ СЂР°С†РёСЋ - РёРіРЅРѕСЂРёРј
+			if(OnlineInfo[i][oLogged] == 0 //  Не залогинился - игнорим
+                || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+                || PlayerInfo[i][pTransmitterOff][2] == true // Канал выключен - игнорим
+                || PlayerInfo[i][pRacDiv][0] == 0 || PlayerInfo[i][pRacDiv][1] == 0) continue; // Не читаем никакую рацию - игнорим
 
-			if(PlayerInfo[i][pRacDiv][0] == g && PlayerInfo[i][pRacDiv][1] == div) // РџРѕРєР°Р·С‹РІР°РµРј С‚РѕР»СЊРєРѕ С‚РµРј, РєС‚Рѕ С‡РёС‚Р°РµС‚ СЌС‚Сѓ СЂР°С†РёСЋ (РќРµ РІР°Р¶РЅРѕ, РєР°РєРёРј РѕР±СЂР°Р·РѕРј РѕРЅ РµС‘ С‡РёС‚Р°РµС‚)
+			if(PlayerInfo[i][pRacDiv][0] == g && PlayerInfo[i][pRacDiv][1] == div) // Показываем только тем, кто читает эту рацию (Не важно, каким образом он её читает)
 			{
 				SendClientMessage(i, color, string);
 			}
@@ -604,16 +604,16 @@ function SendFamilyMessage(f, color, const string[])
 {
 	foreach (Player, i)
 	{
-        if(OnlineInfo[i][oLogged] == 0 // РќРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ - РёРіРЅРѕСЂРёРј
-            || PlayerInfo[i][pBkyrenie] >= 2 // Р’ РєРѕСЃРјРѕСЃРµ - РёРіРЅРѕСЂРёРј
-            || PlayerInfo[i][pTransmitterOff][3] == true // РљР°РЅР°Р» РІС‹РєР»СЋС‡РµРЅ - РёРіРЅРѕСЂРёРј
+        if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
+            || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
+            || PlayerInfo[i][pTransmitterOff][3] == true // Канал выключен - игнорим
             || PlayerInfo[i][pFamily] != f) continue; 
 
 		SendClientMessage(i, color, string);
 	}
 }
 
-function AllMessage(color, const string[]) // Р”РµР№СЃС‚РІРёСЏ РђРґРјРёРЅРёСЃС‚СЂР°С†РёРё
+function AllMessage(color, const string[]) // Действия Администрации
 {
     foreach (Player, i)
     {
@@ -621,7 +621,7 @@ function AllMessage(color, const string[]) // Р”РµР№СЃС‚РІРёСЏ РђРґРјРёРЅРёСЃС‚С
     }
 }
 
-function WaveMess(color, const string[]) // РњР°С‚ РјРµРґРёРєРѕРІ
+function WaveMess(color, const string[]) // Мат медиков
 {
 	foreach (Player, i)
 	{
@@ -630,7 +630,7 @@ function WaveMess(color, const string[]) // РњР°С‚ РјРµРґРёРєРѕРІ
 	return 1;
 }
 
-function SendAdminMessage(color, const string[]) // Р§Р°С‚ Р°РґРјРёРЅРѕРІ /a
+function SendAdminMessage(color, const string[]) // Чат админов /a
 {
 	foreach (Player, i)
 	{
@@ -640,7 +640,7 @@ function SendAdminMessage(color, const string[]) // Р§Р°С‚ Р°РґРјРёРЅРѕРІ /a
 	return 1;
 }
 
-function SendMediaMessage(color, const string[]) // Р§Р°С‚ РјРµРґРёР° /y
+function SendMediaMessage(color, const string[]) // Чат медиа /y
 {
 	foreach (Player, i)
 	{
@@ -650,7 +650,7 @@ function SendMediaMessage(color, const string[]) // Р§Р°С‚ РјРµРґРёР° /y
 	return 1;
 }
 
-function OOCOff(color, const string[]) // Р§Р°С‚ /ao /o /oo /gov Рё РїСЂРѕС‡РёРµ РѕР±СЉСЏРІР»РµРЅРёСЏ РЅР° РІРµСЃСЊ СЃРµСЂРІРµСЂ
+function OOCOff(color, const string[]) // Чат /ao /o /oo /gov и прочие объявления на весь сервер
 {
     foreach (Player, i)
     {
@@ -658,7 +658,7 @@ function OOCOff(color, const string[]) // Р§Р°С‚ /ao /o /oo /gov Рё РїСЂРѕС‡РёРµ
     }
 }
 
-function OOCNews(color, const string[]) // РќРѕРІРѕСЃС‚Рё CNN /news /live
+function OOCNews(color, const string[]) // Новости CNN /news /live
 {
     foreach (Player, i)
     {
@@ -685,19 +685,19 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
             new tid = DP[0][playerid];
             if(listitem == 0)
             {
-                if(tid == 5) // Р’РѕР»РЅР° РЅР°СЂСѓС€РµРЅРёР№
+                if(tid == 5) // Волна нарушений
                 {
 				    if(!IsACop(playerid) && PlayerInfo[playerid][pFbi] == 0 
-                        && PlayerInfo[playerid][pMember] != 4) return ErrorMessage(playerid, "{FF6347}Р’РѕР»РЅР° РЅР°СЂСѓС€РµРЅРёР№ РґР»СЏ РІР°СЃ РЅРµ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ\n{cccccc}Р”РѕСЃС‚СѓРїРЅР° С‚РѕР»СЊРєРѕ СЃРѕС‚СЂСѓРґРЅРёРєР°Рј РїСЂР°РІРѕРѕС…СЂР°РЅРёС‚РµР»СЊРЅС‹С… РѕСЂРіР°РЅРѕРІ Рё РґРѕРєС‚РѕСЂР°Рј");
+                        && PlayerInfo[playerid][pMember] != 4) return ErrorMessage(playerid, "{FF6347}Волна нарушений для вас не отображается\n{cccccc}Доступна только сотрудникам правоохранительных органов и докторам");
                 }
-                else if(tid == 6) // Р§Р°С‚ РђРґРјРёРЅРёСЃС‚СЂР°С†РёРё
+                else if(tid == 6) // Чат Администрации
                 {
                     if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0 
-                        && PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµРґРѕСЃС‚СѓРїРµРЅ С‡Р°С‚ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё");
+                        && PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат администрации");
                 }
-                else if(tid == 7) // Р§Р°С‚ РњРµРґРёР° /y
+                else if(tid == 7) // Чат Медиа /y
                 {
-                    if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµРґРѕСЃС‚СѓРїРµРЅ С‡Р°С‚ РјРµРґРёР°");
+                    if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат медиа");
                 }
                 PlayerInfo[playerid][pTransmitterOff][tid] = !PlayerInfo[playerid][pTransmitterOff][tid];
                 PlayerInfo[playerid][pTransmitterUpdate] = true;
@@ -715,24 +715,24 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
             if(listitem < 0 || listitem >= MAX_ORG) return 1;
             new g = List[listitem][playerid];
 
-            if(tid == 0) // "Р Р°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С†РёРё /r /rb"
+            if(tid == 0) // "Рация организации /r /rb"
             {
                 PlayerInfo[playerid][pRacOrg][0] = g;
                 PlayerInfo[playerid][pRacOrg][1] = g;
             }
-            else if(tid == 1) // "Р Р°С†РёСЏ /d /db /u /ub"
+            else if(tid == 1) // "Рация /d /db /u /ub"
             {
                 PlayerInfo[playerid][pRacDep][0] = g;
                 PlayerInfo[playerid][pRacDep][1] = g;
             }
-            else if(tid == 2) // "Р Р°С†РёСЏ РїРѕРґС„СЂР°РєС†РёРё /i /ib"
+            else if(tid == 2) // "Рация подфракции /i /ib"
             {
                 new i = ListParam[listitem][playerid];
-                if(g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! ID РѕСЂРіР°РЅРёР·Р°С†РёРё РёР»Рё РїРѕРґС„СЂР°РєС†РёРё РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ 0");
+                if(g == 0 || i == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! ID организации или подфракции не может быть 0");
 
-                PlayerInfo[playerid][pRacDiv][0] = g; // РћСЂРіР°РЅРёР·Р°С†РёСЏ
-                PlayerInfo[playerid][pRacDiv][1] = i; // РџРѕРґС„СЂР°РєС†РёСЏ
-                PlayerInfo[playerid][pRacDiv][2] = 1; // Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїРёСЃР°С‚СЊ РІ СЂР°С†РёСЋ РїРѕРґС„СЂР°РєС†РёРё
+                PlayerInfo[playerid][pRacDiv][0] = g; // Организация
+                PlayerInfo[playerid][pRacDiv][1] = i; // Подфракция
+                PlayerInfo[playerid][pRacDiv][2] = 1; // Возможность писать в рацию подфракции
             }
             MenuSettingTransmitter(playerid, tid);
             PlayerPlaySound(playerid,6401,0,0,0);
@@ -748,45 +748,45 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
 
 			new unixtime = gettime();
             new string[120];
-			if(listitem == 0) // Р–СѓС‡РѕРє РЅР° РЎРјР°СЂС‚С„РѕРЅ
+			if(listitem == 0) // Жучок на Смартфон
 			{
-				if(get_invent4(giveplayerid, 26, 0) == 0) return ErrorMessage(playerid, "{FF6347}РЈ РЅРµРіРѕ РЅРµС‚ СЃРјР°СЂС‚С„РѕРЅР°");
-				if(get_para(giveplayerid, 26) == 1) return ErrorMessage(playerid, "{FF6347}Р•РіРѕ СЃРјР°СЂС‚С„РѕРЅ СЃР»РѕРјР°РЅ");
+				if(get_invent4(giveplayerid, 26, 0) == 0) return ErrorMessage(playerid, "{FF6347}У него нет смартфона");
+				if(get_para(giveplayerid, 26) == 1) return ErrorMessage(playerid, "{FF6347}Его смартфон сломан");
 				if(PlayerInfo[giveplayerid][pTrackSm] >= unixtime)
 				{
-					format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїРµСЂРµСѓСЃС‚Р°РЅРѕРІРёР»%s Р¶СѓС‡РѕРє РЅР° {ff9000}СЃРјР°СЂС‚С„РѕРЅРµ {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
+					format(string,sizeof(string),"[ Мысли ]: Я переустановил%s жучок на {ff9000}смартфоне {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
                     SendClientMessage(playerid, COLOR_GREY, string);
-					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјСЏ РґРµР№СЃС‚РІРёСЏ РІ СЃРёСЃС‚РµРјРµ СЃР»РµР¶РµРЅРёСЏ FBI: {ff9000}10 РґРЅРµР№");
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время действия в системе слежения FBI: {ff9000}10 дней");
 				}
 				else
 				{
-					format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ СѓСЃС‚Р°РЅРѕРІРёР»%s Р¶СѓС‡РѕРє РЅР° {ff9000}СЃРјР°СЂС‚С„РѕРЅ {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
+					format(string,sizeof(string),"[ Мысли ]: Я установил%s жучок на {ff9000}смартфон {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
                     SendClientMessage(playerid, COLOR_GREY, string);
-					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјСЏ РґРµР№СЃС‚РІРёСЏ РІ СЃРёСЃС‚РµРјРµ СЃР»РµР¶РµРЅРёСЏ FBI: {ff9000}10 РґРЅРµР№");
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время действия в системе слежения FBI: {ff9000}10 дней");
 				}
 				if(PlayerInfo[giveplayerid][pLeader] != 8 && PlayerInfo[giveplayerid][pMember] != 8) PlayerInfo[giveplayerid][pTrackSm] = gettime()+604800;
 				PlayerPlaySound(playerid,6400,0,0,0);
-				ApplyAnimation(playerid,"DEALER","DRUGS_BUY",4.0,0,0,0,0,0,1);
+				ApplyAnimation(playerid,"DEALER","DRUGS_BUY",4.0, false, false, false, false, false);
 			}
-			if(listitem == 1) // Р–СѓС‡РѕРє РЅР° Р Р°С†РёСЋ
+			if(listitem == 1) // Жучок на Рацию
 			{
-				if(get_invent4(giveplayerid, 21, 0) == 0) return ErrorMessage(playerid, "{FF6347}РЈ РЅРµРіРѕ РЅРµС‚ СЂР°С†РёРё");
-				if(get_para(giveplayerid, 21) == 1) return ErrorMessage(playerid, "{FF6347}Р•РіРѕ СЂР°С†РёСЏ СЃР»РѕРјР°РЅР°");
+				if(get_invent4(giveplayerid, 21, 0) == 0) return ErrorMessage(playerid, "{FF6347}У него нет рации");
+				if(get_para(giveplayerid, 21) == 1) return ErrorMessage(playerid, "{FF6347}Его рация сломана");
 				if(PlayerInfo[giveplayerid][pTrackRac] >= unixtime)
 				{
-					format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїРµСЂРµСѓСЃС‚Р°РЅРѕРІРёР»%s Р¶СѓС‡РѕРє РЅР° {ff9000}СЂР°С†РёРё {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
+					format(string,sizeof(string),"[ Мысли ]: Я переустановил%s жучок на {ff9000}рации {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
                     SendClientMessage(playerid, COLOR_GREY, string);
-					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјСЏ РґРµР№СЃС‚РІРёСЏ РІ СЃРёСЃС‚РµРјРµ СЃР»РµР¶РµРЅРёСЏ FBI: {ff9000}10 РґРЅСЏ");
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время действия в системе слежения FBI: {ff9000}10 дня");
 				}
 				else
 				{
-					format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ СѓСЃС‚Р°РЅРѕРІРёР»%s Р¶СѓС‡РѕРє РЅР° {ff9000}СЂР°С†РёРё {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
+					format(string,sizeof(string),"[ Мысли ]: Я установил%s жучок на {ff9000}рации {99ff66}%s", gender(playerid), rpplayername(giveplayerid));
                     SendClientMessage(playerid, COLOR_GREY, string);
-					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјСЏ РґРµР№СЃС‚РІРёСЏ РІ СЃРёСЃС‚РµРјРµ СЃР»РµР¶РµРЅРёСЏ FBI: {ff9000}10 РґРЅСЏ");
+					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время действия в системе слежения FBI: {ff9000}10 дня");
 				}
 				if(PlayerInfo[giveplayerid][pLeader] != 8 && PlayerInfo[giveplayerid][pMember] != 8) PlayerInfo[giveplayerid][pTrackRac] = gettime()+604800;
 				PlayerPlaySound(playerid,6400,0,0,0);
-				ApplyAnimation(playerid,"DEALER","DRUGS_BUY",4.0,0,0,0,0,0,1);
+				ApplyAnimation(playerid,"DEALER","DRUGS_BUY",4.0, false, false, false, false, false);
 			}
 		}
 	}
@@ -797,12 +797,12 @@ stock SettingTransmitter(playerid)
 {
     new line[214],lines[2096];
 
-    format(line,sizeof(line),"РљР°РЅР°Р»С‹"), strcat(lines,line);
+    format(line,sizeof(line),"Каналы"), strcat(lines,line);
     for(new i = 0; i < sizeof(TransmitterName); i++)
     {
         format(line,sizeof(line),"\n{ff9000}%s",TransmitterName[i]), strcat(lines,line);
     }
-    ShowDialog(playerid,490,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РќР°СЃС‚СЂРѕР№РєРё Р§Р°С‚Р°",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
+    ShowDialog(playerid,490,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Чата",lines,"Выбор","Отмена");
     return 1;
 }
 
@@ -811,29 +811,29 @@ stock MenuSettingTransmitter(playerid, tid)
     new line[214],lines[2096];
     format(line,sizeof(line),"{ff9000}%s", TransmitterName[tid]), strcat(lines,line);
 
-    // РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Рё РґРѕСЃС‚СѓРїР° Рє С‡Р°С‚Сѓ
-    if(PlayerInfo[playerid][pTransmitterOff][tid] == false) format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ: {99ff66}[ On ]"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ: {FF6347}[ Off ]"), strcat(lines,line);
+    // Переключение отображения и доступа к чату
+    if(PlayerInfo[playerid][pTransmitterOff][tid] == false) format(line,sizeof(line),"\n{cccccc}Статус: {99ff66}[ On ]"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}Статус: {FF6347}[ Off ]"), strcat(lines,line);
 
-    // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё С‡Р°С‚Р°
-    if(tid == 0) // "Р Р°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С†РёРё /r /rb"
+    // Дополнительные настройки чата
+    if(tid == 0) // "Рация организации /r /rb"
     {
         new g = PlayerInfo[playerid][pRacOrg][0];
-        format(line,sizeof(line),"\n{cccccc}РљР°РЅР°Р»: %s", fraklastName[g]), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Канал: %s", fraklastName[g]), strcat(lines,line);
     }
-    else if(tid == 1) // "Р Р°С†РёСЏ /d /db /u /ub"
+    else if(tid == 1) // "Рация /d /db /u /ub"
     {
         new g = PlayerInfo[playerid][pRacDep][0];
-        format(line,sizeof(line),"\n{cccccc}РљР°РЅР°Р»: %s", fraklastName[g]), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Канал: %s", fraklastName[g]), strcat(lines,line);
     }
-    else if(tid == 2) // "Р Р°С†РёСЏ РїРѕРґС„СЂР°РєС†РёРё /i /ib"
+    else if(tid == 2) // "Рация подфракции /i /ib"
     {
         new g = PlayerInfo[playerid][pRacDiv][0];
         new i = PlayerInfo[playerid][pRacDiv][1];
-        if(g > 0 && i > 0) format(line,sizeof(line),"\n{cccccc}РљР°РЅР°Р»: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
-        else format(line,sizeof(line),"\n{cccccc}РљР°РЅР°Р»: РЅРµС‚"), strcat(lines,line);
+        if(g > 0 && i > 0) format(line,sizeof(line),"\n{cccccc}Канал: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}Канал: нет"), strcat(lines,line);
     }
-    ShowDialog(playerid,491,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РќР°СЃС‚СЂРѕР№РєРё Р Р°С†РёРё",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
+    ShowDialog(playerid,491,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");
     return 1;
 }
 
@@ -842,7 +842,7 @@ stock SettingChannelTransmitter(playerid, tid)
     new line[214], lines[2096], quan;
     format(line,sizeof(line),"{ff9000}%s", TransmitterName[tid]), strcat(lines,line);
 
-    if(tid == 0) // "Р Р°С†РёСЏ РѕСЂРіР°РЅРёР·Р°С†РёРё /r /rb"
+    if(tid == 0) // "Рация организации /r /rb"
     {
         for(new g = 0; g < MAX_ORG; g++)
         {
@@ -855,7 +855,7 @@ stock SettingChannelTransmitter(playerid, tid)
             }
         }
     }
-    else if(tid == 1) // "Р Р°С†РёСЏ /d /db /u /ub"
+    else if(tid == 1) // "Рация /d /db /u /ub"
     {
         for(new g = 0; g < MAX_ORG; g++)
         {
@@ -868,18 +868,18 @@ stock SettingChannelTransmitter(playerid, tid)
             }
         }
     }
-    else if(tid == 2) // "Р Р°С†РёСЏ РїРѕРґС„СЂР°РєС†РёРё /i /ib"
+    else if(tid == 2) // "Рация подфракции /i /ib"
     {
         new g = fraction(playerid);
-        new i = PlayerInfo[playerid][pDivision][0]; // РџРѕРґС„СЂР°РєС†РёСЏ
-        new ifbi = PlayerInfo[playerid][pDivision][1]; // РџРѕРґС„СЂР°РєС†РёСЏ FBI (РџСЂРё РІРЅРµРґСЂРµРЅРёРё РІ РґСЂСѓРіСѓСЋ РѕСЂРіР°РЅРёР·Р°С†РёСЋ)
+        new i = PlayerInfo[playerid][pDivision][0]; // Подфракция
+        new ifbi = PlayerInfo[playerid][pDivision][1]; // Подфракция FBI (При внедрении в другую организацию)
 
         if(i > 0)
         {
             List[quan][playerid] = g;
             ListParam[quan][playerid] = i;
             quan ++;
-            format(line,sizeof(line),"\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}Подфракция: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
         }
         else List[quan][playerid] = 0;
 
@@ -888,33 +888,33 @@ stock SettingChannelTransmitter(playerid, tid)
             g = 2;
             List[quan][playerid] = g;
             ListParam[quan][playerid] = ifbi;
-            quan ++;
-            format(line,sizeof(line),"\n{cccccc}РџРѕРґС„СЂР°РєС†РёСЏ: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][ifbi - 1][divColorHex], DivisionInfo[g - 1][ifbi - 1][divAbbreviation]), strcat(lines,line);
+            //quan ++;
+            format(line,sizeof(line),"\n{cccccc}Подфракция: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][ifbi - 1][divColorHex], DivisionInfo[g - 1][ifbi - 1][divAbbreviation]), strcat(lines,line);
         }
         else List[quan][playerid] = 0;
     }
-    ShowDialog(playerid,506,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РќР°СЃС‚СЂРѕР№РєРё Р Р°С†РёРё",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
+    ShowDialog(playerid,506,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");
     return 1;
 }
 
 stock IsAllowedTransmitterR(playerid, g)
 {
-    if(PlayerInfo[playerid][pSoska] >= 1) // РђРґРјРёРЅР°Рј РґРѕСЃС‚СѓРїРЅС‹ РєР°РЅР°Р»С‹ РІСЃРµС… РѕСЂРіР°РЅРёР·Р°С†РёР№
+    if(PlayerInfo[playerid][pSoska] >= 1) // Админам доступны каналы всех организаций
     {
         if(g >= 0 && g <= MAX_ORG) return 1;
     }
-    else if(PlayerInfo[playerid][pFbi] > 0) // FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј, СЃРІРѕСЏ Рё FBI
+    else if(PlayerInfo[playerid][pFbi] > 0) // FBI под прикрытием, своя и FBI
     {
         if(g == 2 || PlayerInfo[playerid][pMember] == g) return 1;
     }
-    else if(PlayerInfo[playerid][pMember] == 7) // РџСЂР°РІРёС‚РµР»СЊСЃС‚РІСѓ РІСЃРµ Р·Р°РєРѕРЅРЅС‹Рµ РѕСЂРіР°РЅРёР·Р°С†РёРё
+    else if(PlayerInfo[playerid][pMember] == 7) // Правительству все законные организации
     {
         if(GetAccessRankOrgMay(playerid, PlayerInfo[playerid][pMember], 55, NO_FBI))
         {
             if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 9 || g == 11 || g == 21 || g == 22) return 1;
         }
     }
-    else // Р’СЃРµРј РїСЂРѕС‡РёРј С‚РѕР»СЊРєРѕ РѕСЂРіР°РЅРёР·Р°С†РёСЏ, РІ РєРѕС‚РѕСЂРѕР№ РёРіСЂРѕРє СЃРѕСЃС‚РѕРёС‚
+    else // Всем прочим только организация, в которой игрок состоит
     {
         if(PlayerInfo[playerid][pMember] == g) return 1;
     }
@@ -923,22 +923,22 @@ stock IsAllowedTransmitterR(playerid, g)
 
 stock IsAllowedTransmitterD(playerid, g)
 {
-    if(PlayerInfo[playerid][pSoska] >= 1) // РђРґРјРёРЅР°Рј РґРѕСЃС‚СѓРїРЅС‹ РєР°РЅР°Р»С‹ РІСЃРµС… РѕСЂРіР°РЅРёР·Р°С†РёР№
+    if(PlayerInfo[playerid][pSoska] >= 1) // Админам доступны каналы всех организаций
     {
         if(g >= 0 && g <= MAX_ORG) return 1;
     }
-    else if(PlayerInfo[playerid][pFbi] > 0) // FBI РїРѕРґ РїСЂРёРєСЂС‹С‚РёРµРј, СЃРІРѕСЏ Рё FBI
+    else if(PlayerInfo[playerid][pFbi] > 0) // FBI под прикрытием, своя и FBI
     {
         if(g == 2 || PlayerInfo[playerid][pMember] == g) return 1;
     }
-    else // Р’СЃРµРј РїСЂРѕС‡РёРј С‚РѕР»СЊРєРѕ РѕСЂРіР°РЅРёР·Р°С†РёСЏ, РІ РєРѕС‚РѕСЂРѕР№ РёРіСЂРѕРє СЃРѕСЃС‚РѕРёС‚
+    else // Всем прочим только организация, в которой игрок состоит
     {
         if(PlayerInfo[playerid][pMember] == g) return 1;
     }
     return 0;
 }
 
-// РќРѕРІС‹Р№ СЃС‚РѕРє Р·Р°РіСЂСѓР·РєРё РЅР°СЃС‚СЂРѕРµРє СЂР°С†РёРё
+// Новый сток загрузки настроек рации
 stock OnPlayerLoadTransmitter(playerid)
 {
     new bool:is_null;

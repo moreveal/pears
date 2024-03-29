@@ -30,7 +30,7 @@ CMD:rentsklad(playerid)
 			   		    SetPlayerChatBubble(playerid,"кладёт ящик на склад",COLOR_PURPLE,20.0,3000);
 			       	    RemovePlayerAttachedObject(playerid,1);
 			       	    PPP15[playerid] = 0;
-			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0,0,0,0,0,0,1);
+			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0, false, false, false, false, false, SYNC_ALL);
 			       	    PlayerPlaySound(playerid,6401,0,0,0);
 
 						// Выдаём юниты
@@ -51,7 +51,7 @@ stock use_rent(playerid, wh, inva)
     i_resettabs(playerid);
 	new fpick = WhInfo[wh][wInvent][inva], thingType = WhInfo[wh][wInvType][inva];
 	if(fpick == 0) return 1;
-	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= 2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
+	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
 
 	new string[120];
 	if(thingType == 0) // Количественные предметы до 1000 в один ящик

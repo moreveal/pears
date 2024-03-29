@@ -413,8 +413,8 @@ CMD:veh(playerid, const params[])
 	X=X+7.0*floatsin(-A,degrees);
     Y=Y+7.0*floatcos(-A,degrees);
 
-    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], -1,0, -1, 0.0);
-    else CreatedCars[createid] = PP_CreateVehicle(CreatedCars[createid], params[0], X,Y,Z, A+180.0, params[1], params[2], -1,0, -1, 0.0);
+    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], -1,0, -1, 0.0);
+    else CreatedCars[createid] = PP_CreateVehicle(params[0], X,Y,Z, A+180.0, params[1], params[2], -1,0, -1, 0.0);
 	LinkVehicleToInterior(CreatedCars[createid], GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
 	QuanCar ++;

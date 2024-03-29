@@ -703,7 +703,7 @@ stock CreateTextDraw3DMenu(playerid, objectid)
 		TextDrawTextureMenu[i][playerid] = CreatePlayerTextDraw(playerid, slotpos_y, slotpos_x, string);
 		PlayerTextDrawLetterSize(playerid, TextDrawTextureMenu[i][playerid], 0.115333, 0.616889);
 		PlayerTextDrawTextSize(playerid, TextDrawTextureMenu[i][playerid], 160.0, 8.0);
-		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[i][playerid], 1);
+		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[i][playerid], TEXT_DRAW_ALIGN:1);
 		if(MenuInfo[playerid][zTextid] == i) PlayerTextDrawColour(playerid, TextDrawTextureMenu[i][playerid], -5963521);
 		else PlayerTextDrawColour(playerid, TextDrawTextureMenu[i][playerid], -1);
 		PlayerTextDrawUseBox(playerid, TextDrawTextureMenu[i][playerid], true);
@@ -711,23 +711,23 @@ stock CreateTextDraw3DMenu(playerid, objectid)
 		PlayerTextDrawSetShadow(playerid, TextDrawTextureMenu[i][playerid], 0);
 		PlayerTextDrawSetOutline(playerid, TextDrawTextureMenu[i][playerid], 1);
 		PlayerTextDrawBackgroundColour(playerid, TextDrawTextureMenu[i][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-		PlayerTextDrawFont(playerid, TextDrawTextureMenu[i][playerid], 1);
-		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[i][playerid], 1);
+		PlayerTextDrawFont(playerid, TextDrawTextureMenu[i][playerid], TEXT_DRAW_FONT:1);
+		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[i][playerid], true);
 		PlayerTextDrawSetSelectable(playerid, TextDrawTextureMenu[i][playerid], true);
 
 		new x = i + MAX_TEXTURES_ON_OBJECTS;
 		TextDrawTextureMenu[x][playerid] = CreatePlayerTextDraw(playerid, closepos_y, slotpos_x - 1.325607, "X");
 		PlayerTextDrawLetterSize(playerid, TextDrawTextureMenu[x][playerid], 0.238333, 0.853333);
 		PlayerTextDrawTextSize(playerid, TextDrawTextureMenu[x][playerid], 12.333332, 7.8);
-		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[x][playerid], 1);
+		PlayerTextDrawAlignment(playerid, TextDrawTextureMenu[x][playerid], TEXT_DRAW_ALIGN:1);
 		PlayerTextDrawColour(playerid, TextDrawTextureMenu[x][playerid], -16765441);
 		PlayerTextDrawUseBox(playerid, TextDrawTextureMenu[x][playerid], true);
 		PlayerTextDrawBoxColour(playerid, TextDrawTextureMenu[x][playerid], 0);
 		PlayerTextDrawSetShadow(playerid, TextDrawTextureMenu[x][playerid], 0);
 		PlayerTextDrawSetOutline(playerid, TextDrawTextureMenu[x][playerid], -1);
 		PlayerTextDrawBackgroundColour(playerid, TextDrawTextureMenu[x][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-		PlayerTextDrawFont(playerid, TextDrawTextureMenu[x][playerid], 1);
-		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[x][playerid], 1);
+		PlayerTextDrawFont(playerid, TextDrawTextureMenu[x][playerid], TEXT_DRAW_FONT:1);
+		PlayerTextDrawSetProportional(playerid, TextDrawTextureMenu[x][playerid], true);
 		PlayerTextDrawSetSelectable(playerid, TextDrawTextureMenu[x][playerid], true);
 
 		// —мещаем позицию дл€ следующей строки
@@ -760,132 +760,132 @@ stock CreateTextDrawTextureButton(playerid)
 	DrawTextureButton[0][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0], tpos_y, "LD_SPAC:white"); //  нопка ѕоиск
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[0][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[0][playerid], fix_x, fix_y);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[0][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[0][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[0][playerid], PlayerInfo[playerid][pStyle1]);
-	PlayerTextDrawFont(playerid, DrawTextureButton[0][playerid], 4);
+	PlayerTextDrawFont(playerid, DrawTextureButton[0][playerid], TEXT_DRAW_FONT:4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[0][playerid], true);
 
 	DrawTextureButton[1][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0] + fix_x/2, tpos_y + fix_y/2 - 4.0, "МOЕCK"); // ѕоиск
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[1][playerid], 0.181927, 0.871999);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[1][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[1][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DrawTextureButton[1][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[1][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[1][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[1][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[1][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[1][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[1][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[1][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[1][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[1][playerid], true);
 
 	tpos_x[1] = tpos_x[0] + fix_x + offset_x;
 	DrawTextureButton[2][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1], tpos_y, "LD_SPAC:white"); //  нопка ћои “екстуры
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[2][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[2][playerid], fix_x, fix_y);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[2][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[2][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[2][playerid], PlayerInfo[playerid][pStyle1]);
-	PlayerTextDrawFont(playerid, DrawTextureButton[2][playerid], 4);
+	PlayerTextDrawFont(playerid, DrawTextureButton[2][playerid], TEXT_DRAW_FONT:4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[2][playerid], true);
 
 	DrawTextureButton[3][playerid] = CreatePlayerTextDraw(playerid, tpos_x[1] + fix_x/2, tpos_y + fix_y/2 - 8.0, "MOЕ~n~ПEKCПYPС"); // ћои “екстуры
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[3][playerid], 0.181927, 0.871999);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[3][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[3][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DrawTextureButton[3][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[3][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[3][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[3][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[3][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[3][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[3][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[3][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[3][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[3][playerid], true);
 	
 	// tpos_x[2] = tpos_x[1] + fix_x + offset_x; // ¬ременно убираю кнопку ћои “екстуры (—истема избранных текстур не готова)
 	tpos_x[2] = tpos_x[0] + fix_x + offset_x;
 	DrawTextureButton[4][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2], tpos_y, "LD_SPAC:white"); //  нопка ќбъекты
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[4][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[4][playerid], fix_x, fix_y);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[4][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[4][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[4][playerid], PlayerInfo[playerid][pStyle1]);
-	PlayerTextDrawFont(playerid, DrawTextureButton[4][playerid], 4);
+	PlayerTextDrawFont(playerid, DrawTextureButton[4][playerid], TEXT_DRAW_FONT:4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[4][playerid], true);
 
 	DrawTextureButton[5][playerid] = CreatePlayerTextDraw(playerid, tpos_x[2] + fix_x/2, tpos_y + fix_y/2 - 4.0, "OАРEKПС"); // ќбъекты
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[5][playerid], 0.181927, 0.871999);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[5][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[5][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DrawTextureButton[5][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[5][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[5][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[5][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[5][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[5][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[5][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[5][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[5][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[5][playerid], true);
 	
 	tpos_x[3] = tpos_x[2] + fix_x + offset_x;
 	DrawTextureButton[6][playerid] = CreatePlayerTextDraw(playerid, tpos_x[3], tpos_y, "LD_SPAC:white"); //  нопка Save
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[6][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[6][playerid], fix_x, fix_y);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[6][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[6][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[6][playerid], PlayerInfo[playerid][pStyle1]);
-	PlayerTextDrawFont(playerid, DrawTextureButton[6][playerid], 4);
+	PlayerTextDrawFont(playerid, DrawTextureButton[6][playerid], TEXT_DRAW_FONT:4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[6][playerid], true);
 
 	DrawTextureButton[7][playerid] = CreatePlayerTextDraw(playerid, tpos_x[3] + fix_x/2, tpos_y + fix_y/2 - 4.0, "SAVE"); // Save
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[7][playerid], 0.181927, 0.871999);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[7][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[7][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DrawTextureButton[7][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[7][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[7][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[7][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[7][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[7][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[7][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[7][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[7][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[7][playerid], true);
 
 	tpos_x[4] = tpos_x[3] + fix_x + offset_x;
 	DrawTextureButton[8][playerid] = CreatePlayerTextDraw(playerid, tpos_x[4], tpos_y, "LD_SPAC:white"); //  нопка Exit
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[8][playerid], 0.000000, 0.000000);
 	PlayerTextDrawTextSize(playerid, DrawTextureButton[8][playerid], fix_x, fix_y);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[8][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[8][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[8][playerid], PlayerInfo[playerid][pStyle1]);
-	PlayerTextDrawFont(playerid, DrawTextureButton[8][playerid], 4);
+	PlayerTextDrawFont(playerid, DrawTextureButton[8][playerid], TEXT_DRAW_FONT:4);
 	PlayerTextDrawSetSelectable(playerid, DrawTextureButton[8][playerid], true);
 
 	DrawTextureButton[9][playerid] = CreatePlayerTextDraw(playerid, tpos_x[4] + fix_x/2, tpos_y + fix_y/2 - 4.0, "EXIT"); // Exit
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[9][playerid], 0.181927, 0.871999);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[9][playerid], 2);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[9][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DrawTextureButton[9][playerid], colorText);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[9][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[9][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[9][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[9][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[9][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[9][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[9][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[9][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[9][playerid], true);
 
 	DrawTextureButton[10][playerid] = CreatePlayerTextDraw(playerid, 482.666412, 370.0, "МKM_-_МokaЯa¶©_ѓ®•ky~n~Y_-_ЛҐepx~n~N_-_ЛЃЬЯ~n~Num_4_-_ЛЮeҐo~n~Num_6_-_Л£paҐo~n~~y~ALT_-_МpЬѓeЃЬ¶©_¶ekc¶ypy");
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[10][playerid], 0.329999, 1.305481);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[10][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[10][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_GREY);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[10][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[10][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[10][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[10][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[10][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[10][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[10][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[10][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[10][playerid], true);
 	PlayerTextDrawShow(playerid, DrawTextureButton[10][playerid]);
 
 	DrawTextureButton[11][playerid] = CreatePlayerTextDraw(playerid, tpos_x[0], tpos_y - 10.0, "Text"); // Name Texture and Pages
 	PlayerTextDrawLetterSize(playerid, DrawTextureButton[11][playerid], 0.209420, 0.881332);
-	PlayerTextDrawAlignment(playerid, DrawTextureButton[11][playerid], 1);
+	PlayerTextDrawAlignment(playerid, DrawTextureButton[11][playerid], TEXT_DRAW_ALIGN:1);
 	PlayerTextDrawColour(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_GREY);
 	PlayerTextDrawUseBox(playerid, DrawTextureButton[11][playerid], true);
 	PlayerTextDrawBoxColour(playerid, DrawTextureButton[11][playerid], 0);
 	PlayerTextDrawSetShadow(playerid, DrawTextureButton[11][playerid], 0);
 	PlayerTextDrawSetOutline(playerid, DrawTextureButton[11][playerid], 1);
 	PlayerTextDrawBackgroundColour(playerid, DrawTextureButton[11][playerid], COLOR_TEXTDRAW_STROKE_GREY);
-	PlayerTextDrawFont(playerid, DrawTextureButton[11][playerid], 1);
-	PlayerTextDrawSetProportional(playerid, DrawTextureButton[11][playerid], 1);
+	PlayerTextDrawFont(playerid, DrawTextureButton[11][playerid], TEXT_DRAW_FONT:1);
+	PlayerTextDrawSetProportional(playerid, DrawTextureButton[11][playerid], true);
 
 	PlayerTextDrawShow(playerid, DrawTextureButton[0][playerid]);
 	PlayerTextDrawShow(playerid, DrawTextureButton[1][playerid]);
