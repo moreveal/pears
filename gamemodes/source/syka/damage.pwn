@@ -368,7 +368,10 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
     if(weaponid == 24) // Deagle
     {
         new g = fraction(playerid);
-        if(ChutC[g] != 0 || GoC[g] != 0 || Shooting[playerid] > 0 || ComputerClubIsPlayerCbugActive(playerid)) // +C Доступен
+        if(ChutC[g] != 0 || GoC[g] != 0 
+            || Shooting[playerid] > 0 
+            || ComputerClubIsPlayerCbugActive(playerid) 
+            || MPGO[playerid] > 0) // +C Доступен
         {
              if(interval < 20) return false;
         }
@@ -473,7 +476,9 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма новичков
 	if(!IsPlayerNPC(damagedid) // Игрок не NPC
         && PlayerInfo[damagedid][pConnectTime] <= 2 // Играл 2 часа и меньше
 	    && MPGO[damagedid] == 0 // Не на мероприятии
-	    && ADMS[damagedid] <= 4) // Защита от урона активна
+	    && ADMS[damagedid] <= 4 // Защита от урона активна
+        && PlayerInfo[damagedid][pMember] == 0 // Игрок не состоит в организации
+        && PlayerInfo[damagedid][pFamily] == 0) // Игрок не состоит в семье
 	{
 		new string[160];
 		if(ADMS[playerid] <= 4)

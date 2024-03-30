@@ -1,7 +1,7 @@
 
 new buttonName[][] =
 {
-    "˜˜˜", "H"
+    "ÏÊÌ", "H"
 };
 
 new MindTimer[MAX_REALPLAYERS];

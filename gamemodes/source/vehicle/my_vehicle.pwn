@@ -4728,12 +4728,15 @@ stock UnPackVehicle(playerid)
 CMD:addcar(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 19 && PlayerInfo[playerid][pMedia] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    new para1,vehid,tmp[24],nyche;
-    if(sscanf(params, "s[24]i",tmp,vehid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
+    new para1,vehiclename[64],tmp[24],nyche;
+    if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
+
+	new vehid = ReturnVehicle(vehiclename);
+	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
     if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный, для продажи, транспорт
     else nyche = 0;
-	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)");
     para1 = ReturnUser(tmp, 1);
     if(IsPlayerConnected(para1))
     {

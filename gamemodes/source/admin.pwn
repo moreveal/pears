@@ -392,39 +392,51 @@ CMD:delaction(playerid, const params[])
 	ABroadCast(COLOR_ADM,string,1);
 	return 1;
 }
+
 CMD:veh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
-    if(sscanf(params, "iii", params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт /veh Модель Цвет1 Цвет2");
-	if(!IsAVehExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Невалидный ID транспорта (400 - 612, 2000 и выше - кастомные авто)");
-	if(params[1] < 0 || params[1] > 255 || params[2] < 0 || params[2] > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
 
-	new string[120];
-	if(QuanCar >= MAX_MAPVEH) return format(string, sizeof(string), "{FF6347}Лимит создания транспорта: %d", MAX_MAPVEH), ErrorMessage(playerid, string);
+	new vehiclename[64], color1, color2;
+    if(!sscanf(params, "s[64]ii", vehiclename,color1,color2)) AdmCmdVeh(playerid, vehiclename, color1, color2);
+	else if(!sscanf(params, "s[64]", vehiclename))
+	{
+		new colorveh = 1 + random(254); // Color Vehicle
+		AdmCmdVeh(playerid, vehiclename, colorveh, colorveh);
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать транспорт [ /veh VehID or Name Color1 Color2 ]");
+	return 1;
+}
+
+stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
+{
+	new model = ReturnVehicle(vehiclename);
+	if(model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if(!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+
+	if(color1 < 0 || color1 > 255 || color2 < 0 || color2 > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
+	if(QuanCar >= MAX_MAPVEH) return ErrorMessage(playerid, "{FF6347}Лимит создания транспорта администрацией");
     new createid = -1;
     for(new i = 0; i < MAX_MAPVEH; i++)
 	{
 	    if(CreatedCars[i] == 0) createid = i;
  	}
  	if(createid == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Нет свободных слотов для транспорта");
-    new Float:X,Float:Y,Float:Z,Float:A;
-	GetPlayerPos(playerid, X,Y,Z);
-	GetPlayerFacingAngle(playerid,A);
-	X=X+7.0*floatsin(-A,degrees);
-    Y=Y+7.0*floatcos(-A,degrees);
 
-    if(IsABig(params[0])) CreatedCars[createid] = PP_CreateVehicle(params[0], X,Y,Z+2.0, A+180.0, params[1], params[2], -1,0, -1, 0.0);
-    else CreatedCars[createid] = PP_CreateVehicle(params[0], X,Y,Z, A+180.0, params[1], params[2], -1,0, -1, 0.0);
+	new Float:frontme_pos[4];
+	frontme(playerid, 7.0, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]);
+    if(IsABig(model)) CreatedCars[createid] = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2]+2.0, frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
+    else CreatedCars[createid] = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
 	LinkVehicleToInterior(CreatedCars[createid], GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
 	Cars[CreatedCars[createid]] = 9999;
 	Gas[CreatedCars[createid]] = GasMax;
-	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
-	format(string, sizeof(string), "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d", GetVehicleName(params[0]), params[0], CreatedCars[createid]);
-	SendClientMessage(playerid, COLOR_GREY, string);
+	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
+	SendClientMessage(playerid, COLOR_GREY, "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d {cccccc}(col1 %d, col2 %d)", GetVehicleName(model), model, CreatedCars[createid], color1, color2);
 	return 1;
 }
+
 CMD:delveh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");

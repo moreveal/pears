@@ -22,6 +22,7 @@ stock ExitPrisonersFromBus(playerid)
 function ComeBackPrisonBus(playerid, vehicleid) // Возвращаем автобус на место
 {
     ReloadVehicleNPC(vehicleid);
+    OnNpcSpawn(playerid); // Возвращаем NPC на позицию
 
     // Оповещение всем, кто сидит в КПЗ
     new line[70],lines[140];

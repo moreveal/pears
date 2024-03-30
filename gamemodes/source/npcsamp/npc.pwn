@@ -14,8 +14,8 @@ stock CreateNPCsamp()
 {
     SendRconCommand("password 0"); // Снимаем пароль, чтобы NPC могли подключиться
 
-    ConnectNPC("Tim", "prison_ls");
-    ConnectNPC("Bert", "prison_sf");
+    ConnectNPC("Tim_Johnson", "prison_ls");
+    ConnectNPC("Bert_Robinson", "prison_sf");
 
     print("[MODE]: NPC_Create");
     return 1;
@@ -54,13 +54,13 @@ stock OnNpcConnect(playerid)
 stock SetNpcSpawn(playerid)
 {
     // Водитель тюремного автобуса LS
-    if(IsNameNpc(playerid, "Tim"))
+    if(IsNameNpc(playerid, "Tim_Johnson"))
     {
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 1599.4426,-1607.5927,13.4568,180.0, 0, 0, 0, 0, 0, 0);
     }
 
     // Водитель тюремного автобуса SF
-    else if(IsNameNpc(playerid, "Bert"))
+    else if(IsNameNpc(playerid, "Bert_Robinson"))
     {
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], -1584.4108,678.7656,7.1875,180.0, 0, 0, 0, 0, 0, 0);
     }
@@ -74,7 +74,7 @@ stock OnNpcSpawn(playerid)
     PlayerInfo[playerid][pModel3] = 0;
 
     // Водитель тюремного автобуса LS
-    if(IsNameNpc(playerid, "Tim"))
+    if(IsNameNpc(playerid, "Tim_Johnson"))
     {
         PlayerInfo[playerid][pModel] = 310;
         
@@ -89,7 +89,7 @@ stock OnNpcSpawn(playerid)
     }
 
     // Водитель тюремного автобуса SF
-    else if(IsNameNpc(playerid, "Bert"))
+    else if(IsNameNpc(playerid, "Bert_Robinson"))
     {
         PlayerInfo[playerid][pModel] = 310;
         
@@ -107,7 +107,7 @@ stock OnNpcSpawn(playerid)
 
 stock StartNpc(playerid)
 {
-    if(IsNameNpc(playerid, "Tim"))
+    if(IsNameNpc(playerid, "Tim_Johnson"))
     {
         if(NPCInfo[0][npcStart] == true) return 0;
         Protect_PutPlayerInVehicle(playerid, prisonbus_LS, 0);
@@ -115,7 +115,7 @@ stock StartNpc(playerid)
 		SetVehicleParamsEx(prisonbus_LS, true, true, alarm, doors, bonnet, boot, objective);
         NPCInfo[0][npcStart] = true;
     }
-    else if(IsNameNpc(playerid, "Bert"))
+    else if(IsNameNpc(playerid, "Bert_Robinson"))
     {
         if(NPCInfo[1][npcStart] == true) return 0;
         Protect_PutPlayerInVehicle(playerid, prisonbus_SF, 0);

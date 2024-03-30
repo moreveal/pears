@@ -1710,18 +1710,6 @@ stock CreateObjectTrain()
 	return 1;
 }
 
-stock GetCoordTrain(vehicleid, &Float:x, &Float:y, &Float:z) // Координаты багажника автомобиля
-{
-    new Float:angle,Float:distance;
-	GetVehicleModelInfo(GetVehModelOriginal(VehInfo[vehicleid][vModel]), VEHICLE_MODEL_INFO_FRONTSEAT, x, distance, z);
-    distance = distance/2 + 50;
-	GetVehiclePos(vehicleid, x, y, z);
-	GetVehicleZAngle(vehicleid, angle);
-    x += (distance * floatsin(-angle+180, degrees));
-    y += (distance * floatcos(-angle+180, degrees));
-    return 1;
-}
-
 stock OrderEscort(playerid, frak)
 {
 	if(!IsAFunctionOrganization(1, frak, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту функцию\n\n{cccccc}Недоступно для вас или вашей организации");

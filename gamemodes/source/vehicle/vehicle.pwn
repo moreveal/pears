@@ -32,7 +32,7 @@ new vehClassName[][] =
 
 new vehNameCustom[][] =
 {
-    "Lambo Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
+    "Lamba Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
 	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M6",
 	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW M4 F82", "BMW X5M", "VW Golf", "Cadillac Fleetwood", "Dodge Charger",
 	"Dodge Super Bee", "Ford GT", "Lamba Aventador", "Mercedes GLE 350", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
@@ -466,6 +466,28 @@ stock GetVehicleNear_Side(playerid, v) // Получаем инфу, у какой части транспорт
         }
 	}
 	return sideId;
+}
+
+CMD:getside(playerid, const params[])
+{
+	if(server != 0) return 0;
+	if(sscanf(params, "ii", params[0], params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: /getside id side (side 0 перед, side 1 зад)");
+	
+	GetDetailPosVehicle(playerid, params[0], params[1]);
+	return 1;
+}
+
+stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
+{
+	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");
+	if(vehicleid < 0 || vehicleid >= 2000) return ErrorMessage(playerid, "{FF6347}Не меньше 0 и не больше 1999");
+	if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Транспорта с этим id не существует");
+
+	new Float:pos[3];
+	if(typeSide == 0) GetCoordBonnetVehicle(vehicleid, pos[0], pos[1], pos[2]);
+	else if(typeSide == 1) GetCoordBootVehicle(vehicleid, pos[0], pos[1], pos[2]);
+	CreateGps(playerid, pos[0], pos[1], pos[2], 0, 0, 2.0);
+	return 1;
 }
 
 stock IsATrashBoot(playerid) // Позиция багажника в мусоровоза
@@ -1158,4 +1180,39 @@ function LoadGosVeh()
 		printf("[MODE]: Стоимость Транспорта [%d ms]",GetTickCount() - time);
 	}
 	return 1;
+}
+
+// Поиска id транспорта по названию
+stock ReturnVehicle(const vehiclename[])
+{
+	new model = -1;
+
+	// Если указан id, просто передаём id
+	if(IsNumeric(vehiclename)) model = strval(vehiclename);
+	else
+	{
+		// Ищем по названию среди обычного транспорта
+		for(new i = 0; i < sizeof(vehName); i++)
+		{
+			if(strfind(vehName[i], vehiclename, true) != -1)
+			{
+				model = i + 400;
+				break;
+			}
+		}
+
+		// Ищем по названию среди кастомного транспорта
+		if(model == -1)
+		{
+			for(new i = 0; i < sizeof(vehNameCustom); i++)
+			{
+				if(strfind(vehNameCustom[i], vehiclename, true) != -1)
+				{
+					model = i + 2000;
+					break;
+				}
+			}
+		}
+	}
+    return model;
 }
