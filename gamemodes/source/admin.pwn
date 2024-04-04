@@ -886,3 +886,65 @@ CMD:geo(playerid, const params[])
     SendClientMessage(playerid, COLOR_GREY, string);
  	return 1;
 }
+
+
+function Call_Punishments(playerid, parama)
+{
+	new rows, str[480], sctring[12800], datad1[24], datad2[24], datad3[24],datad5[24], datun, datro[64], kol, qwer[60], tyear, tmonth, tday, thour, tminute, tsecond;
+	cache_get_row_count(rows);
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_value_name(i, "player", datad1, 24);
+		cache_get_value_name(i, "sender", datad3, 24);
+		cache_get_value_name(i, "action", datad2, 24);
+		cache_get_value_name_int(i, "unix", datun);
+		cache_get_value_name(i, "rows", datro,64 );
+		stamp2datetime(datun, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+		format(str,sizeof(str),"{cccccc}[ %02d.%02d.%d %02d:%02d ] /%s %s от %s. Причина: %s.\n", tday, tmonth, tyear, thour, tminute, datad2, datad1,datad3, datro), strcat(sctring,str);
+		kol ++;
+	}
+	if(kol >= 1)
+	{
+		format(qwer,sizeof(qwer),"{0088ff}Лог наказаний %s",datad1);
+		ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,qwer,sctring,"Ок","");
+	}
+	else if(kol == 0) ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}По запросу ничего не найдено","Ок","");
+	return 1;
+}
+
+function Call_PunishmentsName(playerid, const parama)
+{
+	new string[310];
+	new rows, str[480], sctring[12800], datad1, datad2[24], datad3[24],datad5[24], datun, datro[64], kol, qwer[60];
+	cache_get_value_name_int(rows, "user_id", datad1);
+	format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", datad1);
+	mysql_tquery(pearsq_2, string, "Call_Punishments", "dd", playerid, datad1);
+	return 1;
+}
+
+stock PunishmentsLogs(playerid, target)
+{
+	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
+	new string[310];
+	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}Поиск логов...","*","");
+	format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
+	mysql_tquery(pearsq_2, string, "Call_Punishments", "dd", playerid, target);
+	return 1;
+}
+CMD:punishments(playerid,const params[])
+{
+	if(PlayerInfo[playerid][pSoska] == 0) return 0;
+	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть нарушения игрока [ /punishments ID/NickName ]");
+	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
+	new giveplayerid;
+	giveplayerid = ReturnUser(params[0], 1);
+	if(IsPlayerConnected(giveplayerid)) PunishmentsLogs(playerid, giveplayerid);
+	else
+	{
+		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+		new string[128];
+		format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", params[0]);
+		mysql_tquery(pearsq, string, "Call_PunishmentsName", "ds", playerid, params[0]);
+	}
+	return 1;
+}

@@ -1,25 +1,25 @@
-#define MAX_MAKE 100 // Максимальное количество вызовов
+#define MAX_MAKE 100 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РІС‹Р·РѕРІРѕРІ
 
 enum mkInfo
 {
-    mkPlayerId, // playerid Создателя заявки
-    mkWho, // Куда заявка. 0 нет вызова
-    mkStatus, // проверка статуса
-    mkWhoTake, // Кто принял фракция
-    mkWhoTakePlayer, // Кто принял вызов playerid
-    mkWhoParam, // Ид того что угнали/ограбили
-    mkWhoType, // Тип машина/дом
-    Float:mkCord[3], // Корды
+    mkPlayerId, // playerid РЎРѕР·РґР°С‚РµР»СЏ Р·Р°СЏРІРєРё
+    mkWho, // РљСѓРґР° Р·Р°СЏРІРєР°. 0 РЅРµС‚ РІС‹Р·РѕРІР°
+    mkStatus, // РїСЂРѕРІРµСЂРєР° СЃС‚Р°С‚СѓСЃР°
+    mkWhoTake, // РљС‚Рѕ РїСЂРёРЅСЏР» С„СЂР°РєС†РёСЏ
+    mkWhoTakePlayer, // РљС‚Рѕ РїСЂРёРЅСЏР» РІС‹Р·РѕРІ playerid
+    mkWhoParam, // РРґ С‚РѕРіРѕ С‡С‚Рѕ СѓРіРЅР°Р»Рё/РѕРіСЂР°Р±РёР»Рё
+    mkWhoType, // РўРёРї РјР°С€РёРЅР°/РґРѕРј
+    Float:mkCord[3], // РљРѕСЂРґС‹
 }
 new MakeInfo[MAX_MAKE][mkInfo];
 
 new serviceName[][] =
 {
-    "{cccccc}нет", "{0066ff}Полиция", "{ff6666}Скорая Помощь", "{ff6666}Пожарные 911", "{ffcc00}Такси"
+    "{cccccc}РЅРµС‚", "{0066ff}РџРѕР»РёС†РёСЏ", "{ff6666}РЎРєРѕСЂР°СЏ РџРѕРјРѕС‰СЊ", "{ff6666}РџРѕР¶Р°СЂРЅС‹Рµ 911", "{ffcc00}РўР°РєСЃРё"
 };
 new servicePlayerName[][] =
 {
-    "{cccccc}нет", "{0066ff}Полицейский", "{ff6666}Доктор", "{ff6666}Пожарный", "{ffcc00}Таксист"
+    "{cccccc}РЅРµС‚", "{0066ff}РџРѕР»РёС†РµР№СЃРєРёР№", "{ff6666}Р”РѕРєС‚РѕСЂ", "{ff6666}РџРѕР¶Р°СЂРЅС‹Р№", "{ffcc00}РўР°РєСЃРёСЃС‚"
 };
 
 stock SettingServiceMake(playerid)
@@ -27,20 +27,20 @@ stock SettingServiceMake(playerid)
     new s = OnlineInfo[playerid][oServiceMake][0]; // servie id
     new mk = OnlineInfo[playerid][oServiceMake][2]; // make id
 
-    new line[90],lines[180];
+    new line[90],lines[360];
     if(MakeInfo[mk][mkStatus] == 1)
     {
-        format(line,sizeof(line),"{cccccc}Активный Вызов: %s {cccccc}| Ожидание до %s \t", serviceName[s], fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
-        format(line,sizeof(line),"\n{FF6347}Отменить вызов \t"), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}РђРєС‚РёРІРЅС‹Р№ Р’С‹Р·РѕРІ: %s {cccccc}| РћР¶РёРґР°РЅРёРµ РґРѕ %s \t", serviceName[s], fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+        format(line,sizeof(line),"\n{FF6347}РћС‚РјРµРЅРёС‚СЊ РІС‹Р·РѕРІ \t"), strcat(lines,line);
     }
     else
     {
         new callid = MakeInfo[mk][mkPlayerId];
-        format(line,sizeof(line),"{cccccc}Активный Вызов: %s {cccccc}| {99ff66}Вызов Принят \t", serviceName[s]), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}РђРєС‚РёРІРЅС‹Р№ Р’С‹Р·РѕРІ: %s {cccccc}| {99ff66}Р’С‹Р·РѕРІ РџСЂРёРЅСЏС‚ \t", serviceName[s]), strcat(lines,line);
         if(IsOnline(callid)) format(line,sizeof(line),"\n%s: \t{cccccc}%s", servicePlayerName[s], PlayerInfo[callid][pName]), strcat(lines,line);
-        else format(line,sizeof(line),"\n%s: \t{cccccc}неизвестно", servicePlayerName[s]), strcat(lines,line);
+        else format(line,sizeof(line),"\n%s: \t{cccccc}РЅРµРёР·РІРµСЃС‚РЅРѕ", servicePlayerName[s]), strcat(lines,line);
     }
-    ShowDialog(playerid,790,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Вызов служб",lines,"Выбрать","Отмена");
+    ShowDialog(playerid,790,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Р’С‹Р·РѕРІ СЃР»СѓР¶Р±",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
     return 1;
 }
 stock AutoMakeCreate(whom,type,id)
@@ -79,9 +79,9 @@ stock MessageMake(number)
             if(PlayerInfo[i][patroolID] == -1) continue;
             if(IsPlayerRealPosInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
             {
-                if(MakeInfo[number][mkWhoType] == 2) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Сработала сигнализация в доме в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else if(MakeInfo[number][mkWhoType] == 1) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Сработала сигнализация в машине в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
+                if(MakeInfo[number][mkWhoType] == 2) format(string,sizeof(string), " SMS РѕС‚ Р”РёСЃРїРµС‚С‡РµСЂР°: {99ff33}РЎСЂР°Р±РѕС‚Р°Р»Р° СЃРёРіРЅР°Р»РёР·Р°С†РёСЏ РІ РґРѕРјРµ РІ СЂР°Р№РѕРЅРµ %s. РќРѕРјРµСЂ РІС‹Р·РѕРІР°: %d",gSAZones[findraiontolist][zName],number+1);
+                else if(MakeInfo[number][mkWhoType] == 1) format(string,sizeof(string), " SMS РѕС‚ Р”РёСЃРїРµС‚С‡РµСЂР°: {99ff33}РЎСЂР°Р±РѕС‚Р°Р»Р° СЃРёРіРЅР°Р»РёР·Р°С†РёСЏ РІ РјР°С€РёРЅРµ РІ СЂР°Р№РѕРЅРµ %s. РќРѕРјРµСЂ РІС‹Р·РѕРІР°: %d",gSAZones[findraiontolist][zName],number+1);
+                else format(string,sizeof(string), " SMS РѕС‚ Р”РёСЃРїРµС‚С‡РµСЂР°: {99ff33}РўРѕР»СЊРєРѕ С‡С‚Рѕ РїРѕСЃС‚СѓРїРёР» РІС‹Р·РѕРІ РѕС‚ %s РІ СЂР°Р№РѕРЅРµ %s. РќРѕРјРµСЂ РІС‹Р·РѕРІР°: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
                 SendClientMessage(i,COLOR_YELLOW,string);
             }
         }
@@ -89,8 +89,8 @@ stock MessageMake(number)
         {
             if(IsPlayerRealPosInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
             {
-                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Человек в тяжелом состоянии в районе: %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
+                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS РѕС‚ Р”РёСЃРїРµС‚С‡РµСЂР°: {99ff33}Р§РµР»РѕРІРµРє РІ С‚СЏР¶РµР»РѕРј СЃРѕСЃС‚РѕСЏРЅРёРё РІ СЂР°Р№РѕРЅРµ: %s. РќРѕРјРµСЂ РІС‹Р·РѕРІР°: %d",gSAZones[findraiontolist][zName],number+1);
+                else format(string,sizeof(string), " SMS РѕС‚ Р”РёСЃРїРµС‚С‡РµСЂР°: {99ff33}РўРѕР»СЊРєРѕ С‡С‚Рѕ РїРѕСЃС‚СѓРїРёР» РІС‹Р·РѕРІ РѕС‚ %s РІ СЂР°Р№РѕРЅРµ %s. РќРѕРјРµСЂ РІС‹Р·РѕРІР°: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
                 SendClientMessage(i,COLOR_YELLOW,string);
             }
         }
@@ -98,7 +98,7 @@ stock MessageMake(number)
 }
 stock MakeCreate(playerid, whom)
 {
-    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+    if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
 
     new findslot = -1;
     for(new z = 0; z < MAX_MAKE; z++) 
@@ -109,23 +109,23 @@ stock MakeCreate(playerid, whom)
             break;
         }
     }
-    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент 50 активных вызовов\n\n{cccccc}Сообщите об этом администрации в [ /report ]");
+    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}Р’ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ 50 Р°РєС‚РёРІРЅС‹С… РІС‹Р·РѕРІРѕРІ\n\n{cccccc}РЎРѕРѕР±С‰РёС‚Рµ РѕР± СЌС‚РѕРј Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё РІ [ /report ]");
 
     if(whom == 1)
     {
         if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pLeader] == 1 
             || PlayerInfo[playerid][pMember] == 11 || PlayerInfo[playerid][pLeader] == 11 
-            || PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pLeader] == 21) return ErrorMessage(playerid, "{FF6347}Вы сотрудник правоохранительных органов и не можете вызвать полицию");
-        SetPlayerChatBubble(playerid,"вызывает полицию",COLOR_PURPLE,20.0,9000);
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {0066ff}[ Полиция ]");
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
+            || PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pLeader] == 21) return ErrorMessage(playerid, "{FF6347}Р’С‹ СЃРѕС‚СЂСѓРґРЅРёРє РїСЂР°РІРѕРѕС…СЂР°РЅРёС‚РµР»СЊРЅС‹С… РѕСЂРіР°РЅРѕРІ Рё РЅРµ РјРѕР¶РµС‚Рµ РІС‹Р·РІР°С‚СЊ РїРѕР»РёС†РёСЋ");
+        SetPlayerChatBubble(playerid,"РІС‹Р·С‹РІР°РµС‚ РїРѕР»РёС†РёСЋ",COLOR_PURPLE,20.0,9000);
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Р’С‹Р·РѕРІ: {0066ff}[ РџРѕР»РёС†РёСЏ ]");
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}РЎС‚Р°С‚СѓСЃ: {ccffff}РћР¶РёРґР°РЅРёРµ");
     }
     else if(whom == 2)
     {
-        if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return ErrorMessage(playerid, "{FF6347}Вы работник ASGH и не можете вызвать скорую помощь");
-        SetPlayerChatBubble(playerid,"вызывает скорую помощь",COLOR_PURPLE,20.0,9000);
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вызов: {ff6666}[ Скорая Помощь ]");
-        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Статус: {ccffff}Ожидание");
+        if(PlayerInfo[playerid][pMember] == 4 || PlayerInfo[playerid][pLeader] == 4) return ErrorMessage(playerid, "{FF6347}Р’С‹ СЂР°Р±РѕС‚РЅРёРє ASGH Рё РЅРµ РјРѕР¶РµС‚Рµ РІС‹Р·РІР°С‚СЊ СЃРєРѕСЂСѓСЋ РїРѕРјРѕС‰СЊ");
+        SetPlayerChatBubble(playerid,"РІС‹Р·С‹РІР°РµС‚ СЃРєРѕСЂСѓСЋ РїРѕРјРѕС‰СЊ",COLOR_PURPLE,20.0,9000);
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Р’С‹Р·РѕРІ: {ff6666}[ РЎРєРѕСЂР°СЏ РџРѕРјРѕС‰СЊ ]");
+        SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}РЎС‚Р°С‚СѓСЃ: {ccffff}РћР¶РёРґР°РЅРёРµ");
     }
     around_player_audio(playerid, 3600, 0, 5.0, 0);
 
@@ -164,20 +164,20 @@ stock AutoCloseMake(playerid)
     new findslot = OnlineInfo[playerid][oServiceMake][2];
     if(OnlineInfo[playerid][oServiceMake][1] > 0 && MakeInfo[findslot][mkWhoType] == 0)
     {
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Человек принявший ваш вызов прибыл на место.");
-        SuccessMessage(playerid, "Человек принявший ваш вызов прибыл на место.");
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer],"{44ff99}Вы закрыли вызов.");
+        SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р§РµР»РѕРІРµРє РїСЂРёРЅСЏРІС€РёР№ РІР°С€ РІС‹Р·РѕРІ РїСЂРёР±С‹Р» РЅР° РјРµСЃС‚Рѕ.");
+        SuccessMessage(playerid, "Р§РµР»РѕРІРµРє РїСЂРёРЅСЏРІС€РёР№ РІР°С€ РІС‹Р·РѕРІ РїСЂРёР±С‹Р» РЅР° РјРµСЃС‚Рѕ.");
+        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer],"{44ff99}Р’С‹ Р·Р°РєСЂС‹Р»Рё РІС‹Р·РѕРІ.");
     }
     else if(IsPlayerConnected(playerid) && OnlineInfo[playerid][oServiceMake][1] < 1 && MakeInfo[findslot][mkWhoType] == 0)
     {
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время активности вашего вызова истекло.");
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Если проблема актуальна, наверное стоит сделать вызов по новой?");
-        SuccessMessage(playerid, "Время активности вашего вызова истекло.\nЕсли проблема актуально, наверное стоит сделать вызов по новой?");
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Вы не успели приехать на вызов. Время активности вызова вышло.");
+        SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјСЏ Р°РєС‚РёРІРЅРѕСЃС‚Рё РІР°С€РµРіРѕ РІС‹Р·РѕРІР° РёСЃС‚РµРєР»Рѕ.");
+        SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р•СЃР»Рё РїСЂРѕР±Р»РµРјР° Р°РєС‚СѓР°Р»СЊРЅР°, РЅР°РІРµСЂРЅРѕРµ СЃС‚РѕРёС‚ СЃРґРµР»Р°С‚СЊ РІС‹Р·РѕРІ РїРѕ РЅРѕРІРѕР№?");
+        SuccessMessage(playerid, "Р’СЂРµРјСЏ Р°РєС‚РёРІРЅРѕСЃС‚Рё РІР°С€РµРіРѕ РІС‹Р·РѕРІР° РёСЃС‚РµРєР»Рѕ.\nР•СЃР»Рё РїСЂРѕР±Р»РµРјР° Р°РєС‚СѓР°Р»СЊРЅРѕ, РЅР°РІРµСЂРЅРѕРµ СЃС‚РѕРёС‚ СЃРґРµР»Р°С‚СЊ РІС‹Р·РѕРІ РїРѕ РЅРѕРІРѕР№?");
+        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Р’С‹ РЅРµ СѓСЃРїРµР»Рё РїСЂРёРµС…Р°С‚СЊ РЅР° РІС‹Р·РѕРІ. Р’СЂРµРјСЏ Р°РєС‚РёРІРЅРѕСЃС‚Рё РІС‹Р·РѕРІР° РІС‹С€Р»Рѕ.");
     }
     else if(OnlineInfo[playerid][oServiceMake][1] < 0 && MakeInfo[findslot][mkWhoType] == 3)
     {
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Вы не успели приехать на вызов. Время активности вызова вышло.");
+        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Р’С‹ РЅРµ СѓСЃРїРµР»Рё РїСЂРёРµС…Р°С‚СЊ РЅР° РІС‹Р·РѕРІ. Р’СЂРµРјСЏ Р°РєС‚РёРІРЅРѕСЃС‚Рё РІС‹Р·РѕРІР° РІС‹С€Р»Рѕ.");
     }
     OnlineInfo[playerid][oServiceMake][1] = 0;
     OnlineInfo[playerid][oServiceMake][0] = 0;
@@ -197,17 +197,17 @@ stock TakeMake(playerid,number)
     if(MakeInfo[number][mkWhoParam] == -1)
     {
         if(MakeInfo[number][mkWhoType] != 3) OnlineInfo[MakeInfo[number][mkPlayerId]][oServiceMake][1] = 600;
-        SuccessMessage(MakeInfo[number][mkPlayerId], "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет вызванная служба");
-        SendClientMessage(MakeInfo[number][mkPlayerId], COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб. Пожалуйста, не покидайте радиус вызова (200 метров).");
+        SuccessMessage(MakeInfo[number][mkPlayerId], "{99ff66}Р’С‹Р·РѕРІ РїСЂРёРЅСЏС‚\n\n{cccccc}РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РЅРµ РїРѕРєРёРґР°Р№С‚Рµ СЂР°РґРёСѓСЃ РІС‹Р·РѕРІР° (200 РјРµС‚СЂРѕРІ), РґРѕ С‚РµС… РїРѕСЂ РїРѕРєР° РЅРµ РїСЂРёРµРґРµС‚ РІС‹Р·РІР°РЅРЅР°СЏ СЃР»СѓР¶Р±Р°");
+        SendClientMessage(MakeInfo[number][mkPlayerId], COLOR_GREY, " {AFAFAF}Р—Р°РїСЂРѕСЃ РџСЂРёРЅСЏС‚, РѕР¶РёРґР°Р№С‚Рµ РїСЂРёР±С‹С‚РёСЏ СЃР»СѓР¶Р±. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РЅРµ РїРѕРєРёРґР°Р№С‚Рµ СЂР°РґРёСѓСЃ РІС‹Р·РѕРІР° (200 РјРµС‚СЂРѕРІ).");
     }
     MakeInfo[number][mkWhoTake] = fraction(playerid);
     MakeInfo[number][mkWhoTakePlayer] = playerid;
     MakeInfo[number][mkWho] = CopOrMin;
     OnlineInfo[playerid][oTakeMake] = number;
     new line[80];
-    SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
-    format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]+1);
-    format(line,sizeof(line)," {AFAFAF}По призду на место не забудьте закрыть вызов. [/closemake %d]", OnlineInfo[playerid][oTakeMake]+1);
+    SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Р’С‹ РїСЂРёРЅСЏР»Рё РІС‹Р·РѕРІ.");
+    format(line,sizeof(line)," {AFAFAF}РџРѕР»СѓС‡РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚ GPS РґРѕСЃС‚СѓРїРЅРѕ С‡РµСЂРµР· Р±РѕСЂС‚РѕРІРѕР№ РџРљ. [/findmake %d]", OnlineInfo[playerid][oTakeMake]+1);
+    format(line,sizeof(line)," {AFAFAF}РџРѕ РїСЂРёР·РґСѓ РЅР° РјРµСЃС‚Рѕ РЅРµ Р·Р°Р±СѓРґСЊС‚Рµ Р·Р°РєСЂС‹С‚СЊ РІС‹Р·РѕРІ. [/closemake %d]", OnlineInfo[playerid][oTakeMake]+1);
     SendClientMessage(playerid, COLOR_GREY, line);
 }
 
@@ -215,7 +215,7 @@ stock FindMake(playerid,number)
 {
     if(MakeInfo[number][mkStatus] == 2 && MakeInfo[number][mkWhoParam] == -1)
     {
-        if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+        if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р°РєС‚РёРІРЅР° Р·РѕРЅР° РїРѕРёСЃРєР°, РґРѕР¶РґРёС‚РµСЃСЊ РµС‘ РѕРєРѕРЅС‡Р°РЅРёСЏ");
         new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
         ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
     }
@@ -226,7 +226,7 @@ stock FindMake(playerid,number)
             if(VehInfo[MakeInfo[number][mkWhoParam]][vAlarm] == 2 && VehInfo[MakeInfo[number][mkWhoParam]][vAlarmUnix]+604800 > gettime())
             {
                 new Float:X,Float:Y,Float:Z;
-                if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+                if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р°РєС‚РёРІРЅР° Р·РѕРЅР° РїРѕРёСЃРєР°, РґРѕР¶РґРёС‚РµСЃСЊ РµС‘ РѕРєРѕРЅС‡Р°РЅРёСЏ");
                 GetVehiclePos(MakeInfo[number][mkWhoParam],X,Y,Z);
                 new Float:rand_x = 5 + random(30), Float:rand_y = 5 + random(30);
                 switch(random(4))
@@ -241,27 +241,27 @@ stock FindMake(playerid,number)
             }
             else
             {
-                if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+                if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р°РєС‚РёРІРЅР° Р·РѕРЅР° РїРѕРёСЃРєР°, РґРѕР¶РґРёС‚РµСЃСЊ РµС‘ РѕРєРѕРЅС‡Р°РЅРёСЏ");
                 new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
                 ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
             }
         }
         else if(MakeInfo[number][mkWhoType] == 2 || MakeInfo[number][mkWhoType] == 3)
         {
-            if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
+            if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р°РєС‚РёРІРЅР° Р·РѕРЅР° РїРѕРёСЃРєР°, РґРѕР¶РґРёС‚РµСЃСЊ РµС‘ РѕРєРѕРЅС‡Р°РЅРёСЏ");
             new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
             ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
         }
     }
-    else return ErrorMessage(playerid,"{FF6347}Ошибка! Данный вызов нельзя отследить. Он не принят или недоступен");
+    else return ErrorMessage(playerid,"{FF6347}РћС€РёР±РєР°! Р”Р°РЅРЅС‹Р№ РІС‹Р·РѕРІ РЅРµР»СЊР·СЏ РѕС‚СЃР»РµРґРёС‚СЊ. РћРЅ РЅРµ РїСЂРёРЅСЏС‚ РёР»Рё РЅРµРґРѕСЃС‚СѓРїРµРЅ");
     return 1;
 }
 
 CMD:findmake(playerid,const params[])
 {
     new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отследить место вызова {ffcc00}[ /findmake ID вызова ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отследить место вызова {ffcc00}[ /findmake ID вызова ]");
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћС‚СЃР»РµРґРёС‚СЊ РјРµСЃС‚Рѕ РІС‹Р·РѕРІР° {ffcc00}[ /findmake ID РІС‹Р·РѕРІР° ]");
+    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РћС‚СЃР»РµРґРёС‚СЊ РјРµСЃС‚Рѕ РІС‹Р·РѕРІР° {ffcc00}[ /findmake ID РІС‹Р·РѕРІР° ]");
     number--;
     FindMake(playerid,number);
     return 1;
@@ -270,20 +270,20 @@ CMD:findmake(playerid,const params[])
 CMD:acceptmake(playerid,const params[])
 {
     new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /accaptmake ID ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /accaptmake ID ]");
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРЅСЏС‚СЊ РІС‹Р·РѕРІ {ffcc00}[ /accaptmake ID ]");
+    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРёРЅСЏС‚СЊ РІС‹Р·РѕРІ {ffcc00}[ /accaptmake ID ]");
     number--;
-    if(MakeInfo[number][mkStatus] == 0) return ErrorMessage(playerid,"{FF6347}Данный вызов недоступен или его просто нет");
+    if(MakeInfo[number][mkStatus] == 0) return ErrorMessage(playerid,"{FF6347}Р”Р°РЅРЅС‹Р№ РІС‹Р·РѕРІ РЅРµРґРѕСЃС‚СѓРїРµРЅ РёР»Рё РµРіРѕ РїСЂРѕСЃС‚Рѕ РЅРµС‚");
     new g = fraction(playerid);
-    if(OnlineInfo[playerid][oTakeMake] != -1) return ErrorMessage(playerid,"{FF6347}У вас уже есть принятый вызов");
+    if(OnlineInfo[playerid][oTakeMake] != -1) return ErrorMessage(playerid,"{FF6347}РЈ РІР°СЃ СѓР¶Рµ РµСЃС‚СЊ РїСЂРёРЅСЏС‚С‹Р№ РІС‹Р·РѕРІ");
     if(MakeInfo[number][mkWho] == 1)
     {
-        if(g != 1 && g != 11 && g != 21 && g != 1) return ErrorMessage(playerid,"{FF6347}Вы не работаете в LSPD/SFPD/LVPD");
+        if(g != 1 && g != 11 && g != 21 && g != 1) return ErrorMessage(playerid,"{FF6347}Р’С‹ РЅРµ СЂР°Р±РѕС‚Р°РµС‚Рµ РІ LSPD/SFPD/LVPD");
         TakeMake(playerid,number);
     }
     else if(MakeInfo[number][mkWho] == 2)
     {
-        if(g != 4) return ErrorMessage(playerid,"{FF6347}Вы не работаете в Мин.Здраве");
+        if(g != 4) return ErrorMessage(playerid,"{FF6347}Р’С‹ РЅРµ СЂР°Р±РѕС‚Р°РµС‚Рµ РІ РњРёРЅ.Р—РґСЂР°РІРµ");
         TakeMake(playerid,number);
     }
     return 1;
@@ -292,27 +292,27 @@ CMD:acceptmake(playerid,const params[])
 CMD:closemake(playerid,const params[])
 {
     new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РєСЂС‹С‚СЊ РІС‹Р·РѕРІ {ffcc00}[ /closemake ID РІС‹Р·РѕРІР° ]");
+    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РєСЂС‹С‚СЊ РІС‹Р·РѕРІ {ffcc00}[ /closemake ID РІС‹Р·РѕРІР° ]");
     number--;
-    if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{FF6347}Данный вызов не принят что бы его завершить.");
+    if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{FF6347}Р”Р°РЅРЅС‹Р№ РІС‹Р·РѕРІ РЅРµ РїСЂРёРЅСЏС‚ С‡С‚Рѕ Р±С‹ РµРіРѕ Р·Р°РІРµСЂС€РёС‚СЊ.");
     if(MakeInfo[number][mkWhoParam] != -1 && MakeInfo[number][mkWhoType] == 1)
     {
         new Float:x,Float:y,Float:z;
         GetVehiclePos(MakeInfo[number][mkWhoParam],x,y,z);
         if(VehInfo[MakeInfo[number][mkWhoParam]][vAlarm] == 2 && VehInfo[MakeInfo[number][mkWhoParam]][vAlarmUnix]+604800 > gettime())
         {
-            if(!IsPlayerInRangeOfPoint(playerid,80.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+            if(!IsPlayerInRangeOfPoint(playerid,80.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РІРµСЂС€РёС‚СЊ РІС‹Р·РѕРІ РЅР°С…РѕРґСЏСЃСЊ РґР°Р»РµРєРѕ РѕС‚ РјРµСЃС‚Р° РІС‹Р·РѕРІР°");
         }
         else
         {
-            if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+            if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РІРµСЂС€РёС‚СЊ РІС‹Р·РѕРІ РЅР°С…РѕРґСЏСЃСЊ РґР°Р»РµРєРѕ РѕС‚ РјРµСЃС‚Р° РІС‹Р·РѕРІР°");
         }
         CloseMake(playerid,number);
     }
-    if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который никто не принял");
-    if(MakeInfo[number][mkWhoTakePlayer] != playerid && MakeInfo[number][mkWhoTakePlayer] != -1) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который принял другой человек");
-    if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
+    if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РІРµСЂС€РёС‚СЊ РІС‹Р·РѕРІ, РєРѕС‚РѕСЂС‹Р№ РЅРёРєС‚Рѕ РЅРµ РїСЂРёРЅСЏР»");
+    if(MakeInfo[number][mkWhoTakePlayer] != playerid && MakeInfo[number][mkWhoTakePlayer] != -1) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РІРµСЂС€РёС‚СЊ РІС‹Р·РѕРІ, РєРѕС‚РѕСЂС‹Р№ РїСЂРёРЅСЏР» РґСЂСѓРіРѕР№ С‡РµР»РѕРІРµРє");
+    if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ Р·Р°РІРµСЂС€РёС‚СЊ РІС‹Р·РѕРІ РЅР°С…РѕРґСЏСЃСЊ РґР°Р»РµРєРѕ РѕС‚ РјРµСЃС‚Р° РІС‹Р·РѕРІР°");
     CloseMake(playerid,number);
     return 1;
 }
@@ -325,7 +325,7 @@ stock CallService(playerid, whom)
         if(whom != OnlineInfo[playerid][oServiceMake][0])
         {
             new string[120];
-            format(string,sizeof(string),"{FF6347}Вы уже вызвали %s\n\n{cccccc}К сожалению, вы не можете вызвать два сервиса одновременно", serviceName[s]);
+            format(string,sizeof(string),"{FF6347}Р’С‹ СѓР¶Рµ РІС‹Р·РІР°Р»Рё %s\n\n{cccccc}Рљ СЃРѕР¶Р°Р»РµРЅРёСЋ, РІС‹ РЅРµ РјРѕР¶РµС‚Рµ РІС‹Р·РІР°С‚СЊ РґРІР° СЃРµСЂРІРёСЃР° РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ", serviceName[s]);
             ErrorMessage(playerid, string);
             return 1;
         }
@@ -334,15 +334,15 @@ stock CallService(playerid, whom)
     }
 	if(whom == 4)
 	{
-		ShowDialog(playerid,800,DIALOG_STYLE_MSGBOX,"{ff9000}Вызовы","\n{ff9000}Вы уверены, что хотите вызвать такси?\n\n{cccccc}Обязательно дождитесь таксиста после того, как он примет заказ {ff9000};)\n","Да","Нет");
+		ShowDialog(playerid,800,DIALOG_STYLE_MSGBOX,"{ff9000}Р’С‹Р·РѕРІС‹","\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РІС‹Р·РІР°С‚СЊ С‚Р°РєСЃРё?\n\n{cccccc}РћР±СЏР·Р°С‚РµР»СЊРЅРѕ РґРѕР¶РґРёС‚РµСЃСЊ С‚Р°РєСЃРёСЃС‚Р° РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє РѕРЅ РїСЂРёРјРµС‚ Р·Р°РєР°Р· {ff9000};)\n","Р”Р°","РќРµС‚");
 	}
 	else if(whom == 1)
 	{
-		ShowDialog(playerid,598,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {0066ff}полицию ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+		ShowDialog(playerid,598,DIALOG_STYLE_MSGBOX,"{ff9000}РЎРµСЂРІРёСЃ","\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РІС‹Р·РІР°С‚СЊ {0066ff}РїРѕР»РёС†РёСЋ ?\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! {cccccc}Р’ СЃР»СѓС‡Р°Рµ Р»РѕР¶РЅРѕРіРѕ РІС‹Р·РѕРІР° РІР°Рј РїСЂРёРґС‘С‚СЃСЏ Р·Р°РїР»Р°С‚РёС‚СЊ С€С‚СЂР°С„\n","Р”Р°","РќРµС‚");
 	}
 	else if(whom == 2)
 	{
-		ShowDialog(playerid,791,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {ff6666}скорую помощь ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+		ShowDialog(playerid,791,DIALOG_STYLE_MSGBOX,"{ff9000}РЎРµСЂРІРёСЃ","\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РІС‹Р·РІР°С‚СЊ {ff6666}СЃРєРѕСЂСѓСЋ РїРѕРјРѕС‰СЊ ?\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! {cccccc}Р’ СЃР»СѓС‡Р°Рµ Р»РѕР¶РЅРѕРіРѕ РІС‹Р·РѕРІР° РІР°Рј РїСЂРёРґС‘С‚СЃСЏ Р·Р°РїР»Р°С‚РёС‚СЊ С€С‚СЂР°С„\n","Р”Р°","РќРµС‚");
 	}
 	return 1;
 }
@@ -355,34 +355,34 @@ stock MakeList(playerid)
     if(IsACop(playerid)) CopOrMin = 1;
     else CopOrMin = 2;
     new line[100],lines[4048];
-    format(line,sizeof(line),"№ Вызвавший\tСтатус\tРайон\tВремя\t"), strcat(lines,line);
+    format(line,sizeof(line),"в„– Р’С‹Р·РІР°РІС€РёР№\tРЎС‚Р°С‚СѓСЃ\tР Р°Р№РѕРЅ\tР’СЂРµРјСЏ\t"), strcat(lines,line);
     new quan, targetid,findraiontolist,timemake[20];
     for(new z = 0; z < MAX_MAKE; z++) 
     {
         if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 1 && MakeInfo[z][mkWho] == 1)
         {
-            if(MakeInfo[z][mkWhoType] > 0) timemake = "Срочный вызов";
+            if(MakeInfo[z][mkWhoType] > 0) timemake = "РЎСЂРѕС‡РЅС‹Р№ РІС‹Р·РѕРІ";
             else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tР’ РѕР¶РёРґР°РЅРёРµ\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tРџСЂРёРЅСЏС‚\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
         {
-            if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "Срочный вызов";
+            if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "РЎСЂРѕС‡РЅС‹Р№ РІС‹Р·РѕРІ";
             else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tР’ РѕР¶РёРґР°РЅРёРµ\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tРџСЂРёРЅСЏС‚\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 0)
         {
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tР’ РѕР¶РёРґР°РЅРёРµ\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s\tРџСЂРёРЅСЏС‚\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
         }
         else
         {
@@ -391,8 +391,8 @@ stock MakeList(playerid)
         List[z][playerid] = quan;
         quan++;
     }
-    if(quan == 0) return ErrorMessage(playerid,"{FF6347}В данный момент нет вызовов");
-    else ShowDialog(playerid,1478,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список вызовов",lines,"Выбрать","Выход");
+    if(quan == 0) return ErrorMessage(playerid,"{FF6347}Р’ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РЅРµС‚ РІС‹Р·РѕРІРѕРІ");
+    else ShowDialog(playerid,1478,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РЎРїРёСЃРѕРє РІС‹Р·РѕРІРѕРІ",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -402,26 +402,26 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Выбрана не правильная строка.");
+            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Р’С‹Р±СЂР°РЅР° РЅРµ РїСЂР°РІРёР»СЊРЅР°СЏ СЃС‚СЂРѕРєР°.");
             new listselect = List[listitem][playerid],findraiontolist;
             DP[4][playerid] = listselect;
             new string[100];
             if(MakeInfo[listselect][mkStatus] == 2)
             {
-                format(string,sizeof(string),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
-                ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
+                format(string,sizeof(string),"Р’С‹Р·РѕРІ РїСЂРёРЅСЏС‚: %s. Р’С‹Р·РѕРІ РїСЂРёРЅСЏР»:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
+                ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІС‹Р·РѕРІРµ",string,"Р—Р°РєСЂС‹С‚СЊ","");
             }
             else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] == -1)
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
-                format(string,sizeof(string),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
-                ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
+                format(string,sizeof(string),"Р’С‹Р·РѕРІ РѕС‚: %s. Р’ СЂР°Р№РѕРЅРµ: %s\n\nР’С‹ С…РѕС‚РёС‚Рµ РїСЂРёРЅСЏС‚СЊ РІС‹Р·РѕРІ?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
+                ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІС‹Р·РѕРІРµ",string,"РџСЂРёРЅСЏС‚СЊ","РќР°Р·Р°Рґ");
             }
             else 
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
-                format(string,sizeof(string),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
-                ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
+                format(string,sizeof(string),"Р’С‹Р·РѕРІ РѕС‚: %s. Р’ СЂР°Р№РѕРЅРµ: %s\n\nР’С‹ С…РѕС‚РёС‚Рµ РїСЂРёРЅСЏС‚СЊ РІС‹Р·РѕРІ?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
+                ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РІС‹Р·РѕРІРµ",string,"РџСЂРёРЅСЏС‚СЊ","РќР°Р·Р°Рґ");
             }
         }
         else return cmd_mdc(playerid);
