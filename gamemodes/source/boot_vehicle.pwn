@@ -42,7 +42,7 @@ stock use_boot(playerid, v, inva, useinva)
 				SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,5000);
 				format(string, sizeof(string), "* %s вытаскивает из багажника %s", playername(playerid), playername(para1));
 				ProxDetector(20.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
-	    		GameTextForPlayer(para1, RusToGame("~g~Вас вытащили из багажника"), 7000, 4);
+	    		GameTextForPlayer(para1, "~g~‹ac ўЁ¦aЎњћњ њџ —a™a›®њka", 7000, 4);
 	    		EjectBoot(para1, v);
 		    }
 		    else ErrorMessage(playerid, "{FF6347}Ошибка! В багажнике никого нет"), TakeBoot(v, fpick, fquan, thingType, inva), VehInfo[v][vPeople] = 0;

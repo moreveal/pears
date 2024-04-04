@@ -223,9 +223,8 @@ stock AddPlayerTrailer(playerid, model)
             trailerInfo[id][tOwnerID] = PlayerInfo[playerid][pID];
 
             // Сохранение в базу данных
-            static const fmt_str[] = "INSERT INTO trailers (id, owner, model) VALUES (%d, %d, %d)";
-            new query_string[sizeof fmt_str - 2 + 9 - 2 + 9];
-            mysql_format(pearsq, query_string, sizeof query_string, fmt_str, id, trailerInfo[id][tOwnerID], trailerInfo[id][tModel]);
+            new query_string[200];
+            mysql_format(pearsq, query_string, sizeof(query_string), "INSERT INTO trailers (id, owner, model) VALUES (%d, %d, %d)", id, trailerInfo[id][tOwnerID], trailerInfo[id][tModel]);
             mysql_tquery(pearsq, query_string, "OnPlayerTrailerCreate", "d", id);
 
             // Сохраняем трейлер в аккаунт игроку
@@ -550,7 +549,7 @@ CMD:deletetrailer(playerid, const params[]) {
     if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Команда недоступна");
     new trailerid;
     if (sscanf(params, "d", trailerid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /deletetrailer ID трейлера ]");
-    if (DeleteTrailer(trailerid)) SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер №%d", trailerid);
+    if (DeleteTrailer(trailerid)) SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер № %d", trailerid);
     else SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Указанного трейлера не существует");
     return 1;
 }
@@ -565,7 +564,7 @@ CMD:unloadtrailer(playerid, const params[]) {
     if (!trailerInfo[tid][tActive]) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Этот трейлер не находится в игровом мире");
     UnloadPlacedTrailer(tid);
     new stirng[80];
-    format(stirng,sizeof(stirng),"[ Мысли ]: Я выгрузил трейлер [ №%d ] из игрового мира", tid);
+    format(stirng,sizeof(stirng),"[ Мысли ]: Я выгрузил трейлер [ № %d ] из игрового мира", tid);
     SendClientMessage(playerid, COLOR_GRAY, stirng);
     return 1;
 }
@@ -616,6 +615,19 @@ public UploadTrailers()
 		if (trailerInfo[t][tActive]) PlaceTrailer(t, trailerInfo[t][tModel], trailerInfo[t][tPos][0], trailerInfo[t][tPos][1], trailerInfo[t][tPos][2], trailerInfo[t][tRot][0], trailerInfo[t][tRot][1], trailerInfo[t][tRot][2]);
 	}
     printf("[MODE]: Трейлеры [%d ms]",GetTickCount() - time);
+	return 1;
+}
+
+stock infotrailer(playerid, t)
+{
+    if(trailerInfo[t][tOwnerID] == 0) return ErrorMessage(playerid, "{FF6347}У трейлера нет владельца\n{cccccc}Трейлер не был создан");
+	new str[100],sctring[700];
+ 	format(str,sizeof(str),"{0088ff}№ %d",t + 1), strcat(sctring,str);
+   	format(str,sizeof(str),"\n{cccccc}Владелец: {ff9000}№ %d", trailerInfo[t][tOwnerID]), strcat(sctring,str);
+   	format(str,sizeof(str),"\nModel: {ffffff}%d", trailerInfo[t][tModel]), strcat(sctring,str);
+    if (trailerInfo[t][tActive]) format(str,sizeof(str),"\nСтатус: {99ff66}Установлен"), strcat(sctring,str);
+    else format(str,sizeof(str),"\nСтатус: {FF6347}Не установлен"), strcat(sctring,str);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Трейлер",sctring,"*","");
 	return 1;
 }
 

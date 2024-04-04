@@ -1,16 +1,17 @@
 
 stock EditObjectDom(playerid, dom, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
-	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}РџР»Р°РЅРёСЂРѕРІРєСѓ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ");
+	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
 	new Float:ob[3];
     GetDynamicObjectPos(DomInfo[dom][dObject][oba],ob[0], ob[1], ob[2]);
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
-		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ");
 
 	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
 	GoEditDynamicObject(playerid, 6, 1, dom, oba, DomInfo[dom][dObject][oba], 0);
@@ -19,16 +20,16 @@ stock EditObjectDom(playerid, dom, oba)
 
 stock InfoObjectDomBiz(playerid, type, id, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Нельзя посмотреть информацию планировки");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РїРѕСЃРјРѕС‚СЂРµС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ РїР»Р°РЅРёСЂРѕРІРєРё");
 
     new model, object, userid;
     if(type == 1) model = DomInfo[id][dOmodel][oba], object = DomInfo[id][dObject][oba], userid = DomInfo[id][dUser][oba];
     else if(type == 2) model = BizzInfo[id][bOmodel][oba], object = BizzInfo[id][bObject][oba], userid = BizzInfo[id][bUser][oba];
 
-	if(model == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(object)) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-    if(userid == 0) return ErrorMessage(playerid, "{FF6347}У объекта нет создателя\n{cccccc}Он был создан системой");
+	if(model == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(object)) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(userid == 0) return ErrorMessage(playerid, "{FF6347}РЈ РѕР±СЉРµРєС‚Р° РЅРµС‚ СЃРѕР·РґР°С‚РµР»СЏ\n{cccccc}РћРЅ Р±С‹Р» СЃРѕР·РґР°РЅ СЃРёСЃС‚РµРјРѕР№");
 
     new string[144];
 	format(string,sizeof(string),"SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
@@ -45,28 +46,29 @@ function call_io(playerid, userid, id, oba, type)
         if(type == 1) model = DomInfo[id][dOmodel][oba];
         else if(type == 2) model = BizzInfo[id][bOmodel][oba];
 
-		if(model == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Пока искали аккаунт, объект уже был удалён");
+		if(model == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РџРѕРєР° РёСЃРєР°Р»Рё Р°РєРєР°СѓРЅС‚, РѕР±СЉРµРєС‚ СѓР¶Рµ Р±С‹Р» СѓРґР°Р»С‘РЅ");
 		cache_get_value_name(0, "Name", datad, 24);
 
 		new string[80];
-		format(string,sizeof(string),"{ffcccc}[ Map ]: ID Объекта %d | Model %d | Редактировал %s", oba, model, datad);
+		format(string,sizeof(string),"{ffcccc}[ Map ]: ID РћР±СЉРµРєС‚Р° %d | Model %d | Р РµРґР°РєС‚РёСЂРѕРІР°Р» %s", oba, model, datad);
 		SendClientMessage(playerid, COLOR_GREY, string);
 	}
-	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
+	else ErrorMessage(playerid, "{FF6347}РђРєРєР°СѓРЅС‚ РЅРµ РЅР°Р№РґРµРЅ");
 	return 1;
 }
 
 stock EditTextureDom(playerid, dom, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
 	new Float:ob[3];
     GetDynamicObjectPos(DomInfo[dom][dObject][oba],ob[0], ob[1], ob[2]);
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
-		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ");
 
 
     if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
@@ -76,7 +78,7 @@ stock EditTextureDom(playerid, dom, oba)
     ObjectToTexture(playerid, oba);
     NameTexture(playerid);
 
-    // Перезапускаем меню со слотами на объекте
+    // РџРµСЂРµР·Р°РїСѓСЃРєР°РµРј РјРµРЅСЋ СЃРѕ СЃР»РѕС‚Р°РјРё РЅР° РѕР±СЉРµРєС‚Рµ
     if(DrawTextdrawEditor[playerid] == true)
     {
         CloseDraw3DMenu(playerid);
@@ -87,21 +89,22 @@ stock EditTextureDom(playerid, dom, oba)
 
 stock DeleteObjectDom(playerid, dom, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
-	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}РџР»Р°РЅРёСЂРѕРІРєСѓ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ");
+	if(DomInfo[dom][dOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
     new model = DomInfo[dom][dOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
     {
         new resultPut = PutThingDom(dom, model, 1, 0, DomInfo[dom][dQara][oba], 4, 0, 999);
-        if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре дома нет места");
+        if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}Р’ РёРЅРІРµРЅС‚Р°СЂРµ РґРѕРјР° РЅРµС‚ РјРµСЃС‚Р°");
     }
     else
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект был полностью удалён\n{cccccc}Система не позволяет сохранять этот объект в инвентаре","*","");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћР±СЉРµРєС‚ Р±С‹Р» РїРѕР»РЅРѕСЃС‚СЊСЋ СѓРґР°Р»С‘РЅ\n{cccccc}РЎРёСЃС‚РµРјР° РЅРµ РїРѕР·РІРѕР»СЏРµС‚ СЃРѕС…СЂР°РЅСЏС‚СЊ СЌС‚РѕС‚ РѕР±СЉРµРєС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ","*","");
     }
     DestroyDynamicObject(DomInfo[dom][dObject][oba]);
     DelObject(dom, oba);
@@ -147,7 +150,7 @@ stock Delete3DLabelDomBiz(id, obid, type)
     return 1;
 }
 
-stock ShowForPlayer3DLabelDomBiz(playerid, i, type) // Показываем лейблы на объектах в доме или бизах
+stock ShowForPlayer3DLabelDomBiz(playerid, i, type) // РџРѕРєР°Р·С‹РІР°РµРј Р»РµР№Р±Р»С‹ РЅР° РѕР±СЉРµРєС‚Р°С… РІ РґРѕРјРµ РёР»Рё Р±РёР·Р°С…
 {
     for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
@@ -157,8 +160,8 @@ stock ShowForPlayer3DLabelDomBiz(playerid, i, type) // Показываем лейблы на объе
 
 	    if(model >= 1) CreateAndShow3DLabelDomBiz(playerid, i, oba, type);
 	}
-    LabelsInfo[playerid][labelCreate] = i; // Отображение лейблов запущено
-    LabelsInfo[playerid][labelType] = type; // 1 Дом, 2 Бизнес
+    LabelsInfo[playerid][labelCreate] = i; // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ Р»РµР№Р±Р»РѕРІ Р·Р°РїСѓС‰РµРЅРѕ
+    LabelsInfo[playerid][labelType] = type; // 1 Р”РѕРј, 2 Р‘РёР·РЅРµСЃ
     return 1;
 }
 
@@ -184,12 +187,12 @@ stock showDialogInteriorDom(playerid)
     if(MenuInfo[playerid][zStat] > 0) return 1;
 
     new d = DP[4][playerid];
-    if(!IsANearWardrobeDom(playerid, d)) return ErrorMessage(playerid, "{FF6347}Вы не в интерьере или далеко от дома");
-    if(DomInfo[d][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя ремонтировать дом во время продажи");
+    if(!IsANearWardrobeDom(playerid, d)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РґР°Р»РµРєРѕ РѕС‚ РґРѕРјР°");
+    if(DomInfo[d][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ СЂРµРјРѕРЅС‚РёСЂРѕРІР°С‚СЊ РґРѕРј РІРѕ РІСЂРµРјСЏ РїСЂРѕРґР°Р¶Рё");
 
-    if(DP[0][playerid] == 0) DP[1][playerid] = 2; // Переместить объект интерьера дома
-  	else if(DP[0][playerid] == 1) DP[1][playerid] = 4; // Изменить текстуры объекта интерьер дома
-  	else if(DP[0][playerid] == 2) DP[1][playerid] = 3; // Убрать объект интерьер дома
+    if(DP[0][playerid] == 0) DP[1][playerid] = 2; // РџРµСЂРµРјРµСЃС‚РёС‚СЊ РѕР±СЉРµРєС‚ РёРЅС‚РµСЂСЊРµСЂР° РґРѕРјР°
+  	else if(DP[0][playerid] == 1) DP[1][playerid] = 4; // РР·РјРµРЅРёС‚СЊ С‚РµРєСЃС‚СѓСЂС‹ РѕР±СЉРµРєС‚Р° РёРЅС‚РµСЂСЊРµСЂ РґРѕРјР°
+  	else if(DP[0][playerid] == 2) DP[1][playerid] = 3; // РЈР±СЂР°С‚СЊ РѕР±СЉРµРєС‚ РёРЅС‚РµСЂСЊРµСЂ РґРѕРјР°
     else return 1;
 
     PlayerPlaySound(playerid,40405,0,0,0);
@@ -197,7 +200,7 @@ stock showDialogInteriorDom(playerid)
 	return 1;
 }
 
-/*stock setDomDefaultFrame(d) //  Ставим дефолтную планировку в дом
+/*stock setDomDefaultFrame(d) //  РЎС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РїР»Р°РЅРёСЂРѕРІРєСѓ РІ РґРѕРј
 {
 	DomInfo[d][dOmodel][0] = 14713;
 	new Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
@@ -209,7 +212,7 @@ stock showDialogInteriorDom(playerid)
 	return 1;
 }*/
 
-stock DelObject(d, obid) // Удаляем объект из дома
+stock DelObject(d, obid) // РЈРґР°Р»СЏРµРј РѕР±СЉРµРєС‚ РёР· РґРѕРјР°
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	if(d < 0 || d >= MAX_DOM || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
@@ -217,7 +220,7 @@ stock DelObject(d, obid) // Удаляем объект из дома
     DelObjectOwner(d, obid, 0);
 	return 1;
 }
-stock DelObjectOwner(d, obid, owner_type) // Удаляем объект из дома или бизнеса
+stock DelObjectOwner(d, obid, owner_type) // РЈРґР°Р»СЏРµРј РѕР±СЉРµРєС‚ РёР· РґРѕРјР° РёР»Рё Р±РёР·РЅРµСЃР°
 {
 	new string_mysql[140];
 	format(string_mysql,sizeof(string_mysql), "DELETE FROM `pp_owner_objects` WHERE `owner_type` = '%d' AND `owner_id` = '%d' AND `slot` = '%d'", owner_type, d, obid);
@@ -226,7 +229,7 @@ stock DelObjectOwner(d, obid, owner_type) // Удаляем объект из дома или бизнеса
 }
 
 
-stock UpdateObject(d, obid) // Обновляем объект в доме
+stock UpdateObject(d, obid) // РћР±РЅРѕРІР»СЏРµРј РѕР±СЉРµРєС‚ РІ РґРѕРјРµ
 {
     if(LIMITED_LOADING_SERVER >= 2) return 1;
     if(d < 0 || d >= MAX_DOM || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
@@ -236,13 +239,13 @@ stock UpdateObject(d, obid) // Обновляем объект в доме
 }
 
 /*
-// Старый способ сбора текстур для сохранения
+// РЎС‚Р°СЂС‹Р№ СЃРїРѕСЃРѕР± СЃР±РѕСЂР° С‚РµРєСЃС‚СѓСЂ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ
 stock BuildTextureString(type, d, obid, string:output[], outputsize)
 {
     output[0] = '\0';
     new string_texture_part[64];
 
-    // Формирование части запроса для каждой текстуры
+    // Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ С‡Р°СЃС‚Рё Р·Р°РїСЂРѕСЃР° РґР»СЏ РєР°Р¶РґРѕР№ С‚РµРєСЃС‚СѓСЂС‹
     for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++)
     {
 		new objectid, texture_string[100];
@@ -258,26 +261,26 @@ stock BuildTextureString(type, d, obid, string:output[], outputsize)
         format(string_texture_part, sizeof(string_texture_part), "`t%d` = '%s'", i, texture_string);
         strcat(output, string_texture_part, outputsize);
 
-        if(i < MAX_TEXTURES_ON_OBJECTS - 1) strcat(output, ", ", outputsize); // Добавляем запятую после каждой текстуры, кроме последней
+        if(i < MAX_TEXTURES_ON_OBJECTS - 1) strcat(output, ", ", outputsize); // Р”РѕР±Р°РІР»СЏРµРј Р·Р°РїСЏС‚СѓСЋ РїРѕСЃР»Рµ РєР°Р¶РґРѕР№ С‚РµРєСЃС‚СѓСЂС‹, РєСЂРѕРјРµ РїРѕСЃР»РµРґРЅРµР№
     }
 }*/
 
 /*
-// Старое сохранение текстур
+// РЎС‚Р°СЂРѕРµ СЃРѕС…СЂР°РЅРµРЅРёРµ С‚РµРєСЃС‚СѓСЂ
 stock UpdateObjectTextures(d, obid)
 {
     if(LIMITED_LOADING_SERVER >= 2) return 1;
     if(d < 0 || d >= MAX_DOM || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
 
-    if(DomInfo[d][dNewid][obid] != 0) // Только если объект существует в базе
+    if(DomInfo[d][dNewid][obid] != 0) // РўРѕР»СЊРєРѕ РµСЃР»Рё РѕР±СЉРµРєС‚ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РІ Р±Р°Р·Рµ
     {
         new string_mysql[3200];
         new texture_update_string[3000];
 
-        // Собираем строку обновления текстур
+        // РЎРѕР±РёСЂР°РµРј СЃС‚СЂРѕРєСѓ РѕР±РЅРѕРІР»РµРЅРёСЏ С‚РµРєСЃС‚СѓСЂ
         BuildTextureString(1, d, obid, texture_update_string, sizeof(texture_update_string));
 
-        // Формирование запроса
+        // Р¤РѕСЂРјРёСЂРѕРІР°РЅРёРµ Р·Р°РїСЂРѕСЃР°
         format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects` SET %s, `yesUpdate` = '1' WHERE `newid` = '%d'", 
             texture_update_string, DomInfo[d][dNewid][obid]);
 
@@ -296,9 +299,9 @@ stock ClearVariableObjectDom(dom, oba)
     DomInfo[dom][dUser][oba] = 0;
 }
 
-stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодействие
+stock RemoveAllObject(playerid, dom) // РЈРґР°Р»СЏРµРј РѕР±СЉРµРєС‚С‹ Рё РѕС‚РєР»СЋС‡Р°РµРј РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
@@ -311,27 +314,28 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодейств
         }
 	}
 
-    DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
-	DeleteInteractionDom(dom); // Отключаем взаимодействие в доме
-    SaveDom(dom); // Сохраняем дом
+    DeleteAll3DLabel(dom, 1); // РЈРґР°Р»СЏРµРј Р»РµР№Р±Р»С‹ РІСЃРµРј РёРіСЂРѕРєР°Рј
+	DeleteInteractionDom(dom); // РћС‚РєР»СЋС‡Р°РµРј РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ РІ РґРѕРјРµ
+    SaveDom(dom); // РЎРѕС…СЂР°РЅСЏРµРј РґРѕРј
 
-    // Завершение транзакции
+    // Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
-    HouseLog(0, "rdomobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "Удалил всю мебель");
+    HouseLog(0, "rdomobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "РЈРґР°Р»РёР» РІСЃСЋ РјРµР±РµР»СЊ");
 	return 1;
 }
 
-stock ClearAllObject(playerid, dom) // Убираем все объекты в дом отключаем взаимодействие
+stock ClearAllObject(playerid, dom) // РЈР±РёСЂР°РµРј РІСЃРµ РѕР±СЉРµРєС‚С‹ РІ РґРѕРј РѕС‚РєР»СЋС‡Р°РµРј РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1)
         {
-            if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
+            if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
+                || Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
             {
                 new resultPut = PutThingDom(dom, DomInfo[dom][dOmodel][oba], 1, 0, DomInfo[dom][dQara][oba], 4, 0, 999);
                 if(resultPut >= 0)
@@ -344,14 +348,14 @@ stock ClearAllObject(playerid, dom) // Убираем все объекты в дом отключаем взаим
         }
 	}
 
-    DeleteAll3DLabel(dom, 1); // Удаляем лейблы всем игрокам
+    DeleteAll3DLabel(dom, 1); // РЈРґР°Р»СЏРµРј Р»РµР№Р±Р»С‹ РІСЃРµРј РёРіСЂРѕРєР°Рј
 	DeleteInteractionDom(dom);
     SaveDom(dom);
 
-    // Завершение транзакции
+    // Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
-    HouseLog(0, "clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "Убрал мебель");
+    HouseLog(0, "clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, 0, "РЈР±СЂР°Р» РјРµР±РµР»СЊ");
 	return 1;
 }
 
@@ -366,7 +370,7 @@ stock DeleteInteractionDom(dom)
     return 1;
 }
 
-stock CheckObject(dom) // Проверяем есть ли свободные слоты для установки объекта мебели
+stock CheckObject(dom) // РџСЂРѕРІРµСЂСЏРµРј РµСЃС‚СЊ Р»Рё СЃРІРѕР±РѕРґРЅС‹Рµ СЃР»РѕС‚С‹ РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё РѕР±СЉРµРєС‚Р° РјРµР±РµР»Рё
 {
 	new quan;
 	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
@@ -377,7 +381,7 @@ stock CheckObject(dom) // Проверяем есть ли свободные слоты для установки объект
 	return 0;
 }
 
-function LoadObject(stat, owner_type) // Грузим объекты интерьера для дома и бизнеса
+function LoadObject(stat, owner_type) // Р“СЂСѓР·РёРј РѕР±СЉРµРєС‚С‹ РёРЅС‚РµСЂСЊРµСЂР° РґР»СЏ РґРѕРјР° Рё Р±РёР·РЅРµСЃР°
 {
     new time = GetTickCount();
     new rows;
@@ -388,20 +392,20 @@ function LoadObject(stat, owner_type) // Грузим объекты интерьера для дома и биз
     for(new f = 0; f < rows; ++f)
     {
         new temptextures;
-        if(owner_type == 0) temptextures = NewLoadObject(f, 0); // 0 - Грузим дома
-        else if(owner_type == 1) temptextures = NewLoadObject(f, 1); // 1 - Грузим Бизы
+        if(owner_type == 0) temptextures = NewLoadObject(f, 0); // 0 - Р“СЂСѓР·РёРј РґРѕРјР°
+        else if(owner_type == 1) temptextures = NewLoadObject(f, 1); // 1 - Р“СЂСѓР·РёРј Р‘РёР·С‹
         quanAllTextures += temptextures;
     }
     if(owner_type == 0)
     {
-        printf("[MODE]: Объекты Домов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
-        if(stat == 0) Launch3(); // Грузим теперь следующие 501 - 1000
-        else if(stat == 1) Launch6(); // Грузим объекты бизов (После бизов сервер откроется и загрузятся NPC)
+        printf("[MODE]: РћР±СЉРµРєС‚С‹ Р”РѕРјРѕРІ [РўРµРєСЃС‚СѓСЂ %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
+        if(stat == 0) Launch3(); // Р“СЂСѓР·РёРј С‚РµРїРµСЂСЊ СЃР»РµРґСѓСЋС‰РёРµ 501 - 1000
+        else if(stat == 1) Launch6(); // Р“СЂСѓР·РёРј РѕР±СЉРµРєС‚С‹ Р±РёР·РѕРІ (РџРѕСЃР»Рµ Р±РёР·РѕРІ СЃРµСЂРІРµСЂ РѕС‚РєСЂРѕРµС‚СЃСЏ Рё Р·Р°РіСЂСѓР·СЏС‚СЃСЏ NPC)
     }
     else if(owner_type == 1) 
     {
-        printf("[MODE]: Объекты Бизнесов [Текстур %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
-        Launch5(); // Открываем сервер и загружаем NPC
+        printf("[MODE]: РћР±СЉРµРєС‚С‹ Р‘РёР·РЅРµСЃРѕРІ [РўРµРєСЃС‚СѓСЂ %d][%d Quan][%d ms]", quanAllTextures, rows, GetTickCount() - time);
+        Launch5(); // РћС‚РєСЂС‹РІР°РµРј СЃРµСЂРІРµСЂ Рё Р·Р°РіСЂСѓР¶Р°РµРј NPC
     }
     return 1;
 }
@@ -425,7 +429,7 @@ stock UpdateObjectOwner(nd, sla, owner_type)
     return 1;
 }
 
-stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // Сохраняем объект в доме и бизе
+stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // РЎРѕС…СЂР°РЅСЏРµРј РѕР±СЉРµРєС‚ РІ РґРѕРјРµ Рё Р±РёР·Рµ
 {
     new objectid, userid, model, qara, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
     if(owner_type == 0) // Dom
@@ -448,7 +452,7 @@ stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // Сохраняем о
     GetDynamicObjectPos(objectid, x, y, z);
     GetDynamicObjectRot(objectid, rx, ry, rz);
 
-    // Собираем текстуры
+    // РЎРѕР±РёСЂР°РµРј С‚РµРєСЃС‚СѓСЂС‹
     new JsonNode:obj_textures = JSON_Array();
     {
         for(new i = 0; i < MAX_OBJECT_TEXTURES; i++)
@@ -469,7 +473,7 @@ stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // Сохраняем о
         }
     }
 
-    // Собираем Текст
+    // РЎРѕР±РёСЂР°РµРј РўРµРєСЃС‚
     new JsonNode:obj_text = JSON_Array();
     {
         for(new i = 0; i < 1; i++)
@@ -497,10 +501,10 @@ stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // Сохраняем о
 
 
     node = JSON_Object(
-        // Инфа объекта
+        // РРЅС„Р° РѕР±СЉРµРєС‚Р°
         "user", JSON_Int(userid),
 
-        // Объект объекта
+        // РћР±СЉРµРєС‚ РѕР±СЉРµРєС‚Р°
         "obj", JSON_Object(
             "model", JSON_Int(model),
             "qara", JSON_Int(qara),
@@ -508,20 +512,20 @@ stock CreateJsonUpdateObject(nd, sla, owner_type, &JsonNode:node) // Сохраняем о
             "interior", JSON_Int(interior)
         ),
 
-        // Позиция объекта
+        // РџРѕР·РёС†РёСЏ РѕР±СЉРµРєС‚Р°
         "pos", JSON_3DVector(x, y, z),
         "rot", JSON_3DVector(rx, ry, rz),
 
-        // Текстуры
+        // РўРµРєСЃС‚СѓСЂС‹
         "textures", obj_textures,
 
-        // Текст
+        // РўРµРєСЃС‚
         "texts", obj_text
     );
     return 1;
 }
 
-// Новая загрузка объектов домов и бизов
+// РќРѕРІР°СЏ Р·Р°РіСЂСѓР·РєР° РѕР±СЉРµРєС‚РѕРІ РґРѕРјРѕРІ Рё Р±РёР·РѕРІ
 stock NewLoadObject(f, owner_type)
 {
     new sla, nd, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz;
@@ -540,11 +544,11 @@ stock NewLoadObject(f, owner_type)
     new JsonNode:node = JSON_INVALID_NODE;
     if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
     {
-        // Инфа объекта
+        // РРЅС„Р° РѕР±СЉРµРєС‚Р°
         if(owner_type == 0) JSON_GetInt(node, "user", DomInfo[nd][dUser][sla]);
         else if(owner_type == 1) JSON_GetInt(node, "user", BizzInfo[nd][bUser][sla]);
 
-        // Объект объекта
+        // РћР±СЉРµРєС‚ РѕР±СЉРµРєС‚Р°
         new JsonNode:obj = JSON_INVALID_NODE;
         JSON_GetObject(node, "obj", obj);
         if(owner_type == 0)
@@ -560,14 +564,14 @@ stock NewLoadObject(f, owner_type)
         JSON_GetInt(obj, "world", world);
         JSON_GetInt(obj, "interior", interior);
 
-        // Позиция объекта
+        // РџРѕР·РёС†РёСЏ РѕР±СЉРµРєС‚Р°
         JSON_Get3DVector(node, "pos", x, y, z);
         JSON_Get3DVector(node, "rot", rx, ry, rz);
 
         if(owner_type == 0) DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
         else if(owner_type == 1) BizzInfo[nd][bObject][sla] = CreateDynamicObject(BizzInfo[nd][bOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
 
-        // Текстуры Объекта
+        // РўРµРєСЃС‚СѓСЂС‹ РћР±СЉРµРєС‚Р°
         new JsonNode:obj_textures = JSON_INVALID_NODE;
         JSON_GetArray(node, "textures", obj_textures);
         {
@@ -586,7 +590,7 @@ stock NewLoadObject(f, owner_type)
             }
         }
 
-        // Текст Объекта
+        // РўРµРєСЃС‚ РћР±СЉРµРєС‚Р°
         new JsonNode:obj_text = JSON_INVALID_NODE;
         JSON_GetArray(node, "texts", obj_text);
         {
@@ -620,7 +624,7 @@ stock JSON_Get3DVector(&JsonNode:node, const key[], &Float:x, &Float:y, &Float:z
     return 1;
 }
 
-// Старая загрузка объектов и текстур в домах
+// РЎС‚Р°СЂР°СЏ Р·Р°РіСЂСѓР·РєР° РѕР±СЉРµРєС‚РѕРІ Рё С‚РµРєСЃС‚СѓСЂ РІ РґРѕРјР°С…
 /*
 stock OldLoadObjectDom(f)
 {
@@ -628,7 +632,7 @@ stock OldLoadObjectDom(f)
     new ousetextL, oFontFaceL[64], oFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL, oTextFontSizeL, oObjectTextL[64];
     new world, interior;
 
-    // Загрузка данных объекта
+    // Р—Р°РіСЂСѓР·РєР° РґР°РЅРЅС‹С… РѕР±СЉРµРєС‚Р°
     cache_get_value_name_int(f, "slot", sla);
     cache_get_value_name_int(f, "dom", nd);
     cache_get_value_name_int(f, "newid", DomInfo[nd][dNewid][sla]);
@@ -656,11 +660,11 @@ stock OldLoadObjectDom(f)
     new quanAllTextures;
     if(DomInfo[nd][dOmodel][sla] >= 1) 
     {
-        // Обработка world и interior - тут старым объектам даём инты и вирт мир
+        // РћР±СЂР°Р±РѕС‚РєР° world Рё interior - С‚СѓС‚ СЃС‚Р°СЂС‹Рј РѕР±СЉРµРєС‚Р°Рј РґР°С‘Рј РёРЅС‚С‹ Рё РІРёСЂС‚ РјРёСЂ
         //if(world == 0) world = nd + 1000;
         //if(interior == 0) interior = 90;
 
-        // Создание объекта
+        // РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р°
         DomInfo[nd][dObject][sla] = CreateDynamicObject(DomInfo[nd][dOmodel][sla], x, y, z, rx, ry, rz, world, interior, -1, 200.00, 200.00);
 
         if(ousetextL)
@@ -668,7 +672,7 @@ stock OldLoadObjectDom(f)
             SetDynamicObjectMaterialText(DomInfo[nd][dObject][sla], 0, oObjectTextL, oFontSizeL, oFontFaceL, oTextFontSizeL, oFontBoldL, oFontColorL, oBackColorL, oAlignmentL);
         }
 
-        // Получение и применение текстур к объекту
+        // РџРѕР»СѓС‡РµРЅРёРµ Рё РїСЂРёРјРµРЅРµРЅРёРµ С‚РµРєСЃС‚СѓСЂ Рє РѕР±СЉРµРєС‚Сѓ
         new tempQuanTextures = LoadTexturesOnObject(nd, sla, f, 1);
         quanAllTextures += tempQuanTextures;
     }
@@ -678,7 +682,7 @@ stock OldLoadObjectDom(f)
 stock LoadTexturesOnObject(nd, sla, f, type)
 {
     new quanAllTextures;
-    // Получение и применение текстур к объекту
+    // РџРѕР»СѓС‡РµРЅРёРµ Рё РїСЂРёРјРµРЅРµРЅРёРµ С‚РµРєСЃС‚СѓСЂ Рє РѕР±СЉРµРєС‚Сѓ
     for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
     {
         new texture_string[100];
@@ -687,7 +691,7 @@ stock LoadTexturesOnObject(nd, sla, f, type)
         format(string, sizeof(string), "t%d", t);
         cache_get_value_name(f, string, texture_string, sizeof(texture_string));
 
-        if (texture_string[0] != '\0' && strcmp(texture_string, "0") != 0) // Строка не пустая
+        if (texture_string[0] != '\0' && strcmp(texture_string, "0") != 0) // РЎС‚СЂРѕРєР° РЅРµ РїСѓСЃС‚Р°СЏ
         {
             new parsedData[4][44];
             ParseMixedString(texture_string, parsedData, sizeof(parsedData));
@@ -712,17 +716,17 @@ stock LoadTexturesOnObject(nd, sla, f, type)
 }*/
 
 
-// Комнада для пересбора текстур к новому набору
+// РљРѕРјРЅР°РґР° РґР»СЏ РїРµСЂРµСЃР±РѕСЂР° С‚РµРєСЃС‚СѓСЂ Рє РЅРѕРІРѕРјСѓ РЅР°Р±РѕСЂСѓ
 /*new stopReload;
 CMD:reloadtexture(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(server == 0) return ErrorMessage(playerid, "{FF6347}Для тестового сервера, все объекты были обработаны");
-	if(stopReload == 1) return ErrorMessage(playerid, "{FF6347}Команда уже была запущена, объекты обрабатываются");
-	if(stopReload == 2) return ErrorMessage(playerid, "{FF6347}Все объекты обработаны");
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(server == 0) return ErrorMessage(playerid, "{FF6347}Р”Р»СЏ С‚РµСЃС‚РѕРІРѕРіРѕ СЃРµСЂРІРµСЂР°, РІСЃРµ РѕР±СЉРµРєС‚С‹ Р±С‹Р»Рё РѕР±СЂР°Р±РѕС‚Р°РЅС‹");
+	if(stopReload == 1) return ErrorMessage(playerid, "{FF6347}РљРѕРјР°РЅРґР° СѓР¶Рµ Р±С‹Р»Р° Р·Р°РїСѓС‰РµРЅР°, РѕР±СЉРµРєС‚С‹ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ");
+	if(stopReload == 2) return ErrorMessage(playerid, "{FF6347}Р’СЃРµ РѕР±СЉРµРєС‚С‹ РѕР±СЂР°Р±РѕС‚Р°РЅС‹");
 
 	stopReload = 1;
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new d = 0; d < MAX_DOM; d++)
@@ -734,7 +738,7 @@ CMD:reloadtexture(playerid)
 				new yesUpdate;
 				for(new t = 0; t < MAX_TEXTURES_ON_OBJECTS; t++)
 				{
-                    // Замена ID текстуры с дальнейшим сохранением
+                    // Р—Р°РјРµРЅР° ID С‚РµРєСЃС‚СѓСЂС‹ СЃ РґР°Р»СЊРЅРµР№С€РёРј СЃРѕС…СЂР°РЅРµРЅРёРµРј
 					new oldTextureId = DomTexture[d][obid][t] - 1;
 					if(oldTextureId >= 0)
 					{
@@ -758,7 +762,7 @@ CMD:reloadtexture(playerid)
 		}
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
 	stopReload = 2;
@@ -773,23 +777,23 @@ stock FindNewTextureId(oldTextureId)
            && strcmp(OLDObjectTextures[oldTextureId][OLDTextureName], ObjectTextures[i][TextureName], false) == 0
 		   && OLDObjectTextures[oldTextureId][OLDTModel] == ObjectTextures[i][TModel])
         {
-            return i; // Возвращаем новый ID текстуры
+            return i; // Р’РѕР·РІСЂР°С‰Р°РµРј РЅРѕРІС‹Р№ ID С‚РµРєСЃС‚СѓСЂС‹
         }
     }
-    return -1; // Если соответствие не найдено
+    return -1; // Р•СЃР»Рё СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РЅРµ РЅР°Р№РґРµРЅРѕ
 }*/
 
-// Перебрасываем текстуры в новую таблицу
+// РџРµСЂРµР±СЂР°СЃС‹РІР°РµРј С‚РµРєСЃС‚СѓСЂС‹ РІ РЅРѕРІСѓСЋ С‚Р°Р±Р»РёС†Сѓ
 /*new stopsaveTextures;
 CMD:savetexture(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	//if(server == 0) return ErrorMessage(playerid, "{FF6347}Для тестового сервера, все объекты были обработаны");
-	if(stopsaveTextures == 1) return ErrorMessage(playerid, "{FF6347}Команда уже была запущена, объекты обрабатываются");
-	if(stopsaveTextures == 2) return ErrorMessage(playerid, "{FF6347}Все объекты обработаны");
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	//if(server == 0) return ErrorMessage(playerid, "{FF6347}Р”Р»СЏ С‚РµСЃС‚РѕРІРѕРіРѕ СЃРµСЂРІРµСЂР°, РІСЃРµ РѕР±СЉРµРєС‚С‹ Р±С‹Р»Рё РѕР±СЂР°Р±РѕС‚Р°РЅС‹");
+	if(stopsaveTextures == 1) return ErrorMessage(playerid, "{FF6347}РљРѕРјР°РЅРґР° СѓР¶Рµ Р±С‹Р»Р° Р·Р°РїСѓС‰РµРЅР°, РѕР±СЉРµРєС‚С‹ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ");
+	if(stopsaveTextures == 2) return ErrorMessage(playerid, "{FF6347}Р’СЃРµ РѕР±СЉРµРєС‚С‹ РѕР±СЂР°Р±РѕС‚Р°РЅС‹");
 
 	stopsaveTextures = 1;
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	//mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new d = 0; d < MAX_DOM; d++)
@@ -802,7 +806,7 @@ CMD:savetexture(playerid)
 		}
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	//mysql_tquery(pearsq, "COMMIT;");
 
 	stopsaveTextures = 2;

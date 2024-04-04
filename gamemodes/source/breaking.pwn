@@ -184,7 +184,7 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
 				OnlineInfo[playerid][oPrsionCellBreaking][BreakingTypeID[playerid]] = 1;
 			}
-			GameTextForPlayer(playerid,RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~Взломано"),5000,3);
+			GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~‹џћoЇa®o",5000,3);
     	}
 	}
 	else // Не попал в зелёную зону клика (Red)

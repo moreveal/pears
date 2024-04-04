@@ -1,11 +1,11 @@
 
 /*
-// Старая шляпа для установки каркасов в бизы
+// РЎС‚Р°СЂР°СЏ С€Р»СЏРїР° РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё РєР°СЂРєР°СЃРѕРІ РІ Р±РёР·С‹
 CMD:reloadframebiz(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить планировку бизнеса [ /reloadframebiz ID ]");
-	if(params[0] < 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid,"{ff6347}Неверный ID бизнеса\n{cccccc}0 - сбросить планировку всех бизнесов");
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎР±СЂРѕСЃРёС‚СЊ РїР»Р°РЅРёСЂРѕРІРєСѓ Р±РёР·РЅРµСЃР° [ /reloadframebiz ID ]");
+	if(params[0] < 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid,"{ff6347}РќРµРІРµСЂРЅС‹Р№ ID Р±РёР·РЅРµСЃР°\n{cccccc}0 - СЃР±СЂРѕСЃРёС‚СЊ РїР»Р°РЅРёСЂРѕРІРєСѓ РІСЃРµС… Р±РёР·РЅРµСЃРѕРІ");
 
     new string[90];
 	if(params[0] > 0)
@@ -18,22 +18,22 @@ CMD:reloadframebiz(playerid, const params[])
 				if(ReloadFrameBiz(b)) quan ++;
 			}
 		}
-		if(quan == 0) return ErrorMessage(playerid,"{ff6347}У всех бизнесов установлены планировки");
-		format(string, sizeof(string), " [ ADM ]: %s сбросил планировку %d бизнесов", PlayerInfo[playerid][pName], quan);
+		if(quan == 0) return ErrorMessage(playerid,"{ff6347}РЈ РІСЃРµС… Р±РёР·РЅРµСЃРѕРІ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РїР»Р°РЅРёСЂРѕРІРєРё");
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РїР»Р°РЅРёСЂРѕРІРєСѓ %d Р±РёР·РЅРµСЃРѕРІ", PlayerInfo[playerid][pName], quan);
 		ABroadCast(COLOR_ADM,string,1);
 
-        format(string, sizeof(string), "Планировка %d бизнесов", quan);
+        format(string, sizeof(string), "РџР»Р°РЅРёСЂРѕРІРєР° %d Р±РёР·РЅРµСЃРѕРІ", quan);
         AdminLog("reloadframebiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, string);
 	}
 	else
 	{
-		if(!IsABizInteriorFrame(params[0])) return ErrorMessage(playerid,"{ff6347}В этом бизнесе недоступна система объектов");
-        if(!ReloadFrameBiz(params[0])) return ErrorMessage(playerid,"{ff6347}В этом бизнесе уже установлена планировка");
+		if(!IsABizInteriorFrame(params[0])) return ErrorMessage(playerid,"{ff6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµРґРѕСЃС‚СѓРїРЅР° СЃРёСЃС‚РµРјР° РѕР±СЉРµРєС‚РѕРІ");
+        if(!ReloadFrameBiz(params[0])) return ErrorMessage(playerid,"{ff6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ СѓР¶Рµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РїР»Р°РЅРёСЂРѕРІРєР°");
 
-		format(string, sizeof(string), " [ ADM ]: %s сбросил планировку бизнеса № %d", PlayerInfo[playerid][pName], params[0]);
+		format(string, sizeof(string), " [ ADM ]: %s СЃР±СЂРѕСЃРёР» РїР»Р°РЅРёСЂРѕРІРєСѓ Р±РёР·РЅРµСЃР° в„– %d", PlayerInfo[playerid][pName], params[0]);
 		ABroadCast(COLOR_ADM,string,1);
 
-        format(string, sizeof(string), "Планировка бизнесу № %d", params[0]);
+        format(string, sizeof(string), "РџР»Р°РЅРёСЂРѕРІРєР° Р±РёР·РЅРµСЃСѓ в„– %d", params[0]);
         AdminLog("reloadframebiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
 	}
 	return 1;
@@ -47,7 +47,7 @@ stock ReloadFrameBiz(b)
 
         for(new i = 0; i < 8; i++)
 		{
-            if(BizzInfo[b][bOmodel][i] > 0) // Удалим перед созданием
+            if(BizzInfo[b][bOmodel][i] > 0) // РЈРґР°Р»РёРј РїРµСЂРµРґ СЃРѕР·РґР°РЅРёРµРј
             {
                 DestroyDynamicObject(BizzInfo[b][bObject][i]);
                 BizzInfo[b][bObject][i] = 0;
@@ -70,7 +70,7 @@ stock ReloadFrameBiz(b)
             BizzInfo[b][bObject][i] = CreateDynamicObject(BizzInfo[b][bOmodel][i], obj_pos[0], obj_pos[1], obj_pos[2], obj_pos[3], obj_pos[4], obj_pos[5], b+3000, 90, -1, 300.00, 300.00);
         }
 
-        // Начало транзакции
+        // РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 		mysql_tquery(pearsq, "START TRANSACTION;");
 
         UpdateObjectBiz(b, 0);
@@ -82,13 +82,13 @@ stock ReloadFrameBiz(b)
         UpdateObjectBiz(b, 6);
         UpdateObjectBiz(b, 7);
 
-        // Завершение транзакции
+        // Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 		mysql_tquery(pearsq, "COMMIT;");
 
-        // Записываем модель 0 каркаса
+        // Р—Р°РїРёСЃС‹РІР°РµРј РјРѕРґРµР»СЊ 0 РєР°СЂРєР°СЃР°
         BizzInfo[b][bFrame] = BizzInfo[b][bOmodel][0];
 
-        // Координаты точки выхода из инта
+        // РљРѕРѕСЂРґРёРЅР°С‚С‹ С‚РѕС‡РєРё РІС‹С…РѕРґР° РёР· РёРЅС‚Р°
         BizzInfo[b][bInteriorX] = 1387.4436;
         BizzInfo[b][bInteriorY] = -16.2143;
         BizzInfo[b][bInteriorZ] = 1000.8868;
@@ -119,16 +119,17 @@ stock IsAJizzyBiz(b)
     return 0;
 }
 
-stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
+stock ClearAllObjectBiz(playerid, biz) // РЈР±РёСЂР°РµРј РІСЃРµ РѕР±СЉРµРєС‚С‹ РІ Р±РёР·
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1)
         {
-            if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
+            if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
+                || Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
             {
                 new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
                 if(resultPut >= 0)
@@ -141,17 +142,17 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
         }
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
-    DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
-    BizLog("clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Убрал мебель");
+    DeleteAll3DLabel(biz, 2); // РЈРґР°Р»СЏРµРј Р»РµР№Р±Р»С‹ РІСЃРµРј РёРіСЂРѕРєР°Рј
+    BizLog("clearobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "РЈР±СЂР°Р» РјРµР±РµР»СЊ");
 	return 1;
 }
 
-stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
+stock RemoveAllObjectBiz(playerid, biz) // РЈРґР°Р»СЏРµРј РѕР±СЉРµРєС‚С‹
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
@@ -164,28 +165,29 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
         }
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
-    DeleteAll3DLabel(biz, 2); // Удаляем лейблы всем игрокам
-    BizLog("rbizobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "Удалил всю мебель");
+    DeleteAll3DLabel(biz, 2); // РЈРґР°Р»СЏРµРј Р»РµР№Р±Р»С‹ РІСЃРµРј РёРіСЂРѕРєР°Рј
+    BizLog("rbizobject", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], biz, 0, "РЈРґР°Р»РёР» РІСЃСЋ РјРµР±РµР»СЊ");
 	return 1;
 }
 
 stock EditObjectBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
-    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя редактировать объекты планировки");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
+    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РѕР±СЉРµРєС‚С‹ РїР»Р°РЅРёСЂРѕРІРєРё");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}РџР»Р°РЅРёСЂРѕРІРєСѓ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
-		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ");
 
 	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
     if(Komputer[playerid] == 2) exitkomp(playerid, 2);
@@ -195,23 +197,24 @@ stock EditObjectBiz(playerid, biz, oba)
 
 stock DeleteObjectBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
-    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя редактировать объекты планировки");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
+    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РѕР±СЉРµРєС‚С‹ РїР»Р°РЅРёСЂРѕРІРєРё");
+    if(oba == 0) return ErrorMessage(playerid, "{FF6347}РџР»Р°РЅРёСЂРѕРІРєСѓ РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ");
 
     new model = BizzInfo[biz][bOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
     {
         new resultPut = PutThingBiz(biz, BizzInfo[biz][bOmodel][oba], 1, 0, BizzInfo[biz][bQara][oba], 4, 999);
-        if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре бизнеса нет места");
+        if(resultPut == -1) return ErrorMessage(playerid, "{FF6347}Р’ РёРЅРІРµРЅС‚Р°СЂРµ Р±РёР·РЅРµСЃР° РЅРµС‚ РјРµСЃС‚Р°");
     }
     else
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект был полностью удалён\n{cccccc}Система не позволяет сохранять этот объект в инвентаре","*","");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћР±СЉРµРєС‚ Р±С‹Р» РїРѕР»РЅРѕСЃС‚СЊСЋ СѓРґР°Р»С‘РЅ\n{cccccc}РЎРёСЃС‚РµРјР° РЅРµ РїРѕР·РІРѕР»СЏРµС‚ СЃРѕС…СЂР°РЅСЏС‚СЊ СЌС‚РѕС‚ РѕР±СЉРµРєС‚ РІ РёРЅРІРµРЅС‚Р°СЂРµ","*","");
     }
     DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
     DelObjectBiz(biz, oba);
@@ -224,15 +227,16 @@ stock DeleteObjectBiz(playerid, biz, oba)
 
 stock EditTextureBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
-	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
-	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
-	if(Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID РѕР±СЉРµРєС‚Р°");
+	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
+        && Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РѕР±СЉРµРєС‚ РєС‚Рѕ-С‚Рѕ СЂРµРґР°РєС‚РёСЂСѓРµС‚");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
-		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
+		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}РџСЂРµРґРјРµС‚ РґР°Р»РµРєРѕ РѕС‚ РІР°СЃ");
 
     if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
     if(Komputer[playerid] == 2) exitkomp(playerid, 2);
@@ -243,7 +247,7 @@ stock EditTextureBiz(playerid, biz, oba)
     ObjectToTexture(playerid, oba);
     NameTexture(playerid);
 
-    // Перезапускаем меню со слотами на объекте
+    // РџРµСЂРµР·Р°РїСѓСЃРєР°РµРј РјРµРЅСЋ СЃРѕ СЃР»РѕС‚Р°РјРё РЅР° РѕР±СЉРµРєС‚Рµ
     if(DrawTextdrawEditor[playerid] == true)
     {
         CloseDraw3DMenu(playerid);
@@ -292,7 +296,7 @@ stock getObjectStreetBiz(biz)
 	return quan;
 }
 
-stock DelObjectBiz(b, obid) // Удаляем объект из biza
+stock DelObjectBiz(b, obid) // РЈРґР°Р»СЏРµРј РѕР±СЉРµРєС‚ РёР· biza
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 	if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
@@ -301,7 +305,7 @@ stock DelObjectBiz(b, obid) // Удаляем объект из biza
 	return 1;
 }
 
-stock UpdateObjectBiz(b, obid) // Обновляем объект в bize
+stock UpdateObjectBiz(b, obid) // РћР±РЅРѕРІР»СЏРµРј РѕР±СЉРµРєС‚ РІ bize
 {
     if(LIMITED_LOADING_SERVER >= 2) return 1;
     if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
@@ -314,23 +318,23 @@ stock ParseMixedString(const input[], output[][44], outputSize)
 {
     new partIndex = 0, charIndex = 0;
 
-    // Проходим по каждому символу в строке
+    // РџСЂРѕС…РѕРґРёРј РїРѕ РєР°Р¶РґРѕРјСѓ СЃРёРјРІРѕР»Сѓ РІ СЃС‚СЂРѕРєРµ
     for (new i = 0; input[i] != '\0' && partIndex < outputSize; i++)
     {
         if (input[i] == ',' || input[i + 1] == '\0')
         {
-            // Добавляем последний символ, если это конец строки
+            // Р”РѕР±Р°РІР»СЏРµРј РїРѕСЃР»РµРґРЅРёР№ СЃРёРјРІРѕР», РµСЃР»Рё СЌС‚Рѕ РєРѕРЅРµС† СЃС‚СЂРѕРєРё
             if (input[i + 1] == '\0' && input[i] != ',')
                 output[partIndex][charIndex++] = input[i];
 
-            output[partIndex][charIndex] = '\0'; // Завершаем текущую часть
-            partIndex++; // Переходим к следующей части
-            charIndex = 0; // Сбрасываем индекс символа
+            output[partIndex][charIndex] = '\0'; // Р—Р°РІРµСЂС€Р°РµРј С‚РµРєСѓС‰СѓСЋ С‡Р°СЃС‚СЊ
+            partIndex++; // РџРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµР№ С‡Р°СЃС‚Рё
+            charIndex = 0; // РЎР±СЂР°СЃС‹РІР°РµРј РёРЅРґРµРєСЃ СЃРёРјРІРѕР»Р°
         }
         else
         {
-            output[partIndex][charIndex++] = input[i]; // Добавляем символ к текущей части
+            output[partIndex][charIndex++] = input[i]; // Р”РѕР±Р°РІР»СЏРµРј СЃРёРјРІРѕР» Рє С‚РµРєСѓС‰РµР№ С‡Р°СЃС‚Рё
         }
     }
-    return 1; // Возвращаем 1, если обработка прошла успешно
+    return 1; // Р’РѕР·РІСЂР°С‰Р°РµРј 1, РµСЃР»Рё РѕР±СЂР°Р±РѕС‚РєР° РїСЂРѕС€Р»Р° СѓСЃРїРµС€РЅРѕ
 }

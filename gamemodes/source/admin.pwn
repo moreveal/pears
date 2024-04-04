@@ -888,9 +888,9 @@ CMD:geo(playerid, const params[])
 }
 
 
-function Call_Punishments(playerid, parama)
+function Call_Punishments(playerid)
 {
-	new rows, str[480], sctring[12800], datad1[24], datad2[24], datad3[24],datad5[24], datun, datro[64], kol, qwer[60], tyear, tmonth, tday, thour, tminute, tsecond;
+	new rows, str[480], sctring[12800], datad1[24], datad2[24], datad3[24], datun, datro[64], kol, qwer[60], tyear, tmonth, tday, thour, tminute, tsecond;
 	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
@@ -915,10 +915,14 @@ function Call_Punishments(playerid, parama)
 function Call_PunishmentsName(playerid, const parama)
 {
 	new string[310];
-	new rows, str[480], sctring[12800], datad1, datad2[24], datad3[24],datad5[24], datun, datro[64], kol, qwer[60];
-	cache_get_value_name_int(rows, "user_id", datad1);
-	format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", datad1);
-	mysql_tquery(pearsq_2, string, "Call_Punishments", "dd", playerid, datad1);
+	new rows, datad1;
+	if(rows)
+	{
+		cache_get_value_name_int(rows, "user_id", datad1);
+		format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", datad1);
+		mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
+	}
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
 
@@ -928,7 +932,7 @@ stock PunishmentsLogs(playerid, target)
 	new string[310];
 	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}Поиск логов...","*","");
 	format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
-	mysql_tquery(pearsq_2, string, "Call_Punishments", "dd", playerid, target);
+	mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	return 1;
 }
 CMD:punishments(playerid,const params[])

@@ -455,7 +455,7 @@ stock QuestActorJoneMed(playerid) // Начинаем взаимодейство
     }
     else if(PlayerInfo[playerid][pQuest][7] == 3)
     {
-        if(GetPlayerVirtualWorld(playerid) == 0) SetPVarInt(i,"qweststat",37), SetPVarInt(i,"qwesttime",5);
+        if(GetPlayerVirtualWorld(playerid) == 0) SetPVarInt(playerid,"qweststat",37), SetPVarInt(playerid,"qwesttime",5);
         else if(GetPlayerVirtualWorld(playerid) >= 123 && GetPlayerVirtualWorld(playerid) <= 132){
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно купить Хламидиуберин");
             SuccessMessage(playerid,"Подойдите к кассе и купите таблетки Хламидиуберин");
@@ -1013,7 +1013,7 @@ stock QuestCallMessage(i)
     }
     else if(GetPVarInt(i,"qweststat") == 37)
     {
-        FindAptek(playerid);
+        FindAptek(i);
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
     }
     return 1;
