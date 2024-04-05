@@ -1,54 +1,54 @@
 //==================================
-//=====[ Параметры Инвентарей ]=====
+//=====[ РџР°СЂР°РјРµС‚СЂС‹ РРЅРІРµРЅС‚Р°СЂРµР№ ]=====
 //==================================
-// Добавление нового Предмета:
-// 0. INVENTER + 1 предмет
-// 1. fdrawName и fdrawNameEN - его название в текстдравах
-// 2. friskName - просто его название
-// 3. friskPick - его модель объекта на текстдравах
-// 4. friskDefault - гос. цена предмета
+// Р”РѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕРіРѕ РџСЂРµРґРјРµС‚Р°:
+// 0. INVENTER + 1 РїСЂРµРґРјРµС‚
+// 1. fdrawName Рё fdrawNameEN - РµРіРѕ РЅР°Р·РІР°РЅРёРµ РІ С‚РµРєСЃС‚РґСЂР°РІР°С…
+// 2. friskName - РїСЂРѕСЃС‚Рѕ РµРіРѕ РЅР°Р·РІР°РЅРёРµ
+// 3. friskPick - РµРіРѕ РјРѕРґРµР»СЊ РѕР±СЉРµРєС‚Р° РЅР° С‚РµРєСЃС‚РґСЂР°РІР°С…
+// 4. friskDefault - РіРѕСЃ. С†РµРЅР° РїСЂРµРґРјРµС‚Р°
 
-// Не количественный:
-// 5. player_tile (юзать его только и всё)
+// РќРµ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Р№:
+// 5. player_tile (СЋР·Р°С‚СЊ РµРіРѕ С‚РѕР»СЊРєРѕ Рё РІСЃС‘)
 
-// Количественный:
-// 6. stock CheckThingQuan (добавить туда id предмета, который имеет количество)
-// 7. player_tile (юзать предмет)
-// 8. v_limit - лимиты багажника (сколько помещается)
-// 9. d_limit - лимиты дома (сколько помещается)
-// 10. i_limit - лимиты инвентаря (сколько помещается)
-// 11. pt_limit - лимиты тумбы в тюрьме
+// РљРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Р№:
+// 6. stock CheckThingQuan (РґРѕР±Р°РІРёС‚СЊ С‚СѓРґР° id РїСЂРµРґРјРµС‚Р°, РєРѕС‚РѕСЂС‹Р№ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ)
+// 7. player_tile (СЋР·Р°С‚СЊ РїСЂРµРґРјРµС‚)
+// 8. v_limit - Р»РёРјРёС‚С‹ Р±Р°РіР°Р¶РЅРёРєР° (СЃРєРѕР»СЊРєРѕ РїРѕРјРµС‰Р°РµС‚СЃСЏ)
+// 9. d_limit - Р»РёРјРёС‚С‹ РґРѕРјР° (СЃРєРѕР»СЊРєРѕ РїРѕРјРµС‰Р°РµС‚СЃСЏ)
+// 10. i_limit - Р»РёРјРёС‚С‹ РёРЅРІРµРЅС‚Р°СЂСЏ (СЃРєРѕР»СЊРєРѕ РїРѕРјРµС‰Р°РµС‚СЃСЏ)
+// 11. pt_limit - Р»РёРјРёС‚С‹ С‚СѓРјР±С‹ РІ С‚СЋСЂСЊРјРµ
 
-#define INVENTER 204 // Максимальный ID (обычный предмет)
+#define INVENTER 204 // РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ ID (РѕР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚)
 
-// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
-// Упаковка (0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный Ящик, 5 Кейс)
+// РўРёРї С‚РѕРІР°СЂР° (0 РѕР±С‹С‡РЅС‹Р№, 1 РѕСЂСѓР¶РёРµ, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 4 РјРµР±РµР»СЊ, 5 С‚СЂР°РЅСЃРїРѕСЂС‚)
+// РЈРїР°РєРѕРІРєР° (0 РїСЂРµРґРјРµС‚, 1 РїРѕРґР°СЂРѕРє, 2 СЏС‰РёРє, 3 РњРµС€РѕРє, 4 Р—Р°РїРµС‡Р°С‚Р°РЅРЅС‹Р№ РЇС‰РёРє, 5 РљРµР№СЃ)
 
-new fdrawName[][] = // Название Вещи
+new fdrawName[][] = // РќР°Р·РІР°РЅРёРµ Р’РµС‰Рё
 {
-    "","X‡EЂ","€O‡OЏOE_KO‡’‰O","ЂYЏ‘‡KA","ЏPA‹A","OЂO‡OЌKA ЏAЂ‡EЏK…","‚P…Ђ‘","ЊOPOЋOK","AЊЏEЌKA","KAH…CЏPA","ЊO•C_CO_‹€P‘‹ЌAЏKO…",
-    "ЂOMЂA","ѓEЏOHAЏOP","‹EPE‹KA","Њ…‹O","none","ЊAЌKA_C…‚APEЏ","ЂPOH•","HA„…‹KA","OЏM‘ЌK…","P‘ЂA","PA‰…•",
-    "M•CO","MEЋOK","ЋAЋKA_ЏAKC…","ѓEH’‚…","CMAPЏЃOH","AMMO 20,8mm","AMMO 11,43mm","AMMO 5,45mm","AMMO 45mm","YѓOЌKA","ЃOHAP…K",
-	"BOX","TOY","MAN","CHRISTMAS GIFT","ЋAMЊAHCKOE","ЂOKA‡","YЊAKO‹KA","ЃE…EP‹EPK","ЂEH‚A‡’CK…E O‚H…","HOYЏЂYK","ЋOKEP",
-	"‡OЊAЏA","KAPЏA MOP•KA","MOPCKA• €‹E€ѓA","PAKYЋKA","HAѓY‹HA• ‡OѓKA","CYHѓYK C COKPO‹…ЉAM…", "‡O‹YЋKA ѓ‡• AKY‡‘","ЊACЊOPЏ",
-	"Y‚‡…","€A„…‚A‡KA","„APEHOE M•CO","„APEHA• P‘ЂA","Џ…ЏAH","MO‡…ЂѓEH","YPAH","MEЏEOP…Џ","ЊA‡‡Aѓ……","‚E‡…… 3","PlayBoy",
-	"MEѓ KAPЏA","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","MYCOP","TPYЊ","Ђ…HT","ЊPE€EP‹AЏ…‹‘",
-	"‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O",
-	"‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","CEMEHA","KAPЏOЋKA","MOHЏ…PO‹KA","KAPЏA COKPO‹…Љ",
-	"ѓPE‹H•• ‹A3A","YPHA","C‡…ЏOK","CЏAЏY“ЏKA","ЂOKA‡ C KPO‹’”","KYXOHH‘† HO„","ЂOKA‡ C KPO‹’”","ЂAHAH","•Ђ‡OKO","AЊE‡’C…H",
-	"MO‡OKO","Џ‘K‹A","KAPЏOЋKA","ЏOMAЏ","YѓOЂPEH…E","Ђ‘Ќ’• KPO‹’","CEMEHA Џ‘K‹‘","CEMEHA_ЏOMAЏO‹","PACCAѓA","KOCЏ…",
-	"‹OѓKA","‹…HO","‹…CK…","KOH’•K","ЂP“Hѓ…","C…ѓP","C…ѓP","Њ…‹O","SPRUNK","KOЃE",
-	"ЂOKA‡","KPY„KA","SPRUNK","ЂYP‚EP","ЂYP‚EP","PO‡‡","HAЂOP_1","HAЂOP_2","HAЂOP_3","HAЂOP_4",
-	"HAЂOP_5","HAЂOP_6","HAЂOP_7","HAЂOP_8","HAЂOP_9","HAЂOP_10","HAЂOP_11","SPRUNK","KOC•K","XOЏ ѓO‚",
-	"C…‚APEЏA","C…‚APA","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K",
-	"YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","ЊPA‹A HA A‹ЏO","A‹…A ‡…‰EH3…•","ЊPA‹A HA KAЏEP","MOЏO ‡…‰EH3…•","ѓЊ…‡OM","‡…‰EH3…• HA OPY„…E 1",
-	"‡…‰EH3…• HA OPY„…E 2","TOPT","KYCOK ЏOPЏA", "Њ…‰‰A", "Њ…‰‰A ѓOM.", "KYCOK Њ…‰‰‘", "M•CO ‹ YЊAK.", "C‘PO† CЏE†K", "„APEH‘† CЏE†K", "‡OMЏ…K X‡EЂA",
-	"COK AЊE‡’C…H.", "COK •Ђ‡OЌ.", "O‹OЉ…", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "ЏOЊ‡…‹O", "MOPO„EHOE", "ЏAЂ‡EЏKA 3AЉ…Џ‘", "…3O‡EHЏA",
-	"ѓEЏA‡’ ЂOMЂ‘","PEM.KOMЊ‡EKЏ A‹ЏO","KPACKA ѓ‡• ЏPAHCЊOPЏA","ABTOMO6NLJHSE_DNCKN","FNDPABLNKA","3AKNCJ_A3OTA","DETALJ_TUHNHFA","KENC","PEM.KOMЊ‡EKЏ MOЏO","PEM.KOMЊ‡EKЏ A‹…A",
-	"PEM.KOMЊ‡EKЏ KAЏEPO‹","HAMA3‡‘K","P‘ЂKA", "KOPM ѓ‡• P‘ЂOK","ЊAKEЏ", "ЂA‡OHЌ…K C KPACKO†","ЏAЂ‡EЏKA AЏAK…","OЂ‘ЌHA• C…‚HA‡…3A‰…•","Y‡YЌЋEHHA• C…‚HA‡…3A‰…•","MEЏA‡…ЌECKA• ЏPYЂA",
-	"‹…‡KA", "KAPЏ‘ ѓOCЏYЊA Џ”P’M‘"
+    "","XвЂЎEР‚","в‚¬OвЂЎOРЏOE_KOвЂЎвЂ™вЂ°O","Р‚YРЏвЂвЂЎKA","РЏPAвЂ№A","OР‚OвЂЎOРЊKA РЏAР‚вЂЎEРЏKвЂ¦","вЂљPвЂ¦Р‚вЂ","РЉOPOР‹OK","AРЉРЏEРЊKA","KAHвЂ¦CРЏPA","РЉOвЂўC_CO_вЂ№в‚¬PвЂвЂ№РЊAРЏKOвЂ¦",
+    "Р‚OMР‚A","С“EРЏOHAРЏOP","вЂ№EPEвЂ№KA","РЉвЂ¦вЂ№O","none","РЉAРЊKA_CвЂ¦вЂљAPEРЏ","Р‚POHвЂў","HAвЂћвЂ¦вЂ№KA","OРЏMвЂРЊKвЂ¦","PвЂР‚A","PAвЂ°вЂ¦вЂў",
+    "MвЂўCO","MEР‹OK","Р‹AР‹KA_РЏAKCвЂ¦","С“EHвЂ™вЂљвЂ¦","CMAPРЏРѓOH","AMMO 20,8mm","AMMO 11,43mm","AMMO 5,45mm","AMMO 45mm","YС“OРЊKA","РѓOHAPвЂ¦K",
+	"BOX","TOY","MAN","CHRISTMAS GIFT","Р‹AMРЉAHCKOE","Р‚OKAвЂЎ","YРЉAKOвЂ№KA","РѓEвЂ¦EPвЂ№EPK","Р‚EHвЂљAвЂЎвЂ™CKвЂ¦E OвЂљHвЂ¦","HOYРЏР‚YK","Р‹OKEP",
+	"вЂЎOРЉAРЏA","KAPРЏA MOPвЂўKA","MOPCKAвЂў в‚¬вЂ№Eв‚¬С“A","PAKYР‹KA","HAС“YвЂ№HAвЂў вЂЎOС“KA","CYHС“YK C COKPOвЂ№вЂ¦Р‰AMвЂ¦", "вЂЎOвЂ№YР‹KA С“вЂЎвЂў AKYвЂЎвЂ","РЉACРЉOPРЏ",
+	"YвЂљвЂЎвЂ¦","в‚¬AвЂћвЂ¦вЂљAвЂЎKA","вЂћAPEHOE MвЂўCO","вЂћAPEHAвЂў PвЂР‚A","РЏвЂ¦РЏAH","MOвЂЎвЂ¦Р‚С“EH","YPAH","MEРЏEOPвЂ¦РЏ","РЉAвЂЎвЂЎAС“вЂ¦вЂ¦","вЂљEвЂЎвЂ¦вЂ¦ 3","PlayBoy",
+	"MEС“ KAPРЏA","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","MYCOP","TPYРЉ","Р‚вЂ¦HT","РЉPEв‚¬EPвЂ№AРЏвЂ¦вЂ№вЂ",
+	"вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O",
+	"вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","вЂЎEKAPCРЏвЂ№O","CEMEHA","KAPРЏOР‹KA","MOHРЏвЂ¦POвЂ№KA","KAPРЏA COKPOвЂ№вЂ¦Р‰",
+	"С“PEвЂ№HвЂўвЂў вЂ№A3A","YPHA","CвЂЎвЂ¦РЏOK","CРЏAРЏYвЂњРЏKA","Р‚OKAвЂЎ C KPOвЂ№вЂ™вЂќ","KYXOHHвЂвЂ  HOвЂћ","Р‚OKAвЂЎ C KPOвЂ№вЂ™вЂќ","Р‚AHAH","вЂўР‚вЂЎOKO","AРЉEвЂЎвЂ™CвЂ¦H",
+	"MOвЂЎOKO","РЏвЂKвЂ№A","KAPРЏOР‹KA","РЏOMAРЏ","YС“OР‚PEHвЂ¦E","Р‚вЂРЊвЂ™вЂў KPOвЂ№вЂ™","CEMEHA РЏвЂKвЂ№вЂ","CEMEHA_РЏOMAРЏOвЂ№","PACCAС“A","KOCРЏвЂ¦",
+	"вЂ№OС“KA","вЂ№вЂ¦HO","вЂ№вЂ¦CKвЂ¦","KOHвЂ™вЂўK","Р‚PвЂњHС“вЂ¦","CвЂ¦С“P","CвЂ¦С“P","РЉвЂ¦вЂ№O","SPRUNK","KOРѓE",
+	"Р‚OKAвЂЎ","KPYвЂћKA","SPRUNK","Р‚YPвЂљEP","Р‚YPвЂљEP","POвЂЎвЂЎ","HAР‚OP_1","HAР‚OP_2","HAР‚OP_3","HAР‚OP_4",
+	"HAР‚OP_5","HAР‚OP_6","HAР‚OP_7","HAР‚OP_8","HAР‚OP_9","HAР‚OP_10","HAР‚OP_11","SPRUNK","KOCвЂўK","XOРЏ С“OвЂљ",
+	"CвЂ¦вЂљAPEРЏA","CвЂ¦вЂљAPA","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K",
+	"YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","YРЊEР‚HвЂ¦K","РЉPAвЂ№A HA AвЂ№РЏO","AвЂ№вЂ¦A вЂЎвЂ¦вЂ°EH3вЂ¦вЂў","РЉPAвЂ№A HA KAРЏEP","MOРЏO вЂЎвЂ¦вЂ°EH3вЂ¦вЂў","С“РЉвЂ¦вЂЎOM","вЂЎвЂ¦вЂ°EH3вЂ¦вЂў HA OPYвЂћвЂ¦E 1",
+	"вЂЎвЂ¦вЂ°EH3вЂ¦вЂў HA OPYвЂћвЂ¦E 2","TOPT","KYCOK РЏOPРЏA", "РЉвЂ¦вЂ°вЂ°A", "РЉвЂ¦вЂ°вЂ°A С“OM.", "KYCOK РЉвЂ¦вЂ°вЂ°вЂ", "MвЂўCO вЂ№ YРЉAK.", "CвЂPOвЂ  CРЏEвЂ K", "вЂћAPEHвЂвЂ  CРЏEвЂ K", "вЂЎOMРЏвЂ¦K XвЂЎEР‚A",
+	"COK AРЉEвЂЎвЂ™CвЂ¦H.", "COK вЂўР‚вЂЎOРЊ.", "OвЂ№OР‰вЂ¦", "CвЂ¦вЂљHAвЂЎвЂ¦?AвЂ°вЂ¦вЂў", "CвЂ¦вЂљHAвЂЎвЂ¦?AвЂ°вЂ¦вЂў", "CвЂ¦вЂљHAвЂЎвЂ¦?AвЂ°вЂ¦вЂў", "РЏOРЉвЂЎвЂ¦вЂ№O", "MOPOвЂћEHOE", "РЏAР‚вЂЎEРЏKA 3AР‰вЂ¦РЏвЂ", "вЂ¦3OвЂЎEHРЏA",
+	"С“EРЏAвЂЎвЂ™ Р‚OMР‚вЂ","PEM.KOMРЉвЂЎEKРЏ AвЂ№РЏO","KPACKA С“вЂЎвЂў РЏPAHCРЉOPРЏA","ABTOMO6NLJHSE_DNCKN","FNDPABLNKA","3AKNCJ_A3OTA","DETALJ_TUHNHFA","KENC","PEM.KOMРЉвЂЎEKРЏ MOРЏO","PEM.KOMРЉвЂЎEKРЏ AвЂ№вЂ¦A",
+	"PEM.KOMРЉвЂЎEKРЏ KAРЏEPOвЂ№","HAMA3вЂЎвЂK","PвЂР‚KA", "KOPM С“вЂЎвЂў PвЂР‚OK","РЉAKEРЏ", "Р‚AвЂЎOHРЊвЂ¦K C KPACKOвЂ ","РЏAР‚вЂЎEРЏKA AРЏAKвЂ¦","OР‚вЂРЊHAвЂў CвЂ¦вЂљHAвЂЎвЂ¦3AвЂ°вЂ¦вЂў","YвЂЎYРЊР‹EHHAвЂў CвЂ¦вЂљHAвЂЎвЂ¦3AвЂ°вЂ¦вЂў","MEРЏAвЂЎвЂ¦РЊECKAвЂў РЏPYР‚A",
+	"вЂ№вЂ¦вЂЎKA", "KAPРЏвЂ С“OCРЏYРЉA РЏвЂќPвЂ™MвЂ"
 };
-new fdrawNameEN[][] = // Название Вещи на Английском
+new fdrawNameEN[][] = // РќР°Р·РІР°РЅРёРµ Р’РµС‰Рё РЅР° РђРЅРіР»РёР№СЃРєРѕРј
 {
     "","BREAD","WEDDING RING","BOTTLE","WEED","NULL PILL","MUSHROOMS","POWDER","AID KIT","CANISTER","EXPLOSIVES",
     "BOMB","DETONATOR","ROPE","BEER","POISON","CIGARETTES","ARMOR","BAIT","MASTER KEY","FISH","TRANSMITTER",
@@ -72,31 +72,31 @@ new fdrawNameEN[][] = // Название Вещи на Английском
 	"REPAIR KIT BOAT","NAMAZLYK","AQUA FISH", "FISH FOOD", "PACKAGE", "CANS OF PAINT","PILL ATTACK","IMPROVED ALARM SYSTEM","THE USUAL ALARM SYSTEM","METAL PIPE",
 	"FORK","PRISON ACCESS CARDS"
 };
-new friskName[][] = // Название Вещи
+new friskName[][] = // РќР°Р·РІР°РЅРёРµ Р’РµС‰Рё
 {
-    "","Хлеб","Золотое Кольцо","Бутылка","Трава","Оболочка Таблетки","Грибы","Порошок","Аптечка","Канистра","Пояс с Взрывчаткой", // 0 - 10
-    "Бомба","Пульт от Бомбы","Верёвка","Пиво","Яд","Пачка Сигарет","Броня","Наживка","Отмычки","Рыба","Рация", // 11 - 21
-    "Мясо","Мешок","Шашка Такси","Деньги","Смартфон","Ammo 20,8mm","Ammo 11,43mm","Ammo 5,45mm","Ammo 45mm","Удочка","Фонарик", // 22 - 32
-	"Ящик","Ящик с Товаром","Человек","Новогодний Подарок","Шампанское","Бокал","Упаковка","Феиерверк","Бенгальские Свечи","Ноутбук","Шокер", // 33 - 43
-	"Лопата","Карта Моряка","Морская Звезда","Ракушка","Надувная Лодка","Сундук с Сокровищами","Ловушка для Акулы","Паспорт", // 44 - 51
-	"Угли","Зажигалка","Жареное Мясо","Жареная Рыба","Титан","Молибден","Уран","Метеорит","Палладий","Гелий 3","PlayBoy", // 52 - 62
-	"Мед.Карта","E-Ammo 20,8mm","E-Ammo 11,43mm","E-Ammo 5,45mm","E-Ammo 45mm","Мусор","Труп","Бинт","Презервативы", // 63 - 71
-	"Хламидиуберин","Гоногон","Сифистоп","Радиануклин","Перитонин","Грибкоубивин","Дерматитогон","Акнестопин","Порошкозаменин","Никотиновый пластырь", // 72 - 81
-	"Бухлозаменин","Гастритоуберин","Язвазаживин","Колдрекс","Терафлю","Анвимакс","Семена травы","Картошка","Монтировка", "Карта сокровищ", // 82 - 91
-	"Древняя Ваза","Урна с прахом","Слиток золота","Статуэтка","Бокал с кровью","Кухонный Нож","Бокал с кровью","Банан","Яблоко","Апельсин", // 92 - 101
-	"Молоко","Тыква","Картошка","Томат","Удобрение","Бычья Кровь","Семена Тыквы","Семена Томатов","Картошка Рассада","Кости", // 102 - 111
-	"Водка","Вино","Виски","Коньяк","Брэнди","Сидр Яблочный","Сидр Вишневый","Пиво Разливное","Sprunk","Кофе", // 112 - 121
-	"Бокал", "Кружка", "Sprunk в стакане", "Бургер", "Бургер", "Ролл", "Набор 1", "Набор 2", "Набор 3", "Набор 4",  // 122 - 131
-	"Набор 5", "Набор 6", "Набор 7", "Набор 8", "Набор 9", "Набор 10", "Набор 11", "Sprunk Открытый", "Косяк", "Хот-дог", // 132 - 141
-	"Сигарета", "Сигара", "Учебник ПДД", "Основы вождения", "Основы пилотирования", "Винтокрылые машины", "Управление катерами", "Основы мототранспорта", "Учебник русского языка", "Учебник японского языка", // 142 - 151
-	"Учебник итальянского языка", "Учебник китайского языка", "Учебник испанского языка", "Учебник арабского языка", "Водительские права", "Лицензия пилота", "Права на катер", "Лицензия мототранспорта", "Диплом о высшем образовании", "Лицензия на оружие 1", // 152 - 161
-	"Лицензия на оружие 2","Свадебный торт", "Кусок торта", "Пицца", "Пицца Домашняя", "Кусок пиццы", "Мясо в упаковке", "Сырой стейк", "Жареный стейк", "Ломтик хлеба",  // 162 - 171
-	"Апельсиновый сок", "Яблочный сок", "Овощи", "Дом Сигнализация 1 ур.", "Дом Сигнализация 2 ур.", "Дом Сигнализация 3 ур.", "Топливо", "Мороженое", "Таблетка Защиты","Изолента", // 172 - 181
-	"Деталь бомбы","Рем.комплект Авто","Краска для транспорта","Автомобильные диски","Гидравлика","Закись Азота","Деталь Тюнинга","Кейс","Рем.комплект Мото","Рем.комплект Авиа", // 182 - 191
-	"Рем.комплект Катеров","Намазлык","Аквариумная рыбка", "Корм для рыбок", "Пакет", "Баллончик с краской","Таблетка Атаки","Обычная Сигнализация","Улучшенная Сигнализация","Металическая Труба", // 192 - 201
-	"Вилка","Карта доступа Тюрьмы" // 202 - 203
+    "","РҐР»РµР±","Р—РѕР»РѕС‚РѕРµ РљРѕР»СЊС†Рѕ","Р‘СѓС‚С‹Р»РєР°","РўСЂР°РІР°","РћР±РѕР»РѕС‡РєР° РўР°Р±Р»РµС‚РєРё","Р“СЂРёР±С‹","РџРѕСЂРѕС€РѕРє","РђРїС‚РµС‡РєР°","РљР°РЅРёСЃС‚СЂР°","РџРѕСЏСЃ СЃ Р’Р·СЂС‹РІС‡Р°С‚РєРѕР№", // 0 - 10
+    "Р‘РѕРјР±Р°","РџСѓР»СЊС‚ РѕС‚ Р‘РѕРјР±С‹","Р’РµСЂС‘РІРєР°","РџРёРІРѕ","РЇРґ","РџР°С‡РєР° РЎРёРіР°СЂРµС‚","Р‘СЂРѕРЅСЏ","РќР°Р¶РёРІРєР°","РћС‚РјС‹С‡РєРё","Р С‹Р±Р°","Р Р°С†РёСЏ", // 11 - 21
+    "РњСЏСЃРѕ","РњРµС€РѕРє","РЁР°С€РєР° РўР°РєСЃРё","Р”РµРЅСЊРіРё","РЎРјР°СЂС‚С„РѕРЅ","Ammo 20,8mm","Ammo 11,43mm","Ammo 5,45mm","Ammo 45mm","РЈРґРѕС‡РєР°","Р¤РѕРЅР°СЂРёРє", // 22 - 32
+	"РЇС‰РёРє","РЇС‰РёРє СЃ РўРѕРІР°СЂРѕРј","Р§РµР»РѕРІРµРє","РќРѕРІРѕРіРѕРґРЅРёР№ РџРѕРґР°СЂРѕРє","РЁР°РјРїР°РЅСЃРєРѕРµ","Р‘РѕРєР°Р»","РЈРїР°РєРѕРІРєР°","Р¤РµРёРµСЂРІРµСЂРє","Р‘РµРЅРіР°Р»СЊСЃРєРёРµ РЎРІРµС‡Рё","РќРѕСѓС‚Р±СѓРє","РЁРѕРєРµСЂ", // 33 - 43
+	"Р›РѕРїР°С‚Р°","РљР°СЂС‚Р° РњРѕСЂСЏРєР°","РњРѕСЂСЃРєР°СЏ Р—РІРµР·РґР°","Р Р°РєСѓС€РєР°","РќР°РґСѓРІРЅР°СЏ Р›РѕРґРєР°","РЎСѓРЅРґСѓРє СЃ РЎРѕРєСЂРѕРІРёС‰Р°РјРё","Р›РѕРІСѓС€РєР° РґР»СЏ РђРєСѓР»С‹","РџР°СЃРїРѕСЂС‚", // 44 - 51
+	"РЈРіР»Рё","Р—Р°Р¶РёРіР°Р»РєР°","Р–Р°СЂРµРЅРѕРµ РњСЏСЃРѕ","Р–Р°СЂРµРЅР°СЏ Р С‹Р±Р°","РўРёС‚Р°РЅ","РњРѕР»РёР±РґРµРЅ","РЈСЂР°РЅ","РњРµС‚РµРѕСЂРёС‚","РџР°Р»Р»Р°РґРёР№","Р“РµР»РёР№ 3","PlayBoy", // 52 - 62
+	"РњРµРґ.РљР°СЂС‚Р°","E-Ammo 20,8mm","E-Ammo 11,43mm","E-Ammo 5,45mm","E-Ammo 45mm","РњСѓСЃРѕСЂ","РўСЂСѓРї","Р‘РёРЅС‚","РџСЂРµР·РµСЂРІР°С‚РёРІС‹", // 63 - 71
+	"РҐР»Р°РјРёРґРёСѓР±РµСЂРёРЅ","Р“РѕРЅРѕРіРѕРЅ","РЎРёС„РёСЃС‚РѕРї","Р Р°РґРёР°РЅСѓРєР»РёРЅ","РџРµСЂРёС‚РѕРЅРёРЅ","Р“СЂРёР±РєРѕСѓР±РёРІРёРЅ","Р”РµСЂРјР°С‚РёС‚РѕРіРѕРЅ","РђРєРЅРµСЃС‚РѕРїРёРЅ","РџРѕСЂРѕС€РєРѕР·Р°РјРµРЅРёРЅ","РќРёРєРѕС‚РёРЅРѕРІС‹Р№ РїР»Р°СЃС‚С‹СЂСЊ", // 72 - 81
+	"Р‘СѓС…Р»РѕР·Р°РјРµРЅРёРЅ","Р“Р°СЃС‚СЂРёС‚РѕСѓР±РµСЂРёРЅ","РЇР·РІР°Р·Р°Р¶РёРІРёРЅ","РљРѕР»РґСЂРµРєСЃ","РўРµСЂР°С„Р»СЋ","РђРЅРІРёРјР°РєСЃ","РЎРµРјРµРЅР° С‚СЂР°РІС‹","РљР°СЂС‚РѕС€РєР°","РњРѕРЅС‚РёСЂРѕРІРєР°", "РљР°СЂС‚Р° СЃРѕРєСЂРѕРІРёС‰", // 82 - 91
+	"Р”СЂРµРІРЅСЏСЏ Р’Р°Р·Р°","РЈСЂРЅР° СЃ РїСЂР°С…РѕРј","РЎР»РёС‚РѕРє Р·РѕР»РѕС‚Р°","РЎС‚Р°С‚СѓСЌС‚РєР°","Р‘РѕРєР°Р» СЃ РєСЂРѕРІСЊСЋ","РљСѓС…РѕРЅРЅС‹Р№ РќРѕР¶","Р‘РѕРєР°Р» СЃ РєСЂРѕРІСЊСЋ","Р‘Р°РЅР°РЅ","РЇР±Р»РѕРєРѕ","РђРїРµР»СЊСЃРёРЅ", // 92 - 101
+	"РњРѕР»РѕРєРѕ","РўС‹РєРІР°","РљР°СЂС‚РѕС€РєР°","РўРѕРјР°С‚","РЈРґРѕР±СЂРµРЅРёРµ","Р‘С‹С‡СЊСЏ РљСЂРѕРІСЊ","РЎРµРјРµРЅР° РўС‹РєРІС‹","РЎРµРјРµРЅР° РўРѕРјР°С‚РѕРІ","РљР°СЂС‚РѕС€РєР° Р Р°СЃСЃР°РґР°","РљРѕСЃС‚Рё", // 102 - 111
+	"Р’РѕРґРєР°","Р’РёРЅРѕ","Р’РёСЃРєРё","РљРѕРЅСЊСЏРє","Р‘СЂСЌРЅРґРё","РЎРёРґСЂ РЇР±Р»РѕС‡РЅС‹Р№","РЎРёРґСЂ Р’РёС€РЅРµРІС‹Р№","РџРёРІРѕ Р Р°Р·Р»РёРІРЅРѕРµ","Sprunk","РљРѕС„Рµ", // 112 - 121
+	"Р‘РѕРєР°Р»", "РљСЂСѓР¶РєР°", "Sprunk РІ СЃС‚Р°РєР°РЅРµ", "Р‘СѓСЂРіРµСЂ", "Р‘СѓСЂРіРµСЂ", "Р РѕР»Р»", "РќР°Р±РѕСЂ 1", "РќР°Р±РѕСЂ 2", "РќР°Р±РѕСЂ 3", "РќР°Р±РѕСЂ 4",  // 122 - 131
+	"РќР°Р±РѕСЂ 5", "РќР°Р±РѕСЂ 6", "РќР°Р±РѕСЂ 7", "РќР°Р±РѕСЂ 8", "РќР°Р±РѕСЂ 9", "РќР°Р±РѕСЂ 10", "РќР°Р±РѕСЂ 11", "Sprunk РћС‚РєСЂС‹С‚С‹Р№", "РљРѕСЃСЏРє", "РҐРѕС‚-РґРѕРі", // 132 - 141
+	"РЎРёРіР°СЂРµС‚Р°", "РЎРёРіР°СЂР°", "РЈС‡РµР±РЅРёРє РџР”Р”", "РћСЃРЅРѕРІС‹ РІРѕР¶РґРµРЅРёСЏ", "РћСЃРЅРѕРІС‹ РїРёР»РѕС‚РёСЂРѕРІР°РЅРёСЏ", "Р’РёРЅС‚РѕРєСЂС‹Р»С‹Рµ РјР°С€РёРЅС‹", "РЈРїСЂР°РІР»РµРЅРёРµ РєР°С‚РµСЂР°РјРё", "РћСЃРЅРѕРІС‹ РјРѕС‚РѕС‚СЂР°РЅСЃРїРѕСЂС‚Р°", "РЈС‡РµР±РЅРёРє СЂСѓСЃСЃРєРѕРіРѕ СЏР·С‹РєР°", "РЈС‡РµР±РЅРёРє СЏРїРѕРЅСЃРєРѕРіРѕ СЏР·С‹РєР°", // 142 - 151
+	"РЈС‡РµР±РЅРёРє РёС‚Р°Р»СЊСЏРЅСЃРєРѕРіРѕ СЏР·С‹РєР°", "РЈС‡РµР±РЅРёРє РєРёС‚Р°Р№СЃРєРѕРіРѕ СЏР·С‹РєР°", "РЈС‡РµР±РЅРёРє РёСЃРїР°РЅСЃРєРѕРіРѕ СЏР·С‹РєР°", "РЈС‡РµР±РЅРёРє Р°СЂР°Р±СЃРєРѕРіРѕ СЏР·С‹РєР°", "Р’РѕРґРёС‚РµР»СЊСЃРєРёРµ РїСЂР°РІР°", "Р›РёС†РµРЅР·РёСЏ РїРёР»РѕС‚Р°", "РџСЂР°РІР° РЅР° РєР°С‚РµСЂ", "Р›РёС†РµРЅР·РёСЏ РјРѕС‚РѕС‚СЂР°РЅСЃРїРѕСЂС‚Р°", "Р”РёРїР»РѕРј Рѕ РІС‹СЃС€РµРј РѕР±СЂР°Р·РѕРІР°РЅРёРё", "Р›РёС†РµРЅР·РёСЏ РЅР° РѕСЂСѓР¶РёРµ 1", // 152 - 161
+	"Р›РёС†РµРЅР·РёСЏ РЅР° РѕСЂСѓР¶РёРµ 2","РЎРІР°РґРµР±РЅС‹Р№ С‚РѕСЂС‚", "РљСѓСЃРѕРє С‚РѕСЂС‚Р°", "РџРёС†С†Р°", "РџРёС†С†Р° Р”РѕРјР°С€РЅСЏСЏ", "РљСѓСЃРѕРє РїРёС†С†С‹", "РњСЏСЃРѕ РІ СѓРїР°РєРѕРІРєРµ", "РЎС‹СЂРѕР№ СЃС‚РµР№Рє", "Р–Р°СЂРµРЅС‹Р№ СЃС‚РµР№Рє", "Р›РѕРјС‚РёРє С…Р»РµР±Р°",  // 162 - 171
+	"РђРїРµР»СЊСЃРёРЅРѕРІС‹Р№ СЃРѕРє", "РЇР±Р»РѕС‡РЅС‹Р№ СЃРѕРє", "РћРІРѕС‰Рё", "Р”РѕРј РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 1 СѓСЂ.", "Р”РѕРј РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 2 СѓСЂ.", "Р”РѕРј РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ 3 СѓСЂ.", "РўРѕРїР»РёРІРѕ", "РњРѕСЂРѕР¶РµРЅРѕРµ", "РўР°Р±Р»РµС‚РєР° Р—Р°С‰РёС‚С‹","РР·РѕР»РµРЅС‚Р°", // 172 - 181
+	"Р”РµС‚Р°Р»СЊ Р±РѕРјР±С‹","Р РµРј.РєРѕРјРїР»РµРєС‚ РђРІС‚Рѕ","РљСЂР°СЃРєР° РґР»СЏ С‚СЂР°РЅСЃРїРѕСЂС‚Р°","РђРІС‚РѕРјРѕР±РёР»СЊРЅС‹Рµ РґРёСЃРєРё","Р“РёРґСЂР°РІР»РёРєР°","Р—Р°РєРёСЃСЊ РђР·РѕС‚Р°","Р”РµС‚Р°Р»СЊ РўСЋРЅРёРЅРіР°","РљРµР№СЃ","Р РµРј.РєРѕРјРїР»РµРєС‚ РњРѕС‚Рѕ","Р РµРј.РєРѕРјРїР»РµРєС‚ РђРІРёР°", // 182 - 191
+	"Р РµРј.РєРѕРјРїР»РµРєС‚ РљР°С‚РµСЂРѕРІ","РќР°РјР°Р·Р»С‹Рє","РђРєРІР°СЂРёСѓРјРЅР°СЏ СЂС‹Р±РєР°", "РљРѕСЂРј РґР»СЏ СЂС‹Р±РѕРє", "РџР°РєРµС‚", "Р‘Р°Р»Р»РѕРЅС‡РёРє СЃ РєСЂР°СЃРєРѕР№","РўР°Р±Р»РµС‚РєР° РђС‚Р°РєРё","РћР±С‹С‡РЅР°СЏ РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ","РЈР»СѓС‡С€РµРЅРЅР°СЏ РЎРёРіРЅР°Р»РёР·Р°С†РёСЏ","РњРµС‚Р°Р»РёС‡РµСЃРєР°СЏ РўСЂСѓР±Р°", // 192 - 201
+	"Р’РёР»РєР°","РљР°СЂС‚Р° РґРѕСЃС‚СѓРїР° РўСЋСЂСЊРјС‹" // 202 - 203
 };
-new friskPick[] = // ID Модельки в Инвентаре (обычный предмет)
+new friskPick[] = // ID РњРѕРґРµР»СЊРєРё РІ РРЅРІРµРЅС‚Р°СЂРµ (РѕР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚)
 {
     0,19579,2710,1520,19473,1241,1578,1279,11738,1650,19515, // 0 - 10
     1654,364,19088,1486,2057,19897,19142,1455,18644,19630,19942, // 11 - 21
@@ -121,7 +121,7 @@ new friskPick[] = // ID Модельки в Инвентаре (обычный предмет)
 	11715,1581
 };
 
-stock CheckThingQuan(t) // Имеет ли предмет количество (1 да, 0 нет)
+stock CheckThingQuan(t) // РРјРµРµС‚ Р»Рё РїСЂРµРґРјРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ (1 РґР°, 0 РЅРµС‚)
 {
 	if(t >= 4 && t <= 9 || t >= 18 && t <= 20 || t == 25 || t >= 27 && t <= 30 || t == 41 || t == 46 || t == 47 || t == 55 || t == 60 || t == 61
 	|| t >= 64 && t <= 67 || t >= 71 && t <= 89 || t == 106 || t == 108 || t == 109 || t == 110 || t == 140 || t == 142 || t == 178 || t == 180
@@ -129,7 +129,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (1 да, 0 нет)
 	return 0;
 }
 
-new friskDefault[] = // Гос. стоимости предметов
+new friskDefault[] = // Р“РѕСЃ. СЃС‚РѕРёРјРѕСЃС‚Рё РїСЂРµРґРјРµС‚РѕРІ
 {
     0,60,3500,5,500,1000,500,1000,3000,100,1, // 10
     1,1,450,60,1,150,5000,30,650,50,3500, // 21
@@ -161,12 +161,12 @@ new friskPrice[INVENTER];
 
 new gunName[][] =
 {
-    "Кулак", "Кастет", "Клюшка", "Полицейская дубинка", "Нож", "Бита", "Лопата", "Кий", "Катана", "Бензопила",
-    "Фаллоимитатор", "Фаллоимитатор", "Фаллоимитатор", "Фаллоимитатор", "Цветы", "Трость", "Граната", "Дымовая шашка", "Коктейль молотова","none","none","none", "Colt",
-    "Электрошокер", "Desert eagle", "Дробовик", "Обрез", "Скорострельный дробовик", "Uzi", "MP5", "AK-47", "M4",
-    "Tec-9", "Винтовка", "Снайперская винтовка", "RPG", "Базука", "Огнемёт", "Миниган", "Взрыв. пакет", "Детонатор", "Балончик",
-    "Огнетушитель", "Фотоаппарат", "Ночное видение", "Тепловизор", "Парашют", "Каска" ,"", "Транспорт", "Винты Вертолёта",
-	"Взрыв","","Утонул","Падение"
+    "РљСѓР»Р°Рє", "РљР°СЃС‚РµС‚", "РљР»СЋС€РєР°", "РџРѕР»РёС†РµР№СЃРєР°СЏ РґСѓР±РёРЅРєР°", "РќРѕР¶", "Р‘РёС‚Р°", "Р›РѕРїР°С‚Р°", "РљРёР№", "РљР°С‚Р°РЅР°", "Р‘РµРЅР·РѕРїРёР»Р°",
+    "Р¤Р°Р»Р»РѕРёРјРёС‚Р°С‚РѕСЂ", "Р¤Р°Р»Р»РѕРёРјРёС‚Р°С‚РѕСЂ", "Р¤Р°Р»Р»РѕРёРјРёС‚Р°С‚РѕСЂ", "Р¤Р°Р»Р»РѕРёРјРёС‚Р°С‚РѕСЂ", "Р¦РІРµС‚С‹", "РўСЂРѕСЃС‚СЊ", "Р“СЂР°РЅР°С‚Р°", "Р”С‹РјРѕРІР°СЏ С€Р°С€РєР°", "РљРѕРєС‚РµР№Р»СЊ РјРѕР»РѕС‚РѕРІР°","none","none","none", "Colt",
+    "Р­Р»РµРєС‚СЂРѕС€РѕРєРµСЂ", "Desert eagle", "Р”СЂРѕР±РѕРІРёРє", "РћР±СЂРµР·", "РЎРєРѕСЂРѕСЃС‚СЂРµР»СЊРЅС‹Р№ РґСЂРѕР±РѕРІРёРє", "Uzi", "MP5", "AK-47", "M4",
+    "Tec-9", "Р’РёРЅС‚РѕРІРєР°", "РЎРЅР°Р№РїРµСЂСЃРєР°СЏ РІРёРЅС‚РѕРІРєР°", "RPG", "Р‘Р°Р·СѓРєР°", "РћРіРЅРµРјС‘С‚", "РњРёРЅРёРіР°РЅ", "Р’Р·СЂС‹РІ. РїР°РєРµС‚", "Р”РµС‚РѕРЅР°С‚РѕСЂ", "Р‘Р°Р»РѕРЅС‡РёРє",
+    "РћРіРЅРµС‚СѓС€РёС‚РµР»СЊ", "Р¤РѕС‚РѕР°РїРїР°СЂР°С‚", "РќРѕС‡РЅРѕРµ РІРёРґРµРЅРёРµ", "РўРµРїР»РѕРІРёР·РѕСЂ", "РџР°СЂР°С€СЋС‚", "РљР°СЃРєР°" ,"", "РўСЂР°РЅСЃРїРѕСЂС‚", "Р’РёРЅС‚С‹ Р’РµСЂС‚РѕР»С‘С‚Р°",
+	"Р’Р·СЂС‹РІ","","РЈС‚РѕРЅСѓР»","РџР°РґРµРЅРёРµ"
 };
 new gunDraw[][] =
 {
@@ -174,10 +174,10 @@ new gunDraw[][] =
     "DILDO", "DILDO", "DILDO", "DILDO", "FLOWER", "CANE", "GRENADE", "TEARGAS", "MOLTOV","","","", "COLT",
     "SHOCKER", "DESERT_EAGLE", "SHOTGUN", "SAWEDOFF", "SHOTGSPA", "UZI", "MP5", "AK47", "M4",
     "TEC9", "RIFLE", "SNIPER_RIFLE", "RPG", "HS ROCKET", "FLAMETHROWER", "MINIGUN", "SATCHEL", "DETONATOR", "SPRAYCAN",
-    "FIRE", "CAMERA", "NIGHT", "TERMAL", "PARACHUTE", "Fake Pistol" ,"", "Транспорт", "Винты Вертолёта",
-	"Взрыв","","Утонул","Падение"
+    "FIRE", "CAMERA", "NIGHT", "TERMAL", "PARACHUTE", "Fake Pistol" ,"", "РўСЂР°РЅСЃРїРѕСЂС‚", "Р’РёРЅС‚С‹ Р’РµСЂС‚РѕР»С‘С‚Р°",
+	"Р’Р·СЂС‹РІ","","РЈС‚РѕРЅСѓР»","РџР°РґРµРЅРёРµ"
 };
-new friskGun[] = // ID Модельки Оружия в Инвентарях
+new friskGun[] = // ID РњРѕРґРµР»СЊРєРё РћСЂСѓР¶РёСЏ РІ РРЅРІРµРЅС‚Р°СЂСЏС…
 {
     0,331,333,334,335,336,337,338,339,341,321,
     322,323,324,325,326,342,343,344,0,0,0,
@@ -200,50 +200,50 @@ enum prisTableInfo
 };
 new PrisonTableInfo[MAX_PRISON_TABLE][prisTableInfo];
 
-new Page[MAX_REALPLAYERS]; // Какая страница открыта в инвентаре
-new Pagetwo[MAX_REALPLAYERS]; // Какая страница открыта во второй вкладке инвентаря
+new Page[MAX_REALPLAYERS]; // РљР°РєР°СЏ СЃС‚СЂР°РЅРёС†Р° РѕС‚РєСЂС‹С‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ
+new Pagetwo[MAX_REALPLAYERS]; // РљР°РєР°СЏ СЃС‚СЂР°РЅРёС†Р° РѕС‚РєСЂС‹С‚Р° РІРѕ РІС‚РѕСЂРѕР№ РІРєР»Р°РґРєРµ РёРЅРІРµРЅС‚Р°СЂСЏ
 
-new PlayerText:PlaNestPick[40][MAX_REALPLAYERS]; // Кнопка предмета в инвентаре
-new PlayerText:PlaNestPickNum[40][MAX_REALPLAYERS]; // Текст каждой кнопки предмета (отображение количества)
-new PlayerText:PlaNestOthe[3][MAX_REALPLAYERS]; // Скин персонажа и выбранный предмет
-new PlayerText:PlaNestPrice[MAX_REALPLAYERS]; // Стоимость товара
+new PlayerText:PlaNestPick[40][MAX_REALPLAYERS]; // РљРЅРѕРїРєР° РїСЂРµРґРјРµС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ
+new PlayerText:PlaNestPickNum[40][MAX_REALPLAYERS]; // РўРµРєСЃС‚ РєР°Р¶РґРѕР№ РєРЅРѕРїРєРё РїСЂРµРґРјРµС‚Р° (РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР°)
+new PlayerText:PlaNestOthe[3][MAX_REALPLAYERS]; // РЎРєРёРЅ РїРµСЂСЃРѕРЅР°Р¶Р° Рё РІС‹Р±СЂР°РЅРЅС‹Р№ РїСЂРµРґРјРµС‚
+new PlayerText:PlaNestPrice[MAX_REALPLAYERS]; // РЎС‚РѕРёРјРѕСЃС‚СЊ С‚РѕРІР°СЂР°
 
-CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту команду без надобности, она не учитывает кучу условий для разных предметов)
+CMD:gthing(playerid, const params[]) // Р’С‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ (РќР• РРЎРџРћР›Р¬Р—РћР’РђРўР¬ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ Р±РµР· РЅР°РґРѕР±РЅРѕСЃС‚Рё, РѕРЅР° РЅРµ СѓС‡РёС‚С‹РІР°РµС‚ РєСѓС‡Сѓ СѓСЃР»РѕРІРёР№ РґР»СЏ СЂР°Р·РЅС‹С… РїСЂРµРґРјРµС‚РѕРІ)
 {
-    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
-    if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Кол-во ]");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ");
+    if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂСЊ [ ID, РџСЂРµРґРјРµС‚, РљРѕР»-РІРѕ ]");
     
-    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+    // РўРёРї С‚РѕРІР°СЂР° (0 РѕР±С‹С‡РЅС‹Р№, 1 РѕСЂСѓР¶РёРµ, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 4 РјРµР±РµР»СЊ, 5 С‚СЂР°РЅСЃРїРѕСЂС‚)
     new put_inva = GiveThingPlayer(params[0], params[1], params[2], 0, 0, 0, 0, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 	return 1;
 }
 
-CMD:gthingunix(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту команду без надобности, она не учитывает кучу условий для разных предметов)
+CMD:gthingunix(playerid, const params[]) // Р’С‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ (РќР• РРЎРџРћР›Р¬Р—РћР’РђРўР¬ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ Р±РµР· РЅР°РґРѕР±РЅРѕСЃС‚Рё, РѕРЅР° РЅРµ СѓС‡РёС‚С‹РІР°РµС‚ РєСѓС‡Сѓ СѓСЃР»РѕРІРёР№ РґР»СЏ СЂР°Р·РЅС‹С… РїСЂРµРґРјРµС‚РѕРІ)
 {
-    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
-    if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Кол-во, UNIX ]");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ");
+    if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹РґР°С‚СЊ РїСЂРµРґРјРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂСЊ [ ID, РџСЂРµРґРјРµС‚, РљРѕР»-РІРѕ, UNIX ]");
     new unix = gettime();
-    // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+    // РўРёРї С‚РѕРІР°СЂР° (0 РѕР±С‹С‡РЅС‹Р№, 1 РѕСЂСѓР¶РёРµ, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 4 РјРµР±РµР»СЊ, 5 С‚СЂР°РЅСЃРїРѕСЂС‚)
     new put_inva = GiveThingPlayer(params[0], params[1], params[2], unix+params[3], 0, 0, 0, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 	return 1;
 }
 
-stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
+stock tile_second(playerid, invatab) // РљР»Р°С†Р°РµРј РїРѕ СЏС‡РµР№РєР°Рј РІ РїСЂР°РІРѕРј СЂР°Р·РґРµР»Рµ
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1) return 0;
 	PlayerPlaySound(playerid,17803,0,0,0);
-	if(LoadPick[playerid] != 9999) return reset_aksess_tile(playerid); // Сбрасываем выбранные аксесуары
-	if(LoadGun[playerid] != 9999) return reset_gun_tile(playerid); // Сбрасываем выбранное оружие
+	if(LoadPick[playerid] != 9999) return reset_aksess_tile(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РІС‹Р±СЂР°РЅРЅС‹Рµ Р°РєСЃРµСЃСѓР°СЂС‹
+	if(LoadGun[playerid] != 9999) return reset_gun_tile(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РІС‹Р±СЂР°РЅРЅРѕРµ РѕСЂСѓР¶РёРµ
 
 	if(Tabs_Load[playerid] != 6 && Tabs_Load[playerid] != 7)
 	{
-		if(OnlineInfo[playerid][oShowTabs] == 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Вкладка с выбранным предметом закрылась");
+		if(OnlineInfo[playerid][oShowTabs] == 9999) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р’РєР»Р°РґРєР° СЃ РІС‹Р±СЂР°РЅРЅС‹Рј РїСЂРµРґРјРµС‚РѕРј Р·Р°РєСЂС‹Р»Р°СЃСЊ");
 	}
 	
 	new fpick, tab, inva = invatab-20, fpara, thingQuan, thingType, thingPack;
-	if(Tabs_Load[playerid] == 1) // Лавка Товаров
+	if(Tabs_Load[playerid] == 1) // Р›Р°РІРєР° РўРѕРІР°СЂРѕРІ
 	{
 	    tab = OnlineInfo[playerid][oShowTabs];
 	    if(!IsOnline(tab)) return closetab(playerid, 1);
@@ -253,7 +253,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = PlayerInfo[tab][pMarkInvenType][inva];
 		thingPack = PlayerInfo[tab][pMarkInvenPack][inva];
 	}
-	else if(Tabs_Load[playerid] == 2) // Дом
+	else if(Tabs_Load[playerid] == 2) // Р”РѕРј
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = DomInfo[tab][dInvent][inva];
@@ -262,7 +262,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = DomInfo[tab][dInvType][inva];
 		thingPack = DomInfo[tab][dInvPack][inva];
 	}
-	else if(Tabs_Load[playerid] == 3) // Склад Организации
+	else if(Tabs_Load[playerid] == 3) // РЎРєР»Р°Рґ РћСЂРіР°РЅРёР·Р°С†РёРё
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = OrganInfo[tab][gInvent][inva];
@@ -270,7 +270,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = OrganInfo[tab][gInvType][inva];
 		thingPack = 0;
 	}
-	else if(Tabs_Load[playerid] == 4) // Арендованный Склад
+	else if(Tabs_Load[playerid] == 4) // РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ РЎРєР»Р°Рґ
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = WhInfo[tab][wInvent][inva];
@@ -278,7 +278,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = WhInfo[tab][wInvType][inva];
 		thingPack = 0;
 	}
-	else if(Tabs_Load[playerid] == 5) // Багажник
+	else if(Tabs_Load[playerid] == 5) // Р‘Р°РіР°Р¶РЅРёРє
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = VehInfo[tab][vInvent][inva];
@@ -287,7 +287,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = VehInfo[tab][vInvType][inva];
 		thingPack = VehInfo[tab][vInvPack][inva];
 	}
-	else if(Tabs_Load[playerid] == 6) // Мои Товары
+	else if(Tabs_Load[playerid] == 6) // РњРѕРё РўРѕРІР°СЂС‹
 	{
 		fpick = PlayerInfo[playerid][pMarkInven][inva];
 		thingQuan = PlayerInfo[playerid][pMarkInvenQuan][inva];
@@ -295,7 +295,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = PlayerInfo[playerid][pMarkInvenType][inva];
 		thingPack = PlayerInfo[playerid][pMarkInvenPack][inva];
 	}
-	else if(Tabs_Load[playerid] == 7) // Выбошенные Предметы
+	else if(Tabs_Load[playerid] == 7) // Р’С‹Р±РѕС€РµРЅРЅС‹Рµ РџСЂРµРґРјРµС‚С‹
 	{
 		if(MyThrow[inva][playerid] >= 0)
 		{
@@ -306,7 +306,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 			thingPack = ThrowInfo[MyThrow[inva][playerid]][tPack];
 		}
 	}
-	else if(Tabs_Load[playerid] == 8) // Мусорный Контейнер
+	else if(Tabs_Load[playerid] == 8) // РњСѓСЃРѕСЂРЅС‹Р№ РљРѕРЅС‚РµР№РЅРµСЂ
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = gTrash[inva][tab];
@@ -315,7 +315,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = gTrashType[inva][tab];
 		thingPack = gTrashPack[inva][tab];
 	}
-	else if(Tabs_Load[playerid] == 9) // Биз
+	else if(Tabs_Load[playerid] == 9) // Р‘РёР·
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = BizzInfo[tab][bInvent][inva];
@@ -324,7 +324,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		thingType = BizzInfo[tab][bInvType][inva];
 		thingPack = BizzInfo[tab][bInvPack][inva];
 	}
-	else if(Tabs_Load[playerid] == 14) // Тумба
+	else if(Tabs_Load[playerid] == 14) // РўСѓРјР±Р°
 	{
 		tab = OnlineInfo[playerid][oShowTabs];
 		fpick = PrisonTableInfo[tab][ptInvent][inva];
@@ -335,11 +335,11 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 	}
 	
 	
-	if(fpick == 0) // Если клацаем по пустой ячейке
+	if(fpick == 0) // Р•СЃР»Рё РєР»Р°С†Р°РµРј РїРѕ РїСѓСЃС‚РѕР№ СЏС‡РµР№РєРµ
 	{
-		if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Если ячейка в левом разделе не выбрана
+		if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Р•СЃР»Рё СЏС‡РµР№РєР° РІ Р»РµРІРѕРј СЂР°Р·РґРµР»Рµ РЅРµ РІС‹Р±СЂР°РЅР°
 		{
-			if(OnlineInfo[playerid][oInventSelectRight] != 9999 && OnlineInfo[playerid][oInventSelectRight] != inva) // Перекладываем
+			if(OnlineInfo[playerid][oInventSelectRight] != 9999 && OnlineInfo[playerid][oInventSelectRight] != inva) // РџРµСЂРµРєР»Р°РґС‹РІР°РµРј
 			{
 				if(Tabs_Load[playerid] == 2) shift_dom(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 				else if(Tabs_Load[playerid] == 3) shift_sklad(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
@@ -351,66 +351,66 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 				else i_resettabs(playerid);
 			}
 		}
-		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // Кладём предмет из инвентаря в другой
+		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ РІ РґСЂСѓРіРѕР№
 		{
 		    new myinva = OnlineInfo[playerid][oInventSelectLeft], myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
-		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ РЅРµР»СЊР·СЏ РїРµСЂРµРґР°РІР°С‚СЊ, РїСЂРѕРґР°РІР°С‚СЊ РёР»Рё СѓР±РёСЂР°С‚СЊ"), i_resetveshi(playerid);
 		    
 			new string[120];
-			if(Tabs_Load[playerid] == 2) // Дом
+			if(Tabs_Load[playerid] == 2) // Р”РѕРј
 			{
 			    if(myThingType == 0 && myThingPack == 0)
 			    {
 			        if(CheckThingQuan(myfpick) == 1)
 			        {
 			            OnlineInfo[playerid][oInventSelectRight] = inva;
-						format(string,sizeof(string),"{cccccc}Чтобы положить в дом {ff9000}%s {cccccc}введите количество\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-						ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ РґРѕРј {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						return 1;
 			        }
 			    }
 			    put_dom(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
 			}
-			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n\n{cccccc}Только ящики с оружием и аммуницией"), i_resetveshi(playerid); // Склады
-			else if(Tabs_Load[playerid] == 5) // Багажник
+			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїРѕР»РѕР¶РёС‚СЊ РїСЂРµРґРјРµС‚С‹ РЅР° СЃРєР»Р°Рґ\n\n{cccccc}РўРѕР»СЊРєРѕ СЏС‰РёРєРё СЃ РѕСЂСѓР¶РёРµРј Рё Р°РјРјСѓРЅРёС†РёРµР№"), i_resetveshi(playerid); // РЎРєР»Р°РґС‹
+			else if(Tabs_Load[playerid] == 5) // Р‘Р°РіР°Р¶РЅРёРє
 			{
 			    if(myThingType == 0 && myThingPack == 0)
 			    {
 			        if(CheckThingQuan(myfpick) == 1)
 			        {
 			            OnlineInfo[playerid][oInventSelectRight] = inva;
-						format(string,sizeof(string),"{cccccc}Чтобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-						ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ Р±Р°РіР°Р¶РЅРёРє {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						return 1;
 			        }
 			    }
 			    put_boot(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
 			}
-			else if(Tabs_Load[playerid] == 6) // Мои Товары
+			else if(Tabs_Load[playerid] == 6) // РњРѕРё РўРѕРІР°СЂС‹
 			{
 			    if(myThingType == 0 && myThingPack == 0)
 			    {
 			        if(CheckThingQuan(myfpick) == 1)
 			        {
 			            OnlineInfo[playerid][oInventSelectRight] = inva;
-						format(string,sizeof(string),"{cccccc}Чтобы выставить на продажу {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-						ShowDialog(playerid,1103,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІС‹СЃС‚Р°РІРёС‚СЊ РЅР° РїСЂРѕРґР°Р¶Сѓ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,1103,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						return 1;
 			        }
 			    }
 			    new put_invent = put_goods(playerid, myinva, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva);
-			    if(put_invent == -1) return ErrorMessage(playerid, "{FF6347}В разделе товаров нет места"), i_resetveshi(playerid);
+			    if(put_invent == -1) return ErrorMessage(playerid, "{FF6347}Р’ СЂР°Р·РґРµР»Рµ С‚РѕРІР°СЂРѕРІ РЅРµС‚ РјРµСЃС‚Р°"), i_resetveshi(playerid);
 			}
-			else if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}На склад бизнеса нельзя класть обычные предметы\n\n{cccccc}Только мебель из IKEA или багажника автомобиля"), i_resetveshi(playerid);
-			else if(Tabs_Load[playerid] == 14) // Тумба
+			else if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}РќР° СЃРєР»Р°Рґ Р±РёР·РЅРµСЃР° РЅРµР»СЊР·СЏ РєР»Р°СЃС‚СЊ РѕР±С‹С‡РЅС‹Рµ РїСЂРµРґРјРµС‚С‹\n\n{cccccc}РўРѕР»СЊРєРѕ РјРµР±РµР»СЊ РёР· IKEA РёР»Рё Р±Р°РіР°Р¶РЅРёРєР° Р°РІС‚РѕРјРѕР±РёР»СЏ"), i_resetveshi(playerid);
+			else if(Tabs_Load[playerid] == 14) // РўСѓРјР±Р°
 			{
 			    if(myThingType == 0 && myThingPack == 0)
 			    {
 			        if(CheckThingQuan(myfpick) == 1)
 			        {
 			            OnlineInfo[playerid][oInventSelectRight] = inva;
-						format(string,sizeof(string),"{cccccc}Чтобы положить в тумбу {ff9000}%s {cccccc}введите количество\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-						ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+						format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ С‚СѓРјР±Сѓ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+						ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						return 1;
 			        }
 			    }
@@ -419,9 +419,9 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 			else i_resetveshi(playerid);
 		}
 	}
-	else if(fpick > 0) // Что-то Лежит
+	else if(fpick > 0) // Р§С‚Рѕ-С‚Рѕ Р›РµР¶РёС‚
 	{
-		if(OnlineInfo[playerid][oInventSelectRight] == 9999) // Выделяем
+		if(OnlineInfo[playerid][oInventSelectRight] == 9999) // Р’С‹РґРµР»СЏРµРј
 		{
 		    if(Pagetwo[playerid] == 0 && inva <= 19) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva+20][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva+20][playerid]);
 			else if(Pagetwo[playerid] == 1 && inva >= 20 && inva <= 39) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
@@ -429,9 +429,9 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 			else if(Pagetwo[playerid] == 3 && inva >= 60 && inva <= 79) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva-40][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva-40][playerid]);
 			i_infofpick(playerid, fpick, thingQuan, inva, Tabs_Load[playerid], fpara, thingType, thingPack);
 			OnlineInfo[playerid][oInventSelectRight] = inva;
-			if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // Кладём (Если предмет количественный, мы складируем его поверх такого-же)
+			if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // РљР»Р°РґС‘Рј (Р•СЃР»Рё РїСЂРµРґРјРµС‚ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Р№, РјС‹ СЃРєР»Р°РґРёСЂСѓРµРј РµРіРѕ РїРѕРІРµСЂС… С‚Р°РєРѕРіРѕ-Р¶Рµ)
 			{
-			    if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}На склад бизнеса нельзя класть обычные предметы\n\n{cccccc}Только мебель из IKEA или багажника автомобиля"), i_resetveshi(playerid);
+			    if(Tabs_Load[playerid] == 9) return ErrorMessage(playerid, "{FF6347}РќР° СЃРєР»Р°Рґ Р±РёР·РЅРµСЃР° РЅРµР»СЊР·СЏ РєР»Р°СЃС‚СЊ РѕР±С‹С‡РЅС‹Рµ РїСЂРµРґРјРµС‚С‹\n\n{cccccc}РўРѕР»СЊРєРѕ РјРµР±РµР»СЊ РёР· IKEA РёР»Рё Р±Р°РіР°Р¶РЅРёРєР° Р°РІС‚РѕРјРѕР±РёР»СЏ"), i_resetveshi(playerid);
 				if(Tabs_Load[playerid] == 1 || Tabs_Load[playerid] == 6 || Tabs_Load[playerid] == 7) return i_resetveshi(playerid);
 			    new myinva = OnlineInfo[playerid][oInventSelectLeft];
 			    if(PlayerInfo[playerid][pInven][myinva] == 0 || PlayerInfo[playerid][pInven][myinva] != fpick) return i_resetveshi(playerid);
@@ -442,21 +442,21 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 			        if(CheckThingQuan(myfpick) == 1)
 			        {
 						new string[130];
-			        	if(Tabs_Load[playerid] == 2) // Дом
+			        	if(Tabs_Load[playerid] == 2) // Р”РѕРј
 						{
-							format(string,sizeof(string),"{cccccc}Чтобы положить в дом {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-							ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+							format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ РґРѕРј {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+							ShowDialog(playerid,773,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						}
-						else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n\n{cccccc}Только ящики с оружием и аммуницией"), i_resetveshi(playerid); // Склады
-						else if(Tabs_Load[playerid] == 5) // Багажник
+						else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїРѕР»РѕР¶РёС‚СЊ РїСЂРµРґРјРµС‚С‹ РЅР° СЃРєР»Р°Рґ\n\n{cccccc}РўРѕР»СЊРєРѕ СЏС‰РёРєРё СЃ РѕСЂСѓР¶РёРµРј Рё Р°РјРјСѓРЅРёС†РёРµР№"), i_resetveshi(playerid); // РЎРєР»Р°РґС‹
+						else if(Tabs_Load[playerid] == 5) // Р‘Р°РіР°Р¶РЅРёРє
 						{
-							format(string,sizeof(string),"{cccccc}Чтобы положить в багажник {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-							ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+							format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ Р±Р°РіР°Р¶РЅРёРє {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+							ShowDialog(playerid,775,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						}
-						else if(Tabs_Load[playerid] == 14) // Тумба
+						else if(Tabs_Load[playerid] == 14) // РўСѓРјР±Р°
 						{
-							format(string,sizeof(string),"{cccccc}Чтобы положить в тумбу {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
-							ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+							format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРѕР»РѕР¶РёС‚СЊ РІ С‚СѓРјР±Сѓ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(1, myfpick, myThingType, myThingPack));
+							ShowDialog(playerid,929,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 						}
 			        }
 			        else i_resetveshi(playerid);
@@ -464,7 +464,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
        			else i_resetveshi(playerid);
 			}
 		}
-		else if(OnlineInfo[playerid][oInventSelectRight] == inva) // Выполняем
+		else if(OnlineInfo[playerid][oInventSelectRight] == inva) // Р’С‹РїРѕР»РЅСЏРµРј
 		{
 			if(Tabs_Load[playerid] == 1) return use_goods(playerid, tab, inva);
 			else if(Tabs_Load[playerid] == 2) return use_dom(playerid, tab, inva, 9999);
@@ -481,15 +481,15 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 		{
 			if(Tabs_Load[playerid] == 1 || Tabs_Load[playerid] == 6 || Tabs_Load[playerid] == 7 || Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4 || Tabs_Load[playerid] == 9) return i_resettabs(playerid);
 		    new tabfpick, tabType, tabPack;
-			if(Tabs_Load[playerid] == 2) tabfpick = DomInfo[tab][dInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = DomInfo[tab][dInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = DomInfo[tab][dInvPack][OnlineInfo[playerid][oInventSelectRight]]; // Дом
-			else if(Tabs_Load[playerid] == 5) tabfpick = VehInfo[tab][vInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]]; // Багажник
-			else if(Tabs_Load[playerid] == 14) tabfpick = PrisonTableInfo[tab][ptInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]]; // Тумба
+			if(Tabs_Load[playerid] == 2) tabfpick = DomInfo[tab][dInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = DomInfo[tab][dInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = DomInfo[tab][dInvPack][OnlineInfo[playerid][oInventSelectRight]]; // Р”РѕРј
+			else if(Tabs_Load[playerid] == 5) tabfpick = VehInfo[tab][vInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = VehInfo[tab][vInvType][OnlineInfo[playerid][oInventSelectRight]]; // Р‘Р°РіР°Р¶РЅРёРє
+			else if(Tabs_Load[playerid] == 14) tabfpick = PrisonTableInfo[tab][ptInvent][OnlineInfo[playerid][oInventSelectRight]], tabType = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]], tabPack = PrisonTableInfo[tab][ptInvType][OnlineInfo[playerid][oInventSelectRight]]; // РўСѓРјР±Р°
 			
 			if(tabfpick > 0 && fpick == tabfpick)
 			{
-			    if(tabType == 0 && tabPack == 0) // Только обычные предметы
+			    if(tabType == 0 && tabPack == 0) // РўРѕР»СЊРєРѕ РѕР±С‹С‡РЅС‹Рµ РїСЂРµРґРјРµС‚С‹
 			    {
-			    	if(CheckThingQuan(fpick) == 1) // Если количественные, складываем их в одну ячейку
+			    	if(CheckThingQuan(fpick) == 1) // Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ, СЃРєР»Р°РґС‹РІР°РµРј РёС… РІ РѕРґРЅСѓ СЏС‡РµР№РєСѓ
 					{
 						if(Tabs_Load[playerid] == 2) return mix_dom(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
 						else if(Tabs_Load[playerid] == 5) return mix_boot(playerid, tab, OnlineInfo[playerid][oInventSelectRight], inva);
@@ -497,7 +497,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в правом разделе
 					}
 				}
 			}
-			i_resettabs(playerid); // Сбрасываем Выбор
+			i_resettabs(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј Р’С‹Р±РѕСЂ
 		}
 	}
 	return 1;
@@ -510,21 +510,21 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	new fpick = PlayerInfo[playerid][pInven][inva], thingType = PlayerInfo[playerid][pInvenType][inva], thingPack = PlayerInfo[playerid][pInvenPack][inva];
 	if(fpick <= 0) return 1;
 	
-	if(thingPack == 1) return ErrorMessage(playerid, "{FF6347}Подарок нельзя продать\n\n{cccccc}Подарите его кому-нибудь ;)");
-	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}Нельзя продать упакованный предмет");
+	if(thingPack == 1) return ErrorMessage(playerid, "{FF6347}РџРѕРґР°СЂРѕРє РЅРµР»СЊР·СЏ РїСЂРѕРґР°С‚СЊ\n\n{cccccc}РџРѕРґР°СЂРёС‚Рµ РµРіРѕ РєРѕРјСѓ-РЅРёР±СѓРґСЊ ;)");
+	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РїСЂРѕРґР°С‚СЊ СѓРїР°РєРѕРІР°РЅРЅС‹Р№ РїСЂРµРґРјРµС‚");
 	
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её продать");
-	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
+	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅСѓР¶РЅРѕ СЃРґСѓС‚СЊ Р»РѕРґРєСѓ, РїСЂРµР¶РґРµ С‡РµРј РµС‘ РїСЂРѕРґР°С‚СЊ");
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ РЅРµР»СЊР·СЏ РїСЂРѕРґР°С‚СЊ СЌС‚РѕРјСѓ РёРіСЂРѕРєСѓ");
 
 	if(giveplayerid == -1)
 	{
-	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы не ввели текст");
-		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
+	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІРІРµР»Рё С‚РµРєСЃС‚");
+		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»");
 		giveplayerid = ReturnUser(inputtext);
 	}
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
-	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Вы не можете продавать предметы себе");
-    if(OnlineInfo[giveplayerid][oSaleThing] != 0) return ErrorMessage(playerid, "{FF6347}У игрока уже есть предложение о покупке\n\n{cccccc}Ему необходимо согласиться /yes или отказаться /no");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ РІ СЃРµС‚Рё");
+	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРѕРґР°РІР°С‚СЊ РїСЂРµРґРјРµС‚С‹ СЃРµР±Рµ");
+    if(OnlineInfo[giveplayerid][oSaleThing] != 0) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° СѓР¶Рµ РµСЃС‚СЊ РїСЂРµРґР»РѕР¶РµРЅРёРµ Рѕ РїРѕРєСѓРїРєРµ\n\n{cccccc}Р•РјСѓ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕРіР»Р°СЃРёС‚СЊСЃСЏ /yes РёР»Рё РѕС‚РєР°Р·Р°С‚СЊСЃСЏ /no");
 
     DP[0][playerid] = giveplayerid;
     DP[1][playerid] = inva;
@@ -536,13 +536,13 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	{
 	    if(CheckThingQuan(fpick) == 1)
 	    {
-		    format(string,sizeof(string),"{cccccc}Покупатель: %s\nПредмет: {99ff66}%s\n{cccccc}Введите количество\n\nНе меньше 1 и не больше 100.000", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
-			ShowDialog(playerid,1096,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+		    format(string,sizeof(string),"{cccccc}РџРѕРєСѓРїР°С‚РµР»СЊ: %s\nРџСЂРµРґРјРµС‚: {99ff66}%s\n{cccccc}Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+			ShowDialog(playerid,1096,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			return 1;
 		}
 	}
-	format(string,sizeof(string),"{cccccc}Покупатель: %s\nПредмет: {99ff66}%s\n{cccccc}Введите стоимость\n\nНе меньше 1$ и не больше 100.000.000$", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
-	ShowDialog(playerid,1097,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+	format(string,sizeof(string),"{cccccc}РџРѕРєСѓРїР°С‚РµР»СЊ: %s\nРџСЂРµРґРјРµС‚: {99ff66}%s\n{cccccc}Р’РІРµРґРёС‚Рµ СЃС‚РѕРёРјРѕСЃС‚СЊ\n\nРќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000.000$", rpplayername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+	ShowDialog(playerid,1097,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, inva)
@@ -551,34 +551,34 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	if(OnlineInfo[playerid][oShowInterface] != 1 || fpick != PlayerInfo[playerid][pInven][inva] || fquan > PlayerInfo[playerid][pInvenQuan][inva]
 	|| fpick <= 0 || playerid == giveplayerid) return 1;
 
-	// Простые проверки
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
-	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Вы находитесь в слежке");
-	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(5.0, playerid,giveplayerid)) return ErrorMessage(playerid, "{FF6347}Вы далеко от игрока {cccccc}[ Не дальше 5-ти метров ]");
-	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя передавать предметы во время покупок в супермаркете");
+	// РџСЂРѕСЃС‚С‹Рµ РїСЂРѕРІРµСЂРєРё
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ РІ СЃРµС‚Рё");
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЃР»РµР¶РєРµ");
+	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(5.0, playerid,giveplayerid)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ РёРіСЂРѕРєР° {cccccc}[ РќРµ РґР°Р»СЊС€Рµ 5-С‚Рё РјРµС‚СЂРѕРІ ]");
+	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РїРµСЂРµРґР°РІР°С‚СЊ РїСЂРµРґРјРµС‚С‹ РІРѕ РІСЂРµРјСЏ РїРѕРєСѓРїРѕРє РІ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ");
 	
-	// Проверка на особые предметы
-	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её передать или убрать");
+	// РџСЂРѕРІРµСЂРєР° РЅР° РѕСЃРѕР±С‹Рµ РїСЂРµРґРјРµС‚С‹
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ РЅРµР»СЊР·СЏ РїРµСЂРµРґР°С‚СЊ СЌС‚РѕРјСѓ РёРіСЂРѕРєСѓ");
+	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅСѓР¶РЅРѕ СЃРґСѓС‚СЊ Р»РѕРґРєСѓ, РїСЂРµР¶РґРµ С‡РµРј РµС‘ РїРµСЂРµРґР°С‚СЊ РёР»Рё СѓР±СЂР°С‚СЊ");
 
-	// Проверка на наличие особых аксессуаров (Каска и Броня)
-	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[giveplayerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У игрока уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
+	// РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РѕСЃРѕР±С‹С… Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ (РљР°СЃРєР° Рё Р‘СЂРѕРЅСЏ)
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[giveplayerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚\n\n{cccccc}РЈС‡РёС‚С‹РІР°РµС‚СЃСЏ РЅР°РґРµС‚Р°СЏ Р±СЂРѕРЅСЏ");
 
 	new fpara = PlayerInfo[playerid][pInvenPara][inva], fqara = PlayerInfo[playerid][pInvenQara][inva];
 
 	new string[180];
-	// Проверка на лимиты количественного предмета
+	// РџСЂРѕРІРµСЂРєР° РЅР° Р»РёРјРёС‚С‹ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 	new quanThing;
-	if(thingType == 0) // Обычный предмет
+	if(thingType == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 	{
-	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
+	    if(CheckThingQuan(fpick) == 1) // РџСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
 		{
 		    if(thingPack == 0) quanThing = 1;
 		    new getQuan, getLimit;
 		    i_limit(giveplayerid, fpick, getQuan, getLimit);
 		    if(getQuan+fquan > getLimit)
 		    {
-		        format(string,sizeof(string),"{FF6347}У игрока нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit);
+		        format(string,sizeof(string),"{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ\nР›РёРјРёС‚ РґР»СЏ СЌС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°: %d\n\n{cccccc}РЈС‡РёС‚С‹РІР°СЋС‚СЃСЏ СѓРїР°РєРѕРІР°РЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹, Р° С‚Р°Рє-Р¶Рµ СЂР°Р·РґРµР» С‚РѕРІР°СЂРѕРІ", getLimit);
 		        ErrorMessage(playerid, string);
 				i_resetveshi(playerid);
 				i_resettabs(playerid);
@@ -587,28 +587,28 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 		}
 	}
 
-    // Передача предмета
-    if(JustOneThingInventory(fpick, thingType) && get_invent(giveplayerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У игрока уже есть этот предмет");
+    // РџРµСЂРµРґР°С‡Р° РїСЂРµРґРјРµС‚Р°
+    if(JustOneThingInventory(fpick, thingType) && get_invent(giveplayerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚");
 
-    new put_inva = GiveThingPlayer(giveplayerid, fpick, fquan, fpara, fqara, thingType, thingPack, 9999); // Выдаём предмет игроку
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+    new put_inva = GiveThingPlayer(giveplayerid, fpick, fquan, fpara, fqara, thingType, thingPack, 9999); // Р’С‹РґР°С‘Рј РїСЂРµРґРјРµС‚ РёРіСЂРѕРєСѓ
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ"); // РџРѕР»СѓС‡РёР»Рё -1 РІ РѕС‚РІРµС‚, Р·РЅР°С‡РёС‚ РЅРµ РЅР°С€Р»Рё СЏС‡РµР№РєСѓ, РєСѓРґР° РєР»Р°СЃС‚СЊ РїСЂРµРґРјРµС‚
 
-    if(quanThing == 1) take_away(playerid, fquan, inva); // Отнимаем предмет (по количеству)
-    else i_del(playerid, inva); // Отнимаем предмет (целиком)
+    if(quanThing == 1) take_away(playerid, fquan, inva); // РћС‚РЅРёРјР°РµРј РїСЂРµРґРјРµС‚ (РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ)
+    else i_del(playerid, inva); // РћС‚РЅРёРјР°РµРј РїСЂРµРґРјРµС‚ (С†РµР»РёРєРѕРј)
 
-    format(string, sizeof(string), "[ Мысли ]: Я передал%s %s предмет: {444444}%s", gender(playerid), playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+    format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: РЇ РїРµСЂРµРґР°Р»%s %s РїСЂРµРґРјРµС‚: {444444}%s", gender(playerid), playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
 	SendClientMessage(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "[ Мысли ]: %s передал%s мне предмет: {444444}%s", playername(playerid), gender(playerid), GetNameThing(0, fpick, thingType, thingPack));
+	format(string, sizeof(string), "[ РњС‹СЃР»Рё ]: %s РїРµСЂРµРґР°Р»%s РјРЅРµ РїСЂРµРґРјРµС‚: {444444}%s", playername(playerid), gender(playerid), GetNameThing(0, fpick, thingType, thingPack));
 	SendClientMessage(giveplayerid, COLOR_GREY, string);
-	format(string, sizeof(string), "* %s достаёт %s и передаёт %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
+	format(string, sizeof(string), "* %s РґРѕСЃС‚Р°С‘С‚ %s Рё РїРµСЂРµРґР°С‘С‚ %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
 	ProxDetector(20.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     PlayerPlaySound(playerid,1053,0,0,0), PlayerPlaySound(giveplayerid,1052,0,0,0);
     
     SaveInvent(playerid, inva);
     SaveInvent(giveplayerid, put_inva);
 
-    // Логируем передачу
-    format(string,sizeof(string),"Передал: %s", GetNameThing(1, fpick, thingType, thingPack));
+    // Р›РѕРіРёСЂСѓРµРј РїРµСЂРµРґР°С‡Сѓ
+    format(string,sizeof(string),"РџРµСЂРµРґР°Р»: %s", GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("give", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], fquan, string);
 	return 1;
 }
@@ -622,12 +622,12 @@ stock PreviouslyGiveThingPlayer(playerid, giveplayerid, const inputtext[])
 	
 	if(giveplayerid == -1)
 	{
-	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы не ввели текст");
-		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ");
+	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІРІРµР»Рё С‚РµРєСЃС‚");
+		if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»");
 		giveplayerid = ReturnUser(inputtext);
 	}
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
-	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Вы не можете передать предметы себе");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРє РЅРµ РІ СЃРµС‚Рё");
+	if(playerid == giveplayerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїРµСЂРµРґР°С‚СЊ РїСЂРµРґРјРµС‚С‹ СЃРµР±Рµ");
 
 	if(thingType == 0 && thingPack == 0)
 	{
@@ -637,8 +637,8 @@ stock PreviouslyGiveThingPlayer(playerid, giveplayerid, const inputtext[])
 	        DP[1][playerid] = inva;
 	        DP[2][playerid] = fpick;
 			new string[140];
-	    	format(string,sizeof(string),"{cccccc}Чтобы передать %s {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 100.000", playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
-			ShowDialog(playerid,906,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+	    	format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РїРµСЂРµРґР°С‚СЊ %s {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000", playername(giveplayerid), GetNameThing(1, fpick, thingType, thingPack));
+			ShowDialog(playerid,906,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			return 1;
 		}
 	}
@@ -646,60 +646,60 @@ stock PreviouslyGiveThingPlayer(playerid, giveplayerid, const inputtext[])
 	return 1;
 }
 //=================================
-// Интерфейс Инвентаря
-stock i_infofpick(playerid, fpick, thingQuan, inva, sels, fpara, thingType, thingPack) // Отображение выбранного предмета
+// РРЅС‚РµСЂС„РµР№СЃ РРЅРІРµРЅС‚Р°СЂСЏ
+stock i_infofpick(playerid, fpick, thingQuan, inva, sels, fpara, thingType, thingPack) // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 {
 	new string[60];
 	new yesFindModel;
 	if(thingPack == 1)
 	{
-	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "ЊOѓAPOK");
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "РЉOС“APOK");
 		else format(string, sizeof(string), "GIFT");
 	}
 	else if(thingPack == 2)
 	{
-	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "•Љ…K");
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "вЂўР‰вЂ¦K");
 		else format(string, sizeof(string), "BOX");
 	}
 	else if(thingPack == 4)
 	{
-	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "3AЊEЌAЏAHH‘† •Љ…K");
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "3AРЉEРЊAРЏAHHвЂвЂ  вЂўР‰вЂ¦K");
 		else format(string, sizeof(string), "SEALED BOX");
 	}
 	else if(thingPack == 5)
 	{
-	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "KE†C");
+	    if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "KEвЂ C");
 		else format(string, sizeof(string), "CASE");
 	}
 	else
 	{
-	    if(thingType == 0) // Обычный предмет
+	    if(thingType == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 	    {
 	        if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "%s", fdrawName[fpick]);
 			else format(string, sizeof(string), "%s", fdrawNameEN[fpick]);
 	    }
-	    else if(thingType == 1) // Оружие
+	    else if(thingType == 1) // РћСЂСѓР¶РёРµ
 	    {
 		    format(string, sizeof(string), "%s", gunDraw[fpick]);
 	    }
-	    else if(thingType == 2) // Аксессуар
+	    else if(thingType == 2) // РђРєСЃРµСЃСЃСѓР°СЂ
 	    {
 			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "AKCECCYAP");
 			else format(string, sizeof(string), "ACCESSORY");
 		}
-		else if(thingType == 3) // Одежда
+		else if(thingType == 3) // РћРґРµР¶РґР°
 	    {
-			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "OѓE„ѓA");
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "OС“EвЂћС“A");
 			else format(string, sizeof(string), "CLOTHES");
 		}
-		else if(thingType == 4) // Мебель
+		else if(thingType == 4) // РњРµР±РµР»СЊ
 	    {
-			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "MEЂE‡’");
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "MEР‚EвЂЎвЂ™");
 			else format(string, sizeof(string), "FURNITURE");
 		}
-		else if(thingType == 5) // Транспорт
+		else if(thingType == 5) // РўСЂР°РЅСЃРїРѕСЂС‚
 	    {
-			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "ЏPAHCЊOPЏ");
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "РЏPAHCРЉOPРЏ");
 			else format(string, sizeof(string), "VEHICLE");
 		}
 	}
@@ -732,7 +732,7 @@ stock i_infofpick(playerid, fpick, thingQuan, inva, sels, fpara, thingType, thin
 	}
 	return 1;
 }
-stock i_page(playerid, page) // Переключаем страницы главного раздела
+stock i_page(playerid, page) // РџРµСЂРµРєР»СЋС‡Р°РµРј СЃС‚СЂР°РЅРёС†С‹ РіР»Р°РІРЅРѕРіРѕ СЂР°Р·РґРµР»Р°
 {
 	if(page == 0 && Page[playerid] != 0)
 	{
@@ -752,7 +752,7 @@ stock i_page(playerid, page) // Переключаем страницы главного раздела
 	}
 	return 1;
 }
-stock i_resetveshi(p) // Сброс отображения выбранной ячейки основного раздела
+stock i_resetveshi(p) // РЎР±СЂРѕСЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІС‹Р±СЂР°РЅРЅРѕР№ СЏС‡РµР№РєРё РѕСЃРЅРѕРІРЅРѕРіРѕ СЂР°Р·РґРµР»Р°
 {
 	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectLeft] != 9999)
 	{
@@ -763,7 +763,7 @@ stock i_resetveshi(p) // Сброс отображения выбранной ячейки основного раздела
 	}
 	return 1;
 }
-stock i_resettabs(p) // Сброс отображения выбранной ячейки второго раздела
+stock i_resettabs(p) // РЎР±СЂРѕСЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РІС‹Р±СЂР°РЅРЅРѕР№ СЏС‡РµР№РєРё РІС‚РѕСЂРѕРіРѕ СЂР°Р·РґРµР»Р°
 {
 	if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectRight] != 9999)
 	{
@@ -783,8 +783,8 @@ stock i_resettabs(p) // Сброс отображения выбранной ячейки второго раздела
 					new t = MyThrow[OnlineInfo[p][oInventSelectRight]][p];
 					if(t != -1)
 					{
-						if(ThrowInfo[t][tPlayerid] == PlayerInfo[p][pID]) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], -226); // Если предмет оставил этот игрок
-						else PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], 40); // Если предмет оставил хер знает кто
+						if(ThrowInfo[t][tPlayerid] == PlayerInfo[p][pID]) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], -226); // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РѕСЃС‚Р°РІРёР» СЌС‚РѕС‚ РёРіСЂРѕРє
+						else PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], 40); // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РѕСЃС‚Р°РІРёР» С…РµСЂ Р·РЅР°РµС‚ РєС‚Рѕ
 					}
 				}
 				else PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectRight]+plusitem][p], PlayerInfo[p][pStyle1]);
@@ -798,7 +798,7 @@ stock i_resettabs(p) // Сброс отображения выбранной ячейки второго раздела
 	}
 	return 1;
 }
-stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // Отображаем ячейку
+stock i_tile(playerid, item, quan, cell, para, thingType, thingPack) // РћС‚РѕР±СЂР°Р¶Р°РµРј СЏС‡РµР№РєСѓ
 {
 	if(Page[playerid] == 0 && cell <= 19 || Page[playerid] == 1 && cell >= 20)
 	{
@@ -838,23 +838,23 @@ stock textPickInventory(playerid, inva, const text[])
 stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, thingType, thingPack, throwPlayerId, PlayerText:textdraw, PlayerText:textdrawnum, razdel)
 {
 	new yesFindModel;
-	if(thingId == 0) // Пустая ячейка
+	if(thingId == 0) // РџСѓСЃС‚Р°СЏ СЏС‡РµР№РєР°
 	{
-		if(stat == 0) // Основные вкладки
+		if(stat == 0) // РћСЃРЅРѕРІРЅС‹Рµ РІРєР»Р°РґРєРё
 		{
 			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:4);
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
 			PlayerTextDrawColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
 		}
-		else if(stat == 1) // Раздел торговли
+		else if(stat == 1) // Р Р°Р·РґРµР» С‚РѕСЂРіРѕРІР»Рё
 		{
 			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:4);
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle2]);
 			PlayerTextDrawColour(playerid, textdraw, PlayerInfo[playerid][pStyle2]);
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
 		}
-		else if(stat == 2) // Рядом
+		else if(stat == 2) // Р СЏРґРѕРј
 		{
 			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 			PlayerTextDrawSetPreviewModel(playerid, textdraw, 2485);
@@ -888,24 +888,24 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 			PlayerTextDrawBoxColour(playerid, textdraw, 0);
 			PlayerTextDrawFont(playerid, textdraw, TEXT_DRAW_FONT:5);
 			
-			if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColour(playerid, textdraw, -226); // Если предмет оставил этот игрок
-			else PlayerTextDrawBackgroundColour(playerid, textdraw, 80); // Если предмет оставил хер знает кто
+			if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColour(playerid, textdraw, -226); // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РѕСЃС‚Р°РІРёР» СЌС‚РѕС‚ РёРіСЂРѕРє
+			else PlayerTextDrawBackgroundColour(playerid, textdraw, 80); // Р•СЃР»Рё РїСЂРµРґРјРµС‚ РѕСЃС‚Р°РІРёР» С…РµСЂ Р·РЅР°РµС‚ РєС‚Рѕ
 		}
 		
 		yesFindModel = GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, Tabs_Load[playerid]);
-		if(thingType == 0 && thingPack == 0) // Обычный предмет
+		if(thingType == 0 && thingPack == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 		{
-			if(CheckThingQuan(thingId) == 1) // Количественный
+			if(CheckThingQuan(thingId) == 1) // РљРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Р№
 			{
 				format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
 			}
 		}
-		else if(thingType == 3 && thingPack == 0) // Одежда (Отображаем ID)
+		else if(thingType == 3 && thingPack == 0) // РћРґРµР¶РґР° (РћС‚РѕР±СЂР°Р¶Р°РµРј ID)
 		{
 			format(string, sizeof(string), "ID %d", thingId), textPickInventory(playerid, inva, string);
 		}
 
-		if(razdel == 1 && (Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999) // Склады
+		if(razdel == 1 && (Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999) // РЎРєР»Р°РґС‹
 		{
 			format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
 		}
@@ -928,30 +928,30 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 {
 	new yesFindModel;
-	if(thingPack == 1) yesFindModel = 19054; // Подарок
-	else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик
-	else if(thingPack == 3) yesFindModel = 2060; // Мешок
-	else if(thingPack == 5) yesFindModel = 19918; // Кейс
-	else if(thingPack == 0) // Без упаковки
+	if(thingPack == 1) yesFindModel = 19054; // РџРѕРґР°СЂРѕРє
+	else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // РЇС‰РёРє
+	else if(thingPack == 3) yesFindModel = 2060; // РњРµС€РѕРє
+	else if(thingPack == 5) yesFindModel = 19918; // РљРµР№СЃ
+	else if(thingPack == 0) // Р‘РµР· СѓРїР°РєРѕРІРєРё
 	{
-		if(thingType == 0) yesFindModel = friskPick[thingId]; // Обычный предмет
-		if(thingType == 1) // Оружие
+		if(thingType == 0) yesFindModel = friskPick[thingId]; // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
+		if(thingType == 1) // РћСЂСѓР¶РёРµ
 		{
 			yesFindModel = friskGun[thingId];
 			if(thingPara <= 0 && (sels == 0 || sels == 1 || sels == 2 || sels == 5 || sels == 6 || sels == 7 || sels == 8))
 			{
 				new weaponType = WeaponAmmoType(thingId);
-				if(weaponType == 1) yesFindModel = 2034; // Дробовики
-				else if(weaponType == 2) yesFindModel = 2034; // Пистолеты
-				else if(weaponType == 3) yesFindModel = 2044; // Пистолеты-Пулемёты
-				else if(weaponType == 4) yesFindModel = 2035; // Автомат
-				else if(weaponType == 5) yesFindModel = 2036; // Дробовик
+				if(weaponType == 1) yesFindModel = 2034; // Р”СЂРѕР±РѕРІРёРєРё
+				else if(weaponType == 2) yesFindModel = 2034; // РџРёСЃС‚РѕР»РµС‚С‹
+				else if(weaponType == 3) yesFindModel = 2044; // РџРёСЃС‚РѕР»РµС‚С‹-РџСѓР»РµРјС‘С‚С‹
+				else if(weaponType == 4) yesFindModel = 2035; // РђРІС‚РѕРјР°С‚
+				else if(weaponType == 5) yesFindModel = 2036; // Р”СЂРѕР±РѕРІРёРє
 			}
 		}
-		if(thingType == 2) yesFindModel = thingId; // Аксессуары
-		if(thingType == 3) yesFindModel = GetModelSkin(playerid, thingId); // Одежда
-		if(thingType == 4) yesFindModel = thingId; // Мебель
-		if(thingType == 5) yesFindModel = GetVehicleModelSync(playerid, thingId); // Транспорт
+		if(thingType == 2) yesFindModel = thingId; // РђРєСЃРµСЃСЃСѓР°СЂС‹
+		if(thingType == 3) yesFindModel = GetModelSkin(playerid, thingId); // РћРґРµР¶РґР°
+		if(thingType == 4) yesFindModel = thingId; // РњРµР±РµР»СЊ
+		if(thingType == 5) yesFindModel = GetVehicleModelSync(playerid, thingId); // РўСЂР°РЅСЃРїРѕСЂС‚
 	}
 	return yesFindModel;
 }
@@ -965,7 +965,7 @@ stock CheckGoods(playerid)
 		if(PlayerInfo[playerid][pMarkInven][i] == 0)
 		{
 			free ++;
-			break; // Остановим, поскольку мы не возвращаем количество свободных слотов, нам не нужно считать все
+			break; // РћСЃС‚Р°РЅРѕРІРёРј, РїРѕСЃРєРѕР»СЊРєСѓ РјС‹ РЅРµ РІРѕР·РІСЂР°С‰Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРІРѕР±РѕРґРЅС‹С… СЃР»РѕС‚РѕРІ, РЅР°Рј РЅРµ РЅСѓР¶РЅРѕ СЃС‡РёС‚Р°С‚СЊ РІСЃРµ
 		}
     }
     if(free == 0) return 0;
@@ -979,7 +979,7 @@ stock CheckInvent(playerid)
 		if(PlayerInfo[playerid][pInven][i] == 0)
 		{
 			free ++;
-			break; // Остановим, поскольку мы не возвращаем количество свободных слотов, нам не нужно считать все
+			break; // РћСЃС‚Р°РЅРѕРІРёРј, РїРѕСЃРєРѕР»СЊРєСѓ РјС‹ РЅРµ РІРѕР·РІСЂР°С‰Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРІРѕР±РѕРґРЅС‹С… СЃР»РѕС‚РѕРІ, РЅР°Рј РЅРµ РЅСѓР¶РЅРѕ СЃС‡РёС‚Р°С‚СЊ РІСЃРµ
 		}
     }
     if(free == 0) return 1;
@@ -995,7 +995,7 @@ stock free_invent(playerid, quan)
 	if(free >= quan) return 1;
 	return 0;
 }
-stock get_and_take_invent(playerid, thingId, takeQuan) // Изымаем предмет и возвращаем количество
+stock get_and_take_invent(playerid, thingId, takeQuan) // РР·С‹РјР°РµРј РїСЂРµРґРјРµС‚ Рё РІРѕР·РІСЂР°С‰Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ
 {
     new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1009,7 +1009,7 @@ stock get_and_take_invent(playerid, thingId, takeQuan) // Изымаем предмет и возв
 	}
 	return quan;
 }
-stock get_invent(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля)
+stock get_invent(playerid, thingId, thingType) // РџРѕРёСЃРє РїСЂРµРґРјРµС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ (РћСЃРЅРѕРІРЅС‹Рµ СЃС‚СЂР°РЅРёС†С‹ + РўРѕСЂРіРѕРІР»СЏ)
 {
 	new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1022,7 +1022,7 @@ stock get_invent(playerid, thingId, thingType) // Поиск предмета в инвентаре (Ос
 	}
 	return quan;
 }
-stock get_invent2(playerid, stat, thingType) // Поиск предмета в инвентаре (Только две страницы основного инвентаря)
+stock get_invent2(playerid, stat, thingType) // РџРѕРёСЃРє РїСЂРµРґРјРµС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ (РўРѕР»СЊРєРѕ РґРІРµ СЃС‚СЂР°РЅРёС†С‹ РѕСЃРЅРѕРІРЅРѕРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ)
 {
 	new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1031,7 +1031,7 @@ stock get_invent2(playerid, stat, thingType) // Поиск предмета в инвентаре (Толь
 	}
 	return quan;
 }
-stock get_invent3(playerid, stat, unix) // Поиск при продаже не испорченного товара в лавках лесника
+stock get_invent3(playerid, stat, unix) // РџРѕРёСЃРє РїСЂРё РїСЂРѕРґР°Р¶Рµ РЅРµ РёСЃРїРѕСЂС‡РµРЅРЅРѕРіРѕ С‚РѕРІР°СЂР° РІ Р»Р°РІРєР°С… Р»РµСЃРЅРёРєР°
 {
 	new kolvo = 0;
 	for(new i = 0; i < 40; i++)
@@ -1043,7 +1043,7 @@ stock get_invent3(playerid, stat, unix) // Поиск при продаже не испорченного тов
 	}
 	return kolvo;
 }
-stock get_invent4(playerid, stat, thingType) // Поиск предмета в инвентаре (Только две страницы основного инвентаря) и БЕЗ УПАКОВКИ
+stock get_invent4(playerid, stat, thingType) // РџРѕРёСЃРє РїСЂРµРґРјРµС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ (РўРѕР»СЊРєРѕ РґРІРµ СЃС‚СЂР°РЅРёС†С‹ РѕСЃРЅРѕРІРЅРѕРіРѕ РёРЅРІРµРЅС‚Р°СЂСЏ) Рё Р‘Р•Р— РЈРџРђРљРћР’РљР
 {
 	new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1052,7 +1052,7 @@ stock get_invent4(playerid, stat, thingType) // Поиск предмета в инвентаре (Толь
 	}
 	return quan;
 }
-stock get_clothes(playerid) // Поиск, есть ли у игрока одежда (с проверкой под его пол)
+stock get_clothes(playerid) // РџРѕРёСЃРє, РµСЃС‚СЊ Р»Рё Сѓ РёРіСЂРѕРєР° РѕРґРµР¶РґР° (СЃ РїСЂРѕРІРµСЂРєРѕР№ РїРѕРґ РµРіРѕ РїРѕР»)
 {
 	new yesSKin;
 	for(new i = 0; i < 40; i++)
@@ -1080,7 +1080,7 @@ stock get_clothes(playerid) // Поиск, есть ли у игрока одежда (с проверкой под е
 	}
 	return yesSKin;
 }
-stock i_setinvent(playerid, thingId, quan) // Установить значение в ячейке инвентаря
+stock i_setinvent(playerid, thingId, quan) // РЈСЃС‚Р°РЅРѕРІРёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РІ СЏС‡РµР№РєРµ РёРЅРІРµРЅС‚Р°СЂСЏ
 {
 	new inva;
 	for(new i = 0; i < 40; i++)
@@ -1094,7 +1094,7 @@ stock i_setinvent(playerid, thingId, quan) // Установить значение в ячейке инвен
 	}
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
 }
-stock DelInvent(playerid, thingId, input, thingType) // Удалить предметы из инвентаря одного id по количеству и типу
+stock DelInvent(playerid, thingId, input, thingType) // РЈРґР°Р»РёС‚СЊ РїСЂРµРґРјРµС‚С‹ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ РѕРґРЅРѕРіРѕ id РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ Рё С‚РёРїСѓ
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1153,7 +1153,7 @@ stock DelLesson(playerid)
 	}
 	return 1;
 }
-stock check_invent_free(playerid) // Поиск количества свободных слотов
+stock check_invent_free(playerid) // РџРѕРёСЃРє РєРѕР»РёС‡РµСЃС‚РІР° СЃРІРѕР±РѕРґРЅС‹С… СЃР»РѕС‚РѕРІ
 {
 	new kolvo = 0;
 	for(new inva = 0; inva < 40; inva++)
@@ -1162,7 +1162,7 @@ stock check_invent_free(playerid) // Поиск количества свободных слотов
 	}
 	return kolvo;
 }
-stock get_helmet(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // Поиск каски в инвентаре для команды /usehelm
+stock get_helmet(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // РџРѕРёСЃРє РєР°СЃРєРё РІ РёРЅРІРµРЅС‚Р°СЂРµ РґР»СЏ РєРѕРјР°РЅРґС‹ /usehelm
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1177,7 +1177,7 @@ stock get_helmet(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // Поиск кас
 	}
 	return 1;
 }
-stock get_armor(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // Поиск бронежилета в инвентаре для команды /usearm
+stock get_armor(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // РџРѕРёСЃРє Р±СЂРѕРЅРµР¶РёР»РµС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ РґР»СЏ РєРѕРјР°РЅРґС‹ /usearm
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1192,7 +1192,7 @@ stock get_armor(playerid, &thingId, &fpara, &fqara, &inva, &fpack) // Поиск брон
 	}
 	return 1;
 }
-stock get_lic(playerid, stat) // Поиск лицензий (Которые принадлежат игроку)
+stock get_lic(playerid, stat) // РџРѕРёСЃРє Р»РёС†РµРЅР·РёР№ (РљРѕС‚РѕСЂС‹Рµ РїСЂРёРЅР°РґР»РµР¶Р°С‚ РёРіСЂРѕРєСѓ)
 {
 	new kolvo = 0;
 	for(new i = 0; i < 40; i++)
@@ -1205,7 +1205,7 @@ stock get_lic(playerid, stat) // Поиск лицензий (Которые принадлежат игроку)
 	}
 	return kolvo;
 }
-stock get_watch(playerid) // Поиск аксессуаров часов
+stock get_watch(playerid) // РџРѕРёСЃРє Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ С‡Р°СЃРѕРІ
 {
 	new slot = -1;
 	for(new i = 0; i < 40; i++)
@@ -1221,7 +1221,7 @@ stock get_watch(playerid) // Поиск аксессуаров часов
 	}
 	return slot;
 }
-stock get_alienlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5, &s6) // Поиск лицензий (Чужих, добровольно отданных)
+stock get_alienlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5, &s6) // РџРѕРёСЃРє Р»РёС†РµРЅР·РёР№ (Р§СѓР¶РёС…, РґРѕР±СЂРѕРІРѕР»СЊРЅРѕ РѕС‚РґР°РЅРЅС‹С…)
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1251,7 +1251,7 @@ stock get_alienlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5, &s6) // Поиск лицензи
 	}
 	return 1;
 }
-stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лицензий (Украденной)
+stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // РџРѕРёСЃРє Р»РёС†РµРЅР·РёР№ (РЈРєСЂР°РґРµРЅРЅРѕР№)
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1279,7 +1279,7 @@ stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лицензий (У
 	}
 	return 1;
 }
-stock get_para(playerid, fpick) // Параметр предмета
+stock get_para(playerid, fpick) // РџР°СЂР°РјРµС‚СЂ РїСЂРµРґРјРµС‚Р°
 {
 	new para = 0;
 	for(new i = 0; i < 40; i++)
@@ -1292,7 +1292,7 @@ stock get_para(playerid, fpick) // Параметр предмета
 	}
 	return para;
 }
-stock get_qara(playerid, fpick) // Второй параметр предмета
+stock get_qara(playerid, fpick) // Р’С‚РѕСЂРѕР№ РїР°СЂР°РјРµС‚СЂ РїСЂРµРґРјРµС‚Р°
 {
 	new qara = 0;
 	for(new i = 0; i < 40; i++)
@@ -1305,7 +1305,7 @@ stock get_qara(playerid, fpick) // Второй параметр предмета
 	}
 	return qara;
 }
-stock get_drugs(playerid, stat) // Поиск веществ
+stock get_drugs(playerid, stat) // РџРѕРёСЃРє РІРµС‰РµСЃС‚РІ
 {
 	new kolvo = 0;
 	for(new i = 0; i < 40; i++)
@@ -1318,7 +1318,7 @@ stock get_drugs(playerid, stat) // Поиск веществ
 	}
 	return kolvo;
 }
-stock set_para(playerid, fpick, para) // Установка параметра предмета
+stock set_para(playerid, fpick, para) // РЈСЃС‚Р°РЅРѕРІРєР° РїР°СЂР°РјРµС‚СЂР° РїСЂРµРґРјРµС‚Р°
 {
 	for(new i = 0; i < 40; i++)
 	{
@@ -1326,10 +1326,10 @@ stock set_para(playerid, fpick, para) // Установка параметра предмета
 		PlayerInfo[playerid][pInvenPara][i] = para;
 	}
 }
-stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
+stock TakeInvent(playerid, stat, quan, thingType, dopinf) // РЎС‚РѕРє РґР»СЏ РёР·СЉСЏС‚РёСЏ РїСЂРµРґРјРµС‚Р° РёР· РёРЅРІРµРЅС‚Р°СЂСЏ (id, id РїСЂРµРјРµС‚Р°, РєРѕР»РёС‡РµСЃС‚РІРѕ, СЏС‡РµР№РєР°)
 {
 	new plit = -1;
-	if(dopinf == 999) // Если мы НЕ знаем ячейку, нам нужно найти её (999)
+	if(dopinf == 999) // Р•СЃР»Рё РјС‹ РќР• Р·РЅР°РµРј СЏС‡РµР№РєСѓ, РЅР°Рј РЅСѓР¶РЅРѕ РЅР°Р№С‚Рё РµС‘ (999)
 	{
 		for(new i = 0; i < 40; i++)
 		{
@@ -1341,7 +1341,7 @@ stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для изъятия пр
 			}
 		}
 	}
-	else // Если знаем ячейку, нам не нужно её искать)
+	else // Р•СЃР»Рё Р·РЅР°РµРј СЏС‡РµР№РєСѓ, РЅР°Рј РЅРµ РЅСѓР¶РЅРѕ РµС‘ РёСЃРєР°С‚СЊ)
 	{
 	    plit = dopinf;
 	    if(PlayerInfo[playerid][pInven][dopinf] == stat && PlayerInfo[playerid][pInvenType][dopinf] == thingType) take_away(playerid, quan, dopinf);
@@ -1350,9 +1350,9 @@ stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для изъятия пр
 	i_takehands(playerid, stat);
 	return plit;
 }
-stock take_away(playerid, quan, i) // Изымаем предмет, если он был точно найден в ячейке
+stock take_away(playerid, quan, i) // РР·С‹РјР°РµРј РїСЂРµРґРјРµС‚, РµСЃР»Рё РѕРЅ Р±С‹Р» С‚РѕС‡РЅРѕ РЅР°Р№РґРµРЅ РІ СЏС‡РµР№РєРµ
 {
-	if(PlayerInfo[playerid][pInvenQuan][i]-quan <= 0) // Если при изъятии ничего не останется - очищаем полностью
+	if(PlayerInfo[playerid][pInvenQuan][i]-quan <= 0) // Р•СЃР»Рё РїСЂРё РёР·СЉСЏС‚РёРё РЅРёС‡РµРіРѕ РЅРµ РѕСЃС‚Р°РЅРµС‚СЃСЏ - РѕС‡РёС‰Р°РµРј РїРѕР»РЅРѕСЃС‚СЊСЋ
 	{
 	    if(PlayerInfo[playerid][pInvenType][i] == 0) i_takehands(playerid, PlayerInfo[playerid][pInven][i]);
 		PlayerInfo[playerid][pInven][i] = 0;
@@ -1377,46 +1377,46 @@ stock i_del(playerid, i)
 	PlayerInfo[playerid][pInvenPack][i] = 0;
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, i, 0, 0, 0);
 }
-stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack, useinva) // Даём игроку предмет в инвентарь
+stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack, useinva) // Р”Р°С‘Рј РёРіСЂРѕРєСѓ РїСЂРµРґРјРµС‚ РІ РёРЅРІРµРЅС‚Р°СЂСЊ
 {
     new inva = -1;
-	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
+	if(thingId == 0) return inva; // РњР°Р»РѕР»Рё РіРґРµ С‚Рѕ РѕС€РёР±РєР° РјРѕР¶РµС‚ Р±С‹С‚СЊ (0 - РЅРµ РїСЂРѕРїСѓСЃРєР°РµРј РІС‹РґР°С‡Сѓ РїСЂРµРґРјРµС‚Р°)
 	
-	if(useinva == 9999 || -1) // Не знаем в какую ячейку класть
+	if(useinva == 9999 || -1) // РќРµ Р·РЅР°РµРј РІ РєР°РєСѓСЋ СЏС‡РµР№РєСѓ РєР»Р°СЃС‚СЊ
 	{
-	    if(thingType == 0 && thingPack == 0) // Обычный предмет
+	    if(thingType == 0 && thingPack == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 		{
-		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
+		    if(CheckThingQuan(thingId) == 1) // РџСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ (РЎРєР»Р°РґС‹РІР°РµС‚СЃСЏ РІ РѕРґРЅСѓ СЏС‡РµР№РєСѓ)
 		    {
 		        new find;
 		    	for(new i = 0; i < 40; i++)
 				{
-					if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == thingPack) // Ищем тот, где уже предмет лежит
+					if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == thingPack) // РС‰РµРј С‚РѕС‚, РіРґРµ СѓР¶Рµ РїСЂРµРґРјРµС‚ Р»РµР¶РёС‚
 					{
 					    inva = i;
-		  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+		  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - РїРѕСЃРєРѕР»СЊРєСѓ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РјРѕРіСѓС‚ РёРјРµС‚СЊ СЃС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ
 		  				find = 1;
 			   			break;
 					}
 				}
-				if(find == 0) // Если не нашли, ищем пустую
+				if(find == 0) // Р•СЃР»Рё РЅРµ РЅР°С€Р»Рё, РёС‰РµРј РїСѓСЃС‚СѓСЋ
 				{
 					for(new i = 0; i < 40; i++)
 					{
-						if(PlayerInfo[playerid][pInven][i] == 0) // Ищем пустую ячейку
+						if(PlayerInfo[playerid][pInven][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 						{
 						    inva = i;
-			  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - поскольку количественные предметы не могут иметь статус краденного
+			  				put_thing_player(playerid, thingId, quan, para, 0, thingType, thingPack, i); // qara 0 - РїРѕСЃРєРѕР»СЊРєСѓ РєРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РјРѕРіСѓС‚ РёРјРµС‚СЊ СЃС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ
 				   			break;
 						}
 					}
 				}
 			}
-			else if(CheckThingQuan(thingId) == 0) // Объект не имеет количество
+			else if(CheckThingQuan(thingId) == 0) // РћР±СЉРµРєС‚ РЅРµ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
 			{
 			    for(new i = 0; i < 40; i++)
 				{
-					if(PlayerInfo[playerid][pInven][i] == 0) // Ищем пустую ячейку
+					if(PlayerInfo[playerid][pInven][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 					{
 					    inva = i;
 		  				put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i);
@@ -1425,11 +1425,11 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 				}
 			}
 		}
-		else // Все остальные предметы не имеют количества или возможности складываться в одну ячейку
+		else // Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РЅРµ РёРјРµСЋС‚ РєРѕР»РёС‡РµСЃС‚РІР° РёР»Рё РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРєР»Р°РґС‹РІР°С‚СЊСЃСЏ РІ РѕРґРЅСѓ СЏС‡РµР№РєСѓ
 		{
 		    for(new i = 0; i < 40; i++)
 			{
-				if(PlayerInfo[playerid][pInven][i] == 0) // Ищем пустую ячейку
+				if(PlayerInfo[playerid][pInven][i] == 0) // РС‰РµРј РїСѓСЃС‚СѓСЋ СЏС‡РµР№РєСѓ
 				{
 				    inva = i;
 	  				put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i);
@@ -1438,72 +1438,72 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 			}
 		}
 	}
-	else inva = put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, useinva); // Знаем в какую ячейку класть
+	else inva = put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, useinva); // Р—РЅР°РµРј РІ РєР°РєСѓСЋ СЏС‡РµР№РєСѓ РєР»Р°СЃС‚СЊ
 	return inva;
 }
 
 stock ThingParameters(playerid, thingId, &quan, &para)
 {
 	new unix = gettime();
-	if(thingId == 1 && para == 0) quan = GetFullThingQuan(thingId), para = unix+432000; // Хлеб (Время до испорченности)
+	if(thingId == 1 && para == 0) quan = GetFullThingQuan(thingId), para = unix+432000; // РҐР»РµР± (Р’СЂРµРјСЏ РґРѕ РёСЃРїРѕСЂС‡РµРЅРЅРѕСЃС‚Рё)
 	else if(thingId == 6 && para == 0)
 	{
 		if(quan == 0) quan = GetFullThingQuan(thingId);
-		para = unix+604800; // Грибы
+		para = unix+604800; // Р“СЂРёР±С‹
 	}
-	else if(thingId == 14 && para == 0) quan = GetFullThingQuan(thingId), para = unix+7776000; // Пиво (Время до испорченности + количество)
-	else if(thingId == 16 && quan == 0) quan = GetFullThingQuan(thingId); // Пачка сигарет (Полный комплект)
-	else if(thingId == 18 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Наживка
-	else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // Отмычки (Полный комплект)
-	else if(thingId == 20 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Рыба
-	else if(thingId == 22 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Мясо
-	else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // Смартфон (Номер телефона)
-	else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // Шампанское (Количество)
-	else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
-	else if(thingId == 48 && para == 0) para = 100; // Надувная лодка (даём ей 100 литров бенза)
-	else if(thingId == 54 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареное Мясо
-	else if(thingId == 55 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Жареная Рыба
-	else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Если выдаём Журнал PlayBoy
-	else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // Семена травы (Полный комплект)
-	else if(thingId == 96 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь вампира
-	else if(thingId == 98 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Кровь человека
-	else if(thingId == 99 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Банан
-	else if(thingId == 100 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Яблоко
-	else if(thingId == 101 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Апельсин
-	else if(thingId == 102 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Молоко
-	else if(thingId == 103 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Тыква
-	else if(thingId == 104 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Картошка
-	else if(thingId == 105 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Томат
-	else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Бычья кровь
-	else if(thingId == 112 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-	else if(thingId == 113 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-	else if(thingId == 114 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-	else if(thingId == 115 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-	else if(thingId == 116 && quan == 0) quan = GetFullThingQuan(thingId); // бухло
-	else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Яблочный
-	else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Сидр Вишневый
-	else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Пиво Разливное
-	else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+2592000; // Sprunk Банка
-	else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Кофе
-	else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Спранк стакан
-	else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер
-	else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер (Хз второй)
-	else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ролл
-	else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
-	else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk Открытая банка
-	else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // ХОТЕ ДОГЕ
-	else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Свадебный торт (Время до испорченности + количество)
-	else if(thingId == 164 && para == 0) SetSatiety(thingId, quan), para = unix+259200; // Кусок торта
-	else if(thingId == 165 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца
-	else if(thingId == 166 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Пицца Домашняя
-	else if(thingId == 167 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Кусок пиццы
-	else if(thingId == 168 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Мясо в упаковке
-	else if(thingId == 169 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Сырой стейк
-	else if(thingId == 170 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Жареный стейк
-	else if(thingId == 171 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ломтик хлеба
-	else if(thingId == 172 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // А. Сок
-	else if(thingId == 173 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Я. Сок
-	else if(thingId == 174 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Овощи
+	else if(thingId == 14 && para == 0) quan = GetFullThingQuan(thingId), para = unix+7776000; // РџРёРІРѕ (Р’СЂРµРјСЏ РґРѕ РёСЃРїРѕСЂС‡РµРЅРЅРѕСЃС‚Рё + РєРѕР»РёС‡РµСЃС‚РІРѕ)
+	else if(thingId == 16 && quan == 0) quan = GetFullThingQuan(thingId); // РџР°С‡РєР° СЃРёРіР°СЂРµС‚ (РџРѕР»РЅС‹Р№ РєРѕРјРїР»РµРєС‚)
+	else if(thingId == 18 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РќР°Р¶РёРІРєР°
+	else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // РћС‚РјС‹С‡РєРё (РџРѕР»РЅС‹Р№ РєРѕРјРїР»РµРєС‚)
+	else if(thingId == 20 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Р С‹Р±Р°
+	else if(thingId == 22 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // РњСЏСЃРѕ
+	else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // РЎРјР°СЂС‚С„РѕРЅ (РќРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°)
+	else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // РЁР°РјРїР°РЅСЃРєРѕРµ (РљРѕР»РёС‡РµСЃС‚РІРѕ)
+	else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Р‘РµРЅРіР°Р»СЊСЃРєРёРµ СЃРІРµС‡Рё (РџРѕР»РЅС‹Р№ РєРѕРјРїР»РµРєС‚)
+	else if(thingId == 48 && para == 0) para = 100; // РќР°РґСѓРІРЅР°СЏ Р»РѕРґРєР° (РґР°С‘Рј РµР№ 100 Р»РёС‚СЂРѕРІ Р±РµРЅР·Р°)
+	else if(thingId == 54 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Р–Р°СЂРµРЅРѕРµ РњСЏСЃРѕ
+	else if(thingId == 55 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Р–Р°СЂРµРЅР°СЏ Р С‹Р±Р°
+	else if(thingId == 62) quan = GetFullThingQuan(thingId), SetPVarInt(playerid,"PlayBoy", 1); // Р•СЃР»Рё РІС‹РґР°С‘Рј Р–СѓСЂРЅР°Р» PlayBoy
+	else if(thingId == 88 && quan == 0) quan = GetFullThingQuan(thingId); // РЎРµРјРµРЅР° С‚СЂР°РІС‹ (РџРѕР»РЅС‹Р№ РєРѕРјРїР»РµРєС‚)
+	else if(thingId == 96 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // РљСЂРѕРІСЊ РІР°РјРїРёСЂР°
+	else if(thingId == 98 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // РљСЂРѕРІСЊ С‡РµР»РѕРІРµРєР°
+	else if(thingId == 99 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // Р‘Р°РЅР°РЅ
+	else if(thingId == 100 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РЇР±Р»РѕРєРѕ
+	else if(thingId == 101 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РђРїРµР»СЊСЃРёРЅ
+	else if(thingId == 102 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РњРѕР»РѕРєРѕ
+	else if(thingId == 103 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РўС‹РєРІР°
+	else if(thingId == 104 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РљР°СЂС‚РѕС€РєР°
+	else if(thingId == 105 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РўРѕРјР°С‚
+	else if(thingId == 107 && para == 0) quan = GetFullThingQuan(thingId), para = unix+864000; // Р‘С‹С‡СЊСЏ РєСЂРѕРІСЊ
+	else if(thingId == 112 && quan == 0) quan = GetFullThingQuan(thingId); // Р±СѓС…Р»Рѕ
+	else if(thingId == 113 && quan == 0) quan = GetFullThingQuan(thingId); // Р±СѓС…Р»Рѕ
+	else if(thingId == 114 && quan == 0) quan = GetFullThingQuan(thingId); // Р±СѓС…Р»Рѕ
+	else if(thingId == 115 && quan == 0) quan = GetFullThingQuan(thingId); // Р±СѓС…Р»Рѕ
+	else if(thingId == 116 && quan == 0) quan = GetFullThingQuan(thingId); // Р±СѓС…Р»Рѕ
+	else if(thingId == 117 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РЎРёРґСЂ РЇР±Р»РѕС‡РЅС‹Р№
+	else if(thingId == 118 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РЎРёРґСЂ Р’РёС€РЅРµРІС‹Р№
+	else if(thingId == 119 && para == 0) quan = GetFullThingQuan(thingId), para = unix+604800; // РџРёРІРѕ Р Р°Р·Р»РёРІРЅРѕРµ
+	else if(thingId == 120 && para == 0) quan = GetFullThingQuan(thingId), para = unix+2592000; // Sprunk Р‘Р°РЅРєР°
+	else if(thingId == 121 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // РљРѕС„Рµ
+	else if(thingId == 124 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // РЎРїСЂР°РЅРє СЃС‚Р°РєР°РЅ
+	else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Р‘СѓСЂРіРµСЂ
+	else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Р‘СѓСЂРіРµСЂ (РҐР· РІС‚РѕСЂРѕР№)
+	else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Р РѕР»Р»
+	else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РќР°Р±РѕСЂС‹ СЃ Р•РґРѕР№ (РџРѕРґРЅРѕСЃС‹)
+	else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk РћС‚РєСЂС‹С‚Р°СЏ Р±Р°РЅРєР°
+	else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РҐРћРўР• Р”РћР“Р•
+	else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // РЎРІР°РґРµР±РЅС‹Р№ С‚РѕСЂС‚ (Р’СЂРµРјСЏ РґРѕ РёСЃРїРѕСЂС‡РµРЅРЅРѕСЃС‚Рё + РєРѕР»РёС‡РµСЃС‚РІРѕ)
+	else if(thingId == 164 && para == 0) SetSatiety(thingId, quan), para = unix+259200; // РљСѓСЃРѕРє С‚РѕСЂС‚Р°
+	else if(thingId == 165 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РџРёС†С†Р°
+	else if(thingId == 166 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РџРёС†С†Р° Р”РѕРјР°С€РЅСЏСЏ
+	else if(thingId == 167 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РљСѓСЃРѕРє РїРёС†С†С‹
+	else if(thingId == 168 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РњСЏСЃРѕ РІ СѓРїР°РєРѕРІРєРµ
+	else if(thingId == 169 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РЎС‹СЂРѕР№ СЃС‚РµР№Рє
+	else if(thingId == 170 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Р–Р°СЂРµРЅС‹Р№ СЃС‚РµР№Рє
+	else if(thingId == 171 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Р›РѕРјС‚РёРє С…Р»РµР±Р°
+	else if(thingId == 172 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Рђ. РЎРѕРє
+	else if(thingId == 173 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РЇ. РЎРѕРє
+	else if(thingId == 174 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // РћРІРѕС‰Рё
 	else
 	{
 		if(quan == 0) quan = GetFullThingQuan(thingId);
@@ -1512,26 +1512,26 @@ stock ThingParameters(playerid, thingId, &quan, &para)
 }
 stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack, i)
 {
-	if(PlayerInfo[playerid][pInven][i] != 0 && PlayerInfo[playerid][pInven][i] != thingId) return -1; // Защита от ошибки, на всякий случай
+	if(PlayerInfo[playerid][pInven][i] != 0 && PlayerInfo[playerid][pInven][i] != thingId) return -1; // Р—Р°С‰РёС‚Р° РѕС‚ РѕС€РёР±РєРё, РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№
 
-    if(qara == PlayerInfo[playerid][pID]) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+    if(qara == PlayerInfo[playerid][pID]) qara = 0; // РЈРґР°Р»СЏРµРј СЃС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°, РµСЃР»Рё РѕРЅ РїСЂРёРЅР°РґР»РµР¶РёС‚ СЌС‚РѕРјСѓ РёРіСЂРѕРєСѓ
     
-    // Выдача особых предметов
-    if(thingType == 0) // Обычные предметы
+    // Р’С‹РґР°С‡Р° РѕСЃРѕР±С‹С… РїСЂРµРґРјРµС‚РѕРІ
+    if(thingType == 0) // РћР±С‹С‡РЅС‹Рµ РїСЂРµРґРјРµС‚С‹
     {
         ThingParameters(playerid, thingId, quan, para);
 	}
-	else if(thingType == 2) // Аксессуары с особыми возможностями
+	else if(thingType == 2) // РђРєСЃРµСЃСЃСѓР°СЂС‹ СЃ РѕСЃРѕР±С‹РјРё РІРѕР·РјРѕР¶РЅРѕСЃС‚СЏРјРё
     {
-        if(IsHelmet(thingId) && para == 0) para = 3; // Каска
-        if(IsArmor(thingId) && para == 0) para = 100; // Бронежилет
+        if(IsHelmet(thingId) && para == 0) para = 3; // РљР°СЃРєР°
+        if(IsArmor(thingId) && para == 0) para = 100; // Р‘СЂРѕРЅРµР¶РёР»РµС‚
     }
 	
-	PlayerInfo[playerid][pInven][i] = thingId; // Ставим предмет в слот
-	PlayerInfo[playerid][pInvenQuan][i] += quan; // Ставим количество в слот
+	PlayerInfo[playerid][pInven][i] = thingId; // РЎС‚Р°РІРёРј РїСЂРµРґРјРµС‚ РІ СЃР»РѕС‚
+	PlayerInfo[playerid][pInvenQuan][i] += quan; // РЎС‚Р°РІРёРј РєРѕР»РёС‡РµСЃС‚РІРѕ РІ СЃР»РѕС‚
 	
-	// (Техника сломана или нет, Одежда какой организации принадлежит, Unix время свежести продуктов, Изношенность оружия, Прнадлежность лицензии к ID игрока, Тип крепления аксессуара)
-	if(PerishableThing(thingId, thingType)) // Проверка на портящиеся продукты - у них используется Unix (Добавляя испорченный продукт к свежему, портиться должно всё)
+	// (РўРµС…РЅРёРєР° СЃР»РѕРјР°РЅР° РёР»Рё РЅРµС‚, РћРґРµР¶РґР° РєР°РєРѕР№ РѕСЂРіР°РЅРёР·Р°С†РёРё РїСЂРёРЅР°РґР»РµР¶РёС‚, Unix РІСЂРµРјСЏ СЃРІРµР¶РµСЃС‚Рё РїСЂРѕРґСѓРєС‚РѕРІ, РР·РЅРѕС€РµРЅРЅРѕСЃС‚СЊ РѕСЂСѓР¶РёСЏ, РџСЂРЅР°РґР»РµР¶РЅРѕСЃС‚СЊ Р»РёС†РµРЅР·РёРё Рє ID РёРіСЂРѕРєР°, РўРёРї РєСЂРµРїР»РµРЅРёСЏ Р°РєСЃРµСЃСЃСѓР°СЂР°)
+	if(PerishableThing(thingId, thingType)) // РџСЂРѕРІРµСЂРєР° РЅР° РїРѕСЂС‚СЏС‰РёРµСЃСЏ РїСЂРѕРґСѓРєС‚С‹ - Сѓ РЅРёС… РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ Unix (Р”РѕР±Р°РІР»СЏСЏ РёСЃРїРѕСЂС‡РµРЅРЅС‹Р№ РїСЂРѕРґСѓРєС‚ Рє СЃРІРµР¶РµРјСѓ, РїРѕСЂС‚РёС‚СЊСЃСЏ РґРѕР»Р¶РЅРѕ РІСЃС‘)
 	{
 	    if(PlayerInfo[playerid][pInvenPara][i] > 0)
 		{
@@ -1541,9 +1541,9 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 	}
 	else PlayerInfo[playerid][pInvenPara][i] = para;
 	
-	PlayerInfo[playerid][pInvenQara][i] = qara; // Статус краденного предмета
-	PlayerInfo[playerid][pInvenType][i] = thingType; // Тип предмета
-	PlayerInfo[playerid][pInvenPack][i] = thingPack; // Упаковка предмета
+	PlayerInfo[playerid][pInvenQara][i] = qara; // РЎС‚Р°С‚СѓСЃ РєСЂР°РґРµРЅРЅРѕРіРѕ РїСЂРµРґРјРµС‚Р°
+	PlayerInfo[playerid][pInvenType][i] = thingType; // РўРёРї РїСЂРµРґРјРµС‚Р°
+	PlayerInfo[playerid][pInvenPack][i] = thingPack; // РЈРїР°РєРѕРІРєР° РїСЂРµРґРјРµС‚Р°
 	
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]), PlayerPlaySound(playerid,1052,0,0,0);
 	return i;
@@ -1551,42 +1551,42 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 stock GetFullThingQuan(thingId)
 {
 	new quan;
-    if(thingId == 1) quan = 1; // Хлеб
-    else if(thingId == 14) quan = 6; // Пиво
-    else if(thingId == 16) quan = 50; // Пачка сигарет
-    else if(thingId == 19) quan = 5; // Отмычки
-	else if(thingId == 37) quan = 11; // Шампанское
-	else if(thingId == 41) quan = 5; // Бенгальские свечи 
+    if(thingId == 1) quan = 1; // РҐР»РµР±
+    else if(thingId == 14) quan = 6; // РџРёРІРѕ
+    else if(thingId == 16) quan = 50; // РџР°С‡РєР° СЃРёРіР°СЂРµС‚
+    else if(thingId == 19) quan = 5; // РћС‚РјС‹С‡РєРё
+	else if(thingId == 37) quan = 11; // РЁР°РјРїР°РЅСЃРєРѕРµ
+	else if(thingId == 41) quan = 5; // Р‘РµРЅРіР°Р»СЊСЃРєРёРµ СЃРІРµС‡Рё 
 	else if(thingId == 62) quan = 1; // PlayBoy
-	else if(thingId == 88) quan = 5; // Семена травы
-	else if(thingId == 112) quan = 11; // // бухло
-	else if(thingId == 113) quan = 11; // // бухло
-	else if(thingId == 114) quan = 11; // // бухло
-	else if(thingId == 115) quan = 11; // // бухло
-	else if(thingId == 116) quan = 11; // // бухло
-	else if(thingId == 117) quan = 6; // // бухло
-	else if(thingId == 118) quan = 6; // // бухло
-	else if(thingId == 119) quan = 6; // // бухло
-	else if(thingId == 163) quan = 21; // Свадебный торт
-	else if(thingId == 165) quan = 7; // Пицца
-	else if(thingId == 166) quan = 10; // Пицца Домашняя
-	else if(thingId == 120) quan = 4; // Sprunk Банка
-	else if(thingId == 121) quan = 4; // Кофе
-	else if(thingId == 124) quan = 4; // Спранк стакан
-	else if(thingId == 197) quan = 10; // Баллончик с краской
+	else if(thingId == 88) quan = 5; // РЎРµРјРµРЅР° С‚СЂР°РІС‹
+	else if(thingId == 112) quan = 11; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 113) quan = 11; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 114) quan = 11; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 115) quan = 11; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 116) quan = 11; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 117) quan = 6; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 118) quan = 6; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 119) quan = 6; // // Р±СѓС…Р»Рѕ
+	else if(thingId == 163) quan = 21; // РЎРІР°РґРµР±РЅС‹Р№ С‚РѕСЂС‚
+	else if(thingId == 165) quan = 7; // РџРёС†С†Р°
+	else if(thingId == 166) quan = 10; // РџРёС†С†Р° Р”РѕРјР°С€РЅСЏСЏ
+	else if(thingId == 120) quan = 4; // Sprunk Р‘Р°РЅРєР°
+	else if(thingId == 121) quan = 4; // РљРѕС„Рµ
+	else if(thingId == 124) quan = 4; // РЎРїСЂР°РЅРє СЃС‚Р°РєР°РЅ
+	else if(thingId == 197) quan = 10; // Р‘Р°Р»Р»РѕРЅС‡РёРє СЃ РєСЂР°СЃРєРѕР№
 	else quan = 1;
 	return quan;
 }
 
-// Сохраняем весь инвентарь
+// РЎРѕС…СЂР°РЅСЏРµРј РІРµСЃСЊ РёРЅРІРµРЅС‚Р°СЂСЊ
 stock SaveInventAll(playerid, bool:transaction = true)
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new i = 0; i < MAX_INVEN; i++) SaveInvent(playerid, i);
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
@@ -1610,7 +1610,7 @@ stock CreateJsonInvent(playerid, i, &JsonNode:node)
 	return 1;
 }
 
-// Сохраняем одну ячейку инвентаря
+// РЎРѕС…СЂР°РЅСЏРµРј РѕРґРЅСѓ СЏС‡РµР№РєСѓ РёРЅРІРµРЅС‚Р°СЂСЏ
 stock SaveInvent(playerid, i)
 {
 	new JsonNode:node;
@@ -1641,7 +1641,7 @@ stock SaveInventByUserID(user_id, i, JsonNode:node, bool:isMark = false)
 	return 1;
 }
 
-// Запрос для загрузки инвентаря
+// Р—Р°РїСЂРѕСЃ РґР»СЏ Р·Р°РіСЂСѓР·РєРё РёРЅРІРµРЅС‚Р°СЂСЏ
 function OnPlayerInventoryLoad(playerid, race_check)
 {
 	new rows;
@@ -1650,12 +1650,12 @@ function OnPlayerInventoryLoad(playerid, race_check)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 		OnPlayerLoadInventory(playerid);
-		printf("OnPlayerLoadInventory(%s) Инвентарь Найден", PlayerInfo[playerid][pName]);
+		printf("OnPlayerLoadInventory(%s) РРЅРІРµРЅС‚Р°СЂСЊ РќР°Р№РґРµРЅ", PlayerInfo[playerid][pName]);
 	}
 	return 1;
 }
 
-// Новый сток загрузки инвентаря
+// РќРѕРІС‹Р№ СЃС‚РѕРє Р·Р°РіСЂСѓР·РєРё РёРЅРІРµРЅС‚Р°СЂСЏ
 stock OnPlayerLoadInventory(playerid)
 {
 	new string[20];
@@ -1731,9 +1731,9 @@ stock OnPlayerTakeOffline(playerid)
 	return 1;
 }
 
-stock NumberSmartfonPlayer(playerid) // Устанавливаем номер телефона игроку, исходя из уже существующих
+stock NumberSmartfonPlayer(playerid) // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР° РёРіСЂРѕРєСѓ, РёСЃС…РѕРґСЏ РёР· СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС…
 {
-    if(ServerInfo[54] <= 0) ServerInfo[54] = 9000000; // Если в конфиге нет номера телефона
+    if(ServerInfo[54] <= 0) ServerInfo[54] = 9000000; // Р•СЃР»Рё РІ РєРѕРЅС„РёРіРµ РЅРµС‚ РЅРѕРјРµСЂР° С‚РµР»РµС„РѕРЅР°
 	ServerInfo[54] += 1;
 	PlayerInfo[playerid][pDrugPerk] = ServerInfo[54];
 	SaveServer(54);
@@ -1750,46 +1750,46 @@ stock ClearPlayerInven(playerid, inva)
     if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, inva, 0, 0, 0);
 	return 1;
 }
-stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получаем обычное имя предмета по его типу (Для текста, диалоговых окон и логов)
+stock GetNameThing(readStatus, thingId, thingType, thingPack) // РџРѕР»СѓС‡Р°РµРј РѕР±С‹С‡РЅРѕРµ РёРјСЏ РїСЂРµРґРјРµС‚Р° РїРѕ РµРіРѕ С‚РёРїСѓ (Р”Р»СЏ С‚РµРєСЃС‚Р°, РґРёР°Р»РѕРіРѕРІС‹С… РѕРєРѕРЅ Рё Р»РѕРіРѕРІ)
 {
 	new nameProduct[84];
-	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
+	// РўРёРї С‚РѕРІР°СЂР° (0 РѕР±С‹С‡РЅС‹Р№, 1 РѕСЂСѓР¶РёРµ, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 4 РјРµР±РµР»СЊ)
 	if(thingPack == 0)
 	{
 	    if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s", friskName[thingId]);
 		else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s", gunName[thingId]);
 		else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
-		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"Одежда ID %d", thingId);
+		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"РћРґРµР¶РґР° ID %d", thingId);
 		else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", getIkeaObjectName(thingId));
 		else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s", GetVehicleName(thingId));
 	}
-	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный ящик, 5 кейс (помещается только 1 предмет и занимает 1 ячейку)
+	else if(thingPack >= 1) // 0 РїСЂРµРґРјРµС‚, 1 РїРѕРґР°СЂРѕРє, 2 СЏС‰РёРє, 3 РњРµС€РѕРє, 4 Р—Р°РїРµС‡Р°С‚Р°РЅРЅС‹Р№ СЏС‰РёРє, 5 РєРµР№СЃ (РїРѕРјРµС‰Р°РµС‚СЃСЏ С‚РѕР»СЊРєРѕ 1 РїСЂРµРґРјРµС‚ Рё Р·Р°РЅРёРјР°РµС‚ 1 СЏС‡РµР№РєСѓ)
 	{
 	    new hideName[8];
-	    if(thingPack == 1) format(hideName,sizeof(hideName),"Подарок");
-    	else if(thingPack == 2) format(hideName,sizeof(hideName),"Ящик");
-    	else if(thingPack == 3) format(hideName,sizeof(hideName),"Мешок");
-		else if(thingPack == 4) format(hideName,sizeof(hideName),"Запечатанный Ящик");
-		else if(thingPack == 5) format(hideName,sizeof(hideName),"Кейс");
+	    if(thingPack == 1) format(hideName,sizeof(hideName),"РџРѕРґР°СЂРѕРє");
+    	else if(thingPack == 2) format(hideName,sizeof(hideName),"РЇС‰РёРє");
+    	else if(thingPack == 3) format(hideName,sizeof(hideName),"РњРµС€РѕРє");
+		else if(thingPack == 4) format(hideName,sizeof(hideName),"Р—Р°РїРµС‡Р°С‚Р°РЅРЅС‹Р№ РЇС‰РёРє");
+		else if(thingPack == 5) format(hideName,sizeof(hideName),"РљРµР№СЃ");
 	    
 	    if(readStatus == 0 || thingPack == 5) format(nameProduct,sizeof(nameProduct),"%s", hideName);
-	    else // Читаемый, для логов и просмотра содержимого администрацией
+	    else // Р§РёС‚Р°РµРјС‹Р№, РґР»СЏ Р»РѕРіРѕРІ Рё РїСЂРѕСЃРјРѕС‚СЂР° СЃРѕРґРµСЂР¶РёРјРѕРіРѕ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРµР№
 		{
 			if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, friskName[thingId]);
 			else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, gunName[thingId]);
 			else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetNameAccessory(thingId));
-			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (Одежда ID %d)", hideName, thingId);
+			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (РћРґРµР¶РґР° ID %d)", hideName, thingId);
 			else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, getIkeaObjectName(thingId));
 			else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetVehicleName(thingId));
 		}
 	}
 	return nameProduct;
 }
-stock JustOneThingInventory(i, type) // Проверка на наличие предметов, которые не могут повторяться в инвентаре (Только 1)
+stock JustOneThingInventory(i, type) // РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РїСЂРµРґРјРµС‚РѕРІ, РєРѕС‚РѕСЂС‹Рµ РЅРµ РјРѕРіСѓС‚ РїРѕРІС‚РѕСЂСЏС‚СЊСЃСЏ РІ РёРЅРІРµРЅС‚Р°СЂРµ (РўРѕР»СЊРєРѕ 1)
 {
 	if(type == 0 && (i == 10 || i == 11 || i == 12 || i == 13 || i == 17 || i == 21 || i == 23 || i == 26
 	|| i == 42 || i == 43 || i == 48 || i == 51 || i == 63 || i == 91)
-	|| type == 2 && (IsHelmet(i) || IsArmor(i))) return 1; // Каски, Броник
+	|| type == 2 && (IsHelmet(i) || IsArmor(i))) return 1; // РљР°СЃРєРё, Р‘СЂРѕРЅРёРє
 	return 0;
 }
 stock IsHelmet(i)
@@ -1817,7 +1817,7 @@ stock DocumentThing(i, thingType)
 	if(i >= 156 && i <= 162 && thingType == 0) return 1;
 	return 0;
 }
-stock PerishableThing(i, type) //  Проверка на портящиеся продукты
+stock PerishableThing(i, type) //  РџСЂРѕРІРµСЂРєР° РЅР° РїРѕСЂС‚СЏС‰РёРµСЃСЏ РїСЂРѕРґСѓРєС‚С‹
 {
     if(type == 0 && (i == 1 || i == 6 || i == 18 || i == 20 || i == 22 || i == 54 || i == 55 || i == 96 || i == 98 || i == 99 || i == 100 || i == 101 || i == 102
  	|| i == 103 || i == 104 || i == 105 || i == 107 || i == 14 || i == 117 || i == 118 || i == 119 || i == 120 || i == 121 || i == 124 || i == 125
@@ -1832,12 +1832,12 @@ stock NotGiveThing(i, type, quan)
 		|| type == 5) return 1;
 	return 0;
 }
-stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем лимиты инвентаря
+stock i_limit(playerid, thingId, &getQuan, &getLimit) // РџСЂРѕРІРµСЂСЏРµРј Р»РёРјРёС‚С‹ РёРЅРІРµРЅС‚Р°СЂСЏ
 {
 	new lim[INVENTER];
 	new pow = get_power(playerid);
 	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
-	lim[8] = 2, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
+	lim[8] = 2, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // РђРїС‚РµС‡РєРё, РћС‚РјС‹С‡РєРё, Р‘РµРЅРіР°Р»СЊСЃРєРёРµ РЎРІРµС‡Рё, Р”РµРЅСЊРіРё 999РєРє
 	lim[4] = 100*pow, lim[5] = 100*pow, lim[6] = 100*pow, lim[7] = 100*pow, lim[9] = 20, lim[18] = 100*pow, lim[20] = 10*pow, lim[27] = 100*pow, lim[28] = 100*pow, lim[29] = 100*pow, lim[30] = 100*pow;
 	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10, lim[60] = 100, lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow, lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
@@ -1860,33 +1860,33 @@ stock use_sklad(playerid, wh, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != OrganInfo[wh][gInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚");
 
 	new string[160];
 	new yes, giveThing;
-	if(IsHelmet(fpick) && thingType == 2) // Каска (Тип аксессуар)
+	if(IsHelmet(fpick) && thingType == 2) // РљР°СЃРєР° (РўРёРї Р°РєСЃРµСЃСЃСѓР°СЂ)
 	{
-	    if(PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять каску [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60)-unixtime)/60), ErrorMessage(playerid, string);
-	    if(PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	    if(PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РєР°СЃРєСѓ [ Р§РµСЂРµР· %d РјРёРЅ. ]", ((PlayerInfo[playerid][pGacc][6]+OrganInfo[wh][gUnitStat][20]*60)-unixtime)/60), ErrorMessage(playerid, string);
+	    if(PlayerInfo[playerid][pOdet][0] == fpick || PlayerInfo[playerid][pOdet][1] == fpick || PlayerInfo[playerid][pOdet][2] == fpick || PlayerInfo[playerid][pOdet][3] == fpick || PlayerInfo[playerid][pOdet][4] == fpick) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚");
 	    giveThing = 6;
 	    yes = 1;
 	}
-	else if(IsArmor(fpick) && thingType == 2) // Бронежилет (Тип аксессуар)
+	else if(IsArmor(fpick) && thingType == 2) // Р‘СЂРѕРЅРµР¶РёР»РµС‚ (РўРёРї Р°РєСЃРµСЃСЃСѓР°СЂ)
 	{
-	    if(PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять бронежилет [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60)-unixtime)/60), ErrorMessage(playerid, string);
-	    if(PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
+	    if(PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ Р±СЂРѕРЅРµР¶РёР»РµС‚ [ Р§РµСЂРµР· %d РјРёРЅ. ]", ((PlayerInfo[playerid][pGacc][7]+OrganInfo[wh][gUnitStat][21]*60)-unixtime)/60), ErrorMessage(playerid, string);
+	    if(PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚");
 	    giveThing = 7;
 	    yes = 1;
 	}
-	else if(thingType == 1) // Оружие
+	else if(thingType == 1) // РћСЂСѓР¶РёРµ
 	{
-	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять оружие [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, string);
+	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р§РµСЂРµР· %d РјРёРЅ. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, string);
 	    giveThing = 4;
 	    yes = 1;
 	}
 	else if(thingType == 0)
 	{
-	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
+	    if(CheckThingQuan(fpick) == 1) // РџСЂРµРґРјРµС‚ РёРјРµРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ
 		{
 		    DP[0][playerid] = inva;
 			new maxQuan = 1000, maxTime;
@@ -1896,14 +1896,14 @@ stock use_sklad(playerid, wh, inva, useinva)
 			else if(fpick == 30) maxQuan = OrganInfo[wh][gUnitStat][13], maxTime = PlayerInfo[playerid][pGacc][3]+OrganInfo[wh][gUnitStat][17]*60;
 			else if(fpick >= 4 && fpick <= 7) maxQuan = OrganInfo[wh][gUnitStat][22], maxTime = PlayerInfo[playerid][pGacc][8]+OrganInfo[wh][gUnitStat][23]*60;
 			
-			if(maxTime > 0 && maxTime > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять этот предмет [ Через %d мин. ]\n\n{cccccc}Ограничения устанавливает руководитель", maxQuan), ErrorMessage(playerid, string);
-			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\n{cccccc}Не меньше 1 и не больше %d\nЛимиты устанавливает руководитель",friskName[fpick], maxQuan);
-			ShowDialog(playerid,967,DIALOG_STYLE_INPUT,"{ff9000}Склад",string,"Принять","Отмена");
+			if(maxTime > 0 && maxTime > unixtime) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚ [ Р§РµСЂРµР· %d РјРёРЅ. ]\n\n{cccccc}РћРіСЂР°РЅРёС‡РµРЅРёСЏ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЊ", maxQuan), ErrorMessage(playerid, string);
+			format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\n{cccccc}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d\nР›РёРјРёС‚С‹ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЊ",friskName[fpick], maxQuan);
+			ShowDialog(playerid,967,DIALOG_STYLE_INPUT,"{ff9000}РЎРєР»Р°Рґ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			return 1;
 		}
-		if(fpick == 8) // Аптечка
+		if(fpick == 8) // РђРїС‚РµС‡РєР°
 		{
-			if(PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять предмет [ Через %d мин. ]\n\n{cccccc}Ограничения устанавливает руководитель", ((PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60)-unixtime)/60), ErrorMessage(playerid, string);
+			if(PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РїСЂРµРґРјРµС‚ [ Р§РµСЂРµР· %d РјРёРЅ. ]\n\n{cccccc}РћРіСЂР°РЅРёС‡РµРЅРёСЏ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЂСѓРєРѕРІРѕРґРёС‚РµР»СЊ", ((PlayerInfo[playerid][pGacc][5]+OrganInfo[wh][gUnitStat][19]*60)-unixtime)/60), ErrorMessage(playerid, string);
 			giveThing = 5;
 		}
 		yes = 1;
@@ -1917,8 +1917,8 @@ stock use_sklad(playerid, wh, inva, useinva)
 	    if(IsArmor(fpick) && thingType == 2) fpara = 100;
 	    OrganInfo[wh][gInvPara][inva] = fpara;
 	
-		new put_inva = GiveThingPlayer(playerid, fpick, 1, OrganInfo[wh][gInvPara][inva], 0, OrganInfo[wh][gInvType][inva], 0, useinva); // Выдаём предмет игроку
-    	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+		new put_inva = GiveThingPlayer(playerid, fpick, 1, OrganInfo[wh][gInvPara][inva], 0, OrganInfo[wh][gInvType][inva], 0, useinva); // Р’С‹РґР°С‘Рј РїСЂРµРґРјРµС‚ РёРіСЂРѕРєСѓ
+    	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ"); // РџРѕР»СѓС‡РёР»Рё -1 РІ РѕС‚РІРµС‚, Р·РЅР°С‡РёС‚ РЅРµ РЅР°С€Р»Рё СЏС‡РµР№РєСѓ, РєСѓРґР° РєР»Р°СЃС‚СЊ РїСЂРµРґРјРµС‚
     	SaveInvent(playerid, put_inva);
 
     	TakeSklad(wh, fpick, 1, thingType, inva);
@@ -1926,17 +1926,17 @@ stock use_sklad(playerid, wh, inva, useinva)
     	PlayerPlaySound(playerid, 36401, 0.0, 0.0, 0.0);
 
     	if(giveThing > 0) PlayerInfo[playerid][pGacc][giveThing] = unixtime;
-    	format(string, sizeof(string), "берёт со склада: %s", GetNameThing(0, fpick, thingType, 0));
+    	format(string, sizeof(string), "Р±РµСЂС‘С‚ СЃРѕ СЃРєР»Р°РґР°: %s", GetNameThing(0, fpick, thingType, 0));
 		SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,5000);
     	OrgLog(wh, "sklad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 1, GetNameThing(1, fpick, thingType, 0));
 	}
 	return 1;
 }
-stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение предметов внутри инвентаря склада организации (с одной ячейки на другую)
+stock shift_sklad(playerid, wh, getinva, putinva) // РџРµСЂРµРјРµС‰РµРЅРёРµ РїСЂРµРґРјРµС‚РѕРІ РІРЅСѓС‚СЂРё РёРЅРІРµРЅС‚Р°СЂСЏ СЃРєР»Р°РґР° РѕСЂРіР°РЅРёР·Р°С†РёРё (СЃ РѕРґРЅРѕР№ СЏС‡РµР№РєРё РЅР° РґСЂСѓРіСѓСЋ)
 {
 	if(OnlineInfo[playerid][oShowTabs] == wh)
 	{
-	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Перемещать предметы может только лидер"), i_resettabs(playerid);
+	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}РџРµСЂРµРјРµС‰Р°С‚СЊ РїСЂРµРґРјРµС‚С‹ РјРѕР¶РµС‚ С‚РѕР»СЊРєРѕ Р»РёРґРµСЂ"), i_resettabs(playerid);
 		if(OrganInfo[wh][gInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(OrganInfo[wh][gInvent][putinva] != 0) return 1;
 		new quanPlayer;
@@ -1951,7 +1951,7 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение предметов внутр
 		if(quanPlayer >= 2)
 		{
 			new string[80];
-		    format(string, sizeof(string), "{FF6347}Склад просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+		    format(string, sizeof(string), "{FF6347}РЎРєР»Р°Рґ РїСЂРѕСЃРјР°С‚СЂРёРІР°СЋС‚ %d С‡РµР». [ РџРµСЂРµРјРµС‰РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РЅРµРІРѕР·РјРѕР¶РЅРѕ ]", quanPlayer-1);
 			ErrorMessage(playerid, string);
 			i_resettabs(playerid);
 			return 1;
@@ -1984,7 +1984,7 @@ stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
 	{
 		if(OrganInfo[wh][gInvent][inva] == pick && OrganInfo[wh][gInvType][inva] == thingType)
 		{
-		    if(OrganInfo[wh][gInv][inva]+kol > getLimit && checklimit == 1) // Встроенная проверка на лимит
+		    if(OrganInfo[wh][gInv][inva]+kol > getLimit && checklimit == 1) // Р’СЃС‚СЂРѕРµРЅРЅР°СЏ РїСЂРѕРІРµСЂРєР° РЅР° Р»РёРјРёС‚
 		    {
 		        stopFind = true;
 		    }
@@ -2038,9 +2038,9 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 	}
 	return 1;
 }
-stock SaveSklad(idx, bool:transaction = true) // Сохранение всего склада организации по циклу
+stock SaveSklad(idx, bool:transaction = true) // РЎРѕС…СЂР°РЅРµРЅРёРµ РІСЃРµРіРѕ СЃРєР»Р°РґР° РѕСЂРіР°РЅРёР·Р°С†РёРё РїРѕ С†РёРєР»Сѓ
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq_2, "START TRANSACTION;");
 
 	for(new i = 0; i < 20; i++) 
@@ -2048,7 +2048,7 @@ stock SaveSklad(idx, bool:transaction = true) // Сохранение всего склада организ
 		if(OrganInfo[idx][gInvUpdate][i] == true) SaveSkladOne(idx, i);
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq_2, "COMMIT;");
 	return 1;
 }
@@ -2082,22 +2082,22 @@ stock SaveSkladOne(idx, i)
 	return 1;
 }
 
-stock sklad_limit(thingId, thingType) // Проверяем лимиты склада организации
+stock sklad_limit(thingId, thingType) // РџСЂРѕРІРµСЂСЏРµРј Р»РёРјРёС‚С‹ СЃРєР»Р°РґР° РѕСЂРіР°РЅРёР·Р°С†РёРё
 {
 	new getLimit;
-	if(thingType == 0) // Обычные Предметы
+	if(thingType == 0) // РћР±С‹С‡РЅС‹Рµ РџСЂРµРґРјРµС‚С‹
 	{
-	    if(thingId >= 4 && thingId <= 8) getLimit = 10000; // Вещества
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 10000; // Патроны
-	    else getLimit = 1000; // На случай ошибки, остальные предметы лимит 1к
+	    if(thingId >= 4 && thingId <= 8) getLimit = 10000; // Р’РµС‰РµСЃС‚РІР°
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 10000; // РџР°С‚СЂРѕРЅС‹
+	    else getLimit = 1000; // РќР° СЃР»СѓС‡Р°Р№ РѕС€РёР±РєРё, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ Р»РёРјРёС‚ 1Рє
  	}
-	else if(thingType == 1) getLimit = 100; // Оружие
-    else if(thingType == 2) getLimit = 1000; // Каски и Бронежилеты (Аксессуары)
-    else getLimit = 1000; // На случай ошибки, остальные предметы лимит 1к
+	else if(thingType == 1) getLimit = 100; // РћСЂСѓР¶РёРµ
+    else if(thingType == 2) getLimit = 1000; // РљР°СЃРєРё Рё Р‘СЂРѕРЅРµР¶РёР»РµС‚С‹ (РђРєСЃРµСЃСЃСѓР°СЂС‹)
+    else getLimit = 1000; // РќР° СЃР»СѓС‡Р°Р№ РѕС€РёР±РєРё, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ Р»РёРјРёС‚ 1Рє
 	return getLimit;
 }
 
-stock get_sklad(g, thingId, thingType) // Поиск при добавлении нового предмета
+stock get_sklad(g, thingId, thingType) // РџРѕРёСЃРє РїСЂРё РґРѕР±Р°РІР»РµРЅРёРё РЅРѕРІРѕРіРѕ РїСЂРµРґРјРµС‚Р°
 {
 	new quan = 0;
 	for(new inva = 0; inva < 20; inva++)
@@ -2118,11 +2118,11 @@ stock player_tile(playerid, inva)
 		reset_pick_othe(playerid), PlayerTextDrawShow(playerid, PlaNestOthe[2][playerid]);
 		if(Hold[playerid] == 4) Hold[playerid] = 0;
 	}
-	if(fpick == 0) // Ничего нет
+	if(fpick == 0) // РќРёС‡РµРіРѕ РЅРµС‚
 	{
 		if(OnlineInfo[playerid][oInventSelectRight] == 9999)
 		{
-			if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] != inva) // Перекладываем
+			if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] != inva) // РџРµСЂРµРєР»Р°РґС‹РІР°РµРј
 			{
 				if(Hold[playerid] == 2 || Hold[playerid] == 3 && HoldStat[playerid] > 0)
 		    	{
@@ -2137,7 +2137,7 @@ stock player_tile(playerid, inva)
 				PlayerInfo[playerid][pInvenPack][inva] = PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]];
 				i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
 
-				// Старую плитку удаляем
+				// РЎС‚Р°СЂСѓСЋ РїР»РёС‚РєСѓ СѓРґР°Р»СЏРµРј
 				PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]] = 0;
 				PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]] = 0;
 				PlayerInfo[playerid][pInvenPara][OnlineInfo[playerid][oInventSelectLeft]] = 0;
@@ -2150,7 +2150,7 @@ stock player_tile(playerid, inva)
 				CheckCraftReady(playerid);
 			}
 		}
-		else if(OnlineInfo[playerid][oInventSelectRight] != 9999) // Берём Откуда-то
+		else if(OnlineInfo[playerid][oInventSelectRight] != 9999) // Р‘РµСЂС‘Рј РћС‚РєСѓРґР°-С‚Рѕ
 		{
 			OnlineInfo[playerid][oInventSelectLeft] = inva;
 			if(Tabs_Load[playerid] == 2)
@@ -2179,15 +2179,15 @@ stock player_tile(playerid, inva)
 			else i_resettabs(playerid);
 		}
 	}
-	else if(fpick > 0) // Что-то Лежит
+	else if(fpick > 0) // Р§С‚Рѕ-С‚Рѕ Р›РµР¶РёС‚
 	{
-		if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Выделяем
+		if(OnlineInfo[playerid][oInventSelectLeft] == 9999) // Р’С‹РґРµР»СЏРµРј
 		{
 			if(Page[playerid] == 0 && inva <= 19) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva][playerid]);
 			else if(Page[playerid] == 1 && inva >= 20) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva-20][playerid], PlayerInfo[playerid][pStyle3]), PlayerTextDrawShow(playerid, PlaNestPick[inva-20][playerid]);
 			i_infofpick(playerid, fpick, fquan, inva, 0, fpara, thingType, thingPack);
 			OnlineInfo[playerid][oInventSelectLeft] = inva;
-			if(OnlineInfo[playerid][oInventSelectRight] != 9999) // Кладём
+			if(OnlineInfo[playerid][oInventSelectRight] != 9999) // РљР»Р°РґС‘Рј
 			{
 			    new myinva = OnlineInfo[playerid][oInventSelectRight], myfpick;
 			    if(Tabs_Load[playerid] == 2)
@@ -2235,28 +2235,28 @@ stock player_tile(playerid, inva)
 				else i_resetveshi(playerid);
 			}
 		}
-		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] != inva) i_resetveshi(playerid); // Сбрасываем Выбор
-        else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] == inva) // Выполняем
+		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] != inva) i_resetveshi(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј Р’С‹Р±РѕСЂ
+        else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] == inva) // Р’С‹РїРѕР»РЅСЏРµРј
 		{
-			// Упаковываем подарок
+			// РЈРїР°РєРѕРІС‹РІР°РµРј РїРѕРґР°СЂРѕРє
 			if(Hold[playerid] == 4)
 			{
-			    if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
-			    if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет уже упакован");
-			    if(fpick == 51 || fpick == 63 || DocumentThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Документы нельзя упаковать в подарок");
+			    if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ РЅРµР»СЊР·СЏ СѓРїР°РєРѕРІР°С‚СЊ РІ РїРѕРґР°СЂРѕРє");
+			    if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ СѓР¶Рµ СѓРїР°РєРѕРІР°РЅ");
+			    if(fpick == 51 || fpick == 63 || DocumentThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Р”РѕРєСѓРјРµРЅС‚С‹ РЅРµР»СЊР·СЏ СѓРїР°РєРѕРІР°С‚СЊ РІ РїРѕРґР°СЂРѕРє");
 			    
 			    Veshi[playerid] = 1;
 			    DP[0][playerid] = inva;
 				new string[140];
-				format(string,sizeof(string),"{cccccc}Вы уверены, что хотите упаковать в {ff0000}Подарок {ff9000}%s ?",GetNameThing(0, fpick, thingType, thingPack));
-				ShowDialog(playerid,930,DIALOG_STYLE_MSGBOX,"{FF9000}Инвентарь",string,"Да","Нет");
+				format(string,sizeof(string),"{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ СѓРїР°РєРѕРІР°С‚СЊ РІ {ff0000}РџРѕРґР°СЂРѕРє {ff9000}%s ?",GetNameThing(0, fpick, thingType, thingPack));
+				ShowDialog(playerid,930,DIALOG_STYLE_MSGBOX,"{FF9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"Р”Р°","РќРµС‚");
 			    return 1;
 			}
 			
-			// Распаковываем подарок или кейс
+			// Р Р°СЃРїР°РєРѕРІС‹РІР°РµРј РїРѕРґР°СЂРѕРє РёР»Рё РєРµР№СЃ
 			if(thingPack == 1 || thingPack == 5) return i_unpackgift(playerid, inva, thingPack);
 			
-			// Возвращаем украденный предмет
+			// Р’РѕР·РІСЂР°С‰Р°РµРј СѓРєСЂР°РґРµРЅРЅС‹Р№ РїСЂРµРґРјРµС‚
 		    if(PlayerInfo[playerid][pInvenQara][inva] > 0)
 		    {
 		    	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1)
@@ -2266,95 +2266,95 @@ stock player_tile(playerid, inva)
 					{
 					    comeback_item(playerid, inva);
 					}
-					else ErrorMessage(playerid, "{FF6347}Это украденный предмет\n\nВерните предмет владельцу и получите вознаграждение\n{cccccc}Для этого отправляйтесь на склад своей организации и выберите предмет"), i_resetveshi(playerid);
+					else ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ СѓРєСЂР°РґРµРЅРЅС‹Р№ РїСЂРµРґРјРµС‚\n\nР’РµСЂРЅРёС‚Рµ РїСЂРµРґРјРµС‚ РІР»Р°РґРµР»СЊС†Сѓ Рё РїРѕР»СѓС‡РёС‚Рµ РІРѕР·РЅР°РіСЂР°Р¶РґРµРЅРёРµ\n{cccccc}Р”Р»СЏ СЌС‚РѕРіРѕ РѕС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РЅР° СЃРєР»Р°Рґ СЃРІРѕРµР№ РѕСЂРіР°РЅРёР·Р°С†РёРё Рё РІС‹Р±РµСЂРёС‚Рµ РїСЂРµРґРјРµС‚"), i_resetveshi(playerid);
 					return 1;
 		    	}
 		    }
 		    
 			new string[120];
-		    // Используем предмет
-		    if(thingType == 0) // Обычный предмет
+		    // РСЃРїРѕР»СЊР·СѓРµРј РїСЂРµРґРјРµС‚
+		    if(thingType == 0) // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
 		    {
-				if(fpick == 1) return format(string, sizeof(string), "%d", inva), cmd_eatbread(playerid, string), i_resetveshi(playerid); // Хлеб
-				else if(fpick == 2) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Обручальное кольцо используется для церемонии бракосочетаний [ Y >> GPS >> Прочее >> Церковь ]","*",""), i_resetveshi(playerid); // Обручальное кольцо
-				else if(fpick == 3) return seeds(playerid, 1003), i_resetveshi(playerid); // Бутылка
-			 	else if(fpick == 4) return cmd_usedrugs1(playerid), i_resetveshi(playerid); // Трава
-			 	else if(fpick == 5) return ErrorMessage(playerid,"Это таблетка пустышка"), i_resetveshi(playerid); // Спиды
-			 	else if(fpick == 6) return cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
-			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // Порошок
-			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // Аптечка
+				if(fpick == 1) return format(string, sizeof(string), "%d", inva), cmd_eatbread(playerid, string), i_resetveshi(playerid); // РҐР»РµР±
+				else if(fpick == 2) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћР±СЂСѓС‡Р°Р»СЊРЅРѕРµ РєРѕР»СЊС†Рѕ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ С†РµСЂРµРјРѕРЅРёРё Р±СЂР°РєРѕСЃРѕС‡РµС‚Р°РЅРёР№ [ Y >> GPS >> РџСЂРѕС‡РµРµ >> Р¦РµСЂРєРѕРІСЊ ]","*",""), i_resetveshi(playerid); // РћР±СЂСѓС‡Р°Р»СЊРЅРѕРµ РєРѕР»СЊС†Рѕ
+				else if(fpick == 3) return seeds(playerid, 1003), i_resetveshi(playerid); // Р‘СѓС‚С‹Р»РєР°
+			 	else if(fpick == 4) return cmd_usedrugs1(playerid), i_resetveshi(playerid); // РўСЂР°РІР°
+			 	else if(fpick == 5) return ErrorMessage(playerid,"Р­С‚Рѕ С‚Р°Р±Р»РµС‚РєР° РїСѓСЃС‚С‹С€РєР°"), i_resetveshi(playerid); // РЎРїРёРґС‹
+			 	else if(fpick == 6) return cmd_usedrugs3(playerid), i_resetveshi(playerid); // Р“СЂРёР±С‹
+			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // РџРѕСЂРѕС€РѕРє
+			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // РђРїС‚РµС‡РєР°
 			 	else if(fpick == 9)
 				{
-					if(Dei[playerid] == 1003) return cmd_molotov(playerid), i_resetveshi(playerid); // Создаём коктейль молотова
-					else return kani(playerid), i_resetveshi(playerid); // Канистра
+					if(Dei[playerid] == 1003) return cmd_molotov(playerid), i_resetveshi(playerid); // РЎРѕР·РґР°С‘Рј РєРѕРєС‚РµР№Р»СЊ РјРѕР»РѕС‚РѕРІР°
+					else return kani(playerid), i_resetveshi(playerid); // РљР°РЅРёСЃС‚СЂР°
 				}
-			 	else if(fpick == 10) return cmd_allahakbar(playerid), i_resetveshi(playerid); // Пояс со взрывчаткой
+			 	else if(fpick == 10) return cmd_allahakbar(playerid), i_resetveshi(playerid); // РџРѕСЏСЃ СЃРѕ РІР·СЂС‹РІС‡Р°С‚РєРѕР№
 			 	else if(fpick == 11)
 				{
-					ShowDialog(playerid,1335,DIALOG_STYLE_INPUT,"{ff9000}Бомба","\n{cccccc}Введите время, через которое бомба взорвётся [ 10 - 300 секунд ]","Принять","Отмена");
+					ShowDialog(playerid,1335,DIALOG_STYLE_INPUT,"{ff9000}Р‘РѕРјР±Р°","\n{cccccc}Р’РІРµРґРёС‚Рµ РІСЂРµРјСЏ, С‡РµСЂРµР· РєРѕС‚РѕСЂРѕРµ Р±РѕРјР±Р° РІР·РѕСЂРІС‘С‚СЃСЏ [ 10 - 300 СЃРµРєСѓРЅРґ ]","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					return 1;
 				}
-			 	else if(fpick == 13) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Верёвка нужна для того, чтобы кого-нибудь связать [ /tie ]","*",""), i_resetveshi(playerid);
-			 	//else if(fpick == 15) // ЯД (Пустое Значение)
-			 	else if(fpick == 16) return format(string, sizeof(string), "%d", inva), cmd_smoke(playerid, string), i_resetveshi(playerid); // Сигареты
-			 	else if(fpick == 17) return cmd_usearm(playerid), i_resetveshi(playerid); // Бронежилет
-			 	else if(fpick == 18) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Наживка используется для рыбалки [ Y >> GPS >> Работа >> Рыболов ]","*",""), i_resetveshi(playerid);
-			 	else if(fpick == 19) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отмычки используются для взлома замков и дверей [ ALT у дверей ]","*",""), i_resetveshi(playerid);
-			 	else if(fpick == 20) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете продать рыбу в бухте [ Y >> GPS >> Работа >> Рыболов ]\n\n{ff9000}Или приготовить на костре и употребить в качестве еды [ Купите уголь и зажигалку в супермаркете ]","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 13) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’РµСЂС‘РІРєР° РЅСѓР¶РЅР° РґР»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ РєРѕРіРѕ-РЅРёР±СѓРґСЊ СЃРІСЏР·Р°С‚СЊ [ /tie ]","*",""), i_resetveshi(playerid);
+			 	//else if(fpick == 15) // РЇР” (РџСѓСЃС‚РѕРµ Р—РЅР°С‡РµРЅРёРµ)
+			 	else if(fpick == 16) return format(string, sizeof(string), "%d", inva), cmd_smoke(playerid, string), i_resetveshi(playerid); // РЎРёРіР°СЂРµС‚С‹
+			 	else if(fpick == 17) return cmd_usearm(playerid), i_resetveshi(playerid); // Р‘СЂРѕРЅРµР¶РёР»РµС‚
+			 	else if(fpick == 18) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РќР°Р¶РёРІРєР° РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂС‹Р±Р°Р»РєРё [ Y >> GPS >> Р Р°Р±РѕС‚Р° >> Р С‹Р±РѕР»РѕРІ ]","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 19) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћС‚РјС‹С‡РєРё РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ РґР»СЏ РІР·Р»РѕРјР° Р·Р°РјРєРѕРІ Рё РґРІРµСЂРµР№ [ ALT Сѓ РґРІРµСЂРµР№ ]","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 20) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕРґР°С‚СЊ СЂС‹Р±Сѓ РІ Р±СѓС…С‚Рµ [ Y >> GPS >> Р Р°Р±РѕС‚Р° >> Р С‹Р±РѕР»РѕРІ ]\n\n{ff9000}РР»Рё РїСЂРёРіРѕС‚РѕРІРёС‚СЊ РЅР° РєРѕСЃС‚СЂРµ Рё СѓРїРѕС‚СЂРµР±РёС‚СЊ РІ РєР°С‡РµСЃС‚РІРµ РµРґС‹ [ РљСѓРїРёС‚Рµ СѓРіРѕР»СЊ Рё Р·Р°Р¶РёРіР°Р»РєСѓ РІ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ ]","*",""), i_resetveshi(playerid);
 			 	else if(fpick == 21) return SettingTransmitter(playerid), i_resetveshi(playerid);
-			 	else if(fpick == 22) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете продать мясо в лавке лесника [ Y >> GPS >> Работа >> Охота ]\n\n{ff9000}Или приготовить на костре и употребить в качестве еды [ Купите уголь и зажигалку в супермаркете ]","*",""), i_resetveshi(playerid);
-			 	else if(fpick == 23) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете надеть мешок на голову другого игрока [ /bag ]","*",""), i_resetveshi(playerid);
-			 	else if(fpick == 24) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Шашка таксиста используется для работы в такси {444444}[ /gotaxi в транспорте ]","*",""), i_resetveshi(playerid);
-			 	//else if(fpick == 25) // Деньги очкую добавлять в инвентарь
-			 	else if(fpick == 26) return ShowSmartfon(playerid); // Смартфон
-			 	else if(fpick == 31) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_ydo(playerid); // Удочка
-			 	else if(fpick == 32) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_fonar(playerid); // Фонарик
-			 	else if(fpick == 38 || fpick == 122) return glass(playerid, fpick, inva), i_resetveshi(playerid); // Бокал
-			 	else if(fpick == 39) // Подарочная Упаковка
+			 	else if(fpick == 22) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРѕРґР°С‚СЊ РјСЏСЃРѕ РІ Р»Р°РІРєРµ Р»РµСЃРЅРёРєР° [ Y >> GPS >> Р Р°Р±РѕС‚Р° >> РћС…РѕС‚Р° ]\n\n{ff9000}РР»Рё РїСЂРёРіРѕС‚РѕРІРёС‚СЊ РЅР° РєРѕСЃС‚СЂРµ Рё СѓРїРѕС‚СЂРµР±РёС‚СЊ РІ РєР°С‡РµСЃС‚РІРµ РµРґС‹ [ РљСѓРїРёС‚Рµ СѓРіРѕР»СЊ Рё Р·Р°Р¶РёРіР°Р»РєСѓ РІ СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ ]","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 23) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹ РјРѕР¶РµС‚Рµ РЅР°РґРµС‚СЊ РјРµС€РѕРє РЅР° РіРѕР»РѕРІСѓ РґСЂСѓРіРѕРіРѕ РёРіСЂРѕРєР° [ /bag ]","*",""), i_resetveshi(playerid);
+			 	else if(fpick == 24) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РЁР°С€РєР° С‚Р°РєСЃРёСЃС‚Р° РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂР°Р±РѕС‚С‹ РІ С‚Р°РєСЃРё {444444}[ /gotaxi РІ С‚СЂР°РЅСЃРїРѕСЂС‚Рµ ]","*",""), i_resetveshi(playerid);
+			 	//else if(fpick == 25) // Р”РµРЅСЊРіРё РѕС‡РєСѓСЋ РґРѕР±Р°РІР»СЏС‚СЊ РІ РёРЅРІРµРЅС‚Р°СЂСЊ
+			 	else if(fpick == 26) return ShowSmartfon(playerid); // РЎРјР°СЂС‚С„РѕРЅ
+			 	else if(fpick == 31) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_ydo(playerid); // РЈРґРѕС‡РєР°
+			 	else if(fpick == 32) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_fonar(playerid); // Р¤РѕРЅР°СЂРёРє
+			 	else if(fpick == 38 || fpick == 122) return glass(playerid, fpick, inva), i_resetveshi(playerid); // Р‘РѕРєР°Р»
+			 	else if(fpick == 39) // РџРѕРґР°СЂРѕС‡РЅР°СЏ РЈРїР°РєРѕРІРєР°
 			 	{
-			 		if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня заняты руки.."), i_resetveshi(playerid);
+			 		if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ РјРµРЅСЏ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё.."), i_resetveshi(playerid);
 		 		 	Hold[playerid] = 4;
 		 		 	DP[1][playerid] = inva;
-		 		 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Выберите предмет, чтобы упаковать его в подарок","*","");
+		 		 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹Р±РµСЂРёС‚Рµ РїСЂРµРґРјРµС‚, С‡С‚РѕР±С‹ СѓРїР°РєРѕРІР°С‚СЊ РµРіРѕ РІ РїРѕРґР°СЂРѕРє","*","");
 				}
-			 	else if(fpick == 40) return format(string, sizeof(string), "%d", inva), cmd_firework(playerid, string), CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Фейерверк
-			 	else if(fpick == 41) // Бенгальская Свеча
+			 	else if(fpick == 40) return format(string, sizeof(string), "%d", inva), cmd_firework(playerid, string), CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Р¤РµР№РµСЂРІРµСЂРє
+			 	else if(fpick == 41) // Р‘РµРЅРіР°Р»СЊСЃРєР°СЏ РЎРІРµС‡Р°
 			 	{
 			 		if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7)
 			 		{
 			 			i_resetveshi(playerid);
-			 			if(Piss[playerid] == 7) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня в руке уже есть бенгальская свеча");
-			 			if(Piss[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я сейчас не могу [ Справляю нужду или моюсь ]");
-			 			if(Hold[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня заняты руки..");
+			 			if(Piss[playerid] == 7) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ РјРµРЅСЏ РІ СЂСѓРєРµ СѓР¶Рµ РµСЃС‚СЊ Р±РµРЅРіР°Р»СЊСЃРєР°СЏ СЃРІРµС‡Р°");
+			 			if(Piss[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ СЃРµР№С‡Р°СЃ РЅРµ РјРѕРіСѓ [ РЎРїСЂР°РІР»СЏСЋ РЅСѓР¶РґСѓ РёР»Рё РјРѕСЋСЃСЊ ]");
+			 			if(Hold[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЈ РјРµРЅСЏ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё..");
 			 		}
 				 	RemovePlayerAttachedObject(playerid,1);
 		   			RemovePlayerAttachedObject(playerid,2);
 			 		Piss[playerid] = 7;
 			 		PissTime[playerid] = 30;
-			 		if(PlayerInfo[playerid][pSex] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я зажёг бенгальскую свечу {ff9000}[ 30 секунд ]");
-					else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я зажгла бенгальскую свечу {ff9000}[ 30 секунд ]");
-					SetPlayerChatBubble(playerid,"достаёт и зажигает бенгальскую свечу",COLOR_PURPLE,20.0,3000);
-					SetPlayerAttachedObject(playerid, 1, 18717, 5, 0.126999, 0.222999, 1.338000, 173.000289, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // огонёк
-					SetPlayerAttachedObject(playerid, 2, 18644, 5, 0.117999, 0.034000, -0.001000, 0.000000, -1.699997, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // стержень
+			 		if(PlayerInfo[playerid][pSex] == 1) SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ Р·Р°Р¶С‘Рі Р±РµРЅРіР°Р»СЊСЃРєСѓСЋ СЃРІРµС‡Сѓ {ff9000}[ 30 СЃРµРєСѓРЅРґ ]");
+					else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ Р·Р°Р¶РіР»Р° Р±РµРЅРіР°Р»СЊСЃРєСѓСЋ СЃРІРµС‡Сѓ {ff9000}[ 30 СЃРµРєСѓРЅРґ ]");
+					SetPlayerChatBubble(playerid,"РґРѕСЃС‚Р°С‘С‚ Рё Р·Р°Р¶РёРіР°РµС‚ Р±РµРЅРіР°Р»СЊСЃРєСѓСЋ СЃРІРµС‡Сѓ",COLOR_PURPLE,20.0,3000);
+					SetPlayerAttachedObject(playerid, 1, 18717, 5, 0.126999, 0.222999, 1.338000, 173.000289, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // РѕРіРѕРЅС‘Рє
+					SetPlayerAttachedObject(playerid, 2, 18644, 5, 0.117999, 0.034000, -0.001000, 0.000000, -1.699997, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0); // СЃС‚РµСЂР¶РµРЅСЊ
 					TakeInvent(playerid, fpick, 1, thingType, inva);
 					if(PlayerInfo[playerid][pAchieve][115] == 0) AchievePlayer(playerid, 115, 1);
 				}
-				else if(fpick == 42) return notebook(playerid, inva), i_resetveshi(playerid); // Ноутбук
+				else if(fpick == 42) return notebook(playerid, inva), i_resetveshi(playerid); // РќРѕСѓС‚Р±СѓРє
 			 	else if(fpick == 43)
 			 	{
-			 		if(fquan <= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мой электрошокер разряжен");
+			 		if(fquan <= 1) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РњРѕР№ СЌР»РµРєС‚СЂРѕС€РѕРєРµСЂ СЂР°Р·СЂСЏР¶РµРЅ");
 					if(!IsACop(playerid) && PlayerInfo[playerid][pLeader] != 7 && PlayerInfo[playerid][pMember] != 7
-					&& PlayerInfo[playerid][pLeader] != 4 && PlayerInfo[playerid][pMember] != 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
-			 		CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_tazer(playerid); // Электрошокер
+					&& PlayerInfo[playerid][pLeader] != 4 && PlayerInfo[playerid][pMember] != 4) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ СЃРѕС‚СЂСѓРґРЅРёРє РїСЂР°РІРѕРѕС…СЂР°РЅРёС‚РµР»СЊРЅС‹С… РѕСЂРіР°РЅРѕРІ");
+			 		CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_tazer(playerid); // Р­Р»РµРєС‚СЂРѕС€РѕРєРµСЂ
 			 		return 1;
 		 		}
-		 		else if(fpick == 44) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_shovel(playerid); // Лопата
-		 		else if(fpick == 45) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_seamap(playerid); // Карта Моряка
-		 		else if(fpick == 46) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать морскую звезду на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Морская Звезда
-		 		else if(fpick == 47) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать ракушку на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
-		 		else if(fpick == 48) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_boat(playerid); // Надувная Лодка
-		 		else if(fpick == 49) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать сундук с сокровищами на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
-		 		else if(fpick == 50) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_trap(playerid); // Ловушка для Акул
+		 		else if(fpick == 44) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_shovel(playerid); // Р›РѕРїР°С‚Р°
+		 		else if(fpick == 45) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_seamap(playerid); // РљР°СЂС‚Р° РњРѕСЂСЏРєР°
+		 		else if(fpick == 46) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ РјРѕСЂСЃРєСѓСЋ Р·РІРµР·РґСѓ РЅР° СЂС‹Р±Р°С†РєРѕР№ Р±СѓС…С‚Рµ {ff9000}[ Y >> GPS >> Р Р°Р±РѕС‚Р° >> Р С‹Р±Р°Р»РѕРІ ]"), i_resetveshi(playerid); // РњРѕСЂСЃРєР°СЏ Р—РІРµР·РґР°
+		 		else if(fpick == 47) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ СЂР°РєСѓС€РєСѓ РЅР° СЂС‹Р±Р°С†РєРѕР№ Р±СѓС…С‚Рµ {ff9000}[ Y >> GPS >> Р Р°Р±РѕС‚Р° >> Р С‹Р±Р°Р»РѕРІ ]"), i_resetveshi(playerid); // Р Р°РєСѓС€РєР°
+		 		else if(fpick == 48) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_boat(playerid); // РќР°РґСѓРІРЅР°СЏ Р›РѕРґРєР°
+		 		else if(fpick == 49) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ СЃСѓРЅРґСѓРє СЃ СЃРѕРєСЂРѕРІРёС‰Р°РјРё РЅР° СЂС‹Р±Р°С†РєРѕР№ Р±СѓС…С‚Рµ {ff9000}[ Y >> GPS >> Р Р°Р±РѕС‚Р° >> Р С‹Р±Р°Р»РѕРІ ]"), i_resetveshi(playerid); // Р Р°РєСѓС€РєР°
+		 		else if(fpick == 50) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_trap(playerid); // Р›РѕРІСѓС€РєР° РґР»СЏ РђРєСѓР»
 		 		else if(fpick == 51)
 			 	{
 			 	    i_resetveshi(playerid);
@@ -2362,61 +2362,61 @@ stock player_tile(playerid, inva)
 					|| IsPlayerInRangeOfPoint(playerid,3.0,1582.8757,1423.6699,10.8726) || IsPlayerInRangeOfPoint(playerid,3.0,1578.5564,1423.7529,10.8726) || IsPlayerInRangeOfPoint(playerid,3.0,1574.1172,1423.6882,10.8726))
 			 	    {
 			 	        if(NoCompleteQuest(playerid, 0)) dokaerols(playerid);
-			 	        else ErrorMessage(playerid, "{FF6347}Вы уже прошли паспортный контроль");
+			 	        else ErrorMessage(playerid, "{FF6347}Р’С‹ СѓР¶Рµ РїСЂРѕС€Р»Рё РїР°СЃРїРѕСЂС‚РЅС‹Р№ РєРѕРЅС‚СЂРѕР»СЊ");
 			 	        return 1;
 			 	    }
-				 	ShowDialog(playerid,1069,DIALOG_STYLE_INPUT,"{ff9000}Паспорт","\n{cccccc}Введите {ff9000}ID игрока{cccccc}, чтобы показать ему {ff9000}паспорт\n","Принять","Отмена"); // Паспорт
+				 	ShowDialog(playerid,1069,DIALOG_STYLE_INPUT,"{ff9000}РџР°СЃРїРѕСЂС‚","\n{cccccc}Р’РІРµРґРёС‚Рµ {ff9000}ID РёРіСЂРѕРєР°{cccccc}, С‡С‚РѕР±С‹ РїРѕРєР°Р·Р°С‚СЊ РµРјСѓ {ff9000}РїР°СЃРїРѕСЂС‚\n","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°"); // РџР°СЃРїРѕСЂС‚
 				 	return 1;
 			 	}
-		 		else if(fpick == 52) return format(string, sizeof(string), "%d", inva), cmd_campfire(playerid, string), i_resetveshi(playerid); // Уголь
-		 		else if(fpick == 53) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Зажигалка нужна для розжига костра и курения"), i_resetveshi(playerid); // Зажигалка
-		 		else if(fpick == 54) return format(string, sizeof(string), "%d", inva), cmd_eatmeat(playerid, string), i_resetveshi(playerid); // Жареное Мясо
-		 		else if(fpick == 55) return format(string, sizeof(string), "%d", inva), cmd_eatfish(playerid, string), i_resetveshi(playerid); // Жареная Рыба
-		 		else if(fpick == 60) return cmd_thing(playerid), i_resetveshi(playerid); // Палладий
-		 		else if(fpick == 61) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), gelium(playerid); // Гелий 3
-		 		else if(fpick == 62) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Журнал нужен для увеличения скорости онанизма"), i_resetveshi(playerid); // PlayBoy
-		 		else if(fpick == 63) // Мед. карта
+		 		else if(fpick == 52) return format(string, sizeof(string), "%d", inva), cmd_campfire(playerid, string), i_resetveshi(playerid); // РЈРіРѕР»СЊ
+		 		else if(fpick == 53) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°Р¶РёРіР°Р»РєР° РЅСѓР¶РЅР° РґР»СЏ СЂРѕР·Р¶РёРіР° РєРѕСЃС‚СЂР° Рё РєСѓСЂРµРЅРёСЏ"), i_resetveshi(playerid); // Р—Р°Р¶РёРіР°Р»РєР°
+		 		else if(fpick == 54) return format(string, sizeof(string), "%d", inva), cmd_eatmeat(playerid, string), i_resetveshi(playerid); // Р–Р°СЂРµРЅРѕРµ РњСЏСЃРѕ
+		 		else if(fpick == 55) return format(string, sizeof(string), "%d", inva), cmd_eatfish(playerid, string), i_resetveshi(playerid); // Р–Р°СЂРµРЅР°СЏ Р С‹Р±Р°
+		 		else if(fpick == 60) return cmd_thing(playerid), i_resetveshi(playerid); // РџР°Р»Р»Р°РґРёР№
+		 		else if(fpick == 61) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), gelium(playerid); // Р“РµР»РёР№ 3
+		 		else if(fpick == 62) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р–СѓСЂРЅР°Р» РЅСѓР¶РµРЅ РґР»СЏ СѓРІРµР»РёС‡РµРЅРёСЏ СЃРєРѕСЂРѕСЃС‚Рё РѕРЅР°РЅРёР·РјР°"), i_resetveshi(playerid); // PlayBoy
+		 		else if(fpick == 63) // РњРµРґ. РєР°СЂС‚Р°
 			 	{
-			 		if(GetPlayerInterior(playerid) == 5) ShowDialog(playerid,1129,DIALOG_STYLE_INPUT,"{ff9000}Мед Карта","\n{cccccc}Введите {ff9000}ID игрока{cccccc}, чтобы показать ему {ff9000}мед. карту\n","Принять","Отмена"), i_resetveshi(playerid);
+			 		if(GetPlayerInterior(playerid) == 5) ShowDialog(playerid,1129,DIALOG_STYLE_INPUT,"{ff9000}РњРµРґ РљР°СЂС‚Р°","\n{cccccc}Р’РІРµРґРёС‚Рµ {ff9000}ID РёРіСЂРѕРєР°{cccccc}, С‡С‚РѕР±С‹ РїРѕРєР°Р·Р°С‚СЊ РµРјСѓ {ff9000}РјРµРґ. РєР°СЂС‚Сѓ\n","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°"), i_resetveshi(playerid);
 			 		else return format(string, sizeof(string), "%d", playerid), cmd_med(playerid, string), i_resetveshi(playerid);
 		 		}
-		 		else if(fpick == 70) return format(string, sizeof(string), "%d", inva), cmd_bandage(playerid, string), i_resetveshi(playerid); // Бинт
-		 		else if(fpick == 71) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Презервативы нужны для безопасного секса [ /sex ]"), i_resetveshi(playerid);
-		 		else if(fpick >= 72 && fpick <= 87) format(string, sizeof(string), "%d", fpick-71), cmd_remedy(playerid, string), i_resetveshi(playerid); // Лекарства
-		 		else if(fpick == 88) return seeds(playerid, 88), i_resetveshi(playerid); // Семена травы
-		 		else if(fpick == 89) return format(string, sizeof(string), "%d", inva), cmd_eatpotato(playerid, string), i_resetveshi(playerid); // Радиоактивная Картошка
-		 		else if(fpick == 90) return cmd_mount(playerid), i_resetveshi(playerid); // Бомба
-		 		else if(fpick == 91) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), format(string, sizeof(string), "%d", inva), cmd_riches(playerid, string); // Карта Сокровищ
-		 		else if(fpick == 92) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать древнюю вазу на археологических раскопках"), i_resetveshi(playerid);
-		 		else if(fpick == 93) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать урну с прахом на археологических раскопках"), i_resetveshi(playerid);
-		 		else if(fpick == 94) return DP[0][playerid] = inva, ShowDialog(playerid,1153,DIALOG_STYLE_MSGBOX,"{ff9000}Золото","{99ff66}Вы уверены, что хотите обменять золото на {ff9000}Donate Валюту?\n\n{ffcc00}[ 1 Слиток = 8 Gold ]","Да","Нет"), i_resetveshi(playerid);
-		 		else if(fpick == 95) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать статуэтку на археологических раскопках"), i_resetveshi(playerid);
-		 		else if(fpick == 96) return format(string, sizeof(string), "%d", inva), cmd_bloodvampire(playerid, string), i_resetveshi(playerid); // Бокал с кровью вампира
-		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // Кухонный нож
-		 		else if(fpick == 98) return format(string, sizeof(string), "%d", inva), cmd_useblood(playerid, string), i_resetveshi(playerid); // Бокал с обычной кровью
+		 		else if(fpick == 70) return format(string, sizeof(string), "%d", inva), cmd_bandage(playerid, string), i_resetveshi(playerid); // Р‘РёРЅС‚
+		 		else if(fpick == 71) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂРµР·РµСЂРІР°С‚РёРІС‹ РЅСѓР¶РЅС‹ РґР»СЏ Р±РµР·РѕРїР°СЃРЅРѕРіРѕ СЃРµРєСЃР° [ /sex ]"), i_resetveshi(playerid);
+		 		else if(fpick >= 72 && fpick <= 87) format(string, sizeof(string), "%d", fpick-71), cmd_remedy(playerid, string), i_resetveshi(playerid); // Р›РµРєР°СЂСЃС‚РІР°
+		 		else if(fpick == 88) return seeds(playerid, 88), i_resetveshi(playerid); // РЎРµРјРµРЅР° С‚СЂР°РІС‹
+		 		else if(fpick == 89) return format(string, sizeof(string), "%d", inva), cmd_eatpotato(playerid, string), i_resetveshi(playerid); // Р Р°РґРёРѕР°РєС‚РёРІРЅР°СЏ РљР°СЂС‚РѕС€РєР°
+		 		else if(fpick == 90) return cmd_mount(playerid), i_resetveshi(playerid); // Р‘РѕРјР±Р°
+		 		else if(fpick == 91) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), format(string, sizeof(string), "%d", inva), cmd_riches(playerid, string); // РљР°СЂС‚Р° РЎРѕРєСЂРѕРІРёС‰
+		 		else if(fpick == 92) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ РґСЂРµРІРЅСЋСЋ РІР°Р·Сѓ РЅР° Р°СЂС…РµРѕР»РѕРіРёС‡РµСЃРєРёС… СЂР°СЃРєРѕРїРєР°С…"), i_resetveshi(playerid);
+		 		else if(fpick == 93) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ СѓСЂРЅСѓ СЃ РїСЂР°С…РѕРј РЅР° Р°СЂС…РµРѕР»РѕРіРёС‡РµСЃРєРёС… СЂР°СЃРєРѕРїРєР°С…"), i_resetveshi(playerid);
+		 		else if(fpick == 94) return DP[0][playerid] = inva, ShowDialog(playerid,1153,DIALOG_STYLE_MSGBOX,"{ff9000}Р—РѕР»РѕС‚Рѕ","{99ff66}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РѕР±РјРµРЅСЏС‚СЊ Р·РѕР»РѕС‚Рѕ РЅР° {ff9000}Donate Р’Р°Р»СЋС‚Сѓ?\n\n{ffcc00}[ 1 РЎР»РёС‚РѕРє = 8 Gold ]","Р”Р°","РќРµС‚"), i_resetveshi(playerid);
+		 		else if(fpick == 95) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РјРѕРіСѓ РїСЂРѕРґР°С‚СЊ СЃС‚Р°С‚СѓСЌС‚РєСѓ РЅР° Р°СЂС…РµРѕР»РѕРіРёС‡РµСЃРєРёС… СЂР°СЃРєРѕРїРєР°С…"), i_resetveshi(playerid);
+		 		else if(fpick == 96) return format(string, sizeof(string), "%d", inva), cmd_bloodvampire(playerid, string), i_resetveshi(playerid); // Р‘РѕРєР°Р» СЃ РєСЂРѕРІСЊСЋ РІР°РјРїРёСЂР°
+		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // РљСѓС…РѕРЅРЅС‹Р№ РЅРѕР¶
+		 		else if(fpick == 98) return format(string, sizeof(string), "%d", inva), cmd_useblood(playerid, string), i_resetveshi(playerid); // Р‘РѕРєР°Р» СЃ РѕР±С‹С‡РЅРѕР№ РєСЂРѕРІСЊСЋ
 		 		
-				/*else if(fpick == 99) return format(string, sizeof(string), "%d", inva), cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Банан
-		 		else if(fpick == 100) return format(string, sizeof(string), "%d", inva), cmd_eatapple(playerid, string), i_resetveshi(playerid); // Яблоко
-		 		else if(fpick == 101) return format(string, sizeof(string), "%d", inva), cmd_eatorange(playerid, string), i_resetveshi(playerid); // Апельсин
-		 		else if(fpick == 102) return format(string, sizeof(string), "%d", inva), cmd_eatmilk(playerid, string), i_resetveshi(playerid); // Молоко
-		 		else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Тыкву можно продать в здании фермы","*",""), i_resetveshi(playerid); // Тыква
-		 		else if(fpick == 104) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Картошку можно продать в здании фермы","*",""), i_resetveshi(playerid); // Картошка
-		 		else if(fpick == 105) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Томат можно продать в здании фермы","*",""), i_resetveshi(playerid); // Томат
+				/*else if(fpick == 99) return format(string, sizeof(string), "%d", inva), cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Р‘Р°РЅР°РЅ
+		 		else if(fpick == 100) return format(string, sizeof(string), "%d", inva), cmd_eatapple(playerid, string), i_resetveshi(playerid); // РЇР±Р»РѕРєРѕ
+		 		else if(fpick == 101) return format(string, sizeof(string), "%d", inva), cmd_eatorange(playerid, string), i_resetveshi(playerid); // РђРїРµР»СЊСЃРёРЅ
+		 		else if(fpick == 102) return format(string, sizeof(string), "%d", inva), cmd_eatmilk(playerid, string), i_resetveshi(playerid); // РњРѕР»РѕРєРѕ
+		 		else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РўС‹РєРІСѓ РјРѕР¶РЅРѕ РїСЂРѕРґР°С‚СЊ РІ Р·РґР°РЅРёРё С„РµСЂРјС‹","*",""), i_resetveshi(playerid); // РўС‹РєРІР°
+		 		else if(fpick == 104) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РљР°СЂС‚РѕС€РєСѓ РјРѕР¶РЅРѕ РїСЂРѕРґР°С‚СЊ РІ Р·РґР°РЅРёРё С„РµСЂРјС‹","*",""), i_resetveshi(playerid); // РљР°СЂС‚РѕС€РєР°
+		 		else if(fpick == 105) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РўРѕРјР°С‚ РјРѕР¶РЅРѕ РїСЂРѕРґР°С‚СЊ РІ Р·РґР°РЅРёРё С„РµСЂРјС‹","*",""), i_resetveshi(playerid); // РўРѕРјР°С‚
 				*/
-		 		//else if(fpick == 106) return seeds(playerid, 106), i_resetveshi(playerid); // Удобрение
-		 		else if(fpick == 107) return format(string, sizeof(string), "%d", inva), cmd_bullsblood(playerid, string), i_resetveshi(playerid); // Бычья Кровь
-		 		//else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // Семена тыквы
-		 		//else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // Семена томатов
-		 		//else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Рассада картошки
+		 		//else if(fpick == 106) return seeds(playerid, 106), i_resetveshi(playerid); // РЈРґРѕР±СЂРµРЅРёРµ
+		 		else if(fpick == 107) return format(string, sizeof(string), "%d", inva), cmd_bullsblood(playerid, string), i_resetveshi(playerid); // Р‘С‹С‡СЊСЏ РљСЂРѕРІСЊ
+		 		//else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // РЎРµРјРµРЅР° С‚С‹РєРІС‹
+		 		//else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // РЎРµРјРµРЅР° С‚РѕРјР°С‚РѕРІ
+		 		//else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Р Р°СЃСЃР°РґР° РєР°СЂС‚РѕС€РєРё
 		 		else if(fpick == 111)
 			 	{
-			 		ShowDialog(playerid,1207,DIALOG_STYLE_INPUT,"{ff9000}Игральные Кости","\n{cccccc}Введите {99ff66}сумму{cccccc}, на которую будете играть с другим игроком [1 - 10кк]\n\n{FF6347}Внимание!\nЕсли вы договоритесь с кем-либо играть на более крупные суммы -\nадминистрация не вмешается в случае если вас обманут\nНе рекомендуется выходить за рамки ограничений","Принять","Отмена"), i_resetveshi(playerid);
+			 		ShowDialog(playerid,1207,DIALOG_STYLE_INPUT,"{ff9000}РРіСЂР°Р»СЊРЅС‹Рµ РљРѕСЃС‚Рё","\n{cccccc}Р’РІРµРґРёС‚Рµ {99ff66}СЃСѓРјРјСѓ{cccccc}, РЅР° РєРѕС‚РѕСЂСѓСЋ Р±СѓРґРµС‚Рµ РёРіСЂР°С‚СЊ СЃ РґСЂСѓРіРёРј РёРіСЂРѕРєРѕРј [1 - 10РєРє]\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ!\nР•СЃР»Рё РІС‹ РґРѕРіРѕРІРѕСЂРёС‚РµСЃСЊ СЃ РєРµРј-Р»РёР±Рѕ РёРіСЂР°С‚СЊ РЅР° Р±РѕР»РµРµ РєСЂСѓРїРЅС‹Рµ СЃСѓРјРјС‹ -\nР°РґРјРёРЅРёСЃС‚СЂР°С†РёСЏ РЅРµ РІРјРµС€Р°РµС‚СЃСЏ РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё РІР°СЃ РѕР±РјР°РЅСѓС‚\nРќРµ СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ РІС‹С…РѕРґРёС‚СЊ Р·Р° СЂР°РјРєРё РѕРіСЂР°РЅРёС‡РµРЅРёР№","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°"), i_resetveshi(playerid);
 			 		return 1;
 		 		}
 		 		else if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 121 || fpick == 124 || fpick == 125 ||
 				fpick == 139 || fpick == 164 || fpick == 172 || fpick == 166 || fpick == 173 || fpick == 1 || fpick == 54 ||
 				fpick == 55 || fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 || fpick == 104 || fpick == 126 ||
-				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
+				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // РђР»РєР°С€РєР° / Р•РґР°
 				else if(fpick == 144) return cmd_pdd(playerid), i_resetveshi(playerid);
 		 		else if(fpick >= 145 && fpick <= 155)
 			 	{
@@ -2428,172 +2428,172 @@ stock player_tile(playerid, inva)
 	        			Ash[playerid] = stat;
 	        			GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~300 cek", 1500, 3);
 	        			if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid);
-	        			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Дождитесь завершения обучения","*","");
+	        			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ РѕР±СѓС‡РµРЅРёСЏ","*","");
 					}
-				 	else ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Учебники и книги нужны для обучения навыкам\n\n{cccccc}1. Отправляйтесь в аудиторию образовательного центра\n2. Займите свободное место за партой - ALT\n3. Откройте инвентарь и выберите нужный учебник","*","");
+				 	else ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РЈС‡РµР±РЅРёРєРё Рё РєРЅРёРіРё РЅСѓР¶РЅС‹ РґР»СЏ РѕР±СѓС‡РµРЅРёСЏ РЅР°РІС‹РєР°Рј\n\n{cccccc}1. РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РІ Р°СѓРґРёС‚РѕСЂРёСЋ РѕР±СЂР°Р·РѕРІР°С‚РµР»СЊРЅРѕРіРѕ С†РµРЅС‚СЂР°\n2. Р—Р°Р№РјРёС‚Рµ СЃРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ Р·Р° РїР°СЂС‚РѕР№ - ALT\n3. РћС‚РєСЂРѕР№С‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ Рё РІС‹Р±РµСЂРёС‚Рµ РЅСѓР¶РЅС‹Р№ СѓС‡РµР±РЅРёРє","*","");
 				 	i_resetveshi(playerid);
 		 		    return 1;
 		 		}
-		 		else if(DocumentThing(fpick, thingType)) return format(string, sizeof(string), "{ffcc66}Документы: %s\n{cccccc}Показать документы другому игроку возможно только через паспорт [ /pas ]", friskName[fpick]), ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*",""), i_resetveshi(playerid);
-		 		else if(fpick >= 175 && fpick <= 177) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Домашняя сигнализация [ Поместите в инвентарь дома для установки ]","*",""), i_resetveshi(playerid);
-		 		else if(fpick == 181) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Изолента используется в крафтах [ Подробнее можно узнать на верстаке ]","*","");
-				else if(fpick == 168) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Мясо в упакове используется в крафтах [ Подробнее можно узнать на кухонной плите ]","*","");
+		 		else if(DocumentThing(fpick, thingType)) return format(string, sizeof(string), "{ffcc66}Р”РѕРєСѓРјРµРЅС‚С‹: %s\n{cccccc}РџРѕРєР°Р·Р°С‚СЊ РґРѕРєСѓРјРµРЅС‚С‹ РґСЂСѓРіРѕРјСѓ РёРіСЂРѕРєСѓ РІРѕР·РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ С‡РµСЂРµР· РїР°СЃРїРѕСЂС‚ [ /pas ]", friskName[fpick]), ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*",""), i_resetveshi(playerid);
+		 		else if(fpick >= 175 && fpick <= 177) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р”РѕРјР°С€РЅСЏСЏ СЃРёРіРЅР°Р»РёР·Р°С†РёСЏ [ РџРѕРјРµСЃС‚РёС‚Рµ РІ РёРЅРІРµРЅС‚Р°СЂСЊ РґРѕРјР° РґР»СЏ СѓСЃС‚Р°РЅРѕРІРєРё ]","*",""), i_resetveshi(playerid);
+		 		else if(fpick == 181) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РР·РѕР»РµРЅС‚Р° РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ РєСЂР°С„С‚Р°С… [ РџРѕРґСЂРѕР±РЅРµРµ РјРѕР¶РЅРѕ СѓР·РЅР°С‚СЊ РЅР° РІРµСЂСЃС‚Р°РєРµ ]","*","");
+				else if(fpick == 168) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РњСЏСЃРѕ РІ СѓРїР°РєРѕРІРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РІ РєСЂР°С„С‚Р°С… [ РџРѕРґСЂРѕР±РЅРµРµ РјРѕР¶РЅРѕ СѓР·РЅР°С‚СЊ РЅР° РєСѓС…РѕРЅРЅРѕР№ РїР»РёС‚Рµ ]","*","");
 				else if(fpick == 27)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
 			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 20,8mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Дробовикам","Принять","Отмена");
+						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 20,8mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\n\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}Р”СЂРѕР±РѕРІРёРєР°Рј","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках дробовика");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РґСЂРѕР±РѕРІРёРєР°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 28)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 			 		if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
 						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Пистолетам","Принять","Отмена");
+						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 11,43mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\n\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}РџРёСЃС‚РѕР»РµС‚Р°Рј","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета или пистолета пулемёта");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РїРёСЃС‚РѕР»РµС‚Р° РёР»Рё РїРёСЃС‚РѕР»РµС‚Р° РїСѓР»РµРјС‘С‚Р°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 29)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
 			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 5,45mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Автоматам","Принять","Отмена");
+						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 5,45mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\n\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}РђРІС‚РѕРјР°С‚Р°Рј","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках автомата");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… Р°РІС‚РѕРјР°С‚Р°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 30)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
 			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять патроны {ff9000}[ Ammo 45mm ] {cccccc}введите количество [ 1 - 1000 ]\n\nПатроны подходят к {ff9000}Винтовкам","Принять","Отмена");
+						ShowDialog(playerid,904,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 45mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\n\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}Р’РёРЅС‚РѕРІРєР°Рј","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках винтовки");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РІРёРЅС‚РѕРІРєРё");
 			   		return 1;
 			 	}
 			 	else if(fpick == 64)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
 			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 20,8mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Дробовикам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
+						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {FF6347}СЂР°Р·СЂС‹РІРЅС‹Рµ {cccccc}РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 20,8mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}Р”СЂРѕР±РѕРІРёРєР°Рј\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РЈСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РїР°С‚СЂРѕРЅС‹ РЅРµР»СЊР·СЏ Р±СѓРґРµС‚ РІРµСЂРЅСѓС‚СЊ РІ РёРЅРІРµРЅС‚Р°СЂСЊ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках дробовика");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РґСЂРѕР±РѕРІРёРєР°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 65)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
 						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 11,43mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Пистолетам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
+						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {FF6347}СЂР°Р·СЂС‹РІРЅС‹Рµ {cccccc}РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 11,43mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}РџРёСЃС‚РѕР»РµС‚Р°Рј\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РЈСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РїР°С‚СЂРѕРЅС‹ РЅРµР»СЊР·СЏ Р±СѓРґРµС‚ РІРµСЂРЅСѓС‚СЊ РІ РёРЅРІРµРЅС‚Р°СЂСЊ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках пистолета или пистолета пулемёта");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РїРёСЃС‚РѕР»РµС‚Р° РёР»Рё РїРёСЃС‚РѕР»РµС‚Р° РїСѓР»РµРјС‘С‚Р°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 66)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
 			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 5,45mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Автоматам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
+						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {FF6347}СЂР°Р·СЂС‹РІРЅС‹Рµ {cccccc}РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 5,45mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}РђРІС‚РѕРјР°С‚Р°Рј\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РЈСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РїР°С‚СЂРѕРЅС‹ РЅРµР»СЊР·СЏ Р±СѓРґРµС‚ РІРµСЂРЅСѓС‚СЊ РІ РёРЅРІРµРЅС‚Р°СЂСЊ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках автомата");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… Р°РІС‚РѕРјР°С‚Р°");
 			   		return 1;
 			 	}
 			 	else if(fpick == 67)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
 			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
 						DP[0][playerid] = fpick, DP[1][playerid] = inva;
-						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь","{cccccc}Чтобы взять {FF6347}разрывные {cccccc}патроны {ff9000}[ Ammo 45mm ] {cccccc}введите количество [ 1 - 1000 ]\nПатроны подходят к {ff9000}Винтовкам\n\n{FF6347}Внимание! Установленные патроны нельзя будет вернуть в инвентарь","Принять","Отмена");
+						ShowDialog(playerid,1134,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ","{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {FF6347}СЂР°Р·СЂС‹РІРЅС‹Рµ {cccccc}РїР°С‚СЂРѕРЅС‹ {ff9000}[ Ammo 45mm ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ 1 - 1000 ]\nРџР°С‚СЂРѕРЅС‹ РїРѕРґС…РѕРґСЏС‚ Рє {ff9000}Р’РёРЅС‚РѕРІРєР°Рј\n\n{FF6347}Р’РЅРёРјР°РЅРёРµ! РЈСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РїР°С‚СЂРѕРЅС‹ РЅРµР»СЊР·СЏ Р±СѓРґРµС‚ РІРµСЂРЅСѓС‚СЊ РІ РёРЅРІРµРЅС‚Р°СЂСЊ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 					}
-					else ErrorMessage(playerid, "{FF6347}У вас нет в руках винтовки");
+					else ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІ СЂСѓРєР°С… РІРёРЅС‚РѕРІРєРё");
 			   		return 1;
 			 	}
 
-				else if(fpick == 183) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта автомобилей\n\nПодойдите к капоту транспорта и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
-				else if(fpick == 190) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта мототранспорта\n\nПодойдите к транспорту и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
-				else if(fpick == 191) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта авиатранспорта\n\nПодойдите к транспорту и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
-				else if(fpick == 192) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта лодок и катеров\n\nПодойдите к транспорту и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
+				else if(fpick == 183) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р­С‚РѕС‚ СЂРµРј. РєРѕРјРїР»РµРєС‚ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂРµРјРѕРЅС‚Р° Р°РІС‚РѕРјРѕР±РёР»РµР№\n\nРџРѕРґРѕР№РґРёС‚Рµ Рє РєР°РїРѕС‚Сѓ С‚СЂР°РЅСЃРїРѕСЂС‚Р° Рё РѕС‚РєСЂРѕР№С‚Рµ РІРєР»Р°РґРєСѓ РІ РёРЅРІРµРЅС‚Р°СЂРµ, РґР»СЏ СЂРµРјРѕРЅС‚Р°","*",""), i_resetveshi(playerid);
+				else if(fpick == 190) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р­С‚РѕС‚ СЂРµРј. РєРѕРјРїР»РµРєС‚ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂРµРјРѕРЅС‚Р° РјРѕС‚РѕС‚СЂР°РЅСЃРїРѕСЂС‚Р°\n\nРџРѕРґРѕР№РґРёС‚Рµ Рє С‚СЂР°РЅСЃРїРѕСЂС‚Сѓ Рё РѕС‚РєСЂРѕР№С‚Рµ РІРєР»Р°РґРєСѓ РІ РёРЅРІРµРЅС‚Р°СЂРµ, РґР»СЏ СЂРµРјРѕРЅС‚Р°","*",""), i_resetveshi(playerid);
+				else if(fpick == 191) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р­С‚РѕС‚ СЂРµРј. РєРѕРјРїР»РµРєС‚ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂРµРјРѕРЅС‚Р° Р°РІРёР°С‚СЂР°РЅСЃРїРѕСЂС‚Р°\n\nРџРѕРґРѕР№РґРёС‚Рµ Рє С‚СЂР°РЅСЃРїРѕСЂС‚Сѓ Рё РѕС‚РєСЂРѕР№С‚Рµ РІРєР»Р°РґРєСѓ РІ РёРЅРІРµРЅС‚Р°СЂРµ, РґР»СЏ СЂРµРјРѕРЅС‚Р°","*",""), i_resetveshi(playerid);
+				else if(fpick == 192) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р­С‚РѕС‚ СЂРµРј. РєРѕРјРїР»РµРєС‚ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ СЂРµРјРѕРЅС‚Р° Р»РѕРґРѕРє Рё РєР°С‚РµСЂРѕРІ\n\nРџРѕРґРѕР№РґРёС‚Рµ Рє С‚СЂР°РЅСЃРїРѕСЂС‚Сѓ Рё РѕС‚РєСЂРѕР№С‚Рµ РІРєР»Р°РґРєСѓ РІ РёРЅРІРµРЅС‚Р°СЂРµ, РґР»СЏ СЂРµРјРѕРЅС‚Р°","*",""), i_resetveshi(playerid);
 				//else if(fpick == 189) {}
-				else if(fpick == 193) return format(string, sizeof(string), "%d", inva), cmd_namaz(playerid, string), i_resetveshi(playerid); // Намазлык
-				else if(fpick == 197) return cmd_spray(playerid), i_resetveshi(playerid); // балончик
-				else if(fpick == 180) return usedrugs2(playerid,1), i_resetveshi(playerid); // Таблетка защиты
-				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // Таблетка Атаки
+				else if(fpick == 193) return format(string, sizeof(string), "%d", inva), cmd_namaz(playerid, string), i_resetveshi(playerid); // РќР°РјР°Р·Р»С‹Рє
+				else if(fpick == 197) return cmd_spray(playerid), i_resetveshi(playerid); // Р±Р°Р»РѕРЅС‡РёРє
+				else if(fpick == 180) return usedrugs2(playerid,1), i_resetveshi(playerid); // РўР°Р±Р»РµС‚РєР° Р·Р°С‰РёС‚С‹
+				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // РўР°Р±Р»РµС‚РєР° РђС‚Р°РєРё
 
 	 		}
 	 		
-	 		else if(thingType == 2) // Аксессуары
+	 		else if(thingType == 2) // РђРєСЃРµСЃСЃСѓР°СЂС‹
 		    {
-		 	    if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете надеть аксессуар в форме"), i_resetveshi(playerid);
-		 		if(PlayerInfo[playerid][pOdet][0] != 0 && PlayerInfo[playerid][pOdet][1] != 0 && PlayerInfo[playerid][pOdet][2] != 0 && PlayerInfo[playerid][pOdet][3] != 0 && PlayerInfo[playerid][pOdet][4] != 0) return ErrorMessage(playerid, "{FF6347}Вы уже надели 5 аксессуаров [ Лимит 5 ]"), i_resetveshi(playerid);
+		 	    if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РЅР°РґРµС‚СЊ Р°РєСЃРµСЃСЃСѓР°СЂ РІ С„РѕСЂРјРµ"), i_resetveshi(playerid);
+		 		if(PlayerInfo[playerid][pOdet][0] != 0 && PlayerInfo[playerid][pOdet][1] != 0 && PlayerInfo[playerid][pOdet][2] != 0 && PlayerInfo[playerid][pOdet][3] != 0 && PlayerInfo[playerid][pOdet][4] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓР¶Рµ РЅР°РґРµР»Рё 5 Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ [ Р›РёРјРёС‚ 5 ]"), i_resetveshi(playerid);
 		 		if(fpick == 11712)
 		 		{
-				 	if(getillness(playerid, 18) >= 0) DP[0][playerid] = inva, ShowDialog(playerid,1152,DIALOG_STYLE_MSGBOX,"{ff9000}Распятие","{99ff66}Вы уверены, что хотите надеть Распятие?\n\n{ff9000}Вы вампир! Надев распятие вы излечитесь от вампиризма","Да","Нет");
+				 	if(getillness(playerid, 18) >= 0) DP[0][playerid] = inva, ShowDialog(playerid,1152,DIALOG_STYLE_MSGBOX,"{ff9000}Р Р°СЃРїСЏС‚РёРµ","{99ff66}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РЅР°РґРµС‚СЊ Р Р°СЃРїСЏС‚РёРµ?\n\n{ff9000}Р’С‹ РІР°РјРїРёСЂ! РќР°РґРµРІ СЂР°СЃРїСЏС‚РёРµ РІС‹ РёР·Р»РµС‡РёС‚РµСЃСЊ РѕС‚ РІР°РјРїРёСЂРёР·РјР°","Р”Р°","РќРµС‚");
 				 	else CreateOdet(playerid, fpick, inva);
 			 	}
 		 		else CreateOdet(playerid, fpick, inva);
 			}
 
-			else if(thingType == 5) // Транспорт
+			else if(thingType == 5) // РўСЂР°РЅСЃРїРѕСЂС‚
 			{
 				DP[0][playerid] = inva;
-				format(string,sizeof(string),"{cccccc}Вы уверены, что хотите распаковать {ff9000}%s ?", GetVehicleName(fpick));
-				ShowDialog(playerid,493,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
+				format(string,sizeof(string),"{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ СЂР°СЃРїР°РєРѕРІР°С‚СЊ {ff9000}%s ?", GetVehicleName(fpick));
+				ShowDialog(playerid,493,DIALOG_STYLE_MSGBOX,"{ff9000}РўСЂР°РЅСЃРїРѕСЂС‚",string,"Р”Р°","РќРµС‚");
 				return 1;
 			}
 			/*
-			1 позвоночник
-			2 головы
-			3 левого плеча
-			4 правое предплечье
-			5 левая рука
-			6 правая рука
-			7 левое бедро
-			8 правое бедро
-			9 левая нога
-			10 правая нога
-			11 правой голени
-			12 левой голени
-			13 левое предплечье
-			14 правое предплечье
-			15 левая ключица (плечо)
-			16 правая ключица (плечо)
-			17 шея
-			18 челюсть
+			1 РїРѕР·РІРѕРЅРѕС‡РЅРёРє
+			2 РіРѕР»РѕРІС‹
+			3 Р»РµРІРѕРіРѕ РїР»РµС‡Р°
+			4 РїСЂР°РІРѕРµ РїСЂРµРґРїР»РµС‡СЊРµ
+			5 Р»РµРІР°СЏ СЂСѓРєР°
+			6 РїСЂР°РІР°СЏ СЂСѓРєР°
+			7 Р»РµРІРѕРµ Р±РµРґСЂРѕ
+			8 РїСЂР°РІРѕРµ Р±РµРґСЂРѕ
+			9 Р»РµРІР°СЏ РЅРѕРіР°
+			10 РїСЂР°РІР°СЏ РЅРѕРіР°
+			11 РїСЂР°РІРѕР№ РіРѕР»РµРЅРё
+			12 Р»РµРІРѕР№ РіРѕР»РµРЅРё
+			13 Р»РµРІРѕРµ РїСЂРµРґРїР»РµС‡СЊРµ
+			14 РїСЂР°РІРѕРµ РїСЂРµРґРїР»РµС‡СЊРµ
+			15 Р»РµРІР°СЏ РєР»СЋС‡РёС†Р° (РїР»РµС‡Рѕ)
+			16 РїСЂР°РІР°СЏ РєР»СЋС‡РёС†Р° (РїР»РµС‡Рѕ)
+			17 С€РµСЏ
+			18 С‡РµР»СЋСЃС‚СЊ
 			*/
-			else if(thingType == 3) wear(playerid, fpick, inva), i_resetveshi(playerid); // Одежда
+			else if(thingType == 3) wear(playerid, fpick, inva), i_resetveshi(playerid); // РћРґРµР¶РґР°
 			
-			else if(thingType == 1) // Оружие
+			else if(thingType == 1) // РћСЂСѓР¶РёРµ
 		 	{
-		 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+		 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІР·СЏС‚СЊ РѕСЂСѓР¶РёРµ [ Р’СЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ ]");
 		 	    new weapon = fpick, ammo = PlayerInfo[playerid][pInvenQuan][inva];
 		 	    new sl = Protect_Slot(weapon);
-		 	    if(ProtectInfo[playerid][prWeapon][sl] >= 1 && ProtectInfo[playerid][prAmmo][sl] >= 1) return format(string, sizeof(string), "{FF6347}У вас в руках %s\n\n{cccccc}Это оружие одного типа",gunName[ProtectInfo[playerid][prWeapon][sl]]), ErrorMessage(playerid, string);
+		 	    if(ProtectInfo[playerid][prWeapon][sl] >= 1 && ProtectInfo[playerid][prAmmo][sl] >= 1) return format(string, sizeof(string), "{FF6347}РЈ РІР°СЃ РІ СЂСѓРєР°С… %s\n\n{cccccc}Р­С‚Рѕ РѕСЂСѓР¶РёРµ РѕРґРЅРѕРіРѕ С‚РёРїР°",gunName[ProtectInfo[playerid][prWeapon][sl]]), ErrorMessage(playerid, string);
 			 	if(weapon >= 2 && weapon <= 15)
 				{
 					Protect_GiveWeapons(playerid, weapon, ammo, fpara, PlayerInfo[playerid][pInvenQara][inva]);
@@ -2604,42 +2604,42 @@ stock player_tile(playerid, inva)
 		 	    }
 
 				new weaponType = WeaponAmmoType(weapon);
-				if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}Оружие испорчено"), i_resetveshi(playerid);
-		 	    if(weaponType == 1) // Дробовик (Ammo 20,8mm)
+				if(fpara <= 0) return ErrorMessage(playerid, "{FF6347}РћСЂСѓР¶РёРµ РёСЃРїРѕСЂС‡РµРЅРѕ"), i_resetveshi(playerid);
+		 	    if(weaponType == 1) // Р”СЂРѕР±РѕРІРёРє (Ammo 20,8mm)
 				{
-					if(get_invent4(playerid, 27, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к дробовику [ Ammo 20,8mm ]"), i_resetveshi(playerid);
+					if(get_invent4(playerid, 27, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РїР°С‚СЂРѕРЅРѕРІ Рє РґСЂРѕР±РѕРІРёРєСѓ [ Ammo 20,8mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
-					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
-					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+					format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}[ %s ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅРѕРІ",gunName[weapon]);
+					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 				}
-				else if(weaponType == 2 || weaponType == 3) // Пистолет или Пистолет-Пулемёт (Ammo 11,43mm)
+				else if(weaponType == 2 || weaponType == 3) // РџРёСЃС‚РѕР»РµС‚ РёР»Рё РџРёСЃС‚РѕР»РµС‚-РџСѓР»РµРјС‘С‚ (Ammo 11,43mm)
 				{
-					if(get_invent4(playerid, 28, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к пистолету [ Ammo 11,43mm ]"), i_resetveshi(playerid);
+					if(get_invent4(playerid, 28, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РїР°С‚СЂРѕРЅРѕРІ Рє РїРёСЃС‚РѕР»РµС‚Сѓ [ Ammo 11,43mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
-					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
-					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+					format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}[ %s ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅРѕРІ",gunName[weapon]);
+					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 				}
-				else if(weaponType == 4) // Автомат (Ammo 5,45mm)
+				else if(weaponType == 4) // РђРІС‚РѕРјР°С‚ (Ammo 5,45mm)
 				{
-					if(get_invent4(playerid, 29, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к автомату [ Ammo 5,45mm ]"), i_resetveshi(playerid);
+					if(get_invent4(playerid, 29, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РїР°С‚СЂРѕРЅРѕРІ Рє Р°РІС‚РѕРјР°С‚Сѓ [ Ammo 5,45mm ]"), i_resetveshi(playerid);
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
-					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
-					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+					format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}[ %s ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅРѕРІ",gunName[weapon]);
+					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 				}
-				else if(weaponType == 5) // Винтовка (Ammo 45mm)
+				else if(weaponType == 5) // Р’РёРЅС‚РѕРІРєР° (Ammo 45mm)
 				{
-					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к винтовке [ Ammo 45mm ]"), i_resetveshi(playerid);
+					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РїР°С‚СЂРѕРЅРѕРІ Рє РІРёРЅС‚РѕРІРєРµ [ Ammo 45mm ]"), i_resetveshi(playerid);
 					if(weapon == 34)
 					{
-						if(PlayerInfo[playerid][pLeader] != 8 && PlayerInfo[playerid][pMember] != 8 && PlayerInfo[playerid][pLeader] != 22 && PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SWAT"), i_resetveshi(playerid);
+						if(PlayerInfo[playerid][pLeader] != 8 && PlayerInfo[playerid][pMember] != 8 && PlayerInfo[playerid][pLeader] != 22 && PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЃРЅР°Р№РїРµСЂСЃРєСѓСЋ РІРёРЅС‚РѕРІРєСѓ\n{cccccc}РўРѕР»СЊРєРѕ РґР»СЏ ICA, SWAT"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
-					format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
-					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+					format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}[ %s ] {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅРѕРІ",gunName[weapon]);
+					ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}РРЅРІРµРЅС‚Р°СЂСЊ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 				}
 		 	}
 			OnlineInfo[playerid][oInventSelectLeft] = 9999;
@@ -2649,7 +2649,7 @@ stock player_tile(playerid, inva)
 	return 1;
 }
 
-stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки под тип открытого меню
+stock UpdateInventTwoBlock(playerid, type, stat) // РџРѕРґРіРѕРЅСЏРµРј С„РѕРЅ РїСЂР°РІРѕР№ РІРєР»Р°РґРєРё РїРѕРґ С‚РёРї РѕС‚РєСЂС‹С‚РѕРіРѕ РјРµРЅСЋ
 {
 	new Float:pos_vklad_x, Float:pos_vklad_y;
 	new Float:size_vklad_x, Float:size_vklad_y;
@@ -2659,15 +2659,15 @@ stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки
 	new Float:sized_y = PlayerInfo[playerid][pDrawSize_Y][6];
 	new Float:otstyp_y = 4.0+sized_y/8;
 
-	if(type == 0) // Все вкладки закрыты
+	if(type == 0) // Р’СЃРµ РІРєР»Р°РґРєРё Р·Р°РєСЂС‹С‚С‹
 	{
 		new Float:temp_size_x, Float:temp_size_y;
 		PlayerTextDrawGetTextSize(playerid, PlaNestTabs[2][playerid], temp_size_x, temp_size_y);
 		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_size_y + otstyp_y*2);
 	}
-	else if(type == 2 || type == 9) // Дом, Бизнес
+	else if(type == 2 || type == 9) // Р”РѕРј, Р‘РёР·РЅРµСЃ
 	{
-		if(stat == 0) // Без нижней кнопки
+		if(stat == 0) // Р‘РµР· РЅРёР¶РЅРµР№ РєРЅРѕРїРєРё
 		{
 			new Float:temp_pos_x, Float:temp_pos_y;
 			PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
@@ -2683,13 +2683,13 @@ stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки
 			PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y + temp_size_y + otstyp_y);
 		}
 	}
-	else if(type == 1 || type == 6) // Товары, Мои Товары
+	else if(type == 1 || type == 6) // РўРѕРІР°СЂС‹, РњРѕРё РўРѕРІР°СЂС‹
 	{
 		new Float:temp_pos_x, Float:temp_pos_y;
 		PlayerTextDrawGetPos(playerid, PlaInventDraw[4][playerid], temp_pos_x, temp_pos_y);
 		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y);
 	}
-	else if(type == 5) // Багажник
+	else if(type == 5) // Р‘Р°РіР°Р¶РЅРёРє
 	{
 		new Float:temp_pos_x, Float:temp_pos_y;
 		new Float:temp_size_x, Float:temp_size_y;
@@ -2698,7 +2698,7 @@ stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки
 
 		PlayerTextDrawTextSize(playerid, PlaInventDraw[5][playerid], size_vklad_x, temp_pos_y-pos_vklad_y + temp_size_y + otstyp_y);
 	}
-	else // Все остальные (В том числе капот и верстак)
+	else // Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ (Р’ С‚РѕРј С‡РёСЃР»Рµ РєР°РїРѕС‚ Рё РІРµСЂСЃС‚Р°Рє)
 	{
 		new Float:temp_pos_x, Float:temp_pos_y;
 		new Float:temp_size_x, Float:temp_size_y;

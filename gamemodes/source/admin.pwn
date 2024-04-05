@@ -545,8 +545,8 @@ CMD:readhit(playerid)
 CMD:rvanka(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(GetPVarInt(playerid,"Readrvanka") == 0) SetPVarInt(playerid,"Readrvanka",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {99ff66}Активирован");
-	else SetPVarInt(playerid,"Readrvanka",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {FF6347}Отключён");
+	if(GetPVarInt(playerid,"Readcheat") == 0) SetPVarInt(playerid,"Readcheat",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {99ff66}Активирован");
+	else SetPVarInt(playerid,"Readcheat",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {FF6347}Отключён");
   	return 1;
 }
 CMD:setbiz(playerid, const params[])

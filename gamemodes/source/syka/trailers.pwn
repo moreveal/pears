@@ -79,15 +79,18 @@ stock UnloadPlacedTrailer(id)
 {
     if (id < 0 || id > MAX_TRAILERS) return 0;
     if (!trailerInfo[id][tActive]) return 0;
-
-    new objects[1];
-    Streamer_GetNearbyItems(trailerInfo[id][tPos][0], trailerInfo[id][tPos][1], trailerInfo[id][tPos][2], STREAMER_TYPE_OBJECT, objects, .range = 0.05);
     
-    new trailer_obj = objects[0];
-    if (!IsValidDynamicObject(trailer_obj) || GetDynamicObjectModel(trailer_obj) != trailerInfo[id][tModel]) return 0;
-    DestroyDynamicObject(trailer_obj);
-    DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
-    DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
+    if(trailerInfo[id][tObject] > 0)
+    {
+        DestroyDynamicObject(trailerInfo[id][tObject]);
+        trailerInfo[id][tObject] = 0;
+    }
+    if(trailerInfo[id][tEnterPickup] != 0)
+    {
+        DestroyDynamic3DTextLabel(trailerInfo[id][t3DLabel]);
+        DestroyDynamicPickup(trailerInfo[id][tEnterPickup]);
+        trailerInfo[id][tEnterPickup] = 0;
+    }
 
     trailerInfo[id][tActive] = false;
     SavePlayerTrailerInfo(id);
@@ -142,18 +145,14 @@ public AttachTrailerToVehicleDelay(trailerid, vehicleid) { AttachTrailerToVehicl
 forward PlayerTrailerTimer(vehicleid, trailerid, tid);
 public PlayerTrailerTimer(vehicleid, trailerid, tid) {
     // Если либо машина, к которой прикреплен трейлер, либо невидимая машина, на которой висит объект исчезли
-    if (!IsValidVehicle(vehicleid) || !IsValidVehicle(trailerid)) {
-        // На случай, если уничтожилась только машина водителя, уничтожаем и трейлер
-        trailerInfo[tid][tVehicle] = 0;
-        if (GetVehicleModel(trailerid) == TRAILER_INVISIBLE_VEH_MODEL) DestroyPlayerTrailer(tid);
-
-        trailerInfo[tid][tAttached] = 0;
-        KillTimer(trailerInfo[tid][tTimerID]);
-        trailerInfo[tid][tTimerID] = 0;
+    if (!IsValidVehicle(vehicleid) || !IsValidVehicle(trailerid)) 
+    {
+        // Выгружаем из мира эту херабору
+        UnloadAttachedTrailer(tid);
         return 1;
     }
     
-    static Float: safe_health = 1000.0;
+    new Float:safe_health = MaxVehicleHealth(VehInfo[vehicleid][vModel]);
     if (GetVehicleTrailer(vehicleid) < 1) { // Если трейлер отцепился
         // Резко останавливаем машину водителя и сам трейлер (чтобы ничего не летало)
         SetVehicleSpeed(trailerid, 0), SetVehicleSpeed(vehicleid, 0);
@@ -164,7 +163,7 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
         GetVehiclePos(trailerid, trailer_pos[0], trailer_pos[1], trailer_pos[2]);
 
         // Ставим трейлеру максимальное HP
-        ACSetVehicleHealth(trailerid, 1000.0);
+        ACSetVehicleHealth(trailerid, 10000.0);
         
         // Если нет никаких препятствий для присоединения трейлера (высота, вода)
         new Float: depth, Float: vehicledepth;
@@ -398,7 +397,8 @@ stock DestroyPlayerTrailer(tid)
     if (trailerid > 0) 
     {
         if(trailerInfo[tid][tObject] > 0) DestroyDynamicObject(trailerInfo[tid][tObject]), trailerInfo[tid][tObject] = 0;
-        ACDestroyVehicle(trailerid); // Удаляем сам невидимый прицеп
+        if(IsValidVehicle(trailerid)) ACDestroyVehicle(trailerid); // Удаляем сам невидимый прицеп
+        trailerInfo[tid][tVehicle] = 0;
     }
 
     // Если известен id транспорта, к которому мы прикрепили трейлер
@@ -513,6 +513,7 @@ CMD:placetrailer(playerid) {
         if(IsPlayerInRangeOfPoint(playerid, 50.0, -547.4172, -1018.2808, 24.1529)) return ErrorMessage(playerid, "{FF6347}Нельзя установить трейлер на территории трейлерного парка");
         if(IsANotMoney(playerid)) return ErrorMessage(playerid, "{FF6347}Трейлеры запрещено устанавливать на территории городов");
         if(VehInfo[vehicleid][vEngine] == 1) return ErrorMessage(playerid, "{FF6347}Заглушите двигатель транспорта");
+        if(GetVehicleSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}Остановите транспорт\n{cccccc}Установить трейлер во время движения невозможно");
 
         // Уничтожаем таймер, возвращающий прицеп
         if(trailerInfo[tid][tTimerID] > 0) KillTimer(trailerInfo[tid][tTimerID]), trailerInfo[tid][tTimerID] = 0;
@@ -533,7 +534,8 @@ CMD:placetrailer(playerid) {
         VehInfo[vehicleid][vTrailerID] = 0;
 
         // Уничтожаем невидимый автомобиль, к которому прикреплен объект трейлера
-        ACDestroyVehicle(trailerid);
+        if(IsValidVehicle(trailerid)) ACDestroyVehicle(trailerid);
+        trailerInfo[tid][tVehicle] = 0;
 
         SavePlayerTrailerInfo(tid);
 

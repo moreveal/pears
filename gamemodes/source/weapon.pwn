@@ -1,11 +1,11 @@
 
-stock NoTempTakeWeapon(weaponid) // Оружие, которое не нужно временно отнимать
+stock NoTempTakeWeapon(weaponid) // РћСЂСѓР¶РёРµ, РєРѕС‚РѕСЂРѕРµ РЅРµ РЅСѓР¶РЅРѕ РІСЂРµРјРµРЅРЅРѕ РѕС‚РЅРёРјР°С‚СЊ
 {
-    if(weaponid == 23 // Пистолет с глушителем (Электрошокер)
+    if(weaponid == 23 // РџРёСЃС‚РѕР»РµС‚ СЃ РіР»СѓС€РёС‚РµР»РµРј (Р­Р»РµРєС‚СЂРѕС€РѕРєРµСЂ)
         || weaponid == 41 // Spray
-        || weaponid == 42 // Огнетушитель
+        || weaponid == 42 // РћРіРЅРµС‚СѓС€РёС‚РµР»СЊ
         || weaponid == 43 // Camera
-        || weaponid == 46) return 1; // Парашут
+        || weaponid == 46) return 1; // РџР°СЂР°С€СѓС‚
     return 0;
 }
  
@@ -43,7 +43,7 @@ stock GetPlayerWeaponProtect(playerid, weaponid, slot)
     return 0;
 }
 
-stock TempTake(playerid, stat) // Временно забираем оружие
+stock TempTake(playerid, stat) // Р’СЂРµРјРµРЅРЅРѕ Р·Р°Р±РёСЂР°РµРј РѕСЂСѓР¶РёРµ
 {
 	if(PlayerInfo[playerid][pBeret] == 0)
 	{
@@ -61,7 +61,7 @@ stock TempTake(playerid, stat) // Временно забираем оружие
             }
         }
         if(stat == 0) OnDuty[playerid] = 0;
-        Protect_DeleteGuns(playerid, stat);
+        Protect_TakeGuns(playerid, stat);
 
 		PlayerInfo[playerid][pBeret] = 1;
 		SetPlayerArmedWeapon(playerid, WEAPON:0);
@@ -72,16 +72,16 @@ stock TempTake(playerid, stat) // Временно забираем оружие
 	return 1;
 }
 
-stock TempGive(playerid) // Возвращаем временно лишённое оружие
+stock TempGive(playerid) // Р’РѕР·РІСЂР°С‰Р°РµРј РІСЂРµРјРµРЅРЅРѕ Р»РёС€С‘РЅРЅРѕРµ РѕСЂСѓР¶РёРµ
 {
-	if(PlayerInfo[playerid][pBeret] >= 1 // Есть временное лишение
-        && PlayerInfo[playerid][pJailed] == 0 // Не в заключении
-        && !Iamzz[playerid] // Не в зз
-        && MPGO[playerid] == 0 // Не на мп
-        && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
-        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) // Не за рулём
+	if(PlayerInfo[playerid][pBeret] >= 1 // Р•СЃС‚СЊ РІСЂРµРјРµРЅРЅРѕРµ Р»РёС€РµРЅРёРµ
+        && PlayerInfo[playerid][pJailed] == 0 // РќРµ РІ Р·Р°РєР»СЋС‡РµРЅРёРё
+        && !Iamzz[playerid] // РќРµ РІ Р·Р·
+        && MPGO[playerid] == 0 // РќРµ РЅР° РјРї
+        && PlayerInfo[playerid][pBkyrenie] <= 1 // РќРµ РІ РєРѕСЃРјРѕСЃРµ
+        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) // РќРµ Р·Р° СЂСѓР»С‘Рј
 	{
-		Protect_DeleteGuns(playerid, 1);
+		Protect_TakeGuns(playerid, 1);
 		for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
 		{
 			if(TempWeapon[playerid][i] > 0 && TempAmmo[playerid][i] > 0)
@@ -99,7 +99,7 @@ stock TempGive(playerid) // Возвращаем временно лишённое оружие
 	return 1;
 }
 
-// Новый сток загрузки оружия игрока
+// РќРѕРІС‹Р№ СЃС‚РѕРє Р·Р°РіСЂСѓР·РєРё РѕСЂСѓР¶РёСЏ РёРіСЂРѕРєР°
 stock OnPlayerLoadWeapon(playerid)
 {
 	new string[20];
@@ -116,7 +116,7 @@ stock OnPlayerLoadWeapon(playerid)
 
 			new JsonNode:node = JSON_INVALID_NODE;
 
-            if(PlayerInfo[playerid][pBeret] == 0) // Нет лишения
+            if(PlayerInfo[playerid][pBeret] == 0) // РќРµС‚ Р»РёС€РµРЅРёСЏ
             {
                 if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
                 {
@@ -147,12 +147,12 @@ stock OnPlayerLoadWeapon(playerid)
 
 stock SaveGun(playerid, bool:transaction = true)
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new i = 0; i < MAX_WEAPON_SLOTS; i++) SaveOneGun(playerid, i);
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }

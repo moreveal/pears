@@ -1,85 +1,85 @@
-#define COMPUTER_CLUB_GAMES_AMOUNT 1 // Количество существующих игр
-#define COMPUTER_CLUB_MAX_ROOMS 500 // Максимальное количество комнат для одной игры
-#define COMPUTER_CLUB_LOCATIONS_AMOUNT 4 // Количество существующих локаций (все игры вместе)
-#define COMPUTER_CLUB_MAX_GAME_LOCATIONS 10 // Максимальное количество локаций у одной игры
-#define COMPUTER_CLUB_MAX_LOCATION_SPAWNS 5 // Максимальное количество точек спавна на локации
-#define COMPUTER_CLUB_MIN_WORLD 8000 // Минимальный виртуальный мир клуба
-#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MIN_WORLD + (COMPUTER_CLUB_GAMES_AMOUNT + 1) * (COMPUTER_CLUB_MAX_ROOMS + 1) // Максимальный виртуальный мир клуба
+#define COMPUTER_CLUB_GAMES_AMOUNT 1 // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… РёРіСЂ
+#define COMPUTER_CLUB_MAX_ROOMS 500 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРЅР°С‚ РґР»СЏ РѕРґРЅРѕР№ РёРіСЂС‹
+#define COMPUTER_CLUB_LOCATIONS_AMOUNT 4 // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… Р»РѕРєР°С†РёР№ (РІСЃРµ РёРіСЂС‹ РІРјРµСЃС‚Рµ)
+#define COMPUTER_CLUB_MAX_GAME_LOCATIONS 10 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р»РѕРєР°С†РёР№ Сѓ РѕРґРЅРѕР№ РёРіСЂС‹
+#define COMPUTER_CLUB_MAX_LOCATION_SPAWNS 5 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РѕС‡РµРє СЃРїР°РІРЅР° РЅР° Р»РѕРєР°С†РёРё
+#define COMPUTER_CLUB_MIN_WORLD 8000 // РњРёРЅРёРјР°Р»СЊРЅС‹Р№ РІРёСЂС‚СѓР°Р»СЊРЅС‹Р№ РјРёСЂ РєР»СѓР±Р°
+#define COMPUTER_CLUB_MAX_WORLD COMPUTER_CLUB_MIN_WORLD + (COMPUTER_CLUB_GAMES_AMOUNT + 1) * (COMPUTER_CLUB_MAX_ROOMS + 1) // РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РІРёСЂС‚СѓР°Р»СЊРЅС‹Р№ РјРёСЂ РєР»СѓР±Р°
 
-#define COMPUTER_CLUB_MAX_TEAMS 2 // Максимальное количество команд (Создано только для удобства, поддержки 3+ команд нет)
-new Text: computer_club_TD[1]; // Компьютерный клуб
+#define COMPUTER_CLUB_MAX_TEAMS 2 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјР°РЅРґ (РЎРѕР·РґР°РЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ СѓРґРѕР±СЃС‚РІР°, РїРѕРґРґРµСЂР¶РєРё 3+ РєРѕРјР°РЅРґ РЅРµС‚)
+new Text: computer_club_TD[1]; // РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР±
 
 #define COMPUTER_CLUB_WARMUP_TD computer_club_TD[0]
 
 enum e_ComputerClubGames {
     COMPUTER_GAME_TDM, // TDM
-    COMPUTER_GAME_COPCHASE, // CopChase - погоня
-    COMPUTER_GAME_CARGORAIDS // CargoRaids - перехват груза
+    COMPUTER_GAME_COPCHASE, // CopChase - РїРѕРіРѕРЅСЏ
+    COMPUTER_GAME_CARGORAIDS // CargoRaids - РїРµСЂРµС…РІР°С‚ РіСЂСѓР·Р°
 };
 
 enum e_ComputerClubDisconnectReasons {
     COMPUTER_CLUB_D_REASON_SELF,
     COMPUTER_CLUB_D_REASON_KICKED,
     COMPUTER_CLUB_D_REASON_BANNED,
-    COMPUTER_CLUB_D_REASON_NO_BET // Нет суммы для ставки
+    COMPUTER_CLUB_D_REASON_NO_BET // РќРµС‚ СЃСѓРјРјС‹ РґР»СЏ СЃС‚Р°РІРєРё
 };
 
 enum e_ComputerClubWeaponSlotes {
-    COMPUTER_CLUB_WS_COLD, // Холодное оружие
-    COMPUTER_CLUB_WS_PISTOL, // Пистолеты
-    COMPUTER_CLUB_WS_SHOTGUN, // Дробовики
-    COMPUTER_CLUB_WS_SUBMACHINE, // Пистолет-пулемет
-    COMPUTER_CLUB_WS_ASSAULT, // Штурмовые винтовки
-    COMPUTER_CLUB_WS_SNIPER, // Снайперские винтовки
-    COMPUTER_CLUB_WS_HEAVY, // Тяжелые оружия
-    COMPUTER_CLUB_WS_GRENADE, // Гранаты
+    COMPUTER_CLUB_WS_COLD, // РҐРѕР»РѕРґРЅРѕРµ РѕСЂСѓР¶РёРµ
+    COMPUTER_CLUB_WS_PISTOL, // РџРёСЃС‚РѕР»РµС‚С‹
+    COMPUTER_CLUB_WS_SHOTGUN, // Р”СЂРѕР±РѕРІРёРєРё
+    COMPUTER_CLUB_WS_SUBMACHINE, // РџРёСЃС‚РѕР»РµС‚-РїСѓР»РµРјРµС‚
+    COMPUTER_CLUB_WS_ASSAULT, // РЁС‚СѓСЂРјРѕРІС‹Рµ РІРёРЅС‚РѕРІРєРё
+    COMPUTER_CLUB_WS_SNIPER, // РЎРЅР°Р№РїРµСЂСЃРєРёРµ РІРёРЅС‚РѕРІРєРё
+    COMPUTER_CLUB_WS_HEAVY, // РўСЏР¶РµР»С‹Рµ РѕСЂСѓР¶РёСЏ
+    COMPUTER_CLUB_WS_GRENADE, // Р“СЂР°РЅР°С‚С‹
 };
 
 enum e_ComputerClubLocationInfo {
-    ccliName[64], // Название
-    ccliInterior // Виртуальный мир, интерьер
+    ccliName[64], // РќР°Р·РІР°РЅРёРµ
+    ccliInterior // Р’РёСЂС‚СѓР°Р»СЊРЅС‹Р№ РјРёСЂ, РёРЅС‚РµСЂСЊРµСЂ
 };
 new computerClubLocationInfo[COMPUTER_CLUB_LOCATIONS_AMOUNT][e_ComputerClubLocationInfo] = {
-    {"TDM Локация 1", 0},
-    {"TDM Локация 2", 0},
-    {"Луна", 221},
-    {"Марс", 222}
+    {"TDM Р›РѕРєР°С†РёСЏ 1", 0},
+    {"TDM Р›РѕРєР°С†РёСЏ 2", 0},
+    {"Р›СѓРЅР°", 221},
+    {"РњР°СЂСЃ", 222}
 };
 
-// Информация о спавнах для каждой локации (порядок тот же, что и у локаций)
+// РРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРїР°РІРЅР°С… РґР»СЏ РєР°Р¶РґРѕР№ Р»РѕРєР°С†РёРё (РїРѕСЂСЏРґРѕРє С‚РѕС‚ Р¶Рµ, С‡С‚Рѕ Рё Сѓ Р»РѕРєР°С†РёР№)
 enum e_ComputerClubLocationSpawnInfo {
     Float: cclsPos[4], // X, Y, Z, A
-    cclsTeam, // Команда: 0 - любая / 1 и выше - ccpiTeam + 1
+    cclsTeam, // РљРѕРјР°РЅРґР°: 0 - Р»СЋР±Р°СЏ / 1 Рё РІС‹С€Рµ - ccpiTeam + 1
 }
 new computerClubLocationSpawn[COMPUTER_CLUB_LOCATIONS_AMOUNT][COMPUTER_CLUB_MAX_LOCATION_SPAWNS][e_ComputerClubLocationSpawnInfo] = {
-    // TDM Локация 1
+    // TDM Р›РѕРєР°С†РёСЏ 1
     {
-        { {1840.1737, -2493.8921, 13.5547, 90.0}, 1}, // 1 команда
-        { {1792.8868, -2493.9136, 13.5547, -90.0}, 2}, // 2 команда
+        { {1840.1737, -2493.8921, 13.5547, 90.0}, 1}, // 1 РєРѕРјР°РЅРґР°
+        { {1792.8868, -2493.9136, 13.5547, -90.0}, 2}, // 2 РєРѕРјР°РЅРґР°
         {},
         {},
         {}
     },
-    // TDM Локация 2
+    // TDM Р›РѕРєР°С†РёСЏ 2
     {
-        { {1158.5895, -2037.0967, 69.0078, -90.0}, 1}, // 1 команда
-        { {1193.9482, -2037.1539, 69.0078, 90.0}, 2}, // 2 команда
+        { {1158.5895, -2037.0967, 69.0078, -90.0}, 1}, // 1 РєРѕРјР°РЅРґР°
+        { {1193.9482, -2037.1539, 69.0078, 90.0}, 2}, // 2 РєРѕРјР°РЅРґР°
         {},
         {},
         {}
     },
-    // Луна
+    // Р›СѓРЅР°
     {
-        { {12.5819,2946.9397,957.2476,359.8550}, 1}, // 1 команда
-        { {19.6597,3038.2612,957.2476,180.9401}, 2}, // 2 команда
+        { {12.5819,2946.9397,957.2476,359.8550}, 1}, // 1 РєРѕРјР°РЅРґР°
+        { {19.6597,3038.2612,957.2476,180.9401}, 2}, // 2 РєРѕРјР°РЅРґР°
         {},
         {},
         {}
     },
-    // Марс
+    // РњР°СЂСЃ
     {
-        { {1437.2999,2449.1462,1457.2476,76.1354}, 1}, // 1 команда
-        { {1338.8302,2499.8142,1457.2399,273.2004}, 2}, // 2 команда
+        { {1437.2999,2449.1462,1457.2476,76.1354}, 1}, // 1 РєРѕРјР°РЅРґР°
+        { {1338.8302,2499.8142,1457.2399,273.2004}, 2}, // 2 РєРѕРјР°РЅРґР°
         {},
         {},
         {}
@@ -87,8 +87,8 @@ new computerClubLocationSpawn[COMPUTER_CLUB_LOCATIONS_AMOUNT][COMPUTER_CLUB_MAX_
 };
 
 enum e_ComputerClubGameInfo {
-    ccgiName[64], // Название
-    ccgiLocations[COMPUTER_CLUB_MAX_GAME_LOCATIONS] // Доступные этой игре локации
+    ccgiName[64], // РќР°Р·РІР°РЅРёРµ
+    ccgiLocations[COMPUTER_CLUB_MAX_GAME_LOCATIONS] // Р”РѕСЃС‚СѓРїРЅС‹Рµ СЌС‚РѕР№ РёРіСЂРµ Р»РѕРєР°С†РёРё
 };
 new computerClubGameInfo[COMPUTER_CLUB_GAMES_AMOUNT][e_ComputerClubGameInfo] = {
     {"TDM", {0, 1, 2, 3}}
@@ -97,58 +97,58 @@ new computerClubGameInfo[COMPUTER_CLUB_GAMES_AMOUNT][e_ComputerClubGameInfo] = {
 };
 
 enum e_ComputerClubPlayerInfo {
-    bool: ccpiInGame, // Находится в игре
-    e_ComputerClubGames: ccpiID, // ID запущенной игры
-    ccpiRoom, // ID комнаты
-    ccpiTeam, // Номер команды
-    bool: ccpiIsDead, // Мертв ли
-    Float: ccpiConnectPos[4], // Позиция перед коннектом в игру
-    ccpiConnectWorld, ccpiConnectInterior, // Виртуальный мир и интерьер перед коннектом в игру
+    bool: ccpiInGame, // РќР°С…РѕРґРёС‚СЃСЏ РІ РёРіСЂРµ
+    e_ComputerClubGames: ccpiID, // ID Р·Р°РїСѓС‰РµРЅРЅРѕР№ РёРіСЂС‹
+    ccpiRoom, // ID РєРѕРјРЅР°С‚С‹
+    ccpiTeam, // РќРѕРјРµСЂ РєРѕРјР°РЅРґС‹
+    bool: ccpiIsDead, // РњРµСЂС‚РІ Р»Рё
+    Float: ccpiConnectPos[4], // РџРѕР·РёС†РёСЏ РїРµСЂРµРґ РєРѕРЅРЅРµРєС‚РѕРј РІ РёРіСЂСѓ
+    ccpiConnectWorld, ccpiConnectInterior, // Р’РёСЂС‚СѓР°Р»СЊРЅС‹Р№ РјРёСЂ Рё РёРЅС‚РµСЂСЊРµСЂ РїРµСЂРµРґ РєРѕРЅРЅРµРєС‚РѕРј РІ РёРіСЂСѓ
 };
 new computerClubPlayerInfo[MAX_PLAYERS][e_ComputerClubPlayerInfo];
 
 enum e_ComputerClubRoomInfo {
     // ----- Global Settings -----
-    ccriHostID, // ID аккаунта хоста
-    ccriHostNickname[MAX_PLAYER_NAME + 1], // Никнейм хоста (записывается единожды при создании комнаты)
-    ccriName[25], // Название комнаты
-    ccriSlotes, // Количество слотов
-    ccriPassword[64], // Пароль (для частной сессии)
-    bool: ccriClosed, // Закрыта ли комната
-    bool: ccriStarted, // Активна ли игра
-    ccriLocation, // Индекс текущей локации
-    ccriRound, // Текущий раунд
-    ccriMaxRounds, // Максимальное количество раундов
-    ccriBet, // Размер ставки (для некоторых режимов)
-    ccriTotalBet, // Сколько денег находятся в "банке" и будут выплачены победителям
-    Float: ccriMaxHealth, // Максимальное HP (1 - 160)
-    Float: ccriMaxArmor, // Максимальная броня (1 - 100)
-    ccriTeamSize, // Размер команд
-    ccriTeamScores[COMPUTER_CLUB_MAX_TEAMS], // Количество выигранных раундов каждой команды
-    ccriHostDisconnectTimer, // Таймер для отключения комнаты при отсутствии хоста
-    ccriWeapons[8], // Выбранное оружие под каждый слот
-    ccriWeaponsAmmo[8], // Количество патрон под каждый слот оружия
-    bool: ccriViewAccess, // Разрешение на просмотр
-    ccriBannedPlayers[MAX_PLAYERS], // Заблокированные игроки [id аккаунтов]
+    ccriHostID, // ID Р°РєРєР°СѓРЅС‚Р° С…РѕСЃС‚Р°
+    ccriHostNickname[MAX_PLAYER_NAME + 1], // РќРёРєРЅРµР№Рј С…РѕСЃС‚Р° (Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РµРґРёРЅРѕР¶РґС‹ РїСЂРё СЃРѕР·РґР°РЅРёРё РєРѕРјРЅР°С‚С‹)
+    ccriName[25], // РќР°Р·РІР°РЅРёРµ РєРѕРјРЅР°С‚С‹
+    ccriSlotes, // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ
+    ccriPassword[64], // РџР°СЂРѕР»СЊ (РґР»СЏ С‡Р°СЃС‚РЅРѕР№ СЃРµСЃСЃРёРё)
+    bool: ccriClosed, // Р—Р°РєСЂС‹С‚Р° Р»Рё РєРѕРјРЅР°С‚Р°
+    bool: ccriStarted, // РђРєС‚РёРІРЅР° Р»Рё РёРіСЂР°
+    ccriLocation, // РРЅРґРµРєСЃ С‚РµРєСѓС‰РµР№ Р»РѕРєР°С†РёРё
+    ccriRound, // РўРµРєСѓС‰РёР№ СЂР°СѓРЅРґ
+    ccriMaxRounds, // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°СѓРЅРґРѕРІ
+    ccriBet, // Р Р°Р·РјРµСЂ СЃС‚Р°РІРєРё (РґР»СЏ РЅРµРєРѕС‚РѕСЂС‹С… СЂРµР¶РёРјРѕРІ)
+    ccriTotalBet, // РЎРєРѕР»СЊРєРѕ РґРµРЅРµРі РЅР°С…РѕРґСЏС‚СЃСЏ РІ "Р±Р°РЅРєРµ" Рё Р±СѓРґСѓС‚ РІС‹РїР»Р°С‡РµРЅС‹ РїРѕР±РµРґРёС‚РµР»СЏРј
+    Float: ccriMaxHealth, // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ HP (1 - 160)
+    Float: ccriMaxArmor, // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ Р±СЂРѕРЅСЏ (1 - 100)
+    ccriTeamSize, // Р Р°Р·РјРµСЂ РєРѕРјР°РЅРґ
+    ccriTeamScores[COMPUTER_CLUB_MAX_TEAMS], // РљРѕР»РёС‡РµСЃС‚РІРѕ РІС‹РёРіСЂР°РЅРЅС‹С… СЂР°СѓРЅРґРѕРІ РєР°Р¶РґРѕР№ РєРѕРјР°РЅРґС‹
+    ccriHostDisconnectTimer, // РўР°Р№РјРµСЂ РґР»СЏ РѕС‚РєР»СЋС‡РµРЅРёСЏ РєРѕРјРЅР°С‚С‹ РїСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё С…РѕСЃС‚Р°
+    ccriWeapons[8], // Р’С‹Р±СЂР°РЅРЅРѕРµ РѕСЂСѓР¶РёРµ РїРѕРґ РєР°Р¶РґС‹Р№ СЃР»РѕС‚
+    ccriWeaponsAmmo[8], // РљРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅ РїРѕРґ РєР°Р¶РґС‹Р№ СЃР»РѕС‚ РѕСЂСѓР¶РёСЏ
+    bool: ccriViewAccess, // Р Р°Р·СЂРµС€РµРЅРёРµ РЅР° РїСЂРѕСЃРјРѕС‚СЂ
+    ccriBannedPlayers[MAX_PLAYERS], // Р—Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹Рµ РёРіСЂРѕРєРё [id Р°РєРєР°СѓРЅС‚РѕРІ]
     // ----- TDM Settings -----
-    ccriTDMFirstTeamScore, // Количество выигранных раундов первой команды
-    ccriTDMSecondTeamScore, // Количество выигранных раундов второй команды
-    bool: ccriTDMShootMode, // Режим: Обычная стрельба / +C
+    ccriTDMFirstTeamScore, // РљРѕР»РёС‡РµСЃС‚РІРѕ РІС‹РёРіСЂР°РЅРЅС‹С… СЂР°СѓРЅРґРѕРІ РїРµСЂРІРѕР№ РєРѕРјР°РЅРґС‹
+    ccriTDMSecondTeamScore, // РљРѕР»РёС‡РµСЃС‚РІРѕ РІС‹РёРіСЂР°РЅРЅС‹С… СЂР°СѓРЅРґРѕРІ РІС‚РѕСЂРѕР№ РєРѕРјР°РЅРґС‹
+    bool: ccriTDMShootMode, // Р РµР¶РёРј: РћР±С‹С‡РЅР°СЏ СЃС‚СЂРµР»СЊР±Р° / +C
     // ----- CopChase Settings -----
 
     // ----- CargoRaids Settings -----
 
 };
 new computerClubRoomInfo[COMPUTER_CLUB_GAMES_AMOUNT][COMPUTER_CLUB_MAX_ROOMS][e_ComputerClubRoomInfo];
-new computerClubTeamInfo[COMPUTER_CLUB_GAMES_AMOUNT][COMPUTER_CLUB_MAX_ROOMS][COMPUTER_CLUB_MAX_TEAMS][64]; // Названия команд
+new computerClubTeamInfo[COMPUTER_CLUB_GAMES_AMOUNT][COMPUTER_CLUB_MAX_ROOMS][COMPUTER_CLUB_MAX_TEAMS][64]; // РќР°Р·РІР°РЅРёСЏ РєРѕРјР°РЅРґ
 
 enum e_ComputerClubToggleRoomReasons {
-    COMPUTER_CLUB_ROOM_END, // Обычное завершение игры
-    COMPUTER_CLUB_ROOM_HOST, // Завершение игры хостом
-    COMPUTER_CLUB_ROOM_EXIT, // Завершение игры, если остались участники только одной команды
+    COMPUTER_CLUB_ROOM_END, // РћР±С‹С‡РЅРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ РёРіСЂС‹
+    COMPUTER_CLUB_ROOM_HOST, // Р—Р°РІРµСЂС€РµРЅРёРµ РёРіСЂС‹ С…РѕСЃС‚РѕРј
+    COMPUTER_CLUB_ROOM_EXIT, // Р—Р°РІРµСЂС€РµРЅРёРµ РёРіСЂС‹, РµСЃР»Рё РѕСЃС‚Р°Р»РёСЃСЊ СѓС‡Р°СЃС‚РЅРёРєРё С‚РѕР»СЊРєРѕ РѕРґРЅРѕР№ РєРѕРјР°РЅРґС‹
 };
 
-// Получает игру, в которой находится игрок
+// РџРѕР»СѓС‡Р°РµС‚ РёРіСЂСѓ, РІ РєРѕС‚РѕСЂРѕР№ РЅР°С…РѕРґРёС‚СЃСЏ РёРіСЂРѕРє
 stock GetPlayerActiveComputerGame(playerid) {
     if (!computerClubPlayerInfo[playerid][ccpiInGame])
         return -1;
@@ -156,18 +156,18 @@ stock GetPlayerActiveComputerGame(playerid) {
     return computerClubPlayerInfo[playerid][ccpiID];
 }
 
-// Проверяет комнату на существование
+// РџСЂРѕРІРµСЂСЏРµС‚ РєРѕРјРЅР°С‚Сѓ РЅР° СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ
 stock ComputerClubIsRoomExists(gameid, roomid) {
     if (gameid < 0 || roomid < 0) return 0;
     return computerClubRoomInfo[gameid][roomid][ccriSlotes] > 0;
 }
 
-// Проверяет комнату на общедоступность (общая сессия)
+// РџСЂРѕРІРµСЂСЏРµС‚ РєРѕРјРЅР°С‚Сѓ РЅР° РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕСЃС‚СЊ (РѕР±С‰Р°СЏ СЃРµСЃСЃРёСЏ)
 stock ComputerClubIsRoomPublic(gameid, roomid) {
     return isnull(computerClubRoomInfo[gameid][roomid][ccriPassword]);
 }
 
-// Проверяет, в одной ли команде игроки
+// РџСЂРѕРІРµСЂСЏРµС‚, РІ РѕРґРЅРѕР№ Р»Рё РєРѕРјР°РЅРґРµ РёРіСЂРѕРєРё
 stock ComputerClubIsTeammates(firstid, secondid) {
     new _: game_first = GetPlayerActiveComputerGame(firstid),
         _: game_second = GetPlayerActiveComputerGame(secondid);
@@ -181,7 +181,7 @@ stock ComputerClubIsTeammates(firstid, secondid) {
     return false;
 }
 
-// Отсоединяет наблюдателя от сервера
+// РћС‚СЃРѕРµРґРёРЅСЏРµС‚ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ РѕС‚ СЃРµСЂРІРµСЂР°
 stock ComputerClubSpectatorRoomExit(playerid) {
     if (!ComputerClubIsSpectator(playerid)) return false;
     new models = PlayerInfo[playerid][pModel];
@@ -196,12 +196,12 @@ stock ComputerClubSpectatorRoomExit(playerid) {
     return true;
 }
 
-// Отображает меню компьютерного клуба (если игрок уже на одном из серверов, то меню сервера)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РјРµРЅСЋ РєРѕРјРїСЊСЋС‚РµСЂРЅРѕРіРѕ РєР»СѓР±Р° (РµСЃР»Рё РёРіСЂРѕРє СѓР¶Рµ РЅР° РѕРґРЅРѕРј РёР· СЃРµСЂРІРµСЂРѕРІ, С‚Рѕ РјРµРЅСЋ СЃРµСЂРІРµСЂР°)
 stock ShowComputerClubMenu(playerid) {
-    if (ComputerClubIsSpectator(playerid)) return ShowDialog(playerid, 1443, DIALOG_STYLE_MSGBOX, " ", "{ffffff}Вам недоступно меню этой комнаты {cccccc}[ Вы наблюдатель ]\n\n{ffffff}Хотите ли вы отсоединиться от сервера?", "Да", "Нет");
+    if (ComputerClubIsSpectator(playerid)) return ShowDialog(playerid, 1443, DIALOG_STYLE_MSGBOX, " ", "{ffffff}Р’Р°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ РјРµРЅСЋ СЌС‚РѕР№ РєРѕРјРЅР°С‚С‹ {cccccc}[ Р’С‹ РЅР°Р±Р»СЋРґР°С‚РµР»СЊ ]\n\n{ffffff}РҐРѕС‚РёС‚Рµ Р»Рё РІС‹ РѕС‚СЃРѕРµРґРёРЅРёС‚СЊСЃСЏ РѕС‚ СЃРµСЂРІРµСЂР°?", "Р”Р°", "РќРµС‚");
     if (GetPlayerActiveComputerGame(playerid) > -1) return ShowComputerGameMenu(playerid, computerClubPlayerInfo[playerid][ccpiID]);
 
-    static const header[] = "{ff9000}Номер\t{cccccc}Название игры\t{0088ff}Игроки в сети";
+    static const header[] = "{ff9000}РќРѕРјРµСЂ\t{cccccc}РќР°Р·РІР°РЅРёРµ РёРіСЂС‹\t{0088ff}РРіСЂРѕРєРё РІ СЃРµС‚Рё";
     new dialog_text[sizeof header + (3 + 64 + 8) * COMPUTER_CLUB_GAMES_AMOUNT]; strcat(dialog_text, header);
 
     new players_at_game[COMPUTER_CLUB_GAMES_AMOUNT];
@@ -213,41 +213,41 @@ stock ShowComputerClubMenu(playerid) {
     }
 
     for (new i = 0; i < COMPUTER_CLUB_GAMES_AMOUNT; i++)
-        format(dialog_text, sizeof dialog_text, "%s\n{ff9000}#%d\t{cccccc}%s\t{0088ff}%d чел.", dialog_text, i + 1, computerClubGameInfo[i][ccgiName], players_at_game[i]);
+        format(dialog_text, sizeof dialog_text, "%s\n{ff9000}#%d\t{cccccc}%s\t{0088ff}%d С‡РµР».", dialog_text, i + 1, computerClubGameInfo[i][ccgiName], players_at_game[i]);
 
-    return ShowDialog(playerid, 1415, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Компьютерный клуб", dialog_text, "Выбор", "Закрыть");
+    return ShowDialog(playerid, 1415, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР±", dialog_text, "Р’С‹Р±РѕСЂ", "Р—Р°РєСЂС‹С‚СЊ");
 }
 
-// Отображает меню конкретной игры
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РјРµРЅСЋ РєРѕРЅРєСЂРµС‚РЅРѕР№ РёРіСЂС‹
 stock ShowComputerGameMenu(playerid, gameid) {
     if (computerClubPlayerInfo[playerid][ccpiInGame]) {
-        // Отображение настроек сервера (хост сможет их менять, другие только просматривать)
+        // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє СЃРµСЂРІРµСЂР° (С…РѕСЃС‚ СЃРјРѕР¶РµС‚ РёС… РјРµРЅСЏС‚СЊ, РґСЂСѓРіРёРµ С‚РѕР»СЊРєРѕ РїСЂРѕСЃРјР°С‚СЂРёРІР°С‚СЊ)
         ShowComputerClubRoomEdit(playerid, gameid, computerClubPlayerInfo[playerid][ccpiRoom]);
-    } else { // Если игрок еще не в игре
+    } else { // Р•СЃР»Рё РёРіСЂРѕРє РµС‰Рµ РЅРµ РІ РёРіСЂРµ
         SetPVarInt(playerid, "ComputerClubSelectedGame", gameid + 1);
 
         new dialog_title[8 + 64 + 1];
         format(dialog_title, sizeof dialog_title, "{cccccc}%s", computerClubGameInfo[gameid][ccgiName]);
 
-        ShowDialog(playerid, 1416, DIALOG_STYLE_LIST, dialog_title, "{ff9000}Описание игры\n{ffffff}Создать сервер\n{ffffff}Присоединиться к серверу\n{ffffff}Наблюдать за игрой", "Выбор", "Закрыть");
+        ShowDialog(playerid, 1416, DIALOG_STYLE_LIST, dialog_title, "{ff9000}РћРїРёСЃР°РЅРёРµ РёРіСЂС‹\n{ffffff}РЎРѕР·РґР°С‚СЊ СЃРµСЂРІРµСЂ\n{ffffff}РџСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СЃРµСЂРІРµСЂСѓ\n{ffffff}РќР°Р±Р»СЋРґР°С‚СЊ Р·Р° РёРіСЂРѕР№", "Р’С‹Р±РѕСЂ", "Р—Р°РєСЂС‹С‚СЊ");
     }
     return 1;
 }
 
-// Отображает диалог взаимодействия с игроком в комнате (для хостов)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёСЏ СЃ РёРіСЂРѕРєРѕРј РІ РєРѕРјРЅР°С‚Рµ (РґР»СЏ С…РѕСЃС‚РѕРІ)
 stock ShowComputerClubPlayerEdit(playerid, targetid) {
     if (!IsPlayerConnected(targetid)) return 0;
     if (playerid == targetid) return ShowComputerClubPlayersList(playerid);
 
     new dialog_title[64];
-    format(dialog_title, sizeof dialog_title, "{cccccc}Управление игроком {ff9000}%s[%d]", PlayerInfo[targetid][pName], targetid);
+    format(dialog_title, sizeof dialog_title, "{cccccc}РЈРїСЂР°РІР»РµРЅРёРµ РёРіСЂРѕРєРѕРј {ff9000}%s[%d]", PlayerInfo[targetid][pName], targetid);
 
     SetPVarInt(playerid, "ComputerClubPlayerEditId", targetid);
     SetPVarInt(playerid, "ComputerClubPlayerEditAcc", PlayerInfo[targetid][pID]);
-    return ShowDialog(playerid, 1432, DIALOG_STYLE_LIST, dialog_title, "{cccccc}Кикнуть\n{cccccc}Заблокировать", "Выбор", "Назад");
+    return ShowDialog(playerid, 1432, DIALOG_STYLE_LIST, dialog_title, "{cccccc}РљРёРєРЅСѓС‚СЊ\n{cccccc}Р—Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ", "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает подтверждение действия над игроком
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РґРµР№СЃС‚РІРёСЏ РЅР°Рґ РёРіСЂРѕРєРѕРј
 stock ComputerClubPlayerEditAccept(playerid, targetid, type) {
     if (!IsPlayerConnected(targetid)) return 0;
 
@@ -256,23 +256,23 @@ stock ComputerClubPlayerEditAccept(playerid, targetid, type) {
 
     new dialog_text[128];
     switch (type) {
-        case 0: format(dialog_text, sizeof dialog_text, "{cccccc}Вы действительно хотите отсоединить игрока {ff9000}%s{cccccc}?", player_str);
-        case 1: format(dialog_text, sizeof dialog_text, "{cccccc}Вы действительно хотите заблокировать игрока {ff9000}%s{cccccc}?", player_str);
+        case 0: format(dialog_text, sizeof dialog_text, "{cccccc}Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РѕС‚СЃРѕРµРґРёРЅРёС‚СЊ РёРіСЂРѕРєР° {ff9000}%s{cccccc}?", player_str);
+        case 1: format(dialog_text, sizeof dialog_text, "{cccccc}Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ РёРіСЂРѕРєР° {ff9000}%s{cccccc}?", player_str);
         default: return ShowComputerClubPlayerEdit(playerid, targetid);
     }
 
     SetPVarInt(playerid, "ComputerClubPlayerEditType", type);
-    return ShowDialog(playerid, 1433, DIALOG_STYLE_MSGBOX, "{cccccc}Подтверждение действия", dialog_text, "Да", "Назад");
+    return ShowDialog(playerid, 1433, DIALOG_STYLE_MSGBOX, "{cccccc}РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РґРµР№СЃС‚РІРёСЏ", dialog_text, "Р”Р°", "РќР°Р·Р°Рґ");
 }
 
-// Отображает правила конкретной игры
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РїСЂР°РІРёР»Р° РєРѕРЅРєСЂРµС‚РЅРѕР№ РёРіСЂС‹
 stock ShowComputerClubGameRules(playerid, gameid) {
     if (gameid < 0 || gameid > COMPUTER_CLUB_GAMES_AMOUNT - 1) return 0;
     
     new dialog_text[1024];
     switch (e_ComputerClubGames: gameid) {
         case COMPUTER_GAME_TDM: {
-            strcat(dialog_text, "{ffffff}Режим {ff9000}TDM{ffffff} (командный матч) представляет собой интенсивное соревнование между двумя или более {ff9000}командами{ffffff}.\nКаждая команда стремится набрать определенное количество {ff9000}раундов{ffffff}, преодолевая своих соперников в поединках на живучесть.\n\nВ этом захватывающем режиме победа в раунде достигается путем уничтожения всех членов противоположной команды, оставив при этом своих союзников невредимыми.\nТактическое взаимодействие между членами команды становится важным фактором, так как одиночные действия могут не только повлиять на исход раунда, но и на общий результат матча.\n\nЦель команды - добиться определенного числа победных раундов, что требует как мастерства в стрельбе, так и умения эффективно сотрудничать с партнерами.\nВедь именно совместные усилия и координация позволят команде выйти победителем в этом динамичном соревновании.");
+            strcat(dialog_text, "{ffffff}Р РµР¶РёРј {ff9000}TDM{ffffff} (РєРѕРјР°РЅРґРЅС‹Р№ РјР°С‚С‡) РїСЂРµРґСЃС‚Р°РІР»СЏРµС‚ СЃРѕР±РѕР№ РёРЅС‚РµРЅСЃРёРІРЅРѕРµ СЃРѕСЂРµРІРЅРѕРІР°РЅРёРµ РјРµР¶РґСѓ РґРІСѓРјСЏ РёР»Рё Р±РѕР»РµРµ {ff9000}РєРѕРјР°РЅРґР°РјРё{ffffff}.\nРљР°Р¶РґР°СЏ РєРѕРјР°РЅРґР° СЃС‚СЂРµРјРёС‚СЃСЏ РЅР°Р±СЂР°С‚СЊ РѕРїСЂРµРґРµР»РµРЅРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ {ff9000}СЂР°СѓРЅРґРѕРІ{ffffff}, РїСЂРµРѕРґРѕР»РµРІР°СЏ СЃРІРѕРёС… СЃРѕРїРµСЂРЅРёРєРѕРІ РІ РїРѕРµРґРёРЅРєР°С… РЅР° Р¶РёРІСѓС‡РµСЃС‚СЊ.\n\nР’ СЌС‚РѕРј Р·Р°С…РІР°С‚С‹РІР°СЋС‰РµРј СЂРµР¶РёРјРµ РїРѕР±РµРґР° РІ СЂР°СѓРЅРґРµ РґРѕСЃС‚РёРіР°РµС‚СЃСЏ РїСѓС‚РµРј СѓРЅРёС‡С‚РѕР¶РµРЅРёСЏ РІСЃРµС… С‡Р»РµРЅРѕРІ РїСЂРѕС‚РёРІРѕРїРѕР»РѕР¶РЅРѕР№ РєРѕРјР°РЅРґС‹, РѕСЃС‚Р°РІРёРІ РїСЂРё СЌС‚РѕРј СЃРІРѕРёС… СЃРѕСЋР·РЅРёРєРѕРІ РЅРµРІСЂРµРґРёРјС‹РјРё.\nРўР°РєС‚РёС‡РµСЃРєРѕРµ РІР·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ РјРµР¶РґСѓ С‡Р»РµРЅР°РјРё РєРѕРјР°РЅРґС‹ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РІР°Р¶РЅС‹Рј С„Р°РєС‚РѕСЂРѕРј, С‚Р°Рє РєР°Рє РѕРґРёРЅРѕС‡РЅС‹Рµ РґРµР№СЃС‚РІРёСЏ РјРѕРіСѓС‚ РЅРµ С‚РѕР»СЊРєРѕ РїРѕРІР»РёСЏС‚СЊ РЅР° РёСЃС…РѕРґ СЂР°СѓРЅРґР°, РЅРѕ Рё РЅР° РѕР±С‰РёР№ СЂРµР·СѓР»СЊС‚Р°С‚ РјР°С‚С‡Р°.\n\nР¦РµР»СЊ РєРѕРјР°РЅРґС‹ - РґРѕР±РёС‚СЊСЃСЏ РѕРїСЂРµРґРµР»РµРЅРЅРѕРіРѕ С‡РёСЃР»Р° РїРѕР±РµРґРЅС‹С… СЂР°СѓРЅРґРѕРІ, С‡С‚Рѕ С‚СЂРµР±СѓРµС‚ РєР°Рє РјР°СЃС‚РµСЂСЃС‚РІР° РІ СЃС‚СЂРµР»СЊР±Рµ, С‚Р°Рє Рё СѓРјРµРЅРёСЏ СЌС„С„РµРєС‚РёРІРЅРѕ СЃРѕС‚СЂСѓРґРЅРёС‡Р°С‚СЊ СЃ РїР°СЂС‚РЅРµСЂР°РјРё.\nР’РµРґСЊ РёРјРµРЅРЅРѕ СЃРѕРІРјРµСЃС‚РЅС‹Рµ СѓСЃРёР»РёСЏ Рё РєРѕРѕСЂРґРёРЅР°С†РёСЏ РїРѕР·РІРѕР»СЏС‚ РєРѕРјР°РЅРґРµ РІС‹Р№С‚Рё РїРѕР±РµРґРёС‚РµР»РµРј РІ СЌС‚РѕРј РґРёРЅР°РјРёС‡РЅРѕРј СЃРѕСЂРµРІРЅРѕРІР°РЅРёРё.");
         }
         case COMPUTER_GAME_COPCHASE: {
 
@@ -288,7 +288,7 @@ stock ShowComputerClubGameRules(playerid, gameid) {
     return ShowDialog(playerid, 1417, DIALOG_STYLE_MSGBOX, dialog_title, dialog_text, " * ", "");
 }
 
-// Отображает меню создания сервера
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РјРµРЅСЋ СЃРѕР·РґР°РЅРёСЏ СЃРµСЂРІРµСЂР°
 stock ShowComputerClubRoomCreate(playerid) {
     new name[64], password[64];
     new slotes = GetPVarInt(playerid, "ComputerClubRoomSlotes");
@@ -296,75 +296,75 @@ stock ShowComputerClubRoomCreate(playerid) {
     GetPVarString(playerid, "ComputerClubRoomPassword", password, sizeof password);
 
     new dialog_text[512];
-    format(dialog_text, sizeof dialog_text, "{cccccc}Название сервера:\t{ff9000}%s\n{cccccc}Пароль:\t{ff9000}%s\n{cccccc}Количество слотов:\t{ff9000}%d %s\n{99ff99}Подтвердить",
-        (isnull(name) ? "{cccccc}Не задано" : name),
-        (isnull(password) ? "{cccccc}Не используется" : password),
-        slotes, PluralToText(slotes, "игрок", "игрока", "игроков")
+    format(dialog_text, sizeof dialog_text, "{cccccc}РќР°Р·РІР°РЅРёРµ СЃРµСЂРІРµСЂР°:\t{ff9000}%s\n{cccccc}РџР°СЂРѕР»СЊ:\t{ff9000}%s\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ:\t{ff9000}%d %s\n{99ff99}РџРѕРґС‚РІРµСЂРґРёС‚СЊ",
+        (isnull(name) ? "{cccccc}РќРµ Р·Р°РґР°РЅРѕ" : name),
+        (isnull(password) ? "{cccccc}РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ" : password),
+        slotes, PluralToText(slotes, "РёРіСЂРѕРє", "РёРіСЂРѕРєР°", "РёРіСЂРѕРєРѕРІ")
     );
-    return ShowDialog(playerid, 1418, DIALOG_STYLE_TABLIST, "{ff9000}Создание сервера", dialog_text, "Выбор", "Назад");
+    return ShowDialog(playerid, 1418, DIALOG_STYLE_TABLIST, "{ff9000}РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРµСЂР°", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает изменение названия сервера
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РЅР°Р·РІР°РЅРёСЏ СЃРµСЂРІРµСЂР°
 stock ShowComputerClubSetName(playerid, bool: change = false) {
     if (change) SetPVarInt(playerid, "ComputerClubChange", 1);
     
-    return ShowDialog(playerid, 1419, DIALOG_STYLE_INPUT, change ? "Изменение названия" : "Создание сервера {cccccc}[ Название ]", "{ffffff}Укажите название для вашего сервера:", "Принять", "Отмена");
+    return ShowDialog(playerid, 1419, DIALOG_STYLE_INPUT, change ? "РР·РјРµРЅРµРЅРёРµ РЅР°Р·РІР°РЅРёСЏ" : "РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРµСЂР° {cccccc}[ РќР°Р·РІР°РЅРёРµ ]", "{ffffff}РЈРєР°Р¶РёС‚Рµ РЅР°Р·РІР°РЅРёРµ РґР»СЏ РІР°С€РµРіРѕ СЃРµСЂРІРµСЂР°:", "РџСЂРёРЅСЏС‚СЊ", "РћС‚РјРµРЅР°");
 }
 
-// Отображает изменение пароля сервера
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РїР°СЂРѕР»СЏ СЃРµСЂРІРµСЂР°
 stock ShowComputerClubSetPass(playerid, bool: change = false) {
     if (change) SetPVarInt(playerid, "ComputerClubChange", 1);
 
-    return ShowDialog(playerid, 1420, DIALOG_STYLE_INPUT, change ? "Изменение пароля" : "Создание сервера {cccccc}[ Пароль ]", "{ffffff}Укажите пароль для вашего сервера:", "Принять", "Отмена");
+    return ShowDialog(playerid, 1420, DIALOG_STYLE_INPUT, change ? "РР·РјРµРЅРµРЅРёРµ РїР°СЂРѕР»СЏ" : "РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРµСЂР° {cccccc}[ РџР°СЂРѕР»СЊ ]", "{ffffff}РЈРєР°Р¶РёС‚Рµ РїР°СЂРѕР»СЊ РґР»СЏ РІР°С€РµРіРѕ СЃРµСЂРІРµСЂР°:", "РџСЂРёРЅСЏС‚СЊ", "РћС‚РјРµРЅР°");
 }
 
-// Отображает изменение количества слотов сервера
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЃР»РѕС‚РѕРІ СЃРµСЂРІРµСЂР°
 stock ShowComputerClubSetSlotes(playerid, bool: change = false) {
     if (change) SetPVarInt(playerid, "ComputerClubChange", 1);
 
-    return ShowDialog(playerid, 1421, DIALOG_STYLE_INPUT, change ? "Изменение количества слотов" : "Создание сервера {cccccc}[ Слоты ]", "{ffffff}Укажите количество слотов вашего сервера (до 1000):", "Принять", "Отмена");
+    return ShowDialog(playerid, 1421, DIALOG_STYLE_INPUT, change ? "РР·РјРµРЅРµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЃР»РѕС‚РѕРІ" : "РЎРѕР·РґР°РЅРёРµ СЃРµСЂРІРµСЂР° {cccccc}[ РЎР»РѕС‚С‹ ]", "{ffffff}РЈРєР°Р¶РёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ РІР°С€РµРіРѕ СЃРµСЂРІРµСЂР° (РґРѕ 1000):", "РџСЂРёРЅСЏС‚СЊ", "РћС‚РјРµРЅР°");
 }
 
-// Отображает изменение максимального количества участников в одной команде
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ РѕРґРЅРѕР№ РєРѕРјР°РЅРґРµ
 stock ShowComputerClubSetTeamSize(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
     if (gameid < 0) return 0;
 
     new dialog_text[180];
-    format(dialog_text, sizeof dialog_text, "{ffffff}Укажите максимальное количество игроков в одной команде:\n\n{cccccc}Максимальное количество участников в команде для этой комнаты: {ff9000}%d", ComputerClubGetMaxTeamSize(gameid, roomid));
+    format(dialog_text, sizeof dialog_text, "{ffffff}РЈРєР°Р¶РёС‚Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РёРіСЂРѕРєРѕРІ РІ РѕРґРЅРѕР№ РєРѕРјР°РЅРґРµ:\n\n{cccccc}РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІ РєРѕРјР°РЅРґРµ РґР»СЏ СЌС‚РѕР№ РєРѕРјРЅР°С‚С‹: {ff9000}%d", ComputerClubGetMaxTeamSize(gameid, roomid));
     
-    return ShowDialog(playerid, 1437, DIALOG_STYLE_INPUT, "Изменение размера команд", dialog_text, "Принять", "Назад");
+    return ShowDialog(playerid, 1437, DIALOG_STYLE_INPUT, "РР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂР° РєРѕРјР°РЅРґ", dialog_text, "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает изменение максимального количества раундов
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° СЂР°СѓРЅРґРѕРІ
 stock ShowComputerClubSetMaxRounds(playerid) {
-    return ShowDialog(playerid, 1438, DIALOG_STYLE_INPUT, "Изменение количества раундов", "{ffffff}Укажите количество раундов для победы (не более 30):", "Принять", "Назад");
+    return ShowDialog(playerid, 1438, DIALOG_STYLE_INPUT, "РР·РјРµРЅРµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЂР°СѓРЅРґРѕРІ", "{ffffff}РЈРєР°Р¶РёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЂР°СѓРЅРґРѕРІ РґР»СЏ РїРѕР±РµРґС‹ (РЅРµ Р±РѕР»РµРµ 30):", "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает изменение максимального количества HP
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° HP
 stock ShowComputerClubSetMaxHealth(playerid) {
-    return ShowDialog(playerid, 1439, DIALOG_STYLE_INPUT, "Изменение максимального HP [ 1 - 160 ]", "{ffffff}Укажите максимальное количество HP:", "Принять", "Назад");
+    return ShowDialog(playerid, 1439, DIALOG_STYLE_INPUT, "РР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ HP [ 1 - 160 ]", "{ffffff}РЈРєР°Р¶РёС‚Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ HP:", "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает изменение максимального количества брони
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р±СЂРѕРЅРё
 stock ShowComputerClubSetMaxArmor(playerid) {
-    return ShowDialog(playerid, 1440, DIALOG_STYLE_INPUT, "Изменение максимальной брони [ 1 - 100 ]", "{ffffff}Укажите максимальное количество брони:", "Принять", "Назад");
+    return ShowDialog(playerid, 1440, DIALOG_STYLE_INPUT, "РР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ Р±СЂРѕРЅРё [ 1 - 100 ]", "{ffffff}РЈРєР°Р¶РёС‚Рµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ Р±СЂРѕРЅРё:", "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает изменение оружия (+ патрон)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ РѕСЂСѓР¶РёСЏ (+ РїР°С‚СЂРѕРЅ)
 stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = false, bool: change_ammo = false, index = -1) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
     if (gameid < 0) return 0;
 
     if (computerClubRoomInfo[gameid][roomid][ccriStarted]) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу изменять редактировать оружие при запущенной игре");
+        SendClientMessage(playerid, 0xCCCCCCFF, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ РёР·РјРµРЅСЏС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РѕСЂСѓР¶РёРµ РїСЂРё Р·Р°РїСѓС‰РµРЅРЅРѕР№ РёРіСЂРµ");
         return ShowComputerClubMenu(playerid);
     }
 
-    // Заполняем доступные для каждого типа оружия ID
-    const MAX_SLOT_WEAPONS = 8; // Максимальное количество оружий для одного слота
+    // Р—Р°РїРѕР»РЅСЏРµРј РґРѕСЃС‚СѓРїРЅС‹Рµ РґР»СЏ РєР°Р¶РґРѕРіРѕ С‚РёРїР° РѕСЂСѓР¶РёСЏ ID
+    const MAX_SLOT_WEAPONS = 8; // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕСЂСѓР¶РёР№ РґР»СЏ РѕРґРЅРѕРіРѕ СЃР»РѕС‚Р°
     static available_ids[8][MAX_SLOT_WEAPONS] = {
         {WEAPON_GOLFCLUB, WEAPON_NITESTICK, WEAPON_KNIFE, WEAPON_BAT, WEAPON_SHOVEL, WEAPON_POOLSTICK, WEAPON_KATANA, WEAPON_CHAINSAW},
         {WEAPON_COLT45, WEAPON_SILENCED, WEAPON_DEAGLE},
@@ -382,8 +382,8 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
         if (slotid < 0) return 0;
         SetPVarInt(playerid, "ComputerClubSetWeaponSlot", slotid);
 
-        // Выбор оружия для указанного типа
-        strcat(dialog_text, "{cccccc}Убрать\n");
+        // Р’С‹Р±РѕСЂ РѕСЂСѓР¶РёСЏ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ С‚РёРїР°
+        strcat(dialog_text, "{cccccc}РЈР±СЂР°С‚СЊ\n");
         for (new i = 0; i < MAX_SLOT_WEAPONS; i++) {
             new weapon_id = available_ids[slotid][i];
             if (weapon_id == 0) break;
@@ -393,21 +393,21 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
             format(dialog_text, sizeof dialog_text, "%s%s\n", dialog_text, weapon_name);
         }
 
-        return ShowDialog(playerid, 1441, DIALOG_STYLE_LIST, "{cccccc}Выбор оружия", dialog_text, "Выбор", "Назад");
+        return ShowDialog(playerid, 1441, DIALOG_STYLE_LIST, "{cccccc}Р’С‹Р±РѕСЂ РѕСЂСѓР¶РёСЏ", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
     } else if (change_ammo) {
         slotid = GetPVarInt(playerid, "ComputerClubSetWeaponSlot");
         if (slotid < 0 || index < 0) return 0;
 
-        // Изменение количества патрон для указанного оружия
+        // РР·РјРµРЅРµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РїР°С‚СЂРѕРЅ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РѕСЂСѓР¶РёСЏ
         static none_ammo_ids[] = {0, WEAPON_BRASSKNUCKLE, WEAPON_GOLFCLUB, WEAPON_NITESTICK, WEAPON_KNIFE, WEAPON_BAT, WEAPON_SHOVEL, WEAPON_POOLSTICK, WEAPON_KATANA, WEAPON_CHAINSAW, WEAPON_DILDO, WEAPON_DILDO2, WEAPON_VIBRATOR, WEAPON_VIBRATOR2, WEAPON_FLOWER, WEAPON_CANE};
             
-        // Убирание оружия для выбранного слота
+        // РЈР±РёСЂР°РЅРёРµ РѕСЂСѓР¶РёСЏ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ СЃР»РѕС‚Р°
         if (index == 0) {
             ComputerClubSetWeapons(gameid, roomid, slotid, 0, 1);
             return ShowComputerClubSetWeapons(playerid);
         }
 
-        index--; // Учитываем, что первая строка - убирание оружия
+        index--; // РЈС‡РёС‚С‹РІР°РµРј, С‡С‚Рѕ РїРµСЂРІР°СЏ СЃС‚СЂРѕРєР° - СѓР±РёСЂР°РЅРёРµ РѕСЂСѓР¶РёСЏ
         new weapon_id = available_ids[slotid][index];
         SetPVarInt(playerid, "ComputerClubSetWeaponIndex", index);
         SetPVarInt(playerid, "ComputerClubSetWeaponId", weapon_id + 1);
@@ -421,18 +421,18 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
 
         new weapon_name[32];
         GetWeaponName(WEAPON:weapon_id, weapon_name, sizeof(weapon_name));
-        format(dialog_text, sizeof dialog_text, "{cccccc}Укажите количество патрон для выбранного оружия - %s (не более 1000):", weapon_name);
-        return ShowDialog(playerid, 1441, DIALOG_STYLE_INPUT, "{cccccc}Количество патрон", dialog_text, "Принять", "Назад");
+        format(dialog_text, sizeof dialog_text, "{cccccc}РЈРєР°Р¶РёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅ РґР»СЏ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕСЂСѓР¶РёСЏ - %s (РЅРµ Р±РѕР»РµРµ 1000):", weapon_name);
+        return ShowDialog(playerid, 1441, DIALOG_STYLE_INPUT, "{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ РїР°С‚СЂРѕРЅ", dialog_text, "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");
     } else {
         DeletePVar(playerid, "ComputerClubSetWeaponType");
         DeletePVar(playerid, "ComputerClubSetWeaponIndex");
         DeletePVar(playerid, "ComputerClubSetWeaponId");
         DeletePVar(playerid, "ComputerClubSetWeaponSlot");
         
-        // Выбор типа оружия (основное/вторичное) + вывод текущих
+        // Р’С‹Р±РѕСЂ С‚РёРїР° РѕСЂСѓР¶РёСЏ (РѕСЃРЅРѕРІРЅРѕРµ/РІС‚РѕСЂРёС‡РЅРѕРµ) + РІС‹РІРѕРґ С‚РµРєСѓС‰РёС…
         SetPVarInt(playerid, "ComputerClubSetWeaponType", 2);
 
-        static dialog_headers[8][] = {"Холодное оружие", "Пистолет", "Дробовик", "Пистолет-пулемёт", "Штурмовая винтовка", "Винтовка", "Тяжелое оружие", "Метательное оружие"};
+        static dialog_headers[8][] = {"РҐРѕР»РѕРґРЅРѕРµ РѕСЂСѓР¶РёРµ", "РџРёСЃС‚РѕР»РµС‚", "Р”СЂРѕР±РѕРІРёРє", "РџРёСЃС‚РѕР»РµС‚-РїСѓР»РµРјС‘С‚", "РЁС‚СѓСЂРјРѕРІР°СЏ РІРёРЅС‚РѕРІРєР°", "Р’РёРЅС‚РѕРІРєР°", "РўСЏР¶РµР»РѕРµ РѕСЂСѓР¶РёРµ", "РњРµС‚Р°С‚РµР»СЊРЅРѕРµ РѕСЂСѓР¶РёРµ"};
         for (new i = 0; i < 8; i++) {
             new weapon_name_str[100];
             new weapon_id = computerClubRoomInfo[gameid][roomid][ccriWeapons][i];
@@ -448,16 +448,16 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
             format(dialog_text, sizeof dialog_text, "%s{ffffff}%s:\t{ff9000}%s\n", dialog_text, dialog_headers[i], weapon_name_str);
         }
 
-        return ShowDialog(playerid, 1441, DIALOG_STYLE_TABLIST, "{cccccc}Выбор типа оружия", dialog_text, "Выбор", "Назад");
+        return ShowDialog(playerid, 1441, DIALOG_STYLE_TABLIST, "{cccccc}Р’С‹Р±РѕСЂ С‚РёРїР° РѕСЂСѓР¶РёСЏ", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
     }
 }
 
-// Отображает изменение ставки
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РёР·РјРµРЅРµРЅРёРµ СЃС‚Р°РІРєРё
 stock ShowComputerClubSetBet(playerid) {
-  return ShowDialog(playerid, 1442, DIALOG_STYLE_INPUT, "Изменение ставки", "{ffffff}Укажите сумму ставки (не более $1.000.000):", "Принять", "Назад");  
+  return ShowDialog(playerid, 1442, DIALOG_STYLE_INPUT, "РР·РјРµРЅРµРЅРёРµ СЃС‚Р°РІРєРё", "{ffffff}РЈРєР°Р¶РёС‚Рµ СЃСѓРјРјСѓ СЃС‚Р°РІРєРё (РЅРµ Р±РѕР»РµРµ $1.000.000):", "РџСЂРёРЅСЏС‚СЊ", "РќР°Р·Р°Рґ");  
 }
 
-// Отображает список участников указанной (или текущей) комнаты
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРїРёСЃРѕРє СѓС‡Р°СЃС‚РЅРёРєРѕРІ СѓРєР°Р·Р°РЅРЅРѕР№ (РёР»Рё С‚РµРєСѓС‰РµР№) РєРѕРјРЅР°С‚С‹
 stock ShowComputerClubPlayersList(playerid, gameid = -1, roomid = -1) {
     if (gameid == -1 || roomid == -1) {
         gameid = GetPlayerActiveComputerGame(playerid);
@@ -471,10 +471,10 @@ stock ShowComputerClubPlayersList(playerid, gameid = -1, roomid = -1) {
             format(dialog_text, sizeof dialog_text, "%s{%s}%s[%d]%s\n", dialog_text, ColorToHexString(GetPlayerColor(id)), PlayerInfo[id][pName], id, computerClubPlayerInfo[id][ccpiIsDead] ? " {333333}[DEAD]" : "");
     }
 
-    return ShowDialog(playerid, 1429, DIALOG_STYLE_LIST, "{ff9000}Список игроков", dialog_text, "Выбор", "Назад");
+    return ShowDialog(playerid, 1429, DIALOG_STYLE_LIST, "{ff9000}РЎРїРёСЃРѕРє РёРіСЂРѕРєРѕРІ", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает список наблюдателей указанной (или текущей) комнаты
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРїРёСЃРѕРє РЅР°Р±Р»СЋРґР°С‚РµР»РµР№ СѓРєР°Р·Р°РЅРЅРѕР№ (РёР»Рё С‚РµРєСѓС‰РµР№) РєРѕРјРЅР°С‚С‹
 stock ShowComputerClubSpectatorsList(playerid, gameid = -1, roomid = -1) {
     if (gameid == -1 || roomid == -1) {
         gameid = GetPlayerActiveComputerGame(playerid);
@@ -488,7 +488,7 @@ stock ShowComputerClubSpectatorsList(playerid, gameid = -1, roomid = -1) {
             new spectate_game, spectate_room, spectate_id, spectate_team;
             ComputerClubGetSpectatorData(id, spectate_game, spectate_room, spectate_id, spectate_team);
 
-            // Если он не является игроком этой комнаты
+            // Р•СЃР»Рё РѕРЅ РЅРµ СЏРІР»СЏРµС‚СЃСЏ РёРіСЂРѕРєРѕРј СЌС‚РѕР№ РєРѕРјРЅР°С‚С‹
             if (!ComputerClubIsPlayerInRoom(id, spectate_game, spectate_room))
                 format(dialog_text, sizeof dialog_text, "%s{cccccc}%s[%d]\n", dialog_text, PlayerInfo[id][pName], id);
         }
@@ -497,31 +497,31 @@ stock ShowComputerClubSpectatorsList(playerid, gameid = -1, roomid = -1) {
     if (isnull(dialog_text))
         return 0;
 
-    ShowDialog(playerid, 1430, DIALOG_STYLE_LIST, "{ff9000}Список наблюдателей", dialog_text, "Назад", "");
+    ShowDialog(playerid, 1430, DIALOG_STYLE_LIST, "{ff9000}РЎРїРёСЃРѕРє РЅР°Р±Р»СЋРґР°С‚РµР»РµР№", dialog_text, "РќР°Р·Р°Рґ", "");
     
     return 1;
 }
 
-// Отображает меню изменения настроек сервера (уже после его создания)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РјРµРЅСЋ РёР·РјРµРЅРµРЅРёСЏ РЅР°СЃС‚СЂРѕРµРє СЃРµСЂРІРµСЂР° (СѓР¶Рµ РїРѕСЃР»Рµ РµРіРѕ СЃРѕР·РґР°РЅРёСЏ)
 stock ShowComputerClubRoomEdit(playerid, gameid, roomid) {
     new dialog_text[1256];
-    // Общие для всех игр пункты меню
+    // РћР±С‰РёРµ РґР»СЏ РІСЃРµС… РёРіСЂ РїСѓРЅРєС‚С‹ РјРµРЅСЋ
     {
         new password[64], name[64];
         new slotes = computerClubRoomInfo[gameid][roomid][ccriSlotes];
         strcat(password, computerClubRoomInfo[gameid][roomid][ccriPassword]);
         strcat(name, computerClubRoomInfo[gameid][roomid][ccriName]);
 
-        format(dialog_text, sizeof dialog_text, "{cd5700}Покинуть игру\t\n{ff9000}Список игроков >>\t\n{ff9000}Список наблюдателей >>\t\n{ff9000}Доступные команды >>\t\n{ff9000}Доступное оружие >>\t\n{cccccc}Статус игры:\t%s\n{cccccc}Название сервера:\t{ff9000}%s\n{cccccc}Пароль:\t{ff9000}%s\n{cccccc}Количество слотов:\t{ff9000}%d %s\n{cccccc}Возможность подключения:\t%s\n{cccccc}Разрешение на просмотр:\t%s",
+        format(dialog_text, sizeof dialog_text, "{cd5700}РџРѕРєРёРЅСѓС‚СЊ РёРіСЂСѓ\t\n{ff9000}РЎРїРёСЃРѕРє РёРіСЂРѕРєРѕРІ >>\t\n{ff9000}РЎРїРёСЃРѕРє РЅР°Р±Р»СЋРґР°С‚РµР»РµР№ >>\t\n{ff9000}Р”РѕСЃС‚СѓРїРЅС‹Рµ РєРѕРјР°РЅРґС‹ >>\t\n{ff9000}Р”РѕСЃС‚СѓРїРЅРѕРµ РѕСЂСѓР¶РёРµ >>\t\n{cccccc}РЎС‚Р°С‚СѓСЃ РёРіСЂС‹:\t%s\n{cccccc}РќР°Р·РІР°РЅРёРµ СЃРµСЂРІРµСЂР°:\t{ff9000}%s\n{cccccc}РџР°СЂРѕР»СЊ:\t{ff9000}%s\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ:\t{ff9000}%d %s\n{cccccc}Р’РѕР·РјРѕР¶РЅРѕСЃС‚СЊ РїРѕРґРєР»СЋС‡РµРЅРёСЏ:\t%s\n{cccccc}Р Р°Р·СЂРµС€РµРЅРёРµ РЅР° РїСЂРѕСЃРјРѕС‚СЂ:\t%s",
             (!computerClubRoomInfo[gameid][roomid][ccriStarted] ? "{cd5700}[ OFF ]" : "{99ff99}[ ON ]"),
             name,
-            (isnull(password) ? "{cccccc}Не используется" : password),
-            slotes, PluralToText(slotes, "игрок", "игрока", "игроков"),
+            (isnull(password) ? "{cccccc}РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ" : password),
+            slotes, PluralToText(slotes, "РёРіСЂРѕРє", "РёРіСЂРѕРєР°", "РёРіСЂРѕРєРѕРІ"),
             (computerClubRoomInfo[gameid][roomid][ccriClosed] ? "{cd5700}[ OFF ]" : "{99ff99}[ ON ]"),
             (!computerClubRoomInfo[gameid][roomid][ccriViewAccess] ? "{cd5700}[ OFF ]" : "{99ff99}[ ON ]")
         );
     }
-    // Пункты меню отдельные под каждую игру
+    // РџСѓРЅРєС‚С‹ РјРµРЅСЋ РѕС‚РґРµР»СЊРЅС‹Рµ РїРѕРґ РєР°Р¶РґСѓСЋ РёРіСЂСѓ
     switch (e_ComputerClubGames: gameid) {
         case COMPUTER_GAME_TDM: {
             new bet_str[30];
@@ -530,27 +530,27 @@ stock ShowComputerClubRoomEdit(playerid, gameid, roomid) {
             new armor_str[15];
             format(armor_str, sizeof armor_str, "{ff9000}%.0f", computerClubRoomInfo[gameid][roomid][ccriMaxArmor]);
 
-            format(dialog_text, sizeof dialog_text, "%s\n{cccccc}Карта:\t{ff9000}%s\n{cccccc}Размер команд:\t{ff9000}%d %s\n{cccccc}Длительность:\t{ff9000}%d %s\n{cccccc}Режим стрельбы:\t{ff9000}%s\n{cccccc}Максимальное здоровье:\t{ff9000}%.0f\n{cccccc}Максимальная броня:\t%s\n{cccccc}Ставка:\t%s\n", dialog_text,
+            format(dialog_text, sizeof dialog_text, "%s\n{cccccc}РљР°СЂС‚Р°:\t{ff9000}%s\n{cccccc}Р Р°Р·РјРµСЂ РєРѕРјР°РЅРґ:\t{ff9000}%d %s\n{cccccc}Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ:\t{ff9000}%d %s\n{cccccc}Р РµР¶РёРј СЃС‚СЂРµР»СЊР±С‹:\t{ff9000}%s\n{cccccc}РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ Р·РґРѕСЂРѕРІСЊРµ:\t{ff9000}%.0f\n{cccccc}РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ Р±СЂРѕРЅСЏ:\t%s\n{cccccc}РЎС‚Р°РІРєР°:\t%s\n", dialog_text,
                 computerClubLocationInfo[computerClubRoomInfo[gameid][roomid][ccriLocation]][ccliName],
-                computerClubRoomInfo[gameid][roomid][ccriTeamSize], PluralToText(computerClubRoomInfo[gameid][roomid][ccriTeamSize], "игрок", "игрока", "игроков"),
-                computerClubRoomInfo[gameid][roomid][ccriMaxRounds], PluralToText(computerClubRoomInfo[gameid][roomid][ccriMaxRounds], "раунд", "раунда", "раундов"),
-                (!computerClubRoomInfo[gameid][roomid][ccriTDMShootMode] ? "Обычный" : "+C"),
+                computerClubRoomInfo[gameid][roomid][ccriTeamSize], PluralToText(computerClubRoomInfo[gameid][roomid][ccriTeamSize], "РёРіСЂРѕРє", "РёРіСЂРѕРєР°", "РёРіСЂРѕРєРѕРІ"),
+                computerClubRoomInfo[gameid][roomid][ccriMaxRounds], PluralToText(computerClubRoomInfo[gameid][roomid][ccriMaxRounds], "СЂР°СѓРЅРґ", "СЂР°СѓРЅРґР°", "СЂР°СѓРЅРґРѕРІ"),
+                (!computerClubRoomInfo[gameid][roomid][ccriTDMShootMode] ? "РћР±С‹С‡РЅС‹Р№" : "+C"),
                 computerClubRoomInfo[gameid][roomid][ccriMaxHealth],
-                (computerClubRoomInfo[gameid][roomid][ccriMaxArmor] <= 0 ? "{cccccc}Не используется" : armor_str),
-                (computerClubRoomInfo[gameid][roomid][ccriBet] <= 0 ? "{cccccc}Не используется" : bet_str)
+                (computerClubRoomInfo[gameid][roomid][ccriMaxArmor] <= 0 ? "{cccccc}РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ" : armor_str),
+                (computerClubRoomInfo[gameid][roomid][ccriBet] <= 0 ? "{cccccc}РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ" : bet_str)
             );
         }
         case COMPUTER_GAME_COPCHASE: {
-            format(dialog_text, sizeof dialog_text, "%s\n{cccccc}Локация:\t{ff9000}%s\n{cccccc}Автомобили для полицейских\n{cccccc}Автомобили для подозреваемых\n{cccccc}Оружие\n{cccccc}Выбор подозреваемого:\t{ff9000}%s",
+            format(dialog_text, sizeof dialog_text, "%s\n{cccccc}Р›РѕРєР°С†РёСЏ:\t{ff9000}%s\n{cccccc}РђРІС‚РѕРјРѕР±РёР»Рё РґР»СЏ РїРѕР»РёС†РµР№СЃРєРёС…\n{cccccc}РђРІС‚РѕРјРѕР±РёР»Рё РґР»СЏ РїРѕРґРѕР·СЂРµРІР°РµРјС‹С…\n{cccccc}РћСЂСѓР¶РёРµ\n{cccccc}Р’С‹Р±РѕСЂ РїРѕРґРѕР·СЂРµРІР°РµРјРѕРіРѕ:\t{ff9000}%s",
                 dialog_text,
                 "Los Santos",
-                "Случайно"
+                "РЎР»СѓС‡Р°Р№РЅРѕ"
             );
         }
         default:{}
     }
 
-    return ShowDialog(playerid, 1422, DIALOG_STYLE_TABLIST, "Меню сервера", dialog_text, "Выбор", "Закрыть");
+    return ShowDialog(playerid, 1422, DIALOG_STYLE_TABLIST, "РњРµРЅСЋ СЃРµСЂРІРµСЂР°", dialog_text, "Р’С‹Р±РѕСЂ", "Р—Р°РєСЂС‹С‚СЊ");
 }
 
 stock ComputerClubIsPlayerCbugActive(playerid)
@@ -561,13 +561,16 @@ stock ComputerClubIsPlayerCbugActive(playerid)
     return computerClubRoomInfo[gameid][roomid][ccriTDMShootMode];
 }
 
-// Выдает оружие комнаты игроку
+// Р’С‹РґР°РµС‚ РѕСЂСѓР¶РёРµ РєРѕРјРЅР°С‚С‹ РёРіСЂРѕРєСѓ
 stock ComputerClubSetPlayerWeapons(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
 
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     if (!IsPlayerConnected(playerid)) return 0;
+
+    // РљРґ Р°РЅС‚РёС‡РёС‚Р° РЅР° РѕСЂСѓР¶РёРµ
+    GivePlayerResetWeaponUnix(playerid);
 
     ResetPlayerWeapons(playerid);
     for (new i = 0; i < 8; i++)
@@ -576,7 +579,7 @@ stock ComputerClubSetPlayerWeapons(playerid) {
     return 1;
 }
 
-// Изменяет оружие и патроны для комнаты
+// РР·РјРµРЅСЏРµС‚ РѕСЂСѓР¶РёРµ Рё РїР°С‚СЂРѕРЅС‹ РґР»СЏ РєРѕРјРЅР°С‚С‹
 stock ComputerClubSetWeapons(gameid, roomid, slotid, weaponid, ammo) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
 
@@ -590,15 +593,15 @@ stock ComputerClubSetWeapons(gameid, roomid, slotid, weaponid, ammo) {
     return 1;
 }
 
-// Получает индекс первой доступной указанной игре локации
+// РџРѕР»СѓС‡Р°РµС‚ РёРЅРґРµРєСЃ РїРµСЂРІРѕР№ РґРѕСЃС‚СѓРїРЅРѕР№ СѓРєР°Р·Р°РЅРЅРѕР№ РёРіСЂРµ Р»РѕРєР°С†РёРё
 stock ComputerClubGetStartLocation(gameid) {
     return computerClubGameInfo[_:gameid][ccgiLocations][0];
 }
 
-// Получает рандомный из спавнов указанной локации
+// РџРѕР»СѓС‡Р°РµС‚ СЂР°РЅРґРѕРјРЅС‹Р№ РёР· СЃРїР°РІРЅРѕРІ СѓРєР°Р·Р°РЅРЅРѕР№ Р»РѕРєР°С†РёРё
 stock ComputerClubGetRandomSpawn(locationid, teamid = 0) {
-    new available_spawn_ids[COMPUTER_CLUB_MAX_LOCATION_SPAWNS], available_spawns_count = 0; // ID доступных для возрождения спавнов + их количество
-    new occupied_spawn_ids[COMPUTER_CLUB_MAX_LOCATION_SPAWNS], occupied_spawns_count = 0; // ID спавнов на которых находится какой-нибудь игрок
+    new available_spawn_ids[COMPUTER_CLUB_MAX_LOCATION_SPAWNS], available_spawns_count = 0; // ID РґРѕСЃС‚СѓРїРЅС‹С… РґР»СЏ РІРѕР·СЂРѕР¶РґРµРЅРёСЏ СЃРїР°РІРЅРѕРІ + РёС… РєРѕР»РёС‡РµСЃС‚РІРѕ
+    new occupied_spawn_ids[COMPUTER_CLUB_MAX_LOCATION_SPAWNS], occupied_spawns_count = 0; // ID СЃРїР°РІРЅРѕРІ РЅР° РєРѕС‚РѕСЂС‹С… РЅР°С…РѕРґРёС‚СЃСЏ РєР°РєРѕР№-РЅРёР±СѓРґСЊ РёРіСЂРѕРє
     
     for (new j = 0; j < COMPUTER_CLUB_MAX_LOCATION_SPAWNS; j++) {
         new Float: lx = computerClubLocationSpawn[locationid][j][cclsPos][0],
@@ -606,14 +609,14 @@ stock ComputerClubGetRandomSpawn(locationid, teamid = 0) {
             Float: lz = computerClubLocationSpawn[locationid][j][cclsPos][2],
             Float: la = computerClubLocationSpawn[locationid][j][cclsPos][3];
 
-        // Если спавна не существует - выходим из цикла
+        // Р•СЃР»Рё СЃРїР°РІРЅР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - РІС‹С…РѕРґРёРј РёР· С†РёРєР»Р°
         if (lx == 0.0 && ly == 0.0 && lz == 0.0 && la == 0.0) break;
         
-        // Если спавн не соответствует нужной команде - пропускаем его
+        // Р•СЃР»Рё СЃРїР°РІРЅ РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РЅСѓР¶РЅРѕР№ РєРѕРјР°РЅРґРµ - РїСЂРѕРїСѓСЃРєР°РµРј РµРіРѕ
         new spawn_team = computerClubLocationSpawn[locationid][j][cclsTeam];
         if (spawn_team != 0 && spawn_team - 1 != teamid) continue;
 
-        // Если спавн уже кем-то занят - пропускаем его, но запоминаем
+        // Р•СЃР»Рё СЃРїР°РІРЅ СѓР¶Рµ РєРµРј-С‚Рѕ Р·Р°РЅСЏС‚ - РїСЂРѕРїСѓСЃРєР°РµРј РµРіРѕ, РЅРѕ Р·Р°РїРѕРјРёРЅР°РµРј
         new bool: is_occupied = false;
         foreach (new id : Player) {
             if (IsPlayerInRangeOfPoint(id, 3.0, lx, ly, lz)) {
@@ -626,24 +629,24 @@ stock ComputerClubGetRandomSpawn(locationid, teamid = 0) {
         }
         if (is_occupied) continue;
 
-        // Помечаем спавн доступным
+        // РџРѕРјРµС‡Р°РµРј СЃРїР°РІРЅ РґРѕСЃС‚СѓРїРЅС‹Рј
         available_spawn_ids[available_spawns_count] = j;
         available_spawns_count++;
     }
 
     if (available_spawns_count == 0 && occupied_spawns_count > 0)
-        // Если нет доступных спавнов, но есть те, которые заняты - все-таки спавним его туда (ну а куда блин еще)
+        // Р•СЃР»Рё РЅРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… СЃРїР°РІРЅРѕРІ, РЅРѕ РµСЃС‚СЊ С‚Рµ, РєРѕС‚РѕСЂС‹Рµ Р·Р°РЅСЏС‚С‹ - РІСЃРµ-С‚Р°РєРё СЃРїР°РІРЅРёРј РµРіРѕ С‚СѓРґР° (РЅСѓ Р° РєСѓРґР° Р±Р»РёРЅ РµС‰Рµ)
         return occupied_spawn_ids[random_range(0, occupied_spawns_count - 1)];
     else if (available_spawns_count > 0) {
-        // Если доступные спавны есть - спавним на одном из них
+        // Р•СЃР»Рё РґРѕСЃС‚СѓРїРЅС‹Рµ СЃРїР°РІРЅС‹ РµСЃС‚СЊ - СЃРїР°РІРЅРёРј РЅР° РѕРґРЅРѕРј РёР· РЅРёС…
         return available_spawn_ids[random_range(0, available_spawns_count - 1)];
     }
 
-    // Спавнов вообще нет - ну это только если их в коде забыли добавить :/
+    // РЎРїР°РІРЅРѕРІ РІРѕРѕР±С‰Рµ РЅРµС‚ - РЅСѓ СЌС‚Рѕ С‚РѕР»СЊРєРѕ РµСЃР»Рё РёС… РІ РєРѕРґРµ Р·Р°Р±С‹Р»Рё РґРѕР±Р°РІРёС‚СЊ :/
     return 0;
 }
 
-// Получает количество команд в комнате
+// РџРѕР»СѓС‡Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјР°РЅРґ РІ РєРѕРјРЅР°С‚Рµ
 stock ComputerClubGetTeamCount(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
 
@@ -655,14 +658,14 @@ stock ComputerClubGetTeamCount(gameid, roomid) {
     return COMPUTER_CLUB_MAX_TEAMS;
 }
 
-// Узнает минимальный размер для команды в указанной комнате
+// РЈР·РЅР°РµС‚ РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РґР»СЏ РєРѕРјР°РЅРґС‹ РІ СѓРєР°Р·Р°РЅРЅРѕР№ РєРѕРјРЅР°С‚Рµ
 stock ComputerClubGetMaxTeamSize(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     
     return _:(computerClubRoomInfo[gameid][roomid][ccriSlotes] / ComputerClubGetTeamCount(gameid, roomid)) + 1;
 }
 
-// Создает комнату в указанной игре
+// РЎРѕР·РґР°РµС‚ РєРѕРјРЅР°С‚Сѓ РІ СѓРєР°Р·Р°РЅРЅРѕР№ РёРіСЂРµ
 stock ComputerClubRoomCreate(hostid, gameid, const name[], const password[], slotes = 10) {
     for (new roomid = 0; roomid < COMPUTER_CLUB_MAX_ROOMS; roomid++) {
         if (ComputerClubIsRoomExists(gameid, roomid)) continue;
@@ -676,12 +679,12 @@ stock ComputerClubRoomCreate(hostid, gameid, const name[], const password[], slo
         computerClubRoomInfo[gameid][roomid][ccriLocation] = ComputerClubGetStartLocation(gameid);
         format(computerClubRoomInfo[gameid][roomid][ccriHostNickname], MAX_PLAYER_NAME + 1, "%s", PlayerInfo[hostid][pName]);
 
-        // Предустановленные настройки
+        // РџСЂРµРґСѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё
         computerClubRoomInfo[gameid][roomid][ccriMaxRounds] = 3;
         computerClubRoomInfo[gameid][roomid][ccriMaxHealth] = 100;
         if (gameid == _:COMPUTER_GAME_TDM) {
-            computerClubTeamInfo[gameid][roomid][0] = "{FF0000}Красные";
-            computerClubTeamInfo[gameid][roomid][1] = "{0088FF}Синие";
+            computerClubTeamInfo[gameid][roomid][0] = "{FF0000}РљСЂР°СЃРЅС‹Рµ";
+            computerClubTeamInfo[gameid][roomid][1] = "{0088FF}РЎРёРЅРёРµ";
 
             computerClubRoomInfo[gameid][roomid][ccriTeamSize] = ComputerClubGetMaxTeamSize(gameid, roomid);
 
@@ -696,7 +699,7 @@ stock ComputerClubRoomCreate(hostid, gameid, const name[], const password[], slo
     return -1;
 }
 
-// Сохраняет положение игрока перед присоединением к комп. клубу
+// РЎРѕС…СЂР°РЅСЏРµС‚ РїРѕР»РѕР¶РµРЅРёРµ РёРіСЂРѕРєР° РїРµСЂРµРґ РїСЂРёСЃРѕРµРґРёРЅРµРЅРёРµРј Рє РєРѕРјРї. РєР»СѓР±Сѓ
 stock ComputerClubSaveConnectPosition(playerid) {
     GetPlayerPos(playerid, computerClubPlayerInfo[playerid][ccpiConnectPos][0], computerClubPlayerInfo[playerid][ccpiConnectPos][1], computerClubPlayerInfo[playerid][ccpiConnectPos][2]);
     GetPlayerFacingAngle(playerid, computerClubPlayerInfo[playerid][ccpiConnectPos][3]);
@@ -704,40 +707,40 @@ stock ComputerClubSaveConnectPosition(playerid) {
     computerClubPlayerInfo[playerid][ccpiConnectInterior] = GetPlayerInterior(playerid);
 }
 
-// Подключает игрока к нужному серверу
+// РџРѕРґРєР»СЋС‡Р°РµС‚ РёРіСЂРѕРєР° Рє РЅСѓР¶РЅРѕРјСѓ СЃРµСЂРІРµСЂСѓ
 stock ComputerClubRoomJoin(playerid, gameid, roomid) {
-    // Отправляем на спавн, где будет выдано нужное оружие и т.п.
+    // РћС‚РїСЂР°РІР»СЏРµРј РЅР° СЃРїР°РІРЅ, РіРґРµ Р±СѓРґРµС‚ РІС‹РґР°РЅРѕ РЅСѓР¶РЅРѕРµ РѕСЂСѓР¶РёРµ Рё С‚.Рї.
     TempTake(playerid,0);
     savePositionPlayerForMenu(playerid);
     CreateActorComp(playerid);
     PPSpawnPlayer(playerid);
 
-    // Сообщение о коннекте
+    // РЎРѕРѕР±С‰РµРЅРёРµ Рѕ РєРѕРЅРЅРµРєС‚Рµ
     {
-        static const fmt_message_join[] = "[ Компьютерный клуб ]: {cccccc}Вы подключились к серверу {ff9000}%s {ff9000}[%d/%d]";
+        static const fmt_message_join[] = "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ РїРѕРґРєР»СЋС‡РёР»РёСЃСЊ Рє СЃРµСЂРІРµСЂСѓ {ff9000}%s {ff9000}[%d/%d]";
         new message_join[sizeof fmt_message_join - 2 + 64 + 2 * (-2 + 3)];
         format(message_join, sizeof message_join, fmt_message_join, computerClubRoomInfo[gameid][roomid][ccriName], ComputerClubGetPlayersCount(gameid, roomid) + 1, computerClubRoomInfo[gameid][roomid][ccriSlotes]);
         SendClientMessage(playerid, 0x0088FFFF, message_join);
     }
     {
-        static const fmt_message_join[] = "[ Компьютерный клуб ]: {cccccc}%s подключился к серверу";
+        static const fmt_message_join[] = "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}%s РїРѕРґРєР»СЋС‡РёР»СЃСЏ Рє СЃРµСЂРІРµСЂСѓ";
         new message_join[sizeof fmt_message_join - 2 + MAX_PLAYER_NAME + 1];
         format(message_join, sizeof message_join, fmt_message_join, PlayerInfo[playerid][pName]);
 
         ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, message_join);
     }
 
-    // Подключение
+    // РџРѕРґРєР»СЋС‡РµРЅРёРµ
     computerClubPlayerInfo[playerid][ccpiInGame] = true;
     computerClubPlayerInfo[playerid][ccpiID] = e_ComputerClubGames: gameid;
     computerClubPlayerInfo[playerid][ccpiRoom] = roomid;
     ComputerClubSaveConnectPosition(playerid);
     
-    // Отмена отключения сервера при возвращении хоста
+    // РћС‚РјРµРЅР° РѕС‚РєР»СЋС‡РµРЅРёСЏ СЃРµСЂРІРµСЂР° РїСЂРё РІРѕР·РІСЂР°С‰РµРЅРёРё С…РѕСЃС‚Р°
     if (ComputerClubIsPlayerHost(playerid))
         KillTimer(computerClubRoomInfo[gameid][roomid][ccriHostDisconnectTimer]);
 
-    // Отображение текстдрава разминки
+    // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚РґСЂР°РІР° СЂР°Р·РјРёРЅРєРё
     if (gameid == _:COMPUTER_GAME_TDM) {
         if (!computerClubRoomInfo[gameid][roomid][ccriStarted]) TextDrawShowForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
     }
@@ -745,39 +748,39 @@ stock ComputerClubRoomJoin(playerid, gameid, roomid) {
     return 1;
 }
 
-// Отображает настройки названий/количества команд
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РЅР°СЃС‚СЂРѕР№РєРё РЅР°Р·РІР°РЅРёР№/РєРѕР»РёС‡РµСЃС‚РІР° РєРѕРјР°РЅРґ
 stock ShowComputerClubTeamSettings(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
     if (gameid < 0) return 0;
     if (computerClubRoomInfo[gameid][roomid][ccriStarted]) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу редактировать команды при запущенной игре");
+        SendClientMessage(playerid, 0xCCCCCCFF, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РєРѕРјР°РЅРґС‹ РїСЂРё Р·Р°РїСѓС‰РµРЅРЅРѕР№ РёРіСЂРµ");
         return ShowComputerClubMenu(playerid);
     }
 
     new bool: is_host = bool: ComputerClubIsPlayerHost(playerid);
 
-    new dialog_text[256] = "{cccccc}Добавить команду\n";
+    new dialog_text[256] = "{cccccc}Р”РѕР±Р°РІРёС‚СЊ РєРѕРјР°РЅРґСѓ\n";
     if (!is_host) dialog_text[0] = EOS;
     
     for (new i = 0; i < COMPUTER_CLUB_MAX_TEAMS; i++)
         format(dialog_text, sizeof dialog_text, "%s%s\n", dialog_text, computerClubTeamInfo[gameid][roomid][i]);
 
-    return ShowDialog(playerid, 1434, DIALOG_STYLE_LIST, "{ff9000}Управление командами", dialog_text, "Выбор", "Назад");
+    return ShowDialog(playerid, 1434, DIALOG_STYLE_LIST, "{ff9000}РЈРїСЂР°РІР»РµРЅРёРµ РєРѕРјР°РЅРґР°РјРё", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
 }
 
-// Отображает добавление новой команды
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРѕР±Р°РІР»РµРЅРёРµ РЅРѕРІРѕР№ РєРѕРјР°РЅРґС‹
 stock ShowComputerClubAddTeam(playerid) {
-    return ShowDialog(playerid, 1435, DIALOG_STYLE_INPUT, "{ff9000}Добавление команды", "{cccccc}Укажите название команды в формате: {ff9000}{сссссс}Серые\n\n{cccccc}Цвет также будет использоваться для никнеймов участников", "Ок", "Назад");
+    return ShowDialog(playerid, 1435, DIALOG_STYLE_INPUT, "{ff9000}Р”РѕР±Р°РІР»РµРЅРёРµ РєРѕРјР°РЅРґС‹", "{cccccc}РЈРєР°Р¶РёС‚Рµ РЅР°Р·РІР°РЅРёРµ РєРѕРјР°РЅРґС‹ РІ С„РѕСЂРјР°С‚Рµ: {ff9000}{СЃСЃСЃСЃСЃСЃ}РЎРµСЂС‹Рµ\n\n{cccccc}Р¦РІРµС‚ С‚Р°РєР¶Рµ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РЅРёРєРЅРµР№РјРѕРІ СѓС‡Р°СЃС‚РЅРёРєРѕРІ", "РћРє", "РќР°Р·Р°Рґ");
 }
 
-// Отображает редактирование указанной команды
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СѓРєР°Р·Р°РЅРЅРѕР№ РєРѕРјР°РЅРґС‹
 stock ShowComputerClubEditTeam(playerid, teamid) {
     SetPVarInt(playerid, "ComputerClubEditTeamId", teamid);
-    return ShowDialog(playerid, 1436, DIALOG_STYLE_INPUT, "{ff9000}Редактирование команды", "{cccccc}Введите название новой команды в формате: {ff9000}{сссссс}Серые\n\n{cccccc}Цвет также будет использоваться для никнеймов участников\nОставьте поле пустым для удаления команды", "Ок", "Назад");
+    return ShowDialog(playerid, 1436, DIALOG_STYLE_INPUT, "{ff9000}Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РєРѕРјР°РЅРґС‹", "{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РЅРѕРІРѕР№ РєРѕРјР°РЅРґС‹ РІ С„РѕСЂРјР°С‚Рµ: {ff9000}{СЃСЃСЃСЃСЃСЃ}РЎРµСЂС‹Рµ\n\n{cccccc}Р¦РІРµС‚ С‚Р°РєР¶Рµ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РЅРёРєРЅРµР№РјРѕРІ СѓС‡Р°СЃС‚РЅРёРєРѕРІ\nРћСЃС‚Р°РІСЊС‚Рµ РїРѕР»Рµ РїСѓСЃС‚С‹Рј РґР»СЏ СѓРґР°Р»РµРЅРёСЏ РєРѕРјР°РЅРґС‹", "РћРє", "РќР°Р·Р°Рґ");
 }
 
-// Отображает диалог выбора команды
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі РІС‹Р±РѕСЂР° РєРѕРјР°РЅРґС‹
 stock ShowComputerClubChooseTeam(playerid, gameid, bool: before_connection = false) {
     if (gameid < 0 || gameid > COMPUTER_CLUB_GAMES_AMOUNT) return 0;
     new roomid = GetPVarInt(playerid, "ComputerClubSelectedRoom") - 1;
@@ -790,15 +793,15 @@ stock ShowComputerClubChooseTeam(playerid, gameid, bool: before_connection = fal
         format(dialog_text, sizeof dialog_text, "%s%s\n", dialog_text, computerClubTeamInfo[gameid][roomid][i]);
     }
 
-    // Если игра без команд, просто присоединяем его к серверу
+    // Р•СЃР»Рё РёРіСЂР° Р±РµР· РєРѕРјР°РЅРґ, РїСЂРѕСЃС‚Рѕ РїСЂРёСЃРѕРµРґРёРЅСЏРµРј РµРіРѕ Рє СЃРµСЂРІРµСЂСѓ
     if (before_connection && isnull(dialog_text))
         return ComputerClubRoomJoin(playerid, gameid, roomid);
     
     SetPVarInt(playerid, "ComputerClubChooseTeamBC", before_connection ? 1 : 0);
-    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Выбор команды", dialog_text, "Выбор", "Выход");
+    return ShowDialog(playerid, 1425, DIALOG_STYLE_LIST, "{cccccc}Р’С‹Р±РѕСЂ РєРѕРјР°РЅРґС‹", dialog_text, "Р’С‹Р±РѕСЂ", "Р’С‹С…РѕРґ");
 }
 
-// Отображает диалог выбора карты
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі РІС‹Р±РѕСЂР° РєР°СЂС‚С‹
 stock ShowComputerClubChooseMap(playerid) {
     if (!ComputerClubIsPlayerHost(playerid)) return 0;
 
@@ -811,16 +814,16 @@ stock ShowComputerClubChooseMap(playerid) {
 
         format(dialog_text, sizeof dialog_text, "%s{cccccc}%s\n", dialog_text, computerClubLocationInfo[locationid][ccliName]);
     }
-    return ShowDialog(playerid, 1431, DIALOG_STYLE_LIST, "{ff9000}Выбор карты", dialog_text, "Выбор", "Назад");
+    return ShowDialog(playerid, 1431, DIALOG_STYLE_LIST, "{ff9000}Р’С‹Р±РѕСЂ РєР°СЂС‚С‹", dialog_text, "Р’С‹Р±РѕСЂ", "РќР°Р·Р°Рґ");
 }
 
-// Присваивает указанную команду игроку
+// РџСЂРёСЃРІР°РёРІР°РµС‚ СѓРєР°Р·Р°РЅРЅСѓСЋ РєРѕРјР°РЅРґСѓ РёРіСЂРѕРєСѓ
 stock ComputerClubSetPlayerTeam(playerid, teamid) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid > -1) {
         if (computerClubPlayerInfo[playerid][ccpiTeam] == teamid) return 0;
 
-        // [ Авто-баланс команд* ]
+        // [ РђРІС‚Рѕ-Р±Р°Р»Р°РЅСЃ РєРѕРјР°РЅРґ* ]
         computerClubPlayerInfo[playerid][ccpiTeam] = teamid;
 
         PPSpawnPlayer(playerid);
@@ -828,7 +831,7 @@ stock ComputerClubSetPlayerTeam(playerid, teamid) {
     return 1;
 }
 
-// Узнает максимальное количество команд для комнаты
+// РЈР·РЅР°РµС‚ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјР°РЅРґ РґР»СЏ РєРѕРјРЅР°С‚С‹
 stock ComputerClubGetMaxTeams(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
 
@@ -845,12 +848,12 @@ stock ComputerClubGetMaxTeams(gameid, roomid) {
     return COMPUTER_CLUB_MAX_TEAMS;
 }
 
-// Предлагает хосту удалить сервер или выйти на время, при попытке покинуть игру
+// РџСЂРµРґР»Р°РіР°РµС‚ С…РѕСЃС‚Сѓ СѓРґР°Р»РёС‚СЊ СЃРµСЂРІРµСЂ РёР»Рё РІС‹Р№С‚Рё РЅР° РІСЂРµРјСЏ, РїСЂРё РїРѕРїС‹С‚РєРµ РїРѕРєРёРЅСѓС‚СЊ РёРіСЂСѓ
 stock ComputerClubShowHostRoomExit(playerid) {
-    return ShowDialog(playerid, 1427, DIALOG_STYLE_MSGBOX, "{cd5700}Подтверждение выхода", "{cccccc}Вы являетесь хостом этого сервера\n\nВыберите один из двух возможных вариантов:\n{cd5700}1) {cccccc}Удаление сервера - комната будет моментально удалена, а все игроки получат соответствующее уведомление\n{cd5700}2) {cccccc}Выход на время - вы сможете вернуться не позже, чем через пять минут\n\nЕсли вы не вернётесь через отведенное время, сервер будет удалён автоматически", "Удаление", "Выход");
+    return ShowDialog(playerid, 1427, DIALOG_STYLE_MSGBOX, "{cd5700}РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РІС‹С…РѕРґР°", "{cccccc}Р’С‹ СЏРІР»СЏРµС‚РµСЃСЊ С…РѕСЃС‚РѕРј СЌС‚РѕРіРѕ СЃРµСЂРІРµСЂР°\n\nР’С‹Р±РµСЂРёС‚Рµ РѕРґРёРЅ РёР· РґРІСѓС… РІРѕР·РјРѕР¶РЅС‹С… РІР°СЂРёР°РЅС‚РѕРІ:\n{cd5700}1) {cccccc}РЈРґР°Р»РµРЅРёРµ СЃРµСЂРІРµСЂР° - РєРѕРјРЅР°С‚Р° Р±СѓРґРµС‚ РјРѕРјРµРЅС‚Р°Р»СЊРЅРѕ СѓРґР°Р»РµРЅР°, Р° РІСЃРµ РёРіСЂРѕРєРё РїРѕР»СѓС‡Р°С‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ СѓРІРµРґРѕРјР»РµРЅРёРµ\n{cd5700}2) {cccccc}Р’С‹С…РѕРґ РЅР° РІСЂРµРјСЏ - РІС‹ СЃРјРѕР¶РµС‚Рµ РІРµСЂРЅСѓС‚СЊСЃСЏ РЅРµ РїРѕР·Р¶Рµ, С‡РµРј С‡РµСЂРµР· РїСЏС‚СЊ РјРёРЅСѓС‚\n\nР•СЃР»Рё РІС‹ РЅРµ РІРµСЂРЅС‘С‚РµСЃСЊ С‡РµСЂРµР· РѕС‚РІРµРґРµРЅРЅРѕРµ РІСЂРµРјСЏ, СЃРµСЂРІРµСЂ Р±СѓРґРµС‚ СѓРґР°Р»С‘РЅ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё", "РЈРґР°Р»РµРЅРёРµ", "Р’С‹С…РѕРґ");
 }
 
-// Добавляет игрока в список заблокированных
+// Р”РѕР±Р°РІР»СЏРµС‚ РёРіСЂРѕРєР° РІ СЃРїРёСЃРѕРє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅС‹С…
 stock ComputerClubSetBanned(gameid, roomid, playerid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
 
@@ -865,7 +868,7 @@ stock ComputerClubSetBanned(gameid, roomid, playerid) {
     return 1;
 }
 
-// Проверяет, что название команды соответствует требуемому
+// РџСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ РЅР°Р·РІР°РЅРёРµ РєРѕРјР°РЅРґС‹ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ С‚СЂРµР±СѓРµРјРѕРјСѓ
 stock ComputerClubIsValidTeamName(const name[]) {
     if (isnull(name)) return false;
     if (name[0] != '{' || name[7] != '}') return false;
@@ -879,7 +882,7 @@ stock ComputerClubIsValidTeamName(const name[]) {
     return true;
 }
 
-// Добавляет команду в указанную комнату
+// Р”РѕР±Р°РІР»СЏРµС‚ РєРѕРјР°РЅРґСѓ РІ СѓРєР°Р·Р°РЅРЅСѓСЋ РєРѕРјРЅР°С‚Сѓ
 stock ComputerClubAddTeam(gameid, roomid, const name[]) {
     if (!ComputerClubIsValidTeamName(name)) return 0;
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
@@ -894,7 +897,7 @@ stock ComputerClubAddTeam(gameid, roomid, const name[]) {
     return 1;
 }
 
-// Удаляет указанную команду из комнаты
+// РЈРґР°Р»СЏРµС‚ СѓРєР°Р·Р°РЅРЅСѓСЋ РєРѕРјР°РЅРґСѓ РёР· РєРѕРјРЅР°С‚С‹
 stock ComputerClubDeleteTeam(gameid, roomid, teamid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     if (teamid < 0 || teamid > COMPUTER_CLUB_MAX_TEAMS) return 0;
@@ -905,7 +908,7 @@ stock ComputerClubDeleteTeam(gameid, roomid, teamid) {
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
             computerClubPlayerInfo[id][ccpiTeam] = 0;
             if (!ComputerClubIsPlayerHost(id)) {
-                SendClientMessage(id, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Хост сервера удалил команду, в которой вы состояли.");
+                SendClientMessage(id, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РҐРѕСЃС‚ СЃРµСЂРІРµСЂР° СѓРґР°Р»РёР» РєРѕРјР°РЅРґСѓ, РІ РєРѕС‚РѕСЂРѕР№ РІС‹ СЃРѕСЃС‚РѕСЏР»Рё.");
                 ShowComputerClubChooseTeam(id, gameid);
             }
         }
@@ -914,7 +917,7 @@ stock ComputerClubDeleteTeam(gameid, roomid, teamid) {
     return 1;
 }
 
-// Проверяет, заблокирован ли игрок
+// РџСЂРѕРІРµСЂСЏРµС‚, Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ Р»Рё РёРіСЂРѕРє
 stock ComputerClubIsPlayerBanned(gameid, roomid, playerid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
 
@@ -929,11 +932,11 @@ stock ComputerClubIsPlayerBanned(gameid, roomid, playerid) {
     return 0;
 }
 
-// Отключает игрока от текущего сервера
+// РћС‚РєР»СЋС‡Р°РµС‚ РёРіСЂРѕРєР° РѕС‚ С‚РµРєСѓС‰РµРіРѕ СЃРµСЂРІРµСЂР°
 stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     if (!computerClubPlayerInfo[playerid][ccpiInGame]) return 0;
 
-    Protect_DeleteGuns(playerid,0);
+    Protect_TakeGuns(playerid,0);
     TempGive(playerid);
     
     new gameid = computerClubPlayerInfo[playerid][ccpiID],
@@ -941,7 +944,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
         teamid = computerClubPlayerInfo[playerid][ccpiTeam];
     new Float: connect_pos[4]; connect_pos[0] = computerClubPlayerInfo[playerid][ccpiConnectPos][0]; connect_pos[1] = computerClubPlayerInfo[playerid][ccpiConnectPos][1]; connect_pos[2] = computerClubPlayerInfo[playerid][ccpiConnectPos][2]; connect_pos[3] = computerClubPlayerInfo[playerid][ccpiConnectPos][3]; 
    // new connect_world = computerClubPlayerInfo[playerid][ccpiConnectWorld], connect_interior = computerClubPlayerInfo[playerid][ccpiConnectInterior];
-    // Переключение на следующего игрока или выход из комнаты для наблюдателей, что смотрели за отключившимся игроком
+    // РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РЅР° СЃР»РµРґСѓСЋС‰РµРіРѕ РёРіСЂРѕРєР° РёР»Рё РІС‹С…РѕРґ РёР· РєРѕРјРЅР°С‚С‹ РґР»СЏ РЅР°Р±Р»СЋРґР°С‚РµР»РµР№, С‡С‚Рѕ СЃРјРѕС‚СЂРµР»Рё Р·Р° РѕС‚РєР»СЋС‡РёРІС€РёРјСЃСЏ РёРіСЂРѕРєРѕРј
     new bool: empty_room = ComputerClubGetPlayersCount(gameid, roomid) < 2;
     foreach (new id : Player) {
         new spectator_game, spectator_room, spectator_team, spectator_id;
@@ -956,53 +959,53 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
         }
     }
 
-    // Отключение
+    // РћС‚РєР»СЋС‡РµРЅРёРµ
     for(new e_ComputerClubPlayerInfo:i; i < e_ComputerClubPlayerInfo; ++i) computerClubPlayerInfo[playerid][i] = 0;
-    // Личное сообщение об отключении
+    // Р›РёС‡РЅРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС‚РєР»СЋС‡РµРЅРёРё
     {
-        static const fmt_message_exit[] = "[ Компьютерный клуб ]: {cccccc}Вы отключились от сервера {ff9000}%s";
+        static const fmt_message_exit[] = "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ РѕС‚РєР»СЋС‡РёР»РёСЃСЊ РѕС‚ СЃРµСЂРІРµСЂР° {ff9000}%s";
         new message_exit[sizeof fmt_message_exit - 2 + 65];
         format(message_exit, sizeof message_exit, fmt_message_exit, computerClubRoomInfo[gameid][roomid][ccriName]);
         SendClientMessage(playerid, 0x0088FFFF, message_exit);
     }
     
-    // Общее сообщение об отключении
+    // РћР±С‰РµРµ СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС‚РєР»СЋС‡РµРЅРёРё
     {
         new reason_str[30];
-        if (reason == COMPUTER_CLUB_D_REASON_SELF) strcat(reason_str, "{33ccff}Выход");
-        else if (reason == COMPUTER_CLUB_D_REASON_KICKED) strcat(reason_str, "{ffcc66}Кик");
+        if (reason == COMPUTER_CLUB_D_REASON_SELF) strcat(reason_str, "{33ccff}Р’С‹С…РѕРґ");
+        else if (reason == COMPUTER_CLUB_D_REASON_KICKED) strcat(reason_str, "{ffcc66}РљРёРє");
         else if (reason == COMPUTER_CLUB_D_REASON_BANNED) {
-            strcat(reason_str, "{cd5700}Бан");
+            strcat(reason_str, "{cd5700}Р‘Р°РЅ");
             ComputerClubSetBanned(gameid, roomid, playerid);
         }
-        else if (reason == COMPUTER_CLUB_D_REASON_NO_BET) strcat(reason_str, "{ffcc66}Нет суммы для ставки");
+        else if (reason == COMPUTER_CLUB_D_REASON_NO_BET) strcat(reason_str, "{ffcc66}РќРµС‚ СЃСѓРјРјС‹ РґР»СЏ СЃС‚Р°РІРєРё");
         
-        static const fmt_message_exit[] = "[ Компьютерный клуб ]: {cccccc}%s отключился от сервера [ Причина: %s {cccccc}]";
+        static const fmt_message_exit[] = "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}%s РѕС‚РєР»СЋС‡РёР»СЃСЏ РѕС‚ СЃРµСЂРІРµСЂР° [ РџСЂРёС‡РёРЅР°: %s {cccccc}]";
         new message_exit[sizeof fmt_message_exit - 2 + MAX_PLAYER_NAME - 2 + 35];
         format(message_exit, sizeof message_exit, fmt_message_exit, PlayerInfo[playerid][pName], reason_str);
 
         ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, message_exit);
     }
 
-    // Обработка дисконнекта хоста
+    // РћР±СЂР°Р±РѕС‚РєР° РґРёСЃРєРѕРЅРЅРµРєС‚Р° С…РѕСЃС‚Р°
     if (ComputerClubIsPlayerHost(playerid, gameid, roomid)) {
-        ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Хост этого сервера покинул игру.");
-        ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Если он не вернётся в течение 5 минут, сервер будет отключён.");
+        ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РҐРѕСЃС‚ СЌС‚РѕРіРѕ СЃРµСЂРІРµСЂР° РїРѕРєРёРЅСѓР» РёРіСЂСѓ.");
+        ComputerClubRoomMessage(gameid, roomid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р•СЃР»Рё РѕРЅ РЅРµ РІРµСЂРЅС‘С‚СЃСЏ РІ С‚РµС‡РµРЅРёРµ 5 РјРёРЅСѓС‚, СЃРµСЂРІРµСЂ Р±СѓРґРµС‚ РѕС‚РєР»СЋС‡С‘РЅ.");
         computerClubRoomInfo[gameid][roomid][ccriHostDisconnectTimer] = SetTimerEx("ComputerClubRoomDelete", 1000 * 60 * 5, false, "dd", gameid, roomid);
 
-        ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_HOST); // Делаем игру неактивной (дожидается возвращения хоста, ставки возвращаются и т.п.)
+        ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_HOST); // Р”РµР»Р°РµРј РёРіСЂСѓ РЅРµР°РєС‚РёРІРЅРѕР№ (РґРѕР¶РёРґР°РµС‚СЃСЏ РІРѕР·РІСЂР°С‰РµРЅРёСЏ С…РѕСЃС‚Р°, СЃС‚Р°РІРєРё РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ Рё С‚.Рї.)
     }
 
     DeleteActorComp(playerid);
 
-    // Спавн на том месте, где он зашел в игру
+    // РЎРїР°РІРЅ РЅР° С‚РѕРј РјРµСЃС‚Рµ, РіРґРµ РѕРЅ Р·Р°С€РµР» РІ РёРіСЂСѓ
     //new models = PlayerInfo[playerid][pModel];
     SetPosa[playerid] = 2;
     //ProtectSetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
     //SetPlayerVirtualWorld(playerid, connect_world); SetPlayerInterior(playerid, connect_interior);
 
-    // Завершение игры при выходе последнего оставшегося в команде участника
+    // Р—Р°РІРµСЂС€РµРЅРёРµ РёРіСЂС‹ РїСЂРё РІС‹С…РѕРґРµ РїРѕСЃР»РµРґРЅРµРіРѕ РѕСЃС‚Р°РІС€РµРіРѕСЃСЏ РІ РєРѕРјР°РЅРґРµ СѓС‡Р°СЃС‚РЅРёРєР°
     new same_team_players_count = ComputerClubGetPlayersCount(gameid, roomid, teamid);
     switch (e_ComputerClubGames: gameid) {
         case COMPUTER_GAME_TDM: {
@@ -1013,13 +1016,13 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     }
     if(Komputer[playerid] == 1 || Komputer[playerid] == 2) closecomp(playerid), CancelSelectTextDraw(playerid);
 
-    // Убирание текстдрава разминки
+    // РЈР±РёСЂР°РЅРёРµ С‚РµРєСЃС‚РґСЂР°РІР° СЂР°Р·РјРёРЅРєРё
     TextDrawHideForPlayer(playerid, COMPUTER_CLUB_WARMUP_TD);
     
     return 1;   
 }
 
-// Отправляет сообщение всем игрокам в комнате
+// РћС‚РїСЂР°РІР»СЏРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ РІСЃРµРј РёРіСЂРѕРєР°Рј РІ РєРѕРјРЅР°С‚Рµ
 stock ComputerClubRoomMessage(gameid, roomid, color, const message[]) {
     foreach (new playerid : Player) {
         if (!computerClubPlayerInfo[playerid][ccpiInGame]) continue;
@@ -1029,7 +1032,7 @@ stock ComputerClubRoomMessage(gameid, roomid, color, const message[]) {
     }
 }
 
-// Получает количество игроков в комнате
+// РџРѕР»СѓС‡Р°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РёРіСЂРѕРєРѕРІ РІ РєРѕРјРЅР°С‚Рµ
 stock ComputerClubGetPlayersCount(gameid, roomid, teamid = -1) {
     new count = 0;
     foreach (new id : Player) {
@@ -1043,7 +1046,7 @@ stock ComputerClubGetPlayersCount(gameid, roomid, teamid = -1) {
     return count;
 }
 
-// Получает ID комнаты указанной игры по ее порядковому номеру в списке
+// РџРѕР»СѓС‡Р°РµС‚ ID РєРѕРјРЅР°С‚С‹ СѓРєР°Р·Р°РЅРЅРѕР№ РёРіСЂС‹ РїРѕ РµРµ РїРѕСЂСЏРґРєРѕРІРѕРјСѓ РЅРѕРјРµСЂСѓ РІ СЃРїРёСЃРєРµ
 stock ComputerClubGetRoomIdByIndex(gameid, index) {
     new counter = 0;
     for (new roomid = 0; roomid < COMPUTER_CLUB_MAX_ROOMS; roomid++) {
@@ -1055,9 +1058,9 @@ stock ComputerClubGetRoomIdByIndex(gameid, index) {
     return -1;
 }
 
-// Отображает диалог списка серверов
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі СЃРїРёСЃРєР° СЃРµСЂРІРµСЂРѕРІ
 stock ShowComputerClubRoomJoin(playerid, gameid) {
-    static const header[] = "{ff9000}Название\t{cccccc}Слоты\t{cccccc}Создатель";
+    static const header[] = "{ff9000}РќР°Р·РІР°РЅРёРµ\t{cccccc}РЎР»РѕС‚С‹\t{cccccc}РЎРѕР·РґР°С‚РµР»СЊ";
     new dialog_text[sizeof header + (64 + 9 + MAX_PLAYER_NAME) * 20 + 1];
     strcat(dialog_text, header);
 
@@ -1082,40 +1085,40 @@ stock ShowComputerClubRoomJoin(playerid, gameid) {
         );
     }
 
-    if (room_count > 0) return ShowDialog(playerid, 1423, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Список серверов", dialog_text, "Выбор", "Закрыть");
-    return SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Нет доступных комнат для указанной игры");
+    if (room_count > 0) return ShowDialog(playerid, 1423, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}РЎРїРёСЃРѕРє СЃРµСЂРІРµСЂРѕРІ", dialog_text, "Р’С‹Р±РѕСЂ", "Р—Р°РєСЂС‹С‚СЊ");
+    return SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… РєРѕРјРЅР°С‚ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕР№ РёРіСЂС‹");
 }
 
-// Отображает диалог подтверждения присоединения к комнате (+ ввод пароля для закрытых сессий)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РїСЂРёСЃРѕРµРґРёРЅРµРЅРёСЏ Рє РєРѕРјРЅР°С‚Рµ (+ РІРІРѕРґ РїР°СЂРѕР»СЏ РґР»СЏ Р·Р°РєСЂС‹С‚С‹С… СЃРµСЃСЃРёР№)
 stock ComputerClubRoomJoinAccept(playerid, gameid, roomid) {
     new bool: is_spectate = GetPVarInt(playerid, "ComputerClubChooseWatchRoom") > 0;
     
-    // Если игрок заблокирован
+    // Р•СЃР»Рё РёРіСЂРѕРє Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ
     if (ComputerClubIsPlayerBanned(gameid, roomid, playerid)) {
-        SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы не можете присоединиться к этому серверу, так как были заблокированы");
+        SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СЌС‚РѕРјСѓ СЃРµСЂРІРµСЂСѓ, С‚Р°Рє РєР°Рє Р±С‹Р»Рё Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅС‹");
         return ShowComputerClubRoomJoin(playerid, gameid);
     }
 
-    // Если на сервере нет мест
+    // Р•СЃР»Рё РЅР° СЃРµСЂРІРµСЂРµ РЅРµС‚ РјРµСЃС‚
     if (ComputerClubIsRoomFull(gameid, roomid) && !is_spectate)
         return ShowComputerClubRoomJoin(playerid, gameid);
 
-    // Если на сервере нет игроков, и игрок пытается зайти в наблюдатели
+    // Р•СЃР»Рё РЅР° СЃРµСЂРІРµСЂРµ РЅРµС‚ РёРіСЂРѕРєРѕРІ, Рё РёРіСЂРѕРє РїС‹С‚Р°РµС‚СЃСЏ Р·Р°Р№С‚Рё РІ РЅР°Р±Р»СЋРґР°С‚РµР»Рё
     if (ComputerClubIsRoomEmpty(gameid, roomid) && is_spectate) {
-        SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}На этом сервере нет игроков для наблюдения");
+        SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ РЅРµС‚ РёРіСЂРѕРєРѕРІ РґР»СЏ РЅР°Р±Р»СЋРґРµРЅРёСЏ");
         return ShowComputerClubRoomJoin(playerid, gameid);
     }
 
-    // Если на сервере стоит запрет на просмотр и игрок пытается зайти в наблюдатели
+    // Р•СЃР»Рё РЅР° СЃРµСЂРІРµСЂРµ СЃС‚РѕРёС‚ Р·Р°РїСЂРµС‚ РЅР° РїСЂРѕСЃРјРѕС‚СЂ Рё РёРіСЂРѕРє РїС‹С‚Р°РµС‚СЃСЏ Р·Р°Р№С‚Рё РІ РЅР°Р±Р»СЋРґР°С‚РµР»Рё
     if (!computerClubRoomInfo[gameid][roomid][ccriViewAccess] && is_spectate) {
-        SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Настройки этого сервера запрещают просмотр игры");
+        SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќР°СЃС‚СЂРѕР№РєРё СЌС‚РѕРіРѕ СЃРµСЂРІРµСЂР° Р·Р°РїСЂРµС‰Р°СЋС‚ РїСЂРѕСЃРјРѕС‚СЂ РёРіСЂС‹");
         return ShowComputerClubRoomJoin(playerid, gameid);
     }
 
     new bool: is_public = bool: ComputerClubIsRoomPublic(gameid, roomid);
 
     new dialog_text[1024];
-    format(dialog_text, sizeof dialog_text, "{cccccc}Название: {ff9000}%s\n{cccccc}Игроки: {ff9000}[%d/%d]\n{cccccc}Создатель: {ff9000}%s\n\n{cccccc}",
+    format(dialog_text, sizeof dialog_text, "{cccccc}РќР°Р·РІР°РЅРёРµ: {ff9000}%s\n{cccccc}РРіСЂРѕРєРё: {ff9000}[%d/%d]\n{cccccc}РЎРѕР·РґР°С‚РµР»СЊ: {ff9000}%s\n\n{cccccc}",
         computerClubRoomInfo[gameid][roomid][ccriName],
         ComputerClubGetPlayersCount(gameid, roomid),
         computerClubRoomInfo[gameid][roomid][ccriSlotes],
@@ -1123,12 +1126,12 @@ stock ComputerClubRoomJoinAccept(playerid, gameid, roomid) {
     );
 
     if (!is_spectate) {
-        strcat(dialog_text, is_public ? "Вы действительно хотите присоединиться к этому серверу?" : "Введите пароль для подтверждения входа на сервер:");
+        strcat(dialog_text, is_public ? "Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СЌС‚РѕРјСѓ СЃРµСЂРІРµСЂСѓ?" : "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РІС…РѕРґР° РЅР° СЃРµСЂРІРµСЂ:");
     } else {
-        strcat(dialog_text, is_public ? "Вы действительно хотите присоединиться к этому серверу в качестве наблюдателя?" : "Введите пароль для подтверждения входа на сервер в качестве наблюдателя:");
+        strcat(dialog_text, is_public ? "Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СЌС‚РѕРјСѓ СЃРµСЂРІРµСЂСѓ РІ РєР°С‡РµСЃС‚РІРµ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ?" : "Р’РІРµРґРёС‚Рµ РїР°СЂРѕР»СЊ РґР»СЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёСЏ РІС…РѕРґР° РЅР° СЃРµСЂРІРµСЂ РІ РєР°С‡РµСЃС‚РІРµ РЅР°Р±Р»СЋРґР°С‚РµР»СЏ:");
     }
     
-    return ShowDialog(playerid, 1424, is_public ? DIALOG_STYLE_MSGBOX : DIALOG_STYLE_INPUT, "{ff9000}Подтверждение входа", dialog_text, "Вход", "Назад");
+    return ShowDialog(playerid, 1424, is_public ? DIALOG_STYLE_MSGBOX : DIALOG_STYLE_INPUT, "{ff9000}РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ РІС…РѕРґР°", dialog_text, "Р’С…РѕРґ", "РќР°Р·Р°Рґ");
 }
 
 forward ComputerClubRoomDelete(gameid, roomid);
@@ -1139,7 +1142,7 @@ public ComputerClubRoomDelete(gameid, roomid) {
         if (!computerClubPlayerInfo[playerid][ccpiInGame]) continue;
 
         if (ComputerClubIsPlayerInRoom(playerid, gameid, roomid)) {
-            SendClientMessage(playerid, 0x0088FFCC, "[ Компьютерный клуб ]: {cccccc}Сервер был отключён, вы будете возвращены на прежнее место");
+            SendClientMessage(playerid, 0x0088FFCC, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЎРµСЂРІРµСЂ Р±С‹Р» РѕС‚РєР»СЋС‡С‘РЅ, РІС‹ Р±СѓРґРµС‚Рµ РІРѕР·РІСЂР°С‰РµРЅС‹ РЅР° РїСЂРµР¶РЅРµРµ РјРµСЃС‚Рѕ");
             ComputerClubRoomExit(playerid, COMPUTER_CLUB_D_REASON_SELF);
         }
     }
@@ -1149,7 +1152,7 @@ public ComputerClubRoomDelete(gameid, roomid) {
     return 1;
 }
 
-// Отображает диалог изменения статуса комнате (остановить или запустить игру на сервере)
+// РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРёР°Р»РѕРі РёР·РјРµРЅРµРЅРёСЏ СЃС‚Р°С‚СѓСЃР° РєРѕРјРЅР°С‚Рµ (РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РёР»Рё Р·Р°РїСѓСЃС‚РёС‚СЊ РёРіСЂСѓ РЅР° СЃРµСЂРІРµСЂРµ)
 stock ComputerClubShowSetRoomState(playerid) {
     if (!ComputerClubIsPlayerHost(playerid)) return 0;
 
@@ -1162,28 +1165,28 @@ stock ComputerClubShowSetRoomState(playerid) {
 
     new title[64], dialog_text[512];
     if (status) {
-        strcat(title, "{cd5700}Завершение игры");
-        format(dialog_text, sizeof dialog_text, "{cccccc}Вы можете закончить игру досрочно\n\nВ этом случае все игроки будут возвращены на свои места, а прогресс сброшен\n\nСтавка комнаты будет возмещена всем присутствующим игрокам {ff9000}($%d)", room_bet);
+        strcat(title, "{cd5700}Р—Р°РІРµСЂС€РµРЅРёРµ РёРіСЂС‹");
+        format(dialog_text, sizeof dialog_text, "{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ Р·Р°РєРѕРЅС‡РёС‚СЊ РёРіСЂСѓ РґРѕСЃСЂРѕС‡РЅРѕ\n\nР’ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РІСЃРµ РёРіСЂРѕРєРё Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ РЅР° СЃРІРѕРё РјРµСЃС‚Р°, Р° РїСЂРѕРіСЂРµСЃСЃ СЃР±СЂРѕС€РµРЅ\n\nРЎС‚Р°РІРєР° РєРѕРјРЅР°С‚С‹ Р±СѓРґРµС‚ РІРѕР·РјРµС‰РµРЅР° РІСЃРµРј РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‰РёРј РёРіСЂРѕРєР°Рј {ff9000}($%d)", room_bet);
     } else {
-        strcat(title, "{99ff99}Запуск игры");
-        format(dialog_text, sizeof dialog_text, "{cccccc}При запуске игры все участники комнаты будут возрождены на своих местах\n\nСо всех игроков автоматически будет снята ставка комнаты {ff9000}($%d)\n{cccccc}Если хост сервера покинет игру или она завершится принудительно, деньги будут возвращены участникам", room_bet);
+        strcat(title, "{99ff99}Р—Р°РїСѓСЃРє РёРіСЂС‹");
+        format(dialog_text, sizeof dialog_text, "{cccccc}РџСЂРё Р·Р°РїСѓСЃРєРµ РёРіСЂС‹ РІСЃРµ СѓС‡Р°СЃС‚РЅРёРєРё РєРѕРјРЅР°С‚С‹ Р±СѓРґСѓС‚ РІРѕР·СЂРѕР¶РґРµРЅС‹ РЅР° СЃРІРѕРёС… РјРµСЃС‚Р°С…\n\nРЎРѕ РІСЃРµС… РёРіСЂРѕРєРѕРІ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё Р±СѓРґРµС‚ СЃРЅСЏС‚Р° СЃС‚Р°РІРєР° РєРѕРјРЅР°С‚С‹ {ff9000}($%d)\n{cccccc}Р•СЃР»Рё С…РѕСЃС‚ СЃРµСЂРІРµСЂР° РїРѕРєРёРЅРµС‚ РёРіСЂСѓ РёР»Рё РѕРЅР° Р·Р°РІРµСЂС€РёС‚СЃСЏ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ, РґРµРЅСЊРіРё Р±СѓРґСѓС‚ РІРѕР·РІСЂР°С‰РµРЅС‹ СѓС‡Р°СЃС‚РЅРёРєР°Рј", room_bet);
     }
 
-    return ShowDialog(playerid, 1426, DIALOG_STYLE_MSGBOX, title, dialog_text, "Ок", "Назад");
+    return ShowDialog(playerid, 1426, DIALOG_STYLE_MSGBOX, title, dialog_text, "РћРє", "РќР°Р·Р°Рґ");
 }
 
-// Спавнит игрока комп. клуба (обертка под таймер)
+// РЎРїР°РІРЅРёС‚ РёРіСЂРѕРєР° РєРѕРјРї. РєР»СѓР±Р° (РѕР±РµСЂС‚РєР° РїРѕРґ С‚Р°Р№РјРµСЂ)
 forward ComputerClubSpawnPlayer(id);
 public ComputerClubSpawnPlayer(id) {
     ComputerClubSetSpectateMode(id, false);
     return 1;
 }
 
-// Обработчик победы в раунде (принимает номер проигравшей/победившей команды)
+// РћР±СЂР°Р±РѕС‚С‡РёРє РїРѕР±РµРґС‹ РІ СЂР°СѓРЅРґРµ (РїСЂРёРЅРёРјР°РµС‚ РЅРѕРјРµСЂ РїСЂРѕРёРіСЂР°РІС€РµР№/РїРѕР±РµРґРёРІС€РµР№ РєРѕРјР°РЅРґС‹)
 stock ComputerClubWinRoundHandler(gameid, roomid, win_team = -1, lose_team = -1) {
     computerClubRoomInfo[gameid][roomid][ccriRound]++;
 
-    // Получаем номер второй команды (чтобы знать win_team и lose_team)
+    // РџРѕР»СѓС‡Р°РµРј РЅРѕРјРµСЂ РІС‚РѕСЂРѕР№ РєРѕРјР°РЅРґС‹ (С‡С‚РѕР±С‹ Р·РЅР°С‚СЊ win_team Рё lose_team)
     foreach (new id : Player) {
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
             new team = win_team > -1 ? win_team : (lose_team > -1 ? lose_team : -1);
@@ -1200,28 +1203,28 @@ stock ComputerClubWinRoundHandler(gameid, roomid, win_team = -1, lose_team = -1)
         }
     }
 
-    // Прибавляем победу команде
+    // РџСЂРёР±Р°РІР»СЏРµРј РїРѕР±РµРґСѓ РєРѕРјР°РЅРґРµ
     computerClubRoomInfo[gameid][roomid][ccriTeamScores][win_team]++;
 
-    // Если количество побед равняется максимальному, значит игра завершена победой этой команды
+    // Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР±РµРґ СЂР°РІРЅСЏРµС‚СЃСЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРјСѓ, Р·РЅР°С‡РёС‚ РёРіСЂР° Р·Р°РІРµСЂС€РµРЅР° РїРѕР±РµРґРѕР№ СЌС‚РѕР№ РєРѕРјР°РЅРґС‹
     for (new i = 0; i < COMPUTER_CLUB_MAX_TEAMS; i++)
         if (computerClubRoomInfo[gameid][roomid][ccriTeamScores][i] >= computerClubRoomInfo[gameid][roomid][ccriMaxRounds]) {
             ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_END, i);
             break;
         }
     
-    // Спавним наблюдающих для следующего раунда
+    // РЎРїР°РІРЅРёРј РЅР°Р±Р»СЋРґР°СЋС‰РёС… РґР»СЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СЂР°СѓРЅРґР°
     foreach (new id : Player)
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid))
             SetTimerEx("ComputerClubSpawnPlayer", 2000, false, "d", id);
 
-    // Выводим сообщение о победном раунде одной из команд
+    // Р’С‹РІРѕРґРёРј СЃРѕРѕР±С‰РµРЅРёРµ Рѕ РїРѕР±РµРґРЅРѕРј СЂР°СѓРЅРґРµ РѕРґРЅРѕР№ РёР· РєРѕРјР°РЅРґ
     new team_color[2][9];
     for (new i = 0; i < 2; i++)
         strmid(team_color[i], computerClubTeamInfo[gameid][roomid][i], 0, 8);
     
     new message[128];
-    format(message, sizeof message, "Команда %s {cccccc}одержала победу в этом раунде: [%s%d{cccccc}-%s%d{cccccc}]",
+    format(message, sizeof message, "РљРѕРјР°РЅРґР° %s {cccccc}РѕРґРµСЂР¶Р°Р»Р° РїРѕР±РµРґСѓ РІ СЌС‚РѕРј СЂР°СѓРЅРґРµ: [%s%d{cccccc}-%s%d{cccccc}]",
         computerClubTeamInfo[gameid][roomid][win_team],
         team_color[0], computerClubRoomInfo[gameid][roomid][ccriTeamScores][0],
         team_color[1], computerClubRoomInfo[gameid][roomid][ccriTeamScores][1]
@@ -1231,7 +1234,7 @@ stock ComputerClubWinRoundHandler(gameid, roomid, win_team = -1, lose_team = -1)
     
     return 1;
 }
-// Обработчик победы (принимает номер проигравшей/победившей команды или игрока)
+// РћР±СЂР°Р±РѕС‚С‡РёРє РїРѕР±РµРґС‹ (РїСЂРёРЅРёРјР°РµС‚ РЅРѕРјРµСЂ РїСЂРѕРёРіСЂР°РІС€РµР№/РїРѕР±РµРґРёРІС€РµР№ РєРѕРјР°РЅРґС‹ РёР»Рё РёРіСЂРѕРєР°)
 stock ComputerClubWinHandler(gameid, roomid, win_team = -1, lose_team = -1, win_playerid = -1) {
     foreach (new id : Player) {
         new player_game = GetPlayerActiveComputerGame(id),
@@ -1242,9 +1245,9 @@ stock ComputerClubWinHandler(gameid, roomid, win_team = -1, lose_team = -1, win_
         new bool: is_winner = (win_team > -1 && player_team == win_team) || (win_playerid > -1 && id == win_playerid) || (lose_team > -1 && player_team != lose_team);
         if (is_winner) {
             SetPVarInt(id, "ComputerClubIsWinner", 1);
-            SuccessMessage(id,"{44ff99} Поздравляем с победой! Ваша команда выйграла");
+            SuccessMessage(id,"{44ff99} РџРѕР·РґСЂР°РІР»СЏРµРј СЃ РїРѕР±РµРґРѕР№! Р’Р°С€Р° РєРѕРјР°РЅРґР° РІС‹Р№РіСЂР°Р»Р°");
         } else {
-            ErrorMessage(id,"{ff6347} Печально, но вы не расстраивайтесь! Ваша команда проиграла");
+            ErrorMessage(id,"{ff6347} РџРµС‡Р°Р»СЊРЅРѕ, РЅРѕ РІС‹ РЅРµ СЂР°СЃСЃС‚СЂР°РёРІР°Р№С‚РµСЃСЊ! Р’Р°С€Р° РєРѕРјР°РЅРґР° РїСЂРѕРёРіСЂР°Р»Р°");
         }
         if (gameid == _:COMPUTER_GAME_TDM) {
             if (!computerClubRoomInfo[gameid][roomid][ccriStarted]) TextDrawShowForPlayer(id, COMPUTER_CLUB_WARMUP_TD);
@@ -1256,13 +1259,13 @@ stock ComputerClubWinHandler(gameid, roomid, win_team = -1, lose_team = -1, win_
     return 1;
 }
 
-// Узнает, пуста ли комната
+// РЈР·РЅР°РµС‚, РїСѓСЃС‚Р° Р»Рё РєРѕРјРЅР°С‚Р°
 stock ComputerClubIsRoomEmpty(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     return ComputerClubGetPlayersCount(gameid, roomid) < 1;
 }
 
-// Узнает, занята ли комната (нет мест в командах и(-или) нет слотов)
+// РЈР·РЅР°РµС‚, Р·Р°РЅСЏС‚Р° Р»Рё РєРѕРјРЅР°С‚Р° (РЅРµС‚ РјРµСЃС‚ РІ РєРѕРјР°РЅРґР°С… Рё(-РёР»Рё) РЅРµС‚ СЃР»РѕС‚РѕРІ)
 stock ComputerClubIsRoomFull(gameid, roomid) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     if (ComputerClubGetPlayersCount(gameid, roomid) >= computerClubRoomInfo[gameid][roomid][ccriSlotes]) return 1;
@@ -1279,17 +1282,17 @@ stock ComputerClubIsRoomFull(gameid, roomid) {
     return 1;
 }
 
-// Проверяет, следит ли игрок за кем-либо в комп. клубе
+// РџСЂРѕРІРµСЂСЏРµС‚, СЃР»РµРґРёС‚ Р»Рё РёРіСЂРѕРє Р·Р° РєРµРј-Р»РёР±Рѕ РІ РєРѕРјРї. РєР»СѓР±Рµ
 stock ComputerClubIsSpectate(playerid) {
     return (GetPVarInt(playerid, "ComputerClubSpectateTeam") - 2) >= -1;
 }
 
-// Проверяет, является ли игрок наблюдателем (следит, но не присоединен к комнате)
+// РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РёРіСЂРѕРє РЅР°Р±Р»СЋРґР°С‚РµР»РµРј (СЃР»РµРґРёС‚, РЅРѕ РЅРµ РїСЂРёСЃРѕРµРґРёРЅРµРЅ Рє РєРѕРјРЅР°С‚Рµ)
 stock ComputerClubIsSpectator(playerid) {
     return ComputerClubIsSpectate(playerid) && GetPlayerActiveComputerGame(playerid) < 0;
 }
 
-// Получает данные о наблюдателе
+// РџРѕР»СѓС‡Р°РµС‚ РґР°РЅРЅС‹Рµ Рѕ РЅР°Р±Р»СЋРґР°С‚РµР»Рµ
 stock ComputerClubGetSpectatorData(playerid, &gameid, &roomid, &teamid, &id) {
     if (!ComputerClubIsSpectate(playerid)) return;
 
@@ -1299,8 +1302,8 @@ stock ComputerClubGetSpectatorData(playerid, &gameid, &roomid, &teamid, &id) {
     id = GetPVarInt(playerid, "ComputerClubSpectateId");
 }
 
-// Переводит игрока в режим слежки за указанной командой (-1 это игроки любой команды)
-// (надо сделать обработку дисконнекта, чтобы вызывалось переключение на следующего)
+// РџРµСЂРµРІРѕРґРёС‚ РёРіСЂРѕРєР° РІ СЂРµР¶РёРј СЃР»РµР¶РєРё Р·Р° СѓРєР°Р·Р°РЅРЅРѕР№ РєРѕРјР°РЅРґРѕР№ (-1 СЌС‚Рѕ РёРіСЂРѕРєРё Р»СЋР±РѕР№ РєРѕРјР°РЅРґС‹)
+// (РЅР°РґРѕ СЃРґРµР»Р°С‚СЊ РѕР±СЂР°Р±РѕС‚РєСѓ РґРёСЃРєРѕРЅРЅРµРєС‚Р°, С‡С‚РѕР±С‹ РІС‹Р·С‹РІР°Р»РѕСЃСЊ РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РЅР° СЃР»РµРґСѓСЋС‰РµРіРѕ)
 stock ComputerClubSetSpectateMode(playerid, bool: status = true, gameid = -1, roomid = -1, teamid = -1) {
     if (!status) {
         DeletePVar(playerid, "ComputerClubSpectateTeam");
@@ -1317,7 +1320,7 @@ stock ComputerClubSetSpectateMode(playerid, bool: status = true, gameid = -1, ro
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
     }
 
-    // Ставим в спек за первым игроком в команде
+    // РЎС‚Р°РІРёРј РІ СЃРїРµРє Р·Р° РїРµСЂРІС‹Рј РёРіСЂРѕРєРѕРј РІ РєРѕРјР°РЅРґРµ
     foreach (new id : Player) {
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
             if (playerid == id) continue;
@@ -1337,15 +1340,15 @@ stock ComputerClubSetSpectateMode(playerid, bool: status = true, gameid = -1, ro
         }
     }
     
-    // Если не за кем следить - ничего не делаем
+    // Р•СЃР»Рё РЅРµ Р·Р° РєРµРј СЃР»РµРґРёС‚СЊ - РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
     return 0;
 }
 
-// Переводит в спек за указанной командой (обертка для использования в таймере)
+// РџРµСЂРµРІРѕРґРёС‚ РІ СЃРїРµРє Р·Р° СѓРєР°Р·Р°РЅРЅРѕР№ РєРѕРјР°РЅРґРѕР№ (РѕР±РµСЂС‚РєР° РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РІ С‚Р°Р№РјРµСЂРµ)
 forward ComputerClubSpecTeam(playerid, teamid);
 public ComputerClubSpecTeam(playerid, teamid) { ComputerClubSetSpectateMode(playerid, .teamid = teamid); }
 
-// Обертка под переход в спек (присваивает нужный вирт мир и интерьер перед ним)
+// РћР±РµСЂС‚РєР° РїРѕРґ РїРµСЂРµС…РѕРґ РІ СЃРїРµРє (РїСЂРёСЃРІР°РёРІР°РµС‚ РЅСѓР¶РЅС‹Р№ РІРёСЂС‚ РјРёСЂ Рё РёРЅС‚РµСЂСЊРµСЂ РїРµСЂРµРґ РЅРёРј)
 stock ComputerClubSpectatePlayer(playerid, id) {
     new world = GetPlayerVirtualWorld(id),
         interior = GetPlayerInterior(id);
@@ -1358,7 +1361,7 @@ stock ComputerClubSpectatePlayer(playerid, id) {
     PlayerSpectatePlayer(playerid, id);
 }
 
-// Меняет игрока в спеке вперед/назад, если игрок в режиме слежки (SetSpectateMode)
+// РњРµРЅСЏРµС‚ РёРіСЂРѕРєР° РІ СЃРїРµРєРµ РІРїРµСЂРµРґ/РЅР°Р·Р°Рґ, РµСЃР»Рё РёРіСЂРѕРє РІ СЂРµР¶РёРјРµ СЃР»РµР¶РєРё (SetSpectateMode)
 stock ComputerClubSwitchSpectate(playerid, bool: next) {
     new gameid = GetPVarInt(playerid, "ComputerClubSpectateGame"),
         roomid = GetPVarInt(playerid, "ComputerClubSpectateRoom"),
@@ -1366,7 +1369,7 @@ stock ComputerClubSwitchSpectate(playerid, bool: next) {
 
     new spectate_team = GetPVarInt(playerid, "ComputerClubSpectateTeam") - 2;
 
-    if (spectate_team < -1) return 0; // Если игрок не в слежке
+    if (spectate_team < -1) return 0; // Р•СЃР»Рё РёРіСЂРѕРє РЅРµ РІ СЃР»РµР¶РєРµ
 
     new players[MAX_PLAYERS] = {-1, ...};
     new players_i = 0;
@@ -1409,12 +1412,12 @@ stock ComputerClubSwitchSpectate(playerid, bool: next) {
     return 1;
 }
 
-// Выплачивает игрокам в комнате выигрыш, деля общий банк комнаты на всех победителей
+// Р’С‹РїР»Р°С‡РёРІР°РµС‚ РёРіСЂРѕРєР°Рј РІ РєРѕРјРЅР°С‚Рµ РІС‹РёРіСЂС‹С€, РґРµР»СЏ РѕР±С‰РёР№ Р±Р°РЅРє РєРѕРјРЅР°С‚С‹ РЅР° РІСЃРµС… РїРѕР±РµРґРёС‚РµР»РµР№
 stock ComputerClubPayout(gameid, roomid) {
     new total_bet = computerClubRoomInfo[gameid][roomid][ccriTotalBet];
-    if (total_bet == 0) return 0; // Ничего не делаем, если игра без ставки
+    if (total_bet == 0) return 0; // РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј, РµСЃР»Рё РёРіСЂР° Р±РµР· СЃС‚Р°РІРєРё
 
-    // Узнаем победителей и высчитываем сумму выигрыша для каждого из них
+    // РЈР·РЅР°РµРј РїРѕР±РµРґРёС‚РµР»РµР№ Рё РІС‹СЃС‡РёС‚С‹РІР°РµРј СЃСѓРјРјСѓ РІС‹РёРіСЂС‹С€Р° РґР»СЏ РєР°Р¶РґРѕРіРѕ РёР· РЅРёС…
     new winners[MAX_PLAYERS] = {-1, ...}, winners_count = 0;
     foreach (new id : Player) {
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
@@ -1424,14 +1427,14 @@ stock ComputerClubPayout(gameid, roomid) {
         }
     }
 
-    // Выплачиваем выигрыш
+    // Р’С‹РїР»Р°С‡РёРІР°РµРј РІС‹РёРіСЂС‹С€
     new prize = _:(total_bet / winners_count);
     for (new i = 0; i < winners_count; i++) {
         new playerid = winners[i];
         
         oGivePlayerMoney(playerid, prize);
 
-        // Оповещение о выигрыше
+        // РћРїРѕРІРµС‰РµРЅРёРµ Рѕ РІС‹РёРіСЂС‹С€Рµ
         PlayerPlaySound(playerid, 31205, 0.0, 0.0, 0.0);
         static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~$%d";
         new text[sizeof text_fmt - 2 + 15];
@@ -1439,21 +1442,21 @@ stock ComputerClubPayout(gameid, roomid) {
         GameTextForPlayer(playerid, text, 2000, 3);
     }
 
-    // Обнуляем банк комнаты
+    // РћР±РЅСѓР»СЏРµРј Р±Р°РЅРє РєРѕРјРЅР°С‚С‹
     computerClubRoomInfo[gameid][roomid][ccriTotalBet] = 0;
 
     return 1;
 }
 
-// Забирает у игроков сумму, необходимую для игры
+// Р—Р°Р±РёСЂР°РµС‚ Сѓ РёРіСЂРѕРєРѕРІ СЃСѓРјРјСѓ, РЅРµРѕР±С…РѕРґРёРјСѓСЋ РґР»СЏ РёРіСЂС‹
 stock ComputerClubPayin(gameid, roomid) {
     new room_bet = computerClubRoomInfo[gameid][roomid][ccriBet];
-    if (room_bet == 0) return 0; // Ничего не делаем, если игра без ставки
+    if (room_bet == 0) return 0; // РќРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј, РµСЃР»Рё РёРіСЂР° Р±РµР· СЃС‚Р°РІРєРё
 
     foreach (new id : Player) {
-        // Если игрок в комнате и у него есть деньги на оплату ставки
+        // Р•СЃР»Рё РёРіСЂРѕРє РІ РєРѕРјРЅР°С‚Рµ Рё Сѓ РЅРµРіРѕ РµСЃС‚СЊ РґРµРЅСЊРіРё РЅР° РѕРїР»Р°С‚Сѓ СЃС‚Р°РІРєРё
         if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
-            // Кик игрока, если у него недостаточно денег для ставки
+            // РљРёРє РёРіСЂРѕРєР°, РµСЃР»Рё Сѓ РЅРµРіРѕ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РґРµРЅРµРі РґР»СЏ СЃС‚Р°РІРєРё
             if (PlayerInfo[id][pMoney] - room_bet < 0) {
                 new teamid = computerClubPlayerInfo[id][ccpiTeam];
                 ComputerClubRoomExit(id, COMPUTER_CLUB_D_REASON_NO_BET);
@@ -1465,7 +1468,7 @@ stock ComputerClubPayin(gameid, roomid) {
                         break;
                     }
 
-                    // Завершаем игру, возвращаем ставки (при ее наличии)
+                    // Р—Р°РІРµСЂС€Р°РµРј РёРіСЂСѓ, РІРѕР·РІСЂР°С‰Р°РµРј СЃС‚Р°РІРєРё (РїСЂРё РµРµ РЅР°Р»РёС‡РёРё)
                     if (empty_team) ComputerClubSetRoomState(gameid, roomid, false, COMPUTER_CLUB_ROOM_HOST);
                 }
 
@@ -1475,7 +1478,7 @@ stock ComputerClubPayin(gameid, roomid) {
             oGivePlayerMoney(id, -room_bet);
             computerClubRoomInfo[gameid][roomid][ccriTotalBet] += room_bet;
 
-            // Оповещение о принятии ставки
+            // РћРїРѕРІРµС‰РµРЅРёРµ Рѕ РїСЂРёРЅСЏС‚РёРё СЃС‚Р°РІРєРё
             static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~$%d";
             new text[sizeof text_fmt - 2 + 15];
             format(text, sizeof text, text_fmt, room_bet);
@@ -1486,7 +1489,7 @@ stock ComputerClubPayin(gameid, roomid) {
     return 1;
 }
 
-// Узнает, находится ли игрок в комнате (указанной*)
+// РЈР·РЅР°РµС‚, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РёРіСЂРѕРє РІ РєРѕРјРЅР°С‚Рµ (СѓРєР°Р·Р°РЅРЅРѕР№*)
 stock ComputerClubIsPlayerInRoom(playerid, gameid = -1, roomid = -1) {
     if (gameid == -1 || roomid == -1)
         return computerClubPlayerInfo[playerid][ccpiInGame];
@@ -1494,20 +1497,20 @@ stock ComputerClubIsPlayerInRoom(playerid, gameid = -1, roomid = -1) {
     return (GetPlayerActiveComputerGame(playerid) == gameid && computerClubPlayerInfo[playerid][ccpiRoom] == roomid);
 }
 
-// Устанавливает статус комнате [Активна игра или нет]
+// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃС‚Р°С‚СѓСЃ РєРѕРјРЅР°С‚Рµ [РђРєС‚РёРІРЅР° РёРіСЂР° РёР»Рё РЅРµС‚]
 stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggleRoomReasons: reason = COMPUTER_CLUB_ROOM_END, data = -1) {
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
     if (computerClubRoomInfo[gameid][roomid][ccriStarted] == status) return 0;
 
     computerClubRoomInfo[gameid][roomid][ccriStarted] = status;
 
-    if (status) { // При запуске игры
-        // Обнуляем данные предыдущей игры
+    if (status) { // РџСЂРё Р·Р°РїСѓСЃРєРµ РёРіСЂС‹
+        // РћР±РЅСѓР»СЏРµРј РґР°РЅРЅС‹Рµ РїСЂРµРґС‹РґСѓС‰РµР№ РёРіСЂС‹
         computerClubRoomInfo[gameid][roomid][ccriRound] = 0;
         for (new i = 0; i < COMPUTER_CLUB_MAX_TEAMS; i++)
             computerClubRoomInfo[gameid][roomid][ccriTeamScores][i] = 0;
 
-        ComputerClubPayin(gameid, roomid); // Берем ставку со всех игроков в комнате (при её наличии)
+        ComputerClubPayin(gameid, roomid); // Р‘РµСЂРµРј СЃС‚Р°РІРєСѓ СЃРѕ РІСЃРµС… РёРіСЂРѕРєРѕРІ РІ РєРѕРјРЅР°С‚Рµ (РїСЂРё РµС‘ РЅР°Р»РёС‡РёРё)
     }
     
     new room_bet = computerClubRoomInfo[gameid][roomid][ccriBet];
@@ -1517,26 +1520,26 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
             player_room = computerClubPlayerInfo[id][ccpiRoom];
 
         if (player_game == gameid && player_room == roomid) {
-            // Оповещение о смене статуса игры
+            // РћРїРѕРІРµС‰РµРЅРёРµ Рѕ СЃРјРµРЅРµ СЃС‚Р°С‚СѓСЃР° РёРіСЂС‹
             PlayerPlaySound(id, status ? 3200 : 5203, 0.0, 0.0, 0.0);
 
-            // Обработка смены статуса игры
+            // РћР±СЂР°Р±РѕС‚РєР° СЃРјРµРЅС‹ СЃС‚Р°С‚СѓСЃР° РёРіСЂС‹
             if (status) {
-                PPSpawnPlayer(id); // Спавним игрока (выдача оружия и все остальное есть в обработчике спавна)
+                PPSpawnPlayer(id); // РЎРїР°РІРЅРёРј РёРіСЂРѕРєР° (РІС‹РґР°С‡Р° РѕСЂСѓР¶РёСЏ Рё РІСЃРµ РѕСЃС‚Р°Р»СЊРЅРѕРµ РµСЃС‚СЊ РІ РѕР±СЂР°Р±РѕС‚С‡РёРєРµ СЃРїР°РІРЅР°)
             } else {
-                if (has_bet && reason == COMPUTER_CLUB_ROOM_HOST) { // Если игра со ставкой, но завершена досрочно хостом
-                    oGivePlayerMoney(id, room_bet); // Возвращаем размер ставки игроку назад
+                if (has_bet && reason == COMPUTER_CLUB_ROOM_HOST) { // Р•СЃР»Рё РёРіСЂР° СЃРѕ СЃС‚Р°РІРєРѕР№, РЅРѕ Р·Р°РІРµСЂС€РµРЅР° РґРѕСЃСЂРѕС‡РЅРѕ С…РѕСЃС‚РѕРј
+                    oGivePlayerMoney(id, room_bet); // Р’РѕР·РІСЂР°С‰Р°РµРј СЂР°Р·РјРµСЂ СЃС‚Р°РІРєРё РёРіСЂРѕРєСѓ РЅР°Р·Р°Рґ
                     
-                    // Оповещение о возврате ставки
+                    // РћРїРѕРІРµС‰РµРЅРёРµ Рѕ РІРѕР·РІСЂР°С‚Рµ СЃС‚Р°РІРєРё
                     static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~$%d";
                     new text[sizeof text_fmt - 2 + 15];
                     format(text, sizeof text, text_fmt, room_bet);
                     GameTextForPlayer(id, text, 2000, 3);
                 } else if (reason == COMPUTER_CLUB_ROOM_EXIT) {
-                    // Если режим завершается по причине выхода одной из команд
+                    // Р•СЃР»Рё СЂРµР¶РёРј Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ РїРѕ РїСЂРёС‡РёРЅРµ РІС‹С…РѕРґР° РѕРґРЅРѕР№ РёР· РєРѕРјР°РЅРґ
                     return ComputerClubWinHandler(gameid, roomid, .lose_team = data);
                 } else if (reason == COMPUTER_CLUB_ROOM_END) {
-                    // Если режим завершен выигрышем одной из команд
+                    // Р•СЃР»Рё СЂРµР¶РёРј Р·Р°РІРµСЂС€РµРЅ РІС‹РёРіСЂС‹С€РµРј РѕРґРЅРѕР№ РёР· РєРѕРјР°РЅРґ
                     return ComputerClubWinHandler(gameid, roomid, .win_team = data);
                 }
             }
@@ -1544,7 +1547,7 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
     }
 
     if (!status) {
-        // Отображение текстдрава разминки
+        // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ С‚РµРєСЃС‚РґСЂР°РІР° СЂР°Р·РјРёРЅРєРё
         if (gameid == _:COMPUTER_GAME_TDM) {
             foreach (new id : Player) {
                 if (ComputerClubIsPlayerInRoom(id, gameid, roomid))
@@ -1554,7 +1557,7 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
     } else {
         foreach (new id : Player) {
             if (ComputerClubIsPlayerInRoom(id, gameid, roomid)) {
-                TextDrawHideForPlayer(id, COMPUTER_CLUB_WARMUP_TD); // Скрытие текстдрава разминки
+                TextDrawHideForPlayer(id, COMPUTER_CLUB_WARMUP_TD); // РЎРєСЂС‹С‚РёРµ С‚РµРєСЃС‚РґСЂР°РІР° СЂР°Р·РјРёРЅРєРё
             }
         }
     }
@@ -1562,13 +1565,13 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
     return 1;
 }
 
-// Обработка дисконнекта игрока [ее вызов помещён в OnPlayerDisconnect]
+// РћР±СЂР°Р±РѕС‚РєР° РґРёСЃРєРѕРЅРЅРµРєС‚Р° РёРіСЂРѕРєР° [РµРµ РІС‹Р·РѕРІ РїРѕРјРµС‰С‘РЅ РІ OnPlayerDisconnect]
 stock ComputerClubOnPlayerDisconnect(playerid) {
     ComputerClubRoomExit(playerid, COMPUTER_CLUB_D_REASON_SELF);
     return 1;
 }
 
-// Получает координаты указанного спавна
+// РџРѕР»СѓС‡Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ СѓРєР°Р·Р°РЅРЅРѕРіРѕ СЃРїР°РІРЅР°
 stock ComputerClubGetSpawnInfo(locationid, spawnid, &Float: x, &Float: y, &Float: z, &Float: a) {
     x = computerClubLocationSpawn[locationid][spawnid][cclsPos][0],
     y = computerClubLocationSpawn[locationid][spawnid][cclsPos][1],
@@ -1576,11 +1579,11 @@ stock ComputerClubGetSpawnInfo(locationid, spawnid, &Float: x, &Float: y, &Float
     a = computerClubLocationSpawn[locationid][spawnid][cclsPos][3];
 }
 
-// Обработка спавна игрока [ее вызов помещен в OnPlayerSpawn (внутри PlayerSpawnHandler), кинете куда нужно]
+// РћР±СЂР°Р±РѕС‚РєР° СЃРїР°РІРЅР° РёРіСЂРѕРєР° [РµРµ РІС‹Р·РѕРІ РїРѕРјРµС‰РµРЅ РІ OnPlayerSpawn (РІРЅСѓС‚СЂРё PlayerSpawnHandler), РєРёРЅРµС‚Рµ РєСѓРґР° РЅСѓР¶РЅРѕ]
 stock ComputerClubOnPlayerSpawn(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid > -1) {
-        // Назначаем уникальный виртуальный мир для участников комнаты
+        // РќР°Р·РЅР°С‡Р°РµРј СѓРЅРёРєР°Р»СЊРЅС‹Р№ РІРёСЂС‚СѓР°Р»СЊРЅС‹Р№ РјРёСЂ РґР»СЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РєРѕРјРЅР°С‚С‹
 
         new roomid = computerClubPlayerInfo[playerid][ccpiRoom];
         new teamid = computerClubPlayerInfo[playerid][ccpiTeam];
@@ -1591,7 +1594,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         
         computerClubPlayerInfo[playerid][ccpiIsDead] = false;
 
-        // Определения цвета никнейма
+        // РћРїСЂРµРґРµР»РµРЅРёСЏ С†РІРµС‚Р° РЅРёРєРЅРµР№РјР°
         new nick_color, team_color[10];
         strmid(team_color, computerClubTeamInfo[gameid][roomid][teamid], 1, 7); strcat(team_color, "ff");
         sscanf(team_color, "x", nick_color);
@@ -1606,16 +1609,19 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         SetCameraBehindPlayer(playerid);
         SetPlayerColor(playerid, nick_color);
 
-        // Выдача оружия
+        // РљРґ Р°РЅС‚РёС‡РёС‚Р° РЅР° РѕСЂСѓР¶РёРµ
+        GivePlayerResetWeaponUnix(playerid);
+
+        // Р’С‹РґР°С‡Р° РѕСЂСѓР¶РёСЏ
         ResetPlayerWeapons(playerid);
         if (gameid == _:COMPUTER_GAME_TDM)
             ComputerClubSetPlayerWeapons(playerid);
 
-        // Установка здоровья/брони
+        // РЈСЃС‚Р°РЅРѕРІРєР° Р·РґРѕСЂРѕРІСЊСЏ/Р±СЂРѕРЅРё
         ACSetPlayerHealth(playerid, computerClubRoomInfo[gameid][roomid][ccriMaxHealth]);
         ACSetPlayerArmour(playerid, computerClubRoomInfo[gameid][roomid][ccriMaxArmor]);
 
-        // Устанавливаем команду (игроки своей команды не будут получать урон)
+        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РєРѕРјР°РЅРґСѓ (РёРіСЂРѕРєРё СЃРІРѕРµР№ РєРѕРјР°РЅРґС‹ РЅРµ Р±СѓРґСѓС‚ РїРѕР»СѓС‡Р°С‚СЊ СѓСЂРѕРЅ)
         //SetPlayerTeam(playerid, computerClubPlayerInfo[playerid][ccpiTeam]);
 
         SetPlayerTeam(playerid, 2);
@@ -1624,7 +1630,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
     return 1;
 }
 
-// Обработка смерти [ее вызов помещён в OnPlayerDeath]
+// РћР±СЂР°Р±РѕС‚РєР° СЃРјРµСЂС‚Рё [РµРµ РІС‹Р·РѕРІ РїРѕРјРµС‰С‘РЅ РІ OnPlayerDeath]
 stock ComputerClubOnPlayerDeath(playerid, killerid) {
     new gameid = GetPlayerActiveComputerGame(playerid),
         roomid = computerClubPlayerInfo[playerid][ccpiRoom],
@@ -1632,9 +1638,9 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
     if (gameid > -1) {
         if (!computerClubRoomInfo[gameid][roomid][ccriStarted]) return 0;
         switch (e_ComputerClubGames: gameid) {
-            // Обработка смерти TDM
+            // РћР±СЂР°Р±РѕС‚РєР° СЃРјРµСЂС‚Рё TDM
             case COMPUTER_GAME_TDM: {
-                // Переключение на следующего доступного члена команды, если умер тот, за кем следил
+                // РџРµСЂРµРєР»СЋС‡РµРЅРёРµ РЅР° СЃР»РµРґСѓСЋС‰РµРіРѕ РґРѕСЃС‚СѓРїРЅРѕРіРѕ С‡Р»РµРЅР° РєРѕРјР°РЅРґС‹, РµСЃР»Рё СѓРјРµСЂ С‚РѕС‚, Р·Р° РєРµРј СЃР»РµРґРёР»
                 foreach (new id : Player) {
                     new spectate_game, spectate_room, spectate_id, spectate_team;
                     ComputerClubGetSpectatorData(id, spectate_game, spectate_room, spectate_id, spectate_team);
@@ -1656,7 +1662,7 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
                     }
                 }
 
-                // Отображение спека за убийцей в течение двух секунд
+                // РћС‚РѕР±СЂР°Р¶РµРЅРёРµ СЃРїРµРєР° Р·Р° СѓР±РёР№С†РµР№ РІ С‚РµС‡РµРЅРёРµ РґРІСѓС… СЃРµРєСѓРЅРґ
                 if (killerid != INVALID_PLAYER_ID) {
                     new Float: killerX, Float: killerY, Float: killerZ, Float: killerA;
                     GetPlayerPos(killerid, killerX, killerY, killerZ);
@@ -1675,10 +1681,10 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
                     GameTextForPlayer(playerid, text, 2000, 4);
                 }
 
-                // Уводим в спек за своей командой через две секунды
+                // РЈРІРѕРґРёРј РІ СЃРїРµРє Р·Р° СЃРІРѕРµР№ РєРѕРјР°РЅРґРѕР№ С‡РµСЂРµР· РґРІРµ СЃРµРєСѓРЅРґС‹
                 SetTimerEx("ComputerClubSpecTeam", 2000, false, "dd", playerid, teamid);
 
-                // Если все участники команды умерли
+                // Р•СЃР»Рё РІСЃРµ СѓС‡Р°СЃС‚РЅРёРєРё РєРѕРјР°РЅРґС‹ СѓРјРµСЂР»Рё
                 if (teammates_alive_count == 0) {
                     ComputerClubWinRoundHandler(gameid, roomid, .lose_team = teamid);
                 }
@@ -1693,9 +1699,9 @@ stock ComputerClubOnPlayerDeath(playerid, killerid) {
     return 1;
 }
 
-// Устанавливает указанную локацию и переспавнивает игроков
+// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СѓРєР°Р·Р°РЅРЅСѓСЋ Р»РѕРєР°С†РёСЋ Рё РїРµСЂРµСЃРїР°РІРЅРёРІР°РµС‚ РёРіСЂРѕРєРѕРІ
 stock ComputerClubChangeMap(gameid, roomid, locationid) {
-    // Проверка устанавливаемой карты на валидность
+    // РџСЂРѕРІРµСЂРєР° СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРјРѕР№ РєР°СЂС‚С‹ РЅР° РІР°Р»РёРґРЅРѕСЃС‚СЊ
     if (locationid < 0 || locationid >= COMPUTER_CLUB_MAX_GAME_LOCATIONS) return 0;
     {
         new i;
@@ -1707,9 +1713,9 @@ stock ComputerClubChangeMap(gameid, roomid, locationid) {
             return 0;
     }
     
-    // Установка карты
+    // РЈСЃС‚Р°РЅРѕРІРєР° РєР°СЂС‚С‹
     computerClubRoomInfo[gameid][roomid][ccriLocation] = locationid;
-    new str[100]; format(str, sizeof str, "[ Компьютерный клуб ]: {cccccc}Карта текущего сервера изменена: {ff9000}%s", computerClubLocationInfo[locationid][ccliName]);
+    new str[100]; format(str, sizeof str, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РљР°СЂС‚Р° С‚РµРєСѓС‰РµРіРѕ СЃРµСЂРІРµСЂР° РёР·РјРµРЅРµРЅР°: {ff9000}%s", computerClubLocationInfo[locationid][ccliName]);
     foreach (new id : Player) {
         new player_game = GetPlayerActiveComputerGame(id),
             player_room = computerClubPlayerInfo[id][ccpiRoom];
@@ -1723,10 +1729,10 @@ stock ComputerClubChangeMap(gameid, roomid, locationid) {
     return 1;
 }
 
-// Обработка ввода сообщений в чат [ее вызов помещен в OnPlayerText]
+// РћР±СЂР°Р±РѕС‚РєР° РІРІРѕРґР° СЃРѕРѕР±С‰РµРЅРёР№ РІ С‡Р°С‚ [РµРµ РІС‹Р·РѕРІ РїРѕРјРµС‰РµРЅ РІ OnPlayerText]
 stock ComputerClubOnPlayerText(playerid) {
     if (ComputerClubIsSpectate(playerid)) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я наблюдаю за игрой");
+        SendClientMessage(playerid, 0xCCCCCCFF, "[ РњС‹СЃР»Рё ]: РЇ РЅР°Р±Р»СЋРґР°СЋ Р·Р° РёРіСЂРѕР№");
         return 0;
     }
 
@@ -1747,22 +1753,22 @@ stock ComputerClubOnPlayerText(playerid) {
     return 1;
 }
 
-// Обработка ввода команд [ее вызов помещен в OnPlayerCommandText]
+// РћР±СЂР°Р±РѕС‚РєР° РІРІРѕРґР° РєРѕРјР°РЅРґ [РµРµ РІС‹Р·РѕРІ РїРѕРјРµС‰РµРЅ РІ OnPlayerCommandText]
 /*stock ComputerClubCommandReceived(playerid, const cmd[], const params[], flags) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid < 0) return 1;
 
-    static blacklist_commands[] = {"/pay"}; // [ Сюда нужно добавить команды, которые не должны быть доступны в комп. клубе ]
+    static blacklist_commands[] = {"/pay"}; // [ РЎСЋРґР° РЅСѓР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ РєРѕРјР°РЅРґС‹, РєРѕС‚РѕСЂС‹Рµ РЅРµ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РґРѕСЃС‚СѓРїРЅС‹ РІ РєРѕРјРї. РєР»СѓР±Рµ ]
     for (new i = 0; i < sizeof blacklist_commands; i++)
         if (strfind(cmd, blacklist_commands[i], true) != -1) {
-            SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Сейчас я не могу использовать это..");
+            SendClientMessage(playerid, 0xCCCCCCFF, "[ РњС‹СЃР»Рё ]: РЎРµР№С‡Р°СЃ СЏ РЅРµ РјРѕРіСѓ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Рѕ..");
             return 0;
         }
     
     return 1;
 }*/
 
-// Проверяет, является ли игрок хостом комнаты
+// РџСЂРѕРІРµСЂСЏРµС‚, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РёРіСЂРѕРє С…РѕСЃС‚РѕРј РєРѕРјРЅР°С‚С‹
 stock ComputerClubIsPlayerHost(playerid, gameid = -1, roomid = -1) {
     if (gameid == -1 || roomid == -1) {
         if (!computerClubPlayerInfo[playerid][ccpiInGame]) return false;
@@ -1818,21 +1824,21 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
                             if (isnull(name)) return ShowComputerClubRoomCreate(playerid);
 
-                            new roomid = ComputerClubRoomCreate(playerid, gameid, name, password, slotes); // Создание комнаты
+                            new roomid = ComputerClubRoomCreate(playerid, gameid, name, password, slotes); // РЎРѕР·РґР°РЅРёРµ РєРѕРјРЅР°С‚С‹
                             SetPVarInt(playerid, "ComputerClubSelectedRoom", roomid + 1);
                             if (roomid > -1) {
-                                new create_server_message[100]; format(create_server_message, sizeof create_server_message, "[ Компьютерный клуб ]: {cccccc}Сервер успешно создан {ff9000}[#%d]", roomid);
+                                new create_server_message[100]; format(create_server_message, sizeof create_server_message, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЎРµСЂРІРµСЂ СѓСЃРїРµС€РЅРѕ СЃРѕР·РґР°РЅ {ff9000}[#%d]", roomid);
                                 SendClientMessage(playerid, 0x0088FFFF, create_server_message);
 
                                 ShowComputerClubChooseTeam(playerid, gameid, .before_connection = true);
                             } else {
-                                SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Не удалось создать сервер, попробуйте несколько позже.");
+                                SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ СЃРµСЂРІРµСЂ, РїРѕРїСЂРѕР±СѓР№С‚Рµ РЅРµСЃРєРѕР»СЊРєРѕ РїРѕР·Р¶Рµ.");
                             }
                         }
                     }
                 }
 
-                // Очистка
+                // РћС‡РёСЃС‚РєР°
                 if (!response || listitem == 3) {
                     DeletePVar(playerid, "ComputerClubRoomName");
                     DeletePVar(playerid, "ComputerClubRoomSlotes");
@@ -1935,7 +1941,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 if (sscanf(inputtext, "d", size) || size < ComputerClubGetMaxTeamSize(gameid, roomid))
                 {
                     new string[75];
-                    format(string,sizeof(string),"[ Мысли ]: Минимальное количество участников должно быть {ff6347}%d",ComputerClubGetMaxTeamSize(gameid, roomid));
+                    format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РњРёРЅРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ {ff6347}%d",ComputerClubGetMaxTeamSize(gameid, roomid));
       				SendClientMessage(playerid,COLOR_GREY,string);
                     return ShowComputerClubSetTeamSize(playerid);
                 }
@@ -1997,7 +2003,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 if (bet > max_bet) {
                     new message[144];
                     new str_bet[128]; FormatNumberWithCommas(max_bet, str_bet);
-                    format(message, sizeof message, "[ Компьютерный клуб ]: {cccccc}Не все смогут оплатить указанную ставку [ Допустимый размер ставки: {ff9000}$%s {cccccc}]", str_bet);
+                    format(message, sizeof message, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќРµ РІСЃРµ СЃРјРѕРіСѓС‚ РѕРїР»Р°С‚РёС‚СЊ СѓРєР°Р·Р°РЅРЅСѓСЋ СЃС‚Р°РІРєСѓ [ Р”РѕРїСѓСЃС‚РёРјС‹Р№ СЂР°Р·РјРµСЂ СЃС‚Р°РІРєРё: {ff9000}$%s {cccccc}]", str_bet);
                     SendClientMessage(playerid, 0x0088FFFF, message);
 
                     return ShowComputerClubSetBet(playerid);
@@ -2016,13 +2022,13 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
             new type = GetPVarInt(playerid, "ComputerClubSetWeaponType");
             switch (type) {
-                case 0: { // Выбор оружия
+                case 0: { // Р’С‹Р±РѕСЂ РѕСЂСѓР¶РёСЏ
                     if (response)
                         return ShowComputerClubSetWeapons(playerid, .change_ammo = true, .index = listitem);
                     
                     return ShowComputerClubSetWeapons(playerid);
                 }
-                case 1: { // Установка патрон
+                case 1: { // РЈСЃС‚Р°РЅРѕРІРєР° РїР°С‚СЂРѕРЅ
                     new slotid = GetPVarInt(playerid, "ComputerClubSetWeaponSlot");
                     if (response) {
                         new ammo;
@@ -2038,12 +2044,12 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                     }
                     return ShowComputerClubSetWeapons(playerid, slotid, .change_weapon = true);
                 }
-                case 2: { // Выбор типа оружия для изменения
+                case 2: { // Р’С‹Р±РѕСЂ С‚РёРїР° РѕСЂСѓР¶РёСЏ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ
                     if (response)
                         return ShowComputerClubSetWeapons(playerid, listitem, .change_weapon = true);
                     
-                    ShowComputerClubSetWeapons(playerid); // Обнуляем промежуточные данные о выбранных пунктах
-                    return ShowComputerClubMenu(playerid); // Возвращаем в меню
+                    ShowComputerClubSetWeapons(playerid); // РћР±РЅСѓР»СЏРµРј РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ Рѕ РІС‹Р±СЂР°РЅРЅС‹С… РїСѓРЅРєС‚Р°С…
+                    return ShowComputerClubMenu(playerid); // Р’РѕР·РІСЂР°С‰Р°РµРј РІ РјРµРЅСЋ
                 }
             }
         }
@@ -2054,29 +2060,29 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 if (response) {
                     new bool: is_host = ComputerClubIsPlayerHost(playerid) == 1;
 
-                    // Доступные всем игрокам кнопки сверху
-                    if (listitem == 0) { // Выход из комнаты
+                    // Р”РѕСЃС‚СѓРїРЅС‹Рµ РІСЃРµРј РёРіСЂРѕРєР°Рј РєРЅРѕРїРєРё СЃРІРµСЂС…Сѓ
+                    if (listitem == 0) { // Р’С‹С…РѕРґ РёР· РєРѕРјРЅР°С‚С‹
                         if (is_host) return ComputerClubShowHostRoomExit(playerid);
                         return ComputerClubRoomExit(playerid, COMPUTER_CLUB_D_REASON_SELF);
                     }
-                    else if (listitem == 1) return ShowComputerClubPlayersList(playerid); // Отображает список игроков (их команды, статус)
-                    else if (listitem == 2) { // Отображает список наблюдателей за игрой
+                    else if (listitem == 1) return ShowComputerClubPlayersList(playerid); // РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРїРёСЃРѕРє РёРіСЂРѕРєРѕРІ (РёС… РєРѕРјР°РЅРґС‹, СЃС‚Р°С‚СѓСЃ)
+                    else if (listitem == 2) { // РћС‚РѕР±СЂР°Р¶Р°РµС‚ СЃРїРёСЃРѕРє РЅР°Р±Р»СЋРґР°С‚РµР»РµР№ Р·Р° РёРіСЂРѕР№
                         if (!ShowComputerClubSpectatorsList(playerid))
-                            SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Сейчас за игрой никто не наблюдает");
+                            SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЎРµР№С‡Р°СЃ Р·Р° РёРіСЂРѕР№ РЅРёРєС‚Рѕ РЅРµ РЅР°Р±Р»СЋРґР°РµС‚");
 
                         return ShowComputerClubMenu(playerid);
                     }
-                    else if (listitem == 3) return ShowComputerClubTeamSettings(playerid); // Отображает доступные команды (хост может менять)
-                    else if (listitem == 4) return ShowComputerClubSetWeapons(playerid); // Отображает доступное оружие (хост может менять)
+                    else if (listitem == 3) return ShowComputerClubTeamSettings(playerid); // РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРѕСЃС‚СѓРїРЅС‹Рµ РєРѕРјР°РЅРґС‹ (С…РѕСЃС‚ РјРѕР¶РµС‚ РјРµРЅСЏС‚СЊ)
+                    else if (listitem == 4) return ShowComputerClubSetWeapons(playerid); // РћС‚РѕР±СЂР°Р¶Р°РµС‚ РґРѕСЃС‚СѓРїРЅРѕРµ РѕСЂСѓР¶РёРµ (С…РѕСЃС‚ РјРѕР¶РµС‚ РјРµРЅСЏС‚СЊ)
 
                     if (is_host) {
-                        // Изменение общих настроек
-                        if (listitem == 5) return ComputerClubShowSetRoomState(playerid); // Изменение статуса игры
-                        else if (listitem == 6) return ShowComputerClubSetName(playerid, true); // Изменение названия
-                        else if (listitem == 7) return ShowComputerClubSetPass(playerid, true); // Изменение пароля
-                        else if (listitem == 8) return ShowComputerClubSetSlotes(playerid, true); // Изменение количества слотов
-                        else if (listitem == 9) computerClubRoomInfo[gameid][roomid][ccriClosed] ^= true; // Изменение статуса возможности подключаться
-                        else if (listitem == 10) { // Изменение статуса возможности смотреть игру наблюдателям
+                        // РР·РјРµРЅРµРЅРёРµ РѕР±С‰РёС… РЅР°СЃС‚СЂРѕРµРє
+                        if (listitem == 5) return ComputerClubShowSetRoomState(playerid); // РР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РёРіСЂС‹
+                        else if (listitem == 6) return ShowComputerClubSetName(playerid, true); // РР·РјРµРЅРµРЅРёРµ РЅР°Р·РІР°РЅРёСЏ
+                        else if (listitem == 7) return ShowComputerClubSetPass(playerid, true); // РР·РјРµРЅРµРЅРёРµ РїР°СЂРѕР»СЏ
+                        else if (listitem == 8) return ShowComputerClubSetSlotes(playerid, true); // РР·РјРµРЅРµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° СЃР»РѕС‚РѕРІ
+                        else if (listitem == 9) computerClubRoomInfo[gameid][roomid][ccriClosed] ^= true; // РР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РїРѕРґРєР»СЋС‡Р°С‚СЊСЃСЏ
+                        else if (listitem == 10) { // РР·РјРµРЅРµРЅРёРµ СЃС‚Р°С‚СѓСЃР° РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё СЃРјРѕС‚СЂРµС‚СЊ РёРіСЂСѓ РЅР°Р±Р»СЋРґР°С‚РµР»СЏРј
                             computerClubRoomInfo[gameid][roomid][ccriViewAccess] ^= true;
 
                             if (!computerClubRoomInfo[gameid][roomid][ccriViewAccess]) {
@@ -2086,7 +2092,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                                         ComputerClubGetSpectatorData(id, spectator_game, spectator_room, spectator_team, spectator_id);
 
                                         if (gameid == spectator_game && roomid == spectator_room) {
-                                            SendClientMessage(id, 0x0088FFFF, "[ Компьютерный клуб ]: Хост сервера запретил просмотр игры, вы будете возвращены на прежнее место");
+                                            SendClientMessage(id, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: РҐРѕСЃС‚ СЃРµСЂРІРµСЂР° Р·Р°РїСЂРµС‚РёР» РїСЂРѕСЃРјРѕС‚СЂ РёРіСЂС‹, РІС‹ Р±СѓРґРµС‚Рµ РІРѕР·РІСЂР°С‰РµРЅС‹ РЅР° РїСЂРµР¶РЅРµРµ РјРµСЃС‚Рѕ");
                                             ComputerClubSpectatorRoomExit(id);
                                         }
                                     }
@@ -2095,18 +2101,18 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                         }
 
                         if (listitem > 10 && computerClubRoomInfo[gameid][roomid][ccriStarted])
-                            return SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу изменять настройки уже начатой игры");
+                            return SendClientMessage(playerid, 0xCCCCCCFF, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ РёР·РјРµРЅСЏС‚СЊ РЅР°СЃС‚СЂРѕР№РєРё СѓР¶Рµ РЅР°С‡Р°С‚РѕР№ РёРіСЂС‹");
 
-                        // Изменение настроек режима
+                        // РР·РјРµРЅРµРЅРёРµ РЅР°СЃС‚СЂРѕРµРє СЂРµР¶РёРјР°
                         switch (e_ComputerClubGames: gameid) {
                             case COMPUTER_GAME_TDM: {
-                                if (listitem == 11) return ShowComputerClubChooseMap(playerid); // Смена карты
-                                else if (listitem == 12) return ShowComputerClubSetTeamSize(playerid); // Изменение размера команд
-                                else if (listitem == 13) return ShowComputerClubSetMaxRounds(playerid); // Изменение длительности игры (количества раундов)
+                                if (listitem == 11) return ShowComputerClubChooseMap(playerid); // РЎРјРµРЅР° РєР°СЂС‚С‹
+                                else if (listitem == 12) return ShowComputerClubSetTeamSize(playerid); // РР·РјРµРЅРµРЅРёРµ СЂР°Р·РјРµСЂР° РєРѕРјР°РЅРґ
+                                else if (listitem == 13) return ShowComputerClubSetMaxRounds(playerid); // РР·РјРµРЅРµРЅРёРµ РґР»РёС‚РµР»СЊРЅРѕСЃС‚Рё РёРіСЂС‹ (РєРѕР»РёС‡РµСЃС‚РІР° СЂР°СѓРЅРґРѕРІ)
                                 else if (listitem == 14) computerClubRoomInfo[gameid][roomid][ccriTDMShootMode] ^= true;
-                                else if (listitem == 15) return ShowComputerClubSetMaxHealth(playerid); // Изменение максимального количества HP
-                                else if (listitem == 16) return ShowComputerClubSetMaxArmor(playerid); // Изменение максимального количества брони
-                                else if (listitem == 17) return ShowComputerClubSetBet(playerid); // Изменение ставки
+                                else if (listitem == 15) return ShowComputerClubSetMaxHealth(playerid); // РР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° HP
+                                else if (listitem == 16) return ShowComputerClubSetMaxArmor(playerid); // РР·РјРµРЅРµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р±СЂРѕРЅРё
+                                else if (listitem == 17) return ShowComputerClubSetBet(playerid); // РР·РјРµРЅРµРЅРёРµ СЃС‚Р°РІРєРё
                             }
                             case COMPUTER_GAME_COPCHASE: {
                                 
@@ -2129,19 +2135,19 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             if (gameid > -1) {
                 if (response) {
                     new roomid = ComputerClubGetRoomIdByIndex(gameid, listitem);
-                    if (roomid < 0) return SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Ошибка при попытке подключения к серверу. Повторите попытку позже.");
+                    if (roomid < 0) return SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РћС€РёР±РєР° РїСЂРё РїРѕРїС‹С‚РєРµ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ. РџРѕРІС‚РѕСЂРёС‚Рµ РїРѕРїС‹С‚РєСѓ РїРѕР·Р¶Рµ.");
                     
                     SetPVarInt(playerid, "ComputerClubSelectedRoom", roomid + 1);
                     new bool: is_host = bool: ComputerClubIsPlayerHost(playerid, gameid, roomid);
 
-                    if (!ComputerClubIsRoomExists(gameid, roomid)) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Сервер не отвечает...");
-                    else if (!is_host && computerClubRoomInfo[gameid][roomid][ccriClosed]) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Создатель сервера запретил присоединяться новым игрокам");
-                    else if (computerClubRoomInfo[gameid][roomid][ccriStarted]) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы не можете присоединиться к уже начатой игре");
-                    else if (!is_host && ComputerClubGetPlayersCount(gameid, roomid) >= computerClubRoomInfo[gameid][roomid][ccriSlotes]) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}На этом сервере не осталось свободных мест");
+                    if (!ComputerClubIsRoomExists(gameid, roomid)) SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЎРµСЂРІРµСЂ РЅРµ РѕС‚РІРµС‡Р°РµС‚...");
+                    else if (!is_host && computerClubRoomInfo[gameid][roomid][ccriClosed]) SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЎРѕР·РґР°С‚РµР»СЊ СЃРµСЂРІРµСЂР° Р·Р°РїСЂРµС‚РёР» РїСЂРёСЃРѕРµРґРёРЅСЏС‚СЊСЃСЏ РЅРѕРІС‹Рј РёРіСЂРѕРєР°Рј");
+                    else if (computerClubRoomInfo[gameid][roomid][ccriStarted]) SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ Рє СѓР¶Рµ РЅР°С‡Р°С‚РѕР№ РёРіСЂРµ");
+                    else if (!is_host && ComputerClubGetPlayersCount(gameid, roomid) >= computerClubRoomInfo[gameid][roomid][ccriSlotes]) SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РќР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ РЅРµ РѕСЃС‚Р°Р»РѕСЃСЊ СЃРІРѕР±РѕРґРЅС‹С… РјРµСЃС‚");
                     else if (!is_host && computerClubRoomInfo[gameid][roomid][ccriBet] > 0 && PlayerInfo[playerid][pMoney] < computerClubRoomInfo[gameid][roomid][ccriBet]) {
                         new server_bet[20];
                         FormatNumberWithCommas(computerClubRoomInfo[gameid][roomid][ccriBet], server_bet);
-                        new str[120]; format(str, sizeof str, "[ Компьютерный клуб ]: {cccccc}У вас недостаточно наличных для оплаты ставки, установленной на этом сервере ($%s)", server_bet);
+                        new str[120]; format(str, sizeof str, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РЈ РІР°СЃ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РЅР°Р»РёС‡РЅС‹С… РґР»СЏ РѕРїР»Р°С‚С‹ СЃС‚Р°РІРєРё, СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅРѕР№ РЅР° СЌС‚РѕРј СЃРµСЂРІРµСЂРµ ($%s)", server_bet);
                         SendClientMessage(playerid, 0x0088FFFF, str);
                     }
                     else return ComputerClubRoomJoinAccept(playerid, gameid, roomid);
@@ -2160,9 +2166,9 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
                 new bool: is_spectate = GetPVarInt(playerid, "ComputerClubChooseWatchRoom") > 0;
 
-                // Проверка пароля
+                // РџСЂРѕРІРµСЂРєР° РїР°СЂРѕР»СЏ
                 if (!ComputerClubIsRoomPublic(gameid, roomid) && strcmp(inputtext, computerClubRoomInfo[gameid][roomid][ccriPassword]))
-                    return SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы указали неверный пароль для подключения к серверу");
+                    return SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ СѓРєР°Р·Р°Р»Рё РЅРµРІРµСЂРЅС‹Р№ РїР°СЂРѕР»СЊ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє СЃРµСЂРІРµСЂСѓ");
 
                 if (!is_spectate) {
                     ShowComputerClubChooseTeam(playerid, gameid, .before_connection = true);
@@ -2185,18 +2191,18 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 roomid = computerClubPlayerInfo[playerid][ccpiRoom];
             }
 
-            // Если игрок выбрал команду
+            // Р•СЃР»Рё РёРіСЂРѕРє РІС‹Р±СЂР°Р» РєРѕРјР°РЅРґСѓ
             if (response) 
             {
                 if (gameid > -1) {
                     if (computerClubRoomInfo[gameid][roomid][ccriStarted])
-                        return SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы не можете изменить команду при активной игре");
+                        return SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёР·РјРµРЅРёС‚СЊ РєРѕРјР°РЅРґСѓ РїСЂРё Р°РєС‚РёРІРЅРѕР№ РёРіСЂРµ");
 
                     if (before_connection) ComputerClubRoomJoin(playerid, gameid, roomid);
                     
                     new teamid = listitem;
 
-                    // Если выбрана несуществующая команда
+                    // Р•СЃР»Рё РІС‹Р±СЂР°РЅР° РЅРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰Р°СЏ РєРѕРјР°РЅРґР°
                     if (teamid < 0 || teamid >= ComputerClubGetTeamCount(gameid, roomid))
                         return 0;
 
@@ -2206,7 +2212,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                             teams[computerClubPlayerInfo[id][ccpiTeam]]++;
 
                     if (teams[teamid] >= computerClubRoomInfo[gameid][roomid][ccriTeamSize]) {
-                        SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}В этой команде не осталось свободных мест");
+                        SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}Р’ СЌС‚РѕР№ РєРѕРјР°РЅРґРµ РЅРµ РѕСЃС‚Р°Р»РѕСЃСЊ СЃРІРѕР±РѕРґРЅС‹С… РјРµСЃС‚");
                         return ShowComputerClubChooseTeam(playerid, gameid, before_connection);
                     }
 
@@ -2216,11 +2222,11 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                     DeletePVar(playerid, "ComputerClubSelectedGame"); DeletePVar(playerid, "ComputerClubSelectedRoom");
 
                     if(Komputer[playerid] == 1 || Komputer[playerid] == 2) closecomp(playerid), CancelSelectTextDraw(playerid);
-                    SuccessMessage(playerid,"{44ff99} Вы успешно присоединились к серверу. Для управления используйте кнопку [ N ]");
+                    SuccessMessage(playerid,"{44ff99} Р’С‹ СѓСЃРїРµС€РЅРѕ РїСЂРёСЃРѕРµРґРёРЅРёР»РёСЃСЊ Рє СЃРµСЂРІРµСЂСѓ. Р”Р»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ РёСЃРїРѕР»СЊР·СѓР№С‚Рµ РєРЅРѕРїРєСѓ [ N ]");
                     return 1;
                 }
             }
-            // Если esc вновь показываем диалог выбора тимы
+            // Р•СЃР»Рё esc РІРЅРѕРІСЊ РїРѕРєР°Р·С‹РІР°РµРј РґРёР°Р»РѕРі РІС‹Р±РѕСЂР° С‚РёРјС‹
             else ShowComputerClubMenu(playerid);
         }
         case 1434: {
@@ -2233,7 +2239,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
             if (listitem == 0) {
                 if (ComputerClubGetTeamCount(gameid, roomid) >= ComputerClubGetMaxTeams(gameid, roomid)) {
-                    SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Текущее количество команд является максимальным для указанной локации");
+                    SendClientMessage(playerid, 0x0088FFFF, "[ РљРѕРјРїСЊСЋС‚РµСЂРЅС‹Р№ РєР»СѓР± ]: {cccccc}РўРµРєСѓС‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјР°РЅРґ СЏРІР»СЏРµС‚СЃСЏ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕР№ Р»РѕРєР°С†РёРё");
                     return ShowComputerClubTeamSettings(playerid);
                 }
                 return ShowComputerClubAddTeam(playerid);
@@ -2274,7 +2280,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
             
             computerClubTeamInfo[gameid][roomid][teamid][0] = EOS; strcat(computerClubTeamInfo[gameid][roomid][teamid], inputtext);
 
-            // Изменение цвета никнейма игрокам, которые уже состояли в этой команде
+            // РР·РјРµРЅРµРЅРёРµ С†РІРµС‚Р° РЅРёРєРЅРµР№РјР° РёРіСЂРѕРєР°Рј, РєРѕС‚РѕСЂС‹Рµ СѓР¶Рµ СЃРѕСЃС‚РѕСЏР»Рё РІ СЌС‚РѕР№ РєРѕРјР°РЅРґРµ
             new nick_color, team_color[10];
             strmid(team_color, computerClubTeamInfo[gameid][roomid][teamid], 1, 7); strcat(team_color, "ff");
             sscanf(team_color, "x", nick_color);
@@ -2367,16 +2373,16 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 				roomid = computerClubPlayerInfo[playerid][ccpiRoom],
 				host_teamid = computerClubPlayerInfo[playerid][ccpiTeam];
 			
-			// Если хост запускает игру, но у него самого нет денег на оплату ставки - выводим соответствующую ошибку
+			// Р•СЃР»Рё С…РѕСЃС‚ Р·Р°РїСѓСЃРєР°РµС‚ РёРіСЂСѓ, РЅРѕ Сѓ РЅРµРіРѕ СЃР°РјРѕРіРѕ РЅРµС‚ РґРµРЅРµРі РЅР° РѕРїР»Р°С‚Сѓ СЃС‚Р°РІРєРё - РІС‹РІРѕРґРёРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ РѕС€РёР±РєСѓ
 			new room_bet = computerClubRoomInfo[gameid][roomid][ccriBet];
 			if (!computerClubRoomInfo[gameid][roomid][ccriStarted] && room_bet > 0 && PlayerInfo[playerid][pMoney] < room_bet)
-				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}Ошибка", "{cccccc}Вы не можете начать игру {cd5700}[ Недостаточно наличных для оплаты ставки ]", "Закрыть", "");
+				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}РћС€РёР±РєР°", "{cccccc}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РЅР°С‡Р°С‚СЊ РёРіСЂСѓ {cd5700}[ РќРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РЅР°Р»РёС‡РЅС‹С… РґР»СЏ РѕРїР»Р°С‚С‹ СЃС‚Р°РІРєРё ]", "Р—Р°РєСЂС‹С‚СЊ", "");
 			
-			// Если все игроки состоят в одной команде - выводим ошибку
+			// Р•СЃР»Рё РІСЃРµ РёРіСЂРѕРєРё СЃРѕСЃС‚РѕСЏС‚ РІ РѕРґРЅРѕР№ РєРѕРјР°РЅРґРµ - РІС‹РІРѕРґРёРј РѕС€РёР±РєСѓ
 			if (ComputerClubGetPlayersCount(gameid, roomid, host_teamid) == ComputerClubGetPlayersCount(gameid, roomid))
-				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}Ошибка", "{cccccc}Вы не можете начать игру {cd5700}[ Нет участников во второй команде ]", "Закрыть", "");
+				return ShowDialog(playerid, 1742, DIALOG_STYLE_MSGBOX, "{cd5700}РћС€РёР±РєР°", "{cccccc}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РЅР°С‡Р°С‚СЊ РёРіСЂСѓ {cd5700}[ РќРµС‚ СѓС‡Р°СЃС‚РЅРёРєРѕРІ РІРѕ РІС‚РѕСЂРѕР№ РєРѕРјР°РЅРґРµ ]", "Р—Р°РєСЂС‹С‚СЊ", "");
 
-			// Меняем статус игры
+			// РњРµРЅСЏРµРј СЃС‚Р°С‚СѓСЃ РёРіСЂС‹
 			ComputerClubSetRoomState(gameid, roomid, !computerClubRoomInfo[gameid][roomid][ccriStarted], COMPUTER_CLUB_ROOM_HOST);
         }
         case 1443: {
@@ -2389,9 +2395,9 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 }
 
 // _______________________________________________________________________________
-// ______________________________Стоки славы______________________________________
+// ______________________________РЎС‚РѕРєРё СЃР»Р°РІС‹______________________________________
 // _______________________________________________________________________________
-// Позволяет склонять существительные множественного числа (пример: PluralToText(var, "посетитель", "посетителя", "посетителей"))
+// РџРѕР·РІРѕР»СЏРµС‚ СЃРєР»РѕРЅСЏС‚СЊ СЃСѓС‰РµСЃС‚РІРёС‚РµР»СЊРЅС‹Рµ РјРЅРѕР¶РµСЃС‚РІРµРЅРЅРѕРіРѕ С‡РёСЃР»Р° (РїСЂРёРјРµСЂ: PluralToText(var, "РїРѕСЃРµС‚РёС‚РµР»СЊ", "РїРѕСЃРµС‚РёС‚РµР»СЏ", "РїРѕСЃРµС‚РёС‚РµР»РµР№"))
 stock PluralToText(value, const singular[], const genitive[], const plural[]) {
     new result[64];
     format(result, sizeof(result), "%s", value == 1 ? singular : (value >= 2 && value <= 4 ? genitive : plural));
@@ -2405,7 +2411,7 @@ ColorToHexString(color, bool: alpha = false) {
     return result;
 }
 
-// Разбивает число по разрядам, точками
+// Р Р°Р·Р±РёРІР°РµС‚ С‡РёСЃР»Рѕ РїРѕ СЂР°Р·СЂСЏРґР°Рј, С‚РѕС‡РєР°РјРё
 stock FormatNumberWithCommas(number, str[], len = sizeof str)
 {
 	if(number == cellmin)
