@@ -19,7 +19,7 @@ new StartQuestName[][] =
     "Ремонт транспорта",
     "Археологические раскопки",
     "Отдых в клубе",
-    "Последствия от клуба",
+    "Последствия клуба",
     "Знакомство с едой",
     "Знакомство с ноутбуком"
 };
@@ -338,6 +338,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
     else if(PlayerInfo[playerid][pQuest][5] == 7)
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
+        SendClientMessage(playerid, COLOR_GREY, "[ Квест ]: Дальнейшие квесты не озвучены");
         //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         StartScriptActor(playerid, 10, BotPears[47]);
         CreateGps(playerid, -355.7389,1848.3289,46.5077, 0, 0, 5.0);
@@ -493,6 +494,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
     }
     else if(PlayerInfo[playerid][pQuest][8] == 3)
     {
+        SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я покушал, нужно заняться чем-то или ждать звонка от Джони");
         SetPVarInt(playerid,"qweststat",30), SetPVarInt(playerid,"qwesttime",30);
         PlayerInfo[playerid][pQuest][8] = 4;
     }

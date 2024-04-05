@@ -508,7 +508,7 @@ new TrashPos[][TRASHENUM] =
 
 stock use_trash(playerid, tra, inva, useinva)
 {
-	if(trash_stat[tra] != 1) return ErrorMessage(playerid, "{FF6347}Мусорного контейнера нет на месте"), i_resettabs(playerid);
+	if(trash_stat[tra] != 1) return ErrorMessage(playerid, "{FF6347}РњСѓСЃРѕСЂРЅРѕРіРѕ РєРѕРЅС‚РµР№РЅРµСЂР° РЅРµС‚ РЅР° РјРµСЃС‚Рµ"), i_resettabs(playerid);
 	
 	new fpick = gTrash[inva][tra], fquan = gTrashKol[inva][tra], fpara = gTrashPara[inva][tra], fqara = gTrashQara[inva][tra], thingType = gTrashType[inva][tra], thingPack = gTrashPack[inva][tra];
 	if(useinva != 9999)
@@ -516,31 +516,31 @@ stock use_trash(playerid, tra, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
 	
-	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Вы далеко от мусорного контейнера"), closetab(playerid, 1);
+	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚ РјСѓСЃРѕСЂРЅРѕРіРѕ РєРѕРЅС‚РµР№РЅРµСЂР°"), closetab(playerid, 1);
 	
 	new string[160];
-	// Забираем предмет из контейнера
+	// Р—Р°Р±РёСЂР°РµРј РїСЂРµРґРјРµС‚ РёР· РєРѕРЅС‚РµР№РЅРµСЂР°
 	if(thingType == 0 && thingPack == 0)
 	{
 	    DP[0][playerid] = inva;
 	    if(CheckThingQuan(fpick) == 1)
 		{
-			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
-			ShowDialog(playerid,1136,DIALOG_STYLE_INPUT,"{ff9000}Мусорный Контейнер",string,"Принять","Отмена");
+			format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ РІР·СЏС‚СЊ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1.000.000",GetNameThing(0, fpick, thingType, thingPack));
+			ShowDialog(playerid,1136,DIALOG_STYLE_INPUT,"{ff9000}РњСѓСЃРѕСЂРЅС‹Р№ РљРѕРЅС‚РµР№РЅРµСЂ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			return 1;
 		}
-		if(fpick == 68) return ErrorMessage(playerid, "{FF6347}Нелья взять мусор из контейнера"), i_resettabs(playerid);
-		if(fpick == 69) return ShowDialog(playerid,1138,DIALOG_STYLE_MSGBOX,"{ff9000}Мусорный Контейнер","{99ff66}Вы нашли труп!\n{ff9000}Позвонить в полицию, чтобы сообщить о находке?","Да","Нет");
+		if(fpick == 68) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РІР·СЏС‚СЊ РјСѓСЃРѕСЂ РёР· РєРѕРЅС‚РµР№РЅРµСЂР°"), i_resettabs(playerid);
+		if(fpick == 69) return ShowDialog(playerid,1138,DIALOG_STYLE_MSGBOX,"{ff9000}РњСѓСЃРѕСЂРЅС‹Р№ РљРѕРЅС‚РµР№РЅРµСЂ","{99ff66}Р’С‹ РЅР°С€Р»Рё С‚СЂСѓРї!\n{ff9000}РџРѕР·РІРѕРЅРёС‚СЊ РІ РїРѕР»РёС†РёСЋ, С‡С‚РѕР±С‹ СЃРѕРѕР±С‰РёС‚СЊ Рѕ РЅР°С…РѕРґРєРµ?","Р”Р°","РќРµС‚");
 	}
 	
 	i_resettabs(playerid);
 	i_resetveshi(playerid);
 	
-	//  Проверка на наличие особых аксессуаров (Каска и Броня)
-	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
+	//  РџСЂРѕРІРµСЂРєР° РЅР° РЅР°Р»РёС‡РёРµ РѕСЃРѕР±С‹С… Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ (РљР°СЃРєР° Рё Р‘СЂРѕРЅСЏ)
+	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚\n\n{cccccc}РЈС‡РёС‚С‹РІР°РµС‚СЃСЏ РЅР°РґРµС‚Р°СЏ Р±СЂРѕРЅСЏ");
 
-	// Проверка на одиночный предмет
-	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
+	// РџСЂРѕРІРµСЂРєР° РЅР° РѕРґРёРЅРѕС‡РЅС‹Р№ РїСЂРµРґРјРµС‚
+	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїСЂРµРґРјРµС‚\n\n{cccccc}РЈС‡РёС‚С‹РІР°СЋС‚СЃСЏ СѓРїР°РєРѕРІР°РЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹, Р° С‚Р°Рє-Р¶Рµ СЂР°Р·РґРµР» С‚РѕРІР°СЂРѕРІ");
 	
 	if(thingType == 0)
 	{
@@ -548,20 +548,20 @@ stock use_trash(playerid, tra, inva, useinva)
 		{
 			new getQuan, getLimit;
     		i_limit(playerid, fpick, getQuan, getLimit);
-    		if(getQuan+fqara > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров", getLimit), ErrorMessage(playerid, string);
+    		if(getQuan+fqara > getLimit) return format(string,sizeof(string),"{FF6347}РЈ РІР°СЃ РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ\nР›РёРјРёС‚ РґР»СЏ СЌС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°: %d\n\n{cccccc}РЈС‡РёС‚С‹РІР°СЋС‚СЃСЏ СѓРїР°РєРѕРІР°РЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹, Р° С‚Р°Рє-Р¶Рµ СЂР°Р·РґРµР» С‚РѕРІР°СЂРѕРІ", getLimit), ErrorMessage(playerid, string);
  		}
 	}
 
 	new put_inva = GiveThingPlayer(playerid, fpick, fquan, fpara, fqara, thingType, thingPack, useinva);
-	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ"); // РџРѕР»СѓС‡РёР»Рё -1 РІ РѕС‚РІРµС‚, Р·РЅР°С‡РёС‚ РЅРµ РЅР°С€Р»Рё СЏС‡РµР№РєСѓ, РєСѓРґР° РєР»Р°СЃС‚СЊ РїСЂРµРґРјРµС‚
     TakeTrash(tra, fpick, fquan, thingType, inva);
     
     if(PlayerInfo[playerid][pInfoload] >= 50) PlayerInfo[playerid][pInfoload] -= 50;
 	else PlayerInfo[playerid][pInfoload] = 0;
 
-    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
+    SaveInvent(playerid, put_inva); // РЎРѕС…СЂР°РЅСЏРµРј С‚Рѕ, С‡С‚Рѕ РёРіСЂРѕРє РІР·СЏР»
 
-    format(string,sizeof(string),"Взял %d: %s", tra, GetNameThing(1, fpick, thingType, thingPack));
+    format(string,sizeof(string),"Р’Р·СЏР» %d: %s", tra, GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("gtrash", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	return 1;
 }
