@@ -45,8 +45,14 @@ stock OnNpcConnect(playerid)
     }
 
     OnlineInfo[playerid][oLogged] = 1;
-    NPCInfo[ConnectNpcQuan][npcID] = playerid;
-    printf("[MODE]: OnNpcConnect %d", NPCInfo[ConnectNpcQuan][npcID]);
+
+    new id;
+    if(IsNameNpc(playerid, npcNames[0])) id = 0;
+    else if(IsNameNpc(playerid, npcNames[1])) id = 1;
+    else if(IsNameNpc(playerid, npcNames[2])) id = 2;
+
+    NPCInfo[id][npcID] = playerid;
+    printf("[MODE]: OnNpcConnect %d", NPCInfo[id][npcID]);
 
     ConnectNpcQuan ++;
 
@@ -140,32 +146,18 @@ stock OnNpcSpawn(playerid)
     return 1;
 }
 
-stock StartNpc(playerid, destination = 0)
+stock StartNpc(id, destination = 0)
 {
-    new id = -1;
-    for(new i = 0; i < sizeof(npcNames); i++)
-    {
-        if(IsNameNpc(playerid, npcNames[i]))
-        {
-            id = i;
-            break;
-        }
-    }
+    if(NPCInfo[id][npcStart] == true) return 0;
 
-    if(id >= 0)
-    {
-        if(NPCInfo[id][npcStart] == true) return 0;
+    new vehicleid = NPCInfo[id][npcVehicle];
 
-        new vehicleid = NPCInfo[id][npcVehicle];
-
-        Protect_PutPlayerInVehicle(playerid, vehicleid, 0);
-        GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-		SetVehicleParamsEx(vehicleid, true, true, alarm, doors, bonnet, boot, objective);
-        NPCInfo[id][npcStart] = true;
-        NPCInfo[id][npcDestination] = destination;
-        return 1;
-    }
-    return 0;
+    Protect_PutPlayerInVehicle(NPCInfo[id][npcID], vehicleid, 0);
+    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+    SetVehicleParamsEx(vehicleid, true, true, alarm, doors, bonnet, boot, objective);
+    NPCInfo[id][npcStart] = true;
+    NPCInfo[id][npcDestination] = destination;
+    return 1;
 }
 
 // Поиск имён NPC, чтобы игрок не мог занять это имя
@@ -204,7 +196,7 @@ CMD:gotim(playerid)
 {
     if(server != 0) return 0;
 
-    if(!StartNpc(NPCInfo[0][npcID])) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
+    if(!StartNpc(0)) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }
 
@@ -212,7 +204,7 @@ CMD:gobert(playerid)
 {
     if(server != 0) return 0;
 
-    if(!StartNpc(NPCInfo[1][npcID])) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
+    if(!StartNpc(1)) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }
 
@@ -220,7 +212,7 @@ CMD:gojack(playerid)
 {
     if(server != 0) return 0;
 
-    if(!StartNpc(NPCInfo[2][npcID])) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
+    if(!StartNpc(2)) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }
 

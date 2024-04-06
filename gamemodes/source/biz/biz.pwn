@@ -1103,7 +1103,7 @@ stock SaveBizzProductItem(idx, i)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 
-	if(BizzInfo[idx][bProduct][i] == 0 && BizzInfo[idx][bWare][i] == 0) // Слот пустой, тогда NULL
+	if(BizzInfo[idx][bProduct][i] == 0 && BizzInfo[idx][bWare][i] == 0 && BizzInfo[idx][bItem][i] == 0) // Слот пустой, тогда NULL
 	{
 		new string_mysql[140];
 		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `p_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
