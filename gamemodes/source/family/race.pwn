@@ -314,6 +314,15 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
         new fam = DP[3][playerid];
         if(response)
 		{
+            for(new i; i < 10; i++)
+            {
+                if(BizzInfo[b][bFamilyPartner][i] == fam)
+                {
+                    ErrorMessage(giveplayerid, "У вас уже заключено партнерство с этой семьей");
+                    ErrorMessage(playerid, "У владельца бизнеса уже заключено партнерство с моей семьей");
+                    return 1;
+                }
+            }
             BizzInfo[b][bFamilyPartner][number] = FamilyInfo[fam][fIds];
             if(b >= 1 && b <= 12) FamilyInfo[fam][fParthnerBenz] = b;
             else if(b >= 153 && b <= 162) FamilyInfo[fam][fParthnerMarket] = b;
@@ -442,6 +451,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 SaveFamily(fam);
                 SaveBizzPartner(b);
             }
+            ShowStreetRacers(playerid, fam);
         }
         else ShowStreetRacers(playerid, fam);
     }
@@ -502,6 +512,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 ClosePartyStreet(slot);
             }
         }
+        else GoStreetRacers(playerid);
     }
     else if(dialogid == 1462)
     {
@@ -514,8 +525,9 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(FamilyInfo[fam][fRoutIdCreator][slots] == 0) return ErrorMessage(playerid,"{ff4367}Маршрут пустой");
 			DP[0][playerid] = -1;
 			StreetRacers[slot][raceMap] = slots;
-            SuccessMessage(playerid,"{99ff66}Вы успешно выбрали карту для гонки");
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я выбрал гоночный маршрут %d", slots);
 		}
+        else GoStreetRacers(playerid);
     }
     else if(dialogid == 1464)
     {
@@ -790,14 +802,14 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
     {
         new giveplayerid = ReturnUser(params[0]);
         if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
-
+        if(giveplayerid == playerid) return ErrorMessage(playerid, "{FF6347}Нельзя предложить партнерство самому");
         if(!ProxDetectorS(10.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок далеко от вас [ Не больше 10 метров ]");
         new fam = PlayerInfo[giveplayerid][pFamily];
         if(PlayerInfo[giveplayerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок не глава семьи и не может принять предложение");
         if(b >= 1 && b <= 12 && FamilyInfo[fam][fParthnerBenz] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");
         else if(b >= 153 && b <= 162 && FamilyInfo[fam][fParthnerMarket] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");
         else if(b >= 183 && b <= 192 && FamilyInfo[fam][fParthnerService] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У семьи Игрока уже заключено партнерство с подобным бизнесом");
-        //if(giveplayerid == playerid) return ErrorMessage(playerid, "{FF6347}Вы не можете заключить партнерство с собой");
+        if(giveplayerid == playerid) return ErrorMessage(playerid, "{FF6347}Вы не можете заключить партнерство с собой");
         DP[0][giveplayerid] = b;
         DP[1][giveplayerid] = playerid;
         DP[2][giveplayerid] = number;
