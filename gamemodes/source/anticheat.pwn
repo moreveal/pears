@@ -95,7 +95,7 @@ stock dialogCase_Anticheat(playerid, dialogid, response, listitem)
 
 CMD:trig(playerid)
 {
-    TriggerCheat(playerid, 0);
+    TriggerCheat(playerid, 1);
     return 1;
 }
 
@@ -128,8 +128,8 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
         {
             if(AnticheatInfo[playerid][achTrigger][i - 1] == 0) continue;
 
-            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 300 
-                && (cheatid == 1)) // Только античит на Dgun имеет устаревшие триггеры (чтобы игрок не кикнулся, если накопит их в течении дня)
+            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 180 
+                && (cheatid == 1)) // Античит на Dgun имеет устаревшие триггеры (чтобы игрок не кикнулся, если накопит их в течении дня)
             {
                 // Очищаем тригер, который хранится более 5 минут (устаревший)
                 ClearTrigger(playerid, cheatid, i);
@@ -164,16 +164,18 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
     // DGun
     else if(cheatid == 1)
     {
-        new string[140];
-        format(string, sizeof(string), " [ ADM ]: %s[%d] Подозрение на {FF6347}DGun (ping %d) {cccccc}(warning)", PlayerInfo[playerid][pName],playerid, GetPlayerPing(playerid));
-		MessageCheat(0, string);
-
         if(AnticheatTriggers[playerid][cheatid] >= MAX_TRIGGER_GUN)
         {
             printf("[SProtect Kick]: DGun %s",PlayerInfo[playerid][pName]);
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun]");
             ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun]","*","");
             Kickx(playerid);
+        }
+        else
+        {
+            new string[140];
+            format(string, sizeof(string), " [ ADM ]: %s[%d] Подозрение на {FF6347}DGun (ping %d) {cccccc}(warning)", PlayerInfo[playerid][pName],playerid, GetPlayerPing(playerid));
+            MessageCheat(0, string);
         }
     }
     return 1;
@@ -209,7 +211,7 @@ stock AnticheatGunTrigger(playerid, weaponid)
             {
                 AnticheatTick[playerid][1] = current_tick;
 
-                //RemovePlayerWeapon(playerid, WEAPON:weaponid); // Отнимаем оружие у засранца
+                RemovePlayerWeapon(playerid, WEAPON:weaponid); // Отнимаем оружие у засранца
                 if(ResetAmmoUnix[playerid][slot] == 1) return ResetAmmoUnix[playerid][slot] = 0;
 
                 // Записываем тригер

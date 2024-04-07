@@ -332,7 +332,7 @@ stock ClearAllObject(playerid, dom) // Убираем все объекты в �
 
 	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
 	{
-	    if(DomInfo[dom][dOmodel][oba] >= 1)
+	    if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba]))
         {
             if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
                 || Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)

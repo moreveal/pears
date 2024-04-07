@@ -113,7 +113,7 @@ stock SampvoiceStopTalking(playerid)
 
 stock Sampvoice3InitializationMode()
 {
-    SvDebug(SV_TRUE);
+    //SvDebug(SV_TRUE);
 
     new string[4];
     format(string, sizeof(string), "A");
@@ -166,11 +166,21 @@ stock Sampvoice3DestroyPlayer(playerid) // Отключаем игроку sampv
 {
     if(PlayerInfo[playerid][pVoice] == false) return 0;
 
-    if(lstream[playerid]) SvDeleteStream(lstream[playerid]), lstream[playerid] = SV_NULL, SvRemoveKey(playerid, 0x42);
+    if(lstream[playerid]) 
+    {
+        SvDetachSpeakerFromStream(lstream[playerid], playerid);
+        SvDetachListenerFromStream(lstream[playerid], playerid);
+        SvDeleteStream(lstream[playerid]);
+        lstream[playerid] = SV_NULL;
+        SvRemoveKey(playerid, 0x42);
+    }
 
-    if(gAvoi[playerid] == true)
+    if(gAvoi[playerid] == true && adm_stream)
 	{
-        if(adm_stream) gAvoi[playerid] = false, SvDetachListenerFromStream(adm_stream, playerid), SvRemoveKey(playerid, 0x5A);
+        gAvoi[playerid] = false;
+        SvDetachSpeakerFromStream(adm_stream, playerid);
+        SvDetachListenerFromStream(adm_stream, playerid);
+        SvRemoveKey(playerid, 0x5A);
     }
     return 1;
 }

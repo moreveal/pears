@@ -74,6 +74,10 @@ stock SetPlayerDeath(playerid, reason)
     DeathInfo[playerid][deathUnix] = unix + 3600;
 
     ShowPlayerDeath(playerid);
+
+    #if defined SAMPVOICE_COMPILE_3
+    SampvoiceStopTalking(playerid);
+    #endif
     return 1;
 }
 

@@ -23,7 +23,7 @@ stock CreateNPCsamp()
 
     ConnectNPC(npcNames[0], "prison_ls");
     ConnectNPC(npcNames[1], "prison_sf");
-    ConnectNPC(npcNames[2], "prison_sf");
+    ConnectNPC(npcNames[2], "train_ngsa");
 
     print("[MODE]: NPC_Create");
     return 1;
@@ -208,10 +208,13 @@ CMD:gobert(playerid)
     return 1;
 }
 
-CMD:gojack(playerid)
+CMD:gojack(playerid, const params[])
 {
     if(server != 0) return 0;
 
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить поезд [ /gojack id города ]");
+    if(TrainGoing == 1) return ErrorMessage(playerid, "{FF6347}Поезд скоро поедет");
+    UpdateDestinationTrain(params[0]);
     if(!StartNpc(2)) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен или он отсутствует");
     return 1;
 }

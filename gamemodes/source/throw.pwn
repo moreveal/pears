@@ -248,14 +248,12 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
 	// Ставим бомбу
 	if(fpick == 11 && para >= 10)
 	{
-		new roadId = IsPosTrainRoad(X+herx, Y+hery, Z-0.8);
+		/*new roadId = IsPosTrainRoad(X+herx, Y+hery, Z-0.8);
 		if(roadId >= 0) 
 		{
 			qara = roadId + 1;
-			#if defined FCNPC_LOAD
 			if(!CheckTrainNearby(playerid, roadId, para)) return 0;
-			#endif
-		}
+		}*/
 	}
   	
   	if(thingPack > 0) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
