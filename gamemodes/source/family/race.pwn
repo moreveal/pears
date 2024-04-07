@@ -905,7 +905,7 @@ stock ListRegisterToRace(playerid, type,idrace)
 			format(line,sizeof(line),"{ff9000}%d. {cccccc}Свободно\n", quan), strcat(lines,line);
 		}
 	}
-    format(line,sizeof(line),"{ff6347}Отменить регистрацию\n", quan), strcat(lines,line);
+    format(line,sizeof(line),"{ff6347}Отменить регистрацию\n"), strcat(lines,line);
     DP[4][playerid] = idrace;
 	if(type == 0) ShowDialog(playerid,1459,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
     else if(type == 1) ShowDialog(playerid,1465,DIALOG_STYLE_TABLIST,"{cccccc}Сходка StreetRacers",lines,"Выбрать","Отмена");
