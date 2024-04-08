@@ -2394,6 +2394,16 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
     return 1;
 }
 
+CMD:komp(playerid) return cmd_comp(playerid);
+CMD:compclub(playerid) return cmd_comp(playerid);
+CMD:club(playerid) return cmd_comp(playerid);
+CMD:comp(playerid)
+{
+    // Если игрок в компьютерном клубе
+	if(computerClubPlayerInfo[playerid][ccpiInGame] == true) ShowComputerClubMenu(playerid);
+    return 1;
+}
+
 // _______________________________________________________________________________
 // ______________________________Стоки славы______________________________________
 // _______________________________________________________________________________

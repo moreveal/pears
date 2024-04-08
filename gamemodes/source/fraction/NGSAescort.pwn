@@ -2219,25 +2219,25 @@ stock TrainStopped(playerid)
 {
 	new stoped;
 	// Остановка в LV
-	if(IsPlayerInRangeOfPoint(playerid,10.0,1040.8716,2743.1929,16.7004)) stoped = 1;
+	if(IsPlayerInRangeOfPoint(playerid,10.0,1040.8716,2743.1929,16.7004)) stoped = 1, ACSetVehiclePos(train, 1040.8716,2743.1929,16.7004);
 
 	// Станция в LV
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,2864.7500,1269.3850,12.3495)) stoped = 2;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,2864.7500,1269.3850,12.3495)) stoped = 2, ACSetVehiclePos(train, 2864.7500,1269.3850,12.3495);
 
 	// Остановка в LS
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,2441.3848,-273.0861,19.8851)) stoped = 1;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,2441.3848,-273.0861,19.8851)) stoped = 1, ACSetVehiclePos(train, 2441.3848,-273.0861,19.8851);
 
 	// Станция в LS
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,1759.0452,-1953.7865,15.0995)) stoped = 2;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,1759.0452,-1953.7865,15.0995)) stoped = 2, ACSetVehiclePos(train, 1759.0452,-1953.7865,15.0995);
 
 	// Остановка в SF
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,-775.1386,-1156.3657,64.8759)) stoped = 1;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,-775.1386,-1156.3657,64.8759)) stoped = 1, ACSetVehiclePos(train, -775.1386,-1156.3657,64.8759);
 
 	// Станция в SF
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,-1944.2650,124.0558,27.2245)) stoped = 2;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,-1944.2650,124.0558,27.2245)) stoped = 2, ACSetVehiclePos(train, -1944.2650,124.0558,27.2245);
 
 	// Станция NGSA
-	else if(IsPlayerInRangeOfPoint(playerid,10.0,742.8077,1713.5833,7.7953)) stoped = 3;
+	else if(IsPlayerInRangeOfPoint(playerid,10.0,742.8077,1713.5833,7.7953)) stoped = 3, ACSetVehiclePos(train, 742.8077,1713.5833,7.7953);
 
 
 	if(stoped > 0)

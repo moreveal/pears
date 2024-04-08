@@ -362,11 +362,15 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
     new slot = Protect_Slot(weaponid);
     if(slot > 0)
     {
-        if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return 0;
+        if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return false;
     }
 
     // Защита для новичков
-    if(BeginnerDamage(playerid, damagedid)) return 1;
+    if(BeginnerDamage(playerid, damagedid)) return false;
+
+    // Блочим дамаг если игроки в одной тиме в комп клубе
+    if(computerClubPlayerInfo[playerid][ccpiInGame] == true && computerClubPlayerInfo[damagedid][ccpiInGame] == true
+        && ComputerClubIsTeammates(playerid, damagedid)) return false;
 
     // Защита от дамага без интервалов
     new current_tick = GetTickCount();
@@ -484,7 +488,8 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма нович
 	    && MPGO[damagedid] == 0 // Не на мероприятии
 	    && ADMS[damagedid] <= 4 // Защита от урона активна
         && PlayerInfo[damagedid][pMember] == 0 // Игрок не состоит в организации
-        && PlayerInfo[damagedid][pFamily] == 0) // Игрок не состоит в семье
+        && PlayerInfo[damagedid][pFamily] == 0 // Игрок не состоит в семье
+        && computerClubPlayerInfo[damagedid][ccpiInGame] == false) // Игрок не в комп клубе
 	{
 		new string[160];
 		if(ADMS[playerid] <= 4)

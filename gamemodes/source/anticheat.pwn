@@ -128,8 +128,8 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
         {
             if(AnticheatInfo[playerid][achTrigger][i - 1] == 0) continue;
 
-            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 180 
-                && (cheatid == 1)) // Античит на Dgun имеет устаревшие триггеры (чтобы игрок не кикнулся, если накопит их в течении дня)
+            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 300 && cheatid == 0
+                || unix - AnticheatInfo[playerid][achUnix][i - 1] >= 180 && cheatid == 1)
             {
                 // Очищаем тригер, который хранится более 5 минут (устаревший)
                 ClearTrigger(playerid, cheatid, i);
