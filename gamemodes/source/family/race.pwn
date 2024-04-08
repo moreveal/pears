@@ -464,7 +464,12 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 new listord = List[listitem][playerid];
                 DP[1][playerid] = listord;
                 new slot = DP[4][playerid];
-                if(listitem == 8) return LeaveRace(playerid,slot);
+                if(listitem == 8) 
+                {
+                    if(OnlineInfo[playerid][oStreetRaceSlot] == 0) return ErrorMessage(playerid,"{ff6347}Я и так не участник гонки");
+                    if(StreetRacers[slot][raceStat] == 3) return ErrorMessage(playerid,"{FF6347} Сейчас уже идет гонка");
+                    return LeaveRace(playerid,slot);
+                }
                 RegisterToRace(playerid, listord,slot);
             }
         }
@@ -512,7 +517,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 ClosePartyStreet(slot);
             }
         }
-        else GoStreetRacers(playerid);
+        else cmd_fam(playerid);
     }
     else if(dialogid == 1462)
     {
@@ -525,7 +530,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(FamilyInfo[fam][fRoutIdCreator][slots] == 0) return ErrorMessage(playerid,"{ff4367}Маршрут пустой");
 			DP[0][playerid] = -1;
 			StreetRacers[slot][raceMap] = slots;
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я выбрал гоночный маршрут %d", slots);
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я выбрал гоночный маршрут %d. От: %s", slots+1, FamilyRoutNameCreator[fam][slots]);
 		}
         else GoStreetRacers(playerid);
     }

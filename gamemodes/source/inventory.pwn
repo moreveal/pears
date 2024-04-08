@@ -41,7 +41,7 @@ new fdrawName[][] = // Название Вещи
 	"ЂOKA‡","KPY„KA","SPRUNK","ЂYP‚EP","ЂYP‚EP","PO‡‡","HAЂOP_1","HAЂOP_2","HAЂOP_3","HAЂOP_4",
 	"HAЂOP_5","HAЂOP_6","HAЂOP_7","HAЂOP_8","HAЂOP_9","HAЂOP_10","HAЂOP_11","SPRUNK","KOC•K","XOЏ ѓO‚",
 	"C…‚APEЏA","C…‚APA","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K",
-	"YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","ЊPA‹A HA A‹ЏO","A‹…A ‡…‰EH3…•","ЊPA‹A HA KAЏEP","MOЏO ‡…‰EH3…•","ѓЊ…‡OM","‡…‰EH3…• HA OPY„…E 1",
+	"YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","YЌEЂH…K","ЊPA‹A HA A‹ЏO","A‹…A ‡…‰EH3…•","ЊPA‹A HA KAЏEP","MOЏO ‡…‰EH3…•","ѓ…Њ‡OM","‡…‰EH3…• HA OPY„…E 1",
 	"‡…‰EH3…• HA OPY„…E 2","TOPT","KYCOK ЏOPЏA", "Њ…‰‰A", "Њ…‰‰A ѓOM.", "KYCOK Њ…‰‰‘", "M•CO ‹ YЊAK.", "C‘PO† CЏE†K", "„APEH‘† CЏE†K", "‡OMЏ…K X‡EЂA",
 	"COK AЊE‡’C…H.", "COK •Ђ‡OЌ.", "O‹OЉ…", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "C…‚HA‡…?A‰…•", "ЏOЊ‡…‹O", "MOPO„EHOE", "ЏAЂ‡EЏKA 3AЉ…Џ‘", "…3O‡EHЏA",
 	"ѓEЏA‡’ ЂOMЂ‘","PEM.KOMЊ‡EKЏ A‹ЏO","KPACKA ѓ‡• ЏPAHCЊOPЏA","ABTOMO6NLJHSE_DNCKN","FNDPABLNKA","3AKNCJ_A3OTA","DETALJ_TUHNHFA","KENC","PEM.KOMЊ‡EKЏ MOЏO","PEM.KOMЊ‡EKЏ A‹…A",

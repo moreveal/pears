@@ -227,10 +227,7 @@ stock UseRevival(playerid,targetid)
     if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
     if(fraction(playerid) == 4)
     {
-        new wheretakemoney;
-        if(PlayerInfo[targetid][pMoney] > friskPrice[8]*3) wheretakemoney = 0;
-        else if(PlayerInfo[targetid][pAccount] > friskPrice[8]*3) wheretakemoney = 1;
-        else
+        if(PlayerInfo[targetid][pAccount] < friskPrice[8]*3 && PlayerInfo[targetid][pMoney] < friskPrice[8]*3)
         {
             new string[65];
             format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
@@ -238,17 +235,39 @@ stock UseRevival(playerid,targetid)
             ErrorMessage(targetid,string);
             return 1;
         }
-        if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= friskPrice[8]*3;
-        else PlayerInfo[targetid][pAccount] -= friskPrice[8]*3;
-        mysql_save(targetid,0);
     }
     
-    TakeInvent(playerid,8,1,0,999);
     OnlineInfo[targetid][oTimerAnimationRevival] = 7;
     ApplyAnimation(playerid,"MEDIC","CPR",4.0, false, true, true, false, false, SYNC_ALL);
-    update_ability(playerid, 10, 10 + random(5));
 
     around_player_audio(playerid, 5204, 0, 10.0, 1);
+    return 1;
+}
+
+stock CloseRevival(playerid,targetid)
+{
+    if(DeathInfo[targetid][deathStatus] == false) return 0;
+    new Float:x,Float:y,Float:z;
+    GetPlayerPos(targetid,x,y,z);
+    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
+    new wheretakemoney;
+    if(PlayerInfo[targetid][pMoney] > friskPrice[8]*3) wheretakemoney = 0;
+    else if(PlayerInfo[targetid][pAccount] > friskPrice[8]*3) wheretakemoney = 1;
+    else
+    {
+        new string[65];
+        format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
+        ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
+        ErrorMessage(targetid,string);
+        return 1;
+    }
+    if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= friskPrice[8]*3;
+    else PlayerInfo[targetid][pAccount] -= friskPrice[8]*3;
+    mysql_save(targetid,0);
+    
+    TakeInvent(playerid,8,1,0,999);
+    update_ability(playerid, 10, 10 + random(5));
+    ACSetPlayerHealth(targetid, 100);
     return 1;
 }
 
