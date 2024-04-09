@@ -15,7 +15,7 @@ new TrainRoadDestination;
 #endif
 
 new train_object1;
-//new train_object2;
+new train_object2;
 new train_object3;
 //new TrainGear;
 new Text3D:TrainBoxLabel;
@@ -1698,7 +1698,7 @@ stock UpdateTrainBox()
 stock DestroyObjectTrain()
 {
 	if(train_object1) DestroyObject(train_object1);
-	//if(train_object2) DestroyObject(train_object2);
+	if(train_object2) DestroyObject(train_object2);
 	if(train_object3) DestroyObject(train_object3);
 	return 1;
 }
@@ -1713,10 +1713,10 @@ stock CreateObjectTrain()
 	SetObjectMaterial(train_object1, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
 	AttachObjectToVehicle(train_object1, train + 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	/*train_object2 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
+	train_object2 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
 	SetObjectMaterial(train_object2, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
 	SetObjectMaterial(train_object2, 1, 9583, "bigshap_sfw", "freight_crate5", 0x00000000);
-	AttachObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);*/
+	AttachObjectToVehicle(train_object2, train + 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 	train_object3 = CreateObject(3066, pos[0], pos[1], pos[2], 0.000000, 0.000000, 0.000000); 
 	SetObjectMaterial(train_object3, 0, 3066, "ammotrx", "ammotrn92tarp128", 0xFFFFFFFF);
@@ -2282,7 +2282,7 @@ stock IsPlayerNGSATrainPassenger(playerid)
 	if(GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179 // В интерьере поезда
 		|| OnlineInfo[playerid][oWindowTrain] > 0 // В окне поезда
 		|| surfvehicle == train ||surfvehicle == train + 1 || surfvehicle == train + 2 || surfvehicle == train + 3 // На поезде
-		|| surfobject == train_object1 && train_object1 || surfobject == train_object3 && train_object3) return 1; // На объектах поезда
+		|| surfobject == train_object1 && train_object1 || surfobject == train_object2 && train_object2 || surfobject == train_object3 && train_object3) return 1; // На объектах поезда
 	return 0;
 }
 

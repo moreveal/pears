@@ -60,7 +60,7 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
     }
 
     new string_mysql[80];
-    format(string_mysql,sizeof(string_mysql),"SELECT * FROM pp_igroki WHERE user_id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
+    format(string_mysql,sizeof(string_mysql),"SELECT Name FROM pp_igroki WHERE user_id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
     mysql_tquery(pearsq, string_mysql, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
 
     // Сохранение позиции
@@ -169,9 +169,8 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
         new Float: depth, Float: vehicledepth;
         if (IsVehicleStandingGround(vehicleid) && !CA_IsVehicleInWater(vehicleid, depth, vehicledepth)) 
         {
-            // Если машины не в зоне стрима - помещаем трейлер в нее
-            if (GetDistanceBetweenCoords2d(trailer_pos[0], trailer_pos[1], vehicle_pos[0], vehicle_pos[1]) > STREAMER_OBJECT_SD) 
-                SetVehiclePos(trailerid, vehicle_pos[0], vehicle_pos[1], vehicle_pos[2] - 10.0);
+            // Ставим трейлер под наш транспорт, чтобы попытаться избежать ошибку Loading Screen
+            SetVehiclePos(trailerid, vehicle_pos[0], vehicle_pos[1], vehicle_pos[2] - 8.0);
 
             AttachTrailerToVehicle(trailerid, vehicleid); // Присоединяем трейлер обратно
             ACSetVehicleHealth(vehicleid, safe_health); // Компенсируем возможный полученный дамаг

@@ -674,6 +674,22 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         }
         else if(gRedakt[playerid] == 28) // редачим трейлер
         {
+            new Float:dist = GetDistancePoint(x, y, z, trailerInfo[oid][tPos][0], trailerInfo[oid][tPos][1], trailerInfo[oid][tPos][2]);
+            if(dist > 20.0)
+            {
+                ErrorMessage(playerid, "{FF6347}Трейлер слишком далеко от изначальной позиции\n{cccccc}Если вы хотите переместить трейлер в другое место, прикрепите его к автомобилю [ Caps Lock ]");
+                CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+                return 1;
+            }
+
+            new Float:distpark = GetDistancePoint(x, y, z, -547.4172, -1018.2808, 24.1529);
+            if(distpark <= 50.0)
+            {
+                ErrorMessage(playerid, "{FF6347}Нельзя установить трейлер на территории трейлерного парка");
+                CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+                return 1;
+            }
+            
             PlaceTrailer(EditObjectInfo[playerid][editOption], trailerInfo[EditObjectInfo[playerid][editOption]][tModel],  x,  y,  z,  rx,  ry, rz);
         }
 
