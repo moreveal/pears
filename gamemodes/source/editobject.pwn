@@ -557,8 +557,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}Ошибка редактора объектов"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
     }
 
-    if(t_EDIT_RESPONSE:response == EDIT_RESPONSE_CANCEL) CancelDynamicEditable(playerid);
-
     if(t_EDIT_RESPONSE:response == EDIT_RESPONSE_FINAL)
 	{
         if(objectid != EditObjectInfo[playerid][editObjectid]) return ErrorMessage(playerid, "{FF6347}Ошибка редактора объектов"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
@@ -689,7 +687,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }
-            
+
             PlaceTrailer(EditObjectInfo[playerid][editOption], trailerInfo[EditObjectInfo[playerid][editOption]][tModel],  x,  y,  z,  rx,  ry, rz);
         }
 
@@ -697,7 +695,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         gRedakt[playerid] = 0; // Редактор Off
 		PlayerPlaySound(playerid,6401,0,0,0);
         CancelSelectTextDraw(playerid);
+        return 1;
     }
+
+    if(t_EDIT_RESPONSE:response == EDIT_RESPONSE_CANCEL) CancelDynamicEditable(playerid);
     return 1;
 }
 

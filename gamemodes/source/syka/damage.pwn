@@ -518,3 +518,20 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма нович
     }
 	return 0;
 }
+
+new bool:readdam;
+CMD:readdamage(playerid)
+{
+    if(server != 0) return 0;
+    if(readdam == false)
+    {
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {99ff66}включено","*","");
+        readdam = true;
+    }
+    else 
+    {
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {99ff66}отключено","*","");
+        readdam = false;
+    }
+    return 1;
+}

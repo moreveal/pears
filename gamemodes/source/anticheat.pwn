@@ -13,7 +13,8 @@ enum achInfo
 	achTrigger[CHEAT_HISTORY], // ID чита, который тригерится на игрока
     achPing[CHEAT_HISTORY], // Пинг в момент триггера
     achUnix[CHEAT_HISTORY], // Время в момент триггер
-    Float:achLoss[CHEAT_HISTORY] // Loss в момент триггера
+    Float:achLoss[CHEAT_HISTORY], // Loss в момент триггера
+    achFakeafk // Fake AFK
 };
 new AnticheatInfo[MAX_REALPLAYERS][achInfo];
 
@@ -95,12 +96,14 @@ stock dialogCase_Anticheat(playerid, dialogid, response, listitem)
 
 CMD:trig(playerid)
 {
+    if(server != 0) return 0;
     TriggerCheat(playerid, 1);
     return 1;
 }
 
 CMD:triggun(playerid)
 {
+    if(server != 0) return 0;
     GivePlayerWeapon(playerid, WEAPON:38, 3000);
     return 1;
 }
@@ -218,6 +221,23 @@ stock AnticheatGunTrigger(playerid, weaponid)
                 TriggerCheat(playerid, 1);
             }
 		}
+    }
+    return 1;
+}
+
+// Кикаем сразу, если игрок стреляет из читерского оружия
+stock AnticheatGunKick(playerid, weaponid)
+{
+    new slot = Protect_Slot(weaponid), unix = gettime();
+    if(ResetWeaponUnix[playerid][slot] <= unix)
+	{
+        if(ProtectInfo[playerid][prWeapon][slot] != weaponid)
+        {
+            printf("[SProtect Kick]: DGun Bullet %s",PlayerInfo[playerid][pName]);
+            SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun Bullet]");
+            ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun Bullet]","*","");
+            Kickx(playerid);
+        }
     }
     return 1;
 }

@@ -1375,13 +1375,14 @@ stock BotSex(playerid,b)
 	oGivePlayerMoney(playerid, -200);
 	paybiz(b, 200);
 	OnlineInfo[playerid][oSexBot] = b, BizShluhaStatus[b] = playerid;
-	InputProcess[playerid] = 100;
+	InputProcess[playerid] = 0;
 	new Float:x,Float:y,Float:z,Float:a;
-	DynamicActorfrontme(BizShluha[b],0.5,x,y,z,a);
+	DynamicActorfrontme(BizShluha[b],0.9,x,y,z,a);
+	Job_X[playerid] = x, Job_Y[playerid] = y, Job_Z[playerid] = z;
 	PPSetPlayerPos(playerid,x,y,z);
 	SetPlayerFacingAngle(playerid,a-180);
-	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W", 4.0, 0,0,0,1,0);
-	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4.0, false, false, true, false, true);
+	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W", 4.0, false, false, false, true, false);
+	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4.0, false, false, false, false, true);
 	Sex[playerid] = 3;
 	SexPlayerid[playerid] = 5555;
 	SetPVarInt(playerid,"Infect",0);
@@ -1392,7 +1393,7 @@ stock BotSex(playerid,b)
 	procesbar2(playerid, 0);
 	ShowInput(playerid);
 	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
-	SetPVarInt(playerid, "sekas", 10);
+	SetPVarInt(playerid, "sekas", 20);
 	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid,1);
 	return 1;
 }

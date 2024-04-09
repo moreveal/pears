@@ -1,5 +1,5 @@
 
-#define TRAIN_STOP_TIME 1
+#define TRAIN_STOP_TIME 5
 
 new npcarmyid;
 //new TrainRoadID = 0; // Точка, в которой появляется поезд
