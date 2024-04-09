@@ -1372,6 +1372,8 @@ stock BotSex(playerid,b)
 	new days, hour, minute, second, unix = gettime(), string[84];
 	getunix(PlayerInfo[playerid][pSexBreak]-unix, days, hour, minute, second);
 	if(PlayerInfo[playerid][pSexBreak] > unix) return format(string, sizeof(string), "{FF6347}Вы не можете так часто [ Через %02d мин. %02d сек. ]", minute, second), ErrorMessage(playerid, string);
+	
+	DP[0][playerid] = 0;
 	oGivePlayerMoney(playerid, -200);
 	paybiz(b, 200);
 	OnlineInfo[playerid][oSexBot] = b, BizShluhaStatus[b] = playerid;
