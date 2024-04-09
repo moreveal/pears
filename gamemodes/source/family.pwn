@@ -689,3 +689,13 @@ function Call_loadmessagefamily()
 	return 1;
 }
 
+stock CreateFamlLabel(playerid, f)
+{
+	new Float:X,Float:Y,Float:Z;
+	GetPlayerPos(playerid, X,Y,Z);
+
+	new string[100];
+	format(string,sizeof(string),"\n\n[F] %s", FamilyInfo[f][fName]);
+	FamLabel[playerid] = CreateDynamic3DTextLabel(string,0xfaf75c99,X,Y,Z, 5.0, playerid, INVALID_VEHICLE_ID, 1);
+	return 1;
+}
