@@ -952,3 +952,5 @@ CMD:punishments(playerid,const params[])
 	}
 	return 1;
 }
+CMD:cp(playerid, const params[]) return cmd_punishments(playerid, params);
+CMD:checkpunish(playerid, const params[]) return cmd_punishments(playerid, params);
