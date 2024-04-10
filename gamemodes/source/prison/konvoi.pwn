@@ -43,14 +43,6 @@ function ComeBackPrisonBus(playerid, vehicleid) // Возвращаем авто
     return 1;
 }
 
-stock ReloadVehicleNPC(vehicleid)
-{
-    PP_SetVehicleToRespawn(vehicleid);
-    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-	SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
-    return 1;
-}
-
 function PrisonGo(vehicleid) // Запускаем автобус
 {
     if(vehicleid == prisonbus_LS)

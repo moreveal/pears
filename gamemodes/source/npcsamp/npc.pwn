@@ -3,14 +3,13 @@
 // Имена NPC
 new npcNames[][] =
 {
-    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson"
+    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Vinni_Vinson"
 };
 
 enum npcInfo
 {
 	bool:npcStart,
     npcID,
-    npcDestination, // У train есть несколько вариантов маршрута
     npcVehicle // К какому транспорту принадлежит NPC
 };
 new NPCInfo[sizeof(npcNames)][npcInfo];
@@ -24,6 +23,7 @@ stock CreateNPCsamp()
     ConnectNPC(npcNames[0], "prison_ls");
     ConnectNPC(npcNames[1], "prison_sf");
     ConnectNPC(npcNames[2], "train_ngsa");
+    ConnectNPC(npcNames[3], "collector");
 
     print("[MODE]: NPC_Create");
     return 1;
@@ -46,10 +46,16 @@ stock OnNpcConnect(playerid)
 
     OnlineInfo[playerid][oLogged] = 1;
 
+    // Получаем id NPC по имени
     new id;
-    if(IsNameNpc(playerid, npcNames[0])) id = 0;
-    else if(IsNameNpc(playerid, npcNames[1])) id = 1;
-    else if(IsNameNpc(playerid, npcNames[2])) id = 2;
+    for(new i = 0; i < sizeof(npcNames); i++)
+    {
+        if(IsNameNpc(playerid, npcNames[i]))
+        {
+            id = i;
+            break;
+        }
+    }
 
     NPCInfo[id][npcID] = playerid;
     printf("[MODE]: OnNpcConnect %d", NPCInfo[id][npcID]);
@@ -86,6 +92,13 @@ stock SetNpcSpawn(playerid)
     {
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 747.1211,1706.9492,6.2659,0.0, 0, 0, 0, 0, 0, 0);
         NPCInfo[2][npcVehicle] = train;
+    }
+
+    // Икассатор
+    else if(IsNameNpc(playerid, npcNames[3]))
+    {
+        ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 1100.9181,-1186.2133,18.3424,180.0, 0, 0, 0, 0, 0, 0);
+        NPCInfo[3][npcVehicle] = collectorveh;
     }
     return 1;
 }
@@ -143,10 +156,26 @@ stock OnNpcSpawn(playerid)
         SetPlayerColor(playerid, COLOR_ARMY);
         NPCInfo[2][npcStart] = false;
     }
+
+    // Инкассатор
+    else if(IsNameNpc(playerid, npcNames[3]))
+    {
+        PlayerInfo[playerid][pModel] = 71;
+        
+        S_SetPlayerVirtualWorld(playerid,0,0);
+        SetPlayerInterior(playerid,0);
+        m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
+
+        RemovePlayerFromVehicle(playerid);
+        SetPlayerPos(playerid, 1100.9181,-1186.2133,18.3424);
+        SetPlayerFacingAngle(playerid, 180.0);
+        SetPlayerColor(playerid, INV_COLOR);
+        NPCInfo[3][npcStart] = false;
+    }
     return 1;
 }
 
-stock StartNpc(id, destination = 0)
+stock StartNpc(id)
 {
     if(NPCInfo[id][npcStart] == true) return 0;
 
@@ -156,7 +185,6 @@ stock StartNpc(id, destination = 0)
     GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
     SetVehicleParamsEx(vehicleid, true, true, alarm, doors, bonnet, boot, objective);
     NPCInfo[id][npcStart] = true;
-    NPCInfo[id][npcDestination] = destination;
     return 1;
 }
 
@@ -219,8 +247,32 @@ CMD:gojack(playerid, const params[])
     return 1;
 }
 
+CMD:govinni(playerid, const params[])
+{
+    if(server != 0) return 0;
+
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить инкассатора [ /govinni id города ]");
+    if(NPCInfo[3][npcStart] == true) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен");
+    CollectorStart(params[0]);
+    return 1;
+}
+
 stock IsAVehicleNPC(vehicleid)
 {
-    if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train) return 1;
+    if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train || vehicleid == collectorveh) return 1;
     return 0;
+}
+
+stock NpcStatus(id)
+{
+    if(NPCInfo[id][npcStart] == true) return 1;
+    return 0;
+}
+
+stock ReloadVehicleNPC(vehicleid)
+{
+    PP_SetVehicleToRespawn(vehicleid);
+    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
+    return 1;
 }

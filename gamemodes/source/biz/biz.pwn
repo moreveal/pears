@@ -1396,6 +1396,6 @@ stock BotSex(playerid,b)
 	ShowInput(playerid);
 	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
 	SetPVarInt(playerid, "sekas", 20);
-	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid,1);
+	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid);
 	return 1;
 }
