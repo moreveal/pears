@@ -370,8 +370,9 @@ stock MakeList(playerid)
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
         {
-            if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "Срочный вызов";
-            else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
+            //if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "Срочный вызов";
+            //else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
+            timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
             if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
@@ -409,18 +410,21 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
             if(MakeInfo[listselect][mkStatus] == 2)
             {
                 format(string,sizeof(string),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
+                Login[2][playerid] = 0;
                 ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
             }
             else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] == -1)
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
                 format(string,sizeof(string),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
+                Login[2][playerid] = 0;
                 ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
             }
             else 
             {
                 findraiontolist = FindRaionPos(MakeInfo[listselect][mkCord][0], MakeInfo[listselect][mkCord][1], MakeInfo[listselect][mkCord][2]);
                 format(string,sizeof(string),"Вызов от: %s. В районе: %s\n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
+                Login[2][playerid] = 0;
                 ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
             }
         }
