@@ -63,8 +63,8 @@
         "use_prefix": true,
         "use_timestamp": true
     },
-    "max_bots": 3,
-    "max_players": 50,
+    "max_bots": 4,
+    "max_players": 54,
     "name": "My Pears",
     "network": {
         "acks_limit": 3000,
@@ -108,9 +108,14 @@
             "filterscripts/pearsmap"
         ]
     },
+    "sampvoice": {
+        "port": 7778,
+        "threads": 4,
+        "updaterate": 30
+    },
     "rcon": {
         "allow_teleport": false,
-        "enable": false,
+        "enable": true,
         "password": "jopa228"
     },
     "sleep": 5.0,
