@@ -1788,7 +1788,7 @@ stock ShowOrderThingEscort(playerid, g) // Меню заказа боеприп�
     new quan;
 	format(line,sizeof(line),"Товар \tНа складе \tГос. стоимость"), strcat(lines,line);
     // Обычные предметы
-    for(new i = 0; i < INVENTER; i++)
+    for(new i = 0; i < sizeof(friskName); i++)
   	{
         if(IsSkladOrderDepartThing(i, 0))
         {

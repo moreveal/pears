@@ -105,7 +105,7 @@ stock use_throw(playerid, inva, useinva)
 			return 1;
 		}
 	}
-	if(fpick == 11 && ThrowInfo[t][tBombPlant] == true)
+	if(ThrowInfo[t][tBombPlant] == true)
 	{
 		if(ThrowInfo[t][tPlayerid] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете поднять активированную бомбу");
 	} 
@@ -220,7 +220,7 @@ stock use_throw(playerid, inva, useinva)
 	around_player_audio(playerid, 5601, 0, 5.0, 0);
 	return 1;
 }
-stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Кладём предмет на землю
+stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack, DopParametr = 0) // Кладём предмет на землю
 {
 	if(fpick == 34 && thingType == 1 && thingPack >= 1) { } // Исключим падение снайперки, которая в упаковке
 	else
@@ -246,7 +246,7 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
   	Y=Y+0.8*floatcos(-A,degrees);
 
 	// Ставим бомбу
-	if(fpick == 11 && para >= 10)
+	if(fpick == 11 && thingType == 0 && thingPack == 0 && para >= 10)
 	{
 		/*new roadId = IsPosTrainRoad(X+herx, Y+hery, Z-0.8);
 		if(roadId >= 0) 
@@ -255,15 +255,15 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack) // Клад
 			if(!CheckTrainNearby(playerid, roadId, para)) return 0;
 		}*/
 	}
-  	
-  	if(thingPack > 0) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
+
+  	if(thingPack > 0) SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0, DopParametr);
   	else
   	{
   	    if(thingType == 0)
 		{
 		    if(CheckThingQuan(fpick) == 1) return GiveThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, A, 600);
 		}
-		SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0);
+		SetThrow(playerid, fpick, fpick, quan, para, qara, thingType, thingPack, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), X+herx, Y+hery, Z-0.8, 0.0, 0.0, A, 600, 0, 0, DopParametr);
   	}
  	return 1;
 }
@@ -296,7 +296,7 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 	else if(noobject == 0) SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, x, y, z, 0.0, 0.0, rz, time, 0, 0);
 	return 1;
 }
-stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent) // Устанавливаем новый предмет на землю
+stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent, DopParametr = 0) // Устанавливаем новый предмет на землю
 {
 	new noobject, gee;
 	if(fpick >= 128 && fpick <= 138 && thingType == 0) time = 1200;
@@ -325,7 +325,9 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			ThrowInfo[g][tUseplayer] = 0;
 			ThrowInfo[g][tType] = thingType;
 			ThrowInfo[g][tPack] = thingPack;
-			if (fpick == 11 && para >= 9 ) ThrowInfo[g][tBombPlant] = true;
+			if((fpick == 11 || fpick == 205) && para >= 9) ThrowInfo[g][tBombPlant] = true;
+			if(fpick == 205) ThrowInfo[g][tOpenVehicleBomp] = DopParametr;
+
 			if(playerid != -1)
 			{
 			    ThrowInfo[g][tPlayerid] = PlayerInfo[playerid][pID];
@@ -349,6 +351,7 @@ stock DestroyThrow(t) // Удаляем предмет с земли
 {
  	if(ThrowInfo[t][tObjectStat] == 1) ThrowInfo[t][tObjectStat] = 0, DestroyDynamicObject(ThrowInfo[t][tObject]);
 	ThrowInfo[t][tBombPlant] = false;
+	ThrowInfo[t][tOpenVehicleBomp] = 0;
  	ThrowInfo[t][tUseplayer] = 0;
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;

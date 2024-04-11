@@ -4,32 +4,32 @@
 
 enum fundInfo
 {
-    fundNewid, // id в базе
-    bool:fundStat, // Создан ли сбор
-    bool:fundActive, // Включен ли сбор
-    fundName[44], // Название сбора
-    fundText[84], // Описание сбора
-    fundMoney[24], // Собранное лаве
-    fundRequired[24], // Сколько требуется собрать
-    Float:fundPos[3], // Позиция сбора
-    fundUnix, // Дата начала сбора
-    fundQuan, // Количество пожертвований
-    fundMaxMoney[24], // Максимальное пожертвование сумма
-    fundMaxPlayerid, // Максимальное пожертвование id аккаунта
-    fundMaxPlayerName[24], // Максимальное пожертвование имя игрока
-    fundMaxUnix, // Дата и время максимального пожертвования
+    fundNewid, // id РІ Р±Р°Р·Рµ
+    bool:fundStat, // РЎРѕР·РґР°РЅ Р»Рё СЃР±РѕСЂ
+    bool:fundActive, // Р’РєР»СЋС‡РµРЅ Р»Рё СЃР±РѕСЂ
+    fundName[44], // РќР°Р·РІР°РЅРёРµ СЃР±РѕСЂР°
+    fundText[84], // РћРїРёСЃР°РЅРёРµ СЃР±РѕСЂР°
+    fundMoney[24], // РЎРѕР±СЂР°РЅРЅРѕРµ Р»Р°РІРµ
+    fundRequired[24], // РЎРєРѕР»СЊРєРѕ С‚СЂРµР±СѓРµС‚СЃСЏ СЃРѕР±СЂР°С‚СЊ
+    Float:fundPos[3], // РџРѕР·РёС†РёСЏ СЃР±РѕСЂР°
+    fundUnix, // Р”Р°С‚Р° РЅР°С‡Р°Р»Р° СЃР±РѕСЂР°
+    fundQuan, // РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№
+    fundMaxMoney[24], // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ СЃСѓРјРјР°
+    fundMaxPlayerid, // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ id Р°РєРєР°СѓРЅС‚Р°
+    fundMaxPlayerName[24], // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ РёРјСЏ РёРіСЂРѕРєР°
+    fundMaxUnix, // Р”Р°С‚Р° Рё РІСЂРµРјСЏ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ
 
-    bool:fundGift, // Подарки при пожертвовании
-    fundGiftThingId[MAX_FUND_GIFT], // ID Подарка при пожертвовании
-    fundGiftThingQuan[MAX_FUND_GIFT], // Количество Предмета
-    fundGiftThingType[MAX_FUND_GIFT], // Тип Предмета
-    fundGiftPrice[MAX_FUND_GIFT], // От какой суммы пожертвования этот подарок
+    bool:fundGift, // РџРѕРґР°СЂРєРё РїСЂРё РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё
+    fundGiftThingId[MAX_FUND_GIFT], // ID РџРѕРґР°СЂРєР° РїСЂРё РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё
+    fundGiftThingQuan[MAX_FUND_GIFT], // РљРѕР»РёС‡РµСЃС‚РІРѕ РџСЂРµРґРјРµС‚Р°
+    fundGiftThingType[MAX_FUND_GIFT], // РўРёРї РџСЂРµРґРјРµС‚Р°
+    fundGiftPrice[MAX_FUND_GIFT], // РћС‚ РєР°РєРѕР№ СЃСѓРјРјС‹ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ СЌС‚РѕС‚ РїРѕРґР°СЂРѕРє
 
     fundPickup,
     Text3D:fundLabel
 }
 new FundRaisersInfo[MAX_FUND_RAISERS][fundInfo];
-new QuanFundRaisers; // Количество активных пожертвований
+new QuanFundRaisers; // РљРѕР»РёС‡РµСЃС‚РІРѕ Р°РєС‚РёРІРЅС‹С… РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№
 
 new aFloodFund[MAX_REALPLAYERS];
 
@@ -40,7 +40,7 @@ CMD:fund(playerid)
         FundRaisers(playerid);
         PlayerPlaySound(playerid,40405,0,0,0);
     }
-    else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    else ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
     return 1;
 }
 
@@ -68,47 +68,47 @@ stock MenuFundRaisers(playerid, i)
 {
     new line[80],lines[240];
     format(line,sizeof(line),"{cccccc}%s\t", FundRaisersInfo[i][fundName]), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}Информация >>"), strcat(lines,line);
-    format(line,sizeof(line),"\n{99ff66}Пожертвовать"), strcat(lines,line);
-    ShowDialog(playerid,1408,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Сбор Средств",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"\n{ff9000}РРЅС„РѕСЂРјР°С†РёСЏ >>"), strcat(lines,line);
+    format(line,sizeof(line),"\n{99ff66}РџРѕР¶РµСЂС‚РІРѕРІР°С‚СЊ"), strcat(lines,line);
+    ShowDialog(playerid,1408,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
 stock FundRaisers(playerid)
 {
     new line[140],lines[4096];
-    format(line,sizeof(line),"{cccccc}Название\tСобрано"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РќР°Р·РІР°РЅРёРµ\tРЎРѕР±СЂР°РЅРѕ"), strcat(lines,line);
     for(new i = 0; i < MAX_FUND_RAISERS; i++) 
     {
         if(FundRaisersInfo[i][fundActive])
         {
             format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}%s$ / {cccccc}%s$", i + 1, FundRaisersInfo[i][fundName], fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
         }
-        else format(line,sizeof(line),"\n{cccccc}%d. Добавить >>\t", i + 1), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}%d. Р”РѕР±Р°РІРёС‚СЊ >>\t", i + 1), strcat(lines,line);
     }
     new header[60];
-	format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
-	ShowDialog(playerid,1401,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+	format(header,sizeof(header),"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ {cccccc}[ РЎР±РѕСЂРѕРІ: %d ]", QuanFundRaisers);
+	ShowDialog(playerid,1401,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
 }
 
 stock SettingFundRaisers(playerid, i)
 {
     new line[100],lines[900];
-    format(line,sizeof(line),"{cccccc}Настройки Сбора\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}Информация >>"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РќР°СЃС‚СЂРѕР№РєРё РЎР±РѕСЂР°\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff9000}РРЅС„РѕСЂРјР°С†РёСЏ >>"), strcat(lines,line);
 
-    if(FundRaisersInfo[i][fundActive]) format(line,sizeof(line),"\n{cccccc}Статус сбора:\t{99ff66}Активен"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Статус сбора:\t{FF6347}Неактивен"), strcat(lines,line);
+    if(FundRaisersInfo[i][fundActive]) format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ СЃР±РѕСЂР°:\t{99ff66}РђРєС‚РёРІРµРЅ"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}РЎС‚Р°С‚СѓСЃ СЃР±РѕСЂР°:\t{FF6347}РќРµР°РєС‚РёРІРµРЅ"), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Название:\t%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Описание\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Требуется собрать:\t{99ff66}%s$", fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Позиция сбора >>\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{F4254F}Подарки при пожертвовании >> \t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{FF6347}Завершить сбор\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ:\t%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РћРїРёСЃР°РЅРёРµ\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РўСЂРµР±СѓРµС‚СЃСЏ СЃРѕР±СЂР°С‚СЊ:\t{99ff66}%s$", fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РџРѕР·РёС†РёСЏ СЃР±РѕСЂР° >>\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{F4254F}РџРѕРґР°СЂРєРё РїСЂРё РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё >> \t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}Р—Р°РІРµСЂС€РёС‚СЊ СЃР±РѕСЂ\t"), strcat(lines,line);
     new header[60];
-    format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
-    ShowDialog(playerid,1402,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+    format(header,sizeof(header),"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ {cccccc}[ РЎР±РѕСЂРѕРІ: %d ]", QuanFundRaisers);
+    ShowDialog(playerid,1402,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -122,10 +122,10 @@ stock SettingFundRaisersGift(playerid, i)
         {
             format(line,sizeof(line),"{cccccc}%d. {BF91F8}%s\n", g + 1, GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0));
         }
-        else format(line,sizeof(line),"{cccccc}%d. Настроить >>\n", g + 1);
+        else format(line,sizeof(line),"{cccccc}%d. РќР°СЃС‚СЂРѕРёС‚СЊ >>\n", g + 1);
         strcat(lines,line);
     }
-    ShowDialog(playerid,1411,DIALOG_STYLE_TABLIST,"{ff9000}Сбор Средств",lines,"Выбрать","Выход");
+    ShowDialog(playerid,1411,DIALOG_STYLE_TABLIST,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -135,20 +135,20 @@ stock InfoFundRaisers(playerid, i)
     stamp2datetime(FundRaisersInfo[i][fundUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
     new line[130],lines[4096];
 
-    if(!FundRaisersInfo[i][fundName]) format(line,sizeof(line),"{FF6347}Название не заполнено"), strcat(lines,line);
+    if(!FundRaisersInfo[i][fundName]) format(line,sizeof(line),"{FF6347}РќР°Р·РІР°РЅРёРµ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ"), strcat(lines,line);
     else format(line,sizeof(line),"{ff9000}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
-    if(!FundRaisersInfo[i][fundText]) format(line,sizeof(line),"\n{FF6347}Описание не заполнено"), strcat(lines,line);
+    if(!FundRaisersInfo[i][fundText]) format(line,sizeof(line),"\n{FF6347}РћРїРёСЃР°РЅРёРµ РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ"), strcat(lines,line);
     else format(line,sizeof(line),"\n{cccccc}%s", FundRaisersInfo[i][fundText]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n\n{cccccc}Собрано: {99ff66}%s$", fix_number(FundRaisersInfo[i][fundMoney])), strcat(lines,line);
-    if(!FundRaisersInfo[i][fundRequired]) format(line,sizeof(line),"\n{cccccc}Требуется: {FF6347}не заполнено", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Требуется: {99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}РЎРѕР±СЂР°РЅРѕ: {99ff66}%s$", fix_number(FundRaisersInfo[i][fundMoney])), strcat(lines,line);
+    if(!FundRaisersInfo[i][fundRequired]) format(line,sizeof(line),"\n{cccccc}РўСЂРµР±СѓРµС‚СЃСЏ: {FF6347}РЅРµ Р·Р°РїРѕР»РЅРµРЅРѕ", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}РўСЂРµР±СѓРµС‚СЃСЏ: {99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n\n{cccccc}Количество пожертвований: {ff9000}%d", FundRaisersInfo[i][fundQuan]), strcat(lines,line);
-    if(FundRaisersInfo[i][fundUnix] > 0) format(line,sizeof(line),"\n{cccccc}Начало сбора: {555555}%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Начало сбора: {555555}не начат"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№: {ff9000}%d", FundRaisersInfo[i][fundQuan]), strcat(lines,line);
+    if(FundRaisersInfo[i][fundUnix] > 0) format(line,sizeof(line),"\n{cccccc}РќР°С‡Р°Р»Рѕ СЃР±РѕСЂР°: {555555}%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}РќР°С‡Р°Р»Рѕ СЃР±РѕСЂР°: {555555}РЅРµ РЅР°С‡Р°С‚"), strcat(lines,line);
     
-    format(line,sizeof(line),"\n\n\n{99ff66}Максимальное Пожертвование"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n\n{99ff66}РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ"), strcat(lines,line);
     if(FundRaisersInfo[i][fundMaxPlayerid])
     {
         new tyear2, tmonth2, tday2, thour2, tminute2, tsecond2;
@@ -157,28 +157,28 @@ stock InfoFundRaisers(playerid, i)
         format(line,sizeof(line),"\n{99ff66}%s$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
         format(line,sizeof(line),"\n{555555}%02d.%02d.%d %02d:%02d", tday2, tmonth2, tyear2, thour2, tminute2), strcat(lines,line);
     }
-    else format(line,sizeof(line),"\n{555555}нет пожертвований"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{555555}РЅРµС‚ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№"), strcat(lines,line);
 
-    format(line,sizeof(line),"\n\n\n{F4254F}Подарки при Пожертвовании"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n\n{F4254F}РџРѕРґР°СЂРєРё РїСЂРё РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё"), strcat(lines,line);
     if(FundRaisersInfo[i][fundGift])
     {
         for(new g = 0; g < MAX_FUND_GIFT; g++) 
         {
             if(FundRaisersInfo[i][fundGiftThingId][g] > 0)
             {
-                format(line,sizeof(line),"\n{D9F26E}От %d$ {BF91F8}%s", FundRaisersInfo[i][fundGiftPrice][g], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0)), strcat(lines,line);
+                format(line,sizeof(line),"\n{D9F26E}РћС‚ %d$ {BF91F8}%s", FundRaisersInfo[i][fundGiftPrice][g], GetNameThing(0, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingType][g], 0)), strcat(lines,line);
             }
         }
-        format(line,sizeof(line),"\n{cccccc}- Только от требуемой суммы"), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}- Вы получаете все подарки одновременно, если требуемая сумма соблюдена"), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}- Вы НЕ можете получить повторно один и тот-же подарок"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}- РўРѕР»СЊРєРѕ РѕС‚ С‚СЂРµР±СѓРµРјРѕР№ СЃСѓРјРјС‹"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}- Р’С‹ РїРѕР»СѓС‡Р°РµС‚Рµ РІСЃРµ РїРѕРґР°СЂРєРё РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ, РµСЃР»Рё С‚СЂРµР±СѓРµРјР°СЏ СЃСѓРјРјР° СЃРѕР±Р»СЋРґРµРЅР°"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}- Р’С‹ РќР• РјРѕР¶РµС‚Рµ РїРѕР»СѓС‡РёС‚СЊ РїРѕРІС‚РѕСЂРЅРѕ РѕРґРёРЅ Рё С‚РѕС‚-Р¶Рµ РїРѕРґР°СЂРѕРє"), strcat(lines,line);
     }
-    else format(line,sizeof(line),"\n{555555}нет"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{555555}РЅРµС‚"), strcat(lines,line);
     new header[60];
-    format(header,sizeof(header),"{ff9000}Сбор Средств {cccccc}[ Сборов: %d ]", QuanFundRaisers);
+    format(header,sizeof(header),"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ {cccccc}[ РЎР±РѕСЂРѕРІ: %d ]", QuanFundRaisers);
 
-    if(DP[2][playerid] == 1) ShowDialog(playerid,1403,DIALOG_STYLE_MSGBOX,header,lines,"Ок",""); // Настройки
-    else ShowDialog(playerid,1414,DIALOG_STYLE_MSGBOX,header,lines,"Ок",""); // Меню
+    if(DP[2][playerid] == 1) ShowDialog(playerid,1403,DIALOG_STYLE_MSGBOX,header,lines,"РћРє",""); // РќР°СЃС‚СЂРѕР№РєРё
+    else ShowDialog(playerid,1414,DIALOG_STYLE_MSGBOX,header,lines,"РћРє",""); // РњРµРЅСЋ
     return 1;
 }
 
@@ -196,22 +196,22 @@ stock UpdateFundRaisers(i)
         FundRaisersInfo[i][fundPickup] = CreateDynamicPickup(19134, 1, FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2], 0, 0, -1, 100.0);
 
         new line[130],lines[1170];
-        format(line,sizeof(line),"\n{ff9000}*** Сбор Средств ***"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}*** РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ ***"), strcat(lines,line);
         format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%s$ / {cccccc}%s$", fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}РЎРѕР±СЂР°РЅРѕ: {99ff66}%s$ / {cccccc}%s$", fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
 
-        if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {F4254F}Есть"), strcat(lines,line);
-        else format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {555555}Отсутствуют"), strcat(lines,line);
+        if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{cccccc}РџРѕРґР°СЂРєРё РїСЂРё РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё: {F4254F}Р•СЃС‚СЊ"), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}РџРѕРґР°СЂРєРё РїСЂРё РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРё: {555555}РћС‚СЃСѓС‚СЃС‚РІСѓСЋС‚"), strcat(lines,line);
 
-        format(line,sizeof(line),"\n\n{99ff66}Максимальное Пожертвование"), strcat(lines,line);
+        format(line,sizeof(line),"\n\n{99ff66}РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ"), strcat(lines,line);
         if(FundRaisersInfo[i][fundMaxPlayerid])
         {
             format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundMaxPlayerName]), strcat(lines,line);
             format(line,sizeof(line),"\n{99ff66}%s$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
         }
-        else format(line,sizeof(line),"\n{555555}нет пожертвований"), strcat(lines,line);
+        else format(line,sizeof(line),"\n{555555}РЅРµС‚ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№"), strcat(lines,line);
 
-        format(line,sizeof(line),"\n\n{cccccc}[ ALT - меню сбора ]"), strcat(lines,line);
+        format(line,sizeof(line),"\n\n{cccccc}[ ALT - РјРµРЅСЋ СЃР±РѕСЂР° ]"), strcat(lines,line);
         FundRaisersInfo[i][fundLabel] = CreateDynamic3DTextLabel(lines,-1,FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2],10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
 
         FundRaisersInfo[i][fundStat] = true;
@@ -260,7 +260,7 @@ function LoadFundRaisers()
         i ++;
     }
 
-    printf("[MODE]: Сбор Средств [%d Quan][%d ms]",rows,GetTickCount() - time);
+    printf("[MODE]: РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ [%d Quan][%d ms]",rows,GetTickCount() - time);
     return 1;
 }
 
@@ -274,7 +274,7 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
     new input = strval(inputtext);
     new realMoney = strval(FundRaisersInfo[i][fundMoney]);
     new realRequired = strval(FundRaisersInfo[i][fundRequired]);
-    if(realMoney + input > realRequired) return ErrorMessage(playerid, "{FF6347}Деньги собраны. Пожертвования больше не нужны");
+    if(realMoney + input > realRequired) return ErrorMessage(playerid, "{FF6347}Р”РµРЅСЊРіРё СЃРѕР±СЂР°РЅС‹. РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ Р±РѕР»СЊС€Рµ РЅРµ РЅСѓР¶РЅС‹");
 
     oGivePlayerMoney(playerid, -input);
     payanim(playerid, 0);
@@ -284,9 +284,9 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
     FundRaisersInfo[i][fundQuan] ++;
 
     new line[100],lines[700];
-    format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%s$", inputtext), strcat(lines,line);
+    format(line,sizeof(line),"{99ff66}Р‘Р»Р°РіРѕРґР°СЂРёРј РІР°СЃ Р·Р° РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ РІ СЂР°Р·РјРµСЂРµ {D9F26E}%s$", inputtext), strcat(lines,line);
 
-    // Максимальное Пожертвование
+    // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РџРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ
     if(input > strval(FundRaisersInfo[i][fundMaxMoney]))
     {
         format(FundRaisersInfo[i][fundMaxMoney], 24, "%s", inputtext);
@@ -301,10 +301,10 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
             FundRaisersInfo[i][fundMaxUnix], FundRaisersInfo[i][fundNewid]);
         query_empty(pearsq, string_mysql);
 
-        format(line,sizeof(line),"\n{ff9000}Ого! Вы сделали максимальное пожертвование!"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}РћРіРѕ! Р’С‹ СЃРґРµР»Р°Р»Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёРµ!"), strcat(lines,line);
     }
 
-    // Собираем лог пожертвований (информация о подарках)
+    // РЎРѕР±РёСЂР°РµРј Р»РѕРі РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№ (РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕРґР°СЂРєР°С…)
     if(FundRaisersInfo[i][fundGift])
     {
         new bool:GiftLog[MAX_FUND_GIFT];
@@ -344,13 +344,13 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
         {
             if(giftFall > 0) 
             {
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}В инвентаре не хватило места [ Подарок упал на землю ]");
-                format(line,sizeof(line),"\n\n{F4254F}В инвентаре не хватило места [ Подарок упал на землю ]"), strcat(lines,line);
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Р’ РёРЅРІРµРЅС‚Р°СЂРµ РЅРµ С…РІР°С‚РёР»Рѕ РјРµСЃС‚Р° [ РџРѕРґР°СЂРѕРє СѓРїР°Р» РЅР° Р·РµРјР»СЋ ]");
+                format(line,sizeof(line),"\n\n{F4254F}Р’ РёРЅРІРµРЅС‚Р°СЂРµ РЅРµ С…РІР°С‚РёР»Рѕ РјРµСЃС‚Р° [ РџРѕРґР°СЂРѕРє СѓРїР°Р» РЅР° Р·РµРјР»СЋ ]"), strcat(lines,line);
             }
             else 
             {
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Проверьте инвентарь, вы получили подарок!");
-                format(line,sizeof(line),"\n\n{F4254F}Проверьте инвентарь, вы получили подарок!"), strcat(lines,line);
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}РџСЂРѕРІРµСЂСЊС‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ, РІС‹ РїРѕР»СѓС‡РёР»Рё РїРѕРґР°СЂРѕРє!");
+                format(line,sizeof(line),"\n\n{F4254F}РџСЂРѕРІРµСЂСЊС‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ, РІС‹ РїРѕР»СѓС‡РёР»Рё РїРѕРґР°СЂРѕРє!"), strcat(lines,line);
             }
         }
 
@@ -420,34 +420,34 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                     if(FundRaisersInfo[i][fundPos][0] == 0.0 
                         || !strcmp(FundRaisersInfo[i][fundName],"0",true) || !strcmp(FundRaisersInfo[i][fundText],"0",true) 
                         || !strcmp(FundRaisersInfo[i][fundRequired],"0",true))
-                        return ErrorText(playerid, "{FF6347}Вы не настроили сбор средств полностью\n{cccccc}Название, Описание, Требуется собрать, Позиция"), SettingFundRaisers(playerid, i);
+                        return ErrorText(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°СЃС‚СЂРѕРёР»Рё СЃР±РѕСЂ СЃСЂРµРґСЃС‚РІ РїРѕР»РЅРѕСЃС‚СЊСЋ\n{cccccc}РќР°Р·РІР°РЅРёРµ, РћРїРёСЃР°РЅРёРµ, РўСЂРµР±СѓРµС‚СЃСЏ СЃРѕР±СЂР°С‚СЊ, РџРѕР·РёС†РёСЏ"), SettingFundRaisers(playerid, i);
                     
-                    ShowDialog(playerid,1413,DIALOG_STYLE_MSGBOX,"{ff9000}Сбор Средств","{cccccc}Вы уверены, что хотите активировать сбор средств?\n\n{FF6347}Elon_Musk: Убедись, что в подарках нет идиотских и косячных предметов\nЕсли там окажется какая-то херня - я выдерну ноги","Да","Нет");
+                    ShowDialog(playerid,1413,DIALOG_STYLE_MSGBOX,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ Р°РєС‚РёРІРёСЂРѕРІР°С‚СЊ СЃР±РѕСЂ СЃСЂРµРґСЃС‚РІ?\n\n{FF6347}Elon_Musk: РЈР±РµРґРёСЃСЊ, С‡С‚Рѕ РІ РїРѕРґР°СЂРєР°С… РЅРµС‚ РёРґРёРѕС‚СЃРєРёС… Рё РєРѕСЃСЏС‡РЅС‹С… РїСЂРµРґРјРµС‚РѕРІ\nР•СЃР»Рё С‚Р°Рј РѕРєР°Р¶РµС‚СЃСЏ РєР°РєР°СЏ-С‚Рѕ С…РµСЂРЅСЏ - СЏ РІС‹РґРµСЂРЅСѓ РЅРѕРіРё","Р”Р°","РќРµС‚");
                 }
             }
             else if(listitem == 2)
             {
-                ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите название сбора\n\n{FF6347}1 - 40 символов","Принять","Отмена");
+                ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ СЃР±РѕСЂР°\n\n{FF6347}1 - 40 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
             else if(listitem == 3)
             {
-                ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите описание сбора\n\n{FF6347}1 - 80 символов","Принять","Отмена");
+                ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РѕРїРёСЃР°РЅРёРµ СЃР±РѕСЂР°\n\n{FF6347}1 - 80 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
             else if(listitem == 4)
             {
-                ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите сумму, которую необходимо собрать\n\n{FF6347}10.000 - 999.000.000","Принять","Отмена");
+                ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ, РєРѕС‚РѕСЂСѓСЋ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР±СЂР°С‚СЊ\n\n{FF6347}10.000 - 999.000.000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
             else if(listitem == 5)
             {
-                if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Только пешечком");
-                if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}Только на улице");
-		        ShowDialog(playerid,1407,DIALOG_STYLE_MSGBOX,"{ff9000}Сбор Средств","{cccccc}Хотите установить позицию, в которой стоите точкой {ff9000}сбора средств?","Да","Нет");
+                if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ РїРµС€РµС‡РєРѕРј");
+                if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ РЅР° СѓР»РёС†Рµ");
+		        ShowDialog(playerid,1407,DIALOG_STYLE_MSGBOX,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}РҐРѕС‚РёС‚Рµ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РїРѕР·РёС†РёСЋ, РІ РєРѕС‚РѕСЂРѕР№ СЃС‚РѕРёС‚Рµ С‚РѕС‡РєРѕР№ {ff9000}СЃР±РѕСЂР° СЃСЂРµРґСЃС‚РІ?","Р”Р°","РќРµС‚");
             }
             else if(listitem == 6) SettingFundRaisersGift(playerid, i);
             else if(listitem == 7)
             {
-                if(!FundRaisersInfo[i][fundActive]) return ErrorText(playerid, "{FF6347}Нельзя завершить неактивный сбор"), SettingFundRaisers(playerid, DP[0][playerid]);
-		        ShowDialog(playerid,1410,DIALOG_STYLE_MSGBOX,"{ff9000}Сбор Средств","{cccccc}Вы уверены, что хотите {FF6347}завершить {cccccc}этот сбор средств?","Да","Нет");
+                if(!FundRaisersInfo[i][fundActive]) return ErrorText(playerid, "{FF6347}РќРµР»СЊР·СЏ Р·Р°РІРµСЂС€РёС‚СЊ РЅРµР°РєС‚РёРІРЅС‹Р№ СЃР±РѕСЂ"), SettingFundRaisers(playerid, DP[0][playerid]);
+		        ShowDialog(playerid,1410,DIALOG_STYLE_MSGBOX,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ {FF6347}Р·Р°РІРµСЂС€РёС‚СЊ {cccccc}СЌС‚РѕС‚ СЃР±РѕСЂ СЃСЂРµРґСЃС‚РІ?","Р”Р°","РќРµС‚");
             }
         }
         else FundRaisers(playerid);
@@ -460,8 +460,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         new i = DP[0][playerid];
         if(response)
         {
-            if(strlen(inputtext) < 1 || strlen(inputtext) > 40) return ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите название сбора\n\n{ff0000}1 - 40 символов","Принять","Отмена");
-           	if(checksimvol(inputtext)) return ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите название сбора\n\n{FF6347}1 - 40 символов","Принять","Отмена");
+            if(strlen(inputtext) < 1 || strlen(inputtext) > 40) return ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ СЃР±РѕСЂР°\n\n{ff0000}1 - 40 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+           	if(checksimvol(inputtext)) return ShowDialog(playerid,1404,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ СЃР±РѕСЂР°\n\n{FF6347}1 - 40 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 
             format(FundRaisersInfo[i][fundName], 44, "%s", inputtext);
             UpdateFundRaisers(i);
@@ -479,8 +479,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         new i = DP[0][playerid];
         if(response)
         {
-            if(strlen(inputtext) < 1 || strlen(inputtext) > 80) return ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите описание сбора\n\n{ff0000}1 - 80 символов","Принять","Отмена");
-           	if(checksimvol(inputtext)) return ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите описание сбора\n\n{FF6347}1 - 80 символов","Принять","Отмена");
+            if(strlen(inputtext) < 1 || strlen(inputtext) > 80) return ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РѕРїРёСЃР°РЅРёРµ СЃР±РѕСЂР°\n\n{ff0000}1 - 80 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
+           	if(checksimvol(inputtext)) return ShowDialog(playerid,1405,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ РѕРїРёСЃР°РЅРёРµ СЃР±РѕСЂР°\n\n{FF6347}1 - 80 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 
             format(FundRaisersInfo[i][fundText], 34, "%s", inputtext);
             SettingFundRaisers(playerid, i);
@@ -498,11 +498,11 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         if(response)
         {
             if(!checknum(inputtext) || checksimvol(inputtext)) 
-                return ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите сумму, которую необходимо собрать\n\n{FF6347}10.000 - 999.000.000","Принять","Отмена");
+                return ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ, РєРѕС‚РѕСЂСѓСЋ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР±СЂР°С‚СЊ\n\n{FF6347}10.000 - 999.000.000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 
             new input = strval(inputtext);
             if(input < 10000 || input > 999000000) 
-                return ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите сумму, которую необходимо собрать\n\n{FF6347}10.000 - 999.000.000","Принять","Отмена");
+                return ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ, РєРѕС‚РѕСЂСѓСЋ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР±СЂР°С‚СЊ\n\n{FF6347}10.000 - 999.000.000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
            	
             format(FundRaisersInfo[i][fundRequired], 24, "%s", inputtext);
             UpdateFundRaisers(i);
@@ -520,8 +520,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         new i = DP[0][playerid];
         if(response)
         {
-            if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Только пешечком");
-            if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}Только на улице");
+            if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ РїРµС€РµС‡РєРѕРј");
+            if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ РЅР° СѓР»РёС†Рµ");
 
             GetPlayerPos(playerid, FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2]);
             UpdateFundRaisers(i);
@@ -545,10 +545,10 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             if(listitem == 1)
             {
                 new line[90],lines[270];
-                format(line,sizeof(line),"{cccccc}Введите сумму, которую хотите пожертвовать на {ff9000}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
+                format(line,sizeof(line),"{cccccc}Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ, РєРѕС‚РѕСЂСѓСЋ С…РѕС‚РёС‚Рµ РїРѕР¶РµСЂС‚РІРѕРІР°С‚СЊ РЅР° {ff9000}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{FF6347}100$ - 99.000.000$"), strcat(lines,line);
-                if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{99ff66}Посмотрите в информации о требованиях для получения подарка"), strcat(lines,line);
-                ShowDialog(playerid,1409,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств",lines,"Принять","Отмена");
+                if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{99ff66}РџРѕСЃРјРѕС‚СЂРёС‚Рµ РІ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‚СЂРµР±РѕРІР°РЅРёСЏС… РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РїРѕРґР°СЂРєР°"), strcat(lines,line);
+                ShowDialog(playerid,1409,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ",lines,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
         }
     }
@@ -559,16 +559,16 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         if(response)
         {
             if(!checknum(inputtext) || checksimvol(inputtext)) 
-                return ErrorMessage(playerid, "{FF6347}Используйте только цифры");
+                return ErrorMessage(playerid, "{FF6347}РСЃРїРѕР»СЊР·СѓР№С‚Рµ С‚РѕР»СЊРєРѕ С†РёС„СЂС‹");
 
             new input = strval(inputtext);
             if(input < 100 || input > 99000000) 
-                return ErrorMessage(playerid, "{FF6347}Не меньше 100$ и не больше 99.000.000$");
+                return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 100$ Рё РЅРµ Р±РѕР»СЊС€Рµ 99.000.000$");
 
-            if(oGetPlayerMoney(playerid) < input) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+            if(oGetPlayerMoney(playerid) < input) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
 
             new unix = gettime();
-           	if(aFloodFund[playerid] > unix) return ErrorMessage(playerid, "{FF6347}Пожалуйста, для повторного пожертвования, подождите 20 секунд");
+           	if(aFloodFund[playerid] > unix) return ErrorMessage(playerid, "{FF6347}РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РґР»СЏ РїРѕРІС‚РѕСЂРЅРѕРіРѕ РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ, РїРѕРґРѕР¶РґРёС‚Рµ 20 СЃРµРєСѓРЅРґ");
             aFloodFund[playerid] = unix + 20;
 
             new string_mysql[180];
@@ -583,17 +583,17 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         new i = DP[0][playerid];
         if(response)
         {
-            if(!FundRaisersInfo[i][fundActive]) return ErrorMessage(playerid, "{FF6347}Сбор уже завершён");
+            if(!FundRaisersInfo[i][fundActive]) return ErrorMessage(playerid, "{FF6347}РЎР±РѕСЂ СѓР¶Рµ Р·Р°РІРµСЂС€С‘РЅ");
 
             FundRaisersInfo[i][fundActive] = false;
             QuanFundRaisers --;
             UpdateFundRaisers(i);
 
             new string[140];
-            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %d$", FundRaisersInfo[i][fundName],  fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired]));
+            format(string,sizeof(string),"{99ff66}Р’С‹ Р·Р°РІРµСЂС€РёР»Рё СЃР±РѕСЂ СЃСЂРµРґСЃС‚РІ {ff9000}%s\n\n{cccccc}РЎРѕР±СЂР°РЅРѕ: {99ff66}%s$ {cccccc}РёР· %d$", FundRaisersInfo[i][fundName],  fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired]));
             SuccessMessage(playerid, string);
 
-            ClearFundLog(FundRaisersInfo[i][fundNewid]); // Очищаем лог пожертвований по этому сбору (В moneylog история остаётся)
+            ClearFundLog(FundRaisersInfo[i][fundNewid]); // РћС‡РёС‰Р°РµРј Р»РѕРі РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёР№ РїРѕ СЌС‚РѕРјСѓ СЃР±РѕСЂСѓ (Р’ moneylog РёСЃС‚РѕСЂРёСЏ РѕСЃС‚Р°С‘С‚СЃСЏ)
 
             format(FundRaisersInfo[i][fundName], 44, "");
             format(FundRaisersInfo[i][fundText], 84, "");
@@ -624,7 +624,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         {
             if(listitem < 0 || listitem >= MAX_FUND_GIFT) return 0;
             DP[1][playerid] = listitem;
-            ShowDialog(playerid,1412,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите через пробел настройки подарка {FF6347}[Внимание! -1 удалить подарок]\n{ff9000}Тип ID Количество Сумма {cccccc}(От которой этот подарок будет доступен)\n\n{555555}Подробности о предметах и их ID вы можете найти на форуме","Принять","Отмена");
+            ShowDialog(playerid,1412,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ С‡РµСЂРµР· РїСЂРѕР±РµР» РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґР°СЂРєР° {FF6347}[Р’РЅРёРјР°РЅРёРµ! -1 СѓРґР°Р»РёС‚СЊ РїРѕРґР°СЂРѕРє]\n{ff9000}РўРёРї ID РљРѕР»РёС‡РµСЃС‚РІРѕ РЎСѓРјРјР° {cccccc}(РћС‚ РєРѕС‚РѕСЂРѕР№ СЌС‚РѕС‚ РїРѕРґР°СЂРѕРє Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ)\n\n{555555}РџРѕРґСЂРѕР±РЅРѕСЃС‚Рё Рѕ РїСЂРµРґРјРµС‚Р°С… Рё РёС… ID РІС‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РЅР° С„РѕСЂСѓРјРµ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
         }
         else SettingFundRaisers(playerid, i);
     }
@@ -635,39 +635,39 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
         new g = DP[1][playerid];
         if(response)
         {
-            if(!checknumSpace(inputtext)) return ErrorMessage(playerid, "{FF6347}Используйте только цифры");
+            if(!checknumSpace(inputtext)) return ErrorMessage(playerid, "{FF6347}РСЃРїРѕР»СЊР·СѓР№С‚Рµ С‚РѕР»СЊРєРѕ С†РёС„СЂС‹");
 
             new input[4];
             if(sscanf(inputtext, "iiii", input[0], input[1], input[2], input[3]))
             {
-                ShowDialog(playerid,1412,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите через пробел настройки подарка {FF6347}[Внимание! -1 удалить подарок]\n{ff0000}Тип ID Количество Сумма {cccccc}(От которой этот подарок будет доступен)\n\n{555555}Подробности о предметах и их ID вы можете найти на форуме","Принять","Отмена");
+                ShowDialog(playerid,1412,DIALOG_STYLE_INPUT,"{ff9000}РЎР±РѕСЂ РЎСЂРµРґСЃС‚РІ","{cccccc}Р’РІРµРґРёС‚Рµ С‡РµСЂРµР· РїСЂРѕР±РµР» РЅР°СЃС‚СЂРѕР№РєРё РїРѕРґР°СЂРєР° {FF6347}[Р’РЅРёРјР°РЅРёРµ! -1 СѓРґР°Р»РёС‚СЊ РїРѕРґР°СЂРѕРє]\n{ff0000}РўРёРї ID РљРѕР»РёС‡РµСЃС‚РІРѕ РЎСѓРјРјР° {cccccc}(РћС‚ РєРѕС‚РѕСЂРѕР№ СЌС‚РѕС‚ РїРѕРґР°СЂРѕРє Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРµРЅ)\n\n{555555}РџРѕРґСЂРѕР±РЅРѕСЃС‚Рё Рѕ РїСЂРµРґРјРµС‚Р°С… Рё РёС… ID РІС‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РЅР° С„РѕСЂСѓРјРµ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
                 return 1;
             }
 
             new string[120];
-            if(input[0] == 0) // Обычный Предмет 
+            if(input[0] == 0) // РћР±С‹С‡РЅС‹Р№ РџСЂРµРґРјРµС‚ 
             {
-                if(input[1] <= 0 || input[1] >= INVENTER) return format(string,sizeof(string),"{FF6347}ID Предмета не меньше 1 и не больше %d", INVENTER), ErrorMessage(playerid, string);
-                if(input[2] < 0 || input[2] > 100) return ErrorMessage(playerid, "{FF6347}Количество для предмета не меньше 1 не больше 100");
-                if(NotGiveThing(input[1], 0, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя добавить");
+                if(input[1] <= 0 || input[1] >= sizeof(friskName)) return format(string,sizeof(string),"{FF6347}ID РџСЂРµРґРјРµС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", sizeof(friskName)), ErrorMessage(playerid, string);
+                if(input[2] < 0 || input[2] > 100) return ErrorMessage(playerid, "{FF6347}РљРѕР»РёС‡РµСЃС‚РІРѕ РґР»СЏ РїСЂРµРґРјРµС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 РЅРµ Р±РѕР»СЊС€Рµ 100");
+                if(NotGiveThing(input[1], 0, 0)) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РїСЂРµРґРјРµС‚ РЅРµР»СЊР·СЏ РґРѕР±Р°РІРёС‚СЊ");
             }
-            else if(input[0] == 2) // Аксессуар
+            else if(input[0] == 2) // РђРєСЃРµСЃСЃСѓР°СЂ
             {
-                if(input[1] <= 320 || input[1] > MAX_OBJECT_MODEL_ID) return format(string,sizeof(string),"{FF6347}ID Аксессуара не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, string);
-                if(!GetAccessory(input[1])) return ErrorMessage(playerid, "{FF6347}Вы можете добавить аксессуар только из одобренного списка аксессуаров [ /accessory ]");
-                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}Аксессуар в подарке может быть только один");
+                if(input[1] <= 320 || input[1] > MAX_OBJECT_MODEL_ID) return format(string,sizeof(string),"{FF6347}ID РђРєСЃРµСЃСЃСѓР°СЂР° РЅРµ РјРµРЅСЊС€Рµ 321 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_MODEL_ID), ErrorMessage(playerid, string);
+                if(!GetAccessory(input[1])) return ErrorMessage(playerid, "{FF6347}Р’С‹ РјРѕР¶РµС‚Рµ РґРѕР±Р°РІРёС‚СЊ Р°РєСЃРµСЃСЃСѓР°СЂ С‚РѕР»СЊРєРѕ РёР· РѕРґРѕР±СЂРµРЅРЅРѕРіРѕ СЃРїРёСЃРєР° Р°РєСЃРµСЃСЃСѓР°СЂРѕРІ [ /accessory ]");
+                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}РђРєСЃРµСЃСЃСѓР°СЂ РІ РїРѕРґР°СЂРєРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ");
             }
-            else if(input[0] == 3) // Одежда
+            else if(input[0] == 3) // РћРґРµР¶РґР°
             {
-                if(!IsASkinExisting(input[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, далее кастомные ID есть на форуме]");
-                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}Одежда в подарке может быть только одна");
+                if(!IsASkinExisting(input[1])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РґР°Р»РµРµ РєР°СЃС‚РѕРјРЅС‹Рµ ID РµСЃС‚СЊ РЅР° С„РѕСЂСѓРјРµ]");
+                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}РћРґРµР¶РґР° РІ РїРѕРґР°СЂРєРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРЅР°");
             }
-            else if(input[0] == 5) // Транспорт
+            else if(input[0] == 5) // РўСЂР°РЅСЃРїРѕСЂС‚
             {
-                if(input[1] < 400 || input[1] > 611) return ErrorMessage(playerid, "{FF6347}Модель транспорта не меньше 400 и не больше 611");
-                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}Транспорт в подарке может быть только один");
+                if(input[1] < 400 || input[1] > 611) return ErrorMessage(playerid, "{FF6347}РњРѕРґРµР»СЊ С‚СЂР°РЅСЃРїРѕСЂС‚Р° РЅРµ РјРµРЅСЊС€Рµ 400 Рё РЅРµ Р±РѕР»СЊС€Рµ 611");
+                if(input[2] < 0 || input[2] > 1) return ErrorMessage(playerid, "{FF6347}РўСЂР°РЅСЃРїРѕСЂС‚ РІ РїРѕРґР°СЂРєРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РѕРґРёРЅ");
             }
-            else if(input[0] == -1) // Удаляем подарок
+            else if(input[0] == -1) // РЈРґР°Р»СЏРµРј РїРѕРґР°СЂРѕРє
             {
                 FundRaisersInfo[i][fundGiftThingId][g] = 0;
                 FundRaisersInfo[i][fundGiftThingQuan][g] = 0;
@@ -681,9 +681,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                 }
                 if(quan == 0) FundRaisersInfo[i][fundGift] = false;
             }
-            else ErrorMessage(playerid, "{FF6347}Недоступный тип (-1 удалить подарок, 0 предмет, 2 аксессуар, 3 одежда, 5 транспорт)");
+            else ErrorMessage(playerid, "{FF6347}РќРµРґРѕСЃС‚СѓРїРЅС‹Р№ С‚РёРї (-1 СѓРґР°Р»РёС‚СЊ РїРѕРґР°СЂРѕРє, 0 РїСЂРµРґРјРµС‚, 2 Р°РєСЃРµСЃСЃСѓР°СЂ, 3 РѕРґРµР¶РґР°, 5 С‚СЂР°РЅСЃРїРѕСЂС‚)");
 
-            if(input[0] >= 1 && input[3] < 10000 || input[3] > 99000000) return ErrorMessage(playerid, "{FF6347}Сумма пожертвования, от которого доступен подарок, не меньше 10.000$ и не больше 99.000.000$");
+            if(input[0] >= 1 && input[3] < 10000 || input[3] > 99000000) return ErrorMessage(playerid, "{FF6347}РЎСѓРјРјР° РїРѕР¶РµСЂС‚РІРѕРІР°РЅРёСЏ, РѕС‚ РєРѕС‚РѕСЂРѕРіРѕ РґРѕСЃС‚СѓРїРµРЅ РїРѕРґР°СЂРѕРє, РЅРµ РјРµРЅСЊС€Рµ 10.000$ Рё РЅРµ Р±РѕР»СЊС€Рµ 99.000.000$");
 
             if(input[0] >= 0)
             {

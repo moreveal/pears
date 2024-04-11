@@ -181,7 +181,7 @@ CMD:pricevehdown(playerid, const params[])
 CMD:reloadpricefrisk(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	for(new s = 0; s < INVENTER; s++)
+	for(new s = 0; s < sizeof(friskName); s++)
 	{
 		friskPrice[s] = friskDefault[s];
 		SavePriceFrisk(s);

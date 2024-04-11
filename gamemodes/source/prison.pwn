@@ -931,8 +931,8 @@ stock get_prisontable(pt, thingId, thingType) // Поиск предмета в 
 
 stock pt_limit(pt, thingId, &getQuan, &getLimit) // Проверяем лимиты тумбы в тюрьме
 {
-	new lim[INVENTER];
-	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
+	new lim[sizeof(friskName)];
+	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;
 	lim[8] = 100, lim[19] = 1000, lim[41] = 1000, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100000, lim[5] = 100000, lim[6] = 100000, lim[7] = 100000, lim[9] = 20, lim[18] = 10000, lim[20] = 10000, lim[27] = 50000, lim[28] = 50000, lim[29] = 50000, lim[30] = 50000;
 	lim[46] = 1000, lim[47] = 1000, lim[55] = 100, lim[60] = 1000, lim[61] = 500, lim[64] = 10000, lim[65] = 10000, lim[66] = 10000, lim[67] = 10000, lim[71] = 1000;

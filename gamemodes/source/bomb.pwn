@@ -279,3 +279,31 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
     return 1;
 }
 
+stock UseStickyBomb(playerid)
+{
+    new vehicleid = IsAPosBootHardLock(playerid);
+    if(vehicleid == 0) return ErrorMessage(playerid, "{FF6347}Подойдите к багажнику бронированного транспорта\n\n{ffcc66}Бомба липучка используется для взлома бронированных замков");
+    if(IsVehicleOpen(playerid, vehicleid)) return ErrorMessage(playerid, "{FF6347}Вы можете открыть багажник этого транспорта [ N >> Багажник ]");
+    
+    new result = Throw(playerid, 205, 1, 10, 0, 0, 0, vehicleid); // Кладём предмет на землю
+    if(!result) return ErrorMessage(playerid, "{FF6347}Ошибка! Лимит выброшенных предметов\nСвяжитесь с администрацией [ /report ]");
+
+    TakeInvent(playerid, 205, 1, 0, 999);
+    TurnPlayerFaceToVehicle(playerid, vehicleid);
+    ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false, SYNC_ALL);
+    around_player_audio(playerid, 25800, 0, 8.0);
+
+    SuccessMessage(playerid, "{99ff66}Бомба установлена и взорвётся через 10 секунд\n{cccccc}Отойдите на безопасное расстояние");
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через 10 секунд ]", gender(playerid));
+    SetPlayerChatBubble(playerid,"устанавливает бомбу липучку",COLOR_PURPLE,20.0,3000);
+    return 1;
+}
+
+stock StickyBompExplosion(t)
+{
+    new vehicleid = ThrowInfo[t][tOpenVehicleBomp];
+    if(IsVehicleInRangeOfPoint(vehicleid, 20.0, ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ])) LockCar(vehicleid, 0);
+    CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ], 12, 3);
+    DestroyThrow(t); // Удаляем бомбу
+    return 1;
+}

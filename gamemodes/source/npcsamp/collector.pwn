@@ -1,8 +1,9 @@
 
 #define MAX_HEALTH_COLLECTOR 100 // ХП транспорта инкассатора
 
-new collector_health;
+new collector_health = -1;
 new collector_city;
+new Float:collector_veh_pos[4];
 
 stock UpdateCollectorLabel()
 {
@@ -11,8 +12,8 @@ stock UpdateCollectorLabel()
     // Едет
     if(NpcStatus(3))
     {
-        if(collector_health > 0) format(string, sizeof(string), "{82CEA3}Инкассаторская Машина\n{cccccc}%s - San Fierro", cityName[collector_city]);
-        else format(string, sizeof(string), "{82CEA3}Инкассаторская Машина\n{cccccc}%s - San Fierro\n\n{FF6347}ОГРАБЛЕНИЕ\n[ N >> Багажник ]", cityName[collector_city]);
+        if(collector_health > 0) format(string, sizeof(string), "{82CEA3}Инкассаторская Машина\n{cccccc}%s - Правительство", cityName[collector_city]);
+        else format(string, sizeof(string), "{82CEA3}Инкассаторская Машина\n{cccccc}%s - Правительство\n\n{FF6347}ОГРАБЛЕНИЕ\n[ N >> Багажник ]", cityName[collector_city]);
     }
     else format(string, sizeof(string), "{82CEA3}Инкассаторская Машина");
     Update3DTextLabelText(collectorlabel, 0x008080FF, string);
@@ -32,24 +33,37 @@ stock CollectorDamage(playerid, damageid)
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ништяк! Теперь я могу забрать деньги [ N >> Багажник ]");
         SuccessMessage(playerid, "{99ff66}Теперь подойдите к багажнику и заберите мешок с деньгами\n{ffcc66}N >> Багажник");
 
-        new Float:pos_veh[3], vehicleid = GetPlayerVehicleID(damageid), Float:POS[3];
-        GetVehiclePos(vehicleid, pos_veh[0], pos_veh[1], pos_veh[2]);
+        new vehicleid = GetPlayerVehicleID(damageid), Float:POS[3];
+        GetVehiclePos(vehicleid, collector_veh_pos[0], collector_veh_pos[1], collector_veh_pos[2]);
+        GetVehicleZAngle(vehicleid, collector_veh_pos[3]);
         UpdateCollectorLabel();
 
-		GetCoordBonnetVehicle(vehicleid, POS[0], POS[1], POS[2]);
+        GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+        SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
+
+		GetCoordLeftSideVehicle(vehicleid, POS[0], POS[1], POS[2]);
         RemovePlayerFromVehicle(damageid);
         PPSetPlayerPos(damageid, POS[0], POS[1], POS[2]);
-        TurnPlayerFaceToVehicle(damageid, vehicleid);
-        SetPlayerSpecialAction(damageid,SPECIAL_ACTION_HANDSUP);
+        ApplyAnimation(damageid,"ROB_BANK","SHP_HandsUp_Scr",4.1, false, true, true, true, true, SYNC_ALL);
 
         SetVehicleVelocity(vehicleid, 0.0, 0.0, 0.0);
-        ACSetVehiclePos(vehicleid, pos_veh[0], pos_veh[1], pos_veh[2]);
+        ACSetVehiclePos(vehicleid, collector_veh_pos[0], collector_veh_pos[1], collector_veh_pos[2]);
+        SetVehicleZAngle(vehicleid, collector_veh_pos[3]);
 
-        // Открываем икассаторскую тачку
-        LockCar(vehicleid, 0);
-
-        SetTimerEx("ComeBackCollector", 60000, false, "d", damageid);
+        SetTimerEx("ResetCollector", 1000, false, "dd", damageid, vehicleid);
     }
+    return 1;
+}
+
+// Фиксим расположение инкассаторской машины, и анимацию инкассатора
+function ResetCollector(damageid, vehicleid)
+{
+    ApplyAnimation(damageid,"ROB_BANK","SHP_HandsUp_Scr",4.1, false, true, true, true, true, SYNC_ALL);
+    SetVehicleVelocity(vehicleid, 0.0, 0.0, 0.0);
+    ACSetVehiclePos(vehicleid, collector_veh_pos[0], collector_veh_pos[1], collector_veh_pos[2]);
+    SetVehicleZAngle(vehicleid, collector_veh_pos[3]);
+
+    SetTimerEx("ComeBackCollector", 180000, true, "d", damageid);
     return 1;
 }
 
@@ -61,21 +75,33 @@ function ComeBackCollector(damageid)
 }
 
 // Запускаем инкассатора в путь
-stock CollectorStart(city = -1)
+stock CollectorStart(city = -1, bool:forced = false)
 {
-    new tmphour,tmpminute,tmpsecond;
-	gettime(tmphour, tmpminute, tmpsecond);
-	if(tmphour <= 12 || tmphour >= 23) return 0; // С 13:00 до 22:00
+    if(forced == false) // forced == false означает, что запуск не принудительный и был выполнен таймером
+    {
+        new tmphour,tmpminute,tmpsecond;
+        gettime(tmphour, tmpminute, tmpsecond);
+        if(tmphour <= 12 || tmphour >= 23) return 0; // С 13:00 до 22:00
+    }
 
     if(city == -1) city = random(3);
     collector_health = MAX_HEALTH_COLLECTOR;
 
+    // Кладём мешок с деньгами в инкассаторскую тачку
+    new randmoney = ServerInfo[48] - ServerInfo[44];
+    new money = ServerInfo[44] + random(randmoney);
+    if(money <= 0) money = 12000; // На всякий случай, малоли расчитало на 0 или на отрицательное число
+    PutThingBoot(collectorveh, 204, money, 0, 0, 0, 0, 0);
+
+    // Запираем транспорт
+    VehInfo[collectorveh][vCarLock] = 1;
+
     // Пишем уведомление бандам и мафиям
     new string[100];
-	format(string, sizeof(string), "** Инкассаторская машина с деньгами отправилась из %s в San Fierro **", cityName[city]);
+	format(string, sizeof(string), "** Инкассаторская машина с деньгами отправилась из %s в Правительство **", cityName[city]);
 	SendGangMessage(COLOR_ALLDEPT, string);
 
-    format(string, sizeof(string), "** Инкассаторская машина с деньгами отправилась из %s в San Fierro **", cityName[city]);
+    format(string, sizeof(string), "** Инкассаторская машина с деньгами отправилась из %s в Правительство **", cityName[city]);
 	SendMafiaMessage(COLOR_ALLDEPT, string);
 
     // Устанавлиаем город
@@ -96,6 +122,11 @@ stock CollectorEnd(playerid)
     {
         OnNpcSpawn(playerid); // Возвращаем NPC на позицию
         ReloadVehicleNPC(collectorveh);
+
+        // Очищаем багажник инкассаторской тачки
+        ClearBootVehcileAll(collectorveh);
+
+        collector_health = -1;
     }
     return 1;
 }

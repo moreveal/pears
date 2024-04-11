@@ -54,7 +54,7 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
     {
         i0 = 181, q0 = 3, t0 = 0; // Изолента 3 Штуки
         i1 = 60, q1 = 40, t1 = 0; // Палладий 40 грамм
-        i2 = 61, q2 = 50, t2 = 0; // Гелий 3 50 мл
+        i2 = 61, q2 = 10, t2 = 0; // Гелий 3 10 мл
     }
     else if(thingId == 180) // Таблетка Защиты (Химик)
     {
@@ -75,6 +75,10 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
     else if(thingId == 19) // отмычка
     {
         i0 = 202, q0 = 1, t0 = 0; // вилка
+    }
+    else if(thingId == 205) // Бомба Липучка (Инженер)
+    {
+        i0 = 182, q0 = 1, t0 = 0; // Деталь Бомбы 1 Штуки
     }
     else
     {
@@ -516,6 +520,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Бомба"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Монтировка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Бомба Липучка"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
                     }
                     else

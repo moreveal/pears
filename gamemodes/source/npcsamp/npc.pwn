@@ -253,7 +253,7 @@ CMD:govinni(playerid, const params[])
 
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить инкассатора [ /govinni id города ]");
     if(NPCInfo[3][npcStart] == true) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен");
-    CollectorStart(params[0]);
+    CollectorStart(params[0], true);
     return 1;
 }
 

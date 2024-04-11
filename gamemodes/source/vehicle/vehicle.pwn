@@ -388,7 +388,7 @@ stock IsAPosBootOrBonet(playerid, &type)
 	for(new v = 0; v < SKOKOCAROV; v++)
 	{
 		if(VehInfo[v][vModel] == 0) continue;
-		if(!IsVehicleOpen(playerid, v)) continue;
+		// if(!IsVehicleOpen(playerid, v)) continue;
 		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
 
 		if(IsAMoto(VehInfo[v][vModel]) || IsABoat(VehInfo[v][vModel]))
@@ -428,17 +428,36 @@ stock IsAPosBoot(playerid) // Ищем транспорт с багажнико�
 	new vehicleid;
 	for(new v = 0; v < SKOKOCAROV; v++)
 	{
-		if(VehInfo[v][vModel] == 0) continue;
-		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
-		if(!IsVehicleOpen(playerid, v)) continue;
-		if(!IsABoot(v)) continue;
-		if(!GetVehicleNear_Boot(playerid, v)) continue;
+		if(VehInfo[v][vModel] == 0
+			|| !IsABoot(v)
+			|| GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)
+			|| !IsVehicleOpen(playerid, v)
+			|| !GetVehicleNear_Boot(playerid, v)) continue;
 
 		vehicleid = v;
 		break;
 	}
 	return vehicleid;
 }
+
+// Ищем транспорт с багажником рядом, который можно открыть только бомбой липучкой
+stock IsAPosBootHardLock(playerid)
+{
+	new vehicleid;
+	for(new v = 0; v < SKOKOCAROV; v++)
+	{
+		if(VehInfo[v][vModel] == 0
+			|| !IsABoot(v)
+			|| GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)
+			|| !GetVehicleNear_Boot(playerid, v)
+			|| !IsAHardLockVeicle(VehInfo[v][vModel])) continue;
+
+		vehicleid = v;
+		break;
+	}
+	return vehicleid;
+}
+
 stock GetVehicleNear_Boot(playerid, v) // Получаем инфу, стоим ли мы у багажника авто
 {
     new Float:pos_veh[3];
@@ -1248,4 +1267,18 @@ stock ReturnVehicle(const vehiclename[])
 		}
 	}
     return model;
+}
+
+// Замки транспорта, которые невозможно взломать отмычками и требуется бомба липучка
+stock IsAHardLockVeicle(model)
+{
+	if(model == 428) return 1;
+	return 0;
+}
+
+// Транспорт, в котором не нужно оповещать о том, что в нём не сохраняются предметы в багажнике
+stock IsNoMessageVehicle(vehicleid)
+{
+	if(vehicleid == collectorveh) return 1;
+	return 0;
 }

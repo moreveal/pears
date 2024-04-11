@@ -25,7 +25,7 @@ stock use_boot(playerid, v, inva, useinva)
 	}
 	else if(thingType == 0 && thingPack == 0)
 	{
-		new string[140];
+		new string[180];
 	    if(CheckThingQuan(fpick) == 1)
 		{
 		    DP[0][playerid] = inva;
@@ -47,6 +47,24 @@ stock use_boot(playerid, v, inva, useinva)
 		    }
 		    else ErrorMessage(playerid, "{FF6347}Ошибка! В багажнике никого нет"), TakeBoot(v, fpick, fquan, thingType, inva), VehInfo[v][vPeople] = 0;
 			i_resettabs(playerid);
+			return 1;
+		}
+		else if(fpick == 204) // Мешок с деньгами
+		{
+			// Вычитаем из казны бабло (5 - ограбление)
+			getkazna(5, fquan);
+
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ухх! Мои денюжки.. Кажется в мешке было {99ff66}%d$ {cccccc}(%s)", fquan, get_k(fquan));
+			format(string, sizeof(string), "забрал%s мешок с деньгами {99ff66}%d$ {C2A2DA}(%s)", gender(playerid), fquan, get_k(fquan));
+			SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,4000);
+			format(string, sizeof(string), "* %s забрал%s мешок с деньгами {99ff66}%d$ {C2A2DA}(%s)", playername(playerid), gender(playerid), fquan, get_k(fquan));
+			ProxDetectorScream(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			
+			ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
+			oGivePlayerMoney(playerid, fquan);
+			PlayerPlaySound(playerid,5600,0,0,0);
+			TakeBoot(v, fpick, fquan, thingType, inva);
+			MoneyLog("robcollector", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, "Ограбил инкассаторов");
 			return 1;
 		}
 	}
@@ -638,8 +656,8 @@ stock SaveBootByNewid(newid, i, JsonNode:node)
 
 stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимиты дома
 {
-	new lim[INVENTER];
-	for(new i = 0; i < INVENTER; i++) lim[i] = 1;
+	new lim[sizeof(friskName)];
+	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;
 	lim[8] = 100, lim[19] = 100, lim[41] = 1000, lim[25] = 1000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 1кк
 	lim[4] = 10000, lim[5] = 10000, lim[6] = 10000, lim[7] = 10000, lim[9] = 20, lim[18] = 1000, lim[20] = 10000, lim[27] = 10000, lim[28] = 10000, lim[29] = 10000, lim[30] = 10000;
 	lim[46] = 100, lim[47] = 100, lim[55] = 100, lim[60] = 1000, lim[61] = 100, lim[64] = 1000, lim[65] = 1000, lim[66] = 1000, lim[67] = 1000, lim[71] = 100;
@@ -688,6 +706,13 @@ stock ClearBootVehcile(v, i)
     VehInfo[v][vInvPack][i] = 0;
 	return 1;
 }
+
+stock ClearBootVehcileAll(v)
+{
+	for(new inva = 0; inva < 20; inva++) ClearBootVehcile(v, inva);
+	return 1;
+}
+
 stock CheckBoot(v)
 {
 	if(VehInfo[v][vUpgrade] == 1)
