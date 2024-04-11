@@ -21,7 +21,7 @@ CMD:gototerm(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к терминалу бизнеса [ /gototerm Бизнес Терминал ]");
-	if(params[0] >= 42 && params[0] <= 52 || params[0] >= 62 && params[0] <= 76 || params[0] >= 163 && params[0] <= 172)
+	if(IsBizTerminal(params[0]))
 	{
 	    if(params[1] < 1 || params[1] > 5) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер терминала не меньше 1 - 5");
 	    new br = numnrent(params[0]);
@@ -351,6 +351,23 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 516, BizzInfo[b][bTypeProduct][3] = 5, yes[3] = true; // nebula
 		if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 547, BizzInfo[b][bTypeProduct][4] = 5, yes[4] = true; // primo
 	}
+	else if(b >= 53 && b <= 56) // Аренда Авиатранспорта
+	{
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 469, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // Sparrow
+		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 487, BizzInfo[b][bTypeProduct][1] = 5, yes[1] = true; // Maverick
+		if(BizzInfo[b][bProduct][2] == 0 || stat == 1) BizzInfo[b][bProduct][2] = 593, BizzInfo[b][bTypeProduct][2] = 5, yes[2] = true; // Dodo
+		if(BizzInfo[b][bProduct][3] == 0 || stat == 1) BizzInfo[b][bProduct][3] = 511, BizzInfo[b][bTypeProduct][3] = 5, yes[3] = true; // Beagle
+		if(BizzInfo[b][bProduct][4] == 0 || stat == 1) BizzInfo[b][bProduct][4] = 512, BizzInfo[b][bTypeProduct][4] = 5, yes[4] = true; // Cropduster
+
+		if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 513, BizzInfo[b][bTypeProduct][5] = 5, yes[5] = true; // Stuntplane
+		if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 519, BizzInfo[b][bTypeProduct][6] = 5, yes[6] = true; // Shamal
+		if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 553, BizzInfo[b][bTypeProduct][7] = 5, yes[7] = true; // Nevada
+	}
+	else if(b >= 57 && b <= 61) // Аренда Катеров
+	{
+		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 452, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // Speeder
+		if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 453, BizzInfo[b][bTypeProduct][1] = 5, yes[1] = true; // Reefer
+	}
 	else if(b >= 62 && b <= 66) // Аренда Мото
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 461, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // PCJ 600
@@ -363,7 +380,6 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 462, BizzInfo[b][bTypeProduct][0] = 5, yes[0] = true; // Fagio
 	}
-
 	else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Ависалоны, Салоны Катеров
 	{
 		for(new s = 0; s < MAX_BIZ_ITEM; s++) BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
@@ -506,7 +522,18 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
             if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
             else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
-			else if(BizzInfo[b][bTypeProduct][i] == 5) BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
+			else if(BizzInfo[b][bTypeProduct][i] == 5)
+			{
+				if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]); // Продажа транспорта
+				else // Аренда транспорта
+				{
+					if(b >= 53 && b <= 56 || b >= 57 && b <= 61) // Аренда Авиатранспорта, Аренда Катеров
+					{
+						BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/400;
+					}
+					else BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/40;
+				}
+			}
             
 			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
@@ -1397,5 +1424,48 @@ stock BotSex(playerid,b)
 	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
 	SetPVarInt(playerid, "sekas", 20);
 	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid);
+	return 1;
+}
+
+CMD:bp(playerid, const params[]) return cmd_bizprice(playerid, params);
+CMD:bizprice(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+    if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить стоимость бизнеса [ /bizprice ID Цена ]");
+	if(params[0] > MAX_BIZ || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
+	if(params[1] > 2000000000 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Цена бизнеса не меньше 1$ и не больше 2.000.000.000$");
+ 	new string[144];
+	BizzInfo[params[0]][bCost] = params[1];
+	if(BizzInfo[params[0]][bLab] == 1) UpdateBizLabel(params[0], BizzInfo[params[0]][bLab]);
+	format(string, sizeof(string), " [ ADM ]: %s изменил стоимость бизнеса № %d {cccccc}[%d$] [%s]", PlayerInfo[playerid][pName],params[0],params[1],get_k(params[1]));
+ 	ABroadCast(COLOR_ADM,string,1);
+
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bCost`='%d' WHERE `newid`='%d'",params[1],params[0]);
+	query_empty(pearsq, string_mysql);
+
+	format(string, sizeof(string), "Изменил стоимость бизнеса № %d",params[0]);
+	AdminLog("bizprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[1], string);
+	return 1;
+}
+CMD:bg(playerid, const params[]) return cmd_bizgold(playerid, params);
+CMD:bizgold(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+    if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить gold стоимость бизнеса [ /bizgold ID Цена ]");
+	if(params[0] > MAX_BIZ || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
+	if(params[1] > 10000000 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Цена бизнеса не меньше 1G и не больше 10.000.000G");
+ 	new string[144];
+	BizzInfo[params[0]][bGold] = params[1];
+	if(BizzInfo[params[0]][bLab] == 1) UpdateBizLabel(params[0], BizzInfo[params[0]][bLab]);
+	format(string, sizeof(string), " [ ADM ]: %s изменил стоимость бизнеса № %d {cccccc}[%dG]", PlayerInfo[playerid][pName],params[0],params[1]);
+ 	ABroadCast(COLOR_ADM,string,1);
+
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bGold`='%d' WHERE `newid`='%d'",params[1],params[0]);
+	query_empty(pearsq, string_mysql);
+
+	format(string, sizeof(string), "Изменил gold стоимость бизнеса № %d",params[0]);
+	AdminLog("bizgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[1], string);
 	return 1;
 }
