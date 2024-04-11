@@ -1398,8 +1398,8 @@ stock SaveRoutRace(playerid,slot,status)
     {
         FamilyInfo[fam][fRoutIdCreator][slot] = 0;
         FamilyInfo[fam][fRoutIdEditor][slot] = 0;
-        format(FamilyRoutNameEditor[fam][slot],24,"0");
-        format(FamilyRoutNameCreator[fam][slot],24,"0");
+        format(FamilyRoutNameEditor[fam][slot],24,"\0");
+        format(FamilyRoutNameCreator[fam][slot],24,"\0");
         FamilyInfo[fam][fRoutUnix][slot] = 0;
         if(slot == 0)
         {

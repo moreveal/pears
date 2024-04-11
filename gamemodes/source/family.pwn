@@ -500,9 +500,9 @@ public LoadFamily()
 			FamilyInfo[idx][fRoudLoad1X][i] = floatstr(FamRoutX[i]);
 			FamilyInfo[idx][fRoudLoad1Y][i] = floatstr(FamRoutY[i]);
 			FamilyInfo[idx][fRoudLoad1Z][i] = floatstr(FamRoutZ[i]);
-			format(FamRoutX[i],9,"0");
-			format(FamRoutY[i],9,"0");
-			format(FamRoutZ[i],9,"0");
+			format(FamRoutX[i],9,"\0");
+			format(FamRoutY[i],9,"\0");
+			format(FamRoutZ[i],9,"\0");
 		}
 		format(strocaX,sizeof(strocaX),""); // Очищаем strocaX
 		format(strocaY,sizeof(strocaY),""); // Очищаем strocaX

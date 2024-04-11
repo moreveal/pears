@@ -340,7 +340,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
             new string[140];
             if(listitem > 0)
             {
-                if(!strcmp(DivisionInfo[g - 1][listitem - 1][divName],"0",true)) return ErrorText(playerid, "{FF6347}Эта подфракция не настроена и не имеет названия"), showDialogSettingAccessRight(playerid, accessId);
+                if(!strcmp(DivisionInfo[g - 1][listitem - 1][divName],"\0",true)) return ErrorText(playerid, "{FF6347}Эта подфракция не настроена и не имеет названия"), showDialogSettingAccessRight(playerid, accessId);
 
 			    format(string,sizeof(string),"[ Мысли ]: Права [ {ff9000}%s {cccccc}] установлена на {%s}%s", accessRightName[accessId], DivisionInfo[g - 1][listitem - 1][divColorHex], DivisionInfo[g - 1][listitem - 1][divName]);
 			    SendClientMessage(playerid, COLOR_GREY, string);

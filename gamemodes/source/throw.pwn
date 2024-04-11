@@ -339,7 +339,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			    else format(string,sizeof(string),"[tID %d] Оставил: %s", g, GetNameThing(1, fpick, thingType, thingPack));
 			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, string);
 			}
-			else if(playerid == -1) ThrowInfo[g][tPlayerid] = 0, format(ThrowInfo[g][tName], 24, "0"), format(ThrowInfo[g][tIP], 24, "0");
+			else if(playerid == -1) ThrowInfo[g][tPlayerid] = 0, format(ThrowInfo[g][tName], 24, "\0"), format(ThrowInfo[g][tIP], 24, "\0");
 			noobject = 1, gee = g;
 			break;
 		}

@@ -255,7 +255,7 @@ stock BuildTextureString(type, d, obid, string:output[], outputsize)
         new modelid, txdname[32], texturename[32], materialcolor;
         GetDynamicObjectMaterial(objectid, i, modelid, txdname, texturename, materialcolor);
 
-        if(modelid == 0) format(texture_string, sizeof(texture_string), "0");
+        if(modelid == 0) format(texture_string, sizeof(texture_string), "\0");
         else format(texture_string, sizeof(texture_string), "%d,%s,%s,%d", modelid, txdname, texturename, materialcolor);
 
         format(string_texture_part, sizeof(string_texture_part), "`t%d` = '%s'", i, texture_string);
@@ -691,7 +691,7 @@ stock LoadTexturesOnObject(nd, sla, f, type)
         format(string, sizeof(string), "t%d", t);
         cache_get_value_name(f, string, texture_string, sizeof(texture_string));
 
-        if (texture_string[0] != '\0' && strcmp(texture_string, "0") != 0) // Строка не пустая
+        if (texture_string[0] != '\0' && strcmp(texture_string, "\0") != 0) // Строка не пустая
         {
             new parsedData[4][44];
             ParseMixedString(texture_string, parsedData, sizeof(parsedData));

@@ -1,29 +1,29 @@
 
 /*
-Как добавить новый кастомный скин на сервер?
-1. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
-2. Увеличить define MAX_SKIN_CUSTOM
-3. Если скин мужской - добавить новый ID в stock GetSkinSex
+РљР°Рє РґРѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ РєР°СЃС‚РѕРјРЅС‹Р№ СЃРєРёРЅ РЅР° СЃРµСЂРІРµСЂ?
+1. Р”РѕР±Р°РІРёС‚СЊ РІ stock AddCustomSkins РЅРѕРІС‹Р№ AddCharSyncModel (РћСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ СЃРєРёРЅ, РќРѕРІС‹Р№ ID СЃР»РµРґСѓСЋС‰РёР№ РїРѕ РїРѕСЂСЏРґРєСѓ)
+2. РЈРІРµР»РёС‡РёС‚СЊ define MAX_SKIN_CUSTOM
+3. Р•СЃР»Рё СЃРєРёРЅ РјСѓР¶СЃРєРѕР№ - РґРѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Р№ ID РІ stock GetSkinSex
 
-Как добавить скин в магазины?
-1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
+РљР°Рє РґРѕР±Р°РІРёС‚СЊ СЃРєРёРЅ РІ РјР°РіР°Р·РёРЅС‹?
+1. Р’ РЅР°СЃС‚СЂРѕР№РєР°С… РіРѕСЃ С†РµРЅ РїСЂР°РІРёС‚РµР»СЊСЃС‚РІР° СѓРєР°Р·С‹РІР°РµС€СЊ С†РµРЅРЅРёРє Рё РґРѕСЃС‚СѓРї РґР»СЏ Р·Р°РєР°Р·Р° РІ РјР°РіР°Р·С‹ (Рё РЈРЎРЃ)
 */
 
 #define MAX_SKIN_CUSTOM 115
 
-new SkinGos[312 + MAX_SKIN_CUSTOM]; // Стоимости скинов
+new SkinGos[312 + MAX_SKIN_CUSTOM]; // РЎС‚РѕРёРјРѕСЃС‚Рё СЃРєРёРЅРѕРІ
 new bool:skingosUpdate;
-new SkinGold[312 + MAX_SKIN_CUSTOM]; // Gold стоимости скинов
-new SkinBuy[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скинов за вирты
-new SkinBuyGold[312 + MAX_SKIN_CUSTOM]; // Подсчет покупок скинов за голду
-new SkinSale[312 + MAX_SKIN_CUSTOM]; // Доступен ли скин для продажи
+new SkinGold[312 + MAX_SKIN_CUSTOM]; // Gold СЃС‚РѕРёРјРѕСЃС‚Рё СЃРєРёРЅРѕРІ
+new SkinBuy[312 + MAX_SKIN_CUSTOM]; // РџРѕРґСЃС‡РµС‚ РїРѕРєСѓРїРѕРє СЃРєРёРЅРѕРІ Р·Р° РІРёСЂС‚С‹
+new SkinBuyGold[312 + MAX_SKIN_CUSTOM]; // РџРѕРґСЃС‡РµС‚ РїРѕРєСѓРїРѕРє СЃРєРёРЅРѕРІ Р·Р° РіРѕР»РґСѓ
+new SkinSale[312 + MAX_SKIN_CUSTOM]; // Р”РѕСЃС‚СѓРїРµРЅ Р»Рё СЃРєРёРЅ РґР»СЏ РїСЂРѕРґР°Р¶Рё
 new bool:skinsaleUpdate;
 new bool:skinbuyUpdate;
 new bool:skinbuyGoldUpdate;
 
 new skinNameAll[][] =
 {
-    "Сиджей", "The Truth", "Maccer", "Andre", "Mini Bear", "Big Bear", "Emmet", "Taxi Driver", "Janitor", // 0 - 8
+    "РЎРёРґР¶РµР№", "The Truth", "Maccer", "Andre", "Mini Bear", "Big Bear", "Emmet", "Taxi Driver", "Janitor", // 0 - 8
     "Normal Ped", "Old Woman", "Casino croupier", "Rich Woman", "Street Girl", "Normal Ped", "Mr.Whittaker", "Airport Worker", "Businessman", "Beach Visitor", // 9 - 18
     "DJ", "Rich Guy", "Normal Ped", "Normal Ped", "BMXer", "M.D. Bodyguard", "M.D. Bodyguard", "Backpacker", "Construction Worker", "Drug Dealer", // 19 - 28
     "Drug Dealer", "Drug Dealer", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Farm Inhabitant", "Gardener", "Golfer", "Golfer", "Normal Ped", // 29 - 38
@@ -59,13 +59,13 @@ new skinNameAll[][] =
 
 stock AddCustomSkins()
 {
-	// AddCarSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
+	// AddCarSyncModel(РћСЂРёРіРёРЅР°Р»СЊРЅС‹Р№, РќРѕРІС‹Р№) ID РІ СЃР±РѕСЂРєРµ СЃ 15500 РґРѕ 15999
 	// Plus 15188
 
-	// В целом добавить ещё скинов
+	// Р’ С†РµР»РѕРј РґРѕР±Р°РІРёС‚СЊ РµС‰С‘ СЃРєРёРЅРѕРІ
 	AddCharSyncModel(294, 312); // 15500, pearspedcu male
-	AddCharSyncModel(60, 313); // pearspeda (Значит не 313, а 15501) male
-	AddCharSyncModel(233, 314); // pearspedb (Значит не 314, а 15502)
+	AddCharSyncModel(60, 313); // pearspeda (Р—РЅР°С‡РёС‚ РЅРµ 313, Р° 15501) male
+	AddCharSyncModel(233, 314); // pearspedb (Р—РЅР°С‡РёС‚ РЅРµ 314, Р° 15502)
 	AddCharSyncModel(19, 315); // 15503 pearspedc male
 	AddCharSyncModel(59, 316); // 15504 pearspedd male
 	AddCharSyncModel(93, 317); // 15505, pearspede
@@ -182,7 +182,7 @@ stock AddCustomSkins()
     return 1;
 }
 
-// Получаем пол по скину
+// РџРѕР»СѓС‡Р°РµРј РїРѕР» РїРѕ СЃРєРёРЅСѓ
 stock GetSkinSex(s)
 {
 	if(s >= 0 && s <= 8 || s >= 14 && s <= 30 || s >= 32 && s <= 37
@@ -193,54 +193,54 @@ stock GetSkinSex(s)
  	|| s >= 234 && s <= 236 || s >= 239 && s <= 242 || s >= 247 && s <= 250 || s >= 252 && s <= 255 || s >= 258 && s <= 262 || s >= 264 && s <= 297
  	|| s >= 299 && s <= 305 || s >= 310 && s <= 311
 
-	// Кастомные -15188
+	// РљР°СЃС‚РѕРјРЅС‹Рµ -15188
 	|| s == 312
 	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 336
 	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425) return 1; // 0 - мужской скин
+	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425) return 1; // 0 - РјСѓР¶СЃРєРѕР№ СЃРєРёРЅ
 
-	else if(s == 285 || s == 426 || s == 427) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	else if(s == 285 || s == 426 || s == 427) return 0; // РќРµ РёРјРµРµС‚ РїРѕР»Р° (РїРѕРґС…РѕРґРёС‚ РґР»СЏ РјСѓР¶С‡РёРЅ Рё Р¶РµРЅС‰РёРЅ)
 
- 	else return 2; // Все остальные 1, значит женские
+ 	else return 2; // Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ 1, Р·РЅР°С‡РёС‚ Р¶РµРЅСЃРєРёРµ
 }
 
-// Проверка на доступные ID скинов
+// РџСЂРѕРІРµСЂРєР° РЅР° РґРѕСЃС‚СѓРїРЅС‹Рµ ID СЃРєРёРЅРѕРІ
 stock IsASkinExisting(s)
 {
-    if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // Стандартные скины сампа (0 - cj, 74 косячина сампа - не используем его)
+    if(s >= 1 && s <= 73 || s >= 75 && s <= 311 // РЎС‚Р°РЅРґР°СЂС‚РЅС‹Рµ СЃРєРёРЅС‹ СЃР°РјРїР° (0 - cj, 74 РєРѕСЃСЏС‡РёРЅР° СЃР°РјРїР° - РЅРµ РёСЃРїРѕР»СЊР·СѓРµРј РµРіРѕ)
 
-    || s >= 312 && s <= 312 + MAX_SKIN_CUSTOM) return 1; // Кастомные скины пирса
+    || s >= 312 && s <= 312 + MAX_SKIN_CUSTOM) return 1; // РљР°СЃС‚РѕРјРЅС‹Рµ СЃРєРёРЅС‹ РїРёСЂСЃР°
     return 0;
 }
 
 stock GetSkinName(skin)
 {
 	new skinName[34];
-	if(skin >= sizeof(skinNameAll)) format(skinName, sizeof(skinName), "Одежда");
+	if(skin >= sizeof(skinNameAll)) format(skinName, sizeof(skinName), "РћРґРµР¶РґР°");
 	else format(skinName, sizeof(skinName), "%s", skinNameAll[skin]);
 	return skinName;
 }
 
-// Получаем id скина для другого игрока forplayerid +
+// РџРѕР»СѓС‡Р°РµРј id СЃРєРёРЅР° РґР»СЏ РґСЂСѓРіРѕРіРѕ РёРіСЂРѕРєР° forplayerid +
 stock GetSkinPresentation(forplayerid, playerid)
 {
     new skinId;
 	new showModel = GetPlayerSyncSkin(playerid);
-    if(IsPlayerSyncModels(forplayerid)) // Если моды установлены
+    if(IsPlayerSyncModels(forplayerid)) // Р•СЃР»Рё РјРѕРґС‹ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹
 	{
 		if(showModel >= 312) showModel += 15188;
 		skinId = showModel;
 	}
-    else skinId = GetSkinModelOriginal(showModel); // Если моды НЕ установлены, показываем оригинальный скин
+    else skinId = GetSkinModelOriginal(showModel); // Р•СЃР»Рё РјРѕРґС‹ РќР• СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹, РїРѕРєР°Р·С‹РІР°РµРј РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ СЃРєРёРЅ
     return skinId;
 }
 
-// Получаем модель скина с учётом наличия модпака +
+// РџРѕР»СѓС‡Р°РµРј РјРѕРґРµР»СЊ СЃРєРёРЅР° СЃ СѓС‡С‘С‚РѕРј РЅР°Р»РёС‡РёСЏ РјРѕРґРїР°РєР° +
 stock GetModelSkin(playerid, s)
 {
     new skinId;
-    if(IsPlayerSyncModels(playerid)) // Мод установлен
+    if(IsPlayerSyncModels(playerid)) // РњРѕРґ СѓСЃС‚Р°РЅРѕРІР»РµРЅ
 	{
 		if(s >= 312) s += 15188;
 		skinId = s;
@@ -249,7 +249,7 @@ stock GetModelSkin(playerid, s)
     return skinId;
 }
 
-stock GetPlayerModelSkinOriginal(playerid) // Получаем оригинальный скин игрока
+stock GetPlayerModelSkinOriginal(playerid) // РџРѕР»СѓС‡Р°РµРј РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ СЃРєРёРЅ РёРіСЂРѕРєР°
 {
 	new showModel = GetPlayerSyncSkin(playerid);
 	new skinId = GetSkinModelOriginal(showModel);
@@ -258,9 +258,9 @@ stock GetPlayerModelSkinOriginal(playerid) // Получаем оригинальный скин игрока
 
 CMD:getskin(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 19+ ]");
 
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Получить информацию о скине игрока [ /getskin ID ]");	
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ СЃРєРёРЅРµ РёРіСЂРѕРєР° [ /getskin ID ]");	
 
 	new showModel = GetPlayerSyncSkin(params[0]);
 	new skinId = GetSkinModelOriginal(showModel);
@@ -271,18 +271,18 @@ CMD:getskin(playerid, const params[])
 	return 1;
 }
 
-CMD:setskin(playerid, const params[]) // Сменить активную одежду игрока
+CMD:setskin(playerid, const params[]) // РЎРјРµРЅРёС‚СЊ Р°РєС‚РёРІРЅСѓСЋ РѕРґРµР¶РґСѓ РёРіСЂРѕРєР°
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 19+ ]");
 
     new tmp[34], giveplayerid;
-	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить одежду [ /setskin ID ID Скина ]");
+	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РР·РјРµРЅРёС‚СЊ РѕРґРµР¶РґСѓ [ /setskin ID ID РЎРєРёРЅР° ]");
     giveplayerid = ReturnUser(tmp, 1);
 
-	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
-	if(IsPlayerInAnyVehicle(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока в транспорте");
-	if(NoAnim[giveplayerid] == 1) return ErrorMessage(playerid, "{FF6347}Нельзя сменить скин во время активного действия игрока");
+	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РєР°СЃС‚РѕРјРЅС‹Рµ 312 Рё РІС‹С€Рµ]");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё РёР»Рё РѕРЅ РЅРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ");
+	if(IsPlayerInAnyVehicle(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РІ С‚СЂР°РЅСЃРїРѕСЂС‚Рµ");
+	if(NoAnim[giveplayerid] == 1) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ СЃРјРµРЅРёС‚СЊ СЃРєРёРЅ РІРѕ РІСЂРµРјСЏ Р°РєС‚РёРІРЅРѕРіРѕ РґРµР№СЃС‚РІРёСЏ РёРіСЂРѕРєР°");
 
 	PlayerInfo[giveplayerid][pModel] = params[1];
 	PlayerInfo[giveplayerid][pModel2] = 0;
@@ -291,19 +291,19 @@ CMD:setskin(playerid, const params[]) // Сменить активную одежду игрока
 	new string[90];
 	if(giveplayerid != playerid)
 	{
-		format(string, sizeof(string), "Администратор %s изменил вашу одежду", PlayerInfo[playerid][pName]);
+		format(string, sizeof(string), "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s РёР·РјРµРЅРёР» РІР°С€Сѓ РѕРґРµР¶РґСѓ", PlayerInfo[playerid][pName]);
 		SendClientMessage(giveplayerid, COLOR_WHITE, string);
 	}
 
 	if(server == 0)
 	{
 		new sexText[14];
-		if(GetSkinSex(params[1]) == 1) sexText = "Мужской";
-		else if(GetSkinSex(params[1]) == 2) sexText = "Женский";
-		else sexText = "Без пола";
-		format(string, sizeof(string), "Вы изменили %s одежду на ID %d (%s)", PlayerInfo[giveplayerid][pName], params[1], sexText);
+		if(GetSkinSex(params[1]) == 1) sexText = "РњСѓР¶СЃРєРѕР№";
+		else if(GetSkinSex(params[1]) == 2) sexText = "Р–РµРЅСЃРєРёР№";
+		else sexText = "Р‘РµР· РїРѕР»Р°";
+		format(string, sizeof(string), "Р’С‹ РёР·РјРµРЅРёР»Рё %s РѕРґРµР¶РґСѓ РЅР° ID %d (%s)", PlayerInfo[giveplayerid][pName], params[1], sexText);
 	}
-	else format(string, sizeof(string), "Вы изменили %s одежду на ID %d", PlayerInfo[giveplayerid][pName],params[1]);
+	else format(string, sizeof(string), "Р’С‹ РёР·РјРµРЅРёР»Рё %s РѕРґРµР¶РґСѓ РЅР° ID %d", PlayerInfo[giveplayerid][pName],params[1]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 
 	m_custom_sync_SetPlayerSkin(giveplayerid, PlayerInfo[giveplayerid][pModel]);
@@ -312,59 +312,59 @@ CMD:setskin(playerid, const params[]) // Сменить активную одежду игрока
 	return 1;
 }
 
-CMD:giveskin(playerid, const params[]) // Выдать одежду в инвентарь
+CMD:giveskin(playerid, const params[]) // Р’С‹РґР°С‚СЊ РѕРґРµР¶РґСѓ РІ РёРЅРІРµРЅС‚Р°СЂСЊ
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 19+ ]");
 	new tmp[34], giveplayerid;
-	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать одежду /giveskin [ID] [ID Скина]");
-	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
+	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹РґР°С‚СЊ РѕРґРµР¶РґСѓ /giveskin [ID] [ID РЎРєРёРЅР°]");
+	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РєР°СЃС‚РѕРјРЅС‹Рµ 312 Рё РІС‹С€Рµ]");
 	giveplayerid = ReturnUser(tmp, 1);
 
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё РёР»Рё РѕРЅ РЅРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ");
     
     new put_inva = GiveThingPlayer(giveplayerid, params[1], 1, 0, 0, 3, 0, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 
 	new string[100];
-    format(string, sizeof(string), "Администратор %s выдал вам одежду ID: %d", PlayerInfo[playerid][pName], params[1]);
+    format(string, sizeof(string), "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s РІС‹РґР°Р» РІР°Рј РѕРґРµР¶РґСѓ ID: %d", PlayerInfo[playerid][pName], params[1]);
     SendClientMessage(giveplayerid, COLOR_WHITE, string);
-    format(string, sizeof(string), "Вы выдали %s одежду ID %d (Общего Доступа)", PlayerInfo[giveplayerid][pName],params[1]);
+    format(string, sizeof(string), "Р’С‹ РІС‹РґР°Р»Рё %s РѕРґРµР¶РґСѓ ID %d (РћР±С‰РµРіРѕ Р”РѕСЃС‚СѓРїР°)", PlayerInfo[giveplayerid][pName],params[1]);
     SendClientMessage(playerid, COLOR_WHITE, string);
     AdminLog("giveskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], params[1], "");
 	return 1;
 }
 
-CMD:skin(playerid, const params[]) // Временно сменить скин себе
+CMD:skin(playerid, const params[]) // Р’СЂРµРјРµРЅРЅРѕ СЃРјРµРЅРёС‚СЊ СЃРєРёРЅ СЃРµР±Рµ
 {
-	if(PlayerInfo[playerid][pMedia] == 0 || PlayerInfo[playerid][pSoska] >= 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете переодеться в форме");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно сменить скин [ /skin ID Скина ]");
-	if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
+	if(PlayerInfo[playerid][pMedia] == 0 || PlayerInfo[playerid][pSoska] >= 20) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+	if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїРµСЂРµРѕРґРµС‚СЊСЃСЏ РІ С„РѕСЂРјРµ");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјРµРЅРЅРѕ СЃРјРµРЅРёС‚СЊ СЃРєРёРЅ [ /skin ID РЎРєРёРЅР° ]");
+	if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РєР°СЃС‚РѕРјРЅС‹Рµ 312 Рё РІС‹С€Рµ]");
 
 	new string[80];
-	format(string, sizeof(string), "Вы временно сменили скин ID %d",params[0]);
+	format(string, sizeof(string), "Р’С‹ РІСЂРµРјРµРЅРЅРѕ СЃРјРµРЅРёР»Рё СЃРєРёРЅ ID %d",params[0]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 
 	m_custom_sync_SetPlayerSkin(playerid, params[0]);
 	return 1;
 }
 
-CMD:setskinmp(playerid, const params[]) // Временно сменить скин игроку
+CMD:setskinmp(playerid, const params[]) // Р’СЂРµРјРµРЅРЅРѕ СЃРјРµРЅРёС‚СЊ СЃРєРёРЅ РёРіСЂРѕРєСѓ
 {
-	if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+	if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 4+ ]");
 
     new tmp[34], giveplayerid;
-	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно изменить скин [ /setskinmp ID ID Скина ]");
-	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
-	if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Эта команда доступна вам только во время мероприятия");
+	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёС‚СЊ СЃРєРёРЅ [ /setskinmp ID ID РЎРєРёРЅР° ]");
+	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РєР°СЃС‚РѕРјРЅС‹Рµ 312 Рё РІС‹С€Рµ]");
+	if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Р­С‚Р° РєРѕРјР°РЅРґР° РґРѕСЃС‚СѓРїРЅР° РІР°Рј С‚РѕР»СЊРєРѕ РІРѕ РІСЂРµРјСЏ РјРµСЂРѕРїСЂРёСЏС‚РёСЏ");
 
     giveplayerid = ReturnUser(tmp, 1);
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}РРіСЂРѕРєР° РЅРµС‚ РІ СЃРµС‚Рё РёР»Рё РѕРЅ РЅРµ Р·Р°Р»РѕРіРёРЅРёР»СЃСЏ");
 
 	new string[100];
-	format(string, sizeof(string), "Администратор %s временно изменил ваш скин", PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s РІСЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёР» РІР°С€ СЃРєРёРЅ", PlayerInfo[playerid][pName]);
 	SendClientMessage(giveplayerid, COLOR_WHITE, string);
-	format(string, sizeof(string), "Вы временно изменили %s скин %d.", PlayerInfo[giveplayerid][pName], params[1]);
+	format(string, sizeof(string), "Р’С‹ РІСЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёР»Рё %s СЃРєРёРЅ %d.", PlayerInfo[giveplayerid][pName], params[1]);
 	SendClientMessage(playerid, COLOR_WHITE, string);
 
 	m_custom_sync_SetPlayerSkin(giveplayerid, params[1]);
@@ -373,12 +373,12 @@ CMD:setskinmp(playerid, const params[]) // Временно сменить скин игроку
 	return 1;
 }
 
-CMD:setskingro(playerid, const params[]) // Временно сменить скин всем игрокам в радиусе 30 метров
+CMD:setskingro(playerid, const params[]) // Р’СЂРµРјРµРЅРЅРѕ СЃРјРµРЅРёС‚СЊ СЃРєРёРЅ РІСЃРµРј РёРіСЂРѕРєР°Рј РІ СЂР°РґРёСѓСЃРµ 30 РјРµС‚СЂРѕРІ
 {
-    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
-	if (sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно изменить скин всем вокруг себя [ /setskingro ID Скина ]");
-    if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
-    if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Эта команда доступна вам только во время мероприятия");
+    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Р­С‚Рѕ РґРµР№СЃС‚РІРёРµ РІР°Рј РЅРµРґРѕСЃС‚СѓРїРЅРѕ [ РђРґРјРёРЅ 4+ ]");
+	if (sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’СЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёС‚СЊ СЃРєРёРЅ РІСЃРµРј РІРѕРєСЂСѓРі СЃРµР±СЏ [ /setskingro ID РЎРєРёРЅР° ]");
+    if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}РќРµСЃСѓС‰РµСЃС‚РІСѓСЋС‰РёР№ ID СЃРєРёРЅР° [1 - 311, РєР°СЃС‚РѕРјРЅС‹Рµ 312 Рё РІС‹С€Рµ]");
+    if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Р­С‚Р° РєРѕРјР°РЅРґР° РґРѕСЃС‚СѓРїРЅР° РІР°Рј С‚РѕР»СЊРєРѕ РІРѕ РІСЂРµРјСЏ РјРµСЂРѕРїСЂРёСЏС‚РёСЏ");
 
 	new string[100];
     foreach (Player, i)
@@ -388,29 +388,29 @@ CMD:setskingro(playerid, const params[]) // Временно сменить скин всем игрокам в
 
         if(GetDistanceBetweenPlayers(playerid, i) < 30)
         {
-            format(string, sizeof(string), "Администратор %s временно изменил ваш скин", PlayerInfo[playerid][pName]);
+            format(string, sizeof(string), "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s РІСЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёР» РІР°С€ СЃРєРёРЅ", PlayerInfo[playerid][pName]);
             SendClientMessage(i, COLOR_WHITE, string);
 
 			m_custom_sync_SetPlayerSkin(i, params[0]);
         }
     }
-    format(string, sizeof(string), "Вы временно изменили скин игрокам возле себя ID: %d",params[0]);
+    format(string, sizeof(string), "Р’С‹ РІСЂРµРјРµРЅРЅРѕ РёР·РјРµРЅРёР»Рё СЃРєРёРЅ РёРіСЂРѕРєР°Рј РІРѕР·Р»Рµ СЃРµР±СЏ ID: %d",params[0]);
     SendClientMessage(playerid, COLOR_WHITE, string);
-    format(string, sizeof(string), " [ ADM ]: Админ %s изменил скин всем игрокам возле себя ID: [%d]", PlayerInfo[playerid][pName],params[0]);
+    format(string, sizeof(string), " [ ADM ]: РђРґРјРёРЅ %s РёР·РјРµРЅРёР» СЃРєРёРЅ РІСЃРµРј РёРіСЂРѕРєР°Рј РІРѕР·Р»Рµ СЃРµР±СЏ ID: [%d]", PlayerInfo[playerid][pName],params[0]);
     ABroadCast(COLOR_ADM,string,1);
     AdminLog("setskingro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
 	return 1;
 }
 
-// Возвращаем позицию игрока
+// Р’РѕР·РІСЂР°С‰Р°РµРј РїРѕР·РёС†РёСЋ РёРіСЂРѕРєР°
 stock WeReturnToPosition(playerid)
 {
-	keep(playerid); // Подморозим, чтобы не провалился
+	keep(playerid); // РџРѕРґРјРѕСЂРѕР·РёРј, С‡С‚РѕР±С‹ РЅРµ РїСЂРѕРІР°Р»РёР»СЃСЏ
 	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
-	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
-	SetPlayerToTeamColor(playerid); // Возвращаем цвет
+	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Р’РѕР·РІСЂР°С‰Р°РµРј РѕСЂСѓР¶РёРµ
+	SetPlayerToTeamColor(playerid); // Р’РѕР·РІСЂР°С‰Р°РµРј С†РІРµС‚
 
-	// Возвращаем аксессуары
+	// Р’РѕР·РІСЂР°С‰Р°РµРј Р°РєСЃРµСЃСЃСѓР°СЂС‹
 	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5);
 	if(PlayerInfo[playerid][pOdet][1] > 0) Odet(playerid, 6);
 	if(PlayerInfo[playerid][pOdet][2] > 0) Odet(playerid, 7);
@@ -419,7 +419,7 @@ stock WeReturnToPosition(playerid)
 
 	if(!VehShopInfo[playerid][vsTest]) ApplyAnimation(playerid,"PED","Turn_R",4.0, false, true, true, false, false);
 
-    OnlineInfo[playerid][oTempSpawn] = false; // Спавн завершён
+    OnlineInfo[playerid][oTempSpawn] = false; // РЎРїР°РІРЅ Р·Р°РІРµСЂС€С‘РЅ
     return 1;
 }
 
@@ -435,7 +435,7 @@ function loadDrop_Clothes(playerid)
 	return 1;
 }
 
-// Снять одежду
+// РЎРЅСЏС‚СЊ РѕРґРµР¶РґСѓ
 stock player_undress(playerid)
 {
     PlayerPlaySound(playerid,5601,0,0,0);
@@ -452,7 +452,7 @@ stock player_undress(playerid)
 	return 1;
 }
 
-// Меняем скин, когда снимаем одежду (Голый мужчина или женщина)
+// РњРµРЅСЏРµРј СЃРєРёРЅ, РєРѕРіРґР° СЃРЅРёРјР°РµРј РѕРґРµР¶РґСѓ (Р“РѕР»С‹Р№ РјСѓР¶С‡РёРЅР° РёР»Рё Р¶РµРЅС‰РёРЅР°)
 stock TakeOffClothes(playerid)
 {
     if(PlayerInfo[playerid][pSex] == 1) SetPlayerSkinEx(playerid, 154), PlayerInfo[playerid][pModel] = 154;
@@ -460,7 +460,7 @@ stock TakeOffClothes(playerid)
     return 1;
 }
 
-// Проверка на голого персонажа (По скину)
+// РџСЂРѕРІРµСЂРєР° РЅР° РіРѕР»РѕРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р° (РџРѕ СЃРєРёРЅСѓ)
 stock isnaked(playerid)
 {
 	if(PlayerInfo[playerid][pModel] == 154 || PlayerInfo[playerid][pModel] == 18 || PlayerInfo[playerid][pModel] == 140 || PlayerInfo[playerid][pModel] == 139) return 1;
@@ -468,7 +468,7 @@ stock isnaked(playerid)
 }
 
 
-// Магазин Одежды
+// РњР°РіР°Р·РёРЅ РћРґРµР¶РґС‹
 stock CreateClothesActor(playerid, skin)
 {
     DestroyClothesActor(playerid);
@@ -498,14 +498,14 @@ stock GoShmot(playerid, stat)
 	OnlineInfo[playerid][oShowInterface] = 18;
 	if(stat == 1)
 	{
-		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]); // Фон Меню
-		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]); // Влево
-		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]); // Вправо
+		TextDrawShowForPlayer(playerid, DressDraw[0]), TextDrawShowForPlayer(playerid, DressDraw[1]), TextDrawShowForPlayer(playerid, DressDraw[2]); // Р¤РѕРЅ РњРµРЅСЋ
+		TextDrawShowForPlayer(playerid, DressDraw[3]), TextDrawShowForPlayer(playerid, DressDraw[4]); // Р’Р»РµРІРѕ
+		TextDrawShowForPlayer(playerid, DressDraw[5]), TextDrawShowForPlayer(playerid, DressDraw[6]); // Р’РїСЂР°РІРѕ
 		TextDrawShowForPlayer(playerid, DressDraw[7]), TextDrawShowForPlayer(playerid, DressDraw[8]), TextDrawShowForPlayer(playerid, DressDraw[9]); // Select
-	    if(Fractia[playerid] == 100) // Магазин Одежды
+	    if(Fractia[playerid] == 100) // РњР°РіР°Р·РёРЅ РћРґРµР¶РґС‹
 	    {
 	    	show_skin(playerid, 100, 0, 0);
-	    	TextDrawShowForPlayer(playerid, DressDraw[14]), TextDrawShowForPlayer(playerid, DressDraw[15]); // Список
+	    	TextDrawShowForPlayer(playerid, DressDraw[14]), TextDrawShowForPlayer(playerid, DressDraw[15]); // РЎРїРёСЃРѕРє
 	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL [1/50]");
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 	    }
@@ -515,7 +515,7 @@ stock GoShmot(playerid, stat)
 	    	PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CIVIL");
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 	    }
-	    else if(Fractia[playerid] >= 1 && Fractia[playerid] <= 22) // Раздевалка в Организации
+	    else if(Fractia[playerid] >= 1 && Fractia[playerid] <= 22) // Р Р°Р·РґРµРІР°Р»РєР° РІ РћСЂРіР°РЅРёР·Р°С†РёРё
 		{
 		    new g = Fractia[playerid];
 			show_skin(playerid, g, 0, 0);
@@ -541,7 +541,7 @@ stock GoShmot(playerid, stat)
 			PlayerTextDrawShow(playerid, PlaDressDraw[1]);
 		}
 	}
-	else // При регистрации
+	else // РџСЂРё СЂРµРіРёСЃС‚СЂР°С†РёРё
 	{
 		Fractia[playerid] = 200;
 		show_skin(playerid, 200, 0, 0);
@@ -573,12 +573,12 @@ stock left_skin(playerid)
 			}
 		}
 	}
-	else if(g == 100) // Магазин
+	else if(g == 100) // РњР°РіР°Р·РёРЅ
 	{
 		if(select >= 1) select --;
 		else select = 49;
 	}
-	else if(g == 200) // Регистрация
+	else if(g == 200) // Р РµРіРёСЃС‚СЂР°С†РёСЏ
 	{
 		if(select <= 0) select = MAX_SKIN_REG - 1;
 		else select --;
@@ -592,7 +592,7 @@ stock right_skin(playerid)
 {
 	PlayerPlaySound(playerid,17803,0,0,0);
 	new select = GetPVarInt(playerid, "SelectCharPlace"), g = Fractia[playerid];
-	if(g <= 22) // Организация
+	if(g <= 22) // РћСЂРіР°РЅРёР·Р°С†РёСЏ
 	{
 		if(select < MAX_SKIN_ORGANIZATION - 1)
 		{
@@ -601,17 +601,17 @@ stock right_skin(playerid)
 		}
 		else select = 0;
 	}
-	else if(g == 100) // Магазин
+	else if(g == 100) // РњР°РіР°Р·РёРЅ
 	{
 		if(select < 49) select ++;
 		else select = 0;
 	}
-	else if(g == 200) // Регистрация
+	else if(g == 200) // Р РµРіРёСЃС‚СЂР°С†РёСЏ
 	{
 		if(select >= MAX_SKIN_REG - 1) select = 0;
 		else select ++;
 	}
-	else if(g == 400) // Gold Магазин
+	else if(g == 400) // Gold РњР°РіР°Р·РёРЅ
 	{
 		select ++;
 	}
@@ -635,7 +635,7 @@ stock ExitShmot(playerid)
 	RemovePlayerAttachedObject(playerid,5);
 	DestroyClothesActor(playerid);
 
-	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5); // Возвращаем аксессуар в пятом слоте (Ибо примерка идёт на пятый слот)
+	if(PlayerInfo[playerid][pOdet][0] > 0) Odet(playerid, 5); // Р’РѕР·РІСЂР°С‰Р°РµРј Р°РєСЃРµСЃСЃСѓР°СЂ РІ РїСЏС‚РѕРј СЃР»РѕС‚Рµ (РР±Рѕ РїСЂРёРјРµСЂРєР° РёРґС‘С‚ РЅР° РїСЏС‚С‹Р№ СЃР»РѕС‚)
 	return 1;
 }
 
@@ -653,14 +653,14 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
 {
     new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, Aftextdraw[playerid]);
-    if(interval < 800) return 0; // Блокируем, если игрок клацает часто на кнопку
+    if(interval < 800) return 0; // Р‘Р»РѕРєРёСЂСѓРµРј, РµСЃР»Рё РёРіСЂРѕРє РєР»Р°С†Р°РµС‚ С‡Р°СЃС‚Рѕ РЅР° РєРЅРѕРїРєСѓ
 
-    if(clickedid == DressDraw[3]) // Выбор скина стрелка влево
+    if(clickedid == DressDraw[3]) // Р’С‹Р±РѕСЂ СЃРєРёРЅР° СЃС‚СЂРµР»РєР° РІР»РµРІРѕ
     {
         if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200 || Fractia[playerid] == 400) left_skin(playerid);
         else if(Fractia[playerid] == 300) left_akses(playerid);
     }
-    if(clickedid == DressDraw[5]) // Выбор скина стрелка вправо
+    if(clickedid == DressDraw[5]) // Р’С‹Р±РѕСЂ СЃРєРёРЅР° СЃС‚СЂРµР»РєР° РІРїСЂР°РІРѕ
     {
         if(Fractia[playerid] >= 1 && Fractia[playerid] <= 200 || Fractia[playerid] == 400) right_skin(playerid);
         else if(Fractia[playerid] == 300) right_akses(playerid);
@@ -670,28 +670,28 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
     return 1;
 }
 
-stock skinprice(playerid, page) // Настройки гос. цен одежды
+stock skinprice(playerid, page) // РќР°СЃС‚СЂРѕР№РєРё РіРѕСЃ. С†РµРЅ РѕРґРµР¶РґС‹
 {
 	new max_line = 40, yesNext, minlist, thisPage;
 	new line[214],lines[4096];
 
-	// Настраиваем отображение фильтров и страниц
+	// РќР°СЃС‚СЂР°РёРІР°РµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РёР»СЊС‚СЂРѕРІ Рё СЃС‚СЂР°РЅРёС†
 	LoadPageSorting(playerid, 1075, 311 + MAX_SKIN_CUSTOM, minlist, page, thisPage);
 
-	format(line,sizeof(line),"{cccccc}Одежда [ID]\t{cccccc}Цена\t{cccccc}Gold\t{cccccc}Куплено за Вирты / Gold"), strcat(lines,line);
-	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{ff9000}Фильтр\t\t\t"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}РћРґРµР¶РґР° [ID]\t{cccccc}Р¦РµРЅР°\t{cccccc}Gold\t{cccccc}РљСѓРїР»РµРЅРѕ Р·Р° Р’РёСЂС‚С‹ / Gold"), strcat(lines,line);
+	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Р¤РёР»СЊС‚СЂ {99ff66}[РђРєС‚РёРІРµРЅ]\t\t\t"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ff9000}Р¤РёР»СЊС‚СЂ\t\t\t"), strcat(lines,line);
 
 	new one;
 	for(new s = minlist; s < 312 + MAX_SKIN_CUSTOM; s++)
 	{
-		if(s == 0 || s == 74) continue; // Пропускаем косячные скины
+		if(s == 0 || s == 74) continue; // РџСЂРѕРїСѓСЃРєР°РµРј РєРѕСЃСЏС‡РЅС‹Рµ СЃРєРёРЅС‹
 
-		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = s, one = 1; // Записывали первый list
+		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = s, one = 1; // Р—Р°РїРёСЃС‹РІР°Р»Рё РїРµСЂРІС‹Р№ list
 
 		if(CheckSortingLineSkinPrice(playerid, s)) format(line,sizeof(line),"%s", ShowLineSkinPrice(playerid, s)), strcat(lines,line);
 
-		if(OnlineInfo[playerid][oDialogMenu][0] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
+		if(OnlineInfo[playerid][oDialogMenu][0] >= max_line) // РЎР±СЂР°СЃС‹РІР°РµРј РґР°Р»СЊРЅРµР№С€РёР№ РІС‹РІРѕРґ СЃС‚СЂРѕРє, РµСЃР»Рё РґРѕС€Р»Рё РґРѕ Р»РёРјРёС‚Р° РЅР° СЃС‚СЂР°РЅРёС†Рµ
         {
 			yesNext = 1;
             break;
@@ -699,34 +699,34 @@ stock skinprice(playerid, page) // Настройки гос. цен одежды
 
 		if(s >= 311 + MAX_SKIN_CUSTOM && page > 0)
 		{
-			yesNext = 1; // Последний list, отображаем Next Page
-			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
+			yesNext = 1; // РџРѕСЃР»РµРґРЅРёР№ list, РѕС‚РѕР±СЂР°Р¶Р°РµРј Next Page
+			OnlineInfo[playerid][oDialogMenu][5] = 1; // Р—Р°РїРёСЃС‹РІР°РµРј, С‡С‚Рѕ СЌС‚Р° СЃС‚СЂР°РЅРёС†Р° Р±С‹Р»Р° РїРѕСЃР»РµРґРЅРµР№
 		}
 	}
 	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
 	new header[60];
-    format(header,sizeof(header),"Гос Стоимость Одежды [ Страница %d ]", page + 1);
-    ShowDialog(playerid,1075,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+    format(header,sizeof(header),"Р“РѕСЃ РЎС‚РѕРёРјРѕСЃС‚СЊ РћРґРµР¶РґС‹ [ РЎС‚СЂР°РЅРёС†Р° %d ]", page + 1);
+    ShowDialog(playerid,1075,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
 stock CheckSortingLineSkinPrice(playerid, s)
 {
-	if(OnlineInfo[playerid][oSorting][1] > 0) // Фильтр по ID
+	if(OnlineInfo[playerid][oSorting][1] > 0) // Р¤РёР»СЊС‚СЂ РїРѕ ID
 	{
 		new sortingID[14], skinId[14];
 		valstr(sortingID, OnlineInfo[playerid][oSorting][1]);
 		valstr(skinId, s);
 
-		if(strfind(skinId, sortingID, true) != -1) {} // Отображаем схожие ID
-		else return 0; // Отображаем только фильтрованные id
+		if(strfind(skinId, sortingID, true) != -1) {} // РћС‚РѕР±СЂР°Р¶Р°РµРј СЃС…РѕР¶РёРµ ID
+		else return 0; // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ С„РёР»СЊС‚СЂРѕРІР°РЅРЅС‹Рµ id
 	}
 
-	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) {} // Фильтр по названию не включен
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"\0",true)) {} // Р¤РёР»СЊС‚СЂ РїРѕ РЅР°Р·РІР°РЅРёСЋ РЅРµ РІРєР»СЋС‡РµРЅ
 	else
 	{
-		if(strfind(GetSkinName(s), OnlineInfo[playerid][oSortingName], true) != -1) {} // Отображаем схожую строку
-		else return 0; // Отображаем только фильтрованные названия
+		if(strfind(GetSkinName(s), OnlineInfo[playerid][oSortingName], true) != -1) {} // РћС‚РѕР±СЂР°Р¶Р°РµРј СЃС…РѕР¶СѓСЋ СЃС‚СЂРѕРєСѓ
+		else return 0; // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ С„РёР»СЊС‚СЂРѕРІР°РЅРЅС‹Рµ РЅР°Р·РІР°РЅРёСЏ
 	}
 	return 1;
 }
@@ -736,7 +736,7 @@ stock ShowLineSkinPrice(playerid, s)
 	new line[214], atext[7], btext[7];
 
     List[OnlineInfo[playerid][oDialogMenu][0]][playerid] = s;
-    OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
+    OnlineInfo[playerid][oDialogMenu][0] ++; // РџРѕРґСЃС‡РёС‚С‹РІР°РµРј СЃС‚СЂРѕРєРё
 	OnlineInfo[playerid][oDialogMenu][2] = s;
 
 	// Custom or default
@@ -756,17 +756,17 @@ stock SettingGosPriceSkin(playerid, list)
 	new line[120],lines[480];
     if(list >= 312) format(line,sizeof(line),"{0088ff}%s {cccccc}ID: %d\t", GetSkinName(list), list), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}%s ID: %d\t", GetSkinName(list), list), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Стоимость:\t{99ff66}%d$ {cccccc}[%s]", SkinGos[list], get_k(SkinGos[list])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ:\t{99ff66}%d$ {cccccc}[%s]", SkinGos[list], get_k(SkinGos[list])), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Gold:\t{ffcc00}%dG", SkinGold[list]), strcat(lines,line);
-	if(SkinSale[list]) format(line,sizeof(line),"\n{cccccc}Доступ к продаже:\t{99ff66}[ On ]"), strcat(lines,line);
-	else format(line,sizeof(line),"\n{cccccc}Доступ к продаже:\t{FF6347}[ Off ]"), strcat(lines,line);
-    ShowDialog(playerid,971,DIALOG_STYLE_TABLIST_HEADERS,"Гос Стоимость Одежды",lines,"Выбрать","Назад");
+	if(SkinSale[list]) format(line,sizeof(line),"\n{cccccc}Р”РѕСЃС‚СѓРї Рє РїСЂРѕРґР°Р¶Рµ:\t{99ff66}[ On ]"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}Р”РѕСЃС‚СѓРї Рє РїСЂРѕРґР°Р¶Рµ:\t{FF6347}[ Off ]"), strcat(lines,line);
+    ShowDialog(playerid,971,DIALOG_STYLE_TABLIST_HEADERS,"Р“РѕСЃ РЎС‚РѕРёРјРѕСЃС‚СЊ РћРґРµР¶РґС‹",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
 	return 1;
 }
 
 stock showFittingRoom(playerid)
 {
-	ShowDialog(playerid,1088,DIALOG_STYLE_TABLIST,"Доступные Товары","{ff9000}Одежда\n{ff9000}Аксессуары","Выбрать","Выход");
+	ShowDialog(playerid,1088,DIALOG_STYLE_TABLIST,"Р”РѕСЃС‚СѓРїРЅС‹Рµ РўРѕРІР°СЂС‹","{ff9000}РћРґРµР¶РґР°\n{ff9000}РђРєСЃРµСЃСЃСѓР°СЂС‹","Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
 	return 1;
 }
 
@@ -775,23 +775,23 @@ stock showDialogFittingRoomSkin(playerid, page)
 	new max_line = 40, yesNext, minlist, thisPage;
 	new line[214],lines[4096];
 
-	// Настраиваем отображение фильтров и страниц
+	// РќР°СЃС‚СЂР°РёРІР°РµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ С„РёР»СЊС‚СЂРѕРІ Рё СЃС‚СЂР°РЅРёС†
 	LoadPageSorting(playerid, 1089, 311 + MAX_SKIN_CUSTOM, minlist, page, thisPage);
 
-	format(line,sizeof(line),"{cccccc}Одежда [ID]\t{cccccc}Цена"), strcat(lines,line);
-	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Фильтр {99ff66}[Активен]\t"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{ff9000}Фильтр\t"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}РћРґРµР¶РґР° [ID]\t{cccccc}Р¦РµРЅР°"), strcat(lines,line);
+	if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{ff9000}Р¤РёР»СЊС‚СЂ {99ff66}[РђРєС‚РёРІРµРЅ]\t"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ff9000}Р¤РёР»СЊС‚СЂ\t"), strcat(lines,line);
 
 	new one;
 	for(new s = minlist; s < 312 + MAX_SKIN_CUSTOM; s++)
 	{
-		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // Пропускаем
+		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј
 
-		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = s, one = 1; // Записывали первый list
+		if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = s, one = 1; // Р—Р°РїРёСЃС‹РІР°Р»Рё РїРµСЂРІС‹Р№ list
 
 		if(CheckSortingLineSkinPrice(playerid, s)) format(line,sizeof(line),"%s", ShowLineFittingRoom(playerid, s)), strcat(lines,line);
 
-		if(OnlineInfo[playerid][oDialogMenu][0] >= max_line) // Сбрасываем дальнейший вывод строк, если дошли до лимита на странице
+		if(OnlineInfo[playerid][oDialogMenu][0] >= max_line) // РЎР±СЂР°СЃС‹РІР°РµРј РґР°Р»СЊРЅРµР№С€РёР№ РІС‹РІРѕРґ СЃС‚СЂРѕРє, РµСЃР»Рё РґРѕС€Р»Рё РґРѕ Р»РёРјРёС‚Р° РЅР° СЃС‚СЂР°РЅРёС†Рµ
         {
 			yesNext = 1;
             break;
@@ -799,14 +799,14 @@ stock showDialogFittingRoomSkin(playerid, page)
 
 		if(s >= 311 + MAX_SKIN_CUSTOM && page > 0)
 		{
-			yesNext = 1; // Последний list, отображаем Next Page
-			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
+			yesNext = 1; // РџРѕСЃР»РµРґРЅРёР№ list, РѕС‚РѕР±СЂР°Р¶Р°РµРј Next Page
+			OnlineInfo[playerid][oDialogMenu][5] = 1; // Р—Р°РїРёСЃС‹РІР°РµРј, С‡С‚Рѕ СЌС‚Р° СЃС‚СЂР°РЅРёС†Р° Р±С‹Р»Р° РїРѕСЃР»РµРґРЅРµР№
 		}
 	}
 	if(yesNext == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
 	new header[60];
-    format(header,sizeof(header),"Одежда [ Страница %d ]", page + 1);
-    ShowDialog(playerid,1089,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+    format(header,sizeof(header),"РћРґРµР¶РґР° [ РЎС‚СЂР°РЅРёС†Р° %d ]", page + 1);
+    ShowDialog(playerid,1089,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -815,7 +815,7 @@ stock ShowLineFittingRoom(playerid, s)
 	new line[214], atext[7];
 
     List[OnlineInfo[playerid][oDialogMenu][0]][playerid] = s;
-    OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
+    OnlineInfo[playerid][oDialogMenu][0] ++; // РџРѕРґСЃС‡РёС‚С‹РІР°РµРј СЃС‚СЂРѕРєРё
 	OnlineInfo[playerid][oDialogMenu][2] = s;
 
 	// Custom or default
@@ -834,15 +834,15 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 		{
 			if(listitem == 0) DialogMenuSorting(playerid);
 
-			if(OnlineInfo[playerid][oDialogMenu][0] > 0) // Есть строки на странице
+			if(OnlineInfo[playerid][oDialogMenu][0] > 0) // Р•СЃС‚СЊ СЃС‚СЂРѕРєРё РЅР° СЃС‚СЂР°РЅРёС†Рµ
 			{
-				if(listitem >= 1 && listitem <= OnlineInfo[playerid][oDialogMenu][0]) // Отображаемые List
+				if(listitem >= 1 && listitem <= OnlineInfo[playerid][oDialogMenu][0]) // РћС‚РѕР±СЂР°Р¶Р°РµРјС‹Рµ List
 				{
 					new list = List[listitem-1][playerid];
 					OnlineInfo[playerid][oDialogMenu][3] = list;
 					SettingGosPriceSkin(playerid, list);
 				}
-				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) skinprice(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
+				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) skinprice(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°
 			}
 		}
 		else cmd_economy(playerid);
@@ -855,18 +855,18 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 			if(listitem == 0)
 			{
 				new line[100],lines[300];
-				format(line,sizeof(line),"{cccccc}Введите гос. стоимость для {ff9000}%s", GetSkinName(list)), strcat(lines,line);
-				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {99ff66}%d$ {cccccc}[%s]", SkinGos[list], get_k(SkinGos[list])), strcat(lines,line);
-				format(line,sizeof(line),"\n{cccccc}Не меньше 1$ и не больше 900.000.000$"), strcat(lines,line);
-				ShowDialog(playerid,970,DIALOG_STYLE_INPUT,"Гос Стоимость Одежды",lines,"Принять","Отмена");
+				format(line,sizeof(line),"{cccccc}Р’РІРµРґРёС‚Рµ РіРѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ РґР»СЏ {ff9000}%s", GetSkinName(list)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{cccccc}РўРµРєСѓС‰Р°СЏ РЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$ {cccccc}[%s]", SkinGos[list], get_k(SkinGos[list])), strcat(lines,line);
+				format(line,sizeof(line),"\n{cccccc}РќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 900.000.000$"), strcat(lines,line);
+				ShowDialog(playerid,970,DIALOG_STYLE_INPUT,"Р“РѕСЃ РЎС‚РѕРёРјРѕСЃС‚СЊ РћРґРµР¶РґС‹",lines,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			}
 			else if(listitem == 1)
 			{
 				new line[100],lines[300];
-				format(line,sizeof(line),"{cccccc}Введите Gold стоимость для {ff9000}%s", GetSkinName(list)), strcat(lines,line);
-				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {ffcc00}%dG", SkinGold[list]), strcat(lines,line);
-				format(line,sizeof(line),"\n{cccccc}Не меньше 1G и не больше 100.000G"), strcat(lines,line);
-				ShowDialog(playerid,946,DIALOG_STYLE_INPUT,"Гос Стоимость Одежды",lines,"Принять","Отмена");
+				format(line,sizeof(line),"{cccccc}Р’РІРµРґРёС‚Рµ Gold СЃС‚РѕРёРјРѕСЃС‚СЊ РґР»СЏ {ff9000}%s", GetSkinName(list)), strcat(lines,line);
+				format(line,sizeof(line),"\n\n{cccccc}РўРµРєСѓС‰Р°СЏ РЎС‚РѕРёРјРѕСЃС‚СЊ: {ffcc00}%dG", SkinGold[list]), strcat(lines,line);
+				format(line,sizeof(line),"\n{cccccc}РќРµ РјРµРЅСЊС€Рµ 1G Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000G"), strcat(lines,line);
+				ShowDialog(playerid,946,DIALOG_STYLE_INPUT,"Р“РѕСЃ РЎС‚РѕРёРјРѕСЃС‚СЊ РћРґРµР¶РґС‹",lines,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			}
 			else if(listitem == 2)
 			{
@@ -884,7 +884,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 		{
 			new input = strval(inputtext);
 			new list = OnlineInfo[playerid][oDialogMenu][3];
-			if(input < 1 || input > 900000000) return ErrorText(playerid, "{FF6347}Не меньше 1$ и не больше 900.000.000$"), SettingGosPriceSkin(playerid, list);
+			if(input < 1 || input > 900000000) return ErrorText(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 900.000.000$"), SettingGosPriceSkin(playerid, list);
 			SkinGos[list] = input;
 
 			PlayerPlaySound(playerid, 6401, 0,0,0);
@@ -892,15 +892,15 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 			// SaveSkinEconomy();
 
 			new string[180];
-			format(string,sizeof(string),"[ Мысли ]: Гос. стоимость одежды %s ID %d теперь составляет: {99ff66}%d$ [%s]", GetSkinName(list), list, SkinGos[list], get_k(SkinGos[list]));
+			format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: Р“РѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ РѕРґРµР¶РґС‹ %s ID %d С‚РµРїРµСЂСЊ СЃРѕСЃС‚Р°РІР»СЏРµС‚: {99ff66}%d$ [%s]", GetSkinName(list), list, SkinGos[list], get_k(SkinGos[list]));
   			SendClientMessage(playerid,COLOR_GREY,string);
-  			format(string, sizeof(string), "[Правительство] %s изменяет гос. стоимость одежды %s ID %d {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetSkinName(list), list, SkinGos[list], get_k(SkinGos[list]));
+  			format(string, sizeof(string), "[РџСЂР°РІРёС‚РµР»СЊСЃС‚РІРѕ] %s РёР·РјРµРЅСЏРµС‚ РіРѕСЃ. СЃС‚РѕРёРјРѕСЃС‚СЊ РѕРґРµР¶РґС‹ %s ID %d {99ff66}%d$ [%s]", PlayerInfo[playerid][pName], GetSkinName(list), list, SkinGos[list], get_k(SkinGos[list]));
   			SendDepartMessage(COLOR_ALLDEPT, string);
 			SettingGosPriceSkin(playerid, OnlineInfo[playerid][oDialogMenu][3]);
-     		format(string,sizeof(string),"Одежда ID %d", list);
+     		format(string,sizeof(string),"РћРґРµР¶РґР° ID %d", list);
      		OrgLog(7, "minfin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, string);
 
-			// Сбрасываем ценники в Магазинах с Одеждой
+			// РЎР±СЂР°СЃС‹РІР°РµРј С†РµРЅРЅРёРєРё РІ РњР°РіР°Р·РёРЅР°С… СЃ РћРґРµР¶РґРѕР№
      		for(new b = 173; b < 182; b++) ResetBizzPriceItem(playerid, b, list, 3, input);
 		}
 		else SettingGosPriceSkin(playerid, OnlineInfo[playerid][oDialogMenu][3]);
@@ -910,16 +910,16 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 		if(response)
 		{
 			new list = OnlineInfo[playerid][oDialogMenu][3];
-			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceSkin(playerid, list);
+			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}РўРѕР»СЊРєРѕ РґР»СЏ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂРѕРІ 20+ СѓСЂРѕРІРЅСЏ"), SettingGosPriceSkin(playerid, list);
 			new input = strval(inputtext);
-			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 1G и не больше 100.000G"), SettingGosPriceSkin(playerid, list);
+			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1G Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000G"), SettingGosPriceSkin(playerid, list);
 			SkinGold[list] = input;
 
 			PlayerPlaySound(playerid, 6401, 0,0,0);
 			SaveSkinGold();
 
 			new string[180];
-			format(string,sizeof(string),"[ Мысли ]: Gold стоимость одежды %s ID %d теперь составляет: {ffcc00}%dG", GetSkinName(list), list, SkinGold[list]);
+			format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: Gold СЃС‚РѕРёРјРѕСЃС‚СЊ РѕРґРµР¶РґС‹ %s ID %d С‚РµРїРµСЂСЊ СЃРѕСЃС‚Р°РІР»СЏРµС‚: {ffcc00}%dG", GetSkinName(list), list, SkinGold[list]);
   			SendClientMessage(playerid,COLOR_GREY,string);
   			SettingGosPriceSkin(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 
@@ -934,21 +934,21 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 		{
 			if(listitem == 0) DialogMenuSorting(playerid);
 
-			if(OnlineInfo[playerid][oDialogMenu][0] > 0) // Есть строки на странице
+			if(OnlineInfo[playerid][oDialogMenu][0] > 0) // Р•СЃС‚СЊ СЃС‚СЂРѕРєРё РЅР° СЃС‚СЂР°РЅРёС†Рµ
 			{
-				if(listitem >= 1 && listitem <= OnlineInfo[playerid][oDialogMenu][0]) // Отображаемые List
+				if(listitem >= 1 && listitem <= OnlineInfo[playerid][oDialogMenu][0]) // РћС‚РѕР±СЂР°Р¶Р°РµРјС‹Рµ List
 				{
 					new list = List[listitem-1][playerid];
 					OnlineInfo[playerid][oDialogMenu][3] = list;
 					OpenListClothes(playerid, list);
 				}
-				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) showDialogFittingRoomSkin(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
+				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) showDialogFittingRoomSkin(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°
 			}
 		}
 		else 
 		{
-			if(DP[4][playerid] == 0) showFittingRoom(playerid); // В примерочной
-			else ShowOrderThing(playerid, DP[4][playerid]); // В меню бизнеса
+			if(DP[4][playerid] == 0) showFittingRoom(playerid); // Р’ РїСЂРёРјРµСЂРѕС‡РЅРѕР№
+			else ShowOrderThing(playerid, DP[4][playerid]); // Р’ РјРµРЅСЋ Р±РёР·РЅРµСЃР°
 		}
 	}
 	return 1;
@@ -957,7 +957,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 stock OpenListClothes(playerid, list)
 {
 	new b = DP[4][playerid];
-	if(b > 0) // Открыли в меню бизнеса (Значит тут мы заказываем его)
+	if(b > 0) // РћС‚РєСЂС‹Р»Рё РІ РјРµРЅСЋ Р±РёР·РЅРµСЃР° (Р—РЅР°С‡РёС‚ С‚СѓС‚ РјС‹ Р·Р°РєР°Р·С‹РІР°РµРј РµРіРѕ)
 	{
 		AddThingToOrder(playerid, b, list, 3); // biz, thingId, thingType
 		return 1;
@@ -966,13 +966,13 @@ stock OpenListClothes(playerid, list)
 	{
 		if(IsPlayerInRangeOfPoint(playerid,80.0,1383.9026,-26.2840,1000.9112) && GetPlayerVirtualWorld(playerid) == 10 && GetPlayerInterior(playerid) == 10)
 		{
-			if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Снимите форму, чтобы примерить одежду\n{cccccc}На вас надета какая-то форма, костюм или временный скин");
+			if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЎРЅРёРјРёС‚Рµ С„РѕСЂРјСѓ, С‡С‚РѕР±С‹ РїСЂРёРјРµСЂРёС‚СЊ РѕРґРµР¶РґСѓ\n{cccccc}РќР° РІР°СЃ РЅР°РґРµС‚Р° РєР°РєР°СЏ-С‚Рѕ С„РѕСЂРјР°, РєРѕСЃС‚СЋРј РёР»Рё РІСЂРµРјРµРЅРЅС‹Р№ СЃРєРёРЅ");
 
 			TryOnClothes(playerid, list, 0);
-			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы запустили просмотр одежды\n\n{ff9000}Правая Кнопка Мыши - вперёд\nЛевая Кнопка Мыши - назад","*","");
-			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Правая Кнопка Мыши - вперёд | Левая Кнопка Мыши - назад");
+			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹ Р·Р°РїСѓСЃС‚РёР»Рё РїСЂРѕСЃРјРѕС‚СЂ РѕРґРµР¶РґС‹\n\n{ff9000}РџСЂР°РІР°СЏ РљРЅРѕРїРєР° РњС‹С€Рё - РІРїРµСЂС‘Рґ\nР›РµРІР°СЏ РљРЅРѕРїРєР° РњС‹С€Рё - РЅР°Р·Р°Рґ","*","");
+			SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџСЂР°РІР°СЏ РљРЅРѕРїРєР° РњС‹С€Рё - РІРїРµСЂС‘Рґ | Р›РµРІР°СЏ РљРЅРѕРїРєР° РњС‹С€Рё - РЅР°Р·Р°Рґ");
 		}
-		else ErrorMessage(playerid, "{FF6347}Вы покинули примерочную");
+		else ErrorMessage(playerid, "{FF6347}Р’С‹ РїРѕРєРёРЅСѓР»Рё РїСЂРёРјРµСЂРѕС‡РЅСѓСЋ");
 	}
 	return 1;
 }
@@ -984,7 +984,7 @@ stock TryOnClothes(playerid, skin, status)
 	PlayerPlaySound(playerid,5600,0,0,0);
 
 	new string[60];
-	format(string, sizeof(string), "примеряет одежду ID %d", skin);
+	format(string, sizeof(string), "РїСЂРёРјРµСЂСЏРµС‚ РѕРґРµР¶РґСѓ ID %d", skin);
 	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 5000);
 
 	if(status == 0) format(string, sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~Skin ID: ~y~%d", skin);
@@ -998,16 +998,16 @@ stock NextOnClothes(playerid)
 {
 	new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, Afclick[playerid]);
-    if(interval < 700) return 0; // Блокируем, если игрок клацает часто на кнопку
+    if(interval < 700) return 0; // Р‘Р»РѕРєРёСЂСѓРµРј, РµСЃР»Рё РёРіСЂРѕРє РєР»Р°С†Р°РµС‚ С‡Р°СЃС‚Рѕ РЅР° РєРЅРѕРїРєСѓ
 	Afclick[playerid] = current_tick;
 
 	new findSkin;
 	OnlineInfo[playerid][oFittingRoom] ++;
-	if(OnlineInfo[playerid][oFittingRoom] >= 311 + MAX_SKIN_CUSTOM) OnlineInfo[playerid][oFittingRoom] = 1; // Открыт максимальный, значит перелистываем на начало 1
+	if(OnlineInfo[playerid][oFittingRoom] >= 311 + MAX_SKIN_CUSTOM) OnlineInfo[playerid][oFittingRoom] = 1; // РћС‚РєСЂС‹С‚ РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№, Р·РЅР°С‡РёС‚ РїРµСЂРµР»РёСЃС‚С‹РІР°РµРј РЅР° РЅР°С‡Р°Р»Рѕ 1
 
 	for(new s = OnlineInfo[playerid][oFittingRoom]; s < 312 + MAX_SKIN_CUSTOM; s++)
 	{
-		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // Пропускаем
+		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј
 		if(findSkin == 0)
 		{
 			findSkin = s;
@@ -1015,12 +1015,12 @@ stock NextOnClothes(playerid)
 		}
 	}
 
-	// Так и не нашли скин, тогда открываем первый
+	// РўР°Рє Рё РЅРµ РЅР°С€Р»Рё СЃРєРёРЅ, С‚РѕРіРґР° РѕС‚РєСЂС‹РІР°РµРј РїРµСЂРІС‹Р№
 	if(findSkin == 0)
 	{
 		for(new s = 1; s < 312 + MAX_SKIN_CUSTOM; s++)
 		{
-			if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // Пропускаем
+			if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј
 			if(findSkin == 0)
 			{
 				findSkin = s;
@@ -1037,17 +1037,17 @@ stock BackOnClothes(playerid)
 {
 	new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, Afclick[playerid]);
-    if(interval < 700) return 0; // Блокируем, если игрок клацает часто на кнопку
+    if(interval < 700) return 0; // Р‘Р»РѕРєРёСЂСѓРµРј, РµСЃР»Рё РёРіСЂРѕРє РєР»Р°С†Р°РµС‚ С‡Р°СЃС‚Рѕ РЅР° РєРЅРѕРїРєСѓ
 	Afclick[playerid] = current_tick;
 
 	new findSkin;
 	OnlineInfo[playerid][oFittingRoom] --;
 
-	if(OnlineInfo[playerid][oFittingRoom] <= 0) OnlineInfo[playerid][oFittingRoom] = 311 + MAX_SKIN_CUSTOM; // Открыт первый, значит перелистываем в конец
+	if(OnlineInfo[playerid][oFittingRoom] <= 0) OnlineInfo[playerid][oFittingRoom] = 311 + MAX_SKIN_CUSTOM; // РћС‚РєСЂС‹С‚ РїРµСЂРІС‹Р№, Р·РЅР°С‡РёС‚ РїРµСЂРµР»РёСЃС‚С‹РІР°РµРј РІ РєРѕРЅРµС†
 
 	for(new s = OnlineInfo[playerid][oFittingRoom]; s > 0; s--)
 	{
-		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // Пропускаем
+		if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј
 		if(findSkin == 0)
 		{
 			findSkin = s;
@@ -1055,12 +1055,12 @@ stock BackOnClothes(playerid)
 		}
 	}
 
-	// Так и не нашли скин, тогда открываем последний
+	// РўР°Рє Рё РЅРµ РЅР°С€Р»Рё СЃРєРёРЅ, С‚РѕРіРґР° РѕС‚РєСЂС‹РІР°РµРј РїРѕСЃР»РµРґРЅРёР№
 	if(findSkin == 0)
 	{
 		for(new s = 312 + MAX_SKIN_CUSTOM - 1; s > 0; s--)
 		{
-			if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // Пропускаем
+			if(s == 0 || s == 74 || SkinSale[s] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј
 			if(findSkin == 0)
 			{
 				findSkin = s;
@@ -1082,23 +1082,23 @@ stock buy_SkinShop(playerid)
 	else if(g == 100) skin = StoreItem[b][sel], price = StorePrice[b][sel];
 	else if(g == 400) skin = GetPVarInt(playerid, "SkinLave");
 
-	if(skin == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В слоте нет одежды");
-	if(GetSkinSex(skin) == 2 && PlayerInfo[playerid][pSex] == 1) return ErrorMessage(playerid, "{FF6347}Вы не можете купить женскую одежду");
-	else if(GetSkinSex(skin) == 1 && PlayerInfo[playerid][pSex] == 2) return ErrorMessage(playerid, "{FF6347}Вы не можете купить мужскую одежду");
+	if(skin == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р’ СЃР»РѕС‚Рµ РЅРµС‚ РѕРґРµР¶РґС‹");
+	if(GetSkinSex(skin) == 2 && PlayerInfo[playerid][pSex] == 1) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РєСѓРїРёС‚СЊ Р¶РµРЅСЃРєСѓСЋ РѕРґРµР¶РґСѓ");
+	else if(GetSkinSex(skin) == 1 && PlayerInfo[playerid][pSex] == 2) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РєСѓРїРёС‚СЊ РјСѓР¶СЃРєСѓСЋ РѕРґРµР¶РґСѓ");
 
 	new gold = SkinGold[skin];
 	new string[144], yesBuy;
 	if(g >= 1 && g <= 22)
 	{
-		if(g != fraction(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете носить эту одежду [ Другая организация ]");
-		if(PlayerInfo[playerid][pRank] < srank) return format(string, sizeof(string),"{FF6347}Эта одежда доступна с %d ранга", srank), ErrorMessage(playerid, string);
+		if(g != fraction(playerid)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РЅРѕСЃРёС‚СЊ СЌС‚Сѓ РѕРґРµР¶РґСѓ [ Р”СЂСѓРіР°СЏ РѕСЂРіР°РЅРёР·Р°С†РёСЏ ]");
+		if(PlayerInfo[playerid][pRank] < srank) return format(string, sizeof(string),"{FF6347}Р­С‚Р° РѕРґРµР¶РґР° РґРѕСЃС‚СѓРїРЅР° СЃ %d СЂР°РЅРіР°", srank), ErrorMessage(playerid, string);
 		yesBuy = 1;
 	}
 	else if(g == 100 || g == 400)
 	{
-		if(StoreQuan[b][sel] <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
-		if(DP[0][playerid] == 0 && price <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена стоимость");
-		if(DP[0][playerid] == 1 && gold <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена gold стоимость");
+		if(StoreQuan[b][sel] <= 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РћРґРµР¶РґС‹ РЅРµС‚ РІ РјР°РіР°Р·РёРЅРµ [ Р’РѕР·РјРѕР¶РЅРѕ РµС‘ РєС‚Рѕ-С‚Рѕ РєСѓРїРёР» ]");
+		if(DP[0][playerid] == 0 && price <= 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р­С‚РѕР№ РѕРґРµР¶РґРµ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° СЃС‚РѕРёРјРѕСЃС‚СЊ");
+		if(DP[0][playerid] == 1 && gold <= 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р­С‚РѕР№ РѕРґРµР¶РґРµ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° gold СЃС‚РѕРёРјРѕСЃС‚СЊ");
 		g = 0;
 		yesBuy = 1;
 	}
@@ -1107,23 +1107,23 @@ stock buy_SkinShop(playerid)
 	{
 		if(DP[0][playerid] == 0)
 		{
-			if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+			if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
 			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
-			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 
 			SaveInvent(playerid, put_inva);
 			PlayerPlaySound(playerid,6401,0,0,0);
 			if(price == 0)
 			{
-				if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string),"[ Мысли ]: Я взял одежду {ff9000}[ID: %d] (Одежда в инвентаре)", skin), SendClientMessage(playerid, COLOR_GREY, string);
-				else format(string, sizeof(string),"[ Мысли ]: Я взяла одежду {ff9000}[ID: %d] (Одежда в инвентаре)", skin), SendClientMessage(playerid, COLOR_GREY, string);
+				if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РІР·СЏР» РѕРґРµР¶РґСѓ {ff9000}[ID: %d] (РћРґРµР¶РґР° РІ РёРЅРІРµРЅС‚Р°СЂРµ)", skin), SendClientMessage(playerid, COLOR_GREY, string);
+				else format(string, sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РІР·СЏР»Р° РѕРґРµР¶РґСѓ {ff9000}[ID: %d] (РћРґРµР¶РґР° РІ РёРЅРІРµРЅС‚Р°СЂРµ)", skin), SendClientMessage(playerid, COLOR_GREY, string);
 			}
 			else
 			{
-				format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {99ff66}%d$ {ff9000}[ID: %d] (Одежда в инвентаре)", gender(playerid), price, skin);
+				format(string, sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РєСѓРїРёР»%s РѕРґРµР¶РґСѓ Р·Р° {99ff66}%d$ {ff9000}[ID: %d] (РћРґРµР¶РґР° РІ РёРЅРІРµРЅС‚Р°СЂРµ)", gender(playerid), price, skin);
 				SendClientMessage(playerid, COLOR_GREY, string);
 				oGivePlayerMoney(playerid, -price);
-				format(string, sizeof(string),"Одежда ID: %d", skin);
+				format(string, sizeof(string),"РћРґРµР¶РґР° ID: %d", skin);
 				MoneyLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
 
 				GiveQuanBuySkin(skin, 0);
@@ -1145,7 +1145,7 @@ stock buy_SkinShop(playerid)
 						if(Fractia[i] != 100) continue;
 						if(GetPVarInt(i, "SelectCharPlace") != sel) continue;
 						show_skin(i, 100, sel, 0);
-						if(i != playerid)  ErrorMessage(i, "{FF6347}Внимание! Кто-то только что купил последнюю одежду, которую вы просматривали");
+						if(i != playerid)  ErrorMessage(i, "{FF6347}Р’РЅРёРјР°РЅРёРµ! РљС‚Рѕ-С‚Рѕ С‚РѕР»СЊРєРѕ С‡С‚Рѕ РєСѓРїРёР» РїРѕСЃР»РµРґРЅСЋСЋ РѕРґРµР¶РґСѓ, РєРѕС‚РѕСЂСѓСЋ РІС‹ РїСЂРѕСЃРјР°С‚СЂРёРІР°Р»Рё");
 					}
 				}
 				SaveBizzStore(b, sel);
@@ -1153,16 +1153,16 @@ stock buy_SkinShop(playerid)
 		}
 		else if(DP[0][playerid] == 1)
 		{
-			if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Эта одежда не продаётся за Gold");
-			if(PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
+			if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Р­С‚Р° РѕРґРµР¶РґР° РЅРµ РїСЂРѕРґР°С‘С‚СЃСЏ Р·Р° Gold");
+			if(PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р° [ Y >> Donate ]");
 			new put_inva = GiveThingPlayer(playerid, skin, 1, g, 0, 3, 0, 9999);
-			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 
 			SaveInvent(playerid, put_inva);
 			PlayerPlaySound(playerid,6401,0,0,0);
-			format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {ffcc00}%dG {ff9000}[ID: %d] (Одежда в инвентаре)", gender(playerid), gold, skin);
+			format(string, sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РєСѓРїРёР»%s РѕРґРµР¶РґСѓ Р·Р° {ffcc00}%dG {ff9000}[ID: %d] (РћРґРµР¶РґР° РІ РёРЅРІРµРЅС‚Р°СЂРµ)", gender(playerid), gold, skin);
 			SendClientMessage(playerid, COLOR_GREY, string);
-			format(string, sizeof(string),"Одежда ID: %d", skin);
+			format(string, sizeof(string),"РћРґРµР¶РґР° ID: %d", skin);
             DonateLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -gold, string);
 			PlayerInfo[playerid][pDonateMoney] -= gold;
             mysql_save(playerid, 4);
@@ -1175,9 +1175,9 @@ stock buy_SkinShop(playerid)
 
 stock FindNextGoldSkin(find)
 {
-    new findSkin = -1; // Инициализируем переменную значением, указывающим на "не найдено"
+    new findSkin = -1; // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ Р·РЅР°С‡РµРЅРёРµРј, СѓРєР°Р·С‹РІР°СЋС‰РёРј РЅР° "РЅРµ РЅР°Р№РґРµРЅРѕ"
 
-    // Первый проход: ищем скин после значения 'find'
+    // РџРµСЂРІС‹Р№ РїСЂРѕС…РѕРґ: РёС‰РµРј СЃРєРёРЅ РїРѕСЃР»Рµ Р·РЅР°С‡РµРЅРёСЏ 'find'
     for(new s = find + 1; s < 312 + MAX_SKIN_CUSTOM; s++)
     {
         if(s == 0 || s == 74) continue;
@@ -1188,7 +1188,7 @@ stock FindNextGoldSkin(find)
         }
     }
 
-    // Если скин не найден в первом проходе, делаем второй проход от начала
+    // Р•СЃР»Рё СЃРєРёРЅ РЅРµ РЅР°Р№РґРµРЅ РІ РїРµСЂРІРѕРј РїСЂРѕС…РѕРґРµ, РґРµР»Р°РµРј РІС‚РѕСЂРѕР№ РїСЂРѕС…РѕРґ РѕС‚ РЅР°С‡Р°Р»Р°
     if(findSkin == -1)
     {
         for(new s = 0; s <= find; s++)
@@ -1205,9 +1205,9 @@ stock FindNextGoldSkin(find)
 }
 stock FindPreviousGoldSkin(find)
 {
-    new findSkin = -1; // Инициализация переменной значением "не найдено"
+    new findSkin = -1; // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅРѕР№ Р·РЅР°С‡РµРЅРёРµРј "РЅРµ РЅР°Р№РґРµРЅРѕ"
 
-    // Первый проход: ищем скин перед значением 'find'
+    // РџРµСЂРІС‹Р№ РїСЂРѕС…РѕРґ: РёС‰РµРј СЃРєРёРЅ РїРµСЂРµРґ Р·РЅР°С‡РµРЅРёРµРј 'find'
     for(new s = find - 1; s >= 0; s--)
     {
         if(s == 0 || s == 74) continue;
@@ -1218,7 +1218,7 @@ stock FindPreviousGoldSkin(find)
         }
     }
 
-    // Если скин не найден в первом проходе, делаем второй проход от конца
+    // Р•СЃР»Рё СЃРєРёРЅ РЅРµ РЅР°Р№РґРµРЅ РІ РїРµСЂРІРѕРј РїСЂРѕС…РѕРґРµ, РґРµР»Р°РµРј РІС‚РѕСЂРѕР№ РїСЂРѕС…РѕРґ РѕС‚ РєРѕРЅС†Р°
     if(findSkin == -1)
     {
         for(new s = 312 + MAX_SKIN_CUSTOM - 1; s > find; s--)
@@ -1265,26 +1265,26 @@ stock IsAGoldClothesNearby(playerid)
 	return 0;
 }
 
-// Одежда
+// РћРґРµР¶РґР°
 stock IsAShmot(playerid)
 {
  	if(IsPlayerInRangeOfPoint(playerid,1.0,2496.0188,-1695.8295,2073.9805) && GetPlayerVirtualWorld(playerid) == 212 && GetPlayerInterior(playerid) == 212 // Grove
 	|| IsPlayerInRangeOfPoint(playerid,1.0,2488.1748,-2021.3531,2052.2808) && GetPlayerVirtualWorld(playerid) == 213 && GetPlayerInterior(playerid) == 213 // Ballas
 	|| IsPlayerInRangeOfPoint(playerid,1.0,2261.6941,-1459.2672,2089.4438) && GetPlayerVirtualWorld(playerid) == 214 && GetPlayerInterior(playerid) == 214 // Vagos
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1684.0817,-2098.6365,2091.8000) && GetPlayerVirtualWorld(playerid) == 215 && GetPlayerInterior(playerid) == 215 // Aztecas
-	|| IsPlayerInRangeOfPoint(playerid,1.0,2607.8682,918.0507,1551.0000) // Department Раздевалка
-	|| IsPlayerInRangeOfPoint(playerid,1.0,1383.1306,-1.3530,1000.9217) && GetPlayerVirtualWorld(playerid) == 9 && GetPlayerInterior(playerid) == 5 // Госпиталь
+	|| IsPlayerInRangeOfPoint(playerid,1.0,2607.8682,918.0507,1551.0000) // Department Р Р°Р·РґРµРІР°Р»РєР°
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1383.1306,-1.3530,1000.9217) && GetPlayerVirtualWorld(playerid) == 9 && GetPlayerInterior(playerid) == 5 // Р“РѕСЃРїРёС‚Р°Р»СЊ
  	|| IsPlayerInRangeOfPoint(playerid,1.0,-1507.6846,1957.5139,1357.0326) && GetPlayerVirtualWorld(playerid) == 5 && GetPlayerInterior(playerid) == 1 // Cosa Nostra
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1539.6632,1319.2186,16.0415) 
 		&& GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL // Yakuza Mafia
-	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // Правительство
+	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // РџСЂР°РІРёС‚РµР»СЊСЃС‚РІРѕ
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-506.7065,-87.0514,964.8114) && GetPlayerVirtualWorld(playerid) == 8 && GetPlayerInterior(playerid) == 8 // Hitman Agency
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1760.2249,799.6393,137.4583) // CNN
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1997.9194,1110.0148,1018.6735) && GetPlayerVirtualWorld(playerid) == 12 && GetPlayerInterior(playerid) == 1 // Russian Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1928.6663,906.0461,1402.0776) && GetPlayerVirtualWorld(playerid) == 10 && GetPlayerInterior(playerid) == 10 // Triada Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1393.0143,1821.3657,10.8662) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18 // Arabian Mafia
 	|| IsAClothesNearby(playerid)
-	|| IsAGoldClothesNearby(playerid)) // Магаз одежды
+	|| IsAGoldClothesNearby(playerid)) // РњР°РіР°Р· РѕРґРµР¶РґС‹
     {
 		return 1;
 	}
@@ -1300,7 +1300,7 @@ function LoadGosSkin()
 		new string[4096];
 		cache_get_value_name(0, "SkinGos", string, sizeof(string));
 		ParseStringToArray(string, SkinGos, sizeof(SkinGos));
-		printf("[MODE]: Стоимость Скинов [%d ms]", GetTickCount() - time);
+		printf("[MODE]: РЎС‚РѕРёРјРѕСЃС‚СЊ РЎРєРёРЅРѕРІ [%d ms]", GetTickCount() - time);
 	}
 	return 1;
 }
@@ -1314,7 +1314,7 @@ function LoadGoldSkin()
 		new string[4096];
 		cache_get_value_name(0, "SkinGold", string, sizeof(string));
 		ParseStringToArray(string, SkinGold, sizeof(SkinGold));
-		printf("[MODE]: Gold Стоимость Скинов [%d ms]", GetTickCount() - time);
+		printf("[MODE]: Gold РЎС‚РѕРёРјРѕСЃС‚СЊ РЎРєРёРЅРѕРІ [%d ms]", GetTickCount() - time);
 	}
 	return 1;
 }
@@ -1330,7 +1330,7 @@ function LoadSaleSkin()
 		ParseStringToArray(string, SkinSale, sizeof(SkinSale));
 
 		new quan = CreateSkinGiftCase();
-		printf("[MODE]: Доступ скинов в магазинах [В подарках: %d скинов] [%d ms]", quan, GetTickCount() - time);
+		printf("[MODE]: Р”РѕСЃС‚СѓРї СЃРєРёРЅРѕРІ РІ РјР°РіР°Р·РёРЅР°С… [Р’ РїРѕРґР°СЂРєР°С…: %d СЃРєРёРЅРѕРІ] [%d ms]", quan, GetTickCount() - time);
 	}
 	return 1;
 }
@@ -1344,7 +1344,7 @@ function LoadSkinBuy()
 		new string[4096];
 		cache_get_value_name(0, "SkinBuy", string, sizeof(string));
 		ParseStringToArray(string, SkinBuy, sizeof(SkinBuy));
-		printf("[MODE]: Подсчёт покупок скинов [%d ms]", GetTickCount() - time);
+		printf("[MODE]: РџРѕРґСЃС‡С‘С‚ РїРѕРєСѓРїРѕРє СЃРєРёРЅРѕРІ [%d ms]", GetTickCount() - time);
 	}
 	return 1;
 }
@@ -1358,7 +1358,7 @@ function LoadSkinBuyGold()
 		new string[4096];
 		cache_get_value_name(0, "SkinBuyGold", string, sizeof(string));
 		ParseStringToArray(string, SkinBuyGold, sizeof(SkinBuyGold));
-		printf("[MODE]: Подсчёт gold покупок скинов [%d ms]", GetTickCount() - time);
+		printf("[MODE]: РџРѕРґСЃС‡С‘С‚ gold РїРѕРєСѓРїРѕРє СЃРєРёРЅРѕРІ [%d ms]", GetTickCount() - time);
 	}
 	return 1;
 }

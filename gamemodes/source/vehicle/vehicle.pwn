@@ -986,7 +986,7 @@ stock CheckSortingLineVehPrice(playerid, v)
 		else return 0; // Отображаем только фильтрованные id транспортных средств
 	}
 
-	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) {} // Фильтр по названию не включен
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"\0",true)) {} // Фильтр по названию не включен
 	else
 	{
 		if(strfind(GetVehicleName(v), OnlineInfo[playerid][oSortingName], true) != -1) {} // Отображаем схожую строку
@@ -1281,4 +1281,26 @@ stock IsNoMessageVehicle(vehicleid)
 {
 	if(vehicleid == collectorveh) return 1;
 	return 0;
+}
+
+CMD:vgall(playerid, const params[]) return cmd_vehgoldall(playerid, params);
+CMD:vehgoldall(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	if(sscanf(params, "ii",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить gold стоимость всех тс [ /vehgoldall Курс ]");
+	if(params[0] > 10000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Курс не меньше 1 и не больше 10.000");
+
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	{
+		if(VehGos[v] > 0) VehGold[v] = VehGos[v]/params[0];
+	}
+
+	SaveVehicleGold();
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s изменил gold стоимости всех тс по курсу %d$", PlayerInfo[playerid][pName], params[0]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("vehgoldall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Gold цена тс");
+	return 1;
 }

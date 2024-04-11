@@ -418,8 +418,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                 else
                 {
                     if(FundRaisersInfo[i][fundPos][0] == 0.0 
-                        || !strcmp(FundRaisersInfo[i][fundName],"0",true) || !strcmp(FundRaisersInfo[i][fundText],"0",true) 
-                        || !strcmp(FundRaisersInfo[i][fundRequired],"0",true))
+                        || !strcmp(FundRaisersInfo[i][fundName],"\0",true) || !strcmp(FundRaisersInfo[i][fundText],"\0",true) 
+                        || !strcmp(FundRaisersInfo[i][fundRequired],"\0",true))
                         return ErrorText(playerid, "{FF6347}Вы не настроили сбор средств полностью\n{cccccc}Название, Описание, Требуется собрать, Позиция"), SettingFundRaisers(playerid, i);
                     
                     ShowDialog(playerid,1413,DIALOG_STYLE_MSGBOX,"{ff9000}Сбор Средств","{cccccc}Вы уверены, что хотите активировать сбор средств?\n\n{FF6347}Elon_Musk: Убедись, что в подарках нет идиотских и косячных предметов\nЕсли там окажется какая-то херня - я выдерну ноги","Да","Нет");
@@ -745,7 +745,7 @@ stock ClearFundLog(fundid)
 stock fix_number(const real_number[])
 {
     new text[34];
-    if(!strcmp(real_number,"0",true)) format(text, sizeof(text),"0");
+    if(!strcmp(real_number,"\0",true)) format(text, sizeof(text),"\0");
     else format(text, sizeof(text),"%s", real_number);
     return text;
 }

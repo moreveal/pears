@@ -3,6 +3,7 @@
 
 new collector_health = -1;
 new collector_city;
+new collector_timer;
 new Float:collector_veh_pos[4];
 
 stock UpdateCollectorLabel()
@@ -63,13 +64,16 @@ function ResetCollector(damageid, vehicleid)
     ACSetVehiclePos(vehicleid, collector_veh_pos[0], collector_veh_pos[1], collector_veh_pos[2]);
     SetVehicleZAngle(vehicleid, collector_veh_pos[3]);
 
-    SetTimerEx("ComeBackCollector", 180000, true, "d", damageid);
+    if(collector_timer > 0) KillTimer(collector_timer);
+    collector_timer = SetTimerEx("ComeBackCollector", 180000, true, "d", damageid);
     return 1;
 }
 
 // Возвращаем инкассатора домой после ограбления
 function ComeBackCollector(damageid)
 {
+    KillTimer(collector_timer);
+    collector_timer = 0;
     CollectorEnd(damageid);
     return 1;
 }

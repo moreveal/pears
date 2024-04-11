@@ -1,22 +1,22 @@
 
-#define MAX_GOLD_COURSE 10000 // Максимальный курс голды
+#define MAX_GOLD_COURSE 10000 // РњР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РєСѓСЂСЃ РіРѕР»РґС‹
 #define MAX_TRADECRYPT 1000
 #define MAX_TRADECRYPTLOG 20
 enum TradeCryptInfo
 {
-    tcNewid, // id в базе
-    tcStatus, // Статус у владельца
-	tcActive, // установлена ли активность
-    tcName[24], // NickName продавца
-    tcVlad, // Номер Аккаунта
-	tcCount, // Количество
-	tcCourse, // Курс за еденицу
+    tcNewid, // id РІ Р±Р°Р·Рµ
+    tcStatus, // РЎС‚Р°С‚СѓСЃ Сѓ РІР»Р°РґРµР»СЊС†Р°
+	tcActive, // СѓСЃС‚Р°РЅРѕРІР»РµРЅР° Р»Рё Р°РєС‚РёРІРЅРѕСЃС‚СЊ
+    tcName[24], // NickName РїСЂРѕРґР°РІС†Р°
+    tcVlad, // РќРѕРјРµСЂ РђРєРєР°СѓРЅС‚Р°
+	tcCount, // РљРѕР»РёС‡РµСЃС‚РІРѕ
+	tcCourse, // РљСѓСЂСЃ Р·Р° РµРґРµРЅРёС†Сѓ
     tcUnix, // unix
 };
 new TradeCrypt[MAX_TRADECRYPT][TradeCryptInfo];
 enum TradeCryptInfoLog
 {
-	tclCourse, // Курс за еденицу
+	tclCourse, // РљСѓСЂСЃ Р·Р° РµРґРµРЅРёС†Сѓ
 };
 new TradeCryptLog[MAX_TRADECRYPTLOG][TradeCryptInfoLog];
 
@@ -27,12 +27,12 @@ new tclArifmetikAllGold;
 
 stock ClearSorting(playerid)
 {
-    OnlineInfo[playerid][oSorting][0] = 0; // ID диалога, в котором происходит сортировку
-    OnlineInfo[playerid][oSorting][1] = 0; // 1 слой сортировки
-    OnlineInfo[playerid][oSorting][2] = 0; // 2 слой сортировки
-    OnlineInfo[playerid][oSorting][3] = 0; // 3 слой сортировки
-    OnlineInfo[playerid][oSorting][4] = 0; // 3 слой сортировки
-    OnlineInfo[playerid][oSorting][5] = 0; // 3 слой сортировки
+    OnlineInfo[playerid][oSorting][0] = 0; // ID РґРёР°Р»РѕРіР°, РІ РєРѕС‚РѕСЂРѕРј РїСЂРѕРёСЃС…РѕРґРёС‚ СЃРѕСЂС‚РёСЂРѕРІРєСѓ
+    OnlineInfo[playerid][oSorting][1] = 0; // 1 СЃР»РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    OnlineInfo[playerid][oSorting][2] = 0; // 2 СЃР»РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    OnlineInfo[playerid][oSorting][3] = 0; // 3 СЃР»РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    OnlineInfo[playerid][oSorting][4] = 0; // 3 СЃР»РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
+    OnlineInfo[playerid][oSorting][5] = 0; // 3 СЃР»РѕР№ СЃРѕСЂС‚РёСЂРѕРІРєРё
 
     format(OnlineInfo[playerid][oSortingName], 64, ""); 
     return 1;
@@ -40,19 +40,19 @@ stock ClearSorting(playerid)
 
 stock ClearDialogMenu(playerid)
 {
-    OnlineInfo[playerid][oDialogMenu][0] = 0; // Строки на текущей странице
-    OnlineInfo[playerid][oDialogMenu][1] = 0; // Страница
-    OnlineInfo[playerid][oDialogMenu][2] = 0; // Последний list на странице
-    OnlineInfo[playerid][oDialogMenu][4] = 0; // Первый list на странице
-    OnlineInfo[playerid][oDialogMenu][5] = 0; // Информация о последней странице
+    OnlineInfo[playerid][oDialogMenu][0] = 0; // РЎС‚СЂРѕРєРё РЅР° С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†Рµ
+    OnlineInfo[playerid][oDialogMenu][1] = 0; // РЎС‚СЂР°РЅРёС†Р°
+    OnlineInfo[playerid][oDialogMenu][2] = 0; // РџРѕСЃР»РµРґРЅРёР№ list РЅР° СЃС‚СЂР°РЅРёС†Рµ
+    OnlineInfo[playerid][oDialogMenu][4] = 0; // РџРµСЂРІС‹Р№ list РЅР° СЃС‚СЂР°РЅРёС†Рµ
+    OnlineInfo[playerid][oDialogMenu][5] = 0; // РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕСЃР»РµРґРЅРµР№ СЃС‚СЂР°РЅРёС†Рµ
     return 1;
 }
 
 stock LoadPageSorting(playerid, dialogid, maxList, &minlist, &page, &thisPage)
 {
-    OnlineInfo[playerid][oDialogMenu][0] = 0; // Строки на текущей странице
+    OnlineInfo[playerid][oDialogMenu][0] = 0; // РЎС‚СЂРѕРєРё РЅР° С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†Рµ
     OnlineInfo[playerid][oDialogMenu][6] = dialogid;
-    OnlineInfo[playerid][oDialogMenu][7] = 0; // Подсчет глав или заголовкок на странице
+    OnlineInfo[playerid][oDialogMenu][7] = 0; // РџРѕРґСЃС‡РµС‚ РіР»Р°РІ РёР»Рё Р·Р°РіРѕР»РѕРІРєРѕРє РЅР° СЃС‚СЂР°РЅРёС†Рµ
 	if(page == 0)
 	{
 		if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != dialogid) ClearSorting(playerid);
@@ -63,12 +63,12 @@ stock LoadPageSorting(playerid, dialogid, maxList, &minlist, &page, &thisPage)
 	minlist = 0;
     if(page > 0)
 	{
-		if(page == OnlineInfo[playerid][oDialogMenu][1]) minlist = OnlineInfo[playerid][oDialogMenu][4], thisPage = 1; // Если открывается та-же самая страница, показываем первый list
-		else minlist = OnlineInfo[playerid][oDialogMenu][2] + 1; // В другом случае открываем последний list (+ 1 для следующей страницы)
+		if(page == OnlineInfo[playerid][oDialogMenu][1]) minlist = OnlineInfo[playerid][oDialogMenu][4], thisPage = 1; // Р•СЃР»Рё РѕС‚РєСЂС‹РІР°РµС‚СЃСЏ С‚Р°-Р¶Рµ СЃР°РјР°СЏ СЃС‚СЂР°РЅРёС†Р°, РїРѕРєР°Р·С‹РІР°РµРј РїРµСЂРІС‹Р№ list
+		else minlist = OnlineInfo[playerid][oDialogMenu][2] + 1; // Р’ РґСЂСѓРіРѕРј СЃР»СѓС‡Р°Рµ РѕС‚РєСЂС‹РІР°РµРј РїРѕСЃР»РµРґРЅРёР№ list (+ 1 РґР»СЏ СЃР»РµРґСѓСЋС‰РµР№ СЃС‚СЂР°РЅРёС†С‹)
 		OnlineInfo[playerid][oDialogMenu][1] = page;
 	}
 
-    if((minlist >= maxList || OnlineInfo[playerid][oDialogMenu][5] == 1) && thisPage == 0) // Сбрасываем страницы, если последний лист максимальный или больше
+    if((minlist >= maxList || OnlineInfo[playerid][oDialogMenu][5] == 1) && thisPage == 0) // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‚СЂР°РЅРёС†С‹, РµСЃР»Рё РїРѕСЃР»РµРґРЅРёР№ Р»РёСЃС‚ РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РёР»Рё Р±РѕР»СЊС€Рµ
 	{
 		ClearDialogMenu(playerid);
 		minlist = 0, page = 0;
@@ -81,7 +81,7 @@ stock IsActiveSorting(playerid)
     if(OnlineInfo[playerid][oSorting][1] > 0 || OnlineInfo[playerid][oSorting][2] > 0 
         || OnlineInfo[playerid][oSorting][3] > 0 || OnlineInfo[playerid][oSorting][4] > 0 
         || OnlineInfo[playerid][oSorting][5] > 0
-        || strcmp(OnlineInfo[playerid][oSortingName], "0", true ) != 0) return 1;
+        || strcmp(OnlineInfo[playerid][oSortingName], "\0", true ) != 0) return 1;
     return 0;
 }
 
@@ -99,67 +99,67 @@ stock ReloadSorting(playerid, dialogid)
 stock DialogMenuSorting(playerid)
 {
 	new line[90],lines[360];
-    format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РЎРѕСЂС‚РёСЂРѕРІРєР°\t{cccccc}Р—РЅР°С‡РµРЅРёРµ"), strcat(lines,line);
 
-    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}ID:\t{ff9000}Все"), strcat(lines,line);
+    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}ID:\t{ff9000}Р’СЃРµ"), strcat(lines,line);
 	else format(line,sizeof(line),"\n{cccccc}ID:\t{99ff66}%d", OnlineInfo[playerid][oSorting][1]), strcat(lines,line);
 
-	if(!strcmp(OnlineInfo[playerid][oSortingName],"0",true)) format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}Все"), strcat(lines,line);
-	else format(line,sizeof(line),"\n{cccccc}Название:\t{ff9000}%s", OnlineInfo[playerid][oSortingName]), strcat(lines,line);
+	if(!strcmp(OnlineInfo[playerid][oSortingName],"\0",true)) format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ:\t{ff9000}Р’СЃРµ"), strcat(lines,line);
+	else format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ:\t{ff9000}%s", OnlineInfo[playerid][oSortingName]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РЎР±СЂРѕСЃРёС‚СЊ Р¤РёР»СЊС‚СЂС‹\t"), strcat(lines,line);
 
-    ShowDialog(playerid,982,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр",lines,"Выбрать","Назад");
+    ShowDialog(playerid,982,DIALOG_STYLE_TABLIST_HEADERS,"Р¤РёР»СЊС‚СЂ",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
     return 1;
 }
 
 stock TradeSorting(playerid)
 {
     new line[100],lines[600];
-    format(line,sizeof(line),"{cccccc}Сортировка\t{cccccc}Значение"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РЎРѕСЂС‚РёСЂРѕРІРєР°\t{cccccc}Р—РЅР°С‡РµРЅРёРµ"), strcat(lines,line);
 
-    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ff9000}Все трейды"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 1) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{FFCC00}Продажа Gold"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 2) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{99ff66}Покупка Gold"), strcat(lines,line);
-    else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}Тип трейдов:\t{ffffff}Мои трейды"), strcat(lines,line);
+    if(OnlineInfo[playerid][oSorting][1] == 0) format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґРѕРІ:\t{ff9000}Р’СЃРµ С‚СЂРµР№РґС‹"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 1) format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґРѕРІ:\t{FFCC00}РџСЂРѕРґР°Р¶Р° Gold"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 2) format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґРѕРІ:\t{99ff66}РџРѕРєСѓРїРєР° Gold"), strcat(lines,line);
+    else if(OnlineInfo[playerid][oSorting][1] == 3) format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґРѕРІ:\t{ffffff}РњРѕРё С‚СЂРµР№РґС‹"), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Количество:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс:\t{ffcc00}От %dG - До %dG", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ:\t{ffcc00}РћС‚ %dG - Р”Рѕ %dG", OnlineInfo[playerid][oSorting][2], OnlineInfo[playerid][oSorting][3]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљСѓСЂСЃ:\t{ffcc00}РћС‚ %dG - Р”Рѕ %dG", OnlineInfo[playerid][oSorting][4], OnlineInfo[playerid][oSorting][5]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{cccccc}Сбросить Фильтры\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РЎР±СЂРѕСЃРёС‚СЊ Р¤РёР»СЊС‚СЂС‹\t"), strcat(lines,line);
 
-    ShowDialog(playerid,1386,DIALOG_STYLE_TABLIST_HEADERS,"Фильтр Сделок",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1386,DIALOG_STYLE_TABLIST_HEADERS,"Р¤РёР»СЊС‚СЂ РЎРґРµР»РѕРє",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
     return 1;
 }
 
 stock TradeList(playerid, page)
 {
-    Login[2][playerid] = 1; // Блокируем кнопки ноутбука
+    Login[2][playerid] = 1; // Р‘Р»РѕРєРёСЂСѓРµРј РєРЅРѕРїРєРё РЅРѕСѓС‚Р±СѓРєР°
 
     new max_line = 50, yes_next;
     new line[214],lines[4096];
 
-    DP[0][playerid] = 0; // Строки на текущей странице
+    DP[0][playerid] = 0; // РЎС‚СЂРѕРєРё РЅР° С‚РµРєСѓС‰РµР№ СЃС‚СЂР°РЅРёС†Рµ
     if(page == 0)
     {
         if(OnlineInfo[playerid][oSorting][0] > 0 && OnlineInfo[playerid][oSorting][0] != 1379) ClearSorting(playerid);
         OnlineInfo[playerid][oSorting][0] = 1379;
 
-        DP[1][playerid] = 0; // Страница
-        DP[5][playerid] = 0; // Последний trade id
+        DP[1][playerid] = 0; // РЎС‚СЂР°РЅРёС†Р°
+        DP[5][playerid] = 0; // РџРѕСЃР»РµРґРЅРёР№ trade id
     }
 
     new minlist = 0;
     if(page > 0) minlist = page * max_line;
-    if(minlist >= MAX_TRADECRYPT) DP[1][playerid] = 0, minlist = 0, page = 0; // Сбрасываем страницы, если последний tradeid максимальный или больше
+    if(minlist >= MAX_TRADECRYPT) DP[1][playerid] = 0, minlist = 0, page = 0; // РЎР±СЂР°СЃС‹РІР°РµРј СЃС‚СЂР°РЅРёС†С‹, РµСЃР»Рё РїРѕСЃР»РµРґРЅРёР№ tradeid РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РёР»Рё Р±РѕР»СЊС€Рµ
 
-    format(line,sizeof(line),"{cccccc}Трейд\t{cccccc}Количество\t{99ff66}Стоимость\t{FF6347}Курс 1G"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РўСЂРµР№Рґ\t{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ\t{99ff66}РЎС‚РѕРёРјРѕСЃС‚СЊ\t{FF6347}РљСѓСЂСЃ 1G"), strcat(lines,line);
     if(page == 0)
     {
-        format(line,sizeof(line),"\n{ff9000}Создать Трейд\t\t\t"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}РЎРѕР·РґР°С‚СЊ РўСЂРµР№Рґ\t\t\t"), strcat(lines,line);
 
-        if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{cccccc}Фильтр {99ff66}[Активен]\t\t\t"), strcat(lines,line);
-        else format(line,sizeof(line),"\n{cccccc}Фильтр\t\t\t"), strcat(lines,line);
+        if(IsActiveSorting(playerid)) format(line,sizeof(line),"\n{cccccc}Р¤РёР»СЊС‚СЂ {99ff66}[РђРєС‚РёРІРµРЅ]\t\t\t"), strcat(lines,line);
+        else format(line,sizeof(line),"\n{cccccc}Р¤РёР»СЊС‚СЂ\t\t\t"), strcat(lines,line);
     }
 
     for(new d = minlist; d < MAX_TRADECRYPT; d++)
@@ -167,10 +167,10 @@ stock TradeList(playerid, page)
         if(TradeCrypt[d][tcVlad] == 0) continue;
         if(CheckSortingLineTrade(playerid, d)) continue;
 
-        if(OnlineInfo[playerid][oSorting][1] == 0 // Отображаем все трейды
-            || OnlineInfo[playerid][oSorting][1] == 1 && TradeCrypt[d][tcActive] == 0 // Отображаем только продажу голды
-            || OnlineInfo[playerid][oSorting][1] == 2 && TradeCrypt[d][tcActive] == 1 // Отображаем только покупку голды
-            || OnlineInfo[playerid][oSorting][1] == 3 && TradeCrypt[d][tcVlad] == PlayerInfo[playerid][pID]) // Отображаем только мои трейды
+        if(OnlineInfo[playerid][oSorting][1] == 0 // РћС‚РѕР±СЂР°Р¶Р°РµРј РІСЃРµ С‚СЂРµР№РґС‹
+            || OnlineInfo[playerid][oSorting][1] == 1 && TradeCrypt[d][tcActive] == 0 // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РїСЂРѕРґР°Р¶Сѓ РіРѕР»РґС‹
+            || OnlineInfo[playerid][oSorting][1] == 2 && TradeCrypt[d][tcActive] == 1 // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РїРѕРєСѓРїРєСѓ РіРѕР»РґС‹
+            || OnlineInfo[playerid][oSorting][1] == 3 && TradeCrypt[d][tcVlad] == PlayerInfo[playerid][pID]) // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РѕР»СЊРєРѕ РјРѕРё С‚СЂРµР№РґС‹
         {
             format(line,sizeof(line),"%s", ShowLineTrade(playerid, d)), strcat(lines,line);
         }
@@ -183,20 +183,20 @@ stock TradeList(playerid, page)
     }
     if(yes_next == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
     new header[60];
-    format(header,sizeof(header),"Биржевые Сделки [ Страница %d ]", page + 1);
-    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+    format(header,sizeof(header),"Р‘РёСЂР¶РµРІС‹Рµ РЎРґРµР»РєРё [ РЎС‚СЂР°РЅРёС†Р° %d ]", page + 1);
+    ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
 stock CheckSortingLineTrade(playerid, d)
 {
-    // Сортировка по количеству
-    if(OnlineInfo[playerid][oSorting][2] > 0 && TradeCrypt[d][tcCount] < OnlineInfo[playerid][oSorting][2]) return 1; // От Если число меньше - пропускаем
-    if(OnlineInfo[playerid][oSorting][3] > 0 && TradeCrypt[d][tcCount] > OnlineInfo[playerid][oSorting][3]) return 1; // До Если число больше - пропускаем
+    // РЎРѕСЂС‚РёСЂРѕРІРєР° РїРѕ РєРѕР»РёС‡РµСЃС‚РІСѓ
+    if(OnlineInfo[playerid][oSorting][2] > 0 && TradeCrypt[d][tcCount] < OnlineInfo[playerid][oSorting][2]) return 1; // РћС‚ Р•СЃР»Рё С‡РёСЃР»Рѕ РјРµРЅСЊС€Рµ - РїСЂРѕРїСѓСЃРєР°РµРј
+    if(OnlineInfo[playerid][oSorting][3] > 0 && TradeCrypt[d][tcCount] > OnlineInfo[playerid][oSorting][3]) return 1; // Р”Рѕ Р•СЃР»Рё С‡РёСЃР»Рѕ Р±РѕР»СЊС€Рµ - РїСЂРѕРїСѓСЃРєР°РµРј
 
-    // Сортировка по курсу
-    if(OnlineInfo[playerid][oSorting][4] > 0 && TradeCrypt[d][tcCourse] < OnlineInfo[playerid][oSorting][4]) return 1; // От Если число меньше - пропускаем
-    if(OnlineInfo[playerid][oSorting][5] > 0 && TradeCrypt[d][tcCourse] > OnlineInfo[playerid][oSorting][5]) return 1; // До Если число больше - пропускаем
+    // РЎРѕСЂС‚РёСЂРѕРІРєР° РїРѕ РєСѓСЂСЃСѓ
+    if(OnlineInfo[playerid][oSorting][4] > 0 && TradeCrypt[d][tcCourse] < OnlineInfo[playerid][oSorting][4]) return 1; // РћС‚ Р•СЃР»Рё С‡РёСЃР»Рѕ РјРµРЅСЊС€Рµ - РїСЂРѕРїСѓСЃРєР°РµРј
+    if(OnlineInfo[playerid][oSorting][5] > 0 && TradeCrypt[d][tcCourse] > OnlineInfo[playerid][oSorting][5]) return 1; // Р”Рѕ Р•СЃР»Рё С‡РёСЃР»Рѕ Р±РѕР»СЊС€Рµ - РїСЂРѕРїСѓСЃРєР°РµРј
     return 0;
 }
 
@@ -204,17 +204,17 @@ stock ShowLineTrade(playerid, d)
 {
     new line[214];
 
-    // Подсчитываем строки
+    // РџРѕРґСЃС‡РёС‚С‹РІР°РµРј СЃС‚СЂРѕРєРё
     List[DP[0][playerid]][playerid] = d;
     DP[0][playerid] ++;
 
-    if(TradeCrypt[d][tcActive] == 0) // Продаёт Голду
+    if(TradeCrypt[d][tcActive] == 0) // РџСЂРѕРґР°С‘С‚ Р“РѕР»РґСѓ
     {
-        format(line,sizeof(line),"\n{cccccc}%d. {FFCC00}Продажа\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
+        format(line,sizeof(line),"\n{cccccc}%d. {FFCC00}РџСЂРѕРґР°Р¶Р°\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
     }
-    else // Покупает голду
+    else // РџРѕРєСѓРїР°РµС‚ РіРѕР»РґСѓ
     {
-        format(line,sizeof(line),"\n{cccccc}%d. {99ff66}Покупка\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
+        format(line,sizeof(line),"\n{cccccc}%d. {99ff66}РџРѕРєСѓРїРєР°\t{FFCC00}%dG\t{99ff66}%d$\t{FF6347}%d$", d+1, TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], TradeCrypt[d][tcCourse]);
     }
     return line;
 }
@@ -234,18 +234,18 @@ stock ShowDialogCreateTradeGold(playerid, create_page)
     {
         if(TradeCrypt[playerid][tcStatus] == 0) 
         {
-            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"Создание Трейда","{cccccc}Чтобы {ffcc00}продать {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
+            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"РЎРѕР·РґР°РЅРёРµ РўСЂРµР№РґР°","{cccccc}Р§С‚РѕР±С‹ {ffcc00}РїСЂРѕРґР°С‚СЊ {cccccc}Gold РІРІРµРґРёС‚Рµ РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\n{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10.000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
         }
         else 
         {
-            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"Создание Трейда","{cccccc}Чтобы {99ff66}купить {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
+            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"РЎРѕР·РґР°РЅРёРµ РўСЂРµР№РґР°","{cccccc}Р§С‚РѕР±С‹ {99ff66}РєСѓРїРёС‚СЊ {cccccc}Gold РІРІРµРґРёС‚Рµ РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\n{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10.000","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
         }
     }
     else if(create_page == 1)
     {
         new string[140];
-        format(string,sizeof(string),"{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше %d$", MAX_GOLD_COURSE);
-        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда",string,"Принять","Отмена");
+        format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РєСѓСЂСЃ Р·Р° 1 Gold\nРў.Рµ. СЃРєРѕР»СЊРєРѕ Р±СѓРґРµС‚ СЃС‚РѕРёС‚ 1 Gold РІ РІР°С€РµР№ Р·Р°СЏРІРєРµ\n\n{FF6347}РќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ %d$", MAX_GOLD_COURSE);
+        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"РЎРѕР·РґР°РЅРёРµ РўСЂРµР№РґР°",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
     }
     return 1;
 }
@@ -253,7 +253,7 @@ stock ShowDialogCreateTradeGold(playerid, create_page)
 stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext[])
 {
     if(dialogid == 1396) TradeList(playerid, 0);
-    else if(dialogid == 1386) // Настройки фильтра
+    else if(dialogid == 1386) // РќР°СЃС‚СЂРѕР№РєРё С„РёР»СЊС‚СЂР°
 	{
         if(response)
         {
@@ -268,16 +268,16 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(listitem == 1)
             {
                 DP[0][playerid] = 0;
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок","{cccccc}Введите диапазон для отображения сделок по {ff9000}Количеству Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше 100.000$ ]\n{ff9000}Пример: 10 100","Принять","Отмена");
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Р¤РёР»СЊС‚СЂ РЎРґРµР»РѕРє","{cccccc}Р’РІРµРґРёС‚Рµ РґРёР°РїР°Р·РѕРЅ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРґРµР»РѕРє РїРѕ {ff9000}РљРѕР»РёС‡РµСЃС‚РІСѓ Gold\n{cccccc}Р§РµСЂРµР· РїСЂРѕР±РµР» РјРёРЅРёРјР°Р»СЊРЅРѕРµ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ РќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000$ ]\n{ff9000}РџСЂРёРјРµСЂ: 10 100","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
             if(listitem == 2)
             {
                 DP[0][playerid] = 1;
                 new string[210];
-                format(string,sizeof(string),"{cccccc}Введите диапазон для отображения сделок по {ff9000}Курсу Gold\n{cccccc}Через пробел минимальное и максимальное количество [ Не меньше 1$ и не больше %d$ ]\n{ff9000}Пример: 10 100", MAX_GOLD_COURSE);
-				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Фильтр Сделок",string,"Принять","Отмена");
+                format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РґРёР°РїР°Р·РѕРЅ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ СЃРґРµР»РѕРє РїРѕ {ff9000}РљСѓСЂСЃСѓ Gold\n{cccccc}Р§РµСЂРµР· РїСЂРѕР±РµР» РјРёРЅРёРјР°Р»СЊРЅРѕРµ Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ [ РќРµ РјРµРЅСЊС€Рµ 1$ Рё РЅРµ Р±РѕР»СЊС€Рµ %d$ ]\n{ff9000}РџСЂРёРјРµСЂ: 10 100", MAX_GOLD_COURSE);
+				ShowDialog(playerid,1387,DIALOG_STYLE_INPUT,"Р¤РёР»СЊС‚СЂ РЎРґРµР»РѕРє",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
-            if(listitem == 3) // Сбросить Фильтр
+            if(listitem == 3) // РЎР±СЂРѕСЃРёС‚СЊ Р¤РёР»СЊС‚СЂ
             {
                 ReloadSorting(playerid, 1379);
                 TradeSorting(playerid);
@@ -285,7 +285,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         }
         else TradeList(playerid, 0);
     }
-    if(dialogid == 1387) // Фильтры диапазонов
+    if(dialogid == 1387) // Р¤РёР»СЊС‚СЂС‹ РґРёР°РїР°Р·РѕРЅРѕРІ
 	{
         if(response)
         {
@@ -294,12 +294,12 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(input < 1 || input > MAX_GOLD_COURSE
                 || input2 < 1 || input2 > MAX_GOLD_COURSE) return TradeSorting(playerid);
 
-            if(DP[0][playerid] == 0) // Количество
+            if(DP[0][playerid] == 0) // РљРѕР»РёС‡РµСЃС‚РІРѕ
             {
                 OnlineInfo[playerid][oSorting][2] = input;
                 OnlineInfo[playerid][oSorting][3] = input2;
             }
-            else if(DP[0][playerid] == 1) // Курс
+            else if(DP[0][playerid] == 1) // РљСѓСЂСЃ
             {
                 OnlineInfo[playerid][oSorting][4] = input;
                 OnlineInfo[playerid][oSorting][5] = input2;
@@ -309,51 +309,51 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         }
         else TradeSorting(playerid);
     }
-	else if(dialogid == 1379) // вывод меню
+	else if(dialogid == 1379) // РІС‹РІРѕРґ РјРµРЅСЋ
 	{
         if(response)
         {
-            if(DP[1][playerid] == 0) // 1 Страница
+            if(DP[1][playerid] == 0) // 1 РЎС‚СЂР°РЅРёС†Р°
             {
-                if(listitem == 0) // Создать Трейд
+                if(listitem == 0) // РЎРѕР·РґР°С‚СЊ РўСЂРµР№Рґ
                 {
-                    if(AfloodCrypto[playerid] > gettime()) return ErrorText(playerid, "{FF6347}Для повторного создания трейда подождите 20 секунд"), TradeList(playerid, 0);
+                    if(AfloodCrypto[playerid] > gettime()) return ErrorText(playerid, "{FF6347}Р”Р»СЏ РїРѕРІС‚РѕСЂРЅРѕРіРѕ СЃРѕР·РґР°РЅРёСЏ С‚СЂРµР№РґР° РїРѕРґРѕР¶РґРёС‚Рµ 20 СЃРµРєСѓРЅРґ"), TradeList(playerid, 0);
                     MyTradeSetting(playerid);
                 }
-                else if(listitem == 1) // Фильтры
+                else if(listitem == 1) // Р¤РёР»СЊС‚СЂС‹
                 {
                     TradeSorting(playerid);
                 }
 
-                if(DP[0][playerid] > 0) // Есть строки на странице
+                if(DP[0][playerid] > 0) // Р•СЃС‚СЊ СЃС‚СЂРѕРєРё РЅР° СЃС‚СЂР°РЅРёС†Рµ
                 {
-                    if(listitem >= 2 && listitem <= DP[0][playerid] + 1) // Отображаемые List
+                    if(listitem >= 2 && listitem <= DP[0][playerid] + 1) // РћС‚РѕР±СЂР°Р¶Р°РµРјС‹Рµ List
                     {
                         new listtrade = List[listitem-2][playerid];
                         DP[3][playerid] = listtrade;
                         if(TradeCrypt[listtrade][tcVlad] == PlayerInfo[playerid][pID]) inserttodelete(playerid,listtrade);
                         else inserttobuy(playerid, listtrade);
                     }
-                    else if(listitem == DP[0][playerid] + 2) DP[1][playerid] += 1, TradeList(playerid, DP[1][playerid]); // Следующая страница
+                    else if(listitem == DP[0][playerid] + 2) DP[1][playerid] += 1, TradeList(playerid, DP[1][playerid]); // РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°
                 }
             }
-            else // Следующие страницы
+            else // РЎР»РµРґСѓСЋС‰РёРµ СЃС‚СЂР°РЅРёС†С‹
             {
-                if(DP[0][playerid] > 0) // Есть строки на странице
+                if(DP[0][playerid] > 0) // Р•СЃС‚СЊ СЃС‚СЂРѕРєРё РЅР° СЃС‚СЂР°РЅРёС†Рµ
                 {
-                    if(listitem >= 0 && listitem <= DP[0][playerid]) // Отображаемые List
+                    if(listitem >= 0 && listitem <= DP[0][playerid]) // РћС‚РѕР±СЂР°Р¶Р°РµРјС‹Рµ List
                     {
                         new listtrade = List[listitem][playerid];
                         DP[3][playerid] = listtrade;
                         if(TradeCrypt[listtrade][tcVlad] == PlayerInfo[playerid][pID]) inserttodelete(playerid,listtrade);
                         else inserttobuy(playerid, listtrade);
                     }
-                    else if(listitem == DP[0][playerid] + 1) DP[1][playerid] += 1, TradeList(playerid, DP[1][playerid]); // Следующая страница
+                    else if(listitem == DP[0][playerid] + 1) DP[1][playerid] += 1, TradeList(playerid, DP[1][playerid]); // РЎР»РµРґСѓСЋС‰Р°СЏ СЃС‚СЂР°РЅРёС†Р°
                 }
-                else TradeList(playerid, 0); // Нет строк, открываем первую
+                else TradeList(playerid, 0); // РќРµС‚ СЃС‚СЂРѕРє, РѕС‚РєСЂС‹РІР°РµРј РїРµСЂРІСѓСЋ
             }
         }
-        else Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
+        else Login[2][playerid] = 0; // РЎРЅРёРјР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ РєРЅРѕРїРѕРє РЅРѕСѓС‚Р±СѓРєР°
     } 
     else if (dialogid == 1378) // 
     {
@@ -377,9 +377,9 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             new input = strval(inputtext);
             if(sscanf(inputtext, "i", input)) return MyTradeSetting(playerid), PlayerPlaySound(playerid,4203,0,0,0);
             if(input < 1 || input > 10000) return ShowDialogCreateTradeGold(playerid, 0), PlayerPlaySound(playerid,4203,0,0,0);
-            if(TradeCrypt[playerid][tcStatus] == 0) // Продаю золото
+            if(TradeCrypt[playerid][tcStatus] == 0) // РџСЂРѕРґР°СЋ Р·РѕР»РѕС‚Рѕ
             {
-                if(input > PlayerInfo[playerid][pDonateMoney]) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), ShowDialogCreateTradeGold(playerid, 0);
+                if(input > PlayerInfo[playerid][pDonateMoney]) return ErrorText(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р°"), ShowDialogCreateTradeGold(playerid, 0);
             }
             DP[4][playerid] = input;
             ShowDialogCreateTradeGold(playerid, 1);
@@ -395,20 +395,20 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if(input < 1 || input > MAX_GOLD_COURSE) return ShowDialogCreateTradeGold(playerid, 1), PlayerPlaySound(playerid,4203,0,0,0);
 
             new donate = DP[4][playerid];
-            if(IsALimitTradePlayer(playerid) >= 5) return ErrorText(playerid, "{FF6347}Вы можете создать только 5 трейдов"), ShowDialogCreateTradeGold(playerid, 1);
+            if(IsALimitTradePlayer(playerid) >= 5) return ErrorText(playerid, "{FF6347}Р’С‹ РјРѕР¶РµС‚Рµ СЃРѕР·РґР°С‚СЊ С‚РѕР»СЊРєРѕ 5 С‚СЂРµР№РґРѕРІ"), ShowDialogCreateTradeGold(playerid, 1);
             
             new id = GetFreeSlotTrade();
-            if(id == -1) return ErrorText(playerid, "{FF6347}Нет свободных слотов для создания трейда\n\n{cccccc}Обратитесь к администрации /report"),  MyTradeSetting(playerid);
-            if(TradeCrypt[playerid][tcStatus] == 1) // Купить золото
+            if(id == -1) return ErrorText(playerid, "{FF6347}РќРµС‚ СЃРІРѕР±РѕРґРЅС‹С… СЃР»РѕС‚РѕРІ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ С‚СЂРµР№РґР°\n\n{cccccc}РћР±СЂР°С‚РёС‚РµСЃСЊ Рє Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё /report"),  MyTradeSetting(playerid);
+            if(TradeCrypt[playerid][tcStatus] == 1) // РљСѓРїРёС‚СЊ Р·РѕР»РѕС‚Рѕ
             {
-                if(input*donate > PlayerInfo[playerid][pAccount]) return ErrorText(playerid, "{FF6347}На банковском счету недостаточно средств"), ShowDialogCreateTradeGold(playerid, 1);
+                if(input*donate > PlayerInfo[playerid][pAccount]) return ErrorText(playerid, "{FF6347}РќР° Р±Р°РЅРєРѕРІСЃРєРѕРј СЃС‡РµС‚Сѓ РЅРµРґРѕСЃС‚Р°С‚РѕС‡РЅРѕ СЃСЂРµРґСЃС‚РІ"), ShowDialogCreateTradeGold(playerid, 1);
                 PlayerInfo[playerid][pAccount] -= input*donate;
                 TradeCrypt[id][tcActive] = 1;
                 mysql_save(playerid, 1);
             }
-            else if(TradeCrypt[playerid][tcStatus] == 0) // Продать золото
+            else if(TradeCrypt[playerid][tcStatus] == 0) // РџСЂРѕРґР°С‚СЊ Р·РѕР»РѕС‚Рѕ
             {
-                if(donate > PlayerInfo[playerid][pDonateMoney]) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), MyTradeSetting(playerid);
+                if(donate > PlayerInfo[playerid][pDonateMoney]) return ErrorText(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р°"), MyTradeSetting(playerid);
                 PlayerInfo[playerid][pDonateMoney] -= donate;
                 TradeCrypt[id][tcActive] = 0;
                 mysql_save(playerid, 4);
@@ -429,32 +429,32 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             PlayerPlaySound(playerid,6401,0,0,0);
 
             new line[130],lines[1400];
-            format(line,sizeof(line),"{99ff66}Трейд Создан!"), strcat(lines,line);
+            format(line,sizeof(line),"{99ff66}РўСЂРµР№Рґ РЎРѕР·РґР°РЅ!"), strcat(lines,line);
 
-            format(line,sizeof(line),"\n\n{cccccc}Номер трейда: {ff9000}%d", id + 1), strcat(lines,line);
-            if(TradeCrypt[id][tcActive] == 0) format(line,sizeof(line),"\n{cccccc}Тип трейда: {ffcc00}Продажа Gold"), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}Тип трейда: {99ff66}Покупка Gold"), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}Количество: {ffcc00}%d", TradeCrypt[id][tcCount]), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}Курс: {FF6347}1G = %d$", TradeCrypt[id][tcCourse]), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}Стоимость: {99ff66}%d$", TradeCrypt[id][tcCourse] * TradeCrypt[id][tcCount]), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{cccccc}РќРѕРјРµСЂ С‚СЂРµР№РґР°: {ff9000}%d", id + 1), strcat(lines,line);
+            if(TradeCrypt[id][tcActive] == 0) format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґР°: {ffcc00}РџСЂРѕРґР°Р¶Р° Gold"), strcat(lines,line);
+            else format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґР°: {99ff66}РџРѕРєСѓРїРєР° Gold"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ: {ffcc00}%d", TradeCrypt[id][tcCount]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}РљСѓСЂСЃ: {FF6347}1G = %d$", TradeCrypt[id][tcCourse]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$", TradeCrypt[id][tcCourse] * TradeCrypt[id][tcCount]), strcat(lines,line);
 
             if(TradeCrypt[id][tcActive] == 0)
             {
-                format(line,sizeof(line),"\n\n{666666}- Золото списано с вашего аккаунта для успешного заключения сделки"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{666666}- Р—РѕР»РѕС‚Рѕ СЃРїРёСЃР°РЅРѕ СЃ РІР°С€РµРіРѕ Р°РєРєР°СѓРЅС‚Р° РґР»СЏ СѓСЃРїРµС€РЅРѕРіРѕ Р·Р°РєР»СЋС‡РµРЅРёСЏ СЃРґРµР»РєРё"), strcat(lines,line);
             }
             else
             {
-                format(line,sizeof(line),"\n\n{666666}- Деньги списаны с вашего аккаунта для успешного заключения сделки"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{666666}- Р”РµРЅСЊРіРё СЃРїРёСЃР°РЅС‹ СЃ РІР°С€РµРіРѕ Р°РєРєР°СѓРЅС‚Р° РґР»СЏ СѓСЃРїРµС€РЅРѕРіРѕ Р·Р°РєР»СЋС‡РµРЅРёСЏ СЃРґРµР»РєРё"), strcat(lines,line);
             }
-            format(line,sizeof(line),"\n{666666}- Вы можете отменить трейд в любой момент и вернуть свои средства"), strcat(lines,line);
-            format(line,sizeof(line),"\n{666666}- После успешной сделки вы получите уведомление"), strcat(lines,line);
-            format(line,sizeof(line),"\n{666666}- Если сделка не состоится в течении 7 дней, трейд будет отменён и вам вернутся средства"), strcat(lines,line);
+            format(line,sizeof(line),"\n{666666}- Р’С‹ РјРѕР¶РµС‚Рµ РѕС‚РјРµРЅРёС‚СЊ С‚СЂРµР№Рґ РІ Р»СЋР±РѕР№ РјРѕРјРµРЅС‚ Рё РІРµСЂРЅСѓС‚СЊ СЃРІРѕРё СЃСЂРµРґСЃС‚РІР°"), strcat(lines,line);
+            format(line,sizeof(line),"\n{666666}- РџРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ СЃРґРµР»РєРё РІС‹ РїРѕР»СѓС‡РёС‚Рµ СѓРІРµРґРѕРјР»РµРЅРёРµ"), strcat(lines,line);
+            format(line,sizeof(line),"\n{666666}- Р•СЃР»Рё СЃРґРµР»РєР° РЅРµ СЃРѕСЃС‚РѕРёС‚СЃСЏ РІ С‚РµС‡РµРЅРёРё 7 РґРЅРµР№, С‚СЂРµР№Рґ Р±СѓРґРµС‚ РѕС‚РјРµРЅС‘РЅ Рё РІР°Рј РІРµСЂРЅСѓС‚СЃСЏ СЃСЂРµРґСЃС‚РІР°"), strcat(lines,line);
 
-			ShowDialog(playerid,1396,DIALOG_STYLE_MSGBOX, "Создание Трейда", lines, "OK", "");
+			ShowDialog(playerid,1396,DIALOG_STYLE_MSGBOX, "РЎРѕР·РґР°РЅРёРµ РўСЂРµР№РґР°", lines, "OK", "");
         }
         else MyTradeSetting(playerid);
     }
-    else if(dialogid == 1375) // Удаление заявки
+    else if(dialogid == 1375) // РЈРґР°Р»РµРЅРёРµ Р·Р°СЏРІРєРё
     {
         if(response)
 		{
@@ -462,14 +462,14 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             if (listitem >= 0 && listitem <= 3) return inserttodelete(playerid, id);
             else 
             {
-                if(TradeCrypt[id][tcVlad] != PlayerInfo[playerid][pID]) return ErrorText(playerid, "{FF6347}Ошибка! Нельзя удалить чужой трейд"), inserttodelete(playerid, id);
+                if(TradeCrypt[id][tcVlad] != PlayerInfo[playerid][pID]) return ErrorText(playerid, "{FF6347}РћС€РёР±РєР°! РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ С‡СѓР¶РѕР№ С‚СЂРµР№Рґ"), inserttodelete(playerid, id);
 
-                if(TradeCrypt[id][tcActive] == 0) // Продавал золото
+                if(TradeCrypt[id][tcActive] == 0) // РџСЂРѕРґР°РІР°Р» Р·РѕР»РѕС‚Рѕ
                 {
                     PlayerInfo[playerid][pDonateMoney] += TradeCrypt[id][tcCount];
                     mysql_save(playerid, 4);
                 }
-                else // Покупал золото
+                else // РџРѕРєСѓРїР°Р» Р·РѕР»РѕС‚Рѕ
                 {
                     PlayerInfo[playerid][pAccount] += TradeCrypt[id][tcCourse]*TradeCrypt[id][tcCount];
                     mysql_save(playerid, 1);
@@ -481,7 +481,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         }
         else TradeList(playerid, DP[1][playerid]);
     }
-    else if(dialogid == 1374) // Покупка по заявке
+    else if(dialogid == 1374) // РџРѕРєСѓРїРєР° РїРѕ Р·Р°СЏРІРєРµ
     {
         if(response)
 		{
@@ -496,20 +496,20 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         else TradeList(playerid, DP[1][playerid]);
     }
 
-    // Настройки фильтра в меню
+    // РќР°СЃС‚СЂРѕР№РєРё С„РёР»СЊС‚СЂР° РІ РјРµРЅСЋ
     else if(dialogid == 982)
 	{
         if(response)
         {
             if(listitem == 0)
             {
-				ShowDialog(playerid,980,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите ID","Принять","Отмена");
+				ShowDialog(playerid,980,DIALOG_STYLE_INPUT,"Р¤РёР»СЊС‚СЂ","{cccccc}Р’РІРµРґРёС‚Рµ ID","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
             if(listitem == 1)
             {
-                ShowDialog(playerid,972,DIALOG_STYLE_INPUT,"Фильтр","{cccccc}Введите название\nМожно неполное название\n1 - 30 символов","Принять","Отмена");
+                ShowDialog(playerid,972,DIALOG_STYLE_INPUT,"Р¤РёР»СЊС‚СЂ","{cccccc}Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ\nРњРѕР¶РЅРѕ РЅРµРїРѕР»РЅРѕРµ РЅР°Р·РІР°РЅРёРµ\n1 - 30 СЃРёРјРІРѕР»РѕРІ","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
-            if(listitem == 2) // Сбросить Фильтр
+            if(listitem == 2) // РЎР±СЂРѕСЃРёС‚СЊ Р¤РёР»СЊС‚СЂ
             {
 				ReloadSorting(playerid,  OnlineInfo[playerid][oDialogMenu][6]);
 				DialogMenuSorting(playerid);
@@ -517,30 +517,30 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         }
         else 
 		{
-			if(OnlineInfo[playerid][oDialogMenu][6] == 1075) skinprice(playerid, 0); // Возвращаем в меню настроек гос. цен
-			else if(OnlineInfo[playerid][oDialogMenu][6] == 1089) showDialogFittingRoomSkin(playerid, 0); // Возвращаем в меню примерочной
-			else if(OnlineInfo[playerid][oDialogMenu][6] == 1066) vehprice(playerid, 0); // Возвращаем в меню настроек гос. цен транспорта
+			if(OnlineInfo[playerid][oDialogMenu][6] == 1075) skinprice(playerid, 0); // Р’РѕР·РІСЂР°С‰Р°РµРј РІ РјРµРЅСЋ РЅР°СЃС‚СЂРѕРµРє РіРѕСЃ. С†РµРЅ
+			else if(OnlineInfo[playerid][oDialogMenu][6] == 1089) showDialogFittingRoomSkin(playerid, 0); // Р’РѕР·РІСЂР°С‰Р°РµРј РІ РјРµРЅСЋ РїСЂРёРјРµСЂРѕС‡РЅРѕР№
+			else if(OnlineInfo[playerid][oDialogMenu][6] == 1066) vehprice(playerid, 0); // Р’РѕР·РІСЂР°С‰Р°РµРј РІ РјРµРЅСЋ РЅР°СЃС‚СЂРѕРµРє РіРѕСЃ. С†РµРЅ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
 		}
 	}
-	else if(dialogid == 980) // Фильтр по id
+	else if(dialogid == 980) // Р¤РёР»СЊС‚СЂ РїРѕ id
 	{
         if(response)
         {
 			new input = strval(inputtext);
-			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}Не меньше 1 и не больше 10.000"), DialogMenuSorting(playerid);
+			if(input < 1 || input > 10000) return ErrorText(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10.000"), DialogMenuSorting(playerid);
 			OnlineInfo[playerid][oSorting][1] = input;
             PlayerPlaySound(playerid,6401,0,0,0);
             DialogMenuSorting(playerid);
         }
         else DialogMenuSorting(playerid);
     }
-	else if(dialogid == 972) // Фильтр по названию
+	else if(dialogid == 972) // Р¤РёР»СЊС‚СЂ РїРѕ РЅР°Р·РІР°РЅРёСЋ
 	{
         if(response)
         {
-			if(!strlen(inputtext)) return ErrorText(playerid, "{FF6347}Вы ничего не ввели"), DialogMenuSorting(playerid);
-			if(strlen(inputtext) < 1 || strlen(inputtext) > 30) return ErrorText(playerid, "{FF6347}1 - 30 символов"), DialogMenuSorting(playerid);
-           	if(checksimvol(inputtext)) return ErrorText(playerid, "{FF6347}Вы используете запрещённый символ"), DialogMenuSorting(playerid);
+			if(!strlen(inputtext)) return ErrorText(playerid, "{FF6347}Р’С‹ РЅРёС‡РµРіРѕ РЅРµ РІРІРµР»Рё"), DialogMenuSorting(playerid);
+			if(strlen(inputtext) < 1 || strlen(inputtext) > 30) return ErrorText(playerid, "{FF6347}1 - 30 СЃРёРјРІРѕР»РѕРІ"), DialogMenuSorting(playerid);
+           	if(checksimvol(inputtext)) return ErrorText(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ Р·Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР»"), DialogMenuSorting(playerid);
 
 			format(OnlineInfo[playerid][oSortingName], 64,"%s", inputtext);
             PlayerPlaySound(playerid,6401,0,0,0);
@@ -554,18 +554,18 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
 stock MyTradeSetting(playerid)
 {
     new line[130],lines[390];
-    format(line,sizeof(line),"{cccccc}Мой Счёт: {FFCC00}%dG \t{cccccc}Банковский Счет: {99ff66}%d$ {cccccc}[%s]", PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pAccount], get_k(PlayerInfo[playerid][pAccount])), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РњРѕР№ РЎС‡С‘С‚: {FFCC00}%dG \t{cccccc}Р‘Р°РЅРєРѕРІСЃРєРёР№ РЎС‡РµС‚: {99ff66}%d$ {cccccc}[%s]", PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pAccount], get_k(PlayerInfo[playerid][pAccount])), strcat(lines,line);
     if(TradeCrypt[playerid][tcStatus] == 0)
     {
-        format(line,sizeof(line),"\n{cccccc}Тип трейда: \t{ffcc00}Продажа Gold"), strcat(lines,line);
-        format(line,sizeof(line),"\n{ff9000}Создать трейд >>\t"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґР°: \t{ffcc00}РџСЂРѕРґР°Р¶Р° Gold"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}РЎРѕР·РґР°С‚СЊ С‚СЂРµР№Рґ >>\t"), strcat(lines,line);
     }
     else
     {
-        format(line,sizeof(line),"\n{cccccc}Тип трейда: \t{99ff66}Покупка Gold"), strcat(lines,line);
-        format(line,sizeof(line),"\n{ff9000}Создать трейд >>\t"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}РўРёРї С‚СЂРµР№РґР°: \t{99ff66}РџРѕРєСѓРїРєР° Gold"), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}РЎРѕР·РґР°С‚СЊ С‚СЂРµР№Рґ >>\t"), strcat(lines,line);
     }
-    ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,"Создание Трейда",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,"РЎРѕР·РґР°РЅРёРµ РўСЂРµР№РґР°",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
     return 1;
 }
 function OnPlayerTradeCrypto(id) {
@@ -600,48 +600,48 @@ stock GetFreeSlotTrade()
     return tradeid;
 }
 
-stock inserttodelete(playerid, id) // Удаление заказа
+stock inserttodelete(playerid, id) // РЈРґР°Р»РµРЅРёРµ Р·Р°РєР°Р·Р°
 {
     new line[100],lines[500];
 
-    if(TradeCrypt[id][tcActive] == 0) format(line,sizeof(line),"{cccccc}Тип трейда: \t{ffcc00}Продажа Gold"), strcat(lines,line);
-    else format(line,sizeof(line),"{cccccc}Тип трейда: \t{99ff66}Покупка Gold"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Количество: \t{FFCC00}%dG", TradeCrypt[id][tcCount]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс: \t{99ff66}1G = %d$", TradeCrypt[id][tcCourse]), strcat(lines,line);
+    if(TradeCrypt[id][tcActive] == 0) format(line,sizeof(line),"{cccccc}РўРёРї С‚СЂРµР№РґР°: \t{ffcc00}РџСЂРѕРґР°Р¶Р° Gold"), strcat(lines,line);
+    else format(line,sizeof(line),"{cccccc}РўРёРї С‚СЂРµР№РґР°: \t{99ff66}РџРѕРєСѓРїРєР° Gold"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ: \t{FFCC00}%dG", TradeCrypt[id][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљСѓСЂСЃ: \t{99ff66}1G = %d$", TradeCrypt[id][tcCourse]), strcat(lines,line);
 
     new tyear, tmonth, tday, thour, tminute, tsecond;
 	stamp2datetime(TradeCrypt[id][tcUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-    format(line,sizeof(line),"\n{cccccc}Трейд создан: \t%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РўСЂРµР№Рґ СЃРѕР·РґР°РЅ: \t%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{FF6347}Удалить трейд >>\t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}РЈРґР°Р»РёС‚СЊ С‚СЂРµР№Рґ >>\t "), strcat(lines,line);
     DP[3][playerid] = id;
-	ShowDialog(playerid,1375,DIALOG_STYLE_TABLIST,"Мой Трейд",lines,"Выбрать","Отмена");
+	ShowDialog(playerid,1375,DIALOG_STYLE_TABLIST,"РњРѕР№ РўСЂРµР№Рґ",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 
-stock inserttobuy(playerid, b) // Покупка по заявки
+stock inserttobuy(playerid, b) // РџРѕРєСѓРїРєР° РїРѕ Р·Р°СЏРІРєРё
 {
     new line[100],lines[600];
 
     if(TradeCrypt[b][tcActive] == 0) 
     {
-        format(line,sizeof(line),"{cccccc}%d. Тип трейда {ffcc00}Продажа Gold\t", b + 1), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Продавец: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%d. РўРёРї С‚СЂРµР№РґР° {ffcc00}РџСЂРѕРґР°Р¶Р° Gold\t", b + 1), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}РџСЂРѕРґР°РІРµС†: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
     }
     else
     {
-        format(line,sizeof(line),"{cccccc}%d. Тип трейда {99ff66}Покупка Gold\t", b + 1), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Покупатель: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%d. РўРёРї С‚СЂРµР№РґР° {99ff66}РџРѕРєСѓРїРєР° Gold\t", b + 1), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}РџРѕРєСѓРїР°С‚РµР»СЊ: \t{ffffff}%s", TradeCrypt[b][tcName]), strcat(lines,line);
     }
-    format(line,sizeof(line),"\n{cccccc}Количество: \t{ffcc00}%dG", TradeCrypt[b][tcCount]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Курс: \t{FF6347}1G = %d$", TradeCrypt[b][tcCourse]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Стоимость: \t{99ff66}%d$", TradeCrypt[b][tcCourse]*TradeCrypt[b][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ: \t{ffcc00}%dG", TradeCrypt[b][tcCount]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљСѓСЂСЃ: \t{FF6347}1G = %d$", TradeCrypt[b][tcCourse]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ: \t{99ff66}%d$", TradeCrypt[b][tcCourse]*TradeCrypt[b][tcCount]), strcat(lines,line);
 
-    if(TradeCrypt[b][tcActive] == 0) format(line,sizeof(line),"\n{ffcc00}Купить Gold по этому трейду >>\t"), strcat(lines,line);
-    else format(line,sizeof(line),"\n{99ff66}Продать Gold по этому трейду >>\t"), strcat(lines,line);
+    if(TradeCrypt[b][tcActive] == 0) format(line,sizeof(line),"\n{ffcc00}РљСѓРїРёС‚СЊ Gold РїРѕ СЌС‚РѕРјСѓ С‚СЂРµР№РґСѓ >>\t"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{99ff66}РџСЂРѕРґР°С‚СЊ Gold РїРѕ СЌС‚РѕРјСѓ С‚СЂРµР№РґСѓ >>\t"), strcat(lines,line);
 
     DP[3][playerid] = b;
-	ShowDialog(playerid,1374,DIALOG_STYLE_TABLIST_HEADERS,"Биржевые Сделки",lines,"Выбрать","Отмена");
+	ShowDialog(playerid,1374,DIALOG_STYLE_TABLIST_HEADERS,"Р‘РёСЂР¶РµРІС‹Рµ РЎРґРµР»РєРё",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 
@@ -665,9 +665,9 @@ stock savetradecrypto(idx)
 
 stock gotobuycrypto(playerid,id)
 {
-    if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}Упс.. вы не успели. Кто-то уже совершил сделку по этому трейду"), TradeList(playerid, 0);
+    if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}РЈРїСЃ.. РІС‹ РЅРµ СѓСЃРїРµР»Рё. РљС‚Рѕ-С‚Рѕ СѓР¶Рµ СЃРѕРІРµСЂС€РёР» СЃРґРµР»РєСѓ РїРѕ СЌС‚РѕРјСѓ С‚СЂРµР№РґСѓ"), TradeList(playerid, 0);
     new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
-    if(PlayerInfo[playerid][pDonateMoney] < TradeCrypt[id][tcCount]) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), inserttobuy(playerid, id);
+    if(PlayerInfo[playerid][pDonateMoney] < TradeCrypt[id][tcCount]) return ErrorText(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р°"), inserttobuy(playerid, id);
 
     new count = TradeCrypt[id][tcCount];
     new temp_name[24];
@@ -676,7 +676,7 @@ stock gotobuycrypto(playerid,id)
     new para = ReturnUserID(TradeCrypt[id][tcVlad]);
     if(IsPlayerConnected(para))
     {
-        if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Покупатель подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
+        if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}РџРѕРєСѓРїР°С‚РµР»СЊ РїРѕРґРєР»СЋС‡Р°РµС‚СЃСЏ Рє СЃРµСЂРІРµСЂСѓ.. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РґРѕР¶РґРёС‚РµСЃСЊ РєРѕРіРґР° РѕРЅ Р°РІС‚РѕСЂРёР·СѓРµС‚СЃСЏ"), inserttobuy(playerid, id);
         PlayerInfo[para][pDonateMoney] += TradeCrypt[id][tcCount];
         mysql_save(para, 4);
         deltradecrypto(id);
@@ -694,12 +694,12 @@ stock gotobuycrypto(playerid,id)
     PlayerPlaySound(playerid, 6401, 0,0,0);
 
     new string[100];
-    format(string,sizeof(string),"[ Мысли ]: Я продал%s %d Gold, за %d$", gender(playerid), count, price);
+    format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїСЂРѕРґР°Р»%s %d Gold, Р·Р° %d$", gender(playerid), count, price);
     SendClientMessage(playerid, COLOR_GREY, string);
-    format(string, sizeof(string),"{cccccc}Вы продали %d Gold %s за %d$",count, temp_name, price);
-    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
+    format(string, sizeof(string),"{cccccc}Р’С‹ РїСЂРѕРґР°Р»Рё %d Gold %s Р·Р° %d$",count, temp_name, price);
+    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Р‘РёСЂР¶РµРІС‹Рµ РЎРґРµР»РєРё", string, "РћРє", "");
 
-    Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
+    Login[2][playerid] = 0; // РЎРЅРёРјР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ РєРЅРѕРїРѕРє РЅРѕСѓС‚Р±СѓРєР°
 
     CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
 	return 1;
@@ -717,7 +717,7 @@ function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
         format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + price , userid);
         query_empty(pearsq, string);
 
-        format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        format(string, sizeof(string), "%s РїСЂРѕРґР°Р» РІР°Рј %d Gold Р·Р° %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);
@@ -727,9 +727,9 @@ function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
 
 stock gotosellcrypto(playerid,id)
 {
-    if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}Упс.. вы не успели. Кто-то уже совершил сделку по этому трейду"), TradeList(playerid, 0);
+    if (TradeCrypt[id][tcVlad] == 0) return ErrorText(playerid, "{FF6347}РЈРїСЃ.. РІС‹ РЅРµ СѓСЃРїРµР»Рё. РљС‚Рѕ-С‚Рѕ СѓР¶Рµ СЃРѕРІРµСЂС€РёР» СЃРґРµР»РєСѓ РїРѕ СЌС‚РѕРјСѓ С‚СЂРµР№РґСѓ"), TradeList(playerid, 0);
     new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
-    if(oGetPlayerMoney(playerid) < price) return ErrorText(playerid, "{FF6347}Вам не хватает денег"), inserttobuy(playerid, id);
+    if(oGetPlayerMoney(playerid) < price) return ErrorText(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі"), inserttobuy(playerid, id);
 
     new count = TradeCrypt[id][tcCount];
     new temp_name[24];
@@ -738,7 +738,7 @@ stock gotosellcrypto(playerid,id)
     new para = ReturnUserID(TradeCrypt[id][tcVlad]);
     if(IsPlayerConnected(para))
     {
-        if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Продавец подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
+        if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}РџСЂРѕРґР°РІРµС† РїРѕРґРєР»СЋС‡Р°РµС‚СЃСЏ Рє СЃРµСЂРІРµСЂСѓ.. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РґРѕР¶РґРёС‚РµСЃСЊ РєРѕРіРґР° РѕРЅ Р°РІС‚РѕСЂРёР·СѓРµС‚СЃСЏ"), inserttobuy(playerid, id);
         PlayerInfo[para][pAccount] += price;
         mysql_save(para, 1);
         deltradecrypto(id);
@@ -755,12 +755,12 @@ stock gotosellcrypto(playerid,id)
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
     new string[120];
-    format(string,sizeof(string),"[ Мысли ]: Я приобрел%s %d Gold, за %d$", gender(playerid), count, price);
+    format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїСЂРёРѕР±СЂРµР»%s %d Gold, Р·Р° %d$", gender(playerid), count, price);
     SendClientMessage(playerid, COLOR_GREY, string);
-    format(string, sizeof(string),"{cccccc}Вы купили %d Gold у %s за %d$",count,temp_name,price);
-    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
+    format(string, sizeof(string),"{cccccc}Р’С‹ РєСѓРїРёР»Рё %d Gold Сѓ %s Р·Р° %d$",count,temp_name,price);
+    ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Р‘РёСЂР¶РµРІС‹Рµ РЎРґРµР»РєРё", string, "РћРє", "");
 
-    Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
+    Login[2][playerid] = 0; // РЎРЅРёРјР°РµРј Р±Р»РѕРєРёСЂРѕРІРєСѓ РєРЅРѕРїРѕРє РЅРѕСѓС‚Р±СѓРєР°
 
     CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
 	return 1;
@@ -778,7 +778,7 @@ function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
         format(string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `user_id` = '%d'", moneyplayer + price , userid);
         query_empty(pearsq, string);
 
-        format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        format(string, sizeof(string), "%s РєСѓРїРёР» Сѓ РІР°СЃ %d Gold Р·Р° %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);
@@ -820,7 +820,7 @@ function Call_returncrypto(characterid, d)
     if(rows)
     {
         new string[120];
-        if(TradeCrypt[d][tcActive] == 0) // Продавал золото
+        if(TradeCrypt[d][tcActive] == 0) // РџСЂРѕРґР°РІР°Р» Р·РѕР»РѕС‚Рѕ
         {
             new donatemoneyplayer;
             cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
@@ -828,7 +828,7 @@ function Call_returncrypto(characterid, d)
             format(string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
             query_empty(pearsq, string);
         }
-        else // Покупал золото
+        else // РџРѕРєСѓРїР°Р» Р·РѕР»РѕС‚Рѕ
         {
             new moneyplayer;
             cache_get_value_name_int(0, "Account", moneyplayer);
@@ -837,10 +837,10 @@ function Call_returncrypto(characterid, d)
             query_empty(pearsq, string);
         }
 
-        format(string, sizeof(string), "Ваш Gold трейд № %d был удалён", d + 1);
+        format(string, sizeof(string), "Р’Р°С€ Gold С‚СЂРµР№Рґ в„– %d Р±С‹Р» СѓРґР°Р»С‘РЅ", d + 1);
         notify(0, "", characterid, TradeCrypt[d][tcName], string);
     }
-    deltradecrypto(d); // Удаляем трейд
+    deltradecrypto(d); // РЈРґР°Р»СЏРµРј С‚СЂРµР№Рґ
     return 1;
 }
 
@@ -851,19 +851,19 @@ stock CheckCancelCrypto(playerid, stat)
     {
         if(TradeCrypt[d][tcVlad] == PlayerInfo[playerid][pID])
         {
-            if(unix - TradeCrypt[d][tcUnix] >= 604800) // Трейд был создан больше 7 дней назад
+            if(unix - TradeCrypt[d][tcUnix] >= 604800) // РўСЂРµР№Рґ Р±С‹Р» СЃРѕР·РґР°РЅ Р±РѕР»СЊС€Рµ 7 РґРЅРµР№ РЅР°Р·Р°Рґ
             {
-                if(TradeCrypt[d][tcActive] == 0) // Продавал золото
+                if(TradeCrypt[d][tcActive] == 0) // РџСЂРѕРґР°РІР°Р» Р·РѕР»РѕС‚Рѕ
                 {
                     PlayerInfo[playerid][pDonateMoney] += TradeCrypt[d][tcCount];
                     mysql_save(playerid, 4);
                 }
-                else // Покупал золото
+                else // РџРѕРєСѓРїР°Р» Р·РѕР»РѕС‚Рѕ
                 {
                     PlayerInfo[playerid][pAccount] += TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount];
                     mysql_save(playerid, 1);
                 }
-                deltradecrypto(d); // Удаляем трейд
+                deltradecrypto(d); // РЈРґР°Р»СЏРµРј С‚СЂРµР№Рґ
                 quan ++;
             }
         }
@@ -872,7 +872,7 @@ stock CheckCancelCrypto(playerid, stat)
     if(quan > 0 && stat == 1)
     {
         new string[120];
-        format(string, sizeof(string), "{0088ff}У вас удалены неактивные трейды в количестве %d {ffcc66}[ N >> Ноутбук >> Голд Трейд ]", quan);
+        format(string, sizeof(string), "{0088ff}РЈ РІР°СЃ СѓРґР°Р»РµРЅС‹ РЅРµР°РєС‚РёРІРЅС‹Рµ С‚СЂРµР№РґС‹ РІ РєРѕР»РёС‡РµСЃС‚РІРµ %d {ffcc66}[ N >> РќРѕСѓС‚Р±СѓРє >> Р“РѕР»Рґ РўСЂРµР№Рґ ]", quan);
         SendClientMessage(playerid, COLOR_GREY, string);
     }
     return 1;
@@ -921,16 +921,16 @@ function LoadCryptoLog()
 CMD:cryptolog(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;      
-    mysql_tquery(pearsq_2, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Высчитываем курс
+    mysql_tquery(pearsq_2, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Р’С‹СЃС‡РёС‚С‹РІР°РµРј РєСѓСЂСЃ
     UpdateLabelBank();
     return 1;
 }
 
 CMD:goldturnover(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
+	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ РІС‹РїРѕР»РЅРёС‚СЊ СЌС‚Рѕ РґРµР№СЃС‚РІРёРµ");
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
-	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{cccccc}Поиск игроков...","*","");
+	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРёСЃРє Р·РѕР»РѕС‚Р° РЅР° Р°РєРєР°СѓРЅС‚Р°С…","{cccccc}РџРѕРёСЃРє РёРіСЂРѕРєРѕРІ...","*","");
 	mysql_tquery(pearsq, "SELECT DonateMoney, Ammo8 FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1'", "Call_turnovergold", "d", playerid);
 	return 1;
 }
@@ -950,7 +950,7 @@ function Call_turnovergold(playerid)
 		tclArifmetikAllGold += gold + goldchips;
 	}
     printf("[MODE]: AllGoldLog [%d Quan][%d ms]. Count = %d",rows,GetTickCount() - time,tclArifmetikAllGold);
-    if(playerid != -1) ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{66ff99}Загружено. Итоги уже на таблице в банке!","*","");
+    if(playerid != -1) ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}РџРѕРёСЃРє Р·РѕР»РѕС‚Р° РЅР° Р°РєРєР°СѓРЅС‚Р°С…","{66ff99}Р—Р°РіСЂСѓР¶РµРЅРѕ. РС‚РѕРіРё СѓР¶Рµ РЅР° С‚Р°Р±Р»РёС†Рµ РІ Р±Р°РЅРєРµ!","*","");
     UpdateLabelBank();
 	return 1;
 }
