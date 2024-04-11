@@ -64,9 +64,10 @@ function Call_HonorBoardName(playerid, const parama)
 {
 	new string[310];
 	new rows, datad1;
+	cache_get_row_count(rows);
 	if(rows)
 	{
-		cache_get_value_name_int(rows, "user_id", datad1);
+		cache_get_value_name_int(0, "user_id", datad1);
 		format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", datad1);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
 	}
@@ -89,7 +90,7 @@ function Call_frakHB(playerid, g)
 {
 	new rows, datad1[24], datad4, str[80],sctring[4096], tyear, tmonth, tday, thour, tminute, tsecond;
 	cache_get_row_count(rows);
-	if(rows == 0) return ErrorMessage(playerid,"{ff6347}Доска Почета пуста");
+	if(!rows) return ErrorMessage(playerid,"{ff6347}Доска Почета пуста");
 	for(new i = 0; i < rows; i++)
 	{
 	    cache_get_value_name_int(i, "playerid", List[i][playerid]);

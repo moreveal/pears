@@ -916,9 +916,10 @@ function Call_PunishmentsName(playerid, const parama)
 {
 	new string[310];
 	new rows, datad1;
+	cache_get_row_count(rows);
 	if(rows)
 	{
-		cache_get_value_name_int(rows, "user_id", datad1);
+		cache_get_value_name_int(0, "user_id", datad1);
 		format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", datad1);
 		mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	}
