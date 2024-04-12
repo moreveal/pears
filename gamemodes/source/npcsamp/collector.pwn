@@ -1,5 +1,5 @@
 
-#define MAX_HEALTH_COLLECTOR 100 // ХП транспорта инкассатора
+#define MAX_HEALTH_COLLECTOR 5000 // ХП транспорта инкассатора
 
 new collector_health = -1;
 new collector_city;

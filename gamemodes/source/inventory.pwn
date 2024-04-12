@@ -32,7 +32,7 @@ new fdrawName[][] = // Название Вещи
 	"Y‚‡…","€A„…‚A‡KA","„APEHOE M•CO","„APEHA• P‘ЂA","Џ…ЏAH","MO‡…ЂѓEH","YPAH","MEЏEOP…Џ","ЊA‡‡Aѓ……","‚E‡…… 3","PlayBoy",
 	"MEѓ KAPЏA","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","MYCOP","TPYЊ","Ђ…HT","ЊPE€EP‹AЏ…‹‘",
 	"‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O",
-	"‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","CEMEHA","KAPЏOЋKA","MOHЏ…PO‹KA","KAPЏA COKPO‹…Љ",
+	"‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","‡EKAPCЏ‹O","CEMEHA","PAѓ…OAKЏ…‹HA• KAPЏOЋKA","MOHЏ…PO‹KA","KAPЏA COKPO‹…Љ",
 	"ѓPE‹H•• ‹A3A","YPHA","C‡…ЏOK","CЏAЏY“ЏKA","ЂOKA‡ C KPO‹’”","KYXOHH‘† HO„","ЂOKA‡ C KPO‹’”","ЂAHAH","•Ђ‡OKO","AЊE‡’C…H",
 	"MO‡OKO","Џ‘K‹A","KAPЏOЋKA","ЏOMAЏ","YѓOЂPEH…E","Ђ‘Ќ’• KPO‹’","CEMEHA Џ‘K‹‘","CEMEHA_ЏOMAЏO‹","PACCAѓA","KOCЏ…",
 	"‹OѓKA","‹…HO","‹…CK…","KOH’•K","ЂP“Hѓ…","C…ѓP","C…ѓP","Њ…‹O","SPRUNK","KOЃE",
@@ -56,7 +56,7 @@ new fdrawNameEN[][] = // Название Вещи на Английском
 	"COALS","LIGHTER","FRIED MEAT","FRIED FISH","TITANIUM","MOLYBDENUM","URANUS","METEORITE","PALLADIUM","HELIUM 3","PLAYBOY",
 	"MEDICAL CARD","E-AMMO 20,8mm","E-AMMO 11,43mm","E-AMMO 5,45mm","E-AMMO 45mm","TRASH","CORPSE","BANDAGE","CONDOMS",
 	"MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE",
-	"MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","SEEDS","POTATO","TIRE IRON","TREASURE MAP",
+	"MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","MEDICINE","SEEDS","NUCLEAR POTATO","TIRE IRON","TREASURE MAP",
 	"ANCIENT VASE","URN","GOLD","STATUETTE","GLASS OF BLOOD","KITCHEN KNIFE","GLASS OF BLOOD","BANANA","APPLE","ORANGE",
 	"MILK","PUMPKIN","POTATO","TOMATO","FERTILIZER","BOVINE BLOOD","PUMPKIN SEEDS","TOMATO SEEDS","POTATO SEEDLINGS","DICE",
 	"VODKA","WINE","WHISKEY","COGNAC","BRANDY","APPLE CIDER","CHERRY CIDER","DRAFT BEER","SPRUNK","COFFEE",
@@ -80,7 +80,7 @@ new friskName[][] = // Название Вещи
 	"Угли","Зажигалка","Жареное Мясо","Жареная Рыба","Титан","Молибден","Уран","Метеорит","Палладий","Гелий 3","PlayBoy", // 52 - 62
 	"Мед.Карта","E-Ammo 20,8mm","E-Ammo 11,43mm","E-Ammo 5,45mm","E-Ammo 45mm","Мусор","Труп","Бинт","Презервативы", // 63 - 71
 	"Хламидиуберин","Гоногон","Сифистоп","Радиануклин","Перитонин","Грибкоубивин","Дерматитогон","Акнестопин","Порошкозаменин","Никотиновый пластырь", // 72 - 81
-	"Бухлозаменин","Гастритоуберин","Язвазаживин","Колдрекс","Терафлю","Анвимакс","Семена травы","Картошка","Монтировка", "Карта сокровищ", // 82 - 91
+	"Бухлозаменин","Гастритоуберин","Язвазаживин","Колдрекс","Терафлю","Анвимакс","Семена травы","Радиоактивная Картошка","Монтировка", "Карта сокровищ", // 82 - 91
 	"Древняя Ваза","Урна с прахом","Слиток золота","Статуэтка","Бокал с кровью","Кухонный Нож","Бокал с кровью","Банан","Яблоко","Апельсин", // 92 - 101
 	"Молоко","Тыква","Картошка","Томат","Удобрение","Бычья Кровь","Семена Тыквы","Семена Томатов","Картошка Рассада","Кости", // 102 - 111
 	"Водка","Вино","Виски","Коньяк","Брэнди","Сидр Яблочный","Сидр Вишневый","Пиво Разливное","Sprunk","Кофе", // 112 - 121
@@ -129,7 +129,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (
 
 new friskDefault[] = // Гос. стоимости предметов
 {
-    -1,60,20000,-1,3000,1000,500,2000,3000,700,-1, // 10
+    -1,60,20000,-1,3000,1000,500,2000,3000,-1,-1, // 10
     -1,-1,300,100,-1,150,15000,100,200,200,3500, // 21
     700,200,1100,-1,15000,60,35,20,50,3000,700, // 32
     -1,-1,-1,-1,550,250,1500,2300,150,75000,3000, // 43
@@ -143,8 +143,8 @@ new friskDefault[] = // Гос. стоимости предметов
 	450,690,1300,3900,7900,-1,-1,-1,80,250, // 121
 	200,150,80,190,190,250,1200,1350,1450,1490, // 131
 	1490,1800,850,950,1030,700,750,80,500,130, // 141
-	15,500,1500,1500,1500,1500,1500,1500,1500,1500, // 151
-	1500,1500,1500,1500,15000,350000,60000,26000,500000,30000, // 161
+	15,500,-1,-1,-1,-1,-1,-1,-1,-1, // 151
+	-1,-1,-1,-1,15000,350000,60000,26000,500000,30000, // 161
 	150000,30000,1,1200,600,80,700,700,800,10, // 171
 	200,200,300,70000,140000,390000,50,150,-1, 100, // 181
 	-1,1500,3500,1500,7500,10000,10000,-1,1000,30000, // 191

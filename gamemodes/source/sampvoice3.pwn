@@ -175,6 +175,14 @@ stock Sampvoice3DestroyPlayer(playerid) // Отключаем игроку sampv
         SvRemoveKey(playerid, 0x42);
     }
 
+    SampvoiceDetachAdmin(playerid);
+    return 1;
+}
+
+stock SampvoiceDetachAdmin(playerid)
+{
+    if(PlayerInfo[playerid][pVoice] == false) return 0;
+
     if(gAvoi[playerid] == true && adm_stream)
 	{
         gAvoi[playerid] = false;
@@ -183,7 +191,7 @@ stock Sampvoice3DestroyPlayer(playerid) // Отключаем игроку sampv
         SvRemoveKey(playerid, 0x5A);
     }
     return 1;
-}
+}  
 
 public SV_VOID:OnPlayerActivationKeyPress(SV_UINT:playerid,SV_UINT:keyid)
 {

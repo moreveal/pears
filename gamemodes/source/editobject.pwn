@@ -79,8 +79,6 @@ public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:respon
             }
         }
 
-        if(response == EDIT_RESPONSE_CANCEL) CancelEditPlayerObject(playerid);
-
         if(response == EDIT_RESPONSE_FINAL)
 		{
             SaveEditPlayerObject(playerid, GetPlayerObjectModel(playerid, objectid), fX, fY, fZ, fRotX, fRotY, fRotZ); // Save Object
@@ -88,7 +86,10 @@ public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:respon
 
             gRedakt[playerid] = 0; // Редактор Off
             CancelSelectTextDraw(playerid);
+            return 1;
         }
+
+        if(response == EDIT_RESPONSE_CANCEL) CancelEditPlayerObject(playerid);
     }
 	return 1;
 }
