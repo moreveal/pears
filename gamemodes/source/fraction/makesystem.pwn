@@ -363,20 +363,40 @@ stock MakeList(playerid)
         {
             if(MakeInfo[z][mkWhoType] > 0) timemake = "Срочный вызов";
             else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
-            targetid = MakeInfo[z][mkPlayerId];
-            findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            if(playerid != -1)
+            {
+                targetid = MakeInfo[z][mkPlayerId];
+                findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            }
+            else
+            {
+                findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. Неизвестно\tВ ожидание\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. Неизвестно\tПринят\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            }
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
         {
             //if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "Срочный вызов";
             //else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
-            timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
-            targetid = MakeInfo[z][mkPlayerId];
-            findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            if(playerid != -1)
+            {
+                timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
+                targetid = MakeInfo[z][mkPlayerId];
+                findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            }
+            else
+            {
+                timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
+                targetid = MakeInfo[z][mkPlayerId];
+                findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1 ,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+            }
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 0)
         {
