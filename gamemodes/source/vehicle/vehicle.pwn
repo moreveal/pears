@@ -33,13 +33,13 @@ new vehClassName[][] =
 new vehNameCustom[][] =
 {
     "Lamba Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
-	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M6",
-	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW M4 F82", "BMW X5M", "VW Golf", "Cadillac Fleetwood", "Dodge Charger",
-	"Dodge Super Bee", "Ford GT", "Lamba Aventador", "Mercedes GLE 350", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
-	"Shelby GT 500", "Supra MK5", "Toyota GT AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Cabriolet", "BMW E30",
-	"Arm Cargo", "Chevrolet Silverado", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "Ferrari F1",
-	"Crown Vic", "Crown Vic Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Mustang Corch",
-	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Mercedes EQS 580", "Mercedes Sprinter", "Mercedes Vito",
+	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW 325 E30",
+	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW 325I E30", "BMW X6M", "VW Golf", "Cadillac Fleetwood", "BMW 750il E38",
+	"Dodge Super Bee", "Ford GT", "Lamba Centenario", "Mercedes W124", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
+	"Shelby GT 500", "Supra MK5", "Toyota GT AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Cabriolet", "BMW 325I E30",
+	"Arm Cargo", "Ford Raptor", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "Ferrari F1",
+	"Crown Vic", "Crown Vic Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Nissan Silvia S13",
+	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Mercedes EQS 580", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
 	"VW Golf MK2"
 };
@@ -73,12 +73,12 @@ new vehName[][] =
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
     19000000,900000,10000000,11000000,400000,3500000,7000000,2500000,1100000,2800000, // 2000 - 2009
-	1400000,5000000,3000000,4000000,9000000,4200000,10000000,6000000,2500000,400000, // 2010 - 2019
-	2500000,1400000,7000000,4000000,30000000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
+	1400000,5000000,3000000,500000,9000000,4200000,10000000,600000,4500000,400000, // 2010 - 2019
+	2500000,950000,7000000,4000000,400000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
 	5000000,1200000,1300000,15000000,24000000,1500000, // 2030 - 2035
-	31000000,4000000,5000000,5000000,4500000,4000000,300000000, // 2036 - 2042
-	1200000,1200000,7000000,3500000,3500000,500000,12000000, // 2043 - 2049
-	3000000,900000,4700000,700000,15000000,17000000,3000000, // 2050 - 2056
+	31000000,4200000,5000000,5000000,4500000,4000000,300000000, // 2036 - 2042
+	1200000,1200000,7000000,3500000,3500000,500000,1200000, // 2043 - 2049
+	3000000,900000,4700000,700000,1200000,17000000,70000000, // 2050 - 2056
 	11000000,1800000,2100000,9000000,6000000,2900000,500000,500000, // 2057 - 2064
 	300000 // 2065
 };
@@ -150,19 +150,19 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(602, 2010); // Nissan 350Z (Alpha)					LQ
 	AddVehicleSyncModel(579, 2011); // Audi Q7 (Huntley)					MQ
 	AddVehicleSyncModel(426, 2012); // BMW 530i (Premier)					LQ
-	AddVehicleSyncModel(602, 2013); // BMW M6 (Alpha)						MQ
+	AddVehicleSyncModel(602, 2013); // BMW 325 (Alpha)						MQ
 	AddVehicleSyncModel(579, 2014); // Mercedes G65 (Huntley)				LQ			(Не открывается и не ломается Капот)
-	AddVehicleSyncModel(579, 2015); // Ford Raptor (Huntley)				LQ
+	AddVehicleSyncModel(554, 2015); // Ford Raptor (Yosomite)				LQ
 	AddVehicleSyncModel(602, 2016); // Audi RS5	(Alpha)						LQ
-	AddVehicleSyncModel(602, 2017);	// BMW M4 F82 (Alpha)					LQ
-	AddVehicleSyncModel(579, 2018); // BMW X5M (Huntley)					LQ			(Дерьмово выглядит)
+	AddVehicleSyncModel(551, 2017);	// BMW 325i E30 (Merit)					LQ
+	AddVehicleSyncModel(579, 2018); // BMW X6M (Huntley)					LQ			(Дерьмово выглядит)
 	AddVehicleSyncModel(589, 2019);	// VW Golf	(Club)						MQ
 	AddVehicleSyncModel(421, 2020); // Cadillac Fleetwood (Washing)			MQ
-	AddVehicleSyncModel(560, 2021);	// Dodge Charger (Sultan)				LQ			(Дерьмово выглядит)
+	AddVehicleSyncModel(551, 2021);	// BMW 750il E38 (merit)					LQ			(Дерьмово выглядит)
 	AddVehicleSyncModel(475, 2022);	// Dodge Super Bee (Sabre)				MQ
 	AddVehicleSyncModel(541, 2023);	// Ford GT	(Bullet)					LQ			(Дерьмово выглядит)
-	AddVehicleSyncModel(541, 2024);	// Lamba Aventador (BULLET)				LQ			(Дерьмово выглядит)
-	AddVehicleSyncModel(579, 2025);	// Mercedes GLE 350	(Huntley)			LQ			(Дерьмово выглядит)
+	AddVehicleSyncModel(541, 2024);	// Lamba Centenario (BULLET)				LQ			(Дерьмово выглядит)
+	AddVehicleSyncModel(445, 2025);	// Mercedes W124 (Huntley)			LQ			(Дерьмово выглядит)
 	AddVehicleSyncModel(602, 2026);	// Mercedes SL 65 (Alpha)				LQ			(Дерьмово выглядит)
 	AddVehicleSyncModel(602, 2027);	// Nissan 240SX (Alpha)					LQ
 	AddVehicleSyncModel(451, 2028); // Porsche 911 GT2 (Turismo)			LQ
@@ -172,9 +172,9 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)						LQ
 	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)			MQ
 	AddVehicleSyncModel(533, 2034); // Bentley Cabriolet (Feltzer)
-	AddVehicleSyncModel(502, 2035); // BMW E30	(Hotring Racer A)
+	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
 	AddVehicleSyncModel(548, 2036); // Arm Cargo (cargobob)
-	AddVehicleSyncModel(490, 2037); // Chevrolet Silverado (fbirancher)
+	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
 	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
 	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
 	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
@@ -186,14 +186,14 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(490, 2046); // Explorer Dep (fbirancher)
 	AddVehicleSyncModel(490, 2047); // Explorer Police (fbirancher)
 	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
-	AddVehicleSyncModel(503, 2049); // Mustang Corch (hotrinb)
+	AddVehicleSyncModel(503, 2049); // Nissan Silvia s13 (hotrinb)
 	AddVehicleSyncModel(500, 2050); // Jeep Wrangler (mesa)
 	AddVehicleSyncModel(551, 2051); // Lexus LS400 (merit)
 	AddVehicleSyncModel(602, 2052); // Lexus RCF (alpha)
 	AddVehicleSyncModel(477, 2053); // Mazda RX7 (zr350)
-	AddVehicleSyncModel(560, 2054); // Mercedes EQS 580 (sultan)
+	AddVehicleSyncModel(560, 2054); // Audi RS6 C5(sultan)
 	AddVehicleSyncModel(482, 2055); // Mercedes Sprinter (Burrito)
-	AddVehicleSyncModel(482, 2056); // Mercedes Vito (Burrito)
+	AddVehicleSyncModel(541, 2056); // Ferrari Enzo (bullet)
 	AddVehicleSyncModel(560, 2057); // Mercedes E63 (sultan)
 	AddVehicleSyncModel(559, 2058); // Mitsu Eclipse (jester)
 	AddVehicleSyncModel(558, 2059); // Silvia S14 (uranus)
@@ -642,15 +642,15 @@ stock GetVehicleClass(m)
     || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
     || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
 	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033 || m == 2034
-	|| m == 2052 || m == 2054 || m == 2057) class = 1;
+	|| m == 2052 || m == 2057 || m == 2056) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
     || m == 461 || m == 463 || m == 468 || m == 469 || m == 471 || m == 480 || m == 484 || m == 487 || m == 491 || m == 496
     || m == 507 || m == 511 || m == 516 || m == 533 || m == 534 || m == 550 || m == 551 || m == 555 || m == 558 || m == 561
     || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
-	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2013 || m == 2016
-	|| m == 2017 || m == 2018 || m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049) class = 2;
+	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
+	|| m == 2018 || m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049) class = 2;
 
     // Economy Class (3) - Бомж
     else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
@@ -658,16 +658,16 @@ stock GetVehicleClass(m)
     || m == 529 || m == 536 || m == 540 || m == 542 || m == 546 || m == 547 || m == 549 || m == 553 || m == 566 || m == 567
     || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
 	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2061
-	|| m == 2065) class = 3;
+	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054) class = 3;
 
     // Off-Road Class (4) - Внедорожник
     else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
-	|| m == 2005 || m == 2011 || m == 2014 || m == 2015 || m == 2025 || m == 2050) class = 4;
+	|| m == 2005 || m == 2011 || m == 2014 || m == 2015 || m == 2050) class = 4;
 
     // Special Class (5) - Грузовая и Спец Техника
     else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
     || m == 459 || m == 478 || m == 482 || m == 498 || m == 499 || m == 508 || m == 514 || m == 515 || m == 578
-	|| m == 2055 || m == 2056) class = 5;
+	|| m == 2055) class = 5;
 
     // Unique Class (6) - Уникальный Транспорт
     else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
@@ -710,7 +710,7 @@ stock IsABootFront(carid)
 	new model = VehInfo[carid][vModel];
 	if(model == 415 || model == 424 || model == 437 || model == 451 || model == 483 || model == 486 || model == 530 || model == 532 
 	|| model == 541 || model == 568 || model == 588 || model == 601
-	|| model == 2000 || model == 2023 || model == 2024 || model == 2028 || model == 2041) return 1;
+	|| model == 2000 || model == 2023 || model == 2024 || model == 2028 || model == 2041 || model == 2056) return 1;
 	return 0;
 }
 
@@ -731,7 +731,7 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
 	|| model == 2027 || model == 2028 || model == 2029 || model == 2030 || model == 2031 || model == 2033 || model == 2034
 	|| model == 2035 || model == 2038 || model == 2039 || model == 2043 || model == 2044 || model == 2048 || model == 2049
 	|| model == 2050 || model == 2051 || model == 2052 || model == 2053 || model == 2054 || model == 2057 || model == 2058
-	|| model == 2059 || model == 2061 || model == 2062 || model == 2063 || model == 2064 || model == 2065) return 1;
+	|| model == 2059 || model == 2061 || model == 2062 || model == 2063 || model == 2064 || model == 2065 || model == 2056) return 1;
 	return 0;
 }
 
@@ -748,7 +748,7 @@ stock IsA_Gen15(carid) // 15 слотов в багажнике
 {
 	new model = VehInfo[carid][vModel];
 	if(model == 413 || model == 414 || model == 440 || model == 459 || model == 478 || model == 482 || model == 498 || model == 499 || model == 609
-	|| model == 2015 || model == 2041 || model == 2056 || model == 2060) return 1;
+	|| model == 2015 || model == 2041 || model == 2060) return 1;
 	return 0;
 }
 
@@ -781,7 +781,7 @@ stock IsAZad(model) // Транспорт с задними окнами
    	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604
 	|| model == 2005 || model == 2007 || model == 2008 || model == 2009 || model == 2011 || model == 2012 || model == 2014
 	|| model == 2015 || model == 2018 || model == 2020 || model == 2021 || model == 2025 || model == 2033 || model == 2034
-	|| model >= 2037 && model <= 2047 || model == 2051 || model == 2054 || model == 2057 || model == 2060 || model == 2062) return 1;
+	|| model >= 2037 && model <= 2047 || model == 2051 || model == 2054 || model == 2057 || model == 2060 || model == 2062 || model == 2017) return 1;
 	return 0;
 }
 
