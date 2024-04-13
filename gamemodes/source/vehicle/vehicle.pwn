@@ -217,14 +217,14 @@ stock IsAVehExisting(v)
     return 0;
 }
 
-stock GetVehicleName(v)
+stock GetVehicleName(model)
 {
 	new vehicleName[34];
-	if(v >= 400 && v <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[v - 400]);
-	else if(v >= 2000) 
+	if(model >= 400 && model <= 611) format(vehicleName, sizeof(vehicleName), "%s", vehName[model - 400]);
+	else if(model >= 2000) 
 	{
-		if(v - 2000 >= sizeof(vehNameCustom)) format(vehicleName, sizeof(vehicleName), "Unknown");
-		else format(vehicleName, sizeof(vehicleName), "%s", vehNameCustom[v - 2000]);
+		if(model - 2000 >= sizeof(vehNameCustom)) format(vehicleName, sizeof(vehicleName), "Unknown");
+		else format(vehicleName, sizeof(vehicleName), "%s", vehNameCustom[model - 2000]);
 	}
 	return vehicleName;
 }
