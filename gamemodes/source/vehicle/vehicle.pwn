@@ -32,7 +32,7 @@ new vehClassName[][] =
 
 new vehNameCustom[][] =
 {
-    "Lamba Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35", 
+    "Lamba Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35 Tun", 
 	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW 325 E30",
 	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW 325I E30", "BMW X6M", "VW Golf", "Cadillac Fleetwood", "BMW 750il E38",
 	"Dodge Super Bee", "Ford GT", "Lamba Centenario", "Mercedes W124", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
@@ -41,7 +41,8 @@ new vehNameCustom[][] =
 	"Crown Vic", "Crown Vic Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Nissan Silvia S13",
 	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Mercedes EQS 580", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
-	"VW Golf MK2"
+	"VW Golf MK2", "BMW 7", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
+	"Range Rover", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35"
 };
 
 new vehName[][] =
@@ -203,6 +204,18 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
 	AddVehicleSyncModel(492, 2064); // Vaz 2107 (greenwoo)
 	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
+
+	AddVehicleSyncModel(560, 2066); // BMW 7
+	AddVehicleSyncModel(560, 2067); // Chaser JZX100
+	AddVehicleSyncModel(560, 2068); // BMW M5 F90
+	AddVehicleSyncModel(560, 2069); // Audi R8
+	AddVehicleSyncModel(560, 2070); // Rolls Wraith
+	AddVehicleSyncModel(560, 2071); // Rolls Cullinan
+	AddVehicleSyncModel(560, 2072); // Pagani Zonda
+	AddVehicleSyncModel(560, 2073); // Range Rover
+	AddVehicleSyncModel(560, 2074); // Nissan GT-R R34
+	AddVehicleSyncModel(560, 2075); // Silvia S15
+	AddVehicleSyncModel(560, 2076); // Nissan GT-R R35
 	return 1;
 }
 
@@ -211,7 +224,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2065) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2076) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;

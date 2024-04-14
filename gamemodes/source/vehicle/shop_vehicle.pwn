@@ -1,16 +1,16 @@
 
-#define MAX_DRAW_VEHICLESHOP 16 // Количество текстдравов в меню
+#define MAX_DRAW_VEHICLESHOP 16 // РљРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚РґСЂР°РІРѕРІ РІ РјРµРЅСЋ
 
-new PlayerText:VehicleShopDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // Переменные для хранения текстдравов (Создаваемые)
+new PlayerText:VehicleShopDraw[MAX_DRAW_VEHICLESHOP][MAX_REALPLAYERS]; // РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ С‚РµРєСЃС‚РґСЂР°РІРѕРІ (РЎРѕР·РґР°РІР°РµРјС‹Рµ)
 enum vsInfo
 {
-    vsVehicleID, // Переменная, для хранения id транспорта при просмотре в автосалоне
-    vsModel, // id модели транспорта в автосалоне
-    bool:vsVehicleLoad, // Статус создан ли транспорт в автосалоне
-    bool:vsTextDrawLoad, // Статус, загружены ли текстдравы автосалона
-    vsColor[2], // Цвета транспорта
-    bool:vsTest, // Test Drive Статус
-    vsTimer // Таймер, перезагружающий камеру (Bug Fix)
+    vsVehicleID, // РџРµСЂРµРјРµРЅРЅР°СЏ, РґР»СЏ С…СЂР°РЅРµРЅРёСЏ id С‚СЂР°РЅСЃРїРѕСЂС‚Р° РїСЂРё РїСЂРѕСЃРјРѕС‚СЂРµ РІ Р°РІС‚РѕСЃР°Р»РѕРЅРµ
+    vsModel, // id РјРѕРґРµР»Рё С‚СЂР°РЅСЃРїРѕСЂС‚Р° РІ Р°РІС‚РѕСЃР°Р»РѕРЅРµ
+    bool:vsVehicleLoad, // РЎС‚Р°С‚СѓСЃ СЃРѕР·РґР°РЅ Р»Рё С‚СЂР°РЅСЃРїРѕСЂС‚ РІ Р°РІС‚РѕСЃР°Р»РѕРЅРµ
+    bool:vsTextDrawLoad, // РЎС‚Р°С‚СѓСЃ, Р·Р°РіСЂСѓР¶РµРЅС‹ Р»Рё С‚РµРєСЃС‚РґСЂР°РІС‹ Р°РІС‚РѕСЃР°Р»РѕРЅР°
+    vsColor[2], // Р¦РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°
+    bool:vsTest, // Test Drive РЎС‚Р°С‚СѓСЃ
+    vsTimer // РўР°Р№РјРµСЂ, РїРµСЂРµР·Р°РіСЂСѓР¶Р°СЋС‰РёР№ РєР°РјРµСЂСѓ (Bug Fix)
 }
 new VehShopInfo[MAX_REALPLAYERS][vsInfo];
 
@@ -44,23 +44,23 @@ stock buy_VehicleShop(playerid)
     new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
     new gold = GetVehiclePriceGold(modelId);
 
-    if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n{cccccc}Вы можете оплатить транспорт золотом\n{cccccc}При таком способе оплаты наличие не требуется");
-    if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
-    if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-    if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
+    if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}РќРµС‚ РІ РЅР°Р»РёС‡РёРё\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РѕРїР»Р°С‚РёС‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚ Р·РѕР»РѕС‚РѕРј\n{cccccc}РџСЂРё С‚Р°РєРѕРј СЃРїРѕСЃРѕР±Рµ РѕРїР»Р°С‚С‹ РЅР°Р»РёС‡РёРµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ");
+    if(modelId == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РЎР»РѕС‚ РїСѓСЃС‚РѕР№ РёР»Рё С‚СЂР°РЅСЃРїРѕСЂС‚ РЅРµ Р·Р°РіСЂСѓР·РёР»СЃСЏ");
+    if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
+    if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р° [ Y >> Donate ]");
 
     PlayerPlaySound(playerid,40405,0,0,0);
     new string[230];
     if(typeBuy == 0) 
     {
-        format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), price, get_k(price));
+        format(string, sizeof(string), "{cccccc}РќР°Р·РІР°РЅРёРµ: {ff9000}%s\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$ {cccccc}[%s]\n\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РєСѓРїРёС‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚?", GetVehicleName(modelId), price, get_k(price));
     }
     else if(typeBuy == 1)
     {
-        if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Транспорт не продаётся за Gold");
-        format(string, sizeof(string), "{cccccc}Название: {ff9000}%s\n{cccccc}Стоимость: {ffcc00}%dG\n\n{ff9000}Вы уверены, что хотите купить транспорт?", GetVehicleName(modelId), gold);
+        if(gold <= 0) return ErrorMessage(playerid, "{FF6347}РўСЂР°РЅСЃРїРѕСЂС‚ РЅРµ РїСЂРѕРґР°С‘С‚СЃСЏ Р·Р° Gold");
+        format(string, sizeof(string), "{cccccc}РќР°Р·РІР°РЅРёРµ: {ff9000}%s\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ: {ffcc00}%dG\n\n{ff9000}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ РєСѓРїРёС‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚?", GetVehicleName(modelId), gold);
     }
-	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}Транспорт",string,"Да","Нет");
+	ShowDialog(playerid,1341,DIALOG_STYLE_MSGBOX,"{ff9000}РўСЂР°РЅСЃРїРѕСЂС‚",string,"Р”Р°","РќРµС‚");
     return 1;
 }
 
@@ -71,11 +71,11 @@ stock showDialogBuyVehicle(playerid)
     new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId], gold = GetVehiclePriceGold(modelId);
 
     new line[140],lines[420];
-    format(line,sizeof(line),"{ff9000}Как хотите оплатить покупку?\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{99ff66}Деньги\t{99ff66}%d$ {cccccc}[%s]", price, get_k(price)), strcat(lines,line);
-    if(gold > 0) format(line,sizeof(line),"\n{ffcc00}Золото\t{ffcc00}%dG", gold), strcat(lines,line);
-    else format(line,sizeof(line),"\n{ffcc00}Золото\t{cccccc}No gold"), strcat(lines,line);
-    ShowDialog(playerid,1352,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}*",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"{ff9000}РљР°Рє С…РѕС‚РёС‚Рµ РѕРїР»Р°С‚РёС‚СЊ РїРѕРєСѓРїРєСѓ?\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{99ff66}Р”РµРЅСЊРіРё\t{99ff66}%d$ {cccccc}[%s]", price, get_k(price)), strcat(lines,line);
+    if(gold > 0) format(line,sizeof(line),"\n{ffcc00}Р—РѕР»РѕС‚Рѕ\t{ffcc00}%dG", gold), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ffcc00}Р—РѕР»РѕС‚Рѕ\t{cccccc}No gold"), strcat(lines,line);
+    ShowDialog(playerid,1352,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}*",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -96,7 +96,7 @@ stock openMenu_VehicleShop(playerid)
 
     if(b >= 0)
     {
-         // Записываем позицию игрока
+         // Р—Р°РїРёСЃС‹РІР°РµРј РїРѕР·РёС†РёСЋ РёРіСЂРѕРєР°
 	    savePositionPlayerForMenu(playerid);
 
         TP[1][playerid] = 0;
@@ -106,71 +106,97 @@ stock openMenu_VehicleShop(playerid)
     else return 0;
 }
 
-stock closeTestDrive_VehicleShop(playerid)
+stock closeTestDrive(playerid)
 {
     VehShopInfo[playerid][vsTest] = false;
-    
-    new b = TP[0][playerid];
-    new s = TP[1][playerid];
 
-    destroyVehicle_VehicleShop(playerid);
-    showMenu_VehicleShop(playerid, b, s);
+    if(gAutosalon[playerid] > 0) // РўРµСЃС‚ РґСЂР°Р№РІ Р°РІС‚РѕСЃРµСЂРІРёСЃР°
+    {
+        // РЎР°РґРёРј РёРіСЂРѕРєР° РѕР±СЂР°С‚РЅРѕ РІ С‚СЂР°РЅСЃРїРѕСЂС‚
+        Protect_PutPlayerInVehicle(playerid, OnlineInfo[playerid][oAutoserviceVeh], 0);
+        
+        // Р’РѕР·РІСЂР°С‰Р°РµРј С‚СЂР°РЅСЃРїРѕСЂС‚ РЅР° РїРѕР·РёС†РёСЋ РІ Р°РІС‚РѕСЃРµСЂРІРёСЃ
+        vehiclePositionAutoservice(OnlineInfo[playerid][oAutoserviceVeh]);
+
+        // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ Р°РІС‚РѕСЃРµСЂРІРёСЃР°
+		showPlayerAutoserviceMenu(playerid);
+
+        // Р’РѕР·РІСЂР°С‰Р°РµРј РЅРѕСЂРјР°Р»СЊРЅРѕ РєР°РјРµСЂСѓ
+        playerDefaultCameraAutoservice(playerid);
+    }
+    else
+    {    
+        new b = TP[0][playerid];
+        new s = TP[1][playerid];
+
+        destroyVehicle_VehicleShop(playerid);
+        showMenu_VehicleShop(playerid, b, s);
+    }
     return 1;
 }
 stock openTestDrive_VehicleShop(playerid)
 {
-    if(VehShopInfo[playerid][vsVehicleLoad] == false) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не создан");
+    if(VehShopInfo[playerid][vsVehicleLoad] == false) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РўСЂР°РЅСЃРїРѕСЂС‚ РЅРµ СЃРѕР·РґР°РЅ");
+
+    SetPVarInt(playerid,"tunstat",0);
 
     VehShopInfo[playerid][vsTest] = true;
 
-    HidePlayerDialog(playerid); // Сбрасываем диалоговые окна
-    destroyDraw_VehicleShop(playerid); // Удаляем текстдравы
+    HidePlayerDialog(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РґРёР°Р»РѕРіРѕРІС‹Рµ РѕРєРЅР°
+    destroyDraw_VehicleShop(playerid); // РЈРґР°Р»СЏРµРј С‚РµРєСЃС‚РґСЂР°РІС‹
     OnlineInfo[playerid][oShowInterface] = 0;
 
-    CancelSelectTextDraw(playerid); // Убираем мышку
+    CancelSelectTextDraw(playerid); // РЈР±РёСЂР°РµРј РјС‹С€РєСѓ
 	TogglePlayerControllable(playerid, true); // Unfreeze
 
     SetPlayerInterior(playerid, 0);
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 0);
 
-    Gas[VehShopInfo[playerid][vsVehicleID]] = 100; // Топливо максимальное количество
+    Gas[VehShopInfo[playerid][vsVehicleID]] = 100; // РўРѕРїР»РёРІРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ
 
-    new modelId = VehInfo[VehShopInfo[playerid][vsVehicleID]][vModel];
-    if(IsACar(modelId)) // Авто
-    {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6282,1217.3895,11.0);
-        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
-    }
-    else if(IsAMoto(modelId)) // Мото
-    {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.4413,1215.6592,10.0);
-        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
-    }
-    else if(IsABoat(modelId) || modelId == 460) // Катер и Skimmer
-    {
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 2435.5557,483.9736,2.0);
-        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 270.0);
-    }
-    else if(IsAPlane(modelId)) // Авиа
-    {
-        new Float:plus;
-        if(modelId == 553) plus = 2.0; // Большой самолёты, требуется координата Z по выше
-        SetVehiclePos(VehShopInfo[playerid][vsVehicleID], 1477.6621,1236.6989,11.0 + plus);
-        SetVehicleZAngle(VehShopInfo[playerid][vsVehicleID], 0.0);
-    }
+    positionVehicleTestDrive(VehShopInfo[playerid][vsVehicleID]);
 
-    Protect_PutPlayerInVehicle(playerid, VehShopInfo[playerid][vsVehicleID], 0); // Садим в транспорт
-    SetCameraBehindPlayer(playerid); // Возвращаем камеру
+    Protect_PutPlayerInVehicle(playerid, VehShopInfo[playerid][vsVehicleID], 0); // РЎР°РґРёРј РІ С‚СЂР°РЅСЃРїРѕСЂС‚
+    SetCameraBehindPlayer(playerid); // Р’РѕР·РІСЂР°С‰Р°РµРј РєР°РјРµСЂСѓ
 
-    SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
+    SuccessMessage(playerid, "{99ff66}Р’С‹ Р·Р°РїСѓСЃС‚РёР»Рё Test Drive {cccccc}[ Р’С‹Р№С‚Рё: РєРЅРѕРїРєР° N ]");
     return 1;
 }
-stock left_VehicleShop(playerid) // Предыдущий транспорт (Листаем влево)
+
+stock positionVehicleTestDrive(vehicleid)
+{
+    new modelId = VehInfo[vehicleid][vModel];
+    if(IsACar(modelId)) // РђРІС‚Рѕ
+    {
+        ACSetVehiclePos(vehicleid, 1477.6282,1217.3895,11.0);
+        SetVehicleZAngle(vehicleid, 0.0);
+    }
+    else if(IsAMoto(modelId)) // РњРѕС‚Рѕ
+    {
+        ACSetVehiclePos(vehicleid, 1477.4413,1215.6592,10.0);
+        SetVehicleZAngle(vehicleid, 0.0);
+    }
+    else if(IsABoat(modelId) || modelId == 460) // РљР°С‚РµСЂ Рё Skimmer
+    {
+        ACSetVehiclePos(vehicleid, 2435.5557,483.9736,2.0);
+        SetVehicleZAngle(vehicleid, 270.0);
+    }
+    else if(IsAPlane(modelId)) // РђРІРёР°
+    {
+        new Float:plus;
+        if(modelId == 553) plus = 2.0; // Р‘РѕР»СЊС€РѕР№ СЃР°РјРѕР»С‘С‚С‹, С‚СЂРµР±СѓРµС‚СЃСЏ РєРѕРѕСЂРґРёРЅР°С‚Р° Z РїРѕ РІС‹С€Рµ
+        ACSetVehiclePos(vehicleid, 1477.6621,1236.6989,11.0 + plus);
+        SetVehicleZAngle(vehicleid, 0.0);
+    }
+    return 1;
+}
+
+stock left_VehicleShop(playerid) // РџСЂРµРґС‹РґСѓС‰РёР№ С‚СЂР°РЅСЃРїРѕСЂС‚ (Р›РёСЃС‚Р°РµРј РІР»РµРІРѕ)
 {
     new b = TP[0][playerid];
     new s = TP[1][playerid];
 
-    if(s == 0) // Если текущий слот 0, ищем максимальный последний
+    if(s == 0) // Р•СЃР»Рё С‚РµРєСѓС‰РёР№ СЃР»РѕС‚ 0, РёС‰РµРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РїРѕСЃР»РµРґРЅРёР№
     {
         for(new gs = MAX_BIZ_ITEM - 1; gs > 0; gs--)
         {
@@ -188,13 +214,13 @@ stock left_VehicleShop(playerid) // Предыдущий транспорт (Листаем влево)
     createVehicle_VehicleShop(playerid, b, TP[1][playerid]);
     return 1;
 }
-stock right_VehicleShop(playerid) // Следующий транспорт (Листаем вправо)
+stock right_VehicleShop(playerid) // РЎР»РµРґСѓСЋС‰РёР№ С‚СЂР°РЅСЃРїРѕСЂС‚ (Р›РёСЃС‚Р°РµРј РІРїСЂР°РІРѕ)
 {
     new b = TP[0][playerid];
     new s = TP[1][playerid];
 
-    if(s + 1 >= MAX_BIZ_ITEM) TP[1][playerid] = 0; // Если следующий слот последний, показываем 0 слот
-    else if(BizzInfo[b][bProduct][s + 1] == 0) TP[1][playerid] = 0; // Если в следующем слоте нет транспорта, показываем 0 слот
+    if(s + 1 >= MAX_BIZ_ITEM) TP[1][playerid] = 0; // Р•СЃР»Рё СЃР»РµРґСѓСЋС‰РёР№ СЃР»РѕС‚ РїРѕСЃР»РµРґРЅРёР№, РїРѕРєР°Р·С‹РІР°РµРј 0 СЃР»РѕС‚
+    else if(BizzInfo[b][bProduct][s + 1] == 0) TP[1][playerid] = 0; // Р•СЃР»Рё РІ СЃР»РµРґСѓСЋС‰РµРј СЃР»РѕС‚Рµ РЅРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р°, РїРѕРєР°Р·С‹РІР°РµРј 0 СЃР»РѕС‚
     else TP[1][playerid] ++;
 
     HidePlayerDialog(playerid);
@@ -202,7 +228,7 @@ stock right_VehicleShop(playerid) // Следующий транспорт (Листаем вправо)
     createVehicle_VehicleShop(playerid, b, TP[1][playerid]);
     return 1;
 }
-stock changeColor_VehicleShop(playerid, slot) // Меняем цвет транспорта с учётом текстдрава
+stock changeColor_VehicleShop(playerid, slot) // РњРµРЅСЏРµРј С†РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р° СЃ СѓС‡С‘С‚РѕРј С‚РµРєСЃС‚РґСЂР°РІР°
 {
     ChangeVehicleColours(VehShopInfo[playerid][vsVehicleID], VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1]);
 
@@ -231,29 +257,29 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
 
     if(modelId < 400 || VehShopInfo[playerid][vsVehicleLoad] == true) return 0;
 
-     // Создаём транспорт
+     // РЎРѕР·РґР°С‘Рј С‚СЂР°РЅСЃРїРѕСЂС‚
     new Float:pos[4], interiorId;
     new type = GetVehicleType(modelId);
     new class = GetVehicleClass(modelId);
     TP[2][playerid] = class;
 
-    if(type == 1 || type == 2) // Авто и Мото
+    if(type == 1 || type == 2) // РђРІС‚Рѕ Рё РњРѕС‚Рѕ
     {
         interiorId = 191;
         if(class <= 4) pos[0] = 1337.6630, pos[1] = 1570.6387, pos[2] = 10.6414, pos[3] = 154.5664;
         else if(class >= 5) pos[0] = 1316.2491, pos[1] = 1575.4805, pos[2] = 11.5481, pos[3] = 180.1429;
     }
-    else if(type == 3) // Катера (Лодки)
+    else if(type == 3) // РљР°С‚РµСЂР° (Р›РѕРґРєРё)
     {
         interiorId = 0;
         if(bizId == 90) pos[0] = -1464.1099, pos[1] = 740.3231, pos[2] = 1.0, pos[3] = 270.0; // SF
         else if(bizId == 91) pos[0] = 2634.9102, pos[1] = -2320.7798, pos[2] = 1.0, pos[3] = 360.0; // LS
         else if(bizId == 92) pos[0] = 2388.7817, pos[1] = 533.4385, pos[2] = 1.0, pos[3] = 180.0; // LV
     }
-    else if(type == 4 || type == 5) // Вертолёты и Самолёты
+    else if(type == 4 || type == 5) // Р’РµСЂС‚РѕР»С‘С‚С‹ Рё РЎР°РјРѕР»С‘С‚С‹
     {
         interiorId = 190;
-        if(type == 4) pos[0] = 1547.9121, pos[1] = 1579.5526, pos[2] = 11.5170, pos[3] = 357.8251; // Вертолёты
+        if(type == 4) pos[0] = 1547.9121, pos[1] = 1579.5526, pos[2] = 11.5170, pos[3] = 357.8251; // Р’РµСЂС‚РѕР»С‘С‚С‹
         else
         {
             if(modelId == 519) pos[0] = 1547.6863, pos[1] = 1580.7811, pos[2] = 11.7588, pos[3] = 358.6555; // Shamal
@@ -268,17 +294,17 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
     VehShopInfo[playerid][vsVehicleLoad] = true;
 
     new string[100];
-    // Название
+    // РќР°Р·РІР°РЅРёРµ
     format(string,sizeof(string),"%s", GetVehicleName(modelId));
     PlayerTextDrawSetString(playerid, VehicleShopDraw[7][playerid], string);
     PlayerTextDrawShow(playerid, VehicleShopDraw[7][playerid]);
 
-    // Цена
+    // Р¦РµРЅР°
     format(string,sizeof(string),"%d$", price);
     PlayerTextDrawSetString(playerid, VehicleShopDraw[8][playerid], string);
     PlayerTextDrawShow(playerid, VehicleShopDraw[8][playerid]);
 
-    // Gold Цена
+    // Gold Р¦РµРЅР°
     new gold = GetVehiclePriceGold(modelId);
     if(gold > 0) 
     {
@@ -296,14 +322,14 @@ stock createVehicle_VehicleShop(playerid, bizId, productId)
 }
 stock closeMenu_VehicleShop(playerid)
 {
-    destroyVehicle_VehicleShop(playerid); // Удаляем транспорт
+    destroyVehicle_VehicleShop(playerid); // РЈРґР°Р»СЏРµРј С‚СЂР°РЅСЃРїРѕСЂС‚
 
-    HidePlayerDialog(playerid); // Сбрасываем диалоговые окна
-    destroyDraw_VehicleShop(playerid); // Удаляем текстдравы
+    HidePlayerDialog(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РґРёР°Р»РѕРіРѕРІС‹Рµ РѕРєРЅР°
+    destroyDraw_VehicleShop(playerid); // РЈРґР°Р»СЏРµРј С‚РµРєСЃС‚РґСЂР°РІС‹
     OnlineInfo[playerid][oShowInterface] = 0;
 
-    CancelSelectTextDraw(playerid); // Убираем мышку
-	keep(playerid); // Подмораживаем
+    CancelSelectTextDraw(playerid); // РЈР±РёСЂР°РµРј РјС‹С€РєСѓ
+	keep(playerid); // РџРѕРґРјРѕСЂР°Р¶РёРІР°РµРј
 
     S_SetPlayerVirtualWorld(playerid, SpWorld[playerid], SpInt[playerid]);
     SetPlayerInterior(playerid, SpInt[playerid]);
@@ -311,38 +337,38 @@ stock closeMenu_VehicleShop(playerid)
     PPSetPlayerPos(playerid, SpX[playerid], SpY[playerid], SpZ[playerid]);
     SetPlayerFacingAngle(playerid, SpA[playerid]);
 
-    SetCameraBehindPlayer(playerid); // Возвращаем камеру
+    SetCameraBehindPlayer(playerid); // Р’РѕР·РІСЂР°С‰Р°РµРј РєР°РјРµСЂСѓ
 
-    ClearAnimations(playerid), ClearAnim(playerid); // Сбрасываем все анимки
+    ClearAnimations(playerid), ClearAnim(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РІСЃРµ Р°РЅРёРјРєРё
     return 1;
 }
-stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню автосалона
+stock showMenu_VehicleShop(playerid, bizId, slot) // РћС‚РєСЂС‹РІР°РµРј РјРµРЅСЋ Р°РІС‚РѕСЃР°Р»РѕРЅР°
 {
-    if(OnlineInfo[playerid][oShowInterface] > 0) return ErrorMessage(playerid, "{FF6347}У вас открыто меню [ Прежде чем открыть другое, закройте его ]");
+    if(OnlineInfo[playerid][oShowInterface] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РѕС‚РєСЂС‹С‚Рѕ РјРµРЅСЋ [ РџСЂРµР¶РґРµ С‡РµРј РѕС‚РєСЂС‹С‚СЊ РґСЂСѓРіРѕРµ, Р·Р°РєСЂРѕР№С‚Рµ РµРіРѕ ]");
 
-    HidePlayerDialog(playerid); // Сбрасываем диалоговые окна
+    HidePlayerDialog(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РґРёР°Р»РѕРіРѕРІС‹Рµ РѕРєРЅР°
 
-    if(slot == -1) // Первый запуск меню
+    if(slot == -1) // РџРµСЂРІС‹Р№ Р·Р°РїСѓСЃРє РјРµРЅСЋ
     {
-        TP[0][playerid] = bizId; // Записываем id бизнеса, из которого смотрим транспорт
+        TP[0][playerid] = bizId; // Р—Р°РїРёСЃС‹РІР°РµРј id Р±РёР·РЅРµСЃР°, РёР· РєРѕС‚РѕСЂРѕРіРѕ СЃРјРѕС‚СЂРёРј С‚СЂР°РЅСЃРїРѕСЂС‚
 
         slot = 0;
-        // Сбрасываем цвета транспорта
+        // РЎР±СЂР°СЃС‹РІР°РµРј С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°
         VehShopInfo[playerid][vsColor][0] = 1;
         VehShopInfo[playerid][vsColor][1] = 1;
-        // Записываем координаты
+        // Р—Р°РїРёСЃС‹РІР°РµРј РєРѕРѕСЂРґРёРЅР°С‚С‹
         savePositionPlayerForMenu(playerid);
     }
 
-    createDraw_VehicleShop(playerid); // Создаём текстдравы
+    createDraw_VehicleShop(playerid); // РЎРѕР·РґР°С‘Рј С‚РµРєСЃС‚РґСЂР°РІС‹
 
-    // Отображаем текстдравы
+    // РћС‚РѕР±СЂР°Р¶Р°РµРј С‚РµРєСЃС‚РґСЂР°РІС‹
     for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++) PlayerTextDrawShow(playerid, VehicleShopDraw[i][playerid]);
 
-    // Создаём транспорт из первого слота
+    // РЎРѕР·РґР°С‘Рј С‚СЂР°РЅСЃРїРѕСЂС‚ РёР· РїРµСЂРІРѕРіРѕ СЃР»РѕС‚Р°
     createVehicle_VehicleShop(playerid, bizId, slot);
 
-    // Ставим игрока на позицию
+    // РЎС‚Р°РІРёРј РёРіСЂРѕРєР° РЅР° РїРѕР·РёС†РёСЋ
     new Float:pos[4], world, interior;
     GetPlayerVehicleShopPos(playerid, bizId, pos[0], pos[1], pos[2], pos[3], world, interior);
 
@@ -351,16 +377,16 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню автосалона
     PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
     SetPlayerFacingAngle(playerid, pos[3]);
 
-    SelectColorDraw(playerid); // Кликабельность
-    PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь
-    OnlineInfo[playerid][oShowInterface] = 16; // Записываем id открытого меню
+    SelectColorDraw(playerid); // РљР»РёРєР°Р±РµР»СЊРЅРѕСЃС‚СЊ
+    PlayerPlaySound(playerid, 40405, 0, 0, 0); // РўРёР»РёРЅСЊ
+    OnlineInfo[playerid][oShowInterface] = 16; // Р—Р°РїРёСЃС‹РІР°РµРј id РѕС‚РєСЂС‹С‚РѕРіРѕ РјРµРЅСЋ
 
-    // Отображением камеры
+    // РћС‚РѕР±СЂР°Р¶РµРЅРёРµРј РєР°РјРµСЂС‹
     new class = GetVehicleClass(VehShopInfo[playerid][vsModel]);
     TP[2][playerid] = class;
     loadCam_VehicleShop(playerid);
 
-    VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 500, false, "d", playerid); // Bug Fix Камеры
+    VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 500, false, "d", playerid); // Bug Fix РљР°РјРµСЂС‹
     return 1;
 }
 
@@ -370,7 +396,7 @@ function loadCam_VehicleShop(playerid)
 
     new bizId = TP[0][playerid];
     new class = TP[2][playerid];
-    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
+    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // РђРІС‚РѕСЃР°Р»РѕРЅС‹ Рё РњРѕС‚РѕСЃР°Р»РѕРЅС‹
     {
         if(class <= 4)
         {
@@ -383,22 +409,22 @@ function loadCam_VehicleShop(playerid)
             InterpolateCameraLookAt(playerid, 1321.078002, 1568.421386, 11.225045, 1321.078002, 1568.421386, 11.225045, 2000);
         }
     }
-    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
+    else if(bizId >= 87 && bizId <= 89) // РђРІРёР°СЃР°Р»РѕРЅС‹
     {
         InterpolateCameraPos(playerid, 1564.415893, 1597.437255, 11.052239, 1564.415893, 1597.437255, 11.052239, 1000);
         InterpolateCameraLookAt(playerid, 1561.107910, 1593.689208, 11.149888, 1561.107910, 1593.689208, 11.149888, 1000);
     }
-    else if(bizId == 90) // Салон Катеров SF
+    else if(bizId == 90) // РЎР°Р»РѕРЅ РљР°С‚РµСЂРѕРІ SF
     {
         InterpolateCameraPos(playerid, -1445.834228, 752.435607, 1.804146, -1445.834228, 752.435607, 1.804146, 1000);
         InterpolateCameraLookAt(playerid, -1449.700805, 749.277587, 1.526945, -1449.700805, 749.277587, 1.526945, 1000);
     }
-    else if(bizId == 91) // Салон Катеров LS
+    else if(bizId == 91) // РЎР°Р»РѕРЅ РљР°С‚РµСЂРѕРІ LS
     {
         InterpolateCameraPos(playerid, 2620.168945, -2300.133300, 1.827390, 2620.168945, -2300.133300, 1.827390, 1000);
         InterpolateCameraLookAt(playerid, 2623.240234, -2304.076416, 1.960187, 2623.240234, -2304.076416, 1.960187, 1000);
     }
-    else if(bizId == 92) // Салоны Катеров
+    else if(bizId == 92) // РЎР°Р»РѕРЅС‹ РљР°С‚РµСЂРѕРІ
     {
         InterpolateCameraPos(playerid, 2401.330078, 514.935241, 2.140674, 2401.330078, 514.935241, 2.140674, 1000);
         InterpolateCameraLookAt(playerid, 2398.289550, 518.904052, 2.082082, 2398.289550, 518.904052, 2.082082, 1000);
@@ -408,21 +434,21 @@ function loadCam_VehicleShop(playerid)
 
 stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Float:a, &world, &interior)
 {
-    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // Автосалоны и Мотосалоны
+    if(bizId >= 77 && bizId <= 81 || bizId >= 82 && bizId <= 86) // РђРІС‚РѕСЃР°Р»РѕРЅС‹ Рё РњРѕС‚РѕСЃР°Р»РѕРЅС‹
     {
         world = playerid + 1;
         interior = 191;
         x = 1325.2312, y = 1563.8182, z = 10.8662;
         a = 302.9293;
     }
-    else if(bizId >= 87 && bizId <= 89) // Авиасалоны
+    else if(bizId >= 87 && bizId <= 89) // РђРІРёР°СЃР°Р»РѕРЅС‹
     {
         world = playerid + 1;
         interior = 190;
         x = 1573.1488, y = 1603.1798, z = 10.8403;
         a = 132.9289;
     }
-    else if(bizId >= 90 && bizId <= 92) // Салоны Катеров
+    else if(bizId >= 90 && bizId <= 92) // РЎР°Р»РѕРЅС‹ РљР°С‚РµСЂРѕРІ
     {
         world = playerid + 1;
         interior = 0;
@@ -435,7 +461,7 @@ stock GetPlayerVehicleShopPos(playerid, bizId, &Float:x, &Float:y, &Float:z, &Fl
     return 1;
 }
 
-stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Кликаем по текстдравам
+stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // РљР»РёРєР°РµРј РїРѕ С‚РµРєСЃС‚РґСЂР°РІР°Рј
 {
     if(playertextid == VehicleShopDraw[0][playerid]) // Left
     {
@@ -458,7 +484,7 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Кликаем по
         PlayerPlaySound(playerid,30800,0,0,0);
         openTestDrive_VehicleShop(playerid);
     }
-    if(playertextid == VehicleShopDraw[15][playerid]) // Цвет транспорта
+    if(playertextid == VehicleShopDraw[15][playerid]) // Р¦РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
     {
         PlayerPlaySound(playerid,17803,0,0,0);
         showDialogVehicleShopColor(playerid);
@@ -468,20 +494,20 @@ stock ClickTextDraw_VehicleShop(playerid, PlayerText:playertextid) // Кликаем по
 stock showDialogVehicleShopColor(playerid)
 {
     new line[80],lines[160];
-    format(line,sizeof(line),"Первый Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]], VehShopInfo[playerid][vsColor][0]), strcat(lines,line);
-    format(line,sizeof(line),"\nВторой Цвет: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][1]], VehShopInfo[playerid][vsColor][1]), strcat(lines,line);
-    ShowDialog(playerid,1332,DIALOG_STYLE_TABLIST,"{ff9000}*",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"РџРµСЂРІС‹Р№ Р¦РІРµС‚: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][0]], VehShopInfo[playerid][vsColor][0]), strcat(lines,line);
+    format(line,sizeof(line),"\nР’С‚РѕСЂРѕР№ Р¦РІРµС‚: \t{%s}|||||||||| {555555}[ ID %d ]", VehicleColoursTableHex[VehShopInfo[playerid][vsColor][1]], VehShopInfo[playerid][vsColor][1]), strcat(lines,line);
+    ShowDialog(playerid,1332,DIALOG_STYLE_TABLIST,"{ff9000}*",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const inputtext[])
 {
-    if(dialogid == 1332) // Цвет транспорта
+    if(dialogid == 1332) // Р¦РІРµС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
     {
         if(listitem < 0 || listitem > 1) return 0;
         if(response)
         {
             DP[4][playerid] = listitem;
-			ShowDialog(playerid,1333,DIALOG_STYLE_TABLIST,"{ff9000}*","{cccccc}Свой Цвет {ff9000}>>\n{33ccff}Голубой\n{00cc66}Зелёный\n{ffcc00}Жёлтый\n{ff3333}Красный\n{444444}Чёрный\n{ffffff}Белый","Выбрать","Назад");
+			ShowDialog(playerid,1333,DIALOG_STYLE_TABLIST,"{ff9000}*","{cccccc}РЎРІРѕР№ Р¦РІРµС‚ {ff9000}>>\n{33ccff}Р“РѕР»СѓР±РѕР№\n{00cc66}Р—РµР»С‘РЅС‹Р№\n{ffcc00}Р–С‘Р»С‚С‹Р№\n{ff3333}РљСЂР°СЃРЅС‹Р№\n{444444}Р§С‘СЂРЅС‹Р№\n{ffffff}Р‘РµР»С‹Р№","Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
         }
     }
     if(dialogid == 1333)
@@ -490,7 +516,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
         {
             if(listitem == 0)
             {
-			    ShowDialog(playerid,1334,DIALOG_STYLE_INPUT,"{ff9000}*","{cccccc}Введите id цвета транспорта [0 - 255]\n\nПосмотреть, как выглядят цвета транспорта, можно на форуме сервера pears-project.com","Принять","Отмена");
+			    ShowDialog(playerid,1334,DIALOG_STYLE_INPUT,"{ff9000}*","{cccccc}Р’РІРµРґРёС‚Рµ id С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р° [0 - 255]\n\nРџРѕСЃРјРѕС‚СЂРµС‚СЊ, РєР°Рє РІС‹РіР»СЏРґСЏС‚ С†РІРµС‚Р° С‚СЂР°РЅСЃРїРѕСЂС‚Р°, РјРѕР¶РЅРѕ РЅР° С„РѕСЂСѓРјРµ СЃРµСЂРІРµСЂР° pears-project.com","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
 
             if(listitem >= 1 && listitem <= 6)
@@ -518,17 +544,17 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
 		{
             if(VehShopInfo[playerid][vsVehicleLoad] == false) return 0;
 			new color;
-			if(sscanf(inputtext, "i", color)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу");
+			if(sscanf(inputtext, "i", color)) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРёС‡РµРіРѕ РЅРµ РІРІРѕР¶Сѓ");
 			if(color > MAX_COLOR_VEHICLE || color < 0)
             {
                 new string[70];
-                format(string,sizeof(string),"[ Мысли ]: Не меньше 0 и не больше %d", MAX_COLOR_VEHICLE);
+                format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РќРµ РјРµРЅСЊС€Рµ 0 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_COLOR_VEHICLE);
                 ErrorText(playerid, string);
                 return 1;
             }
 
             new slot = DP[4][playerid];
-			if(VehShopInfo[playerid][vsColor][slot] == color) return ErrorText(playerid, "[ Мысли ]: Этот цвет уже выбран");
+			if(VehShopInfo[playerid][vsColor][slot] == color) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р­С‚РѕС‚ С†РІРµС‚ СѓР¶Рµ РІС‹Р±СЂР°РЅ");
             
             PlayerPlaySound(playerid,1134,0,0,0);
             VehShopInfo[playerid][vsColor][slot] = color;
@@ -541,7 +567,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
         if(response)
 		{
             new freeSlot = GetPlayerFreeVehSlot(playerid);
-            if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет свободного слота для транспорта\n\n{cccccc}Вы можете приобрести до 20 слотов {ffcc00}[ Y >> Donate ]");
+            if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЃРІРѕР±РѕРґРЅРѕРіРѕ СЃР»РѕС‚Р° РґР»СЏ С‚СЂР°РЅСЃРїРѕСЂС‚Р°\n\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРёРѕР±СЂРµСЃС‚Рё РґРѕ 20 СЃР»РѕС‚РѕРІ {ffcc00}[ Y >> Donate ]");
 
             new typeBuy = DP[0][playerid];
             new bizId = TP[0][playerid];
@@ -549,10 +575,10 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             new modelId = BizzInfo[bizId][bProduct][productId], price = BizzInfo[bizId][bPrice][productId];
             new gold = GetVehiclePriceGold(modelId);
 
-            if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}Нет в наличии\n{cccccc}Вы можете оплатить транспорт золотом\n{cccccc}При таком способе оплаты наличие не требуется");
-            if(modelId == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Слот пустой или транспорт не загрузился");
-            if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-            if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота [ Y >> Donate ]");
+            if(typeBuy == 0 && BizzInfo[bizId][bItem][productId] <= 0) return ErrorMessage(playerid, "{FF6347}РќРµС‚ РІ РЅР°Р»РёС‡РёРё\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РѕРїР»Р°С‚РёС‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚ Р·РѕР»РѕС‚РѕРј\n{cccccc}РџСЂРё С‚Р°РєРѕРј СЃРїРѕСЃРѕР±Рµ РѕРїР»Р°С‚С‹ РЅР°Р»РёС‡РёРµ РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ");
+            if(modelId == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! РЎР»РѕС‚ РїСѓСЃС‚РѕР№ РёР»Рё С‚СЂР°РЅСЃРїРѕСЂС‚ РЅРµ Р·Р°РіСЂСѓР·РёР»СЃСЏ");
+            if(typeBuy == 0 && oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
+            if(typeBuy == 1 && PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµ С…РІР°С‚Р°РµС‚ Р·РѕР»РѕС‚Р° [ Y >> Donate ]");
 
             new string[200];
             if(typeBuy == 0)
@@ -560,15 +586,15 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
                 paybiz(bizId, price);
                 BizzInfo[bizId][bItem][productId] -= 1;
                 BizzInfo[bizId][bUpdate] = 1;
-                format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
+                format(string,sizeof(string),"{99ff66}РџРѕР·РґСЂР°РІР»СЏРµРј!\n{cccccc}Р’С‹ РєСѓРїРёР»Рё {ff9000}%s {cccccc}Р·Р° {99ff66}%d$ {cccccc}[%s]\n\nРЈРїСЂР°РІР»РµРЅРёРµ С‚СЂР°РЅСЃРїРѕСЂС‚РѕРј: {444444}[ Y >> РўСЂР°РЅСЃРїРѕСЂС‚ РёР»Рё /car ]", GetVehicleName(modelId), price, get_k(price));
                 SuccessMessage(playerid, string);
                 oGivePlayerMoney(playerid, -price);
                 CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, price, "Money");
             }
             else if(typeBuy == 1)
             {
-                if(gold <= 0) return ErrorMessage(playerid, "{FF6347}Транспорт не продаётся за Gold");
-                format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {ffcc00}%dG\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), gold);
+                if(gold <= 0) return ErrorMessage(playerid, "{FF6347}РўСЂР°РЅСЃРїРѕСЂС‚ РЅРµ РїСЂРѕРґР°С‘С‚СЃСЏ Р·Р° Gold");
+                format(string,sizeof(string),"{99ff66}РџРѕР·РґСЂР°РІР»СЏРµРј!\n{cccccc}Р’С‹ РєСѓРїРёР»Рё {ff9000}%s {cccccc}Р·Р° {ffcc00}%dG\n\nРЈРїСЂР°РІР»РµРЅРёРµ С‚СЂР°РЅСЃРїРѕСЂС‚РѕРј: {444444}[ Y >> РўСЂР°РЅСЃРїРѕСЂС‚ РёР»Рё /car ]", GetVehicleName(modelId), gold);
                 SuccessMessage(playerid, string);
                 PlayerInfo[playerid][pDonateMoney] -= gold;
                 mysql_save(playerid, 4);
@@ -577,7 +603,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
                 format(string,sizeof(string),"Veh %d", modelId);
                 DonateLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, string);
             }
-            format(string,sizeof(string),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
+            format(string,sizeof(string),"{0088ff}РџРѕР·РґСЂР°РІР»СЏРµРј! Р’С‹ РєСѓРїРёР»Рё %s {ffcc66}[ Y >> РўСЂР°РЅСЃРїРѕСЂС‚ РёР»Рё /car ]", GetVehicleName(modelId));
             SendClientMessage(playerid, COLOR_GREY, string);
 
             new posId;
@@ -589,7 +615,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             GiveCar(playerid, freeSlot, modelId, pos[0], pos[1], pos[2], pos[3],0, VehShopInfo[playerid][vsColor][0], VehShopInfo[playerid][vsColor][1], 0, 0, 0);
             if(PlayerInfo[playerid][pAchieve][12] == 0) AchievePlayer(playerid, 12, 1);
 
-            GiveQuanBuyVehicle(modelId, typeBuy); // Подсчитываем покупки транспорта
+            GiveQuanBuyVehicle(modelId, typeBuy); // РџРѕРґСЃС‡РёС‚С‹РІР°РµРј РїРѕРєСѓРїРєРё С‚СЂР°РЅСЃРїРѕСЂС‚Р°
         }
     }
     if(dialogid == 1352)
@@ -621,9 +647,9 @@ stock GiveQuanBuyVehicle(v, typeBuy)
     return 1;
 }
 
-stock destroyDraw_VehicleShop(playerid) // Удаляем текстдравы
+stock destroyDraw_VehicleShop(playerid) // РЈРґР°Р»СЏРµРј С‚РµРєСЃС‚РґСЂР°РІС‹
 {
-    if(VehShopInfo[playerid][vsTextDrawLoad] == false) return 0; // Если текстдравы не созданы, возвращаем 0
+    if(VehShopInfo[playerid][vsTextDrawLoad] == false) return 0; // Р•СЃР»Рё С‚РµРєСЃС‚РґСЂР°РІС‹ РЅРµ СЃРѕР·РґР°РЅС‹, РІРѕР·РІСЂР°С‰Р°РµРј 0
 
     for(new i = 0; i < MAX_DRAW_VEHICLESHOP; i++)
     {
@@ -641,31 +667,31 @@ stock DynamicPickupVehiceShop()
         if(i <= 4) 
         {
             CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Автосалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}РђРІС‚РѕСЃР°Р»РѕРЅ\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 5 && i <= 9) 
         {
             CreateDynamicPickup(2485, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Мотосалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}РњРѕС‚РѕСЃР°Р»РѕРЅ\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 10 && i <= 12) 
         {
             CreateDynamicPickup(2511, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Авиасалон\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}РђРІРёР°СЃР°Р»РѕРЅ\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
         else if(i >= 13) 
         {
             CreateDynamicPickup(2484, 1, BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z], BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
-            CreateDynamic3DTextLabel("{ff9000}Салон Катеров\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
+            CreateDynamic3DTextLabel("{ff9000}РЎР°Р»РѕРЅ РљР°С‚РµСЂРѕРІ\n{444444}[ ALT ]",-1,BuyCarPos[i][bcar_X],BuyCarPos[i][bcar_Y],BuyCarPos[i][bcar_Z],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,BuyCarPos[i][bcar_World], BuyCarPos[i][bcar_Int]);
         }
     }
 	return 1;
 }
-stock createDraw_VehicleShop(playerid) // Создаём текстдравы
+stock createDraw_VehicleShop(playerid) // РЎРѕР·РґР°С‘Рј С‚РµРєСЃС‚РґСЂР°РІС‹
 {
-    if(VehShopInfo[playerid][vsTextDrawLoad] == true) return 0; // Если эти текстдравы уже созданы, возвращаем 0
+    if(VehShopInfo[playerid][vsTextDrawLoad] == true) return 0; // Р•СЃР»Рё СЌС‚Рё С‚РµРєСЃС‚РґСЂР°РІС‹ СѓР¶Рµ СЃРѕР·РґР°РЅС‹, РІРѕР·РІСЂР°С‰Р°РµРј 0
 
-    VehicleShopDraw[0][playerid] = CreatePlayerTextDraw(playerid, 291.333404, 344.222290, "ld_beat:chit"); // кнопка влево
+    VehicleShopDraw[0][playerid] = CreatePlayerTextDraw(playerid, 291.333404, 344.222290, "ld_beat:chit"); // РєРЅРѕРїРєР° РІР»РµРІРѕ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[0][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[0][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[0][playerid], TEXT_DRAW_ALIGN:1);
@@ -675,7 +701,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[0][playerid], TEXT_DRAW_FONT:4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[0][playerid], true);
 
-    VehicleShopDraw[1][playerid] = CreatePlayerTextDraw(playerid, 302.000000, 358.400054, "LD_SPAC:white"); // кнопка влево (иконка)
+    VehicleShopDraw[1][playerid] = CreatePlayerTextDraw(playerid, 302.000000, 358.400054, "LD_SPAC:white"); // РєРЅРѕРїРєР° РІР»РµРІРѕ (РёРєРѕРЅРєР°)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[1][playerid], 0.021666, 0.265481);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[1][playerid], 36.333328, 48.533309);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[1][playerid], TEXT_DRAW_ALIGN:1);
@@ -689,7 +715,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[1][playerid], 0.000000, 90.000000, 90.000000, 1.000000);
     PlayerTextDrawBackgroundColour(playerid, VehicleShopDraw[1][playerid], 0);
 
-    VehicleShopDraw[2][playerid] = CreatePlayerTextDraw(playerid, 372.333526, 344.222290, "ld_beat:chit"); // кнопка вправо
+    VehicleShopDraw[2][playerid] = CreatePlayerTextDraw(playerid, 372.333526, 344.222290, "ld_beat:chit"); // РєРЅРѕРїРєР° РІРїСЂР°РІРѕ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[2][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[2][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[2][playerid], TEXT_DRAW_ALIGN:1);
@@ -699,7 +725,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[2][playerid], TEXT_DRAW_FONT:4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[2][playerid], true);
 
-    VehicleShopDraw[3][playerid] = CreatePlayerTextDraw(playerid, 388.333343, 358.400054, "LD_SPAC:white"); // кнопка вправо (иконка)
+    VehicleShopDraw[3][playerid] = CreatePlayerTextDraw(playerid, 388.333343, 358.400054, "LD_SPAC:white"); // РєРЅРѕРїРєР° РІРїСЂР°РІРѕ (РёРєРѕРЅРєР°)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[3][playerid], 0.021666, 0.265481);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[3][playerid], 36.333328, 48.533309);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[3][playerid], TEXT_DRAW_ALIGN:1);
@@ -713,7 +739,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[3][playerid], 0.000000, -90.000000, -90.000000, 1.000000);
     PlayerTextDrawBackgroundColour(playerid, VehicleShopDraw[3][playerid], 0);
 
-    VehicleShopDraw[4][playerid] = CreatePlayerTextDraw(playerid, 72.666656, 280.414825, "LD_SPAC:white"); // Фон меню
+    VehicleShopDraw[4][playerid] = CreatePlayerTextDraw(playerid, 72.666656, 280.414825, "LD_SPAC:white"); // Р¤РѕРЅ РјРµРЅСЋ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[4][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[4][playerid], 110.666702, 63.051860);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[4][playerid], TEXT_DRAW_ALIGN:1);
@@ -722,7 +748,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[4][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[4][playerid], TEXT_DRAW_FONT:4);
 
-    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 32.666690, 265.822296, "ld_beat:chit"); // Левое скругление меню
+    VehicleShopDraw[5][playerid] = CreatePlayerTextDraw(playerid, 32.666690, 265.822296, "ld_beat:chit"); // Р›РµРІРѕРµ СЃРєСЂСѓРіР»РµРЅРёРµ РјРµРЅСЋ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[5][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[5][playerid], 78.000022, 92.088874);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[5][playerid], TEXT_DRAW_ALIGN:1);
@@ -731,7 +757,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[5][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[5][playerid], TEXT_DRAW_FONT:4);
 
-    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 145.666748, 265.822296, "ld_beat:chit"); // Правое скругление меню
+    VehicleShopDraw[6][playerid] = CreatePlayerTextDraw(playerid, 145.666748, 265.822296, "ld_beat:chit"); // РџСЂР°РІРѕРµ СЃРєСЂСѓРіР»РµРЅРёРµ РјРµРЅСЋ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[6][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[6][playerid], 78.000022, 92.088874);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[6][playerid], TEXT_DRAW_ALIGN:1);
@@ -740,7 +766,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[6][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[6][playerid], TEXT_DRAW_FONT:4);
 
-    VehicleShopDraw[7][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 289.540618, "Cadillac_Fleetwood"); // Название
+    VehicleShopDraw[7][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 289.540618, "Cadillac_Fleetwood"); // РќР°Р·РІР°РЅРёРµ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[7][playerid], 0.290333, 1.280593);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[7][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, VehicleShopDraw[7][playerid], -1061109505);
@@ -750,7 +776,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[7][playerid], TEXT_DRAW_FONT:1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[7][playerid], true);
 
-    VehicleShopDraw[8][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 308.792602, "100000000$"); // Ценник
+    VehicleShopDraw[8][playerid] = CreatePlayerTextDraw(playerid, 65.333274, 308.792602, "100000000$"); // Р¦РµРЅРЅРёРє
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[8][playerid], 0.290333, 1.280593);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[8][playerid], TEXT_DRAW_ALIGN:1);
     PlayerTextDrawColour(playerid, VehicleShopDraw[8][playerid], 1238057215);
@@ -772,7 +798,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[9][playerid], TEXT_DRAW_FONT:1);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[9][playerid], true);
 
-    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 188.666839, 343.977874, "ld_beat:chit"); // Фон и сама кнопка купить
+    VehicleShopDraw[10][playerid] = CreatePlayerTextDraw(playerid, 188.666839, 343.977874, "ld_beat:chit"); // Р¤РѕРЅ Рё СЃР°РјР° РєРЅРѕРїРєР° РєСѓРїРёС‚СЊ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[10][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[10][playerid], 62.666683, 75.081443);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[10][playerid], TEXT_DRAW_ALIGN:1);
@@ -782,7 +808,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[10][playerid], TEXT_DRAW_FONT:4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[10][playerid], true);
 
-    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 191.666702, 347.466735, "ld_beat:chit"); // Типо кнопка купить
+    VehicleShopDraw[11][playerid] = CreatePlayerTextDraw(playerid, 191.666702, 347.466735, "ld_beat:chit"); // РўРёРїРѕ РєРЅРѕРїРєР° РєСѓРїРёС‚СЊ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[11][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[11][playerid], 56.666698, 68.029541);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[11][playerid], TEXT_DRAW_ALIGN:1);
@@ -791,7 +817,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetOutline(playerid, VehicleShopDraw[11][playerid], 0);
     PlayerTextDrawFont(playerid, VehicleShopDraw[11][playerid], TEXT_DRAW_FONT:4);
 
-    VehicleShopDraw[12][playerid] = CreatePlayerTextDraw(playerid, 219.333312, 374.163024, "BUY"); // Надпись купить
+    VehicleShopDraw[12][playerid] = CreatePlayerTextDraw(playerid, 219.333312, 374.163024, "BUY"); // РќР°РґРїРёСЃСЊ РєСѓРїРёС‚СЊ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[12][playerid], 0.414666, 1.512889);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[12][playerid], TEXT_DRAW_ALIGN:2);
     PlayerTextDrawColour(playerid, VehicleShopDraw[12][playerid], 659827199);
@@ -801,7 +827,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[12][playerid], TEXT_DRAW_FONT:3);
     PlayerTextDrawSetProportional(playerid, VehicleShopDraw[12][playerid], true);
 
-    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 7.666769, 208.333358, "ld_beat:chit"); // Тест драйв
+    VehicleShopDraw[13][playerid] = CreatePlayerTextDraw(playerid, 7.666769, 208.333358, "ld_beat:chit"); // РўРµСЃС‚ РґСЂР°Р№РІ
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[13][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[13][playerid], 63.333347, 76.740722);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[13][playerid], TEXT_DRAW_ALIGN:1);
@@ -811,7 +837,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawFont(playerid, VehicleShopDraw[13][playerid], TEXT_DRAW_FONT:4);
     PlayerTextDrawSetSelectable(playerid, VehicleShopDraw[13][playerid], true);
 
-    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 24.666648, 226.903671, "LD_SPAC:white"); // Тест драйв (иконка)
+    VehicleShopDraw[14][playerid] = CreatePlayerTextDraw(playerid, 24.666648, 226.903671, "LD_SPAC:white"); // РўРµСЃС‚ РґСЂР°Р№РІ (РёРєРѕРЅРєР°)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[14][playerid], 0.019333, 0.170074);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[14][playerid], 30.666662, 38.577793);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[14][playerid], TEXT_DRAW_ALIGN:1);
@@ -825,7 +851,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     PlayerTextDrawSetPreviewRot(playerid, VehicleShopDraw[14][playerid], 0.000000, 0.000000, -55.000000, 1.000000);
     PlayerTextDrawBackgroundColour(playerid, VehicleShopDraw[14][playerid], 0);
 
-    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 171.666809, 293.200012, "ld_beat:chit"); // Кнопка цвет (она будет менять цвет в зависимости от цвета авто в меню выбора)
+    VehicleShopDraw[15][playerid] = CreatePlayerTextDraw(playerid, 171.666809, 293.200012, "ld_beat:chit"); // РљРЅРѕРїРєР° С†РІРµС‚ (РѕРЅР° Р±СѓРґРµС‚ РјРµРЅСЏС‚СЊ С†РІРµС‚ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С†РІРµС‚Р° Р°РІС‚Рѕ РІ РјРµРЅСЋ РІС‹Р±РѕСЂР°)
     PlayerTextDrawLetterSize(playerid, VehicleShopDraw[15][playerid], 0.000000, 0.000000);
     PlayerTextDrawTextSize(playerid, VehicleShopDraw[15][playerid], 31.000032, 37.333328);
     PlayerTextDrawAlignment(playerid, VehicleShopDraw[15][playerid], TEXT_DRAW_ALIGN:1);
@@ -840,22 +866,22 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     VehShopInfo[playerid][vsTextDrawLoad] = true;
     return 1;
 }
-stock ForBizVehicleClassAndType(b, vehicleType, vehicleClass) // Расчитываем бизнесы салона, по типу и классу транспорта
+stock ForBizVehicleClassAndType(b, vehicleType, vehicleClass) // Р Р°СЃС‡РёС‚С‹РІР°РµРј Р±РёР·РЅРµСЃС‹ СЃР°Р»РѕРЅР°, РїРѕ С‚РёРїСѓ Рё РєР»Р°СЃСЃСѓ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
 {
-	// Автосалоны
+	// РђРІС‚РѕСЃР°Р»РѕРЅС‹
 	if(b == 77 && vehicleType == 1 && vehicleClass == 1) return 1; // Premium Class (77 Biz)
 	else if(b == 78 && vehicleType == 1 && vehicleClass == 2) return 1; // Middle Class (78 Biz)
 	else if(b == 79 && vehicleType == 1 && vehicleClass == 3) return 1; // Economy Class (79 Biz)
 	else if(b == 80 && vehicleType == 1 && vehicleClass == 4) return 1; // Off-Road Class (80 Biz)
 	else if(b == 81 && vehicleType == 1 && vehicleClass == 5) return 1; // Special Class (81 Biz)
 
-    // Мотосалоны
+    // РњРѕС‚РѕСЃР°Р»РѕРЅС‹
     else if(b >= 82 && b <= 86 && vehicleType == 2 && vehicleClass <= 5) return 1; // Moto
 
-    // Авиасалоны
+    // РђРІРёР°СЃР°Р»РѕРЅС‹
     else if(b >= 87 && b <= 89 && (vehicleType == 4 || vehicleType == 5) && vehicleClass <= 5) return 1; // Helicopter and Plane
 
-    // Салоны Катеров
+    // РЎР°Р»РѕРЅС‹ РљР°С‚РµСЂРѕРІ
     else if(b >= 90 && b <= 92 && vehicleType == 3 && vehicleClass <= 5) return 1; // Boat
 	return 0;
 }
