@@ -43,7 +43,7 @@ JESTER       1400      2725.3   1.5    0.0 0.0 -0.5  70  0.63 0.8  0.6      5 30
 
 CMD:vehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid, handlingid, value[24];
     if(IsPlayerInAnyVehicle(playerid))
@@ -66,7 +66,7 @@ CMD:vehhand(playerid, const params[])
 
 CMD:getvehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid, model;
     if(IsPlayerInAnyVehicle(playerid))
@@ -102,7 +102,7 @@ stock SetVehicleHandling(vehicleid, HandlingEntry:handlingid, const value[])
 
 CMD:rvehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid;
     if(IsPlayerInAnyVehicle(playerid))

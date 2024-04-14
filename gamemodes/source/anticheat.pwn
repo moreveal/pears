@@ -233,7 +233,10 @@ stock AnticheatGunKick(playerid, weaponid)
 	{
         if(ProtectInfo[playerid][prWeapon][slot] != weaponid)
         {
-            printf("[SProtect Kick]: DGun Bullet %s",PlayerInfo[playerid][pName]);
+            RemovePlayerWeapon(playerid, WEAPON:weaponid); // Отнимаем оружие у засранца
+            if(ResetAmmoUnix[playerid][slot] == 1) return ResetAmmoUnix[playerid][slot] = 0; // Защита при последнем выстреле
+
+            printf("[SProtect Kick]: DGun Bullet %s weaponid %d (ping: %d)",PlayerInfo[playerid][pName], weaponid, GetPlayerPing(playerid));
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun Bullet]");
             ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun Bullet]","*","");
             Kickx(playerid);
