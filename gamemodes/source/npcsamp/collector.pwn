@@ -1,10 +1,15 @@
 
-#define MAX_HEALTH_COLLECTOR 3000 // ХП транспорта инкассатора
+#define MAX_HEALTH_COLLECTOR 3000 // ХП транспорта инкассатора VREMENNO
+
+// Количество мешков нужно устанавливать ТОЛЬКО чётными числами
+#define BAG_COLLECTOR 8 // Количество мешком с деньгами инкассаторов
+#define MAX_ROB_BAG 2 // Количество мешков, которые может взять один игрок 
 
 new collector_health = -1;
 new collector_city;
 new collector_timer;
 new Float:collector_veh_pos[4];
+new collector_rob_bag[BAG_COLLECTOR];
 
 stock UpdateCollectorLabel()
 {
@@ -95,7 +100,12 @@ stock CollectorStart(city = -1, bool:forced = false)
     new randmoney = ServerInfo[48] - ServerInfo[44];
     new money = ServerInfo[44] + random(randmoney);
     if(money <= 0) money = 12000; // На всякий случай, малоли расчитало на 0 или на отрицательное число
-    PutThingBoot(collectorveh, 204, money, 0, 0, 0, 0, 0);
+
+    money = money/BAG_COLLECTOR; // Делим деньги на количество мешков
+    for(new i = 0; i < BAG_COLLECTOR; i++)
+    {
+        PutThingBoot(collectorveh, 204, money, 0, 0, 0, 0, i); // Кладём мешки по слотам
+    }
 
     // Запираем транспорт
     VehInfo[collectorveh][vCarLock] = 1;
@@ -130,9 +140,52 @@ stock CollectorEnd(playerid)
         // Очищаем багажник инкассаторской тачки
         ClearBootVehcileAll(collectorveh);
 
+        // Очищаем статус ограбления коллекторов
+        for(new i = 0; i < BAG_COLLECTOR; i++) collector_rob_bag[i] = 0;
+
         collector_health = -1;
     }
     return 1;
+}
+
+stock PlayerRobCollector(playerid)
+{
+    if(GetQuanCollectorRob(playerid) >= MAX_ROB_BAG)
+    {
+        new string[230];
+        format(string,sizeof(string),"{FF6347}Вы можете взять только %d мешка за одно ограбление\
+            \n{ffcc66}Выполняйте ограбление вместе с сообщниками, чтобы забрать больше\n{ffcc66}Рекомендуемое количество сообщников: %d", MAX_ROB_BAG, BAG_COLLECTOR / MAX_ROB_BAG);
+        ErrorMessage(playerid, string);
+        return 1;
+    }
+
+    PutQuanCollectorRob(playerid);
+    return 0;
+}
+
+// Записываем количество краденных мешков игроком во время ограбления
+stock PutQuanCollectorRob(playerid)
+{
+    for(new i = 0; i < BAG_COLLECTOR; i++)
+    {
+        if(collector_rob_bag[i] == 0)
+        {
+            collector_rob_bag[i] = PlayerInfo[playerid][pID];
+            break;
+        }
+    }
+    return 1;
+}
+
+// Получаем количество мешков, которые взял игрок во время ограбления
+stock GetQuanCollectorRob(playerid)
+{
+    new quan;
+    for(new i = 0; i < BAG_COLLECTOR; i++)
+    {
+        if(collector_rob_bag[i] == PlayerInfo[playerid][pID]) quan ++;
+    }
+    return quan;
 }
 
 // Объясняем, куда инкассатору нужно ехать

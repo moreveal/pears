@@ -1,5 +1,7 @@
 
-stock UpdateSqlProperties() // Сохраняем инфу о сервере в базу (для синхры)
+#define ALERT_COMPLAIT "https://forum.pears.fun/forums/zhaloby-na-administraciju.57/post-thread" // РЎСЃС‹Р»РєР° РЅР° СЃРѕР·РґР°РЅРёРµ Р¶Р°Р»РѕР±С‹ РЅР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°
+
+stock UpdateSqlProperties() // РЎРѕС…СЂР°РЅСЏРµРј РёРЅС„Сѓ Рѕ СЃРµСЂРІРµСЂРµ РІ Р±Р°Р·Сѓ (РґР»СЏ СЃРёРЅС…СЂС‹)
 {
     // if(server == 0) return 0; // VREMENNO koment
 
@@ -14,7 +16,7 @@ stock UpdateSqlProperties() // Сохраняем инфу о сервере в базу (для синхры)
     return 1;
 }
 
-stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
+stock UpdateSqlPlayer() // Р—Р°РїРёСЃС‹РІР°РµРј РІСЃРµ Р°РєРєР°СѓРЅС‚С‹ РІ С‚Р°Р±Р»РёС†Сѓ
 {
     // if(server == 0) return 0; // VREMENNO koment
 
@@ -25,13 +27,13 @@ stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
     new string_mysql[400];
     foreach(Player,i)
 	{
-        if(OnlineInfo[i][oLogged] == 0) continue; // Незалогинившихся, не показываем
+        if(OnlineInfo[i][oLogged] == 0) continue; // РќРµР·Р°Р»РѕРіРёРЅРёРІС€РёС…СЃСЏ, РЅРµ РїРѕРєР°Р·С‹РІР°РµРј
         format(string_mysql, sizeof(string_mysql), "INSERT INTO online_players ( playerId, name, accountId, score, ping ) VALUES \
             ('%d', '%s', '%d', '%d', '%d')", 
             i, 
             PlayerInfo[i][pName], 
             PlayerInfo[i][pID], 
-            (OnlineInfo[i][oLogged] == 0) ? 0 : PlayerInfo[i][pLevel], // Использование тернарного оператора здесь
+            (OnlineInfo[i][oLogged] == 0) ? 0 : PlayerInfo[i][pLevel], // РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С‚РµСЂРЅР°СЂРЅРѕРіРѕ РѕРїРµСЂР°С‚РѕСЂР° Р·РґРµСЃСЊ
             GetPlayerPing(i));
 
         mysql_tquery(pearsq_3, string_mysql);
@@ -62,7 +64,30 @@ stock SendBridgeEvent(const name[], JsonNode:data = JSON_INVALID_NODE)
     return 1;
 }
 
-// Удаляем все старые запросы от сервера
+// РћС‚РїСЂР°РІР»СЏРµРј РїРѕС‡С‚Сѓ С‡РµСЂРµР· pears_bridge
+stock SendMail(const mail[], const subject[], const body[], const name[] = "")
+{
+    SendBridgeEvent("send_mail", JSON_Object(
+        "mail", JSON_String(mail),
+        "subject", JSON_String(subject),
+        "body", JSON_String(body),
+        "name", JSON_String(name)
+    ));
+    return 1;
+}
+
+// РћС‚РїСЂР°РІР»СЏРµРј СѓРІРµРґРѕРјР»РµРЅРёРµ РЅР° С„РѕСЂСѓРј
+stock SendAlertBridge(const user_id, const body[], const url[] = "")
+{
+    SendBridgeEvent("account_alert", JSON_Object(
+        "account_id", JSON_Int(user_id),
+        "body", JSON_String(body),
+        "url", JSON_String(url)
+    ));
+    return 1;
+}
+
+// РЈРґР°Р»СЏРµРј РІСЃРµ СЃС‚Р°СЂС‹Рµ Р·Р°РїСЂРѕСЃС‹ РѕС‚ СЃРµСЂРІРµСЂР°
 stock ClearOldBridgeEvents()
 {
     if(server == 0) return 0;

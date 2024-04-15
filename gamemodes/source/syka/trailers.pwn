@@ -550,7 +550,10 @@ CMD:deletetrailer(playerid, const params[]) {
     if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Команда недоступна");
     new trailerid;
     if (sscanf(params, "d", trailerid)) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Удалить трейлер игрока [ /deletetrailer ID трейлера ]");
-    if (DeleteTrailer(trailerid)) SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер № %d", trailerid);
+    if(trailerid <= 0 || trailerid > MAX_TRAILERS) return ErrorMessage(playerid, "{FF6347}Номер трейлера не меньше 1 и не больше 1000");
+    new trid = trailerid - 1;
+    if(trailerInfo[trid][tOwnerID] == 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер не создан");
+    if (DeleteTrailer(trid)) SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я удалил трейлер № %d", trailerid);
     else SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Указанного трейлера не существует");
     return 1;
 }

@@ -1,10 +1,11 @@
 
 #define CHEAT_HISTORY 30 // количество записей варнингов у каждого игрока
-#define MAX_TRIGGER_GUN 5 // количество триггеров на dgun
+#define TRIG_DGUN 5 // количество триггеров на dgun
+#define TRIG_DISTANCE_DAMAGE 5 // количество триггеров на dgun
 
 new cheatName[][] =
 {
-    "Rvanka", "DGun"
+    "Rvanka", "DGun", "Distance Damage"
 };
 
 enum achInfo
@@ -21,107 +22,31 @@ new AnticheatInfo[MAX_REALPLAYERS][achInfo];
 new AnticheatTriggers[MAX_REALPLAYERS][sizeof(cheatName)];
 new AnticheatTick[MAX_REALPLAYERS][sizeof(cheatName)];
 
-CMD:triggers(playerid) return cmd_trigger(playerid);
-CMD:trigers(playerid) return cmd_trigger(playerid);
-CMD:triger(playerid) return cmd_trigger(playerid);
-CMD:trigger(playerid)
-{
-    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-
-    ShowMenuTriggers(playerid);
-    return 1;
-}
-
-stock ShowPlayerTriggers(playerid, targetid) // Меню конкретного игрока с триггерами
-{
-    if(!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Игрока нет в сети");
-
-    new line[100],lines[100 * CHEAT_HISTORY];
-    format(line,sizeof(line),"Триггер\tПинг\tLoss\tВремя"), strcat(lines,line);
-    for(new i = 0; i < CHEAT_HISTORY; i++)
-	{
-        if(AnticheatInfo[targetid][achTrigger][i] > 0)
-        {
-            new cheatid = AnticheatInfo[targetid][achTrigger][i] - 1;
-            new tyear, tmonth, tday, thour, tminute, tsecond;
-			stamp2datetime(AnticheatInfo[targetid][achUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
-
-            format(line,sizeof(line),"\n%s \t %d \t %f \t %02d:%02d:%02d", cheatName[cheatid], AnticheatInfo[targetid][achPing][i], AnticheatInfo[targetid][achLoss][i], thour, tminute, tsecond), strcat(lines,line);
-        }
-    }
-    format(line,sizeof(line),"{ff9000}Триггеры %s[%d]: %d", PlayerInfo[targetid][pName], targetid, AnticheatInfo[targetid][achWarnings]);
-    ShowDialog(playerid,828,DIALOG_STYLE_TABLIST_HEADERS,line,lines,"Выбор","Отмена");
-    return 1;
-}
-
 stock ShowMenuTriggers(playerid) // Меню всех игроков с триггерами онлайн
 {
     new line[214],lines[4096],quan;
 	    
-    new kolimn0 = 0; // Отображаем количество срабатываний рванки в первой колонке
-    new kolimn1 = 1; // Отображаем количество срабатываний dgun во второй колонке
+    // Триггеры на какие читы выводим в меню
+    new kolimn0 = 0; // Rvanka
+    new kolimn1 = 1; // DGun
+    new kolimn2 = 2; // Distance Damage
 
-    format(line,sizeof(line),"Имя\t%s\t%s", cheatName[kolimn0], cheatName[kolimn1]), strcat(lines,line);
+    format(line,sizeof(line),"Имя\t%s\t%s\t%s", cheatName[kolimn0], cheatName[kolimn1], cheatName[kolimn2]), strcat(lines,line);
     foreach (Player, i)
 	{
         if(AnticheatInfo[i][achWarnings] > 0)
         {
             List[quan][playerid] = i;
             quan ++;
-            format(line,sizeof(line),"\n%s[%d] \t %d \t %d", PlayerInfo[i][pName], i, AnticheatTriggers[i][kolimn0], AnticheatTriggers[i][kolimn1]), strcat(lines,line);
+            format(line,sizeof(line),"\n%s[%d] \t %d \t %d \t %d", PlayerInfo[i][pName], i, AnticheatTriggers[i][kolimn0], AnticheatTriggers[i][kolimn1], AnticheatTriggers[i][kolimn2]), strcat(lines,line);
         }
     }
     ShowDialog(playerid,830,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Триггеры Античита",lines,"Выбор","Отмена");
     return 1;
 }
 
-stock dialogCase_Anticheat(playerid, dialogid, response, listitem)
-{
-    if(dialogid == 830)
-    {
-        if(response)
-        {
-            if(listitem < 0 || listitem >= 200) return 1;
-
-            new targetid = List[listitem][playerid];
-            if(!IsOnline(targetid)) return ShowMenuTriggers(playerid); // Игрок offline
-
-            DP[0][playerid] = targetid;
-            ShowPlayerTriggers(playerid, targetid);
-        }
-    }
-    else if(dialogid == 828) ShowMenuTriggers(playerid);
-    return 1;
-}
-
-CMD:trig(playerid)
-{
-    if(server != 0) return 0;
-    TriggerCheat(playerid, 1);
-    return 1;
-}
-
-CMD:triggun(playerid)
-{
-    if(server != 0) return 0;
-    GivePlayerWeapon(playerid, WEAPON:38, 3000);
-    return 1;
-}
-
-// Удаляем один триггер
-stock ClearTrigger(playerid, cheatid, i)
-{
-    AnticheatTriggers[playerid][cheatid] --;
-    AnticheatTick[playerid][cheatid] = 0;
-
-    AnticheatInfo[playerid][achTrigger][i] = 0;
-    AnticheatInfo[playerid][achPing][i] = 0;
-    AnticheatInfo[playerid][achUnix][i] = 0;
-    AnticheatInfo[playerid][achLoss][i] = 0;
-    return 1;
-}
-
-stock TriggerCheat(playerid, cheatid) // Записываем триггер в список
+// Обработка триггера (записываем, кикаем и так далее)
+stock TriggerCheat(playerid, cheatid)
 {
     new unix = gettime();
 
@@ -131,10 +56,10 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
         {
             if(AnticheatInfo[playerid][achTrigger][i - 1] == 0) continue;
 
-            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 300 && cheatid == 0
-                || unix - AnticheatInfo[playerid][achUnix][i - 1] >= 180 && cheatid == 1)
+            if(unix - AnticheatInfo[playerid][achUnix][i - 1] >= 300 && cheatid == 0 // Устаревший триггер более 5 минут
+                || unix - AnticheatInfo[playerid][achUnix][i - 1] >= 180 && (cheatid == 1 || cheatid == 2)) // Устаревший триггер более 3 минут
             {
-                // Очищаем тригер, который хранится более 5 минут (устаревший)
+                // Очищаем устаревший триггер
                 ClearTrigger(playerid, cheatid, i);
             }
             else
@@ -167,7 +92,7 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
     // DGun
     else if(cheatid == 1)
     {
-        if(AnticheatTriggers[playerid][cheatid] >= MAX_TRIGGER_GUN)
+        if(AnticheatTriggers[playerid][cheatid] >= TRIG_DGUN)
         {
             printf("[SProtect Kick]: DGun %s",PlayerInfo[playerid][pName]);
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun]");
@@ -181,25 +106,22 @@ stock TriggerCheat(playerid, cheatid) // Записываем триггер в 
             MessageCheat(0, string);
         }
     }
+
+    // Distance Damage
+    else if(cheatid == 2)
+    {
+        if(AnticheatTriggers[playerid][cheatid] >= TRIG_DISTANCE_DAMAGE)
+        {
+            printf("[SProtect Kick]: Distance Damage %s",PlayerInfo[playerid][pName]);
+            SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [Distance Damage]");
+            ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [Distance Damage]","*","");
+            Kickx(playerid);
+        }
+    }
     return 1;
 }
 
-stock MessageCheat(cheat, const string[]) // Сообщение о читере в чат админу
-{
-	if(cheat == 0) // /rvanka
-	{
-		foreach (Player, i)
-		{
-			if(PlayerInfo[i][pSoska] >= 1 && GetPVarInt(i,"Readcheat") == 1 && OnlineInfo[i][oLogged] == 1)
-			{
-				SendClientMessage(i, COLOR_ADM, string);
-			}
-		}
-	}
-	return 1;
-}
-
-// Собираем варнинги на оружие
+// Собираем варнинги на DGun
 stock AnticheatGunTrigger(playerid, weaponid)
 {
     new slot = Protect_Slot(weaponid), unix = gettime();
@@ -243,6 +165,120 @@ stock AnticheatGunKick(playerid, weaponid)
         }
     }
     return 1;
+}
+
+stock AnticheatDistanceDamage(playerid, damagedid, weaponid)
+{
+    if(weaponid <= 15 || weaponid == 41 || weaponid == 42) // Нестреляющее оружие, Spraycan, огнетушитель
+    {
+        if(!ProxDetectorS(8.0, playerid, damagedid)) // Игроки находятся дальше 8 метров друг от друга
+        {
+            // Записываем тригер
+            TriggerCheat(playerid, 2);
+        }
+    }
+    return 1;
+}
+
+
+// Тестовая команда вывозва триггера
+CMD:trig(playerid)
+{
+    if(server != 0) return 0;
+    TriggerCheat(playerid, 2);
+    return 1;
+}
+
+// Тестовая команда выдачи оружия в обход античита (по сути, как игрок выдаёт себе читом)
+CMD:triggun(playerid)
+{
+    if(server != 0) return 0;
+    GivePlayerWeapon(playerid, WEAPON:38, 3000);
+    return 1;
+}
+
+
+// ===========================================================
+// Внизу нехер менять при добавлении новой записи для античита
+// ===========================================================
+CMD:triggers(playerid) return cmd_trigger(playerid);
+CMD:trigers(playerid) return cmd_trigger(playerid);
+CMD:triger(playerid) return cmd_trigger(playerid);
+CMD:trigger(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+    ShowMenuTriggers(playerid);
+    return 1;
+}
+
+stock ShowPlayerTriggers(playerid, targetid) // Меню конкретного игрока с триггерами
+{
+    if(!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Игрока нет в сети");
+
+    new line[100],lines[100 * CHEAT_HISTORY];
+    format(line,sizeof(line),"Триггер\tПинг\tLoss\tВремя"), strcat(lines,line);
+    for(new i = 0; i < CHEAT_HISTORY; i++)
+	{
+        if(AnticheatInfo[targetid][achTrigger][i] > 0)
+        {
+            new cheatid = AnticheatInfo[targetid][achTrigger][i] - 1;
+            new tyear, tmonth, tday, thour, tminute, tsecond;
+			stamp2datetime(AnticheatInfo[targetid][achUnix][i], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+            format(line,sizeof(line),"\n%s \t %d \t %f \t %02d:%02d:%02d", cheatName[cheatid], AnticheatInfo[targetid][achPing][i], AnticheatInfo[targetid][achLoss][i], thour, tminute, tsecond), strcat(lines,line);
+        }
+    }
+    format(line,sizeof(line),"{ff9000}Триггеры %s[%d]: %d", PlayerInfo[targetid][pName], targetid, AnticheatInfo[targetid][achWarnings]);
+    ShowDialog(playerid,828,DIALOG_STYLE_TABLIST_HEADERS,line,lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock dialogCase_Anticheat(playerid, dialogid, response, listitem)
+{
+    if(dialogid == 830)
+    {
+        if(response)
+        {
+            if(listitem < 0 || listitem >= 200) return 1;
+
+            new targetid = List[listitem][playerid];
+            if(!IsOnline(targetid)) return ShowMenuTriggers(playerid); // Игрок offline
+
+            DP[0][playerid] = targetid;
+            ShowPlayerTriggers(playerid, targetid);
+        }
+    }
+    else if(dialogid == 828) ShowMenuTriggers(playerid);
+    return 1;
+}
+
+// Удаляем один триггер
+stock ClearTrigger(playerid, cheatid, i)
+{
+    AnticheatTriggers[playerid][cheatid] --;
+    AnticheatTick[playerid][cheatid] = 0;
+
+    AnticheatInfo[playerid][achTrigger][i] = 0;
+    AnticheatInfo[playerid][achPing][i] = 0;
+    AnticheatInfo[playerid][achUnix][i] = 0;
+    AnticheatInfo[playerid][achLoss][i] = 0;
+    return 1;
+}
+
+stock MessageCheat(cheat, const string[]) // Сообщение о читере в чат админу
+{
+	if(cheat == 0) // /rvanka
+	{
+		foreach (Player, i)
+		{
+			if(PlayerInfo[i][pSoska] >= 1 && GetPVarInt(i,"Readcheat") == 1 && OnlineInfo[i][oLogged] == 1)
+			{
+				SendClientMessage(i, COLOR_ADM, string);
+			}
+		}
+	}
+	return 1;
 }
 
 // Кд античита на оружие

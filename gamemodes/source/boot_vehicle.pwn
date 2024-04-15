@@ -51,13 +51,15 @@ stock use_boot(playerid, v, inva, useinva)
 		}
 		else if(fpick == 204) // Мешок с деньгами
 		{
+			if(PlayerRobCollector(playerid)) return i_resettabs(playerid);
+
 			// Вычитаем из казны бабло (5 - ограбление)
 			getkazna(5, fquan);
 
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ухх! Мои денюжки.. Кажется в мешке было {99ff66}%d$ {cccccc}(%s)", fquan, get_k(fquan));
-			format(string, sizeof(string), "забрал%s мешок с деньгами {99ff66}%d$ {C2A2DA}(%s)", gender(playerid), fquan, get_k(fquan));
+			format(string, sizeof(string), "взял%s мешок {99ff66}%d$ {C2A2DA}(%s)", gender(playerid), fquan, get_k(fquan));
 			SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,4000);
-			format(string, sizeof(string), "* %s забрал%s мешок с деньгами {99ff66}%d$ {C2A2DA}(%s)", playername(playerid), gender(playerid), fquan, get_k(fquan));
+			format(string, sizeof(string), "* %s взял%s мешок {99ff66}%d$ {C2A2DA}(%s)", playername(playerid), gender(playerid), fquan, get_k(fquan));
 			ProxDetectorScream(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			
 			ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
