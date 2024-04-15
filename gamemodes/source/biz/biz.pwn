@@ -503,6 +503,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 190, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Ремонтный набор Мото
 		if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 199, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Обычная сигнализация
 		if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 200, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Улучшенная Сигнализация
+		if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 206, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Детали для переноса хэндлинга
 	}
 	else if(b >= 193 && b <= 195) // Сервис Авиатранспорта
 	{

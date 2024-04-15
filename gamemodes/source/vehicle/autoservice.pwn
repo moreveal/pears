@@ -1,3 +1,35 @@
+stock CheckAutoInRangeService(playerid)
+{
+    new b = gAutosalon[playerid];
+    new quan = -1, veh;
+    if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT && GetPlayerInterior(playerid) != 223) return 0;
+    for(new i = 0; i < MAX_MYVEHICLE; i++)
+	{
+		if(PlayerInfo[playerid][pMyVeh][i] > 0)
+        {
+			if(PlayerInfo[playerid][pMyVehID][i] > 0)
+			{
+                if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 10.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
+                quan = i;
+                veh = PlayerInfo[playerid][pMyVehID][i];
+                break;
+			}
+		}
+	}
+    if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
+    new v = GetPlayerVehicleID(playerid);
+    if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
+    if(VehInfo[v][vHandlingModel] == VehInfo[veh][vModel]) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорта, с которого хотите перенести");
+    if(!PutVehicleHandling(VehInfo[veh][vModel], v)) return ErrorMessage(playerid, "{FF6347}Характеристики этой модели транспорта не найден");
+    else SuccessMessage(playerid,"{44ff99}Характеристики машины были успешно изменены, другая машина была разобрана на детали");
+    if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][9]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+    VehInfo[v][vHandlingModel] = VehInfo[veh][vModel];
+    SaveCar(v);
+    oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][9]);
+    paybiz(b, BizzInfo[b][bPrice][9]);
+    DeleteMyVeh(playerid, quan);
+    return 1;
+}
 
 stock ClickTextDraw_Autoservice(playerid, Text:clickedid) // Кликаем по текстдравам
 {

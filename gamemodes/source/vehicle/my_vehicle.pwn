@@ -4457,6 +4457,11 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
 			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarm]);
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
+			cache_get_value_name_int(0, "vHandlingModel", VehInfo[vehid][vHandlingModel]);
+
+
+			// Устанавливаем хэндлинг
+			if(VehInfo[vehid][vHandlingModel] > 0)PutVehicleHandling(VehInfo[vehid][vHandlingModel], vehid);
 
 			// Загружаем содержимое багажника
 			OnLoadVehicle(vehid);
@@ -5045,4 +5050,20 @@ stock CreatePlatesVehicle()
 	}
 	format(numer, sizeof(numer), "%s %d %s%s", bukv[0], nomer, bukv[1], bukv[2]);
     return numer;
+}
+
+stock DeleteMyVeh(playerid, slot)
+{
+  new string_mysql[100];
+  format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot+1);
+  query_empty(pearsq, string_mysql);
+
+  if(PlayerInfo[playerid][pMyVehID][slot] > 0) ACDestroyVehicle(PlayerInfo[playerid][pMyVehID][slot]);
+  PlayerInfo[playerid][pMyVeh][slot] = 0;
+  PlayerInfo[playerid][pMyVehID][slot] = 0;
+
+  // Сохраняем авто
+  format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot, PlayerInfo[playerid][pID]);
+  query_empty(pearsq, string_mysql);
+  return 1;
 }
