@@ -4208,6 +4208,11 @@ stock pts(p, v)
    	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePriceGos(model)), strcat(lines,line);
 	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n"), strcat(lines,line);
 
+	if(VehInfo[v][vHandlingModel] > 0)
+	{
+		format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[v][vHandlingModel])), strcat(lines,line);
+	}
+
 	for(new i = 0; i < 13; i++)
 	{
 		if(GetVehicleComponentInSlot(v, CARMODTYPE:i) != 0) format(line,sizeof(line),"\n{0088ff}* {cccccc}%s",detalName[GetVehicleComponentInSlot(v, CARMODTYPE:i)]), strcat(lines,line);
@@ -4459,12 +4464,11 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
 			cache_get_value_name_int(0, "vHandlingModel", VehInfo[vehid][vHandlingModel]);
 
-
-			// Устанавливаем хэндлинг
-			if(VehInfo[vehid][vHandlingModel] > 0)PutVehicleHandling(VehInfo[vehid][vHandlingModel], vehid);
-
 			// Загружаем содержимое багажника
 			OnLoadVehicle(vehid);
+
+			// Загружаем детали тюнинга
+			OnLoadTunningVehicle(vehid);
 
 			VehInfo[vehid][vDeath] = false;
 			LoadTunning(vehid); // Загружаем тюнинг
@@ -4476,10 +4480,28 @@ function LoadCar(playerid, dab, race_check)
 
 			format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
 			SuccessMessage(playerid, string);
+
+			// Загружаем тюнинг транспорта с задержечкой
+			if(VehInfo[vehid][vTimerTunning] >= 0) KillTimer(VehInfo[vehid][vTimerTunning]);
+			VehInfo[vehid][vTimerTunning] = SetTimerEx("TimerLoadHandling", 2000, false, "dddd", vehid, paramet[1], paramet[0], dab);
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);
 	return 1;
+}
+
+// Возвращаем инкассатора домой после ограбления
+function TimerLoadHandling(vehicleid, model, user_id, slot)
+{
+	KillTimer(VehInfo[vehicleid][vTimerTunning]);
+	VehInfo[vehicleid][vTimerTunning] = 0;
+
+	if(VehInfo[vehicleid][vModel] == model && VehInfo[vehicleid][vSost] == user_id && VehInfo[vehicleid][vDatabase] == slot
+		&& IsValidVehicle(vehicleid))
+	{
+		SetHandlingTotal(vehicleid);
+	}
+    return 1;
 }
 
 stock OnLoadVehicle(vehid)
@@ -4505,6 +4527,85 @@ stock OnLoadVehicle(vehid)
 				JSON_GetInt(node, "type", VehInfo[vehid][vInvType][i]);
 				JSON_GetInt(node, "pack", VehInfo[vehid][vInvPack][i]);
 			}
+		}
+	}
+	return 1;
+}
+
+stock OnLoadTunningVehicle(vehid)
+{
+	for(new i = 0; i < MAX_TUNNING_VEHICLE; i++)
+	{
+		new string[20], bool:is_null;
+		format(string, sizeof(string), "t_slot_%d", i);
+		cache_is_value_name_null(0, string, is_null);
+
+		if(is_null == false)
+		{
+			new string_json[512];
+			cache_get_value_name(0, string, string_json, 512);
+
+			new JsonNode:node = JSON_INVALID_NODE;
+			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+			{
+				JSON_GetInt(node, "id", VehInfo[vehid][vTunningID][i]);
+				JSON_GetInt(node, "qara", VehInfo[vehid][vTunningQara][i]);
+			}
+		}
+	}
+	return 1;
+}
+
+stock SaveTunning(playerid, bool:transaction = true)
+{
+	// Начало транзакции
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
+
+	for(new i = 0; i < MAX_TUNNING_VEHICLE; i++) SaveOneTunning(playerid, i);
+
+	// Завершение транзакции
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
+	return 1;
+}
+
+stock CreateJsonTunning(&JsonNode:node, thingId, thingQara)
+{
+	if(thingId == 0)
+	{
+		node = JSON_INVALID_NODE;
+		return 1;
+	}
+	node = JSON_Object(
+		"id", JSON_Int(thingId),
+		"qara", JSON_Int(thingQara)
+	);
+	return 1;
+}
+
+stock SaveOneTunning(vehid, i)
+{
+	new JsonNode:node;
+	CreateJsonTunning(node, VehInfo[vehid][vTunningID][i], VehInfo[vehid][vTunningQara][i]);
+	SaveTunningByNewid(VehInfo[vehid][vNewid], i, node);
+	return 1;
+}
+
+stock SaveTunningByNewid(newid, i, JsonNode:node)
+{
+	if(node == JSON_INVALID_NODE)
+	{
+		new string_mysql[140];
+		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `t_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
+		mysql_tquery(pearsq, string_mysql);
+	}
+	else
+	{
+		new string_json[512];
+		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+		{
+			new string_mysql[640];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `t_slot_%d`= '%e' WHERE `newid` = '%d'", i, string_json, newid);
+			mysql_tquery(pearsq, string_mysql);
 		}
 	}
 	return 1;

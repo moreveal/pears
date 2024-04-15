@@ -19,11 +19,31 @@ stock CheckAutoInRangeService(playerid)
     if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
     new v = GetPlayerVehicleID(playerid);
     if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
-    if(VehInfo[v][vHandlingModel] == VehInfo[veh][vModel]) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорта, с которого хотите перенести");
-    if(!PutVehicleHandling(VehInfo[veh][vModel], v)) return ErrorMessage(playerid, "{FF6347}Характеристики этой модели транспорта не найден");
-    else SuccessMessage(playerid,"{44ff99}Характеристики машины были успешно изменены, другая машина была разобрана на детали");
+    if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
+
+    // Ищем дефолтные характеристики той тачки
+    new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
+    if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Характеристики транспорта не были найдены");
+
+    // Снимаем тюнинг с нашей тачки и кладём в багажник
+    TakeAllTunningVehicle(v);
+
+    // Перекидываем тюнинг с другой тачки на нашу
+    ReversVehicleTunning(v, veh);
+
+    // Записали характеристики другой тачки на нашу
+    VehInfo[v][vHandlingModel] = GetVehicleRealModel(veh);
+
+    // Устанавливаем все характеристики на транспорт
+    SetHandlingTotal(v);
+
+    // Сохраняем тюнинг на транспорте
+    SaveTunning(playerid);
+    
+    new string[160];
+    format(string, sizeof(string),"{99ff66}Корпус вашего транспорта был совмещён с %s\n{ffcc66}%s был разобран на запчасти", GetVehicleName(VehInfo[veh][vModel]), GetVehicleName(VehInfo[veh][vModel]));
+    SuccessMessage(playerid, string);
     if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][9]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-    VehInfo[v][vHandlingModel] = VehInfo[veh][vModel];
     SaveCar(v);
     oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][9]);
     paybiz(b, BizzInfo[b][bPrice][9]);

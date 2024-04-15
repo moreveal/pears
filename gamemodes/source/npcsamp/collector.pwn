@@ -70,7 +70,7 @@ function ResetCollector(damageid, vehicleid)
     SetVehicleZAngle(vehicleid, collector_veh_pos[3]);
 
     if(collector_timer > 0) KillTimer(collector_timer);
-    collector_timer = SetTimerEx("ComeBackCollector", 180000, true, "d", damageid);
+    collector_timer = SetTimerEx("ComeBackCollector", 180000, false, "d", damageid);
     return 1;
 }
 

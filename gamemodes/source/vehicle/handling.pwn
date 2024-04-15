@@ -1,6 +1,41 @@
 
 #define MAX_HANDLING_ID 25
 
+// Чтение HANDLING.CFG
+enum HandlingData
+{
+    HD_Name[24],
+    Float:HD_Mass,
+    Float:HD_TurnMass,
+    Float:HD_Drag,
+    Float:HD_CentreOfMassX,
+    Float:HD_CentreOfMassY,
+    Float:HD_CentreOfMassZ,
+    HD_Boyant,
+    Float:HD_TractionMultiplier,
+    Float:HD_TractionLoss,
+    Float:HD_TractionBias,
+    HD_NumberOfGears,
+    Float:HD_MaxVelocity,
+    Float:HD_EngineAcceleration,
+    Float:HD_EngineInertia,
+    HD_Zalupa[4],
+    HD_Zalupa2[4],
+    Float:HD_BrakeDeceleration,
+    Float:HD_BrakeBias,
+    HD_ABS,
+    Float:HD_SteeringLock,
+    Float:HD_SuspensionForceLevel,
+    Float:HD_SuspensionDampingLevel,
+    Float:HD_SuspensionHighSpdComDamp,
+    Float:HD_SuspensionUpperLimit,
+    Float:HD_SuspensionLowerLimit,
+    Float:HD_SuspensionBiasBetweenFrontAndRear,
+    HD_ModelID
+}
+new DefaultHandling[sizeof(vehName) + sizeof(vehNameCustom)][HandlingData];
+new HandlingVehInfo[SKOKOCAROV][HandlingData];
+
 new handlingName[][] =
 {
     "HANDLING_RESET",
@@ -41,6 +76,68 @@ drift
 JESTER       1400      2725.3   1.5    0.0 0.0 -0.5  70  0.63 0.8  0.6      5 300.0 35.0 3.0  4 p   11.0  0.51 0 75.0   0.5  0.19  0.0   0.25 -0.1  0.5   0.4 0.37 0 35000 40002004 C04000 1 1 1
 */
 
+
+/*
+Как установить тюнинг на транспорт?
+new slot = SetVehicleDetailTunning(vehicleid, thingId, thingQara);
+if(slot == -1) return ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга");
+SaveOneTunning(playerid, slot);
+
+
+Как снять деталь тюнинга с транспорта?
+new slot = RemoveDetailTunning(vehicleid, thingId);
+if(slot == -1) return ErrorMessage(playerid, "{FF6347}Эта деталь тюнинга не установлена на транспорте");
+SaveOneTunning(playerid, slot);
+*/
+
+// Ставим одну деталь тюнинга
+stock SetVehicleDetailTunning(vehicleid, thingId, thingQara)
+{
+    new slot = -1;
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        if(VehInfo[vehicleid][vTunningID][t] == 0)
+        {
+            VehInfo[vehicleid][vTunningID][t] = thingId;
+            VehInfo[vehicleid][vTunningQara][t] = thingQara;
+            slot = t;
+            break;
+        }
+    }
+    if(slot >= 0) SetHandlingTotal(vehicleid);
+    return slot;
+}
+
+// Снимаем одну деталь тюнинга по её thingId
+stock RemoveDetailTunning(vehicleid, thingId)
+{
+    new slot = -1;
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        if(VehInfo[vehicleid][vTunningID][t] == thingId)
+        {
+            VehInfo[vehicleid][vTunningID][t] = 0;
+            VehInfo[vehicleid][vTunningQara][t] = 0;
+            slot = t;
+            break;
+        }
+    }
+    if(slot >= 0) SetHandlingTotal(vehicleid, true);
+    return slot;
+}
+
+
+CMD:sethandling(playerid, const params[])
+{   
+    if(server != 0) return 0;
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить хендлинг на транспорте /sethandling VehID");
+    if(!IsValidVehicle(params[0])) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
+
+    SetHandlingTotal(params[0]);
+    SuccessMessage(playerid, "{99ff66}Хендлинг транспорта перезаписан");
+    return 1;
+}
+
 CMD:vehhand(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
@@ -59,7 +156,7 @@ CMD:vehhand(playerid, const params[])
     if(handlingid < 1 || handlingid > MAX_HANDLING_ID) return ErrorMessage(playerid, "{FF6347}HandlingID не меньше 1 и не больше 25");
     if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
     
-    SetVehicleHandling(vehicleid, HandlingEntry:handlingid, value);
+    SetVehicleHandlingPofigType(vehicleid, handlingid, value);
     SendClientMessage(playerid, -1, "Handling %s %d %s новое значение %s", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid, handlingName[handlingid], value);
     return 1;
 }
@@ -81,22 +178,28 @@ CMD:getvehhand(playerid, const params[])
     
     if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
     
-    if(!PutVehicleHandling(model, vehicleid)) return ErrorMessage(playerid, "{FF6347}Handling этой модели транспорта не найден");
+    new vehicleHandlingID = FindVehicleModelHandling(model);
+    if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Handling этой модели транспорта не найден");
+
+    VehInfo[vehicleid][vHandlingModel] = model;
+
+    // Записали хендлинг перенесённой тачки
+    SetVehicleHandlingDefault(vehicleid, vehicleHandlingID);
+
+    // Применили весь хендлинг
+    PutVehicleHandling(vehicleid);
+
     SendClientMessage(playerid, -1, "Handling %s [ID: %d] скопирован для %s [ID: %d Vehicleid: %d]", GetVehicleName(model), model, GetVehicleName(VehInfo[vehicleid][vModel]), VehInfo[vehicleid][vModel], vehicleid);
     return 1;
 }
 
 // Устанавливаем хендлинг
-stock SetVehicleHandling(vehicleid, HandlingEntry:handlingid, const value[])
+stock SetVehicleHandlingPofigType(vehicleid, handlingid, const value[])
 {
-    if(GetHandlingEntryType(handlingid) == HANDLING_TYPE_FLOAT)
-    {
-        SetVehicleHandlingFloat(vehicleid, handlingid, floatstr(value));
-    }
-    else if(GetHandlingEntryType(handlingid) == HANDLING_TYPE_INT)
-    {
-        SetVehicleHandlingInt(vehicleid, handlingid, strval(value));
-    }
+    SetVehicleHandling(vehicleid, handlingid, value); // Записываем тачке её новый хендлинг
+
+    if(GetHandlingEntryType(HandlingEntry:handlingid) == HANDLING_TYPE_FLOAT) SetVehicleHandlingFloat(vehicleid, HandlingEntry:handlingid, floatstr(value));
+    else if(GetHandlingEntryType(HandlingEntry:handlingid) == HANDLING_TYPE_INT) SetVehicleHandlingInt(vehicleid, HandlingEntry:handlingid, strval(value));
     return 1;
 }
 
@@ -115,74 +218,316 @@ CMD:rvehhand(playerid, const params[])
     }
     if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
 
-    ResetVehicleHandling(vehicleid);
+    DestroyVehicleHandling(vehicleid);
     SendClientMessage(playerid, -1, "Handling %s %d {FF6347}сброшен", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid);
     return 1;
 }
 
-// Чтение HANDLING.CFG
-enum HandlingData
+// Снимаем весь тюнинг и хендлинг с транспорта
+stock DestroyVehicleHandling(vehicleid)
 {
-    HD_Name[24],
-    Float:HD_Mass,
-    Float:HD_TurnMass,
-    Float:HD_Drag,
-    Float:HD_CentreOfMassX,
-    Float:HD_CentreOfMassY,
-    Float:HD_CentreOfMassZ,
-    HD_Boyant,
-    Float:HD_TractionMultiplier,
-    Float:HD_TractionLoss,
-    Float:HD_TractionBias,
-    HD_NumberOfGears,
-    Float:HD_MaxVelocity,
-    Float:HD_EngineAcceleration,
-    Float:HD_EngineInertia,
-    HD_Zalupa[4],
-    HD_Zalupa2[4],
-    Float:HD_BrakeDeceleration,
-    Float:HD_BrakeBias,
-    HD_ABS,
-    Float:HD_SteeringLock,
-    Float:HD_SuspensionForceLevel,
-    Float:HD_SuspensionDampingLevel,
-    Float:HD_SuspensionHighSpdComDamp,
-    Float:HD_SuspensionUpperLimit,
-    Float:HD_SuspensionLowerLimit,
-    Float:HD_SuspensionBiasBetweenFrontAndRear,
-    HD_ModelID
+    VehInfo[vehicleid][vHandlingModel] = 0;
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++) ClearTunningSlot(vehicleid, t);
+    ResetVehicleHandling(vehicleid);
+    return 1;
 }
-new HandlingInfo[sizeof(vehName) + sizeof(vehNameCustom)][HandlingData];
 
-// Кладём хандлинг одной тачки на другую
-stock PutVehicleHandling(getmodel, vehicleid)
+// Получаем 1 процент настройки в стандартном хендлинге транспорта
+stock GetOneProcentHandling(handlId, vehicleHandlingID, &Float:oneProcent)
 {
-    new v = FindVehicleModelHandling(getmodel);
-    if(v == -1) return 0;
+    new defaultValue[14];
+    GetVehicleHandlingDefault(handlId, vehicleHandlingID, defaultValue);
+    oneProcent = floatstr(defaultValue) / 100;
+    return 1;
+}
 
-    //SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingInfo[v][HD_Mass]);
-    //SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingInfo[v][HD_TurnMass]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_DRAGMULT, HandlingInfo[v][HD_Drag]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_X, HandlingInfo[v][HD_CentreOfMassX]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingInfo[v][HD_CentreOfMassY]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingInfo[v][HD_CentreOfMassZ]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONMULTIPLIER, HandlingInfo[v][HD_TractionMultiplier]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONLOSS, HandlingInfo[v][HD_TractionLoss]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONBIAS, HandlingInfo[v][HD_TractionBias]);
-    SetVehicleHandlingInt(vehicleid, HANDLING_NUMOFGEARS, HandlingInfo[v][HD_NumberOfGears]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_MAXVELOCITY, HandlingInfo[v][HD_MaxVelocity]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_ENGINEACCELERATION, HandlingInfo[v][HD_EngineAcceleration]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_ENGINEINERTIA, HandlingInfo[v][HD_EngineInertia]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_BRAKEDECELERATION, HandlingInfo[v][HD_BrakeDeceleration]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_BRAKEBIAS, HandlingInfo[v][HD_BrakeBias]);
-    SetVehicleHandlingInt(vehicleid, HANDLING_ABS, HandlingInfo[v][HD_ABS]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_STEERINGLOCK, HandlingInfo[v][HD_SteeringLock]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPFORCELEVEL, HandlingInfo[v][HD_SuspensionForceLevel]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPDAMPINGLEVEL, HandlingInfo[v][HD_SuspensionDampingLevel]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPHIGHSPDCOMDAMP, HandlingInfo[v][HD_SuspensionHighSpdComDamp]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPUPPERLIMIT, HandlingInfo[v][HD_SuspensionUpperLimit]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPLOWERLIMIT, HandlingInfo[v][HD_SuspensionLowerLimit]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPBIASBETWEEN, HandlingInfo[v][HD_SuspensionBiasBetweenFrontAndRear]);
+// Снимаем весь тюннинг с транспорта и кладём детали в багажник
+stock TakeAllTunningVehicle(vehicleid)
+{
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        if(VehInfo[vehicleid][vTunningID][t] > 0)
+        {
+            PutThingBoot(vehicleid, VehInfo[vehicleid][vTunningID][t], 1, 0, VehInfo[vehicleid][vTunningQara][t], 0, 0, 999);
+            ClearTunningSlot(vehicleid, t);
+        }
+    }
+    return 1;
+}
+
+stock ClearAllTunning(vehicleid)
+{
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++) ClearTunningSlot(vehicleid, t);
+    return 1;
+}
+
+// Очищаем тюнинг с транспорта
+stock ClearTunningSlot(vehicleid, slot)
+{
+    VehInfo[vehicleid][vTunningID][slot] = 0;
+    VehInfo[vehicleid][vTunningQara][slot] = 0;
+    return 1;
+}
+
+// Перекидываем тюнинг детали с одной машины на другую
+stock ReversVehicleTunning(vehicleid, getvehicleid)
+{
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        VehInfo[vehicleid][vTunningID][t] = VehInfo[getvehicleid][vTunningID][t];
+        VehInfo[vehicleid][vTunningQara][t] = VehInfo[getvehicleid][vTunningQara][t];
+    }
+    return 1;
+}
+
+// Ставим все характеристики в переменные
+stock SetHandlingTotal(vehicleid, bool:result = false)
+{
+    new model = GetVehicleRealModel(vehicleid);
+    new vehicleHandlingID = FindVehicleModelHandling(model);
+
+    // Записали хендлинг перенесённой тачки
+    if(VehInfo[vehicleid][vHandlingModel] > 0) result = true;
+    SetVehicleHandlingDefault(vehicleid, vehicleHandlingID);
+
+    // Записали все детали тюнинга
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        if(VehInfo[vehicleid][vTunningID][t] > 0)
+        {
+            SetVehicleTuning(vehicleid, VehInfo[vehicleid][vTunningID][t], model, vehicleHandlingID);
+            result = true;
+        }
+    }
+
+    // Применили весь хендлинг
+    if(result == true) PutVehicleHandling(vehicleid);
+    return 1;
+}
+
+// Записываем тюнинг в одной детали в переменную транспорта
+stock SetVehicleTuning(vehicleid, thingId, model = 0, vehicleHandlingID = 0)
+{
+    new plus, handl0, handl1, handl2, value0[14], value1[14], value2[14];
+    if(!GetHandlingChangeThing(thingId, plus, handl0, handl1, handl2, value0, value1, value2)) return 0;
+
+    // Получаем реальную model транспорта
+    if(model == 0) model = GetVehicleRealModel(vehicleid);
+
+    // Получаем vehiclehandlingid внутри enuma с хранением дефолтных характеристик
+    if(vehicleHandlingID == 0) vehicleHandlingID = FindVehicleModelHandling(model);
+
+    if(handl0 > 0) SetOneDetailTuning(vehicleid, plus, handl0, vehicleHandlingID, value0);
+    if(handl1 > 0) SetOneDetailTuning(vehicleid, plus, handl1, vehicleHandlingID, value1);
+    if(handl2 > 0) SetOneDetailTuning(vehicleid, plus, handl2, vehicleHandlingID, value2);
+    return 1;
+}
+
+stock SetOneDetailTuning(vehicleid, plus, handlingid, vehicleHandlingID, const value[])
+{
+    new defaultValue[14], Float:oneProcent;
+    if(plus == 0) SetVehicleHandling(vehicleid, handlingid, value);
+    else
+    {
+        GetOneProcentHandling(handlingid, vehicleHandlingID, oneProcent); // Получили 1 процент для тюнинг детали
+        GetVehicleHandling(vehicleid, handlingid, defaultValue); // Получаем это значение у транспорта
+        new handlingFormat[14];
+        format(handlingFormat,sizeof(handlingFormat),"%s",floatstr(defaultValue) + oneProcent * floatstr(value));
+        SetVehicleHandling(vehicleid, handlingid, handlingFormat);
+    }
+}
+
+// Получаем реальную модель транспорта (вдруг на ней стоит кастомный хендлинг от другого транспорта)
+stock GetVehicleRealModel(vehicleid)
+{
+    new model = VehInfo[vehicleid][vModel];
+    if(VehInfo[vehicleid][vHandlingModel] > 0) model = VehInfo[vehicleid][vHandlingModel];
+    return model;
+}
+
+// Получаем инфу, что деталь меняет и сколько даёт
+stock GetHandlingChangeThing(thingId, &plus, &handl0, &handl1, &handl2, value0[], value1[], value2[])
+{
+    if(thingId == 207) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"3.5"); // Максимальная скорость
+        format(value1, 14,"5.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else return 0;
+    return 1;
+}
+
+// Записываем хендлинг в переменную
+stock SetVehicleHandling(vehicleid, handlingId, const value[])
+{
+    switch(handlingId)
+    {
+        case 1: HandlingVehInfo[vehicleid][HD_Mass] = floatstr(value);
+        case 2: HandlingVehInfo[vehicleid][HD_TurnMass] = floatstr(value);
+        case 3: HandlingVehInfo[vehicleid][HD_Drag] = floatstr(value);
+        case 4: HandlingVehInfo[vehicleid][HD_CentreOfMassX] = floatstr(value);
+        case 5: HandlingVehInfo[vehicleid][HD_CentreOfMassY] = floatstr(value);
+        case 6: HandlingVehInfo[vehicleid][HD_CentreOfMassZ] = floatstr(value);
+        // case 1: HandlingVehInfo[vehicleid][HD_Boyant] = strval(HandlingVehInfo[vehicleid][HD_Boyant]);
+        case 7: HandlingVehInfo[vehicleid][HD_TractionMultiplier] = floatstr(value);
+        case 8: HandlingVehInfo[vehicleid][HD_TractionLoss] = floatstr(value);
+        case 9: HandlingVehInfo[vehicleid][HD_TractionBias] = floatstr(value);
+        case 10: HandlingVehInfo[vehicleid][HD_NumberOfGears] = strval(value);
+        case 11: HandlingVehInfo[vehicleid][HD_MaxVelocity] = floatstr(value);
+        case 12: HandlingVehInfo[vehicleid][HD_EngineAcceleration] = floatstr(value);
+        case 13: HandlingVehInfo[vehicleid][HD_EngineInertia] = floatstr(value);
+        //case 1: format(HandlingVehInfo[vehicleid][HD_Zalupa], 14, "%s", value);
+        //case 1: format(HandlingVehInfo[vehicleid][HD_Zalupa2], 14, "%s", value);
+        case 14: HandlingVehInfo[vehicleid][HD_BrakeDeceleration] = floatstr(value);
+        case 15: HandlingVehInfo[vehicleid][HD_BrakeBias] = floatstr(value);
+        case 16: HandlingVehInfo[vehicleid][HD_ABS] = strval(value);
+        case 17: HandlingVehInfo[vehicleid][HD_SteeringLock] = floatstr(value);
+        case 18: HandlingVehInfo[vehicleid][HD_SuspensionForceLevel] = floatstr(value);
+        case 19: HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel] = floatstr(value);
+        case 20: HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp] = floatstr(value);
+        case 21: HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit] = floatstr(value);
+        case 22: HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit] = floatstr(value);
+        case 23: HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear] = floatstr(value);
+        default: {}
+    }
+    return 1;
+}
+
+// Берём хендлинг из переменной
+stock GetVehicleHandling(vehicleid, handlingId, value[])
+{
+    switch(handlingId)
+    {
+        case 1: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_Mass]);
+        case 2: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_TurnMass]);
+        case 3: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_Drag]);
+        case 4: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
+        case 5: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_CentreOfMassY]);
+        case 6: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
+        // case 1: format(value, 14, "%d", HandlingVehInfo[vehicleid][HD_Boyant]);
+        case 7: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_TractionMultiplier]);
+        case 8: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_TractionLoss]);
+        case 9: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_TractionBias]);
+        case 10: format(value, 14, "%d", HandlingVehInfo[vehicleid][HD_NumberOfGears]);
+        case 11: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_MaxVelocity]);
+        case 12: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_EngineAcceleration]);
+        case 13: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_EngineInertia]);
+        //case 1: format(value, 14, "%s", HandlingVehInfo[vehicleid][HD_Zalupa]);
+        //case 1: format(value, 14, "%s", HandlingVehInfo[vehicleid][HD_Zalupa2]);
+        case 14: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeDeceleration]);
+        case 15: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeBias]);
+        case 16: format(value, 14, "%d", HandlingVehInfo[vehicleid][HD_ABS]);
+        case 17: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SteeringLock]);
+        case 18: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionForceLevel]);
+        case 19: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel]);
+        case 20: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp]);
+        case 21: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
+        case 22: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
+        case 23: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
+        default: {}
+    }
+    return 1;
+}
+
+// Берём дефолтный хендлинг
+stock GetVehicleHandlingDefault(handlingId, vehicleHandlingID, value[])
+{
+    switch(handlingId)
+    {
+        case 1: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_Mass]);
+        case 2: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_TurnMass]);
+        case 3: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_Drag]);
+        case 4: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_CentreOfMassX]);
+        case 5: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_CentreOfMassY]);
+        case 6: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_CentreOfMassZ]);
+        // case 1: format(value, 14, "%d", DefaultHandling[vehicleHandlingID][HD_Boyant]);
+        case 7: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_TractionMultiplier]);
+        case 8: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_TractionLoss]);
+        case 9: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_TractionBias]);
+        case 10: format(value, 14, "%d", DefaultHandling[vehicleHandlingID][HD_NumberOfGears]);
+        case 11: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_MaxVelocity]);
+        case 12: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_EngineAcceleration]);
+        case 13: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_EngineInertia]);
+        //case 1: format(value, 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa]);
+        //case 1: format(value, 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa2]);
+        case 14: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeDeceleration]);
+        case 15: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeBias]);
+        case 16: format(value, 14, "%d", DefaultHandling[vehicleHandlingID][HD_ABS]);
+        case 17: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SteeringLock]);
+        case 18: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionForceLevel]);
+        case 19: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionDampingLevel]);
+        case 20: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionHighSpdComDamp]);
+        case 21: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionUpperLimit]);
+        case 22: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionLowerLimit]);
+        case 23: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionBiasBetweenFrontAndRear]);
+        default: {}
+    }
+    return 1;
+}
+
+// Перекидываем дефолтное значение характеристик транспорта
+stock SetVehicleHandlingDefault(vehicleid, vehicleHandlingID)
+{
+    HandlingVehInfo[vehicleid][HD_Mass] = DefaultHandling[vehicleHandlingID][HD_Mass];
+    HandlingVehInfo[vehicleid][HD_TurnMass] = DefaultHandling[vehicleHandlingID][HD_TurnMass];
+    HandlingVehInfo[vehicleid][HD_Drag] = DefaultHandling[vehicleHandlingID][HD_Drag];
+    HandlingVehInfo[vehicleid][HD_CentreOfMassX] = DefaultHandling[vehicleHandlingID][HD_CentreOfMassX];
+    HandlingVehInfo[vehicleid][HD_CentreOfMassY] = DefaultHandling[vehicleHandlingID][HD_CentreOfMassY];
+    HandlingVehInfo[vehicleid][HD_CentreOfMassZ] = DefaultHandling[vehicleHandlingID][HD_CentreOfMassZ];
+    // format(HandlingVehInfo[vehicleid][HD_Boyant], 14, "%d", DefaultHandling[vehicleHandlingID][HD_Boyant]);
+    HandlingVehInfo[vehicleid][HD_TractionMultiplier] = DefaultHandling[vehicleHandlingID][HD_TractionMultiplier];
+    HandlingVehInfo[vehicleid][HD_TractionLoss] = DefaultHandling[vehicleHandlingID][HD_TractionLoss];
+    HandlingVehInfo[vehicleid][HD_TractionBias] = DefaultHandling[vehicleHandlingID][HD_TractionBias];
+    HandlingVehInfo[vehicleid][HD_NumberOfGears] = DefaultHandling[vehicleHandlingID][HD_NumberOfGears];
+    HandlingVehInfo[vehicleid][HD_MaxVelocity] = DefaultHandling[vehicleHandlingID][HD_MaxVelocity];
+    HandlingVehInfo[vehicleid][HD_EngineAcceleration] = DefaultHandling[vehicleHandlingID][HD_EngineAcceleration];
+    HandlingVehInfo[vehicleid][HD_EngineInertia] = DefaultHandling[vehicleHandlingID][HD_EngineInertia];
+    // format(HandlingVehInfo[vehicleid][HD_Zalupa], 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa]);
+    // format(HandlingVehInfo[vehicleid][HD_Zalupa2], 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa2]);
+    HandlingVehInfo[vehicleid][HD_BrakeDeceleration] = DefaultHandling[vehicleHandlingID][HD_BrakeDeceleration];
+    HandlingVehInfo[vehicleid][HD_BrakeBias] = DefaultHandling[vehicleHandlingID][HD_BrakeBias];
+    HandlingVehInfo[vehicleid][HD_ABS] = DefaultHandling[vehicleHandlingID][HD_ABS];
+    HandlingVehInfo[vehicleid][HD_SteeringLock] = DefaultHandling[vehicleHandlingID][HD_SteeringLock];
+    HandlingVehInfo[vehicleid][HD_SuspensionForceLevel] = DefaultHandling[vehicleHandlingID][HD_SuspensionForceLevel];
+    HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel] = DefaultHandling[vehicleHandlingID][HD_SuspensionDampingLevel];
+    HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp] = DefaultHandling[vehicleHandlingID][HD_SuspensionHighSpdComDamp];
+    HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit] = DefaultHandling[vehicleHandlingID][HD_SuspensionUpperLimit];
+    HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit] = DefaultHandling[vehicleHandlingID][HD_SuspensionLowerLimit];
+    HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear] = DefaultHandling[vehicleHandlingID][HD_SuspensionBiasBetweenFrontAndRear];
+    return 1;
+}
+
+// Присваиваем итоговый хендлинг на транспорт
+stock PutVehicleHandling(vehicleid)
+{
+    //SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingVehInfo[vehicleid][HD_Mass]);
+    //SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_DRAGMULT, HandlingVehInfo[vehicleid][HD_Drag]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_X, HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingVehInfo[vehicleid][HD_CentreOfMassY]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONMULTIPLIER, HandlingVehInfo[vehicleid][HD_TractionMultiplier]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONLOSS, HandlingVehInfo[vehicleid][HD_TractionLoss]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONBIAS, HandlingVehInfo[vehicleid][HD_TractionBias]);
+    SetVehicleHandlingInt(vehicleid, HANDLING_NUMOFGEARS, HandlingVehInfo[vehicleid][HD_NumberOfGears]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_MAXVELOCITY, HandlingVehInfo[vehicleid][HD_MaxVelocity]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_ENGINEACCELERATION, HandlingVehInfo[vehicleid][HD_EngineAcceleration]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_ENGINEINERTIA, HandlingVehInfo[vehicleid][HD_EngineInertia]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_BRAKEDECELERATION, HandlingVehInfo[vehicleid][HD_BrakeDeceleration]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_BRAKEBIAS, HandlingVehInfo[vehicleid][HD_BrakeBias]);
+    SetVehicleHandlingInt(vehicleid, HANDLING_ABS, HandlingVehInfo[vehicleid][HD_ABS]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_STEERINGLOCK, HandlingVehInfo[vehicleid][HD_SteeringLock]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPFORCELEVEL, HandlingVehInfo[vehicleid][HD_SuspensionForceLevel]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPDAMPINGLEVEL, HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPHIGHSPDCOMDAMP, HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPUPPERLIMIT, HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPLOWERLIMIT, HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPBIASBETWEEN, HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
     return 1;
 }
 
@@ -192,7 +537,7 @@ stock FindVehicleModelHandling(model)
     new findHandling = -1;
     for(new v = 0; v < sizeof(vehName) + sizeof(vehNameCustom); v++)
     {
-        if(HandlingInfo[v][HD_ModelID] == model)
+        if(DefaultHandling[v][HD_ModelID] == model)
         {
             findHandling = v;
             break;
@@ -212,33 +557,33 @@ stock ReadHandlingCFG()
             case '/', ';', '%', '!', '$', '^': continue;
         }
         if(!sscanf(line, "s[14]ffffffifffifffccffifffffff", 
-            HandlingInfo[quan][HD_Name],
-            HandlingInfo[quan][HD_Mass],
-            HandlingInfo[quan][HD_TurnMass],
-            HandlingInfo[quan][HD_Drag],
-            HandlingInfo[quan][HD_CentreOfMassX],
-            HandlingInfo[quan][HD_CentreOfMassY],
-            HandlingInfo[quan][HD_CentreOfMassZ],
-            HandlingInfo[quan][HD_Boyant],
-            HandlingInfo[quan][HD_TractionMultiplier],
-            HandlingInfo[quan][HD_TractionLoss],
-            HandlingInfo[quan][HD_TractionBias],
-            HandlingInfo[quan][HD_NumberOfGears],
-            HandlingInfo[quan][HD_MaxVelocity],
-            HandlingInfo[quan][HD_EngineAcceleration],
-            HandlingInfo[quan][HD_EngineInertia],
-            HandlingInfo[quan][HD_Zalupa],
-            HandlingInfo[quan][HD_Zalupa2],
-            HandlingInfo[quan][HD_BrakeDeceleration],
-            HandlingInfo[quan][HD_BrakeBias],
-            HandlingInfo[quan][HD_ABS],
-            HandlingInfo[quan][HD_SteeringLock],
-            HandlingInfo[quan][HD_SuspensionForceLevel],
-            HandlingInfo[quan][HD_SuspensionDampingLevel],
-            HandlingInfo[quan][HD_SuspensionHighSpdComDamp],
-            HandlingInfo[quan][HD_SuspensionUpperLimit],
-            HandlingInfo[quan][HD_SuspensionLowerLimit],
-            HandlingInfo[quan][HD_SuspensionBiasBetweenFrontAndRear]))
+            DefaultHandling[quan][HD_Name],
+            DefaultHandling[quan][HD_Mass],
+            DefaultHandling[quan][HD_TurnMass],
+            DefaultHandling[quan][HD_Drag],
+            DefaultHandling[quan][HD_CentreOfMassX],
+            DefaultHandling[quan][HD_CentreOfMassY],
+            DefaultHandling[quan][HD_CentreOfMassZ],
+            DefaultHandling[quan][HD_Boyant],
+            DefaultHandling[quan][HD_TractionMultiplier],
+            DefaultHandling[quan][HD_TractionLoss],
+            DefaultHandling[quan][HD_TractionBias],
+            DefaultHandling[quan][HD_NumberOfGears],
+            DefaultHandling[quan][HD_MaxVelocity],
+            DefaultHandling[quan][HD_EngineAcceleration],
+            DefaultHandling[quan][HD_EngineInertia],
+            DefaultHandling[quan][HD_Zalupa],
+            DefaultHandling[quan][HD_Zalupa2],
+            DefaultHandling[quan][HD_BrakeDeceleration],
+            DefaultHandling[quan][HD_BrakeBias],
+            DefaultHandling[quan][HD_ABS],
+            DefaultHandling[quan][HD_SteeringLock],
+            DefaultHandling[quan][HD_SuspensionForceLevel],
+            DefaultHandling[quan][HD_SuspensionDampingLevel],
+            DefaultHandling[quan][HD_SuspensionHighSpdComDamp],
+            DefaultHandling[quan][HD_SuspensionUpperLimit],
+            DefaultHandling[quan][HD_SuspensionLowerLimit],
+            DefaultHandling[quan][HD_SuspensionBiasBetweenFrontAndRear]))
         {
             quan ++;
         }
@@ -274,10 +619,10 @@ stock ReadVehicleIDE()
         {
             for(new v = 0; v < sizeof(vehName) + sizeof(vehNameCustom); v++)
             {
-                if(strfind(HandlingInfo[v][HD_Name], Temp[VD_Handling],true) != (-1))
+                if(strfind(DefaultHandling[v][HD_Name], Temp[VD_Handling],true) != (-1))
                 {
-                    if(Temp[VD_Id] > 15000) HandlingInfo[v][HD_ModelID] = Temp[VD_Id] - 13066;
-                    else HandlingInfo[v][HD_ModelID] = Temp[VD_Id];
+                    if(Temp[VD_Id] > 15000) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13066;
+                    else DefaultHandling[v][HD_ModelID] = Temp[VD_Id];
                 }
             }
         }
