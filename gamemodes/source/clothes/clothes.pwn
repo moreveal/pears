@@ -9,7 +9,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 115
+#define MAX_SKIN_CUSTOM 140
 
 new SkinGos[312 + MAX_SKIN_CUSTOM]; // Стоимости скинов
 new bool:skingosUpdate;
@@ -179,6 +179,31 @@ stock AddCustomSkins()
 	AddCharSyncModel(303, 425); // 15613, pearscop5 male
 	AddCharSyncModel(142, 426); // 15614, pearspedcv male
 	AddCharSyncModel(221, 427); // 15615, pearspedcw male
+	AddCharSyncModel(277, 428); // 15616, astronaut all
+	AddCharSyncModel(6, 429); // 15617, jason male
+	AddCharSyncModel(21, 430); // 15618, prisonblack male
+	AddCharSyncModel(141, 431); // 15619, pearspedcx female
+	AddCharSyncModel(144, 432); // 15620, pearspedcy male
+	AddCharSyncModel(287, 433); // 15621, pearspedcz male
+	AddCharSyncModel(146, 434); // 15622, pearspedda male
+	AddCharSyncModel(42, 435); // 15623, pearspeddb male
+	AddCharSyncModel(287, 436); // 15624, pearspeddc male
+	AddCharSyncModel(307, 437); // 15625, pearspeddd female
+	AddCharSyncModel(310, 438); // 15626, pearspedde male
+	AddCharSyncModel(306, 439); // 15627, pearscop6 female
+	AddCharSyncModel(281, 440); // 15628, pearspeddf male
+	AddCharSyncModel(280, 441); // 15629, pearspeddg male
+	AddCharSyncModel(265, 442); // 15630, pearspeddh male
+	AddCharSyncModel(310, 443); // 15631, pearspeddi male
+	AddCharSyncModel(306, 444); // 15632, pearspeddj female
+	AddCharSyncModel(306, 445); // 15633, pearspeddk female
+	AddCharSyncModel(282, 446); // 15634, pearspeddl male
+	AddCharSyncModel(282, 447); // 15635, pearspeddm male
+	AddCharSyncModel(282, 448); // 15636, pearspeddn male
+	AddCharSyncModel(282, 449); // 15637, pearspeddo male
+	AddCharSyncModel(282, 450); // 15638, pearspeddp male
+	AddCharSyncModel(282, 451); // 15639, pearspeddq male
+	AddCharSyncModel(306, 452); // 15640, pearspeddr female
     return 1;
 }
 
@@ -198,11 +223,12 @@ stock GetSkinSex(s)
 	|| s == 313 || s == 315 || s == 316 || s >= 318 && s <= 322 || s >= 326 && s <= 336
 	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
-	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425) return 1; // 0 - мужской скин
+	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
+	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451) return 1; // 1 - мужской скин
 
-	else if(s == 285 || s == 426 || s == 427) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	else if(s == 285 || s == 426 || s == 427 || s == 428) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
- 	else return 2; // Все остальные 1, значит женские
+ 	else return 2; // Все остальные 2, значит женские
 }
 
 // Проверка на доступные ID скинов

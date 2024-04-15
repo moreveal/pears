@@ -41,7 +41,7 @@ new vehNameCustom[][] =
 	"Crown Vic", "Crown Vic Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Nissan Silvia S13",
 	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Mercedes EQS 580", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
-	"VW Golf MK2", "BMW 7", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
+	"VW Golf MK2", "BMW 725il", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
 	"Range Rover", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35"
 };
 
@@ -81,7 +81,8 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
 	1200000,1200000,7000000,3500000,3500000,500000,1200000, // 2043 - 2049
 	3000000,900000,4700000,700000,1200000,17000000,70000000, // 2050 - 2056
 	11000000,1800000,2100000,9000000,6000000,2900000,500000,500000, // 2057 - 2064
-	300000 // 2065
+	300000, 5500000, 750000, 6600000, 7000000, 28000000, 32000000, 70000000, // 2065 - 2072
+	3200000, 2900000, 2500000, 2200000 // 20673 - 2076
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
