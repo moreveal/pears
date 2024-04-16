@@ -60,13 +60,14 @@ stock use_boot(playerid, v, inva, useinva)
 			format(string, sizeof(string), "взял%s мешок {99ff66}%d$ {C2A2DA}(%s)", gender(playerid), fquan, get_k(fquan));
 			SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,4000);
 			format(string, sizeof(string), "* %s взял%s мешок {99ff66}%d$ {C2A2DA}(%s)", playername(playerid), gender(playerid), fquan, get_k(fquan));
-			ProxDetectorScream(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			ProxDetectorScream(10.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			
 			ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
 			oGivePlayerMoney(playerid, fquan);
 			PlayerPlaySound(playerid,5600,0,0,0);
 			TakeBoot(v, fpick, fquan, thingType, inva);
 			MoneyLog("robcollector", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, "Ограбил инкассаторов");
+			i_resettabs(playerid);
 			return 1;
 		}
 	}

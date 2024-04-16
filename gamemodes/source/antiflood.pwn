@@ -71,6 +71,7 @@ stock CallOnePublic(playerid, publicid, interval)
             return 1;
         }
     }
+    else AntiFloodInfo[playerid][afQuan][publicid] = 0;
     return 0;
 }
 
