@@ -618,7 +618,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 new string[70];
                 format(string,sizeof(string),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid);
                 SendClientMessage(playerid, COLOR_GREY, string);
-                AdminLog("ikea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", IkeaInfo[oid][iModel], "IKEA");
+                AdminLog("ikea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", IkeaInfo[oid][iModel], "добавил");
             }
             if(gRedakt[playerid] == 16)
             {

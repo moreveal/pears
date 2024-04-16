@@ -171,7 +171,7 @@ stock AnticheatDistanceDamage(playerid, damagedid, weaponid)
 {
     if(weaponid <= 15 || weaponid == 41 || weaponid == 42) // Нестреляющее оружие, Spraycan, огнетушитель
     {
-        if(!ProxDetectorS(8.0, playerid, damagedid)) // Игроки находятся дальше 8 метров друг от друга
+        if(!ProxDetectorS(4.0, playerid, damagedid)) // Игроки находятся дальше 8 метров друг от друга
         {
             // Записываем тригер
             TriggerCheat(playerid, 2);
