@@ -106,23 +106,49 @@ stock openMenu_VehicleShop(playerid)
     else return 0;
 }
 
-stock closeTestDrive(playerid)
+function TimerLoadAutoservice(playerid)
 {
-    VehShopInfo[playerid][vsTest] = false;
+    if(IsOnline(playerid) && gAutosalon[playerid] > 0)
+	{
+        new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
 
-    if(gAutosalon[playerid] > 0) // Тест драйв автосервиса
-    {
         // Садим игрока обратно в транспорт
-        Protect_PutPlayerInVehicle(playerid, OnlineInfo[playerid][oAutoserviceVeh], 0);
-        
-        // Возвращаем транспорт на позицию в автосервис
-        vehiclePositionAutoservice(OnlineInfo[playerid][oAutoserviceVeh]);
+        Protect_PutPlayerInVehicle(playerid, vehicleid, 0);
 
         // Открываем меню автосервиса
 		showPlayerAutoserviceMenu(playerid);
 
-        // Возвращаем нормально камеру
-        playerDefaultCameraAutoservice(playerid);
+        if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]), OnlineInfo[playerid][oTimerAutoservice] = 0;
+    }
+    return 1;
+}
+
+stock closeTestDrive(playerid)
+{
+    if(VehShopInfo[playerid][vsTest] == false) return 1; // Блокируем повторный выход из тест драйва
+
+    VehShopInfo[playerid][vsTest] = false;
+    if(gAutosalon[playerid] > 0) // Тест драйв автосервиса
+    {
+        new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
+
+        // Ставим игрока в автосервисе
+        S_SetPlayerVirtualWorld(playerid,playerid+1,223);
+        SetPlayerInterior(playerid,223);
+        PPSetPlayerPos(playerid,-1131.3629,2865.5681,918.0888);
+        SetPlayerFacingAngle(playerid, 0.6306);
+        VehInfo[vehicleid][vSeat] = 0; // Отмечаем, что игрок уже не в транспорте
+
+        // Возвращаем транспорт на позицию в автосервис
+        vehiclePositionAutoservice(vehicleid, playerid);
+
+        // Чиним транспорт после тест драйва
+        ACRepairVehicle(vehicleid);
+        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel]));
+
+        // Таймер для корректного возвращение игрока в транспорт
+        if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]);
+		OnlineInfo[playerid][oTimerAutoservice] = SetTimerEx("TimerLoadAutoservice", 2000, false, "d", playerid);
     }
     else
     {    

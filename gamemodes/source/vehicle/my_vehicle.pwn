@@ -4018,7 +4018,15 @@ stock SaveMyVehiclePos(vehicleid) // Сохраняем позицию личн�
 	VehInfo[vehicleid][vKoordinatZ] = pos[2];
 	VehInfo[vehicleid][vKoordinatA] = pos[3];
 
-	GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:VehInfo[vehicleid][vPanels], VEHICLE_DOOR_STATUS:VehInfo[vehicleid][vDoors], VEHICLE_LIGHT_STATUS:VehInfo[vehicleid][vFara], VEHICLE_TYRE_STATUS:VehInfo[vehicleid][vTires]);
+	// Транспорт внутри тестдрайва всегда полностью отремонтирован
+	if(VehInfo[vehicleid][vTestDrive] > 0)
+	{
+		VehInfo[vehicleid][vPanels] = 0;
+		VehInfo[vehicleid][vDoors] = 0;
+		VehInfo[vehicleid][vFara] = 0;
+		VehInfo[vehicleid][vTires] = 0;
+	}
+	else GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:VehInfo[vehicleid][vPanels], VEHICLE_DOOR_STATUS:VehInfo[vehicleid][vDoors], VEHICLE_LIGHT_STATUS:VehInfo[vehicleid][vFara], VEHICLE_TYRE_STATUS:VehInfo[vehicleid][vTires]);
 	return 1;
 }
 
@@ -4481,27 +4489,12 @@ function LoadCar(playerid, dab, race_check)
 			format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
 			SuccessMessage(playerid, string);
 
-			// Загружаем тюнинг транспорта с задержечкой
-			if(VehInfo[vehid][vTimerTunning] >= 0) KillTimer(VehInfo[vehid][vTimerTunning]);
-			VehInfo[vehid][vTimerTunning] = SetTimerEx("TimerLoadHandling", 4000, false, "dddd", vehid, paramet[1], paramet[0], dab);
+			// Загружаем тюнинг транспорта
+			SetHandlingTotal(vehid);
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);
 	return 1;
-}
-
-// Возвращаем инкассатора домой после ограбления
-function TimerLoadHandling(vehicleid, model, user_id, slot)
-{
-	KillTimer(VehInfo[vehicleid][vTimerTunning]);
-	VehInfo[vehicleid][vTimerTunning] = 0;
-
-	if(VehInfo[vehicleid][vModel] == model && VehInfo[vehicleid][vSost] == user_id && VehInfo[vehicleid][vDatabase] == slot
-		&& IsValidVehicle(vehicleid))
-	{
-		SetHandlingTotal(vehicleid);
-	}
-    return 1;
 }
 
 stock OnLoadVehicle(vehid)

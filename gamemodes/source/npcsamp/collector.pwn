@@ -10,6 +10,7 @@ new collector_city;
 new collector_timer;
 new Float:collector_veh_pos[4];
 new collector_rob_bag[BAG_COLLECTOR];
+new bool:collector_onemessage;
 
 stock UpdateCollectorLabel()
 {
@@ -33,6 +34,29 @@ stock CollectorDamage(playerid, damageid)
     new string[70];
 	format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d/%d", collector_health, MAX_HEALTH_COLLECTOR);
     GameTextForPlayer(playerid, string, 2000, 3);
+
+    // Сообщение законникам о нападении на инкассаторскую машину
+    if(collector_onemessage == false // Ещё не сообщали
+        && collector_health <= MAX_HEALTH_COLLECTOR - 100) // Хп меньше полного на 100 (сделано для того, чтобы обычные редкие постреливания не принимать за нападение)
+    {
+        collector_onemessage = true; // Сообщение всего один раз за рейс
+
+        // Ищем район нападения
+        new Float:pos_veh[3];
+        GetVehiclePos(GetPlayerVehicleID(damageid), pos_veh[0], pos_veh[1], pos_veh[2]);
+        new findraiontolist = FindRaionPos(pos_veh[0], pos_veh[1], pos_veh[2]);
+
+        foreach (Player, i)
+        {
+            if(OnlineInfo[i][oLogged] == 0
+                || PlayerInfo[i][pBkyrenie] >= 2
+                || PlayerInfo[i][pTransmitterOff][5] == true) continue;
+            if(IsACop(i) || PlayerInfo[i][pFbi] >= 1)
+            {
+                SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, "[DEP]: Нападение на инкассаторскую машину, %s[%d] в районе %s", rpplayername(playerid), playerid, gSAZones[findraiontolist][zName]);
+            }
+        }
+    }
 
     if(collector_health <= 0)
     {
@@ -144,6 +168,7 @@ stock CollectorEnd(playerid)
         for(new i = 0; i < BAG_COLLECTOR; i++) collector_rob_bag[i] = 0;
 
         collector_health = -1;
+        collector_onemessage = false;
     }
     return 1;
 }

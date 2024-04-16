@@ -117,34 +117,31 @@ stock playerDefaultCameraAutoservice(playerid)
     return 1;
 }
 
-stock vehiclePositionAutoservice(vehicleid)
+stock vehiclePositionAutoservice(vehicleid, playerid)
 {
-    if(VehInfo[vehicleid][vTestDrive] > 0)
+    VehInfo[vehicleid][vTestDrive] = 0;
+    new model = VehInfo[vehicleid][vModel];
+    if(IsAMoto(model))
     {
-        new playerid = VehInfo[vehicleid][vTestDrive] - 1;
-        new model = VehInfo[vehicleid][vModel];
-        if(IsAMoto(model))
-        {
-            ACSetVehiclePos(vehicleid,-1137.9078,2867.5972,917.8622);
-            SetVehicleZAngle(vehicleid, 250.4064);
-        }
-        else if(IsABig(model))
-        {
-            ACSetVehiclePos(vehicleid,-1126.8308,2880.2805,918.4659);
-            SetVehicleZAngle(vehicleid, 179.0594);
-        }
-        else
-        {
-            ACSetVehiclePos(vehicleid,-1138.4857,2875.1323,917.9734);
-            SetVehicleZAngle(vehicleid, 249.8055);
-        }
-        GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-        SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
-        VehInfo[vehicleid][vEngine] = 0;
-        VehInfo[vehicleid][vLights] = 0;
-        SetVehicleVirtualWorld(vehicleid, playerid+1);
-        LinkVehicleToInterior(vehicleid, 223);
+        ACSetVehiclePos(vehicleid,-1137.9078,2867.5972,917.8622);
+        SetVehicleZAngle(vehicleid, 250.4064);
     }
+    else if(IsABig(model))
+    {
+        ACSetVehiclePos(vehicleid,-1126.8308,2880.2805,918.4659);
+        SetVehicleZAngle(vehicleid, 179.0594);
+    }
+    else
+    {
+        ACSetVehiclePos(vehicleid,-1138.4857,2875.1323,917.9734);
+        SetVehicleZAngle(vehicleid, 249.8055);
+    }
+    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+    SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
+    VehInfo[vehicleid][vEngine] = 0;
+    VehInfo[vehicleid][vLights] = 0;
+    SetVehicleVirtualWorld(vehicleid, playerid+1);
+    LinkVehicleToInterior(vehicleid, 223);
     return 1;
 }
 
@@ -152,8 +149,21 @@ stock openTestDrive_Autoservice(playerid)
 {
     if(gAutosalon[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы не находитесь в автосервисе");
     new vehicleid = GetPlayerVehicleID(playerid);
-    if(Cars[vehicleid] != 88) return ErrorMessage(playerid, "{FF6347}Тест драйв доступен только для личного транспорта");
-    if(GetPVarInt(playerid,"tunstat") > 0) return ErrorMessage(playerid, "{FF6347}Сохраните или отмените выбранную деталь\n{ffcc66}Тест драйв доступен только для проверки характеристик транспорта");
+    if(Cars[vehicleid] != 88) return ErrorMessage(playerid, "{FF6347}Test Drive доступен только для личного транспорта");
+    if(GetPVarInt(playerid,"tunstat") > 0) return ErrorMessage(playerid, "{FF6347}Сохраните или отмените выбранную деталь\n{ffcc66}Test Drive доступен только для проверки характеристик транспорта");
+    if(OnlineInfo[playerid][oTimerAutoservice] > 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения выхода из тест драйва");
+
+    new Float:health, Float:max_health = MaxVehicleHealth(VehInfo[vehicleid][vModel]);
+    GetVehicleHealth(vehicleid, health);
+    if(health < max_health) return ErrorMessage(playerid, "{FF6347}Почините двигатель транспорта, прежде чем использовать Test Drive");
+
+    if(IsACar(VehInfo[vehicleid][vModel]))
+    {
+        new panels, vehdoors, vehlights, tires;
+        GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:panels, VEHICLE_DOOR_STATUS:vehdoors, VEHICLE_LIGHT_STATUS:vehlights, VEHICLE_TYRE_STATUS:tires);
+        if(panels != 0 || vehdoors != 0 || vehlights != 0 || tires != 0) return ErrorMessage(playerid, "{FF6347}Почините транспорт, прежде чем использовать Test Drive");
+    }
+    
     VehShopInfo[playerid][vsTest] = true;
 
     HidePlayerDialog(playerid); // Сбрасываем диалоговые окна
@@ -166,10 +176,19 @@ stock openTestDrive_Autoservice(playerid)
     SetPlayerInterior(playerid, 0);
     LinkVehicleToInterior(vehicleid, 0);
 
+	VehInfo[vehicleid][vTestDrive] = playerid + 1; // Транспорт находится в Test Drive
     positionVehicleTestDrive(vehicleid);
 
     SetCameraBehindPlayer(playerid); // Возвращаем камеру
     SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
+
+    // Запускаем транспорт
+    GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+    SetVehicleParamsEx(vehicleid, true, true, alarm, doors, bonnet, boot, objective);
+    VehInfo[vehicleid][vLights] = 1;
+    VehInfo[vehicleid][vEngine] = 1;
+
+    if(PlayerInfo[playerid][pDrawVisible][7] == false && setting_pos_draw[playerid] != 8 && setting_size_draw[playerid] != 8) ShowVehSpeed(playerid);
     return 1;
 }
 
