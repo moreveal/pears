@@ -348,7 +348,7 @@ stock OnLoadSkinOrganization(f, g)
 		if(is_null == false)
 		{
 			new string_json[512];
-			cache_get_value_name(0, string, string_json, 512);
+			cache_get_value_name(f, string, string_json, 512);
 
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
@@ -401,28 +401,6 @@ stock SaveOneSkinOrganization(g, i)
 	}
 	return 1;
 }
-
-/*stock SaveSkin(idx) // Сохранения id скина организации, стоимости и ранга с которого он доступен
-{
-	new string_mysql[304 + 220 + 377 + 220 + 376 + 231]; // 1688
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `skin0`='%d',`skin1`='%d',`skin2`='%d',`skin3`='%d',`skin4`='%d',`skin5`='%d',`skin6`='%d',`skin7`='%d',`skin8`='%d',`skin9`='%d',\
-	`skin10`='%d',`skin11`='%d',`skin12`='%d',`skin13`='%d',`skin14`='%d',`skin15`='%d',`skin16`='%d',`skin17`='%d',`skin18`='%d',`skin19`='%d',",
-	OrganInfo[idx][gSkin][0],OrganInfo[idx][gSkin][1],OrganInfo[idx][gSkin][2],OrganInfo[idx][gSkin][3],OrganInfo[idx][gSkin][4],OrganInfo[idx][gSkin][5],OrganInfo[idx][gSkin][6],
-	OrganInfo[idx][gSkin][7],OrganInfo[idx][gSkin][8],OrganInfo[idx][gSkin][9],OrganInfo[idx][gSkin][10],OrganInfo[idx][gSkin][11],OrganInfo[idx][gSkin][12],OrganInfo[idx][gSkin][13],
-	OrganInfo[idx][gSkin][14],OrganInfo[idx][gSkin][15],OrganInfo[idx][gSkin][16],OrganInfo[idx][gSkin][17],OrganInfo[idx][gSkin][18],OrganInfo[idx][gSkin][19]);
-	format(string_mysql, sizeof(string_mysql), "%s`skinprice0`='%d',`skinprice1`='%d',`skinprice2`='%d',`skinprice3`='%d',`skinprice4`='%d',`skinprice5`='%d',`skinprice6`='%d',`skinprice7`='%d',`skinprice8`='%d',`skinprice9`='%d',\
-	`skinprice10`='%d',`skinprice11`='%d',`skinprice12`='%d',`skinprice13`='%d',`skinprice14`='%d',`skinprice15`='%d',`skinprice16`='%d',`skinprice17`='%d',`skinprice18`='%d',`skinprice19`='%d',",  string_mysql,
-	OrganInfo[idx][gSkinPrice][0],OrganInfo[idx][gSkinPrice][1],OrganInfo[idx][gSkinPrice][2],OrganInfo[idx][gSkinPrice][3],OrganInfo[idx][gSkinPrice][4],OrganInfo[idx][gSkinPrice][5],OrganInfo[idx][gSkinPrice][6],
-	OrganInfo[idx][gSkinPrice][7],OrganInfo[idx][gSkinPrice][8],OrganInfo[idx][gSkinPrice][9],OrganInfo[idx][gSkinPrice][10],OrganInfo[idx][gSkinPrice][11],OrganInfo[idx][gSkinPrice][12],OrganInfo[idx][gSkinPrice][13],
-	OrganInfo[idx][gSkinPrice][14],OrganInfo[idx][gSkinPrice][15],OrganInfo[idx][gSkinPrice][16],OrganInfo[idx][gSkinPrice][17],OrganInfo[idx][gSkinPrice][18],OrganInfo[idx][gSkinPrice][19]);
-	format(string_mysql, sizeof(string_mysql), "%s`skinrank0`='%d',`skinrank1`='%d',`skinrank2`='%d',`skinrank3`='%d',`skinrank4`='%d',`skinrank5`='%d',`skinrank6`='%d',`skinrank7`='%d',`skinrank8`='%d',`skinrank9`='%d',\
-	`skinrank10`='%d',`skinrank11`='%d',`skinrank12`='%d',`skinrank13`='%d',`skinrank14`='%d',`skinrank15`='%d',`skinrank16`='%d',`skinrank17`='%d',`skinrank18`='%d',`skinrank19`='%d' WHERE `frakid`='%d'", string_mysql,
-	OrganInfo[idx][gSkinRank][0],OrganInfo[idx][gSkinRank][1],OrganInfo[idx][gSkinRank][2],OrganInfo[idx][gSkinRank][3],OrganInfo[idx][gSkinRank][4],OrganInfo[idx][gSkinRank][5],OrganInfo[idx][gSkinRank][6],
-	OrganInfo[idx][gSkinRank][7],OrganInfo[idx][gSkinRank][8],OrganInfo[idx][gSkinRank][9],OrganInfo[idx][gSkinRank][10],OrganInfo[idx][gSkinRank][11],OrganInfo[idx][gSkinRank][12],OrganInfo[idx][gSkinRank][13],
-	OrganInfo[idx][gSkinRank][14],OrganInfo[idx][gSkinRank][15],OrganInfo[idx][gSkinRank][16],OrganInfo[idx][gSkinRank][17],OrganInfo[idx][gSkinRank][18],OrganInfo[idx][gSkinRank][19],idx);
-	query_empty(pearsq_2, string_mysql);
-	return 1;
-}*/
 
 stock SaveOrgan(idx)
 {

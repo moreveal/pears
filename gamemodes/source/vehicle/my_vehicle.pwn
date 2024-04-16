@@ -4483,7 +4483,7 @@ function LoadCar(playerid, dab, race_check)
 
 			// Загружаем тюнинг транспорта с задержечкой
 			if(VehInfo[vehid][vTimerTunning] >= 0) KillTimer(VehInfo[vehid][vTimerTunning]);
-			VehInfo[vehid][vTimerTunning] = SetTimerEx("TimerLoadHandling", 2000, false, "dddd", vehid, paramet[1], paramet[0], dab);
+			VehInfo[vehid][vTimerTunning] = SetTimerEx("TimerLoadHandling", 4000, false, "dddd", vehid, paramet[1], paramet[0], dab);
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);
