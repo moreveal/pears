@@ -504,6 +504,25 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 199, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Обычная сигнализация
 		if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 200, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Улучшенная Сигнализация
 		if(BizzInfo[b][bProduct][9] == 0 || stat == 1) BizzInfo[b][bProduct][9] = 206, BizzInfo[b][bTypeProduct][9] = 0, yes[9] = true; // Детали для переноса хэндлинга
+		if(BizzInfo[b][bProduct][10] == 0 || stat == 1) BizzInfo[b][bProduct][10] = 207, BizzInfo[b][bTypeProduct][10] = 0, yes[10] = true; // Движок
+		if(BizzInfo[b][bProduct][11] == 0 || stat == 1) BizzInfo[b][bProduct][11] = 208, BizzInfo[b][bTypeProduct][11] = 0, yes[11] = true; // Движок
+		if(BizzInfo[b][bProduct][12] == 0 || stat == 1) BizzInfo[b][bProduct][12] = 209, BizzInfo[b][bTypeProduct][12] = 0, yes[12] = true; // Движок
+		if(BizzInfo[b][bProduct][13] == 0 || stat == 1) BizzInfo[b][bProduct][13] = 210, BizzInfo[b][bTypeProduct][13] = 0, yes[13] = true; // Движок
+		if(BizzInfo[b][bProduct][14] == 0 || stat == 1) BizzInfo[b][bProduct][14] = 211, BizzInfo[b][bTypeProduct][14] = 0, yes[14] = true; // Трансмиссия
+		if(BizzInfo[b][bProduct][15] == 0 || stat == 1) BizzInfo[b][bProduct][15] = 212, BizzInfo[b][bTypeProduct][15] = 0, yes[15] = true; // Трансмиссия
+		if(BizzInfo[b][bProduct][16] == 0 || stat == 1) BizzInfo[b][bProduct][16] = 213, BizzInfo[b][bTypeProduct][16] = 0, yes[16] = true; // Трансмиссия
+		if(BizzInfo[b][bProduct][17] == 0 || stat == 1) BizzInfo[b][bProduct][17] = 214, BizzInfo[b][bTypeProduct][17] = 0, yes[17] = true; // Трансмиссия
+		if(BizzInfo[b][bProduct][18] == 0 || stat == 1) BizzInfo[b][bProduct][18] = 215, BizzInfo[b][bTypeProduct][18] = 0, yes[18] = true; // Подвеска
+		if(BizzInfo[b][bProduct][19] == 0 || stat == 1) BizzInfo[b][bProduct][19] = 216, BizzInfo[b][bTypeProduct][19] = 0, yes[19] = true; // Подвеска
+		if(BizzInfo[b][bProduct][20] == 0 || stat == 1) BizzInfo[b][bProduct][20] = 217, BizzInfo[b][bTypeProduct][20] = 0, yes[20] = true; // Подвеска
+		if(BizzInfo[b][bProduct][21] == 0 || stat == 1) BizzInfo[b][bProduct][21] = 218, BizzInfo[b][bTypeProduct][21] = 0, yes[21] = true; // Шины
+		if(BizzInfo[b][bProduct][22] == 0 || stat == 1) BizzInfo[b][bProduct][22] = 219, BizzInfo[b][bTypeProduct][22] = 0, yes[22] = true; // Шины
+		if(BizzInfo[b][bProduct][23] == 0 || stat == 1) BizzInfo[b][bProduct][23] = 220, BizzInfo[b][bTypeProduct][23] = 0, yes[23] = true; // Шины
+		if(BizzInfo[b][bProduct][24] == 0 || stat == 1) BizzInfo[b][bProduct][24] = 221, BizzInfo[b][bTypeProduct][24] = 0, yes[24] = true; // Тормоза
+		if(BizzInfo[b][bProduct][25] == 0 || stat == 1) BizzInfo[b][bProduct][25] = 222, BizzInfo[b][bTypeProduct][25] = 0, yes[25] = true; // Тормоза
+		if(BizzInfo[b][bProduct][26] == 0 || stat == 1) BizzInfo[b][bProduct][26] = 223, BizzInfo[b][bTypeProduct][26] = 0, yes[26] = true; // Тормоза
+		if(BizzInfo[b][bProduct][27] == 0 || stat == 1) BizzInfo[b][bProduct][27] = 224, BizzInfo[b][bTypeProduct][27] = 0, yes[27] = true; // Движок Топовый
+
 	}
 	else if(b >= 193 && b <= 195) // Сервис Авиатранспорта
 	{

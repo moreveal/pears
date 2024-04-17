@@ -4543,6 +4543,7 @@ stock OnLoadTunningVehicle(vehid)
 			{
 				JSON_GetInt(node, "id", VehInfo[vehid][vTunningID][i]);
 				JSON_GetInt(node, "qara", VehInfo[vehid][vTunningQara][i]);
+				JSON_GetInt(node, "type", VehInfo[vehid][vTunningType][i]);
 			}
 		}
 	}
@@ -4561,7 +4562,7 @@ stock SaveTunning(playerid, bool:transaction = true)
 	return 1;
 }
 
-stock CreateJsonTunning(&JsonNode:node, thingId, thingQara)
+stock CreateJsonTunning(&JsonNode:node, thingId, thingQara,tuningType)
 {
 	if(thingId == 0)
 	{
@@ -4570,7 +4571,8 @@ stock CreateJsonTunning(&JsonNode:node, thingId, thingQara)
 	}
 	node = JSON_Object(
 		"id", JSON_Int(thingId),
-		"qara", JSON_Int(thingQara)
+		"qara", JSON_Int(thingQara),
+		"type", JSON_Int(tuningType)
 	);
 	return 1;
 }
@@ -4578,7 +4580,7 @@ stock CreateJsonTunning(&JsonNode:node, thingId, thingQara)
 stock SaveOneTunning(vehid, i)
 {
 	new JsonNode:node;
-	CreateJsonTunning(node, VehInfo[vehid][vTunningID][i], VehInfo[vehid][vTunningQara][i]);
+	CreateJsonTunning(node, VehInfo[vehid][vTunningID][i], VehInfo[vehid][vTunningQara][i],VehInfo[vehid][vTunningType][i]);
 	SaveTunningByNewid(VehInfo[vehid][vNewid], i, node);
 	return 1;
 }

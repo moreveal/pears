@@ -33,8 +33,8 @@ new vehClassName[][] =
 new vehNameCustom[][] =
 {
     "Lamba Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35 Tun", 
-	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW 325 E30",
-	"Mercedes G65", "Ford Raptor", "Audi RS5", "BMW 325I E30", "BMW X6M", "VW Golf", "Cadillac Fleetwood", "BMW 750il E38",
+	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M635CSI E24",
+	"Mercedes Brabus B800", "Ford Raptor", "Audi RS5", "BMW 325I E30", "BMW X6M", "VW Golf", "Cadillac Fleetwood", "BMW 750il E38",
 	"Dodge Super Bee", "Ford GT", "Lamba Centenario", "Mercedes W124", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
 	"Shelby GT 500", "Supra MK5", "Toyota GT AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Cabriolet", "BMW 325I E30",
 	"Arm Cargo", "Ford Raptor", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "Ferrari F1",
@@ -152,8 +152,8 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(602, 2010); // Nissan 350Z (Alpha)					LQ
 	AddVehicleSyncModel(579, 2011); // Audi Q7 (Huntley)					MQ
 	AddVehicleSyncModel(426, 2012); // BMW 530i (Premier)					LQ
-	AddVehicleSyncModel(602, 2013); // BMW 325 (Alpha)						MQ
-	AddVehicleSyncModel(579, 2014); // Mercedes G65 (Huntley)				LQ			(Не открывается и не ломается Капот)
+	AddVehicleSyncModel(602, 2013); // BMW M635CSI E24 (Alpha)						MQ
+	AddVehicleSyncModel(579, 2014); // Mercedes Brabus B800 (Huntley)				LQ			(Не открывается и не ломается Капот)
 	AddVehicleSyncModel(554, 2015); // Ford Raptor (Yosomite)				LQ
 	AddVehicleSyncModel(602, 2016); // Audi RS5	(Alpha)						LQ
 	AddVehicleSyncModel(551, 2017);	// BMW 325i E30 (Merit)					LQ

@@ -91,7 +91,7 @@ SaveOneTunning(playerid, slot);
 */
 
 // Ставим одну деталь тюнинга
-stock SetVehicleDetailTunning(vehicleid, thingId, thingQara)
+stock SetVehicleDetailTunning(vehicleid, thingId, thingQara,tuningType)
 {
     new slot = -1;
     for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
@@ -100,11 +100,26 @@ stock SetVehicleDetailTunning(vehicleid, thingId, thingQara)
         {
             VehInfo[vehicleid][vTunningID][t] = thingId;
             VehInfo[vehicleid][vTunningQara][t] = thingQara;
+            VehInfo[vehicleid][vTunningType][t] = tuningType;
             slot = t;
             break;
         }
     }
     if(slot >= 0) SetHandlingTotal(vehicleid);
+    return slot;
+}
+
+stock GetVehicleDetailTunning(vehicleid, tuningType)
+{
+    new slot;
+    for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
+    {
+        if(VehInfo[vehicleid][vTunningType][t] == tuningType)
+        {
+            slot = 1;
+            break;
+        }
+    }
     return slot;
 }
 
@@ -116,8 +131,7 @@ stock RemoveDetailTunning(vehicleid, thingId)
     {
         if(VehInfo[vehicleid][vTunningID][t] == thingId)
         {
-            VehInfo[vehicleid][vTunningID][t] = 0;
-            VehInfo[vehicleid][vTunningQara][t] = 0;
+            ClearTunningSlot(playerid,t);
             slot = t;
             break;
         }
@@ -248,7 +262,7 @@ stock TakeAllTunningVehicle(vehicleid)
     {
         if(VehInfo[vehicleid][vTunningID][t] > 0)
         {
-            PutThingBoot(vehicleid, VehInfo[vehicleid][vTunningID][t], 1, 0, VehInfo[vehicleid][vTunningQara][t], 0, 0, 999);
+            PutThingBoot(vehicleid, VehInfo[vehicleid][vTunningID][t], 1, VehInfo[vehicleid][vTunningType][t], VehInfo[vehicleid][vTunningQara][t], 0, 0, 999);
             ClearTunningSlot(vehicleid, t);
         }
     }
@@ -266,6 +280,7 @@ stock ClearTunningSlot(vehicleid, slot)
 {
     VehInfo[vehicleid][vTunningID][slot] = 0;
     VehInfo[vehicleid][vTunningQara][slot] = 0;
+    VehInfo[vehicleid][vTunningType][slot] = 0;
     return 1;
 }
 
@@ -276,6 +291,7 @@ stock ReversVehicleTunning(vehicleid, getvehicleid)
     {
         VehInfo[vehicleid][vTunningID][t] = VehInfo[getvehicleid][vTunningID][t];
         VehInfo[vehicleid][vTunningQara][t] = VehInfo[getvehicleid][vTunningQara][t];
+        VehInfo[vehicleid][vTunningType][t] = VehInfo[getvehicleid][vTunningType][t];
     }
     return 1;
 }
@@ -332,7 +348,9 @@ stock SetOneDetailTuning(vehicleid, plus, handlingid, vehicleHandlingID, const v
         GetOneProcentHandling(handlingid, vehicleHandlingID, oneProcent); // Получили 1 процент для тюнинг детали
         GetVehicleHandling(vehicleid, handlingid, defaultValue); // Получаем это значение у транспорта
         new handlingFormat[14];
-        format(handlingFormat,sizeof(handlingFormat),"%s",floatstr(defaultValue) + oneProcent * floatstr(value));
+        format(handlingFormat,sizeof(handlingFormat),"%f",floatstr(defaultValue) + oneProcent * floatstr(value));
+        printf("%s",handlingFormat);
+        printf("%f,%f,%f",floatstr(defaultValue),oneProcent,floatstr(value));
         SetVehicleHandling(vehicleid, handlingid, handlingFormat);
     }
 }
@@ -354,8 +372,178 @@ stock GetHandlingChangeThing(thingId, &plus, &handl0, &handl1, &handl2, value0[]
         handl0 = 11;
         handl1 = 12;
         handl2 = 0;
-        format(value0, 14,"3.5"); // Максимальная скорость
-        format(value1, 14,"5.5"); // Разгон
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 208) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 209) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 210) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 211) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 212) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 213) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 214) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 215) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 216) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 217) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 218) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 219) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 220) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 221) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 222) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 223) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
+        format(value2, 14,"0.0");
+    }
+    else if(thingId == 224) // Турбонаддув Garrett
+    {
+        plus = 1;
+        handl0 = 11;
+        handl1 = 12;
+        handl2 = 0;
+        format(value0, 14,"5.5"); // Максимальная скорость
+        format(value1, 14,"3.5"); // Разгон
         format(value2, 14,"0.0");
     }
     else return 0;
