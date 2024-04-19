@@ -1090,6 +1090,15 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
             format(line,sizeof(line),"\n{ff9000}* {cccccc}%s",detalName[GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i)]), strcat(lines,line);
         }
     }
+    format(line,sizeof(line),"\n\n{ff9000}Установленный Тюнинг"), strcat(lines,line);
+    for(new i;i< MAX_TUNNING_VEHICLE;i++)
+    {
+        if(VehInfo[vehicleid][vTunningID][i] > 0)
+        {
+            if(VehInfo[vehicleid][vTunningType][i] == 0) format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s% | + %s%]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][1]), strcat(lines,line);
+            else format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s% ]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0]), strcat(lines,line);
+        }
+    }
 
     if(stat == 0)
     {

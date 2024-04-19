@@ -4471,6 +4471,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarm]);
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
 			cache_get_value_name_int(0, "vHandlingModel", VehInfo[vehid][vHandlingModel]);
+			cache_get_value_name_float(0, "vTunningBPAN", VehInfo[vehid][vTunningBPAN]);
 
 			// Загружаем содержимое багажника
 			OnLoadVehicle(vehid);
@@ -4491,6 +4492,13 @@ function LoadCar(playerid, dab, race_check)
 
 			// Загружаем тюнинг транспорта
 			SetHandlingTotal(vehid);
+
+
+			// Высота подвески
+			if(VehInfo[vehid][vTunningBPAN] > 0)
+			{
+				SetVehicleHandlingFloat(vehid, HANDLING_SUSPFORCELEVEL, VehInfo[vehid][vTunningBPAN]);
+			}
 		}
 	}
 	SetPVarInt(playerid,"stopload",0);
@@ -4550,12 +4558,12 @@ stock OnLoadTunningVehicle(vehid)
 	return 1;
 }
 
-stock SaveTunning(playerid, bool:transaction = true)
+stock SaveTunning(v, bool:transaction = true)
 {
 	// Начало транзакции
 	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new i = 0; i < MAX_TUNNING_VEHICLE; i++) SaveOneTunning(playerid, i);
+	for(new i = 0; i < MAX_TUNNING_VEHICLE; i++) SaveOneTunning(v, i);
 
 	// Завершение транзакции
 	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
