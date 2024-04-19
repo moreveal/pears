@@ -36,10 +36,10 @@ new vehNameCustom[][] =
 	"Lancer Evolution IX", "Shkoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M635CSI E24",
 	"Mercedes Brabus B800", "Ford Raptor", "Audi RS5", "BMW 325I E30", "BMW X6M", "VW Golf", "Cadillac Fleetwood", "BMW 750il E38",
 	"Dodge Super Bee", "Ford GT", "Lamba Centenario", "Mercedes W124", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
-	"Shelby GT 500", "Supra MK5", "Toyota GT AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Cabriolet", "BMW 325I E30",
+	"Shelby GT 500", "Toyota Supra MK5", "Toyota AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Continental GT", "BMW 325I E30",
 	"Arm Cargo", "Ford Raptor", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "Ferrari F1",
-	"Crown Vic", "Crown Vic Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Nissan Silvia S13",
-	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Mercedes EQS 580", "Mercedes Sprinter", "Ferrari Enzo",
+	"Ford Crown Victoria", "Ford Crown Victoria Dep", "Ford Expedition", "Ford Explorer Dep", "Ford Explorer Police", "Ford Focus ST", "Nissan Silvia S13",
+	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Audi RS6 C5", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
 	"VW Golf MK2", "BMW 725il", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
 	"Range Rover", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35"
@@ -169,11 +169,11 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(602, 2027);	// Nissan 240SX (Alpha)					LQ
 	AddVehicleSyncModel(451, 2028); // Porsche 911 GT2 (Turismo)			LQ
 	AddVehicleSyncModel(402, 2029);	// Shelby GT 500 (Buffalo)				LQ
-	AddVehicleSyncModel(562, 2030); // Supra MK5 (Elegy)					LQ
+	AddVehicleSyncModel(562, 2030); // Toyota Supra MK5 (Elegy)					LQ
 	AddVehicleSyncModel(558, 2031); // Toyota GT AE86 (Uranus)				LQ
 	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)						LQ
 	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)			MQ
-	AddVehicleSyncModel(533, 2034); // Bentley Cabriolet (Feltzer)
+	AddVehicleSyncModel(533, 2034); // Bentley Continental GT (Feltzer)
 	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
 	AddVehicleSyncModel(548, 2036); // Arm Cargo (cargobob)
 	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
@@ -182,11 +182,11 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
 	AddVehicleSyncModel(528, 2041); // Truck SWAT (fbitruck)
 	AddVehicleSyncModel(494, 2042); // Ferrari F1 (hotring)
-	AddVehicleSyncModel(426, 2043); // Crown Vic (Premier)
-	AddVehicleSyncModel(426, 2044); // Crown Vic Dep (Premier)
-	AddVehicleSyncModel(490, 2045); // Expedition (fbirancher)
-	AddVehicleSyncModel(490, 2046); // Explorer Dep (fbirancher)
-	AddVehicleSyncModel(490, 2047); // Explorer Police (fbirancher)
+	AddVehicleSyncModel(426, 2043); // Ford Crown Victoria (Premier)
+	AddVehicleSyncModel(426, 2044); // Ford Crown Victoria Dep (Premier)
+	AddVehicleSyncModel(490, 2045); // Ford Expedition (fbirancher)
+	AddVehicleSyncModel(490, 2046); // Ford Explorer Dep (fbirancher)
+	AddVehicleSyncModel(490, 2047); // Ford Explorer Police (fbirancher)
 	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
 	AddVehicleSyncModel(503, 2049); // Nissan Silvia s13 (hotrinb)
 	AddVehicleSyncModel(500, 2050); // Jeep Wrangler (mesa)
@@ -219,7 +219,6 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(560, 2076); // Nissan GT-R R35
 	return 1;
 }
-
 // Проверка на доступный транспорт
 stock IsAVehExisting(v)
 {
