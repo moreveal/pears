@@ -3,7 +3,7 @@
 // Имена NPC
 new npcNames[][] =
 {
-    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Vinni_Vinson"
+    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Mr_Winston"
 };
 
 enum npcInfo

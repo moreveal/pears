@@ -127,13 +127,14 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     {
         new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
-        if(dist > 200.0 && distStreet > 30.0)
+        if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
         {
-            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
+            format(string,sizeof(string),"{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше %.0f метров от дома", DomInfo[oid][dMapDistance]);
+            ErrorMessage(playerid, string);
             CancelEditable(playerid);
             return 1;
         }
-        
+
         new findSlot = getFreeSlotObjectDom(oid);
         if(findSlot == -1)
         {
@@ -579,9 +580,11 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		{
             new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
             new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
-            if(dist > 200.0 && distStreet > 30.0)
+            if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
             {
-                ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от дома");
+                new string[150];
+                format(string,sizeof(string),"{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше %.0f метров от дома", DomInfo[oid][dMapDistance]);
+                ErrorMessage(playerid, string);
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
                 return 1;
             }

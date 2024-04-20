@@ -164,7 +164,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 37) // /cuff /uncuff", // 37
     {
-        if(IsAPoliceFunction(g) || g == 7)  return 1;
+        if(IsAPoliceFunction(g) || g == 3 || g == 7)  return 1;
     }
     else if(accessId == 38) // /stun /unstun", // 38 [ASGH]
     {

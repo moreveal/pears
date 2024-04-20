@@ -1,4 +1,27 @@
 
+CMD:domdist(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить радиус для мапа дома [ /domdist ID Радиус ]");
+	if(params[0] > MAX_DOM || params[0] < 1) return ErrorMessage(playerid, "{FF6347}Несуществующий номер дома");
+	if(params[1] <= 10.0 || params[1] >= 200.0) return ErrorMessage(playerid, "{FF6347}Радиус не меньше 10 и не больше 200");
+
+	DomInfo[params[0]][dMapDistance] = params[1];
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s изменил радиус маппинга для дома № %d (%d метров)", PlayerInfo[playerid][pName], params[0], params[1]);
+ 	ABroadCast(COLOR_ADM,string,1);
+
+	new string_mysql[100];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `dMapDistance`='%f' WHERE `Ids`='%d'", DomInfo[params[0]][dMapDistance], params[0]);
+	query_empty(pearsq, string_mysql);
+
+	HouseLog(0, "domdist", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], params[0], params[1], "Дистанция маппинга");
+	format(string, sizeof(string), "Дом %d, %d метров", params[0], params[1]);
+	AdminLog("domdist", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
+	return 1;
+}
+
 stock getFreeSlotObjectDom(dom)
 {
 	new slot = -1;

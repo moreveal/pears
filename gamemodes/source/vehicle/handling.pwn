@@ -362,6 +362,9 @@ stock SetHandlingTotal(vehicleid, bool:result = false)
     new model = GetVehicleRealModel(vehicleid);
     new vehicleHandlingID = FindVehicleModelHandling(model);
 
+    // Если не нашли хендлинг транспорта, останавливаем установку
+    if(vehicleHandlingID <= 0) return 1;
+
     // Записали хендлинг перенесённой тачки
     if(VehInfo[vehicleid][vHandlingModel] > 0) result = true;
     SetVehicleHandlingDefault(vehicleid, vehicleHandlingID);

@@ -246,6 +246,7 @@ stock UseRevival(playerid,targetid)
 
 stock CloseRevival(playerid,targetid)
 {
+    if(playerid == 9999) return 0;
     if(DeathInfo[targetid][deathStatus] == false) return 0;
     new Float:x,Float:y,Float:z;
     GetPlayerPos(targetid,x,y,z);
@@ -257,8 +258,8 @@ stock CloseRevival(playerid,targetid)
     {
         new string[65];
         format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
-        ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
         ErrorMessage(targetid,string);
+        ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
         return 1;
     }
     if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= friskPrice[8]*3;
