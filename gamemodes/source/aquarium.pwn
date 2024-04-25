@@ -5,26 +5,26 @@
 enum aquaINFO
 { 
     aqNewid,
-    aqFishStat[MAX_FISH_IN_AQUARIUM], // Статус рыбки (0 нету, 1 всё ок, 2 сдохла)
-    aqFishObject[MAX_FISH_IN_AQUARIUM], // Объекты рыбки
-    aqFishSatiety[MAX_FISH_IN_AQUARIUM], // Сытость рыбки
-    aqFishSide[MAX_FISH_IN_AQUARIUM], // Куда плывет рыба (0 в лево, 1 в право)
-    aqTextObject[MAX_FISH_IN_AQUARIUM], // Объект имени и статуса рыбки
-    Float:aqFishZ[MAX_FISH_IN_AQUARIUM], // По какой высоте плавает рыбка
+    aqFishStat[MAX_FISH_IN_AQUARIUM], // РЎС‚Р°С‚СѓСЃ СЂС‹Р±РєРё (0 РЅРµС‚Сѓ, 1 РІСЃС‘ РѕРє, 2 СЃРґРѕС…Р»Р°)
+    aqFishObject[MAX_FISH_IN_AQUARIUM], // РћР±СЉРµРєС‚С‹ СЂС‹Р±РєРё
+    aqFishSatiety[MAX_FISH_IN_AQUARIUM], // РЎС‹С‚РѕСЃС‚СЊ СЂС‹Р±РєРё
+    aqFishSide[MAX_FISH_IN_AQUARIUM], // РљСѓРґР° РїР»С‹РІРµС‚ СЂС‹Р±Р° (0 РІ Р»РµРІРѕ, 1 РІ РїСЂР°РІРѕ)
+    aqTextObject[MAX_FISH_IN_AQUARIUM], // РћР±СЉРµРєС‚ РёРјРµРЅРё Рё СЃС‚Р°С‚СѓСЃР° СЂС‹Р±РєРё
+    Float:aqFishZ[MAX_FISH_IN_AQUARIUM], // РџРѕ РєР°РєРѕР№ РІС‹СЃРѕС‚Рµ РїР»Р°РІР°РµС‚ СЂС‹Р±РєР°
 
-    Float:aqTop, // Верхняя часть аквариума
-    Float:aqBottom, // Нижняя часть аквариума
-    Float:aqLeft, // Левая часть аквариума
-    Float:aqRight, // Правая часть аквариума
-    Float:aqDistX, // Расстояние от аквариума слева направо
-    Float:aqDistY, // Расстояние от аквариума снизу вверх
+    Float:aqTop, // Р’РµСЂС…РЅСЏСЏ С‡Р°СЃС‚СЊ Р°РєРІР°СЂРёСѓРјР°
+    Float:aqBottom, // РќРёР¶РЅСЏСЏ С‡Р°СЃС‚СЊ Р°РєРІР°СЂРёСѓРјР°
+    Float:aqLeft, // Р›РµРІР°СЏ С‡Р°СЃС‚СЊ Р°РєРІР°СЂРёСѓРјР°
+    Float:aqRight, // РџСЂР°РІР°СЏ С‡Р°СЃС‚СЊ Р°РєРІР°СЂРёСѓРјР°
+    Float:aqDistX, // Р Р°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ Р°РєРІР°СЂРёСѓРјР° СЃР»РµРІР° РЅР°РїСЂР°РІРѕ
+    Float:aqDistY, // Р Р°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ Р°РєРІР°СЂРёСѓРјР° СЃРЅРёР·Сѓ РІРІРµСЂС…
 
-    aqFeedFish, // Кормление рыбок
-    aqFullSatiety[MAX_FISH_IN_AQUARIUM], // Рыбка похавала
-    aqCdFeed // Кд на кормление рыбок
+    aqFeedFish, // РљРѕСЂРјР»РµРЅРёРµ СЂС‹Р±РѕРє
+    aqFullSatiety[MAX_FISH_IN_AQUARIUM], // Р С‹Р±РєР° РїРѕС…Р°РІР°Р»Р°
+    aqCdFeed // РљРґ РЅР° РєРѕСЂРјР»РµРЅРёРµ СЂС‹Р±РѕРє
 };
 new AquariumInfo[MAX_AQUARIUM][aquaINFO];
-new FishName[MAX_AQUARIUM][MAX_FISH_IN_AQUARIUM][11]; // Имя рыбки
+new FishName[MAX_AQUARIUM][MAX_FISH_IN_AQUARIUM][11]; // РРјСЏ СЂС‹Р±РєРё
 
 stock CreateFish(aquaid, fishid)
 {
@@ -39,19 +39,19 @@ stock CreateFish(aquaid, fishid)
 
 stock PutFishInAquarium(aquaid, fishid)
 {
-    if(AquariumInfo[aquaid][aqFishStat][fishid] == 1) // Рыбка живая и плавает
+    if(AquariumInfo[aquaid][aqFishStat][fishid] == 1) // Р С‹Р±РєР° Р¶РёРІР°СЏ Рё РїР»Р°РІР°РµС‚
     {
         switch(random(2))
         {
             case 0:
             {
                 AquariumInfo[aquaid][aqFishSide][fishid] = 0;
-                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 90.000000); // Смотрит влево
+                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 90.000000); // РЎРјРѕС‚СЂРёС‚ РІР»РµРІРѕ
             }
             case 1:
             {
                 AquariumInfo[aquaid][aqFishSide][fishid] = 1;
-                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 270.000000); // Смотрит вправо
+                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 270.000000); // РЎРјРѕС‚СЂРёС‚ РІРїСЂР°РІРѕ
             }
         }
         new Float:rand_y; // 1.530006
@@ -68,19 +68,19 @@ stock PutFishInAquarium(aquaid, fishid)
         AquariumInfo[aquaid][aqFishZ][fishid] = AquariumInfo[aquaid][aqBottom] + rand_y;
         SetDynamicObjectPos(AquariumInfo[aquaid][aqFishObject][fishid], AquariumInfo[aquaid][aqLeft] + random(6), 382.885467, AquariumInfo[aquaid][aqFishZ][fishid]);
     }
-    else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) // Рыбка дохлая
+    else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) // Р С‹Р±РєР° РґРѕС…Р»Р°СЏ
     {
         switch(random(2))
         {
             case 0:
             {
                 AquariumInfo[aquaid][aqFishSide][fishid] = 0;
-                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 180.0000, 90.000000); // Смотрит влево
+                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 180.0000, 90.000000); // РЎРјРѕС‚СЂРёС‚ РІР»РµРІРѕ
             }
             case 1:
             {
                 AquariumInfo[aquaid][aqFishSide][fishid] = 1;
-                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 180.0000, 270.000000); // Смотрит вправо
+                SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 180.0000, 270.000000); // РЎРјРѕС‚СЂРёС‚ РІРїСЂР°РІРѕ
             }
         }
         SetDynamicObjectPos(AquariumInfo[aquaid][aqFishObject][fishid], AquariumInfo[aquaid][aqLeft] + random(6), 382.885467, AquariumInfo[aquaid][aqTop]);
@@ -91,7 +91,7 @@ stock PutFishInAquarium(aquaid, fishid)
 stock UpdateTextFish(aquaid, fishid)
 {
     new string[60];
-    if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string), "%s\n{FF6347}Рыбка умерла", FishName[aquaid][fishid]);
+    if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string), "%s\n{FF6347}Р С‹Р±РєР° СѓРјРµСЂР»Р°", FishName[aquaid][fishid]);
     else
     {
         if(AquariumInfo[aquaid][aqFishSatiety][fishid] <= 10) format(string, sizeof(string), "%s\n{FF6347}Eat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]);
@@ -119,8 +119,8 @@ stock MoveFish(aquaid, fishid)
             case 2: rand_x = AquariumInfo[aquaid][aqRight] - 1.5;
             case 3: rand_x = AquariumInfo[aquaid][aqRight] - 2.0;
         }
-        SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 270.000000); // Смотрит вправо
-        ms_fihish = MoveDynamicObject(AquariumInfo[aquaid][aqFishObject][fishid], rand_x, 382.885467, AquariumInfo[aquaid][aqFishZ][fishid], 0.6); // Плывёт вправо
+        SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 270.000000); // РЎРјРѕС‚СЂРёС‚ РІРїСЂР°РІРѕ
+        ms_fihish = MoveDynamicObject(AquariumInfo[aquaid][aqFishObject][fishid], rand_x, 382.885467, AquariumInfo[aquaid][aqFishZ][fishid], 0.6); // РџР»С‹РІС‘С‚ РІРїСЂР°РІРѕ
     }
     else if(AquariumInfo[aquaid][aqFishSide][fishid] == 1)
     {
@@ -132,8 +132,8 @@ stock MoveFish(aquaid, fishid)
             case 2: rand_x = AquariumInfo[aquaid][aqLeft] + 1.5;
             case 3: rand_x = AquariumInfo[aquaid][aqLeft] + 2.0;
         }
-        SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 90.000000); // Смотрит влево
-        ms_fihish = MoveDynamicObject(AquariumInfo[aquaid][aqFishObject][fishid], rand_x, 382.885467, AquariumInfo[aquaid][aqFishZ][fishid], 0.6); // Плывёт влево
+        SetDynamicObjectRot(AquariumInfo[aquaid][aqFishObject][fishid], 0.0000, 0.0000, 90.000000); // РЎРјРѕС‚СЂРёС‚ РІР»РµРІРѕ
+        ms_fihish = MoveDynamicObject(AquariumInfo[aquaid][aqFishObject][fishid], rand_x, 382.885467, AquariumInfo[aquaid][aqFishZ][fishid], 0.6); // РџР»С‹РІС‘С‚ РІР»РµРІРѕ
     }
     if(ms_fihish - 1000 > 0) ms_fihish -= 1000;
     SetTimerEx("FinishSwimFish", ms_fihish, false, "dd", aquaid, fishid);
@@ -164,13 +164,13 @@ stock AquariumMenu(playerid, aquaid)
     new line[70],lines[490];
     
     DP[0][playerid] = aquaid;
-    format(line,sizeof(line),"{cccccc}Имя\t{cccccc}Статус"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Покормить Рыбок: {99ff66}%d$", getThingPriceGos(195, 0)), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РРјСЏ\t{cccccc}РЎС‚Р°С‚СѓСЃ"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РџРѕРєРѕСЂРјРёС‚СЊ Р С‹Р±РѕРє: {99ff66}%d$", getThingPriceGos(195, 0)), strcat(lines,line);
     for(new i = 0; i < MAX_FISH_IN_AQUARIUM; i++)
     {
         if(AquariumInfo[aquaid][aqFishStat][i] == 0)
         {
-            format(line,sizeof(line),"\n{555555}Нет рыбки \t {cccccc}Купить {99ff66}>>"), strcat(lines,line);
+            format(line,sizeof(line),"\n{555555}РќРµС‚ СЂС‹Р±РєРё \t {cccccc}РљСѓРїРёС‚СЊ {99ff66}>>"), strcat(lines,line);
         }
         else if(AquariumInfo[aquaid][aqFishStat][i] == 1)
         {
@@ -180,10 +180,10 @@ stock AquariumMenu(playerid, aquaid)
         }
         else if(AquariumInfo[aquaid][aqFishStat][i] == 2)
         {
-            format(line,sizeof(line),"\n{FF6347}%s \t {FF6347}Рыбка умерла", FishName[aquaid][i]), strcat(lines,line);
+            format(line,sizeof(line),"\n{FF6347}%s \t {FF6347}Р С‹Р±РєР° СѓРјРµСЂР»Р°", FishName[aquaid][i]), strcat(lines,line);
         }
     }
-    ShowDialog(playerid,499,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аквариум",lines,"Выбор","Отмена");
+    ShowDialog(playerid,499,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РђРєРІР°СЂРёСѓРј",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
     PlayerPlaySound(playerid,40405,0,0,0);
     return 1;
 }
@@ -194,16 +194,16 @@ stock AquariumFish(playerid, aquaid, fishid)
     {
         DP[2][playerid] = getThingPriceGos(194, 0);
         new string[100];
-        if(AquariumInfo[aquaid][aqFishStat][fishid] == 0) format(string, sizeof(string),"{cccccc}Введите имя рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
-        else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string),"{cccccc}Введите имя новой рыбки [ 2 - 10 Символов ]\n\nСтоимость: {99ff66}%d$", DP[2][playerid]);
-		ShowDialog(playerid,498,DIALOG_STYLE_INPUT,"{ff9000}Аквариум",string,"Принять","Отмена");
+        if(AquariumInfo[aquaid][aqFishStat][fishid] == 0) format(string, sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РёРјСЏ СЂС‹Р±РєРё [ 2 - 10 РЎРёРјРІРѕР»РѕРІ ]\n\nРЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$", DP[2][playerid]);
+        else if(AquariumInfo[aquaid][aqFishStat][fishid] == 2) format(string, sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ РёРјСЏ РЅРѕРІРѕР№ СЂС‹Р±РєРё [ 2 - 10 РЎРёРјРІРѕР»РѕРІ ]\n\nРЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$", DP[2][playerid]);
+		ShowDialog(playerid,498,DIALOG_STYLE_INPUT,"{ff9000}РђРєРІР°СЂРёСѓРј",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
     }
     else
     {
         new line[70],lines[140];
         format(line,sizeof(line),"{ff9000}%s {cccccc}| Eat: %d / 100", FishName[aquaid][fishid], AquariumInfo[aquaid][aqFishSatiety][fishid]), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Переименовать Рыбку >>"), strcat(lines,line);
-        ShowDialog(playerid,497,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аквариум",lines,"Выбор","Отмена");
+        format(line,sizeof(line),"\n{cccccc}РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ Р С‹Р±РєСѓ >>"), strcat(lines,line);
+        ShowDialog(playerid,497,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РђРєРІР°СЂРёСѓРј",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
     }
     return 1;
 }
@@ -232,31 +232,31 @@ stock FeedTheFish(aquaid)
             }
         }
 
-        AquariumInfo[aquaid][aqFeedFish] -= feed_end; // Завершение кормёжки у рыбок
+        AquariumInfo[aquaid][aqFeedFish] -= feed_end; // Р—Р°РІРµСЂС€РµРЅРёРµ РєРѕСЂРјС‘Р¶РєРё Сѓ СЂС‹Р±РѕРє
     }
     return 1;
 }
 
 stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtext[])
 {
-    if(dialogid == 499) // Главное меню
+    if(dialogid == 499) // Р“Р»Р°РІРЅРѕРµ РјРµРЅСЋ
     {
         if(response)
         {
             if(listitem == 0)
             {
                 new aquaid = DP[0][playerid];
-                if(AquariumInfo[aquaid][aqFeedFish] > 0) return ErrorMessage(playerid, "{FF6347}Рыбки уже кушают");
+                if(AquariumInfo[aquaid][aqFeedFish] > 0) return ErrorMessage(playerid, "{FF6347}Р С‹Р±РєРё СѓР¶Рµ РєСѓС€Р°СЋС‚");
                 if(AquariumInfo[aquaid][aqCdFeed] > gettime())
                 {
                     new string[120];
-                    format(string, sizeof(string), "{FF6347}Рыбок кормили совсем недавно\n{cccccc}Покормить повторно можно будет через %s", fine_time(AquariumInfo[aquaid][aqCdFeed] - gettime()));
+                    format(string, sizeof(string), "{FF6347}Р С‹Р±РѕРє РєРѕСЂРјРёР»Рё СЃРѕРІСЃРµРј РЅРµРґР°РІРЅРѕ\n{cccccc}РџРѕРєРѕСЂРјРёС‚СЊ РїРѕРІС‚РѕСЂРЅРѕ РјРѕР¶РЅРѕ Р±СѓРґРµС‚ С‡РµСЂРµР· %s", fine_time(AquariumInfo[aquaid][aqCdFeed] - gettime()));
                     ErrorMessage(playerid, string);
                     return 1;
                 }
 
                 new price = getThingPriceGos(195, 0);
-                if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}У вас не хватает денег");
+                if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
 
                 new full_feed, null_fish;
                 for(new i; i < MAX_FISH_IN_AQUARIUM; ++i)
@@ -267,17 +267,17 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
                     }
                     else full_feed ++, null_fish ++;
                 }
-                if(null_fish >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}В аквариуме нет живых рыбок");
-                if(full_feed >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}Все рыбки сыты");
+                if(null_fish >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}Р’ Р°РєРІР°СЂРёСѓРјРµ РЅРµС‚ Р¶РёРІС‹С… СЂС‹Р±РѕРє");
+                if(full_feed >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}Р’СЃРµ СЂС‹Р±РєРё СЃС‹С‚С‹");
 
-                SuccessMessage(playerid, "{99ff66}Вы покормили рыбок\n{cccccc}Теперь рыбки будут счастливы :)");
+                SuccessMessage(playerid, "{99ff66}Р’С‹ РїРѕРєРѕСЂРјРёР»Рё СЂС‹Р±РѕРє\n{cccccc}РўРµРїРµСЂСЊ СЂС‹Р±РєРё Р±СѓРґСѓС‚ СЃС‡Р°СЃС‚Р»РёРІС‹ :)");
                 oGivePlayerMoney(playerid, -price);
                 putkazna(2, price);
                 payanim(playerid, 0);
 
                 for(new i; i < MAX_FISH_IN_AQUARIUM; ++i) AquariumInfo[aquaid][aqFullSatiety][i] = 0; 
-                AquariumInfo[aquaid][aqFeedFish] = MAX_FISH_IN_AQUARIUM; // Процесс кормёжки
-                AquariumInfo[aquaid][aqCdFeed] = gettime() + 600; // Кд на кормление (10 минут)
+                AquariumInfo[aquaid][aqFeedFish] = MAX_FISH_IN_AQUARIUM; // РџСЂРѕС†РµСЃСЃ РєРѕСЂРјС‘Р¶РєРё
+                AquariumInfo[aquaid][aqCdFeed] = gettime() + 600; // РљРґ РЅР° РєРѕСЂРјР»РµРЅРёРµ (10 РјРёРЅСѓС‚)
             }
             else if(listitem >= 1 && listitem <= MAX_FISH_IN_AQUARIUM + 1)
             {
@@ -286,19 +286,19 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             }
         }
     }
-    else if(dialogid == 498) // Покупка новой рыбки
+    else if(dialogid == 498) // РџРѕРєСѓРїРєР° РЅРѕРІРѕР№ СЂС‹Р±РєРё
     {
         if(response)
         {
             if(!strlen(inputtext)) return AquariumMenu(playerid, DP[0][playerid]);
-            if(strlen(inputtext) < 2 || strlen(inputtext) > 10) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 10 символов");
-           	if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Запрещённый символ в тексте");
+            if(strlen(inputtext) < 2 || strlen(inputtext) > 10) return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10 СЃРёРјРІРѕР»РѕРІ");
+           	if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР» РІ С‚РµРєСЃС‚Рµ");
 
             new price = DP[2][playerid];
-            if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}У вас не хватает денег");
+            if(oGetPlayerMoney(playerid) < price) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµ С…РІР°С‚Р°РµС‚ РґРµРЅРµРі");
             
             new string[100];
-            format(string,sizeof(string),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$", GetNameThing(0, 194, 0, 0), price);
+            format(string,sizeof(string),"{99ff66}Р’С‹ РїСЂРёРѕР±СЂРµР»Рё: %s\n{cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ: {99ff66}%d$", GetNameThing(0, 194, 0, 0), price);
             SuccessMessage(playerid, string);
             oGivePlayerMoney(playerid, -price);
             putkazna(2, price);
@@ -318,33 +318,33 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
         }
         else AquariumMenu(playerid, DP[0][playerid]);
     }
-    else if(dialogid == 497) // Меню рыбки
+    else if(dialogid == 497) // РњРµРЅСЋ СЂС‹Р±РєРё
     {
         if(response)
         {
-            if(listitem == 0) // Переименовать
+            if(listitem == 0) // РџРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ
             {
                 if(DP[0][playerid] == 0 && PlayerInfo[playerid][pLeader] != 7 
-                    && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Только лидер правительства или администратор может переименовать рыбку");
+                    && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ Р»РёРґРµСЂ РїСЂР°РІРёС‚РµР»СЊСЃС‚РІР° РёР»Рё Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ РјРѕР¶РµС‚ РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ СЂС‹Р±РєСѓ");
 
-		        ShowDialog(playerid,496,DIALOG_STYLE_INPUT,"{ff9000}Аквариум","{cccccc}Введите новое имя рыбки [ 2 - 10 Символов ]","Принять","Отмена");
+		        ShowDialog(playerid,496,DIALOG_STYLE_INPUT,"{ff9000}РђРєРІР°СЂРёСѓРј","{cccccc}Р’РІРµРґРёС‚Рµ РЅРѕРІРѕРµ РёРјСЏ СЂС‹Р±РєРё [ 2 - 10 РЎРёРјРІРѕР»РѕРІ ]","РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
             }
         }
         else AquariumMenu(playerid, DP[0][playerid]);
     }
-    else if(dialogid == 496) // Переименовывание рыбки
+    else if(dialogid == 496) // РџРµСЂРµРёРјРµРЅРѕРІС‹РІР°РЅРёРµ СЂС‹Р±РєРё
     {
         if(response)
         {
             if(!strlen(inputtext)) return AquariumMenu(playerid, DP[0][playerid]);
-            if(strlen(inputtext) < 2 || strlen(inputtext) > 10) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 10 символов");
-           	if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Запрещённый символ в тексте");
+            if(strlen(inputtext) < 2 || strlen(inputtext) > 10) return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10 СЃРёРјРІРѕР»РѕРІ");
+           	if(checksimvol(inputtext)) return ErrorMessage(playerid, "{FF6347}Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ СЃРёРјРІРѕР» РІ С‚РµРєСЃС‚Рµ");
             
             new aquaid = DP[0][playerid], fishid = DP[1][playerid];
-            if(AquariumInfo[aquaid][aqFishStat][fishid] != 1) return ErrorMessage(playerid, "{FF6347}Рыбка умерла или её нет в аквариуме [ Купите новую ]");
+            if(AquariumInfo[aquaid][aqFishStat][fishid] != 1) return ErrorMessage(playerid, "{FF6347}Р С‹Р±РєР° СѓРјРµСЂР»Р° РёР»Рё РµС‘ РЅРµС‚ РІ Р°РєРІР°СЂРёСѓРјРµ [ РљСѓРїРёС‚Рµ РЅРѕРІСѓСЋ ]");
 
             new string[100];
-            format(string,sizeof(string),"{99ff66}Рыбка %s теперь имеет новое имя: {ff9000}%s", FishName[aquaid][fishid], inputtext);
+            format(string,sizeof(string),"{99ff66}Р С‹Р±РєР° %s С‚РµРїРµСЂСЊ РёРјРµРµС‚ РЅРѕРІРѕРµ РёРјСЏ: {ff9000}%s", FishName[aquaid][fishid], inputtext);
             SuccessMessage(playerid, string);
 
             format(FishName[aquaid][fishid], 11, "%s", inputtext);
@@ -390,7 +390,7 @@ function LoadAquarium()
             }
         }
 	}
-	printf("[MODE]: Аквариумы [%d ms]", GetTickCount() - time);
+	printf("[MODE]: РђРєРІР°СЂРёСѓРјС‹ [%d ms]", GetTickCount() - time);
 	return 1;
 }
 
@@ -398,14 +398,14 @@ CMD:fishsatiety(playerid, const params[])
 {
     if(server != 0) return 0;
 
-    if(AquariumInfo[0][aqFeedFish] > 0) return ErrorMessage(playerid, "{FF6347}Дождитесь пока рыбки в аквариуме покушают");
+    if(AquariumInfo[0][aqFeedFish] > 0) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ РїРѕРєР° СЂС‹Р±РєРё РІ Р°РєРІР°СЂРёСѓРјРµ РїРѕРєСѓС€Р°СЋС‚");
     if(!sscanf(params, "ii",params[0],params[1]))
     {
-        if(params[0] < 0 || params[0] >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}Неверный id рыбки");
-        if(params[1] < 0 || params[1] > 100) return ErrorMessage(playerid, "{FF6347}Сытость не меньше 0 и не больше 100");
+        if(params[0] < 0 || params[0] >= MAX_FISH_IN_AQUARIUM) return ErrorMessage(playerid, "{FF6347}РќРµРІРµСЂРЅС‹Р№ id СЂС‹Р±РєРё");
+        if(params[1] < 0 || params[1] > 100) return ErrorMessage(playerid, "{FF6347}РЎС‹С‚РѕСЃС‚СЊ РЅРµ РјРµРЅСЊС€Рµ 0 Рё РЅРµ Р±РѕР»СЊС€Рµ 100");
         new i = params[0];
-        if(AquariumInfo[0][aqFishStat][i] == 0) return ErrorMessage(playerid, "{FF6347}Этой рыбки не существует");
-        if(AquariumInfo[0][aqFishStat][i] == 2) return ErrorMessage(playerid, "{FF6347}Этой рыбка мертва");
+        if(AquariumInfo[0][aqFishStat][i] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕР№ СЂС‹Р±РєРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+        if(AquariumInfo[0][aqFishStat][i] == 2) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕР№ СЂС‹Р±РєР° РјРµСЂС‚РІР°");
         AquariumInfo[0][aqCdFeed] = 0;
         AquariumInfo[0][aqFishSatiety][i] = params[1];
 
@@ -417,7 +417,7 @@ CMD:fishsatiety(playerid, const params[])
         }
         UpdateTextFish(0, i);
     }
-    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить сытость рыбки [ /fishsatiety ID Сытость ]");
+    else SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РР·РјРµРЅРёС‚СЊ СЃС‹С‚РѕСЃС‚СЊ СЂС‹Р±РєРё [ /fishsatiety ID РЎС‹С‚РѕСЃС‚СЊ ]");
     return 1;
 }
 

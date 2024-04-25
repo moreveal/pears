@@ -614,8 +614,8 @@ stock SetVehicleHandlingDefault(vehicleid, vehicleHandlingID)
 // Присваиваем итоговый хендлинг на транспорт
 stock PutVehicleHandling(vehicleid)
 {
-    //SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingVehInfo[vehicleid][HD_Mass]);
-    //SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingVehInfo[vehicleid][HD_Mass]); // Раскоментил (мб всё таки нужно учитывать вес, но не уверен)
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]); // Раскоментил (мб всё таки нужно учитывать вес, но не уверен)
     SetVehicleHandlingFloat(vehicleid, HANDLING_DRAGMULT, HandlingVehInfo[vehicleid][HD_Drag]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_X, HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingVehInfo[vehicleid][HD_CentreOfMassY]);

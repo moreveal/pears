@@ -3863,13 +3863,7 @@ stock TimeCallVehicle(metr)
 	else if(metr >= 2100 && metr < 2400) time = 90;
 	else if(metr >= 2400 && metr < 2700) time = 100;
 	else if(metr >= 2700 && metr < 3000) time = 110;
-	else if(metr >= 3000 && metr < 3300) time = 120;
-	else if(metr >= 3300 && metr < 3600) time = 130;
-	else if(metr >= 3600 && metr < 3900) time = 140;
-	else if(metr >= 3900 && metr < 4200) time = 150;
-	else if(metr >= 4200 && metr < 4500) time = 160;
-	else if(metr >= 4500 && metr < 4800) time = 170;
-	else time = 180;
+	else time = 120;
 	return time;
 }
 

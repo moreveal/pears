@@ -752,12 +752,12 @@ stock CloseEditObject(playerid)
 {
     if(gRedakt[playerid] > 0 && gRedakt[playerid] != 31 && gRedakt[playerid] != 32)
 	{
-		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) 
+		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) // Player
         {
             CancelEditPlayerObject(playerid);
             EndObjectEditing(playerid);
         }
-		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
+		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]); // Dynamic
 		gRedakt[playerid] = 0;
 	}
     return 1;
