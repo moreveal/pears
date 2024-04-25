@@ -24,7 +24,7 @@ stock CheckAutoInRangeService(playerid)
     // Ищем дефолтные характеристики той тачки
     new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
     if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Характеристики транспорта не были найдены");
-
+    VehInfo[v][vHandlingModelTemp] = 0;
     // Снимаем тюнинг с нашей тачки и кладём в багажник
     TakeAllTunningVehicle(v);
 
@@ -64,7 +64,7 @@ stock ShowDetailHandling(playerid, tuningType)
         }
     }
     if(quan == 0) return ErrorMessage(playerid,"{ff6347}Кажется данных деталей тюнинга нет");
-    DP[0][playerid] = quan;
+    DP[0][playerid] = quan+1;
     DP[1][playerid] = tuningType;
     new v = GetPlayerVehicleID(playerid);
     new lineHeader[30];
@@ -84,7 +84,8 @@ stock ShowDetailHandling(playerid, tuningType)
         }
         else format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[Пусто]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
     }
-    if(GetVehicleDetailTunning(v, tuningType) == 1) format(line,sizeof(line),"\n{ff9000}Снять деталь %s",friskDetailTypeName[tuningType]), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff9000}Снять временную деталь %s",friskDetailTypeName[tuningType]), strcat(lines,line);
+    if(GetVehicleDetailTunning(v, tuningType) != -1) format(line,sizeof(line),"\n{ff9000}Снять деталь %s",friskDetailTypeName[tuningType]), strcat(lines,line);
     ShowDialog(playerid,576,DIALOG_STYLE_TABLIST_HEADERS,lineHeader,lines,"Выбор","Отмена");
     return 1;
 }
@@ -118,25 +119,22 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new v = GetPlayerVehicleID(playerid);
-            new b = gAutosalon[playerid];
+            DP[2][playerid] = gAutosalon[playerid];
             if(listitem < 0 && listitem > DP[0][playerid]) return ErrorMessage(playerid,"{ff6347}Ошибка строки");
             if(listitem == DP[0][playerid])
             {
-                if(GetVehicleDetailTunning(v, DP[1][playerid]) == 0) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
+                if(GetVehicleDetailTunning(v, DP[1][playerid]) == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 RemoveDetailTunning(v,GetVehicleDetailTunningID(v, DP[1][playerid]));
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }
-            if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][friskDetail[ListParam[listitem][playerid]][2]]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-            new detail = friskDetail[ListParam[listitem][playerid]][0];
-            if(GetVehicleDetailTunning(v, DP[1][playerid]) == 1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте уже стоит данный тип деталь");
-            new slot = SetVehicleDetailTunning(v, detail, 0,DP[1][playerid]);
-            if(slot == -1) return ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга");
-            if(BizzInfo[b][bItem][friskDetail[ListParam[listitem][playerid]][2]] < 1) return ErrorMessage(playerid, "{FF6347}В автосервисе не хватает рем комплектов, для ремонта двигателя\n\n{cccccc}Вы можете отправиться в другой автосервис");
-            BizzInfo[b][bItem][friskDetail[ListParam[listitem][playerid]][2]] -= 1, BizzInfo[b][bUpdate] = 1;
-            SaveOneTunning(v, slot);
-            oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][friskDetail[ListParam[listitem][playerid]][2]]);
-            paybiz(b, BizzInfo[b][bPrice][friskDetail[ListParam[listitem][playerid]][2]]);
-            SuccessMessage(playerid,"{44ff99}Вы успешно установили деталь тюнинга");
+            if(listitem == DP[0][playerid]-1)
+            {
+                if(TempDetail[playerid][DP[1][playerid]] == 0) return ErrorMessage(playerid,"{ff6347}В вашем транспорте нет временного типа детали");
+                TempDetail[playerid][DP[1][playerid]] = 0;
+                return SuccessMessage(playerid,"{44ff99}Вы успешно сняли временную деталь тюнинга");
+            }
+            TempDetail[playerid][friskDetail[ListParam[listitem][playerid]][1]] = friskDetail[ListParam[listitem][playerid]][0];
+            SuccessMessage(playerid,"{44ff99}Вы успешно установили временно деталь тюнинга. \n\nПосле выхода из автосервиса вам предложит купить весь временный тюнинг.");
         }
         else return ShowAllTypeDetail(playerid);
     }
@@ -163,6 +161,121 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         }
         else CloseTuning(playerid);
     }
+    if(dialogid == 708)
+    {
+        if(response)
+        {
+            new v = GetPlayerVehicleID(playerid);
+            new b = DP[2][playerid];
+            new money;
+            for(new i;i< sizeof(friskDetailTypeName);i++)
+            {
+                if(TempDetail[playerid][i] > 0)
+                {
+                    money += BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]];
+                }
+            }
+            if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+            for(new i;i< sizeof(friskDetailTypeName);i++)
+            {
+                new slot = -1;
+                if(TempDetail[playerid][i] > 0)
+                {
+                    slot = GetVehicleDetailTunning(v, friskDetail[TempDetail[playerid][i] - 207][1]);
+                    if(slot == -1)
+                    {
+                        new slot2 = SetVehicleDetailTunning(v, TempDetail[playerid][i], 0,friskDetail[TempDetail[playerid][i] - 207][1]);
+                        if(slot2 == -1)
+                        {
+                            ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга(какие-то детали могли установится)");
+                            break;
+                        }
+                        else
+                        {
+                            BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
+                        }
+                    }
+                    else
+                    {
+                        PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
+                        VehInfo[v][vTunningID][slot] = TempDetail[playerid][i];
+                        VehInfo[v][vTunningQara][slot] = 0;
+                        VehInfo[v][vTunningType][slot] = friskDetail[TempDetail[playerid][i]-207][1];
+                        BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
+                    }
+                    TempDetail[playerid][i] = 0;
+                }
+            }
+            SaveTunning(v);
+            BizzInfo[b][bUpdate] = 1;
+            oGivePlayerMoney(playerid, -money);
+            paybiz(b, money);
+            SuccessMessage(playerid,"{44ff99}Вы успешно установили детали тюнинга");
+            return ExitTuning(playerid);
+        }
+        else CloseTuning(playerid);
+    }
+    if(dialogid == 551)
+    {
+        if(response)
+        {
+            new b = gAutosalon[playerid];
+            new quan = -1, veh;
+            if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT && GetPlayerInterior(playerid) != 223) return 0;
+            for(new i = 0; i < MAX_MYVEHICLE; i++)
+            {
+                if(PlayerInfo[playerid][pMyVeh][i] > 0)
+                {
+                    if(PlayerInfo[playerid][pMyVehID][i] > 0)
+                    {
+                        if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 10.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
+                        quan = i;
+                        veh = PlayerInfo[playerid][pMyVehID][i];
+                        break;
+                    }
+                }
+            }
+            if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
+            new v = GetPlayerVehicleID(playerid);
+            if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
+            if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
+            new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
+
+            // Если не нашли хендлинг транспорта, останавливаем установку
+            if(vehicleHandlingID <= 0) return 1;
+            SetVehicleHandlingDefault(v,vehicleHandlingID);
+            VehInfo[v][vHandlingModelTemp] = GetVehicleRealModel(veh);
+            SuccessMessage(playerid,"{44ff99}Временный хендлинг для TestDrive установлен");
+        }
+        else CloseTuning(playerid);
+    }
+    return 1;
+}
+
+stock ExitTuningOrSave(playerid)
+{
+    new veh = GetPlayerVehicleID(playerid);
+    new line[90],lines[2500];
+    format(line,sizeof(line),"{cccccc}Неоплаченный тюнинг транспорта\n"), strcat(lines,line);
+    format(line,sizeof(line),"{ff6347}- Детали того же типа, что уже установлены на транспорт будут заменены!\n"), strcat(lines,line);
+    new b = DP[2][playerid];
+    for(new i;i< sizeof(friskDetailTypeName);i++)
+    {
+        if(TempDetail[playerid][i] > 0)
+        {
+            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s% ] {99ff66}[ %d$ ]",friskDetailTypeName[friskDetail[TempDetail[playerid][i]-207][1]],friskName[TempDetail[playerid][i]],friskDetailPoint[TempDetail[playerid][i]-207][0],BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i]-207][2]]), strcat(lines,line);
+        }
+    }
+    format(line,sizeof(line),"\n\n{cccccc}Имеющийся тюнинг"), strcat(lines,line);
+    for(new i;i< MAX_TUNNING_VEHICLE;i++)
+    {
+        if(VehInfo[veh][vTunningID][i] > 0)
+        {
+            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s% ]",friskDetailTypeName[friskDetail[VehInfo[veh][vTunningID][i]-207][1]],friskName[VehInfo[veh][vTunningID][i]], friskDetailPoint[VehInfo[veh][vTunningID][i]-207][0]), strcat(lines,line);
+        }
+    }
+    format(line,sizeof(line),"\n\n{ff6347}Оплатить тюнинг?"), strcat(lines,line);
+    ShowDialog(playerid,708,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг Транспорта",lines,"Да","Нет");
     return 1;
 }
 
@@ -176,7 +289,7 @@ CMD:checktun(playerid,const param[])
     {
         if(VehInfo[veh][vTunningID][i] > 0)
         {
-            format(line,sizeof(line),"\n%s",friskName[VehInfo[veh][vTunningID]][i]), strcat(lines,line);
+            format(line,sizeof(line),"\n%s",friskName[VehInfo[veh][vTunningID][i]]), strcat(lines,line);
         }
     }
     ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг Транспорта",lines,"ОК","");
@@ -318,6 +431,7 @@ stock openTestDrive_Autoservice(playerid)
     SetVehicleParamsEx(vehicleid, true, true, alarm, doors, bonnet, boot, objective);
     VehInfo[vehicleid][vLights] = 1;
     VehInfo[vehicleid][vEngine] = 1;
+    SetHandlingTotalForTestDrive(playerid,vehicleid);
 
     if(PlayerInfo[playerid][pDrawVisible][7] == false && setting_pos_draw[playerid] != 8 && setting_size_draw[playerid] != 8) ShowVehSpeed(playerid);
     return 1;

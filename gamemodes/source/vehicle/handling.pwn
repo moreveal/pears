@@ -47,6 +47,8 @@ new friskDetailTypeName[][] = // Тип детали
 {
     "Двигатель","Трансмиссия","Подвеска","Шины","Тормоз"
 };
+
+new TempDetail[MAX_REALPLAYERS][sizeof(friskDetailTypeName)];
 // Чтение HANDLING.CFG
 enum HandlingData
 {
@@ -157,12 +159,12 @@ stock SetVehicleDetailTunning(vehicleid, thingId, thingQara,tuningType)
 
 stock GetVehicleDetailTunning(vehicleid, tuningType)
 {
-    new slot;
+    new slot = -1;
     for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
     {
         if(VehInfo[vehicleid][vTunningType][t] == tuningType && VehInfo[vehicleid][vTunningID][t] != 0)
         {
-            slot = 1;
+            slot = t;
             break;
         }
     }
@@ -357,6 +359,36 @@ stock ReversVehicleTunning(vehicleid, getvehicleid)
 }
 
 // Ставим все характеристики в переменные
+stock SetHandlingTotalForTestDrive(playerid,vehicleid, bool:result = false)
+{
+    new model = GetVehicleRealModelTemp(vehicleid);
+    new vehicleHandlingID = FindVehicleModelHandling(model);
+
+    // Если не нашли хендлинг транспорта, останавливаем установку
+    if(vehicleHandlingID <= 0) return 1;
+
+    if(VehInfo[vehicleid][vHandlingModelTemp] > 0) 
+    {
+        result = true;
+        SetVehicleHandlingDefault(vehicleid, vehicleHandlingID);
+    }
+
+    // Записали все детали тюнинга
+    for(new t = 0; t < sizeof(friskDetailTypeName); t++)
+    {
+        if(TempDetail[playerid][t] > 0)
+        {
+            SetVehicleTuning(vehicleid, TempDetail[playerid][t], model, vehicleHandlingID);
+            result = true;
+        }
+    }
+
+    // Применили весь хендлинг
+    if(result == true) PutVehicleHandling(vehicleid);
+    return 1;
+}
+
+// Ставим все характеристики в переменные
 stock SetHandlingTotal(vehicleid, bool:result = false)
 {
     new model = GetVehicleRealModel(vehicleid);
@@ -422,6 +454,13 @@ stock GetVehicleRealModel(vehicleid)
 {
     new model = VehInfo[vehicleid][vModel];
     if(VehInfo[vehicleid][vHandlingModel] > 0) model = VehInfo[vehicleid][vHandlingModel];
+    return model;
+}
+
+stock GetVehicleRealModelTemp(vehicleid)
+{
+    new model = VehInfo[vehicleid][vModel];
+    if(VehInfo[vehicleid][vHandlingModelTemp] > 0) model = VehInfo[vehicleid][vHandlingModelTemp];
     return model;
 }
 
@@ -614,8 +653,8 @@ stock SetVehicleHandlingDefault(vehicleid, vehicleHandlingID)
 // Присваиваем итоговый хендлинг на транспорт
 stock PutVehicleHandling(vehicleid)
 {
-    SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingVehInfo[vehicleid][HD_Mass]); // Раскоментил (мб всё таки нужно учитывать вес, но не уверен)
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]); // Раскоментил (мб всё таки нужно учитывать вес, но не уверен)
+    SetVehicleHandlingFloat(vehicleid, HANDLING_MASS, HandlingVehInfo[vehicleid][HD_Mass]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_DRAGMULT, HandlingVehInfo[vehicleid][HD_Drag]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_X, HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingVehInfo[vehicleid][HD_CentreOfMassY]);

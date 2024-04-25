@@ -211,25 +211,26 @@ CMD:outhb(playerid, const params[])
     if(sscanf(params, "s[24]i",tmpName,g)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вынести человека в Доску Почета [ NickName, ID орг.]");
 	if(g < 1 || g > 24) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID организации не меньше 1 и не больше 24"), PlayerPlaySound(playerid,4203,0,0,0);
     new unix = gettime();
-	new tmpTPlayerID = PlayerInfo[playerid][pID], tmpTName = PlayerInfo[playerid][pName];
+	new tmpTPlayerID = PlayerInfo[playerid][pID];
 	new para = ReturnUser(tmpName, 1);
 
 	new string_mysql[120];
     if(IsPlayerConnected(para))
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
-	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
-      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddsdsd", playerid, g, tmpPlayerID, tmpName, tmpTPlayerID, tmpTName, unix,para);
+	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", tmpPlayerID, g);
+      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddddd",  playerid, g, tmpPlayerID, tmpTPlayerID, unix,para);
+		printf("%d %d %d %d %d %d",playerid, g, tmpPlayerID, tmpTPlayerID, unix,para);
     }
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
-		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "ddsdsd", playerid, g, tmpName, tmpTPlayerID, tmpTName, unix,para);
+		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "dddd", playerid, g, tmpTPlayerID, unix);
     }
 	return 1;
 }
-function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayerID,const tmpTName[], unix,target)
+function get_outhonorboard(playerid, g, tmpTPlayerID, unix)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -239,38 +240,40 @@ function get_outhonorboard(playerid, g, tmpPlayerID, const tmpName[], tmpTPlayer
 	    cache_get_value_name_int(0, "user_id", plaid);
 		new string_mysql[120];
 	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
-      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dsddd", playerid, tmpName, plaid, g,target);
+      	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddddd",  playerid, g, plaid, tmpTPlayerID, unix,-1);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
 }
-function out_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const tmpTName[], unix,target)
+function out_honorboard(playerid, g, plaid, tmpTPlayerID, unix,target)
 {
-    new rows, string[160];
+    new rows, string[160], NickName[24];
 	cache_get_row_count(rows);
 	if(rows)
 	{
-		if(target >= 0 && OnlineInfo[target][oLogged] == 1)
+		cache_get_value_name(0, "playerName", NickName, 24);
+		if(target != -1)
 		{
-			format(string, sizeof(string),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",PlayerInfo[playerid][pName], frakName[g]);
+			if(OnlineInfo[target][oLogged] == 0) return 0;
+			format(string, sizeof(string),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",rpplayername(playerid), frakName[g]);
 			SendClientMessage(target, COLOR_GREY, string);
-			format(string, sizeof(string),"{99ff66}%s {cccccc}вынес вас из доски почета %s", PlayerInfo[playerid][pName], frakName[g]);
+			format(string, sizeof(string),"{99ff66}%s {cccccc}вынес вас из доски почета %s", rpplayername(target), frakName[g]);
 			ShowDialog(target,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", string,"*","");
 			if(PlayerInfo[target][pDrawVisible][2] == false) PlayerTextDrawShow(target, PlayerSiteDraw[2][target]);
 		}
 		PlayerPlaySound(playerid, 6401, 0,0,0);
-	    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета",tmpName,frakName[g]);
-	    format(string, sizeof(string),"\n{cccccc}Вы вынесли %s из доски почета %s",tmpName,frakName[g]);
+	    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета %s",NickName,frakName[g]);
+	    format(string, sizeof(string),"\n{cccccc}Вы вынесли %s из доски почета %s",NickName,frakName[g]);
 		ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", string, "Ок", "");
 	    format(string,sizeof(string),"DELETE FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
 		query_empty(pearsq, string);
 	    
 	    format(string, sizeof(string), "Вас вынесли из доски почета %s", frakeasyName[g]);
-		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], plaid, tmpName, string);
+		notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], plaid, NickName, string);
 	
 		format(string, sizeof(string), "вынес с ДП %s", frakeasyName[g]);
-		OrgLog(g, "outhb", tmpTPlayerID, tmpTName, PlayerInfo[playerid][pPlaIP], plaid, tmpName,PlayerInfo[plaid][pPlaIP],0, string);
+		OrgLog(g, "outhb", tmpTPlayerID, PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], plaid, NickName,PlayerInfo[plaid][pPlaIP],0, string);
 	}
-	else format(string,sizeof(string),"{FF6347}%s не находится в доске почета %s",tmpName,frakeasyName[g]), ErrorMessage(playerid, string);
+	else format(string,sizeof(string),"{FF6347}Выбранный человек не находится в доске почета %s",frakeasyName[g]), ErrorMessage(playerid, string);
 	return 1;
 }
