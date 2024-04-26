@@ -1103,9 +1103,9 @@ stock buy_SkinShop(playerid)
 {
 	if(Fractia[playerid] == 0) return 1;
 
-	new g = Fractia[playerid], sel = GetPVarInt(playerid, "SelectCharPlace"), skin, price, srank, b = Bid[playerid]-173;
+	new g = Fractia[playerid], sel = GetPVarInt(playerid, "SelectCharPlace"), skin, price, srank, b = Bid[playerid]-173, quan;
 	if(g >= 1 && g <= 22) skin = OrganInfo[g][gSkin][sel], price = OrganInfo[g][gSkinPrice][sel], srank = OrganInfo[g][gSkinRank][sel];
-	else if(g == 100) skin = StoreItem[b][sel], price = StorePrice[b][sel];
+	else if(g == 100) skin = StoreItem[b][sel], price = StorePrice[b][sel], quan = StoreQuan[b][sel];
 	else if(g == 400) skin = GetPVarInt(playerid, "SkinLave");
 
 	if(skin == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! В слоте нет одежды");
@@ -1122,7 +1122,7 @@ stock buy_SkinShop(playerid)
 	}
 	else if(g == 100 || g == 400)
 	{
-		if(StoreQuan[b][sel] <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
+		if(quan <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
 		if(DP[0][playerid] == 0 && price <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена стоимость");
 		if(DP[0][playerid] == 1 && gold <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена gold стоимость");
 		g = 0;

@@ -882,7 +882,7 @@ stock GiftFromCapt(playerid, kills)
 			else SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок");
 
 			new string[144];
-			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %s убийств и получил кейс в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);
+			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %d убийств и получил кейс в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);
 			SendGangMessage(COLOR_ALLDEPT, string);
 		}
 	}

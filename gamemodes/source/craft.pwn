@@ -858,12 +858,16 @@ function CraftProcess(playerid, tabs_load)
 
                 PlayerInfo[playerid][pQuest][4] = 1;
                 SaveQuest(playerid);
+                
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чем выше мой навык автомеханика, тем быстрее и качественнее я выполняю ремонт [ Y >> Меню >> Навыки ]");
             }
 
-            new line[90],lines[270];
+            new line[90],lines[360];
             format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
             format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel])), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
+            format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
             SuccessMessage(playerid, lines);
         }
         else // Крафт

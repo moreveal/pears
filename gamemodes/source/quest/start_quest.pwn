@@ -1102,12 +1102,12 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 				else CreateGps(playerid, 1364.35242, -1682.73926, 13.47850, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе","*","");
             }
-            if(questId == 5)
+            else if(questId == 5)
             {
                 CreateGps(playerid,-338.6526,1730.2946,42.9321, 0, 0, 5.0);
 				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Квест отмечен в вашем GPS навигаторе\nПо прибытию нужно будет поговорить с Брюсом","*","");
             }
-            if(questId == 6)
+            else if(questId == 6)
             {
                 if(PlayerInfo[playerid][pSex] == 1)
                 {
@@ -1119,7 +1119,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                     ErrorMessage(playerid,"{ff6347} Для запуска квеста вы должны быть мужчиной");
                 }
             }
-            if(questId == 7)
+            else if(questId == 7)
             {
                 if(PlayerInfo[playerid][pSex] == 1 && getillness(playerid, 1) > -1)
                 {
@@ -1131,12 +1131,12 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                     ErrorMessage(playerid,"{ff6347} Для запуска квеста вы должны быть мужчиной и иметь болезнь хламидиоз");
                 }
             }
-            if(questId == 8)
+            else if(questId == 8)
             {
                 SuccessMessage(playerid,"{44ff99}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
                 SetPVarInt(playerid,"qweststat",25), SetPVarInt(playerid,"qwesttime",3);
             }
-            if(questId == 9)
+            else if(questId == 9)
             {
                 if(PlayerInfo[playerid][pMoney] < 100000) return ErrorMessage(playerid,"{ff6347}У вас на руках недостаточно денег для запуска квеста.");
                 if(get_invent4(playerid,42,0) < 1) 
