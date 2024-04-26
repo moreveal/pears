@@ -651,7 +651,7 @@ CMD:invest(playerid)
 }
 CMD:giveinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 22 && strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1))
+	if(PlayerInfo[playerid][pSoska] >= 22 && (strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1) || strfind(PlayerInfo[playerid][pName],"Cardinale_Reveal",true) != (-1)))
     {
 		if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Положить 0-деньги | 1-золото в общак администрации [ /giveinvest ID Количество ]");
 		if(params[0] > 1 || params[0] < 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: 0-деньги 1-золото");
@@ -818,7 +818,7 @@ CMD:animer(playerid, const params[])
 }
 CMD:protect(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] >= 22 && (strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1) || strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1)) )
+	if(PlayerInfo[playerid][pSoska] >= 22 && (strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1) || strfind(PlayerInfo[playerid][pName],"Cardinale_Reveal",true) != (-1)) )
 	{
 		PlayerPlaySound(playerid,40405,0,0,0);
        	new str[150],sctring[900];

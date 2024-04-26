@@ -41,7 +41,7 @@ new vehNameCustom[][] =
 	"Ford Crown Victoria", "Ford Crown Victoria Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Silvia S13",
 	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Audi RS6 C5", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
-	"VW Golf MK2", "BMW 725il", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
+	"VW Golf MK2", "BMW 760i", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
 	"Audi RS3", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35", "Charger RT 69"
 };
 
@@ -73,7 +73,7 @@ new vehName[][] =
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
-    19000000,900000,10000000,11000000,400000,3500000,7000000,2500000,1100000,2800000, // 2000 - 2009
+    19000000,900000,10000000,11000000,400000,3500000,12000000,2500000,1100000,2800000, // 2000 - 2009
 	1400000,5000000,3000000,500000,9000000,4200000,10000000,600000,4500000,400000, // 2010 - 2019
 	2500000,950000,7000000,4000000,400000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
 	5000000,1200000,1300000,15000000,24000000,1500000, // 2030 - 2035
@@ -81,8 +81,8 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
 	1200000,1200000,7000000,3500000,3500000,500000,1200000, // 2043 - 2049
 	3000000,900000,4700000,700000,1200000,17000000,70000000, // 2050 - 2056
 	11000000,1800000,2100000,9000000,6000000,2900000,500000,500000, // 2057 - 2064
-	300000, 5500000, 750000, 6600000, 7000000, 28000000, 32000000, 70000000, // 2065 - 2072
-	3200000, 2900000, 2500000, 2200000, 1300000 // 20673 - 2077
+	300000, 5500000, 750000, 15000000, 7000000, 28000000, 32000000, 70000000, // 2065 - 2072
+	3200000, 2900000, 2500000, 5200000, 1300000 // 2073 - 2077
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
@@ -206,7 +206,7 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(492, 2064); // Vaz 2107 (greenwoo)
 	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
 
-	AddVehicleSyncModel(560, 2066); // BMW 7
+	AddVehicleSyncModel(560, 2066); // BMW 760i
 	AddVehicleSyncModel(560, 2067); // Chaser JZX100
 	AddVehicleSyncModel(560, 2068); // BMW M5 F90
 	AddVehicleSyncModel(415, 2069); // Audi R8
