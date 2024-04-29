@@ -1,89 +1,89 @@
 
 /*
-- Сделать адм команду (1 раз предупреждение, 2 раз блокировка к личному редактору, админ выставит время блокировки) - в случае если чел в интерьер общего доступа (дом, биз) поставил хуету
-- Добавить unix для каждого объекта и карты в целом (чтобы можно было в будущем удалять не используемые мапы в личных редакторах)
+- РЎРґРµР»Р°С‚СЊ Р°РґРј РєРѕРјР°РЅРґСѓ (1 СЂР°Р· РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёРµ, 2 СЂР°Р· Р±Р»РѕРєРёСЂРѕРІРєР° Рє Р»РёС‡РЅРѕРјСѓ СЂРµРґР°РєС‚РѕСЂСѓ, Р°РґРјРёРЅ РІС‹СЃС‚Р°РІРёС‚ РІСЂРµРјСЏ Р±Р»РѕРєРёСЂРѕРІРєРё) - РІ СЃР»СѓС‡Р°Рµ РµСЃР»Рё С‡РµР» РІ РёРЅС‚РµСЂСЊРµСЂ РѕР±С‰РµРіРѕ РґРѕСЃС‚СѓРїР° (РґРѕРј, Р±РёР·) РїРѕСЃС‚Р°РІРёР» С…СѓРµС‚Сѓ
+- Р”РѕР±Р°РІРёС‚СЊ unix РґР»СЏ РєР°Р¶РґРѕРіРѕ РѕР±СЉРµРєС‚Р° Рё РєР°СЂС‚С‹ РІ С†РµР»РѕРј (С‡С‚РѕР±С‹ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РІ Р±СѓРґСѓС‰РµРј СѓРґР°Р»СЏС‚СЊ РЅРµ РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РјР°РїС‹ РІ Р»РёС‡РЅС‹С… СЂРµРґР°РєС‚РѕСЂР°С…)
 
-- Сохранение в базу (изменение строк, добавление и удаление лишних)
-- Отправление интерьера из личного редактора на одобрение админам
-- Админ команды одобрения и отказа в публикации интерьера в шоурум
-- Создать быструю установку интерьера в дом или бизнес за 500 gold (в обход системы ремонта)
+- РЎРѕС…СЂР°РЅРµРЅРёРµ РІ Р±Р°Р·Сѓ (РёР·РјРµРЅРµРЅРёРµ СЃС‚СЂРѕРє, РґРѕР±Р°РІР»РµРЅРёРµ Рё СѓРґР°Р»РµРЅРёРµ Р»РёС€РЅРёС…)
+- РћС‚РїСЂР°РІР»РµРЅРёРµ РёРЅС‚РµСЂСЊРµСЂР° РёР· Р»РёС‡РЅРѕРіРѕ СЂРµРґР°РєС‚РѕСЂР° РЅР° РѕРґРѕР±СЂРµРЅРёРµ Р°РґРјРёРЅР°Рј
+- РђРґРјРёРЅ РєРѕРјР°РЅРґС‹ РѕРґРѕР±СЂРµРЅРёСЏ Рё РѕС‚РєР°Р·Р° РІ РїСѓР±Р»РёРєР°С†РёРё РёРЅС‚РµСЂСЊРµСЂР° РІ С€РѕСѓСЂСѓРј
+- РЎРѕР·РґР°С‚СЊ Р±С‹СЃС‚СЂСѓСЋ СѓСЃС‚Р°РЅРѕРІРєСѓ РёРЅС‚РµСЂСЊРµСЂР° РІ РґРѕРј РёР»Рё Р±РёР·РЅРµСЃ Р·Р° 500 gold (РІ РѕР±С…РѕРґ СЃРёСЃС‚РµРјС‹ СЂРµРјРѕРЅС‚Р°)
 
 
-- /mtset - замена текстуры на объекте по слоту и номеру текстуры
-- /mtsetall - замена текстур на всех объектах одной модели по слоту и номеру текстуры
-- на кнопку N - открывать редактор текстур перед лицом, а не внутри хрен знает чего и летающей камеры
-- на кнопку Y - открывать список редактируемых текстур на объекте в виде текстдравов на экране
-- Убираю стандартный редактор текстур из редактора интерьеров домов и бизнесов
-- Нужно учитывать класс и тип планировки при загрузке интерьера и его публикации
+- /mtset - Р·Р°РјРµРЅР° С‚РµРєСЃС‚СѓСЂС‹ РЅР° РѕР±СЉРµРєС‚Рµ РїРѕ СЃР»РѕС‚Сѓ Рё РЅРѕРјРµСЂСѓ С‚РµРєСЃС‚СѓСЂС‹
+- /mtsetall - Р·Р°РјРµРЅР° С‚РµРєСЃС‚СѓСЂ РЅР° РІСЃРµС… РѕР±СЉРµРєС‚Р°С… РѕРґРЅРѕР№ РјРѕРґРµР»Рё РїРѕ СЃР»РѕС‚Сѓ Рё РЅРѕРјРµСЂСѓ С‚РµРєСЃС‚СѓСЂС‹
+- РЅР° РєРЅРѕРїРєСѓ N - РѕС‚РєСЂС‹РІР°С‚СЊ СЂРµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ РїРµСЂРµРґ Р»РёС†РѕРј, Р° РЅРµ РІРЅСѓС‚СЂРё С…СЂРµРЅ Р·РЅР°РµС‚ С‡РµРіРѕ Рё Р»РµС‚Р°СЋС‰РµР№ РєР°РјРµСЂС‹
+- РЅР° РєРЅРѕРїРєСѓ Y - РѕС‚РєСЂС‹РІР°С‚СЊ СЃРїРёСЃРѕРє СЂРµРґР°РєС‚РёСЂСѓРµРјС‹С… С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ РІ РІРёРґРµ С‚РµРєСЃС‚РґСЂР°РІРѕРІ РЅР° СЌРєСЂР°РЅРµ
+- РЈР±РёСЂР°СЋ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ РёР· СЂРµРґР°РєС‚РѕСЂР° РёРЅС‚РµСЂСЊРµСЂРѕРІ РґРѕРјРѕРІ Рё Р±РёР·РЅРµСЃРѕРІ
+- РќСѓР¶РЅРѕ СѓС‡РёС‚С‹РІР°С‚СЊ РєР»Р°СЃСЃ Рё С‚РёРї РїР»Р°РЅРёСЂРѕРІРєРё РїСЂРё Р·Р°РіСЂСѓР·РєРµ РёРЅС‚РµСЂСЊРµСЂР° Рё РµРіРѕ РїСѓР±Р»РёРєР°С†РёРё
 
-- При загрузке интерьера и включённом отображении лейблов - отображать сразу все лейблы на объектах (/loadmap)
+- РџСЂРё Р·Р°РіСЂСѓР·РєРµ РёРЅС‚РµСЂСЊРµСЂР° Рё РІРєР»СЋС‡С‘РЅРЅРѕРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРё Р»РµР№Р±Р»РѕРІ - РѕС‚РѕР±СЂР°Р¶Р°С‚СЊ СЃСЂР°Р·Сѓ РІСЃРµ Р»РµР№Р±Р»С‹ РЅР° РѕР±СЉРµРєС‚Р°С… (/loadmap)
 
-Редактор текстур:
-- Сделать поиск по ID
-- Сделать поиск по названию или названию библиотеки
-- Сделать добавление текстур в избранное
-- Отображение слотов текстур на объекте в виде текстдравов справа
+Р РµРґР°РєС‚РѕСЂ С‚РµРєСЃС‚СѓСЂ:
+- РЎРґРµР»Р°С‚СЊ РїРѕРёСЃРє РїРѕ ID
+- РЎРґРµР»Р°С‚СЊ РїРѕРёСЃРє РїРѕ РЅР°Р·РІР°РЅРёСЋ РёР»Рё РЅР°Р·РІР°РЅРёСЋ Р±РёР±Р»РёРѕС‚РµРєРё
+- РЎРґРµР»Р°С‚СЊ РґРѕР±Р°РІР»РµРЅРёРµ С‚РµРєСЃС‚СѓСЂ РІ РёР·Р±СЂР°РЅРЅРѕРµ
+- РћС‚РѕР±СЂР°Р¶РµРЅРёРµ СЃР»РѕС‚РѕРІ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ РІ РІРёРґРµ С‚РµРєСЃС‚РґСЂР°РІРѕРІ СЃРїСЂР°РІР°
 */
 
-#define MAX_TEXT_OBJECT_LENGTH 124 // Максимальное количество символов текст на объекте
-#define MAX_OBJECT_TEXTURES 38 // Максимальное количество текстур на объекте
+#define MAX_TEXT_OBJECT_LENGTH 124 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ С‚РµРєСЃС‚ РЅР° РѕР±СЉРµРєС‚Рµ
+#define MAX_OBJECT_TEXTURES 38 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ
 #define         MAX_MATERIALS               16
 #define         MAX_TEXT_LENGTH             129
 
-enum peoEnum // Enum отвечающий за личный редактор объектов
+enum peoEnum // Enum РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° Р»РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ
 {
-    bool:peoInEditor, // Статус - находится ли игрок внутри редактора
+    bool:peoInEditor, // РЎС‚Р°С‚СѓСЃ - РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РёРіСЂРѕРє РІРЅСѓС‚СЂРё СЂРµРґР°РєС‚РѕСЂР°
 
-    // Переменные отвечающие за загруженный интерьер (для админов, он может быть и чужим)
-    peoNewid, // id из базы данных
-    bool:peoLoaded, // Статус - загружен из базы или нет
-    peoName[34], // Название интерьера
-    peoQuanUpdates, // Количество изменений в интерьере с момента сохранения или загрузки
-    peoQuanObjects, // Количество объектов в интерьере
-    peoCreatorId, // ID создателя интерьера
-    peoCreatorName[24], // Имя создателя интерьера
-    bool:peoStatusLoad, // Статус загружается ли интерьер в данный момент
-    peoPriceInterior, // Стоимость интерьера без учёта мебели и текстур
-    peoPublicationStatus, // Статус публикации интерьера в шоурум
-    peoSelObject, // Выбранный объект для редактирования
+    // РџРµСЂРµРјРµРЅРЅС‹Рµ РѕС‚РІРµС‡Р°СЋС‰РёРµ Р·Р° Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ (РґР»СЏ Р°РґРјРёРЅРѕРІ, РѕРЅ РјРѕР¶РµС‚ Р±С‹С‚СЊ Рё С‡СѓР¶РёРј)
+    peoNewid, // id РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+    bool:peoLoaded, // РЎС‚Р°С‚СѓСЃ - Р·Р°РіСЂСѓР¶РµРЅ РёР· Р±Р°Р·С‹ РёР»Рё РЅРµС‚
+    peoName[34], // РќР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂСЊРµСЂР°
+    peoQuanUpdates, // РљРѕР»РёС‡РµСЃС‚РІРѕ РёР·РјРµРЅРµРЅРёР№ РІ РёРЅС‚РµСЂСЊРµСЂРµ СЃ РјРѕРјРµРЅС‚Р° СЃРѕС…СЂР°РЅРµРЅРёСЏ РёР»Рё Р·Р°РіСЂСѓР·РєРё
+    peoQuanObjects, // РљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉРµРєС‚РѕРІ РІ РёРЅС‚РµСЂСЊРµСЂРµ
+    peoCreatorId, // ID СЃРѕР·РґР°С‚РµР»СЏ РёРЅС‚РµСЂСЊРµСЂР°
+    peoCreatorName[24], // РРјСЏ СЃРѕР·РґР°С‚РµР»СЏ РёРЅС‚РµСЂСЊРµСЂР°
+    bool:peoStatusLoad, // РЎС‚Р°С‚СѓСЃ Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ Р»Рё РёРЅС‚РµСЂСЊРµСЂ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚
+    peoPriceInterior, // РЎС‚РѕРёРјРѕСЃС‚СЊ РёРЅС‚РµСЂСЊРµСЂР° Р±РµР· СѓС‡С‘С‚Р° РјРµР±РµР»Рё Рё С‚РµРєСЃС‚СѓСЂ
+    peoPublicationStatus, // РЎС‚Р°С‚СѓСЃ РїСѓР±Р»РёРєР°С†РёРё РёРЅС‚РµСЂСЊРµСЂР° РІ С€РѕСѓСЂСѓРј
+    peoSelObject, // Р’С‹Р±СЂР°РЅРЅС‹Р№ РѕР±СЉРµРєС‚ РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ
 
-    // Переменные отвечающие за объекты
-    peoObject[MAX_OBJECT_INT], // ID Объекта присваеваемый в Streamer
-    peoModel[MAX_OBJECT_INT], // id модели объекта
-    Float:peoX[MAX_OBJECT_INT], // координата объекта
-    Float:peoY[MAX_OBJECT_INT], // координата объекта
-    Float:peoZ[MAX_OBJECT_INT], // координата объекта
-    Float:peoRX[MAX_OBJECT_INT], // координата объекта
-    Float:peoRY[MAX_OBJECT_INT], // координата объекта
-    Float:peoRZ[MAX_OBJECT_INT], // координата объекта
-    Text3D:peoObjectLabel[MAX_OBJECT_INT], // Label объектов
-    bool:peoObjectLabelStatus, // Статус отображения 3d лейблов на объектах
+    // РџРµСЂРµРјРµРЅРЅС‹Рµ РѕС‚РІРµС‡Р°СЋС‰РёРµ Р·Р° РѕР±СЉРµРєС‚С‹
+    peoObject[MAX_OBJECT_INT], // ID РћР±СЉРµРєС‚Р° РїСЂРёСЃРІР°РµРІР°РµРјС‹Р№ РІ Streamer
+    peoModel[MAX_OBJECT_INT], // id РјРѕРґРµР»Рё РѕР±СЉРµРєС‚Р°
+    Float:peoX[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Float:peoY[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Float:peoZ[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Float:peoRX[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Float:peoRY[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Float:peoRZ[MAX_OBJECT_INT], // РєРѕРѕСЂРґРёРЅР°С‚Р° РѕР±СЉРµРєС‚Р°
+    Text3D:peoObjectLabel[MAX_OBJECT_INT], // Label РѕР±СЉРµРєС‚РѕРІ
+    bool:peoObjectLabelStatus, // РЎС‚Р°С‚СѓСЃ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ 3d Р»РµР№Р±Р»РѕРІ РЅР° РѕР±СЉРµРєС‚Р°С…
 };
 new peoInfo[MAX_REALPLAYERS][peoEnum];
-new peoTexture[MAX_REALPLAYERS][MAX_OBJECT_INT][MAX_TEXTURES_ON_OBJECTS]; // Переменные хранения текстур на объекте
+new peoTexture[MAX_REALPLAYERS][MAX_OBJECT_INT][MAX_TEXTURES_ON_OBJECTS]; // РџРµСЂРµРјРµРЅРЅС‹Рµ С…СЂР°РЅРµРЅРёСЏ С‚РµРєСЃС‚СѓСЂ РЅР° РѕР±СЉРµРєС‚Рµ
 
 stock showDialogPersonalEditor(playerid, targetid)
 {
     new line[90],lines[990];
-    format(line,sizeof(line),"Изменений: %d \t ", peoInfo[targetid][peoQuanUpdates]), strcat(lines,line);
+    format(line,sizeof(line),"РР·РјРµРЅРµРЅРёР№: %d \t ", peoInfo[targetid][peoQuanUpdates]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Объекты >> \t {cccccc}[ %d ]", peoInfo[targetid][peoQuanObjects]), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Планировка \t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Название интерьера \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Стоимость интерьера \t {99ff66}%d$", peoInfo[targetid][peoPriceInterior]), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}РћР±СЉРµРєС‚С‹ >> \t {cccccc}[ %d ]", peoInfo[targetid][peoQuanObjects]), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}РџР»Р°РЅРёСЂРѕРІРєР° \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}РќР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂСЊРµСЂР° \t {FF9000}%s", peoInfo[targetid][peoName]), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}РЎС‚РѕРёРјРѕСЃС‚СЊ РёРЅС‚РµСЂСЊРµСЂР° \t {99ff66}%d$", peoInfo[targetid][peoPriceInterior]), strcat(lines,line);
 
     if(!peoInfo[targetid][peoObjectLabelStatus]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {FF6347}[ Off ]"), strcat(lines,line);
     else format(line,sizeof(line),"\n{A86CFB}* {cccccc}3D Text Label \t {99ff66}[ On ]"), strcat(lines,line);
 
-    if(!peoInfo[targetid][peoLoaded]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}Загрузить сохранённый интерьер \t "), strcat(lines,line);
-    else format(line,sizeof(line),"\n{A86CFB}* {cccccc}Выгрузить интерьер \t {99ff66}[ Загружен ]"), strcat(lines,line);
+    if(!peoInfo[targetid][peoLoaded]) format(line,sizeof(line),"\n{A86CFB}* {cccccc}Р—Р°РіСЂСѓР·РёС‚СЊ СЃРѕС…СЂР°РЅС‘РЅРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ \t "), strcat(lines,line);
+    else format(line,sizeof(line),"\n{A86CFB}* {cccccc}Р’С‹РіСЂСѓР·РёС‚СЊ РёРЅС‚РµСЂСЊРµСЂ \t {99ff66}[ Р—Р°РіСЂСѓР¶РµРЅ ]"), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{A86CFB}* {cccccc}Использовать доступный интерьер \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}* {cccccc}РСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РґРѕСЃС‚СѓРїРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ \t "), strcat(lines,line);
 
-    format(line,sizeof(line),"\n{A86CFB}* {99ff66}Сохранить интерьер \t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{FF6347}Выйти из редактора\t "), strcat(lines,line);
-    format(line,sizeof(line),"\n{666666}Команды редактора {A86CFB}>> \t "), strcat(lines,line);
-    ShowDialog(playerid,1292,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Редактор Интерьера",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"\n{A86CFB}* {99ff66}РЎРѕС…СЂР°РЅРёС‚СЊ РёРЅС‚РµСЂСЊРµСЂ \t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}Р’С‹Р№С‚Рё РёР· СЂРµРґР°РєС‚РѕСЂР°\t "), strcat(lines,line);
+    format(line,sizeof(line),"\n{666666}РљРѕРјР°РЅРґС‹ СЂРµРґР°РєС‚РѕСЂР° {A86CFB}>> \t "), strcat(lines,line);
+    ShowDialog(playerid,1292,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Р РµРґР°РєС‚РѕСЂ РРЅС‚РµСЂСЊРµСЂР°",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
@@ -92,21 +92,21 @@ stock showDialogAllObjectsPeo(playerid, targetid)
 	PlayerPlaySound(playerid,40405,0,0,0);
 
     new line[100],lines[4048];
-    format(line,sizeof(line),"ID ModelID Название \t Гос. цена"), strcat(lines,line);
+    format(line,sizeof(line),"ID ModelID РќР°Р·РІР°РЅРёРµ \t Р“РѕСЃ. С†РµРЅР°"), strcat(lines,line);
  	for(new i = 0; i < MAX_OBJECT_INT; i++)
 	{
 	    if(peoInfo[targetid][peoModel][i] > 0)
 	    {
-	        if(i == 0) format(line,sizeof(line),"\n{cccccc}%d. Планировка \t {99ff66}%d$", i, getFrameObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
+	        if(i == 0) format(line,sizeof(line),"\n{cccccc}%d. РџР»Р°РЅРёСЂРѕРІРєР° \t {99ff66}%d$", i, getFrameObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
 	        else format(line,sizeof(line),"\n{cccccc}%d. %d (%s) \t {99ff66}%d$", i, peoInfo[targetid][peoModel][i], getIkeaObjectName(peoInfo[targetid][peoModel][i]), getIkeaObjectPrice(peoInfo[targetid][peoModel][i])), strcat(lines,line);
 		}
 		else format(line,sizeof(line),"\n{cccccc}%d. ... \t ",i), strcat(lines,line);
 	}
-    ShowDialog(playerid,1295,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Редактор Интерьера",lines,"*","");
+    ShowDialog(playerid,1295,DIALOG_STYLE_TABLIST_HEADERS,"{A86CFB}Р РµРґР°РєС‚РѕСЂ РРЅС‚РµСЂСЊРµСЂР°",lines,"*","");
 	return 1;
 }
 
-stock showUseInterior(playerid) // Показываем список интерьеров, которые игрок может загрузить в личный редактор
+stock showUseInterior(playerid) // РџРѕРєР°Р·С‹РІР°РµРј СЃРїРёСЃРѕРє РёРЅС‚РµСЂСЊРµСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ РёРіСЂРѕРє РјРѕР¶РµС‚ Р·Р°РіСЂСѓР·РёС‚СЊ РІ Р»РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ
 {
     PlayerPlaySound(playerid,40405,0,0,0);
     new line[100],lines[1400];
@@ -114,16 +114,16 @@ stock showUseInterior(playerid) // Показываем список интерьеров, которые игрок м
     for(new i = 0; i < 200; i++) List[i][playerid] = 0, ListParam[i][playerid] = 0;
 
     new quan;
-    // Собственный дом
+    // РЎРѕР±СЃС‚РІРµРЅРЅС‹Р№ РґРѕРј
     if(PlayerInfo[playerid][pDom] > 0)
     {
         List[quan][playerid] = PlayerInfo[playerid][pDom];
         ListParam[quan][playerid] = 0;
         quan ++;
-        format(line,sizeof(line),"{cccccc}Дом № {ff9000}%d\n", PlayerInfo[playerid][pDom]), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}Р”РѕРј в„– {ff9000}%d\n", PlayerInfo[playerid][pDom]), strcat(lines,line);
     }
 
-    // Арендованный дом
+    // РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ РґРѕРј
     if(PlayerInfo[playerid][pHouserent] > 0)
     {
         new d = PlayerInfo[playerid][pHouserent];
@@ -132,11 +132,11 @@ stock showUseInterior(playerid) // Показываем список интерьеров, которые игрок м
             List[quan][playerid] = d;
             ListParam[quan][playerid] = 0;
             quan ++;
-            format(line,sizeof(line),"{cccccc}Арендованный Дом № {ff9000}%d\n", d), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ Р”РѕРј в„– {ff9000}%d\n", d), strcat(lines,line);
         }
     }
 
-    // Семейный Дом
+    // РЎРµРјРµР№РЅС‹Р№ Р”РѕРј
     if(PlayerInfo[playerid][pFamily] > 0)
     {
         new f = PlayerInfo[playerid][pFamily];
@@ -148,21 +148,21 @@ stock showUseInterior(playerid) // Показываем список интерьеров, которые игрок м
                 List[quan][playerid] = d;
                 ListParam[quan][playerid] = 0;
                 quan ++;
-                format(line,sizeof(line),"{cccccc}Семейный Дом № {ff9000}%d\n", d), strcat(lines,line);
+                format(line,sizeof(line),"{cccccc}РЎРµРјРµР№РЅС‹Р№ Р”РѕРј в„– {ff9000}%d\n", d), strcat(lines,line);
             }
         }
     }
 
-    // Личный Бизнес
+    // Р›РёС‡РЅС‹Р№ Р‘РёР·РЅРµСЃ
     if(PlayerInfo[playerid][pBusiness] > 0)
     {
         List[quan][playerid] = PlayerInfo[playerid][pBusiness];
         ListParam[quan][playerid] = 1;
         quan ++;
-        format(line,sizeof(line),"{cccccc}%s № {ff9000}%d\n", bizname(PlayerInfo[playerid][pBusiness]), PlayerInfo[playerid][pBusiness]), strcat(lines,line);
+        format(line,sizeof(line),"{cccccc}%s в„– {ff9000}%d\n", bizname(PlayerInfo[playerid][pBusiness]), PlayerInfo[playerid][pBusiness]), strcat(lines,line);
     }
 
-    // Семейные бизнесы
+    // РЎРµРјРµР№РЅС‹Рµ Р±РёР·РЅРµСЃС‹
     new b;
     if(PlayerInfo[playerid][pFamily] > 0)
     {
@@ -176,14 +176,14 @@ stock showUseInterior(playerid) // Показываем список интерьеров, которые игрок м
             List[quan][playerid] = b;
             ListParam[quan][playerid] = 1;
             quan ++;
-            format(line,sizeof(line),"{cccccc}%s № {ff9000}%d\n", bizname(b), b), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}%s в„– {ff9000}%d\n", bizname(b), b), strcat(lines,line);
         }
     }
-    ShowDialog(playerid,1298,DIALOG_STYLE_TABLIST,"{A86CFB}Редактор Интерьера",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1298,DIALOG_STYLE_TABLIST,"{A86CFB}Р РµРґР°РєС‚РѕСЂ РРЅС‚РµСЂСЊРµСЂР°",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
     return 1;
 }
 
-stock CreateObjectPeoInterior(playerid, peoId, modelId, slotId, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, world, interior) // Сток создания объекта
+stock CreateObjectPeoInterior(playerid, peoId, modelId, slotId, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, world, interior) // РЎС‚РѕРє СЃРѕР·РґР°РЅРёСЏ РѕР±СЉРµРєС‚Р°
 {
     peoInfo[peoId][peoModel][slotId] = modelId;
     peoInfo[peoId][peoX][slotId] = x;
@@ -196,19 +196,19 @@ stock CreateObjectPeoInterior(playerid, peoId, modelId, slotId, Float:x, Float:y
 
     if(slotId > 0)
     {
-        if(peoInfo[playerid][peoObjectLabelStatus]) create3dtextLabel(playerid, slotId); // 3d label ставим, если включено отображение
+        if(peoInfo[playerid][peoObjectLabelStatus]) create3dtextLabel(playerid, slotId); // 3d label СЃС‚Р°РІРёРј, РµСЃР»Рё РІРєР»СЋС‡РµРЅРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ
     }
     return 1;
 }
 
 CMD:loadtobiz(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить интерьер из личного редактора в бизнес [ /loadtobiz ID Бизнеса ]");
-    if(params[0] <= 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Неверный ID бизнеса");
-    if(!IsABizInteriorFrame(params[0])) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недоступна система интерьеров");
-    if(IsAJizzyBiz(params[0])) return ErrorMessage(playerid, "{FF6347}В этот бизнес нельзя установить интерьер\n{cccccc}Пример: Бизнес Jizzy имеет собственный каркас из нескольких частей");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РіСЂСѓР·РёС‚СЊ РёРЅС‚РµСЂСЊРµСЂ РёР· Р»РёС‡РЅРѕРіРѕ СЂРµРґР°РєС‚РѕСЂР° РІ Р±РёР·РЅРµСЃ [ /loadtobiz ID Р‘РёР·РЅРµСЃР° ]");
+    if(params[0] <= 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}РќРµРІРµСЂРЅС‹Р№ ID Р±РёР·РЅРµСЃР°");
+    if(!IsABizInteriorFrame(params[0])) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕРј Р±РёР·РЅРµСЃРµ РЅРµРґРѕСЃС‚СѓРїРЅР° СЃРёСЃС‚РµРјР° РёРЅС‚РµСЂСЊРµСЂРѕРІ");
+    if(IsAJizzyBiz(params[0])) return ErrorMessage(playerid, "{FF6347}Р’ СЌС‚РѕС‚ Р±РёР·РЅРµСЃ РЅРµР»СЊР·СЏ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РёРЅС‚РµСЂСЊРµСЂ\n{cccccc}РџСЂРёРјРµСЂ: Р‘РёР·РЅРµСЃ Jizzy РёРјРµРµС‚ СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ РєР°СЂРєР°СЃ РёР· РЅРµСЃРєРѕР»СЊРєРёС… С‡Р°СЃС‚РµР№");
     LoadInteriorToBiz(playerid, params[0]);
     return 1;
 }
@@ -216,7 +216,7 @@ stock LoadInteriorToBiz(playerid, b)
 {
     new peoId = GetPlayerVirtualWorld(playerid)-4000;
 
-    // Переменные для хранения информации об объекте
+    // РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РѕР± РѕР±СЉРµРєС‚Рµ
     new Float:pos[6];
 
     new text[MAX_TEXT_LENGTH];
@@ -230,31 +230,31 @@ stock LoadInteriorToBiz(playerid, b)
 
     new quan, quanTextures;
 
-    // Начало транзакции
+    // РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
     for(new i = 0; i < MAX_OBJECT_INT; i++)
     {
-        // Удаляем текущие объекты из бизнеса
+        // РЈРґР°Р»СЏРµРј С‚РµРєСѓС‰РёРµ РѕР±СЉРµРєС‚С‹ РёР· Р±РёР·РЅРµСЃР°
         if(BizzInfo[b][bOmodel][i] > 0) 
         {
             DestroyDynamicObject(BizzInfo[b][bObject][i]);
-            if(peoInfo[peoId][peoObject][i] == 0 || peoInfo[peoId][peoModel][i] == 0) DelObjectBiz(b, i); // Удаляем только если не перезаписываем
+            if(peoInfo[peoId][peoObject][i] == 0 || peoInfo[peoId][peoModel][i] == 0) DelObjectBiz(b, i); // РЈРґР°Р»СЏРµРј С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРµ РїРµСЂРµР·Р°РїРёСЃС‹РІР°РµРј
         }
 
         if(peoInfo[peoId][peoObject][i] == 0 || peoInfo[peoId][peoModel][i] == 0)  continue;
 
-        // Получаем инфу об объекте
+        // РџРѕР»СѓС‡Р°РµРј РёРЅС„Сѓ РѕР± РѕР±СЉРµРєС‚Рµ
         GetDynamicObjectPos(peoInfo[peoId][peoObject][i], pos[0], pos[1], pos[2]);
         GetDynamicObjectRot(peoInfo[peoId][peoObject][i], pos[3], pos[4], pos[5]);
 
-        // Создаём объект
+        // РЎРѕР·РґР°С‘Рј РѕР±СЉРµРєС‚
         BizzInfo[b][bOmodel][i] = peoInfo[peoId][peoModel][i];
         BizzInfo[b][bObject][i] = CreateDynamicObject(BizzInfo[b][bOmodel][i], pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], b+3000, 90, -1, 100.00, 100.00);
         BizzInfo[b][bQara][i] = 0;
         BizzInfo[b][bUser][i] = PlayerInfo[playerid][pID];
 
-        // загрузка текстур и текста
+        // Р·Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂ Рё С‚РµРєСЃС‚Р°
         for(new m = 0; m < MAX_OBJECT_TEXTURES; m++)
         {
             new modelid, txdname[44], texturename[44], materialcolor;
@@ -274,30 +274,30 @@ stock LoadInteriorToBiz(playerid, b)
             }
         }
 
-        UpdateObjectBiz(b, i); // Сохраняем сразу в базу
+        UpdateObjectBiz(b, i); // РЎРѕС…СЂР°РЅСЏРµРј СЃСЂР°Р·Сѓ РІ Р±Р°Р·Сѓ
         quan ++;
     }
 
-    // Завершение транзакции
+    // Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
     SaveBizz(b);
 
     new string[144];
-    format(string, sizeof(string), "{99ff66}Вы установили интерьер из личного редактора в бизнес № %d\nКоличество объектов: %d\nКоличество текстур: %d", b, quan, quanTextures);
+    format(string, sizeof(string), "{99ff66}Р’С‹ СѓСЃС‚Р°РЅРѕРІРёР»Рё РёРЅС‚РµСЂСЊРµСЂ РёР· Р»РёС‡РЅРѕРіРѕ СЂРµРґР°РєС‚РѕСЂР° РІ Р±РёР·РЅРµСЃ в„– %d\nРљРѕР»РёС‡РµСЃС‚РІРѕ РѕР±СЉРµРєС‚РѕРІ: %d\nРљРѕР»РёС‡РµСЃС‚РІРѕ С‚РµРєСЃС‚СѓСЂ: %d", b, quan, quanTextures);
     SuccessMessage(playerid, string);
-	BizLog("loadtobiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, 0, "Установил интерьер");
+	BizLog("loadtobiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, 0, "РЈСЃС‚Р°РЅРѕРІРёР» РёРЅС‚РµСЂСЊРµСЂ");
     return 1;
 }
 
 stock useAvailableInterior(playerid, propId, typeProperty)
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
-    if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование объекта");
-    if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}Покиньте меню выбора планировки");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
+    if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р—Р°РІРµСЂС€РёС‚Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р°");
+    if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}РџРѕРєРёРЅСЊС‚Рµ РјРµРЅСЋ РІС‹Р±РѕСЂР° РїР»Р°РЅРёСЂРѕРІРєРё");
 
-    DestroyPeoInterior(playerid); // Удаляем все объекты
+    DestroyPeoInterior(playerid); // РЈРґР°Р»СЏРµРј РІСЃРµ РѕР±СЉРµРєС‚С‹
 
     new modelid;
     new txdname[32];
@@ -313,7 +313,7 @@ stock useAvailableInterior(playerid, propId, typeProperty)
     new backcolor, textalignment;
     new yestext;
 
-    // Грузим объекты из дома
+    // Р“СЂСѓР·РёРј РѕР±СЉРµРєС‚С‹ РёР· РґРѕРјР°
     if(typeProperty == 0)
     {
         for(new i = 0; i < MAX_OBJECT_INT; i++)
@@ -346,7 +346,7 @@ stock useAvailableInterior(playerid, propId, typeProperty)
             }
         }
     }
-    // Грузим объекты из бизнеса
+    // Р“СЂСѓР·РёРј РѕР±СЉРµРєС‚С‹ РёР· Р±РёР·РЅРµСЃР°
     else if(typeProperty == 1)
     {
         for(new i = 0; i < MAX_OBJECT_INT; i++)
@@ -382,8 +382,8 @@ stock useAvailableInterior(playerid, propId, typeProperty)
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 
     new string[90];
-    if(typeProperty == 0) format(string,sizeof(string),"{99ff66}Вы загрузили в личный редактор интерьер {ff9000}Дома № %d", propId);
-    else if(typeProperty == 1) format(string,sizeof(string),"{99ff66}Вы загрузили в личный редактор интерьер {ff9000}Бизнеса № %d", propId);
+    if(typeProperty == 0) format(string,sizeof(string),"{99ff66}Р’С‹ Р·Р°РіСЂСѓР·РёР»Рё РІ Р»РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ РёРЅС‚РµСЂСЊРµСЂ {ff9000}Р”РѕРјР° в„– %d", propId);
+    else if(typeProperty == 1) format(string,sizeof(string),"{99ff66}Р’С‹ Р·Р°РіСЂСѓР·РёР»Рё РІ Р»РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ РёРЅС‚РµСЂСЊРµСЂ {ff9000}Р‘РёР·РЅРµСЃР° в„– %d", propId);
 	SuccessMessage(playerid, string);
     return 1;
 }
@@ -391,42 +391,42 @@ stock useAvailableInterior(playerid, propId, typeProperty)
 stock showDialogCommandEditor(playerid)
 {
     new line[80],lines[1120];
-	format(line,sizeof(line),"\n{A86CFB}/loadinterior {cccccc}- загрузить сохранённый интерьер"), strcat(lines,line);
-	format(line,sizeof(line),"\n{A86CFB}/unloadinterior {cccccc}- выгрузить интерьер"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/nameinterior {cccccc}- название интерьера"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/priceinterior {cccccc}- указать стоимость интерьера"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/exiteditor {cccccc}- выйти из редактора"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/loadinterior {cccccc}- Р·Р°РіСЂСѓР·РёС‚СЊ СЃРѕС…СЂР°РЅС‘РЅРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/unloadinterior {cccccc}- РІС‹РіСЂСѓР·РёС‚СЊ РёРЅС‚РµСЂСЊРµСЂ"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/nameinterior {cccccc}- РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂСЊРµСЂР°"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/priceinterior {cccccc}- СѓРєР°Р·Р°С‚СЊ СЃС‚РѕРёРјРѕСЃС‚СЊ РёРЅС‚РµСЂСЊРµСЂР°"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/exiteditor {cccccc}- РІС‹Р№С‚Рё РёР· СЂРµРґР°РєС‚РѕСЂР°"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n\n{A86CFB}/cobject {cccccc}- создать объект"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/sel {cccccc}- выбрать объект"), strcat(lines,line);
-	format(line,sizeof(line),"\n{A86CFB}/eobject {cccccc}- переместить объект"), strcat(lines,line);
-	format(line,sizeof(line),"\n{A86CFB}/dobject {cccccc}- удалить объект"), strcat(lines,line);
-	format(line,sizeof(line),"\n{A86CFB}/ox /oy /oz /rx /ry /rz {cccccc}- установка угла объекта"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/label3d {cccccc}- 3d label для отображения id объектов"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/clone {cccccc}- копировать выбранный объект"), strcat(lines,line);
-    format(line,sizeof(line),"\n{A86CFB}/model {cccccc}- заменить модель выбранного объекта"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{A86CFB}/cobject {cccccc}- СЃРѕР·РґР°С‚СЊ РѕР±СЉРµРєС‚"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/sel {cccccc}- РІС‹Р±СЂР°С‚СЊ РѕР±СЉРµРєС‚"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/eobject {cccccc}- РїРµСЂРµРјРµСЃС‚РёС‚СЊ РѕР±СЉРµРєС‚"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/dobject {cccccc}- СѓРґР°Р»РёС‚СЊ РѕР±СЉРµРєС‚"), strcat(lines,line);
+	format(line,sizeof(line),"\n{A86CFB}/ox /oy /oz /rx /ry /rz {cccccc}- СѓСЃС‚Р°РЅРѕРІРєР° СѓРіР»Р° РѕР±СЉРµРєС‚Р°"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/label3d {cccccc}- 3d label РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ id РѕР±СЉРµРєС‚РѕРІ"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/clone {cccccc}- РєРѕРїРёСЂРѕРІР°С‚СЊ РІС‹Р±СЂР°РЅРЅС‹Р№ РѕР±СЉРµРєС‚"), strcat(lines,line);
+    format(line,sizeof(line),"\n{A86CFB}/model {cccccc}- Р·Р°РјРµРЅРёС‚СЊ РјРѕРґРµР»СЊ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°"), strcat(lines,line);
 
-    if(PlayerInfo[playerid][pSoska] >= 22) format(line,sizeof(line),"\n{A86CFB}/loadmap {cccccc}- загрузить мап из map_interior.db"), strcat(lines,line);
-	ShowDialog(playerid,1295,DIALOG_STYLE_MSGBOX,"{A86CFB}Редактор Интерьера",lines,"*","");
+    if(PlayerInfo[playerid][pSoska] >= 22) format(line,sizeof(line),"\n{A86CFB}/loadmap {cccccc}- Р·Р°РіСЂСѓР·РёС‚СЊ РјР°Рї РёР· map_interior.db"), strcat(lines,line);
+	ShowDialog(playerid,1295,DIALOG_STYLE_MSGBOX,"{A86CFB}Р РµРґР°РєС‚РѕСЂ РРЅС‚РµСЂСЊРµСЂР°",lines,"*","");
     return 1;
 }
 
-CMD:editor(playerid) // Команда для открытия диалогового окна с управлением редактором
+CMD:editor(playerid) // РљРѕРјР°РЅРґР° РґР»СЏ РѕС‚РєСЂС‹С‚РёСЏ РґРёР°Р»РѕРіРѕРІРѕРіРѕ РѕРєРЅР° СЃ СѓРїСЂР°РІР»РµРЅРёРµРј СЂРµРґР°РєС‚РѕСЂРѕРј
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
     showDialogPersonalEditor(playerid, playerid);
     return 1;
 }
 
 CMD:priceinterior(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
     new world = GetPlayerVirtualWorld(playerid);
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
 
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Стоимость интерьера в личном редакторе [ /priceinterior Стоимость ]");
-    if(params[0] <= 0 || params[0] > 100000000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Стоимость не меньше 1 и не больше 100.000.000$");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎС‚РѕРёРјРѕСЃС‚СЊ РёРЅС‚РµСЂСЊРµСЂР° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ [ /priceinterior РЎС‚РѕРёРјРѕСЃС‚СЊ ]");
+    if(params[0] <= 0 || params[0] > 100000000) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎС‚РѕРёРјРѕСЃС‚СЊ РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 100.000.000$");
 
     peoInfo[playerid][peoPriceInterior] = params[0];
     peoInfo[playerid][peoQuanUpdates] ++;
@@ -436,15 +436,15 @@ CMD:priceinterior(playerid, const params[])
 
 CMD:nameinterior(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
     new world = GetPlayerVirtualWorld(playerid);
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
     new inputtext[34];
-    if(sscanf(params, "s[34]", inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить название интерьера в личном редакторе [ /nameinterior Имя ]");
+    if(sscanf(params, "s[34]", inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РР·РјРµРЅРёС‚СЊ РЅР°Р·РІР°РЅРёРµ РёРЅС‚РµСЂСЊРµСЂР° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ [ /nameinterior РРјСЏ ]");
     if(!strlen(inputtext)) return 1;
-    if(strlen(inputtext) < 3 || strlen(inputtext) > 34) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Название не меньше 3 и не больше 34 символов");
-    if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Хм... я пытаюсь указать в названии какие-то каракули... [ Запрещённый Символ ]");
+    if(strlen(inputtext) < 3 || strlen(inputtext) > 34) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РќР°Р·РІР°РЅРёРµ РЅРµ РјРµРЅСЊС€Рµ 3 Рё РЅРµ Р±РѕР»СЊС€Рµ 34 СЃРёРјРІРѕР»РѕРІ");
+    if(checksimvol(inputtext)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РҐРј... СЏ РїС‹С‚Р°СЋСЃСЊ СѓРєР°Р·Р°С‚СЊ РІ РЅР°Р·РІР°РЅРёРё РєР°РєРёРµ-С‚Рѕ РєР°СЂР°РєСѓР»Рё... [ Р—Р°РїСЂРµС‰С‘РЅРЅС‹Р№ РЎРёРјРІРѕР» ]");
 
     format(peoInfo[playerid][peoName],34,"%s", inputtext);
     peoInfo[playerid][peoQuanUpdates] ++;
@@ -454,27 +454,27 @@ CMD:nameinterior(playerid, const params[])
 
 CMD:sel(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
     new world = GetPlayerVirtualWorld(playerid);
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
 
-    if(sscanf(params, "i", params[0]))  return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выбрать объект для редактирования [ /sel ID ]");
+    if(sscanf(params, "i", params[0]))  return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹Р±СЂР°С‚СЊ РѕР±СЉРµРєС‚ РґР»СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ [ /sel ID ]");
     if(params[0] <= 0 || params[0] >= MAX_OBJECT_INT)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT);
+        format(string,sizeof(string),"{FF6347}ID РѕР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_INT);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(peoInfo[peoId][peoModel][params[0]] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+    if(peoInfo[peoId][peoModel][params[0]] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° СЃ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
-    new prewSel = peoInfo[peoId][peoSelObject]; // Получаем ID предыдущего выбранного объекта
-    peoInfo[peoId][peoSelObject] = params[0]; // Записываем выбранный новый объект
-    update3dtextLabel(playerid, params[0]); // Обновляем label нового объекта
-    if(peoInfo[peoId][peoModel][prewSel] > 0) update3dtextLabel(playerid, prewSel); // Обновляем label предыдущего объекта
+    new prewSel = peoInfo[peoId][peoSelObject]; // РџРѕР»СѓС‡Р°РµРј ID РїСЂРµРґС‹РґСѓС‰РµРіРѕ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+    peoInfo[peoId][peoSelObject] = params[0]; // Р—Р°РїРёСЃС‹РІР°РµРј РІС‹Р±СЂР°РЅРЅС‹Р№ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚
+    update3dtextLabel(playerid, params[0]); // РћР±РЅРѕРІР»СЏРµРј label РЅРѕРІРѕРіРѕ РѕР±СЉРµРєС‚Р°
+    if(peoInfo[peoId][peoModel][prewSel] > 0) update3dtextLabel(playerid, prewSel); // РћР±РЅРѕРІР»СЏРµРј label РїСЂРµРґС‹РґСѓС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 
     PlayerPlaySound(playerid,17803,0,0,0);
     return 1;
@@ -483,7 +483,7 @@ CMD:sel(playerid, const params[])
 CMD:ox(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по X координате [ /ox Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎРґРІРёРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ X РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /ox РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 0);
     return 1;
 }
@@ -491,7 +491,7 @@ CMD:ox(playerid, const params[])
 CMD:oy(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по Y координате [ /oy Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎРґРІРёРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ Y РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /oy РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 1);
     return 1;
 }
@@ -499,7 +499,7 @@ CMD:oy(playerid, const params[])
 CMD:oz(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сдвинуть объект по Z координате [ /oz Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЎРґРІРёРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ Z РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /oz РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 2);
     return 1;
 }
@@ -507,7 +507,7 @@ CMD:oz(playerid, const params[])
 CMD:rx(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RX координате [ /rx Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРІРµСЂРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ RX РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /rx РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 3);
     return 1;
 }
@@ -515,7 +515,7 @@ CMD:rx(playerid, const params[])
 CMD:ry(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RY координате [ /ry Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРІРµСЂРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ RY РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /ry РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 4);
     return 1;
 }
@@ -523,7 +523,7 @@ CMD:ry(playerid, const params[])
 CMD:rz(playerid, const params[])
 {
     new Float:input;
-    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Повернуть объект по RZ координате [ /rz Координата ]");
+    if(sscanf(params, "f", input)) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РџРѕРІРµСЂРЅСѓС‚СЊ РѕР±СЉРµРєС‚ РїРѕ RZ РєРѕРѕСЂРґРёРЅР°С‚Рµ [ /rz РљРѕРѕСЂРґРёРЅР°С‚Р° ]");
     SetObjectPosPersonalEditor(playerid, peoInfo[playerid][peoSelObject], input, 5);
     return 1;
 }
@@ -531,33 +531,33 @@ CMD:rz(playerid, const params[])
 CMD:gclone(playerid) return cmd_clone(playerid);
 CMD:clone(playerid)
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Выберите объект, чтобы его клонировать [ /sel ]");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РѕР±СЉРµРєС‚, С‡С‚РѕР±С‹ РµРіРѕ РєР»РѕРЅРёСЂРѕРІР°С‚СЊ [ /sel ]");
     CloneObjectPersonalEditor(playerid, peoInfo[playerid][peoSelObject]);
     return 1;
 }
 
 CMD:mtset(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Выберите объект, чтобы изменить текстуру [ /sel ]");
-    if(sscanf(params, "ii", params[0], params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить текстуру [ /mtset Слот Текстуры ID Текстуры ]");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РѕР±СЉРµРєС‚, С‡С‚РѕР±С‹ РёР·РјРµРЅРёС‚СЊ С‚РµРєСЃС‚СѓСЂСѓ [ /sel ]");
+    if(sscanf(params, "ii", params[0], params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РјРµРЅРёС‚СЊ С‚РµРєСЃС‚СѓСЂСѓ [ /mtset РЎР»РѕС‚ РўРµРєСЃС‚СѓСЂС‹ ID РўРµРєСЃС‚СѓСЂС‹ ]");
     if(params[0] < 0 || params[0] >= MAX_OBJECT_TEXTURES)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}Слот текстуры не меньше 0 и не больше %d", MAX_OBJECT_TEXTURES - 1);
+        format(string,sizeof(string),"{FF6347}РЎР»РѕС‚ С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РјРµРЅСЊС€Рµ 0 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_TEXTURES - 1);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(params[1] <= 0 || params[1] > 9064) return ErrorMessage(playerid, "{FF6347}ID текстуры не меньше 1 и не больше 9064");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(params[1] <= 0 || params[1] > 9064) return ErrorMessage(playerid, "{FF6347}ID С‚РµРєСЃС‚СѓСЂС‹ РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 9064");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = GetPlayerVirtualWorld(playerid)-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РїР»Р°РЅРёСЂРѕРІРєСѓ РґР»СЏ РІР°С€РµРіРѕ РёРЅС‚РµСЂСЊРµСЂР°");
     new getSlotId = peoInfo[playerid][peoSelObject];
-    if(peoInfo[peoId][peoModel][getSlotId] == 0) return ErrorMessage(playerid, "{FF6347}Этого объекта не существует");
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][getSlotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(peoInfo[peoId][peoModel][getSlotId] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][getSlotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
     SetDynamicObjectMaterial(peoInfo[peoId][peoObject][getSlotId], params[0], ObjectTextures[params[1]][TModel], ObjectTextures[params[1]][TXDName], ObjectTextures[params[1]][TextureName], 0x00000000);
     PlayerPlaySound(playerid,1084,0,0,0);
@@ -567,18 +567,18 @@ CMD:mtset(playerid, const params[])
 CMD:oprop(playerid, const params[]) return cmd_model(playerid, params);
 CMD:model(playerid, const params[])
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы уже используете редактор объектов");
-    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Выберите объект, чтобы заменить его модель [ /sel ]");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить модель выбранного объекта [ /model ModelID ]");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓР¶Рµ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoSelObject] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РѕР±СЉРµРєС‚, С‡С‚РѕР±С‹ Р·Р°РјРµРЅРёС‚СЊ РµРіРѕ РјРѕРґРµР»СЊ [ /sel ]");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р—Р°РјРµРЅРёС‚СЊ РјРѕРґРµР»СЊ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РѕР±СЉРµРєС‚Р° [ /model ModelID ]");
     if(params[0] > MAX_OBJECT_MODEL_ID || params[0] <= 320)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}ID Объекта не меньше 321 и не больше %d", MAX_OBJECT_MODEL_ID);
+        format(string,sizeof(string),"{FF6347}ID РћР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 321 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_MODEL_ID);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(params[0] >= 400 && params[0] <= 611) return ErrorMessage(playerid, "{FF6347}Эту model объекта нельзя использовать");
+    if(params[0] >= 400 && params[0] <= 611) return ErrorMessage(playerid, "{FF6347}Р­С‚Сѓ model РѕР±СЉРµРєС‚Р° РЅРµР»СЊР·СЏ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ");
 
     ModelObjectPersonalEditor(playerid, peoInfo[playerid][peoSelObject], params[0]);
     return 1;
@@ -586,35 +586,35 @@ CMD:model(playerid, const params[])
 
 stock SetObjectPosPersonalEditor(playerid, slotId, Float:pos, posId)
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new world = GetPlayerVirtualWorld(playerid);
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РїР»Р°РЅРёСЂРѕРІРєСѓ РґР»СЏ РІР°С€РµРіРѕ РёРЅС‚РµСЂСЊРµСЂР°");
 
     if(slotId <= 0 || slotId >= MAX_OBJECT_INT)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT);
+        format(string,sizeof(string),"{FF6347}ID РѕР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_INT);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° СЃ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
-    if(posId >= 3) // Углы наклона
+    if(posId >= 3) // РЈРіР»С‹ РЅР°РєР»РѕРЅР°
     {
-        if(pos < -360.0 || pos > 360.0) return ErrorMessage(playerid, "{FF6347}Не меньше -360.0 и не больше 360.0");
+        if(pos < -360.0 || pos > 360.0) return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ -360.0 Рё РЅРµ Р±РѕР»СЊС€Рµ 360.0");
     }
-    else // Сдвиг в сторону
+    else // РЎРґРІРёРі РІ СЃС‚РѕСЂРѕРЅСѓ
     {
-        if(pos < -200.0 || pos > 200.0) return ErrorMessage(playerid, "{FF6347}Не меньше -200.0 и не больше 200.0");
+        if(pos < -200.0 || pos > 200.0) return ErrorMessage(playerid, "{FF6347}РќРµ РјРµРЅСЊС€Рµ -200.0 Рё РЅРµ Р±РѕР»СЊС€Рµ 200.0");
         new Float:maxDistFromInterior = GetDistancePoint(1387.4436,-16.2143,1000.8868,peoInfo[playerid][peoX][slotId]+pos,peoInfo[playerid][peoY][slotId]+pos,peoInfo[playerid][peoZ][slotId]+pos);
-        if(maxDistFromInterior >= 200.0) return ErrorMessage(playerid, "{FF6347}Нельзя переносить объект дальше чем на 200 метров от точки входа в интерьер");
+        if(maxDistFromInterior >= 200.0) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ РїРµСЂРµРЅРѕСЃРёС‚СЊ РѕР±СЉРµРєС‚ РґР°Р»СЊС€Рµ С‡РµРј РЅР° 200 РјРµС‚СЂРѕРІ РѕС‚ С‚РѕС‡РєРё РІС…РѕРґР° РІ РёРЅС‚РµСЂСЊРµСЂ");
     }
 
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
     if(posId == 0) peoInfo[playerid][peoX][slotId] += pos; // x
     else if(posId == 1) peoInfo[playerid][peoY][slotId] += pos; // y
@@ -631,25 +631,25 @@ stock SetObjectPosPersonalEditor(playerid, slotId, Float:pos, posId)
     return 1;
 }
 
-stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание объекта в личном редакторе
+stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // РЎРѕР·РґР°РЅРёРµ РѕР±СЉРµРєС‚Р° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РїР»Р°РЅРёСЂРѕРІРєСѓ РґР»СЏ РІР°С€РµРіРѕ РёРЅС‚РµСЂСЊРµСЂР°");
 
     new slotId = getFreeObjectSlot(peoId);
     if(slotId == -1)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}Лимит объектов для интерьеров: %d", MAX_OBJECT_INT-1);
+        format(string,sizeof(string),"{FF6347}Р›РёРјРёС‚ РѕР±СЉРµРєС‚РѕРІ РґР»СЏ РёРЅС‚РµСЂСЊРµСЂРѕРІ: %d", MAX_OBJECT_INT-1);
         ErrorMessage(playerid, string);
         return 1;
     }
 
-    // Ищем координату перед игроком
+    // РС‰РµРј РєРѕРѕСЂРґРёРЅР°С‚Сѓ РїРµСЂРµРґ РёРіСЂРѕРєРѕРј
     new Float:f_pos[4];
     frontme(playerid, 4.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
     CreateObjectPeoInterior(playerid, peoId, modelId, slotId, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0, world, interior);
@@ -658,22 +658,22 @@ stock CreateObjectPersonalEditor(playerid, modelId, world, interior) // Создание
     return 1;
 }
 
-stock CloneObjectPersonalEditor(playerid, getSlotId) // Клонируем объект
+stock CloneObjectPersonalEditor(playerid, getSlotId) // РљР»РѕРЅРёСЂСѓРµРј РѕР±СЉРµРєС‚
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РёСЃРїРѕР»СЊР·СѓРµС‚Рµ СЂРµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = GetPlayerVirtualWorld(playerid)-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
-    if(peoInfo[peoId][peoModel][getSlotId] == 0) return ErrorMessage(playerid, "{FF6347}Этого объекта не существует");
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][getSlotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РїР»Р°РЅРёСЂРѕРІРєСѓ РґР»СЏ РІР°С€РµРіРѕ РёРЅС‚РµСЂСЊРµСЂР°");
+    if(peoInfo[peoId][peoModel][getSlotId] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][getSlotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
     new slotId = getFreeObjectSlot(peoId);
     if(slotId == -1)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}Лимит объектов для интерьеров: %d", MAX_OBJECT_INT-1);
+        format(string,sizeof(string),"{FF6347}Р›РёРјРёС‚ РѕР±СЉРµРєС‚РѕРІ РґР»СЏ РёРЅС‚РµСЂСЊРµСЂРѕРІ: %d", MAX_OBJECT_INT-1);
         ErrorMessage(playerid, string);
         return 1;
     }
@@ -681,7 +681,7 @@ stock CloneObjectPersonalEditor(playerid, getSlotId) // Клонируем объект
 
     CreateObjectPeoInterior(playerid, peoId, peoInfo[peoId][peoModel][getSlotId], slotId, peoInfo[peoId][peoX][slotId], peoInfo[peoId][peoY][slotId], peoInfo[peoId][peoZ][slotId],peoInfo[peoId][peoRX][slotId],peoInfo[peoId][peoRY][slotId],peoInfo[peoId][peoRZ][slotId], GetPlayerVirtualWorld(playerid), 90);
 
-    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Грузим текстуры
+    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Р“СЂСѓР·РёРј С‚РµРєСЃС‚СѓСЂС‹
     {
         if(peoTexture[peoId][getSlotId][i] >= 1)
         {
@@ -691,10 +691,10 @@ stock CloneObjectPersonalEditor(playerid, getSlotId) // Клонируем объект
         }
     }
 
-    peoInfo[peoId][peoSelObject] = slotId; // Записываем выбранный новый объект
+    peoInfo[peoId][peoSelObject] = slotId; // Р—Р°РїРёСЃС‹РІР°РµРј РІС‹Р±СЂР°РЅРЅС‹Р№ РЅРѕРІС‹Р№ РѕР±СЉРµРєС‚
     if(peoInfo[playerid][peoObjectLabelStatus]) 
     {
-        if(peoInfo[peoId][peoModel][getSlotId] > 0) update3dtextLabel(playerid, getSlotId); // Обновляем label предыдущего объекта
+        if(peoInfo[peoId][peoModel][getSlotId] > 0) update3dtextLabel(playerid, getSlotId); // РћР±РЅРѕРІР»СЏРµРј label РїСЂРµРґС‹РґСѓС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
     }
 
     peoInfo[peoId][peoQuanObjects] ++;
@@ -703,21 +703,21 @@ stock CloneObjectPersonalEditor(playerid, getSlotId) // Клонируем объект
     return 1;
 }
 
-stock ModelObjectPersonalEditor(playerid, slotId, modelId) // Заменяем модель объекта
+stock ModelObjectPersonalEditor(playerid, slotId, modelId) // Р—Р°РјРµРЅСЏРµРј РјРѕРґРµР»СЊ РѕР±СЉРµРєС‚Р°
 {
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = GetPlayerVirtualWorld(playerid)-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
-    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Выберите планировку для вашего интерьера");
-    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Этого объекта не существует");
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[peoId][peoModel][0] == 0) return ErrorMessage(playerid, "{FF6347}Р’С‹Р±РµСЂРёС‚Рµ РїР»Р°РЅРёСЂРѕРІРєСѓ РґР»СЏ РІР°С€РµРіРѕ РёРЅС‚РµСЂСЊРµСЂР°");
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
     DestroyDynamicObject(peoInfo[peoId][peoObject][slotId]);
 
     peoInfo[peoId][peoModel][slotId] = modelId;
     peoInfo[peoId][peoObject][slotId] = CreateDynamicObject(peoInfo[peoId][peoModel][slotId],peoInfo[peoId][peoX][slotId], peoInfo[peoId][peoY][slotId], peoInfo[peoId][peoZ][slotId],peoInfo[peoId][peoRX][slotId],peoInfo[peoId][peoRY][slotId],peoInfo[peoId][peoRZ][slotId], GetPlayerVirtualWorld(playerid), 90, -1, 100.00, 100.00);
     
-    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Грузим текстуры
+    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Р“СЂСѓР·РёРј С‚РµРєСЃС‚СѓСЂС‹
     {
         if(peoTexture[peoId][slotId][i] >= 1)
         {
@@ -725,7 +725,7 @@ stock ModelObjectPersonalEditor(playerid, slotId, modelId) // Заменяем модель об
             SetDynamicObjectMaterial(peoInfo[peoId][peoObject][slotId], i, ObjectTextures[textureId][TModel], ObjectTextures[textureId][TXDName], ObjectTextures[textureId][TextureName], 0x00000000);
         }
     }
-    if(peoInfo[playerid][peoObjectLabelStatus]) update3dtextLabel(playerid, slotId); // Обновляем label
+    if(peoInfo[playerid][peoObjectLabelStatus]) update3dtextLabel(playerid, slotId); // РћР±РЅРѕРІР»СЏРµРј label
 
     peoInfo[peoId][peoQuanUpdates] ++;
     PlayerPlaySound(playerid,1084,0,0,0);
@@ -734,51 +734,51 @@ stock ModelObjectPersonalEditor(playerid, slotId, modelId) // Заменяем модель об
     return 1;
 }
 
-stock EditObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в личном редакторе
+stock EditObjectPersonalEditor(playerid, slotId, world) // РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
 
     if(slotId <= 0 || slotId >= MAX_OBJECT_INT)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT);
+        format(string,sizeof(string),"{FF6347}ID РѕР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_INT);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° СЃ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
     new Float:dobject_pos[3];
     GetDynamicObjectPos(peoInfo[peoId][peoObject][slotId], dobject_pos[0], dobject_pos[1], dobject_pos[2]);
-    if(!IsPlayerInRangeOfPoint(playerid, 100.0, dobject_pos[0], dobject_pos[1], dobject_pos[2])) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от объекта [ Не дальше 100 метров ]");
+    if(!IsPlayerInRangeOfPoint(playerid, 100.0, dobject_pos[0], dobject_pos[1], dobject_pos[2])) return ErrorMessage(playerid, "{FF6347}Р’С‹ СЃР»РёС€РєРѕРј РґР°Р»РµРєРѕ РѕС‚ РѕР±СЉРµРєС‚Р° [ РќРµ РґР°Р»СЊС€Рµ 100 РјРµС‚СЂРѕРІ ]");
 
     GoEditDynamicObject(playerid, 21, 1, peoId, slotId, peoInfo[peoId][peoObject][slotId], 0);
     return 1;
 }
 
-stock DeleteObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта в личном редакторе
+stock DeleteObjectPersonalEditor(playerid, slotId, world) // РџРµСЂРµРјРµС‰РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ [ /loadeditor ]");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
     new peoId = world-4000;
-    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Вы находитесь в чужом личном редакторе");
+    if(peoId != playerid) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С‡СѓР¶РѕРј Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ");
     if(slotId <= 0 || slotId >= MAX_OBJECT_INT)
     {
         new string[60];
-        format(string,sizeof(string),"{FF6347}ID объекта не меньше 1 и не больше %d", MAX_OBJECT_INT);
+        format(string,sizeof(string),"{FF6347}ID РѕР±СЉРµРєС‚Р° РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_OBJECT_INT);
         ErrorMessage(playerid, string);
         return 1;
     }
-    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}Объекта с этим ID не существует");
-    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
+    if(peoInfo[peoId][peoModel][slotId] == 0) return ErrorMessage(playerid, "{FF6347}РћР±СЉРµРєС‚Р° СЃ СЌС‚РёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
+    if(!IsValidDynamicObject(peoInfo[peoId][peoObject][slotId])) return ErrorMessage(playerid, "{FF6347}DynamicObject РїРѕРґ С‚Р°РєРёРј ID РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
 
     DestroyDynamicObject(peoInfo[peoId][peoObject][slotId]);
     peoInfo[peoId][peoModel][slotId] = 0;
 
-    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) peoTexture[playerid][slotId][i] = 0; // Очищаем текстуры
+    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) peoTexture[playerid][slotId][i] = 0; // РћС‡РёС‰Р°РµРј С‚РµРєСЃС‚СѓСЂС‹
 
     if(peoInfo[playerid][peoObjectLabelStatus]) DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][slotId]);
 
@@ -788,7 +788,7 @@ stock DeleteObjectPersonalEditor(playerid, slotId, world) // Перемещение объекта
     return 1;
 }
 
-stock getFreeObjectSlot(peoId) // Получаем свободный слот для создания объекта
+stock getFreeObjectSlot(peoId) // РџРѕР»СѓС‡Р°РµРј СЃРІРѕР±РѕРґРЅС‹Р№ СЃР»РѕС‚ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РѕР±СЉРµРєС‚Р°
 {
     new objid = -1;
     for(new i = 0; i < MAX_OBJECT_INT; i++)
@@ -802,13 +802,13 @@ stock getFreeObjectSlot(peoId) // Получаем свободный слот для создания объекта
     return objid;
 }
 
-forward Call_checkname_loadinterior(playerid, race_check, str_name[]); // Ищем ID аккаунта, если игрок Offline
+forward Call_checkname_loadinterior(playerid, race_check, str_name[]); // РС‰РµРј ID Р°РєРєР°СѓРЅС‚Р°, РµСЃР»Рё РёРіСЂРѕРє Offline
 public Call_checkname_loadinterior(playerid, race_check, str_name[])
 {
     new rows;
     cache_get_row_count(rows);
     if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
-    if(!rows) return ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
+    if(!rows) return ErrorMessage(playerid, "{FF6347}РђРєРєР°СѓРЅС‚ РЅРµ РЅР°Р№РґРµРЅ");
 
     new userId;
     cache_get_value_name_int(0, "user_id", userId);
@@ -817,9 +817,9 @@ public Call_checkname_loadinterior(playerid, race_check, str_name[])
     return 1;
 }
 
-stock goloadInterior(playerid, userId, str_name[]) // Начинаем загрузку интерьера
+stock goloadInterior(playerid, userId, str_name[]) // РќР°С‡РёРЅР°РµРј Р·Р°РіСЂСѓР·РєСѓ РёРЅС‚РµСЂСЊРµСЂР°
 {
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы уже загружаете интерьер\nДождитесь завершения загрузки");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р’С‹ СѓР¶Рµ Р·Р°РіСЂСѓР¶Р°РµС‚Рµ РёРЅС‚РµСЂСЊРµСЂ\nР”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё");
 
     new playerIdFind = -1;
     foreach(Player,i)
@@ -833,9 +833,9 @@ stock goloadInterior(playerid, userId, str_name[]) // Начинаем загрузку интерьер
     }
 
     new string[180];
-    if(playerIdFind >= 0) return format(string,sizeof(string),"{FF6347}Интерьер %s уже загружен или загружается на аккаунт %s[%d]", str_name, PlayerInfo[playerIdFind][pName], playerIdFind), ErrorMessage(playerid, string);
+    if(playerIdFind >= 0) return format(string,sizeof(string),"{FF6347}РРЅС‚РµСЂСЊРµСЂ %s СѓР¶Рµ Р·Р°РіСЂСѓР¶РµРЅ РёР»Рё Р·Р°РіСЂСѓР¶Р°РµС‚СЃСЏ РЅР° Р°РєРєР°СѓРЅС‚ %s[%d]", str_name, PlayerInfo[playerIdFind][pName], playerIdFind), ErrorMessage(playerid, string);
 
-    DP[0][playerid] = 1; // Загрузка интерьера
+    DP[0][playerid] = 1; // Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂСЊРµСЂР°
     DialogLoadInterior(playerid);
 
     peoInfo[playerid][peoStatusLoad] = true;
@@ -847,21 +847,21 @@ stock goloadInterior(playerid, userId, str_name[]) // Начинаем загрузку интерьер
 }
 
 forward Call_loadinterior_information(playerid, race_check, userId, str_name[]);
-public Call_loadinterior_information(playerid, race_check, userId, str_name[]) // Грузим инфу о загружаемом интерьере и передаём информацию в базу, что мы начинаем его грузить
+public Call_loadinterior_information(playerid, race_check, userId, str_name[]) // Р“СЂСѓР·РёРј РёРЅС„Сѓ Рѕ Р·Р°РіСЂСѓР¶Р°РµРјРѕРј РёРЅС‚РµСЂСЊРµСЂРµ Рё РїРµСЂРµРґР°С‘Рј РёРЅС„РѕСЂРјР°С†РёСЋ РІ Р±Р°Р·Сѓ, С‡С‚Рѕ РјС‹ РЅР°С‡РёРЅР°РµРј РµРіРѕ РіСЂСѓР·РёС‚СЊ
 {
     new rows;
 	cache_get_row_count(rows);
-    if(!rows) return ErrorMessage(playerid, "{FF6347}Интерьера не существует"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
+    if(!rows) return ErrorMessage(playerid, "{FF6347}РРЅС‚РµСЂСЊРµСЂР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
     if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
-    cache_get_value_name_int(0, "newid", peoInfo[playerid][peoNewid]); // ID Интерьера в личном редакторе
+    cache_get_value_name_int(0, "newid", peoInfo[playerid][peoNewid]); // ID РРЅС‚РµСЂСЊРµСЂР° РІ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ
     cache_get_value_name(0, "peoName", peoInfo[playerid][peoName], 34);
-    cache_get_value_name_int(0, "peoPriceInterior", peoInfo[playerid][peoPriceInterior]); // Получаем прайс интерьера, который устанавливает создатель
-    cache_get_value_name_int(0, "peoPublicationStatus", peoInfo[playerid][peoPublicationStatus]); // Получаем статус публикации
+    cache_get_value_name_int(0, "peoPriceInterior", peoInfo[playerid][peoPriceInterior]); // РџРѕР»СѓС‡Р°РµРј РїСЂР°Р№СЃ РёРЅС‚РµСЂСЊРµСЂР°, РєРѕС‚РѕСЂС‹Р№ СѓСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ СЃРѕР·РґР°С‚РµР»СЊ
+    cache_get_value_name_int(0, "peoPublicationStatus", peoInfo[playerid][peoPublicationStatus]); // РџРѕР»СѓС‡Р°РµРј СЃС‚Р°С‚СѓСЃ РїСѓР±Р»РёРєР°С†РёРё
     peoInfo[playerid][peoCreatorId] = userId;
     format(peoInfo[playerid][peoCreatorName],24,"%s", str_name);
 
-    // После загрузки информации о интерьере, начинаем грузить его объекты
+    // РџРѕСЃР»Рµ Р·Р°РіСЂСѓР·РєРё РёРЅС„РѕСЂРјР°С†РёРё Рѕ РёРЅС‚РµСЂСЊРµСЂРµ, РЅР°С‡РёРЅР°РµРј РіСЂСѓР·РёС‚СЊ РµРіРѕ РѕР±СЉРµРєС‚С‹
     new string_mysql[100];
     format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_peo_objects` WHERE `user_id` = '%d'", userId);
 	mysql_tquery(pearsq, string_mysql, "Call_loadinterior_object", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
@@ -869,15 +869,15 @@ public Call_loadinterior_information(playerid, race_check, userId, str_name[]) /
 }
 
 forward Call_loadinterior_object(playerid, race_check, userId, str_name[]);
-public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Грузим объекты интерьера для дома
+public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Р“СЂСѓР·РёРј РѕР±СЉРµРєС‚С‹ РёРЅС‚РµСЂСЊРµСЂР° РґР»СЏ РґРѕРјР°
 {
 	new rows;
 	cache_get_row_count(rows);
-    if(!rows) return ErrorMessage(playerid, "{FF6347}В интерьере нет объектов"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
+    if(!rows) return ErrorMessage(playerid, "{FF6347}Р’ РёРЅС‚РµСЂСЊРµСЂРµ РЅРµС‚ РѕР±СЉРµРєС‚РѕРІ"), peoInfo[playerid][peoStatusLoad] = false, peoInfo[playerid][peoCreatorId] = 0;
     if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
     
     new slotId, string[6];
-	for(new f; f < rows; ++f) // Цикл для всех найденных объектов игрока
+	for(new f; f < rows; ++f) // Р¦РёРєР» РґР»СЏ РІСЃРµС… РЅР°Р№РґРµРЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ РёРіСЂРѕРєР°
 	{
         cache_get_value_name_int(f, "slotId", slotId);
     	cache_get_value_name_int(f, "peoModel", peoInfo[playerid][peoModel][slotId]);
@@ -888,13 +888,13 @@ public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Гру
 		cache_get_value_name_float(f, "peoRY", peoInfo[playerid][peoRY][slotId]);
 		cache_get_value_name_float(f, "peoRZ", peoInfo[playerid][peoRZ][slotId]);
 
-        if(peoInfo[playerid][peoModel][slotId] >= 1) // Создали объект
+        if(peoInfo[playerid][peoModel][slotId] >= 1) // РЎРѕР·РґР°Р»Рё РѕР±СЉРµРєС‚
         {
             peoInfo[playerid][peoObject][slotId] = CreateDynamicObject(peoInfo[playerid][peoModel][slotId], peoInfo[playerid][peoX][slotId], peoInfo[playerid][peoY][slotId], peoInfo[playerid][peoZ][slotId], peoInfo[playerid][peoRX][slotId], peoInfo[playerid][peoRY][slotId], peoInfo[playerid][peoRZ][slotId], playerid+4000, 90, -1, 100.00, 100.00);
             peoInfo[playerid][peoQuanObjects] ++;
         }
 
-        for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Грузим текстуры
+        for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++) // Р“СЂСѓР·РёРј С‚РµРєСЃС‚СѓСЂС‹
         {
             format(string, sizeof(string), "txt%d", i);
 			cache_get_value_name_int(f, string, peoTexture[playerid][slotId][i]);
@@ -911,10 +911,10 @@ public Call_loadinterior_object(playerid, race_check, userId, str_name[]) // Гру
     return 1;
 }
 
-CMD:loadinterior(playerid, const params[]) // Загружаем интерьер
+CMD:loadinterior(playerid, const params[]) // Р—Р°РіСЂСѓР¶Р°РµРј РёРЅС‚РµСЂСЊРµСЂ
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(peoInfo[playerid][peoLoaded]) return ErrorMessage(playerid, "{FF6347}На ваш аккаунт уже загружен интерьер");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[playerid][peoLoaded]) return ErrorMessage(playerid, "{FF6347}РќР° РІР°С€ Р°РєРєР°СѓРЅС‚ СѓР¶Рµ Р·Р°РіСЂСѓР¶РµРЅ РёРЅС‚РµСЂСЊРµСЂ");
 
     if(PlayerInfo[playerid][pSoska] >= 1)
     {
@@ -922,11 +922,11 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерьер
         if(!sscanf(params, "s[24]",playerName))
 	    {
             new giveplayerid = ReturnUser(playerName, 1);
-     	    if(IsPlayerConnected(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // Игрок Online
-            else // Игрок Offline
+     	    if(IsPlayerConnected(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // РРіСЂРѕРє Online
+            else // РРіСЂРѕРє Offline
             {
-                if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Вы не правильно указали никнейм\nЕсли вы указали ID, значит игрок Offline");
-                DP[0][playerid] = 0; // Поиск игрока
+                if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РїСЂР°РІРёР»СЊРЅРѕ СѓРєР°Р·Р°Р»Рё РЅРёРєРЅРµР№Рј\nР•СЃР»Рё РІС‹ СѓРєР°Р·Р°Р»Рё ID, Р·РЅР°С‡РёС‚ РёРіСЂРѕРє Offline");
+                DP[0][playerid] = 0; // РџРѕРёСЃРє РёРіСЂРѕРєР°
                 DialogLoadInterior(playerid);
                 format(string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
                 mysql_tquery(pearsq, string, "Call_checkname_loadinterior", "dds", playerid, g_MysqlRaceCheck[playerid], playerName);
@@ -935,24 +935,24 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерьер
         }
     }
 
-    // Если не админ и ничего не вводили, то просто грузим обственный интерьер
+    // Р•СЃР»Рё РЅРµ Р°РґРјРёРЅ Рё РЅРёС‡РµРіРѕ РЅРµ РІРІРѕРґРёР»Рё, С‚Рѕ РїСЂРѕСЃС‚Рѕ РіСЂСѓР·РёРј РѕР±СЃС‚РІРµРЅРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ
     goloadInterior(playerid, PlayerInfo[playerid][pID], PlayerInfo[playerid][pName]);
     return 1;
 }
 
-CMD:unloadinterior(playerid, const params[]) // Выгружаем интерьер
+CMD:unloadinterior(playerid, const params[]) // Р’С‹РіСЂСѓР¶Р°РµРј РёРЅС‚РµСЂСЊРµСЂ
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения загрузки интерьера");
-    if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Завершите редактирование объекта");
-    if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}Покиньте меню выбора планировки");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
+    if(peoInfo[playerid][peoStatusLoad]) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ Р·Р°РІРµСЂС€РµРЅРёСЏ Р·Р°РіСЂСѓР·РєРё РёРЅС‚РµСЂСЊРµСЂР°");
+    if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Р—Р°РІРµСЂС€РёС‚Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РѕР±СЉРµРєС‚Р°");
+    if(OnlineInfo[playerid][oShowInterface] == 14) return ErrorMessage(playerid, "{FF6347}РџРѕРєРёРЅСЊС‚Рµ РјРµРЅСЋ РІС‹Р±РѕСЂР° РїР»Р°РЅРёСЂРѕРІРєРё");
 
     DestroyPeoInterior(playerid);
     ClearPeoInfo(playerid);
     return 1;
 }
 
-stock ClearPeoInfo(playerid) // Удаляем информацию о личном редакторе
+stock ClearPeoInfo(playerid) // РЈРґР°Р»СЏРµРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ Р»РёС‡РЅРѕРј СЂРµРґР°РєС‚РѕСЂРµ
 {
     peoInfo[playerid][peoNewid] = 0;
     peoInfo[playerid][peoLoaded] = false;
@@ -966,7 +966,7 @@ stock ClearPeoInfo(playerid) // Удаляем информацию о личном редакторе
     return 1;
 }
 
-stock DestroyPeoInterior(playerid) // Удаляем загруженный интерьер (все объекты)
+stock DestroyPeoInterior(playerid) // РЈРґР°Р»СЏРµРј Р·Р°РіСЂСѓР¶РµРЅРЅС‹Р№ РёРЅС‚РµСЂСЊРµСЂ (РІСЃРµ РѕР±СЉРµРєС‚С‹)
 {
     for(new i = 0; i < MAX_OBJECT_INT; i++)
     {
@@ -985,63 +985,63 @@ stock DestroyPeoInterior(playerid) // Удаляем загруженный интерьер (все объекты)
     return 1;
 }
 
-CMD:loadeditor(playerid) // Входим в личный редактор
+CMD:loadeditor(playerid) // Р’С…РѕРґРёРј РІ Р»РёС‡РЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ
 {
-    if(server != 0) return ErrorMessage(playerid, "{FF6347}Доступно только на тестовом сервере");
+    if(server != 0) return ErrorMessage(playerid, "{FF6347}Р”РѕСЃС‚СѓРїРЅРѕ С‚РѕР»СЊРєРѕ РЅР° С‚РµСЃС‚РѕРІРѕРј СЃРµСЂРІРµСЂРµ");
     if(PlayerInfo[playerid][pSoska] <= 0)
     {
-	    // if(!IsPlayerInRangeOfPoint(playerid, 2.0, 228.0, 228.0, 228.0)) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в шоуруме");
-        if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция");
-        if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+	    // if(!IsPlayerInRangeOfPoint(playerid, 2.0, 228.0, 228.0, 228.0)) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ С€РѕСѓСЂСѓРјРµ");
+        if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Р’Р°СЃ РїСЂРµСЃР»РµРґСѓРµС‚ РїРѕР»РёС†РёСЏ");
+        if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
     }
-    if(peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы уже в редакторе");
+    if(peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ СѓР¶Рµ РІ СЂРµРґР°РєС‚РѕСЂРµ");
 
-    if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы находитесь в наблюдении");
-    if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Завершите редактирование текстдравов");
+    if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ РЅР°Р±Р»СЋРґРµРЅРёРё");
+    if(setting_pos_draw[playerid] > 0 || setting_size_draw[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р—Р°РІРµСЂС€РёС‚Рµ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РµРєСЃС‚РґСЂР°РІРѕРІ");
 
-    if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Закрываем инвентарь
-    else if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid); // Закрываем смартфон
+    if(OnlineInfo[playerid][oShowInterface] == 1) CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Р—Р°РєСЂС‹РІР°РµРј РёРЅРІРµРЅС‚Р°СЂСЊ
+    else if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid), CancelSelectTextDraw(playerid); // Р—Р°РєСЂС‹РІР°РµРј СЃРјР°СЂС‚С„РѕРЅ
 
-    // Записываем текущие координаты и инты, чтобы при выходе из редактора вернуть игрока обратно
+    // Р—Р°РїРёСЃС‹РІР°РµРј С‚РµРєСѓС‰РёРµ РєРѕРѕСЂРґРёРЅР°С‚С‹ Рё РёРЅС‚С‹, С‡С‚РѕР±С‹ РїСЂРё РІС‹С…РѕРґРµ РёР· СЂРµРґР°РєС‚РѕСЂР° РІРµСЂРЅСѓС‚СЊ РёРіСЂРѕРєР° РѕР±СЂР°С‚РЅРѕ
     GetPlayerPos(playerid, SpX[playerid], SpY[playerid], SpZ[playerid]);
     GetPlayerFacingAngle(playerid, SpA[playerid]);
     SpInt[playerid] = GetPlayerInterior(playerid);
     SpWorld[playerid] = GetPlayerVirtualWorld(playerid);
 
-    S_SetPlayerVirtualWorld(playerid,playerid+4000,90); // Вирт миры 4000 - 4999 (Миры для личного редактора)
-	SetPlayerInterior(playerid,90); // Инт 90 (поскольку там располагаются все кастомные интерьеры)
-    PPSetPlayerPos(playerid,1387.4436,-16.2143,1000.8868); // Позиция входа в дом и бизнес (Они всегда в одной и той-же точке)
-    SetPlayerFacingAngle(playerid, 0.0); // Угол поворота игрока
-    SetCameraBehindPlayer(playerid); // Сбрасываем камеру
+    S_SetPlayerVirtualWorld(playerid,playerid+4000,90); // Р’РёСЂС‚ РјРёСЂС‹ 4000 - 4999 (РњРёСЂС‹ РґР»СЏ Р»РёС‡РЅРѕРіРѕ СЂРµРґР°РєС‚РѕСЂР°)
+	PPSetPlayerInterior(playerid,90); // РРЅС‚ 90 (РїРѕСЃРєРѕР»СЊРєСѓ С‚Р°Рј СЂР°СЃРїРѕР»Р°РіР°СЋС‚СЃСЏ РІСЃРµ РєР°СЃС‚РѕРјРЅС‹Рµ РёРЅС‚РµСЂСЊРµСЂС‹)
+    PPSetPlayerPos(playerid,1387.4436,-16.2143,1000.8868); // РџРѕР·РёС†РёСЏ РІС…РѕРґР° РІ РґРѕРј Рё Р±РёР·РЅРµСЃ (РћРЅРё РІСЃРµРіРґР° РІ РѕРґРЅРѕР№ Рё С‚РѕР№-Р¶Рµ С‚РѕС‡РєРµ)
+    SetPlayerFacingAngle(playerid, 0.0); // РЈРіРѕР» РїРѕРІРѕСЂРѕС‚Р° РёРіСЂРѕРєР°
+    SetCameraBehindPlayer(playerid); // РЎР±СЂР°СЃС‹РІР°РµРј РєР°РјРµСЂСѓ
 
-    peoInfo[playerid][peoInEditor] = true; // Мы в редакторе
+    peoInfo[playerid][peoInEditor] = true; // РњС‹ РІ СЂРµРґР°РєС‚РѕСЂРµ
 
-    // Врубаем 3d label по дефолту
+    // Р’СЂСѓР±Р°РµРј 3d label РїРѕ РґРµС„РѕР»С‚Сѓ
     peoInfo[playerid][peoObjectLabelStatus] = true;
     show3dtextLabels(playerid);
 
-    SendClientMessage(playerid, COLOR_GREY, "{A86CFB}[ Editor ]: {cccccc}Команда для управления редактором {A86CFB}/editor");
+    SendClientMessage(playerid, COLOR_GREY, "{A86CFB}[ Editor ]: {cccccc}РљРѕРјР°РЅРґР° РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ СЂРµРґР°РєС‚РѕСЂРѕРј {A86CFB}/editor");
 	return 1;
 }
 
-CMD:exiteditor(playerid) // Выходим из личного редактора
+CMD:exiteditor(playerid) // Р’С‹С…РѕРґРёРј РёР· Р»РёС‡РЅРѕРіРѕ СЂРµРґР°РєС‚РѕСЂР°
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
 
     keep(playerid);
     S_SetPlayerVirtualWorld(playerid,SpWorld[playerid],SpInt[playerid]);
-	SetPlayerInterior(playerid,SpInt[playerid]);
+	PPSetPlayerInterior(playerid,SpInt[playerid]);
     PPSetPlayerPos(playerid,SpX[playerid], SpY[playerid], SpZ[playerid]);
     SetPlayerFacingAngle(playerid, SpA[playerid]);
     SetCameraBehindPlayer(playerid);
 
-    peoInfo[playerid][peoInEditor] = false; // Статус редактора Off
+    peoInfo[playerid][peoInEditor] = false; // РЎС‚Р°С‚СѓСЃ СЂРµРґР°РєС‚РѕСЂР° Off
 	return 1;
 }
 
 CMD:label3d(playerid)
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
 
     if(!peoInfo[playerid][peoObjectLabelStatus])
     {
@@ -1057,14 +1057,14 @@ CMD:label3d(playerid)
     return 1;
 }
 
-stock create3dtextLabel(playerid, slotId) // Создаём 3d text
+stock create3dtextLabel(playerid, slotId) // РЎРѕР·РґР°С‘Рј 3d text
 {
     peoInfo[playerid][peoObjectLabel][slotId] = CreateDynamic3DTextLabel("_",0xA9C4E4FF,peoInfo[playerid][peoX][slotId], peoInfo[playerid][peoY][slotId], peoInfo[playerid][peoZ][slotId],100.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,playerid+4000,90, playerid);
     update3dtextLabel(playerid, slotId);
     return 1;
 }
 
-stock update3dtextLabel(playerid, slotId) // Обновляем название 3d text
+stock update3dtextLabel(playerid, slotId) // РћР±РЅРѕРІР»СЏРµРј РЅР°Р·РІР°РЅРёРµ 3d text
 {
     new string[80];
     if(peoInfo[playerid][peoSelObject] == slotId) format(string,sizeof(string),"{cccccc}ID: {A86CFB}%d {cccccc}| Model: {A86CFB}%d", slotId, peoInfo[playerid][peoModel][slotId]);
@@ -1074,14 +1074,14 @@ stock update3dtextLabel(playerid, slotId) // Обновляем название 3d text
     return 1;
 }
 
-stock update3dtextLabelPos(playerid, slotId) // Обновляем позицию 3d text
+stock update3dtextLabelPos(playerid, slotId) // РћР±РЅРѕРІР»СЏРµРј РїРѕР·РёС†РёСЋ 3d text
 {
     DestroyDynamic3DTextLabel(peoInfo[playerid][peoObjectLabel][slotId]);
     create3dtextLabel(playerid, slotId);
     return 1;
 }
 
-stock show3dtextLabels(playerid) // Показываем все 3d text
+stock show3dtextLabels(playerid) // РџРѕРєР°Р·С‹РІР°РµРј РІСЃРµ 3d text
 {
     for(new i = 1; i < MAX_OBJECT_INT; i++)
     {
@@ -1093,7 +1093,7 @@ stock show3dtextLabels(playerid) // Показываем все 3d text
     return 1;
 }
 
-stock hide3dtextLabels(playerid) // Убираем все 3d text
+stock hide3dtextLabels(playerid) // РЈР±РёСЂР°РµРј РІСЃРµ 3d text
 {
     for(new i = 1; i < MAX_OBJECT_INT; i++)
     {
@@ -1107,17 +1107,17 @@ stock hide3dtextLabels(playerid) // Убираем все 3d text
 
 stock DialogLoadInterior(playerid)
 {
-	if(DP[0][playerid] == 0) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Поиск аккаунта..","*","");
-	else if(DP[0][playerid] == 1) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка интерьера..","*","");
+	if(DP[0][playerid] == 0) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}РџРѕРёСЃРє Р°РєРєР°СѓРЅС‚Р°..","*","");
+	else if(DP[0][playerid] == 1) ShowDialog(playerid,1293,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Р—Р°РіСЂСѓР·РєР° РёРЅС‚РµСЂСЊРµСЂР°..","*","");
 	return 1;
 }
 
 CMD:loadmap(playerid)
 {
-    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе");
-    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду [ Admin 22+ ]");
+    if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ СЂРµРґР°РєС‚РѕСЂРµ");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ [ Admin 22+ ]");
 
-    ErrorMessage(playerid, "{FF6347}Функция временно недоступна");
+    ErrorMessage(playerid, "{FF6347}Р¤СѓРЅРєС†РёСЏ РІСЂРµРјРµРЅРЅРѕ РЅРµРґРѕСЃС‚СѓРїРЅР°");
     //peoLoadMap(playerid);
     return 1;
 }
@@ -1253,7 +1253,7 @@ stock sqlite_LoadMapObjects(playerid)
     {
         if(stopLoad == false)
         {
-            // Удаляем все объекты, которые были созданы
+            // РЈРґР°Р»СЏРµРј РІСЃРµ РѕР±СЉРµРєС‚С‹, РєРѕС‚РѕСЂС‹Рµ Р±С‹Р»Рё СЃРѕР·РґР°РЅС‹
             for(new ob = 0; ob < MAX_OBJECT_INT; ob++)
             {
                 if(peoInfo[playerid][peoModel][ob] > 0) 
@@ -1281,7 +1281,7 @@ stock sqlite_LoadMapObjects(playerid)
                     peoInfo[playerid][peoObject][i] = CreateDynamicObject(peoInfo[playerid][peoModel][i], peoInfo[playerid][peoX][i], peoInfo[playerid][peoY][i], peoInfo[playerid][peoZ][i], peoInfo[playerid][peoRX][i], peoInfo[playerid][peoRY][i], peoInfo[playerid][peoRZ][i], playerid+4000, 90, -1, 100.00, 100.00);
                     peoInfo[playerid][peoQuanObjects] ++;
 
-                    // текст на объекте
+                    // С‚РµРєСЃС‚ РЅР° РѕР±СЉРµРєС‚Рµ
                     if(tmpobject[ousetext])
                     {
                         new string[90];
@@ -1289,10 +1289,10 @@ stock sqlite_LoadMapObjects(playerid)
                         SetDynamicObjectMaterialText(peoInfo[playerid][peoObject][i], 0, string, FontSizes[tmpobject[oFontSize]], FontNames[tmpobject[oFontFace]], tmpobject[oTextFontSize], tmpobject[oFontBold], tmpobject[oFontColor], tmpobject[oBackColor], tmpobject[oAlignment]);
                     }
 
-                    // загрузка текстур
+                    // Р·Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂ
                     for(new m = 0; m < MAX_MATERIALS; m++)
                     {
-                        if(tmpobject[oTexIndex][m] > 0) // Натягиваем текстуру
+                        if(tmpobject[oTexIndex][m] > 0) // РќР°С‚СЏРіРёРІР°РµРј С‚РµРєСЃС‚СѓСЂСѓ
                         {
                             SetDynamicObjectMaterial(peoInfo[playerid][peoObject][i], m, ObjectTextures[tmpobject[oTexIndex][m]][TModel], ObjectTextures[tmpobject[oTexIndex][m]][TXDName], ObjectTextures[tmpobject[oTexIndex][m]][TextureName], tmpobject[oColorIndex][m]);
                         }
@@ -1309,7 +1309,7 @@ stock sqlite_LoadMapObjects(playerid)
     if(stopLoad == false)
     {
         new string[90];
-        format(string,sizeof(string),"{444444}Маппинг с интерьером загружен {A86CFB}[Объектов: %d]", count);
+        format(string,sizeof(string),"{444444}РњР°РїРїРёРЅРі СЃ РёРЅС‚РµСЂСЊРµСЂРѕРј Р·Р°РіСЂСѓР¶РµРЅ {A86CFB}[РћР±СЉРµРєС‚РѕРІ: %d]", count);
         SuccessMessage(playerid, string);
     }
     return 0;

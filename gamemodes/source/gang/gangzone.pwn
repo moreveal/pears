@@ -120,13 +120,13 @@ CMD:zahvat(playerid, const params[])
 	if(tmphour >= 0 && tmphour < 10 && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью [ 00:00 - 10:00 ]");
 
 	new string[160];
-	if(FrakCD[frakid] > unixtime) return format(string,sizeof(string),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %d сек. ]",FrakCD[frakid]-unixtime), ErrorMessage(playerid, string);
+	if(FrakCD[frakid] > unixtime) return format(string,sizeof(string),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %s ]", fine_time(FrakCD[frakid]-unixtime)), ErrorMessage(playerid, string);
 	new Float:Pos[3];
 	GetPlayerPos(playerid,Pos[0],Pos[1],Pos[2]);
 	if(Pos[2] >= 90.000) return  ErrorMessage(playerid, "{FF6347}Вы слишком высоко над городом");
 	if(Kapt[frakid] > 0) return ErrorMessage(playerid, "{FF6347}Ваша банда уже сражается за территорию");
-	if(CaptInfo[cCaptStat] == true) return format(string,sizeof(string),"{FF6347}В гетто происходит конфликт {cccccc}[ Капт закончится через: %d ]", CaptInfo[cTime]), ErrorMessage(playerid, string);
-	if(CaptInfo[cCaptReset] >= 1) return format(string,sizeof(string),"{FF6347}Сейчас... ещё немного {cccccc}[ Пауза после предыдущего капта: %d ]", CaptInfo[cCaptReset]), ErrorMessage(playerid, string);
+	if(CaptInfo[cCaptStat] == true) return format(string,sizeof(string),"{FF6347}В гетто происходит конфликт {cccccc}[ Капт закончится через: %s ]", fine_time(CaptInfo[cTime])), ErrorMessage(playerid, string);
+	if(CaptInfo[cCaptReset] >= 1) return format(string,sizeof(string),"{FF6347}Сейчас... ещё немного {cccccc}[ Пауза после предыдущего капта: %s ]", fine_time(CaptInfo[cCaptReset])), ErrorMessage(playerid, string);
 	
 	new findCapt;
 	for(new i = 0;i<GZONES;i++)
@@ -135,7 +135,7 @@ CMD:zahvat(playerid, const params[])
 		{
 			new etafraka = GZInfo[i][gFrakVlad];
 			if(etafraka == frakid) return ErrorMessage(playerid, "{FF6347}Вы не можете начать захват своей территории");
-			if(GZInfo[i][gCherez] > unixtime) return format(string,sizeof(string),"{FF6347}На этой территории совсем недавно была битва {cccccc}[ Осталось %d сек. ]",GZInfo[i][gCherez]-unixtime), ErrorMessage(playerid, string);
+			if(GZInfo[i][gCherez] > unixtime) return format(string,sizeof(string),"{FF6347}На этой территории совсем недавно была битва {cccccc}[ Осталось %s ]", fine_time(GZInfo[i][gCherez]-unixtime)), ErrorMessage(playerid, string);
 			if(OrganInfo[etafraka][gstat2] == 1) return ErrorMessage(playerid, "{FF6347}Банда, которой принадлежит эта территория, временно закрыта [ Вероятно, у них нет лидера ]");
  			if(!IsPlayerInBandOnline(etafraka) && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете начать захват территории, которую некому защищать [ Участники Offline ]");
  			if(etafraka >= 1)
@@ -272,6 +272,25 @@ CMD:capture(playerid)
 		else format(str,sizeof(str),"{FF6347}Кастомный Дамаг {99ff66}[ Off ]\n"), strcat(sctring,str);
 	}
 	ShowDialog(playerid,841,DIALOG_STYLE_LIST,"{ff9000}Capture",sctring,"Выбор","Отмена");
+	return 1;
+}
+
+// Сбросить кд капта
+CMD:reloadcapt(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить территорию [ /setgz ID Фракции ]");
+	if(params[0] > 16 || params[0] < 13) return ErrorMessage(playerid, "{FF6347}ID банды 13 - 16");
+	if(Kapt[params[0]] > 0) return ErrorMessage(playerid, "{FF6347}Нельзя сбросить кд банды во время капта");
+
+	FrakCD[params[0]] = 0;
+
+	new string[144];
+	format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {cccccc}Администратор %s сбросил кд капта вашей банды", PlayerInfo[playerid][pName]);
+   	SendRadioMessage(params[0],COLOR_GREY,string);
+	format(string, sizeof(string), " [ ADM ]: Админ %s сбросил кд капта банды %s", PlayerInfo[playerid][pName], frakeasyName[params[0]]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("reloadcapt", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил кд капта");
 	return 1;
 }
 

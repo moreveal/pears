@@ -144,7 +144,7 @@ new friskDefault[] = // Гос. стоимости предметов
     2500,900,500,1000,45000,350000,2000,-1, // 51
     450,40,2300,50,-1,-1,-1,-1,900,800,1000, // 62
     -1,1000,1000,1000,1000,-1,20000,100,200, // 71
-    7000,5000,8000,13000,23000,19000,16000,14000,24500,1300, // 81
+    2000,5000,8000,13000,23000,19000,16000,14000,24500,1300, // 81
 	2000,3000,9000,900,900,900,100,50,2000,-1, // 91
 	300,200,-1,15000,-1,490,-1,40,40,40, // 101
 	70,500,200,150,1500,5000,200,200,200,200, // 111
@@ -1102,18 +1102,21 @@ stock i_setinvent(playerid, thingId, quan) // Установить значен�
 	}
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][inva], PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenType][inva], PlayerInfo[playerid][pInvenPack][inva]);
 }
+
 stock DelInvent(playerid, thingId, input, thingType) // Удалить предметы из инвентаря одного id по количеству и типу
 {
+	new quan;
 	for(new i = 0; i < 40; i++)
 	{
 		if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
 		{
 			PlayerInfo[playerid][pInven][i] = 0, PlayerInfo[playerid][pInvenQuan][i] = 0, PlayerInfo[playerid][pInvenPara][i] = 0, PlayerInfo[playerid][pInvenQara][i] = 0, i_takehands(playerid, thingId);
 			input --;
+			quan ++;
 			if(input == 0) break;
 		}
 	}
-	return 1;
+	return quan;
 }
 stock DelInvent2(playerid, stat, unix)
 {

@@ -1003,7 +1003,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     SetPosa[playerid] = 2;
     //ProtectSetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
-    //SetPlayerVirtualWorld(playerid, connect_world); SetPlayerInterior(playerid, connect_interior);
+    //SetPlayerVirtualWorld(playerid, connect_world); PPSetPlayerInterior(playerid, connect_interior);
 
     // Завершение игры при выходе последнего оставшегося в команде участника
     new same_team_players_count = ComputerClubGetPlayersCount(gameid, roomid, teamid);
@@ -1357,7 +1357,7 @@ stock ComputerClubSpectatePlayer(playerid, id) {
     GetPlayerPos(id, x, y, z);
     PPOpenSpectating(playerid, x, y, z);
     SetPlayerVirtualWorld(playerid, world);
-    SetPlayerInterior(playerid, interior);
+    PPSetPlayerInterior(playerid, interior);
     PlayerSpectatePlayer(playerid, id);
 }
 
@@ -1590,7 +1590,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         new locationid = computerClubRoomInfo[gameid][roomid][ccriLocation];
 
         S_SetPlayerVirtualWorld(playerid, COMPUTER_CLUB_MIN_WORLD + (gameid + 1) * (roomid + 1),computerClubLocationInfo[locationid][ccliInterior]);
-        SetPlayerInterior(playerid,computerClubLocationInfo[locationid][ccliInterior]);
+        PPSetPlayerInterior(playerid,computerClubLocationInfo[locationid][ccliInterior]);
         
         computerClubPlayerInfo[playerid][ccpiIsDead] = false;
 

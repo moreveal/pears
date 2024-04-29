@@ -686,7 +686,7 @@ CMD:gotobusstop(playerid, const params[])
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепорт к остановке [ /gotobusstop ID ]");
 	if(params[0] < 1 || params[0] > 100) return ErrorMessage(playerid, "{FF6347}Номер не меньше 1 и не больше 100");
 	S_SetPlayerVirtualWorld(playerid, 0, 0);
-	SetPlayerInterior(playerid, 0);
+	PPSetPlayerInterior(playerid, 0);
 	PPSetPlayerPos(playerid, BusStationInfo[params[0] - 1][bsCordX], BusStationInfo[params[0] - 1][bsCordY], BusStationInfo[params[0] - 1][bsCordZ]);
 	return 1;
 }

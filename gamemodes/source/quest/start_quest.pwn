@@ -535,12 +535,12 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     {
         new vehicleid = GetPlayerVehicleID(playerid);
         SetVehicleVirtualWorld(vehicleid, playerid + 1), S_SetPlayerVirtualWorld(playerid, playerid + 1, 0);
-        LinkVehicleToInterior(vehicleid, 0), SetPlayerInterior(playerid, 0);
+        LinkVehicleToInterior(vehicleid, 0), PPSetPlayerInterior(playerid, 0);
     }
     else
     {
         S_SetPlayerVirtualWorld(playerid, playerid + 1, 0);
-        SetPlayerInterior(playerid, 0);
+        PPSetPlayerInterior(playerid, 0);
     }
 
     // Color Vehicle
@@ -622,14 +622,14 @@ stock ExitQuestJone(playerid) // Вышли из зоны квеста
         {
             new vehicleid = GetPlayerVehicleID(playerid);
             SetVehicleVirtualWorld(vehicleid, 0), S_SetPlayerVirtualWorld(playerid, 0, 0);
-		    LinkVehicleToInterior(vehicleid, 0), SetPlayerInterior(playerid, 0);
+		    LinkVehicleToInterior(vehicleid, 0), PPSetPlayerInterior(playerid, 0);
 
             NoCollisionForAll(playerid, 0); // Отключаем коллизию на 20 сек при выезде из зоны
         }
         else
         {
             S_SetPlayerVirtualWorld(playerid, 0, 0);
-            SetPlayerInterior(playerid, 0);
+            PPSetPlayerInterior(playerid, 0);
         }
     }
     return 1;

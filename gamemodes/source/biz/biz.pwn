@@ -27,7 +27,7 @@ CMD:gototerm(playerid, const params[])
 	    new br = numnrent(params[0]);
 	    if(RentStat[br][params[1]-1] <= 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У бизнеса нет терминала под этим номером");
 		PPSetPlayerPos(playerid,RentPos_X[br][params[1]-1],RentPos_Y[br][params[1]-1],RentPos_Z[br][params[1]-1]);
-		S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
+		S_SetPlayerVirtualWorld(playerid,0,0), PPSetPlayerInterior(playerid,0);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У этого бизнеса нет терминалов");
 	return 1;

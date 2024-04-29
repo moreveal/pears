@@ -134,7 +134,7 @@ stock closeTestDrive(playerid)
 
         // Ставим игрока в автосервисе
         S_SetPlayerVirtualWorld(playerid,playerid+1,223);
-        SetPlayerInterior(playerid,223);
+        PPSetPlayerInterior(playerid,223);
         PPSetPlayerPos(playerid,-1131.3629,2865.5681,918.0888);
         SetPlayerFacingAngle(playerid, 0.6306);
         VehInfo[vehicleid][vSeat] = 0; // Отмечаем, что игрок уже не в транспорте
@@ -175,7 +175,7 @@ stock openTestDrive_VehicleShop(playerid)
     CancelSelectTextDraw(playerid); // Убираем мышку
 	TogglePlayerControllable(playerid, true); // Unfreeze
 
-    SetPlayerInterior(playerid, 0);
+    PPSetPlayerInterior(playerid, 0);
     LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 0);
 
     Gas[VehShopInfo[playerid][vsVehicleID]] = 100; // Топливо максимальное количество
@@ -358,7 +358,7 @@ stock closeMenu_VehicleShop(playerid)
 	keep(playerid); // Подмораживаем
 
     S_SetPlayerVirtualWorld(playerid, SpWorld[playerid], SpInt[playerid]);
-    SetPlayerInterior(playerid, SpInt[playerid]);
+    PPSetPlayerInterior(playerid, SpInt[playerid]);
 
     PPSetPlayerPos(playerid, SpX[playerid], SpY[playerid], SpZ[playerid]);
     SetPlayerFacingAngle(playerid, SpA[playerid]);
@@ -399,7 +399,7 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     GetPlayerVehicleShopPos(playerid, bizId, pos[0], pos[1], pos[2], pos[3], world, interior);
 
     S_SetPlayerVirtualWorld(playerid, world, interior);
-    SetPlayerInterior(playerid, interior);
+    PPSetPlayerInterior(playerid, interior);
     PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
     SetPlayerFacingAngle(playerid, pos[3]);
 

@@ -2,6 +2,7 @@
 #define CHEAT_HISTORY 30 // количество записей варнингов у каждого игрока
 #define TRIG_DGUN 5 // количество триггеров на dgun
 #define TRIG_DISTANCE_DAMAGE 5 // количество триггеров на dgun
+#define TIME_TO_SPAWN 10 // Игроку даётся время в секундх на выполнение спавна от сервера, иначе кик
 
 new cheatName[][] =
 {
@@ -287,6 +288,20 @@ stock GivePlayerResetWeaponUnix(playerid)
     for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
     {
         if(ProtectInfo[playerid][prWeapon][i] >= 0 && ProtectInfo[playerid][prAmmo][i] >= 0) ResetWeaponUnix[playerid][i] = gettime() + 5;
+    }
+    return 1;
+}
+
+// Защита от игнора спавна
+stock AntiIgnoreSpawn(playerid)
+{
+    if(OnlineInfo[playerid][oSpawnUnix] > 0 
+        && gettime() - OnlineInfo[playerid][oSpawnUnix] >= TIME_TO_SPAWN)
+    {
+        printf("[SProtect Kick]: Ignore Spawn %s (ping: %d)",PlayerInfo[playerid][pName], GetPlayerPing(playerid));
+        SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [Ignore Spawn]");
+        ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [Ignore Spawn]","*","");
+        Kickx(playerid);
     }
     return 1;
 }

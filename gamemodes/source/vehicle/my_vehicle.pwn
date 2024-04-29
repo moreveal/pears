@@ -3638,11 +3638,13 @@ stock PlayerVehicleCall(playerid)
 	if(VehInfo[v][vSeat] > 0) return ErrorMessage(playerid, "{FF6347}В вашем транспорте кто-то сидит [ Нельзя вызвать, это будет считаться телепортом игрока ]");
 	if(PlayerInfo[playerid][pJailed] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете вызывать транспорт находясь в заключении или в больнице");
 	
-	new Float:posic[3];
-	GetPlayerPos(playerid, posic[0], posic[1], posic[2]);
-	new Float:vdist = GetVehicleDistanceFromPoint(v, posic[0], posic[1], posic[2]);
-	if(vdist <= 100.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 100 метров ]");
+	// Антфлуд вызова
+	new current_tick = GetTickCount();
+	new interval = GetTickDiff(current_tick, GetPVarInt(playerid,"afcar"));
+	if(interval < 5000) return ErrorMessage(playerid, "{FF6347}Пожалуйста подождите, нельзя так часто вызывать транспорт");
+	SetPVarInt(playerid,"afcar", current_tick);
 
+	// Проверки на прицепы и эвакуацию
 	if(IsTrailerAttachedToVehicle(v)) return ErrorMessage(playerid, "{FF6347}Нельзя вызвать транспорт с прицепом");
 	new towid = gettug(v);
 	if(towid > 0)
@@ -3653,10 +3655,34 @@ stock PlayerVehicleCall(playerid)
 		return 1;
 	}
 
-	new current_tick = GetTickCount();
-	new interval = GetTickDiff(current_tick, GetPVarInt(playerid,"afcar"));
-	if(interval < 3000) return ErrorMessage(playerid, "{FF6347}Пожалуйста подождите, нельзя так часто вызывать транспорт");
-	SetPVarInt(playerid,"afcar", Aftextdraw[playerid]);
+	// Получаем расстояние от игрока до тачки
+	new Float:posic[3];
+	GetPlayerPos(playerid, posic[0], posic[1], posic[2]);
+	new Float:vdist = GetVehicleDistanceFromPoint(v, posic[0], posic[1], posic[2]);
+
+	// Во время капта транспорт можно вызвать перед собой
+	if(Kapt[fraction(playerid)] > 0)
+	{
+		if(vdist <= 30.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 30 метров ]");
+
+		new vehicleid = v;
+		if(Gas[vehicleid] >= 5) Gas[vehicleid] -= 5;
+
+		LinkVehicleToInterior(vehicleid, 0);
+		SetVehicleVirtualWorld(vehicleid, 0);
+
+		VehInfo[vehicleid][vTimerSpawn] = 20;
+		VehInfo[vehicleid][vNospawn] = 0;
+		VehInfo[vehicleid][vCallParking] = 0;
+
+		new Float:frontme_pos[4];
+		frontme(playerid, 7.0, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]);
+		ACSetVehiclePos(vehicleid, frontme_pos[0], frontme_pos[1], frontme_pos[2]);
+		return 1;
+	}
+
+	
+	if(vdist <= 100.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 100 метров ]");
 
 	new Float:veh_dist, Float:dist;
 	new parkingId = FindCallVehicle(playerid, v, veh_dist, dist);
@@ -3853,17 +3879,11 @@ stock TimeCallVehicle(metr)
 {
 	new time;
 	if(metr < 100) time = 10;
-	else if(metr >= 100 && metr < 300) time = 20;
-	else if(metr >= 300 && metr < 600) time = 30;
-	else if(metr >= 600 && metr < 900) time = 40;
-	else if(metr >= 900 && metr < 1200) time = 50;
-	else if(metr >= 1200 && metr < 1500) time = 60;
-	else if(metr >= 1500 && metr < 1800) time = 70;
-	else if(metr >= 1800 && metr < 2100) time = 80;
-	else if(metr >= 2100 && metr < 2400) time = 90;
-	else if(metr >= 2400 && metr < 2700) time = 100;
-	else if(metr >= 2700 && metr < 3000) time = 110;
-	else time = 120;
+	else if(metr >= 100 && metr < 600) time = 20;
+	else if(metr >= 600 && metr < 1200) time = 30;
+	else if(metr >= 1200 && metr < 1800) time = 40;
+	else if(metr >= 1800 && metr < 2400) time = 50;
+	else time = 60;
 	return time;
 }
 

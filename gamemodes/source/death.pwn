@@ -142,7 +142,7 @@ stock WeReturnToDeathPosition(playerid)
 {
     NoAnim[playerid] = 1;
 
-	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);
+	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), PPSetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 

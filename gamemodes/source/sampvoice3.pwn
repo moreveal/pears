@@ -47,7 +47,7 @@ CMD:gotoareav(playerid, const params[])
     new z = params[0]-1;
 	if(!AreaVStat[z]) return ErrorMessage(playerid, "{FF6347}Эта зона не установлена");
 
-	S_SetPlayerVirtualWorld(playerid, AreaVWorld[z], AreaVInt[z]), SetPlayerInterior(playerid, AreaVInt[z]);
+	S_SetPlayerVirtualWorld(playerid, AreaVWorld[z], AreaVInt[z]), PPSetPlayerInterior(playerid, AreaVInt[z]);
 	PPSetPlayerPos(playerid, AreaV_X[z], AreaV_Y[z], AreaV_Z[z]);
 	return 1;
 }

@@ -448,7 +448,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
 
                 CuffedPlayer(playerid, 9999);
                 S_SetPlayerVirtualWorld(playerid,0,0);
-		        SetPlayerInterior(playerid,0);
+		        PPSetPlayerInterior(playerid,0);
 
                 if(vehicleid == prisonbus_LS)
                 {
@@ -706,7 +706,7 @@ stock PrisonEscape(playerid)
 
     keep(playerid);
     PPSetPlayerPos(playerid,299.2186,2164.9827,942.0348);
-    S_SetPlayerVirtualWorld(playerid,241,241), SetPlayerInterior(playerid,241);
+    S_SetPlayerVirtualWorld(playerid,241,241), PPSetPlayerInterior(playerid,241);
     SetPlayerFacingAngle(playerid,173.2588);
     SetPlayerCriminal(playerid, -1, CriminalCodeInfo[0][0][ccName], CriminalCodeInfo[0][0][ccLevel], 0, 0);
     SuccessMessage(playerid, "{99ff66}Вы сбежали из тюрьмы");

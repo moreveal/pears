@@ -182,8 +182,8 @@ stock TradeList(playerid, page)
         }
     }
     if(yes_next == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
-    new header[60];
-    format(header,sizeof(header),"Биржевые Сделки [ Страница %d ]", page + 1);
+    new header[130];
+    format(header,sizeof(header),"Биржевые Сделки [ Курс 1$ = %dG | Страница %d] ", tclArifmetikAllGold, page + 1);
     ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
     return 1;
 }
@@ -230,22 +230,25 @@ CMD:ptrade(playerid)
 
 stock ShowDialogCreateTradeGold(playerid, create_page)
 {
+    new header[80];
+    format(header,sizeof(header),"Создание Трейда [ Курс 1$ = %dG ]", tclArifmetikAllGold);
     if(create_page == 0)
     {
         if(TradeCrypt[playerid][tcStatus] == 0) 
         {
-            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"Создание Трейда","{cccccc}Чтобы {ffcc00}продать {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
+            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,header,"{cccccc}Чтобы {ffcc00}продать {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
         }
         else 
         {
-            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,"Создание Трейда","{cccccc}Чтобы {99ff66}купить {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
+            ShowDialog(playerid,1377,DIALOG_STYLE_INPUT,header,"{cccccc}Чтобы {99ff66}купить {cccccc}Gold введите его количество\n\n{FF6347}Не меньше 1 и не больше 10.000","Принять","Отмена");
         }
     }
+
     else if(create_page == 1)
     {
         new string[140];
         format(string,sizeof(string),"{cccccc}Введите курс за 1 Gold\nТ.е. сколько будет стоит 1 Gold в вашей заявке\n\n{FF6347}Не меньше 1$ и не больше %d$", MAX_GOLD_COURSE);
-        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,"Создание Трейда",string,"Принять","Отмена");
+        ShowDialog(playerid,1376,DIALOG_STYLE_INPUT,header,string,"Принять","Отмена");
     }
     return 1;
 }
@@ -565,7 +568,10 @@ stock MyTradeSetting(playerid)
         format(line,sizeof(line),"\n{cccccc}Тип трейда: \t{99ff66}Покупка Gold"), strcat(lines,line);
         format(line,sizeof(line),"\n{ff9000}Создать трейд >>\t"), strcat(lines,line);
     }
-    ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,"Создание Трейда",lines,"Выбрать","Назад");
+
+    new header[80];
+    format(header,sizeof(header),"Создание Трейда [ Курс 1$ = %dG ]", tclArifmetikAllGold);
+    ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Назад");
     return 1;
 }
 function OnPlayerTradeCrypto(id) {
@@ -677,9 +683,15 @@ stock gotobuycrypto(playerid,id)
     if(IsPlayerConnected(para))
     {
         if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Покупатель подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
-        PlayerInfo[para][pDonateMoney] += TradeCrypt[id][tcCount];
+        PlayerInfo[para][pDonateMoney] += count;
         mysql_save(para, 4);
         deltradecrypto(id);
+
+        // Уведомление челу, если он в игре
+        if(OnlineInfo[para][oLogged] == 1)
+        {
+   			SendClientMessage(para, COLOR_GREY, "{99ff66}[ GOLD TRADE ]: {cccccc}Успешная сделка на %d$ с {ff9000}%s {cccccc}| Ваш доход: {ffcc00}%dG", price, rpplayername(playerid), count);
+        }
     }
     else
     {
@@ -693,15 +705,20 @@ stock gotobuycrypto(playerid,id)
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
 
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я продал%s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), count, price);
     new string[100];
-    format(string,sizeof(string),"[ Мысли ]: Я продал%s %d Gold, за %d$", gender(playerid), count, price);
-    SendClientMessage(playerid, COLOR_GREY, string);
     format(string, sizeof(string),"{cccccc}Вы продали %d Gold %s за %d$",count, temp_name, price);
     ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
-    CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
+    format(string, sizeof(string),"Подал %dG за %d$", count, price);
+    DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -count, string);
+
+    format(string, sizeof(string),"Купил %dG за %d$", count, price);
+    DonateLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
+
+    CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
 	return 1;
 }
 
@@ -742,6 +759,12 @@ stock gotosellcrypto(playerid,id)
         PlayerInfo[para][pAccount] += price;
         mysql_save(para, 1);
         deltradecrypto(id);
+
+        // Уведомление челу, если он в игре
+        if(OnlineInfo[para][oLogged] == 1)
+        {
+   			SendClientMessage(para, COLOR_GREY, "{99ff66}[ GOLD TRADE ]: {cccccc}Успешная сделка на %dG с {ff9000}%s {cccccc}| Ваш доход: {99ff66}%d$ [%s]", count, rpplayername(playerid), price, get_k(price));
+        }
     }
     else
     {
@@ -754,16 +777,22 @@ stock gotosellcrypto(playerid,id)
     mysql_save(playerid,4);
 
     PlayerPlaySound(playerid, 6401, 0,0,0);
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s {ffcc00}%dG {cccccc} за {99ff66}%d$", gender(playerid), count, price);
+
     new string[120];
-    format(string,sizeof(string),"[ Мысли ]: Я приобрел%s %d Gold, за %d$", gender(playerid), count, price);
-    SendClientMessage(playerid, COLOR_GREY, string);
     format(string, sizeof(string),"{cccccc}Вы купили %d Gold у %s за %d$",count,temp_name,price);
     ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
 
-    CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "0.0.0.0", count, TradeCrypt[id][tcCourse]);
-	return 1;
+    format(string, sizeof(string),"Купил %dG за %d$", count, price);
+    DonateLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], count, string);
+
+    format(string, sizeof(string),"Продал %dG за %d$", count, price);
+    DonateLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
+
+    CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
+    return 1;
 }
 
 function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
@@ -952,5 +981,21 @@ function Call_turnovergold(playerid)
     printf("[MODE]: AllGoldLog [%d Quan][%d ms]. Count = %d",rows,GetTickCount() - time,tclArifmetikAllGold);
     if(playerid != -1) ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{66ff99}Загружено. Итоги уже на таблице в банке!","*","");
     UpdateLabelBank();
+	return 1;
+}
+
+// Информация про юниты в меню bank online
+stock InfoUnit(playerid)
+{
+	new line[100],lines[800];
+	format(line,sizeof(line),"{9900ff}Что такое Юниты?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Это валюта, которая начисляется на ваш счёт в организации,"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}когда вы выполняете различную работу."), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Пример: доставляете ящики с боеприпасами на склад"), strcat(lines,line);
+	format(line,sizeof(line),"\n\n{9900ff}Что делать с Юнитами?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Их можно обменять на вирты в этом меню, когда вы вступите в организацию."), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Лидер каждой организации настраивает размер оплаты юнитами,"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}а так-же интервалы и время, когда вы сможете их обменивать на вирты."), strcat(lines,line);
+	ShowDialog(playerid,515,DIALOG_STYLE_MSGBOX,"{9900ff}Юниты",lines,"*","");
 	return 1;
 }

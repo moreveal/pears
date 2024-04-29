@@ -432,7 +432,7 @@ CMD:setskingro(playerid, const params[]) // Временно сменить ск
 stock WeReturnToPosition(playerid)
 {
 	keep(playerid); // Подморозим, чтобы не провалился
-	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), SetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
+	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oSpawnWorld], OnlineInfo[playerid][oSpawnInt]), PPSetPlayerInterior(playerid, OnlineInfo[playerid][oSpawnInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
@@ -514,7 +514,7 @@ stock GoShmot(playerid, stat)
 {
 	PPSetPlayerPos(playerid, 1542.2922,-1451.5934,45.9063), SetPlayerFacingAngle(playerid, 36.3980);
 	S_SetPlayerVirtualWorld(playerid, playerid+1, 0);
- 	SetPlayerInterior(playerid, 0);
+ 	PPSetPlayerInterior(playerid, 0);
  	TogglePlayerControllable(playerid, false);
 	InterpolateCameraPos(playerid, 1540.998779, -1459.510864, 46.879333, 1538.850585, -1455.088989, 46.521511, 1000);
 	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
@@ -653,7 +653,7 @@ stock ExitShmot(playerid)
 	PPSetPlayerPos(playerid, SkinX[playerid], SkinY[playerid], SkinZ[playerid]);
  	SetPlayerFacingAngle(playerid, SkinA[playerid]);
   	S_SetPlayerVirtualWorld(playerid, SkinWorld[playerid], SkinInt[playerid]);
-   	SetPlayerInterior(playerid, SkinInt[playerid]);
+   	PPSetPlayerInterior(playerid, SkinInt[playerid]);
 
 	SetCameraBehindPlayer(playerid);
 	CancelSelectTextDraw(playerid);
@@ -1122,7 +1122,7 @@ stock buy_SkinShop(playerid)
 	}
 	else if(g == 100 || g == 400)
 	{
-		if(quan <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
+		if(quan <= 0 && g == 100) return ErrorMessage(playerid, "{FF6347}Ошибка! Одежды нет в магазине [ Возможно её кто-то купил ]");
 		if(DP[0][playerid] == 0 && price <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена стоимость");
 		if(DP[0][playerid] == 1 && gold <= 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Этой одежде не установлена gold стоимость");
 		g = 0;

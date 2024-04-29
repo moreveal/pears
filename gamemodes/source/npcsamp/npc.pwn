@@ -115,7 +115,7 @@ stock OnNpcSpawn(playerid)
         PlayerInfo[playerid][pModel] = 310;
         
         S_SetPlayerVirtualWorld(playerid,0,0);
-        SetPlayerInterior(playerid,0);
+        PPSetPlayerInterior(playerid,0);
         m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 
         RemovePlayerFromVehicle(playerid);
@@ -131,7 +131,7 @@ stock OnNpcSpawn(playerid)
         PlayerInfo[playerid][pModel] = 310;
         
         S_SetPlayerVirtualWorld(playerid,0,0);
-        SetPlayerInterior(playerid,0);
+        PPSetPlayerInterior(playerid,0);
         m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 
         RemovePlayerFromVehicle(playerid);
@@ -147,7 +147,7 @@ stock OnNpcSpawn(playerid)
         PlayerInfo[playerid][pModel] = 287;
         
         S_SetPlayerVirtualWorld(playerid,0,0);
-        SetPlayerInterior(playerid,0);
+        PPSetPlayerInterior(playerid,0);
         m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 
         RemovePlayerFromVehicle(playerid);
@@ -163,7 +163,7 @@ stock OnNpcSpawn(playerid)
         PlayerInfo[playerid][pModel] = 71;
         
         S_SetPlayerVirtualWorld(playerid,0,0);
-        SetPlayerInterior(playerid,0);
+        PPSetPlayerInterior(playerid,0);
         m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
 
         RemovePlayerFromVehicle(playerid);

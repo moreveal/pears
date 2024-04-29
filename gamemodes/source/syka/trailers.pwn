@@ -299,10 +299,10 @@ stock TrailerBuy(playerid)
 {
 	new line[80],lines[400];
     format(line,sizeof(line),"{cccccc}Название \t{99ff66}Цена\n"), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Round Trailer\t{99ff66}200.000$\n"), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Mini Trailer\t{99ff66}250.000$\n"), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Middle Trailer\t{99ff66}300.000$\n"), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Big Trailer\t{99ff66}400.000$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Round Trailer\t{99ff66}600.000$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Mini Trailer\t{99ff66}750.000$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Middle Trailer\t{99ff66}900.000$\n"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Big Trailer\t{99ff66}1.200.000$\n"), strcat(lines,line);
     format(line,sizeof(line),"{FF6347}Уничтожить Трейлер\n"), strcat(lines,line);
 	ShowDialog(playerid,1395, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Покупка Трейлера", lines,"Выбрать","Отмена");
 	return 1;
@@ -413,10 +413,11 @@ stock trailer_add(playerid, model, trailer)
 {
     if(PlayerInfo[playerid][pTrailer] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть трейлер");
     new money;
-    if(trailer == 0) money = 200000;
-    else if(trailer == 1) money = 250000;
-    else if(trailer == 2) money = 300000;
-    else if(trailer == 3) money = 400000;
+    if(trailer == 0) money = 600000;
+    else if(trailer == 1) money = 750000;
+    else if(trailer == 2) money = 900000;
+    else if(trailer == 3) money = 1200000;
+
     if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     new infocreate = AddPlayerTrailer(playerid, model);
     if (infocreate == 0) 
@@ -447,7 +448,7 @@ CMD:trailer(playerid, const params[])
 
     PPSetPlayerPos(playerid, trailerInfo[trailerid][tPic][0], trailerInfo[trailerid][tPic][1], trailerInfo[trailerid][tPic][2] + 0.5);
     S_SetPlayerVirtualWorld(playerid, 0, 0);
-	SetPlayerInterior(playerid, 0);
+	PPSetPlayerInterior(playerid, 0);
 	return 1;
 }
 
@@ -587,7 +588,7 @@ stock exittrailer(playerid)
     if(Sleep[playerid] >= 1 || SleepRP[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я сплю");
     keep(playerid);
     S_SetPlayerVirtualWorld(playerid, 0, 0);
-    SetPlayerInterior(playerid, 0);
+    PPSetPlayerInterior(playerid, 0);
     PPSetPlayerPos(playerid, trailerInfo[tid][tPic][0], trailerInfo[tid][tPic][1], trailerInfo[tid][tPic][2] + 0.5);
     return 1;
 }

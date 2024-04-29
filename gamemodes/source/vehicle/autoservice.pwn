@@ -314,7 +314,7 @@ stock showPlayerAutoserviceMenu(playerid)
     TogglePlayerControllable(playerid, false);
 
     S_SetPlayerVirtualWorld(playerid,playerid+1,223);
-    SetPlayerInterior(playerid,223);
+    PPSetPlayerInterior(playerid,223);
 
     OnlineInfo[playerid][oShowInterface] = 20; // Интерфейс автосервиса
     TextDrawShowForPlayer(playerid, TuningDraw[0]);
@@ -417,7 +417,7 @@ stock openTestDrive_Autoservice(playerid)
     CancelSelectTextDraw(playerid); // Убираем мышку
 	TogglePlayerControllable(playerid, true); // Unfreeze
 
-    SetPlayerInterior(playerid, 0);
+    PPSetPlayerInterior(playerid, 0);
     LinkVehicleToInterior(vehicleid, 0);
 
 	VehInfo[vehicleid][vTestDrive] = playerid + 1; // Транспорт находится в Test Drive

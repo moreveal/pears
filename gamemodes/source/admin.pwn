@@ -160,7 +160,7 @@ CMD:gotobiz(playerid, const params[])
 	{
 	    if(BizzInfo[params[0]][bLab] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Позиция бизнеса недоступна [ Только в Бизнес Центре | Тп к терминалу /gototerm ]");
 		PPSetPlayerPos(playerid,BizzInfo[params[0]][bX],BizzInfo[params[0]][bY],BizzInfo[params[0]][bZ]);
-		S_SetPlayerVirtualWorld(playerid,0,0), SetPlayerInterior(playerid,0);
+		S_SetPlayerVirtualWorld(playerid,0,0), PPSetPlayerInterior(playerid,0);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
 	return 1;

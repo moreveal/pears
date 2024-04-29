@@ -1,16 +1,16 @@
 
-#define GRAFFITY_PRECENT 20 // Сколько процентов даёт или отнимает каждое граффити
+#define GRAFFITY_PRECENT 20 // РЎРєРѕР»СЊРєРѕ РїСЂРѕС†РµРЅС‚РѕРІ РґР°С‘С‚ РёР»Рё РѕС‚РЅРёРјР°РµС‚ РєР°Р¶РґРѕРµ РіСЂР°С„С„РёС‚Рё
 
 enum graphitiEnum
 {
     graphitiID,
-    Float:graphitiPos[6], // Координаты
-    graphitiUnix, // Время создания граффити
-    graphitiPlayer, // номер акка игрока
-    graphitiOrg, // номер организации
-    graphitiStatus, // Статус 0 - не установлена, 1 установлена
-    graphitiZone, // Зона где граффити
-    graphitiName[24], // Никнейм игрока.
+    Float:graphitiPos[6], // РљРѕРѕСЂРґРёРЅР°С‚С‹
+    graphitiUnix, // Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ РіСЂР°С„С„РёС‚Рё
+    graphitiPlayer, // РЅРѕРјРµСЂ Р°РєРєР° РёРіСЂРѕРєР°
+    graphitiOrg, // РЅРѕРјРµСЂ РѕСЂРіР°РЅРёР·Р°С†РёРё
+    graphitiStatus, // РЎС‚Р°С‚СѓСЃ 0 - РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР°, 1 СѓСЃС‚Р°РЅРѕРІР»РµРЅР°
+    graphitiZone, // Р—РѕРЅР° РіРґРµ РіСЂР°С„С„РёС‚Рё
+    graphitiName[24], // РќРёРєРЅРµР№Рј РёРіСЂРѕРєР°.
 }
 new GraphitiInfo[GZONES][graphitiEnum];
 new GraphitiPos[6][8];
@@ -19,7 +19,7 @@ new GraphitiPickUp[GZONES];
 new Text3D: GraphitiLabel[GZONES];
 new QuanGraffity;
 
-forward LoadGraphiti(); // Загрузка из базы
+forward LoadGraphiti(); // Р—Р°РіСЂСѓР·РєР° РёР· Р±Р°Р·С‹
 public LoadGraphiti()
 {
 	new time = GetTickCount();
@@ -42,12 +42,12 @@ public LoadGraphiti()
             {
                 GraphitiInfo[f][graphitiPos][i] = floatstr(GraphitiPos[i]);
             }
-            format(stroca,sizeof(stroca),""); // Очищаем stroca
+            format(stroca,sizeof(stroca),""); // РћС‡РёС‰Р°РµРј stroca
             GraphitiUpdateElement(f);
             QuanGraffity ++;
         }
 	}
-	printf("[MODE]: Граффити [%d Quan][%d ms]",rows,GetTickCount() - time);
+	printf("[MODE]: Р“СЂР°С„С„РёС‚Рё [%d Quan][%d ms]",rows,GetTickCount() - time);
 	return 1;
 }
 
@@ -55,7 +55,7 @@ stock ShowAllGraphiti(playerid)
 {
 	new line[100],lines[4096];
 	new tyear, tmonth, tday, thour, tminute, tsecond, quan,g;
-	format(line,sizeof(line),"№ Банда\tСоздал\tВремя редактирования/создания"), strcat(lines,line);
+	format(line,sizeof(line),"в„– Р‘Р°РЅРґР°\tРЎРѕР·РґР°Р»\tР’СЂРµРјСЏ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ/СЃРѕР·РґР°РЅРёСЏ"), strcat(lines,line);
 	for(new i = 0; i < GZONES; i++)
 	{
 		List[i][playerid] = 0;
@@ -67,52 +67,67 @@ stock ShowAllGraphiti(playerid)
 		}
 		else
 		{
-			format(line,sizeof(line),"\n%d. Пусто\t\t", i+1), strcat(lines,line);
+			format(line,sizeof(line),"\n%d. РџСѓСЃС‚Рѕ\t\t", i+1), strcat(lines,line);
         }
         List[quan][playerid] = i;
 		quan++;
 	}
-    ShowDialog(playerid,1476,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список Граффити",lines,"Выбрать","Выход");
+    ShowDialog(playerid,1476,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РЎРїРёСЃРѕРє Р“СЂР°С„С„РёС‚Рё",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
 	return 1;
 }
 
 stock CreateGraphiti(playerid)
 {
-    if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж уже наносит граффити или редактирует какой-то объект");
-    if(get_invent4(playerid, 197, 0) <= 0) return ErrorMessage(playerid, "{FF6347}Вам нужен баллончик с краской\n{cccccc}Вы можете приобрести его в любом супермаркете");
-    if(Hold[playerid] != 197) return ErrorMessage(playerid, "{FF6347}Возьмите в руки баллончик с краской\n{cccccc}Откройте инвентарь и нажмите на него два раза");
+    if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ СѓР¶Рµ РЅР°РЅРѕСЃРёС‚ РіСЂР°С„С„РёС‚Рё РёР»Рё СЂРµРґР°РєС‚РёСЂСѓРµС‚ РєР°РєРѕР№-С‚Рѕ РѕР±СЉРµРєС‚");
+    if(get_invent4(playerid, 197, 0) <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅСѓР¶РµРЅ Р±Р°Р»Р»РѕРЅС‡РёРє СЃ РєСЂР°СЃРєРѕР№\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РїСЂРёРѕР±СЂРµСЃС‚Рё РµРіРѕ РІ Р»СЋР±РѕРј СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ");
+    if(Hold[playerid] != 197) return ErrorMessage(playerid, "{FF6347}Р’РѕР·СЊРјРёС‚Рµ РІ СЂСѓРєРё Р±Р°Р»Р»РѕРЅС‡РёРє СЃ РєСЂР°СЃРєРѕР№\n{cccccc}РћС‚РєСЂРѕР№С‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ Рё РЅР°Р¶РјРёС‚Рµ РЅР° РЅРµРіРѕ РґРІР° СЂР°Р·Р°");
 
     new g = fraction(playerid);
-    new objectid;
-    if(g == 13) objectid = 1528; // grove
-    else if(g == 14) objectid = 1529; // ballas
-    else if(g == 15) objectid = 1530; // vagos
-    else objectid = 1531; // aztec
     new Float:f_pos[4];
     frontme(playerid, 1.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-    CreateEditPlayerObject(playerid, 27, 0, 0, 0, objectid, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, f_pos[3] + 90.0);
+    new objectid = CreateEditPlayerObject(playerid, 27, 0, 0, 0, 2729, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, f_pos[3]);
+    SetMaterialGraffity(playerid, g, objectid);
     return 1;
 }
 
 stock GraphitiUpdateElement(graphiti)
 {
-    new g = GraphitiInfo[graphiti][graphitiOrg],text[16],objectid;
-    if(g == 13) text = "{00cc00}Grove",objectid = 1528; // grove
-    else if(g == 14) text = "{9900cc}Ballas",objectid = 1529; // ballas
-    else if(g == 15) text = "{ffcc33}Vagos",objectid = 1530; // vagos
-    else text = "{00ffff}Aztecas",objectid = 1531; // aztec
+    new g = GraphitiInfo[graphiti][graphitiOrg];
     new Float:x,Float:y,Float:z;
-    GraphitiObject[graphiti] = CreateDynamicObject(objectid, GraphitiInfo[graphiti][graphitiPos][0],GraphitiInfo[graphiti][graphitiPos][1],GraphitiInfo[graphiti][graphitiPos][2],GraphitiInfo[graphiti][graphitiPos][3],GraphitiInfo[graphiti][graphitiPos][4],GraphitiInfo[graphiti][graphitiPos][5],0,0);
-    backtobject(GraphitiObject[graphiti],1.0,x,y,z,GraphitiInfo[graphiti][graphitiPos][5]);
+    GraphitiObject[graphiti] = CreateDynamicObject(2729, GraphitiInfo[graphiti][graphitiPos][0],GraphitiInfo[graphiti][graphitiPos][1],GraphitiInfo[graphiti][graphitiPos][2],GraphitiInfo[graphiti][graphitiPos][3],GraphitiInfo[graphiti][graphitiPos][4],GraphitiInfo[graphiti][graphitiPos][5], 0, 0, -1, 50.0, 50.0);
+    
+    // РќР°С‚СЏРіРёРІР°РµРј С‚РµРєСЃС‚СѓСЂСѓ РЅР° РіСЂР°С„С„РёС‚Рё
+    SetMaterialGraffity(-1, g, GraphitiObject[graphiti]);
+
+    lefttobject(GraphitiObject[graphiti],1.0,x,y,z,GraphitiInfo[graphiti][graphitiPos][5]);
     GraphitiPickUp[graphiti] = CreateDynamicPickup(365,1,x,y,z,0,0);
 
     new string[100];
-    format(string,sizeof(string),"{cccccc}Граффити\n%s\n\n{ff9000}[ Баллончик или Канистра в руках + ALT ]",text);
-    GraphitiLabel[graphiti] = CreateDynamic3DTextLabel(string,0xA9C4E4FF,GraphitiInfo[graphiti][graphitiPos][0], GraphitiInfo[graphiti][graphitiPos][1], GraphitiInfo[graphiti][graphitiPos][2],5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
+    format(string,sizeof(string),"{cccccc}Р“СЂР°С„С„РёС‚Рё %s\n\n{666666}[ Р‘Р°Р»Р»РѕРЅС‡РёРє РёР»Рё РљР°РЅРёСЃС‚СЂР° РІ СЂСѓРєР°С… + ALT ]", frakeasyName[g]);
+    GraphitiLabel[graphiti] = CreateDynamic3DTextLabel(string,0xA9C4E4FF,x,y,z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
     return 1;
 }
 
-stock GetZone(playerid) // Получение территории в гетто
+stock SetMaterialGraffity(playerid, g, objectid)
+{
+    if(playerid == -1) // Dynamic Object
+    {
+        if(g == 14) SetDynamicObjectMaterial(objectid, 0, 1527, "tags_larollin", "rollin", 0x00000000); // Ballas
+        else if(g == 15) SetDynamicObjectMaterial(objectid, 0, 1530, "tags_lavagos", "vagos", 0x00000000); // Vagos
+        else if(g == 16) SetDynamicObjectMaterial(objectid, 0, 1531, "tags_laazteca", "aztecas", 0x00000000); // Los Aztecas
+        else SetDynamicObjectMaterial(objectid, 0, 1490, "tags2_lalae", "grove", 0x00000000); // Grove
+    }
+    else // Player Object
+    {
+        if(g == 14) SetPlayerObjectMaterial(playerid, objectid, 0, 1527, "tags_larollin", "rollin", 0x00000000); // Ballas
+        else if(g == 15) SetPlayerObjectMaterial(playerid, objectid, 0, 1530, "tags_lavagos", "vagos", 0x00000000); // Vagos
+        else if(g == 16) SetPlayerObjectMaterial(playerid, objectid, 0, 1531, "tags_laazteca", "aztecas", 0x00000000); // Los Aztecas
+        else SetPlayerObjectMaterial(playerid, objectid, 0, 1490, "tags2_lalae", "grove", 0x00000000); // Grove
+    }
+    return 1;
+}
+
+stock GetZone(playerid) // РџРѕР»СѓС‡РµРЅРёРµ С‚РµСЂСЂРёС‚РѕСЂРёРё РІ РіРµС‚С‚Рѕ
 {
     new yesGhetto = -1;
 	for(new g = 0; g < GZONES; g++)
@@ -126,7 +141,7 @@ stock GetZone(playerid) // Получение территории в гетто
     return yesGhetto;
 }
 
-stock GetZoneXYZ(Float:x,Float:y) // Получение территории в гетто
+stock GetZoneXYZ(Float:x,Float:y) // РџРѕР»СѓС‡РµРЅРёРµ С‚РµСЂСЂРёС‚РѕСЂРёРё РІ РіРµС‚С‚Рѕ
 {
     new yesGhetto = -1;
 	for(new g = 0; g < GZONES; g++)
@@ -155,21 +170,21 @@ stock SaveGraphiti(slot)
 
 CMD:spray(playerid)
 {
-	if(get_invent4(playerid, 197, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет балончика с краской\n{cccccc}Его можно купить в любом супермаркете");
+	if(get_invent4(playerid, 197, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ Р±Р°Р»РѕРЅС‡РёРєР° СЃ РєСЂР°СЃРєРѕР№\n{cccccc}Р•РіРѕ РјРѕР¶РЅРѕ РєСѓРїРёС‚СЊ РІ Р»СЋР±РѕРј СЃСѓРїРµСЂРјР°СЂРєРµС‚Рµ");
     if(Hold[playerid] == 197)
     {
    		RemovePlayerAttachedObject(playerid,1), Hold[playerid] = 0;
     	if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"PED","phone_out",4.0, false, true, true, false, false);
-  		SetPlayerChatBubble(playerid,"убирает балончик",COLOR_PURPLE,30.0,8000); 
+  		SetPlayerChatBubble(playerid,"СѓР±РёСЂР°РµС‚ Р±Р°Р»РѕРЅС‡РёРє",COLOR_PURPLE,30.0,8000); 
         PlayerPlaySound(playerid,5601,0,0,0);
 	}
 	else
 	{
-		if(Hold[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа заняты руки");
+		if(Hold[playerid] > 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°С€РµРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р° Р·Р°РЅСЏС‚С‹ СЂСѓРєРё");
   		RemovePlayerAttachedObject(playerid,1);
   		Hold[playerid] = 197;
   		SetPlayerAttachedObject(playerid, 1, 365, 6, 0.098999, 0.039999, 0.000000, 85.700012, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000, 0, 0);
-  		SetPlayerChatBubble(playerid,"достаёт балончик",COLOR_PURPLE,30.0,8000);
+  		SetPlayerChatBubble(playerid,"РґРѕСЃС‚Р°С‘С‚ Р±Р°Р»РѕРЅС‡РёРє",COLOR_PURPLE,30.0,8000);
         PlayerPlaySound(playerid,5600,0,0,0);
     }
 	return 1;
@@ -177,8 +192,8 @@ CMD:spray(playerid)
 
 stock clearspray(playerid, zone)
 {
-    if(get_invent4(playerid, 9, 0) <= 0) return ErrorMessage(playerid, "{FF6347}Вам нужна канистра с бензином\n{cccccc}Отправляйтесь на ближайшую заправку и приобретите канистру");
-    if(Dei[playerid] != 8) return ErrorMessage(playerid, "{FF6347}Возьмите в руки канистру с бензином\n{cccccc}Откройте инвентарь и нажмите на канистру два раза");
+    if(get_invent4(playerid, 9, 0) <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅСѓР¶РЅР° РєР°РЅРёСЃС‚СЂР° СЃ Р±РµРЅР·РёРЅРѕРј\n{cccccc}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РЅР° Р±Р»РёР¶Р°Р№С€СѓСЋ Р·Р°РїСЂР°РІРєСѓ Рё РїСЂРёРѕР±СЂРµС‚РёС‚Рµ РєР°РЅРёСЃС‚СЂСѓ");
+    if(Dei[playerid] != 8) return ErrorMessage(playerid, "{FF6347}Р’РѕР·СЊРјРёС‚Рµ РІ СЂСѓРєРё РєР°РЅРёСЃС‚СЂСѓ СЃ Р±РµРЅР·РёРЅРѕРј\n{cccccc}РћС‚РєСЂРѕР№С‚Рµ РёРЅРІРµРЅС‚Р°СЂСЊ Рё РЅР°Р¶РјРёС‚Рµ РЅР° РєР°РЅРёСЃС‚СЂСѓ РґРІР° СЂР°Р·Р°");
 
     DestroyDynamicObject(GraphitiObject[zone]);
     DestroyDynamicPickup(GraphitiPickUp[zone]);
@@ -190,10 +205,10 @@ stock clearspray(playerid, zone)
     GraphitiInfo[zone][graphitiStatus] = 0;
     GraphitiInfo[zone][graphitiZone] = zone;
     GraphitiInfo[zone][graphitiPlayer] = PlayerInfo[playerid][pID];
-    TakeInvent(playerid, 9, 1, 0, 999); // Отнимаем 1 литр из канистры
+    TakeInvent(playerid, 9, 1, 0, 999); // РћС‚РЅРёРјР°РµРј 1 Р»РёС‚СЂ РёР· РєР°РЅРёСЃС‚СЂС‹
     if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"SPRAYCAN","spraycan_full",3.0, false, true, true, false, false);
     PlayerPlaySound(playerid,20802,0,0,0);
-    SuccessMessage(playerid,"{99ff66}Вы стёрли граффити");
+    SuccessMessage(playerid,"{99ff66}Р’С‹ СЃС‚С‘СЂР»Рё РіСЂР°С„С„РёС‚Рё");
     SaveGraphiti(zone);
     QuanGraffity --;
     return 1;
@@ -207,20 +222,20 @@ stock MenuGraffity(playerid, zone)
 
     new line[100],lines[300];
     format(line,sizeof(line),"%s {cccccc}| %s | {666666}%02d.%02d.%d %02d:%02d\t", frakName[GraphitiInfo[zone][graphitiOrg]], GraphitiInfo[zone][graphitiName], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Перекрасить {ff9000}>>\t{666666}Баллончик в руке"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Стереть {ff6347}>>\t{666666}Канистра в руке"), strcat(lines,line);
-    ShowDialog(playerid,1399,DIALOG_STYLE_TABLIST_HEADERS,"Граффити",lines,"Выбрать","Выход");
+    format(line,sizeof(line),"\n{cccccc}РџРµСЂРµРєСЂР°СЃРёС‚СЊ {ff9000}>>\t{666666}Р‘Р°Р»Р»РѕРЅС‡РёРє РІ СЂСѓРєРµ"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РЎС‚РµСЂРµС‚СЊ {ff6347}>>\t{666666}РљР°РЅРёСЃС‚СЂР° РІ СЂСѓРєРµ"), strcat(lines,line);
+    ShowDialog(playerid,1399,DIALOG_STYLE_TABLIST_HEADERS,"Р“СЂР°С„С„РёС‚Рё",lines,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
     return 1;
 }
 
 stock gospray(playerid)
 {
     new g = fraction(playerid);
-    if(g != 13 && g != 14 && g != 15 && g != 16) return ErrorMessage(playerid,"{ff6347}Стереть или нанести граффити могут только участники банды");
-    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid,"{ff6347}Вы не можете стереть или нанести граффити в помещении");
+    if(g != 13 && g != 14 && g != 15 && g != 16) return ErrorMessage(playerid,"{ff6347}РЎС‚РµСЂРµС‚СЊ РёР»Рё РЅР°РЅРµСЃС‚Рё РіСЂР°С„С„РёС‚Рё РјРѕРіСѓС‚ С‚РѕР»СЊРєРѕ СѓС‡Р°СЃС‚РЅРёРєРё Р±Р°РЅРґС‹");
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃС‚РµСЂРµС‚СЊ РёР»Рё РЅР°РЅРµСЃС‚Рё РіСЂР°С„С„РёС‚Рё РІ РїРѕРјРµС‰РµРЅРёРё");
 
     new zone = GetZone(playerid);
-    if(zone == -1) return ErrorMessage(playerid,"{ff6347}Нанести или стереть граффити можно только на территории капта\n{cccccc}Примечение: на респах банд квадрат капта намеренно отсутствует");
+    if(zone == -1) return ErrorMessage(playerid,"{ff6347}РќР°РЅРµСЃС‚Рё РёР»Рё СЃС‚РµСЂРµС‚СЊ РіСЂР°С„С„РёС‚Рё РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёРё РєР°РїС‚Р°\n{cccccc}РџСЂРёРјРµС‡РµРЅРёРµ: РЅР° СЂРµСЃРїР°С… Р±Р°РЅРґ РєРІР°РґСЂР°С‚ РєР°РїС‚Р° РЅР°РјРµСЂРµРЅРЅРѕ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚");
 
     if(GraphitiInfo[zone][graphitiStatus] == 1)
     {
@@ -231,8 +246,8 @@ stock gospray(playerid)
         }
         else
         {
-            if(GraphitiInfo[zone][graphitiOrg] == g) ErrorMessage(playerid,"{ff6347}В этом квадрате нанесено граффити вашей банды");
-            else ErrorMessage(playerid,"{ff6347}В этом квадрате нанесено граффити чужой банды\n{cccccc}Вы можете найти граффити, стереть его или перекрасить");
+            if(GraphitiInfo[zone][graphitiOrg] == g) ErrorMessage(playerid,"{ff6347}Р’ СЌС‚РѕРј РєРІР°РґСЂР°С‚Рµ РЅР°РЅРµСЃРµРЅРѕ РіСЂР°С„С„РёС‚Рё РІР°С€РµР№ Р±Р°РЅРґС‹");
+            else ErrorMessage(playerid,"{ff6347}Р’ СЌС‚РѕРј РєРІР°РґСЂР°С‚Рµ РЅР°РЅРµСЃРµРЅРѕ РіСЂР°С„С„РёС‚Рё С‡СѓР¶РѕР№ Р±Р°РЅРґС‹\n{cccccc}Р’С‹ РјРѕР¶РµС‚Рµ РЅР°Р№С‚Рё РіСЂР°С„С„РёС‚Рё, СЃС‚РµСЂРµС‚СЊ РµРіРѕ РёР»Рё РїРµСЂРµРєСЂР°СЃРёС‚СЊ");
         }
         return 1;
     }
@@ -242,23 +257,23 @@ stock gospray(playerid)
 
 CMD:sprays(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
     ShowAllGraphiti(playerid);
     return 1;
 }
 
 CMD:cleargraffity(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
-    ShowDialog(playerid,1394,DIALOG_STYLE_MSGBOX,"Граффити","{cccccc}Вы уверены, что хотите {ff6347}стереть все граффити","Да","Нет");
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Сѓ РєРѕРјР°РЅРґСѓ");
+    ShowDialog(playerid,1394,DIALOG_STYLE_MSGBOX,"Р“СЂР°С„С„РёС‚Рё","{cccccc}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ {ff6347}СЃС‚РµСЂРµС‚СЊ РІСЃРµ РіСЂР°С„С„РёС‚Рё","Р”Р°","РќРµС‚");
     return 1;
 }
 
 stock ClearAllGraffity(playerid)
 {
-    if(QuanGraffity <= 0) return ErrorMessage(playerid,"{ff6347}На сервере нет ни одного граффити");
+    if(QuanGraffity <= 0) return ErrorMessage(playerid,"{ff6347}РќР° СЃРµСЂРІРµСЂРµ РЅРµС‚ РЅРё РѕРґРЅРѕРіРѕ РіСЂР°С„С„РёС‚Рё");
 
-    // Начало транзакции
+    // РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
     new quan;
@@ -281,13 +296,13 @@ stock ClearAllGraffity(playerid)
     }
 
     new string[80];
-    format(string, sizeof(string), " [ ADM ]: %s удалил все граффити (%d штук)",PlayerInfo[playerid][pName], quan);
+    format(string, sizeof(string), " [ ADM ]: %s СѓРґР°Р»РёР» РІСЃРµ РіСЂР°С„С„РёС‚Рё (%d С€С‚СѓРє)",PlayerInfo[playerid][pName], quan);
 	ABroadCast(COLOR_ADM,string,1);
 
-    // Завершение транзакции
+    // Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	mysql_tquery(pearsq, "COMMIT;");
 
-    AdminLog("cleargraffity", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Удалил все граффити");
+    AdminLog("cleargraffity", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "РЈРґР°Р»РёР» РІСЃРµ РіСЂР°С„С„РёС‚Рё");
     return 1;
 }
 
@@ -302,21 +317,21 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
         if(response)
         {
             new zone = DP[0][playerid];
-            if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return ErrorMessage(playerid,"{ff6347}Вы находитесь в интерьере или помещении");
-            if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Только пешком рядом с граффити");
-            if(GraphitiInfo[zone][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}Ошибка! Граффити куда-то пропало.. Возможно его кто-то стёр");
-            if(!IsPlayerInRangeOfPoint(playerid,2.0,GraphitiInfo[zone][graphitiPos][0],GraphitiInfo[zone][graphitiPos][1],GraphitiInfo[zone][graphitiPos][2])) return ErrorMessage(playerid, "{FF6347}Вы далеко отошли от граффити");
+            if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return ErrorMessage(playerid,"{ff6347}Р’С‹ РЅР°С…РѕРґРёС‚РµСЃСЊ РІ РёРЅС‚РµСЂСЊРµСЂРµ РёР»Рё РїРѕРјРµС‰РµРЅРёРё");
+            if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}РўРѕР»СЊРєРѕ РїРµС€РєРѕРј СЂСЏРґРѕРј СЃ РіСЂР°С„С„РёС‚Рё");
+            if(GraphitiInfo[zone][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}РћС€РёР±РєР°! Р“СЂР°С„С„РёС‚Рё РєСѓРґР°-С‚Рѕ РїСЂРѕРїР°Р»Рѕ.. Р’РѕР·РјРѕР¶РЅРѕ РµРіРѕ РєС‚Рѕ-С‚Рѕ СЃС‚С‘СЂ");
+            if(!IsPlayerInRangeOfPoint(playerid,2.0,GraphitiInfo[zone][graphitiPos][0],GraphitiInfo[zone][graphitiPos][1],GraphitiInfo[zone][graphitiPos][2])) return ErrorMessage(playerid, "{FF6347}Р’С‹ РґР°Р»РµРєРѕ РѕС‚РѕС€Р»Рё РѕС‚ РіСЂР°С„С„РёС‚Рё");
             if(GraphitiInfo[zone][graphitiUnix]+1800>gettime())
             {
                 new string[120];
-                format(string,sizeof(string), "{ff6347}Граффити было создано недавно\n{cccccc}Можно стереть или перекрасить через %s", fine_time(GraphitiInfo[zone][graphitiUnix]+1800 - gettime()));
+                format(string,sizeof(string), "{ff6347}Р“СЂР°С„С„РёС‚Рё Р±С‹Р»Рѕ СЃРѕР·РґР°РЅРѕ РЅРµРґР°РІРЅРѕ\n{cccccc}РњРѕР¶РЅРѕ СЃС‚РµСЂРµС‚СЊ РёР»Рё РїРµСЂРµРєСЂР°СЃРёС‚СЊ С‡РµСЂРµР· %s", fine_time(GraphitiInfo[zone][graphitiUnix]+1800 - gettime()));
                 ErrorMessage(playerid,string);
                 return 1;
             }
-            if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+            if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€РµРјСѓ РїРµСЂСЃРѕРЅР°Р¶Сѓ РїР»РѕС…Рѕ");
 
-            if(listitem == 0) CreateGraphiti(playerid); // Перекрасить
-            if(listitem == 1) clearspray(playerid, zone); // Стереть
+            if(listitem == 0) CreateGraphiti(playerid); // РџРµСЂРµРєСЂР°СЃРёС‚СЊ
+            if(listitem == 1) clearspray(playerid, zone); // РЎС‚РµСЂРµС‚СЊ
         }
     }
     else if(dialogid == 1476)
@@ -324,11 +339,11 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
         if(response)
         {
             if(PlayerInfo[playerid][pSoska] == 0) return ShowAllGraphiti(playerid);
-            if(listitem < 0 || listitem > GZONES) return ErrorMessage(playerid,"Лист итем паленый броооооо");
+            if(listitem < 0 || listitem > GZONES) return ErrorMessage(playerid,"Р›РёСЃС‚ РёС‚РµРј РїР°Р»РµРЅС‹Р№ Р±СЂРѕРѕРѕРѕРѕРѕ");
             {
                 new listord = List[listitem][playerid];
                 DP[0][playerid] = listord;
-                if(GraphitiInfo[listord][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}Данное граффити еще не размещено!");
+                if(GraphitiInfo[listord][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}Р”Р°РЅРЅРѕРµ РіСЂР°С„С„РёС‚Рё РµС‰Рµ РЅРµ СЂР°Р·РјРµС‰РµРЅРѕ!");
                 if(GraphitiInfo[listord][graphitiStatus] != 0)
                 {
                     new tyear, tmonth, tday, thour, tminute, tsecond;
@@ -336,8 +351,8 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
                     new g = GraphitiInfo[listord][graphitiOrg];
 
                     new string[100];
-                    format(string,sizeof(string),"%d. %s\nБанда: %s\nДата создания: %02d.%02d.%d %02d:%02d", listord+1,GraphitiInfo[listord][graphitiName],fraklastName[g],tday, tmonth, tyear, thour, tminute);
-                    ShowDialog(playerid,1477,DIALOG_STYLE_MSGBOX,"{ff9000}Граффити",string,"Тп","Назад");
+                    format(string,sizeof(string),"%d. %s\nР‘Р°РЅРґР°: %s\nР”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ: %02d.%02d.%d %02d:%02d", listord+1,GraphitiInfo[listord][graphitiName],fraklastName[g],tday, tmonth, tyear, thour, tminute);
+                    ShowDialog(playerid,1477,DIALOG_STYLE_MSGBOX,"{ff9000}Р“СЂР°С„С„РёС‚Рё",string,"РўРї","РќР°Р·Р°Рґ");
                 }
             }
         }
@@ -347,9 +362,9 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
         if(response)
         {
             new listord = DP[0][playerid];
-            if(GraphitiInfo[listord][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}Ошибка! Граффити удалено");
+            if(GraphitiInfo[listord][graphitiStatus] == 0) return ErrorMessage(playerid,"{ff6347}РћС€РёР±РєР°! Р“СЂР°С„С„РёС‚Рё СѓРґР°Р»РµРЅРѕ");
             S_SetPlayerVirtualWorld(playerid, 0, 0);
-            SetPlayerInterior(playerid, 0);
+            PPSetPlayerInterior(playerid, 0);
             PPSetPlayerPos(playerid, GraphitiInfo[listord][graphitiPos][0],GraphitiInfo[listord][graphitiPos][1],GraphitiInfo[listord][graphitiPos][2]+3);
         }
         else ShowAllGraphiti(playerid);
