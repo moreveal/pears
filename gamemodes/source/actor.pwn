@@ -25,14 +25,14 @@ stock VoiceDynamicActor(playerid, actorid, const link[])
     return 1;
 }
 
-function SendDynamicActorMessage(playerid, actorid, const text[]) // Обычный текст над головой NPC
+stock SendDynamicActorMessage(playerid, actorid, const text[], time = 4500) // Обычный текст над головой NPC
 {
-	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 0, playerid, text);
+	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 0, playerid, text, time);
 	return 1;
 }
-function SendDynamicActorScript(actorid, playerid, const text[]) // Текст для сценария
+stock SendDynamicActorScript(actorid, playerid, const text[], time = 4500) // Текст для сценария
 {
-	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 1, playerid, text);
+	if(IsValidDynamicActor(actorid)) MessageDynamicActor(actorid, 1, playerid, text, time);
 	return 1;
 }
 
@@ -63,7 +63,7 @@ stock DeleteActorComp(playerid)
 }
 
 
-stock MessageDynamicActor(actorid, status, playerid, const text[])
+stock MessageDynamicActor(actorid, status, playerid, const text[], time)
 {
     new Float:pos[3];
     GetDynamicActorPos(actorid, pos[0], pos[1], pos[2]);
@@ -73,7 +73,7 @@ stock MessageDynamicActor(actorid, status, playerid, const text[])
 
     BotTalkStat[playerid] = actorid;
     BotTalk[playerid] = CreatePlayer3DTextLabel(playerid, text, 0x67b2ffFF, pos[0], pos[1], pos[2] + 1.1, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, true);
-    if(status == 0) BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", 4500, false, "dd", playerid, actorid);
+    if(status == 0) BotTalkTimer[playerid] = SetTimerEx("ClearDynamicTextActor", time, false, "dd", playerid, actorid);
 
     ApplyDynamicActorAnimation(actorid, "GANGS", talk_anims_actor[random(sizeof(talk_anims_actor))], 4.0, 0, 1, 1, 0, 0);
 }

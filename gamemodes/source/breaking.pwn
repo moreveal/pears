@@ -40,7 +40,7 @@ stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открывае�
 		}
 	}
 	SelectColorDraw(playerid); // Включаем кликабельность текстдравов
-	BreakingTimer[playerid] = SetTimerEx("BreakingProcess", 100, true, "d", playerid); // Запускаем таймер для заполнения шкалы
+	BreakingTimer[playerid] = SetTimerEx("BreakingProcess", 200, true, "d", playerid); // Запускаем таймер для заполнения шкалы
 	return 1;
 }
 stock fine_dayshour(t)
