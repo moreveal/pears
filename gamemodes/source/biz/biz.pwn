@@ -1107,12 +1107,12 @@ stock SaveBizz(b)
 	mysql_escape_string(BizzInfo[b][bArReason], f_str3, sizeof(f_str3));
 	mysql_escape_string(BizzInfo[b][bStatReason], f_str4, sizeof(f_str4));
 
-	new string_mysql[2000];
+	new string_mysql[2200];
 	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Vlad`='%s',`Level`='%d',`Sost`='%d',`Data`='%d',`Freeze`='%d',`Arest`='%d',`Fam`='%d',`Intorval`='%d',\
-	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',`BizShluha`='%d',`BizShluhaX`='%f',`BizShluhaY`='%f',`BizShluhaZ`='%f',",f_str1,
+	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',`BizShluha`='%d',`BizShluhaX`='%f',`BizShluhaY`='%f',`BizShluhaZ`='%f',`BizShluhaA`='%f',",f_str1,
 	BizzInfo[b][bLevel], BizzInfo[b][bSost], BizzInfo[b][bData], BizzInfo[b][bFreeze], BizzInfo[b][bArest], BizzInfo[b][bFam], BizzInfo[b][bInterval],
 	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], f_str2, BizzInfo[b][bBar], BizzInfo[b][bBarX], BizzInfo[b][bBarY], 
-	BizzInfo[b][bBarZ],BizzInfo[b][bShluha], BizzInfo[b][bShluhaCord][0], BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2]); // 259 + 110 + 24 + 120 + 34 + 72
+	BizzInfo[b][bBarZ],BizzInfo[b][bShluha], BizzInfo[b][bShluhaCord][0], BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2],BizzInfo[b][bShluhaCord][3]); // 259 + 110 + 24 + 120 + 34 + 72
 
 	format(string_mysql, sizeof(string_mysql), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
 	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',`bZZ` ='%d',",string_mysql,
@@ -1372,7 +1372,7 @@ stock GpsBiz(playerid, bizType)
 stock CreateGreenZoneBiz(b)
 {
 	if(BizzInfo[b][bZZ] == 1) return 0;
-	dyn_zone_zzBiz[b] = CreateDynamicSphere(BizzInfo[b][bBarX],BizzInfo[b][bBarY],BizzInfo[b][bBarZ], 50, 3000+b, BizzInfo[b][bInterior]);
+	dyn_zone_zzBiz[b] = CreateDynamicSphere(BizzInfo[b][bBarX],BizzInfo[b][bBarY],BizzInfo[b][bBarZ], 100.0, 3000+b, BizzInfo[b][bInterior]);
 	BizzInfo[b][bZZ] = 1;
 	BizzInfo[b][bUpdate] = 1;
 	return 1;
@@ -1404,8 +1404,8 @@ stock CreateShluha(idx)
 {
 	new string[70];
     format(string,sizeof(string),"{ff9000}Проститутка\n{44ff99}Цена 200$\n{cccccc}[ ALT ]");
-	BizShluha[idx] = CreateDynamicActor(369, BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2],180, true, 100.0, 3000+idx, BizzInfo[idx][bInterior], -1, 100.0, -1, 0);
-	BizShluhaLabel[idx] = CreateDynamic3DTextLabel(string,-1,BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2],3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,3000+idx, BizzInfo[idx][bInterior]); 
+	BizShluha[idx] = CreateDynamicActor(369, BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2], BizzInfo[idx][bShluhaCord][3], true, 100.0, 3000+idx, BizzInfo[idx][bInterior], -1, 100.0, -1, 0);
+	BizShluhaLabel[idx] = CreateDynamic3DTextLabel(string,-1,BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,3000+idx, BizzInfo[idx][bInterior]); 
 	return 1;
 }
 
