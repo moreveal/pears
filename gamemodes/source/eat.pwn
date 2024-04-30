@@ -262,17 +262,24 @@ stock godrink(playerid)
 		EatPlayer(playerid, 70), eat = 7; // Хавчик
 		if(HoldQuan[playerid] <= 1) Eat[playerid] = 1, EatTime[playerid] = 4, stopdrink(playerid);
 	}
-	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) Effect[playerid] = 5, EffectTime[playerid] += 10, infect(playerid, 11, 10), alco = 10; // Пиво, Сидры, Пиво разливное
-	else if(HoldStat[playerid] == 37) Effect[playerid] = 5, EffectTime[playerid] += 20, infect(playerid, 11, 10), alco = 20; // Шампанское
-	else if(HoldStat[playerid] == 112) Effect[playerid] = 5, EffectTime[playerid] += 40, infect(playerid, 11, 20), alco = 40; // Водка
-	else if(HoldStat[playerid] == 113) Effect[playerid] = 5, EffectTime[playerid] += 15, infect(playerid, 11, 10), alco = 15; // Вино
-	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) Effect[playerid] = 5, EffectTime[playerid] += 30, infect(playerid, 11, 20), alco = 30; // Виски, Коньяк, Брэнди
+
+	// Эффект алкоголя
+	if(HoldStat[playerid] == 14 || HoldStat[playerid] == 117 || HoldStat[playerid] == 118 || HoldStat[playerid] == 119) alco = 10; // Пиво, Сидры, Пиво разливное
+	else if(HoldStat[playerid] == 37) alco = 20; // Шампанское
+	else if(HoldStat[playerid] == 112) alco = 40; // Водка
+	else if(HoldStat[playerid] == 113) alco = 15; // Вино
+	else if(HoldStat[playerid] == 114 || HoldStat[playerid] == 115 || HoldStat[playerid] == 116) alco = 30; // Виски, Коньяк, Брэнди
+
+	GiveAlcoEffect(playerid, alco);
+
+	// В интерьере клубы, купили выпить по квесту
+	new worldid = GetPlayerVirtualWorld(playerid);
+	if(worldid >= 3000) ShowBuyAcloQuest(playerid, worldid);
 	
 	new string[80];
-	if(alco > 0)
+	if(alco > 0) 
 	{
-		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d cek", alco, EffectTime[playerid]);
-		GameTextForPlayer(playerid,string,2500,3);
+
 	}
 	else if(coffe > 0)
 	{
@@ -301,6 +308,22 @@ stock godrink(playerid)
 	}
 	return 1;
 }
+
+// Эффект от алкоголя
+stock GiveAlcoEffect(playerid, time)
+{
+	Effect[playerid] = 5; // 5 id алкоэффекта
+	EffectTime[playerid] += time; // Время
+
+	new string[90];
+	format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d cek", time, EffectTime[playerid]);
+	GameTextForPlayer(playerid,string,2500,3);
+
+	// Зависимость
+	infect(playerid, 11, 10);
+	return 1;
+}
+
 stock goeat_podnos(playerid)
 {
     new t = HoldStat[playerid];

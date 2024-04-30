@@ -1413,6 +1413,7 @@ stock BotSex(playerid,b)
 {
 	if(BizzInfo[b][bShluha] == 0) return 0;
 	if(!IsPlayerInRangeOfPoint(playerid,1.0, BizzInfo[b][bShluhaCord][0],BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2])) return 0;
+	if(!(Effect[playerid] == 5 && EffectTime[playerid] > 0)) return ErrorMessage(playerid,"{ff6347}Вы слишком трезвый, чтобы подойти к проститутке\n{ffcc66}Найдите бар, купите что-нибудь и выпейте");
 	if(BizShluhaStatus[b] >= 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(OnlineInfo[playerid][oSexBot] > 0) return ErrorMessage(playerid,"{ff6347}Проститутка в данный момент занята");
 	if(oGetPlayerMoney(playerid) < 200) return ErrorMessage(playerid,"{ff6347}Вам не хватает денег [ 200$ ]");
@@ -1444,6 +1445,8 @@ stock BotSex(playerid,b)
 	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
 	SetPVarInt(playerid, "sekas", 20);
 	SexTimer[playerid] = SetTimerEx("SexTime", 200, true, "d", playerid);
+
+	if(PlayerInfo[playerid][pQuest][6] == 1) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Нажимайте на кнопки, указанные справа от шкалы\nНеобходимо нажимать на правильную букву, чтобы пополнять процесс","*","");
 	return 1;
 }
 

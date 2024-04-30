@@ -109,9 +109,9 @@ CMD:remedy(playerid, const params[])
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
+		new line[120],lines[600];
 		if(PlayerInfo[playerid][pIllness][medid] <= 0)
 		{
-			new line[120],lines[600];
 			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
 			format(line,sizeof(line),"\n{99ff66}Проверьте мед карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
 
@@ -127,10 +127,14 @@ CMD:remedy(playerid, const params[])
 		else
 		{
 			new Float:ostmed = (PlayerInfo[playerid][pIllnessProg][medid]-1000)/200;
-			format(string,sizeof(string),"{99ff66}Вы приняли лекарство {ff9000}%s\n{99ff66}Для полного выздоровления необходимо принять: {0088ff}%d таблеток", friskName[params[0]+71], floatround(ostmed, floatround_ceil));
-			SuccessMessage(playerid, string);
+			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s", friskName[params[0]+71]), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Для полного выздоровления необходимо принять: {0088ff}%d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
+			format(line,sizeof(line),"\n\n{ff9000}Как вылечиться?"), strcat(lines,line);
+			format(line,sizeof(line),"\n{ffcc66}- Принимайте таблетки каждые 5 минут"), strcat(lines,line);
+			format(line,sizeof(line),"\n{ffcc66}- Необходимо пропить полный курс, чтобы вылечиться"), strcat(lines,line);
+			SuccessMessage(playerid, lines);
 		}
-		PlayerInfo[playerid][pRemedy] = gettime()+300;
+		PlayerInfo[playerid][pRemedy] = gettime()+300; // 5 минут кд для повторного принятие
 		mysql_save(playerid, 60);
 		update_illness(playerid, medid);
  	}
