@@ -995,10 +995,8 @@ stock QuestCallMessage(i)
     }
     else if(GetPVarInt(i,"qweststat") == 29)
     {
-        if(PlayerInfo[i][pAccount] < 3000) PlayerInfo[i][pAccount] = 3000;
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Я скинул тебе лаве на карту");
+        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Я скину тебе лаве на карту");
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-        SaveQuest(i);
         FindEat(i);
     }
 
@@ -1031,6 +1029,8 @@ stock QuestCallMessage(i)
         SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Да и в целом с ним много приколов, так что давай, двигай на работу. Заработай примерно 100.000$");
         SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
     }
+
+    // Деньги накоплены
     else if(GetPVarInt(i,"qweststat") == 35)
     {
         SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Молодец, я вижу у тебя достаточно денег. Я тебе в GPS скинул координаты магазина техники");
@@ -1214,6 +1214,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
             {
                 if(PlayerInfo[playerid][pSex] == 1)
                 {
+                    if(NoCompleteQuest(playerid, 5)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
                     SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
                     SetPVarInt(playerid,"qweststat",19), SetPVarInt(playerid,"qwesttime",3);
                 }
@@ -1223,6 +1224,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
             {
                 if(PlayerInfo[playerid][pSex] == 1 && getillness(playerid, 1) > -1)
                 {
+                    if(NoCompleteQuest(playerid, 6)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
                     SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
                     SetPVarInt(playerid,"qweststat",22), SetPVarInt(playerid,"qwesttime",3);
                 }
