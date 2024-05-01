@@ -549,14 +549,18 @@ stock PressSeatableObjectHandler(playerid)
 			new status = sit(playerid, x, y, player_pos[2]);
 			if(status > 0)
 			{
+				// Знакомство с едой (квест)
+				QuestHavkaSitHelp(playerid);
+
+				// Статус, что игрок сидит (Можем в других функах получать статус, что игрок сидит, с помощью этой переменной)
 				playerSeat[playerid] = true;
 				
+				// Ставим на расчитанную позицию
 				PPSetPlayerPos(playerid, x, y, player_pos[2]);
-
 				SetPlayerFacingAngle(playerid, a);
 
+				// Активируем анимации и всю фигню
 				sit_Active(playerid, x, y, player_pos[2], a);
-
 				return 1;
 			}
 		}
@@ -660,6 +664,7 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 					return -1;
 				}
 			}
+
 			// Образовательный Центр
 			if(sid >= 78 && sid <= 101)
 			{
@@ -672,6 +677,7 @@ stock sit(playerid, Float:x, Float:y, Float:z)
 				else ShowDialog(playerid,1227,DIALOG_STYLE_MSGBOX,"{ff9000}Образовательный Центр","\n{ff9000}Вы уверены, что хотите начать экзамен?\n","Да","Нет");
 			}
 
+			// Записываем, что сидим
 			SitID[sid] = playerid+1;
 			SitPlayer[playerid] = sitid;
 

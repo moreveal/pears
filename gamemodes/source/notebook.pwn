@@ -185,6 +185,9 @@ stock TradeList(playerid, page)
     new header[130];
     format(header,sizeof(header),"Биржевые Сделки [ Курс 1$ = %dG | Страница %d] ", tclArifmetikAllGold, page + 1);
     ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
+
+    // Квест знакомство с ноутбуком
+    JoneNoteLastTalk(playerid);
     return 1;
 }
 

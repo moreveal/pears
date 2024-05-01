@@ -33,8 +33,8 @@ new StartQuestPresent[][] =
     "Кейс",
     "",
     "",
-    "",
-    "Золото(при отсутствие)"
+    "Деньги",
+    "Кейс"
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -82,7 +82,7 @@ stock NoCompleteQuest(playerid, questId)
     else if(questId == 6 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Секас
     else if(questId == 7 && PlayerInfo[playerid][pQuest][questId] < 5) return 1; // Мед.карта и лечение болезни
     else if(questId == 8 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Хавка
-    else if(questId == 9 && PlayerInfo[playerid][pQuest][questId] < 3) return 1; // Ноут
+    else if(questId == 9 && PlayerInfo[playerid][pQuest][questId] < 5) return 1; // Ноут
     return 0;
 }
 
@@ -344,11 +344,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
         SaveQuest(playerid);
 
         // Выдаём кейс
-        new thingId, thingQuan, thingType, thingPara, thingPack;
-        CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
-        GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
-
-        SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+        GiveGiftQuest(playerid);
 
         // Запускаем следующий квест
         if(PlayerInfo[playerid][pSex] == 1) SetPVarInt(playerid,"qweststat",18), SetPVarInt(playerid,"qwesttime",20);
@@ -463,7 +459,7 @@ stock QuestActorJoneMed(playerid)
         if(GetPlayerVirtualWorld(playerid) == 0) SetPVarInt(playerid,"qweststat",37), SetPVarInt(playerid,"qwesttime",5);
         else if(GetPlayerVirtualWorld(playerid) >= 123 && GetPlayerVirtualWorld(playerid) <= 132)
         {
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно купить Хламидиуберин");
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Доктор сказал купить Хламидиуберин");
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Подойдите к кассе и купите таблетки Хламидиуберин","*","");
         }
     }
@@ -488,24 +484,59 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
     new b = GetPlayerVirtualWorld(playerid)-3000;
     if(PlayerInfo[playerid][pQuest][8] == 1)
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Подойдите к кассе и закажите себе набор с едой","*","");
         CreateGps(playerid, BizzInfo[b][bBarX],BizzInfo[b][bBarY],BizzInfo[b][bBarZ], 0, 0, 5.0);
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Покушать хочется. Закажу себе большой Набор");
+
+        new lines[300];
+        format(lines,sizeof(lines),"{ffcc66}Подойдите к кассе и закажите себе {ff9000}набор с едой\
+                                \n\n{FF6347}Внимание! {ffcc66}Обязательно купите большой Набор\
+                                \n{ffcc66}Квест покажет вам, как взаимодействовать с предметами");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
     }
     else if(PlayerInfo[playerid][pQuest][8] == 2)
     {
-        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: Вы купили набор с едой, вам нужно подойти к столу и положить его на стол [ F ]");
-        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: После я должен сесть на диван/стул [ ALT ] открыть инвентарь [ N ]");
-        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: После открыть вкладку [ Рядом ] кликнуть по набору два раза и начать кушать кликая [ ПКМ ]");
-        SendClientMessage(playerid,COLOR_GREY,"[ Квест ]: Для выполнение квеста вам нужно полностью съесть купленный набор");
+        SendClientMessage(playerid,COLOR_GREY,"{0088ff}[ Квест ] {ffcc66}Как кушать?");
+        SendClientMessage(playerid,COLOR_GREY,"{ffcc66}- Положите поднос на стол [ Кнопка F ]");
+        SendClientMessage(playerid,COLOR_GREY,"{ffcc66}- Затем сядьте на стул или диван, рядом с подносом [ Кнопка - ALT ]");
+        SendClientMessage(playerid,COLOR_GREY,"{ffcc66}- После откройте инвентарь и выберите в разделе << Рядом >> ваш поднос");
+        SendClientMessage(playerid,COLOR_GREY,"{ffcc66}- Ваш поднос будет отмечен белым фоном, в отличии от других");
         PlayerInfo[playerid][pQuest][8] = 3;
     }
     else if(PlayerInfo[playerid][pQuest][8] == 3)
     {
-        SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я покушал, нужно заняться чем-то или ждать звонка от Джони");
-        SetPVarInt(playerid,"qweststat",30), SetPVarInt(playerid,"qwesttime",30);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Ваш персонаж наелся\
+                                                                \n{ffcc66}Теперь вы можете отправиться на улицу\
+                                                                \n\n{99ff66}Подсказка:\
+                                                                \n{ffcc66}- Если вы не будете кормить вашего персонажа, то он начнёт терять хп\
+                                                                \n{ffcc66}- Если будете полностью игнорировать желание покушать, персонаж заболеет","*","");
+
+        SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я покушал%s, нужно заняться чем-то или ждать звонка от Джони", gender(playerid));
         PlayerInfo[playerid][pQuest][8] = 4;
+        SaveQuest(playerid);
+
+        // Выдаём деньги на руки
+        oGivePlayerMoney(playerid, 5000);
+
+        // Запускаем квест знакомство с ноутбуком
+        ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
     }
-    SaveQuest(playerid);
+    return 1;
+}
+
+stock QuestHavkaSitHelp(playerid)
+{
+    new world = GetPlayerVirtualWorld(playerid);
+    new b = world-3000;
+
+    if(BizType(b) == 13 // Type 13, значит только: Закусочные
+	    && PlayerInfo[playerid][pQuest][8] == 3)
+    {
+        new lines[300];
+        format(lines,sizeof(lines),"{ffcc66}Откройте инвентарь [ Кнопка N ]\
+                                    \n{ffcc66}Затем выберите ваш Набор во вкладке << Рядом >>\
+                                    \n{99ff66}Подсказка: {ffcc66}Ваш набор будет выделяться белым фоном");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+    }
     return 1;
 }
 
@@ -514,17 +545,16 @@ stock QuestActorJoneNotebook(playerid) // Начинаем взаимодейс�
     if(!NoCompleteQuest(playerid, 9)) return 0; // Если квест уже пойден, не запускаем квест
     if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");
 
-    if(PlayerInfo[playerid][pQuest][9] == 1)
+    if(PlayerInfo[playerid][pQuest][9] == 1) // Вот эта шляпа не работает (Видимо должно показывать при входе)
     {
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Подойдите к кассе и купите ноутбук","*","");
-        CreateGps(playerid, 1995.8162,1565.3362,1564.1647, 0, 0, 5.0);
     }
-    else if(PlayerInfo[playerid][pQuest][9] == 2)
+    else if(PlayerInfo[playerid][pQuest][9] == 2) // Просит взять в руки ноутбук после покупки
     {
-        SetPVarInt(playerid,"qweststat",38), SetPVarInt(playerid,"qwesttime",5);
+        SetPVarInt(playerid,"qweststat",38), SetPVarInt(playerid,"qwesttime",3);
         PlayerInfo[playerid][pQuest][9] = 3;
+        SaveQuest(playerid);
     }
-    SaveQuest(playerid);
     return 1;
 }
 
@@ -786,374 +816,434 @@ stock SaveQuest(playerid) // Сохраняем информацию о квес
     return 1;
 }
 
-stock QuestCallMessage(i)
+stock QuestCallMessage(playerid)
 {
     // Jone первый звонок
-    if(GetPVarInt(i,"qweststat") == 2)
+    if(GetPVarInt(playerid,"qweststat") == 2)
     {	
-        SetPVarInt(i, "MobileStat",2), SetPVarInt(i, "Mobile",2500), SetPVarInt(i, "taks",0);
-        if(OnlineInfo[i][oShowInterface] == 2) CloseMenu(i), SmartfonCall(i);
-        else ShowSmartfon(i);
-        SendClientMessage(i, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
-        SetPlayerChatBubble(i,"смартфон звонит",COLOR_PURPLE,20.0,3000);
-        around_player_audio(i, 23000, 0, 5.0, 0);
+        SetPVarInt(playerid, "MobileStat",2), SetPVarInt(playerid, "Mobile",2500), SetPVarInt(playerid, "taks",0);
+        if(OnlineInfo[playerid][oShowInterface] == 2) CloseMenu(playerid), SmartfonCall(playerid);
+        else ShowSmartfon(playerid);
+        SendClientMessage(playerid, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
+        SetPlayerChatBubble(playerid,"смартфон звонит",COLOR_PURPLE,20.0,3000);
+        around_player_audio(playerid, 23000, 0, 5.0, 0);
     }
-    else if(GetPVarInt(i,"qweststat") == 3)
+    else if(GetPVarInt(playerid,"qweststat") == 3)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone0.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Мне дали твой номер и сказали ты можешь помочь");
-        SetPVarInt(i,"qweststat",4), SetPVarInt(i,"qwesttime",3);
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone0.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Мне дали твой номер и сказали ты можешь помочь");
+        SetPVarInt(playerid,"qweststat",4), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 4)
+    else if(GetPVarInt(playerid,"qweststat") == 4)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Дельце не трудное и за него ты получишь вознаграждение");
-        SetPVarInt(i,"qweststat",5), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Дельце не трудное и за него ты получишь вознаграждение");
+        SetPVarInt(playerid,"qweststat",5), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 5)
+    else if(GetPVarInt(playerid,"qweststat") == 5)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приезжай. Я скину тебе в навигатор точку GPS");
-        SetPVarInt(i,"qweststat",6), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приезжай. Я скину тебе в навигатор точку GPS");
+        SetPVarInt(playerid,"qweststat",6), SetPVarInt(playerid,"qwesttime",4);
 
-        PlayerInfo[i][pQuest][3] = 1; // Джоне нам позвонил первый раз
-        SaveQuest(i);
+        PlayerInfo[playerid][pQuest][3] = 1; // Джоне нам позвонил первый раз
+        SaveQuest(playerid);
 
         // Сохраняем unix этого звонка
-        QuestInfo[i][UnixCall] = gettime();
+        QuestInfo[playerid][UnixCall] = gettime();
     }
-    else if(GetPVarInt(i,"qweststat") == 6)
+    else if(GetPVarInt(playerid,"qweststat") == 6)
     {
-        SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
-        hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
-        SetPVarInt(i,"qweststat",7), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
+        hangup(playerid, 0), PlayerPlaySound(playerid, 1063, 0,0,0);
+        SetPVarInt(playerid,"qweststat",7), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 7)
+    else if(GetPVarInt(playerid,"qweststat") == 7)
     {	
-        PlayerPlaySound(i, 1084, 0,0,0);
-        SendClientMessage(i, COLOR_YELLOW, " SMS от Джоне: {99ff33}скинул точку в твой навигатор");
+        PlayerPlaySound(playerid, 1084, 0,0,0);
+        SendClientMessage(playerid, COLOR_YELLOW, " SMS от Джоне: {99ff33}скинул точку в твой навигатор");
 
-        if(PlayerInfo[i][pKomnataCity] == 3) CreateGps(i,2121.7776,2709.5793,10.8203, 0, 0, 5.0);
-        else CreateGps(i, 1364.35242, -1682.73926, 13.47850, 0, 0, 5.0);
+        if(PlayerInfo[playerid][pKomnataCity] == 3) CreateGps(playerid,2121.7776,2709.5793,10.8203, 0, 0, 5.0);
+        else CreateGps(playerid, 1364.35242, -1682.73926, 13.47850, 0, 0, 5.0);
 
-        ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*","{99ff66}Добавлена точка в GPS навигатор","*","");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*","{99ff66}Добавлена точка в GPS навигатор","*","");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
 
         // Запускаем подсказку о передвижении по серверу
-        if(IsPlayerInRangeOfPoint(i,150.0,1613.4502,-2292.7754,13.5331) && GetPlayerVirtualWorld(i) == 0) SetPVarInt(i,"qweststat",9), SetPVarInt(i,"qwesttime",4);
-        else if(IsPlayerInRangeOfPoint(i,150.0,1741.3041,1427.0760,10.8767) && GetPlayerVirtualWorld(i) == 0) SetPVarInt(i,"qweststat",10), SetPVarInt(i,"qwesttime",4);
+        ShowHintArenda(playerid);
+
+        // Подсказка, что можно офнуть звонки от ботов
+        MessageOffCallQuest(playerid);
     }
-    else if(GetPVarInt(i,"qweststat") == 9)
+
+
+    // Уведомление о том, как передвигаться по штату
+    else if(GetPVarInt(playerid,"qweststat") == 9)
     {
-        FlyCameraPos(i,1570.383911, -2280.617187, 18.590723,  1567.874877, -2276.920654, 16.345813  ,900,800);
-        SetPVarInt(i,"qweststat",1), SetPVarInt(i,"qwesttime",6);
-        ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как передвигаться по штату?\n\n{ff9000}Воспользуйтесь терминалом аренды скутеров, чтобы отправиться к первому квесту","*","");
+        FlyCameraPos(playerid,1570.383911, -2280.617187, 18.590723,  1567.874877, -2276.920654, 16.345813  ,900,800);
+        SetPVarInt(playerid,"qweststat",1), SetPVarInt(playerid,"qwesttime",6);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как передвигаться по штату?\n\n{ff9000}Воспользуйтесь терминалом аренды скутеров, чтобы отправиться к первому квесту","*","");
     }
-    else if(GetPVarInt(i,"qweststat") == 10)
+    else if(GetPVarInt(playerid,"qweststat") == 10)
     {
-        FlyCameraPos(i,1709.974975, 1412.771484, 15.816736,  1712.994873, 1416.352539, 14.068523  ,900,800);
-        SetPVarInt(i,"qweststat",1), SetPVarInt(i,"qwesttime",6);
-        ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как передвигаться по штату?\n\n{ff9000}Воспользуйтесь терминалом аренды скутеров, чтобы отправиться к первому квесту","*","");
+        FlyCameraPos(playerid,1709.974975, 1412.771484, 15.816736,  1712.994873, 1416.352539, 14.068523  ,900,800);
+        SetPVarInt(playerid,"qweststat",1), SetPVarInt(playerid,"qwesttime",6);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Как передвигаться по штату?\n\n{ff9000}Воспользуйтесь терминалом аренды скутеров, чтобы отправиться к первому квесту","*","");
     }
+
 
     // Jone второй звонок
-    else if(GetPVarInt(i,"qweststat") == 11)
+    else if(GetPVarInt(playerid,"qweststat") == 11)
     {	
-        SetPVarInt(i, "MobileStat",2), SetPVarInt(i, "Mobile",2501), SetPVarInt(i, "taks",0);
-        if(OnlineInfo[i][oShowInterface] == 2) CloseMenu(i), SmartfonCall(i);
-        else ShowSmartfon(i);
-        SendClientMessage(i, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
-        SetPlayerChatBubble(i,"смартфон звонит",COLOR_PURPLE,20.0,3000);
-        around_player_audio(i, 23000, 0, 5.0, 0);
+        SetPVarInt(playerid, "MobileStat",2), SetPVarInt(playerid, "Mobile",2501), SetPVarInt(playerid, "taks",0);
+        if(OnlineInfo[playerid][oShowInterface] == 2) CloseMenu(playerid), SmartfonCall(playerid);
+        else ShowSmartfon(playerid);
+        SendClientMessage(playerid, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
+        SetPlayerChatBubble(playerid,"смартфон звонит",COLOR_PURPLE,20.0,3000);
+        around_player_audio(playerid, 23000, 0, 5.0, 0);
     }
-    else if(GetPVarInt(i,"qweststat") == 12)
+    else if(GetPVarInt(playerid,"qweststat") == 12)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone4.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (телефон): Ну чё? Ты приедешь?");
-        SetPVarInt(i,"qweststat",13), SetPVarInt(i,"qwesttime",2);
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone4.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (телефон): Ну чё? Ты приедешь?");
+        SetPVarInt(playerid,"qweststat",13), SetPVarInt(playerid,"qwesttime",2);
     }
-    else if(GetPVarInt(i,"qweststat") == 13)
+    else if(GetPVarInt(playerid,"qweststat") == 13)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (телефон): Давай, я жду тебя");
-        SetPVarInt(i,"qweststat",14), SetPVarInt(i,"qwesttime",2);
-        PlayerInfo[i][pQuest][3] = 2; // Джоне нам позвонил второй раз
-        SaveQuest(i);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (телефон): Давай, я жду тебя");
+        SetPVarInt(playerid,"qweststat",14), SetPVarInt(playerid,"qwesttime",2);
+        PlayerInfo[playerid][pQuest][3] = 2; // Джоне нам позвонил второй раз
+        SaveQuest(playerid);
     }
-    else if(GetPVarInt(i,"qweststat") == 14)
+    else if(GetPVarInt(playerid,"qweststat") == 14)
     {
-        SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
-        hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
-        SetPVarInt(i,"qweststat",7), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
+        hangup(playerid, 0), PlayerPlaySound(playerid, 1063, 0,0,0);
+        SetPVarInt(playerid,"qweststat",7), SetPVarInt(playerid,"qwesttime",4);
     }
+
 
     // Ремон Транспорта (Квест от Джоне)
-    else if(GetPVarInt(i,"qweststat") == 15)
+    else if(GetPVarInt(playerid,"qweststat") == 15)
     {
-        if(PlayerInfo[i][pSex] == 1) 
+        if(PlayerInfo[playerid][pSex] == 1) 
         {
-            PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_repair0.mp3");
-            SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ну как тебе авто? Уже успел сломать?");
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair0.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ну как тебе авто? Уже успел сломать?");
         }
         else 
         {
-            PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_repair00.mp3");
-            SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ну как тебе авто? Уже успела сломать?");
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair00.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ну как тебе авто? Уже успела сломать?");
         }
-        SetPVarInt(i,"qweststat",16), SetPVarInt(i,"qwesttime",3);
+        SetPVarInt(playerid,"qweststat",16), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 16)
+    else if(GetPVarInt(playerid,"qweststat") == 16)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_repair1.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ну ты даёшь.. У тебя в машине лежит ремкомплект");
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair1.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ну ты даёшь.. У тебя в машине лежит ремкомплект");
 
-        SetPVarInt(i,"qweststat",17), SetPVarInt(i,"qwesttime",3);
+        SetPVarInt(playerid,"qweststat",17), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 17)
+    else if(GetPVarInt(playerid,"qweststat") == 17)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Подойди к багажнику, открой инвентарь и выбери вкладку <<Багажник>>");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Подойди к багажнику, открой инвентарь и выбери вкладку <<Багажник>>");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
+
 
     // Джонни Секс
-    else if(GetPVarInt(i,"qweststat") == 18)
+    else if(GetPVarInt(playerid,"qweststat") == 18)
     {
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-        ShowQwest(i,6);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        ShowQwest(playerid,6);
     }
-    else if(GetPVarInt(i,"qweststat") == 19)
+    else if(GetPVarInt(playerid,"qweststat") == 19)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_bar0.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Сейчас самое время расслабиться, после тяжелого трудового дня");
-        SetPVarInt(i,"qweststat",20), SetPVarInt(i,"qwesttime",5);
-        PlayerInfo[i][pQuest][6] = 1;
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_bar0.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Сейчас самое время расслабиться, после тяжелого трудового дня");
+        SetPVarInt(playerid,"qweststat",20), SetPVarInt(playerid,"qwesttime",5);
+        PlayerInfo[playerid][pQuest][6] = 1;
     }
-    else if(GetPVarInt(i,"qweststat") == 20)
+    else if(GetPVarInt(playerid,"qweststat") == 20)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Мой знакомый здесь владеет сетью клубов");
-        SetPVarInt(i,"qweststat",21), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Мой знакомый здесь владеет сетью клубов");
+        SetPVarInt(playerid,"qweststat",21), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 21)
+    else if(GetPVarInt(playerid,"qweststat") == 21)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Сгоняй в любой клуб или бар, развейся. Мне помогает");
-        SetPVarInt(i,"qweststat",69), SetPVarInt(i,"qwesttime",6);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Сгоняй в любой клуб или бар, развейся. Мне помогает");
+        SetPVarInt(playerid,"qweststat",69), SetPVarInt(playerid,"qwesttime",6);
     }
-    else if(GetPVarInt(i,"qweststat") == 69)
+    else if(GetPVarInt(playerid,"qweststat") == 69)
     {
-        FindKlub(i);
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        FindKlub(playerid, true); // true означает, что мы ищем клуб для квеста, а значит будем распределять игроков по клубам, чтобы они не толпились
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
+
 
     // Джоне мед.карта
-    else if(GetPVarInt(i,"qweststat") == 22)
+    else if(GetPVarInt(playerid,"qweststat") == 22)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_bar1.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Вот чёрт! Дружище...");
-        SetPVarInt(i,"qweststat",23), SetPVarInt(i,"qwesttime",3);
-        PlayerInfo[i][pQuest][7] = 1;
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_bar1.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Вот чёрт! Дружище...");
+        SetPVarInt(playerid,"qweststat",23), SetPVarInt(playerid,"qwesttime",3);
+        PlayerInfo[playerid][pQuest][7] = 1;
     }
-    else if(GetPVarInt(i,"qweststat") == 23)
+    else if(GetPVarInt(playerid,"qweststat") == 23)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Я тоже был в этом клубе недавно и походу че-то подцепил");
-        SetPVarInt(i,"qweststat",24), SetPVarInt(i,"qwesttime",5);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я тоже был в этом клубе недавно и походу че-то подцепил");
+        SetPVarInt(playerid,"qweststat",24), SetPVarInt(playerid,"qwesttime",5);
     }
-    else if(GetPVarInt(i,"qweststat") == 24)
+    else if(GetPVarInt(playerid,"qweststat") == 24)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Надеюсь у тебя были презики? Советую провериться в больничке, на всякий");
-        SetPVarInt(i,"qweststat",70), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Надеюсь у тебя были презики? Советую провериться в больничке, на всякий");
+        SetPVarInt(playerid,"qweststat",70), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 70)
+    else if(GetPVarInt(playerid,"qweststat") == 70)
     {
-        CreateGps(i,1173.9412, -1323.2576, 14.9922, 0, 0, 5.0);
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-        SendClientMessage(i, COLOR_GREY, "[ Мысли ]: Только-бы не заболеть... Мне нужно скорее в больницу");
-        ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отправляйтесь в больницу, чтобы получить лечение","*","");
+        CreateGps(playerid,1173.9412, -1323.2576, 14.9922, 0, 0, 5.0);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Только-бы не заболеть... Мне нужно скорее в больницу");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отправляйтесь в больницу, чтобы получить лечение","*","");
     }
 
+
     // Джоне хавчик
-    else if(GetPVarInt(i,"qweststat") == 25)
+    else if(GetPVarInt(playerid,"qweststat") == 25)
     {
-        PlayerInfo[i][pQuest][8] = 1;
-        if(PlayerInfo[i][pSex] == 1) 
+        PlayerInfo[playerid][pQuest][8] = 1;
+        if(PlayerInfo[playerid][pSex] == 1) 
         {
-            PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_havka0.mp3");
-            SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Извини, что так вышло с этой стриптизершей, или как её");
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Извини, что так вышло с этой стриптизершей, или как её");
         }
         else 
         {
-            PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3");
-            SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Не устала работать?");
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Не устала работать?");
         }
-        SetPVarInt(i,"qweststat",27), SetPVarInt(i,"qwesttime",3);
+        SetPVarInt(playerid,"qweststat",27), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 27)
+    else if(GetPVarInt(playerid,"qweststat") == 27)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Хавать хочешь?");
-        SetPVarInt(i,"qweststat",28), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Хавать хочешь?");
+        SetPVarInt(playerid,"qweststat",28), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 28)
+    else if(GetPVarInt(playerid,"qweststat") == 28)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Найди какое нибудь кафе, похавай");
-        SetPVarInt(i,"qweststat",29), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Найди какое нибудь кафе, похавай");
+        SetPVarInt(playerid,"qweststat",29), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 29)
+    else if(GetPVarInt(playerid,"qweststat") == 29)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Я скину тебе лаве на карту");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-        FindEat(i);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я скину тебе лаве на карту");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        FindEat(playerid, true);
     }
 
-    // Джоне ноут
-    else if(GetPVarInt(i,"qweststat") == 30)
+
+    // Джоне ноут (Если не хватает денег)
+    else if(GetPVarInt(playerid,"qweststat") == 30)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): В общем, для удобства тебе нужен ноутбук. Купить его ты можешь в магазине техники.");
-        SetPVarInt(i,"qweststat",31), SetPVarInt(i,"qwesttime",4);
+        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я думаю тебе нужно купить ноут");
+        SetPVarInt(playerid,"qweststat",31), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 31)
+    else if(GetPVarInt(playerid,"qweststat") == 31)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Он стоит не дешево, поэтому открывай в телефоне информацию о работах и отправляйся на одну из них");
-        SetPVarInt(i,"qweststat",32), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Но, если у тебя нет денег, то пора их заработать");
+        SetPVarInt(playerid,"qweststat",32), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 32)
+    else if(GetPVarInt(playerid,"qweststat") == 32)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Как заработаешь круглую сумму, я тебе звякну");
-        SetPVarInt(i,"qweststat",33), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Поищи работу в своём смартфоне {ffcc66}[ Y >> GPS >> Работа ]");
+        SetPVarInt(playerid,"qweststat",33), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 33)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я наберу тебе, когда заработаешь денег на ноутбук");
+        SetPVarInt(playerid,"qweststat",34), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 34)
+    {
+        SendClientMessage(playerid, COLOR_GREY,"{0088ff}[ Квест ] {ffcc66}Для продолжения вам необходимо заработать {99ff66}%d$", getThingPriceGos(42, 0) * 2);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        PlayerInfo[playerid][pQuest][9] = 1;
+        SaveQuest(playerid);
     }
 
-    // Накопили деньги, пора купить ноутбук
-    else if(GetPVarInt(i,"qweststat") == 33)
+
+    // Джоне ноут (Денег хватает)
+    else if(GetPVarInt(playerid,"qweststat") == 35)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ноутбук тебе облегчит жизнь, в нем есть и банк, и все организации и бизнесы работают через него.");
-        SetPVarInt(i,"qweststat",34), SetPVarInt(i,"qwesttime",4);
-        PlayerInfo[i][pQuest][9] = 1;
+        if(PlayerInfo[playerid][pSex] == 1)
+        {
+            //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Дружище, ты заработал денег?");
+        }
+        else
+        {
+            //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Подруга, ты заработала денег?");
+        }
+        SetPVarInt(playerid,"qweststat",36), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 34)
+    else if(GetPVarInt(playerid,"qweststat") == 36)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Да и в целом с ним много приколов, так что давай, двигай на работу. Заработай примерно 100.000$");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Отлично! Тогда дуй в ближайший магаз и купи ноутбук");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        FindTehshop(playerid);
     }
 
-    // Деньги накоплены
-    else if(GetPVarInt(i,"qweststat") == 35)
-    {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Молодец, я вижу у тебя достаточно денег. Я тебе в GPS скинул координаты магазина техники");
-        SetPVarInt(i,"qweststat",36), SetPVarInt(i,"qwesttime",4);
-    }
-    else if(GetPVarInt(i,"qweststat") == 36)
-    {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Езжай в него, как купишь ноутбук я тебе объясню как им пользоваться!");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-        FindTehshop(i);
-    }
 
     // Вышли из больницы, отобразили местонахождение аптеки
-    else if(GetPVarInt(i,"qweststat") == 37)
+    else if(GetPVarInt(playerid,"qweststat") == 37)
     {
-        FindAptek(i);
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        FindAptek(playerid, true);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
 
-    // Купили ноут
-    else if(GetPVarInt(i,"qweststat") == 38)
+
+    // Джоне ноут (Купили ноут)
+    else if(GetPVarInt(playerid,"qweststat") == 38)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Так, смотри, бери ноут в руки, открывай рабочий стол, и на нем у тебя будет приложение БАНК");
-        SetPVarInt(i,"qweststat",39), SetPVarInt(i,"qwesttime",10);
+        PlayerInfo[playerid][pQuest][9] = 2;
+        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Давай я научу тебя пользоваться ноутбуком");
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ] {ffcc66}Откройте инвентарь и выберите ноутбук [ Кнопка N ]");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
-    else if(GetPVarInt(i,"qweststat") == 38)
+
+    // Открыл Банк Online
+    else if(GetPVarInt(playerid,"qweststat") == 39)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Так, смотри, бери ноут в руки, открывай рабочий стол, и на нем у тебя будет приложение [ БАНК ]");
-        SendClientMessage(i, COLOR_GREY, "[ Квест ]: Что бы открыть ноутбук, зайдите в инвентарь [ N ], далее найдите предмет ноутбук");
-        SendClientMessage(i, COLOR_GREY, "[ Квест ]: Два раза нажмите на него, и следуйте указаниям Джони что бы ознакится с функционалом");
-        SetPVarInt(i,"qweststat",39), SetPVarInt(i,"qwesttime",10);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Кстати, советую включить автооплату налогов, чтобы потом не накопилось");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
-    else if(GetPVarInt(i,"qweststat") == 39)
+
+    // Открыл Gold Trade
+    else if(GetPVarInt(playerid,"qweststat") == 40)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): В приложение Банка ты можешь посмотреть информацию о счетах, оплатить налоги и делать переводы");
-        SetPVarInt(i,"qweststat",40), SetPVarInt(i,"qwesttime",6);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Так-же за голду можно покупать машины и шмот");
+        SetPVarInt(playerid,"qweststat",41), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 40)
+    else if(GetPVarInt(playerid,"qweststat") == 41)
     {
-        if(PlayerInfo[i][pDonateMoney] > 0) SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Далее можешь зайти в приложение [ Голд Трейд ], у тебя как раз есть золото для продажи");
-        else PlayerInfo[i][pDonateMoney] += 8, SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Далее можешь зайти в приложение [ Голд Трейд ], я тебе на аккаунт сделал небольшой подгон");
-        SetPVarInt(i,"qweststat",41), SetPVarInt(i,"qwesttime",6);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Загляни как-нибудь в любой автосалон или магазин одежды");
+        SetPVarInt(playerid,"qweststat",42), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 41)
+    else if(GetPVarInt(playerid,"qweststat") == 42)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): За золото можно покупать разные приколы и улучшения. Еще золото можно обменять на обычные доллары, и наоборот");
-        SetPVarInt(i,"qweststat",42), SetPVarInt(i,"qwesttime",6);
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё братан, я отчаливаю. Ещё услышимся");
+        SetPVarInt(playerid,"qweststat",43), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 41)
+    else if(GetPVarInt(playerid,"qweststat") == 43)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Ты можешь прямо сейчас выставить свое золото на продажу и получить немного кэша");
-        SetPVarInt(i,"qweststat",42), SetPVarInt(i,"qwesttime",6);
+        PlayerInfo[playerid][pQuest][9] = 5;
+        SaveQuest(playerid);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+
+        // Выдаём кейс
+        GiveGiftQuest(playerid);
     }
-    else if(GetPVarInt(i,"qweststat") == 42)
-    {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): Еще есть приложение [ Игры ]. Ставишь ноут на стол, садишься рядом и отдыхаешь по полной играя в комп.");
-        SetPVarInt(i,"qweststat",43), SetPVarInt(i,"qwesttime",6);
-    }
-    else if(GetPVarInt(i,"qweststat") == 43)
-    {
-        SendClientMessage(i, COLOR_YELLOW,"Джоне (голосовое): С ноутбуком закончили. Думаю разберешься если что-то было непонятно.");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
-    }
+
 
     // Археолог первый звонок
-    else if(GetPVarInt(i,"qweststat") == 44)
+    else if(GetPVarInt(playerid,"qweststat") == 44)
     {	
-        SetPVarInt(i, "MobileStat",2), SetPVarInt(i, "Mobile",2502), SetPVarInt(i, "taks",0); // Mobile 2502 - звонит археолог
-        if(OnlineInfo[i][oShowInterface] == 2) CloseMenu(i), SmartfonCall(i);
-        else ShowSmartfon(i);
-        SendClientMessage(i, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
-        SetPlayerChatBubble(i,"смартфон звонит",COLOR_PURPLE,20.0,3000);
-        around_player_audio(i, 23000, 0, 5.0, 0);
+        SetPVarInt(playerid, "MobileStat",2), SetPVarInt(playerid, "Mobile",2502), SetPVarInt(playerid, "taks",0); // Mobile 2502 - звонит археолог
+        if(OnlineInfo[playerid][oShowInterface] == 2) CloseMenu(playerid), SmartfonCall(playerid);
+        else ShowSmartfon(playerid);
+        SendClientMessage(playerid, COLOR_GREY, "{AFAFAF}Входящий Вызов: {ccffff}Неизвестный");
+        SetPlayerChatBubble(playerid,"смартфон звонит",COLOR_PURPLE,20.0,3000);
+        around_player_audio(playerid, 23000, 0, 5.0, 0);
     }
-    else if(GetPVarInt(i,"qweststat") == 45)
+    else if(GetPVarInt(playerid,"qweststat") == 45)
     {
-        PlayAudioStreamForPlayer(i, "https://cdn.pears.fun/sound/characters/bruce/bruce_call0.mp3");
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приветствую. Я не телефонный мошенник, так что не сбрасывай");
-        SetPVarInt(i,"qweststat",46), SetPVarInt(i,"qwesttime",3);
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce_call0.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Приветствую. Я не телефонный мошенник, так что не сбрасывай");
+        SetPVarInt(playerid,"qweststat",46), SetPVarInt(playerid,"qwesttime",3);
 
         // Сохраняем unix этого звонка
-        QuestInfo[i][UnixCall] = gettime();
+        QuestInfo[playerid][UnixCall] = gettime();
     }
-    else if(GetPVarInt(i,"qweststat") == 46)
+    else if(GetPVarInt(playerid,"qweststat") == 46)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Я работаю в компании, которая занимается археологическими раскопками");
-        SetPVarInt(i,"qweststat",47), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Я работаю в компании, которая занимается археологическими раскопками");
+        SetPVarInt(playerid,"qweststat",47), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 47)
+    else if(GetPVarInt(playerid,"qweststat") == 47)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Джоне сказал, что я могу тебе набрать");
-        SetPVarInt(i,"qweststat",48), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Джоне сказал, что я могу тебе набрать");
+        SetPVarInt(playerid,"qweststat",48), SetPVarInt(playerid,"qwesttime",3);
     }
-    else if(GetPVarInt(i,"qweststat") == 48)
+    else if(GetPVarInt(playerid,"qweststat") == 48)
     {
-        SendClientMessage(i, COLOR_YELLOW,"Неизвестный Абонент (телефон): Если интересует возможность заработать, приезжай");
-        SetPVarInt(i,"qweststat",49), SetPVarInt(i,"qwesttime",3);
+        SendClientMessage(playerid, COLOR_YELLOW,"Неизвестный Абонент (телефон): Если интересует возможность заработать, приезжай");
+        SetPVarInt(playerid,"qweststat",49), SetPVarInt(playerid,"qwesttime",3);
 
-        PlayerInfo[i][pQuest][5] = 1; // Археолог нам позвонил первый раз
-        SaveQuest(i);
+        PlayerInfo[playerid][pQuest][5] = 1; // Археолог нам позвонил первый раз
+        SaveQuest(playerid);
     }
-    else if(GetPVarInt(i,"qweststat") == 49)
+    else if(GetPVarInt(playerid,"qweststat") == 49)
     {
-        SendClientMessage(i, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
-        hangup(i, 0), PlayerPlaySound(i, 1063, 0,0,0);
-        SetPVarInt(i,"qweststat",50), SetPVarInt(i,"qwesttime",4);
+        SendClientMessage(playerid, COLOR_GREY, "{cc9999}Оператор: {AFAFAF}Абонент сбросил вызов!");
+        hangup(playerid, 0), PlayerPlaySound(playerid, 1063, 0,0,0);
+        SetPVarInt(playerid,"qweststat",50), SetPVarInt(playerid,"qwesttime",4);
     }
-    else if(GetPVarInt(i,"qweststat") == 50)
+    else if(GetPVarInt(playerid,"qweststat") == 50)
     {	
-        PlayerPlaySound(i, 1084, 0,0,0);
-        SendClientMessage(i, COLOR_YELLOW, " SMS от Брюс: {99ff33}метка уже в твоём GPS");
+        PlayerPlaySound(playerid, 1084, 0,0,0);
+        SendClientMessage(playerid, COLOR_YELLOW, " SMS от Брюс: {99ff33}метка уже в твоём GPS");
 
-        CreateGps(i,-338.6107,1729.5956,42.8917, 0, 0, 5.0);
+        CreateGps(playerid,-338.6107,1729.5956,42.8917, 0, 0, 5.0);
 
-        ShowDialog(i,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*","{99ff66}Добавлена точка в GPS навигатор","*","");
-        SetPVarInt(i,"qweststat",0), SetPVarInt(i,"qwesttime",0);
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*","{99ff66}Добавлена точка в GPS навигатор","*","");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
 
         // Запускаем подсказку о передвижении по серверу
-        if(IsPlayerInRangeOfPoint(i,150.0,1613.4502,-2292.7754,13.5331) && GetPlayerVirtualWorld(i) == 0) SetPVarInt(i,"qweststat",9), SetPVarInt(i,"qwesttime",4);
-        else if(IsPlayerInRangeOfPoint(i,150.0,1741.3041,1427.0760,10.8767) && GetPlayerVirtualWorld(i) == 0) SetPVarInt(i,"qweststat",10), SetPVarInt(i,"qwesttime",4);
+        ShowHintArenda(playerid);
+
+        // Подсказка, что мы можем выключить эти звонки
+        MessageOffCallQuest(playerid);
     }
     return 1;
 }
+
+// Квест знакомство с ноутбуком
+// Последняя фраза квеста
+stock JoneNoteLastTalk(playerid)
+{
+    if(PlayerInfo[playerid][pQuest][9] == 3)
+    {
+        PlayerInfo[playerid][pQuest][9] = 4;
+        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Здесь ты можешь торговать. Покупать и продавать голду");
+        SetPVarInt(playerid,"qweststat",40), SetPVarInt(playerid,"qwesttime",4);
+    }
+}
+
+stock ShowHintArenda(playerid)
+{
+    if(IsPlayerInRangeOfPoint(playerid,150.0,1613.4502,-2292.7754,13.5331) && GetPlayerVirtualWorld(playerid) == 0) 
+        SetPVarInt(playerid,"qweststat",9), SetPVarInt(playerid,"qwesttime",4);
+    else if(IsPlayerInRangeOfPoint(playerid,150.0,1741.3041,1427.0760,10.8767) && GetPlayerVirtualWorld(playerid) == 0) 
+        SetPVarInt(playerid,"qweststat",10), SetPVarInt(playerid,"qwesttime",4);
+    return 1;
+}
+
+stock GiveGiftQuest(playerid)
+{
+    new thingId, thingQuan, thingType, thingPara, thingPack;
+    CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
+    GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+
+    SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+    return 1;
+}
+
+// Подсказка, что можно офнуть звонки от квестовых персонажей
+stock MessageOffCallQuest(playerid) 
+    return SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Вы можете отключить звонки от квестовых персонажей [ Y >> Квесты >> Звонки Off ]");
 
 stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 {
@@ -1216,7 +1306,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                 {
                     if(NoCompleteQuest(playerid, 5)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
                     SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
-                    SetPVarInt(playerid,"qweststat",19), SetPVarInt(playerid,"qwesttime",3);
+                    ShowQwest(playerid, 6);
                 }
                 else ErrorMessage(playerid,"{ff6347}Для запуска квеста вы должны быть мужчиной");
             }
@@ -1226,28 +1316,20 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
                 {
                     if(NoCompleteQuest(playerid, 6)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
                     SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
-                    SetPVarInt(playerid,"qweststat",22), SetPVarInt(playerid,"qwesttime",3);
+                    ShowQwest(playerid, 7);
                 }
                 else ErrorMessage(playerid,"{99ff66}Для запуска квеста вы должны быть мужчиной и иметь болезнь: Хламидиоз");
             }
             else if(questId == 8)
             {
                 SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
-                SetPVarInt(playerid,"qweststat",25), SetPVarInt(playerid,"qwesttime",3);
+                ShowQwest(playerid, 8);
             }
             else if(questId == 9)
             {
-                if(PlayerInfo[playerid][pMoney] < 100000) return ErrorMessage(playerid,"{ff6347}У вас на руках недостаточно денег для запуска квеста.");
-                if(get_invent4(playerid,42,0) < 1) 
-                {
-                    SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
-                    SetPVarInt(playerid,"qweststat",35), SetPVarInt(playerid,"qwesttime",3);
-                }
-                else
-                {
-                    PlayerInfo[playerid][pQuest][9] = 2;
-                    QuestActorJoneNotebook(playerid);
-                }
+                if(NoCompleteQuest(playerid, 9)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
+                SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
+                ShowQwest(playerid, 9);
             }
             else showDialogStartQuest(playerid, DP[0][playerid]);
         }
@@ -1274,10 +1356,25 @@ stock StartFirstCallQuest(playerid)
     if(PlayerInfo[playerid][pQwestMessageOff] == true) return 1;
 
     if(NoCompleteQuest(playerid, 3)) SelectNextStartQuest(playerid); // Джоне или Исследование гробницы в зависимости от заполненности
-    else if(NoCompleteQuest(playerid, 5) && PlayerInfo[playerid][pQuest][5] == 0) ShowQwest(playerid, 5); // Исследование гробницы
-    else if(NoCompleteQuest(playerid, 6) && PlayerInfo[playerid][pQuest][6] == 0) ShowQwest(playerid, 6); // Отдых в клубе
-    else if(NoCompleteQuest(playerid, 7) && PlayerInfo[playerid][pQuest][7] == 0) ShowQwest(playerid, 7); // Последствия отдыха
-    else if(NoCompleteQuest(playerid, 8) && PlayerInfo[playerid][pQuest][8] == 0) ShowQwest(playerid, 8); // Знакомство с едой
-    else if(NoCompleteQuest(playerid, 9) && PlayerInfo[playerid][pQuest][9] == 0) ShowQwest(playerid, 9); // Знакомство с ноутбуком
+    else if(NoCompleteQuest(playerid, 5)) 
+    {
+         if(PlayerInfo[playerid][pQuest][5] == 0) ShowQwest(playerid, 5); // Исследование гробницы
+    }
+    else if(NoCompleteQuest(playerid, 6)) 
+    {
+        if(PlayerInfo[playerid][pQuest][6] == 0) ShowQwest(playerid, 6); // Отдых в клубе
+    }
+    else if(NoCompleteQuest(playerid, 7)) 
+    {
+        if(PlayerInfo[playerid][pQuest][7] == 0) ShowQwest(playerid, 7); // Последствия отдыха
+    }
+    else if(NoCompleteQuest(playerid, 8)) 
+    {
+        if(PlayerInfo[playerid][pQuest][8] == 0) ShowQwest(playerid, 8); // Знакомство с едой
+    }
+    else if(NoCompleteQuest(playerid, 9)) 
+    {
+        if(PlayerInfo[playerid][pQuest][9] == 0) ShowQwest(playerid, 9); // Знакомство с ноутбуком
+    }
     return 1;
 }

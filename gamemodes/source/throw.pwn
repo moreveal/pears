@@ -165,9 +165,22 @@ stock use_throw(playerid, inva, useinva)
 			else
 			{
 			    Hold[playerid] = 13, HoldFrisk[playerid] = fpick, HoldQuan[playerid] = fquan, HoldStat[playerid] = t, ThrowInfo[t][tUseplayer] = playerid+1;
-			    if(fpick >= 128 && fpick <= 138) format(string,sizeof(string),"{ffcc66}Вы начали взаимодействие с предметом: %s (%d кусков)\nЗакройте инвентарь (ESC), чтобы начать кушать {ff9000}[ Кушать: %s ]", friskName[fpick], fquan-1, buttonName[Device[playerid]]);
-				else format(string,sizeof(string),"{ffcc66}Вы начали взаимодействие с предметом: %s\nЗакройте инвентарь (ESC), чтобы использовать предмет {ff9000}[ Использовать: %s ]", friskName[fpick], buttonName[Device[playerid]]);
-    			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}•",string,"•","");
+			    
+				// Подсказка, как начать взаимодействие с предметом
+				new lines[300];
+				if(IsANaborsEdoi(fpick)) 
+				{
+					format(lines,sizeof(lines),"{ffcc66}Закройте инвентарь и кушайте {ff9000}используя %s\
+											\n\n{ffcc66}Вы начали взаимодействие с предметом: %s (%d кусков)", buttonName[Device[playerid]], friskName[fpick], fquan-1);
+				}
+				else
+				{
+					format(lines,sizeof(lines),"{ffcc66}Закройте инвентарь и активируйте предмет {ff9000}используя %s\
+											\n\n{ffcc66}Вы начали взаимодействие с предметом: %s", buttonName[Device[playerid]], friskName[fpick]);
+				}
+				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+
+				// Текстдравы подсказок
 				TextDrawShowForPlayer(playerid, MindDraw[3]);
 				if(Device[playerid] == 0) PlayerTextDrawSetString(playerid, HintButton, "RMB");
 				else if(Device[playerid] == 1) PlayerTextDrawSetString(playerid, HintButton, "H");

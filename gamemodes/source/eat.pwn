@@ -331,35 +331,42 @@ stock goeat_podnos(playerid)
 	if(ThrowInfo[t][tId] > 0 && HoldFrisk[playerid] == ThrowInfo[t][tId])
 	{
 	    ThrowInfo[t][tQuan] --;
+
+		// Звук кушанья всем рядом с нами
 	    around_player_audio(playerid, 32200, 0, 5.0, 0);
-		new quanEat = 7;
+
+		// Утоляем голод
+		new quanEat = 8;
 	    EatPlayer(playerid, quanEat * 10);
 		new string[80];
 	    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~+%d~n~~y~%d/100", quanEat, PlayerInfo[playerid][pNeon]/10);
 		GameTextForPlayer(playerid,string,1800,3);
-		if(fpick == 134 || fpick == 135 || fpick == 136) // Если поднос с кофе
+
+		// Персонаж наелся во время Знакомства с едой
+		if(PlayerInfo[playerid][pNeon] >= 1000 && PlayerInfo[playerid][pQuest][8] == 3) QuestActorJoneHavka(playerid);
+
+		 // Если поднос с кофе
+		if(fpick == 134 || fpick == 135 || fpick == 136)
 		{
 			if(PlayerInfo[playerid][pMechSkill]+20 <= 1000) PlayerInfo[playerid][pMechSkill] += 20;
 			else PlayerInfo[playerid][pMechSkill] = 1000;
 		}
+
+		// Если испорченная еда на подносе
 	    new unix = gettime();
 		if(unix > ThrowInfo[t][tPara])
 		{
 			EatPlayer(playerid, -800), SetPVarInt(playerid, "qweststat", 64), SetPVarInt(playerid, "qwesttime", 3);
 			if(PlayerInfo[playerid][pAchieve][113] == 0) AchievePlayer(playerid, 113, 1);
 		}
+
+		// Всё схавали
 		if(ThrowInfo[t][tQuan] <= 1)
 	    {
-			if(PlayerInfo[playerid][pQuest][8] == 3) QuestActorJoneHavka(playerid);
 	        DestroyThrow(t);
 			updatethrowall(t);
 			Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0;
 			if(playerSeat[playerid]) TextDrawShowForPlayer(playerid, MindDraw[3]), PlayerTextDrawSetString(playerid, HintButton, "ENTER"), PlayerTextDrawShow(playerid, HintButton);
-			/*if(PlayerInfo[playerid][pQwest] == 16)
-			{
-				PlayerInfo[playerid][pQwest] = 17, mysql_save(playerid, 69);
-				ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чудесно! Ваш персонаж покушал\nВы можете купить с собой пару бургеров (по желаниию) и выйти на улицу","*","");
-			}*/
 	    }
 	}
 	return 1;
