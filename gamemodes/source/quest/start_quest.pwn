@@ -446,7 +446,7 @@ stock QuestActorJoneMed(playerid)
             return 0;
         }
 
-        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true); // VREMENNO
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/doctor/doctor0.mp3",1377.5765,-21.8737,1000.9217,6.0,true);
         // Тут идёт озвучка медика, первый приём
         StartScriptActor(playerid, 10, BotPears[416]);
         PlayerInfo[playerid][pIllnessStat][slotillness] = 1;
@@ -465,7 +465,7 @@ stock QuestActorJoneMed(playerid)
     }
     else if(PlayerInfo[playerid][pQuest][7] == 4)
     {
-        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true); // VREMENNO
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/doctor/doctor2.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Доктор (голосовое): Обязательно пропейте полный курс лечения. Важно принять все таблетки");
         PlayerInfo[playerid][pQuest][7] = 5;
         SaveQuest(playerid);
@@ -1044,24 +1044,24 @@ stock QuestCallMessage(playerid)
     // Джоне ноут (Если не хватает денег)
     else if(GetPVarInt(playerid,"qweststat") == 30)
     {
-        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note0.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я думаю тебе нужно купить ноут");
         SetPVarInt(playerid,"qweststat",31), SetPVarInt(playerid,"qwesttime",4);
     }
     else if(GetPVarInt(playerid,"qweststat") == 31)
     {
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Но, если у тебя нет денег, то пора их заработать");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Но, если у тебя нет денег, то сейчас самое время их заработать");
         SetPVarInt(playerid,"qweststat",32), SetPVarInt(playerid,"qwesttime",4);
     }
     else if(GetPVarInt(playerid,"qweststat") == 32)
     {
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Поищи работу в своём смартфоне {ffcc66}[ Y >> GPS >> Работа ]");
-        SetPVarInt(playerid,"qweststat",33), SetPVarInt(playerid,"qwesttime",4);
+        SetPVarInt(playerid,"qweststat",33), SetPVarInt(playerid,"qwesttime",2);
     }
     else if(GetPVarInt(playerid,"qweststat") == 33)
     {
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я наберу тебе, когда заработаешь денег на ноутбук");
-        SetPVarInt(playerid,"qweststat",34), SetPVarInt(playerid,"qwesttime",4);
+        SetPVarInt(playerid,"qweststat",34), SetPVarInt(playerid,"qwesttime",3);
     }
     else if(GetPVarInt(playerid,"qweststat") == 34)
     {
@@ -1077,19 +1077,23 @@ stock QuestCallMessage(playerid)
     {
         if(PlayerInfo[playerid][pSex] == 1)
         {
-            //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note1.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Дружище, ты заработал денег?");
         }
         else
         {
-            //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note1w.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Подруга, ты заработала денег?");
         }
-        SetPVarInt(playerid,"qweststat",36), SetPVarInt(playerid,"qwesttime",4);
+        SetPVarInt(playerid,"qweststat",36), SetPVarInt(playerid,"qwesttime",3);
     }
     else if(GetPVarInt(playerid,"qweststat") == 36)
     {
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Отлично! Тогда дуй в ближайший магаз и купи ноутбук");
+        SetPVarInt(playerid,"qweststat",71), SetPVarInt(playerid,"qwesttime",3);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 71)
+    {
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
         FindTehshop(playerid);
     }
@@ -1107,7 +1111,7 @@ stock QuestCallMessage(playerid)
     else if(GetPVarInt(playerid,"qweststat") == 38)
     {
         PlayerInfo[playerid][pQuest][9] = 2;
-        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note2.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Давай я научу тебя пользоваться ноутбуком");
         SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ] {ffcc66}Откройте инвентарь и выберите ноутбук [ Кнопка N ]");
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
@@ -1133,7 +1137,8 @@ stock QuestCallMessage(playerid)
     }
     else if(GetPVarInt(playerid,"qweststat") == 42)
     {
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё братан, я отчаливаю. Ещё услышимся");
+        if(PlayerInfo[playerid][pSex] == 1) SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё братан, я отчаливаю. Ещё услышимся");
+        else SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё солнце, я отчаливаю. Ещё услышимся :)");
         SetPVarInt(playerid,"qweststat",43), SetPVarInt(playerid,"qwesttime",4);
     }
     else if(GetPVarInt(playerid,"qweststat") == 43)
@@ -1216,7 +1221,9 @@ stock JoneNoteLastTalk(playerid)
     if(PlayerInfo[playerid][pQuest][9] == 3)
     {
         PlayerInfo[playerid][pQuest][9] = 4;
-        //PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_havka0w.mp3"); // vremenmo
+
+        if(PlayerInfo[playerid][pSex] == 1) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note7.mp3");
+        else PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_note7w.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Здесь ты можешь торговать. Покупать и продавать голду");
         SetPVarInt(playerid,"qweststat",40), SetPVarInt(playerid,"qwesttime",4);
     }
