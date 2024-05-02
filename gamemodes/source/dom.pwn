@@ -163,7 +163,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 		if(DomInfo[dom][dAcccupP] == 3 && (DomInfo[dom][dFam] == 0 || DomInfo[dom][dFam] >= 1 && PlayerInfo[playerid][pFamily] != DomInfo[dom][dFam]) && PlayerInfo[playerid][pHouserent] != dom) return ErrorMessage(playerid, "{FF6347}Класть предметы в шкаф этого дома может только владелец, проживающие и семья"), i_resetveshi(playerid);
 	}
 	
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем убрать в дом"), i_resetveshi(playerid);
+	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 	
 	new string[100];

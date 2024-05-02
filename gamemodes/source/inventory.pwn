@@ -521,7 +521,7 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	if(thingPack == 1) return ErrorMessage(playerid, "{FF6347}Подарок нельзя продать\n\n{cccccc}Подарите его кому-нибудь ;)");
 	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}Нельзя продать упакованный предмет");
 	
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её продать");
+	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
 
 	if(giveplayerid == -1)
@@ -553,6 +553,14 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	ShowDialog(playerid,1097,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
 	return 1;
 }
+
+stock NotGiveInflatabelBoat(playerid, thingId, thingType)
+{
+	if(GetPVarInt(playerid,"Arobsklad") == 3) return ErrorMessage(playerid, "{FF6347}Вы не можете переложить лодку в тот момент, когда накачиваете её");
+	if(thingId == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её передать или убрать");
+	return 0;
+}
+
 stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, inva)
 {
 	Veshi[playerid] = 0, i_resetveshi(playerid);
@@ -567,7 +575,7 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	
 	// Проверка на особые предметы
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Вам нужно сдуть лодку, прежде чем её передать или убрать");
+	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[giveplayerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У игрока уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
@@ -1500,7 +1508,7 @@ stock ThingParameters(playerid, thingId, &quan, &para)
 	else if(thingId == 125 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер
 	else if(thingId == 126 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Бургер (Хз второй)
 	else if(thingId == 127 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Ролл
-	else if(thingId >= 128 && thingId <= 138 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
+	else if(IsANaborsEdoi(thingId) && para == 0) SetSatiety(thingId, quan), para = unix+172800; // Наборы с Едой (Подносы)
 	else if(thingId == 139 && para == 0) quan = GetFullThingQuan(thingId), para = unix+172800; // Sprunk Открытая банка
 	else if(thingId == 141 && para == 0) SetSatiety(thingId, quan), para = unix+172800; // ХОТЕ ДОГЕ
 	else if(thingId == 163 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Свадебный торт (Время до испорченности + количество)
@@ -1832,7 +1840,7 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
 {
     if(type == 0 && (i == 1 || i == 6 || i == 18 || i == 20 || i == 22 || i == 54 || i == 55 || i == 96 || i == 98 || i == 99 || i == 100 || i == 101 || i == 102
  	|| i == 103 || i == 104 || i == 105 || i == 107 || i == 14 || i == 117 || i == 118 || i == 119 || i == 120 || i == 121 || i == 124 || i == 125
-  	|| i == 126 || i == 127 || i >= 128 && i <= 138 || i == 139 || i == 141 || i == 163 || i == 164 || i == 165 || i == 166 || i == 167
+  	|| i == 126 || i == 127 || IsANaborsEdoi(i) || i == 139 || i == 141 || i == 163 || i == 164 || i == 165 || i == 166 || i == 167
 	|| i == 168 || i == 169 || i == 170 || i == 171 || i == 172 || i == 173 || i == 174)) return 1;
 	return 0;
 }

@@ -50,6 +50,7 @@ enum questInfo
     ScriptQuest,
 	VehicleQuest, // ID Vehicle Quest
     VehColorQuest, // Color ID Vehicle Quest
+    VehModel, // Model vehicle
     ActorTimer, // Timer Actor Script
     ActorText, // Script ID Text Actor
     Text3D:LabelFirst, // 3d text 1
@@ -230,8 +231,8 @@ stock QuestActorJone(playerid) // Начинаем взаимодействов�
 
             InHandClear(playerid);
             if(QuestInfo[playerid][VehicleQuest]) ACDestroyVehicle(QuestInfo[playerid][VehicleQuest]), QuestInfo[playerid][VehicleQuest] = 0;
-            if(IsPlayerInRangeOfPoint(playerid,5.0, 1364.35242, -1682.73926, 13.47850)) GiveCar(playerid, freeSlot, 2008, 1362.8092,-1658.9130,13.1072,269.5840, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            else if(IsPlayerInRangeOfPoint(playerid,5.0, 2121.7776,2709.5793,10.8203)) GiveCar(playerid, freeSlot, 2008, 2118.9817,2729.5417,10.5447,270.2156, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+            if(IsPlayerInRangeOfPoint(playerid,5.0, 1364.35242, -1682.73926, 13.47850)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 1362.8092,-1658.9130,13.1072,269.5840, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+            else if(IsPlayerInRangeOfPoint(playerid,5.0, 2121.7776,2709.5793,10.8203)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 2118.9817,2729.5417,10.5447,270.2156, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
             // Выполнили квест 0
             PlayerInfo[playerid][pQuest][3] = 3;
@@ -315,7 +316,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
         PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Прохлаждаешься? Иди работай!");
     }
-    else if(PlayerInfo[playerid][pQuest][5] == 5 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
+    else if((PlayerInfo[playerid][pQuest][5] == 4 || PlayerInfo[playerid][pQuest][5] == 5) && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
         if(PlayerInfo[playerid][pSex] == 1)
@@ -588,6 +589,20 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     QuestInfo[playerid][ScriptQuest] = 0;
     DestroyDetailsQuest(playerid);
 
+    if(QuestInfo[playerid][VehModel] == 0)
+    {
+        switch(random(7))
+        {
+            case 0: QuestInfo[playerid][VehModel] = 558; // uranus
+            case 1: QuestInfo[playerid][VehModel] = 559; // jester
+            case 2: QuestInfo[playerid][VehModel] = 561; // stratum
+            case 3: QuestInfo[playerid][VehModel] = 562; // elegy
+            case 4: QuestInfo[playerid][VehModel] = 565; // flash
+            case 5: QuestInfo[playerid][VehModel] = 550; // sunrise
+            case 6: QuestInfo[playerid][VehModel] = 402; // buffalo
+        }
+    }
+
     if(zoneid == 0) // Los Santos
     {
         // NPC
@@ -595,7 +610,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
         QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,1364.35242, -1682.73926, 13.47850 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle
-        QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(2008, 1362.8092,-1658.9130,13.1072,269.5840, color1, color2, -1, 0, -1, 0.0);
+        QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehModel], 1362.8092,-1658.9130,13.1072,269.5840, color1, color2, -1, 0, -1, 0.0);
     
         // Master Keys
         QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,1366.066772, -1679.641357, 13.546929, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
@@ -607,7 +622,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
         QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,2121.7776,2709.5793,10.8203 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle
-        QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(2008, 2118.9817,2729.5417,10.5447,270.2156, color1, color2, -1, 0, -1, 0.0);
+        QuestInfo[playerid][VehicleQuest] = PP_CreateVehicle(QuestInfo[playerid][VehModel], 2118.9817,2729.5417,10.5447,270.2156, color1, color2, -1, 0, -1, 0.0);
     
         // Master Keys
         QuestInfo[playerid][LabelFirst] = CreateDynamic3DTextLabel("{ff9000}Отмычки [ALT]",0xA9C4E4FF,2124.882568, 2711.710449, 10.820312, 4.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);

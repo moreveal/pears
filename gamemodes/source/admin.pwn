@@ -836,8 +836,8 @@ CMD:protect(playerid)
        	if(protect[4] == 0) format(str,sizeof(str),"{cccccc}Car Changer {00cc00}[On]\n"),strcat(sctring,str);
        	else if(protect[4] == 1) format(str,sizeof(str),"{cccccc}Car Changer {ffcc00}[Chat]\n"),strcat(sctring,str);
        	else if(protect[4] == 2) format(str,sizeof(str),"{cccccc}Car Changer {ff0000}[Off]\n"),strcat(sctring,str);
-       	if(protect[5] == 0) format(str,sizeof(str),"{cccccc}Teleport Player {00cc00}[On]\n"),strcat(sctring,str);
-       	else if(protect[5] == 1) format(str,sizeof(str),"{cccccc}Teleport Player {ff0000}[Off]\n"),strcat(sctring,str);
+       	if(protect[5] == 0) format(str,sizeof(str),"{cccccc}Кик за Teleport Player {00cc00}[On]\n"),strcat(sctring,str);
+       	else if(protect[5] == 1) format(str,sizeof(str),"{cccccc}Кик за Teleport Player {ff0000}[Off]\n"),strcat(sctring,str);
        	if(protect[6] == 0) format(str,sizeof(str),"{cccccc}Протокол игнорирования рассинхрона {00cc00}[On]\n"),strcat(sctring,str);
        	else if(protect[6] == 1) format(str,sizeof(str),"{cccccc}Протокол игнорирования рассинхрона {ff0000}[Off]\n"),strcat(sctring,str);
        	if(protect[7] == 0) format(str,sizeof(str),"{cccccc}Защита от ошибочного кика на спавне {00cc00}[On]\n"),strcat(sctring,str);
@@ -854,9 +854,6 @@ CMD:protect(playerid)
        	if(protect[13] == 0) format(str,sizeof(str),"{cccccc}CoordMaster {99ff66}[On]\n"),strcat(sctring,str);
        	else if(protect[13] == 1) format(str,sizeof(str),"{cccccc}CoordMaster {ffcc00}[Chat]\n"),strcat(sctring,str);
        	else if(protect[13] == 2) format(str,sizeof(str),"{cccccc}CoordMaster {ff0000}[Off]\n"),strcat(sctring,str);
-       	if(protect[14] == 0) format(str,sizeof(str),"{cccccc}Damager {99ff66}[On]\n"),strcat(sctring,str);
-       	else if(protect[14] == 1) format(str,sizeof(str),"{cccccc}Damager {ffcc00}[Chat]\n"),strcat(sctring,str);
-       	else if(protect[14] == 2) format(str,sizeof(str),"{cccccc}Damager {ff0000}[Off]\n"),strcat(sctring,str);
     	ShowDialog(playerid,868,DIALOG_STYLE_LIST,"{0088ff}Protect Project",sctring,"Выбор","Отмена");
 	}
 	return 1;

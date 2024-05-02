@@ -2159,7 +2159,7 @@ stock GoTrain(playerid)
 
 	// Запускаем таймер для начала движения поезда
 	TrainGoing = 1;
-	SetTimer("TrainStart", 10000, false);
+	SetTimer("TrainStart", 30000, false);
 
 	// Пишем сообщение всем армейцам, которые рядом тусуются
 	foreach(Player,i)
@@ -2199,7 +2199,7 @@ stock ProcessTrainRob()
 			DestroyTrainBox();
 
 			TrainGoing = 1;
-			SetTimer("TrainStart", 10000, false);
+			SetTimer("TrainStart", 30000, false);
 
 			new Float:pos[3];
 	        GetVehiclePos(train, pos[0], pos[1], pos[2]);
@@ -2282,10 +2282,14 @@ stock TrainStopped(playerid)
 			TrainStoppedTime = TRAIN_STOP_TIME * 60;
 			CreateTrainBox();
 
+			new Float:pos[3];
+	        GetVehiclePos(train, pos[0], pos[1], pos[2]);
+
 			// Пишем сообщение всем, кто едет в поезде, об остановке
 			foreach(Player,i)
 			{
-				if(OnlineInfo[i][oLogged] == 1 && IsPlayerNGSATrainPassenger(i)) MessageTrainStop(i);
+				if(OnlineInfo[i][oLogged] == 1 
+					&& (IsPlayerNGSATrainNearby(i, pos[0], pos[1], pos[2]) && fraction(i) == 3 || IsPlayerNGSATrainPassenger(i))) MessageTrainStop(i);
 			}
 		}
 		else if(stoped == 2)
@@ -2336,12 +2340,12 @@ stock MessageTrainStartAfterStop(playerid)
     format(line,sizeof(line),"{336633}Остановка поезда завершена"), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ Кнопка G возле главного вагона ]"), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}- Вы так-же можете ехать на вагонах поезда, но будьте осторожны"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 10 секунд"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 30 секунд"), strcat(lines,line);
 	// format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
 	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ Кнопка G ]");
-	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 10 секунд");
+	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 30 секунд");
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
 }
@@ -2452,11 +2456,12 @@ stock TakeABoxFromTrain(playerid)
 	if(!result) return ErrorMessage(playerid, "{FF6347}Поблизости нет транспорта Barracks\n{cccccc}Для начала возьмите грузовик, чтобы перекладывать в него ящики\nВыгрузите его из поезда");
 
 	new inva = GetInvaBoxInBoot(train);
-	if(inva == -1) return ErrorMessage(playerid, "{FF6347}В поезде нет ящиков");
+	if(inva == -1 || BoxInTrain <= 0) return ErrorMessage(playerid, "{FF6347}В поезде нет ящиков");
 
 	TakeBootBox(playerid, train, inva, 0);
 
 	BoxInTrain --; // Считаем количество ящиков в поезде
+	
 	// Все ящики разгружены
 	if(BoxInTrain <= 0)
 	{
@@ -2696,12 +2701,12 @@ stock MessageTrainStartOnStation(playerid)
     format(line,sizeof(line),"{336633}Внимание! Поезд полностью загружен и готов к отправлению"), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ Кнопка G возле главного вагона ]"), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}- Вы так-же можете ехать на вагонах поезда, но будьте осторожны"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 10 секунд"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Поезд отправится от станции через 30 секунд"), strcat(lines,line);
 	// format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
 	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ Кнопка G ]");
-	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 10 секунд");
+	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 30 секунд");
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
 }
@@ -2727,12 +2732,12 @@ stock MessageBoxFullOnTrain(playerid)
     new line[80],lines[320];
     format(line,sizeof(line),"{336633}Завалы, после взрыва бомбы, устранены!"), strcat(lines,line);
 	format(line,sizeof(line),"\n\n{cccccc}- Займите место в поезде {ff9000}[ Кнопка G возле главного вагона ]"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}- Поезд отправится через 10 секунд"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Поезд отправится через 30 секунд"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Не пытайтесь ехать на других вагона, вы упадёте"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
 	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}По вагонам! Подойдите к главному вагону и сядьте в него [ Кнопка G ]");
-	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 10 секунд");
+	SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Поезд отправится через 30 секунд");
     PlayerPlaySound(playerid,6401,0,0,0);
     return 1;
 }*/

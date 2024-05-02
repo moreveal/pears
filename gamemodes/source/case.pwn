@@ -1,15 +1,15 @@
 /*
-Добавляем кейс, Указываем параметры рандома, условно:
-case 0..1 - Значит шанс равен 2%
-case 2..99 - Значит шанс равен 98%
+Р”РѕР±Р°РІР»СЏРµРј РєРµР№СЃ, РЈРєР°Р·С‹РІР°РµРј РїР°СЂР°РјРµС‚СЂС‹ СЂР°РЅРґРѕРјР°, СѓСЃР»РѕРІРЅРѕ:
+case 0..1 - Р—РЅР°С‡РёС‚ С€Р°РЅСЃ СЂР°РІРµРЅ 2%
+case 2..99 - Р—РЅР°С‡РёС‚ С€Р°РЅСЃ СЂР°РІРµРЅ 98%
 
-fpick - Оставляем ноль если выдаем предмет не в инвентарь
-quan - Оставляем один если выдаем один предмет.
-fpick 94 - Выдача голды человеку.
-oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
+fpick - РћСЃС‚Р°РІР»СЏРµРј РЅРѕР»СЊ РµСЃР»Рё РІС‹РґР°РµРј РїСЂРµРґРјРµС‚ РЅРµ РІ РёРЅРІРµРЅС‚Р°СЂСЊ
+quan - РћСЃС‚Р°РІР»СЏРµРј РѕРґРёРЅ РµСЃР»Рё РІС‹РґР°РµРј РѕРґРёРЅ РїСЂРµРґРјРµС‚.
+fpick 94 - Р’С‹РґР°С‡Р° РіРѕР»РґС‹ С‡РµР»РѕРІРµРєСѓ.
+oGivePlayerMoney(playerid, babki) - Р’С‹РґР°С‚СЊ РёРіСЂРѕРєСѓ РґРµРЅСЋР¶РєСѓ
 */
-#define MAX_CASE_ITEM 10 // Максимальное количество слотов в кейсе
-#define MAC_CASES 1 // Максимальное количество типов Кейсов
+#define MAX_CASE_ITEM 10 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕС‚РѕРІ РІ РєРµР№СЃРµ
+#define MAC_CASES 1 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ С‚РёРїРѕРІ РљРµР№СЃРѕРІ
 
 new ThingVehiclecaseGift[212 + MAX_VEHICLE_CUSTOM];
 new ThingVehicleQuan;
@@ -19,12 +19,12 @@ new ThingSkinQuan;
 
 /*enum caseInfo
 {
-    caseId, // кейс ID
-    caseSlots, // Количество предметов в кейсе
-    caseSlot[MAX_CASE_ITEM],// Предметы в кейсе
-    caseSlotType[MAX_CASE_ITEM], // Тип слота в кейсе
-    caseSlotPara[MAX_CASE_ITEM], // Параметр
-    caseSlotQuan[MAX_CASE_ITEM], // Количество
+    caseId, // РєРµР№СЃ ID
+    caseSlots, // РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРјРµС‚РѕРІ РІ РєРµР№СЃРµ
+    caseSlot[MAX_CASE_ITEM],// РџСЂРµРґРјРµС‚С‹ РІ РєРµР№СЃРµ
+    caseSlotType[MAX_CASE_ITEM], // РўРёРї СЃР»РѕС‚Р° РІ РєРµР№СЃРµ
+    caseSlotPara[MAX_CASE_ITEM], // РџР°СЂР°РјРµС‚СЂ
+    caseSlotQuan[MAX_CASE_ITEM], // РљРѕР»РёС‡РµСЃС‚РІРѕ
 }
 new OpenCase[MAC_CASES][caseInfo];*/
 
@@ -34,9 +34,10 @@ stock IsThingNotVariable(i)
     || i == 43 || i == 48 || i == 51 || i == 54 || i == 55
     || i == 56 || i == 57 || i == 58 || i == 59 || i == 63 || i == 68 || i == 69 || i == 89 || i == 96 || i >= 99 && i <= 105  || i == 106 
     || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
-    || i >= 128 && i <= 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
+    || i == 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
     || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
-    || i == 200 || i == 203) return 0;
+    || i == 200 || i == 203
+    || IsANaborsEdoi(i)) return 0;
     return 1;
 }
 
@@ -54,7 +55,7 @@ stock IsThingGunNotVariable(i)
 
 stock CreateGiftCase()
 {
-    // Собираем обычный транспорт
+    // РЎРѕР±РёСЂР°РµРј РѕР±С‹С‡РЅС‹Р№ С‚СЂР°РЅСЃРїРѕСЂС‚
     for(new i; i < 212; i++)
     {
         new vehclass = GetVehicleClass(i+400);
@@ -62,7 +63,7 @@ stock CreateGiftCase()
         if(vehclass >= 1 && vehclass <= 4 && (vetype == 1 || vetype == 2)) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
     }
 
-    // Собираем кастомный транспорт
+    // РЎРѕР±РёСЂР°РµРј РєР°СЃС‚РѕРјРЅС‹Р№ С‚СЂР°РЅСЃРїРѕСЂС‚
     for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
     {
         new vehclass = GetVehicleClass(i+2000);
@@ -72,7 +73,7 @@ stock CreateGiftCase()
     return 1;
 }
 
-stock CreateSkinGiftCase() // Собираем скины
+stock CreateSkinGiftCase() // РЎРѕР±РёСЂР°РµРј СЃРєРёРЅС‹
 {
     for(new i; i < 312 + MAX_SKIN_CUSTOM; i++)
     {
@@ -81,39 +82,39 @@ stock CreateSkinGiftCase() // Собираем скины
     return ThingSkinQuan;
 }
 
-// Рандомайзер для создания кейса
+// Р Р°РЅРґРѕРјР°Р№Р·РµСЂ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РєРµР№СЃР°
 stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thingPack)
 {
-    // Тут временно и нужно нормально заполнить рандомайзер для кесов
-    // Скорее всего нужно связать рандомайзер с системой fundraisers 
-    // Чтобы был какой-то единый общий список доступных предметов для подарков, который мы будем заполнять
-    // Соответственно брать список предметов для кейса будем оттуда
+    // РўСѓС‚ РІСЂРµРјРµРЅРЅРѕ Рё РЅСѓР¶РЅРѕ РЅРѕСЂРјР°Р»СЊРЅРѕ Р·Р°РїРѕР»РЅРёС‚СЊ СЂР°РЅРґРѕРјР°Р№Р·РµСЂ РґР»СЏ РєРµСЃРѕРІ
+    // РЎРєРѕСЂРµРµ РІСЃРµРіРѕ РЅСѓР¶РЅРѕ СЃРІСЏР·Р°С‚СЊ СЂР°РЅРґРѕРјР°Р№Р·РµСЂ СЃ СЃРёСЃС‚РµРјРѕР№ fundraisers 
+    // Р§С‚РѕР±С‹ Р±С‹Р» РєР°РєРѕР№-С‚Рѕ РµРґРёРЅС‹Р№ РѕР±С‰РёР№ СЃРїРёСЃРѕРє РґРѕСЃС‚СѓРїРЅС‹С… РїСЂРµРґРјРµС‚РѕРІ РґР»СЏ РїРѕРґР°СЂРєРѕРІ, РєРѕС‚РѕСЂС‹Р№ РјС‹ Р±СѓРґРµРј Р·Р°РїРѕР»РЅСЏС‚СЊ
+    // РЎРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ Р±СЂР°С‚СЊ СЃРїРёСЃРѕРє РїСЂРµРґРјРµС‚РѕРІ РґР»СЏ РєРµР№СЃР° Р±СѓРґРµРј РѕС‚С‚СѓРґР°
     new zaglushka = type;
-    // ВАЖНО! Не класть еду в кейсы, чтобы она там по unix не портилась нахрен
+    // Р’РђР–РќРћ! РќРµ РєР»Р°СЃС‚СЊ РµРґСѓ РІ РєРµР№СЃС‹, С‡С‚РѕР±С‹ РѕРЅР° С‚Р°Рј РїРѕ unix РЅРµ РїРѕСЂС‚РёР»Р°СЃСЊ РЅР°С…СЂРµРЅ
     if(zaglushka == 0)
     {
         switch(random(15))
         {
-            case 0: thingType = 0; // Обычный предмет
-            case 1: thingType = 1; // Оружие
-            //case 2: thingType = 0; // Акс 2(временно 0)
-            case 3, 4: thingType = 3; // Одежда
-            case 5: thingType = 5; // Транспорт
-            default: thingType = 0; // ПОДКРУТКА обычный предмет
+            case 0: thingType = 0; // РћР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
+            case 1: thingType = 1; // РћСЂСѓР¶РёРµ
+            //case 2: thingType = 0; // РђРєСЃ 2(РІСЂРµРјРµРЅРЅРѕ 0)
+            case 3, 4: thingType = 3; // РћРґРµР¶РґР°
+            case 5: thingType = 5; // РўСЂР°РЅСЃРїРѕСЂС‚
+            default: thingType = 0; // РџРћР”РљР РЈРўРљРђ РѕР±С‹С‡РЅС‹Р№ РїСЂРµРґРјРµС‚
         }
     }
     new quan;
-    if(thingType == 0) // Если выпал обычный
+    if(thingType == 0) // Р•СЃР»Рё РІС‹РїР°Р» РѕР±С‹С‡РЅС‹Р№
     {
         new ThingIDcaseGift[sizeof(friskName)];
         for(new i = 1; i < sizeof(friskName); i++)
         {
-            if(IsThingNotVariable(i) // Запрещённые предметы для кейса
-                && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
-                && !DocumentThing(i, thingType) // Документы
-                && !CheckThingQuan(i) // Количественные предметы
-                && !JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
-                //&& !PerishableThing(i,0) // Портящиеся предметы
+            if(IsThingNotVariable(i) // Р—Р°РїСЂРµС‰С‘РЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РґР»СЏ РєРµР№СЃР°
+                && !NotGiveThing(i, thingType, 1) // РџСЂРµРґРјРµС‚С‹ РєРѕС‚РѕСЂС‹Рµ РЅРµР»СЊР·СЏ РїРµСЂРµРґР°С‚СЊ
+                && !DocumentThing(i, thingType) // Р”РѕРєСѓРјРµРЅС‚С‹
+                && !CheckThingQuan(i) // РљРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹
+                && !JustOneThingInventory(i, thingType) // РџСЂРµРґРјРµС‚ С‚РѕР»СЊРєРѕ РІ РµРґРёРЅСЃС‚РІРµРЅРЅРѕРј СЌРєР·РµРјРїР»СЏСЂРµ РІ РёРЅРІРµРЅС‚Р°СЂРµ
+                //&& !PerishableThing(i,0) // РџРѕСЂС‚СЏС‰РёРµСЃСЏ РїСЂРµРґРјРµС‚С‹
                 ) ThingIDcaseGift[quan] = i, quan ++;
         }
         new thingTemp = random(quan);
@@ -145,13 +146,13 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
         thingPara = AccessoryInfo[ThingIDcaseGift[thingTemp]][acBone];
         thingQuan = 1;
     }
-    else if(thingType == 3) // Список собирается при запуске сервера
+    else if(thingType == 3) // РЎРїРёСЃРѕРє СЃРѕР±РёСЂР°РµС‚СЃСЏ РїСЂРё Р·Р°РїСѓСЃРєРµ СЃРµСЂРІРµСЂР°
     {
         new thingTemp = random(ThingSkinQuan);
         thingId = ThingSkincaseGift[thingTemp];
         thingQuan = 1;
     }
-    else if(thingType == 5) // Список собирается при запуске сервера
+    else if(thingType == 5) // РЎРїРёСЃРѕРє СЃРѕР±РёСЂР°РµС‚СЃСЏ РїСЂРё Р·Р°РїСѓСЃРєРµ СЃРµСЂРІРµСЂР°
     {
         new thingTemp = random(ThingVehicleQuan);
         thingId = ThingVehiclecaseGift[thingTemp];
@@ -159,31 +160,31 @@ stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thing
         thingQuan = colorveh;
     }
 
-    thingPack = 5; // Не трогаем
+    thingPack = 5; // РќРµ С‚СЂРѕРіР°РµРј
     return 1;
 }
 
 CMD:givecase(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс в инвентарь [ /givecase ID ]");
+    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: Р’С‹РґР°С‚СЊ РєРµР№СЃ РІ РёРЅРІРµРЅС‚Р°СЂСЊ [ /givecase ID ]");
     
     new thingId, thingQuan, thingType, thingPara, thingPack;
     CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
     new put_inva = GiveThingPlayer(params[0], thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РЈ РёРіСЂРѕРєР° РЅРµС‚ РјРµСЃС‚Р° РІ РёРЅРІРµРЅС‚Р°СЂРµ");
 
     new string[120];
-    format(string, sizeof(string), "* Вы выдали %s кейс", PlayerInfo[params[0]][pName]);
+    format(string, sizeof(string), "* Р’С‹ РІС‹РґР°Р»Рё %s РєРµР№СЃ", PlayerInfo[params[0]][pName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 
     if(params[0] != playerid)
     {
-        format(string, sizeof(string), "* Администратор %s выдал вам кейс", PlayerInfo[playerid][pName]);
+        format(string, sizeof(string), "* РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂ %s РІС‹РґР°Р» РІР°Рј РєРµР№СЃ", PlayerInfo[playerid][pName]);
 	    SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
     }
 
-    AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "Рандомный кейс");
+    AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "Р Р°РЅРґРѕРјРЅС‹Р№ РєРµР№СЃ");
 	return 1;
 }
 
@@ -193,8 +194,8 @@ CMD:givecase(playerid, const params[])
 
 	new quan;
 	new line[90],lines[1170];
-    format(line,sizeof(line),"\n{cccccc}Добавить Кейс{ff9000}>>\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}0. Кейс новичков{ff9000}>>\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Р”РѕР±Р°РІРёС‚СЊ РљРµР№СЃ{ff9000}>>\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff9000}0. РљРµР№СЃ РЅРѕРІРёС‡РєРѕРІ{ff9000}>>\t"), strcat(lines,line);
     for(new i = 0; i < MAX_ORDERESCORT; i++)
 	{
 		List[i][playerid] = 0;
@@ -203,12 +204,12 @@ CMD:givecase(playerid, const params[])
 		{
 		    List[quan][playerid] = i;
 			quan ++;
-			format(line,sizeof(line),"\n{ff9000}%d. Кейс \t{cccccc}Количество предметов: %d", quan,OpenCase[i][caseSlots]), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%d. РљРµР№СЃ \t{cccccc}РљРѕР»РёС‡РµСЃС‚РІРѕ РїСЂРµРґРјРµС‚РѕРІ: %d", quan,OpenCase[i][caseSlots]), strcat(lines,line);
 		}
 	}
 	new header[40];
-	format(header,sizeof(header),"Управление кейсами");
-	ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
+	format(header,sizeof(header),"РЈРїСЂР°РІР»РµРЅРёРµ РєРµР№СЃР°РјРё");
+	ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 
@@ -220,15 +221,15 @@ stock CaseMenu(playerid, number, slot)
 	new line[90],lines[1170];
     DP[2][playerid] = number;
     DP[3][playerid] = slot;
-    format(line,sizeof(line),"{cccccc}Тип предмета: {ff9000} \t%d", OpenCase[number][caseSlotType][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Название предмета:\t {ff9000}%s",friskName[OpenCase[number][caseSlot][slot]]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Номер предмета:\t {ff9000}%d",OpenCase[number][caseSlot][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Параметр:\t {ff9000}%d",OpenCase[number][caseSlotPara][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Количетсво:\t {ff9000}%d",OpenCase[number][caseSlotQuan][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Добавить {ff9000}>>\t"), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}РўРёРї РїСЂРµРґРјРµС‚Р°: {ff9000} \t%d", OpenCase[number][caseSlotType][slot]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РќР°Р·РІР°РЅРёРµ РїСЂРµРґРјРµС‚Р°:\t {ff9000}%s",friskName[OpenCase[number][caseSlot][slot]]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РќРѕРјРµСЂ РїСЂРµРґРјРµС‚Р°:\t {ff9000}%d",OpenCase[number][caseSlot][slot]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РџР°СЂР°РјРµС‚СЂ:\t {ff9000}%d",OpenCase[number][caseSlotPara][slot]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}РљРѕР»РёС‡РµС‚СЃРІРѕ:\t {ff9000}%d",OpenCase[number][caseSlotQuan][slot]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Р”РѕР±Р°РІРёС‚СЊ {ff9000}>>\t"), strcat(lines,line);
 	new header[40];
-	format(header,sizeof(header),"{ff9000}Слот Кейс",slot);
-	ShowDialog(playerid,11112,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
+	format(header,sizeof(header),"{ff9000}РЎР»РѕС‚ РљРµР№СЃ",slot);
+	ShowDialog(playerid,11112,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 
@@ -238,12 +239,12 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Выбрана не правильная строка.");
+            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Р’С‹Р±СЂР°РЅР° РЅРµ РїСЂР°РІРёР»СЊРЅР°СЏ СЃС‚СЂРѕРєР°.");
             DP[4][playerid] = listitem;
             new number = DP[2][playerid];
             new slot = DP[3][playerid];
             new string[100];
-            if(listitem == 0) ShowDialog(playerid, 11113,DIALOG_STYLE_TABLIST, "Выбор типа для слота","1 - Обычный\n2 - Оружие\n3 - Одежда\n4 - Аксессуар\n5 - Транспорт");
+            if(listitem == 0) ShowDialog(playerid, 11113,DIALOG_STYLE_TABLIST, "Р’С‹Р±РѕСЂ С‚РёРїР° РґР»СЏ СЃР»РѕС‚Р°","1 - РћР±С‹С‡РЅС‹Р№\n2 - РћСЂСѓР¶РёРµ\n3 - РћРґРµР¶РґР°\n4 - РђРєСЃРµСЃСЃСѓР°СЂ\n5 - РўСЂР°РЅСЃРїРѕСЂС‚");
             if(listitem == 1)
             {
                 CaseMenu(playerid,number,slot)
@@ -252,12 +253,12 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
             {
                 if(OpenCase[number][caseSlotType][slot] == 0)
                {
-                    SendClientMessage(playerid,COLOR_GREY, "[Мысли] Сначала нужно указать тип предмета")
+                    SendClientMessage(playerid,COLOR_GREY, "[РњС‹СЃР»Рё] РЎРЅР°С‡Р°Р»Р° РЅСѓР¶РЅРѕ СѓРєР°Р·Р°С‚СЊ С‚РёРї РїСЂРµРґРјРµС‚Р°")
                     return CaseMenu(playerid,number,slot);
                }
                else
                {
-                    ShowDialog(playerid, 11113,DIALOG_STYLE_INPUT "Введите количество","выбор","отмена");
+                    ShowDialog(playerid, 11113,DIALOG_STYLE_INPUT "Р’РІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ","РІС‹Р±РѕСЂ","РѕС‚РјРµРЅР°");
                }
             }
         }

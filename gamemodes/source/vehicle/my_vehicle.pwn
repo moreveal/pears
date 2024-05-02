@@ -3660,8 +3660,10 @@ stock PlayerVehicleCall(playerid)
 	GetPlayerPos(playerid, posic[0], posic[1], posic[2]);
 	new Float:vdist = GetVehicleDistanceFromPoint(v, posic[0], posic[1], posic[2]);
 
-	// Во время капта транспорт можно вызвать перед собой
-	if(Kapt[fraction(playerid)] > 0)
+	// Быстрый вызов транспорта перед собой
+	new g = fraction(playerid);
+	if(Kapt[g] > 0 // Во время капта
+		|| Zahvat[g] > 0) // Во время мафиозной стрелы
 	{
 		if(vdist <= 30.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 30 метров ]");
 

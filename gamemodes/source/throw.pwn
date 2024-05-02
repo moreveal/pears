@@ -86,7 +86,7 @@ stock use_throw(playerid, inva, useinva)
 
     if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0)
 	{
-		if(fpick >= 128 && fpick <= 138 || fpick == 42) // Если предметы с взаимодействием
+		if(IsANaborsEdoi(fpick) || fpick == 42) // Если предметы с взаимодействием
 		{
 			if(ThrowInfo[t][tPutLocation] == 0) return ErrorMessage(playerid, "{FF6347}Этот предмет лежит на полу и он уже есть в вашем инвентаре\n{ffcc66}Если вы хотите начать взаимодействие с предметом, положите его на стол\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 		}
@@ -147,7 +147,7 @@ stock use_throw(playerid, inva, useinva)
 	}
 
 	// Взаимодействие с Подносом еды или Ноутбуком
-	if((fpick >= 128 && fpick <= 138 || fpick == 42) && thingType == 0 && thingPack == 0)
+	if((IsANaborsEdoi(fpick) || fpick == 42) && thingType == 0 && thingPack == 0)
 	{
 	    if(ThrowInfo[t][tUseplayer] > 0 && ThrowInfo[t][tUseplayer] != playerid+1) return format(string,sizeof(string),"{FF6347}С этим предметом взаимодействует %s",PlayerInfo[ThrowInfo[t][tUseplayer]-1][pName]), ErrorMessage(playerid, string);
 		if(playerSeat[playerid])
@@ -227,7 +227,7 @@ stock use_throw(playerid, inva, useinva)
 	{
 		if(fpick != ThrowInfo[t][tModel]) in_hand_eat(playerid, 2, fpick, ThrowInfo[t][tModel], fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]);
 	}
-	if(fpick >= 128 && fpick <= 138) in_hand_podnos(playerid, fpick, fquan, ThrowInfo[t][tPara], ThrowInfo[t][tQara]);
+	if(IsANaborsEdoi(fpick)) in_hand_podnos(playerid, fpick, fquan, ThrowInfo[t][tPara], ThrowInfo[t][tQara]);
 	DestroyThrow(t);
 	updatethrowall(t);
 	around_player_audio(playerid, 5601, 0, 5.0, 0);
@@ -312,7 +312,7 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent, DopParametr = 0) // Устанавливаем новый предмет на землю
 {
 	new noobject, gee;
-	if(fpick >= 128 && fpick <= 138 && thingType == 0) time = 1200;
+	if(IsANaborsEdoi(fpick) && thingType == 0) time = 1200;
 	if(fpick == 11 && thingType == 0) time = 1200;
 	if(fpick == 42 && type == 1) time = -1;
 	for(new g = 0; g < MAX_THROW; g++)

@@ -953,7 +953,7 @@ stock put_prisontable(playerid, inva, i, thingId, thingQuan, binva, thingType, t
 	
 	if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
 	
-	if(thingId == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем убрать в тумбу"), i_resetveshi(playerid);
+	if(NotGiveInflatabelBoat(playerid, thingId, thingType)) return i_resetveshi(playerid);
 	if(NotGiveThing(thingId, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 	
 	new string[100];

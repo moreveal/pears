@@ -168,7 +168,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oInventSelectLeft] == 9999 || v == INVALID_VEHICLE_ID || !IsABoot(v)
 	|| PlayerInfo[playerid][pInven][inva] <= 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return 1;
 	
-	if(fpick == 48 && thingType == 0 && OnlineInfo[playerid][oInflatableBoat] != NON) return ErrorMessage(playerid, "{FF6347}Нужно сдуть лодку, прежде чем положить в багажник"), i_resetveshi(playerid);
+	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
     if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
     if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
