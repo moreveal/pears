@@ -42,7 +42,7 @@ new vehNameCustom[][] =
 	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Audi RS6 C5", "Mercedes Sprinter", "Ferrari Enzo",
 	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
 	"VW Golf MK2", "BMW 760i", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
-	"Audi RS3", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35", "Charger RT 69"
+	"Audi RS3", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35", "Charger RT 69","Mars Rover", "Mars Rider", "Mars RC Car", "Ingenuity"
 };
 
 new vehName[][] =
@@ -82,7 +82,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
 	3000000,900000,4700000,700000,1200000,17000000,70000000, // 2050 - 2056
 	11000000,1800000,2100000,9000000,6000000,2900000,500000,500000, // 2057 - 2064
 	300000, 5500000, 750000, 15000000, 7000000, 28000000, 32000000, 70000000, // 2065 - 2072
-	3200000, 2900000, 2500000, 5200000, 1300000 // 2073 - 2077
+	3200000, 2900000, 2500000, 5200000, 1300000,200000000,200000000,200000000,200000000 // 2073 - 2081
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
@@ -205,7 +205,6 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
 	AddVehicleSyncModel(492, 2064); // Vaz 2107 (greenwoo)
 	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
-
 	AddVehicleSyncModel(560, 2066); // BMW 760i
 	AddVehicleSyncModel(560, 2067); // Chaser JZX100
 	AddVehicleSyncModel(560, 2068); // BMW M5 F90
@@ -218,6 +217,11 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(558, 2075); // Silvia S15
 	AddVehicleSyncModel(562, 2076); // Nissan GT-R R35
 	AddVehicleSyncModel(402, 2077); // Charger RT 69
+
+	AddVehicleSyncModel(573, 2078); // Mars Rover
+	AddVehicleSyncModel(573, 2079); // Mars Rider
+	AddVehicleSyncModel(594, 2080); // Mars RC Car
+	AddVehicleSyncModel(465, 2081); // Mars RC Heli
 	return 1;
 }
 // Проверка на доступный транспорт
@@ -225,7 +229,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2077) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2081) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -623,7 +627,7 @@ stock GetVehicleType(model) // Получаем тип транспорта
     || model == 580 || model == 582 || model == 583 || model == 585 || model == 587 || model == 588 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 600 || model == 601 || model == 602
     || model == 603 || model == 604 || model == 605 || model == 609
-	|| model >= 2000 && model <= 2035 || model >= 2037) type = 1;
+	|| model >= 2000 && model <= 2035 || model >= 2037 && model <= 2079) type = 1;
 
 
     // Мототранспорт (Требуется лицензия на мото транспорт) Moto
