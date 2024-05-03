@@ -149,7 +149,7 @@ stock WeReturnToDeathPosition(playerid)
     if(DeathInfo[playerid][deathReason] == 54) PlayerInfo[playerid][pLastPos][2] -= 1.0;
 
     PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-    SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+    PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
 
     UpdateDeathProcess(playerid);
     ACSetPlayerHealth(playerid, 90.0);
@@ -169,7 +169,7 @@ stock UpdateDeathProcess(playerid)
     if(!IsPlayerInRangeOfPoint(playerid,0.8,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]))
     {
         PPSetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-        SetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+        PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
     }
     return 1;
 }

@@ -688,6 +688,7 @@ CMD:gotobusstop(playerid, const params[])
 	S_SetPlayerVirtualWorld(playerid, 0, 0);
 	PPSetPlayerInterior(playerid, 0);
 	PPSetPlayerPos(playerid, BusStationInfo[params[0] - 1][bsCordX], BusStationInfo[params[0] - 1][bsCordY], BusStationInfo[params[0] - 1][bsCordZ]);
+	PPSetPlayerFacingAngle(playerid,0.0);
 	return 1;
 }
 

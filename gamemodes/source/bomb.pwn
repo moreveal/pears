@@ -70,6 +70,7 @@ CMD:gotoruins(playerid, const params[])
     if(RuinsInfo[r][boStat] == 0) return ErrorMessage(playerid, "{FF6347}Руин под этим ID не существует");
     S_SetPlayerVirtualWorld(playerid, RuinsInfo[r][boWorld], RuinsInfo[r][boInterior]), PPSetPlayerInterior(playerid, RuinsInfo[r][boInterior]);
 	PPSetPlayerPos(playerid, RuinsInfo[r][boPos][0],RuinsInfo[r][boPos][1],RuinsInfo[r][boPos][2]);
+	PPSetPlayerFacingAngle(playerid,0.0);
     return 1;
 }
 

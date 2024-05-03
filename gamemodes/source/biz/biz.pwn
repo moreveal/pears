@@ -26,8 +26,9 @@ CMD:gototerm(playerid, const params[])
 	    if(params[1] < 1 || params[1] > 5) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер терминала не меньше 1 - 5");
 	    new br = numnrent(params[0]);
 	    if(RentStat[br][params[1]-1] <= 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У бизнеса нет терминала под этим номером");
-		PPSetPlayerPos(playerid,RentPos_X[br][params[1]-1],RentPos_Y[br][params[1]-1],RentPos_Z[br][params[1]-1]);
 		S_SetPlayerVirtualWorld(playerid,0,0), PPSetPlayerInterior(playerid,0);
+		PPSetPlayerPos(playerid,RentPos_X[br][params[1]-1],RentPos_Y[br][params[1]-1],RentPos_Z[br][params[1]-1]);
+		PPSetPlayerFacingAngle(playerid, 0.0);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: У этого бизнеса нет терминалов");
 	return 1;
@@ -1430,7 +1431,7 @@ stock BotSex(playerid,b)
 	DynamicActorfrontme(BizShluha[b],0.9,x,y,z,a);
 	Job_X[playerid] = x, Job_Y[playerid] = y, Job_Z[playerid] = z;
 	PPSetPlayerPos(playerid,x,y,z);
-	SetPlayerFacingAngle(playerid,a-180);
+	PPSetPlayerFacingAngle(playerid,a-180);
 	ApplyDynamicActorAnimation(BizShluha[b],"BLOWJOBZ","BJ_STAND_LOOP_W", 4.0, false, false, false, true, false);
 	ApplyAnimation(playerid,"BLOWJOBZ","BJ_STAND_LOOP_P",4.0, false, false, false, false, true);
 	Sex[playerid] = 3;

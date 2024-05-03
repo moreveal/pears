@@ -2778,9 +2778,9 @@ stock EnterTrain(playerid, stat)
 
 	keep(playerid);
 	S_SetPlayerVirtualWorld(playerid,180,179), PPSetPlayerInterior(playerid,179);
-	if(EnterTrainPos == 0) PPSetPlayerPos(playerid, 1304.9014,1604.4469,19.8963), SetPlayerFacingAngle(playerid, 90.5205), EnterTrainPos = 1;
-	else if(EnterTrainPos == 1) PPSetPlayerPos(playerid, 1304.4021,1604.2426,19.8963), SetPlayerFacingAngle(playerid, 112.7673), EnterTrainPos = 2;
-	else if(EnterTrainPos == 2) PPSetPlayerPos(playerid, 1304.7849,1603.6268,19.8963), SetPlayerFacingAngle(playerid, 138.7743), EnterTrainPos = 0;
+	if(EnterTrainPos == 0) PPSetPlayerPos(playerid, 1304.9014,1604.4469,19.8963), PPSetPlayerFacingAngle(playerid, 90.5205), EnterTrainPos = 1;
+	else if(EnterTrainPos == 1) PPSetPlayerPos(playerid, 1304.4021,1604.2426,19.8963), PPSetPlayerFacingAngle(playerid, 112.7673), EnterTrainPos = 2;
+	else if(EnterTrainPos == 2) PPSetPlayerPos(playerid, 1304.7849,1603.6268,19.8963), PPSetPlayerFacingAngle(playerid, 138.7743), EnterTrainPos = 0;
 	SetCameraBehindPlayer(playerid);
 	return 1;
 }
@@ -2810,7 +2810,7 @@ stock ExitTrain(playerid)
 	keep(playerid);
 	S_SetPlayerVirtualWorld(playerid,0,0), PPSetPlayerInterior(playerid,0);
 	PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]-1.0);
-	SetPlayerFacingAngle(playerid, pos[3]);
+	PPSetPlayerFacingAngle(playerid, pos[3]);
 	SetCameraBehindPlayer(playerid);
 	return 1;
 }
@@ -2870,7 +2870,7 @@ stock postrainroad(playerid)
 	format(string, sizeof(string), "%d", puttrainpos);
 	SendClientMessage(playerid, -1, string);
 	PPSetPlayerPos(playerid,TrainRoad[puttrainpos][TrainRoad_X],TrainRoad[puttrainpos][TrainRoad_Y],TrainRoad[puttrainpos][TrainRoad_Z]);
-	SetPlayerFacingAngle(playerid, TrainRoad[puttrainpos][TrainRoad_A]);
+	PPSetPlayerFacingAngle(playerid, TrainRoad[puttrainpos][TrainRoad_A]);
 	puttrainpos ++;
 	return 1;
 }*/

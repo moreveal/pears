@@ -57,17 +57,17 @@ stock EnterBizDoor(playerid)
                 if(i <= 7) // Автосалоны, Мотосалоны
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 186), PPSetPlayerInterior(playerid, 186);
-                    PPSetPlayerPos(playerid,1346.2616,1577.9895,10.8269), SetPlayerFacingAngle(playerid, 0.0);
+                    PPSetPlayerPos(playerid,1346.2616,1577.9895,10.8269), PPSetPlayerFacingAngle(playerid, 0.0);
                 }
                 else if(i >= 8 && i <= 10) // Авиасалоны
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 185), PPSetPlayerInterior(playerid, 185);
-                    PPSetPlayerPos(playerid,1335.5031,1576.4174,10.8364), SetPlayerFacingAngle(playerid, 0.0);
+                    PPSetPlayerPos(playerid,1335.5031,1576.4174,10.8364), PPSetPlayerFacingAngle(playerid, 0.0);
                 }
                 else if(i >= 11 && i <= 13) // Салоны Катеров
                 {
                     S_SetPlayerVirtualWorld(playerid, b+3000, 184), PPSetPlayerInterior(playerid, 184);
-                    PPSetPlayerPos(playerid,1363.7249,1580.1615,10.8461), SetPlayerFacingAngle(playerid, 0.0);
+                    PPSetPlayerPos(playerid,1363.7249,1580.1615,10.8461), PPSetPlayerFacingAngle(playerid, 0.0);
                 }
                 SetCameraBehindPlayer(playerid);
                 yes = true;
@@ -86,20 +86,20 @@ stock EnterBizDoor(playerid)
         {
             S_SetPlayerVirtualWorld(playerid, 0, 0), PPSetPlayerInterior(playerid, 0);
 
-			if(b == 78) PPSetPlayerPos(playerid,542.2576,-1290.8726,17.2775), SetPlayerFacingAngle(playerid, 1.6429);
-            else if(b == 79) PPSetPlayerPos(playerid,1081.0867,-1701.6763,13.6268), SetPlayerFacingAngle(playerid, 184.0356);
-            else if(b == 81) PPSetPlayerPos(playerid,2200.8342,1391.8214,10.8203), SetPlayerFacingAngle(playerid, 183.0626);
-            else if(b == 82) PPSetPlayerPos(playerid,1139.3390,-914.0158,43.4865), SetPlayerFacingAngle(playerid, 272.4193);
-            else if(b == 83) PPSetPlayerPos(playerid,427.7670,-1319.4551,15.1215), SetPlayerFacingAngle(playerid, 214.5179);
-            else if(b == 84) PPSetPlayerPos(playerid,-1942.3628,558.1135,35.2184), SetPlayerFacingAngle(playerid, 1.1827);
-            else if(b == 85) PPSetPlayerPos(playerid,2087.9812,2089.1755,11.0579), SetPlayerFacingAngle(playerid, 272.1625);
-            else if(b == 86) PPSetPlayerPos(playerid,1970.0583,2457.1067,11.2225), SetPlayerFacingAngle(playerid, 271.8051);
-            else if(b == 87) PPSetPlayerPos(playerid,1600.6296,-2239.9875,13.5820), SetPlayerFacingAngle(playerid, 180.8459);
-            else if(b == 88) PPSetPlayerPos(playerid,-1463.1289,-268.9378,14.1484), SetPlayerFacingAngle(playerid, 166.1381);
-            else if(b == 89) PPSetPlayerPos(playerid,1703.8481,1527.2494,10.8309), SetPlayerFacingAngle(playerid, 187.6563);
-            else if(b == 90) PPSetPlayerPos(playerid,-1497.3159,754.7651,7.2423), SetPlayerFacingAngle(playerid, 177.2830);
-            else if(b == 91) PPSetPlayerPos(playerid,2690.9456,-2342.3950,13.6670), SetPlayerFacingAngle(playerid, 271.7137);
-            else if(b == 92) PPSetPlayerPos(playerid,2323.4531,566.6951,7.8012), SetPlayerFacingAngle(playerid, 91.2554);
+			if(b == 78) PPSetPlayerPos(playerid,542.2576,-1290.8726,17.2775), PPSetPlayerFacingAngle(playerid, 1.6429);
+            else if(b == 79) PPSetPlayerPos(playerid,1081.0867,-1701.6763,13.6268), PPSetPlayerFacingAngle(playerid, 184.0356);
+            else if(b == 81) PPSetPlayerPos(playerid,2200.8342,1391.8214,10.8203), PPSetPlayerFacingAngle(playerid, 183.0626);
+            else if(b == 82) PPSetPlayerPos(playerid,1139.3390,-914.0158,43.4865), PPSetPlayerFacingAngle(playerid, 272.4193);
+            else if(b == 83) PPSetPlayerPos(playerid,427.7670,-1319.4551,15.1215), PPSetPlayerFacingAngle(playerid, 214.5179);
+            else if(b == 84) PPSetPlayerPos(playerid,-1942.3628,558.1135,35.2184), PPSetPlayerFacingAngle(playerid, 1.1827);
+            else if(b == 85) PPSetPlayerPos(playerid,2087.9812,2089.1755,11.0579), PPSetPlayerFacingAngle(playerid, 272.1625);
+            else if(b == 86) PPSetPlayerPos(playerid,1970.0583,2457.1067,11.2225), PPSetPlayerFacingAngle(playerid, 271.8051);
+            else if(b == 87) PPSetPlayerPos(playerid,1600.6296,-2239.9875,13.5820), PPSetPlayerFacingAngle(playerid, 180.8459);
+            else if(b == 88) PPSetPlayerPos(playerid,-1463.1289,-268.9378,14.1484), PPSetPlayerFacingAngle(playerid, 166.1381);
+            else if(b == 89) PPSetPlayerPos(playerid,1703.8481,1527.2494,10.8309), PPSetPlayerFacingAngle(playerid, 187.6563);
+            else if(b == 90) PPSetPlayerPos(playerid,-1497.3159,754.7651,7.2423), PPSetPlayerFacingAngle(playerid, 177.2830);
+            else if(b == 91) PPSetPlayerPos(playerid,2690.9456,-2342.3950,13.6670), PPSetPlayerFacingAngle(playerid, 271.7137);
+            else if(b == 92) PPSetPlayerPos(playerid,2323.4531,566.6951,7.8012), PPSetPlayerFacingAngle(playerid, 91.2554);
             SetCameraBehindPlayer(playerid);
             yes = true;
         }

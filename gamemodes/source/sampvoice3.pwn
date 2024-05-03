@@ -49,6 +49,7 @@ CMD:gotoareav(playerid, const params[])
 
 	S_SetPlayerVirtualWorld(playerid, AreaVWorld[z], AreaVInt[z]), PPSetPlayerInterior(playerid, AreaVInt[z]);
 	PPSetPlayerPos(playerid, AreaV_X[z], AreaV_Y[z], AreaV_Z[z]);
+    PPSetPlayerFacingAngle(playerid, 0.0);
 	return 1;
 }
 

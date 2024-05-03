@@ -120,7 +120,7 @@ stock OnNpcSpawn(playerid)
 
         RemovePlayerFromVehicle(playerid);
         SetPlayerPos(playerid, 1599.4426,-1607.5927,13.4568);
-        SetPlayerFacingAngle(playerid, 180.0);
+        PPSetPlayerFacingAngle(playerid, 180.0);
         SetPlayerColor(playerid, COLOR_LSPD);
         NPCInfo[0][npcStart] = false;
     }
@@ -136,7 +136,7 @@ stock OnNpcSpawn(playerid)
 
         RemovePlayerFromVehicle(playerid);
         SetPlayerPos(playerid, -1584.4108,678.7656,7.1875);
-        SetPlayerFacingAngle(playerid, 180.0);
+        PPSetPlayerFacingAngle(playerid, 180.0);
         SetPlayerColor(playerid, COLOR_SFPD);
         NPCInfo[1][npcStart] = false;
     }
@@ -152,7 +152,7 @@ stock OnNpcSpawn(playerid)
 
         RemovePlayerFromVehicle(playerid);
         SetPlayerPos(playerid, 747.1211,1706.9492,6.2659);
-        SetPlayerFacingAngle(playerid, 0.0);
+        PPSetPlayerFacingAngle(playerid, 0.0);
         SetPlayerColor(playerid, COLOR_ARMY);
         NPCInfo[2][npcStart] = false;
     }
@@ -168,7 +168,7 @@ stock OnNpcSpawn(playerid)
 
         RemovePlayerFromVehicle(playerid);
         SetPlayerPos(playerid, 1100.9181,-1186.2133,18.3424);
-        SetPlayerFacingAngle(playerid, 180.0);
+        PPSetPlayerFacingAngle(playerid, 180.0);
         SetPlayerColor(playerid, INV_COLOR);
         NPCInfo[3][npcStart] = false;
     }

@@ -3952,9 +3952,9 @@ CMD:insertcar(playerid)
 		ACDestroyVehicle(vehicleid);
 		PlayerPlaySound(playerid,1138,0,0,0);
 
-		if(IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0)) PPSetPlayerPos(playerid,2685.9084,-2319.6357,3.0000), SetPlayerFacingAngle(playerid,6.4261);
-		else if(IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)) PPSetPlayerPos(playerid,-1480.8885,681.3235,1.4976), SetPlayerFacingAngle(playerid,0.0);
-		else if(IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) PPSetPlayerPos(playerid,2298.0408,529.1321,1.7944), SetPlayerFacingAngle(playerid,0.0);
+		if(IsPlayerInRangeOfPoint(playerid,30.0,2674.7729,-2301.3738,2.0)) PPSetPlayerPos(playerid,2685.9084,-2319.6357,3.0000), PPSetPlayerFacingAngle(playerid,6.4261);
+		else if(IsPlayerInRangeOfPoint(playerid,30.0,-1455.2177,687.7392,2.0)) PPSetPlayerPos(playerid,-1480.8885,681.3235,1.4976), PPSetPlayerFacingAngle(playerid,0.0);
+		else if(IsPlayerInRangeOfPoint(playerid,30.0,2307.9270,511.1468,2.0)) PPSetPlayerPos(playerid,2298.0408,529.1321,1.7944), PPSetPlayerFacingAngle(playerid,0.0);
 		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"поставил транспорт на парковку",COLOR_PURPLE,20.0,3000);
 		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"поставила транспорт на парковку",COLOR_PURPLE,20.0,3000);
 
@@ -4733,10 +4733,10 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
   		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
         query_empty(pearsq, string_mysql);
 
-		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), SetPlayerFacingAngle(playerid,270.0);
-		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), SetPlayerFacingAngle(playerid,90.0);
-		else if(IsPlayerInRangeOfPoint(playerid,10.0,2741.2739,-2316.9890,1.0)) PPSetPlayerPos(playerid,2733.0496,-2312.8413,1.5468), SetPlayerFacingAngle(playerid,180.0);
-		else PPSetPlayerPos(playerid,42.7541,930.0029,21.7048), SetPlayerFacingAngle(playerid,0.0);
+		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), PPSetPlayerFacingAngle(playerid,270.0);
+		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), PPSetPlayerFacingAngle(playerid,90.0);
+		else if(IsPlayerInRangeOfPoint(playerid,10.0,2741.2739,-2316.9890,1.0)) PPSetPlayerPos(playerid,2733.0496,-2312.8413,1.5468), PPSetPlayerFacingAngle(playerid,180.0);
+		else PPSetPlayerPos(playerid,42.7541,930.0029,21.7048), PPSetPlayerFacingAngle(playerid,0.0);
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не за рулём личного транспорта");
 	return 1;

@@ -557,7 +557,7 @@ stock PressSeatableObjectHandler(playerid)
 				
 				// Ставим на расчитанную позицию
 				PPSetPlayerPos(playerid, x, y, player_pos[2]);
-				SetPlayerFacingAngle(playerid, a);
+				PPSetPlayerFacingAngle(playerid, a);
 
 				// Активируем анимации и всю фигню
 				sit_Active(playerid, x, y, player_pos[2], a);
@@ -784,7 +784,7 @@ CMD:ebalo180(playerid)
 	if(PlayerInfo[playerid][pSoska] < 1) return 0;
 	new Float:a;
 	GetPlayerFacingAngle(playerid,a);
-	SetPlayerFacingAngle(playerid,a+180);
+	PPSetPlayerFacingAngle(playerid,a+180);
 
 	ApplyAnimation(playerid,"PED","SEAT_down",4.0, false, false, false, true, false, SYNC_ALL);
 	return 1;

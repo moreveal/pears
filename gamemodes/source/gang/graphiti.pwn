@@ -366,6 +366,7 @@ stock dialogCase_Graphiti(playerid, dialogid, response, listitem)
             S_SetPlayerVirtualWorld(playerid, 0, 0);
             PPSetPlayerInterior(playerid, 0);
             PPSetPlayerPos(playerid, GraphitiInfo[listord][graphitiPos][0],GraphitiInfo[listord][graphitiPos][1],GraphitiInfo[listord][graphitiPos][2]+3);
+            PPSetPlayerFacingAngle(playerid, 0.0);
         }
         else ShowAllGraphiti(playerid);
     }

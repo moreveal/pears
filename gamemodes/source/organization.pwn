@@ -480,10 +480,25 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 		new kol;
 		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
 		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
-		PlayerInfo[playerid][pUnit] += kol*OrganInfo[g][gUnitStat][2];
 
-		new string[80];
-		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d",kol*OrganInfo[g][gUnitStat][2]);
+		GivePlayerUnit(playerid, kol*OrganInfo[g][gUnitStat][2]);
+	}
+	return 1;
+}
+
+stock GivePlayerUnit(playerid, unit)
+{
+	PlayerInfo[playerid][pUnit] += unit;
+
+	new string[80];
+	if(unit > 0) 
+	{
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d", unit);
+		GameTextForPlayer(playerid,string,3000,3);
+	}
+	else if(unit < 0)
+	{
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~r~-%d", unit);
 		GameTextForPlayer(playerid,string,3000,3);
 	}
 	return 1;

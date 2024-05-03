@@ -136,7 +136,7 @@ stock closeTestDrive(playerid)
         S_SetPlayerVirtualWorld(playerid,playerid+1,223);
         PPSetPlayerInterior(playerid,223);
         PPSetPlayerPos(playerid,-1131.3629,2865.5681,918.0888);
-        SetPlayerFacingAngle(playerid, 0.6306);
+        PPSetPlayerFacingAngle(playerid, 0.6306);
         VehInfo[vehicleid][vSeat] = 0; // Отмечаем, что игрок уже не в транспорте
 
         // Возвращаем транспорт на позицию в автосервис
@@ -361,7 +361,7 @@ stock closeMenu_VehicleShop(playerid)
     PPSetPlayerInterior(playerid, SpInt[playerid]);
 
     PPSetPlayerPos(playerid, SpX[playerid], SpY[playerid], SpZ[playerid]);
-    SetPlayerFacingAngle(playerid, SpA[playerid]);
+    PPSetPlayerFacingAngle(playerid, SpA[playerid]);
 
     SetCameraBehindPlayer(playerid); // Возвращаем камеру
 
@@ -401,7 +401,7 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     S_SetPlayerVirtualWorld(playerid, world, interior);
     PPSetPlayerInterior(playerid, interior);
     PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
-    SetPlayerFacingAngle(playerid, pos[3]);
+    PPSetPlayerFacingAngle(playerid, pos[3]);
 
     SelectColorDraw(playerid); // Кликабельность
     PlayerPlaySound(playerid, 40405, 0, 0, 0); // Тилинь

@@ -17,46 +17,59 @@ stock ProcessFollowMe(playerid)
 			    if((w != GetPlayerVirtualWorld(playerid) || i != GetPlayerInterior(playerid))) S_SetPlayerVirtualWorld(playerid, w, i), PPSetPlayerInterior(playerid, i);
 
 				// Если мы дальше 4 метров и ближе 20 заставляем игрока идти за нами
-				if(distcop >= 4.0 && GetPVarInt(playerid, "Follow_Run") == 0)
+				if(distcop >= 4.0)
 				{
 					TurnPlayerFaceToPlayer(playerid, copid); // Поворачиваем лицом
-					ApplyAnimation(playerid,"PED","sprint_panic",4.0, true, true, true, false, 0);
-					SetPVarInt(playerid, "Follow_Run", 1);
+					if(GetPVarInt(playerid, "Follow_Run") == 0)
+					{
+						ApplyAnimation(playerid,"PED","sprint_panic",4.0, true, true, true, false, 0);
+						SetPVarInt(playerid, "Follow_Run", 1);
+					}
 				}
 
 				// Подошли близко, останавливаем
-				if(distcop <= 3.9 && GetPVarInt(playerid, "Follow_Run") == 1)
-				{
-					ApplyAnimation(playerid,"PED","facanger",4.0, false, true, true, false, false);
-					ClearAnimations(playerid);
-					SetPVarInt(playerid, "Follow_Run", 0);
-				}
+				if(distcop <= 3.9 && GetPVarInt(playerid, "Follow_Run") == 1) StopFollowMe(playerid);
 			}
 		}
 	}
     return 1;
 }
 
-// Ставим в позицию игрока, которого ведём за собой
-stock SetPlayerPosFollowMe(playerid, bool:keepStatus = false)
+// Встаём
+stock StopFollowMe(playerid)
 {
+	ApplyAnimation(playerid,"PED","facanger",4.0, false, true, true, false, false);
+	ClearAnimations(playerid);
+	SetPVarInt(playerid, "Follow_Run", 0);
+	return 1;
+}
+
+// Ставим в позицию игрока, которого ведём за собой
+stock SetPlayerPosFollowMe(playerid) 
+{
+	// Этот stock встроен в SetPlayerFaclingAngle
+	// Потому что, чтобы игрока правильно поставить перед лицом нам нужно заранее знать, куда мы будем смотреть после входа
+
 	if(Follow[playerid] != 9999 // Имеет id игрока
 		&& FollowTime[playerid] == 1) // Я веду игрока
 	{
 		new followid = Follow[playerid];
 		if(IsOnline(followid))
 		{
-			// Морозим, если необходимо
-			if(keepStatus == true) keep(followid);
+			StopFollowMe(followid); // Останавливаем
+			keep(followid); // Морозим игрока
 
 			// Меняем вирт мир и инт
-			new world = GetPlayerVirtualWorld(playerid), interior = OnlineInfo[playerid][oInteriorPlayer];
+			new world = OnlineInfo[playerid][oWorldPlayer], interior = OnlineInfo[playerid][oInteriorPlayer];
 			S_SetPlayerVirtualWorld(followid, world, interior);
 			PPSetPlayerInterior(followid, interior);
 
+			// Обновляем объекты стримера (Потому что мы игрока можем поставить в экстерьер)
+			Streamer_Update(followid, STREAMER_TYPE_OBJECT);
+
 			// Ставим перед лицом
 			new Float:copx,Float:copy, Float:copz, Float:copa;
-			frontme(playerid, 2.0, copx, copy, copz, copa);
+			frontme(playerid, 2.0, copx, copy, copz, copa, true);
         	SetPlayerLookAt(followid, copx, copy);
         	PPSetPlayerPos(followid, copx, copy, copz);
 		}

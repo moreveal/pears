@@ -1003,7 +1003,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     SetPosa[playerid] = 2;
     //ProtectSetSpawnInfo(playerid, NO_TEAM, models, connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
-    //SetPlayerVirtualWorld(playerid, connect_world); PPSetPlayerInterior(playerid, connect_interior);
+    //S_SetPlayerVirtualWorld(playerid, connect_world); PPSetPlayerInterior(playerid, connect_interior);
 
     // Завершение игры при выходе последнего оставшегося в команде участника
     new same_team_players_count = ComputerClubGetPlayersCount(gameid, roomid, teamid);
@@ -1356,7 +1356,7 @@ stock ComputerClubSpectatePlayer(playerid, id) {
     new Float:x, Float:y, Float:z;
     GetPlayerPos(id, x, y, z);
     PPOpenSpectating(playerid, x, y, z);
-    SetPlayerVirtualWorld(playerid, world);
+    S_SetPlayerVirtualWorld(playerid, world, interior);
     PPSetPlayerInterior(playerid, interior);
     PlayerSpectatePlayer(playerid, id);
 }
@@ -1604,7 +1604,7 @@ stock ComputerClubOnPlayerSpawn(playerid) {
 
         new models = PlayerInfo[playerid][pModel];
         ProtectSetSpawnInfo(playerid, teamid, models, x, y, z, a, 0, 0, 0, 0, 0, 0);
-        PPSetPlayerPos(playerid, x, y, z), SetPlayerFacingAngle(playerid, a);
+        PPSetPlayerPos(playerid, x, y, z), PPSetPlayerFacingAngle(playerid, a);
 
         SetCameraBehindPlayer(playerid);
         SetPlayerColor(playerid, nick_color);

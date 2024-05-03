@@ -463,7 +463,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                         case 1: PPSetPlayerPos(playerid,1603.3575,-1611.1398,13.5016);
                         default: PPSetPlayerPos(playerid,1605.9177,-1611.5446,13.5291);
                     }
-                    SetPlayerFacingAngle(playerid,180.0);
+                    PPSetPlayerFacingAngle(playerid,180.0);
                 }
                 else if(vehicleid == prisonbus_SF)
                 {
@@ -478,7 +478,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                         case 1: PPSetPlayerPos(playerid,-1580.8610,686.3076,7.1875);
                         default: PPSetPlayerPos(playerid,-1579.2289,685.9234,7.1875);
                     }
-                    SetPlayerFacingAngle(playerid,180.0);
+                    PPSetPlayerFacingAngle(playerid,180.0);
                 }
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Садитесь в тюремный автобус\n\n{FF6347}Внимание! {ffcc66}Если вы выйдете из автобуса, то вернётесь обратно в КПЗ!","*","");
                 SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Мне нужно сесть в автобус [ Отправление через 30 секунд ]");
@@ -705,9 +705,9 @@ stock PrisonEscape(playerid)
     query_empty(pearsq, string_mysql);
 
     keep(playerid);
-    PPSetPlayerPos(playerid,299.2186,2164.9827,942.0348);
     S_SetPlayerVirtualWorld(playerid,241,241), PPSetPlayerInterior(playerid,241);
-    SetPlayerFacingAngle(playerid,173.2588);
+    PPSetPlayerPos(playerid,299.2186,2164.9827,942.0348);
+    PPSetPlayerFacingAngle(playerid,173.2588);
     SetPlayerCriminal(playerid, -1, CriminalCodeInfo[0][0][ccName], CriminalCodeInfo[0][0][ccLevel], 0, 0);
     SuccessMessage(playerid, "{99ff66}Вы сбежали из тюрьмы");
 

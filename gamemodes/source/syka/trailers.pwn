@@ -446,9 +446,10 @@ CMD:trailer(playerid, const params[])
     new trailerid = params[0] - 1;
     if(!trailerInfo[trailerid][tActive]) return ErrorMessage(playerid, "{FF6347}Трейлер не установлен");
 
-    PPSetPlayerPos(playerid, trailerInfo[trailerid][tPic][0], trailerInfo[trailerid][tPic][1], trailerInfo[trailerid][tPic][2] + 0.5);
     S_SetPlayerVirtualWorld(playerid, 0, 0);
 	PPSetPlayerInterior(playerid, 0);
+    PPSetPlayerPos(playerid, trailerInfo[trailerid][tPic][0], trailerInfo[trailerid][tPic][1], trailerInfo[trailerid][tPic][2] + 0.5);
+    PPSetPlayerFacingAngle(playerid, 0.0);
 	return 1;
 }
 
@@ -590,6 +591,7 @@ stock exittrailer(playerid)
     S_SetPlayerVirtualWorld(playerid, 0, 0);
     PPSetPlayerInterior(playerid, 0);
     PPSetPlayerPos(playerid, trailerInfo[tid][tPic][0], trailerInfo[tid][tPic][1], trailerInfo[tid][tPic][2] + 0.5);
+    PPSetPlayerFacingAngle(playerid, 0.0);
     return 1;
 }
 

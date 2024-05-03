@@ -512,9 +512,9 @@ stock DestroyClothesActor(playerid)
 }
 stock GoShmot(playerid, stat)
 {
-	PPSetPlayerPos(playerid, 1542.2922,-1451.5934,45.9063), SetPlayerFacingAngle(playerid, 36.3980);
 	S_SetPlayerVirtualWorld(playerid, playerid+1, 0);
  	PPSetPlayerInterior(playerid, 0);
+	PPSetPlayerPos(playerid, 1542.2922,-1451.5934,45.9063), PPSetPlayerFacingAngle(playerid, 36.3980);
  	TogglePlayerControllable(playerid, false);
 	InterpolateCameraPos(playerid, 1540.998779, -1459.510864, 46.879333, 1538.850585, -1455.088989, 46.521511, 1000);
 	InterpolateCameraLookAt(playerid, 1538.275634, -1455.370727, 46.213356, 1536.296020, -1450.861206, 45.747303, 1000);
@@ -650,10 +650,10 @@ stock ExitShmot(playerid)
 {
 	SetPVarInt(playerid, "SelectCharPlace",0);
 	keep(playerid);
-	PPSetPlayerPos(playerid, SkinX[playerid], SkinY[playerid], SkinZ[playerid]);
- 	SetPlayerFacingAngle(playerid, SkinA[playerid]);
-  	S_SetPlayerVirtualWorld(playerid, SkinWorld[playerid], SkinInt[playerid]);
+	S_SetPlayerVirtualWorld(playerid, SkinWorld[playerid], SkinInt[playerid]);
    	PPSetPlayerInterior(playerid, SkinInt[playerid]);
+	PPSetPlayerPos(playerid, SkinX[playerid], SkinY[playerid], SkinZ[playerid]);
+ 	PPSetPlayerFacingAngle(playerid, SkinA[playerid]);
 
 	SetCameraBehindPlayer(playerid);
 	CancelSelectTextDraw(playerid);

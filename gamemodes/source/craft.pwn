@@ -552,14 +552,15 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
         if(CraftProcessTimer[playerid] == 0)
         {
             i_resetveshi(playerid);
-            new line[100],lines[1000];
+            new lines[2000];
 
             if(Tabs_Load[playerid] == 10) // Двигатель
             {
-                format(line,sizeof(line),"\n{444444}Выберите {ff9000}Рем. комплект {444444}в инвентаре"), strcat(lines,line);
-                format(line,sizeof(line),"\n{444444}Затем повторно нажмите на двигатель, чтобы начать ремонт"), strcat(lines,line);
-
-                format(line,sizeof(line),"\n\n{ffcc66}Нажимайте на кнопку с гаечным ключём в тот момент,\nкогда полоса загрузки находится на зелёной зоне"), strcat(lines,line);
+                format(lines,sizeof(lines),
+                "\n{444444}Выберите {ff9000}Рем. комплект {444444}в инвентаре\
+                \n{444444}Затем повторно нажмите на двигатель, чтобы начать ремонт\
+                \n\n{ffcc66}Нажимайте на кнопку с гаечным ключём в тот момент,\
+                \nкогда полоса загрузки находится на зелёной зоне");
                 ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Двигатель",lines,"*","");
             }
             else
@@ -578,40 +579,39 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 }
                 if(Tabs_Load[playerid] == 11) // Верстак
                 {
-                    format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                    format(line,sizeof(line),"\n\n{ff9000}Улучшение Предметов"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}1. Выберите {ff9000}предмет в инвентаре{444444}, который хотите улучшить"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}2. Затем нажмите на пустую область в кружочке"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    format(lines,sizeof(lines),
+                    "\n{ff9000}Создание Предметов\
+                    \n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху\
+                    \n{444444}2. Выберите предмет, который хотите создать\
+                    \n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки\
+                    \n\n{ff9000}Улучшение Предметов\
+                    \n{444444}1. Выберите {ff9000}предмет в инвентаре{444444}, который хотите улучшить\
+                    \n{444444}2. Затем нажмите на пустую область в кружочке\
+                    \n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки\
+                    \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
+                    \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Верстак",lines,"*","");
                 }
                 else if(Tabs_Load[playerid] == 12) // Кухонная Плита
                 {
-                    format(line,sizeof(line),"\n{ff9000}Готовка Еды"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}2. Выберите продукт, который хотите приготовить"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}3. Положите требуемые ингредиенты из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    format(lines,sizeof(lines),
+                    "\n{ff9000}Готовка Еды\
+                    \n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху\
+                    \n{444444}2. Выберите продукт, который хотите приготовить\
+                    \n{444444}3. Положите требуемые ингредиенты из инвентаря в пустые ячейки\
+                    \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
+                    \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Кухонная Плита",lines,"*","");
                 }
                 else if(Tabs_Load[playerid] == 13) // Химический Стол
                 {
-                    format(line,sizeof(line),"\n{ff9000}Создание Предметов"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}2. Выберите предмет, который хотите создать"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки"), strcat(lines,line);
-
-                    format(line,sizeof(line),"\n\n{ffcc66}После выбора предмета и сбора деталей нажмите"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ffcc66}на кнопку с галочкой, чтобы начать процесс"), strcat(lines,line);
+                    format(lines,sizeof(lines),
+                    "\n{ff9000}Создание Предметов\
+                    \n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху\
+                    \n{444444}2. Выберите предмет, который хотите создать\
+                    \n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки\
+                    \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
+                    \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
                 }
             }
