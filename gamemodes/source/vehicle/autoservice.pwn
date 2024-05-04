@@ -1,3 +1,63 @@
+
+// Диалоговое окно о начале покупки
+stock showDialogBuyAutoserviceDetail(playerid, slot)
+{
+    new b = gAutosalon[playerid];
+	DP[6][playerid] = slot; // Записали слот товара в бизнесе
+	new line[140],lines[700];
+	format(line,sizeof(line),"{ff9000}Вы уверены, что хотите приобрести %s?", GetNameThing(0, BizzInfo[b][bProduct][slot], BizzInfo[b][bTypeProduct][slot], 0)), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Стоимость: {99ff66}%d$", BizzInfo[b][bPrice][slot]), strcat(lines,line);
+	ShowDialog(playerid,436,DIALOG_STYLE_MSGBOX,"{ff9000}Автосервис",lines,"Да","Нет");
+	return 1;
+}
+
+// Покупка и установка предмета в автосервисе
+stock buyThingAutoserice(playerid, slot)
+{
+	new b = gAutosalon[playerid];
+	new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
+    if(BizzInfo[b][bItem][slot] <= 0) return ErrorMessage(playerid, "{FF6347}Товара нет в наличии\n{ffcc66}Вы можете отправить в другой автосервис");
+	if(Cars[vehicleid] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
+	if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][slot]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+	
+	new thingId = BizzInfo[b][bProduct][slot], thingType = BizzInfo[b][bTypeProduct][slot];
+	if(thingId == 226)
+	{
+		if(VehInfo[vehicleid][vArmor] == 1000) return ErrorMessage(playerid, "{FF6347}Эта деталь уже установлена");
+		VehInfo[vehicleid][vArmor] = 1000;
+        SetVehicleArmor(vehicleid);
+	}
+	else if(thingId == 227)
+	{
+		if(VehInfo[vehicleid][vArmor] == 2000) return ErrorMessage(playerid, "{FF6347}Эта деталь уже установлена");
+		VehInfo[vehicleid][vArmor] = 2000;
+        SetVehicleArmor(vehicleid);
+	}
+	else if(thingId == 228)
+	{
+		if(VehInfo[vehicleid][vArmor] == 3000) return ErrorMessage(playerid, "{FF6347}Эта деталь уже установлена");
+		VehInfo[vehicleid][vArmor] = 3000;
+        SetVehicleArmor(vehicleid);
+	}
+
+    BizzInfo[b][bItem][slot] -= 1, BizzInfo[b][bUpdate] = 1;
+
+	SaveCar(vehicleid);
+	oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]);
+	paybiz(b, BizzInfo[b][bPrice][slot]);
+
+	new string[100];
+	format(string,sizeof(string),"{99ff66}Вы купили %s", GetNameThing(0, thingId, thingType, 0));
+	SuccessMessage(playerid, string);
+	return 1;
+}
+
+stock SetVehicleArmor(vehicleid)
+{
+    ACSetVehicleHealth(vehicleid, VehInfo[vehicleid][vHealth] + VehInfo[vehicleid][vArmor]);
+    return 1;
+}
+
 stock CheckAutoInRangeService(playerid)
 {
     new b = gAutosalon[playerid];
@@ -397,7 +457,7 @@ stock openTestDrive_Autoservice(playerid)
     if(GetPVarInt(playerid,"tunstat") > 0) return ErrorMessage(playerid, "{FF6347}Сохраните или отмените выбранную деталь\n{ffcc66}Test Drive доступен только для проверки характеристик транспорта");
     if(OnlineInfo[playerid][oTimerAutoservice] > 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения выхода из тест драйва");
 
-    new Float:health, Float:max_health = MaxVehicleHealth(VehInfo[vehicleid][vModel]);
+    new Float:health, Float:max_health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
     GetVehicleHealth(vehicleid, health);
     if(health < max_health) return ErrorMessage(playerid, "{FF6347}Почините двигатель транспорта, прежде чем использовать Test Drive");
 

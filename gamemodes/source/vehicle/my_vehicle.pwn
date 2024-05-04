@@ -3496,8 +3496,14 @@ stock ServiceVehicleShop(playerid)
 	format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}%d$ \t {444444}%d", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]), strcat(lines,line);
 	if(b <= 192)
 	{
+		// Ремкомплект мото
 		i = 6;
 		List[1][playerid] = i;
+		format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}%d$ \t {444444}%d", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]), strcat(lines,line);
+	
+		// Домкрат
+		i = 28;
+		List[2][playerid] = i;
 		format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}%d$ \t {444444}%d", GetNameThing(0, BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i], 0), BizzInfo[b][bPrice][i], BizzInfo[b][bItem][i]), strcat(lines,line);
 	}
 
@@ -4232,10 +4238,8 @@ stock pts(p, v)
    	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePriceGos(model)), strcat(lines,line);
 	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n"), strcat(lines,line);
 
-	if(VehInfo[v][vHandlingModel] > 0)
-	{
-		format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[v][vHandlingModel])), strcat(lines,line);
-	}
+	if(VehInfo[v][vHandlingModel] > 0) format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[v][vHandlingModel])), strcat(lines,line);
+	if(VehInfo[v][vArmor] > 0) format(line,sizeof(line),"\n{cccccc}Бронеплёнка: {0088ff}%.0f", VehInfo[v][vArmor]), strcat(lines,line);
 
 	for(new i = 0; i < 13; i++)
 	{
@@ -4414,10 +4418,12 @@ function LoadCar(playerid, dab, race_check)
 	}
 	else
 	{
+		new Float:armor_veh;
 		cache_get_value_name_float(0, "koordinatx", kord[0]);
 		cache_get_value_name_float(0, "koordinaty", kord[1]);
 		cache_get_value_name_float(0, "koordinatz", kord[2]);
 		cache_get_value_name_float(0, "koordinata", kord[3]);
+		cache_get_value_name_float(0, "vArmor", armor_veh);
 		cache_get_value_name_int(0, "vehcol1", paramet[2]);
 		cache_get_value_name_int(0, "vehcol2", paramet[3]);
 		cache_get_value_name_int(0, "arest", paramet[4]);
@@ -4432,13 +4438,16 @@ function LoadCar(playerid, dab, race_check)
 				SetPVarInt(playerid,"stopload",0);
 				return 1;
 			}
+
+			// Без восстановления, просто грузим
 			if(repair == 0)
 			{
 				cache_get_value_name_float(0, "health", health);
-				if(!health) health = MaxVehicleHealth(paramet[1]);
-				else if(health < 400.0) health = 400.0;
+				if(!health) health = MaxVehicleHealth(paramet[1]) + armor_veh;
+				else if(health <= 400.0) health = 400.0;
+				else health += armor_veh;
 			}
-			else health = MaxVehicleHealth(paramet[1]);
+			else health = MaxVehicleHealth(paramet[1]) + armor_veh; // Восстанавливаем
 			
 			new numer[20], benz, god, nyche;
 			cache_get_value_name(0, "numer", numer, 20);
@@ -4463,7 +4472,7 @@ function LoadCar(playerid, dab, race_check)
 				SetPVarInt(playerid,"stopload",0);
 				return 1;
 			}
-
+			VehInfo[vehid][vArmor] = armor_veh;
 			cache_get_value_name_int(0, "arest", VehInfo[vehid][vArest]);
 			cache_get_value_name_int(0, "lock", VehInfo[vehid][vCarLock]);
 			cache_get_value_name_int(0, "comp1", VehInfo[vehid][vComp1]);
@@ -4928,7 +4937,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
+					CreatePlatesVehicle(), MaxVehicleHealth(carid, carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
 				mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
 			}
 			else
@@ -4936,7 +4945,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json);
+					CreatePlatesVehicle(), MaxVehicleHealth(carid, carid), nyche, string_json);
 				query_empty(pearsq, string_mysql);
 			}
 		}
@@ -5020,7 +5029,7 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 
 		new string_mysql[600];
 		format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
+		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid, carid),CreatePlatesVehicle(),nyche);
 		query_empty(pearsq, string_mysql); // 249 + 44 + 80 + 24 (407)
 
         // Сохраняем авто

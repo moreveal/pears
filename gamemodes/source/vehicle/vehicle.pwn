@@ -315,7 +315,7 @@ stock PP_CreateVehicle(model,Float:x,Float:y,Float:z,Float:a, col1, col2, sek, s
 	VehInfo[id][vFara] = 0;
 	VehInfo[id][vTires] = 0;
 
-	if(!health) health = MaxVehicleHealth(model);
+	if(!health) health = MaxVehicleHealth(model, id);
 	VehInfo[id][vHealth] = health;
 	SetVehicleHealth(id, VehInfo[id][vHealth]);
 
@@ -340,7 +340,7 @@ stock PP_AddStaticVehicleEx(modelID, Float: spawn_X, Float: spawn_Y, Float: spaw
 	VehInfo[id][vFara] = 0;
 	VehInfo[id][vTires] = 0;
 
-	if(!health) health = MaxVehicleHealth(modelID);
+	if(!health) health = MaxVehicleHealth(modelID, id);
 	VehInfo[id][vHealth] = health;
 	SetVehicleHealth(id, VehInfo[id][vHealth]);
 
@@ -579,7 +579,7 @@ stock IsATrashBoot(playerid) // Позиция багажника в мусор�
 	return 0;
 }
 
-stock MaxVehicleHealth(model)
+stock MaxVehicleHealth(model, vehicleid = 0)
 {
 	new maxhealth;
     if(model == 428 || model == 470 || model == 528) maxhealth = 3000;
@@ -587,6 +587,8 @@ stock MaxVehicleHealth(model)
     else if(model == 432) maxhealth = 6000;
 	else if(model == 537 || model == 538 || model == 2032) maxhealth = 10000; // train
     else maxhealth = 2000;
+
+	if(vehicleid > 0) maxhealth += floatround(VehInfo[vehicleid][vArmor], floatround_round);
 	return maxhealth;
 }
 

@@ -523,7 +523,10 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][25] == 0 || stat == 1) BizzInfo[b][bProduct][25] = 222, BizzInfo[b][bTypeProduct][25] = 0, yes[25] = true; // Тормоза
 		if(BizzInfo[b][bProduct][26] == 0 || stat == 1) BizzInfo[b][bProduct][26] = 223, BizzInfo[b][bTypeProduct][26] = 0, yes[26] = true; // Тормоза
 		if(BizzInfo[b][bProduct][27] == 0 || stat == 1) BizzInfo[b][bProduct][27] = 224, BizzInfo[b][bTypeProduct][27] = 0, yes[27] = true; // Движок Топовый
-
+		if(BizzInfo[b][bProduct][28] == 0 || stat == 1) BizzInfo[b][bProduct][28] = 225, BizzInfo[b][bTypeProduct][28] = 0, yes[28] = true; // Домкрат
+		if(BizzInfo[b][bProduct][29] == 0 || stat == 1) BizzInfo[b][bProduct][29] = 226, BizzInfo[b][bTypeProduct][29] = 0, yes[29] = true; // Бронеплёнка 1000
+		if(BizzInfo[b][bProduct][30] == 0 || stat == 1) BizzInfo[b][bProduct][30] = 227, BizzInfo[b][bTypeProduct][30] = 0, yes[30] = true; // Бронеплёнка 2000
+		if(BizzInfo[b][bProduct][31] == 0 || stat == 1) BizzInfo[b][bProduct][31] = 228, BizzInfo[b][bTypeProduct][31] = 0, yes[31] = true; // Бронеплёнка 3000
 	}
 	else if(b >= 193 && b <= 195) // Сервис Авиатранспорта
 	{

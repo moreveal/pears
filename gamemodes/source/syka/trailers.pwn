@@ -152,7 +152,7 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
         return 1;
     }
     
-    new Float:safe_health = MaxVehicleHealth(VehInfo[vehicleid][vModel]);
+    new Float:safe_health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
     if (GetVehicleTrailer(vehicleid) < 1) { // Если трейлер отцепился
         // Резко останавливаем машину водителя и сам трейлер (чтобы ничего не летало)
         SetVehicleSpeed(trailerid, 0), SetVehicleSpeed(vehicleid, 0);

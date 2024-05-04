@@ -144,7 +144,7 @@ stock closeTestDrive(playerid)
 
         // Чиним транспорт после тест драйва
         ACRepairVehicle(vehicleid);
-        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel]));
+        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
 
         // Таймер для корректного возвращение игрока в транспорт
         if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]);

@@ -1,5 +1,5 @@
 
-//#define MAX_CONNECT_FCNPC 3 // Максимальное количество постоянно загруженных NPC
+//#define MAX_CONNECT_FCNPC 3 // РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЃС‚РѕСЏРЅРЅРѕ Р·Р°РіСЂСѓР¶РµРЅРЅС‹С… NPC
 
 //new quanConnectNPC;
 
@@ -10,24 +10,24 @@ new Float:speedTrain;
 new Float:speedGo;
 new TrainStoped = 1;
 new TrainGearDelay;
-new MoveStatus; // 0 Разгон, 1 Торможение
+new MoveStatus; // 0 Р Р°Р·РіРѕРЅ, 1 РўРѕСЂРјРѕР¶РµРЅРёРµ
 
 
 stock CreateNPC()
 {
-    // Первый NPC
+    // РџРµСЂРІС‹Р№ NPC
     NpcArmy = FCNPC_Create("John");
-    npcarmyid = GetMaxPlayers() - 1; // id бота
+    npcarmyid = GetMaxPlayers() - 1; // id Р±РѕС‚Р°
     FCNPC_Spawn(NpcArmy, 287, 53.8143,1275.7471,16.7148);
     SetPlayerColor(npcarmyid, 0x336633FF);
-    FCNPC_SetInvulnerable(NpcArmy, true); // Неубиваемый
+    FCNPC_SetInvulnerable(NpcArmy, true); // РќРµСѓР±РёРІР°РµРјС‹Р№
     FCNPC_PutInVehicle(NpcArmy, train, 0);
 
     print("[MODE]: FCNPC_Create");
     return 1;
 }
 
-public FCNPC_OnCreate(npcid) // Вызывается при создании NPC
+public FCNPC_OnCreate(npcid) // Р’С‹Р·С‹РІР°РµС‚СЃСЏ РїСЂРё СЃРѕР·РґР°РЅРёРё NPC
 {
 
     return 1;
@@ -38,7 +38,7 @@ public FCNPC_OnUpdate(npcid)
     if(GetPlayerState(npcid) == PLAYER_STATE_DRIVER)
     {
         new vehicleid = GetPlayerVehicleID(npcid);
-		new Float:vhp, Float:maxhp = MaxVehicleHealth(VehInfo[vehicleid][vModel]);
+		new Float:vhp, Float:maxhp = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
 		GetVehicleHealth(vehicleid, vhp);
         if(vhp < maxhp) VehInfo[vehicleid][vHealth] = maxhp, SetVehicleHealth(vehicleid, maxhp);
     }
@@ -48,16 +48,16 @@ public FCNPC_OnUpdate(npcid)
 CMD:traingo(playerid, const params[])
 {
     if(server != 0) return 0;
-    if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}Остановите поезд /trainstop");
+    if(TrainMoved == 1) return ErrorMessage(playerid, "{FF6347}РћСЃС‚Р°РЅРѕРІРёС‚Рµ РїРѕРµР·Рґ /trainstop");
 
-    if(sscanf(params, "i", params[0])) return ErrorMessage(playerid, "{FF6347}/traingo TrainRoadDestination (В какую точку едем)");
-    if(TrainRoadID == params[0]) return ErrorMessage(playerid, "{FF6347}Поезд уже в этой точке");
+    if(sscanf(params, "i", params[0])) return ErrorMessage(playerid, "{FF6347}/traingo TrainRoadDestination (Р’ РєР°РєСѓСЋ С‚РѕС‡РєСѓ РµРґРµРј)");
+    if(TrainRoadID == params[0]) return ErrorMessage(playerid, "{FF6347}РџРѕРµР·Рґ СѓР¶Рµ РІ СЌС‚РѕР№ С‚РѕС‡РєРµ");
 
-    if(BoxInTrain <= 0) BoxInTrain = 1; // Типо есть ящики
+    if(BoxInTrain <= 0) BoxInTrain = 1; // РўРёРїРѕ РµСЃС‚СЊ СЏС‰РёРєРё
     TrainRoadDestination = params[0]; // 311 SF, 807 LS, 1181 LV, 0 NGSA
 
     TrainStart();
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Движение поезда запущено","*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р”РІРёР¶РµРЅРёРµ РїРѕРµР·РґР° Р·Р°РїСѓС‰РµРЅРѕ","*","");
     return 1;
 }
 
@@ -84,12 +84,12 @@ function TrainStart()
 CMD:trainstop(playerid)
 {
     if(server != 0) return 0;
-    if(TrainMoved == 0) return ErrorMessage(playerid, "{FF6347}Поезд стоит на месте");
-    if(MoveStatus == 1) return ErrorMessage(playerid, "{FF6347}Поезд уже останавливается");
-    if(TrainStoped == 1) return ErrorMessage(playerid, "{FF6347}Дождитесь остановки поезда");
+    if(TrainMoved == 0) return ErrorMessage(playerid, "{FF6347}РџРѕРµР·Рґ СЃС‚РѕРёС‚ РЅР° РјРµСЃС‚Рµ");
+    if(MoveStatus == 1) return ErrorMessage(playerid, "{FF6347}РџРѕРµР·Рґ СѓР¶Рµ РѕСЃС‚Р°РЅР°РІР»РёРІР°РµС‚СЃСЏ");
+    if(TrainStoped == 1) return ErrorMessage(playerid, "{FF6347}Р”РѕР¶РґРёС‚РµСЃСЊ РѕСЃС‚Р°РЅРѕРІРєРё РїРѕРµР·РґР°");
     MoveStatus = 1;
     ReasonToStopTrain = 0;
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Останавливаем поезд","*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕРµР·Рґ","*","");
     return 1;
 }
 // /npcgo -0.3150 1.7
@@ -98,7 +98,7 @@ stock FindNextTrainRoad()
     new maxTrainRoad = sizeof(TrainRoad);
     new plus;
 
-    if(MoveStatus == 1) // При остановке прыгаем по меньшему количеству поинтов
+    if(MoveStatus == 1) // РџСЂРё РѕСЃС‚Р°РЅРѕРІРєРµ РїСЂС‹РіР°РµРј РїРѕ РјРµРЅСЊС€РµРјСѓ РєРѕР»РёС‡РµСЃС‚РІСѓ РїРѕРёРЅС‚РѕРІ
     {
         if(TrainGear >= 5) plus = 5;
         else plus = 2;
@@ -125,7 +125,7 @@ public FCNPC_OnReachDestination(npcid)
 {
     if(npcid == NpcArmy)
     {
-        // Ставим поезд на новую позицию
+        // РЎС‚Р°РІРёРј РїРѕРµР·Рґ РЅР° РЅРѕРІСѓСЋ РїРѕР·РёС†РёСЋ
         if(TrainRoadID <= 290 || TrainRoadID >= 320) SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
 
         if(TrainStoped == 1)
@@ -139,7 +139,7 @@ public FCNPC_OnReachDestination(npcid)
             if(ReasonToStopTrain > 0) CreateTrainBox();
             else
             {
-                // Пишем сообщение всем, кто едет в поезде
+                // РџРёС€РµРј СЃРѕРѕР±С‰РµРЅРёРµ РІСЃРµРј, РєС‚Рѕ РµРґРµС‚ РІ РїРѕРµР·РґРµ
                 foreach(Player,i)
                 {
                     if(OnlineInfo[i][oLogged] == 0) continue;
@@ -152,7 +152,7 @@ public FCNPC_OnReachDestination(npcid)
         }
         else
         {
-            if(MoveStatus == 0) // Разгоняем поезд
+            if(MoveStatus == 0) // Р Р°Р·РіРѕРЅСЏРµРј РїРѕРµР·Рґ
             {
                 TrainGearDelay ++;
                 if(TrainGear == 1 || TrainGear == 2
@@ -163,17 +163,17 @@ public FCNPC_OnReachDestination(npcid)
                     || TrainGear == 7 && TrainGearDelay >= 8
                     || TrainGear == 8 && TrainGearDelay >= 10) TrainGearSet(1);
             }
-            else if(MoveStatus == 1) // Тормозим поезд
+            else if(MoveStatus == 1) // РўРѕСЂРјРѕР·РёРј РїРѕРµР·Рґ
             {
                 TrainGearSet(0);
             }
 
             if(MoveStatus == 0)
             {
-                // Проверка наличия ящиков при движении
-                if(TrainRoadDestination != 0 && BoxInTrain <= 0) TrainRoadDestination = 0; // Если мы едет не на базу и в поезде нет ящиков - отправляем на базу
+                // РџСЂРѕРІРµСЂРєР° РЅР°Р»РёС‡РёСЏ СЏС‰РёРєРѕРІ РїСЂРё РґРІРёР¶РµРЅРёРё
+                if(TrainRoadDestination != 0 && BoxInTrain <= 0) TrainRoadDestination = 0; // Р•СЃР»Рё РјС‹ РµРґРµС‚ РЅРµ РЅР° Р±Р°Р·Сѓ Рё РІ РїРѕРµР·РґРµ РЅРµС‚ СЏС‰РёРєРѕРІ - РѕС‚РїСЂР°РІР»СЏРµРј РЅР° Р±Р°Р·Сѓ
 
-                // Ищем остановку на нужной станции
+                // РС‰РµРј РѕСЃС‚Р°РЅРѕРІРєСѓ РЅР° РЅСѓР¶РЅРѕР№ СЃС‚Р°РЅС†РёРё
                 new pointsToStop;
                 if(TrainRoadDestination == 0) pointsToStop = sizeof(TrainRoad) - TrainRoadID + 1;
                 else
@@ -186,24 +186,24 @@ public FCNPC_OnReachDestination(npcid)
                     ReasonToStopTrain = 0;
                 }
                 
-                // Ищем руины бомбы на путях перед поездом
-                if(BoxInTrain > 0 && server > 0 || server == 0) // Только если в поезде есть ящики (Если нет, нам насрать на развалины, поезд должен вернуться to NGSA Station)
+                // РС‰РµРј СЂСѓРёРЅС‹ Р±РѕРјР±С‹ РЅР° РїСѓС‚СЏС… РїРµСЂРµРґ РїРѕРµР·РґРѕРј
+                if(BoxInTrain > 0 && server > 0 || server == 0) // РўРѕР»СЊРєРѕ РµСЃР»Рё РІ РїРѕРµР·РґРµ РµСЃС‚СЊ СЏС‰РёРєРё (Р•СЃР»Рё РЅРµС‚, РЅР°Рј РЅР°СЃСЂР°С‚СЊ РЅР° СЂР°Р·РІР°Р»РёРЅС‹, РїРѕРµР·Рґ РґРѕР»Р¶РµРЅ РІРµСЂРЅСѓС‚СЊСЃСЏ to NGSA Station)
                 {
                     new ruinsOnTrainRoad = IsRuinsOnTrainRoad();
-                    if(ruinsOnTrainRoad >= 0) // Нашли, спереди есть руины
+                    if(ruinsOnTrainRoad >= 0) // РќР°С€Р»Рё, СЃРїРµСЂРµРґРё РµСЃС‚СЊ СЂСѓРёРЅС‹
                     {
-                        // Считаем точки до руин
+                        // РЎС‡РёС‚Р°РµРј С‚РѕС‡РєРё РґРѕ СЂСѓРёРЅ
                         new pointsToRuins = GetPointToRuinsOnTrain(ruinsOnTrainRoad);
 
-                        if(pointsToRuins <= GetPointToStopTrain() + 6  // Точек до руин столько-же сколько до полной остановки - Начинаем тормозить
-                            && pointsToRuins >= GetPointToStopTrain() / 2) // Но не меньше половины, ибо нахер нам стопать поезд, если руины появились перед еблом слишком резко
+                        if(pointsToRuins <= GetPointToStopTrain() + 6  // РўРѕС‡РµРє РґРѕ СЂСѓРёРЅ СЃС‚РѕР»СЊРєРѕ-Р¶Рµ СЃРєРѕР»СЊРєРѕ РґРѕ РїРѕР»РЅРѕР№ РѕСЃС‚Р°РЅРѕРІРєРё - РќР°С‡РёРЅР°РµРј С‚РѕСЂРјРѕР·РёС‚СЊ
+                            && pointsToRuins >= GetPointToStopTrain() / 2) // РќРѕ РЅРµ РјРµРЅСЊС€Рµ РїРѕР»РѕРІРёРЅС‹, РёР±Рѕ РЅР°С…РµСЂ РЅР°Рј СЃС‚РѕРїР°С‚СЊ РїРѕРµР·Рґ, РµСЃР»Рё СЂСѓРёРЅС‹ РїРѕСЏРІРёР»РёСЃСЊ РїРµСЂРµРґ РµР±Р»РѕРј СЃР»РёС€РєРѕРј СЂРµР·РєРѕ
                         {
                             SetDynamicObjectMaterial(TrainLampObject, 0, 19063, "xmasorbs", "sphere", 0xFFFF0000);
 
                             MoveStatus = 1;
-                            ReasonToStopTrain = ruinsOnTrainRoad + 1; // Тормозим по причине конкретного id руин
+                            ReasonToStopTrain = ruinsOnTrainRoad + 1; // РўРѕСЂРјРѕР·РёРј РїРѕ РїСЂРёС‡РёРЅРµ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ id СЂСѓРёРЅ
 
-                            // Пишем сообщение всем, кто едет в поезде
+                            // РџРёС€РµРј СЃРѕРѕР±С‰РµРЅРёРµ РІСЃРµРј, РєС‚Рѕ РµРґРµС‚ РІ РїРѕРµР·РґРµ
                             foreach(Player,i)
                             {
                                 if(OnlineInfo[i][oLogged] == 0) continue;
@@ -228,7 +228,7 @@ stock GetPointToRuinsOnTrain(ruinsOnTrainRoad)
     if(ruinsOnTrainRoad > TrainRoadID) pointsToRuins = ruinsOnTrainRoad - TrainRoadID;
     else
     {
-        new tempFinalPoint = sizeof(TrainRoad) - TrainRoadID; // Сколько осталось точек до завершения кольца маршрута
+        new tempFinalPoint = sizeof(TrainRoad) - TrainRoadID; // РЎРєРѕР»СЊРєРѕ РѕСЃС‚Р°Р»РѕСЃСЊ С‚РѕС‡РµРє РґРѕ Р·Р°РІРµСЂС€РµРЅРёСЏ РєРѕР»СЊС†Р° РјР°СЂС€СЂСѓС‚Р°
         pointsToRuins += tempFinalPoint + ruinsOnTrainRoad;
     }
     return pointsToRuins;
@@ -242,13 +242,13 @@ stock GetPointToStopTrain()
     else if(TrainGear == 7) point = 3 * 5 + 3 * 2;
     else if(TrainGear == 6) point = 2 * 5 + 3 * 2;
     else if(TrainGear == 5) point = 1 * 5 + 3 * 2;
-    else if(TrainGear <= 4) point = TrainGear * 2; // Последняя передача не считается при торможении (-2)
+    else if(TrainGear <= 4) point = TrainGear * 2; // РџРѕСЃР»РµРґРЅСЏСЏ РїРµСЂРµРґР°С‡Р° РЅРµ СЃС‡РёС‚Р°РµС‚СЃСЏ РїСЂРё С‚РѕСЂРјРѕР¶РµРЅРёРё (-2)
     return point;
 }
 
 stock TrainGearSet(stat)
 {
-    if(stat == 1) // Повышаем передачу
+    if(stat == 1) // РџРѕРІС‹С€Р°РµРј РїРµСЂРµРґР°С‡Сѓ
     {
         if(TrainGear == 0) TrainGear = 1, speedTrain = -0.0200, speedGo = 0.1;
         else if(TrainGear == 1) TrainGear = 2, speedTrain = -0.0600, speedGo = 0.3;
@@ -260,7 +260,7 @@ stock TrainGearSet(stat)
         else if(TrainGear == 7) TrainGear = 8, speedTrain = -0.4950, speedGo = 2.8;
         else if(TrainGear == 8) TrainGear = 9, speedTrain = -0.5930, speedGo = 3.5;
     }
-    else if(stat == 0) // Понижаем передачу
+    else if(stat == 0) // РџРѕРЅРёР¶Р°РµРј РїРµСЂРµРґР°С‡Сѓ
     {
         if(TrainGear == 9) TrainGear = 8, speedTrain = -0.4950, speedGo = 2.8;
         else if(TrainGear == 8) TrainGear = 7, speedTrain = -0.4130, speedGo = 2.3;
@@ -268,33 +268,33 @@ stock TrainGearSet(stat)
         else if(TrainGear == 6) TrainGear = 5, speedTrain = -0.2450, speedGo = 1.3;
         else if(TrainGear == 5) TrainGear = 4, speedTrain = -0.1730, speedGo = 0.9;
         else if(TrainGear == 4) TrainGear = 3, speedTrain = -0.0980, speedGo = 0.5;
-        else if(TrainGear == 3) TrainGear = 2, speedTrain = -0.0600, speedGo = 0.3, TrainStoped = 1; // Останавливаем, после завершения цикла 2-ой передачи
+        else if(TrainGear == 3) TrainGear = 2, speedTrain = -0.0600, speedGo = 0.3, TrainStoped = 1; // РћСЃС‚Р°РЅР°РІР»РёРІР°РµРј, РїРѕСЃР»Рµ Р·Р°РІРµСЂС€РµРЅРёСЏ С†РёРєР»Р° 2-РѕР№ РїРµСЂРµРґР°С‡Рё
         else if(TrainGear == 2) TrainGear = 1, speedTrain = -0.0200, speedGo = 0.1, TrainStoped = 1;
         else if(TrainGear == 1) TrainStoped = 1;
     }
     TrainGearDelay = 0;
 
     new string[50];
-    format(string,sizeof(string),"машинист переключает поезд на %d передачу", TrainGear);
+    format(string,sizeof(string),"РјР°С€РёРЅРёСЃС‚ РїРµСЂРµРєР»СЋС‡Р°РµС‚ РїРѕРµР·Рґ РЅР° %d РїРµСЂРµРґР°С‡Сѓ", TrainGear);
 	SetPlayerChatBubble(npcarmyid, string, COLOR_PURPLE, 30.0, 3000);
     return 1;
 }
 
-stock IsRuinsOnTrainRoad() // Ищем руины по пути поезда
+stock IsRuinsOnTrainRoad() // РС‰РµРј СЂСѓРёРЅС‹ РїРѕ РїСѓС‚Рё РїРѕРµР·РґР°
 {
     new trainPoint = -1;
     for(new r; r < MAX_OBJECT_RUINS; ++r)
 	{
         if(RuinsInfo[r][boStat] == 0) continue;
-        if(RuinsInfo[r][boTrainRoad] <= 0) continue; // Пропускаем, если руины лежат не на жд путях
+        if(RuinsInfo[r][boTrainRoad] <= 0) continue; // РџСЂРѕРїСѓСЃРєР°РµРј, РµСЃР»Рё СЂСѓРёРЅС‹ Р»РµР¶Р°С‚ РЅРµ РЅР° Р¶Рґ РїСѓС‚СЏС…
 
-        if(RuinsInfo[r][boTrainRoad]-1 > TrainRoadID) // Руины только где-то впереди пути
+        if(RuinsInfo[r][boTrainRoad]-1 > TrainRoadID) // Р СѓРёРЅС‹ С‚РѕР»СЊРєРѕ РіРґРµ-С‚Рѕ РІРїРµСЂРµРґРё РїСѓС‚Рё
         {
             trainPoint = RuinsInfo[r][boTrainRoad] - 1;
         }
-        else // Спереди нет руин
+        else // РЎРїРµСЂРµРґРё РЅРµС‚ СЂСѓРёРЅ
         {
-            if(TrainRoadID >= 1480 && RuinsInfo[r][boTrainRoad]-1 <= 100)  // Только если текущая позиция поезда находится в завершении, а руины где-то в начале
+            if(TrainRoadID >= 1480 && RuinsInfo[r][boTrainRoad]-1 <= 100)  // РўРѕР»СЊРєРѕ РµСЃР»Рё С‚РµРєСѓС‰Р°СЏ РїРѕР·РёС†РёСЏ РїРѕРµР·РґР° РЅР°С…РѕРґРёС‚СЃСЏ РІ Р·Р°РІРµСЂС€РµРЅРёРё, Р° СЂСѓРёРЅС‹ РіРґРµ-С‚Рѕ РІ РЅР°С‡Р°Р»Рµ
             {
                 trainPoint = RuinsInfo[r][boTrainRoad] - 1;
             }
@@ -306,21 +306,21 @@ stock IsRuinsOnTrainRoad() // Ищем руины по пути поезда
 stock MessageTrainStop(playerid)
 {
     new line[90],lines[450];
-    format(line,sizeof(line),"{FF6347}Внимание! {336633}Впереди обнаружено повреждение железнодорожных путей"), strcat(lines,line);
-    format(line,sizeof(line),"\n\n{cccccc}- Поезд плавно остановится перед препятствием"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}- Вы не можете продолжить движение, пока не устраните причину"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}- Вероятно это было устроено намеренно, с целью остановить поезд"), strcat(lines,line);
-    format(line,sizeof(line),"\n\n{336633}Защищайте груз любой ценой!"), strcat(lines,line);
+    format(line,sizeof(line),"{FF6347}Р’РЅРёРјР°РЅРёРµ! {336633}Р’РїРµСЂРµРґРё РѕР±РЅР°СЂСѓР¶РµРЅРѕ РїРѕРІСЂРµР¶РґРµРЅРёРµ Р¶РµР»РµР·РЅРѕРґРѕСЂРѕР¶РЅС‹С… РїСѓС‚РµР№"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}- РџРѕРµР·Рґ РїР»Р°РІРЅРѕ РѕСЃС‚Р°РЅРѕРІРёС‚СЃСЏ РїРµСЂРµРґ РїСЂРµРїСЏС‚СЃС‚РІРёРµРј"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРѕРґРѕР»Р¶РёС‚СЊ РґРІРёР¶РµРЅРёРµ, РїРѕРєР° РЅРµ СѓСЃС‚СЂР°РЅРёС‚Рµ РїСЂРёС‡РёРЅСѓ"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Р’РµСЂРѕСЏС‚РЅРѕ СЌС‚Рѕ Р±С‹Р»Рѕ СѓСЃС‚СЂРѕРµРЅРѕ РЅР°РјРµСЂРµРЅРЅРѕ, СЃ С†РµР»СЊСЋ РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РїРѕРµР·Рґ"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{336633}Р—Р°С‰РёС‰Р°Р№С‚Рµ РіСЂСѓР· Р»СЋР±РѕР№ С†РµРЅРѕР№!"), strcat(lines,line);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-    SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Впереди обнаружено повреждение путей. Защищайте груз!");
+    SendClientMessage(playerid, COLOR_YELLOW, " SMS РѕС‚ РћРїРµСЂР°С‚РѕСЂР°: {99ff33}Р’РїРµСЂРµРґРё РѕР±РЅР°СЂСѓР¶РµРЅРѕ РїРѕРІСЂРµР¶РґРµРЅРёРµ РїСѓС‚РµР№. Р—Р°С‰РёС‰Р°Р№С‚Рµ РіСЂСѓР·!");
     PlayerPlaySound(playerid,6001,0,0,0);
-    StopAudio(playerid, 4, 6004); // Офаем звук через 4 сек
+    StopAudio(playerid, 4, 6004); // РћС„Р°РµРј Р·РІСѓРє С‡РµСЂРµР· 4 СЃРµРє
     return 1;
 }
 
 stock MessageTrainStopInfo(playerid)
 {
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{336633}Поезд остановился\n{cccccc}Прямо сейчас вы можете выйти из поезда","*","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{336633}РџРѕРµР·Рґ РѕСЃС‚Р°РЅРѕРІРёР»СЃСЏ\n{cccccc}РџСЂСЏРјРѕ СЃРµР№С‡Р°СЃ РІС‹ РјРѕР¶РµС‚Рµ РІС‹Р№С‚Рё РёР· РїРѕРµР·РґР°","*","");
     return 1;
 }

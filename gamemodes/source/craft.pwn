@@ -844,7 +844,7 @@ function CraftProcess(playerid, tabs_load)
             i_del(playerid, CraftInvent[playerid]); // Забираем предмет
 
             new vehicleid = OnlineInfo[playerid][oShowTabs], minus = 10 - get_ability(playerid, 8);
-            new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel]) - (100 * minus);
+            new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - (100 * minus);
             ACSetVehicleHealth(vehicleid, health);
             update_ability(playerid, 8, 15);
 
@@ -864,7 +864,7 @@ function CraftProcess(playerid, tabs_load)
 
             new line[90],lines[360];
             format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
-            format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel])), strcat(lines,line);
+            format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
             format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
             format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
             format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
