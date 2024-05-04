@@ -557,9 +557,49 @@ stock PrisonMovingPoster(playerid,number)
 	    SuccessMessage(playerid, "{99ff66}Вы закрыли дырку в стене и предотвратили побег");
     }
 
-    if(PrisonPosterStatus[number] == 0) PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number), PlayerPlaySound(playerid,5601,0,0,0);
+    if(PrisonPosterStatus[number] == 0) EscapeInfo(playerid),PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number), PlayerPlaySound(playerid,5601,0,0,0);
     else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number), PlayerPlaySound(playerid,5602,0,0,0);
     return 1;
+}
+
+stock EscapeInfo(playerid)
+{
+	new line[214],lines[4096];
+	format(line,sizeof(line),"{684F7D}Что за постер?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Постер это объект, который закрывает дырку в стене которую вы можете продолбить"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы можете вешать и убирать его на ALT, помните, охранники сразу увидят если постер снят"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Что даёт дырка в стене?"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Если вы полностью пробьете стену то вы сможете сбежать из тюрьмы!"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Вы можете начать долбить стену монитровкой, которую можно скрафтить в рабочей секции из трубы"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}или пронести с собой, если вам повезет с археалогии."), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Сняв постер, и взяв в руки монтировку, подойдите к стене и нажимайте ПКМ, чтобы долбить стену"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- При разрушение стены, под ней будет образовываться песок, который нужно убирать шваброй"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Где взять швабру и как выйти из камеры?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Шфабра лежит в блоке камер, что бы её взять нужно выйти из камеры"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Из камер вы можете выйти когда дверь открывается автоматически, либо скрафтив/найдя отмычку"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}- Отмычки появляются в рандомное время в тумбочках, а скрафтить их можно из вилки, которую"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}можно взять в столовой, после придя на станок в рабочей секции скрафтить отмычку из неё"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Что за тумбочка?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- В ней вы можете хранить запрещенные вещи, которые могут отнять тюремщики"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Доступ к тумбочки они могут получить во время тревоги в тюрьме"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Я продолбил стену, что дальше?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Нажать еще раз ALT рядом с постером и вы сбежите"), strcat(lines,line);
+	format(line,sizeof(line),"\n{ff6347}- ВАЖНО!! {cccccc}Сразу после этого по всей тюрьме включится тревога"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- В одну дырку может сбежать только один человек"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- После того как вы покинете камеру тюрьмы через дырку, розыск останется, и добавится еще статья"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}за побег из тюрьмы, ну а дальше вам просто нужно выбраться из туннеля"), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff6347}- ВАЖНО!! {cccccc}Туннель соединен с базой NGSA, вам нужно будет выйти в другой стороне по трубе"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{684F7D}Как избавиться от розыска?"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- Есть много вариантов. Одна из систем связанна со SWAT, вам нужно проникнуть на их базу"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}и взломать сервер с базой данных, после чего убрать себя из розыска"), strcat(lines,line);
+
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{684F7D}Побег из тюрьмы",lines,"*","");
+	return 1;
 }
 
 CMD:movingbeton(playerid, const params[])

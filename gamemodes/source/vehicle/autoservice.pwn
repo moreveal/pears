@@ -9,7 +9,7 @@ stock CheckAutoInRangeService(playerid)
         {
 			if(PlayerInfo[playerid][pMyVehID][i] > 0)
 			{
-                if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 10.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
+                if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 50.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
                 quan = i;
                 veh = PlayerInfo[playerid][pMyVehID][i];
                 break;
@@ -228,7 +228,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 {
                     if(PlayerInfo[playerid][pMyVehID][i] > 0)
                     {
-                        if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 10.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
+                        if(!IsVehicleInRangeOfPoint(PlayerInfo[playerid][pMyVehID][i], 50.0,  BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ])) continue;
                         quan = i;
                         veh = PlayerInfo[playerid][pMyVehID][i];
                         break;

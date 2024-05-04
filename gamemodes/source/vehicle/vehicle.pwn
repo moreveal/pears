@@ -40,7 +40,7 @@ new vehNameCustom[][] =
 	"Arm Cargo", "Ford Raptor", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "Ferrari F1",
 	"Ford Crown Victoria", "Ford Crown Victoria Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Silvia S13",
 	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Audi RS6 C5", "Mercedes Sprinter", "Ferrari Enzo",
-	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2107",
+	"Mercedes E63", "Mitsu Eclipse", "Silvia S14", "Hummer H1", "Plymouth Hemi", "Camry Taxi", "Vaz 2106", "Vaz 2105",
 	"VW Golf MK2", "BMW 760i", "Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls Wraith", "Rolls Cullinan", "Pagani Zonda",
 	"Audi RS3", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35", "Charger RT 69","Mars Rover", "Mars Rider", "Mars RC Car", "Ingenuity"
 };
@@ -203,7 +203,7 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(475, 2061); // Plymouth Hemi Cuda (sabre)
 	AddVehicleSyncModel(420, 2062); // Camry Taxi (taxi)
 	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
-	AddVehicleSyncModel(492, 2064); // Vaz 2107 (greenwoo)
+	AddVehicleSyncModel(492, 2064); // Vaz 2105 (greenwoo)
 	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
 	AddVehicleSyncModel(560, 2066); // BMW 760i
 	AddVehicleSyncModel(560, 2067); // Chaser JZX100
