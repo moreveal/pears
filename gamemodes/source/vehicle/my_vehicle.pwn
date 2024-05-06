@@ -4440,14 +4440,19 @@ function LoadCar(playerid, dab, race_check)
 			}
 
 			// Без восстановления, просто грузим
+			new maxHealth = MaxVehicleHealth(paramet[1]);
 			if(repair == 0)
 			{
 				cache_get_value_name_float(0, "health", health);
-				if(!health) health = MaxVehicleHealth(paramet[1]) + armor_veh;
+				if(!health) health = maxHealth + armor_veh;
 				else if(health <= 400.0) health = 400.0;
-				else health += armor_veh;
+				else 
+				{
+					health += armor_veh;
+					if(health > maxHealth + armor_veh) health = maxHealth + armor_veh; // Защита от перебора по хп
+				}
 			}
-			else health = MaxVehicleHealth(paramet[1]) + armor_veh; // Восстанавливаем
+			else health = maxHealth + armor_veh; // Восстанавливаем
 			
 			new numer[20], benz, god, nyche;
 			cache_get_value_name(0, "numer", numer, 20);
@@ -4937,7 +4942,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-					CreatePlatesVehicle(), MaxVehicleHealth(carid, carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
+					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
 				mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
 			}
 			else
@@ -4945,7 +4950,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
-					CreatePlatesVehicle(), MaxVehicleHealth(carid, carid), nyche, string_json);
+					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json);
 				query_empty(pearsq, string_mysql);
 			}
 		}
@@ -5029,7 +5034,7 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 
 		new string_mysql[600];
 		format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid, carid),CreatePlatesVehicle(),nyche);
+		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
 		query_empty(pearsq, string_mysql); // 249 + 44 + 80 + 24 (407)
 
         // Сохраняем авто
