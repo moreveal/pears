@@ -854,6 +854,7 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk, p)
         {
 		    if(WantedInfo[playerid][wanLoad] == true) return ErrorMessage(zakonnik, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
 		    if(PlayerInfo[playerid][pJailed] != 0) return ErrorMessage(zakonnik, "{FF6347}Подозреваемый уже находится в заключении");
+            if(CheckPlayerNpc(playerid, playerid)) return 1;
         }
 
         if(zakonnik != -1)

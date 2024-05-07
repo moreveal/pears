@@ -1328,3 +1328,31 @@ CMD:vehgoldall(playerid, const params[])
 	AdminLog("vehgoldall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Gold цена тс");
 	return 1;
 }
+
+
+#if defined _ALS_AddVehicleComponent
+    #undef AddVehicleComponent
+#else
+    #define _ALS_AddVehicleComponent
+#endif
+#define AddVehicleComponent PPAddVehicleComponent
+
+stock PPAddVehicleComponent(vehicleid, component)
+{
+	if(VehInfo[vehicleid][vModel] >= 2000) // Если кастомная
+	{
+		if(component != 1010  // Азот
+			&& component != 1087 // Гидравлика
+			&& !IsAWheels(component)) // Диски
+		return false;
+	}
+	return true;
+}
+
+// Диски на транспорт
+stock IsAWheels(component)
+{
+	if(component == 1025 || component >= 1073 && component <= 1085 
+		|| component == 1096 || component == 1097 || component == 1098) return 1;
+	return 0;
+}

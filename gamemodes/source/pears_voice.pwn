@@ -127,7 +127,7 @@ stock Sampvoice3InitializationPlayer(playerid) // Запускаем игрок�
 
         if(lstream[playerid] == INVALID_AUDIOSTREAM)
         {
-            lstream[playerid] = CreateAudioStream("L", -1);
+            lstream[playerid] = CreateAudioStream();
             AttachAudioStreamToPlayer(lstream[playerid], playerid);
             SetAudioStreamAutostreamState(lstream[playerid], true);
             SetAudioStreamSpatialState(lstream[playerid], true);

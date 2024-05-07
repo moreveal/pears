@@ -807,7 +807,7 @@ stock CreatePartnerRace(playerid, b, const params[],number) // Отправка 
     {
         new giveplayerid = ReturnUser(params[0]);
         if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
-        if(giveplayerid == playerid) return ErrorMessage(playerid, "{FF6347}Нельзя предложить партнерство самому");
+        if(giveplayerid == playerid) return ErrorMessage(playerid, "{FF6347}Нельзя предложить партнерство самому себе");
         if(!ProxDetectorS(10.0, playerid, giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок далеко от вас [ Не больше 10 метров ]");
         new fam = PlayerInfo[giveplayerid][pFamily];
         if(PlayerInfo[giveplayerid][pFamrank] < FamilyInfo[fam][fRanks]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок не глава семьи и не может принять предложение");

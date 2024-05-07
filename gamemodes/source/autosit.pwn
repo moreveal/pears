@@ -557,7 +557,7 @@ stock PressSeatableObjectHandler(playerid)
 				
 				// Ставим на расчитанную позицию
 				PPSetPlayerPos(playerid, x, y, player_pos[2]);
-				PPSetPlayerFacingAngle(playerid, a);
+				PPSetPlayerFacingAngle(playerid, a, false);
 
 				// Активируем анимации и всю фигню
 				sit_Active(playerid, x, y, player_pos[2], a);

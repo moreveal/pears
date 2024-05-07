@@ -488,6 +488,8 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 
 stock GivePlayerUnit(playerid, unit)
 {
+	if(unit == 0) return 1; // Если вдруг юниты не были настроены, отменяем выдачу
+
 	PlayerInfo[playerid][pUnit] += unit;
 
 	new string[80];
@@ -501,6 +503,8 @@ stock GivePlayerUnit(playerid, unit)
 		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~r~-%d", unit);
 		GameTextForPlayer(playerid,string,3000,3);
 	}
+
+	mysql_save(playerid, 41);
 	return 1;
 }
 

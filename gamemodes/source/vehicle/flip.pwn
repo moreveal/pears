@@ -13,23 +13,23 @@ stock CheckFlipVehicle(playerid)
     {
         if(rotation[1] >= 120.0 && rotation[1] <= 240.0)
         {
-            new inventSlot = get_invent2_Slot(playerid, THINGID_FLIP, 0);
-            if(inventSlot >= 0)
+            if(OnlineInfo[playerid][oFlipTriger] <= 0) 
             {
-                if(OnlineInfo[playerid][oFlipVeh] != vehicleid 
-                    && OnlineInfo[playerid][oFlipTriger] <= 0) 
-                {
-                    OnlineInfo[playerid][oFlipVeh] = vehicleid;
-                    OnlineInfo[playerid][oFlipVehHealth] = VehInfo[vehicleid][vHealth];
-                }
+                if(OnlineInfo[playerid][oFlipVeh] != vehicleid) OnlineInfo[playerid][oFlipVeh] = vehicleid;
+                OnlineInfo[playerid][oFlipVehHealth] = VehInfo[vehicleid][vHealth];
+            }
 
-                OnlineInfo[playerid][oFlipTriger] ++;
-                if(OnlineInfo[playerid][oFlipTriger] >= MAX_FLIP_TRIGER) 
+            OnlineInfo[playerid][oFlipTriger] ++;
+            if(OnlineInfo[playerid][oFlipTriger] >= MAX_FLIP_TRIGER) 
+            {
+                new inventSlot = get_invent2_Slot(playerid, THINGID_FLIP, 0);
+                if(inventSlot >= 0)
                 {
                     FlipVehicle(vehicleid);
                     ACSetVehicleHealth(vehicleid, OnlineInfo[playerid][oFlipVehHealth]);
                     TakeInvent(playerid, THINGID_FLIP, 1, 0, inventSlot); // Забираем один домкрат
                 }
+                OnlineInfo[playerid][oFlipVeh] = 0;
             }
         }
         else if(OnlineInfo[playerid][oFlipTriger] > 0) OnlineInfo[playerid][oFlipTriger] --;

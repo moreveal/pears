@@ -303,11 +303,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
             if(RentStat[oid][slot] > 0) DestroyDynamic3DTextLabel(RentLabel[oid][slot]);
         }
-        if(gRedakt[playerid] == 14 || distpos >= 5)
+        if(gRedakt[playerid] == 14 || distpos >= 5) // Установили или перенесли дальше 5 метров
         {
-            if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), EndObjectEditing(playerid);
-            if(gRedakt[playerid] == 14)
+            if(gRedakt[playerid] == 14) // Установили
             {
+                if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), EndObjectEditing(playerid);
                 RentObject[oid][slot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
             }
             RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)

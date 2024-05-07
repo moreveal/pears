@@ -60,15 +60,16 @@ stock FindCarInWareHouse(playerid)
         query_empty(pearsq, string);
         crimeInfo[i][crmSenderID] = 0;
         SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Можно взять новое дело и проверить этот же склад на другой транспорт");
-        format(string, sizeof(string), "Ваш угнанный %s был найден полицей",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
+        format(string, sizeof(string), "Угнанный %s был найден полицей",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
         OrganInfo[g][glave] += 5000;
-        new stirngg[51];
-        format(stirngg, sizeof(stirngg), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+5000"), GameTextForPlayer(playerid,stirngg,3000,3);
-        PlayerInfo[playerid][pUnit] += 5000;
+
+        // VREMENNO 
+        // Нужна система настройки юнитов (тут выдаём юниты за найденный транспорт)
+        // GivePlayerUnit(playerid, OrganInfo[g][gUnitStat][0]);
+
         PlayerInfo[playerid][pTheft] = -1;
         crimeInfo[i][crmSklad] = -1;
-        mysql_save(playerid, 41);
         SaveCrime(i);
     }
     else return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы осмотрели склад.\nНа этом складе нет нужного транспорта. Поищите на других складах","*","");
@@ -183,10 +184,11 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
     OrganInfo[g][glave] += 5000;
-    new stirngg[51];
-    format(stirngg, sizeof(stirngg), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+5000"), GameTextForPlayer(playerid,stirngg,3000,3);
-    PlayerInfo[playerid][pUnit] += 5000;
-    mysql_save(playerid, 41);
+
+    // VREMENNO
+    // Тут тоже нужна настройка юнитов
+    // GivePlayerUnit(playerid, OrganInfo[g][gUnitStat][0]);
+
 	SaveCar(car);
     SaveCrime(slot);
 	ACDestroyVehicle(car);

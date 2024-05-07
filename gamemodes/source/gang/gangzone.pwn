@@ -616,7 +616,6 @@ stock CheckGangZone() // Распределение результатов по 
 				{
 					for(new gp = 0; gp < MAX_GANG_CAPT_STATA; gp++) PlayerInfo[i][pGangCapt][gp] = 0;
 				}
-				if(nauniti > 0) PlayerInfo[i][pUnit] += nauniti;
 				PlayerInfo[i][pMyWar] = ServerInfo[41];
 				for(new gp2 = 0; gp2 < MAX_GANG_CAPT_STATA; gp2++)
 				{
@@ -626,7 +625,9 @@ stock CheckGangZone() // Распределение результатов по 
 					PlayerInfo[i][pGangTemp][gp2] = 0;
 				}
 				SavePlayerCapt(i);
-				mysql_save(i, 41);
+
+				// Выдаём юниты
+				GivePlayerUnit(i, nauniti);
 			}
 			if(gVidga[i] == true) DelUpdate(i), ClearDeathBox(i, 5);
 		}

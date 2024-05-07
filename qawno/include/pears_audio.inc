@@ -22,7 +22,7 @@
 
 */
 
-native AudioStream:CreateAudioStream(const name[], colour);
+native AudioStream:CreateAudioStream(const name[] = "", colour = -1);
 native bool:DeleteAudioStream(AudioStream:stream);
 native bool:AttachAudioStreamToPlayer(AudioStream:stream, vehicleid);
 native bool:AttachAudioStreamToVehicle(AudioStream:stream, vehicleid);
