@@ -100,6 +100,7 @@ CMD:followme(playerid, const params[])
 	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	if(!ProxDetectorS(5.0, playerid, params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко");
 	if(GetPlayerState(params[0]) == PLAYER_STATE_SPECTATING && gSpectateID[params[0]] != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко");
+	if(CheckPlayerNpc(playerid, params[0])) return 1;
 	if(IsPlayerInAnyVehicle(params[0]) && GetVehicleSpeed(params[0]) > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Нельзя тащить за собой из транспорта на ходу");
 	if(GetPVarInt(params[0],"afksystem") >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Подозреваемый уснул..");
 	if(Follow[playerid] == 9999)

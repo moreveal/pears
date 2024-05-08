@@ -1,7 +1,7 @@
 
 #define MAX_ACC 100 // Максимальное количество команд по правам доступа у организаций
 #define MAX_ORDERESCORT 10 // Максимальное количество заказов в ЭСкорте
-#define MAX_SKIN_ORGANIZATION 30 
+#define MAX_SKIN_ORGANIZATION 50 
 
 enum gInfo
 {
@@ -434,7 +434,7 @@ function gunsklad(playerid)
 		{
 		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
 
-			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 22) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SWAT]");
+			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 1) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SAPD]");
 			if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 			{
 			    if(thingType == 1) fpara = 100000;

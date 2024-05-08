@@ -4758,7 +4758,9 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 
 CMD:delcar(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 19 && PlayerInfo[playerid][pMedia] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(!(PlayerInfo[playerid][pSoska] >= 19 
+		|| PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
 	new tmp[24],slot,para1;
 	if(sscanf(params, "s[24]i", tmp,slot)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Удалить личный транспорт [ /delcar ID Слот ]");
 	if(slot > MAX_MYVEHICLE || slot < 1) return ErrorMessage(playerid, "{FF6347}Номер слота не меньше 1 и не больше 20");
@@ -4866,7 +4868,9 @@ stock UnPackVehicle(playerid)
 
 CMD:addcar(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 19 && PlayerInfo[playerid][pMedia] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(!(PlayerInfo[playerid][pSoska] >= 19 
+		|| PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
     new para1,vehiclename[64],tmp[24],nyche;
     if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
 

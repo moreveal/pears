@@ -141,11 +141,11 @@ new friskDefault[] = // Гос. стоимости предметов
     -1,-1,300,100,-1,150,15000,100,200,200,3500, // 21
     700,200,1100,-1,15000,60,35,20,50,3000,700, // 32
     -1,-1,-1,-1,550,250,1500,2300,150,75000,3000, // 43
-    2500,900,500,1000,45000,350000,2000,-1, // 51
+    900,900,500,1000,45000,350000,2000,-1, // 51
     450,40,2300,50,-1,-1,-1,-1,900,800,1000, // 62
     -1,1000,1000,1000,1000,-1,20000,100,200, // 71
     2000,5000,8000,13000,23000,19000,16000,14000,24500,1300, // 81
-	2000,3000,9000,900,900,900,100,50,2000,-1, // 91
+	2000,3000,9000,900,900,900,100,50,1300,-1, // 91
 	300,200,-1,15000,-1,490,-1,40,40,40, // 101
 	70,500,200,150,1500,5000,200,200,200,200, // 111
 	450,690,1300,3900,7900,-1,-1,-1,80,250, // 121
@@ -2689,7 +2689,9 @@ stock player_tile(playerid, inva)
 					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к винтовке [ Ammo 45mm ]"), i_resetveshi(playerid);
 					if(weapon == 34)
 					{
-						if(PlayerInfo[playerid][pLeader] != 8 && PlayerInfo[playerid][pMember] != 8 && PlayerInfo[playerid][pLeader] != 22 && PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SWAT"), i_resetveshi(playerid);
+						if(PlayerInfo[playerid][pMember] != 8 
+							&& PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, 
+							"{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SAPD"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;

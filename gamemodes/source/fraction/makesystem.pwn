@@ -278,7 +278,7 @@ CMD:acceptmake(playerid,const params[])
     if(OnlineInfo[playerid][oTakeMake] != -1) return ErrorMessage(playerid,"{FF6347}У вас уже есть принятый вызов");
     if(MakeInfo[number][mkWho] == 1)
     {
-        if(g != 1 && g != 11 && g != 21 && g != 1) return ErrorMessage(playerid,"{FF6347}Вы не работаете в LSPD/SFPD/LVPD");
+        if(g != 1 && g != 11 && g != 21) return ErrorMessage(playerid,"{FF6347}Вы не работаете в SAPD");
         TakeMake(playerid,number);
     }
     else if(MakeInfo[number][mkWho] == 2)

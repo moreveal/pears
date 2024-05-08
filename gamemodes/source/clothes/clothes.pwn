@@ -545,7 +545,7 @@ stock GoShmot(playerid, stat)
 		{
 		    new g = Fractia[playerid];
 			show_skin(playerid, g, 0, 0);
-			if(g == 1) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "LSPD");
+			if(g == 1) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "SAPD");
 			else if(g == 2) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "FBI");
 			else if(g == 3) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "NGSA");
 			else if(g == 4) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ASGH");

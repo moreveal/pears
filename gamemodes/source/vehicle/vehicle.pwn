@@ -1337,6 +1337,7 @@ CMD:vehgoldall(playerid, const params[])
 #endif
 #define AddVehicleComponent PPAddVehicleComponent
 
+
 stock PPAddVehicleComponent(vehicleid, component)
 {
 	if(VehInfo[vehicleid][vModel] >= 2000) // Если кастомная
@@ -1346,7 +1347,7 @@ stock PPAddVehicleComponent(vehicleid, component)
 			&& !IsAWheels(component)) // Диски
 		return false;
 	}
-	return true;
+	return AddVehicleComponent(vehicleid, component);
 }
 
 // Диски на транспорт
