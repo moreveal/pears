@@ -557,9 +557,21 @@ stock PrisonMovingPoster(playerid,number)
 	    SuccessMessage(playerid, "{99ff66}Вы закрыли дырку в стене и предотвратили побег");
     }
 
-    if(PrisonPosterStatus[number] == 0) EscapeInfo(playerid),PrisonPosterStatus[number] = 1,PrisonMovingDownPoster(number), PlayerPlaySound(playerid,5601,0,0,0);
+    if(PrisonPosterStatus[number] == 0) 
+    {
+        if(OnlineInfo[playerid][oPrisonInforamtion] < 3) OnlineInfo[playerid][oPrisonInforamtion]++, EscapeInfo(playerid);
+        PrisonPosterStatus[number] = 1;
+        PrisonMovingDownPoster(number);
+        PlayerPlaySound(playerid,5601,0,0,0);
+    }
     else if(PrisonPosterStatus[number] == 1) PrisonPosterStatus[number] = 0,PrisonMovingBackPoster(number), PlayerPlaySound(playerid,5602,0,0,0);
     return 1;
+}
+
+CMD:posterinfo(playerid)
+{
+    if(PlayerInfo[playerid][pJailTime] < 1) return 1;
+    else return EscapeInfo(playerid);
 }
 
 stock EscapeInfo(playerid)
@@ -597,6 +609,8 @@ stock EscapeInfo(playerid)
 	format(line,sizeof(line),"\n\n{684F7D}Как избавиться от розыска?"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Есть много вариантов. Одна из систем связанна со SWAT, вам нужно проникнуть на их базу"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}и взломать сервер с базой данных, после чего убрать себя из розыска"), strcat(lines,line);
+
+    format(line,sizeof(line),"\n\n{684F7D}Повторно вызвать эту информацию можно коммандой /posterinfo"), strcat(lines,line);
 
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{684F7D}Побег из тюрьмы",lines,"*","");
 	return 1;

@@ -137,11 +137,10 @@ stock ShowDetailHandling(playerid, tuningType)
     else if(tuningType == 4) format(line,sizeof(line),"{ff9000}Деталь\t{cccccc}[Качество тормазов]\t{99ff66}Цена"), strcat(lines,line);
     for(new i; i<quan;i++)
     {
-        printf("%d [%s / %s]",BizzInfo[gAutosalon[playerid]][bProduct][friskDetail[ListParam[i][playerid]][2]],friskDetailPoint[ListParam[i][playerid]][0],friskDetailPoint[ListParam[i][playerid]][1]);
-        if(tuningType == 0) format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[+%s% | +%s%]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],friskDetailPoint[ListParam[i][playerid]][0],friskDetailPoint[ListParam[i][playerid]][1],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
+        if(tuningType == 0) format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[+%s %% | +%s %%]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],friskDetailPoint[ListParam[i][playerid]][0],friskDetailPoint[ListParam[i][playerid]][1],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
         else if(tuningType >= 1 && tuningType <= 4) 
         {
-            format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[+%s%]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],friskDetailPoint[ListParam[i][playerid]][0],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[+%s %%]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],friskDetailPoint[ListParam[i][playerid]][0],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
         }
         else format(line,sizeof(line),"\n{ff9000}%s\t{cccccc}[Пусто]\t{99ff66}%d$",friskName[friskDetail[ListParam[i][playerid]][0]],BizzInfo[gAutosalon[playerid]][bPrice][friskDetail[ListParam[i][playerid]][2]]), strcat(lines,line);
     }
@@ -324,7 +323,7 @@ stock ExitTuningOrSave(playerid)
     {
         if(TempDetail[playerid][i] > 0)
         {
-            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s% ] {99ff66}[ %d$ ]",friskDetailTypeName[friskDetail[TempDetail[playerid][i]-207][1]],friskName[TempDetail[playerid][i]],friskDetailPoint[TempDetail[playerid][i]-207][0],BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i]-207][2]]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s%% ] {99ff66}[ %d$ ]",friskDetailTypeName[friskDetail[TempDetail[playerid][i]-207][1]],friskName[TempDetail[playerid][i]],friskDetailPoint[TempDetail[playerid][i]-207][0],BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i]-207][2]]), strcat(lines,line);
         }
     }
     format(line,sizeof(line),"\n\n{cccccc}Имеющийся тюнинг"), strcat(lines,line);
@@ -332,7 +331,7 @@ stock ExitTuningOrSave(playerid)
     {
         if(VehInfo[veh][vTunningID][i] > 0)
         {
-            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s% ]",friskDetailTypeName[friskDetail[VehInfo[veh][vTunningID][i]-207][1]],friskName[VehInfo[veh][vTunningID][i]], friskDetailPoint[VehInfo[veh][vTunningID][i]-207][0]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s%% ]",friskDetailTypeName[friskDetail[VehInfo[veh][vTunningID][i]-207][1]],friskName[VehInfo[veh][vTunningID][i]], friskDetailPoint[VehInfo[veh][vTunningID][i]-207][0]), strcat(lines,line);
         }
     }
     format(line,sizeof(line),"\n\n{ff6347}Оплатить тюнинг?"), strcat(lines,line);
