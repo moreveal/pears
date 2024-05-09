@@ -1329,15 +1329,6 @@ CMD:vehgoldall(playerid, const params[])
 	return 1;
 }
 
-
-#if defined _ALS_AddVehicleComponent
-    #undef AddVehicleComponent
-#else
-    #define _ALS_AddVehicleComponent
-#endif
-#define AddVehicleComponent PPAddVehicleComponent
-
-
 stock PPAddVehicleComponent(vehicleid, component)
 {
 	if(VehInfo[vehicleid][vModel] >= 2000) // Если кастомная
@@ -1345,10 +1336,19 @@ stock PPAddVehicleComponent(vehicleid, component)
 		if(component != 1010  // Азот
 			&& component != 1087 // Гидравлика
 			&& !IsAWheels(component)) // Диски
-		return false;
+		{
+			return false;
+		}
 	}
 	return AddVehicleComponent(vehicleid, component);
 }
+
+#if defined _ALS_AddVehicleComponent
+    #undef AddVehicleComponent
+#else
+    #define _ALS_AddVehicleComponent
+#endif
+#define AddVehicleComponent PPAddVehicleComponent
 
 // Диски на транспорт
 stock IsAWheels(component)

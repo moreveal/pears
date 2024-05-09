@@ -154,7 +154,7 @@ CMD:stopmaf(playerid)
 }
 CMD:gotobiz(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 3) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 3 && PlayerInfo[playerid][pMedia] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к бизнесу [ /gotobiz ID ]");
 	if(params[0] >= 1 && params[0] <= 200)
 	{
