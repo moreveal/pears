@@ -509,7 +509,7 @@ stock GivePlayerUnit(playerid, unit)
 }
 
 // lmenu
-CMD:omenu(playerid) return cmd_lmenu(playerid);
+CMD:omenu(playerid) return pc_cmd_lmenu(playerid);
 CMD:lmenu(playerid)
 {
 	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Ваш персонаж участвует в экспедиции NASA");
@@ -605,9 +605,9 @@ stock open_detail_lmenu(playerid, detail)
 {	
 	new g = fraction(playerid);
 	if(detail == 1) infoorg(playerid, fraction(playerid));
-	else if(detail == 2) cmd_members(playerid);
-	else if(detail == 3) cmd_membersoff(playerid);
-	else if(detail == 4) cmd_nabor(playerid);
+	else if(detail == 2) pc_cmd_members(playerid);
+	else if(detail == 3) pc_cmd_membersoff(playerid);
+	else if(detail == 4) pc_cmd_nabor(playerid);
 	else if(detail == 5)
 	{
 		if(!GetAccessRankOrg(playerid, g, 4, NO_FBI)) return 1;
@@ -616,19 +616,19 @@ stock open_detail_lmenu(playerid, detail)
 		OrganInfo[g][gUpdate] = 1;
 		showDialogOrganizationMenu(playerid);
     }
-    else if(detail == 6) cmd_dip(playerid);
+    else if(detail == 6) pc_cmd_dip(playerid);
 	else if(detail == 7) rank_organization(playerid, fraction(playerid));
 	else if(detail == 8)
 	{
 		if(!GetAccessRankOrg(playerid, g, 6, NO_FBI)) return 1;
 		logorg(playerid, g);
 	}
-	else if(detail == 9) cmd_cac(playerid);
-	else if(detail == 10) BL[playerid] = fraction(playerid), cmd_blacklist(playerid);
-	else if(detail == 11) cmd_oac(playerid);
-	else if(detail == 12) cmd_gac(playerid);
-	else if(detail == 13) cmd_jac(playerid);
-	else if(detail == 14) cmd_alldiv(playerid);
+	else if(detail == 9) pc_cmd_cac(playerid);
+	else if(detail == 10) BL[playerid] = fraction(playerid), pc_cmd_blacklist(playerid);
+	else if(detail == 11) pc_cmd_oac(playerid);
+	else if(detail == 12) pc_cmd_gac(playerid);
+	else if(detail == 13) pc_cmd_jac(playerid);
+	else if(detail == 14) pc_cmd_alldiv(playerid);
 	else if(detail == 15)
 	{
 		if(!GetAccessRankOrg(playerid, g, 5, NO_FBI)) return 1;

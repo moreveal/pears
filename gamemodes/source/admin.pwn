@@ -950,6 +950,8 @@ stock PunishmentsLogs(playerid, target)
 	mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	return 1;
 }
+
+alias:punishments("cp", "checkpunish")
 CMD:punishments(playerid,const params[])
 {
 	if(PlayerInfo[playerid][pSoska] == 0) return 0;
@@ -967,5 +969,3 @@ CMD:punishments(playerid,const params[])
 	}
 	return 1;
 }
-CMD:cp(playerid, const params[]) return cmd_punishments(playerid, params);
-CMD:checkpunish(playerid, const params[]) return cmd_punishments(playerid, params);

@@ -386,7 +386,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
                 ShowDialog(playerid,613,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Права Доступа",lines,"Выбрать","Выход");
             }
         }
-        else cmd_oac(playerid);
+        else pc_cmd_oac(playerid);
     }
     else if(dialogid == 616)
    	{
@@ -405,7 +405,7 @@ stock dialogCase_AccessRight(playerid, dialogid, response, listitem, const input
    		if(response)
         {
 			new g = DP[1][playerid];
-			if(!strlen(inputtext)) return cmd_oac(playerid);
+			if(!strlen(inputtext)) return pc_cmd_oac(playerid);
 			new fr = strval(inputtext);
 
             new string[160];

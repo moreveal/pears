@@ -57,7 +57,7 @@ stock showDialogAllDivisions(playerid)
 }
 
 // Меню подфракции
-CMD:div(playerid) return cmd_division(playerid);
+CMD:div(playerid) return pc_cmd_division(playerid);
 CMD:division(playerid)
 {
 	if(PlayerInfo[playerid][pDivision][0] == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
@@ -113,7 +113,7 @@ stock showDialogMenuDivision(playerid)
 }
 
 // Список участников подфракции
-CMD:dmembers(playerid, const params[]) return cmd_divmembers(playerid, params);
+CMD:dmembers(playerid, const params[]) return pc_cmd_divmembers(playerid, params);
 CMD:divmembers(playerid, const params[])
 {
 	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
@@ -265,7 +265,7 @@ function call_membersdiv(playerid, org, div)
 	return 1;
 }
 
-CMD:divin(playerid, const params[]) return cmd_divinvite(playerid, params);
+CMD:divin(playerid, const params[]) return pc_cmd_divinvite(playerid, params);
 CMD:divinvite(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
@@ -302,8 +302,8 @@ CMD:divinvite(playerid, const params[])
 	return 1;
 }
 
-CMD:divkick(playerid, const params[]) return cmd_divuninvite(playerid, params);
-CMD:divun(playerid, const params[]) return cmd_divuninvite(playerid, params);
+CMD:divkick(playerid, const params[]) return pc_cmd_divuninvite(playerid, params);
+CMD:divun(playerid, const params[]) return pc_cmd_divuninvite(playerid, params);
 CMD:divuninvite(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
@@ -429,7 +429,7 @@ stock mysql_SaveDivision(str_id, whichDiv, value)
 	return 1;
 }
 
-CMD:dleave(playerid) return cmd_divleave(playerid);
+CMD:dleave(playerid) return pc_cmd_divleave(playerid);
 CMD:divleave(playerid)
 {
 	new g = fraction(playerid);
@@ -506,7 +506,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			if(listitem == 1) 
 			{
 				format(string,sizeof(string),"%d", i + 1);
-				cmd_divmembers(playerid, string);
+				pc_cmd_divmembers(playerid, string);
 			}
 			if(listitem == 2) divmembersoff(playerid);
 			if(listitem == 3)
@@ -558,7 +558,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			}*/
 			if(listitem == 11) // Войти в подфракцию
 			{
-				if(PlayerInfo[playerid][pDivision][0] == i + 1) return cmd_divleave(playerid);
+				if(PlayerInfo[playerid][pDivision][0] == i + 1) return pc_cmd_divleave(playerid);
 
 				PlayerInfo[playerid][pDivision][0] = i + 1;
 				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
@@ -907,7 +907,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			new string[30];
 			format(string, sizeof(string), "%s", inputtext);
-            cmd_divinvite(playerid, string);
+            pc_cmd_divinvite(playerid, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}
@@ -921,7 +921,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			new string[30];
 			format(string, sizeof(string), "%s", inputtext);
-            cmd_divuninvite(playerid, string);
+            pc_cmd_divuninvite(playerid, string);
 		}
 		else showDialogMenuDivision(playerid);
 	}

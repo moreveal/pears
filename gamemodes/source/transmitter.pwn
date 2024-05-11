@@ -282,13 +282,13 @@ stock commandR(playerid, typeCommand, const params[])
 }
 
 // Команды /d /db /u /ub (Рация департамента и союза банд мафий) - Работает для всех организаций и учитывает прикрытием FBI (Переключается в /mm)
-CMD:u(playerid, const params[]) return cmd_d(playerid, params);
+CMD:u(playerid, const params[]) return pc_cmd_d(playerid, params);
 CMD:d(playerid, const params[])
 {
 	commandD(playerid, 0, params);
 	return 1;
 }
-CMD:ub(playerid, const params[]) return cmd_db(playerid, params);
+CMD:ub(playerid, const params[]) return pc_cmd_db(playerid, params);
 CMD:db(playerid, const params[])
 {
 	commandD(playerid, 1, params);
@@ -676,7 +676,7 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
             DP[0][playerid] = listitem;
             MenuSettingTransmitter(playerid, listitem);
         }
-        else cmd_mm(playerid);
+        else pc_cmd_mm(playerid);
     }
     else if(dialogid == 491)
     {

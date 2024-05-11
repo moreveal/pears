@@ -445,7 +445,13 @@ stock IsPlayerSyncModels(playerid)
 	OnPlayerDisconnect
 */
 
-public OnPlayerDisconnect(playerid, reason)
+stock DisconnectCustomSync(playerid)
+{
+	c_player_sync_models{playerid} = false;
+	return 1;
+}
+
+/*public OnPlayerDisconnect(playerid, reason)
 {
 	c_player_sync_models{playerid} = false;
 
@@ -464,7 +470,7 @@ public OnPlayerDisconnect(playerid, reason)
 #define OnPlayerDisconnect m_custom_sync_OnPlayerDisconnec
 #if defined m_custom_sync_OnPlayerDisconnec
 	forward m_custom_sync_OnPlayerDisconnec(playerid, reason);
-#endif
+#endif*/
 
 /*
 	ORPC
@@ -473,7 +479,7 @@ public OnPlayerDisconnect(playerid, reason)
 #if M_CUSTOM_CustomForPlayers
 	ORPC:CS_RPC_WorldPlayerAdd(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		static
 			wPlayerID;
@@ -498,12 +504,12 @@ public OnPlayerDisconnect(playerid, reason)
 			}
 			BS_SetWriteOffset(bs, offset);
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_WorldPlayerAdd);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_WorldPlayerAdd);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;
@@ -511,7 +517,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 	ORPC:CS_RPC_SetSpawnInfo(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 		
 		static
 			byteTeam;
@@ -537,12 +543,12 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, offset);
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_SetSpawnInfo);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_SetSpawnInfo);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;
@@ -550,7 +556,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 	ORPC:CS_RPC_RequestClass(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		static
 			byteTeam;
@@ -576,12 +582,12 @@ public OnPlayerDisconnect(playerid, reason)
 			}
 			BS_SetWriteOffset(bs, offset);
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_RequestClass);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_RequestClass);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;
@@ -589,7 +595,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 	ORPC:CS_RPC_SetPlayerSkin(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		static
 			wPlayerID;
@@ -627,12 +633,12 @@ public OnPlayerDisconnect(playerid, reason)
 			BS_SetWriteOffset(bs, offset);
 			
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_SetPlayerSkin);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_SetPlayerSkin);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;
@@ -642,7 +648,7 @@ public OnPlayerDisconnect(playerid, reason)
 #if M_CUSTOM_CustomForActors
 	ORPC:CS_RPC_ShowActor(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		static wActorID = -1, wModelID;
 
@@ -666,12 +672,12 @@ public OnPlayerDisconnect(playerid, reason)
 				}
 				BS_SetWriteOffset(bs, offset);
 
-				#if defined PR_SendRPC
+				/*#if defined PR_SendRPC
 					PR_SendRPC(bs, playerid, CS_RPC_ShowActor);
 				#else
 					BS_RPC(bs, playerid, CS_RPC_ShowActor);
 				#endif
-				return 0;
+				return 0;*/
 			}
 		}
 
@@ -682,7 +688,7 @@ public OnPlayerDisconnect(playerid, reason)
 #if M_CUSTOM_CustomForVehicles
 	ORPC:CS_RPC_WorldVehicleAdd(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		static
 			wVehicleID;
@@ -708,12 +714,12 @@ public OnPlayerDisconnect(playerid, reason)
 			BS_SetWriteOffset(bs, offset);
 
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_WorldVehicleAdd);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_WorldVehicleAdd);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;
@@ -723,7 +729,7 @@ public OnPlayerDisconnect(playerid, reason)
 #if M_CUSTOM_CustomForObjects
 	ORPC:CS_RPC_CreateObject(playerid, BitStream:bs)
 	{
-		if(playerid == -1) return false;
+		if(playerid == -1) return true;
 
 		if (c_player_sync_models{playerid} == true)
 			return 1;
@@ -746,12 +752,12 @@ public OnPlayerDisconnect(playerid, reason)
 
 			BS_SetWriteOffset(bs, offset);
 
-			#if defined PR_SendRPC
+			/*#if defined PR_SendRPC
 				PR_SendRPC(bs, playerid, CS_RPC_CreateObject);
 			#else
 				BS_RPC(bs, playerid, CS_RPC_CreateObject);
 			#endif
-			return 0;
+			return 0;*/
 		}
 
 		return 1;

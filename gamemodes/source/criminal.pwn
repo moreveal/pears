@@ -17,8 +17,8 @@ enum criminalInfo
 };
 new CriminalCodeInfo[MAX_CRIMINAL_CODE_ARTICLE][MAX_CRIMINAL_CODE_SUBENTRY][criminalInfo];
 
-CMD:yk(playerid) return cmd_criminal(playerid);
-CMD:uk(playerid) return cmd_criminal(playerid);
+CMD:yk(playerid) return pc_cmd_criminal(playerid);
+CMD:uk(playerid) return pc_cmd_criminal(playerid);
 CMD:criminal(playerid)
 {
 	CriminalCodeMenu(playerid, 0, 0);
@@ -343,7 +343,7 @@ CMD:wanted(playerid, const params[])
 	return 1;
 }
 
-CMD:ticket(playerid, const params[]) return cmd_tickets(playerid, params);
+CMD:ticket(playerid, const params[]) return pc_cmd_tickets(playerid, params);
 CMD:tickets(playerid, const params[])
 {
 	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1 || PlayerInfo[playerid][pSoska] >= 1)

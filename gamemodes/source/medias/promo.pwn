@@ -23,7 +23,7 @@ stock setprom(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	new pf = ListCode[playerid];
-	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), cmd_promo(playerid);
+	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
 	new tyear[2], tmonth[2], tday[2], thour[2], tminute[2], tsecond[2];
 	stamp2datetime(PromoInfo[pf][roUnixbegin], tyear[0], tmonth[0], tday[0], thour[0], tminute[0], tsecond[0], 3);
 	stamp2datetime(PromoInfo[pf][roUnixend], tyear[1], tmonth[1], tday[1], thour[1], tminute[1], tsecond[1], 3);
@@ -234,7 +234,7 @@ function Call_createpromo(playerid, const str_promo[])
 		PromoNumber ++;
 		setprom(playerid);
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такой промкод уже есть или существует как неактивный"), cmd_promo(playerid);
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такой промкод уже есть или существует как неактивный"), pc_cmd_promo(playerid);
 	
 	g_MysqlCall[playerid] = false;
 	return 1;
@@ -251,7 +251,7 @@ stock critprom(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	new pf = ListCode[playerid];
-	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), cmd_promo(playerid);
+	if(pf >= 50) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ошибка промокода!"), pc_cmd_promo(playerid);
 	
 	new line[70], lines[140];
 	if(PromoInfo[pf][roVoice] == 1) format(line,sizeof(line),"{cccccc}Лаунчер: \t {99ff66}[ Требуется ]\n"), strcat(lines,line);
@@ -352,7 +352,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
         		setprom(playerid);
         	}
         }
-        else cmd_server(playerid);
+        else pc_cmd_server(playerid);
   	}
   	if(dialogid == 635)
 	{
@@ -441,7 +441,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 			if(listitem == 12 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,614,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней через которое промокод {FF6347}завершит своё действие [1 - 3000]","Принять","Отмена");
 			if(listitem == 13 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,606,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Вы уверены, что хотите удалить промокод?\n\n","Да","Отмена");
   	    }
-  	    else cmd_promo(playerid);
+  	    else pc_cmd_promo(playerid);
  	}
  	if(dialogid == 603)
 	{
@@ -485,7 +485,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 			for(new spf = 0; spf < 5; spf ++) PromoInfo[pf][roPar][spf] = 0, PromoInfo[pf][roStat][spf] = 0;
 			PromoNumber --;
 			PlayerPlaySound(playerid,31203,0,0,0);
-			cmd_promo(playerid);
+			pc_cmd_promo(playerid);
 			AdminLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, PromoInfo[pf][roName], "", 0, "Удалил промокод");
        	}
        	else setprom(playerid);
@@ -753,7 +753,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	    {
   	        if(PromoNumber >= 50) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: 50");
   	    	if(strlen(inputtext) < 3 || strlen(inputtext) > 60) return ErrorMessage(playerid, "{FF6347}Не меньше 3 и не больше 60 символов");
-  	    	if(!strlen(inputtext)) return cmd_promo(playerid);
+  	    	if(!strlen(inputtext)) return pc_cmd_promo(playerid);
   	    	new load = 0;
 			for(new f = 0; f < MAX_PROMO; f++)
 			{
@@ -774,7 +774,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 		        mysql_tquery(pearsq, string, "Call_createpromo", "ds", playerid, inputtext);
     		}
   		}
-  		else cmd_promo(playerid);
+  		else pc_cmd_promo(playerid);
   	}
 	return 1;
 }

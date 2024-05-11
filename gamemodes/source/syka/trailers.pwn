@@ -356,11 +356,11 @@ stock dialogCase_Trailer(playerid, dialogid, response)
 {
 	if(dialogid == 1336)
    	{
-   	    if(response) cmd_placetrailer(playerid);
+   	    if(response) pc_cmd_placetrailer(playerid);
     }
     else if(dialogid == 1337)
    	{
-   	    if(response) cmd_attachtrailer(playerid);
+   	    if(response) pc_cmd_attachtrailer(playerid);
     }
     else if(dialogid == 1463)
     {

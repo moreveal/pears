@@ -293,7 +293,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 else if(BizzInfo[b][bFamilyPartner][listord] == 0) return ErrorMessage(playerid,"{FF6347}В слоте партнерства пусто");
             }
         }
-        else cmd_fam(playerid);
+        else pc_cmd_fam(playerid);
     }
     else if(dialogid == 1455)
     {
@@ -397,7 +397,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 ShowAllRoutRace(playerid,0);
             }
 		}
-		else cmd_fam(playerid);
+		else pc_cmd_fam(playerid);
     }
     else if(dialogid == 1458)
     {
@@ -517,7 +517,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
                 ClosePartyStreet(slot);
             }
         }
-        else cmd_fam(playerid);
+        else pc_cmd_fam(playerid);
     }
     else if(dialogid == 1462)
     {

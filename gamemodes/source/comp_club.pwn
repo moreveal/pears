@@ -2394,9 +2394,9 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
     return 1;
 }
 
-CMD:komp(playerid) return cmd_comp(playerid);
-CMD:compclub(playerid) return cmd_comp(playerid);
-CMD:club(playerid) return cmd_comp(playerid);
+CMD:komp(playerid) return pc_cmd_comp(playerid);
+CMD:compclub(playerid) return pc_cmd_comp(playerid);
+CMD:club(playerid) return pc_cmd_comp(playerid);
 CMD:comp(playerid)
 {
     // Если игрок в компьютерном клубе

@@ -147,7 +147,7 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
             }
             return 1;
         }
-        else return cmd_goverment(playerid);
+        else return pc_cmd_goverment(playerid);
     }
     if(dialogid == 1497)
     {

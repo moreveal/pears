@@ -528,7 +528,7 @@ CMD:rz(playerid, const params[])
     return 1;
 }
 
-CMD:gclone(playerid) return cmd_clone(playerid);
+CMD:gclone(playerid) return pc_cmd_clone(playerid);
 CMD:clone(playerid)
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");
@@ -564,7 +564,7 @@ CMD:mtset(playerid, const params[])
     return 1;
 }
 
-CMD:oprop(playerid, const params[]) return cmd_model(playerid, params);
+CMD:oprop(playerid, const params[]) return pc_cmd_model(playerid, params);
 CMD:model(playerid, const params[])
 {
     if(!peoInfo[playerid][peoInEditor]) return ErrorMessage(playerid, "{FF6347}Вы не находитесь в редакторе [ /loadeditor ]");

@@ -409,7 +409,7 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				if(OrganInfo[frakid][gRejim2] == false)
 				{
 					new unixtime = gettime();
-					if(OrganInfo[frakid][gSanCbug] > unixtime) return ErrorText(playerid, "[ Мысли ]: Нельзя нападать с этим режимом [ Ограничение администрации ]"), cmd_capture(playerid);
+					if(OrganInfo[frakid][gSanCbug] > unixtime) return ErrorText(playerid, "[ Мысли ]: Нельзя нападать с этим режимом [ Ограничение администрации ]"), pc_cmd_capture(playerid);
 					OrganInfo[frakid][gRejim2] = true;
 					format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}%s изменил условия следующей битвы {cccccc}[ +C Активирован ]",PlayerInfo[playerid][pName]);
   					SendRadioMessage(frakid,COLOR_GREY,string);
@@ -442,7 +442,7 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				}
 			}
 			OrganInfo[frakid][gUpdate] = 1;
-			cmd_capture(playerid);
+			pc_cmd_capture(playerid);
 		}
 	}
     else if(dialogid == 1008) // Сброс каптов

@@ -871,7 +871,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) skinprice(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
 			}
 		}
-		else cmd_economy(playerid);
+		else pc_cmd_economy(playerid);
 	}
 	else if(dialogid == 971)
 	{

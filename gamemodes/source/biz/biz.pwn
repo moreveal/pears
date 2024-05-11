@@ -1454,7 +1454,7 @@ stock BotSex(playerid,b)
 	return 1;
 }
 
-CMD:bp(playerid, const params[]) return cmd_bizprice(playerid, params);
+CMD:bp(playerid, const params[]) return pc_cmd_bizprice(playerid, params);
 CMD:bizprice(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
@@ -1475,7 +1475,7 @@ CMD:bizprice(playerid, const params[])
 	AdminLog("bizprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[1], string);
 	return 1;
 }
-CMD:bg(playerid, const params[]) return cmd_bizgold(playerid, params);
+CMD:bg(playerid, const params[]) return pc_cmd_bizgold(playerid, params);
 CMD:bizgold(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");

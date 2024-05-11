@@ -32,14 +32,14 @@ CMD:infect(p, const params[])
 }
 CMD:diagnosis(playerid)
 {
-	if(PlayerInfo[playerid][pMember] != 4 && PlayerInfo[playerid][pLeader] != 4) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не доктор и не могу поставить диагноз"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
-	if(GetPlayerInterior(playerid) != 5) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я могу поставить диагноз только находясь в госпитале"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(PlayerInfo[playerid][pMember] != 4 && PlayerInfo[playerid][pLeader] != 4) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не доктор и не могу поставить диагноз"), pc_cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(GetPlayerInterior(playerid) != 5) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я могу поставить диагноз только находясь в госпитале"), pc_cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
 	if(Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}Попросите пациента передать вам его медицинскую карту [ Инвентарь N или /med ]");
 	new para1 = DeiStat[playerid];
-	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), cmd_remove(playerid);
+	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), pc_cmd_remove(playerid);
 	if(para1 == playerid && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете себе поставить диагноз");
-	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), cmd_remove(playerid);
-	if(!illness(para1)) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: У него нет никаких симптомов"), cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
+	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), pc_cmd_remove(playerid);
+	if(!illness(para1)) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: У него нет никаких симптомов"), pc_cmd_showmed(playerid), PlayerPlaySound(playerid,4203,0,0,0);
 	new str[68],sctring[4800];
 	format(str,sizeof(str),"Хламидиоз"), strcat(sctring,str); // 1
    	format(str,sizeof(str),"\nГонорея"), strcat(sctring,str); // 2
@@ -62,15 +62,15 @@ CMD:diagnosis(playerid)
 	ShowDialog(playerid,1128,DIALOG_STYLE_LIST,"{ff6666}Поставить Диагноз",sctring,"Выбрать","Отмена");
 	return 1;
 }
-CMD:sym(playerid) return cmd_symptom(playerid);
+CMD:sym(playerid) return pc_cmd_symptom(playerid);
 CMD:symptom(playerid)
 {
 	if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Вы в слежке");
 	new para1 = DeiStat[playerid];
 	if(para1 != playerid && Dei[playerid] != 6) return ErrorMessage(playerid, "{FF6347}Попросите пациента передать вам его медицинскую карту [ Инвентарь N или /med ]");
-	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), cmd_remove(playerid);
-	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), cmd_remove(playerid);
+	if(!IsOnline(para1)) return ErrorMessage(playerid, "{FF6347}Пациент куда-то делся [Вышел из игры]"), pc_cmd_remove(playerid);
+	if(!ProxDetectorS(3.0, playerid, para1) || GetPlayerState(para1) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента"), pc_cmd_remove(playerid);
 	PlayerPlaySound(playerid,40405,0,0,0);
 	getmed(playerid, para1);
 	return 1;

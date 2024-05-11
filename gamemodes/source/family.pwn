@@ -253,12 +253,12 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
 				showDialogFamilyMenu(playerid);
 				return 1;
 			}
-			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), cmd_fam(playerid);
+			if(sscanf(inputtext, "i", input)) return ErrorText(playerid, "[ Мысли ]: Я ничего не ввожу"), pc_cmd_fam(playerid);
 
 			new string[100];
-			if(input > MAX_RANK_FAMILY || input < 2) return format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_FAMILY), ErrorText(playerid, string), cmd_fam(playerid);
+			if(input > MAX_RANK_FAMILY || input < 2) return format(string,sizeof(string),"[ Мысли ]: Не меньше 2 и не больше %d рангов", MAX_RANK_FAMILY), ErrorText(playerid, string), pc_cmd_fam(playerid);
 
-			if(FamilyInfo[f][fRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), cmd_fam(playerid);
+			if(FamilyInfo[f][fRanks] == input) return ErrorText(playerid, "[ Мысли ]: Это количество рангов уже указано"), pc_cmd_fam(playerid);
 			FamilyInfo[f][fRanks] = input;
 			FamilyInfo[f][fUpdate] = 1;
 
@@ -272,11 +272,11 @@ stock dialogCase_Family(playerid, dialogid, response, listitem, const inputtext[
 			SendClientMessage(playerid, COLOR_GREY, string);
 			PlayerPlaySound(playerid, 6401, 0, 0, 0);
 			
-			cmd_fam(playerid);
+			pc_cmd_fam(playerid);
 
             FamilyLog(f, "franks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, "Количество рангов");
 		}
-		else cmd_fam(playerid);
+		else pc_cmd_fam(playerid);
 	}
     return 1;
 }

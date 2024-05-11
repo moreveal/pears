@@ -26,7 +26,9 @@ stock showthrow(playerid)
 }
 stock use_throw(playerid, inva, useinva)
 {
-    if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Вы в транспорте");
+    if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Вы в транспорте"), i_resettabs(playerid);
+	if(howstun(playerid) || HealthAC[playerid] <= 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо"), i_resettabs(playerid);
+
     new t = MyThrow[inva][playerid];
     if(t <= -1) return i_resettabs(playerid);
     new fpick = ThrowInfo[t][tId], fquan = ThrowInfo[t][tQuan], thingPara = ThrowInfo[t][tPara], thingQara = ThrowInfo[t][tQara], thingType = ThrowInfo[t][tType], thingPack = ThrowInfo[t][tPack];
@@ -36,11 +38,11 @@ stock use_throw(playerid, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(GetPVarInt(playerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете");
+	if(GetPVarInt(playerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
 	if(thingPack == 2 || thingPack == 4) // Ящик с предметом
 	{
-	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя");
-	    if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
+	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя"), i_resettabs(playerid);
+	    if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]"), i_resettabs(playerid);
 
 		GiveThingHand(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack);
 

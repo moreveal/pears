@@ -171,7 +171,7 @@ public OnPasswordHashCreateHidden(playerid, const password[])
     query_empty(pearsq, string);
 
     PlayerPlaySound(playerid,6401,0,0,0);
-    cmd_hidden(playerid);
+    pc_cmd_hidden(playerid);
     return 1;
 }
 

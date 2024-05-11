@@ -182,29 +182,19 @@ stock AnticheatDistanceDamage(playerid, damagedid, weaponid)
 }
 
 
-// Тестовая команда вывозва триггера
-CMD:trig(playerid)
-{
-    if(server != 0) return 0;
-    TriggerCheat(playerid, 2);
-    return 1;
-}
-
 // Тестовая команда выдачи оружия в обход античита (по сути, как игрок выдаёт себе читом)
-CMD:triggun(playerid)
+/*CMD:triggun(playerid)
 {
     if(server != 0) return 0;
     GivePlayerWeapon(playerid, WEAPON:38, 3000);
     return 1;
-}
+}*/
 
 
 // ===========================================================
 // Внизу нехер менять при добавлении новой записи для античита
 // ===========================================================
-CMD:triggers(playerid) return cmd_trigger(playerid);
-CMD:trigers(playerid) return cmd_trigger(playerid);
-CMD:triger(playerid) return cmd_trigger(playerid);
+alias:trigger("triger", "trigers", "triggers", "trig")
 CMD:trigger(playerid)
 {
     if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");

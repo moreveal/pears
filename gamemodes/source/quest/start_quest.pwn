@@ -1303,7 +1303,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
 		}
 		else
 		{
-			if(DP[0][playerid] == 1) cmd_quest(playerid);
+			if(DP[0][playerid] == 1) pc_cmd_quest(playerid);
 		}
 	}
     else if(dialogid == 505) 

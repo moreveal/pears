@@ -364,6 +364,9 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 		    new myinva = OnlineInfo[playerid][oInventSelectLeft], myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
 		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 		    
+			// Кейс нельзя выбрасывать на 3 уровне и ниже
+			if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
+
 			new string[120];
 			if(Tabs_Load[playerid] == 2) // Дом
 			{
@@ -524,6 +527,9 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
 
+	// Кейс нельзя выбрасывать на 3 уровне и ниже
+	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
+
 	if(giveplayerid == -1)
 	{
 	    if(!strlen(inputtext)) return ErrorMessage(playerid, "{FF6347}Вы не ввели текст");
@@ -576,6 +582,9 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	// Проверка на особые предметы
 	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
+
+	// Кейс нельзя выбрасывать на 3 уровне и ниже
+	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
 
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[giveplayerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У игрока уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
@@ -1859,6 +1868,8 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
 	|| i == 168 || i == 169 || i == 170 || i == 171 || i == 172 || i == 173 || i == 174)) return 1;
 	return 0;
 }
+
+// Предметы, которые нельзя передать из инвентаря или выбросить на землю (при выбрасывании - уничтожаются)
 stock NotGiveThing(i, type, quan)
 {
 	if(type == 0 && (i == 10 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63 || i == 156 && quan == 2)
@@ -1866,6 +1877,23 @@ stock NotGiveThing(i, type, quan)
 		|| type == 5) return 1;
 	return 0;
 }
+
+// Нелегальные предметы
+stock UnlegalThing(i, thingType, thingPack)
+{
+	if(thingType == 0 // Обычный предмет
+		&& thingPack != 5 // Не кейс
+		&& (i == 4 || i == 5 || i == 6 || i == 7 || i == 10 || i == 11 || i == 12 || i == 140)) return 1;
+	return 0;
+}
+
+stock IsNotGiveCase(playerid, thingPack)
+{
+	if(thingPack == 5 // Предмет упакован в кейс
+		&& PlayerInfo[playerid][pLevel] <= 3) return ErrorMessage(playerid, "{FF6347}Вы не можете передать, выбросить или продать кейс\n{ffcc66}Передача кейсов будет доступна с 4 уровня [ /stats ]");
+	return 0;
+}
+
 stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем лимиты инвентаря
 {
 	new lim[sizeof(friskName)];
@@ -2327,20 +2355,20 @@ stock player_tile(playerid, inva)
 		    // Используем предмет
 		    if(thingType == 0) // Обычный предмет
 		    {
-				if(fpick == 1) return format(string, sizeof(string), "%d", inva), cmd_eatbread(playerid, string), i_resetveshi(playerid); // Хлеб
+				if(fpick == 1) return format(string, sizeof(string), "%d", inva), pc_cmd_eatbread(playerid, string), i_resetveshi(playerid); // Хлеб
 				else if(fpick == 2) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Обручальное кольцо используется для церемонии бракосочетаний [ Y >> GPS >> Прочее >> Церковь ]","*",""), i_resetveshi(playerid); // Обручальное кольцо
 				else if(fpick == 3) return seeds(playerid, 1003), i_resetveshi(playerid); // Бутылка
-			 	else if(fpick == 4) return cmd_usedrugs1(playerid), i_resetveshi(playerid); // Трава
+			 	else if(fpick == 4) return pc_cmd_usedrugs1(playerid), i_resetveshi(playerid); // Трава
 			 	else if(fpick == 5) return ErrorMessage(playerid,"Это таблетка пустышка"), i_resetveshi(playerid); // Спиды
-			 	else if(fpick == 6) return cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
-			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // Порошок
+			 	else if(fpick == 6) return pc_cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
+			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), pc_cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // Порошок
 			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // Аптечка
 			 	else if(fpick == 9)
 				{
-					if(Dei[playerid] == 1003) return cmd_molotov(playerid), i_resetveshi(playerid); // Создаём коктейль молотова
+					if(Dei[playerid] == 1003) return pc_cmd_molotov(playerid), i_resetveshi(playerid); // Создаём коктейль молотова
 					else return kani(playerid), i_resetveshi(playerid); // Канистра
 				}
-			 	else if(fpick == 10) return cmd_allahakbar(playerid), i_resetveshi(playerid); // Пояс со взрывчаткой
+			 	else if(fpick == 10) return pc_cmd_allahakbar(playerid), i_resetveshi(playerid); // Пояс со взрывчаткой
 			 	else if(fpick == 11)
 				{
 					ShowDialog(playerid,1335,DIALOG_STYLE_INPUT,"{ff9000}Бомба","\n{cccccc}Введите время, через которое бомба взорвётся [ 10 - 300 секунд ]","Принять","Отмена");
@@ -2348,8 +2376,8 @@ stock player_tile(playerid, inva)
 				}
 			 	else if(fpick == 13) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Верёвка нужна для того, чтобы кого-нибудь связать [ /tie ]","*",""), i_resetveshi(playerid);
 			 	//else if(fpick == 15) // ЯД (Пустое Значение)
-			 	else if(fpick == 16) return format(string, sizeof(string), "%d", inva), cmd_smoke(playerid, string), i_resetveshi(playerid); // Сигареты
-			 	else if(fpick == 17) return cmd_usearm(playerid), i_resetveshi(playerid); // Бронежилет
+			 	else if(fpick == 16) return format(string, sizeof(string), "%d", inva), pc_cmd_smoke(playerid, string), i_resetveshi(playerid); // Сигареты
+			 	else if(fpick == 17) return pc_cmd_usearm(playerid), i_resetveshi(playerid); // Бронежилет
 			 	else if(fpick == 18) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Наживка используется для рыбалки [ Y >> GPS >> Работа >> Рыболов ]","*",""), i_resetveshi(playerid);
 			 	else if(fpick == 19) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отмычки используются для взлома замков и дверей [ ALT у дверей ]","*",""), i_resetveshi(playerid);
 			 	else if(fpick == 20) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы можете продать рыбу в бухте [ Y >> GPS >> Работа >> Рыболов ]\n\n{ff9000}Или приготовить на костре и употребить в качестве еды [ Купите уголь и зажигалку в супермаркете ]","*",""), i_resetveshi(playerid);
@@ -2359,8 +2387,8 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 24) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Шашка таксиста используется для работы в такси {444444}[ /gotaxi в транспорте ]","*",""), i_resetveshi(playerid);
 			 	//else if(fpick == 25) // Деньги очкую добавлять в инвентарь
 			 	else if(fpick == 26) return ShowSmartfon(playerid); // Смартфон
-			 	else if(fpick == 31) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_ydo(playerid); // Удочка
-			 	else if(fpick == 32) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_fonar(playerid); // Фонарик
+			 	else if(fpick == 31) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_ydo(playerid); // Удочка
+			 	else if(fpick == 32) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_fonar(playerid); // Фонарик
 			 	else if(fpick == 38 || fpick == 122) return glass(playerid, fpick, inva), i_resetveshi(playerid); // Бокал
 			 	else if(fpick == 39) // Подарочная Упаковка
 			 	{
@@ -2369,7 +2397,7 @@ stock player_tile(playerid, inva)
 		 		 	DP[1][playerid] = inva;
 		 		 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Выберите предмет, чтобы упаковать его в подарок","*","");
 				}
-			 	else if(fpick == 40) return format(string, sizeof(string), "%d", inva), cmd_firework(playerid, string), CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Фейерверк
+			 	else if(fpick == 40) return format(string, sizeof(string), "%d", inva), pc_cmd_firework(playerid, string), CloseFrisk(playerid), CancelSelectTextDraw(playerid); // Фейерверк
 			 	else if(fpick == 41) // Бенгальская Свеча
 			 	{
 			 		if(Piss[playerid] >= 1 || Hold[playerid] >= 1 || Piss[playerid] == 7)
@@ -2397,16 +2425,16 @@ stock player_tile(playerid, inva)
 			 		if(fquan <= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мой электрошокер разряжен");
 					if(!IsACop(playerid) && PlayerInfo[playerid][pLeader] != 7 && PlayerInfo[playerid][pMember] != 7
 					&& PlayerInfo[playerid][pLeader] != 4 && PlayerInfo[playerid][pMember] != 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
-			 		CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_tazer(playerid); // Электрошокер
+			 		CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_tazer(playerid); // Электрошокер
 			 		return 1;
 		 		}
-		 		else if(fpick == 44) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_shovel(playerid); // Лопата
-		 		else if(fpick == 45) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_seamap(playerid); // Карта Моряка
+		 		else if(fpick == 44) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_shovel(playerid); // Лопата
+		 		else if(fpick == 45) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_seamap(playerid); // Карта Моряка
 		 		else if(fpick == 46) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать морскую звезду на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Морская Звезда
 		 		else if(fpick == 47) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать ракушку на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
-		 		else if(fpick == 48) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_boat(playerid); // Надувная Лодка
+		 		else if(fpick == 48) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_boat(playerid); // Надувная Лодка
 		 		else if(fpick == 49) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать сундук с сокровищами на рыбацкой бухте {ff9000}[ Y >> GPS >> Работа >> Рыбалов ]"), i_resetveshi(playerid); // Ракушка
-		 		else if(fpick == 50) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), cmd_trap(playerid); // Ловушка для Акул
+		 		else if(fpick == 50) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_trap(playerid); // Ловушка для Акул
 		 		else if(fpick == 51)
 			 	{
 			 	    i_resetveshi(playerid);
@@ -2420,43 +2448,43 @@ stock player_tile(playerid, inva)
 				 	ShowDialog(playerid,1069,DIALOG_STYLE_INPUT,"{ff9000}Паспорт","\n{cccccc}Введите {ff9000}ID игрока{cccccc}, чтобы показать ему {ff9000}паспорт\n","Принять","Отмена"); // Паспорт
 				 	return 1;
 			 	}
-		 		else if(fpick == 52) return format(string, sizeof(string), "%d", inva), cmd_campfire(playerid, string), i_resetveshi(playerid); // Уголь
+		 		else if(fpick == 52) return format(string, sizeof(string), "%d", inva), pc_cmd_campfire(playerid, string), i_resetveshi(playerid); // Уголь
 		 		else if(fpick == 53) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Зажигалка нужна для розжига костра и курения"), i_resetveshi(playerid); // Зажигалка
-		 		else if(fpick == 54) return format(string, sizeof(string), "%d", inva), cmd_eatmeat(playerid, string), i_resetveshi(playerid); // Жареное Мясо
-		 		else if(fpick == 55) return format(string, sizeof(string), "%d", inva), cmd_eatfish(playerid, string), i_resetveshi(playerid); // Жареная Рыба
-		 		else if(fpick == 60) return cmd_thing(playerid), i_resetveshi(playerid); // Палладий
+		 		else if(fpick == 54) return format(string, sizeof(string), "%d", inva), pc_cmd_eatmeat(playerid, string), i_resetveshi(playerid); // Жареное Мясо
+		 		else if(fpick == 55) return format(string, sizeof(string), "%d", inva), pc_cmd_eatfish(playerid, string), i_resetveshi(playerid); // Жареная Рыба
+		 		else if(fpick == 60) return pc_cmd_thing(playerid), i_resetveshi(playerid); // Палладий
 		 		else if(fpick == 61) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), gelium(playerid); // Гелий 3
 		 		else if(fpick == 62) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Журнал нужен для увеличения скорости онанизма"), i_resetveshi(playerid); // PlayBoy
 		 		else if(fpick == 63) // Мед. карта
 			 	{
 			 		if(GetPlayerInterior(playerid) == 5) ShowDialog(playerid,1129,DIALOG_STYLE_INPUT,"{ff9000}Мед Карта","\n{cccccc}Введите {ff9000}ID игрока{cccccc}, чтобы показать ему {ff9000}мед. карту\n","Принять","Отмена"), i_resetveshi(playerid);
-			 		else return format(string, sizeof(string), "%d", playerid), cmd_med(playerid, string), i_resetveshi(playerid);
+			 		else return format(string, sizeof(string), "%d", playerid), pc_cmd_med(playerid, string), i_resetveshi(playerid);
 		 		}
-		 		else if(fpick == 70) return format(string, sizeof(string), "%d", inva), cmd_bandage(playerid, string), i_resetveshi(playerid); // Бинт
+		 		else if(fpick == 70) return format(string, sizeof(string), "%d", inva), pc_cmd_bandage(playerid, string), i_resetveshi(playerid); // Бинт
 		 		else if(fpick == 71) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Презервативы нужны для безопасного секса [ /sex ]"), i_resetveshi(playerid);
-		 		else if(fpick >= 72 && fpick <= 87) format(string, sizeof(string), "%d", fpick-71), cmd_remedy(playerid, string), i_resetveshi(playerid); // Лекарства
+		 		else if(fpick >= 72 && fpick <= 87) format(string, sizeof(string), "%d", fpick-71), pc_cmd_remedy(playerid, string), i_resetveshi(playerid); // Лекарства
 		 		else if(fpick == 88) return seeds(playerid, 88), i_resetveshi(playerid); // Семена травы
-		 		else if(fpick == 89) return format(string, sizeof(string), "%d", inva), cmd_eatpotato(playerid, string), i_resetveshi(playerid); // Радиоактивная Картошка
-		 		else if(fpick == 90) return cmd_mount(playerid), i_resetveshi(playerid); // Бомба
-		 		else if(fpick == 91) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), format(string, sizeof(string), "%d", inva), cmd_riches(playerid, string); // Карта Сокровищ
+		 		else if(fpick == 89) return format(string, sizeof(string), "%d", inva), pc_cmd_eatpotato(playerid, string), i_resetveshi(playerid); // Радиоактивная Картошка
+		 		else if(fpick == 90) return pc_cmd_mount(playerid), i_resetveshi(playerid); // Бомба
+		 		else if(fpick == 91) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), format(string, sizeof(string), "%d", inva), pc_cmd_riches(playerid, string); // Карта Сокровищ
 		 		else if(fpick == 92) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать древнюю вазу на археологических раскопках"), i_resetveshi(playerid);
 		 		else if(fpick == 93) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать урну с прахом на археологических раскопках"), i_resetveshi(playerid);
 		 		else if(fpick == 94) return DP[0][playerid] = inva, ShowDialog(playerid,1153,DIALOG_STYLE_MSGBOX,"{ff9000}Золото","{99ff66}Вы уверены, что хотите обменять золото на {ff9000}Donate Валюту?\n\n{ffcc00}[ 1 Слиток = 8 Gold ]","Да","Нет"), i_resetveshi(playerid);
 		 		else if(fpick == 95) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать статуэтку на археологических раскопках"), i_resetveshi(playerid);
-		 		else if(fpick == 96) return format(string, sizeof(string), "%d", inva), cmd_bloodvampire(playerid, string), i_resetveshi(playerid); // Бокал с кровью вампира
+		 		else if(fpick == 96) return format(string, sizeof(string), "%d", inva), pc_cmd_bloodvampire(playerid, string), i_resetveshi(playerid); // Бокал с кровью вампира
 		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // Кухонный нож
-		 		else if(fpick == 98) return format(string, sizeof(string), "%d", inva), cmd_useblood(playerid, string), i_resetveshi(playerid); // Бокал с обычной кровью
+		 		else if(fpick == 98) return format(string, sizeof(string), "%d", inva), pc_cmd_useblood(playerid, string), i_resetveshi(playerid); // Бокал с обычной кровью
 		 		
-				/*else if(fpick == 99) return format(string, sizeof(string), "%d", inva), cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Банан
-		 		else if(fpick == 100) return format(string, sizeof(string), "%d", inva), cmd_eatapple(playerid, string), i_resetveshi(playerid); // Яблоко
-		 		else if(fpick == 101) return format(string, sizeof(string), "%d", inva), cmd_eatorange(playerid, string), i_resetveshi(playerid); // Апельсин
-		 		else if(fpick == 102) return format(string, sizeof(string), "%d", inva), cmd_eatmilk(playerid, string), i_resetveshi(playerid); // Молоко
+				/*else if(fpick == 99) return format(string, sizeof(string), "%d", inva), pc_cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Банан
+		 		else if(fpick == 100) return format(string, sizeof(string), "%d", inva), pc_cmd_eatapple(playerid, string), i_resetveshi(playerid); // Яблоко
+		 		else if(fpick == 101) return format(string, sizeof(string), "%d", inva), pc_cmd_eatorange(playerid, string), i_resetveshi(playerid); // Апельсин
+		 		else if(fpick == 102) return format(string, sizeof(string), "%d", inva), pc_cmd_eatmilk(playerid, string), i_resetveshi(playerid); // Молоко
 		 		else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Тыкву можно продать в здании фермы","*",""), i_resetveshi(playerid); // Тыква
 		 		else if(fpick == 104) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Картошку можно продать в здании фермы","*",""), i_resetveshi(playerid); // Картошка
 		 		else if(fpick == 105) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Томат можно продать в здании фермы","*",""), i_resetveshi(playerid); // Томат
 				*/
 		 		//else if(fpick == 106) return seeds(playerid, 106), i_resetveshi(playerid); // Удобрение
-		 		else if(fpick == 107) return format(string, sizeof(string), "%d", inva), cmd_bullsblood(playerid, string), i_resetveshi(playerid); // Бычья Кровь
+		 		else if(fpick == 107) return format(string, sizeof(string), "%d", inva), pc_cmd_bullsblood(playerid, string), i_resetveshi(playerid); // Бычья Кровь
 		 		//else if(fpick == 108) return seeds(playerid, 108), i_resetveshi(playerid); // Семена тыквы
 		 		//else if(fpick == 109) return seeds(playerid, 109), i_resetveshi(playerid); // Семена томатов
 		 		//else if(fpick == 110) return seeds(playerid, 110), i_resetveshi(playerid); // Рассада картошки
@@ -2469,7 +2497,7 @@ stock player_tile(playerid, inva)
 				fpick == 139 || fpick == 164 || fpick == 172 || fpick == 166 || fpick == 173 || fpick == 1 || fpick == 54 ||
 				fpick == 55 || fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 || fpick == 104 || fpick == 126 ||
 				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
-				else if(fpick == 144) return cmd_pdd(playerid), i_resetveshi(playerid);
+				else if(fpick == 144) return pc_cmd_pdd(playerid), i_resetveshi(playerid);
 		 		else if(fpick >= 145 && fpick <= 155)
 			 	{
 			 	    if(SitPlayer[playerid] >= 78 && SitPlayer[playerid] <= 101)
@@ -2594,8 +2622,8 @@ stock player_tile(playerid, inva)
 				else if(fpick == 191) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта авиатранспорта\n\nПодойдите к транспорту и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
 				else if(fpick == 192) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Этот рем. комплект используется для ремонта лодок и катеров\n\nПодойдите к транспорту и откройте вкладку в инвентаре, для ремонта","*",""), i_resetveshi(playerid);
 				//else if(fpick == 189) {}
-				else if(fpick == 193) return format(string, sizeof(string), "%d", inva), cmd_namaz(playerid, string), i_resetveshi(playerid); // Намазлык
-				else if(fpick == 197) return cmd_spray(playerid), i_resetveshi(playerid); // балончик
+				else if(fpick == 193) return format(string, sizeof(string), "%d", inva), pc_cmd_namaz(playerid, string), i_resetveshi(playerid); // Намазлык
+				else if(fpick == 197) return pc_cmd_spray(playerid), i_resetveshi(playerid); // балончик
 				else if(fpick == 180) return usedrugs2(playerid,1), i_resetveshi(playerid); // Таблетка защиты
 				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // Таблетка Атаки
 				else if(fpick == 225) return showDialogSettingFlip(playerid), i_resetveshi(playerid); // Домкрат (Настройка автопереворота)

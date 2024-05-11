@@ -4,13 +4,13 @@ stock jobcollector(playerid)
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
 	
 	new line[100],lines[400];
-	if(ServerInfo[53] == 10) format(line,sizeof(line),"{99ff66}Повышенная Оплата: Активна \t \n"), strcat(lines,line);
-	else format(line,sizeof(line),"{cccccc}Стандартная Оплата \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{0088ff}Как заработать? \t \n"), strcat(lines,line);
-	if(GetPVarInt(playerid,"job_stat") != 13) format(line,sizeof(line),"{ff9000}Начать Работу \t \n"), strcat(lines,line);
-	else if(GetPVarInt(playerid,"job_stat") == 13) format(line,sizeof(line),"{ff9000}Завершить Работу \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{99ff66}Получить Зарплату \t {99ff66}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
-	ShowDialog(playerid,1338,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Инкассаторы",lines,"Выбор","Отмена");
+	if(ServerInfo[53] == 10) format(line,sizeof(line),"{99ff66}РџРѕРІС‹С€РµРЅРЅР°СЏ РћРїР»Р°С‚Р°: РђРєС‚РёРІРЅР° \t \n"), strcat(lines,line);
+	else format(line,sizeof(line),"{cccccc}РЎС‚Р°РЅРґР°СЂС‚РЅР°СЏ РћРїР»Р°С‚Р° \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{0088ff}РљР°Рє Р·Р°СЂР°Р±РѕС‚Р°С‚СЊ? \t \n"), strcat(lines,line);
+	if(GetPVarInt(playerid,"job_stat") != 13) format(line,sizeof(line),"{ff9000}РќР°С‡Р°С‚СЊ Р Р°Р±РѕС‚Сѓ \t \n"), strcat(lines,line);
+	else if(GetPVarInt(playerid,"job_stat") == 13) format(line,sizeof(line),"{ff9000}Р—Р°РІРµСЂС€РёС‚СЊ Р Р°Р±РѕС‚Сѓ \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{99ff66}РџРѕР»СѓС‡РёС‚СЊ Р—Р°СЂРїР»Р°С‚Сѓ \t {99ff66}[ %d$ ]\n", PlayerInfo[playerid][pSalary]), strcat(lines,line);
+	ShowDialog(playerid,1338,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РРЅРєР°СЃСЃР°С‚РѕСЂС‹",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
 	return 1;
 }
 
@@ -25,12 +25,12 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				if(listitem == 0)
 				{
 					new stro[86],sctringo[860];
-			        format(stro,sizeof(stro),"{0088ff}Как заработать?"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n\n{cccccc}- Выберите пункт <<Начать Работу>> в этом меню"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Отправляйтесь на улицу и возьмите спец.транспорт с парковки"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Следуйте по точкам указанным на гпс до банкомата, а после возвращайтесь в банк"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Только по перевозки денег в банк в получите зарплату"), strcat(sctringo,stro);
-			        ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Инкассаторы",sctringo,"Ок","");
+			        format(stro,sizeof(stro),"{0088ff}РљР°Рє Р·Р°СЂР°Р±РѕС‚Р°С‚СЊ?"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n\n{cccccc}- Р’С‹Р±РµСЂРёС‚Рµ РїСѓРЅРєС‚ <<РќР°С‡Р°С‚СЊ Р Р°Р±РѕС‚Сѓ>> РІ СЌС‚РѕРј РјРµРЅСЋ"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РЅР° СѓР»РёС†Сѓ Рё РІРѕР·СЊРјРёС‚Рµ СЃРїРµС†.С‚СЂР°РЅСЃРїРѕСЂС‚ СЃ РїР°СЂРєРѕРІРєРё"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- РЎР»РµРґСѓР№С‚Рµ РїРѕ С‚РѕС‡РєР°Рј СѓРєР°Р·Р°РЅРЅС‹Рј РЅР° РіРїСЃ РґРѕ Р±Р°РЅРєРѕРјР°С‚Р°, Р° РїРѕСЃР»Рµ РІРѕР·РІСЂР°С‰Р°Р№С‚РµСЃСЊ РІ Р±Р°РЅРє"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- РўРѕР»СЊРєРѕ РїРѕ РїРµСЂРµРІРѕР·РєРё РґРµРЅРµРі РІ Р±Р°РЅРє РІ РїРѕР»СѓС‡РёС‚Рµ Р·Р°СЂРїР»Р°С‚Сѓ"), strcat(sctringo,stro);
+			        ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}РРЅРєР°СЃСЃР°С‚РѕСЂС‹",sctringo,"РћРє","");
 			        return 1;
 				}
 				if(listitem == 1)
@@ -38,31 +38,31 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				    if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
 				    if(GetPVarInt(playerid,"job_stat") != 13)
 				    {
-				    	if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет водительских прав [ Y >> GPS >> Образовательный Центр ]");
-				    	if(PlayerInfo[playerid][pMechSkill] == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж устал и хочет спать");
+				    	if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІРѕРґРёС‚РµР»СЊСЃРєРёС… РїСЂР°РІ [ Y >> GPS >> РћР±СЂР°Р·РѕРІР°С‚РµР»СЊРЅС‹Р№ Р¦РµРЅС‚СЂ ]");
+				    	if(PlayerInfo[playerid][pMechSkill] == 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ СѓСЃС‚Р°Р» Рё С…РѕС‡РµС‚ СЃРїР°С‚СЊ");
 				    	SetPVarInt(playerid,"job_stat",13);
 						RemovePlayerAttachedObject(playerid,0), PlayerPlaySound(playerid,5600,0,0,0);
 				    	SetPlayerAttachedObject(playerid, 0, 19904, 1, 0.067999, 0.044999, 0.000000, 0.000000, 88.199996, 178.000000, 1.053000, 1.141001, 1.016000, 0, 0);
-				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отправляйтесь на улицу и возьмите спец.транспорт с парковки\n","*","");
+				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ РЅР° СѓР»РёС†Сѓ Рё РІРѕР·СЊРјРёС‚Рµ СЃРїРµС†.С‚СЂР°РЅСЃРїРѕСЂС‚ СЃ РїР°СЂРєРѕРІРєРё\n","*","");
 				    }
 				    else if(GetPVarInt(playerid,"job_stat") == 13)
 				    {
 				    	SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), PlayerPlaySound(playerid,5601,0,0,0);
-				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы {FF6347}завершили {ffcc66}работу в Инкассаторах","*","");
+				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Р’С‹ {FF6347}Р·Р°РІРµСЂС€РёР»Рё {ffcc66}СЂР°Р±РѕС‚Сѓ РІ РРЅРєР°СЃСЃР°С‚РѕСЂР°С…","*","");
 				    	DisablePlayerRaceCheckpoint(playerid);
 				    }
 		    	}
 		    	if(listitem == 2)
 				{
 					if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
-					if(PlayerInfo[playerid][pSalary] <= 0) return ErrorMessage(playerid, "{FF6347}Вы не выполнили работу");
+					if(PlayerInfo[playerid][pSalary] <= 0) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РІС‹РїРѕР»РЅРёР»Рё СЂР°Р±РѕС‚Сѓ");
 					new pay = PlayerInfo[playerid][pSalary];
 					if(ServerInfo[53] == 9) pay += pay/4;
 					paysalary(playerid, pay, 0);
 					ApplyAnimation(playerid,"DEALER","shop_pay",4.0, false, false, false, false, false);
-					MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PlayerInfo[playerid][pSalary], "Зарплата Инкассаторы");
-					SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Моя зарплата {99ff66}%d$", PlayerInfo[playerid][pSalary]);
-					SendDynamicActorMessage(playerid, BotPears[5],"Отлично! Держи деньги");
+					MoneyLog("salary", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PlayerInfo[playerid][pSalary], "Р—Р°СЂРїР»Р°С‚Р° РРЅРєР°СЃСЃР°С‚РѕСЂС‹");
+					SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РњРѕСЏ Р·Р°СЂРїР»Р°С‚Р° {99ff66}%d$", PlayerInfo[playerid][pSalary]);
+					SendDynamicActorMessage(playerid, BotPears[5],"РћС‚Р»РёС‡РЅРѕ! Р”РµСЂР¶Рё РґРµРЅСЊРіРё");
 					PlayerInfo[playerid][pPlacement] = 0, PlayerInfo[playerid][pSalary] = 0;
 					mysql_save(playerid, 58);
 				}
@@ -81,26 +81,26 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
                     SetPVarInt(playerid,"job_collector",0);
                     SetPVarInt(playerid,"job_collector_term",0);
                     SetPVarInt(playerid,"job_collector_status",0);
-                    ErrorMessage(playerid,"Я отменил перевозку денег");
-                }//ОТМЕНИТЬ
-                else return ErrorMessage(playerid,"Я не выполняю перевозку денег");
+                    ErrorMessage(playerid,"РЇ РѕС‚РјРµРЅРёР» РїРµСЂРµРІРѕР·РєСѓ РґРµРЅРµРі");
+                }//РћРўРњР•РќРРўР¬
+                else return ErrorMessage(playerid,"РЇ РЅРµ РІС‹РїРѕР»РЅСЏСЋ РїРµСЂРµРІРѕР·РєСѓ РґРµРЅРµРі");
             }
 			if(listitem >= 1 && listitem <= 50)
 			{
                 new veh = GetPlayerVehicleID(playerid);
                 new model = VehInfo[veh][vModel];
-                if(model != 428) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Securicar)");
+                if(model != 428) return SendClientMessage(playerid, COLOR_GREY, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РЅР° СЃРїРµС†.С‚СЂР°РЅСЃРїРѕСЂС‚Рµ(Securicar)");
                 new listterm = List[listitem-1][playerid];
                 new listord = ListParam[listitem-1][playerid];
                 new termid = numnrent(listord);
-                if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "[ Мысли ]: Я не могу самостоятельно выполнять заказы в своём бизнесе"), cmd_checkterm(playerid);
-				if(BizzInfo[listord][bDeliveryOrder] >= 0) return ErrorText(playerid, "[ Мысли ]: Заказ недоступен, его уже кто-то забрал.."), cmd_checkterm(playerid);
+                if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: РЇ РЅРµ РјРѕРіСѓ СЃР°РјРѕСЃС‚РѕСЏС‚РµР»СЊРЅРѕ РІС‹РїРѕР»РЅСЏС‚СЊ Р·Р°РєР°Р·С‹ РІ СЃРІРѕС‘Рј Р±РёР·РЅРµСЃРµ"), pc_cmd_checkterm(playerid);
+				if(BizzInfo[listord][bDeliveryOrder] >= 0) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Р—Р°РєР°Р· РЅРµРґРѕСЃС‚СѓРїРµРЅ, РµРіРѕ СѓР¶Рµ РєС‚Рѕ-С‚Рѕ Р·Р°Р±СЂР°Р».."), pc_cmd_checkterm(playerid);
 
 				BizzInfo[listord][bDeliveryOrder] = playerid;
 				SetPVarInt(playerid,"job_collector",listord);
                 SetPVarInt(playerid,"job_collector_term",listterm+1);
                 SetPVarInt(playerid,"job_collector_status",1);
-                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к банкомату для снятия денег(отмечено в GPS Навигаторе)");
+                SendClientMessage(playerid, COLOR_YELLOW, " SMS РѕС‚ РћРїРµСЂР°С‚РѕСЂР°: {99ff33}РћС‚РїСЂР°РІР»СЏР№С‚РµСЃСЊ Рє Р±Р°РЅРєРѕРјР°С‚Сѓ РґР»СЏ СЃРЅСЏС‚РёСЏ РґРµРЅРµРі(РѕС‚РјРµС‡РµРЅРѕ РІ GPS РќР°РІРёРіР°С‚РѕСЂРµ)");
                 CreateGps(playerid,RentPos_X[termid][listterm],RentPos_Y[termid][listterm],RentPos_Z[termid][listterm],0, 0, 10.0);
 			}
         }
@@ -112,14 +112,14 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 			if(IsPlayerInRangeOfPoint(playerid,3.0,1107.387, -1216.869, 17.804))
 			{
 			    if(listitem >= 1 || listitem < 0) return 1;
-				if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя арендовать транспорт сидя в транспорте");
-				if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет водительских прав [ Y >> GPS >> Образовательный Центр ]");
-				if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid, "{FF6347}Зайдите в будку и начните дежурство, прежде чем брать транспорт");
+				if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}РќРµР»СЊР·СЏ Р°СЂРµРЅРґРѕРІР°С‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚ СЃРёРґСЏ РІ С‚СЂР°РЅСЃРїРѕСЂС‚Рµ");
+				if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ РІРѕРґРёС‚РµР»СЊСЃРєРёС… РїСЂР°РІ [ Y >> GPS >> РћР±СЂР°Р·РѕРІР°С‚РµР»СЊРЅС‹Р№ Р¦РµРЅС‚СЂ ]");
+				if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid, "{FF6347}Р—Р°Р№РґРёС‚Рµ РІ Р±СѓРґРєСѓ Рё РЅР°С‡РЅРёС‚Рµ РґРµР¶СѓСЂСЃС‚РІРѕ, РїСЂРµР¶РґРµ С‡РµРј Р±СЂР°С‚СЊ С‚СЂР°РЅСЃРїРѕСЂС‚");
 				new unix = gettime();
-				if(PlayerInfo[playerid][pRent][0] > unix && PlayerInfo[playerid][pRent][1] > unix) return ErrorMessage(playerid, "{FF6347}У вас уже два арендованных транспорта [ Y >> Транспорт или /car ]");
+				if(PlayerInfo[playerid][pRent][0] > unix && PlayerInfo[playerid][pRent][1] > unix) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ СѓР¶Рµ РґРІР° Р°СЂРµРЅРґРѕРІР°РЅРЅС‹С… С‚СЂР°РЅСЃРїРѕСЂС‚Р° [ Y >> РўСЂР°РЅСЃРїРѕСЂС‚ РёР»Рё /car ]");
 	            new model, newcar;
             	if(listitem == 0) newcar = PP_CreateVehicle(428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1, 0.0), model = 428;
-				SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Если не устроил выданный банкомат [ /checkterm ]");
+				SendClientMessage(playerid,COLOR_GREY,"[ РњС‹СЃР»Рё ]: Р•СЃР»Рё РЅРµ СѓСЃС‚СЂРѕРёР» РІС‹РґР°РЅРЅС‹Р№ Р±Р°РЅРєРѕРјР°С‚ [ /checkterm ]");
                 Gas[newcar] = 100;
 	   			VehInfo[newcar][vAgetid] = playerid;
 	   			VehInfo[newcar][vRent] = unix+3600;
@@ -129,11 +129,11 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
                 new tyear, tmonth, tday, thour, tminute, tsecond;
                 stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 
-				ReloadVehicleLabel(newcar); // Перезагружаем лейбл на тс
+				ReloadVehicleLabel(newcar); // РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј Р»РµР№Р±Р» РЅР° С‚СЃ
                 VehInfo[newcar][v3dstat] = 4000;
 
 				new string[90];
-                format(string,sizeof(string),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
+                format(string,sizeof(string),"{cccccc}РђСЂРµРЅРґР° РґРѕ {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
                 VehLabel[newcar] = CreateDynamic3DTextLabel(string,0xfaf75c99, 1107.387, -1216.869, 17.804,1.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	   			Protect_PutPlayerInVehicle(playerid, newcar, 0);
 	   			CreateRent_Player(playerid, unix, newcar, 6, 100, model, 0, 0, 1107.387, -1216.869, 17.804,1);
@@ -152,12 +152,12 @@ stock CreateTermCollector(playerid, whrom, term)
 }
 CMD:checkterm(playerid)
 {
-    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
+    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Р’С‹ РЅРµ СЂР°Р±РѕС‚Р°РµС‚Рµ РёРЅРєР°СЃСЃР°С‚Р°СЂРѕРј!");
 	new quan;
 	new line[100],lines[2000];
 
-    format(line,sizeof(line),"{FF6347}Номер бизнеса\t Денег в банкомате\tОплата "), strcat(lines,line);
-    format(line,sizeof(line),"\n{FF6347}Отменить Доставку \t\t "), strcat(lines,line);
+    format(line,sizeof(line),"{FF6347}РќРѕРјРµСЂ Р±РёР·РЅРµСЃР°\t Р”РµРЅРµРі РІ Р±Р°РЅРєРѕРјР°С‚Рµ\tРћРїР»Р°С‚Р° "), strcat(lines,line);
+    format(line,sizeof(line),"\n{FF6347}РћС‚РјРµРЅРёС‚СЊ Р”РѕСЃС‚Р°РІРєСѓ \t\t "), strcat(lines,line);
     for(new b = 163; b < 172; b++)
 	{
         for(new i = 0; i < 5; i++)
@@ -173,15 +173,15 @@ CMD:checkterm(playerid)
             }
         }
 	}
-    if(quan < 0) return ErrorMessage(playerid,"В данный момент не один из банкоматов не заполнен");
-	ShowDialog(playerid,1339,DIALOG_STYLE_TABLIST_HEADERS,"Инкасаторские заказы",lines,"Выбрать","Отмена");
+    if(quan < 0) return ErrorMessage(playerid,"Р’ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ РЅРµ РѕРґРёРЅ РёР· Р±Р°РЅРєРѕРјР°С‚РѕРІ РЅРµ Р·Р°РїРѕР»РЅРµРЅ");
+	ShowDialog(playerid,1339,DIALOG_STYLE_TABLIST_HEADERS,"РРЅРєР°СЃР°С‚РѕСЂСЃРєРёРµ Р·Р°РєР°Р·С‹",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
 stock agetcollector(playerid)
 {
 	if(IsPlayerInRangeOfPoint(playerid,3.0,1107.387, -1216.869, 17.804))
 	{
-		ShowDialog(playerid,1340,2,"{ff9000}Транспорт Инкасаторов", "Securicar ","Выбрать","Выход");
+		ShowDialog(playerid,1340,2,"{ff9000}РўСЂР°РЅСЃРїРѕСЂС‚ РРЅРєР°СЃР°С‚РѕСЂРѕРІ", "Securicar ","Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
   	}
     return 1;
 }
@@ -190,7 +190,7 @@ stock CloseCollector(playerid)
 {
 	new b = GetPlayerVirtualWorld(playerid)-3000;
 	new term = GetPVarInt(playerid,"job_collector_term")-1;
-	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в данный банк.");
+	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ СЂР°Р±РѕС‚Р°РµС‚Рµ РёРЅРєР°СЃР°С‚РѕСЂРѕРј РёР»Рё РЅРµ РІС‹РїРѕР»РЅСЏРµС‚Рµ РґРѕСЃС‚Р°РІРєСѓ РІ РґР°РЅРЅС‹Р№ Р±Р°РЅРє.");
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
@@ -204,7 +204,7 @@ stock CloseCollector(playerid)
 	UpdateLabelTerm(b,br,term);
 	BizzInfo[b][bDeliveryOrder] = -1;
 	BizzInfo[b][bItem][term] = 0, BizzInfo[b][bUpdate] = 1;
-	SuccessMessage(playerid,"Деньги доставлены!\nВы можете сесть дальше в транспорт инкассаторов\nи продолжить работать.");
+	SuccessMessage(playerid,"Р”РµРЅСЊРіРё РґРѕСЃС‚Р°РІР»РµРЅС‹!\nР’С‹ РјРѕР¶РµС‚Рµ СЃРµСЃС‚СЊ РґР°Р»СЊС€Рµ РІ С‚СЂР°РЅСЃРїРѕСЂС‚ РёРЅРєР°СЃСЃР°С‚РѕСЂРѕРІ\nРё РїСЂРѕРґРѕР»Р¶РёС‚СЊ СЂР°Р±РѕС‚Р°С‚СЊ.");
 	RemovePlayerAttachedObject(playerid,1);
 	return 1;
 }
@@ -225,11 +225,11 @@ stock FindBankFromCollector(playerid)
 			}
 		}
 	}
-	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслуженны\n\n{cccccc}Пожалуйста подождите, деньги в банкоматах появляются когд\nими пользуются граждане штата");
+	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Р’СЃРµ Р±Р°РЅРєРѕРјР°С‚С‹ Р±С‹Р»Рё РѕР±СЃР»СѓР¶РµРЅРЅС‹\n\n{cccccc}РџРѕР¶Р°Р»СѓР№СЃС‚Р° РїРѕРґРѕР¶РґРёС‚Рµ, РґРµРЅСЊРіРё РІ Р±Р°РЅРєРѕРјР°С‚Р°С… РїРѕСЏРІР»СЏСЋС‚СЃСЏ РєРѕРіРґ\nРёРјРё РїРѕР»СЊР·СѓСЋС‚СЃСЏ РіСЂР°Р¶РґР°РЅРµ С€С‚Р°С‚Р°");
 
 	CreateTermCollector(playerid,137+biz,kakoi+1);
 	new string[200];
-	format(string,sizeof(string),"{ff9000}Ближайший Банкомат: %s {99ff66}отмечен на карте\n{cccccc}Бизнес № %d | банкомат № %d | Денег в банкомате %d$ | Оплата за доставку: %d$", BizzInfo[biz+137][bName], biz+137, kakoi+1,BizzInfo[biz+137][bItem],BizzInfo[biz+137][bDeliveryPay]);
+	format(string,sizeof(string),"{ff9000}Р‘Р»РёР¶Р°Р№С€РёР№ Р‘Р°РЅРєРѕРјР°С‚: %s {99ff66}РѕС‚РјРµС‡РµРЅ РЅР° РєР°СЂС‚Рµ\n{cccccc}Р‘РёР·РЅРµСЃ в„– %d | Р±Р°РЅРєРѕРјР°С‚ в„– %d | Р”РµРЅРµРі РІ Р±Р°РЅРєРѕРјР°С‚Рµ %d$ | РћРїР»Р°С‚Р° Р·Р° РґРѕСЃС‚Р°РІРєСѓ: %d$", BizzInfo[biz+137][bName], biz+137, kakoi+1,BizzInfo[biz+137][bItem],BizzInfo[biz+137][bDeliveryPay]);
 	SuccessMessage(playerid, string);
 	CreateGps(playerid, RentPos_X[biz][kakoi], RentPos_Y[biz][kakoi], RentPos_Z[biz][kakoi], 0, 0, 5.0);
 	return 1;

@@ -1080,7 +1080,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 				else if(listitem == OnlineInfo[playerid][oDialogMenu][0] + 1) vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1] + 1); // Следующая страница
 			}
 		}
-		else cmd_economy(playerid);
+		else pc_cmd_economy(playerid);
 	}
 	else if(dialogid == 1067)
 	{
@@ -1307,7 +1307,7 @@ stock IsNoMessageVehicle(vehicleid)
 	return 0;
 }
 
-CMD:vgall(playerid, const params[]) return cmd_vehgoldall(playerid, params);
+CMD:vgall(playerid, const params[]) return pc_cmd_vehgoldall(playerid, params);
 CMD:vehgoldall(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");

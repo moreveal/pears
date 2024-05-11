@@ -157,6 +157,9 @@ stock put_goods(playerid, inva, fpick, quan, binva)
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
     if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать");
 	if(PlayerInfo[playerid][pMarkInven][binva] > 0) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята");
+
+	// Кейс нельзя выбрасывать на 3 уровне и ниже
+	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
 	
 	new put_inva = binva;
 	PlayerInfo[playerid][pMarkInven][binva] = fpick;

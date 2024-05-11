@@ -1,32 +1,32 @@
 
 /*
-Как добавить новые права доступа?
-1. Плюсуем в MAX_BIZ_ACCESS
-2. Добавляем название в new bizAccess
-3. Добавляем в базу новые acc и accrank, если требуются
-4. Используем GetAccessBizMay или GetAccessBiz (возвращает - 0 нет доступа, 1 есть доступ)
+РљР°Рє РґРѕР±Р°РІРёС‚СЊ РЅРѕРІС‹Рµ РїСЂР°РІР° РґРѕСЃС‚СѓРїР°?
+1. РџР»СЋСЃСѓРµРј РІ MAX_BIZ_ACCESS
+2. Р”РѕР±Р°РІР»СЏРµРј РЅР°Р·РІР°РЅРёРµ РІ new bizAccess
+3. Р”РѕР±Р°РІР»СЏРµРј РІ Р±Р°Р·Сѓ РЅРѕРІС‹Рµ acc Рё accrank, РµСЃР»Рё С‚СЂРµР±СѓСЋС‚СЃСЏ
+4. РСЃРїРѕР»СЊР·СѓРµРј GetAccessBizMay РёР»Рё GetAccessBiz (РІРѕР·РІСЂР°С‰Р°РµС‚ - 0 РЅРµС‚ РґРѕСЃС‚СѓРїР°, 1 РµСЃС‚СЊ РґРѕСЃС‚СѓРї)
 
-Как добавить новую настройку?
-1. Плюсуем в MAX_BIZ_SETTING
-2. Добавляем название в new bizSetting
-3. Добавляем атрибут настройки (что отображается напротив названия) в GetSettingAttributionText
-4. Добавляем в базу новую setting, если требуется
-5. Изменяем по необходимости dialogid == 691 область: // Настройки и dialogid == 693
-6. Используем переменную, где нам необходимо BizzInfo[b][bSetting][i]
+РљР°Рє РґРѕР±Р°РІРёС‚СЊ РЅРѕРІСѓСЋ РЅР°СЃС‚СЂРѕР№РєСѓ?
+1. РџР»СЋСЃСѓРµРј РІ MAX_BIZ_SETTING
+2. Р”РѕР±Р°РІР»СЏРµРј РЅР°Р·РІР°РЅРёРµ РІ new bizSetting
+3. Р”РѕР±Р°РІР»СЏРµРј Р°С‚СЂРёР±СѓС‚ РЅР°СЃС‚СЂРѕР№РєРё (С‡С‚Рѕ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РЅР°РїСЂРѕС‚РёРІ РЅР°Р·РІР°РЅРёСЏ) РІ GetSettingAttributionText
+4. Р”РѕР±Р°РІР»СЏРµРј РІ Р±Р°Р·Сѓ РЅРѕРІСѓСЋ setting, РµСЃР»Рё С‚СЂРµР±СѓРµС‚СЃСЏ
+5. РР·РјРµРЅСЏРµРј РїРѕ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё dialogid == 691 РѕР±Р»Р°СЃС‚СЊ: // РќР°СЃС‚СЂРѕР№РєРё Рё dialogid == 693
+6. РСЃРїРѕР»СЊР·СѓРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ, РіРґРµ РЅР°Рј РЅРµРѕР±С…РѕРґРёРјРѕ BizzInfo[b][bSetting][i]
 */
 
 new bizAccess[][] =
 {
-	"Вывод средств", "Переименование бизнеса", "Управление ценниками", "Просмотр лога", // 0 - 3
-	"Управление местоположением", "Доступ к меню", "Доступ к складу", "Редактор объектов" // 4 - 7
+	"Р’С‹РІРѕРґ СЃСЂРµРґСЃС‚РІ", "РџРµСЂРµРёРјРµРЅРѕРІР°РЅРёРµ Р±РёР·РЅРµСЃР°", "РЈРїСЂР°РІР»РµРЅРёРµ С†РµРЅРЅРёРєР°РјРё", "РџСЂРѕСЃРјРѕС‚СЂ Р»РѕРіР°", // 0 - 3
+	"РЈРїСЂР°РІР»РµРЅРёРµ РјРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµРј", "Р”РѕСЃС‚СѓРї Рє РјРµРЅСЋ", "Р”РѕСЃС‚СѓРї Рє СЃРєР»Р°РґСѓ", "Р РµРґР°РєС‚РѕСЂ РѕР±СЉРµРєС‚РѕРІ" // 4 - 7
 };
 
 new bizSetting[][] =
 {
-	"Вывод дохода", "Макс. сумма вывода дохода", "Интервал вывода дохода" // 0 - 3
+	"Р’С‹РІРѕРґ РґРѕС…РѕРґР°", "РњР°РєСЃ. СЃСѓРјРјР° РІС‹РІРѕРґР° РґРѕС…РѕРґР°", "РРЅС‚РµСЂРІР°Р» РІС‹РІРѕРґР° РґРѕС…РѕРґР°" // 0 - 3
 };
 
-stock GetAccessBizMay(playerid, b, accessId) // Результат доступа
+stock GetAccessBizMay(playerid, b, accessId) // Р РµР·СѓР»СЊС‚Р°С‚ РґРѕСЃС‚СѓРїР°
 {
 	if(PlayerInfo[playerid][pBusiness] == b) return 1;
 	if(BizzInfo[b][bFam] >= 1 && BizzInfo[b][bAcc][accessId] == 1)
@@ -36,11 +36,11 @@ stock GetAccessBizMay(playerid, b, accessId) // Результат доступа
 	return 0;
 }
 
-stock GetAccessBiz(playerid, b, accessId) // Ответ с сообщением
+stock GetAccessBiz(playerid, b, accessId) // РћС‚РІРµС‚ СЃ СЃРѕРѕР±С‰РµРЅРёРµРј
 {
 	if(!GetAccessBizMay(playerid, b, accessId))
 	{
-		ErrorMessage(playerid, "{FF6347}Вам недоступна эта функция бизнеса\n\n{cccccc}Бизнес имеет настройки прав доступа для участников семьи");
+		ErrorMessage(playerid, "{FF6347}Р’Р°Рј РЅРµРґРѕСЃС‚СѓРїРЅР° СЌС‚Р° С„СѓРЅРєС†РёСЏ Р±РёР·РЅРµСЃР°\n\n{cccccc}Р‘РёР·РЅРµСЃ РёРјРµРµС‚ РЅР°СЃС‚СЂРѕР№РєРё РїСЂР°РІ РґРѕСЃС‚СѓРїР° РґР»СЏ СѓС‡Р°СЃС‚РЅРёРєРѕРІ СЃРµРјСЊРё");
 		return 0;
 	}
 	return 1;
@@ -51,39 +51,39 @@ stock GetSettingAttributionText(settingId, result)
 	new text[34];
 	if(settingId == 0)
 	{
-		if(result == 0) text = "Личный счет";
-		else if(result == 1) text = "Семейный счет";
+		if(result == 0) text = "Р›РёС‡РЅС‹Р№ СЃС‡РµС‚";
+		else if(result == 1) text = "РЎРµРјРµР№РЅС‹Р№ СЃС‡РµС‚";
 	}
 	else if(settingId == 1) format(text,sizeof(text),"{99ff66}%d$", result);
-	else if(settingId == 2) format(text,sizeof(text),"{0088ff}%d мин.", result);
+	else if(settingId == 2) format(text,sizeof(text),"{0088ff}%d РјРёРЅ.", result);
 	return text;
 }
 
 CMD:bac(playerid)
 {
-	if(PlayerInfo[playerid][pBusiness] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет собственного бизнеса");
+	if(PlayerInfo[playerid][pBusiness] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ Р±РёР·РЅРµСЃР°");
 
 	new b = PlayerInfo[playerid][pBusiness], quan;
 	new line[100],lines[4048];
 
 	DP[4][playerid] = b;
-	format(line,sizeof(line),"Настройка \t Значение"), strcat(lines,line);
+	format(line,sizeof(line),"РќР°СЃС‚СЂРѕР№РєР° \t Р—РЅР°С‡РµРЅРёРµ"), strcat(lines,line);
 
-	// Права доступа бизнеса
+	// РџСЂР°РІР° РґРѕСЃС‚СѓРїР° Р±РёР·РЅРµСЃР°
 	for(new i; i < MAX_BIZ_ACCESS; ++ i)
 	{
 		if(BizzInfo[b][bFam] > 0 && BizzInfo[b][bAcc][i] == 1)
 		{
-			format(line,sizeof(line),"\n{cccccc}%s \t {ff9000}%d+ Fam Ранг", bizAccess[i],BizzInfo[b][bAccRank][0]), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}%s \t {ff9000}%d+ Fam Р Р°РЅРі", bizAccess[i],BizzInfo[b][bAccRank][0]), strcat(lines,line);
 		}
-		else  format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}Владелец", bizAccess[i]), strcat(lines,line);
+		else  format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}Р’Р»Р°РґРµР»РµС†", bizAccess[i]), strcat(lines,line);
 
 		List[quan][playerid] = i;
 		ListParam[quan][playerid] = 0;
 		quan ++;
 	}
 
-	// Настройки бизнеса
+	// РќР°СЃС‚СЂРѕР№РєРё Р±РёР·РЅРµСЃР°
 	for(new i; i < MAX_BIZ_SETTING; ++ i)
 	{
 		format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}%s", bizSetting[i], GetSettingAttributionText(i, BizzInfo[b][bSetting][i])), strcat(lines,line);
@@ -92,7 +92,7 @@ CMD:bac(playerid)
 		ListParam[quan][playerid] = 1;
 		quan ++;
 	}
-	ShowDialog(playerid,691,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Настройки {ff9000}Бизнеса",lines,"Выбрать","Отмена");
+	ShowDialog(playerid,691,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}РќР°СЃС‚СЂРѕР№РєРё {ff9000}Р‘РёР·РЅРµСЃР°",lines,"Р’С‹Р±СЂР°С‚СЊ","РћС‚РјРµРЅР°");
    	return 1;
 }
 
@@ -102,12 +102,12 @@ stock showDialogBizAccess(playerid, b, i)
 	new line[60],lines[180];
 	format(line,sizeof(line),"%s \t ", bizAccess[i]), strcat(lines,line);
 
-	if(BizzInfo[b][bAcc][i] == 0) format(line,sizeof(line),"\n{cccccc}Доступ: \t {99ff66}Владелец"), strcat(lines,line);
-	else if(BizzInfo[b][bAcc][i] == 1) format(line,sizeof(line),"\n{cccccc}Доступ: \t {ffcc00}Владелец и Семья"), strcat(lines,line);
-	else if(BizzInfo[b][bAcc][i] == 2) format(line,sizeof(line),"\n{cccccc}Доступ: \t {FF6347}Любой Гость"), strcat(lines,line);
-	format(line,sizeof(line),"\n{cccccc}Fam Ранг: \t {ff9000}%d+", BizzInfo[b][bAccRank][i]), strcat(lines,line);
+	if(BizzInfo[b][bAcc][i] == 0) format(line,sizeof(line),"\n{cccccc}Р”РѕСЃС‚СѓРї: \t {99ff66}Р’Р»Р°РґРµР»РµС†"), strcat(lines,line);
+	else if(BizzInfo[b][bAcc][i] == 1) format(line,sizeof(line),"\n{cccccc}Р”РѕСЃС‚СѓРї: \t {ffcc00}Р’Р»Р°РґРµР»РµС† Рё РЎРµРјСЊСЏ"), strcat(lines,line);
+	else if(BizzInfo[b][bAcc][i] == 2) format(line,sizeof(line),"\n{cccccc}Р”РѕСЃС‚СѓРї: \t {FF6347}Р›СЋР±РѕР№ Р“РѕСЃС‚СЊ"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Fam Р Р°РЅРі: \t {ff9000}%d+", BizzInfo[b][bAccRank][i]), strcat(lines,line);
 
-	ShowDialog(playerid,692,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}Настройки {ff9000}Бизнеса",lines,"Выбрать","Назад");
+	ShowDialog(playerid,692,DIALOG_STYLE_TABLIST_HEADERS,"{cccccc}РќР°СЃС‚СЂРѕР№РєРё {ff9000}Р‘РёР·РЅРµСЃР°",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
 	return 1;
 }
 
@@ -115,9 +115,9 @@ stock bizsbrosprava(b)
 {
 	for(new i; i < MAX_BIZ_ACCESS; ++ i) BizzInfo[b][bAcc][i] = 0, BizzInfo[b][bAccRank][i] = MAX_RANK_FAMILY;
 
-	BizzInfo[b][bSetting][0] = 0; // Вывод на личный счет (1 - это счёт семьи)
-	BizzInfo[b][bSetting][1] = 10000000; // Максимальная сумма вывода за раз (10кк)
-	BizzInfo[b][bSetting][2] = 0; // Интервал на вывод (0 минут)
+	BizzInfo[b][bSetting][0] = 0; // Р’С‹РІРѕРґ РЅР° Р»РёС‡РЅС‹Р№ СЃС‡РµС‚ (1 - СЌС‚Рѕ СЃС‡С‘С‚ СЃРµРјСЊРё)
+	BizzInfo[b][bSetting][1] = 10000000; // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ СЃСѓРјРјР° РІС‹РІРѕРґР° Р·Р° СЂР°Р· (10РєРє)
+	BizzInfo[b][bSetting][2] = 0; // РРЅС‚РµСЂРІР°Р» РЅР° РІС‹РІРѕРґ (0 РјРёРЅСѓС‚)
 	return 1;
 }
 
@@ -129,28 +129,28 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
         {
 			if(listitem < 0 || listitem >= MAX_BIZ_ACCESS + MAX_BIZ_SETTING) return 1;
 
-			if(PlayerInfo[playerid][pBusiness] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет собственного бизнеса");
+			if(PlayerInfo[playerid][pBusiness] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ РЅРµС‚ СЃРѕР±СЃС‚РІРµРЅРЅРѕРіРѕ Р±РёР·РЅРµСЃР°");
 			new b = PlayerInfo[playerid][pBusiness];
 
-			// Права Доступа
+			// РџСЂР°РІР° Р”РѕСЃС‚СѓРїР°
 			if(ListParam[listitem][playerid] == 0)
 			{
-				if(BizzInfo[b][bFam] == 0) return ErrorText(playerid, "[ Мысли ]: К моему бизнесу не привязана семья"), cmd_bac(playerid);
+				if(BizzInfo[b][bFam] == 0) return ErrorText(playerid, "[ РњС‹СЃР»Рё ]: Рљ РјРѕРµРјСѓ Р±РёР·РЅРµСЃСѓ РЅРµ РїСЂРёРІСЏР·Р°РЅР° СЃРµРјСЊСЏ"), pc_cmd_bac(playerid);
 				showDialogBizAccess(playerid, b, List[listitem][playerid]);
 			}
 
-			// Настройки
+			// РќР°СЃС‚СЂРѕР№РєРё
 			if(ListParam[listitem][playerid] == 1)
 			{
 				new settingId = List[listitem-MAX_BIZ_ACCESS][playerid];
 				new line[100],lines[200];
 
 				DP[2][playerid] = settingId;
-				format(line,sizeof(line),"{cccccc}Введите значение для настройки: {ff9000}%s", bizSetting[settingId]), strcat(lines,line);
+				format(line,sizeof(line),"{cccccc}Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ РЅР°СЃС‚СЂРѕР№РєРё: {ff9000}%s", bizSetting[settingId]), strcat(lines,line);
 				if(settingId == 0) 
 				{
 					DP[0][playerid] = 0, DP[1][playerid] = 1;
-					format(line,sizeof(line),"\n\n{0088ff}0 - личный счет, 1 - семейный счет"), strcat(lines,line);
+					format(line,sizeof(line),"\n\n{0088ff}0 - Р»РёС‡РЅС‹Р№ СЃС‡РµС‚, 1 - СЃРµРјРµР№РЅС‹Р№ СЃС‡РµС‚"), strcat(lines,line);
 				}
 				else if(settingId == 1) 
 				{
@@ -160,9 +160,9 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 				else if(settingId == 2) 
 				{
 					DP[0][playerid] = 0, DP[1][playerid] = 14400;
-					format(line,sizeof(line),"\n\n{0088ff}0 - 14400 минут (10 дней)"), strcat(lines,line);
+					format(line,sizeof(line),"\n\n{0088ff}0 - 14400 РјРёРЅСѓС‚ (10 РґРЅРµР№)"), strcat(lines,line);
 				}
-				ShowDialog(playerid,693,DIALOG_STYLE_INPUT,"{ff9000}Настройки Бизнеса",lines,"Принять","Отмена");
+				ShowDialog(playerid,693,DIALOG_STYLE_INPUT,"{ff9000}РќР°СЃС‚СЂРѕР№РєРё Р‘РёР·РЅРµСЃР°",lines,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			}
         }
         else mybiz(playerid, DP[4][playerid]);
@@ -179,7 +179,7 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 				if(BizzInfo[b][bAcc][i] == 0) BizzInfo[b][bAcc][i] = 1;
 				else if(BizzInfo[b][bAcc][i] == 1)
 				{
-					if(i == 6 || i == 7) BizzInfo[b][bAcc][i] = 2; // Только у двух прав доступа есть возможность выбрать Любого Гостя
+					if(i == 6 || i == 7) BizzInfo[b][bAcc][i] = 2; // РўРѕР»СЊРєРѕ Сѓ РґРІСѓС… РїСЂР°РІ РґРѕСЃС‚СѓРїР° РµСЃС‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РІС‹Р±СЂР°С‚СЊ Р›СЋР±РѕРіРѕ Р“РѕСЃС‚СЏ
 					else BizzInfo[b][bAcc][i] = 0;
 				}
 				else BizzInfo[b][bAcc][i] = 0;
@@ -190,11 +190,11 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(listitem == 1)
 			{
 				new string[120];
-				format(string,sizeof(string),"{cccccc}Введите ранг семьи, с которого будет доступно {ff9000}%s\n\n1 - %d Ранг", bizAccess[i], MAX_RANK_FAMILY);
-				ShowDialog(playerid,696,DIALOG_STYLE_INPUT,"{ff9000}Настройки Бизнеса",string,"Принять","Отмена");
+				format(string,sizeof(string),"{cccccc}Р’РІРµРґРёС‚Рµ СЂР°РЅРі СЃРµРјСЊРё, СЃ РєРѕС‚РѕСЂРѕРіРѕ Р±СѓРґРµС‚ РґРѕСЃС‚СѓРїРЅРѕ {ff9000}%s\n\n1 - %d Р Р°РЅРі", bizAccess[i], MAX_RANK_FAMILY);
+				ShowDialog(playerid,696,DIALOG_STYLE_INPUT,"{ff9000}РќР°СЃС‚СЂРѕР№РєРё Р‘РёР·РЅРµСЃР°",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			}
 		}
-		else cmd_bac(playerid);
+		else pc_cmd_bac(playerid);
 	}
 	else if(dialogid == 693)
    	{
@@ -202,24 +202,24 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 		new i = DP[2][playerid];
    		if(response)
         {
-			if(!strlen(inputtext)) return cmd_bac(playerid);
+			if(!strlen(inputtext)) return pc_cmd_bac(playerid);
 
 			new input = strval(inputtext);
 			if(input < DP[0][playerid] || input > DP[1][playerid])
 			{
 				new string[80];
-				format(string,sizeof(string),"[ Мысли ]: Значение не меньше %d и не больше %d", DP[0][playerid], DP[1][playerid]);
+				format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: Р—РЅР°С‡РµРЅРёРµ РЅРµ РјРµРЅСЊС€Рµ %d Рё РЅРµ Р±РѕР»СЊС€Рµ %d", DP[0][playerid], DP[1][playerid]);
 				ErrorText(playerid, string);
-				cmd_bac(playerid);
+				pc_cmd_bac(playerid);
 				return 1;
 			}
 
 			BizzInfo[b][bSetting][i] = input;
 			BizzInfo[b][bUpdate] = 1;
-			cmd_bac(playerid);
+			pc_cmd_bac(playerid);
 			PlayerPlaySound(playerid,6401,0,0,0);
 		}
-		else cmd_bac(playerid);
+		else pc_cmd_bac(playerid);
 	}
 	else if(dialogid == 696)
    	{
@@ -233,7 +233,7 @@ stock dialogCase_AccessBiz(playerid, dialogid, response, listitem, const inputte
 			if(input <= 0 || input > MAX_RANK_FAMILY)
 			{
 				new string[80];
-				format(string,sizeof(string),"[ Мысли ]: Семейный ранг не меньше 1 и не больше %d", MAX_RANK_FAMILY);
+				format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЎРµРјРµР№РЅС‹Р№ СЂР°РЅРі РЅРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ %d", MAX_RANK_FAMILY);
 				ErrorText(playerid, string);
 				showDialogBizAccess(playerid, b, i);
 				return 1;

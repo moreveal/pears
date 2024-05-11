@@ -658,7 +658,7 @@ stock ShowRoutCity(playerid)
 }
 stock showDialogMenuBusStation(playerid, cam)
 {
-	if(BusStationInfo[cam][bsActive] == 0) return ErrorText(playerid,"[ Мысли ]: Остановки не существует"), cmd_busstop(playerid);
+	if(BusStationInfo[cam][bsActive] == 0) return ErrorText(playerid,"[ Мысли ]: Остановки не существует"), pc_cmd_busstop(playerid);
 	new header[80];
 	format(header,sizeof(header),"{ff9000}%s", BusStationInfo[cam][bsName]);
 	ShowDialog(playerid,1302,DIALOG_STYLE_LIST,header,"{444444}Об остановке..\n{cccccc}Найти\n{cccccc}Изменить название\n{FF6347}Удалить","Выбор","Отмена");
