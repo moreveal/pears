@@ -24,23 +24,30 @@
 
 native AudioStream:CreateAudioStream(const name[] = "", colour = -1);
 native bool:DeleteAudioStream(AudioStream:stream);
+
 native bool:AttachAudioStreamToPlayer(AudioStream:stream, vehicleid);
 native bool:AttachAudioStreamToVehicle(AudioStream:stream, vehicleid);
+
 native bool:AttachAudioStreamListener(AudioStream:stream, playerid);
 native bool:DetachAudioStreamListener(AudioStream:stream, playerid);
 native bool:IsAudioStreamListenerAttached(AudioStream:stream, playerid);
+
 native bool:AttachAudioStreamSpeaker(AudioStream:stream, playerid);
 native bool:DetachAudioStreamSpeaker(AudioStream:stream, playerid);
 native bool:IsAudioStreamSpeakerAttached(AudioStream:stream, playerid);
 native bool:IsAudioStreamSpeakerSpeaking(AudioStream:stream, playerid);
-native bool:IsPlayerSpeaking(AudioStream:stream, playerid);
+native bool:IsPlayerSpeaking(playerid);
+
 native bool:SetAudioStreamAutostreamState(AudioStream:stream, bool:enabled);
+native bool:SetAudioStreamAutostreamDist(AudioStream:stream, Float:dist);
 native bool:IsAudioStreamAutostreamEnabled(AudioStream:stream);
-native bool:SetAudioStreamRollofFactor(AudioStream:stream, Float:value);
+
 native bool:SetAudioStreamMinDistance(AudioStream:stream, Float:dist);
 native bool:SetAudioStreamMaxDistance(AudioStream:stream, Float:dist);
+
 native bool:SetAudioStreamSpatialState(AudioStream:stream, bool:enabled);
 native bool:IsAudioStreamSpatialEnabled(AudioStream:stream);
+
 native bool:GetAudioStreamVirtualWorld(AudioStream:stream);
 native bool:GetAudioStreamPosition(AudioStream:stream, &Float:x, &Float:y, &Float:z);
 native bool:SetAudioStreamVirtualWorld(AudioStream:stream, worldid);

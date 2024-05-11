@@ -1876,7 +1876,7 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10, lim[60] = 100, lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow, lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
 	lim[82] = 10, lim[83] = 10, lim[84] = 10, lim[85] = 10, lim[86] = 10, lim[87] = 10, lim[88] = 10, lim[89] = 10, lim[106] = 12, lim[108] = 20, lim[109] = 20, lim[110] = 20;
-	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 100;
+	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 20;
 
     getQuan = get_invent(playerid, thingId, 0);
     getLimit = lim[thingId];
