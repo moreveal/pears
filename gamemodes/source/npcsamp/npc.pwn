@@ -3,7 +3,7 @@
 // Имена NPC
 new npcNames[][] =
 {
-    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Mr_Winston"
+    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Mr_Winston", "Danny_Devito"
 };
 
 enum npcInfo
@@ -24,6 +24,7 @@ stock CreateNPCsamp()
     ConnectNPC(npcNames[1], "prison_sf");
     ConnectNPC(npcNames[2], "train_ngsa");
     ConnectNPC(npcNames[3], "collector");
+    ConnectNPC(npcNames[4], "plane_fly");
 
     print("[MODE]: NPC_Create");
     return 1;
@@ -100,6 +101,13 @@ stock SetNpcSpawn(playerid)
         ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 1100.9181,-1186.2133,18.3424,180.0, 0, 0, 0, 0, 0, 0);
         NPCInfo[3][npcVehicle] = collectorveh;
     }
+
+    // Пилот
+    else if(IsNameNpc(playerid, npcNames[4]))
+    {
+        ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], 2042.4969,-2613.1316,13.5469,0.0078, 0, 0, 0, 0, 0, 0);
+        NPCInfo[4][npcVehicle] = flyveh;
+    }
     return 1;
 }
 
@@ -171,6 +179,22 @@ stock OnNpcSpawn(playerid)
         PPSetPlayerFacingAngle(playerid, 180.0);
         SetPlayerColor(playerid, INV_COLOR);
         NPCInfo[3][npcStart] = false;
+    }
+
+    // Пилот
+    else if(IsNameNpc(playerid, npcNames[4]))
+    {
+        PlayerInfo[playerid][pModel] = 61;
+        
+        S_SetPlayerVirtualWorld(playerid,0,0);
+        PPSetPlayerInterior(playerid,0);
+        m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
+
+        RemovePlayerFromVehicle(playerid);
+        SetPlayerPos(playerid, 2042.4969,-2613.1316,13.5469);
+        PPSetPlayerFacingAngle(playerid, 0.0078);
+        SetPlayerColor(playerid, INV_COLOR);
+        NPCInfo[4][npcStart] = false;
     }
     return 1;
 }
@@ -257,9 +281,19 @@ CMD:govinni(playerid, const params[])
     return 1;
 }
 
+CMD:godeny(playerid)
+{
+    if(server != 0) return 0;
+
+    if(NPCInfo[4][npcStart] == true) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен");
+    PlaneStart();
+    return 1;
+}
+
 stock IsAVehicleNPC(vehicleid)
 {
-    if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train || vehicleid == collectorveh) return 1;
+    if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train || vehicleid == collectorveh
+        || vehicleid == flyveh) return 1;
     return 0;
 }
 

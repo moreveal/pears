@@ -530,7 +530,7 @@ CMD:readdamage(playerid)
     }
     else 
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {99ff66}отключено","*","");
+        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {FF6347}отключено","*","");
         readdam = false;
     }
     return 1;

@@ -413,6 +413,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 			else if(fpick == 45) model = 3017; // Карта Моряка
 			else if(fpick == 48) model = 1575; // Надувная Лодка
 			else if(fpick == 91) model = 3017; // Карта Сокровищ
+			else if(fpick == 229) model = 18849; // Сумка из самолёта
 	    }
 	    else if(thingType == 1) // Оружие
 	    {
@@ -444,6 +445,15 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 		SetDynamicObjectMaterial(ThrowInfo[t][tObject], 0, 19058, "xmasboxes", "wrappingpaper20", 0x00000000);
 		SetDynamicObjectMaterial(ThrowInfo[t][tObject], 1, 19058, "xmasboxes", "silk9-128x128", 0x00000000);
  	}
+
+	// Сумка с самолёта
+	if(fpick == 229)
+	{
+		SetDynamicObjectMaterial(ThrowInfo[t][tObject], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+    	SetDynamicObjectMaterial(ThrowInfo[t][tObject], 1, 19962, "samproadsigns", "materialtext1", 0x00000000);
+	}
+
+	// Обновляем игроку объект
  	if(playerid != -1) Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
  	return 1;
 }
