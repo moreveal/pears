@@ -39,6 +39,7 @@ stock use_throw(playerid, inva, useinva)
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
 	if(GetPVarInt(playerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
+
 	if(thingPack == 2 || thingPack == 4) // Ящик с предметом
 	{
 	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя"), i_resettabs(playerid);
@@ -46,7 +47,7 @@ stock use_throw(playerid, inva, useinva)
 
 		GiveThingHand(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack);
 
-		ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, true, true); // Анимация поднять предмет
+		ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
 		DestroyThrow(t);
 		updatethrowall(t);
 		
@@ -70,11 +71,10 @@ stock use_throw(playerid, inva, useinva)
         OnlineInfo[playerid][oOnBackThing][4] = thingType; // Тип предмета
         OnlineInfo[playerid][oOnBackThing][5] = thingPack; // Упаковка Мешок
 
-		ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, true, true); // Анимация поднять предмет
+		ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
 		DestroyThrow(t);
 		updatethrowall(t);
 
-        PPP15[playerid] = 3; // Повторение анимации рук перед лицом
         RemovePlayerAttachedObject(playerid,2); // Удаляем прежний прикреплённый объект
         SetPlayerAttachedObject(playerid, 2, 2060, 1, 0.076999, -0.155999, 0.000000, 91.999961, 0.000000, 0.000000, 0.610000, 0.649999, 0.664000, 0, 0); // Вешаем мешок на спину
 		i_resetveshi(playerid);
@@ -82,6 +82,9 @@ stock use_throw(playerid, inva, useinva)
 		Veshi[playerid] = 0;
 		return 1;
 	}
+
+	// Сумка из самолёта
+	if(fpick == 229 && thingType == 0) return GetBagPlane(playerid, t), i_resettabs(playerid);
 	
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
@@ -197,8 +200,9 @@ stock use_throw(playerid, inva, useinva)
 	if(ThrowInfo[t][tPutLocation] == 0 && NoAnim[playerid] == 0) ApplyAnimation(playerid,"CARRY","liftup05",4.0, false, true, true, false, false); // Предмет лежал на земле
 	else if(ThrowInfo[t][tPutLocation] == 1 && NoAnim[playerid] == 0) ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false); // Предмет лежал на столе
 	
+	// Предмет может оказаться в инвентаре
 	new yesinva = -1;
-	if(ThrowInfo[t][tNoinvent] == 0) // Предмет может оказатсья в инвентаре
+	if(ThrowInfo[t][tNoinvent] == 0)
 	{
 	    if(thingType == 0)
 		{
@@ -225,6 +229,7 @@ stock use_throw(playerid, inva, useinva)
 		format(string,sizeof(string),"[ID %d] Взял: %s",t,GetNameThing(1, fpick, thingType, thingPack));
 		UserLog("took", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ThrowInfo[t][tPlayerid], ThrowInfo[t][tName], ThrowInfo[t][tIP], fquan, string);
 	}
+
 	if(fpick == 38 || fpick == 122 || fpick == 123)
 	{
 		if(fpick != ThrowInfo[t][tModel]) in_hand_eat(playerid, 2, fpick, ThrowInfo[t][tModel], fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]);
@@ -314,9 +319,12 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent, DopParametr = 0) // Устанавливаем новый предмет на землю
 {
 	new noobject, gee;
-	if(IsANaborsEdoi(fpick) && thingType == 0) time = 1200;
+
+	if(IsANaborsEdoi(fpick) && thingType == 0) time = 1200; // Наборы с едой
 	if(fpick == 11 && thingType == 0) time = 1200;
-	if(fpick == 42 && type == 1) time = -1;
+	if(fpick == 42 && thingType == 0 && type == 1) time = -1; // Ноутбук на столе (-1 значит никогда не исчезнет)
+	if(fpick == 229 && thingType == 0) z -= object_correct_z(18849); // Корректируем позицию предмета сумки с парашютом на земле
+
 	for(new g = 0; g < MAX_THROW; g++)
 	{
 		if(ThrowInfo[g][tId] == 0)
@@ -397,6 +405,8 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 		}
 		if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"CARRY","putdwn",4.0, false, false, false, false, false);
 	}
+
+	new Float:correct_z;
 	if(thingPack == 1) model = 3014, setgift = 1; // Подарок
 	else if(thingPack == 2 || thingPack == 4)  model = 3014; // Ящик
 	else if(thingPack == 5)  model = 19918; // Кейс
@@ -413,7 +423,11 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 			else if(fpick == 45) model = 3017; // Карта Моряка
 			else if(fpick == 48) model = 1575; // Надувная Лодка
 			else if(fpick == 91) model = 3017; // Карта Сокровищ
-			else if(fpick == 229) model = 18849; // Сумка из самолёта
+			else if(fpick == 229) // Сумка из самолёта
+			{
+				model = 18849;
+				correct_z = object_correct_z(model); // Корректируем позицию объекта сумки с парашютом на земле
+			}
 	    }
 	    else if(thingType == 1) // Оружие
 	    {
@@ -434,7 +448,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	    else if(thingType == 4) model = 2912; // Мебель
 	}
 	ThrowInfo[t][tObjectStat] = 1;
- 	ThrowInfo[t][tObject] = CreateDynamicObject(model, ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ], ThrowInfo[t][tRX], ThrowInfo[t][tRY], ThrowInfo[t][tRZ], ThrowInfo[t][tWorld], ThrowInfo[t][tInt], -1, 30.00, 30.00);
+ 	ThrowInfo[t][tObject] = CreateDynamicObject(model, ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ] + correct_z, ThrowInfo[t][tRX], ThrowInfo[t][tRY], ThrowInfo[t][tRZ], ThrowInfo[t][tWorld], ThrowInfo[t][tInt], -1, 30.00, 30.00);
  	if(setgift == 1)
  	{
  		SetDynamicObjectMaterial(ThrowInfo[t][tObject], 0, 19058, "xmasboxes", "wrappingpaper20", 0x00000000);
@@ -447,11 +461,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
  	}
 
 	// Сумка с самолёта
-	if(fpick == 229)
-	{
-		SetDynamicObjectMaterial(ThrowInfo[t][tObject], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
-    	SetDynamicObjectMaterial(ThrowInfo[t][tObject], 1, 19962, "samproadsigns", "materialtext1", 0x00000000);
-	}
+	if(fpick == 229) SetTextureBagPlane(ThrowInfo[t][tObject]);
 
 	// Обновляем игроку объект
  	if(playerid != -1) Streamer_Update(playerid, STREAMER_TYPE_OBJECT);

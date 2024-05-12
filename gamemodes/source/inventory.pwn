@@ -577,6 +577,7 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Вы находитесь в слежке");
 	if(GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(5.0, playerid,giveplayerid)) return ErrorMessage(playerid, "{FF6347}Вы далеко от игрока {cccccc}[ Не дальше 5-ти метров ]");
+	if(CheckPlayerNpc(playerid, giveplayerid)) return 1;
 	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя передавать предметы во время покупок в супермаркете");
 	
 	// Проверка на особые предметы
@@ -2469,7 +2470,7 @@ stock player_tile(playerid, inva)
 		 		else if(fpick == 91) return CloseFrisk(playerid), CancelSelectTextDraw(playerid), format(string, sizeof(string), "%d", inva), pc_cmd_riches(playerid, string); // Карта Сокровищ
 		 		else if(fpick == 92) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать древнюю вазу на археологических раскопках"), i_resetveshi(playerid);
 		 		else if(fpick == 93) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать урну с прахом на археологических раскопках"), i_resetveshi(playerid);
-		 		else if(fpick == 94) return DP[0][playerid] = inva, ShowDialog(playerid,1153,DIALOG_STYLE_MSGBOX,"{ff9000}Золото","{99ff66}Вы уверены, что хотите обменять золото на {ff9000}Donate Валюту?\n\n{ffcc00}[ 1 Слиток = 8 Gold ]","Да","Нет"), i_resetveshi(playerid);
+		 		else if(fpick == 94) return DP[0][playerid] = inva, ShowDialog(playerid,1153,DIALOG_STYLE_MSGBOX,"{ff9000}Золото","{99ff66}Вы уверены, что хотите обменять золото на {ff9000}Donate Валюту?","Да","Нет"), i_resetveshi(playerid);
 		 		else if(fpick == 95) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу продать статуэтку на археологических раскопках"), i_resetveshi(playerid);
 		 		else if(fpick == 96) return format(string, sizeof(string), "%d", inva), pc_cmd_bloodvampire(playerid, string), i_resetveshi(playerid); // Бокал с кровью вампира
 		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // Кухонный нож
