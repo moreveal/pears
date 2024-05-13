@@ -5,15 +5,9 @@ enum courtsInfo
     courtsPlayerId, // playerid Создателя заявки
     courtsStatus, // Статус заявки
     courtsTakeUserid, // Ид судьи
-    courtsClass, // Статус стока
-    courtsDeposit // Денег для отработки
+    courtsClass // Статус стока
 }
 new CourtsInfo[MAX_COURTS][courtsInfo];
-
-CMD:sud(playerid)
-{
-    return CourtsList(playerid);
-}
 
 stock GoCourtsProcess(playerid,targetid)
 {
@@ -27,10 +21,11 @@ stock GoCourtsProcess(playerid,targetid)
     return 1;
 }
 
-stock GoCloseProcess(playerid)
+stock CloseCourtsProcess(playerid)
 {
     new slot = OnlineInfo[playerid][oCourtsID]-1;
-    if(CourtsInfo[slot][courtsStatus] == 1) // Отклоняем заявку
+    if(CourtsInfo[slot][courtsStatus] != 2) return 0;
+    if(CourtsInfo[slot][courtsClass] == 0) // Отклоняем заявку
     {
         S_SetPlayerVirtualWorld(playerid,WORLD_PRISON_CELLS,INT_PRISON_CELLS);
         PPSetPlayerInterior(playerid,INT_PRISON_CELLS);
@@ -38,18 +33,53 @@ stock GoCloseProcess(playerid)
         PPSetPlayerFacingAngle(playerid, 0.0);
         PlayerInfo[playerid][pCourtsStatus] = 2;
     }
-    else if(CourtsInfo[slot][courtsStatus] == 1) // Отпускаем по УДО / залог
+    else if(CourtsInfo[slot][courtsClass] == 1) // Отпускаем по УДО
     {
-        PPSetPlayerPos(playerid, -2780.8091,417.6989,12.6403);
-        PPSetPlayerFacingAngle(playerid, 90.0);
-        PlayerInfo[playerid][pCourtsStatus] = 0;
+        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО. Вы свободны");
     }
-    else if(CourtsInfo[slot][courtsStatus] == 1) // Отпускаем по УДО + Отработка
+    else if(CourtsInfo[slot][courtsClass] == 2) // Отпускаем по УДО + залог
     {
+        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*100)
+        {
+            ErrorMessage(CourtsInfo[slot][courtsTakeUserid],"{ff6347}У заключенного не хватает денег на руках для оплаты залога");
+            return ErrorMessage(playerid,"{ff6347}У вас не достаточно денег на руках для оплаты выхода под залог");
+        }
+        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*100); // Забираем бабки равные Срокзаключения * 100
+        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и залог. Вы свободны");
+    }
+    else if(CourtsInfo[slot][courtsClass] == 3) // Сокращаем срок в половину за залог
+    {
+        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*100)
+        {
+            ErrorMessage(CourtsInfo[slot][courtsTakeUserid],"{ff6347}У заключенного не хватает денег на руках для оплаты залога");
+            return ErrorMessage(playerid,"{ff6347}У вас не достаточно денег на руках для оплаты сокращения срока под залог");
+        }
+        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*100); // Забираем бабки равные Срокзаключения * 100
+        S_SetPlayerVirtualWorld(playerid,WORLD_PRISON_CELLS,INT_PRISON_CELLS);
+        PPSetPlayerInterior(playerid,INT_PRISON_CELLS);
+        PPSetPlayerPos(playerid, 1032.6429,2443.3469,10.8509);
+        PPSetPlayerFacingAngle(playerid, 0.0);
+        PlayerInfo[playerid][pJailTime]= PlayerInfo[playerid][pJailTime]/2;
+        PlayerInfo[playerid][pCourtsStatus] = 2;
+        SuccessMessage(playerid,"{44ff99}Вам сократили срок в половину за залог.Вы возвращены в тюрьму");
+    }
+    else if(CourtsInfo[slot][courtsClass] == 4) // Отпускаем по УДО + Отработка
+    {
+        PlayerInfo[playerid][pCourtsDeposit] = PlayerInfo[playerid][pJailTime]*100;
+        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму");
+    }
+    if(CourtsInfo[slot][courtsClass] == 4 || CourtsInfo[slot][courtsClass] == 2 || CourtsInfo[slot][courtsClass] == 1)
+    {
+        PlayerInfo[playerid][pCourtsStatus] = 0;
         PPSetPlayerPos(playerid, -2780.8091,417.6989,12.6403);
         PPSetPlayerFacingAngle(playerid, 90.0);
-        PlayerInfo[playerid][pCourtsStatus] = 0;
-        PlayerInfo[playerid][pCourtsDeposit] = CourtsInfo[slot][courtsDeposit];
+        PlayerInfo[playerid][pHodka] ++;
+        PlayerInfo[playerid][pJailed] = 0;PlayerInfo[playerid][pJailTime] = 0;
+        PlayerInfo[playerid][pRab] = 0;
+        //TempGive(playerid);
+        GameTextForPlayer(playerid, RusToGame("~w~Вы ~g~Свободны"), 5000, 3);
+        SetPlayerToTeamColor(playerid);
+        GF_OnPlayerUpdate(playerid);
     }
     DeleteOrderToCourts(CourtsInfo[slot][courtsPlayerId]);
     return 1;
@@ -105,6 +135,7 @@ stock CreateNewOrderToCourts(playerid)
     PlayerInfo[playerid][pCourtsStatus] = 1;
     CourtsInfo[slot][courtsPlayerId] = playerid;
     OnlineInfo[playerid][oCourtsID] = slot+1;
+    SuccessMessage(playerid,"{44ff99}Вы успешно отправили заявку в суд для рассмотрения дела");
     return 1;
 }
 
@@ -133,12 +164,14 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
             }
             if(CourtsInfo[listselect][courtsStatus] == 2)
             {
-                new line[90],lines[360];
-                format(line,sizeof(line),"{ff9000}Действие\t{cccccc}производное"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ff9000}Предоставить УДО\t{cccccc}[Выпустит заключенного]"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ff9000}Предоставить УДО под залог\t{cccccc}[Выпустит заключенного после оплаты]"), strcat(lines,line);
-                format(line,sizeof(line),"\n{ff9000}Сокращение срока под залог\t{cccccc}[ПУК]"), strcat(lines,line);
-                ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Тюнинг",lines,"Выбор","Отмена");
+                new line[110],lines[660];
+                format(line,sizeof(line),"{ff9000}Действие\t{cccccc}Мера наказания"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ff6347}Отказать в заявке\t{cccccc}[Вернет в тюрьму]"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ff9000}Предоставить УДО\t{cccccc}[Выпустить заключенного]"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ff9000}Предоставить УДО под залог\t{cccccc}[Выпустить заключенного и оплатить залог]"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ff9000}Сокращение срока под залог\t{cccccc}[Уменьшить срок в половину и оплатить залог]"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ff9000}Предоставить УДО и исправительные работы\t{cccccc}[Выпустит и установит кол.во денег для отработки]"), strcat(lines,line);
+                ShowDialog(playerid,1500,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Тюнинг",lines,"Выбор","Отмена");
             }
             if(CourtsInfo[listselect][courtsStatus] == 1)
             {
@@ -169,17 +202,17 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
             SuccessMessage(playerid,"{44ff99}Вы отправили заявку на рассмотрения дела Заключенного");
             new str[600];
             format(str,sizeof(str),"{cccccc}Судья %s, вызывает вас на рассмотрения дела\n\n
-            {684F7D}Что это такое?\n
-            {cccccc}- Во время рассмотрения дела вам могут уменьшить срок заключения.\n
-            {cccccc}- Либо заменить его на исправительные работы, или оплатить на месте.\n
-            {cccccc}сумму для выхода под залог.\n\n
-            {ff6347}Хотите что бы ваше дело рассмотрели?
+{684F7D}Что это такое?
+{cccccc}- Во время рассмотрения дела вам могут уменьшить срок заключения.
+{cccccc}- Либо заменить его на исправительные работы, или оплатить на месте.
+{cccccc}сумму для выхода под залог.\n
+{ff6347}Хотите что бы ваше дело рассмотрели?
             ",rpplayername(playerid));
             ShowDialog(targetid,1499,DIALOG_STYLE_MSGBOX,"Суд",str,"Да","Нет");
         }
         else return 1;
     }
-    if(dialogid == 1498)
+    if(dialogid == 1499)
     {
         if(response)
         {
@@ -191,6 +224,16 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
             PlayerInfo[playerid][pCourtsStatus] = 0;
             SendClientMessage(Moiplayer[playerid],COLOR_GREY,"Заключенный %s отказался от рассмотрения дела",rpplayername(playerid));
             return 1;
+        }
+    }
+    if(dialogid == 1500)
+    {
+        if(response)
+        {
+            new slot = DP[4][playerid];
+            if(CourtsInfo[slot][courtsStatus] != 2) return 0;
+            CourtsInfo[slot][courtsClass] = listitem;
+            return CloseCourtsProcess(CourtsInfo[slot][courtsPlayerId]);
         }
     }
     return 1;
