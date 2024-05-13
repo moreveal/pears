@@ -4439,20 +4439,19 @@ function LoadCar(playerid, dab, race_check)
 				return 1;
 			}
 
-			// Без восстановления, просто грузим
 			new maxHealth = MaxVehicleHealth(paramet[1]);
-			if(repair == 0)
+			maxHealth += armor_veh; // Добавляем броню к максимальному хп
+			if(repair == 0) // Без восстановления, просто грузим
 			{
 				cache_get_value_name_float(0, "health", health);
-				if(!health) health = maxHealth + armor_veh;
+				if(!health) health = maxHealth;
 				else if(health <= 400.0) health = 400.0;
-				else 
+				else
 				{
-					health += armor_veh;
-					if(health > maxHealth + armor_veh) health = maxHealth + armor_veh; // Защита от перебора по хп
+					if(health > maxHealth) health = maxHealth; // Защита от перебора по хп
 				}
 			}
-			else health = maxHealth + armor_veh; // Восстанавливаем
+			else health = maxHealth; // Восстанавливаем
 			
 			new numer[20], benz, god, nyche;
 			cache_get_value_name(0, "numer", numer, 20);

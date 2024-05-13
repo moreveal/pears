@@ -606,7 +606,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     if(zoneid == 0) // Los Santos
     {
         // NPC
-        QuestInfo[playerid][QuestBot] = CreateDynamicActor(44, 1364.35242, -1682.73926, 13.47850, 5.0, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
+        QuestInfo[playerid][QuestBot] = CreateDynamicActor(353, 1364.35242, -1682.73926, 13.47850, 5.0, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
         QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,1364.35242, -1682.73926, 13.47850 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle
@@ -618,7 +618,7 @@ stock OpenStartQuest(playerid, zoneid) // Запускаем зону квест
     else if(zoneid == 1) // Las Venturas
     {
         // NPC
-        QuestInfo[playerid][QuestBot] = CreateDynamicActor(44, 2121.7776,2709.5793,10.8203,357.4829, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
+        QuestInfo[playerid][QuestBot] = CreateDynamicActor(353, 2121.7776,2709.5793,10.8203,357.4829, true, 100.0, playerid + 1, 0, playerid, 100.0, -1, 0);
         QuestInfo[playerid][QuestBotLabel] = CreateDynamic3DTextLabel("{cccccc}Джоне [ALT]",0xA9C4E4FF,2121.7776,2709.5793,10.8203 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, playerid + 1, 0, playerid);
     
         // Vehicle

@@ -61,8 +61,11 @@ stock ChangeFlipVehicle(playerid)
 
 stock FlipVehicle(vehicleid)
 {
-    new Float:zangle;
-    GetVehicleZAngle(vehicleid, zangle);
-    SetVehicleZAngle(vehicleid, zangle);
+    new Float:pos[4];
+    GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
+    GetVehicleZAngle(vehicleid, pos[3]);
+
+    ACSetVehiclePos(vehicleid, pos[0], pos[1], pos[2] + 1.0); // Ставим в ту-же позицию, но чуточек выше
+    SetVehicleZAngle(vehicleid, pos[3]);
     return 1;
 }

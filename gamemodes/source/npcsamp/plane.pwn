@@ -1,5 +1,5 @@
 
-#define MAX_HEALTH_PLANE 700 // Максимальное хп самолёта
+#define MAX_HEALTH_PLANE 400 // Максимальное хп самолёта
 #define MAX_DIST_OBJECT_PLANE 300.0 // Расстояние отображения объектов на самолёте
 #define HIDE_WORLD_PLANE 228
 #define HIDE_INTERIOR_PLANE 10
@@ -114,7 +114,7 @@ stock PlaneStart()
     AttachDynamicObjectToVehicle(plane_objects[0], flyveh,  -0.00020, 0.08770, 0.54640,   -57.24000, 0.00000, 0.00000);
     AttachDynamicObjectToVehicle(plane_objects[1], flyveh,  -0.0531, -7.7945, 3.0531,   0.0000, 12.5100, -90.0000);
 
-    if(serverType == 0) plane_health = 10; // Хп самолёта для тестов на компе
+    if(serverType == 0) plane_health = 20; // Хп самолёта для тестов на компе
     else plane_health = MAX_HEALTH_PLANE; // Хп самолёта на основных серверах
     plane_gold = random(2);
     return 1;
