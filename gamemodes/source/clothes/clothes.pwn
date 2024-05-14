@@ -891,7 +891,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				new line[100],lines[300];
 				format(line,sizeof(line),"{cccccc}Введите Gold стоимость для {ff9000}%s", GetSkinName(list)), strcat(lines,line);
 				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {ffcc00}%dG", SkinGold[list]), strcat(lines,line);
-				format(line,sizeof(line),"\n{cccccc}Не меньше 1G и не больше 100.000G"), strcat(lines,line);
+				format(line,sizeof(line),"\n{cccccc}Не меньше 0G и не больше 100.000G"), strcat(lines,line);
 				ShowDialog(playerid,946,DIALOG_STYLE_INPUT,"Гос Стоимость Одежды",lines,"Принять","Отмена");
 			}
 			else if(listitem == 2)
@@ -938,7 +938,7 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 			new list = OnlineInfo[playerid][oDialogMenu][3];
 			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceSkin(playerid, list);
 			new input = strval(inputtext);
-			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 1G и не больше 100.000G"), SettingGosPriceSkin(playerid, list);
+			if(input < 0 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 0G и не больше 100.000G"), SettingGosPriceSkin(playerid, list);
 			SkinGold[list] = input;
 
 			PlayerPlaySound(playerid, 6401, 0,0,0);

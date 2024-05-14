@@ -681,6 +681,9 @@ stock ExitQuestJone(playerid) // Вышли из зоны квеста
         {
             S_SetPlayerVirtualWorld(playerid, 0, 0);
             PPSetPlayerInterior(playerid, 0);
+
+            // Спавним личные тачки при выходе из зоны квеста
+            RespawnPersonalVehicle(playerid);
         }
             
         // Выезжаем после успешного прохождения Jone и запускаем звонок с Археологических раскопок

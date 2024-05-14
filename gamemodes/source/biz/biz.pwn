@@ -392,7 +392,8 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		{
 			if(slot >= MAX_BIZ_ITEM) break;
 
-			if(ForBizVehicleClassAndType(b, GetVehicleType(v + 2000), GetVehicleClass(v + 2000)))
+			if(ForBizVehicleClassAndType(b, GetVehicleType(v + 2000), GetVehicleClass(v + 2000))
+				&& VehSale[v + 212] == 1)
 			{
 				BizzInfo[b][bProduct][slot] = v + 2000, BizzInfo[b][bTypeProduct][slot] = 5, yes[slot] = true;
 				slot ++;
@@ -404,7 +405,8 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		{
 			if(slot >= MAX_BIZ_ITEM) break;
 
-			if(ForBizVehicleClassAndType(b, GetVehicleType(v), GetVehicleClass(v)))
+			if(ForBizVehicleClassAndType(b, GetVehicleType(v), GetVehicleClass(v))
+				&& VehSale[v - 400] == 1)
 			{
 				BizzInfo[b][bProduct][slot] = v, BizzInfo[b][bTypeProduct][slot] = 5, yes[slot] = true;
 				slot ++;

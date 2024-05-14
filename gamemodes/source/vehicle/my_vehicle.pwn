@@ -4440,7 +4440,7 @@ function LoadCar(playerid, dab, race_check)
 			}
 
 			new maxHealth = MaxVehicleHealth(paramet[1]);
-			maxHealth += armor_veh; // Добавляем броню к максимальному хп
+			maxHealth += floatround(armor_veh, floatround_round); // Добавляем броню к максимальному хп
 			if(repair == 0) // Без восстановления, просто грузим
 			{
 				cache_get_value_name_float(0, "health", health);
@@ -4717,6 +4717,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 	if(VehInfo[newcar][vSost] == PlayerInfo[playerid][pID]) // Личный Транспорт
 	{
 		new slot = VehInfo[newcar][vDatabase];
+		new model = VehInfo[newcar][vModel];
 
 		if(PlayerInfo[playerid][pVehTax][slot - 1] > 0) return ErrorMessage(playerid, "{FF6347}Вам необходимо оплатить налоги на транспорт");
 		if(VehInfo[newcar][vNosell] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за Media Транспорт: {ff0000}Невозможно");
@@ -4729,22 +4730,28 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		}
 		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, "");
 		
-		new string_mysql[100];
-		format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
-        query_empty(pearsq, string_mysql);
-
 		PlayerInfo[playerid][pMyVeh][slot - 1] = 0;
 		PlayerInfo[playerid][pMyVehID][slot - 1] = 0;
 		
 		PlayerPlaySound(playerid,1138,0,0,0);
 		if(PlayerInfo[playerid][pSex] == 1)SetPlayerChatBubble(playerid,"сдал транспорт в утиль",COLOR_PURPLE,20.0,3000);
 		else if(PlayerInfo[playerid][pSex] == 2)SetPlayerChatBubble(playerid,"сдала транспорт в утиль",COLOR_PURPLE,20.0,3000);
-
 		ACDestroyVehicle(newcar);
+
+		mysql_tquery(pearsq, "START TRANSACTION;");
+
+		new string_mysql[100];
+		format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
+        query_empty(pearsq, string_mysql);
 
 		// Сохраняем авто
   		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
         query_empty(pearsq, string_mysql);
+
+		// Подсчитываем транспорт на руках игроков
+		VehicleQuan(model, -1);
+
+		mysql_tquery(pearsq, "COMMIT;");
 
 		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), PPSetPlayerFacingAngle(playerid,270.0);
 		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), PPSetPlayerFacingAngle(playerid,90.0);
@@ -4769,7 +4776,7 @@ CMD:delcar(playerid, const params[])
 	if(IsPlayerConnected(para1))
  	{
  	    if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
-		format(string_mysql,sizeof(string_mysql),"SELECT sost, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
         mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, PlayerInfo[para1][pName], PlayerInfo[para1][pID], slot);
 	}
 	else
@@ -4789,7 +4796,7 @@ function Call_delcaroff(playerid, str_name[], slot)
 	{
 		cache_get_value_name_int(0, "user_id", datadid);
 		new string_mysql[120];
-		format(string_mysql,sizeof(string_mysql),"SELECT sost, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
+		format(string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
 		mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -4801,12 +4808,17 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 	cache_get_row_count(rows);
 	if(rows)
 	{
+		new model;
+		cache_get_value_name_int(0, "model", model);
+
 		if(PlayerInfo[playerid][pSoska] < 19)
 	    {
 			new datad1;
 			cache_get_value_name_int(0, "nosell", datad1);
 			if(datad1 == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете удалить этот транспорт [ Только созданный через медиа ]");
 		}
+
+		mysql_tquery(pearsq, "START TRANSACTION;");
 
 		format(string,sizeof(string),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", str_id, slot);
         query_empty(pearsq, string);
@@ -4816,6 +4828,11 @@ function Call_delcar(playerid, str_name[], str_id, slot)
         // Сохраняем авто
   		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, str_id);
         query_empty(pearsq, string);
+
+		// Подсчитываем транспорт на руках игроков
+		VehicleQuan(model, -1);
+
+		mysql_tquery(pearsq, "COMMIT;");
 
     	// Если чувак оказался Online
     	new para1 = ReturnUser(str_name, 1);
@@ -4932,6 +4949,8 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
 		new string_mysql[800];
 
+		mysql_tquery(pearsq, "START TRANSACTION;");
+
 		new JsonNode:node;
 		CreateJsonBoot(node, 183, 1, 0, 0, 0, 0);
 		new string_json[512];
@@ -4957,10 +4976,16 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				query_empty(pearsq, string_mysql);
 			}
 		}
+		else return true;
 
         // Сохраняем авто
 		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
 		query_empty(pearsq, string_mysql);
+
+		// Подсчитываем транспорт на руках игроков
+		VehicleQuan(carid, 1);
+
+		mysql_tquery(pearsq, "COMMIT;");
 	}
 	return true;
 }
@@ -5035,6 +5060,8 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 	{
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCarOffline (str_name: %s, slot: %d, carid: %d)", str_name, slot, carid);
 
+		mysql_tquery(pearsq, "START TRANSACTION;");
+
 		new string_mysql[600];
 		format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
 		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
@@ -5043,6 +5070,11 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
         // Сохраняем авто
 		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id` = '%d'",slot, carid, ploid);
 		query_empty(pearsq, string_mysql);
+
+		// Подсчитываем транспорт на руках игроков
+		VehicleQuan(carid, 1);
+
+		mysql_tquery(pearsq, "COMMIT;");
 	}
 	return 1;
 }
@@ -5203,4 +5235,26 @@ stock DeleteMyVeh(playerid, slot)
   format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot, PlayerInfo[playerid][pID]);
   query_empty(pearsq, string_mysql);
   return 1;
+}
+
+stock RespawnPersonalVehicle(playerid)
+{
+	new bool:respawn;
+	for(new i = 0; i < MAX_MYVEHICLE; i++)
+	{
+    	if(PlayerInfo[playerid][pMyVeh][i] != 0)
+		{
+			if(PlayerInfo[playerid][pMyVehID][i] > 0) 
+			{
+				PP_SetVehicleToRespawn(PlayerInfo[playerid][pMyVehID][i]);
+				respawn = true;
+			}
+		}
+	}
+
+	if(respawn)
+	{
+		SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Ваш личный транспорт был заспавнен [ Вы можете загрузить его Y >> Транспорт ]");
+	}
+	return 1;
 }

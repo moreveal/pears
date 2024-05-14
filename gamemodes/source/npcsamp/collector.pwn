@@ -118,7 +118,9 @@ stock CollectorStart(city = -1, bool:forced = false)
     }
 
     if(city == -1) city = random(3);
-    collector_health = MAX_HEALTH_COLLECTOR;
+    
+    if(serverType == 0) collector_health = MAX_HEALTH_COLLECTOR / 10;
+    else collector_health = MAX_HEALTH_COLLECTOR;
 
     // Кладём мешок с деньгами в инкассаторскую тачку
     new randmoney = ServerInfo[48] - ServerInfo[44];

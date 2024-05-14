@@ -665,11 +665,10 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
 
 stock GiveQuanBuyVehicle(v, typeBuy)
 {
-	if(v >= 2000) v -= 1788;
-	else if(v >= 400 && v <= 611) v -= 400;
+	v = CorrectVehicleID(v);
 
-    if(typeBuy == 0) VehBuy[v] ++, vehbuyUpdate = true;
-    else if(typeBuy == 1) VehBuyGold[v] ++, vehbuyGoldUpdate = true;
+    if(typeBuy == 0) VehBuy[v] ++, SaveVehicleBuy(v);
+    else if(typeBuy == 1) VehBuyGold[v] ++, SaveVehicleBuyGold(v);
     return 1;
 }
 
@@ -892,6 +891,7 @@ stock createDraw_VehicleShop(playerid) // Создаём текстдравы
     VehShopInfo[playerid][vsTextDrawLoad] = true;
     return 1;
 }
+
 stock ForBizVehicleClassAndType(b, vehicleType, vehicleClass) // Расчитываем бизнесы салона, по типу и классу транспорта
 {
 	// Автосалоны

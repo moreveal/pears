@@ -11,7 +11,7 @@ oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 #define MAX_CASE_ITEM 10 // Максимальное количество слотов в кейсе
 #define MAC_CASES 1 // Максимальное количество типов Кейсов
 
-new ThingVehiclecaseGift[212 + MAX_VEHICLE_CUSTOM];
+new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingVehicleQuan;
 
 new ThingSkincaseGift[312 + MAX_SKIN_CUSTOM];
@@ -55,20 +55,24 @@ stock IsThingGunNotVariable(i)
 
 stock CreateGiftCase()
 {
+    ThingVehicleQuan = 0;
+
     // Собираем обычный транспорт
     for(new i; i < 212; i++)
     {
-        new vehclass = GetVehicleClass(i+400);
-        new vetype = GetVehicleType(i+400);
-        if(vehclass >= 1 && vehclass <= 4 && (vetype == 1 || vetype == 2)) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+        // Исключаем лимитированный транспорт
+        if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
+
+        if(VehSale[i] == 1) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
     }
 
     // Собираем кастомный транспорт
     for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
     {
-        new vehclass = GetVehicleClass(i+2000);
-        new vetype = GetVehicleType(i+2000);
-        if(vehclass >= 1 && vehclass <= 4 && (vetype == 1 || vetype == 2)) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+        // Исключаем лимитированный транспорт
+        if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
+
+        if(VehSale[i] == 1) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
     }
     return 1;
 }
