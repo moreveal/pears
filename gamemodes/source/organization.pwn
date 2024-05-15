@@ -55,7 +55,8 @@ enum gInfo
 	gOrderStatus, // Статус заказа
 	gDeliveryOrder, // Статус доставки
 	gDeliveryPay, // Общая стоимость
-	gTax // Стоимость доставки боеприпасов
+	gTax, // Стоимость доставки боеприпасов
+	gUnit[MAX_UNIT] // Новые настройки юнитов
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -241,6 +242,9 @@ function LoadOrgan()
 
 		// Загружаем скины организации
 		OnLoadSkinOrganization(f, idx);
+
+		// Загружаем новые настройки юнитов
+		OnLoadUnitSetting(f, idx);
 
 		cache_get_value_name_int(f, "gMaxRanks", OrganInfo[idx][gMaxRanks]);
 		if(idx == 13 || idx == 14 || idx == 15 || idx == 16)
@@ -475,36 +479,14 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 	if(thingQara != 0) return 1; // Если ящик был собран с арендованного склада (Не выдаём юниты)
 
 	new g = fraction(playerid);
-	if(OrganInfo[g][gUnitStat][2] > 0)
+	if(OrganInfo[g][gUnit][0])
 	{
 		new kol;
 		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
 		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
 
-		GivePlayerUnit(playerid, kol*OrganInfo[g][gUnitStat][2]);
+		GivePlayerUnit(playerid, kol*OrganInfo[g][gUnit][0]);
 	}
-	return 1;
-}
-
-stock GivePlayerUnit(playerid, unit)
-{
-	if(unit == 0) return 1; // Если вдруг юниты не были настроены, отменяем выдачу
-
-	PlayerInfo[playerid][pUnit] += unit;
-
-	new string[80];
-	if(unit > 0) 
-	{
-		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~w~+%d", unit);
-		GameTextForPlayer(playerid,string,3000,3);
-	}
-	else if(unit < 0)
-	{
-		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~Unit: ~r~-%d", unit);
-		GameTextForPlayer(playerid,string,3000,3);
-	}
-
-	mysql_save(playerid, 41);
 	return 1;
 }
 
@@ -591,7 +573,7 @@ stock detail_lmenu(playerid, detail)
 	else if(detail == 10) text = "\n{cccccc}Черный список\t";
 	else if(detail == 11) text = "\n{ff9000}Права доступа\t";
 	else if(detail == 12) text = "\n{ff9000}Настройки склада\t";
-	else if(detail == 13) text = "\n{ff9000}Настройки оплаты\t";
+	else if(detail == 13) text = "\n{ff9000}Настройки Unit\t";
 	else if(detail == 14) text = "\n{cccccc}Подфракции\t";
 	else if(detail == 15) format(text, sizeof(text), "\n{cccccc}Количество рангов\t{ff9000}%d", OrganInfo[g][gMaxRanks]);
 	else if(detail == 16) 

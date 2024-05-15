@@ -631,7 +631,7 @@ stock infectback(playerid)
 				PlayerInfo[playerid][pIllnessProg][i] += 30;
 				if(PlayerInfo[playerid][pIllnessProg][i] >= 1000)
 				{
-					PlayerInfo[playerid][pIllnessProg][i] = 2000, PlayerInfo[playerid][pNeon] = 1000, PlayerInfo[playerid][pMechSkill] = 1000;
+					PlayerInfo[playerid][pIllnessProg][i] = 2000, UpdateHunger(playerid, 1000), PlayerInfo[playerid][pMechSkill] = 1000;
 					if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) burn_vampire(playerid, 1);
 					if(PlayerInfo[playerid][pOdet][0] == 11712) RemoveAksess(playerid, 0);
 					else if(PlayerInfo[playerid][pOdet][1] == 11712) RemoveAksess(playerid, 1);

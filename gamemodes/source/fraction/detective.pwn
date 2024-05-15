@@ -64,10 +64,7 @@ stock FindCarInWareHouse(playerid)
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
         OrganInfo[g][glave] += 5000;
 
-        // VREMENNO 
-        // Нужна система настройки юнитов (тут выдаём юниты за найденный транспорт)
-        // GivePlayerUnit(playerid, OrganInfo[g][gUnitStat][0]);
-
+        GiveUnit(playerid, 12);
         PlayerInfo[playerid][pTheft] = -1;
         crimeInfo[i][crmSklad] = -1;
         SaveCrime(i);
@@ -184,11 +181,7 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
     OrganInfo[g][glave] += 5000;
-
-    // VREMENNO
-    // Тут тоже нужна настройка юнитов
-    // GivePlayerUnit(playerid, OrganInfo[g][gUnitStat][0]);
-
+    GiveUnit(playerid, 11);
 	SaveCar(car);
     SaveCrime(slot);
 	ACDestroyVehicle(car);

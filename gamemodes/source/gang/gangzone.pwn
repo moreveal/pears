@@ -608,8 +608,8 @@ stock CheckGangZone() // Распределение результатов по 
 				else if(saveKills > 0 && tempKills > saveKills) saveKills = tempKills, playerwin = i; // Перезаписываем, если у следующего чувака килов больше
 
 				// Начисляем Юниты
-				if(OrganInfo[org][gUnitStat][0] >= 1) nauniti += tempKills*OrganInfo[org][gUnitStat][0];
-				if(OrganInfo[org][gUnitStat][1] >= 1) nauniti += PlayerInfo[i][pGangTemp][4]*OrganInfo[org][gUnitStat][1];
+				if(OrganInfo[org][gUnit][5] >= 1) nauniti += tempKills*OrganInfo[org][gUnit][5];
+				if(OrganInfo[org][gUnit][6] >= 1) nauniti += PlayerInfo[i][pGangTemp][4]*OrganInfo[org][gUnit][6];
 
 				// Если война новая, очищаем сохранения старой войны
 				if(PlayerInfo[i][pMyWar] >= 1 && PlayerInfo[i][pMyWar] != ServerInfo[41])

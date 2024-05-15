@@ -272,7 +272,6 @@ CMD:gnews(playerid, const params[])
             }
 			format(string, sizeof(string), "{FFFFFF}* CNN * Сектант: {AA8C00}%s *", params[0]);
 			OOCNews(COLOR_GREY,string);
-			if(PlayerInfo[playerid][pSoska]==0 && PlayerInfo[playerid][pLeader]==0)PlayerInfo[playerid][pWorked1]++;
 		}
 		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не в Студии или Транспорте CNN");
 	}
