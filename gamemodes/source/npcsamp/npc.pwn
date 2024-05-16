@@ -10,7 +10,7 @@
 // Имена NPC
 new npcNames[][] =
 {
-    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Mr_Winston", "Danny_Devito"
+    "Tim_Johnson", "Bert_Robinson", "Jack_Dawson", "Mr_Winston", "Danny_Devito", "Dominic_Torpeda"
 };
 
 // Информация об NPC, спавны, вирт мир и т.д.
@@ -21,7 +21,8 @@ new NpcPositionSpawn[][NPCPOSENUM] =
     { -1584.4108,678.7656,7.1875,180.0, 0, 0 }, // Водитель тюремного автобуса SF
     { 747.1211,1706.9492,6.2659,0.0, 0, 0 }, // Водитель поезда NGSA
     { 1100.9181,-1186.2133,18.3424,180.0, 0, 0 }, // Икассатор
-    { 2042.4969,-2613.1316,13.5469,0.0078, HIDE_WORLD_PLANE, HIDE_INTERIOR_PLANE } // Пилот
+    { 2042.4969,-2613.1316,13.5469,0.0078, HIDE_WORLD_PLANE, HIDE_INTERIOR_PLANE }, // Пилот
+    { -2406.4172,-606.0099,132.6484,41.3329, 0, 0 } // Dominic
 };
 
 enum npcInfo
@@ -34,6 +35,7 @@ enum npcInfo
 };
 new NPCInfo[sizeof(npcNames)][npcInfo];
 new ConnectNpcQuan;
+new Text3D: NpcLabel[sizeof(npcNames)]; // Лейблы NPC
 
 // Подключаем всех NPC
 stock CreateNPCsamp()
@@ -53,6 +55,7 @@ stock ConnectOneNpc(id)
     else if(id == 2) ConnectNPC(npcNames[2], "train_ngsa");
     else if(id == 3) ConnectNPC(npcNames[3], "collector");
     else if(id == 4) ConnectNPC(npcNames[4], "plane_fly");
+    else if(id == 5) ConnectNPC(npcNames[5], "dominic_race");
     return 1;
 }
 
@@ -80,8 +83,12 @@ stock OnNpcConnect(playerid)
     NPCInfo[id][npcID] = playerid;
     NPCInfo[id][npcConnected] = true;
     printf("[MODE]: OnNpcConnect %d", NPCInfo[id][npcID]);
-
     ConnectNpcQuan ++;
+
+    // Крепим лейбл с именем (Только для доминика)
+    new string[34];
+    format(string, sizeof(string), "{FFFFFF}%s [ ALT ]", npcNames[id]);
+    NpcLabel[id] = CreateDynamic3DTextLabel(string,0xA9C4E4FF, 0.0, 0.0, 0.2, 5.0, playerid, INVALID_VEHICLE_ID, 1);
 
     // Спавним (внутри стока сначала настраиваем спавн, потом спавним)
     PPSpawnPlayer(playerid);
@@ -94,7 +101,11 @@ stock OnNpcConnect(playerid)
 stock OnNpcDisconnect(playerid)
 {
     new id = OnlineInfo[playerid][oNpcID];
-    if(id >= 0) NPCInfo[id][npcConnected] = false;
+    if(id >= 0) 
+    {
+        NPCInfo[id][npcConnected] = false;
+        DestroyDynamic3DTextLabel(NpcLabel[id]);// Удаляем лейбл с именем (Только для доминика)
+    }
     return 1;
 }
 
@@ -124,6 +135,7 @@ stock SetNpcSpawn(playerid)
     else if(id == 2) NPCInfo[id][npcVehicle] = train; // Водитель поезда NGSA
     else if(id == 3) NPCInfo[id][npcVehicle] = collectorveh; // Икассатор
     else if(id == 4) NPCInfo[id][npcVehicle] = flyveh; // Пилот
+    else if(id == 5) NPCInfo[id][npcVehicle] = dominicveh; // Доминик
     return 1;
 }
 
@@ -139,6 +151,7 @@ stock OnNpcSpawn(playerid)
     else if(id == 2) PlayerInfo[playerid][pModel] = 287, SetPlayerColor(playerid, COLOR_ARMY); // Водитель поезда NGSA
     else if(id == 3) PlayerInfo[playerid][pModel] = 71, SetPlayerColor(playerid, INV_COLOR); // Инкассатор
     else if(id == 4) PlayerInfo[playerid][pModel] = 61, SetPlayerColor(playerid, INV_COLOR); // Пилот
+    else if(id == 5) PlayerInfo[playerid][pModel] = 453, SetPlayerColor(playerid, INV_COLOR); // Доминик
 
     S_SetPlayerVirtualWorld(playerid, NpcPositionSpawn[id][Npc_World], NpcPositionSpawn[id][Npc_Interior]);
     PPSetPlayerInterior(playerid, NpcPositionSpawn[id][Npc_Interior]);
@@ -284,7 +297,7 @@ stock IsNameNpc(playerid, const name[])
 stock IsAVehicleNPC(vehicleid)
 {
     if(vehicleid == prisonbus_LS || vehicleid == prisonbus_SF || vehicleid == train || vehicleid == collectorveh
-        || vehicleid == flyveh) return 1;
+        || vehicleid == flyveh || vehicleid == dominicveh) return 1;
     return 0;
 }
 

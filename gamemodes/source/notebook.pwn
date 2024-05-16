@@ -678,6 +678,7 @@ stock gotobuycrypto(playerid,id)
     new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
     if(PlayerInfo[playerid][pDonateMoney] < TradeCrypt[id][tcCount]) return ErrorText(playerid, "{FF6347}Вам не хватает золота"), inserttobuy(playerid, id);
 
+    new string[140];
     new count = TradeCrypt[id][tcCount];
     new temp_name[24];
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
@@ -695,12 +696,24 @@ stock gotobuycrypto(playerid,id)
         {
    			SendClientMessage(para, COLOR_GREY, "{99ff66}[ GOLD TRADE ]: {cccccc}Успешная сделка на %d$ с {ff9000}%s {cccccc}| Ваш доход: {ffcc00}%dG", price, rpplayername(playerid), count);
         }
+
+        format(string, sizeof(string),"Подал %dG за %d$", count, price);
+        DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -count, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        DonateLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
     }
     else
     {
         new string_mysql[90];
 		format(string_mysql,sizeof(string_mysql),"SELECT DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+
+        format(string, sizeof(string),"Подал %dG за %d$", count, price);
+        DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -count, string);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        DonateLog("buygold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
     }
     oGivePlayerMoney(playerid, price);
     PlayerInfo[playerid][pDonateMoney] -= count;
@@ -709,17 +722,10 @@ stock gotobuycrypto(playerid,id)
     PlayerPlaySound(playerid, 6401, 0,0,0);
 
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я продал%s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), count, price);
-    new string[100];
     format(string, sizeof(string),"{cccccc}Вы продали %d Gold %s за %d$",count, temp_name, price);
     ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
-
-    format(string, sizeof(string),"Подал %dG за %d$", count, price);
-    DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -count, string);
-
-    format(string, sizeof(string),"Купил %dG за %d$", count, price);
-    DonateLog("buygold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], count, string);
 
     CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
 	return 1;
@@ -751,6 +757,7 @@ stock gotosellcrypto(playerid,id)
     new price = TradeCrypt[id][tcCount]*TradeCrypt[id][tcCourse];
     if(oGetPlayerMoney(playerid) < price) return ErrorText(playerid, "{FF6347}Вам не хватает денег"), inserttobuy(playerid, id);
 
+    new string[140];
     new count = TradeCrypt[id][tcCount];
     new temp_name[24];
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
@@ -768,12 +775,24 @@ stock gotosellcrypto(playerid,id)
         {
    			SendClientMessage(para, COLOR_GREY, "{99ff66}[ GOLD TRADE ]: {cccccc}Успешная сделка на %dG с {ff9000}%s {cccccc}| Ваш доход: {99ff66}%d$ [%s]", count, rpplayername(playerid), price, get_k(price));
         }
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        DonateLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], count, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        DonateLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
     }
     else
     {
         new string_mysql[90];
 		format(string_mysql,sizeof(string_mysql),"SELECT Account FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+
+        format(string, sizeof(string),"Купил %dG за %d$", count, price);
+        DonateLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", count, string);
+
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
+        DonateLog("sellgold", TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
     }
     oGivePlayerMoney(playerid, -price);
     PlayerInfo[playerid][pDonateMoney] += count;
@@ -782,17 +801,10 @@ stock gotosellcrypto(playerid,id)
     PlayerPlaySound(playerid, 6401, 0,0,0);
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s {ffcc00}%dG {cccccc} за {99ff66}%d$", gender(playerid), count, price);
 
-    new string[120];
     format(string, sizeof(string),"{cccccc}Вы купили %d Gold у %s за %d$",count,temp_name,price);
     ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "Биржевые Сделки", string, "Ок", "");
 
     Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
-
-    format(string, sizeof(string),"Купил %dG за %d$", count, price);
-    DonateLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], count, string);
-
-    format(string, sizeof(string),"Продал %dG за %d$", count, price);
-    DonateLog("sellgold", PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -count, string);
 
     CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
     return 1;

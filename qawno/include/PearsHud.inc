@@ -54,5 +54,13 @@
             BS_Delete(bs);
             return 1;
         }
+
+        stock HidePlayerHudTimeDate(playerid) {
+          return SetPlayerHudTimeDate(playerid, "", "");
+        }
+
+        stock HidePlayerHudTask(const playerid) {
+          return SetPlayerHudTask(playerid, "", "");
+        }
     #endif // !defined __cplusplus
 #endif // PEARS_HUD_INC_

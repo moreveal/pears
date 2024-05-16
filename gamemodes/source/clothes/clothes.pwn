@@ -9,7 +9,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 140
+#define MAX_SKIN_CUSTOM 141
 
 new SkinGos[312 + MAX_SKIN_CUSTOM]; // Стоимости скинов
 new bool:skingosUpdate;
@@ -204,6 +204,7 @@ stock AddCustomSkins()
 	AddCharSyncModel(282, 450); // 15638, pearspeddp male
 	AddCharSyncModel(282, 451); // 15639, pearspeddq male
 	AddCharSyncModel(306, 452); // 15640, pearspeddr female
+	AddCharSyncModel(121, 453); // 15641, pearspedds male
     return 1;
 }
 
@@ -224,7 +225,8 @@ stock GetSkinSex(s)
 	|| s == 352 || s == 353 || s == 354 || s == 356 || s == 364 || s == 365 || s == 367
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
-	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451) return 1; // 1 - мужской скин
+	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
+	|| s == 453) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
