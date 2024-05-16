@@ -4,8 +4,8 @@
 new Text:SpawnChoiseDraw[MAX_SPAWNDRAWCHOISE];
 
 /*
-0 - Организация
-1 - Точка выхода
+0 - РћСЂРіР°РЅРёР·Р°С†РёСЏ
+1 - РўРѕС‡РєР° РІС‹С…РѕРґР°
 2 - Family
 3 - Division
 4 - Home
@@ -18,15 +18,15 @@ new Text:SpawnChoiseDraw[MAX_SPAWNDRAWCHOISE];
 stock SaveLastPlayerPosition(playerid)
 {
     if(SetPosa[playerid] > 0 
-        || MPGO[playerid] == 1 // На мероприятии
-        || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING // В слежке (спеке)
+        || MPGO[playerid] == 1 // РќР° РјРµСЂРѕРїСЂРёСЏС‚РёРё
+        || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING // Р’ СЃР»РµР¶РєРµ (СЃРїРµРєРµ)
         || OnlineInfo[playerid][oShowInterface] == 14 
-        || OnlineInfo[playerid][oShowInterface] == 16 // Меню салонов транспорта
-        || VehShopInfo[playerid][vsTest] == true // Тестдрайв
+        || OnlineInfo[playerid][oShowInterface] == 16 // РњРµРЅСЋ СЃР°Р»РѕРЅРѕРІ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
+        || VehShopInfo[playerid][vsTest] == true // РўРµСЃС‚РґСЂР°Р№РІ
         || OnlineInfo[playerid][oShowInterface] == 18
-        || gAutosalon[playerid] > 0 // В автосервисе
-        || Fractia[playerid] > 0  // В выборе одежды
-        || computerClubPlayerInfo[playerid][ccpiInGame] == true) // В комп клубе
+        || gAutosalon[playerid] > 0 // Р’ Р°РІС‚РѕСЃРµСЂРІРёСЃРµ
+        || Fractia[playerid] > 0  // Р’ РІС‹Р±РѕСЂРµ РѕРґРµР¶РґС‹
+        || computerClubPlayerInfo[playerid][ccpiInGame] == true) // Р’ РєРѕРјРї РєР»СѓР±Рµ
     {
         PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
@@ -48,7 +48,7 @@ stock SaveLastPlayerPosition(playerid)
         PlayerInfo[playerid][pLastPos][2] = pos[2];
         PlayerInfo[playerid][pLastPos][3] = pos[3];
 
-        // Если последняя точка в динамической зоне квеста и квест выполнен значит сохраняем вирт мир 0
+        // Р•СЃР»Рё РїРѕСЃР»РµРґРЅСЏСЏ С‚РѕС‡РєР° РІ РґРёРЅР°РјРёС‡РµСЃРєРѕР№ Р·РѕРЅРµ РєРІРµСЃС‚Р° Рё РєРІРµСЃС‚ РІС‹РїРѕР»РЅРµРЅ Р·РЅР°С‡РёС‚ СЃРѕС…СЂР°РЅСЏРµРј РІРёСЂС‚ РјРёСЂ 0
         if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot])
         {
             PlayerInfo[playerid][pLastWorld] = 0;
@@ -69,22 +69,22 @@ stock CloseSpawnChoise(playerid)
 
 stock GoSpawn(playerid)
 {
-    if(PlayerInfo[playerid][pTut] == 0) return GoGame(playerid); // Если игрок не завершил регистрацию
+    if(PlayerInfo[playerid][pTut] == 0) return GoGame(playerid); // Р•СЃР»Рё РёРіСЂРѕРє РЅРµ Р·Р°РІРµСЂС€РёР» СЂРµРіРёСЃС‚СЂР°С†РёСЋ
 
     if(PlayerInfo[playerid][pJailed] > 0 
         || PlayerInfo[playerid][pBkyrenie] >= 2 
         || DeathInfo[playerid][deathStatus] == true
-        || PlayerInfo[playerid][pQuest][0] == 0) return GoGame(playerid); // Если игроку нельзя выбирать спавн
+        || PlayerInfo[playerid][pQuest][0] == 0) return GoGame(playerid); // Р•СЃР»Рё РёРіСЂРѕРєСѓ РЅРµР»СЊР·СЏ РІС‹Р±РёСЂР°С‚СЊ СЃРїР°РІРЅ
 
     HidePlayerDialog(playerid);
     Login[4][playerid] = 1;
 
     OnlineInfo[playerid][oShowInterface] = 17;
-    TextDrawHideForPlayer(playerid, NameServerDraw[0]), TextDrawHideForPlayer(playerid, NameServerDraw[1]);
+    HideMainLogoServer(playerid);
     for(new i = 0; i < MAX_SPAWNDRAWCHOISE; i++) TextDrawShowForPlayer(playerid, SpawnChoiseDraw[i]);
     SelectColorDraw(playerid);
 
-    if(IsACristmas()) TextDrawHideForPlayer(playerid,ChristmasDraw[0]); // Выключаем нг текстдрав
+    if(IsACristmas()) TextDrawHideForPlayer(playerid,ChristmasDraw[0]); // Р’С‹РєР»СЋС‡Р°РµРј РЅРі С‚РµРєСЃС‚РґСЂР°РІ
     return 1;
 }
 
@@ -95,10 +95,10 @@ stock SelectSpawnChoise(playerid, spawnId)
 
     if(IsPlayerSyncModels(playerid)) PlayerPlaySound(playerid, 4400, 0,0,0);
     else PlayerPlaySound(playerid,17803,0,0,0);
-    if(Login[4][playerid] == 1) GoGame(playerid); // Спавн при входе в игру
-    else // Через команду /spawnchange
+    if(Login[4][playerid] == 1) GoGame(playerid); // РЎРїР°РІРЅ РїСЂРё РІС…РѕРґРµ РІ РёРіСЂСѓ
+    else // Р§РµСЂРµР· РєРѕРјР°РЅРґСѓ /spawnchange
     {
-		SuccessMessage(playerid, "{cccccc}Вы изменили свой {99ff66}спавн");
+		SuccessMessage(playerid, "{cccccc}Р’С‹ РёР·РјРµРЅРёР»Рё СЃРІРѕР№ {99ff66}СЃРїР°РІРЅ");
         CloseSpawnChoise(playerid);
         CancelSelectTextDraw(playerid);
         PlayerInfo[playerid][pSpawnchange] = spawnId;
@@ -116,8 +116,8 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
 
     if(clickedid == SpawnChoiseDraw[0]) 
     {
-        if(OnlineInfo[playerid][oLogged] == 1) return ErrorMessage(playerid, "{FF6347}Последнюю позицию можно выбрать только при входе на сервер");
-        if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+        if(OnlineInfo[playerid][oLogged] == 1) return ErrorMessage(playerid, "{FF6347}РџРѕСЃР»РµРґРЅСЋСЋ РїРѕР·РёС†РёСЋ РјРѕР¶РЅРѕ РІС‹Р±СЂР°С‚СЊ С‚РѕР»СЊРєРѕ РїСЂРё РІС…РѕРґРµ РЅР° СЃРµСЂРІРµСЂ");
+        if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°С€РµРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р° РЅРµС‚ РїРѕСЃР»РµРґРЅРµР№, СЃРѕС…СЂР°РЅС‘РЅРЅРѕР№ РїРѕР·РёС†РёРё\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
 
         /*if(IsAGang(playerid))
         {
@@ -126,7 +126,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             {
                 if(IsPointInDynamicArea(ZoneCapt, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
                 {
-                    ErrorMessage(playerid, "{FF6347}Вы не можете сейчас выбрать последнюю точку\n{cccccc}Она находится на территории активного капта вашей банды");
+                    ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІС‹Р±СЂР°С‚СЊ РїРѕСЃР»РµРґРЅСЋСЋ С‚РѕС‡РєСѓ\n{cccccc}РћРЅР° РЅР°С…РѕРґРёС‚СЃСЏ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёРё Р°РєС‚РёРІРЅРѕРіРѕ РєР°РїС‚Р° РІР°С€РµР№ Р±Р°РЅРґС‹");
                     return 1;
                 }
             }
@@ -140,7 +140,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             {
                 if(IsPointInDynamicArea(MafGz[0][mZone], PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
                 {
-                    ErrorMessage(playerid, "{FF6347}Вы не можете сейчас выбрать последнюю точку\n{cccccc}Она находится на территории активной стрелы вашей мафии");
+                    ErrorMessage(playerid, "{FF6347}Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ СЃРµР№С‡Р°СЃ РІС‹Р±СЂР°С‚СЊ РїРѕСЃР»РµРґРЅСЋСЋ С‚РѕС‡РєСѓ\n{cccccc}РћРЅР° РЅР°С…РѕРґРёС‚СЃСЏ РЅР° С‚РµСЂСЂРёС‚РѕСЂРёРё Р°РєС‚РёРІРЅРѕР№ СЃС‚СЂРµР»С‹ РІР°С€РµР№ РјР°С„РёРё");
                     return 1;
                 }
             }
@@ -152,14 +152,14 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
     {
         new g = fraction(playerid);
         new i = PlayerInfo[playerid][pDivision][0];
-        if(g == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж не стоит в организации\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
-        if(i > 0) // Есть подфракция
+        if(g == 0) return ErrorMessage(playerid, "{FF6347}Р’Р°С€ РїРµСЂСЃРѕРЅР°Р¶ РЅРµ СЃС‚РѕРёС‚ РІ РѕСЂРіР°РЅРёР·Р°С†РёРё\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
+        if(i > 0) // Р•СЃС‚СЊ РїРѕРґС„СЂР°РєС†РёСЏ
         {
             OnlineInfo[playerid][oNoClick] = true;
             new line[100],lines[200];
 			format(line,sizeof(line),"%s", frakName[g]), strcat(lines,line);
             format(line,sizeof(line),"\n{%s}%s", DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divName]), strcat(lines,line);
-		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
+		    ShowDialog(playerid,502,DIALOG_STYLE_TABLIST,"{ff9000}Р’С‹Р±РѕСЂ СЃРїР°РІРЅР°",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
         }
         else SelectSpawnChoise(playerid, 8);
     }
@@ -174,14 +174,14 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             List[quan][playerid] = 4; // Home
             ListParam[quan][playerid] = PlayerInfo[playerid][pDom];
             quan ++;
-            format(line,sizeof(line),"{cccccc}Дом № {ff9000}%d\n", PlayerInfo[playerid][pDom]), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}Р”РѕРј в„– {ff9000}%d\n", PlayerInfo[playerid][pDom]), strcat(lines,line);
         }
         if(PlayerInfo[playerid][pHouserent])
         {
             List[quan][playerid] = 7; // Rent Home
             ListParam[quan][playerid] = PlayerInfo[playerid][pHouserent];
             quan ++;
-            format(line,sizeof(line),"{cccccc}Арендованный Дом № {ff9000}%d\n", PlayerInfo[playerid][pHouserent]), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}РђСЂРµРЅРґРѕРІР°РЅРЅС‹Р№ Р”РѕРј в„– {ff9000}%d\n", PlayerInfo[playerid][pHouserent]), strcat(lines,line);
         }
         if(PlayerInfo[playerid][pFamily])
         {
@@ -191,7 +191,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
                 List[quan][playerid] = 6; // Family Home
                 ListParam[quan][playerid] = FamilyInfo[fam][fDop5];
                 quan ++;
-                format(line,sizeof(line),"{cccccc}Семейный Дом № {ff9000}%d\n", FamilyInfo[fam][fDop5]), strcat(lines,line);
+                format(line,sizeof(line),"{cccccc}РЎРµРјРµР№РЅС‹Р№ Р”РѕРј в„– {ff9000}%d\n", FamilyInfo[fam][fDop5]), strcat(lines,line);
             }
         }
         if(PlayerInfo[playerid][pRoom])
@@ -199,37 +199,37 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             List[quan][playerid] = 5;
             ListParam[quan][playerid] = PlayerInfo[playerid][pRoom];
             quan ++;
-            format(line,sizeof(line),"{cccccc}Квартира № {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}РљРІР°СЂС‚РёСЂР° в„– {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
         }
         if(PlayerInfo[playerid][pTrailer])
         {
             List[quan][playerid] = 9;
             ListParam[quan][playerid] = PlayerInfo[playerid][pTrailer] - 1;
             quan ++;
-            format(line,sizeof(line),"{cccccc}Трейлер № {ff9000}%d\n", PlayerInfo[playerid][pTrailer]), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}РўСЂРµР№Р»РµСЂ в„– {ff9000}%d\n", PlayerInfo[playerid][pTrailer]), strcat(lines,line);
         }
 
         List[quan][playerid] = 0;
         //quan ++;
         if(PlayerInfo[playerid][pKomnata] != 9999 && PlayerInfo[playerid][pKomnata] >= 1)
       	{
-            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}Отель {ff9000}Las Venturas\n"), strcat(lines,line);
-            else format(line,sizeof(line),"{cccccc}Отель {ff9000}Los Santos\n"), strcat(lines,line);
+            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}РћС‚РµР»СЊ {ff9000}Las Venturas\n"), strcat(lines,line);
+            else format(line,sizeof(line),"{cccccc}РћС‚РµР»СЊ {ff9000}Los Santos\n"), strcat(lines,line);
         }
         else
         {
-            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Las Venturas\n"), strcat(lines,line);
-            else format(line,sizeof(line),"{cccccc}Улица Отеля {ff9000}Los Santos\n"), strcat(lines,line);
+            if(PlayerInfo[playerid][pKomnataCity] == 3) format(line,sizeof(line),"{cccccc}РЈР»РёС†Р° РћС‚РµР»СЏ {ff9000}Las Venturas\n"), strcat(lines,line);
+            else format(line,sizeof(line),"{cccccc}РЈР»РёС†Р° РћС‚РµР»СЏ {ff9000}Los Santos\n"), strcat(lines,line);
         }
-        ShowDialog(playerid,503,DIALOG_STYLE_TABLIST,"{ff9000}Выбор спавна",lines,"Выбор","Отмена");
+        ShowDialog(playerid,503,DIALOG_STYLE_TABLIST,"{ff9000}Р’С‹Р±РѕСЂ СЃРїР°РІРЅР°",lines,"Р’С‹Р±РѕСЂ","РћС‚РјРµРЅР°");
     }
     else if(clickedid == SpawnChoiseDraw[9]) // Family
     {
-        if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет семьи\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+        if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°С€РµРіРѕ РїРµСЂСЃРѕРЅР°Р¶Р° РЅРµС‚ СЃРµРјСЊРё\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
         new f = PlayerInfo[playerid][pFamily];
-        if(FamilyInfo[f][fSost] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вашей семьи не существует\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
-        if(FamilyInfo[f][fStatusSpawn] == 0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
-		if(FamilyInfo[f][fSpawnX] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашей семьи нет своего спавна\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+        if(FamilyInfo[f][fSost] == 0) return ErrorMessage(playerid, "{FF6347}РћС€РёР±РєР°! Р’Р°С€РµР№ СЃРµРјСЊРё РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
+        if(FamilyInfo[f][fStatusSpawn] == 0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°С€РµР№ СЃРµРјСЊРё РЅРµС‚ СЃРІРѕРµРіРѕ СЃРїР°РІРЅР°\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
+		if(FamilyInfo[f][fSpawnX] == 0.0) return ErrorMessage(playerid, "{FF6347}РЈ РІР°С€РµР№ СЃРµРјСЊРё РЅРµС‚ СЃРІРѕРµРіРѕ СЃРїР°РІРЅР°\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
 
         SelectSpawnChoise(playerid, 2);
     }
@@ -249,7 +249,7 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
                 new g = fraction(playerid);
                 new i = PlayerInfo[playerid][pDivision][0];
 
-                if(DivisionInfo[g - 1][i - 1][divSpawnPos][0] == 0.0) return ErrorMessage(playerid, "{FF6347}В подфракции не установлен отдельный спавн");
+                if(DivisionInfo[g - 1][i - 1][divSpawnPos][0] == 0.0) return ErrorMessage(playerid, "{FF6347}Р’ РїРѕРґС„СЂР°РєС†РёРё РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РѕС‚РґРµР»СЊРЅС‹Р№ СЃРїР°РІРЅ");
                 SelectSpawnChoise(playerid, 3);
             }
         }
@@ -266,15 +266,15 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
 
             if(spawnId == 4 || spawnId == 6 || spawnId == 7) // Dom
             {
-                if(DomInfo[numSpawn][dArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот дом арестован\n\n{cccccc}Если это ваш дом, оплатите налоги для снятия ареста");
+                if(DomInfo[numSpawn][dArest] == 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РґРѕРј Р°СЂРµСЃС‚РѕРІР°РЅ\n\n{cccccc}Р•СЃР»Рё СЌС‚Рѕ РІР°С€ РґРѕРј, РѕРїР»Р°С‚РёС‚Рµ РЅР°Р»РѕРіРё РґР»СЏ СЃРЅСЏС‚РёСЏ Р°СЂРµСЃС‚Р°");
             }
             else if(spawnId == 5) // Room
             {
-                if(RoomInfo[numSpawn][rArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот квартира арестована\n\n{cccccc}Если это ваша квартира, оплатите налоги для снятия ареста");
+                if(RoomInfo[numSpawn][rArest] == 1) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ РєРІР°СЂС‚РёСЂР° Р°СЂРµСЃС‚РѕРІР°РЅР°\n\n{cccccc}Р•СЃР»Рё СЌС‚Рѕ РІР°С€Р° РєРІР°СЂС‚РёСЂР°, РѕРїР»Р°С‚РёС‚Рµ РЅР°Р»РѕРіРё РґР»СЏ СЃРЅСЏС‚РёСЏ Р°СЂРµСЃС‚Р°");
             }
             else if(spawnId == 9) // Trailer
             {
-                if(trailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+                if(trailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ С‚СЂРµР№Р»РµСЂ РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ\n\n{cccccc}Р’С‹ РІСЃРµРіРґР° РјРѕР¶РµС‚Рµ РІС‹Р±СЂР°С‚СЊ СЃРїР°РІРЅ РІ РћС‚РµР»Рµ {ff9000}Р–РёР»СЊС‘ >> РћС‚РµР»СЊ");
             }
             
             SelectSpawnChoise(playerid, spawnId);
@@ -316,7 +316,7 @@ stock CreateDrawSpawnChoise()
     TextDrawSetPreviewModel(SpawnChoiseDraw[1], 1277);
     TextDrawSetPreviewRot(SpawnChoiseDraw[1], 0.000000, 0.000000, 180.000000, 1.000000);
 
-    SpawnChoiseDraw[2] = TextDrawCreate(tempX + sizeX / 2, 268.0, "ЊOC‡EѓHEE MECЏO");
+    SpawnChoiseDraw[2] = TextDrawCreate(tempX + sizeX / 2, 268.0, "РЉOCвЂЎEС“HEE MECРЏO");
     TextDrawLetterSize(SpawnChoiseDraw[2], 0.204666, 0.907259);
     TextDrawAlignment(SpawnChoiseDraw[2], TEXT_DRAW_ALIGN:2);
     TextDrawColour(SpawnChoiseDraw[2], -1061109505);
@@ -354,7 +354,7 @@ stock CreateDrawSpawnChoise()
     TextDrawSetPreviewModel(SpawnChoiseDraw[4], 1275);
     TextDrawSetPreviewRot(SpawnChoiseDraw[4], 0.000000, 0.000000, 180.000000, 1.000000);
 
-    SpawnChoiseDraw[5] = TextDrawCreate(tempX + sizeX / 2, 268.0, "OP‚AH…3A‰…•");
+    SpawnChoiseDraw[5] = TextDrawCreate(tempX + sizeX / 2, 268.0, "OPвЂљAHвЂ¦3AвЂ°вЂ¦вЂў");
     TextDrawLetterSize(SpawnChoiseDraw[5], 0.204666, 0.907259);
     TextDrawAlignment(SpawnChoiseDraw[5], TEXT_DRAW_ALIGN:2);
     TextDrawColour(SpawnChoiseDraw[5], -1061109505);
@@ -392,7 +392,7 @@ stock CreateDrawSpawnChoise()
     TextDrawSetPreviewModel(SpawnChoiseDraw[7], 1273);
     TextDrawSetPreviewRot(SpawnChoiseDraw[7], 0.000000, 0.000000, 180.000000, 1.000000);
 
-    SpawnChoiseDraw[8] = TextDrawCreate(tempX + sizeX / 2, 268.0, "„…‡’E");
+    SpawnChoiseDraw[8] = TextDrawCreate(tempX + sizeX / 2, 268.0, "вЂћвЂ¦вЂЎвЂ™E");
     TextDrawLetterSize(SpawnChoiseDraw[8], 0.204666, 0.907259);
     TextDrawAlignment(SpawnChoiseDraw[8], TEXT_DRAW_ALIGN:2);
     TextDrawColour(SpawnChoiseDraw[8], -1061109505);
@@ -430,7 +430,7 @@ stock CreateDrawSpawnChoise()
     TextDrawSetPreviewModel(SpawnChoiseDraw[10], 1314);
     TextDrawSetPreviewRot(SpawnChoiseDraw[10], 0.000000, 0.000000, 180.000000, 1.000000);
 
-    SpawnChoiseDraw[11] = TextDrawCreate(tempX + sizeX / 2, 268.0, "CEM’•");
+    SpawnChoiseDraw[11] = TextDrawCreate(tempX + sizeX / 2, 268.0, "CEMвЂ™вЂў");
     TextDrawLetterSize(SpawnChoiseDraw[11], 0.204666, 0.907259);
     TextDrawAlignment(SpawnChoiseDraw[11], TEXT_DRAW_ALIGN:2);
     TextDrawColour(SpawnChoiseDraw[11], -1061109505);
@@ -440,7 +440,7 @@ stock CreateDrawSpawnChoise()
     TextDrawFont(SpawnChoiseDraw[11], TEXT_DRAW_FONT:1);
     TextDrawSetProportional(SpawnChoiseDraw[11], true);
 
-    SpawnChoiseDraw[12] = TextDrawCreate(320.0, 318.0, "‹‘ЂEP…ЏE CЊA‹H ‹AЋE‚O ЊEPCOHA„A");
+    SpawnChoiseDraw[12] = TextDrawCreate(320.0, 318.0, "вЂ№вЂР‚EPвЂ¦РЏE CРЉAвЂ№H вЂ№AР‹EвЂљO РЉEPCOHAвЂћA");
     TextDrawLetterSize(SpawnChoiseDraw[12], 0.354000, 1.471407);
     TextDrawAlignment(SpawnChoiseDraw[12], TEXT_DRAW_ALIGN:2);
     TextDrawColour(SpawnChoiseDraw[12], -1);

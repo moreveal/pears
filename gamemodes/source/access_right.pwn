@@ -147,9 +147,9 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     {
         if(IsAPoliceFunction(g))  return 1;
     }
-    else if(accessId == 33) // /lawyer", // 33
+    else if(accessId == 33) // /lawyer", // 33 (id настройки прав свободно, команда вырезана)
     {
-        if(IsAPoliceFunction(g))  return 1;
+        // if(IsAPoliceFunction(g))  return 1;
     }
     else if(accessId == 34) // /zarest", // 34
     {
