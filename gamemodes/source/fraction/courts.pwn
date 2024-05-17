@@ -79,6 +79,7 @@ stock CloseCourtsProcess(playerid)
         PlayerInfo[playerid][pHodka] ++;
         PlayerInfo[playerid][pJailed] = 0;PlayerInfo[playerid][pJailTime] = 0;
         PlayerInfo[playerid][pRab] = 0;
+        ClearAllWantedPlayer(playerid);
         TempGive(playerid);
         GameTextForPlayer(playerid, RusToGame("~w~Вы ~g~Свободны"), 5000, 3);
         SetPlayerToTeamColor(playerid);

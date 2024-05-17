@@ -78,6 +78,7 @@ stock CheckAutoInRangeService(playerid)
 	}
     if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
     new v = GetPlayerVehicleID(playerid);
+    if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
     if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
     if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
 
@@ -150,6 +151,23 @@ stock ShowDetailHandling(playerid, tuningType)
     return 1;
 }
 
+stock ShowMenuBonnet(playerid)
+{
+    new v = OnlineInfo[playerid][oShowTabs];
+    new line[60],lines[360];
+    format(line,sizeof(line),"{ff9000}Диагностика"), strcat(lines,line);
+    for(new i; i<sizeof(friskDetailTypeName);i++)
+    {
+        if(GetVehicleDetailTunning(v, i) != -1) 
+        {
+            format(line,sizeof(line),"\n{ff9000}Снять деталь %s",friskDetailTypeName[i]), strcat(lines,line);
+            List[i][playerid] = i;
+        }
+    }
+    ShowDialog(playerid,1502,DIALOG_STYLE_TABLIST,"{ff9000}Тюнинг",lines,"Выбор","Отмена");
+    return 1;
+}
+
 stock ShowAllTypeDetail(playerid)
 {
     new line[60],lines[360];
@@ -179,6 +197,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new v = GetPlayerVehicleID(playerid);
+            if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
             DP[2][playerid] = gAutosalon[playerid];
             if(listitem < 0 && listitem > DP[0][playerid]) return ErrorMessage(playerid,"{ff6347}Ошибка строки");
             if(listitem == DP[0][playerid])
@@ -186,7 +205,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 new slot = GetVehicleDetailTunning(v, DP[1][playerid]);
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
-                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положжит ьтуда деталь");
+                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положить туда деталь");
                 RemoveDetailTunning(v,GetVehicleDetailTunningID(v, DP[1][playerid]));
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }
@@ -311,6 +330,24 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             SuccessMessage(playerid,"{44ff99}Временный хендлинг для TestDrive установлен");
         }
         else CloseTuning(playerid);
+    }
+    if(dialogid == 1502)
+    {
+        if(response)
+        {
+            new v = OnlineInfo[playerid][oShowTabs];
+            if(listitem < 0 || listitem > 6) return 0;
+            if(listitem == 0) DiagnosVehicle(playerid, v, 0);
+            if(listitem >= 1 && listitem <= 6)
+            {
+                new slot = GetVehicleDetailTunning(v, List[listitem-1][playerid]);
+                if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
+                new put_inva = GiveThingPlayer(playerid, VehInfo[v][vTunningID][slot], 1, 0, VehInfo[v][vTunningQara][slot], 0, 0, 9999); // Выдаём предмет игроку
+                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В инвентаре нет места что бы положить туда деталь");
+                RemoveDetailTunning(v,GetVehicleDetailTunningID(v, List[listitem-1][playerid]));
+                return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
+            }
+        }
     }
     return 1;
 }

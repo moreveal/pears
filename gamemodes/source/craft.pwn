@@ -453,7 +453,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
 
         if(Tabs_Load[playerid] == 10) // Двигатель
         {
-            if(OnlineInfo[playerid][oInventSelectLeft] == 9999) DiagnosVehicle(playerid, vehicleid, 0);
+            if(OnlineInfo[playerid][oInventSelectLeft] == 9999) ShowMenuBonnet(playerid);
             else
             {
                 new Float:health;
