@@ -458,17 +458,16 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
             {
                 new Float:health;
                 GetVehicleHealth(vehicleid, health);
-                if(health > 500.0) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
-
                 new inva = OnlineInfo[playerid][oInventSelectLeft];
                 new thingId = PlayerInfo[playerid][pInven][inva];
+                if(health > 500.0 && !(thingId >= 207 && thingId <= 224)) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
 
                 if(IsAMoto(model)) ThingNeed[playerid] = 190;
                 else if(IsAPlane(model)) ThingNeed[playerid] = 191;
                 else if(IsABoat(model)) ThingNeed[playerid] = 192;
                 else ThingNeed[playerid] = 183;
 
-                if(thingId != ThingNeed[playerid])
+                if(thingId != ThingNeed[playerid] && !(thingId >= 207 && thingId <=224))
                 {
                     new string[90];
                     format(string,sizeof(string),"{FF6347}Для ремонта этого транспорта требуется {cccccc}%s", friskName[ThingNeed[playerid]]);
@@ -476,7 +475,21 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     i_resetveshi(playerid);
                     return 1;
                 }
-
+                if(thingId >= 207 && thingId <=224)
+                {
+                    ThingNeed[playerid] = thingId;
+                    new slot = -1;
+                    slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
+                    if(slot == -1)
+                    {
+                        new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0,friskDetail[thingId - 207][1]);
+                        if(slot2 == -1)
+                        {
+                            ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга");
+                            return 1;
+                        }
+                    }
+                }
                 ClearCraftProcess(playerid);
 
                 CraftInvent[playerid] = inva;
@@ -839,35 +852,69 @@ function CraftProcess(playerid, tabs_load)
 
         if(Tabs_Load[playerid] == 10) // Ремонт Двигателя (Капот)
         {
+            new vehicleid = OnlineInfo[playerid][oShowTabs];
             if(!CheckCraftThing(playerid)) return 1;
-
-            i_del(playerid, CraftInvent[playerid]); // Забираем предмет
-
-            new vehicleid = OnlineInfo[playerid][oShowTabs], minus = 10 - get_ability(playerid, 8);
-            new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - (100 * minus);
-            ACSetVehicleHealth(vehicleid, health);
-            update_ability(playerid, 8, 15);
-
-            // Квест ремонт транспорта
-            if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
-            {
-                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair6.mp3");
-                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Четко! Новый рем комплект можешь купить самостоятельно в любом автосервисе");
-                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Найди его в GPS навигаторе на своём смартфоне");
-                SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё. До связи");
-
-                PlayerInfo[playerid][pQuest][4] = 1;
-                SaveQuest(playerid);
-                
-                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чем выше мой навык автомеханика, тем быстрее и качественнее я выполняю ремонт [ Y >> Меню >> Навыки ]");
-            }
-
+            new inva = CraftInvent[playerid];
+            new thingId = PlayerInfo[playerid][pInven][inva];
             new line[90],lines[360];
-            format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
-            format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
-            format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
-            format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
-            format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
+            if(thingId >= 207 && thingId <= 224)
+            {
+                format(line,sizeof(line),"{99ff66}Выполнено!\n\n"), strcat(lines,line);
+                new slot = -1;
+                slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
+                if(slot == -1)
+                {
+                    new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0,friskDetail[thingId - 207][1]);
+                    if(slot2 == -1)
+                    {
+                        ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга");
+                        return 1;
+                    }
+                }
+                else
+                {
+                    format(line,sizeof(line),"{99ff66}Прошлая стоявшая деталь данного типа была помещена в инвентарь!"), strcat(lines,line);
+                    new put_inva = GiveThingPlayer(playerid, VehInfo[vehicleid][vTunningID][slot], 1, 0, VehInfo[vehicleid][vTunningQara][slot], 0, 0, 9999); // Выдаём предмет игроку
+	                if(put_inva == -1) PutThingBoot(vehicleid, VehInfo[vehicleid][vTunningID][slot], 1, VehInfo[vehicleid][vTunningType][slot], VehInfo[vehicleid][vTunningQara][slot], 0, 0, 999);
+                    VehInfo[vehicleid][vTunningID][slot] = thingId;
+                    VehInfo[vehicleid][vTunningQara][slot] = 0;
+                    VehInfo[vehicleid][vTunningType][slot] = friskDetail[thingId-207][1];
+                }
+                SaveTunning(vehicleid);
+                format(line,sizeof(line),"\n\n{ffcc66}Вы только что установили на свой транспорт"), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Установленная деталь: %s", friskName[thingId]), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость установки деталий повышается"), strcat(lines,line);
+                format(line,sizeof(line),"\n{666666}Навык повышается при ремонте двигателя"), strcat(lines,line);
+                format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
+            }
+            else
+            {
+                new minus = 10 - get_ability(playerid, 8);
+                new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - (100 * minus);
+                ACSetVehicleHealth(vehicleid, health);
+
+                // Квест ремонт транспорта
+                if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair6.mp3");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Четко! Новый рем комплект можешь купить самостоятельно в любом автосервисе");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Найди его в GPS навигаторе на своём смартфоне");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Всё. До связи");
+
+                    PlayerInfo[playerid][pQuest][4] = 1;
+                    SaveQuest(playerid);
+                    
+                    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чем выше мой навык автомеханика, тем быстрее и качественнее я выполняю ремонт [ Y >> Меню >> Навыки ]");
+                }
+
+                format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
+                format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
+                update_ability(playerid, 8, 15);
+            }
+            i_del(playerid, inva); // Забираем предмет
             SuccessMessage(playerid, lines);
         }
         else // Крафт

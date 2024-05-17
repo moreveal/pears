@@ -183,7 +183,10 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             if(listitem < 0 && listitem > DP[0][playerid]) return ErrorMessage(playerid,"{ff6347}Ошибка строки");
             if(listitem == DP[0][playerid])
             {
-                if(GetVehicleDetailTunning(v, DP[1][playerid]) == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
+                new slot = GetVehicleDetailTunning(v, DP[1][playerid]);
+                if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
+                new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
+                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положжит ьтуда деталь");
                 RemoveDetailTunning(v,GetVehicleDetailTunningID(v, DP[1][playerid]));
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }

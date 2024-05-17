@@ -405,7 +405,7 @@ CMD:armgro(playerid)
 }
 CMD:delaction(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации");
+    if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации и медиа 3 уровня");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
 	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
 	new kol = 0;
@@ -545,35 +545,35 @@ CMD:spawns(playerid)
 }
 CMD:readconnect(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(GetPVarInt(playerid,"Readcon") == 0) SetPVarInt(playerid,"Readcon",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр Connect Log {99ff66}Активирован");
 	else SetPVarInt(playerid,"Readcon",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр Connect Log {FF6347}Отключён");
 	return 1;
 }
 CMD:readkill(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(GetPVarInt(playerid,"Readkill") == 0) SetPVarInt(playerid,"Readkill",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр смертей {99ff66}Активирован");
 	else SetPVarInt(playerid,"Readkill",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр смертей {FF6347}Отключён");
   	return 1;
 }
 CMD:readdm(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(GetPVarInt(playerid,"Readdm") == 0) SetPVarInt(playerid,"Readdm",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {99ff66}Активирован");
 	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {FF6347}Отключён");
 	return 1;
 }
 CMD:readhit(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(GetPVarInt(playerid,"Readhit") == 0) SetPVarInt(playerid,"Readhit",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {99ff66}Активирован");
 	else SetPVarInt(playerid,"Readhit",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {FF6347}Отключён");
   	return 1;
 }
 CMD:rvanka(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(GetPVarInt(playerid,"Readcheat") == 0) SetPVarInt(playerid,"Readcheat",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {99ff66}Активирован");
 	else SetPVarInt(playerid,"Readcheat",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр rvanka {FF6347}Отключён");
   	return 1;
@@ -891,7 +891,7 @@ CMD:gpci(playerid, const params[])
 }
 CMD:loss(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть потерянные пакеты игрока [ /loss ID ]");
 	if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
 	new string[144];

@@ -1498,3 +1498,28 @@ CMD:bizgold(playerid, const params[])
 	AdminLog("bizgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[1], string);
 	return 1;
 }
+CMD:reloadbizparthner(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	new b;
+    if(sscanf(params, "i",b)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить партнерство с семьямии [ /bizgold ID(0 все бизнесы) ]");
+	if(b != 0) RemoveBizParthner(b);
+	else
+	{
+		for(new i = 1; i < MAX_BIZ; i++)
+		{
+			RemoveBizParthner(i);
+		}
+	}
+	return 1;
+}
+
+stock RemoveBizParthner(b)
+{
+	for(new i; i < 10; i++)
+	{
+		BizzInfo[b][bFamilyPartner][i] = 0;
+	}
+	BizzInfo[b][bUpdate] = 1;
+	return 1;
+}

@@ -257,7 +257,7 @@ stock gospray(playerid)
 
 CMD:sprays(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] <= 0) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
     ShowAllGraphiti(playerid);
     return 1;
 }

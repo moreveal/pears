@@ -197,7 +197,7 @@ stock AnticheatDistanceDamage(playerid, damagedid, weaponid)
 alias:trigger("triger", "trigers", "triggers", "trig")
 CMD:trigger(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     ShowMenuTriggers(playerid);
     return 1;

@@ -39,22 +39,22 @@ stock CloseCourtsProcess(playerid)
     }
     else if(CourtsInfo[slot][courtsClass] == 2) // Отпускаем по УДО + залог
     {
-        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*100)
+        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*10)
         {
             ErrorMessage(CourtsInfo[slot][courtsTakeUserid],"{ff6347}У заключенного не хватает денег на руках для оплаты залога");
             return ErrorMessage(playerid,"{ff6347}У вас не достаточно денег на руках для оплаты выхода под залог");
         }
-        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*100); // Забираем бабки равные Срокзаключения * 100
+        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*10); // Забираем бабки равные Срокзаключения * 100
         SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и залог. Вы свободны");
     }
     else if(CourtsInfo[slot][courtsClass] == 3) // Сокращаем срок в половину за залог
     {
-        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*100)
+        if(PlayerInfo[playerid][pMoney] <= PlayerInfo[playerid][pJailTime]*10)
         {
             ErrorMessage(CourtsInfo[slot][courtsTakeUserid],"{ff6347}У заключенного не хватает денег на руках для оплаты залога");
             return ErrorMessage(playerid,"{ff6347}У вас не достаточно денег на руках для оплаты сокращения срока под залог");
         }
-        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*100); // Забираем бабки равные Срокзаключения * 100
+        else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*10); // Забираем бабки равные Срокзаключения * 100
         S_SetPlayerVirtualWorld(playerid,WORLD_PRISON_CELLS,INT_PRISON_CELLS);
         PPSetPlayerInterior(playerid,INT_PRISON_CELLS);
         PPSetPlayerPos(playerid, 1032.6429,2443.3469,10.8509);
@@ -65,8 +65,11 @@ stock CloseCourtsProcess(playerid)
     }
     else if(CourtsInfo[slot][courtsClass] == 4) // Отпускаем по УДО + Отработка
     {
-        PlayerInfo[playerid][pCourtsDeposit] = PlayerInfo[playerid][pJailTime]*100;
-        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму");
+        PlayerInfo[playerid][pCourtsDeposit] = PlayerInfo[playerid][pJailTime]*10;
+        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму
+{684F7D}Отрабаотать нужно на работе у Клининговой Компании
+        
+{684F7D}Посмотреть сумму отработки можно в БАНК ОНЛАЙН");
     }
     if(CourtsInfo[slot][courtsClass] == 4 || CourtsInfo[slot][courtsClass] == 2 || CourtsInfo[slot][courtsClass] == 1)
     {
@@ -76,7 +79,7 @@ stock CloseCourtsProcess(playerid)
         PlayerInfo[playerid][pHodka] ++;
         PlayerInfo[playerid][pJailed] = 0;PlayerInfo[playerid][pJailTime] = 0;
         PlayerInfo[playerid][pRab] = 0;
-        //TempGive(playerid);
+        TempGive(playerid);
         GameTextForPlayer(playerid, RusToGame("~w~Вы ~g~Свободны"), 5000, 3);
         SetPlayerToTeamColor(playerid);
         GF_OnPlayerUpdate(playerid);
@@ -118,9 +121,10 @@ stock CourtsList(playerid)
     return 1;
 }
 
-stock CreateNewOrderToCourts(playerid)
+stock CreateNewOrderToCourts(playerid, bool:message = true)
 {
-    if(OnlineInfo[playerid][oCourtsID] > 0) return ErrorMessage(playerid,"{ff6347}У вас уже есть заявка в суд, ожидайте вызова в суд!");
+    if(OnlineInfo[playerid][oCourtsID] > 0 && message == true) return ErrorMessage(playerid,"{ff6347}У вас уже есть заявка в суд, ожидайте вызова в суд!");
+    if(!(PlayerInfo[playerid][pJailTime] > 0 && PlayerInfo[playerid][pJailed] == 1)) return 0;
     new slot = -1;
     for(new i; i < MAX_COURTS; i++)
     {
@@ -130,18 +134,24 @@ stock CreateNewOrderToCourts(playerid)
             break;
         }
     }
-    if(slot == -1) return ErrorMessage(playerid,"{ff6347}В данный момоент максимальное количество заявок в суд");
+    if(slot == -1)
+    {
+        if(message == true) ErrorMessage(playerid,"{ff6347}В данный момоент максимальное количество заявок в суд");
+        return 1;
+    }
     CourtsInfo[slot][courtsStatus] = 1;
     PlayerInfo[playerid][pCourtsStatus] = 1;
     CourtsInfo[slot][courtsPlayerId] = playerid;
     OnlineInfo[playerid][oCourtsID] = slot+1;
-    SuccessMessage(playerid,"{44ff99}Вы успешно отправили заявку в суд для рассмотрения дела");
+    if(message == true) SuccessMessage(playerid,"{44ff99}Вы успешно отправили заявку в суд для рассмотрения дела");
     return 1;
 }
 
 stock DeleteOrderToCourts(playerid)
 {
+    if(OnlineInfo[playerid][oCourtsID] == 0) return 1;
     new slot = OnlineInfo[playerid][oCourtsID]-1;
+    OnlineInfo[playerid][oCourtsID] = 0;
     CourtsInfo[slot][courtsStatus] = 0;
     CourtsInfo[slot][courtsPlayerId] = 0;
     return 1;
@@ -193,7 +203,7 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
         {
             new listselect = DP[4][playerid];
             new targetid = CourtsInfo[listselect][courtsPlayerId];
-            Moiplayer[targetid] = playerid;
+            DP[1][targetid] = playerid;
             if(GetPVarInt(targetid,"afksystem") >= 3) 
             {
                 ErrorText(playerid,"{ff6347}Игрок в афк, попробуйте чуть позже, или выберите другую заявку");
@@ -216,13 +226,13 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            return GoCourtsProcess(playerid,Moiplayer[playerid]);
+            return GoCourtsProcess(playerid,DP[1][playerid]);
         }
         else
         {
             DeleteOrderToCourts(playerid);
             PlayerInfo[playerid][pCourtsStatus] = 0;
-            SendClientMessage(Moiplayer[playerid],COLOR_GREY,"Заключенный %s отказался от рассмотрения дела",rpplayername(playerid));
+            SendClientMessage(DP[1][playerid],COLOR_GREY,"Заключенный %s отказался от рассмотрения дела",rpplayername(playerid));
             return 1;
         }
     }
