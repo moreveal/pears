@@ -87,8 +87,9 @@ stock OnNpcConnect(playerid)
 
     // Крепим лейбл с именем (Только для доминика)
     new string[34];
-    format(string, sizeof(string), "{FFFFFF}%s [ ALT ]", npcNames[id]);
-    NpcLabel[id] = CreateDynamic3DTextLabel(string,0xA9C4E4FF, 0.0, 0.0, 0.2, 5.0, playerid, INVALID_VEHICLE_ID, 1);
+    if(id == 5) format(string, sizeof(string), "{FFFFFF}%s [ ALT ]", npcNames[id]); // Кнопка ALT, только у доминика
+    else format(string, sizeof(string), "{FFFFFF}%s", npcNames[id]);
+    NpcLabel[id] = CreateDynamic3DTextLabel(string,0xA9C4E4FF, 0.0, 0.0, 0.12, 5.0, playerid, INVALID_VEHICLE_ID, 1);
 
     // Спавним (внутри стока сначала настраиваем спавн, потом спавним)
     PPSpawnPlayer(playerid);
