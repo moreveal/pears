@@ -478,9 +478,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 if(thingId >= 207 && thingId <=224)
                 {
                     ThingNeed[playerid] = thingId;
-                    new slot = -1;
-                    slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
-                    if(slot == -1)
+                    if(GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]) == -1)
                     {
                         new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0,friskDetail[thingId - 207][1]);
                         if(slot2 == -1)
@@ -860,8 +858,7 @@ function CraftProcess(playerid, tabs_load)
             if(thingId >= 207 && thingId <= 224)
             {
                 format(line,sizeof(line),"{99ff66}Выполнено!\n\n"), strcat(lines,line);
-                new slot = -1;
-                slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
+                new slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
                 if(slot == -1)
                 {
                     new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0,friskDetail[thingId - 207][1]);
