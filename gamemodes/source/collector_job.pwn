@@ -91,6 +91,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
                 new model = VehInfo[veh][vModel];
                 if(model != 428) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не на спец.транспорте(Securicar)");
                 new listterm = List[listitem-1][playerid];
+				if(listterm == 0) return 1;
                 new listord = ListParam[listitem-1][playerid];
                 new termid = numnrent(listord);
                 if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "[ Мысли ]: Я не могу самостоятельно выполнять заказы в своём бизнесе"), pc_cmd_checkterm(playerid);
@@ -155,6 +156,7 @@ CMD:checkterm(playerid)
     if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
 	new quan;
 	new line[100],lines[2000];
+	ClearList(playerid);
 
     format(line,sizeof(line),"{FF6347}Номер бизнеса\t Денег в банкомате\tОплата "), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Отменить Доставку \t\t "), strcat(lines,line);

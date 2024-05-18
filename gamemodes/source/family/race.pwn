@@ -995,6 +995,7 @@ stock StreetRacersBusi(playerid, br)
 
 stock CheckpointRaceRout(playerid)
 {
+    if(OnlineInfo[playerid][oStreetRaceSlot] == 0) return 1;
     new idrace = OnlineInfo[playerid][oStreetRaceSlot]-1;
 	new r = carRaceCheckpoint[playerid];
     PlayerPlaySound(playerid,1150,0,0,0);

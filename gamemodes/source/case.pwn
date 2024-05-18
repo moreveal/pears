@@ -14,7 +14,7 @@ oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingVehicleQuan;
 
-new ThingSkincaseGift[312 + MAX_SKIN_CUSTOM];
+new ThingSkincaseGift[MAX_MODELS_SKIN];
 new ThingSkinQuan;
 
 /*enum caseInfo
@@ -36,7 +36,7 @@ stock IsThingNotVariable(i)
     || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
     || i == 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
     || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
-    || i == 200 || i == 203
+    || i == 200 || i == 203 || i == 204 || i == 226 || i == 227 || i == 228 || i == 229
     || IsANaborsEdoi(i)) return 0;
     return 1;
 }
@@ -47,18 +47,19 @@ stock IsThingClotheNotVariable(i)
     return 1;
 }
 
+// Оружие которое нельзя давать в кейс
 stock IsThingGunNotVariable(i)
 {
-    if(i == 0 || i == 1 || i == 2 || i == 7 || i == 9 || i >= 15 && i <= 21 || i == 23 || i == 26 || i == 34 || i >= 34) return 0;
-    return 1;
+    if(i == 0 || i == 1 || i == 2 || i == 4 || i == 7 || i == 9 || i >= 15 && i <= 21 || i == 23 || i == 26 || i == 34 || i >= 34) return 0; // Низя
+    return 1; // Остальные можно
 }
 
-stock CreateGiftCase()
+stock CreateVehicleGiftCase()
 {
     ThingVehicleQuan = 0;
 
     // Собираем обычный транспорт
-    for(new i; i < 212; i++)
+    for(new i = 0; i < 212; i++)
     {
         // Исключаем лимитированный транспорт
         if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
@@ -67,7 +68,7 @@ stock CreateGiftCase()
     }
 
     // Собираем кастомный транспорт
-    for(new i ; i < MAX_VEHICLE_CUSTOM; i++)
+    for(new i = 0; i < MAX_VEHICLE_CUSTOM; i++)
     {
         // Исключаем лимитированный транспорт
         if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
@@ -79,7 +80,9 @@ stock CreateGiftCase()
 
 stock CreateSkinGiftCase() // Собираем скины
 {
-    for(new i; i < 312 + MAX_SKIN_CUSTOM; i++)
+    ThingSkinQuan = 0;
+    
+    for(new i; i < MAX_MODELS_SKIN; i++)
     {
         if(SkinSale[i] == 1) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
     }
@@ -87,7 +90,7 @@ stock CreateSkinGiftCase() // Собираем скины
 }
 
 // Рандомайзер для создания кейса
-stock CreateCasePlayer(type,&thingId, &thingQuan, &thingType, &thingPara, &thingPack)
+stock CreateCasePlayer(type, &thingId, &thingQuan, &thingType, &thingPara, &thingPack)
 {
     new zaglushka = type;
     if(zaglushka == 0)

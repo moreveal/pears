@@ -126,11 +126,23 @@ stock TriggerCheat(playerid, cheatid)
 stock AnticheatGunTrigger(playerid, weaponid)
 {
     new slot = Protect_Slot(weaponid), unix = gettime();
-    if(ResetWeaponUnix[playerid][slot] <= unix)
-	{
-        if(ProtectInfo[playerid][prWeapon][slot] != weaponid
-            || weaponid > 0 && ProtectInfo[playerid][prAmmo][slot] <= 0)
+    
+    if(weaponid > 0 && (ProtectInfo[playerid][prWeapon][slot] != weaponid
+        ||  ProtectInfo[playerid][prAmmo][slot] <= 0))
+    {
+        // Если у игрока на руках никогда не было пушки, кикаем сразу
+        if(ProtectInfo[playerid][prGiveWeapon][slot] != weaponid)
         {
+            printf("[SProtect Kick]: NoWeapon %s weaponid %d (prGiveWeapon %d[%d]) (ping: %d)",
+                PlayerInfo[playerid][pName], weaponid, ProtectInfo[playerid][prGiveWeapon][slot], slot, GetPlayerPing(playerid));
+            SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun NoWeapon]");
+            ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun NoWeapon]","*","");
+            Kickx(playerid);
+            return 1;
+        }
+
+        if(ResetWeaponUnix[playerid][slot] <= unix)
+	    {
             new current_tick = GetTickCount();
             new interval = GetTickDiff(current_tick, AnticheatTick[playerid][1]);
             if(interval > 400)
@@ -143,7 +155,7 @@ stock AnticheatGunTrigger(playerid, weaponid)
                 // Записываем тригер
                 TriggerCheat(playerid, 1);
             }
-		}
+        }
     }
     return 1;
 }
@@ -159,7 +171,7 @@ stock AnticheatGunKick(playerid, weaponid)
             RemovePlayerWeapon(playerid, WEAPON:weaponid); // Отнимаем оружие у засранца
             if(ResetAmmoUnix[playerid][slot] == 1) return ResetAmmoUnix[playerid][slot] = 0; // Защита при последнем выстреле
 
-            printf("[SProtect Kick]: DGun Bullet %s weaponid %d (ping: %d)",PlayerInfo[playerid][pName], weaponid, GetPlayerPing(playerid));
+            printf("[SProtect Kick]: DGun Bullet %s weaponid %d ammo %d (ping: %d)",PlayerInfo[playerid][pName], weaponid, ProtectInfo[playerid][prAmmo][slot], GetPlayerPing(playerid));
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun Bullet]");
             ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun Bullet]","*","");
             Kickx(playerid);

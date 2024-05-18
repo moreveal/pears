@@ -70,7 +70,6 @@ stock Dominic_StartQuest(playerid)
                 "{ff9000}Вы уверены, что хотите начать гонку?\
                 \n\n{99ff66}Вы можете выиграть:\
                 \n{cccccc}- Деталь для тюнинга\
-                \n- Бронеплёнка\
                 \n- Кейс\
                 \n- Рем. комплект\
                 \n- Домкрат\
@@ -90,17 +89,17 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
     if(PlayerInfo[playerid][pAchieve][127] == 0) AchievePlayer(playerid, 127, 1); // Ачивка за победу в гонке с Домиником
 
     new thingId, thingQuan = 1, thingType, thingPara, thingPack;
-    switch(random(16))
+    switch(random(15))
     {
-        case 0..5:
+        case 0..4:
         {
             thingId = 225; // Домкрат
             thingQuan = 1 + random(4);
         }
-        case 6..10: thingId = 183; // Рем комплект
-        case 11..13: thingId = 119; // Пиво разливное
-        case 14: thingId = 207 + random(21); // Какая-то деталь тюнинга (207 - 228)
-        case 15: CreateCasePlayer(0, thingId, thingQuan, thingType, thingPara, thingPack); // Кейс
+        case 5..8: thingId = 183; // Рем комплект
+        case 9..11: thingId = 119; // Пиво разливное
+        case 12..13: thingId = 207 + random(18); // Какая-то деталь тюнинга (207 - 225)
+        case 14: CreateCasePlayer(0, thingId, thingQuan, thingType, thingPara, thingPack); // Кейс
     }
 
     // Количественный предмет (Проверка на лимиты)

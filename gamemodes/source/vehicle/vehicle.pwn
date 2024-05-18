@@ -1211,7 +1211,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			AdminLog("vehlimited", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", v, string);
 
 			// Пересобираем подарки с транспортом
-			CreateGiftCase();
+			CreateVehicleGiftCase();
 		}
 		else SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
 	}
@@ -1442,6 +1442,9 @@ function LoadPriceVeh()
 			}
 		}
 		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
+
+		// Собираем набор транспорта для кейсов
+		CreateVehicleGiftCase();
 	}
 	return 1;
 }
