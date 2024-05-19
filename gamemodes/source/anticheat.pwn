@@ -125,16 +125,19 @@ stock TriggerCheat(playerid, cheatid)
 // Собираем варнинги на DGun
 stock AnticheatGunTrigger(playerid, weaponid)
 {
+    // Блокируем невалидное оружие
+    if(weaponid <= 0 || weaponid >= MAX_WEAPON_ID) return 1;
+
     new slot = Protect_Slot(weaponid), unix = gettime();
     
     if(weaponid > 0 && (ProtectInfo[playerid][prWeapon][slot] != weaponid
         ||  ProtectInfo[playerid][prAmmo][slot] <= 0))
     {
         // Если у игрока на руках никогда не было пушки, кикаем сразу
-        if(ProtectInfo[playerid][prGiveWeapon][slot] != weaponid)
+        if(ProtectInfo[playerid][prGiveWeapon][weaponid] == false)
         {
-            printf("[SProtect Kick]: NoWeapon %s weaponid %d (prGiveWeapon %d[%d]) (ping: %d)",
-                PlayerInfo[playerid][pName], weaponid, ProtectInfo[playerid][prGiveWeapon][slot], slot, GetPlayerPing(playerid));
+            printf("[SProtect Kick]: NoWeapon %s weaponid %d (slot %d) (ping: %d)",
+                PlayerInfo[playerid][pName], weaponid, slot, GetPlayerPing(playerid));
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [DGun NoWeapon]");
             ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты по подозрению в читерстве [DGun NoWeapon]","*","");
             Kickx(playerid);

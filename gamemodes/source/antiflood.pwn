@@ -45,20 +45,18 @@ if(CallPublic(playerid, publicid)) return false;
 
 stock CallPublic(playerid, publicid)
 {
-    new current_tick = GetTickCount();
-    new interval = GetTickDiff(current_tick, AntiFloodInfo[playerid][afCall][publicid]);
-    new intervalAll = GetTickDiff(current_tick, AntiFloodInfo[playerid][afCall][27]);
+    if(OnlineInfo[playerid][oKickTimer] > 0) return 1; // Если игрока уже кикаем, пшёл нафиг
 
-    if(CallOnePublic(playerid, publicid, interval)) return 1;
-    if(CallOnePublic(playerid, 27, intervalAll)) return 1;
-
-    AntiFloodInfo[playerid][afCall][publicid] = current_tick;
-    AntiFloodInfo[playerid][afCall][27] = current_tick;
+    if(CallOnePublic(playerid, publicid)) return 1;
+    if(CallOnePublic(playerid, 27)) return 1;
     return 0;
 }
 
-stock CallOnePublic(playerid, publicid, interval)
+stock CallOnePublic(playerid, publicid)
 {
+    new current_tick = GetTickCount();
+    new interval = GetTickDiff(current_tick, AntiFloodInfo[playerid][afCall][publicid]);
+
     if(interval < infoPublics[publicid][0])
     {
         AntiFloodInfo[playerid][afQuan][publicid] ++;
@@ -71,7 +69,7 @@ stock CallOnePublic(playerid, publicid, interval)
             return 1;
         }
     }
-    else AntiFloodInfo[playerid][afQuan][publicid] = 0;
+    else AntiFloodInfo[playerid][afQuan][publicid] = 0, AntiFloodInfo[playerid][afCall][publicid] = current_tick;
     return 0;
 }
 
