@@ -435,7 +435,7 @@ stock showPlayerAutoserviceMenu(playerid)
 
     SetPVarInt(playerid,"tunstat",0);
     if(PlayerInfo[playerid][pDrawVisible][7] == false && setting_pos_draw[playerid] != 8 && setting_size_draw[playerid] != 8) CloseVehSpeed(playerid);
-    PlayerTextDrawHide(playerid, PlayerHintDraw[0][playerid]), PlayerTextDrawHide(playerid, PlayerHintDraw[1][playerid]);
+    HideOldHint(playerid);
     return 1;
 }
 

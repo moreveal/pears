@@ -1311,7 +1311,7 @@ stock ComputerClubSetSpectateMode(playerid, bool: status = true, gameid = -1, ro
         DeletePVar(playerid, "ComputerClubSpectateRoom");
         DeletePVar(playerid, "ComputerClubSpectateId");
 
-        // TogglePlayerSpectating всегда возвращает return 1;
+        // TogglePlayerSpectating не всегда возвращает return 1;
 
         PPTogglePlayerSpectating(playerid, true);
         return PPTogglePlayerSpectating(playerid, false);

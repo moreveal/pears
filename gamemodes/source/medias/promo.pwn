@@ -573,7 +573,10 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	    	if(PromoInfo[pf][roActiv] == 1) return ErrorText(playerid,"{FF6347}Нельзя редактировать активнй промокод"), setprom(playerid);
   	    	if(strlen(inputtext) < 3 || strlen(inputtext) > 60) return ShowDialog(playerid,625,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите новое название для промокода {ff0000}[ 3 - 60 символов ]","Принять","Отмена");
   	    	if(!strlen(inputtext)) return ShowDialog(playerid,625,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите новое название для промокода [ 3 - 60 символов ]","Принять","Отмена");
-  	    	new load = 0;
+  	    	if(checksimvolPromo(inputtext)) return ErrorMessage(playerid, "{FF6347}Этот символ запрещено использовать в названии промокода\
+																		\n{ffcc66}# - этот символ не нужно использовать при создании.\
+																		\n{ffcc66}Игрок можно активировать промокод, как с решёткой, так и без неё");
+			new load = 0;
 			for(new f = 0; f < MAX_PROMO; f++)
 			{
 				if(strfind(inputtext,PromoInfo[f][roName],true) != (-1))
@@ -754,6 +757,10 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	        if(PromoNumber >= 50) return ErrorMessage(playerid, "{FF6347}Лимит активных промокодов: 50");
   	    	if(strlen(inputtext) < 3 || strlen(inputtext) > 60) return ErrorMessage(playerid, "{FF6347}Не меньше 3 и не больше 60 символов");
   	    	if(!strlen(inputtext)) return pc_cmd_promo(playerid);
+			if(checksimvolPromo(inputtext)) return ErrorMessage(playerid, "{FF6347}Этот символ запрещено использовать в названии промокода\
+																		\n{ffcc66}# - этот символ не нужно использовать при создании.\
+																		\n{ffcc66}Игрок можно активировать промокод, как с решёткой, так и без неё");
+
   	    	new load = 0;
 			for(new f = 0; f < MAX_PROMO; f++)
 			{
@@ -770,11 +777,18 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 				ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Загрузка промокода...","*","");
 				if(g_MysqlCall[playerid]) return ErrorMessage(playerid, "{FF6347}Дождитесь ответа от базы");
 				g_MysqlCall[playerid] = true;
-		        format(string, sizeof(string), "SELECT * FROM `pp_promo` WHERE `name` = '%s'", inputtext);
+		        mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_promo` WHERE `name` = '%e'", inputtext);
 		        mysql_tquery(pearsq, string, "Call_createpromo", "ds", playerid, inputtext);
     		}
   		}
   		else pc_cmd_promo(playerid);
   	}
+	return 1;
+}
+
+// Удаляем решётку из ввода промокода
+stock ReloadPromoName(inputtext[])
+{
+	if(inputtext[0] == '#') strdel(inputtext, 0, 1);
 	return 1;
 }

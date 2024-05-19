@@ -8,6 +8,7 @@
         HUD_RPC_SET_TIME_DATE,
         HUD_RPC_SET_HINTS_RENDER,
         HUD_RPC_SET_TASK_NAME_DESC,
+        HUD_RPC_SET_POPUP,
 
         HUD_RPC_MAX
     };
@@ -55,12 +56,27 @@
             return 1;
         }
 
+        stock SetPlayerHudPopup(const playerid, const text[], const timeout) {
+          new BitStream:bs = BS_New();
+          BS_WriteUint8(bs, _:HUD_RPC_SET_POPUP);
+          BS_WriteUint16(bs, strlen(text));
+          BS_WriteString(bs, text);
+          BS_WriteUint32(bs, timeout);
+          PR_SendRPC(bs, playerid, PEARS_HUD_RPC_ID);
+          BS_Delete(bs);
+          return 1;
+        }
+
         stock HidePlayerHudTimeDate(playerid) {
           return SetPlayerHudTimeDate(playerid, "", "");
         }
 
         stock HidePlayerHudTask(const playerid) {
           return SetPlayerHudTask(playerid, "", "");
+        }
+
+        stock HidePlayerHudPopup(const playerid) {
+          return SetPlayerHudPopup(playerid, "", 0);
         }
     #endif // !defined __cplusplus
 #endif // PEARS_HUD_INC_

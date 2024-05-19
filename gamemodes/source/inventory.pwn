@@ -2574,7 +2574,7 @@ stock player_tile(playerid, inva)
 				
 				else if(fpick == 27)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
 			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
@@ -2586,7 +2586,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 28)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 			 		if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
 						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
@@ -2598,7 +2598,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 29)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
 			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
@@ -2610,7 +2610,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 30)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
 			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
@@ -2622,7 +2622,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 64)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][3]);
 			 		if((weaponType == 1) && ProtectInfo[playerid][prAmmo][3] >= 1)
 					{
@@ -2634,7 +2634,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 65)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					if(WeaponAmmoType(ProtectInfo[playerid][prWeapon][2]) == 2 && ProtectInfo[playerid][prAmmo][2] >= 1 
 						|| WeaponAmmoType(ProtectInfo[playerid][prWeapon][4]) == 3 && ProtectInfo[playerid][prAmmo][4] >= 1)
 					{
@@ -2646,7 +2646,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 66)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][5]);
 			 		if((weaponType == 4) && ProtectInfo[playerid][prAmmo][5] >= 1)
 					{
@@ -2658,7 +2658,7 @@ stock player_tile(playerid, inva)
 			 	}
 			 	else if(fpick == 67)
 			 	{
-			 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+			 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 					new weaponType = WeaponAmmoType(ProtectInfo[playerid][prWeapon][6]);
 			 		if((weaponType == 5) && ProtectInfo[playerid][prAmmo][6] >= 1)
 					{
@@ -2722,10 +2722,10 @@ stock player_tile(playerid, inva)
 			18 челюсть
 			*/
 			else if(thingType == 3) wear(playerid, fpick, inva), i_resetveshi(playerid); // Одежда
-			
+
 			else if(thingType == 1) // Оружие
 		 	{
-		 		if(PlayerInfo[playerid][pBeret] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие [ Временное лишение ]");
+		 		if(PlayerInfo[playerid][pBeret] >= 1) return ShowMessageErrorGun(playerid);
 		 	    new weapon = fpick, ammo = PlayerInfo[playerid][pInvenQuan][inva];
 		 	    new sl = Protect_Slot(weapon);
 		 	    if(ProtectInfo[playerid][prWeapon][sl] >= 1 && ProtectInfo[playerid][prAmmo][sl] >= 1) return format(string, sizeof(string), "{FF6347}У вас в руках %s\n\n{cccccc}Это оружие одного типа",gunName[ProtectInfo[playerid][prWeapon][sl]]), ErrorMessage(playerid, string);
@@ -2784,6 +2784,14 @@ stock player_tile(playerid, inva)
 		}
 	}
 	return 1;
+}
+
+stock ShowMessageErrorGun(playerid)
+{
+	return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас взять оружие или патроны\
+	\n{ffcc66}У вашего игрока временно изъято оружие из рук.\
+	\n{ffcc66}Возможно вы находитесь в зелёной зоне, в тюрьме\
+	\n{ffcc66}или за рулём транспорта.");
 }
 
 stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон правой вкладки под тип открытого меню
