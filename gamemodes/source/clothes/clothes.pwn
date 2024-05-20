@@ -382,7 +382,7 @@ CMD:skin(playerid, const params[]) // Временно сменить скин �
 
 CMD:setskinmp(playerid, const params[]) // Временно сменить скин игроку
 {
-	if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+	if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
 
     new tmp[34], giveplayerid;
 	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно изменить скин [ /setskinmp ID ID Скина ]");
@@ -406,7 +406,7 @@ CMD:setskinmp(playerid, const params[]) // Временно сменить ск�
 
 CMD:setskingro(playerid, const params[]) // Временно сменить скин всем игрокам в радиусе 30 метров
 {
-    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+    if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
 	if (sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно изменить скин всем вокруг себя [ /setskingro ID Скина ]");
     if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
     if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Эта команда доступна вам только во время мероприятия");
