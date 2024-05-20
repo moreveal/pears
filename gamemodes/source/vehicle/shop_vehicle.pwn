@@ -186,6 +186,9 @@ stock openTestDrive_VehicleShop(playerid)
     SetCameraBehindPlayer(playerid); // Возвращаем камеру
 
     SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
+
+    // Выключаем музыку
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) StopAudioStreamForPlayer(playerid), HidePlayerHudPopup(playerid);
     return 1;
 }
 
@@ -364,8 +367,10 @@ stock closeMenu_VehicleShop(playerid)
     PPSetPlayerFacingAngle(playerid, SpA[playerid]);
 
     SetCameraBehindPlayer(playerid); // Возвращаем камеру
-
     ClearAnimations(playerid), ClearAnim(playerid); // Сбрасываем все анимки
+
+    // Выключаем музыку
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) StopAudioStreamForPlayer(playerid), HidePlayerHudPopup(playerid);
     return 1;
 }
 stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню автосалона
@@ -413,6 +418,9 @@ stock showMenu_VehicleShop(playerid, bizId, slot) // Открываем меню
     loadCam_VehicleShop(playerid);
 
     VehShopInfo[playerid][vsTimer] = SetTimerEx("loadCam_VehicleShop", 500, false, "d", playerid); // Bug Fix Камеры
+
+    // Воспроизводим музыку в автосалоне
+    PlayMenuMusicForPlayer(playerid, 1);
     return 1;
 }
 

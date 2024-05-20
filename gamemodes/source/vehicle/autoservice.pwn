@@ -340,13 +340,13 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             if(listitem == 0) DiagnosVehicle(playerid, v, 0);
             if(listitem >= 1 && listitem <= 6)
             {
-                if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личный транспорт");
+                if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
                 if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Это не ваш личный транспорт");
-                if(!IsACar(VehInfo[v][vModel])) return ErrorMessage(playerid,"{ff6347}Тюнинг можно снимать только с автомобили!");
+                if(!IsACar(VehInfo[v][vModel])) return ErrorMessage(playerid,"{ff6347}Тюнинг можно снимать только с автомобиля!");
                 new slot = GetVehicleDetailTunning(v, List[listitem-1][playerid]);
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = GiveThingPlayer(playerid, VehInfo[v][vTunningID][slot], 1, 0, VehInfo[v][vTunningQara][slot], 0, 0, 9999); // Выдаём предмет игроку
-                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В инвентаре нет места что бы положить туда деталь");
+                if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В инвентаре нет места чтобы положить туда деталь");
                 RemoveDetailTunning(v,GetVehicleDetailTunningID(v, List[listitem-1][playerid]));
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }
@@ -439,6 +439,9 @@ stock showPlayerAutoserviceMenu(playerid)
     SetPVarInt(playerid,"tunstat",0);
     if(PlayerInfo[playerid][pDrawVisible][7] == false && setting_pos_draw[playerid] != 8 && setting_size_draw[playerid] != 8) CloseVehSpeed(playerid);
     HideOldHint(playerid);
+
+    // Воспроизводим музыку в автосервисе
+    PlayMenuMusicForPlayer(playerid, 2);
     return 1;
 }
 
@@ -537,6 +540,9 @@ stock openTestDrive_Autoservice(playerid)
     SetHandlingTotalForTestDrive(playerid,vehicleid);
 
     if(PlayerInfo[playerid][pDrawVisible][7] == false && setting_pos_draw[playerid] != 8 && setting_size_draw[playerid] != 8) ShowVehSpeed(playerid);
+
+    // Выключаем музыку
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) StopAudioStreamForPlayer(playerid), HidePlayerHudPopup(playerid);
     return 1;
 }
 
