@@ -286,10 +286,12 @@ stock TakeThingForCraft(playerid) // Собираем инфу о предмет
     new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
     GetThingForCraft(CreateThingID[playerid], craftId[0], craftQuan[0], craftType[0], craftId[1], craftQuan[1], craftType[1], craftId[2], craftQuan[2], craftType[2], craftId[3], craftQuan[3], craftType[3], craftId[4], craftQuan[4], craftType[4]);
     
+    mysql_tquery(pearsq, "START TRANSACTION;");
     for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
     {
         if(craftId[i] > 0) TakeThingInCraftSlot(playerid, craftId[i], craftType[i], craftQuan[i]);
     }
+    mysql_tquery(pearsq, "COMMIT;");
     return 1;
 }
 

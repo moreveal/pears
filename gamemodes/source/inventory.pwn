@@ -680,9 +680,6 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	format(string, sizeof(string), "* %s достаёт %s и передаёт %s.", playername(playerid), GetNameThing(0, fpick, thingType, thingPack), playername(giveplayerid));
 	ProxDetector(20.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
     PlayerPlaySound(playerid,1053,0,0,0), PlayerPlaySound(giveplayerid,1052,0,0,0);
-    
-    SaveInvent(playerid, inva);
-    SaveInvent(giveplayerid, put_inva);
 
     // Логируем передачу
     format(string,sizeof(string),"Передал: %s", GetNameThing(1, fpick, thingType, thingPack));
@@ -1080,8 +1077,8 @@ stock get_and_take_invent(playerid, thingId, takeQuan) // Изымаем пре�
 		if(PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == 0 && PlayerInfo[playerid][pInvenPack][i] == 0)
 		{
 			quan += PlayerInfo[playerid][pInvenQuan][i];
-			if(quan >= takeQuan) take_away(playerid, takeQuan, i);
-			else take_away(playerid, quan, i);
+			if(quan >= takeQuan) take_away(playerid, takeQuan, i, false);
+			else take_away(playerid, quan, i, false);
 		}
 	}
 	return quan;
@@ -1421,7 +1418,7 @@ stock set_para(playerid, fpick, para) // Установка параметра �
 		PlayerInfo[playerid][pInvenPara][i] = para;
 	}
 }
-stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
+stock TakeInvent(playerid, stat, quan, thingType, dopinf, bool:save = true) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
 {
 	new plit = -1;
 	if(dopinf == 999) // Если мы НЕ знаем ячейку, нам нужно найти её (999)
@@ -1431,7 +1428,7 @@ stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для и�
 			if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
 			{
 			    plit = i;
-			    take_away(playerid, quan, i);
+			    take_away(playerid, quan, i, save);
 				break;
 			}
 		}
@@ -1439,13 +1436,13 @@ stock TakeInvent(playerid, stat, quan, thingType, dopinf) // Сток для и�
 	else // Если знаем ячейку, нам не нужно её искать)
 	{
 	    plit = dopinf;
-	    if(PlayerInfo[playerid][pInven][dopinf] == stat && PlayerInfo[playerid][pInvenType][dopinf] == thingType) take_away(playerid, quan, dopinf);
+	    if(PlayerInfo[playerid][pInven][dopinf] == stat && PlayerInfo[playerid][pInvenType][dopinf] == thingType) take_away(playerid, quan, dopinf, save);
 	}
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][plit], PlayerInfo[playerid][pInvenQuan][plit], plit, PlayerInfo[playerid][pInvenPara][plit], PlayerInfo[playerid][pInvenType][plit], PlayerInfo[playerid][pInvenPack][plit]), PlayerPlaySound(playerid,1053,0,0,0), i_resetveshi(playerid);
 	i_takehands(playerid, stat);
 	return plit;
 }
-stock take_away(playerid, quan, i) // Изымаем предмет, если он был точно найден в ячейке
+stock take_away(playerid, quan, i, bool:save = true) // Изымаем предмет, если он был точно найден в ячейке
 {
 	if(PlayerInfo[playerid][pInvenQuan][i]-quan <= 0) // Если при изъятии ничего не останется - очищаем полностью
 	{
@@ -1458,10 +1455,14 @@ stock take_away(playerid, quan, i) // Изымаем предмет, если о
 		PlayerInfo[playerid][pInvenPack][i] = 0;
 	}
 	else PlayerInfo[playerid][pInvenQuan][i] -= quan;
+
+	// Сохраняем ячейку в базу данных сразу
+	if(save == true) SaveInvent(playerid, i);
+
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]);
 	return 1;
 }
-stock i_del(playerid, i)
+stock i_del(playerid, i, bool:save = true)
 {
     if(PlayerInfo[playerid][pInvenType][i] == 0) i_takehands(playerid, PlayerInfo[playerid][pInven][i]);
 	PlayerInfo[playerid][pInven][i] = 0;
@@ -1470,6 +1471,10 @@ stock i_del(playerid, i)
 	PlayerInfo[playerid][pInvenQara][i] = 0;
 	PlayerInfo[playerid][pInvenType][i] = 0;
 	PlayerInfo[playerid][pInvenPack][i] = 0;
+
+	// Сохраняем ячейку в базу данных сразу
+	if(save == true) SaveInvent(playerid, i);
+
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, i, 0, 0, 0);
 }
 stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack, useinva) // Даём игроку предмет в инвентарь
@@ -1640,6 +1645,7 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 	PlayerInfo[playerid][pInvenType][i] = thingType; // Тип предмета
 	PlayerInfo[playerid][pInvenPack][i] = thingPack; // Упаковка предмета
 	
+	SaveInvent(playerid, i); // Сохраняем ячейку сразу в инвентаре
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]), PlayerPlaySound(playerid,1052,0,0,0);
 	return i;
 }
@@ -2051,7 +2057,6 @@ stock use_sklad(playerid, wh, inva, useinva)
 	
 		new put_inva = GiveThingPlayer(playerid, fpick, 1, OrganInfo[wh][gInvPara][inva], 0, OrganInfo[wh][gInvType][inva], 0, useinva); // Выдаём предмет игроку
     	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
-    	SaveInvent(playerid, put_inva);
 
     	TakeSklad(wh, fpick, 1, thingType, inva);
 		PlayerPlaySound(playerid,1052,0,0,0);

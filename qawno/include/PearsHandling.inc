@@ -41,6 +41,7 @@
         HANDLING_MAXVELOCITY,                               // m_transmissionData.m_fMaxGearVelocity
         HANDLING_ENGINEACCELERATION,                        // m_transmissionData.m_fEngineAcceleration
         HANDLING_ENGINEINERTIA,                             // m_transmissionData.m_fEngineInertia
+        HANDLING_DRIVETYPE,                                 // m_transmissionData.m_nDriveType
         HANDLING_BRAKEDECELERATION,                         // m_fBrakeDeceleration
         HANDLING_BRAKEBIAS,                                 // m_fBrakeBias
         HANDLING_ABS,                                       // m_bABS
@@ -111,6 +112,7 @@
                 HANDLING_WHEELTILT:
                 return HANDLING_TYPE_FLOAT;
             case HANDLING_NUMOFGEARS,
+                HANDLING_DRIVETYPE,
                 HANDLING_ABS:
                 return HANDLING_TYPE_INT;
             default:
@@ -166,6 +168,7 @@
         stock SetVehicleHandlingInt(const vehicleid, const HandlingEntry:entry, const value) {
             if (GetVehicleModel(vehicleid) == 0) return 0;
             if (GetHandlingEntryType(entry) != HANDLING_TYPE_INT) return 0;
+
             if (!IsVehicleHandlingModified(vehicleid)) {
                 vehicleHandlingsRpcs[vehicleid] = BS_New();
                 BS_WriteUint16(vehicleHandlingsRpcs[vehicleid], vehicleid);

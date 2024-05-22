@@ -1259,10 +1259,15 @@ stock ShowHintArenda(playerid)
 stock GiveGiftQuest(playerid)
 {
     new thingId, thingQuan, thingType, thingPara, thingPack;
-    CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
-    GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
-
-    SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+    CreateCasePlayer(0, thingId, thingQuan, thingType, thingPara, thingPack);
+    new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    CalculateVehicleLimited(thingId, thingType);
+    if(put_inva == -1)
+    {
+        Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+    }
+    else SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
     return 1;
 }
 

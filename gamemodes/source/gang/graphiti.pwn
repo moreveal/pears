@@ -205,7 +205,7 @@ stock clearspray(playerid, zone)
     GraphitiInfo[zone][graphitiStatus] = 0;
     GraphitiInfo[zone][graphitiZone] = zone;
     GraphitiInfo[zone][graphitiPlayer] = PlayerInfo[playerid][pID];
-    TakeInvent(playerid, 9, 1, 0, 999); // Отнимаем 1 литр из канистры
+    TakeInvent(playerid, 9, 1, 0, 999, false); // Отнимаем 1 литр из канистры
     if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"SPRAYCAN","spraycan_full",3.0, false, true, true, false, false);
     PlayerPlaySound(playerid,20802,0,0,0);
     SuccessMessage(playerid,"{99ff66}Вы стёрли граффити");

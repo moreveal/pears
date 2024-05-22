@@ -4862,7 +4862,6 @@ stock UnPackVehicle(playerid)
     if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
 
 	i_del(playerid, inva);
-	SaveInvent(playerid, inva);
 
 	new posId, biz, Float:pos[4];
 	if(IsABoat(thingId)) biz = 90 + random(2), posId = random(4);
@@ -4879,6 +4878,11 @@ stock UnPackVehicle(playerid)
 
 	format(string,sizeof(string),"[ Мысли ]: Я распаковал%s %s [ Y >> Транспорт или /car ]", gender(playerid), GetVehicleName(thingId));
 	SendClientMessage(playerid,COLOR_GREY,string);
+
+	// Пересчитываем выданный транспорт на руках
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	TakeCalculateVehicleLimited(thingId, thingType);
+	mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
 

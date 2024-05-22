@@ -342,9 +342,13 @@ stock CompletingDaily(playerid, dailyid, quan)
         {
             DailyInfo[playerid][daiFull] = true;
 
+            mysql_tquery(pearsq, "START TRANSACTION;");
             new thingId, thingQuan, thingType, thingPara, thingPack;
             CreateCasePlayer(0,thingId, thingQuan, thingType, thingPara, thingPack);
             new plit = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+            CalculateVehicleLimited(thingId, thingType);
+            mysql_tquery(pearsq, "COMMIT;");
+
             if(plit == -1)
             {
                 Throw(playerid, thingId, thingQuan, 0, 0, thingType, thingPack);
@@ -353,7 +357,6 @@ stock CompletingDaily(playerid, dailyid, quan)
             else 
             {
                 SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ Проверьте инвентарь, там вас ждёт кейс ]");
-                SaveInvent(playerid, plit); // Сохраняем ячейку, в которую положили кейс
             }
         }
     }

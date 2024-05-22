@@ -1,0 +1,848 @@
+
+new Create_BizObjectSlot;
+new Create_BizID;
+
+// Создание объекта для интерьера
+stock BizCreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid = -1, interiorid = -1, playerid = -1, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, STREAMER_TAG_AREA:areaid = STREAMER_TAG_AREA:-1, priority = 0)
+{
+    // Создаём объект
+    new bizobject = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, worldid, interiorid, playerid, streamdistance, drawdistance, areaid, priority);
+
+    // Прописываем переменные
+    BizzInfo[Create_BizID][bObject][Create_BizObjectSlot] = bizobject;
+    BizzInfo[Create_BizID][bOmodel][Create_BizObjectSlot] = modelid;
+    Create_BizObjectSlot ++;
+    return bizobject;
+}
+
+// Интерьеры
+stock CreateBizInterior(b, type)
+{
+    Create_BizObjectSlot = 0;
+    Create_BizID = b;
+
+    new tmpobjid, object_world = b+3000, object_int = 90;
+    if(type == 0) // Интерьер Jizzy
+    {
+		BizCreateDynamicObject(14536, 1366.405761, -9.411747, 1016.865722, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // 1 этаж
+		BizCreateDynamicObject(14546, 1366.405639, -9.408047, 1016.865051, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // 2 Этаж
+		BizCreateDynamicObject(14533, 1366.405395, -9.408463, 1016.863159, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // Крыша
+		BizCreateDynamicObject(14559, 1366.416992, -9.402415, 1016.880432, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // Лампы
+		BizCreateDynamicObject(14547, 1366.399169, -9.228580, 1016.756347, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // Балконы и украшения
+		BizCreateDynamicObject(14539, 1367.140380, -1.730533, 1008.311218, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // Неоновые вывески
+		BizCreateDynamicObject(14540, 1373.554809, -4.100122, 1000.507629, 0.0, 0.0, 90.0, object_world, object_int, -1, 300.00, 300.00); // Диваны
+		BizCreateDynamicObject(14537, 1365.023071, -8.790015, 1001.836059, 0.0, 0.0, 0.0, object_world, object_int, -1, 300.00, 300.00); // Барная стойка
+
+        if(BizzInfo[b][bShluha] == 1) ReloadBizWhore(b, 1356.703247, 7.211422, 1001.088745, 181.014129);
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1370.243652, -11.577264, 1001.101257);
+    }
+    else if(type == 1) // Интерьер мини бар стендап
+    {
+        tmpobjid = BizCreateDynamicObject(14808, 1388.273315, -10.203638, 1001.315551, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1386.709472, -17.266181, 999.893493, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1391.189453, -1.416180, 999.893493, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1388.208740, -8.101121, 999.893493, -0.000004, 0.000003, -77.399978, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1387.016113, -9.969033, 999.893676, 0.000000, 0.000007, -26.499992, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1388.545776, -10.479004, 999.893493, -0.000007, 0.000000, -110.299949, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1386.178466, -4.746126, 999.893493, -0.000012, 0.000006, -26.599994, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1386.872314, -6.850920, 999.893676, -0.000003, 0.000014, 24.299985, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1388.234375, -5.987833, 999.893493, -0.000014, -0.000000, -59.499961, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1387.949462, -12.727690, 999.893493, -0.000015, 0.000012, -135.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1385.733642, -12.683016, 999.893676, 0.000000, 0.000020, -85.099891, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1386.095336, -14.254426, 999.893493, -0.000020, 0.000001, -168.899810, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7489, "vgntamotel", "vgncoctart1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(18764, 1383.590942, -9.257164, 997.773559, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(1541, 1394.145019, -12.171056, 1001.501342, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1394.145019, -13.241053, 1001.501342, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1394.145019, -14.321055, 1001.501342, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2232, 1382.804321, -7.604036, 1000.863464, 0.000000, 0.000000, 91.099990, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2295, 1389.330566, -1.842226, 999.851867, 0.000000, 0.000000, -6.199995, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2714, 1387.485229, -17.248373, 1001.734375, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19611, 1385.360717, -9.330703, 1000.273559, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19610, 1385.353881, -9.318420, 1001.920104, 1.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19159, 1390.631347, -6.966396, 1002.294189, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19614, 1382.735107, -11.082186, 1000.273559, 0.000000, 0.000000, 100.399986, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19086, 1393.491943, -15.806475, 1001.043334, 0.000000, 0.000000, 132.500015, object_world, object_int, -1, 300.00, 300.00);
+
+        if(BizzInfo[b][bShluha] == 1) ReloadBizWhore(b, 1390.563598, -3.668386, 1000.898132, 186.027694);
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1392.271728, -13.349721, 1001.098144);
+    }
+    else if(type == 2) // Интерьер Alhambra
+    {
+        tmpobjid = BizCreateDynamicObject(18018, 1387.457885, -2.945837, 999.885131, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "pdome_wall1", 0xFFFFFFFF);
+        SetDynamicObjectMaterial(tmpobjid, 1, 14533, "pleas_dome", "ab_carpethexi", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 11631, "mp_ranchcut", "mpCJ_SPEAKER4", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1385.975830, -17.432441, 999.896667, 0.000000, -0.000029, 179.999816, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1387.475585, -17.432441, 999.896667, 0.000000, -0.000029, 179.999816, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2126, 1376.914428, -13.012654, 1002.319213, 0.000000, 0.000007, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1382.664306, -11.062910, 1002.309326, -0.000007, 0.000000, -89.999977, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2126, 1380.065429, -13.012654, 1002.319213, 0.000000, 0.000007, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1381.505004, -14.362914, 1002.309326, -0.000007, 0.000000, -179.999969, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1378.355224, -14.362914, 1002.309326, -0.000007, 0.000000, -179.999969, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(1541, 1398.037963, -5.622262, 1001.504516, 0.000020, 0.000022, 89.999961, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1398.037963, -10.552268, 1001.504516, 0.000020, 0.000022, 89.999961, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1398.037963, -8.112264, 1001.504516, 0.000020, 0.000022, 89.999961, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2232, 1383.757080, 11.186971, 1002.196838, 0.000007, 0.000000, -0.400023, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19159, 1381.729003, 5.597400, 1004.698364, 0.000000, 0.000022, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(11686, 1396.150756, -5.692627, 999.869323, -0.000007, 0.000000, -90.000099, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2295, 1374.234985, -10.076283, 1002.294677, 0.000000, 0.000022, 32.600009, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19614, 1378.838623, 11.122007, 1001.586914, 0.000007, 0.000000, 10.399931, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19086, 1396.140502, -10.953086, 1001.276428, 0.000012, -0.000001, 102.600021, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(11686, 1396.140747, -10.502629, 999.879333, -0.000007, 0.000000, -90.000099, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19786, 1367.471801, -12.347799, 1004.559631, -0.000007, 0.000000, 90.000022, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bShluha] == 1) ReloadBizWhore(b, 1372.719848, -1.341350, 1000.895690, 270.941833);
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1395.154052, -5.660453, 1001.085021);
+    }
+    else if(type == 3) // Интерьер большого Клуба (Ретекстур каркаса ресторана)
+    {
+        tmpobjid = BizCreateDynamicObject(14777, 1387.443725, -2.773494, 999.888061, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14808, "lee_strip2", "strip_neon_Curtain", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 14533, "pleas_dome", "ab_velvor", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 6064, "law_beach1", "musk1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 5, 11631, "mp_ranchcut", "mpCJ_SPEAKER4", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 7, 14808, "lee_strip2", "strip_neon_Flat", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 8, 14533, "pleas_dome", "ab_carpethexi", 0xFFFFFFFF);
+        SetDynamicObjectMaterial(tmpobjid, 13, 14533, "pleas_dome", "ab_velvor", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19367, 1387.459228, -17.364425, 1000.945678, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "ab_velvor", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1385.944458, -17.240186, 999.887695, 0.000000, -0.000022, 179.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1387.444091, -17.240186, 999.887695, 0.000000, -0.000022, 179.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(2232, 1380.800415, -2.818052, 1000.497985, 0.000007, 0.000000, 89.599975, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19786, 1371.511230, 6.444461, 1004.480834, 0.000000, -0.000007, 89.999954, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19159, 1384.675659, -2.760339, 1003.799987, 0.000000, 0.000022, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19086, 1394.814331, -8.258367, 1001.277893, 0.000012, -0.000001, 98.999969, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bShluha] == 1) ReloadBizWhore(b, 1373.080200, -2.720093, 1000.906311, 267.181793);
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1393.630615, -3.543036, 1001.095825);
+    }
+    else if(type == 4) // Интерьер закусочной тёмный (ааахуенный хавчик)
+    {
+        tmpobjid = BizCreateDynamicObject(18020, 1387.847045, -4.587462, 1001.888488, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 6064, "law_beach1", "musk1", 0xEEEEEEFF);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 4004, "civic07_lan", "sl_rotnbrik", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 5, 18021, "genintintfastd", "CJ_DON_WIN", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 6, 14500, "imm_roomss", "mp_motel_bluew", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 7, 14832, "lee_stripclub", "Strip_ceiling", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1395.743774, -6.130202, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.166015, -5.267906, 1000.522766, 0.000000, 0.000000, 225.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1392.631103, -6.802330, 1000.522766, 0.000000, 0.000000, 225.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1393.492309, -8.378797, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1394.200195, -7.671690, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1387.536010, -5.769956, 1000.522766, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1386.000732, -4.235537, 1000.522766, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.469970, -5.158758, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.718505, -7.410223, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.011474, -6.702336, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19476, 1391.636596, -7.582349, 1001.086791, 0.000000, 0.000000, 44.799968, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14674, "civic02cj", "kb_balcony_ferns", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19476, 1392.101562, -8.064809, 1001.086791, 0.000000, 0.000000, 44.799968, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14674, "civic02cj", "kb_balcony_ferns", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1388.640380, -8.929623, 1001.467102, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1386.363769, -13.610689, 1001.467102, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.988159, -9.000400, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.601928, -10.612615, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1385.015014, -11.373468, 1000.522766, -0.000004, 0.000004, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.273437, -8.286215, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1383.767578, -15.266037, 1000.303833, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1384.638183, -16.168657, 999.897277, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1382.827392, -14.358461, 999.897277, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1399.637695, -6.870179, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1398.715087, -7.841412, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1397.784423, -8.722803, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1395.702880, -10.853691, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1394.743286, -11.763371, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1396.631835, -9.875386, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1392.245971, -14.311434, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1391.306640, -15.199912, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1393.137939, -13.368510, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1383.473022, -9.831968, 1000.522766, -0.000004, 0.000004, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1381.398437, -12.897229, 1000.303833, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1380.486206, -12.017934, 999.897277, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1382.282958, -13.813986, 999.897277, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1386.724243, -17.508802, 999.906311, 0.000000, 0.000000, 540.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14577, "casinovault01", "cof_wood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2422, 1391.380493, -0.591127, 1000.809448, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19787, "samplcdtvs1", "samplcdtv1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2448, 1391.970947, -0.133422, 999.779418, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2453, 1391.992797, -0.441659, 1001.759399, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2642, 1386.648559, -2.319453, 1001.319396, 0.000018, 0.000014, 44.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2425, "cj_jucie", "CJ_SPRUNK_FRONT2", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2432, "cj_don_sign", "cj_don_post_2", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.118896, -3.632133, 1001.216552, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ААА*ХУЕННЫЙ", 130, "Impact", 90, 1, 0xFFFFFFFF, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(2766, 1382.448364, -6.475871, 1002.186340, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.147583, -3.643419, 1001.188720, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ААА*ХУЕННЫЙ", 130, "Impact", 90, 1, 0xFF222222, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1396.564208, -2.076498, 1001.276611, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "B", 130, "Wingdings", 199, 1, 0xFFFF9000, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1396.583251, -2.069427, 1001.246582, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "B", 130, "Wingdings", 199, 1, 0xFF222222, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19370, 1397.402709, -0.705592, 1001.116699, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1400.961059, -4.262338, 1001.116699, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1399.779663, -3.095612, 999.976623, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1398.559814, -1.886463, 999.985412, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1399.779663, -3.095612, 1002.787597, -0.000004, 90.000007, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1398.559814, -1.886463, 1002.796386, -0.000004, 90.000007, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(18763, 1399.140380, -2.498966, 1001.316467, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7509, "vgwestretail1", "hedge2_256", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1533, 1395.937011, -1.102702, 999.865783, 0.000018, -0.000007, 495.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2754, "otb_machine", "ab_shinyPanel", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2772, "airp_prop", "cj_chromepipe", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1382.368041, -9.615525, 1001.467102, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.118896, -3.632133, 1000.786132, -0.000009, -0.000009, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ХАВЧИК", 130, "Impact", 90, 1, 0xFFFF9000, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.147583, -3.643419, 1000.758300, -0.000009, -0.000009, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ХАВЧИК", 130, "Impact", 90, 1, 0xFF222222, 0x00000000, 2);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(2738, 1377.226074, -1.011554, 1000.496826, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2738, 1380.054687, 1.816872, 1000.496826, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1380.879760, -5.940177, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1382.097412, -4.723958, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1383.265258, -3.557231, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2766, 1384.096923, -4.828309, 1002.186340, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1453, 1386.491455, -12.738044, 1000.426269, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19137, 1386.467651, -12.752106, 1001.120239, 13.999997, -89.999992, -41.599967, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2456, 1389.544799, -2.818835, 1000.819519, 0.000004, 0.000041, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1388.679565, 3.427848, 999.806396, 0.000004, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1545, 1387.884643, -1.833116, 1001.427429, 0.000004, 0.000071, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1384.446655, -2.376364, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2452, 1391.119506, 2.954210, 999.769409, 0.000004, 0.000027, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2418, 1384.827514, 6.310834, 999.799377, 0.000009, 0.000033, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2420, 1389.513061, -16.308660, 999.779418, -0.000027, 0.000004, -134.999954, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2430, 1389.943603, -3.167787, 1002.309570, 0.000003, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1390.537231, -1.520321, 999.779418, 0.000004, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2447, 1389.851562, -2.252892, 999.779418, 0.000004, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2682, 1393.074951, 0.688004, 1001.559387, 0.000039, 0.000003, 134.999893, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1386.734863, 1.483304, 999.806396, 0.000004, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1391.245239, -0.813215, 999.779418, 0.000004, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1388.176391, -1.407935, 1000.819396, 0.000004, 0.000065, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2688, 1389.597412, -16.182750, 1001.721435, -0.000019, 0.000004, -134.999954, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1389.299194, -2.701189, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1388.592041, -1.994084, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1387.884399, -1.286977, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1388.558715, -1.789770, 1000.819396, 0.000004, 0.000065, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1523, 1379.442626, -9.421485, 999.896301, 0.000000, 0.000000, 44.900012, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19367, 1395.496215, -0.511629, 1001.616577, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1391.251708, -2.101769, 1001.097839);
+    }
+    else if(type == 5) // Интерьер Cluckin bell (который всегда был в sf возле sfpd)
+    {
+        tmpobjid = BizCreateDynamicObject(18022, 1395.183105, -12.178794, 1001.827209, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 12844, "cos_liquorstore", "b_wtilesreflect", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 9220, "sfn_apart02sfn", "concreteslab", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 6, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 7, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 8, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1392.132324, -15.506141, 1000.507751, -0.000012, -0.000004, -89.999977, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1400.473144, -10.913116, 1001.211853, 0.000004, 0.000004, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1395.324462, -9.812899, 999.890991, 0.000000, -0.000007, 269.999938, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 3440, "airportpillar", "metalic_64", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2754, "otb_machine", "ab_shinyPanel", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1396.270263, -15.506141, 1000.507751, -0.000019, -0.000004, -89.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1387.433471, -17.022899, 999.890991, 0.000000, -0.000007, 179.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14577, "casinovault01", "cof_wood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2422, 1391.949096, -10.208021, 1000.912292, 0.000014, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19787, "samplcdtvs1", "samplcdtv1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2430, 1390.661499, -10.601887, 1002.254516, 0.000007, 0.000031, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 2767, "cb_details", "CJ_cb_bin1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 10056, "bigoldbuild_sfe", "cluckbell01_law", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2453, 1394.019409, -10.554864, 1001.853393, 0.000014, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2642, 1396.493652, -10.816768, 1001.434082, 0.000023, 0.000018, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2425, "cj_jucie", "CJ_SPRUNK_FRONT2", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2432, "cj_don_sign", "cj_don_post_2", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2766, 1385.704833, -12.719346, 1001.770935, 0.000004, 0.000004, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1390.382812, -16.593124, 1001.211853, 0.000004, 0.000004, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1385.934082, -17.022899, 999.890991, 0.000000, -0.000007, 179.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14577, "casinovault01", "cof_wood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1393.786254, -15.623053, 1000.289672, 0.000007, 0.000000, 89.999977, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1397.924194, -15.623053, 1000.289672, 0.000014, 0.000000, 89.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1399.531982, -15.536143, 1000.507751, 0.000009, -0.000004, 89.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1400.408447, -15.506141, 1000.507751, -0.000028, -0.000004, -89.999931, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1395.394042, -15.536143, 1000.507751, 0.000001, -0.000004, 89.999977, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1402.062377, -15.623053, 1000.289672, 0.000022, 0.000000, 89.999931, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1403.670166, -15.536143, 1000.507751, 0.000017, -0.000004, 89.999931, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 18901, "matclothes", "bandanazigzag", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(2446, 1391.673950, -10.285452, 999.874084, 0.000009, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1391.563354, -8.015831, 999.891479, 0.000009, 0.000031, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2766, 1385.709960, -15.135441, 1001.770935, 0.000004, 0.000004, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1453, 1398.164428, -11.132582, 1000.427124, 0.000003, -0.000007, -90.000030, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19137, 1398.171264, -11.105633, 1001.121093, 14.000000, -89.999984, -176.599899, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1390.673339, -10.285452, 999.874084, 0.000009, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2447, 1389.669555, -10.315627, 999.874084, 0.000009, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2448, 1392.671020, -10.318090, 999.873779, 0.000014, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2682, 1389.614868, -16.574850, 1001.123962, 0.000044, -0.000001, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1389.673217, -8.015831, 999.891479, 0.000009, 0.000031, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1389.897338, -10.308174, 1001.476562, -0.000000, 0.000070, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1390.809082, -11.279597, 1001.100341);
+    }
+    else if(type == 6) // Интерьер Pizza (ретекстуренный инт из гетто)
+    {
+        tmpobjid = BizCreateDynamicObject(18023, 1388.793823, -6.625020, 1002.009765, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 3621, "dockcargo1_las", "dt_ceiling1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 13363, "cephotoblockcs_t", "dustyjade_128", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 17049, "cuntwf", "sw_walltile", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 5, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 6, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 7, 19962, "samproadsigns", "materialtext1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 8, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 9, 2059, "cj_ammo2", "cj_don_post_1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 10, 12844, "cos_liquorstore", "b_wtilesreflect", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2446, 1389.048950, -0.645153, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.725341, -5.218460, 1000.516967, -0.000009, -0.000018, 179.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2446, 1390.048828, -0.645153, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2446, 1391.048339, -0.645153, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2447, 1392.044555, -0.676638, 999.773620, 0.000014, 0.000066, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 3, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2446, 1395.451782, -0.645153, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2422, 1389.710083, -0.562426, 1000.803649, 0.000018, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19787, "samplcdtvs1", "samplcdtv1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.912597, -5.218460, 1000.516967, -0.000009, -0.000033, 179.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1382.919067, -6.852556, 1000.281250, 0.000000, 0.000022, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.882568, -8.498472, 1000.516967, -0.000009, 0.000012, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.912597, -9.376461, 1000.516967, -0.000009, -0.000039, 179.999816, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1382.919067, -11.010558, 1000.281250, 0.000000, 0.000029, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.882568, -12.656469, 1000.516967, -0.000009, 0.000018, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.912597, -13.535470, 1000.516967, -0.000009, -0.000048, 179.999771, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1382.919067, -15.169567, 1000.281250, 0.000000, 0.000037, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1382.882568, -16.815469, 1000.516967, -0.000009, 0.000027, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.682739, -5.218460, 1000.516967, -0.000009, -0.000024, 179.999908, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1390.689208, -6.852556, 1000.281250, 0.000000, 0.000014, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.652709, -8.498472, 1000.516967, -0.000009, 0.000003, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.682739, -9.376461, 1000.516967, -0.000009, -0.000033, 179.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1390.689208, -11.010558, 1000.281250, 0.000000, 0.000022, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.652709, -12.656469, 1000.516967, -0.000009, 0.000012, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.682739, -13.535470, 1000.516967, -0.000009, -0.000039, 179.999816, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1390.689208, -15.169567, 1000.281250, 0.000000, 0.000029, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1390.652709, -16.815469, 1000.516967, -0.000009, 0.000018, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1394.731811, -6.852556, 1000.281250, 0.000000, 0.000007, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.695312, -8.498472, 1000.516967, -0.000009, -0.000003, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.725341, -9.376461, 1000.516967, -0.000009, -0.000024, 179.999908, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1394.731811, -11.010558, 1000.281250, 0.000000, 0.000014, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.695312, -12.656469, 1000.516967, -0.000009, 0.000003, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.725341, -13.535470, 1000.516967, -0.000009, -0.000033, 179.999862, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2762, 1394.731811, -15.169567, 1000.281250, 0.000000, 0.000022, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 3096, "bbpcpx", "blugrad32", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.695312, -16.815469, 1000.516967, -0.000009, 0.000012, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1386.724975, -17.380136, 999.890502, 0.000000, -0.000014, 179.999908, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14577, "casinovault01", "cof_wood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2766, 1381.848876, -10.354207, 1002.050415, 0.000009, 0.000009, 89.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2453, 1394.270751, -0.828751, 1001.753601, 0.000018, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2452, 1395.417846, 2.052911, 999.763610, -0.000006, 0.000037, -90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 4, 16322, "a51_stores", "metalic128", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2447, 1387.045776, -0.676638, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 3, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2420, 1385.753173, -17.215208, 999.893737, -0.000037, -0.000006, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2422, 1388.339843, -0.562426, 1000.803649, 0.000018, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19787, "samplcdtvs1", "samplcdtv1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2446, 1388.049194, -0.645152, 999.773620, 0.000014, 0.000058, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2448, 1393.044311, -0.676509, 999.773620, 0.000018, 0.000066, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 1977, "cooler1", "koen_win", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 2767, "cb_details", "pattern1_cb", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2642, 1385.718994, -1.929448, 1002.433593, 0.000028, 0.000024, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2425, "cj_jucie", "CJ_SPRUNK_FRONT2", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2432, "cj_don_sign", "cj_don_post_2", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.695312, -12.656469, 1000.516967, -0.000009, 0.000003, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2799, "castable", "cl_napkin", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(2416, 1392.689819, 3.821135, 999.800598, 0.000014, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1391.391357, -0.591071, 1000.813598, -0.000006, 0.000082, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2766, 1395.750244, -10.314208, 1002.050415, 0.000009, 0.000009, 270.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1390.789428, 3.821135, 999.800598, 0.000014, 0.000052, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1523, 1383.361328, -1.632786, 999.890502, 0.000009, 0.000009, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1390.857666, -0.591071, 1000.813598, -0.000006, 0.000081, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1388.889770, 3.821135, 999.800598, 0.000014, 0.000051, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1453, 1385.715942, -2.229736, 1000.430480, 0.000007, 0.000025, -89.999954, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19137, 1385.722778, -2.202892, 1001.124450, 13.999965, -89.999977, -176.599838, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2682, 1395.505004, -0.874104, 1000.993286, 0.000048, -0.000007, 134.999893, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1545, 1390.904052, -1.054415, 1001.421630, -0.000006, 0.000089, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2430, 1388.062622, -1.179087, 1002.473937, 0.000012, 0.000037, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2418, 1387.005981, 3.783134, 999.793579, 0.000018, 0.000043, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1388.792968, -1.770311, 1001.092834);
+    }
+    else if(type == 7) // Интерьер закусочной светлый (ааахуенный хавчик)
+    {
+        tmpobjid = BizCreateDynamicObject(18020, 1387.847045, -4.587461, 1001.888488, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 18008, "intclothesa", "mp_cloth_vicfloor", 0xEEEEEEFF);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 18018, "genintintbarb", "GB_midbar01", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 5, 18021, "genintintfastd", "CJ_DON_WIN", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 6, 2821, "gb_foodwrap01", "sm_marble", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 7, 11301, "carshow_sfse", "ws_officy_ceiling", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1395.743774, -6.130201, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1394.166015, -5.267906, 1000.522766, 0.000000, 0.000000, 225.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1392.631103, -6.802330, 1000.522766, 0.000000, 0.000000, 225.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1393.492309, -8.378796, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1394.200195, -7.671689, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1387.536010, -5.769956, 1000.522766, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1386.000732, -4.235537, 1000.522766, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.469970, -5.158758, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.718505, -7.410223, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.011474, -6.702335, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19476, 1391.636596, -7.582349, 1001.086791, 0.000000, 0.000000, 44.799968, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14674, "civic02cj", "kb_balcony_ferns", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19476, 1392.101562, -8.064809, 1001.086791, 0.000000, 0.000000, 44.799968, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14674, "civic02cj", "kb_balcony_ferns", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1388.640380, -8.929622, 1001.467102, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1386.363769, -13.610689, 1001.467102, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.988159, -9.000399, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1386.601928, -10.612614, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1385.015014, -11.373468, 1000.522766, -0.000004, 0.000004, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1384.273437, -8.286214, 1000.303833, 0.000009, 0.000000, 134.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1383.767578, -15.266036, 1000.303833, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1384.638183, -16.168657, 999.897277, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1382.827392, -14.358461, 999.897277, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1399.637695, -6.870179, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1398.715087, -7.841412, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1397.784423, -8.722803, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1395.702880, -10.853691, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1394.743286, -11.763371, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1396.631835, -9.875386, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1392.245971, -14.311433, 1000.303833, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1391.306640, -15.199912, 999.897277, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1393.137939, -13.368510, 999.897277, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2639, 1383.473022, -9.831968, 1000.522766, -0.000004, 0.000004, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 10631, "queensammo_sfs", "ammu_camo1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2644, 1381.398437, -12.897229, 1000.303833, 0.000000, 0.000000, 135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 17934, "coochieghous", "sanpednhus1r", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14488, "dogsgym", "AH_bgmartiles", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1380.486206, -12.017934, 999.897277, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19994, 1382.282958, -13.813986, 999.897277, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1561, 1386.724243, -17.508802, 999.906311, 0.000000, 0.000000, 540.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 14577, "casinovault01", "cof_wood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2766, 1382.448364, -6.475871, 1002.186340, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2420, 1389.513061, -16.308660, 999.779418, -0.000027, 0.000004, -134.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2422, 1391.380493, -0.591127, 1000.809448, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19787, "samplcdtvs1", "samplcdtv1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2448, 1391.970947, -0.133422, 999.779418, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2453, 1391.992797, -0.441659, 1001.759399, 0.000009, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 1977, "cooler1", "koen_win", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2642, 1386.648559, -2.319453, 1001.319396, 0.000018, 0.000014, 44.999954, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2425, "cj_jucie", "CJ_SPRUNK_FRONT2", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 2432, "cj_don_sign", "cj_don_post_3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2432, "cj_don_sign", "cj_don_post_2", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.118896, -3.632133, 1001.216552, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ААА*ХУЕННЫЙ", 130, "Impact", 90, 1, 0xFFFFFFFF, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.147583, -3.643419, 1001.188720, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ААА*ХУЕННЫЙ", 130, "Impact", 90, 1, 0xFF222222, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1396.564208, -2.076498, 1001.276611, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "B", 130, "Wingdings", 199, 1, 0xFFFF9000, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1396.583251, -2.069427, 1001.246582, -0.000004, -0.000004, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "B", 130, "Wingdings", 199, 1, 0xFF222222, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19370, 1397.402709, -0.705591, 1001.116699, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1400.961059, -4.262338, 1001.116699, 0.000000, 0.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1399.779663, -3.095612, 999.976623, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1398.559814, -1.886463, 999.985412, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1399.779663, -3.095612, 1002.787597, -0.000003, 90.000007, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19370, 1398.559814, -1.886463, 1002.796386, -0.000003, 90.000007, -44.999988, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 9583, "bigshap_sfw", "bridge_walls2_sfw", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(18763, 1399.140380, -2.498966, 1001.316467, 0.000000, 90.000000, -45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 7509, "vgwestretail1", "hedge2_256", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19367, 1395.496215, -0.511628, 1001.616577, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2821, "gb_foodwrap01", "sm_marble", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1533, 1395.937011, -1.102702, 999.865783, 0.000018, -0.000007, 495.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 2754, "otb_machine", "ab_shinyPanel", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 2772, "airp_prop", "cj_chromepipe", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2253, 1382.368041, -9.615525, 1001.467102, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 2, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 3, 802, "gta_proc_bushland", "veg_bush3", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 4, 14479, "skuzzy_motelmain", "mp_CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.118896, -3.632133, 1000.786132, -0.000009, -0.000009, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ХАВЧИК", 130, "Impact", 90, 1, 0xFFFF9000, 0x00000000, 2);
+        tmpobjid = BizCreateDynamicObject(19483, 1398.147583, -3.643419, 1000.758300, -0.000009, -0.000009, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterialText(tmpobjid, 0, "ХАВЧИК", 130, "Impact", 90, 1, 0xFF222222, 0x00000000, 2);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(2738, 1377.226074, -1.011554, 1000.496826, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2738, 1380.054687, 1.816872, 1000.496826, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1380.879760, -5.940177, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1382.097412, -4.723958, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1383.265258, -3.557231, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2766, 1384.096923, -4.828309, 1002.186340, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1453, 1386.491455, -12.738044, 1000.426269, 0.000000, 0.000000, 45.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19137, 1386.467651, -12.752106, 1001.120239, 13.999997, -89.999992, -41.599967, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2456, 1389.544799, -2.818835, 1000.819519, 0.000004, 0.000041, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1388.679565, 3.427848, 999.806396, 0.000004, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1545, 1387.884643, -1.833116, 1001.427429, 0.000004, 0.000071, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2515, 1384.446655, -2.376364, 1000.886901, 0.000000, 0.000000, -135.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2452, 1391.119506, 2.954210, 999.769409, 0.000004, 0.000027, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2418, 1384.827514, 6.310834, 999.799377, 0.000009, 0.000033, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2430, 1389.943603, -3.167787, 1002.309570, 0.000003, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1390.537231, -1.520321, 999.779418, 0.000003, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2447, 1389.851562, -2.252892, 999.779418, 0.000004, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2682, 1393.074951, 0.688004, 1001.559387, 0.000039, 0.000003, 134.999893, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2416, 1386.734863, 1.483304, 999.806396, 0.000004, 0.000027, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1391.245239, -0.813215, 999.779418, 0.000004, 0.000048, 44.999984, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1388.176391, -1.407935, 1000.819396, 0.000004, 0.000065, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2688, 1389.597412, -16.182750, 1001.721435, -0.000019, 0.000004, -134.999954, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1389.299194, -2.701189, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1388.592041, -1.994084, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2446, 1387.884399, -1.286977, 999.779418, 0.000004, 0.000048, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2500, 1388.558715, -1.789770, 1000.819396, 0.000004, 0.000065, -45.000015, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1523, 1379.442626, -9.421485, 999.896301, 0.000000, 0.000000, 44.900012, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1391.372558, -2.160719, 1001.097839);
+    }
+    else if(type == 8) // Интерьер Pig Pen
+    {
+        tmpobjid = BizCreateDynamicObject(14838, 1394.957153, -5.510683, 1001.434143, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 5, 11631, "mp_ranchcut", "mpCJ_SPEAKER4", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1401.915649, -14.329889, 999.894592, -0.000007, 0.000023, -166.800003, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1537, 1386.719482, -17.280269, 999.894592, 0.000000, -0.000014, 179.999908, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 1, 6871, "vegascourtbld", "marbletilewal1_256", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 2, 1376, "cranes_dyn2_cj", "ws_oldpaintedblue", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1400.035400, -13.157139, 999.894775, 0.000012, 0.000020, -115.900062, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1399.541259, -14.691955, 999.894592, -0.000018, 0.000017, 160.299896, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1401.335327, 6.259218, 999.887268, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1385.057983, -5.115343, 999.894592, -0.000022, 0.000025, 94.199966, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1386.510498, -3.441611, 999.894775, 0.000006, 0.000034, 145.099960, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1385.071777, -2.713592, 999.894592, -0.000033, 0.000011, 61.300029, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1404.996582, 4.529211, 999.887268, 0.000000, 0.000000, -90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2126, 1401.818481, 3.369479, 999.877258, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1397.036376, 2.549211, 999.887268, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14533, "pleas_dome", "club_zeb_SFW1", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2126, 1398.288330, 4.019481, 999.877258, 0.000000, 0.000000, 270.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1385.055053, -10.439634, 999.894592, -0.000014, 0.000024, 107.699951, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1386.076660, -8.473064, 999.894775, 0.000009, 0.000028, 158.599929, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1384.507812, -8.101022, 999.894592, -0.000027, 0.000014, 74.800025, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1399.127563, -3.924806, 999.894592, -0.000007, 0.000023, 16.799930, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1819, 1401.077758, -4.977177, 999.894775, 0.000012, 0.000020, 67.699913, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 2423, "cj_ff_counters", "CJ_Laminate1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1759, 1401.474487, -3.414366, 999.894592, -0.000018, 0.000017, -16.099992, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(1753, 1382.994873, 5.319215, 999.887268, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 14839, "lee_strippriv", "WH_Sofa", 0x00000000);
+        SetDynamicObjectMaterial(tmpobjid, 1, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        tmpobjid = BizCreateDynamicObject(2126, 1384.126220, 6.819478, 999.877258, 0.000000, 0.000000, 270.000000, object_world, object_int, -1, 300.00, 300.00); 
+        SetDynamicObjectMaterial(tmpobjid, 0, 19598, "sfbuilding1", "darkwood1", 0x00000000);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        BizCreateDynamicObject(1541, 1397.121704, -20.190134, 1001.502441, 0.000022, 0.000014, -0.000037, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1396.051757, -20.190134, 1001.502441, 0.000022, 0.000014, -0.000037, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(1541, 1394.971801, -20.190134, 1001.502441, 0.000022, 0.000014, -0.000037, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2232, 1407.094116, -13.834695, 1000.884582, 0.000014, 0.000000, -90.400047, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2295, 1391.156616, -5.429338, 999.872985, -0.000000, 0.000014, -6.199992, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19159, 1397.792114, -9.660464, 1003.445922, 0.000000, 0.000014, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2714, 1387.495849, -17.262466, 1001.735473, 0.000000, -0.000014, 179.999908, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19786, 1403.417358, 0.734323, 1002.197448, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(2295, 1399.367187, 6.340593, 999.872985, -0.000000, 0.000014, 21.800008, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19159, 1391.100830, -9.660464, 1003.445922, 0.000000, 0.000014, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19614, 1407.027343, -5.540902, 1000.284667, 0.000014, -0.000001, 280.399932, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19086, 1385.305297, -11.815959, 1001.284667, 0.000011, -0.000009, 14.300004, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(11686, 1392.342529, -17.800472, 999.887268, 0.000000, 0.000007, 179.999938, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(11686, 1397.153564, -17.790472, 999.877258, 0.000000, 0.000007, 179.999938, object_world, object_int, -1, 300.00, 300.00); 
+        BizCreateDynamicObject(19786, 1388.465576, 6.224326, 1002.197448, 0.000000, 0.000000, 270.000000, object_world, object_int, -1, 300.00, 300.00); 
+
+        if(BizzInfo[b][bShluha] == 1) ReloadBizWhore(b, 1390.483032, -1.901680, 1000.883117, 535.374267);
+        if(BizzInfo[b][bBar] == 1) ReloadBizBar(b, 1397.101440, -16.869112, 1001.083129);
+    }
+    return true;
+}

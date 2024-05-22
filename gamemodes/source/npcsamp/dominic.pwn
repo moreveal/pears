@@ -111,6 +111,7 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
 		if(getQuan+thingQuan > getLimit) fallGift = true;
     }
 
+    mysql_tquery(pearsq, "START TRANSACTION;");
     // Выдаём предмет
     new put_inva = -1;
     if(fallGift == false) 
@@ -124,9 +125,11 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
         SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Подарок ]: {ffcc66}Вы получили подарок [В инвентаре нет места, подарок упал на землю]");
         SuccessMessage(playerid, "{99ff66}Доминик дал вам подарок\n{ffcc66}Подарок упал на землю [ Кнопка N >> Рядом ]");
     }
-
+    CalculateVehicleLimited(thingId, thingType);
+    
     PlayerInfo[playerid][pDominic] = 0;
     SaveDominicQuest(playerid);
+    mysql_tquery(pearsq, "COMMIT;");
 
     switch(random(3))
     {

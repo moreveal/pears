@@ -559,8 +559,6 @@ stock use_trash(playerid, tra, inva, useinva)
     if(PlayerInfo[playerid][pInfoload] >= 50) PlayerInfo[playerid][pInfoload] -= 50;
 	else PlayerInfo[playerid][pInfoload] = 0;
 
-    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
-
     format(string,sizeof(string),"Взял %d: %s", tra, GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("gtrash", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	return 1;

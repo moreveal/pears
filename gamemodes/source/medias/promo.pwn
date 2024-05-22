@@ -92,17 +92,18 @@ function Call_promo(playerid, pf, unix)
 	cache_get_row_count(rows);
 	if(!rows)
 	{
-	    new yeslvl = 0;
-		new str[100],sctring[600];
-		format(str,sizeof(str),"{ff9000}____________________________________________________________\n\n");
-		strcat(sctring,str);
-		format(str,sizeof(str),"\n{ff9000}%s\n", PromoInfo[pf][roText]), strcat(sctring,str);
 		new quan = 0; // new
 		for(new checkslot; checkslot < 5; checkslot++)
 		{
 			if(PromoInfo[pf][roPar][checkslot] == 2 || PromoInfo[pf][roPar][checkslot] == 13 || PromoInfo[pf][roPar][checkslot] == 14) quan++;
 		}
 		if(!free_invent(playerid,quan)) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+	    new yeslvl = 0;
+		new str[100],sctring[600];
+		format(str,sizeof(str),"{ff9000}____________________________________________________________\n\n");
+		strcat(sctring,str);
+		format(str,sizeof(str),"\n{ff9000}%s\n", PromoInfo[pf][roText]), strcat(sctring,str);
 		for(new statpf = 0; statpf < 5; statpf++)
 		{
 			if(PromoInfo[pf][roPar][statpf] == 2) // Транспорт
@@ -146,14 +147,15 @@ function Call_promo(playerid, pf, unix)
 			}
 			if(PromoInfo[pf][roPar][statpf] == 13) // Кейс // NEW
 			{
-				format(str,sizeof(str),"{ff9000}* Кейс {999999}[ Инвентарь(N) ]\n"), strcat(sctring,str);
+				format(str,sizeof(str),"{ff9000}* Кейс {999999}[ Инвентарь N ]\n"), strcat(sctring,str);
 				new thingId, thingQuan, thingType, thingPara, thingPack;
 				CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
 				GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+				CalculateVehicleLimited(thingId, thingType);
 			}
 			if(PromoInfo[pf][roPar][statpf] == 14) // Скин
 			{
-				format(str,sizeof(str),"{ff9000}* Одежда {cccccc}[ №%d ]{999999}[ Инвентарь(N) ]\n",PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
+				format(str,sizeof(str),"{ff9000}* Одежда {cccccc}[ №%d ]{999999}[ Инвентарь N ]\n",PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				GiveThingPlayer(playerid, PromoInfo[pf][roStat][statpf], 1, 0, 0, 3, 0, 9999);
 			}
 		}

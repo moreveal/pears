@@ -912,8 +912,6 @@ stock use_prisontable(playerid, i, inva, useinva)
 	new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, thingQara, thingType, thingPack, useinva);
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
     TakePrisonTable(i, thingId, thingQuan, thingType, inva);
-    
-    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
 	
     format(string,sizeof(string),"Взял %d: %s", i, GetNameThing(1, thingId, thingType, thingPack));
 	UserLog("gtable", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingQuan, string);
@@ -1041,7 +1039,6 @@ stock put_prisontable(playerid, inva, i, thingId, thingQuan, binva, thingType, t
 	
 	if(quanThing == 1) take_away(playerid, thingQuan, inva); // Отнимаем предмет (по количеству)
  	else i_del(playerid, inva); // Отнимаем предмет (целиком)
- 	SaveInvent(playerid, inva); // Сохраняем ячейку инвентаря игрока
 	
     format(string,sizeof(string),"Положил %d: %s", i, GetNameThing(1, thingId, thingType, thingPack));
 	UserLog("ptable", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingQuan, string);

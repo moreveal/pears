@@ -138,8 +138,6 @@ stock use_dom(playerid, dom, inva, useinva)
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
     TakeDom(dom, fpick, fquan, thingType, inva);
     
-    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
-    
     format(string, sizeof(string), "Взял %s", GetNameThing(1, fpick, thingType, thingPack));
 	HouseLog(0, "wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, fquan, string);
 	
@@ -197,7 +195,6 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	
 	if(quanThing == 1) take_away(playerid, fquan, inva); // Отнимаем предмет (по количеству)
  	else i_del(playerid, inva); // Отнимаем предмет (целиком)
- 	SaveInvent(playerid, inva); // Сохраняем ячейку инвентаря игрока
 	
 	format(string,sizeof(string),"Положил в дом %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);

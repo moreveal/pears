@@ -71,9 +71,8 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
 		{
 			if(!CheckInvent(p))
 			{
-			    new plit = GiveThingPlayer(p, fpick, 1, fpara, 0, thingType, 0, 9999); // Выдаём предмет игроку
+			    GiveThingPlayer(p, fpick, 1, fpara, 0, thingType, 0, 9999); // Выдаём предмет игроку
 				SendClientMessage(p, COLOR_GREY, "{0088ff}[ Навык ]: {ffcc66}Проверьте инвентарь, вы получили подарок!");
-				SaveInvent(p, plit);
 			}
 			else Throw(p, fpick, 1, fpara, 0, thingType, 0), SendClientMessage(p, COLOR_GREY, "{0088ff}[ Навык ]: {ffcc66}Вы получили подарок [В инвентаре нет места, подарок упал на землю]");
 		}

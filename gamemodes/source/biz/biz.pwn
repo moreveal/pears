@@ -542,7 +542,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
-        if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && (yes[i] || stat == 1))
+        if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && stat == 1)
         {
 			// Выставляем Стоимость
             if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
@@ -1406,12 +1406,26 @@ stock GetBizArea(areaid)
 	return yes;
 }
 
+stock DestroyBizBar(b)
+{
+    if(BizzInfo[b][bBar] == 1) DestroyDynamicPickup(BizBar[b]), DestroyDynamic3DTextLabel(BizBarLabel[b]), BizzInfo[b][bBar] = 0;
+    return 1;
+}
+
+stock DestroyBizWhore(b)
+{
+    if(BizzInfo[b][bShluha] == 1) DestroyDynamicActor(BizShluha[b]), DestroyDynamic3DTextLabel(BizShluhaLabel[b]), BizzInfo[b][bShluha] = 0;
+    return 1;
+}
+
 stock CreateShluha(idx)
 {
 	new string[70];
     format(string,sizeof(string),"{ff9000}Проститутка\n{44ff99}Цена 200$\n{cccccc}[ ALT ]");
 	BizShluha[idx] = CreateDynamicActor(369, BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2], BizzInfo[idx][bShluhaCord][3], true, 100.0, 3000+idx, BizzInfo[idx][bInterior], -1, 100.0, -1, 0);
 	BizShluhaLabel[idx] = CreateDynamic3DTextLabel(string,-1,BizzInfo[idx][bShluhaCord][0], BizzInfo[idx][bShluhaCord][1], BizzInfo[idx][bShluhaCord][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,3000+idx, BizzInfo[idx][bInterior]); 
+	BizzInfo[idx][bShluha] = 1;
+	BizShluhaStatus[idx] = -1;
 	return 1;
 }
 

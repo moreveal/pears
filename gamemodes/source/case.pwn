@@ -61,19 +61,15 @@ stock CreateVehicleGiftCase()
     // Собираем обычный транспорт
     for(new i = 0; i < 212; i++)
     {
-        // Исключаем лимитированный транспорт
-        if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
-
-        if(VehSale[i] == 1) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+        if(VehSale[i] == 1
+            || VehLimited[i] > 0 && VehQuan[i] < VehLimited[i] && VehLimitedCase[i] < VehLimited[i]) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
     }
 
     // Собираем кастомный транспорт
     for(new i = 0; i < MAX_VEHICLE_CUSTOM; i++)
     {
-        // Исключаем лимитированный транспорт
-        if(VehLimited[i] > 0 && VehQuan[i] >= VehLimited[i]) continue;
-
-        if(VehSale[i] == 1) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+        if(VehSale[i] == 1
+            || VehLimited[i] > 0 && VehQuan[i] < VehLimited[i] && VehLimitedCase[i] < VehLimited[i]) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
     }
     return 1;
 }
@@ -166,6 +162,40 @@ stock CreateCasePlayer(type, &thingId, &thingQuan, &thingType, &thingPara, &thin
     return 1;
 }
 
+// Добавляем лимитированный транспорт в кейсе на руках
+stock CalculateVehicleLimited(thingId, thingType)
+{
+    if(thingType != 5) return false; // Это не транспорт, значит не считаем
+
+    new v = CorrectVehicleID(thingId);
+    if(VehLimited[v] > 0)
+    {
+        VehLimitedCase[v] += 1; // Считаем выданную лимитированную тачку
+        SaveVehicleLimitedCase(v);
+
+        // Пересобираем транспорт в подарках
+        CreateVehicleGiftCase();
+    }
+    return true;
+}
+
+// Вычитаем лимитированный транспорт в кейсе на руках
+stock TakeCalculateVehicleLimited(thingId, thingType)
+{
+    if(thingType != 5) return false; // Это не транспорт, значит не считаем
+
+    new v = CorrectVehicleID(thingId);
+    if(VehLimited[v] > 0 && VehLimitedCase[v] - 1 >= 0) 
+    {
+        VehLimitedCase[v] -= 1; // Вычитаем выданную лимитированную тачку
+        SaveVehicleLimitedCase(v);
+
+        // Пересобираем транспорт в подарках
+        CreateVehicleGiftCase();
+    }
+    return true;
+}
+
 CMD:givecase(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
@@ -176,6 +206,7 @@ CMD:givecase(playerid, const params[])
     new put_inva = GiveThingPlayer(params[0], thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 
+    CalculateVehicleLimited(thingId, thingType);
     new string[120];
     format(string, sizeof(string), "* Вы выдали %s кейс", PlayerInfo[params[0]][pName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);

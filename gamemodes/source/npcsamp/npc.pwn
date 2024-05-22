@@ -316,3 +316,17 @@ stock ReloadVehicleNPC(vehicleid)
 	SetVehicleParamsEx(vehicleid, false, false, alarm, doors, bonnet, boot, objective);
     return 1;
 }
+
+
+// Не пускаем игрока, если он подключается раньше всех NPC
+stock BlockConnectBeforeNPC(playerid)
+{
+    if(ConnectNpcQuan < sizeof(npcNames))
+    {
+        TextDrawShowForPlayer(playerid, Chernifon);
+		ShowDialog(playerid,2017,DIALOG_STYLE_MSGBOX,"{FF6347}*","{FF6347}Системы сервера не были окончательно запущены\n{cccccc}Пожалуйста, перезайдите {FF6347}/q или ESC >> Выход","Ок","");
+		Kickx(playerid);
+        return true;
+    }
+    return false;
+}

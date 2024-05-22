@@ -110,7 +110,6 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	oGivePlayerMoney(seller, price);
 	payanim(playerid, 0); // Анимация передачи денег с появление бабла в руках
 
-	SaveInvent(playerid, put_inva);
     updategoods(seller, inva);
     
     format(string,sizeof(string),"Купил: %s [%d$]",GetNameThing(1, fpick, thingType, thingPack), price);
@@ -178,7 +177,6 @@ stock put_goods(playerid, inva, fpick, quan, binva)
 	}
 	if(quanThing == 1) take_away(playerid, quan, inva); // Отнимаем предмет (по количеству)
     else i_del(playerid, inva); // Отнимаем предмет (целиком)
-	PlayerInfo[playerid][pI_Update][inva] = true;
 
     updategoods(playerid, binva);
 	item_second(playerid, PlayerInfo[playerid][pMarkInven][binva], PlayerInfo[playerid][pMarkInvenQuan][binva], binva, 1, PlayerInfo[playerid][pMarkInvenPara][binva], PlayerInfo[playerid][pMarkInvenType][binva], PlayerInfo[playerid][pMarkInvenPack][binva], 0);

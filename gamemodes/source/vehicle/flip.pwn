@@ -27,7 +27,7 @@ stock CheckFlipVehicle(playerid)
                 {
                     FlipVehicle(vehicleid);
                     ACSetVehicleHealth(vehicleid, OnlineInfo[playerid][oFlipVehHealth]);
-                    TakeInvent(playerid, THINGID_FLIP, 1, 0, inventSlot); // Забираем один домкрат
+                    TakeInvent(playerid, THINGID_FLIP, 1, 0, inventSlot, false); // Забираем один домкрат
                 }
                 OnlineInfo[playerid][oFlipVeh] = 0;
             }

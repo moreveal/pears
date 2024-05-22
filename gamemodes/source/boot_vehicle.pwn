@@ -94,7 +94,6 @@ stock use_boot(playerid, v, inva, useinva)
 	new put_inva = GiveThingPlayer(playerid, fpick, fquan, thingPara, thingQara, thingType, thingPack, useinva);
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
     TakeBoot(v, fpick, fquan, thingType, inva);
-    SaveInvent(playerid, put_inva); // Сохраняем то, что игрок взял
 
     format(string,sizeof(string),"Взял из %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
@@ -221,7 +220,6 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 
 		if(quanThing == 1) take_away(playerid, fquan, inva); // Отнимаем предмет (по количеству)
 	 	else i_del(playerid, inva); // Отнимаем предмет (целиком)
-	 	SaveInvent(playerid, inva); // Сохраняем ячейку инвентаря игрока
 
 		format(string,sizeof(string),"Положил в багажник: %s", GetNameThing(1, fpick, thingType, thingPack));
 		UserLog("putboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);

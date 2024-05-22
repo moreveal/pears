@@ -1,5 +1,5 @@
 
-#define MAX_HANDLING_ID 25
+#define MAX_HANDLING_ID 26
 #define MAX_DETAIL 18
 new friskDetail[MAX_DETAIL][3] = // ID предмета в инвентаре | 2 тип детали(0 двигатель,1 трансмиссия, 2 подвеска, 3 шины, 4 тормоз) | bizprice |
 {
@@ -85,8 +85,8 @@ enum HandlingData
     Float:HD_MaxVelocity,
     Float:HD_EngineAcceleration,
     Float:HD_EngineInertia,
-    HD_Zalupa[4],
-    HD_Zalupa2[4],
+    HD_Zalupa,
+    HD_Zalupa2,
     Float:HD_BrakeDeceleration,
     Float:HD_BrakeBias,
     HD_ABS,
@@ -119,18 +119,19 @@ new handlingName[][] =
     "HANDLING_MAXVELOCITY",           // 11 m_transmissionData.m_fMaxGearVelocity      150.0 —- Максимальная скорость
     "HANDLING_ENGINEACCELERATION",    // 12 m_transmissionData.m_fEngineAcceleration   18.0 —— Ускорение (мощность)
     "HANDLING_ENGINEINERTIA",         // 13 m_transmissionData.m_fEngineInertia        20.0 —— Инерция двигателя (влияет на ускорение 0.0...250.0)
-    "HANDLING_BRAKEDECELERATION",     // 14 m_fBrakeDeceleration                       4.0 —-— Эффективность торможения (1.0...20.0)
-    "HANDLING_BRAKEBIAS",             // 15 m_fBrakeBias                               0.80 —— Распределение тормоза (0.0-задняя,0.5-равномерно,1.0-передняя)
-    "HANDLING_ABS",                   // 16 m_bABS                                     0 —----— Наличие ABS (0 - нету; 1 - есть)
-    "HANDLING_STEERINGLOCK",          // 17 m_fSteeringLock                            30.0 —— Уровень поворота колес(10.0...40.0)
-    "HANDLING_SUSPFORCELEVEL",        // 18 m_fSuspensionForceLevel                    0.8 —-— Жесткость пружин (влияет на высоту подвески)
-    "HANDLING_SUSPDAMPINGLEVEL",      // 19 m_fSuspensionDampingLevel                  0.08 —— Жесткость амортизаторов (длительность качки корпуса)
-    "HANDLING_SUSPHIGHSPDCOMDAMP",    // 20 m_fSuspensionHighSpdComDamp                0.0 —-— Прыгучесть на скорости
-    "HANDLING_SUSPUPPERLIMIT",        // 21 m_fSuspensionUpperLimit                    0.45 —— Верхний предел (амплитуда сжатия пружин 0.1...0.5)
-    "HANDLING_SUSPLOWERLIMIT",        // 22 m_fSuspensionLowerLimit                    -0.25 —- Нижний предел (амплитуда сжатия пружин -0.01...-0.5)
-    "HANDLING_SUSPBIASBETWEEN",       // 23 m_fSuspensionBiasBetweenFrontAndRear       0.45 —— Смещение наклона (высота зада переда 0.0...0.6)
-    "HANDLING_WHEELSCALE",            // 24 custom: CVehicle->m_fWheelScale            Размер колёс
-    "HANDLING_WHEELTILT",             // 25 custom: wheel_tilt                         Развал
+    "HANDLING_DRIVETYPE",             // 14 m_transmissionData.m_nDriveType            Привод транспорта
+    "HANDLING_BRAKEDECELERATION",     // 15 m_fBrakeDeceleration                       4.0 —-— Эффективность торможения (1.0...20.0)
+    "HANDLING_BRAKEBIAS",             // 16 m_fBrakeBias                               0.80 —— Распределение тормоза (0.0-задняя,0.5-равномерно,1.0-передняя)
+    "HANDLING_ABS",                   // 17 m_bABS                                     0 —----— Наличие ABS (0 - нету; 1 - есть)
+    "HANDLING_STEERINGLOCK",          // 18 m_fSteeringLock                            30.0 —— Уровень поворота колес(10.0...40.0)
+    "HANDLING_SUSPFORCELEVEL",        // 19 m_fSuspensionForceLevel                    0.8 —-— Жесткость пружин (влияет на высоту подвески)
+    "HANDLING_SUSPDAMPINGLEVEL",      // 20 m_fSuspensionDampingLevel                  0.08 —— Жесткость амортизаторов (длительность качки корпуса)
+    "HANDLING_SUSPHIGHSPDCOMDAMP",    // 21 m_fSuspensionHighSpdComDamp                0.0 —-— Прыгучесть на скорости
+    "HANDLING_SUSPUPPERLIMIT",        // 22 m_fSuspensionUpperLimit                    0.45 —— Верхний предел (амплитуда сжатия пружин 0.1...0.5)
+    "HANDLING_SUSPLOWERLIMIT",        // 23 m_fSuspensionLowerLimit                    -0.25 —- Нижний предел (амплитуда сжатия пружин -0.01...-0.5)
+    "HANDLING_SUSPBIASBETWEEN",       // 24 m_fSuspensionBiasBetweenFrontAndRear       0.45 —— Смещение наклона (высота зада переда 0.0...0.6)
+    "HANDLING_WHEELSCALE",            // 25 custom: CVehicle->m_fWheelScale            Размер колёс
+    "HANDLING_WHEELTILT",             // 26 custom: wheel_tilt                         Развал
 
     "HANDLING_MAX"
 };
@@ -506,7 +507,7 @@ stock GetHandlingChangeThing(thingId, &plus, &handl0, &handl1, &handl2, value0[]
     else if(friskDetail[DetailTuningID][1] == 2) // Подвеска
     {
         plus = 1;
-        handl0 = 17;
+        handl0 = 18;
         handl1 = 0;
         handl2 = 0;
     }
@@ -520,7 +521,7 @@ stock GetHandlingChangeThing(thingId, &plus, &handl0, &handl1, &handl2, value0[]
     else if(friskDetail[DetailTuningID][1] == 4) // Тормоз
     {
         plus = 1;
-        handl0 = 14;
+        handl0 = 15;
         handl1 = 0;
         handl2 = 0;
     }
@@ -547,18 +548,18 @@ stock SetVehicleHandling(vehicleid, handlingId, const value[])
         case 11: HandlingVehInfo[vehicleid][HD_MaxVelocity] = floatstr(value);
         case 12: HandlingVehInfo[vehicleid][HD_EngineAcceleration] = floatstr(value);
         case 13: HandlingVehInfo[vehicleid][HD_EngineInertia] = floatstr(value);
-        //case 1: format(HandlingVehInfo[vehicleid][HD_Zalupa], 14, "%s", value);
-        //case 1: format(HandlingVehInfo[vehicleid][HD_Zalupa2], 14, "%s", value);
-        case 14: HandlingVehInfo[vehicleid][HD_BrakeDeceleration] = floatstr(value);
-        case 15: HandlingVehInfo[vehicleid][HD_BrakeBias] = floatstr(value);
-        case 16: HandlingVehInfo[vehicleid][HD_ABS] = strval(value);
-        case 17: HandlingVehInfo[vehicleid][HD_SteeringLock] = floatstr(value);
-        case 18: HandlingVehInfo[vehicleid][HD_SuspensionForceLevel] = floatstr(value);
-        case 19: HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel] = floatstr(value);
-        case 20: HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp] = floatstr(value);
-        case 21: HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit] = floatstr(value);
-        case 22: HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit] = floatstr(value);
-        case 23: HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear] = floatstr(value);
+        case 14: HandlingVehInfo[vehicleid][HD_Zalupa] = strval(value);
+        //case 1: format(HandlingVehInfo[vehicleid][HD_Zalupa2] = floatstr(value);
+        case 15: HandlingVehInfo[vehicleid][HD_BrakeDeceleration] = floatstr(value);
+        case 16: HandlingVehInfo[vehicleid][HD_BrakeBias] = floatstr(value);
+        case 17: HandlingVehInfo[vehicleid][HD_ABS] = strval(value);
+        case 18: HandlingVehInfo[vehicleid][HD_SteeringLock] = floatstr(value);
+        case 19: HandlingVehInfo[vehicleid][HD_SuspensionForceLevel] = floatstr(value);
+        case 20: HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel] = floatstr(value);
+        case 21: HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp] = floatstr(value);
+        case 22: HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit] = floatstr(value);
+        case 23: HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit] = floatstr(value);
+        case 24: HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear] = floatstr(value);
         default: {}
     }
     return 1;
@@ -583,18 +584,18 @@ stock GetVehicleHandling(vehicleid, handlingId, value[])
         case 11: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_MaxVelocity]);
         case 12: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_EngineAcceleration]);
         case 13: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_EngineInertia]);
-        //case 1: format(value, 14, "%s", HandlingVehInfo[vehicleid][HD_Zalupa]);
+        case 14: format(value, 14, "%c", HandlingVehInfo[vehicleid][HD_Zalupa]);
         //case 1: format(value, 14, "%s", HandlingVehInfo[vehicleid][HD_Zalupa2]);
-        case 14: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeDeceleration]);
-        case 15: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeBias]);
-        case 16: format(value, 14, "%d", HandlingVehInfo[vehicleid][HD_ABS]);
-        case 17: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SteeringLock]);
-        case 18: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionForceLevel]);
-        case 19: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel]);
-        case 20: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp]);
-        case 21: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
-        case 22: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
-        case 23: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
+        case 15: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeDeceleration]);
+        case 16: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_BrakeBias]);
+        case 17: format(value, 14, "%d", HandlingVehInfo[vehicleid][HD_ABS]);
+        case 18: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SteeringLock]);
+        case 19: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionForceLevel]);
+        case 20: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel]);
+        case 21: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp]);
+        case 22: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
+        case 23: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
+        case 24: format(value, 14, "%f", HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
         default: {}
     }
     return 1;
@@ -619,18 +620,18 @@ stock GetVehicleHandlingDefault(handlingId, vehicleHandlingID, value[])
         case 11: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_MaxVelocity]);
         case 12: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_EngineAcceleration]);
         case 13: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_EngineInertia]);
-        //case 1: format(value, 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa]);
+        case 14: format(value, 14, "%c", DefaultHandling[vehicleHandlingID][HD_Zalupa]);
         //case 1: format(value, 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa2]);
-        case 14: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeDeceleration]);
-        case 15: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeBias]);
-        case 16: format(value, 14, "%d", DefaultHandling[vehicleHandlingID][HD_ABS]);
-        case 17: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SteeringLock]);
-        case 18: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionForceLevel]);
-        case 19: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionDampingLevel]);
-        case 20: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionHighSpdComDamp]);
-        case 21: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionUpperLimit]);
-        case 22: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionLowerLimit]);
-        case 23: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionBiasBetweenFrontAndRear]);
+        case 15: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeDeceleration]);
+        case 16: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_BrakeBias]);
+        case 17: format(value, 14, "%d", DefaultHandling[vehicleHandlingID][HD_ABS]);
+        case 18: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SteeringLock]);
+        case 19: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionForceLevel]);
+        case 20: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionDampingLevel]);
+        case 21: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionHighSpdComDamp]);
+        case 22: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionUpperLimit]);
+        case 23: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionLowerLimit]);
+        case 24: format(value, 14, "%f", DefaultHandling[vehicleHandlingID][HD_SuspensionBiasBetweenFrontAndRear]);
         default: {}
     }
     return 1;
@@ -653,7 +654,6 @@ stock SetVehicleHandlingDefault(vehicleid, vehicleHandlingID)
     HandlingVehInfo[vehicleid][HD_MaxVelocity] = DefaultHandling[vehicleHandlingID][HD_MaxVelocity];
     HandlingVehInfo[vehicleid][HD_EngineAcceleration] = DefaultHandling[vehicleHandlingID][HD_EngineAcceleration];
     HandlingVehInfo[vehicleid][HD_EngineInertia] = DefaultHandling[vehicleHandlingID][HD_EngineInertia];
-    // format(HandlingVehInfo[vehicleid][HD_Zalupa], 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa]);
     // format(HandlingVehInfo[vehicleid][HD_Zalupa2], 14, "%s", DefaultHandling[vehicleHandlingID][HD_Zalupa2]);
     HandlingVehInfo[vehicleid][HD_BrakeDeceleration] = DefaultHandling[vehicleHandlingID][HD_BrakeDeceleration];
     HandlingVehInfo[vehicleid][HD_BrakeBias] = DefaultHandling[vehicleHandlingID][HD_BrakeBias];
@@ -665,6 +665,7 @@ stock SetVehicleHandlingDefault(vehicleid, vehicleHandlingID)
     HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit] = DefaultHandling[vehicleHandlingID][HD_SuspensionUpperLimit];
     HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit] = DefaultHandling[vehicleHandlingID][HD_SuspensionLowerLimit];
     HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear] = DefaultHandling[vehicleHandlingID][HD_SuspensionBiasBetweenFrontAndRear];
+    HandlingVehInfo[vehicleid][HD_Zalupa] = DefaultHandling[vehicleHandlingID][HD_Zalupa];
     return 1;
 }
 
@@ -679,7 +680,7 @@ stock PutVehicleHandling(vehicleid)
     SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONMULTIPLIER, HandlingVehInfo[vehicleid][HD_TractionMultiplier]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONLOSS, HandlingVehInfo[vehicleid][HD_TractionLoss]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONBIAS, HandlingVehInfo[vehicleid][HD_TractionBias]);
+    //SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONBIAS, HandlingVehInfo[vehicleid][HD_TractionBias]); // Вырубаем перенос Traction Bias
     SetVehicleHandlingInt(vehicleid, HANDLING_NUMOFGEARS, HandlingVehInfo[vehicleid][HD_NumberOfGears]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_MAXVELOCITY, HandlingVehInfo[vehicleid][HD_MaxVelocity]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_ENGINEACCELERATION, HandlingVehInfo[vehicleid][HD_EngineAcceleration]);
@@ -694,6 +695,7 @@ stock PutVehicleHandling(vehicleid)
     SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPUPPERLIMIT, HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPLOWERLIMIT, HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPBIASBETWEEN, HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
+    SetVehicleHandlingInt(vehicleid, HANDLING_ABS, HandlingVehInfo[vehicleid][HD_Zalupa]);
     return 1;
 }
 

@@ -164,14 +164,21 @@ public OnPasswordHashCreateHidden(playerid, const password[])
 	new dest[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(dest);
 
-    new string[320];
+    new string[800];
     format(string, sizeof(string), "INSERT INTO `pp_igroki` SET `Name`='Pirzz_Prezest',`Ammo5`='%d',`RegData`='%d',`Key`='%s',`Tut`='1',\
         `DrugPerk`='%d',`Model`='23',`Money`='2000',`Komnata`='5',`Qwest`='100',`Sex`='1',`Neon`='100',`Cap`='100',`Infoload`='1000',`Age`='18',`Keyhidden`='%s'", 
             PlayerInfo[playerid][pID], gettime(), dest, ServerInfo[54], password);
-    query_empty(pearsq, string);
+    mysql_tquery(pearsq, string, "Call_getidHidden", "d", playerid);
 
     PlayerPlaySound(playerid,6401,0,0,0);
     pc_cmd_hidden(playerid);
+    return 1;
+}
+
+function Call_getidHidden(playerid)
+{
+    new user_id = cache_insert_id();
+    CreateAdditionalyDatabase(user_id);
     return 1;
 }
 
@@ -181,7 +188,7 @@ public OnPasswordHashPasswordHidden(playerid, const password[], user_id)
 	new dest[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(dest);
 
-    new string[180];
+    new string[600];
     format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key`='%s', `Keyhidden`='%s' WHERE `Ammo5` = '%d'", 
             dest, password, user_id);
     query_empty(pearsq, string);

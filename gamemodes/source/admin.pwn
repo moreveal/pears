@@ -247,24 +247,55 @@ CMD:reloadpriceveh(playerid)
 	AdminLog("reloadveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Цены");
 	return 1;
 }
-CMD:reloadbiz(playerid, const params[])
+
+alias:rbiz("reloadbiz", "relbiz")
+CMD:rbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить продукты и тарифы бизнеса [ /reloadbiz ID ][ 0 - Сбросить Все ]");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Добавить новые товары в бизнес [ /rbiz ID ][ 0 - Сбросить Все ]");
 	new string[128];
 	if(params[0] == 0)
 	{
-		for(new b = 0; b < sizeof(BizzInfo); b++) relprodbiz(b);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты всех бизнесов", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+		for(new b = 0; b < sizeof(BizzInfo); b++) relprodbiz(b, 0);
+		format(string, sizeof(string), " [ ADM ]: %s добавил новые товары во все бизнесы", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rbiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Новые товары в бизнесы");
 	}
 	else if(params[0] >= 1 && params[0] <= 200)
 	{
-		relprodbiz(params[0]);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		relprodbiz(params[0], 0);
+		format(string, sizeof(string), " [ ADM ]: %s добавил новые товары в бизнес %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		
+		format(string, sizeof(string), "Новые товары в бизнес %d", params[0]);
+		AdminLog("rbiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
 	return 1;
 }
+
+alias:rbizforce("reloadbizforce", "relbizforce")
+CMD:rbizforce(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить продукты и тарифы бизнеса [ /rbizforce ID ][ 0 - Сбросить Все ]");
+	new string[128];
+	if(params[0] == 0)
+	{
+		for(new b = 0; b < sizeof(BizzInfo); b++) relprodbiz(b, 1);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты всех бизнесов", PlayerInfo[playerid][pName]), ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rbizforce", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил товары в бизах");
+	}
+	else if(params[0] >= 1 && params[0] <= 200)
+	{
+		relprodbiz(params[0], 1);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил тарифы и продукты бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		
+		format(string, sizeof(string), "Сбросил товары в бизнесе %d", params[0]);
+		AdminLog("rbizforce", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
+	}
+	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	return 1;
+}
+
 CMD:reloadbizpos(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] <= 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");

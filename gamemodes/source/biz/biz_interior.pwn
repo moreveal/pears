@@ -113,10 +113,141 @@ stock ReloadFrameBiz(b)
 	return 0;
 }*/
 
+#pragma warning disable 240
+#include "../gamemodes/source/biz/biz_interior_default.pwn" // Дефолтные интерьеры бизнесов
+#pragma warning enable 240
+
+alias:rbizint("reloadbizint", "reloadintbit", "rintbiz")
+CMD:rbizint(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить интерьер бизнеса [ /rbizint ID ]");
+	if(params[0] < 0 || params[0] >= MAX_BIZ) return ErrorMessage(playerid,"{ff6347}Неверный ID бизнеса\n{cccccc}0 - сбросить интерьер всех бизнесов");
+
+    new string[140];
+    DP[0][playerid] = params[0];
+    if(params[0] == 0) format(string, sizeof(string), "Вы уверены, что хотите сбросить интерьеры всех бизнесов?");
+    else format(string, sizeof(string), "Вы уверены, что хотите сбросить интерьер бизнеса № %d ?", params[0]);
+	ShowDialog(playerid,1155,DIALOG_STYLE_MSGBOX,"Сброс Интерьера",string,"Да","Нет");
+    return true;
+}
+
+// Процесс сброса интерьера
+stock ReloadBizInterior(b)
+{
+    // Удалим все объекты перед созданием нового интерьера
+    DeleteAllObjectBizz(b);
+
+    // Устанавливаем интерьеры в клубы и бары
+    if(b == 93) CreateBizInterior(b, 0); // Интерьер Jizzy
+    else if(b == 94 || b == 95) CreateBizInterior(b, 2); // Интерьер Alhambra
+    else if(b == 96) CreateBizInterior(b, 8); // Интерьер Pig Pen
+    else if(b == 97 || b == 98 || b == 101 || b == 102) CreateBizInterior(b, 3); // Интерьер большого Клуба (Ретекстур каркаса ресторана)
+    else if(b == 99 || b == 100) CreateBizInterior(b, 1); // Интерьер мини бар стендап
+
+    // Устанавливаем интерьеры в закусочные
+    else if(b == 103 || b == 109 || b == 116) CreateBizInterior(b, 4); // Интерьер закусочной тёмный (ааахуенный хавчик)
+    else if(b == 104 || b == 113 || b == 115 || b == 117) CreateBizInterior(b, 6); // Интерьер Pizza (ретекстуренный инт из гетто)
+    else if(b == 105 || b == 106 || b == 108 || b == 110 || b == 111 || b == 114) CreateBizInterior(b, 5); // Интерьер Cluckin bell (который всегда был в sf возле sfpd)
+    else if(b == 107 || b == 112) CreateBizInterior(b, 7); // Интерьер закусочной светлый (ааахуенный хавчик)
+
+    // Сохраняем все объекты в бизнесе
+    SaveAllObjectBizz(b);
+    return true;
+}
+
+stock SaveAllObjectBizz(b)
+{
+    mysql_tquery(pearsq, "START TRANSACTION;");
+    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    {
+        if(BizzInfo[b][bOmodel][i] > 0) UpdateObjectBiz(b, i);
+    }
+    mysql_tquery(pearsq, "COMMIT;");
+    return true;
+}
+
+// Удаление всех объектов в бизнесе
+stock DeleteAllObjectBizz(b)
+{
+    mysql_tquery(pearsq, "START TRANSACTION;");
+    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    {
+        if(BizzInfo[b][bOmodel][i] > 0)
+        {
+            DestroyDynamicObject(BizzInfo[b][bObject][i]);
+            ClearVariableObjectBiz(b, i);
+            UpdateObjectBiz(b, i);
+        }
+    }
+    mysql_tquery(pearsq, "COMMIT;");
+    return true;
+}
+
+// Выполняем сброс интерьера
+stock PreReloadBizInterior(playerid, idx)
+{
+    new string[140];
+    if(idx == 0)
+    {
+        new quan;
+        for(new b = 1; b < sizeof(BizzInfo); b++)
+        {
+            if(IsABizInteriorFrame(b)) ReloadBizInterior(b), quan ++;
+        }
+
+        format(string, sizeof(string), " [ ADM ]: %s сбросил интерьеры всех бизнесов (Количество: %d)", PlayerInfo[playerid][pName], quan);
+		ABroadCast(COLOR_ADM,string,1);
+        AdminLog("rbizint", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Интерьеры всех бизнесов");
+    }
+    else
+    {
+        if(idx >= MAX_BIZ) return ErrorMessage(playerid,"{ff6347}Ошибка! Такого номера бизнеса не существует");
+        if(!IsABizInteriorFrame(idx)) return ErrorMessage(playerid,"{ff6347}В этом бизнесе недоступна система объектов");
+		format(string, sizeof(string), " [ ADM ]: %s сбросил интерьер бизнеса № %d", PlayerInfo[playerid][pName], idx);
+		ABroadCast(COLOR_ADM,string,1);
+        format(string, sizeof(string), "Интерьер бизнеса № %d", idx);
+        AdminLog("rbizint", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", idx, string);
+
+        ReloadBizInterior(idx);
+    }
+    return true;
+}
+
 stock IsAJizzyBiz(b)
 {
     if(b == 93) return 1;
     return 0;
+}
+
+stock ReloadBizWhore(b, Float:x, Float:y, Float:z, Float:a)
+{
+    DestroyBizWhore(b);
+
+    BizzInfo[b][bShluhaCord][0] = x;
+    BizzInfo[b][bShluhaCord][1] = y;
+    BizzInfo[b][bShluhaCord][2] = z;
+    BizzInfo[b][bShluhaCord][3] = a;
+	BizzInfo[b][bShluha] = 1;
+	BizShluhaStatus[b] = -1;
+
+    CreateShluha(b);
+    SaveBizz(b);
+    return true;
+}
+
+stock ReloadBizBar(b, Float:x, Float:y, Float:z)
+{
+    DestroyBizBar(b);
+
+    BizzInfo[b][bBarX] = x;
+    BizzInfo[b][bBarY] = y;
+    BizzInfo[b][bBarZ] = z;
+	BizzInfo[b][bBar] = 1;
+
+    CreateBarLabel(b);
+    SaveBizz(b);
+    return true;
 }
 
 stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
@@ -258,7 +389,6 @@ stock EditTextureBiz(playerid, biz, oba)
 
 stock ClearVariableObjectBiz(biz, oba)
 {
-    //BizzInfo[biz][bNewid][oba] = 0;
     BizzInfo[biz][bObject][oba] = 0;
     BizzInfo[biz][bOmodel][oba] = 0;
     BizzInfo[biz][bQara][oba] = 0;
@@ -314,27 +444,12 @@ stock UpdateObjectBiz(b, obid) // Обновляем объект в bize
     return 1;
 }
 
-stock ParseMixedString(const input[], output[][44], outputSize)
+stock dialogCase_BizInterior(playerid, dialogid, response)
 {
-    new partIndex = 0, charIndex = 0;
-
-    // Проходим по каждому символу в строке
-    for (new i = 0; input[i] != '\0' && partIndex < outputSize; i++)
+    if(dialogid == 1155)
     {
-        if (input[i] == ',' || input[i + 1] == '\0')
-        {
-            // Добавляем последний символ, если это конец строки
-            if (input[i + 1] == '\0' && input[i] != ',')
-                output[partIndex][charIndex++] = input[i];
-
-            output[partIndex][charIndex] = '\0'; // Завершаем текущую часть
-            partIndex++; // Переходим к следующей части
-            charIndex = 0; // Сбрасываем индекс символа
-        }
-        else
-        {
-            output[partIndex][charIndex++] = input[i]; // Добавляем символ к текущей части
-        }
+        if(response) ReloadBizInterior(DP[0][playerid]);
+        return true;
     }
-    return 1; // Возвращаем 1, если обработка прошла успешно
+    return false;
 }

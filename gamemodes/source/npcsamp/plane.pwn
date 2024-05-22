@@ -32,6 +32,7 @@ stock GetBagPlane(playerid, t)
     if(plane_gold > 0) quanInvent = 2; // Если есть слиток золота, требуем два слота
     if(!free_invent(playerid, quanInvent)) return format(string, sizeof(string), "{FF6347}В инвентаре не хватает места\nТребуется свободных слотов: %d", quanInvent), ErrorMessage(playerid, string);
 
+    mysql_tquery(pearsq, "START TRANSACTION;");
     // Даём голд (если он был в этой сумке)
     if(plane_gold > 0) GiveThingPlayer(playerid, 94, 1, 0, 0, 0, 0, 9999);
 
@@ -39,6 +40,8 @@ stock GetBagPlane(playerid, t)
     new thingId, thingQuan, thingType, thingPara, thingPack;
     CreateCasePlayer(0, thingId, thingQuan, thingType, thingPara, thingPack);
     GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    CalculateVehicleLimited(thingId, thingType);
+    mysql_tquery(pearsq, "COMMIT;");
 
     // Даём деньги
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ухх! Мои денюжки.. В сумке было {99ff66}%d$ {cccccc}(%s)", money, get_k(money));

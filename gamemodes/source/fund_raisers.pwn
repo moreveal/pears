@@ -336,7 +336,6 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
                         giftFall ++;
                         Throw(playerid, FundRaisersInfo[i][fundGiftThingId][g], FundRaisersInfo[i][fundGiftThingQuan][g], 0, 0, FundRaisersInfo[i][fundGiftThingType][g], 1);
                     }
-                    else SaveInvent(playerid, plit);
                 }
             }
         }

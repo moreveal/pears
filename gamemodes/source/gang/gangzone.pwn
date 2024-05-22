@@ -891,15 +891,20 @@ stock GiftFromCapt(playerid, kills)
 	{
 		case 0:
 		{
+			mysql_tquery(pearsq, "START TRANSACTION;");
+
 			new thingId, thingQuan, thingType, thingPara, thingPack;
     		CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
     		new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+			CalculateVehicleLimited(thingId, thingType);
     		if(put_inva == -1)
 			{
 				Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
                 SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
 			}
 			else SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок");
+
+			mysql_tquery(pearsq, "COMMIT;");
 
 			new string[144];
 			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %d убийств и получил кейс в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);

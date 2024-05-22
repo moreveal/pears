@@ -25,6 +25,7 @@ new VehBuyGold[MAX_MODELS_VEHICLE]; // Подсчет покупок транс�
 new VehLimited[MAX_MODELS_VEHICLE]; // Информация о лимитированном транспорте
 new VehQuan[MAX_MODELS_VEHICLE]; // Количество на руках игроков транспортных средств
 new VehSale[MAX_MODELS_VEHICLE]; // Статус доступности продажи транспорта (1 продаётся, 0 нет)
+new VehLimitedCase[MAX_MODELS_VEHICLE]; // Статус лимитированного транспорта, выданного в кейсах в данный момент
 
 new vehClassName[][] =
 {
@@ -218,7 +219,6 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(558, 2075); // Silvia S15
 	AddVehicleSyncModel(562, 2076); // Nissan GT-R R35
 	AddVehicleSyncModel(402, 2077); // Charger RT 69
-
 	AddVehicleSyncModel(573, 2078); // Mars Rover
 	AddVehicleSyncModel(573, 2079); // Mars Rider
 	AddVehicleSyncModel(594, 2080); // Mars RC Car
@@ -677,7 +677,7 @@ stock GetVehicleClass(m)
     || m == 474 || m == 475 || m == 479 || m == 492 || m == 512 || m == 513 || m == 517 || m == 518 || m == 526 || m == 527
     || m == 529 || m == 536 || m == 540 || m == 542 || m == 546 || m == 547 || m == 549 || m == 553 || m == 566 || m == 567
     || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
-	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2061
+	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2059 || m == 2061
 	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054 || m == 2067 || m == 2074 || m == 2075 || m == 2077) class = 3;
 
     // Off-Road Class (4) - Внедорожник
@@ -693,7 +693,7 @@ stock GetVehicleClass(m)
     else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
-    || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2059 || m == 2062 || m == 2063 || m == 2064) class = 6;
+    || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062 || m == 2063 || m == 2064) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
@@ -1035,8 +1035,9 @@ stock ShowLineVehPrice(playerid, v)
 		else atext = "cccccc"; // Обычный транспорт
 	}
 
-	format(line,sizeof(line),"\n{%s}%s {cccccc}[%d]\t{99ff66}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d", atext, GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
-    return line;
+	if(VehSale[vehicleList]) format(line,sizeof(line),"\n{%s}%s {cccccc}[%d]\t{99ff66}%d$ {cccccc}[%s]\t{ffcc00}%dG\t{cccccc}%d / %d", atext, GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
+    else format(line,sizeof(line),"\n{%s}%s {cccccc}[%d]\t%d$ {cccccc}[%s]\t%dG\t{cccccc}%d / %d", atext, GetVehicleName(v), v, VehGos[vehicleList], get_k(VehGos[vehicleList]), VehGold[vehicleList], VehBuy[vehicleList], VehBuyGold[vehicleList]);
+	return line;
 }
 
 stock SettingGosPriceVehicle(playerid, vehicleList)
@@ -1135,6 +1136,8 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			}
 			else if(listitem == 1)
 			{
+				if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
+
 				new line[100],lines[300];
 				format(line,sizeof(line),"{cccccc}Введите Gold стоимость для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
 				format(line,sizeof(line),"\n\n{cccccc}Текущая Стоимость: {ffcc00}%dG", VehGold[vehicleList]), strcat(lines,line);
@@ -1143,6 +1146,8 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			}
 			else if(listitem == 2)
 			{
+				if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
+
 				new line[100],lines[600];
 				format(line,sizeof(line),"{cccccc}Введите лимитированность для {ff9000}%s", GetVehicleName(v)), strcat(lines,line);
 				if(VehLimited[vehicleList] == 0) format(line,sizeof(line),"\n\n{cccccc}Текущее количество: {99ff66}Не ограничено"), strcat(lines,line);
@@ -1154,10 +1159,15 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			}
 			else if(listitem == 3)
 			{
+				if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
+
 				if(VehSale[vehicleList]) VehSale[vehicleList] = 0;
 				else VehSale[vehicleList] = 1;
 				SaveVehicleSale(vehicleList);
 				SettingGosPriceVehicle(playerid, OnlineInfo[playerid][oDialogMenu][3]);
+
+				// Пересобираем подарки с транспортом
+				CreateVehicleGiftCase();
 			}
 		}
 		else vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
@@ -1290,14 +1300,23 @@ stock SaveVehicleSale(v)
     return 1;
 }
 
+// Сохраняем лимитированное количествов транспорта в кейсах (до тех пор, пока игрок не распакует)
+stock SaveVehicleLimitedCase(v)
+{
+    new string_mysql[140];
+	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehLimitedCase` = '%d' WHERE `model` = '%d'", VehLimitedCase[v], v);
+	query_empty(pearsq, string_mysql);
+    return 1;
+}
+
 
 new bool:ReloadLimitedProcess; // Пауза на применение команды
 
-alias:reloadlimited("rlimit", "rlimited", "rlimitveh", "rlimitedveh")
+alias:reloadlimited("rlimit", "rlimited", "rlimitveh", "rvehlimit", "rlimitedveh")
 CMD:reloadlimited(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(ReloadLimitedProcess == false) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения пересчёта транспорта");
+	if(ReloadLimitedProcess == true) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения пересчёта транспорта");
 
 	new vehiclename[64];
 	if(sscanf(params, "s[64]", vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пересчитать количество транспорта на руках [ /rlimit Model ]");
@@ -1307,7 +1326,7 @@ CMD:reloadlimited(playerid, const params[])
 
 	ReloadLimitedVehicle(model); // Пересчитываем
 	new string[140];
-	format(string, sizeof(string), " [ ADM ]: %s[%d] пересчитал %s на руках", PlayerInfo[playerid][pName], GetVehicleName(model));
+	format(string, sizeof(string), " [ ADM ]: %s пересчитал %s на руках игроков", PlayerInfo[playerid][pName], GetVehicleName(model));
 	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("reloadlimited", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
 	return 1;
@@ -1320,7 +1339,7 @@ stock ReloadLimitedVehicle(model)
 
 	ReloadLimitedProcess = true;
 	new string_mysql[120];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT model FROM `pp_cars` WHERE `model` = '%d'", model);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT newid, model FROM `pp_cars` WHERE `model` = '%d'", model);
 	mysql_tquery(pearsq, string_mysql, "Call_ReloadLimitedVehicle", "d", v);
 	return 1;
 }
@@ -1330,6 +1349,11 @@ function Call_ReloadLimitedVehicle(v)
 	new rows;
 	cache_get_row_count(rows);
 	VehQuan[v] = rows;
+	SaveVehicleQuan(v);
+
+	VehLimitedCase[v] = 0;
+	SaveVehicleLimitedCase(v);
+
 	ReloadLimitedProcess = false;
 	return 1;
 }
@@ -1362,15 +1386,16 @@ function Call_CheckLimitedVehicle(playerid, model, v)
 	if(rows)
 	{
 		new user_id, line[214], lines[4096];
-		format(line,sizeof(line),"{ff9000}%s {cccccc}[ Лимит: %d | На руках: %d ]\n\n", GetVehicleName(model), VehLimited[v], VehQuan[v]), strcat(lines,line);
+		format(line,sizeof(line),"{ff9000}%s {cccccc}[ Лимит: %d | На руках: %d ]\n", GetVehicleName(model), VehLimited[v], VehQuan[v]), strcat(lines,line);
 
 		for(new i = 0; i < rows; i++)
 		{
 			cache_get_value_name_int(i, "sost", user_id);
-			format(line,sizeof(line),"{cccccc}%d\n", user_id), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}user_id: %d", user_id), strcat(lines,line);
 		}
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{999999}*",lines,"*","");
 	}
+	else return ErrorMessage(playerid, "{FF6347}Этого транспорта нет на руках игроков");
 	return 1;
 }
 
@@ -1433,12 +1458,23 @@ function LoadPriceVeh()
 			cache_get_value_name_int(v, "VehLimited", VehLimited[vehicleList]);
 			cache_get_value_name_int(v, "VehQuan", VehQuan[vehicleList]);
 			cache_get_value_name_int(v, "VehSale", VehSale[vehicleList]);
+			cache_get_value_name_int(v, "VehLimitedCase", VehLimitedCase[vehicleList]);
 
 			// Если гос 0, сразу прописываем из дефолт цен
-			if(VehGos[v] == 0)
+			if(VehGos[vehicleList] == 0)
 			{
-				if(v <= 211) VehGos[v] = vehSumma[v];
-				else VehGos[v] = vehSummaCustom[v - 212];
+				if(v <= 211) VehGos[vehicleList] = vehSumma[vehicleList];
+				else VehGos[vehicleList] = vehSummaCustom[vehicleList - 212];
+			}
+
+			// Пересчитываем лимитированный транспорт
+			if(VehLimited[vehicleList] > 0)
+			{
+				if(VehLimitedCase[vehicleList] >= VehLimited[vehicleList] // Если лимитированный транспорт в кейсах больше или равняется лимиту транспорта
+					&& VehQuan[vehicleList] < VehLimitedCase[vehicleList]) // Если количество на руках меньше чем количество в кейсах
+				{
+					VehLimitedCase[vehicleList] = 0;
+				}
 			}
 		}
 		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
