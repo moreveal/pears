@@ -40,6 +40,16 @@ stock CreatePlayerRacePoint(playerid, raceid, typerace)
             pointQuan ++;
         }
     }
+    else if(raceid == 3)
+    {
+        for(new i = 0; i < sizeof(DominicRace_Three); i++)
+        {
+            RacePointPlayer_X[playerid][i] = DominicRace_Three[i][Dominic_X];
+            RacePointPlayer_Y[playerid][i] = DominicRace_Three[i][Dominic_Y];
+            RacePointPlayer_Z[playerid][i] = DominicRace_Three[i][Dominic_Z];
+            pointQuan ++;
+        }
+    }
     /*
     Сюда добавлять дальше другие маршруты и гонки (система всё расчитает и четко отработает)
     else if(raceid == 1)

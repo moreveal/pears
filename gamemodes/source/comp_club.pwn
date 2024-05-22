@@ -1523,7 +1523,7 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
 
         if (player_game == gameid && player_room == roomid) {
             // Оповещение о смене статуса игры
-            PlayerPlaySound(id, status ? 3200 : 5203, 0.0, 0.0, 0.0);
+            PlayerPlaySound(id, status ? 3200 : 1145, 0.0, 0.0, 0.0);
 
             // Обработка смены статуса игры
             if (status) {
