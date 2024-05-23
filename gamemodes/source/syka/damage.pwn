@@ -351,6 +351,9 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         return false;
     }
 
+    // Игрок, которому наносим урон, AFK
+    if(IsPlayerAfk(damagedid)) return false;
+
     // Блокируем урон по NPC
     if(IsPlayerNPC(damagedid)) return false;
 
