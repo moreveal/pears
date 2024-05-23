@@ -1725,7 +1725,7 @@ stock SaveInventByUserID(user_id, i, JsonNode:node, bool:isMark = false)
 	if(node == JSON_INVALID_NODE)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_inventory` SET `%s_slot_%d`= NULL WHERE `user_id` = '%d'", (isMark ? "m" : "i"), i, user_id);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_inventory` SET `%s_slot_%d`= NULL WHERE `user_id` = '%d'", (isMark ? "m" : "i"), i, user_id);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -1816,8 +1816,8 @@ stock OnPlayerLoadInventory(playerid)
 
 stock OnPlayerFriskOffline(playerid)
 {
-	new string_mysql[100];
-	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `%s` WHERE `user_id` = '%d'", 
+	new string_mysql[140];
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `%e` WHERE `user_id` = '%d'", 
 		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
 	mysql_tquery(pearsq, string_mysql, "Call_frisk", "ds", playerid, ListName[playerid]);
 	return 1;
@@ -1825,8 +1825,8 @@ stock OnPlayerFriskOffline(playerid)
 
 stock OnPlayerTakeOffline(playerid)
 {
-	new string_mysql[100];
-	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `%s` WHERE `user_id` = '%d'", 
+	new string_mysql[140];
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `%e` WHERE `user_id` = '%d'", 
 		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
 	mysql_tquery(pearsq, string_mysql, "Call_takefrisk", "dsd", playerid, ListName[playerid], ListInva[DP[3][playerid]][playerid]);
 	return 1;
@@ -2195,7 +2195,7 @@ stock SaveSkladOne(idx, i)
 	if(OrganInfo[idx][gInvent][i] == 0)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= NULL WHERE `frakid` = '%d'", i, idx);
+		mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= NULL WHERE `frakid` = '%d'", i, idx);
 		mysql_tquery(pearsq_2, string_mysql);
 	}
 	else

@@ -6,7 +6,7 @@ stock UpdateSqlProperties() // Сохраняем инфу о сервере в 
     // if(server == 0) return 0; // VREMENNO koment
 
     new string_mysql[1024];
-    format(string_mysql, sizeof(string_mysql), "INSERT INTO properties ( name, value ) VALUES \
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "INSERT INTO properties ( name, value ) VALUES \
         ('players', '%d'), \
         ('maxPlayers',  '%d'), \
         ('password',  '%s'), \
@@ -28,8 +28,8 @@ stock UpdateSqlPlayer() // Записываем все аккаунты в та�
     foreach(Player,i)
 	{
         if(OnlineInfo[i][oLogged] == 0) continue; // Незалогинившихся, не показываем
-        format(string_mysql, sizeof(string_mysql), "INSERT INTO online_players ( playerId, name, accountId, score, ping ) VALUES \
-            ('%d', '%s', '%d', '%d', '%d')", 
+        mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "INSERT INTO online_players ( playerId, name, accountId, score, ping ) VALUES \
+            ('%d', '%e', '%d', '%d', '%d')", 
             i, 
             PlayerInfo[i][pName], 
             PlayerInfo[i][pID], 
@@ -93,7 +93,7 @@ stock ClearOldBridgeEvents()
     if(server == 0) return 0;
 
     new string_mysql[90];
-    format(string_mysql, sizeof(string_mysql), "DELETE FROM events_from_server WHERE date <= %d", gettime() - 604800);
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "DELETE FROM events_from_server WHERE date <= %d", gettime() - 604800);
     mysql_tquery(pearsq_3, string_mysql);
     return 1;
 }

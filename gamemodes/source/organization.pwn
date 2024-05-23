@@ -252,7 +252,7 @@ function LoadOrgan()
 			if(OrganInfo[idx][gMap] >= 1)
 			{
 			    MysqlRaceMapFrak[idx] = 1;
-				format(strFromFile2, sizeof(strFromFile2), "SELECT * FROM `pp_mapfrak` WHERE `frakid` = '%d' AND `mapid` = '%d' LIMIT 200", idx, OrganInfo[idx][gMap]);
+				mysql_format(pearsq, strFromFile2, sizeof(strFromFile2), "SELECT * FROM `pp_mapfrak` WHERE `frakid` = '%d' AND `mapid` = '%d' LIMIT 200", idx, OrganInfo[idx][gMap]);
 				mysql_tquery(pearsq, strFromFile2, "call_loadmap", "ddd", -1, idx, OrganInfo[idx][gMap]);
 			}
 		}
@@ -384,7 +384,7 @@ stock SaveOneSkinOrganization(g, i)
 	if(OrganInfo[g][gSkin][i] == 0)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `s_slot_%d`= NULL WHERE `frakid` = '%d'", i, g);
+		mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `s_slot_%d`= NULL WHERE `frakid` = '%d'", i, g);
 		mysql_tquery(pearsq_2, string_mysql);
 	}
 	else
@@ -409,17 +409,17 @@ stock SaveOneSkinOrganization(g, i)
 stock SaveOrgan(idx)
 {
 	new string_mysql[1200];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
-	`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
-	OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
-	OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],
-	OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]); // 235 + 154
-	format(string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  string_mysql,
-	orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]); // 133 + 110
-	format(string_mysql, sizeof(string_mysql), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
-	`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", string_mysql,
-	OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
-	OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx); // 201 + 154
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
+		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
+		OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
+		OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],
+		OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]); // 235 + 154
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  string_mysql,
+		orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]); // 133 + 110
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
+		`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", string_mysql,
+		OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
+		OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx); // 201 + 154
 	query_empty(pearsq_2, string_mysql); // 987
 	return 1;
 }
@@ -730,9 +730,9 @@ CMD:membersoff(playerid)
 	if(needg >= MAX_ORG) return ErrorMessage(playerid, "{FF6347}Ошибка! Неверный ID организации");
 
 	new string[240];
-	if(needg == 2) format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
+	if(needg == 2) mysql_format(pearsq, string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
 		FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);
-	else format(string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
+	else mysql_format(pearsq, string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
 		FROM `pp_igroki` WHERE `Member` = '%d' AND `Online` = '0' LIMIT 40", needg);
 	mysql_tquery(pearsq, string, "Call_mem", "dd", playerid, needg);
 	return 1;
@@ -879,7 +879,7 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // Сохраняем одну строку в базу
 {
 	new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `%s` SET `%s` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `%e` SET `%e` = '%d' WHERE `frakid` = '%d'", db_name, name, value, orgId);
 	query_empty(pearsq_2, string_mysql);
 	return 1;
 }
@@ -887,25 +887,19 @@ stock mysql_SaveOrganization(orgId, const db_name[], const name[], value) // С�
 stock SaveRank(orgId, rankId)
 {
 	new string_mysql[160];
-	new nameRank[MAX_NAME_LENGTH];
-	mysql_escape_string(RankOrg[orgId][rankId], nameRank, sizeof(nameRank));
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `rank%d` = '%s' WHERE `frakid` = '%d'", rankId, nameRank, orgId);
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `rank%d` = '%e' WHERE `frakid` = '%d'", rankId, RankOrg[orgId][rankId], orgId);
 	query_empty(pearsq_2, string_mysql);
 	return 1;
 }
 
 stock SaveAllRanks(orgId)
 {
-	new nameRank[MAX_NAME_LENGTH];
-	mysql_escape_string(RankOrg[orgId][0], nameRank, sizeof(nameRank));
-
 	new string_mysql[2000];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_organization` SET `rank0` = '%s'", nameRank); // 44 + 31
+	mysql_format(pearsq_2, string_mysql,sizeof(string_mysql),"UPDATE `pp_organization` SET `rank0` = '%e'", RankOrg[orgId][0]); // 44 + 31
 
 	for(new i = 0; i < MAX_RANK_ORG; i++) 
 	{
-		mysql_escape_string(RankOrg[orgId][i], nameRank, sizeof(nameRank));
-		format(string_mysql,sizeof(string_mysql),"%s, `rank%d` = '%s'", string_mysql, i, nameRank); // 20 + 2 + 31
+		mysql_format(pearsq_2, string_mysql,sizeof(string_mysql),"%s, `rank%d` = '%e'", string_mysql, i, RankOrg[orgId][i]); // 20 + 2 + 31
 	}
     format(string_mysql,sizeof(string_mysql),"%s WHERE `frakid` = '%d'", string_mysql, orgId); // 25 + 11
 	query_empty(pearsq_2, string_mysql);

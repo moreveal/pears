@@ -643,7 +643,7 @@ stock SaveBootByNewid(newid, i, JsonNode:node)
 	if(node == JSON_INVALID_NODE)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `v_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `v_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else

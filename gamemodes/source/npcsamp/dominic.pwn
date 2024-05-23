@@ -317,7 +317,7 @@ CMD:reloaddominic(playerid)
 stock SaveDominicQuest(playerid)
 {
     new string_mysql[140];
-    format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `pDominic`='%d', `pDominic`='%d' WHERE `user_id`='%d'", 
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `pDominic`='%d', `pDominic`='%d' WHERE `user_id`='%d'", 
         PlayerInfo[playerid][pDominic], PlayerInfo[playerid][pDominic], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
     return 1;

@@ -469,7 +469,8 @@ stock GetAccessRankOrg(playerid, g, accessId, fbi) // Ответ с сообще
 stock SaveOrganAccess(idx, accid)
 {
     new string_mysql[79 + 55];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `acc%d`='%d', `accdiv%d`='%d' WHERE `frakid`='%d'", accid, OrganInfo[idx][gAcc][accid], accid, OrganInfo[idx][gAccDiv][accid], idx);
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `acc%d`='%d', `accdiv%d`='%d' WHERE `frakid`='%d'", 
+        accid, OrganInfo[idx][gAcc][accid], accid, OrganInfo[idx][gAccDiv][accid], idx);
 	query_empty(pearsq_2, string_mysql);
 	return true;
 }
@@ -479,7 +480,7 @@ stock SaveOrganAccessAll(idx)
     new string_mysql[2600];
 
     // Первая часть
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
     for(new i = 0; i < 60; i++)
     {
         format(string_mysql, sizeof(string_mysql), "%s`acc%d`='%d'%s", string_mysql, i, OrganInfo[idx][gAcc][i], (i < 59 ? "," : " "));
@@ -488,7 +489,7 @@ stock SaveOrganAccessAll(idx)
     query_empty(pearsq_2, string_mysql);
 
     // Вторая часть
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET ");
     for(new i = 60; i < MAX_ACC; i++) 
     {
         format(string_mysql, sizeof(string_mysql), "%s`acc%d`='%d'%s", string_mysql, i, OrganInfo[idx][gAcc][i], (i < MAX_ACC-1 ? "," : " "));

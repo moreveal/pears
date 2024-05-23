@@ -432,7 +432,7 @@ function LoadMenuMusic()
 stock SaveMenuMusicInt(i, const namePermission[], databasePermission)
 {
 	new string_mysql[180];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_MenuMusic` SET `%s` = '%d' WHERE `newid` = '%d'", 
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_MenuMusic` SET `%s` = '%d' WHERE `newid` = '%d'", 
 		namePermission, databasePermission, MenuMusicInfo[i][musID]);
 	query_empty(pearsq, string_mysql);
 	return true;

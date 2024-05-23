@@ -21,8 +21,8 @@ CMD:showhb(playerid, const params[])
 	{
 		Login[2][playerid] = 0, stop_dialog(playerid);
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
-		new string[101];
-		format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
+		new string[120];
+		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
 	}
 	else
@@ -31,8 +31,8 @@ CMD:showhb(playerid, const params[])
 		if(IsARealNPC(params[0])) return ErrorMessage(playerid, "{FF6347}Это NPC");
 		Login[2][playerid] = 0, stop_dialog(params[0]);
 		ShowDialog(params[0],1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
-		new string[101];
-		format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
+		new string[120];
+		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", params[0]);
 	}
 	return 1;
@@ -45,16 +45,16 @@ CMD:checkhb(playerid,const params[])
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
-	new string[101];
+	new string[120];
 	if(IsPlayerConnected(giveplayerid))
 	{
-		format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[giveplayerid][pID]);
+		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[giveplayerid][pID]);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
 	}
 	else
 	{
 		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", params[0]);
+		mysql_format(pearsq, string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
 		mysql_tquery(pearsq, string, "Call_HonorBoardName", "ds", playerid, params[0]);
 	}
 	return 1;
@@ -68,7 +68,7 @@ function Call_HonorBoardName(playerid, const parama)
 	if(rows)
 	{
 		cache_get_value_name_int(0, "user_id", datad1);
-		format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", datad1);
+		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", datad1);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -81,8 +81,8 @@ CMD:honorboard(playerid)
 	new g = fraction(playerid);
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка фракционной Доски Почета...","*","");
-	new string[101];
-	format(string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' ORDER BY `Unix` LIMIT 70", g);
+	new string[120];
+	mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `org` = '%d' ORDER BY `Unix` LIMIT 70", g);
 	mysql_tquery(pearsq, string, "Call_frakHB", "dd", playerid,g);
 	return 1;
 }
@@ -124,17 +124,17 @@ CMD:inhb(playerid, const params[])
 	new tmpTPlayerID = PlayerInfo[playerid][pID];
 	new para = ReturnUser(tmpName, 1);
 
-	new string_mysql[100];
+	new string_mysql[140];
     if(IsPlayerConnected(para))
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
-	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
+	  	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
       	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsdd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix, para);
     }
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmpName);
 		mysql_tquery(pearsq, string_mysql, "get_inhonorboard", "ddsdsd", playerid, g,tmpName, tmpTPlayerID, PlayerInfo[playerid][pName], unix);
     }
 	return 1;
@@ -162,8 +162,8 @@ function get_inhonorboard(playerid, g, const tmpName[], tmpTPlayerID,const tmpTN
 	{
 	    new plaid;
 	    cache_get_value_name_int(0, "user_id", plaid);
-		new string_mysql[100];
-	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
+		new string_mysql[120];
+	    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
       	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsd", playerid, g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -194,7 +194,7 @@ function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const t
 		    format(query, sizeof(query),"\n{cccccc}Вы занесли %s в Доску почета %s",tmpName,frakName[g]);
 			ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
 		}
-        format(query, sizeof(query), "INSERT INTO `honorboard` (`org`, `playerid`, `playerName`, `Tplayerid`, `TplayerName`, `Unix`) VALUES ( '%d', '%d', '%s', '%d', '%s', '%d' )",
+        mysql_format(pearsq, query, sizeof(query), "INSERT INTO `honorboard` (`org`, `playerid`, `playerName`, `Tplayerid`, `TplayerName`, `Unix`) VALUES ( '%d', '%d', '%e', '%d', '%e', '%d' )",
     	g, plaid, tmpName, tmpTPlayerID, tmpTName, unix);
     	mysql_tquery(pearsq, query, "", "");
     	
@@ -214,18 +214,18 @@ CMD:outhb(playerid, const params[])
 	new tmpTPlayerID = PlayerInfo[playerid][pID];
 	new para = ReturnUser(tmpName, 1);
 
-	new string_mysql[120];
+	new string_mysql[140];
     if(IsPlayerConnected(para))
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
-	  	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", tmpPlayerID, g);
+	  	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", tmpPlayerID, g);
       	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddddd",  playerid, g, tmpPlayerID, tmpTPlayerID, unix,para);
 		printf("%d %d %d %d %d %d",playerid, g, tmpPlayerID, tmpTPlayerID, unix,para);
     }
     else
     {
         if(!CheckRP_Nickname(tmpName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmpName);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmpName);
 		mysql_tquery(pearsq, string_mysql, "get_outhonorboard", "dddd", playerid, g, tmpTPlayerID, unix);
     }
 	return 1;
@@ -239,7 +239,7 @@ function get_outhonorboard(playerid, g, tmpTPlayerID, unix)
 	    new plaid;
 	    cache_get_value_name_int(0, "user_id", plaid);
 		new string_mysql[120];
-	    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
+	    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
       	mysql_tquery(pearsq, string_mysql, "out_honorboard", "dddddd",  playerid, g, plaid, tmpTPlayerID, unix,-1);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -265,7 +265,7 @@ function out_honorboard(playerid, g, plaid, tmpTPlayerID, unix,target)
 	    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета %s",NickName,frakName[g]);
 	    format(string, sizeof(string),"\n{cccccc}Вы вынесли %s из доски почета %s",NickName,frakName[g]);
 		ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", string, "Ок", "");
-	    format(string,sizeof(string),"DELETE FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
+	    mysql_format(pearsq, string,sizeof(string),"DELETE FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
 		query_empty(pearsq, string);
 	    
 	    format(string, sizeof(string), "Вас вынесли из доски почета %s", frakeasyName[g]);

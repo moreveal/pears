@@ -840,7 +840,7 @@ stock SaveSkladBiz(idx, i)
 	if(BizzInfo[idx][bInvent][i] == 0)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `b_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `b_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -1100,38 +1100,34 @@ stock SaveBizzCity(b)
 
 	// Saving immediately
 	new string_mysql[90];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `bCity` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bCity], b);
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `bCity` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bCity], b);
 	query_empty(pearsq, string_mysql);
 	return true;
 }
 stock SaveBizz(b)
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
-	new f_str1[24],f_str2[34],f_str3[64],f_str4[64];
-	mysql_escape_string(BizzInfo[b][bVlad], f_str1, sizeof(f_str1));
-	mysql_escape_string(BizzInfo[b][bName], f_str2, sizeof(f_str2));
-	mysql_escape_string(BizzInfo[b][bArReason], f_str3, sizeof(f_str3));
-	mysql_escape_string(BizzInfo[b][bStatReason], f_str4, sizeof(f_str4));
 
 	new string_mysql[2200];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Vlad`='%s',`Level`='%d',`Sost`='%d',`Data`='%d',`Freeze`='%d',`Arest`='%d',`Fam`='%d',`Intorval`='%d',\
-	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%s',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',`BizShluha`='%d',`BizShluhaX`='%f',`BizShluhaY`='%f',`BizShluhaZ`='%f',`BizShluhaA`='%f',",f_str1,
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Vlad`='%e',`Level`='%d',`Sost`='%d',`Data`='%d',`Freeze`='%d',`Arest`='%d',`Fam`='%d',`Intorval`='%d',\
+	`bcX`='%f',`bcY`='%f',`bcZ`='%f',`Lab`='%d',`Descrip`='%d',`Name`='%e',`BizBar`='%d',`BizBarX`='%f',`BizBarY`='%f',`BizBarZ`='%f',`BizShluha`='%d',`BizShluhaX`='%f',`BizShluhaY`='%f',`BizShluhaZ`='%f',`BizShluhaA`='%f',",
+	BizzInfo[b][bVlad],
 	BizzInfo[b][bLevel], BizzInfo[b][bSost], BizzInfo[b][bData], BizzInfo[b][bFreeze], BizzInfo[b][bArest], BizzInfo[b][bFam], BizzInfo[b][bInterval],
-	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], f_str2, BizzInfo[b][bBar], BizzInfo[b][bBarX], BizzInfo[b][bBarY], 
+	BizzInfo[b][bX], BizzInfo[b][bY], BizzInfo[b][bZ], BizzInfo[b][bLab], BizzInfo[b][bDescrip], BizzInfo[b][bName], BizzInfo[b][bBar], BizzInfo[b][bBarX], BizzInfo[b][bBarY], 
 	BizzInfo[b][bBarZ],BizzInfo[b][bShluha], BizzInfo[b][bShluhaCord][0], BizzInfo[b][bShluhaCord][1],BizzInfo[b][bShluhaCord][2],BizzInfo[b][bShluhaCord][3]); // 259 + 110 + 24 + 120 + 34 + 72
 
-	format(string_mysql, sizeof(string_mysql), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`obX0`='%f',`obY0`='%f',`obZ0`='%f',`obRX0`='%f',`obRY0`='%f',`obRZ0`='%f',`obX1`='%f',`obY1`='%f',`obZ1`='%f',`obRX1`='%f',`obRY1`='%f',`obRZ1`='%f'\
 	,`EnterX`='%f',`EnterY`='%f',`EnterZ`='%f',`EnterA`='%f',`InteriorX`='%f',`InteriorY`='%f',`InteriorZ`='%f',`InteriorA`='%f',`Inter`='%d',`bZZ` ='%d',",string_mysql,
 	BizzInfo[b][bBizOX][0],BizzInfo[b][bBizOY][0],BizzInfo[b][bBizOZ][0],BizzInfo[b][bBizORX][0],BizzInfo[b][bBizORY][0],BizzInfo[b][bBizORZ][0],
 	BizzInfo[b][bBizOX][1],BizzInfo[b][bBizOY][1],BizzInfo[b][bBizOZ][1],BizzInfo[b][bBizORX][1],BizzInfo[b][bBizORY][1],BizzInfo[b][bBizORZ][1],BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],
 	BizzInfo[b][bEnterZ],BizzInfo[b][bEnterA], BizzInfo[b][bInteriorX], BizzInfo[b][bInteriorY], BizzInfo[b][bInteriorZ], BizzInfo[b][bInteriorA], 
 	BizzInfo[b][bInterior],BizzInfo[b][bZZ]); // 307 + 22 + 400 + 12
 	
-	format(string_mysql, sizeof(string_mysql), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',\
-	`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%s',`Stat`='%d',`StatReason`='%s',`Taxday`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',\
+	`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%e',`Stat`='%d',`StatReason`='%e',`Taxday`='%d',\
 	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d',`bMafiaSchet`='%d' WHERE `newid`='%d'", string_mysql,
 	BizzInfo[b][bMafia],BizzInfo[b][bBablo],BizzInfo[b][bSchet],BizzInfo[b][bSell],BizzInfo[b][bPastime],BizzInfo[b][bMafunix],BizzInfo[b][bTaxes],
-	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], f_str3, BizzInfo[b][bStat], f_str4, BizzInfo[b][bTaxday], 
+	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], BizzInfo[b][bArReason], BizzInfo[b][bStat], BizzInfo[b][bStatReason], BizzInfo[b][bTaxday], 
 	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus],BizzInfo[b][bMafiaSchet], b); // 292 + 187 + 64+29
 	query_empty(pearsq, string_mysql); // 1891
 
@@ -1159,7 +1155,7 @@ stock SaveBizzProductItem(idx, i)
 	if(BizzInfo[idx][bProduct][i] == 0 && BizzInfo[idx][bWare][i] == 0 && BizzInfo[idx][bItem][i] == 0) // Слот пустой, тогда NULL
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `p_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `p_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -1270,7 +1266,7 @@ stock SaveBizzOrder(idx, i)
 	if(BizzInfo[idx][bOrder][i] == 0) // Слот пустой, тогда NULL
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `o_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `o_slot_%d`= NULL WHERE `newid` = '%d'", i, idx);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -1309,12 +1305,12 @@ stock SaveBizzPartner(idx)
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
 
 	new string_mysql[500];
-	format(string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `parthner0` = '%d'", BizzInfo[idx][bFamilyPartner][0]); // 40 + 11
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `parthner0` = '%d'", BizzInfo[idx][bFamilyPartner][0]); // 40 + 11
 	for(new i = 1; i < 10; i++) 
 	{
-		format(string_mysql,sizeof(string_mysql),"%s, `parthner%d` = '%d'", string_mysql, i, BizzInfo[idx][bFamilyPartner][i]); // 24 + 11 + 2 (370)
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `parthner%d` = '%d'", string_mysql, i, BizzInfo[idx][bFamilyPartner][i]); // 24 + 11 + 2 (370)
 	}
-    format(string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx); // 24 + 11
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, idx); // 24 + 11
 	query_empty(pearsq, string_mysql); // 456
 	return 1;
 }
@@ -1484,7 +1480,7 @@ CMD:bizprice(playerid, const params[])
  	ABroadCast(COLOR_ADM,string,1);
 
 	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bCost`='%d' WHERE `newid`='%d'",params[1],params[0]);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bCost`='%d' WHERE `newid`='%d'",params[1],params[0]);
 	query_empty(pearsq, string_mysql);
 
 	format(string, sizeof(string), "Изменил стоимость бизнеса № %d",params[0]);
@@ -1505,7 +1501,7 @@ CMD:bizgold(playerid, const params[])
  	ABroadCast(COLOR_ADM,string,1);
 
 	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bGold`='%d' WHERE `newid`='%d'",params[1],params[0]);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `bGold`='%d' WHERE `newid`='%d'",params[1],params[0]);
 	query_empty(pearsq, string_mysql);
 
 	format(string, sizeof(string), "Изменил gold стоимость бизнеса № %d",params[0]);

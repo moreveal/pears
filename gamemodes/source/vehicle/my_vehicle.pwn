@@ -4361,7 +4361,7 @@ function LoadCar(playerid, dab, race_check)
 
 			// Сохраняем авто
 			new string_mysql[120];
-			format(string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET `death` = '%i' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
+			mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET `death` = '%d' WHERE `sost` = '%d' AND `slot` = '%d'", death, paramet[0], dab);
 			query_empty(pearsq, string_mysql);
 
 			repair = 1;
@@ -4627,7 +4627,7 @@ stock SaveTunningByNewid(newid, i, JsonNode:node)
 	if(node == JSON_INVALID_NODE)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `t_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_cars` SET `t_slot_%d`= NULL WHERE `newid` = '%d'", i, newid);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -4740,12 +4740,12 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 
 		mysql_tquery(pearsq, "START TRANSACTION;");
 
-		new string_mysql[100];
-		format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
+		new string_mysql[120];
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot);
         query_empty(pearsq, string_mysql);
 
 		// Сохраняем авто
-  		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
+  		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, PlayerInfo[playerid][pID]);
         query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
@@ -4771,19 +4771,19 @@ CMD:delcar(playerid, const params[])
 	if(sscanf(params, "s[24]i", tmp,slot)) return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Удалить личный транспорт [ /delcar ID Слот ]");
 	if(slot > MAX_MYVEHICLE || slot < 1) return ErrorMessage(playerid, "{FF6347}Номер слота не меньше 1 и не больше 20");
 
-	new string_mysql[120];
+	new string_mysql[140];
 	para1 = ReturnUser(tmp, 1);
 	if(IsPlayerConnected(para1))
  	{
  	    if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
-		format(string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
         mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, PlayerInfo[para1][pName], PlayerInfo[para1][pID], slot);
 	}
 	else
 	{
 	    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
 		mysql_tquery(pearsq, string_mysql, "Call_delcaroff", "dsd", playerid, tmp, slot);
 	 }
 	return 1;
@@ -4796,7 +4796,7 @@ function Call_delcaroff(playerid, str_name[], slot)
 	{
 		cache_get_value_name_int(0, "user_id", datadid);
 		new string_mysql[120];
-		format(string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", datadid, slot);
 		mysql_tquery(pearsq, string_mysql, "Call_delcar", "dsdd", playerid, str_name, datadid, slot);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -4820,13 +4820,13 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 
 		mysql_tquery(pearsq, "START TRANSACTION;");
 
-		format(string,sizeof(string),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", str_id, slot);
+		mysql_format(pearsq, string,sizeof(string),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", str_id, slot);
         query_empty(pearsq, string);
 		format(string, sizeof(string), " [ ADM ]: %s удалил транспорт игрока %s [ Слот: %d ]",PlayerInfo[playerid][pName],str_name, slot);
   		ABroadCast(COLOR_ADM,string,1);
 
         // Сохраняем авто
-  		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, str_id);
+  		mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot - 1, str_id);
         query_empty(pearsq, string);
 
 		// Подсчитываем транспорт на руках игроков
@@ -4929,7 +4929,7 @@ CMD:addcar(playerid, const params[])
     {
         if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 		new string_mysql[120];
-        format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+        mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
         mysql_tquery(pearsq, string_mysql, "Call_addcaradmin", "dsdd", playerid, tmp, vehid, nyche);
         return 1;
     }
@@ -4937,8 +4937,8 @@ CMD:addcar(playerid, const params[])
 }
 stock GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior)
 {
-	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
+	new string_mysql[120];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", PlayerInfo[playerid][pID], slot + 1);
 	mysql_tquery(pearsq, string_mysql, "Call_GiveCar", "dddffffdddddd", playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyche, col1, col2, statusLoad, world, interior);
 	return 1;
 }
@@ -4966,7 +4966,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 				// if(GetPlayerQuanLoadVehicle(playerid) >= 2) Не грузить если два и больше уже загружено
 
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%e',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
 					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json); // 291 + 66 + 80 + 24 (461)
 				mysql_tquery(pearsq, string_mysql, "Call_OnLoadVehicle", "ddddffffdddddsddd", playerid, PlayerInfo[playerid][pID], slot + 1, carid, Float:x, Float:y, Float:z, Float:f, col1, col2, 0, 100, 2024, CreatePlatesVehicle(),nyche, world, interior);
@@ -4974,7 +4974,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 			else
 			{
 				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
+					`koordinatz`='%f',`koordinata`='%f',`vehcol1`='%d',`vehcol2`='%d',`numer`='%e',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d',\
 					`v_slot_0`= '%e'", PlayerInfo[playerid][pID],slot + 1,carid, x,y, z, f, col1, col2, 
 					CreatePlatesVehicle(), MaxVehicleHealth(carid), nyche, string_json);
 				query_empty(pearsq, string_mysql);
@@ -4983,7 +4983,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 		else return true;
 
         // Сохраняем авто
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id`='%d'", slot, carid, PlayerInfo[playerid][pID]);
 		query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
@@ -5051,8 +5051,8 @@ function Call_addcaradmin(playerid, str_name[], f_vehid, nyche)
 }
 function GiveCarOffline(str_name[], slot, carid, Float:x, Float:y, Float:z, Float:f, ploid, nyche)
 {
-	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", ploid, slot + 1);
+	new string_mysql[120];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_cars` WHERE `sost`='%d' AND `slot`='%d'", ploid, slot + 1);
 	mysql_tquery(pearsq, string_mysql, "Call_GiveCarOffline", "sddffffdd", str_name, slot, carid, Float:x,Float:y,Float:z,Float:f,ploid,nyche);
 	return 1;
 }
@@ -5067,12 +5067,12 @@ function Call_GiveCarOffline(str_name[], slot, carid, Float:x,Float:y,Float:z,Fl
 		mysql_tquery(pearsq, "START TRANSACTION;");
 
 		new string_mysql[600];
-		format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
-		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%s',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_cars` SET `sost`='%d',`slot`='%d',`model`='%d',`koordinatx`='%f',`koordinaty`='%f',\
+		`koordinatz`='%f',`koordinata`='%f',`vehcol1`='1',`vehcol2`='1',`numer`='%e',`comp1`='999',`benz`='100',`god`='2024',`health`='%f',`nosell`='%d'", ploid, slot + 1,carid, x,y, z, f, MaxVehicleHealth(carid),CreatePlatesVehicle(),nyche);
 		query_empty(pearsq, string_mysql); // 249 + 44 + 80 + 24 (407)
 
         // Сохраняем авто
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id` = '%d'",slot, carid, ploid);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '%d' WHERE `user_id` = '%d'",slot, carid, ploid);
 		query_empty(pearsq, string_mysql);
 
 		// Подсчитываем транспорт на руках игроков
@@ -5148,7 +5148,7 @@ CMD:rslot(playerid, const params[])
 		    if(vslot > MAX_MYVEHICLE || vslot < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер слота не меньше 1 и не больше 20");
 
 			PlayerInfo[giveplayerid][pMyVeh][vslot - 1] = 0;
-			format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, PlayerInfo[giveplayerid][pName]);
+			mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%e'", vslot - 1, PlayerInfo[giveplayerid][pName]);
 			query_empty(pearsq, string);
 
   	    	format(string, sizeof(string), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",PlayerInfo[giveplayerid][pName],vslot);
@@ -5158,7 +5158,7 @@ CMD:rslot(playerid, const params[])
 		else
 		{
   			if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: /rslot Lol_Lolkin");
-  			format(string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+  			mysql_format(pearsq, string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
   			mysql_tquery(pearsq, string, "Call_resetslot", "dsd", playerid, tmp, vslot);
   			return 1;
 		}
@@ -5173,7 +5173,7 @@ function Call_resetslot(playerid, str_name[],vslot)
 	if(rows)
 	{
 		new string[140];
-   		format(string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%s'", vslot - 1, str_name);
+   		mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `Name` = '%e'", vslot - 1, str_name);
     	query_empty(pearsq, string);
 	    format(string, sizeof(string), "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s очищен слот транспорта № %d",str_name,vslot);
 	    SendClientMessage(playerid, COLOR_WHITE, string);
@@ -5227,8 +5227,8 @@ stock CreatePlatesVehicle()
 
 stock DeleteMyVeh(playerid, slot)
 {
-  new string_mysql[100];
-  format(string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot+1);
+  new string_mysql[120];
+  mysql_format(pearsq, string_mysql,sizeof(string_mysql),"DELETE FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[playerid][pID], slot+1);
   query_empty(pearsq, string_mysql);
 
   if(PlayerInfo[playerid][pMyVehID][slot] > 0) ACDestroyVehicle(PlayerInfo[playerid][pMyVehID][slot]);
@@ -5236,7 +5236,7 @@ stock DeleteMyVeh(playerid, slot)
   PlayerInfo[playerid][pMyVehID][slot] = 0;
 
   // Сохраняем авто
-  format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot, PlayerInfo[playerid][pID]);
+  mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `MyVeh%d` = '0' WHERE `user_id` = '%d'", slot, PlayerInfo[playerid][pID]);
   query_empty(pearsq, string_mysql);
   return 1;
 }

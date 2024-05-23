@@ -59,8 +59,8 @@ stock PlaceTrailer(id, model, Float: x, Float: y, Float: z, Float: rx, Float: ry
         case 3168: GetRelativePos(x, y, z, rx, ry, rz, (1369.5554 - 1371.515380), (1576.9391 - 1577.505981), (10.8125 - 9.820312), doorX, doorY, doorZ);
     }
 
-    new string_mysql[80];
-    format(string_mysql,sizeof(string_mysql),"SELECT Name FROM pp_igroki WHERE user_id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
+    new string_mysql[100];
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT Name FROM pp_igroki WHERE user_id = '%d'", trailerInfo[id][tOwnerID]); // Грузим ID Аккаунта
     mysql_tquery(pearsq, string_mysql, "OnCreatePlayerTrailerPickup", "dfff", id, doorX, doorY, doorZ);
 
     // Сохранение позиции
@@ -240,7 +240,7 @@ stock AddPlayerTrailer(playerid, model)
 stock UpdateTrailerPlayer(trailer, user_id)
 {
     new string_mysql[100];
-    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `pTrailer` = '%d' WHERE `user_id` = '%d'", trailer, user_id);
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `pTrailer` = '%d' WHERE `user_id` = '%d'", trailer, user_id);
     query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -659,7 +659,8 @@ stock SavePlayerTrailerInfo(id) {
     if (id < 0 || id > MAX_TRAILERS) return 0;
 
     new string_mysql[500];
-    format(string_mysql, sizeof(string_mysql), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d",
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE trailers SET owner = %d, pos_x = %.4f, pos_y = %.4f, pos_z = %.4f, \
+        pic_x = %.4f, pic_y = %.4f, pic_z = %.4f, rot_x = %.4f, rot_y = %.4f, rot_z = %.4f, active = %d, locked = %d WHERE id = %d",
 	    trailerInfo[id][tOwnerID],
         trailerInfo[id][tPos][0], trailerInfo[id][tPos][1], trailerInfo[id][tPos][2],
         trailerInfo[id][tPic][0], trailerInfo[id][tPic][1], trailerInfo[id][tPic][2],
@@ -679,10 +680,8 @@ function OnPlayerTrailerCreate(id) {
 
 stock DeleteTrailerFromDB(tid)
 {
-    // Вносим изменения в базу данных
-    static const query_fmt_str[] = "DELETE FROM trailers WHERE id = %d";
-    new query_string[sizeof query_fmt_str - 2 + 5 + 1];
-    mysql_format(pearsq, query_string, sizeof query_string, query_fmt_str, trailerInfo[tid][tID]);
+    new query_string[100];
+    mysql_format(pearsq, query_string, sizeof(query_string), "DELETE FROM trailers WHERE id = %d", trailerInfo[tid][tID]);
     mysql_tquery(pearsq, query_string);
 
     // Сохраняем трейлер в аккаунт игроку

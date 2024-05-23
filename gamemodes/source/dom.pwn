@@ -13,7 +13,7 @@ CMD:domdist(playerid, const params[])
  	ABroadCast(COLOR_ADM,string,1);
 
 	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `dMapDistance`='%f' WHERE `Ids`='%d'", DomInfo[params[0]][dMapDistance], params[0]);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `dMapDistance`='%f' WHERE `Ids`='%d'", DomInfo[params[0]][dMapDistance], params[0]);
 	query_empty(pearsq, string_mysql);
 
 	HouseLog(0, "domdist", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], params[0], params[1], "Дистанция маппинга");
@@ -477,7 +477,7 @@ stock SaveOneTainik(idx, inva) // Сохраняем одну ячейку шк�
 	if(DomInfo[idx][dInvent][inva] == 0)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `d_slot_%d`= NULL WHERE `Ids` = '%d'", inva, idx);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `d_slot_%d`= NULL WHERE `Ids` = '%d'", inva, idx);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else

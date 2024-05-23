@@ -218,7 +218,7 @@ stock SaveOneGunByUserID(user_id, i, JsonNode:node)
     if(node == JSON_INVALID_NODE)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `gun_%d`= NULL WHERE `user_id` = '%d'", i, user_id);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `gun_%d`= NULL WHERE `user_id` = '%d'", i, user_id);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else

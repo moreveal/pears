@@ -971,13 +971,15 @@ function Call_Punishments(playerid)
 
 function Call_PunishmentsName(playerid, const parama)
 {
-	new string[310];
+	new string[400];
 	new rows, datad1;
 	cache_get_row_count(rows);
 	if(rows)
 	{
 		cache_get_value_name_int(0, "user_id", datad1);
-		format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", datad1);
+		mysql_format(pearsq_2, string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' \
+			AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') \
+			ORDER BY `unix` DESC LIMIT 40", datad1);
 		mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -987,9 +989,11 @@ function Call_PunishmentsName(playerid, const parama)
 stock PunishmentsLogs(playerid, target)
 {
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
-	new string[310];
+	new string[400];
 	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}Поиск логов...","*","");
-	format(string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
+	mysql_format(pearsq_2, string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' \
+		AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') \
+		ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
 	mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	return 1;
 }
@@ -1006,8 +1010,8 @@ CMD:punishments(playerid,const params[])
 	else
 	{
 		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		new string[128];
-		format(string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%s'", params[0]);
+		new string[140];
+		mysql_format(pearsq, string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
 		mysql_tquery(pearsq, string, "Call_PunishmentsName", "ds", playerid, params[0]);
 	}
 	return 1;

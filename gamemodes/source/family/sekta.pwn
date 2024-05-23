@@ -430,7 +430,8 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
 stock SaveFamilySekta(idx)
 {
     new string_mysql[500];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `influence`='%d',`influenceTemp`='%d',`unixcnn`='%d',`unixrite`='%d',`altarPosX`='%.2f',`altarPosY`='%.2f',`altarPosZ`='%.2f',`altarPosXR`='%.2f',`altarPosYR`='%.2f',`altarPosZR`='%.2f',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `influence`='%d',`influenceTemp`='%d',`unixcnn`='%d',\
+    `unixrite`='%d',`altarPosX`='%.2f',`altarPosY`='%.2f',`altarPosZ`='%.2f',`altarPosXR`='%.2f',`altarPosYR`='%.2f',`altarPosZR`='%.2f',\
 	`unixAltar`='%d',`altarStatus`='%d' WHERE `id`='%d'",
 	FamilyInfo[idx][fInfluence],FamilyInfo[idx][fInfluenceTemp],FamilyInfo[idx][fsUnixCNN],FamilyInfo[idx][fsUnixRite],FamilyInfo[idx][fsAltarPos][0],FamilyInfo[idx][fsAltarPos][1],FamilyInfo[idx][fsAltarPos][2],FamilyInfo[idx][fsAltarPos][3],FamilyInfo[idx][fsAltarPos][4],FamilyInfo[idx][fsAltarPos][5],
 	FamilyInfo[idx][fsUnixAltar],FamilyInfo[idx][fsAltarStatus],idx); // 246 + 66 + 120 (432)

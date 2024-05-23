@@ -298,7 +298,8 @@ stock SaveUnitAll(idx)
 stock SaveUnit(idx, unitid)
 {
 	new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `gUnit%d`='%d' WHERE `frakid`='%d'", unitid, OrganInfo[idx][gUnit][unitid], idx);
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `gUnit%d`='%d' WHERE `frakid`='%d'", 
+        unitid, OrganInfo[idx][gUnit][unitid], idx);
 	query_empty(pearsq_2, string_mysql);
 	return true;
 }
@@ -307,7 +308,8 @@ stock SaveUnit(idx, unitid)
 stock SaveOrganUnit(idx, unitid)
 {
 	new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `unitstat%d`='%d' WHERE `frakid`='%d'", unitid, OrganInfo[idx][gUnitStat][unitid], idx);
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `unitstat%d`='%d' WHERE `frakid`='%d'", 
+        unitid, OrganInfo[idx][gUnitStat][unitid], idx);
 	query_empty(pearsq_2, string_mysql);
 	return true;
 }
@@ -316,7 +318,7 @@ stock SaveOrganUnit(idx, unitid)
 stock SaveOrganUnitAll(idx)
 {
 	new string_mysql[1800];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `unitstat0`='%d',`unitstat1`='%d',\
+	mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `unitstat0`='%d',`unitstat1`='%d',\
 	`unitstat2`='%d',`unitstat3`='%d',`unitstat4`='%d',`unitstat5`='%d',`unitstat6`='%d',`unitstat7`='%d',`unitstat8`='%d',`unitstat9`='%d',",OrganInfo[idx][gUnitStat][0],OrganInfo[idx][gUnitStat][1],
 	OrganInfo[idx][gUnitStat][2],OrganInfo[idx][gUnitStat][3],OrganInfo[idx][gUnitStat][4],OrganInfo[idx][gUnitStat][5],OrganInfo[idx][gUnitStat][6],OrganInfo[idx][gUnitStat][7],OrganInfo[idx][gUnitStat][8],OrganInfo[idx][gUnitStat][9]);
 	format(string_mysql, sizeof(string_mysql), "%s`unitstat10`='%d',`unitstat11`='%d',`unitstat12`='%d',`unitstat13`='%d',`unitstat14`='%d',`unitstat15`='%d',`unitstat16`='%d',`unitstat17`='%d',`unitstat18`='%d',\

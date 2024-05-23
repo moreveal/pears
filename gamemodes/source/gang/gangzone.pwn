@@ -1076,7 +1076,7 @@ function LoadGangZone() // Грузим зоны из базы
 stock SaveGangZone(idx) // Сохраняем зону
 {
 	new string_mysql[180];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_zones` SET `FrakVlad`='%d', `data` = NOW() WHERE `id` = '%d'", GZInfo[idx][gFrakVlad], idx);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_zones` SET `FrakVlad`='%d', `data` = NOW() WHERE `id` = '%d'", GZInfo[idx][gFrakVlad], idx);
     query_empty(pearsq, string_mysql); // 72 + 22
     return 1;
 }
@@ -1119,7 +1119,7 @@ stock OnLoadPlayerCapt(playerid) // Загружаем капты
 	}
 
 	new string_mysql[3000];
-	format(string_mysql, sizeof(string_mysql), "SELECT %s FROM `pp_igroki` WHERE `user_id`='%d'", lines, PlayerInfo[playerid][pID]);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT %e FROM `pp_igroki` WHERE `user_id`='%d'", lines, PlayerInfo[playerid][pID]);
 	mysql_pquery(pearsq, string_mysql, "LoadPlayerCapt", "dd", playerid, g_MysqlRaceCheck[playerid]);
 	return 1;
 }

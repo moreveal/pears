@@ -19,12 +19,14 @@ stock mysql_save_ability(playerid, abilityId) // Сохраняем навык �
 	new string_mysql[120];
 	if(abilityId == 2)
 	{
-		format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik`='%d',`AbilStat2`='%d' WHERE `user_id`='%d'", PlayerInfo[playerid][pAbility][2], PlayerInfo[playerid][pAbilStat][2], PlayerInfo[playerid][pID]);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik`='%d',`AbilStat2`='%d' WHERE `user_id`='%d'", 
+			PlayerInfo[playerid][pAbility][2], PlayerInfo[playerid][pAbilStat][2], PlayerInfo[playerid][pID]);
 		query_empty(pearsq, string_mysql);
 	}
 	else
 	{
-		format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d`='%d',`AbilStat%d`='%d' WHERE `user_id`='%d'", abilityId, PlayerInfo[playerid][pAbility][abilityId], abilityId, PlayerInfo[playerid][pAbilStat][abilityId], PlayerInfo[playerid][pID]);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d`='%d',`AbilStat%d`='%d' WHERE `user_id`='%d'", 
+			abilityId, PlayerInfo[playerid][pAbility][abilityId], abilityId, PlayerInfo[playerid][pAbilStat][abilityId], PlayerInfo[playerid][pID]);
     	query_empty(pearsq, string_mysql);
  	}
     return 1;
@@ -391,12 +393,12 @@ function Call_setability(playerid, stat, amount, str_name[])
 		cache_get_value_name_int(0, "user_id", datadid);
 		if(stat == 3)
 		{
-			format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik` = '%d', `AbilStat2`='%d' WHERE `user_id` = '%d'", getAbilityRealProgress(amount), amount, datadid);
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Voennik` = '%d', `AbilStat2`='%d' WHERE `user_id` = '%d'", getAbilityRealProgress(amount), amount, datadid);
 			query_empty(pearsq, string_mysql);
 		}
 		else
 		{
-			format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d` = '%d',`AbilStat%d`='%d' WHERE `user_id` = '%d'", stat, getAbilityRealProgress(amount), stat, amount, datadid);
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Ability%d` = '%d',`AbilStat%d`='%d' WHERE `user_id` = '%d'", stat, getAbilityRealProgress(amount), stat, amount, datadid);
 			query_empty(pearsq, string_mysql);
 		}
 		format(string_mysql, sizeof(string_mysql), "Вы изменили %s на %d уровень игроку %s Offline", abilityName[stat], amount, str_name);
@@ -442,7 +444,7 @@ CMD:setability(playerid, const params[])
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 
 		new string_mysql[80];
-		format(string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", tmp);
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
 		mysql_tquery(pearsq, string_mysql, "Call_setability", "ddds", playerid, stat, amount, tmp);
 		return 1;
 	}

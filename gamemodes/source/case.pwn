@@ -61,17 +61,23 @@ stock CreateVehicleGiftCase()
     // Собираем обычный транспорт
     for(new i = 0; i < 212; i++)
     {
+        if(!IsAVehExisting(i+400)
+            || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
+
         if(VehSale[i] == 1
-            || VehLimited[i] > 0 && VehQuan[i] < VehLimited[i] && VehLimitedCase[i] < VehLimited[i]) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+            || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
     }
 
     // Собираем кастомный транспорт
     for(new i = 0; i < MAX_VEHICLE_CUSTOM; i++)
     {
+        if(!IsAVehExisting(i+2000)
+            || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
+
         if(VehSale[i] == 1
-            || VehLimited[i] > 0 && VehQuan[i] < VehLimited[i] && VehLimitedCase[i] < VehLimited[i]) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+            || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
     }
-    return 1;
+    return ThingVehicleQuan;
 }
 
 stock CreateSkinGiftCase() // Собираем скины

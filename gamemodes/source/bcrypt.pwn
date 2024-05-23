@@ -49,7 +49,7 @@ public OnPasswordHashSetnewpass(playerid, const password[])
     new string[180];
 	SendClientMessage(playerid, COLOR_GREY, "{ffffff}* Ваш новый пароль: {0088ff}%s", password);
 	SendClientMessage(playerid, COLOR_GREY, "{ffffff}* Чтобы вы не забыли, новый пароль отправлен на Email {ff9000}%s",PlayerInfo[playerid][pMail]);
-	format(string, sizeof(string), "UPDATE `pp_igroki` SET `Key` = '%s' WHERE `user_id` = '%d'", PlayerInfo[playerid][pKey], PlayerInfo[playerid][pID]);
+	mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `Key` = '%e' WHERE `user_id` = '%d'", PlayerInfo[playerid][pKey], PlayerInfo[playerid][pID]);
 	query_empty(pearsq, string);
 
 	format(string, sizeof(string), "ID аккаунта: %d | Никнейм: %s | Новый пароль: %s", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], password);
@@ -68,7 +68,7 @@ public OnPasswordHashVzlomOffline(playerid, const str_name[], const password[], 
     bcrypt_get_hash(dest);
 
     new string[180];
-	format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%s' WHERE `Name` = '%s'", dest, str_name);
+	mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e' WHERE `Name` = '%s'", dest, str_name);
     query_empty(pearsq, string);
 
     format(string, sizeof(string), "Администратор %s сгенерировал%s новый пароль для вашего аккаунта. Никнейм: %s | Пароль: %s", 
@@ -110,7 +110,8 @@ public OnPasswordHashVzlom(playerid, const password[], giveplayerid)
 
     // Офаем автологин
     PlayerInfo[giveplayerid][pBdPoletDayz] = 1;
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%s',`BdPoletDayz` = '1' WHERE `user_id` = '%d'",PlayerInfo[giveplayerid][pKey], PlayerInfo[giveplayerid][pID]);
+    mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e',`BdPoletDayz` = '1' WHERE `user_id` = '%d'",
+        PlayerInfo[giveplayerid][pKey], PlayerInfo[giveplayerid][pID]);
     query_empty(pearsq, string);
     format(string, sizeof(string), "{FF8282}IP: {FFFFFF}%s {FF8282}| Аккаунт: {FFFFFF}%s {FF8282}| Email: {FFFFFF}%s",PlayerInfo[giveplayerid][pPlaIP],PlayerInfo[giveplayerid][pName],PlayerInfo[giveplayerid][pMail]);
     ABroadCast(COLOR_YELLOW,string,1);
@@ -137,7 +138,7 @@ public OnPasswordHashSetpasOffline(playerid, const password[], const str_name[],
     bcrypt_get_hash(dest);
 
     new string[180];
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%s' WHERE `Name` = '%s'", dest, str_name);
+    mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e' WHERE `Name` = '%e'", dest, str_name);
     query_empty(pearsq, string);
     SendClientMessage(playerid, COLOR_WHITE, "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s изменён пароль {0088ff}%s", str_name, password);
     AdminLog("setpas", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], user_id, str_name, "", 0, "");
@@ -150,7 +151,7 @@ public OnPasswordHashSetpas(playerid, const password[], giveplayerid)
     bcrypt_get_hash(PlayerInfo[giveplayerid][pKey]);
 
     new string[180];
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%s' WHERE `user_id` = '%d'", PlayerInfo[giveplayerid][pKey], PlayerInfo[giveplayerid][pID]);
+    mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e' WHERE `user_id` = '%d'", PlayerInfo[giveplayerid][pKey], PlayerInfo[giveplayerid][pID]);
     query_empty(pearsq, string);
     SendClientMessage(playerid, COLOR_WHITE, "{ffffff}[ {0088ff}ADM {ffffff}] Игроку %s изменён пароль {0088ff}%s", PlayerInfo[giveplayerid][pName], password);
     PlayerInfo[giveplayerid][pBdPoletDayz] = 1;
@@ -165,8 +166,8 @@ public OnPasswordHashCreateHidden(playerid, const password[])
     bcrypt_get_hash(dest);
 
     new string[800];
-    format(string, sizeof(string), "INSERT INTO `pp_igroki` SET `Name`='Pirzz_Prezest',`Ammo5`='%d',`RegData`='%d',`Key`='%s',`Tut`='1',\
-        `DrugPerk`='%d',`Model`='23',`Money`='2000',`Komnata`='5',`Qwest`='100',`Sex`='1',`Neon`='100',`Cap`='100',`Infoload`='1000',`Age`='18',`Keyhidden`='%s'", 
+    mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_igroki` SET `Name`='Pirzz_Prezest',`Ammo5`='%d',`RegData`='%d',`Key`='%e',`Tut`='1',\
+        `DrugPerk`='%d',`Model`='23',`Money`='2000',`Komnata`='5',`Qwest`='100',`Sex`='1',`Neon`='100',`Cap`='100',`Infoload`='1000',`Age`='18',`Keyhidden`='%e'", 
             PlayerInfo[playerid][pID], gettime(), dest, ServerInfo[54], password);
     mysql_tquery(pearsq, string, "Call_getidHidden", "d", playerid);
 
@@ -188,8 +189,8 @@ public OnPasswordHashPasswordHidden(playerid, const password[], user_id)
 	new dest[BCRYPT_HASH_LENGTH];
     bcrypt_get_hash(dest);
 
-    new string[600];
-    format(string,sizeof(string),"UPDATE `pp_igroki` SET `Key`='%s', `Keyhidden`='%s' WHERE `Ammo5` = '%d'", 
+    new string[700];
+    mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key`='%e', `Keyhidden`='%e' WHERE `Ammo5` = '%d'", 
             dest, password, user_id);
     query_empty(pearsq, string);
     return 1;
@@ -210,7 +211,8 @@ public OnPasswordHashResetPassword(playerid, const password[])
 
 
     new string_mysql[200];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Key` = '%s' WHERE `user_id` = '%d'", PlayerInfo[playerid][pKey], PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Key` = '%e' WHERE `user_id` = '%d'", 
+        PlayerInfo[playerid][pKey], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
 
     format(string,sizeof(string),"{cccccc}Привет, {ff9000}%s\n{99ff66}Введите ваш новый пароль\n\n{cccccc}Если вы забыли пароль, нажмите ESC или Отмена",PlayerInfo[playerid][pName]);

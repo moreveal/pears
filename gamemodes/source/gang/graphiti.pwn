@@ -163,7 +163,7 @@ stock SaveGraphiti(slot)
     GraphitiInfo[slot][graphitiPos][2],GraphitiInfo[slot][graphitiPos][3],GraphitiInfo[slot][graphitiPos][4], GraphitiInfo[slot][graphitiPos][5]); // 30 + 120
 
     new string_mysql[600];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%s' WHERE `gnewid`='%d'",
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_graphiti` SET `gstring`='%s',`gunix`='%d',`gplayernumber`='%d',`gZone`='%d',`gStatus`='%d',`gorg`='%d',`gName`='%e' WHERE `gnewid`='%d'",
     part,GraphitiInfo[slot][graphitiUnix],GraphitiInfo[slot][graphitiPlayer],GraphitiInfo[slot][graphitiZone],GraphitiInfo[slot][graphitiStatus],GraphitiInfo[slot][graphitiOrg],GraphitiInfo[slot][graphitiName],GraphitiInfo[slot][graphitiID]);
     query_empty(pearsq, string_mysql); // 147 + 66 + 24 (237) + 150
 }

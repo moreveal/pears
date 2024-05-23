@@ -841,7 +841,7 @@ stock goloadInterior(playerid, userId, str_name[]) // Начинаем загр�
     peoInfo[playerid][peoStatusLoad] = true;
     peoInfo[playerid][peoCreatorId] = userId;
 
-    format(string,sizeof(string),"SELECT * FROM `pp_peo_information` WHERE `user_id` = '%d'", userId);
+    mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_peo_information` WHERE `user_id` = '%d'", userId);
 	mysql_tquery(pearsq, string, "Call_loadinterior_information", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
     return 1;
 }
@@ -862,8 +862,8 @@ public Call_loadinterior_information(playerid, race_check, userId, str_name[]) /
     format(peoInfo[playerid][peoCreatorName],24,"%s", str_name);
 
     // После загрузки информации о интерьере, начинаем грузить его объекты
-    new string_mysql[100];
-    format(string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_peo_objects` WHERE `user_id` = '%d'", userId);
+    new string_mysql[120];
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `pp_peo_objects` WHERE `user_id` = '%d'", userId);
 	mysql_tquery(pearsq, string_mysql, "Call_loadinterior_object", "ddds", playerid, g_MysqlRaceCheck[playerid], userId, str_name);
     return 1;
 }
@@ -918,7 +918,7 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерье�
 
     if(PlayerInfo[playerid][pSoska] >= 1)
     {
-        new playerName[24], string[46 + 24];
+        new playerName[24], string[140];
         if(!sscanf(params, "s[24]",playerName))
 	    {
             new giveplayerid = ReturnUser(playerName, 1);
@@ -928,7 +928,7 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерье�
                 if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Вы не правильно указали никнейм\nЕсли вы указали ID, значит игрок Offline");
                 DP[0][playerid] = 0; // Поиск игрока
                 DialogLoadInterior(playerid);
-                format(string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
+                mysql_format(pearsq, string,sizeof(string),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", playerName);
                 mysql_tquery(pearsq, string, "Call_checkname_loadinterior", "dds", playerid, g_MysqlRaceCheck[playerid], playerName);
             }
             return 1;

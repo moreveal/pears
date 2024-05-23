@@ -349,7 +349,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
 
         // Запускаем следующий квест
         if(PlayerInfo[playerid][pSex] == 1) SetPVarInt(playerid,"qweststat",18), SetPVarInt(playerid,"qwesttime",20);
-        else ShowQwest(playerid, 8);
+        else SetPVarInt(playerid,"qweststat",25), SetPVarInt(playerid,"qwesttime",20);
     }
     else if(PlayerInfo[playerid][pQuest][5] >= 8) // Реплики, когда мы полностью прошли квест
     {
@@ -829,7 +829,7 @@ stock SaveQuest(playerid) // Сохраняем информацию о квес
 
     // Сохраняем
     new string_mysql[400];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `user_id`='%d'", part, PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `user_id`='%d'", part, PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql); // 53 + 11 +
     return 1;
 }
@@ -1385,26 +1385,35 @@ stock StartFirstCallQuest(playerid)
     // Если звонки от квестов выключены
     if(PlayerInfo[playerid][pQwestMessageOff] == true) return 1;
 
-    if(NoCompleteQuest(playerid, 3)) SelectNextStartQuest(playerid); // Джоне или Исследование гробницы в зависимости от заполненности
-    else if(NoCompleteQuest(playerid, 5)) 
+    if(NoCompleteQuest(playerid, 3)) return SelectNextStartQuest(playerid); // Джоне или Исследование гробницы в зависимости от заполненности
+    if(NoCompleteQuest(playerid, 5)) 
     {
          if(PlayerInfo[playerid][pQuest][5] == 0) ShowQwest(playerid, 5); // Исследование гробницы
+         return 1;
     }
-    else if(NoCompleteQuest(playerid, 6)) 
+
+    if(PlayerInfo[playerid][pSex] == 1)
     {
-        if(PlayerInfo[playerid][pQuest][6] == 0) ShowQwest(playerid, 6); // Отдых в клубе
+        if(NoCompleteQuest(playerid, 6)) 
+        {
+            if(PlayerInfo[playerid][pQuest][6] == 0) ShowQwest(playerid, 6); // Отдых в клубе
+            return 1;
+        }
+        if(NoCompleteQuest(playerid, 7)) 
+        {
+            if(PlayerInfo[playerid][pQuest][7] == 0) ShowQwest(playerid, 7); // Последствия отдыха
+            return 1;
+        }
     }
-    else if(NoCompleteQuest(playerid, 7)) 
-    {
-        if(PlayerInfo[playerid][pQuest][7] == 0) ShowQwest(playerid, 7); // Последствия отдыха
-    }
-    else if(NoCompleteQuest(playerid, 8)) 
+    if(NoCompleteQuest(playerid, 8)) 
     {
         if(PlayerInfo[playerid][pQuest][8] == 0) ShowQwest(playerid, 8); // Знакомство с едой
+        return 1;
     }
-    else if(NoCompleteQuest(playerid, 9)) 
+    if(NoCompleteQuest(playerid, 9)) 
     {
         if(PlayerInfo[playerid][pQuest][9] == 0) ShowQwest(playerid, 9); // Знакомство с ноутбуком
+        return 1;
     }
     return 1;
 }

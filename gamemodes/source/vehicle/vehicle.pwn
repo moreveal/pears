@@ -1241,7 +1241,7 @@ stock VehicleQuan(model, quan)
 stock SaveVehiclePrice(v)
 {
 	new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehGos` = '%d' WHERE `model` = '%d'", VehGos[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehGos` = '%d' WHERE `model` = '%d'", VehGos[v], v);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -1250,7 +1250,7 @@ stock SaveVehiclePrice(v)
 stock SaveVehicleGold(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehGold` = '%d' WHERE `model` = '%d'", VehGold[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehGold` = '%d' WHERE `model` = '%d'", VehGold[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1259,7 +1259,7 @@ stock SaveVehicleGold(v)
 stock SaveVehicleBuy(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehBuy` = '%d' WHERE `model` = '%d'", VehBuy[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehBuy` = '%d' WHERE `model` = '%d'", VehBuy[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1268,7 +1268,7 @@ stock SaveVehicleBuy(v)
 stock SaveVehicleBuyGold(v)
 {
 	new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehBuyGold` = '%d' WHERE `model` = '%d'", VehBuyGold[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehBuyGold` = '%d' WHERE `model` = '%d'", VehBuyGold[v], v);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -1277,7 +1277,7 @@ stock SaveVehicleBuyGold(v)
 stock SaveVehicleLimited(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehLimited` = '%d' WHERE `model` = '%d'", VehLimited[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehLimited` = '%d' WHERE `model` = '%d'", VehLimited[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1286,7 +1286,7 @@ stock SaveVehicleLimited(v)
 stock SaveVehicleQuan(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehQuan` = '%d' WHERE `model` = '%d'", VehQuan[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehQuan` = '%d' WHERE `model` = '%d'", VehQuan[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1295,7 +1295,7 @@ stock SaveVehicleQuan(v)
 stock SaveVehicleSale(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehSale` = '%d' WHERE `model` = '%d'", VehSale[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehSale` = '%d' WHERE `model` = '%d'", VehSale[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1304,7 +1304,7 @@ stock SaveVehicleSale(v)
 stock SaveVehicleLimitedCase(v)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehLimitedCase` = '%d' WHERE `model` = '%d'", VehLimitedCase[v], v);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceveh` SET `VehLimitedCase` = '%d' WHERE `model` = '%d'", VehLimitedCase[v], v);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1477,10 +1477,11 @@ function LoadPriceVeh()
 				}
 			}
 		}
-		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
 
 		// Собираем набор транспорта для кейсов
-		CreateVehicleGiftCase();
+		new quanVehicleCase = CreateVehicleGiftCase();
+
+		printf("[MODE]: Настройки Транспорта [В кейсах %d тс][%d ms]", quanVehicleCase, GetTickCount() - time);
 	}
 	return 1;
 }

@@ -197,7 +197,7 @@ stock divmembersoff(playerid)
 	DP[5][playerid] = 0;
 
 	new string_mysql[330];
-	format(string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
 		`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
 		OR `Division1` = '%d' AND `Fbi` > '0' AND `Online` = '0' LIMIT 40", div, org, div);
 	mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
@@ -353,9 +353,9 @@ CMD:divuninvite(playerid, const params[])
 	{
 		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
 
-		new string_mysql[160];
+		new string_mysql[180];
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
-		format(string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%s'", playerName);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%e'", playerName);
 		mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
 	}
 	return 1;
@@ -424,7 +424,7 @@ stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // Получаем инфор
 stock mysql_SaveDivision(str_id, whichDiv, value)
 {
 	new string_mysql[100];
-	format(string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `user_id` = '%d'", whichDiv, value, str_id);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `user_id` = '%d'", whichDiv, value, str_id);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -935,8 +935,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 			new org = DP[1][playerid] + 1; // Получаем id организации
 			new div = DP[2][playerid] + 1; // Получаем id подфракции
 
-			new string_mysql[330];
-			format(string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
+			new string_mysql[360];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
 				`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' \
 				OR `Division1` = '%d' AND `Member`='%d' AND `Online` = '0' AND `user_id`>'%d' LIMIT 40", div, org, DP[4][playerid], div ,org, DP[4][playerid]);
 			mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
@@ -956,21 +956,14 @@ stock racDivisionSetting(playerid, g, i , readRac)
 
 stock DivisionSave(g, i) // Сохраняем в базу (моментальное сохранение при любом изменении)
 {
-    // Экранируем текстовые строки (Для защиты от sql инъекций)
-    new escapeName[MAX_NAME_LENGTH], escapeAbbreviation[MAX_NAME_DIVISION_ABBREVIATION_LENGTH], escapeColorHex[7];
-	mysql_escape_string(DivisionInfo[g][i][divName], escapeName, sizeof(escapeName));
-    mysql_escape_string(DivisionInfo[g][i][divAbbreviation], escapeAbbreviation, sizeof(escapeAbbreviation));
-	mysql_escape_string(DivisionInfo[g][i][divColorHex], escapeColorHex, sizeof(escapeColorHex));
-
-    // Формируем запросы в переменную
 	new string_mysql[500 + MAX_NAME_LENGTH + MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
-    format(string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRanks` = '%d', `divName` = '%s', `divAbbreviation` = '%s', `divSpawnPos0` = '%f',\
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRanks` = '%d', `divName` = '%e', `divAbbreviation` = '%e', `divSpawnPos0` = '%f',\
 	`divSpawnPos1` = '%f', `divSpawnPos2` = '%f', `divSpawnPos3` = '%f'",
-    DivisionInfo[g][i][divRanks], escapeName, escapeAbbreviation, DivisionInfo[g][i][divSpawnPos][0], DivisionInfo[g][i][divSpawnPos][1],
+    DivisionInfo[g][i][divRanks], DivisionInfo[g][i][divName], DivisionInfo[g][i][divAbbreviation], DivisionInfo[g][i][divSpawnPos][0], DivisionInfo[g][i][divSpawnPos][1],
 	DivisionInfo[g][i][divSpawnPos][2], DivisionInfo[g][i][divSpawnPos][3]); // 179 + 11 + 31 + 11 + 80
 
-	format(string_mysql,sizeof(string_mysql),"%s, `divSpawnWorld` = '%d', `divSpawnInterior` = '%d', `divColorHex` = '%s' WHERE `org`='%d' AND `divid`='%d'", string_mysql,
-    DivisionInfo[g][i][divSpawnWorld], DivisionInfo[g][i][divSpawnInterior], escapeColorHex, g, i); // 110 + 44 + 7
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `divSpawnWorld` = '%d', `divSpawnInterior` = '%d', `divColorHex` = '%e' WHERE `org`='%d' AND `divid`='%d'", 
+	string_mysql, DivisionInfo[g][i][divSpawnWorld], DivisionInfo[g][i][divSpawnInterior], DivisionInfo[g][i][divColorHex], g, i); // 110 + 44 + 7
 
     // Отправляем запрос
     query_empty(pearsq, string_mysql); // 473
@@ -979,15 +972,9 @@ stock DivisionSave(g, i) // Сохраняем в базу (моментальн
 
 stock DivisionSaveRankName(g, i, r) // Сохраняем название ранга в базу (моментальное сохранение)
 {
-	// Экранируем текстовые строки (Для защиты от sql инъекций)
-    new escapeRankName[MAX_NAME_LENGTH];
-	mysql_escape_string(DivisionRankName[g][i][r], escapeRankName, sizeof(escapeRankName));
-
-    // Формируем запросы в переменную
 	new string_mysql[79 + 33 + MAX_NAME_LENGTH];
-    format(string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRankName%d` = '%s' WHERE `org`='%d' AND `divid`='%d'", r, escapeRankName, g, i);
-
-    // Отправляем запрос
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `division` SET `divRankName%d` = '%e' WHERE `org`='%d' AND `divid`='%d'", 
+		r, DivisionRankName[g][i][r], g, i);
     query_empty(pearsq, string_mysql);
 	return 1;
 }

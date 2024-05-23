@@ -591,29 +591,25 @@ public LoadFamily()
 
 stock SaveFamily(idx)
 {
-	new f_str1[MAX_NAME_FAMILY_LENGTH],f_str2[24];
-	mysql_escape_string(FamilyInfo[idx][fName], f_str1, sizeof(f_str1));
-	mysql_escape_string(FamilyInfo[idx][fOsn], f_str2, sizeof(f_str2));
-
 	new string_mysql[2400];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `akka`='%d',`sost`='%d',`name`='%s',`osn`='%s',",
-	FamilyInfo[idx][fOwner], FamilyInfo[idx][fSost],f_str1,f_str2); // 71 + 22 + 31 + 21
-	format(string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`war6`='%d',`war7`='%d',`war8`='%d',`war9`='%d',`war10`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `akka`='%d',`sost`='%d',`name`='%e',`osn`='%e',",
+	FamilyInfo[idx][fOwner], FamilyInfo[idx][fSost],FamilyInfo[idx][fName],FamilyInfo[idx][fOsn]); // 71 + 22 + 31 + 21
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`war6`='%d',`war7`='%d',`war8`='%d',`war9`='%d',`war10`='%d',\
 	`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',`union6`='%d',`union7`='%d',`union8`='%d',`union9`='%d',`union10`='%d',",  string_mysql,
 	famwar[idx][0],famwar[idx][1],famwar[idx][2],famwar[idx][3],famwar[idx][4],famwar[idx][5],famwar[idx][6],famwar[idx][7],famwar[idx][8],famwar[idx][9],
 	famuni[idx][0],famuni[idx][1],famuni[idx][2],famuni[idx][3],famuni[idx][4],famuni[idx][5],famuni[idx][6],famuni[idx][7],famuni[idx][8],famuni[idx][9]); // 269 + 220
-	format(string_mysql, sizeof(string_mysql), "%s`Accmoninv`='%d',`Accmonget`='%d',`Accdom`='%d',`Accbiz`='%d',`Accname`='%d',`Accrank`='%d',`Accspawn`='%d',`Accgarage`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`Accmoninv`='%d',`Accmonget`='%d',`Accdom`='%d',`Accbiz`='%d',`Accname`='%d',`Accrank`='%d',`Accspawn`='%d',`Accgarage`='%d',\
 	`Acclog`='%d',`Accdon`='%d',`Accveh`='%d',`Accinv`='%d',`Accuninv`='%d',`Accgiver`='%d',`Accfammu`='%d',`Accfamfo`='%d',",  string_mysql,
 	FamilyInfo[idx][fAccmoninv],FamilyInfo[idx][fAccmonget],FamilyInfo[idx][fAccdom],FamilyInfo[idx][fAccbiz],FamilyInfo[idx][fAccname],FamilyInfo[idx][fAccrank],FamilyInfo[idx][fAccspawn],FamilyInfo[idx][fAccgarage],
 	FamilyInfo[idx][fAcclog],FamilyInfo[idx][fAccdon],FamilyInfo[idx][fAccveh],FamilyInfo[idx][fAccinv],FamilyInfo[idx][fAccuninv],FamilyInfo[idx][fAccgiver],
 	FamilyInfo[idx][fAccfammu],FamilyInfo[idx][fAccfamfo]); // 252 + 176
-	format(string_mysql, sizeof(string_mysql), "%s`fveh0`='%d',`fveh1`='%d',`fveh2`='%d',`fveh3`='%d',`fveh4`='%d',`fveh5`='%d',`fveh6`='%d',`fveh7`='%d',`fveh8`='%d',`fveh9`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`fveh0`='%d',`fveh1`='%d',`fveh2`='%d',`fveh3`='%d',`fveh4`='%d',`fveh5`='%d',`fveh6`='%d',`fveh7`='%d',`fveh8`='%d',`fveh9`='%d',\
 	`fbiz0`='%d',`fbiz1`='%d',`fbiz2`='%d',`fbiz3`='%d',`fbiz4`='%d',`fbiz5`='%d',`fbiz6`='%d',`fbiz7`='%d',`fbiz8`='%d',`fbiz9`='%d',", string_mysql,
 	FamilyInfo[idx][fVeh][0],FamilyInfo[idx][fVeh][1],FamilyInfo[idx][fVeh][2],FamilyInfo[idx][fVeh][3],FamilyInfo[idx][fVeh][4],
 	FamilyInfo[idx][fVeh][5],FamilyInfo[idx][fVeh][6],FamilyInfo[idx][fVeh][7],FamilyInfo[idx][fVeh][8],FamilyInfo[idx][fVeh][9],
 	FamilyInfo[idx][fBiz][0],FamilyInfo[idx][fBiz][1],FamilyInfo[idx][fBiz][2],FamilyInfo[idx][fBiz][3],FamilyInfo[idx][fBiz][4],
 	FamilyInfo[idx][fBiz][5],FamilyInfo[idx][fBiz][6],FamilyInfo[idx][fBiz][7],FamilyInfo[idx][fBiz][8],FamilyInfo[idx][fBiz][9]); // 267 + 220
-	format(string_mysql, sizeof(string_mysql), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',\
 	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d',\
 	`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d',`influence`='%d',`fRanks`='%d' WHERE `id`='%d'", string_mysql,
 	FamilyInfo[idx][fSpawnX],FamilyInfo[idx][fSpawnY],FamilyInfo[idx][fSpawnZ],FamilyInfo[idx][fSpawnA],FamilyInfo[idx][fInt],FamilyInfo[idx][fWorld],FamilyInfo[idx][fStatusUch],FamilyInfo[idx][fStatusRank],FamilyInfo[idx][fStatusGarage],
@@ -627,15 +623,8 @@ stock SaveFamily(idx)
 
 stock FamilySaveRankName(f, r) //  Сохраняем название ранга в базу (моментальное сохранение)
 {
-	// Экранируем текстовые строки (Для защиты от sql инъекций)
-    new escapeRankName[MAX_NAME_FAMILY_LENGTH];
-	mysql_escape_string(FamilyRankName[f][r], escapeRankName, sizeof(escapeRankName));
-
-    // Формируем запросы в переменную
-	new string_mysql[55 + 22 + MAX_NAME_FAMILY_LENGTH];
-    format(string_mysql,sizeof(string_mysql),"UPDATE `pp_family` SET `rank%d` = '%s' WHERE `id`='%d'", r, escapeRankName, f);
-
-    // Отправляем запрос
+	new string_mysql[100 + 22 + MAX_NAME_FAMILY_LENGTH];
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_family` SET `rank%d` = '%e' WHERE `id`='%d'", r, FamilyRankName[f][r], f);
     query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -661,8 +650,8 @@ new LastMessageID;
 
 stock CheckMessageFamilyChat()
 {
-	new string_mysql[100];
-	format(string_mysql,sizeof(string_mysql),"SELECT * FROM `family_chat_messages` WHERE `TYPE` = '1' AND `ID` > '%d' LIMIT 30", LastMessageID);
+	new string_mysql[120];
+	mysql_format(pearsq_2, string_mysql,sizeof(string_mysql),"SELECT * FROM `family_chat_messages` WHERE `TYPE` = '1' AND `ID` > '%d' LIMIT 30", LastMessageID);
 	mysql_tquery(pearsq_2, string_mysql, "Call_loadmessagefamily", "");
 	return 1;
 }

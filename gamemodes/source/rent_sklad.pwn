@@ -11,36 +11,36 @@ CMD:rentsklad(playerid)
 			    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1];
 				new thingQara = OnlineInfo[playerid][oInHandThing][3], thingType = OnlineInfo[playerid][oInHandThing][4];
 				new thingPack = OnlineInfo[playerid][oInHandThing][5];
-				if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Запечатанный ящик невозможно распаковать на складе\n\n{cccccc}Этот ящик защищён и используется для доставки боеприпасов NGSA");
-				if(fpick > 0 && thingPack == 2) //  Кладём Ящик
+				if(fpick > 0 && thingPack == 4) return ErrorMessage(playerid, "{FF6347}Р—Р°РїРµС‡Р°С‚Р°РЅРЅС‹Р№ СЏС‰РёРє РЅРµРІРѕР·РјРѕР¶РЅРѕ СЂР°СЃРїР°РєРѕРІР°С‚СЊ РЅР° СЃРєР»Р°РґРµ\n\n{cccccc}Р­С‚РѕС‚ СЏС‰РёРє Р·Р°С‰РёС‰С‘РЅ Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґР»СЏ РґРѕСЃС‚Р°РІРєРё Р±РѕРµРїСЂРёРїР°СЃРѕРІ NGSA");
+				if(fpick > 0 && thingPack == 2) //  РљР»Р°РґС‘Рј РЇС‰РёРє
 				{
-					if(fpick == 34 && thingType == 1 && WhInfo[r][wStat] != 8 && WhInfo[r][wStat] != 22) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку");
+					if(fpick == 34 && thingType == 1 && WhInfo[r][wStat] != 8 && WhInfo[r][wStat] != 22) return ErrorMessage(playerid, "{FF6347}РќР° СЌС‚РѕРј СЃРєР»Р°РґРµ РЅРµР»СЊР·СЏ С…СЂР°РЅРёС‚СЊ СЃРЅР°Р№РїРµСЂСЃРєСѓСЋ РІРёРЅС‚РѕРІРєСѓ");
 					if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
 					{
-					    new put_inva = putrentwh(r, fpick, fquan, thingType); // Кладём предмет
-						if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе, для этого предмета, нет места [ Лимит ]");
+					    new put_inva = putrentwh(r, fpick, fquan, thingType); // РљР»Р°РґС‘Рј РїСЂРµРґРјРµС‚
+						if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}РќР° СЃРєР»Р°РґРµ, РґР»СЏ СЌС‚РѕРіРѕ РїСЂРµРґРјРµС‚Р°, РЅРµС‚ РјРµСЃС‚Р° [ Р›РёРјРёС‚ ]");
 
 					    InHandClear(playerid);
 
 						new string[70];
-						format(string,sizeof(string),"[ Мысли ]: Я положил%s ящик на склад {ff9000}[ %s | %d ]", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
+						format(string,sizeof(string),"[ РњС‹СЃР»Рё ]: РЇ РїРѕР»РѕР¶РёР»%s СЏС‰РёРє РЅР° СЃРєР»Р°Рґ {ff9000}[ %s | %d ]", gender(playerid), GetNameThing(1, fpick, thingType, thingPack),fquan);
 		    			SendClientMessage(playerid, COLOR_GREY, string);
 						OrgLog(WhInfo[r][wStat], "putrentwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, GetNameThing(1, fpick, thingType, thingPack));
 
-			   		    SetPlayerChatBubble(playerid,"кладёт ящик на склад",COLOR_PURPLE,20.0,3000);
+			   		    SetPlayerChatBubble(playerid,"РєР»Р°РґС‘С‚ СЏС‰РёРє РЅР° СЃРєР»Р°Рґ",COLOR_PURPLE,20.0,3000);
 			       	    RemovePlayerAttachedObject(playerid,1);
 			       	    PPP15[playerid] = 0;
 			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0, false, false, false, false, false, SYNC_ALL);
 			       	    PlayerPlaySound(playerid,6401,0,0,0);
 
-						// Выдаём юниты
+						// Р’С‹РґР°С‘Рј СЋРЅРёС‚С‹
 	       	    		GiveUnitForBox(playerid, fpick, thingType, fquan, thingQara);
        	    		}
-       	    		else ErrorMessage(playerid, "{FF6347}Содержимое ящика в моих руках, не может храниться на этом складе");
+       	    		else ErrorMessage(playerid, "{FF6347}РЎРѕРґРµСЂР¶РёРјРѕРµ СЏС‰РёРєР° РІ РјРѕРёС… СЂСѓРєР°С…, РЅРµ РјРѕР¶РµС‚ С…СЂР°РЅРёС‚СЊСЃСЏ РЅР° СЌС‚РѕРј СЃРєР»Р°РґРµ");
 				}
-				else ErrorMessage(playerid, "{FF6347}У меня нет в руках ящика [ Открыть склад: N >> Склад ]");
+				else ErrorMessage(playerid, "{FF6347}РЈ РјРµРЅСЏ РЅРµС‚ РІ СЂСѓРєР°С… СЏС‰РёРєР° [ РћС‚РєСЂС‹С‚СЊ СЃРєР»Р°Рґ: N >> РЎРєР»Р°Рґ ]");
 			}
-			else ErrorMessage(playerid, "{FF6347}Этот склад никем не арендован");
+			else ErrorMessage(playerid, "{FF6347}Р­С‚РѕС‚ СЃРєР»Р°Рґ РЅРёРєРµРј РЅРµ Р°СЂРµРЅРґРѕРІР°РЅ");
 		}
 	}
 	return 1;
@@ -51,31 +51,31 @@ stock use_rent(playerid, wh, inva)
     i_resettabs(playerid);
 	new fpick = WhInfo[wh][wInvent][inva], thingType = WhInfo[wh][wInvType][inva];
 	if(fpick == 0) return 1;
-	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
+	if(OnlineInfo[playerid][oInHandThing] >= 1 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) return ErrorMessage(playerid, "{FF6347}РЈ РІР°СЃ Р·Р°РЅСЏС‚С‹ СЂСѓРєРё [ РџСЂРµРґРјРµС‚ РёР»Рё РѕСЂСѓР¶РёРµ ]");
 
 	new string[120];
-	if(thingType == 0) // Количественные предметы до 1000 в один ящик
+	if(thingType == 0) // РљРѕР»РёС‡РµСЃС‚РІРµРЅРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РґРѕ 1000 РІ РѕРґРёРЅ СЏС‰РёРє
 	{
 	    if(CheckThingQuan(fpick) == 1)
 	    {
 	        DP[0][playerid] = inva;
-			format(string,sizeof(string),"{cccccc}Чтобы собрать ящик с {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 1000",GetNameThing(1, fpick, thingType, 0));
-			ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Склад",string,"Принять","Отмена");
+			format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ СЃРѕР±СЂР°С‚СЊ СЏС‰РёРє СЃ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 1000",GetNameThing(1, fpick, thingType, 0));
+			ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}РЎРєР»Р°Рґ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 			return 1;
 	    }
 	}
 	
-	// Все остальные предметы до 10 штук в 1 ящик
+	// Р’СЃРµ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ РґРѕ 10 С€С‚СѓРє РІ 1 СЏС‰РёРє
 	DP[0][playerid] = inva;
-	format(string,sizeof(string),"{cccccc}Чтобы собрать ящик с {ff9000}%s {cccccc}введите количество\n\nНе меньше 1 и не больше 10",GetNameThing(1, fpick, thingType, 0));
-	ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}Склад",string,"Принять","Отмена");
+	format(string,sizeof(string),"{cccccc}Р§С‚РѕР±С‹ СЃРѕР±СЂР°С‚СЊ СЏС‰РёРє СЃ {ff9000}%s {cccccc}РІРІРµРґРёС‚Рµ РєРѕР»РёС‡РµСЃС‚РІРѕ\n\nРќРµ РјРµРЅСЊС€Рµ 1 Рё РЅРµ Р±РѕР»СЊС€Рµ 10",GetNameThing(1, fpick, thingType, 0));
+	ShowDialog(playerid,969,DIALOG_STYLE_INPUT,"{ff9000}РЎРєР»Р°Рґ",string,"РџСЂРёРЅСЏС‚СЊ","РћС‚РјРµРЅР°");
 	return 1;
 }
-stock shift_rent(playerid, wh, getinva, putinva) // Перемещение предметов внутри инвентаря арендованного склада организации (с одной ячейки на другую)
+stock shift_rent(playerid, wh, getinva, putinva) // РџРµСЂРµРјРµС‰РµРЅРёРµ РїСЂРµРґРјРµС‚РѕРІ РІРЅСѓС‚СЂРё РёРЅРІРµРЅС‚Р°СЂСЏ Р°СЂРµРЅРґРѕРІР°РЅРЅРѕРіРѕ СЃРєР»Р°РґР° РѕСЂРіР°РЅРёР·Р°С†РёРё (СЃ РѕРґРЅРѕР№ СЏС‡РµР№РєРё РЅР° РґСЂСѓРіСѓСЋ)
 {
 	if(OnlineInfo[playerid][oShowTabs] == wh)
 	{
-	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Перемещать предметы может только лидер"), i_resettabs(playerid);
+	    if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}РџРµСЂРµРјРµС‰Р°С‚СЊ РїСЂРµРґРјРµС‚С‹ РјРѕР¶РµС‚ С‚РѕР»СЊРєРѕ Р»РёРґРµСЂ"), i_resettabs(playerid);
 		if(WhInfo[wh][wInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(WhInfo[wh][wInvent][putinva] != 0) return 1;
 		new quanPlayer;
@@ -90,7 +90,7 @@ stock shift_rent(playerid, wh, getinva, putinva) // Перемещение предметов внутри
 		if(quanPlayer >= 2)
 		{
 			new string[80];
-			format(string, sizeof(string), "{FF6347}Склад просматривают %d чел. [ Перемещение предмета невозможно ]", quanPlayer-1);
+			format(string, sizeof(string), "{FF6347}РЎРєР»Р°Рґ РїСЂРѕСЃРјР°С‚СЂРёРІР°СЋС‚ %d С‡РµР». [ РџРµСЂРµРјРµС‰РµРЅРёРµ РїСЂРµРґРјРµС‚Р° РЅРµРІРѕР·РјРѕР¶РЅРѕ ]", quanPlayer-1);
 			ErrorMessage(playerid, string);
 			i_resettabs(playerid);
 			return 1;
@@ -123,7 +123,7 @@ stock putrentwh(wh, pick, kol, thingType)
 	{
 		if(WhInfo[wh][wInvent][inva] == pick && WhInfo[wh][wInvType][inva] == thingType)
 		{
-		    if(WhInfo[wh][wInv][inva]+kol > getLimit) // Встроенная проверка на лимит
+		    if(WhInfo[wh][wInv][inva]+kol > getLimit) // Р’СЃС‚СЂРѕРµРЅРЅР°СЏ РїСЂРѕРІРµСЂРєР° РЅР° Р»РёРјРёС‚
 		    {
 		        stopFind = true;
 		    }
@@ -204,9 +204,9 @@ stock OnLoadRentInvent(idx, f)
 	return 1;
 }
 
-stock SaveRent(idx, bool:transaction = true) // Сохранение всего арендованного склада по циклу
+stock SaveRent(idx, bool:transaction = true) // РЎРѕС…СЂР°РЅРµРЅРёРµ РІСЃРµРіРѕ Р°СЂРµРЅРґРѕРІР°РЅРЅРѕРіРѕ СЃРєР»Р°РґР° РїРѕ С†РёРєР»Сѓ
 {
-	// Начало транзакции
+	// РќР°С‡Р°Р»Рѕ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new i = 0; i < 20; i++) 
@@ -214,7 +214,7 @@ stock SaveRent(idx, bool:transaction = true) // Сохранение всего арендованного с
 		if(WhInfo[idx][wInvUpdate][i] == true) SaveRentOne(idx, i);
 	}
 
-	// Завершение транзакции
+	// Р—Р°РІРµСЂС€РµРЅРёРµ С‚СЂР°РЅР·Р°РєС†РёРё
 	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
@@ -225,7 +225,7 @@ stock SaveRentOne(idx, i)
 	if(WhInfo[idx][wInvent][i] == 0)
 	{
 		new string_mysql[140];
-		format(string_mysql, sizeof(string_mysql), "UPDATE `pp_rentwh` SET `r_slot_%d`= NULL WHERE `Ids` = '%d'", i, idx);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_rentwh` SET `r_slot_%d`= NULL WHERE `Ids` = '%d'", i, idx);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -248,16 +248,16 @@ stock SaveRentOne(idx, i)
 	return 1;
 }
 
-stock rentwh_limit(thingId, thingType, &getLimit) // Проверяем лимиты склада организации
+stock rentwh_limit(thingId, thingType, &getLimit) // РџСЂРѕРІРµСЂСЏРµРј Р»РёРјРёС‚С‹ СЃРєР»Р°РґР° РѕСЂРіР°РЅРёР·Р°С†РёРё
 {
-	if(thingType == 0) // Обычные Предметы
+	if(thingType == 0) // РћР±С‹С‡РЅС‹Рµ РџСЂРµРґРјРµС‚С‹
 	{
-	    if(thingId >= 4 && thingId <= 8) getLimit = 50000; // Вещества
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 50000; // Патроны
-	    else getLimit = 10000; // На случай ошибки, остальные предметы лимит 10к
+	    if(thingId >= 4 && thingId <= 8) getLimit = 50000; // Р’РµС‰РµСЃС‚РІР°
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 50000; // РџР°С‚СЂРѕРЅС‹
+	    else getLimit = 10000; // РќР° СЃР»СѓС‡Р°Р№ РѕС€РёР±РєРё, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ Р»РёРјРёС‚ 10Рє
  	}
-	else if(thingType == 1) getLimit = 5000; // Оружие
-    else if(thingType == 2) getLimit = 5000; // Каски и Бронежилеты (Аксессуары)
-    else getLimit = 10000; // На случай ошибки, остальные предметы лимит 10к
+	else if(thingType == 1) getLimit = 5000; // РћСЂСѓР¶РёРµ
+    else if(thingType == 2) getLimit = 5000; // РљР°СЃРєРё Рё Р‘СЂРѕРЅРµР¶РёР»РµС‚С‹ (РђРєСЃРµСЃСЃСѓР°СЂС‹)
+    else getLimit = 10000; // РќР° СЃР»СѓС‡Р°Р№ РѕС€РёР±РєРё, РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРµРґРјРµС‚С‹ Р»РёРјРёС‚ 10Рє
 	return 1;
 }

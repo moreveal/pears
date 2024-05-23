@@ -294,9 +294,9 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
         format(FundRaisersInfo[i][fundMaxPlayerName], 24, "%s", PlayerInfo[playerid][pName]);
         FundRaisersInfo[i][fundMaxUnix] = unix;
 
-        new string_mysql[153 + 24 + 24 + 33];
-        format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMaxMoney`='%s', `fundMaxPlayerid`='%d',\
-            `fundMaxPlayerName`='%s', `fundMaxUnix`='%d' WHERE `fundNewid`='%d'", 
+        new string_mysql[260];
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMaxMoney`='%e', `fundMaxPlayerid`='%d',\
+            `fundMaxPlayerName`='%e', `fundMaxUnix`='%d' WHERE `fundNewid`='%d'", 
             FundRaisersInfo[i][fundMaxMoney], FundRaisersInfo[i][fundMaxPlayerid], FundRaisersInfo[i][fundMaxPlayerName], 
             FundRaisersInfo[i][fundMaxUnix], FundRaisersInfo[i][fundNewid]);
         query_empty(pearsq, string_mysql);
@@ -357,8 +357,8 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
         UpdateFundRaisers(i);
 
         new string_mysql[140];
-        format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMoney`='%s', `fundQuan`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundMoney], 
-            FundRaisersInfo[i][fundQuan], FundRaisersInfo[i][fundNewid]);
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMoney`='%e', `fundQuan`='%d' WHERE `fundNewid`='%d'", 
+            FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundQuan], FundRaisersInfo[i][fundNewid]);
         query_empty(pearsq, string_mysql);
 
         MoneyLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, FundRaisersInfo[i][fundName]);
@@ -377,7 +377,8 @@ stock AreYouSureFundRaisersActive(playerid, i)
     PlayerPlaySound(playerid,6401,0,0,0);
 
     new string_mysql[140];
-    format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundUnix`='%d' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundUnix], FundRaisersInfo[i][fundNewid]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundUnix`='%d' WHERE `fundNewid`='%d'", 
+        FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundUnix], FundRaisersInfo[i][fundNewid]);
     query_empty(pearsq, string_mysql);
 
     AdminLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, FundRaisersInfo[i][fundName]);
@@ -411,7 +412,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                     UpdateFundRaisers(i);
 
                     new string_mysql[140];
-                    format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundNewid]);
+                    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%d' WHERE `fundNewid`='%d'", 
+                        FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundNewid]);
 	                query_empty(pearsq, string_mysql);
                 }
                 else
@@ -467,7 +469,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             SettingFundRaisers(playerid, i);
 
             new string_mysql[140];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundName`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundName`='%e' WHERE `fundNewid`='%d'", 
+                FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
 	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
@@ -485,7 +488,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             SettingFundRaisers(playerid, i);
 
             new string_mysql[140];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundText`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundText], FundRaisersInfo[i][fundNewid]);
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundText`='%e' WHERE `fundNewid`='%d'", 
+                FundRaisersInfo[i][fundText], FundRaisersInfo[i][fundNewid]);
 	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
@@ -508,7 +512,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             SettingFundRaisers(playerid, i);
 
             new string_mysql[140];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundRequired`='%s' WHERE `fundNewid`='%d'", FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundNewid]);
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundRequired`='%e' WHERE `fundNewid`='%d'",
+                FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundNewid]);
 	        query_empty(pearsq, string_mysql);
         }
         else SettingFundRaisers(playerid, i);
@@ -528,7 +533,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             PlayerPlaySound(playerid,6400,0,0,0);
 
             new string_mysql[160];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundPos0`='%f', `fundPos1`='%f', `fundPos2`='%f' WHERE `fundNewid`='%d'", 
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundPos0`='%f', `fundPos1`='%f', `fundPos2`='%f' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundPos][0], FundRaisersInfo[i][fundPos][1], FundRaisersInfo[i][fundPos][2], FundRaisersInfo[i][fundNewid]);
 	        query_empty(pearsq, string_mysql);
         }
@@ -571,7 +576,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             aFloodFund[playerid] = unix + 20;
 
             new string_mysql[180];
-            format(string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
+            mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
 		    mysql_tquery(pearsq_2, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
         }
         else MenuFundRaisers(playerid, i);
@@ -604,8 +609,8 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             for(new g = 0; g < MAX_FUND_GIFT; g++) FundRaisersInfo[i][fundGiftThingId][g] = 0;
 
             new string_mysql[500];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%s', `fundText`='%s', `fundMoney`='%s', `fundQuan`='0',\
-                `fundRequired`='%s', `fundGift`='%i', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%e', `fundText`='%e', `fundMoney`='%e', \
+                `fundQuan`='0', `fundRequired`='%e', `fundGift`='%d', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundText], 
                 FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundGift], 
                 FundRaisersInfo[i][fundNewid]); // 263 + 33 + 44 + 84 + 24 + 24
@@ -701,7 +706,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             AdminLog("fundgift", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, string);
 
             new string_mysql[185 + 110];
-            format(string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundGift`='%i', `fundGiftThingId%d`='%d', `fundGiftThingQuan%d`='%d',\
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundGift`='%i', `fundGiftThingId%d`='%d', `fundGiftThingQuan%d`='%d',\
             `fundGiftThingType%d`='%d', `fundGiftPrice%d`='%d' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundGift], g, FundRaisersInfo[i][fundGiftThingId][g], g, FundRaisersInfo[i][fundGiftThingQuan][g], 
                 g, FundRaisersInfo[i][fundGiftThingType][g], g, FundRaisersInfo[i][fundGiftPrice][g],
@@ -727,8 +732,8 @@ stock FundLog(senderid, const sender[], const senderip[], const quan[], const na
 	new unix = gettime();
 
     new string_mysql[300];
-    format(string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
-	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%s','%s','%s','%s','%d','%d')",
+    mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
+	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%e','%e','%e','%e','%d','%d')",
     senderid, sender, senderip, quan, name, fundid, unix);
 	mysql_tquery(pearsq_2, string_mysql, "", "");
 }
@@ -736,7 +741,7 @@ stock FundLog(senderid, const sender[], const senderip[], const quan[], const na
 stock ClearFundLog(fundid)
 {
     new string_mysql[90];
-    format(string_mysql, sizeof(string_mysql),"DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
+    mysql_format(pearsq_2, string_mysql, sizeof(string_mysql),"DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
 	query_empty(pearsq_2, string_mysql);
     return 1;
 }

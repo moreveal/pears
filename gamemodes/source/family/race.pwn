@@ -1243,8 +1243,8 @@ stock SaveRoutRace(playerid,slot,status)
                 quan++;
                 PlayerInfo[playerid][CheckPointX][i] = 0.0, PlayerInfo[playerid][CheckPointY][i] = 0.0,PlayerInfo[playerid][CheckPointZ][i] = 0.0,PlayerInfo[playerid][pCheckPointCount][i] = 0;
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
-            `routNameCreator1`='%s',`routNameEditor1`='%s',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
+            `routNameCreator1`='%e',`routNameEditor1`='%e',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam); // 199 + 480 + 480 + 480 + 24 + 24 + 44
             query_empty(pearsq, string_mysql);
@@ -1279,8 +1279,8 @@ stock SaveRoutRace(playerid,slot,status)
                 quan++;
                 PlayerInfo[playerid][CheckPointX][i] = 0.0, PlayerInfo[playerid][CheckPointY][i] = 0.0,PlayerInfo[playerid][CheckPointZ][i] = 0.0,PlayerInfo[playerid][pCheckPointCount][i] = 0;
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
-            `routNameCreator2`='%s',`routNameEditor2`='%s',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
+            `routNameCreator2`='%e',`routNameEditor2`='%e',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1315,8 +1315,8 @@ stock SaveRoutRace(playerid,slot,status)
                 quan++;
                 PlayerInfo[playerid][CheckPointX][i] = 0.0, PlayerInfo[playerid][CheckPointY][i] = 0.0,PlayerInfo[playerid][CheckPointZ][i] = 0.0,PlayerInfo[playerid][pCheckPointCount][i] = 0;
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
-            `routNameCreator3`='%s',`routNameEditor3`='%s',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
+            `routNameCreator3`='%e',`routNameEditor3`='%e',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1351,8 +1351,8 @@ stock SaveRoutRace(playerid,slot,status)
                 quan++;
                 PlayerInfo[playerid][CheckPointX][i] = 0.0, PlayerInfo[playerid][CheckPointY][i] = 0.0,PlayerInfo[playerid][CheckPointZ][i] = 0.0,PlayerInfo[playerid][pCheckPointCount][i] = 0;
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
-            `routNameCreator4`='%s',`routNameEditor4`='%s',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
+            `routNameCreator4`='%e',`routNameEditor4`='%e',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1387,8 +1387,8 @@ stock SaveRoutRace(playerid,slot,status)
                 PlayerInfo[playerid][CheckPointX][i] = 0.0, PlayerInfo[playerid][CheckPointY][i] = 0.0,PlayerInfo[playerid][CheckPointZ][i] = 0.0,PlayerInfo[playerid][pCheckPointCount][i] = 0;
                 quan++;
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
-            `routNameCreator5`='%s',`routNameEditor5`='%s',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
+            `routNameCreator5`='%e',`routNameEditor5`='%e',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1414,8 +1414,8 @@ stock SaveRoutRace(playerid,slot,status)
                 format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,0.0);
 
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
-            `routNameCreator1`='%s',`routNameEditor1`='%s',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout1X`='%s',`Rout1Y`='%s',`Rout1Z`='%s',\
+            `routNameCreator1`='%e',`routNameEditor1`='%e',`routIdCreator1`='%d',`routIdEditor1`='%d',`routUnix1`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameCreator[fam][slot],FamilyRoutNameEditor[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam); // 199 + 480 + 480 + 480 + 24 + 24 + 44
             query_empty(pearsq, string_mysql);
@@ -1432,8 +1432,8 @@ stock SaveRoutRace(playerid,slot,status)
                 format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,0.0);
 
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
-            `routNameCreator2`='%s',`routNameEditor2`='%s',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout2X`='%s',`Rout2Y`='%s',`Rout2Z`='%s',\
+            `routNameCreator2`='%e',`routNameEditor2`='%e',`routIdCreator2`='%d',`routIdEditor2`='%d',`routUnix2`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1450,8 +1450,8 @@ stock SaveRoutRace(playerid,slot,status)
                 format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,0.0);
 
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
-            `routNameCreator3`='%s',`routNameEditor3`='%s',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout3X`='%s',`Rout3Y`='%s',`Rout3Z`='%s',\
+            `routNameCreator3`='%e',`routNameEditor3`='%e',`routIdCreator3`='%d',`routIdEditor3`='%d',`routUnix3`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1468,8 +1468,8 @@ stock SaveRoutRace(playerid,slot,status)
                 format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,0.0);
 
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
-            `routNameCreator4`='%s',`routNameEditor4`='%s',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout4X`='%s',`Rout4Y`='%s',`Rout4Z`='%s',\
+            `routNameCreator4`='%e',`routNameEditor4`='%e',`routIdCreator4`='%d',`routIdEditor4`='%d',`routUnix4`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);
@@ -1486,8 +1486,8 @@ stock SaveRoutRace(playerid,slot,status)
                 format(strocaZ,sizeof(strocaZ),"%.2f",strocaZ,0.0);
 
             }
-            format(string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
-            `routNameCreator5`='%s',`routNameEditor5`='%s',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_family` SET `Rout5X`='%s',`Rout5Y`='%s',`Rout5Z`='%s',\
+            `routNameCreator5`='%e',`routNameEditor5`='%e',`routIdCreator5`='%d',`routIdEditor5`='%d',`routUnix5`='%d' WHERE `id`='%d'",
             strocaX,strocaY,strocaZ,FamilyRoutNameEditor[fam][slot],FamilyRoutNameCreator[fam][slot],FamilyInfo[fam][fRoutIdCreator][slot],
             FamilyInfo[fam][fRoutIdEditor][slot],FamilyInfo[fam][fRoutUnix][slot], fam);
             query_empty(pearsq, string_mysql);

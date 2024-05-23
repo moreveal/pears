@@ -70,14 +70,14 @@ function Call_regpromo(playerid)
 	cache_get_row_count(rows);
 	if(rows)
 	{
-	    new string[200], datad1;
+	    new string[240], datad1;
 	    if(AntiFloodMysqlRequest(playerid, 10)) return 1;
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Поиск игроков...","*","");
 		cache_get_value_name_int(0, "newid", datad1);
 		DP[2][playerid] = 0;
 		DP[0][playerid] = datad1;
 
-		format(string,sizeof(string),"SELECT user_id, Name, Level, ConnectTime, Offtime, Online \
+		mysql_format(pearsq, string,sizeof(string),"SELECT user_id, Name, Level, ConnectTime, Offtime, Online \
 			FROM `pp_igroki` WHERE `Promoins`='%d' AND `Level`>'0' ORDER BY `user_id` DESC LIMIT 60", datad1);
 		mysql_tquery(pearsq, string, "call_getprom", "d", playerid);
 	}
@@ -86,7 +86,7 @@ function Call_regpromo(playerid)
 }
 function Call_promo(playerid, pf, unix)
 {
-	new rows, string[184];
+	new rows, string[240];
 	new year, month,day;
  	getdate(year, month, day);
 	cache_get_row_count(rows);
@@ -166,7 +166,7 @@ function Call_promo(playerid, pf, unix)
 		SavePromo(10, pf);
 		PlayerLog(2, "promo", playerid, 0, "", "", PromoInfo[pf][roName]);
 		
-		format(string, sizeof(string), "INSERT INTO `promo_log` SET `promoid`='%d',`promo`='%s',`playerid`='%d',`player`='%s',`playerip`='%s',`unix`='%d'", PromoInfo[pf][roNewid], PromoInfo[pf][roName], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], unix);
+		mysql_format(pearsq_2, string, sizeof(string), "INSERT INTO `promo_log` SET `promoid`='%d',`promo`='%e',`playerid`='%d',`player`='%e',`playerip`='%e',`unix`='%d'", PromoInfo[pf][roNewid], PromoInfo[pf][roName], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], unix);
 		query_empty(pearsq_2, string);
 
 		if(OnlineInfo[playerid][oListenRadioPears] == 0)
@@ -179,7 +179,7 @@ function Call_promo(playerid, pf, unix)
 		{
 			if(PlayerInfo[playerid][pLevel] == 5)
 			{
-				format(string,sizeof(string),"SELECT Name, Ref5, Money FROM `pp_igroki` WHERE `user_id` = '%d'",PlayerInfo[playerid][pReferalID]);
+				mysql_format(pearsq, string,sizeof(string),"SELECT Name, Ref5, Money FROM `pp_igroki` WHERE `user_id` = '%d'",PlayerInfo[playerid][pReferalID]);
         		mysql_tquery(pearsq, string, "Call_givereferal", "dd", playerid,PlayerInfo[playerid][pReferalID]);
 			}
 		}
@@ -218,9 +218,9 @@ function Call_createpromo(playerid, const str_promo[])
 			}
 		}
 		new f_str[184],string[144];
-		format(f_str, sizeof(f_str), "INSERT INTO `pp_promo` SET `loading`='1',`name`='%s',`unixcreate`='%d',`unixbegin`='%d',`unixend`='%d',`unixstart`='%d'", str_promo, unix, unix-minus+60, unix-minus+604620, unix-minus+60);
+		mysql_format(pearsq, f_str, sizeof(f_str), "INSERT INTO `pp_promo` SET `loading`='1',`name`='%e',`unixcreate`='%d',`unixbegin`='%d',`unixend`='%d',`unixstart`='%d'", str_promo, unix, unix-minus+60, unix-minus+604620, unix-minus+60);
 		query_empty(pearsq, f_str);
-		format(string,sizeof(string),"SELECT * FROM `pp_promo` WHERE `name` = '%s'", str_promo); // Грузим ID промокода
+		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_promo` WHERE `name` = '%e'", str_promo); // Грузим ID промокода
 		mysql_tquery(pearsq, string, "Call_getpromo", "d", pf);
 		format(PromoInfo[pf][roName], 64, str_promo);
 		PromoInfo[pf][roUnixcreate] = unix;
@@ -309,7 +309,7 @@ CMD:promolog(playerid, const params[])
 	if(AntiFloodMysqlRequest(playerid, 10)) return 1;
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Поиск промокода...","*","");
 	new string[200];
-	format(string,sizeof(string),"SELECT * FROM `pp_promo` WHERE `name` = '%s'", params[0]);
+	mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_promo` WHERE `name` = '%e'", params[0]);
 	mysql_tquery(pearsq, string, "Call_regpromo", "d", playerid);
 	return 1;
 }
@@ -473,7 +473,8 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	        new pf = ListCode[playerid];
   	        if(PromoInfo[pf][roActiv] == 1) return ErrorText(playerid,"{FF6347}Нельзя удалить активный промокод"), setprom(playerid);
 			new f_str[144];
-			format(f_str,sizeof(f_str),"UPDATE `pp_promo` SET `loading` = '0' WHERE `newid` = '%d'", PromoInfo[pf][roNewid]), query_empty(pearsq, f_str);
+			mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_promo` SET `loading` = '0' WHERE `newid` = '%d'", PromoInfo[pf][roNewid]);
+			query_empty(pearsq, f_str);
 			format(string, sizeof(string), "[ Промокод ]: %s промокод {FF0000}удалён",PromoInfo[pf][roName]), SendClientMessage(playerid,COLOR_GREY,string);
 			PromoInfo[pf][roNewid] = 0;
 			PromoInfo[pf][roActiv] = 0;

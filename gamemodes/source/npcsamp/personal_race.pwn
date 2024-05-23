@@ -54,6 +54,7 @@ stock CreatePlayerRacePoint(playerid, raceid, typerace)
     Сюда добавлять дальше другие маршруты и гонки (система всё расчитает и четко отработает)
     else if(raceid == 1)
     {
+        
     }
     */
     RacePointPlayerQuan[playerid] = pointQuan; // Записываем количество поинтов на маршруте гонки

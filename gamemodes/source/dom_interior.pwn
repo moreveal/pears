@@ -32,7 +32,7 @@ stock InfoObjectDomBiz(playerid, type, id, oba)
     if(userid == 0) return ErrorMessage(playerid, "{FF6347}У объекта нет создателя\n{cccccc}Он был создан системой");
 
     new string[144];
-	format(string,sizeof(string),"SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
+	mysql_format(pearsq, string,sizeof(string),"SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", userid);
 	mysql_tquery(pearsq, string, "call_io", "ddddd", playerid, userid, id, oba, type);
 	return 1;
 }
@@ -222,8 +222,8 @@ stock DelObject(d, obid) // Удаляем объект из дома
 }
 stock DelObjectOwner(d, obid, owner_type) // Удаляем объект из дома или бизнеса
 {
-	new string_mysql[140];
-	format(string_mysql,sizeof(string_mysql), "DELETE FROM `pp_owner_objects` WHERE `owner_type` = '%d' AND `owner_id` = '%d' AND `slot` = '%d'", owner_type, d, obid);
+	new string_mysql[160];
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql), "DELETE FROM `pp_owner_objects` WHERE `owner_type` = '%d' AND `owner_id` = '%d' AND `slot` = '%d'", owner_type, d, obid);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -237,58 +237,6 @@ stock UpdateObject(d, obid) // Обновляем объект в доме
     UpdateObjectOwner(d, obid, 0);
     return 1;
 }
-
-/*
-// Старый способ сбора текстур для сохранения
-stock BuildTextureString(type, d, obid, string:output[], outputsize)
-{
-    output[0] = '\0';
-    new string_texture_part[64];
-
-    // Формирование части запроса для каждой текстуры
-    for(new i = 0; i < MAX_TEXTURES_ON_OBJECTS; i++)
-    {
-		new objectid, texture_string[100];
-		if(type == 1) objectid = DomInfo[d][dObject][obid];
-        else if(type == 2) objectid = BizzInfo[d][bObject][obid];
-
-        new modelid, txdname[32], texturename[32], materialcolor;
-        GetDynamicObjectMaterial(objectid, i, modelid, txdname, texturename, materialcolor);
-
-        if(modelid == 0) format(texture_string, sizeof(texture_string), "\0");
-        else format(texture_string, sizeof(texture_string), "%d,%s,%s,%d", modelid, txdname, texturename, materialcolor);
-
-        format(string_texture_part, sizeof(string_texture_part), "`t%d` = '%s'", i, texture_string);
-        strcat(output, string_texture_part, outputsize);
-
-        if(i < MAX_TEXTURES_ON_OBJECTS - 1) strcat(output, ", ", outputsize); // Добавляем запятую после каждой текстуры, кроме последней
-    }
-}*/
-
-/*
-// Старое сохранение текстур
-stock UpdateObjectTextures(d, obid)
-{
-    if(LIMITED_LOADING_SERVER >= 2) return 1;
-    if(d < 0 || d >= MAX_DOM || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
-
-    if(DomInfo[d][dNewid][obid] != 0) // Только если объект существует в базе
-    {
-        new string_mysql[3200];
-        new texture_update_string[3000];
-
-        // Собираем строку обновления текстур
-        BuildTextureString(1, d, obid, texture_update_string, sizeof(texture_update_string));
-
-        // Формирование запроса
-        format(string_mysql, sizeof(string_mysql), "UPDATE `pp_objects` SET %s, `yesUpdate` = '1' WHERE `newid` = '%d'", 
-            texture_update_string, DomInfo[d][dNewid][obid]);
-
-        query_empty(pearsq, string_mysql);
-    }
-    return 1;
-}
-*/
 
 stock ClearVariableObjectDom(dom, oba)
 {

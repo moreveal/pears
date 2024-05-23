@@ -434,12 +434,9 @@ stock InitializeAquarium(aquaid)
 
 stock SaveAquarium(aquaid, fishid)
 {
-    new f_str[11];
-	mysql_escape_string(FishName[aquaid][fishid], f_str, sizeof(f_str));
-
-    new string_mysql[102 + 66 + 11];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishStat%d`='%d',`aqFishSatiety%d`='%d',`FishName%d`='%s' WHERE `newid`='%d'",
-        fishid, AquariumInfo[aquaid][aqFishStat][fishid], fishid, AquariumInfo[aquaid][aqFishSatiety][fishid], fishid, f_str, AquariumInfo[aquaid][aqNewid]);
+    new string_mysql[200];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishStat%d`='%d',`aqFishSatiety%d`='%d',`FishName%d`='%e' WHERE `newid`='%d'",
+        fishid, AquariumInfo[aquaid][aqFishStat][fishid], fishid, AquariumInfo[aquaid][aqFishSatiety][fishid], fishid, FishName[aquaid][fishid], AquariumInfo[aquaid][aqNewid]);
     query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -465,7 +462,7 @@ stock AquariumFishSatiety(aquaid)
             else
             {
                 new string_mysql[120];
-                format(string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishSatiety%d`='%d' WHERE `newid`='%d'",
+                mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `aquarium` SET `aqFishSatiety%d`='%d' WHERE `newid`='%d'",
                     fishid, AquariumInfo[aquaid][aqFishSatiety][fishid], AquariumInfo[aquaid][aqNewid]);
                 query_empty(pearsq, string_mysql);
             }

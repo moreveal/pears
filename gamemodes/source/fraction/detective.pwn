@@ -56,7 +56,7 @@ stock FindCarInWareHouse(playerid)
     if(crimeInfo[i][crmSklad] == world)
     {   
         new string[120];
-        format(string,sizeof(string),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
+        mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
         query_empty(pearsq, string);
         crimeInfo[i][crmSenderID] = 0;
         SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Можно взять новое дело и проверить этот же склад на другой транспорт");
@@ -151,7 +151,7 @@ stock InputCarToRent(playerid,wh,car)
 	if(slot == -1) return ErrorMessage(playerid, "{FF6347} Не найден свободный слот преступления. Сообщите администрации!");
     if(GetPVarInt(playerid,"stopload") >= 1) return 1;
     SetPVarInt(playerid,"stopload",1);
-	format(string, sizeof(string), "SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", VehInfo[car][vSost]);
+	mysql_format(pearsq, string, sizeof(string), "SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", VehInfo[car][vSost]);
 	mysql_tquery(pearsq, string, "CrimeCar", "ddddd", playerid,wh,car,slot, g_MysqlRaceCheck[playerid]);
 	return 1;
 }
@@ -191,8 +191,12 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
 
 stock SaveCrime(slot)
 {
-    new string_mysql[400];
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%s',`TargetID`='%d',`TargetName`='%s',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],crimeInfo[slot][crmID]);
+    new string_mysql[500];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%e',\
+    `TargetID`='%d',`TargetName`='%e',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",
+    crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],
+    crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],
+    crimeInfo[slot][crmID]);
     query_empty(pearsq, string_mysql); // 205 + 99 + 24 + 24 (352)
 	return 1;
 }

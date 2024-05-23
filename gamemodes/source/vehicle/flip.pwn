@@ -53,7 +53,7 @@ stock ChangeFlipVehicle(playerid)
     else PlayerInfo[playerid][pAutoFlipOff] = false;
 
     new f_str[120];
-    format(f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pAutoFlipOff` = '%i' WHERE `user_id` = '%d'", 
+    mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pAutoFlipOff` = '%d' WHERE `user_id` = '%d'", 
         PlayerInfo[playerid][pAutoFlipOff], PlayerInfo[playerid][pID]);
     query_empty(pearsq, f_str);
     return 1;

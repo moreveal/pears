@@ -511,7 +511,7 @@ stock SaveDailyQuestSlot(playerid, slot)
     new string_mysql[200];
 
     // Формируем запрос для обновления одного слота квеста
-    format(string_mysql, sizeof(string_mysql), "UPDATE `pp_quests` SET daiFull = %d, daiQuan_%d = %d, daiStatus_%d = %d WHERE user_id = %d", 
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_quests` SET daiFull = %d, daiQuan_%d = %d, daiStatus_%d = %d WHERE user_id = %d", 
         DailyInfo[playerid][daiFull], slot, DailyInfo[playerid][daiQuan][slot], slot, DailyInfo[playerid][daiStatus][slot], PlayerInfo[playerid][pID]);
 
     // Отправляем запрос в базу данных

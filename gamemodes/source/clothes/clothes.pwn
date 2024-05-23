@@ -1386,7 +1386,7 @@ function LoadPriceSkin()
 stock SaveSkinEconomy(s)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinGos` = '%d' WHERE `skin` = '%d'", SkinGos[s], s);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinGos` = '%d' WHERE `skin` = '%d'", SkinGos[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1395,7 +1395,7 @@ stock SaveSkinEconomy(s)
 stock SaveSkinGold(s)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinGold` = '%d' WHERE `skin` = '%d'", SkinGold[s], s);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinGold` = '%d' WHERE `skin` = '%d'", SkinGold[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1404,7 +1404,7 @@ stock SaveSkinGold(s)
 stock SaveSkinSale(s)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinSale` = '%d' WHERE `skin` = '%d'", SkinSale[s], s);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinSale` = '%d' WHERE `skin` = '%d'", SkinSale[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1413,7 +1413,7 @@ stock SaveSkinSale(s)
 stock SaveSkinBuy(s)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinBuy` = '%d' WHERE `skin` = '%d'", SkinBuy[s], s);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinBuy` = '%d' WHERE `skin` = '%d'", SkinBuy[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -1422,7 +1422,7 @@ stock SaveSkinBuy(s)
 stock SaveSkinBuyGold(s)
 {
     new string_mysql[140];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinBuyGold` = '%d' WHERE `skin` = '%d'", SkinBuyGold[s], s);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinBuyGold` = '%d' WHERE `skin` = '%d'", SkinBuyGold[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }

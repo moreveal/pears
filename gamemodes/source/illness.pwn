@@ -800,13 +800,13 @@ stock update_illness(playerid, stat)
 	new string_mysql[260];
 	if(ContagiousInfect(stat))
 	{
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d',`pColdCD`='%d' WHERE `user_id`='%d'", 
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d',`pColdCD`='%d' WHERE `user_id`='%d'", 
 		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], 
 		PlayerInfo[playerid][pColdCD], PlayerInfo[playerid][pID]);
 	}
 	else
 	{
-		format(string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `user_id`='%d'", 
+		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `user_id`='%d'", 
 		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], 
 		PlayerInfo[playerid][pID]);
 	}
@@ -815,8 +815,8 @@ stock update_illness(playerid, stat)
 }
 stock update_allillness(playerid)
 {
-	new string_mysql[329 + 176];
-	format(string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Illness0`='%d',`IllnessStat0`='%d',`IllnessProg0`='%d',\
+	new string_mysql[600];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Illness0`='%d',`IllnessStat0`='%d',`IllnessProg0`='%d',\
 	`Illness1`='%d',`IllnessStat1`='%d',`IllnessProg1`='%d',`Illness2`='%d',`IllnessStat2`='%d',`IllnessProg2`='%d',\
   	`Illness3`='%d',`IllnessStat3`='%d',`IllnessProg3`='%d',`Illness4`='%d',`IllnessStat4`='%d',`IllnessProg4`='%d' WHERE `user_id`='%d'",
   	PlayerInfo[playerid][pIllness][0],PlayerInfo[playerid][pIllnessStat][0],PlayerInfo[playerid][pIllnessProg][0],
