@@ -15,9 +15,14 @@ public OnNPCExitVehicle() StopRecordingPlayback();
 stock PlayBackNext()
 {
 	new destination = CheckDestination();
+	
 	if(destination == 0) StartRecordingPlayback(RECORDING_TYPE, "dominic_start");
-	else if(destination == 1) StartRecordingPlayback(RECORDING_TYPE, "dominic_race1");
-	else if(destination == 2) StartRecordingPlayback(RECORDING_TYPE, "dominic_race2");
+	else
+	{
+	    new string[40];
+	    format(string,sizeof(string),"dominic_race%d", destination);
+	    StartRecordingPlayback(RECORDING_TYPE, string);
+	}
 }
 
 stock CheckDestination()
@@ -29,9 +34,8 @@ stock CheckDestination()
 		fread(handle, buf);
 		fclose(handle);
 		
-		if(strval(buf) == 1) return 1;
-		else if(strval(buf) == 2) return 2;
-		else return 0;
+		new result = strval(buf);
+		return result;
 	}
 	return 0;
 }

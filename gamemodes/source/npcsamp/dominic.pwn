@@ -19,72 +19,73 @@ stock Dominic_StartQuest(playerid)
     GetPlayerPos(NPCInfo[5][npcID], pos[0], pos[1], pos[2]);
     if(IsPlayerInRangeOfPoint(playerid,2.0, pos[0], pos[1], pos[2]))
     {
-        if(PlayerInfo[playerid][pDominic] == 1) Dominic_GiveGift(playerid, pos[0], pos[1], pos[2]); // Получаем подарок от Доминика
-        else
+        new unix = gettime();
+        if(PlayerInfo[playerid][pDominicUnix] > unix)
         {
-            new unix = gettime();
-            if(PlayerInfo[playerid][pDominicUnix] > unix)
-            {
-                new string[140];
-                format(string, sizeof(string), "{FF6347}Вы не можете сейчас начать гонку с Домиником\n{ffcc66}Гонка будет доступна через %s", fine_time(PlayerInfo[playerid][pDominicUnix] - unix));
-                ErrorMessage(playerid, string);
-                return 1;
-            }
-
-            switch(random(3))
-            {
-                case 0:
-                {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic0.mp3",pos[0], pos[1], pos[2],6.0,true);
-                    SetPlayerChatBubble(NPCInfo[5][npcID],"Ну что, давай прокатимся?",0x67b2ffFF,5.0,3000);
-                }
-                case 1:
-                {
-                    if(PlayerInfo[playerid][pSex] == 1)
-                    {
-                        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1.mp3",pos[0], pos[1], pos[2],6.0,true);
-                        SetPlayerChatBubble(NPCInfo[5][npcID],"Уверен, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
-                    }
-                    else
-                    {
-                        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1_w.mp3",pos[0], pos[1], pos[2],6.0,true);
-                        SetPlayerChatBubble(NPCInfo[5][npcID],"Уверена, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
-                    }
-                }
-                case 2:
-                {
-                    if(PlayerInfo[playerid][pSex] == 1)
-                    {
-                        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2.mp3",pos[0], pos[1], pos[2],6.0,true);
-                        SetPlayerChatBubble(NPCInfo[5][npcID],"Готов прокатиться?",0x67b2ffFF,5.0,3000);
-                    }
-                    else
-                    {
-                        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2_w.mp3",pos[0], pos[1], pos[2],6.0,true);
-                        SetPlayerChatBubble(NPCInfo[5][npcID],"Готова прокатиться?",0x67b2ffFF,5.0,3000);
-                    }
-                }
-            }
-
-            ShowDialog(playerid,655,DIALOG_STYLE_MSGBOX,"{ff9000}Доминик Торпеда",
-                "{ff9000}Вы уверены, что хотите начать гонку?\
-                \n\n{99ff66}Вы можете выиграть:\
-                \n{cccccc}- Деталь для тюнинга\
-                \n- Кейс\
-                \n- Рем. комплект\
-                \n- Домкрат\
-                \n- Пиво\
-                \n\n{FF6347}Внимание! {ffcc66}Этот квест весьма сложный\
-                \n{ffcc66}Чтобы победить Доминика, вам понадобится прокаченная и быстрая тачка",
-                "Да","Нет");
+            new string[140];
+            format(string, sizeof(string), "{FF6347}Вы не можете сейчас начать гонку с Домиником\n{ffcc66}Гонка будет доступна через %s", fine_time(PlayerInfo[playerid][pDominicUnix] - unix));
+            ErrorMessage(playerid, string);
+            return 1;
         }
+
+        switch(random(4))
+        {
+            case 0:
+            {
+                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic0.mp3",pos[0], pos[1], pos[2],6.0,true);
+                SetPlayerChatBubble(NPCInfo[5][npcID],"Ну что, давай прокатимся?",0x67b2ffFF,5.0,3000);
+            }
+            case 1:
+            {
+                if(PlayerInfo[playerid][pSex] == 1)
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    SetPlayerChatBubble(NPCInfo[5][npcID],"Уверен, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
+                }
+                else
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1_w.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    SetPlayerChatBubble(NPCInfo[5][npcID],"Уверена, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
+                }
+            }
+            case 2:
+            {
+                if(PlayerInfo[playerid][pSex] == 1)
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    SetPlayerChatBubble(NPCInfo[5][npcID],"Готов прокатиться?",0x67b2ffFF,5.0,3000);
+                }
+                else
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2_w.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    SetPlayerChatBubble(NPCInfo[5][npcID],"Готова прокатиться?",0x67b2ffFF,5.0,3000);
+                }
+            }
+            case 3:
+            {
+                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic3.mp3",pos[0], pos[1], pos[2],6.0,true);
+                SetPlayerChatBubble(NPCInfo[5][npcID],"Мы болтаем или едем?",0x67b2ffFF,5.0,3000);
+            }
+        }
+
+        ShowDialog(playerid,655,DIALOG_STYLE_MSGBOX,"{ff9000}Доминик Торпеда",
+            "{ff9000}Вы уверены, что хотите начать гонку?\
+            \n\n{99ff66}Вы можете выиграть:\
+            \n{cccccc}- Деталь для тюнинга\
+            \n- Кейс\
+            \n- Рем. комплект\
+            \n- Домкрат\
+            \n- Пиво\
+            \n\n{FF6347}Внимание! {ffcc66}Этот квест весьма сложный\
+            \n{ffcc66}Чтобы победить Доминика, вам понадобится прокаченная и быстрая тачка",
+            "Да","Нет");
         return 1;
     }
     return 0;
 }
 
 // Получаем подарок от доминика
-stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
+stock Dominic_GiveGift(playerid)
 {
     if(PlayerInfo[playerid][pAchieve][127] == 0) AchievePlayer(playerid, 127, 1); // Ачивка за победу в гонке с Домиником
 
@@ -94,7 +95,7 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
         case 0..4:
         {
             thingId = 225; // Домкрат
-            thingQuan = 1 + random(4);
+            thingQuan = 1 + random(2);
         }
         case 5..8: thingId = 183; // Рем комплект
         case 9..11: thingId = 119; // Пиво разливное
@@ -103,7 +104,7 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
     }
 
     // Количественный предмет (Проверка на лимиты)
-    new bool:fallGift;
+    new bool:fallGift, bool:pizdaPodarku;
     if(CheckThingQuan(thingId) == 1)
 	{
         new getQuan, getLimit;
@@ -114,41 +115,39 @@ stock Dominic_GiveGift(playerid, Float:x, Float:y, Float:z)
     mysql_tquery(pearsq, "START TRANSACTION;");
     // Выдаём предмет
     new put_inva = -1;
-    if(fallGift == false) 
+    if(fallGift == false)
     {
         put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999); // Всё окей, даём в инвентарь
         SuccessMessage(playerid, "{99ff66}Доминик дал вам подарок\n{ffcc66}Проверьте свой инвентарь [ Кнопка N ]");
+        CalculateVehicleLimited(thingId, thingType);
     }
-	if(put_inva == -1) // Всё хуйня, кладём на землю
+	if(put_inva == -1) // Всё хуйня, кладём в багажник
     {
-        Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
-        SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Подарок ]: {ffcc66}Вы получили подарок [В инвентаре нет места, подарок упал на землю]");
-        SuccessMessage(playerid, "{99ff66}Доминик дал вам подарок\n{ffcc66}Подарок упал на землю [ Кнопка N >> Рядом ]");
+        if(IsPlayerInAnyVehicle(playerid))
+        {
+            new veh = GetPlayerVehicleID(playerid);
+            put_inva = PutThingBoot(veh, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+            CalculateVehicleLimited(thingId, thingType);
+	        if(put_inva == -1) pizdaPodarku = true;
+            else
+            {
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Подарок ]: {ffcc66}Вы получили подарок [В инвентаре нет места, подарок помещён в багажник]");
+                SuccessMessage(playerid, "{99ff66}Доминик дал вам подарок\n{ffcc66}Подарок помещён в багажник вашего транспорта");
+            }
+        }
+        else pizdaPodarku = true;
     }
-    CalculateVehicleLimited(thingId, thingType);
+
+    // Некуда выдавать подарок, обойдётся
+    if(pizdaPodarku == true)
+    {
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Подарок ]: {ffcc66}Внимание! Вы победили Доминика, в вашем инвентаре и багажнике нет места!");
+        ErrorMessage(playerid, "{FF6347}Внимание! Вы победили Доминика, но в вашем инвентаре и багажнике нет места!\n{ffcc66}Система не смогла выдать вам подарок");
+    }
     
     PlayerInfo[playerid][pDominic] = 0;
     SaveDominicQuest(playerid);
     mysql_tquery(pearsq, "COMMIT;");
-
-    switch(random(3))
-    {
-        case 0:
-        {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic3.mp3",x, y, z,6.0,true);
-            SetPlayerChatBubble(NPCInfo[5][npcID],"Вот, держи.. Это для тебя",0x67b2ffFF,5.0,3000);
-        }
-        case 1:
-        {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic4.mp3",x, y, z,6.0,true);
-            SetPlayerChatBubble(NPCInfo[5][npcID],"Держи, это тебе подарок от меня",0x67b2ffFF,5.0,3000);
-        }
-        case 2:
-        {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic5.mp3",x, y, z,6.0,true);
-            SetPlayerChatBubble(NPCInfo[5][npcID],"Возьми, этот подарок для тебя",0x67b2ffFF,5.0,3000);
-        }
-    }
     return 1;
 }
 
@@ -239,21 +238,61 @@ stock Dominic_PickupRaceCheckpoint()
         SaveDominicQuest(DominicPlayeridRace);
         ClearPlayerRace(DominicPlayeridRace, false);
 
-        if(PlayerInfo[DominicPlayeridRace][pSex] == 1)
+        switch(random(4))
         {
-            PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6.mp3");
-            SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли, брат");
-            SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
-        }
-        else
-        {
-            PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6_w.mp3");
-            SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли");
-            SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
+            case 0:
+            {
+                if(PlayerInfo[DominicPlayeridRace][pSex] == 1)
+                {
+                    PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6.mp3");
+                    SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли, брат");
+                    SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
+                }
+                else
+                {
+                    PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6_w.mp3");
+                    SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли");
+                    SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
+                }
+            }
+            case 1:
+            {
+                PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic10.mp3");
+                SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Покажи мне как ты ездишь и я скажу кто ты");
+                SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Прокатимся как-нибудь ещё");
+            }
         }
         SendClientMessage(DominicPlayeridRace, COLOR_GREY, "[ Мысли ]: Вот блин! Я проиграл%s", gender(DominicPlayeridRace));
     }
     return 1;
+}
+
+stock Dominic_TalkingRace(playerid)
+{
+    switch(random(4))
+    {
+        case 0:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic11.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Гони или умри");
+        }
+        case 1:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic12.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Говорят в дороге думается лучше. Кем ты был и кем станешь");
+        }
+        case 2:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic13.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Все ищут острых ощущений, но самое важное - это семья");
+        }
+        case 3:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic14.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Не важно, что у машины под капотом. Самое важное - это то кто сидит за рулём");
+        }
+    }
+    return true;
 }
 
 // Завершаем гонку с домиником и ставим бота на место
@@ -271,28 +310,36 @@ stock Dominic_ExtPlayerRace()
 // Игрок приехал на финиш раньше доминика
 stock Dominic_FinishPlayer(playerid)
 {
-    switch(random(2))
+    switch(random(4))
     {
         case 0:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic7.mp3");
-            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Молодец, ты неплохо водишь");
-            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): У меня для тебя кое-что есть, приезжай");
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic4.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Хорошая гонка");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Надеюсь ещё прокатимся");
         }
         case 1:
         {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic5.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Неважно, на сантиметр впереди или на километр");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Победа есть победа");
+        }
+        case 2:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic7.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Молодец, ты неплохо водишь");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Этот подарок для тебя");
+        }
+        case 3:
+        {
             PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic8.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Ты хороший водитель");
-            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Приезжай, у меня для тебя подарок");
+            SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Надеюсь тебе понравится мой подарок");
         }
     }
 
-    CreateGps(playerid, NpcPositionSpawn[5][Npc_X], NpcPositionSpawn[5][Npc_Y], NpcPositionSpawn[5][Npc_Z], 0, 0, 2.0);
-
-    // Сохраняем статус квеста с домиником
-    PlayerInfo[playerid][pDominic] = 1;
-    Dominic_Restriction(playerid);
-    SaveDominicQuest(playerid);
+    Dominic_Restriction(playerid); // Кд на повторную гонку
+    Dominic_GiveGift(playerid); // Получаем подарок от Доминика
     return 1;
 }
 

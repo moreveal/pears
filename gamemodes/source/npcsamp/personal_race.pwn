@@ -125,6 +125,11 @@ stock PickupRaceCheckpoint(playerid)
 	    DisablePlayerRaceCheckpoint(playerid);
 
         OnlineInfo[playerid][oQuanPointRace] ++; // Считаем поинты
+        if(OnlineInfo[playerid][oQuanPointRace] == 20)
+        {
+            if(OnlineInfo[playerid][oDominicRace] > 0) Dominic_TalkingRace(playerid); // Цитаты Доминика во время гонки
+        }
+        
         if(OnlineInfo[playerid][oQuanPointRace] >= RacePointPlayerQuan[playerid]) // Приехали на последний поинт
         {
             ClearPlayerRace(playerid); // Очищаем гонку

@@ -168,7 +168,7 @@ stock AddCustomSkins()
 	AddCharSyncModel(311, 415); // 15603, pearscop male
 	AddCharSyncModel(287, 416); // 15604, pearsarmy1 male
 	AddCharSyncModel(287, 417); // 15605, pearsarmy2 male
-	AddCharSyncModel(285, 418); // 15606, pearsswat1 male
+	AddCharSyncModel(5, 418); // 15606, pearsswat1 male (жирный араб)
 	AddCharSyncModel(285, 419); // 15607, pearsswat2 male
 	AddCharSyncModel(300, 420); // 15608, pearscop2 male
 	AddCharSyncModel(301, 421); // 15609, pearsswat4 male

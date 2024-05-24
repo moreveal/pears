@@ -432,6 +432,24 @@ stock GetPrisonBusLocation(konvoiId)
     return 0;
 }
 
+// Считаем количество игроков, которые отправляются в конвой
+stock GetPlayersInKonvoi(playerid, konvoiId, vehicleid)
+{
+    new quan;
+    foreach(Player,i)
+	{
+        if(OnlineInfo[i][oLogged] == 1 && GetPlayerVirtualWorld(i) == 0 && GetPlayerInterior(i) == 0)
+        {
+            if(!IsPlayerAfk(i) || IsPlayerInVehicle(playerid, vehicleid))
+            {
+                if(konvoiId == 1 && IsPlayerInRangeOfPoint(i,50.0,1604.8387,-1611.0654,13.5175) && PlayerInfo[i][pJailed] == 3) quan ++;
+                else if(konvoiId == 2 && IsPlayerInRangeOfPoint(i,50.0,-1580.0209,686.4322,7.1875) && PlayerInfo[i][pJailed] == 9) quan ++;
+            }
+        }
+    }
+    return quan;
+}
+
 stock dialogCase_Prison(playerid, dialogid, response, listitem)
 {
     if(dialogid == 532)
@@ -445,6 +463,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 new konvoiId = DP[0][playerid];
                 new vehicleid = GetPrisonBusLocation(konvoiId);
                 if(!vehicleid) return ErrorMessage(playerid, "{FF6347}Тюремный автобус в данный момент выполняет конвой\n{cccccc}Пожалуйста, подождите. Он прибудет обратно примерно через 10 минут");
+                if(GetPlayersInKonvoi(playerid, konvoiId, vehicleid) >= 8) return ErrorMessage(playerid, "{FF6347}В конвой отправлено максимальное количество заключенных\n{cccccc}К сожалению, вы не успели. Дождитесь следующего конвоя");
 
                 CuffedPlayer(playerid, 9999);
                 S_SetPlayerVirtualWorld(playerid,0,0);
