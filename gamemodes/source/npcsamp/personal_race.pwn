@@ -162,7 +162,7 @@ stock ShowRaceCheckpoint(playerid)
 }
 
 // Очищаем гонку
-stock ClearPlayerRace(playerid, bool:clear = true)
+stock ClearPlayerRace(playerid)
 {
     if(OnlineInfo[playerid][oStatusRace] > 0)
     {
@@ -172,7 +172,11 @@ stock ClearPlayerRace(playerid, bool:clear = true)
     }
 
     // Финиш в гонке с домиником
-    if(clear == true && OnlineInfo[playerid][oDominicRace] > 0 && playerid == DominicPlayeridRace) Dominic_ExtPlayerRace();
+    if(OnlineInfo[playerid][oDominicRace] > 0 && playerid == DominicPlayeridRace) 
+    {
+        OnlineInfo[playerid][oDominicRace] = 0;
+        Dominic_ExtPlayerRace();
+    }
 
     // Сюда дальше можно добавлять другие обработчики финиширования в системах
     return 1;

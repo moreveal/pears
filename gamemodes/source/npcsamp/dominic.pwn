@@ -145,7 +145,6 @@ stock Dominic_GiveGift(playerid)
         ErrorMessage(playerid, "{FF6347}Внимание! Вы победили Доминика, но в вашем инвентаре и багажнике нет места!\n{ffcc66}Система не смогла выдать вам подарок");
     }
     
-    PlayerInfo[playerid][pDominic] = 0;
     SaveDominicQuest(playerid);
     mysql_tquery(pearsq, "COMMIT;");
     return 1;
@@ -208,6 +207,10 @@ stock Dominic_PlayerCapsLock(playerid)
 
             // Отображаем доминику последний поинт
             Dominic_ShowLastPoint(playerid, NPCInfo[5][npcID]);
+
+            // Запиываем и сохраняем начало гонки (чтобы игрок не смог выйти и запустить гонку повторно)
+            Dominic_Restriction(playerid);
+            SaveDominicQuest(playerid);
             return 1;
         }
     }
@@ -236,7 +239,7 @@ stock Dominic_PickupRaceCheckpoint()
     {
         Dominic_Restriction(DominicPlayeridRace);
         SaveDominicQuest(DominicPlayeridRace);
-        ClearPlayerRace(DominicPlayeridRace, false);
+        ClearPlayerRace(DominicPlayeridRace);
 
         switch(random(4))
         {
@@ -364,8 +367,8 @@ CMD:reloaddominic(playerid)
 stock SaveDominicQuest(playerid)
 {
     new string_mysql[140];
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `pDominic`='%d', `pDominic`='%d' WHERE `user_id`='%d'", 
-        PlayerInfo[playerid][pDominic], PlayerInfo[playerid][pDominic], PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `pDominicUnix`='%d' WHERE `user_id`='%d'", 
+        PlayerInfo[playerid][pDominicUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql);
     return 1;
 }
@@ -412,7 +415,7 @@ stock Dominic_WaitRace()
 
         if(IsOnline(DominicPlayeridRace))
         {
-            ClearPlayerRace(DominicPlayeridRace, false);
+            ClearPlayerRace(DominicPlayeridRace);
 
             ErrorMessage(DominicPlayeridRace, "{FF6347}Гонка с Домиником была отменена\n{ffcc66}В течении минуты вы не подъехали к Доминику");
             SendClientMessage(DominicPlayeridRace, COLOR_GREY, "[ Мысли ]: Я не подъехал%s к Доминику, чтобы начать гонку", gender(DominicPlayeridRace));

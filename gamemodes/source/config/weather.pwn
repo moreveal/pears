@@ -86,36 +86,32 @@ stock WeatherMoving()
     return 1;
 }
 
-stock GetWeatherBasicArea(areaid)
+stock UpdateWeatherPlayer(playerid)
 {
-	new bool:yes;
-	for(new i; i < 2; i++)
-	{
-		if(areaid == dyn_zone_WeatherBasic[i])
-		{
-			yes = true;
-			break;
-		}
-	}
-	return yes;
+    if(IsPlayerInDynamicArea(playerid, dyn_zone_WeatherBasic[0]) || IsPlayerInDynamicArea(playerid, dyn_zone_WeatherBasic[1])) // Находимся в центре
+    {
+        SetPlayerWeather(playerid, Weather[WeatherID][weatherID]);
+        return true;
+    }
+    else if(IsPlayerInDynamicArea(playerid, dyn_zone_WeatherNotBasic[0]) || IsPlayerInDynamicArea(playerid, dyn_zone_WeatherNotBasic[1])) // Находимся во внешней погоде
+    {
+        SetPlayerWeather(playerid, 4);
+        return true;
+    }
+    return false;
 }
 
-stock GetWeatherNotBasicArea(areaid)
+stock IsAreaWeather(areaid)
 {
-	new bool:yes;
-	for(new i; i < 2; i++)
-	{
-		if(areaid == dyn_zone_WeatherNotBasic[i])
-		{
-			yes = true;
-			break;
-		}
-	}
-	return yes;
+    if(areaid == dyn_zone_WeatherBasic[0] || areaid == dyn_zone_WeatherBasic[1]
+        || areaid == dyn_zone_WeatherNotBasic[0] || areaid == dyn_zone_WeatherNotBasic[1]) return true;
+    return false;
 }
 
 stock CompletionWeather()
 {
+    Pogoda = 1; // Погода всегда по дефолту
+
     for(new i; i < MAX_WEATHER; i++)
     {
         if(i == 0) Weather[i][weatherUnix] = gettime() + random(86400/MAX_WEATHER);
@@ -161,40 +157,4 @@ stock CompletionWeather()
         printf("Номер погоды: %d. Направление: %d Идет из: %f %f к: %f %f",Weather[i][weatherID],Weather[i][weatherDirection], Weather[i][weatherDirectionCordStart][0],Weather[i][weatherDirectionCordStart][1],Weather[i][weatherDirectionCordStop][0],Weather[i][weatherDirectionCordStop][1]);
     }
     return 1;
-}
-
-
-CMD:forecast(playerid)
-{
-	new str[100],sctring[1400];
-    if(Pogoda <= 17) format(str,sizeof(str),"\n{cccccc}Сегодня: {ff9000}%s", weatherName[Pogoda]), strcat(sctring,str);
-    new tyear[13], tmonth[13], tday[13], thour[13], tminute[13], tsecond[13], unix = gettime();
-	stamp2datetime(unix+86400, tyear[0], tmonth[0], tday[0], thour[0], tminute[0], tsecond[0], 3);
-	stamp2datetime(unix+172800, tyear[1], tmonth[1], tday[1], thour[1], tminute[1], tsecond[1], 3);
-	stamp2datetime(unix+259200, tyear[2], tmonth[2], tday[2], thour[2], tminute[2], tsecond[2], 3);
-	stamp2datetime(unix+345600, tyear[3], tmonth[3], tday[3], thour[3], tminute[3], tsecond[3], 3);
-	stamp2datetime(unix+432000, tyear[4], tmonth[4], tday[4], thour[4], tminute[4], tsecond[4], 3);
-	stamp2datetime(unix+518400, tyear[5], tmonth[5], tday[5], thour[5], tminute[5], tsecond[5], 3);
-	stamp2datetime(unix+604800, tyear[6], tmonth[6], tday[6], thour[6], tminute[6], tsecond[6], 3);
-	stamp2datetime(unix+691200, tyear[7], tmonth[7], tday[7], thour[7], tminute[7], tsecond[7], 3);
-	stamp2datetime(unix+777600, tyear[8], tmonth[8], tday[8], thour[8], tminute[8], tsecond[8], 3);
-	stamp2datetime(unix+864000, tyear[9], tmonth[9], tday[9], thour[9], tminute[9], tsecond[9], 3);
-	stamp2datetime(unix+950400, tyear[10], tmonth[10], tday[10], thour[10], tminute[10], tsecond[10], 3);
-	stamp2datetime(unix+1036800, tyear[11], tmonth[11], tday[11], thour[11], tminute[11], tsecond[11], 3);
-	stamp2datetime(unix+1123200, tyear[12], tmonth[12], tday[12], thour[12], tminute[12], tsecond[12], 3);
-    format(str,sizeof(str),"\n{cccccc}Завтра %02d.%02d.%d: {ff9000}%s", tday[0], tmonth[0], tyear[0], weatherName[dayweat[1]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[1], tmonth[1], tyear[1], weatherName[dayweat[2]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[2], tmonth[2], tyear[2], weatherName[dayweat[3]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[3], tmonth[3], tyear[3], weatherName[dayweat[4]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[4], tmonth[4], tyear[4], weatherName[dayweat[5]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[5], tmonth[5], tyear[5], weatherName[dayweat[6]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[6], tmonth[6], tyear[6], weatherName[dayweat[7]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[7], tmonth[7], tyear[7], weatherName[dayweat[8]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[8], tmonth[8], tyear[8], weatherName[dayweat[9]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[9], tmonth[9], tyear[9], weatherName[dayweat[10]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[10], tmonth[10], tyear[10], weatherName[dayweat[11]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[11], tmonth[11], tyear[11], weatherName[dayweat[12]]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}%02d.%02d.%d: {ff9000}%s", tday[12], tmonth[12], tyear[12], weatherName[dayweat[13]]), strcat(sctring,str);
-  	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Прогноз Погоды",sctring,"*","");
-	return 1;
 }

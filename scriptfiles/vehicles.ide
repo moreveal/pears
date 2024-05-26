@@ -265,7 +265,7 @@ cars
 15105, 	chargdep, 	chargdep, 	car, 		CHARGDEP, 	CHARGDEP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15106, 	enforswat, 	enforswat, 	car, 		ENFORSWAT, 	ENFORSWAT, 	van,	ignore,		10,	0,	0,		-1, 0.936, 0.936,	-1
 15107, 	truckswat, 	truckswat, 	car, 		TRUCKSWAT, 	TRUCKSWAT, 	van,	big,	 	4, 	0,	0,		-1, 0.85, 0.85,		-1
-15108,	frerrarif1, frerrarif1, car,        FRERRARIF1, FRERRARIF1, null,   ignore, 10, 7, 0, 1, 1.0, 1.0, 1
+15108,	frerrarif1, frerrarif1, car,        FRERRARIF1, FRERRARIF1, null,   ignore, 10, 7, 0, 0, 0.85, 0.85, 1
 15109, 	crownciv, 	crownciv, 	car, 		CROWNCIV, 	CROWNCIV,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15110, 	crowndep, 	crowndep, 	car, 		CROWNDEP, 	CROWNDEP,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15111,	expidit, 	expidit, 	car, 		EXPIDIT, 	EXPIDIT, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
@@ -284,7 +284,7 @@ cars
 15124,	mieclipse,	mieclipse,	car, 		MIECLIPSE, 	MIECLIPSE, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 15125,	silvias14,	silvias14,	car, 		SILVIAS14, 	SILVIAS14, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 15126,	armhum1, 	armhum1, 	car, 		ARMHUM1, 	ARMHUM1, 	null,	ignore,			2,	0,	0,		-1, 0.9, 0.9,	-1
-15127, 	hemicuda, 	hemicuda, 	car, 		HEMICUDA,	HEMICUDA, 	null,	normal,			10, 	0,	2ff0,		-1, 0.65, 0.65,		0
+15127, 	hemicuda, 	hemicuda, 	car, 		HEMICUDA,	HEMICUDA, 	null,	normal,			10, 	0,	2ff0,		-1, 0.7, 0.7,		0
 15128, 	camrytax, 	camrytax, 	car, 		CAMRYTAX, 	CAMRYTAX, 	null,	taxi,			10, 	0,	1f10,		-1, 0.7, 0.7,		0
 15129,	vazsix,		vazsix,		car, 		VAZSIX, 	VAZSIX, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 15130,	vazsev,		vazsev,		car, 		VAZSEV, 	VAZSEV, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
@@ -305,5 +305,6 @@ cars
 15145,	marsride, 	marsride, 	mtruck,		MARSRIDE,	MARSRIDE, 	truck,	ignore,			4,	0,	0,		-1, 1.8, 1.8,		-1
 15146,	rcmarscar, 	rcmarscar, 	car, 		RCMARSCAR, 	RCMARSCAR, 	null,	ignore,		1, 	0,	0,		-1, 0.25, 0.25,		-1
 15147,	rcmarsheli, rcmarsheli, heli, 		RCMARSHELI, RCMARSHELI, null,	ignore,		1,	0,	0,		-1, 0.25, 0.25,		-1
+15148,	peugeot406,	peugeot406,	car, 		PEUGEOT406, PEUGEOT406, null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 end
 
