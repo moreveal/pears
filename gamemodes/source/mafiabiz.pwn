@@ -10,15 +10,15 @@ stock ShowMafiaBiz(playerid, mina, maxa)
 {
 	new stro[184], sctringo[3600];
     PlayerPlaySound(playerid,40405,0,0,0);
-    format(stro,sizeof(stro),"{444444}Далее >>\n"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"{444444}Р”Р°Р»РµРµ >>\n"), strcat(sctringo,stro);
     for(new b = mina; b <= maxa; b++)
 	{
-		if(BizzInfo[b][bMafia] >= 1) format(stro,sizeof(stro),"{ff9000}№ %d {cccccc}| Под Контролем: %s\n", b, frakName[BizzInfo[b][bMafia]]), strcat(sctringo,stro);
-		else format(stro,sizeof(stro),"{ff9000}№ %d {cccccc}| Свободен\n", b), strcat(sctringo,stro);
+		if(BizzInfo[b][bMafia] >= 1) format(stro,sizeof(stro),"{ff9000}в„– %d {cccccc}| РџРѕРґ РљРѕРЅС‚СЂРѕР»РµРј: %s\n", b, frakName[BizzInfo[b][bMafia]]), strcat(sctringo,stro);
+		else format(stro,sizeof(stro),"{ff9000}в„– %d {cccccc}| РЎРІРѕР±РѕРґРµРЅ\n", b), strcat(sctringo,stro);
     }
-    format(stro,sizeof(stro),"{444444}Далее >>"), strcat(sctringo,stro);
-    if(mina >= 50) ShowDialog(playerid,989,DIALOG_STYLE_LIST,"{ff9000}Рейдерский Захват",sctringo,"Выбрать","Назад");
-    else ShowDialog(playerid,989,DIALOG_STYLE_LIST,"{ff9000}Рейдерский Захват",sctringo,"Выбрать","Выход");
+    format(stro,sizeof(stro),"{444444}Р”Р°Р»РµРµ >>"), strcat(sctringo,stro);
+    if(mina >= 50) ShowDialog(playerid,989,DIALOG_STYLE_LIST,"{ff9000}Р РµР№РґРµСЂСЃРєРёР№ Р—Р°С…РІР°С‚",sctringo,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
+    else ShowDialog(playerid,989,DIALOG_STYLE_LIST,"{ff9000}Р РµР№РґРµСЂСЃРєРёР№ Р—Р°С…РІР°С‚",sctringo,"Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
 }
 
 stock InfoMafiaBiz(playerid, b)
@@ -26,26 +26,27 @@ stock InfoMafiaBiz(playerid, b)
 	new str[100],sctring[400];
 	new tyear, tmonth, tday, thour, tminute, tsecond;
 	stamp2datetime(BizzInfo[b][bMafunix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
- 	format(str,sizeof(str),"\n\n{444444}Бизнес {ff9000}%s [%d]", bizname(b), b), strcat(sctring,str);
- 	format(str,sizeof(str),"\n\n{cccccc}Владелец: %s",BizzInfo[b][bVlad]), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}Под контролем: %s", frakName[BizzInfo[b][bMafia]]), strcat(sctring,str);
- 	format(str,sizeof(str),"\n{cccccc}Доля с дохода за крышевание: {ffffff}10%"), strcat(sctring,str);
-    format(str,sizeof(str),"\n{cccccc}Денег в бизнесе: {44ff99}%d$",BizzInfo[b][bMafiaSchet]), strcat(sctring,str);
- 	if(BizzInfo[b][bMafunix] >= 1) format(str,sizeof(str),"\n{cccccc}Дата и время захвата: [ %02d.%02d.%d %02d:%02d ]\n\n", tday, tmonth, tyear, thour, tminute), strcat(sctring,str);
- 	else format(str,sizeof(str),"\n{cccccc}Дата и время захвата: {ffffff}Передан администрацией\n\n"), strcat(sctring,str);
-	ShowDialog(playerid,990,DIALOG_STYLE_MSGBOX,"{ff9000}Рейдерский Захват",sctring,"Ок","");
+ 	format(str,sizeof(str),"\n\n{444444}Р‘РёР·РЅРµСЃ {ff9000}%s [%d]", bizname(b), b), strcat(sctring,str);
+ 	format(str,sizeof(str),"\n\n{cccccc}Р’Р»Р°РґРµР»РµС†: %s",BizzInfo[b][bVlad]), strcat(sctring,str);
+    format(str,sizeof(str),"\n{cccccc}РџРѕРґ РєРѕРЅС‚СЂРѕР»РµРј: %s", frakName[BizzInfo[b][bMafia]]), strcat(sctring,str);
+ 	format(str,sizeof(str),"\n{cccccc}Р”РѕР»СЏ СЃ РґРѕС…РѕРґР° Р·Р° РєСЂС‹С€РµРІР°РЅРёРµ: {ffffff}10%"), strcat(sctring,str);
+    format(str,sizeof(str),"\n{cccccc}Р”РµРЅРµРі РІ Р±РёР·РЅРµСЃРµ: {44ff99}%d$",BizzInfo[b][bMafiaSchet]), strcat(sctring,str);
+ 	if(BizzInfo[b][bMafunix] >= 1) format(str,sizeof(str),"\n{cccccc}Р”Р°С‚Р° Рё РІСЂРµРјСЏ Р·Р°С…РІР°С‚Р°: [ %02d.%02d.%d %02d:%02d ]\n\n", tday, tmonth, tyear, thour, tminute), strcat(sctring,str);
+ 	else format(str,sizeof(str),"\n{cccccc}Р”Р°С‚Р° Рё РІСЂРµРјСЏ Р·Р°С…РІР°С‚Р°: {ffffff}РџРµСЂРµРґР°РЅ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРµР№\n\n"), strcat(sctring,str);
+	ShowDialog(playerid,990,DIALOG_STYLE_MSGBOX,"{ff9000}Р РµР№РґРµСЂСЃРєРёР№ Р—Р°С…РІР°С‚",sctring,"РћРє","");
 }
 
 stock TakeMoneyMafiaBiz(playerid,b)
 {
     new g = fraction(playerid);
-    if(BizzInfo[b][bMafia] != g) return ErrorMessage(playerid,"{ff6347}Ваша мафия не крышует этот бизнес");
-    if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}В сейфе бизнеса не накопилось 10.000$, вернитесь позже.\nПосмотреть деньги на счете бизнеса можно командой [ /mafiabiz ]");
+    if(BizzInfo[b][bMafia] != g) return ErrorMessage(playerid,"{ff6347}Р’Р°С€Р° РјР°С„РёСЏ РЅРµ РєСЂС‹С€СѓРµС‚ СЌС‚РѕС‚ Р±РёР·РЅРµСЃ");
+    if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}Р’ СЃРµР№С„Рµ Р±РёР·РЅРµСЃР° РЅРµ РЅР°РєРѕРїРёР»РѕСЃСЊ 10.000$, РІРµСЂРЅРёС‚РµСЃСЊ РїРѕР·Р¶Рµ.\nРџРѕСЃРјРѕС‚СЂРµС‚СЊ РґРµРЅСЊРіРё РЅР° СЃС‡РµС‚Рµ Р±РёР·РЅРµСЃР° РјРѕР¶РЅРѕ РєРѕРјР°РЅРґРѕР№ [ /mafiabiz ]");
     OrganInfo[g][glave] += BizzInfo[b][bMafiaSchet];
     OrganInfo[g][gUpdate] = 1;
 
     BizzInfo[b][bMafiaSchet] = 0;
     BizzInfo[b][bUpdate] = 1;
-    SuccessMessage(playerid,"{44ff99}Вы успешно забрали деньги мафии\n{cccccc}Деньги начислены на счет вашей мафии");
+    SuccessMessage(playerid,"{44ff99}Р’С‹ СѓСЃРїРµС€РЅРѕ Р·Р°Р±СЂР°Р»Рё РґРµРЅСЊРіРё РјР°С„РёРё\n{cccccc}Р”РµРЅСЊРіРё РЅР°С‡РёСЃР»РµРЅС‹ РЅР° СЃС‡РµС‚ РІР°С€РµР№ РјР°С„РёРё");
+    GiveUnit(playerid,18);
     return 1;
 }

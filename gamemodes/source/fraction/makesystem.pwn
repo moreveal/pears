@@ -146,6 +146,7 @@ stock MakeCreate(playerid, whom)
 stock CloseMake(playerid,number)
 {
     OnlineInfo[playerid][oTakeMake] = -1;
+    GiveUnit(playerid,17);
     if(MakeInfo[number][mkPlayerId] == -1)
     {
         MakeInfo[number][mkWho] = -1;

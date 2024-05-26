@@ -353,6 +353,7 @@ stock SaveNewRout(playerid,who,const Name[])
 	}
 	FullRout[slot][brUnix] = gettime();
 	SaveRout(slot);
+	GiveUnit(playerid, 14);
 	SuccessMessage(playerid,"{99ff66} Маршрут сохранен");
 	return 1;
 }

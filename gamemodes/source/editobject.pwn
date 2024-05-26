@@ -474,7 +474,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SaveGraphiti(zone);
         ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0, false, true, true, false, false, SYNC_ALL);
         SetPlayerChatBubble(playerid,"наносит граффити",COLOR_PURPLE,20.0,4000);
-
+        GiveUnit(playerid,16);
         around_player_audio(playerid, 1134, 0, 5.0, 0);
     }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);

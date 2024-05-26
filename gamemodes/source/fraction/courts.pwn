@@ -85,6 +85,7 @@ stock CloseCourtsProcess(playerid)
         SetPlayerToTeamColor(playerid);
         GF_OnPlayerUpdate(playerid);
     }
+    GiveUnit(CourtsInfo[slot][courtsTakeUserid], 13);
     DeleteOrderToCourts(CourtsInfo[slot][courtsPlayerId]);
     return 1;
 }

@@ -22,6 +22,7 @@ new Text3D:TrainBoxLabel;
 new TrainBoxPickup;
 new Float:TrainBoxPos[3];
 new TrainStoppedTime;
+new MemberTrainStart[MAX_REALPLAYERS];
 
 new ExitTrainPos; // Подсчёт стороны выхода из поезда
 new EnterTrainPos; // Подсчёт для входа в поезд
@@ -1976,6 +1977,18 @@ stock LoadOrderEscort(playerid)
 	}
 	if(stop) return ErrorMessage(playerid, "{FF6347}Уберите из багажника Barracks все лишние предметы");
 
+	new Float:xp,Float:yp,Float:zp,quan;
+	GetPlayerRealPos(playerid,xp,yp,zp);
+	foreach(Player,i)
+	{
+		if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING
+			|| GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) continue;
+		if(IsPlayerInRangeOfPoint(i,70.0, xp,yp,zp))
+		{
+			MemberTrainStart[quan] = PlayerInfo[i][pID];
+			quan++;
+		}
+	}
 	BoxStat = 0;
 	for(new i = 0; i < MAX_ORDERESCORT; i++)
 	{
@@ -2652,6 +2665,16 @@ stock UnloadBoxesToWarehouse(playerid)
 		По окончанию всё объединяется в единую строку work и отправляется в log
 		Так-же выдаются юниты по настроенному тарифу каждого действия (только если участники в онлайне) (обновить настройки юнитов)
 		*/
+		for(new i;i < MAX_REALPLAYERS; i++)
+		{
+			if(MemberTrainStart[i] == 0) continue;
+			else
+			{
+				new giveplayerid = ReturnUserID(MemberTrainStart[i]);
+				if(giveplayerid == INVALID_PLAYER_ID) continue;
+				if(IsPlayerInRangeOfPoint(giveplayerid,70.0, EscortOrg[g][0],EscortOrg[g][1],EscortOrg[g][2])) GiveUnit(giveplayerid, 15);
+			}
+		}
 
 		// Отключаем заказ у организации
 		OrganInfo[g][gOrderStatus] = 0;
@@ -2666,7 +2689,6 @@ stock UnloadBoxesToWarehouse(playerid)
 		BoxStat = 0;
 		EscortStatus = 0;
 		EscortOrganization = 0;
-
 		// Все армейцы, которые рядом тусуются
 		foreach(Player,i)
 		{

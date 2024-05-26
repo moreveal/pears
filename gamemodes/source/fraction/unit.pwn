@@ -22,7 +22,19 @@ new unitName[][] = // Названия настроек юниты
     "Рассмотрение установки бизнеса", // 9
     "Диагноз пациенту", // 10
     "Угон транспорта", // 11
-    "Найденный угнанный транспорт" // 12
+    "Найденный угнанный транспорт", // 12
+    "Рассмотрение заявки в суд", // 13 -
+    "Создание автобусного маршрута", // 14 -
+    "Доставка боеприпасов", // 15 -
+    "Покраска граффити", // 16 -
+    "Закрытие вызова", // 17 - // Я бы добавил как для МЗ при условии что они подняли, но вопрос с ментами, а у них как детектить успешное выполнение?
+    "Снятие денег с бизнеса", // 18 -
+    "Участие в стреле", // 19 -
+    "Участие в захвате порта" // 20 -
+    // Ниже могут абузится, я хз что делать.
+    //"Установка радара", // 21 -
+    //"Установка остановки", // 22 -
+    //"Установка камеры", // 23 -
 };
 
 new unitDefault[] =
@@ -39,7 +51,15 @@ new unitDefault[] =
     3000, // 9
     1000, // 10
     5000, // 11
-    5000 // 12
+    5000, // 12
+    1000, // 13
+    10000, // 14
+    5000, // 15
+    500, // 16
+    1500, // 17
+    1000, // 18
+    15000, // 19
+    15000 // 20
 };
 
 stock IsAUnitOrganization(unitid, g, playerid)
@@ -101,6 +121,38 @@ stock IsAUnitOrganization(unitid, g, playerid)
     else if(unitid == 12) // Найденный транспорт
     {
         if(IsAPolice(playerid)) return 1;
+    }
+    else if(unitid == 13) // Рассмотрение заявки в суд
+    {
+        if(PlayerInfo[playerid][pMember] == 7 && PlayerInfo[playerid][pDivision] == 1) return 1; // Дополнить покумекав с Владом как правильно!
+    }
+    else if(unitid == 14) // Создание автобусного маршрута
+    {
+        if(PlayerInfo[playerid][pMember] == 7) return 1;
+    }
+    else if(unitid == 15) // Доставка БП у NGSA
+    {
+        if(PlayerInfo[playerid][pMember] == 3) return 1;
+    }
+    else if(unitid == 16) // Покраска граффити
+    {
+        if(IsAGang(playerid)) return 1;
+    }
+    else if(unitid == 17) // Закрытие вызова
+    {
+        if(IsACop(playerid) || PlayerInfo[playerid][pMember] == 4) return 1;
+    }
+    else if(unitid == 18) // Снимаем бабки с бизнеса
+    {
+        if(IsAMafia(playerid)) return 1;
+    }
+    else if(unitid == 19) // Стрела
+    {
+        if(IsAMafia(playerid)) return 1;
+    }
+    else if(unitid == 20) // Порт
+    {
+        if(IsAMafia(playerid)) return 1;
     }
     return 0;
 }

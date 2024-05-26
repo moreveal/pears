@@ -266,7 +266,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     {
         if(g == 3)  return 1;
     }
-    else if(accessId == 73) // 73 Военно Морской Флот [NGSA]
+    else if(accessId == 74) // 73 Военно Морской Флот [NGSA]
     {
         if(g == 3)  return 1;
     }
