@@ -56,15 +56,11 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
  			PlayerInfo[p][pAbilStat][abilityId] = 10;
  			format(string,sizeof(string),"{0088ff}[ Навык ]: {99ff66}%s максимальный! Вы лучший в своём деле! {ff9000}[ 10 ]", abilityName[abilityId]);
 			SendClientMessage(p, COLOR_GREY, string);
-			format(string,sizeof(string),"{99ff66}%s максимальный! Вы лучший в своём деле!", abilityName[abilityId]);
-			SuccessMessage(p, string);
 		}
 		else
 		{
 		    format(string,sizeof(string),"{0088ff}[ Навык ]: {ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
 			SendClientMessage(p, COLOR_GREY, string);
-			format(string,sizeof(string),"{ffcc66}%s повышен! {ff9000}[ %d ] {cccccc}[ Y >> Меню >> Навыки ]", abilityName[abilityId], PlayerInfo[p][pAbilStat][abilityId]);
-			SuccessMessage(p, string);
 		}
 
 		new fpick, fpara, thingType;

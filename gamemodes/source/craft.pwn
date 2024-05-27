@@ -1130,30 +1130,16 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
     
     new line[130],lines[2210];
     format(line,sizeof(line),"{ff9000}%s",GetVehicleName(VehInfo[vehicleid][vModel])), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}Состояние: {cccccc}%.0f Health\n", health), strcat(lines,line);
-
-    for(new i = 0; i < 13; i++)
-    {
-        if(GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i) != 0)
-        {
-            format(line,sizeof(line),"\n{ff9000}* {cccccc}%s",detalName[GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i)]), strcat(lines,line);
-        }
-    }
-    format(line,sizeof(line),"\n\n{ff9000}Установленный Тюнинг"), strcat(lines,line);
-    for(new i;i< MAX_TUNNING_VEHICLE;i++)
-    {
-        if(VehInfo[vehicleid][vTunningID][i] > 0)
-        {
-            if(VehInfo[vehicleid][vTunningType][i] == 0) format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s% | + %s%]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][1]), strcat(lines,line);
-            else format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s% ]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0]), strcat(lines,line);
-        }
-    }
-
+    format(line,sizeof(line),"\n{ff9000}Состояние: {cccccc}%.0f Health", health), strcat(lines,line);
     if(stat == 0)
     {
         format(line,sizeof(line),"\n\n{444444}Выберите {ff9000}Рем. комплект {444444}в инвентаре"), strcat(lines,line);
         format(line,sizeof(line),"\n{444444}Затем повторно нажмите на двигатель, чтобы начать ремонт"), strcat(lines,line);
     }
+
+    // Добавляем подробную информацию о тюнинге транспорта
+	strcat(lines, VehicleInfoCreateLines(vehicleid));
+
     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Диагностика",lines,"*","");
 }
 

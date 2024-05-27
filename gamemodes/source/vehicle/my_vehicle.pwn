@@ -4232,22 +4232,48 @@ stock pts(p, v)
 	if(Cars[v] == 88) format(line,sizeof(line),"\n{cccccc}Номер: {666666}%s", VehInfo[v][vNumer]), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Налог: {FF6347}%d$ {555555}каждый PayDay",Procent(1, GetVehiclePriceGos(model))), strcat(lines,line);
 
-   	if(VehInfo[v][vUpgrade] == 1) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {99ff66}установлен"), strcat(lines,line);
-   	else if(VehInfo[v][vUpgrade] == 0) format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: {444444}отсутствует"), strcat(lines,line);
-
    	format(line,sizeof(line),"\n\n{cccccc}Гос. стоимость: {99ff66}%d$",GetVehiclePriceGos(model)), strcat(lines,line);
-	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки\n"), strcat(lines,line);
+	format(line,sizeof(line),"\n{555555}В автосалоне стоимость выше из-за наценки"), strcat(lines,line);
 
-	if(VehInfo[v][vHandlingModel] > 0) format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[v][vHandlingModel])), strcat(lines,line);
-	if(VehInfo[v][vArmor] > 0) format(line,sizeof(line),"\n{cccccc}Бронеплёнка: {0088ff}%.0f", VehInfo[v][vArmor]), strcat(lines,line);
+	// Добавляем подробную информацию о тюнинге транспорта
+	strcat(lines, VehicleInfoCreateLines(v));
 
-	for(new i = 0; i < 13; i++)
-	{
-		if(GetVehicleComponentInSlot(v, CARMODTYPE:i) != 0) format(line,sizeof(line),"\n{0088ff}* {cccccc}%s",detalName[GetVehicleComponentInSlot(v, CARMODTYPE:i)]), strcat(lines,line);
-	}
-	format(line,sizeof(line),"\n"), strcat(lines,line);
 	ShowDialog(p,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Паспорт Транспортного Средства",lines,"*","");
 }
+
+stock VehicleInfoCreateLines(vehicleid)
+{
+	new line[214], lines[4096];
+	format(line,sizeof(line),"\n"), strcat(lines,line);
+
+	format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: %s", VehInfo[vehicleid][vUpgrade] ? "{99ff66}установлен" : "{444444}отсутствует"), strcat(lines,line);
+	if(VehInfo[vehicleid][vHandlingModel] > 0) format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[vehicleid][vHandlingModel])), strcat(lines,line);
+	if(VehInfo[vehicleid][vArmor] > 0) format(line,sizeof(line),"\n{cccccc}Бронеплёнка: {0088ff}%.0f", VehInfo[vehicleid][vArmor]), strcat(lines,line);
+
+	format(line,sizeof(line),"\n\n{ff9000}Установленные Детали"), strcat(lines,line);
+	new quanStyling;
+	for(new i = 0; i < 13; i++)
+    {
+        if(GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i) != 0)
+        {
+            format(line,sizeof(line),"\n{ff9000}* {cccccc}%s",detalName[GetVehicleComponentInSlot(vehicleid, CARMODTYPE:i)]), strcat(lines,line);
+			quanStyling ++;
+        }
+    }
+	if(quanStyling == 0) format(line,sizeof(line),"\n{444444}отсутствует"), strcat(lines,line);
+
+    format(line,sizeof(line),"\n\n{ff9000}Установленный Тюнинг"), strcat(lines,line);
+    for(new i;i< MAX_TUNNING_VEHICLE;i++)
+    {
+        if(VehInfo[vehicleid][vTunningID][i] > 0)
+        {
+            if(VehInfo[vehicleid][vTunningType][i] == 0) format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s %% | + %s %%]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][1]), strcat(lines,line);
+            else format(line,sizeof(line),"\n{ff9000}%s: {cccccc}%s [+ %s %% ]",friskDetailTypeName[VehInfo[vehicleid][vTunningType][i]],friskName[VehInfo[vehicleid][vTunningID][i]],friskDetailPoint[VehInfo[vehicleid][vTunningID][i]-207][0]), strcat(lines,line);
+        }
+    }
+	return lines;
+}
+
 function LoadCar(playerid, dab, race_check)
 {
 	new rows;
