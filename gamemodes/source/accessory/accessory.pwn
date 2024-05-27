@@ -265,7 +265,7 @@ stock GetTextDrawNameAccessory(modelId)
 
 stock DeleteAccessory(i)
 {
-	new string_mysql[80];
+	new string_mysql[200];
 	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"DELETE FROM `accessory` WHERE `newid` = '%d'", AccessoryInfo[i][acID]);
 	query_empty(pearsq, string_mysql);
 

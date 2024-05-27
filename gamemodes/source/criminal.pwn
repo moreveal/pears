@@ -667,7 +667,7 @@ function Call_loadwanted(playerid, race_check)
 	}
 	else 
     {
-        new string_mysql[80];
+        new string_mysql[100];
         mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_wanted` SET `playerid` = '%d'", PlayerInfo[playerid][pID]);
         query_empty(pearsq, string_mysql);
     }

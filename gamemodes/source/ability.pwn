@@ -443,7 +443,7 @@ CMD:setability(playerid, const params[])
 	{
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 
-		new string_mysql[80];
+		new string_mysql[100];
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
 		mysql_tquery(pearsq, string_mysql, "Call_setability", "ddds", playerid, stat, amount, tmp);
 		return 1;
