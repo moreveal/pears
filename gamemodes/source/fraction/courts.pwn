@@ -213,13 +213,12 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
             }
             SuccessMessage(playerid,"{44ff99}Вы отправили заявку на рассмотрения дела Заключенного");
             new str[600];
-            format(str,sizeof(str),"{cccccc}Судья %s, вызывает вас на рассмотрения дела\n\n
-{684F7D}Что это такое?
-{cccccc}- Во время рассмотрения дела вам могут уменьшить срок заключения.
-{cccccc}- Либо заменить его на исправительные работы, или оплатить на месте.
-{cccccc}сумму для выхода под залог.\n
-{ff6347}Хотите что бы ваше дело рассмотрели?
-            ",rpplayername(playerid));
+            format(str,sizeof(str),"{cccccc}Судья %s, вызывает вас на рассмотрения дела\
+                \n\n{684F7D}Что это такое?\
+                {cccccc}- Во время рассмотрения дела вам могут уменьшить срок заключения.\
+                {cccccc}- Либо заменить его на исправительные работы, или оплатить на месте.\
+                {cccccc}сумму для выхода под залог.\n\
+                {ff6347}Хотите что бы ваше дело рассмотрели?",rpplayername(playerid));
             ShowDialog(targetid,1499,DIALOG_STYLE_MSGBOX,"Суд",str,"Да","Нет");
         }
         else return 1;
@@ -243,10 +242,12 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem)
         if(response)
         {
             new slot = DP[4][playerid];
+            if(slot < 0 || slot >= MAX_COURTS) return false;
             if(CourtsInfo[slot][courtsStatus] != 2) return 0;
             CourtsInfo[slot][courtsClass] = listitem;
             return CloseCourtsProcess(CourtsInfo[slot][courtsPlayerId]);
         }
+        return true;
     }
     return 1;
 }

@@ -3,7 +3,7 @@
 
 stock UpdateSqlProperties() // Сохраняем инфу о сервере в базу (для синхры)
 {
-    // if(server == 0) return 0; // VREMENNO koment
+    if(server == 0) return 0;
 
     new string_mysql[1024];
     mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "INSERT INTO properties ( name, value ) VALUES \
@@ -18,7 +18,7 @@ stock UpdateSqlProperties() // Сохраняем инфу о сервере в 
 
 stock UpdateSqlPlayer() // Записываем все аккаунты в таблицу
 {
-    // if(server == 0) return 0; // VREMENNO koment
+    if(server == 0) return 0;
 
     mysql_tquery(pearsq_3, "START TRANSACTION;");
 
