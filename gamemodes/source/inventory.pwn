@@ -684,8 +684,12 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
     // Логируем передачу
     format(string,sizeof(string),"Передал: %s", GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("give", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], fquan, string);
+	
+	format(string,sizeof(string),"Получил: %s", GetNameThing(1, fpick, thingType, thingPack));
+	UserLog("get", PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], fquan, string);
 	return 1;
 }
+
 stock PreviouslyGiveThingPlayer(playerid, giveplayerid, const inputtext[])
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1 || OnlineInfo[playerid][oInventSelectLeft] == 9999) return 1;
@@ -2178,7 +2182,7 @@ stock TakeSklad(g, thingId, quan, thingType, dopinf)
 stock SaveSklad(idx, bool:transaction = true) // Сохранение всего склада организации по циклу
 {
 	// Начало транзакции
-	if(transaction == true) mysql_tquery(pearsq_2, "START TRANSACTION;");
+	if(transaction == true) mysql_tquery(pearsq, "START TRANSACTION;");
 
 	for(new i = 0; i < 20; i++) 
 	{
@@ -2186,7 +2190,7 @@ stock SaveSklad(idx, bool:transaction = true) // Сохранение всего
 	}
 
 	// Завершение транзакции
-	if(transaction == true) mysql_tquery(pearsq_2, "COMMIT;");
+	if(transaction == true) mysql_tquery(pearsq, "COMMIT;");
 	return 1;
 }
 
@@ -2195,8 +2199,8 @@ stock SaveSkladOne(idx, i)
 	if(OrganInfo[idx][gInvent][i] == 0)
 	{
 		new string_mysql[140];
-		mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= NULL WHERE `frakid` = '%d'", i, idx);
-		mysql_tquery(pearsq_2, string_mysql);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= NULL WHERE `frakid` = '%d'", i, idx);
+		mysql_tquery(pearsq, string_mysql);
 	}
 	else
 	{
@@ -2211,8 +2215,8 @@ stock SaveSkladOne(idx, i)
 		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
 		{
 			new string_mysql[640];
-			mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= '%e' WHERE `frakid` = '%d'", i, string_json, idx);
-			mysql_tquery(pearsq_2, string_mysql);
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `g_slot_%d`= '%e' WHERE `frakid` = '%d'", i, string_json, idx);
+			mysql_tquery(pearsq, string_mysql);
 		}
 	}
 	OrganInfo[idx][gInvUpdate][i] = false;

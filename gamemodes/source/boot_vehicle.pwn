@@ -95,7 +95,9 @@ stock use_boot(playerid, v, inva, useinva)
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
     TakeBoot(v, fpick, fquan, thingType, inva);
 
-    format(string,sizeof(string),"Взял из %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
+
+	if(VehInfo[v][vNewid] > 0) format(string,sizeof(string),"Взял из %s [DB %d]: %s", GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vNewid], GetNameThing(1, fpick, thingType, thingPack));
+	else format(string,sizeof(string),"Взял из %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 
 	// Квест ремонт транспорта
@@ -221,7 +223,9 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 		if(quanThing == 1) take_away(playerid, fquan, inva); // Отнимаем предмет (по количеству)
 	 	else i_del(playerid, inva); // Отнимаем предмет (целиком)
 
-		format(string,sizeof(string),"Положил в багажник: %s", GetNameThing(1, fpick, thingType, thingPack));
+
+		if(VehInfo[v][vNewid] > 0) format(string,sizeof(string),"Положил в %s [DB %d]: %s", GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vNewid], GetNameThing(1, fpick, thingType, thingPack));
+		else format(string,sizeof(string),"Положил в %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
 		UserLog("putboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 
 		i_resetveshi(playerid);

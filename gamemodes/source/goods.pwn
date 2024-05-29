@@ -112,9 +112,20 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 
     updategoods(seller, inva);
     
-    format(string,sizeof(string),"Купил: %s [%d$]",GetNameThing(1, fpick, thingType, thingPack), price);
-	UserLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], fquan, string);
-    
+	// Формируем описание логов
+	new string_buy[100];
+	format(string_buy, sizeof(string_buy),"Купил: %s (%d) [%d$]",GetNameThing(1, fpick, thingType, thingPack), fquan, price);
+	new string_sell[100];
+	format(string_sell, sizeof(string_sell),"Продал: %s (%d) [%d$]",GetNameThing(1, fpick, thingType, thingPack), fquan, price);
+
+	// Логи на деньги
+	MoneyLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], -price, string_buy);
+	MoneyLog("sellgoods", PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, string_sell);
+
+	// Лог инвентаря
+	UserLog("buygoods", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], fquan, string_buy);
+    UserLog("sellgoods", PlayerInfo[seller][pID], PlayerInfo[seller][pName], PlayerInfo[seller][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], fquan, string_sell);
+
     if(PlayerInfo[seller][pAchieve][22] == 0) AchievePlayer(seller, 22, 1);
 	if(PlayerInfo[playerid][pAchieve][23] == 0) AchievePlayer(playerid, 23, 1);
 	return 1;

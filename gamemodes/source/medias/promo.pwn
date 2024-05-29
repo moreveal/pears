@@ -166,7 +166,7 @@ function Call_promo(playerid, pf, unix)
 		SavePromo(10, pf);
 		PlayerLog(2, "promo", playerid, 0, "", "", PromoInfo[pf][roName]);
 		
-		mysql_format(pearsq_2, string, sizeof(string), "INSERT INTO `promo_log` SET `promoid`='%d',`promo`='%e',`playerid`='%d',`player`='%e',`playerip`='%e',`unix`='%d'", PromoInfo[pf][roNewid], PromoInfo[pf][roName], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], unix);
+		mysql_format(pearsq_2, string, sizeof(string), "INSERT INTO `promo_log` SET `promoid`='%d',`playerid`='%d',`player`='%e',`playerip`='%e',`unix`='%d'", PromoInfo[pf][roNewid], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], unix);
 		query_empty(pearsq_2, string);
 
 		if(OnlineInfo[playerid][oListenRadioPears] == 0)

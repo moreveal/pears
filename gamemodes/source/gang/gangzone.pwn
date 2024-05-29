@@ -592,7 +592,7 @@ stock CheckGangZone() // Распределение результатов по 
 {
 	CaptInfo[cCaptStat] = false;
 	CaptInfo[cCaptReset] = 10;
-	new g = CaptInfo[cZoneID], head, cbug, saveKills, playerwin = -1;
+	new g = CaptInfo[cZoneID], saveKills, playerwin = -1;
 	foreach(Player,i)
 	{
 		if(OnlineInfo[i][oLogged] == 1)
@@ -638,7 +638,7 @@ stock CheckGangZone() // Распределение результатов по 
 	TopKiller(); // Формируем Топ
   	Kapt[CaptInfo[cAttack]] = 0;
  	Kapt[CaptInfo[cDefend]] = 0;
-  	if(GoC[CaptInfo[cAttack]] >= 1 || GoC[CaptInfo[cDefend]] >= 1) ChutC[CaptInfo[cAttack]] = 10, ChutC[CaptInfo[cDefend]] = 10, cbug = 1;
+  	if(GoC[CaptInfo[cAttack]] >= 1 || GoC[CaptInfo[cDefend]] >= 1) ChutC[CaptInfo[cAttack]] = 10, ChutC[CaptInfo[cDefend]] = 10;
   	GoC[CaptInfo[cAttack]] = 0;
   	GoC[CaptInfo[cDefend]] = 0;
 	new unixtime = gettime();
@@ -674,8 +674,6 @@ stock CheckGangZone() // Распределение результатов по 
 		SaveGangZone(g);
 		capt_win(CaptInfo[cDefend]);
 		capt_loose(CaptInfo[cAttack]);
-		// Логируем
-		CaptLog(head, cbug, CaptInfo[cDefend], 0);
 		return 1;
 	}
 	if(CaptInfo[cPresenceD] <= 299 && CaptInfo[cPresenceA] >= 300) // Захват удался по ВРЕМЕНИ
@@ -699,8 +697,6 @@ stock CheckGangZone() // Распределение результатов по 
 		InfoSendZone(CaptInfo[cAttack]);
 		capt_loose(CaptInfo[cDefend]);
 		capt_win(CaptInfo[cAttack]);
-		// Логируем
-		CaptLog(head, cbug, CaptInfo[cAttack], 1);
 		return 1;
 	}
   	if(CaptInfo[cQuanityA] >= 1 && CaptInfo[cQuanityD] >= 1) // По окончанию обе стороны на капте
@@ -726,8 +722,6 @@ stock CheckGangZone() // Распределение результатов по 
 			InfoSendZone(CaptInfo[cAttack]);
 			capt_loose(CaptInfo[cDefend]);
 			capt_win(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cAttack], 2);
 			return 1;
 		}
 		else if(CaptInfo[cKillA] == CaptInfo[cKillD]) // Счёт одинаковый
@@ -751,8 +745,6 @@ stock CheckGangZone() // Распределение результатов по 
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cDefend], 3);
 			return 1;
 		}
 		else if(CaptInfo[cKillA] > CaptInfo[cKillD]) // Атакующие больше убили
@@ -778,8 +770,6 @@ stock CheckGangZone() // Распределение результатов по 
 			InfoSendZone(CaptInfo[cAttack]);
 			capt_loose(CaptInfo[cDefend]);
 			capt_win(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cAttack], 4);
 			return 1;
 		}
 		else if(CaptInfo[cKillD] > CaptInfo[cKillA]) // Защищающиеся больше убили
@@ -803,8 +793,6 @@ stock CheckGangZone() // Распределение результатов по 
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cDefend], 5);
 			return 1;
 		}
   	}
@@ -829,8 +817,6 @@ stock CheckGangZone() // Распределение результатов по 
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cDefend], 6);
 			return 1;
 		}
 		else if(CaptInfo[cQuanityA] > CaptInfo[cQuanityD]) // Если нападающие есть, а защищающиеся бросили территорию
@@ -854,8 +840,6 @@ stock CheckGangZone() // Распределение результатов по 
 			InfoSendZone(CaptInfo[cAttack]);
 			capt_loose(CaptInfo[cDefend]);
 			capt_win(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cAttack], 7);
 			return 1;
 		}
 		else if(CaptInfo[cQuanityD] > CaptInfo[cQuanityA]) // Если нападающие съебались, а защищающиеся есть на терре
@@ -877,8 +861,6 @@ stock CheckGangZone() // Распределение результатов по 
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
-			// Логируем
-			CaptLog(head, cbug, CaptInfo[cDefend], 8);
 			return 1;
 		}
   	}

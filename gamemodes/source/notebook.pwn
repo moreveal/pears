@@ -924,12 +924,12 @@ stock CheckCancelCrypto(playerid, stat)
 
 stock CryptoLog(status, const nameplayer[],playerID, senderpID, const namesender[], const senderip[], const playerip[], countsell, countcourse)
 {
-	new query[500], unix = gettime();
-    mysql_format(pearsq_2, query, sizeof(query), "INSERT INTO `crypto_log`\
+	new query[600], unix = gettime();
+    mysql_format(pearsq, query, sizeof(query), "INSERT INTO `crypto_log`\
 	    (`tradecryptoSenderID`,`tradecryptoPlayerID`,`tradecryptoPlayerName`,`tradecryptoSenderName`,`tradecryptoPlayerIP`,`tradecryptoSenderIP`,\
         `tradecryptoStatus`,`tradecryptoCount`,`tradecryptoCourse`,`tradecryptoUnix`) VALUES ('%d','%d','%e','%e','%e','%e','%d','%d','%d','%d')",
     senderpID, playerID, nameplayer, namesender, playerip, senderip,status, countsell, countcourse, unix);
-	mysql_tquery(pearsq_2, query, "", "");
+	mysql_tquery(pearsq, query);
 }
 
 stock UpdateLabelBank()
@@ -948,15 +948,22 @@ function LoadCryptoLog()
 	new time = GetTickCount();
 	new rows,rowslast;
 	cache_get_row_count(rows);
-    if(rows > 20) rowslast = rows - 20;
-    else rowslast = 0;
-	for(new f=rowslast,i; f<rows; ++f,i++)
-	{
-		cache_get_value_name_int(f, "tradecryptoCourse", TradeCryptLog[i][tclCourse]);
-        tclArifmetik += TradeCryptLog[i][tclCourse];
-	}
-    if(rows > 20) tclArifmetik /= 20;
-    else tclArifmetik /= rows;
+    if(rows == 0)
+    {
+        tclArifmetik = 1000;
+    }
+    else
+    {
+        if(rows > 20) rowslast = rows - 20;
+        else rowslast = 0;
+        for(new f=rowslast,i; f<rows; ++f,i++)
+        {
+            cache_get_value_name_int(f, "tradecryptoCourse", TradeCryptLog[i][tclCourse]);
+            tclArifmetik += TradeCryptLog[i][tclCourse];
+        }
+        if(rows > 20) tclArifmetik /= 20;
+        else tclArifmetik /= rows;
+    }
 	printf("[MODE]: Trade Gold Log [%d Quan][%d ms]. Course = %d",rows,GetTickCount() - time,tclArifmetik);
     UpdateLabelBank();
 	return 1;
@@ -965,7 +972,7 @@ function LoadCryptoLog()
 CMD:cryptolog(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 20 && server != 0) return 0;      
-    mysql_tquery(pearsq_2, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Высчитываем курс
+    mysql_tquery(pearsq, "SELECT * FROM `crypto_log`", "LoadCryptoLog", ""); // Высчитываем курс
     UpdateLabelBank();
     return 1;
 }

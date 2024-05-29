@@ -947,17 +947,21 @@ CMD:geo(playerid, const params[])
 
 function Call_Punishments(playerid)
 {
-	new rows, str[480], sctring[12800], datad1[24], datad2[24], datad3[24], datun, datro[64], kol, qwer[60], tyear, tmonth, tday, thour, tminute, tsecond;
+	new rows, str[480], sctring[12800], datad1[24], datad2[24], datad3[24], datun[64], datro[64], kol, qwer[60];
 	cache_get_row_count(rows);
 	for(new i = 0; i < rows; i++)
 	{
-		cache_get_value_name(i, "player", datad1, 24);
-		cache_get_value_name(i, "sender", datad3, 24);
+		new bool:is_null;
+		cache_is_value_name_null(i, "primary_player_name", is_null);
+		if(is_null == false) cache_get_value_name(i, "primary_player_name", datad1, 24);
+
+		cache_is_value_name_null(i, "secondary_player_name", is_null);
+		if(is_null == false) cache_get_value_name(i, "secondary_player_name", datad3, 24);
+
 		cache_get_value_name(i, "action", datad2, 24);
-		cache_get_value_name_int(i, "unix", datun);
+		cache_get_value_name(i, "timestamp_fmt", datun, sizeof(datun));
 		cache_get_value_name(i, "rows", datro,64 );
-		stamp2datetime(datun, tyear, tmonth, tday, thour, tminute, tsecond, 3);
-		format(str,sizeof(str),"{cccccc}[ %02d.%02d.%d %02d:%02d ] /%s %s от %s. Причина: %s.\n", tday, tmonth, tyear, thour, tminute, datad2, datad1,datad3, datro), strcat(sctring,str);
+		format(str,sizeof(str),"{cccccc}[ %s ] /%s %s от %s. Причина: %s.\n", datun, datad2, datad1,datad3, datro), strcat(sctring,str);
 		kol ++;
 	}
 	if(kol >= 1)
@@ -971,15 +975,17 @@ function Call_Punishments(playerid)
 
 function Call_PunishmentsName(playerid, const parama)
 {
-	new string[400];
+	new string[500];
 	new rows, datad1;
 	cache_get_row_count(rows);
 	if(rows)
 	{
 		cache_get_value_name_int(0, "user_id", datad1);
-		mysql_format(pearsq_2, string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' \
-			AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') \
-			ORDER BY `unix` DESC LIMIT 40", datad1);
+		mysql_format(pearsq_2, string, sizeof(string), "SELECT action, primary_player_name, secondary_player_name, timestamp, rows, \
+			DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
+			FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
+			AND action IN ('warn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
+			ORDER BY `timestamp` DESC LIMIT 40", datad1);
 		mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
@@ -989,10 +995,12 @@ function Call_PunishmentsName(playerid, const parama)
 stock PunishmentsLogs(playerid, target)
 {
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
-	new string[400];
+	new string[500];
 	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{000000}.","{cccccc}Поиск логов...","*","");
-	mysql_format(pearsq_2, string, sizeof(string), "SELECT * FROM `admin_logs` WHERE `playerid` = '%d' \
-		AND (`action` = 'warn' OR `action` = 'unwarn' OR `action` = 'mute' OR `action` = 'unmute' OR `action` = 'prison' OR `action` = 'unprison' OR `action` = 'ban' OR `action` = 'unban' OR `action` = 'kick') \
+	mysql_format(pearsq_2, string, sizeof(string), "SELECT action, primary_player_name, secondary_player_name, timestamp, rows, \
+		DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
+		FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
+		AND action IN ('warn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
 		ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
 	mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	return 1;

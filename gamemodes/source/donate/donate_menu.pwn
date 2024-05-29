@@ -1,4 +1,5 @@
 
+#define REFERAL_PROCENT_DONATE 10
 #define MAX_DONATE_SERVICE 13
 
 new donatePrice[MAX_DONATE_SERVICE];
@@ -70,6 +71,158 @@ stock showDialogConfirmationDonateSkills(playerid, ability)
     format(line,sizeof(line),"\n\n{ff9000}Вы уверены, что хотите оплатить покупку?"), strcat(lines,line);
     ShowDialog(playerid,856,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",lines,"Да","Нет");
     return true;
+}
+
+stock GetDonate(playerid)
+{
+    if(server == 0) return ErrorMessage(playerid, "{FF6347}Недоступно на тестовом сервере");
+
+    if(GetPVarInt(playerid,"afdonate") > 0)
+    {
+        new string[80];
+        format(string,sizeof(string),"{FF6347}Пожалуйста, повторите запрос позже [ Подождите %d секунд ]", GetPVarInt(playerid,"afdonate"));
+        ErrorText(playerid, string);
+        pc_cmd_donate(playerid);
+        return true;
+    }
+    SetPVarInt(playerid,"afdonate",20);
+
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка платежей..","*","");
+    new string_mysql[200];
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql),"SELECT * FROM `orders` WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'", 
+        PlayerInfo[playerid][pName]);
+    mysql_tquery(pearsq_3, string_mysql, "Call_Donate", "d", playerid);
+    return true;
+}
+
+stock showDialogErrorDonateCall(playerid)
+{
+    PlayerPlaySound(playerid,4203,0,0,0);
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{cccccc}Меню {ff9000}Donate",
+        "{FF6347}На ваш аккаунт не поступали зачисления средств. \
+        \n{cccccc}Пополняйте свой счёт самостоятельно на сайте \
+        \n{0088ff}pears.fun >> {ffcc00}Донат","Ок","");
+    return true;
+}
+
+forward Call_Donate(playerid);
+public Call_Donate(playerid)
+{
+	new rows;
+	cache_get_row_count(rows);
+
+	// Ничего не нашли, значит донатов нет
+	if(rows == 0) return showDialogErrorDonateCall(playerid);
+
+	// Собираем все донаты на аккаунте
+	new gold;
+	for(new i = 0; i < rows; i++)
+	{
+		new amount;
+		cache_get_value_name_int(0, "amount", amount);
+		gold += amount;
+	}
+
+	// Общая сумма донатов, почему-то 0
+	if(gold == 0) return showDialogErrorDonateCall(playerid);
+
+    new string_mysql[200];
+    // Отмечаем инфу о том, что голда была выдана на аккаунт
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "UPDATE `orders` SET `status` = 'completed' WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'",
+        PlayerInfo[playerid][pName]);
+    mysql_tquery(pearsq_3, string_mysql);
+
+    // Запись в логе
+    DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, "Донат");
+
+    // Выдаём голду на аккаунт
+    PlayerInfo[playerid][pDonateMoney] += gold;
+    PlayerInfo[playerid][pDonateAll] += gold; // Сумма донатов за всё время
+
+    new string[300];
+    format(string, sizeof(string),"{99ff66}Счёт Пополнен\
+                                \n{cccccc}Начислено: {ffcc00}%dG\
+                                \n{cccccc}Баланс: {ffcc00}%dG", 
+                                gold, PlayerInfo[playerid][pDonateMoney]);
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",string,"Ок","");
+    PlayerPlaySound(playerid,6401,0,0,0);
+    SendClientMessage(playerid, COLOR_GREY,"{0088ff}На ваш аккаунт начислено {ffcc00}%dG {ffcc66}[ Баланс %dG ]", gold, PlayerInfo[playerid][pDonateMoney]);
+
+    // Сохраняем голду в базе
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `DonateMoney` = '%d',`DonateAll` = '%d' WHERE `user_id` = '%d'",
+				PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pDonateAll], PlayerInfo[playerid][pID]);
+	mysql_tquery(pearsq, string_mysql);
+
+    // Ачивки
+    if(PlayerInfo[playerid][pAchieve][36] == 0) AchievePlayer(playerid, 36, 1); // Первый Донат
+    if(PlayerInfo[playerid][pAchieve][37] == 0 && PlayerInfo[playerid][pDonateAll] >= 500) AchievePlayer(playerid, 37, 1); // Общая сумма донатов
+    if(PlayerInfo[playerid][pAchieve][38] == 0 && PlayerInfo[playerid][pDonateAll] >= 1000) AchievePlayer(playerid, 38, 1);
+    if(PlayerInfo[playerid][pAchieve][39] == 0 && PlayerInfo[playerid][pDonateAll] >= 10000) AchievePlayer(playerid, 39, 1);
+    if(PlayerInfo[playerid][pAchieve][40] == 0 && PlayerInfo[playerid][pDonateAll] >= 20000) AchievePlayer(playerid, 40, 1);
+    if(PlayerInfo[playerid][pAchieve][41] == 0 && PlayerInfo[playerid][pDonateAll] >= 30000) AchievePlayer(playerid, 41, 1);
+    if(PlayerInfo[playerid][pAchieve][42] == 0 && PlayerInfo[playerid][pDonateAll] >= 40000) AchievePlayer(playerid, 42, 1);
+    if(PlayerInfo[playerid][pAchieve][43] == 0 && PlayerInfo[playerid][pDonateAll] >= 50000) AchievePlayer(playerid, 43, 1);
+    if(PlayerInfo[playerid][pAchieve][44] == 0 && PlayerInfo[playerid][pDonateAll] >= 100000) AchievePlayer(playerid, 44, 1);
+    if(PlayerInfo[playerid][pAchieve][26] == 0 && PlayerInfo[playerid][pDonateMoney] >= 10000) AchievePlayer(playerid, 26, 1); // Сумма на счёте больше 10к голды
+
+    // Подарок игроку, который нас пригласил (Начисляем ему рефералы)
+    if(PlayerInfo[playerid][pReferalID] > 0 && PlayerInfo[playerid][pReferalID] != PlayerInfo[playerid][pID])
+    {
+        new koef = gold/100;
+        if(koef >= 1)
+        {
+            new proc = koef * REFERAL_PROCENT_DONATE;
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"SELECT Name, DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", PlayerInfo[playerid][pReferalID]);
+            mysql_tquery(pearsq, string_mysql, "Call_giverefdon", "ddd", playerid, PlayerInfo[playerid][pReferalID], proc);
+        }
+    }
+	return 1;
+}
+
+// Выдаём проценты рефералу
+function Call_giverefdon(playerid, user_id, gold)
+{
+	new rows, string[160], string_mysql[140];
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    new referalName[24], playerGold, onl;
+	    cache_get_value_name(0, "Name", referalName, sizeof(referalName));
+
+	    new playa = ReturnUser(referalName, 1);
+	    cache_get_value_name_int(0, "DonateMoney", playerGold);
+
+        // Сохраняем голду в базу
+	    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `DonateMoney` = '%d' WHERE `user_id` = '%d'", playerGold + gold, user_id);
+		mysql_tquery(pearsq, string_mysql);
+
+        // Уведомление
+        format(string, sizeof(string), "Вам начислен реферал %dG", gold);
+	    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, referalName, string);
+
+        // Если этот игрок онлайн, выдаём ему всё на аккаунт и оповещаем
+	    if(IsPlayerConnected(playa))
+		{
+            PlayerInfo[playa][pDonateMoney] += gold;
+			if(OnlineInfo[playa][oLogged] == 1)
+			{
+                PlayerPlaySound(playa,6401,0,0,0);
+                SendClientMessage(playa, COLOR_GREY,"{0088ff}На ваш аккаунт начислено {ffcc00}%dG {ffcc66}| Реферал от %s[%d]", gold, PlayerInfo[playerid][pName], playerid);
+			}
+		}
+
+        // Логируем
+        if(onl == 0) DonateLog("givegold",  user_id, referalName, "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], gold, "Процент от доната");
+		else DonateLog("givegold", user_id, referalName, PlayerInfo[playa][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], gold, "Процент от доната");
+
+	}
+	else // Аккаунт рефералки не был найден, значит очищаем навеки
+	{
+		PlayerInfo[playerid][pReferalID] = 0, format(PlayerInfo[playerid][pReferal], 24, "");
+		mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `Referal` = '0', `ReferalID` = '0' WHERE `user_id` = '%d'", PlayerInfo[playerid][pID]);
+		mysql_tquery(pearsq, string);
+	}
+	return 1;
 }
 
 stock dialogCase_DonateMenu(playerid, dialogid, response, listitem)

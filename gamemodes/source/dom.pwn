@@ -141,7 +141,7 @@ stock use_dom(playerid, dom, inva, useinva)
     format(string, sizeof(string), "Взял %s", GetNameThing(1, fpick, thingType, thingPack));
 	HouseLog(0, "wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, fquan, string);
 	
-    format(string,sizeof(string),"Взял %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
+    format(string,sizeof(string),"Взял из Дома %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
 	return 1;
 }
