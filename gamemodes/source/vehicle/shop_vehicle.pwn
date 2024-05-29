@@ -624,6 +624,9 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
                 SuccessMessage(playerid, string);
                 oGivePlayerMoney(playerid, -price);
                 CarLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], modelId, price, "Money");
+
+                format(string, sizeof(string), "Купил %s", GetVehicleName(modelId));
+    		    MoneyLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
             }
             else if(typeBuy == 1)
             {

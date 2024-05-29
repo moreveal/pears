@@ -66,10 +66,10 @@ stock CloseCourtsProcess(playerid)
     else if(CourtsInfo[slot][courtsClass] == 4) // Отпускаем по УДО + Отработка
     {
         PlayerInfo[playerid][pCourtsDeposit] = PlayerInfo[playerid][pJailTime]*10;
-        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму
-{684F7D}Отрабаотать нужно на работе у Клининговой Компании
-        
-{684F7D}Посмотреть сумму отработки можно в БАНК ОНЛАЙН");
+        SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\
+                                \n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму\
+                                \n{684F7D}Отработать нужно на работе у Клининговой Компании\
+                                \n{684F7D}Посмотреть сумму отработки можно в БАНК ОНЛАЙН");
     }
     if(CourtsInfo[slot][courtsClass] == 4 || CourtsInfo[slot][courtsClass] == 2 || CourtsInfo[slot][courtsClass] == 1)
     {

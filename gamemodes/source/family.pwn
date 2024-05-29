@@ -324,6 +324,9 @@ stock AddFamilyVehicle(playerid, f)
 	FamilyInfo[f][fVeh][freeSlot] = model;
 	FamilyInfo[f][fUpdate] = 1;
 	PP_SetVehicleToRespawn(GetPlayerVehicleID(playerid)); // Тот транспорт удаляем
+
+    format(string, sizeof(string), "Гараж семьи № %d", f);
+    MoneyLog("famcar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -vehsum, string);
 	return 1;
 }
 

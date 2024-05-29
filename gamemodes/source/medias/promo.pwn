@@ -97,7 +97,7 @@ function Call_promo(playerid, pf, unix)
 		{
 			if(PromoInfo[pf][roPar][checkslot] == 2 || PromoInfo[pf][roPar][checkslot] == 13 || PromoInfo[pf][roPar][checkslot] == 14) quan++;
 		}
-		if(!free_invent(playerid,quan)) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+		if(!free_invent(playerid,quan)) return ErrorMessage(playerid, "{FF6347}У вас не хватает места в инвентаре");
 
 	    new yeslvl = 0;
 		new str[100],sctring[600];
@@ -117,12 +117,16 @@ function Call_promo(playerid, pf, unix)
 			{
 				format(str,sizeof(str),"{ff9000}* %s {cccccc}%d$\n",promoName[PromoInfo[pf][roPar][statpf]], PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				oGivePlayerMoney(playerid, PromoInfo[pf][roStat][statpf]);
+
+				MoneyLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PromoInfo[pf][roStat][statpf], PromoInfo[pf][roName]);
 			}
 			if(PromoInfo[pf][roPar][statpf] == 4) // Золото
 			{
 				format(str,sizeof(str),"{ff9000}* %s {cccccc}%dG {999999}[ Y >> Донат или /donate ]\n",promoName[PromoInfo[pf][roPar][statpf]], PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				PlayerInfo[playerid][pDonateMoney] += PromoInfo[pf][roStat][statpf];
 				if(PlayerInfo[playerid][pAchieve][26] == 0 && PlayerInfo[playerid][pDonateMoney] >= 10000) AchievePlayer(playerid, 26, 1);
+
+				DonateLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PromoInfo[pf][roStat][statpf], PromoInfo[pf][roName]);
 			}
 			if(PromoInfo[pf][roPar][statpf] == 5) // Уровень
 			{
@@ -164,10 +168,9 @@ function Call_promo(playerid, pf, unix)
 		ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод",sctring,"Oк","");
 		PromoInfo[pf][roNumber] ++;
 		SavePromo(10, pf);
-		PlayerLog(2, "promo", playerid, 0, "", "", PromoInfo[pf][roName]);
 		
-		mysql_format(pearsq_2, string, sizeof(string), "INSERT INTO `promo_log` SET `promoid`='%d',`playerid`='%d',`player`='%e',`playerip`='%e',`unix`='%d'", PromoInfo[pf][roNewid], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], unix);
-		query_empty(pearsq_2, string);
+		// Записываем в лог, что мы взяли этот промокод
+		PromoLog(playerid, pf);
 
 		if(OnlineInfo[playerid][oListenRadioPears] == 0)
 		{

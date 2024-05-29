@@ -420,9 +420,10 @@ stock trailer_add(playerid, model, trailer)
 
     if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     new infocreate = AddPlayerTrailer(playerid, model);
+
+    new string[80];
     if (infocreate == 0) 
     {
-        new string[55];
         format(string,sizeof(string),"{FF6347}Трейлер не может быть создан [ Лимит: %d ]", MAX_TRAILERS);
         ErrorMessage(playerid, string);
     }
@@ -432,6 +433,11 @@ stock trailer_add(playerid, model, trailer)
         SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
         SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");
  	    CreateGps(playerid,-547.4172, -1018.2808, 24.1529, 0, 0, 10.0);
+
+        HouseLog(2, "buytrailer", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pTrailer], 0, "");
+
+        format(string, sizeof(string), "Купил трейлер № %d", PlayerInfo[playerid][pTrailer]);
+    	MoneyLog("buytrailer", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -money, string);
     }
     return 1;
 }

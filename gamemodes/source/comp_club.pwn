@@ -1438,10 +1438,10 @@ stock ComputerClubPayout(gameid, roomid) {
 
         // Оповещение о выигрыше
         PlayerPlaySound(playerid, 31205, 0.0, 0.0, 0.0);
-        static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~$%d";
-        new text[sizeof text_fmt - 2 + 15];
-        format(text, sizeof text, text_fmt, prize);
-        GameTextForPlayer(playerid, text, 2000, 3);
+
+        new string[40];
+        format(string, sizeof(string), "Выиграл в компах [%d]", roomid);
+        MoneyLog("compwin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", prize, string);
     }
 
     // Обнуляем банк комнаты
@@ -1480,11 +1480,9 @@ stock ComputerClubPayin(gameid, roomid) {
             oGivePlayerMoney(id, -room_bet);
             computerClubRoomInfo[gameid][roomid][ccriTotalBet] += room_bet;
 
-            // Оповещение о принятии ставки
-            static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~$%d";
-            new text[sizeof text_fmt - 2 + 15];
-            format(text, sizeof text, text_fmt, room_bet);
-            GameTextForPlayer(id, text, 2000, 3);
+            new string[40];
+            format(string, sizeof(string), "Ставка в компах [%d]", roomid);
+            MoneyLog("compbet", PlayerInfo[id][pID], PlayerInfo[id][pName], PlayerInfo[id][pPlaIP], 0, "", "", -room_bet, string);
         }
     }
 
@@ -1529,18 +1527,21 @@ stock ComputerClubSetRoomState(gameid, roomid, bool: status, e_ComputerClubToggl
             if (status) {
                 PPSpawnPlayer(id); // Спавним игрока (выдача оружия и все остальное есть в обработчике спавна)
             } else {
-                if (has_bet && reason == COMPUTER_CLUB_ROOM_HOST) { // Если игра со ставкой, но завершена досрочно хостом
+                if (has_bet && reason == COMPUTER_CLUB_ROOM_HOST) // Если игра со ставкой, но завершена досрочно хостом
+                {
                     oGivePlayerMoney(id, room_bet); // Возвращаем размер ставки игроку назад
                     
-                    // Оповещение о возврате ставки
-                    static const text_fmt[] = "~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~$%d";
-                    new text[sizeof text_fmt - 2 + 15];
-                    format(text, sizeof text, text_fmt, room_bet);
-                    GameTextForPlayer(id, text, 2000, 3);
-                } else if (reason == COMPUTER_CLUB_ROOM_EXIT) {
+                    new string[40];
+                    format(string, sizeof(string), "Возврат ставки в компах [%d]", roomid);
+                    MoneyLog("compback", PlayerInfo[id][pID], PlayerInfo[id][pName], PlayerInfo[id][pPlaIP], 0, "", "", room_bet, string);
+                } 
+                else if (reason == COMPUTER_CLUB_ROOM_EXIT) 
+                {
                     // Если режим завершается по причине выхода одной из команд
                     return ComputerClubWinHandler(gameid, roomid, .lose_team = data);
-                } else if (reason == COMPUTER_CLUB_ROOM_END) {
+                } 
+                else if (reason == COMPUTER_CLUB_ROOM_END) 
+                {
                     // Если режим завершен выигрышем одной из команд
                     return ComputerClubWinHandler(gameid, roomid, .win_team = data);
                 }

@@ -34,6 +34,67 @@ stock defaultPriceDonate()
     donatePrice[12] = 140; // Стоимость кейса
 }
 
+CMD:donate(playerid)
+{
+	PlayerPlaySound(playerid,1150,0,0,0);
+	new lines[1000];
+	format(lines, sizeof(lines),"{99ff66}Получить {ffcc00}Золото\
+	                        \n{444444}Информация..\
+	                        \n{ffcc00}VIP {cccccc}Аккаунт {444444}>>\
+	                        \n{cccccc}Услуги Аккаунта {444444}>>\
+	                        \n{cccccc}Навыки {444444}>>\
+	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
+                            \n{cccccc}Купить Кейс {ffcc00}[%d G]\
+                            \n{ffffff}Где купить Скин/Одежду? {99ff66}>>\
+                            \n{ffffff}Где купить Машину? {99ff66}>>\
+                            \n{ffffff}Где купить Дом? {99ff66}>>\
+                            \n{ffffff}Где купить Бизнес? {99ff66}>>", 
+                            donatePrice[2], donatePrice[12]);
+	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
+	return true;
+}
+
+stock showDialogHowBuySkin(playerid)
+{
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",
+        "{ff9000}Купить одежду можно в любом магазине одежды \
+        \n{cccccc}Для этого вам необходимо отправиться в магазин \
+        \n{cccccc}Y >> GPS >> Услуги >> Магазины Одежды \
+        \n\n{cccccc}Внутри магазина вы можете приобрести одежду как за вирты, \
+        \n{cccccc}так и за {ffcc00}Gold","Ок","");
+    return true;
+}
+
+stock showDialogHowBuyCar(playerid)
+{
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",
+        "{ff9000}Купить машину можно в любом Автосервисе \
+        \n{cccccc}Для этого вам необходимо отправиться в автосалон \
+        \n{cccccc}Y >> GPS >> Транспорт >> Автосалоны \
+        \n\n{cccccc}В автосалоне вы можете приобрести машину как за вирты, \
+        \n{cccccc}так и за {ffcc00}Gold","Ок","");
+    return true;
+}
+
+stock showDialogHowBuyHouse(playerid)
+{
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",
+        "{ff9000}Для того, чтобы купить дом просто подойдите к нему и нажмите ALT \
+        \n\n{cccccc}Вы можете приобрести дом как за вирты, так и за {ffcc00}Gold","Ок","");
+    return true;
+}
+
+stock showDialogHowBuyBiz(playerid)
+{
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",
+        "{ff9000}Для того, чтобы купить бизнес отправляйтесь в Бизнес Центр \
+        \n{cccccc}Y >> GPS >> Услуги >> Бизнес Центр \
+        \n\n{cccccc}В Бизнес Центре можно ознакомиться со всеми бизнесами \
+        \n{cccccc}и посмотреть статистику доходов \
+        \n{cccccc}Вы можете приобрести бизнес как за вирты, так и за {ffcc00}Gold","Ок","");
+    return true;
+}
+
 // Меню покупки навыков
 stock showDialogDonateSkills(playerid)
 {

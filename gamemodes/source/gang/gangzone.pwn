@@ -390,6 +390,12 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				OrganInfo[PlayerInfo[playerid][pLeader]][gCapture][11] ++, OrganInfo[PlayerInfo[playerid][pLeader]][gCapture][12] ++;
 				SaveCapt(PlayerInfo[giveplayerid][pLeader]), SaveCapt(PlayerInfo[playerid][pLeader]);
 				UpdateHonor(0);
+
+				format(string, sizeof(string), "Продал теру № %d", gz);
+    			MoneyLog("sellgz", PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], cena, string);
+				
+				format(string, sizeof(string), "Купил теру № %d", gz);
+    			MoneyLog("buygz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], -cena, string);
 				return 0;
 	        }
 	        else ErrorMessage(playerid, "{FF6347}Стоп! Вы не находитесь на продаваемой территории");

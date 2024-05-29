@@ -576,8 +576,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             aFloodFund[playerid] = unix + 20;
 
             new string_mysql[180];
-            mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
-		    mysql_tquery(pearsq_2, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", 
+                FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
+		    mysql_tquery(pearsq, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
         }
         else MenuFundRaisers(playerid, i);
     }
@@ -729,20 +730,18 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
 
 stock FundLog(senderid, const sender[], const senderip[], const quan[], const name[], fundid)
 {
-	new unix = gettime();
-
     new string_mysql[300];
-    mysql_format(pearsq_2, string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
 	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%e','%e','%e','%e','%d','%d')",
-    senderid, sender, senderip, quan, name, fundid, unix);
-	mysql_tquery(pearsq_2, string_mysql, "", "");
+    senderid, sender, senderip, quan, name, fundid, gettime());
+	mysql_tquery(pearsq, string_mysql);
 }
 
 stock ClearFundLog(fundid)
 {
     new string_mysql[90];
-    mysql_format(pearsq_2, string_mysql, sizeof(string_mysql),"DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
-	query_empty(pearsq_2, string_mysql);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
+	query_empty(pearsq, string_mysql);
     return 1;
 }
 

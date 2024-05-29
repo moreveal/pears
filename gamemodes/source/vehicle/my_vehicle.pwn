@@ -4753,6 +4753,9 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 			new string[90];
 			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
 			SendClientMessage(playerid, COLOR_GREY, string);
+
+			format(string, sizeof(string), "В утиль %s [DB %d]", GetVehicleName(VehInfo[newcar][vModel]), VehInfo[newcar][vNewid]);
+    		MoneyLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, string);
 		}
 		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, "");
 		
