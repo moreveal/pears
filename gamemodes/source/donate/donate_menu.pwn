@@ -234,20 +234,21 @@ public Call_Donate(playerid)
         {
             new proc = koef * REFERAL_PROCENT_DONATE;
             mysql_format(pearsq, string_mysql, sizeof(string_mysql),"SELECT Name, DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", PlayerInfo[playerid][pReferalID]);
-            mysql_tquery(pearsq, string_mysql, "Call_giverefdon", "ddd", playerid, PlayerInfo[playerid][pReferalID], proc);
+            new Cache:cache = mysql_query(pearsq, string_mysql);
+            Call_giverefdon(playerid, PlayerInfo[playerid][pReferalID], proc, cache != MYSQL_INVALID_CACHE);
+            if(cache != MYSQL_INVALID_CACHE) cache_delete(cache);
         }
     }
 	return 1;
 }
 
 // Выдаём проценты рефералу
-function Call_giverefdon(playerid, user_id, gold)
+function Call_giverefdon(playerid, user_id, gold, bool:IsValid)
 {
-	new rows, string[160], string_mysql[140];
-	cache_get_row_count(rows);
-	if(rows)
+	new string[160];
+	if(IsValid == true)
 	{
-	    new referalName[24], playerGold, onl;
+	    new referalName[24], playerGold, onl, string_mysql[140];
 	    cache_get_value_name(0, "Name", referalName, sizeof(referalName));
 
 	    new playa = ReturnUser(referalName, 1);
@@ -255,8 +256,8 @@ function Call_giverefdon(playerid, user_id, gold)
 
         // Сохраняем голду в базу
 	    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `DonateMoney` = '%d' WHERE `user_id` = '%d'", playerGold + gold, user_id);
-		mysql_tquery(pearsq, string_mysql);
-
+		mysql_query(pearsq, string_mysql, false);
+ 
         // Уведомление
         format(string, sizeof(string), "Вам начислен реферал %dG", gold);
 	    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, referalName, string);
@@ -275,7 +276,6 @@ function Call_giverefdon(playerid, user_id, gold)
         // Логируем
         if(onl == 0) DonateLog("givegold",  user_id, referalName, "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], gold, "Процент от доната");
 		else DonateLog("givegold", user_id, referalName, PlayerInfo[playa][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], gold, "Процент от доната");
-
 	}
 	else // Аккаунт рефералки не был найден, значит очищаем навеки
 	{
