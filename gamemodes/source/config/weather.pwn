@@ -1,9 +1,15 @@
-#define MAX_WEATHER 2 // Максимальное количество заявок
+#define MAX_WEATHER 6 // Максимальное количество заявок
 // CreateDynamicCircle
 new WeatherID = -1; // ID погоды
 new WeatherCount; // Кол-во шагов
 new dyn_zone_WeatherBasic[2];
 new dyn_zone_WeatherNotBasic[2];
+
+new weatherName[][] =
+{
+    "Солнечно","Солнечно","Солнечно","Солнечно","Облачно","Солнечно"," ","Пасмурно","Дождь","Туман",
+    "Солнечно","Солнечно","Солнечно"," "," "," ","Гроза","Солнечно","Солнечно","Песчанная Буря"
+};
 
 enum weatherInfo
 {
@@ -16,9 +22,22 @@ enum weatherInfo
 }
 new Weather[MAX_WEATHER][weatherInfo];
 
-CMD:startweather(playerid)
+CMD:startweather(playerid, const params[])
 {
-    WeatherStart(0);
+    new number;
+    if(PlayerInfo[playerid][pSoska] < 9) return 0;
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить погоду {ffcc00}[ /startweather ID погоды ]");
+    number--;
+    Weather[number][weatherUnix] = gettime();
+    if(number >= MAX_WEATHER || number <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить погоду {ffcc00}[ /startweather ID погоды ]");
+    WeatherStart(number);
+    return 1;
+}
+
+CMD:showweather(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 9) return 0;
+    WeatherShowMenu(playerid);
     return 1;
 }
 
@@ -28,6 +47,25 @@ CMD:gotoweather(playerid)
     if(WeatherID == -1) return ErrorMessage(playerid, "{ff6347} В данный момент нет зоны погоды");
     PPSetPlayerPos(playerid,Weather[WeatherID][weatherDirectionCordStart][0]+10*WeatherCount,Weather[WeatherID][weatherDirectionCordStart][1]+10*WeatherCount, 15.0);
     return 1;
+}
+
+stock WeatherShowMenu(playerid)
+{
+    new line[100],lines[200*MAX_WEATHER];
+    format(line,sizeof(line),"№ Погода\tВремя старта\tСтатус\tНаправление"), strcat(lines,line);
+    for(new i; i < MAX_WEATHER; i++)
+    {
+        new text[40], textstatus[7];
+        if(Weather[i][weatherDirection] == 0) text = "С Юга на Север";
+        else if(Weather[i][weatherDirection] == 1) text = "С Севера на ЮГ";
+        else if(Weather[i][weatherDirection] == 2) text = "С Запада на Восток";
+        else if(Weather[i][weatherDirection] == 3) text = "С Востока на Запад";
+        if(Weather[i][weatherStatus] == 0) textstatus = "Будет";
+        else if(Weather[i][weatherStatus] == 1) textstatus = "Идет";
+        else if(Weather[i][weatherStatus] == 2) textstatus = "Прошла";
+        format(line,sizeof(line),"\n%d. %s\t%s\t%s\t%s", i+1,weatherName[Weather[i][weatherID]], fine_time(Weather[i][weatherUnix]-gettime()),textstatus,text), strcat(lines,line);
+    }
+    ShowDialog(playerid,1700,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Прогноз погоды",lines,"Выбрать","Выход");
 }
 
 stock WeatherStart(i)
@@ -122,7 +160,7 @@ stock CompletionWeather()
     for(new i; i < MAX_WEATHER; i++)
     {
         if(i == 0) Weather[i][weatherUnix] = gettime() + random(86400/MAX_WEATHER);
-        else Weather[i][weatherUnix] = Weather[i-1][weatherUnix] + random(7200);
+        else Weather[i][weatherUnix] = Weather[i-1][weatherUnix] +7200+ random(14400);
         Weather[i][weatherStatus] = 0;
         Weather[i][weatherID] = random(3);
         if(Weather[i][weatherID] == 0) Weather[i][weatherID] = 8;
