@@ -1,2 +1,7 @@
-
+**/*.amx
+**/*.so
+**/*.ini
+**/*.rec
 /.vscode
+log.txt
+crashdetect_log.txt
