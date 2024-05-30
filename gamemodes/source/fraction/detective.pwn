@@ -167,6 +167,7 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
 		return 0;
 	}
     new g = fraction(playerid);
+    new string[40];
 	cache_get_value_name(0, "Name", tempname, 24);
 	format(crimeInfo[slot][crmTargetName], 24, "%s", tempname); // Записываем имя чела
     format(crimeInfo[slot][crmSenderName], 24, "%s", PlayerInfo[playerid][pName]); // Записываем имя чела
@@ -181,7 +182,9 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
     OrganInfo[g][glave] += 5000;
+    format(string,sizeof(string), "Фрак: %d, Склад: %s", fraction(playerid), wh);
     GiveUnit(playerid, 11);
+    CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh,string);
 	SaveCar(car);
     SaveCrime(slot);
 	ACDestroyVehicle(car);

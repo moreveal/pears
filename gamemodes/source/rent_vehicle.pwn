@@ -1,19 +1,19 @@
 
-static Float:RentBusPoint[3][3] = { // Координаты аренды автобусов
+static Float:RentBusPoint[3][3] = { // РљРѕРѕСЂРґРёРЅР°С‚С‹ Р°СЂРµРЅРґС‹ Р°РІС‚РѕР±СѓСЃРѕРІ
 	{1003.3546,-1351.2242,13.3380}, // 0 ls
 	{-2070.0610,-96.9424,35.1641}, // 1 sf
 	{1052.3445,2310.6680,10.8363} // 2 lv
 };
 new bool:create_bus_pos[3];
 
-static Float:RentTruckPoint[3][3] = { // Координаты аренды грузовиков
-	{-18.6327,-282.6137,5.4297}, // 0 Дальнобойщики
-	{2545.5227,2791.2454,10.8203}, // 1 Нефтеперерабатывающий
-	{2248.7615,2790.5532,10.8203} // 2 Гос. склад
+static Float:RentTruckPoint[3][3] = { // РљРѕРѕСЂРґРёРЅР°С‚С‹ Р°СЂРµРЅРґС‹ РіСЂСѓР·РѕРІРёРєРѕРІ
+	{-18.6327,-282.6137,5.4297}, // 0 Р”Р°Р»СЊРЅРѕР±РѕР№С‰РёРєРё
+	{2545.5227,2791.2454,10.8203}, // 1 РќРµС„С‚РµРїРµСЂРµСЂР°Р±Р°С‚С‹РІР°СЋС‰РёР№
+	{2248.7615,2790.5532,10.8203} // 2 Р“РѕСЃ. СЃРєР»Р°Рґ
 };
 
 #define MAX_RENT_TRUCK_VEHICLES 7
-new RentTruckVehicleModel[] = //  ID Аренды грузового транспорта
+new RentTruckVehicleModel[] = //  ID РђСЂРµРЅРґС‹ РіСЂСѓР·РѕРІРѕРіРѕ С‚СЂР°РЅСЃРїРѕСЂС‚Р°
 {
     499, // Benson
     414, // Mule
@@ -26,18 +26,18 @@ new RentTruckVehicleModel[] = //  ID Аренды грузового транспорта
 
 stock DynamicPickupRent()
 {
-    // Аренда Автобусов
+    // РђСЂРµРЅРґР° РђРІС‚РѕР±СѓСЃРѕРІ
     for(new i = 0; i < sizeof(RentBusPoint); i++)
     {
         CreateDynamicPickup(2485, 1, RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2], 0, 0);
-        CreateDynamic3DTextLabel("{ff9000}Транспорт Автобусного Депо\n{444444}[ ALT ]",-1,RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}РўСЂР°РЅСЃРїРѕСЂС‚ РђРІС‚РѕР±СѓСЃРЅРѕРіРѕ Р”РµРїРѕ\n{444444}[ ALT ]",-1,RentBusPoint[i][0],RentBusPoint[i][1],RentBusPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     }
 
-    // Аренда грузовиков
+    // РђСЂРµРЅРґР° РіСЂСѓР·РѕРІРёРєРѕРІ
     for(new i = 0; i < sizeof(RentTruckPoint); i++)
     {
         CreateDynamicPickup(2485, 1, RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2], 0, 0);
-        CreateDynamic3DTextLabel("{ff9000}Аренда Грузового Транспорта\n{444444}[ ALT ]",-1,RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}РђСЂРµРЅРґР° Р“СЂСѓР·РѕРІРѕРіРѕ РўСЂР°РЅСЃРїРѕСЂС‚Р°\n{444444}[ ALT ]",-1,RentTruckPoint[i][0],RentTruckPoint[i][1],RentTruckPoint[i][2],7.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     }
 	return 1;
 }
@@ -48,11 +48,11 @@ stock agetbus(playerid)
     else if(IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[1][0],RentBusPoint[1][1],RentBusPoint[1][2])) DP[0][playerid] = 1;
     else if(IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[2][0],RentBusPoint[2][1],RentBusPoint[2][2])) DP[0][playerid] = 2;
     
-	ShowDialog(playerid,1191,2,"{ff9000}Транспорт Автобусного Депо", "Bus (Автобус)","Выбрать","Выход");
+	ShowDialog(playerid,1191,2,"{ff9000}РўСЂР°РЅСЃРїРѕСЂС‚ РђРІС‚РѕР±СѓСЃРЅРѕРіРѕ Р”РµРїРѕ", "Bus (РђРІС‚РѕР±СѓСЃ)","Р’С‹Р±СЂР°С‚СЊ","Р’С‹С…РѕРґ");
 	return 1;
 }
 
-stock IsARentBusPos(playerid) // Проверка рядом с арендой автобусов
+stock IsARentBusPos(playerid) // РџСЂРѕРІРµСЂРєР° СЂСЏРґРѕРј СЃ Р°СЂРµРЅРґРѕР№ Р°РІС‚РѕР±СѓСЃРѕРІ
 {
     if((IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[0][0],RentBusPoint[0][1],RentBusPoint[0][2]) 
     || IsPlayerInRangeOfPoint(playerid,3.0,RentBusPoint[1][0],RentBusPoint[1][1],RentBusPoint[1][2])
@@ -64,21 +64,21 @@ stock IsARentBusPos(playerid) // Проверка рядом с арендой автобусов
 stock agettruck(playerid)
 {
     new quan;
-    DP[2][playerid] = 0; // Аренда Грузовиков
+    DP[2][playerid] = 0; // РђСЂРµРЅРґР° Р“СЂСѓР·РѕРІРёРєРѕРІ
     new line[100],lines[1000];
 
-    format(line,sizeof(line),"Транспорт\tСтоимость Аренды\tВремя Аренды"), strcat(lines,line);
+    format(line,sizeof(line),"РўСЂР°РЅСЃРїРѕСЂС‚\tРЎС‚РѕРёРјРѕСЃС‚СЊ РђСЂРµРЅРґС‹\tР’СЂРµРјСЏ РђСЂРµРЅРґС‹"), strcat(lines,line);
     for(new i = 0; i < MAX_RENT_TRUCK_VEHICLES; i++)
     {
         List[quan][playerid] = RentTruckVehicleModel[i];
         quan ++;
-        format(line,sizeof(line),"\n{ff9000}%s\t{99ff66}%d$\t{cccccc}1 Час",GetVehicleName(RentTruckVehicleModel[i]), GetVehiclePriceGos(RentTruckVehicleModel[i])/10), strcat(lines,line);
+        format(line,sizeof(line),"\n{ff9000}%s\t{99ff66}%d$\t{cccccc}1 Р§Р°СЃ",GetVehicleName(RentTruckVehicleModel[i]), GetVehiclePriceGos(RentTruckVehicleModel[i])/10), strcat(lines,line);
     }
-    ShowDialog(playerid,1288,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Аренда Грузового Транспорта",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1288,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}РђСЂРµРЅРґР° Р“СЂСѓР·РѕРІРѕРіРѕ РўСЂР°РЅСЃРїРѕСЂС‚Р°",lines,"Р’С‹Р±СЂР°С‚СЊ","РќР°Р·Р°Рґ");
 	return 1;
 }
 
-stock IsARentTruckPos(playerid) // Проверка рядом с арендой грузовиков
+stock IsARentTruckPos(playerid) // РџСЂРѕРІРµСЂРєР° СЂСЏРґРѕРј СЃ Р°СЂРµРЅРґРѕР№ РіСЂСѓР·РѕРІРёРєРѕРІ
 {
     if((IsPlayerInRangeOfPoint(playerid,3.0,RentTruckPoint[0][0],RentTruckPoint[0][1],RentTruckPoint[0][2]) 
     || IsPlayerInRangeOfPoint(playerid,3.0,RentTruckPoint[1][0],RentTruckPoint[1][1],RentTruckPoint[1][2])
@@ -114,10 +114,10 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 		new tyear, tmonth, tday, thour, tminute, tsecond;
 	 	stamp2datetime(VehInfo[newcar][vRent], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 
-		ReloadVehicleLabel(newcar); // Перезагружаем лейбл на тс
+		ReloadVehicleLabel(newcar); // РџРµСЂРµР·Р°РіСЂСѓР¶Р°РµРј Р»РµР№Р±Р» РЅР° С‚СЃ
 	   	VehInfo[newcar][v3dstat] = 4000;
 		new string[80];
-		format(string,sizeof(string),"{cccccc}Аренда до {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
+		format(string,sizeof(string),"{cccccc}РђСЂРµРЅРґР° РґРѕ {0088ff}%02d:%02d\n{444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
 	    VehLabel[newcar] = CreateDynamic3DTextLabel(string,0xfaf75c99,pos[0],pos[1],pos[2],15.0,INVALID_PLAYER_ID, newcar,0,0,0);
 	}
 

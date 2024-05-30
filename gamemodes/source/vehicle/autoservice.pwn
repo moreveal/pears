@@ -48,6 +48,7 @@ stock buyThingAutoserice(playerid, slot)
 
 	new string[100];
 	format(string,sizeof(string),"{99ff66}Вы купили %s", GetNameThing(0, thingId, thingType, 0));
+    MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][slot], string);
 	SuccessMessage(playerid, string);
 	return 1;
 }
@@ -107,6 +108,7 @@ stock CheckAutoInRangeService(playerid)
     if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][9]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     SaveCar(v);
     oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][9]);
+    MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][9], "Заменил хендлинг в своей машине");
     paybiz(b, BizzInfo[b][bPrice][9]);
     DeleteMyVeh(playerid, quan);
     return 1;
@@ -291,6 +293,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             SaveTunning(v);
             BizzInfo[b][bUpdate] = 1;
             oGivePlayerMoney(playerid, -money);
+            MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -money, "Оплата тюнинга");
             paybiz(b, money);
             SuccessMessage(playerid,"{44ff99}Вы успешно установили детали тюнинга");
             return ExitTuning(playerid);

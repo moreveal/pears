@@ -392,6 +392,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 format(string,sizeof(string),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
                 format(string,sizeof(string),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
                 busstationcreate(ost);
+                OrgLog(7, "CloseCourtsProcess", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ost, "Установил остановку");
                 bsrows++;
                 break;
             }
@@ -474,6 +475,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SaveGraphiti(zone);
         ApplyAnimation(playerid,"SPRAYCAN","spraycan_fire",3.0, false, true, true, false, false, SYNC_ALL);
         SetPlayerChatBubble(playerid,"наносит граффити",COLOR_PURPLE,20.0,4000);
+        OrgLog(fraction(playerid), "CreateGraphiti", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", zone, "Установил/переделал граффити");
         GiveUnit(playerid,16);
         around_player_audio(playerid, 1134, 0, 5.0, 0);
     }

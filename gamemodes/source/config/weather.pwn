@@ -82,7 +82,14 @@ stock WeatherMoving()
         dyn_zone_WeatherBasic[1] = CreateDynamicCircle(Weather[i][weatherDirectionCordStart][0]+countx,Weather[i][weatherDirectionCordStart][1]+county, 800, 0,0,-1);
         dyn_zone_WeatherNotBasic[1] = CreateDynamicCircle(Weather[i][weatherDirectionCordStart][0]+countx,Weather[i][weatherDirectionCordStart][1]+county, 1000, 0,0,-1);
     }
-    printf("Погода движется: %f, %f Шаг: %d", Weather[i][weatherDirectionCordStart][0],Weather[i][weatherDirectionCordStart][1]+county,WeatherCount);
+    if(Weather[i][weatherDirectionCordStart][0]+countx > 8000 || Weather[i][weatherDirectionCordStart][1]+county > 8000 || Weather[i][weatherDirectionCordStart][1]+county < -4000 || Weather[i][weatherDirectionCordStart][0]+countx < -4000)
+    {
+        DestroyDynamicArea(dyn_zone_WeatherBasic[0]);
+        DestroyDynamicArea(dyn_zone_WeatherNotBasic[0]);
+        DestroyDynamicArea(dyn_zone_WeatherBasic[1]);
+        DestroyDynamicArea(dyn_zone_WeatherNotBasic[1]);
+        Weather[i][weatherStatus] = 2;
+    }
     return 1;
 }
 

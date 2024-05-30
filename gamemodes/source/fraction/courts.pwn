@@ -24,6 +24,7 @@ stock GoCourtsProcess(playerid,targetid)
 stock CloseCourtsProcess(playerid)
 {
     new slot = OnlineInfo[playerid][oCourtsID]-1;
+    new text[40];
     if(CourtsInfo[slot][courtsStatus] != 2) return 0;
     if(CourtsInfo[slot][courtsClass] == 0) // Отклоняем заявку
     {
@@ -32,10 +33,12 @@ stock CloseCourtsProcess(playerid)
         PPSetPlayerPos(playerid, 1032.6429,2443.3469,10.8509);
         PPSetPlayerFacingAngle(playerid, 0.0);
         PlayerInfo[playerid][pCourtsStatus] = 2;
+        format(text,sizeof(text),"Отклонил заявку в суде");
     }
     else if(CourtsInfo[slot][courtsClass] == 1) // Отпускаем по УДО
     {
         SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО. Вы свободны");
+        format(text,sizeof(text),"Отпустил по УДО в суде");
     }
     else if(CourtsInfo[slot][courtsClass] == 2) // Отпускаем по УДО + залог
     {
@@ -45,6 +48,7 @@ stock CloseCourtsProcess(playerid)
             return ErrorMessage(playerid,"{ff6347}У вас не достаточно денег на руках для оплаты выхода под залог");
         }
         else oGivePlayerMoney(playerid, -PlayerInfo[playerid][pJailTime]*10); // Забираем бабки равные Срокзаключения * 100
+        format(text,sizeof(text),"Отпустил по УДО с залогом в суде");
         SuccessMessage(playerid,"{44ff99}Вас отпустили по УДО и залог. Вы свободны");
     }
     else if(CourtsInfo[slot][courtsClass] == 3) // Сокращаем срок в половину за залог
@@ -61,6 +65,7 @@ stock CloseCourtsProcess(playerid)
         PPSetPlayerFacingAngle(playerid, 0.0);
         PlayerInfo[playerid][pJailTime]= PlayerInfo[playerid][pJailTime]/2;
         PlayerInfo[playerid][pCourtsStatus] = 2;
+        format(text,sizeof(text),"Сократил срок в половину за залог в суде");
         SuccessMessage(playerid,"{44ff99}Вам сократили срок в половину за залог.Вы возвращены в тюрьму");
     }
     else if(CourtsInfo[slot][courtsClass] == 4) // Отпускаем по УДО + Отработка
@@ -70,6 +75,7 @@ stock CloseCourtsProcess(playerid)
                                 \n\nВ случае не отработки работ в ближайшее время, вас снова могут посадить в тюрьму\
                                 \n{684F7D}Отработать нужно на работе у Клининговой Компании\
                                 \n{684F7D}Посмотреть сумму отработки можно в БАНК ОНЛАЙН");
+        format(text,sizeof(text),"Отпустил по УДО с отработкой в суде");
     }
     if(CourtsInfo[slot][courtsClass] == 4 || CourtsInfo[slot][courtsClass] == 2 || CourtsInfo[slot][courtsClass] == 1)
     {
@@ -86,6 +92,8 @@ stock CloseCourtsProcess(playerid)
         GF_OnPlayerUpdate(playerid);
     }
     GiveUnit(CourtsInfo[slot][courtsTakeUserid], 13);
+    new sudplayerid = CourtsInfo[slot][courtsTakeUserid];
+    OrgLog(7, "CloseCourtsProcess", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[sudplayerid][pID], PlayerInfo[sudplayerid][pName], PlayerInfo[sudplayerid][pPlaIP], 0, text);
     DeleteOrderToCourts(CourtsInfo[slot][courtsPlayerId]);
     return 1;
 }
