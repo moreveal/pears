@@ -114,7 +114,7 @@ stock LinkForumAccount(playerid)
         "account_id", JSON_Int(PlayerInfo[playerid][pID]),
         "key", JSON_Int(key)
     ));
-    return 1;
+    return key;
 }
 
 stock InvitePlayerBridge(user_id, g)

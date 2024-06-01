@@ -78,7 +78,7 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
 {
     19000000,900000,10000000,11000000,400000,3500000,12000000,2500000,1100000,2800000, // 2000 - 2009
 	1400000,5000000,3000000,500000,9000000,4200000,10000000,600000,4500000,400000, // 2010 - 2019
-	2500000,950000,7000000,4000000,400000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
+	2500000,950000,7000000,4000000,60000000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
 	5000000,1200000,1300000,15000000,24000000,1500000, // 2030 - 2035
 	31000000,4200000,5000000,5000000,4500000,4000000,300000000, // 2036 - 2042
 	1200000,1200000,7000000,3500000,3500000,500000,1200000, // 2043 - 2049
@@ -1541,6 +1541,47 @@ stock IsNoMessageVehicle(vehicleid)
 {
 	if(vehicleid == collectorveh) return 1;
 	return 0;
+}
+
+CMD:rvehquan(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 25) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
+	{
+		if(VehBuy[v] > 0) 
+		{
+			VehBuy[v] = 0;
+			SaveVehicleBuy(v);
+		}
+
+		if(VehBuyGold[v] > 0) 
+		{
+			VehBuyGold[v] = 0;
+			SaveVehicleBuyGold(v);
+		}
+
+		if(VehQuan[v] > 0) 
+		{
+			VehQuan[v] = 0;
+			SaveVehicleQuan(v);
+		}
+
+		if(VehLimitedCase[v] > 0) 
+		{
+			VehLimitedCase[v] = 0;
+			SaveVehicleLimitedCase(v);
+		}
+	}
+
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил подсчёт всех тс на руках (VehBuy, VehBuyGold, VehQuan, VehLimitedCase)", PlayerInfo[playerid][pName]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rvehquan", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return 1;
 }
 
 CMD:vgall(playerid, const params[]) return pc_cmd_vehgoldall(playerid, params);

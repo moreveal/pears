@@ -257,6 +257,10 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
         // /sign", // 71 Сменить имя [ICA]
         if(g == 8)  return 1;
     }
+    else if(accessId == 70) // 70 Отключить / Включить никнейм [ICA] - ВЫКЛЮЧЕНА У ХИТОВ
+    {
+        return 0;
+    }
     else if(accessId == 72) // 72 Система Тюрьмы [Police]
     {
         if(IsAPolice(g))  return 1;

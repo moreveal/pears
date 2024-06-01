@@ -153,7 +153,7 @@ function Call_promo(playerid, pf, unix)
 			{
 				format(str,sizeof(str),"{ff9000}* Кейс {999999}[ Инвентарь N ]\n"), strcat(sctring,str);
 				new thingId, thingQuan, thingType, thingPara, thingPack;
-				CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
+				CreateCasePlayer(playerid, thingId, thingQuan, thingType,thingPara, thingPack);
 				GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
 				CalculateVehicleLimited(thingId, thingType);
 			}

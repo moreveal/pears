@@ -344,7 +344,7 @@ stock CompletingDaily(playerid, dailyid, quan)
 
             mysql_tquery(pearsq, "START TRANSACTION;");
             new thingId, thingQuan, thingType, thingPara, thingPack;
-            CreateCasePlayer(0,thingId, thingQuan, thingType, thingPara, thingPack);
+            CreateCasePlayer(playerid,thingId, thingQuan, thingType, thingPara, thingPack);
             new plit = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
             CalculateVehicleLimited(thingId, thingType);
             mysql_tquery(pearsq, "COMMIT;");

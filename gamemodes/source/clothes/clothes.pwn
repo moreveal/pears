@@ -1435,3 +1435,32 @@ stock SaveSkinName(s)
 	query_empty(pearsq, string_mysql);
     return 1;
 }
+
+CMD:rskinquan(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 25) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+
+	mysql_tquery(pearsq, "START TRANSACTION;");
+	for(new s = 0; s < MAX_MODELS_SKIN; s++)
+	{
+		if(SkinBuy[s] > 0) 
+		{
+			SkinBuy[s] = 0;
+			SaveSkinBuy(s);
+		}
+
+		if(SkinBuyGold[s] > 0) 
+		{
+			SkinBuyGold[s] = 0;
+			SaveSkinBuyGold(s);
+		}
+	}
+
+	mysql_tquery(pearsq, "COMMIT;");
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s сбросил подсчёт всех скинов (SkinBuy, SkinBuyGold)", PlayerInfo[playerid][pName]);
+ 	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rskinquan", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return 1;
+}

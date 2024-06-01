@@ -17,6 +17,9 @@ new ThingVehicleQuan;
 new ThingSkincaseGift[MAX_MODELS_SKIN];
 new ThingSkinQuan;
 
+new ThingSkincaseGiftFemale[MAX_MODELS_SKIN];
+new ThingSkinQuanFemale;
+
 /*enum caseInfo
 {
     caseId, // кейс ID
@@ -64,8 +67,15 @@ stock CreateVehicleGiftCase()
         if(!IsAVehExisting(i+400)
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
-        if(VehSale[i] == 1
-            || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+        new vehClass = GetVehicleClass(i+400);
+        if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
+
+        new vehType = GetVehicleType(i+400);
+        if(vehType == 1 || vehType == 2)
+        {
+            if(VehSale[i] == 1
+                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+        }
     }
 
     // Собираем кастомный транспорт
@@ -74,8 +84,15 @@ stock CreateVehicleGiftCase()
         if(!IsAVehExisting(i+2000)
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
-        if(VehSale[i] == 1
-            || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+        new vehClass = GetVehicleClass(i+2000);
+        if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
+
+        new vehType = GetVehicleType(i+400);
+        if(vehType == 1 || vehType == 2)
+        {
+            if(VehSale[i] == 1
+                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+        }
     }
     return ThingVehicleQuan;
 }
@@ -86,27 +103,29 @@ stock CreateSkinGiftCase() // Собираем скины
     
     for(new i; i < MAX_MODELS_SKIN; i++)
     {
-        if(SkinSale[i] == 1) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
+        if(SkinSale[i] == 1) 
+        {
+            new genderSkin = GetSkinSex(i);
+            if(genderSkin == 1 || genderSkin == 0) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
+            else if(genderSkin == 2 || genderSkin == 0) ThingSkincaseGiftFemale[ThingSkinQuan] = i, ThingSkinQuanFemale ++;
+        }
     }
     return ThingSkinQuan;
 }
 
 // Рандомайзер для создания кейса
-stock CreateCasePlayer(type, &thingId, &thingQuan, &thingType, &thingPara, &thingPack)
+stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack)
 {
-    new zaglushka = type;
-    if(zaglushka == 0)
+    switch(random(15))
     {
-        switch(random(15))
-        {
-            case 0: thingType = 0; // Обычный предмет
-            case 1: thingType = 1; // Оружие
-            //case 2: thingType = 0; // Акс 2(временно 0)
-            case 3, 4: thingType = 3; // Одежда
-            case 5: thingType = 5; // Транспорт
-            default: thingType = 0; // ПОДКРУТКА обычный предмет
-        }
+        case 0: thingType = 0; // Обычный предмет
+        case 1: thingType = 1; // Оружие
+        //case 2: thingType = 0; // Акс 2(временно 0)
+        case 3, 4: thingType = 3; // Одежда
+        case 5: thingType = 5; // Транспорт
+        default: thingType = 0; // ПОДКРУТКА обычный предмет
     }
+
     new quan;
     if(thingType == 0) // Если выпал обычный
     {
@@ -152,8 +171,16 @@ stock CreateCasePlayer(type, &thingId, &thingQuan, &thingType, &thingPara, &thin
     }
     else if(thingType == 3) // Список собирается при запуске сервера
     {
-        new thingTemp = random(ThingSkinQuan);
-        thingId = ThingSkincaseGift[thingTemp];
+        if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+        {
+            new thingTemp = random(ThingSkinQuan);
+            thingId = ThingSkincaseGift[thingTemp];
+        }
+        else // Женский скин в кейсе
+        {
+            new thingTemp = random(ThingSkinQuanFemale);
+            thingId = ThingSkincaseGiftFemale[thingTemp];
+        }
         thingQuan = 1;
     }
     else if(thingType == 5) // Список собирается при запуске сервера
@@ -208,7 +235,7 @@ CMD:givecase(playerid, const params[])
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс в инвентарь [ /givecase ID ]");
     
     new thingId, thingQuan, thingType, thingPara, thingPack;
-    CreateCasePlayer(0, thingId, thingQuan, thingType,thingPara, thingPack);
+    CreateCasePlayer(params[0], thingId, thingQuan, thingType,thingPara, thingPack);
     new put_inva = GiveThingPlayer(params[0], thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 

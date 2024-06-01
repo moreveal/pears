@@ -38,7 +38,7 @@ stock GetBagPlane(playerid, t)
 
     // Даём кейс
     new thingId, thingQuan, thingType, thingPara, thingPack;
-    CreateCasePlayer(0, thingId, thingQuan, thingType, thingPara, thingPack);
+    CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack);
     GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     CalculateVehicleLimited(thingId, thingType);
     mysql_tquery(pearsq, "COMMIT;");
