@@ -556,7 +556,7 @@ stock GoShmot(playerid, stat)
 			else if(g == 4) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ASGH");
 			else if(g == 5) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "COSA NOSTRA");
 			else if(g == 6) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "YAKUZA");
-			else if(g == 7) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "GOVERMENT");
+			else if(g == 7) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "GOVERNMENT");
 			else if(g == 8) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "ICA");
 			else if(g == 9) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "CNN");
 			else if(g == 10) PlayerTextDrawSetString(playerid, PlaDressDraw[1], "TRIADA");

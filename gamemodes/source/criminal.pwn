@@ -889,10 +889,10 @@ stock SetPlayerCriminal(playerid,zakonnik,const reason[],zv, uk, p)
 			if(zakonnik != -1) WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
 			WantedInfo[playerid][wanUnix][slotUk] = gettime();
 			if(zakonnik != -1) format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
-			SaveWantedPlayer(playerid, slotUk);
-
-			if(PlayerInfo[playerid][pCrimes]+zv > 50) PlayerInfo[playerid][pCrimes] = 50;
+            if(PlayerInfo[playerid][pCrimes]+zv > 50) PlayerInfo[playerid][pCrimes] = 50;
 			else if(PlayerInfo[playerid][pCrimes]+zv <= 50) PlayerInfo[playerid][pCrimes] += zv;
+
+			SaveWantedPlayer(playerid, slotUk);
 
             new string[140];
 			// Сообщения преступнику

@@ -182,9 +182,9 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
     OrganInfo[g][glave] += 5000;
-    format(string,sizeof(string), "Фрак: %d, Склад: %s", fraction(playerid), wh);
+    format(string,sizeof(string), "Фрак: %d, Склад: %d", fraction(playerid), wh);
     GiveUnit(playerid, 11);
-    CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh,string);
+    CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh, string);
 	SaveCar(car);
     SaveCrime(slot);
 	ACDestroyVehicle(car);

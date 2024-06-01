@@ -11,7 +11,7 @@ stock UpdateSqlProperties() // Сохраняем инфу о сервере в 
         ('maxPlayers',  '%d'), \
         ('password',  '%s'), \
         ('lastUpdate', '%d') \
-        ON DUPLICATE KEY UPDATE value = VALUES(value)", OrganInfo[0][gstat2], GetMaxPlayers(), serverPass, gettime());
+        ON DUPLICATE KEY UPDATE value = VALUES(value)", OrganInfo[0][gstat2], GetMaxPlayers() - sizeof(npcNames), serverPass, gettime());
     mysql_tquery(pearsq_3, string_mysql, "", "");
     return 1;
 }

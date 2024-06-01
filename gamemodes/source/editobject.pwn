@@ -234,7 +234,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 if(BizzInfo[oid][bLab] == 1) DestroyDynamicPickup(BizPickup[oid]), DestroyDynamic3DTextLabel(BizLabel[oid]), BizzInfo[oid][bLab] = 0;
 
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-                format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /goverment ] {ffffff} **", oid);
+                format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения открытия {cccccc}[ /government ] {ffffff} **", oid);
                 SendRadioMessage(7, COLOR_ALLDEPT, string);
             }
             createdoor_biznes(oid);
@@ -312,7 +312,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
             RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /goverment ] {ffffff} **", b, slot + 1);
+            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /government ] {ffffff} **", b, slot + 1);
             SendRadioMessage(7, COLOR_ALLDEPT, string);
         }
 

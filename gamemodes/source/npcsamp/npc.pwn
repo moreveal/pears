@@ -35,6 +35,7 @@ enum npcInfo
 };
 new NPCInfo[sizeof(npcNames)][npcInfo];
 new ConnectNpcQuan;
+new ConnectNpcUnix;
 new Text3D: NpcLabel[sizeof(npcNames)]; // Лейблы NPC
 
 // Подключаем всех NPC
@@ -95,7 +96,11 @@ stock OnNpcConnect(playerid)
     PPSpawnPlayer(playerid);
 
     // Все подрубились, возвращаем пароль
-    if(ConnectNpcQuan >= sizeof(npcNames) && (server > 0 || serverType == 1)) SetPearsPassword();
+    if(ConnectNpcQuan >= sizeof(npcNames) && (server > 0 || serverType == 1)) 
+    {
+        SetPearsPassword();
+        ConnectNpcUnix = gettime();
+    }
     return 1;
 }
 
@@ -321,7 +326,7 @@ stock ReloadVehicleNPC(vehicleid)
 // Не пускаем игрока, если он подключается раньше всех NPC
 stock BlockConnectBeforeNPC(playerid)
 {
-    if(ConnectNpcQuan < sizeof(npcNames))
+    if(ConnectNpcQuan < sizeof(npcNames) || gettime() - ConnectNpcUnix < 2)
     {
         TextDrawShowForPlayer(playerid, Chernifon);
 		ShowDialog(playerid,2017,DIALOG_STYLE_MSGBOX,"{FF6347}*","{FF6347}Системы сервера не были окончательно запущены\n{cccccc}Пожалуйста, перезайдите {FF6347}/q или ESC >> Выход","Ок","");

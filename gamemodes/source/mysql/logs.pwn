@@ -5,13 +5,13 @@ new %0_id_[32];                         \
 new %0_name_[32];                       \
 new %0_ip_[32];                         \
                                         \
-if (%0_id == 0) strcat(%0_id_, "NULL"); \
+if (%0_id == 0 && false) strcat(%0_id_, "NULL");                           \
 else mysql_format(pearsq_2, %0_id_, sizeof(%0_id_), "'%d'", %0_id);        \
                                                                            \
-if (strlen(%0_name) == 0) strcat(%0_name_, "NULL");                        \
+if (strlen(%0_name) == 0 && false) strcat(%0_name_, "NULL");               \
 else mysql_format(pearsq_2, %0_name_, sizeof(%0_name_), "'%e'", %0_name);  \
                                                                            \
-if (strlen(%0_ip) == 0) strcat(%0_ip_, "NULL");                            \
+if (strlen(%0_ip) == 0) strcat(%0_ip_, "'0.0.0.0'");                       \
 else mysql_format(pearsq_2, %0_ip_, sizeof(%0_ip_), "'%e'", %0_ip);
 
 
@@ -147,7 +147,7 @@ stock HouseLog(house_type, const action[],
 
     new house_type_[24];
     if(house_type == 0) house_type_ = "house";
-    else if(house_type == 1) house_type_ = "room";
+    else if(house_type == 1) house_type_ = "apartment";
     else if(house_type == 2) house_type_ = "trailer";
     else house_type_ = "unknown";
 
@@ -251,7 +251,7 @@ stock InsultLog(playerid, const rows[])
 {
     new query[512];
     mysql_format(pearsq_2, query, sizeof(query),
-        "INSERT INTO insult_log ( \
+        "INSERT INTO insult_logs ( \
             `primary_player_id`, \
             `primary_player_name`, \
             `primary_player_ip`, \
