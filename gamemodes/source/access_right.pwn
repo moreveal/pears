@@ -436,6 +436,8 @@ stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Результат до
         realRank = PlayerInfo[playerid][pFbi];
     }
 
+    if(PlayerInfo[playerid][pLeader] == realOrg) return true; // Игрок лидер, а значит у него всегда есть доступ к команде
+
     if(OrganInfo[realOrg][gAccDiv][accessId] > 0) // Есть подфракция у команды
     {
         if(PlayerInfo[playerid][pDivision][0] == OrganInfo[realOrg][gAccDiv][accessId]

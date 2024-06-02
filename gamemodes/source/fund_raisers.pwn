@@ -35,7 +35,7 @@ new aFloodFund[MAX_REALPLAYERS];
 
 CMD:fund(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] >= 10)
+    if(PlayerInfo[playerid][pSoska] >= 19)
     {
         FundRaisers(playerid);
         PlayerPlaySound(playerid,40405,0,0,0);
@@ -595,7 +595,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             UpdateFundRaisers(i);
 
             new string[140];
-            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %d$", FundRaisersInfo[i][fundName],  fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired]));
+            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %s$", FundRaisersInfo[i][fundName],  FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]);
             SuccessMessage(playerid, string);
 
             ClearFundLog(FundRaisersInfo[i][fundNewid]); // Очищаем лог пожертвований по этому сбору (В moneylog история остаётся)
@@ -604,16 +604,21 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             format(FundRaisersInfo[i][fundText], 84, "");
             format(FundRaisersInfo[i][fundMoney], 24, "");
             format(FundRaisersInfo[i][fundRequired], 24, "");
+            format(FundRaisersInfo[i][fundMaxMoney], 24, "");
+            FundRaisersInfo[i][fundMaxPlayerid] = 0;
+            format(FundRaisersInfo[i][fundMaxPlayerName], 24, "");
+            FundRaisersInfo[i][fundMaxUnix] = 0;
             FundRaisersInfo[i][fundQuan] = 0;
 
             FundRaisersInfo[i][fundGift] = false;
             for(new g = 0; g < MAX_FUND_GIFT; g++) FundRaisersInfo[i][fundGiftThingId][g] = 0;
 
             new string_mysql[500];
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%e', `fundText`='%e', `fundMoney`='%e', \
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%e', `fundText`='%e', `fundMoney`='%e', \ 
+                `fundMaxMoney`='%e', `fundMaxPlayerid`='0', \
                 `fundQuan`='0', `fundRequired`='%e', `fundGift`='%d', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundText], 
-                FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundGift], 
+                FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundMaxMoney], FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundGift], 
                 FundRaisersInfo[i][fundNewid]); // 263 + 33 + 44 + 84 + 24 + 24
             query_empty(pearsq, string_mysql); // 445
 

@@ -121,7 +121,8 @@ stock Dominic_GiveGift(playerid)
         SuccessMessage(playerid, "{99ff66}Доминик дал вам подарок\n{ffcc66}Проверьте свой инвентарь [ Кнопка N ]");
         CalculateVehicleLimited(thingId, thingType);
     }
-	if(put_inva == -1) // Всё хуйня, кладём в багажник
+
+	if(fallGift == true || put_inva == -1) // Всё хуйня, кладём в багажник
     {
         if(IsPlayerInAnyVehicle(playerid))
         {

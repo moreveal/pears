@@ -508,7 +508,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Ваш персонаж наелся\
                                                                 \n{ffcc66}Теперь вы можете отправиться на улицу\
                                                                 \n\n{99ff66}Подсказка:\
-                                                                \n{ffcc66}- Если вы не будете кормить вашего персонажа, то он начнёт терять хп\
+                                                                \n{ffcc66}- Если вы не будете кормить вашего персонажа, то он начнёт терять здоровье\
                                                                 \n{ffcc66}- Если будете полностью игнорировать желание покушать, персонаж заболеет","*","");
 
         SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я покушал%s, нужно заняться чем-то или ждать звонка от Джони", gender(playerid));
@@ -1357,7 +1357,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
             }
             else if(questId == 9)
             {
-                if(NoCompleteQuest(playerid, 9)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
+                if(NoCompleteQuest(playerid, 8)) return ErrorMessage(playerid,"{ff6347}Вы не выполнили предыдущий квест");
                 SuccessMessage(playerid,"{99ff66}Квест запущен, ожидайте указаний от бота и голосовых сообщений");
                 ShowQwest(playerid, 9);
             }

@@ -354,10 +354,13 @@ stock CompletingDaily(playerid, dailyid, quan)
                 Throw(playerid, thingId, thingQuan, 0, 0, thingType, thingPack);
                 SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
             }
-            else 
+            else
             {
                 SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ Проверьте инвентарь, там вас ждёт кейс ]");
             }
+
+            PlayerInfo[playerid][pExp] ++;
+	        UpdatePlayerExp(playerid);
         }
     }
 

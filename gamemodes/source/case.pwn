@@ -231,7 +231,7 @@ stock TakeCalculateVehicleLimited(thingId, thingType)
 
 CMD:givecase(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
+    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс в инвентарь [ /givecase ID ]");
     
     new thingId, thingQuan, thingType, thingPara, thingPack;
@@ -251,7 +251,7 @@ CMD:givecase(playerid, const params[])
     }
 
     AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "Рандомный кейс");
-	return 1;
+    return 1;
 }
 
 /*stock CaseList(playerid)
