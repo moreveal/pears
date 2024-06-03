@@ -84,6 +84,7 @@ function Call_regpromo(playerid)
 	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Промокод не найден.."), HidePlayerDialog(playerid);
 	return 1;
 }
+
 function Call_promo(playerid, pf, unix)
 {
 	new rows, string[240];
@@ -92,12 +93,15 @@ function Call_promo(playerid, pf, unix)
 	cache_get_row_count(rows);
 	if(!rows)
 	{
-		new quan = 0; // new
-		for(new checkslot; checkslot < 5; checkslot++)
+		if(PromoInfo[pf][roLevel] > 0) // Проверка на лимиты только если промокод не регистрационный
 		{
-			if(PromoInfo[pf][roPar][checkslot] == 2 || PromoInfo[pf][roPar][checkslot] == 13 || PromoInfo[pf][roPar][checkslot] == 14) quan++;
+			new quan = 0;
+			for(new checkslot; checkslot < 5; checkslot++)
+			{
+				if(PromoInfo[pf][roPar][checkslot] == 2 || PromoInfo[pf][roPar][checkslot] == 13 || PromoInfo[pf][roPar][checkslot] == 14) quan++;
+			}
+			if(!free_invent(playerid,quan)) return ErrorMessage(playerid, "{FF6347}У вас не хватает места в инвентаре");
 		}
-		if(!free_invent(playerid,quan)) return ErrorMessage(playerid, "{FF6347}У вас не хватает места в инвентаре");
 
 	    new yeslvl = 0;
 		new str[100],sctring[600];
@@ -106,21 +110,21 @@ function Call_promo(playerid, pf, unix)
 		format(str,sizeof(str),"\n{ff9000}%s\n", PromoInfo[pf][roText]), strcat(sctring,str);
 		for(new statpf = 0; statpf < 5; statpf++)
 		{
-			if(PromoInfo[pf][roPar][statpf] == 2) // Транспорт
+			if(PromoInfo[pf][roPar][statpf] == 2 && PromoInfo[pf][roLevel] > 0) // Транспорт
 			{
 				new vehid = PromoInfo[pf][roStat][statpf];
 				format(str,sizeof(str),"{ff9000}* %s {cccccc}%s\n",promoName[PromoInfo[pf][roPar][statpf]], GetVehicleName(vehid)), strcat(sctring,str);
 				new colorveh = 1 + random(254); // Color Vehicle
 				GiveThingPlayer(playerid, vehid, colorveh, 0, 0, 5, 0, 9999);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 3) // Деньги
+			if(PromoInfo[pf][roPar][statpf] == 3 && PromoInfo[pf][roLevel] > 0) // Деньги
 			{
 				format(str,sizeof(str),"{ff9000}* %s {cccccc}%d$\n",promoName[PromoInfo[pf][roPar][statpf]], PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				oGivePlayerMoney(playerid, PromoInfo[pf][roStat][statpf]);
 
 				MoneyLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PromoInfo[pf][roStat][statpf], PromoInfo[pf][roName]);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 4) // Золото
+			if(PromoInfo[pf][roPar][statpf] == 4 && PromoInfo[pf][roLevel] > 0) // Золото
 			{
 				format(str,sizeof(str),"{ff9000}* %s {cccccc}%dG {999999}[ Y >> Донат или /donate ]\n",promoName[PromoInfo[pf][roPar][statpf]], PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				PlayerInfo[playerid][pDonateMoney] += PromoInfo[pf][roStat][statpf];
@@ -128,7 +132,7 @@ function Call_promo(playerid, pf, unix)
 
 				DonateLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", PromoInfo[pf][roStat][statpf], PromoInfo[pf][roName]);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 5) // Уровень
+			if(PromoInfo[pf][roPar][statpf] == 5 && PromoInfo[pf][roLevel] > 0) // Уровень
 			{
 				format(str,sizeof(str),"{ff9000}* Уровень: {cccccc}+%d {999999}[ /stats ]\n", PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				PlayerInfo[playerid][pLevel] += PromoInfo[pf][roStat][statpf], yeslvl = 1;
@@ -149,7 +153,7 @@ function Call_promo(playerid, pf, unix)
 				}
 				else if(PlayerInfo[playerid][pDonateRank] >= 3) format(str,sizeof(str),"{ff9000}* VIP: {ffcc00}Активна Premium VIP\n"), strcat(sctring,str);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 13) // Кейс // NEW
+			if(PromoInfo[pf][roPar][statpf] == 13 && PromoInfo[pf][roLevel] > 0) // Кейс // NEW
 			{
 				format(str,sizeof(str),"{ff9000}* Кейс {999999}[ Инвентарь N ]\n"), strcat(sctring,str);
 				new thingId, thingQuan, thingType, thingPara, thingPack;
@@ -157,7 +161,7 @@ function Call_promo(playerid, pf, unix)
 				GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
 				CalculateVehicleLimited(thingId, thingType);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 14) // Скин
+			if(PromoInfo[pf][roPar][statpf] == 14 && PromoInfo[pf][roLevel] > 0) // Скин
 			{
 				format(str,sizeof(str),"{ff9000}* Одежда {cccccc}[ №%d ]{999999}[ Инвентарь N ]\n",PromoInfo[pf][roStat][statpf]), strcat(sctring,str);
 				GiveThingPlayer(playerid, PromoInfo[pf][roStat][statpf], 1, 0, 0, 3, 0, 9999);
@@ -166,6 +170,15 @@ function Call_promo(playerid, pf, unix)
 		format(str,sizeof(str),"\n\n{ff9000}____________________________________________________________");
 		strcat(sctring,str);
 		ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод",sctring,"Oк","");
+
+		if(PromoInfo[pf][roLevel] <= 0 && PlayerInfo[playerid][pLevel] == 1 && PlayerInfo[playerid][pPromoreg] == 0)
+		{
+			PlayerInfo[playerid][pPromoreg] = pf;
+			mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Promoreg` = '%d', `Promoins` = '%d' WHERE `user_id` = '%d'", 
+				PromoInfo[pf][roNewid], PromoInfo[pf][roNewid], PlayerInfo[playerid][pID]);
+			mysql_tquery(pearsq, string);
+		}
+
 		PromoInfo[pf][roNumber] ++;
 		SavePromo(10, pf);
 		
@@ -178,6 +191,7 @@ function Call_promo(playerid, pf, unix)
 		    if(month == 12 || month == 1) PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/newyear01.mp3");
 			else PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/pears.mp3");
 		}
+
 		if(PlayerInfo[playerid][pReferalID] >= 1 && yeslvl == 1)
 		{
 			if(PlayerInfo[playerid][pLevel] == 5)
@@ -403,7 +417,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 					if(PromoInfo[pf][roActiv] == 2 && PlayerInfo[playerid][pSoska] < 9) return ErrorText(playerid,"{FF6347}Промокод на одобрение у ответственной администрации");
 					if(PromoInfo[pf][roPar][0] == 0 && PromoInfo[pf][roPar][1] == 0 && PromoInfo[pf][roPar][2] == 0 && PromoInfo[pf][roPar][3] == 0 && PromoInfo[pf][roPar][4] == 0) return ErrorText(playerid,"{FF6347}Нужно добавить хотя-бы один подарок в промокод"), setprom(playerid);
 					if(PlayerInfo[playerid][pMedia] > 0 && DP[4][playerid] > 1000000) return ErrorText(playerid,"{FF6347}Ценность промокода привышает 1.000.000$, допустима ценность ниже этого."), setprom(playerid);
-					if(PlayerInfo[playerid][pMedia] > 0) ErrorText(playerid,"{FF6347}Промокод отправлен на одобрение ответственной администрации"),PromoInfo[pf][roActiv] = 2;
+					if(PlayerInfo[playerid][pMedia] > 0) ErrorText(playerid,"{FF6347}Промокод отправлен на одобрение ответственной администрации"), PromoInfo[pf][roActiv] = 2;
 					else PromoInfo[pf][roActiv] = 1;
 				}
 				PlayerPlaySound(playerid,6401,0,0,0);
