@@ -29,14 +29,14 @@ CMD:startweather(playerid, const params[])
     if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить погоду {ffcc00}[ /startweather ID погоды ]");
     number--;
     Weather[number][weatherUnix] = gettime();
-    if(number >= MAX_WEATHER || number <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить погоду {ffcc00}[ /startweather ID погоды ]");
+    if(number > MAX_WEATHER || number < 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить погоду {ffcc00}[ /startweather ID погоды ]");
     WeatherStart(number);
     return 1;
 }
 
 CMD:showweather(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 9) return 0;
+    if(PlayerInfo[playerid][pMember] != 9 && PlayerInfo[playerid][pLeader] != 9) return 0;
     WeatherShowMenu(playerid);
     return 1;
 }
@@ -52,7 +52,7 @@ CMD:gotoweather(playerid)
 stock WeatherShowMenu(playerid)
 {
     new line[100],lines[200*MAX_WEATHER];
-    format(line,sizeof(line),"№ Погода\tВремя старта\tСтатус\tНаправление"), strcat(lines,line);
+    format(line,sizeof(line),"№ Погода\tДо старта\tСтатус\tНаправление"), strcat(lines,line);
     for(new i; i < MAX_WEATHER; i++)
     {
         new text[40], textstatus[7];
@@ -63,7 +63,9 @@ stock WeatherShowMenu(playerid)
         if(Weather[i][weatherStatus] == 0) textstatus = "Будет";
         else if(Weather[i][weatherStatus] == 1) textstatus = "Идет";
         else if(Weather[i][weatherStatus] == 2) textstatus = "Прошла";
-        format(line,sizeof(line),"\n%d. %s\t%s\t%s\t%s", i+1,weatherName[Weather[i][weatherID]], fine_time(Weather[i][weatherUnix]-gettime()),textstatus,text), strcat(lines,line);
+        new tyear, tmonth, tday, thour, tminute, tsecond;
+        stamp2datetime(Weather[i][weatherUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+        format(line,sizeof(line),"\n%d. %s\t%s [ %02d:%02d ]\t%s\t%s", i+1,weatherName[Weather[i][weatherID]], fine_time(Weather[i][weatherUnix]-gettime()),thour, tminute,textstatus,text), strcat(lines,line);
     }
     ShowDialog(playerid,1700,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Прогноз погоды",lines,"Выбрать","Выход");
 }
