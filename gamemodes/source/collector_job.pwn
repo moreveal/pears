@@ -50,6 +50,8 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				    	SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), PlayerPlaySound(playerid,5601,0,0,0);
 				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы {FF6347}завершили {ffcc66}работу в Инкассаторах","*","");
 				    	DisablePlayerRaceCheckpoint(playerid);
+
+						SpawnRentVehicleJob(playerid, 428);
 				    }
 		    	}
 		    	if(listitem == 2)

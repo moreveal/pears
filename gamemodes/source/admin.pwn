@@ -657,6 +657,7 @@ CMD:rkasino(playerid)
 	SendClientMessage(playerid, COLOR_GREY, "[ Pears ] Соотношение побед в казино очищено");
 	return 1;
 }
+
 CMD:checkas(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 22) return 1;
@@ -668,6 +669,7 @@ CMD:checkas(playerid)
     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{0088ff}Информация",sctring,"Oк","");
 	return 1;
 }
+
 CMD:invest(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 10 && PlayerInfo[playerid][pMedia] <= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");

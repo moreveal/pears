@@ -191,3 +191,17 @@ stock SaveRentVehiclePos(playerid, vehicleid, sl)
 	PlayerInfo[playerid][pRent_A][sl] = pos[3];
 	return 1;
 }
+
+// Спавним рабочий транспорт
+stock SpawnRentVehicleJob(playerid, model = 0, model2 = 0)
+{
+	for(new i = 0; i < 2; i++) 
+	{
+		if(PlayerInfo[playerid][pRentVeh][i] > 0
+			&& (PlayerInfo[playerid][pRentModel][i] == model && model > 0 || PlayerInfo[playerid][pRentModel][i] == model2 && model2 > 0))
+			{
+				RentDestroy(playerid, i);
+			}
+	}
+	return true;
+}

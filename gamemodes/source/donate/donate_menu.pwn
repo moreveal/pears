@@ -11,7 +11,7 @@ stock discount()
     {
         if(donatePrice[i] > 0)
         {
-            donatePrice[i] = donatePrice[i]-(donatePrice[i]/100*ServerInfo[55]);
+            donatePrice[i] = donatePrice[i]-(donatePrice[i]/100*ServerInfo[58]);
         }
     }
 }
@@ -127,8 +127,7 @@ stock showDialogConfirmationDonateSkills(playerid, ability)
 
     new line[100], lines[300];
     format(line,sizeof(line),"{cccccc}Покупка: {0088ff}%s", abilityName[ability]), strcat(lines,line);
-    if(ServerInfo[55] > 0) format(line,sizeof(line),"\n{cccccc}Стоимость: {ffcc00}%dG {ff9000}[ Сегодня скида %d проц. ]", donatePrice[10], ServerInfo[55]), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Стоимость: {ffcc00}%dG", donatePrice[10]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Стоимость: {ffcc00}%dG", donatePrice[10]), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ff9000}Вы уверены, что хотите оплатить покупку?"), strcat(lines,line);
     ShowDialog(playerid,856,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",lines,"Да","Нет");
     return true;
@@ -306,8 +305,7 @@ stock dialogCase_DonateMenu(playerid, dialogid, response, listitem)
 
 			new str[130],sctring[860];
 			format(str,sizeof(str),"{cccccc}Покупка: {0088ff}%s\n", atext), strcat(sctring,str);
-			if(ServerInfo[55] > 0) format(str,sizeof(str),"{cccccc}Стоимость: {ffcc00}%dG {ff9000}[ Сегодня скида %d проц. ]\n", cena, ServerInfo[55]), strcat(sctring,str);
-			else format(str,sizeof(str),"{cccccc}Стоимость: {ffcc00}%dG\n", cena), strcat(sctring,str);
+			format(str,sizeof(str),"{cccccc}Стоимость: {ffcc00}%dG\n", cena), strcat(sctring,str);
 			format(str,sizeof(str),"\n\n{ff9000}Вы уверены, что хотите оплатить покупку?"), strcat(sctring,str);
 			ShowDialog(playerid,852,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",sctring,"Да","Нет");
 	    }

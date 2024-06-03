@@ -795,16 +795,20 @@ CMD:su(playerid, const params[])
     if(!sscanf(params, "s[121]s[8]", tmp, article)) // Указываем Ник и Номер статьи
     {
         if(!CheckWarningSu(playerid, tmp, playa)) return 1;
-        new findUk = -1, findP;
+
+        new findUk = -1, findP, bool:stopFind;
         for(new i = 0; i < MAX_CRIMINAL_CODE_ARTICLE; i++)
         {
+            if(stopFind == true) break; // Останавливаем поиск, если нашли статью
+
             if(CriminalCodeInfo[i][0][ccStatus] == false) continue;
             for(new p = 0; p < MAX_CRIMINAL_CODE_SUBENTRY; p++)
 	        {
-                if(strfind(CriminalCodeInfo[i][p][ccArcticle], article,true) != (-1))
+                if(strfind(CriminalCodeInfo[i][p][ccArcticle], article, true) != (-1))
                 {
                     findUk = i;
                     findP = p;
+                    stopFind = true;
                     break;
                 }
             }
