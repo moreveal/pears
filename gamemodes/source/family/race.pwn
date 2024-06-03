@@ -256,16 +256,17 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
     }
     else if(dialogid == 1453)
    	{
+        new b = DP[4][playerid];
    	    if(response)
         {
             if(listitem < 0 || listitem > 9) return ErrorMessage(playerid,"Лист итем паленый броооооо");
             {
-                new b = DP[4][playerid];
                 new listord = List[listitem][playerid];
                 DP[1][playerid] = listord;
                 settingpartner(playerid, b, listord);
             }
         }
+        else return mybiz(playerid,b);
     }
     else if(dialogid == 1454)
    	{

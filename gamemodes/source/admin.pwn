@@ -1026,3 +1026,21 @@ CMD:punishments(playerid,const params[])
 	}
 	return 1;
 }
+CMD:giveeditorder(playerid, const params[])
+{
+	new f_str[100];
+	if(PlayerInfo[playerid][pSoska] < 14) return 0;
+	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать право на редактирование цен [ /giveeditorder ID/NickName ]");
+	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
+	new giveplayerid;
+	giveplayerid = ReturnUser(params[0], 1);
+	if(IsPlayerConnected(giveplayerid))
+	{
+		PlayerInfo[giveplayerid][pTaxesUnix] = gettime()+3600;
+	}
+	else return ErrorMessage(playerid,"{ff6347}Игрок в оффлайне, выдавать право на редактирование можно только для онлайн игроков");
+	mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pTaxesUnix` = '%d' WHERE `user_id` = '%d'", gettime()+3600,PlayerInfo[giveplayerid][pID]);
+	query_empty(pearsq, f_str);
+	AdminLog("giveeditorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP],  PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Дал доступ к редактированию minfin");
+	return 1;
+}
