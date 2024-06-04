@@ -147,8 +147,9 @@ stock closeTestDrive(playerid)
         ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
 
         // Таймер для корректного возвращение игрока в транспорт
+	    GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~3A‚PY3KA A‹ЏOCEP‹…CA", 3000, 3);
         if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]);
-		OnlineInfo[playerid][oTimerAutoservice] = SetTimerEx("TimerLoadAutoservice", 2000, false, "d", playerid);
+		OnlineInfo[playerid][oTimerAutoservice] = SetTimerEx("TimerLoadAutoservice", 3000, false, "d", playerid);
     }
     else
     {    

@@ -355,12 +355,18 @@ stock Dominic_Restriction(playerid)
     return 1;
 }
 
-alias:reloaddominic("rdominic", "доминик")
-CMD:reloaddominic(playerid)
+alias:rdominic("доминик")
+CMD:rdominic(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    PlayerInfo[playerid][pDominicUnix] = 0;
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Доминик Торпеда","{ffcc66}Ограничение, на повторную гонку с Домиником, очищено","*","");
+    if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд с домиником [ /rdominic ID ]");
+    if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
+
+    PlayerInfo[params[0]][pDominicUnix] = 0;
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили кд на повторную гонку с Домиником для %s **", PlayerInfo[params[0]][pName]);
+    if(playerid != params[0]) SendClientMessage(params[0], COLOR_LIGHTBLUE, "** %s очистил вам кд на повторную гонку с Домиником **", PlayerInfo[playerid][pName]);
+
+    AdminLog("rdominic", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "");
     return 1;
 }
 

@@ -250,7 +250,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new v = GetPlayerVehicleID(playerid);
-            new b = DP[2][playerid];
+            new b = gAutosalon[playerid];
             new money;
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
@@ -364,7 +364,7 @@ stock ExitTuningOrSave(playerid)
     new line[90],lines[2500];
     format(line,sizeof(line),"{cccccc}Неоплаченный тюнинг транспорта\n"), strcat(lines,line);
     format(line,sizeof(line),"{ff6347}- Детали того же типа, что уже установлены на транспорт будут заменены!\n"), strcat(lines,line);
-    new b = DP[2][playerid];
+    new b = gAutosalon[playerid];
     for(new i;i< sizeof(friskDetailTypeName);i++)
     {
         if(TempDetail[playerid][i] > 0)

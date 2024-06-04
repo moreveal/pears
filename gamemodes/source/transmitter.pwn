@@ -168,7 +168,7 @@ CMD:famforce(playerid, const params[])
 
 CMD:y(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вы не медиа партнёр");
+	if(PlayerInfo[playerid][pMedia] == 0 && !admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вы не медиа партнёр");
 	if(PlayerInfo[playerid][pTransmitterOff][7] == true) return ErrorMessage(playerid, "{FF6347}У вас выключен чат медиа\n{cccccc}Y >> Меню >> Настройки Чата");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чат медиа /y текст");
 	new string[144];
@@ -645,7 +645,7 @@ function SendMediaMessage(color, const string[]) // Чат медиа /y
 	foreach (Player, i)
 	{
 	    if(OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pTransmitterOff][7] == false
-            && PlayerInfo[i][pMedia] > 0) SendClientMessage(i, color, string);
+            && (PlayerInfo[i][pMedia] > 0 || admin_right(PlayerInfo[i][pSoska], ADM_SPHERE_MANAGER))) SendClientMessage(i, color, string);
 	}
 	return 1;
 }
@@ -697,7 +697,8 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
                 }
                 else if(tid == 7) // Чат Медиа /y
                 {
-                    if(PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат медиа");
+                    if(PlayerInfo[playerid][pMedia] == 0 
+                        && !admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат медиа");
                 }
                 PlayerInfo[playerid][pTransmitterOff][tid] = !PlayerInfo[playerid][pTransmitterOff][tid];
                 PlayerInfo[playerid][pTransmitterUpdate] = true;

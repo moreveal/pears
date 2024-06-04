@@ -249,7 +249,7 @@ CMD:gojack(playerid, const params[])
 
 CMD:govinni(playerid, const params[])
 {
-    if(server != 0) return 0;
+    if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить инкассатора [ /govinni id города ]");
     if(params[0] < 0 || params[0] > 2) return ErrorMessage(playerid, "{FF6347}0 LS, 1 SF, 2 LV");
@@ -261,8 +261,7 @@ CMD:govinni(playerid, const params[])
 
 CMD:godeny(playerid)
 {
-    if(server != 0) return 0;
-
+    if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     if(NPCInfo[4][npcStart] == true) return ErrorMessage(playerid, "{FF6347}Этот NPC уже запущен");
     if(NPCInfo[4][npcConnected] == false) return ErrorMessage(playerid, "{FF6347}Этот NPC отключился от сервера [ /reloadnpc ]");
     PlaneStart();

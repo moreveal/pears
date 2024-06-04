@@ -1150,7 +1150,9 @@ stock put_thing_prisontable(pt, playerid, thingId, thingQuan, thingPara, thingQa
 	PrisonTableInfo[pt][ptInvQara][i] = thingQara; // Статус краденного предмета
 	PrisonTableInfo[pt][ptInvType][i] = thingType; // Тип предмета
 	PrisonTableInfo[pt][ptInvPack][i] = thingPack; // Упаковка предмета
-    PrisonTableInfo[pt][ptInvPlayer][i] = PlayerInfo[playerid][pID];
+
+    if(playerid == -1) PrisonTableInfo[pt][ptInvPlayer][i] = -1;
+    else PrisonTableInfo[pt][ptInvPlayer][i] = PlayerInfo[playerid][pID];
 	
 	foreach(Player,x)
 	{
