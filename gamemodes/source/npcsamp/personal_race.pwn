@@ -132,8 +132,10 @@ stock PickupRaceCheckpoint(playerid)
         
         if(OnlineInfo[playerid][oQuanPointRace] >= RacePointPlayerQuan[playerid]) // Приехали на последний поинт
         {
-            ClearPlayerRace(playerid); // Очищаем гонку
             if(OnlineInfo[playerid][oDominicRace] > 0) Dominic_FinishPlayer(playerid); // Инфа о том, что мы выиграли гонку
+            // Следующие условия гонки сюда
+
+            ClearPlayerRace(playerid); // Очищаем гонку
         }
         else ShowRaceCheckpoint(playerid); // Отображаем следующий RaceCheckPoint
     }

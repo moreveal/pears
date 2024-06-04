@@ -294,6 +294,7 @@ CMD:reloadcapt(playerid, const params[])
 	return 1;
 }
 
+alias:stopgz("stopcapt", "stopcapture", "stopgang")
 CMD:stopgz(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");

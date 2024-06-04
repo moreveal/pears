@@ -566,6 +566,10 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 			{
 				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]);
 			}
+			else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Авиасалоны, Салоны катеров
+			{
+				BizzInfo[b][bItem][i] = 10;
+			}
 			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
 
 			yesUpdate = true;

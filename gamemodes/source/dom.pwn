@@ -1,4 +1,43 @@
 
+alias:rdomtaxes("rdomnal", "rdomtax", "rdomnalog")
+CMD:rdomtaxes(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в доме [ /rdomtaxes Номер Дома (0 - все дома) ]");
+
+	new string[144];
+	if(params[0] > 0)
+	{
+		if(params[0] >= MAX_DOM) return ErrorMessage(playerid, "{FF6347}Такого номера дома не существует");
+		ReloadDomTaxes(params[0]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги в доме № %d", PlayerInfo[playerid][pName], params[0]);
+ 		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rdomtaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги в доме");
+	}
+	else
+	{
+		mysql_transaction(pearsq, true);
+		for(new d = 0; d < sizeof(DomInfo); d++)
+ 		{
+			if(DomInfo[d][dTaxes] > 0 || DomInfo[d][dTaxday] > 0) ReloadDomTaxes(d);
+		}
+		mysql_commit(pearsq);
+
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги во всех домах", PlayerInfo[playerid][pName]);
+ 		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rdomtaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги во всех домах");	
+	}
+	return 1;
+}
+
+stock ReloadDomTaxes(d)
+{
+	DomInfo[d][dTaxes] = 0;
+	DomInfo[d][dTaxday] = 0;
+	SaveTax_Dom(d);
+	return true;
+}
+
 CMD:domdist(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");

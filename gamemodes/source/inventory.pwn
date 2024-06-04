@@ -272,9 +272,13 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСП
     }
   }
   if(thingItem == -1) return ErrorMessage(playerid, "{FF6347}Нужный предмет не был найден в списке предметов \n\nИспользуйте - /gthinginfo - для просмотра списка предметов");
-	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+  if(thingItem >= sizeof(friskName) || thingItem <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
+  
+  // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
   new put_inva = GiveThingPlayer(params[0], thingItem, params[1], 0, 0, 0, 0, 9999);
   if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+  AdminLog("gthing", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingItem, friskName[thingItem]);
   return 1;
 }
 
@@ -282,10 +286,14 @@ CMD:gthingunix(playerid, const params[]) // Выдать предмет (НЕ И
 {
     if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
     if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Кол-во, UNIX ]");
-    new unix = gettime();
+    
+	if(params[1] >= sizeof(friskName) || params[1] <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
+	new unix = gettime();
     // Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
     new put_inva = GiveThingPlayer(params[0], params[1], params[2], unix+params[3], 0, 0, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+	AdminLog("gthingunix", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[1], friskName[params[1]]);
 	return 1;
 }
 
