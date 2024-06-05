@@ -391,6 +391,8 @@ stock dialogCase_Dominic(playerid, dialogid, response)
 
             new raceid = 1;
             if(PlayerInfo[playerid][pAchieve][127] > 0) raceid += random(MAX_ROUTE_DOMINIC); // Ачивку получали, значит маршрут можем выбрать рандомный
+
+            if(server == 0 && serverType == 0) SendClientMessageToAll(-1, "ГОУ СУКА %d (строку видно только на сервере с компа)", raceid);
             Dominic_CreatePlayerRace(playerid, raceid);
             StartNpc(5);
         }

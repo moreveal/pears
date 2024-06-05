@@ -43,7 +43,7 @@ CMD:domdist(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить радиус для мапа дома [ /domdist ID Радиус ]");
 	if(params[0] > MAX_DOM || params[0] < 1) return ErrorMessage(playerid, "{FF6347}Несуществующий номер дома");
-	if(params[1] <= 10.0 || params[1] >= 200.0) return ErrorMessage(playerid, "{FF6347}Радиус не меньше 10 и не больше 200");
+	if(params[1] <= 10.0 || params[1] > 200.0) return ErrorMessage(playerid, "{FF6347}Радиус не меньше 10 и не больше 200");
 
 	DomInfo[params[0]][dMapDistance] = params[1];
 

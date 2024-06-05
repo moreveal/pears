@@ -14,7 +14,6 @@ CMD:media(playerid)
 	format(str,sizeof(str),"\n{cccccc}Рефералы \t{ff9000}[%d]\t",PlayerInfo[playerid][pRefreg]), strcat(sctring,str);
 	
 	format(str, sizeof(str), "\n{cccccc}Чат Медиа \t%s\t{ff9000}/y", PlayerInfo[playerid][pTransmitterOff][7] ? "{FF6347}[ Off ]" : "{99ff66}[ On ]"), strcat(sctring, str);
-	format(str, sizeof(str), "\n{cccccc}Чат Администрации \t%s\t{ff9000}/a", PlayerInfo[playerid][pTransmitterOff][6] ? "{FF6347}[ Off ]" : "{99ff66}[ On ]"), strcat(sctring, str);
 
 	// Голосовой Чат
 	if(gAvoi[playerid]) format(str,sizeof(str),"\n{cccccc}Voice Администрации \t{99ff66}[ On ]\t{ff9000}Кнопка Z"), strcat(sctring,str);

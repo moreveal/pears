@@ -42,7 +42,7 @@ stock SetPlayerDeath(playerid, reason)
     new bool:nodeath;
     if(NoDeath(playerid)) nodeath = true;
 
-    if(nodeath == true)
+    if(nodeath == true) // Если сдох от взрыва, тогда в пизду не умираем
     {
         //SendClientMessageToAllf(-1, "SetPlayerDeath %d (reason %d) {ff0000}nodeath system", playerid, reason);
         return 0;
@@ -55,9 +55,13 @@ stock SetPlayerDeath(playerid, reason)
     GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
 	GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
 
-    //new Float:zpos;
-    //CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1], zpos);
-    //PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
+    // Корректируем игрока по высоте
+    new Float:zpos;
+    CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1], zpos);
+    if(PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
+
+    // Сразу ставим игрока в новую Z координату
+    if(reason != 51) ReturnPositionDeath(playerid); // Только если умер не от взрыва
 
     PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
     PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
@@ -115,7 +119,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
-    ||  IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
+    || IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
     || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1; // В воде
     return 0;
 }
@@ -141,16 +145,11 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
 stock WeReturnToDeathPosition(playerid)
 {
     NoAnim[playerid] = 1;
-
 	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), PPSetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-    if(DeathInfo[playerid][deathReason] == 54) PlayerInfo[playerid][pLastPos][2] -= 1.0;
-
-    PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-    PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
-
+    ReturnPositionDeath(playerid);
     UpdateDeathProcess(playerid);
     ACSetPlayerHealth(playerid, 90.0);
     return 1;
@@ -161,17 +160,23 @@ stock UpdateDeathProcess(playerid)
     UpdateDeathDrawProcess(playerid);
 
     new string[24];
-    TogglePlayerControllable(playerid, false);
+    //TogglePlayerControllable(playerid, false);
     ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
     format(string, sizeof(string), "без сознания [%s]", fine_time(DeathInfo[playerid][deathTime]));
     SetPlayerChatBubble(playerid,string, COLOR_LIGHTRED,20.0,1500);
 
     if(!IsPlayerInRangeOfPoint(playerid,0.8,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]))
     {
-        PPSetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-        PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+        ReturnPositionDeath(playerid);
     }
     return 1;
+}
+
+stock ReturnPositionDeath(playerid)
+{
+    PPSetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+    PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+    return true;
 }
 
 stock DeathEnd(playerid, stat)
@@ -197,8 +202,7 @@ stock DeathEnd(playerid, stat)
     {
         TempGive(playerid);
         TogglePlayerControllable(playerid, true);
-        ClearAnim(playerid), ClearAnimations(playerid);
-	    ApplyAnimation(playerid,"PED","facanger",4.1, false, true, true, true, true, SYNC_ALL);
+        ClearAnimations(playerid);
     }
     AutoCloseMake(playerid);
     return 1;

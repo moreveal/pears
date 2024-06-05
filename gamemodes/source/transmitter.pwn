@@ -635,7 +635,7 @@ function SendAdminMessage(color, const string[]) // Чат админов /a
 	foreach (Player, i)
 	{
 	    if(OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pTransmitterOff][6] == false
-            && (PlayerInfo[i][pSoska] > 0 || PlayerInfo[i][pHidden] > 0 || PlayerInfo[i][pMedia] > 0)) SendClientMessage(i, color, string);
+            && (PlayerInfo[i][pSoska] > 0 || PlayerInfo[i][pHidden] > 0)) SendClientMessage(i, color, string);
 	}
 	return 1;
 }
@@ -692,8 +692,7 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
                 }
                 else if(tid == 6) // Чат Администрации
                 {
-                    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0 
-                        && PlayerInfo[playerid][pMedia] == 0) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат администрации");
+                    if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pHidden] == 0) return ErrorMessage(playerid, "{FF6347}Вам недоступен чат администрации");
                 }
                 else if(tid == 7) // Чат Медиа /y
                 {

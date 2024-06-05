@@ -42,7 +42,7 @@ CMD:givemats(playerid, const params[])
 			// В организациях никогда не используем OrganInfo[0], всегда g начинается с 1 OrganInfo[1] это LSPD 
 			// в OrganInfo[0] сохранения разных других систем не связанных напрямую с организациями
 			{
-				new put_inva = putsklad(params[0], params[1], params[3], 0, params[2],1); // Кладём предмет
+				new put_inva = putsklad(g, params[1], params[3], 0, params[2], 1); // Кладём предмет
 				if(put_inva >= 0) quan ++;
 			}
 
