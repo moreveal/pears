@@ -231,8 +231,8 @@ stock QuestActorJone(playerid) // Начинаем взаимодействов�
 
             InHandClear(playerid);
             if(QuestInfo[playerid][VehicleQuest]) ACDestroyVehicle(QuestInfo[playerid][VehicleQuest]), QuestInfo[playerid][VehicleQuest] = 0;
-            if(IsPlayerInRangeOfPoint(playerid,5.0, 1364.35242, -1682.73926, 13.47850)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 1362.8092,-1658.9130,13.1072,269.5840, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
-            else if(IsPlayerInRangeOfPoint(playerid,5.0, 2121.7776,2709.5793,10.8203)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 2118.9817,2729.5417,10.5447,270.2156, 0, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+            if(IsPlayerInRangeOfPoint(playerid,5.0, 1364.35242, -1682.73926, 13.47850)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 1362.8092,-1658.9130,13.1072,269.5840, 2, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+            else if(IsPlayerInRangeOfPoint(playerid,5.0, 2121.7776,2709.5793,10.8203)) GiveCar(playerid, freeSlot, QuestInfo[playerid][VehModel], 2118.9817,2729.5417,10.5447,270.2156, 2, QuestInfo[playerid][VehColorQuest], QuestInfo[playerid][VehColorQuest], yesLoad, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
             // Выполнили квест 0
             PlayerInfo[playerid][pQuest][3] = 3;

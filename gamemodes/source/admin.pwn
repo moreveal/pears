@@ -1005,7 +1005,7 @@ stock PunishmentsLogs(playerid, target)
 		DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
 		FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
 		AND action IN ('warn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
-		ORDER BY `unix` DESC LIMIT 40", PlayerInfo[target][pID]);
+		ORDER BY `timestamp` DESC LIMIT 40", PlayerInfo[target][pID]);
 	mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	return 1;
 }

@@ -565,6 +565,7 @@ stock BusRouterEnd(playerid)
 		new Float:distance;
 		for(new i; i< MAX_CHECKPOINT; i++)
 		{
+			if(i + 1 >= MAX_CHECKPOINT) break;
 			if(FullRout[rout][brCordX][i+1] == 0.0 && FullRout[rout][brCordY][i+1] == 0.0) break;
 			distance += GetDistancePoint(FullRout[rout][brCordX][i],FullRout[rout][brCordY][i],FullRout[rout][brCordZ][i],FullRout[rout][brCordX][i+1],FullRout[rout][brCordY][i+1],FullRout[rout][brCordZ][i+1]);
 		}
@@ -597,10 +598,29 @@ stock BusRouter(playerid, v)
 	}
 	if(driverid[playerid] > 0) busdriverstat[driverid[playerid]-1] = 1;
 	DisablePlayerRaceCheckpoint(playerid);
-	if(r == 370) {}
-	if(FullRout[slot][brCordX][r] != 0.0 && FullRout[slot][brCordY][r] != 0.0 && FullRout[slot][brCordX][r+1] == 0.0 && FullRout[slot][brCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r],6.0);
-	else if(FullRout[slot][brCordX][r+1] != 0.0 && FullRout[slot][brCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r+1], FullRout[slot][brCordY][r+1], FullRout[slot][brCordZ][r+1],6.0);
-	else if(FullRout[slot][brCordX][r] == 0.0 && FullRout[slot][brCordY][r] == 0.0) return BusRouterEnd(playerid);
+
+	new bool:Finish;
+	if(r >= 60) Finish = true; // Заехали на последний
+	else
+	{
+		if(FullRout[slot][brCordX][r] == 0.0 && FullRout[slot][brCordY][r] == 0.0) Finish = true; // Следующий последний
+		else
+		{
+			// Следующий чекпоинт не существует (значит отображаем финишный)
+			if(r + 1 >= 60) SetPlayerRaceCheckpoint(playerid,CP_TYPE:1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], 0.0, 0.0, 0.0,6.0);
+			else
+			{
+				// Следующий чекпоинт пустой (значит отображаем финишный)
+				if(FullRout[slot][brCordX][r + 1] == 0.0 && FullRout[slot][brCordY][r + 1] == 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:1,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], 0.0, 0.0, 0.0,6.0);
+				else SetPlayerRaceCheckpoint(playerid,CP_TYPE:0,FullRout[slot][brCordX][r], FullRout[slot][brCordY][r], FullRout[slot][brCordZ][r], FullRout[slot][brCordX][r + 1], FullRout[slot][brCordY][r + 1], FullRout[slot][brCordZ][r + 1],6.0);
+			}
+		}
+	}
+
+
+	// Финиш маршрута
+	if(Finish == true) return BusRouterEnd(playerid);
+	
 	if(VehInfo[v][v3dstat] > 1) UpdateLabelBus(playerid, v);
 	else
 	{
@@ -638,7 +658,7 @@ stock ShowRoutCity(playerid)
 		if((IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,y,x2,y2) || IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x3,y3,x4,y4)) && FullRout[i][brStatus] == 1)
 		{
 			format(line,sizeof(line),"\n%d.%s\t %d", quan+1,FullRout[i][brNameRout],busdrivers[i]), strcat(lines,line);
-			List[quan][playerid] = i;
+			List[quan][playerid] = i + 1;
 			quan ++;
 		}
 	}

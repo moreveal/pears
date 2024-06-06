@@ -1,4 +1,6 @@
 
+#define MAX_ATM_MONEY 10000 // Дефолтная сумма комиссионных в банкомата (от которой инкассаторы могут выполнять доставку)
+
 stock jobcollector(playerid)
 {
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 13) return StopJob(playerid);
@@ -155,7 +157,7 @@ stock CreateTermCollector(playerid, whrom, term)
 }
 CMD:checkterm(playerid)
 {
-    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Вы не работаете инкассатаром!");
+    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"Вы не работаете инкассатором!");
 	new quan;
 	new line[100],lines[2000];
 	ClearList(playerid);
@@ -168,7 +170,7 @@ CMD:checkterm(playerid)
 	    {
             if(BizzInfo[b][bItem][i] == 0) continue;
 
-            if(RentStat[b-137][i] == 1 && BizzInfo[b][bItem][i] > 1000 && BizzInfo[b][bDeliveryOrder] < 0 && BizzInfo[b][bDeliveryPay] > 0)
+            if(RentStat[b-137][i] == 1 && BizzInfo[b][bItem][i] >= BizzInfo[b][bAtmCollector] && BizzInfo[b][bDeliveryOrder] < 0 && BizzInfo[b][bDeliveryPay] > 0)
             {
                 List[quan][playerid] = i;
                 ListParam[quan][playerid] = b;
@@ -177,7 +179,7 @@ CMD:checkterm(playerid)
             }
         }
 	}
-    if(quan < 0) return ErrorMessage(playerid,"В данный момент не один из банкоматов не заполнен");
+    if(quan < 0) return ErrorMessage(playerid,"В данный момент ни один из банкоматов не заполнен");
 	ShowDialog(playerid,1339,DIALOG_STYLE_TABLIST_HEADERS,"Инкасаторские заказы",lines,"Выбрать","Отмена");
 	return 1;
 }
@@ -194,7 +196,7 @@ stock CloseCollector(playerid)
 {
 	new b = GetPlayerVirtualWorld(playerid)-3000;
 	new term = GetPVarInt(playerid,"job_collector_term")-1;
-	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в данный банк.");
+	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];

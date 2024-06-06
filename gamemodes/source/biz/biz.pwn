@@ -49,25 +49,63 @@ CMD:bizcity(playerid, const params[])
 	return 1;
 }
 
+stock dialogCollectorMoneyDelivery(playerid, b)
+{
+	new lines[300], string[60];
+	format(lines,sizeof(lines),"\n{cccccc}Введите минимальную сумму, после накопления которой\
+								\nбудет доступна инкассация денег в банк\
+								\n\nТекущая минимальная сумма инкассации: {99ff66}%d$\
+								\n{FF6347}Не меньше 1.000$ и не больше 1.000.000$", BizzInfo[b][bAtmCollector]);
+	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,1156,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock UpdateCollectorMoneyDelivery(playerid, b, const inputtext[])
+{
+	new input = strval(inputtext);
+	if(input < 1000 || input > 1000000) return dialogCollectorMoneyDelivery(playerid, b);
+
+	BizzInfo[b][bAtmCollector] = input;
+	productbiz(playerid, b);
+
+	new string[160];
+	mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_bizz` SET `bAtmCollector` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bAtmCollector], b);
+	mysql_tquery(pearsq, string);
+
+	format(string,sizeof(string),"Инкассация денег от %s", get_k(BizzInfo[b][bAtmCollector]));
+	BizLog("collector", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, input, string);
+	return true;
+}
+
 stock productbiz(playerid, b) // Заказ товаров в бизнес
 {
 	new quan;
-	new line[100],lines[4048];
+	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
 	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
 	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
-    for(new i = 0; i < 50; i++)
+    
+	// В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
+	if(b >= 163 && b <= 172)
 	{
-		List[i][playerid] = 0;
-		if(BizzInfo[b][bOrder][i] == 0) continue;
-
-		if(BizzInfo[b][bOrder][i] > 0)
+		format(line,sizeof(line),"{cccccc}Инкассация денег\t от {99ff66}%d$ \t \n", BizzInfo[b][bAtmCollector]), strcat(lines,line);
+	}	
+	else
+	{
+		for(new i = 0; i < 50; i++)
 		{
-		    List[quan][playerid] = i;
-			quan ++;
-			format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
+			List[i][playerid] = 0;
+			if(BizzInfo[b][bOrder][i] == 0) continue;
+
+			if(BizzInfo[b][bOrder][i] > 0)
+			{
+				List[quan][playerid] = i;
+				quan ++;
+				format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
+			}
 		}
 	}
 	new header[90];
@@ -535,7 +573,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 191, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
 	}
-	else if(b >= 197 && b <= 200) // Сервис Авиатранспорта
+	else if(b >= 197 && b <= 200) // Сервис Катеров
 	{
     	if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 192, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
     	if(BizzInfo[b][bProduct][1] == 0 || stat == 1) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
@@ -564,14 +602,17 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
 			{
-				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]);
+				BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bWare][i], BizzInfo[b][bTypeProduct][i]) / 4;
 			}
 			else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Авиасалоны, Салоны катеров
 			{
 				BizzInfo[b][bItem][i] = 10;
 			}
-			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]);
-
+			else if(b >= 42 && b <= 52 || b >= 53 && b <= 56 || b >= 57 && b <= 61 || b >= 62 && b <= 66 || b >= 67 && b <= 76) // Аренды Все
+			{
+				BizzInfo[b][bItem][i] = 40;
+			}
+			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]) / 4;
 			yesUpdate = true;
         }
     }

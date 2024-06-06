@@ -4724,7 +4724,8 @@ CMD:scrap(playerid)
     	new v = GetPlayerVehicleID(playerid);
 		if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя сдать личный транспорт в утиль во время сделки");
 		
-		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{ff0000}Внимание! {ffcc00}Это Media Транспорт и возврат денег невозможен","Да","Нет");
+		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\
+			\n{ff0000}Внимание! {ffcc00}Этот транспорт был вам подарен или принадлежит Media, возврат денег невозможен","Да","Нет");
 		else
 		{
 			new string[160];
@@ -4746,7 +4747,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		new model = VehInfo[newcar][vModel];
 
 		if(PlayerInfo[playerid][pVehTax][slot - 1] > 0) return ErrorMessage(playerid, "{FF6347}Вам необходимо оплатить налоги на транспорт");
-		if(VehInfo[newcar][vNosell] == 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за Media Транспорт: {ff0000}Невозможно");
+		if(VehInfo[newcar][vNosell] >= 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за этот транспорт: {ff0000}Невозможно");
 		else
 		{
 			oGivePlayerMoney(playerid, GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);

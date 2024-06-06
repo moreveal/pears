@@ -2,6 +2,8 @@
 stock CreateMysqlTable()
 {
 	AddColumnIfNotExists("pp_igroki", "pTaxesUnix", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 	return true;
 }
 
