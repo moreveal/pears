@@ -42,7 +42,7 @@ stock RaitingSekta(playerid)
         if(FamilyInfo[i][fType] != 3) continue;
         format(line,sizeof(line),"\n%d.%s\t{FF6347}%d", i+1,FamilyInfo[i][fName],SetRaitingSekta(i)), strcat(lines,line);
     }
-    ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,"{FF6347}Sekta Menu",lines,"Выбрать","Назад");
+    ShowDialog(playerid,1700,DIALOG_STYLE_TABLIST_HEADERS,"{FF6347}Sekta Menu",lines,"Ok","");
     return 1;
 }
 

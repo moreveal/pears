@@ -945,6 +945,7 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 	// Заправки
     if(b >= 1 && b <= 12)
     {
+		if(BizzInfo[b][bProduct][0] != thingId && BizzInfo[b][bTypeProduct][0] != 0) return true;
         BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
     }
 

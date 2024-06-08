@@ -1,4 +1,4 @@
-#define MAX_APPLICATION_THEFT 100
+
 #define MAX_CRIME 100
 
 enum crimeenumInfo
@@ -26,7 +26,7 @@ new crimeStatusName[][] =
 forward LoadCrime(); // Загрузка из базы
 public LoadCrime()
 {
-	new time = GetTickCount();
+	new time = GetTickCount(), quan;
 	for(new f; f < MAX_CRIME; ++f)
 	{
     	cache_get_value_name_int(f, "newid", crimeInfo[f][crmID]);
@@ -40,8 +40,9 @@ public LoadCrime()
         cache_get_value_name_int(f, "TargetZalupaParam", crimeInfo[f][crmTargetZalupaParam]);
         cache_get_value_name_int(f, "Sklad", crimeInfo[f][crmSklad]);
         cache_get_value_name_int(f, "Unix", crimeInfo[f][crmUnix]);
+        if(crimeInfo[f][crmSenderID] > 0) quan ++;
 	}
-	printf("[MODE]: Преступления [%d ms]", GetTickCount() - time);
+	printf("[MODE]: Преступления %d [%d ms]", quan, GetTickCount() - time);
 	return 1;
 }
 
@@ -76,24 +77,25 @@ stock FindCarInWareHouse(playerid)
 stock ListCrime(playerid)
 {
     new line[120],lines[4048];
-	format(line,sizeof(line),"{cccccc}№.Тип\tПреступник\tПостродавший[Дата]\tСтатус"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}№.Тип\tПреступник\tПострадавший [Дата]\tСтатус"), strcat(lines,line);
     new quan;
     new tyear, tmonth, tday, thour, tminute, tsecond;
-    format(line,sizeof(line),"\n{ff6347}Отказаться от заявки\t\t\t"), strcat(lines,line);
+    format(line,sizeof(line),"\n{ff6347}Отказаться от расследования\t\t\t"), strcat(lines,line);
 	for(new i = 0; i < MAX_CRIME; i++)
 	{
 		List[i][playerid] = 0; // Очищаем листы
         if(crimeInfo[i][crmSenderID] == 0) continue;
+
         stamp2datetime(crimeInfo[i][crmUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
         if(crimeInfo[i][crmType] == 0)
         {   
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен\t%s[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\tНеизвестен\t%s[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            else format(line,sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
         }
-        else if(crimeInfo[i][crmType] == 1)
+        else
         {
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s[ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d.%s\t%s\t%s[ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            else format(line,sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
         }
         List[quan][playerid] = i;
         quan ++;
@@ -106,16 +108,21 @@ stock ListCrime(playerid)
 stock IsPlayerRangeOfCamer(playerid)
 {
     if(IsHideEbalo(playerid)) return 0;
+    new result;
     new Float:pos[3];
     for(new i; i < 100; i++)
     {
         if(CamInfo[i][cStat] > 0)
         {
 		    GetDynamicObjectPos(CamInfo[i][cObject], pos[0], pos[1], pos[2]);
-            if(IsPlayerInRangeOfPoint(playerid,100.0,pos[0], pos[1], pos[2])) return 1;
+            if(IsPlayerInRangeOfPoint(playerid,100.0,pos[0], pos[1], pos[2]))
+            {
+                result = 1;
+                break;
+            }
         }
     }
-    return 0;
+    return result;
 }
 
 stock IsHideEbalo(playerid)
@@ -136,10 +143,30 @@ stock InputCarToRent(playerid,wh,car)
 	if(WhInfo[wh][wStat] <= 0) return ErrorMessage(playerid, "{FF6347}Этот склад никем не арендован");
 	new string[144], g = fraction(playerid);
 	if(WhInfo[wh][wStat] != g) return format(string, sizeof(string), "{FF6347}Этот склад принадлежит %s", frakName[WhInfo[wh][wStat]]), ErrorMessage(playerid, string);
-	if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "Это мой личный транспорт\nЯ не могу его поместить на склад");
+	if(VehInfo[car][vSost] == PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете отправить на склад сбыта свой транспорт");
     
 	PlayerPlaySound(playerid,40405,0,0,0);
-	new slot = -1;
+    if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Стоп! Дождитесь завершения загрузки угона транспорта");
+    SetPVarInt(playerid,"stopload",1);
+	mysql_format(pearsq, string, sizeof(string), "SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", VehInfo[car][vSost]);
+	mysql_tquery(pearsq, string, "CrimeCar", "dddd", playerid, wh, car, g_MysqlRaceCheck[playerid]);
+	return 1;
+}
+
+function CrimeCar(playerid, wh, car, zalupa)
+{
+    SetPVarInt(playerid,"stopload",0);
+
+	if(g_MysqlRaceCheck[playerid] != zalupa) return Kickx(playerid);
+	new rows;
+	cache_get_row_count(rows);
+	if(!rows)
+	{
+		ErrorMessage(playerid, "{FF6347}Ошибка! Владелец транспорта не найден\n\n{cccccc}Обратитесь к администрации [ /report ]");
+		return 0;
+	}
+
+    new slot = -1;
 	for (new i; i < MAX_CRIME; i++)
 	{
 		if(crimeInfo[i][crmSenderID] == 0)
@@ -148,26 +175,10 @@ stock InputCarToRent(playerid,wh,car)
 			break;
 		}
 	}
-	if(slot == -1) return ErrorMessage(playerid, "{FF6347} Не найден свободный слот преступления. Сообщите администрации!");
-    if(GetPVarInt(playerid,"stopload") >= 1) return 1;
-    SetPVarInt(playerid,"stopload",1);
-	mysql_format(pearsq, string, sizeof(string), "SELECT Name FROM `pp_igroki` WHERE `user_id` = '%d'", VehInfo[car][vSost]);
-	mysql_tquery(pearsq, string, "CrimeCar", "ddddd", playerid,wh,car,slot, g_MysqlRaceCheck[playerid]);
-	return 1;
-}
+	if(slot == -1) return ErrorMessage(playerid, "{FF6347}Не найден свободный слот преступления. Сообщите администрации!");
 
-function CrimeCar(playerid,wh,car,slot,zalupa)
-{
-	if(g_MysqlRaceCheck[playerid] != zalupa) return Kickx(playerid);
-	new rows,tempname[24];
-	cache_get_row_count(rows);
-	if(!rows)
-	{
-		ErrorMessage(playerid, "{FF6347}Ошибка! Владелец транспорта не найден\n\n{cccccc}Обратитесь к администрации [ /report ]");
-		return 0;
-	}
+    new tempname[24];
     new g = fraction(playerid);
-    new string[40];
 	cache_get_value_name(0, "Name", tempname, 24);
 	format(crimeInfo[slot][crmTargetName], 24, "%s", tempname); // Записываем имя чела
     format(crimeInfo[slot][crmSenderName], 24, "%s", PlayerInfo[playerid][pName]); // Записываем имя чела
@@ -182,24 +193,45 @@ function CrimeCar(playerid,wh,car,slot,zalupa)
     crimeInfo[slot][crmUnix] = gettime();
 	VehInfo[car][vSklad] = wh+1;
     OrganInfo[g][glave] += 5000;
-    format(string,sizeof(string), "Фрак: %d, Склад: %d", fraction(playerid), wh);
     GiveUnit(playerid, 11);
-    CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh, string);
+
+    // Сохраняем статус угона транспорта и сохраняем преступление
+    mysql_transaction(pearsq, true);
 	SaveCar(car);
     SaveCrime(slot);
+    mysql_commit(pearsq);
+
+    new string[40];
+    format(string,sizeof(string), "Фрак: %d, Склад: %d", g, wh);
+    CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh, string);
 	ACDestroyVehicle(car);
-    SetPVarInt(playerid,"stopload",0);
 	return 1;
 }
 
 stock SaveCrime(slot)
 {
-    new string_mysql[500];
+    new string_mysql[600];
     mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%e',\
     `TargetID`='%d',`TargetName`='%e',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",
     crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],
     crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],
     crimeInfo[slot][crmID]);
-    query_empty(pearsq, string_mysql); // 205 + 99 + 24 + 24 (352)
+    query_empty(pearsq, string_mysql);
 	return 1;
+}
+
+// Очищаем угнанный транспорт в системе преступлений
+stock ReloadVehicleInCrime()
+{
+	mysql_transaction(pearsq, true);
+	for (new i; i < MAX_CRIME; i++)
+	{
+		if(crimeInfo[i][crmSenderID] > 0)
+		{
+			crimeInfo[i][crmSenderID] = 0;
+			SaveCrime(i);
+		}
+	}
+	mysql_commit(pearsq);
+	return true;
 }

@@ -477,7 +477,7 @@ stock getNameAbbreviationOrganization(playerid, g, typeFbi)
 }
 stock getPlayerNameTransmitter(playerid) // Получение имени для раций /i /ib /f /fb
 {
-    new PlayerName[24];
+    new PlayerName[34];
 	if(PlayerInfo[playerid][pLeader] == 8 || PlayerInfo[playerid][pMember] == 8) // ICA
 	{
 		if(PlayerInfo[playerid][pSignTransmitter] == false) format(PlayerName,sizeof(PlayerName), "%s[%d]", PlayerInfo[playerid][pName], playerid); // Включено отображением имени
@@ -489,7 +489,7 @@ stock getPlayerNameTransmitter(playerid) // Получение имени для
 
 stock getPlayerNameTransmitterOffline(g, bool:singStatus, const playerName[], const signName[]) // Получение имени offline для раций /i /ib /f /fb
 {
-    new PlayerName[24];
+    new PlayerName[34];
 	if(g == 8) // ICA
 	{
 		if(singStatus == false) format(PlayerName,sizeof(PlayerName), "%s", playerName); // Включено отображением имени

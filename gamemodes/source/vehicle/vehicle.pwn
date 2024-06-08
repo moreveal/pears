@@ -1493,6 +1493,27 @@ function Call_CheckLimitedVehicle(playerid, model, v)
 	return 1;
 }
 
+alias:rvehcrime("vehcrime", "crimeveh", "rcrimeveh")
+CMD:rvehcrime(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+	new string_mysql[120];
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET `Sklad` = '0'");
+	query_empty(pearsq, string_mysql);
+
+	// Очищаем все угоны авто
+	ReloadVehicleInCrime();
+
+	new string[140];
+	format(string, sizeof(string), " [ ADM ]: %s очистил весь транспорт из угона", PlayerInfo[playerid][pName]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("rvehcrime", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return 1;
+}
+
+
+
 new PlayerText3D:CustomVehLabel[MAX_REALPLAYERS][SKOKOCAROV];
 new bool:CustomLabelBusy[MAX_REALPLAYERS][SKOKOCAROV];
 

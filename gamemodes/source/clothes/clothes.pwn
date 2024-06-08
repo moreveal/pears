@@ -367,7 +367,7 @@ CMD:giveskin(playerid, const params[]) // Выдать одежду в инве�
 
 CMD:skin(playerid, const params[]) // Временно сменить скин себе
 {
-	if(PlayerInfo[playerid][pSoska] >= 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(gSkafandr[playerid] > 0 || gFormavvs[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете переодеться в форме");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно сменить скин [ /skin ID Скина ]");
 	if(!IsASkinExisting(params[0])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
@@ -480,6 +480,8 @@ stock player_undress(playerid)
 	if(PlayerInfo[playerid][pOdet][2] > 0) RemovePlayerAttachedObject(playerid, 7);
 	if(PlayerInfo[playerid][pOdet][3] > 0) RemovePlayerAttachedObject(playerid, 8);
 	if(PlayerInfo[playerid][pOdet][4] > 0) RemovePlayerAttachedObject(playerid, 9);
+
+	mysql_save(playerid, 75);
 	return 1;
 }
 

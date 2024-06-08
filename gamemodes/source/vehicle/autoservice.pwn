@@ -400,7 +400,7 @@ CMD:checktun(playerid,const param[])
             format(line,sizeof(line),"\n%s",friskName[VehInfo[veh][vTunningID][i]]), strcat(lines,line);
         }
     }
-    ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг Транспорта",lines,"ОК","");
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг Транспорта",lines,"ОК","");
     return 1;
 }
 stock ClickTextDraw_Autoservice(playerid, Text:clickedid) // Кликаем по текстдравам

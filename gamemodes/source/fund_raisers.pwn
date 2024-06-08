@@ -82,7 +82,7 @@ stock FundRaisers(playerid)
     {
         if(FundRaisersInfo[i][fundActive])
         {
-            format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}%s$ / {cccccc}%s$", i + 1, FundRaisersInfo[i][fundName], fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}%s$ / {cccccc}%s$", i + 1, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
         }
         else format(line,sizeof(line),"\n{cccccc}%d. Добавить >>\t", i + 1), strcat(lines,line);
     }
@@ -102,7 +102,7 @@ stock SettingFundRaisers(playerid, i)
 
     format(line,sizeof(line),"\n{cccccc}Название:\t%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Описание\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Требуется собрать:\t{99ff66}%s$", fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Требуется собрать:\t{99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Позиция сбора >>\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{F4254F}Подарки при пожертвовании >> \t"), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Завершить сбор\t"), strcat(lines,line);
@@ -140,7 +140,7 @@ stock InfoFundRaisers(playerid, i)
     if(!FundRaisersInfo[i][fundText]) format(line,sizeof(line),"\n{FF6347}Описание не заполнено"), strcat(lines,line);
     else format(line,sizeof(line),"\n{cccccc}%s", FundRaisersInfo[i][fundText]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n\n{cccccc}Собрано: {99ff66}%s$", fix_number(FundRaisersInfo[i][fundMoney])), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Собрано: {99ff66}%s$", FundRaisersInfo[i][fundMoney]), strcat(lines,line);
     if(!FundRaisersInfo[i][fundRequired]) format(line,sizeof(line),"\n{cccccc}Требуется: {FF6347}не заполнено", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
     else format(line,sizeof(line),"\n{cccccc}Требуется: {99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
 
@@ -198,7 +198,7 @@ stock UpdateFundRaisers(i)
         new line[130],lines[1170];
         format(line,sizeof(line),"\n{ff9000}*** Сбор Средств ***"), strcat(lines,line);
         format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%s$ / {cccccc}%s$", fix_number(FundRaisersInfo[i][fundMoney]), fix_number(FundRaisersInfo[i][fundRequired])), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%s$ / {cccccc}%s$", FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
 
         if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {F4254F}Есть"), strcat(lines,line);
         else format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {555555}Отсутствуют"), strcat(lines,line);
@@ -748,12 +748,4 @@ stock ClearFundLog(fundid)
     mysql_format(pearsq, string_mysql, sizeof(string_mysql), "DELETE FROM `fund_logs` WHERE `fundid` = '%d'", fundid);
 	query_empty(pearsq, string_mysql);
     return 1;
-}
-
-stock fix_number(const real_number[])
-{
-    new text[34];
-    if(!strcmp(real_number,"\0",true)) format(text, sizeof(text),"\0");
-    else format(text, sizeof(text),"%s", real_number);
-    return text;
 }

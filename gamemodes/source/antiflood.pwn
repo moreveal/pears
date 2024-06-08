@@ -64,7 +64,7 @@ stock CallOnePublic(playerid, publicid)
         {
             printf("[SProtect Kick]: AntiFlood CallPublic publicid %d %s", publicid, PlayerInfo[playerid][pName]);
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты сервером [AntiFlood publicid %d]", publicid);
-            ShowDialog(playerid,11002,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты сервером [AntiFlood]","*","");
+            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff0000}Protect Project","{ff0000}Вы были кикнуты сервером [AntiFlood]","*","");
             Kickx(playerid);
             return 1;
         }

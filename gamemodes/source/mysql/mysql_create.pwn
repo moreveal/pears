@@ -2,11 +2,11 @@
 stock CreateMysqlTable()
 {
 	AddColumnIfNotExists("pp_igroki", "pTaxesUnix", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pNotCloseVeh", "BOOLEAN NOT NULL DEFAULT FALSE");
 
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 	return true;
 }
-
 
 
 // Функция для проверки существования столбца и его добавления

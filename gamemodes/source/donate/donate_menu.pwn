@@ -37,18 +37,19 @@ stock defaultPriceDonate()
 CMD:donate(playerid)
 {
 	PlayerPlaySound(playerid,1150,0,0,0);
-	new lines[1000];
+	new lines[1200];
 	format(lines, sizeof(lines),"{99ff66}Получить {ffcc00}Золото\
-	                        \n{444444}Информация..\
-	                        \n{ffcc00}VIP {cccccc}Аккаунт {444444}>>\
-	                        \n{cccccc}Услуги Аккаунта {444444}>>\
-	                        \n{cccccc}Навыки {444444}>>\
+                            \n{ffcc00}Gold Trade {666666}[ Обменник Голды ]\
+	                        \n{666666}Информация..\
+	                        \n{ffcc00}VIP {cccccc}Аккаунт {666666}>>\
+	                        \n{cccccc}Услуги Аккаунта {666666}>>\
+	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
                             \n{cccccc}Купить Кейс {ffcc00}[%d G]\
-                            \n{ffffff}Где купить Скин/Одежду? {99ff66}>>\
-                            \n{ffffff}Где купить Машину? {99ff66}>>\
-                            \n{ffffff}Где купить Дом? {99ff66}>>\
-                            \n{ffffff}Где купить Бизнес? {99ff66}>>", 
+                            \n{666666}Где купить Скин/Одежду? {99ff66}>>\
+                            \n{666666}Где купить Машину? {99ff66}>>\
+                            \n{666666}Где купить Дом? {99ff66}>>\
+                            \n{666666}Где купить Бизнес? {99ff66}>>", 
                             donatePrice[2], donatePrice[12]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;

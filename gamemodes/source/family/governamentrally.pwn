@@ -628,7 +628,7 @@ stock ShowVoteInfo(playerid)
             if(ViborFunk[gop] == 1) format(str,sizeof(str),"\n{0088ff}%d. {ffffff}%s {ffffff}[ {cccccc}Глава: {cccccc}%s{ffffff}]",gop+1,FamilyInfo[strval(ViborName[gop])][fName],FamilyInfo[strval(ViborName[gop])][fOsn]), strcat(sctring,str);
         }
     }
-    ShowDialog(playerid,11111,DIALOG_STYLE_LIST,"{0088ff}Подробная информация о кандидатах",sctring,"Выбор","Отмена");
+    ShowDialog(playerid,1700,DIALOG_STYLE_LIST,"{0088ff}Подробная информация о кандидатах",sctring,"Ok","");
     return 1;
 }
 

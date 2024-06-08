@@ -688,7 +688,7 @@ stock CreatePlayerPursuit(playerid, mentid)
     format(line,sizeof(line),"{0066ff}Вас преследует полиция!"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ffcc66}Если вы выйдете из игры во время преследования, вы автоматически отправитесь в тюрьму"), strcat(lines,line);
     format(line,sizeof(line),"\n{ffcc66}Вы можете сдаться полиции или попытаться избежать ареста"), strcat(lines,line);
-	ShowDialog(playerid,1982,DIALOG_STYLE_MSGBOX,"{0066ff}POLICE",lines,"*","");*/
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{0066ff}POLICE",lines,"*","");*/
 
     TextDrawShowForPlayer(playerid, PursuitDraw[0]);
     TextDrawShowForPlayer(playerid, PursuitDraw[1]);

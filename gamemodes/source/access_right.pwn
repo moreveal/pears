@@ -437,6 +437,7 @@ stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Результат до
     }
 
     if(PlayerInfo[playerid][pLeader] == realOrg) return true; // Игрок лидер, а значит у него всегда есть доступ к команде
+    if(realRank >= get_maxrank(realOrg) - 1) return true; // Игрок имеет ранг -1 от максимального, значит он зам и у него всегда есть доступ
 
     if(OrganInfo[realOrg][gAccDiv][accessId] > 0) // Есть подфракция у команды
     {
@@ -454,9 +455,10 @@ stock GetAccessRankOrg(playerid, g, accessId, fbi) // Ответ с сообще
 {
 	if(!GetAccessRankOrgMay(playerid, g, accessId, fbi))
 	{
-        new line[90],lines[360];
+        new line[90],lines[450];
         format(line,sizeof(line),"{FF6347}Вам недоступна эта функция [ %s ]", accessRightName[accessId]), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Требуется ранг: {FF6347}%d+", OrganInfo[g][gAcc][accessId]), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Доступ к функции имеет лидер и его заместитель"), strcat(lines,line);
         if(OrganInfo[g][gAccDiv][accessId] > 0)
         {
             new i = OrganInfo[g][gAccDiv][accessId] - 1;

@@ -183,7 +183,7 @@ stock TradeList(playerid, page)
     }
     if(yes_next == 1) format(line,sizeof(line),"\n{cccccc}Next Page >>\t\t\t"), strcat(lines,line);
     new header[130];
-    format(header,sizeof(header),"Биржевые Сделки [ Курс 1$ = %dG | Страница %d] ", tclArifmetikAllGold, page + 1);
+    format(header,sizeof(header),"Биржевые Сделки [ Курс 1G = %d$ | Страница %d] ", tclArifmetik, page + 1);
     ShowDialog(playerid,1379,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Выход");
 
     // Квест знакомство с ноутбуком
@@ -234,7 +234,7 @@ CMD:ptrade(playerid)
 stock ShowDialogCreateTradeGold(playerid, create_page)
 {
     new header[80];
-    format(header,sizeof(header),"Создание Трейда [ Курс 1$ = %dG ]", tclArifmetikAllGold);
+    format(header,sizeof(header),"Создание Трейда [ Курс 1G = %d$ ]", tclArifmetik);
     if(create_page == 0)
     {
         if(TradeCrypt[playerid][tcStatus] == 0) 
@@ -359,7 +359,11 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 else TradeList(playerid, 0); // Нет строк, открываем первую
             }
         }
-        else Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
+        else 
+        {
+            if(DP[6][playerid] == 0) pc_cmd_donate(playerid);
+            else if(DP[6][playerid] == 1) Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
+        }
     } 
     else if (dialogid == 1378) // 
     {
@@ -581,7 +585,7 @@ stock MyTradeSetting(playerid)
     }
 
     new header[80];
-    format(header,sizeof(header),"Создание Трейда [ Курс 1$ = %dG ]", tclArifmetikAllGold);
+    format(header,sizeof(header),"Создание Трейда [ Курс 1G = %d$ ]", tclArifmetik);
     ShowDialog(playerid,1378,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Назад");
     return 1;
 }

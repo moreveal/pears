@@ -360,6 +360,8 @@ stock MakeList(playerid)
     new quan, targetid,findraiontolist,timemake[20];
     for(new z = 0; z < MAX_MAKE; z++) 
     {
+        if(MakeInfo[z][mkPlayerId] == -1) continue;
+
         if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 1 && MakeInfo[z][mkWho] == 1)
         {
             if(MakeInfo[z][mkWhoType] > 0) timemake = "Срочный вызов";
@@ -432,7 +434,7 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
             {
                 format(string,sizeof(string),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
                 Login[2][playerid] = 0;
-                ShowDialog(playerid,11111,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
+                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
             }
             else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] == -1)
             {

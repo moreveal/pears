@@ -231,107 +231,39 @@ stock TakeCalculateVehicleLimited(thingId, thingType)
 
 CMD:givecase(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не администратор");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс в инвентарь [ /givecase ID ]");
+    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс [ /givecase ID ]");
     
+    GivePlayerCase(playerid, params[0]);
+    return 1;
+}
+
+CMD:givecaseall(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 24) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, false);
+    }
+
+    new string[140];
+	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам кейсы", PlayerInfo[playerid][pName]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Выдал всем кейсы");
+    return 1;
+}
+
+stock GivePlayerCase(playerid, giveplayerid, bool:onePlayer = true)
+{
     new thingId, thingQuan, thingType, thingPara, thingPack;
-    CreateCasePlayer(params[0], thingId, thingQuan, thingType,thingPara, thingPack);
-    new put_inva = GiveThingPlayer(params[0], thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    CreateCasePlayer(giveplayerid, thingId, thingQuan, thingType,thingPara, thingPack);
+    new put_inva = GiveThingPlayer(giveplayerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 
     CalculateVehicleLimited(thingId, thingType);
-    new string[120];
-    format(string, sizeof(string), "* Вы выдали %s кейс", PlayerInfo[params[0]][pName]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
+    if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s кейс", PlayerInfo[giveplayerid][pName]);
+    if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* Администратор %s выдал вам кейс", PlayerInfo[playerid][pName]);
 
-    if(params[0] != playerid)
-    {
-        format(string, sizeof(string), "* Администратор %s выдал вам кейс", PlayerInfo[playerid][pName]);
-	    SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
-    }
-
-    AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "Рандомный кейс");
-    return 1;
+    if(onePlayer == true) AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Рандомный кейс");
+    return true;
 }
-
-/*stock CaseList(playerid)
-{
-    if(PlayerInfo[playerid][pSoska] < 21) return 0
-
-	new quan;
-	new line[90],lines[1170];
-    format(line,sizeof(line),"\n{cccccc}Добавить Кейс{ff9000}>>\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{ff9000}0. Кейс новичков{ff9000}>>\t"), strcat(lines,line);
-    for(new i = 0; i < MAX_ORDERESCORT; i++)
-	{
-		List[i][playerid] = 0;
-
-		if(OrganInfo[g][gOrder][i] > 0)
-		{
-		    List[quan][playerid] = i;
-			quan ++;
-			format(line,sizeof(line),"\n{ff9000}%d. Кейс \t{cccccc}Количество предметов: %d", quan,OpenCase[i][caseSlots]), strcat(lines,line);
-		}
-	}
-	new header[40];
-	format(header,sizeof(header),"Управление кейсами");
-	ShowDialog(playerid,11111,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
-	return 1;
-}
-
-stock CaseMenu(playerid, number, slot)
-{
-    if(PlayerInfo[playerid][pSoska] < 21) return 0
-
-	new quan;
-	new line[90],lines[1170];
-    DP[2][playerid] = number;
-    DP[3][playerid] = slot;
-    format(line,sizeof(line),"{cccccc}Тип предмета: {ff9000} \t%d", OpenCase[number][caseSlotType][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Название предмета:\t {ff9000}%s",friskName[OpenCase[number][caseSlot][slot]]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Номер предмета:\t {ff9000}%d",OpenCase[number][caseSlot][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Параметр:\t {ff9000}%d",OpenCase[number][caseSlotPara][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Количетсво:\t {ff9000}%d",OpenCase[number][caseSlotQuan][slot]), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Добавить {ff9000}>>\t"), strcat(lines,line);
-	new header[40];
-	format(header,sizeof(header),"{ff9000}Слот Кейс",slot);
-	ShowDialog(playerid,11112,DIALOG_STYLE_TABLIST_HEADERS,header,lines,"Выбрать","Отмена");
-	return 1;
-}
-
-stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
-{
-    if(dialogid == 11111)
-    {
-        if(response)
-        {
-            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Выбрана не правильная строка.");
-            DP[4][playerid] = listitem;
-            new number = DP[2][playerid];
-            new slot = DP[3][playerid];
-            new string[100];
-            if(listitem == 0) ShowDialog(playerid, 11113,DIALOG_STYLE_TABLIST, "Выбор типа для слота","1 - Обычный\n2 - Оружие\n3 - Одежда\n4 - Аксессуар\n5 - Транспорт");
-            if(listitem == 1)
-            {
-                CaseMenu(playerid,number,slot)
-            }
-            if(listitem == 2)
-            {
-                if(OpenCase[number][caseSlotType][slot] == 0)
-               {
-                    SendClientMessage(playerid,COLOR_GREY, "[Мысли] Сначала нужно указать тип предмета")
-                    return CaseMenu(playerid,number,slot);
-               }
-               else
-               {
-                    ShowDialog(playerid, 11113,DIALOG_STYLE_INPUT "Введите количество","выбор","отмена");
-               }
-            }
-        }
-    }
-    if(dialogid == 11113)
-    {
-
-    }
-    return 1;
-}*/

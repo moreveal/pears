@@ -121,7 +121,7 @@ public OnPasswordHashVzlom(playerid, const password[], giveplayerid)
     SendClientMessage(giveplayerid,COLOR_LIGHTRED, "Если вы по каким-либо причинам, не можете узнать новый пароль, отправленный на Email, свяжитесь с администрацией!");
     SendClientMessage(giveplayerid,COLOR_LIGHTRED, "{ff0000}Обязательно сделайте в данный момент Screenshot [ Кнопка: F8 ]");
     format(string, sizeof(string),"{00cc00}Этот аккаунт защитил администратор %s (%d-%d-%d)\n{0088ff}из-за возможного Взома\n{0088ff}Пароль аккаунта изменён и отправлен на Email: {FFFFFF}%s",PlayerInfo[playerid][pName],day,month,year, PlayerInfo[giveplayerid][pMail]);
-    ShowDialog(giveplayerid, 32761, 0, "******* {00cc00}*Аккаунт Защищён* {FFFFFF}*******", string, "Ок", "");
+    ShowDialog(giveplayerid,1700, 0, "******* {00cc00}*Аккаунт Защищён* {FFFFFF}*******", string, "Ок", "");
     PlayAudioStreamForPlayer(giveplayerid, "https://cdn.pears.fun/sound/banned.mp3");
     AdminLog("vzlom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "");
     Kickx(giveplayerid);

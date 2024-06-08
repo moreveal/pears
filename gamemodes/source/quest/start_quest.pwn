@@ -281,10 +281,12 @@ stock MasterKeyQuest(playerid)
     return 0;
 }
 
+/*
 stock AdminBugTracker(playerid)
 {
     if(PlayerInfo[playerid][pSoska] > 0)
     {
+        // Баг исправлен
         SendClientMessage(playerid, COLOR_GREY,"{FF6347}Elon_Musk: ВНИМАНИЕ! Ищем баг бота Брюса");
         SendClientMessage(playerid, COLOR_GREY,"{FF6347}Если игрок жалуется что с ним не разговаривает бот на археологии");
         SendClientMessage(playerid, COLOR_GREY,"{FF6347}Прописываем на него команду /bug ID");
@@ -292,7 +294,9 @@ stock AdminBugTracker(playerid)
     }
     return 1;
 }
+*/
 
+/*
 CMD:bug(playerid, const params[])
 {
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чек баг брюса [ /bug ID игрока ]");
@@ -307,6 +311,7 @@ CMD:bug(playerid, const params[])
     }
     return true;
 }
+*/
 
 stock QuestActorBruce(playerid) // Начинаем взаимодействовать с NPC квеста Археалогия
 {
@@ -333,36 +338,15 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
         {
             PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce2.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
             StartScriptActor(playerid, 9, BotPears[47]);
-            PlayerInfo[playerid][pQuest][5] = 4;
+            PlayerInfo[playerid][pQuest][5] = 3;
             CreateGps(playerid, -293.3882,1827.2743,43.5926, 0, 0, 5.0);
         }
     }
-    else if(PlayerInfo[playerid][pQuest][5] == 4)
+    else if(PlayerInfo[playerid][pQuest][5] == 3 || PlayerInfo[playerid][pQuest][5] == 4 || PlayerInfo[playerid][pQuest][5] == 5)
     {
         if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
         PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce3.mp3",-338.6526, 1730.2946, 42.9321,6.0,true);
         SendDynamicActorMessage(playerid, BotPears[47], "Прохлаждаешься? Иди работай!");
-    }
-    else if((PlayerInfo[playerid][pQuest][5] == 4 || PlayerInfo[playerid][pQuest][5] == 5) && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
-    {
-        if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
-        if(PlayerInfo[playerid][pSex] == 1)
-        {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce4.mp3");
-            SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашёл что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
-        }
-        else
-        {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce4w.mp3");
-            SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашла что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
-        }
-        SaveQuest(playerid);
-    }
-    else if(PlayerInfo[playerid][pQuest][5] == 6 && !IsPlayerInRangeOfPoint(playerid,5.0,-338.6526, 1730.2946, 42.9321))
-    {
-        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce5.mp3");
-        SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Эй черенок. Неси все ценности в вагончик и получишь свою оплату");
-        CreateGps(playerid, -336.2932,1725.8201,42.8567, 0, 0, 2.0);
     }
     else if(PlayerInfo[playerid][pQuest][5] == 7)
     {
@@ -402,6 +386,30 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
         }
     }
     return 1;
+}
+
+stock sayBruceExitCrypt(playerid)
+{
+    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce5.mp3");
+    SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Эй черенок. Неси все ценности в вагончик и получишь свою оплату");
+    CreateGps(playerid, -336.2932,1725.8201,42.8567, 0, 0, 2.0);
+    return true;
+}
+
+stock sayBruceRich(playerid)
+{
+    if(PlayerInfo[playerid][pSex] == 1)
+    {
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce4.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашёл что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
+    }
+    else
+    {
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/bruce/bruce4w.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Брюс (голосовое): Нашла что-нибудь ценное? Смотри там у меня. Всё что найдёшь принадлежит компании");
+    }
+    SaveQuest(playerid);
+    return true;
 }
 
 stock QuestActorJoneSeks(playerid)

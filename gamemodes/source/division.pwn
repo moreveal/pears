@@ -268,13 +268,19 @@ function call_membersdiv(playerid, org, div)
 CMD:divin(playerid, const params[]) return pc_cmd_divinvite(playerid, params);
 CMD:divinvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
+	DivisionInvite(playerid, params);
+	return true;
+}
 
+stock DivisionInvite(playerid, const params[], i = -1)
+{	
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
 	new g = fraction(playerid);
-	new i = PlayerInfo[playerid][pDivision][0];
+	if(i == -1) i = PlayerInfo[playerid][pDivision][0] - 1;
+
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
+	if(i <= 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid;
 	if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить игрока в подфракцию [ /divinvite ID ]");
@@ -287,19 +293,19 @@ CMD:divinvite(playerid, const params[])
 
 	new string[120];
 	// Записываем чела, которого приглашаем
-	format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName]);
+	format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i][divName]);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
 	PlayerPlaySound(playerid,40405,0,0,0);
 
 	// Записываем этому челу инфу, куда приглашаем и кто приглашает
-	DP[0][giveplayerid] = i;
+	DP[0][giveplayerid] = i + 1;
 	DP[1][giveplayerid] = playerid;
-	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName]);
+	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i][divName]);
 	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
 	PlayerPlaySound(giveplayerid,40405,0,0,0);
 
-	OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, DivisionInfo[g - 1][i - 1][divName]);
-	return 1;
+	OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, DivisionInfo[g - 1][i][divName]);
+	return true;
 }
 
 CMD:divkick(playerid, const params[]) return pc_cmd_divuninvite(playerid, params);
@@ -905,9 +911,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
           	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			new string[30];
-			format(string, sizeof(string), "%s", inputtext);
-            pc_cmd_divinvite(playerid, string);
+			new i = DP[2][playerid]; // Получаем id подфракции
+			DivisionInvite(playerid, inputtext, i);
 		}
 		else showDialogMenuDivision(playerid);
 	}
