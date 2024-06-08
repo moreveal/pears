@@ -697,3 +697,50 @@ stock DeleteTrailerFromDB(tid)
     for(new e_TrailerInfo:i; i < e_TrailerInfo; ++i) trailerInfo[tid][i] = 0;
     return 1;
 }
+
+// Вход в трейлер
+stock EnterTrailer(playerid)
+{
+    new bool:yesEnter;
+    if(OnlineInfo[playerid][oInteriorPlayer] == 0 && OnlineInfo[playerid][oWorldPlayer] == 0)
+    {
+        new Float:pickup_pos[3];
+        for(new i = 0; i < MAX_TRAILERS; i++)
+        {
+            if(trailerInfo[i][tOwnerID] > 0 && trailerInfo[i][tObject] > 0 && trailerInfo[i][tActive] == true
+                && IsValidDynamicPickup(trailerInfo[i][tEnterPickup]))
+            {
+                Streamer_GetItemPos(STREAMER_TYPE_PICKUP, trailerInfo[i][tEnterPickup], pickup_pos[0], pickup_pos[1], pickup_pos[2]);
+                if(IsPlayerInRangeOfPoint(playerid, 1.8, pickup_pos[0], pickup_pos[1], pickup_pos[2]))
+                {
+                    if(trailerInfo[i][tLocked] == false || trailerInfo[i][tOwnerID] == PlayerInfo[playerid][pID])
+                    {
+                        keep(playerid);
+                        S_SetPlayerVirtualWorld(playerid,i+5000,187);
+                        PPSetPlayerInterior(playerid,187);
+                        PPSetPlayerPos(playerid,-0.6773,1567.1011,12.7694);
+                        PPSetPlayerFacingAngle(playerid, 91);
+                        SetCameraBehindPlayer(playerid);
+                        GameTextForPlayer(playerid," ",5000,3);
+                    }
+                    else
+                    {
+                        DP[0][playerid] = i;
+                        PlayerPlaySound(playerid,17803,0,0,0);
+                        new lines[200];
+                        format(lines,sizeof(lines),"{FF6347}Дверь заперта!\
+                            {cccccc}\n\nТребования для проникновения в трейлер!\
+                            {cccccc}\n- Террорка маска [ Y >> GPS >> Услуги >> Магазины Одежды ]\
+                            {cccccc}\n- Фонарик [ Y >> GPS >> Услуги >> Супермаркеты ]\
+                            {FF6347}\n\nВнимание! {cccccc}Доступно только для участников банд и мафий\
+                            {cccccc}\n\nХотите взломать дверь?");
+                        ShowDialog(playerid,1463,DIALOG_STYLE_MSGBOX,"{ff9000}Дверь",lines,"Да","Нет");
+                    }
+                    yesEnter = true;
+                    break;
+                }
+            }
+        }
+    }
+    return yesEnter;
+}

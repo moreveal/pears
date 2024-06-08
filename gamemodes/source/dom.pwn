@@ -1,4 +1,42 @@
 
+
+CMD:rdomspawn(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить спавн в доме [ /rdomspawn Номер Дома (0 - все дома) ]");
+
+	new string[144];
+	if(params[0] > 0)
+	{
+		if(params[0] >= MAX_DOM) return ErrorMessage(playerid, "{FF6347}Такого номера дома не существует");
+		if(DomInfo[params[0]][dInspa] == 0) return ErrorMessage(playerid, "{FF6347}В доме не установлен спавн");
+		DomInfo[params[0]][dInspa] = 0;
+		format(string, sizeof(string), " [ ADM ]: %s сбросил спавн в доме № %d", PlayerInfo[playerid][pName], params[0]);
+ 		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rdomspawn", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил спавн в доме");
+	}
+	else
+	{
+		new string_mysql[100];
+		mysql_transaction(pearsq, true);
+		for(new d = 0; d < sizeof(DomInfo); d++)
+ 		{
+			if(DomInfo[d][dInspa] > 0) 
+			{
+				DomInfo[d][dInspa] = 0;
+				mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `Inspa` = '0' WHERE `Ids` = '%d'", d);
+				mysql_tquery(pearsq, string_mysql);
+			}
+		}
+		mysql_commit(pearsq);
+
+		format(string, sizeof(string), " [ ADM ]: %s сбросил спавн во всех домах", PlayerInfo[playerid][pName]);
+ 		ABroadCast(COLOR_ADM,string,1);
+		AdminLog("rdomspawn", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил спавн во всех домах");	
+	}
+	return 1;
+}
+
 alias:rdomtaxes("rdomnal", "rdomtax", "rdomnalog")
 CMD:rdomtaxes(playerid, const params[])
 {

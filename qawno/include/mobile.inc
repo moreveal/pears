@@ -13,14 +13,11 @@
 #endif
 #define _mobile_included
 
-#tryinclude <a_samp>
-#include <Pawn.RakNet>
-
 native GetMobileClientID(playerid, buffer[], size = sizeof(buffer)) = gpci;
 
 #define MIN_PACKET_SIZE     3
 #define MOBILE_AUTH_KEY     "ED40ED0E8089CC44C08EE9580F4C8C44EE8EE990"
-const ID_CUSTOM_SYNC = 221;
+const ID_MOBILE_SYNC = 221;
 const RPC_INIT_MOBILE = 0x10;
 
 enum pMobileInfo
@@ -77,7 +74,7 @@ public OnPlayerDisconnect(playerid, reason)
 	forward mob_OnPlayerDisconnect(playerid, reason);
 #endif
 
-IRawPacket:ID_CUSTOM_SYNC(playerid, BitStream:bs)
+IPacket:ID_MOBILE_SYNC(playerid, BitStream:bs)
 {
 	new bytes, rpcid;
 	BS_GetNumberOfBytesUsed(bs, bytes);

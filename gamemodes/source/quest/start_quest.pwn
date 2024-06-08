@@ -281,6 +281,33 @@ stock MasterKeyQuest(playerid)
     return 0;
 }
 
+stock AdminBugTracker(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] > 0)
+    {
+        SendClientMessage(playerid, COLOR_GREY,"{FF6347}Elon_Musk: ВНИМАНИЕ! Ищем баг бота Брюса");
+        SendClientMessage(playerid, COLOR_GREY,"{FF6347}Если игрок жалуется что с ним не разговаривает бот на археологии");
+        SendClientMessage(playerid, COLOR_GREY,"{FF6347}Прописываем на него команду /bug ID");
+        SendClientMessage(playerid, COLOR_GREY,"{FF6347}Результат текста из чата мне в телегу");
+    }
+    return 1;
+}
+
+CMD:bug(playerid, const params[])
+{
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чек баг брюса [ /bug ID игрока ]");
+    if(IsOnline(params[0]))
+    {
+        SendClientMessage(playerid, -1, "{FF6347}CMD:bug");
+        new yes;
+        if(BotTalkTimer[params[0]]) SendClientMessage(playerid, -1, "BotTalkTimer[playerid]"), yes = 1;
+        if(QuestInfo[params[0]][ActorTimer]) SendClientMessage(playerid, -1, "QuestInfo[playerid][ActorTimer]"), yes = 1;
+
+        if(yes == 0) SendClientMessage(playerid, -1, "Всё чисто, ёпта");
+    }
+    return true;
+}
+
 stock QuestActorBruce(playerid) // Начинаем взаимодействовать с NPC квеста Археалогия
 {
     if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете пройти сейчас этот квест\n{cccccc}Вас преследует полиция");

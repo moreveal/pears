@@ -323,7 +323,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
             {
                 if(listitem == 0) // Создать Трейд
                 {
-                    if(AfloodCrypto[playerid] > gettime()) return ErrorText(playerid, "{FF6347}Для повторного создания трейда подождите 20 секунд"), TradeList(playerid, 0);
+                    if(AfloodCrypto[playerid] > gettime()) return ErrorText(playerid, "{FF6347}Для повторного создания трейда подождите 3 секунды"), TradeList(playerid, 0);
                     MyTradeSetting(playerid);
                 }
                 else if(listitem == 1) // Фильтры
@@ -419,7 +419,7 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 TradeCrypt[id][tcActive] = 0;
                 mysql_save(playerid, 4);
             }
-            AfloodCrypto[playerid] = gettime() + 20;
+            AfloodCrypto[playerid] = gettime() + 3;
 
 			TradeCrypt[id][tcCount] = donate;
             TradeCrypt[id][tcCourse] = input;
@@ -979,7 +979,7 @@ CMD:cryptolog(playerid)
 
 CMD:goldturnover(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] != 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выполнить это действие");
 	if(AntiFloodMysqlRequest(playerid, 30)) return 1;
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Поиск золота на аккаунтах","{cccccc}Поиск игроков...","*","");
 	mysql_tquery(pearsq, "SELECT DonateMoney, Ammo8 FROM `pp_igroki` WHERE `DonateMoney`>='1' OR `Ammo8`>='1'", "Call_turnovergold", "d", playerid);

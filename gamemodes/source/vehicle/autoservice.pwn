@@ -156,6 +156,8 @@ stock ShowDetailHandling(playerid, tuningType)
 stock ShowMenuBonnet(playerid)
 {
     new v = OnlineInfo[playerid][oShowTabs];
+    if(v == 9999) return true;
+    
     new line[60],lines[360];
     format(line,sizeof(line),"{ff9000}Диагностика"), strcat(lines,line);
     for(new i; i<sizeof(friskDetailTypeName);i++)

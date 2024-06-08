@@ -1124,6 +1124,7 @@ stock destroyDraw_CraftProcess(playerid)
 
 stock DiagnosVehicle(playerid, vehicleid, stat)
 {
+    if(vehicleid == 9999) return true;
     new Float:health;
     GetVehicleHealth(vehicleid, health);
     PlayerPlaySound(playerid,40405,0,0,0);
@@ -1141,6 +1142,7 @@ stock DiagnosVehicle(playerid, vehicleid, stat)
 	strcat(lines, VehicleInfoCreateLines(vehicleid));
 
     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Диагностика",lines,"*","");
+    return true;
 }
 
 stock posDraw_CraftProcess(playerid, type)

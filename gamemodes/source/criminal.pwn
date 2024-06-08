@@ -320,7 +320,8 @@ CMD:wanted(playerid, const params[])
 			format(line,sizeof(line),"{cccccc}Имя\t{FF6347}Розыск\n"), strcat(lines,line);
 			foreach(Player, i)
 			{
-                List[i][playerid] = 0;
+                if(quan >= 200) break;
+                List[quan][playerid] = 0;
 				if(PlayerInfo[i][pCrimes] > 0 && ADUTY[i] == 0 && OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pJailed] == 0)
                 {
                     format(line,sizeof(line),"{cccccc}%s[%d]\t{FF6347}%d\n",rpplayername(i),i,PlayerInfo[i][pCrimes]), strcat(lines,line);
@@ -357,7 +358,8 @@ CMD:tickets(playerid, const params[])
 			format(line,sizeof(line),"{cccccc}Имя\t{FF6347}Сумма Штрафов\n"), strcat(lines,line);
 			foreach(Player, i)
 			{
-                List[i][playerid] = 0;
+                if(quan >= 200) break;
+                List[quan][playerid] = 0;
 				if(PlayerInfo[i][pAmmos11] > 0 && OnlineInfo[i][oLogged] == 1)
                 {
                     format(line,sizeof(line),"{cccccc}%s[%d]\t{FF6347}%d$\n",rpplayername(i),i,PlayerInfo[i][pAmmos11]), strcat(lines,line);

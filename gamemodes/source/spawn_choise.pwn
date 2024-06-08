@@ -83,8 +83,6 @@ stock GoSpawn(playerid)
     HideMainLogoServer(playerid);
     for(new i = 0; i < MAX_SPAWNDRAWCHOISE; i++) TextDrawShowForPlayer(playerid, SpawnChoiseDraw[i]);
     SelectColorDraw(playerid);
-
-    if(IsACristmas()) TextDrawHideForPlayer(playerid,ChristmasDraw[0]); // Выключаем нг текстдрав
     return 1;
 }
 

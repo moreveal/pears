@@ -532,11 +532,16 @@ stock CreateBusDriver(playerid)
 stock ExitBusDriver(playerid)
 {
 	new i = driverid[playerid];
+
     busdriverid[i] = 0;
     busdriverstat[i] = 0;
 	driverid[playerid] = 0;
 	bus[playerid] = 0, bustime[playerid] = gettime(), busstation[playerid] = 0;
-    if(busdrivers[busrout[playerid]] > 0) busdrivers[busrout[playerid]]--;
+
+	if(busrout[playerid] > 0)
+	{
+    	if(busdrivers[busrout[playerid]] > 0) busdrivers[busrout[playerid]]--;
+	}
     
     SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), DisablePlayerRaceCheckpoint(playerid);
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)

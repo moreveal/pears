@@ -176,13 +176,13 @@ stock SampvoiceDetachAdmin(playerid)
     return 1;
 }  
 
-/*public bool:OnPlayerVoiceSpeak(playerid, AudioStream:stream)
+public bool:OnPlayerVoiceSpeak(playerid, AudioStream:stream)
 {
     if(PlayerInfo[playerid][pVoice] == false) return false;
     if(isamute(playerid) == 1) return false;
 
     return true;
-}*/
+}
 
 /*public SV_VOID:OnPlayerActivationKeyPress(SV_UINT:playerid,SV_UINT:keyid)
 {
