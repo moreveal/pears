@@ -142,12 +142,12 @@ new friskDefault[] = // Гос. стоимости предметов
     700,200,1100,-1,15000,60,35,20,50,3000,700, // 32
     -1,-1,-1,-1,550,250,1500,2300,150,75000,3000, // 43
     900,900,500,1000,45000,350000,2000,-1, // 51
-    450,40,2300,50,-1,-1,-1,-1,900,800,1000, // 62
+    200,40,2300,50,-1,-1,-1,-1,900,800,1000, // 62
     -1,1000,1000,1000,1000,-1,20000,100,200, // 71
     2000,5000,8000,13000,23000,19000,16000,14000,24500,1300, // 81
 	2000,3000,9000,900,900,900,100,50,1300,-1, // 91
 	300,200,-1,15000,-1,490,-1,40,40,40, // 101
-	15,500,200,150,1500,5000,200,200,200,200, // 111
+	10,500,200,150,1500,5000,200,200,200,200, // 111
 	450,690,1300,3900,7900,-1,-1,-1,80,250, // 121
 	200,150,80,190,190,250,1200,1350,1450,1490, // 131
 	1490,1800,850,950,1030,700,750,80,500,130, // 141
@@ -2544,11 +2544,11 @@ stock player_tile(playerid, inva)
 		 		else if(fpick == 97) return useknife(playerid, inva), i_resetveshi(playerid); // Кухонный нож
 		 		else if(fpick == 98) return format(string, sizeof(string), "%d", inva), pc_cmd_useblood(playerid, string), i_resetveshi(playerid); // Бокал с обычной кровью
 		 		
-				/*else if(fpick == 99) return format(string, sizeof(string), "%d", inva), pc_cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Банан
+				else if(fpick == 99) return format(string, sizeof(string), "%d", inva), pc_cmd_eatbanana(playerid, string), i_resetveshi(playerid); // Банан
 		 		else if(fpick == 100) return format(string, sizeof(string), "%d", inva), pc_cmd_eatapple(playerid, string), i_resetveshi(playerid); // Яблоко
 		 		else if(fpick == 101) return format(string, sizeof(string), "%d", inva), pc_cmd_eatorange(playerid, string), i_resetveshi(playerid); // Апельсин
 		 		else if(fpick == 102) return format(string, sizeof(string), "%d", inva), pc_cmd_eatmilk(playerid, string), i_resetveshi(playerid); // Молоко
-		 		else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Тыкву можно продать в здании фермы","*",""), i_resetveshi(playerid); // Тыква
+		 		/*else if(fpick == 103) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Тыкву можно продать в здании фермы","*",""), i_resetveshi(playerid); // Тыква
 		 		else if(fpick == 104) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Картошку можно продать в здании фермы","*",""), i_resetveshi(playerid); // Картошка
 		 		else if(fpick == 105) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Томат можно продать в здании фермы","*",""), i_resetveshi(playerid); // Томат
 				*/
@@ -2564,7 +2564,7 @@ stock player_tile(playerid, inva)
 		 		}
 		 		else if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 121 || fpick == 124 || fpick == 125 ||
 				fpick == 139 || fpick == 164 || fpick == 172 || fpick == 166 || fpick == 173 || fpick == 1 || fpick == 54 ||
-				fpick == 55 || fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 || fpick == 104 || fpick == 126 ||
+				fpick == 55 ||fpick == 103 || fpick == 104 || fpick == 126 ||
 				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
 				else if(fpick == 144) return pc_cmd_pdd(playerid), i_resetveshi(playerid);
 		 		else if(fpick >= 145 && fpick <= 155)

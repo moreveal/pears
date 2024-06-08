@@ -36,7 +36,7 @@ CMD:startweather(playerid, const params[])
 
 CMD:showweather(playerid)
 {
-    if(PlayerInfo[playerid][pMember] != 9 && PlayerInfo[playerid][pLeader] != 9) return 0;
+    if(PlayerInfo[playerid][pMember] != 9 && PlayerInfo[playerid][pLeader] != 9 && PlayerInfo[playerid][pSoska] != 0) return 0;
     WeatherShowMenu(playerid);
     return 1;
 }
