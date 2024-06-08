@@ -793,8 +793,8 @@ CMD:su(playerid, const params[])
 	if(!GetAccessRankOrg(playerid, g, 32, PlayerInfo[playerid][pFbi])) return 1;
 
     if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
-    new playa,tmp[121],article[8];
-    if(!sscanf(params, "s[121]s[8]", tmp, article)) // Указываем Ник и Номер статьи
+    new playa,tmp[121],article[64];
+    if(!sscanf(params, "s[121]s[64]", tmp, article)) // Указываем Ник и Номер статьи
     {
         if(!CheckWarningSu(playerid, tmp, playa)) return 1;
 

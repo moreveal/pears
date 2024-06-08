@@ -312,7 +312,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
             RentStat[oid][slot] = 2; // Установили (Требуем одобрение в установке)
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект установлен\n\nТеперь, его расположение, необходимо одобрить сотрудникам Правительства\nПосле рассмотрения заявления вы получите уведомление","*","");
-            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала {cccccc}[ /government ] {ffffff} **", b, slot + 1);
+            format(string, sizeof(string), "{FFFFFF}** {00C6FF}Бизнес № %d требует одобрения терминала № %d {cccccc}[ /government ] {ffffff} **", b, slot + 1);
             SendRadioMessage(7, COLOR_ALLDEPT, string);
         }
 

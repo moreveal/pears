@@ -411,6 +411,8 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 PlayerInfo[playerid][pAccount] -= input*donate;
                 TradeCrypt[id][tcActive] = 1;
                 mysql_save(playerid, 1);
+
+                MoneyLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input*donate, "Создал голд трейд");
             }
             else if(TradeCrypt[playerid][tcStatus] == 0) // Продать золото
             {
@@ -418,6 +420,8 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 PlayerInfo[playerid][pDonateMoney] -= donate;
                 TradeCrypt[id][tcActive] = 0;
                 mysql_save(playerid, 4);
+
+                DonateLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -donate, "Создал голд трейд");
             }
             AfloodCrypto[playerid] = gettime() + 3;
 
@@ -474,11 +478,15 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
                 {
                     PlayerInfo[playerid][pDonateMoney] += TradeCrypt[id][tcCount];
                     mysql_save(playerid, 4);
+
+                    DonateLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", TradeCrypt[id][tcCount], "Отменил голд трейд");
                 }
                 else // Покупал золото
                 {
                     PlayerInfo[playerid][pAccount] += TradeCrypt[id][tcCourse]*TradeCrypt[id][tcCount];
                     mysql_save(playerid, 1);
+
+                    MoneyLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", TradeCrypt[id][tcCourse]*TradeCrypt[id][tcCount], "Отменил голд трейд");
                 }
                 deltradecrypto(id);
                 PlayerPlaySound(playerid, 6801, 0,0,0);
@@ -846,7 +854,7 @@ function LoadTradeCrypto()
 		cache_get_value_name_int(f, "unix", TradeCrypt[f][tcUnix]);
 
 
-        if(unix - TradeCrypt[f][tcUnix] >= 864000)
+        if(TradeCrypt[f][tcUnix] > 0 && unix - TradeCrypt[f][tcUnix] >= 864000)
         {
             new string_mysql[120];
             mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT DonateMoney, Account FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[f][tcVlad]);
@@ -871,6 +879,8 @@ function Call_returncrypto(characterid, d)
 
             mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + TradeCrypt[d][tcCount] , characterid);
             query_empty(pearsq, string);
+
+            DonateLog("goldtrade", characterid, TradeCrypt[d][tcName], "", 0, "", "", TradeCrypt[d][tcCount], "Отмена трейда при запуске");
         }
         else // Покупал золото
         {
@@ -879,6 +889,8 @@ function Call_returncrypto(characterid, d)
 
             mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `user_id` = '%d'", moneyplayer + TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], characterid);
             query_empty(pearsq, string);
+
+            MoneyLog("goldtrade", characterid, TradeCrypt[d][tcName], "", 0, "", "", TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount], "Отмена трейда при запуске");
         }
 
         format(string, sizeof(string), "Ваш Gold трейд № %d был удалён", d + 1);
@@ -901,11 +913,15 @@ stock CheckCancelCrypto(playerid, stat)
                 {
                     PlayerInfo[playerid][pDonateMoney] += TradeCrypt[d][tcCount];
                     mysql_save(playerid, 4);
+
+                    DonateLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", TradeCrypt[d][tcCount], "Отмена трейда при входе");
                 }
                 else // Покупал золото
                 {
                     PlayerInfo[playerid][pAccount] += TradeCrypt[d][tcCourse]*TradeCrypt[d][tcCount];
                     mysql_save(playerid, 1);
+
+                    MoneyLog("goldtrade", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", TradeCrypt[d][tcCount], "Отмена трейда при входе");
                 }
                 deltradecrypto(d); // Удаляем трейд
                 quan ++;

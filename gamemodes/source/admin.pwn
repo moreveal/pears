@@ -771,7 +771,9 @@ CMD:getgold(playerid, const params[])
 	PlayerPlaySound(playerid,6400,0,0,0);
 	format(string, sizeof(string), " [ ADM ]: %s берёт из общака администрации %d грамм золота [Цель: %s]",PlayerInfo[playerid][pName] ,params[0],params[1]);
 	ABroadCast(COLOR_ADM,string,1);
+	
 	AdminLog("getgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], params[1]);
+	DonateLog("getgold",  PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], params[1]);
 	return 1;
 }
 CMD:block(playerid, const params[])

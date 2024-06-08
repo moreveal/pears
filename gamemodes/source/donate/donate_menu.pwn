@@ -147,6 +147,9 @@ stock GetDonate(playerid)
     }
     SetPVarInt(playerid,"afdonate",20);
 
+
+    if(GetPVarInt(playerid,"acall_donate") == 1) return ErrorMessage(playerid, "{FF6347}Пожалуйста, дождитесь начисления прежде чем отправлять следующий запрос");
+    SetPVarInt(playerid,"acall_donate",1);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка платежей..","*","");
     new string_mysql[200];
     mysql_format(pearsq_3, string_mysql, sizeof(string_mysql),"SELECT * FROM `orders` WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'", 
@@ -162,6 +165,8 @@ stock showDialogErrorDonateCall(playerid)
         "{FF6347}На ваш аккаунт не поступали зачисления средств. \
         \n{cccccc}Пополняйте свой счёт самостоятельно на сайте \
         \n{0088ff}pears.fun >> {ffcc00}Донат","Ок","");
+
+    SetPVarInt(playerid,"acall_donate",0);
     return true;
 }
 
@@ -187,19 +192,21 @@ public Call_Donate(playerid)
 	if(gold == 0) return showDialogErrorDonateCall(playerid);
 
     new string_mysql[200];
+    new string[300];
     // Отмечаем инфу о том, что голда была выдана на аккаунт
     mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "UPDATE `orders` SET `status` = 'completed' WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'",
         PlayerInfo[playerid][pName]);
     mysql_tquery(pearsq_3, string_mysql);
 
     // Запись в логе
-    DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, "Донат");
+    if(newskidka1 > 0) format(string, sizeof(string),"Автодонат X%d", newskidka1);
+    else format(string, sizeof(string),"Автодонат");
+    DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, string);
 
     // Выдаём голду на аккаунт
     PlayerInfo[playerid][pDonateMoney] += gold;
     PlayerInfo[playerid][pDonateAll] += gold; // Сумма донатов за всё время
 
-    new string[300];
     format(string, sizeof(string),"{99ff66}Счёт Пополнен\
                                 \n{cccccc}Начислено: {ffcc00}%dG\
                                 \n{cccccc}Баланс: {ffcc00}%dG", 
@@ -238,6 +245,8 @@ public Call_Donate(playerid)
             if(cache != MYSQL_INVALID_CACHE) cache_delete(cache);
         }
     }
+
+    SetPVarInt(playerid,"acall_donate",0);
 	return 1;
 }
 
