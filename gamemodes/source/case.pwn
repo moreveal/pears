@@ -240,7 +240,7 @@ CMD:givecase(playerid, const params[])
 
 CMD:givecaseall(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 24) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, false);
@@ -258,7 +258,7 @@ stock GivePlayerCase(playerid, giveplayerid, bool:onePlayer = true)
     new thingId, thingQuan, thingType, thingPara, thingPack;
     CreateCasePlayer(giveplayerid, thingId, thingQuan, thingType,thingPara, thingPack);
     new put_inva = GiveThingPlayer(giveplayerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
-    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+    if(put_inva == -1 && onePlayer == true) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 
     CalculateVehicleLimited(thingId, thingType);
     if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s кейс", PlayerInfo[giveplayerid][pName]);
