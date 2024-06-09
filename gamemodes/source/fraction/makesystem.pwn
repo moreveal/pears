@@ -160,7 +160,7 @@ stock CloseMake(playerid,number)
 
 stock AutoCloseMake(playerid)
 {
-    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    if(OnlineInfo[playerid][oServiceMake][0] == 0 && OnlineInfo[playerid][oServiceMake][2] == 0) return 1;
 
     new findslot = OnlineInfo[playerid][oServiceMake][2];
     if(OnlineInfo[playerid][oServiceMake][1] > 0 && MakeInfo[findslot][mkWhoType] == 0)
@@ -208,6 +208,7 @@ stock TakeMake(playerid,number)
     new line[80];
     SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
     format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [/findmake %d]", OnlineInfo[playerid][oTakeMake]+1);
+    SendClientMessage(playerid, COLOR_GREY, line);
     format(line,sizeof(line)," {AFAFAF}По приезду на место не забудьте закрыть вызов. [/closemake %d]", OnlineInfo[playerid][oTakeMake]+1);
     SendClientMessage(playerid, COLOR_GREY, line);
 }

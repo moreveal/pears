@@ -937,8 +937,13 @@ CMD:gpci(playerid, const params[])
 }
 CMD:loss(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть потерянные пакеты игрока [ /loss ID ]");
+	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3 && !sscanf(params, "i", params[0]))
+	{
+		new string[144];
+ 		format(string, sizeof(string), "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(params[0]));
+    	SendClientMessage(playerid, COLOR_GREY, string);
+	}
+	else if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть потерянные пакеты игрока [ /loss ID ]");
 	if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
 	new string[144];
  	format(string, sizeof(string), "%s потерянные пакеты: %.2f проц.", PlayerInfo[params[0]][pName], NetStats_PacketLossPercent(params[0]));
