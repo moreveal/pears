@@ -1,3 +1,14 @@
+new blockwork[10]; // 0 рыба.
+
+CMD:blockwork(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заблокировать работу до рестарта [ /blockwork ID работы ]");
+	if(params[0] < 0 || params[0] > 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип [ 0 рыбалка, 1 ферма, 2 автобус, 3 архео, 4 НАСА,5 ОХОТА]");
+	if(blockwork[params[0]] == 1) blockwork[params[0]] = 0,SendClientMessage(playerid,COLOR_GREY,"Я открыл работу");
+	else if(blockwork[params[0]] == 0) blockwork[params[0]] = 1,SendClientMessage(playerid,COLOR_GREY,"Я закрыл работу");
+	return 1;
+}
 
 CMD:givemats(playerid, const params[])
 {
