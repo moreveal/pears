@@ -59,8 +59,11 @@ stock CallOnePublic(playerid, publicid)
 
     if(interval < infoPublics[publicid][0])
     {
+        new limitCall = infoPublics[publicid][1];
+        if(PlayerInfo[playerid][pSoska] > 0) limitCall *= 2;
+
         AntiFloodInfo[playerid][afQuan][publicid] ++;
-        if(AntiFloodInfo[playerid][afQuan][publicid] >= infoPublics[publicid][1])
+        if(AntiFloodInfo[playerid][afQuan][publicid] >= limitCall)
         {
             printf("[SProtect Kick]: AntiFlood CallPublic publicid %d %s", publicid, PlayerInfo[playerid][pName]);
             SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты сервером [AntiFlood publicid %d]", publicid);

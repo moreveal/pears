@@ -18,7 +18,7 @@ CMD:rdomspawn(playerid, const params[])
 	else
 	{
 		new string_mysql[100];
-		mysql_transaction(pearsq, true);
+		mysql_transaction(pearsq);
 		for(new d = 0; d < sizeof(DomInfo); d++)
  		{
 			if(DomInfo[d][dInspa] > 0) 
@@ -54,7 +54,7 @@ CMD:rdomtaxes(playerid, const params[])
 	}
 	else
 	{
-		mysql_transaction(pearsq, true);
+		mysql_transaction(pearsq);
 		for(new d = 0; d < sizeof(DomInfo); d++)
  		{
 			if(DomInfo[d][dTaxes] > 0 || DomInfo[d][dTaxday] > 0) ReloadDomTaxes(d);

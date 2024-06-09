@@ -719,7 +719,7 @@ stock gotobuycrypto(playerid,id)
     {
         new string_mysql[120];
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
-		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "ddddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcCount], TradeCrypt[id][tcName]);
 
         format(string, sizeof(string),"Подал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -count, string);
@@ -743,7 +743,7 @@ stock gotobuycrypto(playerid,id)
 	return 1;
 }
 
-function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
+function get_tobuytradecrypto(playerid, userid, price, id, gold, const name_seller[])
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -752,10 +752,10 @@ function get_tobuytradecrypto(playerid, userid, price, id, const name_seller[])
         new donatemoneyplayer, string[100];
         cache_get_value_name_int(0, "DonateMoney", donatemoneyplayer);
 
-        mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + price , userid);
+        mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `user_id` = '%d'", donatemoneyplayer + gold , userid);
         query_empty(pearsq, string);
 
-        format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], gold, price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);
@@ -798,7 +798,7 @@ stock gotosellcrypto(playerid,id)
     {
         new string_mysql[120];
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT Account FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
-		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "dddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcName]);
+		mysql_tquery(pearsq, string_mysql, "get_toselltradecrypto", "ddddds", playerid, TradeCrypt[id][tcVlad], price, id, count, TradeCrypt[id][tcName]);
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
         DonateLog("buygold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", count, string);
@@ -822,7 +822,7 @@ stock gotosellcrypto(playerid,id)
     return 1;
 }
 
-function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
+function get_toselltradecrypto(playerid, userid, price, id, gold, const name_seller[])
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -834,7 +834,7 @@ function get_toselltradecrypto(playerid, userid, price, id, const name_seller[])
         mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Account`='%d' WHERE `user_id` = '%d'", moneyplayer + price , userid);
         query_empty(pearsq, string);
 
-        format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], TradeCrypt[id][tcCount], price);
+        format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], gold, price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
 
         deltradecrypto(id);

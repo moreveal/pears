@@ -196,7 +196,7 @@ function CrimeCar(playerid, wh, car, zalupa)
     GiveUnit(playerid, 11);
 
     // Сохраняем статус угона транспорта и сохраняем преступление
-    mysql_transaction(pearsq, true);
+    mysql_transaction(pearsq);
 	SaveCar(car);
     SaveCrime(slot);
     mysql_commit(pearsq);
@@ -223,7 +223,7 @@ stock SaveCrime(slot)
 // Очищаем угнанный транспорт в системе преступлений
 stock ReloadVehicleInCrime()
 {
-	mysql_transaction(pearsq, true);
+	mysql_transaction(pearsq);
 	for (new i; i < MAX_CRIME; i++)
 	{
 		if(crimeInfo[i][crmSenderID] > 0)

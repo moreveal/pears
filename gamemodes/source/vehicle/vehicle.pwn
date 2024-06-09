@@ -1497,7 +1497,7 @@ alias:rvehcrime("vehcrime", "crimeveh", "rcrimeveh")
 CMD:rvehcrime(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-
+	
 	new string_mysql[120];
 	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_cars` SET `Sklad` = '0'");
 	query_empty(pearsq, string_mysql);

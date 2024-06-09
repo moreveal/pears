@@ -554,6 +554,8 @@ CMD:placetrailer(playerid) {
 //alias:placetrailer("trailer_place")
 
 // Команда для удаления трейлера по ID
+
+alias:deletetrailer("dtrailer", "deltrailer")
 CMD:deletetrailer(playerid, const params[]) {
     if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Команда недоступна");
     new trailerid;
@@ -565,7 +567,6 @@ CMD:deletetrailer(playerid, const params[]) {
     else SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Указанного трейлера не существует");
     return 1;
 }
-//alias:deletetrailer("dtrailer", "deltrailer")
 
 // Выгружает созданный в игровом мире трейлер
 CMD:unloadtrailer(playerid, const params[]) {
