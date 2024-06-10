@@ -8,6 +8,27 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dDoorInt0", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dDoorInt1", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dDoor0", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dDoor1", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneX", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneY", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneZ", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoX", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoY", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoZ", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneIntX", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneIntY", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneIntZ", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntX", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntY", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntZ", "FLOAT NOT NULL DEFAULT '0'");
 	return true;
 }
 

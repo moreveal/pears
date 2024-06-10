@@ -1581,3 +1581,10 @@ stock RemoveBizParthner(b)
 	BizzInfo[b][bUpdate] = 1;
 	return 1;
 }
+
+stock BizClearsHoursMoney(b)
+{
+	BizzInfo[b][bBablo] = 0;
+	BizzInfo[b][bUpdate] = 1;
+	return 1;
+}

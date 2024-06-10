@@ -607,3 +607,108 @@ stock OnLoadDomInvent(idx, f)
 	}
 	return 1;
 }
+
+stock CreateNewHouseDoor(playerid,d, door)
+{
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid,x,y,z);
+	if(DomInfo[d][dDoor][door] == 0)
+	{
+		DomInfo[d][dDoor][door] = 1;
+		if(door == 0)
+		{
+			DopDomPickup[d][door] = CreateDynamicPickup(19132, 1, x, y, z,0,0);
+			DomInfo[d][dCoordDopDoorOne][0] = x;
+			DomInfo[d][dCoordDopDoorOne][1] = y;
+			DomInfo[d][dCoordDopDoorOne][2] = z;
+		}
+		else if(door == 1)
+		{
+			DopDomPickup[d][door] = CreateDynamicPickup(19132, 1, x, y, z,0,0);
+			DomInfo[d][dCoordDopDoorTwo][0] = x;
+			DomInfo[d][dCoordDopDoorTwo][1] = y;
+			DomInfo[d][dCoordDopDoorTwo][2] = z;
+		}
+	}
+	else
+	{
+		DomInfo[d][dDoor][door] = 0;
+		if(DopDomPickup[d][door] != 0) DestroyDynamicPickup(DopDomPickup[d][door]);
+		if(door == 0)
+		{
+			DomInfo[d][dCoordDopDoorOne][0] = 0.0;
+			DomInfo[d][dCoordDopDoorOne][1] = 0.0;
+			DomInfo[d][dCoordDopDoorOne][2] = 0.0;
+		}
+		else if(door == 1)
+		{
+			DomInfo[d][dCoordDopDoorTwo][0] = 0.0;
+			DomInfo[d][dCoordDopDoorTwo][1] = 0.0;
+			DomInfo[d][dCoordDopDoorTwo][2] = 0.0;
+		}
+	}
+	SaveDopDoor(d);
+	return 1;
+}
+
+stock CreateNewHouseDoorInt(playerid,d, door)
+{
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid,x,y,z);
+	new w = GetPlayerVirtualWorld(playerid);
+	new i = GetPlayerInterior(playerid);
+	if(DomInfo[d][dDoorInt][door] == 0)
+	{
+		DomInfo[d][dDoorInt][door] = 1;
+		if(door == 0)
+		{
+			DopDomPickupInt[d][door] = CreateDynamicPickup(19132, 1, x, y, z,w,i);
+			DomInfo[d][dCoordDopDoorOneInt][0] = x;
+			DomInfo[d][dCoordDopDoorOneInt][1] = y;
+			DomInfo[d][dCoordDopDoorOneInt][2] = z;
+		}
+		else if(door == 1)
+		{
+			DopDomPickupInt[d][door] = CreateDynamicPickup(19132, 1, x, y, z,w,i);
+			DomInfo[d][dCoordDopDoorTwoInt][0] = x;
+			DomInfo[d][dCoordDopDoorTwoInt][1] = y;
+			DomInfo[d][dCoordDopDoorTwoInt][2] = z;
+		}
+	}
+	else
+	{
+		DomInfo[d][dDoorInt][door] = 0;
+		if(DopDomPickupInt[d][door] != 0) DestroyDynamicPickup(DopDomPickupInt[d][door]);
+		if(door == 0)
+		{
+			DomInfo[d][dCoordDopDoorOneInt][0] = 0.0;
+			DomInfo[d][dCoordDopDoorOneInt][1] = 0.0;
+			DomInfo[d][dCoordDopDoorOneInt][2] = 0.0;
+		}
+		else if(door == 1)
+		{
+			DomInfo[d][dCoordDopDoorTwoInt][0] = 0.0;
+			DomInfo[d][dCoordDopDoorTwoInt][1] = 0.0;
+			DomInfo[d][dCoordDopDoorTwoInt][2] = 0.0;
+		}
+	}
+	SaveDopDoor(d);
+	return 1;
+}
+
+stock SaveDopDoor(d)
+{
+	new string_mysql[3600];
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_dom` SET `dDoorInt0` = '%d', `dDoorInt1` = '%d', `dDoor0` = '%d', `dDoor1` = '%d'",
+	DomInfo[d][dDoorInt][0],DomInfo[d][dDoorInt][1],DomInfo[d][dDoor][0],DomInfo[d][dDoor][1]);
+    mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `dCoordDopDoorOneX` = '%f', `dCoordDopDoorOneY` = '%f', `dCoordDopDoorOneZ` = '%f'", string_mysql,
+	DomInfo[d][dCoordDopDoorOne][0],DomInfo[d][dCoordDopDoorOne][1],DomInfo[d][dCoordDopDoorOne][2]);
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `dCoordDopDoorTwoX` = '%f', `dCoordDopDoorTwoY` = '%f', `dCoordDopDoorTwoZ` = '%f'", string_mysql,
+	DomInfo[d][dCoordDopDoorTwo][0],DomInfo[d][dCoordDopDoorTwo][1],DomInfo[d][dCoordDopDoorTwo][2]);
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `dCoordDopDoorOneIntX` = '%f', `dCoordDopDoorOneIntY` = '%f', `dCoordDopDoorOneIntZ` = '%f'", string_mysql,
+	DomInfo[d][dCoordDopDoorOneInt][0],DomInfo[d][dCoordDopDoorOneInt][1],DomInfo[d][dCoordDopDoorOneInt][2]);
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s, `dCoordDopDoorTwoIntX` = '%f', `dCoordDopDoorTwoIntY` = '%f', `dCoordDopDoorTwoIntZ` = '%f' WHERE `Ids` = '%d'", string_mysql,
+	DomInfo[d][dCoordDopDoorTwoInt][0],DomInfo[d][dCoordDopDoorTwoInt][1],DomInfo[d][dCoordDopDoorTwoInt][2], d);
+    query_empty(pearsq, string_mysql);
+	return 1;
+}

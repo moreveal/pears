@@ -377,13 +377,13 @@ CMD:promo(playerid)
 	    if(PromoInfo[p][roNewid] >= 1)
 	    {
 	    	List[kol][playerid] = PromoInfo[p][roID];
-	    	if(PromoInfo[p][roActiv] == 1) format(str,sizeof(str),"{cccccc}%d. {ff9000}%s {cccccc}[%d]\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
-	    	else if(PromoInfo[p][roActiv] == 2) format(str,sizeof(str),"{cccccc}%d. {ff9000}%s {cccccc}[%d](В ожидание одобрения)\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
-			else format(str,sizeof(str),"{cccccc}%d. %s [%d]\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
+	    	if(PromoInfo[p][roActiv] == 1) format(str,sizeof(str),"{cccccc}%d. {ff9000}%s {cccccc}[ %d ]\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
+	    	else if(PromoInfo[p][roActiv] == 2) format(str,sizeof(str),"{cccccc}%d. {ff9000}%s {cccccc}[ %d ](В ожидании одобрения)\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
+			else format(str,sizeof(str),"{cccccc}%d. %s [ %d ]\n", p+1, PromoInfo[p][roName], PromoInfo[p][roNumber]), strcat(sctring,str);
 	    	kol++;
 		}
 	}
-	format(qwer,sizeof(qwer),"{ff9000}Промокоды {FFFFFF}[%d]",PromoNumber);
+	format(qwer,sizeof(qwer),"{ff9000}Промокоды {FFFFFF}[ %d ]",PromoNumber);
 	ShowDialog(playerid,621,DIALOG_STYLE_LIST,qwer,sctring,"Выбрать","Отмена");
 	return 1;
 }
