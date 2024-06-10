@@ -1,5 +1,7 @@
 #define MAX_OBJECTS_BUSSTATION 9 // Количество объектов остановки
 
+//new BusDriverPlayerid[MAX_BUSDRIVER];
+
 enum busstationInfo //  Переменные автобусных остановок
 {
     idbusstation, // id в базе
@@ -371,7 +373,7 @@ public LoadRout()
 		cache_get_value_name_int(f, "type", FullRout[f][brType]);
 		cache_get_value_name(f, "brNameCreator", FullRout[f][brNameCreator],24);
 		cache_get_value_name(f, "brNameEditor", FullRout[f][brNameEditor],24);
-		cache_get_value_name(f, "brNameRout", FullRout[f][brNameRout],24);
+		cache_get_value_name(f, "brNameRout", FullRout[f][brNameRout],40);
 		cache_get_value_name_int(f, "brIDEditor", FullRout[f][brIdEditor]);
     	cache_get_value_name_int(f, "brIDCreator", FullRout[f][brIdCreator]);
 		cache_get_value_name_int(f, "brUnixEditor", FullRout[f][brUnixEditor]);
@@ -518,7 +520,7 @@ stock CreateBusDriver(playerid)
 	        break;
 	    }
  	}
- 	busdrivers[busrout[playerid]] ++;
+ 	if(busrout[playerid] >= 0) busdrivers[busrout[playerid]] ++;
     bus[playerid] = 0, bustime[playerid] = 0, busstation[playerid] = 0;
 	if(busroutetime > gettime())
 	{
@@ -532,18 +534,17 @@ stock CreateBusDriver(playerid)
 
 stock ExitBusDriver(playerid)
 {
-	new i = driverid[playerid];
+	new i = driverid[playerid] - 1;
 
+	driverid[playerid] = 0;
     busdriverid[i] = 0;
     busdriverstat[i] = 0;
-	driverid[playerid] = 0;
 	bus[playerid] = 0, bustime[playerid] = gettime(), busstation[playerid] = 0;
 
-	if(busrout[playerid] > 0)
+	if(busrout[playerid] >= 0)
 	{
     	if(busdrivers[busrout[playerid]] > 0) busdrivers[busrout[playerid]]--;
 	}
-    
     SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), DisablePlayerRaceCheckpoint(playerid);
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
@@ -599,7 +600,7 @@ stock BusRouter(playerid, v)
 	new r = bus[playerid];
 	if(r == 0)
 	{
-	    if(busdrivers[busrout[playerid]] >= MAX_BUSDRIVER && driverid[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Сейчас на дежурстве 30 водителей автобусов\n{cccccc}Вы можете дождаться свободное место или отправиться на другую работу");
+	    if(busdrivers[busrout[playerid]] >= MAX_BUSDRIVER && driverid[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Сейчас на дежурстве 50 водителей автобусов\n{cccccc}Вы можете дождаться свободное место или отправиться на другую работу");
 	    if(driverid[playerid] == 0) CreateBusDriver(playerid);
 	}
 	if(driverid[playerid] > 0) busdriverstat[driverid[playerid]-1] = 1;
@@ -657,13 +658,13 @@ stock ShowRoutCity(playerid)
 	if(IsPlayerCity(playerid) == 3) x = -1236,y= 542, x2 = 3000.0,y2=3000.0,x3 =-3000 , y3 =1544 ,x4 =-1236 , y4 =3000; // lv
 	else if(IsPlayerCity(playerid)  == 2) x = -3000.0, y= -3000.0, x2 = -1236.0, y2 = 1544.0,x3 = -1236.0625, y3 = -3000.0,x4 = -133.0625 ,y4= -372.0;//sf
 	else if(IsPlayerCity(playerid)  == 1) x = -1236.0, y = -372.0, x2 = -133.0, y2 = 542.0, x3 = -133.0625, y3 = -3000, x4 = 3000, y4 = 542; //ls
-	// СЮДА ФОРЕЧ
 	for(new i; i < 50; i++)
 	{	
 		List[i][playerid] = 0;
-		if((IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,y,x2,y2) || IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x3,y3,x4,y4)) && FullRout[i][brStatus] == 1)
+		if((IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x,y,x2,y2) 
+			|| IsPosInSquare(FullRout[i][brCordX][0],FullRout[i][brCordY][0],x3,y3,x4,y4)) && FullRout[i][brStatus] == 1)
 		{
-			format(line,sizeof(line),"\n%d.%s\t %d", quan+1,FullRout[i][brNameRout],busdrivers[i]), strcat(lines,line);
+			format(line,sizeof(line),"\n%d. %s\t %d", quan+1, FullRout[i][brNameRout], busdrivers[i]), strcat(lines,line);
 			List[quan][playerid] = i + 1;
 			quan ++;
 		}
@@ -672,6 +673,7 @@ stock ShowRoutCity(playerid)
 	else if (quan == 0) ErrorMessage(playerid,"В этом городе нет ни одного маршрута автобуса! Обратитесь в правительство что бы они активировали/создали маршурт. Либо отправляйтесь в депо другого города");
 	return 1;
 }
+
 stock showDialogMenuBusStation(playerid, cam)
 {
 	if(BusStationInfo[cam][bsActive] == 0) return ErrorText(playerid,"[ Мысли ]: Остановки не существует"), pc_cmd_busstop(playerid);

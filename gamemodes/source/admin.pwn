@@ -10,9 +10,21 @@ CMD:blockwork(playerid, const params[])
 	return 1;
 }
 
+CMD:netstat(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	new line[600], lines[800], stats[500];
+	GetNetworkStats(stats, sizeof(stats));
+	format(line,sizeof(line), "%s", stats), strcat(lines, line);
+	format(line,sizeof(line), "\n\nIzTuryagi: %d ms", GlobalTickTimer), strcat(lines, line);
+	format(line,sizeof(line), "\nSkolkobenza: %d ms", GlobalTickTimer2), strcat(lines, line);
+	ShowPlayerDialog(playerid,1700,DIALOG_STYLE_MSGBOX, "Server Network Stats", lines, "Close", "");
+	return true;
+}
+
 CMD:givemats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предметы на склад [ /givemats Организация Предмет Тип Количество ]");
 	if(params[2] < 0 || params[2] > 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип предметов [ 0 Вещества и патроны, 1 Оружие, 2 Броня ]");
 	if(params[3] < 1 || params[3] > 50000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 50.000");
@@ -20,8 +32,8 @@ CMD:givemats(playerid, const params[])
 	new yes;
 	if(params[2] == 0) // Обычные Предметы
 	{
-		if(params[1] >= 4 && params[1] <= 8 || params[1] >= 27 && params[1] <= 30) yes = 1; // Только вещества и патроны
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Предметов [ 4-8 Вещества, 27-30 Патроны ]");
+		if(params[1] >= 4 && params[1] <= 8 || params[1] >= 27 && params[1] <= 30 || params[1] == 70) yes = 1; // Только вещества и патроны
+		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Предметов [ 4-7 Вещества, 8 Аптечка, 27-30 Патроны, 70 Бинты ]");
 	}
 	else if(params[2] == 1) // Оружие
 	{
@@ -69,7 +81,7 @@ CMD:givemats(playerid, const params[])
 
 CMD:delmats(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить боеприпасы со склада [ /delmats ID Организации ]");
 	if(params[0] >= 1 && params[0] <= 22)
 	{
@@ -466,7 +478,7 @@ CMD:delaction(playerid, const params[])
 
 CMD:veh(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+    if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
 
 	new vehiclename[64], color1, color2;
     if(!sscanf(params, "s[64]ii", vehiclename,color1,color2)) AdmCmdVeh(playerid, vehiclename, color1, color2);
@@ -510,7 +522,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 
 CMD:delveh(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 4) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+    if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
     if(QuanCar <= 0) return ErrorMessage(playerid, "{FF6347}На сервере нет созданного транспорта");
     if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить транспорт /delveh ID (ID транспорта в /dl)");
 	if(params[0] < 0 || params[0] >= SKOKOCAROV) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
@@ -937,17 +949,16 @@ CMD:gpci(playerid, const params[])
 }
 CMD:loss(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3 && !sscanf(params, "i", params[0]))
+	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3)
 	{
-		new string[144];
- 		format(string, sizeof(string), "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(params[0]));
-    	SendClientMessage(playerid, COLOR_GREY, string);
+		SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(playerid));
 	}
-	else if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть потерянные пакеты игрока [ /loss ID ]");
-	if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
-	new string[144];
- 	format(string, sizeof(string), "%s потерянные пакеты: %.2f проц.", PlayerInfo[params[0]][pName], NetStats_PacketLossPercent(params[0]));
-    SendClientMessage(playerid, COLOR_GREY, string);
+	else
+	{
+		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(playerid));
+		if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
+		SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[params[0]][pName], NetStats_PacketLossPercent(params[0]));
+	}
  	return 1;
 }
 CMD:geo(playerid, const params[])

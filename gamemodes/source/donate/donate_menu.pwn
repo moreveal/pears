@@ -165,7 +165,7 @@ stock showDialogErrorDonateCall(playerid)
     ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{cccccc}Меню {ff9000}Donate",
         "{FF6347}На ваш аккаунт не поступали зачисления средств. \
         \n{cccccc}Пополняйте свой счёт самостоятельно на сайте \
-        \n{0088ff}pears.fun >> {ffcc00}Донат","Ок","");
+        \n{0088ff}pears.fun >> {ffcc00}Магазин","Ок","");
 
     SetPVarInt(playerid,"acall_donate",0);
     return true;

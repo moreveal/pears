@@ -945,8 +945,10 @@ stock ResetBizzPriceItem(playerid, b, thingId, thingType, input)
 	// Заправки
     if(b >= 1 && b <= 12)
     {
-		if(BizzInfo[b][bProduct][0] != thingId && BizzInfo[b][bTypeProduct][0] != 0) return true;
-        BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
+		if(BizzInfo[b][bProduct][0] == thingId && BizzInfo[b][bTypeProduct][0] == 0)
+		{
+        	BizzInfo[b][bPrice][0] = friskPrice[thingId]+friskPrice[thingId]/2, UpdateFillLabel(b), SaveBizzProductItem(b, 0), bizUpdate = true;
+		}
     }
 
 	// Супермаркеты, Оружейный Магазин, Аптеки, Магазины с Техникой, Клуб
@@ -1576,13 +1578,6 @@ stock RemoveBizParthner(b)
 	{
 		BizzInfo[b][bFamilyPartner][i] = 0;
 	}
-	BizzInfo[b][bUpdate] = 1;
-	return 1;
-}
-
-stock BizClearsHoursMoney(b)
-{
-	BizzInfo[b][bBablo] = 0;
 	BizzInfo[b][bUpdate] = 1;
 	return 1;
 }

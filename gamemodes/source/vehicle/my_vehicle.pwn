@@ -4249,6 +4249,16 @@ stock VehicleInfoCreateLines(vehicleid)
 	format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: %s", VehInfo[vehicleid][vUpgrade] ? "{99ff66}установлен" : "{444444}отсутствует"), strcat(lines,line);
 	if(VehInfo[vehicleid][vHandlingModel] > 0) format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[vehicleid][vHandlingModel])), strcat(lines,line);
 	if(VehInfo[vehicleid][vArmor] > 0) format(line,sizeof(line),"\n{cccccc}Бронеплёнка: {0088ff}%.0f", VehInfo[vehicleid][vArmor]), strcat(lines,line);
+	if(VehInfo[vehicleid][vAlarmSystem] > 0)
+	{
+		new tyear, tmonth, tday, thour, tminute, tsecond;
+		stamp2datetime(VehInfo[vehicleid][vAlarmUnix]+1209600, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+
+		format(line,sizeof(line),"\n{cccccc}Сигнализация %d ур {0088ff}[ Активна до: %02d.%02d.%d %02d:%02d ]", VehInfo[vehicleid][vAlarmSystem], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		if(VehInfo[vehicleid][vAlarmUnix]+1209600 > gettime()) format(line,sizeof(line),"\n{99ff66}Сигнализация актуальная и не требует обновления"), strcat(lines,line);
+		else if(VehInfo[vehicleid][vAlarmUnix]+604800 > gettime()) format(line,sizeof(line),"\n{ffcc00}Рекомендуется обновить сигнализацию в автосервисе"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{FF6347}Ваша сигнализация устарела! Требуется обновление в автосервисе"), strcat(lines,line);
+	}
 
 	format(line,sizeof(line),"\n\n{ff9000}Установленные Детали"), strcat(lines,line);
 	new quanStyling;
@@ -4327,11 +4337,11 @@ function LoadCar(playerid, dab, race_check)
 		if(paramet[0] == PlayerInfo[playerid][pID])
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт угнан {FF6347}[ Обратитесь к копам: Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
-			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\nПолицейские найдут его в любом случае, рано или поздно, это их обязанность\nВы можете обратиться в Полицейский Департамент, что бы ускорить процесс возврата транспорта за доп.плату\n\n{cccccc}[ Y >> GPS >> Организация >> Фракции >> LSPD/SFPD/LVPD ]");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n{ffcc66}Не переживайте, ваш транспорт к вам вернётся\nПолицейские штата выполнят свою работу и вернут ваш транспорт");
 		}
 		else 
 		{
-			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n\n{cccccc}Транспорт уже ищут полицейские");
+			ErrorMessage(playerid, "{FF6347}Транспорт угнан!\n{ffcc66}Транспорт уже ищут полицейские");
 			PlayerInfo[playerid][pKeyVeh][0] = 0;
 			mysql_SavePlayer(playerid, "KeyVeh0", 0);
 		}
@@ -4523,7 +4533,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
 			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);
 			cache_get_value_name_int(0, "tires", VehInfo[vehid][vTires]);
-			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarm]);
+			cache_get_value_name_int(0, "Alarm", VehInfo[vehid][vAlarmSystem]);
 			cache_get_value_name_int(0, "AlarmUnix", VehInfo[vehid][vAlarmUnix]);
 			cache_get_value_name_int(0, "vHandlingModel", VehInfo[vehid][vHandlingModel]);
 			cache_get_value_name_float(0, "vTunningBPAN", VehInfo[vehid][vTunningBPAN]);

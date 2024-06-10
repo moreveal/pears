@@ -441,7 +441,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 			    }
 			    put_dom(playerid, myinva, tab, myfpick, PlayerInfo[playerid][pInvenQuan][myinva], inva, myThingType, myThingPack);
 			}
-			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n\n{cccccc}Только ящики с оружием и аммуницией"), i_resetveshi(playerid); // Склады
+			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n{ffcc66}Только ящики с оружием, аммуницией или мед оборудованием"), i_resetveshi(playerid); // Склады
 			else if(Tabs_Load[playerid] == 5) // Багажник
 			{
 			    if(myThingType == 0 && myThingPack == 0)

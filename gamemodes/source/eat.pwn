@@ -211,7 +211,7 @@ stock godrink(playerid)
 	}
 	if(HoldStat[playerid] == 163) return ErrorMessage(playerid, "{FF6347}Свадебный торт нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
 	if(HoldStat[playerid] == 166) return ErrorMessage(playerid, "{FF6347}Домашнюю пиццу нужно поставить на стол и резать кухонным ножом [ Кнопка F ]");
-	if(Hold[playerid] == 3 && HoldStat[playerid] > 0)
+	if(Hold[playerid] == 3 && HoldStat[playerid] > 0 && HoldInva[playerid] >= 0)
 	{
 	    if(PlayerInfo[playerid][pInven][HoldInva[playerid]] == HoldStat[playerid]) PlayerInfo[playerid][pInvenQuan][HoldInva[playerid]] --;
 	}

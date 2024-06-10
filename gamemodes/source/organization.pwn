@@ -56,7 +56,10 @@ enum gInfo
 	gDeliveryOrder, // Статус доставки
 	gDeliveryPay, // Общая стоимость
 	gTax, // Стоимость доставки боеприпасов
-	gUnit[MAX_UNIT] // Новые настройки юнитов
+	gUnit[MAX_UNIT], // Новые настройки юнитов
+
+	gMedMoney, // Деньги для закупа мед оборудования
+	bool:gMedMoneyUpdate // Статус для сохранение переменной денег мед оборудования
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -265,8 +268,9 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "OrderStatus", OrganInfo[idx][gOrderStatus]);
 		cache_get_value_name_int(f, "gDeliveryPay", OrganInfo[idx][gDeliveryPay]);
 		cache_get_value_name_int(f, "gTax", OrganInfo[idx][gTax]);
-		OrganInfo[idx][gDeliveryOrder] = -1;
+		cache_get_value_name_int(f, "gMedMoney", OrganInfo[idx][gMedMoney]);
 
+		OrganInfo[idx][gDeliveryOrder] = -1;
 		// NGSA
 		if(idx == 3)
 		{
@@ -423,7 +427,7 @@ stock SaveOrgan(idx)
 }
 
 // Склад организации
-function gunsklad(playerid)
+stock gunsklad(playerid)
 {
 	new skladstat = IsAGunSklad(playerid);
 	if(skladstat > 0)
@@ -437,7 +441,10 @@ function gunsklad(playerid)
 		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
 
 			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 1) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SAPD]");
-			if((fpick >= 4 && fpick <= 7 || fpick >= 27 && fpick <= 30) && thingType == 0 || IsHelmet(fpick) && thingType == 2 || IsArmor(fpick) && thingType == 2 || thingType == 1)
+			
+			if((fpick >= 4 && fpick <= 7 || fpick == 8 || fpick >= 27 && fpick <= 30 || fpick == 70) && thingType == 0 
+				|| IsHelmet(fpick) && thingType == 2 
+				|| IsArmor(fpick) && thingType == 2 || thingType == 1)
 			{
 			    if(thingType == 1) fpara = 100000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
@@ -532,6 +539,12 @@ stock showDialogOrganizationMenu(playerid)
 		format(line,sizeof(line), detail_lmenu(playerid, 16)), strcat(lines,line); // Заказ БП
 	}
 
+	// ASGH
+	if(g == 4)
+	{
+		format(line,sizeof(line), detail_lmenu(playerid, 17)), strcat(lines,line); // Мед оборудование (Оплата заказа)
+	}
+
 	if(IsAGang(playerid) || IsAMafia(playerid))
 	{
 	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
@@ -579,6 +592,7 @@ stock detail_lmenu(playerid, detail)
 		if(OrganInfo[g][gOrderStatus] == 1) format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t{99ff66}Active");
 		else format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t");
 	}
+	else if(detail == 17) format(text, sizeof(text), "\n{cccccc}Мед оборудование\t{99ff66}%d$", OrganInfo[g][gMedMoney]);
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -618,7 +632,125 @@ stock open_detail_lmenu(playerid, detail)
 		ShowDialog(playerid,1331,DIALOG_STYLE_INPUT,"{ff9000}Организация",string,"Принять","Отмена");
 	}
 	else if(detail == 16) OrderEscort(playerid, g);
+	else if(detail == 17) OrderMedEquipment(playerid);
 	return 1;
+}
+
+stock OrderMedEquipment(playerid)
+{
+	ShowDialog(playerid,26,DIALOG_STYLE_LIST,"{ff9000}Организация","{cccccc}Оплатить оборудование\n{cccccc}GPS Склада мед оборудования\n{666666}Информация","Выбрать","Отмена");
+	return true;
+}
+
+stock InputOrderMedEquipment(playerid)
+{
+	ShowDialog(playerid,27,DIALOG_STYLE_INPUT,"{ff9000}Организация","{cccccc}Введите сумму для оплаты закупа мед оборудования\
+																	\n{FF6347}Не меньше 1$ и не больше 1.000.000$","Принять","Отмена");
+	return true;
+}
+
+// Заказываем мед оборудование для организации
+stock CreateOrderMedEquipment(playerid, const inputtext[])
+{
+	new input = strval(inputtext);
+	if(input < 1 || input > 1000000) return InputOrderMedEquipment(playerid);
+
+	new g = fraction(playerid);
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы не состоите в организации");
+	if(input > PlayerInfo[playerid][pAccount]) return ErrorMessage(playerid, "{FF6347}На вашем банковском счету недостаточно средств");
+
+	PlayerPlaySound(playerid,6401,0,0,0);
+	OrganInfo[g][gMedMoney] += input;
+	PlayerInfo[playerid][pAccount] -= input;
+	showDialogOrganizationMenu(playerid);
+
+	mysql_transaction(pearsq);
+	mysql_save(playerid, 43);
+	UpdateMedMoneyOrg(g);
+	mysql_commit(pearsq);
+
+	new string[40];
+	format(string,sizeof(string),"Закуп мед оборудования %s", frakeasyName[g]);
+	MoneyLog("ordermed", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, string);
+	OrgLog(g, "ordermed", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, "Закуп мед оборудования");
+	return true;
+}
+
+stock UpdateMedMoneyOrg(g)
+{
+	new string[160];
+	mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_organization` SET `gMedMoney` = '%d' WHERE `frakid` = '%d'", OrganInfo[g][gMedMoney], g);
+	mysql_tquery(pearsq, string);
+	return true;
+}
+
+#define MAX_WH_MED_THING 2
+new WarehouseMedThingId[MAX_WH_MED_THING];
+new WarehouseMedThingType[MAX_WH_MED_THING];
+new WarehouseMedThingQuan[MAX_WH_MED_THING];
+
+// Заполняем товары для склада мед оборудования
+stock CreateWarehouseMedThing()
+{
+	WarehouseMedThingId[0] = 8;
+	WarehouseMedThingType[0] = 0;
+	WarehouseMedThingQuan[0] = 10;
+
+	WarehouseMedThingId[1] = 70;
+	WarehouseMedThingType[1] = 0;
+	WarehouseMedThingQuan[1] = 10;
+	return true;
+}
+
+stock GovWarehouseMed(playerid)
+{
+	new g = fraction(playerid);
+	if(!IsAFunctionOrganization(75, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник ASGH");
+	if(!GetAccessRankOrg(playerid, g, 75, NO_FBI)) return 1;
+
+	new line[100], lines[100 * MAX_WH_MED_THING];
+	for(new i = 0; i < MAX_WH_MED_THING; i++)
+	{
+		if(WarehouseMedThingId[i] == 0) continue;
+		format(line,sizeof(line),"{cccccc}%s [ %d штук ]\t{99ff66}%d$\n", 
+			GetNameThing(1, WarehouseMedThingId[i], WarehouseMedThingType[i], 0), 
+			WarehouseMedThingQuan[i], 
+			getThingPriceGos(WarehouseMedThingId[i], WarehouseMedThingType[i]) * WarehouseMedThingQuan[i]), strcat(lines,line);
+	}
+	ShowDialog(playerid,29,DIALOG_STYLE_TABLIST,"{ff9000}Склад Мед Оборудования",lines,"Выбрать","Отмена");
+	return true;
+}
+
+// Собираем ящик с мед оборудованием с гос склада
+stock GetMedEquipment(playerid, thingId, thingQuan, thingType)
+{
+	if(OnlineInfo[playerid][oInHandThing][0] > 0 || Hand[playerid] >= 1 || Hold[playerid] >= 1 || GetPlayerWeapon(playerid) >= WEAPON:2) 
+		return ErrorMessage(playerid, "{FF6347}У вас заняты руки [ Предмет или оружие ]");
+
+	new g = fraction(playerid);
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы не состоите в организации");
+
+	new price = getThingPriceGos(thingId, thingType) * thingQuan;
+	if(OrganInfo[g][gMedMoney] < price) return ErrorMessage(playerid, "{FF6347}На депозите организации не хватает денег для оплаты мед оборудования");
+
+	new getLimit = sklad_limit(thingId, thingType);
+	if(get_sklad(g, thingId, thingType) + thingQuan > getLimit) return ErrorMessage(playerid, "{FF6347}На складе вашей организации нет места для этого предмета\
+																							\n{ffcc66}Это означает, что сейчас нет необходимости доставлять товары на склад");
+
+	OrganInfo[g][gMedMoney] -= price;
+	OrganInfo[g][gMedMoneyUpdate] = true;
+
+	GiveThingHand(playerid, thingId, thingQuan, 0, 0, thingType, 2);
+	ApplyAnimation(playerid,"CARRY","liftup",4.0, false, true, true, false, 0); // Анимация поднять предмет
+	PPP15[playerid] = 3; // Повторение анимации рук перед лицом
+	RemovePlayerAttachedObject(playerid,1); // Удаляем прежний прикреплённый объект
+	SetPlayerAttachedObject(playerid,1 , 3014, 6, 0.120000, 0.199448, -0.120000, 254.000000, 0.900000, 70.000000); // Создаём ящик в руках
+
+	new string[40];
+	format(string, sizeof(string), "собирает ящик: %s", GetNameThing(1, thingId, thingType, 0));
+	SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
+	PlayerPlaySound(playerid,1052,0,0,0);
+	return true;
 }
 
 stock rank_organization(playerid, g)
@@ -732,7 +864,7 @@ CMD:membersoff(playerid)
 		FROM `pp_igroki` WHERE `Member`='%d' AND `Online`='0' OR `Fbi`>'0' AND `Online`='0' LIMIT 40", needg);
 	else mysql_format(pearsq, string, sizeof(string), "SELECT user_id, Name, Leader, Rank, Vig, Offtime, Fbi, Division0, Division1, SignTransmitter, CallSign \
 		FROM `pp_igroki` WHERE `Member` = '%d' AND `Online` = '0' LIMIT 40", needg);
-	mysql_tquery(pearsq, string, "Call_mem", "dd", playerid, needg);
+	mysql_pquery(pearsq, string, "Call_mem", "dd", playerid, needg);
 	return 1;
 }
 

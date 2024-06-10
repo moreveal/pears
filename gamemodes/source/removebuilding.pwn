@@ -14,7 +14,12 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 596 удалённх объектов
+ 	// 599 удалённх объектов
+
+	// Hospital LS
+	RemoveBuildingForPlayer(playerid, 5737, 1120.160, -1303.449, 18.570, 0.250);
+	RemoveBuildingForPlayer(playerid, 5935, 1120.160, -1303.449, 18.570, 0.250);
+	RemoveBuildingForPlayer(playerid, 1440, 1141.979, -1346.109, 13.265, 0.250);
 
 	// FBI Street
 	RemoveBuildingForPlayer(playerid, 6873, 2053.020, 2403.219, 9.820, 0.250);

@@ -117,7 +117,7 @@ CMD:zahvat(playerid, const params[])
 	new tmphour, tmpminute, tmpsecond;
 	gettime(tmphour, tmpminute, tmpsecond);
 	new unixtime = gettime();
-	if(tmphour >= 0 && tmphour < 10 && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью [ 00:00 - 10:00 ]");
+	if(tmphour > 23 || tmphour < 11) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью\n{ffcc66}Капты доступны с 11:00 до 23:00");
 
 	new string[160];
 	if(FrakCD[frakid] > unixtime) return format(string,sizeof(string),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %s ]", fine_time(FrakCD[frakid]-unixtime)), ErrorMessage(playerid, string);

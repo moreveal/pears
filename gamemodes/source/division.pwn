@@ -279,7 +279,7 @@ stock DivisionInvite(playerid, const params[], i = -1)
 	if(i == -1) i = PlayerInfo[playerid][pDivision][0] - 1;
 
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-	if(i <= 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
 	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid;

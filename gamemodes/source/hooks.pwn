@@ -47,6 +47,21 @@ stock PPAttachTrailerToVehicle(trailerid, vehicleid)
 #endif
 #define AttachTrailerToVehicle PPAttachTrailerToVehicle
 
+/*stock PPmysql_tquery(MySQL:handle, const query[], const callback[] = "", const format[] = "", {Float,_}:...)
+{
+	if(strlen(query) <= 5)
+	{
+		PrintBacktrace();
+	}
+	return true;
+}
+
+#if defined _ALS_mysql_tquery
+    #undef mysql_tquery
+#else
+    #define _ALS_mysql_tquery
+#endif
+#define mysql_tquery PPmysql_tquery*/
 
 /*stock PPmysql_format(MySQL:handle, output[], max_len, const format[], {MySQL, Float,_}:...)
 {

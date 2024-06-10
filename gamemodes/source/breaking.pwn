@@ -78,7 +78,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
-		if(VehInfo[breakingId][vAlarm] > 0)
+		if(VehInfo[breakingId][vAlarmSystem] > 0)
 		{
 			VehInfo[breakingId][vAlarmSound] = 20;
 			if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/auto2.mp3");
@@ -169,7 +169,7 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			else if(BreakingType[playerid] == 2)
 			{
 				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-				if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] == 1)VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 3;
+				if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] == 1) VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 3;
 				else VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 2;
 				EngineStart(playerid, BreakingTypeID[playerid]);
 			}

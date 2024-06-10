@@ -44,8 +44,10 @@ CMD:media(playerid)
 CMD:ahelpmedia(playerid)
 {
     if(PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Эти команды доступны только для медиа партнёров 3 Уровня\n{cccccc}У вас есть доступ к некоторым функциям в этом меню только на тестовом сервере");
-    new stro[90],sctringo[1620];
+    new stro[90],sctringo[1720];
     format(stro,sizeof(stro),"\n{ff9000}Команды Медиа:"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}/veh /delveh - создание и удаление транспорта"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}/skin - выдать себе временный визуальный скин"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/sp /spoff - Слежка за игроком"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/izol /unizol - Поместить/вытащить игрока в изолятор"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/mir /unmir - поместить в отдельный вирт мир"), strcat(sctringo,stro);

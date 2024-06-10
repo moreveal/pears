@@ -6,6 +6,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pSharkTrap", "BLOB NULL DEFAULT NULL");
 
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
 	return true;
 }
 
