@@ -112,7 +112,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
     || MPGO[playerid] > 0 // На мп
     || (Kapt[g] > 0) // && IsAGhetto(playerid)) // Капт + На территории гетто
-    || ChutC[g] >= 1 // Добив после капта (10 сек)
+    || ChutC[g] >= 1 // Добив после капта
     || Zahvat[g] > 0 // Порт
     || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
@@ -130,7 +130,7 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
     if(PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
     || MPGO[playerid] > 0 // На мп
     || Kapt[g] > 0 && IsAGhetto(playerid) // Капт + На территории гетто
-    || ChutC[g] >= 1 // Добив после капта (10 сек)
+    || ChutC[g] >= 1 // Добив после капта
     || Zahvat[g] > 0 // Порт
     || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
@@ -204,7 +204,8 @@ stock DeathEnd(playerid, stat)
         TogglePlayerControllable(playerid, true);
         ClearAnimations(playerid);
     }
-    AutoCloseMake(playerid);
+
+    DestroyMake(playerid);
     return 1;
 }
 
@@ -243,8 +244,6 @@ stock UseRevival(playerid,targetid)
     
     OnlineInfo[targetid][oTimerAnimationRevival] = 7;
     ApplyAnimation(playerid,"MEDIC","CPR",4.0, false, true, true, false, false, SYNC_ALL);
-
-    around_player_audio(playerid, 5204, 0, 10.0, 1);
     return 1;
 }
 
@@ -254,22 +253,37 @@ stock CloseRevival(playerid,targetid)
     if(DeathInfo[targetid][deathStatus] == false) return 0;
     new Float:x,Float:y,Float:z;
     GetPlayerPos(targetid,x,y,z);
-    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
-    new wheretakemoney;
-    if(PlayerInfo[targetid][pMoney] > friskPrice[8]*3) wheretakemoney = 0;
-    else if(PlayerInfo[targetid][pAccount] > friskPrice[8]*3) wheretakemoney = 1;
-    else
+    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать");
+
+    if(fraction(playerid) == 4)
     {
-        new string[65];
-        format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",friskPrice[8]*3);
-        ErrorMessage(targetid,string);
-        ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
-        return 1;
+        new price = friskPrice[8]*3;
+        new wheretakemoney;
+        if(PlayerInfo[targetid][pMoney] > price) wheretakemoney = 0;
+        else if(PlayerInfo[targetid][pAccount] > price) wheretakemoney = 1;
+        else
+        {
+            new string[65];
+            format(string,sizeof(string),"{ff6347}У вас недостаточно средств для реанимации. Нужно %d$",price);
+            ErrorMessage(targetid,string);
+            ErrorMessage(playerid,"{ff6347}У пациента недостаточно средств для реанимации");
+            return 1;
+        }
+        if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= price;
+        else PlayerInfo[targetid][pAccount] -= price;
+        mysql_save(targetid,0);
+
+        // Кладём деньги на счет ASGH
+        OrganInfo[4][glave] += price;
+	    OrganInfo[4][gUpdate] = true;
+
+        // Выдаём медику юниты за реанимацию
+        GiveUnit(playerid, 21);
     }
-    if(wheretakemoney == 0) PlayerInfo[targetid][pMoney] -= friskPrice[8]*3;
-    else PlayerInfo[targetid][pAccount] -= friskPrice[8]*3;
-    mysql_save(targetid,0);
     
+    // Закрываем вызов и сообщаем, что мы вылечили пострадавшего
+    RevivalCloseMake(targetid, playerid);
+
     TakeInvent(playerid,8,1,0,999);
     update_ability(playerid, 10, 10 + random(5));
     ACSetPlayerHealth(targetid, 100);
@@ -305,7 +319,7 @@ stock AcceptRevial(playerid)
         format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
         Moiplayer[Moiplayer[playerid]] = playerid;
         ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
-        format(string,sizeof(string),"{66ff99}Вы отправили запрос на лечение %s. Ожидайте...",rpplayername(Moiplayer[playerid]));
+        format(string,sizeof(string),"{66ff99}Вы предложили %s оказание медицинской помощи. Ожидайте ответа...",rpplayername(Moiplayer[playerid]));
         keep(playerid);
         SuccessMessage(playerid,string);
     }

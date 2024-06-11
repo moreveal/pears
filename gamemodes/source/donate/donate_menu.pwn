@@ -353,3 +353,96 @@ stock dialogCase_DonateMenu(playerid, dialogid, response, listitem)
     }
     return false;
 }
+
+stock GivePlatinumVip(playerid)
+{
+	PlayerInfo[playerid][pDonateRank] = 4;
+    PlayerInfo[playerid][pUpgrade] = 0;
+    if(PlayerInfo[playerid][pAchieve][118] == 0) AchievePlayer(playerid, 118, 1);
+	return true;
+}
+
+alias:setvip("givevip")
+CMD:setvip(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+    new tmp[121], status;
+    if(sscanf(params, "s[121]i", tmp, status)
+        || status < 0 || status > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить статус Platinum VIP [ /setvip ID 0 или 1 ]");
+	if(strlen(tmp) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
+
+	new giveplayerid;
+ 	giveplayerid = ReturnUser(tmp, 1);
+	if(IsPlayerConnected(giveplayerid)) 
+	{
+        if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
+
+        if(status == 1)
+        {
+            if(PlayerInfo[giveplayerid][pDonateRank] == 4) return ErrorMessage(playerid, "{FF6347}У игрока уже есть Platinum VIP");
+            GivePlatinumVip(giveplayerid);
+            mysql_save(giveplayerid, 4);
+
+            SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s Platinum VIP", PlayerInfo[giveplayerid][pName]);
+            if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s выдал вам Platinum VIP", PlayerInfo[playerid][pName]);
+            AdminLog("setvip", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], status, "Выдал Platinum VIP");
+        }
+        else
+        {
+            if(PlayerInfo[giveplayerid][pDonateRank] != 4) return ErrorMessage(playerid, "{FF6347}У игрока нет Platinum VIP");
+            PlayerInfo[giveplayerid][pDonateRank] = 0;
+            mysql_save(giveplayerid, 4);
+
+            SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы забрали Platinum VIP у %s", PlayerInfo[giveplayerid][pName]);
+            if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s забрал у вас Platinum VIP", PlayerInfo[playerid][pName]);
+            AdminLog("setvip", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], status, "Забрал Platinum VIP");
+        }
+    }
+    else
+    {
+        if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+        new string[57];
+        mysql_format(pearsq, string,sizeof(string),"SELECT user_id, DonateRank FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
+        mysql_tquery(pearsq, string, "Call_setvip", "dsd", playerid, params[0], status);
+    }
+    return true;
+}
+
+function Call_setvip(playerid, const str_name[], status)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		new user_id, DonateRank;
+		cache_get_value_name_int(0, "user_id", user_id);
+        cache_get_value_name_int(0, "DonateRank", DonateRank);
+
+        new string[120];
+        if(status == 1)
+        {
+            if(DonateRank == 4) return ErrorMessage(playerid, "{FF6347}У игрока уже есть Platinum VIP");
+            mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `DonateRank` = '4' WHERE `user_id` = '%d'", user_id);
+		    mysql_tquery(pearsq, string);
+
+            SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s Platinum VIP", str_name);
+
+            format(string, sizeof(string), "Админ %s выдал вам Platinum VIP", PlayerInfo[playerid][pName]);
+ 		    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, str_name, string);
+            AdminLog("setvip", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], user_id, str_name, "", status, "Выдал Platinum VIP");
+        }
+        else
+        {
+            if(DonateRank != 4) return ErrorMessage(playerid, "{FF6347}У игрока нет Platinum VIP");
+            mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `DonateRank` = '0' WHERE `user_id` = '%d'", user_id);
+		    mysql_tquery(pearsq, string);
+
+            format(string, sizeof(string), "Админ %s забрал у вас Platinum VIP", PlayerInfo[playerid][pName]);
+ 		    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, str_name, string);
+            AdminLog("setvip", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], user_id, str_name, "", status, "Забрал Platinum VIP");
+        }
+	}
+	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
+    return true;
+}

@@ -8,6 +8,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_organization", "gWarehouse", "BOOLEAN NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_dom", "dDoorInt0", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dDoorInt1", "INT NOT NULL DEFAULT '0'");

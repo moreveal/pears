@@ -549,7 +549,7 @@ stock ExitBusDriver(playerid)
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 	    new v = GetPlayerVehicleID(playerid);
-	    if(VehInfo[playerid][vModel] == 431 && VehInfo[v][v3dstat] == 7000) DestroyDynamic3DTextLabel(VehLabel[v]), VehInfo[v][v3dstat] = 0;
+	    if(IsABus(VehInfo[v][vModel]) && VehInfo[v][v3dstat] == 7000) DestroyDynamic3DTextLabel(VehLabel[v]), VehInfo[v][v3dstat] = 0;
 	}
 	busrout[playerid] = -1;
 	return 1;

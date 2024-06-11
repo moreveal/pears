@@ -77,9 +77,7 @@ stock SetPlayerPosFollowMe(playerid)
     return 1;
 }
 
-CMD:gme(playerid, const params[]) return pc_cmd_followme(playerid, params);
-CMD:gotome(playerid, const params[]) return pc_cmd_followme(playerid, params);
-CMD:fme(playerid, const params[]) return pc_cmd_followme(playerid, params);
+alias:followme("fme", "gotome", "gme")
 CMD:followme(playerid, const params[])
 {
 	if(!IsACop(playerid)

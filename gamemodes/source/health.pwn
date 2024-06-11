@@ -30,22 +30,10 @@ stock ProcessHealthPlayer(playerid)
 			format(string, sizeof string, "+%.1f HP", OnlineInfo[playerid][oHealthMed]);
 			SetPlayerChatBubble(playerid, string, COLOR_GREEN, 45.0, 4000);
 
-            // Старая система кровотечения off
-            PlayerInfo[playerid][pRanentors] = 0;
-            TextDrawHideForPlayer(playerid, PearsDraw[0]);
-
             // Если лечим бинтами
             if(OnlineInfo[playerid][oHealthThing] == 70)
             {
-                // Все эффекты off
-                Effect[playerid] = 0;
-                EffectTime[playerid] = 0;
-                SetPlayerDrunkLevel(playerid, 0);
-
-                // Погоду и время сбрасываем (Вдруг были эффекты)
-                PearsWeather(playerid), PearsTime(playerid);
-
-                PoliceStick[0][playerid] = 0; // Количества ударов тупым предметом сбрасываем
+                ResetHeal(playerid);
 
                 if(IsAZoneCapt(playerid))
                 {
@@ -59,6 +47,10 @@ stock ProcessHealthPlayer(playerid)
             //  Лечим порошком
             else if(OnlineInfo[playerid][oHealthThing] == 7)
             {
+                // Старая система кровотечения off
+                PlayerInfo[playerid][pRanentors] = 0;
+                TextDrawHideForPlayer(playerid, PearsDraw[0]);
+
                 Effect[playerid] = 4;
                 EffectTime[playerid] += 30;
                 PearsWeather(playerid), PearsTime(playerid);
@@ -85,4 +77,22 @@ stock HealthPlayer(playerid, time, Float:health, inva, thingId) // Лечим
 	OnlineInfo[playerid][oHealthInva] = inva; // Слот предмета
     OnlineInfo[playerid][oHealthThing] = thingId; // ID предмета
 	return 1;
+}
+
+stock ResetHeal(playerid)
+{
+    // Старая система кровотечения off
+    PlayerInfo[playerid][pRanentors] = 0;
+    TextDrawHideForPlayer(playerid, PearsDraw[0]);
+
+    // Все эффекты off
+    Effect[playerid] = 0;
+    EffectTime[playerid] = 0;
+    SetPlayerDrunkLevel(playerid, 0);
+
+    // Погоду и время сбрасываем (Вдруг были эффекты)
+    PearsWeather(playerid), PearsTime(playerid);
+
+    PoliceStick[0][playerid] = 0; // Количества ударов тупым предметом сбрасываем
+    return true;
 }

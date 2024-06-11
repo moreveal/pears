@@ -21,6 +21,9 @@ stock buyThingAutoserice(playerid, slot)
 	if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][slot]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 	
 	new thingId = BizzInfo[b][bProduct][slot], thingType = BizzInfo[b][bTypeProduct][slot];
+    new maxHealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], 0);
+    if(VehInfo[vehicleid][vHealth] < maxHealth) return ErrorMessage(playerid, "{FF6347}Отремонтируйте ваш транспорт прежде чем установить деталь");
+
 	if(thingId == 226)
 	{
 		if(VehInfo[vehicleid][vArmor] == 1000) return ErrorMessage(playerid, "{FF6347}Эта деталь уже установлена");
@@ -57,7 +60,8 @@ stock buyThingAutoserice(playerid, slot)
 
 stock SetVehicleArmor(vehicleid)
 {
-    ACSetVehicleHealth(vehicleid, VehInfo[vehicleid][vHealth] + VehInfo[vehicleid][vArmor]);
+    new maxHealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], 0);
+    ACSetVehicleHealth(vehicleid, maxHealth + VehInfo[vehicleid][vArmor]);
     return 1;
 }
 

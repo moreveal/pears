@@ -843,7 +843,7 @@ stock CheckWarningSu(playerid, const tmp[], &playa)
 	}
 	if(IsACapt(playa))
 	{
-		ErrorMessage(playerid, "{FF6347}Подозреваемый находится в гетто {ff0000}[ Работа на Капте - Запрещена ]");
+		ErrorMessage(playerid,"{FF6347}Подозреваемый находится в гетто\n{ffcc66}Работа на капте запрещена");
 		return 0;
 	}
 	return 1;

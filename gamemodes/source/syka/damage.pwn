@@ -106,6 +106,10 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:weaponid, bodypart, 
         || weaponid == WEAPON:23 // Это будет всегда электрошокер
         || HealthAC[damagedid] <= 0.0 // Хп уже на нуле
         || HealthAC[playerid] <= 0.0 // Урон наносит игрок с нулевым хп
+        || Stun[3][playerid] >= 1 // Урон наносит оглушенный игрок
+        || Stun[4][playerid] == 1 // Урон наносит игрок в наручниках
+        || Stun[5][playerid] == 1 // Урон наносит игрок в смирительной рубашке
+        || DeathInfo[playerid][deathStatus] == true // Урон наносит игрок в стадии смерти
     ) return 0;
 
 

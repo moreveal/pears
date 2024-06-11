@@ -299,7 +299,7 @@ stock DivisionInvite(playerid, const params[], i = -1)
 
 	// Записываем этому челу инфу, куда приглашаем и кто приглашает
 	DP[0][giveplayerid] = i + 1;
-	DP[1][giveplayerid] = playerid;
+	DP[7][giveplayerid] = playerid;
 	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i][divName]);
 	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
 	PlayerPlaySound(giveplayerid,40405,0,0,0);
@@ -863,7 +863,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 	if(dialogid == 1326) showDialogMenuDivision(playerid); // divmembers или просто возвращаем меню
 	if(dialogid == 1327) // divinvite
 	{
-		new giveplayerid = DP[1][playerid];
+		new giveplayerid = DP[7][playerid];
 		new g = fraction(playerid);
 		new i = DP[0][playerid];
 		if(g == 0) return 0;

@@ -27,14 +27,12 @@ new unitName[][] = // Названия настроек юниты
     "Создание автобусного маршрута", // 14 -
     "Доставка боеприпасов", // 15 -
     "Покраска граффити", // 16 -
-    "Закрытие вызова", // 17 - // Я бы добавил как для МЗ при условии что они подняли, но вопрос с ментами, а у них как детектить успешное выполнение?
-    "Снятие денег с бизнеса", // 18 -
-    "Участие в стреле", // 19 -
-    "Участие в захвате порта" // 20 -
-    // Ниже могут абузится, я хз что делать.
-    //"Установка радара", // 21 -
-    //"Установка остановки", // 22 -
-    //"Установка камеры", // 23 -
+    "Закрытие вызова", // 17
+    "Снятие денег с бизнеса", // 18
+    "Участие в стреле", // 19
+    "Участие в захвате порта", // 20
+    "Реанимация пострадавшего", // 21
+    "Лечение /heal" // 22
 };
 
 new unitDefault[] =
@@ -59,7 +57,9 @@ new unitDefault[] =
     1500, // 17
     1000, // 18
     15000, // 19
-    15000 // 20
+    15000, // 20
+    3000, // 21
+    700 // 22
 };
 
 stock IsAUnitOrganization(unitid, g, playerid)
@@ -140,7 +140,7 @@ stock IsAUnitOrganization(unitid, g, playerid)
     }
     else if(unitid == 17) // Закрытие вызова
     {
-        if(IsACop(playerid) || PlayerInfo[playerid][pMember] == 4) return 1;
+        if(IsACop(playerid)) return 1;
     }
     else if(unitid == 18) // Снимаем бабки с бизнеса
     {
@@ -153,6 +153,14 @@ stock IsAUnitOrganization(unitid, g, playerid)
     else if(unitid == 20) // Порт
     {
         if(IsAMafia(playerid)) return 1;
+    }
+    else if(unitid == 21) // Реанимация пострадавшего
+    {
+        if(PlayerInfo[playerid][pMember] == 4) return 1;
+    }
+    else if(unitid == 22) // Лечение /heal
+    {
+        if(PlayerInfo[playerid][pMember] == 4) return 1;
     }
     return 0;
 }

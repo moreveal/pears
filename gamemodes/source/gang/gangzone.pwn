@@ -645,7 +645,8 @@ stock CheckGangZone() // Распределение результатов по 
 	TopKiller(); // Формируем Топ
   	Kapt[CaptInfo[cAttack]] = 0;
  	Kapt[CaptInfo[cDefend]] = 0;
-  	if(GoC[CaptInfo[cAttack]] >= 1 || GoC[CaptInfo[cDefend]] >= 1) ChutC[CaptInfo[cAttack]] = 10, ChutC[CaptInfo[cDefend]] = 10;
+  	ChutC[CaptInfo[cAttack]] = 60;
+	ChutC[CaptInfo[cDefend]] = 60;
   	GoC[CaptInfo[cAttack]] = 0;
   	GoC[CaptInfo[cDefend]] = 0;
 	new unixtime = gettime();
@@ -871,6 +872,8 @@ stock CheckGangZone() // Распределение результатов по 
 			return 1;
 		}
   	}
+	SendRadioMessage(CaptInfo[cDefend],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]: {ffffff}В течении минуты после капта будет доступно +C и отсутствие больки");
+	SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]: {ffffff}В течении минуты после капта будет доступно +C и отсутствие больки");
   	return 1;
 }
 
@@ -987,14 +990,17 @@ stock IsAZoneCapt(playerid)
 stock IsACapt(playerid) // Проверка, находится ли игрок в зоне активного капта
 {
 	new yesCapt;
-	for(new g = 0; g < GZONES; g++)
+	if(Kapt[fraction(playerid)] > 0)
 	{
-		if(GZInfo[g][gBitva] > 0) continue;
-
-		if(IsPlayerInSquare(playerid,GangZone[g][gzMinX],GangZone[g][gzMinY],GangZone[g][gzMaxX],GangZone[g][gzMaxY]))
+		for(new g = 0; g < GZONES; g++)
 		{
-			yesCapt = 1;
-			break;
+			if(GZInfo[g][gBitva] == 0) continue;
+
+			if(IsPlayerInSquare(playerid,GangZone[g][gzMinX],GangZone[g][gzMinY],GangZone[g][gzMaxX],GangZone[g][gzMaxY]))
+			{
+				yesCapt = 1;
+				break;
+			}
 		}
 	}
     return yesCapt;

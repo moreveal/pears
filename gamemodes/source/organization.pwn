@@ -59,7 +59,8 @@ enum gInfo
 	gUnit[MAX_UNIT], // Новые настройки юнитов
 
 	gMedMoney, // Деньги для закупа мед оборудования
-	bool:gMedMoneyUpdate // Статус для сохранение переменной денег мед оборудования
+	bool:gMedMoneyUpdate, // Статус для сохранение переменной денег мед оборудования
+	bool:gWarehouse // Доступ к складу, 0 открыт, 1 закрыт
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
@@ -269,6 +270,7 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "gDeliveryPay", OrganInfo[idx][gDeliveryPay]);
 		cache_get_value_name_int(f, "gTax", OrganInfo[idx][gTax]);
 		cache_get_value_name_int(f, "gMedMoney", OrganInfo[idx][gMedMoney]);
+		cache_get_value_name_bool(0, "gWarehouse", OrganInfo[idx][gWarehouse]);
 
 		OrganInfo[idx][gDeliveryOrder] = -1;
 		// NGSA
@@ -410,7 +412,7 @@ stock SaveOneSkinOrganization(g, i)
 
 stock SaveOrgan(idx)
 {
-	new string_mysql[1200];
+	new string_mysql[1400];
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
 		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
 		OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
@@ -419,9 +421,9 @@ stock SaveOrgan(idx)
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`war1`='%d',`war2`='%d',`war3`='%d',`war4`='%d',`war5`='%d',`union1`='%d',`union2`='%d',`union3`='%d',`union4`='%d',`union5`='%d',",  string_mysql,
 		orgwar[idx][0],orgwar[idx][1],orgwar[idx][2],orgwar[idx][3],orgwar[idx][4],orguni[idx][0],orguni[idx][1],orguni[idx][2],orguni[idx][3],orguni[idx][4]); // 133 + 110
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`drugs1`='%d',`drugs2`='%d',`drugs3`='%d',`drugs4`='%d',`apt`='%d',`food`='%d',`cvetcar`='%d',`interval`='%d',\
-		`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d' WHERE `frakid`='%d'", string_mysql,
+		`SCbug`='%d',`SanCbug`='%d',`Rejim2`='%d',`cash`='%d',`map`='%d', `gWarehouse` = '%d' WHERE `frakid`='%d'", string_mysql,
 		OrganInfo[idx][gdrugs1],OrganInfo[idx][gdrugs2],OrganInfo[idx][gdrugs3],OrganInfo[idx][gdrugs4],OrganInfo[idx][gapt],OrganInfo[idx][gstat2],OrganInfo[idx][gstat],OrganInfo[idx][gInterval],
-		OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap],idx); // 201 + 154
+		OrganInfo[idx][gSCbug], OrganInfo[idx][gSanCbug], OrganInfo[idx][gRejim2], OrganInfo[idx][gCash], OrganInfo[idx][gMap], OrganInfo[idx][gWarehouse],idx);
 	query_empty(pearsq, string_mysql); // 987
 	return 1;
 }
@@ -555,6 +557,7 @@ stock showDialogOrganizationMenu(playerid)
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
 		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
+		if(g == 4) format(line,sizeof(line), detail_lmenu(playerid, 18)), strcat(lines,line); // Стоимость лечения
 	}
 	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST_HEADERS,"Меню Организации",lines,"Выбрать","Отмена");
 	return 1;
@@ -593,6 +596,7 @@ stock detail_lmenu(playerid, detail)
 		else format(text, sizeof(text), "\n{cccccc}Заказ боеприпасов\t");
 	}
 	else if(detail == 17) format(text, sizeof(text), "\n{cccccc}Мед оборудование\t{99ff66}%d$", OrganInfo[g][gMedMoney]);
+	else if(detail == 18) format(text, sizeof(text), "\n{ff9000}Стоимость лечения\t{99ff66}%d$", ServerInfo[9]);
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -633,7 +637,30 @@ stock open_detail_lmenu(playerid, detail)
 	}
 	else if(detail == 16) OrderEscort(playerid, g);
 	else if(detail == 17) OrderMedEquipment(playerid);
+	else if(detail == 18) ShowDialogSettingHealPrice(playerid);
 	return 1;
+}
+
+stock ShowDialogSettingHealPrice(playerid)
+{
+	ShowDialog(playerid,1507,DIALOG_STYLE_INPUT,"{ff9000}Организация","{cccccc}Введите стоимость лечения /heal\
+																	\n{FF6347}Не меньше 1$ и не больше 10.000$","Принять","Отмена");
+	return true;
+}
+
+// Настраиваем стоимость лечения
+stock SettingHealPrice(playerid, const inputtext[])
+{
+	new input = strval(inputtext);
+	if(input < 1 || input > 10000) return ShowDialogSettingHealPrice(playerid);
+
+	PlayerPlaySound(playerid,6401,0,0,0);
+	ServerInfo[9] = input;
+	SaveServer(9);
+	showDialogOrganizationMenu(playerid);
+
+	OrgLog(fraction(playerid), "healprice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", input, "Стоимость лечения");
+	return true;
 }
 
 stock OrderMedEquipment(playerid)

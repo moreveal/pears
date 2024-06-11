@@ -16,7 +16,14 @@ stock sell_shark(playerid)
 		DestroyDynamicObject(VehInfo[v][vObject]);
 		VehInfo[v][vObjstat] = 0;
 		new pay;
-		pay = ServerInfo[1] + random(ServerInfo[1]/2); // Стоимость акулы + рандом 1к зависит от веса
+
+		new sumRand = ServerInfo[1]/2; // Получаем число добавление для веса акулы
+		new randomPrice;
+		if(sumRand > 4) randomPrice = random(sumRand); // Если число рандомного веса больше 4, значит можно расчитать
+		new givePrice;
+		if(randomPrice > 0 && randomPrice <= 100000) givePrice = randomPrice; // Сука тут ещё закроем все возможные пиздецы
+
+		pay = ServerInfo[1] + givePrice; // Стоимость акулы + рандом
 		if(ServerInfo[53] == 0) pay += pay/4; // Это повышенная оплата, если она есть для этой работы сейчас
 		paysalary(playerid, pay, 0);
 		getkazna(3, pay);
@@ -44,7 +51,9 @@ stock shark(playerid)
 		if(VehInfo[v][vObjstat] == 0)
 		{
 			PlayerPlaySound(playerid, 1084, 0,0,0);
-            DeleteSharkTrap(playerid);
+            DeleteSharkTrap(playerid); // Удаляем акулу
+			SaveSharkTrap(playerid); // Сохраняем в базу
+
 			VehInfo[v][vObject] = CreateDynamicObject(1608, 0.0 ,0.0 ,-50.0 ,0.0 ,0.0 ,0.0);
 			AttachDynamicObjectToVehicle(VehInfo[v][vObject], v, 0.075000, -7.865132, -1.074999, 73.364997, 1.005001, -0.000000);
 			VehInfo[v][vObjstat] = 1;

@@ -1,4 +1,4 @@
-#define MAX_MAKE 100 // Максимальное количество вызовов
+#define MAX_MAKE 200 // Максимальное количество вызовов
 
 enum mkInfo
 {
@@ -43,7 +43,7 @@ stock SettingServiceMake(playerid)
     ShowDialog(playerid,790,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Вызов служб",lines,"Выбрать","Отмена");
     return 1;
 }
-stock AutoMakeCreate(whom,type,id)
+stock AutoMakeCreate(whom, type, id)
 {
     new findslot = -1;
     for(new z = 0; z < MAX_MAKE; z++) 
@@ -61,8 +61,15 @@ stock AutoMakeCreate(whom,type,id)
     MakeInfo[findslot][mkWhoType] = type+1;
 
     if(type == 0) GetVehiclePos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
-    if(type == 1) MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX],MakeInfo[findslot][mkCord][1]=DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2]=DomInfo[id][dKoordinatZ];
-    if(type == 2) GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]), MakeInfo[findslot][mkPlayerId] = id, OnlineInfo[id][oServiceMake][0] = 2,OnlineInfo[id][oServiceMake][1] = DeathInfo[id][deathTime];
+    if(type == 1) MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX],MakeInfo[findslot][mkCord][1]=DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2] = DomInfo[id][dKoordinatZ];
+    if(type == 2) 
+    {
+        GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
+        MakeInfo[findslot][mkPlayerId] = id;
+        OnlineInfo[id][oServiceMake][0] = 2;
+        OnlineInfo[id][oServiceMake][1] = DeathInfo[id][deathTime];
+        OnlineInfo[id][oServiceMake][2] = findslot;
+    }
     MessageMake(findslot);
     return 1;
 }
@@ -79,23 +86,24 @@ stock MessageMake(number)
             if(PlayerInfo[i][patroolID] == -1) continue;
             if(IsPlayerRealPosInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
             {
-                if(MakeInfo[number][mkWhoType] == 2) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Сработала сигнализация в доме в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else if(MakeInfo[number][mkWhoType] == 1) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Сработала сигнализация в машине в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
-                SendClientMessage(i,COLOR_YELLOW,string);
+                if(MakeInfo[number][mkWhoType] == 2) format(string, sizeof(string), "[DEP]: Сработала сигнализация в доме в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                else if(MakeInfo[number][mkWhoType] == 1) format(string, sizeof(string), "[DEP]: Сработала сигнализация в транспорте в районе %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
+                else format(string, sizeof(string), "[DEP]: Поступил вызов от %s[%d] в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]), MakeInfo[number][mkPlayerId], gSAZones[findraiontolist][zName],number+1);
+				SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, string);
             }
         }
         else if(MakeInfo[number][mkWho] == 2 && fraction(i) == 4)
         {
             if(IsPlayerRealPosInRangeOfPoint(i,1000.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]))
             {
-                if(MakeInfo[number][mkWhoType] == 3) format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Человек в тяжелом состоянии в районе: %s. Номер вызова: %d",gSAZones[findraiontolist][zName],number+1);
-                else format(string,sizeof(string), " SMS от Диспетчера: {99ff33}Только что поступил вызов от %s в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]),gSAZones[findraiontolist][zName],number+1);
-                SendClientMessage(i,COLOR_YELLOW,string);
+                if(MakeInfo[number][mkWhoType] == 3) format(string, sizeof(string), "[DEP]: Человек в тяжелом состоянии в районе %s. Номер вызова: %d", gSAZones[findraiontolist][zName],number+1);
+                else format(string, sizeof(string), "[DEP]: Поступил вызов от %s[%d] в районе %s. Номер вызова: %d",rpplayername(MakeInfo[number][mkPlayerId]), MakeInfo[number][mkPlayerId], gSAZones[findraiontolist][zName],number+1);
+				SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, string);
             }
         }
     }
 }
+
 stock MakeCreate(playerid, whom)
 {
     if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
@@ -146,7 +154,7 @@ stock MakeCreate(playerid, whom)
 stock CloseMake(playerid,number)
 {
     OnlineInfo[playerid][oTakeMake] = -1;
-    GiveUnit(playerid,17);
+    if(PlayerInfo[playerid][pMember] == 1) GiveUnit(playerid, 17); // Выдаём копам юниты за закрытие вызова
     if(MakeInfo[number][mkPlayerId] == -1)
     {
         MakeInfo[number][mkWho] = -1;
@@ -154,7 +162,10 @@ stock CloseMake(playerid,number)
         MakeInfo[number][mkWhoParam] = -1;
         MakeInfo[number][mkWhoTakePlayer] = -1;
     }
-    else AutoCloseMake(MakeInfo[number][mkPlayerId]);
+    else 
+    {
+        if(IsOnline(MakeInfo[number][mkPlayerId])) AutoCloseMake(MakeInfo[number][mkPlayerId]);
+    }
     return 1;
 }
 
@@ -165,28 +176,82 @@ stock AutoCloseMake(playerid)
     new findslot = OnlineInfo[playerid][oServiceMake][2];
     if(OnlineInfo[playerid][oServiceMake][1] > 0 && MakeInfo[findslot][mkWhoType] == 0)
     {
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Человек принявший ваш вызов прибыл на место.");
-        SuccessMessage(playerid, "Человек принявший ваш вызов прибыл на место.");
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer],"{44ff99}Вы закрыли вызов.");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: %s {cccccc}прибыл на место и закрыл вызов", servicePlayerName[OnlineInfo[playerid][oServiceMake][0]]);
+        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer],"{99ff66}Вы закрыли вызов");
     }
-    else if(IsPlayerConnected(playerid) && OnlineInfo[playerid][oServiceMake][1] < 1 && MakeInfo[findslot][mkWhoType] == 0)
+    DestroyMake(playerid, false);
+    return 1;
+}
+
+stock RevivalCloseMake(playerid, medicid)
+{
+    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    new number = OnlineInfo[playerid][oServiceMake][2];
+
+    if(MakeInfo[number][mkWhoTakePlayer] >= 0 && MakeInfo[number][mkWhoTakePlayer] != medicid) MessageMakeCloseAccepted(playerid, number, 2);
+    DestroyMake(playerid, false);
+    return true;
+}
+
+stock MessageMakeCloseAccepted(playerid, number, typeClose)
+{
+    if(MakeInfo[number][mkWhoTakePlayer] >= 0)
     {
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Время активности вашего вызова истекло.");
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Если проблема актуальна, наверное стоит сделать вызов по новой?");
-        SuccessMessage(playerid, "Время активности вашего вызова истекло.\nЕсли проблема актуально, наверное стоит сделать вызов по новой?");
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Вы не успели приехать на вызов. Время активности вызова вышло.");
+        new giveplayerid = MakeInfo[number][mkWhoTakePlayer];
+        if(IsOnline(giveplayerid))
+        {
+            OnlineInfo[giveplayerid][oTakeMake] = -1;
+            SendClientMessage(giveplayerid, COLOR_GREY, "[ Мысли ]: Упс.. кажется я не успел%s приехать на вызов", gender(giveplayerid));
+            if(typeClose == 0) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Игрок, который совершил вызов вышел из игры");
+            else if(typeClose == 1) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Время активного вызова вышло");
+            else if(typeClose == 2) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Пострадавшего уже кто-то вылечил");
+            else if(typeClose == 3) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Пострадавший отправился в госпиталь или его кто-то вылечил");
+
+            if(zones_gpsstat[giveplayerid] == true &&
+                IsNearlyCloseGps(giveplayerid, 20.0, Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], OnlineInfo[playerid][oWorldPlayer], OnlineInfo[playerid][oInteriorPlayer]))
+            {
+                DestroyGps(giveplayerid);
+            }
+        }
     }
-    else if(OnlineInfo[playerid][oServiceMake][1] < 0 && MakeInfo[findslot][mkWhoType] == 3)
-    {
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) ErrorMessage(MakeInfo[findslot][mkWhoTakePlayer],"{ff6347}Вы не успели приехать на вызов. Время активности вызова вышло.");
-    }
+    return true;
+}
+
+stock TimeOutCloseMake(playerid)
+{
+    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    new number = OnlineInfo[playerid][oServiceMake][2];
+
+    MessageMakeCloseAccepted(playerid, number, 1);
+    DestroyMake(playerid, false);
+    return true;
+}
+
+stock ExitCloseMake(playerid)
+{
+    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    new number = OnlineInfo[playerid][oServiceMake][2];
+
+    MessageMakeCloseAccepted(playerid, number, 0);
+    DestroyMake(playerid, false);
+    return true;
+}
+
+stock DestroyMake(playerid, bool:message = true)
+{
+    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    new number = OnlineInfo[playerid][oServiceMake][2];
+
+    if(message == true) MessageMakeCloseAccepted(playerid, number, 3);
+
     OnlineInfo[playerid][oServiceMake][1] = 0;
     OnlineInfo[playerid][oServiceMake][0] = 0;
     OnlineInfo[playerid][oServiceMake][2] = 0;
-    MakeInfo[findslot][mkPlayerId] = -1;
-    MakeInfo[findslot][mkWho] = 0;
-    MakeInfo[findslot][mkStatus] = 0;
-    return 1;
+    MakeInfo[number][mkPlayerId] = -1;
+    MakeInfo[number][mkWho] = 0;
+    MakeInfo[number][mkStatus] = 0;
+    MakeInfo[number][mkWhoTakePlayer] = -1;
+    return true;
 }
 
 stock TakeMake(playerid,number)
@@ -210,21 +275,14 @@ stock TakeMake(playerid,number)
     MakeInfo[number][mkWhoTakePlayer] = playerid;
     MakeInfo[number][mkWho] = CopOrMin;
     OnlineInfo[playerid][oTakeMake] = number;
-    new line[80];
-    SendClientMessage(playerid, COLOR_GREY, " {AFAFAF}Вы приняли вызов.");
-    format(line,sizeof(line)," {AFAFAF}Получение координат GPS доступно через бортовой ПК. [ /findmake %d ]", OnlineInfo[playerid][oTakeMake]+1);
-    format(line,sizeof(line)," {AFAFAF}По приезду на место не забудьте закрыть вызов. [ /closemake %d ]", OnlineInfo[playerid][oTakeMake]+1);
-    SendClientMessage(playerid, COLOR_GREY, line);
 
-    if(MakeInfo[number][mkWhoParam] == -1)
+    SendClientMessage(playerid, COLOR_GREY, "{ccffff}Вы приняли вызов. Отмечено в вашем GPS {ffcc66}[ Повторная активация GPS /findmake ]");
+    if((MakeInfo[number][mkWhoType] == 0 || MakeInfo[number][mkWhoType] == 3) && IsOnline(giveplayerid))
     {
-        if(IsOnline(giveplayerid))
-        {
-            new Float:pos_find[3];
-            GetPlayerRealPos(giveplayerid, pos_find[0], pos_find[1], pos_find[2]);
-            CreateGps(playerid, pos_find[0], pos_find[1], pos_find[2], OnlineInfo[giveplayerid][oWorldPlayer], OnlineInfo[giveplayerid][oInteriorPlayer], 2.0);
-        }
+        SendClientMessage(playerid, COLOR_GREY, "{ccffff}Вызов совершил %s[%d]", rpplayername(giveplayerid), giveplayerid);
     }
+    if(CopOrMin == 1) SendClientMessage(playerid, COLOR_GREY, "{ccffff}По приезду на вызов закройте его [ /closemake ]");
+    FindMake(playerid,number);
 }
 
 stock FindMake(playerid,number)
@@ -237,7 +295,7 @@ stock FindMake(playerid,number)
     }
     else if(MakeInfo[number][mkStatus] == 2 && MakeInfo[number][mkWhoParam] != -1)
     {
-        if(MakeInfo[number][mkWhoType] == 1)
+        if(MakeInfo[number][mkWhoType] == 1) // Вызвали на машину
         {
             if(VehInfo[MakeInfo[number][mkWhoParam]][vAlarmSystem] == 2 && VehInfo[MakeInfo[number][mkWhoParam]][vAlarmUnix]+604800 > gettime())
             {
@@ -262,32 +320,40 @@ stock FindMake(playerid,number)
                 ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
             }
         }
-        else if(MakeInfo[number][mkWhoType] == 2 || MakeInfo[number][mkWhoType] == 3)
+        else if(MakeInfo[number][mkWhoType] == 2) // Вызвали в дом
         {
             if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
             new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
             ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
+        }
+        else if(MakeInfo[number][mkWhoType] == 0 || MakeInfo[number][mkWhoType] == 3) // Вызов был от человека (поэтому сразу создаём GPS)
+        {
+            new giveplayerid = MakeInfo[number][mkPlayerId];
+            if(IsOnline(giveplayerid))
+            {
+                new Float:pos_find[3];
+                GetPlayerRealPos(giveplayerid, pos_find[0], pos_find[1], pos_find[2]);
+                CreateGps(playerid, pos_find[0], pos_find[1], pos_find[2], OnlineInfo[giveplayerid][oWorldPlayer], OnlineInfo[giveplayerid][oInteriorPlayer], 2.0);
+            }
+            else ErrorMessage(playerid, "{FF6347}Ошибка! Игрок который совершил вызов вышел из игры");
         }
     }
     else return ErrorMessage(playerid,"{FF6347}Ошибка! Данный вызов нельзя отследить. Он не принят или недоступен");
     return 1;
 }
 
-CMD:findmake(playerid,const params[])
+CMD:findmake(playerid)
 {
-    new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отследить место вызова {ffcc00}[ /findmake ID вызова ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отследить место вызова {ffcc00}[ /findmake ID вызова ]");
-    number--;
-    FindMake(playerid,number);
+    if(OnlineInfo[playerid][oTakeMake] == -1) return ErrorMessage(playerid, "{FF6347}Вы не приняли вызов от другого игрока");
+    FindMake(playerid, OnlineInfo[playerid][oTakeMake]);
     return 1;
 }
 
 CMD:acceptmake(playerid,const params[])
 {
     new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /accaptmake ID ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /accaptmake ID ]");
+    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /acceptmake ID ]");
+    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Принять вызов {ffcc00}[ /acceptmake ID ]");
     number--;
     if(MakeInfo[number][mkStatus] == 0) return ErrorMessage(playerid,"{FF6347}Данный вызов недоступен или его просто нет");
     new g = fraction(playerid);
@@ -299,19 +365,16 @@ CMD:acceptmake(playerid,const params[])
     }
     else if(MakeInfo[number][mkWho] == 2)
     {
-        if(g != 4) return ErrorMessage(playerid,"{FF6347}Вы не работаете в Мин.Здраве");
+        if(g != 4) return ErrorMessage(playerid,"{FF6347}Вы не работаете в ASGH");
         TakeMake(playerid,number);
     }
     return 1;
 }
 
-CMD:closemake(playerid,const params[])
+CMD:closemake(playerid)
 {
-    new number;
-    if(sscanf(params, "d",number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
-    if(number == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Закрыть вызов {ffcc00}[ /closemake ID вызова ]");
-    number--;
-    if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{FF6347}Данный вызов не принят что бы его завершить.");
+    if(OnlineInfo[playerid][oTakeMake] == -1) return ErrorMessage(playerid, "{FF6347}Вы не приняли вызов от другого игрока");
+    new number = OnlineInfo[playerid][oTakeMake];
     if(MakeInfo[number][mkWhoParam] != -1 && MakeInfo[number][mkWhoType] == 1)
     {
         new Float:x,Float:y,Float:z;
@@ -329,7 +392,7 @@ CMD:closemake(playerid,const params[])
     if(MakeInfo[number][mkStatus] != 2) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который никто не принял");
     if(MakeInfo[number][mkWhoTakePlayer] != playerid && MakeInfo[number][mkWhoTakePlayer] != -1) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов, который принял другой человек");
     if(!IsPlayerInRangeOfPoint(playerid,80.0,MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2])) return ErrorMessage(playerid,"{ff6347}Вы не можете завершить вызов находясь далеко от места вызова");
-    CloseMake(playerid,number);
+    CloseMake(playerid, number);
     return 1;
 }
 
@@ -370,8 +433,8 @@ stock MakeList(playerid)
     new CopOrMin = 0; // 1 - kop, 2 - MZ
     if(IsACop(playerid)) CopOrMin = 1;
     else CopOrMin = 2;
-    new line[100],lines[4048];
-    format(line,sizeof(line),"№ Вызвавший\tСтатус\tРайон\tВремя"), strcat(lines,line);
+    new line[214],lines[4048];
+    format(line,sizeof(line),"№ Вызвавший\tСтатус\tРайон\tОсталось"), strcat(lines,line);
     new quan, targetid,findraiontolist,timemake[20];
     for(new z = 0; z < MAX_MAKE; z++) 
     {
@@ -385,37 +448,35 @@ stock MakeList(playerid)
             {
                 targetid = MakeInfo[z][mkPlayerId];
                 findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s[%d]\t{99ff66}В ожидании\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s[%d]\t{FF6347}Принят\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
             }
             else
             {
                 findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. Неизвестно\tВ ожидание\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-                else format(line,sizeof(line),"\n%d. Неизвестно\tПринят\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. Неизвестно\t{99ff66}В ожидании\t{cccccc}%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. Неизвестно\t{FF6347}Принят\t{cccccc}%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
             }
             List[quan][playerid] = z;
             quan++;
         }
         else if((MakeInfo[z][mkStatus] == 1 || MakeInfo[z][mkStatus] == 2) && CopOrMin == 2 && MakeInfo[z][mkWho] == 2)
         {
-            //if(MakeInfo[z][mkWhoType] > 0 && OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1] < 1) timemake = "Срочный вызов";
-            //else timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
             if(playerid != -1)
             {
                 timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
                 targetid = MakeInfo[z][mkPlayerId];
                 findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s[%d]\t{99ff66}В ожидании\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s[%d]\t{FF6347}Принят\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
             }
             else
             {
                 timemake = fine_time(OnlineInfo[MakeInfo[z][mkPlayerId]][oServiceMake][1]);
                 targetid = MakeInfo[z][mkPlayerId];
                 findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
-                else format(line,sizeof(line),"\n%d. %s\tПринят\t%s\t%s", quan+1 ,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\t{99ff66}В ожидании\t{cccccc}%s\t%s", quan+1,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
+                else format(line,sizeof(line),"\n%d. %s\t{FF6347}Принят\t{cccccc}%s\t%s", quan+1 ,gSAZones[findraiontolist][zName],timemake), strcat(lines,line);
             }
             List[quan][playerid] = z;
             quan++;
@@ -424,8 +485,8 @@ stock MakeList(playerid)
         {
             targetid = MakeInfo[z][mkPlayerId];
             findraiontolist = FindRaionPos(MakeInfo[z][mkCord][0],MakeInfo[z][mkCord][1],MakeInfo[z][mkCord][2]);
-            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s\tВ ожидание\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
-            else format(line,sizeof(line),"\n%d. %s\tПринят\t%d\t%s\t%s", quan+1, rpplayername(targetid),gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            if(MakeInfo[z][mkStatus] == 1) format(line,sizeof(line),"\n%d. %s[%d]\t{99ff66}В ожидании\t%d\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
+            else format(line,sizeof(line),"\n%d. %s[%d]\t{FF6347}Принят\t%d\t{cccccc}%s\t%s", quan+1, rpplayername(targetid), targetid, gSAZones[findraiontolist][zName],fine_time(OnlineInfo[playerid][oServiceMake][1])), strcat(lines,line);
             
             List[quan][playerid] = z;
             quan++;
@@ -446,13 +507,14 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347} Выбрана не правильная строка.");
+            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347}Выбрана не правильная строка.");
             new listselect = List[listitem][playerid],findraiontolist;
             DP[4][playerid] = listselect;
             new string[160], showMake;
             if(MakeInfo[listselect][mkStatus] == 2)
             {
-                format(string,sizeof(string),"Вызов принят: %s. Вызов принял:%s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
+                PlayerPlaySound(playerid,4203,0,0,0);
+                format(string,sizeof(string),"{ff6347}Вызов уже принят: %s. Принял: %s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
                 Login[2][playerid] = 0;
                 ShowDialog(playerid,1504,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
             }
