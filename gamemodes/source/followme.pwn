@@ -82,7 +82,8 @@ CMD:followme(playerid, const params[])
 {
 	if(!IsACop(playerid)
 		&& PlayerInfo[playerid][pMember] != 4
-		&& PlayerInfo[playerid][pMember] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
+		&& PlayerInfo[playerid][pMember] != 3
+		&& PlayerInfo[playerid][pMember] != 7) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
 	if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я в транспорте");
 	if(NoAnim[playerid] == 1)  return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Сейчас не момент для этого действия {ff9000}[ Enter или Л.К.М. ]");
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING && PlayerInfo[playerid][pSoska] == 0) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я нахожусь в слежке");
