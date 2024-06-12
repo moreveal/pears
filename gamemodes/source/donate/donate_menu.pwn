@@ -401,10 +401,10 @@ CMD:setvip(playerid, const params[])
     }
     else
     {
-        if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-        new string[57];
-        mysql_format(pearsq, string,sizeof(string),"SELECT user_id, DonateRank FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
-        mysql_tquery(pearsq, string, "Call_setvip", "dsd", playerid, params[0], status);
+        if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+        new string[140];
+        mysql_format(pearsq, string,sizeof(string),"SELECT user_id, DonateRank FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
+        mysql_tquery(pearsq, string, "Call_setvip", "dsd", playerid, tmp, status);
     }
     return true;
 }

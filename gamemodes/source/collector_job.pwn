@@ -82,30 +82,25 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
             {
                 if (GetPVarInt(playerid,"job_collector") >= 1)
                 {
-                    BizzInfo[GetPVarInt(playerid,"job_collector")][bDeliveryOrder] = -1;
-                    SetPVarInt(playerid,"job_collector",0);
-                    SetPVarInt(playerid,"job_collector_term",0);
-                    SetPVarInt(playerid,"job_collector_status",0);
-                    ErrorMessage(playerid,"Я отменил перевозку денег");
+					CloseCollectorToBiz(playerid);
+                    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы отменили инкассацию денег","*","");
                 }
-                else return ErrorMessage(playerid,"{FF6347}Вы не выполняете перевозку денег");
+                else return ErrorMessage(playerid,"{FF6347}Вы не выполняете инкассацию денег");
             }
 			if(listitem >= 1 && listitem <= 50)
 			{
+				if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"{FF6347}Вы не работаете инкассатором\n{ffcc66}Устроиться на работу можно [ Y >> GPS >> Работа >> Инкассаторы ]");
                 new veh = GetPlayerVehicleID(playerid);
                 new model = VehInfo[veh][vModel];
                 if(model != 428) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Securicar\n{ffcc66}Возьмие транспорт на парковке инкассаторов");
                 new listterm = List[listitem-1][playerid];
-				if(listterm == 0) return 1;
                 new listord = ListParam[listitem-1][playerid];
+				if(listord == 0) return 1;
                 new termid = numnrent(listord);
-                if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "[ Мысли ]: Я не могу самостоятельно выполнять заказы в своём бизнесе"), pc_cmd_checkterm(playerid);
-				if(BizzInfo[listord][bDeliveryOrder] >= 0) return ErrorText(playerid, "[ Мысли ]: Заказ недоступен, его уже кто-то забрал.."), pc_cmd_checkterm(playerid);
+                if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "{FF6347}Вы не можете самостоятельно выполнить инкассацию денег в своём бизнесе"), pc_cmd_checkterm(playerid);
+				if(TerminalDelivery[listord - GetBizMin(19)][listterm] != 0) return ErrorText(playerid,"{FF6347}Упс, вы не успели.. Кто-то принял этот заказ");
 
-				BizzInfo[listord][bDeliveryOrder] = playerid;
-				SetPVarInt(playerid,"job_collector",listord);
-                SetPVarInt(playerid,"job_collector_term",listterm+1);
-                SetPVarInt(playerid,"job_collector_status",1);
+				CreateTermCollector(playerid, listord, listterm);
                 SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к банкомату для снятия денег (отмечено в GPS Навигаторе)");
                 CreateGps(playerid,RentPos_X[termid][listterm],RentPos_Y[termid][listterm],RentPos_Z[termid][listterm],0, 0, 10.0);
 			}
@@ -126,7 +121,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				if(PlayerInfo[playerid][pRent][0] > unix && PlayerInfo[playerid][pRent][1] > unix) return ErrorMessage(playerid, "{FF6347}У вас уже два арендованных транспорта [ Y >> Транспорт или /car ]");
 	            new model, newcar;
             	if(listitem == 0) newcar = PP_CreateVehicle(428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1, 0.0), model = 428;
-				SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я могу посмотреть список всех доступных банкоматов [ /checkterm ]");
+				SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я могу посмотреть список всех доступных банкоматов [ /atm ]");
                 Gas[newcar] = 100;
 	   			VehInfo[newcar][vAgetid] = playerid;
 	   			VehInfo[newcar][vRent] = unix+3600;
@@ -150,34 +145,48 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
     }
     return false;
 }
+
 stock CreateTermCollector(playerid, whrom, term)
 {
-	BizzInfo[whrom][bDeliveryOrder] = playerid;
 	SetPVarInt(playerid,"job_collector",whrom);
 	SetPVarInt(playerid,"job_collector_term",term);
 	SetPVarInt(playerid,"job_collector_status",1);
+	TerminalDelivery[whrom - GetBizMin(19)][term] = 1;
 	return 1;
 }
+
+stock CloseCollectorToBiz(playerid)
+{
+	new b = GetPVarInt(playerid,"job_collector");
+	TerminalDelivery[b - GetBizMin(19)][GetPVarInt(playerid,"job_collector_term")] = 0;
+	SetPVarInt(playerid,"job_collector",0);
+	SetPVarInt(playerid,"job_collector_term",0);
+	SetPVarInt(playerid,"job_collector_status",0);
+	return true;
+}
+
+alias:checkterm("atm")
 CMD:checkterm(playerid)
 {
-    if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"{FF6347}Вы не работаете инкассатором\n{ffcc66}Устроиться на работу можно [ Y >> GPS >> Работа >> Инкассаторы ]");
 	new quan;
 	new line[214],lines[4096];
 	ClearList(playerid);
 
     format(line,sizeof(line),"Номер бизнеса\tДенег в банкомате\tОплата"), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Отменить Инкассацию\t\t "), strcat(lines,line);
+
+	new minb = GetBizMin(19);
     for(new b = 163; b <= 172; b++)
 	{
 		if(b < 163 || b > 172) continue; // На всякий пожарный оставлю эту гавнину
 
         for(new i = 0; i < 5; i++)
 	    {
-            if(BizzInfo[b][bItem][i] == 0) continue;
+            if(BizzInfo[b][bItem][i] == 0
+				|| TerminalDelivery[b - minb][i] != 0) continue;
 
             if(RentStat[b-137][i] > 0 
 				&& BizzInfo[b][bItem][i] >= BizzInfo[b][bAtmCollector] 
-				&& BizzInfo[b][bDeliveryOrder] == -1 
 				&& BizzInfo[b][bDeliveryPay] > 0)
             {
                 List[quan][playerid] = i;
@@ -203,8 +212,8 @@ stock agetcollector(playerid)
 stock CloseCollector(playerid)
 {
 	new b = GetPlayerVirtualWorld(playerid)-3000;
-	new term = GetPVarInt(playerid,"job_collector_term")-1;
-	if(BizzInfo[b][bDeliveryOrder] < 0 || GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
+	new term = GetPVarInt(playerid,"job_collector_term");
+	if(GetPVarInt(playerid,"job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
@@ -216,8 +225,8 @@ stock CloseCollector(playerid)
 	SetPVarInt(playerid,"job_collector_status",0);
 	new br = numnrent(b);
 	UpdateLabelTerm(b,br,term);
-	BizzInfo[b][bDeliveryOrder] = -1;
-	BizzInfo[b][bItem][term] = 0, BizzInfo[b][bUpdate] = 1;
+	BizzInfo[b][bItem][term] = 0;
+	BizzInfo[b][bUpdate] = 1;
 	SuccessMessage(playerid,"{99ff66}Деньги доставлены\n{ffcc66}Вы можете забрать зарплату на базе инкассаторов\nили сесть в Securicar и продолжить работу");
 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу забрать зарплату на базе инкассаторов или продолжить работу");
 	RemovePlayerAttachedObject(playerid,1);
@@ -226,33 +235,34 @@ stock CloseCollector(playerid)
 
 stock FindBankFromCollector(playerid)
 {
-	new Float:dist, Float:findpos, biz = 26, kakoi, quan;
+	new Float:dist, Float:findpos, findBiz = 26, kakoi, quan;
 	dist = GetPlayerDistanceFromPoint(playerid, RentPos_X[26][0], RentPos_Y[26][0], RentPos_Z[26][0]);
 	for(new b = 26; b <= 35; b++)
 	{
-		if(b > 35) continue; // На всякий пожарный оставлю эту гавнину 
-
-	    for(new i = 0; i < MAX_TERMINAL_BIZ; i++)
+		for(new i = 0; i < MAX_TERMINAL_BIZ; i++)
 		{
+			if(BizzInfo[b][bItem][i] == 0
+				|| TerminalDelivery[b - 26][i] != 0) continue;
+
 		    if(RentStat[b][i] > 0 
 				&& BizzInfo[b+137][bItem][i] > BizzInfo[b+137][bAtmCollector] 
-				&& (BizzInfo[b+137][bDeliveryOrder] == -1 || BizzInfo[b+137][bDeliveryOrder] == playerid)
 				&& BizzInfo[b+137][bDeliveryPay] > 0)
 		    {
 		        quan ++;
 	    		findpos = GetPlayerDistanceFromPoint(playerid, RentPos_X[b][i], RentPos_Y[b][i], RentPos_Z[b][i]);
-	    		if(findpos <= dist) dist = findpos, kakoi = i, biz = b;
+	    		if(findpos <= dist) dist = findpos, kakoi = i, findBiz = b;
 			}
 		}
 	}
 	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслуженны\n{ffcc66}Деньги в банкоматах накапливаются со временем");
 
-	CreateTermCollector(playerid,137+biz,kakoi+1);
+	new correctB = rentnumn(findBiz);
+	CreateTermCollector(playerid, correctB, kakoi);
 	new string[200];
 	format(string,sizeof(string),"{ff9000}Ближайший Банкомат: %s {99ff66}отмечен на карте\n{cccccc}Бизнес № %d | Банкомат № %d | Денег в банкомате %d$\nОплата инкассации: {99ff66}%d$", 
-		BizzInfo[biz+137][bName], biz+137, kakoi+1,BizzInfo[biz+137][bItem],BizzInfo[biz+137][bDeliveryPay]);
+		BizzInfo[correctB][bName], correctB, kakoi+1, BizzInfo[correctB][bItem], BizzInfo[correctB][bDeliveryPay]);
 	SuccessMessage(playerid, string);
-	CreateGps(playerid, RentPos_X[biz][kakoi], RentPos_Y[biz][kakoi], RentPos_Z[biz][kakoi], 0, 0, 5.0);
+	CreateGps(playerid, RentPos_X[findBiz][kakoi], RentPos_Y[findBiz][kakoi], RentPos_Z[findBiz][kakoi], 0, 0, 5.0);
 	return 1;
 }
 

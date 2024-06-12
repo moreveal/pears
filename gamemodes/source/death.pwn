@@ -52,6 +52,8 @@ stock SetPlayerDeath(playerid, reason)
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
 
+    if(MPGO[playerid] == 0) PlayerInfo[playerid][pDeaths] ++; // Засчитываем Смерть
+
     GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
 	GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
 
@@ -224,7 +226,7 @@ stock UpdateDeathDrawProcess(playerid)
     return 1;
 }
 
-stock UseRevival(playerid,targetid)
+stock UseRevival(playerid, targetid)
 {
     if(DeathInfo[targetid][deathStatus] == false) return 0;
     new Float:x,Float:y,Float:z;
@@ -328,14 +330,16 @@ stock AcceptRevial(playerid)
         if(get_ability(playerid, 10) < 2 && !IsACop(playerid))
         {
             new stro[90],sctringo[450];
-            format(stro,sizeof(stro),"\n{ff9000}Информация по системе реанимации:"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n\n\n{cccccc}- Для лечения человека вам нужна аптечка"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- А так же 2 уровень навыка Медик или же быть участником ПД или МЗ"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Каждая реанимация добавляет определенное количество очков в скилл"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Для повышения навыка требуется трудоустроиться в ПД или МЗ"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{ff9000}Как реанимировать пострадавшего?"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n\n{cccccc}- Для реанимации вам нужна аптечка"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Аптечку можно приобрести в любой аптеке [ Y >> GPS >> Услуги >> Аптека ]"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Если вы не полицейский и не доктор, вам потребуется 2 уровень Навыка Медка"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Чтобы прокачать навык вам потребуется стать доктором и реанимировать пострадавших"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Так-же вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
             ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
         }
-        UseRevival(playerid,Moiplayer[playerid]);
+        Moiplayer[Moiplayer[playerid]] = playerid;
+        UseRevival(playerid, Moiplayer[playerid]);
     }
     return 1;
 }

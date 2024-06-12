@@ -1863,12 +1863,11 @@ stock getThingHaveQuanOrderEscort(g, thingId, thingType)
 	return stop;
 }
 
-stock delproductEscort(g, ord) // Удаляем заказ доставки товара в бизнесы
+stock delproductEscort(g, ord) // Удаляем заказ доставки товара в организацию
 {
 	OrganInfo[g][gOrder][ord] = 0;
     OrganInfo[g][gOrderQuan][ord] = 0;
     OrganInfo[g][gOrderType][ord] = 0;
-    Orders --;
 }
 
 stock SaveEscortOrder(idx)

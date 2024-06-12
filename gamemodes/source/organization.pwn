@@ -491,6 +491,7 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 		new kol;
 		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
 		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
+		else if((thingId == 8 || thingId == 70) && thingType == 0) kol = thingQuan*100; // Аптечки, Бинты
 
 		GivePlayerUnit(playerid, kol*OrganInfo[g][gUnit][0]);
 	}
@@ -842,7 +843,7 @@ stock formatPlayerInfo(str[], size, playerid, g)
     if(PlayerInfo[playerid][pFbi] > 0 && g == 2)
     {
         format(str, size, "\n%s {%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", atext, btext, getPlayerNameTransmitter(playerid), 
-			getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]), PlayerInfo[playerid][pFbi], afkStatus);
+			getNameRankPlayer(g, PlayerInfo[playerid][pFbi], PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pDivRank][1]), PlayerInfo[playerid][pFbi], afkStatus);
     }
     else
     {
@@ -900,6 +901,7 @@ function Call_mem(playerid, g)
     if(!GetAccessRankOrg(playerid, g, 0, NO_FBI)) return 1;
 
     new rows, str[214], sctring[4096], datad1[24], datad4[24], datad2, datad3, kol, qwer[144], datad5, datad6, datad7, btext[8], Division0, Division1;
+	new DivRank0, DivRank1;
 	new bool:singTransmitter, SingName[24];
     cache_get_row_count(rows);
 
@@ -924,9 +926,11 @@ function Call_mem(playerid, g)
 		cache_get_value_name_int(i, "Division1", Division1);
 		cache_get_value_name_int(i, "SignTransmitter", singTransmitter);
 		cache_get_value_name(i, "CallSign", SingName, 24);
+		cache_get_value_name_int(i, "pDivRank0", DivRank0);
+		cache_get_value_name_int(i, "pDivRank1", DivRank1);
 
         btext = datad7 > 0 ? "0088ff" : "cccccc";
-        formatPlayerInfoOff(str, sizeof(str), datad1, datad2, datad3, datad4, datad6, btext, g, Division0, Division1, singTransmitter, SingName);
+        formatPlayerInfoOff(str, sizeof(str), datad1, datad2, datad3, datad4, datad6, btext, g, Division0, Division1, singTransmitter, SingName, DivRank0, DivRank1);
         strcat(sctring, str);
 
         kol++;
@@ -949,17 +953,17 @@ function Call_mem(playerid, g)
     return 1;
 }
 
-stock formatPlayerInfoOff(str[], size, const name[], rank, vig, offtime[], fbi, const btext[], g, Division0, Division1, bool:singTransmitter, const SingName[])
+stock formatPlayerInfoOff(str[], size, const name[], rank, vig, offtime[], fbi, const btext[], g, Division0, Division1, bool:singTransmitter, const SingName[], DivRank0, DivRank1)
 {
     if(fbi > 0 && g == 2)
     {
         format(str, size, "\n{%s}%s {444444}UNDER{cccccc}\t%s [%d]\t \t{444444}%s", btext, 
-			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName) , getNameRankOrganization(2, Division1, fbi), rank, offtime);
+			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName) , getNameRankPlayer(2, fbi, Division1, DivRank1), rank, offtime);
     }
     else
     {
         format(str, size, "\n{%s}%s{cccccc}\t%s [%d]\t%d\t{444444}%s", btext, 
-			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName), getNameRankOrganization(g, Division0, rank), rank, vig, offtime);
+			getPlayerNameTransmitterOffline(g, singTransmitter, name, SingName), getNameRankPlayer(g, rank, Division0, DivRank0), rank, vig, offtime);
     }
 }
 

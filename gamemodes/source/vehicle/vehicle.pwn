@@ -308,7 +308,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2082) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2096) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -800,7 +800,7 @@ stock IsABoot(carid) // Транспорт, у которых есть бага�
 {
 	new model = VehInfo[carid][vModel];
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 413
-    || model == 415 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 428 || model == 429 || model == 433 || model == 434 || model == 436
+    || model == 415 || model == 416 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 428 || model == 429 || model == 433 || model == 434 || model == 436
     || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 || model == 466 || model == 467
     || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 489 || model == 490 || model == 491
     || model == 492 || model == 494 || model == 495 || model == 496 || model == 498 || model == 500 || model == 502 || model == 503 || model == 504 || model == 505 || model == 506
@@ -1702,7 +1702,7 @@ CMD:vehgoldall(playerid, const params[])
 	mysql_tquery(pearsq, "START TRANSACTION;");
 	for(new v = 0; v < 211 + sizeof(vehNameCustom) + 1; v++)
 	{
-		if(VehGos[v] > 0) 
+		if(VehGos[v] > 0 && VehGold[v] == 0) 
 		{
 			VehGold[v] = VehGos[v]/params[0];
 			SaveVehicleGold(v);
@@ -1711,7 +1711,7 @@ CMD:vehgoldall(playerid, const params[])
 	mysql_tquery(pearsq, "COMMIT;");
 
 	new string[144];
-	format(string, sizeof(string), " [ ADM ]: %s изменил gold стоимости всех тс по курсу %d$", PlayerInfo[playerid][pName], params[0]);
+	format(string, sizeof(string), " [ ADM ]: %s изменил gold стоимости тс с 0 gold по курсу %d$", PlayerInfo[playerid][pName], params[0]);
  	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("vehgoldall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Gold цена тс");
 	return 1;

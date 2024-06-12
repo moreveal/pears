@@ -864,7 +864,7 @@ function CraftProcess(playerid, tabs_load)
                 new slot = GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]);
                 if(slot == -1)
                 {
-                    new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0,friskDetail[thingId - 207][1]);
+                    new slot2 = SetVehicleDetailTunning(vehicleid, thingId, 0, friskDetail[thingId - 207][1]);
                     if(slot2 == -1)
                     {
                         ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга");
@@ -876,13 +876,13 @@ function CraftProcess(playerid, tabs_load)
                     format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость установки деталий повышается"), strcat(lines,line);
                     format(line,sizeof(line),"\n{666666}Навык повышается при ремонте двигателя"), strcat(lines,line);
                     format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
-                    SaveTunning(vehicleid);
+                    SaveOneTunning(vehicleid, slot2);
                 }
                 else
                 {
-                    format(line,sizeof(line),"{ff6347}Не выполнено!\n"), strcat(lines,line);
+                    format(line,sizeof(line),"{ff6347}Не выполнено!"), strcat(lines,line);
                     format(line,sizeof(line),"\n{ffcc66}Вы пытались установить деталь %s, но в вашем ТС уже стоит", friskName[thingId]), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ffcc66}деталь такого же типа. Сначаа снимите её, а после уже ставте новую"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ffcc66}деталь такого же типа. Сначала снимите её, а затем установите новую"), strcat(lines,line);
                 }
             }
             else

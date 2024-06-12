@@ -84,7 +84,7 @@ stock showDialogMenuDivision(playerid)
 	// Настройки подфракции для лидеров, замов и глав подфракции
 	if(PlayerInfo[playerid][pLeader] > 0 
 	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g+1)-1
-	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pRank] >= DivisionInfo[g][i][divRanks])
+	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pDivRank][0] >= DivisionInfo[g][i][divRanks])
 	{
 		DP[3][playerid] = 1; // Даём доступ к управлению подфракцией
 
@@ -143,7 +143,7 @@ stock showDialogMembersDivision(playerid, org, div)
 		if(OnlineInfo[i][oLogged] == 1 
 			&& (PlayerInfo[i][pMember] == org && PlayerInfo[i][pDivision][0] == div || org == 2 && PlayerInfo[i][pFbi] > 0 && PlayerInfo[i][pDivision][1] == div))
 		{
-			rank = PlayerInfo[i][pRank];
+			rank = PlayerInfo[i][pDivRank][0];
 
 			// Получаем информацию о рации (Включена или нет)
 			if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";
@@ -265,7 +265,43 @@ function call_membersdiv(playerid, org, div)
 	return 1;
 }
 
-CMD:divin(playerid, const params[]) return pc_cmd_divinvite(playerid, params);
+alias:giverankdiv("giverankd", "divrank", "divrang")
+CMD:giverankdiv(playerid, const params[])
+{
+	DivisionGiveRank(playerid, params);
+	return true;
+}
+
+stock DivisionGiveRank(playerid, const params[], i = -1)
+{	
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
+	new g = fraction(playerid);
+	if(i == -1) i = PlayerInfo[playerid][pDivision][0] - 1;
+
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
+		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
+
+	new playerName[24], giveplayerid, rank;
+	if(sscanf(params, "s[24]i", playerName, rank)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить ранг игрока в подфракции [ /divrank ID Ранг ]");
+
+	giveplayerid = ReturnUser(playerName);
+	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
+	if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
+	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+	if(PlayerInfo[giveplayerid][pDivision][0] - 1 != i) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей подфракции");
+
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы изменили ранг %s на %d", getPlayerNameTransmitter(giveplayerid), rank);
+	SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s изменил ваш ранг в подфракции на %d", getPlayerNameTransmitter(playerid), rank);
+
+	new string[84];
+	format(string, sizeof(string), "Изменил ранг в %s на %d", DivisionInfo[g - 1][i][divAbbreviation], rank);
+	OrgLog(g, "giverankdiv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, string);
+	return true;
+}
+
+alias:divinvite("divin")
 CMD:divinvite(playerid, const params[])
 {
 	DivisionInvite(playerid, params);
@@ -280,7 +316,8 @@ stock DivisionInvite(playerid, const params[], i = -1)
 
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
+	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
+		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid;
 	if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить игрока в подфракцию [ /divinvite ID ]");
@@ -318,7 +355,8 @@ CMD:divuninvite(playerid, const params[])
 	new i = PlayerInfo[playerid][pDivision][0];
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	if(i == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(PlayerInfo[playerid][pRank] < DivisionInfo[g-1][i-1][divRanks]) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
+	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
+		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
 	new playerName[24], giveplayerid, reason[24];
 	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID Причина ]");
@@ -399,7 +437,7 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		if(playerLoad[3] > 0) outOrg = playerLoad[3];
 		else outOrg = playerLoad[2];
 		uninviteDivisionKey(outOrg, playerLoad[4], whichDiv); // Ищем, какую подфракцию будем очищать
-		mysql_SaveDivision(playerLoad[5], whichDiv, 0); // Сохраняем в базу
+		mysql_SaveDivision(playerLoad[5], whichDiv, 0, 0); // Сохраняем в базу
 
 		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы исключили %s из %s по причине: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
@@ -414,7 +452,8 @@ stock uninviteDivision(playerid, outOrg) // Исключаем из подфра
 	new whichDiv;
 	uninviteDivisionKey(outOrg, PlayerInfo[playerid][pFbi], whichDiv); // Ищем, какую подфракцию будем очищать
 	PlayerInfo[playerid][pDivision][whichDiv] = 0; // Очищаем
-	mysql_SaveDivision(PlayerInfo[playerid][pID], whichDiv, 0); // Сохраняем в базу
+	PlayerInfo[playerid][pDivRank][whichDiv] = 0; // Очищаем
+	mysql_SaveDivision(PlayerInfo[playerid][pID], whichDiv, 0, 0); // Сохраняем в базу
 
 	new getOrg, getDiv, getReadRac;
 	resetTransmitterDivisionKey(PlayerInfo[playerid][pDivision][0], fraction(playerid), getOrg, getDiv, getReadRac); // Ищем, какую рацию нужно выключать
@@ -427,10 +466,11 @@ stock uninviteDivisionKey(outOrg, fbi, &whichDiv) // Получаем инфор
 	else whichDiv = 0;
 	return 1;
 }
-stock mysql_SaveDivision(str_id, whichDiv, value)
+stock mysql_SaveDivision(str_id, whichDiv, value, rank)
 {
 	new string_mysql[100];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d' WHERE `user_id` = '%d'", whichDiv, value, str_id);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_igroki` SET `Division%d` = '%d', `pDivRank%d` = '%d' WHERE `user_id` = '%d'", 
+		whichDiv, value, whichDiv, rank, str_id);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
@@ -445,6 +485,9 @@ CMD:divleave(playerid)
 
    	PlayerPlaySound(playerid,40405,0,0,0);
    	DP[5][playerid] = 0; // Сбрасываем счетчик уточнений
+
+	DP[1][playerid] = g; // Записываем id организации
+	DP[2][playerid] = i; // Записываем id подфракции
 
 	new string[140];
    	format(string, sizeof(string), "{cccccc}Вы уверены, что хотите покинуть {%s}%s{cccccc}?", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
@@ -480,6 +523,7 @@ stock showDialogInfoDivision(playerid)
 	format(line,sizeof(line),"\n/dleave - покинуть подфракцию"), strcat(lines,line);
 	format(line,sizeof(line),"\n/divin - пригласить"), strcat(lines,line);
 	format(line,sizeof(line),"\n/divun - исключить"), strcat(lines,line);
+	format(line,sizeof(line),"\n/divrank - изменить ранг в подфракции"), strcat(lines,line);
 	format(line,sizeof(line),"\n/i /ib - канал рации"), strcat(lines,line);
 	ShowDialog(playerid,1326,DIALOG_STYLE_MSGBOX,"{ff9000}Подфракция",lines,"*","");
 	return 1;
@@ -567,7 +611,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 				if(PlayerInfo[playerid][pDivision][0] == i + 1) return pc_cmd_divleave(playerid);
 
 				PlayerInfo[playerid][pDivision][0] = i + 1;
-				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
+				PlayerInfo[playerid][pDivRank][0] = DivisionInfo[g][i][divRanks];
+				mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pDivRank][0]); // Сохраняем в базу
 
 				// Включаем отображение рации /i
 				if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;
@@ -872,7 +917,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 		if(response)
 		{
 			PlayerInfo[playerid][pDivision][0] = i;
-			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0]); // Сохраняем в базу
+			PlayerInfo[playerid][pDivRank][0] = 1;
+			mysql_SaveDivision(PlayerInfo[playerid][pID], 0, PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pDivRank][0]); // Сохраняем в базу
 
 			// Включаем отображение рации /i
 			if(PlayerInfo[playerid][pTransmitterOff][2] == true) PlayerInfo[playerid][pTransmitterOff][2] = false, PlayerInfo[playerid][pTransmitterUpdate] = true;

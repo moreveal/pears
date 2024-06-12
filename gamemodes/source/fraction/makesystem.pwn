@@ -111,13 +111,13 @@ stock MakeCreate(playerid, whom)
     new findslot = -1;
     for(new z = 0; z < MAX_MAKE; z++) 
     {
-        if(MakeInfo[z][mkWho] == 0)
+        if(MakeInfo[z][mkWho] <= 0)
         {
             findslot = z;
             break;
         }
     }
-    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент 50 активных вызовов\n\n{cccccc}Сообщите об этом администрации в [ /report ]");
+    if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент нет свободных слотов для вызовов\n\n{cccccc}Сообщите об этом администрации в [ /report ]");
 
     if(whom == 1)
     {

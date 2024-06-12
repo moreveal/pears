@@ -250,7 +250,7 @@ stock commandR(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankPlayer(g, PlayerInfo[playerid][pFbi], PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pDivRank][1]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
     else // Получаем ранг организации с учётом подфракции
@@ -312,7 +312,7 @@ stock commandD(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_LENGTH], nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankPlayer(g, PlayerInfo[playerid][pFbi], PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pDivRank][1]));
         format(nameAbb,sizeof(nameAbb), "%s", getNameAbbreviationOrganization(playerid, g, 1));
     }
     else // Получаем ранг организации с учётом подфракции
@@ -378,7 +378,7 @@ stock commandI(playerid, typeCommand, const params[])
     new nameRank[MAX_NAME_LENGTH];
     if(g == 2 && PlayerInfo[playerid][pFbi] > 0) // Получаем ранг FBI под прикрытием в своём чате
     {
-        format(nameRank,sizeof(nameRank), "%s", getNameRankOrganization(g, PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pFbi]));
+        format(nameRank,sizeof(nameRank), "%s", getNameRankPlayer(g, PlayerInfo[playerid][pFbi], PlayerInfo[playerid][pDivision][1], PlayerInfo[playerid][pDivRank][1]));
     }
     else // Получаем ранг организации с учётом подфракции
     {
@@ -440,25 +440,44 @@ stock getNameRank(playerid) // Получаем общее название ра
     new g = fraction(playerid);
 
     if(g == 0 && PlayerInfo[playerid][pSoska] > 0) format(nameRank,sizeof(nameRank), "Админ");
-    else if(g > 0) format(nameRank,sizeof(nameRank), getNameRankOrganization(g, PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pRank]));
+    else if(g > 0) format(nameRank,sizeof(nameRank), getNameRankPlayer(g, PlayerInfo[playerid][pRank], PlayerInfo[playerid][pDivision][0], PlayerInfo[playerid][pDivRank][0]));
     else format(nameRank,sizeof(nameRank), "None");
     return nameRank;
 }
-stock getNameRankOrganization(g, i, r) // Получаем название ранга внутри организации (с учётом подфракции)
+stock getNameRankPlayer(g, r, i, ri) // Получаем название ранга внутри организации (с учётом подфракции)
 {
     new nameRank[MAX_NAME_LENGTH];
-    if(i > 0)  // Если состоит в подфракции
+    if(i > 0) format(nameRank,sizeof(nameRank), getNameRankDivision(g, i, ri)); // Если состоит в подфракции
+    else format(nameRank,sizeof(nameRank), getNameRankOrganization(g, r));
+    return nameRank;
+}
+
+stock getNameRankDivision(g, i, r)
+{
+    new nameRank[MAX_NAME_LENGTH];
+    if(g == 0 || i == 0 || r == 0) format(nameRank,sizeof(nameRank), "None");
+    else 
     {
-        g -= 1, i -= 1, r -= 1; // Исправления, для корректного получения названий переменных
-        format(nameRank,sizeof(nameRank), DivisionRankName[g][i][r]);
-    }
-    else
-    {
-        r -= 1; // Исправления, для корректного получения названий переменных
-        format(nameRank,sizeof(nameRank), RankOrg[g][r]);
+        new maxRankDiv = DivisionInfo[g - 1][i - 1][divRanks];
+        if(r > maxRankDiv) format(nameRank,sizeof(nameRank), DivisionRankName[g - 1][i - 1][maxRankDiv - 1]); // Если ранг выше максимального, отображаем предыдущее
+        else format(nameRank,sizeof(nameRank), DivisionRankName[g - 1][i - 1][r - 1]);
     }
     return nameRank;
 }
+
+stock getNameRankOrganization(g, r)
+{
+    new nameRank[MAX_NAME_LENGTH];
+    if(g == 0 || r == 0) format(nameRank,sizeof(nameRank), "None");
+    else 
+    {
+        new maxRankOrg = get_maxrank(g);
+        if(r >= maxRankOrg) format(nameRank,sizeof(nameRank), RankOrg[g][maxRankOrg - 1]); // Если ранг выше максимального, отображаем максимальный
+        format(nameRank,sizeof(nameRank), RankOrg[g][r - 1]); // g не корректируем намеренно, на нём нам насрать
+    }
+    return nameRank;
+}
+
 stock getNameAbbreviation(playerid)
 {
     new nameAbb[MAX_NAME_DIVISION_ABBREVIATION_LENGTH];

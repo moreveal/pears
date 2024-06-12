@@ -55,6 +55,6 @@ stock HealPlayer(playerid)
 
 	OrganInfo[4][glave] += price;
 	OrganInfo[4][gUpdate] = 1;
-    GivePlayerUnit(giveplayerid, 22);
+    GiveUnit(giveplayerid, 22);
 	return true;
 }

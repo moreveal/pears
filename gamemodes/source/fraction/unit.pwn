@@ -165,7 +165,7 @@ stock IsAUnitOrganization(unitid, g, playerid)
     return 0;
 }
 
-stock GiveUnit(playerid, unitid)
+stock GiveUnit(playerid, unitid) // ВНИМАНИЕ! unitid - тут мы выдаём юниты по id из системы юнитов
 {
     if(IsAUnitOrganization(unitid, PlayerInfo[playerid][pMember], playerid))
     {
@@ -174,7 +174,7 @@ stock GiveUnit(playerid, unitid)
     return 1;
 }
 
-stock GivePlayerUnit(playerid, unit)
+stock GivePlayerUnit(playerid, unit) // ВНИМАНИЕ! unit - тут мы выдаём напрямую количество юнитов
 {
 	if(unit == 0) return 1; // Если вдруг юниты не были настроены, отменяем выдачу
 
@@ -240,7 +240,8 @@ stock showDialogSettingUnit(playerid, unitid)
     if(unitid == 0)
     {
         format(line,sizeof(line),"\n{cccccc}Патроны, Вещества - количество в ящике умножается на {9900ff}значение юнитов\n"), strcat(lines,line);
-		format(line,sizeof(line),"\n{cccccc}Аптечки, Броня, Оружие - 1 предмет в ящике умножается на 1000 и на {9900ff}значение юнитов\n"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Броня, Оружие - 1 предмет в ящике умножается на 1000 и на {9900ff}значение юнитов\n"), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Аптечки, Бинты - 1 предмет в ящике умножается на 100 и на {9900ff}значение юнитов\n"), strcat(lines,line);
     }
 
     format(line,sizeof(line), "\n{ff9000}Введите новое значение [ Не меньше 1U и не больше 100.000U ]"), strcat(lines,line);

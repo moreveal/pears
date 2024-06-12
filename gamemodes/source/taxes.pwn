@@ -4,10 +4,11 @@ CMD:cleartaxes(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
-    if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Очистить подоходный налог игрока [ /cleartaxes ID ]");
-	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
+    new tmp[121];
+    if(sscanf(params, "s[121]", tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Очистить подоходный налог игрока [ /cleartaxes ID ]");
+	if(strlen(tmp) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 	new giveplayerid;
- 	giveplayerid = ReturnUser(params[0], 1);
+ 	giveplayerid = ReturnUser(tmp, 1);
 	if(IsPlayerConnected(giveplayerid)) 
 	{
         if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
@@ -24,10 +25,10 @@ CMD:cleartaxes(playerid, const params[])
     }
     else
     {
-        if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-        new string[57];
-        mysql_format(pearsq, string,sizeof(string),"SELECT user_id, Taxes1 FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
-        mysql_tquery(pearsq, string, "Call_cleartaxes", "ds", playerid, params[0]);
+        if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+        new string[140];
+        mysql_format(pearsq, string,sizeof(string),"SELECT user_id, Taxes1 FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
+        mysql_tquery(pearsq, string, "Call_cleartaxes", "ds", playerid, tmp);
     }
     return true;
 }

@@ -40,7 +40,7 @@ CMD:rdomspawn(playerid, const params[])
 alias:rdomtaxes("rdomnal", "rdomtax", "rdomnalog")
 CMD:rdomtaxes(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в доме [ /rdomtaxes Номер Дома (0 - все дома) ]");
 
 	new string[144];
