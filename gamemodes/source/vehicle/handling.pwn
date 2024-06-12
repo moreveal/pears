@@ -205,20 +205,28 @@ stock GetVehicleDetailTunningID(vehicleid, tuningType)
 }
 
 // Снимаем одну деталь тюнинга по её thingId
-stock RemoveDetailTunning(vehicleid, thingId)
+/*stock RemoveDetailTunning(vehicleid, thingId)
 {
     new slot = -1;
     for(new t = 0; t < MAX_TUNNING_VEHICLE; t++)
     {
         if(VehInfo[vehicleid][vTunningID][t] == thingId)
         {
-            ClearTunningSlot(vehicleid,t);
+            ClearTunningSlot(vehicleid, t);
             slot = t;
             break;
         }
     }
     if(slot >= 0) SetHandlingTotal(vehicleid, true);
     return slot;
+}*/
+
+// Снимаем деталь по слоту
+stock RemoveDetailTunningSlot(vehicleid, slot)
+{
+    ClearTunningSlot(vehicleid, slot);
+    SetHandlingTotal(vehicleid, true);
+    return true;
 }
 
 

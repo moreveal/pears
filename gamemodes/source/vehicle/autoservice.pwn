@@ -218,7 +218,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
                 if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положить туда деталь");
-                RemoveDetailTunning(v, slot);
+                RemoveDetailTunningSlot(v, slot);
                 SaveOneTunning(v, slot);
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }
@@ -229,7 +229,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли временную деталь тюнинга");
             }
             TempDetail[playerid][friskDetail[ListParam[listitem][playerid]][1]] = friskDetail[ListParam[listitem][playerid]][0];
-            SuccessMessage(playerid,"{44ff99}Вы успешно установили временно деталь тюнинга. \n\nПосле выхода из автосервиса вам предложит купить весь временный тюнинг.");
+            SuccessMessage(playerid,"{44ff99}Вы успешно установили временно деталь тюнинга\n\nПосле выхода из автосервиса вам предложит купить весь временный тюнинг");
         }
         else return ShowAllTypeDetail(playerid);
     }
@@ -364,7 +364,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = GiveThingPlayer(playerid, VehInfo[v][vTunningID][slot], 1, 0, VehInfo[v][vTunningQara][slot], 0, 0, 9999); // Выдаём предмет игроку
                 if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В инвентаре нет места чтобы положить туда деталь");
-                RemoveDetailTunning(v, VehInfo[v][vTunningID][slot]);
+                RemoveDetailTunningSlot(v, slot);
                 SaveOneTunning(v, slot);
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
             }

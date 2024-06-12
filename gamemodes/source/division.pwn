@@ -35,10 +35,14 @@ new DivisionRankName[MAX_ORG][MAX_DIVISION_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH]; 
 // Список всех подфракций (Меню для лидера)
 CMD:alldiv(playerid)
 {
-	if(PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Вы не лидер организации");
-
-    PlayerPlaySound(playerid,1150,0,0,0);
-    showDialogAllDivisions(playerid);
+	new g = fraction(playerid);
+	if(PlayerInfo[playerid][pLeader] > 0
+		|| g > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g) - 1)
+	{
+    	PlayerPlaySound(playerid,1150,0,0,0);
+    	showDialogAllDivisions(playerid);
+	}
+	else ErrorMessage(playerid, "{FF6347}У вас нет доступа к настройкам всех подфракций");
 	return 1;
 }
 stock showDialogAllDivisions(playerid)
@@ -137,6 +141,9 @@ stock showDialogMembersDivision(playerid, org, div)
 	new atext[10], btext[10], quan, rank, fineTime[24];
 	new year, month, day;
 	getdate(year, month, day);
+
+	DP[1][playerid] = org-1;
+	DP[2][playerid] = div-1;
 
 	foreach(Player,i)
 	{
@@ -280,24 +287,31 @@ stock DivisionGiveRank(playerid, const params[], i = -1)
 
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
-		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
-	new playerName[24], giveplayerid, rank;
-	if(sscanf(params, "s[24]i", playerName, rank)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить ранг игрока в подфракции [ /divrank ID Ранг ]");
+	if(PlayerInfo[playerid][pLeader] > 0 
+	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g)-1
+	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pDivRank][0] >= DivisionInfo[g - 1][i][divRanks])
+	{
+		new playerName[24], giveplayerid, rank;
+		if(sscanf(params, "s[24]i", playerName, rank)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить ранг игрока в подфракции [ /divrank ID Ранг ]");
 
-	giveplayerid = ReturnUser(playerName);
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
-	if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
-	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
-	if(PlayerInfo[giveplayerid][pDivision][0] - 1 != i) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей подфракции");
+		giveplayerid = ReturnUser(playerName);
+		if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
+		if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
+		if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+		if(PlayerInfo[giveplayerid][pDivision][0] - 1 != i) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей подфракции");
 
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы изменили ранг %s на %d", getPlayerNameTransmitter(giveplayerid), rank);
-	SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s изменил ваш ранг в подфракции на %d", getPlayerNameTransmitter(playerid), rank);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы изменили ранг %s на %d", getPlayerNameTransmitter(giveplayerid), rank);
+		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s изменил ваш ранг в подфракции на %d", getPlayerNameTransmitter(playerid), rank);
 
-	new string[84];
-	format(string, sizeof(string), "Изменил ранг в %s на %d", DivisionInfo[g - 1][i][divAbbreviation], rank);
-	OrgLog(g, "giverankdiv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, string);
+		PlayerInfo[giveplayerid][pDivRank][0] = rank;
+		mysql_SaveDivision(PlayerInfo[giveplayerid][pID], 0, PlayerInfo[giveplayerid][pDivision][0], PlayerInfo[giveplayerid][pDivRank][0]);
+
+		new string[84];
+		format(string, sizeof(string), "Изменил ранг в %s на %d", DivisionInfo[g - 1][i][divAbbreviation], rank);
+		OrgLog(g, "giverankdiv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, string);
+	}
+	else ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 	return true;
 }
 
@@ -319,91 +333,108 @@ stock DivisionInvite(playerid, const params[], i = -1)
 	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
 		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 
-	new playerName[24], giveplayerid;
-	if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить игрока в подфракцию [ /divinvite ID ]");
+	if(PlayerInfo[playerid][pLeader] > 0 
+	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g)-1
+	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pDivRank][0] >= DivisionInfo[g - 1][i][divRanks])
+	{
+		new playerName[24], giveplayerid;
+		if(sscanf(params, "s[24]", playerName)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Пригласить игрока в подфракцию [ /divinvite ID ]");
 
-	giveplayerid = ReturnUser(playerName);
-	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
-	if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
-	if(PlayerInfo[giveplayerid][pDivision][0] > 0) return ErrorMessage(playerid, "{FF6347}Игрок уже находится в подфракции");
-	if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+		giveplayerid = ReturnUser(playerName);
+		if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
+		if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
+		if(PlayerInfo[giveplayerid][pDivision][0] > 0) return ErrorMessage(playerid, "{FF6347}Игрок уже находится в подфракции");
+		if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 
-	new string[120];
-	// Записываем чела, которого приглашаем
-	format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i][divName]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-	PlayerPlaySound(playerid,40405,0,0,0);
+		new string[120];
+		// Записываем чела, которого приглашаем
+		format(string, sizeof(string), "* Вы отправили приглашение %s на вступление в %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i][divName]);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
+		PlayerPlaySound(playerid,40405,0,0,0);
 
-	// Записываем этому челу инфу, куда приглашаем и кто приглашает
-	DP[0][giveplayerid] = i + 1;
-	DP[7][giveplayerid] = playerid;
-	format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i][divName]);
-	ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
-	PlayerPlaySound(giveplayerid,40405,0,0,0);
+		// Записываем этому челу инфу, куда приглашаем и кто приглашает
+		DP[0][giveplayerid] = i + 1;
+		DP[7][giveplayerid] = playerid;
+		format(string, sizeof(string), "{ffcc66}%s{33CCFF}, приглашает вас в %s\n\n{33CCFF}Вы согласны?", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i][divName]);
+		ShowDialog(giveplayerid,1327,DIALOG_STYLE_MSGBOX,"{ff9000}Приглашение",string,"Да","Нет");
+		PlayerPlaySound(giveplayerid,40405,0,0,0);
 
-	OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, DivisionInfo[g - 1][i][divName]);
+		OrgLog(g, "divin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, DivisionInfo[g - 1][i][divName]);
+	}
+	else ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
 	return true;
 }
 
-CMD:divkick(playerid, const params[]) return pc_cmd_divuninvite(playerid, params);
-CMD:divun(playerid, const params[]) return pc_cmd_divuninvite(playerid, params);
+alias:divuninvite("divun", "divkick")
 CMD:divuninvite(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
-
-	new g = fraction(playerid);
-	new i = PlayerInfo[playerid][pDivision][0];
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
-	if(PlayerInfo[playerid][pDivRank][0] < DivisionInfo[g-1][i][divRanks]
-		&& PlayerInfo[playerid][pLeader] == 0) return ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
-
-	new playerName[24], giveplayerid, reason[24];
-	if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID Причина ]");
-
-	if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ Мысли ]: Имя не меньше 1 и не больше 24 символов");
-	if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ Мысли ]: Причина не меньше 1 и не больше 24 символов");
-	if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
-
-	giveplayerid = ReturnUser(playerName);
-	if(IsPlayerConnected(giveplayerid))
- 	{
-		if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
-		if(PlayerInfo[giveplayerid][pDivision][0] != i && PlayerInfo[giveplayerid][pDivision][1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");
-		if(g == 2)
-		{
-			if(fraction(giveplayerid) != 2 && PlayerInfo[giveplayerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
-		}
-		else 
-		{
-			if(fraction(giveplayerid) != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
-		}
-
-		new string[120];
-		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
-		format(string, sizeof(string), "* Вы исключили %s из %s по причине: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i - 1][divName], reason);
-		SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-
-		PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
-		format(string, sizeof(string), "* %s исключает вас из %s по причине: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i - 1][divName], reason);
-		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
-
-		// Исключаем
-		uninviteDivision(giveplayerid, g);
-
-		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i, reason);
-	}
-	else
-	{
-		if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
-
-		new string_mysql[180];
-		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
-		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%e'", playerName);
-		mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g, i, playerName, reason, g_MysqlRaceCheck[playerid]);
-	}
+	DivisionUninvite(playerid, params);
 	return 1;
 }
+
+stock DivisionUninvite(playerid, const params[], i = -1)
+{	
+	if(PlayerInfo[playerid][pGoogle] == 0 && server != 0) return ErrorMessage(playerid, "{FF6347}У вас не привязан Google Authenticator [ Y >> Меню >> Аккаунт ]");
+	new g = fraction(playerid);
+	if(i == -1) i = PlayerInfo[playerid][pDivision][0] - 1;
+
+	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+
+	if(PlayerInfo[playerid][pLeader] > 0 
+	|| PlayerInfo[playerid][pMember] > 0 && PlayerInfo[playerid][pRank] >= get_maxrank(g)-1
+	|| PlayerInfo[playerid][pDivision][0] == i+1 && PlayerInfo[playerid][pDivRank][0] >= DivisionInfo[g - 1][i][divRanks])
+	{
+		new playerName[24], giveplayerid, reason[24];
+		if(sscanf(params, "s[24]s[24]", playerName, reason)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Исключить участника из подфракции [ /divuninvite ID Причина ]");
+
+		if(strlen(playerName) > 24 || strlen(playerName) < 1) return ErrorText(playerid, "[ Мысли ]: Имя не меньше 1 и не больше 24 символов");
+		if(strlen(reason) > 24 || strlen(reason) < 1) return ErrorText(playerid, "[ Мысли ]: Причина не меньше 1 и не больше 24 символов");
+		if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
+
+		giveplayerid = ReturnUser(playerName);
+		if(IsPlayerConnected(giveplayerid))
+		{
+			if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
+			if(PlayerInfo[giveplayerid][pDivision][0] != i && PlayerInfo[giveplayerid][pDivision][1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");
+			if(g == 2)
+			{
+				if(fraction(giveplayerid) != 2 && PlayerInfo[giveplayerid][pFbi] == 0) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+			}
+			else 
+			{
+				if(fraction(giveplayerid) != g) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
+			}
+
+			new string[120];
+			PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
+			format(string, sizeof(string), "* Вы исключили %s из %s по причине: %s", getPlayerNameTransmitter(giveplayerid), DivisionInfo[g - 1][i][divName], reason);
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
+
+			PlayerPlaySound(giveplayerid, 6801, 0, 0, 0); // Отказ
+			format(string, sizeof(string), "* %s исключает вас из %s по причине: %s", getPlayerNameTransmitter(playerid), DivisionInfo[g - 1][i][divName], reason);
+			SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, string);
+
+			// Исключаем
+			uninviteDivision(giveplayerid, g);
+
+			OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], i + 1, reason);
+		}
+		else
+		{
+			if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети [ Используйте никнейм, чтобы уволить Offline ]");
+
+			new string_mysql[180];
+			ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}*","{cccccc}Поиск игрока...","*","");
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Member, Leader, Fbi, Division0, Division1 FROM `pp_igroki` WHERE `Name` = '%e'", playerName);
+			mysql_tquery(pearsq, string_mysql, "call_divuninvite", "dddssd", playerid, g - 1, i, playerName, reason, g_MysqlRaceCheck[playerid]);
+		}
+	}
+	else ErrorMessage(playerid, "{FF6347}Доступно только для главы подфракции");
+	return true;
+}
+
+
 function call_divuninvite(playerid, g, i, const str_name[], const reason[], race_check) // Offline исключение из подфракции
 {
 	if(!IsOnline(playerid)) return 0; // Если тот, кто посылал запрос вышел из игры
@@ -442,7 +473,7 @@ function call_divuninvite(playerid, g, i, const str_name[], const reason[], race
 		PlayerPlaySound(playerid, 6801, 0, 0, 0); // Отказ
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы исключили %s из %s по причине: %s", str_name, DivisionInfo[g - 1][i - 1][divName], reason);
 
-		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], playerLoad[5], str_name, "", i, reason);
+		OrgLog(g, "divkick", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], playerLoad[5], str_name, "", i + 1, reason);
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
 	return 1;
@@ -970,9 +1001,8 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
           	if(strlen(inputtext) > 24 || strlen(inputtext) < 1) return ErrorText(playerid, "[ Мысли ]: Не меньше 1 и не больше 24 символов"), showDialogMenuDivision(playerid);
            	if(checksimvol(inputtext)) return ErrorText(playerid, "[ Мысли ]: Хм... я пытаюсь написать какие-то каракули... [ Запрещённый Символ ]"), showDialogMenuDivision(playerid);
 
-			new string[30];
-			format(string, sizeof(string), "%s", inputtext);
-            pc_cmd_divuninvite(playerid, string);
+			new i = DP[2][playerid]; // Получаем id подфракции
+			DivisionUninvite(playerid, inputtext, i);
 		}
 		else showDialogMenuDivision(playerid);
 	}
