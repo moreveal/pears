@@ -1,7 +1,21 @@
-**/*.amx
-**/*.so
-**/*.ini
-**/*.rec
-/.vscode
-log.txt
-crashdetect_log.txt
+# Ignore everything
+*
+
+# And then exclude required files
+
+# Pwn and inc files (gamemode, filterscripts, npcmodes etc)
+!gamemodes/**/*.pwn
+!gamemodes/**/*.inc
+!filterscripts/*.pwn
+!npcmodes/*.pwn
+
+# NPCs recordings
+!npcmodes/recordings/*.rec
+
+# Some custom files required for gamemode
+!scriptfiles
+
+# Proper files encoding detection
+!.vscode
+.vscode/*
+!.vscode/settings.json
