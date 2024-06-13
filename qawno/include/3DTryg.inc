@@ -2,7 +2,7 @@
  *                                                                                                                                   *
  *                                                    )(   3DTryg Functions   )(                                                     *
  *                                                                                                                                   *
- * Copyright © 2019 Abyss Morgan. All rights reserved.                                                                               *
+ * Copyright Â© 2019 Abyss Morgan. All rights reserved.                                                                               *
  * Contributors: Crayder, IllidanS4, Nero_3D, RyDeR, Zoutdaxv, hesambia, Neil Lamoureux, Ivan_Ino, Ralfie, Unrea1, Katarina Calzaghe *
  * Mr.Reus                                                                                                                           *
  *                                                                                                                                   *

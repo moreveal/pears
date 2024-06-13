@@ -2864,8 +2864,8 @@ native bool:ArePlayerWeaponsAllowed(playerid);
 
 /*
 native # Deprecated();
-native Â Â Â Â Â Â Â Â Â Â Deprecated(
-native Â Â Â Â Â ====================(
+native Ð’ Ð’ Ð’ Ð’ Ð’ Ð’ Ð’ Ð’ Ð’ Ð’ Deprecated(
+native Ð’ Ð’ Ð’ Ð’ Ð’ ====================(
 native
 */
 

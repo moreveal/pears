@@ -1804,7 +1804,7 @@ stock bool:stmt_fetch_row(&DBStatement:stStatement) {
 				#emit STACK     20
 				
 				// Fix a bug with UTF-8 characters
-				// For example, 'ö' would become 0xFFFFFFC3 instead of 0xC3
+				// For example, 'Г¶' would become 0xFFFFFFC3 instead of 0xC3
 				#emit PUSH.S     iAddress
 				#emit PUSH.C     sc_szFormatString
 				#emit PUSH.S     iSize
