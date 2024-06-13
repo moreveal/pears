@@ -1,3 +1,6 @@
+
+#define MAFIA_BABKI 10
+
 CMD:mafiabiz(playerid)
 {
     PlayerPlaySound(playerid,40405,0,0,0);
@@ -29,7 +32,7 @@ stock InfoMafiaBiz(playerid, b)
  	format(str,sizeof(str),"\n\n{444444}Бизнес {ff9000}%s [%d]", bizname(b), b), strcat(sctring,str);
  	format(str,sizeof(str),"\n\n{cccccc}Владелец: %s",BizzInfo[b][bVlad]), strcat(sctring,str);
     format(str,sizeof(str),"\n{cccccc}Под контролем: %s", frakName[BizzInfo[b][bMafia]]), strcat(sctring,str);
- 	format(str,sizeof(str),"\n{cccccc}Доля с дохода за крышевание: {ffffff}10%"), strcat(sctring,str);
+ 	format(str,sizeof(str),"\n{cccccc}Доля с дохода за крышевание: {ffffff}%d %%", MAFIA_BABKI), strcat(sctring,str);
     format(str,sizeof(str),"\n{cccccc}Денег в бизнесе: {44ff99}%d$",BizzInfo[b][bMafiaSchet]), strcat(sctring,str);
  	if(BizzInfo[b][bMafunix] >= 1) format(str,sizeof(str),"\n{cccccc}Дата и время захвата: [ %02d.%02d.%d %02d:%02d ]\n\n", tday, tmonth, tyear, thour, tminute), strcat(sctring,str);
  	else format(str,sizeof(str),"\n{cccccc}Дата и время захвата: {ffffff}Передан администрацией\n\n"), strcat(sctring,str);
