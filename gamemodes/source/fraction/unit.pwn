@@ -62,7 +62,7 @@ new unitDefault[] =
     700 // 22
 };
 
-stock IsAUnitOrganization(unitid, g, playerid)
+stock IsAUnitOrganization(unitid, fraction, playerid)
 {
     if(unitid == 0) // Доставка ящика на склад
     {
@@ -94,49 +94,49 @@ stock IsAUnitOrganization(unitid, g, playerid)
     }
     else if(unitid == 7) // Арест недвижимости
     {
-        if(IsAFunctionOrganization(57, g, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, g, 57, NO_FBI)) // Права доступа по рангу
+        if(IsAFunctionOrganization(57, fraction, playerid) // Права доступа для организации
+            && GetAccessRankOrgMay(playerid, fraction, 57, NO_FBI)) // Права доступа по рангу
             return 1;
     }
     else if(unitid == 8) // Арест бизнеса
     {
-        if(IsAFunctionOrganization(58, g, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, g, 58, NO_FBI)) // Права доступа по рангу
+        if(IsAFunctionOrganization(58, fraction, playerid) // Права доступа для организации
+            && GetAccessRankOrgMay(playerid, fraction, 58, NO_FBI)) // Права доступа по рангу
             return 1;
     }
     else if(unitid == 9) // Рассмотрение установки бизнеса
     {
-        if(IsAFunctionOrganization(60, g, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, g, 60, NO_FBI)) // Права доступа по рангу
+        if(IsAFunctionOrganization(60, fraction, playerid) // Права доступа для организации
+            && GetAccessRankOrgMay(playerid, fraction, 60, NO_FBI)) // Права доступа по рангу
             return 1;
     }
     else if(unitid == 10) // Диагноз пациенту
     {
-        if(g == 4 || PlayerInfo[playerid][pMember] == 4) return 1;
+        if(fraction == 4) return 1;
     }
     else if(unitid == 11) // Угон транспорта
     {
-        if(IsAGang(playerid) || IsAMafia(playerid)) return 1;
+        if(IsAGang(fraction) || IsAMafia(fraction)) return 1;
     }
     else if(unitid == 12) // Найденный транспорт
     {
-        if(IsAPolice(playerid)) return 1;
+        if(IsAPolice(fraction)) return 1;
     }
     else if(unitid == 13) // Рассмотрение заявки в суд
     {
-        if(PlayerInfo[playerid][pMember] == 7 && PlayerInfo[playerid][pDivision] == 1) return 1; // Дополнить покумекав с Владом как правильно!
+        if(fraction == 7 && PlayerInfo[playerid][pDivision] == 1) return 1; // Дополнить покумекав с Владом как правильно!
     }
     else if(unitid == 14) // Создание автобусного маршрута
     {
-        if(PlayerInfo[playerid][pMember] == 7) return 1;
+        if(fraction == 7) return 1;
     }
     else if(unitid == 15) // Доставка БП у NGSA
     {
-        if(PlayerInfo[playerid][pMember] == 3) return 1;
+        if(fraction == 3) return 1;
     }
     else if(unitid == 16) // Покраска граффити
     {
-        if(IsAGang(playerid)) return 1;
+        if(IsAGang(fraction)) return 1;
     }
     else if(unitid == 17) // Закрытие вызова
     {
@@ -144,23 +144,23 @@ stock IsAUnitOrganization(unitid, g, playerid)
     }
     else if(unitid == 18) // Снимаем бабки с бизнеса
     {
-        if(IsAMafia(playerid)) return 1;
+        if(IsAMafia(fraction)) return 1;
     }
     else if(unitid == 19) // Стрела
     {
-        if(IsAMafia(playerid)) return 1;
+        if(IsAMafia(fraction)) return 1;
     }
     else if(unitid == 20) // Порт
     {
-        if(IsAMafia(playerid)) return 1;
+        if(IsAMafia(fraction)) return 1;
     }
     else if(unitid == 21) // Реанимация пострадавшего
     {
-        if(PlayerInfo[playerid][pMember] == 4) return 1;
+        if(fraction == 4) return 1;
     }
     else if(unitid == 22) // Лечение /heal
     {
-        if(PlayerInfo[playerid][pMember] == 4) return 1;
+        if(fraction == 4) return 1;
     }
     return 0;
 }
@@ -200,21 +200,21 @@ CMD:jac(playerid) // Меню настроек оплаты (Юниты)
 {
 	if(PlayerInfo[playerid][pLeader] <= 0) return ErrorText(playerid, "{FF6347}Вы не лидер организации"), showDialogOrganizationMenu(playerid);
 
-	new g = PlayerInfo[playerid][pMember];
+    new player_fraction = PlayerInfo[playerid][pMember];
     DP[0][playerid] = 0;
- 	DP[1][playerid] = g;
+ 	DP[1][playerid] = player_fraction;
 	for(new i = 0; i < 200; i++) List[i][playerid] = 0; // Очищаем list
 	
     new line[214],lines[4096];
-    format(line,sizeof(line),"{cccccc}Интервал вывода юнитов \t{0088ff}1 раз в %d дней\n", OrganInfo[g][gUnitStat][3]), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Макс. сумма вывода\t{99ff66}%d$\n", OrganInfo[g][gUnitStat][4]), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Интервал вывода юнитов \t{0088ff}1 раз в %d дней\n", OrganInfo[player_fraction][gUnitStat][3]), strcat(lines,line);
+    format(line,sizeof(line),"{cccccc}Макс. сумма вывода\t{99ff66}%d$\n", OrganInfo[player_fraction][gUnitStat][4]), strcat(lines,line);
 
-    for(new i = 0; i < sizeof(unitName); i++)
+    for(new unitid = 0; unitid < sizeof(unitName); unitid++)
     {
-        if(IsAUnitOrganization(i, g, playerid)) format(line,sizeof(line), detail_jac(playerid, i)), strcat(lines,line);
+        if(IsAUnitOrganization(unitid, player_fraction, playerid)) format(line,sizeof(line), detail_jac(playerid, unitid)), strcat(lines,line);
     }
     new header[60];
-    format(header,sizeof(header),"{cccccc}Настройки Unit: %s", fraklastName[g]);
+    format(header,sizeof(header),"{cccccc}Настройки Unit: %s", fraklastName[player_fraction]);
 	ShowDialog(playerid,642,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
    	return 1;
 }

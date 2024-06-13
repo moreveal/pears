@@ -92,7 +92,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				if(GetPVarInt(playerid,"job_stat") != 13) return ErrorMessage(playerid,"{FF6347}Вы не работаете инкассатором\n{ffcc66}Устроиться на работу можно [ Y >> GPS >> Работа >> Инкассаторы ]");
                 new veh = GetPlayerVehicleID(playerid);
                 new model = VehInfo[veh][vModel];
-                if(model != 428) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Securicar\n{ffcc66}Возьмие транспорт на парковке инкассаторов");
+                if(model != 428) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Securicar\n{ffcc66}Возьмите транспорт на парковке инкассаторов");
                 new listterm = List[listitem-1][playerid];
                 new listord = ListParam[listitem-1][playerid];
 				if(listord == 0) return 1;

@@ -431,6 +431,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 	{
   	    if(response)
   	    {
+			new bool: edit_promo_access = bool: admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER);
   	        new pf = ListCode[playerid];
   	    	if(listitem == 0)
 			{
@@ -451,8 +452,8 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 				{
 					if(PromoInfo[pf][roActiv] == 2 && PlayerInfo[playerid][pSoska] < 9) return ErrorText(playerid,"{FF6347}Промокод на одобрение у ответственной администрации");
 					if(PromoInfo[pf][roPar][0] == 0 && PromoInfo[pf][roPar][1] == 0 && PromoInfo[pf][roPar][2] == 0 && PromoInfo[pf][roPar][3] == 0 && PromoInfo[pf][roPar][4] == 0) return ErrorText(playerid,"{FF6347}Нужно добавить хотя-бы один подарок в промокод"), setprom(playerid);
-					if(PlayerInfo[playerid][pMedia] > 0 && DP[4][playerid] > 1000000) return ErrorText(playerid,"{FF6347}Ценность промокода привышает 1.000.000$, допустима ценность ниже этого."), setprom(playerid);
-					if(PlayerInfo[playerid][pMedia] > 0) ErrorText(playerid,"{FF6347}Промокод отправлен на одобрение ответственной администрации"), PromoInfo[pf][roActiv] = 2;
+					if((!edit_promo_access && PlayerInfo[playerid][pMedia] > 0) && DP[4][playerid] > 1000000) return ErrorText(playerid,"{FF6347}Ценность промокода привышает 1.000.000$, допустима ценность ниже этого."), setprom(playerid);
+					if(!edit_promo_access && PlayerInfo[playerid][pMedia] > 0) ErrorText(playerid,"{FF6347}Промокод отправлен на одобрение ответственной администрации"), PromoInfo[pf][roActiv] = 2;
 					else PromoInfo[pf][roActiv] = 1;
 				}
 				PlayerPlaySound(playerid,6401,0,0,0);
@@ -486,14 +487,15 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 					SavePromo(listitem-1, pf);
 				}
 			}
+			
 			if(listitem == 6) ShowDialog(playerid,625,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите новое название для промокода [ 3 - 60 символов ]","Принять","Отмена");
 			if(listitem == 7) critprom(playerid);
-			if(listitem == 8 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,626,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите уровень с которого игрок сможет взять промокод (0 при регистрации) [0 - 100]","Принять","Отмена");
-			if(listitem == 9 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,603,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите доступное количество активаций этого промокода (0 неограничено) [0 - 100.000]","Принять","Отмена");
+			if(listitem == 8 && edit_promo_access) ShowDialog(playerid,626,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите уровень с которого игрок сможет взять промокод (0 при регистрации) [0 - 100]","Принять","Отмена");
+			if(listitem == 9 && edit_promo_access) ShowDialog(playerid,603,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите доступное количество активаций этого промокода (0 неограничено) [0 - 100.000]","Принять","Отмена");
 			if(listitem == 10) ShowDialog(playerid,627,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите подпись промокода {ff9000}[3 - 80 символов]\n{cccccc}Это текст, который увидит игрок когда использует промокод","Принять","Отмена");
-			if(listitem == 11 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,629,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней через которое промокод {99ff66}начнёт своё действие [0 - 3000]","Принять","Отмена");
-			if(listitem == 12 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,614,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней через которое промокод {FF6347}завершит своё действие [1 - 3000]","Принять","Отмена");
-			if(listitem == 13 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,606,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Вы уверены, что хотите удалить промокод?\n\n","Да","Отмена");
+			if(listitem == 11 && edit_promo_access) ShowDialog(playerid,629,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней через которое промокод {99ff66}начнёт своё действие [0 - 3000]","Принять","Отмена");
+			if(listitem == 12 && edit_promo_access) ShowDialog(playerid,614,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней через которое промокод {FF6347}завершит своё действие [1 - 3000]","Принять","Отмена");
+			if(listitem == 13 && edit_promo_access) ShowDialog(playerid,606,DIALOG_STYLE_MSGBOX,"{ff9000}Промокод","{cccccc}Вы уверены, что хотите удалить промокод?\n\n","Да","Отмена");
   	    }
   	    else pc_cmd_promo(playerid);
  	}
@@ -656,12 +658,14 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 	{
   	    if(response)
   	    {
+			new bool: edit_promo_access = bool: admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER);
   	        new pf = ListCode[playerid];
+			
   	        if(PromoInfo[pf][roActiv] == 1) return ErrorText(playerid,"{FF6347}Нельзя редактировать активный промокод"), setprom(playerid);
-  	    	if(listitem == 0 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,611,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество денег {99ff66}1.000$ - 300.000$","Принять","Отмена");
+  	    	if(listitem == 0 && edit_promo_access) ShowDialog(playerid,611,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество денег {99ff66}1.000$ - 300.000$","Принять","Отмена");
   	    	else if(listitem == 0) ErrorText(playerid,"Выдача денег в промокоде заблокирована, чтобы не нарушать экономику"), setprom(playerid);
 			if(listitem == 1) ShowDialog(playerid,610,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество золота {ffcc00}1G - 100G","Принять","Отмена");
-  	    	if(listitem == 2 && PlayerInfo[playerid][pMedia] == 0) ShowDialog(playerid,609,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите Level, на который повысится игрок {ff9000}1","Принять","Отмена");
+  	    	if(listitem == 2 && edit_promo_access) ShowDialog(playerid,609,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите Level, на который повысится игрок {ff9000}1","Принять","Отмена");
   	    	else if(listitem == 2) ErrorText(playerid,"Выдача денег в промокоде заблокирована, чтобы не нарушать экономику"), setprom(playerid);
 			if(listitem == 3) ShowDialog(playerid,604,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество PayDay, во время которых игрок получит X2 Exp {ff9000}1 - 1000","Принять","Отмена");
   	    	if(listitem == 4) ShowDialog(playerid,602,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите количество дней активности VIP аккаунта {ff9000}1 - 30","Принять","Отмена");

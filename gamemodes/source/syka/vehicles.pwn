@@ -1,14 +1,13 @@
-// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 stock GetVehicleRotation(vehicleid,&Float:rx,&Float:ry,&Float:rz){
 	new Float: qw, Float: qx, Float: qy, Float: qz;
     GetVehicleRotationQuat(vehicleid, qw, qx, qy, qz);
 
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	// Преобразование в углы Эйлера
 	rx = asin(2 * qy * qz - 2 * qx * qw);
     ry = -atan2(qx * qz + qy * qw, 0.5 - qx * qx - qy * qy);
     rz = -atan2(qx * qy + qz * qw, 0.5 - qx * qx - qz * qz);
 
-    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    // Нормализация
     rx = fmod(rx + 360.0, 360.0);
     ry = fmod(ry + 360.0, 360.0);
     rz = fmod(rz + 360.0, 360.0);
@@ -16,7 +15,7 @@ stock GetVehicleRotation(vehicleid,&Float:rx,&Float:ry,&Float:rz){
 
 stock VehicleOnPlayerDisconnect(playerid)
 {
-	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	// Если был прикреплен трейлер
 	new tid = GetPlayerTrailerID(playerid);
 	if (tid > -1) {
 		if (trailerInfo[tid][tAttached]) {
@@ -28,7 +27,6 @@ stock VehicleOnPlayerDisconnect(playerid)
 	return 1;
 }
 
-// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 stock IsVehicleStandingGround(vehicleid) {
 	if (!IsValidVehicle(vehicleid)) return false;
 
@@ -55,4 +53,22 @@ stock SetVehicleSpeed(vehicleid, speed_mph)
 	}
 	new Float: vMultiplier = float(speed_mph) / cur_speed_mph;
 	SetVehicleVelocity(vehicleid, v[0] *vMultiplier, v[1] *vMultiplier, v[2] *vMultiplier);
+}
+
+stock GetClosestVehicle(playerid, Float:maxDistance = 3.0) {
+	new Float:last_dist = 99999.0;
+	new last_vehicleid = INVALID_VEHICLE_ID;
+	new Float:px, Float:py, Float:pz; GetPlayerPos(playerid, px, py, pz);
+
+	foreach (new vehicleid : Vehicle) {
+		if (IsVehicleStreamedIn(vehicleid, playerid)) {
+			new Float:dist = GetVehicleDistanceFromPoint(vehicleid, px, py, pz);
+			if (dist <= last_dist && dist <= maxDistance)
+			{
+				last_dist = dist;
+				last_vehicleid = vehicleid;
+			}
+		}
+	}
+	return last_vehicleid;
 }
