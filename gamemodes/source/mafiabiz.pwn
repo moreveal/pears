@@ -1,5 +1,5 @@
 
-#define MAFIA_BABKI 10
+#define MAFIA_BABKI 2
 
 CMD:mafiabiz(playerid)
 {
