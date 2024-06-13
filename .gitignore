@@ -1,5 +1,6 @@
 # Ignore everything
 *
+!*/
 
 # And then exclude required files
 
@@ -15,7 +16,5 @@
 # Some custom files required for gamemode
 !scriptfiles
 
-# Proper files encoding detection
-!.vscode
-.vscode/*
+# Proper files encoding detection & diff decorations disable
 !.vscode/settings.json
