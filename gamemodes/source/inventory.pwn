@@ -2596,6 +2596,12 @@ stock player_tile(playerid, inva)
 			 	{
 			 	    if(SitPlayer[playerid] >= 78 && SitPlayer[playerid] <= 101)
 			 	    {
+						if (PlayerInfo[playerid][pStopoc] > gettime())
+						{
+							new str[144];
+							format(str, sizeof(str), "{FF6347}В данный момент вы не можете продолжить обучение\n\n{cccccc}Попробуйте через %d секунд", PlayerInfo[playerid][pStopoc] - gettime());
+							return ErrorMessage(playerid, str);
+						}
 			 	        new stat = fpick-144;
 			 	        if(isanot_lesson(playerid, stat) == 0) return i_resetveshi(playerid);
 	        			AshTime[playerid] = 180;
