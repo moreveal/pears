@@ -718,9 +718,10 @@ CMD:invest(playerid)
     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Общак Администрации",sctring,"Oк","");
 	return 1;
 }
+
 CMD:giveinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 22 && (strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1) || strfind(PlayerInfo[playerid][pName],"Cardinale_Reveal",true) != (-1)))
+	if(PlayerInfo[playerid][pSoska] >= 23)
     {
 		if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Положить 0-деньги | 1-золото в общак администрации [ /giveinvest ID Количество ]");
 		if(params[0] > 1 || params[0] < 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: 0-деньги 1-золото");
