@@ -204,7 +204,8 @@ CMD:invitepatrool(playerid, const params[])
 	return 1;
 }
 
-CMD:patrool(playerid)
+alias:patrol("patrool")
+CMD:patrol(playerid)
 {
 	if(PlayerInfo[playerid][pMember] == 1 || PlayerInfo[playerid][pMember] == 11
 	|| PlayerInfo[playerid][pMember] == 21 || PlayerInfo[playerid][pMember] == 22)

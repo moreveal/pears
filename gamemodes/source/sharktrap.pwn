@@ -247,7 +247,7 @@ stock Update_Trap(playerid)
 	stamp2datetime(TrapTime[playerid], tyear, tmonth, tday, thour, tminute, tsecond, 3);
 	if(Trap[playerid] == 1) format(string, sizeof(string),"{ff9000}Ловушка для Акулы\n\n{cccccc}Сработает в {FF6347}%02d:%02d\n{cccccc}Принадлежит: {444444}%s", thour, tminute, PlayerInfo[playerid][pName]);
 	else if(Trap[playerid] == 2) format(string, sizeof(string),"{ff9000}Ловушка для Акулы\n\n{99ff66}[ Забрать Акулу - CAPS LOCK (Гудок) ]\n{cccccc}Принадлежит: {444444}%s", PlayerInfo[playerid][pName]);
-	UpdateDynamic3DTextLabelText(TrapText[playerid],0xA9C4E4FF, string);
+	UpdateDynamic3DTextLabelText(TrapText[playerid], 0xA9C4E4FF, string);
 	return true;
 }
 
