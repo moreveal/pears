@@ -2,7 +2,7 @@
 new zoneId[MAX_FIND_ZONE];
 new ZoneTimer[MAX_REALPLAYERS];
 
-new FindZone[MAX_REALPLAYERS];
+new FindZone[MAX_REALPLAYERS] = {-1, ...};
 new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
