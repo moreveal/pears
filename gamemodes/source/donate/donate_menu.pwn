@@ -438,6 +438,8 @@ function Call_setvip(playerid, const str_name[], status)
             mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `DonateRank` = '0' WHERE `user_id` = '%d'", user_id);
 		    mysql_tquery(pearsq, string);
 
+            SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы забрали у %s Platinum VIP", str_name);
+
             format(string, sizeof(string), "Админ %s забрал у вас Platinum VIP", PlayerInfo[playerid][pName]);
  		    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, str_name, string);
             AdminLog("setvip", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], user_id, str_name, "", status, "Забрал Platinum VIP");
