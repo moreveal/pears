@@ -94,19 +94,19 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 3) // 3 /dip // 3 [Gang Mafia]
     {
-        if(IsAGang(playerid) || IsAMafia(playerid)) return 1;
+        if(IsGangMember(playerid) || IsMafiaMember(playerid)) return 1;
     }
     else if(accessId == 7) // Гараж организации // 7
     {
-        if(IsAGang(playerid) || IsAMafia(playerid)) return 1;
+        if(IsGangMember(playerid) || IsMafiaMember(playerid)) return 1;
     }
     else if(accessId == 16) // /capture /zahvat // 16
     {
-        if(IsAGang(playerid)) return 1;
+        if(IsGangMember(playerid)) return 1;
     }
     else if(accessId == 17) // /cob /eob /dob /iob /3d // 17
     {
-        if(IsAGang(playerid)) return 1;
+        if(IsGangMember(playerid)) return 1;
     }
     else if(accessId == 18) // /endorse // 18 выдать доступ к помещению
     {
@@ -114,11 +114,11 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 19) // /omap управление картами // 19
     {
-        if(IsAGang(playerid)) return 1;
+        if(IsGangMember(playerid)) return 1;
     }
     else if(accessId == 21) // Арендованный склад // 21
     {
-        if(IsAGang(playerid) || IsAMafia(playerid) || g == 8) return 1;
+        if(IsGangMember(playerid) || IsMafiaMember(playerid) || g == 8) return 1;
     }
     else if(accessId == 25) // /frisk /take // 25
     {
@@ -126,7 +126,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 26) // /mafia", // 26 Забить стрелу [Mafia]
     {
-        if(IsAMafia(playerid))  return 1;
+        if(IsMafiaMember(playerid))  return 1;
     }
     else if(accessId == 27) // /gov", // 27
     {
@@ -134,7 +134,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 28) // /numbercar", // 28
     {
-        if(IsAPolice(g))  return 1;
+        if(IsPolice(g))  return 1;
     }
     else if(accessId == 30) // /camera", // 30 установить камеру слежения [FBI]
     {
@@ -158,11 +158,11 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 35) // /radar", // 35
     {
-        if(IsAPolice(g))  return 1;
+        if(IsPolice(g))  return 1;
     }
     else if(accessId == 36) // /delradar", // 36
     {
-        if(IsAPolice(g))  return 1;
+        if(IsPolice(g))  return 1;
     }
     else if(accessId == 37) // /cuff /uncuff", // 37
     {
@@ -174,7 +174,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 39) // /u /ub", // 39
     {
-        if(IsAGang(playerid) || IsAMafia(playerid))  return 1;
+        if(IsGangMember(playerid) || IsMafiaMember(playerid))  return 1;
     }
     else if(accessId == 40) // Отображение имён Вместе с позывными  // 40 [ICA]
     {
@@ -198,11 +198,11 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 45) // /access /tank", // 45 Рарешение на транспорт в LSPD, SFPD, LVPD | Доступ к танку в NGSA
     {
-        if(IsAPolice(g) || g == 3)  return 1;
+        if(IsPolice(g) || g == 3)  return 1;
     }
     else if(accessId == 46) // /arestcar", // 46 арестовать личный транспорт
     {
-        if(IsAPolice(g) || g == 7 || g == 22)  return 1;
+        if(IsPolice(g) || g == 7 || g == 22)  return 1;
     }
     else if(accessId == 47) // /assent", // 47 выдать разрешение на спец. задание (Увал под прикрытием) [FBI]
     {
@@ -264,7 +264,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 72) // 72 Система Тюрьмы [Police]
     {
-        if(IsAPolice(g))  return 1;
+        if(IsPolice(g))  return 1;
     }
     else if(accessId == 73) // 73 Военно Морской Флот [NGSA]
     {

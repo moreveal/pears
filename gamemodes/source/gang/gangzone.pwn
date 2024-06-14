@@ -411,7 +411,7 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 		if(response)
 		{
 			new frakid = fraction(playerid);
-            if(!IsAGang(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник банды");
+            if(!IsGangMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не участник банды");
 			if(Kapt[frakid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изменять условия во время битвы за территорию");
 
 			if(listitem == 0)

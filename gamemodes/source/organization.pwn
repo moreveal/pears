@@ -431,8 +431,8 @@ stock SaveOrgan(idx)
 // Склад организации
 stock gunsklad(playerid)
 {
-	new skladstat = IsAGunSklad(playerid);
-	if(skladstat > 0)
+	new skladstat = GetSkladStat(playerid);
+	if(skladstat > -1)
 	{
 	    new fpick = OnlineInfo[playerid][oInHandThing][0], fquan = OnlineInfo[playerid][oInHandThing][1];
 		new fpara = OnlineInfo[playerid][oInHandThing][2], thingQara = OnlineInfo[playerid][oInHandThing][3];
@@ -451,8 +451,8 @@ stock gunsklad(playerid)
 			    if(thingType == 1) fpara = 100000;
 			    if(IsHelmet(fpick) && thingType == 2) fpara = 3;
 			    if(IsArmor(fpick) && thingType == 2) fpara = 100;
-			
-			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType,1); // Кладём предмет
+				
+			    new put_inva = putsklad(skladstat, fpick, fquan, fpara, thingType, 1); // Кладём предмет
 				if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места [ Лимит ]");
 
 				InHandClear(playerid);
@@ -481,7 +481,7 @@ stock gunsklad(playerid)
 	return 1;
 }
 
-stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
+stock GiveUnitForBox(playerid, thingId, thingType, thingAmount, thingQara)
 {
 	if(thingQara != 0) return 1; // Если ящик был собран с арендованного склада (Не выдаём юниты)
 
@@ -489,11 +489,11 @@ stock GiveUnitForBox(playerid, thingId, thingType, thingQuan, thingQara)
 	if(OrganInfo[g][gUnit][0])
 	{
 		new kol;
-		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingQuan; // Вещества, Патроны
-		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingQuan*1000; // Каска, Броня, Оружие
-		else if((thingId == 8 || thingId == 70) && thingType == 0) kol = thingQuan*100; // Аптечки, Бинты
+		if((thingId >= 4 && thingId <= 7 || thingId >= 27 && thingId <= 30) && thingType == 0) kol = thingAmount; // Вещества, Патроны
+		else if(IsHelmet(thingId) && thingType == 2 || IsArmor(thingId) && thingType == 2 || thingType == 1) kol = thingAmount * 1000; // Каска, Броня, Оружие
+		else if((thingId == 8 || thingId == 70) && thingType == 0) kol = thingAmount * 100; // Аптечки, Бинты
 
-		GivePlayerUnit(playerid, kol*OrganInfo[g][gUnit][0]);
+		GivePlayerUnit(playerid, kol * OrganInfo[g][gUnit][0]);
 	}
 	return 1;
 }
@@ -548,7 +548,7 @@ stock showDialogOrganizationMenu(playerid)
 		format(line,sizeof(line), detail_lmenu(playerid, 17)), strcat(lines,line); // Мед оборудование (Оплата заказа)
 	}
 
-	if(IsAGang(playerid) || IsAMafia(playerid))
+	if(IsGangMember(playerid) || IsMafiaMember(playerid))
 	{
 	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
 	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем

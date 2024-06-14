@@ -706,7 +706,7 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
             {
                 if(tid == 5) // Волна нарушений
                 {
-				    if(!IsACop(playerid) && PlayerInfo[playerid][pFbi] == 0 
+				    if(!IsPoliceMember(playerid) && PlayerInfo[playerid][pFbi] == 0 
                         && PlayerInfo[playerid][pMember] != 4) return ErrorMessage(playerid, "{FF6347}Волна нарушений для вас не отображается\n{cccccc}Доступна только сотрудникам правоохранительных органов и докторам");
                 }
                 else if(tid == 6) // Чат Администрации

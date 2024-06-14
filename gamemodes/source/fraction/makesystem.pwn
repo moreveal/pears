@@ -431,7 +431,7 @@ stock CallService(playerid, whom)
 stock MakeList(playerid)
 {
     new CopOrMin = 0; // 1 - kop, 2 - MZ
-    if(IsACop(playerid)) CopOrMin = 1;
+    if(IsPoliceMember(playerid)) CopOrMin = 1;
     else CopOrMin = 2;
     new line[214],lines[4048];
     format(line,sizeof(line),"№ Вызвавший\tСтатус\tРайон\tОсталось"), strcat(lines,line);
