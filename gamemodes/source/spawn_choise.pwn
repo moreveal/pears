@@ -117,7 +117,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
         if(OnlineInfo[playerid][oLogged] == 1) return ErrorMessage(playerid, "{FF6347}Последнюю позицию можно выбрать только при входе на сервер");
         if(PlayerInfo[playerid][pLastPos][0] == 0.0 && PlayerInfo[playerid][pLastPos][1] == 0.0) return ErrorMessage(playerid, "{FF6347}У вашего персонажа нет последней, сохранённой позиции\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
 
-        /*if(IsAGang(playerid))
+        /*if(IsGangMember(playerid))
         {
             new g = fraction(playerid);
             if(Kapt[g] > 0 && ZoneCapt)
@@ -130,7 +130,7 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
             }
         }*/
 
-        if(IsAMafia(playerid))
+        if(IsMafiaMember(playerid))
         {
             new g = fraction(playerid);
             if(MafGz[0][mStat] > 0 && MafGz[0][mZone] > 0

@@ -2151,14 +2151,14 @@ stock shift_sklad(playerid, wh, getinva, putinva) // Перемещение пр
 }
 stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
 {
-	new put_inva = -1, getLimit, bool:stopFind;
+	new put_inva = -1, getLimit = 0, bool: stopFind = false;
 	getLimit = sklad_limit(pick, thingType);
 	
 	for(new inva = 0; inva < 20; inva++)
 	{
 		if(OrganInfo[wh][gInvent][inva] == pick && OrganInfo[wh][gInvType][inva] == thingType)
 		{
-		    if(OrganInfo[wh][gInv][inva]+kol > getLimit && checklimit == 1) // Встроенная проверка на лимит
+		    if(OrganInfo[wh][gInv][inva] + kol > getLimit && checklimit == 1) // Встроенная проверка на лимит
 		    {
 		        stopFind = true;
 		    }
@@ -2166,6 +2166,7 @@ stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
 			break;
 		}
 	}
+
 	if(put_inva == -1 && stopFind == false)
 	{
 		for(new inva = 0; inva < 20; inva++)
@@ -2177,16 +2178,18 @@ stock putsklad(wh, pick, kol, fpara, thingType, checklimit)
 			}
 		}
  	}
+
  	if(put_inva >= 0)
  	{
 		OrganInfo[wh][gInvUpdate][put_inva] = true;
 		OrganInfo[wh][gUpdateSklad] = 1;
-	 	foreach(Player,i)
+	 	foreach(Player, id)
 		{
-			if(Tabs_Load[i] != 3) continue;
-			if(OnlineInfo[i][oLogged] == 1 && OnlineInfo[i][oShowInterface] == 1 && OnlineInfo[i][oShowTabs] == wh) tilesklad(i, OrganInfo[wh][gInvent][put_inva], OrganInfo[wh][gInv][put_inva], put_inva, thingType);
+			if(Tabs_Load[id] != 3) continue;
+			if(OnlineInfo[id][oLogged] == 1 && OnlineInfo[id][oShowInterface] == 1 && OnlineInfo[id][oShowTabs] == wh) tilesklad(id, OrganInfo[wh][gInvent][put_inva], OrganInfo[wh][gInv][put_inva], put_inva, thingType);
 		}
 	}
+
 	return put_inva;
 }
 stock TakeSklad(g, thingId, quan, thingType, dopinf)
@@ -2433,7 +2436,7 @@ stock player_tile(playerid, inva)
 			// Возвращаем украденный предмет
 		    if(PlayerInfo[playerid][pInvenQara][inva] > 0)
 		    {
-		    	if(IsACop(playerid) || PlayerInfo[playerid][pFbi] >= 1)
+		    	if(IsPoliceMember(playerid) || PlayerInfo[playerid][pFbi] >= 1)
 		    	{
 		    	    if(IsPlayerInRangeOfPoint(playerid,1.5,1578.7206,-1688.5414,6.2508) && GetPlayerVirtualWorld(playerid) == 257 || IsPlayerInRangeOfPoint(playerid,1.5,2544.0967,911.8699,1551.0039) && GetPlayerVirtualWorld(playerid) == 2
 					|| IsPlayerInRangeOfPoint(playerid,1.5,-1595.5094,726.3425,-4.8892) && GetPlayerVirtualWorld(playerid) == 208 || IsPlayerInRangeOfPoint(playerid,1.5,2544.0967,911.8699,1551.0039) && GetPlayerVirtualWorld(playerid) == 22)
@@ -2517,7 +2520,7 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 43)
 			 	{
 			 		if(fquan <= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мой электрошокер разряжен");
-					if(!IsACop(playerid) && PlayerInfo[playerid][pLeader] != 7 && PlayerInfo[playerid][pMember] != 7
+					if(!IsPoliceMember(playerid) && PlayerInfo[playerid][pLeader] != 7 && PlayerInfo[playerid][pMember] != 7
 					&& PlayerInfo[playerid][pLeader] != 4 && PlayerInfo[playerid][pMember] != 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
 			 		CloseFrisk(playerid), CancelSelectTextDraw(playerid), pc_cmd_tazer(playerid); // Электрошокер
 			 		return 1;

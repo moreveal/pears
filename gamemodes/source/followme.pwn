@@ -80,7 +80,7 @@ stock SetPlayerPosFollowMe(playerid)
 alias:followme("fme", "gotome", "gme")
 CMD:followme(playerid, const params[])
 {
-	if(!IsACop(playerid)
+	if(!IsPoliceMember(playerid)
 		&& PlayerInfo[playerid][pMember] != 4
 		&& PlayerInfo[playerid][pMember] != 3
 		&& PlayerInfo[playerid][pMember] != 7) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не сотрудник правоохранительных органов");
