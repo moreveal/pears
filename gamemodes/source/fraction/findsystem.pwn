@@ -7,6 +7,11 @@ new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
 {
+  // уничтожаем последнюю зону финда, если она по какой-то причине не была удалена
+  // возможно исправит баг с финдом
+  // о баге: в ShowFindZone пишет: "Нельзя найти на данный момент человека, попробуйте позже"
+  DestroyFindZone(playerid);
+
   new ability = get_ability(playerid, 9); // Навык сыщика
   new Float:zone;
 
