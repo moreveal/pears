@@ -136,6 +136,7 @@ CMD:clearfinds(playerid)
 {
   if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 
+  new total = 0;
   for (new i = 0; i < MAX_REALPLAYERS; i++)
   {
     if (DestroyFindZone(i))
@@ -149,8 +150,10 @@ CMD:clearfinds(playerid)
         SendClientMessage(playerid, -1, "Оффлайн (%d) очищен", i);
       }
       ZoneTimer[i] = 0;
+      total++;
     }
   }
+  SendClientMessage(playerid, -1, "Очищено: %d", total);
   return 1;
 }
 
