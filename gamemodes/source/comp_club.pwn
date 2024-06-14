@@ -572,10 +572,18 @@ stock ComputerClubSetPlayerWeapons(playerid) {
     // Кд античита на оружие
     GivePlayerResetWeaponUnix(playerid);
 
+    // Выдача оружия
     ResetPlayerWeapons(playerid);
-    for (new i = 0; i < 8; i++)
-        //GivePlayerWeapon(playerid, computerClubRoomInfo[gameid][roomid][ccriWeapons][i], computerClubRoomInfo[gameid][roomid][ccriWeaponsAmmo][i]);
-        Protect_GiveWeapons(playerid, computerClubRoomInfo[gameid][roomid][ccriWeapons][i], computerClubRoomInfo[gameid][roomid][ccriWeaponsAmmo][i], GUN_HEALTH,0);
+    for (new i = 0; i < 8; i++) {
+        new weaponid = computerClubRoomInfo[gameid][roomid][ccriWeapons][i];
+        new ammo = computerClubRoomInfo[gameid][roomid][ccriWeaponsAmmo][i];
+
+        new sl = Protect_Slot(weaponid);
+        ProtectInfo[playerid][prWeapon][sl] = weaponid, ProtectInfo[playerid][prAmmo][sl] += ammo;
+        ProtectInfo[playerid][prGiveWeapon][weaponid] = true;
+
+        GivePlayerWeapon(playerid, WEAPON: weaponid, ammo);
+    }
     return 1;
 }
 
@@ -1582,12 +1590,11 @@ stock ComputerClubGetSpawnInfo(locationid, spawnid, &Float: x, &Float: y, &Float
     a = computerClubLocationSpawn[locationid][spawnid][cclsPos][3];
 }
 
-// Обработка спавна игрока [ее вызов помещен в OnPlayerSpawn (внутри PlayerSpawnHandler), кинете куда нужно]
+// Обработка спавна игрока [ее вызов помещен в OnPlayerSpawn (внутри PlayerSpawnHandler)]
 stock ComputerClubOnPlayerSpawn(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid > -1) {
         // Назначаем уникальный виртуальный мир для участников комнаты
-
         new roomid = computerClubPlayerInfo[playerid][ccpiRoom];
         new teamid = computerClubPlayerInfo[playerid][ccpiTeam];
         new locationid = computerClubRoomInfo[gameid][roomid][ccriLocation];

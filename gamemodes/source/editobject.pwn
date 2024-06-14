@@ -1,6 +1,3 @@
-
-#define STREAMER_EDITABLE_DYNAMIC_OBJECT   E_STREAMER_CUSTOM(4)
-
 enum editObjectInfoEnum
 {
     editPlayerOrDynamic, // 0 Player, 1 Dynamic (Какую систему редактирования используем - 0 временный объект New System, 1 постоянный Old)

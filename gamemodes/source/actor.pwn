@@ -1,5 +1,3 @@
-#define STREAMER_ACTOR_PLAYER_ID   E_STREAMER_CUSTOM(5)
-
 #define MAX_BOTS 600  // пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅ. npc пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 new BotPears[MAX_BOTS];
