@@ -2489,9 +2489,7 @@ alias:comp("compclub", "komp")
 CMD:comp(playerid)
 {
     // Если игрок в компьютерном клубе
-    // TODO: вернуть проверку
-	//if(computerClubPlayerInfo[playerid][ccpiInGame] == true)
-    ShowComputerClubMenu(playerid);
+	if(computerClubPlayerInfo[playerid][ccpiInGame] == true) ShowComputerClubMenu(playerid);
     return 1;
 }
 
