@@ -131,6 +131,29 @@ CMD:find(playerid, const params[])
   else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду\n\n{cccccc}Только для сотрудников правоохранительных органов");
   return 1;
 }
+
+CMD:clearfinds(playerid)
+{
+  if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+
+  for (new i = 0; i < MAX_REALPLAYERS; i++)
+  {
+    if (DestroyFindZone(i))
+    {
+      if (IsPlayerConnected(i))
+      {
+        SendClientMessage(playerid, -1, "%s (%d) очищен", PlayerInfo[i][pName], i);
+      }
+      else
+      {
+        SendClientMessage(playerid, -1, "Оффлайн (%d) очищен", i);
+      }
+      ZoneTimer[i] = 0;
+    }
+  }
+  return 1;
+}
+
 stock WhiteFindPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
 	PlayerInfo[playerid][find_X] = x;
