@@ -114,10 +114,14 @@ CMD:zahvat(playerid, const params[])
 	if(IsPlayerInAnyVehicle(playerid)) return ErrorMessage(playerid, "{FF6347}Вы в транспорте");
 	if(Zach[frakid] == 1) return ErrorMessage(playerid, "{FF6347}Сейчас нельзя начать захват территории, вашу банду зачищают");
 	if(OrganInfo[frakid][gstat2] == 1) return ErrorMessage(playerid, "{FF6347}Ваша банда временно закрыта администрацией [ Вероятно, отсутствует лидер ]");
-	new tmphour, tmpminute, tmpsecond;
-	gettime(tmphour, tmpminute, tmpsecond);
+
+	{
+		new tmphour;
+		gettime(tmphour);
+		if (tmphour < 11) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью\n{ffcc66}Капты доступны с 11:00 до 23:59");
+	}
+	
 	new unixtime = gettime();
-	if(tmphour > 23 || tmphour < 11) return ErrorMessage(playerid, "{FF6347}Нельзя захватить территорию ночью\n{ffcc66}Капты доступны с 11:00 до 23:00");
 
 	new string[160];
 	if(FrakCD[frakid] > unixtime) return format(string,sizeof(string),"{FF6347}Вам и вашим людям необходимо отдохнуть {cccccc}[ Осталось %s ]", fine_time(FrakCD[frakid]-unixtime)), ErrorMessage(playerid, string);
