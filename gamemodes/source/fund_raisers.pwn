@@ -376,7 +376,7 @@ function Call_pay_fundraisers(playerid, i, amount, race_check)
     query_empty(pearsq, string_mysql);
 
     MoneyLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, FundRaisersInfo[i][fundName]);
-    FundLog(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], inputtext, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
+    FundLog(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], input, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
 
     return 1;
 }
@@ -747,11 +747,11 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
     return 1;
 }
 
-stock FundLog(senderid, const sender[], const senderip[], const quan[], const name[], fundid)
+stock FundLog(senderid, const sender[], const senderip[], quan, const name[], fundid)
 {
     new string_mysql[300];
     mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `fund_logs`\
-	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%e','%e','%e','%e','%d','%d')",
+	(`senderid`,`sender`,`senderip`,`quan`,`name`,`fundid`,`unix`) VALUES ('%d','%e','%e','%d','%e','%d','%d')",
     senderid, sender, senderip, quan, name, fundid, gettime());
 	mysql_tquery(pearsq, string_mysql);
 }
