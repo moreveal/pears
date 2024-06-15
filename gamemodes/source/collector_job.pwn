@@ -220,9 +220,7 @@ stock CloseCollector(playerid)
 	PlayerInfo[playerid][pPlacement] = 13;
 	PlayerInfo[playerid][pSalary] += BizzInfo[b][bDeliveryPay];
 	mysql_save(playerid, 58);
-	SetPVarInt(playerid,"job_collector",0);
-	SetPVarInt(playerid,"job_collector_term",0);
-	SetPVarInt(playerid,"job_collector_status",0);
+	CloseCollectorToBiz(playerid);
 	new br = numnrent(b);
 	UpdateLabelTerm(b,br,term);
 	BizzInfo[b][bItem][term] = 0;
