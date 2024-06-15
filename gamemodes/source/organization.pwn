@@ -604,7 +604,7 @@ stock open_detail_lmenu(playerid, detail)
 {	
 	new g = fraction(playerid);
 	if(detail == 1) infoorg(playerid, fraction(playerid));
-	else if(detail == 2) pc_cmd_members(playerid);
+	else if(detail == 2) pc_cmd_members(playerid, "");
 	else if(detail == 3) pc_cmd_membersoff(playerid);
 	else if(detail == 4) pc_cmd_nabor(playerid);
 	else if(detail == 5)
@@ -798,21 +798,25 @@ stock rank_organization(playerid, g)
 }
 
 // New members
-CMD:members(playerid)
+CMD:members(playerid, const params[])
 {
-    new g = fraction(playerid);
-	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	new fractionid = fraction(playerid);
+	if (PlayerInfo[playerid][pSoska] >= 1 && !isnull(params)) {
+		sscanf(params, "d", fractionid);
+		if (fractionid < 1 || fractionid > 24) return ErrorMessage(playerid, "{FF6347}ID организации не меньше 1 и не больше 24");
+	}
+	if(fractionid == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
-	PlayerPlaySound(playerid,40405,0,0,0);
+	PlayerPlaySound(playerid, 40405, 0, 0, 0);
 	new str[214], sctring[4096], quan;
 	
 	format(str, sizeof(str), "{cccccc}Имя\t{cccccc}Ранг\t{FF6347}Выговоры\t{444444}AFK"), strcat(sctring, str);
 
 	foreach(Player, i)
 	{
-		if(isPlayerEligible(i, g))
+		if(isPlayerEligible(i, fractionid))
 		{
-			formatPlayerInfo(str, sizeof(str), i, g);
+			formatPlayerInfo(str, sizeof(str), i, fractionid);
 			strcat(sctring, str);
 			quan ++;
 		}
@@ -821,8 +825,12 @@ CMD:members(playerid)
 	new qwer[100];
 	new year, month, day;
 	getdate(year, month, day);
-	format(qwer, sizeof(qwer), "{cccccc}Участники %s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", frakName[g], quan, day, month, year);
-	ShowDialog(playerid, 706, DIALOG_STYLE_TABLIST_HEADERS, qwer, sctring, "Ок", "");
+	format(qwer, sizeof(qwer), "{cccccc}Участники %s {99ff66}Online: %d {ff9000}[%02d.%02d.%d]", frakName[fractionid], quan, day, month, year);
+
+	new bool: not_my_members = fractionid != fraction(playerid);
+	if (not_my_members) SetPVarInt(playerid, "NotMyMembers", 1);
+	ShowDialog(playerid, 706, DIALOG_STYLE_TABLIST_HEADERS, qwer, sctring, "Ок", (not_my_members ? "" : "Назад"));
+
     return 1;
 }
 

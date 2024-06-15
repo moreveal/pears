@@ -728,7 +728,10 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
     }
     else if(dialogid == 506)
     {
+        new bool: open_by_cmd = bool: GetPVarInt(playerid, "OpenChannelTransmitterByCMD");
+
         new tid = DP[0][playerid];
+        
         if(response)
         {
             if(listitem < 0 || listitem >= MAX_ORG) return 1;
@@ -753,10 +756,19 @@ stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
                 PlayerInfo[playerid][pRacDiv][1] = i; // Подфракция
                 PlayerInfo[playerid][pRacDiv][2] = 1; // Возможность писать в рацию подфракции
             }
-            MenuSettingTransmitter(playerid, tid);
-            PlayerPlaySound(playerid,6401,0,0,0);
+            
+            if (!open_by_cmd) MenuSettingTransmitter(playerid, tid);
+            else {
+                new str[64];
+                format(str, sizeof(str), "{99ff66}Ваш текущий канал рации: %s", frakName[g]);
+                SuccessMessage(playerid, str);
+            }
+
+            PlayerPlaySound(playerid, 6401, 0, 0, 0);
         }
-        else MenuSettingTransmitter(playerid, tid);
+        else if (!open_by_cmd) MenuSettingTransmitter(playerid, tid);
+
+        DeletePVar(playerid, "OpenChannelTransmitterByCMD");
     }
     else if(dialogid == 958)
 	{
@@ -860,6 +872,8 @@ stock SettingChannelTransmitter(playerid, tid)
 {
     new line[214], lines[2096], quan;
     format(line,sizeof(line),"{ff9000}%s", TransmitterName[tid]), strcat(lines,line);
+
+    DP[0][playerid] = tid;
 
     if(tid == 0) // "Рация организации /r /rb"
     {
