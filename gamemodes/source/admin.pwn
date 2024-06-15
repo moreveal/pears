@@ -24,57 +24,61 @@ CMD:netstat(playerid)
 
 CMD:givemats(playerid, const params[])
 {
+	new fractionId, thingId, thingType, thingAmount;
 	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(sscanf(params, "iiii",params[0],params[1],params[2],params[3])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предметы на склад [ /givemats Организация Предмет Тип Количество ]");
-	if(params[2] < 0 || params[2] > 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип предметов [ 0 Вещества и патроны, 1 Оружие, 2 Броня ]");
-	if(params[3] < 1 || params[3] > 50000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 50.000");
-	
-	new yes;
-	if(params[2] == 0) // Обычные Предметы
-	{
-		if(params[1] >= 4 && params[1] <= 8 || params[1] >= 27 && params[1] <= 30 || params[1] == 70) yes = 1; // Только вещества и патроны
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Предметов [ 4-7 Вещества, 8 Аптечка, 27-30 Патроны, 70 Бинты ]");
-	}
-	else if(params[2] == 1) // Оружие
-	{
-		if(params[1] >= 2 && params[1] <= 15 || params[1] == 22 || params[1] == 24 || params[1] == 25 || params[1] == 26 || params[1] == 27 
-			|| params[1] == 28 || params[1] == 29 || params[1] == 30 || params[1] == 31 || params[1] == 32 || params[1] == 33 || params[1] == 34) yes = 1; // Только оружие
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Оружия [ 2-15, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ]");
-	}
-	else if(params[2] == 2) // Аксессуары
-	{
-		if(IsArmor(params[1])) yes = 1;
-		else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Аксессуаров [ 19142 Бронежилет ]");
+	if(sscanf(params, "iI(-1)I(-1)I(-1)", fractionId, thingType, thingId, thingAmount)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предметы на склад [ /givemats Организация Тип Предмет Количество ]");
+	if(fractionId < 0 || fractionId > 22) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Доступные ID организации: [0 - Все, 1 - LSPD, ...]");
+
+	switch (thingType) {
+		case 0: { // Обычные предметы
+			if (!(thingId >= 4 && thingId <= 8 || thingId >= 27 && thingId <= 30 || thingId == 70))
+				return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Предметов [ 4-7 Вещества, 8 Аптечка, 27-30 Патроны, 70 Бинты ]");
+		}
+		case 1: { // Оружие
+			if (!(thingId >= 2 && thingId <= 15 || thingId == 22 || thingId == 24 || thingId == 25 || thingId == 26 || thingId == 27 
+			|| thingId == 28 || thingId == 29 || thingId == 30 || thingId == 31 || thingId == 32 || thingId == 33 || thingId == 34))
+				return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Оружия [ 2-15, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 ]");
+		}
+		case 2: { // Аксессуары
+			if (!(IsArmor(thingId)))
+				return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID Аксессуаров [ 19142 Бронежилет ]");
+		}
+		default: return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип предметов [ 0 Обычные предметы, 1 Оружие, 2 Аксессуары ]");
 	}
 
-	if(yes == 1)
-	{
-		if(params[0] >= 1 && params[0] <= 22) 
-		{
-			new put_inva = putsklad(params[0], params[1], params[3], 0, params[2],1); // Кладём предмет
-			if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места");
-			new string[160];
-			format(string, sizeof(string), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], frakName[params[0]]);
-			ABroadCast(COLOR_ADM,string,1);
-			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Положил на склад предметы");
-		}
-		else if(params[0] == 0)
-		{
-			new quan;
-			for(new g = 1; g < MAX_ORG; g++) 
-			// В организациях никогда не используем OrganInfo[0], всегда g начинается с 1 OrganInfo[1] это LSPD 
-			// в OrganInfo[0] сохранения разных других систем не связанных напрямую с организациями
-			{
-				new put_inva = putsklad(g, params[1], params[3], 0, params[2], 1); // Кладём предмет
-				if(put_inva >= 0) quan ++;
-			}
+	if(thingAmount < 1 || thingAmount > 50000) return SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Количество не меньше 1 и не больше 50.000");
 
-			new string[160];
-			format(string, sizeof(string), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %d организаций из %d",PlayerInfo[playerid][pName], GetNameThing(1, params[1], params[2], 0), params[2], quan, MAX_ORG);
-			ABroadCast(COLOR_ADM,string,1);
-			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Положил на склад предметы");
+	// Выдача предмета на склад организации
+	if(fractionId == 0) 
+	{
+		new quan;
+		for(new g = 1; g < MAX_ORG; g++) 
+		// В организациях никогда не используем OrganInfo[0], всегда g начинается с 1 OrganInfo[1] это LSPD 
+		// в OrganInfo[0] сохранения разных других систем не связанных напрямую с организациями
+		{
+			new put_inva = putsklad(g, thingId, thingAmount, 0, thingType, 1); // Кладём предмет
+			if(put_inva >= 0) quan++;
 		}
-		else ErrorMessage(playerid, "{FF6347}Организации под этим ID не существует");
+
+		new string[160];
+		format(string, sizeof(string), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %d организаций из %d", PlayerInfo[playerid][pName], GetNameThing(1, thingId, thingType, 0), thingAmount, quan, MAX_ORG);
+		ABroadCast(COLOR_ADM, string, 1);
+		{
+			new log_str[144];
+			format(log_str, sizeof(log_str), "Выдал на склад %s в количестве %d (организаций: %d)", GetNameThing(1, thingId, thingType, 0), thingAmount, quan);
+			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fractionId, log_str);
+		}
+	} else {
+		new put_inva = putsklad(fractionId, thingId, thingAmount, 0, thingType, 1); // Кладём предмет
+		if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}На складе организации, для этого предмета, нет места");
+		new string[160];
+		format(string, sizeof(string), " [ ADM ]: %s выдал %s [Кол-во: %d] на склад %s", PlayerInfo[playerid][pName], GetNameThing(1, thingId, thingType, 0), thingAmount, frakName[fractionId]);
+		ABroadCast(COLOR_ADM,string,1);
+		{
+			new log_str[144];
+			format(log_str, sizeof(log_str), "Выдал на склад %s в количестве %d", GetNameThing(1, thingId, thingType, 0), thingAmount);
+			AdminLog("givemats", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fractionId, log_str);
+		}
 	}
 	return 1;
 }
