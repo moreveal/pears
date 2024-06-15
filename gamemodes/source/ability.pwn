@@ -159,16 +159,17 @@ stock ShowSkill(playerid, targetid)
     new dta = GetLanguageProcess(PlayerInfo[targetid][pKitai]);
     new eta = GetLanguageProcess(PlayerInfo[targetid][pIspan]);
     new gta = GetLanguageProcess(PlayerInfo[targetid][pArab]);
-    if(ata > 0) format(str,sizeof(str),"\n{ffffff}Русский Язык \t {66ff99}%d проц. \t \n",ata), strcat(sctring,str);
-    if(bta > 0) format(str,sizeof(str),"\n{ffffff}Японский Язык \t {66ff99}%d проц. \t \n",bta), strcat(sctring,str);
-    if(cta > 0) format(str,sizeof(str),"\n{ffffff}Итальянский Язык \t {66ff99}%d проц. \t \n",cta), strcat(sctring,str);
-    if(dta > 0) format(str,sizeof(str),"\n{ffffff}Китайский Язык \t {66ff99}%d проц. \t \n",dta), strcat(sctring,str);
-    if(eta > 0) format(str,sizeof(str),"\n{ffffff}Испанский Язык \t {66ff99}%d проц. \t \n",eta), strcat(sctring,str);
-    if(gta > 0) format(str,sizeof(str),"\n{ffffff}Арабский Язык \t {66ff99}%d проц. \t \n",gta), strcat(sctring,str);
+   	format(str,sizeof(str),"\n{ffffff}Русский Язык \t {66ff99}%d%% \t \n", ata), strcat(sctring,str);
+    format(str,sizeof(str),"\n{ffffff}Японский Язык \t {66ff99}%d%% \t \n", bta), strcat(sctring,str);
+    format(str,sizeof(str),"\n{ffffff}Итальянский Язык \t {66ff99}%d%% \t \n", cta), strcat(sctring,str);
+    format(str,sizeof(str),"\n{ffffff}Китайский Язык \t {66ff99}%d%% \t \n", dta), strcat(sctring,str);
+    format(str,sizeof(str),"\n{ffffff}Испанский Язык \t {66ff99}%d%% \t \n", eta), strcat(sctring,str);
+    format(str,sizeof(str),"\n{ffffff}Арабский Язык \t {66ff99}%d%% \t \n", gta), strcat(sctring,str);
+
     format(str,sizeof(str),"\n{cccccc}Количество Смертей \t {cccccc}%d \t \n",PlayerInfo[targetid][pDeaths]), strcat(sctring,str);
     format(str,sizeof(str),"\n{cccccc}Количество Убийств \t {cccccc}%d \t \n",PlayerInfo[targetid][pKills]), strcat(sctring,str);
     
-	format(lol,sizeof(lol),"{ff9000}Навыки %s",playername(targetid));
+	format(lol,sizeof(lol),"{ff9000}Навыки %s", playername(targetid));
 	ShowDialog(playerid,1276,DIALOG_STYLE_TABLIST_HEADERS,lol,sctring,"Выбрать","Выход");
 	return 1;
 }
