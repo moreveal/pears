@@ -11,7 +11,7 @@ stock CheckFlipVehicle(playerid)
 
     if(IsACar(VehInfo[vehicleid][vModel]))
     {
-        if(rotation[1] >= 120.0 && rotation[1] <= 240.0)
+        if(rotation[1] >= 100.0 && rotation[1] <= 260.0)
         {
             if(OnlineInfo[playerid][oFlipTriger] <= 0) 
             {
