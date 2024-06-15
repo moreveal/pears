@@ -200,6 +200,8 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				OnlineInfo[playerid][oPrsionCellBreaking][BreakingTypeID[playerid]] = 1;
 			}
 			GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~‹џћoЇa®o",5000,3);
+
+			update_ability(playerid, 6, 10);
     	}
 	}
 	else // Не попал в зелёную зону клика (Red)
