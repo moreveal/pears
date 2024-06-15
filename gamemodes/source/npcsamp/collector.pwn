@@ -51,7 +51,7 @@ stock CollectorDamage(playerid, damageid)
             if(OnlineInfo[i][oLogged] == 0
                 || PlayerInfo[i][pBkyrenie] >= 2
                 || PlayerInfo[i][pTransmitterOff][5] == true) continue;
-            if(IsACop(i) || PlayerInfo[i][pFbi] >= 1)
+            if(IsPoliceMember(i) || PlayerInfo[i][pFbi] >= 1)
             {
                 SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, "[DEP]: Нападение на инкассаторскую машину, %s[%d] в районе %s", rpplayername(playerid), playerid, gSAZones[findraiontolist][zName]);
             }

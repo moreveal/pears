@@ -327,7 +327,7 @@ stock AcceptRevial(playerid)
     }
     else
     {
-        if(get_ability(playerid, 10) < 2 && !IsACop(playerid))
+        if(get_ability(playerid, 10) < 2 && !IsPoliceMember(playerid))
         {
             new stro[90],sctringo[450];
             format(stro,sizeof(stro),"\n{ff9000}Как реанимировать пострадавшего?"), strcat(sctringo,stro);

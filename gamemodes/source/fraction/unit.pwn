@@ -64,104 +64,25 @@ new unitDefault[] =
 
 stock IsAUnitOrganization(unitid, fraction, playerid)
 {
-    if(unitid == 0) // Доставка ящика на склад
-    {
-        return 1; // доступно всем организациям
+    switch (unitid) {
+        case 0: return 1; // Доставка ящика на склад своей организации (Доступно всем)
+        case 1..4: return IsPoliceMember(playerid); // 1 минута на блок посту; RP/NRP арест; Возвращение украденного предмета
+        case 5, 6: return IsAGangCapt(playerid); // Килл на капте, Урон за 1хп на капте
+        case 7: return IsAFunctionOrganization(57, fraction, playerid) && GetAccessRankOrgMay(playerid, fraction, 57, NO_FBI); // Арест недвижимости
+        case 8: return IsAFunctionOrganization(58, fraction, playerid) && GetAccessRankOrgMay(playerid, fraction, 58, NO_FBI); // Арест бизнеса
+        case 9: return IsAFunctionOrganization(60, fraction, playerid) && GetAccessRankOrgMay(playerid, fraction, 60, NO_FBI); // Рассмотрение установки бизнеса
+        case 10: return fraction == 4; // Диагноз пациенту
+        case 11: return IsGangMember(playerid) || IsMafiaMember(playerid); // Угон транспорта
+        case 12: return IsPolice(fraction); // Найденный транспорт
+        case 13: return fraction == 7 && PlayerInfo[playerid][pDivision] == 1; // Рассмотрение заявки в суд (Дополнить покумекав с Владом как правильно!)
+        case 14: return fraction == 7; // Создание автобусного маршрута
+        case 15: return fraction == 3; // Доставка БП у NGSA
+        case 16: return IsGangMember(playerid); // Покраска граффити
+        case 17: return IsPoliceMember(playerid); // Закрытие вызова
+        case 18..20: return IsMafiaMember(playerid); // Снятие денег с бизнеса; Стрела; Порт
+        case 21, 22: return fraction == 4; // Реанимация пострадавшего; Лечение [/heal]
     }
-    else if(unitid == 1) // 1 минута на блок посту
-    {
-        if(IsACop(playerid)) return 1;
-    }
-    else if(unitid == 2) // RP Арест
-    {
-        if(IsACop(playerid)) return 1;
-    }
-    else if(unitid == 3) // Non RP Арест
-    {
-        if(IsACop(playerid)) return 1;
-    }
-    else if(unitid == 4) // Возвращение украденного предмета
-    {
-        if(IsACop(playerid)) return 1;
-    }
-    else if(unitid == 5) // Килл на капте
-    {
-        if(IsAGangCapt(playerid)) return 1;
-    }
-    else if(unitid == 6) // Урон за 1 хп на капте
-    {
-        if(IsAGangCapt(playerid)) return 1;
-    }
-    else if(unitid == 7) // Арест недвижимости
-    {
-        if(IsAFunctionOrganization(57, fraction, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, fraction, 57, NO_FBI)) // Права доступа по рангу
-            return 1;
-    }
-    else if(unitid == 8) // Арест бизнеса
-    {
-        if(IsAFunctionOrganization(58, fraction, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, fraction, 58, NO_FBI)) // Права доступа по рангу
-            return 1;
-    }
-    else if(unitid == 9) // Рассмотрение установки бизнеса
-    {
-        if(IsAFunctionOrganization(60, fraction, playerid) // Права доступа для организации
-            && GetAccessRankOrgMay(playerid, fraction, 60, NO_FBI)) // Права доступа по рангу
-            return 1;
-    }
-    else if(unitid == 10) // Диагноз пациенту
-    {
-        if(fraction == 4) return 1;
-    }
-    else if(unitid == 11) // Угон транспорта
-    {
-        if(IsAGang(fraction) || IsAMafia(fraction)) return 1;
-    }
-    else if(unitid == 12) // Найденный транспорт
-    {
-        if(IsAPolice(fraction)) return 1;
-    }
-    else if(unitid == 13) // Рассмотрение заявки в суд
-    {
-        if(fraction == 7 && PlayerInfo[playerid][pDivision] == 1) return 1; // Дополнить покумекав с Владом как правильно!
-    }
-    else if(unitid == 14) // Создание автобусного маршрута
-    {
-        if(fraction == 7) return 1;
-    }
-    else if(unitid == 15) // Доставка БП у NGSA
-    {
-        if(fraction == 3) return 1;
-    }
-    else if(unitid == 16) // Покраска граффити
-    {
-        if(IsAGang(fraction)) return 1;
-    }
-    else if(unitid == 17) // Закрытие вызова
-    {
-        if(IsACop(playerid)) return 1;
-    }
-    else if(unitid == 18) // Снимаем бабки с бизнеса
-    {
-        if(IsAMafia(fraction)) return 1;
-    }
-    else if(unitid == 19) // Стрела
-    {
-        if(IsAMafia(fraction)) return 1;
-    }
-    else if(unitid == 20) // Порт
-    {
-        if(IsAMafia(fraction)) return 1;
-    }
-    else if(unitid == 21) // Реанимация пострадавшего
-    {
-        if(fraction == 4) return 1;
-    }
-    else if(unitid == 22) // Лечение /heal
-    {
-        if(fraction == 4) return 1;
-    }
+
     return 0;
 }
 

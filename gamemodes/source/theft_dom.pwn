@@ -9,7 +9,7 @@
             if(dom == PlayerInfo[playerid][pDom]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить свой дом");
             if(dom == PlayerInfo[playerid][pHouserent]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить дом, в котором проживаете");
             if(DomInfo[dom][dFam] >= 1 && PlayerInfo[playerid][pFamily] == DomInfo[dom][dFam]) return ErrorMessage(playerid, "{FF6347}Вы не можете ограбить дом своей семьи");
-            if(!IsAGang(playerid) && !IsAMafia(playerid)) return ErrorMessage(playerid, "{FF6347}Украсть мебель может только участник преступной группировки (Банда, Мафия)");
+            if(!IsGangMember(playerid) && !IsMafiaMember(playerid)) return ErrorMessage(playerid, "{FF6347}Украсть мебель может только участник преступной группировки (Банда, Мафия)");
             if(OnlineInfo[playerid][oOnBackThing][0] > 0) return ErrorMessage(playerid, "{FF6347}У вас уже есть предмет в мешке\n\n{cccccc}Отправляйтесь на арендованный склад своей организации, чтобы получить юниты");
             if(DomInfo[dom][dTheftQuan] > 0 && DomInfo[dom][dTheft] < gettime()) return ErrorMessage(playerid, "{FF6347}Закончилось время активного ограбления или ограбление не начато");
             if(DomInfo[dom][dTheftQuan] >= 4) return ErrorMessage(playerid, "{FF6347}За одно ограбление, можно украсть не больше 4-ёх предметов мебели");

@@ -30,8 +30,8 @@ CMD:rentsklad(playerid)
 			   		    SetPlayerChatBubble(playerid,"кладёт ящик на склад",COLOR_PURPLE,20.0,3000);
 			       	    RemovePlayerAttachedObject(playerid,1);
 			       	    PPP15[playerid] = 0;
-			       	    ApplyAnimation(playerid,"CARRY","putdwn",4.0, false, false, false, false, false, SYNC_ALL);
-			       	    PlayerPlaySound(playerid,6401,0,0,0);
+			       	    ApplyAnimation(playerid, "CARRY", "putdwn", 4.0, false, false, false, false, false, SYNC_ALL);
+			       	    PlayerPlaySound(playerid, 6401, 0, 0, 0);
 
 						// Выдаём юниты
 	       	    		GiveUnitForBox(playerid, fpick, thingType, fquan, thingQara);
