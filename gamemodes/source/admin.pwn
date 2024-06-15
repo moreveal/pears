@@ -952,20 +952,7 @@ CMD:gpci(playerid, const params[])
     SendClientMessage(playerid, COLOR_GREY, string);
  	return 1;
 }
-CMD:loss(playerid, const params[])
-{
-	if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pHidden] == 0 && PlayerInfo[playerid][pMedia] != 3)
-	{
-		SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(playerid));
-	}
-	else
-	{
-		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[playerid][pName], NetStats_PacketLossPercent(playerid));
-		if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
-		SendClientMessage(playerid, COLOR_GREY, "%s потерянные пакеты: %.2f проц.", PlayerInfo[params[0]][pName], NetStats_PacketLossPercent(params[0]));
-	}
- 	return 1;
-}
+
 CMD:geo(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] <= 2 && PlayerInfo[playerid][pHidden] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
@@ -979,7 +966,6 @@ CMD:geo(playerid, const params[])
     SendClientMessage(playerid, COLOR_GREY, string);
  	return 1;
 }
-
 
 function Call_Punishments(playerid)
 {
