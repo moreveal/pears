@@ -9,12 +9,12 @@ enum fundInfo
     bool:fundActive, // Включен ли сбор
     fundName[44], // Название сбора
     fundText[84], // Описание сбора
-    fundMoney[24], // Собранное лаве
-    fundRequired[24], // Сколько требуется собрать
+    fundMoney, // Собранное лаве
+    fundRequired, // Сколько требуется собрать
     Float:fundPos[3], // Позиция сбора
     fundUnix, // Дата начала сбора
     fundQuan, // Количество пожертвований
-    fundMaxMoney[24], // Максимальное пожертвование сумма
+    fundMaxMoney, // Максимальное пожертвование сумма
     fundMaxPlayerid, // Максимальное пожертвование id аккаунта
     fundMaxPlayerName[24], // Максимальное пожертвование имя игрока
     fundMaxUnix, // Дата и время максимального пожертвования
@@ -82,7 +82,7 @@ stock FundRaisers(playerid)
     {
         if(FundRaisersInfo[i][fundActive])
         {
-            format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}%s$ / {cccccc}%s$", i + 1, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+            format(line,sizeof(line),"\n{ff9000}%d. %s\t{99ff66}%d$ / {cccccc}%d$", i + 1, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
         }
         else format(line,sizeof(line),"\n{cccccc}%d. Добавить >>\t", i + 1), strcat(lines,line);
     }
@@ -102,7 +102,7 @@ stock SettingFundRaisers(playerid, i)
 
     format(line,sizeof(line),"\n{cccccc}Название:\t%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Описание\t"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Требуется собрать:\t{99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Требуется собрать:\t{99ff66}%d$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Позиция сбора >>\t"), strcat(lines,line);
     format(line,sizeof(line),"\n{F4254F}Подарки при пожертвовании >> \t"), strcat(lines,line);
     format(line,sizeof(line),"\n{FF6347}Завершить сбор\t"), strcat(lines,line);
@@ -140,9 +140,9 @@ stock InfoFundRaisers(playerid, i)
     if(!FundRaisersInfo[i][fundText]) format(line,sizeof(line),"\n{FF6347}Описание не заполнено"), strcat(lines,line);
     else format(line,sizeof(line),"\n{cccccc}%s", FundRaisersInfo[i][fundText]), strcat(lines,line);
 
-    format(line,sizeof(line),"\n\n{cccccc}Собрано: {99ff66}%s$", FundRaisersInfo[i][fundMoney]), strcat(lines,line);
-    if(!FundRaisersInfo[i][fundRequired]) format(line,sizeof(line),"\n{cccccc}Требуется: {FF6347}не заполнено", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
-    else format(line,sizeof(line),"\n{cccccc}Требуется: {99ff66}%s$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Собрано: {99ff66}%d$", FundRaisersInfo[i][fundMoney]), strcat(lines,line);
+    if(!FundRaisersInfo[i][fundRequired]) format(line,sizeof(line),"\n{cccccc}Требуется: {FF6347}не заполнено"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{cccccc}Требуется: {99ff66}%d$", FundRaisersInfo[i][fundRequired]), strcat(lines,line);
 
     format(line,sizeof(line),"\n\n{cccccc}Количество пожертвований: {ff9000}%d", FundRaisersInfo[i][fundQuan]), strcat(lines,line);
     if(FundRaisersInfo[i][fundUnix] > 0) format(line,sizeof(line),"\n{cccccc}Начало сбора: {555555}%02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
@@ -154,7 +154,7 @@ stock InfoFundRaisers(playerid, i)
         new tyear2, tmonth2, tday2, thour2, tminute2, tsecond2;
         stamp2datetime(FundRaisersInfo[i][fundMaxUnix], tyear2, tmonth2, tday2, thour2, tminute2, tsecond2, 3);
         format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundMaxPlayerName]), strcat(lines,line);
-        format(line,sizeof(line),"\n{99ff66}%s$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
+        format(line,sizeof(line),"\n{99ff66}%d$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
         format(line,sizeof(line),"\n{555555}%02d.%02d.%d %02d:%02d", tday2, tmonth2, tyear2, thour2, tminute2), strcat(lines,line);
     }
     else format(line,sizeof(line),"\n{555555}нет пожертвований"), strcat(lines,line);
@@ -198,7 +198,7 @@ stock UpdateFundRaisers(i)
         new line[130],lines[1170];
         format(line,sizeof(line),"\n{ff9000}*** Сбор Средств ***"), strcat(lines,line);
         format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundName]), strcat(lines,line);
-        format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%s$ / {cccccc}%s$", FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
+        format(line,sizeof(line),"\n{cccccc}Собрано: {99ff66}%d$ / {cccccc}%d$", FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]), strcat(lines,line);
 
         if(FundRaisersInfo[i][fundGift]) format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {F4254F}Есть"), strcat(lines,line);
         else format(line,sizeof(line),"\n{cccccc}Подарки при Пожертвовании: {555555}Отсутствуют"), strcat(lines,line);
@@ -207,7 +207,7 @@ stock UpdateFundRaisers(i)
         if(FundRaisersInfo[i][fundMaxPlayerid])
         {
             format(line,sizeof(line),"\n{D9F26E}%s", FundRaisersInfo[i][fundMaxPlayerName]), strcat(lines,line);
-            format(line,sizeof(line),"\n{99ff66}%s$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
+            format(line,sizeof(line),"\n{99ff66}%d$", FundRaisersInfo[i][fundMaxMoney]), strcat(lines,line);
         }
         else format(line,sizeof(line),"\n{555555}нет пожертвований"), strcat(lines,line);
 
@@ -232,14 +232,14 @@ function LoadFundRaisers()
         cache_get_value_name_bool(f, "fundActive", FundRaisersInfo[i][fundActive]);
         cache_get_value_name(f, "fundName", FundRaisersInfo[i][fundName], 44);
         cache_get_value_name(f, "fundText", FundRaisersInfo[i][fundText], 84);
-        cache_get_value_name(f, "fundMoney", FundRaisersInfo[i][fundMoney], 24);
-        cache_get_value_name(f, "fundRequired", FundRaisersInfo[i][fundRequired], 24);
+        cache_get_value_name_int(f, "fundMoney", FundRaisersInfo[i][fundMoney]);
+        cache_get_value_name_int(f, "fundRequired", FundRaisersInfo[i][fundRequired]);
         cache_get_value_name_float(f, "fundPos0", FundRaisersInfo[i][fundPos][0]);
         cache_get_value_name_float(f, "fundPos1", FundRaisersInfo[i][fundPos][1]);
         cache_get_value_name_float(f, "fundPos2", FundRaisersInfo[i][fundPos][2]);
         cache_get_value_name_int(f, "fundUnix", FundRaisersInfo[i][fundUnix]);
         cache_get_value_name_int(f, "fundQuan", FundRaisersInfo[i][fundQuan]);
-        cache_get_value_name(f, "fundMaxMoney", FundRaisersInfo[i][fundMaxMoney], 24);
+        cache_get_value_name_int(f, "fundMaxMoney", FundRaisersInfo[i][fundMaxMoney]);
         cache_get_value_name_int(f, "fundMaxPlayerid", FundRaisersInfo[i][fundMaxPlayerid]);
         cache_get_value_name(f, "fundMaxPlayerName", FundRaisersInfo[i][fundMaxPlayerName], 24);
         cache_get_value_name_int(f, "fundMaxUnix", FundRaisersInfo[i][fundMaxUnix]);
@@ -264,38 +264,51 @@ function LoadFundRaisers()
     return 1;
 }
 
-function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
+function Call_pay_fundraisers(playerid, i, amount, race_check)
 {
     new rows;
 	cache_get_row_count(rows);
     if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
     new unix = gettime();
-    new input = strval(inputtext);
-    new realMoney = strval(FundRaisersInfo[i][fundMoney]);
-    new realRequired = strval(FundRaisersInfo[i][fundRequired]);
-    if(realMoney + input > realRequired) return ErrorMessage(playerid, "{FF6347}Деньги собраны. Пожертвования больше не нужны");
+    new input = amount;
+    if (input <= 0)
+    {
+        // снимаем флуд, так как не получилось закинуть
+        aFloodFund[playerid] = 0;
+
+        return ErrorMessage(playerid, "{FF6347}Введите корректную сумму");
+    }
+    new realMoney = FundRaisersInfo[i][fundMoney];
+    new realRequired = FundRaisersInfo[i][fundRequired];
+    if(realMoney + input > realRequired)
+    {
+        // снимаем флуд, так как не получилось закинуть
+        aFloodFund[playerid] = 0;
+
+        return ErrorMessage(playerid, "{FF6347}Цель сбора требует меньше денежных средств, чем Вы пытаетесь пожертвовать");
+    }
 
     oGivePlayerMoney(playerid, -input);
     payanim(playerid, 0);
 
-    new tempMoney = strval(FundRaisersInfo[i][fundMoney]) + input;
-    format(FundRaisersInfo[i][fundMoney], 24, "%d", tempMoney);
+    new tempMoney = FundRaisersInfo[i][fundMoney] + input;
+    FundRaisersInfo[i][fundMoney] = tempMoney;
     FundRaisersInfo[i][fundQuan] ++;
 
     new line[100],lines[700];
-    format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%s$", inputtext), strcat(lines,line);
+    format(line,sizeof(line),"{99ff66}Благодарим вас за пожертвование в размере {D9F26E}%d$", input), strcat(lines,line);
 
     // Максимальное Пожертвование
-    if(input > strval(FundRaisersInfo[i][fundMaxMoney]))
+    if(input > FundRaisersInfo[i][fundMaxMoney])
     {
-        format(FundRaisersInfo[i][fundMaxMoney], 24, "%s", inputtext);
+        FundRaisersInfo[i][fundMaxMoney] = input;
         FundRaisersInfo[i][fundMaxPlayerid] = PlayerInfo[playerid][pID];
         format(FundRaisersInfo[i][fundMaxPlayerName], 24, "%s", PlayerInfo[playerid][pName]);
         FundRaisersInfo[i][fundMaxUnix] = unix;
 
         new string_mysql[260];
-        mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMaxMoney`='%e', `fundMaxPlayerid`='%d',\
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMaxMoney`='%d', `fundMaxPlayerid`='%d',\
             `fundMaxPlayerName`='%e', `fundMaxUnix`='%d' WHERE `fundNewid`='%d'", 
             FundRaisersInfo[i][fundMaxMoney], FundRaisersInfo[i][fundMaxPlayerid], FundRaisersInfo[i][fundMaxPlayerName], 
             FundRaisersInfo[i][fundMaxUnix], FundRaisersInfo[i][fundNewid]);
@@ -352,18 +365,19 @@ function Call_pay_fundraisers(playerid, i, const inputtext[], race_check)
                 format(line,sizeof(line),"\n\n{F4254F}Проверьте инвентарь, вы получили подарок!"), strcat(lines,line);
             }
         }
-
-        SuccessMessage(playerid, lines);
-        UpdateFundRaisers(i);
-
-        new string_mysql[140];
-        mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMoney`='%e', `fundQuan`='%d' WHERE `fundNewid`='%d'", 
-            FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundQuan], FundRaisersInfo[i][fundNewid]);
-        query_empty(pearsq, string_mysql);
-
-        MoneyLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, FundRaisersInfo[i][fundName]);
-        FundLog(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], inputtext, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
     }
+
+    SuccessMessage(playerid, lines);
+    UpdateFundRaisers(i);
+
+    new string_mysql[140];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundMoney`='%d', `fundQuan`='%d' WHERE `fundNewid`='%d'", 
+        FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundQuan], FundRaisersInfo[i][fundNewid]);
+    query_empty(pearsq, string_mysql);
+
+    MoneyLog("fund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -input, FundRaisersInfo[i][fundName]);
+    FundLog(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], inputtext, FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundNewid]);
+
     return 1;
 }
 
@@ -420,7 +434,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
                 {
                     if(FundRaisersInfo[i][fundPos][0] == 0.0 
                         || !strcmp(FundRaisersInfo[i][fundName],"\0",true) || !strcmp(FundRaisersInfo[i][fundText],"\0",true) 
-                        || !strcmp(FundRaisersInfo[i][fundRequired],"\0",true))
+                        || FundRaisersInfo[i][fundRequired] <= 0)
                         return ErrorText(playerid, "{FF6347}Вы не настроили сбор средств полностью\n{cccccc}Название, Описание, Требуется собрать, Позиция"), SettingFundRaisers(playerid, i);
                     
                     ShowDialog(playerid,1413,DIALOG_STYLE_MSGBOX,"{ff9000}Сбор Средств","{cccccc}Вы уверены, что хотите активировать сбор средств?\n\n{FF6347}Elon_Musk: Убедись, что в подарках нет идиотских и косячных предметов\nЕсли там окажется какая-то херня - я выдерну ноги","Да","Нет");
@@ -507,12 +521,12 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             if(input < 10000 || input > 999000000) 
                 return ShowDialog(playerid,1406,DIALOG_STYLE_INPUT,"{ff9000}Сбор Средств","{cccccc}Введите сумму, которую необходимо собрать\n\n{FF6347}10.000 - 999.000.000","Принять","Отмена");
            	
-            format(FundRaisersInfo[i][fundRequired], 24, "%s", inputtext);
+            FundRaisersInfo[i][fundRequired] = input;
             UpdateFundRaisers(i);
             SettingFundRaisers(playerid, i);
 
             new string_mysql[140];
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundRequired`='%e' WHERE `fundNewid`='%d'",
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundRequired`='%d' WHERE `fundNewid`='%d'",
                 FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundNewid]);
 	        query_empty(pearsq, string_mysql);
         }
@@ -578,7 +592,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             new string_mysql[180];
             mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", 
                 FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
-		    mysql_tquery(pearsq, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, inputtext, g_MysqlRaceCheck[playerid]);
+		    mysql_tquery(pearsq, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, input, g_MysqlRaceCheck[playerid]);
         }
         else MenuFundRaisers(playerid, i);
     }
@@ -595,16 +609,16 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             UpdateFundRaisers(i);
 
             new string[140];
-            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%s$ {cccccc}из %s$", FundRaisersInfo[i][fundName],  FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]);
+            format(string,sizeof(string),"{99ff66}Вы завершили сбор средств {ff9000}%s\n\n{cccccc}Собрано: {99ff66}%d$ {cccccc}из %d$", FundRaisersInfo[i][fundName],  FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundRequired]);
             SuccessMessage(playerid, string);
 
             ClearFundLog(FundRaisersInfo[i][fundNewid]); // Очищаем лог пожертвований по этому сбору (В moneylog история остаётся)
 
             format(FundRaisersInfo[i][fundName], 44, "");
             format(FundRaisersInfo[i][fundText], 84, "");
-            format(FundRaisersInfo[i][fundMoney], 24, "");
-            format(FundRaisersInfo[i][fundRequired], 24, "");
-            format(FundRaisersInfo[i][fundMaxMoney], 24, "");
+            FundRaisersInfo[i][fundMoney] = 0;
+            FundRaisersInfo[i][fundRequired] = 0;
+            FundRaisersInfo[i][fundMaxMoney] = 0;
             FundRaisersInfo[i][fundMaxPlayerid] = 0;
             format(FundRaisersInfo[i][fundMaxPlayerName], 24, "");
             FundRaisersInfo[i][fundMaxUnix] = 0;
@@ -614,9 +628,9 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             for(new g = 0; g < MAX_FUND_GIFT; g++) FundRaisersInfo[i][fundGiftThingId][g] = 0;
 
             new string_mysql[500];
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%e', `fundText`='%e', `fundMoney`='%e', \ 
-                `fundMaxMoney`='%e', `fundMaxPlayerid`='0', \
-                `fundQuan`='0', `fundRequired`='%e', `fundGift`='%d', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `fund_raisers` SET `fundActive`='%i', `fundName`='%e', `fundText`='%e', `fundMoney`='%d', \ 
+                `fundMaxMoney`='%d', `fundMaxPlayerid`='0', \
+                `fundQuan`='0', `fundRequired`='%d', `fundGift`='%d', `fundGiftThingId0`='0', `fundGiftThingId1`='0', `fundGiftThingId2`='0' WHERE `fundNewid`='%d'", 
                 FundRaisersInfo[i][fundActive], FundRaisersInfo[i][fundName], FundRaisersInfo[i][fundText], 
                 FundRaisersInfo[i][fundMoney], FundRaisersInfo[i][fundMaxMoney], FundRaisersInfo[i][fundRequired], FundRaisersInfo[i][fundGift], 
                 FundRaisersInfo[i][fundNewid]); // 263 + 33 + 44 + 84 + 24 + 24

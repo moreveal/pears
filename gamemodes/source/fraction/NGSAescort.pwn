@@ -2396,7 +2396,7 @@ stock PutVehicleToTrain(playerid)
 	new v = GetPlayerVehicleID(playerid);
 	if(v >= armcar[0] && v <= armcar[1])
 	{
-		if(VehInfo[v][vModel] != 433 && VehInfo[v][vModel] != 470) return ErrorMessage(playerid, "{FF6347}Погрузить на поезд можно только Barracks или Patriot");
+		if(VehInfo[v][vModel] != 433 && VehInfo[v][vModel] != 470 && VehInfo[v][vModel] != 2060) return ErrorMessage(playerid, "{FF6347}Погрузить на поезд можно только Barracks, Patriot и Hummer H1");
 		if(get_bootbox(v) > 0) return ErrorMessage(playerid, "{FF6347}Сначала необходимо погрузить ящики из транспорта на поезд\n{cccccc}В этом транспорте обнаружены ящики в багажнике");
 
 		if(VehInfo[v][vModel] == 470)

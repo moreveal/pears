@@ -1058,21 +1058,44 @@ CMD:punishments(playerid,const params[])
 	}
 	return 1;
 }
+
+alias:giveeditorder("seteditorder")
 CMD:giveeditorder(playerid, const params[])
 {
 	new f_str[100];
-	if(PlayerInfo[playerid][pSoska] < 14) return 0;
-	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать право на редактирование цен [ /giveeditorder ID/NickName ]");
-	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
+	if(PlayerInfo[playerid][pSoska] < 14) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать/отобрать право на редактирование цен [ /giveeditorder ID/NickName ]");
+	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
 	if(IsPlayerConnected(giveplayerid))
 	{
-		PlayerInfo[giveplayerid][pTaxesUnix] = gettime()+3600;
+		new unix = gettime();
+		if (PlayerInfo[giveplayerid][pTaxesUnix] > unix) // если уже есть активное разрешение
+		{
+			PlayerInfo[giveplayerid][pTaxesUnix] = 0;
+		}
+		else
+		{
+			PlayerInfo[giveplayerid][pTaxesUnix] = unix + 3600;
+		}
 	}
 	else return ErrorMessage(playerid,"{ff6347}Игрок в оффлайне, выдавать право на редактирование можно только для онлайн игроков");
-	mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pTaxesUnix` = '%d' WHERE `user_id` = '%d'", gettime()+3600,PlayerInfo[giveplayerid][pID]);
+	new gave = PlayerInfo[giveplayerid][pTaxesUnix] != 0;
+	mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pTaxesUnix` = '%d' WHERE `user_id` = '%d'", PlayerInfo[giveplayerid][pTaxesUnix], PlayerInfo[giveplayerid][pID]);
 	query_empty(pearsq, f_str);
-	AdminLog("giveeditorder", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP],  PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Дал доступ к редактированию minfin");
+	AdminLog(
+		"giveeditorder",
+		PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP],
+		PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP],
+		0,
+		(gave ? "Дал доступ на час к редактированию minfin" : "Забрал доступ к редактированию minfin")
+	);
+	SendClientMessage(
+		playerid,
+		COLOR_LIGHTBLUE,
+		(gave ? "* Вы выдали %s доступ на час к редактированию minfin" : "* Вы забрали у %s доступ к редактированию minfin"),
+		PlayerInfo[giveplayerid][pName]
+	);
 	return 1;
 }
