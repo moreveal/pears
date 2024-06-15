@@ -122,7 +122,8 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || VehShopInfo[playerid][vsTest] // test drive
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
     || IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
-    || CA_IsPlayerNearWater(playerid, 1.0, 1.0)) return 1; // В воде
+    || CA_IsPlayerNearWater(playerid, 1.0, 1.0) // В воде
+    || (bespilot[playerid] != 0 || GetTickCount() - bespilotejecttick[playerid] < 1000)) return 1; // NGSA беспилотник
     return 0;
 }
 
