@@ -1994,7 +1994,9 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;
 	lim[8] = 5, lim[19] = 5, lim[41] = 10, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100*pow, lim[5] = 100*pow, lim[6] = 100*pow, lim[7] = 100*pow, lim[9] = 20, lim[18] = 100*pow, lim[20] = 20*pow, lim[27] = 100*pow, lim[28] = 100*pow, lim[29] = 100*pow, lim[30] = 100*pow;
-	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10, lim[60] = 100, lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow;
+	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10; 
+	lim[60] = 100*pow; // Палладий
+	lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow;
 	lim[70] = 10;
 	lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
