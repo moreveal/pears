@@ -318,13 +318,20 @@ stock AcceptRevial(playerid)
 {
     if(fraction(playerid) == 4)
     {
-        new string[160];
-        format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
         Moiplayer[Moiplayer[playerid]] = playerid;
-        ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
-        format(string,sizeof(string),"{66ff99}Вы предложили %s оказание медицинской помощи. Ожидайте ответа...",rpplayername(Moiplayer[playerid]));
-        keep(playerid);
-        SuccessMessage(playerid,string);
+        if (!IsPlayerAfk(Moiplayer[playerid]))
+        {
+            new string[160];
+            format(string,sizeof(string),"{cccccc}Медик %s хочет вас реанимировать. Стоимость: %d$",rpplayername(playerid),friskPrice[8]*3);
+            ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
+            format(string,sizeof(string),"{66ff99}Вы предложили %s оказание медицинской помощи. Ожидайте ответа...",rpplayername(Moiplayer[playerid]));
+            keep(playerid);
+            SuccessMessage(playerid,string);
+        }
+        else
+        {
+            UseRevival(playerid, Moiplayer[playerid]);
+        }
     }
     else
     {
