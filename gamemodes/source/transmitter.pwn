@@ -11,7 +11,7 @@ new TransmitterName[][] =
     "Волна Преступлений", "Чат Администрации /a", "Чат Медиа /y", "Общие Объявления /ao /o /oo /gov", "Новости CNN /news /live" // 5 - 9
 };
 
-stock checkTransmitterPermission(playerid) // Проверки разрешений рации (чтобы не дублировать одну и ту-же херню в каждую команду)
+stock checkTransmitterPermission(playerid) // Проверки разрешений рации (чтобы не дублировать одну и ту же херню в каждую команду)
 {
 	if(PlayerInfo[playerid][pBkyrenie] >= 2)
 	{
@@ -303,7 +303,7 @@ stock commandD(playerid, typeCommand, const params[])
     writeRac = PlayerInfo[playerid][pRacDep][1]; // Возможность написать в подключённый канал рации
 
     if(PlayerInfo[playerid][pTransmitterOff][1] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен общий канал /d /db /u /ub [ Y >> Меню >> Настройки Чата ]");
-    if(writeRac == 0 || g == 0) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к общему каналу\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
+    if(writeRac == 0 || g == 0 || g == 9) return ErrorMessage(playerid, "{FF6347}У вас нет доступа к общему каналу\n{cccccc}Вы можете настроить каналы рации [ Y >> Меню >> Настройки Чата ]");
 	if(sscanf(params, "s[144]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Общий канал организаций /d /u или /db /ub текст");
 
     if(checkTransmitterOrgMute(playerid)) return 1; // Проверка мута рации организации
@@ -331,7 +331,7 @@ stock commandD(playerid, typeCommand, const params[])
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))
     {
         new maxRank = get_maxrank(g);
-        if(PlayerInfo[playerid][pRank] >= maxRank-1) // Лидеры и Замы
+        if(PlayerInfo[playerid][pRank] >= maxRank - 1) // Лидеры и Замы
         {
             if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
             else format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
@@ -520,7 +520,7 @@ stock getPlayerNameTransmitterOffline(g, bool:singStatus, const playerName[], co
 
 stock IsADepartID(g) // Получение списка законных организаций, которые видят /d чат департамента
 {
-    if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 9 || g == 11 || g == 21 || g == 22) return 1;
+    if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 11 || g == 21 || g == 22) return 1;
     return 0;
 }
 stock IsAGangID(g) // Получение списка банд, которые видят /d или /u общий чат

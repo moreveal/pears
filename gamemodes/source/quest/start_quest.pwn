@@ -1330,7 +1330,7 @@ stock dialogCase_StartQuest(playerid, dialogid, response, listitem)
     	            format(line,sizeof(line),"{ffcc66}Как пройти этот квест?"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Этот квест запускается самостоятельно при выполнении необходимых условий"), strcat(lines,line);
                     format(line,sizeof(line),"\n{cccccc}Но если вам не терпится пройти его сейчас, вы можете выполнить следующие действия"), strcat(lines,line);
-                    format(line,sizeof(line),"\n\n{ffcc66}1. Положите в багажнике автомобиля Рем. Комплект"), strcat(lines,line);
+                    format(line,sizeof(line),"\n\n{ffcc66}1. Положите в багажник автомобиля Рем. Комплект"), strcat(lines,line);
                     format(line,sizeof(line),"\n{ffcc66}2. Затем повредите автомобиль, сидя за рулём, до 400 хп и квест сразу запустится"), strcat(lines,line);
                     ShowDialog(playerid,505,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"Ок","");
                 }

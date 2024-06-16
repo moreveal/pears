@@ -59,9 +59,20 @@ stock FindCarInWareHouse(playerid)
         new string[120];
         mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_cars` SET `Sklad` = '-1' WHERE `newid` = '%d'",crimeInfo[i][crmTargetZalupa]);
         query_empty(pearsq, string);
+
+        // Выдаем розыск преступнику, если его имя известно
+        if(crimeInfo[i][crmType] != 0) {
+            // Ищем статью за угон транспортного средства и выдаем соответствующий розыск, если она нашлась
+            new uk, p;
+            if (FindCriminalArticle("Угон", uk, p, .ignorecase = false)) {
+                new zv = CriminalCodeInfo[uk][p][ccLevel];
+                SetPlayerCriminalOffline(crimeInfo[i][crmSenderID], playerid, CriminalCodeInfo[uk][p][ccName], zv, uk, p);
+            }
+        }
+
         crimeInfo[i][crmSenderID] = 0;
         SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Можно взять новое дело и проверить этот же склад на другой транспорт");
-        format(string, sizeof(string), "Угнанный %s был найден полицей",GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
+        format(string, sizeof(string), "Угнанный %s был найден полицией", GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
         OrganInfo[g][glave] += 5000;
 
@@ -89,19 +100,19 @@ stock ListCrime(playerid)
         stamp2datetime(crimeInfo[i][crmUnix], tyear, tmonth, tday, thour, tminute, tsecond, 3);
         if(crimeInfo[i][crmType] == 0)
         {   
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line, sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1, crimeStatusName[crimeInfo[i][crmStatus]], crimeInfo[i][crmTargetName], tday, tmonth, tyear, thour, tminute), strcat(lines, line);
+            else format(line, sizeof(line),"\n{cccccc}№ %d. %s\tНеизвестен\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1, crimeStatusName[crimeInfo[i][crmStatus]], crimeInfo[i][crmTargetName], tday, tmonth, tyear, thour, tminute), strcat(lines, line);
         }
         else
         {
-            if(crimeInfo[i][crmStatusCrime] == 0) format(line,sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
-            else format(line,sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1,crimeStatusName[crimeInfo[i][crmStatus]],crimeInfo[i][crmSenderName],crimeInfo[i][crmTargetName],tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+            if(crimeInfo[i][crmStatusCrime] == 0) format(line, sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{FF6347}Не принят", i + 1, crimeStatusName[crimeInfo[i][crmStatus]], crimeInfo[i][crmSenderName], crimeInfo[i][crmTargetName], tday, tmonth, tyear, thour, tminute), strcat(lines, line);
+            else format(line, sizeof(line),"\n{cccccc}№ %d. %s\t%s\t%s [ %02d.%02d.%d %02d:%02d ]\t{99ff66}Принят", i + 1, crimeStatusName[crimeInfo[i][crmStatus]], crimeInfo[i][crmSenderName], crimeInfo[i][crmTargetName], tday, tmonth, tyear, thour, tminute), strcat(lines, line);
         }
         List[quan][playerid] = i;
         quan ++;
 	}
     if(quan == 0) return ErrorMessage(playerid, "{FF6347}Нет никаких совершенных преступлений");
-    ShowDialog(playerid,1351,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Список Преступлений",lines,"Выбрать","Отмена");
+    ShowDialog(playerid, 1351, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Список Преступлений", lines, "Выбрать", "Отмена");
     return 1;
 }
 
