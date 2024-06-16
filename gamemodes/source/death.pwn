@@ -71,12 +71,12 @@ stock SetPlayerDeath(playerid, reason)
     new unix = gettime();
     DeathInfo[playerid][deathStatus] = true;
     DeathInfo[playerid][deathReason] = reason;
-
-    new timeDeath = 180, timeDeathTwo = 300;
-    if(DeathInfo[playerid][deathCut] == true) timeDeath = 10, timeDeathTwo = 10;
     
-    if(DeathInfo[playerid][deathUnix] >= unix) DeathInfo[playerid][deathTime] = timeDeathTwo; // 5 min
-    else DeathInfo[playerid][deathTime] = timeDeath; // 3 min
+    DeathInfo[playerid][deathTime] = 30; // 30 секунд ожидания перед возможностью отправиться в больницу
+    if (Pursuit[playerid] != 9999) {
+        // Увеличиваем время ожидания при некоторых обстоятельствах (Наличие розыска, ...)
+        DeathInfo[playerid][deathTime] = 60;
+    }
     DeathInfo[playerid][deathUnix] = unix + 3600;
 
     ShowPlayerDeath(playerid);
@@ -95,11 +95,9 @@ stock ShowPlayerDeath(playerid)
 
     new line[130],lines[520];
    	format(line,sizeof(line),"{FF6347}Ваш персонаж получил тяжёлую травму"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Госпитализация через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Вы сможете отправиться в больницу через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}В течении ожидания к вам может прибыть скорая помощь, чтобы вылечить вас"), strcat(lines,line);
     if(PlayerInfo[playerid][pSoska] > 0) format(line,sizeof(line),"\n{ff9000}Для администрации: /hp"), strcat(lines,line);
-
-    format(line,sizeof(line),"\n\n{555555}Смерть, чаще чем один раз в час, увеличивает время ожидания"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
 
     AutoMakeCreate(2,2,playerid);
@@ -158,6 +156,22 @@ stock WeReturnToDeathPosition(playerid)
     return 1;
 }
 
+stock IsBlockDeathReturnEnabled(playerid) {
+    return GetPVarInt(playerid, "BlockDeathReturn") > 0;
+}
+
+// Приостанавливаем возвращение на место смерти, если игрок в стадии
+stock BlockDeathReturn(playerid, allowed_state = PLAYER_STATE_PASSENGER, bool: status = true) {
+    if (status) {
+        SetPVarInt(playerid, "BlockDeathReturn", 1);
+        SetPVarInt(playerid, "BlockDeathReturnAllowedState", allowed_state);
+        DeletePVar(playerid, "BlockDeathReturnAttempts");
+    } else {
+        DeletePVar(playerid, "BlockDeathReturn");
+    }
+    return 1;
+}
+
 stock UpdateDeathProcess(playerid)
 {
     UpdateDeathDrawProcess(playerid);
@@ -167,8 +181,12 @@ stock UpdateDeathProcess(playerid)
 
     if (!GetPVarInt(playerid, "BlockDeathReturn")) ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
 
-    format(string, sizeof(string), "без сознания [%s]", fine_time(DeathInfo[playerid][deathTime]));
-    SetPlayerChatBubble(playerid,string, COLOR_LIGHTRED,20.0,1500);
+    // Выводим над головой статус "без сознания" + время, когда игрок сможет отправиться в больницу
+    if (Pursuit[playerid] == 9999) {
+        strcat(string, "Без сознания");
+        if (DeathInfo[playerid][deathTime] > 0) format(string, sizeof(string), "%s [%s]", string, fine_time(DeathInfo[playerid][deathTime]));
+        SetPlayerChatBubble(playerid, string, COLOR_LIGHTRED, 20.0, 1500);
+    }
 
     if(!IsPlayerInRangeOfPoint(playerid,0.8, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
     {
@@ -180,15 +198,17 @@ stock UpdateDeathProcess(playerid)
 stock ReturnPositionDeath(playerid)
 {
     if (GetPVarInt(playerid, "BlockDeathReturn")) {
-        if (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) {
+        if (_:GetPlayerState(playerid) == GetPVarInt(playerid, "BlockDeathReturnAllowedState")) {
             GetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
+            PlayerInfo[playerid][pLastPos][0] -= 0.6;
+
             return true;
         }
 
         new return_attempts = GetPVarInt(playerid, "BlockDeathReturnAttempts");
         SetPVarInt(playerid, "BlockDeathReturnAttempts", ++return_attempts);
 
-        if (return_attempts >= 3) DeletePVar(playerid, "BlockDeathReturn");
+        if (return_attempts >= 3) BlockDeathReturn(playerid, .status = false);
     }
 
     PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
@@ -234,10 +254,15 @@ stock ShowInterfaceDeath(playerid)
 
 stock UpdateDeathDrawProcess(playerid)
 {
-    new string[24];
-    format(string, sizeof(string), "%s", fine_time(DeathInfo[playerid][deathTime]));
-    PlayerTextDrawSetString(playerid, DeathDraw1, string);
-    PlayerTextDrawShow(playerid, DeathDraw1);
+    if (DeathInfo[playerid][deathTime] <= 0) {
+        PlayerTextDrawSetString(playerid, DeathDraw1, "Press: N");
+        PlayerTextDrawShow(playerid, DeathDraw1);
+    } else {
+        new string[24];
+        format(string, sizeof(string), "%s", fine_time(DeathInfo[playerid][deathTime]));
+        PlayerTextDrawSetString(playerid, DeathDraw1, string);
+        PlayerTextDrawShow(playerid, DeathDraw1);
+    }
     return 1;
 }
 
@@ -364,4 +389,19 @@ stock AcceptRevial(playerid)
         UseRevival(playerid, Moiplayer[playerid]);
     }
     return 1;
+}
+
+stock DeathOnKeyStateChange(playerid, KEY: newkeys, KEY: oldkeys) {
+    #pragma unused oldkeys
+
+    // У игрока есть возможность отправиться в больницу
+    if (DeathInfo[playerid][deathTime] <= 0) {
+        if (newkeys & KEY_NO) {
+            if (Pursuit[playerid] != 9999) return ErrorMessage(playerid, "{FF6347}Сейчас вы не можете отправиться в больницу [ Вас преследует полиция ]");
+            
+            ShowDialog(playerid, 1508, DIALOG_STYLE_MSGBOX, "{ff9000}*", "{ff6347}Теперь вы можете отправиться в больницу.\n{cccccc}Если вы откажетесь, вы будете лежать до того момента, пока вам не помогут или не добьют.\n\n{ff9000}Отправляетесь в больницу?", "Да", "Нет");
+            return 0;
+        }
+    }
+    return 0;
 }
