@@ -271,7 +271,7 @@ stock UseRevival(playerid, targetid)
     if(DeathInfo[targetid][deathStatus] == false) return 0;
     new Float:x,Float:y,Float:z;
     GetPlayerPos(targetid,x,y,z);
-    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
+    if(!IsPlayerInRangeOfPoint(playerid,2.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать. Повторите запрос.");
     if(fraction(playerid) == 4)
     {
         if(PlayerInfo[targetid][pAccount] < friskPrice[8]*3 && PlayerInfo[targetid][pMoney] < friskPrice[8]*3)
@@ -295,7 +295,7 @@ stock CloseRevival(playerid,targetid)
     if(DeathInfo[targetid][deathStatus] == false) return 0;
     new Float:x,Float:y,Float:z;
     GetPlayerPos(targetid,x,y,z);
-    if(!IsPlayerInRangeOfPoint(playerid,1.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать");
+    if(!IsPlayerInRangeOfPoint(playerid,2.0,x,y,z)) return ErrorMessage(playerid,"{ff6347}Вы слишком далеко от человека, которого хотели реанимировать");
 
     if(fraction(playerid) == 4)
     {
