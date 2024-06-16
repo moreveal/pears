@@ -592,7 +592,7 @@ stock dialogCase_FundRaisers(playerid, dialogid, response, listitem, const input
             new string_mysql[180];
             mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `fund_logs` WHERE `fundid` = '%d' AND `senderid` = '%d' LIMIT 500", 
                 FundRaisersInfo[i][fundNewid], PlayerInfo[playerid][pID]);
-		    mysql_tquery(pearsq, string_mysql, "Call_pay_fundraisers", "ddsd", playerid, i, input, g_MysqlRaceCheck[playerid]);
+		    mysql_tquery(pearsq, string_mysql, "Call_pay_fundraisers", "dddd", playerid, i, input, g_MysqlRaceCheck[playerid]);
         }
         else MenuFundRaisers(playerid, i);
     }
