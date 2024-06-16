@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 13
+#define MAX_DONATE_SERVICE 14
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -32,12 +32,19 @@ stock defaultPriceDonate()
     donatePrice[10] = 50; // +1 уровень навыка
     donatePrice[11] = 90; // Максимальное знание языка
     donatePrice[12] = 140; // Стоимость кейса
+    donatePrice[13] = 90; // Стоимость ремонта транспорта
 }
 
 CMD:donate(playerid)
 {
 	PlayerPlaySound(playerid,1150,0,0,0);
-	new lines[1200];
+    showDialogDonateMenu(playerid);
+    return true;
+}
+
+stock showDialogDonateMenu(playerid)
+{
+    new lines[1200];
 	format(lines, sizeof(lines),"{99ff66}Получить {ffcc00}Золото\
                             \n{ffcc00}Gold Trade {666666}[ Обменник Голды ]\
 	                        \n{666666}Информация..\
@@ -46,11 +53,12 @@ CMD:donate(playerid)
 	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
                             \n{cccccc}Купить Кейс {ffcc00}[%d G]\
+                            \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\
                             \n{666666}Где купить Дом? {99ff66}>>\
                             \n{666666}Где купить Бизнес? {99ff66}>>", 
-                            donatePrice[2], donatePrice[12]);
+                            donatePrice[2], donatePrice[12], donatePrice[13]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;
 }
@@ -446,5 +454,38 @@ function Call_setvip(playerid, const str_name[], status)
         }
 	}
 	else ErrorMessage(playerid, "{FF6347}Аккаунт не найден");
+    return true;
+}
+
+stock RepairVehicleForGold(playerid)
+{
+    if(Protect_Veh[playerid] == 9999 && Protect_Seat[playerid] == 9999) return ErrorText(playerid, "{FF6347}Вы не в транспорте"), showDialogDonateMenu(playerid);
+    if(PlayerInfo[playerid][pDonateMoney] < donatePrice[13]) return pc_cmd_donate(playerid), ErrorText(playerid, "{FF6347}Вам не хватает золота");
+
+    new vehicleid;
+    if(Protect_Veh[playerid] != 9999) vehicleid = Protect_Veh[playerid];
+    else if(Protect_Seat[playerid] != 9999) vehicleid = Protect_Seat[playerid];
+
+    new Float:health;
+    GetVehicleHealth(vehicleid, health);
+    new maxhealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
+
+    if(maxhealth > health) // Максимальное хп выше текущего, значит чиним
+    {
+        ACRepairVehicle(vehicleid);
+		ACSetVehicleHealth(vehicleid, maxhealth);
+
+        PlayerInfo[playerid][pDonateMoney] -= donatePrice[13];
+        tclArifmetikAllGold -= donatePrice[13];
+        mysql_save(playerid, 4);
+
+		PlayerPlaySound(playerid,6401,0,0,0);
+
+        new string[100];
+		format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~PEMOHЏ ‹‘ЊO‡HEH: ~y~-%dG", donatePrice[13]);
+		GameTextForPlayer(playerid,string,4000,3);
+		DonateLog("repair",PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -donatePrice[13], "");
+    }
+    else ErrorText(playerid, "{FF6347}Транспорт не нуждается в ремонте"), showDialogDonateMenu(playerid);
     return true;
 }
