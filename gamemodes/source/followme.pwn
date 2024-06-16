@@ -4,8 +4,7 @@ new FollowTime[MAX_REALPLAYERS];
 
 stock ProcessFollowMe(playerid)
 {
-    if(Follow[playerid] != 9999 && FollowTime[playerid] == 0 && HealthAC[playerid] != 0
-		&& DeathInfo[playerid][deathStatus] == false)
+    if(Follow[playerid] != 9999 && FollowTime[playerid] == 0 && HealthAC[playerid] != 0)
 	{
 		new copid = Follow[playerid];
 		if(IsOnline(copid))
@@ -22,13 +21,23 @@ stock ProcessFollowMe(playerid)
 					TurnPlayerFaceToPlayer(playerid, copid); // Поворачиваем лицом
 					if(GetPVarInt(playerid, "Follow_Run") == 0)
 					{
-						ApplyAnimation(playerid,"PED","sprint_panic",4.0, true, true, true, false, 0);
+						ApplyAnimation(playerid, "PED", "sprint_panic", 4.0, true, true, true, false, 0);
 						SetPVarInt(playerid, "Follow_Run", 1);
+					}
+
+					if (distcop >= 10.0) {
+						new Float: f_pos[4];
+						backme(copid, 1.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
+						PPSetPlayerPosFindZ(playerid, f_pos[0], f_pos[1], f_pos[2]);
 					}
 				}
 
 				// Подошли близко, останавливаем
 				if(distcop <= 3.9 && GetPVarInt(playerid, "Follow_Run") == 1) StopFollowMe(playerid);
+
+				// Разрешаем передвижение с места смерти, если игрок без сознания
+				if (!IsBlockDeathReturnEnabled(playerid))
+					if(DeathInfo[playerid][deathStatus]) BlockDeathReturn(playerid, .allowed_state = PLAYER_STATE_ONFOOT);
 			}
 		}
 	}
@@ -47,7 +56,7 @@ stock StopFollowMe(playerid)
 // Ставим в позицию игрока, которого ведём за собой
 stock SetPlayerPosFollowMe(playerid) 
 {
-	// Этот stock встроен в SetPlayerFaclingAngle
+	// Этот stock встроен в SetPlayerFacingAngle
 	// Потому что, чтобы игрока правильно поставить перед лицом нам нужно заранее знать, куда мы будем смотреть после входа
 
 	if(Follow[playerid] != 9999 // Имеет id игрока
@@ -101,16 +110,13 @@ CMD:followme(playerid, const params[])
 	if(GetPlayerState(params[0]) == PLAYER_STATE_SPECTATING && gSpectateID[params[0]] != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко");
 	if(CheckPlayerNpc(playerid, params[0])) return 1;
 	if(IsPlayerInAnyVehicle(params[0]) && GetVehicleSpeed(params[0]) > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Нельзя тащить за собой из транспорта на ходу");
-	if(GetPVarInt(params[0],"afksystem") >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Подозреваемый уснул..");
+	if(IsPlayerAfk(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Подозреваемый уснул..");
 	if(Follow[playerid] == 9999)
 	{
 		if(Stun[4][params[0]] >= 1 || Stun[5][params[0]] >= 1 || Stun[0][params[0]] >= 1)
 		{
 			if(PlayerInfo[params[0]][pJailed] > 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Он находится под заключением");
-
-			// Если игрок дохлый, лечим его
-			if(DeathInfo[params[0]][deathStatus]) ACSetPlayerHealth(params[0], 100);
-
+			
 			new string[144];
 			Follow[playerid] = params[0], FollowTime[playerid] = 1;
 			Follow[params[0]] = playerid, FollowTime[params[0]] = 0;
@@ -141,6 +147,7 @@ CMD:followme(playerid, const params[])
 				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				format(string, sizeof(string), "отпускает %s", playername(s));
 				SetPlayerChatBubble(playerid,string,COLOR_PURPLE,30.0,10000);
+				BlockDeathReturn(s, .status = false);
 			}
 		}
 		Follow[playerid] = 9999, FollowTime[playerid] = 0;
