@@ -259,7 +259,7 @@ cars
 15099, 	mercgt63, 	mercgt63, 	car, 		MERCGT63, 	MERCGT63, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15100, 	bentcabri, 	bentcabri, 	car, 		BENTCABRI, 	BENTCABRI, 	null,	executive, 	5, 	0,	0,		-1, 0.69, 0.69,		0
 15101,	bmwe30, 	bmwe30, 	car, 		BMWE30,	    BMWE30, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
-15102, 	armcargo, 	armcargo, 	heli, 		CARGOBOB, 	CARGOBB, 	null,	ignore,		5,	0,	0,		-1, 0.74, 0.74,		-1
+15102, 	armcargo, 	armcargo, 	heli, 		POLMAV, 	POLMAV, 	null,	ignore,		5,	0,	0,		-1, 0.74, 0.74,		-1
 15103,	silverado, 	silverado, 	car, 		SILVERADO, 	SILVERADO, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
 15104, 	chargcop, 	chargcop, 	car, 		CHARGCOP, 	CHARGCOP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15105, 	chargdep, 	chargdep, 	car, 		CHARGDEP, 	CHARGDEP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0

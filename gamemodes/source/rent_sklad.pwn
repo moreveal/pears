@@ -252,12 +252,12 @@ stock rentwh_limit(thingId, thingType, &getLimit) // Проверяем лими
 {
 	if(thingType == 0) // Обычные Предметы
 	{
-	    if(thingId >= 4 && thingId <= 8) getLimit = 50000; // Вещества
-	    else if(thingId >= 27 && thingId <= 30) getLimit = 50000; // Патроны
-	    else getLimit = 10000; // На случай ошибки, остальные предметы лимит 10к
+	    if(thingId >= 4 && thingId <= 8) getLimit = 100000; // Вещества
+	    else if(thingId >= 27 && thingId <= 30) getLimit = 100000; // Патроны
+	    else getLimit = 100000; // На случай ошибки, остальные предметы лимит 100к
  	}
-	else if(thingType == 1) getLimit = 5000; // Оружие
-    else if(thingType == 2) getLimit = 5000; // Каски и Бронежилеты (Аксессуары)
-    else getLimit = 10000; // На случай ошибки, остальные предметы лимит 10к
+	else if(thingType == 1) getLimit = 10000; // Оружие
+    else if(thingType == 2) getLimit = 10000; // Каски и Бронежилеты (Аксессуары)
+    else getLimit = 100000; // На случай ошибки, остальные предметы лимит 100к
 	return 1;
 }

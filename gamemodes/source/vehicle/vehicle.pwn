@@ -196,7 +196,7 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)
 	AddVehicleSyncModel(533, 2034); // Bentley Continental GT (Feltzer)
 	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
-	AddVehicleSyncModel(548, 2036); // Arm Cargo (cargobob)
+	AddVehicleSyncModel(487, 2036); // Arm Cargo (Maverick)
 	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
 	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
 	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
@@ -1656,6 +1656,15 @@ stock IsNoMessageVehicle(vehicleid)
 	return 0;
 }
 
+// Транспорт, на котором можно ехать стоя на нём
+stock IsARideOnVehicle(model)
+{
+	if(model == 406 || model == 422 || model == 478 || model == 543 || model == 554 
+	|| model == 537 || model == 538 || model == 569 || model == 570 
+	|| model == 2036) return true;
+	return false;
+}
+
 CMD:rvehquan(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 25) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
@@ -1734,7 +1743,8 @@ stock PPAddVehicleComponent(vehicleid, component)
 			return false;
 		}
 
-		if(VehInfo[vehicleid][vModel] == 2001 && component == 1010) return false; // Не ставим компонент азота на беху VREMENNO
+		if((VehInfo[vehicleid][vModel] == 2001 || VehInfo[vehicleid][vModel] == 2010)
+			&& component == 1010) return false; // Не ставим компонент азота на беху VREMENNO
 	}
 	return AddVehicleComponent(vehicleid, component);
 }
