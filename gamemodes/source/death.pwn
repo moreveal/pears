@@ -340,10 +340,10 @@ stock AcceptRevial(playerid)
             new stro[90],sctringo[450];
             format(stro,sizeof(stro),"\n{ff9000}Как реанимировать пострадавшего?"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n\n{cccccc}- Для реанимации вам нужна аптечка"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Аптечку можно приобрести в любой аптеке [ Y >> GPS >> Услуги >> Аптека ]"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Аптечку можно приобрести у сотрудников госпиталя"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Если вы не полицейский и не доктор, вам потребуется 2 уровень Навыка Медка"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Чтобы прокачать навык вам потребуется стать доктором и реанимировать пострадавших"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Так-же вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Также вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
             return ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
         }
         Moiplayer[Moiplayer[playerid]] = playerid;
