@@ -164,7 +164,7 @@ stock CollectorEnd(playerid)
         ReloadVehicleNPC(collectorveh);
 
         // Очищаем багажник инкассаторской тачки
-        ClearBootVehcileAll(collectorveh);
+        ClearBootVehicleAll(collectorveh);
 
         // Очищаем статус ограбления коллекторов
         for(new i = 0; i < BAG_COLLECTOR; i++) collector_rob_bag[i] = 0;
