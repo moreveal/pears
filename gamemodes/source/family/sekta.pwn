@@ -292,7 +292,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             }
             else if(listitem == 1)
             {
-                if(GetPVarInt(playerid,"Boot") != 9999) return ErrorMessage(playerid,"{FF6347}Я в багажнике");
+                if(GetPVarInt(playerid, "Boot") > 0) return ErrorMessage(playerid,"{FF6347}Я в багажнике");
                 if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
                 new Float:x,Float:y,Float:z;
                 GetPlayerRealPos(playerid,x,y,z);

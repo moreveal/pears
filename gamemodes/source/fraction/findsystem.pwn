@@ -166,31 +166,31 @@ stock WhiteFindPlayerPos(playerid, Float:x, Float:y, Float:z)
 }
 stock GetPlayerRealPos(playerid, &Float:x, &Float:y, &Float:z)
 {
-    if(GetPVarInt(playerid,"Boot") != 9999) // В багажнике
-    {
-        new vehicleid = GetPVarInt(playerid,"Boot");
-        GetVehiclePos(vehicleid, x, y, z);
-    }
-    else if(IsPlayerInRangeOfPoint(playerid,30.0,1305.7756,1604.4343,19.7263) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179) // В поезде
-    {
-        GetVehiclePos(train, x, y, z);
-    }
-    else 
-    {
-        if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) // В интерьере
-        {
-            x = PlayerInfo[playerid][find_X];
-            y = PlayerInfo[playerid][find_Y];
-            z = PlayerInfo[playerid][find_Z];
-        } 
-        else if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) // На улице
-        {
-            x = Protect_X[playerid];
-            y = Protect_Y[playerid];
-            z = Protect_Z[playerid];
-        }
-    }
-    return 1;
+  new boot_vehicleid = GetPVarInt(playerid, "Boot");
+  if(boot_vehicleid > 0) // В багажнике
+  {
+      GetVehiclePos(boot_vehicleid, x, y, z);
+  }
+  else if(IsPlayerInRangeOfPoint(playerid,30.0,1305.7756,1604.4343,19.7263) && GetPlayerVirtualWorld(playerid) == 180 && GetPlayerInterior(playerid) == 179) // В поезде
+  {
+      GetVehiclePos(train, x, y, z);
+  }
+  else 
+  {
+      if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) // В интерьере
+      {
+          x = PlayerInfo[playerid][find_X];
+          y = PlayerInfo[playerid][find_Y];
+          z = PlayerInfo[playerid][find_Z];
+      } 
+      else if(GetPlayerInterior(playerid) == 0 && GetPlayerVirtualWorld(playerid) == 0) // На улице
+      {
+          x = Protect_X[playerid];
+          y = Protect_Y[playerid];
+          z = Protect_Z[playerid];
+      }
+  }
+  return 1;
 }
 
 stock FindRaion(playerid)

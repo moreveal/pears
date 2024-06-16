@@ -92,7 +92,7 @@ CMD:followme(playerid, const params[])
 	if(box[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я на ринге");
 	if(MPGO[playerid] != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я на мероприятии");
 	if(PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
-	if(GetPVarInt(playerid,"Boot") != 9999) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я в багажнике");
+	if(GetPVarInt(playerid, "Boot") > 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я в багажнике");
   	if(howstun(playerid) || HealthAC[playerid] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне плохо");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вести за собой [ /fme ID ]");
 	if(params[0] == playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чтоо..?");

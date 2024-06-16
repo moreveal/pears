@@ -489,8 +489,10 @@ stock IsAPosBootOrBonet(playerid, &type)
 {
 	new vehicleid = -1;
 	new Float:pos_veh[3];
-	for(new v = 0; v < SKOKOCAROV; v++)
+	foreach (new v : Vehicle)
 	{
+		if (!IsVehicleStreamedIn(v, playerid)) continue;
+
 		if(VehInfo[v][vModel] == 0) continue;
 		// if(!IsVehicleOpen(playerid, v)) continue;
 		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
@@ -525,6 +527,10 @@ stock IsAPosBootOrBonet(playerid, &type)
 			}
 		}
 	}
+
+	if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
+	else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+
 	return vehicleid;
 }
 stock IsAPosBoot(playerid) // Ищем транспорт с багажником рядом
@@ -568,12 +574,12 @@ stock GetVehicleNear_Boot(playerid, v) // Получаем инфу, стоим 
     if(IsABootFront(v)) // Багажник спереди
     {
         GetCoordBonnetVehicle(v, pos_veh[0], pos_veh[1], pos_veh[2]);
-        if(IsPlayerInRangeOfPoint(playerid, 1.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
+        if(IsPlayerInRangeOfPoint(playerid, 2.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
     }
     else // Багажник сзади
     {
         GetCoordBootVehicle(v, pos_veh[0], pos_veh[1], pos_veh[2]);
-        if(IsPlayerInRangeOfPoint(playerid, 1.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
+        if(IsPlayerInRangeOfPoint(playerid, 2.0, pos_veh[0], pos_veh[1], pos_veh[2])) return 1;
     }
 	return 0;
 }
@@ -599,11 +605,11 @@ stock GetVehicleNear_Side(playerid, v) // Получаем инфу, у како
 	{
         GetCoordBonnetVehicle(v, bonet_veh[0], bonet_veh[1], bonet_veh[2]);
         GetCoordBootVehicle(v, boot_veh[0], boot_veh[1], boot_veh[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 1.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) 
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) 
         {
             if(IsABoot(v)) sideId = 1; // Багажник
         }
-        else if(IsPlayerInRangeOfPoint(playerid, 1.0, boot_veh[0], boot_veh[1], boot_veh[2])) 
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, boot_veh[0], boot_veh[1], boot_veh[2])) 
 		{
 			if(!IsANoEngine(VehInfo[v][vModel])) sideId = 2; // Капот
 		}
@@ -612,11 +618,11 @@ stock GetVehicleNear_Side(playerid, v) // Получаем инфу, у како
 	{
         GetCoordBonnetVehicle(v, bonet_veh[0], bonet_veh[1], bonet_veh[2]);
         GetCoordBootVehicle(v, boot_veh[0], boot_veh[1], boot_veh[2]);
-		if(IsPlayerInRangeOfPoint(playerid, 1.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) 
+		if(IsPlayerInRangeOfPoint(playerid, 2.0, bonet_veh[0], bonet_veh[1], bonet_veh[2])) 
 		{
 			if(!IsANoEngine(VehInfo[v][vModel])) sideId = 2; // Капот
 		}
-        else if(IsPlayerInRangeOfPoint(playerid, 1.0, boot_veh[0], boot_veh[1], boot_veh[2]))
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, boot_veh[0], boot_veh[1], boot_veh[2]))
         {
             if(IsABoot(v)) sideId = 1; // Багажник
         }
