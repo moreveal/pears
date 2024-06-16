@@ -712,20 +712,17 @@ stock get_bootbox(v) // Считаем количество ящиков в ба
 	}
 	return quan;
 }
-stock ClearBootVehcile(v, i)
+stock ClearBootVehicle(v, i)
 {
-    VehInfo[v][vInvent][i] = 0;
-	VehInfo[v][vInv][i] = 0;
-	VehInfo[v][vInvPara][i] = 0;
-	VehInfo[v][vInvQara][i] = 0;
-	VehInfo[v][vInvType][i] = 0;
-    VehInfo[v][vInvPack][i] = 0;
+	printf("[vehicle: %d] - slot %d, stat %d, people %d", v, i, VehInfo[v][vInvent][i], VehInfo[v][vPeople]); // Log
+	if (VehInfo[v][vInvent][i] == 35 && VehInfo[v][vPeople] > 0) EjectBoot(VehInfo[v][vPeople] - 1, v); // Вытаскиваем игрока из багажника, если в слоте человек
+	TakeBoot(v, VehInfo[v][vInvent][i], VehInfo[v][vInv][i], VehInfo[v][vInvType][i], i); // Очищаем слот
 	return 1;
 }
 
-stock ClearBootVehcileAll(v)
+stock ClearBootVehicleAll(v)
 {
-	for(new inva = 0; inva < 20; inva++) ClearBootVehcile(v, inva);
+	for(new inva = 0; inva < 20; inva++) ClearBootVehicle(v, inva);
 	return 1;
 }
 

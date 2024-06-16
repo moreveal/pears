@@ -164,11 +164,13 @@ stock UpdateDeathProcess(playerid)
 
     new string[24];
     //TogglePlayerControllable(playerid, false);
-    ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
+
+    if (!GetPVarInt(playerid, "BlockDeathReturn")) ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
+
     format(string, sizeof(string), "без сознания [%s]", fine_time(DeathInfo[playerid][deathTime]));
     SetPlayerChatBubble(playerid,string, COLOR_LIGHTRED,20.0,1500);
 
-    if(!IsPlayerInRangeOfPoint(playerid,0.8,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]))
+    if(!IsPlayerInRangeOfPoint(playerid,0.8, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
     {
         ReturnPositionDeath(playerid);
     }
@@ -177,7 +179,19 @@ stock UpdateDeathProcess(playerid)
 
 stock ReturnPositionDeath(playerid)
 {
-    PPSetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
+    if (GetPVarInt(playerid, "BlockDeathReturn")) {
+        if (GetPlayerState(playerid) == PLAYER_STATE_PASSENGER) {
+            GetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
+            return true;
+        }
+
+        new return_attempts = GetPVarInt(playerid, "BlockDeathReturnAttempts");
+        SetPVarInt(playerid, "BlockDeathReturnAttempts", ++return_attempts);
+
+        if (return_attempts >= 3) DeletePVar(playerid, "BlockDeathReturn");
+    }
+
+    PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
     PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
     return true;
 }

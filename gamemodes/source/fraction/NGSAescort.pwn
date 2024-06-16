@@ -2544,7 +2544,7 @@ stock ClearOrderEscortAndPutSklad(g, thingId, thingQuan, thingPara, thingType, v
 			OrganInfo[g][gDeliveryPay] += getThingPriceGos(thingId, thingType) * thingQuan;
 
 			// Очищаем слот в багажнике
-			ClearBootVehcile(veh, bootslot);
+			ClearBootVehicle(veh, bootslot);
 			break;
 		}
 	}
