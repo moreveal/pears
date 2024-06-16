@@ -337,7 +337,7 @@ stock AcceptRevial(playerid)
             format(stro,sizeof(stro),"\n{cccccc}- Если вы не полицейский и не доктор, вам потребуется 2 уровень Навыка Медка"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Чтобы прокачать навык вам потребуется стать доктором и реанимировать пострадавших"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Так-же вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
-            ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
+            return ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
         }
         Moiplayer[Moiplayer[playerid]] = playerid;
         UseRevival(playerid, Moiplayer[playerid]);
