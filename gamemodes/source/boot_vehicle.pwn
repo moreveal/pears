@@ -714,7 +714,6 @@ stock get_bootbox(v) // Считаем количество ящиков в ба
 }
 stock ClearBootVehicle(v, i)
 {
-	printf("[vehicle: %d] - slot %d, stat %d, people %d", v, i, VehInfo[v][vInvent][i], VehInfo[v][vPeople]); // Log
 	if (VehInfo[v][vInvent][i] == 35 && VehInfo[v][vPeople] > 0) EjectBoot(VehInfo[v][vPeople] - 1, v); // Вытаскиваем игрока из багажника, если в слоте человек
 	TakeBoot(v, VehInfo[v][vInvent][i], VehInfo[v][vInv][i], VehInfo[v][vInvType][i], i); // Очищаем слот
 	return 1;
