@@ -47,6 +47,19 @@ stock PPAttachTrailerToVehicle(trailerid, vehicleid)
 #endif
 #define AttachTrailerToVehicle PPAttachTrailerToVehicle
 
+stock PPSetPlayerSkin(playerid, skinid) {
+	new result = SetPlayerSkin(playerid, skinid);
+	TogglePlayerControllable(playerid, true);
+	return result;
+}
+
+#if defined _ALS_SetPlayerSkin
+	#undef SetPlayerSkin
+#else
+	#define _ALS_SetPlayerSkin
+#endif
+#define SetPlayerSkin PPSetPlayerSkin
+
 /*stock PPmysql_tquery(MySQL:handle, const query[], const callback[] = "", const format[] = "", {Float,_}:...)
 {
 	if(strlen(query) <= 5)
