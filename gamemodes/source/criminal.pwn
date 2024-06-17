@@ -933,7 +933,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
             if(zakonnik != -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason,PlayerInfo[zakonnik][pName],zv);
             else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]",reason,zv);
             SendClientMessage(playerid, COLOR_GREY, string);
-            ErrorMessage(playerid,"{ffcc00}Вас пытается задержать полиция!\n\n{cccccc}Вы совершили престулпение и сейчас вас пытаются задержать\nВы можете попытать\nВ случае если вы сдадитесь добровольно, в суде это зачтется\n\nДля добровольной сдачи у вас есть {ff6743}15{cccccc} секунд:\n- Нажмите кнопку [ H ] находясь пешком.\n- На момент выполнения анимации не совершайте никаких действий");
+            //ErrorMessage(playerid, "{ffcc00}Вас пытается задержать полиция!\n\n{cccccc}Вы совершили преступление и сейчас вас пытаются задержать\nВы можете попытать\nВ случае если вы сдадитесь добровольно, в суде это зачтется\n\nДля добровольной сдачи у вас есть {ff6743}15{cccccc} секунд:\n- Нажмите кнопку [ H ] находясь пешком.\n- На момент выполнения анимации не совершайте никаких действий");
             OnlineInfo[playerid][oUnixAcceptWanted] = 15;
             Moiplayer[playerid] = zakonnik;
         }
