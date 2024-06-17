@@ -2450,7 +2450,7 @@ stock player_tile(playerid, inva)
 		    	}
 		    }
 		    
-			new string[120];
+			new string[200];
 		    // Используем предмет
 		    if(thingType == 0) // Обычный предмет
 		    {

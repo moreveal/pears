@@ -2499,7 +2499,11 @@ CMD:comp(playerid)
 // Позволяет склонять существительные множественного числа (пример: PluralToText(var, "посетитель", "посетителя", "посетителей"))
 stock PluralToText(value, const singular[], const genitive[], const plural[]) {
     new result[64];
-    format(result, sizeof(result), "%s", value == 1 ? singular : (value >= 2 && value <= 4 ? genitive : plural));
+    switch (value % 10) {
+        case 1: strcat(result, singular);
+        case 2..4: strcat(result, genitive);
+        default: strcat(result, plural);
+    }
     return result;
 }
 
