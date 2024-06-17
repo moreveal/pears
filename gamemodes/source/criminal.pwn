@@ -1001,3 +1001,21 @@ stock AcceptWanted(playerid)
     SendClientMessage(Moiplayer[playerid],COLOR_GREY,string);
     return 1;
 }
+
+// Получаем номер слота, если ли у игрока статья розыска
+stock GetPlayerCriminalSlot(playerid, findUk, findP)
+{
+    if(PlayerInfo[playerid][pCrimes] == 0) return -1;
+
+    new criminalSlot = -1;
+    for(new i = 0; i < MAX_CRIME_PLAYER; i++)
+    {
+        if(WantedInfo[playerid][wanCrime][i] == 0) continue;
+        if(WantedInfo[playerid][wanCrime][i] == findUk + 1 && WantedInfo[playerid][wanSubentry][i] == findP)
+        {
+            criminalSlot = i;
+            break;
+        }
+    }
+    return criminalSlot;
+}
