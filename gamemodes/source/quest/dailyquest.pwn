@@ -229,16 +229,22 @@ new DailyInfo[MAX_REALPLAYERS][dailyquestInfo];
 CMD:createdaily(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Перезапустить ежедневные задания игроку [ /createdaily ID ]");
-    if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+    new targetid, taskid;
+    if(sscanf(params, "uD(-1)", targetid, taskid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Перезапустить ежедневные задания игроку [ /createdaily ID Задание ]");
+    if (taskid == -1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер задания должен быть от 1 до %d [ 0 - Все задания ]", MAX_DAILY_QUEST_PLAYER);
+    if(!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
 
-    new string[120];
-    format(string, sizeof(string), "* Вы перезапустили ежедневные задания для %s", PlayerInfo[params[0]][pName]);
-	SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-
-    format(string, sizeof(string), "* Администратор %s перезапустил ваши ежедневные задания", PlayerInfo[playerid][pName]);
-	SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
-    CreateDaily(params[0], 1);
+    if (taskid == 0) {
+        // Перезапуск всех квестов
+        SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы перезапустили ежедневные задания для %s", PlayerInfo[targetid][pName]);
+        SendClientMessage(targetid, COLOR_LIGHTBLUE, "* Администратор %s перезапустил ваши ежедневные задания", PlayerInfo[playerid][pName]);
+        CreateDaily(targetid, 1);
+    } else {
+        // Перезапуск конкретного квеста
+        SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы перезапустили ежедневное задание №%d для %s", taskid, PlayerInfo[targetid][pName]);
+        SendClientMessage(targetid, COLOR_LIGHTBLUE, "* Администратор %s перезапустил ваше ежедневное задание №%d", PlayerInfo[playerid][pName], taskid);
+        CreateDaily(targetid, 1, taskid - 1);
+    }
     return 1;
 }
 
@@ -268,17 +274,21 @@ stock SelectUniqueDailyForSlot(playerid, slot) {
     return dailyid;
 }
 
-stock CreateDaily(playerid, forced) 
+stock CreateDaily(playerid, forced, taskid = -1) 
 {
     if(DailyInfo[playerid][daiDay] == getdate() && forced == 0) return 0; // Если день тот-же и мы не перезапускаем квесты, тогда игнорим
 
-    for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
-    {
-        new dailyid = SelectUniqueDailyForSlot(playerid, i);
-        if(dailyid > 0)
+    if (taskid == -1) {
+        for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
         {
-            CreateDailySlotForPlayer(playerid, i, dailyid);
+            new dailyid = SelectUniqueDailyForSlot(playerid, i);
+            if(dailyid > 0)
+            {
+                CreateDailySlotForPlayer(playerid, i, dailyid);
+            }
         }
+    } else {
+        CreateDailySlotForPlayer(playerid, taskid, SelectUniqueDailyForSlot(playerid, taskid));
     }
 
     DailyInfo[playerid][daiFull] = false; // Сбрасываем статус выполненных заданий
