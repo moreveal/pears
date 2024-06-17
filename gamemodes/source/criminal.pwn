@@ -297,9 +297,9 @@ enum wantedInfo
     wanTicketUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
     bool:wanLoad // Загрузка розыска из базы
 };
-new WantedInfo[MAX_REALPLAYERS + 1][wantedInfo];
-new WantedPolice[MAX_REALPLAYERS + 1][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
-new TicketPolice[MAX_REALPLAYERS + 1][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
+new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][wantedInfo];
+new WantedPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
+new TicketPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
 
 CMD:wanted(playerid, const params[])
 {
@@ -782,7 +782,7 @@ stock CreatePlayerTicketOffline(suspectid, cop_playerid, zv, uk, p, slotzv) {
     }
 
     // Если подозреваемый не в сети, эмулируем его подключение и выписываем штраф
-    static const playerid = MAX_REALPLAYERS; new string[144];
+    static const playerid = MAX_REALPLAYERS + cop_playerid; new string[144];
     mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", suspectid);
     mysql_tquery(pearsq, string, "OnPlayerLoad", "dd", playerid, g_MysqlRaceCheck[playerid]);
     WantedInfo[playerid][wanLoad] = true;
@@ -979,7 +979,7 @@ stock SetPlayerCriminalOffline(suspectid, cop_playerid, const reason[], zv, uk, 
     }
 
     // Если подозреваемый не в сети, эмулируем его подключение и выдаем розыск
-    static const playerid = MAX_REALPLAYERS; new string[144];
+    new playerid = MAX_REALPLAYERS + cop_playerid, string[144];
     mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", suspectid);
     mysql_tquery(pearsq, string, "OnPlayerLoad", "dd", playerid, g_MysqlRaceCheck[playerid]);
     WantedInfo[playerid][wanLoad] = true;
