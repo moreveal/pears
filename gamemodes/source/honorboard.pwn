@@ -181,16 +181,16 @@ function in_honorboard(playerid, g, plaid, const tmpName[], tmpTPlayerID,const t
 	{
 		if(targetid >= 0 && OnlineInfo[targetid][oLogged] == 1)
 		{
-			format(query, sizeof(query),"{FF6347}[ %s ]: поместил вас в Доску Почета %s\n",tmpTName, frakName[g]);
+			format(query, sizeof(query),"{99ff66}[ %s ]: поместил вас в Доску Почета %s\n",tmpTName, frakName[g]);
 			SendClientMessage(targetid, COLOR_GREY, query);
-			if(playerid >= 0) format(query, sizeof(query),"\n{FF6347}%s поместил вас в Доску Почета %s\n", tmpTName, frakName[g]), ShowDialog(targetid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
+			if(playerid >= 0) format(query, sizeof(query),"\n{99ff66}%s поместил вас в Доску Почета %s\n", tmpTName, frakName[g]), ShowDialog(targetid,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", query,"*","");
 			PlayerPlaySound(targetid, 31202, 0,0,0);
 			if(PlayerInfo[targetid][pDrawVisible][2] == false) PlayerTextDrawShow(targetid, PlayerSiteDraw[2][targetid]);
 		}
 	    if(playerid >= 0)
 	    {
 		    PlayerPlaySound(playerid, 6401, 0,0,0);
-		    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы занесли {FF6347}%s {ffcc66}в Доску Почета %s",tmpName,frakName[g]);
+		    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы занесли {99ff66}%s {ffcc66}в Доску Почета %s",tmpName,frakName[g]);
 		    format(query, sizeof(query),"\n{cccccc}Вы занесли %s в Доску почета %s",tmpName,frakName[g]);
 			ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", query, "Ок", "");
 		}
@@ -255,14 +255,14 @@ function out_honorboard(playerid, g, plaid, tmpTPlayerID, unix,target)
 		if(target != -1)
 		{
 			if(OnlineInfo[target][oLogged] == 0) return 0;
-			format(string, sizeof(string),"{99ff66}[ %s ]: {cccccc}вынес вас из доски почета %s\n",rpplayername(playerid), frakName[g]);
+			format(string, sizeof(string),"{FF6347}[ %s ]: {cccccc}вынес вас из доски почета %s\n",rpplayername(playerid), frakName[g]);
 			SendClientMessage(target, COLOR_GREY, string);
-			format(string, sizeof(string),"{99ff66}%s {cccccc}вынес вас из доски почета %s", rpplayername(target), frakName[g]);
+			format(string, sizeof(string),"{FF6347}%s {cccccc}вынес вас из доски почета %s", rpplayername(target), frakName[g]);
 			ShowDialog(target,1012,DIALOG_STYLE_MSGBOX,"{ff0000}*", string,"*","");
 			if(PlayerInfo[target][pDrawVisible][2] == false) PlayerTextDrawShow(target, PlayerSiteDraw[2][target]);
 		}
 		PlayerPlaySound(playerid, 6401, 0,0,0);
-	    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {99ff66}%s {ffcc66}из доски почета %s",NickName,frakName[g]);
+	    SendClientMessage(playerid, COLOR_GREY,"{ffcc66}Вы вынесли {FF6347}%s {ffcc66}из доски почета %s",NickName,frakName[g]);
 	    format(string, sizeof(string),"\n{cccccc}Вы вынесли %s из доски почета %s",NickName,frakName[g]);
 		ShowDialog(playerid,1012,DIALOG_STYLE_MSGBOX, "{ff0000}*", string, "Ок", "");
 	    mysql_format(pearsq, string,sizeof(string),"DELETE FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", plaid, g);
