@@ -56,6 +56,8 @@ stock SetVehicleSpeed(vehicleid, speed_mph)
 }
 
 stock GetClosestVehicle(playerid, Float:maxDistance = 3.0) {
+	if (IsPlayerInAnyVehicle(playerid)) return GetPlayerVehicleID(playerid);
+	
 	new Float:last_dist = 99999.0;
 	new last_vehicleid = INVALID_VEHICLE_ID;
 	new Float:px, Float:py, Float:pz; GetPlayerPos(playerid, px, py, pz);
