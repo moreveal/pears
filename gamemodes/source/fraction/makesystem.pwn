@@ -556,11 +556,14 @@ CMD:resetmakes(playerid)
     {
         if (MakeInfo[i][mkWho] != 0 && MakeInfo[i][mkStatus] == 1) // никто не взялся за заказ
         {
-            OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][0] = 0;
-			OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][1] = 0;
-			OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][2] = 0;
+            if (MakeInfo[i][mkPlayerId] >= 0)
+            {
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][0] = 0;
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][1] = 0;
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][2] = 0;
+            }
 
-			MakeInfo[i][mkPlayerId] = 0;
+			MakeInfo[i][mkPlayerId] = -1;
 			MakeInfo[i][mkWho] = 0;
 			MakeInfo[i][mkStatus] = 0;
 
