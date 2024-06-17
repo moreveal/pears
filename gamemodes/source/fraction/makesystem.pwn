@@ -1,4 +1,4 @@
-#define MAX_MAKE 200 // Максимальное количество вызовов
+#define MAX_MAKE_AMOUNT 300 // Максимальное количество вызовов
 
 enum mkInfo
 {
@@ -11,7 +11,7 @@ enum mkInfo
     mkWhoType, // Тип машина/дом
     Float:mkCord[3], // Корды
 }
-new MakeInfo[MAX_MAKE][mkInfo];
+new MakeInfo[MAX_MAKE_AMOUNT][mkInfo];
 
 new serviceName[][] =
 {
@@ -22,9 +22,15 @@ new servicePlayerName[][] =
     "{cccccc}нет", "{0066ff}Полицейский", "{ff6666}Доктор", "{ff6666}Пожарный", "{ffcc00}Таксист"
 };
 
+stock FindFreeMakeSlot() {
+    for (new i = 0; i < MAX_MAKE_AMOUNT; i++)
+        if (MakeInfo[i][mkWho] <= 0) return i;
+    return -1;
+}
+
 stock SettingServiceMake(playerid)
 {
-    new s = OnlineInfo[playerid][oServiceMake][0]; // servie id
+    new s = OnlineInfo[playerid][oServiceMake][0]; // service id
     new mk = OnlineInfo[playerid][oServiceMake][2]; // make id
 
     new line[90],lines[360];
@@ -46,7 +52,7 @@ stock SettingServiceMake(playerid)
 stock AutoMakeCreate(whom, type, id)
 {
     new findslot = -1;
-    for(new z = 0; z < MAX_MAKE; z++) 
+    for(new z = 0; z < MAX_MAKE_AMOUNT; z++) 
     {
         if(MakeInfo[z][mkWho] == 0 || MakeInfo[z][mkWhoParam] == id)
         {
@@ -67,7 +73,7 @@ stock AutoMakeCreate(whom, type, id)
         GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
         MakeInfo[findslot][mkPlayerId] = id;
         OnlineInfo[id][oServiceMake][0] = 2;
-        OnlineInfo[id][oServiceMake][1] = DeathInfo[id][deathTime];
+        OnlineInfo[id][oServiceMake][1] = 10 * 60;
         OnlineInfo[id][oServiceMake][2] = findslot;
     }
     MessageMake(findslot);
@@ -108,15 +114,7 @@ stock MakeCreate(playerid, whom)
 {
     if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
 
-    new findslot = -1;
-    for(new z = 0; z < MAX_MAKE; z++) 
-    {
-        if(MakeInfo[z][mkWho] <= 0)
-        {
-            findslot = z;
-            break;
-        }
-    }
+    new findslot = FindFreeMakeSlot();
     if(findslot == -1) return ErrorMessage(playerid,"{FF6347}В данный момент нет свободных слотов для вызовов\n\n{cccccc}Сообщите об этом администрации в [ /report ]");
 
     if(whom == 1)
@@ -144,8 +142,8 @@ stock MakeCreate(playerid, whom)
 
     GetPlayerRealPos(playerid, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
 
-    OnlineInfo[playerid][oServiceMake][0] = whom; // servie id
-    OnlineInfo[playerid][oServiceMake][1] = 300;
+    OnlineInfo[playerid][oServiceMake][0] = whom; // service id
+    OnlineInfo[playerid][oServiceMake][1] = 5 * 60;
     OnlineInfo[playerid][oServiceMake][2] = findslot; // make id
     MessageMake(findslot);
     return 1;
@@ -202,7 +200,7 @@ stock MessageMakeCloseAccepted(playerid, number, typeClose)
         {
             OnlineInfo[giveplayerid][oTakeMake] = -1;
             SendClientMessage(giveplayerid, COLOR_GREY, "[ Мысли ]: Упс.. кажется я не успел%s приехать на вызов", gender(giveplayerid));
-            if(typeClose == 0) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Игрок, который совершил вызов вышел из игры");
+            if(typeClose == 0) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Игрок, который совершил вызов, вышел из игры");
             else if(typeClose == 1) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Время активного вызова вышло");
             else if(typeClose == 2) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Пострадавшего уже кто-то вылечил");
             else if(typeClose == 3) ErrorMessage(giveplayerid,"{ff6347}Вы не успели приехать на вызов\n{ffcc66}Пострадавший отправился в госпиталь или его кто-то вылечил");
@@ -266,7 +264,7 @@ stock TakeMake(playerid,number)
     {
         if(IsOnline(giveplayerid))
         {
-            if(MakeInfo[number][mkWhoType] != 3) OnlineInfo[giveplayerid][oServiceMake][1] = 600;
+            if(MakeInfo[number][mkWhoType] != 3) OnlineInfo[giveplayerid][oServiceMake][1] = 10 * 60;
             SuccessMessage(giveplayerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет служба");
             SendClientMessage(giveplayerid, COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб. Пожалуйста, не покидайте радиус вызова (200 метров).");
         }
@@ -417,7 +415,7 @@ stock CallService(playerid, whom)
 	}
 	else if(whom == 1)
 	{
-		ShowDialog(playerid,598,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {0066ff}полицию ?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
+		ShowDialog(playerid,598,DIALOG_STYLE_MSGBOX,"{ff9000}Сервис","\n{ff9000}Вы уверены, что хотите вызвать {0066ff}полицию?\n\n{FF6347}Внимание! {cccccc}В случае ложного вызова вам придётся заплатить штраф\n","Да","Нет");
 	}
 	else if(whom == 2)
 	{
@@ -436,7 +434,7 @@ stock MakeList(playerid)
     new line[214],lines[4048];
     format(line,sizeof(line),"№ Вызвавший\tСтатус\tРайон\tОсталось"), strcat(lines,line);
     new quan, targetid,findraiontolist,timemake[20];
-    for(new z = 0; z < MAX_MAKE; z++) 
+    for(new z = 0; z < MAX_MAKE_AMOUNT; z++) 
     {
         if(MakeInfo[z][mkPlayerId] == -1) continue;
 
@@ -507,7 +505,7 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
     {
         if(response)
         {
-            if(listitem < 0 || listitem > MAX_MAKE) return ErrorMessage(playerid,"{ff6347}Выбрана не правильная строка.");
+            if(listitem < 0 || listitem > MAX_MAKE_AMOUNT) return ErrorMessage(playerid,"{ff6347}Выбрана не правильная строка.");
             new listselect = List[listitem][playerid],findraiontolist;
             DP[4][playerid] = listselect;
             new string[160], showMake;
@@ -552,7 +550,7 @@ CMD:resetmakes(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
     new count = 0;
-    for (new i = 0; i < MAX_MAKE; i++)
+    for (new i = 0; i < MAX_MAKE_AMOUNT; i++)
     {
         if (MakeInfo[i][mkWho] != 0 && MakeInfo[i][mkStatus] == 1) // никто не взялся за заказ
         {
@@ -570,6 +568,6 @@ CMD:resetmakes(playerid)
             count++;
         }
     }
-    SendClientMessage(playerid, COLOR_GREY, "Очищено: %d", count);
+    SendClientMessage(playerid, COLOR_GREY, "Очищено: %d вызовов", count);
     return 1;
 }
