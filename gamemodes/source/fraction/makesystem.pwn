@@ -547,3 +547,29 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
     if(dialogid == 1504) MakeList(playerid);
     return false;
 }
+
+CMD:resetmakes(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+    new count = 0;
+    for (new i = 0; i < MAX_MAKE; i++)
+    {
+        if (MakeInfo[i][mkWho] != 0 && MakeInfo[i][mkStatus] == 1) // никто не взялся за заказ
+        {
+            if (MakeInfo[i][mkPlayerId] >= 0)
+            {
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][0] = 0;
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][1] = 0;
+                OnlineInfo[MakeInfo[i][mkPlayerId]][oServiceMake][2] = 0;
+            }
+
+			MakeInfo[i][mkPlayerId] = -1;
+			MakeInfo[i][mkWho] = 0;
+			MakeInfo[i][mkStatus] = 0;
+
+            count++;
+        }
+    }
+    SendClientMessage(playerid, COLOR_GREY, "Очищено: %d", count);
+    return 1;
+}

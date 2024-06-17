@@ -357,13 +357,20 @@ stock AcceptRevial(playerid)
 {
     if(fraction(playerid) == 4)
     {
-        new string[160];
-        format(string,sizeof(string),"Медик %s, хочет вас реанимировать. Стоимость: %d",rpplayername(playerid),friskPrice[8]*3);
         Moiplayer[Moiplayer[playerid]] = playerid;
-        ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
-        format(string,sizeof(string),"{66ff99}Вы предложили %s оказание медицинской помощи. Ожидайте ответа...",rpplayername(Moiplayer[playerid]));
-        keep(playerid);
-        SuccessMessage(playerid,string);
+        if (!IsPlayerAfk(Moiplayer[playerid]))
+        {
+            new string[160];
+            format(string,sizeof(string),"{cccccc}Медик %s хочет вас реанимировать. Стоимость: %d$",rpplayername(playerid),friskPrice[8]*3);
+            ShowDialog(Moiplayer[playerid],1483,DIALOG_STYLE_MSGBOX,"{ff9000}Лечение",string,"Принять","Отклонить");
+            format(string,sizeof(string),"{66ff99}Вы предложили %s оказание медицинской помощи. Ожидайте ответа...",rpplayername(Moiplayer[playerid]));
+            keep(playerid);
+            SuccessMessage(playerid,string);
+        }
+        else
+        {
+            UseRevival(playerid, Moiplayer[playerid]);
+        }
     }
     else
     {
@@ -372,11 +379,11 @@ stock AcceptRevial(playerid)
             new stro[90],sctringo[450];
             format(stro,sizeof(stro),"\n{ff9000}Как реанимировать пострадавшего?"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n\n{cccccc}- Для реанимации вам нужна аптечка"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Аптечку можно приобрести в любой аптеке [ Y >> GPS >> Услуги >> Аптека ]"), strcat(sctringo,stro);
+            format(stro,sizeof(stro),"\n{cccccc}- Аптечку можно приобрести у сотрудников госпиталя"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Если вы не полицейский и не доктор, вам потребуется 2 уровень Навыка Медка"), strcat(sctringo,stro);
             format(stro,sizeof(stro),"\n{cccccc}- Чтобы прокачать навык вам потребуется стать доктором и реанимировать пострадавших"), strcat(sctringo,stro);
-            format(stro,sizeof(stro),"\n{cccccc}- Так-же вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
-            ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
+            format(stro,sizeof(stro),"\n{cccccc}- Также вы можете приобрести навык [ Y >> Donate ]"), strcat(sctringo,stro);
+            return ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Реанимация",sctringo,"Ок","");
         }
         Moiplayer[Moiplayer[playerid]] = playerid;
         UseRevival(playerid, Moiplayer[playerid]);

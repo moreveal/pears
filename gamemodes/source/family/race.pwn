@@ -169,6 +169,7 @@ stock ClosePartyStreet(slot)
     
     if(RaceIcon[slot] != 0) DestroyDynamicMapIcon(RaceIcon[slot]);
     DestroyDynamicArea(dyn_zone_zzRace[slot]);
+    dyn_zone_zzRace[slot] = INVALID_STREAMER_ID;
     FamilyInfo[StreetRacers[slot][raceFamily]][fStreetRacersID] = -1;
     RaceIcon[slot] = 0;
     StreetRacers[slot][raceFamily] = -1;
