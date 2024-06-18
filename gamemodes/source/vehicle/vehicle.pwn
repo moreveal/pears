@@ -1,21 +1,6 @@
 
-/*
-Как добавить новый тс?
-1. Добавляем в AddCustomVehice заменку и следующий id
-2. Добавляем в IsAVehExisting новую цифру для создания транспорта
-3. Добавляем имя транспорта в vehNameCustom[
-4. Добавляем гос стоимость в vehSummaCustom[
-5. Добавляем в GetVehicleType (что это за тип транспорта)
-6. stock GetVehicleClass - класс авто
-7. stock IsABoot Есть ли у него багажник
-8. stock IsABootFront - если у транспорта, багажник спереди а двигатель сзади
-9. stock IsA_Gen5, IsA_Gen10, IsA_Gen15 - сколько по дефолту слотов в багажнике (если не указать, будет 20 слотов)
-10. stock IsATaxi - доступен ли транспорт работать в такси [сейчас там уже ВСЕ >= 2000]
-11. stock IsAZad - есть ли задние двери в транспорте
-12. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
-*/
+#include "../gamemodes/source/custom/vehicle_custom.pwn" // pwn для добавления новых тс в мод
 
-#define MAX_VEHICLE_CUSTOM 200 // Кастомный транспорт
 #define MAX_MODELS_VEHICLE 212 + MAX_VEHICLE_CUSTOM // Количество моделей транспорта на сервере
 
 new VehGos[MAX_MODELS_VEHICLE]; // Стоимости транспорта
@@ -30,31 +15,6 @@ new VehLimitedCase[MAX_MODELS_VEHICLE]; // Статус лимитированн
 new vehClassName[][] =
 {
     "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Government"
-};
-
-new vehNameCustom[][] =
-{
-    "Lamborghini Murcielago", "BMW E36 328i", "BMW M4 G82", "Mercedes S63", "Acura Integra", "Hummer H2", "Nissan GT-R R35 RB", 
-	"Impreza WRX STi", "Skoda Octavia", "Mercedes C63", "Nissan 350Z", "Audi Q7", "BMW 530i", "BMW M635CSI E24",
-	"Mercedes G63 B800 Brabus", "Ford Raptor", "Audi RS5", "BMW 325i E30", "BMW X6M", "Volkswagen Golf", "Cadillac Fleetwood", "BMW 750il E38",
-	"Dodge Super Bee", "Ford GT", "Lamborghini Centenario", "Mercedes W124", "Mercedes SL 65", "Nissan 240SX", "Porsche 911 GT2",
-	"Shelby GT 500", "Toyota Supra MK5", "Toyota AE86", "Prison Bus", "Mercedes AMG GT63", "Bentley Continental GT", "BMW 325I E30",
-	"Arm Cargo", "Ford Raptor", "Charger Police", "Charger Dep", "Enforcer SWAT", "Truck SWAT", "F1 Ferrari",
-	"Ford Crown Victoria", "Ford Crown Victoria Dep", "Expedition", "Explorer Dep", "Explorer Police", "Ford Focus ST", "Silvia S13",
-	"Jeep Wrangler", "Lexus LS400", "Lexus RCF", "Mazda RX7", "Audi RS6 C5", "Mercedes Sprinter", "Ferrari Enzo",
-	"Mercedes E63", "Mitsubishi Eclipse", "Nissan Silvia S14", "Hummer H1", "Plymouth Hemi", "Toyota Camry Taxi", "Vaz 2106", "Vaz 2105",
-	"Volkswagen Golf MK2", "BMW 760i", "Toyota Chaser JZX100", "BMW M5 F90", "Audi R8", "Rolls-Royce Wraith", "Rolls-Royce Cullinan", "Pagani Zonda",
-	"Audi RS3", "Nissan GT-R R34", "Silvia S15", "Nissan GT-R R35", "Charger RT 69","Mars Rover", "Mars Rider", "Mars RC Car", "Ingenuity",
-	"Peugeot 406 2003","Alfa-Romeo 159 Ti","Aston-Martin DB11","Chevrolet Corvette C6 ZR1", "Tesla Model X P100D","Chiron",
-	"Porsche 911 JS Edition","Bentley Turbo R 1991","Chevrolet Express","Ford Econoline Pack","Audi RS7","Bentley Continental GT",
-	"Chevrolet Tahoe", "Sa Bus", "Paramedic"
-
-	/*"Dodge Charger SRT Hellcat","Dodge Viper","Enforcer CIRG","FBI Car","FBI APC","Motorcycle","Ferrari 348",
-	"Ford Crown Victoria Killer Marauder","Jeep Cherokee 1984 Sand Edition","Lamborghini Miura P400 SV","Lamborghini Gallardo Superleggera",
-	"Mazda RX-8","McLaren 720s Spider","Porsche 911","Porsche Carrera GT","Dron FBI","Subaru BRZ","FBIWater","Volvo XC90",
-	"BMW X5","Yamaha DT180","Yamaha Vino","Yamaha Vino Pizza","BMW M2 Competition","BMW X7","BMW M3 Competition","BMW M3",
-	"Dodge Charger SRT Hellcat","Bugatti Chiron","Bugatti Divo","Volvo Polestar One","Toyota Chaser BN Sports","Mazda RX-7",
-	"SAPD Helicopter","MH-6 Little Bird","FBI Helicopter","Cyberpunk Turbo-R","Cyberpunk Type-66","BMW M5 Competition Sport"*/
 };
 
 new vehName[][] =
@@ -81,29 +41,6 @@ new vehName[][] =
     "Freight Box", "Trailer", "Andromada", "Dodo", "RC Cam", "Launch", "Police Car", "Police Car", "Police Car",
     "Police Ranger", "Picador", "S.W.A.T", "Alpha", "Phoenix", "Glendale", "Sadler", "Luggage", "Luggage", "Stairs",
     "Boxville", "Tiller", "Utility Trailer"
-};
-
-new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
-{
-    19000000,900000,10000000,11000000,400000,3500000,12000000,2500000,1100000,2800000, // 2000 - 2009
-	1400000,5000000,3000000,500000,9000000,4200000,10000000,600000,4500000,400000, // 2010 - 2019
-	2500000,950000,7000000,4000000,60000000,6000000,7000000,1300000,3000000,3200000, // 2020 - 2029
-	5000000,1200000,1300000,15000000,24000000,1500000, // 2030 - 2035
-	31000000,4200000,5000000,5000000,4500000,4000000,300000000, // 2036 - 2042
-	1200000,1200000,7000000,3500000,3500000,500000,1200000, // 2043 - 2049
-	3000000,900000,4700000,700000,1200000,17000000,70000000, // 2050 - 2056
-	11000000,1800000,2100000,9000000,6000000,2900000,500000,500000, // 2057 - 2064
-	300000, 5500000, 750000, 15000000, 7000000, 28000000, 32000000, 70000000, // 2065 - 2072
-	3200000, 2900000, 2500000, 5200000, 1300000,200000000,200000000,200000000,200000000,45000000, // 2073 - 2082
-	1400000,15000000,6000000,30000000,90000000,40000000,20000000,1000000,1000000,11000000,40000000, //2083 - 2093
-	1000000,4000000,5000000 // 2094 - 2096
-	
-	/*
-	10000000,10000000,30000000,500000,14000000,10000000,5000000,17000000, // 2104
-	22000000,800000,22000000,13000000,22000000,60000000,2300000,30000000,3000000,3000000,300000,100000,120000,//2105 - 2117
-	7000000,9000000,9000000,7500000,6000000,65000000,70000000,3600000,1600000,900000,50000000,50000000, //2118 - 2129
-	50000000,12000000,12000000,13000000 //2130 - 2131
-	*/
 };
 
 new vehSumma[] = // Гос цены на авто (Дефолтные)
@@ -157,162 +94,6 @@ new vehSpeed[] =
 	179, 171, 125, 192, 194, 167, 171, 0, 0, 0, // 599 - 608
 	122, 0, 0 // 609 - 611
 };
-
-stock AddCustomVehice() // Добавляем тс на карту
-{
-	AddVehicleSyncModel(451, 2000); // Lamba Murcielago (Turismo)
-	AddVehicleSyncModel(602, 2001); // BMW E36 328i (Alpha)
-	AddVehicleSyncModel(411, 2002); // BMW M4 G82 (Infernus)
-	AddVehicleSyncModel(494, 2003); // Mercedes S63 Coupe (Hotring)
-	AddVehicleSyncModel(559, 2004); // Acura Integra (Jester)
-	AddVehicleSyncModel(579, 2005); // Hummer H2 (Huntley)
-	AddVehicleSyncModel(503, 2006); // Nissan GT-R R35 (Hotrinb)
-	AddVehicleSyncModel(561, 2007); // Impreza WRX STi (Stratum)
-	AddVehicleSyncModel(426, 2008); // Shkoda Octavia (Premier)
-	AddVehicleSyncModel(551, 2009); // Mercedes C63 W204 (Merit)
-	AddVehicleSyncModel(602, 2010); // Nissan 350Z (Alpha)
-	AddVehicleSyncModel(579, 2011); // Audi Q7 (Huntley)
-	AddVehicleSyncModel(426, 2012); // BMW 530i (Premier)
-	AddVehicleSyncModel(602, 2013); // BMW M635CSI E24 (Alpha)
-	AddVehicleSyncModel(579, 2014); // Mercedes Brabus B800 (Huntley)
-	AddVehicleSyncModel(554, 2015); // Ford Raptor (Yosomite)
-	AddVehicleSyncModel(602, 2016); // Audi RS5	(Alpha)
-	AddVehicleSyncModel(551, 2017);	// BMW 325i E30 (Merit)
-	AddVehicleSyncModel(579, 2018); // BMW X6M (Huntley)
-	AddVehicleSyncModel(589, 2019);	// VW Golf	(Club)
-	AddVehicleSyncModel(421, 2020); // Cadillac Fleetwood (Washing)
-	AddVehicleSyncModel(551, 2021);	// BMW 750il E38 (merit)
-	AddVehicleSyncModel(475, 2022);	// Dodge Super Bee (Sabre)
-	AddVehicleSyncModel(541, 2023);	// Ford GT	(Bullet)
-	AddVehicleSyncModel(541, 2024);	// Lamba Centenario (BULLET)
-	AddVehicleSyncModel(445, 2025);	// Mercedes W124 (Huntley)
-	AddVehicleSyncModel(602, 2026);	// Mercedes SL 65 (Alpha)
-	AddVehicleSyncModel(602, 2027);	// Nissan 240SX (Alpha)
-	AddVehicleSyncModel(451, 2028); // Porsche 911 GT2 (Turismo)
-	AddVehicleSyncModel(402, 2029);	// Shelby GT 500 (Buffalo)
-	AddVehicleSyncModel(562, 2030); // Toyota Supra MK5 (Elegy)
-	AddVehicleSyncModel(558, 2031); // Toyota GT AE86 (Uranus)
-	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)
-	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)
-	AddVehicleSyncModel(533, 2034); // Bentley Continental GT (Feltzer)
-	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
-	AddVehicleSyncModel(487, 2036); // Arm Cargo (Maverick)
-	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
-	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
-	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
-	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
-	AddVehicleSyncModel(528, 2041); // Truck SWAT (fbitruck)
-	AddVehicleSyncModel(494, 2042); // Ferrari F1 (hotring)
-	AddVehicleSyncModel(426, 2043); // Ford Crown Victoria (Premier)
-	AddVehicleSyncModel(426, 2044); // Ford Crown Victoria Dep (Premier)
-	AddVehicleSyncModel(490, 2045); // Ford Expedition (fbirancher)
-	AddVehicleSyncModel(490, 2046); // Ford Explorer Dep (fbirancher)
-	AddVehicleSyncModel(490, 2047); // Ford Explorer Police (fbirancher)
-	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
-	AddVehicleSyncModel(503, 2049); // Nissan Silvia s13 (hotrinb)
-	AddVehicleSyncModel(500, 2050); // Jeep Wrangler (mesa)
-	AddVehicleSyncModel(551, 2051); // Lexus LS400 (merit)
-	AddVehicleSyncModel(602, 2052); // Lexus RCF (alpha)
-	AddVehicleSyncModel(477, 2053); // Mazda RX7 (zr350)
-	AddVehicleSyncModel(560, 2054); // Audi RS6 C5(sultan)
-	AddVehicleSyncModel(482, 2055); // Mercedes Sprinter (Burrito)
-	AddVehicleSyncModel(541, 2056); // Ferrari Enzo (bullet)
-	AddVehicleSyncModel(560, 2057); // Mercedes E63 (sultan)
-	AddVehicleSyncModel(559, 2058); // Mitsu Eclipse (jester)
-	AddVehicleSyncModel(558, 2059); // Silvia S14 (uranus)
-	AddVehicleSyncModel(470, 2060); // Hummer H1 (patriot)
-	AddVehicleSyncModel(475, 2061); // Plymouth Hemi Cuda (sabre)
-	AddVehicleSyncModel(420, 2062); // Camry Taxi (taxi)
-	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
-	AddVehicleSyncModel(492, 2064); // Vaz 2105 (greenwoo)
-	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
-	AddVehicleSyncModel(560, 2066); // BMW 760i
-	AddVehicleSyncModel(560, 2067); // Chaser JZX100
-	AddVehicleSyncModel(560, 2068); // BMW M5 F90
-	AddVehicleSyncModel(415, 2069); // Audi R8
-	AddVehicleSyncModel(411, 2070); // Rolls Wraith
-	AddVehicleSyncModel(579, 2071); // Rolls Cullinan
-	AddVehicleSyncModel(541, 2072); // Pagani Zonda
-	AddVehicleSyncModel(560, 2073); // Audi RS3
-	AddVehicleSyncModel(562, 2074); // Nissan GT-R R34
-	AddVehicleSyncModel(558, 2075); // Silvia S15
-	AddVehicleSyncModel(562, 2076); // Nissan GT-R R35
-	AddVehicleSyncModel(402, 2077); // Charger RT 69
-	AddVehicleSyncModel(573, 2078); // Mars Rover
-	AddVehicleSyncModel(573, 2079); // Mars Rider
-	AddVehicleSyncModel(594, 2080); // Mars RC Car
-	AddVehicleSyncModel(465, 2081); // Mars RC Heli
-	AddVehicleSyncModel(560, 2082); // Peugeot 406 (2003)
-
-	AddVehicleSyncModel(551, 2083); // Alfa-Romeo 159 Ti
-	AddVehicleSyncModel(402, 2084); // Aston-Martin DB11
-	AddVehicleSyncModel(402, 2085); // Chevrolet Corvette C6 ZR1
-	AddVehicleSyncModel(560, 2086); // Tesla Model X P100D
-	AddVehicleSyncModel(415, 2087); // Chiron
-	AddVehicleSyncModel(477, 2088); // Porsche 911 JS Edition
-	AddVehicleSyncModel(580, 2089); // Bentley Turbo R 1991
-	AddVehicleSyncModel(413, 2090); // Chevrolet Express
-	AddVehicleSyncModel(482, 2091); // Ford Econoline Pack
-	AddVehicleSyncModel(405, 2092); // Audi RS7 2014
-	AddVehicleSyncModel(602, 2093); // Bentley Continental GT
-	AddVehicleSyncModel(579, 2094); // Chevrolet Tahoe
-	AddVehicleSyncModel(431, 2095); // Sa Bus (Bus)
-	AddVehicleSyncModel(416, 2096); // Paramedic
-
-	/*
-	AddVehicleSyncModel(560, 2095); // Dodge Charger SRT Hellcat
-	AddVehicleSyncModel(429, 2096); // Dodge Viper
-	AddVehicleSyncModel(427, 2097); // Enforcer CIRG
-	AddVehicleSyncModel(490, 2098); // FBI Car
-	AddVehicleSyncModel(528, 2099); // FBI APC
-	AddVehicleSyncModel(521, 2100); // Motorcycle
-	AddVehicleSyncModel(415, 2101); // Ferrari 348
-	AddVehicleSyncModel(494, 2102); // Ford Crown Victoria Killer Maraude
-	AddVehicleSyncModel(495, 2103); // Jeep Cherokee 1984 Sand Edition
-	AddVehicleSyncModel(541, 2104); // Lamborghini Miura P400 SV
-	AddVehicleSyncModel(411, 2105); // Lamborghini Gallardo Superleggera
-	AddVehicleSyncModel(551, 2106); // Mazda RX-8
-	AddVehicleSyncModel(541, 2107); // McLaren 720s Spider
-	AddVehicleSyncModel(480, 2108); // Porsche 911
-	AddVehicleSyncModel(541, 2109); // Porsche Carrera GT
-	AddVehicleSyncModel(465, 2110); // Dron FBI
-	AddVehicleSyncModel(559, 2111); // Subaru BRZ
-	AddVehicleSyncModel(601, 2112); // FBI Water
-	AddVehicleSyncModel(579, 2113); // Volvo XC90
-	AddVehicleSyncModel(579, 2114); // BMW X5
-	AddVehicleSyncModel(468, 2115); // Yamaha DT180
-	AddVehicleSyncModel(462, 2116); // Yamaha Vino
-	AddVehicleSyncModel(448, 2117); // Yamaha Vino Pizza
-	AddVehicleSyncModel(429, 2118); // BMW M2 Competition
-	AddVehicleSyncModel(579, 2119); // BMW X7
-	AddVehicleSyncModel(560, 2120); // BMW M3 Competition
-	AddVehicleSyncModel(560, 2121); // BMW M3
-	AddVehicleSyncModel(560, 2122); // Dodge Charger SRT Hellcat
-	AddVehicleSyncModel(541, 2123); // Bugatti Chiron
-	AddVehicleSyncModel(541, 2124); // Bugatti Divo
-	AddVehicleSyncModel(559, 2125); // Volvo Polestar One
-	AddVehicleSyncModel(551, 2126); // Toyota Chaser BN Sports
-	AddVehicleSyncModel(587, 2127); // Mazda RX-7
-	AddVehicleSyncModel(497, 2128); // SAPD Helicopter
-	AddVehicleSyncModel(487, 2129); // MH-6 Little Bird
-	AddVehicleSyncModel(497, 2130); // FBI Helicopter
-	AddVehicleSyncModel(411, 2131); // Cyberpunk Turbo-R
-	AddVehicleSyncModel(541, 2132); // Cyberpunk Type-66
-	AddVehicleSyncModel(560, 2133); // BMW M5 Competition Sport
-	*/
-	return 1;
-}
-
-// Проверка на доступный транспорт
-stock IsAVehExisting(v)
-{
-    if(v >= 400 && v <= 611 // Стандартный транспорт gta
-
-    || v >= 2000 && v <= 2096) return 1; // Кастомный транспорт пирса
-
-	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
-    return 0;
-}
 
 stock GetVehicleName(model)
 {
@@ -697,6 +478,9 @@ stock GetVehicleType(model) // Получаем тип транспорта
 {
     new type;
 
+    // Если транспорт кастомный, то мы получаем его тип по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
     // Автомобили (Требуются водительские права) Car
     if(model == 400 || model == 401 || model == 402 || model == 403 || model == 404 || model == 405
     || model == 406 || model == 407 || model == 408 || model == 409 || model == 410 || model == 411 || model == 412
@@ -718,9 +502,7 @@ stock GetVehicleType(model) // Получаем тип транспорта
     || model == 572 || model == 573 || model == 574 || model == 575 || model == 576 || model == 578 || model == 579
     || model == 580 || model == 582 || model == 583 || model == 585 || model == 587 || model == 588 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 600 || model == 601 || model == 602
-    || model == 603 || model == 604 || model == 605 || model == 609
-	|| model >= 2000 && model <= 2035 || model >= 2037 && model <= 2079 
-	|| model >= 2082 && model <= 2096) type = 1;
+    || model == 603 || model == 604 || model == 605 || model == 609) type = 1;
 
 
     // Мототранспорт (Требуется лицензия на мото транспорт) Moto
@@ -733,7 +515,7 @@ stock GetVehicleType(model) // Получаем тип транспорта
 
     // Вертолёты (Требуется лицензия на вертолёт) Helicopter
     else if(model == 417 || model == 425 || model == 447 || model == 469 || model == 487 || model == 488 || model == 497 
-    || model == 548 || model == 563 || model == 2036 || model == 2128 || model == 2129 || model == 2130) type = 4;
+    || model == 548 || model == 563) type = 4;
 
     // Самолёты (Требуется лицензия на самолёт) Plane
     else if(model == 460 || model == 476 || model == 511 || model == 512 || model == 513 || model == 519 || model == 520 
@@ -741,99 +523,60 @@ stock GetVehicleType(model) // Получаем тип транспорта
 
     // Велотранспорт (Лицензия не требуется) Bicycle
     else if(model == 481 || model == 509 || model == 510) type = 6;
+
+    // Если не указать тип, то он будет 0 и лицензия не будет требоваться
     return type;
 }
-stock GetVehicleClass(m)
-{
-    new class;
 
-    // Premium Class (1) - Премиум
-
-    if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
-    || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
-    || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
-	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033 || m == 2034
-	|| m == 2052 || m == 2057 || m == 2056 || m == 2066 || m == 2068 || m == 2069 || m == 2070 || m == 2071 || m == 2072
-	|| m == 2084 || m == 2085 || m == 2086 || m == 2087 || m == 2089 || m == 2092 || m == 2093) class = 1;
-
-    // Middle Class (2) - Средний
-    else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
-    || m == 461 || m == 463 || m == 468 || m == 469 || m == 471 || m == 480 || m == 484 || m == 487 || m == 491 || m == 496
-    || m == 507 || m == 511 || m == 516 || m == 533 || m == 534 || m == 550 || m == 551 || m == 555 || m == 558 || m == 561
-    || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
-	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
-	|| m == 2018 || m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049 
-	|| m == 2073 || m == 2076 || m == 2083) class = 2;
-
-    // Economy Class (3) - Бомж
-    else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
-    || m == 474 || m == 475 || m == 479 || m == 492 || m == 512 || m == 513 || m == 517 || m == 518 || m == 526 || m == 527
-    || m == 529 || m == 536 || m == 540 || m == 542 || m == 546 || m == 547 || m == 549 || m == 553 || m == 566 || m == 567
-    || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
-	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2059 || m == 2061
-	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054 || m == 2067 || m == 2074 || m == 2075 || m == 2077
-	|| m == 2082) class = 3;
-
-    // Off-Road Class (4) - Внедорожник
-    else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
-	|| m == 2005 || m == 2011 || m == 2014 || m == 2015 || m == 2050 || m == 2094 || m == 2103 || m == 2113 || m == 2114 || m == 2119) class = 4;
-
-    // Special Class (5) - Грузовая и Спец Техника
-    else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
-    || m == 459 || m == 478 || m == 482 || m == 498 || m == 499 || m == 508 || m == 514 || m == 515 || m == 578
-	|| m == 2055 || m == 2090 || m == 2091) class = 5;
-
-    // Unique Class (6) - Уникальный Транспорт
-    else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
-    || m == 476 || m == 481 || m == 483
-    || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
-    || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062 || m == 2063 || m == 2064
-	|| m == 2088 || m == 2095) class = 6;
-
-    // Goverment Class (7) - Государственный Транспорт
-    else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
-    || m == 438 || m == 447 || m == 448 || m == 470 || m == 485 || m == 486 || m == 488 || m == 490 || m == 497 || m == 520
-    || m == 523 || m == 524 || m == 525 || m == 528 || m == 539 || m == 544 || m == 548 || m == 552 || m == 563 || m == 572 
-    || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
-	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
-	|| m == 2047 || m == 2060 || m == 2096) class = 7;
-
-    else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
-    return class;
-}
-
-stock IsABoot(carid) // Транспорт, у которых есть багажник
+// Транспорт, у которых есть багажник
+stock IsABoot(carid)
 {
 	new model = VehInfo[carid][vModel];
+
+    // Если транспорт кастомный, то мы получаем наличие багажника по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 413
-    || model == 415 || model == 416 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 || model == 428 || model == 429 || model == 433 || model == 434 || model == 436
-    || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 || model == 466 || model == 467
+    || model == 415 || model == 416 || model == 418 || model == 419 || model == 420 || model == 421 || model == 422 || model == 426 
+    || model == 428 || model == 429 || model == 433 || model == 434 || model == 436
+    || model == 438 || model == 439 || model == 440 || model == 442 || model == 444 || model == 445 || model == 451 || model == 458 || model == 459 
+    || model == 466 || model == 467
     || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 489 || model == 490 || model == 491
-    || model == 492 || model == 494 || model == 495 || model == 496 || model == 498 || model == 500 || model == 502 || model == 503 || model == 504 || model == 505 || model == 506
-    || model == 507 || model == 516 || model == 517 || model == 518 || model == 526 || model == 527 || model == 528 || model == 529 || model == 533 || model == 534 || model == 535
-    || model == 536 || model == 540 || model == 541 || model == 542 || model == 543 || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551
-    || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 || model == 565 || model == 566
-    || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 || model == 596 || model == 597
-    || model == 598 || model == 599 || model == 600 || model == 602 || model == 603 || model == 604 || model == 605 || model == 609
-	|| model >= 2000 && model <= 2031 || model >= 2033 && model <= 2035
-	|| model >= 2037 && model <= 2041 || model >= 2043 && model <= 2077
-	|| model >= 2082 && model <= 2087 || model >= 2089 && model <= 2094 || model == 2096) return 1;
+    || model == 492 || model == 494 || model == 495 || model == 496 || model == 498 || model == 500 || model == 502 || model == 503 || model == 504 
+    || model == 505 || model == 506
+    || model == 507 || model == 516 || model == 517 || model == 518 || model == 526 || model == 527 || model == 528 || model == 529 || model == 533 
+    || model == 534 || model == 535
+    || model == 536 || model == 540 || model == 541 || model == 542 || model == 543 || model == 545 || model == 546 || model == 547 || model == 549 
+    || model == 550 || model == 551
+    || model == 554 || model == 555 || model == 556 || model == 557 || model == 558 || model == 559 || model == 560 || model == 561 || model == 562 
+    || model == 565 || model == 566
+    || model == 567 || model == 573 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589 
+    || model == 596 || model == 597
+    || model == 598 || model == 599 || model == 600 || model == 602 || model == 603 
+    || model == 604 || model == 605 || model == 609) return 1;
 	return 0;
 }
 
+// Транспорт, у которых багажник спереди, а двигатель сзади
 stock IsABootFront(carid)
 {
 	new m = VehInfo[carid][vModel];
+
+    // Если транспорт кастомный, то мы получаем расположение багажника по его заменке без лаунчера
+    if(m >= 2000) m = GetVehModelOriginal(m);
+
 	if(m == 415 || m == 424 || m == 437 || m == 451 || m == 483 || m == 486 || m == 530 || m == 532 
-	|| m == 541 || m == 568 || m == 588 || m == 601
-	|| m == 2000 || m == 2023 || m == 2024 || m == 2028 || m == 2041 || m == 2056 || m == 2069 || m == 2072
-	|| m == 2087 || m == 2088) return 1;
+	|| m == 541 || m == 568 || m == 588 || m == 601) return 1;
 	return 0;
 }
 
 stock IsA_Gen5(carid) // 5 слотов в багажнике
 {
 	new model = VehInfo[carid][vModel];
+
+	// Если транспорт кастомный, то мы получаем количество слотов багажника по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
 	if(model == 400 || model == 401 || model == 402 || model == 404 || model == 405 || model == 409 || model == 410 || model == 411 || model == 412 || model == 415
     || model == 419 || model == 420 || model == 421 || model == 426 || model == 429 || model == 434 || model == 436 || model == 438 || model == 439 || model == 442 || model == 445
     || model == 451 || model == 458 || model == 466 || model == 467 || model == 470 || model == 474 || model == 475 || model == 477 || model == 479 || model == 480 || model == 489
@@ -841,45 +584,45 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
     || model == 517 || model == 518 || model == 526 || model == 527 || model == 529 || model == 533 || model == 534 || model == 536 || model == 540 || model == 541 || model == 542
     || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551 || model == 555 || model == 558 || model == 559 || model == 560 || model == 561
     || model == 562 || model == 565 || model == 566 || model == 567 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589
-    || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604
-	|| model == 2000 || model == 2001 || model == 2002 || model == 2003 || model == 2004 || model == 2006 || model == 2007
-	|| model == 2008 || model == 2009 || model == 2010 || model == 2012 || model == 2013 || model == 2016 || model == 2017
-	|| model == 2019 || model == 2020 || model == 2021 || model == 2022 || model == 2023 || model == 2024 || model == 2026
-	|| model == 2027 || model == 2028 || model == 2029 || model == 2030 || model == 2031 || model == 2033 || model == 2034
-	|| model == 2035 || model == 2038 || model == 2039 || model == 2043 || model == 2044 || model == 2048 || model == 2049
-	|| model == 2050 || model == 2051 || model == 2052 || model == 2053 || model == 2054 || model == 2056 || model == 2057 || model == 2058
-	|| model == 2059 || model == 2061 || model == 2062 || model == 2063 || model == 2064 || model >= 2065 && model <= 2077
-	|| model == 2082 || model >= 2083 && model <= 2087 || model == 2089 || model >= 2092 && model <= 2093) return 1;
+    || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604) return 1;
 	return 0;
 }
 
 stock IsA_Gen10(carid) // 10 слотов в багажнике
 {
 	new model = VehInfo[carid][vModel];
-	if(model == 418 || model == 422 || model == 444 || model == 543 || model == 554 || model == 556 || model == 557 || model == 600 || model == 605
-	|| model == 2005 || model == 2011 || model == 2014 || model == 2018 || model == 2025 || model == 2037 || model == 2045
-	|| model == 2046 || model == 2047 || model == 2094) return 1;
+
+	// Если транспорт кастомный, то мы получаем количество слотов багажника по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
+	if(model == 418 || model == 422 || model == 444 || model == 543 || model == 554 || model == 556 || model == 557 || model == 600 || model == 605) return 1;
 	return 0;
 }
 
 stock IsA_Gen15(carid) // 15 слотов в багажнике
 {
 	new model = VehInfo[carid][vModel];
-	if(model == 413 || model == 414 || model == 440 || model == 459 || model == 478 || model == 482 || model == 498 || model == 499 || model == 609
-	|| model == 2015 || model == 2041 || model == 2060) return 1;
+
+	// Если транспорт кастомный, то мы получаем количество слотов багажника по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
+	if(model == 413 || model == 414 || model == 440 || model == 459 || model == 478 || model == 482 || model == 498 || model == 499 || model == 609) return 1;
 	return 0;
 }
 
 stock IsATaxi(carid) // Транспорт, который разрешён для работы в такси
 {
 	new model = VehInfo[carid][vModel];
+
+	// Если транспорт кастомный, то мы получаем доступ к работе в такси по его заменке безе лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
 	if(model >= 400 && model <= 424 || model >= 426 && model <= 429 || model == 431 || model == 433 || model == 434 || model >= 436 && model <= 440 || model >= 442 && model <= 445
  	|| model == 447 || model == 448 || model == 451 || model >= 455 && model <= 463 || model >= 466 && model <= 471 || model == 474 || model == 475 || model >= 477 && model <= 480
  	|| model == 482 || model == 483 || model >= 487 && model <= 492 || model >= 494 && model <= 500 || model >= 502 && model <= 508 || model == 511 || model >= 514 && model <= 518
  	|| model >= 521 && model <= 529 || model >= 533 && model <= 536 || model >= 540 && model <= 552 || model >= 554 && model <= 563 || model >= 565 && model <= 567
- 	|| model >= 573 && model <= 576 || model >= 578 && model <= 582 || model >= 585 && model <= 589 || model == 593 || model >= 596 && model <= 605 || model == 609
-	|| model >= 2000 && model <= 2077
-	|| model == 2082 || model == 2083 || model == 2086 || model == 2089 || model == 2092 || model == 2094) return 1;
+ 	|| model >= 573 && model <= 576 || model >= 578 && model <= 582 || model >= 585 && model <= 589 
+	|| model == 593 || model >= 596 && model <= 605 || model == 609) return 1;
 	return 0;
 }
 
@@ -893,16 +636,14 @@ stock IsAVello(carid) // Велики
 
 stock IsAZad(model) // Транспорт с задними окнами
 {
+	// Если транспорт кастомный, то мы получаем инфу о задних дверях по его заменке без лаунчера
+    if(model >= 2000) model = GetVehModelOriginal(model);
+
     if(model == 404 || model == 405 || model == 409 || model == 420 || model == 421 || model == 426 || model == 438
 	|| model == 445 || model == 458 || model == 466 || model == 467 || model == 470 || model == 479 || model == 490
  	|| model == 492 || model == 507 || model == 516 || model == 529 || model == 540 || model == 546 || model == 547
   	|| model == 550 || model == 551 || model == 560 || model == 561 || model == 566 || model == 579 || model == 580
-   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604
-	|| model == 2005 || model == 2007 || model == 2008 || model == 2009 || model == 2011 || model == 2012 || model == 2014
-	|| model == 2015 || model == 2017 || model == 2018 || model == 2020 || model == 2021 || model == 2025 || model == 2033 || model == 2034
-	|| model >= 2037 && model <= 2047 || model == 2051 || model == 2054 || model == 2057 || model == 2060 || model == 2062
-	|| model >= 2066 && model <= 2068 || model == 2071 || model == 2073 
-	|| model == 2082 || model == 2083 || model == 2086 || model == 2087 || model == 2089 || model == 2092 || model == 2094 || model == 2095) return 1;
+   	|| model == 585 || model == 596 || model == 597 || model == 598 || model == 604) return 1;
 	return 0;
 }
 

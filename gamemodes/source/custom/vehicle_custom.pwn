@@ -1,0 +1,430 @@
+/*
+Как добавить новый тс?
+1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
+2. Добавляем имя транспорта в vehNameCustom[
+3. Добавляем гос стоимость в vehSummaCustom[
+4. Добавляем в AddCustomVehice заменку и следующий id (Внимание! От заменки зависит расположение двигателя, количество дверей и наличие багажника)
+5. Добавляем в IsAVehExisting новую цифру для создания транспорта
+6. stock GetVehicleClass - класс авто
+*/
+
+#define MAX_VEHICLE_CUSTOM 200 // Кастомный транспорт
+
+new vehNameCustom[][] =
+{
+    "Lamba Murcielago", // 2000
+    "BMW E36 328i", // 2001
+    "BMW M4 G82", // 2002
+    "Mercedes S63", // 2003
+    "Acura Integra", // 2004
+    "Hummer H2", // 2005
+    "Nissan GT-R R35 RB", // 2006
+	"Impreza WRX STi", // 2007
+    "Skoda Octavia", // 2008
+    "Mercedes C63", // 2009
+    "Nissan 350Z", // 2010
+    "Audi Q7", // 2011
+    "BMW 530i", // 2012
+    "BMW M635CSI E24",// 2013
+	"Mercedes G63 B800", // 2014
+    "Ford Raptor", // 2015
+    "Audi RS5", // 2016
+    "BMW 325i E30", // 2017
+    "BMW X6M", // 2018
+    "Volkswagen Golf", // 2019
+    "Cadillac Fleetwood", // 2020
+    "BMW 750il E38",// 2021
+	"Dodge Super Bee", // 2022
+    "Ford GT", // 2023
+    "Lamba Centenario", // 2024
+    "Mercedes W124", // 2025
+    "Mercedes SL 65", // 2026
+    "Nissan 240SX", // 2027
+    "Porsche 911 GT2",// 2028
+	"Shelby GT 500", // 2029
+    "Toyota Supra MK5", // 2030
+    "Toyota AE86", // 2031
+    "Prison Bus", // 2032
+    "Mercedes AMG GT63", // 2033
+    "Bentley Continental GT", // 2034
+    "BMW 325I E30",// 2035
+	"Arm Cargo", // 2036
+    "Ford Raptor", // 2037
+    "Charger Police", // 2038
+    "Charger Dep", // 2039
+    "Enforcer SWAT", // 2040
+    "Truck SWAT", // 2041
+    "F1 Ferrari",// 2042
+	"Ford Crown Victoria", // 2043
+    "Ford Crown Victoria Dep", // 2044
+    "Expedition", // 2045
+    "Explorer Dep", // 2046
+    "Explorer Police", // 2047
+    "Ford Focus ST", // 2048
+    "Silvia S13", // 2049
+	"Jeep Wrangler", // 2050
+    "Lexus LS400", // 2051
+    "Lexus RCF", // 2052
+    "Mazda RX7", // 2053
+    "Audi RS6 C5", // 2054
+    "Mercedes Sprinter", // 2055
+    "Ferrari Enzo",// 2056
+	"Mercedes E63", // 2057
+    "Mitsubishi Eclipse", // 2058
+    "Nissan Silvia S14", // 2059
+    "Hummer H1", // 2060
+    "Plymouth Hemi", // 2061
+    "Toyota Camry Taxi", // 2062
+    "Vaz 2106", // 2063
+    "Vaz 2105",// 2064
+	"Volkswagen Golf MK2", // 2065
+    "BMW 760i", // 2066
+    "Toyota Chaser JZX100", // 2067
+    "BMW M5 F90", // 2068
+    "Audi R8", // 2069
+    "Rolls-Royce Wraith", // 2070
+    "Rolls-Royce Cullinan", // 2071
+    "Pagani Zonda",// 2072
+	"Audi RS3", // 2073
+    "Nissan GT-R R34", // 2074
+    "Silvia S15", // 2075
+    "Nissan GT-R R35", // 2076
+    "Charger RT 69", // 2077
+    "Mars Rover", // 2078
+    "Mars Rider", // 2079
+    "Mars RC Car", // 2080
+    "Ingenuity",// 2081
+	"Peugeot 406 2003", // 2082
+    "Alfa-Romeo 159 Ti", // 2083
+    "Aston-Martin DB11", // 2084
+    "Chevrolet Corvette C6 ZR1", // 2085
+    "Tesla Model X P100D", // 2086
+    "Chiron", // 2087
+	"Porsche 911 JS Edition", // 2088
+    "Bentley Turbo R 1991", // 2089
+    "Chevrolet Express", // 2090
+    "Ford Econoline Pack", // 2091
+    "Audi RS7", // 2092
+    "Bentley Continental GT",// 2093
+	"Chevrolet Tahoe", // 2094
+    "Sa Bus", // 2095
+    "Paramedic" // 2096
+};
+
+new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
+{
+    19000000, // Lamba Murcielago // 2000
+    900000, // BMW E36 328i // 2001
+    10000000, // BMW M4 G82 // 2002
+    11000000, // Mercedes S63 // 2003
+    400000, // Acura Integra // 2004
+    3500000, // Hummer H2 // 2005
+    12000000, // Nissan GT-R R35 RB // 2006
+    2500000, // Impreza WRX STi // 2007
+    1100000, // Skoda Octavia // 2008
+    2800000, // Mercedes C63 // 2009
+	1400000, // Nissan 350Z // 2010
+    5000000, // Audi Q7 // 2011
+    3000000, // BMW 530i // 2012
+    500000, // BMW M635CSI E24 // 2013
+    9000000, // Mercedes G63 B800 // 2014
+    4200000, // Ford Raptor // 2015
+    10000000, // Audi RS5 // 2016
+    600000, // BMW 325i E30 // 2017
+    4500000, // BMW X6M // 2018
+    400000, // Volkswagen Golf // 2019
+	2500000, // Cadillac Fleetwood // 2020
+    950000, // BMW 750il E38 // 2021
+    7000000, // Dodge Super Bee // 2022
+    4000000, // Ford GT // 2023
+    60000000, // Lamba Centenario // 2024
+    6000000, // Mercedes W124 // 2025
+    7000000, // Mercedes SL 65 // 2026
+    1300000, // Nissan 240SX // 2027
+    3000000, // Porsche 911 GT2// 2028
+    3200000, // Shelby GT 500 // 2029
+	5000000, // Toyota Supra MK5 // 2030
+    1200000, // Toyota AE86 // 2031
+    1300000, // Prison Bus // 2032
+    15000000, // Mercedes AMG GT63 // 2033
+    24000000, // Bentley Continental GT // 2034
+    1500000, // BMW 325I E30 // 2035
+	31000000, // Arm Cargo // 2036
+    4200000, // Ford Raptor // 2037
+    5000000, // Charger Police // 2038
+    5000000, // Charger Dep // 2039
+    4500000, // Enforcer SWAT // 2040
+    4000000, // Truck SWAT // 2041
+    300000000, // F1 Ferrari // 2042
+	1200000, // Ford Crown Victoria // 2043
+    1200000, // Ford Crown Victoria Dep // 2044
+    7000000, // Expedition // 2045
+    3500000, // Explorer Dep // 2046
+    3500000, // Explorer Police // 2047
+    500000, // Ford Focus ST // 2048
+    1200000, // Silvia S13 // 2049
+	3000000, // Jeep Wrangler // 2050
+    900000, // Lexus LS400 // 2051
+    4700000, // Lexus RCF // 2052
+    700000, // Mazda RX7 // 2053
+    1200000, // Audi RS6 C5 // 2054
+    17000000, // Mercedes Sprinter // 2055
+    70000000, // Ferrari Enzo // 2056
+	11000000, // Mercedes E63 // 2057
+    1800000, // Mitsubishi Eclipse // 2058
+    2100000, // Nissan Silvia S14 // 2059
+    9000000, // Hummer H1 // 2060
+    6000000, // Plymouth Hemi // 2061
+    2900000, // Toyota Camry Taxi // 2062
+    500000, // Vaz 2106 // 2063
+    500000, // Vaz 2105 // 2064
+	300000,  // Volkswagen Golf MK2 // 2065
+    5500000,  // BMW 760i // 2066
+    750000,  // Toyota Chaser JZX100 // 2067
+    15000000,  // BMW M5 F90 // 2068
+    7000000,  // Audi R8 // 2069
+    28000000,  // Rolls-Royce Wraith // 2070
+    32000000,  // Rolls-Royce Cullinan // 2071
+    70000000, // Pagani Zonda // 2072
+	3200000,  // Audi RS3 // 2073
+    2900000,  // Nissan GT-R R34 // 2074
+    2500000,  // Silvia S15 // 2075
+    5200000,  // Nissan GT-R R35 // 2076
+    1300000, // Charger RT 69 // 2077
+    200000000, // Mars Rover // 2078
+    200000000, // Mars Rider // 2079
+    200000000, // Mars RC Car // 2080
+    200000000, // Ingenuity // 2081
+    45000000, // Peugeot 406 2003 // 2082
+	1400000, // Alfa-Romeo 159 Ti // 2083
+    15000000, // Aston-Martin DB11 // 2084
+    6000000, // Chevrolet Corvette C6 ZR1 // 2085
+    30000000, // Tesla Model X P100D // 2086
+    90000000, // Chiron // 2087
+    40000000, // Porsche 911 JS Edition // 2088
+    20000000, // Bentley Turbo R 1991 // 2089
+    1000000, // Chevrolet Express // 2090
+    1000000, // Ford Econoline Pack // 2091
+    11000000, // Audi RS7 // 2092
+    40000000, // Bentley Continental GT// 2093
+	1000000, // Chevrolet Tahoe // 2094
+    4000000, // Sa Bus // 2095
+    5000000 // Paramedic // 2096
+};
+
+stock AddCustomVehice() // Добавляем тс на карту
+{
+	AddVehicleSyncModel(451, 2000); // Lamba Murcielago (Turismo)
+	AddVehicleSyncModel(602, 2001); // BMW E36 328i (Alpha)
+	AddVehicleSyncModel(411, 2002); // BMW M4 G82 (Infernus)
+	AddVehicleSyncModel(494, 2003); // Mercedes S63 Coupe (Hotring)
+	AddVehicleSyncModel(559, 2004); // Acura Integra (Jester)
+	AddVehicleSyncModel(579, 2005); // Hummer H2 (Huntley)
+	AddVehicleSyncModel(503, 2006); // Nissan GT-R R35 (Hotrinb)
+	AddVehicleSyncModel(561, 2007); // Impreza WRX STi (Stratum)
+	AddVehicleSyncModel(426, 2008); // Shkoda Octavia (Premier)
+	AddVehicleSyncModel(551, 2009); // Mercedes C63 W204 (Merit)
+	AddVehicleSyncModel(602, 2010); // Nissan 350Z (Alpha)
+	AddVehicleSyncModel(579, 2011); // Audi Q7 (Huntley)
+	AddVehicleSyncModel(426, 2012); // BMW 530i (Premier)
+	AddVehicleSyncModel(602, 2013); // BMW M635CSI E24 (Alpha)
+	AddVehicleSyncModel(579, 2014); // Mercedes Brabus B800 (Huntley)
+	AddVehicleSyncModel(554, 2015); // Ford Raptor (Yosomite)
+	AddVehicleSyncModel(602, 2016); // Audi RS5	(Alpha)
+	AddVehicleSyncModel(551, 2017);	// BMW 325i E30 (Merit)
+	AddVehicleSyncModel(579, 2018); // BMW X6M (Huntley)
+	AddVehicleSyncModel(589, 2019);	// VW Golf	(Club)
+	AddVehicleSyncModel(421, 2020); // Cadillac Fleetwood (Washing)
+	AddVehicleSyncModel(551, 2021);	// BMW 750il E38 (merit)
+	AddVehicleSyncModel(475, 2022);	// Dodge Super Bee (Sabre)
+	AddVehicleSyncModel(541, 2023);	// Ford GT	(Bullet)
+	AddVehicleSyncModel(541, 2024);	// Lamba Centenario (BULLET)
+	AddVehicleSyncModel(445, 2025);	// Mercedes W124 (Huntley)
+	AddVehicleSyncModel(602, 2026);	// Mercedes SL 65 (Alpha)
+	AddVehicleSyncModel(602, 2027);	// Nissan 240SX (Alpha)
+	AddVehicleSyncModel(451, 2028); // Porsche 911 GT2 (Turismo)
+	AddVehicleSyncModel(402, 2029);	// Shelby GT 500 (Buffalo)
+	AddVehicleSyncModel(562, 2030); // Toyota Supra MK5 (Elegy)
+	AddVehicleSyncModel(558, 2031); // Toyota GT AE86 (Uranus)
+	AddVehicleSyncModel(431, 2032); // Prison Bus (Bus)
+	AddVehicleSyncModel(560, 2033); // Mercedes AMG GT63 (Sultan)
+	AddVehicleSyncModel(533, 2034); // Bentley Continental GT (Feltzer)
+	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
+	AddVehicleSyncModel(487, 2036); // Arm Cargo (Maverick)
+	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
+	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
+	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
+	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
+	AddVehicleSyncModel(528, 2041); // Truck SWAT (fbitruck)
+	AddVehicleSyncModel(494, 2042); // Ferrari F1 (hotring)
+	AddVehicleSyncModel(426, 2043); // Ford Crown Victoria (Premier)
+	AddVehicleSyncModel(426, 2044); // Ford Crown Victoria Dep (Premier)
+	AddVehicleSyncModel(490, 2045); // Ford Expedition (fbirancher)
+	AddVehicleSyncModel(490, 2046); // Ford Explorer Dep (fbirancher)
+	AddVehicleSyncModel(490, 2047); // Ford Explorer Police (fbirancher)
+	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
+	AddVehicleSyncModel(503, 2049); // Nissan Silvia s13 (hotrinb)
+	AddVehicleSyncModel(500, 2050); // Jeep Wrangler (mesa)
+	AddVehicleSyncModel(551, 2051); // Lexus LS400 (merit)
+	AddVehicleSyncModel(602, 2052); // Lexus RCF (alpha)
+	AddVehicleSyncModel(477, 2053); // Mazda RX7 (zr350)
+	AddVehicleSyncModel(560, 2054); // Audi RS6 C5(sultan)
+	AddVehicleSyncModel(482, 2055); // Mercedes Sprinter (Burrito)
+	AddVehicleSyncModel(541, 2056); // Ferrari Enzo (bullet)
+	AddVehicleSyncModel(560, 2057); // Mercedes E63 (sultan)
+	AddVehicleSyncModel(559, 2058); // Mitsu Eclipse (jester)
+	AddVehicleSyncModel(558, 2059); // Silvia S14 (uranus)
+	AddVehicleSyncModel(470, 2060); // Hummer H1 (patriot)
+	AddVehicleSyncModel(475, 2061); // Plymouth Hemi Cuda (sabre)
+	AddVehicleSyncModel(420, 2062); // Camry Taxi (taxi)
+	AddVehicleSyncModel(492, 2063); // Vaz 2106 (greenwoo)
+	AddVehicleSyncModel(492, 2064); // Vaz 2105 (greenwoo)
+	AddVehicleSyncModel(589, 2065); // VW Golf MK2 (Club)
+	AddVehicleSyncModel(560, 2066); // BMW 760i
+	AddVehicleSyncModel(560, 2067); // Chaser JZX100
+	AddVehicleSyncModel(560, 2068); // BMW M5 F90
+	AddVehicleSyncModel(415, 2069); // Audi R8
+	AddVehicleSyncModel(411, 2070); // Rolls Wraith
+	AddVehicleSyncModel(579, 2071); // Rolls Cullinan
+	AddVehicleSyncModel(541, 2072); // Pagani Zonda
+	AddVehicleSyncModel(560, 2073); // Audi RS3
+	AddVehicleSyncModel(562, 2074); // Nissan GT-R R34
+	AddVehicleSyncModel(558, 2075); // Silvia S15
+	AddVehicleSyncModel(562, 2076); // Nissan GT-R R35
+	AddVehicleSyncModel(402, 2077); // Charger RT 69
+	AddVehicleSyncModel(573, 2078); // Mars Rover
+	AddVehicleSyncModel(573, 2079); // Mars Rider
+	AddVehicleSyncModel(594, 2080); // Mars RC Car
+	AddVehicleSyncModel(465, 2081); // Mars RC Heli
+	AddVehicleSyncModel(560, 2082); // Peugeot 406 (2003)
+
+	AddVehicleSyncModel(551, 2083); // Alfa-Romeo 159 Ti
+	AddVehicleSyncModel(402, 2084); // Aston-Martin DB11
+	AddVehicleSyncModel(402, 2085); // Chevrolet Corvette C6 ZR1
+	AddVehicleSyncModel(560, 2086); // Tesla Model X P100D
+	AddVehicleSyncModel(415, 2087); // Chiron
+	AddVehicleSyncModel(477, 2088); // Porsche 911 JS Edition
+	AddVehicleSyncModel(580, 2089); // Bentley Turbo R 1991
+	AddVehicleSyncModel(413, 2090); // Chevrolet Express
+	AddVehicleSyncModel(482, 2091); // Ford Econoline Pack
+	AddVehicleSyncModel(405, 2092); // Audi RS7 2014
+	AddVehicleSyncModel(602, 2093); // Bentley Continental GT
+	AddVehicleSyncModel(579, 2094); // Chevrolet Tahoe
+	AddVehicleSyncModel(431, 2095); // Sa Bus (Bus)
+	AddVehicleSyncModel(416, 2096); // Paramedic
+
+	/*
+	AddVehicleSyncModel(560, 2095); // Dodge Charger SRT Hellcat
+	AddVehicleSyncModel(429, 2096); // Dodge Viper
+	AddVehicleSyncModel(427, 2097); // Enforcer CIRG
+	AddVehicleSyncModel(490, 2098); // FBI Car
+	AddVehicleSyncModel(528, 2099); // FBI APC
+	AddVehicleSyncModel(521, 2100); // Motorcycle
+	AddVehicleSyncModel(415, 2101); // Ferrari 348
+	AddVehicleSyncModel(494, 2102); // Ford Crown Victoria Killer Maraude
+	AddVehicleSyncModel(495, 2103); // Jeep Cherokee 1984 Sand Edition
+	AddVehicleSyncModel(541, 2104); // Lamborghini Miura P400 SV
+	AddVehicleSyncModel(411, 2105); // Lamborghini Gallardo Superleggera
+	AddVehicleSyncModel(551, 2106); // Mazda RX-8
+	AddVehicleSyncModel(541, 2107); // McLaren 720s Spider
+	AddVehicleSyncModel(480, 2108); // Porsche 911
+	AddVehicleSyncModel(541, 2109); // Porsche Carrera GT
+	AddVehicleSyncModel(465, 2110); // Dron FBI
+	AddVehicleSyncModel(559, 2111); // Subaru BRZ
+	AddVehicleSyncModel(601, 2112); // FBI Water
+	AddVehicleSyncModel(579, 2113); // Volvo XC90
+	AddVehicleSyncModel(579, 2114); // BMW X5
+	AddVehicleSyncModel(468, 2115); // Yamaha DT180
+	AddVehicleSyncModel(462, 2116); // Yamaha Vino
+	AddVehicleSyncModel(448, 2117); // Yamaha Vino Pizza
+	AddVehicleSyncModel(429, 2118); // BMW M2 Competition
+	AddVehicleSyncModel(579, 2119); // BMW X7
+	AddVehicleSyncModel(560, 2120); // BMW M3 Competition
+	AddVehicleSyncModel(560, 2121); // BMW M3
+	AddVehicleSyncModel(560, 2122); // Dodge Charger SRT Hellcat
+	AddVehicleSyncModel(541, 2123); // Bugatti Chiron
+	AddVehicleSyncModel(541, 2124); // Bugatti Divo
+	AddVehicleSyncModel(559, 2125); // Volvo Polestar One
+	AddVehicleSyncModel(551, 2126); // Toyota Chaser BN Sports
+	AddVehicleSyncModel(587, 2127); // Mazda RX-7
+	AddVehicleSyncModel(497, 2128); // SAPD Helicopter
+	AddVehicleSyncModel(487, 2129); // MH-6 Little Bird
+	AddVehicleSyncModel(497, 2130); // FBI Helicopter
+	AddVehicleSyncModel(411, 2131); // Cyberpunk Turbo-R
+	AddVehicleSyncModel(541, 2132); // Cyberpunk Type-66
+	AddVehicleSyncModel(560, 2133); // BMW M5 Competition Sport
+	*/
+	return 1;
+}
+
+// Проверка на доступный транспорт
+stock IsAVehExisting(v)
+{
+    if(v >= 400 && v <= 611 // Стандартный транспорт gta
+
+    || v >= 2000 && v <= 2096) return 1; // Кастомный транспорт пирса
+
+	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
+    return 0;
+}
+
+
+stock GetVehicleClass(m)
+{
+    new class;
+
+    // Premium Class (1) - Премиум
+
+    if(m == 402 || m == 409 || m == 411 || m == 415 || m == 429 || m == 446 || m == 451 || m == 454 || m == 477 || m == 493 
+    || m == 494 || m == 502 || m == 503 || m == 506 || m == 519 || m == 521 || m == 522 || m == 535 || m == 541 || m == 559
+    || m == 560 || m == 562 || m == 565 || m == 580 || m == 586
+	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033 || m == 2034
+	|| m == 2052 || m == 2057 || m == 2056 || m == 2066 || m == 2068 || m == 2069 || m == 2070 || m == 2071 || m == 2072
+	|| m == 2084 || m == 2085 || m == 2086 || m == 2087 || m == 2089 || m == 2092 || m == 2093) class = 1;
+
+    // Middle Class (2) - Средний
+    else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
+    || m == 461 || m == 463 || m == 468 || m == 469 || m == 471 || m == 480 || m == 484 || m == 487 || m == 491 || m == 496
+    || m == 507 || m == 511 || m == 516 || m == 533 || m == 534 || m == 550 || m == 551 || m == 555 || m == 558 || m == 561
+    || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
+	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
+	|| m == 2018 || m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049 
+	|| m == 2073 || m == 2076 || m == 2083) class = 2;
+
+    // Economy Class (3) - Бомж
+    else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
+    || m == 474 || m == 475 || m == 479 || m == 492 || m == 512 || m == 513 || m == 517 || m == 518 || m == 526 || m == 527
+    || m == 529 || m == 536 || m == 540 || m == 542 || m == 546 || m == 547 || m == 549 || m == 553 || m == 566 || m == 567
+    || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
+	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2059 || m == 2061
+	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054 || m == 2067 || m == 2074 || m == 2075 || m == 2077
+	|| m == 2082) class = 3;
+
+    // Off-Road Class (4) - Внедорожник
+    else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
+	|| m == 2005 || m == 2011 || m == 2014 || m == 2015 || m == 2050 || m == 2094) class = 4;
+
+    // Special Class (5) - Грузовая и Спец Техника
+    else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
+    || m == 459 || m == 478 || m == 482 || m == 498 || m == 499 || m == 508 || m == 514 || m == 515 || m == 578
+	|| m == 2055 || m == 2090 || m == 2091) class = 5;
+
+    // Unique Class (6) - Уникальный Транспорт
+    else if(m == 423 || m == 424 || m == 431 || m == 434 || m == 437 || m == 442 || m == 443 || m == 444 || m == 457 || m == 473 
+    || m == 476 || m == 481 || m == 483
+    || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
+    || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062 || m == 2063 || m == 2064
+	|| m == 2088 || m == 2095) class = 6;
+
+    // Goverment Class (7) - Государственный Транспорт
+    else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
+    || m == 438 || m == 447 || m == 448 || m == 470 || m == 485 || m == 486 || m == 488 || m == 490 || m == 497 || m == 520
+    || m == 523 || m == 524 || m == 525 || m == 528 || m == 539 || m == 544 || m == 548 || m == 552 || m == 563 || m == 572 
+    || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
+	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
+	|| m == 2047 || m == 2060 || m == 2096) class = 7;
+
+    else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
+    return class;
+}
+
