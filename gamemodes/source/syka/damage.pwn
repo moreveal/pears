@@ -496,6 +496,7 @@ stock BeginnerDamage(playerid, damagedid) // Защита от дма нович
 	    && ADMS[damagedid] <= 4 // Защита от урона активна
         && PlayerInfo[damagedid][pMember] == 0 // Игрок не состоит в организации
         && PlayerInfo[damagedid][pFamily] == 0 // Игрок не состоит в семье
+        && Pursuit[damagedid] == 9999 // Игрока не преследует полиция
         && computerClubPlayerInfo[damagedid][ccpiInGame] == false) // Игрок не в комп клубе
 	{
 		new string[160];
