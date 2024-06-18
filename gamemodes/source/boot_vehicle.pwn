@@ -454,8 +454,13 @@ stock put_bootbox(playerid, v) // Кладём ящик в багажник
 {
 	if(OnlineInfo[playerid][oInHandThing][0] > 0 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4))
 	{
+		new max_slotes = 20;
+		if (IsA_Gen5(v)) max_slotes = 5;
+		else if(IsA_Gen10(v)) max_slotes = 10;
+		else if(IsA_Gen15(v)) max_slotes = 15;
+		
 	    new put_inva = PutThingBoot(v, OnlineInfo[playerid][oInHandThing][0], OnlineInfo[playerid][oInHandThing][1], OnlineInfo[playerid][oInHandThing][2], OnlineInfo[playerid][oInHandThing][3], OnlineInfo[playerid][oInHandThing][4], OnlineInfo[playerid][oInHandThing][5], 999);
-	    if(put_inva == -1)
+	    if(put_inva == -1 || put_inva >= max_slotes)
 		{
 			ErrorMessage(playerid, "{FF6347}В транспорте нет места");
 			return 0;
