@@ -938,6 +938,8 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
             Moiplayer[playerid] = zakonnik;
         }
 
+        // TODO: Помечаем и сообщаем, что игрок не сможет получить возврат залога, если по одному из решений суда ему назначен исправительный срок
+
         foreach (Player, i)
         {
             if(OnlineInfo[i][oLogged] == 0

@@ -1,5 +1,21 @@
 #define PI 3.14159265358979323846
 
+// Разбивает число по разрядам, точками
+stock FormatNumberWithCommas(number, str[], len = sizeof str)
+{
+	if(number == cellmin)
+	{
+		str[0] = EOS;
+		strcat(str, "-2.147.483.648", len);
+		return 1;
+	}
+	format(str, len, "%d", number);
+
+	for(new i = strlen(str), end = number >= 0 ? 0 : 1; (i -= 3) > end;)
+		strins(str, ".", i, len);
+	return 1;
+}
+
 // Переносит координаты на указанную дистанцию и направление от указанной точки (2D)
 stock GetXYInFrontOfPoint(&Float:x, &Float:y, Float:angle, Float:dist) {
 	x += (dist * floatsin(-angle, degrees));

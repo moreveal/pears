@@ -2514,22 +2514,6 @@ ColorToHexString(color, bool: alpha = false) {
     return result;
 }
 
-// Разбивает число по разрядам, точками
-stock FormatNumberWithCommas(number, str[], len = sizeof str)
-{
-	if(number == cellmin)
-	{
-		str[0] = EOS;
-		strcat(str, "-2.147.483.648", len);
-		return 1;
-	}
-	format(str, len, "%d", number);
-
-	for(new i = strlen(str), end = number >= 0 ? 0 : 1; (i -= 3) > end;)
-		strins(str, ".", i, len);
-	return 1;
-}
-
 stock GetPlayerIdByNickname(const name[])
 {
 	foreach (new i: Player) {
