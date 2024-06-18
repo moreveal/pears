@@ -226,6 +226,8 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId >= 52 && accessId <= 62)
     {
+        if (accessId == 54) return 0; // Вырезанная команда /free
+
         // /appoint", // 52 Назначить лидера [Goverment]
         // /suspend", // 53 Снять лидера [Goverment]
         // /free", // 54 Система освобождения преступников (Адвокаты) (В будущем судьи /judge) [Goverment]
@@ -237,7 +239,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
         // /acbiz /denybiz", // 60 Контроль расположения бизнесов [Goverment]
         // /busstop", // 61 Автобусные остановки + сюда маршруты [Goverment]
         // /minfin", // 62 Министерство Финансов [Goverment]
-        if(g == 7)  return 1;
+        if(g == 7) return 1;
     }
     else if(accessId == 63) // /mdc", // 63 База Данных
     {
