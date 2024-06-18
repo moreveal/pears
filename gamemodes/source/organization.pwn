@@ -520,7 +520,6 @@ stock showDialogOrganizationMenu(playerid)
 	new line[100],lines[4048];
 	format(line,sizeof(line), "%s\t", frakName[DP[1][playerid]]), strcat(lines,line);
 
-	new bool: is_subleader = PlayerInfo[playerid][pRank] >= get_maxrank(fraction(playerid)) - 1;
 	if(g == 5 || g == 6 || g == 10 || g == 12 || g == 18 || g == 13 || g == 14 || g == 15 || g == 16 || g == 17 || g == 19 || g == 20)
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 1)), strcat(lines,line);  // Информация
@@ -529,7 +528,7 @@ stock showDialogOrganizationMenu(playerid)
 	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // Участники Offline
 	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // Статус набора
 	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // Переводы на счет
-	if(PlayerInfo[playerid][pLeader] >= 1 || is_subleader) // Лидер или заместитель
+	if(PlayerInfo[playerid][pLeader] >= 1 || is_subleader(playerid))
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
 	}
