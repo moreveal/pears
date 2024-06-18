@@ -508,11 +508,12 @@ stock ClearPlayerWantedArcticle(playerid, criminalid)
     new uk = WantedInfo[criminalid][wanCrime][i] - 1;
     new p = WantedInfo[criminalid][wanSubentry][i];
 
+    new bool: is_subleader = PlayerInfo[playerid][pRank] >= get_maxrank(fraction(playerid)) - 1;
     if(WantedInfo[criminalid][wanCrime][i] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Статья пропала из дела");
     if(WantedInfo[criminalid][wanPoliceId][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pSoska] <= 1
     && PlayerInfo[playerid][pLeader] != 1 && PlayerInfo[playerid][pLeader] != 2 && PlayerInfo[playerid][pLeader] != 7 
     && PlayerInfo[playerid][pLeader] != 11 && PlayerInfo[playerid][pLeader] != 21 
-    && PlayerInfo[playerid][pLeader] != 22) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту статью из дела\n\n{ffcc66}Статью может изъять только полицейский, который её выдал или лидер");
+    && PlayerInfo[playerid][pLeader] != 22 && !is_subleader) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту статью из дела\n\n{ffcc66}Статью может изъять только полицейский, который её выдал или лидер");
 
     if(WantedInfo[criminalid][wanUnix][i] + 1200 < gettime() && PlayerInfo[playerid][pLeader] == 0 
     && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять статью из дела\n\n{ffcc66}Статья была выдана больше 20 минут назад");
