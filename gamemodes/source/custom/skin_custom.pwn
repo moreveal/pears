@@ -1,7 +1,7 @@
 
 /*
 Как добавить новый кастомный скин на сервер?
-1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 скина)
+1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
 4. Если хотим добавить скин в организцию, добавляем его в public ReloadSkin
@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 154
+#define MAX_SKIN_CUSTOM 181
 
 stock AddCustomSkins()
 {
@@ -162,19 +162,47 @@ stock AddCustomSkins()
 	AddCharSyncModel(121, 453); // 15641, pearspedds male
 
     // Скины FBI
-    AddCharSyncModel(165, 454); // 15642, pearspedds male
-    AddCharSyncModel(286, 455); // 15643, pearspedds male
-    AddCharSyncModel(286, 456); // 15644, pearspedds male
-    AddCharSyncModel(295, 457); // 15645, pearspedds male
-    AddCharSyncModel(286, 458); // 15646, pearspedds male
-    AddCharSyncModel(286, 459); // 15647, pearspedds male
-    AddCharSyncModel(285, 460); // 15648, pearspedds all
-    AddCharSyncModel(285, 461); // 15649, pearspedds all
-    AddCharSyncModel(165, 462); // 15650, pearspedds male
-    AddCharSyncModel(286, 463); // 15651, pearspedds male
-    AddCharSyncModel(286, 464); // 15652, pearspedds male
-    AddCharSyncModel(150, 465); // 15653, pearspedds female
-    AddCharSyncModel(286, 466); // 15654, pearspedds male
+    AddCharSyncModel(165, 454); // 15642, pearspeddt male
+    AddCharSyncModel(286, 455); // 15643, pearspeddu male
+    AddCharSyncModel(286, 456); // 15644, pearspeddv male
+    AddCharSyncModel(295, 457); // 15645, pearspeddw male
+    AddCharSyncModel(286, 458); // 15646, pearspeddx male
+    AddCharSyncModel(286, 459); // 15647, pearspeddy male
+    AddCharSyncModel(285, 460); // 15648, pearspeddz all
+    AddCharSyncModel(285, 461); // 15649, pearspedea all
+    AddCharSyncModel(165, 462); // 15650, pearspedeb male
+    AddCharSyncModel(286, 463); // 15651, pearspedec male
+    AddCharSyncModel(286, 464); // 15652, pearspeded male
+    AddCharSyncModel(150, 465); // 15653, pearspedee female
+    AddCharSyncModel(286, 466); // 15654, pearspedef male
+
+	AddCharSyncModel(23, 467); // 15655, zverworks male
+	AddCharSyncModel(121, 468); // 15656, pearspedeg male Yakuza
+	AddCharSyncModel(118, 469); // 15657, pearspedeh male Yakuza
+	AddCharSyncModel(123, 470); // 15658, pearspedei male Yakuza
+	AddCharSyncModel(118, 471); // 15659, pearspedej male Yakuza
+	AddCharSyncModel(119, 472); // 15660, pearspedek male RM
+	AddCharSyncModel(66, 473); // 15661, pearspedel male
+	AddCharSyncModel(60, 474); // 15662, pearspedem male RM
+	AddCharSyncModel(113, 475); // 15663, pearspeden male RM
+	AddCharSyncModel(68, 476); // 15664, pearspedeo male
+	AddCharSyncModel(68, 477); // 15665, pearspedep male
+	AddCharSyncModel(113, 478); // 15666, pearspedeq male
+	AddCharSyncModel(66, 479); // 15667, pearspeder male
+	AddCharSyncModel(111, 480); // 15668, pearspedes male RM
+	AddCharSyncModel(247, 481); // 15669, pearspedet male
+	AddCharSyncModel(46, 482); // 15670, pearspedeu male RM
+	AddCharSyncModel(223, 483); // 15671, pearspedev male
+	AddCharSyncModel(111, 484); // 15672, pearspedew male RM
+	AddCharSyncModel(46, 485); // 15673, pearspedex male RM
+	AddCharSyncModel(60, 486); // 15674, pearspedey male
+	AddCharSyncModel(29, 487); // 15675, pearspedfz male
+	AddCharSyncModel(117, 488); // 15676, pearspedfa male Yakuza
+	AddCharSyncModel(121, 489); // 15677, pearspedfb male
+	AddCharSyncModel(272, 490); // 15678, pearspedfc male RM
+	AddCharSyncModel(126, 491); // 15679, pearspedfd male RM
+	AddCharSyncModel(125, 492); // 15680, pearspedfe male
+	AddCharSyncModel(294, 493); // 15681, pearspedff male
     return 1;
 }
 
@@ -196,7 +224,7 @@ stock GetSkinSex(s)
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
 	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
-	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s == 466) return 1; // 1 - мужской скин
+	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 493) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
@@ -333,12 +361,18 @@ public ReloadSkin(playerid, g)
 	}
 	else if(g == 6) // Yakuza Mafia
 	{
-		OrganInfo[g][gSkin][0] = 122, OrganInfo[g][gSkinPrice][0] = 0, OrganInfo[g][gSkinRank][0] = 1;
-		OrganInfo[g][gSkin][1] = 123, OrganInfo[g][gSkinPrice][1] = 40000, OrganInfo[g][gSkinRank][1] = 4;
-		OrganInfo[g][gSkin][2] = 203, OrganInfo[g][gSkinPrice][2] = 50000, OrganInfo[g][gSkinRank][2] = 5;
-		OrganInfo[g][gSkin][3] = 49, OrganInfo[g][gSkinPrice][3] = 100000, OrganInfo[g][gSkinRank][3] = 8;
-		OrganInfo[g][gSkin][4] = 55, OrganInfo[g][gSkinPrice][4] = 0, OrganInfo[g][gSkinRank][4] = 0;
-		OrganInfo[g][gSkin][5] = 169, OrganInfo[g][gSkinPrice][5] = 100000, OrganInfo[g][gSkinRank][5] = 8;
+		OrganInfo[g][gSkin][0] = 468, OrganInfo[g][gSkinPrice][0] = 50000, OrganInfo[g][gSkinRank][0] = 3;
+		OrganInfo[g][gSkin][1] = 469, OrganInfo[g][gSkinPrice][1] = 0, OrganInfo[g][gSkinRank][1] = 1;
+		OrganInfo[g][gSkin][2] = 470, OrganInfo[g][gSkinPrice][2] = 90000, OrganInfo[g][gSkinRank][2] = 5;
+		OrganInfo[g][gSkin][3] = 471, OrganInfo[g][gSkinPrice][3] = 90000, OrganInfo[g][gSkinRank][3] = 6;
+		OrganInfo[g][gSkin][4] = 488, OrganInfo[g][gSkinPrice][4] = 70000, OrganInfo[g][gSkinRank][4] = 6;
+		
+		OrganInfo[g][gSkin][5] = 122, OrganInfo[g][gSkinPrice][5] = 0, OrganInfo[g][gSkinRank][5] = 1;
+		OrganInfo[g][gSkin][6] = 123, OrganInfo[g][gSkinPrice][6] = 40000, OrganInfo[g][gSkinRank][6] = 4;
+		OrganInfo[g][gSkin][7] = 203, OrganInfo[g][gSkinPrice][7] = 50000, OrganInfo[g][gSkinRank][7] = 5;
+		OrganInfo[g][gSkin][8] = 49, OrganInfo[g][gSkinPrice][8] = 100000, OrganInfo[g][gSkinRank][8] = 8;
+		OrganInfo[g][gSkin][9] = 55, OrganInfo[g][gSkinPrice][9] = 0, OrganInfo[g][gSkinRank][9] = 0;
+		OrganInfo[g][gSkin][10] = 169, OrganInfo[g][gSkinPrice][10] = 100000, OrganInfo[g][gSkinRank][10] = 8;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
@@ -402,13 +436,23 @@ public ReloadSkin(playerid, g)
 	}
 	else if(g == 12) // Russian Mafia
 	{
-		OrganInfo[g][gSkin][0] = 112, OrganInfo[g][gSkinPrice][0] = 0, OrganInfo[g][gSkinRank][0] = 1;
-		OrganInfo[g][gSkin][1] = 111, OrganInfo[g][gSkinPrice][1] = 20000, OrganInfo[g][gSkinRank][1] = 2;
-		OrganInfo[g][gSkin][2] = 125, OrganInfo[g][gSkinPrice][2] = 30000, OrganInfo[g][gSkinRank][2] = 3;
-		OrganInfo[g][gSkin][3] = 46, OrganInfo[g][gSkinPrice][3] = 50000, OrganInfo[g][gSkinRank][3] = 5;
-		OrganInfo[g][gSkin][4] = 272, OrganInfo[g][gSkinPrice][4] = 100000, OrganInfo[g][gSkinRank][4] = 8;
-		OrganInfo[g][gSkin][5] = 192, OrganInfo[g][gSkinPrice][5] = 0, OrganInfo[g][gSkinRank][5] = 1;
-		OrganInfo[g][gSkin][6] = 85, OrganInfo[g][gSkinPrice][6] = 100000, OrganInfo[g][gSkinRank][6] = 8;
+		OrganInfo[g][gSkin][0] = 472, OrganInfo[g][gSkinPrice][0] = 70000, OrganInfo[g][gSkinRank][0] = 8;
+		OrganInfo[g][gSkin][1] = 474, OrganInfo[g][gSkinPrice][1] = 0, OrganInfo[g][gSkinRank][1] = 1;
+		OrganInfo[g][gSkin][2] = 475, OrganInfo[g][gSkinPrice][2] = 30000, OrganInfo[g][gSkinRank][2] = 5;
+		OrganInfo[g][gSkin][3] = 480, OrganInfo[g][gSkinPrice][3] = 40000, OrganInfo[g][gSkinRank][3] = 3;
+		OrganInfo[g][gSkin][4] = 482, OrganInfo[g][gSkinPrice][4] = 80000, OrganInfo[g][gSkinRank][4] = 7;
+		OrganInfo[g][gSkin][5] = 484, OrganInfo[g][gSkinPrice][5] = 19000, OrganInfo[g][gSkinRank][5] = 2;
+		OrganInfo[g][gSkin][6] = 485, OrganInfo[g][gSkinPrice][6] = 95000, OrganInfo[g][gSkinRank][6] = 6;
+		OrganInfo[g][gSkin][7] = 490, OrganInfo[g][gSkinPrice][7] = 60000, OrganInfo[g][gSkinRank][7] = 6;
+		OrganInfo[g][gSkin][8] = 491, OrganInfo[g][gSkinPrice][8] = 80000, OrganInfo[g][gSkinRank][8] = 7;
+
+		OrganInfo[g][gSkin][9] = 112, OrganInfo[g][gSkinPrice][9] = 0, OrganInfo[g][gSkinRank][9] = 1;
+		OrganInfo[g][gSkin][10] = 111, OrganInfo[g][gSkinPrice][10] = 20000, OrganInfo[g][gSkinRank][10] = 2;
+		OrganInfo[g][gSkin][11] = 125, OrganInfo[g][gSkinPrice][11] = 30000, OrganInfo[g][gSkinRank][11] = 3;
+		OrganInfo[g][gSkin][12] = 46, OrganInfo[g][gSkinPrice][12] = 50000, OrganInfo[g][gSkinRank][12] = 5;
+		OrganInfo[g][gSkin][13] = 272, OrganInfo[g][gSkinPrice][13] = 100000, OrganInfo[g][gSkinRank][13] = 8;
+		OrganInfo[g][gSkin][14] = 192, OrganInfo[g][gSkinPrice][14] = 0, OrganInfo[g][gSkinRank][14] = 1;
+		OrganInfo[g][gSkin][15] = 85, OrganInfo[g][gSkinPrice][15] = 100000, OrganInfo[g][gSkinRank][15] = 8;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
