@@ -163,7 +163,8 @@ stock closeTestDrive(playerid)
 }
 stock openTestDrive_VehicleShop(playerid)
 {
-    if(VehShopInfo[playerid][vsVehicleLoad] == false) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не создан");
+    new vehicleid = VehShopInfo[playerid][vsVehicleID];
+    if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не создан");
 
     SetPVarInt(playerid,"tunstat",0);
 
@@ -177,13 +178,13 @@ stock openTestDrive_VehicleShop(playerid)
 	TogglePlayerControllable(playerid, true); // Unfreeze
 
     PPSetPlayerInterior(playerid, 0);
-    LinkVehicleToInterior(VehShopInfo[playerid][vsVehicleID], 0);
+    LinkVehicleToInterior(vehicleid, 0);
 
-    Gas[VehShopInfo[playerid][vsVehicleID]] = 100; // Топливо максимальное количество
+    Gas[vehicleid] = 100; // Топливо максимальное количество
 
-    positionVehicleTestDrive(VehShopInfo[playerid][vsVehicleID]);
+    positionVehicleTestDrive(vehicleid);
 
-    Protect_PutPlayerInVehicle(playerid, VehShopInfo[playerid][vsVehicleID], 0); // Садим в транспорт
+    Protect_PutPlayerInVehicle(playerid, vehicleid, 0); // Садим в транспорт
     SetCameraBehindPlayer(playerid); // Возвращаем камеру
 
     SuccessMessage(playerid, "{99ff66}Вы запустили Test Drive {cccccc}[ Выйти: кнопка N ]");
