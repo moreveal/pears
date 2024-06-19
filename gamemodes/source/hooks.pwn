@@ -19,7 +19,9 @@
 // Закрываем диалоговое окно (Перехват функции)
 stock PPHidePlayerDialog(playerid)
 {
-	SetPVarInt(playerid,"DialogID",-1);
+	PlayerInfo[playerid][pDialogID] = -1;
+	PlayerInfo[playerid][pDialogClosed] = true;
+	
 	HidePlayerDialog(playerid);
 	return true;
 }

@@ -18,7 +18,7 @@ CMD:netstat(playerid)
 	format(line,sizeof(line), "%s", stats), strcat(lines, line);
 	format(line,sizeof(line), "\n\nIzTuryagi: %d ms", GlobalTickTimer), strcat(lines, line);
 	format(line,sizeof(line), "\nSkolkobenza: %d ms", GlobalTickTimer2), strcat(lines, line);
-	ShowPlayerDialog(playerid,1700,DIALOG_STYLE_MSGBOX, "Server Network Stats", lines, "Close", "");
+	ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "Server Network Stats", lines, "Close", "");
 	return true;
 }
 

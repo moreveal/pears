@@ -792,7 +792,7 @@ CMD:ebalo180(playerid)
 	return 1;
 }
 
-stock AutoSitOnDialogResponse(playerid, dialogid, response, listitem,const inputtext[]) {
+stock dialogCase_AutoSit(playerid, dialogid, response, listitem,const inputtext[]) {
 	if(dialogid == 1484)
 	{
 		if (!response) return 1;
