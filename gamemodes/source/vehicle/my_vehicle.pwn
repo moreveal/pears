@@ -4734,7 +4734,7 @@ CMD:scrap(playerid)
     	new v = GetPlayerVehicleID(playerid);
 		if(PlayerInfo[playerid][pTstat] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя сдать личный транспорт в утиль во время сделки");
 		
-		if(VehInfo[v][vNosell] == 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\
+		if(VehInfo[v][vNosell] >= 1) ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль","{ff9000}Вы уверены что хотите сдать транспорт в утиль?\
 			\n{ff0000}Внимание! {ffcc00}Этот транспорт был вам подарен или принадлежит Media, возврат денег невозможен","Да","Нет");
 		else
 		{
