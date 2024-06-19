@@ -222,7 +222,7 @@ function CrimeCar(playerid, wh, car, zalupa)
 stock SaveCrime(slot)
 {
     new string_mysql[600];
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_Crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%e',\
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_crime` SET `Status`='%d',`Type`='%d',`SenderID`='%d',`SenderName`='%e',\
     `TargetID`='%d',`TargetName`='%e',`TargetZalupa`='%d',`TargetZalupaParam`='%d',`Sklad`='%d',`Unix`='%d' WHERE `newid`='%d'",
     crimeInfo[slot][crmStatus],crimeInfo[slot][crmType],crimeInfo[slot][crmSenderID],crimeInfo[slot][crmSenderName],crimeInfo[slot][crmTargetID],
     crimeInfo[slot][crmTargetName],crimeInfo[slot][crmTargetZalupa],crimeInfo[slot][crmTargetZalupaParam],crimeInfo[slot][crmSklad],crimeInfo[slot][crmUnix],
