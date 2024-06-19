@@ -582,12 +582,14 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
         if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && stat == 1)
         {
 			// Выставляем Стоимость
-            if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = friskPrice[BizzInfo[b][bProduct][i]];
-            else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = gunPrice[BizzInfo[b][bProduct][i]];
-            else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = 10000;
+			new priceAdded = floatround(float(getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])) * 1.5);
+
+			if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = priceAdded;
+			else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = priceAdded;
+			else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = priceAdded;
 			else if(BizzInfo[b][bTypeProduct][i] == 5)
 			{
-				if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]); // Продажа транспорта
+				if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = priceAdded; // Продажа транспорта
 				else // Аренда транспорта
 				{
 					if(b >= 53 && b <= 56 || b >= 57 && b <= 61) // Аренда Авиатранспорта, Аренда Катеров
