@@ -1980,6 +1980,16 @@ stock UnlegalThing(i, thingType, thingPack)
 	return 0;
 }
 
+// Определение нелегальной одежды
+stock UnlegalSkin(orgid, thingPara, thingType)
+{
+	if(thingType == 3 && thingPara > 0 && thingPara != orgid)
+	{
+		if(IsDepartmentOrganization(thingPara)) return true; // Одежда принадлежит департаменту
+	}
+	return false;
+}
+
 stock IsNotGiveCase(playerid, thingPack)
 {
 	if(thingPack == 5 // Предмет упакован в кейс
