@@ -47,9 +47,7 @@ enum courtsInfo
 new CourtsInfo[MAX_COURT_OFFERS][courtsInfo];
 
 // Отправить сообщение всем находящимся в зале суда
-stock CourtMessage(courtid, color, const message[]) {
-    if (courtid < 0 || courtid > MAX_COURT_OFFERS) return 0;
-
+stock CourtMessage(color, const message[]) {
     foreach (new playerid : Player) {
         if (!IsPlayerInRangeOfPoint(playerid, 150.0, -2776.8091, 417.6989, 12.6403)) continue; // Не в зале суда
         if (GetPlayerVirtualWorld(playerid) != 172) continue; // Не в правительстве
@@ -173,7 +171,7 @@ stock CloseCourtsProcess(courtid, deposit = -1, period = -1)
             format(court_message, sizeof(court_message), "* Судья %s отпустил заключённого %s по УДО {99ff66}[Сумма отработки: %s$ | Срок: %s]", rpplayername(arbiterid), rpplayername(prisonerid), pretty_deposit, pretty_period);
         }
     }
-    CourtMessage(courtid, COLOR_GREY, court_message);
+    CourtMessage(COLOR_GREY, court_message);
 
     GiveUnit(arbiterid, 13);
     OrgLog(7, "CloseCourtsProcess", PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], PlayerInfo[arbiterid][pID], PlayerInfo[arbiterid][pName], PlayerInfo[arbiterid][pPlaIP], 0, log_message);
