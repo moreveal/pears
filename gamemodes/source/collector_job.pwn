@@ -28,10 +28,10 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				{
 					new stro[86],sctringo[860];
 			        format(stro,sizeof(stro),"{0088ff}Как заработать?"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n\n{cccccc}- Выберите пункт <<Начать Работу>> в этом меню"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Отправляйтесь на улицу и возьмите спец.транспорт с парковки"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Следуйте по точкам указанным на гпс до банкомата, а после возвращайтесь в банк"), strcat(sctringo,stro);
-			        format(stro,sizeof(stro),"\n{cccccc}- Только по перевозки денег в банк в получите зарплату"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n\n{cccccc}- Выберите пункт \"Начать Работу\" в этом меню"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- Отправляйтесь на улицу и возьмите спец. транспорт с парковки"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- Следуйте по точкам указанным в GPS до банкомата, а после возвращайтесь в банк"), strcat(sctringo,stro);
+			        format(stro,sizeof(stro),"\n{cccccc}- Только по перевозки денег в банк вы получите зарплату"), strcat(sctringo,stro);
 			        ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Инкассаторы",sctringo,"Ок","");
 			        return 1;
 				}
@@ -45,7 +45,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				    	SetPVarInt(playerid,"job_stat",13);
 						RemovePlayerAttachedObject(playerid,0), PlayerPlaySound(playerid,5600,0,0,0);
 				    	SetPlayerAttachedObject(playerid, 0, 19904, 1, 0.067999, 0.044999, 0.000000, 0.000000, 88.199996, 178.000000, 1.053000, 1.141001, 1.016000, 0, 0);
-				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отправляйтесь на улицу и возьмите спец.транспорт с парковки\n","*","");
+				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Отправляйтесь на улицу и возьмите спец. транспорт с парковки\n","*","");
 				    }
 				    else if(GetPVarInt(playerid,"job_stat") == 13)
 				    {
@@ -101,7 +101,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 				if(TerminalDelivery[listord - GetBizMin(19)][listterm] != 0) return ErrorText(playerid,"{FF6347}Упс, вы не успели.. Кто-то принял этот заказ");
 
 				CreateTermCollector(playerid, listord, listterm);
-                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к банкомату для снятия денег (отмечено в GPS Навигаторе)");
+                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к банкомату для снятия денег (отмечено в GPS)");
                 CreateGps(playerid,RentPos_X[termid][listterm],RentPos_Y[termid][listterm],RentPos_Z[termid][listterm],0, 0, 10.0);
 			}
         }
@@ -157,11 +157,11 @@ stock CreateTermCollector(playerid, whrom, term)
 
 stock CloseCollectorToBiz(playerid)
 {
-	new b = GetPVarInt(playerid,"job_collector");
+	new b = GetPVarInt(playerid, "job_collector");
 	TerminalDelivery[b - GetBizMin(19)][GetPVarInt(playerid,"job_collector_term")] = 0;
-	SetPVarInt(playerid,"job_collector",0);
-	SetPVarInt(playerid,"job_collector_term",0);
-	SetPVarInt(playerid,"job_collector_status",0);
+	SetPVarInt(playerid,"job_collector", 0);
+	SetPVarInt(playerid,"job_collector_term", 0);
+	SetPVarInt(playerid,"job_collector_status", 0);
 	return true;
 }
 
@@ -203,7 +203,7 @@ stock agetcollector(playerid)
 {
 	if(IsPlayerInRangeOfPoint(playerid,3.0,1107.387, -1216.869, 17.804))
 	{
-		ShowDialog(playerid,1340,2,"{ff9000}Транспорт Инкасаторов", "Securicar ","Выбрать","Выход");
+		ShowDialog(playerid, 1340, 2, "{ff9000}Транспорт Инкасаторов", "Securicar", "Выбрать", "Выход");
   	}
     return 1;
 }
@@ -212,7 +212,7 @@ stock CloseCollector(playerid)
 {
 	new b = GetPlayerVirtualWorld(playerid) - 3000;
 	new term = GetPVarInt(playerid, "job_collector_term");
-	if(GetPVarInt(playerid, "job_collector") != b || GetPVarInt(playerid,"job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
+	if(GetPVarInt(playerid, "job_collector") != b || GetPVarInt(playerid, "job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
