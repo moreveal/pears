@@ -527,8 +527,8 @@ stock ShowComputerClubRoomEdit(playerid, gameid, roomid) {
     switch (e_ComputerClubGames: gameid) {
         case COMPUTER_GAME_TDM: {
             new bet_str[30];
-            FormatNumberWithCommas(computerClubRoomInfo[gameid][roomid][ccriBet], bet_str);
-            format(bet_str, sizeof bet_str, "{00cc00}$%s", bet_str);
+            format(bet_str, sizeof bet_str, "{00cc00}$%s", FormatNumberWithCommas(computerClubRoomInfo[gameid][roomid][ccriBet]));
+
             new armor_str[15];
             format(armor_str, sizeof armor_str, "{ff9000}%.0f", computerClubRoomInfo[gameid][roomid][ccriMaxArmor]);
 
@@ -2086,8 +2086,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
 
                 if (bet > max_bet) {
                     new message[144];
-                    new str_bet[128]; FormatNumberWithCommas(max_bet, str_bet);
-                    format(message, sizeof message, "[ Компьютерный клуб ]: {cccccc}Не все игроки смогут оплатить указанную ставку [ Допустимый размер ставки: {ff9000}$%s {cccccc}]", str_bet);
+                    format(message, sizeof message, "[ Компьютерный клуб ]: {cccccc}Не все игроки смогут оплатить указанную ставку [ Допустимый размер ставки: {ff9000}$%s {cccccc}]", FormatNumberWithCommas(max_bet));
                     SendClientMessage(playerid, 0x0088FFFF, message);
 
                     return ShowComputerClubSetBet(playerid);
@@ -2229,9 +2228,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                     else if (computerClubRoomInfo[gameid][roomid][ccriStarted]) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}Вы не можете присоединиться к уже начатой игре");
                     else if (!is_host && ComputerClubGetPlayersCount(gameid, roomid) >= computerClubRoomInfo[gameid][roomid][ccriSlotes]) SendClientMessage(playerid, 0x0088FFFF, "[ Компьютерный клуб ]: {cccccc}На этом сервере не осталось свободных мест");
                     else if (!is_host && computerClubRoomInfo[gameid][roomid][ccriBet] > 0 && PlayerInfo[playerid][pMoney] < computerClubRoomInfo[gameid][roomid][ccriBet]) {
-                        new server_bet[20];
-                        FormatNumberWithCommas(computerClubRoomInfo[gameid][roomid][ccriBet], server_bet);
-                        new str[120]; format(str, sizeof str, "[ Компьютерный клуб ]: {cccccc}У вас недостаточно наличных для оплаты ставки, установленной на этом сервере ($%s)", server_bet);
+                        new str[120]; format(str, sizeof str, "[ Компьютерный клуб ]: {cccccc}У вас недостаточно наличных для оплаты ставки, установленной на этом сервере ($%s)", FormatNumberWithCommas(computerClubRoomInfo[gameid][roomid][ccriBet]));
                         SendClientMessage(playerid, 0x0088FFFF, str);
                     }
                     else return ComputerClubRoomJoinAccept(playerid, gameid, roomid);

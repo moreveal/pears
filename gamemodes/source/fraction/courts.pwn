@@ -88,7 +88,7 @@ stock CloseCourtsProcess(courtid, deposit = -1, period = -1)
     if(courtStatus != COURT_STATUS_REVIEW) return 0;
 
     new log_message[64], court_message[144];
-    new pretty_deposit[30]; FormatNumberWithCommas(deposit, pretty_deposit);
+    new pretty_deposit[30]; format(pretty_deposit, sizeof(pretty_deposit), "%s", FormatNumberWithCommas(deposit));
     new pretty_period[10]; format(pretty_period, sizeof(pretty_period), "%d %s", period, PluralToText(period, "день", "дня", "дней"));
 
     if(courtDecision != COURT_CLASS_DECLINE && courtDecision != COURT_CLASS_JAIL_REDUCE_PAROLE)
@@ -258,12 +258,6 @@ stock CourtEnterDeposit(courtid) {
     #pragma unused courtDecision
 
     new dialog_text[512];
-
-    new pretty_minimal_deposit[10], pretty_maximal_deposit[10], pretty_prisoner_money[20];
-    FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT, pretty_minimal_deposit);
-    FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT, pretty_maximal_deposit);
-    FormatNumberWithCommas(PlayerInfo[prisonerid][pMoney], pretty_prisoner_money);
-
     format(dialog_text, sizeof(dialog_text),
         "{ffffff}Укажите сумму для залога {99ff66}(%s$ - %s$)\n" \
         "{ffffff}Доступная сумма на руках у заключённого: {99ff66}%s$\n\n{ffffff}" \
@@ -271,8 +265,8 @@ stock CourtEnterDeposit(courtid) {
         "Если заключённый не будет нарушать правопорядок в течение указанного вами времени, ему будет возмещено 75%% от суммы залога\n\n" \
         "{cccccc}Укажите данные через пробел: Сумма Количество дней (%d - %d)", \
         \
-        pretty_minimal_deposit, pretty_maximal_deposit,
-        pretty_prisoner_money,
+        FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT), FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT),
+        FormatNumberWithCommas(PlayerInfo[prisonerid][pMoney]),
         COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD
     );
 

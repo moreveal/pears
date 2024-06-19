@@ -1,19 +1,25 @@
 #define PI 3.14159265358979323846
 
 // Разбивает число по разрядам, точками
-stock FormatNumberWithCommas(number, str[], len = sizeof str)
+stock FormatNumberWithCommas(number)
 {
+    #define str_len 64
+
+    new str[str_len];
 	if(number == cellmin)
 	{
 		str[0] = EOS;
-		strcat(str, "-2.147.483.648", len);
-		return 1;
+		strcat(str, "-2.147.483.648", str_len);
+		return str;
 	}
-	format(str, len, "%d", number);
+	format(str, str_len, "%d", number);
 
 	for(new i = strlen(str), end = number >= 0 ? 0 : 1; (i -= 3) > end;)
-		strins(str, ".", i, len);
-	return 1;
+		strins(str, ".", i, str_len);
+
+    #undef str_len
+
+	return str;
 }
 
 // Переносит координаты на указанную дистанцию и направление от указанной точки (2D)
