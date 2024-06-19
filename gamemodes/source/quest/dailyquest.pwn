@@ -226,13 +226,14 @@ enum dailyquestInfo
 }
 new DailyInfo[MAX_REALPLAYERS][dailyquestInfo];
 
+alias:createdaily("resetdaily")
 CMD:createdaily(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if (PlayerInfo[playerid][pSoska] < 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     new targetid, taskid;
-    if(sscanf(params, "uD(-1)", targetid, taskid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Перезапустить ежедневные задания игроку [ /createdaily ID Задание ]");
+    if (sscanf(params, "uD(-1)", targetid, taskid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Перезапустить ежедневные задания игроку [ /createdaily ID Задание ]");
     if (taskid == -1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер задания должен быть от 1 до %d [ 0 - Все задания ]", MAX_DAILY_QUEST_PLAYER);
-    if(!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+    if (!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
 
     if (taskid == 0) {
         // Перезапуск всех квестов
@@ -246,6 +247,16 @@ CMD:createdaily(playerid, const params[])
         CreateDaily(targetid, 1, taskid - 1);
     }
     return 1;
+}
+
+CMD:showdaily(playerid, const params[])
+{
+    if (PlayerInfo[playerid][pSoska] < 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    new targetid;
+    if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Просмотреть ежедневные задания игрока [ /showdaily ID ]");
+    if (!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
+    
+    return showDialogDailyQuest(playerid, targetid);
 }
 
 stock SelectUniqueDailyForSlot(playerid, slot) {
@@ -388,29 +399,36 @@ stock GetNoCompleteDailyQuan(playerid)
     return quan;
 }
 
-stock showDialogDailyQuest(playerid)
+stock showDialogDailyQuest(playerid, targetid = -1)
 {
-    if(DailyInfo[playerid][daiLoaded] == false) return ErrorMessage(playerid, "{FF6347}Квесты не загрузились на ваш аккаунт\n{cccccc}Подождите немного, пока ваш аккаунт полность загрузится :)");
+    if (targetid == -1) targetid = playerid;
+    if (DailyInfo[targetid][daiLoaded] == false) return ErrorMessage(playerid, "{FF6347}Квесты не загрузились на аккаунт\n{cccccc}Подождите немного, пока аккаунт полностью загрузится :)");
 
     new line[214], lines[214 * MAX_DAILY_QUEST_PLAYER], quan;
-    format(line,sizeof(line),"{cccccc}Задание\t{cccccc}Статус"), strcat(lines,line);
+    format(line, sizeof(line), "{cccccc}Задание\t{cccccc}Статус"), strcat(lines, line);
 
-    format(line,sizeof(line),"\n{99ff66}Информация о Заданиях"), strcat(lines,line);
+    if (playerid == targetid) format(line, sizeof(line), "\n{99ff66}Информация о Заданиях"), strcat(lines, line);
     for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++)
     {
-        List[i][playerid] = 0;
-        if(DailyInfo[playerid][daiID][i] > 0)
+        List[i][targetid] = 0;
+        if(DailyInfo[targetid][daiID][i] > 0)
         {
-            if(DailyInfo[playerid][daiStatus][i] == false)
+            if(DailyInfo[targetid][daiStatus][i] == false)
             {
-                format(line,sizeof(line),"\n{ff9000}%d. %s\t{cccccc}%d / %d", i + 1, dailyName[DailyInfo[playerid][daiID][i]], DailyInfo[playerid][daiQuan][i], DailyInfo[playerid][daiQuanNeed][i]), strcat(lines,line);
+                format(line, sizeof(line), "\n{ff9000}%d. %s\t{cccccc}%d / %d", i + 1, dailyName[DailyInfo[targetid][daiID][i]], DailyInfo[targetid][daiQuan][i], DailyInfo[targetid][daiQuanNeed][i]), strcat(lines, line);
             }
-            else format(line,sizeof(line),"\n{cccccc}%d. %s\t{99ff66}Выполнен", i + 1, dailyName[DailyInfo[playerid][daiID][i]]), strcat(lines,line);
-            List[quan][playerid] = i;
+            else format(line, sizeof(line), "\n{cccccc}%d. %s\t{99ff66}Выполнен", i + 1, dailyName[DailyInfo[targetid][daiID][i]]), strcat(lines, line);
+            List[quan][targetid] = i;
             quan ++;
         }
     }
-    ShowDialog(playerid,460,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Ежедневные Задания",lines,"Выбор","Отмена");
+
+    SetPVarInt(playerid, "IsMyDailyQuests", playerid == targetid);
+
+    new dialog_header[100] = "{ff9000}Ежедневные Задания";
+    if (playerid != targetid) format(dialog_header, sizeof(dialog_header), "%s (%s)", dialog_header, rpplayername(targetid));
+
+    ShowDialog(playerid, 460, DIALOG_STYLE_TABLIST_HEADERS, dialog_header, lines, "Выбор", "Отмена");
     return 1;
 }
 
@@ -418,26 +436,30 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
 {
     if(dialogid == 460)
     {
+        new bool: is_my_quests = GetPVarInt(playerid, "IsMyDailyQuests") == 1; DeletePVar(playerid, "IsMyDailyQuests");
+        if (!is_my_quests) return 1;
+
         if(response)
         {
             if(listitem == 0) // Информация о Ежедневных Заданиях
             {
-                new line[90],lines[1080];
-                format(line,sizeof(line),"{ffcc66}Что такое ежедневные задания?"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Это небольшие действия, которые нужно выполнить, чтобы получить кейс"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- После выполнения задания вы так-же получаете +1 Exp [ /stats ]"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Большинство заданий связано со стандартными работами"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Однако, иногда вам могут попадаться уникальные задания"), strcat(lines,line);
+                static const lines[] =
+                    "{ffcc66}Что такое ежедневные задания?" \
+                    "\n{cccccc}- Это небольшие действия, которые нужно выполнить, чтобы получить кейс" \
+                    "\n{cccccc}- После выполнения задания вы так-же получаете +1 Exp [ /stats ]" \
+                    "\n{cccccc}- Большинство заданий связано со стандартными работами" \
+                    "\n{cccccc}- Однако, иногда вам могут попадаться уникальные задания" \
+                    \
+                    "\n\n{ffcc66}Сколько даётся времени на выполнение заданий?" \
+                    "\n{cccccc}- Ежедневные задания обновляются 1 раз в день" \
+                    "\n{cccccc}- Обновление происходит в тот момент, когда вы заходите на сервер" \
+                    \
+                    "\n\n{ffcc66}Что в кейсе?" \
+                    "\n{cccccc}- В кейсе могут находиться как мелкие предметы, не имеющие ценности," \
+                    "\n{cccccc}так и большие подарки." \
+                    "\n{cccccc}Например: одежда, транспорт, деньги и даже золото";
 
-                format(line,sizeof(line),"\n\n{ffcc66}Сколько даётся времени на выполнение заданий?"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Ежедневные задания обновляются 1 раз в день"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- Обновление происходит в тот момент, когда вы заходите на сервер"), strcat(lines,line);
-
-                format(line,sizeof(line),"\n\n{ffcc66}Что в кейсе?"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}- В кейсе могут находиться как мелкие предметы, не имеющие ценности,"), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}так и большие подарки."), strcat(lines,line);
-                format(line,sizeof(line),"\n{cccccc}Например: одежда, транспорт, деньги и даже золото"), strcat(lines,line);
-                ShowDialog(playerid,458,DIALOG_STYLE_MSGBOX,"{ff9000}Ежедневные Задания",lines,"*","");
+                ShowDialog(playerid, 458, DIALOG_STYLE_MSGBOX, "{ff9000}Ежедневные Задания", lines, "*", "");
                 return 1;
             }
 
