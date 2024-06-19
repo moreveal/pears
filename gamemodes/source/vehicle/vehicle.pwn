@@ -1484,8 +1484,7 @@ stock PPAddVehicleComponent(vehicleid, component)
 			return false;
 		}
 
-		if((VehInfo[vehicleid][vModel] == 2001 || VehInfo[vehicleid][vModel] == 2010)
-			&& component == 1010) return false; // Не ставим компонент азота на беху VREMENNO
+		//if((VehInfo[vehicleid][vModel] == 2001 || VehInfo[vehicleid][vModel] == 2010) && component == 1010) return false; // Не ставим компонент азота
 	}
 	return AddVehicleComponent(vehicleid, component);
 }
