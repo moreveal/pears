@@ -121,6 +121,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
     || IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
     || CA_IsPlayerNearWater(playerid, 1.0, 1.0) // В воде
+    || PlayerInfo[playerid][pJailed] > 0 // В заключении
     || (bespilot[playerid] != 0 || GetTickCount() - bespilotejecttick[playerid] < 1000)) return 1; // NGSA беспилотник
     return 0;
 }
@@ -137,8 +138,9 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
     || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
-    || ADUTY[playerid] == 1
-    || computerClubPlayerInfo[playerid][ccpiInGame]) return 1;
+    || ADUTY[playerid] == 1 // Администратор на дежурстве
+    || PlayerInfo[playerid][pJailed] > 0 // В заключении
+    || computerClubPlayerInfo[playerid][ccpiInGame]) return 1; // Компьютерный клуб
     return 0;
 }
 
