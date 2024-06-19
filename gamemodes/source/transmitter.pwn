@@ -459,7 +459,8 @@ stock getNameRankDivision(g, i, r)
     else 
     {
         new maxRankDiv = DivisionInfo[g - 1][i - 1][divRanks];
-        if(r > maxRankDiv) format(nameRank,sizeof(nameRank), DivisionRankName[g - 1][i - 1][maxRankDiv - 1]); // Если ранг выше максимального, отображаем предыдущее
+        if (maxRankDiv <= 0) format(nameRank,sizeof(nameRank), "None"); 
+        else if(r > maxRankDiv) format(nameRank,sizeof(nameRank), DivisionRankName[g - 1][i - 1][maxRankDiv - 1]); // Если ранг выше максимального, отображаем предыдущее
         else format(nameRank,sizeof(nameRank), DivisionRankName[g - 1][i - 1][r - 1]);
     }
     return nameRank;
