@@ -1,15 +1,23 @@
 #define MAX_MAKE_AMOUNT 300 // Максимальное количество вызовов
+#define MAKE_AUTOCLOSE_TIME 900 // Время через которое вызов будет завершен автоматически при любых обстоятельствах (в секундах)
+
+enum e_MakeType {
+    MAKE_TYPE_VEHICLE, // Взлом автомобиля
+    MAKE_TYPE_HOUSE, // Взлом дома
+    MAKE_TYPE_PLAYER // Вызов игрока
+};
 
 enum mkInfo
 {
     mkPlayerId, // playerid Создателя заявки
+    mkCreatedTime, // Когда была создана заявка
     mkWho, // Куда заявка. 0 нет вызова
     mkStatus, // проверка статуса
     mkWhoTake, // Кто принял фракция
     mkWhoTakePlayer, // Кто принял вызов playerid
     mkWhoParam, // Ид того что угнали/ограбили
     mkWhoType, // Тип машина/дом
-    Float:mkCord[3], // Корды
+    Float: mkCord[3], // Корды
 }
 new MakeInfo[MAX_MAKE_AMOUNT][mkInfo];
 
@@ -41,7 +49,7 @@ stock SettingServiceMake(playerid)
     }
     else
     {
-        new callid = MakeInfo[mk][mkPlayerId];
+        new callid = MakeInfo[mk][mkWhoTakePlayer];
         format(line,sizeof(line),"{cccccc}Активный Вызов: %s {cccccc}| {99ff66}Вызов Принят \t", serviceName[s]), strcat(lines,line);
         if(IsOnline(callid)) format(line,sizeof(line),"\n%s: \t{cccccc}%s", servicePlayerName[s], PlayerInfo[callid][pName]), strcat(lines,line);
         else format(line,sizeof(line),"\n%s: \t{cccccc}неизвестно", servicePlayerName[s]), strcat(lines,line);
@@ -61,22 +69,33 @@ stock AutoMakeCreate(whom, type, id)
         }
     }
     if(findslot == -1) return 0;
+
     MakeInfo[findslot][mkPlayerId] = -1;
     MakeInfo[findslot][mkWho] = whom;
     MakeInfo[findslot][mkStatus] = 1;
-    MakeInfo[findslot][mkWhoType] = type+1;
+    MakeInfo[findslot][mkWhoType] = type + 1;
 
-    if(type == 0) GetVehiclePos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
-    if(type == 1) MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX],MakeInfo[findslot][mkCord][1]=DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2] = DomInfo[id][dKoordinatZ];
-    if(type == 2) 
-    {
-        GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
-        MakeInfo[findslot][mkPlayerId] = id;
-        OnlineInfo[id][oServiceMake][0] = 2;
-        OnlineInfo[id][oServiceMake][1] = 10 * 60;
-        OnlineInfo[id][oServiceMake][2] = findslot;
+    switch(e_MakeType: type) {
+        case MAKE_TYPE_VEHICLE: {
+            GetVehiclePos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
+        }
+        case MAKE_TYPE_HOUSE: {
+            MakeInfo[findslot][mkCord][0] = DomInfo[id][dKoordinatX], MakeInfo[findslot][mkCord][1] = DomInfo[id][dKoordinatY], MakeInfo[findslot][mkCord][2] = DomInfo[id][dKoordinatZ];
+        }
+        case MAKE_TYPE_PLAYER: {
+            GetPlayerRealPos(id, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
+            MakeInfo[findslot][mkPlayerId] = id;
+            OnlineInfo[id][oServiceMake][0] = 2;
+            OnlineInfo[id][oServiceMake][1] = MAKE_AUTOCLOSE_TIME;
+            OnlineInfo[id][oServiceMake][2] = findslot;
+        }
     }
+
+    MakeInfo[findslot][mkCreatedTime] = gettime();
+    SetTimerEx("TimeOutCloseMake", MAKE_AUTOCLOSE_TIME * 1000, false, "dd", findslot, MakeInfo[findslot][mkCreatedTime]);
+
     MessageMake(findslot);
+
     return 1;
 }
 
@@ -139,12 +158,17 @@ stock MakeCreate(playerid, whom)
     MakeInfo[findslot][mkWho] = whom;
     MakeInfo[findslot][mkStatus] = 1;
     MakeInfo[findslot][mkWhoParam] = -1;
+    MakeInfo[findslot][mkWhoType] = 3;
 
     GetPlayerRealPos(playerid, MakeInfo[findslot][mkCord][0], MakeInfo[findslot][mkCord][1], MakeInfo[findslot][mkCord][2]);
 
     OnlineInfo[playerid][oServiceMake][0] = whom; // service id
     OnlineInfo[playerid][oServiceMake][1] = 5 * 60;
     OnlineInfo[playerid][oServiceMake][2] = findslot; // make id
+
+    MakeInfo[findslot][mkCreatedTime] = gettime();
+    SetTimerEx("TimeOutCloseMake", MAKE_AUTOCLOSE_TIME * 1000, false, "dd", findslot, MakeInfo[findslot][mkCreatedTime]);
+
     MessageMake(findslot);
     return 1;
 }
@@ -170,14 +194,15 @@ stock CloseMake(playerid,number)
 stock AutoCloseMake(playerid)
 {
     if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+    OnlineInfo[playerid][oServiceMake][1] = 0;
 
     new findslot = OnlineInfo[playerid][oServiceMake][2];
     if(OnlineInfo[playerid][oServiceMake][1] > 0 && MakeInfo[findslot][mkWhoType] == 0)
     {
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: %s {cccccc}прибыл на место и закрыл вызов", servicePlayerName[OnlineInfo[playerid][oServiceMake][0]]);
-        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer],"{99ff66}Вы закрыли вызов");
+        if(MakeInfo[findslot][mkWhoTakePlayer] != 0) SuccessMessage(MakeInfo[findslot][mkWhoTakePlayer], "{99ff66}Вы закрыли вызов");
     }
-    DestroyMake(playerid, false);
+    DestroyPlayerMake(playerid, false);
     return 1;
 }
 
@@ -187,7 +212,7 @@ stock RevivalCloseMake(playerid, medicid)
     new number = OnlineInfo[playerid][oServiceMake][2];
 
     if(MakeInfo[number][mkWhoTakePlayer] >= 0 && MakeInfo[number][mkWhoTakePlayer] != medicid) MessageMakeCloseAccepted(playerid, number, 2);
-    DestroyMake(playerid, false);
+    DestroyPlayerMake(playerid, false);
     return true;
 }
 
@@ -215,13 +240,33 @@ stock MessageMakeCloseAccepted(playerid, number, typeClose)
     return true;
 }
 
-stock TimeOutCloseMake(playerid)
+function TimeOutCloseMake(makeid, created_time)
 {
-    if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
-    new number = OnlineInfo[playerid][oServiceMake][2];
+    // Если на место вызова теперь другой - пропускаем
+    if (MakeInfo[makeid][mkCreatedTime] != created_time) return 1;
 
-    MessageMakeCloseAccepted(playerid, number, 1);
-    DestroyMake(playerid, false);
+    new e_MakeType: type = e_MakeType:(MakeInfo[makeid][mkWhoType] - 1);
+    if (_:type < 0) return 1; // Если вызова не существует - пропускаем
+
+    switch (type) {
+        case MAKE_TYPE_VEHICLE, MAKE_TYPE_HOUSE: {
+            DestroyMake(makeid);
+        }
+        case MAKE_TYPE_PLAYER: {
+            new playerid = MakeInfo[makeid][mkPlayerId];
+
+            // Если вызов неактивный - пропускаем
+            if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
+
+            OnlineInfo[playerid][oServiceMake][1] = 0;
+
+            new number = OnlineInfo[playerid][oServiceMake][2];
+            MessageMakeCloseAccepted(playerid, number, 1);
+            DestroyPlayerMake(playerid, false);
+        }
+        default: {}
+    }
+
     return true;
 }
 
@@ -231,24 +276,35 @@ stock ExitCloseMake(playerid)
     new number = OnlineInfo[playerid][oServiceMake][2];
 
     MessageMakeCloseAccepted(playerid, number, 0);
-    DestroyMake(playerid, false);
+    DestroyPlayerMake(playerid, false);
     return true;
 }
 
-stock DestroyMake(playerid, bool:message = true)
+stock DestroyMake(makeid) {
+    if (makeid < 0 || makeid > MAX_MAKE_AMOUNT) return 1;
+
+    MakeInfo[makeid][mkPlayerId] = -1;
+    MakeInfo[makeid][mkWho] = 0;
+    MakeInfo[makeid][mkStatus] = 0;
+    MakeInfo[makeid][mkWhoType] = -1;
+    MakeInfo[makeid][mkWhoTakePlayer] = -1;
+
+    return 1;
+}
+
+stock DestroyPlayerMake(playerid, bool:message = true)
 {
     if(OnlineInfo[playerid][oServiceMake][0] == 0) return 1;
-    new number = OnlineInfo[playerid][oServiceMake][2];
+    new makeid = OnlineInfo[playerid][oServiceMake][2];
 
-    if(message == true) MessageMakeCloseAccepted(playerid, number, 3);
+    if(message == true) MessageMakeCloseAccepted(playerid, makeid, 3);
 
     OnlineInfo[playerid][oServiceMake][1] = 0;
     OnlineInfo[playerid][oServiceMake][0] = 0;
     OnlineInfo[playerid][oServiceMake][2] = 0;
-    MakeInfo[number][mkPlayerId] = -1;
-    MakeInfo[number][mkWho] = 0;
-    MakeInfo[number][mkStatus] = 0;
-    MakeInfo[number][mkWhoTakePlayer] = -1;
+
+    DestroyMake(makeid);
+
     return true;
 }
 
@@ -264,7 +320,7 @@ stock TakeMake(playerid,number)
     {
         if(IsOnline(giveplayerid))
         {
-            if(MakeInfo[number][mkWhoType] != 3) OnlineInfo[giveplayerid][oServiceMake][1] = 10 * 60;
+            if(MakeInfo[number][mkWhoType] != 3) OnlineInfo[giveplayerid][oServiceMake][1] = MAKE_AUTOCLOSE_TIME;
             SuccessMessage(giveplayerid, "{99ff66}Вызов принят\n\n{cccccc}Пожалуйста, не покидайте радиус вызова (200 метров), до тех пор пока не приедет служба");
             SendClientMessage(giveplayerid, COLOR_GREY, " {AFAFAF}Запрос Принят, ожидайте прибытия служб. Пожалуйста, не покидайте радиус вызова (200 метров).");
         }
@@ -279,7 +335,7 @@ stock TakeMake(playerid,number)
     {
         SendClientMessage(playerid, COLOR_GREY, "{ccffff}Вызов совершил %s[%d]", rpplayername(giveplayerid), giveplayerid);
     }
-    if(CopOrMin == 1) SendClientMessage(playerid, COLOR_GREY, "{ccffff}По приезду на вызов закройте его [ /closemake ]");
+    //if(CopOrMin == 1) SendClientMessage(playerid, COLOR_GREY, "{ccffff}По приезду на вызов закройте его [ /closemake ]");
     FindMake(playerid,number);
 }
 
@@ -289,7 +345,7 @@ stock FindMake(playerid,number)
     {
         if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
         new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
-        ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
+        ShowFindZone(playerid, MakeInfo[number][mkPlayerId], MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
     }
     else if(MakeInfo[number][mkStatus] == 2 && MakeInfo[number][mkWhoParam] != -1)
     {
@@ -309,20 +365,20 @@ stock FindMake(playerid,number)
                     case 3: X -= rand_x, Y += rand_y;
                 }
                 new findraiontolist = FindRaionPos(X,Y,Z);
-                ShowFindZone(playerid, -1, X, Y,findraiontolist);
+                ShowFindZone(playerid, MakeInfo[number][mkPlayerId], X, Y,findraiontolist);
             }
             else
             {
                 if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
                 new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
-                ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
+                ShowFindZone(playerid, MakeInfo[number][mkPlayerId], MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
             }
         }
         else if(MakeInfo[number][mkWhoType] == 2) // Вызвали в дом
         {
             if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
             new findraiontolist = FindRaionPos(MakeInfo[number][mkCord][0],MakeInfo[number][mkCord][1],MakeInfo[number][mkCord][2]);
-            ShowFindZone(playerid, -1, MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
+            ShowFindZone(playerid, MakeInfo[number][mkPlayerId], MakeInfo[number][mkCord][0], MakeInfo[number][mkCord][1],findraiontolist);
         }
         else if(MakeInfo[number][mkWhoType] == 0 || MakeInfo[number][mkWhoType] == 3) // Вызов был от человека (поэтому сразу создаём GPS)
         {
@@ -423,8 +479,6 @@ stock CallService(playerid, whom)
 	}
 	return 1;
 }
-
-
 
 stock MakeList(playerid)
 {

@@ -86,7 +86,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 			return 1;
 		}
 	    DomInfo[breakingId][dBreaking] = PlayerInfo[playerid][pID];
-		AutoMakeCreate(1,1,breakingId);
+		AutoMakeCreate(1, 1, breakingId);
 	}
 	else if(type == 1) // Взламываем дверь транспорта
 	{
@@ -100,14 +100,14 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 			GetVehicleParamsEx(breakingId, engine, lights, alarm, doors, bonnet, boot, objective);
 			SetVehicleParamsEx(breakingId, engine, lights, true, doors, bonnet, boot, objective);
 		}
-		AutoMakeCreate(1,0,breakingId);
+		AutoMakeCreate(1, 0, breakingId);
 	}
 	else if(type == 2) // Взламываем двигатель
 	{
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
-		if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] != 1) AutoMakeCreate(1,0,breakingId);
+		if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] != 1) AutoMakeCreate(1, 0, breakingId);
 	}
 	else if(type == 3) // Взламываем трейлер
 	{

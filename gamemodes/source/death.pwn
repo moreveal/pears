@@ -100,7 +100,7 @@ stock ShowPlayerDeath(playerid)
     if(PlayerInfo[playerid][pSoska] > 0) format(line,sizeof(line),"\n{ff9000}Для администрации: /hp"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
 
-    AutoMakeCreate(2,2,playerid);
+    AutoMakeCreate(2, 2, playerid);
     TempTake(playerid, 0);
     return 1;
 }
@@ -242,7 +242,7 @@ stock DeathEnd(playerid, stat)
         ClearAnimations(playerid);
     }
 
-    DestroyMake(playerid);
+    DestroyPlayerMake(playerid);
     return 1;
 }
 
