@@ -127,7 +127,7 @@ stock GetDailyQuanMinMax(dailyid, &minQuan, &maxQuan) // Диапазон кол
         // Охота
         case 6: minQuan = 1, maxQuan = 2; // Охотиться на оленя (Количество раз)
         // NASA Луна - Марс ЕСТЬ ТРЕБОВАНИЯ
-        case 7: minQuan = 20, maxQuan = 50; // Собирать базальт
+        case 7: minQuan = 10, maxQuan = 25; // Собирать базальт
         case 8: minQuan = 5, maxQuan = 10; // Собирать палладий
         case 9: minQuan = 2, maxQuan = 8; // Чистить солнечные панели
         case 10: minQuan = 1, maxQuan = 3; // Собирать данные со спутниковой тарелки
