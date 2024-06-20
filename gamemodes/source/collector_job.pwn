@@ -252,7 +252,7 @@ stock FindBankFromCollector(playerid)
 			if(findpos <= dist) dist = findpos, termId = i, bizId = currentBizId;
 		}
 	}
-	if(findpos == 0.0) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслужены\n{ffcc66}Деньги в банкоматах накапливаются со временем");
+	if (!bizId) return ErrorMessage(playerid, "{FF6347}Все банкоматы были обслужены\n{ffcc66}Деньги в банкоматах накапливаются со временем");
 
 	CreateTermCollector(playerid, bizId, termId);
 	new string[200];
