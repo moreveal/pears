@@ -234,10 +234,16 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	else ErrorMessage(playerid, "{FF6347}Вы далеко от транспорта");
 	return put_inva;
 }
+
 stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) // Кладём предмет в багажник
 {
     new inva = -1;
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
+
+	new max_slotes = 20;
+	if (IsA_Gen5(v)) max_slotes = 5;
+	else if(IsA_Gen10(v)) max_slotes = 10;
+	else if(IsA_Gen15(v)) max_slotes = 15;
 	
 	if(useinva == 999) // Не знаем в какую ячейку класть
 	{
@@ -246,7 +252,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 		    if(CheckThingQuan(thingId) == 1) // Предмет имеет количество (Складывается в одну ячейку)
 		    {
 		        new find;
-		    	for(new i = 0; i < 20; i++)
+		    	for(new i = 0; i < max_slotes; i++)
 				{
 					if(VehInfo[v][vInvent][i] == thingId && VehInfo[v][vInvType][i] == thingType) // Ищем тот, где уже предмет лежит
 					{
@@ -258,7 +264,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 				}
 				if(find == 0) // Если не нашли, ищем пустую
 				{
-					for(new i = 0; i < 20; i++)
+					for(new i = 0; i < max_slotes; i++)
 					{
 						if(VehInfo[v][vInvent][i] == 0) // Ищем пустую ячейку
 						{
@@ -271,7 +277,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 			}
 			else if(CheckThingQuan(thingId) == 0) // Объект не имеет количество
 			{
-			    for(new i = 0; i < 20; i++)
+			    for(new i = 0; i < max_slotes; i++)
 				{
 					if(VehInfo[v][vInvent][i] == 0) // Ищем пустую ячейку
 					{
@@ -284,7 +290,7 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 		}
 		else // Все остальные предметы не имеют количества или возможности складываться в одну ячейку
 		{
-		    for(new i = 0; i < 20; i++)
+		    for(new i = 0; i < max_slotes; i++)
 			{
 				if(VehInfo[v][vInvent][i] == 0) // Ищем пустую ячейку
 				{
@@ -454,13 +460,8 @@ stock put_bootbox(playerid, v) // Кладём ящик в багажник
 {
 	if(OnlineInfo[playerid][oInHandThing][0] > 0 && (OnlineInfo[playerid][oInHandThing][5] == 2 || OnlineInfo[playerid][oInHandThing][5] == 4))
 	{
-		new max_slotes = 20;
-		if (IsA_Gen5(v)) max_slotes = 5;
-		else if(IsA_Gen10(v)) max_slotes = 10;
-		else if(IsA_Gen15(v)) max_slotes = 15;
-		
 	    new put_inva = PutThingBoot(v, OnlineInfo[playerid][oInHandThing][0], OnlineInfo[playerid][oInHandThing][1], OnlineInfo[playerid][oInHandThing][2], OnlineInfo[playerid][oInHandThing][3], OnlineInfo[playerid][oInHandThing][4], OnlineInfo[playerid][oInHandThing][5], 999);
-	    if(put_inva == -1 || put_inva >= max_slotes)
+	    if(put_inva == -1)
 		{
 			ErrorMessage(playerid, "{FF6347}В транспорте нет места");
 			return 0;
