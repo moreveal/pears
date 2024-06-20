@@ -2,6 +2,8 @@
 #define NON_DAMAGE_TEAM 1 // Тима для отмены стандартного урона
 #define max(%0,%1) (%0 > %1 ? %0 : %1) // Получает максимальное значение среди двух переданных
 
+#define DEFAULT_PLAYER_TEAM 2
+
 #if !defined BODY_PART_TORSO
 enum {
 	BODY_PART_TORSO = 3,
@@ -24,15 +26,19 @@ stock IsShootingWeapon(weaponid)
     return 0;
 }
 
-stock WeaponShootInVehicle(weaponid)
+stock IsWeaponUsableInVehicle(weaponid)
 {
-    if(weaponid == 22 || weaponid == 28 || weaponid == 29 || weaponid == 30 || weaponid == 31 || weaponid == 32) return 1;
+    static const weapons[] = {WEAPON_COLT45, WEAPON_UZI, WEAPON_MP5, WEAPON_AK47, WEAPON_M4, WEAPON_TEC9};
+
+    for (new i = 0; i < sizeof(weapons); i++)
+        if (weaponid == weapons[i]) return 1;
+
     return 0;
 }
 
 // Урон оружия по умолчанию. Связано с s_DamageType.
 // Оружие ближнего боя имеет множители, так как урон различается в зависимости от типа удара и стиля боя.
-static Float:s_WeaponDamage[] = {
+static Float: s_WeaponDamage[] = {
   1.0, // 0 - Fist
   1.0, // 1 - Brass knuckles
   1.0, // 2 - Golf club
@@ -91,11 +97,11 @@ static Float:s_WeaponDamage[] = {
 };
 
 new TickDamagePlayer[MAX_REALPLAYERS]; // Записываем для интервалов между дамагами
-new BulletDamagePlayer[MAX_REALPLAYERS] = { -1, ... }; // Игрок совершил высрел в bullet sync
+new BulletDamagePlayer[MAX_REALPLAYERS] = { -1, ... }; // Игрок совершил выстрел в bullet sync
 
 // Получает урон, наносимый оружием, а также наносимое бронежилету повреждение
 // Бронежилет работает только на огнестрельное оружие**
-stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:weaponid, bodypart, &Float: damage, &Float: armour_breaking)
+stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON: weaponid, bodypart, &Float: damage, &Float: armour_breaking)
 {
     if (VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 432  // Если игрок находится в танке
         || VehInfo[GetPlayerVehicleID(damagedid)][vModel] == 537  // Если игрок находится в поезде
@@ -103,7 +109,7 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:weaponid, bodypart, 
         || GetPVarInt(damagedid, "afksystem") >= 5 // Если игрок, по которому наносят урон, в AFK не менее 5 секунд
         || Iamzz[damagedid] // Если игрок, по которому наносят урон, в зелёной зоне
         || IsPlayerInVehicle(damagedid, prisonbus_LS) || IsPlayerInVehicle(damagedid, prisonbus_SF) // Если игрок в тюремном автобусе
-        || weaponid == WEAPON:23 // Это будет всегда электрошокер
+        || weaponid == WEAPON_SILENCED // Это будет всегда электрошокер
         || HealthAC[damagedid] <= 0.0 // Хп уже на нуле
         || HealthAC[playerid] <= 0.0 // Урон наносит игрок с нулевым хп
         || Stun[3][playerid] >= 1 // Урон наносит оглушенный игрок
@@ -244,7 +250,7 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:weaponid, bodypart, 
                 damage = random_range(weaponProperties[i][wpBodyDamage][0], weaponProperties[i][wpBodyDamage][1]);
 
 				// Уменьшение урона в два раза при попадании в ноги/руки
-				if (bodypart > 4) damage *= 0.5;
+				if (bodypart > 4) damage /= 2;
             }
 			damage *= distance_coef; // Учитывание коэффициента дистанции
             if(Effect[damagedid] == 6)
@@ -270,20 +276,20 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:weaponid, bodypart, 
             if (armour_action > 0) { // Если бронежилет есть, и он подействовал на наносимый урон
                 //format(string, sizeof string, "Бронежилет игрока %s[%d] сократил получаемый урон на %d процентов | Новый урон: %0.2f", PlayerInfo[damagedid][pName], damagedid, armour_action, damage - (damage / 100 * armour_action));
                 //SendClientMessageToAll(COLOR_GREY, string);
-                damage = damage - (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
+                damage -= (damage / 100 * armour_action); // Применяем изменения к урону, вычитая необходимый процент, поглощаемый бронежилетом
             }
-
-            if(DeathInfo[damagedid][deathStatus]) // Если игрок мертвый на земле
+        
+            if(DeathInfo[damagedid][deathStatus]) // Если игрок мертвый на земле (в стадии)
             {
-                damage = damage/4; // Снимаем хп в 4 раза медленнее
+                damage /= 2; // Снимаем хп в 2 раза медленнее при добивании
             }
 
-            // Скилл силы
+            // Скилл силы для ближнего боя
             if((weaponid == WEAPON:0 || weaponid == WEAPON:1) && box[playerid] == 0 && ProxDetectorS(3.0, playerid, damagedid)) 
             {
-                new Float:power = get_power(playerid);
-                damage += power;
+                damage += get_power(playerid);
             }
+
             return 1;
         }
     }
@@ -343,14 +349,13 @@ static s_MaxWeaponShootRate[] =
     400 // 48 - Pistol whip (custom)
 };
 
-forward PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart);
-public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
+function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bodypart)
 {
     // Кикаем падлюку, если при нанесении дамага его тима странная
-    if(GetPlayerTeam(playerid) != 2)
+    if(GetPlayerTeam(playerid) != DEFAULT_PLAYER_TEAM)
     {
         SendClientMessage(playerid, COLOR_LIGHTRED, "* {0066ff}Protect Project: {FF6347}Вы были кикнуты по подозрению в читерстве [PlayerDamage].");
-        ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff0000}****  {FFFFFF}*[Protect Project]*  {ff0000}****","{ff0000}******** {ffffff}Вы были кикнуты по подозрению в читерстве [PlayerDamage] {ff0000}********","*","");
+        ShowDialog(playerid, 1996, DIALOG_STYLE_MSGBOX, "{ff0000}****  {FFFFFF}*[Protect Project]*  {ff0000}****","{ff0000}******** {ffffff}Вы были кикнуты по подозрению в читерстве [PlayerDamage] {ff0000}********", "*", "");
         Kickx(playerid);
         return false;
     }
@@ -376,13 +381,12 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
     if(BeginnerDamage(playerid, damagedid)) return false;
 
     // Блочим дамаг если игроки в одной тиме в комп клубе
-    if(computerClubPlayerInfo[playerid][ccpiInGame] == true && computerClubPlayerInfo[damagedid][ccpiInGame] == true
-        && ComputerClubIsTeammates(playerid, damagedid)) return false;
+    if(ComputerClubIsTeammates(playerid, damagedid)) return false;
 
     // Защита от дамага без интервалов
     new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, TickDamagePlayer[playerid]);
-    if(weaponid == 24) // Deagle
+    if(weaponid == _:WEAPON_DEAGLE)
     {
         new g = fraction(playerid);
         if(ChutC[g] != 0 || GoC[g] != 0 
@@ -403,9 +407,8 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
     }
     TickDamagePlayer[playerid] = current_tick;
 
-
     // Убийство с ножа
-    if (weaponid == 4 && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, false, "df", damagedid, 0.0);
+    if (weaponid == _:WEAPON_KNIFE && amount == 0.0 && bodypart == 3) return SetTimerEx("SetPlayerHealthTimer", 3000, false, "df", damagedid, 0.0);
     // Обработка удара прикладом
     if (IsShootingWeapon(GetPlayerWeapon(playerid)) && amount == 2.6400001049042) {
         new Float: health;
@@ -417,8 +420,8 @@ public PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, bod
         new handler_weapon = weaponid;
         switch (weaponid)
         {
-            case 37: handler_weapon = 18; // Определять все огненное оружие как молотов
-            case 51: handler_weapon = amount >= 80.0 ? 35 : 36; // Взрывающееся оружие (35 обрабатывается как близкий взрыв, 36 - дальний)
+            case 37: handler_weapon = WEAPON_MOLOTOV; // Определять все огненное оружие как молотов
+            case 51: handler_weapon = amount >= 80.0 ? WEAPON_ROCKETLAUNCHER : WEAPON_HEATSEEKER; // Взрывающееся оружие (35 обрабатывается как близкий взрыв, 36 - дальний)
         }
         new Float: damage, Float: armour_breaking;
         GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON:handler_weapon, bodypart, damage, armour_breaking);
@@ -533,12 +536,12 @@ CMD:readdamage(playerid)
     if(server != 0) return 0;
     if(readdam == false)
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {99ff66}включено","*","");
+        ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "{ffcc00}*", "{ffcc66}Чтение дамага {99ff66}включено", "*", "");
         readdam = true;
     }
     else 
     {
-        ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Чтение дамага {FF6347}отключено","*","");
+        ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "{ffcc00}*", "{ffcc66}Чтение дамага {FF6347}отключено", "*", "");
         readdam = false;
     }
     return 1;

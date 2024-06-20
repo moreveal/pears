@@ -678,10 +678,12 @@ function Call_loadwanted(playerid, race_check)
 	return 1;
 }
 
+stock IsPlayerHavePursuit(playerid) { return Pursuit[playerid] != 9999; }
+stock ResetPlayerPursuit(playerid) { Pursuit[playerid] = 9999; return 1; }
 stock CreatePlayerPursuit(playerid, mentid)
 {
     if (!IsOnline(playerid)) return 1;
-    if(GetPVarInt(playerid,"afksystem") >= 5 || Pursuit[playerid] != 9999) return 0;
+    if(GetPVarInt(playerid, "afksystem") >= 5 || IsPlayerHavePursuit(playerid)) return 0;
 
     SendClientMessage(playerid, COLOR_GREY, "{0066ff}[ POLICE ]: {abcdef}Вас преследует полиция. Не выходите из игры во время преследования!");
 

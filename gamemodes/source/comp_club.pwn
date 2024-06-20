@@ -850,8 +850,7 @@ stock ComputerClubSetPlayerTeam(playerid, teamid) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid > -1) {
         if (computerClubPlayerInfo[playerid][ccpiTeam] == teamid) return 0;
-
-        // [ Авто-баланс команд* ]
+        
         computerClubPlayerInfo[playerid][ccpiTeam] = teamid;
 
         PPSpawnPlayer(playerid);
@@ -1700,11 +1699,6 @@ stock ComputerClubOnPlayerSpawn(playerid) {
         // Установка здоровья/брони
         ACSetPlayerHealth(playerid, computerClubRoomInfo[gameid][roomid][ccriMaxHealth]);
         ACSetPlayerArmour(playerid, computerClubRoomInfo[gameid][roomid][ccriMaxArmor]);
-
-        // Устанавливаем команду (игроки своей команды не будут получать урон)
-        //SetPlayerTeam(playerid, computerClubPlayerInfo[playerid][ccpiTeam]);
-
-        SetPlayerTeam(playerid, 2);
 
         return 0;
     }

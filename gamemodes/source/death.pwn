@@ -1,18 +1,19 @@
 
 enum deathInfo
 {
-    bool:deathStatus, // Статус смерти
+    bool: deathStatus, // Статус смерти
     deathTime, // Время валяния на земле
     deathUnix, // unix предыдущей смерти
     deathReason, // id причина смерти
-    bool:deathCut // сокращённое время смерти
+    deathKiller, // playerid убийцы
+    bool: deathCut // сокращённое время смерти
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
 CMD:deathcut(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "Вы не можете использовать эту команду");
-    if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Изменить время для реанимации [ /deathcut ID ]");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Изменить время для реанимации [ /deathcut ID ]");
     if(!IsOnline(params[0])) return ErrorMessage(playerid, "Игрока нет в сети");
 
     new string[100];
@@ -34,36 +35,42 @@ CMD:deathcut(playerid, const params[])
         format(string, sizeof(string), "Администратор %s изменил ваше время для реанимации", PlayerInfo[playerid][pName]);
         SendClientMessage(params[0], COLOR_WHITE, string);
     }
+
     return 1;
 }
 
 stock SetPlayerDeath(playerid, reason)
 {
-    new bool:nodeath;
-    if(NoDeath(playerid)) nodeath = true;
+    new killerid = DeathInfo[playerid][deathKiller];
+    if (!IsPlayerConnected(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
 
-    if(nodeath == true) // Если сдох от взрыва, тогда в пизду не умираем
-    {
-        //SendClientMessageToAllf(-1, "SetPlayerDeath %d (reason %d) {ff0000}nodeath system", playerid, reason);
+    if (NoDeath(playerid)) { // Если игрок не должен умирать (попадать в стадию)
+        // Если игрок уже мёртв
+        if (DeathInfo[playerid][deathStatus]) {
+            if (killerid == INVALID_PLAYER_ID) return 0;
+
+            if (IsPoliceMember(killerid) && IsPlayerHavePursuit(playerid)) {
+                ArestPlayer(playerid, killerid, AREST_TYPE_KILL);
+            }
+        }
         return 0;
     }
-    //else SendClientMessageToAllf(-1, "SetPlayerDeath %d (reason %d)", playerid, reason);
 
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
 
-    if(MPGO[playerid] == 0) PlayerInfo[playerid][pDeaths] ++; // Засчитываем Смерть
+    if (MPGO[playerid] == 0) PlayerInfo[playerid][pDeaths]++; // Засчитываем Смерть
 
-    GetPlayerPos(playerid,PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1],PlayerInfo[playerid][pLastPos][2]);
-	GetPlayerFacingAngle(playerid,PlayerInfo[playerid][pLastPos][3]);
+    GetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
+	GetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
 
     // Корректируем игрока по высоте
-    new Float:zpos;
-    CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0],PlayerInfo[playerid][pLastPos][1], zpos);
-    if(PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
+    new Float: zpos;
+    CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], zpos);
+    if (PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
 
     // Сразу ставим игрока в новую Z координату
-    if(reason != 51) ReturnPositionDeath(playerid); // Только если умер не от взрыва
+    if (reason != 51) ReturnPositionDeath(playerid); // Только если умер не от взрыва
 
     PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
     PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
@@ -73,10 +80,12 @@ stock SetPlayerDeath(playerid, reason)
     DeathInfo[playerid][deathReason] = reason;
     
     DeathInfo[playerid][deathTime] = 30; // 30 секунд ожидания перед возможностью отправиться в больницу
-    if (Pursuit[playerid] != 9999) {
+    if (IsPlayerHavePursuit(playerid)) {
         // Увеличиваем время ожидания при некоторых обстоятельствах (Наличие розыска, ...)
         DeathInfo[playerid][deathTime] = 60;
     }
+    if (DeathInfo[playerid][deathCut]) DeathInfo[playerid][deathTime] /= 2;
+
     DeathInfo[playerid][deathUnix] = unix + 3600;
 
     ShowPlayerDeath(playerid);
@@ -140,6 +149,7 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
     || VehShopInfo[playerid][vsTest] // test drive
     || ADUTY[playerid] == 1 // Администратор на дежурстве
     || PlayerInfo[playerid][pJailed] > 0 // В заключении
+    || IsPlayerHavePursuit(playerid) // Активное преследование
     || computerClubPlayerInfo[playerid][ccpiInGame]) return 1; // Компьютерный клуб
     return 0;
 }
@@ -184,7 +194,7 @@ stock UpdateDeathProcess(playerid)
     if (!GetPVarInt(playerid, "BlockDeathReturn")) ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
 
     // Выводим над головой статус "без сознания" + время, когда игрок сможет отправиться в больницу
-    if (Pursuit[playerid] == 9999) {
+    if (!IsPlayerHavePursuit(playerid)) {
         strcat(string, "Без сознания");
         if (DeathInfo[playerid][deathTime] > 0) format(string, sizeof(string), "%s [%s]", string, fine_time(DeathInfo[playerid][deathTime]));
         SetPlayerChatBubble(playerid, string, COLOR_LIGHTRED, 20.0, 1500);
@@ -215,6 +225,7 @@ stock ReturnPositionDeath(playerid)
 
     PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
     PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+    TogglePlayerControllable(playerid, false);
     return true;
 }
 
@@ -399,7 +410,7 @@ stock DeathOnKeyStateChange(playerid, KEY: newkeys, KEY: oldkeys) {
     // У игрока есть возможность отправиться в больницу
     if (DeathInfo[playerid][deathTime] <= 0) {
         if (newkeys & KEY_NO) {
-            if (Pursuit[playerid] != 9999) return ErrorMessage(playerid, "{FF6347}Сейчас вы не можете отправиться в больницу [ Вас преследует полиция ]");
+            if (IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Сейчас вы не можете отправиться в больницу [ Вас преследует полиция ]");
             
             ShowDialog(playerid, 1508, DIALOG_STYLE_MSGBOX, "{ff9000}*", "{ff6347}Теперь вы можете отправиться в больницу.\n{cccccc}Если вы откажетесь, вы будете лежать до того момента, пока вам не помогут или не добьют.\n\n{ff9000}Отправляетесь в больницу?", "Да", "Нет");
             return 0;
