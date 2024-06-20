@@ -38,7 +38,8 @@ stock use_throw(playerid, inva, useinva)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
-	if(GetPVarInt(playerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
+	if(GetPVarInt(playerid, "svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
+	if(CheckInvent(playerid)) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
 	if(thingPack == 2 || thingPack == 4) // Ящик с предметом
 	{
