@@ -3,7 +3,7 @@
 // Разбивает число по разрядам, точками
 stock FormatNumberWithCommas(number)
 {
-    #define str_len 64
+    const str_len = 64;
 
     new str[str_len];
 	if(number == cellmin)
@@ -16,8 +16,6 @@ stock FormatNumberWithCommas(number)
 
 	for(new i = strlen(str), end = number >= 0 ? 0 : 1; (i -= 3) > end;)
 		strins(str, ".", i, str_len);
-
-    #undef str_len
 
 	return str;
 }

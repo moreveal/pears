@@ -636,6 +636,21 @@ stock getThingPriceGos(thingId, thingType)
 	else if(thingType == 5) price = GetVehiclePriceGos(thingId);
 	return price;
 }
+
+stock showBizPriceDialog(playerid, b) {
+	new minb = GetBizMin(19);
+	new header[64], lines[512];
+
+	format(lines, sizeof(lines), \
+		"{cccccc}Комиссия на {99ff66}Внесение \t [%.3f проц.]\n" \
+		"{cccccc}Комиссия на {FF6347}Вывод {99ff66} \t [%.3f проц.]\n", \
+		comput[b - minb], comtake[b - minb]
+	);
+	format(header, sizeof(header), "{cccccc}Прайс Бизнеса {ff9000}%s [%d]", bizname(b), b);
+
+	return ShowDialog(playerid, 1171, DIALOG_STYLE_LIST, header, lines, "Выбрать", "Отмена");
+}
+
 stock pricebiz(playerid, b)
 {
 	DP[4][playerid] = b;
@@ -658,17 +673,12 @@ stock pricebiz(playerid, b)
 	}
 	else if(b >= 163 && b <= 172) // Прайс Банкоматов
 	{
-		new minb = GetBizMin(19);
-		format(line,sizeof(line),"{cccccc}Комиссия на {99ff66}Внесение \t [%.3f проц.]\n", comput[b-minb]), strcat(lines,line);
-		format(line,sizeof(line),"{cccccc}Комиссия на {FF6347}Вывод {99ff66} \t [%.3f проц.]\n", comtake[b-minb]), strcat(lines,line);
-		format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
-		ShowDialog(playerid,1171,DIALOG_STYLE_LIST,lol,lines,"Выбрать","Отмена");
-		return 1;
+		return showBizPriceDialog(playerid, b);
 	}
 	else return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя настраивать стоимость товаров и услуг"), mybiz(playerid, b);
 
-	format(lol,sizeof(lol),"{cccccc}Прайс Бизнеса {ff9000}%s [%d]",bizname(b), b);
-	ShowDialog(playerid,997,DIALOG_STYLE_TABLIST,lol,lines,"Выбрать","Отмена");
+	format(lol, sizeof(lol), "{cccccc}Прайс Бизнеса {ff9000}%s [%d]", bizname(b), b);
+	ShowDialog(playerid, 997, DIALOG_STYLE_TABLIST, lol, lines, "Выбрать", "Отмена");
 	return 1;
 }
 
