@@ -4,7 +4,7 @@ stock PlayerInArea51(playerid)
 {
     if(!IsADepart(playerid) // Не сотрудник департамента
 				&& (Onli[3] > 0 || server == 0) // Армейцы Online
-				&& GetPVarInt(playerid,"endorse") != 3 // Нет доступа к респе
+				&& GetPVarInt(playerid, "endorse") != 3 // Нет доступа к респе
 				&& GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
     {
         new findUk, findP;

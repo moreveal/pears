@@ -888,7 +888,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
     if (!IsOnline(zakonnik)) zakonnik = -1;
 
-    if(zakonnik != -1)
+    if(IsOnline(zakonnik))
     {
         if(CriminalCodeInfo[uk][p][ccLevel] == 0 && CriminalCodeInfo[uk][p][ccFine] == 0) return ErrorMessage(zakonnik, "{FF6347}У заголовка статьи нет розыска или штрафа");
     }
@@ -911,7 +911,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
     if(IsPlayerConnected(playerid) && slotUk == -1 && resultFine == 0)
     {
-        if(zakonnik >= 0) ErrorMessage(zakonnik, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
+        if(IsOnline(zakonnik)) ErrorMessage(zakonnik, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
         return 1;
     }
 
@@ -920,9 +920,9 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
     {
         WantedInfo[playerid][wanCrime][slotUk] = uk + 1;
         WantedInfo[playerid][wanSubentry][slotUk] = p;
-        if(zakonnik != -1) WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
+        if(IsOnline(zakonnik)) WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
         WantedInfo[playerid][wanUnix][slotUk] = gettime();
-        if(zakonnik != -1) format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
+        if(IsOnline(zakonnik)) format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
         if(PlayerInfo[playerid][pCrimes]+zv > 50) PlayerInfo[playerid][pCrimes] = 50;
         else if(PlayerInfo[playerid][pCrimes]+zv <= 50) PlayerInfo[playerid][pCrimes] += zv;
 
@@ -932,10 +932,9 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
         if (IsPlayerConnected(playerid)) {
             // Сообщения преступнику
-            if(zakonnik != -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason,PlayerInfo[zakonnik][pName],zv);
-            else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]",reason,zv);
+            if(zakonnik != -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
+            else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]", reason, zv);
             SendClientMessage(playerid, COLOR_GREY, string);
-            //ErrorMessage(playerid, "{ffcc00}Вас пытается задержать полиция!\n\n{cccccc}Вы совершили преступление и сейчас вас пытаются задержать\nВы можете попытать\nВ случае если вы сдадитесь добровольно, в суде это зачтется\n\nДля добровольной сдачи у вас есть {ff6743}15{cccccc} секунд:\n- Нажмите кнопку [ H ] находясь пешком.\n- На момент выполнения анимации не совершайте никаких действий");
             OnlineInfo[playerid][oUnixAcceptWanted] = 15;
             Moiplayer[playerid] = zakonnik;
         }
@@ -953,7 +952,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
                 new playerid_str[8];
                 if (IsPlayerConnected(playerid)) format(playerid_str, sizeof(playerid_str), "[%d]", playerid);
 
-                if(zakonnik != -1) {
+                if(IsOnline(zakonnik)) {
                     format(string, sizeof(string), "[DEP]: По заявлению %s[%d], %s%s обвиняется в %s. {FF6347}Ур. розыска: [%d]", PlayerInfo[zakonnik][pName], zakonnik, rpplayername(playerid), playerid_str, reason, zv);
                 } else {
                     format(string, sizeof(string), "[DEP]: По анонимному заявлению, %s%s обвиняется в %s. {FF6347}Ур. розыска: [%d]", rpplayername(playerid), playerid_str, reason, zv);
@@ -963,11 +962,20 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         }
 
         // Врубаем Pursuit
-        if(zakonnik != -1)
-        {
-            CreatePlayerPursuit(playerid, zakonnik);
+        CreatePlayerPursuit(playerid, zakonnik);
 
-            OrgLog(fraction(zakonnik), "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], CriminalCodeInfo[uk][p][ccName]);
+        new fractionid = 1; // SAPD (по умолчанию)
+        if (IsOnline(zakonnik)) fractionid = fraction(zakonnik);
+        else {
+            if (!strcmp(reason, "Проникновение")) fractionid = 3; // NGSA
+        }
+        
+        // Логирование выдачи розыска
+        if(IsOnline(zakonnik)) {
+            OrgLog(fractionid, "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], CriminalCodeInfo[uk][p][ccName]);
+        } else {
+            new log_string[128]; format(log_string, sizeof(log_string), "Автовыдача розыска [%s]", CriminalCodeInfo[uk][p][ccName]);
+            OrgLog(fractionid, "su", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CriminalCodeInfo[uk][p][ccLevel], log_string);
         }
     }
 	return slotUk;

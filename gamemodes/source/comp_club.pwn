@@ -1032,7 +1032,7 @@ stock ComputerClubRoomExit(playerid, e_ComputerClubDisconnectReasons: reason) {
     ProtectSetSpawnInfo(playerid, NO_TEAM, PlayerInfo[playerid][pModel], connect_pos[0], connect_pos[1], connect_pos[2], connect_pos[3], 0, 0, 0, 0, 0, 0);
     PPSpawnPlayer(playerid);
     S_SetPlayerVirtualWorld(playerid, connect_world); PPSetPlayerInterior(playerid, connect_interior);
-    SetPlayerHealth(playerid, connect_health); SetPlayerArmour(playerid, connect_armor);
+    ACSetPlayerHealth(playerid, connect_health); ACSetPlayerArmour(playerid, connect_armor);
 
     // Завершение игры при выходе последнего оставшегося в команде участника
     new same_team_players_count = ComputerClubGetPlayersCount(gameid, roomid, teamid);
