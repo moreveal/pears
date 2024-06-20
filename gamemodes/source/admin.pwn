@@ -528,14 +528,18 @@ CMD:delveh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
     if(QuanCar <= 0) return ErrorMessage(playerid, "{FF6347}На сервере нет созданного транспорта");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить транспорт /delveh ID (ID транспорта в /dl)");
-	if(params[0] < 0 || params[0] >= SKOKOCAROV) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
-	if(Cars[params[0]] == 0) return ErrorMessage(playerid, "{FF6347}Транспорта не существует");
-	if(Cars[params[0]] != 9999) return ErrorMessage(playerid, "{FF6347}Этот транспорт не создан администрацией");
+    new vehicleid;
+	if(sscanf(params, "i", vehicleid)) {
+		if (IsPlayerInAnyVehicle(playerid)) vehicleid = GetPlayerVehicleID(playerid);
+		else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить транспорт /delveh ID (ID транспорта в /dl)");
+	}
+	if(vehicleid < 0 || vehicleid >= SKOKOCAROV) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
+	if(Cars[vehicleid] == 0) return ErrorMessage(playerid, "{FF6347}Транспорта не существует");
+	if(Cars[vehicleid] != 9999) return ErrorMessage(playerid, "{FF6347}Этот транспорт не создан администрацией");
 	
 	for(new i = 0; i < MAX_MAPVEH; i++)
 	{
-	    if(CreatedCars[i] == params[0])
+	    if(CreatedCars[i] == vehicleid)
 		{
 			ACDestroyVehicle(CreatedCars[i]);
 			CreatedCars[i] = 0;
@@ -544,8 +548,8 @@ CMD:delveh(playerid, const params[])
  	}
  	QuanCar --;
  	PlayerPlaySound(playerid,6801,0,0,0);
-	AdminLog("delveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "");
-	SendClientMessage(playerid, COLOR_GREY, "{0088ff}Транспорт ID %d {FF6347}удалён", params[0]);
+	AdminLog("delveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", vehicleid, "");
+	SendClientMessage(playerid, COLOR_GREY, "{0088ff}Транспорт ID %d {FF6347}удалён", vehicleid);
 	return 1;
 }
 CMD:rvc(playerid)
