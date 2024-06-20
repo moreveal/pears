@@ -158,11 +158,12 @@ stock GetVehicleModelSync(playerid, model) // Получаем модель тр
     return vehId;
 }
 
-stock PP_CreateVehicle(model,Float:x,Float:y,Float:z,Float:a, col1, col2, sek, siren, timerspawn, Float:health)
+stock PP_CreateVehicle(model, Float:x, Float:y, Float:z, Float:a, col1, col2, sek, siren, timerspawn, Float:health)
 {
 	if(QuantityVehicles + 1 >= SKOKOCAROV) return -1; // Лимит транспортных средств на серверах SAMP
 
-	new id = m_custom_sync_CreateVehicle(model, x, y, z, a, col1, col2, sek, bool:siren);
+	new id = m_custom_sync_CreateVehicle(model, x, y, z, a, col1, col2, sek, bool: siren);
+	if (id == INVALID_VEHICLE_ID) return -1; // Ошибка при создании транспорта
 
 	LinkVehicleToInterior(id, 0);
 	SetVehicleVirtualWorld(id, 0);

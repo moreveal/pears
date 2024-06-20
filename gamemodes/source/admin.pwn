@@ -498,8 +498,9 @@ CMD:veh(playerid, const params[])
 stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 {
 	new model = ReturnVehicle(vehiclename);
-	if(model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
-	if(!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if (model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if (!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+	if (IsATrain(model)) return ErrorMessage(playerid, "{FF6347}Нельзя создать поезд");
 
 	if(color1 < 0 || color1 > 255 || color2 < 0 || color2 > 255) return ErrorMessage(playerid, "{FF6347}Цвет не меньше 0 и не больше 255");
 	if(QuanCar >= MAX_MAPVEH) return ErrorMessage(playerid, "{FF6347}Лимит создания транспорта администрацией");
