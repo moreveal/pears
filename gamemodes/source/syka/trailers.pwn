@@ -450,7 +450,7 @@ CMD:trailerpos(playerid, const params[]) {
     trailerid--; // Корректировка для обращения к массиву
 
     if (!TrailerInfo[trailerid][tActive]) return ErrorMessage(playerid, "{ff6347}Трейлер не установлен чтобы его редактировать");
-    if(!IsPlayerInRangeOfPoint(playerid, 10.0, TrailerInfo[trailerid][tPos][0], TrailerInfo[trailerid][tPos][1], TrailerInfo[trailerid][tPos][2])) return ErrorMessage(playerid,"{ff6347}Трейлер далеко от вас, подойдите ближе чтобы его редактировать");
+    if(!IsPlayerInRangeOfPoint(playerid, 10.0, TrailerInfo[trailerid][tPos][0], TrailerInfo[trailerid][tPos][1], TrailerInfo[trailerid][tPos][2])) return ErrorMessage(playerid, "{ff6347}Трейлер далеко от вас, подойдите ближе чтобы его редактировать");
     GoEditDynamicObject(playerid, REDAKT_TYPE_ADM_TRAILER, 1, trailerid, 0, TrailerInfo[trailerid][tObject], 0);
 
     return 1;
@@ -470,6 +470,7 @@ CMD:trailer(playerid, const params[])
 	PPSetPlayerInterior(playerid, 0);
     PPSetPlayerPos(playerid, TrailerInfo[trailerid][tPic][0], TrailerInfo[trailerid][tPic][1], TrailerInfo[trailerid][tPic][2] + 0.5);
     PPSetPlayerFacingAngle(playerid, 0.0);
+    
 	return 1;
 }
 
