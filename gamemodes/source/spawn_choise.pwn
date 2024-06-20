@@ -272,7 +272,7 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
             }
             else if(spawnId == 9) // Trailer
             {
-                if(trailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
+                if(TrailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
             }
             
             SelectSpawnChoise(playerid, spawnId);

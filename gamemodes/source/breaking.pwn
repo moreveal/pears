@@ -111,8 +111,8 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	}
 	else if(type == 3) // Взламываем трейлер
 	{
-	    if(trailerInfo[breakingId][tBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер уже кто-то взламывает");
-	    trailerInfo[breakingId][tBreaking] = PlayerInfo[playerid][pID];
+	    if(TrailerInfo[breakingId][tBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер уже кто-то взламывает");
+	    TrailerInfo[breakingId][tBreaking] = PlayerInfo[playerid][pID];
 	}
 	else if(type == 4) // Взламываем камеру в тюрьме
 	{
@@ -190,8 +190,8 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 			}
 			else if(BreakingType[playerid] == 3)
 			{
-				trailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
-				trailerInfo[BreakingTypeID[playerid]][tLocked] = false;
+				TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
+				TrailerInfo[BreakingTypeID[playerid]][tLocked] = false;
 				SavePlayerTrailerInfo(BreakingTypeID[playerid]);
 			}
 			else if(BreakingType[playerid] == 4)
@@ -255,7 +255,7 @@ stock StopBreaking(playerid)
 	if(BreakingType[playerid] == 0) DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
 	else if(BreakingType[playerid] == 1) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
 	else if(BreakingType[playerid] == 2) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-	else if(BreakingType[playerid] == 3) trailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
+	else if(BreakingType[playerid] == 3) TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
 	else if(BreakingType[playerid] == 4) KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
     HidePlayerDialog(playerid);
     GameTextForPlayer(playerid," ",8000,3);

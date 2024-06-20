@@ -18,10 +18,10 @@ stock VehicleOnPlayerDisconnect(playerid)
 	// Если был прикреплен трейлер
 	new tid = GetPlayerTrailerID(playerid);
 	if (tid > -1) {
-		if (trailerInfo[tid][tAttached]) {
-			new trailerid = GetVehicleTrailer(trailerInfo[tid][tAttached]);
+		if (TrailerInfo[tid][tAttached]) {
+			new trailerid = GetVehicleTrailer(TrailerInfo[tid][tAttached]);
 			if (trailerid > 0) ACDestroyVehicle(trailerid);
-			else KillTimer(trailerInfo[tid][tTimerID]);
+			else KillTimer(TrailerInfo[tid][tTimerID]);
 		}
 	}
 	return 1;

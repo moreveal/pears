@@ -322,7 +322,7 @@ stock EditObjectBiz(playerid, biz, oba)
 
 	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
     if(Komputer[playerid] == 2) exitkomp(playerid, 2);
-	GoEditDynamicObject(playerid, 17, 1, biz, oba, BizzInfo[biz][bObject][oba], 0);
+	GoEditDynamicObject(playerid, REDAKT_TYPE_BIZ_FURNITURE_SET, 1, biz, oba, BizzInfo[biz][bObject][oba], 0);
 	return 1;
 }
 

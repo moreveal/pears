@@ -16,7 +16,7 @@ new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
 /* Инструкция
 
 - Если мы хотим создать новый объект для сервера в любую систему, используем: CreateEditPlayerObject
- id Номер gRedakt (31 и 32 использовать НЕЛЬЗЯ!)
+ id Номер gRedakt
  type 0 создаём объект, 1 перемещаем уже созданный ранее
  option доп информация, например номер дома или бизнеса
  slot слот для объекта, в к примеру в том же доме
@@ -26,14 +26,14 @@ new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
  ВСЁ
 
  - Если хотим отредачить уже существующий объект, используем: GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
- id номер gRedakt (31 и 32 использовать НЕЛЬЗЯ!)
+ id номер gRedakt
  type 0 создаём, 1 перемещаем
  option доп информация, например номер дома или бизнеса
  slot слот для объекта, в к примеру в том же доме
  objectid - идентификатор объекта, который был создан ранее
  - Затем в OnPlayerEditDynamicObject под EDIT_RESPONSE_FINAL добавляем условия для соответствующей системы (лейблы там и т.д.)
 */
-stock CreateEditPlayerObject(playerid, id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+stock CreateEditPlayerObject(playerid, e_RedaktType: id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     EditObjectInfo[playerid][editPlayerOrDynamic] = 0;
     gRedakt[playerid] = id;
@@ -81,7 +81,7 @@ public OnPlayerEditObject(playerid, playerobject, objectid, EDIT_RESPONSE:respon
             SaveEditPlayerObject(playerid, GetPlayerObjectModel(playerid, objectid), fX, fY, fZ, fRotX, fRotY, fRotZ); // Save Object
             DestroyPlayerObject(playerid, objectid); // Delete Temp Object
 
-            gRedakt[playerid] = 0; // Редактор Off
+            CancelPlayerEditObject(playerid);
             CancelSelectTextDraw(playerid);
             return 1;
         }
@@ -99,7 +99,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     new slot = EditObjectInfo[playerid][editSlot];
     //new type = EditObjectInfo[playerid][editType];
 
-    if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
+    if(gRedakt[playerid] == REDAKT_TYPE_MAP) // Создание или Перемещение Map Объекта (Админская Система)
     {
         new objid = -1;
 	    for(new i = 0; i < MAX_MAPOBJECT; i++)
@@ -117,10 +117,9 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		if(MapInfo[0][mapload] == 0) MapInfo[0][mapload] = 1, format(MapInfo[0][mapname], 64, "name");
 		ObjectMapLabelAll(0, objid);
 
-        format(string,sizeof(string),"CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
-        SendClientMessage(playerid, COLOR_GREY, string);
+        SendClientMessage(playerid, COLOR_GREY, "CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
     }
-    else if(gRedakt[playerid] == 6) // Установка мебели в доме
+    else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
     {
         new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
@@ -162,7 +161,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         Update3DLabelDomBiz(oid, findSlot, 1);
         if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
     }
-    else if(gRedakt[playerid] == 9) // Установка Камер Слежения
+    else if(gRedakt[playerid] == REDAKT_TYPE_CAMERA) // Установка Камер Слежения
 	{
         if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Лимит камер слежения"), EndObjectEditing(playerid);
         camerafbi ++;
@@ -185,7 +184,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
         }
     }
-    else if(gRedakt[playerid] == 10) // Перемещение Объектов Бизнеса (Улица)
+    else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_STREET) // Перемещение Объектов Бизнеса (Улица)
     {
         if(slot == 0)
         {
@@ -239,7 +238,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SaveBizz(oid);
         BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], oid, 0, "Перенёс объект бизнеса");
     }
-    else if(gRedakt[playerid] == 11) // Установка Маппинга на респах банд
+    else if(gRedakt[playerid] == REDAKT_TYPE_GANG_SPAWN_SET) // Установка Маппинга на респах банд
 	{
         new yes = -1;
         for(new oba = 0; oba < 200; oba++)
@@ -269,7 +268,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
         }
     }
-    else if(gRedakt[playerid] == 13 || gRedakt[playerid] == 14) // Перемещение и Установка Терминалов Бизнеса
+    else if(gRedakt[playerid] == REDAKT_TYPE_TERMINAL_MOVE || gRedakt[playerid] == REDAKT_TYPE_TERMINAL_SET)
     {
         new b = rentnumn(oid);
         if(termnearby(oid, x, y, z)) return ErrorMessage(playerid, "{FF6347}Слишком близко к другому терминалу или тележке [Отмена установки]"), EndObjectEditing(playerid);
@@ -291,7 +290,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 
         new Float:distpos = GetDistancePoint(x, y, z, RentPos_X[oid][slot], RentPos_Y[oid][slot], RentPos_Z[oid][slot]);
     
-        if(gRedakt[playerid] == 13) // Переместили
+        if(gRedakt[playerid] == REDAKT_TYPE_TERMINAL_MOVE) // Переместили
         {
             if(IsValidDynamicObject(RentObject[oid][slot]))
             {
@@ -300,9 +299,9 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
             if(RentStat[oid][slot] > 0) DestroyDynamic3DTextLabel(RentLabel[oid][slot]);
         }
-        if(gRedakt[playerid] == 14 || distpos >= 5) // Установили или перенесли дальше 5 метров
+        if(gRedakt[playerid] == REDAKT_TYPE_TERMINAL_SET || distpos >= 5.0) // Установили или перенесли дальше 5 метров
         {
-            if(gRedakt[playerid] == 14) // Установили
+            if(gRedakt[playerid] == REDAKT_TYPE_TERMINAL_SET) // Установили
             {
                 if(IsValidDynamicObject(RentObject[oid][slot])) return ErrorMessage(playerid, "{FF6347}Ошибка! Кто-то уже установил этот терминал или тележку [Отмена установки]"), EndObjectEditing(playerid);
                 RentObject[oid][slot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 300.00, 300.00);
@@ -328,7 +327,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SaveBizzTerm(oid, slot);
         BizLog("bizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, slot, "Установил объект");
     }
-    else if(gRedakt[playerid] == 17) // Установка мебели в бизнесе
+    else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_FURNITURE_SET) // Установка мебели в бизнесе
     {
         new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
         new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
@@ -369,7 +368,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         Update3DLabelDomBiz(oid, findSlot, 2);
         if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
     }
-    else if(gRedakt[playerid] == 19) // Установка Остановки
+    else if(gRedakt[playerid] == REDAKT_TYPE_BUS_STATION) // Установка Остановки
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Остановка слишком далеко от вас [Отмена установки]"), EndObjectEditing(playerid);
@@ -395,7 +394,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             }
         }
     }
-    else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
+    else if(gRedakt[playerid] >= REDAKT_TYPE_STREET_MARKET && gRedakt[playerid] <= REDAKT_TYPE_STREET_TERMINAL) // Объекты для стритов
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), EndObjectEditing(playerid);
@@ -405,7 +404,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
         UpdateLabelTermRace(oid,DP[0][playerid]);
     }
-    else if(gRedakt[playerid] == 26) // Объекты для секты
+    else if(gRedakt[playerid] == REDAKT_TYPE_SECTA) // Объекты для секты
     {
         new fam = PlayerInfo[playerid][pFamily];
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
@@ -430,7 +429,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         SektaObjectHealt[fam] = 1000;
         SaveFamilySekta(fam);
     }
-    else if(gRedakt[playerid] == 27) // Граффити
+    else if(gRedakt[playerid] == REDAKT_TYPE_GRAFFITY) // Граффити
     {
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 10.0)
@@ -481,7 +480,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     return 1;
 }
 
-stock GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
+stock GoEditDynamicObject(playerid, e_RedaktType: id, type, option, slot, objectid, dopoption)
 {
     EditObjectInfo[playerid][editPlayerOrDynamic] = 1;
     gRedakt[playerid] = id;
@@ -494,7 +493,7 @@ stock GoEditDynamicObject(playerid, id, type, option, slot, objectid, dopoption)
 
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_EDITABLE_DYNAMIC_OBJECT, 1); // Editable Dynamic Object
     EditDynamicObject(playerid, objectid);
-    PlayerPlaySound(playerid,17000,0,0,0);
+    PlayerPlaySound(playerid, 17000, 0, 0, 0);
 	return 1;
 }
 
@@ -571,11 +570,11 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         //new type = EditObjectInfo[playerid][editType];
 
         // Условности разных систем при сохранении установки или перемещения объекта
-        if(gRedakt[playerid] == 3) // Создание или Перемещение Map Объекта (Админская Система)
+        if(gRedakt[playerid] == REDAKT_TYPE_MAP) // Создание или Перемещение Map Объекта (Админская Система)
         {
             ObjectMapLabelAll(1, slot);
         }
-        else if(gRedakt[playerid] == 6) // Установка мебели в доме
+        else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
 		{
             new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
             new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
@@ -592,7 +591,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             UpdateObject(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
         }
-        else if(gRedakt[playerid] == 12) // Установка Маппинга на респах банд
+        else if(gRedakt[playerid] == REDAKT_TYPE_GANG_SPAWN_SET) // Установка Маппинга на респах банд
 		{
             if(!IsAGObjectInSquare(oid, x, y)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Объект за пределами территории... {ffcc00}[ Отмена Установки ]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
             if(ObjectInfo[oid][gOmodel][slot] == 2915)
@@ -607,13 +606,13 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             UpdateGangObject(oid+13, OrganInfo[oid+13][gMap], slot);
             update_labelobject(oid, slot), OrgLog(oid+13, "eob", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ObjectInfo[oid][gOmodel][slot], "");
 		}
-        else if(gRedakt[playerid] == 15 || gRedakt[playerid] == 16) // Установка или перенос предмета IKEA
+        else if(gRedakt[playerid] == REDAKT_TYPE_IKEA_SET || gRedakt[playerid] == REDAKT_TYPE_IKEA_MOVE)
 		{
             new mworl = GetPlayerVirtualWorld(playerid), mint = GetPlayerInterior(playerid);
             IkeaInfo[oid][iBuyX] = x;
             IkeaInfo[oid][iBuyY] = y;
             IkeaInfo[oid][iBuyZ] = z;
-            if(gRedakt[playerid] == 15)
+            if(gRedakt[playerid] == REDAKT_TYPE_IKEA_SET)
             {
                 format(IkeaInfo[oid][iName], 24, "%s", object_name(IkeaInfo[oid][iModel]));
                 IkeaInfo[oid][iQuantextures] = object_material(IkeaInfo[oid][iModel]);
@@ -621,11 +620,10 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 format(string,sizeof(string),"[ Server ]: Настройте предмет для продажи [ /ikea %d ]", oid);
                 SendClientMessage(playerid, COLOR_GREY, string);
                 AdminLog("ikea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", IkeaInfo[oid][iModel], "добавил");
-            }
-            if(gRedakt[playerid] == 16)
-            {
+            } else {
                 if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
             }
+
             UpdateIkeaObject(oid);
             if(IkeaInfo[oid][iLabelstat] == 0)
             {
@@ -634,7 +632,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             UpdateLabelIkea(oid);
 		}
-        else if(gRedakt[playerid] == 17) // Перемещение Мебель в Бизнесе
+        else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_FURNITURE_SET) // Перемещение Мебель в Бизнесе
 		{
             new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
             new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
@@ -649,7 +647,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             UpdateObjectBiz(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
-        else if(gRedakt[playerid] == 20 || gRedakt[playerid] == 21) // Установка или перенос предмета в Личном Редакторе
+        else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET || gRedakt[playerid] == REDAKT_TYPE_OWN_MOVE)
 		{
             new prewSel = peoInfo[oid][peoSelObject]; // Получаем ID предыдущего выбранного объекта
             peoInfo[oid][peoSelObject] = slot; // Записываем выбранный новый объект
@@ -659,7 +657,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             peoInfo[oid][peoRX][slot] = rx;
             peoInfo[oid][peoRY][slot] = ry;
             peoInfo[oid][peoRZ][slot] = rz;
-            if(gRedakt[playerid] == 20) peoInfo[oid][peoQuanObjects] ++;
+            if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET) peoInfo[oid][peoQuanObjects] ++;
             if(peoInfo[playerid][peoObjectLabelStatus])
             {
                 update3dtextLabelPos(playerid, slot); // Обновляем label нового объекта
@@ -667,16 +665,16 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             }
             peoInfo[oid][peoQuanUpdates] ++;
 		}
-        else if(gRedakt[playerid] == 22 || gRedakt[playerid] == 23 || gRedakt[playerid] == 24 || gRedakt[playerid] == 25) // Объекты для стритов
+        else if(gRedakt[playerid] >= REDAKT_TYPE_STREET_MARKET && gRedakt[playerid] <= REDAKT_TYPE_STREET_TERMINAL) // Объекты для стритов
         {
             WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
             CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
             UpdateLabelTermRace(oid,DP[0][playerid]);
         }
-        else if(gRedakt[playerid] == 28) // редачим трейлер
+        else if(gRedakt[playerid] == REDAKT_TYPE_TRAILER || gRedakt[playerid] == REDAKT_TYPE_ADM_TRAILER) // редачим трейлер
         {
-            new Float:dist = GetDistancePoint(x, y, z, trailerInfo[oid][tPos][0], trailerInfo[oid][tPos][1], trailerInfo[oid][tPos][2]);
-            if(dist > 20.0)
+            new Float:dist = GetDistancePoint(x, y, z, TrailerInfo[oid][tPos][0], TrailerInfo[oid][tPos][1], TrailerInfo[oid][tPos][2]);
+            if(gRedakt[playerid] != REDAKT_TYPE_ADM_TRAILER && dist > 20.0)
             {
                 ErrorMessage(playerid, "{FF6347}Трейлер слишком далеко от изначальной позиции\n{cccccc}Если вы хотите переместить трейлер в другое место, прикрепите его к автомобилю [ Caps Lock ]");
                 CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
@@ -691,12 +689,12 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 return 1;
             }
 
-            PlaceTrailer(EditObjectInfo[playerid][editOption], trailerInfo[EditObjectInfo[playerid][editOption]][tModel],  x,  y,  z,  rx,  ry, rz);
+            PlaceTrailer(EditObjectInfo[playerid][editOption], TrailerInfo[EditObjectInfo[playerid][editOption]][tModel], x, y, z, rx, ry, rz);
         }
 
         //Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
-        gRedakt[playerid] = 0; // Редактор Off
-		PlayerPlaySound(playerid,6401,0,0,0);
+        CancelPlayerEditObject(playerid);
+		PlayerPlaySound(playerid, 6401, 0, 0, 0);
         //CancelSelectTextDraw(playerid);
         return 1;
     }
@@ -708,7 +706,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     new slot = DP[0][playerid];
-    if(gRedakt[playerid] == 22)
+    if(gRedakt[playerid] == REDAKT_TYPE_STREET_MARKET)
     {
         StreetRacers[slot][racePosMarket][0] = x;
         StreetRacers[slot][racePosMarket][1] = y;
@@ -717,7 +715,7 @@ stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, F
         StreetRacers[slot][racePosMarket][4] = ry;
         StreetRacers[slot][racePosMarket][5] = rz;
     }
-    else if(gRedakt[playerid] == 23)
+    else if(gRedakt[playerid] == REDAKT_TYPE_STREET_BENZ)
     {
         StreetRacers[slot][racePosBenz][0] = x;
         StreetRacers[slot][racePosBenz][1] = y;
@@ -726,7 +724,7 @@ stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, F
         StreetRacers[slot][racePosBenz][4] = ry;
         StreetRacers[slot][racePosBenz][5] = rz;
     }
-    else if(gRedakt[playerid] == 24)
+    else if(gRedakt[playerid] == REDAKT_TYPE_STREET_SERVICE)
     {
         StreetRacers[slot][racePosService][0] = x;
         StreetRacers[slot][racePosService][1] = y;
@@ -735,7 +733,7 @@ stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, F
         StreetRacers[slot][racePosService][4] = ry;
         StreetRacers[slot][racePosService][5] = rz;
     }
-    else if(gRedakt[playerid] == 25)
+    else if(gRedakt[playerid] == REDAKT_TYPE_STREET_TERMINAL)
     {
         StreetRacers[slot][racePosTerminal][0] = x;
         StreetRacers[slot][racePosTerminal][1] = y;
@@ -749,7 +747,7 @@ stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, F
 
 stock CloseEditObject(playerid)
 {
-    if(gRedakt[playerid] > 0 && gRedakt[playerid] != 31 && gRedakt[playerid] != 32)
+    if(IsPlayerEditObject(playerid) && gRedakt[playerid] != REDAKT_TYPE_ACCS && gRedakt[playerid] != REDAKT_TYPE_ADM_ACCS)
 	{
 		if(EditObjectInfo[playerid][editPlayerOrDynamic] == 0) // Player
         {
@@ -757,14 +755,14 @@ stock CloseEditObject(playerid)
             EndObjectEditing(playerid);
         }
 		else CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]); // Dynamic
-		gRedakt[playerid] = 0;
+		CancelPlayerEditObject(playerid);
 	}
     return 1;
 }
 
 stock CancelEditable(playerid)
 {
-    if(gRedakt[playerid] == 0) return 1;
+    if(!IsPlayerEditObject(playerid)) return 1;
 
     new objectid = EditObjectInfo[playerid][editTempObject];
     UnblockEditObject(playerid, objectid);
@@ -775,7 +773,7 @@ stock CancelEditable(playerid)
 
 stock CancelEditPlayerObject(playerid)
 {
-    if(gRedakt[playerid] == 0) return 1;
+    if(!IsPlayerEditObject(playerid)) return 1;
 
     new objectid = EditObjectInfo[playerid][editTempObject];
     if(objectid >= 0) 
@@ -784,15 +782,15 @@ stock CancelEditPlayerObject(playerid)
         DestroyPlayerObject(playerid, objectid);
         EditObjectInfo[playerid][editTempObject] = -1;
     }
-    gRedakt[playerid] = 0; // Редактор Off
-    PlayerPlaySound(playerid,31200,0,0,0);
+    gRedakt[playerid] = REDAKT_TYPE_NONE;
+    PlayerPlaySound(playerid, 31200, 0, 0, 0);
     return 1;
 }
 
 stock UnblockEditObject(playerid, objectid)
 {
-    if(gRedakt[playerid] == 6 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
-    else if(gRedakt[playerid] == 17 && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectBiz(playerid, GetPlayerObjectModel(playerid, objectid));
+    if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectDom(playerid, GetPlayerObjectModel(playerid, objectid));
+    else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_FURNITURE_SET && EditObjectInfo[playerid][editType] == 0) CancelCreateObjectBiz(playerid, GetPlayerObjectModel(playerid, objectid));
     return 1;
 }
 
@@ -814,7 +812,7 @@ stock CancelCreateObjectBiz(playerid, model)
 
 stock CancelDynamicEditable(playerid)
 {
-    if(gRedakt[playerid] == 0) return 1;
+    if(!IsPlayerEditObject(playerid)) return 1;
     CancelSelectTextDraw(playerid);
     
     new oid = EditObjectInfo[playerid][editOption];
@@ -824,18 +822,18 @@ stock CancelDynamicEditable(playerid)
     if(EditObjectInfo[playerid][editType] == 0) // Создание Объекта (Удаляем при отмене)
     {
         // Условности разных систем при отмене создания
-        if(gRedakt[playerid] == 11) // Объект на респе Банд
+        if(gRedakt[playerid] == REDAKT_TYPE_GANG_SPAWN_SET) // Объект на респе Банд
         {
             if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
             ObjectInfo[oid][gOmodel][slot] = 0;
         }
-        else if(gRedakt[playerid] == 15) // IKEA
+        else if(gRedakt[playerid] == REDAKT_TYPE_IKEA_SET) // IKEA
         {
             IkeaInfo[oid][iModel] = 0;
             IkeaInfo[oid][iObject] = 0;
             if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
         }
-        else if(gRedakt[playerid] == 20) // Личный Редактор
+        else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET) // Личный Редактор
         {
             peoInfo[oid][peoModel][slot] = 0;
             peoInfo[oid][peoObject][slot] = 0;
@@ -850,7 +848,7 @@ stock CancelDynamicEditable(playerid)
         Streamer_SetIntData(STREAMER_TYPE_OBJECT, EditObjectInfo[playerid][editObjectid], STREAMER_EDITABLE_DYNAMIC_OBJECT, 0); // Теперь объект никто не редактирует
     }
 
-    gRedakt[playerid] = 0; // Редактор Off
-    PlayerPlaySound(playerid,31200,0,0,0);
+    CancelPlayerEditObject(playerid);
+    PlayerPlaySound(playerid, 31200, 0, 0, 0);
     return 1;
 }

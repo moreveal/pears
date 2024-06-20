@@ -138,7 +138,7 @@ stock use_dom(playerid, dom, inva, useinva)
 	
 	if(OnlineInfo[playerid][oShowTabs] != dom) return 1;
 	if(Veshi[playerid] >= 1) return 1;
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
  		
 	if(useinva != 9999)
 	{
@@ -173,7 +173,7 @@ stock use_dom(playerid, dom, inva, useinva)
 	{
 		new obid = DomInfo[dom][dInvent][inva];
 		if(DomInfo[dom][dSell] >= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете заниматься ремонтом дома во время продажи");
-		if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+		if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
 
 		if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
 		{
@@ -189,7 +189,7 @@ stock use_dom(playerid, dom, inva, useinva)
 
 		new Float:f_pos[4];
 		frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-		CreateEditPlayerObject(playerid, 6, 0, dom, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
+		CreateEditPlayerObject(playerid, REDAKT_TYPE_FURNITURE_SET, 0, dom, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
 		return 1;
 	}
 	
@@ -227,7 +227,7 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowTabs] == 9999
 	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != fpick || PlayerInfo[playerid][pInvenQuan][inva] < fquan) return i_resetveshi(playerid);
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
+	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
 	if(!IsPlayerInRangeOfPoint(playerid,200.0,DomInfo[dom][dEnterX], DomInfo[dom][dEnterY], DomInfo[dom][dEnterZ])) return ErrorMessage(playerid, "{FF6347}Зайдите в дом, чтобы положить предмет"), i_resetveshi(playerid);
 	

@@ -685,7 +685,7 @@ stock pricebiz(playerid, b)
 stock use_biz(playerid, biz, inva, useinva)
 {
     if(Veshi[playerid] >= 1) return i_resettabs(playerid);
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Ваш персонаж занят ремонтом или настройкой предмета"), i_resettabs(playerid);
+	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Ваш персонаж занят ремонтом или настройкой предмета"), i_resettabs(playerid);
 	if(useinva != 9999)
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != BizzInfo[biz][bInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
@@ -713,7 +713,7 @@ stock use_biz(playerid, biz, inva, useinva)
 
 		new Float:f_pos[4];
 		frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-		CreateEditPlayerObject(playerid, 17, 0, biz, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
+		CreateEditPlayerObject(playerid, REDAKT_TYPE_BIZ_FURNITURE_SET, 0, biz, inva, obid, f_pos[0], f_pos[1], f_pos[2], 0.0000, 0.0000, 0.0000);
 		return 1;
 	}
 

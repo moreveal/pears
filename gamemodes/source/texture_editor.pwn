@@ -54,7 +54,7 @@ CMD:textur(playerid, const params[]) return pc_cmd_texture(playerid, params);
 CMD:texture(playerid, const params[])
 {
     if(Device[playerid] == 1) return ErrorMessage(playerid, "{FF6347}Недоступно во время игры на смартфоне");
-    if(gRedakt[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
+    if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Вы используете редактор объектов");
 
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ретекстур объекта /texture ID объекта");
 	if(LabelsInfo[playerid][labelCreate] == 0) return ErrorMessage(playerid, "{FF6347}Активируйте отображение 3D Лейблов на объектах\n{cccccc}Для домов: /dedit >> 3D Лейблы\n{cccccc}Для бизнесов: /bedit >> 3D Лейблы");
@@ -77,7 +77,7 @@ stock Show3DMenu(playerid)
 
   	HidePlayerDialog(playerid);
   	TextDrawHideForPlayer(playerid, PissDraw), TextDrawHideForPlayer(playerid, PissDraw2);
-	gRedakt[playerid] = 0;
+	CancelPlayerEditObject(playerid);
 	OnlineInfo[playerid][oShowInterface] = 19;
 
 	PearsWeather(playerid);

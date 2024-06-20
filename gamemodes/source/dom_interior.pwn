@@ -14,7 +14,7 @@ stock EditObjectDom(playerid, dom, oba)
 		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
 
 	if(OnlineInfo[playerid][oShowInterface] == 2) CloseSmartfon(playerid);
-	GoEditDynamicObject(playerid, 6, 1, dom, oba, DomInfo[dom][dObject][oba], 0);
+	GoEditDynamicObject(playerid, REDAKT_TYPE_FURNITURE_SET, 1, dom, oba, DomInfo[dom][dObject][oba], 0);
 	return 1;
 }
 

@@ -337,7 +337,7 @@ stock dialogCase_Sekta(playerid, dialogid, response, listitem)
             {
                 new Float:f_pos[4];
                 frontme(playerid, 2.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-                CreateEditPlayerObject(playerid, 26, 0, 0, 0, 19527,f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
+                CreateEditPlayerObject(playerid, REDAKT_TYPE_SECTA, 0, 0, 0, 19527,f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
             }
             if(listitem == 1)
             {

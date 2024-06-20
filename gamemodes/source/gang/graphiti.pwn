@@ -78,14 +78,14 @@ stock ShowAllGraphiti(playerid)
 
 stock CreateGraphiti(playerid)
 {
-    if(gRedakt[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж уже наносит граффити или редактирует какой-то объект");
+    if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Ваш персонаж уже наносит граффити или редактирует какой-то объект");
     if(get_invent4(playerid, 197, 0) <= 0) return ErrorMessage(playerid, "{FF6347}Вам нужен баллончик с краской\n{cccccc}Вы можете приобрести его в любом супермаркете");
     if(Hold[playerid] != 197) return ErrorMessage(playerid, "{FF6347}Возьмите в руки баллончик с краской\n{cccccc}Откройте инвентарь и нажмите на него два раза");
 
     new g = fraction(playerid);
     new Float:f_pos[4];
     frontme(playerid, 1.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-    new objectid = CreateEditPlayerObject(playerid, 27, 0, 0, 0, 2729, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, f_pos[3]);
+    new objectid = CreateEditPlayerObject(playerid, REDAKT_TYPE_GRAFFITY, 0, 0, 0, 2729, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, f_pos[3]);
     SetMaterialGraffity(playerid, g, objectid);
     return 1;
 }

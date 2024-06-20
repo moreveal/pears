@@ -644,7 +644,7 @@ CMD:rvanka(playerid)
 CMD:setbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /setbiz ID номер ]");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /setbiz ID Номер ]");
 	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pBusiness] = params[1];
 	new string[144];
@@ -657,7 +657,7 @@ CMD:setbiz(playerid, const params[])
 CMD:setdom(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер дома игроку [ /setdom ID номер ]");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер дома игроку [ /setdom ID Номер ]");
 	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pDom]=params[1];
 	new string[144];
@@ -670,7 +670,7 @@ CMD:setdom(playerid, const params[])
 CMD:setroom(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setroom ID номер ]");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setroom ID Номер ]");
 	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pRoom]=params[1];
 	new string[144];

@@ -246,10 +246,10 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
 
                     new Float:f_pos[4];
                     frontme(playerid, 5.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-                    if(moving == 0) CreateEditPlayerObject(playerid, 21 + listitem, 0, listitem -1, 0, objectid, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
+                    if(moving == 0) CreateEditPlayerObject(playerid, REDAKT_TYPE_STREET_MARKET + e_RedaktType:(listitem - 1), 0, listitem -1, 0, objectid, f_pos[0], f_pos[1], f_pos[2], 0.0, 0.0, 0.0);
                     else if(moving == 1)
                     {
-                        GoEditDynamicObject(playerid, 21 + listitem, 1, listitem - 1, 0, RentObjectRace[slot][listitem -1], 0);
+                        GoEditDynamicObject(playerid, REDAKT_TYPE_STREET_MARKET + e_RedaktType:(listitem - 1), 1, listitem - 1, 0, RentObjectRace[slot][listitem -1], 0);
                     }
                 }
             }

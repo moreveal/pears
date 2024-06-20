@@ -877,7 +877,7 @@ stock use_prisontable(playerid, i, inva, useinva)
 	
 	if(OnlineInfo[playerid][oShowTabs] != i) return 1;
 	if(Veshi[playerid] >= 1) return 1;
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
+	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов");
  		
 	if(useinva != 9999)
 	{
@@ -1022,7 +1022,7 @@ stock put_prisontable(playerid, inva, i, thingId, thingQuan, binva, thingType, t
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1 || binva == 9999 || OnlineInfo[playerid][oShowTabs] == 9999
 	|| PlayerInfo[playerid][pInven][inva] == 0 || PlayerInfo[playerid][pInven][inva] != thingId || PlayerInfo[playerid][pInvenQuan][inva] < thingQuan) return i_resetveshi(playerid);
-	if(gRedakt[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
+	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Нельзя перекладывать предметы во время использования редактора объектов"), i_resetveshi(playerid);
 	
 	if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
 	
