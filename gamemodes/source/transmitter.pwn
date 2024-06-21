@@ -409,6 +409,8 @@ CMD:fb(playerid, const params[])
 stock commandF(playerid, typeCommand, const params[])
 {
     if(PlayerInfo[playerid][pFamily] == 0) return ErrorMessage(playerid, "{FF6347}У вас нет семьи");
+    if(GetPVarInt(playerid, "adminreadfam")) return ErrorMessage(playerid, "{FF6347}Нельзя писать в чат семьи, когда вы её прослушиваете");
+
 	if(checkTransmitterPermission(playerid)) return 1; // Проверки разрешений рации
 
     if(PlayerInfo[playerid][pTransmitterOff][3] == true) return ErrorMessage(playerid, "{FF6347}В вашей рации выключен канал семьи /f /fb [ Y >> Меню >> Настройки Чата ]");
@@ -624,10 +626,13 @@ function SendFamilyMessage(f, color, const string[])
 {
 	foreach (Player, i)
 	{
+        new familyid = f;
+        if(GetPVarInt(i, "adminreadfam")) familyid = GetPVarInt(i, "adminreadfam"); // Меняем номер семьи при чтении [ /readfam ]
+
         if(OnlineInfo[i][oLogged] == 0 // Не залогинился - игнорим
             || PlayerInfo[i][pBkyrenie] >= 2 // В космосе - игнорим
             || PlayerInfo[i][pTransmitterOff][3] == true // Канал выключен - игнорим
-            || PlayerInfo[i][pFamily] != f) continue; 
+            || PlayerInfo[i][pFamily] != familyid) continue;
 
 		SendClientMessage(i, color, string);
 	}
