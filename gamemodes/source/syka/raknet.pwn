@@ -1,8 +1,12 @@
+const
+    RPC_PLAYERGIVEDAMAGE = 115,
+    RPC_SENDCLIENTMESSAGE = 93;
+
 public OnIncomingRPC(playerid, rpcid, BitStream:bs)
 {
     switch (rpcid)
     {
-        case 115: // Получение и нанесение урона
+        case RPC_PLAYERGIVEDAMAGE:
         {
             new bool: type, id, Float: damage, weaponid, bodypart;
             BS_ReadValue(bs,
