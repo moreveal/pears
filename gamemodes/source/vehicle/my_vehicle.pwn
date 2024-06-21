@@ -4205,8 +4205,8 @@ stock slcar(playerid, i)
 		if(VehInfo[v][vKey] != 0 && VehInfo[v][vKeyUnix] > gettime()) format(str,sizeof(str),"{cccccc}Отозвать Ключи\t\n"), strcat(sctring,str);
 		else format(str,sizeof(str),"{cccccc}Дать Ключи\t\n"), strcat(sctring,str);
 
-		if(VehInfo[v][vUpgrade] >= 1) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{99ff66}[ OK ]\n"), strcat(sctring,str);
-		else if(VehInfo[v][vUpgrade] == 0) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 490G ]\n"), strcat(sctring,str);
+		if(VehInfo[v][vEnhancedBoot]) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{99ff66}[ OK ]\n"), strcat(sctring,str);
+		else if(!VehInfo[v][vEnhancedBoot]) format(str,sizeof(str),"{cccccc}Увеличить Багажник \t{ffcc00}[ 490G ]\n"), strcat(sctring,str);
 		if(VehInfo[v][vSellcar] == 0) format(str,sizeof(str),"{99ff66}Выставить {cccccc}на Продажу\t\n"), strcat(sctring,str);
 		else format(str,sizeof(str),"{FF6347}Отменить {cccccc}Продажу\t\n"), strcat(sctring,str);
 		format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
@@ -4246,7 +4246,7 @@ stock VehicleInfoCreateLines(vehicleid)
 	new line[214], lines[4096];
 	format(line,sizeof(line),"\n"), strcat(lines,line);
 
-	format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: %s", VehInfo[vehicleid][vUpgrade] ? "{99ff66}установлен" : "{444444}отсутствует"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}Увеличенный Багажник: %s", VehInfo[vehicleid][vEnhancedBoot] ? "{99ff66}установлен" : "{444444}отсутствует"), strcat(lines,line);
 	if(VehInfo[vehicleid][vHandlingModel] > 0) format(line,sizeof(line),"\n{cccccc}Двигатель и Подвеска: {0088ff}%s", GetVehicleName(VehInfo[vehicleid][vHandlingModel])), strcat(lines,line);
 	if(VehInfo[vehicleid][vArmor] > 0) format(line,sizeof(line),"\n{cccccc}Бронеплёнка: {0088ff}%.0f", VehInfo[vehicleid][vArmor]), strcat(lines,line);
 	if(VehInfo[vehicleid][vAlarmSystem] > 0)
@@ -4528,7 +4528,7 @@ function LoadCar(playerid, dab, race_check)
 			cache_get_value_name_int(0, "comp11", VehInfo[vehid][vComp11]);
 			cache_get_value_name_int(0, "benz2", Gelium[vehid]);
 			cache_get_value_name_int(0, "keyunix", VehInfo[vehid][vKeyUnix]);
-			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vUpgrade]);
+			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vEnhancedBoot]);
 			cache_get_value_name_int(0, "panels", VehInfo[vehid][vPanels]);
 			cache_get_value_name_int(0, "doors", VehInfo[vehid][vDoors]);
 			cache_get_value_name_int(0, "fara", VehInfo[vehid][vFara]);

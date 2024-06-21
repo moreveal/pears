@@ -185,7 +185,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	GetCoordBootVehicle(v, Boot[0], Boot[1], Boot[2]);
 	if(IsPlayerInRangeOfPoint(playerid, 1.0, Boot[0], Boot[1], Boot[2]) && !IsABootFront(v) || IsPlayerInRangeOfPoint(playerid, 1.0, Bonnet[0], Bonnet[1], Bonnet[2]) && IsABootFront(v))
 	{
-	    if(VehInfo[v][vUpgrade] == 0) // Проверка на слоты багажника
+	    if(!VehInfo[v][vEnhancedBoot]) // Проверка на слоты багажника
 		{
 			if(IsA_Gen5(v) && binva >= 5) return ErrorMessage(playerid, "{FF6347}В багажнике не хватает места [ Y >> Транспорт >> Увеличить Багажник ]"), i_resetveshi(playerid);
 
@@ -239,11 +239,8 @@ stock PutThingBoot(v, thingId, quan, para, qara, thingType, thingPack, useinva) 
 {
     new inva = -1;
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
-
-	new max_slotes = 20;
-	if (IsA_Gen5(v)) max_slotes = 5;
-	else if(IsA_Gen10(v)) max_slotes = 10;
-	else if(IsA_Gen15(v)) max_slotes = 15;
+	
+	new max_slotes = GetMaxBootSlotes(v);
 	
 	if(useinva == 999) // Не знаем в какую ячейку класть
 	{
@@ -430,7 +427,7 @@ stock shift_boot(playerid, v, getinva, putinva) // Перемещение пре
 			i_resettabs(playerid);
 			return 1;
 		}
-		if(VehInfo[v][vUpgrade] == 0)
+		if(!VehInfo[v][vEnhancedBoot])
 		{
 			if(IsA_Gen5(v) && putinva >= 5) return ErrorMessage(playerid, "{FF6347}В багажнике не хватает места [ Y >> Транспорт >> Увеличить Багажник ]"), i_resetveshi(playerid);
 			if(IsA_Gen10(v) && putinva >= 10) return ErrorMessage(playerid, "{FF6347}В багажнике не хватает места [ Y >> Транспорт >> Увеличить Багажник ]"), i_resetveshi(playerid);
@@ -516,7 +513,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 	if(fpick == 0)
 	{
 		new blocker = 0;
-		if(VehInfo[v][vUpgrade] == 1) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]), PlayerTextDrawColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
+		if(VehInfo[v][vEnhancedBoot]) PlayerTextDrawBackgroundColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]), PlayerTextDrawColour(playerid, PlaNestPick[inva][playerid], PlayerInfo[playerid][pStyle1]);
 		else
 		{
    			if(IsA_Gen5(v))
@@ -731,25 +728,37 @@ stock ClearBootVehicleAll(v)
 	return 1;
 }
 
+stock GetMaxBootSlotes(v) {
+	new max_slotes = 20;
+
+	if (!VehInfo[v][vEnhancedBoot]) {
+		if (IsA_Gen5(v)) max_slotes = 5;
+		else if(IsA_Gen10(v)) max_slotes = 10;
+		else if(IsA_Gen15(v)) max_slotes = 15;
+	}
+
+	return max_slotes;
+}
+
 stock CheckBoot(v)
 {
-	if(VehInfo[v][vUpgrade] == 1)
+	if(VehInfo[v][vEnhancedBoot])
 	{
 		if(VehInfo[v][vInvent][0] >= 1 && VehInfo[v][vInvent][1] >= 1 && VehInfo[v][vInvent][2] >= 1 && VehInfo[v][vInvent][3] >= 1 && VehInfo[v][vInvent][4] >= 1
 		&& VehInfo[v][vInvent][5] >= 1 && VehInfo[v][vInvent][6] >= 1 && VehInfo[v][vInvent][7] >= 1 && VehInfo[v][vInvent][8] >= 1 && VehInfo[v][vInvent][9] >= 1
 		&& VehInfo[v][vInvent][10] >= 1 && VehInfo[v][vInvent][11] >= 1 && VehInfo[v][vInvent][12] >= 1 && VehInfo[v][vInvent][13] >= 1 && VehInfo[v][vInvent][14] >= 1
 		&& VehInfo[v][vInvent][15] >= 1 && VehInfo[v][vInvent][16] >= 1 && VehInfo[v][vInvent][17] >= 1 && VehInfo[v][vInvent][18] >= 1 && VehInfo[v][vInvent][19] >= 1) return 1;
 	}
-	else if(IsA_Gen5(v) && VehInfo[v][vUpgrade] == 0)
+	else if(IsA_Gen5(v) && !VehInfo[v][vEnhancedBoot])
 	{
 	    if(VehInfo[v][vInvent][0] >= 1 && VehInfo[v][vInvent][1] >= 1 && VehInfo[v][vInvent][2] >= 1 && VehInfo[v][vInvent][3] >= 1 && VehInfo[v][vInvent][4] >= 1) return 1;
  	}
- 	else if(IsA_Gen10(v) && VehInfo[v][vUpgrade] == 0)
+ 	else if(IsA_Gen10(v) && !VehInfo[v][vEnhancedBoot])
 	{
 	    if(VehInfo[v][vInvent][0] >= 1 && VehInfo[v][vInvent][1] >= 1 && VehInfo[v][vInvent][2] >= 1 && VehInfo[v][vInvent][3] >= 1 && VehInfo[v][vInvent][4] >= 1
 		&& VehInfo[v][vInvent][5] >= 1 && VehInfo[v][vInvent][6] >= 1 && VehInfo[v][vInvent][7] >= 1 && VehInfo[v][vInvent][8] >= 1 && VehInfo[v][vInvent][9] >= 1) return 1;
  	}
- 	else if(IsA_Gen15(v) && VehInfo[v][vUpgrade] == 0)
+ 	else if(IsA_Gen15(v) && !VehInfo[v][vEnhancedBoot])
 	{
 	    if(VehInfo[v][vInvent][0] >= 1 && VehInfo[v][vInvent][1] >= 1 && VehInfo[v][vInvent][2] >= 1 && VehInfo[v][vInvent][3] >= 1 && VehInfo[v][vInvent][4] >= 1
 		&& VehInfo[v][vInvent][5] >= 1 && VehInfo[v][vInvent][6] >= 1 && VehInfo[v][vInvent][7] >= 1 && VehInfo[v][vInvent][8] >= 1 && VehInfo[v][vInvent][9] >= 1
