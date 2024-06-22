@@ -104,7 +104,7 @@ stock GetPlayerModelSkinOriginal(playerid) // Получаем оригинал�
 
 CMD:getskin(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 15) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 15+ ]");
 
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Получить информацию о скине игрока [ /getskin ID ]");	
 
@@ -119,7 +119,7 @@ CMD:getskin(playerid, const params[])
 
 CMD:setskin(playerid, const params[]) // Сменить активную одежду игрока
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 15) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 15+ ]");
 
     new tmp[34], giveplayerid;
 	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить одежду [ /setskin ID ID Скина ]");
@@ -160,7 +160,7 @@ CMD:setskin(playerid, const params[]) // Сменить активную оде�
 
 CMD:giveskin(playerid, const params[]) // Выдать одежду в инвентарь
 {
-	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 19+ ]");
+	if(PlayerInfo[playerid][pSoska] < 15) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 15+ ]");
 	new tmp[34], giveplayerid;
 	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать одежду /giveskin [ID] [ID Скина]");
 	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");

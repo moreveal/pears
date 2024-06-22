@@ -4804,7 +4804,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 
 CMD:delcar(playerid, const params[])
 {
-	if(!(PlayerInfo[playerid][pSoska] >= 19 
+	if(!(PlayerInfo[playerid][pSoska] >= 15
 		|| PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
 	new tmp[24],slot,para1;
@@ -4928,8 +4928,7 @@ stock UnPackVehicle(playerid)
 
 CMD:addcar(playerid, const params[])
 {
-    if(!(PlayerInfo[playerid][pSoska] >= 19 
-		|| PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(!(PlayerInfo[playerid][pSoska] >= 15 || PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new para1,vehiclename[64],tmp[24],nyche;
     if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");
@@ -4938,7 +4937,7 @@ CMD:addcar(playerid, const params[])
 	if(vehid == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 	if(!IsAVehExisting(vehid)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
 
-    if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный, для продажи, транспорт
+    if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный для продажи транспорт
     else nyche = 0;
     para1 = ReturnUser(tmp, 1);
     if(IsPlayerConnected(para1))
@@ -4946,7 +4945,6 @@ CMD:addcar(playerid, const params[])
         if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу выдать личный транспорт только себе");
         new freeSlot = GetPlayerFreeVehSlot(para1);
         if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет свободного слота\n\n{cccccc}Возможно, требуется открыть дополнительные слоты [ Y >> Donate ]");
-
 
 		new posId, biz, Float:pos[4];
 		if(IsABoat(vehid)) biz = 90 + random(2), posId = random(4);

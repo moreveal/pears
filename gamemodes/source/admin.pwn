@@ -278,7 +278,7 @@ CMD:reloadpriceveh(playerid)
 alias:rbiz("reloadbiz", "relbiz")
 CMD:rbiz(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(PlayerInfo[playerid][pSoska] < 15 || PlayerInfo[playerid][pSoska] == 19) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Добавить новые товары в бизнес [ /rbiz ID ][ 0 - Сбросить Все ]");
 	new string[128];
 	if(params[0] == 0)
@@ -323,10 +323,11 @@ CMD:rbizforce(playerid, const params[])
 	return 1;
 }
 
+alias:reloadbizpos("rbizpos")
 CMD:reloadbizpos(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить позицию бизнеса [ /reloadbizpos ID ][ 0 - Сбросить Все ]");
+	if(PlayerInfo[playerid][pSoska] < 15 || PlayerInfo[playerid][pSoska] == 19) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Сбросить позицию бизнеса [ /reloadbizpos ID ][ 0 - Сбросить Все ]");
 	new string[128];
 	if(params[0] == 0)
 	{
