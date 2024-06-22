@@ -15,25 +15,30 @@ stock ProcessFollowMe(playerid)
 			    new w = GetPlayerVirtualWorld(copid), i = GetPlayerInterior(copid);
 			    if((w != GetPlayerVirtualWorld(playerid) || i != GetPlayerInterior(playerid))) S_SetPlayerVirtualWorld(playerid, w, i), PPSetPlayerInterior(playerid, i);
 
-				// Если мы дальше 4 метров и ближе 20 заставляем игрока идти за нами
-				if(distcop >= 4.0)
+				// Если мы дальше 2.5 метров
+				static const Float: min_dist = 2.5;
+				if(distcop >= min_dist)
 				{
 					TurnPlayerFaceToPlayer(playerid, copid); // Поворачиваем лицом
-					if(GetPVarInt(playerid, "Follow_Run") == 0)
+
+					//if (distcop <= max_dist) {
+					if(!GetPVarInt(playerid, "Follow_Run"))
 					{
 						ApplyAnimation(playerid, "PED", "sprint_panic", 4.0, true, true, true, false, 0);
 						SetPVarInt(playerid, "Follow_Run", 1);
 					}
+					//}
 
-					if (distcop >= 10.0) {
-						new Float: f_pos[4];
-						backme(copid, 1.0, f_pos[0], f_pos[1], f_pos[2], f_pos[3]);
-						PPSetPlayerPosFindZ(playerid, f_pos[0], f_pos[1], f_pos[2]);
+					// Если впереди есть препятствие - телепортируемся к копу
+					if (CA_IsPlayerBlocked(playerid, .dist = 1.0, .height = 0.15)) {
+						new Float: pos[4];
+						backme(copid, 1.5, pos[0], pos[1], pos[2], pos[3]);
+						PPSetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 					}
 				}
 
 				// Подошли близко, останавливаем
-				if(distcop <= 3.9 && GetPVarInt(playerid, "Follow_Run") == 1) StopFollowMe(playerid);
+				if(distcop < min_dist && GetPVarInt(playerid, "Follow_Run")) StopFollowMe(playerid);
 
 				// Разрешаем передвижение с места смерти, если игрок без сознания
 				if (!IsBlockDeathReturnEnabled(playerid))
@@ -49,7 +54,7 @@ stock StopFollowMe(playerid)
 {
 	ApplyAnimation(playerid,"PED","facanger",4.0, false, true, true, false, false);
 	ClearAnimations(playerid);
-	SetPVarInt(playerid, "Follow_Run", 0);
+	DeletePVar(playerid, "Follow_Run");
 	return 1;
 }
 
@@ -165,5 +170,6 @@ stock StopFollow(p)
 		if(OnlineInfo[s][oLogged] == 1) Follow[s] = 9999, FollowTime[s] = 0;
 	}
 	Follow[p] = 9999, FollowTime[p] = 0;
+	DeletePVar(p, "Follow_Run");
 	return 1;
 }

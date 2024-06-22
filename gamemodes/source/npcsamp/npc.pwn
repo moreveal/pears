@@ -163,7 +163,7 @@ stock OnNpcSpawn(playerid)
     PPSetPlayerInterior(playerid, NpcPositionSpawn[id][Npc_Interior]);
     m_custom_sync_SetPlayerSkin(playerid, PlayerInfo[playerid][pModel]);
     RemovePlayerFromVehicle(playerid);
-    SetPlayerPos(playerid, NpcPositionSpawn[id][Npc_X],NpcPositionSpawn[id][Npc_Y],NpcPositionSpawn[id][Npc_Z]);
+    PPSetPlayerPos(playerid, NpcPositionSpawn[id][Npc_X],NpcPositionSpawn[id][Npc_Y],NpcPositionSpawn[id][Npc_Z]);
     PPSetPlayerFacingAngle(playerid, NpcPositionSpawn[id][Npc_A]);
     NPCInfo[id][npcStart] = false;
     return 1;

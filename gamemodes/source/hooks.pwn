@@ -49,7 +49,7 @@ stock PPAttachTrailerToVehicle(trailerid, vehicleid)
 #endif
 #define AttachTrailerToVehicle PPAttachTrailerToVehicle
 
-stock PPSetPlayerSkin(playerid, skinid) {
+stock __HOOK_SetPlayerSkin(playerid, skinid) {
 	new result = SetPlayerSkin(playerid, skinid);
 	TogglePlayerControllable(playerid, true);
 	return result;
@@ -60,7 +60,19 @@ stock PPSetPlayerSkin(playerid, skinid) {
 #else
 	#define _ALS_SetPlayerSkin
 #endif
-#define SetPlayerSkin PPSetPlayerSkin
+#define SetPlayerSkin __HOOK_SetPlayerSkin
+
+stock __HOOK_ApplyAnimation(playerid, const animationLibrary[], const animationName[], Float: delta, bool: loop, bool: lockX, bool: lockY, bool: freeze, time, FORCE_SYNC: forceSync = SYNC_NONE) {
+	if (GetPVarInt(playerid, "Follow_Run")) return 0; // Не ставим анимацию, если игрока ведут за собой
+	return ApplyAnimation(playerid, animationLibrary, animationName, delta, loop, lockX, lockY, freeze, time, forceSync);
+}
+
+#if defined _ALS_ApplyAnimation
+	#undef ApplyAnimation
+#else
+	#define _ALS_ApplyAnimation
+#endif
+#define ApplyAnimation __HOOK_ApplyAnimation
 
 /*stock PPmysql_tquery(MySQL:handle, const query[], const callback[] = "", const format[] = "", {Float,_}:...)
 {
