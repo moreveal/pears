@@ -2424,8 +2424,8 @@ stock player_tile(playerid, inva)
 				else i_resetveshi(playerid);
 			}
 		}
-		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] != inva) i_resetveshi(playerid); // Сбрасываем Выбор
-        else if(OnlineInfo[playerid][oInventSelectLeft] != 9999 && OnlineInfo[playerid][oInventSelectLeft] == inva) // Выполняем
+		else if(OnlineInfo[playerid][oInventSelectLeft] != inva) i_resetveshi(playerid); // Сбрасываем Выбор
+        else // Выполняем
 		{
 			// Упаковываем подарок
 			if(Hold[playerid] == 4)

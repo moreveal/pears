@@ -74,6 +74,7 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 				ShowDialog(suspectid, 163, DIALOG_STYLE_MSGBOX, "Заказ", string, "Да", "Нет");
 			}
 		}
+		PPSpawnPlayer(suspectid);
 	}
 	else
 	{
