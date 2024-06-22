@@ -61,20 +61,41 @@ stock showDialogAllDivisions(playerid)
 }
 
 // Меню подфракции
-CMD:div(playerid) return pc_cmd_division(playerid);
+alias:division("div")
 CMD:division(playerid)
 {
 	if(PlayerInfo[playerid][pDivision][0] == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
 	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	DP[1][playerid] = fraction(playerid)-1;
-	DP[2][playerid] = PlayerInfo[playerid][pDivision][0]-1;
+	DP[2][playerid] = PlayerInfo[playerid][pDivision][0] - 1;
 
 	DP[6][playerid] = 0;
     PlayerPlaySound(playerid,1150,0,0,0);
     showDialogMenuDivision(playerid);
 	return 1;
 }
+
+// Цвет подфракции
+CMD:divcolor(playerid) {
+	new g = fraction(playerid),
+		i = PlayerInfo[playerid][pDivision][0] - 1;
+
+	if(i < 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
+	if(g < 1) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+
+	new div_color = GetDivisionColor(g, i);
+	if (GetPlayerColor(playerid) == div_color) {
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Значок отличия подфракции выключен");
+		SetPlayerColor(playerid, INV_COLOR);
+	} else {
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я включил значок отличия подфракции");
+		SetPlayerColor(playerid, div_color);
+	}
+
+	return 1;
+}
+
 stock showDialogMenuDivision(playerid)
 {
 	new g = DP[1][playerid]; // Получаем id организации
