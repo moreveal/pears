@@ -2833,7 +2833,7 @@ stock player_tile(playerid, inva)
 					if(weapon == 34)
 					{
 						if(PlayerInfo[playerid][pMember] != 8 
-							&& PlayerInfo[playerid][pMember] != 22) return ErrorMessage(playerid, 
+							&& PlayerInfo[playerid][pMember] != 1) return ErrorMessage(playerid, 
 							"{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SAPD"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
