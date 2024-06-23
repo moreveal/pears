@@ -284,7 +284,7 @@ stock PutSubentryLoad(f, i, p, bool:status)
 
 #define MAX_CRIME_PLAYER 10
 
-enum wantedInfo
+enum e_WantedInfo
 {
     wanCrime[MAX_CRIME_PLAYER], // id статей
     wanSubentry[MAX_CRIME_PLAYER], // id подстатей
@@ -297,7 +297,7 @@ enum wantedInfo
     wanTicketUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
     bool:wanLoad // Загрузка розыска из базы
 };
-new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][wantedInfo];
+new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][e_WantedInfo];
 new WantedPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
 new TicketPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
 
