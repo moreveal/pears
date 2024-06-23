@@ -220,7 +220,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положить туда деталь");
                 {
                     new stringlog[64];
-                    format(stringlog,sizeof(stringlog),"Снял деталь тюнинга %s в СТО",friskName[VehInfo[v][vTunningID][slot]]);
+                    format(stringlog,sizeof(stringlog),"Снял деталь тюнинга %s в СТО %d",friskName[VehInfo[v][vTunningID][slot]],gAutosalon[playerid]);
                     CarLog("settun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], VehInfo[v][vTunningID][slot], stringlog);
                 }
                 RemoveDetailTunningSlot(v, slot);
@@ -306,7 +306,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         VehInfo[v][vTunningType][slot] = friskDetail[TempDetail[playerid][i]-207][1];
                         BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                     }
-                    format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s",friskName[TempDetail[playerid][i]]);
+                    format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизе %d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
                     CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
                     TempDetail[playerid][i] = 0;
                 }
