@@ -218,6 +218,11 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
                 if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В багажнике авто нет места что бы положить туда деталь");
+                {
+                    new stringlog[64];
+                    format(stringlog,sizeof(stringlog),"Снял деталь тюнинга %s в СТО",friskName[VehInfo[v][vTunningID][slot]]);
+                    CarLog("settun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], VehInfo[v][vTunningID][slot], stringlog);
+                }
                 RemoveDetailTunningSlot(v, slot);
                 SaveOneTunning(v, slot);
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
@@ -271,6 +276,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 }
             }
             if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+            new stringlog[128];
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
                 new slot = -1;
@@ -292,12 +298,16 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                     }
                     else
                     {
+                        format(stringlog,sizeof(stringlog),"Деталь %s заменена в автосервисе",friskName[VehInfo[v][vTunningID][slot]]);
+                        CarLog("PutThingBoot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], VehInfo[v][vTunningID][slot], stringlog);
                         PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
                         VehInfo[v][vTunningID][slot] = TempDetail[playerid][i];
                         VehInfo[v][vTunningQara][slot] = 0;
                         VehInfo[v][vTunningType][slot] = friskDetail[TempDetail[playerid][i]-207][1];
                         BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                     }
+                    format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s",friskName[TempDetail[playerid][i]]);
+                    CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
                     TempDetail[playerid][i] = 0;
                 }
             }
@@ -357,6 +367,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             if(listitem == 0) DiagnosVehicle(playerid, v, 0);
             if(listitem >= 1 && listitem <= 6)
             {
+                new stringlog[50];
                 if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
                 if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Это не ваш личный транспорт");
                 if(!IsACar(VehInfo[v][vModel])) return ErrorMessage(playerid,"{ff6347}Тюнинг можно снимать только с автомобиля!");
@@ -364,6 +375,8 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 if(slot == -1) return ErrorMessage(playerid,"{ff6347}В вашем транспорте не стоит тип детали");
                 new put_inva = GiveThingPlayer(playerid, VehInfo[v][vTunningID][slot], 1, 0, VehInfo[v][vTunningQara][slot], 0, 0, 9999); // Выдаём предмет игроку
                 if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}В инвентаре нет места чтобы положить туда деталь");
+                format(stringlog,sizeof(stringlog),"Снял деталь тюнинга %s",friskName[VehInfo[v][vTunningID][slot]]);
+                CarLog("settun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], VehInfo[v][vTunningID][slot], stringlog);
                 RemoveDetailTunningSlot(v, slot);
                 SaveOneTunning(v, slot);
                 return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");

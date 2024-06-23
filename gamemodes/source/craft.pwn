@@ -876,6 +876,11 @@ function CraftProcess(playerid, tabs_load)
                     format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость установки деталий повышается"), strcat(lines,line);
                     format(line,sizeof(line),"\n{666666}Навык повышается при ремонте двигателя"), strcat(lines,line);
                     format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
+                    {
+                        new stringlog[64];
+                        format(stringlog,sizeof(stringlog),"Установил деталь тюнинга %s",friskName[thingId]);
+                        CarLog("settun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[vehicleid][vModel], thingId, stringlog);
+                    }
                     SaveOneTunning(vehicleid, slot2);
                 }
                 else
