@@ -1744,6 +1744,7 @@ stock CreateJsonInvent(playerid, i, &JsonNode:node)
 		"type", JSON_Int(PlayerInfo[playerid][pInvenType][i]),
 		"pack", JSON_Int(PlayerInfo[playerid][pInvenPack][i])
 	);
+
 	return 1;
 }
 

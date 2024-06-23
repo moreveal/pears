@@ -294,7 +294,7 @@ enum e_WantedInfo
     wanTicketSubentry[MAX_CRIME_PLAYER], // id подстатей штрафа
     wanTicketPoliceId[MAX_CRIME_PLAYER], //  userid полицейского
     wanTicketUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
-    bool:wanLoad // Загрузка розыска из базы
+    bool: wanLoad // Загрузка розыска из базы
 };
 new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][e_WantedInfo];
 new WantedPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
