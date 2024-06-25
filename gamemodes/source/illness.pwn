@@ -1,6 +1,35 @@
 new zones_cold[MAX_REALPLAYERS], zones_coldstat[MAX_REALPLAYERS], incold[MAX_REALPLAYERS];
 new vampire[MAX_REALPLAYERS];
 
+new illnessName[][] =
+{
+    "None", "Хламидиоз", "Гонорея", "Сифилис", "Лучевая Болезнь", "Перитонит Мочевого Пузыря", "Грибок Ногтей", "Дерматит", "Акне", "Порошковая Зависимость",
+	"Никотиновая Зависимость", "Алкоголизм", "Гастрит", "Язва", "Простуда", "ОРВИ", "Грипп", "Covid-19", "Вампиризм"
+};
+
+alias:sick("getinfect")
+CMD:sick(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть список заболевших в игре [ /sick ID Болезни ]");
+	if(params[0] < 1 || params[0] > 18) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не меньше 1 и не больше 18");
+
+	new line[100],lines[4096], quan;
+	format(line,sizeof(line),"{cccccc}%s", illnessName[params[0]]), strcat(lines,line);
+	foreach(Player,i)
+	{
+		if(OnlineInfo[i][oLogged] == 0) continue;
+		if(getillness(playerid, params[0]) >= 0)
+		{
+			format(line,sizeof(line),"\n{cccccc}%s[%d]", PlayerInfo[playerid][pName], playerid), strcat(lines,line);
+			quan ++;
+		}
+	}
+	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Этой болезнью никто не болеет Online");
+	ShowDialog(playerid,1700,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Заболевшие",lines,"*","");
+	return true;
+}
+
 CMD:rinfect(p, const params[])
 {
 	if(PlayerInfo[p][pSoska] < 10) return SendClientMessage(p, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
