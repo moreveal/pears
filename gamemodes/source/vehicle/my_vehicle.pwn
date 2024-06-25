@@ -4284,7 +4284,7 @@ stock VehicleInfoCreateLines(vehicleid)
 	return lines;
 }
 
-function LoadCar(playerid, dab, race_check)
+function LoadCar(playerid, dab, race_check, adminLoad)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -4423,6 +4423,14 @@ function LoadCar(playerid, dab, race_check)
 		}
 	}
 
+	// Принудительная загрузка транспорта администрацией
+	if(adminLoad == 1)
+	{
+		new slot;
+		cache_get_value_name_int(0, "slot", slot);
+		dab = slot;
+	}
+
 	new Float:kord[4], vehid, yescar, string[124];
 	for(new car = 1; car < SKOKOCAROV; car++)
 	{
@@ -4441,7 +4449,7 @@ function LoadCar(playerid, dab, race_check)
 		}
 		else
 		{
-			if(VehInfo[yescar][vKey] != PlayerInfo[playerid][pID])
+			if(VehInfo[yescar][vKey] != PlayerInfo[playerid][pID] && adminLoad == 0)
 			{
 				ErrorMessage(playerid, "{FF6347}Владелец отозвал ключи от транспорта");
 				PlayerInfo[playerid][pKeyVeh][0] = 0;
@@ -4466,7 +4474,7 @@ function LoadCar(playerid, dab, race_check)
 		cache_get_value_name_int(0, "keyveh", paramet[5]);
 		if(paramet[0] != 0 && paramet[1] != 0 && paramet[4] == 0)
 		{
-			if(paramet[0] != PlayerInfo[playerid][pID] && paramet[5] != PlayerInfo[playerid][pID])
+			if(paramet[0] != PlayerInfo[playerid][pID] && paramet[5] != PlayerInfo[playerid][pID] && adminLoad == 0)
 			{
 				ErrorMessage(playerid, "{FF6347}Владелец отозвал ключи от транспорта");
 				PlayerInfo[playerid][pKeyVeh][0] = 0;
@@ -5299,4 +5307,17 @@ stock RespawnPersonalVehicle(playerid)
 		SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Pears Project ]: {ffcc66}Ваш личный транспорт был заспавнен [ Вы можете загрузить его Y >> Транспорт ]");
 	}
 	return 1;
+}
+
+CMD:loadcar(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете это сделать");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить транспорт из базы по DB ID [ /loadcar ID ]");
+	if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Ошибка! В данный момент вы уже загружаете транспорт");
+
+	new string[120];
+	SetPVarInt(playerid,"stopload",1);
+	mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_cars` WHERE `newid` = '%d'", params[0]);
+	mysql_tquery(pearsq, string, "LoadCar", "dddd", playerid, params[0], g_MysqlRaceCheck[playerid], 1);
+	return true;
 }
