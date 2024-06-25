@@ -17,12 +17,14 @@ stock CreateVehicleMusicStream(vehicleid, const url[], bool:withTiming = true)
         VehicleMusicAudioStream[vehicleid] = CreateAudioStream();
         AttachAudioStreamToVehicle(VehicleMusicAudioStream[vehicleid], vehicleid); // Аттачим к тачке
 
-        SetAudioStreamAutostreamDist(VehicleMusicAudioStream[vehicleid], 10.0); // Максимальная дистанция
-        SetAudioStreamMinDistance(VehicleMusicAudioStream[vehicleid], 0.5); // Минимальная дистанция (менее громкость не меняется)
-        SetAudioStreamMaxDistance(VehicleMusicAudioStream[vehicleid], 8.0); // Макимальная дистанция
+        SetAudioStreamAutostreamDist(VehicleMusicAudioStream[vehicleid], 12.0); // Максимальная дистанция
+        SetAudioStreamMinDistance(VehicleMusicAudioStream[vehicleid], 2.0); // Минимальная дистанция (менее громкость не меняется)
+        SetAudioStreamMaxDistance(VehicleMusicAudioStream[vehicleid], 10.0); // Макимальная дистанция
 
         SetAudioStreamAutostreamState(VehicleMusicAudioStream[vehicleid], true); // Врубать музло когда игрок входит в зону стрима
         SetAudioStreamSpatialState(VehicleMusicAudioStream[vehicleid], true); // 3d звук
+
+        CreateRadioVehicleLabelAround(vehicleid);
     }
 
     SetVehicleMusicStreamUrl(vehicleid, url, withTiming);
@@ -43,6 +45,7 @@ stock DestroyVehicleMusicStream(vehicleid)
 
     DeleteAudioStream(VehicleMusicAudioStream[vehicleid]);
     VehicleMusicAudioStream[vehicleid] = INVALID_AUDIOSTREAM;
+    DestroyRadioVehicleLabelAround(vehicleid);
     return true;
 }
 
