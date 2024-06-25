@@ -48,3 +48,21 @@
 
 #define WORLD_GOVJUDGE 172
 #define INT_GOVJUDGE 0
+
+//==================================================
+// Arabian Mafia
+
+#define WORLD_ARABIAN_1LVL 171
+#define INT_ARABIAN_1LVL 18
+
+#define WORLD_ARABIAN_2LVL 170
+#define INT_ARABIAN_2LVL 18
+
+#define WORLD_ARABIAN_M1LVL 169
+#define INT_ARABIAN_M1LVL 18
+
+#define WORLD_ARABIAN_KORIDOR -1
+#define INT_ARABIAN_KORIDOR 19
+
+#define WORLD_ARABIAN_HOTEL -1
+#define INT_ARABIAN_HOTEL 20

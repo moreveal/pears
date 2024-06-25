@@ -1163,7 +1163,8 @@ stock IsAShmot(playerid)
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1760.2249,799.6393,137.4583) // CNN
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1997.9194,1110.0148,1018.6735) && GetPlayerVirtualWorld(playerid) == 12 && GetPlayerInterior(playerid) == 1 // Russian Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1928.6663,906.0461,1402.0776) && GetPlayerVirtualWorld(playerid) == 10 && GetPlayerInterior(playerid) == 10 // Triada Mafia
-	|| IsPlayerInRangeOfPoint(playerid,1.0,1393.0143,1821.3657,10.8662) && GetPlayerVirtualWorld(playerid) == 182 && GetPlayerInterior(playerid) == 18 // Arabian Mafia
+	|| IsPlayerInRangeOfPoint(playerid,1.0,919.1400,1378.4596,1029.4221) 
+		&& GetPlayerVirtualWorld(playerid) == WORLD_ARABIAN_M1LVL && GetPlayerInterior(playerid) == INT_ARABIAN_M1LVL // Arabian Mafia
 	|| IsAClothesNearby(playerid)
 	|| IsAGoldClothesNearby(playerid)) // Магаз одежды
     {

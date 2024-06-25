@@ -38,3 +38,21 @@ stock CheckPlayerInResp(playerid)
     else if(Iamterr[playerid] > 0) Iamterr[playerid] = 0;
     return true;
 }
+
+stock IsAArabianLift(playerid)
+{
+    if(IsPlayerInRangeOfPoint(playerid,2.0,1364.3219,-33.4613,1000.9297) 
+        && GetPlayerVirtualWorld(playerid) == WORLD_ARABIAN_1LVL && GetPlayerInterior(playerid) == INT_ARABIAN_1LVL
+			
+    || IsPlayerInRangeOfPoint(playerid,2.0,1386.8922,-47.7762,1000.9336)
+        && GetPlayerVirtualWorld(playerid) == WORLD_ARABIAN_2LVL && GetPlayerInterior(playerid) == INT_ARABIAN_2LVL
+
+    || IsPlayerInRangeOfPoint(playerid,2.0,910.8951,1378.9348,1029.4417)
+        && GetPlayerVirtualWorld(playerid) == WORLD_ARABIAN_M1LVL && GetPlayerInterior(playerid) == INT_ARABIAN_M1LVL
+
+    || IsPlayerInRangeOfPoint(playerid,2.0,915.1874,1385.5457,1029.3643)
+        && GetPlayerVirtualWorld(playerid) >= 1 && GetPlayerInterior(playerid) == INT_ARABIAN_KORIDOR
+    ) return true;
+
+    return false;
+}
