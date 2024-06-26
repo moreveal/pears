@@ -75,9 +75,9 @@ stock CourtSetCrimeFromDecision(playerid, decisionid) {
         SetPVarInt(playerid, "IsCourtDecisionSetCriminal", 1);
         SetPlayerCriminal(playerid, -1, CriminalCodeInfo[uk][p][ccName], CriminalCodeInfo[uk][p][ccLevel], uk, p);
         DeletePVar(playerid, "IsCourtDecisionSetCriminal");
-
-        PlayerCourtDecision[playerid][decisionid][pcdWantedReturn] = true;
     }
+    PlayerCourtDecision[playerid][decisionid][pcdWantedReturn] = true;
+
     #undef info
 
     return 1;
