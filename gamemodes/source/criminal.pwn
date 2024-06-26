@@ -1,22 +1,3 @@
-
-#define MAX_CRIMINAL_CODE_ARTICLE 80 // Максимальный набор статьей в кодексе
-#define MAX_CRIMINAL_CODE_SUBENTRY 20 // Максимальное количество статей в наборе
-
-enum criminalInfo
-{
-    ccID, // newid в базе данных
-	ccArticle[8], // Номер статьи (возможность указать плавающую точку, типо 1.1 и т.д.)
-    bool:ccStatus, // Существует статья или нет
-	ccName[31], // Название статьи
-	ccLevel, // Уровень розыска статьи
-    ccFine, // Штраф 
-	ccText[121], // Описание статьи
-    ccUnix, // Дата и время последнего изменения статьи
-    ccPlayer[21], // Никнейм игрока, который последний раз изменял статью
-    ccUserID // ID аккаунта игрока, который последний раз изменял статью
-};
-new CriminalCodeInfo[MAX_CRIMINAL_CODE_ARTICLE][MAX_CRIMINAL_CODE_SUBENTRY][criminalInfo];
-
 alias:criminal("uk", "yk")
 CMD:criminal(playerid)
 {
@@ -279,26 +260,6 @@ stock PutSubentryLoad(f, i, p, bool:status)
     cache_get_value_name_int(f, "ccUserID", CriminalCodeInfo[i][p][ccUserID]);
     return 1;
 }
-
-
-#define MAX_CRIME_PLAYER 10
-
-enum e_WantedInfo
-{
-    wanCrime[MAX_CRIME_PLAYER], // id статей
-    wanSubentry[MAX_CRIME_PLAYER], // id подстатей
-    wanPoliceId[MAX_CRIME_PLAYER], // userid полицейского
-    wanUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
-
-    wanTicketCrime[MAX_CRIME_PLAYER], // id статей штрафа
-    wanTicketSubentry[MAX_CRIME_PLAYER], // id подстатей штрафа
-    wanTicketPoliceId[MAX_CRIME_PLAYER], //  userid полицейского
-    wanTicketUnix[MAX_CRIME_PLAYER], // unix, когда выдали розыск
-    bool: wanLoad // Загрузка розыска из базы
-};
-new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][e_WantedInfo];
-new WantedPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
-new TicketPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
 
 CMD:wanted(playerid, const params[])
 {
@@ -926,7 +887,13 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         WantedInfo[playerid][wanSubentry][slotUk] = p;
         if(IsOnline(zakonnik)) WantedInfo[playerid][wanPoliceId][slotUk] = PlayerInfo[zakonnik][pID];
         WantedInfo[playerid][wanUnix][slotUk] = gettime();
-        if(IsOnline(zakonnik)) format(WantedPolice[playerid][slotUk], 24,"%s", PlayerInfo[zakonnik][pName]);
+
+        if(IsOnline(zakonnik)) {
+            format(WantedPolice[playerid][slotUk], 24, "%s", PlayerInfo[zakonnik][pName]);
+        } else {
+            format(WantedPolice[playerid][slotUk], 24, "%s", "Аноним");
+        }
+
         if(PlayerInfo[playerid][pCrimes]+zv > 50) PlayerInfo[playerid][pCrimes] = 50;
         else if(PlayerInfo[playerid][pCrimes]+zv <= 50) PlayerInfo[playerid][pCrimes] += zv;
 
@@ -942,8 +909,32 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
             OnlineInfo[playerid][oUnixAcceptWanted] = 15;
             Moiplayer[playerid] = zakonnik;
         }
+        
+        {
+            // Если розыск выдается не по решению суда
+            if (!GetPVarInt(playerid, "IsCourtDecisionSetCriminal")) {
+                // Помечаем условия судебного решения нарушенными и сообщаем о возврате прежнего уровня розыска, в случае если заключенный был выпущен по УДО
+                new decisionid, bool: have_decision;
+                while (decisionid >= 0) {
+                    decisionid = CourtGetNewestPlayerDecision(playerid, decisionid);
 
-        // TODO: Помечаем и сообщаем, что игрок не сможет получить возврат залога, если по одному из решений суда ему назначен исправительный срок
+                    if (decisionid == -1 && have_decision) {
+                        new notify_str[144];
+                        format(notify_str, sizeof(notify_str),
+                            "Вы совершили правонарушение после решения суда о предоставлении УДО\n" \
+                            "Теперь вы снова объявлены в розыск!"
+                        );
+                        notify(0, "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], notify_str);
+                    } else if (decisionid > -1) {
+                        if (!CourtIsParoleType(PlayerCourtDecision[playerid][decisionid][pcdType])) continue;
+                        if (PlayerCourtDecision[playerid][decisionid][pcdWantedReturn]) continue;
+
+                        have_decision = true;
+                        CourtSetCrimeFromDecision(playerid, decisionid);
+                    }
+                }
+            }
+        }
 
         foreach (Player, i)
         {
@@ -966,7 +957,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         }
 
         // Врубаем Pursuit
-        CreatePlayerPursuit(playerid, zakonnik);
+        if (zakonnik > -1) CreatePlayerPursuit(playerid, zakonnik);
 
         new fractionid = 1; // SAPD (по умолчанию)
         if (IsOnline(zakonnik)) fractionid = fraction(zakonnik);

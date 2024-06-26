@@ -1,68 +1,7 @@
-// Минимальная и максимальная сумма для залога
-#define COURT_MINIMAL_DEPOSIT       10_000
-#define COURT_MAXIMAL_DEPOSIT       1_000_000
-
-// Минимальная и максимальная суммы для отработки
-#define COURT_MINIMAL_WORKING_OUT   10_000
-#define COURT_MAXIMAL_WORKING_OUT   100_000
-
-// Минимальное и максимальное количество дней, в течение которых подсудимому нельзя совершать правонарушения (или нужно отработать за этот срок)
-#define COURT_MINIMAL_PERIOD        1
-#define COURT_MAXIMAL_PERIOD        14
-
-#define MAX_COURT_OFFERS 100 // Максимальное количество заявок
-#define MAX_COURT_PLAYER_DECISIONS 25 // Максимальное количество закрепленных за игроком активных судебных решений
-
-// Типы заявок на суд
-enum e_CourtStatus {
-    COURT_STATUS_NONE, // Не существует
-    COURT_STATUS_WAITING, // В ожидании
-    COURT_STATUS_REVIEW, // Рассматривается
-    COURT_STATUS_DONE // Рассмотрено
-};
-
-// Типы судебных решений
-enum e_CourtDecision {
-    COURT_CLASS_DECLINE, // Отклонение заявки
-    COURT_CLASS_FREE_PAROLE, // УДО
-    COURT_CLASS_PAROLE, // УДО + Залог
-    COURT_CLASS_JAIL_REDUCE_PAROLE, // Сокращение срока в два раза + Залог
-    COURT_CLASS_WORKING_OUT_PAROLE // УДО + Отработка
-};
-
-enum e_CourtInfo
-{
-    courtsPlayerId, // playerid Создателя заявки
-    courtsTakeUserId, // playerid Судьи
-    e_CourtStatus: courtsStatus, // Статус заявки
-    e_CourtDecision: courtsDecision // Решение судебного заседания
-}
-new CourtInfo[MAX_COURT_OFFERS][e_CourtInfo];
-
-// Судебные решения, закрепленные за игроком
-enum e_PlayerCourtDecison {
-    pcdID, // ID судебного решения
-    pcdSuspectID, // ID аккаунта преступника
-    pcdArbiterID, // ID аккаунта судьи
-    pcdLawyerID, // ID аккаунта адвоката
-    e_CourtDecision: pcdType, // Вынесенное решение
-    pcdPrice, // Цена (Залог/Стоимость исправительных работ)
-    pcdTime, // Время вынесения приговора (UNIX)
-    pcdPeriod, // Количество назначенных дней (для запрета правонарушений / отработки долга)
-    e_WantedInfo: pcdWantedInfo // Информация о статьях, которые были закреплены за игроком на момент вынесения приговора
-};
-new PlayerCourtDecision[MAX_REALPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_PlayerCourtDecison];
-new PlayerCourtDecisionWanted[MAX_REALPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_WantedInfo];
-
 // ============================================= Работа с судебными решениями =============================================
 
-stock CreateJSONCourtWantedInfo(playerid, desicionid, &JsonNode: crimes) {
-    #define info PlayerCourtDecisionWanted[playerid][desicionid]
-
-    if (info[wanUnix] == 0 && info[wanTicketUnix] == 0) {
-        crimes = JSON_INVALID_NODE;
-        return 1;
-    }
+stock CreateJSONCourtWantedInfo(playerid, decisionid, &JsonNode: crimes) {
+    #define info PlayerCourtDecisionWanted[playerid][decisionid]
 
     for (new i = 0; i < MAX_CRIME_PLAYER; i++) {
         new JsonNode: crime_info = JSON_Object(
@@ -92,32 +31,111 @@ stock CreateJSONCourtWantedInfo(playerid, desicionid, &JsonNode: crimes) {
     return 1;
 }
 
-stock LoadJSONCourtWantedInfo(playerid, desicionid, JsonNode: crimes) {
+stock LoadJSONCourtWantedInfo(playerid, decisionid, JsonNode: crimes) {
     if (crimes == JSON_INVALID_NODE) return 0;
 
-    #define info PlayerCourtDecisionWanted[playerid][desicionid]
+    #define info PlayerCourtDecisionWanted[playerid][decisionid]
 
-    new allWantedLen; JSON_ArrayLength(crimes, allWantedLen);
-    for (new i = 0; i < allWantedLen; i++) {
-        new JsonNode: curWanted;
-        new JsonCallResult: res = JSON_ArrayObject(crimes, i, curWanted);
-        if (res != JSON_CALL_NO_ERR) continue;
+    new index = -1; new JsonNode: curWanted = JSON_INVALID_NODE;
+    while (!JSON_ArrayIterate(crimes, index, curWanted)) {
+        if (index >= MAX_CRIME_PLAYER) break;
 
         new JsonNode: crime, JsonNode: ticket;
-        JSON_GetArray(curWanted, "crime", crime);
-        JSON_GetArray(curWanted, "ticket", ticket);
+        JSON_GetObject(curWanted, "crime", crime);
+        JSON_GetObject(curWanted, "ticket", ticket);
 
-        new crimeLen; JSON_ArrayLength(crime, crimeLen);
-        for (new index = 0; index < crimeLen; index++) {
-            JSON_GetInt(crime, "crime", info[wanCrime][index]);
-            JSON_GetInt(crime, "subentry", info[wanSubentry][index]);
-            JSON_GetInt(crime, "policeid", info[wanPoliceId][index]);
-            JSON_GetInt(crime, "unix", info[wanUnix][index]);
+        JSON_GetInt(crime, "crime", info[wanCrime][index]);
+        JSON_GetInt(crime, "subentry", info[wanSubentry][index]);
+        JSON_GetInt(crime, "policeid", info[wanPoliceId][index]);
+        JSON_GetInt(crime, "unix", info[wanUnix][index]);
 
-            JSON_GetInt(ticket, "crime", info[wanTicketCrime][index]);
-            JSON_GetInt(ticket, "subentry", info[wanTicketSubentry][index]);
-            JSON_GetInt(ticket, "policeid", info[wanTicketPoliceId][index]);
-            JSON_GetInt(ticket, "unix", info[wanTicketUnix][index]);
+        JSON_GetInt(ticket, "crime", info[wanTicketCrime][index]);
+        JSON_GetInt(ticket, "subentry", info[wanTicketSubentry][index]);
+        JSON_GetInt(ticket, "policeid", info[wanTicketPoliceId][index]);
+        JSON_GetInt(ticket, "unix", info[wanTicketUnix][index]);
+    }
+
+    #undef info
+
+    return 1;
+}
+
+stock CourtIsPlayerDecisionEnd(playerid, decisionid) {
+    return  PlayerCourtDecision[playerid][decisionid][pcdTime] != 0 &&
+            gettime() >= (PlayerCourtDecision[playerid][decisionid][pcdTime] + PlayerCourtDecision[playerid][decisionid][pcdPeriod] * 86400);
+}
+
+stock CourtSetCrimeFromDecision(playerid, decisionid) {
+    #define info PlayerCourtDecisionWanted[playerid][decisionid]
+
+    for (new i = 0; i < MAX_CRIME_PLAYER; i++) {
+        if (info[wanUnix][i] == 0 && info[wanTicketUnix][i] == 0) continue;
+
+        new uk = info[wanCrime][i] - 1, p = info[wanSubentry][i];
+        SetPVarInt(playerid, "IsCourtDecisionSetCriminal", 1);
+        SetPlayerCriminal(playerid, -1, CriminalCodeInfo[uk][p][ccName], CriminalCodeInfo[uk][p][ccLevel], uk, p);
+        DeletePVar(playerid, "IsCourtDecisionSetCriminal");
+
+        PlayerCourtDecision[playerid][decisionid][pcdWantedReturn] = true;
+    }
+    #undef info
+
+    return 1;
+}
+
+function LoadPlayerCourtDecisions(playerid, race_check) {
+    new rows;
+    cache_get_row_count(rows);
+
+    if (rows == 0) return 1;
+    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
+
+    #define info PlayerCourtDecision[playerid][slot]
+
+    for (new i = 0; i < min(rows, MAX_COURT_PLAYER_DECISIONS); i++) {
+        // Загрузка основной информации
+        new slot = 0; cache_get_value_name_int(i, "slot", slot);
+
+        cache_get_value_name_int(i, "suspect", info[pcdSuspectID]);
+        cache_get_value_name_int(i, "arbiter", info[pcdArbiterID]);
+        cache_get_value_name_int(i, "lawyer", info[pcdLawyerID]);
+        cache_get_value_name_int(i, "type", info[pcdType]);
+        cache_get_value_name_int(i, "deposit", info[pcdDeposit]);
+        cache_get_value_name_int(i, "time", info[pcdTime]);
+        cache_get_value_name_int(i, "period", info[pcdPeriod]);
+        cache_get_value_name_int(i, "wanted_return", info[pcdWantedReturn]);
+
+        // Если судебное решение истекло
+        if (CourtIsPlayerDecisionEnd(playerid, slot)) {
+            new notify_str[144];
+            if (info[pcdType] == COURT_CLASS_WORKING_OUT_PAROLE) {
+                // Возвращаем игроку прежний розыск, если он не успел отработать
+                format(notify_str, sizeof(notify_str),
+                    "Вы не успели отработать сумму, назначенную вам решением суда, за %d %s\nТеперь вы снова объявлены в розыск!",
+                    info[pcdPeriod], PluralToText(info[pcdPeriod], "день", "дня", "дней")
+                );
+                notify(0, "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], notify_str, .ingame_message = false);
+
+                CourtSetCrimeFromDecision(playerid, slot);
+            }
+
+            // Удаляем решение
+            CourtDeleteDecision(playerid, slot);
+            continue;
+        }
+
+        // Загрузка информации по статьям
+        new wanted_info[4096];
+        new bool: is_null;
+        cache_is_value_name_null(i, "wanted", is_null);
+
+        if (!is_null) {
+            cache_get_value_name(i, "wanted", wanted_info);
+
+            new JsonNode: data = JSON_INVALID_NODE;
+            if (JSON_Parse(wanted_info, data) == JSON_CALL_NO_ERR) {
+                LoadJSONCourtWantedInfo(playerid, slot, data);
+            }
         }
     }
 
@@ -126,48 +144,159 @@ stock LoadJSONCourtWantedInfo(playerid, desicionid, JsonNode: crimes) {
     return 1;
 }
 
-stock CourtIsPlayerDesicionEnd(playerid, desicionid) {
-    return gettime() >= (PlayerCourtDecision[playerid][desicionid][pcdTime] + PlayerCourtDecision[playerid][desicionid][pcdPeriod] * 86400);
+stock SavePlayerCourtDecisions(playerid) {
+    new mysql_string[4096];
+    
+    mysql_tquery(pearsq, "START TRANSACTION;");
+
+    new JsonNode: crimes = JSON_Array(), wanted_json[4096];
+    for (new decisionid = 0; decisionid < MAX_COURT_PLAYER_DECISIONS; decisionid++) {
+        if (!PlayerCourtDecision[playerid][decisionid][pcdType]) continue;
+        
+        CreateJSONCourtWantedInfo(playerid, decisionid, crimes);
+
+        if (crimes != JSON_INVALID_NODE) {
+            if (JSON_Stringify(crimes, wanted_json) == JSON_CALL_NO_ERR) {
+                mysql_format(pearsq, mysql_string, sizeof(mysql_string),
+                    "REPLACE INTO `court_decisions` \
+                    (`slot`, `suspect`, `arbiter`, `lawyer`, `type`, `deposit`, `time`, `period`, `wanted_return`, `wanted`) \
+                    VALUES (%d, %d, %d, %d, %d, %d, %d, %d, %d, '%e');", \
+                    \
+                    decisionid,
+                    PlayerCourtDecision[playerid][decisionid][pcdSuspectID],
+                    PlayerCourtDecision[playerid][decisionid][pcdArbiterID],
+                    PlayerCourtDecision[playerid][decisionid][pcdLawyerID],
+                    _:PlayerCourtDecision[playerid][decisionid][pcdType],
+                    PlayerCourtDecision[playerid][decisionid][pcdDeposit],
+                    PlayerCourtDecision[playerid][decisionid][pcdTime],
+                    PlayerCourtDecision[playerid][decisionid][pcdPeriod],
+                    PlayerCourtDecision[playerid][decisionid][pcdWantedReturn],
+                    wanted_json
+                );
+                query_empty(pearsq, mysql_string);
+            }
+        }
+    }
+
+    mysql_tquery(pearsq, "COMMIT;");
 }
 
-function LoadPlayerCourtDesicionInfo(playerid, desicionid) {
-    new rows;
-    cache_get_field_count(rows);
+// Возвращаем ближайший свободный слот
+// Если все слоты заняты, берём и заменяем тот, который хранит в себе наименьшее количество долга
+stock CourtGetFreePlayerDecisionSlot(playerid) {
+    for (new slot = 0, i = 0; i < MAX_COURT_PLAYER_DECISIONS; i++) {
+        if (PlayerCourtDecision[playerid][i][pcdDeposit] < PlayerCourtDecision[playerid][slot][pcdDeposit])
+            slot = i;
 
-    if (rows == 0) return 1;
+        if (i == MAX_COURT_PLAYER_DECISIONS - 1 // Последняя итерация
+        || PlayerCourtDecision[playerid][slot][pcdDeposit] <= 0 // Нулевая сумма залога / отработки
+        || CourtIsPlayerDecisionEnd(playerid, slot)) return slot; // Истекший срок
+    }
 
-    #define info PlayerCourtDecision[playerid][desicionid]
+    return 0;
+}
 
-    // Загрузка основной информации
-    cache_get_value_name_int(0, "id", info[pcdID]);
-    cache_get_value_name_int(0, "suspect", info[pcdSuspectID]);
-    cache_get_value_name_int(0, "arbiter", info[pcdArbiterID]);
-    cache_get_value_name_int(0, "lawyer", info[pcdLawyerID]);
-    cache_get_value_name_int(0, "type", info[pcdType]);
-    cache_get_value_name_int(0, "price", info[pcdPrice]);
-    cache_get_value_name_int(0, "time", info[pcdTime]);
+// Узнает, является ли указанный decisionid свободным для игрока
+stock CourtIsFreePlayerDecisionSlot(playerid, decisionid) {
+    if (decisionid < 0 || decisionid >= MAX_COURT_PLAYER_DECISIONS) return 0;
+    return PlayerCourtDecision[playerid][decisionid][pcdDeposit] <= 0 && PlayerCourtDecision[playerid][decisionid][pcdTime] <= 0;
+}
 
-    // Загрузка информации по статьям
-    new wanted_info[1024], JsonNode: data;
-    cache_get_value_name(0, "wanted", wanted_info);
-    JSON_Parse(wanted_info, data);
-    LoadJSONCourtWantedInfo(playerid, desicionid, data);
+// Выносит судебное решение для указанного игрока
+stock CourtCreateDecision(playerid, arbiterid, lawyerid, e_CourtDecision: type, deposit, period) {
+    if (deposit < 0 || period < COURT_MINIMAL_PERIOD) return 1;
+    #pragma unused lawyerid // Временно, т.к. не реализована система для адвокатов
+    
+    new decisionid = CourtGetFreePlayerDecisionSlot(playerid);
 
-    #undef info
+    // Основные данные
+    PlayerCourtDecision[playerid][decisionid][pcdSuspectID] = PlayerInfo[playerid][pID];
+    PlayerCourtDecision[playerid][decisionid][pcdArbiterID] = PlayerInfo[arbiterid][pID];
+    PlayerCourtDecision[playerid][decisionid][pcdLawyerID] = 0;
+    PlayerCourtDecision[playerid][decisionid][pcdType] = type;
+    PlayerCourtDecision[playerid][decisionid][pcdDeposit] = deposit;
+    PlayerCourtDecision[playerid][decisionid][pcdTime] = gettime();
+    PlayerCourtDecision[playerid][decisionid][pcdPeriod] = period;
+    
+    // Данные о текущем розыске
+    for (new i = 0; i < MAX_CRIME_PLAYER; i++) {
+        PlayerCourtDecisionWanted[playerid][decisionid][wanCrime][i] = WantedInfo[playerid][wanCrime][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanSubentry][i] = WantedInfo[playerid][wanSubentry][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanPoliceId][i] = WantedInfo[playerid][wanPoliceId][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanUnix][i] = WantedInfo[playerid][wanUnix][i];
+
+        PlayerCourtDecisionWanted[playerid][decisionid][wanTicketCrime][i] = WantedInfo[playerid][wanTicketCrime][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanTicketSubentry][i] = WantedInfo[playerid][wanTicketSubentry][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanTicketPoliceId][i] = WantedInfo[playerid][wanTicketPoliceId][i];
+        PlayerCourtDecisionWanted[playerid][decisionid][wanTicketUnix][i] = WantedInfo[playerid][wanTicketUnix][i];
+    }
+
+    return decisionid;
+}
+
+// Удаляет указанное судебное решение
+stock CourtDeleteDecision(playerid, decisionid) {
+    PlayerCourtDecision[playerid][decisionid][pcdType] = COURT_CLASS_NONE;
+    PlayerCourtDecision[playerid][decisionid][pcdDeposit] = 0;
+    PlayerCourtDecision[playerid][decisionid][pcdTime] = 0;
 
     return 1;
 }
 
-stock CourtGetFreePlayerDesicionSlot(playerid) {
-    for (new = 0; i < MAX_COURT_PLAYER_DECISIONS; i++)
-        if (PlayerCourtDecision[playerid][i][pcdID] < 1) return i;
-
-    // TODO: Реализовать механизм стека, заменять более старые судебные решения новыми
-
-    return -1;
+// Возвращает общую сумму долга для отработок
+stock CourtGetWorkoutDeposit(playerid) {
+    new deposit = 0;
+    for (new i = 0; i < MAX_COURT_PLAYER_DECISIONS; i++) {
+        if (PlayerCourtDecision[playerid][i][pcdType] != COURT_CLASS_WORKING_OUT_PAROLE) continue;
+        deposit += PlayerCourtDecision[playerid][i][pcdDeposit];
+    }
+    return deposit;
 }
 
-// TODO: При заходе игрока проверять его судебные решения, и удалять все истекшие (CourtIsPlayerDesicionEnd)
+// Вычитает необходимую сумму из общей суммы долгов
+stock CourtSubtractWorkoutDeposit(playerid, deposit) {
+    new slot;
+    for (new i = 0; i < MAX_COURT_PLAYER_DECISIONS; i++) {
+        if (PlayerCourtDecision[playerid][i][pcdType] != COURT_CLASS_WORKING_OUT_PAROLE || CourtIsFreePlayerDecisionSlot(playerid, i)) continue;
+        if (PlayerCourtDecision[playerid][i][pcdDeposit] == 0) continue;
+
+        if (PlayerCourtDecision[playerid][i][pcdDeposit] <= PlayerCourtDecision[playerid][slot][pcdDeposit])
+            slot = i + 1;
+    }
+
+    slot--;
+    if (slot > -1) {
+        if (deposit > PlayerCourtDecision[playerid][slot][pcdDeposit]) {
+            deposit -= PlayerCourtDecision[playerid][slot][pcdDeposit];
+            PlayerCourtDecision[playerid][slot][pcdDeposit] = 0;
+            CourtDeleteDecision(playerid, slot); // Закрываем судебное решение после выплаты
+            return CourtSubtractWorkoutDeposit(playerid, deposit);
+        } else {
+            PlayerCourtDecision[playerid][slot][pcdDeposit] -= deposit;
+        }
+    }
+
+    // Возвращаем общую сумму для выплаты
+    return CourtGetWorkoutDeposit(playerid);
+}
+
+// Получает decisionid самого нового решения (-1 - не найдено)
+stock CourtGetNewestPlayerDecision(playerid, startid = 0) {
+    new slot;
+    for (new i = startid; i < MAX_COURT_PLAYER_DECISIONS; i++) {
+        if (CourtIsFreePlayerDecisionSlot(playerid, i)) continue;
+        
+        if (PlayerCourtDecision[playerid][slot][pcdTime] <= PlayerCourtDecision[playerid][i][pcdTime])
+            slot = i + 1;
+    }
+
+    return slot - 1;
+}
+
+// Узнает, является ли переданный тип судебного решения выпусканием по УДО
+stock CourtIsParoleType(e_CourtDecision: type) {
+    return type == COURT_CLASS_FREE_PAROLE || type == COURT_CLASS_PAROLE || type == COURT_CLASS_WORKING_OUT_PAROLE || type == COURT_CLASS_JAIL_REDUCE_PAROLE;
+}
 
 // =================================================== Работа с судами ====================================================
 
@@ -202,13 +331,13 @@ stock CourtMessage(color, const message[]) {
 }
 
 // Получение данных о судебном деле
-stock CourtGetProcessData(courtid, &prisonerid, &arbiterid, &e_CourtStatus: status, &e_CourtDecision: decision) {
-    if (courtid < 0 || courtid > MAX_COURT_OFFERS) return 0;
+stock CourtGetProcessData(courtofferid, &prisonerid, &arbiterid, &e_CourtStatus: status, &e_CourtDecision: decision) {
+    if (courtofferid < 0 || courtofferid > MAX_COURT_OFFERS) return 0;
 
-    prisonerid = CourtInfo[courtid][courtsPlayerId];
-    arbiterid = CourtInfo[courtid][courtsTakeUserId];
-    status = CourtInfo[courtid][courtsStatus];
-    decision = CourtInfo[courtid][courtsDecision];
+    prisonerid = CourtInfo[courtofferid][ciPlayerID];
+    arbiterid = CourtInfo[courtofferid][ciTakeUserID];
+    status = CourtInfo[courtofferid][ciStatus];
+    decision = CourtInfo[courtofferid][ciDecision];
 
     return 1;
 }
@@ -217,28 +346,37 @@ stock CourtGetProcessData(courtid, &prisonerid, &arbiterid, &e_CourtStatus: stat
 stock CourtStartProcess(playerid, targetid)
 {
     CourtMovePlayerToDock(playerid);
-    new courtid = OnlineInfo[playerid][oCourtsID] - 1;
-    CourtInfo[courtid][courtsStatus] = COURT_STATUS_REVIEW;
-    CourtInfo[courtid][courtsTakeUserId] = targetid;
+    new courtofferid = OnlineInfo[playerid][oCourtsID] - 1;
+    CourtInfo[courtofferid][ciStatus] = COURT_STATUS_REVIEW;
+    CourtInfo[courtofferid][ciTakeUserID] = targetid;
 
-    return courtid;
+    return courtofferid;
 }
 
 // Окончание судебного процесса, вынесение решения по делу
-stock CourtCloseProcess(courtid, deposit = -1, period = -1)
+stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
 {
     new prisonerid, arbiterid, e_CourtStatus: courtStatus, e_CourtDecision: courtDecision;
-    CourtGetProcessData(courtid, prisonerid, arbiterid, courtStatus, courtDecision);
+    CourtGetProcessData(courtofferid, prisonerid, arbiterid, courtStatus, courtDecision);
 
     if(courtStatus != COURT_STATUS_REVIEW) return 0;
 
-    new log_message[64], court_message[144];
+    PlayerInfo[prisonerid][pCourtsStatus] = 0;
+    if (deposit > -1 && period > -1) {
+        // Создаем и закрепляем за игроком судебное решение
+        CourtCreateDecision(prisonerid, arbiterid, 0, courtDecision, deposit, period);
+
+        // Помещаем залог в казну
+        if (courtDecision != COURT_CLASS_WORKING_OUT_PAROLE)
+            putkazna(0, deposit);
+    }
+
+    new log_message[64], court_message[512];
     new pretty_deposit[30]; format(pretty_deposit, sizeof(pretty_deposit), "%s", FormatNumberWithCommas(deposit));
     new pretty_period[10]; format(pretty_period, sizeof(pretty_period), "%d %s", period, PluralToText(period, "день", "дня", "дней"));
 
     if(courtDecision != COURT_CLASS_DECLINE && courtDecision != COURT_CLASS_JAIL_REDUCE_PAROLE)
     {
-        PlayerInfo[prisonerid][pCourtsStatus] = 0;
         PPSetPlayerPos(prisonerid, -2780.8091, 417.6989, 12.6403);
         PPSetPlayerFacingAngle(prisonerid, 90.0);
         PlayerInfo[prisonerid][pHodka]++;
@@ -280,8 +418,8 @@ stock CourtCloseProcess(courtid, deposit = -1, period = -1)
             
                 format(court_message, sizeof(court_message),
                     "{44ff99}Вас отпустили по УДО. Сумма залога составила: %s$. Теперь вы свободны!\n\n" \
-                    "Судья назначил вам срок исправления размером в %s." \
-                    //"Если в течение этого времени вы не совершите ни одного правонарушения - вы сможете вернуть 75%% от суммы залога обратно"
+                    "Судья назначил вам срок исправления размером в %s.\n" \
+                    "Если в течение этого времени вы совершите правонарушение - вы вновь будете объявлены в розыск по предыдущим статьям"
                 , pretty_deposit, pretty_period);
                 SuccessMessage(prisonerid, court_message);
 
@@ -298,33 +436,31 @@ stock CourtCloseProcess(courtid, deposit = -1, period = -1)
             }
         }
         case COURT_CLASS_WORKING_OUT_PAROLE: { // УДО + Отработка
-            PlayerInfo[prisonerid][pCourtsDeposit] += deposit;
-
             new text[512];
             format(text, sizeof(text),
                 "{44ff99}Вас отпустили по УДО и назначали исправительные работы. Вы обязаны их отработать.\
-                \n{cccccc}Сумма исправительных работ: %s$\n\n\
-                В случае неотработки работ в ближайшее время, вас снова могут посадить в тюрьму\
-                \n{684F7D}Отработать нужно на работе в Клининговой Компании\
+                \n{cccccc}Сумма исправительных работ: %s$\
+                \
+                \n\nВ случае неотработки работ в течение %s, или в случае совершения правонарушения, вы снова будете объявлены в розыск\
+                \
+                \n\n{684F7D}Отработать нужно на работе в Клининговой Компании\
                 \n{684F7D}Посмотреть сумму отработки можно в Банке", \
                 \
-                pretty_deposit
+                pretty_deposit,
+                pretty_period
             );
             SuccessMessage(prisonerid, text);
 
-            format(log_message, sizeof(log_message), "Отпустил по УДО [Сумма отработки: %d$ | Срок: %s]", PlayerInfo[prisonerid][pCourtsDeposit]);
+            format(log_message, sizeof(log_message), "Отпустил по УДО [Сумма отработки: %d$ | Срок: %s]", deposit, pretty_period);
             format(court_message, sizeof(court_message), "* Судья %s отпустил заключённого %s по УДО {99ff66}[Сумма отработки: %s$ | Срок: %s]", rpplayername(arbiterid), rpplayername(prisonerid), pretty_deposit, pretty_period);
         }
+        default: {}
     }
     CourtMessage(COLOR_GREY, court_message);
 
     GiveUnit(arbiterid, 13);
     OrgLog(7, "CourtCloseProcess", PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], PlayerInfo[arbiterid][pID], PlayerInfo[arbiterid][pName], PlayerInfo[arbiterid][pPlaIP], 0, log_message);
     CourtDeleteOrder(prisonerid);
-
-    if (deposit > -1 && period > 0) {
-        // TODO: Выдаем новое решение суда и записываем его в базу
-    }
 
     return 1;
 }
@@ -337,13 +473,13 @@ stock CourtShowList(playerid)
     new quan,timemake[20],targetid;
     for(new z = 0; z < MAX_COURT_OFFERS; z++) 
     {
-        targetid = CourtInfo[z][courtsPlayerId];
+        targetid = CourtInfo[z][ciPlayerID];
         timemake = fine_time(PlayerInfo[targetid][pJailTime]);
 
-        if (PlayerInfo[targetid][pJailTime] < 600) continue;
+        if (PlayerInfo[targetid][pJailTime] < COURT_MINIMAL_JAILTIME) continue;
         if (IsPlayerAfk(targetid)) continue;
 
-        switch (CourtInfo[z][courtsStatus]) {
+        switch (CourtInfo[z][ciStatus]) {
             case COURT_STATUS_WAITING: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tВ ожидании", quan + 1, rpplayername(targetid), timemake, PlayerInfo[targetid][pCrimes]), strcat(lines, line);
             case COURT_STATUS_REVIEW: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tВ процессе рассмотрения", quan + 1, rpplayername(targetid), timemake,PlayerInfo[targetid][pCrimes]), strcat(lines, line);
             case COURT_STATUS_DONE: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tРассмотрено", quan+1, rpplayername(targetid), timemake, PlayerInfo[targetid][pCrimes]), strcat(lines, line);
@@ -361,26 +497,30 @@ stock CourtShowList(playerid)
 // Создание заявки на рассмотрение дела заключённого
 stock CourtCreateOrder(playerid, bool: message = true)
 {
-    if(OnlineInfo[playerid][oCourtsID] > 0 && message) return ErrorMessage(playerid,"{ff6347}У вас уже есть активная заявка, ожидайте вызова в суд!");
+    if (message) {
+        if (PlayerInfo[playerid][pJailTime] < COURT_MINIMAL_JAILTIME) return ErrorMessage(playerid, "{ff6347}Вам осталось совсем немного для конца заключения");
+        if (OnlineInfo[playerid][oCourtsID] > 0) return ErrorMessage(playerid, "{ff6347}У вас уже есть активная заявка, ожидайте вызова в суд!");
+    }
+
     if(!(PlayerInfo[playerid][pJailTime] > 0 && PlayerInfo[playerid][pJailed] == 1)) return 0;
-    new courtid = -1;
+    new courtofferid = -1;
     for(new i; i < MAX_COURT_OFFERS; i++)
     {
-        if(CourtInfo[i][courtsStatus] == COURT_STATUS_NONE)
+        if(CourtInfo[i][ciStatus] == COURT_STATUS_NONE)
         {
-            courtid = i;
+            courtofferid = i;
             break;
         }
     }
-    if(courtid == -1)
+    if(courtofferid == -1)
     {
         if(message == true) ErrorMessage(playerid,"{ff6347}В данный момент нельзя создать заявку в суд [ Количество максимальных заявок превышено ]");
         return 1;
     }
-    CourtInfo[courtid][courtsStatus] = COURT_STATUS_WAITING;
+    CourtInfo[courtofferid][ciStatus] = COURT_STATUS_WAITING;
     PlayerInfo[playerid][pCourtsStatus] = 1;
-    CourtInfo[courtid][courtsPlayerId] = playerid;
-    OnlineInfo[playerid][oCourtsID] = courtid + 1;
+    CourtInfo[courtofferid][ciPlayerID] = playerid;
+    OnlineInfo[playerid][oCourtsID] = courtofferid + 1;
     if(message == true) SuccessMessage(playerid,"{44ff99}Вы успешно отправили заявку в суд для рассмотрения дела");
     return 1;
 }
@@ -388,44 +528,63 @@ stock CourtCreateOrder(playerid, bool: message = true)
 // Удаление заявки на суд
 stock CourtDeleteOrder(playerid)
 {
-    new courtid = OnlineInfo[playerid][oCourtsID] - 1;
-    if (courtid < 0) return 1;
+    new courtofferid = OnlineInfo[playerid][oCourtsID] - 1;
+    if (courtofferid < 0) return 1;
 
     OnlineInfo[playerid][oCourtsID] = 0;
-    CourtInfo[courtid][courtsStatus] = COURT_STATUS_NONE;
-    CourtInfo[courtid][courtsPlayerId] = 0;
+    CourtInfo[courtofferid][ciStatus] = COURT_STATUS_NONE;
+    CourtInfo[courtofferid][ciPlayerID] = 0;
 
     return 1;
 }
 
 // Отображение диалога для ввода суммы залога (количества дней*)
-stock CourtEnterDeposit(courtid) {
+stock CourtEnterDeposit(courtofferid) {
     new prisonerid, arbiterid, e_CourtStatus: courtStatus, e_CourtDecision: courtDecision;
-    CourtGetProcessData(courtid, prisonerid, arbiterid, courtStatus, courtDecision);
+    CourtGetProcessData(courtofferid, prisonerid, arbiterid, courtStatus, courtDecision);
 
     #pragma unused courtStatus
-    #pragma unused courtDecision
 
-    new dialog_text[512];
-    format(dialog_text, sizeof(dialog_text),
-        "{ffffff}Укажите сумму для залога {99ff66}(%s$ - %s$)\n" \
-        "{ffffff}Доступная сумма на руках у заключённого: {99ff66}%s$\n\n{ffffff}" \
-        "Указанная вами сумма будет начислена на счёт казны\n" \
-        "Если заключённый не будет нарушать правопорядок в течение указанного вами времени, ему будет возмещено 75%% от суммы залога\n\n" \
-        "{cccccc}Укажите данные через пробел: Сумма Количество дней (%d - %d)", \
-        \
-        FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT), FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT),
-        FormatNumberWithCommas(PlayerInfo[prisonerid][pMoney]),
-        COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD
-    );
+    new dialog_text[512], dialog_header[64];
+    if (courtDecision == COURT_CLASS_PAROLE || courtDecision == COURT_CLASS_JAIL_REDUCE_PAROLE) {
+        format(dialog_text, sizeof(dialog_text),
+            "{ffffff}Укажите сумму для залога {99ff66}(%s$ - %s$)\n" \
+            "{ffffff}Доступная сумма на руках у заключённого: {99ff66}%s$\n\n{ffffff}" \
+            \
+            "Указанная вами сумма будет начислена на счёт казны\n" \
+            "Если заключённый совершит правонарушение в указанный срок, он вновь будет объявлен в розыск по предыдущим статьям\n\n" \
+            \
+            "{cccccc}Укажите данные через пробел: Сумма, Количество дней (%d - %d)",
+
+            FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT), FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT),
+            FormatNumberWithCommas(PlayerInfo[prisonerid][pMoney]),
+            COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD
+        );
+        strcat(dialog_header, "{ff9000}Назначение суммы залога");
+    } else if (courtDecision == COURT_CLASS_WORKING_OUT_PAROLE) {
+        format(dialog_text, sizeof(dialog_text),
+            "{ffffff}Укажите сумму для отработки {99ff66}(%s$ - %s$)\n" \
+            "{ffffff}Доступная сумма на руках у заключённого: {99ff66}%s$\n\n{ffffff}" \
+            \
+            "Указанная вами сумма будет начислена на счёт казны\n" \
+            "Если заключённый не успеет отработать эту сумму в указанный срок, он вновь будет объявлен в розыск по предыдущим статьям\n\n" \
+            \
+            "{cccccc}Укажите данные через пробел: Сумма, Количество дней (%d - %d)",
+
+            FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT), FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT),
+            FormatNumberWithCommas(PlayerInfo[prisonerid][pMoney]),
+            COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD
+        );
+        strcat(dialog_header, "{ff9000}Назначение суммы отработки");
+    }
 
     return ShowDialog(arbiterid, COURT_DIALOG_ENTER_DEPOSIT, DIALOG_STYLE_INPUT, "{ff9000}Назначение суммы залога", dialog_text, "Принять", "Назад");
 }
 
 // Отображение диалога с возможными вариантами решений
-stock CourtShowProcessAccept(courtid, deposit = -1, period = -1) {
+stock CourtShowProcessAccept(courtofferid, deposit = -1, period = -1) {
     new prisonerid, arbiterid, e_CourtStatus: courtStatus, e_CourtDecision: courtDecision;
-    CourtGetProcessData(courtid, prisonerid, arbiterid, courtStatus, courtDecision);
+    CourtGetProcessData(courtofferid, prisonerid, arbiterid, courtStatus, courtDecision);
 
     #pragma unused courtStatus
 
@@ -452,9 +611,9 @@ stock CourtShowProcessAccept(courtid, deposit = -1, period = -1) {
 }
 
 // Уведомление о вызове на суд
-stock CourtShowArbiterOfferCall(courtid) {
+stock CourtShowArbiterOfferCall(courtofferid) {
     new prisonerid, arbiterid, e_CourtStatus: courtStatus, e_CourtDecision: courtDecision;
-    CourtGetProcessData(courtid, prisonerid, arbiterid, courtStatus, courtDecision);
+    CourtGetProcessData(courtofferid, prisonerid, arbiterid, courtStatus, courtDecision);
 
     #pragma unused courtStatus
     #pragma unused courtDecision
@@ -479,9 +638,9 @@ stock CourtShowArbiterOfferCall(courtid) {
 }
 
 // Выбор выносимого решения
-stock CourtShowOfferReview(courtid) {
+stock CourtShowOfferReview(courtofferid) {
     new prisonerid, arbiterid, e_CourtStatus: courtStatus, e_CourtDecision: courtDecision;
-    CourtGetProcessData(courtid, prisonerid, arbiterid, courtStatus, courtDecision);
+    CourtGetProcessData(courtofferid, prisonerid, arbiterid, courtStatus, courtDecision);
 
     new string[110];
     switch(courtStatus) {
@@ -517,10 +676,10 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
             if(response)
             {
                 if(listitem < 0 || listitem > MAX_COURT_OFFERS) return ErrorMessage(playerid, "{ff6347}Выбрана не правильная строка.");
-                new courtid = DP[4][playerid] = List[listitem][playerid];
-                CourtInfo[courtid][courtsTakeUserId] = playerid;
+                new courtofferid = DP[4][playerid] = List[listitem][playerid];
+                CourtInfo[courtofferid][ciTakeUserID] = playerid;
 
-                return CourtShowOfferReview(courtid);
+                return CourtShowOfferReview(courtofferid);
             }
             else return pc_cmd_goverment(playerid);
         }
@@ -529,12 +688,12 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
             return CourtShowList(playerid);
         }
         case COURT_DIALOG_OFFER_WAITING_INFO: {
-            new courtid = DP[4][playerid];
-            if (!response) return CourtShowOfferReview(courtid);
+            new courtofferid = DP[4][playerid];
+            if (!response) return CourtShowOfferReview(courtofferid);
             
-            DP[1][CourtInfo[courtid][courtsPlayerId]] = playerid;
+            DP[1][CourtInfo[courtofferid][ciPlayerID]] = playerid;
 
-            CourtShowArbiterOfferCall(courtid);
+            CourtShowArbiterOfferCall(courtofferid);
         }
         case COURT_DIALOG_OFFER_CALL: {
             if (response) return CourtStartProcess(playerid, DP[1][playerid]);
@@ -546,37 +705,37 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
         case COURT_DIALOG_OFFER_REVIEW: {
             if (!response) return 1;
 
-            new courtid = DP[4][playerid];
-            if(courtid < 0 || courtid >= MAX_COURT_OFFERS) return false;
-            if(CourtInfo[courtid][courtsStatus] != COURT_STATUS_REVIEW) return 0;
-            new e_CourtDecision: courtDecision = CourtInfo[courtid][courtsDecision] = e_CourtDecision: listitem;
+            new courtofferid = DP[4][playerid];
+            if(courtofferid < 0 || courtofferid >= MAX_COURT_OFFERS) return false;
+            if(CourtInfo[courtofferid][ciStatus] != COURT_STATUS_REVIEW) return 0;
+            new e_CourtDecision: courtDecision = CourtInfo[courtofferid][ciDecision] = e_CourtDecision: listitem;
 
             if (courtDecision == COURT_CLASS_JAIL_REDUCE_PAROLE || courtDecision == COURT_CLASS_PAROLE || courtDecision == COURT_CLASS_WORKING_OUT_PAROLE) {
-                return CourtEnterDeposit(courtid);
+                return CourtEnterDeposit(courtofferid);
             }
-            return CourtShowProcessAccept(courtid);
+            return CourtShowProcessAccept(courtofferid);
         }
         case COURT_DIALOG_ENTER_DEPOSIT: {
-            new courtid = DP[4][playerid];
-            if (!response) return CourtShowOfferReview(courtid);
+            new courtofferid = DP[4][playerid];
+            if (!response) return CourtShowOfferReview(courtofferid);
 
             new deposit, period;
             if (!sscanf(inputtext, "dd", deposit, period)) {
                 if (deposit >= COURT_MINIMAL_DEPOSIT && deposit <= COURT_MAXIMAL_DEPOSIT) {
                     if (period >= COURT_MINIMAL_PERIOD && period <= COURT_MAXIMAL_PERIOD) {
-                        return CourtShowProcessAccept(courtid, deposit, period);
+                        return CourtShowProcessAccept(courtofferid, deposit, period);
                     } else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Количество дней не меньше %d и не больше %d", COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD);
                 } else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сумма не меньше %s$ и не больше %s$", COURT_MINIMAL_DEPOSIT, COURT_MAXIMAL_DEPOSIT);
             }
 
-            return CourtEnterDeposit(courtid);
+            return CourtEnterDeposit(courtofferid);
         }
         case COURT_DIALOG_PROCESS_ACCEPT: {
-            new courtid = DP[4][playerid];
-            if (!response) return CourtShowOfferReview(courtid);
+            new courtofferid = DP[4][playerid];
+            if (!response) return CourtShowOfferReview(courtofferid);
 
             new deposit = DP[5][playerid], period = DP[6][playerid];
-            return CourtCloseProcess(courtid, deposit, period);
+            return CourtCloseProcess(courtofferid, deposit, period);
         }
     }
 

@@ -1784,12 +1784,14 @@ function OnPlayerInventoryLoad(playerid, race_check)
 {
 	new rows;
 	cache_get_row_count(rows);
+
 	if(rows)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 		OnPlayerLoadInventory(playerid);
 		printf("OnPlayerLoadInventory(%s) Инвентарь Найден", PlayerInfo[playerid][pName]);
 	}
+	
 	return 1;
 }
 
