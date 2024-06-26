@@ -511,7 +511,7 @@ stock SelectVoteAfterRally()
     {
         new stringlog[100];
         format(stringlog,sizeof(stringlog),"Голосование за: %s. Итог: %s.",ViborInfo[vname],ViborName[set]);
-        OrgLog(7, "voting", 0, "", " ", 0, "", "", 0, stringlog);
+        OrgLog(7, "voting", 0, "", "", 0, "", "", 0, stringlog);
     }
     else if(ViborInfo[vstat] == 2)
     {
@@ -578,7 +578,7 @@ public Call_dismissalGover()
         cache_get_value_name(0, "Name", nickname,24);
         mysql_format(pearsq, f_str,sizeof(f_str),"SELECT user_id, Soska, Member, Leader, Rank, Fbi, Family FROM `pp_igroki` WHERE `Name` = '%e'", nickname);
 		mysql_tquery(pearsq, f_str, "Call_uninvite", "dss", -1, nickname,"Снят по голосованию после митинга");
-        OrgLog(7, "DismissalAfterRally", userid, nickname, " ", 0, "", "", 0, "Снят по голосованию после митинга");
+        OrgLog(7, "DismissalAfterRally", userid, nickname, "", 0, "", "", 0, "Снят по голосованию после митинга");
 	}
 	return 1;
 }
@@ -595,7 +595,7 @@ public Call_dismissalSenat()
         cache_get_value_name(0, "Name", nickname,24);
         mysql_format(pearsq, f_str,sizeof(f_str),"SELECT user_id, Soska, Member, Leader, Rank, Fbi, Family FROM `pp_igroki` WHERE `Name` = '%e'", nickname);
 		mysql_tquery(pearsq, f_str, "Call_uninvite", "dss", -1, nickname,"Снят по голосованию после митинга");
-        OrgLog(7, "DismissalAfterRally", userid, nickname, " ", 0, "", "", 0, "Уволен по голосованию после митинга");
+        OrgLog(7, "DismissalAfterRally", userid, nickname, "", 0, "", "", 0, "Уволен по голосованию после митинга");
 	}
 	return 1;
 }
