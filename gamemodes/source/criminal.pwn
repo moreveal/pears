@@ -764,7 +764,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
             new line[80],lines[240];
             format(line,sizeof(line),"{0066ff}Вам выписан штраф в размере {FF6347}%d$", CriminalCodeInfo[uk][p][ccFine]), strcat(lines,line);
             format(line,sizeof(line),"\n\n{ffcc66}Вы можете оплатить его в любом банкомате"), strcat(lines,line);
-            format(line,sizeof(line),"\n{ffcc66}За длительную неуплату штрфов, вы будете арестованы"), strcat(lines,line);
+            format(line,sizeof(line),"\n{ffcc66}За длительную неуплату штрафов, вы будете арестованы"), strcat(lines,line);
             ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{0066ff}POLICE",lines,"*","");
         }
     }
