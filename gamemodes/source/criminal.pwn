@@ -694,7 +694,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
     }
 
     if (IsPlayerConnected(playerid)) {
-        if(zv == 0 && mentid != -1)
+        if(zv == 0 && mentid > -1)
         {
             if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(2.0, playerid, mentid)) return ErrorMessage(mentid, "{FF6347}Вы далеко от игрока");
         }
@@ -705,7 +705,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
         PlayerInfo[playerid][pAmmos11] += CriminalCodeInfo[uk][p][ccFine];
         WantedInfo[playerid][wanTicketCrime][slotUk] = uk + 1;
         WantedInfo[playerid][wanTicketSubentry][slotUk] = p;
-        if(mentid != -1) 
+        if(mentid > -1) 
         {
             WantedInfo[playerid][wanTicketPoliceId][slotUk] = PlayerInfo[mentid][pID];
             format(TicketPolice[playerid][slotUk], 24,"%s", PlayerInfo[mentid][pName]);
@@ -730,7 +730,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
     }
     else
     {
-        if(mentid != -1 && slotzv != -1) ErrorMessage(mentid, "{FF6347}У преступника максимальное количество штрафов в личном деле [ /wanted ]");
+        if(mentid > -1 && slotzv != -1) ErrorMessage(mentid, "{FF6347}У преступника максимальное количество штрафов в личном деле [ /wanted ]");
         return 0;
     }
     return 1;
@@ -851,7 +851,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         if(CheckPlayerNpc(playerid, playerid)) return 1;
     }
 
-    if (!IsOnline(zakonnik)) zakonnik = -1;
+    if (!IsOnline(zakonnik) && zakonnik > 0) zakonnik = _:COP_TYPE_NONE;
 
     if(IsOnline(zakonnik))
     {
@@ -869,7 +869,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
     new resultFine;
     // Выписываем штраф
-    if(CriminalCodeInfo[uk][p][ccFine] != 0 && zakonnik != -1) 
+    if(CriminalCodeInfo[uk][p][ccFine] != 0 && zakonnik > -1) 
     {
         resultFine = CreatePlayerTicket(playerid, zakonnik, zv, uk, p, slotUk);
     }
@@ -903,7 +903,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
         if (IsPlayerConnected(playerid)) {
             // Сообщения преступнику
-            if(zakonnik != -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
+            if(zakonnik > -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
             else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]", reason, zv);
             SendClientMessage(playerid, COLOR_GREY, string);
             OnlineInfo[playerid][oUnixAcceptWanted] = 15;
@@ -912,7 +912,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         
         {
             // Если розыск выдается не по решению суда
-            if (!GetPVarInt(playerid, "IsCourtDecisionSetCriminal")) {
+            if (zakonnik != _:COP_TYPE_COURT) {
                 // Помечаем условия судебного решения нарушенными и сообщаем о возврате прежнего уровня розыска, в случае если заключенный был выпущен по УДО
                 new decisionid, bool: have_decision;
                 while (decisionid >= 0) {
@@ -926,8 +926,15 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
                         );
                         notify(0, "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], notify_str);
                     } else if (decisionid > -1) {
-                        if (!CourtIsParoleType(PlayerCourtDecision[playerid][decisionid][pcdType])) continue;
-                        if (PlayerCourtDecision[playerid][decisionid][pcdWantedReturn]) continue;
+                        new bool: is_continue = false;
+
+                        // Пропуск судебных решений, не связанных с отпусканием по УДО + пропуск исправительных работ
+                        if (!CourtIsParoleType(PlayerCourtDecision[playerid][decisionid][pcdType])
+                            || PlayerCourtDecision[playerid][decisionid][pcdType] == COURT_CLASS_WORKING_OUT_PAROLE) is_continue = true;
+                        // Пропуск судебных решений, по которым уже возвращался розыск
+                        if (PlayerCourtDecision[playerid][decisionid][pcdWantedReturn]) is_continue = true;
+
+                        if (is_continue) { decisionid++; continue; }
 
                         have_decision = true;
                         CourtSetCrimeFromDecision(playerid, decisionid);

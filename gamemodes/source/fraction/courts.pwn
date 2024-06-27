@@ -72,9 +72,7 @@ stock CourtSetCrimeFromDecision(playerid, decisionid) {
         if (info[wanUnix][i] == 0 && info[wanTicketUnix][i] == 0) continue;
 
         new uk = info[wanCrime][i] - 1, p = info[wanSubentry][i];
-        SetPVarInt(playerid, "IsCourtDecisionSetCriminal", 1);
-        SetPlayerCriminal(playerid, -1, CriminalCodeInfo[uk][p][ccName], CriminalCodeInfo[uk][p][ccLevel], uk, p);
-        DeletePVar(playerid, "IsCourtDecisionSetCriminal");
+        SetPlayerCriminal(playerid, _:COP_TYPE_COURT, CriminalCodeInfo[uk][p][ccName], CriminalCodeInfo[uk][p][ccLevel], uk, p);
     }
     PlayerCourtDecision[playerid][decisionid][pcdWantedReturn] = true;
 
@@ -284,9 +282,9 @@ stock CourtSubtractWorkoutDeposit(playerid, deposit) {
 stock CourtGetNewestPlayerDecision(playerid, startid = 0) {
     new slot;
     for (new i = startid; i < MAX_COURT_PLAYER_DECISIONS; i++) {
-        if (CourtIsFreePlayerDecisionSlot(playerid, i)) continue;
+        if (PlayerCourtDecision[playerid][slot][pcdTime] == 0) continue;
         
-        if (PlayerCourtDecision[playerid][slot][pcdTime] <= PlayerCourtDecision[playerid][i][pcdTime])
+        if (PlayerCourtDecision[playerid][i][pcdTime] >= PlayerCourtDecision[playerid][slot][pcdTime])
             slot = i + 1;
     }
 
