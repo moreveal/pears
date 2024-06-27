@@ -19,9 +19,9 @@ CMD:sick(playerid, const params[])
 	foreach(Player,i)
 	{
 		if(OnlineInfo[i][oLogged] == 0) continue;
-		if(getillness(playerid, params[0]) >= 0)
+		if(getillness(i, params[0]) >= 0)
 		{
-			format(line,sizeof(line),"\n{cccccc}%s[%d]", PlayerInfo[playerid][pName], playerid), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}%s[%d]", PlayerInfo[i][pName], i), strcat(lines,line);
 			quan ++;
 		}
 	}
