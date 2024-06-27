@@ -164,6 +164,15 @@ stock MakeadminPlayerBridge(user_id, g)
     return 1;
 }
 
+stock MakeDjPlayerBridge(user_id, level)
+{
+    SendBridgeEvent("account_makedj", JSON_Object(
+        "account_id", JSON_Int(user_id),
+        "level", JSON_Int(level)
+    ));
+    return 1;
+}
+
 stock GiverankPlayerBridge(user_id, g, r)
 {
     SendBridgeEvent("account_giverank", JSON_Object(
