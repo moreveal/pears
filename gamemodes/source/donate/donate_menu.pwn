@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 14
+#define MAX_DONATE_SERVICE 15
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -33,6 +33,12 @@ stock defaultPriceDonate()
     donatePrice[11] = 90; // Максимальное знание языка
     donatePrice[12] = 140; // Стоимость кейса
     donatePrice[13] = 90; // Стоимость ремонта транспорта
+    donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
+}
+
+stock GetPriceGoldDonateMenu(donateid)
+{
+    return donatePrice[donateid];
 }
 
 CMD:donate(playerid)

@@ -222,7 +222,8 @@ enum dailyquestInfo
     bool:daiStatus[MAX_DAILY_QUEST_PLAYER], // Статус выполненого задания
     daiDay, // Номер дня, в который необходимо выполнить текущие задания
     bool:daiLoaded, // Статус загрузки из базы данных
-    bool:daiFull // Квест полностью пройден
+    bool:daiFull, // Квест полностью пройден
+    bool:daiChange // Статус замены одного задания в день
 }
 new DailyInfo[MAX_REALPLAYERS][dailyquestInfo];
 
@@ -303,6 +304,7 @@ stock CreateDaily(playerid, forced, taskid = -1)
     }
 
     DailyInfo[playerid][daiFull] = false; // Сбрасываем статус выполненных заданий
+    if(forced == 0) DailyInfo[playerid][daiChange] = false; // Сбрасываем статус возможности заменить одно задание в день бесплатно
     DailyInfo[playerid][daiDay] = getdate(); // записываем сегодняшний день
 
     SaveDailyQuests(playerid);
@@ -432,6 +434,31 @@ stock showDialogDailyQuest(playerid, targetid = -1)
     return 1;
 }
 
+// Выбор или замена задания
+stock showDialogSelectDailyQuest(playerid, dailyid)
+{
+    new line[100],lines[300];
+    format(line,sizeof(line),"{ff9000}%s", dailyName[dailyid]), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Выполнить задание {99ff66}>>"), strcat(lines,line);
+    if(DailyInfo[playerid][daiChange] == false) format(line,sizeof(line),"\n{FF6347}Заменить задание {cccccc}[ Бесплатно ]"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{FF6347}Заменить задание {ffcc00}[ %dG ]", GetPriceGoldDonateMenu(14)), strcat(lines,line);
+
+    ShowDialog(playerid, 435, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Ежедневные Задания", lines, "Выбор", "Отмена");
+    return true;
+}
+
+// Предлагаем заменить задание
+stock showDialogChangeDailyQuest(playerid, dailyid)
+{
+    new line[100],lines[300];
+    format(line,sizeof(line),"{ff9000}%s", dailyName[dailyid]), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{ffcc66}Вы уверены, что хотите заменить это задание?"), strcat(lines,line);
+    if(DailyInfo[playerid][daiChange] == false) format(line,sizeof(line),"\n{ffcc66}Вы можете заменить бесплатно только одно задание в день"), strcat(lines,line);
+    else format(line,sizeof(line),"\n{ffcc66}Стоимость замены задания: {ffcc00}%dG", GetPriceGoldDonateMenu(14)), strcat(lines,line);
+    ShowDialog(playerid, 434, DIALOG_STYLE_MSGBOX, "{ff9000}Ежедневные Задания", lines, "Да", "Нет");
+    return true;
+}
+
 stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
 {
     if(dialogid == 460)
@@ -470,9 +497,41 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
             else
             {
                 new dailyid = DailyInfo[playerid][daiID][slot];
-                new resultGps = DailyGPS(playerid, dailyid, 0);
                 DP[0][playerid] = dailyid;
+                DP[1][playerid] = slot;
 
+                showDialogSelectDailyQuest(playerid, dailyid);
+            }
+        }
+        else pc_cmd_quest(playerid);
+        return true;
+    }
+    else if(dialogid == 458) 
+    {
+        showDialogDailyQuest(playerid);
+        return true;
+    }
+    else if(dialogid == 454)
+    {
+        if(response)
+        {
+            DailyGPS(playerid, DP[0][playerid], 1);
+            SuccessMessage(playerid, "{99ff66}Место для выполнения задания отмечено GPS меткой");
+        }
+        else showDialogSelectDailyQuest(playerid, DP[0][playerid]);
+        return true;
+    }
+
+    // Выбор задания или его замена
+    else if(dialogid == 435)
+    {
+        new dailyid = DP[0][playerid];
+        if(response)
+        {
+            // Выполняем задание
+            if(listitem == 0)
+            {
+                new resultGps = DailyGPS(playerid, dailyid, 0);
                 new line[214],lines[4096];
                 format(line,sizeof(line),"{ff9000}%s", dailyName[dailyid]), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{cccccc}%s", dailyDescription[dailyid]), strcat(lines,line);
@@ -488,20 +547,51 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
                     ShowDialog(playerid,458,DIALOG_STYLE_MSGBOX,"{ff9000}Ежедневные Задания",lines,"Ок","");
                 }
             }
+
+            // Заменяем задание
+            else if(listitem == 1) showDialogChangeDailyQuest(playerid, dailyid);
         }
-        else pc_cmd_quest(playerid);
+        else showDialogDailyQuest(playerid);
+        return true;
     }
-    else if(dialogid == 458) showDialogDailyQuest(playerid); // Диалог: Информация о Ежедневных Заданиях
-    else if(dialogid == 454)
+
+    // Диалог предупреждения о замене задания
+    else if(dialogid == 434)
     {
         if(response)
         {
-            DailyGPS(playerid, DP[0][playerid], 1);
-            SuccessMessage(playerid, "{99ff66}Место для выполнения задания отмечено GPS меткой");
+            if(DailyInfo[playerid][daiChange] == true)
+            {
+                if(GetPriceGoldDonateMenu(14) > PlayerInfo[playerid][pDonateMoney]) return ErrorMessage(playerid, "{FF6347}Вам не хватает золота");
+                PlayerInfo[playerid][pDonateMoney] -= GetPriceGoldDonateMenu(14);
+                tclArifmetikAllGold -= GetPriceGoldDonateMenu(14);
+    	        mysql_save(playerid, 4);
+		        DonateLog("changedaily", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -GetPriceGoldDonateMenu(14), "Заменил задание");
+            
+                new string[80];
+                format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~3AѓAH…E 3AMEHEHO: ~y~-%dG", GetPriceGoldDonateMenu(14));
+                GameTextForPlayer(playerid,string,4000,3);
+            }
+            else
+            {
+                DailyInfo[playerid][daiChange] = true;
+                SaveDailyQuestChange(playerid);
+            }
+
+            new slot = DP[1][playerid];
+            new findDaily = SelectUniqueDailyForSlot(playerid, slot);
+            if(findDaily > 0)
+            {
+                CreateDailySlotForPlayer(playerid, slot, findDaily);
+            }
+            showDialogDailyQuest(playerid);
+
+            PlayerPlaySound(playerid,6401,0,0,0);
+            GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~3AѓAH…E 3AMEHEHO",4000,3);
         }
-        else showDialogDailyQuest(playerid);
+        else showDialogSelectDailyQuest(playerid, DP[0][playerid]);
     }
-    return 1;
+    return false;
 }
 
 function OnPlayerQuestsLoad(playerid)
@@ -512,6 +602,7 @@ function OnPlayerQuestsLoad(playerid)
     {
         cache_get_value_name_int(0, "daiDay", DailyInfo[playerid][daiDay]);
         cache_get_value_name_bool(0, "daiFull", DailyInfo[playerid][daiFull]);
+        cache_get_value_name_bool(0, "daiChange", DailyInfo[playerid][daiChange]);
         for (new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++)
         {
             format(string, sizeof(string), "daiID_%d", i);
@@ -540,6 +631,21 @@ function OnPlayerQuestsLoad(playerid)
     return 1;
 }
 
+stock SaveDailyQuestChange(playerid)
+{
+    if (DailyInfo[playerid][daiLoaded] == false) return 0;
+
+    new string_mysql[100];
+
+    // Формируем запрос для обновления одного слота квеста
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_quests` SET daiChange = %d WHERE user_id = %d", 
+        DailyInfo[playerid][daiChange], PlayerInfo[playerid][pID]);
+
+    // Отправляем запрос в базу данных
+    mysql_tquery(pearsq, string_mysql, "", "");
+    return 1;
+}
+
 stock SaveDailyQuestSlot(playerid, slot)
 {
     if (slot < 0 || slot >= MAX_DAILY_QUEST_PLAYER || DailyInfo[playerid][daiLoaded] == false) return 0;
@@ -557,10 +663,10 @@ stock SaveDailyQuestSlot(playerid, slot)
 
 stock SaveDailyQuests(playerid)
 {
-    new string_mysql[1400], part[240];
+    new string_mysql[1600], part[280];
 
     // Начальная часть запроса с daiDay
-    format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_quests` (user_id, daiDay, daiFull");
+    format(string_mysql, sizeof(string_mysql), "INSERT INTO `pp_quests` (user_id, daiDay, daiFull, daiChange");
 
     // Добавляем названия остальных столбцов
     for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
@@ -570,7 +676,7 @@ stock SaveDailyQuests(playerid)
     }
 
     // Добавляем значения для daiDay и user_id
-    format(part, sizeof(part), ") VALUES (%d, %d, %d", PlayerInfo[playerid][pID], DailyInfo[playerid][daiDay], DailyInfo[playerid][daiFull]);
+    format(part, sizeof(part), ") VALUES (%d, %d, %d, %d", PlayerInfo[playerid][pID], DailyInfo[playerid][daiDay], DailyInfo[playerid][daiFull], DailyInfo[playerid][daiChange]);
     strcat(string_mysql, part);
 
     // Добавляем значения для остальных столбцов
