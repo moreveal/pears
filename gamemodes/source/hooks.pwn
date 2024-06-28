@@ -74,6 +74,29 @@ stock __HOOK_ApplyAnimation(playerid, const animationLibrary[], const animationN
 #endif
 #define ApplyAnimation __HOOK_ApplyAnimation
 
+stock __HOOK_SetVehicleNumberPlate(vehicleid, const numberplate[]) {
+	// Сохраняем состояние автомобиля
+	new t_VEHICLE_PANEL_STATUS:_panels, t_VEHICLE_DOOR_STATUS:_doors, t_VEHICLE_LIGHT_STATUS:_lights, t_VEHICLE_TYRE_STATUS:_tires;
+	GetVehicleDamageStatus(vehicleid, _panels, _doors, _lights, _tires);
+	new Float: health;
+	GetVehicleHealth(vehicleid, health);
+
+	SetVehicleNumberPlate(vehicleid, numberplate);
+
+	// Возвращаем состояние автомобиля после изменения номеров
+	SetVehicleHealth(vehicleid, health);
+	UpdateVehicleDamageStatus(vehicleid, _panels, _doors, _lights, _tires);
+
+	return 1;
+}
+
+#if defined _ALS_SetVehicleNumberPlate
+	#undef SetVehicleNumberPlate
+#else
+	#define _ALS_SetVehicleNumberPlate
+#endif
+#define SetVehicleNumberPlate __HOOK_SetVehicleNumberPlate
+
 /*stock PPmysql_tquery(MySQL:handle, const query[], const callback[] = "", const format[] = "", {Float,_}:...)
 {
 	if(strlen(query) <= 5)
