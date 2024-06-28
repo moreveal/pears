@@ -1192,6 +1192,7 @@ stock SaveBizz(b)
 
 	SaveBizzAccess(b);
 	SaveBizzSetting(b);
+	SaveBizzObjects(b);
 	return true;
 }
 stock SaveBizzProduct(idx, bool:transaction = true)

@@ -269,7 +269,7 @@ stock SaveBizzAccess(b)
 stock SaveBizzSetting(b)
 {
 	new string_mysql[1400];
-	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_bizz` SET `setting0` = '%d'", BizzInfo[b][bSetting][0]);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_bizz` SET `setting0` = '%d'", BizzInfo[b][bSetting][0]);
 
 	for(new i = 1; i < MAX_BIZ_SETTING; i++) 
 	{
@@ -279,4 +279,28 @@ stock SaveBizzSetting(b)
     mysql_format(pearsq, string_mysql,sizeof(string_mysql),"%s WHERE `newid` = '%d'", string_mysql, b);
 	query_empty(pearsq, string_mysql);
 	return 1;
+}
+
+stock SaveBizzObjects(b)
+{
+	new string_mysql[1400];
+
+	for (new i = 0; i < 2; i++) {
+		new Float: x, Float: y, Float: z,
+			Float: rx, Float: ry, Float: rz;
+		
+		GetDynamicObjectPos(BizzInfo[b][bBizObject][i], x, y, z);
+		GetDynamicObjectRot(BizzInfo[b][bBizObject][i], rx, ry, rz);
+
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql),
+			"REPLACE INTO `pp_bizzobject` \
+			(`newid`, `slot`, `X`, `Y`, `Z`, `rX`, `rY`, `rZ`) \
+			VALUES (%d, %d, %f, %f, %f, %f, %f, %f)",
+
+			b, i,
+			x, y, z,
+			rx, ry, rz
+		);
+		query_empty(pearsq, string_mysql);
+	}
 }
