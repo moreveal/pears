@@ -48,13 +48,22 @@ stock SaveLastPlayerPosition(playerid)
         PlayerInfo[playerid][pLastPos][2] = pos[2];
         PlayerInfo[playerid][pLastPos][3] = pos[3];
 
+        PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+        PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
+
         // Если последняя точка в динамической зоне квеста и квест выполнен значит сохраняем вирт мир 0
         if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot])
         {
             PlayerInfo[playerid][pLastWorld] = 0;
         }
-        else PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-        PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
+
+        // Если игрок в воде - сохраняем последнюю позицию над водой
+        {
+            new Float: depth, Float: playerdepth;
+            if (CA_IsPlayerInWater(playerid, depth, playerdepth)) {
+                PlayerInfo[playerid][pLastPos][2] += playerdepth + 0.5;
+            }
+        }
     }
     return 1;
 }
