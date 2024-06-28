@@ -271,6 +271,10 @@ function Call_giverefdon(playerid, user_id, gold, bool:IsValid)
 	new string[160];
 	if(IsValid == true)
 	{
+        new rows;
+        cache_get_row_count(rows);
+        if (!rows) return 1;
+        
 	    new referalName[24], playerGold, onl, string_mysql[140];
 	    cache_get_value_name(0, "Name", referalName, sizeof(referalName));
 

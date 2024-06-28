@@ -660,20 +660,25 @@ stock infotrailer(playerid, t)
 	return 1;
 }
 
-forward OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z);
-public OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
-	new owner_name[MAX_PLAYER_NAME + 1], number = id+1;
-	cache_get_value_name(0, "Name", owner_name);
-    new string[100];
-    if(TrailerInfo[id][tEnterPickup] != 0)
-    {
-        DestroyDynamic3DTextLabel(TrailerInfo[id][t3DLabel]);
-        DestroyDynamicPickup(TrailerInfo[id][tEnterPickup]);
+function OnCreatePlayerTrailerPickup(id, Float: x, Float: y, Float: z) {
+    new rows;
+    cache_get_row_count(rows);
+
+    if (rows) {
+        new owner_name[MAX_PLAYER_NAME + 1], number = id + 1;
+        cache_get_value_name(0, "Name", owner_name);
+        new string[100];
+        if(TrailerInfo[id][tEnterPickup] != 0)
+        {
+            DestroyDynamic3DTextLabel(TrailerInfo[id][t3DLabel]);
+            DestroyDynamicPickup(TrailerInfo[id][tEnterPickup]);
+        }
+        format(string,sizeof(string),"{cccccc}Трейлер "COLOR_ORANGE_TEXT"№ %d\n"COLOR_WHITE_TEXT"Владелец: "COLOR_ORANGE_TEXT"%s", number, owner_name);
+        TrailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, x, y, z, 12.5, .testlos = 1, .worldid = 0, .interiorid = 0);
+        TrailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_PICKUP, x, y, z, 0, 0, .streamdistance = 100.0);
+        Streamer_SetIntData(STREAMER_TYPE_PICKUP, TrailerInfo[id][tEnterPickup], STREAMER_EXTRA_TYPE_TRAILER_ENTER, id + 1);
     }
-    format(string,sizeof(string),"{cccccc}Трейлер "COLOR_ORANGE_TEXT"№ %d\n"COLOR_WHITE_TEXT"Владелец: "COLOR_ORANGE_TEXT"%s", number, owner_name);
-    TrailerInfo[id][t3DLabel] = CreateDynamic3DTextLabel(string, 0xA9C4E4FF, x, y, z, 12.5, .testlos = 1, .worldid = 0, .interiorid = 0);
-    TrailerInfo[id][tEnterPickup] = CreateDynamicPickup(1272, STREAMER_TYPE_PICKUP, x, y, z, 0, 0, .streamdistance = 100.0);
-	Streamer_SetIntData(STREAMER_TYPE_PICKUP, TrailerInfo[id][tEnterPickup], STREAMER_EXTRA_TYPE_TRAILER_ENTER, id + 1);
+    
 	return 1;
 }
 

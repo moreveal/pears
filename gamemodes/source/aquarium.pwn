@@ -358,13 +358,16 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
 
 function LoadAquarium()
 {
+    new rows;
+	cache_get_row_count(rows);
+
     new w_gov1 = 189, i_gov1 = 0;
     AquariumInfo[0][aqTextObject][0] = CreateDynamicObject(19475, -2787.407714, 382.085937, 6.803994, -0.000018, 0.000007, -89.999855, w_gov1, i_gov1, -1, 300.00, 300.00); // text_fish0 (maxsize_name 10)
 	AquariumInfo[0][aqTextObject][1] = CreateDynamicObject(19475, -2787.778076, 382.085937, 6.553992, -0.000018, 0.000007, -89.999855, w_gov1, i_gov1, -1, 300.00, 300.00); // text_fish1 (maxsize_name 10)
 	AquariumInfo[0][aqTextObject][2] = CreateDynamicObject(19475, -2787.417724, 382.085937, 6.253999, -0.000018, 0.000007, -89.999855, w_gov1, i_gov1, -1, 300.00, 300.00); // text_fish2 (maxsize_name 10)
 
 	new time = GetTickCount();
-	for(new f; f < MAX_AQUARIUM; ++f)
+	for(new f; f < min(rows, MAX_AQUARIUM); ++f)
 	{
         InitializeAquarium(f);
 
