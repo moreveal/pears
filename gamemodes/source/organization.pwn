@@ -273,7 +273,7 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "gDeliveryPay", OrganInfo[idx][gDeliveryPay]);
 		cache_get_value_name_int(f, "gTax", OrganInfo[idx][gTax]);
 		cache_get_value_name_int(f, "gMedMoney", OrganInfo[idx][gMedMoney]);
-		cache_get_value_name_bool(0, "gWarehouse", OrganInfo[idx][gWarehouse]);
+		cache_get_value_name_bool(f, "gWarehouse", OrganInfo[idx][gWarehouse]);
 
 		OrganInfo[idx][gDeliveryOrder] = -1;
 		// NGSA
@@ -281,6 +281,9 @@ function LoadOrgan()
 		{
 			if(OrganInfo[idx][gTax] == 0) OrganInfo[idx][gTax] = 100000;
 		}
+
+		// Загружаем расчёт по зпшкам в час
+		LoadSalaryOrganization(idx);
 	}
 	UpdateHonor(1), UpdateHonor(2);
 
