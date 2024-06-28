@@ -60,7 +60,10 @@ enum gInfo
 
 	gMedMoney, // Деньги для закупа мед оборудования
 	bool:gMedMoneyUpdate, // Статус для сохранение переменной денег мед оборудования
-	bool:gWarehouse // Доступ к складу, 0 открыт, 1 закрыт
+	bool:gWarehouse, // Доступ к складу, 0 открыт, 1 закрыт
+
+	gMinSalary, // Минимальная зпшка в орге
+	gMaxSalary // Максимальная зпшка в орге
 };
 new OrganInfo[35][gInfo];
 new RankOrg[MAX_ORG][MAX_RANK_ORG][MAX_NAME_LENGTH];
