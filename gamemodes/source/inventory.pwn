@@ -46,7 +46,7 @@ new fdrawName[][] = // Название Вещи
 	"PEM.KOMЊ‡EKЏ KAЏEPO‹","HAMA3‡‘K","P‘ЂKA", "KOPM ѓ‡• P‘ЂOK","ЊAKEЏ", "ЂA‡OHЌ…K C KPACKO†","ЏAЂ‡EЏKA AЏAK…","OЂ‘ЌHA• C…‚HA‡…3A‰…•","Y‡YЌЋEHHA• C…‚HA‡…3A‰…•","MEЏA‡…ЌECKA• ЏPYЂA",
 	"‹…‡KA", "KAPЏ‘ ѓOCЏYЊA Џ”P’M‘", "MEЋOK C ѓEH’‚AM…", "ЂOMЂA ‡…ЊYЌKA","3AЊЌACЏ…","AROSPEED","SkunkRacer","Venom","DC Sports",
 	"ACT","Clutch Masters","Jacson Raceing","HPRacing","Ibach Springs","KONI suspension","BILSTEIN","YKOHAMA","TOYO","Falken Tire",
-	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "ѓOMKPAЏ", "ЂPOHEЊ‡EHKA 1000", "ЂPOHEЊ‡EHKA 2000", "ЂPOHEЊ‡EHKA 3000", "CYMKA"
+	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "ѓOMKPAЏ", "ЂPOHEЊ‡EHKA 1000", "ЂPOHEЊ‡EHKA 2000", "ЂPOHEЊ‡EHKA 3000", "CYMKA", "KPEM OЏ CO‡H‰A"
 };
 new fdrawNameEN[][] = // Название Вещи на Английском
 {
@@ -72,7 +72,7 @@ new fdrawNameEN[][] = // Название Вещи на Английском
 	"REPAIR KIT BOAT","NAMAZLYK","AQUA FISH", "FISH FOOD", "PACKAGE", "CANS OF PAINT","PILL ATTACK","IMPROVED ALARM SYSTEM","THE USUAL ALARM SYSTEM","METAL PIPE",
 	"FORK","PRISON ACCESS CARDS","BAG OF MONEY","STICKY BOMB","PARTS","AROSPEED","SkunkRacer","Venom","DC Sports",
 	"ACT","Clutch Masters","Jacson Raceing","HPRacing","Ibach Springs","KONI suspension","BILSTEIN","YKOHAMA","TOYO","Falken Tire",
-	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "JACK", "ARMORED FILM 1000", "ARMORED FILM 2000", "ARMORED FILM 3000", "BAG"
+	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "JACK", "ARMORED FILM 1000", "ARMORED FILM 2000", "ARMORED FILM 3000", "BAG", "SUNSCREEN"
 };
 new friskName[][] = // Название Вещи
 {
@@ -98,7 +98,7 @@ new friskName[][] = // Название Вещи
 	"Рем.комплект Катеров","Намазлык","Аквариумная рыбка", "Корм для рыбок", "Пакет", "Баллончик с краской","Таблетка Атаки","Обычная Сигнализация","Улучшенная Сигнализация","Металическая Труба", // 192 - 201
 	"Вилка","Карта доступа Тюрьмы","Мешок с деньгами","Бомба липучка", "Запчасти","AROSPEED","SkunkRacer","Venom","DC Sports", // 202 - 210
 	"ACT","Clutch Masters","Jacson Raceing","HPRacing","Ibach Springs","KONI suspension","BILSTEIN","YKOHAMA","TOYO","Falken Tire",// 211-220
-	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "Домкрат", "Бронеплёнка 1000", "Бронеплёнка 2000", "Бронеплёнка 3000", "Сумка" // 221-229
+	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "Домкрат", "Бронеплёнка 1000", "Бронеплёнка 2000", "Бронеплёнка 3000", "Сумка","Солнцезащитный Крем" // 221-230
 };
 new friskPick[] = // ID Модельки в Инвентаре (обычный предмет)
 {
@@ -124,7 +124,7 @@ new friskPick[] = // ID Модельки в Инвентаре (обычный �
 	19921,2833,1599,19561,1575,365,1241,1614,1615,1135, // 192 - 201
 	11715,1581,1550,363,19917,19917,19917,19917,19917, // 202 - 210
 	19917,19917,19917,19917,19917,19917,19917,19917,19917,19917, // 211 - 220
-	19917,19917,19917,19917,19900,1649,1649,1649,2919 // 221-229
+	19917,19917,19917,19917,19900,1649,1649,1649,2919,1644 // 221-230
 };
 
 stock CheckThingQuan(t) // Имеет ли предмет количество (1 да, 0 нет)
@@ -132,7 +132,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (
 	return
 	(t >= 4 && t <= 9 || t >= 18 && t <= 20 || t == 25 || t >= 27 && t <= 30 || t == 41 || t == 46 || t == 47 || t == 55 || t == 60 || t == 61
 	|| t >= 64 && t <= 67 || t == 70 || t >= 71 && t <= 89 || t == 106 || t == 108 || t == 109 || t == 110 || t == 140 || t == 142 || t == 178 || t == 180
-	|| t == 181 || t == 197 || t == 198 || t == 225) ? 1 : 0;
+	|| t == 181 || t == 197 || t == 198 || t == 225 || t == 1644) ? 1 : 0;
 }
 
 new friskDefault[] = // Гос. стоимости предметов
@@ -159,7 +159,7 @@ new friskDefault[] = // Гос. стоимости предметов
 	5000,1500,3000,10,10,700,-1,10000,50000, -1, // 201
 	-1,-1,-1,-1, 50000,100000,200000,400000,800000, // 210
 	100000,200000,400000,800000,600000,1200000,300000,300000,600000,1000000, // 220
-	100000,200000,800000,1000000,5000,1400000,2800000,4200000,-1 // 229
+	100000,200000,800000,1000000,5000,1400000,2800000,4200000,-1,2500 // 230
 };
 new friskPrice[sizeof(friskName)];
 //==================================
@@ -2011,7 +2011,7 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
 	lim[82] = 10, lim[83] = 10, lim[84] = 10, lim[85] = 10, lim[86] = 10, lim[87] = 10, lim[88] = 10, lim[89] = 10, lim[106] = 12, lim[108] = 20, lim[109] = 20, lim[110] = 20;
-	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 20;
+	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 20, lim[230] = 5;
 
     getQuan = get_invent(playerid, thingId, 0);
     getLimit = lim[thingId];
@@ -2743,6 +2743,7 @@ stock player_tile(playerid, inva)
 				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // Таблетка Атаки
 				else if(fpick == 225) return showDialogSettingFlip(playerid), i_resetveshi(playerid); // Домкрат (Настройка автопереворота)
 
+				else if(fpick == 230) return format(string, sizeof(string), "%d", inva), pc_cmd_suncreen(playerid, string), i_resetveshi(playerid); // Солнцезащитный Крем
 	 		}
 	 		
 	 		else if(thingType == 2) // Аксессуары

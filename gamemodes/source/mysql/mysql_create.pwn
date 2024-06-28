@@ -6,6 +6,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pSharkTrap", "BLOB NULL DEFAULT NULL");
     AddColumnIfNotExists("pp_igroki", "pDivRank0", "INT NOT NULL DEFAULT '0'"); // Ранг в подфракции
     AddColumnIfNotExists("pp_igroki", "pDivRank1", "INT NOT NULL DEFAULT '0'"); // Ранг в подфракции для fbi под прикрытием
+    AddColumnIfNotExists("pp_igroki", "pSunScreen", "INT NOT NULL DEFAULT '0'"); // Солнцезащитный крем
 
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 
