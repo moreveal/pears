@@ -127,7 +127,7 @@ stock Dominic_GiveGift(playerid)
         if(IsPlayerInAnyVehicle(playerid))
         {
             new veh = GetPlayerVehicleID(playerid);
-            put_inva = PutThingBoot(veh, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+            put_inva = PutThingBoot(veh, thingId, thingQuan, thingPara, 0, thingType, thingPack, 999);
             CalculateVehicleLimited(thingId, thingType);
 	        if(put_inva == -1) pizdaPodarku = true;
             else
