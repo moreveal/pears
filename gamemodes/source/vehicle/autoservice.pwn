@@ -43,7 +43,8 @@ stock buyThingAutoserice(playerid, slot)
         SetVehicleArmor(vehicleid);
 	}
 
-    BizzInfo[b][bItem][slot] -= 1, BizzInfo[b][bUpdate] = 1;
+	if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][slot] -= 1;
+	BizzInfo[b][bUpdate] = 1;
 
 	SaveCar(vehicleid);
 	oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]);
@@ -295,7 +296,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         }
                         else
                         {
-                            BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
+                            if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                         }
                     }
                     else
@@ -306,7 +307,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         VehInfo[v][vTunningID][slot] = TempDetail[playerid][i];
                         VehInfo[v][vTunningQara][slot] = 0;
                         VehInfo[v][vTunningType][slot] = friskDetail[TempDetail[playerid][i]-207][1];
-                        BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
+                        if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                     }
                     format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизе %d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
                     CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
