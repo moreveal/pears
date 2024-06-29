@@ -820,7 +820,7 @@ CMD:members(playerid, const params[])
 
 	foreach(Player, i)
 	{
-		if(isPlayerEligible(i, fractionid))
+		if(isPlayerEligible(i, fractionid, playerid))
 		{
 			formatPlayerInfo(str, sizeof(str), i, fractionid);
 			strcat(sctring, str);
@@ -866,7 +866,7 @@ stock formatPlayerInfo(str[], size, playerid, g)
     }
 }
 
-stock isPlayerEligible(playerid, g)
+stock isPlayerEligible(playerid, g, makeplayerid)
 {
     // Проверяем, что игрок онлайн
     if(OnlineInfo[playerid][oLogged] == 0)
@@ -878,7 +878,7 @@ stock isPlayerEligible(playerid, g)
 
     // Дополнительные условия для специфических фракций или ролей
     // Например, для FBI или других специальных групп
-    if(g == 2 && PlayerInfo[playerid][pFbi] > 0)
+    if(g == 2 && PlayerInfo[playerid][pFbi] > 0 && GetAccessRankOrgMay(makeplayerid, g, 47, NO_FBI))
         return 1;
 
     // По умолчанию возвращаем false, если ни одно условие не выполнено
