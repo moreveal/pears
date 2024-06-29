@@ -5315,6 +5315,7 @@ CMD:loadcar(playerid, const params[])
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Загрузить транспорт из базы по DB ID [ /loadcar ID ]");
 	if(GetPVarInt(playerid,"stopload") >= 1) return ErrorMessage(playerid, "{FF6347}Ошибка! В данный момент вы уже загружаете транспорт");
 
+	DP[5][playerid] = 0; // Обнуляем переменную для восстановления транспорта
 	new string[120];
 	SetPVarInt(playerid,"stopload",1);
 	mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_cars` WHERE `newid` = '%d'", params[0]);
