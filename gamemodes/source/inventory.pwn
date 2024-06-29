@@ -1041,7 +1041,7 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 	}
 
 	// Заменяем кастомный объект для игрока без лаунчера
-	if(!IsPlayerSyncModels(playerid) && IsAObjectCustom(yesFindModel)) yesFindModel = 18631;
+	if(!IsPlayerSyncModels(playerid) && IsCustomObject(yesFindModel)) yesFindModel = 18631;
 
 	return yesFindModel;
 }
