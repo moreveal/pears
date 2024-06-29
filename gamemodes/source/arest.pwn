@@ -1,5 +1,15 @@
 stock IsNormalArestType(e_ArestType: type) { return (_:type > 0 && _:type < 2); }
 
+// Может ли игрок быть арестован полицейским в текущий момент
+stock IsPlayerCanBeArrested(playerid) {
+	return !( // Не
+		MPGO[playerid] > 0 // Находится на мероприятии
+		|| computerClubPlayerInfo[playerid][ccpiInGame] // Находится в компьютерном клубе
+		|| (bespilot[playerid] != 0 || GetTickCount() - bespilotejecttick[playerid] < 1000) // Управляет беспилотником
+		|| PlayerInfo[playerid][pJailed] > 0 // Находится в заключении
+	);
+}
+
 stock ArestPlayer(suspectid, copid, e_ArestType: type)
 {
 	// Не производим арест, если у игрока нет розыска, или он уже в заключении, или он на мероприятии

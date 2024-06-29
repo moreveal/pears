@@ -45,13 +45,11 @@ stock SetPlayerDeath(playerid, reason)
     if (!IsPlayerConnected(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
 
     if (NoDeath(playerid)) { // Если игрок не должен умирать (попадать в стадию)
-        // Если игрок уже мёртв
-        if (DeathInfo[playerid][deathStatus]) {
-            if (killerid == INVALID_PLAYER_ID) return 0;
+        if (killerid == INVALID_PLAYER_ID) return 0;
 
-            if (IsPoliceMember(killerid) && IsPlayerHavePursuit(playerid)) {
-                ArestPlayer(playerid, killerid, AREST_TYPE_KILL);
-            }
+        // DM Арест
+        if (IsPoliceMember(killerid) && IsPlayerHavePursuit(playerid) && IsPlayerCanBeArrested(playerid)) {
+            ArestPlayer(playerid, killerid, AREST_TYPE_KILL);
         }
         return 0;
     }
