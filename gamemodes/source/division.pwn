@@ -141,16 +141,16 @@ stock showDialogMenuDivision(playerid)
 CMD:dmembers(playerid, const params[]) return pc_cmd_divmembers(playerid, params);
 CMD:divmembers(playerid, const params[])
 {
-	if(fraction(playerid) == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(fraction(playerid) <= 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 
 	new i;
 	if(!sscanf(params, "i", params[0]))
 	{
-		if(params[0] < 0 || params[0] >= MAX_DIVISION_ORG) return 1;
+		if(params[0] < 0 || params[0] >= MAX_DIVISION_ORG) return ErrorMessage(playerid, "{FF6347}Неверный ID подфракции");
 		i = params[0];
 	}
 	else i = PlayerInfo[playerid][pDivision][0];
-	if(i == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! ID подфракции не может быть 0");
+	if(i <= 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в подфракции");
     showDialogMembersDivision(playerid, fraction(playerid), i);
 	return 1;
 }
@@ -172,6 +172,7 @@ stock showDialogMembersDivision(playerid, org, div)
 			&& (PlayerInfo[i][pMember] == org && PlayerInfo[i][pDivision][0] == div || org == 2 && PlayerInfo[i][pFbi] > 0 && PlayerInfo[i][pDivision][1] == div))
 		{
 			rank = PlayerInfo[i][pDivRank][0];
+			if(rank <= 0) rank = 1;
 
 			// Получаем информацию о рации (Включена или нет)
 			if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";
