@@ -628,13 +628,39 @@ CMD:readdm(playerid)
 	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {FF6347}Отключён");
 	return 1;
 }
-CMD:readhit(playerid)
+CMD:readhit(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(GetPVarInt(playerid,"Readhit") == 0) SetPVarInt(playerid,"Readhit",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {99ff66}Активирован");
-	else SetPVarInt(playerid,"Readhit",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {FF6347}Отключён");
-  	return 1;
+
+	new targetid = -1;
+
+	// -1 = все, INVALID_PLAYER_ID = никто, [0, 999] = любой выбранный игрок
+	new currentTargetId = GetPVarInt(playerid,"Readhit") != 0 ? GetPVarInt(playerid, "ReadhitTarget") : INVALID_PLAYER_ID;
+
+	new bool:valid_args = !sscanf(params, "i", targetid);
+
+	if (!valid_args || currentTargetId == targetid || targetid < 0)
+	{
+		new bool:enabled = currentTargetId != INVALID_PLAYER_ID;
+		SetPVarInt(playerid, "Readhit", enabled ? 0 : 1);
+		SetPVarInt(playerid, "ReadhitTarget", -1);
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий %s", (enabled ? "{99ff66}Активирован" : "{FF6347}Отключён"));
+		return 1;
+	}
+	else
+	{
+		if (!IsPlayerConnected(targetid) || IsPlayerNPC(targetid))
+		{
+			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+			return 1;
+		}
+		SetPVarInt(playerid, "Readhit", 1);
+		SetPVarInt(playerid, "ReadhitTarget", targetid);
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий {99ff66}Активирован на %s", rpplayername(targetid));
+		return 1;
+	}
 }
+
 CMD:rvanka(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
