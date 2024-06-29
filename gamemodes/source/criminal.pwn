@@ -17,8 +17,7 @@ enum criminalInfo
 };
 new CriminalCodeInfo[MAX_CRIMINAL_CODE_ARTICLE][MAX_CRIMINAL_CODE_SUBENTRY][criminalInfo];
 
-CMD:yk(playerid) return pc_cmd_criminal(playerid);
-CMD:uk(playerid) return pc_cmd_criminal(playerid);
+alias:criminal("uk", "yk")
 CMD:criminal(playerid)
 {
 	CriminalCodeMenu(playerid, 0, 0);
