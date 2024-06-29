@@ -588,6 +588,9 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
 
             PlayerPlaySound(playerid,6401,0,0,0);
             GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~3AѓAH…E 3AMEHEHO",4000,3);
+
+            // Сохраняем задание в слоте
+            SaveDailyQuestSlot(playerid, slot);
         }
         else showDialogSelectDailyQuest(playerid, DP[0][playerid]);
     }

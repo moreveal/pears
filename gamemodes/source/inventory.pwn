@@ -1039,6 +1039,10 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 		if(thingType == 4) yesFindModel = thingId; // Мебель
 		if(thingType == 5) yesFindModel = GetVehicleModelSync(playerid, thingId); // Транспорт
 	}
+
+	// Заменяем кастомный объект для игрока без лаунчера
+	if(!IsPlayerSyncModels(playerid) && IsAObjectCustom(yesFindModel)) yesFindModel = 18631;
+
 	return yesFindModel;
 }
 //=================================
