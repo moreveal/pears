@@ -4388,7 +4388,7 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 
 			if(BizzInfo[b][bItem][slot] < 2) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недостаточно рем. комплектов для восстановления\n\n{cccccc}Вы можете отправиться в другой сервис");
 				
-			if(BizzInfo[bizId][bSost] > 0) BizzInfo[b][bItem][slot] -= 2;
+			if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][slot] -= 2;
 			BizzInfo[b][bUpdate] = 1;
 			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]*2);
 			paybiz(b, BizzInfo[b][bPrice][slot]*2);
@@ -4936,7 +4936,7 @@ stock UnPackVehicle(playerid)
 
 CMD:addcar(playerid, const params[])
 {
-    if(!(PlayerInfo[playerid][pSoska] >= 15 || PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(!(PlayerInfo[playerid][pSoska] >= 14 || PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new para1,vehiclename[64],tmp[24],nyche;
     if(sscanf(params, "s[24]s[64]",tmp,vehiclename)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создание личного авто /addcar ID VehID");

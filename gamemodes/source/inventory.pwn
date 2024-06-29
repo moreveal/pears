@@ -1041,7 +1041,7 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 	}
 
 	// Заменяем кастомный объект для игрока без лаунчера
-	if(!IsPlayerSyncModels(playerid) && IsAObjectCustom(yesFindModel)) yesFindModel = 18631;
+	if(!IsPlayerSyncModels(playerid) && IsCustomObject(yesFindModel)) yesFindModel = 18631;
 
 	return yesFindModel;
 }
@@ -1744,6 +1744,7 @@ stock CreateJsonInvent(playerid, i, &JsonNode:node)
 		"type", JSON_Int(PlayerInfo[playerid][pInvenType][i]),
 		"pack", JSON_Int(PlayerInfo[playerid][pInvenPack][i])
 	);
+
 	return 1;
 }
 
@@ -1783,12 +1784,14 @@ function OnPlayerInventoryLoad(playerid, race_check)
 {
 	new rows;
 	cache_get_row_count(rows);
+
 	if(rows)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 		OnPlayerLoadInventory(playerid);
 		printf("OnPlayerLoadInventory(%s) Инвентарь Найден", PlayerInfo[playerid][pName]);
 	}
+	
 	return 1;
 }
 

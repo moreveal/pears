@@ -233,7 +233,7 @@ cars
 15073,	mlannin,	mlannin,	car, 		MLANNIN, 	MLANNIN, 	null,	richfamily, 	7, 	0,	0,		-1, 0.72, 0.72,		1
 15074, 	octavia, 	octavia, 	car, 		OCTAVIA, 	OCTAVIA,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15075,	merscsit, 	merscsit, 	car, 		MERSCSIT,	MERSCSIT, 	null,	richfamily,	10, 	0,	0,		-1, 0.73, 0.73,		0
-15076,	nisszthf,	nisszthf,	car, 		NISSZTHF,	NISSZTHF, 	null,	executive, 	10, 	0,	0,		-1, 0.73, 0.73,		0
+15076,	nisszthf,	nisszthf,	car, 		NISSZTHF,	NISSZTHF, 	null,	executive, 	10, 	0,	0,		-1, 0.77, 0.77,		0
 15077,	audiqse, 	audiqse, 	car,		AUDIQSE, 	AUDIQSE, 	null,	richfamily,		6,	7,	0,	-1, 0.88, 0.88,		0
 15078, 	bmwfti,	    bmwfti,	    car, 		BMWFTI, 	BMWFTI,	    null,	richfamily,		10,	0,	0,		-1, 0.69, 0.69,		0
 15079,	bmwmsix,	bmwmsix,	car, 		BMWMSIX,	BMWMSIX, 	null,	executive, 	10, 	0,	0,		-1, 0.72, 0.72,		0
@@ -319,6 +319,18 @@ cars
 15159,	bentcont,	bentcont,	car, 		BENTCONT,	BENTCONT, 	null,	executive, 	    10, 0,	0,		-1, 0.7, 0.7,		0
 15160, 	chevtaho, 	chevtaho, 	car, 		CHEVTAHO, 	CHEVTAHO, 	null, 	richfamily,     6,  7,  0,      -1, 0.7, 0.7,       0
 15161, 	bussart, 	bussart,	car, 	    BUSART, 	BUSART, 	bus,	normal,	 	    5, 	0,	0,		-1, 1, 1,		-1		
-15162, 	saambu, 	saambu, 	car, 		SAAMBUL, 	SAAMBUL, 	van,	ignore,		10,	0,	0,		-1, 0.864, 0.864,	-1
+15162, 	saambu, 	saambu, 	car, 		SAAMBUL, 	SAAMBUL, 	van,	ignore,		    10,	0,	0,		-1, 0.864, 0.864,	-1
+15163,	cls63,	    cls63,	    car, 		CLS63, 	    CLS63, 	    null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15164, 	divo,		divo,		car, 		DIVO,		DIVO,    	null,	executive,	    4, 	0,	0,		-1, 0.8, 0.85,		0
+15165, 	chasertun, 	chasertun, 	car, 		CHASERTUN,	CHASERTUN, 	null,	richfamily,		10, 0,	0,	    -1, 0.75, 0.75,		0
+15166, 	mavsapd,	mavsapd, 	heli, 		MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,		-1, 0.7, 0.7,		-1
+15167, 	littlebird,	littlebird,	heli, 		MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,		-1, 0.7, 0.7,		-1
+15266, 	mavfbi,		mavfbi,		heli, 		MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,		-1, 0.7, 0.7,		-1
+15267, 	mcl720s,	mcl720s,	car, 	    MCL720S,	MCL720S, 	null,	executive,	    4, 	0,	0,		-1, 0.7, 0.75,		0
+15268,  miura,		miura,		car, 		MIURA,		MIURA, 	    null,	executive,	    4, 	0,	0,		-1, 0.7, 0.75,		0
+15269, 	lamgol, 	lamgol, 	car, 		LAMGOL, 	LAMGOL, 	null,	executive, 	    5, 	0,	0,		-1, 0.7, 0.7,		0
+15270, 	fer348, 	fer348, 	car, 		FER348, 	FER348, 	null,	executive, 	    5, 	0,	0,		-1, 0.68, 0.68,		0
+15271,	jeepsand, 	jeepsand, 	car, 		JEEPSAND, 	JEEPSAND, 	null,	ignore, 	    4,	0,	0,		-1, 0.972, 0.972,	-1
+15272,	cls63cop,	cls63cop,	car, 		CLS63COP, 	CLS63COP, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 end
 

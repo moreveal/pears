@@ -117,7 +117,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 		if(MapInfo[0][mapload] == 0) MapInfo[0][mapload] = 1, format(MapInfo[0][mapname], 64, "name");
 		ObjectMapLabelAll(0, objid);
 
-        SendClientMessage(playerid, COLOR_GREY, "CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", modelid, x, y, z, rx, ry, rz);
+        SendClientMessage(playerid, COLOR_GREY, "%d = CreateDynamicObject(%d, %f, %f, %f, %f, %f, %f);", MapInfo[0][mapobject][objid], modelid, x, y, z, rx, ry, rz);
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
     {
@@ -388,7 +388,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 format(string,sizeof(string),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
                 format(string,sizeof(string),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
                 busstationcreate(ost);
-                OrgLog(7, "CloseCourtsProcess", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ost, "Установил остановку");
+                OrgLog(7, "CourtCloseProcess", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ost, "Установил остановку");
                 bsrows++;
                 break;
             }

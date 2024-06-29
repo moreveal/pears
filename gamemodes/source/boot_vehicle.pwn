@@ -371,6 +371,7 @@ stock mix_boot(playerid, v, getinva, putinva) // Смешивание предм
 	{
 		if(VehInfo[v][vInvent][getinva] == 0) return i_resettabs(playerid);
 		else if(VehInfo[v][vInvent][putinva] != VehInfo[v][vInvent][getinva]) return i_resettabs(playerid);
+		if(VehInfo[v][vInvPack][putinva] > 0 || VehInfo[v][vInvPack][getinva] > 0) return i_resettabs(playerid);
 		new quanPlayer;
 		foreach(Player,i)
 		{

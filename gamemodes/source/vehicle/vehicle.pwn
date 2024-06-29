@@ -421,6 +421,67 @@ CMD:getside(playerid, const params[])
 	return 1;
 }
 
+CMD:azot(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+		AddVehicleComponent(vehicleid, 1010);
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Азот установлен на транспорт","*","");
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+CMD:tun(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+
+		for(new i = 0; i < MAX_TUNNING_VEHICLE; i++)
+		{
+			if(VehInfo[vehicleid][vTunningID][i] > 0) VehInfo[vehicleid][vTunningID][i] = 0;
+		}
+
+		VehInfo[vehicleid][vTunningID][0] = 224; // Philin Customs
+		VehInfo[vehicleid][vTunningID][1] = 214; // HPRacing
+		VehInfo[vehicleid][vTunningID][2] = 216; // KONI suspension
+		VehInfo[vehicleid][vTunningID][3] = 220; // Falken Tire
+		VehInfo[vehicleid][vTunningID][4] = 223; // Wilwood
+
+		SetHandlingTotal(vehicleid);
+
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Полный пиздатый тюн установлен на транспорт (Без сохранения в базу)","*","");
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+alias:cleartun("rtun")
+CMD:cleartun(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+
+		for(new i = 0; i < MAX_TUNNING_VEHICLE; i++)
+		{
+			if(VehInfo[vehicleid][vTunningID][i] > 0) VehInfo[vehicleid][vTunningID][i] = 0;
+		}
+		SetHandlingTotal(vehicleid);
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Весь тюнинг удалён с транспорта (Без сохранения в базу)","*","");
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
 stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 {
 	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");
