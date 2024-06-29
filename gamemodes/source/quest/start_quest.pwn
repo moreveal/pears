@@ -1291,7 +1291,7 @@ stock ShowHintArenda(playerid)
     return 1;
 }
 
-stock GiveGiftQuest(playerid)
+stock GiveGiftQuest(playerid, bool:message = true)
 {
     new thingId, thingQuan, thingType, thingPara, thingPack;
     CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack);
@@ -1302,7 +1302,10 @@ stock GiveGiftQuest(playerid)
         Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
         SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
     }
-    else SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+    else 
+    {
+        if(message == true) SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+    }
     return 1;
 }
 
