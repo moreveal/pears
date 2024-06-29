@@ -620,7 +620,7 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
             if(typeBuy == 0)
             {
                 paybiz(bizId, price);
-                BizzInfo[bizId][bItem][productId] -= 1;
+                if(BizzInfo[bizId][bSost] > 0) BizzInfo[bizId][bItem][productId] -= 1;
                 BizzInfo[bizId][bUpdate] = 1;
                 format(string,sizeof(string),"{99ff66}Поздравляем!\n{cccccc}Вы купили {ff9000}%s {cccccc}за {99ff66}%d$ {cccccc}[%s]\n\nУправление транспортом: {444444}[ Y >> Транспорт или /car ]", GetVehicleName(modelId), price, get_k(price));
                 SuccessMessage(playerid, string);

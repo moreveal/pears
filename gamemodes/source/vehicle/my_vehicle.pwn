@@ -4388,7 +4388,7 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 
 			if(BizzInfo[b][bItem][slot] < 2) return ErrorMessage(playerid, "{FF6347}В этом бизнесе недостаточно рем. комплектов для восстановления\n\n{cccccc}Вы можете отправиться в другой сервис");
 				
-			BizzInfo[b][bItem][slot] -= 2;
+			if(BizzInfo[bizId][bSost] > 0) BizzInfo[b][bItem][slot] -= 2;
 			BizzInfo[b][bUpdate] = 1;
 			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]*2);
 			paybiz(b, BizzInfo[b][bPrice][slot]*2);

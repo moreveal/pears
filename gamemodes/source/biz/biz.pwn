@@ -1102,7 +1102,7 @@ stock takeWareBusiness(b, thingId) // Снимаем продукты из би�
 
 	for(new i = 0; i < 6; i++)
     {
-		if(ingId[i] > 0)
+		if(ingId[i] > 0 && BizzInfo[b][bSost] > 0)
 		{
 			slot = getSlotIngredientBusiness(ingId[i]);
 			if(BizzInfo[b][bItem][slot] - ingQuan[i] < 0) BizzInfo[b][bItem][slot] = 0;

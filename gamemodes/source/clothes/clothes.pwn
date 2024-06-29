@@ -1018,7 +1018,7 @@ stock buy_SkinShop(playerid)
 			else if(g == 100)
 			{
 				paybiz(Bid[playerid], price);
-				StoreQuan[b][sel] -= 1;
+				if(BizzInfo[b+173][bSost] > 0) StoreQuan[b][sel] -= 1;
 				if(StoreQuan[b][sel] <= 0)
 				{
 					StoreItem[b][sel] = 0, StorePrice[b][sel] = 0;

@@ -195,7 +195,8 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
     new fquan;
     new put_i = putshopcarts(playerid, item, 0, fquan);
     if(put_i == -1) return ErrorMessage(playerid, "{FF6347}В тележке нет места\n{cccccc}Вы можете положить до 10 предметов");
-    BizzInfo[b][bItem][item] -= 1, BizzInfo[b][bUpdate] = 1;
+    if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][item] -= 1;
+	BizzInfo[b][bUpdate] = 1;
 
 	SetPVarInt(playerid,"sbussines",b);
 	SetPVarInt(playerid,"svzyal",GetPVarInt(playerid,"svzyal")+1);
@@ -277,7 +278,8 @@ stock addiction(playerid, item)
 	    new fquan;
 	    new put_i = putshopcarts(playerid, item, 1, fquan);
 	    if(put_i == -1) return 1;
-	    BizzInfo[b][bItem][item] -= 1, BizzInfo[b][bUpdate] = 1;
+	    if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][item] -= 1;
+		BizzInfo[b][bUpdate] = 1;
 
 		SetPVarInt(playerid,"sbussines",b);
 		SetPVarInt(playerid,"svzyal",GetPVarInt(playerid,"svzyal")+1);
