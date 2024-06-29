@@ -286,11 +286,8 @@ CMD:getvehhand(playerid, const params[])
 
     VehInfo[vehicleid][vHandlingModel] = model;
 
-    // Записали хендлинг перенесённой тачки
-    SetVehicleHandlingDefault(vehicleid, vehicleHandlingID);
-
     // Применили весь хендлинг
-    PutVehicleHandling(vehicleid);
+    SetHandlingTotal(vehicleid);
 
     SendClientMessage(playerid, -1, "Handling %s [ID: %d] скопирован для %s [ID: %d Vehicleid: %d]", GetVehicleName(model), model, GetVehicleName(VehInfo[vehicleid][vModel]), VehInfo[vehicleid][vModel], vehicleid);
     return 1;
