@@ -2074,6 +2074,11 @@ stock use_sklad(playerid, wh, inva, useinva)
 	}
 	else if(thingType == 1) // Оружие
 	{
+		new g = fraction(playerid) - 1,
+			i = PlayerInfo[playerid][pDivision][0] - 1;
+
+		if (!DivisionIsAvailableWeapon(g, i, fpick)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут брать со склада это оружие");
+
 	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять оружие [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, string);
 	    giveThing = 4;
 	    yes = 1;
@@ -2840,9 +2845,8 @@ stock player_tile(playerid, inva)
 					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к винтовке [ Ammo 45mm ]"), i_resetveshi(playerid);
 					if(weapon == 34)
 					{
-						if(PlayerInfo[playerid][pMember] != 8 
-							&& PlayerInfo[playerid][pMember] != 1) return ErrorMessage(playerid, 
-							"{FF6347}Вы не можете использовать снайперскую винтовку\n{cccccc}Только для ICA, SAPD"), i_resetveshi(playerid);
+						if(!IsOrderDepartWeapon(fraction(playerid), 34)) return ErrorMessage(playerid, 
+							"{FF6347}Вы не можете использовать снайперскую винтовку"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;

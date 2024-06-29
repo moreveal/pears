@@ -1146,5 +1146,47 @@ stock SaveReturnCoord(playerid)
 	GetPlayerPos(playerid, OnlineInfo[playerid][oReturnCord][0], OnlineInfo[playerid][oReturnCord][1],OnlineInfo[playerid][oReturnCord][2]);
 	OnlineInfo[playerid][oReturnWorld] = GetPlayerVirtualWorld(playerid);
 	OnlineInfo[playerid][oReturnInt] = GetPlayerInterior(playerid);
+}
+
+stock ShowDepartWeapons(playerid, fractionid = 0) {
+	new dialog_text[512], quan;
+	static const dialog_header[] = "{ff9000}Редактирование доступных оружий для заказа";
+
+	if (fractionid == 0) {
+		for(new g = 0; g < MAX_ORG; g++)
+		{
+			List[g][playerid] = 0;
+			if(IsAFunctionOrganization(1, g, playerid)) 
+			{
+				format(dialog_text, sizeof(dialog_text),"%s\n%s", dialog_text, fraklastName[g]);
+				List[quan][playerid] = g;
+				quan++;
+			}
+		}
+		return ShowDialog(playerid, ADMIN_SET_DEPARTWEAPONS_FRACTIONS, DIALOG_STYLE_LIST, dialog_header, dialog_text, "Выбрать", "Закрыть");
+	}
+
+	DP[0][playerid] = fractionid;
+
+	format(dialog_text, sizeof(dialog_text), "{cccccc}Организация: %s\n", fraklastName[fractionid]);
+	for (new weaponid = 0; weaponid < 38; weaponid++) {
+		if (!IsDefaultOrderDepartWeapon(weaponid)) continue;
+
+		format(dialog_text, sizeof(dialog_text), "%s\n{%s}%s", dialog_text, IsOrderDepartWeapon(fractionid, weaponid) ? "99ff66" : "ff6347", GetNameThing(0, weaponid, 1, 0));
+
+		quan++;
+		List[quan][playerid] = weaponid;
+	}
+
+	ShowDialog(playerid, ADMIN_SET_DEPARTWEAPONS_LIST, DIALOG_STYLE_LIST, dialog_header, dialog_text, "Выбрать", "Назад");
+
+	return 1;
+}
+
+alias:orderweapons("departweapons")
+CMD:orderweapons(playerid) {
+	if (PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	ShowDepartWeapons(playerid);
+
 	return 1;
 }

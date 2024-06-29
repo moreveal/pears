@@ -287,6 +287,8 @@ function LoadOrgan()
 	}
 	UpdateHonor(1), UpdateHonor(2);
 
+	mysql_tquery(pearsq, "SELECT * FROM `depart_weapons`", "LoadOrderWeaponsDepart", ""); // Загружаем доступные для заказа оружия
+
     format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n\n{ffffff}[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[0] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,329.3005,1913.6547,17.6566,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
@@ -448,7 +450,7 @@ stock gunsklad(playerid)
 		{
 		    if(fpick >= 4 && fpick <= 7 && (skladstat == 1 || skladstat == 3 || skladstat == 4 || skladstat == 7 || skladstat == 9 || skladstat == 11 || skladstat == 21 || skladstat == 22 || skladstat == 29 || skladstat == 33)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить вещества");
 
-			if(fpick == 34 && thingType == 1 && skladstat != 8 && skladstat != 1) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку\n{cccccc}[Только для ICA, SAPD]");
+			if(fpick == 34 && thingType == 1 && !IsOrderDepartWeapon(skladstat, 34)) return ErrorMessage(playerid, "{FF6347}На этом складе нельзя хранить снайперскую винтовку");
 			
 			if((fpick >= 4 && fpick <= 7 || fpick == 8 || fpick >= 27 && fpick <= 30 || fpick == 70) && thingType == 0 
 				|| IsHelmet(fpick) && thingType == 2 

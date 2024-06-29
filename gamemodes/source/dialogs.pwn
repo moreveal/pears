@@ -9,5 +9,30 @@ enum e_DialogId {
     COURT_DIALOG_ENTER_DEPOSIT, // Указание залога для вызволения / суммы для отработки
     COURT_DIALOG_CANCEL_OFFER, // Отмена заявки для подсудимого
 
-    POLICE_DIALOG_SELF_SURRENDER // Сдаться властям
+    // Сдаться властям
+    POLICE_DIALOG_SELF_SURRENDER,
+
+    // Подфракции
+    DIVISION_MENU,
+    DIVISION_SETTINGS,
+    DIVISION_SETNAME,
+    DIVISION_ABBREVIATION,
+    DIVISION_RANK_AMOUNT,
+    DIVISION_RANK_SETNAME,
+    DIVISION_RANK_SETNAME_SAVE,
+    DIVISION_SPAWN,
+    DIVISION_SETCOLOR,
+    //DIVISION_SETVEHCOLOR,
+    DIVISION_LEAVE,
+    DIVISION_MEMBERS,
+    DIVISION_INVITE,
+    DIVISION_INVITE_SAVE,
+    DIVISION_UNINVITE_SAVE,
+    DIVISION_MEMBERS_LIST,
+    DIVISION_ORDER_WEAPONS,
+
+
+    // Установка доступных оружий для сотрудников департамента 
+    ADMIN_SET_DEPARTWEAPONS_FRACTIONS, // Список фракций
+    ADMIN_SET_DEPARTWEAPONS_LIST, // Список оружия
 };
