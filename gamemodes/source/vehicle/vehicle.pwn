@@ -421,6 +421,20 @@ CMD:getside(playerid, const params[])
 	return 1;
 }
 
+alias:tuneme("tunme", "azot")
+CMD:tuneme(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+		AddVehicleComponent(vehicleid, 1010);
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
 stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 {
 	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");
