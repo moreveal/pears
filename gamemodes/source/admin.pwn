@@ -641,10 +641,10 @@ CMD:readhit(playerid, const params[])
 
 	if (!valid_args || currentTargetId == targetid || targetid < 0)
 	{
-		new bool:enabled = currentTargetId != INVALID_PLAYER_ID;
-		SetPVarInt(playerid, "Readhit", enabled ? 0 : 1);
+		new bool:enable = currentTargetId == INVALID_PLAYER_ID;
+		SetPVarInt(playerid, "Readhit", enable ? 1 : 0);
 		SetPVarInt(playerid, "ReadhitTarget", -1);
-		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий %s", (enabled ? "{99ff66}Активирован" : "{FF6347}Отключён"));
+		SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр попаданий %s", (enable ? "{99ff66}Активирован" : "{FF6347}Отключён"));
 		return 1;
 	}
 	else
