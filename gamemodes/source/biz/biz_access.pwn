@@ -294,7 +294,7 @@ stock SaveBizzObjects(b)
 
 		mysql_format(pearsq, string_mysql, sizeof(string_mysql),
 			"REPLACE INTO `pp_bizzobject` \
-			(`newid`, `slot`, `X`, `Y`, `Z`, `rX`, `rY`, `rZ`) \
+			(`bizid`, `slot`, `X`, `Y`, `Z`, `rX`, `rY`, `rZ`) \
 			VALUES (%d, %d, %f, %f, %f, %f, %f, %f)",
 
 			b, i,
