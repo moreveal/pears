@@ -497,7 +497,7 @@ stock CourtCreateOrder(playerid, bool: message = true)
 {
     if (message) {
         if (PlayerInfo[playerid][pJailTime] < COURT_MINIMAL_JAILTIME) return ErrorMessage(playerid, "{ff6347}Вам осталось совсем немного для конца заключения");
-        if (OnlineInfo[playerid][oCourtsID] > 0) return ErrorMessage(playerid, "{ff6347}У вас уже есть активная заявка, ожидайте вызова в суд!");
+        if (OnlineInfo[playerid][oCourtsID] > 0) return ShowDialog(playerid, _:COURT_DIALOG_CANCEL_OFFER, DIALOG_STYLE_MSGBOX, "{cccccc}Заявка в суд", "{ff6347}У вас уже есть активная заявка в суд, желаете её отменить?", "Да", "Закрыть");
     }
 
     if(!(PlayerInfo[playerid][pJailTime] > 0 && PlayerInfo[playerid][pJailed] == 1)) return 0;
@@ -687,7 +687,7 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
         }
         case COURT_DIALOG_OFFER_WAITING_INFO: {
             new courtofferid = DP[4][playerid];
-            if (!response) return CourtShowOfferReview(courtofferid);
+            if (!response) return CourtShowList(courtofferid);
             
             DP[1][CourtInfo[courtofferid][ciPlayerID]] = playerid;
 
@@ -734,6 +734,12 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
 
             new deposit = DP[5][playerid], period = DP[6][playerid];
             return CourtCloseProcess(courtofferid, deposit, period);
+        }
+        case COURT_DIALOG_CANCEL_OFFER: {
+            if (!response) return 1;
+
+            CourtDeleteOrder(playerid);
+            SuccessMessage(playerid, "{99ff66}Вы успешно удалили заявку!");
         }
     }
 

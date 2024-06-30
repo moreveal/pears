@@ -7,6 +7,7 @@ enum e_DialogId {
     COURT_DIALOG_OFFER_REVIEW, // Доступные варианты выбора для рассмотрения дела
     COURT_DIALOG_PROCESS_ACCEPT, // Принять выбранный вариант для рассмотрения дела
     COURT_DIALOG_ENTER_DEPOSIT, // Указание залога для вызволения / суммы для отработки
+    COURT_DIALOG_CANCEL_OFFER, // Отмена заявки для подсудимого
 
     POLICE_DIALOG_SELF_SURRENDER // Сдаться властям
 };
