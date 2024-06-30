@@ -663,11 +663,14 @@ stock SaveDailyQuestSlot(playerid, slot)
 {
     if (slot < 0 || slot >= MAX_DAILY_QUEST_PLAYER || DailyInfo[playerid][daiLoaded] == false) return 0;
 
-    new string_mysql[200];
+    new string_mysql[260];
 
     // Формируем запрос для обновления одного слота квеста
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_quests` SET daiFull = %d, daiQuan_%d = %d, daiStatus_%d = %d WHERE user_id = %d", 
-        DailyInfo[playerid][daiFull], slot, DailyInfo[playerid][daiQuan][slot], slot, DailyInfo[playerid][daiStatus][slot], PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_quests` SET \
+        daiFull = %d, daiID_%d = %d, daiQuanNeed_%d = %d, daiQuan_%d = %d, \
+        daiStatus_%d = %d WHERE user_id = %d", 
+        DailyInfo[playerid][daiFull], slot, DailyInfo[playerid][daiID][slot], slot, DailyInfo[playerid][daiQuanNeed][slot], slot, DailyInfo[playerid][daiQuan][slot], 
+        slot, DailyInfo[playerid][daiStatus][slot], PlayerInfo[playerid][pID]);
 
     // Отправляем запрос в базу данных
     mysql_tquery(pearsq, string_mysql, "", "");
