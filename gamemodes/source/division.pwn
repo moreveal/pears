@@ -225,8 +225,8 @@ stock divmembersoff(playerid)
 	DP[4][playerid] = 0;
 	DP[5][playerid] = 0;
 
-	new string_mysql[330];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
+	new string_mysql[400];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, pDivRank0, pDivRank1, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \
 		`Division0` = '%d' AND `Member`='%d' AND `Online` = '0' \
 		OR `Division1` = '%d' AND `Fbi` > '0' AND `Online` = '0' LIMIT 40", div, org, div);
 	mysql_tquery(pearsq, string_mysql, "call_membersdiv", "ddd", playerid, org, div);
@@ -245,7 +245,7 @@ function call_membersdiv(playerid, org, div)
 	for(new i = 0; i < rows; i++)
 	{
 		cache_get_value_name(i, "Name", playerName, 24);
-		cache_get_value_name_int(i, "Rank", playerLoad[0]);
+		cache_get_value_name_int(i, "pDivRank0", playerLoad[0]);
 		cache_get_value_name_int(i, "Fbi", playerLoad[1]);
 		cache_get_value_name_int(i, "Member", playerLoad[2]);
 		cache_get_value_name_int(i, "user_id", playerLoad[3]);
@@ -267,7 +267,7 @@ function call_membersdiv(playerid, org, div)
 			if(playerLoad[1] > 0)
 			{
 				btext = "333333";
-				rank = playerLoad[1];
+				cache_get_value_name_int(i, "pDivRank1", rank);
 			}
 		}
 
@@ -319,7 +319,6 @@ stock DivisionGiveRank(playerid, const params[], i = -1)
 
 		giveplayerid = ReturnUser(playerName);
 		if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
-		if(!ProxDetectorS(2.0, playerid, giveplayerid) || GetPlayerState(giveplayerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы слишком далеко от игрока");
 		if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		if(PlayerInfo[giveplayerid][pDivision][0] - 1 != i) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей подфракции");
 
