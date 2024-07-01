@@ -482,7 +482,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     if(Cars[vehicleid] != 88) return ErrorMessage(playerid, "{FF6347}Установить деталь можно только на личный транспорт");
                     if(VehInfo[vehicleid][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Это не ваш личный транспорт");
                     if(!IsACar(model)) return ErrorMessage(playerid,"{ff6347}Тюнинг можно ставить только на автомобили!");
-                    if(!IsABoot(model)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: На данный транспорт нельзя поставить деталь тюнинга");
+                    if(!IsABoot(vehicleid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: На данный транспорт нельзя поставить деталь тюнинга");
                     ThingNeed[playerid] = thingId;
                     if(GetVehicleDetailTunning(vehicleid, friskDetail[thingId - 207][1]) != -1)
                     {
