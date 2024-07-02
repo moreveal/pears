@@ -840,7 +840,7 @@ stock CheckWarningSu(playerid, const tmp[], &playa)
 
 function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 {
-    if (playerid == zakonnik) return ErrorMessage(zakonnik, "{FF6347}Нельзя объявить в розыск самого себя");
+    if (playerid == zakonnik && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(zakonnik, "{FF6347}Нельзя объявить в розыск самого себя");
 
 	new slotUk = -1;
 
