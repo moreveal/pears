@@ -2519,6 +2519,7 @@ stock RobABoxFromTrain(playerid)
 		BoxInTrain --;
 
 		SetPlayerChatBubble(playerid,"забрал ящик из поезда",COLOR_PURPLE,20.0,3000);
+		if(BoxInTrain <= 0) return EscortFail();
 	}
 	return 1;
 }
@@ -2548,6 +2549,32 @@ stock ClearOrderEscortAndPutSklad(g, thingId, thingQuan, thingPara, thingType, v
 			break;
 		}
 	}
+	return 1;
+}
+
+CMD:reloadEscortNGSA(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 10) return 0;
+	if(EscortStatus > 0) return ErrorMessage(playerid,"{ff6347}В данный момент у НГСА нет доставки БП");
+	EscortFail();
+	return 1;
+}
+
+stock EscortFail()
+{
+	if(EscortStatus == 0) return 0;
+	new g = EscortOrganization, string[50];
+	OrganInfo[3][glave] -= OrganInfo[g][gDeliveryPay]; // Что б хуй пососали за проебанные БП
+	format(string,sizeof(string),"Провал доставка для: %s", frakeasyName[g]);
+	OrgLog(3, "escortfail", 0, "", "", 0, "", "", -OrganInfo[g][gDeliveryPay], string);
+	// Сбрасываем доставку
+	OrganInfo[g][gDeliveryOrder] = -1;
+	SaveEscortOrder(g);
+
+	// Очищаем переменные
+	BoxStat = 0;
+	EscortStatus = 0;
+	EscortOrganization = 0;
 	return 1;
 }
 
