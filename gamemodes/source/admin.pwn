@@ -186,6 +186,7 @@ CMD:gotobiz(playerid, const params[])
 	if(params[0] >= 1 && params[0] <= 200)
 	{
 	    if(BizzInfo[params[0]][bLab] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Позиция бизнеса недоступна [ Только в Бизнес Центре | Тп к терминалу /gototerm ]");
+		SaveReturnCoord(playerid);
 		S_SetPlayerVirtualWorld(playerid,0,0), PPSetPlayerInterior(playerid,0);
 		PPSetPlayerPos(playerid,BizzInfo[params[0]][bX],BizzInfo[params[0]][bY],BizzInfo[params[0]][bZ]);
 		PPSetPlayerFacingAngle(playerid,0.0);
@@ -1127,5 +1128,23 @@ CMD:giveeditorder(playerid, const params[])
 		(gave ? "* Вы выдали %s доступ на час к редактированию minfin" : "* Вы забрали у %s доступ к редактированию minfin"),
 		PlayerInfo[giveplayerid][pName]
 	);
+	return 1;
+}
+alias:gotoreturn("gotor")
+CMD:gotoreturn(playerid)
+{
+	if(OnlineInfo[playerid][oReturnCord][0] == 0.0 && OnlineInfo[playerid][oReturnCord][1] == 0.0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: У меня нет прошлой позиции");
+	if(PlayerInfo[playerid][pSoska] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	PPSetPlayerPos(playerid, OnlineInfo[playerid][oReturnCord][0],OnlineInfo[playerid][oReturnCord][1],OnlineInfo[playerid][oReturnCord][2]);
+	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oReturnWorld], OnlineInfo[playerid][oReturnInt]);
+	PPSetPlayerInterior(playerid, OnlineInfo[playerid][oReturnInt]);
+	return 1;
+}
+
+stock SaveReturnCoord(playerid)
+{
+	GetPlayerPos(playerid, OnlineInfo[playerid][oReturnCord][0], OnlineInfo[playerid][oReturnCord][1],OnlineInfo[playerid][oReturnCord][2]);
+	OnlineInfo[playerid][oReturnWorld] = GetPlayerVirtualWorld(playerid);
+	OnlineInfo[playerid][oReturnInt] = GetPlayerInterior(playerid);
 	return 1;
 }
