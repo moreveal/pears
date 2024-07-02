@@ -280,6 +280,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             }
             if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
             new stringlog[128];
+            money = 0;
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
                 new slot = -1;
@@ -291,7 +292,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         new slot2 = SetVehicleDetailTunning(v, TempDetail[playerid][i], 0,friskDetail[TempDetail[playerid][i] - 207][1]);
                         if(slot2 == -1)
                         {
-                            ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга(какие-то детали могли установится)");
+                            ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга. Установка прервана (какие-то детали могли установиться)");
                             break;
                         }
                         else
@@ -303,12 +304,18 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                     {
                         format(stringlog,sizeof(stringlog),"Деталь %s заменена в автосервисе",friskName[VehInfo[v][vTunningID][slot]]);
                         CarLog("PutThingBoot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], VehInfo[v][vTunningID][slot], stringlog);
-                        PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
+                        new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
+                        if(put_inva == -1)
+                        {
+                            ErrorMessage(playerid, "{FF6347}В багажнике нет слотов для тюнинга. Установка прервана (какие-то детали могли установиться)");
+                            break;
+                        }
                         VehInfo[v][vTunningID][slot] = TempDetail[playerid][i];
                         VehInfo[v][vTunningQara][slot] = 0;
                         VehInfo[v][vTunningType][slot] = friskDetail[TempDetail[playerid][i]-207][1];
                         if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                     }
+                    money += BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]];
                     format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизе %d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
                     CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
                     TempDetail[playerid][i] = 0;
@@ -403,7 +410,7 @@ stock ExitTuningOrSave(playerid)
             format(line,sizeof(line),"\n{cccccc}%s: %s [ + %s%% ] {99ff66}[ %d$ ]",friskDetailTypeName[friskDetail[TempDetail[playerid][i]-207][1]],friskName[TempDetail[playerid][i]],friskDetailPoint[TempDetail[playerid][i]-207][0],BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i]-207][2]]), strcat(lines,line);
         }
     }
-    format(line,sizeof(line),"\n\n{cccccc}Имеющийся тюнинг"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Имеющийся тюнинг (попадет в багажник)"), strcat(lines,line);
     for(new i;i< MAX_TUNNING_VEHICLE;i++)
     {
         if(VehInfo[veh][vTunningID][i] > 0)
