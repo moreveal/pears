@@ -723,7 +723,7 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
                     if (period >= COURT_MINIMAL_PERIOD && period <= COURT_MAXIMAL_PERIOD) {
                         return CourtShowProcessAccept(courtofferid, deposit, period);
                     } else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Количество дней не меньше %d и не больше %d", COURT_MINIMAL_PERIOD, COURT_MAXIMAL_PERIOD);
-                } else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сумма не меньше %s$ и не больше %s$", COURT_MINIMAL_DEPOSIT, COURT_MAXIMAL_DEPOSIT);
+                } else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сумма не меньше %s$ и не больше %s$", FormatNumberWithCommas(COURT_MINIMAL_DEPOSIT), FormatNumberWithCommas(COURT_MAXIMAL_DEPOSIT));
             }
 
             return CourtEnterDeposit(courtofferid);

@@ -127,6 +127,8 @@ CMD:inhb(playerid, const params[])
 	new string_mysql[140];
     if(IsPlayerConnected(para))
     {
+		if(IsARealNPC(para)) return ErrorMessage(playerid, "{FF6347}Это NPC");
+		
 		new tmpPlayerID = PlayerInfo[para][pID];
 	  	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", PlayerInfo[para][pID], g);
       	mysql_tquery(pearsq, string_mysql, "in_honorboard", "dddsdsdd", playerid, g, tmpPlayerID, PlayerInfo[para][pName], tmpTPlayerID, PlayerInfo[playerid][pName], unix, para);
