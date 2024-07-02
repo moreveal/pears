@@ -90,9 +90,8 @@ CMD:trap(playerid)
  		if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас установить ловушку\n{ffcc66}Ваш персонаж должен быть пешком и не за рулём");
  		if(IsATrap(playerid))
 	    {
-	 		new animname[32], animlib[32];
-			GetAnimationName(GetPlayerAnimationIndex(playerid),animlib,32,animname,32);
-			if(strcmp(animlib, "SWIM", true) == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете установить ловушку в воде");
+	 		new Float: depth, Float: playerdepth;
+			if(CA_IsPlayerInWater(playerid, depth, playerdepth)) return ErrorMessage(playerid, "{FF6347}Вы не можете установить ловушку в воде");
 		 	SetPVarInt(playerid,"oryjtemp",0), SetPVarInt(playerid,"Arobsklad",9);
 		 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Нужно установить ловушку {ff9000}[ Нажимайте %s ]", buttonName[Device[playerid]]);
 		 	ApplyAnimation(playerid,"BOMBER","BOM_Plant_Loop",4.0, false, true, true, true, true);

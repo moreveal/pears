@@ -33,7 +33,8 @@ new unitName[][] = // Названия настроек юниты
     "Участие в захвате порта", // 20
     "Реанимация пострадавшего", // 21
     "Лечение /heal", // 22
-    "Оформление автомобильных номеров" // 23
+    "Оформление автомобильных номеров", // 23
+    "Фиксирование нарушений скоростного режима" // 24
 };
 
 new unitDefault[] =
@@ -61,7 +62,8 @@ new unitDefault[] =
     15000, // 20
     3000, // 21
     700, // 22
-    400 // 23
+    400, // 23
+    50 // 24
 };
 
 stock IsAUnitOrganization(unitid, fraction, playerid)
@@ -83,7 +85,7 @@ stock IsAUnitOrganization(unitid, fraction, playerid)
         case 17: return IsPoliceMember(playerid); // Закрытие вызова
         case 18..20: return IsMafiaMember(playerid); // Снятие денег с бизнеса; Стрела; Порт
         case 21, 22: return fraction == 4; // Реанимация пострадавшего; Лечение [/heal]
-        case 23: return IsPoliceMember(playerid); // Оформление автомобильных номеров
+        case 23, 24: return IsPoliceMember(playerid); // Оформление автомобильных номеров; Фиксирование нарушений скоростного режима
     }
 
     return 0;
@@ -167,7 +169,9 @@ stock showDialogSettingUnit(playerid, unitid)
 		format(line,sizeof(line),"\n{cccccc}Броня, Оружие - 1 предмет в ящике умножается на 1000 и на {9900ff}значение юнитов\n"), strcat(lines,line);
         format(line,sizeof(line),"\n{cccccc}Аптечки, Бинты - 1 предмет в ящике умножается на 100 и на {9900ff}значение юнитов\n"), strcat(lines,line);
     } else if (unitid == 23) {
-        format(line,sizeof(line),"\n\n{cccccc}Стоимость автомобильного номера делится на 1000 и умножается на {9900ff}значение юнитов"), strcat(lines,line);
+        format(line,sizeof(line),"\n\n{cccccc}Стоимость автомобильного номера делится на 1000 и умножается на {9900ff}значение юнитов\n"), strcat(lines,line);
+    } else if (unitid == 24) {
+        format(line,sizeof(line),"\n\n{cccccc}Прибыль организации от полученных штрафов делится на 100 и умножается на {9900ff}значение юнитов\n"), strcat(lines,line);
     }
 
     format(line,sizeof(line), "\n{ff9000}Введите новое значение [ Не меньше 1U и не больше 100.000U ]"), strcat(lines,line);

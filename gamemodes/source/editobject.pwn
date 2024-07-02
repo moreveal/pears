@@ -388,7 +388,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
                 format(string,sizeof(string),"[ Мысли ]: Остановка установлена {ff9000}[ %s ]", BusStationInfo[ost][bsName]), SendClientMessage(playerid, COLOR_GREY, string);
                 format(string,sizeof(string),"установил%s остановку", gender(playerid)), SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 3000);
                 busstationcreate(ost);
-                OrgLog(7, "CourtCloseProcess", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ost, "Установил остановку");
+                OrgLog(7, "BusStation", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ost, "Установил остановку");
                 bsrows++;
                 break;
             }
@@ -474,6 +474,21 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         OrgLog(fraction(playerid), "CreateGraphiti", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", zone, "Установил/переделал граффити");
         GiveUnit(playerid,16);
         around_player_audio(playerid, 1134, 0, 5.0, 0);
+    }
+    else if (gRedakt[playerid] == REDAKT_TYPE_RADAR) { // Перемещение радара
+        new radarid = oid;
+
+        RadarInfo[radarid][riX] = x;
+        RadarInfo[radarid][riY] = y;
+        RadarInfo[radarid][riZ] = z;
+        Radar_SetNormalZ(radarid);
+        
+        RadarInfo[radarid][riRX] = rx;
+        RadarInfo[radarid][riRY] = ry;
+        RadarInfo[radarid][riRZ] = rz;
+
+        Radar_Place(radarid);
+        SaveRadars(radarid);
     }
     Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
     PlayerPlaySound(playerid,6401,0,0,0);

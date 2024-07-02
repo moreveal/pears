@@ -472,7 +472,7 @@ stock ClearPlayerWantedArcticle(playerid, criminalid)
     if(WantedInfo[criminalid][wanPoliceId][i] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pSoska] <= 1
     && PlayerInfo[playerid][pLeader] != 1 && PlayerInfo[playerid][pLeader] != 2 && PlayerInfo[playerid][pLeader] != 7 
     && PlayerInfo[playerid][pLeader] != 11 && PlayerInfo[playerid][pLeader] != 21 
-    && PlayerInfo[playerid][pLeader] != 22 && !is_subleader(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту статью из дела\n\n{ffcc66}Статью может изъять только полицейский, который её выдал или лидер");
+    && PlayerInfo[playerid][pLeader] != 22 && !IsSubLeader(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять эту статью из дела\n\n{ffcc66}Статью может изъять только полицейский, который её выдал или лидер");
 
     if(WantedInfo[criminalid][wanUnix][i] + 1200 < gettime() && PlayerInfo[playerid][pLeader] == 0 
     && PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете изъять статью из дела\n\n{ffcc66}Статья была выдана больше 20 минут назад");
@@ -903,8 +903,8 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
         if (IsPlayerConnected(playerid)) {
             // Сообщения преступнику
-            if(zakonnik > -1) format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [%s] {FF6347}Ур. розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
-            else format(string, sizeof(string), "{abcdef}Вы совершили Преступление [%s] Полицейский: [Аноним] {FF6347}Ур. розыска: [%d]", reason, zv);
+            if(zakonnik > -1) format(string, sizeof(string), "{abcdef}Вы совершили преступление [%s] | Полицейский: [%s] {FF6347}Уровень розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
+            else format(string, sizeof(string), "{abcdef}Вы совершили преступление [%s] | Полицейский: [Аноним] {FF6347}Уровень розыска: [%d]", reason, zv);
             SendClientMessage(playerid, COLOR_GREY, string);
             OnlineInfo[playerid][oUnixAcceptWanted] = 15;
             Moiplayer[playerid] = zakonnik;

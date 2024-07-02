@@ -536,7 +536,7 @@ stock showDialogOrganizationMenu(playerid)
 	format(line,sizeof(line), detail_lmenu(playerid, 3)), strcat(lines,line); // Участники Offline
 	format(line,sizeof(line), detail_lmenu(playerid, 4)), strcat(lines,line); // Статус набора
 	format(line,sizeof(line), detail_lmenu(playerid, 5)), strcat(lines,line); // Переводы на счет
-	if(PlayerInfo[playerid][pLeader] >= 1 || is_subleader(playerid))
+	if(PlayerInfo[playerid][pLeader] >= 1 || IsSubLeader(playerid))
 	{
 		format(line,sizeof(line), detail_lmenu(playerid, 14)), strcat(lines,line); // Подфракции
 	}

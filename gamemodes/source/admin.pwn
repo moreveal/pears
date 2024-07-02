@@ -182,7 +182,7 @@ CMD:stopmaf(playerid)
 CMD:gotobiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 3 && PlayerInfo[playerid][pMedia] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к бизнесу [ /gotobiz ID ]");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к бизнесу [ /gotobiz ID ]");
 	if(params[0] >= 1 && params[0] <= 200)
 	{
 	    if(BizzInfo[params[0]][bLab] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Позиция бизнеса недоступна [ Только в Бизнес Центре | Тп к терминалу /gototerm ]");
@@ -192,6 +192,20 @@ CMD:gotobiz(playerid, const params[])
 		PPSetPlayerFacingAngle(playerid,0.0);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
+	return 1;
+}
+CMD:gotoradar(playerid, const params[]) {
+	if (PlayerInfo[playerid][pSoska] < 3 && PlayerInfo[playerid][pMedia] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if (sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепортироваться к стационарному радару [ /gotoradar ID ]");
+	if (params[0] < 1 || params[0] > MAX_RADARS) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер радара не меньше 1 и не больше %d", MAX_RADARS);
+	
+	new radarid = params[0] - 1, Float: x, Float: y, Float: z;
+	if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Радар не существует или не установлен");
+	GetDynamicObjectPos(RadarInfo[radarid][riObjects][0], x, y, z);
+
+	S_SetPlayerVirtualWorld(playerid, 0, 0), PPSetPlayerInterior(playerid, 0);
+	PPSetPlayerPos(playerid, x, y, z);
+
 	return 1;
 }
 CMD:pricevehup(playerid, const params[])

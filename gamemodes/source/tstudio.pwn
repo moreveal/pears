@@ -1,5 +1,5 @@
 
-#define MAX_GROUP_OBJECT 10 // Максимальное количество сгруппирированных объектов
+#define MAX_GROUP_OBJECT 20 // Максимальное количество сгруппирированных объектов
 
 enum tsINFO
 { 
@@ -11,8 +11,8 @@ enum tsINFO
     Float:tsPosRX[MAX_GROUP_OBJECT],
     Float:tsPosRY[MAX_GROUP_OBJECT],
     Float:tsPosRZ[MAX_GROUP_OBJECT],
-    tsWorld, // Мир, в котором должны оказаться объекты по окончанию трансформации
-    tsInt // Инт, в котором должны оказаться объекты по окончанию трансформации
+    tsWorld[MAX_GROUP_OBJECT], // Виртуальный мир объекта
+    tsInt[MAX_GROUP_OBJECT] // Интерьер объекта
 };
 new TSInfo[tsINFO];
 
@@ -67,8 +67,8 @@ stock MatrixDynamicObjectPos(status, Float:x, Float:y, Float:z, Float:rx, Float:
         }
 
         // Меняем объектам мир и интерьер на необходимый
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, TSInfo[tsObjectID][i], E_STREAMER_WORLD_ID, TSInfo[tsWorld]);
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, TSInfo[tsObjectID][i], E_STREAMER_INTERIOR_ID, TSInfo[tsInt]);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, TSInfo[tsObjectID][i], E_STREAMER_WORLD_ID, TSInfo[tsWorld][i]);
+        Streamer_SetIntData(STREAMER_TYPE_OBJECT, TSInfo[tsObjectID][i], E_STREAMER_INTERIOR_ID, TSInfo[tsInt][i]);
     }
 
     ClearGroup();
@@ -104,11 +104,11 @@ stock gadd(objectid, world, int)
             TSInfo[tsObjectID][i] = objectid;
             GetDynamicObjectPos(TSInfo[tsObjectID][i], TSInfo[tsPosX][i], TSInfo[tsPosY][i], TSInfo[tsPosZ][i]);
             GetDynamicObjectRot(TSInfo[tsObjectID][i], TSInfo[tsPosRX][i], TSInfo[tsPosRY][i], TSInfo[tsPosRZ][i]);
+            TSInfo[tsWorld][i] = world;
+            TSInfo[tsInt][i] = int;
             break;
         }
     }
-    TSInfo[tsWorld] = world;
-    TSInfo[tsInt] = int;
     return 1;
 }
 
