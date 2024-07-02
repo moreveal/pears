@@ -511,6 +511,8 @@ stock playerDefaultCameraAutoservice(playerid)
 stock vehiclePositionAutoservice(vehicleid, playerid)
 {
     VehInfo[vehicleid][vTestDrive] = 0;
+    // Загружаем тюнинг транспорта стандартный
+    SetHandlingTotal(vehicleid);
     new model = VehInfo[vehicleid][vModel];
     if(IsAMoto(model))
     {
