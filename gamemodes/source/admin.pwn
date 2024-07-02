@@ -1081,6 +1081,14 @@ CMD:punishments(playerid,const params[])
 	return 1;
 }
 
+CMD:checkpts(playerid,const params[])
+{
+	if(PlayerInfo[playerid][pSoska] == 0) return 0;
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть птс машины [ /checkpts vehid ]");
+	pts(playerid,params[0]);
+	return 1;
+}
+
 alias:giveeditorder("seteditorder")
 CMD:giveeditorder(playerid, const params[])
 {
