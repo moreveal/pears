@@ -1,12 +1,3 @@
-CMD:testradar(playerid, const params[]) { // Log
-    new radarid;
-    if (sscanf(params, "d", radarid)) return ErrorMessage(playerid, "{ff6347}Укажите ID радара");
-    if (radarid < 1 || radarid > MAX_RADARS) return ErrorMessage(playerid, "{ff6347}ID радара от 1 до MAX_RADARS");
-    radarid--;
-    Radar_SetBroken(radarid, !Radar_IsBroken(radarid));
-    return 1;
-}
-
 stock SaveRadars(id = -1) {
     new query_string[1024];
 
