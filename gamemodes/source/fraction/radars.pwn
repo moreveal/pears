@@ -527,8 +527,9 @@ function Radar_Dialog_List(playerid) {
         if (IsOnline(currentid)) format(id_str, sizeof(id_str), "[%d]", currentid);
         
         new findraiontolist = FindRaionPos(RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ]);
-        format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}%s%s\t{cccccc}%s\t{ff9000}%d км/ч [$%s]\t%s",
+        format(dialog_text, sizeof(dialog_text), "%s\n{ff9000}№%d. {cccccc}%s%s\t{cccccc}%s\t{ff9000}%d км/ч [$%s]\t%s",
             dialog_text,
+            id + 1,
             RadarInfo[id][riOwnerName], id_str,
             gSAZones[findraiontolist][zName],
             RadarInfo[id][riMaxSpeed],
@@ -651,14 +652,24 @@ stock Radar_Dialog_Delete(playerid, radarid) {
     return ShowDialog(playerid, _:RADAR_DIALOG_DELETE, DIALOG_STYLE_MSGBOX, "{ff9000}Управление радаром", "{ff6347}Вы действительно хотите удалить этот радар?\nУдаление безвозвратно сотрёт все статистические данные", "Да", "Назад");
 }
 
+// Проверяет, есть ли радар рядом с указанным игроком
 stock Radar_IsAnyNearPlayer(playerid) {
     for (new i = 0; i < MAX_RADARS; i++) {
         if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
 
-        new Float: x, Float: y, Float: z;
-        GetDynamicObjectPos(RadarInfo[i][riObjects][0], x, y, z);
+        if (GetPlayerDistanceFromPoint(playerid, RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]) < RADAR_INTERVAL)
+            return 1;
+    }
 
-        if (GetPlayerDistanceFromPoint(playerid, x, y, z) < RADAR_INTERVAL)
+    return 0;
+}
+
+// Проверяет есть ли с указанным радаром любой другой рядом
+stock Radar_IsAnyNear(radarid) {
+    for (new i = 0; i < MAX_RADARS; i++) {
+        if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+
+        if (GetDistanceBetweenCoords3d(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ], RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ]) < RADAR_INTERVAL)
             return 1;
     }
 
@@ -800,7 +811,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                     return CreateEditPlayerObject(playerid, REDAKT_TYPE_RADAR, 1, radarid, 0, 19894, x, y, z, rx, ry, rz);
                 }
                 case 5: {
-                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNearPlayer(playerid)) {
+                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) {
                         new string[144]; format(string, sizeof(string), "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: %.0f метров ]", RADAR_INTERVAL);
                         return ErrorMessage(playerid, string);
                     }
