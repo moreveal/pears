@@ -39,6 +39,7 @@ new RadarInfo[MAX_RADARS][e_RadarInfo];
 
 enum e_PlayerRadarInfo {
     priCooldown, // Задержка в секундах перед следующим возможным получением штрафа
-    priLastRadar // Последний радар (фиксация нарушения, последнее попадание, ...)
+    priLastRadar, // Последний радар (фиксация нарушения, последнее попадание, ...)
+    Float: priX, Float: priY, Float: priZ // Хранение какой-либо позиции, связанной с радарами
 };
 new PlayerRadarInfo[MAX_REALPLAYERS][e_PlayerRadarInfo];

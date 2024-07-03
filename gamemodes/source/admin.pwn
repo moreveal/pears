@@ -199,12 +199,11 @@ CMD:gotoradar(playerid, const params[]) {
 	if (sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепортироваться к стационарному радару [ /gotoradar ID ]");
 	if (params[0] < 1 || params[0] > MAX_RADARS) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер радара не меньше 1 и не больше %d", MAX_RADARS);
 	
-	new radarid = params[0] - 1, Float: x, Float: y, Float: z;
+	new radarid = params[0] - 1;
 	if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Радар не существует или не установлен");
-	GetDynamicObjectPos(RadarInfo[radarid][riObjects][0], x, y, z);
 
 	S_SetPlayerVirtualWorld(playerid, 0, 0), PPSetPlayerInterior(playerid, 0);
-	PPSetPlayerPos(playerid, x, y, z);
+	PPSetPlayerPos(playerid, RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ] + 0.5);
 
 	return 1;
 }

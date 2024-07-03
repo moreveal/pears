@@ -145,10 +145,10 @@ stock ReadVehicleIDE
 CS_RPC_WorldVehicleAdd
 */
 
-stock GetVehicleModelSync(playerid, model, bool: force = false) // Получаем модель транспорта с учётом наличия модпака +
+stock GetVehicleModelSync(playerid, model) // Получаем модель транспорта с учётом наличия модпака +
 {
     new vehId;
-    if(force || IsPlayerSyncModels(playerid)) // Мод установлен
+    if(playerid == -1 || IsPlayerSyncModels(playerid)) // Мод установлен
 	{
 		if(model >= 612 && model <= 15265) model += 13066;
 		else if(model >= 15266) model += 13266;

@@ -443,6 +443,7 @@ stock GetAccessRankOrgMay(playerid, g, accessId, fbi) // Результат до
         realRank = PlayerInfo[playerid][pFbi];
     }
 
+    if(g < 1) return false; // Игрок без фракции, значит доступа нет
     if(PlayerInfo[playerid][pLeader] == realOrg) return true; // Игрок лидер, а значит у него всегда есть доступ к команде
     if(realRank >= get_maxrank(realOrg) - 1) return true; // Игрок имеет ранг -1 от максимального, значит он зам и у него всегда есть доступ
 

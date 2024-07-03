@@ -158,7 +158,7 @@ stock Radar_Delete(radarid) {
     // Очищаем данные о радаре
     for (new e_RadarInfo: i; i < e_RadarInfo; ++i) RadarInfo[radarid][i] = 0;
     
-    SaveRadars();
+    SaveRadars(radarid);
     return 1;
 }
 
@@ -223,7 +223,7 @@ stock Radar_UpdateLabel(id, bool: create = true) {
         else
             strcat(label, "\n{FF0000}[ Выведен из строя ]");
 
-        if (RadarInfo[id][riTextLabel]) DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
+        if (IsValidDynamic3DTextLabel(RadarInfo[id][riTextLabel])) return UpdateDynamic3DTextLabelText(RadarInfo[id][riTextLabel], 0x0077FFFF, label);
         RadarInfo[id][riTextLabel] = CreateDynamic3DTextLabel(label, 0x0077FFFF, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], 10.0, .worldid = 0, .interiorid = 0);
     }
 
@@ -398,6 +398,7 @@ stock Radar_Place(id, bool: status = true) {
             gadd(RadarInfo[id][riObjects][5], 0, 0);
             RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.869873, 1574.497680, 9.990758, 17.800004, -75.400001, 24.899986, object_world, object_int, -1, 300.00, 300.00); 
             SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
+            SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
             gadd(RadarInfo[id][riObjects][6], 0, 0);
             RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.625488, 1574.107055, 11.062417, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
             SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
@@ -445,7 +446,8 @@ stock Radar_Place(id, bool: status = true) {
         // 3D текст
         Radar_UpdateLabel(id);
     } else {
-        if (RadarInfo[id][riObjects][0]) {
+        Radar_SetBroken(id, false); // Чиним радар, если мы его удаляем
+        if (IsValidDynamicObject(RadarInfo[id][riObjects][0])) {
             DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
             for (new i = 0; i < 30; i++) {
                 if (RadarInfo[id][riObjects][i] == 0) continue;
@@ -866,6 +868,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
 stock Radar_StartPump(playerid, radarid = -1) {
     new bool: is_repair = radarid > -1;
 
+    GetPlayerPos(playerid, PlayerRadarInfo[playerid][priX], PlayerRadarInfo[playerid][priY], PlayerRadarInfo[playerid][priZ]);
     SetPVarInt(playerid, "oryjtemp", 0); SetPVarInt(playerid, "Arobsklad", 11);
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Нужно %s радар {ff9000}[ Нажимайте %s ]", (is_repair ? "починить" : "установить"), buttonName[Device[playerid]]);
     ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, false, true, true, true, true);
@@ -888,29 +891,38 @@ stock Pump_Radar(playerid) {
 
     new string[64];
     SetPVarInt(playerid, "oryjtemp", GetPVarInt(playerid, "oryjtemp") + 1 + random(2));
+
+    // Проверка на дистанцию, доступ к радарам и прочее
+    if (!IsPlayerInRangeOfPoint(playerid, 10.0, PlayerRadarInfo[playerid][priX], PlayerRadarInfo[playerid][priY], PlayerRadarInfo[playerid][priZ]) // Далеко от места установки
+        || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
+        || (is_repair && !Radar_IsBroken(radarid))) // Радар чинят, но он уже починен
+    {
+        SetPVarInt(playerid, "oryjtemp", 0);
+        SetPVarInt(playerid, "Arobsklad", 0);
+
+        ClearAnim(playerid);
+        PlayerPlaySound(playerid, 31203, 0.0, 0.0, 0.0);
+        return 0;
+    }
+
     new current_progress = GetPVarInt(playerid, "oryjtemp");
     if(current_progress >= MAX_TIMES) {
-        if(GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI)) {
-            SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad", 0);
-            format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~%d/%d", MAX_TIMES, MAX_TIMES);
-            GameTextForPlayer(playerid, string, 1500, 3);
-            PlayerPlaySound(playerid, 32000, 0, 0, 0);
-            
-            ClearAnim(playerid);
+        SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad", 0);
+        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~%d/%d", MAX_TIMES, MAX_TIMES);
+        GameTextForPlayer(playerid, string, 1500, 3);
+        PlayerPlaySound(playerid, 32000, 0, 0, 0);
+        
+        ClearAnim(playerid);
 
-            if (is_repair) {
-                Radar_SetBroken(radarid, false);
-                SuccessMessage(playerid, "{99ff66}Вы успешно починили радар");
-            } else {
-                Radar_Create(playerid, RADAR_RADIUS, 90, 1000);
-                SuccessMessage(playerid, "{99ff66}Вы успешно установили радар\nУстановлены настройки по умолчанию, вы можете изменить их в настройках [ ALT ]");
-            }
-            DeletePVar(playerid, "RadarRepair");
-            ApplyAnimation(playerid, "OTB", "betslp_loop", 4.0, false, true, true, false, false, SYNC_ALL);
+        if (is_repair) {
+            Radar_SetBroken(radarid, false);
+            SuccessMessage(playerid, "{99ff66}Вы успешно починили радар");
         } else {
-            SetPVarInt(playerid, "oryjtemp", 0);
-            SetPVarInt(playerid, "Arobsklad", 0);
+            Radar_Create(playerid, RADAR_RADIUS, 90, 1000);
+            SuccessMessage(playerid, "{99ff66}Вы успешно установили радар\nУстановлены настройки по умолчанию, вы можете изменить их в настройках [ ALT ]");
         }
+        DeletePVar(playerid, "RadarRepair");
+        ApplyAnimation(playerid, "OTB", "betslp_loop", 4.0, false, true, true, false, false, SYNC_ALL);
     } else {
         format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~%d/%d", current_progress, MAX_TIMES);
         GameTextForPlayer(playerid, string, 1500, 3);
