@@ -2621,10 +2621,11 @@ stock ClearOrderEscortAndPutSklad(g, thingId, thingQuan, thingPara, thingType, v
 	return 1;
 }
 
-CMD:reloadEscortNGSA(playerid)
+alias:cancelescort("reloadEscortNGSA")
+CMD:cancelescort(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 10) return 0;
-	if(EscortStatus > 0) return ErrorMessage(playerid,"{ff6347}В данный момент у НГСА нет доставки БП");
+	if(EscortStatus <= 0) return ErrorMessage(playerid,"{ff6347}В данный момент у НГСА нет доставки БП");
 	EscortFail();
 	return 1;
 }
