@@ -231,13 +231,13 @@ stock Radar_UpdateLabel(id, bool: create = true) {
 }
 
 function Radar_DeleteFlashlight(id) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
     if (IsValidDynamicObject(RadarInfo[id][riObjects][16])) DestroyDynamicObject(RadarInfo[id][riObjects][16]);
     return 1;
 }
 
 stock Radar_SetLaserPosition(id, playerid) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
     if (!IsPlayerInAnyVehicle(playerid)) return 0;
 
     // Поворачиваем лазер к игроку
@@ -252,7 +252,7 @@ stock Radar_SetLaserPosition(id, playerid) {
 }
 
 function Radar_UpdateLaser(id, playerid) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || !IsValidTimer(RadarInfo[id][riDeleteLaserTimer]) || !IsOnline(playerid)) {
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id) || !IsValidTimer(RadarInfo[id][riDeleteLaserTimer]) || !IsOnline(playerid)) {
         KillTimer(RadarInfo[id][riUpdateLaserTimer]);
         return 0;
     }
@@ -263,7 +263,7 @@ function Radar_UpdateLaser(id, playerid) {
 }
 
 function Radar_DeleteLaser(id) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][15], E_STREAMER_WORLD_ID, 228);
     Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][15], E_STREAMER_INTERIOR_ID, 228);
@@ -272,11 +272,12 @@ function Radar_DeleteLaser(id) {
 }
 
 stock Radar_FlashLight(id) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
     Radar_DeleteFlashlight(id);
     new Float: x, Float: y, Float: z; GetDynamicObjectPos(RadarInfo[id][riObjects][12], x, y, z);
     RadarInfo[id][riObjects][16] = CreateDynamicObject(18670, x, y, z - 1.7, 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][16], STREAMER_RADAR_OBJECT, 1);
     if (IsValidTimer(RadarInfo[id][riDeleteFlashlightTimer])) KillTimer(RadarInfo[id][riDeleteFlashlightTimer]);
     RadarInfo[id][riDeleteFlashlightTimer] = SetTimerEx("Radar_DeleteFlashlight", 1000, false, "d", id);
 
@@ -284,7 +285,7 @@ stock Radar_FlashLight(id) {
 }
 
 stock Radar_Laser(id, playerid = -1) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
     new objectid = RadarInfo[id][riObjects][15];
     if (IsOnline(playerid)) {
@@ -445,19 +446,27 @@ stock Radar_Place(id, bool: status = true) {
 
         // 3D текст
         Radar_UpdateLabel(id);
-    } else {
-        Radar_SetBroken(id, false); // Чиним радар, если мы его удаляем
-        if (IsValidDynamicObject(RadarInfo[id][riObjects][0])) {
-            DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
-            for (new i = 0; i < 30; i++) {
-                if (RadarInfo[id][riObjects][i] == 0) continue;
 
-                DestroyDynamicObject(RadarInfo[id][riObjects][i]);
+        // Добавляем метаданные объектам радаров
+        for (new i = 0; i < 30; i++) {
+            new objectid = RadarInfo[id][riObjects][i];
+            if (IsValidDynamicObject(objectid)) Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_RADAR_OBJECT, 1);
+        }
+    } else {
+        RadarInfo[id][riBroken] = false; // Помечаем радар исправным, если мы его удаляем
+
+        // Удаляем объекты радара
+        new nearest_objects[50];
+        new count = Streamer_GetNearbyItems(RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], STREAMER_TYPE_OBJECT, nearest_objects, .range = 10.0, .worldid = 0);
+        for (new i = 0; i < min(count, sizeof(nearest_objects)); i++) {
+            new objectid = nearest_objects[i];
+            if (Streamer_HasIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_RADAR_OBJECT)) {
+                DestroyDynamicObject(objectid);
                 RadarInfo[id][riObjects][i] = 0;
             }
-
-            RadarInfo[id][riTextLabel] = Text3D: 0;
         }
+        DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
+        RadarInfo[id][riTextLabel] = Text3D: 0;
     }
     RadarInfo[id][riPlaced] = status;
 
@@ -679,10 +688,9 @@ stock Radar_IsAnyNear(radarid) {
 stock Radar_GetNearest(playerid, Float: distance = 9999.0) {
     new slot = -1, Float: min_dist = distance;
     for (new i = 0; i < MAX_RADARS; i++) {
-        new Float: x, Float: y, Float: z;
-        GetDynamicObjectPos(RadarInfo[i][riObjects][0], x, y, z);
+        if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
 
-        new Float: dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
+        new Float: dist = GetPlayerDistanceFromPoint(playerid, RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]);
         if (dist < min_dist) {
             min_dist = dist;
             slot = i;
@@ -1043,8 +1051,13 @@ stock Radar_ViolationHandler(playerid) {
 	    	{
 				for(new radarid = 0; radarid < MAX_RADARS; radarid++) // Ищем радары по близости
 				{
+                    if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) continue;
+
 					if (IsPlayerInRangeOfPoint(playerid, RadarInfo[radarid][riRadius], RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ])) {
-						// Пропускаем, если скорость не больше допустимой
+						// Пропускаем, если радар неисправен
+                        if (Radar_IsBroken(radarid)) continue;
+                        
+                        // Пропускаем, если скорость не больше допустимой
                         if (WatchSpeed[playerid] <= RadarInfo[radarid][riMaxSpeed]) continue;
 
                         // Пропускаем, если высота игрока сильно отличается от высоты расположения радара
@@ -1054,10 +1067,7 @@ stock Radar_ViolationHandler(playerid) {
                         if (floatabs(playerPos[2] - radarPos[2]) > 2.5) continue;
 
                         // Пропускаем, если КД еще не прошло
-                        if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) return 0;
-
-                        // Пропускаем, если радар неисправен
-                        if (Radar_IsBroken(radarid)) return 0;
+                        if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
 
 						new string[144];
 						SendClientMessage(playerid, 0x0088FFFF, "Нарушение скоростного режима [ %.0f км/ч | %d км/ч ] | {FF6347}Штраф: $%d", WatchSpeed[playerid], RadarInfo[radarid][riMaxSpeed], RadarInfo[radarid][riFine]);
