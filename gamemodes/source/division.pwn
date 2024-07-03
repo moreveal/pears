@@ -538,16 +538,17 @@ stock SetDivisionAvailableWeapon(g, i, weaponid, bool: status) {
 }
 
 stock DivisionIsAvailableWeapon(g, i, weaponid) {
+	g--;
 	if(i < 0 || g < 0) return 1;
 	return DivisionInfo[g][i][divAvailableWeapons][weaponid];
 }
 
 stock showDialogSettingDivisionWeapons(playerid, g, i) { // Меню настройки оружий доступных для взятия со склада для подфракции
 	if(i < 0 || g < 0) return 1;
-	if (!IsAFunctionOrganization(1, g, playerid)) return ErrorText(playerid, "Ваша организация не может заказывать оружие на склад");
+	if (!IsAFunctionOrganization(1, g + 1, playerid)) return ErrorText(playerid, "Ваша организация не может заказывать оружие на склад");
 	
 	new dialog_header[128];
-	format(dialog_header, sizeof(dialog_header), "{%s}Доступное оружие", DivisionInfo[g][i][divColorHex]);
+	format(dialog_header, sizeof(dialog_header), "{ff9000}Доступное оружие {%s}%s", DivisionInfo[g][i][divColorHex], DivisionInfo[g][i][divName]);
 
 	DP[1][playerid] = g;
 	DP[2][playerid] = i;
@@ -1148,7 +1149,7 @@ function LoadDivision() // Загрузка из базы
 		if(isnull(DivisionInfo[g][i][divColorHex])) format(DivisionInfo[g][i][divColorHex], 7, "cccccc");
 
 		{
-			new available_weapons_str[512];
+			new available_weapons_str[256];
 			cache_get_value_name(f, "divAvailableWeapons", available_weapons_str);
 
 			if (isnull(available_weapons_str)) {

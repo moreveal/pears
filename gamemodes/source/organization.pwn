@@ -56,6 +56,7 @@ enum gInfo
 	gDeliveryOrder, // Статус доставки
 	gDeliveryPay, // Общая стоимость
 	gTax, // Стоимость доставки боеприпасов
+	bool:gAvailableWeapons[38], // Доступные для взятия оружия на складе (если игрок без подфракции)
 	gUnit[MAX_UNIT], // Новые настройки юнитов
 
 	gMedMoney, // Деньги для закупа мед оборудования
@@ -274,6 +275,16 @@ function LoadOrgan()
 		cache_get_value_name_int(f, "gTax", OrganInfo[idx][gTax]);
 		cache_get_value_name_int(f, "gMedMoney", OrganInfo[idx][gMedMoney]);
 		cache_get_value_name_bool(f, "gWarehouse", OrganInfo[idx][gWarehouse]);
+
+		// Загрузка доступных оружий на складе
+		new available_weapons_str[256];
+		cache_get_value_name(f, "gAvailableWeapons", available_weapons_str);
+		if (isnull(available_weapons_str)) {
+			// Если нет информации по доступным оружиям - делаем доступными все
+			for (new weaponid = 0; weaponid < 38; weaponid++) OrganInfo[idx][gAvailableWeapons][weaponid] = true;
+		} else {
+			sscanf(available_weapons_str, "p<|>a<i>[38]", OrganInfo[idx][gAvailableWeapons]);
+		}
 
 		OrganInfo[idx][gDeliveryOrder] = -1;
 		// NGSA
@@ -1052,6 +1063,25 @@ stock dialogCase_Organization(playerid, dialogid, response, listitem, const inpu
 		}
 		else showDialogOrganizationMenu(playerid);
 	}
+	if(dialogid == _:ORGANIZATION_AVAILABLE_WEAPONS) // Настройка доступа ко складу для участников без подфракции
+	{
+		new g = fraction(playerid);
+		if (!response) return SettingSkladOrganization(playerid, g);
+
+		// Установка нового значения
+		new weapon = List[listitem][playerid];
+		OrganInfo[g][gAvailableWeapons][weapon] ^= true;
+
+		// Сохранение
+		new available_weapons_str[40 * 2];
+		for (new weaponid = 0; weaponid < 38; weaponid++)
+			format(available_weapons_str, sizeof(available_weapons_str), "%s%d|", available_weapons_str, OrganInfo[g][gAvailableWeapons][weaponid]);
+		new string_mysql[256];
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `gAvailableWeapons` = '%e' WHERE frakid = %d", available_weapons_str, g);
+		mysql_tquery(pearsq, string_mysql);
+
+		return ShowAvailableOrganizationWeapons(playerid, g);
+	}
 	return 1;
 }
 
@@ -1082,6 +1112,35 @@ stock SaveAllRanks(orgId)
 	}
     format(string_mysql,sizeof(string_mysql),"%s WHERE `frakid` = '%d'", string_mysql, orgId); // 25 + 11
 	query_empty(pearsq, string_mysql);
+}
+
+stock IsAvailableOrganizationWeapon(g, weaponid) {
+	if (g < 1 || g > MAX_ORG) return 1;
+	return OrganInfo[g][gAvailableWeapons][weaponid];
+}
+
+stock ShowAvailableOrganizationWeapons(playerid, g) {
+	if (!IsSubLeader(playerid) && !IsLeader(playerid)) return ErrorMessage(playerid, "Редактирование доступных на складе оружий доступно только заместителю и лидеру организации");
+
+	new dialog_header[128];
+	format(dialog_header, sizeof(dialog_header), "{ff9000}Доступное оружие %s", frakName[g]);
+
+	DP[1][playerid] = g;
+
+	new dialog_text[256], quan;
+
+	for (new weaponid = 0; weaponid < 38; weaponid++) {
+		if (!IsDefaultOrderDepartWeapon(weaponid)) continue;
+
+		format(dialog_text, sizeof(dialog_text), "%s\n{%s}%s", dialog_text, OrganInfo[g][gAvailableWeapons][weaponid] ? "99ff66" : "ff6347", GetNameThing(0, weaponid, 1, 0));
+
+		List[quan][playerid] = weaponid;
+		quan++;
+	}
+
+	ShowDialog(playerid, _:ORGANIZATION_AVAILABLE_WEAPONS, DIALOG_STYLE_LIST, dialog_header, dialog_text, "Выбрать", "Назад");
+
+	return 1;
 }
 
 stock ReloadRank(playerid, g) // Сброс названий рангов

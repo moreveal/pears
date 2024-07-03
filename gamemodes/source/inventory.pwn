@@ -2074,10 +2074,11 @@ stock use_sklad(playerid, wh, inva, useinva)
 	}
 	else if(thingType == 1) // Оружие
 	{
-		new g = fraction(playerid) - 1,
+		new g = fraction(playerid),
 			i = PlayerInfo[playerid][pDivision][0] - 1;
 
 		if (!DivisionIsAvailableWeapon(g, i, fpick)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут брать со склада это оружие");
+		if (i < 0 && !IsAvailableOrganizationWeapon(g, fpick)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам взять со склада это оружие");
 
 	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять оружие [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, string);
 	    giveThing = 4;
@@ -2845,8 +2846,10 @@ stock player_tile(playerid, inva)
 					if(get_invent4(playerid, 30, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет патронов к винтовке [ Ammo 45mm ]"), i_resetveshi(playerid);
 					if(weapon == 34)
 					{
-						if(!IsOrderDepartWeapon(fraction(playerid), 34)) return ErrorMessage(playerid, 
-							"{FF6347}Вы не можете использовать снайперскую винтовку"), i_resetveshi(playerid);
+						new g = fraction(playerid),
+							i = PlayerInfo[playerid][pDivision][0] - 1;
+						if(!DivisionIsAvailableWeapon(g, i, weapon)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут использовать снайперскую винтовку"), i_resetveshi(playerid);
+						if(i < 0 && !IsAvailableOrganizationWeapon(g, weapon)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам использовать снайперскую винтовку"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;

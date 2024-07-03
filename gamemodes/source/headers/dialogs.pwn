@@ -31,6 +31,9 @@ enum e_DialogId {
     DIVISION_MEMBERS_LIST,
     DIVISION_ORDER_WEAPONS,
 
+    // Организации
+    ORGANIZATION_AVAILABLE_WEAPONS,
+
     // Установка доступных оружий для сотрудников департамента 
     ADMIN_SET_DEPARTWEAPONS_FRACTIONS, // Список фракций
     ADMIN_SET_DEPARTWEAPONS_LIST, // Список оружия
