@@ -260,11 +260,11 @@ CMD:createdaily(playerid, const params[])
     return 1;
 }
 
-CMD:showdaily(playerid, const params[])
+CMD:checkdaily(playerid, const params[])
 {
     if (PlayerInfo[playerid][pSoska] < 3) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     new targetid;
-    if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Просмотреть ежедневные задания игрока [ /showdaily ID ]");
+    if (sscanf(params, "u", targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Просмотреть ежедневные задания игрока [ /checkdaily ID ]");
     if (!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
     
     return showDialogDailyQuest(playerid, targetid);
