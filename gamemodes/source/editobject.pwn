@@ -478,13 +478,24 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     else if (gRedakt[playerid] == REDAKT_TYPE_RADAR) { // Перемещение радара
         new radarid = oid;
 
+        for (new i = 0; i < MAX_RADARS; i++) {
+            if (radarid == i || !Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+            if (GetDistanceBetweenCoords3d(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ], x, y, z) < RADAR_INTERVAL) {
+                // Если рядом есть другой радар
+                EndObjectEditing(playerid);
+                return ErrorMessage(playerid, "{ff6347}Нельзя переместить радар близко к другому [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
+            }
+        }
+
+        RadarInfo[radarid][riLastX] = RadarInfo[radarid][riX];
+        RadarInfo[radarid][riLastY] = RadarInfo[radarid][riY];
+        RadarInfo[radarid][riLastZ] = RadarInfo[radarid][riZ];
+        
         RadarInfo[radarid][riX] = x;
         RadarInfo[radarid][riY] = y;
-        RadarInfo[radarid][riZ] = z;
-        Radar_SetNormalZ(radarid);
-        
-        RadarInfo[radarid][riRX] = rx;
-        RadarInfo[radarid][riRY] = ry;
+        RadarInfo[radarid][riZ] = z; Radar_SetNormalZ(radarid);
+        RadarInfo[radarid][riRX] = 0.0;
+        RadarInfo[radarid][riRY] = 0.0;
         RadarInfo[radarid][riRZ] = rz;
 
         Radar_Place(radarid);

@@ -165,10 +165,13 @@ stock Radar_Delete(radarid) {
 stock Radar_SetPosition(id, Float: x, Float: y, Float: z, Float: rx, Float: ry, Float: rz) {
     if (!Radar_IsExists(id)) return 0;
 
-    // Позиция первого объекта радара, остальные расчитываются автоматически
     RadarInfo[id][riX] = x;
     RadarInfo[id][riY] = y;
     RadarInfo[id][riZ] = z;
+    RadarInfo[id][riLastX] = x;
+    RadarInfo[id][riLastY] = y;
+    RadarInfo[id][riLastZ] = z;
+
     RadarInfo[id][riRX] = rx;
     RadarInfo[id][riRY] = ry;
     RadarInfo[id][riRZ] = rz;
@@ -444,6 +447,10 @@ stock Radar_Place(id, bool: status = true) {
             RadarInfo[id][riBroken] = true;
         }
 
+        RadarInfo[id][riLastX] = RadarInfo[id][riX];
+        RadarInfo[id][riLastY] = RadarInfo[id][riY];
+        RadarInfo[id][riLastZ] = RadarInfo[id][riZ];
+
         // 3D текст
         Radar_UpdateLabel(id);
 
@@ -457,7 +464,7 @@ stock Radar_Place(id, bool: status = true) {
 
         // Удаляем объекты радара
         new nearest_objects[50];
-        new count = Streamer_GetNearbyItems(RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], STREAMER_TYPE_OBJECT, nearest_objects, .range = 10.0, .worldid = 0);
+        new count = Streamer_GetNearbyItems(RadarInfo[id][riLastX], RadarInfo[id][riLastY], RadarInfo[id][riLastZ], STREAMER_TYPE_OBJECT, nearest_objects, .range = 10.0, .worldid = 0);
         for (new i = 0; i < min(count, sizeof(nearest_objects)); i++) {
             new objectid = nearest_objects[i];
             if (Streamer_HasIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_RADAR_OBJECT)) {
@@ -751,10 +758,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                 if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу установить радар, находясь в транспорте");
 	            if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу установить радар в этом месте");
                 if(Radar_GetAmount(playerid) >= RADAR_PER_PLAYER) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать больше %d %s", RADAR_PER_PLAYER, PluralToText(RADAR_PER_PLAYER, "радар", "радара", "радаров"));
-                if(Radar_IsAnyNearPlayer(playerid)) {
-                    new string[144]; format(string, sizeof(string), "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: %.0f метров ]", RADAR_INTERVAL);
-                    return ErrorMessage(playerid, string);
-                }
+                if(Radar_IsAnyNearPlayer(playerid)) return ErrorMessage(playerid, "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: "#RADAR_INTERVAL" метров");
 
                 Radar_StartPump(playerid);
             } else if (listitem > 0) {
@@ -819,10 +823,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                     return CreateEditPlayerObject(playerid, REDAKT_TYPE_RADAR, 1, radarid, 0, 19894, x, y, z, rx, ry, rz);
                 }
                 case 5: {
-                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) {
-                        new string[144]; format(string, sizeof(string), "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: %.0f метров ]", RADAR_INTERVAL);
-                        return ErrorMessage(playerid, string);
-                    }
+                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) return ErrorMessage(playerid, "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
                     if (Radar_IsPlaced(radarid) && RadarInfo[radarid][riBroken]) return ErrorMessage(playerid, "{ff6347}Этот радар сейчас сломан, его нельзя свернуть в таком состоянии");
                     if (!Radar_IsPlaced(radarid) && !Radar_IsOwnerOnline(radarid)) return ErrorMessage(playerid, "{ff6347}Нельзя установить радар игрока не в сети");
 
@@ -1058,7 +1059,7 @@ stock Radar_ViolationHandler(playerid) {
                         if (Radar_IsBroken(radarid)) continue;
                         
                         // Пропускаем, если скорость не больше допустимой
-                        if (WatchSpeed[playerid] <= RadarInfo[radarid][riMaxSpeed]) continue;
+                        if (WatchSpeed[playerid] <= RadarInfo[radarid][riMaxSpeed] + 1.0) continue;
 
                         // Пропускаем, если высота игрока сильно отличается от высоты расположения радара
                         new Float: playerPos[3], Float: radarPos[3];

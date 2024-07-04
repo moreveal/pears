@@ -1,6 +1,6 @@
 #define MAX_RADARS                      50 // Максимально возможное количество радаров на сервере
 #define RADAR_PER_PLAYER                5 // Максимальное количество радаров на игрока
-#define RADAR_INTERVAL                  300.0 // Минимальное расстояние между радарами
+#define RADAR_INTERVAL                  300 // Минимальное расстояние между радарами
 #define RADAR_RADIUS                    60.0 // Радиус срабатывания по умолчанию
 #define RADAR_CREATING_TIMES            30 // Количество нажатий на ПКМ для установки радара
 #define RADAR_MANUAL_REPAIR_TIMES       45 // Количество нажатий на ПКМ для ремонта радара
@@ -17,6 +17,7 @@ enum e_RadarInfo {
     bool: riBroken, // Сломан ли радар
     riHits, // Количество попаданий по радару
     Float: riX, Float: riY, Float: riZ, Float: riRX, Float: riRY, Float: riRZ, // Позиция установленного радара
+    Float: riLastX, Float: riLastY, Float: riLastZ, // Последняя установленная позиция радара (для перемещений и т.п.) 
     Float: riRadius, // Радиус действия радара
     riFraction, // ID организации, за которой закреплён радар
     riMaxSpeed, // Максимальная допустимая скорость

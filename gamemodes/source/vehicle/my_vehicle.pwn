@@ -4065,7 +4065,7 @@ CMD:vehdamage(playerid)
 }
 CMD:car(playerid)
 {
-	if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Ваш персонаж учавствует в экспедиции NASA");
+	if(PlayerInfo[playerid][pBkyrenie] >= 2 && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Ваш персонаж участвует в экспедиции NASA");
 	if(howstun(playerid) || HealthAC[playerid] <= 0 || GetPVarInt(playerid, "Boot") > 0) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо и он не может сейчас это сделать");
 	if(PursuitTime[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция");
 	if(MPGO[playerid] != 0 || CnnVed[playerid] >= 11 || GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Сейчас нельзя управлять своим транспортом");
