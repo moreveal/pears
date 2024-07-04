@@ -597,6 +597,12 @@ stock Radar_Place(id, bool: status = true) {
     }
     RadarInfo[id][riPlaced] = status;
 
+    // Обновляем объекты у всех рядом с радаром
+    foreach (new playerid : Player) {
+        if (IsPlayerInRangeOfPoint(playerid, 50.0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ]))
+            Streamer_Update(playerid);
+    }
+
     return 1;
 }
 
@@ -608,6 +614,11 @@ stock Radar_GetOwner(id) {
 stock Radar_IsOwner(playerid, id) {
     if (!Radar_IsExists(id)) return 0;
     return Radar_GetOwner(id) == PlayerInfo[playerid][pID];
+}
+
+stock Radar_DeleteAllByOwner(pid) {
+    for (new i = 0; i < MAX_RADARS; i++)
+        if (Radar_GetOwner(i) == pid) Radar_Delete(i);
 }
 
 // Получает количество созданных радаров

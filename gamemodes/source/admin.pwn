@@ -194,6 +194,7 @@ CMD:gotobiz(playerid, const params[])
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200");
 	return 1;
 }
+
 CMD:gotoradar(playerid, const params[]) {
 	if (PlayerInfo[playerid][pSoska] < 3 && PlayerInfo[playerid][pMedia] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if (sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Телепортироваться к стационарному радару [ /gotoradar ID ]");
@@ -204,6 +205,46 @@ CMD:gotoradar(playerid, const params[]) {
 
 	S_SetPlayerVirtualWorld(playerid, 0, 0), PPSetPlayerInterior(playerid, 0);
 	PPSetPlayerPos(playerid, RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ] + 0.5);
+
+	return 1;
+}
+
+CMD:radarstatus(playerid, const params[]) {
+	if (PlayerInfo[playerid][pSoska] < 6) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	new radarid, repair;
+	if (sscanf(params, "iI(-1)", radarid, repair)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить статус радара [ /radarstatus Номер Статус ]");
+	if (radarid < 0 || radarid > MAX_RADARS) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID радара от 1 до "#MAX_RADARS" [ 0 - Все ]");
+	if (repair < 0 || repair > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Статус [ 0 - Сломать | 1 - Починить ]");
+
+	new string[144], action[32], log_action[32];
+	if (repair) {
+		strcat(action, "починил"); strcat(log_action, "Починил");
+	} else {
+		strcat(action, "сломал"); strcat(log_action, "Сломал");
+	}
+	if (radarid == 0) {
+		new quan;
+		for (new i = 0; i < MAX_RADARS; i++) {
+			if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+			
+			Radar_SetBroken(i, bool: !repair);
+			quan++;
+		}
+		if (quan == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ни один радар не размещён в игровом мире");
+		format(string, sizeof(string), "[ ADM ]: %s %s все размещённые скоростные радары", PlayerInfo[playerid][pName], action);
+		ABroadCast(COLOR_ADM, string, 2);
+		format(string, sizeof(string), "%s все радары", log_action);
+		AdminLog("radarstatus", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, string);
+	} else {
+		radarid--;
+		if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Указанный радар не существует или не размещён в игровом мире");
+		Radar_SetBroken(radarid, bool: !repair);
+
+		format(string, sizeof(string), "[ ADM ]: %s %s скоростной радар №%d", PlayerInfo[playerid][pName], action, radarid + 1);
+		ABroadCast(COLOR_ADM, string, 2);
+		format(string, sizeof(string), "%s радар", log_action);
+		AdminLog("radarstatus", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", radarid + 1, string);
+	}
 
 	return 1;
 }
