@@ -488,6 +488,7 @@ stock uninviteDivision(playerid, outOrg) // Исключаем из подфра
 	uninviteDivisionKey(outOrg, PlayerInfo[playerid][pFbi], whichDiv); // Ищем, какую подфракцию будем очищать
 	PlayerInfo[playerid][pDivision][whichDiv] = 0; // Очищаем
 	PlayerInfo[playerid][pDivRank][whichDiv] = 0; // Очищаем
+	CheckAndRemoveSniperRifle(playerid);
 	mysql_SaveDivision(PlayerInfo[playerid][pID], whichDiv, 0, 0); // Сохраняем в базу
 
 	new getOrg, getDiv, getReadRac;
@@ -539,7 +540,7 @@ stock SetDivisionAvailableWeapon(g, i, weaponid, bool: status) {
 
 stock DivisionIsAvailableWeapon(g, i, weaponid) {
 	g--;
-	if(i < 0 || g < 0) return 1;
+	if(i < 0 || g < 0) return 0;
 	return DivisionInfo[g][i][divAvailableWeapons][weaponid];
 }
 
