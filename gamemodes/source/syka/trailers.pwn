@@ -24,6 +24,7 @@ enum e_TrailerInfo {
     tBreaking // Хранит ID игрока, взламывающего трейлер
 }
 new TrailerInfo[MAX_TRAILERS][e_TrailerInfo];
+new Float: TrailerSafeHealth[MAX_VEHICLES];
 
 const TRAILER_INVISIBLE_VEH_MODEL = 606; // ID невидимого транспорта для прикрепления объекта трейлера
 const TRAILER_INVISIBLE_VEH_INTERIOR = 101; // Интерьер невидимого транспорта для трейлера
@@ -143,7 +144,6 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
         return 1;
     }
     
-    new Float:safe_health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
     if (GetVehicleTrailer(vehicleid) < 1) { // Если трейлер отцепился
         // Резко останавливаем машину водителя и сам трейлер (чтобы ничего не летало)
         SetVehicleSpeed(trailerid, 0), SetVehicleSpeed(vehicleid, 0);
@@ -164,12 +164,12 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
             SetVehiclePos(trailerid, vehicle_pos[0], vehicle_pos[1], vehicle_pos[2] - 8.0);
 
             AttachTrailerToVehicle(trailerid, vehicleid); // Присоединяем трейлер обратно
-            ACSetVehicleHealth(vehicleid, safe_health); // Компенсируем возможный полученный дамаг
+            ACSetVehicleHealth(vehicleid, TrailerSafeHealth[vehicleid]); // Компенсируем возможный полученный дамаг
         }
     }
     else {
         // Запоминаем последнее количество HP до отсоединения прицепа, чтобы восстановить его, если он продамажит транспорт
-        GetVehicleHealth(vehicleid, safe_health);
+        GetVehicleHealth(vehicleid, TrailerSafeHealth[vehicleid]);
     }
 
     return 1;
@@ -515,6 +515,7 @@ CMD:attachtrailer(playerid)
     TrailerInfo[tid][tObject] = trailerobj;
     TrailerInfo[tid][tVehicle] = trailerid;
     VehInfo[vehicleid][vTrailerID] = tid + 1;
+    TrailerSafeHealth[vehicleid] = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
     TrailerInfo[tid][tTimerID] = SetTimerEx("PlayerTrailerTimer", 1000, true, "ddd", vehicleid, trailerid, tid);
     return 1;
 }
