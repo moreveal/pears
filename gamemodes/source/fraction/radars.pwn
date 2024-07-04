@@ -381,69 +381,189 @@ stock Radar_Place(id, bool: status = true) {
 
             MatrixDynamicObjectPos(0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], RadarInfo[id][riRX], RadarInfo[id][riRY], RadarInfo[id][riRZ]);
         } else {
-            RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.712036, 1574.065429, 10.886045, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][0], 0, 0);
-            RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 30.201633, -11.061601, -136.169357, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][1], 0, 0);
-            RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.415534, 21.729801, -76.648292, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][2], 0, 0);
-            RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.398666, -2.788732, 86.196357, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][3], 0, 0);
-            RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.557617, 1573.844726, 10.908425, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 8480, "csrspalace01", "black32", 0x00000000);
-            gadd(RadarInfo[id][riObjects][4], 0, 0);
-            RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.720703, 1574.175415, 10.869961, 76.713333, -21.107568, -104.367736, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
-            gadd(RadarInfo[id][riObjects][5], 0, 0);
-            RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.869873, 1574.497680, 9.990758, 17.800004, -75.400001, 24.899986, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
-            gadd(RadarInfo[id][riObjects][6], 0, 0);
-            RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.625488, 1574.107055, 11.062417, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][7], 0, 0);
-            RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.862915, 1573.934692, 10.998029, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][8], 0, 0);
-            RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.768432, 1574.051757, 11.139507, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][9], 0, 0);
-            RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.825561, 1574.171386, 11.020440, -76.713333, -68.892303, 75.632217, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][10], 0, 0);
-            RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.734863, 1573.999755, 11.146165, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][11], 0, 0);
-            RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.849487, 1574.199584, 11.037131, 4.747482, -12.423845, 145.041549, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][12], 0, 0);
-            RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.849365, 1574.189819, 11.057155, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][13], 0, 0);
-            RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.842651, 1574.191528, 11.027957, 4.747449, 167.576141, 145.041687, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][14], 0, 0);
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            RadarInfo[id][riObjects][15] = CreateDynamicObject(18717, 1327.211547, 1573.505004, 9.493952, -17.700000, -17.700002, 14.000007, object_world, object_int, -1, 300.00, 300.00); 
-            gadd(RadarInfo[id][riObjects][15], 0, 0);
+            switch (1 + random(100)) {
+                case 1..35: { // 2 версия разрушения (35%)
+                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.268676, 1571.099121, 10.970118, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][0], 0, 0);
+                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 33.100021, 1.100000, -124.900009, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][1], 0, 0);
+                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 36.000000, 1.299999, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][2], 0, 0);
+                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 35.100002, 0.000000, 124.399932, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][3], 0, 0);
+                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.418945, 1570.880493, 10.918087, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 14387, "dr_gsnew", "cd_tex2", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][4], 0, 0);
+                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.169311, 1571.149658, 10.969779, 78.864028, 85.422599, -140.835128, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][5], 0, 0);
+                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1326.000732, 1570.830932, 11.166330, 26.397958, 0.985989, 34.234886, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][6], 0, 0);
+                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.196533, 1570.978393, 11.113520, -78.864028, 274.577331, 39.164817, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][7], 0, 0);
+                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.443481, 1571.149291, 11.108892, -78.864028, 274.577331, 39.164817, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][8], 0, 0);
+                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.298706, 1571.059082, 11.225257, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][9], 0, 0);
+                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.209106, 1571.189941, 11.144275, -78.864006, -175.422607, 39.164882, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][10], 0, 0);
+                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.335205, 1571.009765, 11.215250, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][11], 0, 0);
+                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.191284, 1571.215332, 11.170728, -11.099998, -0.900001, -145.499954, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][12], 0, 0);
+                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.199951, 1571.205078, 11.188487, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][13], 0, 0);
+                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.196289, 1571.209594, 11.159052, -11.099997, 179.099990, -145.499984, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][14], 0, 0);
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18688, 1325.952026, 1570.738037, 9.420307, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                    gadd(RadarInfo[id][riObjects][15], 0, 0);
 
-            // Корректировка позиции
-            TSInfo[tsOffset][0] = -0.086425;
-            TSInfo[tsOffset][1] = -0.161254;
-            TSInfo[tsOffset][2] = -0.565986;
+                    TSInfo[tsOffset][0] = -0.136596;
+                    TSInfo[tsOffset][1] = -0.036132;
+                    TSInfo[tsOffset][2] = -0.637525;
+                }
+                case 36..51: { // 3 версия разрушения (15%)
+                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1325.755126, 1570.806396, 10.722577, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][0], 0, 0);
+                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 47.214488, 20.037380, -157.906661, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][1], 0, 0);
+                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 15.360242, -41.216545, 12.167108, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][2], 0, 0);
+                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 14.729486, 12.932216, 102.482681, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][3], 0, 0);
+                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1325.672363, 1570.550048, 10.700902, 4.600025, -39.599956, -17.900060, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 14387, "dr_gsnew", "cd_tex2", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][4], 0, 0);
+                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1325.759033, 1570.909912, 10.681324, 50.177452, 172.805923, 77.637153, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][5], 0, 0);
+                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.351074, 1570.912353, 10.634958, 16.261367, -41.440956, -7.809256, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][6], 0, 0);
+                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1325.558715, 1570.835693, 10.752696, -50.177452, 187.194061, -102.362838, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][7], 0, 0);
+                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1325.774169, 1570.750000, 10.943493, -50.177452, 187.194061, -102.362838, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][8], 0, 0);
+                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1325.591064, 1570.842651, 10.921028, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][9], 0, 0);
+                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1325.704223, 1570.959960, 10.849022, -50.177459, 97.194053, -102.362861, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][10], 0, 0);
+                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1325.572143, 1570.783691, 10.918830, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][11], 0, 0);
+                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1325.702026, 1570.996582, 10.866758, -4.600006, 39.599964, 162.099945, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][12], 0, 0);
+                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1325.687255, 1570.989868, 10.882050, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][13], 0, 0);
+                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1325.706054, 1570.985717, 10.859010, -4.600002, -140.400024, 162.099960, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][14], 0, 0);
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18704, 1326.316528, 1570.660278, 9.216628, -1.799999, -25.099998, -16.599998, object_world, object_int, -1, 300.00, 300.00); 
+                    gadd(RadarInfo[id][riObjects][15], 0, 0);
 
-            Radar_SetNormalZ(id);
-            RadarInfo[id][riZ] -= 0.165;
+                    TSInfo[tsOffset][0] = 0.073242;
+                    TSInfo[tsOffset][1] = -0.043823;
+                    TSInfo[tsOffset][2] = -0.642516;
+                }
+                default: { // 1 версия разрушения (45%)
+                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.712036, 1574.065429, 10.886045, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][0], 0, 0);
+                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 30.201633, -11.061601, -136.169357, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][1], 0, 0);
+                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.415534, 21.729801, -76.648292, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][2], 0, 0);
+                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.398666, -2.788732, 86.196357, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][3], 0, 0);
+                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.557617, 1573.844726, 10.908425, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 8480, "csrspalace01", "black32", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][4], 0, 0);
+                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.720703, 1574.175415, 10.869961, 76.713333, -21.107568, -104.367736, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][5], 0, 0);
+                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.869873, 1574.497680, 9.990758, 17.800004, -75.400001, 24.899986, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][6], 0, 0);
+                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.625488, 1574.107055, 11.062417, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][7], 0, 0);
+                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.862915, 1573.934692, 10.998029, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][8], 0, 0);
+                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.768432, 1574.051757, 11.139507, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][9], 0, 0);
+                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.825561, 1574.171386, 11.020440, -76.713333, -68.892303, 75.632217, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][10], 0, 0);
+                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.734863, 1573.999755, 11.146165, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][11], 0, 0);
+                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.849487, 1574.199584, 11.037131, 4.747482, -12.423845, 145.041549, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][12], 0, 0);
+                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.849365, 1574.189819, 11.057155, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][13], 0, 0);
+                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.842651, 1574.191528, 11.027957, 4.747449, 167.576141, 145.041687, object_world, object_int, -1, 300.00, 300.00); 
+                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
+                    gadd(RadarInfo[id][riObjects][14], 0, 0);
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18717, 1327.211547, 1573.505004, 9.493952, -17.700000, -17.700002, 14.000007, object_world, object_int, -1, 300.00, 300.00); 
+                    gadd(RadarInfo[id][riObjects][15], 0, 0);
 
+                    TSInfo[tsOffset][0] = -0.086425;
+                    TSInfo[tsOffset][1] = -0.161254;
+                    TSInfo[tsOffset][2] = -0.565986;
+                }
+            }
+
+            Radar_SetNormalZ(id); RadarInfo[id][riZ] -= 0.165;
             MatrixDynamicObjectPos(0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], RadarInfo[id][riRX], RadarInfo[id][riRY], RadarInfo[id][riRZ]);
+            
             RadarInfo[id][riBroken] = true;
         }
 
