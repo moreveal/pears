@@ -360,34 +360,10 @@ stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
     if(courtStatus != COURT_STATUS_REVIEW) return 0;
 
     PlayerInfo[prisonerid][pCourtsStatus] = 0;
-    if (deposit > -1 && period > -1) {
-        // Создаем и закрепляем за игроком судебное решение
-        CourtCreateDecision(prisonerid, arbiterid, 0, courtDecision, deposit, period);
-
-        // Помещаем залог в казну
-        if (courtDecision != COURT_CLASS_WORKING_OUT_PAROLE)
-            putkazna(0, deposit);
-    }
 
     new log_message[64], court_message[512];
     new pretty_deposit[30]; format(pretty_deposit, sizeof(pretty_deposit), "%s", FormatNumberWithCommas(deposit));
     new pretty_period[10]; format(pretty_period, sizeof(pretty_period), "%d %s", period, PluralToText(period, "день", "дня", "дней"));
-
-    if(courtDecision != COURT_CLASS_DECLINE && courtDecision != COURT_CLASS_JAIL_REDUCE_PAROLE)
-    {
-        PPSetPlayerPos(prisonerid, -2780.8091, 417.6989, 12.6403);
-        PPSetPlayerFacingAngle(prisonerid, 90.0);
-        PlayerInfo[prisonerid][pHodka]++;
-        PlayerInfo[prisonerid][pJailed] = 0; PlayerInfo[prisonerid][pJailTime] = 0;
-        PlayerInfo[prisonerid][pRab] = 0;
-        ClearAllWantedPlayer(prisonerid);
-        TempGive(prisonerid);
-        GameTextForPlayer(prisonerid, RusToGame("~w~Вы ~g~Свободны"), 5000, 3);
-        SetPlayerToTeamColor(prisonerid);
-        GF_OnPlayerUpdate(prisonerid);
-    } else {
-        CourtMovePlayerToTerminal(prisonerid);
-    }
 
     switch (courtDecision) {
         case COURT_CLASS_DECLINE: { // Отклонение заявки
@@ -456,6 +432,31 @@ stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
     }
     CourtMessage(COLOR_GREY, court_message);
 
+    if (deposit > -1 && period > -1) {
+        // Создаем и закрепляем за игроком судебное решение
+        CourtCreateDecision(prisonerid, arbiterid, 0, courtDecision, deposit, period);
+
+        // Помещаем залог в казну
+        if (courtDecision != COURT_CLASS_WORKING_OUT_PAROLE)
+            putkazna(0, deposit);
+    }
+
+    if(courtDecision != COURT_CLASS_DECLINE && courtDecision != COURT_CLASS_JAIL_REDUCE_PAROLE)
+    {
+        PPSetPlayerPos(prisonerid, -2780.8091, 417.6989, 12.6403);
+        PPSetPlayerFacingAngle(prisonerid, 90.0);
+        PlayerInfo[prisonerid][pHodka]++;
+        PlayerInfo[prisonerid][pJailed] = 0; PlayerInfo[prisonerid][pJailTime] = 0;
+        PlayerInfo[prisonerid][pRab] = 0;
+        ClearAllWantedPlayer(prisonerid);
+        TempGive(prisonerid);
+        GameTextForPlayer(prisonerid, RusToGame("~w~Вы ~g~Свободны"), 5000, 3);
+        SetPlayerToTeamColor(prisonerid);
+        GF_OnPlayerUpdate(prisonerid);
+    } else {
+        CourtMovePlayerToTerminal(prisonerid);
+    }
+
     GiveUnit(arbiterid, 13);
     OrgLog(7, "CourtCloseProcess", PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], PlayerInfo[arbiterid][pID], PlayerInfo[arbiterid][pName], PlayerInfo[arbiterid][pPlaIP], 0, log_message);
     CourtDeleteOrder(prisonerid);
@@ -504,6 +505,7 @@ stock CourtCreateOrder(playerid, bool: message = true)
     new courtofferid = -1;
     for(new i; i < MAX_COURT_OFFERS; i++)
     {
+        if(CourtInfo[i][ciPlayerID] == playerid) CourtDeleteOrder(playerid); // Удаляем предыдущую заявку на суд, если есть
         if(CourtInfo[i][ciStatus] == COURT_STATUS_NONE)
         {
             courtofferid = i;
