@@ -287,7 +287,7 @@ function Call_createpromo(playerid, const str_promo[])
 		PromoNumber ++;
 		setprom(playerid);
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такой промкод уже есть или существует как неактивный"), pc_cmd_promo(playerid);
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Такой промокод уже есть или существует как неактивный"), pc_cmd_promo(playerid);
 	
 	g_MysqlCall[playerid] = false;
 	return 1;
