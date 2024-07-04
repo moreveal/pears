@@ -421,7 +421,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 		else if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // Кладём предмет из инвентаря в другой
 		{
 		    new myinva = OnlineInfo[playerid][oInventSelectLeft], myfpick = PlayerInfo[playerid][pInven][myinva], myThingType = PlayerInfo[playerid][pInvenType][myinva], myThingPack = PlayerInfo[playerid][pInvenPack][myinva];
-		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+		    if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva], myThingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 		    
 			// Кейс нельзя выбрасывать на 3 уровне и ниже
 			if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
@@ -584,7 +584,7 @@ stock PreviouslySellThingPlayer(playerid, giveplayerid, const inputtext[])
 	if(thingPack >= 2) return ErrorMessage(playerid, "{FF6347}Нельзя продать упакованный предмет");
 	
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
-	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя продать этому игроку");
 
 	// Кейс нельзя выбрасывать на 3 уровне и ниже
 	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
@@ -640,7 +640,7 @@ stock give_invent(playerid, giveplayerid, fpick, fquan, thingType, thingPack, in
 	if(GetPVarInt(playerid,"svzyal") >= 1 || GetPVarInt(giveplayerid,"svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя передавать предметы во время покупок в супермаркете");
 	
 	// Проверка на особые предметы
-	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
+	if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 
 	// Кейс нельзя выбрасывать на 3 уровне и ниже
@@ -1970,8 +1970,10 @@ stock PerishableThing(i, type) //  Проверка на портящиеся п
 }
 
 // Предметы, которые нельзя передать из инвентаря или выбросить на землю (при выбрасывании - уничтожаются)
-stock NotGiveThing(i, type, quan)
+stock NotGiveThing(i, type, quan, thingPack = -1)
 {
+	if (thingPack == 5) return 0; // Кейс можно выбрасывать и передавать всегда
+
 	if(type == 0 && (i == 10 || i == 12 || i == 17 || i == 43 || i == 51 || i == 63 || i == 156 && quan == 2)
 		|| type == 1 && (i == 34)
 		|| type == 5) return 1;
@@ -2618,7 +2620,7 @@ stock player_tile(playerid, inva)
 		 		else if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 121 || fpick == 124 || fpick == 125 ||
 				fpick == 139 || fpick == 164 || fpick == 172 || fpick == 166 || fpick == 173 || fpick == 1 || fpick == 54 ||
 				fpick == 55 ||fpick == 103 || fpick == 104 || fpick == 126 ||
-				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick), i_resetveshi(playerid); // Алкашка / Еда
+				fpick == 127 || fpick == 141 || fpick == 163 || fpick == 167) return drink_eat(playerid, inva, fpick, thingPack), i_resetveshi(playerid); // Алкашка / Еда
 				else if(fpick == 144) return pc_cmd_pdd(playerid), i_resetveshi(playerid);
 		 		else if(fpick >= 145 && fpick <= 155)
 			 	{

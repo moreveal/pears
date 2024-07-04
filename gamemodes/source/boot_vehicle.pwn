@@ -174,7 +174,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	// Кейс нельзя выбрасывать на 3 уровне и ниже
 	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
 
-    if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
+    if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
     if((VehInfo[v][vSost] == PlayerInfo[playerid][pID] || VehInfo[v][vKey] == PlayerInfo[playerid][pID] && VehInfo[v][vKeyUnix] > gettime()) && GetPlayerVip(playerid) > 0) {}
 	else
 	{

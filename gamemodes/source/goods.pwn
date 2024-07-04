@@ -61,7 +61,7 @@ stock buy_goods(playerid, seller, inva, fpick, fquan, para, qara)
 	i_resetveshi(playerid);
 	Veshi[playerid] = 0;
 	new thingType = PlayerInfo[seller][pMarkInvenType][inva], thingQuan = PlayerInfo[seller][pMarkInvenQuan][inva], thingPack = PlayerInfo[seller][pMarkInvenPack][inva], price = PlayerInfo[seller][pMarkPrice][inva];
-	if(NotGiveThing(fpick, thingType, thingQuan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
+	if(NotGiveThing(fpick, thingType, thingQuan, thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передать этому игроку");
 	
 	// Проверка на наличие особых аксессуаров (Каска и Броня)
 	if(IsArmor(fpick) && thingType == 2 && PlayerInfo[playerid][pArmor] >= 1) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитывается надетая броня");
@@ -165,7 +165,7 @@ stock put_goods(playerid, inva, fpick, quan, binva)
 	new thingType = PlayerInfo[playerid][pInvenType][inva], thingPack = PlayerInfo[playerid][pInvenType][inva];
 
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
-    if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva])) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать");
+    if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать");
 	if(PlayerInfo[playerid][pMarkInven][binva] > 0) return ErrorMessage(playerid, "{FF6347}Эта ячейка занята");
 
 	// Кейс нельзя выбрасывать на 3 уровне и ниже

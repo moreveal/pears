@@ -404,14 +404,15 @@ stock stopdrink(playerid)
 	TextDrawHideForPlayer(playerid, MindDraw[3]), PlayerTextDrawHide(playerid, HintButton);
 	return 1;
 }
-stock drink_eat(playerid, inva, fpick)
+stock drink_eat(playerid, inva, fpick, thingPack = -1)
 {
+	if(thingPack > 0) return 1; // Ничего не делаем, если предмет запакован
 	if(box[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}Вы участник боя на ринге");
 	if(PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7) return ErrorMessage(playerid, "{FF6347}Вы пациент госпиталя");
 	if(howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
 	if(fpick == 14 || fpick == 37 || fpick >= 112 && fpick <= 119)
 	{
-	    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Вы учасник экспедиции NASA [ Вам запрещено употреблять алкоголь ]");
+	    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Вы участник экспедиции NASA [ Вам запрещено употреблять алкоголь ]");
 	    if(fraction(playerid) == 18) return ErrorMessage(playerid, "{FF6347}Ваша религия не позволяет употреблять алкоголь [Arabian Mafia]");
 	}
 	if(Hold[playerid] == 3)
@@ -454,13 +455,15 @@ stock drink_eat(playerid, inva, fpick)
 	}
 	else
 	{
-	    in_hand_eat(playerid, 3, fpick, fpick, PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], 0);
+	    in_hand_eat(playerid, 3, fpick, fpick, PlayerInfo[playerid][pInvenQuan][inva], inva, PlayerInfo[playerid][pInvenPara][inva], PlayerInfo[playerid][pInvenQara][inva], 0, thingPack);
 	    PlayerPlaySound(playerid,5600,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
 	}
 	return 1;
 }
-stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinventer)
+stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinventer, thingPack = -1)
 {
+	if (thingPack > 0) return 1; // Ничего не делаем, если это запакованный предмет
+
     Eat[playerid] = 0;
     HoldNoinvent[playerid] = noinventer;
     Hold[playerid] = hold, HoldFrisk[playerid] = fpick, HoldStat[playerid] = soder, HoldQuan[playerid] = quan, HoldInva[playerid] = inva;

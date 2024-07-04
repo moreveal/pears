@@ -141,7 +141,7 @@ stock use_throw(playerid, inva, useinva)
 		}
 		ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
 		RemovePlayerAttachedObject(playerid,1);
-		in_hand_eat(playerid, 3, fpick+1, fpick+1, 3, put_inva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]); // Выдаём сразу в руки
+		in_hand_eat(playerid, 3, fpick+1, fpick+1, 3, put_inva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent], thingPack); // Выдаём сразу в руки
 	    PlayerPlaySound(playerid,5600,0,0,0);
 	    ThrowInfo[t][tQuan] -= 1;
 	    if(ThrowInfo[t][tQuan] <= 1)
@@ -225,7 +225,7 @@ stock use_throw(playerid, inva, useinva)
 
 		yesinva = GiveThingPlayer(playerid, fpick, tort_quan, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tType], ThrowInfo[t][tPack], useinva);
 
-		if(ThrowInfo[t][tPutLocation] == 1 && fpick >= 112 && fpick <= 121 || fpick == 14 || fpick == 37) in_hand_eat(playerid, 3, fpick, fpick, fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]);
+		if(ThrowInfo[t][tPutLocation] == 1 && fpick >= 112 && fpick <= 121 || fpick == 14 || fpick == 37) in_hand_eat(playerid, 3, fpick, fpick, fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent], thingPack);
 
 		format(string,sizeof(string),"[ID %d] Взял: %s",t,GetNameThing(1, fpick, thingType, thingPack));
 		UserLog("took", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ThrowInfo[t][tPlayerid], ThrowInfo[t][tName], ThrowInfo[t][tIP], fquan, string);
@@ -233,7 +233,7 @@ stock use_throw(playerid, inva, useinva)
 
 	if(fpick == 38 || fpick == 122 || fpick == 123)
 	{
-		if(fpick != ThrowInfo[t][tModel]) in_hand_eat(playerid, 2, fpick, ThrowInfo[t][tModel], fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent]);
+		if(fpick != ThrowInfo[t][tModel]) in_hand_eat(playerid, 2, fpick, ThrowInfo[t][tModel], fquan, yesinva, ThrowInfo[t][tPara], ThrowInfo[t][tQara], ThrowInfo[t][tNoinvent], thingPack);
 	}
 	if(IsANaborsEdoi(fpick)) in_hand_podnos(playerid, fpick, fquan, ThrowInfo[t][tPara], ThrowInfo[t][tQara]);
 	DestroyThrow(t);
@@ -246,7 +246,7 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack, DopParametr
 	if(fpick == 34 && thingType == 1 && thingPack >= 1) { } // Исключим падение снайперки, которая в упаковке
 	else
 	{
-		if(NotGiveThing(fpick, thingType, quan)) return 1; // Предметы которые нельзя передавать или выбрасывать
+		if(NotGiveThing(fpick, thingType, quan, thingPack)) return 1; // Предметы которые нельзя передавать или выбрасывать
 	}
 	if(throwkol >= 1000) return 1;
 	throwkol ++;
