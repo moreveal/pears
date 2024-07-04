@@ -1004,11 +1004,8 @@ CMD:geo(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] <= 2 && PlayerInfo[playerid][pHidden] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть геолокацию игрока [ /geo ID ]");
 	if(!IsOnline(params[0])) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
-	new country[144], city[144], isp[144], string[144];
- 	//GetPlayerCountry(params[0], country, sizeof(country));
- 	//GetPlayerISP(params[0], isp, sizeof(isp));
- 	//GetPlayerCity(params[0], city, sizeof(city));
- 	format(string, sizeof(string), "%s: {FF3300}%s {FFFFFF}| {1975FF}%s {33CC00}| %s", PlayerInfo[params[0]][pName], country, isp, city);
+	new string[144];
+ 	format(string, sizeof(string), "%s: {FF3300}%s {FFFFFF}| {1975FF}%s {33CC00}| %s", PlayerInfo[params[0]][pName], GetPlayerCountry(params[0]), GetPlayerProvider(params[0]), GetPlayerCity(params[0]));
     SendClientMessage(playerid, COLOR_GREY, string);
  	return 1;
 }
