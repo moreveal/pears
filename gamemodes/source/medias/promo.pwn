@@ -269,7 +269,7 @@ function Call_createpromo(playerid, const str_promo[])
 			}
 		}
 		new f_str[184],string[144];
-		mysql_format(pearsq, f_str, sizeof(f_str), "INSERT INTO `pp_promo` SET `loading`='1',`name`='%e',`unixcreate`='%d',`unixbegin`='%d',`unixend`='%d',`unixstart`='%d'", str_promo, unix, unix-minus+60, unix-minus+604620, unix-minus+60);
+		mysql_format(pearsq, f_str, sizeof(f_str), "INSERT INTO `pp_promo` SET `name`='%e',`unixcreate`='%d',`unixbegin`='%d',`unixend`='%d',`unixstart`='%d'", str_promo, unix, unix-minus+60, unix-minus+604620, unix-minus+60);
 		query_empty(pearsq, f_str);
 		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_promo` WHERE `name` = '%e'", str_promo); // Грузим ID промокода
 		mysql_tquery(pearsq, string, "Call_getpromo", "d", pf);
@@ -527,10 +527,12 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	        new pf = ListCode[playerid];
   	        if(PromoInfo[pf][roActiv] == 1) return ErrorText(playerid,"{FF6347}Нельзя удалить активный промокод"), setprom(playerid);
 			new f_str[144];
-			mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_promo` SET `loading` = '0' WHERE `newid` = '%d'", PromoInfo[pf][roNewid]);
+			mysql_format(pearsq, f_str,sizeof(f_str),"DELETE FROM `pp_promo` WHERE `newid` = '%d'", PromoInfo[pf][roNewid]);
 			query_empty(pearsq, f_str);
 			format(string, sizeof(string), "[ Промокод ]: %s промокод {FF0000}удалён",PromoInfo[pf][roName]), SendClientMessage(playerid,COLOR_GREY,string);
+			AdminLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, PromoInfo[pf][roName], "", 0, "Удалил промокод");
 			PromoInfo[pf][roNewid] = 0;
+			PromoInfo[pf][roName][0] = EOS;
 			PromoInfo[pf][roActiv] = 0;
 			PromoInfo[pf][roUnixcreate] = 0;
 			PromoInfo[pf][roUnixbegin] = 0;
@@ -540,10 +542,9 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 			PromoInfo[pf][roNumber] = 0;
 			format(PromoInfo[pf][roText], 84, "");
 			for(new spf = 0; spf < 5; spf ++) PromoInfo[pf][roPar][spf] = 0, PromoInfo[pf][roStat][spf] = 0;
-			PromoNumber --;
+			PromoNumber--;
 			PlayerPlaySound(playerid,31203,0,0,0);
 			pc_cmd_promo(playerid);
-			AdminLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, PromoInfo[pf][roName], "", 0, "Удалил промокод");
        	}
        	else setprom(playerid);
 	}
@@ -636,7 +637,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 			new load = 0;
 			for(new f = 0; f < MAX_PROMO; f++)
 			{
-				if(strfind(inputtext,PromoInfo[f][roName],true) != (-1))
+				if(!strcmp(inputtext, PromoInfo[f][roName], true) && !isnull(PromoInfo[f][roName]))
 				{
 					ShowDialog(playerid,625,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите новое название для промокода {FF6347}[ Название промокода уже занято ]","Принять","Отмена");
 					load++;
@@ -823,9 +824,9 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
   	    	new load = 0;
 			for(new f = 0; f < MAX_PROMO; f++)
 			{
-				if(strfind(inputtext,PromoInfo[f][roName],true) != (-1))
+				if(!strcmp(inputtext, PromoInfo[f][roName], true) && !isnull(PromoInfo[f][roName]))
 				{
-					ShowDialog(playerid,623,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите название для промокода  [3 - 60 символов] {FF6347}[Промокод с таким именем уже существует!]\n\n{cccccc}Это текст, который будет вводить игрок, чтобы получить промокод","Принять","Отмена");
+					ShowDialog(playerid,623,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите название для промокода [3 - 60 символов] {FF6347}[Промокод с таким именем уже существует!]\n\n{cccccc}Это текст, который будет вводить игрок, чтобы получить промокод","Принять","Отмена");
 					load++;
 					return 1;
  				}
