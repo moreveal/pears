@@ -62,10 +62,13 @@ stock SetPlayerDeath(playerid, reason)
     GetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
 	GetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
 
-    // Корректируем игрока по высоте
-    new Float: zpos;
-    CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], zpos);
-    if (PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
+    if (CA_IsPlayerInAir(playerid)) // Если игрок в воздухе
+    {
+        // Корректируем высоту
+        new Float: zpos;
+        CA_FindZ_For2DCoord(PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], zpos);
+        if (PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
+    }
 
     // Сразу ставим игрока в новую Z координату
     if (reason != 51) ReturnPositionDeath(playerid); // Только если умер не от взрыва
