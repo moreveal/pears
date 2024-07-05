@@ -16,6 +16,148 @@
 #endif
 #define cache_get_value_name_int PPcache_get_value_name_int*/
 
+
+// Объекты
+stock PP_DestroyDynamicObject(&STREAMER_TAG_OBJECT:objectid)
+{
+	new result = DestroyDynamicObject(objectid);
+	// нам стоит здесь ставить в любом случае INVALID_STREAMER_ID, так как единственный сценарий
+	// при котором бы DestroyDynamicObject вернул 0 -- это несуществующий динамический объект
+	// то же самое относится и к остальным DestroyDynamic*
+	objectid = STREAMER_TAG_OBJECT:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicObject
+    #undef DestroyDynamicObject
+#else
+    #define _ALS_DestroyDynamicObject
+#endif
+#define DestroyDynamicObject PP_DestroyDynamicObject
+// Объекты
+
+
+// Пикапы
+stock PP_DestroyDynamicPickup(&STREAMER_TAG_PICKUP:pickupid)
+{
+	new result = DestroyDynamicPickup(pickupid);
+	pickupid = STREAMER_TAG_PICKUP:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicPickup
+    #undef DestroyDynamicPickup
+#else
+    #define _ALS_DestroyDynamicPickup
+#endif
+#define DestroyDynamicPickup PP_DestroyDynamicPickup
+// Пикапы
+
+
+// Чекпоинты
+stock PP_DestroyDynamicCP(&STREAMER_TAG_CP:checkpointid)
+{
+	new result = DestroyDynamicCP(checkpointid);
+	checkpointid = STREAMER_TAG_CP:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicCP
+    #undef DestroyDynamicCP
+#else
+    #define _ALS_DestroyDynamicCP
+#endif
+#define DestroyDynamicCP PP_DestroyDynamicCP
+// Чекпоинты
+
+
+// Гоночные чекпоинты
+stock PP_DestroyDynamicRaceCP(&STREAMER_TAG_RACE_CP:checkpointid)
+{
+	new result = DestroyDynamicRaceCP(checkpointid);
+	checkpointid = STREAMER_TAG_RACE_CP:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicRaceCP
+    #undef DestroyDynamicRaceCP
+#else
+    #define _ALS_DestroyDynamicRaceCP
+#endif
+#define DestroyDynamicRaceCP PP_DestroyDynamicRaceCP
+// Гоночные чекпоинты
+
+
+// Иконки на карте
+stock PP_DestroyDynamicMapIcon(&STREAMER_TAG_MAP_ICON:iconid)
+{
+	new result = DestroyDynamicMapIcon(iconid);
+	iconid = STREAMER_TAG_MAP_ICON:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicMapIcon
+    #undef DestroyDynamicMapIcon
+#else
+    #define _ALS_DestroyDynamicMapIcon
+#endif
+#define DestroyDynamicMapIcon PP_DestroyDynamicMapIcon
+// Иконки на карте
+
+
+// 3Д тексты
+stock PP_DestroyDynamic3DTextLabel(&STREAMER_TAG_3D_TEXT_LABEL:id)
+{
+	new result = DestroyDynamic3DTextLabel(id);
+	id = STREAMER_TAG_3D_TEXT_LABEL:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamic3DTextLabel
+    #undef DestroyDynamic3DTextLabel
+#else
+    #define _ALS_DestroyDynamic3DTextLabel
+#endif
+#define DestroyDynamic3DTextLabel PP_DestroyDynamic3DTextLabel
+// 3Д тексты
+
+
+// Динамические зоны
+stock PP_DestroyDynamicArea(&STREAMER_TAG_AREA:areaid)
+{
+	new result = DestroyDynamicArea(areaid);
+	areaid = STREAMER_TAG_AREA:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicArea
+    #undef DestroyDynamicArea
+#else
+    #define _ALS_DestroyDynamicArea
+#endif
+#define DestroyDynamicArea PP_DestroyDynamicArea
+// Динамические зоны
+
+
+// Актёры
+stock PP_DestroyDynamicActor(&STREAMER_TAG_ACTOR:actorid)
+{
+	new result = DestroyDynamicActor(actorid);
+	actorid = STREAMER_TAG_ACTOR:INVALID_STREAMER_ID;
+	return result;
+}
+
+#if defined _ALS_DestroyDynamicActor
+    #undef DestroyDynamicActor
+#else
+    #define _ALS_DestroyDynamicActor
+#endif
+#define DestroyDynamicActor PP_DestroyDynamicActor
+// Актёры
+
+
+
+
 // Закрываем диалоговое окно (Перехват функции)
 stock PPHidePlayerDialog(playerid)
 {
