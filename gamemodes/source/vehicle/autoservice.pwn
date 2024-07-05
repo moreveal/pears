@@ -213,6 +213,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         {
             new v = GetPlayerVehicleID(playerid);
             if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
+            if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
             DP[2][playerid] = gAutosalon[playerid];
             if(listitem < 0 && listitem > DP[0][playerid]) return ErrorMessage(playerid,"{ff6347}Ошибка строки");
             if(listitem == DP[0][playerid])
