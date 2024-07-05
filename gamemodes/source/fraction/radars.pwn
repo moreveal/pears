@@ -1115,7 +1115,7 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
                         if (!IsPoliceMember(currentid)) continue;
 
                         SendClientMessage(currentid, COLOR_LIGHTNEUTRALBLUE, \
-                            "[PD]: Порча государственного радара №%d, %s[%d] в районе %s",
+                            "[PD]: Сломан скоростной радар №%d, %s[%d] в районе %s",
                             
                             i + 1,
                             rpplayername(playerid), playerid,
