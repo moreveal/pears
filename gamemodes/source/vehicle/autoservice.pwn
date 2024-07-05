@@ -280,7 +280,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 }
             }
             if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
-            new stringlog[128];
+            new stringlog[128], bool:result;
             money = 0;
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
@@ -294,6 +294,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         if(slot2 == -1)
                         {
                             ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга. Установка прервана (какие-то детали могли установиться)");
+                            result = true;
                             break;
                         }
                         else
@@ -319,6 +320,13 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                     money += BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]];
                     format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизе %d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
                     CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
+                    TempDetail[playerid][i] = 0;
+                }
+            }
+            if(result)
+            {
+                for(new i;i< sizeof(friskDetailTypeName);i++)
+                {
                     TempDetail[playerid][i] = 0;
                 }
             }
