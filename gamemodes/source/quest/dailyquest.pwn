@@ -314,7 +314,7 @@ stock CreateDaily(playerid, forced, taskid = -1)
     }
 
     DailyInfo[playerid][daiFull] = false; // Сбрасываем статус выполненных заданий
-    if(forced == 0) DailyInfo[playerid][daiChange] = false; // Сбрасываем статус возможности заменить одно задание в день бесплатно
+    DailyInfo[playerid][daiChange] = false; // Сбрасываем статус возможности заменить одно задание в день бесплатно
     DailyInfo[playerid][daiDay] = getdate(); // записываем сегодняшний день
 
     SaveDailyQuests(playerid);
