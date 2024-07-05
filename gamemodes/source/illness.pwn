@@ -519,8 +519,6 @@ stock InfoEatMessage(playerid, stat)
 
 		if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) SendMindMessage(playerid,"• xo¤y kyҐa¦©"," ");
 		else SendMindMessage(playerid,"I want to eat"," ");
-
-		Login[2][playerid] = 0;
 	}
 	return 1;
 }
@@ -544,8 +542,6 @@ stock InfoPissMessage(playerid, stat)
 			format(line,sizeof(line),"\n{FF6347}Если вы не сходите в туалет, ваш персонаж обмочится"), strcat(lines,line);
 		}
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
-
-		Login[2][playerid] = 0;
 	}
 	return 1;
 }
@@ -573,7 +569,6 @@ stock InfectInfo(playerid)
 			format(line,sizeof(line),"\n\n{99ff66}Подсказка :)\n{ffcc66}Употребив алкоголь вы сможете плавать и не заболеть"), strcat(lines,line);
 			ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 		}
-		Login[2][playerid] = 0;
 	}
 	return 1;
 }

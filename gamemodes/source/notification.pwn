@@ -113,13 +113,11 @@ stock CreateGlobalTextDrawHintButton()
 
 stock SuccessMessage(playerid, const string[])
 {
-	Login[2][playerid] = 0;
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{99ff66}*",string,"*",""), PlayerPlaySound(playerid,6401,0,0,0);
 	return 1;
 }
 stock ErrorMessage(playerid, const string[])
 {
-	Login[2][playerid] = 0;
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff0000}*",string,"*",""), PlayerPlaySound(playerid,4203,0,0,0);
 	return 1;
 }

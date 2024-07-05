@@ -134,8 +134,6 @@ stock TradeSorting(playerid)
 
 stock TradeList(playerid, page)
 {
-    Login[2][playerid] = 1; // Блокируем кнопки ноутбука
-
     new max_line = 50, yes_next;
     new line[214],lines[4096];
 
@@ -353,7 +351,6 @@ stock dialogCase_notebook(playerid, dialogid,response, listitem, const inputtext
         else 
         {
             if(DP[6][playerid] == 0) pc_cmd_donate(playerid);
-            else if(DP[6][playerid] == 1) Login[2][playerid] = 0; // Снимаем блокировку кнопок ноутбука
         }
         return true;
     } 

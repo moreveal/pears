@@ -19,7 +19,7 @@ CMD:showhb(playerid, const params[])
 {
 	if(sscanf(params, "i", params[0]))
 	{
-		Login[2][playerid] = 0, stop_dialog(playerid);
+		stop_dialog(playerid);
 		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
 		new string[120];
 		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
@@ -29,7 +29,7 @@ CMD:showhb(playerid, const params[])
 	{
 		if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 		if(IsARealNPC(params[0])) return ErrorMessage(playerid, "{FF6347}Это NPC");
-		Login[2][playerid] = 0, stop_dialog(params[0]);
+		stop_dialog(params[0]);
 		ShowDialog(params[0],1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
 		new string[120];
 		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[playerid][pID]);
@@ -77,7 +77,7 @@ function Call_HonorBoardName(playerid, const parama)
 
 CMD:honorboard(playerid)
 {
-    Login[2][playerid] = 0, stop_dialog(playerid);
+    stop_dialog(playerid);
 	new g = fraction(playerid);
 	if(g == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
 	ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка фракционной Доски Почета...","*","");

@@ -567,7 +567,6 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
             {
                 PlayerPlaySound(playerid,4203,0,0,0);
                 format(string,sizeof(string),"{ff6347}Вызов уже принят: %s. Принял: %s",frakeasyName[MakeInfo[listselect][mkWhoTake]],rpplayername(MakeInfo[listselect][mkWhoTakePlayer]));
-                Login[2][playerid] = 0;
                 ShowDialog(playerid,1504,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Закрыть","");
             }
             else if(MakeInfo[listselect][mkStatus] == 1 && OnlineInfo[playerid][oTakeMake] == -1) showMake = 1;
@@ -579,7 +578,6 @@ stock dialogCase_MakeSystem(playerid, dialogid, response, listitem)
                 format(string,sizeof(string),"{ff9000}Вызов от: %s\
                                             \n{cccccc}В районе: %s\
                                             \n\nВы хотите принять вызов?",rpplayername(MakeInfo[listselect][mkPlayerId]),gSAZones[findraiontolist][zName]);
-                Login[2][playerid] = 0;
                 ShowDialog(playerid,1479,DIALOG_STYLE_MSGBOX,"Информация о вызове",string,"Принять","Назад");
             }
         }
