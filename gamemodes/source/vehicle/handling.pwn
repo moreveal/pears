@@ -24,42 +24,24 @@ new friskDetail[MAX_DETAIL][3] = // ID предмета в инвентаре | 
 };
 new friskDetailPoint[][3][MAX_DETAIL] =
 {
-    { "5.0","2.5", "0.0" },
-    { "10.0", "5.0", "0.0 "},
-    { "15.0","7.5", "0.0" },
-    { "20.0","10.0", "0.0 "},
-    { "10.0","0.0","0.0" },
-    { "15.0","0.0","0.0" },
-    { "20.0","0.0","0.0" },
-    { "25.0","0.0","0.0" },     
-    { "10.0","0.0","0.0" },   
-    { "15.0","0.0","0.0" },   
-    { "5.0","0.0","0.0" },     
-    { "5.0", "0.0", "0.0"},
-    { "10.0","0.0", "0.0" },
-    { "15.0","0.0", "0.0" },
-    { "10.0","0.0", "0.0" },
-    { "20.0","0.0"," 0.0" },
-    { "50.0","0.0"," 0.0" },
-    { "30.0","15.0","0.0" }
-    /*{ "5.0","2.5", "0.0" },
-    { "10.0", "5.0", "0.0 "},
-    { "15.0","7.5", "0.0" },
-    { "20.0","10.0", "0.0 "},
-    { "10.0","0.0", "0.0" },
-    { "15.0","0.0", "0.0" },
-    { "20.0","0.0", "0.0 "},
-    { "25.0","0.0","0.0"},     
-    { "10.0","0.0","0.0" },   
-    { "15.0","0.0","0.0" },   
-    { "5.0","0.0","0.0"},     
-    { "5.0", "0.0", "0.0 "},
-    { "10.0","0.0", "0.0" },
-    { "15.0","0.0", "0.0" },
-    { "10.0","0.0", "0.0" },
-    { "20.0","0.0"," 0.0" },
-    { "50.0","0.0"," 0.0" },
-    { "30.0","15.0","0.0" } */
+    { "5.0","2.5", "0.0" }, // Двигатель AROSPEED
+    { "10.0", "5.0", "0.0 "}, // Двигатель SkinkRacer
+    { "15.0","7.5", "0.0" }, // Двигатель Venom
+    { "20.0","10.0", "0.0 "}, // DC Sports
+    { "10.0","0.0","0.0" }, // Трансмиссия ACT
+    { "15.0","0.0","0.0" }, // Трансмиссия Clutch Masters
+    { "20.0","0.0","0.0" }, // Трансмиссия Jackson Racing
+    { "25.0","0.0","0.0" }, // Трансмиссия HP Racing
+    { "10.0","0.0","0.0" }, // Подвеска Ibach Springs
+    { "15.0","0.0","0.0" }, // Подвеска Koni Suspension
+    { "5.0","0.0","0.0" }, // Подвеска Billstein
+    { "5.0", "0.0", "0.0"}, // Шины YOKOHAMA
+    { "10.0","0.0", "0.0" }, // Шины TOYO
+    { "15.0","0.0", "0.0" }, // Шины Falken Tyre
+    { "10.0","0.0", "0.0" }, // Тормоза KVR Performance
+    { "20.0","0.0"," 0.0" }, // Тормоза Brembo
+    { "50.0","0.0"," 0.0" }, // Тормоза Wilwood
+    { "30.0","15.0","0.0" } // Двигатель Philin Customs
 };
 new friskDetailTypeName[][] = // Тип детали
 {
@@ -681,8 +663,8 @@ stock PutVehicleHandling(vehicleid)
     SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_TurnMass]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_DRAGMULT, HandlingVehInfo[vehicleid][HD_Drag]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_X, HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingVehInfo[vehicleid][HD_CentreOfMassY]);
-    SetVehicleHandlingFloat(vehicleid, HANDLING_TURNMASS, HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Y, HandlingVehInfo[vehicleid][HD_CentreOfMassY]);
+    SetVehicleHandlingFloat(vehicleid, HANDLING_CENTREOFMASS_Z, HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONMULTIPLIER, HandlingVehInfo[vehicleid][HD_TractionMultiplier]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONLOSS, HandlingVehInfo[vehicleid][HD_TractionLoss]);
     //SetVehicleHandlingFloat(vehicleid, HANDLING_TRACTIONBIAS, HandlingVehInfo[vehicleid][HD_TractionBias]); // Вырубаем перенос Traction Bias
@@ -701,6 +683,34 @@ stock PutVehicleHandling(vehicleid)
     SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPLOWERLIMIT, HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
     SetVehicleHandlingFloat(vehicleid, HANDLING_SUSPBIASBETWEEN, HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
     SetVehicleHandlingInt(vehicleid, HANDLING_ABS, HandlingVehInfo[vehicleid][HD_Zalupa]);
+
+    /*
+    SendClientMessageToAll(COLOR_RED, "vehicleid %d", vehicleid);
+    SendClientMessageToAll(-1, "HD_Mass %0.2f", HandlingVehInfo[vehicleid][HD_Mass]);
+    SendClientMessageToAll(-1, "HD_TurnMass %0.2f", HandlingVehInfo[vehicleid][HD_TurnMass]);
+    SendClientMessageToAll(-1, "HD_Drag %0.2f", HandlingVehInfo[vehicleid][HD_Drag]);
+    SendClientMessageToAll(-1, "HD_CentreOfMassX %0.2f", HandlingVehInfo[vehicleid][HD_CentreOfMassX]);
+    SendClientMessageToAll(-1, "HD_CentreOfMassY %0.2f", HandlingVehInfo[vehicleid][HD_CentreOfMassY]);
+    SendClientMessageToAll(-1, "HD_CentreOfMassZ %0.2f", HandlingVehInfo[vehicleid][HD_CentreOfMassZ]);
+    SendClientMessageToAll(-1, "HD_TractionMultiplier %0.2f", HandlingVehInfo[vehicleid][HD_TractionMultiplier]);
+    SendClientMessageToAll(-1, "HD_TractionLoss %0.2f", HandlingVehInfo[vehicleid][HD_TractionLoss]);
+    SendClientMessageToAll(-1, "HD_NumberOfGears %d", HandlingVehInfo[vehicleid][HD_NumberOfGears]);
+    SendClientMessageToAll(-1, "HD_MaxVelocity %0.2f", HandlingVehInfo[vehicleid][HD_MaxVelocity]);
+    SendClientMessageToAll(-1, "HD_EngineAcceleration %0.2f", HandlingVehInfo[vehicleid][HD_EngineAcceleration]);
+    SendClientMessageToAll(-1, "HD_EngineInertia %0.2f", HandlingVehInfo[vehicleid][HD_EngineInertia]);
+    SendClientMessageToAll(-1, "HD_BrakeDeceleration %0.2f", HandlingVehInfo[vehicleid][HD_BrakeDeceleration]);
+    SendClientMessageToAll(-1, "HD_BrakeBias %0.2f", HandlingVehInfo[vehicleid][HD_BrakeBias]);
+    SendClientMessageToAll(-1, "HD_ABS %d", HandlingVehInfo[vehicleid][HD_ABS]);
+    SendClientMessageToAll(-1, "HD_SteeringLock %0.2f", HandlingVehInfo[vehicleid][HD_SteeringLock]);
+    SendClientMessageToAll(-1, "HD_SuspensionForceLevel %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionForceLevel]);
+    SendClientMessageToAll(-1, "HD_SuspensionDampingLevel %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionDampingLevel]);
+    SendClientMessageToAll(-1, "HD_SuspensionHighSpdComDamp %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionHighSpdComDamp]);
+    SendClientMessageToAll(-1, "HD_SuspensionUpperLimit %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionUpperLimit]);
+    SendClientMessageToAll(-1, "HD_SuspensionLowerLimit %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionLowerLimit]);
+    SendClientMessageToAll(-1, "HD_SuspensionBiasBetweenFrontAndRear %0.2f", HandlingVehInfo[vehicleid][HD_SuspensionBiasBetweenFrontAndRear]);
+    SendClientMessageToAll(-1, "HD_Zalupa %d", HandlingVehInfo[vehicleid][HD_Zalupa]);
+    SendClientMessageToAll(COLOR_RED, " ");
+    */
     return 1;
 }
 
@@ -795,7 +805,7 @@ stock ReadVehicleIDE()
                 if(strfind(DefaultHandling[v][HD_Name], Temp[VD_Handling],true) != (-1))
                 {
                     if(Temp[VD_Id] >= 612 && Temp[VD_Id] <= 15265) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13066;
-				    else if(Temp[VD_Id] >= 15266) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13266;
+				    else if(Temp[VD_Id] >= 15266) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13164;
                     else DefaultHandling[v][HD_ModelID] = Temp[VD_Id];
                 }
             }

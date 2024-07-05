@@ -475,7 +475,8 @@ CMD:cleartun(playerid)
 		{
 			if(VehInfo[vehicleid][vTunningID][i] > 0) VehInfo[vehicleid][vTunningID][i] = 0;
 		}
-		SetHandlingTotal(vehicleid);
+		
+		SetHandlingTotal(vehicleid, true);
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Весь тюнинг удалён с транспорта (Без сохранения в базу)","*","");
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
