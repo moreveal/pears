@@ -1087,7 +1087,8 @@ stock Pump_Radar(playerid) {
 }
 
 stock Radar_OnShoot(playerid, weaponid, objectid) {
-    if (IsDepartmentOrganization(fraction(playerid))) return 0; // Пропускаем обработку выстрела по радару для сотрудников департамента
+    if (IsDepartmentOrganization(fraction(playerid))) return 0; // Пропускаем обработку выстрела для сотрудников департамента
+    if (IsPlayerBeginner(playerid)) return 0; // Пропускаем обработку выстрела для новичков
 
     for (new i = 0; i < MAX_RADARS; i++) {
         if (!Radar_IsExists(i) || !Radar_IsPlaced(i) || Radar_IsBroken(i)) continue;
@@ -1201,6 +1202,9 @@ stock Radar_ViolationHandler(playerid) {
 
                         // Пропускаем, если КД еще не прошло
                         if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
+
+                        // Пропускаем, если игрок - администратор или новичок
+                        if (PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
 
 						new string[144];
 						SendClientMessage(playerid, 0x0088FFFF, "Нарушение скоростного режима [ %.0f км/ч | %d км/ч ] | {FF6347}Штраф: $%d", WatchSpeed[playerid], RadarInfo[radarid][riMaxSpeed], RadarInfo[radarid][riFine]);

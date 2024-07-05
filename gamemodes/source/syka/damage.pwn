@@ -494,7 +494,7 @@ public SetPlayerHealthTimer(playerid, Float: health) return ACSetPlayerHealth(pl
 stock BeginnerDamage(playerid, damagedid) // Защита от дма новичков
 {
 	if(!IsPlayerNPC(damagedid) // Игрок не NPC
-        && PlayerInfo[damagedid][pConnectTime] <= 2 // Играл 2 часа и меньше
+        && IsPlayerBeginner(damagedid) // Играл 2 часа и меньше
 	    && MPGO[damagedid] == 0 // Не на мероприятии
 	    && ADMS[damagedid] <= 4 // Защита от урона активна
         && PlayerInfo[damagedid][pMember] == 0 // Игрок не состоит в организации
