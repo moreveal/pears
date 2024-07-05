@@ -655,8 +655,8 @@ function Radar_AutoUnplace(pid) {
     return 1;
 }
 
-function Radar_Dialog_List(playerid) {
-    new g = fraction(playerid);
+stock Radar_Dialog_List(playerid, g = -1, owner = -1) {
+    if (g < 1) g = fraction(playerid);
     if (g < 1) return 0;
 
     new dialog_header[64];
@@ -668,6 +668,7 @@ function Radar_Dialog_List(playerid) {
     for (new quan = 0, id = 0; id < MAX_RADARS; id++) {
         if (!Radar_IsExists(id)) continue;
         if (Radar_GetFraction(id) != g) continue;
+        if (owner > -1 && Radar_GetOwner(id) != owner) continue;
 
         // Получаем ID, если игрок в сети
         new currentid = ReturnUser(RadarInfo[id][riOwnerName]), id_str[10];
