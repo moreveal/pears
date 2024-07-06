@@ -662,7 +662,7 @@ stock Radar_Dialog_List(playerid, g = -1, owner = -1) {
     new dialog_header[64];
     format(dialog_header, sizeof(dialog_header), "{ff9000}Радары %s", frakName[g]);
 
-    new dialog_text[2048] = "{cccccc}Создатель\t{cccccc}Район\t{cccccc}Ограничение\t{cccccc}Статус\n";
+    new dialog_text[4096] = "{cccccc}Создатель\t{cccccc}Район\t{cccccc}Ограничение\t{cccccc}Статус\n";
 
     strcat(dialog_text, "{cccccc}Создать радар");
     for (new quan = 0, id = 0; id < MAX_RADARS; id++) {
