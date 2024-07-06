@@ -1,3 +1,4 @@
+// update 06.07.2024 zver
 /*
 Как добавить новый тс?
 1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
@@ -120,7 +121,10 @@ new vehNameCustom[][] =
     "Lamborghini Gallardo Superleggera", // 2105
     "Ferrari 348", // 2106
     "Jeep Cherokee 1984 Sand Edition", // 2107
-    "Mercedes-Benz CLS 63 AMG Police" // 2108
+    "Mercedes-Benz CLS 63 AMG Police", // 2108
+    "Volvo Polestar One", // 2109
+    "Mazda RX7 Tune body", // 2110
+    "Dodge Viper" // 2111
 };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -233,7 +237,10 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     25000000, // Lamborghini Gallardo Superleggera // 2105
     20000000, // Ferrari 348 // 2106
     3000000, // Jeep Cherokee 1984 Sand Edition // 2107
-    10000000 // Mercedes-Benz CLS 63 AMG Police // 2108
+    10000000, // Mercedes-Benz CLS 63 AMG Police // 2108
+    4000000, // Volvo Polestar One // 2109
+    2500000, // Mazda RX7 Tune body // 2110
+    13000000 // Dodge Viper // 2111
 };
 
 stock AddCustomVehice() // Добавляем тс на карту
@@ -335,7 +342,6 @@ stock AddCustomVehice() // Добавляем тс на карту
 	AddVehicleSyncModel(579, 2094); // Chevrolet Tahoe
 	AddVehicleSyncModel(431, 2095); // Sa Bus (Bus)
 	AddVehicleSyncModel(416, 2096); // Paramedic
-    // update 29 jun zver
     AddVehicleSyncModel(560, 2097); // Mercedes-Benz CLS 63 AMG // 2097
     AddVehicleSyncModel(541, 2098); // Bugatti Divo // 2098
     AddVehicleSyncModel(551, 2099); // Toyota Chaser BN Sports // 2099
@@ -348,7 +354,10 @@ stock AddCustomVehice() // Добавляем тс на карту
     AddVehicleSyncModel(415, 2106); // Ferrari 348 // 2106
     AddVehicleSyncModel(495, 2107); // Jeep Cherokee 1984 Sand Edition // 2107
     AddVehicleSyncModel(596, 2108); // Mercedes-Benz CLS 63 AMG Police // 2108
-
+    // update 6 jul zver
+    AddVehicleSyncModel(559, 2109); // Volvo Polestar One // 2109
+    AddVehicleSyncModel(558, 2110); // Mazda RX7 Tune body // 2110
+    AddVehicleSyncModel(429, 2111); // Dodge Viper // 2111
 	return 1;
 }
 
@@ -357,7 +366,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2108) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2111) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -376,7 +385,7 @@ stock GetVehicleClass(m)
 	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033 || m == 2034
 	|| m == 2052 || m == 2057 || m == 2056 || m == 2066 || m == 2068 || m == 2069 || m == 2070 || m == 2071 || m == 2072
 	|| m == 2084 || m == 2085 || m == 2086 || m == 2087 || m == 2089 || m == 2092 || m == 2093 || m == 2098 || m == 2103
-    || m == 2104 || m == 2105) class = 1;
+    || m == 2104 || m == 2105 || m == 2111) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -385,7 +394,7 @@ stock GetVehicleClass(m)
     || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
 	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
 	|| m == 2018 || m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049 
-	|| m == 2073 || m == 2076 || m == 2083 || m == 2097) class = 2;
+	|| m == 2073 || m == 2076 || m == 2083 || m == 2097 || m == 2109) class = 2;
 
     // Economy Class (3) - Бомж
     else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
@@ -394,7 +403,7 @@ stock GetVehicleClass(m)
     || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
 	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2059 || m == 2061
 	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054 || m == 2067 || m == 2074 || m == 2075 || m == 2077
-	|| m == 2082 || m == 2099) class = 3;
+	|| m == 2082 || m == 2099 || m == 2110) class = 3;
 
     // Off-Road Class (4) - Внедорожник
     else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
