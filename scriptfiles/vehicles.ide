@@ -332,5 +332,8 @@ cars
 15270, 	fer348, 	fer348, 	car, 		FER348, 	FER348, 	null,	executive, 	    5, 	0,	0,		-1, 0.68, 0.68,		0
 15271,	jeepsand, 	jeepsand, 	car, 		JEEPSAND, 	JEEPSAND, 	null,	ignore, 	    4,	0,	0,		-1, 0.972, 0.972,	-1
 15272,	cls63cop,	cls63cop,	car, 		CLS63COP, 	CLS63COP, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15273,	polestar,	polestar,	car, 	    POLESTAR, 	POLESTAR, 	null,	richfamily, 	7, 	0,	0,		-1, 0.75, 0.75,		1
+15274,	rx7tun,		rx7tun,		car, 		RX7TUN, 	RX7TUN, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
+15275, 	viper, 	    viper, 	    car, 		VIPER,	    VIPER, 	    null,	executive, 	    5, 	0,	0,		-1, 0.7, 0.7,		0
 end
 
