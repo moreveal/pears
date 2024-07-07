@@ -428,7 +428,9 @@ stock drink_eat(playerid, inva, fpick, thingPack = -1)
 	{
 	    if(fpick == 120 || fpick == 124) return ErrorMessage(playerid, "{FF6347}Sprunk нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из банки ]");
 	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}Кофе нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из кружки ]");
-	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 ||fpick == 103 ||fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
+	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 || fpick == 103 
+		|| fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166 
+		|| fpick == 172 || fpick == 173) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
 	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}В вашем бокале ещё есть содержимое {cccccc}[ Допейте или поставьте бокал F ]");
 	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Эта бутылка пустая");
 	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
