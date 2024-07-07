@@ -10,6 +10,7 @@ new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_T
 new Text3D:RentLabel[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ]; // Позиция аренды и самого Объекта
 new RentPickup[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], bool:RentPickupStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new BizIcon[MAX_BIZ];
+new BizCarSlotId[MAX_BIZ][MAX_BIZ_ITEM], BizCarSlotPrice[MAX_BIZ][MAX_BIZ_ITEM]; // Ценник и ид машины прошлые;
 
 
 new cityName[][] =
@@ -420,7 +421,12 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 	}
 	else if(b >= 77 && b <= 81 || b >= 82 && b <= 86 || b >= 87 && b <= 89 || b >= 90 && b <= 92) // Автосалоны, Мотосалоны, Ависалоны, Салоны Катеров
 	{
-		for(new s = 0; s < MAX_BIZ_ITEM; s++) BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
+		for(new s = 0; s < MAX_BIZ_ITEM; s++) 
+		{
+			// записываем залупу, а то может быть новый кастомный кар и все обычные поедут
+			if(BizzInfo[b][bProduct][s] > 0 && BizzInfo[b][bPrice][s] > 0) BizCarSlotId[b][s] = BizzInfo[b][bProduct][s], BizCarSlotPrice[b][s] = BizzInfo[b][bPrice][s];
+			BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
+		}
 
 		new slot;
 
@@ -582,24 +588,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     {
         if((BizzInfo[b][bProduct][i] > 0 || BizzInfo[b][bWare][i] > 0) && stat == 1)
         {
-			// Выставляем Стоимость
-			new priceAdded = floatround(float(getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])) * 1.5);
-
-			if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = priceAdded;
-			else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = priceAdded;
-			else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = priceAdded;
-			else if(BizzInfo[b][bTypeProduct][i] == 5)
-			{
-				if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = priceAdded; // Продажа транспорта
-				else // Аренда транспорта
-				{
-					if(b >= 53 && b <= 56 || b >= 57 && b <= 61) // Аренда Авиатранспорта, Аренда Катеров
-					{
-						BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/400;
-					}
-					else BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/40;
-				}
-			}
+			SetBizPriceItem(b,i);
             
 			// Выставляем количество
 			if(b >= 103 && b <= 122 || b >= 153 && b <= 162) // Закусочные, Рестораны, Ларьки с едой
@@ -617,12 +606,47 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 			else BizzInfo[b][bItem][i] = maxQuanThingProduct(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i]) / 4;
 			yesUpdate = true;
         }
+		else if(b >= 77 && b <= 92 && stat == 0) SetBizPriceItem(b,i);
     }
     if(yesUpdate)
 	{
 	    if(b <= 12) UpdateFillLabel(b);
 	    if(b >= 13 && b <= 26) UpdateSupermarketLabel_S(b);
 		SaveBizzProduct(b);
+	}
+	return 1;
+}
+
+stock SetBizPriceItem(b,i)
+{
+	if(b >= 77 && b <= 92 && BizCarSlotId[b][i] != BizzInfo[b][bProduct][i]) // Хуйня для автоматической настройки цен ибо там сортировка ебанутая
+	{
+		for(new z; z < MAX_BIZ_ITEM; z++)
+		{
+			if(BizCarSlotId[b][z] != BizzInfo[b][bProduct][i]) continue;
+			else 
+			{
+				BizzInfo[b][bPrice][i] = BizCarSlotPrice[b][z];
+				return 1;
+			}
+		}
+	}
+	new priceAdded = floatround(float(getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])) * 1.5);
+
+	if(BizzInfo[b][bTypeProduct][i] == 0) BizzInfo[b][bPrice][i] = priceAdded;
+	else if(BizzInfo[b][bTypeProduct][i] == 1) BizzInfo[b][bPrice][i] = priceAdded;
+	else if(BizzInfo[b][bTypeProduct][i] == 2) BizzInfo[b][bPrice][i] = priceAdded;
+	else if(BizzInfo[b][bTypeProduct][i] == 5)
+	{
+		if(b >= 77 && b <= 92) BizzInfo[b][bPrice][i] = priceAdded; // Продажа транспорта
+		else // Аренда транспорта
+		{
+			if(b >= 53 && b <= 56 || b >= 57 && b <= 61) // Аренда Авиатранспорта, Аренда Катеров
+			{
+				BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/400;
+			}
+			else BizzInfo[b][bPrice][i] = getThingPriceGos(BizzInfo[b][bProduct][i], BizzInfo[b][bTypeProduct][i])/40;
+		}
 	}
 	return 1;
 }
