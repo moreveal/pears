@@ -1047,6 +1047,7 @@ stock Pump_Radar(playerid) {
     // Проверка на дистанцию, доступ к радарам и прочее
     if (!IsPlayerInRangeOfPoint(playerid, 10.0, PlayerRadarInfo[playerid][priX], PlayerRadarInfo[playerid][priY], PlayerRadarInfo[playerid][priZ]) // Далеко от места установки
         || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
+        || !is_repair && Radar_IsAnyNearPlayer(playerid) // Радар ставят, но рядом уже стоит
         || (is_repair && !Radar_IsBroken(radarid))) // Радар чинят, но он уже починен
     {
         SetPVarInt(playerid, "oryjtemp", 0);
@@ -1239,6 +1240,7 @@ stock Radar_ViolationHandler(playerid) {
                         // Проигрывание звуков
                         foreach (new currentid : Player) {
                             if (GetPlayerDistanceFromPoint(currentid, radarPos[0], radarPos[1], radarPos[2]) > RADAR_RADIUS) continue;
+                            if (GetPlayerVirtualWorld(currentid) != 0 || GetPlayerInterior(currentid) != 0) continue;
 
                             Streamer_Update(currentid);
                             PlayerPlaySound(currentid, 1132, 0.0, 0.0, 0.0);
