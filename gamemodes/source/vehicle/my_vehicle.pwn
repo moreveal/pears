@@ -3700,7 +3700,7 @@ stock PlayerVehicleCall(playerid)
 	new metr = floatround(dist, floatround_round);
 	DP[4][playerid] = parkingId;
 
-	VehInfo[v][vCallTimer] = TimeCallVehicle(veh_metr) / 30;
+	VehInfo[v][vCallTimer] = TimeCallVehicle(veh_metr);
 	VehInfo[v][vCallPlayerid] = playerid;
 
 	new string[300];
@@ -3886,12 +3886,12 @@ stock FindParking_Boat(playerid, min, max)
 stock TimeCallVehicle(metr)
 {
 	new time;
-	if(metr < 100) time = 10;
-	else if(metr >= 100 && metr < 600) time = 20;
-	else if(metr >= 600 && metr < 1200) time = 30;
-	else if(metr >= 1200 && metr < 1800) time = 40;
-	else if(metr >= 1800 && metr < 2400) time = 50;
-	else time = 60;
+	if(metr < 100) time = 5;
+	else if(metr >= 100 && metr < 600) time = 10;
+	else if(metr >= 600 && metr < 1200) time = 15;
+	else if(metr >= 1200 && metr < 1800) time = 20;
+	else if(metr >= 1800 && metr < 2400) time = 25;
+	else time = 30;
 	return time;
 }
 
@@ -4181,9 +4181,7 @@ stock slcar(playerid, i)
 	if(VehInfo[v][vCallParking] == 0) format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
 	else 
 	{
-		new sek = VehInfo[v][vCallTimer]*30;
-		if(sek > 0) format(str,sizeof(str),"{ff9000}Отменить Доставку \t{cccccc}[Примерно: %s]\n", fine_time(sek)), strcat(sctring,str);
-		else format(str,sizeof(str),"{ff9000}Отменить Доставку \t{cccccc}[Меньше 30 секунд]\n"), strcat(sctring,str);
+		format(str,sizeof(str),"{ff9000}Отменить Доставку \t{cccccc}[Осталось: %s]\n", fine_time(VehInfo[v][vCallTimer])), strcat(sctring,str);
 	}
 	if(VehInfo[v][vCarLock] == 0) format(str,sizeof(str),"{cccccc}Центральный Замок \t{99ff66}[ Открыт ]\n"), strcat(sctring,str);
 	else if(VehInfo[v][vCarLock] == 1) format(str,sizeof(str),"{cccccc}Центральный Замок \t{FF6347}[ Закрыт ]\n"), strcat(sctring,str);
