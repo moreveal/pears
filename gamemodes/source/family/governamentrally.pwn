@@ -8,7 +8,7 @@ enum rallygov
     rallyStatus, // Статус митинга.
     rallyInfo[40], // Название.
     rallyPoint, // Количество очков.
-    rallyUnix, // Количество очков.
+    rallyUnix, // время старта.
     rallyType, // Тип для авто системы
 }
 new RallyInfo[1][rallygov];
@@ -109,6 +109,7 @@ CMD:sharpvoteclose(playerid)
 
 stock CreateRally(playerid,type)
 {
+    if(ViborInfo[vfunk2] > gettime()) return ErrorMessage(playerid,"{ff6347}Сейчас идет голосование, начать митинг нельзя!");
     if(RallyInfo[0][rallyStatus] != 0) return ErrorMessage(playerid,"{ff6347}Кто-то уже начал митинг!");
     RallyInfo[0][rallyStatus] = 1;
     if(type == 2) format(RallyInfo[0][rallyInfo], 25, "%s",ListName[playerid]);
