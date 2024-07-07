@@ -152,8 +152,11 @@ CMD:familytype(playerid, const params[])
 	  {
 		FamilyInfo[fam][fType] = type;
 		FamilyInfo[fam][fUpdate] = 1;
+		new string[40];
+		format(string,sizeof(string),"Установил семье №%d тип %d",fam,type);
+		AdminLog("familytype", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fam, string);
       }
-	  else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить семейный ранг [ /familytype IDFam type(3 секта, 4 стриты,2 партия) ]");
+	  else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить семейный ранг [ /familytype IDFam type(2 партия,3 секта, 4 стриты) ]");
     }
 	return 1;
 }
