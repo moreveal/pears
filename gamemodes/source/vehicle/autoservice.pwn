@@ -271,7 +271,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         {
             new v = GetPlayerVehicleID(playerid);
             new b = gAutosalon[playerid];
-            new money;
+            new money,bool:result;
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
                 if(TempDetail[playerid][i] > 0)
@@ -293,7 +293,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         new slot2 = SetVehicleDetailTunning(v, TempDetail[playerid][i], 0,friskDetail[TempDetail[playerid][i] - 207][1]);
                         if(slot2 == -1)
                         {
-                            ErrorMessage(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга. Установка прервана (какие-то детали могли установиться)");
+                            ErrorText(playerid, "{FF6347}В транспорте нет слотов для установки тюнинга. Установка прервана (какие-то детали могли установиться)");
                             result = true;
                             break;
                         }
@@ -309,7 +309,8 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         new put_inva = PutThingBoot(v, VehInfo[v][vTunningID][slot], 1, VehInfo[v][vTunningType][slot], VehInfo[v][vTunningQara][slot], 0, 0, 999);
                         if(put_inva == -1)
                         {
-                            ErrorMessage(playerid, "{FF6347}В багажнике нет слотов для тюнинга. Установка прервана (какие-то детали могли установиться)");
+                            ErrorText(playerid, "{FF6347}В багажнике нет слотов для тюнинга. Установка прервана (какие-то детали могли установиться)");
+                            result = true;
                             break;
                         }
                         VehInfo[v][vTunningID][slot] = TempDetail[playerid][i];
