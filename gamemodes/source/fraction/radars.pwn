@@ -7,8 +7,8 @@ stock SaveRadars(id = -1) {
     for (new i = minid; i < maxid; i++) {
         if (Radar_IsExists(i)) {
             mysql_format(pearsq, query_string, sizeof(query_string),
-                "REPLACE INTO `radars` (`id`, `fraction`, `owner`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `radius`, `max_speed`, `fine`, `tickets_issued`, `fine_total`) \
-                VALUES(%d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d)",
+                "REPLACE INTO `radars` (`id`, `fraction`, `owner`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `radius`, `max_speed`, `fine`, `tickets_issued`, `fine_total`, `fine_total_before_units`) \
+                VALUES(%d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, %d)",
                 
                 i,
                 RadarInfo[i][riFraction],
@@ -18,7 +18,8 @@ stock SaveRadars(id = -1) {
                 RadarInfo[i][riMaxSpeed],
                 RadarInfo[i][riFine],
                 RadarInfo[i][riTicketsIssued],
-                RadarInfo[i][riFineTotal]
+                RadarInfo[i][riFineTotal],
+                RadarInfo[i][riFineTotalBeforeUnits]
             );
         } else {
             mysql_format(pearsq, query_string, sizeof(query_string),
@@ -30,27 +31,6 @@ stock SaveRadars(id = -1) {
     }
 }
 
-/*
-CREATE TABLE `radars` (
-  `id` int(11) NOT NULL,
-  `fraction` int(11) NOT NULL COMMENT 'ID организации',
-  `owner` int(11) NOT NULL COMMENT 'ID аккаунта создателя',
-  `x` float NOT NULL,
-  `y` float NOT NULL,
-  `z` float NOT NULL,
-  `rx` float NOT NULL,
-  `ry` float NOT NULL,
-  `rz` float NOT NULL,
-  `radius` float NOT NULL COMMENT 'Радиус действия',
-  `max_speed` int(11) NOT NULL COMMENT 'Максимально допустимая скорость',
-  `fine` int(11) NOT NULL COMMENT 'Размер штрафа',
-  `tickets_issued` int(11) NOT NULL COMMENT 'Количество выписанных штрафов',
-  `fine_total` int(11) NOT NULL COMMENT 'Общая сумма штрафов'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `radars`
-  ADD UNIQUE KEY `newid` (`id`);
-*/
 function LoadRadars() {
     new rows;
     cache_get_row_count(rows);
@@ -75,6 +55,7 @@ function LoadRadars() {
 
         cache_get_value_name_int(i, "tickets_issued", RadarInfo[id][riTicketsIssued]);
         cache_get_value_name_int(i, "fine_total", RadarInfo[id][riFineTotal]);
+        cache_get_value_name_int(i, "fine_total_before_units", RadarInfo[id][riFineTotalBeforeUnits]);
     }
 }
 
@@ -121,12 +102,12 @@ stock Radar_Create(playerid, Float: radius, maxSpeed, fine) {
 stock Radar_CalculateUnits(radarid) {
     if (!Radar_IsExists(radarid)) return 0;
 
-    new police_share = RadarInfo[radarid][riFineTotal] / 100 * RADAR_POLICE_SHARE;
+    new fine_total = RadarInfo[radarid][riFineTotal] - RadarInfo[radarid][riFineTotalBeforeUnits];
+    new police_share = fine_total / 100 * RADAR_POLICE_SHARE;
     return police_share / 100 * OrganInfo[RadarInfo[radarid][riFraction]][gUnit][24];
 }
 
-stock Radar_Delete(radarid) {
-    // Выплачиваем юниты
+stock Radar_CollectUnits(radarid) {
     new units = Radar_CalculateUnits(radarid);
     if (units > 0) {
         new bool: owner_online = false;
@@ -144,6 +125,15 @@ stock Radar_Delete(radarid) {
             query_empty(pearsq, string);
         }
     }
+    RadarInfo[radarid][riFineTotalBeforeUnits] = RadarInfo[radarid][riFineTotal];
+    SaveRadars(radarid);
+
+    return 1;
+}
+
+stock Radar_Delete(radarid) {
+    // Выплачиваем юниты
+    Radar_CollectUnits(radarid);
 
     // Убираем из игрового мира
     Radar_Place(radarid, false);
@@ -710,11 +700,13 @@ stock Radar_Dialog_Management(playerid, radarid, bool: single_dialog = false) {
         "{cccccc}Изменить ограничение скорости [%d км/ч]\n" \
         "{cccccc}Изменить штраф [$%s]\n" \
         "{cccccc}Изменить расположение\n" \
+        "{8066ff}Собрать юниты [%d]\n" \
         "%s\n" \
         "{ff6347}Удалить",
 
         RadarInfo[radarid][riMaxSpeed],
         FormatNumberWithCommas(RadarInfo[radarid][riFine]),
+        Radar_CalculateUnits(radarid),
         Radar_IsPlaced(radarid) ? "{555555}Свернуть" : "{0088FF}Развернуть"
     );
 
@@ -955,13 +947,24 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                     return CreateEditPlayerObject(playerid, REDAKT_TYPE_RADAR, 1, radarid, 0, 19894, x, y, z, rx, ry, rz);
                 }
                 case 5: {
+                    if (Radar_CalculateUnits(radarid) > 0) {
+                        if (!Radar_IsOwner(playerid, radarid)) {
+                            ErrorText(playerid, "{ff6347}Только создатель радара может собрать с него юниты");
+                        } else {
+                            Radar_CollectUnits(radarid);
+                            PlayerPlaySound(playerid, 6401);
+                        }
+                    }
+                    return Radar_Dialog_Management(playerid, radarid);
+                }
+                case 6: {
                     if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) return ErrorMessage(playerid, "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
                     if (Radar_IsPlaced(radarid) && RadarInfo[radarid][riBroken]) return ErrorMessage(playerid, "{ff6347}Этот радар сейчас сломан, его нельзя свернуть в таком состоянии");
                     if (!Radar_IsPlaced(radarid) && !Radar_IsOwnerOnline(radarid)) return ErrorMessage(playerid, "{ff6347}Нельзя установить радар игрока не в сети");
 
                     return Radar_Dialog_Place(playerid, radarid);
                 }
-                case 6: {
+                case 7: {
                     return Radar_Dialog_Delete(playerid, radarid);
                 }
                 default: {}
@@ -1204,8 +1207,8 @@ stock Radar_ViolationHandler(playerid) {
                         // Пропускаем, если КД еще не прошло
                         if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
 
-                        // Пропускаем, если игрок - администратор или новичок
-                        if (PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
+                        // Пропускаем, если игрок - администратор или новичок (только для основного сервера)
+                        if (server > 0 && PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
 
 						new string[144];
 						SendClientMessage(playerid, 0x0088FFFF, "Нарушение скоростного режима [ %.0f км/ч | %d км/ч ] | {FF6347}Штраф: $%d", WatchSpeed[playerid], RadarInfo[radarid][riMaxSpeed], RadarInfo[radarid][riFine]);
