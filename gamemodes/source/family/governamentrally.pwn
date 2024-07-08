@@ -75,21 +75,23 @@ CMD:startrally(playerid)
 }
 CMD:stoprally(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 10) return 0;
+    if(PlayerInfo[playerid][pSoska] < 15) return 0;
     CloseRally(playerid);
+    AdminLog("stoprally", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Остановил митинг");
     return 1;
 }
 
 CMD:voteclose(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 14) return 0;
+    if(PlayerInfo[playerid][pSoska] < 15) return 0;
     SelectVoteAfterRally();
+    AdminLog("voteclose", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Предварительно завершил голосование в GOV");
     return 1;
 }
 
 CMD:sharpvoteclose(playerid)
 {
-    if(PlayerInfo[playerid][pSoska] < 14) return 0;
+    if(PlayerInfo[playerid][pSoska] < 15) return 0;
     ViborInfo[vstat] = 0; // Закрываем
     new string[5];
     for(new gop = 0;gop<10;gop++)
@@ -104,6 +106,7 @@ CMD:sharpvoteclose(playerid)
     UpdateVoteTableObject();
     SaveVibor();
     DeleteVoteInfoPickup();
+    AdminLog("voteclose", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Отменил голосование в GOV");
     return 1;
 }
 
@@ -561,9 +564,11 @@ stock SelectVoteAfterRally()
 
 CMD:setvote(playerid,const params[])
 {
+    if(PlayerInfo[playerid][pSoska] < 20) return 0;
     new number,count;
     sscanf(params, "ii",number,count);
     ViborGol[number] = count;
+    AdminLog("setvote", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", number, "Гандоний глаз подкуплен был и подкрутил");
     return 1;
 }
 
