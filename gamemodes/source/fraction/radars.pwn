@@ -1113,7 +1113,7 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
                     // Оповещаем полицейских о разрушении радара
                     new findraiontolist = FindRaionPos(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]);
                     foreach (new currentid : Player) {
-                        if (!IsPoliceMember(currentid)) continue;
+                        if (!IsPoliceMember(currentid) || !IsOnline(currentid)) continue;
 
                         SendClientMessage(currentid, COLOR_LIGHTNEUTRALBLUE, \
                             "[PD]: Сломан скоростной радар №%d, %s[%d] в районе %s",
