@@ -14,7 +14,7 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 599 удалённх объектов
+ 	// 603 удалённых объектов
 
 	// Hospital LS
 	RemoveBuildingForPlayer(playerid, 5737, 1120.160, -1303.449, 18.570, 0.250);
@@ -676,6 +676,13 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 618, 1190.1953, -1995.4531, 66.8047, 0.25);
 	RemoveBuildingForPlayer(playerid, 691, 1205.2734, -1987.8203, 63.7891, 0.25);
 	RemoveBuildingForPlayer(playerid, 691, 1291.0469, -2007.0703, 54.8828, 0.25);
+	//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //------------------------------ NGSA Polygon ------------------------------
+	RemoveBuildingForPlayer(playerid, 8228, 1097.390, 1293.229, 12.484, 0.250);
+	RemoveBuildingForPlayer(playerid, 8234, 1097.390, 1293.229, 12.484, 0.250);
+	RemoveBuildingForPlayer(playerid, 8136, 1038.229, 1263.949, 14.687, 0.250);
+	RemoveBuildingForPlayer(playerid, 8138, 1038.229, 1263.949, 14.687, 0.250);
     //--------------------------------------------------------------------------
 	return 1;
 }
