@@ -271,7 +271,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         {
             new v = GetPlayerVehicleID(playerid);
             new b = gAutosalon[playerid];
-            new money,bool:result;
+            new money;
             for(new i;i< sizeof(friskDetailTypeName);i++)
             {
                 if(TempDetail[playerid][i] > 0)
