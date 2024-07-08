@@ -481,11 +481,11 @@ stock CourtShowList(playerid)
         switch (CourtInfo[z][ciStatus]) {
             case COURT_STATUS_WAITING: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tВ ожидании", quan + 1, rpplayername(targetid), timemake, PlayerInfo[targetid][pCrimes]), strcat(lines, line);
             case COURT_STATUS_REVIEW: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tВ процессе рассмотрения", quan + 1, rpplayername(targetid), timemake,PlayerInfo[targetid][pCrimes]), strcat(lines, line);
-            case COURT_STATUS_DONE: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tРассмотрено", quan+1, rpplayername(targetid), timemake, PlayerInfo[targetid][pCrimes]), strcat(lines, line);
+            case COURT_STATUS_DONE: format(line, sizeof(line), "\n%d. %s\t%s\t%d\tРассмотрено", quan + 1, rpplayername(targetid), timemake, PlayerInfo[targetid][pCrimes]), strcat(lines, line);
             default: continue;
         }
 
-        List[z][playerid] = quan;
+        List[quan][playerid] = z;
         quan++;
     }
     if(quan == 0) return ErrorMessage(playerid, "{FF6347}В данный момент нет заявок в суд");
@@ -677,6 +677,11 @@ stock dialogCase_CourtsSystem(playerid, dialogid, response, listitem, const inpu
             {
                 if(listitem < 0 || listitem > MAX_COURT_OFFERS) return ErrorMessage(playerid, "{ff6347}Выбрана не правильная строка.");
                 new courtofferid = DP[4][playerid] = List[listitem][playerid];
+                if (courtofferid < 0 || courtofferid > MAX_COURT_OFFERS) {
+                    DP[4][playerid] = 0;
+                    return 1;
+                }
+                
                 CourtInfo[courtofferid][ciTakeUserID] = playerid;
 
                 return CourtShowOfferReview(courtofferid);

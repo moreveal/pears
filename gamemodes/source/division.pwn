@@ -1062,6 +1062,7 @@ stock dialogCase_Division(playerid, dialogid, response, listitem, const inputtex
 
 			new org = DP[1][playerid] + 1; // Получаем id организации
 			new div = DP[2][playerid] + 1; // Получаем id подфракции
+			if (org < 0 || div < 0) return 0;
 
 			new string_mysql[360];
 			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT user_id, Name, Member, Rank, Fbi, Offtime, CallSign FROM `pp_igroki` WHERE \

@@ -160,7 +160,7 @@ stock GetVehicleModelSync(playerid, model) // Получаем модель тр
 
 stock PP_CreateVehicle(model, Float:x, Float:y, Float:z, Float:a, col1, col2, sek, siren, timerspawn, Float:health)
 {
-	if(QuantityVehicles + 1 >= SKOKOCAROV) return -1; // Лимит транспортных средств на серверах SAMP
+	if(QuantityVehicles + 1 >= MAX_CARS) return -1; // Лимит транспортных средств на серверах SAMP
 
 	new id = m_custom_sync_CreateVehicle(model, x, y, z, a, col1, col2, sek, bool: siren);
 	if (id == INVALID_VEHICLE_ID) return -1; // Ошибка при создании транспорта
@@ -318,7 +318,7 @@ stock IsAPosBootOrBonet(playerid, &type)
 stock IsAPosBoot(playerid) // Ищем транспорт с багажником рядом
 {
 	new vehicleid;
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(VehInfo[v][vModel] == 0
 			|| !IsABoot(v)
@@ -336,7 +336,7 @@ stock IsAPosBoot(playerid) // Ищем транспорт с багажнико�
 stock IsAPosBootHardLock(playerid)
 {
 	new vehicleid;
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(VehInfo[v][vModel] == 0
 			|| !IsABoot(v)
@@ -499,7 +499,7 @@ stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 stock IsATrashBoot(playerid) // Позиция багажника в мусоровоза
 {
 	new Float:Boot[3];
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(VehInfo[v][vModel] != 408) continue;
 		if(GetVehicleInterior(v) != GetPlayerInterior(playerid) || GetVehicleVirtualWorld(v) != GetPlayerVirtualWorld(playerid)) continue;
@@ -846,7 +846,7 @@ stock IsAGangCar(model) // Транспорт для банд
 stock GetNeedVehicleNearby(model, Float:x, Float:y, Float:z, Float:radius)
 {
 	new yes;
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(VehInfo[v][vModel] != model) continue;
 
@@ -1324,8 +1324,8 @@ CMD:rvehcrime(playerid, const params[])
 
 
 
-new PlayerText3D:CustomVehLabel[MAX_REALPLAYERS][SKOKOCAROV];
-new bool:CustomLabelBusy[MAX_REALPLAYERS][SKOKOCAROV];
+new PlayerText3D:CustomVehLabel[MAX_REALPLAYERS][MAX_CARS];
+new bool:CustomLabelBusy[MAX_REALPLAYERS][MAX_CARS];
 
 stock CreateCustomVehicleLabel(playerid, vehicleid, Float:dist)
 {
@@ -1353,7 +1353,7 @@ stock DestroyCustomVehicleLabel(playerid, vehicleid)
 
 stock DestroyAllCustomVehicleLabels(playerid)
 {
-	for(new i = 0; i < SKOKOCAROV; i++)
+	for(new i = 0; i < MAX_CARS; i++)
 	{
 		if(CustomLabelBusy[playerid][i] == true)
 		{

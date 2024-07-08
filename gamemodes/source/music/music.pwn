@@ -1,9 +1,9 @@
 
-new AudioStream:VehicleMusicAudioStream[SKOKOCAROV] = { INVALID_AUDIOSTREAM, ... };
+new AudioStream:VehicleMusicAudioStream[MAX_CARS] = { INVALID_AUDIOSTREAM, ... };
 
 stock IsVehicleHavingMusicStream(vehicleid)
 {
-    if (vehicleid <= 0 || vehicleid >= SKOKOCAROV) return false;
+    if (vehicleid <= 0 || vehicleid >= MAX_CARS) return false;
     return VehicleMusicAudioStream[vehicleid] != INVALID_AUDIOSTREAM;
 }
 

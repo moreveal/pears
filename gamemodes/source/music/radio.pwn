@@ -1,6 +1,6 @@
 
-new PlayerText3D:RadioVehLabel[MAX_REALPLAYERS][SKOKOCAROV];
-new bool:RadioLabelBusy[MAX_REALPLAYERS][SKOKOCAROV];
+new PlayerText3D:RadioVehLabel[MAX_REALPLAYERS][MAX_CARS];
+new bool:RadioLabelBusy[MAX_REALPLAYERS][MAX_CARS];
 
 CMD:radio(playerid)
 {
@@ -47,7 +47,7 @@ stock DestroyRadioVehicleLabel(playerid, vehicleid)
 
 stock DestroyAllRadioVehicleLabels(playerid)
 {
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(RadioLabelBusy[playerid][v] == true)
 		{

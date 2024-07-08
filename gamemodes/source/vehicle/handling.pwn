@@ -82,7 +82,7 @@ enum HandlingData
     HD_ModelID
 }
 new DefaultHandling[sizeof(vehName) + sizeof(vehNameCustom)][HandlingData];
-new HandlingVehInfo[SKOKOCAROV][HandlingData];
+new HandlingVehInfo[MAX_CARS][HandlingData];
 
 new handlingName[][] =
 {

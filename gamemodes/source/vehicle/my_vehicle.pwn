@@ -3806,7 +3806,7 @@ stock FindCallVehicle(playerid, v, &Float:vdist, &Float:dist)
 stock GetVehicleNear(Float:x, Float:y, Float:z)
 {
 	new yescar, Float:pos[3];
-	for(new v = 0; v < SKOKOCAROV; v++)
+	for(new v = 0; v < MAX_CARS; v++)
 	{
 		if(VehInfo[v][vModel] > 0)
 		{
@@ -3973,7 +3973,7 @@ CMD:insertcar(playerid)
 CMD:infocar(playerid)
 {
 	new Float:cars_pos[3], infocar = -1;
-	for(new cars = 1; cars < SKOKOCAROV; cars++)
+	for(new cars = 1; cars < MAX_CARS; cars++)
 	{
 		if(VehInfo[cars][vSellcar] == 0) continue;
   		GetCoordSellCarVehicle(cars, cars_pos[0], cars_pos[1], cars_pos[2]);
@@ -3987,7 +3987,7 @@ CMD:buycar(playerid)
 {
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return ErrorMessage(playerid, "{FF6347}Вы находитесь в слежке");
 	new Float:cars_pos[3], v = -1;
-	for(new cars = 1; cars < SKOKOCAROV; cars++)
+	for(new cars = 1; cars < MAX_CARS; cars++)
 	{
 		if(VehInfo[cars][vSellcar] == 0) continue;
   		GetCoordSellCarVehicle(cars, cars_pos[0], cars_pos[1], cars_pos[2]);
@@ -4216,6 +4216,8 @@ stock slcar(playerid, i)
 }
 stock pts(p, v)
 {
+	if (!IsValidVehicle(v)) return 0;
+	
 	new model = VehInfo[v][vModel], vladid = VehInfo[v][vIdvlad];
 	new line[80],lines[1840];
 
@@ -4237,6 +4239,8 @@ stock pts(p, v)
 	strcat(lines, VehicleInfoCreateLines(v));
 
 	ShowDialog(p,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Паспорт Транспортного Средства",lines,"*","");
+
+	return 1;
 }
 
 stock VehicleInfoCreateLines(vehicleid)
@@ -4430,7 +4434,7 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 	}
 
 	new Float:kord[4], vehid, yescar, string[124];
-	for(new car = 1; car < SKOKOCAROV; car++)
+	for(new car = 1; car < MAX_CARS; car++)
 	{
 		if(VehInfo[car][vNewid] == newid) yescar = car;
 	}

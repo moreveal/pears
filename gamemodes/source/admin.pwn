@@ -590,7 +590,7 @@ CMD:delveh(playerid, const params[])
 		if (IsPlayerInAnyVehicle(playerid)) vehicleid = GetPlayerVehicleID(playerid);
 		else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить транспорт /delveh ID (ID транспорта в /dl)");
 	}
-	if(vehicleid < 0 || vehicleid >= SKOKOCAROV) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
+	if(vehicleid < 0 || vehicleid >= MAX_CARS) return ErrorMessage(playerid, "{FF6347}ID транспорта не меньше 0 и не больше 1999");
 	if(Cars[vehicleid] == 0) return ErrorMessage(playerid, "{FF6347}Транспорта не существует");
 	if(Cars[vehicleid] != 9999) return ErrorMessage(playerid, "{FF6347}Этот транспорт не создан администрацией");
 	
@@ -1136,8 +1136,8 @@ CMD:punishments(playerid,const params[])
 CMD:checkpts(playerid,const params[])
 {
 	if(PlayerInfo[playerid][pSoska] == 0) return 0;
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть птс машины [ /checkpts vehid ]");
-	pts(playerid,params[0]);
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Посмотреть ПТС транспорта [ /checkpts Номер ]");
+	if (!pts(playerid, params[0])) return ErrorMessage(playerid, "{ff6347}Транспортного средства не существует");
 	return 1;
 }
 

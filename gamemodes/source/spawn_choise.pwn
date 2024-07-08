@@ -97,6 +97,8 @@ stock GoSpawn(playerid)
 
 stock SelectSpawnChoise(playerid, spawnId)
 {
+    if (spawnId < 0) spawnId = 0;
+
     PlayerInfo[playerid][pSelectspawn] = spawnId;
     OnlineInfo[playerid][oNoClick] = false;
 

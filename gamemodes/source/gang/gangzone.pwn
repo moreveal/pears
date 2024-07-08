@@ -1039,13 +1039,13 @@ stock IsAGhetto(playerid) // Проверка, находится ли игро�
 stock RespawnSquare()
 {
 	new g = CaptInfo[cZoneID];
-	new bool:unwanted[SKOKOCAROV];
+	new bool:unwanted[MAX_CARS];
 	foreach(Player,i)
 	{
        	if(IsPlayerInAnyVehicle(i)) { unwanted[GetPlayerVehicleID(i)] = true; }
        	if(IsTrailerAttachedToVehicle(GetPlayerVehicleID(i))) { unwanted[GetVehicleTrailer(GetPlayerVehicleID(i))] = true; }
 	}
-	for(new car = 1; car < SKOKOCAROV; car++)
+	for(new car = 1; car < MAX_CARS; car++)
 	{
 		if(!unwanted[car])
 		{
