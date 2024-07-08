@@ -91,7 +91,9 @@ CMD:trap(playerid)
  		if(IsATrap(playerid))
 	    {
 	 		new Float: depth, Float: playerdepth;
-			if(CA_IsPlayerInWater(playerid, depth, playerdepth)) return ErrorMessage(playerid, "{FF6347}Вы не можете установить ловушку в воде");
+			if(CA_IsPlayerInWater(playerid, depth, playerdepth)) {
+				if (playerdepth > 0.0) return ErrorMessage(playerid, "{FF6347}Вы не можете установить ловушку в воде");
+			}
 		 	SetPVarInt(playerid,"oryjtemp",0), SetPVarInt(playerid,"Arobsklad",9);
 		 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Нужно установить ловушку {ff9000}[ Нажимайте %s ]", buttonName[Device[playerid]]);
 		 	ApplyAnimation(playerid,"BOMBER","BOM_Plant_Loop",4.0, false, true, true, true, true);

@@ -2079,8 +2079,8 @@ stock use_sklad(playerid, wh, inva, useinva)
 		new g = fraction(playerid),
 			i = PlayerInfo[playerid][pDivision][0] - 1;
 
-		if (i >= 0 && !DivisionIsAvailableWeapon(g, i, fpick)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут брать со склада это оружие");
-		else if (!IsAvailableOrganizationWeapon(g, fpick)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам взять со склада это оружие");
+		if(i < 0 && !IsAvailableOrganizationWeapon(g, fpick)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам вам взять со склада это оружие"), i_resetveshi(playerid);
+		else if(i >= 0 && !DivisionIsAvailableWeapon(g, i, fpick)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут брать со склада это оружие"), i_resetveshi(playerid);
 
 	    if(PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60 > unixtime) return format(string,sizeof(string),"{FF6347}Вы не можете сейчас взять оружие [ Через %d мин. ]", ((PlayerInfo[playerid][pGacc][4]+OrganInfo[wh][gUnitStat][18]*60)-unixtime)/60), ErrorMessage(playerid, string);
 	    giveThing = 4;
@@ -2850,8 +2850,8 @@ stock player_tile(playerid, inva)
 					{
 						new g = fraction(playerid),
 							i = PlayerInfo[playerid][pDivision][0] - 1;
-						if(i >= 0 && !DivisionIsAvailableWeapon(g, i, weapon)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут использовать снайперскую винтовку"), i_resetveshi(playerid);
-						else if(!IsAvailableOrganizationWeapon(g, weapon)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам использовать снайперскую винтовку"), i_resetveshi(playerid);
+						if(i < 0 && !IsAvailableOrganizationWeapon(g, weapon)) return ErrorMessage(playerid, "{ff6347}Настройки доступа вашей организации не позволяют вам использовать снайперскую винтовку"), i_resetveshi(playerid);
+						else if(i >= 0 && !DivisionIsAvailableWeapon(g, i, weapon)) return ErrorMessage(playerid, "{ff6347}Участники вашей подфракции не могут использовать снайперскую винтовку"), i_resetveshi(playerid);
 					}
 					DP[0][playerid] = weapon;
 					DP[1][playerid] = inva;
