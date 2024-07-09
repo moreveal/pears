@@ -562,12 +562,13 @@ stock SelectVoteAfterRally()
     return 1;
 }
 
-CMD:setvote(playerid,const params[])
+CMD:setvote(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return 0;
     new number,count;
     sscanf(params, "ii",number,count);
     ViborGol[number] = count;
+    SaveVibor();
     AdminLog("setvote", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", number, "Гандоний глаз подкуплен был и подкрутил");
     return 1;
 }

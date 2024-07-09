@@ -14,6 +14,10 @@ oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingVehicleQuan;
 
+// Премиум транспорт
+new ThingPremiumVehiclecaseGift[MAX_MODELS_VEHICLE];
+new ThingPremiumVehicleQuan;
+
 new ThingSkincaseGift[MAX_MODELS_SKIN];
 new ThingSkinQuan;
 
@@ -97,11 +101,12 @@ stock CreateVehicleGiftCase()
             if(VehSale[i] == 1
                 || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) 
                 {
-                    ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+                    if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = i+2000, ThingPremiumVehicleQuan ++; // Premium Vehicle
+                    else ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
                 }
         }
     }
-    return ThingVehicleQuan;
+    return true;
 }
 
 stock CreateSkinGiftCase() // Собираем скины
@@ -214,8 +219,19 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
-        new thingTemp = random(ThingVehicleQuan);
-        thingId = ThingVehiclecaseGift[thingTemp];
+        switch(random(5))
+        {
+            case 1: // Premium
+            {
+                new thingTemp = random(ThingPremiumVehicleQuan);
+                thingId = ThingPremiumVehiclecaseGift[thingTemp];
+            }
+            default: // Прочие тс
+            {
+                new thingTemp = random(ThingVehicleQuan);
+                thingId = ThingVehiclecaseGift[thingTemp];
+            }
+        }
         new colorveh = 1 + random(254); // Color Vehicle
         thingQuan = colorveh;
     }
@@ -279,6 +295,24 @@ CMD:givecaseall(playerid)
 	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам кейсы", PlayerInfo[playerid][pName]);
 	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Выдал всем кейсы");
+    return 1;
+}
+
+CMD:givecasegro(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i)
+        {
+            GivePlayerCase(playerid, i, false);
+        }
+    }
+
+    new string[140];
+	format(string, sizeof(string), " [ ADM ]: %s выдал кейсы игрокам рядом с собой", PlayerInfo[playerid][pName]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Выдал кейсы рядом с собой");
     return 1;
 }
 

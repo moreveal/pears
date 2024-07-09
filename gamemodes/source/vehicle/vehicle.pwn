@@ -1404,9 +1404,9 @@ function LoadPriceVeh()
 		}
 
 		// Собираем набор транспорта для кейсов
-		new quanVehicleCase = CreateVehicleGiftCase();
+		CreateVehicleGiftCase();
 
-		printf("[MODE]: Настройки Транспорта [В кейсах %d тс][%d ms]", quanVehicleCase, GetTickCount() - time);
+		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
 	}
 	return 1;
 }
