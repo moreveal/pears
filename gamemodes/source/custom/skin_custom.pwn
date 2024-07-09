@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 183
+#define MAX_SKIN_CUSTOM 193
 
 stock AddCustomSkins()
 {
@@ -204,6 +204,16 @@ stock AddCustomSkins()
 	AddCharSyncModel(125, 492); // 15680, pearspedfe male
 	AddCharSyncModel(294, 493); // 15681, pearspedff male
 	AddCharSyncModel(285, 494); // 15682, pearsvvs male
+	AddCharSyncModel(70, 495); // 15683, pearsdoctor male
+	AddCharSyncModel(308, 496); // 15684, pearsmedg1 famale
+	AddCharSyncModel(308, 497); // 15685, pearsmedg2 famale
+	AddCharSyncModel(308, 498); // 15686, pearsmedg3 famale
+	AddCharSyncModel(308, 499); // 15687, pearsmedg4 famale
+	AddCharSyncModel(275, 500); // 15688, pearsmedm1 male
+	AddCharSyncModel(276, 501); // 15689, pearsmedm2 male
+	AddCharSyncModel(275, 502); // 15690, pearsmedm3 male
+	AddCharSyncModel(276, 503); // 15691, pearsmedm4 male
+	AddCharSyncModel(274, 504); // 15692, pearsmedm5 male
     return 1;
 }
 
@@ -225,7 +235,7 @@ stock GetSkinSex(s)
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
 	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
-	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 494) return 1; // 1 - мужской скин
+	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 504) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
@@ -343,6 +353,16 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][4] = 70, OrganInfo[g][gSkinPrice][4] = 100000, OrganInfo[g][gSkinRank][4] = 10;
 		OrganInfo[g][gSkin][5] = 308, OrganInfo[g][gSkinPrice][5] = 0, OrganInfo[g][gSkinRank][5] = 0;
 		OrganInfo[g][gSkin][6] = 219, OrganInfo[g][gSkinPrice][6] = 70000, OrganInfo[g][gSkinRank][6] = 10;
+		OrganInfo[g][gSkin][7] = 495, OrganInfo[g][gSkinPrice][7] = 90000, OrganInfo[g][gSkinRank][7] = 7;
+		OrganInfo[g][gSkin][8] = 496, OrganInfo[g][gSkinPrice][8] = 10000, OrganInfo[g][gSkinRank][8] = 1;
+		OrganInfo[g][gSkin][9] = 497, OrganInfo[g][gSkinPrice][9] = 10000, OrganInfo[g][gSkinRank][9] = 1;
+		OrganInfo[g][gSkin][10] = 498, OrganInfo[g][gSkinPrice][10] = 10000, OrganInfo[g][gSkinRank][10] = 1;
+		OrganInfo[g][gSkin][11] = 499, OrganInfo[g][gSkinPrice][11] = 10000, OrganInfo[g][gSkinRank][11] = 1;
+		OrganInfo[g][gSkin][12] = 500, OrganInfo[g][gSkinPrice][12] = 10000, OrganInfo[g][gSkinRank][12] = 1;
+		OrganInfo[g][gSkin][13] = 501, OrganInfo[g][gSkinPrice][13] = 10000, OrganInfo[g][gSkinRank][13] = 1;
+		OrganInfo[g][gSkin][14] = 502, OrganInfo[g][gSkinPrice][14] = 10000, OrganInfo[g][gSkinRank][14] = 1;
+		OrganInfo[g][gSkin][15] = 503, OrganInfo[g][gSkinPrice][15] = 10000, OrganInfo[g][gSkinRank][15] = 1;
+		OrganInfo[g][gSkin][16] = 504, OrganInfo[g][gSkinPrice][16] = 10000, OrganInfo[g][gSkinRank][16] = 1;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
