@@ -20,6 +20,10 @@ new ThingSkinQuan;
 new ThingSkincaseGiftFemale[MAX_MODELS_SKIN];
 new ThingSkinQuanFemale;
 
+new ThingAccessoryGift[MAX_ACCESSORY];
+new ThingAccessoryGiftBone[MAX_ACCESSORY];
+new ThingAccessoryQuan;
+
 /*enum caseInfo
 {
     caseId, // кейс ID
@@ -87,11 +91,14 @@ stock CreateVehicleGiftCase()
         new vehClass = GetVehicleClass(i+2000);
         if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
 
-        new vehType = GetVehicleType(i+400);
+        new vehType = GetVehicleType(i+2000);
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
-                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) 
+                {
+                    ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+                }
         }
     }
     return ThingVehicleQuan;
@@ -113,6 +120,43 @@ stock CreateSkinGiftCase() // Собираем скины
     return ThingSkinQuan;
 }
 
+stock CreateAccessoryGiftCase() // Собираем аксессуары для кейса
+{
+    ThingAccessoryQuan = 0;
+    for(new i; i < MAX_ACCESSORY; i++)
+    {
+        if(AccessoryInfo[i][acCase] == true)
+        {
+            ThingAccessoryGift[ThingAccessoryQuan] = AccessoryInfo[i][acModel];
+            ThingAccessoryGiftBone[ThingAccessoryQuan] = AccessoryInfo[i][acBone];
+            ThingAccessoryQuan ++;
+        }
+    }
+    return ThingAccessoryQuan;
+}
+
+// Сток для получения обычного предмета из кейса
+stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
+{
+    new quan;
+    new ThingIDcaseGift[sizeof(friskName)];
+    for(new i = 1; i < sizeof(friskName); i++)
+    {
+        if(IsThingNotVariable(i) // Запрещённые предметы для кейса
+            && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
+            && !DocumentThing(i, thingType) // Документы
+            && !CheckThingQuan(i) // Количественные предметы
+            && !JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
+            //&& !PerishableThing(i,0) // Портящиеся предметы
+            ) ThingIDcaseGift[quan] = i, quan ++;
+    }
+    new thingTemp = random(quan);
+    thingId = ThingIDcaseGift[thingTemp];
+    thingQuan = 0;
+    thingPack = 5;
+    return true;
+}
+
 // Рандомайзер для создания кейса
 stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack)
 {
@@ -120,30 +164,15 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         case 0: thingType = 0; // Обычный предмет
         case 1: thingType = 1; // Оружие
-        //case 2: thingType = 0; // Акс 2(временно 0)
+        case 2: thingType = 2; // Аксессуар
         case 3, 4: thingType = 3; // Одежда
         case 5: thingType = 5; // Транспорт
         default: thingType = 0; // ПОДКРУТКА обычный предмет
     }
 
     new quan;
-    if(thingType == 0) // Если выпал обычный
-    {
-        new ThingIDcaseGift[sizeof(friskName)];
-        for(new i = 1; i < sizeof(friskName); i++)
-        {
-            if(IsThingNotVariable(i) // Запрещённые предметы для кейса
-                && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
-                && !DocumentThing(i, thingType) // Документы
-                && !CheckThingQuan(i) // Количественные предметы
-                && !JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
-                //&& !PerishableThing(i,0) // Портящиеся предметы
-                ) ThingIDcaseGift[quan] = i, quan ++;
-        }
-        new thingTemp = random(quan);
-        thingId = ThingIDcaseGift[thingTemp];
-        thingQuan = 0;
-    }
+    if(thingType == 0) CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если выпал обычный
+
     else if(thingType == 1)
     {
         new ThingIDcaseGift[46];
@@ -157,19 +186,18 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         thingPara = GUN_HEALTH;
         thingQuan = 1;
     }
-    else if(thingType == 2)
+
+    else if(thingType == 2) // Аксессуары (Список собирается при запуске сервера и при активации аксессуара для кейса)
     {
-        new ThingIDcaseGift[MAX_ACCESSORY];
-        for(new i; i < MAX_ACCESSORY; i++)
-        {
-            if(AccessoryInfo[i][acStatus] == 1) ThingIDcaseGift[quan] = i, quan ++;
-        }
-        new thingTemp = random(quan);
-        thingId = AccessoryInfo[ThingIDcaseGift[thingTemp]][acModel];
-        thingPara = AccessoryInfo[ThingIDcaseGift[thingTemp]][acBone];
+        if(ThingAccessoryQuan <= 0) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг аксессуаров для кейса нет, выпадет обычный предмет
+
+        new thingTemp = random(ThingAccessoryQuan);
+        thingId = ThingAccessoryGift[thingTemp];
+        thingPara = ThingAccessoryGiftBone[thingTemp];
         thingQuan = 1;
     }
-    else if(thingType == 3) // Список собирается при запуске сервера
+
+    else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
     {
         if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
         {
@@ -183,7 +211,8 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         }
         thingQuan = 1;
     }
-    else if(thingType == 5) // Список собирается при запуске сервера
+
+    else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
         new thingTemp = random(ThingVehicleQuan);
         thingId = ThingVehiclecaseGift[thingTemp];

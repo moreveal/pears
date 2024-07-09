@@ -337,6 +337,10 @@ public LoadAccessory()
 		cache_get_value_name_bool(f, "acCase", AccessoryInfo[f][acCase]);
 		AccessoryQuan ++;
 	}
+
+	// Собираем набор аксов для кейса
+	CreateAccessoryGiftCase();
+
 	printf("[MODE]: Аксессуары [%d Quan][%d ms]",rows, GetTickCount() - time);
 	return 1;
 }
