@@ -1,5 +1,6 @@
 
 #define MAX_ACCESSORY 1000 // Максимальное количество аксессуаров для игроков
+#define MAX_LINE_PAGE_ACCESSORY 60 // Количество listitem на странице
 
 enum accessorInfo
 {
@@ -50,14 +51,17 @@ CMD:accessory(playerid)
 
 stock AccessoryList(playerid, page, const findName[]) // Меню настроек аксессуаров для игроков
 {
+	// Настраиваем отображение фильтров и страниц
+	new minlist, thisPage, yesNext;
+	LoadPageSorting(playerid, 1278, MAX_ACCESSORY, minlist, page, thisPage);
+
     format(ListName[playerid],34, ""); // Очищаем имя сохранённого поиска
 	DP[1][playerid] = page; // Сохраняем открытую страницу
 	DP[2][playerid] = 0; // Сбрасываем статус отображения списка аксессуаров
 	
-    new minId = 0, maxId = 99, quanId, quanFind = strlen(findName), quanType, findModel; // Минимальный и максимально отображаемые аксессуары на странице
-    if(page >= 1) minId += 100*page, maxId += 100*page; // Если это следующие страницы, присваиваем следующие ID
+    new quanId, quanFind = strlen(findName), quanType, findModel; // Минимальный и максимально отображаемые аксессуары на странице
     
-    new line[100],lines[4048];
+    new line[100],lines[4048], one;
 	format(line,sizeof(line),"Аксессуар\tModel\tЦена"), strcat(lines,line);
 	format(line,sizeof(line),"\n{99ff66}Добавить аксессуар\t\t"), strcat(lines,line);
 	
@@ -69,25 +73,37 @@ stock AccessoryList(playerid, page, const findName[]) // Меню настрое
 	}
 	else format(line,sizeof(line),"\n{cccccc}Найти\t\t"), strcat(lines,line);
 	
-    for(new i = minId; i < maxId; i++)
+    for(new i = minlist; i < MAX_ACCESSORY; i++)
 	{
 	    if(AccessoryInfo[i][acModel] > 0 && quanFind == 0 // Если поиск по модели и имени не активен, просто показываем все аксессуары
 		|| quanFind > 0 && (quanType == 1 && AccessoryInfo[i][acModel] == findModel) // Ищем по model
 		|| quanFind > 0 && (quanType == 0 && strfind(AccessoryInfo[i][acName], findName, true) != -1)) // Ищем по названию
 	    {
+			if(one == 0) OnlineInfo[playerid][oDialogMenu][4] = i, one = 1; // Записывали первый list
+			OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
+			OnlineInfo[playerid][oDialogMenu][2] = i;
+
 	        List[quanId][playerid] = i; // Сохраняем найденный аксессуар в переменную
 	        quanId ++; // Ведём подсчёт переменных
 			if(AccessoryInfo[i][acStatus] == 0) format(line,sizeof(line),"\n{cccccc}%d. %s\t%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
 			else format(line,sizeof(line),"\n{cccccc}%d. {ff9000}%s\t{cccccc}%d\t%d$", i+1, AccessoryInfo[i][acName], AccessoryInfo[i][acModel], AccessoryInfo[i][acPrice]), strcat(lines,line);
 		}
+
+		if(quanId >= MAX_LINE_PAGE_ACCESSORY)
+		{
+			yesNext = 1;
+			break;
+		}
+
+		if(i >= MAX_ACCESSORY - 1 && page > 0)
+		{
+			yesNext = 1; // Последний list, отображаем Next Page
+			OnlineInfo[playerid][oDialogMenu][5] = 1; // Записываем, что эта страница была последней
+		}
 	}
-	if(quanId == 0)
-	{
-		DP[2][playerid] = 1;
-		format(line,sizeof(line),"\n{FF6347}Аксессуары не найдены\t\t"), strcat(lines,line);
-	}
-	if(page > 0 || quanId >= 100) format(line,sizeof(line),"\n{444444}Далее >>\t\t"), strcat(lines,line);
-	
+
+	if(yesNext == 1) format(line,sizeof(line),"\n{99ff66}Далее >>\t \t "), strcat(lines,line);
+
 	new lol[60];
 	format(lol,sizeof(lol),"{ff9000}Аксессуары %d {cccccc}[Страница %d]", AccessoryQuan, page+1);
     ShowDialog(playerid,1278,DIALOG_STYLE_TABLIST_HEADERS,lol,lines,"Выбрать","Выход");

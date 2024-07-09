@@ -736,7 +736,7 @@ ORPC:CS_RPC_CreateObject(playerid, BitStream:bs)
 {
 	if(!IsPlayerConnected(playerid)) return true;
 
-	if (c_player_sync_models{playerid} == false) return true;
+	if (c_player_sync_models{playerid} == true) return true;
 
 	static ModelID;
 	BS_SetReadOffset(bs, 16);
