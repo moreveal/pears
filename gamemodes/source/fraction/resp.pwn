@@ -56,3 +56,22 @@ stock IsAArabianLift(playerid)
 
     return false;
 }
+
+stock IsACnnLift(playerid)
+{
+    // Крыша
+    if(IsPlayerInRangeOfPoint(playerid,2.0,1425.9067,-1217.1545,195.0469) 
+        && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0
+			
+    // 1 этаж
+    || IsPlayerInRangeOfPoint(playerid,2.0,965.0433,1450.9865,1029.3549)
+        && GetPlayerVirtualWorld(playerid) == WORLD_CNN_1LVL && GetPlayerInterior(playerid) == INT_CNN_1LVL
+
+    // 2 Этаж
+    || IsPlayerInRangeOfPoint(playerid,2.0,1425.7341,-1218.1085,124.1885)
+        && GetPlayerVirtualWorld(playerid) == WORLD_CNN_2LVL && GetPlayerInterior(playerid) == INT_CNN_2LVL
+
+    ) return true;
+
+    return false;
+}

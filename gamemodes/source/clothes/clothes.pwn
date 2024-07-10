@@ -1160,7 +1160,8 @@ stock IsAShmot(playerid)
 		&& GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL // Yakuza Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // Правительство
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-506.7065,-87.0514,964.8114) && GetPlayerVirtualWorld(playerid) == 8 && GetPlayerInterior(playerid) == 8 // Hitman Agency
-	|| IsPlayerInRangeOfPoint(playerid,1.0,-1760.2249,799.6393,137.4583) // CNN
+	|| IsPlayerInRangeOfPoint(playerid,1.0,1416.2957,-1212.1395,124.0505)
+		&& GetPlayerVirtualWorld(playerid) == WORLD_CNN_2LVL && GetPlayerInterior(playerid) == INT_CNN_2LVL // CNN
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1997.9194,1110.0148,1018.6735) && GetPlayerVirtualWorld(playerid) == 12 && GetPlayerInterior(playerid) == 1 // Russian Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-1928.6663,906.0461,1402.0776) && GetPlayerVirtualWorld(playerid) == 10 && GetPlayerInterior(playerid) == 10 // Triada Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,919.1400,1378.4596,1029.4221) 

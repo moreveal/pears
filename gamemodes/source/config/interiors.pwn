@@ -66,3 +66,12 @@
 
 #define WORLD_ARABIAN_HOTEL -1
 #define INT_ARABIAN_HOTEL 20
+
+//==================================================
+// CNN
+
+#define WORLD_CNN_1LVL 168
+#define INT_CNN_1LVL 9
+
+#define WORLD_CNN_2LVL 167
+#define INT_CNN_2LVL 0

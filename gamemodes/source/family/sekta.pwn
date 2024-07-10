@@ -257,7 +257,9 @@ CMD:gnews(playerid, const params[])
 	if(PlayerInfo[playerid][pFamrank] >= FamilyInfo[fam][fRanks] - 1 && FamilyInfo[fam][fType] == 3)
 	{
 		new newcar = GetPlayerVehicleID(playerid);
-		if(newcar >= cnncar[0] && newcar <= cnncar[1] || IsPlayerInRangeOfPoint(playerid,5.0,-1750.7061,801.5389,137.4583) || Cars[newcar] == 9)
+		if(newcar >= cnncar[0] && newcar <= cnncar[1] || Cars[newcar] == 9
+            || IsPlayerInRangeOfPoint(playerid,10.0,1432.6202,-1189.6243,124.0505)
+             && GetPlayerVirtualWorld(playerid) == WORLD_CNN_2LVL && GetPlayerInterior(playerid) == INT_CNN_2LVL)
 		{
             if(AntiFloodText(playerid, params[0])) return 1;
 
