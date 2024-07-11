@@ -127,8 +127,8 @@ CMD:followme(playerid, const params[])
 			Follow[params[0]] = playerid, FollowTime[params[0]] = 0;
 			format(string, sizeof(string), "* Вы ведёте за собой %s.", playername(params[0]));
 			SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-			format(string, sizeof(string), "* %s ведёт за собой %s.", playername(playerid), playername(params[0]));
-			ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+			//format(string, sizeof(string), "* %s ведёт за собой %s.", playername(playerid), playername(params[0]));
+			//ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 			format(string, sizeof(string), "ведёт за собой %s", playername(params[0]));
 			SetPlayerChatBubble(playerid,string,COLOR_PURPLE,30.0,10000);
 			PlayerPlaySound(playerid, 6401, 0.0, 0.0, 0.0);
@@ -148,8 +148,8 @@ CMD:followme(playerid, const params[])
 				Follow[s] = 9999, FollowTime[s] = 0;
 				format(string, sizeof(string), "* Вы отпустили %s.", playername(s));
 				SendClientMessage(playerid, COLOR_LIGHTBLUE, string);
-				format(string, sizeof(string), "* %s отпускает %s.", playername(playerid), playername(s));
-				ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
+				//format(string, sizeof(string), "* %s отпускает %s.", playername(playerid), playername(s));
+				//ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				format(string, sizeof(string), "отпускает %s", playername(s));
 				SetPlayerChatBubble(playerid,string,COLOR_PURPLE,30.0,10000);
 				BlockDeathReturn(s, .status = false);
