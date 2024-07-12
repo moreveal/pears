@@ -509,7 +509,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы �
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[5][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[5][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпсь Z
+	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпись Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[6][playerid], 0.611874, 2.008332);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[6][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[6][playerid], -1);
