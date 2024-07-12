@@ -47,8 +47,10 @@ new maxOrgSalary[] = // Максимальная зп в организации
 
 
 // Функция для расчета зарплаты по рангу
-stock GetSalary(rank, org)
+stock GetSalary(rank, org, fbi)
 {
+    if(fbi > 0) org = 2, rank = fbi; // Если игрок под прикрытием в FBI, тогда он получает зп из FBI
+
     new max_rank = get_maxrank(org);
 
     if (rank < 1) rank = 1;
