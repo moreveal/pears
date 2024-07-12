@@ -10,6 +10,19 @@
 	CompletingDaily(playerid, dailyid, quan);
 */
 
+enum e_DailyType {
+    DAILY_TYPE_NONE, // Нет
+    DAILY_TYPE_FISHING, // Рыбалка
+    DAILY_TYPE_SPERM, // Спермобанк
+    DAILY_TYPE_HUNT, // Охота
+    DAILY_TYPE_SPACE, // Космос
+    DAILY_TYPE_ARCHEOLOGY, // Археология
+    DAILY_TYPE_FARM, // Ферма
+    DAILY_TYPE_TRUCK, // Дальнобойщики
+    DAILY_TYPE_CLEANING, // Клининговая служба
+    DAILY_TYPE_BUS // Автобус
+};
+
 new dailyName[][] =
 {
     "нет", // 0
@@ -112,6 +125,22 @@ new dailyDescription[][] =
         \n- Зайдите в вагончик и устройтесь на работу\
             \n- Выберите маршрут и арендуйте автобус для работы" // 21 Работать водителем автобуса
 };
+
+stock GetDailyType(dailyId) {
+    switch (dailyId) {
+        case 1..4: return DAILY_TYPE_FISHING;
+        case 5: return DAILY_TYPE_SPERM;
+        case 6: return DAILY_TYPE_HUNT;
+        case 7..11: return DAILY_TYPE_SPACE;
+        case 12..15: return DAILY_TYPE_ARCHEOLOGY;
+        case 16..17: return DAILY_TYPE_FARM;
+        case 18: return DAILY_TYPE_TRUCK;
+        case 19..20: return DAILY_TYPE_CLEANING;
+        case 21: return DAILY_TYPE_BUS;
+
+        default: return DAILY_TYPE_NONE;
+    }
+}
 
 stock GetDailyQuanMinMax(dailyid, &minQuan, &maxQuan) // Диапазон количества для заданий
 {
@@ -282,7 +311,7 @@ stock GetUniqueDailyForPlayer(playerid) {
 
         new bool: isUnique = true;
         for (new j = 0; j < MAX_DAILY_QUEST_PLAYER; j++) {
-            if (DailyInfo[playerid][daiID][j] == dailyId) {
+            if (GetDailyType(DailyInfo[playerid][daiID][j]) == GetDailyType(dailyId)) {
                 isUnique = false;
                 break;
             }
