@@ -700,7 +700,6 @@ stock gotobuycrypto(playerid,id)
         if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Покупатель подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
         PlayerInfo[para][pDonateMoney] += count;
         mysql_save(para, 4);
-        deltradecrypto(id);
 
         // Уведомление челу, если он в игре
         if(OnlineInfo[para][oLogged] == 1)
@@ -734,6 +733,7 @@ stock gotobuycrypto(playerid,id)
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я продал%s %s {ffcc00}%dG {cccccc}за {99ff66}%d$", gender(playerid), temp_name, count, price);
     CryptoLog(0, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
 	
+    deltradecrypto(id);
     TradeList(playerid, DP[1][playerid]);
     return 1;
 }
@@ -752,8 +752,6 @@ function get_tobuytradecrypto(playerid, userid, price, id, gold, const name_sell
 
         format(string, sizeof(string), "%s продал вам %d Gold за %d$", PlayerInfo[playerid][pName], gold, price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
-
-        deltradecrypto(id);
 	}
 	return 1;
 }
@@ -775,7 +773,6 @@ stock gotosellcrypto(playerid,id)
         if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Продавец подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
         PlayerInfo[para][pAccount] += price;
         mysql_save(para, 1);
-        deltradecrypto(id);
 
         // Уведомление челу, если он в игре
         if(OnlineInfo[para][oLogged] == 1)
@@ -809,6 +806,7 @@ stock gotosellcrypto(playerid,id)
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я приобрел%s у %s {ffcc00}%dG {cccccc} за {99ff66}%d$", gender(playerid), temp_name, count, price);
     CryptoLog(1, TradeCrypt[id][tcName],TradeCrypt[id][tcVlad], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], "", count, TradeCrypt[id][tcCourse]);
     
+    deltradecrypto(id);
     TradeList(playerid, DP[1][playerid]);
     return 1;
 }
@@ -827,8 +825,6 @@ function get_toselltradecrypto(playerid, userid, price, id, gold, const name_sel
 
         format(string, sizeof(string), "%s купил у вас %d Gold за %d$", PlayerInfo[playerid][pName], gold, price);
         notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], userid, name_seller, string);
-
-        deltradecrypto(id);
 	}
 	return 1;
 }
