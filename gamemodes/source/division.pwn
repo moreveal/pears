@@ -217,6 +217,8 @@ stock divmembersoff(playerid)
 }
 function call_membersdiv(playerid, org, div)
 {
+	if (org < 1 || div < 1) return ErrorMessage(playerid, "{ff6347}Ошибка при получении информации об участниках");
+
 	new year, month, day, rows;
 	getdate(year, month, day);
 	cache_get_row_count(rows);
@@ -253,6 +255,8 @@ function call_membersdiv(playerid, org, div)
 				cache_get_value_name_int(i, "pDivRank1", rank);
 			}
 		}
+
+		if (rank < 1) continue;
 
 		if(org == 8) // ICA
 		{
