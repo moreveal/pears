@@ -1665,6 +1665,9 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 	
 	PlayerInfo[playerid][pInven][slot] = thingId; // Ставим предмет в слот
 	PlayerInfo[playerid][pInvenQuan][slot] += quan; // Ставим количество в слот
+
+	// Не выдаем оружий ближнего боя больше чем 1
+	if (thingType == 1 && !IsShootingWeapon(thingId)) PlayerInfo[playerid][pInvenQuan][slot] = min(quan, 1);
 	
 	// (Техника сломана или нет, Одежда какой организации принадлежит, Unix время свежести продуктов, Изношенность оружия, Прнадлежность лицензии к ID игрока, Тип крепления аксессуара)
 	if(PerishableThing(thingId, thingType)) // Проверка на портящиеся продукты - у них используется Unix (Добавляя испорченный продукт к свежему, портиться должно всё)
@@ -1858,18 +1861,40 @@ stock OnPlayerLoadInventory(playerid)
 
 stock OnPlayerFriskOffline(playerid)
 {
-	new string_mysql[140];
-	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `%e` WHERE `user_id` = '%d'", 
-		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
+	new string_mysql[256];
+	if (DP[1][playerid] == 1 || DP[1][playerid] == 2) {
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql),
+			"SELECT `pp_igroki_inventory`.*, `pp_igroki`.Member \
+			FROM pp_igroki_inventory \
+			JOIN pp_igroki \
+			ON pp_igroki_inventory.user_id = pp_igroki.user_id  \
+			WHERE pp_igroki_inventory.user_id = %d",
+
+			DP[0][playerid]
+		);
+	} else {
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", DP[0][playerid]);
+	}
 	mysql_tquery(pearsq, string_mysql, "Call_frisk", "ds", playerid, ListName[playerid]);
 	return 1;
 }
 
 stock OnPlayerTakeOffline(playerid)
 {
-	new string_mysql[140];
-	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `%e` WHERE `user_id` = '%d'", 
-		((DP[1][playerid] == 1 || DP[1][playerid] == 2) ? "pp_igroki_inventory" : "pp_igroki"), DP[0][playerid]);
+	new string_mysql[256];
+	if (DP[1][playerid] == 1 || DP[1][playerid] == 2) {
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql),
+			"SELECT `pp_igroki_inventory`.*, `pp_igroki`.Member \
+			FROM pp_igroki_inventory \
+			JOIN pp_igroki \
+			ON pp_igroki_inventory.user_id = pp_igroki.user_id  \
+			WHERE pp_igroki_inventory.user_id = %d",
+
+			DP[0][playerid]
+		);
+	} else {
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", DP[0][playerid]);
+	}
 	mysql_tquery(pearsq, string_mysql, "Call_takefrisk", "dsd", playerid, ListName[playerid], ListInva[DP[3][playerid]][playerid]);
 	return 1;
 }
