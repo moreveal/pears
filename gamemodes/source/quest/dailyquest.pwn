@@ -705,7 +705,10 @@ stock SaveDailyQuests(playerid)
     }
 
     // Добавляем ON DUPLICATE KEY UPDATE с упрощенными значениями
-    strcat(string_mysql, ") ON DUPLICATE KEY UPDATE daiDay = VALUES(daiDay), daiFull = VALUES(daiFull)");
+    format(string_mysql, sizeof(string_mysql),
+        "%s) ON DUPLICATE KEY UPDATE daiDay = VALUES(daiDay), daiFull = VALUES(daiFull), daiChange = %d",
+        string_mysql, DailyInfo[playerid][daiChange]
+    );
 
     for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
     {
