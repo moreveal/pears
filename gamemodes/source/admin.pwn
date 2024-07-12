@@ -871,7 +871,7 @@ CMD:getinvest(playerid, const params[])
 }
 CMD:getgold(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 13) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+	if(PlayerInfo[playerid][pSoska] < 13) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
 	if(sscanf(params, "is[144]",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Взять золото из общака администрации [ /getgold Количество Причина ]");
 	if(params[0] > 10000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не больше 10000 и не меньше 1");
 	if(ServerInfo[33] < params[0]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В общаке администрации нет столько золота");
