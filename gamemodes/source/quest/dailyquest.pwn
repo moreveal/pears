@@ -270,30 +270,32 @@ CMD:checkdaily(playerid, const params[])
     return showDialogDailyQuest(playerid, targetid);
 }
 
-stock SelectUniqueDailyForSlot(playerid, slot) {
-    new dailyid, isUnique, attempts = 0;
+stock GetUniqueDailyForPlayer(playerid) {
+    const MAX_ATTEMPTS = 30;
+    for (new i = 0; i < MAX_ATTEMPTS; i++) {
+        new dailyId = random(sizeof(dailyName) - 1) + 1;
+        if (!IsDailyAvailableForPlayer(playerid, dailyId)) {
+            // Задание недоступно: не засчитываем эту попытку поиска задания и продолжаем дальше
+            i--;
+            continue;
+        }
 
-    do {
-        dailyid = random(sizeof(dailyName) - 1) + 1; // Выбираем случайное задание, начиная с 1
-        if (!IsDailyAvailableForPlayer(playerid, dailyid)) continue; // Проверяем требования для задания
-
-        isUnique = true;
-
-        // Проверяем, не было ли это задание уже выбрано в других слотах
-        for(new j = 0; j < slot; j++) {
-            if(DailyInfo[playerid][daiID][j] == dailyid) {
+        new bool: isUnique = true;
+        for (new j = 0; j < MAX_DAILY_QUEST_PLAYER; j++) {
+            if (DailyInfo[playerid][daiID][j] == dailyId) {
                 isUnique = false;
                 break;
             }
         }
 
-        attempts++;
-        if(attempts > 10) { // Ограничение попыток, чтобы избежать бесконечного цикла
-            return 0; // Возвращаем 0 (задание "нет"), если не удается найти уникальное
-        }
-    } while (!isUnique);
-
-    return dailyid;
+        // Задание повторяется: пытаемся найти ещё раз
+        if (!isUnique) continue;
+        
+        // Уникальное задание найдено - возвращаем его
+        return dailyId;
+    }
+    // Задание не найдено: возвращаем задание №0 "нет"
+    return 0;
 }
 
 stock CreateDaily(playerid, forced, taskid = -1) 
@@ -303,14 +305,14 @@ stock CreateDaily(playerid, forced, taskid = -1)
     if (taskid == -1) {
         for(new i = 0; i < MAX_DAILY_QUEST_PLAYER; i++) 
         {
-            new dailyid = SelectUniqueDailyForSlot(playerid, i);
+            new dailyid = GetUniqueDailyForPlayer(playerid);
             if(dailyid > 0)
             {
                 CreateDailySlotForPlayer(playerid, i, dailyid);
             }
         }
     } else {
-        CreateDailySlotForPlayer(playerid, taskid, SelectUniqueDailyForSlot(playerid, taskid));
+        CreateDailySlotForPlayer(playerid, taskid, GetUniqueDailyForPlayer(playerid));
     }
 
     DailyInfo[playerid][daiFull] = false; // Сбрасываем статус выполненных заданий
@@ -589,7 +591,7 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
             }
 
             new slot = DP[1][playerid];
-            new findDaily = SelectUniqueDailyForSlot(playerid, slot);
+            new findDaily = GetUniqueDailyForPlayer(playerid);
             if(findDaily > 0)
             {
                 CreateDailySlotForPlayer(playerid, slot, findDaily);
