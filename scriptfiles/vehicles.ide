@@ -265,7 +265,7 @@ cars
 15105, 	chargdep, 	chargdep, 	car, 		CHARGDEP, 	CHARGDEP, 	null,	executive, 	5, 	0,	0,		-1, 0.7, 0.7,		0
 15106, 	enforswat, 	enforswat, 	car, 		ENFORSWAT, 	ENFORSWAT, 	van,	ignore,		10,	0,	0,		-1, 0.936, 0.936,	-1
 15107, 	truckswat, 	truckswat, 	car, 		TRUCKSWAT, 	TRUCKSWAT, 	van,	big,	 	4, 	0,	0,		-1, 0.85, 0.85,		-1
-15108,	frerrarif1, frerrarif1, car,        FRERRARIF1, FRERRARIF1, null,   ignore, 10, 7, 0, 0, 0.85, 0.85, 1
+15108,	frerrarif1, frerrarif1, car,        FRERRARIF1, FRERRARIF1, null,   ignore,     10, 7,  0,       0, 0.9, 0.9,     1
 15109, 	crownciv, 	crownciv, 	car, 		CROWNCIV, 	CROWNCIV,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15110, 	crowndep, 	crowndep, 	car, 		CROWNDEP, 	CROWNDEP,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15111,	expidit, 	expidit, 	car, 		EXPIDIT, 	EXPIDIT, 	null,	ignore, 	3,	0,	0,		-1, 1.00, 1.00,		-1
@@ -335,5 +335,10 @@ cars
 15273,	polestar,	polestar,	car, 	    POLESTAR, 	POLESTAR, 	null,	richfamily, 	7, 	0,	0,		-1, 0.75, 0.75,		1
 15274,	rx7tun,		rx7tun,		car, 		RX7TUN, 	RX7TUN, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 15275, 	viper, 	    viper, 	    car, 		VIPER,	    VIPER, 	    null,	executive, 	    5, 	0,	0,		-1, 0.7, 0.7,		0
+15276,	m5e60,		m5e60,		car, 		M5E60,  	M5E60, 	    null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
+15277,	m8gc,		m8gc,		car, 		M8GC, 	    M8GC, 	    null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
+15278, 	camaro17, 	camaro17, 	car, 		CAMARO17, 	CAMARO17, 	null,	executive, 	    5, 	0,	0,		-1, 0.7, 0.7,		0
+15279,	motobike,	motobike,	bike,	    MOTOBIKE,	MOTOBIKE,	bikes,	motorbike,	    6,	0,	3f341210,		16, 0.68, 0.68,		-1
+
 end
 
