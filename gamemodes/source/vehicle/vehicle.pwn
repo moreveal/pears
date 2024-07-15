@@ -646,7 +646,7 @@ stock IsA_Gen5(carid) // 5 слотов в багажнике
     || model == 490 || model == 491 || model == 492 || model == 495 || model == 496 || model == 500 || model == 504 || model == 505 || model == 506 || model == 507 || model == 516
     || model == 517 || model == 518 || model == 526 || model == 527 || model == 529 || model == 533 || model == 534 || model == 536 || model == 540 || model == 541 || model == 542
     || model == 545 || model == 546 || model == 547 || model == 549 || model == 550 || model == 551 || model == 555 || model == 558 || model == 559 || model == 560 || model == 561
-    || model == 562 || model == 565 || model == 566 || model == 567 || model == 575 || model == 576 || model == 579 || model == 580 || model == 585 || model == 587 || model == 589
+    || model == 562 || model == 565 || model == 566 || model == 567 || model == 575 || model == 576 || model == 580 || model == 585 || model == 587 || model == 589
     || model == 596 || model == 597 || model == 598 || model == 599 || model == 602 || model == 603 || model == 604) return 1;
 	return 0;
 }
