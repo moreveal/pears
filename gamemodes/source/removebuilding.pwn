@@ -230,14 +230,14 @@ stock DeleteObject(playerid)
 	//RemoveBuildingForPlayer(playerid, 18656, 262.133880, 1807.660522, 35.790237, 3.0); // Прожектор
  	//--------------------------------------------------------------------------
 	//------------------------[ Мафиозный Корабль LS ]--------------------------
- 	RemoveBuildingForPlayer(playerid, 3689, 2430.5859, -2583.9453, 20.5234, 0.25);
-	RemoveBuildingForPlayer(playerid, 3690, 2430.5859, -2583.9453, 20.5234, 0.25);
-	RemoveBuildingForPlayer(playerid, 3688, 2450.8750, -2680.4531, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 3769, 2400.9063, -2577.3359, 15.1641, 0.25);
-	RemoveBuildingForPlayer(playerid, 1226, 2410.9766, -2632.8750, 16.4688, 0.25);
-	RemoveBuildingForPlayer(playerid, 3625, 2400.9063, -2577.3359, 15.1641, 0.25);
-	RemoveBuildingForPlayer(playerid, 3621, 2450.8750, -2680.4531, 17.7891, 0.25);
-	RemoveBuildingForPlayer(playerid, 1635, 2430.5781, -2653.9453, 23.7188, 0.25);
+ 	RemoveBuildingForPlayer(playerid, 3689, 2430.585, -2583.945, 20.523, 0.250);
+	RemoveBuildingForPlayer(playerid, 3690, 2430.585, -2583.945, 20.523, 0.250);
+	RemoveBuildingForPlayer(playerid, 3688, 2450.875, -2680.453, 17.789, 0.250);
+	RemoveBuildingForPlayer(playerid, 3769, 2400.906, -2577.335, 15.164, 0.250);
+	RemoveBuildingForPlayer(playerid, 1226, 2410.976, -2632.875, 16.468, 0.250);
+	RemoveBuildingForPlayer(playerid, 3625, 2400.906, -2577.335, 15.164, 0.250);
+	RemoveBuildingForPlayer(playerid, 3621, 2450.875, -2680.453, 17.789, 0.250);
+	RemoveBuildingForPlayer(playerid, 1635, 2430.578, -2653.945, 23.718, 0.250);
  	//--------------------------------------------------------------------------
 	//------------------------[ Мафиозный Корабль SF ]--------------------------
  	RemoveBuildingForPlayer(playerid, 10840, -1666.1250, -62.0781, 10.9453, 0.25);
