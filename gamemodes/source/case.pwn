@@ -204,15 +204,23 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
     {
-        if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+        if(playerid == INVALID_PLAYER_ID)
         {
             new thingTemp = random(ThingSkinQuan);
             thingId = ThingSkincaseGift[thingTemp];
         }
-        else // Женский скин в кейсе
+        else
         {
-            new thingTemp = random(ThingSkinQuanFemale);
-            thingId = ThingSkincaseGiftFemale[thingTemp];
+            if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+            {
+                new thingTemp = random(ThingSkinQuan);
+                thingId = ThingSkincaseGift[thingTemp];
+            }
+            else // Женский скин в кейсе
+            {
+                new thingTemp = random(ThingSkinQuanFemale);
+                thingId = ThingSkincaseGiftFemale[thingTemp];
+            }
         }
         thingQuan = 1;
     }
