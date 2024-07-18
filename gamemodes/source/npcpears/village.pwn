@@ -2,7 +2,7 @@
 #define NOT_FIND_ATTACK_PLAYER 9000
 #define SECOND_FOR_BACK_VILLAGE 300 // Время на возвращение ботов деревенских после того как их всех убили
 #define CD_GIFT_VILLAGE 3600 // Кд, через которое подарки можно будет получить, убив всех ботов
-#define RESPAWN_VILLAGE_NPC 180 // Время респавна для NPC
+#define RESPAWN_VILLAGE_NPC 150 // Время респавна для NPC
 #define MAX_CASE_VILLAGE 8 // Максимальное количество кейсов у деревенских
 
 new Iterator:VillagePlayer<MAX_PLAYERS>;
@@ -37,7 +37,19 @@ new VillageNpcWalk[][VILLAGENPCWALK] =
     { -1538.1300,2632.1814,55.8360, -1538.3060,2654.8223,55.8360},
     { -1426.7478,2594.5620,55.8360, -1440.5133,2594.5186,55.8360},
     { -1433.7206,2613.3018,55.8360, -1433.3739,2630.3848,55.8360},
-    { -1407.4387,2630.5642,55.6875, -1408.3096,2649.6248,55.6875}
+    { -1407.4387,2630.5642,55.6875, -1408.3096,2649.6248,55.6875},
+    { -1476.0532,2680.3450,55.6742, -1476.1816,2696.7197,55.8194},
+    { -1471.8306,2679.6736,55.8360, -1436.1375,2678.8806,55.8360},
+    { -1432.8440,2611.5532,55.8360, -1433.4375,2658.2288,55.8360},
+    { -1444.2333,2663.1423,55.8360, -1466.0264,2662.2234,55.8360},
+    { -1488.6769,2660.2205,55.8360, -1488.4928,2612.9570,55.8360},
+    { -1478.0665,2593.2788,55.8360, -1450.7744,2593.7302,55.8360},
+    { -1417.9578,2621.0537,55.8360, -1418.1655,2651.4641,55.8360},
+    { -1437.1744,2627.4558,55.8360, -1454.8990,2627.2456,55.8360},
+    { -1516.2959,2638.5239,55.8360, -1533.8876,2637.3040,55.8360},
+    { -1554.3000,2602.8113,55.8360, -1553.7778,2564.9648,55.8360},
+    { -1535.5031,2569.6995,55.8360, -1508.0277,2577.2761,55.8360},
+    { -1596.3037,2676.6538,55.0900, -1596.6954,2696.1082,55.0639}
 };
 
 new VillageRandomWeapons[] = { 4, 6, 9, 9, 25, 26, 30, 30, 30, 30 };
@@ -219,10 +231,10 @@ CMD:spawnvillage(playerid)
 {
     if(PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
-    for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
     VillageInfo[villActive] = false;
     VillageInfo[villGiftStatus] = false;
     VillageInfo[villCDShowGift] = 0;
+    for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
     UpdateLabelVillageGift();
     return true;
 }
@@ -324,19 +336,31 @@ stock GiveDamagePlayerToVillageNpc(NPC:npc, damagerid)
 
 stock SetSpawnVillageNpc(NPC:npc)
 {
-    new quanVillageNpcDeath;
     for(new i = 0; i < sizeof(VillageNpcWalk); i++)
     {
-        if(IsNpcDead(VillageInfo[villID][i])) quanVillageNpcDeath ++; // Считаем дохлых NPC
-
-        if(VillageInfo[villID][i] == npc) RevivalVillageNpc(i);
+        if(VillageInfo[villID][i] == npc) 
+        {
+            RevivalVillageNpc(i);
+            break;
+        }
     }
 
-    if(server == 0) SendClientMessageToAll(-1, "Количество дохлых NPC %d", quanVillageNpcDeath);
+    new quanVillageNpcDeath = GetQuanDeadVillageNpc();
+    if(server == 0) SendClientMessageToAll(-1, "Количество живых NPC %d", sizeof(VillageNpcWalk) - quanVillageNpcDeath);
 
     // Все NPC умерли, открываем призы
     if(quanVillageNpcDeath >= sizeof(VillageNpcWalk)) CreateVillageGift();
     return true;
+}
+
+stock GetQuanDeadVillageNpc()
+{
+    new quan;
+    for(new i = 0; i < sizeof(VillageNpcWalk); i++)
+    {
+        if(IsNpcDead(VillageInfo[villID][i])) quan ++; // Считаем дохлых NPC
+    }
+    return quan;
 }
 
 // Открываем призы и создаём всю фигню
@@ -364,17 +388,22 @@ stock CreateVillageGift()
             SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, 0,0, -1481.3367 + random(5),2627.9875 + random(5), 57.771343, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
         }
     }
+    else
+    {
+        VillageInfo[villCDShowGift] = SECOND_FOR_BACK_VILLAGE;
+        for(new i = 0; i < sizeof(VillageNpcWalk); i++) VillageInfo[villRespawn][i] = SECOND_FOR_BACK_VILLAGE;
+    }
     return true;
 }
 
 // Сообщение о завершении битвы
 stock MessageVillageWin(playerid)
 {
-    new lines[210];
+    new lines[320];
     if(VillageInfo[villCD] > 0)
     {
         format(lines,sizeof(lines),"{EE8B59}Все деревенские были убиты!\
-	                            \n{cccccc}- Однако, вы не можете забрать призы, потому что их нет на месте\
+	                            \n{cccccc}- Однако, вы не можете забрать призы, потому что призов нет на месте\
 	                            \n{cccccc}- Призы доступны для получения 1 раз в %d минут\
                                 \n{EE8B59}- Осталось времени для повторного получения призов: %s", CD_GIFT_VILLAGE / 60, fine_time(VillageInfo[villCD]));
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
@@ -514,8 +543,21 @@ stock PlayerExitVillage(playerid)
 // Нанесли урон NPC
 public bool:OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bodypart)
 {
+    if(Protect_Veh[damagerid] != 9999)
+    {
+        new vehicleid = Protect_Veh[damagerid];
+        if(IsShootingVehicle(VehInfo[vehicleid][vModel])) return false;
+    }
     GiveDamagePlayerToVillageNpc(npc, damagerid);
     return true;
+}
+
+// Транспорт из которого можно стрелять (полный список)
+stock IsShootingVehicle(model)
+{
+    model = GetVehModelOriginal(model);
+    if(model == 425 || model == 430 || model == 432 || model == 447 || model == 464 || model == 476 || model == 520 || model == 564) return true;
+    return false;
 }
 
 // NPC нанёс урон игроку
