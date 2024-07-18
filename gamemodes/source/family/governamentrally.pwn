@@ -565,11 +565,18 @@ stock SelectVoteAfterRally()
 CMD:setvote(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return 0;
-    new number,count;
-    sscanf(params, "ii",number,count);
+    new number, count;
+    if (sscanf(params, "ii", number, count)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить голоса кандидата [ /setvote ID Количество ]");
+
+    new log_str[64];
+    format(log_str, sizeof(log_str), "Кандидат: №%d [Было: %d | Стало: %d]", number, ViborGol[number], count);
+
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Количество голосов №%d было изменено: {ff9000}%d {cccccc}-> {ff9000}%d", number, ViborGol[number], count);
+    
     ViborGol[number] = count;
     SaveVibor();
-    AdminLog("setvote", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", number, "Гандоний глаз подкуплен был и подкрутил");
+
+    AdminLog("setvote", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", number, log_str);
     return 1;
 }
 
