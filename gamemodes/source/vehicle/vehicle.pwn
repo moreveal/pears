@@ -483,6 +483,39 @@ CMD:cleartun(playerid)
 	return true;
 }
 
+alias:wheel("wheels", "whel", "whels")
+CMD:wheel(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить диски на транспорт /wheel ID модели");
+		if(!IsAWheelForVehicles(params[0])) return ErrorMessage(playerid, "{FF6347}Этот id нельзя установить в качестве дисков на транспорт");
+		AddVehicleComponent(vehicleid, params[0]);
+		PlayerPlaySound(playerid,40404,0,0,0);
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+CMD:paint(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(IsAVehiclesPaintJob(VehInfo[vehicleid][vModel]) == 0) return ErrorMessage(playerid, "{FF6347}На этот транспорт нельзя установить покрасочную работу");
+		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить покрасочную работу на транспорт /paint ID paintjob (3 - удалить)");
+
+		ChangeVehiclePaintjob(vehicleid, params[0]);
+		PlayerPlaySound(playerid,1134,0,0,0);
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
 stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 {
 	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");

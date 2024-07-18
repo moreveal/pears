@@ -446,3 +446,31 @@ stock GetVehicleClass(m)
     return class;
 }
 
+// Перечисляем транспорт с покрасочными работами
+stock IsAVehiclesPaintJob(model)
+{
+    if(model == 2042) return 4; // Ferrari F1 имеет 4 покрасочные работы
+    return 0;
+}
+
+// Перечисляем кастомные модели дисков для транспорта (Сюды добавлять новые)
+stock IsAWheelsForVehicleCustom(model)
+{
+    if(model == 12246) return true;
+    return false;
+}
+
+// Перечисляем стандартные модели дисков для транспорта
+stock IsAWheelsForVehicleDefault(model)
+{
+    if(model == 1025 || model >= 1073 && model <= 1085 || model >= 1096 && model <= 1098) return true;
+    return false;
+}
+
+// Проверка дисков для трансопрта
+stock IsAWheelForVehicles(model)
+{
+    if(IsAWheelsForVehicleDefault(model)
+        || IsAWheelsForVehicleCustom(model)) return true;
+    return false;
+}
