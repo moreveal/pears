@@ -179,6 +179,7 @@ stock SetVillageNpcRandomWeapons(i)
 
 stock SpawnVillageNpc(i)
 {
+    VillageInfo[villRespawn][i] = 0;
     VillageInfo[villAttackPlayerid][i] = INVALID_PLAYER_ID;
 
     SetNpcPosition(VillageInfo[villID][i], VillageNpcWalk[i][WalkStart_X], VillageNpcWalk[i][WalkStart_Y], VillageNpcWalk[i][WalkStart_Z]);
@@ -220,6 +221,9 @@ CMD:spawnvillage(playerid)
 
     for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
     VillageInfo[villActive] = false;
+    VillageInfo[villGiftStatus] = false;
+    VillageInfo[villCDShowGift] = 0;
+    UpdateLabelVillageGift();
     return true;
 }
 
