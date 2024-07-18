@@ -219,9 +219,9 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
-        switch(random(5))
+        switch(random(15))
         {
-            case 1: // Premium
+            case 5: // Premium
             {
                 new thingTemp = random(ThingPremiumVehicleQuan);
                 thingId = ThingPremiumVehiclecaseGift[thingTemp];
