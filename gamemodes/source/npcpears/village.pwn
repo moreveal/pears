@@ -124,6 +124,47 @@ stock CreateVillageNpc()
     // Выходы
     CreateDynamicPickup(19132, 1, -1483.0803,2642.3938,58.7813, 0, 0);
     CreateDynamicPickup(19132, 1, -1476.9990,2613.9775,58.7813, 0, 0);
+
+    CreateDynamicActor(14, -1361.6107,2642.7361,51.9239,255.6489, true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    CreateDynamicActor(15, -1619.9281,2685.8677,54.9776,74.5639, true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    return true;
+}
+
+// Меню информации от сторожа
+stock ShowDialogInfoVillage(playerid)
+{
+    if((IsPlayerInRangeOfPoint(playerid,1.0,-1361.6107,2642.7361,51.9239)
+        || IsPlayerInRangeOfPoint(playerid,1.0,-1619.9281,2685.8677,54.9776)) 
+        && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    {
+		ShowDialog(playerid,1271,DIALOG_STYLE_TABLIST,"{ff9000}Сторож","{ff9000}Расскажи, что это за деревня\
+		                            \n{666666}Правила >>","Выбор","Отмена");
+        return true;
+    }
+    return false;
+}
+
+// Запускаем отображенеи информации для игрока
+stock InformationVillage(playerid, listitem)
+{
+    if(listitem == 0)
+    {
+        // Тут запускается озвучка для бота
+    }
+    else if(listitem == 1) // Правила
+    {
+        new lines[600];
+        format(lines,sizeof(lines),"{EE8B59}Деревенские\
+	                            \n\n{cccccc}- В Деревне бродят агрессивные жители\
+	                            \n{cccccc}- Если вы нападёте на одного из них, они начнут атаковать всех приезжих\
+                                \n{cccccc}- Вы можете убить всех деревенских для того, чтобы получить доступ к их хранилищу\
+                                \n\n{ffcc66}- После смерти житель деревни возраждается через %d сек.\
+                                \n{ffcc66}- Ваша задача успеть убить всех жителей\
+                                \n{ffcc66}- Деревенские с холодным оружием имеют в два раза больше хп, чем с огнестрельным\
+                                \n{ffcc66}Рекомендация: Не нападайте в одиночку. Вы сильно рискуете\
+                                ", RESPAWN_VILLAGE_NPC);
+        ShowDialog(playerid,1272,DIALOG_STYLE_MSGBOX,"{ff9000}Правила",lines,"*","");
+    }
     return true;
 }
 
