@@ -458,7 +458,7 @@ stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
     }
 
     GiveUnit(arbiterid, 13);
-    OrgLog(7, "CourtCloseProcess", PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], PlayerInfo[arbiterid][pID], PlayerInfo[arbiterid][pName], PlayerInfo[arbiterid][pPlaIP], 0, log_message);
+    OrgLog(7, "CourtCloseProcess", PlayerInfo[arbiterid][pID], PlayerInfo[arbiterid][pName], PlayerInfo[arbiterid][pPlaIP], PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], 0, log_message);
     CourtDeleteOrder(prisonerid);
 
     return 1;

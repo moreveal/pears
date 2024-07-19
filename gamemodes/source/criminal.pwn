@@ -976,8 +976,8 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         if(IsOnline(zakonnik)) {
             OrgLog(fractionid, "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], CriminalCodeInfo[uk][p][ccName]);
         } else {
-            new log_string[128]; format(log_string, sizeof(log_string), "Автовыдача розыска [%s]", CriminalCodeInfo[uk][p][ccName]);
-            OrgLog(fractionid, "su", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CriminalCodeInfo[uk][p][ccLevel], log_string);
+            new log_string[128]; format(log_string, sizeof(log_string), "Выдача розыска системой [%s]", CriminalCodeInfo[uk][p][ccName]);
+            OrgLog(fractionid, "su", 0, "", "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], log_string);
         }
     }
 	return slotUk;
