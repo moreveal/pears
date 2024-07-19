@@ -36,6 +36,9 @@ stock CreateMysqlTable()
 
     // Аксессуары
     AddColumnIfNotExists("accessory", "acCase", "BOOLEAN NOT NULL DEFAULT '0'");
+
+    // Подсказки с озвучкой
+    AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
 	return true;
 }
 

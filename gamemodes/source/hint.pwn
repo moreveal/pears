@@ -1,8 +1,17 @@
 
-#define MAX_HINT 1 // Максимальное количество подсказок (новая система)
+#define MAX_HINT 2 // Максимальное количество подсказок (новая система)
 
 new bool:HintLoad[MAX_REALPLAYERS];
 new HitPlayer[MAX_REALPLAYERS][MAX_HINT];
+
+// Включаем подсказки для игрока после того как он залогинился в игре
+stock ShowPlayerHintAfterLogin(playerid)
+{
+    if(HintLoad[playerid] == false) return false;
+
+    if(HitPlayer[playerid][1] == 0) ShowPlayerHintInfo(playerid, 1); // Подсказка про деревенских
+    return true;
+}
 
 stock ShowPlayerHintInfo(playerid, hintid)
 {
@@ -18,6 +27,26 @@ stock ShowPlayerHintInfo(playerid, hintid)
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): У нас тут криминальненько и если не хочешь, чтобы твою машину угнали..");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Поставь на неё сигнализацию");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты можешь купить её в любом автосервисе [ Y >> GPS >> Автосервис ]");
+    }
+
+    // Подсказка про деревенских
+    else if(hintid == 1)
+    {
+        if(!IsPlayerSyncModels(playerid)) return false; // Если нет лаунчера, хрен тебе а не уведомление
+
+        // Если один из этих квестов не пройден, не сообщаем игроку о том, что у нас есть деревенские
+        if(NoCompleteQuest(playerid, 2) // Привести себя в порядок
+            || NoCompleteQuest(playerid, 3) // Взломать тачку
+            || NoCompleteQuest(playerid, 5) // Археологические раскопки
+            || NoCompleteQuest(playerid, 8) // Хавка
+            || NoCompleteQuest(playerid, 9) // Ноут
+            ) return false;
+
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_hint1.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Привет. Ну как оно? Хочу дать тебе наводку на одно дельце");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Рядом со станцией NASA есть деревня, там живут какие-то больные");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Они что-то охраняют и это что-то ты можешь забрать себе");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Возьмие оружие, друзей и отправляйся [ Y >> Квесты >> Деревенские ]");
     }
 
     // Сохраняем результат подсказки
@@ -64,6 +93,8 @@ function Call_OnPlayerHintLoad(playerid, race_check)
         printf("OnPlayerHintLoad(%s) Подсказки Созданы", PlayerInfo[playerid][pName]);
 	}
     HintLoad[playerid] = true;
+
+    ShowPlayerHintAfterLogin(playerid);
 	return 1;
 }
 

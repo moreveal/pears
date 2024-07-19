@@ -72,8 +72,8 @@ enum VILLAGEINFO
 new VillageInfo[VILLAGEINFO];
 
 new Float: VillageStoroj[2][4] = {
-    {-1361.6107,2642.7361,51.9239,255.6489}, // Бэрни
-    {-1619.9281,2685.8677,54.9776,74.5639} // Эрни
+    {-1361.6107,2642.7361,51.9239,255.6489}, // Эрни
+    {-1619.9281,2685.8677,54.9776,74.5639} // Бэрни
 };
 
 // Проверка бота, дохлый ли он
@@ -152,14 +152,16 @@ stock CreateVillageNpc()
     VillageInfo[villStoroji][0] = CreateDynamicActor(14, VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2],VillageStoroj[0][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
     VillageInfo[villStoroji][1] = CreateDynamicActor(15, VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],VillageStoroj[1][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
 
-    CreateDynamic3DTextLabel("Эрни [ ALT ]",0xA9C4E4FF,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-    CreateDynamic3DTextLabel("Бэрни [ ALT ]",0xA9C4E4FF,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+    CreateDynamic3DTextLabel("{cccccc}Эрни [ ALT ]",0xA9C4E4FF,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+    CreateDynamic3DTextLabel("{cccccc}Бэрни [ ALT ]",0xA9C4E4FF,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     return true;
 }
 
 // Меню информации от сторожа
 stock ShowDialogInfoVillage(playerid)
 {
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Этот квест доступен только при наличии лаунчера");
+
     if((IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2])
         || IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2])) 
         && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
@@ -185,7 +187,7 @@ stock InformationVillage(playerid, listitem)
         }
         else if(IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2]))
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/erny/erny0.mp3",VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],6.0,true);
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/berny/berny0.mp3",VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],6.0,true);
             StartScriptActor(playerid, 12, VillageInfo[villStoroji][1]);
         }
     }
