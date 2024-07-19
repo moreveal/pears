@@ -70,39 +70,44 @@ stock CreateVehicleGiftCase()
     ThingVehicleQuan = 0;
 
     // Собираем обычный транспорт
-    for(new i = 0; i < 212; i++)
+    for(new v = 400; v < 612; v++)
     {
-        if(!IsAVehExisting(i+400)
+        new i = CorrectVehicleID(v);
+
+        if(!IsAVehExisting(v)
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
-        new vehClass = GetVehicleClass(i+400);
+        new vehClass = GetVehicleClass(v);
         if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
 
-        new vehType = GetVehicleType(i+400);
+        new vehType = GetVehicleType(v);
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
-                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = i+400, ThingVehicleQuan ++;
+                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
         }
     }
 
+    ThingPremiumVehicleQuan = 0;
     // Собираем кастомный транспорт
-    for(new i = 0; i < MAX_VEHICLE_CUSTOM; i++)
+    for(new v = 2000; v < 2000 + MAX_VEHICLE_CUSTOM; v++)
     {
-        if(!IsAVehExisting(i+2000)
+        new i = CorrectVehicleID(v);
+
+        if(!IsAVehExisting(v)
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
-        new vehClass = GetVehicleClass(i+2000);
+        new vehClass = GetVehicleClass(v);
         if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
 
-        new vehType = GetVehicleType(i+2000);
+        new vehType = GetVehicleType(v);
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
                 || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) 
                 {
-                    if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = i+2000, ThingPremiumVehicleQuan ++; // Premium Vehicle
-                    else ThingVehiclecaseGift[ThingVehicleQuan] = i+2000, ThingVehicleQuan ++;
+                    if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
+                    else ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
                 }
         }
     }
@@ -219,9 +224,9 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
-        switch(random(15))
+        switch(random(18))
         {
-            case 5: // Premium
+            case 8: // Premium
             {
                 new thingTemp = random(ThingPremiumVehicleQuan);
                 thingId = ThingPremiumVehiclecaseGift[thingTemp];
