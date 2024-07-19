@@ -136,7 +136,7 @@ stock CreateVillageNpc()
         SpawnVillageNpc(i);
     }
 
-    VillageInfo[villZone] = CreateDynamicCube(-1636, 2505, 100.0, -1356, 2734, 200.0, 0, 0);
+    VillageInfo[villZone] = CreateDynamicCube(-1636.0, 2505.0, 0.0, -1356.0, 2734.0, 300.0, 0, 0);
 
     // Входы
 	VillageInfo[villEnterLabel][0] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,-1483.2771,2644.1699,58.7281,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);

@@ -46,7 +46,7 @@ stock ShowPlayerHintInfo(playerid, hintid)
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Привет. Ну как оно? Хочу дать тебе наводку на одно дельце");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Рядом со станцией NASA есть деревня, там живут какие-то больные");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Они что-то охраняют и это что-то ты можешь забрать себе");
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Возьмие оружие, друзей и отправляйся [ Y >> Квесты >> Деревенские ]");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Возьми оружие, друзей и отправляйся [ Y >> Квесты >> Деревенские ]");
     }
 
     // Сохраняем результат подсказки
