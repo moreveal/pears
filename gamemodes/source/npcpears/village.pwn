@@ -66,9 +66,15 @@ enum VILLAGEINFO
     villCD, // Кд на получение призов после того как все боты убиты
     Text3D:villEnterLabel[2], // Лейблы входов
     bool:villGiftStatus, // Статус, можно ли забирать подарки
-    villCDShowGift // Время, которое даётся на то, чтобы забрать все подарки
+    villCDShowGift, // Время, которое даётся на то, чтобы забрать все подарки
+    villStoroji[2] // Два сторожа (DynamicActor)
 }
 new VillageInfo[VILLAGEINFO];
+
+new Float: VillageStoroj[2][4] = {
+    {-1361.6107,2642.7361,51.9239,255.6489}, // Бэрни
+    {-1619.9281,2685.8677,54.9776,74.5639} // Эрни
+};
 
 // Проверка бота, дохлый ли он
 stock IsNpcDead(NPC:npc)
@@ -104,6 +110,24 @@ CMD:rvillage(playerid)
     return true;
 }
 
+alias:racvillage("spawnvillage", "respawnvillage")
+CMD:racvillage(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+    VillageInfo[villActive] = false;
+    VillageInfo[villGiftStatus] = false;
+    VillageInfo[villCDShowGift] = 0;
+    for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
+    UpdateLabelVillageGift();
+
+    new string[100];
+    format(string, sizeof(string), " [ ADM ]: %s заспавнил всех деревенских",PlayerInfo[playerid][pName]);
+	ABroadCast(COLOR_ADM,string,1);
+    AdminLog("racvillage", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+    return true;
+}
+
 stock CreateVillageNpc()
 {
     for(new i = 0; i < sizeof(VillageNpcWalk); i++)
@@ -112,7 +136,7 @@ stock CreateVillageNpc()
         SpawnVillageNpc(i);
     }
 
-    VillageInfo[villZone] = CreateDynamicSphere(-1490.1393,2608.5479,55.6808, 140.0, 0, 0);
+    VillageInfo[villZone] = CreateDynamicCube(-1636, 2505, 100.0, -1356, 2734, 200.0, 0, 0);
 
     // Входы
 	VillageInfo[villEnterLabel][0] = CreateDynamic3DTextLabel(" ",0xA9C4E4FF,-1483.2771,2644.1699,58.7281,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
@@ -125,19 +149,22 @@ stock CreateVillageNpc()
     CreateDynamicPickup(19132, 1, -1483.0803,2642.3938,58.7813, 0, 0);
     CreateDynamicPickup(19132, 1, -1476.9990,2613.9775,58.7813, 0, 0);
 
-    CreateDynamicActor(14, -1361.6107,2642.7361,51.9239,255.6489, true, 100.0, 0, 0, -1, 100.0, -1, 0);
-    CreateDynamicActor(15, -1619.9281,2685.8677,54.9776,74.5639, true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    VillageInfo[villStoroji][0] = CreateDynamicActor(14, VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2],VillageStoroj[0][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
+    VillageInfo[villStoroji][1] = CreateDynamicActor(15, VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],VillageStoroj[1][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
+
+    CreateDynamic3DTextLabel("Эрни [ ALT ]",0xA9C4E4FF,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+    CreateDynamic3DTextLabel("Бэрни [ ALT ]",0xA9C4E4FF,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2] + 1.0,3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
     return true;
 }
 
 // Меню информации от сторожа
 stock ShowDialogInfoVillage(playerid)
 {
-    if((IsPlayerInRangeOfPoint(playerid,1.0,-1361.6107,2642.7361,51.9239)
-        || IsPlayerInRangeOfPoint(playerid,1.0,-1619.9281,2685.8677,54.9776)) 
+    if((IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2])
+        || IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2])) 
         && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
     {
-		ShowDialog(playerid,1271,DIALOG_STYLE_TABLIST,"{ff9000}Сторож","{ff9000}Расскажи, что это за деревня\
+		ShowDialog(playerid,1271,DIALOG_STYLE_TABLIST,"{ff9000}Сторож","{ff9000}Расскажи, что это за деревня?\
 		                            \n{666666}Правила >>","Выбор","Отмена");
         return true;
     }
@@ -149,19 +176,30 @@ stock InformationVillage(playerid, listitem)
 {
     if(listitem == 0)
     {
-        // Тут запускается озвучка для бота
+        if(BotTalkTimer[playerid] || QuestInfo[playerid][ActorTimer]) return 1; // Если бот уже болтает - не прерываем его
+
+        if(IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2]))
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/erny/erny0.mp3",VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2],6.0,true);
+            StartScriptActor(playerid, 11, VillageInfo[villStoroji][0]);
+        }
+        else if(IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2]))
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/erny/erny0.mp3",VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],6.0,true);
+            StartScriptActor(playerid, 12, VillageInfo[villStoroji][1]);
+        }
     }
     else if(listitem == 1) // Правила
     {
         new lines[600];
-        format(lines,sizeof(lines),"{EE8B59}Деревенские\
+        format(lines,sizeof(lines),"{FB9656}Деревенские\
 	                            \n\n{cccccc}- В Деревне бродят агрессивные жители\
 	                            \n{cccccc}- Если вы нападёте на одного из них, они начнут атаковать всех приезжих\
                                 \n{cccccc}- Вы можете убить всех деревенских для того, чтобы получить доступ к их хранилищу\
-                                \n\n{ffcc66}- После смерти житель деревни возраждается через %d сек.\
+                                \n\n{ffcc66}- После смерти житель деревни возрождается через %d сек.\
                                 \n{ffcc66}- Ваша задача успеть убить всех жителей\
                                 \n{ffcc66}- Деревенские с холодным оружием имеют в два раза больше хп, чем с огнестрельным\
-                                \n{ffcc66}Рекомендация: Не нападайте в одиночку. Вы сильно рискуете\
+                                \n{ff9000}- Рекомендация: Не нападайте в одиночку. Вы сильно рискуете\
                                 ", RESPAWN_VILLAGE_NPC);
         ShowDialog(playerid,1272,DIALOG_STYLE_MSGBOX,"{ff9000}Правила",lines,"*","");
     }
@@ -209,14 +247,14 @@ stock UpdateLabelVillageGift()
     new string[200];
     if(VillageInfo[villGiftStatus] == true)
     {
-        format(string,sizeof(string),"{EE8B59}Хранилище Деревенских\
+        format(string,sizeof(string),"{FB9656}Хранилище Деревенских\
                 \n{99ff66}Призы доступны для получения\
                 \n\n{cccccc}Войти ALT");
     }
     else
     {
-        if(VillageInfo[villCD] > 0) format(string,sizeof(string),"{EE8B59}Хранилище Деревенских\n{666666}Хранилище будет доступно через %s", fine_time(VillageInfo[villCD]));
-        else format(string,sizeof(string),"{EE8B59}Хранилище Деревенских\n{99ff66}В хранилище что-то есть\n\n{666666}Устраните всех деревенских, чтобы забрать их вещи");
+        if(VillageInfo[villCD] > 0) format(string,sizeof(string),"{FB9656}Хранилище Деревенских\n{666666}Хранилище будет доступно через %s", fine_time(VillageInfo[villCD]));
+        else format(string,sizeof(string),"{FB9656}Хранилище Деревенских\n{99ff66}В хранилище что-то есть\n\n{666666}Устраните всех деревенских, чтобы забрать их вещи");
     }
 
 	UpdateDynamic3DTextLabelText(VillageInfo[villEnterLabel][0],0xA9C4E4FF,string);
@@ -264,19 +302,6 @@ stock GoVilliageNpc(i, destination, NPC_MOVE_MODE:MOVE_MODE)
     {
         TaskNpcGoToPoint(VillageInfo[villID][i], VillageNpcWalk[i][WalkStart_X], VillageNpcWalk[i][WalkStart_Y], VillageNpcWalk[i][WalkStart_Z], MOVE_MODE);
     }
-    return true;
-}
-
-alias:spawnvillage("racvillage", "respawnvillage")
-CMD:spawnvillage(playerid)
-{
-    if(PlayerInfo[playerid][pSoska] <= 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-
-    VillageInfo[villActive] = false;
-    VillageInfo[villGiftStatus] = false;
-    VillageInfo[villCDShowGift] = 0;
-    for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
-    UpdateLabelVillageGift();
     return true;
 }
 
@@ -443,15 +468,15 @@ stock MessageVillageWin(playerid)
     new lines[320];
     if(VillageInfo[villCD] > 0)
     {
-        format(lines,sizeof(lines),"{EE8B59}Все деревенские были убиты!\
+        format(lines,sizeof(lines),"{FB9656}Все деревенские были убиты!\
 	                            \n{cccccc}- Однако, вы не можете забрать призы, потому что призов нет на месте\
 	                            \n{cccccc}- Призы доступны для получения 1 раз в %d минут\
-                                \n{EE8B59}- Осталось времени для повторного получения призов: %s", CD_GIFT_VILLAGE / 60, fine_time(VillageInfo[villCD]));
+                                \n{FB9656}- Осталось времени для повторного получения призов: %s", CD_GIFT_VILLAGE / 60, fine_time(VillageInfo[villCD]));
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
     }
     else
     {
-        format(lines,sizeof(lines),"{EE8B59}Все деревенские были убиты!\
+        format(lines,sizeof(lines),"{FB9656}Все деревенские были убиты!\
 	                            \n{cccccc}- Теперь вы можете забрать их вещи [ Отмечено GPS меткой ]\
 	                            \n{cccccc}- У вас есть %d минут на то, чтобы забрать призы", SECOND_FOR_BACK_VILLAGE / 60);
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");

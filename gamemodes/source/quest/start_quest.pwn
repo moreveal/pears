@@ -170,6 +170,20 @@ stock SendScriptActor(playerid, scriptid, actorid) // Следующая реп�
         QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue10[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue10));
         SendDynamicActorScript(actorid, playerid, scriptCue10[QuestInfo[playerid][ActorText]]);
     }
+
+    // Эрни
+    else if(scriptid == 11)
+    {
+        QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue11[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue11));
+        SendDynamicActorScript(actorid, playerid, scriptCue11[QuestInfo[playerid][ActorText]]);
+    }
+
+    // Бэрни
+    else if(scriptid == 12)
+    {
+        QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue12[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue12));
+        SendDynamicActorScript(actorid, playerid, scriptCue12[QuestInfo[playerid][ActorText]]);
+    }
     return 1;
 }
 function NextScriptActor(playerid, scriptid, actorid, maxScript) // Обработчик следующей реплики
