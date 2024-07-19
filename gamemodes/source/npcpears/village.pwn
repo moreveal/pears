@@ -404,20 +404,25 @@ stock GiveDamagePlayerToVillageNpc(NPC:npc, damagerid)
 
 stock SetSpawnVillageNpc(NPC:npc)
 {
+    new bool:villageNpc;
     for(new i = 0; i < sizeof(VillageNpcWalk); i++)
     {
         if(VillageInfo[villID][i] == npc) 
         {
             RevivalVillageNpc(i);
+            villageNpc = true;
             break;
         }
     }
 
-    new quanVillageNpcDeath = GetQuanDeadVillageNpc();
-    if(server == 0) SendClientMessageToAll(-1, "Количество живых NPC %d", sizeof(VillageNpcWalk) - quanVillageNpcDeath);
+    if(villageNpc == true)
+    {
+        new quanVillageNpcDeath = GetQuanDeadVillageNpc();
+        if(server == 0) SendClientMessageToAll(-1, "Количество живых NPC %d", sizeof(VillageNpcWalk) - quanVillageNpcDeath);
 
-    // Все NPC умерли, открываем призы
-    if(quanVillageNpcDeath >= sizeof(VillageNpcWalk)) CreateVillageGift();
+        // Все NPC умерли, открываем призы
+        if(quanVillageNpcDeath >= sizeof(VillageNpcWalk)) CreateVillageGift();
+    }
     return true;
 }
 
