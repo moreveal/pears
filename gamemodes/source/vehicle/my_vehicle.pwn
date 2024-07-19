@@ -4568,7 +4568,6 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 			// Загружаем тюнинг транспорта
 			SetHandlingTotal(vehid);
 
-
 			// Высота подвески
 			if(VehInfo[vehid][vTunningBPAN] > 0)
 			{
