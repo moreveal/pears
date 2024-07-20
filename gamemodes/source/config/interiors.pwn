@@ -75,3 +75,8 @@
 
 #define WORLD_CNN_2LVL 167
 #define INT_CNN_2LVL 0
+
+//==================================================
+// Полигон NGSA
+#define WORLD_POLYGON_NGSA 4
+#define INT_POLYGON_NGSA 3
