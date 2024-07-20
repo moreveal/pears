@@ -153,8 +153,10 @@ stock CreateManiac(playerid, i, cityID)
     ManiacInfo[manID][cityID] = CreateNpc(507, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]);
     ManiacInfo[manCreate][cityID] = true;
     SetNpcWeapon(ManiacInfo[manID][cityID], WEAPON_CHAINSAW);
-    SetNpcHealth(ManiacInfo[manID][cityID], 5000.0);
+    SetNpcHealth(ManiacInfo[manID][cityID], 7000.0);
     TaskNpcAttackPlayer(ManiacInfo[manID][cityID], playerid);
+    SetNpcStunAnimationEnabled(ManiacInfo[manID][cityID], false); // Выключаем анимацию стана при нанесении дамага маньяку
+
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
     return true;
 }
