@@ -1,11 +1,24 @@
-#define MAX_OBSTACLE_POINTS     75  // Максимальное количество "точек" в одном маршруте
-#define MAX_OBSTACLE_ROUTES     10  // Максимальное количество созданных маршрутов
-#define MAX_OBSTACLE_PLAYERS    15  // Максимальное количество участников в одной команде
+#define MAX_OBSTACLE_POINTS         75  // Максимальное количество "точек" в одном маршруте
+#define MAX_OBSTACLE_ROUTES         10  // Максимальное количество созданных маршрутов
+#define MAX_OBSTACLE_PLAYERS        15  // Максимальное количество участников в одной команде
 
-#define OBSTACLE_TEAMS_AMOUNT   2   // Максимальное количество команд, для каждой свой маршрут (значение задано для удобства, не изменять)
-#define OBSTACLE_TYPES_AMOUNT   2   // Количество доступных типов (значение задано для удобства, не изменять)
+#define MAX_OBSTACLE_PASSTIME       3600  // Максимальное время для прохождения маршрута (в секундах)
+#define MAX_OBSTACLE_POINT_INTERVAL 300.0 // Максимальное расстояние между точками
+#define MAX_OBSTACLE_START_INTERVAL 45.0 // Максимальное расстояние удаленности от первого чекпоинта при запуске маршрута
 
-#define OBSTACLE_MAX_PASSTIME   3600  // Максимальное время для прохождения маршрута (в секундах)
+#define OBSTACLE_TEAMS_AMOUNT       2   // Максимальное количество команд, для каждой свой маршрут (значение задано для удобства, не изменять)
+#define OBSTACLE_TYPES_AMOUNT       2   // Количество доступных типов (значение задано для удобства, не изменять)
+
+enum e_ObstacleVehicleType {
+    OBSTACLE_VEHICLE_NONE, // Без транспорта
+    OBSTACLE_VEHICLE_MOTO, // Мотоциклы
+    OBSTACLE_VEHICLE_CAR, // Автомобили
+    OBSTACLE_VEHICLE_AVIA, // Авиатранспорт
+    OBSTACLE_VEHICLE_WATER, // Водный транспорт
+    
+    // Счетчик
+    OBSTACLE_VEHICLE_COUNTER
+};
 
 enum e_ObstacleInfoType {
     OBSTACLE_TYPE_SOLO, // Одиночное прохождение
@@ -31,6 +44,7 @@ enum e_ObstacleInfo {
     obLastPassTime, // Последнее зафиксированное время прохождения
     bool: obStarted, // Запущен ли маршрут
     obStartedTime, // Время последнего запуска
+    e_ObstacleVehicleType: obVehiclePass, // Прохождение с транспортом
     e_ObstacleInfoType: obType // Тип маршрута
 };
 new ObstacleInfo[MAX_OBSTACLE_ROUTES][e_ObstacleInfo];
@@ -48,6 +62,7 @@ enum e_ObstaclePlayerInfo {
     // Чекпоинт
     obpCheckpoint, // ID последнего взятого чекпоинта
     obpCheckpointModel, // Streamer Object
+    e_ObstacleVehicleType: obpVehiclePass,
 
     // Создание нового маршрута
     obpName[128],

@@ -4,6 +4,7 @@
         `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID аккаунта создателя',
         `passtime` int(11) NOT NULL COMMENT 'Время прохождения',
         `last_passtime` int(11) NOT NULL COMMENT 'Время прохождения перед последним запуском',
+        `vehiclepass` int(2) NOT NULL COMMENT 'Тип транспорта',
         `points` blob NOT NULL COMMENT 'Точки маршрута',
         `stats` blob NOT NULL COMMENT 'Статистика последнего забега'
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -21,6 +22,7 @@ function Obstacle_Load() {
         cache_get_value_name(i, "name", ObstacleInfo[i][obName]);
         cache_get_value_int(i, "passtime", ObstacleInfo[i][obPassTime]);
         cache_get_value_int(i, "last_passtime", ObstacleInfo[i][obLastPassTime]);
+        cache_get_value_int(i, "vehiclepass", ObstacleInfo[i][obVehiclePass]);
 
         new points_json[125 * 85];
         cache_get_value_name(i, "points", points_json);
@@ -55,13 +57,14 @@ stock Obstacle_Save(id = -1) {
                     new query[256 + sizeof(points_json) + sizeof(stats_json)];
                     mysql_format(pearsq, query, sizeof(query),
                         "REPLACE INTO `obstacles` \
-                        (`id`, `name`, `passtime`, `last_passtime`, `points`, `stats`) \
-                        VALUES (%d, '%s', %d, %d, '%s', '%e')",
+                        (`id`, `name`, `passtime`, `last_passtime`, `vehiclepass`, `points`, `stats`) \
+                        VALUES (%d, '%s', %d, %d, %d, '%e', '%e')",
 
                         i,
                         ObstacleInfo[i][obName],
                         ObstacleInfo[i][obPassTime],
                         ObstacleInfo[i][obLastPassTime],
+                        ObstacleInfo[i][obVehiclePass],
                         points_json, stats_json
                     );
                     query_empty(pearsq, query);
@@ -236,6 +239,8 @@ stock Obstacle_Dialog_Stats(playerid, id) {
 
     // Построение диалога
     format(dialog_text, sizeof(dialog_text), "{cccccc}Допустимое время прохождения: %s\n\n", fine_time(ObstacleInfo[id][obLastPassTime]));
+
+    new quan = 0;
     for (new team = 0; team < OBSTACLE_TEAMS_AMOUNT; team++) {
         if (team_exists[team]) {
             format(dialog_text, sizeof(dialog_text), "%s{ffff00}%d команда:\n", dialog_text, team + 1);
@@ -260,12 +265,14 @@ stock Obstacle_Dialog_Stats(playerid, id) {
                         ObstacleStatsInfo[id][player_index][obsName]
                     );
                 }
+
+                quan++;
             }
             strcat(dialog_text, "\n");
         }
     }
 
-    if (isnull(dialog_text)) return ErrorMessage(playerid, "{ff6347}Данные для статистики отсутствуют");
+    if (quan == 0) return ErrorMessage(playerid, "{ff6347}Данные для статистики отсутствуют");
 
     return ShowDialog(playerid, OBSTACLE_DIALOG_STATS, DIALOG_STYLE_MSGBOX, "{ff9000}Статистика маршрута", dialog_text, "Назад", "");
 }
@@ -313,6 +320,19 @@ stock Obstacle_IsStarted(id) {
     return ObstacleInfo[id][obStarted];
 }
 
+stock Obstacle_GetVehicleTypeName(e_ObstacleVehicleType: vehicleType) {
+    new vehicleTypeName[16];
+    switch (vehicleType) {
+        case OBSTACLE_VEHICLE_NONE: strcat(vehicleTypeName, "Без");
+        case OBSTACLE_VEHICLE_MOTO: strcat(vehicleTypeName, "Мотоциклы");
+        case OBSTACLE_VEHICLE_CAR: strcat(vehicleTypeName, "Автомобили");
+        case OBSTACLE_VEHICLE_AVIA: strcat(vehicleTypeName, "Авиатранспорт");
+        case OBSTACLE_VEHICLE_WATER: strcat(vehicleTypeName, "Лодки");
+        default: {}
+    }
+    return vehicleTypeName;
+}
+
 stock Obstacle_Dialog_Create(playerid, id = -1) {
     if (!GetAccessRankOrg(playerid, fraction(playerid), 76, NO_FBI)) return 0;
 
@@ -349,6 +369,7 @@ stock Obstacle_Dialog_Create(playerid, id = -1) {
             "{cccccc}Название:\t{cccccc}%s\n" \
             "{cccccc}Тип маршрута:\t{cccccc}%s\n" \
             "{cccccc}Время прохождения:\t{cccccc}%s\n" \
+            "{cccccc}Использование транспорта:\t{cccccc}%s\n" \
             "{cccccc}Отметить на карте\t\n" \
             "{555555}Статистика\t\n" \
             "%s\t\n" \
@@ -357,6 +378,7 @@ stock Obstacle_Dialog_Create(playerid, id = -1) {
             ObstacleInfo[id][obName],
             Obstacle_GetTypeName(ObstacleInfo[id][obType]),
             fine_time(ObstacleInfo[id][obPassTime]),
+            Obstacle_GetVehicleTypeName(ObstacleInfo[id][obVehiclePass]),
             (!Obstacle_IsStarted(id) ? "{99ff66}Запустить маршрут" : "{ff6347}Завершить маршрут")
         );
     }
@@ -466,6 +488,15 @@ stock Obstacle_Create_AddPoint(playerid, teamid, Float: x, Float: y, Float: z) {
     new count = Obstacle_Create_GetPointsCount(playerid, teamid);
     if (count >= MAX_OBSTACLE_POINTS) return ErrorMessage(playerid, "{ff6347}Достигнуто максимальное число точек на команду");
     
+    if (count > 0) {
+        if (GetDistanceBetweenCoords3d(
+            x, y, z,
+            ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpX],
+            ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpY],
+            ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpZ]
+        ) > MAX_OBSTACLE_POINT_INTERVAL) return ErrorMessage(playerid, "{ff6347}Точки должны быть расположены на расстоянии не более "#MAX_OBSTACLE_POINT_INTERVAL" метров друг от друга");
+    }
+
     ObstaclePlayerPointsInfo[playerid][teamid][count][obpX] = x;
     ObstaclePlayerPointsInfo[playerid][teamid][count][obpY] = y;
     ObstaclePlayerPointsInfo[playerid][teamid][count][obpZ] = z;
@@ -665,6 +696,7 @@ stock Obstacle_Start(id) {
                 Obstacle_PlayerInfo_Cleanup(playerid);
                 ObstaclePlayerInfo[playerid][obpRouteID] = id;
                 ObstaclePlayerInfo[playerid][obpTeam] = teamid;
+                ObstaclePlayerInfo[playerid][obpVehiclePass] = ObstacleInfo[id][obVehiclePass];
 
                 // Отображаем первый чекпоинт
                 Obstacle_ShowCheckpoint(playerid, 0);
@@ -705,7 +737,28 @@ stock Obstacle_Delete(id) {
 
     Obstacle_End(id);
 
+    // Очищаем основную информацию маршрута
     for (new e_ObstacleInfo: i; i < e_ObstacleInfo; i++) ObstacleInfo[id][i] = 0;
+
+    for (new teamid = 0; teamid < OBSTACLE_TEAMS_AMOUNT; teamid++) {
+        // Очищаем установленные точки
+        for (new pointid = 0; pointid < MAX_OBSTACLE_POINTS; pointid++) {
+            for (new e_ObstacleInfoPoint: i; i < e_ObstacleInfoPoint; i++) {
+                ObstaclePointsInfo[id][teamid][pointid][i] = 0;
+            }
+        }
+        // Очищаем участников маршрута
+        for (new playerid = 0; playerid < MAX_OBSTACLE_PLAYERS; playerid++) {
+            ObstacleMembersInfo[id][teamid][playerid] = 0;
+        }
+    }
+
+    // Очищаем статистику маршрута
+    for (new playerid = 0; playerid < MAX_OBSTACLE_PLAYERS; playerid++) {
+        for (new e_ObstacleInfoStats: i; i < e_ObstacleInfoStats; i++) {
+            ObstacleStatsInfo[id][playerid][i] = 0;
+        }
+    }
 
     Obstacle_Save(id);
 
@@ -795,6 +848,20 @@ stock Obstacle_Dialog_Start_AddMember(playerid, id) {
     }
 
     return ShowDialog(playerid, OBSTACLE_DIALOG_START_ADDMEMBER, DIALOG_STYLE_INPUT, dialog_header, dialog_text, "Принять", "Назад");
+}
+
+stock Obstacle_Dialog_SetVehicleType(playerid, id) {
+    if (!Obstacle_IsExists(id)) return ErrorMessage(playerid, "{ff6347}Этот маршрут не существует");
+    if (Obstacle_IsStarted(id)) return ErrorMessage(playerid, "{ff6347}Нельзя изменять тип транспорта запущенного маршрута");
+    DP[0][playerid] = id;
+
+    new dialog_text[256];
+    for (new quan = 0, e_ObstacleVehicleType: i; i < OBSTACLE_VEHICLE_COUNTER; i++) {
+        format(dialog_text, sizeof(dialog_text), "%s{cccccc}%s\n", dialog_text, Obstacle_GetVehicleTypeName(i));
+        List[quan++][playerid] = _:i;
+    }
+
+    return ShowDialog(playerid, OBSTACLE_DIALOG_SETVEHICLETYPE, DIALOG_STYLE_LIST, "{ff9000}Тип транспорта", dialog_text, "Выбор", "Назад");
 }
 
 stock Obstacle_Dialog_Start_Accept(playerid, id) {
@@ -925,19 +992,53 @@ stock Obstacle_ShowCheckpoint(playerid, checkpointid) {
     new
         Float: x = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpX],
         Float: y = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpY],
-        Float: z = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpZ];
-    
-    ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicCP(x, y, z, .size = 0.80, .playerid = playerid);
+        Float: z = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpZ],
+        Float: nextx, Float: nexty, Float: nextz;
 
-    Streamer_Update(playerid, STREAMER_TYPE_CP);
+    new bool: is_finish_checkpoint = max_checkpointid <= checkpointid;
+    if (!is_finish_checkpoint) {
+        nextx = ObstaclePointsInfo[obstacleid][teamid][checkpointid + 1][obpX];
+        nexty = ObstaclePointsInfo[obstacleid][teamid][checkpointid + 1][obpY];
+        nextz = ObstaclePointsInfo[obstacleid][teamid][checkpointid + 1][obpZ];
+    } else {
+        nextx = x;
+        nexty = y;
+        nextz = z;
+    }
+
+    if (ObstacleInfo[obstacleid][obVehiclePass] == OBSTACLE_VEHICLE_NONE) {
+        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicCP(x, y, z, .size = 0.80, .playerid = playerid);
+        Streamer_Update(playerid, STREAMER_TYPE_CP);
+    } else {
+        new race_cp_type = 0, Float: size = 3.5;
+        switch(ObstacleInfo[obstacleid][obVehiclePass]) {
+            case OBSTACLE_VEHICLE_CAR, OBSTACLE_VEHICLE_MOTO, OBSTACLE_VEHICLE_WATER: {
+                race_cp_type = (is_finish_checkpoint ? 1 : 0);
+
+                if (ObstacleInfo[obstacleid][obVehiclePass] == OBSTACLE_VEHICLE_MOTO) size = 1.2;
+            }
+            case OBSTACLE_VEHICLE_AVIA: {
+                race_cp_type = (is_finish_checkpoint ? 4 : 3);
+            }
+            default: {}
+        }
+
+        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicRaceCP(race_cp_type, x, y, z, nextx, nexty, nextz, .size = size, .playerid = playerid);
+        Streamer_Update(playerid, STREAMER_TYPE_RACE_CP);
+    }
 
     return 1;
 }
 
 stock Obstacle_HideCheckpoint(playerid) {
     if (ObstaclePlayerInfo[playerid][obpCheckpointModel] > 0) {
-        DestroyDynamicCP(ObstaclePlayerInfo[playerid][obpCheckpointModel]);
-        Streamer_Update(playerid, STREAMER_TYPE_CP);
+        if (ObstaclePlayerInfo[playerid][obpVehiclePass] == OBSTACLE_VEHICLE_NONE) {
+            DestroyDynamicCP(ObstaclePlayerInfo[playerid][obpCheckpointModel]);
+            Streamer_Update(playerid, STREAMER_TYPE_CP);
+        } else {
+            DestroyDynamicRaceCP(ObstaclePlayerInfo[playerid][obpCheckpointModel]);
+            Streamer_Update(playerid, STREAMER_TYPE_RACE_CP);
+        }
     }
     ObstaclePlayerInfo[playerid][obpCheckpointModel] = 0;
 
@@ -955,7 +1056,7 @@ stock Obstacle_OnPlayerUpdate(playerid) {
             Float: y = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpY],
             Float: z = ObstaclePointsInfo[obstacleid][teamid][checkpointid][obpZ];
 
-        if (!IsPlayerInRangeOfPoint(playerid, 150.0, x, y, z)) {
+        if (!IsPlayerInRangeOfPoint(playerid, MAX_OBSTACLE_POINT_INTERVAL + 20.0, x, y, z)) {
             ErrorMessage(playerid, "{ff6347}Вы провалили выполнение маршрута [Отошли слишком далеко]");
             Obstacle_DeleteMember(playerid);
         }
@@ -966,6 +1067,30 @@ stock Obstacle_OnPlayerUpdate(playerid) {
 stock Obstacle_OnPlayerEnterCP(playerid) {
     new obstacleid = ObstaclePlayerInfo[playerid][obpRouteID],
         checkpointid = ObstaclePlayerInfo[playerid][obpCheckpoint];
+
+    if (!Obstacle_IsExists(obstacleid)) return 0;
+
+    {
+        // Учитывание доступного транспорта для прохождения маршрута
+        new vehicleid = GetPlayerVehicleID(playerid), model = GetVehicleModel(vehicleid);
+        switch (ObstacleInfo[obstacleid][obVehiclePass]) {
+            case OBSTACLE_VEHICLE_MOTO: {
+                if (!IsAMoto(model) && !IsAVello(vehicleid)) return 1;
+            }
+            case OBSTACLE_VEHICLE_CAR: {
+                if (!IsACar(model)) return 1;
+            }
+            case OBSTACLE_VEHICLE_AVIA: {
+                if (!IsAPlane(model)) return 1;
+            }
+            case OBSTACLE_VEHICLE_WATER: {
+                if (!IsABoat(model)) return 1;
+            }
+            default: {
+                if (IsPlayerInAnyVehicle(playerid)) return 1;
+            }
+        }
+    }
 
     if (ObstaclePlayerInfo[playerid][obpCheckpointModel]) {
         new teamid = ObstaclePlayerInfo[playerid][obpTeam];
@@ -1037,16 +1162,21 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
 
             if (listitem == 0) {
                 return Obstacle_Dialog_SetName(playerid, obstacleid);
-            } else if (listitem == 1) {
+            }
+            if (listitem == 1) {
                 if (obstacleid > -1) {
                     ErrorText(playerid, "{ff6347}Нельзя изменить тип уже созданного маршрута");
                     Obstacle_Dialog_Create(playerid, obstacleid);
                 } else {
                     Obstacle_Dialog_SetType(playerid, obstacleid);
                 }
-            } else if (listitem == 2) {
+                return 1;
+            }
+            if (listitem == 2) {
                 return Obstacle_Dialog_SetPassTime(playerid, obstacleid);
-            } else if (is_create) {
+            }
+            
+            if (is_create) {
                 if (listitem == 3) return Obstacle_Dialog_SetPoints(playerid, obstacleid);
                 if (listitem == 4 || listitem == 5) {
                     if (listitem == 4) {
@@ -1057,16 +1187,19 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
                 }
             } else {
                 if (listitem == 3) {
-                    return Obstacle_SetMarker(playerid, obstacleid);
+                    return Obstacle_Dialog_SetVehicleType(playerid, obstacleid);
                 }
                 if (listitem == 4) {
-                    return Obstacle_Dialog_Stats(playerid, obstacleid);
+                    return Obstacle_SetMarker(playerid, obstacleid);
                 }
                 if (listitem == 5) {
+                    return Obstacle_Dialog_Stats(playerid, obstacleid);
+                }
+                if (listitem == 6) {
                     if (Obstacle_IsStarted(obstacleid)) return Obstacle_Dialog_End_Accept(playerid, obstacleid);
                     return Obstacle_Dialog_Start(playerid, obstacleid);
                 }
-                if (listitem == 6) {
+                if (listitem == 7) {
                     return Obstacle_Dialog_Delete_Accept(playerid, obstacleid);
                 }
             }
@@ -1098,11 +1231,19 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
 
             return Obstacle_Dialog_Create(playerid, obstacleid);
         }
+        case OBSTACLE_DIALOG_SETVEHICLETYPE: {
+            if (response) {
+                ObstacleInfo[obstacleid][obVehiclePass] = e_ObstacleVehicleType: List[listitem][playerid];
+                Obstacle_Save(obstacleid);
+            }
+
+            return Obstacle_Dialog_Create(playerid, obstacleid);
+        }
         case OBSTACLE_DIALOG_SETPASSTIME: {
             if (!response) return Obstacle_Dialog_Create(playerid, obstacleid);
 
             new minutes;
-            if (sscanf(inputtext, "d", minutes) || minutes < 0 || minutes > OBSTACLE_MAX_PASSTIME) return Obstacle_Dialog_SetPassTime(playerid, obstacleid);
+            if (sscanf(inputtext, "d", minutes) || minutes < 0 || minutes > MAX_OBSTACLE_PASSTIME) return Obstacle_Dialog_SetPassTime(playerid, obstacleid);
 
             if (is_create) {
                 ObstaclePlayerInfo[playerid][obpPassTime] = minutes;
@@ -1195,7 +1336,7 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
 
                     new Float: x, Float: y, Float: z;
                     GetPlayerPos(currentid, x, y, z);
-                    if (GetDistanceBetweenCoords3d(x, y, z, ObstaclePointsInfo[obstacleid][teamid][0][obpX], ObstaclePointsInfo[obstacleid][teamid][0][obpY], ObstaclePointsInfo[obstacleid][teamid][0][obpZ]) > 20.0) {
+                    if (GetDistanceBetweenCoords3d(x, y, z, ObstaclePointsInfo[obstacleid][teamid][0][obpX], ObstaclePointsInfo[obstacleid][teamid][0][obpY], ObstaclePointsInfo[obstacleid][teamid][0][obpZ]) > MAX_OBSTACLE_START_INTERVAL) {
                         return ErrorMessage(playerid, "{ff6347}Один из участников находится далеко от начала маршрута");
                     }
                 }
