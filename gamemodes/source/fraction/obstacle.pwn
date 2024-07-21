@@ -221,8 +221,8 @@ stock Obstacle_Dialog_Stats(playerid, id) {
                 for (new j = 0; j < team_player_count[team] - i - 1; j++) {
                     new time1 = ObstacleStatsInfo[id][team_players[team][j]][obsPassTime];
                     new time2 = ObstacleStatsInfo[id][team_players[team][j + 1]][obsPassTime];
-                    if (time1 <= 0) time1 = 999999;
-                    if (time2 <= 0) time2 = 999999;
+                    if (time1 <= 0 || time1 > ObstacleInfo[id][obLastPassTime]) time1 = 999999;
+                    if (time2 <= 0 || time2 > ObstacleInfo[id][obLastPassTime]) time2 = 999999;
 
                     if (time1 > time2) {
                         new temp = team_players[team][j];
@@ -235,17 +235,20 @@ stock Obstacle_Dialog_Stats(playerid, id) {
     }
 
     // Построение диалога
+    format(dialog_text, sizeof(dialog_text), "{cccccc}Допустимое время прохождения: %s\n\n", fine_time(ObstacleInfo[id][obLastPassTime]));
     for (new team = 0; team < OBSTACLE_TEAMS_AMOUNT; team++) {
         if (team_exists[team]) {
             format(dialog_text, sizeof(dialog_text), "%s{ffff00}%d команда:\n", dialog_text, team + 1);
             for (new i = 0; i < team_player_count[team]; i++) {
                 new player_index = team_players[team][i];
+                new player_pass_time = ObstacleStatsInfo[id][player_index][obsPassTime];
 
-                if (ObstacleStatsInfo[id][player_index][obsPassTime] > 0) {
+                if (player_pass_time > 0) {
                     format(dialog_text, sizeof(dialog_text),
-                        "%s{99ff66}%s {cccccc}- [%s]\n",
+                        "%s{%s}%s {cccccc}- [%s]\n",
 
                         dialog_text,
+                        (player_pass_time <= ObstacleInfo[id][obLastPassTime] ? "99ff66" : "ff6347"),
                         ObstacleStatsInfo[id][player_index][obsName],
                         fine_time(ObstacleStatsInfo[id][player_index][obsPassTime])
                     );
@@ -683,6 +686,7 @@ stock Obstacle_End(id) {
     if (!Obstacle_IsExists(id)) return 0;
 
     ObstacleInfo[id][obStarted] = false;
+    ObstacleInfo[id][obLastPassTime] = ObstacleInfo[id][obPassTime];
 
     foreach (new playerid : Player) {
         if (ObstaclePlayerInfo[playerid][obpRouteID] == id) {
@@ -1098,7 +1102,7 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
             if (!response) return Obstacle_Dialog_Create(playerid, obstacleid);
 
             new minutes;
-            if (sscanf(inputtext, "d", minutes) || minutes < 0 || minutes > 3600) return Obstacle_Dialog_SetPassTime(playerid, obstacleid);
+            if (sscanf(inputtext, "d", minutes) || minutes < 0 || minutes > OBSTACLE_MAX_PASSTIME) return Obstacle_Dialog_SetPassTime(playerid, obstacleid);
 
             if (is_create) {
                 ObstaclePlayerInfo[playerid][obpPassTime] = minutes;

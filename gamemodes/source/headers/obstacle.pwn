@@ -5,6 +5,8 @@
 #define OBSTACLE_TEAMS_AMOUNT   2   // Максимальное количество команд, для каждой свой маршрут (значение задано для удобства, не изменять)
 #define OBSTACLE_TYPES_AMOUNT   2   // Количество доступных типов (значение задано для удобства, не изменять)
 
+#define OBSTACLE_MAX_PASSTIME   3600  // Максимальное время для прохождения маршрута (в секундах)
+
 enum e_ObstacleInfoType {
     OBSTACLE_TYPE_SOLO, // Одиночное прохождение
     OBSTACLE_TYPE_TEAM // Командное прохождение (1х1, 2х2, 3х3, ...)
@@ -26,7 +28,7 @@ enum e_ObstacleInfoStats {
 enum e_ObstacleInfo {
     obName[128], // Название маршрута
     obPassTime, // Время прохождения
-    obLastPassTime, // Время прохождения перед последним запуском
+    obLastPassTime, // Последнее зафиксированное время прохождения
     bool: obStarted, // Запущен ли маршрут
     obStartedTime, // Время последнего запуска
     e_ObstacleInfoType: obType // Тип маршрута
