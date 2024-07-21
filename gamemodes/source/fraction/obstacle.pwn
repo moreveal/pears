@@ -1023,7 +1023,7 @@ stock Obstacle_ShowCheckpoint(playerid, checkpointid) {
             default: {}
         }
 
-        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicRaceCP(race_cp_type, x, y, z, nextx, nexty, nextz, .size = size, .playerid = playerid);
+        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicRaceCP(race_cp_type, x, y, z, nextx, nexty, nextz, .size = size, .playerid = playerid, .streamdistance = 350.0);
         Streamer_Update(playerid, STREAMER_TYPE_RACE_CP);
     }
 
