@@ -1454,30 +1454,36 @@ stock set_para(playerid, fpick, para) // Установка параметра �
 		PlayerInfo[playerid][pInvenPara][i] = para;
 	}
 }
-stock TakeInvent(playerid, stat, quan, thingType, dopinf, bool:save = true) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
+stock TakeInvent(playerid, thingId, thingQuan, thingType, slot = 999, bool:save = true) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
 {
+	// Если предмет не имеет количества - забираем всё
+	if (thingType != 0 || CheckThingQuan(thingId) == 0) {
+		thingQuan = 999999;
+	}
+
 	new plit = -1;
-	if(dopinf == 999) // Если мы НЕ знаем ячейку, нам нужно найти её (999)
+	if(slot == 999) // Если мы НЕ знаем ячейку, нам нужно найти её (999)
 	{
 		for(new i = 0; i < 40; i++)
 		{
-			if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
+			if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenPack][i] == 0)
 			{
 			    plit = i;
-			    take_away(playerid, quan, i, save);
+			    take_away(playerid, thingQuan, i, save);
 				break;
 			}
 		}
 	}
 	else // Если знаем ячейку, нам не нужно её искать)
 	{
-	    plit = dopinf;
-	    if(PlayerInfo[playerid][pInven][dopinf] == stat && PlayerInfo[playerid][pInvenType][dopinf] == thingType) take_away(playerid, quan, dopinf, save);
+		plit = slot;
+	    if(PlayerInfo[playerid][pInven][slot] == thingId && PlayerInfo[playerid][pInvenType][slot] == thingType) take_away(playerid, thingQuan, slot, save);
 	}
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][plit], PlayerInfo[playerid][pInvenQuan][plit], plit, PlayerInfo[playerid][pInvenPara][plit], PlayerInfo[playerid][pInvenType][plit], PlayerInfo[playerid][pInvenPack][plit]), PlayerPlaySound(playerid,1053,0,0,0), i_resetveshi(playerid);
-	i_takehands(playerid, stat);
+	i_takehands(playerid, thingId);
 	return plit;
 }
+
 stock take_away(playerid, quan, i, bool:save = true) // Изымаем предмет, если он был точно найден в ячейке
 {
 	if(PlayerInfo[playerid][pInvenQuan][i]-quan <= 0) // Если при изъятии ничего не останется - очищаем полностью
@@ -1664,7 +1670,12 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
     }
 	
 	PlayerInfo[playerid][pInven][slot] = thingId; // Ставим предмет в слот
-	PlayerInfo[playerid][pInvenQuan][slot] += quan; // Ставим количество в слот
+
+	if (thingType == 0 && thingPack == 0 && CheckThingQuan(thingId) == 1) {
+		PlayerInfo[playerid][pInvenQuan][slot] += quan; // Добавляем нужное количество в слот
+	} else {
+		PlayerInfo[playerid][pInvenQuan][slot] = 1; // Добавляет всегда 1, т.к. предмет не имеет количества
+	}
 
 	// Не выдаем оружий ближнего боя больше чем 1
 	if (thingType == 1 && !IsShootingWeapon(thingId)) PlayerInfo[playerid][pInvenQuan][slot] = min(quan, 1);
