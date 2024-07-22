@@ -315,17 +315,17 @@ function LoadOrgan()
     format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[2][gbenz]);
 	FrakiBenz[11] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,2101.6763,2423.8325,74.5786,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n\n{ffffff}[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n\n{ffffff}[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[5] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1400.3053,456.5131,7.1809,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[8] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1354.442749, 385.154052, 1.907501,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[10] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1354.441894, 349.254119, 1.907502,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[12] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1319.4836,493.9069,18.2344,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[20] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1256.6936,428.4373,24.7980,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[33][gbenz]);
+	format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]",OrganInfo[3][gbenz]);
 	FrakiBenz[21] = CreateDynamic3DTextLabel(strFromFile2,0xA9C4E4FF,-1246.7941,439.3991,7.1875,10.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
 
     format(strFromFile2,sizeof(strFromFile2),"{ffffff}* {0088ff}Топливо {ffffff}[ {0088ff}%d л. {ffffff}] *\n{ffffff}[ {0088ff}/fill {ffffff}]\n[ Заправить Цистерну - {0088ff}CAPS LOCK (Гудок) {ffffff}]",OrganInfo[1][gbenz]);
