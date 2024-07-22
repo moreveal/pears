@@ -1,9 +1,9 @@
-#define MAX_OBSTACLE_POINTS         75  // Максимальное количество "точек" в одном маршруте
+#define MAX_OBSTACLE_POINTS         80  // Максимальное количество "точек" в одном маршруте
 #define MAX_OBSTACLE_ROUTES         10  // Максимальное количество созданных маршрутов
 #define MAX_OBSTACLE_PLAYERS        15  // Максимальное количество участников в одной команде
 
-#define MAX_OBSTACLE_PASSTIME       3600  // Максимальное время для прохождения маршрута (в секундах)
-#define MAX_OBSTACLE_POINT_INTERVAL 300.0 // Максимальное расстояние между точками
+#define MAX_OBSTACLE_PASSTIME       7200  // Максимальное время для прохождения маршрута (в секундах)
+#define MAX_OBSTACLE_POINT_INTERVAL 500.0 // Максимальное расстояние между точками
 #define MAX_OBSTACLE_START_INTERVAL 45.0 // Максимальное расстояние удаленности от первого чекпоинта при запуске маршрута
 
 #define OBSTACLE_TEAMS_AMOUNT       2   // Максимальное количество команд, для каждой свой маршрут (значение задано для удобства, не изменять)

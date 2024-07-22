@@ -224,8 +224,8 @@ stock Obstacle_Dialog_Stats(playerid, id) {
                 for (new j = 0; j < team_player_count[team] - i - 1; j++) {
                     new time1 = ObstacleStatsInfo[id][team_players[team][j]][obsPassTime];
                     new time2 = ObstacleStatsInfo[id][team_players[team][j + 1]][obsPassTime];
-                    if (time1 <= 0 || time1 > ObstacleInfo[id][obLastPassTime]) time1 = 999999;
-                    if (time2 <= 0 || time2 > ObstacleInfo[id][obLastPassTime]) time2 = 999999;
+                    if (time1 < 0 || time1 > ObstacleInfo[id][obLastPassTime]) time1 = 999999;
+                    if (time2 < 0 || time2 > ObstacleInfo[id][obLastPassTime]) time2 = 999999;
 
                     if (time1 > time2) {
                         new temp = team_players[team][j];
@@ -238,7 +238,11 @@ stock Obstacle_Dialog_Stats(playerid, id) {
     }
 
     // Построение диалога
-    format(dialog_text, sizeof(dialog_text), "{cccccc}Допустимое время прохождения: %s\n\n", fine_time(ObstacleInfo[id][obLastPassTime]));
+    format(dialog_text, sizeof(dialog_text),
+        "{cccccc}Допустимое время прохождения: %s\n\n",
+
+        (ObstacleInfo[id][obLastPassTime] > 0 ? fine_time(ObstacleInfo[id][obLastPassTime]) : "Не ограничено")
+    );
 
     new quan = 0;
     for (new team = 0; team < OBSTACLE_TEAMS_AMOUNT; team++) {
@@ -248,12 +252,12 @@ stock Obstacle_Dialog_Stats(playerid, id) {
                 new player_index = team_players[team][i];
                 new player_pass_time = ObstacleStatsInfo[id][player_index][obsPassTime];
 
-                if (player_pass_time > 0) {
+                if (player_pass_time >= 0) {
                     format(dialog_text, sizeof(dialog_text),
                         "%s{%s}%s {cccccc}- [%s]\n",
 
                         dialog_text,
-                        (player_pass_time <= ObstacleInfo[id][obLastPassTime] ? "99ff66" : "ff6347"),
+                        (ObstacleInfo[id][obLastPassTime] <= 0 || player_pass_time <= ObstacleInfo[id][obLastPassTime] ? "99ff66" : "ff6347"),
                         ObstacleStatsInfo[id][player_index][obsName],
                         fine_time(ObstacleStatsInfo[id][player_index][obsPassTime])
                     );
@@ -296,7 +300,7 @@ stock Obstacle_Dialog_List(playerid) {
             
             dialog_text,
             ObstacleInfo[i][obName],
-            fine_time(ObstacleInfo[i][obPassTime]),
+            (ObstacleInfo[i][obPassTime] > 0 ? fine_time(ObstacleInfo[i][obPassTime]) : "Не ограничено"),
             (ObstacleInfo[i][obType] == OBSTACLE_TYPE_SOLO ? "ffff00" : "99ff66"),
             Obstacle_GetTypeName(ObstacleInfo[i][obType])
         );
@@ -362,7 +366,7 @@ stock Obstacle_Dialog_Create(playerid, id = -1) {
 
             ObstaclePlayerInfo[playerid][obpName],
             Obstacle_GetTypeName(ObstaclePlayerInfo[playerid][obpType]),
-            fine_time(ObstaclePlayerInfo[playerid][obpPassTime])
+            (ObstaclePlayerInfo[playerid][obpPassTime] > 0 ? fine_time(ObstaclePlayerInfo[playerid][obpPassTime]) : "Не ограничено")
         );
     } else {
         format(dialog_text, sizeof(dialog_text),
@@ -377,7 +381,7 @@ stock Obstacle_Dialog_Create(playerid, id = -1) {
 
             ObstacleInfo[id][obName],
             Obstacle_GetTypeName(ObstacleInfo[id][obType]),
-            fine_time(ObstacleInfo[id][obPassTime]),
+            (ObstacleInfo[id][obPassTime] > 0 ? fine_time(ObstacleInfo[id][obPassTime]) : "Не ограничено"),
             Obstacle_GetVehicleTypeName(ObstacleInfo[id][obVehiclePass]),
             (!Obstacle_IsStarted(id) ? "{99ff66}Запустить маршрут" : "{ff6347}Завершить маршрут")
         );
@@ -462,7 +466,7 @@ stock Obstacle_Dialog_SetPoints(playerid, id) {
     } else {
         format(dialog_text, sizeof(dialog_text),
             "{cccccc}Номер команды:\t%d\n" \
-            "{ff9000}Добавить точку [Y]\t{99ff66}(%d/%d)\n" \
+            "{ff9000}Добавить точку [Y/H]\t{99ff66}(%d/%d)\n" \
             "{555555}Удалить последнюю точку [N]\t\n" \
             "{99ff66}Сохранить и выйти",
 
@@ -486,7 +490,7 @@ stock Obstacle_Dialog_SetPoints_Accept(playerid, id) {
 
 stock Obstacle_Create_AddPoint(playerid, teamid, Float: x, Float: y, Float: z) {
     new count = Obstacle_Create_GetPointsCount(playerid, teamid);
-    if (count >= MAX_OBSTACLE_POINTS) return ErrorMessage(playerid, "{ff6347}Достигнуто максимальное число точек на команду");
+    if (count >= MAX_OBSTACLE_POINTS) { ErrorMessage(playerid, "{ff6347}Достигнуто максимальное число точек на команду"); return 0; }
     
     if (count > 0) {
         if (GetDistanceBetweenCoords3d(
@@ -494,7 +498,7 @@ stock Obstacle_Create_AddPoint(playerid, teamid, Float: x, Float: y, Float: z) {
             ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpX],
             ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpY],
             ObstaclePlayerPointsInfo[playerid][teamid][count - 1][obpZ]
-        ) > MAX_OBSTACLE_POINT_INTERVAL) return ErrorMessage(playerid, "{ff6347}Точки должны быть расположены на расстоянии не более "#MAX_OBSTACLE_POINT_INTERVAL" метров друг от друга");
+        ) > MAX_OBSTACLE_POINT_INTERVAL) { ErrorMessage(playerid, "{ff6347}Точки должны быть расположены на расстоянии не более "#MAX_OBSTACLE_POINT_INTERVAL" метров друг от друга"); return 0; }
     }
 
     ObstaclePlayerPointsInfo[playerid][teamid][count][obpX] = x;
@@ -545,6 +549,7 @@ stock Obstacle_Create_UpdateMapIcons(playerid, teamid, notify = false) {
                     .color = 0xFFFF00FF,
                     .worldid = GetPlayerVirtualWorld(playerid),
                     .interiorid = GetPlayerInterior(playerid),
+                    .streamdistance = 6000.0,
                     .playerid = playerid
                 );
             }
@@ -612,7 +617,6 @@ stock Obstacle_Create(playerid) {
     new id = Obstacle_GetFreeSlot();
     if (id < 0) { ErrorMessage(playerid, "{ff6347}Было достигнуто максимальное количество маршрутов"); return -1; }
     if (Obstacle_Create_GetPointsCount(playerid) < 1) { ErrorMessage(playerid, "{ff6347}Не было добавлено ни одной точки маршрута"); return -1; }
-    if (ObstaclePlayerInfo[playerid][obpPassTime] < 1) { ErrorMessage(playerid, "{ff6347}Время прохождения маршрута не установлено"); return -1; }
     if (isnull(ObstaclePlayerInfo[playerid][obpName])) { ErrorMessage(playerid, "{ff6347}Название для маршрута не установлено"); return -1; }
 
     ObstacleInfo[id][obName][0] = EOS; strcat(ObstacleInfo[id][obName], ObstaclePlayerInfo[playerid][obpName]);
@@ -645,7 +649,7 @@ stock Obstacle_Stats_Add(playerid, id, bool: finish = true) {
             if (finish) {
                 ObstacleStatsInfo[id][i][obsPassTime] = gettime() - ObstacleInfo[id][obStartedTime];
             } else {
-                ObstacleStatsInfo[id][i][obsPassTime] = 0;
+                ObstacleStatsInfo[id][i][obsPassTime] = -1;
             }
             
             return 1;
@@ -971,7 +975,7 @@ stock Obstacle_DeleteMember(playerid, bool: finish = false) {
 stock Obstacle_IsExists(id) {
     if (id < 0 || id >= MAX_OBSTACLE_ROUTES) return 0;
 
-    return ObstacleInfo[id][obPassTime] > 0;
+    return !isnull(ObstacleInfo[id][obName]);
 }
 
 stock Obstacle_ShowCheckpoint(playerid, checkpointid) {
@@ -1019,11 +1023,12 @@ stock Obstacle_ShowCheckpoint(playerid, checkpointid) {
             }
             case OBSTACLE_VEHICLE_AVIA: {
                 race_cp_type = (is_finish_checkpoint ? 4 : 3);
+                size = 12.0;
             }
             default: {}
         }
 
-        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicRaceCP(race_cp_type, x, y, z, nextx, nexty, nextz, .size = size, .playerid = playerid, .streamdistance = 350.0);
+        ObstaclePlayerInfo[playerid][obpCheckpointModel] = CreateDynamicRaceCP(race_cp_type, x, y, z, nextx, nexty, nextz, .size = size, .playerid = playerid, .streamdistance = 6000.0);
         Streamer_Update(playerid, STREAMER_TYPE_RACE_CP);
     }
 
@@ -1120,15 +1125,22 @@ stock Obstacle_OnKeyStateChange(playerid, KEY: newkeys, KEY: oldkeys) {
     
     if (ObstaclePlayerInfo[playerid][obpEditPoints]) {
         new teamid = ObstaclePlayerInfo[playerid][obpTeam];
-        if (newkeys & KEY_YES) {
+        
+        new KEY: add_point_key = KEY_YES; // Y
+        new KEY: delete_point_key = KEY_NO; // N
+
+        new vehid = GetPlayerVehicleID(playerid);
+        if (IsValidVehicle(vehid) && IsAShassi(VehInfo[vehid][vModel])) add_point_key = KEY_CROUCH; // H для самолётов
+
+        if (newkeys & add_point_key) {
             new Float: x, Float: y, Float: z;
             GetPlayerPos(playerid, x, y, z);
 
-            Obstacle_Create_AddPoint(playerid, teamid, x, y, z);
-
-            PlayerPlaySound(playerid, 6401);
-            Obstacle_Create_UpdateMapIcons(playerid, teamid, .notify = true);
-        } else if (newkeys & KEY_NO) {
+            if (Obstacle_Create_AddPoint(playerid, teamid, x, y, z)) {
+                PlayerPlaySound(playerid, 6401);
+                Obstacle_Create_UpdateMapIcons(playerid, teamid, .notify = true);
+            }
+        } else if (newkeys & delete_point_key) {
             Obstacle_Create_DeletePoint(playerid, teamid, Obstacle_Create_GetPointsCount(playerid, teamid) - 1);
 
             PlayerPlaySound(playerid, 30802);
@@ -1275,10 +1287,10 @@ stock dialogCase_Obstacle(playerid, dialogid, response, listitem, const inputtex
                         new Float: x, Float: y, Float: z;
                         GetPlayerPos(playerid, x, y, z);
 
-                        Obstacle_Create_AddPoint(playerid, teamid, x, y, z);
-
-                        PlayerPlaySound(playerid, 6401);
-                        Obstacle_Create_UpdateMapIcons(playerid, teamid);
+                        if (Obstacle_Create_AddPoint(playerid, teamid, x, y, z)) {
+                            PlayerPlaySound(playerid, 6401);
+                            Obstacle_Create_UpdateMapIcons(playerid, teamid, .notify = true);
+                        }
                     }
                     case 2: {
                         Obstacle_Create_DeletePoint(playerid, teamid, Obstacle_Create_GetPointsCount(playerid, teamid) - 1);
