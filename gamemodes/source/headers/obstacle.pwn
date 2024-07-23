@@ -1,5 +1,5 @@
 #define MAX_OBSTACLE_POINTS         80  // Максимальное количество "точек" в одном маршруте
-#define MAX_OBSTACLE_ROUTES         10  // Максимальное количество созданных маршрутов
+#define MAX_OBSTACLE_ROUTES         20  // Максимальное количество созданных маршрутов
 #define MAX_OBSTACLE_PLAYERS        15  // Максимальное количество участников в одной команде
 
 #define MAX_OBSTACLE_PASSTIME       7200  // Максимальное время для прохождения маршрута (в секундах)
