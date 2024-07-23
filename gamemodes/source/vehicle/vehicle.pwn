@@ -516,6 +516,12 @@ CMD:paint(playerid, const params[])
 	return true;
 }
 
+stock GetVehicleSale(model) {
+	new vehsale_model = model - 400;
+	if (model >= 2000) vehsale_model = model - 2000 + 212;
+	return VehSale[vehsale_model];
+}
+
 stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 {
 	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");
@@ -1105,6 +1111,12 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 
 				// Пересобираем подарки с транспортом
 				CreateVehicleGiftCase();
+
+				new log_str[128];
+				new model = vehicleList + 400;
+				if (vehicleList >= 212) model = vehicleList + 2000 - 212;
+				format(log_str, sizeof(log_str), "Транспорт %s [ID: %d]", GetVehicleName(model), model);
+				OrgLog(7, "salechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", VehSale[vehicleList], log_str);
 			}
 		}
 		else vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
@@ -1441,6 +1453,7 @@ function LoadPriceVeh()
 
 		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
 	}
+
 	return 1;
 }
 
