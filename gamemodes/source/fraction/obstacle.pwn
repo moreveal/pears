@@ -343,10 +343,11 @@ stock Obstacle_Dialog_Create(playerid, id = -1) {
     new bool: is_create = !Obstacle_IsExists(id);
 
     if (is_create) {
+        if (Obstacle_IsMember(playerid) && Obstacle_IsStarted(ObstaclePlayerInfo[playerid][obpRouteID])) return ErrorMessage(playerid, "{FF6347}Нельзя начать создавать маршрут, если вы проходите один из них");
+        if (Obstacle_GetFreeSlot() < 0) return ErrorMessage(playerid, "{ff6347}Было достигнуто максимальное количество маршрутов");
+        
         ObstaclePlayerInfo[playerid][obpCreate] = true;
         Obstacle_DeleteMember(playerid);
-
-        if (Obstacle_IsMember(playerid) && Obstacle_IsStarted(ObstaclePlayerInfo[playerid][obpRouteID])) return ErrorMessage(playerid, "{FF6347}Нельзя начать создавать маршрут, если вы проходите один из них");
     }
     SetPVarInt(playerid, "ObstacleCreate", is_create);
 
