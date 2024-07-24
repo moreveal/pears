@@ -1671,10 +1671,10 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 	
 	PlayerInfo[playerid][pInven][slot] = thingId; // Ставим предмет в слот
 
-	if (thingType == 0 && thingPack == 0 && CheckThingQuan(thingId) == 1) {
-		PlayerInfo[playerid][pInvenQuan][slot] += quan; // Добавляем нужное количество в слот
+	if (thingType == 1 && thingPack == 0) {
+		PlayerInfo[playerid][pInvenQuan][slot] = 1; // Добавляем всегда 1, т.к. в слоте не может быть более чем 1 оружия
 	} else {
-		PlayerInfo[playerid][pInvenQuan][slot] = 1; // Добавляет всегда 1, т.к. предмет не имеет количества
+		PlayerInfo[playerid][pInvenQuan][slot] += quan; // Добавляем нужное количество в слот
 	}
 
 	// Не выдаем оружий ближнего боя больше чем 1
