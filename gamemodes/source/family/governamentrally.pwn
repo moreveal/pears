@@ -475,7 +475,7 @@ stock SelectVoteAfterRally()
             {
                 UnmakeleaderPlayerBridge(PlayerInfo[i][pID], PlayerInfo[i][pLeader], PlayerInfo[i][pRank]);
                 PlayerInfo[i][pLeader] = 0;
-                Uninvivte(i,0);
+                Uninvite(i,0);
                 otmena = 1;
                 OrgLog(7, "DismissalAfterRally", PlayerInfo[i][pID], PlayerInfo[i][pName], PlayerInfo[i][pPlaIP], 0, "", "", 0, "Снят по голосованию после митинга");
                 break;
@@ -495,7 +495,7 @@ stock SelectVoteAfterRally()
             {
                 UnmakeleaderPlayerBridge(PlayerInfo[i][pID], PlayerInfo[i][pLeader], PlayerInfo[i][pRank]);
                 PlayerInfo[i][pLeader] = 0;
-                Uninvivte(i,0);
+                Uninvite(i,0);
                 OrgLog(7, "DismissalAfterRally", PlayerInfo[i][pID], PlayerInfo[i][pName], PlayerInfo[i][pPlaIP], 0, "", "", 0, "Уволен по голосованию после митинга");
             }
         }

@@ -7,12 +7,13 @@ stock SaveRadars(id = -1) {
     for (new i = minid; i < maxid; i++) {
         if (Radar_IsExists(i)) {
             mysql_format(pearsq, query_string, sizeof(query_string),
-                "REPLACE INTO `radars` (`id`, `fraction`, `owner`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `radius`, `max_speed`, `fine`, `tickets_issued`, `fine_total`, `fine_total_before_units`) \
-                VALUES(%d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, %d)",
+                "REPLACE INTO `radars` (`id`, `fraction`, `owner`, `placed`, `x`, `y`, `z`, `rx`, `ry`, `rz`, `radius`, `max_speed`, `fine`, `tickets_issued`, `fine_total`, `fine_total_before_units`) \
+                VALUES(%d, %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %d, %d, %d, %d)",
                 
                 i,
                 RadarInfo[i][riFraction],
                 RadarInfo[i][riPID],
+                RadarInfo[i][riPlaced],
                 RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ], RadarInfo[i][riRX], RadarInfo[i][riRY], RadarInfo[i][riRZ],
                 RadarInfo[i][riRadius],
                 RadarInfo[i][riMaxSpeed],
@@ -43,6 +44,7 @@ function LoadRadars() {
         
         cache_get_value_name_int(i, "fraction", RadarInfo[id][riFraction]);
         cache_get_value_name_int(i, "owner", RadarInfo[id][riPID]);
+        cache_get_value_name_int(i, "placed", RadarInfo[id][riPlaced]);
         cache_get_value_name_float(i, "x", RadarInfo[id][riX]);
         cache_get_value_name_float(i, "y", RadarInfo[id][riY]);
         cache_get_value_name_float(i, "z", RadarInfo[id][riZ]);
@@ -56,6 +58,8 @@ function LoadRadars() {
         cache_get_value_name_int(i, "tickets_issued", RadarInfo[id][riTicketsIssued]);
         cache_get_value_name_int(i, "fine_total", RadarInfo[id][riFineTotal]);
         cache_get_value_name_int(i, "fine_total_before_units", RadarInfo[id][riFineTotalBeforeUnits]);
+
+        if (RadarInfo[id][riPlaced]) Radar_Place(id);
     }
 }
 
@@ -67,6 +71,13 @@ stock Radar_IsExists(id) {
 stock Radar_IsPlaced(id) {
     if (!Radar_IsExists(id)) return 0;
     return RadarInfo[id][riPlaced];
+}
+
+stock Radar_GetMaxRadarsForPlayer(playerid) {
+    new amount = RADAR_PER_PLAYER;
+    if (IsLeader(playerid) || IsSubLeader(playerid)) amount += 1; // +1 для заместителей и лидеров
+
+    return amount;
 }
 
 stock Radar_Create(playerid, Float: radius, maxSpeed, fine) {
@@ -99,34 +110,91 @@ stock Radar_Create(playerid, Float: radius, maxSpeed, fine) {
     return -1;
 }
 
-stock Radar_CalculateUnits(radarid) {
+stock Radar_CalculateUnits(radarid, playerid = -1) {
     if (!Radar_IsExists(radarid)) return 0;
 
     new fine_total = RadarInfo[radarid][riFineTotal] - RadarInfo[radarid][riFineTotalBeforeUnits];
-    new police_share = fine_total / 100 * RADAR_POLICE_SHARE;
-    return police_share / 100 * OrganInfo[RadarInfo[radarid][riFraction]][gUnit][24];
+    new Float: police_share = fine_total / 100.0 * RADAR_POLICE_SHARE;
+
+    new Float: units = police_share / 100.0 * Float: OrganInfo[RadarInfo[radarid][riFraction]][gUnit][24];
+
+    if (playerid > -1) {
+        // Высчитываем сколько юнитов с радара получит конкретный игрок
+        new radars_total = Radar_GetAmount(.fraction = Radar_GetFraction(radarid), .placed = true);
+        new radars_player = Radar_GetAmount(.playerid = playerid, .fraction = Radar_GetFraction(radarid), .placed = true);
+
+        if (radars_total == 0) return 0;
+
+        new Float: player_units = units * (Float: radars_player / Float: radars_total);
+
+        return _:player_units;
+    }
+
+    return _:units;
 }
 
 stock Radar_CollectUnits(radarid) {
+    new bool: success_payment = false;
+
     new units = Radar_CalculateUnits(radarid);
     if (units > 0) {
-        new bool: owner_online = false;
-        foreach (new playerid : Player) {
-            if (Radar_IsOwner(playerid, radarid)) {
-                owner_online = true;
-                GivePlayerUnit(playerid, units);
-                break;
+        new radars_total = Radar_GetAmount(.fraction = Radar_GetFraction(radarid), .placed = true);
+        
+        {
+            new radars_pid[MAX_RADARS];
+            new radars_amount[MAX_RADARS];
+
+            // Считаем количество установленных радаров у игроков
+            for (new i = 0; i < MAX_RADARS; i++) {
+                if (Radar_GetFraction(i) != Radar_GetFraction(radarid)) continue;
+                if (!Radar_IsPlaced(i)) continue;
+
+                new ownerid = RadarInfo[i][riPID];
+                for (new j = 0; j < sizeof(radars_pid); j++) {
+                    if (radars_pid[j] == ownerid || radars_pid[j] == 0) {
+                        radars_pid[j] = ownerid;
+                        radars_amount[j]++;
+                        break;
+                    }
+                }
+            }
+
+            // Выплачиваем юниты, исходя из количества установленных каждым игроком в организации
+            for (new i = 0; i < sizeof(radars_pid); i++) {
+                new ownerid = radars_pid[i];
+                if (ownerid == 0) break;
+                
+                new radars_player = radars_amount[i];
+                new player_units = _:(Float: units * (Float: radars_player / Float: radars_total));
+
+                success_payment = true;
+                
+                new bool: player_online = false;
+                foreach (new playerid : Player) {
+                    if (PlayerInfo[playerid][pID] == ownerid) {
+                        player_online = true;
+                        GivePlayerUnit(playerid, player_units);
+                        break;
+                    }
+                }
+
+                // Если игрок не в сети - начисляем юниты Offline
+                if (!player_online) {
+                    new string[128];
+                    // Запрос кидается
+                    mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `Unit` = `Unit` + %d WHERE `user_id` = %d", player_units, ownerid);
+                    query_empty(pearsq, string);
+                }
             }
         }
-        if (!owner_online) {
-            // Начисляем юниты Offline, если игрок не в сети
-            new string[128];
-            mysql_format(pearsq, string, sizeof(string), "UPDATE `pp_igroki` SET `Unit` = `Unit` + %d WHERE `user_id` = %d", units, RadarInfo[radarid][riPID]);
-            query_empty(pearsq, string);
-        }
     }
-    RadarInfo[radarid][riFineTotalBeforeUnits] = RadarInfo[radarid][riFineTotal];
-    SaveRadars(radarid);
+
+    // Если юниты были выплачены (есть хотя бы один игрок для их получения и т.п.)
+    if (success_payment) {
+        // Вычитаем юниты из радара и сохраняем
+        RadarInfo[radarid][riFineTotalBeforeUnits] = RadarInfo[radarid][riFineTotal];
+        SaveRadars(radarid);
+    }
 
     return 1;
 }
@@ -139,11 +207,11 @@ stock Radar_Delete(radarid) {
     Radar_Place(radarid, false);
 
     // Удаление таймеров
-    KillTimer(RadarInfo[radarid][riAutoUnplaceTimer]);
     KillTimer(RadarInfo[radarid][riDeleteLaserTimer]);
     KillTimer(RadarInfo[radarid][riUpdateLaserTimer]);
     KillTimer(RadarInfo[radarid][riDeleteFlashlightTimer]);
     KillTimer(RadarInfo[radarid][riRepairTimer]);
+    KillTimer(RadarInfo[radarid][riLabelNoFixTimer]);
     
     // Очищаем данные о радаре
     for (new e_RadarInfo: i; i < e_RadarInfo; ++i) RadarInfo[radarid][i] = 0;
@@ -171,29 +239,59 @@ stock Radar_SetPosition(id, Float: x, Float: y, Float: z, Float: rx, Float: ry, 
 
 stock Radar_IsBroken(id) {
     if (!Radar_IsExists(id)) return 0;
-    return RadarInfo[id][riBroken];
+    return RadarInfo[id][riBroken] != RADAR_BROKEN_NONE;
 }
 
-function Radar_SetBroken(id, bool: status) {
+stock Radar_IsPlayerNear(playerid, id, Float: radius = RADAR_RADIUS) {
+    if (GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
+    if (!IsPlayerInRangeOfPoint(playerid, radius, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ])) return 0;
+
+    return 1;
+}
+
+function Radar_SetBroken(id, e_RadarBroken: status) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
-    if (bool: Radar_IsBroken(id) == status) return 0;
+    if (RadarInfo[id][riBroken] == status) return 0;
 
     RadarInfo[id][riBroken] = status;
-    if (status) {
+    if (_:status) {
         foreach (new currentid : Player) {
-            if (!IsPlayerInRangeOfPoint(currentid, 20.0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ])) continue;
-            PlayerPlaySound(currentid, 6003, 0.0, 0.0, 0.0);
+            if (!Radar_IsPlayerNear(currentid, id)) continue;
+
+            PlayerPlaySound(currentid, 17003);
         }
     }
+
+    if (status == RADAR_BROKEN_NO_FIX) {
+        if (IsValidTimer(RadarInfo[id][riRepairTimer])) KillTimer(RadarInfo[id][riRepairTimer]);
+        RadarInfo[id][riRepairTimer] = SetTimerEx("Radar_SetBroken", RADAR_BROKE_NO_FIX_TIME * 60 * 1000, false, "dd", id, RADAR_BROKEN_FIX);
+        RadarInfo[id][riRepairTimerStarted] = gettime();
+    } else if (status == RADAR_BROKEN_FIX) {
+        if (IsValidTimer(RadarInfo[id][riRepairTimer])) KillTimer(RadarInfo[id][riRepairTimer]);
+        RadarInfo[id][riRepairTimer] = SetTimerEx("Radar_SetBroken", RADAR_BROKE_TIME * 60 * 1000, false, "dd", id, RADAR_BROKEN_NONE);
+        RadarInfo[id][riRepairTimerStarted] = gettime();
+    }
+
+    // Пересоздаем радар и 3D текст
     Radar_Place(id);
 
     return 1;
 }
 
-stock Radar_UpdateLabel(id, bool: create = true) {
+function Radar_UpdateLabelNoFix(id) {
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || RadarInfo[id][riBroken] != RADAR_BROKEN_NO_FIX) return 0;
+    Radar_UpdateLabel(id);
+    SetTimerEx("Radar_UpdateLabelNoFix", 1000, false, "d", id);
+    return 1;
+}
+
+stock Radar_UpdateLabel(id) {
     if (!Radar_IsExists(id)) return 0;
 
-    if ( create || !create && Radar_IsPlaced(id) ) {
+    if (!Radar_IsPlaced(id)) {
+        DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
+        RadarInfo[id][riTextLabel] = Text3D: 0;
+    } else {
         new speed_color[8 + 1];
         if (RadarInfo[id][riMaxSpeed] <= 90) strcat(speed_color, "{99ff66}");
         else if (RadarInfo[id][riMaxSpeed] <= 120) strcat(speed_color, "{ffff00}");
@@ -211,10 +309,23 @@ stock Radar_UpdateLabel(id, bool: create = true) {
             FormatNumberWithCommas(RadarInfo[id][riFine])
         );
 
-        if (!Radar_IsBroken(id))
-            strcat(label, "\n{FF9000}[ ALT - Взаимодействие ]");
-        else
-            strcat(label, "\n{FF0000}[ Выведен из строя ]");
+        switch(RadarInfo[id][riBroken]) {
+            case RADAR_BROKEN_NO_FIX: {
+                format(label, sizeof(label),
+                    "%s\n\n{FF6347}Выведен из строя\n{CCCCCC}[ Можно починить через: %s ]",
+
+                    label,
+                    fine_time( RADAR_BROKE_NO_FIX_TIME * 60 - (gettime() - RadarInfo[id][riRepairTimerStarted]) )
+                );
+            }
+            case RADAR_BROKEN_FIX: {
+                strcat(label, "\n\n{FFFF00}Выведен из строя");
+            }
+            default: {
+                strcat(label, "\n{FF9000}[ ALT - Взаимодействие ]");
+            }
+        }
+            
 
         if (IsValidDynamic3DTextLabel(RadarInfo[id][riTextLabel])) return UpdateDynamic3DTextLabelText(RadarInfo[id][riTextLabel], 0x0077FFFF, label);
         RadarInfo[id][riTextLabel] = CreateDynamic3DTextLabel(label, 0x0077FFFF, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], 10.0, .worldid = 0, .interiorid = 0);
@@ -225,7 +336,7 @@ stock Radar_UpdateLabel(id, bool: create = true) {
 
 function Radar_DeleteFlashlight(id) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
-    if (IsValidDynamicObject(RadarInfo[id][riObjects][16])) DestroyDynamicObject(RadarInfo[id][riObjects][16]);
+    if (IsValidDynamicObject(RadarInfo[id][riObjects][29])) DestroyDynamicObject(RadarInfo[id][riObjects][29]);
     return 1;
 }
 
@@ -234,7 +345,7 @@ stock Radar_SetLaserPosition(id, playerid) {
     if (!IsPlayerInAnyVehicle(playerid)) return 0;
 
     // Поворачиваем лазер к игроку
-    new objectid = RadarInfo[id][riObjects][15];
+    new objectid = RadarInfo[id][riObjects][8];
     TurnDynamicObjectToPlayer(objectid, playerid);
 
     // Корректировка
@@ -258,8 +369,8 @@ function Radar_UpdateLaser(id, playerid) {
 function Radar_DeleteLaser(id) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][15], E_STREAMER_WORLD_ID, 228);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][15], E_STREAMER_INTERIOR_ID, 228);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, 228);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, 228);
 
     return 1;
 }
@@ -269,8 +380,7 @@ stock Radar_FlashLight(id) {
 
     Radar_DeleteFlashlight(id);
     new Float: x, Float: y, Float: z; GetDynamicObjectPos(RadarInfo[id][riObjects][12], x, y, z);
-    RadarInfo[id][riObjects][16] = CreateDynamicObject(18670, x, y, z - 1.7, 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][16], STREAMER_RADAR_OBJECT, 1);
+    RadarInfo[id][riObjects][29] = CreateDynamicObject(18670, x, y, z - 1.7, 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00);
     if (IsValidTimer(RadarInfo[id][riDeleteFlashlightTimer])) KillTimer(RadarInfo[id][riDeleteFlashlightTimer]);
     RadarInfo[id][riDeleteFlashlightTimer] = SetTimerEx("Radar_DeleteFlashlight", 1000, false, "d", id);
 
@@ -279,319 +389,590 @@ stock Radar_FlashLight(id) {
 
 stock Radar_Laser(id, playerid = -1) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
+    if (!IsOnline(playerid)) return 0;
 
-    new objectid = RadarInfo[id][riObjects][15];
-    if (IsOnline(playerid)) {
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_WORLD_ID, 0);
-        Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_INTERIOR_ID, 0);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, 0);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, 0);
 
-        if (IsValidTimer(RadarInfo[id][riDeleteLaserTimer])) KillTimer(RadarInfo[id][riDeleteLaserTimer]);
-        RadarInfo[id][riDeleteLaserTimer] = SetTimerEx("Radar_DeleteLaser", 4500, false, "d", id);
-        if (IsValidTimer(RadarInfo[id][riUpdateLaserTimer])) KillTimer(RadarInfo[id][riUpdateLaserTimer]);
-        RadarInfo[id][riUpdateLaserTimer] = SetTimerEx("Radar_UpdateLaser", 10, true, "dd", id, playerid);
-    }
+    if (IsValidTimer(RadarInfo[id][riDeleteLaserTimer])) KillTimer(RadarInfo[id][riDeleteLaserTimer]);
+    RadarInfo[id][riDeleteLaserTimer] = SetTimerEx("Radar_DeleteLaser", 4500, false, "d", id);
+    if (IsValidTimer(RadarInfo[id][riUpdateLaserTimer])) KillTimer(RadarInfo[id][riUpdateLaserTimer]);
+    RadarInfo[id][riUpdateLaserTimer] = SetTimerEx("Radar_UpdateLaser", 10, true, "dd", id, playerid);
 
     return 1;
 }
 
-function Radar_RestorePosition(id) {
-    if (!Radar_IsExists(id) || !Radar_IsPlaced(id)) return 0;
-    return Radar_Place(id);
+stock Radar_Explode(id) {
+    if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || !Radar_IsBroken(id)) return 0;
+    
+    
+    return 1;
 }
 
 stock Radar_Place(id, bool: status = true) {
     if (!Radar_IsExists(id)) return 0;
 
     if (status) {
-        new bool: is_broken = bool: Radar_IsBroken(id);
+        new e_RadarBroken: brokenStatus = RadarInfo[id][riBroken];
         Radar_Place(id, false); // Удаляем объекты, если они уже были установлены
         
         new object_world = 17, object_int = 228;
-        
-        if (!is_broken) {
-            // Основной объект (ноутбук)
-            RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][0], 0, 0);
-            RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 30.000000, 0.000000, 240.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][1], 0, 0);
-            RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 30.000000, 0.000000, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][2], 0, 0);
-            RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 30.000000, 0.000000, 120.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-            gadd(RadarInfo[id][riObjects][3], 0, 0);
-            RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.328002, 1570.761352, 10.960308, 0.000000, 0.000000, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 19894, "laptopsamp1", "laptopscreen3", 0x00000000);
-            gadd(RadarInfo[id][riObjects][4], 0, 0);
-            RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.275146, 1571.127563, 10.940304, 90.000000, 0.000000, 270.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
-            gadd(RadarInfo[id][riObjects][5], 0, 0);
-            RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.952148, 1571.001342, 11.160321, 15.300004, 0.000007, -0.000001, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
-            gadd(RadarInfo[id][riObjects][6], 0, 0);
-            RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.197875, 1571.001586, 11.110310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][7], 0, 0);
-            RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.498168, 1571.001586, 11.110310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][8], 0, 0);
-            RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.326049, 1571.031616, 11.220313, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][9], 0, 0);
-            RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.328002, 1571.171752, 11.110310, 270.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][10], 0, 0);
-            RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.328002, 1570.969604, 11.222311, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][11], 0, 0);
-            RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.327270, 1571.207153, 11.130313, 0.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][12], 0, 0);
-            RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.328369, 1571.197509, 11.150322, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][13], 0, 0);
-            RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.328369, 1571.197509, 11.120322, 180.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-            SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
-            gadd(RadarInfo[id][riObjects][14], 0, 0);
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            RadarInfo[id][riObjects][15] = CreateDynamicObject(18643, 1325.951538, 1571.024658, 10.970321, 0.000000, 0.000000, 90.000000, object_world, object_int, -1, 300.00, 300.00); 
-            gadd(RadarInfo[id][riObjects][15], 228, 228); // Объект спрятан и отображается только в нужный момент
 
-            // Корректировка позиции
-            TSInfo[tsOffset][0] = -0.128173;
-            TSInfo[tsOffset][1] = 0.042236;
-            TSInfo[tsOffset][2] = 0.120000;
+        if (RadarInfo[id][riMaxSpeed] <= 90.0) {
+            if (!brokenStatus) {
+                RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1323.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][0], 0, 0);
+                RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1323.328002, 1570.760375, 10.960308, 0.000000, 0.000000, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 19894, "laptopsamp1", "laptopscreen3", 0x00000000);
+                gadd(RadarInfo[id][riObjects][1], 0, 0);
+                RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1323.279052, 1571.169555, 10.790301, 89.999992, 0.000121, -89.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                gadd(RadarInfo[id][riObjects][2], 0, 0);
+                RadarInfo[id][riObjects][3] = CreateDynamicObject(19144, 1322.956054, 1571.043334, 11.010315, 15.300004, 0.000068, -0.000016, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                gadd(RadarInfo[id][riObjects][3], 0, 0);
+                RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1323.197875, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][4], 0, 0);
+                RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1323.498168, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][5], 0, 0);
+                RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1323.326049, 1571.031616, 11.220313, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][6], 0, 0);
+                RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1323.328002, 1571.171752, 11.116310, 270.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][7], 0, 0);
+                RadarInfo[id][riObjects][8] = CreateDynamicObject(18643, 1322.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Red
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1323.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                gadd(RadarInfo[id][riObjects][9], 0, 0);
+                RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1323.330566, 1571.037353, 11.030100, -27.000001, 180.000000, -0.000026, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][10], 0, 0);
+                RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1323.330566, 1571.037353, 11.030100, -26.999984, -179.999984, 119.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][11], 0, 0);
+                RadarInfo[id][riObjects][12] = CreateDynamicObject(19967, 1323.330566, 1571.037353, 11.030100, -26.999996, -179.999984, -119.999984, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][12], 0, 0);
+                RadarInfo[id][riObjects][13] = CreateDynamicObject(19143, 1323.332519, 1571.117431, 11.285957, 19.000013, 0.000085, -0.000021, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                gadd(RadarInfo[id][riObjects][13], 0, 0);
 
-            MatrixDynamicObjectPos(0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], RadarInfo[id][riRX], RadarInfo[id][riRY], RadarInfo[id][riRZ]);
-        } else {
-            switch (1 + random(100)) {
-                case 1..35: { // 2 версия разрушения (35%)
-                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.268676, 1571.099121, 10.970118, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][0], 0, 0);
-                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 33.100021, 1.100000, -124.900009, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][1], 0, 0);
-                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 36.000000, 1.299999, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][2], 0, 0);
-                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.328002, 1571.031616, 10.960308, 35.100002, 0.000000, 124.399932, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][3], 0, 0);
-                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.418945, 1570.880493, 10.918087, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 14387, "dr_gsnew", "cd_tex2", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][4], 0, 0);
-                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.169311, 1571.149658, 10.969779, 78.864028, 85.422599, -140.835128, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][5], 0, 0);
-                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1326.000732, 1570.830932, 11.166330, 26.397958, 0.985989, 34.234886, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][6], 0, 0);
-                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.196533, 1570.978393, 11.113520, -78.864028, 274.577331, 39.164817, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][7], 0, 0);
-                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.443481, 1571.149291, 11.108892, -78.864028, 274.577331, 39.164817, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][8], 0, 0);
-                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.298706, 1571.059082, 11.225257, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][9], 0, 0);
-                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.209106, 1571.189941, 11.144275, -78.864006, -175.422607, 39.164882, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][10], 0, 0);
-                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.335205, 1571.009765, 11.215250, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][11], 0, 0);
-                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.191284, 1571.215332, 11.170728, -11.099998, -0.900001, -145.499954, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][12], 0, 0);
-                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.199951, 1571.205078, 11.188487, 11.099998, 0.900001, 34.500011, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][13], 0, 0);
-                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.196289, 1571.209594, 11.159052, -11.099997, 179.099990, -145.499984, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][14], 0, 0);
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18688, 1325.952026, 1570.738037, 9.420307, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
-                    gadd(RadarInfo[id][riObjects][15], 0, 0);
+                TSInfo[tsOffset][2] = 0.077821;
+            } else {
+                switch (brokenStatus) {
+                    case RADAR_BROKEN_NO_FIX: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1323.322875, 1567.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1323.234497, 1566.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1323.276733, 1567.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19144, 1322.947265, 1567.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1323.218872, 1567.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1323.498291, 1566.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1323.365966, 1567.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1323.395385, 1567.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1323.347290, 1566.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1323.331420, 1567.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1323.331420, 1567.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1323.331420, 1567.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1323.411254, 1567.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
 
-                    TSInfo[tsOffset][0] = -0.136596;
-                    TSInfo[tsOffset][1] = -0.036132;
-                    TSInfo[tsOffset][2] = -0.637525;
-                }
-                case 36..51: { // 3 версия разрушения (15%)
-                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1325.755126, 1570.806396, 10.722577, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][0], 0, 0);
-                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 47.214488, 20.037380, -157.906661, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][1], 0, 0);
-                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 15.360242, -41.216545, 12.167108, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][2], 0, 0);
-                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1325.755126, 1570.806396, 10.722577, 14.729486, 12.932216, 102.482681, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][3], 0, 0);
-                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1325.672363, 1570.550048, 10.700902, 4.600025, -39.599956, -17.900060, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 14387, "dr_gsnew", "cd_tex2", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][4], 0, 0);
-                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1325.759033, 1570.909912, 10.681324, 50.177452, 172.805923, 77.637153, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][5], 0, 0);
-                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.351074, 1570.912353, 10.634958, 16.261367, -41.440956, -7.809256, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][6], 0, 0);
-                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1325.558715, 1570.835693, 10.752696, -50.177452, 187.194061, -102.362838, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][7], 0, 0);
-                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1325.774169, 1570.750000, 10.943493, -50.177452, 187.194061, -102.362838, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][8], 0, 0);
-                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1325.591064, 1570.842651, 10.921028, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][9], 0, 0);
-                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1325.704223, 1570.959960, 10.849022, -50.177459, 97.194053, -102.362861, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][10], 0, 0);
-                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1325.572143, 1570.783691, 10.918830, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][11], 0, 0);
-                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1325.702026, 1570.996582, 10.866758, -4.600006, 39.599964, 162.099945, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][12], 0, 0);
-                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1325.687255, 1570.989868, 10.882050, 4.600006, -39.599964, -17.900032, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][13], 0, 0);
-                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1325.706054, 1570.985717, 10.859010, -4.600002, -140.400024, 162.099960, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][14], 0, 0);
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18704, 1326.316528, 1570.660278, 9.216628, -1.799999, -25.099998, -16.599998, object_world, object_int, -1, 300.00, 300.00); 
-                    gadd(RadarInfo[id][riObjects][15], 0, 0);
+                        RadarInfo[id][riObjects][16] = CreateDynamicObject(18688, 1323.299926, 1566.762329, 9.580307, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        RadarInfo[id][riObjects][17] = CreateDynamicObject(18686, 1323.269531, 1566.983886, 9.640308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // Boom Effect
+                        
+                        TSInfo[tsOffset][2] = -0.537282;
+                    }
+                    default: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1323.322875, 1563.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1323.234497, 1562.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1323.276733, 1563.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 16322, "a51_stores", "steel64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19144, 1322.947265, 1563.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1323.218872, 1563.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1323.498291, 1562.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1323.365966, 1563.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1323.395385, 1563.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1323.347290, 1562.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1323.331420, 1563.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1323.331420, 1563.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1323.331420, 1563.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 16322, "a51_stores", "steel64", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1323.411254, 1563.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
+                        RadarInfo[id][riObjects][13] = CreateDynamicObject(18703, 1323.305786, 1562.892333, 10.100318, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        gadd(RadarInfo[id][riObjects][13], 0, 0);
 
-                    TSInfo[tsOffset][0] = 0.073242;
-                    TSInfo[tsOffset][1] = -0.043823;
-                    TSInfo[tsOffset][2] = -0.642516;
-                }
-                default: { // 1 версия разрушения (45%)
-                    RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.712036, 1574.065429, 10.886045, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][0], 0, 0);
-                    RadarInfo[id][riObjects][1] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 30.201633, -11.061601, -136.169357, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][1], 0, 0);
-                    RadarInfo[id][riObjects][2] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.415534, 21.729801, -76.648292, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][2], 0, 0);
-                    RadarInfo[id][riObjects][3] = CreateDynamicObject(19087, 1326.712036, 1574.065429, 10.886045, 32.398666, -2.788732, 86.196357, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3113, "carrierxr", "ws_shipmetal1", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][3], 0, 0);
-                    RadarInfo[id][riObjects][4] = CreateDynamicObject(19893, 1326.557617, 1573.844726, 10.908425, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 1, 8480, "csrspalace01", "black32", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][4], 0, 0);
-                    RadarInfo[id][riObjects][5] = CreateDynamicObject(334, 1326.720703, 1574.175415, 10.869961, 76.713333, -21.107568, -104.367736, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16322, "a51_stores", "steel64", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][5], 0, 0);
-                    RadarInfo[id][riObjects][6] = CreateDynamicObject(19144, 1325.869873, 1574.497680, 9.990758, 17.800004, -75.400001, 24.899986, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 1, 2127, "cj_kitchen", "CJ_RED", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][6], 0, 0);
-                    RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.625488, 1574.107055, 11.062417, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][7], 0, 0);
-                    RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.862915, 1573.934692, 10.998029, -76.713333, 21.107612, 75.632232, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][8], 0, 0);
-                    RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.768432, 1574.051757, 11.139507, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][9], 0, 0);
-                    RadarInfo[id][riObjects][10] = CreateDynamicObject(19894, 1326.825561, 1574.171386, 11.020440, -76.713333, -68.892303, 75.632217, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][10], 0, 0);
-                    RadarInfo[id][riObjects][11] = CreateDynamicObject(19894, 1326.734863, 1573.999755, 11.146165, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][11], 0, 0);
-                    RadarInfo[id][riObjects][12] = CreateDynamicObject(19623, 1326.849487, 1574.199584, 11.037131, 4.747482, -12.423845, 145.041549, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 3, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][12], 0, 0);
-                    RadarInfo[id][riObjects][13] = CreateDynamicObject(19941, 1326.849365, 1574.189819, 11.057155, -4.747470, 12.423851, -34.958362, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][13], 0, 0);
-                    RadarInfo[id][riObjects][14] = CreateDynamicObject(19941, 1326.842651, 1574.191528, 11.027957, 4.747449, 167.576141, 145.041687, object_world, object_int, -1, 300.00, 300.00); 
-                    SetDynamicObjectMaterial(RadarInfo[id][riObjects][14], 0, 18632, "fishingrod", "plastic", 0x00000000);
-                    gadd(RadarInfo[id][riObjects][14], 0, 0);
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    RadarInfo[id][riObjects][15] = CreateDynamicObject(18717, 1327.211547, 1573.505004, 9.493952, -17.700000, -17.700002, 14.000007, object_world, object_int, -1, 300.00, 300.00); 
-                    gadd(RadarInfo[id][riObjects][15], 0, 0);
-
-                    TSInfo[tsOffset][0] = -0.086425;
-                    TSInfo[tsOffset][1] = -0.161254;
-                    TSInfo[tsOffset][2] = -0.565986;
+                        TSInfo[tsOffset][2] = -0.277277;
+                    }
                 }
             }
+        } else if (RadarInfo[id][riMaxSpeed] <= 120.0) {
+            if (!brokenStatus) {
+                RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][0], 0, 0);
+                RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1326.328002, 1570.760375, 10.960308, 0.000000, 0.000000, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 19894, "laptopsamp1", "laptopscreen3", 0x00000000);
+                gadd(RadarInfo[id][riObjects][1], 0, 0);
+                RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1326.279052, 1571.169555, 10.790301, 89.999992, 0.000121, -89.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                gadd(RadarInfo[id][riObjects][2], 0, 0);
+                RadarInfo[id][riObjects][3] = CreateDynamicObject(19146, 1325.956054, 1571.043334, 11.010315, 15.300004, 0.000068, -0.000016, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 3096, "bbpcpx", "blugrad32", 0x00000000);
+                gadd(RadarInfo[id][riObjects][3], 0, 0);
+                RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1326.197875, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][4], 0, 0);
+                RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1326.498168, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][5], 0, 0);
+                RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1326.326049, 1571.031616, 11.220313, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][6], 0, 0);
+                RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.328002, 1571.171752, 11.116310, 270.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][7], 0, 0);
+                RadarInfo[id][riObjects][8] = CreateDynamicObject(19080, 1325.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Blue
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][9], 0, 0);
+                RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1326.330566, 1571.037353, 11.030100, -27.000001, 180.000000, -0.000026, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][10], 0, 0);
+                RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1326.330566, 1571.037353, 11.030100, -26.999984, -179.999984, 119.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][11], 0, 0);
+                RadarInfo[id][riObjects][12] = CreateDynamicObject(19967, 1326.330566, 1571.037353, 11.030100, -26.999996, -179.999984, -119.999984, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][12], 0, 0);
+                RadarInfo[id][riObjects][13] = CreateDynamicObject(19143, 1326.332519, 1571.117431, 11.285957, 19.000013, 0.000085, -0.000021, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                gadd(RadarInfo[id][riObjects][13], 0, 0);
 
-            Radar_SetNormalZ(id); RadarInfo[id][riZ] -= 0.165;
-            MatrixDynamicObjectPos(0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], RadarInfo[id][riRX], RadarInfo[id][riRY], RadarInfo[id][riRZ]);
-            
-            RadarInfo[id][riBroken] = true;
+                TSInfo[tsOffset][2] = 0.077821;
+            } else {
+                switch (brokenStatus) {
+                    case RADAR_BROKEN_NO_FIX: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.322875, 1567.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1326.234497, 1566.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1326.276733, 1567.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19146, 1325.947265, 1567.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 3096, "bbpcpx", "blugrad32", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1326.218872, 1567.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1326.498291, 1566.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1326.365966, 1567.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.395385, 1567.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.347290, 1566.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1326.331420, 1567.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1326.331420, 1567.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1326.331420, 1567.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1326.411254, 1567.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
+
+                        RadarInfo[id][riObjects][16] = CreateDynamicObject(18688, 1326.299926, 1566.762329, 9.580307, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        RadarInfo[id][riObjects][17] = CreateDynamicObject(18686, 1326.269531, 1566.983886, 9.640308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // Boom Effect
+                    
+                        TSInfo[tsOffset][2] = -0.537282;
+                    }
+                    default: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.322875, 1563.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1326.234497, 1562.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1326.276733, 1563.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 14576, "mafiacasinovault01", "ab_vaultmetal", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19146, 1325.947265, 1563.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 3096, "bbpcpx", "blugrad32", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1326.218872, 1563.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1326.498291, 1562.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1326.365966, 1563.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1326.395385, 1563.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1326.347290, 1562.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1326.331420, 1563.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1326.331420, 1563.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1326.331420, 1563.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 2772, "airp_prop", "CJ_GALVANISED", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1326.411254, 1563.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
+                        RadarInfo[id][riObjects][13] = CreateDynamicObject(18703, 1326.305786, 1562.892333, 10.100318, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        gadd(RadarInfo[id][riObjects][13], 0, 0);
+
+                        TSInfo[tsOffset][2] = -0.277277;
+                    }
+                }
+            }
+        } else {
+            if (!brokenStatus) {
+                RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1329.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][0], 0, 0);
+                RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1329.328002, 1570.760375, 10.960308, 0.000000, 0.000000, 360.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 19894, "laptopsamp1", "laptopscreen3", 0x00000000);
+                gadd(RadarInfo[id][riObjects][1], 0, 0);
+                RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1329.279052, 1571.169555, 10.790301, 89.999992, 0.000121, -89.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][2], 0, 0);
+                RadarInfo[id][riObjects][3] = CreateDynamicObject(19145, 1328.956054, 1571.043334, 11.010315, 15.300004, 0.000068, -0.000016, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 1273, "icons3", "greengrad32", 0x00000000);
+                gadd(RadarInfo[id][riObjects][3], 0, 0);
+                RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1329.197875, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][4], 0, 0);
+                RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1329.498168, 1571.001586, 11.116310, -89.999992, 179.999984, -90.000015, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][5], 0, 0);
+                RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1329.326049, 1571.031616, 11.220313, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][6], 0, 0);
+                RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1329.328002, 1571.171752, 11.116310, 270.000000, 0.000000, 180.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][7], 0, 0);
+                RadarInfo[id][riObjects][8] = CreateDynamicObject(19083, 1328.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Green
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1329.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                gadd(RadarInfo[id][riObjects][9], 0, 0);
+                RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1329.330566, 1571.037353, 11.030100, -27.000001, 180.000000, -0.000026, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][10], 0, 0);
+                RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1329.330566, 1571.037353, 11.030100, -26.999984, -179.999984, 119.999961, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][11], 0, 0);
+                RadarInfo[id][riObjects][12] = CreateDynamicObject(19967, 1329.330566, 1571.037353, 11.030100, -26.999996, -179.999984, -119.999984, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                gadd(RadarInfo[id][riObjects][12], 0, 0);
+                RadarInfo[id][riObjects][13] = CreateDynamicObject(19143, 1329.332519, 1571.117431, 11.285957, 19.000013, 0.000085, -0.000021, object_world, object_int, -1, 300.00, 300.00); 
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                SetDynamicObjectMaterial(RadarInfo[id][riObjects][13], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                gadd(RadarInfo[id][riObjects][13], 0, 0);
+
+                TSInfo[tsOffset][2] = 0.077821;
+            } else {
+                switch (brokenStatus) {
+                    case RADAR_BROKEN_NO_FIX: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1329.322875, 1567.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1329.234497, 1566.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1329.276733, 1567.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19145, 1328.947265, 1567.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 1273, "icons3", "greengrad32", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1329.218872, 1567.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1329.498291, 1566.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1329.365966, 1567.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1329.395385, 1567.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1329.347290, 1566.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1329.331420, 1567.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1329.331420, 1567.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1329.331420, 1567.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1329.411254, 1567.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
+
+                        RadarInfo[id][riObjects][16] = CreateDynamicObject(18688, 1329.299926, 1566.762329, 9.580307, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        RadarInfo[id][riObjects][17] = CreateDynamicObject(18686, 1329.269531, 1566.983886, 9.640308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); // Boom Effect
+
+                        TSInfo[tsOffset][2] = -0.537282;
+                    }
+                    default: {
+                        RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1329.322875, 1563.060546, 10.979763, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][0], 0, 0);
+                        RadarInfo[id][riObjects][1] = CreateDynamicObject(19893, 1329.234497, 1562.807128, 10.942198, 7.976202, 13.235788, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 0, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][1], 1, 10765, "airportgnd_sfse", "black64", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][1], 0, 0);
+                        RadarInfo[id][riObjects][2] = CreateDynamicObject(334, 1329.276733, 1563.186157, 10.797300, 87.093429, 135.795898, 139.167785, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][2], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][2], 0, 0);
+                        RadarInfo[id][riObjects][3] = CreateDynamicObject(19145, 1328.947265, 1563.048095, 10.963741, 9.437971, 6.928065, 36.718753, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][3], 1, 1273, "icons3", "greengrad32", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][3], 0, 0);
+                        RadarInfo[id][riObjects][4] = CreateDynamicObject(19894, 1329.218872, 1563.038696, 11.155601, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][4], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][4], 0, 0);
+                        RadarInfo[id][riObjects][5] = CreateDynamicObject(19894, 1329.498291, 1562.951293, 11.087444, -74.583496, -31.465616, 40.257831, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][5], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][5], 0, 0);
+                        RadarInfo[id][riObjects][6] = CreateDynamicObject(19894, 1329.365966, 1563.008666, 11.230935, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][6], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][6], 0, 0);
+                        RadarInfo[id][riObjects][7] = CreateDynamicObject(19894, 1329.395385, 1563.159667, 11.149615, -74.583480, -121.465476, 40.257938, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][7], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][7], 0, 0);
+                        RadarInfo[id][riObjects][8] = CreateDynamicObject(19894, 1329.347290, 1562.950195, 11.220918, 7.976202, 13.235789, -19.203355, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][8], 0, 0);
+                        RadarInfo[id][riObjects][9] = CreateDynamicObject(19967, 1329.331420, 1563.049560, 11.033987, -24.954961, 177.702224, 3.956743, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][9], 0, 0);
+                        RadarInfo[id][riObjects][10] = CreateDynamicObject(19967, 1329.331420, 1563.049560, 11.033987, -29.815286, -180.821670, 124.572387, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][10], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][10], 0, 0);
+                        RadarInfo[id][riObjects][11] = CreateDynamicObject(19967, 1329.331420, 1563.049560, 11.033987, -26.174581, -176.883407, -113.641273, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 1, 3474, "freightcrane", "yellowcabchev_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][11], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][11], 0, 0);
+                        RadarInfo[id][riObjects][12] = CreateDynamicObject(19143, 1329.411254, 1563.073364, 11.304652, 26.426906, 14.667220, -23.978219, object_world, object_int, -1, 300.00, 300.00); 
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
+                        SetDynamicObjectMaterial(RadarInfo[id][riObjects][12], 1, 19623, "camera1", "cscamera02", 0x00000000);
+                        gadd(RadarInfo[id][riObjects][12], 0, 0);
+                        RadarInfo[id][riObjects][13] = CreateDynamicObject(18703, 1329.305786, 1562.892333, 10.100318, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
+                        gadd(RadarInfo[id][riObjects][13], 0, 0);
+
+                        TSInfo[tsOffset][2] = -0.277277;
+                    }
+                }
+            }
         }
+
+        if (brokenStatus == RADAR_BROKEN_NO_FIX) {
+            // Огонь спрятан и отображается только через секунду
+            gadd(RadarInfo[id][riObjects][16], 228, 0);
+            SetTimerEx("SetDynamicObjectVirtualWorld", 1000, false, "dd", RadarInfo[id][riObjects][16], 0);
+            gadd(RadarInfo[id][riObjects][17], 0, 0);
+            SetTimerEx("SetDynamicObjectVirtualWorld", 2000, false, "dd", RadarInfo[id][riObjects][17], 228);
+        }
+
+        Radar_SetNormalZ(id);
+
+        TSInfo[tsOffset][0] = -0.048507;
+        TSInfo[tsOffset][1] = 0.110473;
+        MatrixDynamicObjectPos(0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ], RadarInfo[id][riRX], RadarInfo[id][riRY], RadarInfo[id][riRZ]);
+
+        RadarInfo[id][riBroken] = brokenStatus;
 
         RadarInfo[id][riLastX] = RadarInfo[id][riX];
         RadarInfo[id][riLastY] = RadarInfo[id][riY];
         RadarInfo[id][riLastZ] = RadarInfo[id][riZ];
 
-        // 3D текст
-        Radar_UpdateLabel(id);
-
-        // Добавляем метаданные объектам радаров
-        for (new i = 0; i < 30; i++) {
-            new objectid = RadarInfo[id][riObjects][i];
-            if (IsValidDynamicObject(objectid)) Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_RADAR_OBJECT, 1);
-        }
+        SaveRadars(id);
     } else {
-        RadarInfo[id][riBroken] = false; // Помечаем радар исправным, если мы его удаляем
+        RadarInfo[id][riBroken] = RADAR_BROKEN_NONE; // Помечаем радар исправным, если мы его удаляем
 
         // Удаляем объекты радара
-        new nearest_objects[50];
-        new count = Streamer_GetNearbyItems(RadarInfo[id][riLastX], RadarInfo[id][riLastY], RadarInfo[id][riLastZ], STREAMER_TYPE_OBJECT, nearest_objects, .range = 10.0, .worldid = 0);
-        for (new i = 0; i < min(count, sizeof(nearest_objects)); i++) {
-            new objectid = nearest_objects[i];
-            if (Streamer_HasIntData(STREAMER_TYPE_OBJECT, objectid, STREAMER_RADAR_OBJECT)) {
-                DestroyDynamicObject(objectid);
-                RadarInfo[id][riObjects][i] = 0;
-            }
+        for (new i = 0; i < 30; i++) {
+            new objectid = RadarInfo[id][riObjects][i];
+            if (IsValidDynamicObject(objectid)) DestroyDynamicObject(objectid);
         }
         DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
         RadarInfo[id][riTextLabel] = Text3D: 0;
     }
     RadarInfo[id][riPlaced] = status;
 
+    // 3D текст
+    Radar_UpdateLabel(id); // Обновляем один раз
+    Radar_UpdateLabelNoFix(id); // Обновляем раз в секунду (для счетчика)
+
     // Обновляем объекты у всех рядом с радаром
     foreach (new playerid : Player) {
         if (IsPlayerInRangeOfPoint(playerid, 50.0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ]))
             Streamer_Update(playerid);
     }
+
+    // Если радар был развернут или свернут - сохраняем
+    if (!RadarInfo[id][riBroken]) SaveRadars(id);
 
     return 1;
 }
@@ -611,14 +992,16 @@ stock Radar_DeleteAllByOwner(pid) {
         if (Radar_GetOwner(i) == pid) Radar_Delete(i);
 }
 
-// Получает количество созданных радаров
-stock Radar_GetAmount(creator_playerid = -1, bool: only_placed = false) {
+// Получает количество созданных радаров (поддерживает условия)
+stock Radar_GetAmount(playerid = -1, bool: placed = false, city = -1, fraction = 0) {
     new count;
     for (new i = 0; i < MAX_RADARS; i++) {
         if (
             Radar_IsExists(i) // Существует
-            && creator_playerid == -1 || PlayerInfo[creator_playerid][pID] == RadarInfo[i][riPID] // Установлен конкретным игроком
-            && !only_placed || (only_placed && Radar_IsPlaced(i)) // Установлен в игровом мире
+            && (playerid == -1 || PlayerInfo[playerid][pID] == RadarInfo[i][riPID]) // Установлен конкретным игроком
+            && (!placed || placed && Radar_IsPlaced(i)) // Установлен в игровом мире
+            && (city == -1 || (city != _:CITY_AREA_NONE && GetCityArea(RadarInfo[i][riX], RadarInfo[i][riY]) == city) ) // Установлен в указанном городе
+            && (fraction == 0 || Radar_GetFraction(i) == fraction) // Принадлежит указанной организации
         ) count++;
     }
     return count;
@@ -627,22 +1010,6 @@ stock Radar_GetAmount(creator_playerid = -1, bool: only_placed = false) {
 stock Radar_GetFraction(id) {
     if (!Radar_IsExists(id)) return 0;
     return RadarInfo[id][riFraction];
-}
-
-function Radar_AutoUnplace(pid) {
-    // Проверяем, не появился ли игрок в сети
-    foreach (new id : Player) {
-        if (PlayerInfo[id][pID] == pid) return 0;
-    }
-
-    // Если не появился, удаляем радары из игрового мира
-    for (new i = 0; i < MAX_RADARS; i++) {
-        if (Radar_IsPlaced(i) && Radar_GetOwner(i) == pid) {
-            Radar_Place(i, false);
-        }
-    }
-
-    return 1;
 }
 
 stock Radar_Dialog_List(playerid, g = -1, owner = -1) {
@@ -721,18 +1088,18 @@ stock Radar_Dialog_Management(playerid, radarid, bool: single_dialog = false) {
 stock Radar_Dialog_Stats(playerid, radarid) {
     if (!Radar_IsExists(radarid)) return 0;
 
-    new dialog_text[512];
+    new dialog_text[1024];
     format(dialog_text, sizeof(dialog_text), \
         "{0088FF}Статистика радара №%d\n\n" \
         "{cccccc}Количество выписанных штрафов: {ff6347}%d чел.\n" \
         "{cccccc}Общая сумма штрафов: {ff6347}$%s\n\n" \
-        "{cccccc}Количество юнитов: {8066ff}%d\n" \
-        "{cccccc}- Юниты будут переведены на счёт владельца при удалении радара",
+        "{cccccc}Количество юнитов: {8066ff}%d {cccccc}[Вы получите: {8066ff}%d{cccccc}]\n" \
+        "{cccccc}- Сумма юнитов зависит от количества функционирующих радаров сотрудника",
         
         radarid + 1,
         RadarInfo[radarid][riTicketsIssued],
         FormatNumberWithCommas(RadarInfo[radarid][riFineTotal]),
-        Radar_CalculateUnits(radarid)
+        Radar_CalculateUnits(radarid), Radar_CalculateUnits(radarid, playerid)
     );
 
     ShowDialog(playerid, _:RADAR_DIALOG_STATS, DIALOG_STYLE_MSGBOX, "{ff9000}Статистика радара", dialog_text, "Закрыть", "");
@@ -743,7 +1110,7 @@ stock Radar_Dialog_Stats(playerid, radarid) {
 stock Radar_Dialog_Set_MaxSpeed(playerid, radarid) {
     if (!Radar_IsExists(radarid)) return 0;
 
-    new available_speed_limits[] = {60, 90, 120, 150, 200};
+    new available_speed_limits[] = {60, 90, 120, 150};
 
     new dialog_text[512];
     for (new quan, i = 0; i < sizeof(available_speed_limits); i++) {
@@ -762,7 +1129,7 @@ stock Radar_Dialog_Set_MaxSpeed(playerid, radarid) {
 stock Radar_Dialog_Set_Fine(playerid, radarid) {
     if (!Radar_IsExists(radarid)) return 0;
 
-    new available_fines[] = {500, 750, 1000, 1500, 2000};
+    new available_fines[] = {750, 1000, 1500, 2000};
 
     new dialog_text[512];
     for (new quan, i = 0; i < sizeof(available_fines); i++) {
@@ -793,9 +1160,9 @@ stock Radar_Dialog_Delete(playerid, radarid) {
 }
 
 // Проверяет, есть ли радар рядом с указанным игроком
-stock Radar_IsAnyNearPlayer(playerid) {
+stock Radar_IsAnyNearPlayer(playerid, bool: placed = true) {
     for (new i = 0; i < MAX_RADARS; i++) {
-        if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+        if (!Radar_IsExists(i) || (placed && !Radar_IsPlaced(i)) ) continue;
 
         if (GetPlayerDistanceFromPoint(playerid, RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]) < RADAR_INTERVAL)
             return 1;
@@ -831,14 +1198,7 @@ stock Radar_GetNearest(playerid, Float: distance = 9999.0) {
 }
 
 stock Radar_OnPlayerDisconnect(playerid) {
-    for (new i = 0; i < MAX_RADARS; i++) {
-        if (Radar_IsExists(i) && Radar_IsOwner(playerid, i)) {
-            // Запускаем таймер на 5 минут и удаляем радар из игрового мира, если игрок не появится в сети
-            if (IsValidTimer(RadarInfo[i][riAutoUnplaceTimer])) KillTimer(RadarInfo[i][riAutoUnplaceTimer]);
-            RadarInfo[i][riAutoUnplaceTimer] = SetTimerEx("Radar_AutoUnplace", AUTO_UNPLACE_RADAR_TIME * 60 * 1000, false, "d", PlayerInfo[playerid][pID]);
-            break;
-        }
-    }
+    #pragma unused playerid
 
     return 1;
 }
@@ -849,6 +1209,182 @@ stock Radar_OnPlayerConnect(playerid) {
             format(RadarInfo[i][riOwnerName], 24, "%s", PlayerInfo[playerid][pName]);
         }
     }
+
+    Radar_Detect_TextDrawInit(playerid);
+    return 1;
+}
+
+stock Radar_Detect_TextDrawInit(playerid) {
+    radarDetector_TD[playerid][0] = CreatePlayerTextDraw(playerid, 590.0000, 126.0000, "LD_SPAC:white"); // Черный бокс позади (для обводки)
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][0], 42.5000, 46.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][0], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][0], 0x000000FF);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][0], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][0], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][0], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][0], 0);
+    PlayerTextDrawSetOutline(playerid, radarDetector_TD[playerid][0], 1);
+
+    radarDetector_TD[playerid][1] = CreatePlayerTextDraw(playerid, 591.0000, 127.0000, "LD_SPAC:white"); // Основной бокс
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][1], 40.5000, 43.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][1], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][1], 0xEAEAEAFF);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][1], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][1], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][1], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][1], 0);
+    PlayerTextDrawSetOutline(playerid, radarDetector_TD[playerid][1], 1);
+
+    radarDetector_TD[playerid][2] = CreatePlayerTextDraw(playerid, 591.0000, 161.0000, "LD_SPAC:white"); // Нижняя полоса
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][2], 40.0000, 10.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][2], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][2], 0x000000FF);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][2], 0x000000FF);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][2], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][2], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][2], 0);
+
+    radarDetector_TD[playerid][3] = CreatePlayerTextDraw(playerid, 591.0000, 127.0000, "LD_SPAC:white"); // Верхняя полоса
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][3], 40.0000, 10.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][3], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][3], 0x000000FF);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][3], 0x000000FF);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][3], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][3], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][3], 0);
+
+    // Размер прямоугольника желтого: 2, отступ между: 3
+    new Float: yellowBoxSize = 1.5, Float: yellowBoxIndent = 1.5;
+    new Float: yellowBoxesAmount = 40.0 / (yellowBoxSize + yellowBoxIndent);
+
+    // Полосы на нижней
+    new lastid = 3;
+    for (new i = 0; i < yellowBoxesAmount; i++) {
+        new id = lastid + 1;
+
+        radarDetector_TD[playerid][id] = CreatePlayerTextDraw(playerid, 591.0000 + (yellowBoxIndent * i) + (yellowBoxSize * i), 161.0000, "LD_SPAC:white");
+        PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id], yellowBoxSize, 10.0000);
+        PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_ALIGN: 1);
+        PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id], 0xFFFF00FF);
+        PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id], 255);
+        PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_FONT: 4);
+        PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id], false);
+        PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id], 0);
+
+        lastid = id;
+    }
+
+    // Полосы на верхней
+    for (new i = 0; i < yellowBoxesAmount; i++) {
+        new id = lastid + 1;
+
+        radarDetector_TD[playerid][id] = CreatePlayerTextDraw(playerid, 591.0000 + (yellowBoxIndent * i) + (yellowBoxSize * i), 127.0000, "LD_SPAC:white");
+        PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id], yellowBoxSize, 10.0000);
+        PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_ALIGN: 1);
+        PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id], 0xFFFF00FF);
+        PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id], 255);
+        PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_FONT: 4);
+        PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id], false);
+        PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id], 0);
+        
+        lastid = id;
+    }
+
+    new id = lastid + 1;
+
+    radarDetector_TD[playerid][id] = CreatePlayerTextDraw(playerid, 604.0000, 142.9703, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id], 7.0000, 13.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id], 255);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id], 0);
+
+    radarDetector_TD[playerid][id + 1] = CreatePlayerTextDraw(playerid, 607.4667, 144.6296, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id + 1], 2.0000, 3.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id + 1], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id + 1], -1);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id + 1], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id + 1], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id + 1], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id + 1], 0);
+
+    radarDetector_TD[playerid][id + 2] = CreatePlayerTextDraw(playerid, 605.8001, 150.4370, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id + 2], 2.0000, 4.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id + 2], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id + 2], -1);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id + 2], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id + 2], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id + 2], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id + 2], 0);
+
+    radarDetector_TD[playerid][id + 3] = CreatePlayerTextDraw(playerid, 611.4667, 145.0444, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id + 3], 2.0000, 9.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id + 3], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id + 3], 255);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id + 3], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id + 3], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id + 3], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id + 3], 0);
+
+    radarDetector_TD[playerid][id + 4] = CreatePlayerTextDraw(playerid, 613.7999, 146.2889, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id + 4], 2.0000, 7.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id + 4], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id + 4], 255);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id + 4], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id + 4], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id + 4], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id + 4], 0);
+
+    radarDetector_TD[playerid][id + 5] = CreatePlayerTextDraw(playerid, 616.1334, 146.2888, "LD_SPAC:white"); // Камера
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][id + 5], 5.0000, 7.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][id + 5], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][id + 5], 255);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][id + 5], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][id + 5], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][id + 5], false);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][id + 5], 0);
+
+    radarDetector_TD[playerid][39] = CreatePlayerTextDraw(playerid, 612.0001, 170.9185, "RADAR"); // RADAR
+    PlayerTextDrawLetterSize(playerid, radarDetector_TD[playerid][39], 0.2913, 1.4921);
+    PlayerTextDrawTextSize(playerid, radarDetector_TD[playerid][39], 0.0000, -66.0000);
+    PlayerTextDrawAlignment(playerid, radarDetector_TD[playerid][39], TEXT_DRAW_ALIGN: 2);
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][39], -1);
+    PlayerTextDrawSetOutline(playerid, radarDetector_TD[playerid][39], 1);
+    PlayerTextDrawBackgroundColour(playerid, radarDetector_TD[playerid][39], 255);
+    PlayerTextDrawFont(playerid, radarDetector_TD[playerid][39], TEXT_DRAW_FONT: 2);
+    PlayerTextDrawSetProportional(playerid, radarDetector_TD[playerid][39], true);
+    PlayerTextDrawSetShadow(playerid, radarDetector_TD[playerid][39], 0);
+
+    return 1;
+}
+
+stock Radar_Detect_TextDrawShow(playerid, color = -1) {
+    if (!PlayerRadarInfo[playerid][priDetectTextdraw]) {
+        for (new i = 0; i < sizeof(radarDetector_TD[]); i++) {
+            if (radarDetector_TD[playerid][i] == PlayerText: 0) break;
+            PlayerTextDrawShow(playerid, radarDetector_TD[playerid][i]);
+        }
+    }
+
+    PlayerTextDrawColour(playerid, radarDetector_TD[playerid][39], color);
+    PlayerTextDrawShow(playerid, radarDetector_TD[playerid][39]);
+
+    PlayerRadarInfo[playerid][priDetectTextdraw] = true;
+
+    return 1;
+}
+
+stock Radar_Detect_TextDrawHide(playerid) {
+    if (!PlayerRadarInfo[playerid][priDetectTextdraw]) return 0;
+    for (new i = 0; i < sizeof(radarDetector_TD[]); i++) {
+        PlayerTextDrawHide(playerid, radarDetector_TD[playerid][i]);
+    }
+
+    PlayerRadarInfo[playerid][priDetectTextdraw] = false;
+    PlayerRadarInfo[playerid][priLastDetectRadar] = -1;
+    
     return 1;
 }
 
@@ -881,8 +1417,10 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                 if(!GetAccessRankOrg(playerid, g, 35, NO_FBI)) return 1;
                 if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу установить радар, находясь в транспорте");
 	            if(GetPlayerInterior(playerid) != 0 || GetPlayerVirtualWorld(playerid) != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу установить радар в этом месте");
-                if(Radar_GetAmount(playerid) >= RADAR_PER_PLAYER) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать больше %d %s", RADAR_PER_PLAYER, PluralToText(RADAR_PER_PLAYER, "радар", "радара", "радаров"));
-                if(Radar_IsAnyNearPlayer(playerid)) return ErrorMessage(playerid, "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: "#RADAR_INTERVAL" метров");
+                new maxRadars = Radar_GetMaxRadarsForPlayer(playerid);
+                if(Radar_GetAmount(playerid) >= maxRadars) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать больше %d %s", maxRadars, PluralToText(maxRadars, "радара", "радаров", "радаров"));
+                if(Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В одном городе не может быть установлено более "#RADAR_PER_CITY" радаров");
+                if(Radar_IsAnyNearPlayer(playerid)) return ErrorMessage(playerid, "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
 
                 Radar_StartPump(playerid);
             } else if (listitem > 0) {
@@ -948,19 +1486,16 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                 }
                 case 5: {
                     if (Radar_CalculateUnits(radarid) > 0) {
-                        if (!Radar_IsOwner(playerid, radarid)) {
-                            ErrorText(playerid, "{ff6347}Только создатель радара может собрать с него юниты");
-                        } else {
-                            Radar_CollectUnits(radarid);
-                            PlayerPlaySound(playerid, 6401);
-                        }
+                        if (!GetAccessRankOrg(playerid, fraction(playerid), 77, NO_FBI)) return 1;
+                       
+                        Radar_CollectUnits(radarid);
+                        PlayerPlaySound(playerid, 6401);
                     }
                     return Radar_Dialog_Management(playerid, radarid);
                 }
                 case 6: {
                     if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) return ErrorMessage(playerid, "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
-                    if (Radar_IsPlaced(radarid) && RadarInfo[radarid][riBroken]) return ErrorMessage(playerid, "{ff6347}Этот радар сейчас сломан, его нельзя свернуть в таком состоянии");
-                    if (!Radar_IsPlaced(radarid) && !Radar_IsOwnerOnline(radarid)) return ErrorMessage(playerid, "{ff6347}Нельзя установить радар игрока не в сети");
+                    if (Radar_IsPlaced(radarid) && Radar_IsBroken(radarid)) return ErrorMessage(playerid, "{ff6347}Этот радар сейчас сломан, его нельзя свернуть в таком состоянии");
 
                     return Radar_Dialog_Place(playerid, radarid);
                 }
@@ -978,7 +1513,9 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
             new radarid = DP[0][playerid];
             if (response) {
                 RadarInfo[radarid][riMaxSpeed] = List[listitem][playerid];
-                if (Radar_IsPlaced(radarid)) Radar_UpdateLabel(radarid, .create = false);
+                if (Radar_IsPlaced(radarid)) {
+                    Radar_Place(radarid);
+                }
             }
 
             Radar_Dialog_Management(playerid, radarid);
@@ -987,7 +1524,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
             new radarid = DP[0][playerid];
             if (response) {
                 RadarInfo[radarid][riFine] = List[listitem][playerid];
-                if (Radar_IsPlaced(radarid)) Radar_UpdateLabel(radarid, .create = false);
+                if (Radar_IsPlaced(radarid)) Radar_UpdateLabel(radarid);
             }
 
             Radar_Dialog_Management(playerid, radarid);
@@ -1013,7 +1550,11 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
             new radarid = DP[0][playerid];
             if (!response) return 0;
 
-            Radar_StartPump(playerid, radarid);
+            if (RadarInfo[radarid][riBroken] == RADAR_BROKEN_FIX) {
+                Radar_StartPump(playerid, radarid);
+            } else {
+                ErrorMessage(playerid, "{ff6347}Сейчас починить этот радар невозможно");
+            }
         }
     }
 
@@ -1033,7 +1574,7 @@ stock Radar_StartPump(playerid, radarid = -1) {
     SetPVarInt(playerid, "RadarRepair", radarid);
     DP[3][playerid] = is_repair ? RADAR_MANUAL_REPAIR_TIMES : RADAR_CREATING_TIMES;
     
-    new string[64]; format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~0/%d", DP[3][playerid]);
+    new string[64]; format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP: ~w~0/%d", DP[3][playerid]);
     GameTextForPlayer(playerid, string, 5000, 3);
 
     return 1;
@@ -1051,7 +1592,8 @@ stock Pump_Radar(playerid) {
     if (!IsPlayerInRangeOfPoint(playerid, 10.0, PlayerRadarInfo[playerid][priX], PlayerRadarInfo[playerid][priY], PlayerRadarInfo[playerid][priZ]) // Далеко от места установки
         || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
         || !is_repair && Radar_IsAnyNearPlayer(playerid) // Радар ставят, но рядом уже стоит
-        || (is_repair && !Radar_IsBroken(radarid))) // Радар чинят, но он уже починен
+        || (is_repair && !Radar_IsBroken(radarid)) // Радар чинят, но он уже починен
+        || Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
     {
         SetPVarInt(playerid, "oryjtemp", 0);
         SetPVarInt(playerid, "Arobsklad", 0);
@@ -1064,23 +1606,23 @@ stock Pump_Radar(playerid) {
     new current_progress = GetPVarInt(playerid, "oryjtemp");
     if(current_progress >= MAX_TIMES) {
         SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad", 0);
-        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~%d/%d", MAX_TIMES, MAX_TIMES);
+        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP: ~w~%d/%d", MAX_TIMES, MAX_TIMES);
         GameTextForPlayer(playerid, string, 1500, 3);
         PlayerPlaySound(playerid, 32000, 0, 0, 0);
         
         ClearAnim(playerid);
 
         if (is_repair) {
-            Radar_SetBroken(radarid, false);
+            Radar_SetBroken(radarid, RADAR_BROKEN_NONE);
             SuccessMessage(playerid, "{99ff66}Вы успешно починили радар");
         } else {
-            Radar_Create(playerid, RADAR_RADIUS, 90, 1000);
+            Radar_Create(playerid, RADAR_RADIUS, 60, 1000);
             SuccessMessage(playerid, "{99ff66}Вы успешно установили радар\nУстановлены настройки по умолчанию, вы можете изменить их в настройках [ ALT ]");
         }
         DeletePVar(playerid, "RadarRepair");
         ApplyAnimation(playerid, "OTB", "betslp_loop", 4.0, false, true, true, false, false, SYNC_ALL);
     } else {
-        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~PAѓAP: ~w~%d/%d", current_progress, MAX_TIMES);
+        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP: ~w~%d/%d", current_progress, MAX_TIMES);
         GameTextForPlayer(playerid, string, 1500, 3);
         ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, false, true, true, true, true);
         if (current_progress <= 5) PlayerPlaySound(playerid, 32401, 0.0, 0.0, 0.0);
@@ -1091,19 +1633,27 @@ stock Pump_Radar(playerid) {
 }
 
 stock Radar_OnShoot(playerid, weaponid, objectid) {
-    if (IsDepartmentOrganization(fraction(playerid))) return 0; // Пропускаем обработку выстрела для сотрудников департамента
-    if (IsPlayerBeginner(playerid)) return 0; // Пропускаем обработку выстрела для новичков
+    new const currentTime = gettime();
+    if (PlayerInfo[playerid][pSoska] < 22) {
+        if (IsDepartmentOrganization(fraction(playerid))) return 0; // Пропускаем обработку выстрела для сотрудников департамента
+        if (IsPlayerBeginner(playerid)) return 0; // Пропускаем обработку выстрела для новичков
+    }
+    if (currentTime - PlayerRadarInfo[playerid][priBrokenRadarTime] < RADAR_BROKE_PLAYER_COOLDOWN * 60) return 0; // Пропускаем обработку выстрела, если у игрока КД
+    if (server >= 0 && PlayerInfo[playerid][pSoska] > 0 && PlayerInfo[playerid][pSoska] < 20) return 0; // Младшие администраторы не могут разрушать радары на основном сервере
 
     for (new i = 0; i < MAX_RADARS; i++) {
         if (!Radar_IsExists(i) || !Radar_IsPlaced(i) || Radar_IsBroken(i)) continue;
         for (new objid = 0; objid < 30; objid++) {
             new currentobjectid = RadarInfo[i][riObjects][objid];
             if (currentobjectid == objectid) {
+                if (currentTime - RadarInfo[i][riBrokenTime] < RADAR_BROKE_COOLDOWN * 60) return 0; // Пропускаем обработку выстрела, если у радара КД
+
                 if (weaponid >= 22 && weaponid <= 38) {
                     RadarInfo[i][riHits]++;
 
                     new string[64];
-			        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~b~PAѓAP: ~w~%d/%d", RadarInfo[i][riHits], RADAR_BROKE_HITS_AMOUNT), GameTextForPlayer(playerid, string, 2000, 3);
+			        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~PAѓAP: ~w~%d/%d", RadarInfo[i][riHits], RADAR_BROKE_HITS_AMOUNT);
+                    GameTextForPlayer(playerid, string, 2000, 3);
                 }
 
                 if (RadarInfo[i][riHits] >= RADAR_BROKE_HITS_AMOUNT) {
@@ -1128,9 +1678,8 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
                     }
 
                     RadarInfo[i][riHits] = 0;
-                    Radar_SetBroken(i, true);
-                    if (IsValidTimer(RadarInfo[i][riRepairTimer])) KillTimer(RadarInfo[i][riRepairTimer]);
-                    RadarInfo[i][riRepairTimer] = SetTimerEx("Radar_SetBroken", RADAR_BROKE_TIME * 60 * 1000, false, "dd", i, false);
+                    Radar_SetBroken(i, RADAR_BROKEN_NO_FIX);
+                    PlayerRadarInfo[playerid][priBrokenRadarTime] = RadarInfo[i][riBrokenTime] = currentTime;
                 }
                 return 1;
             }
@@ -1175,26 +1724,114 @@ stock Radar_ViolationHandler(playerid) {
     if(OnlineInfo[playerid][oLogged] == 1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
-		if(vehicleid >= swatcar[0] && vehicleid <= swatcar[1] || vehicleid >= armcar[0] && vehicleid <= armcar[1]
+		if(!(vehicleid >= swatcar[0] && vehicleid <= swatcar[1] || vehicleid >= armcar[0] && vehicleid <= armcar[1]
 		|| vehicleid >= LSPDcar[0] && vehicleid <= LSPDcar[1] || vehicleid >= fbicar[0] && vehicleid <= fbicar[1]
 		|| vehicleid == janswat[0] || vehicleid == janswat[1] || vehicleid == janswat[2] || vehicleid == janswat[3] || Cars[vehicleid] == 4 || Cars[vehicleid] == 3
 		|| vehicleid >= SFPDcar[0] && vehicleid <= SFPDcar[1] || vehicleid >= NonLSCar[0] && vehicleid <= NonLSCar[1] || vehicleid >= NonSFCar[0] && vehicleid <= NonSFCar[1]
 		|| Cars[vehicleid] == 1 || Cars[vehicleid] == 11 || Cars[vehicleid] == 2 || Cars[vehicleid] == 7 || Cars[vehicleid] == 28
 	 	|| Cars[vehicleid] == 21 || Cars[vehicleid] == 22
-		|| vehicleid >= Medcar[0] && vehicleid <= Medcar[1]){ }
-		else
+		|| vehicleid >= Medcar[0] && vehicleid <= Medcar[1]))
 		{
 	    	if(	IsACar(VehInfo[vehicleid][vModel]) || IsAMoto(VehInfo[vehicleid][vModel])
 				&& (GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0))
 	    	{
+                // Подсвечивание радара на мини-карте
+                {
+                    new radarid = -1,
+                        Float: highlight_radius = 0.0;
+
+                    if (PlayerInfo[playerid][pDonateRank] >= 4) { // Platinum VIP
+                        highlight_radius = 200.0;
+                    } else if (get_invent2(playerid, 232, 0)) { // Детектор радаров 2 ур.
+                        highlight_radius = 120.0;
+                    } 
+
+                    if (highlight_radius > 0) {
+                        radarid = Radar_GetNearest(playerid, highlight_radius);
+                        if (radarid > -1 && !IsValidDynamicMapIcon(PlayerRadarInfo[playerid][priClosestRadarMapIcon])) {
+                            PlayerRadarInfo[playerid][priClosestRadarMapIcon] = CreateDynamicMapIcon(
+                                RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ],
+                                .type = 56,
+                                .color = 0xF7EA25FF,
+                                .worldid = 0, .interiorid = 0,
+                                .playerid = playerid,
+                                .streamdistance = highlight_radius
+                            );
+                        }
+                    }
+                    if (radarid == -1 || highlight_radius == 0.0) {
+                        if (IsValidDynamicMapIcon(PlayerRadarInfo[playerid][priClosestRadarMapIcon])) {
+                            DestroyDynamicMapIcon(PlayerRadarInfo[playerid][priClosestRadarMapIcon]);
+                        }
+                    }
+                }
+
+                // Поиск номера модели Peugeot 406
+                static peugeot_modelid = -1;
+                if (peugeot_modelid == -1) {
+                    for (new i = 0; i < sizeof(vehNameCustom); i++) {
+                        if (!strcmp(vehNameCustom[i], "Peugeot 406")) {
+                            peugeot_modelid = i + 2000;
+                            break;
+                        }
+                    } 
+                }
+
+                new currentTime = gettime();
+                new bool: detectRadarTextDrawHide = true;
 				for(new radarid = 0; radarid < MAX_RADARS; radarid++) // Ищем радары по близости
 				{
-                    if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) continue;
+                    if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) continue; // Пропуск неустановленных радаров
+                    if (VehInfo[vehicleid][vModel] == peugeot_modelid && RadarInfo[radarid][riMaxSpeed] <= 120.0) continue; // Игнорирование радара <= 120м для Peugeot 406
+
+                    // Пропускаем, если радар неисправен
+                    if (Radar_IsBroken(radarid)) continue;
+
+                    // Пропускаем, если КД еще не прошло
+                    if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
+
+                    // Пропускаем, если игрок - администратор или новичок (только для основного сервера)
+                    if (server > 0 && PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
+
+                    // Вывод уведомления о ближайшем радаре для владельцев детектора
+                    {
+                        new bool: isDetectedRadar = PlayerRadarInfo[playerid][priLastDetectRadar] == radarid;
+                        if (!PlayerRadarInfo[playerid][priDetectTextdraw] || isDetectedRadar) {
+                            new bool: simple_detector = get_invent2(playerid, 231, 0) > 0,
+                                bool: enhanced_detector = get_invent2(playerid, 232, 0) > 0;
+                            if (simple_detector || enhanced_detector) {
+                                new Float: max_radius = enhanced_detector ? 200.0 : 130.0;
+
+                                if (IsPlayerInRangeOfPoint(playerid, max_radius, RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ])) {
+                                    new highlight_color = 0x99FF66FF;
+
+                                    if (enhanced_detector) {
+                                        // Меняем цвет относительно скорости транспорта (только для улучшенного детектора)
+                                        new Float: ratio = WatchSpeed[playerid] / RadarInfo[radarid][riMaxSpeed];
+                                        if (ratio > 1.0) {
+                                            if (ratio >= 1.30) {
+                                                highlight_color = 0xFF6347FF;
+                                            } else if (ratio >= 1.10) {
+                                                highlight_color = 0xFFFF00FF;
+                                            }
+                                        } else if (ratio <= 0.45) {
+                                            highlight_color = 0x0088FFFF;
+                                        }
+                                    } else highlight_color = 0xFFFFFFFF;
+
+                                    if (!PlayerRadarInfo[playerid][priDetectTextdraw]) {
+                                        PlayerRadarInfo[playerid][priDetectTime] = currentTime;
+                                        PlayerRadarInfo[playerid][priLastDetectRadar] = radarid;
+                                    }
+
+                                    Radar_Detect_TextDrawShow(playerid, highlight_color);
+                                    detectRadarTextDrawHide = false;
+                                }
+                            }
+                        }
+                    }
 
 					if (IsPlayerInRangeOfPoint(playerid, RadarInfo[radarid][riRadius], RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ])) {
-						// Пропускаем, если радар неисправен
-                        if (Radar_IsBroken(radarid)) continue;
-                        
                         // Пропускаем, если скорость не больше допустимой
                         if (WatchSpeed[playerid] <= RadarInfo[radarid][riMaxSpeed] + 1.0) continue;
 
@@ -1204,11 +1841,30 @@ stock Radar_ViolationHandler(playerid) {
                         GetDynamicObjectPos(RadarInfo[radarid][riObjects][0], radarPos[0], radarPos[1], radarPos[2]);
                         if (floatabs(playerPos[2] - radarPos[2]) > 2.5) continue;
 
-                        // Пропускаем, если КД еще не прошло
-                        if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
+                        // Глушим радар, если у игрока есть глушилка
+                        if (get_invent2(playerid, 233, 0) && get_para(playerid, 233) > currentTime ||
+                            get_boot(vehicleid, 233) >= 0 && get_boot_para(vehicleid, 233) > currentTime)
+                        {
+                            if (currentTime >= PlayerRadarInfo[playerid][priJammedTime] + RADAR_JAMMER_COOLDOWN) { // Нет КД глушения на игроке
+                                if (currentTime > RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) { // Радар не заглушен
+                                    PlayerRadarInfo[playerid][priJammedTime] = currentTime;
+                                    RadarInfo[radarid][riJammedTime] = currentTime;
 
-                        // Пропускаем, если игрок - администратор или новичок (только для основного сервера)
-                        if (server > 0 && PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
+                                    PlayerPlaySound(playerid, 41603);
+                                    foreach (new currentid : Player) {
+                                        if (currentid == playerid) continue;
+                                        if (!Radar_IsPlayerNear(currentid, radarid)) continue;
+
+                                        PlayerPlaySound(currentid, 6003);
+                                    }
+                                    
+                                    GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP 3A‚‡YЋEH", 2000, 3);
+                                }
+                            }
+                        }
+
+                        // Пропускаем, если радар заглушен
+                        if (currentTime <= RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) continue;
 
 						new string[144];
 						SendClientMessage(playerid, 0x0088FFFF, "Нарушение скоростного режима [ %.0f км/ч | %d км/ч ] | {FF6347}Штраф: $%d", WatchSpeed[playerid], RadarInfo[radarid][riMaxSpeed], RadarInfo[radarid][riFine]);
@@ -1254,8 +1910,15 @@ stock Radar_ViolationHandler(playerid) {
 						break;
 					}
 				}
+                if (detectRadarTextDrawHide) Radar_Detect_TextDrawHide(playerid);
 			}
 		}
-	}
+	} else {
+        if (IsValidDynamicMapIcon(PlayerRadarInfo[playerid][priClosestRadarMapIcon])) {
+            DestroyDynamicMapIcon(PlayerRadarInfo[playerid][priClosestRadarMapIcon]);
+        }
+        Radar_Detect_TextDrawHide(playerid);
+    }
+
 	return 1;
 }

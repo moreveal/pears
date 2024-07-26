@@ -31,9 +31,9 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 		// Отключаем преследование
 		DestroyPursuit(suspectid);
 
-		new cityPlayer = IsPlayerInCity(suspectid);
-		if(cityPlayer == 1) PlayerInfo[suspectid][pJailed] = 3; // КПЗ LS
-		else if(cityPlayer == 2) PlayerInfo[suspectid][pJailed] = 9; // КПЗ SF
+		new e_CityArea: cityPlayer = e_CityArea: GetPlayerCityArea(suspectid);
+		if(cityPlayer == CITY_AREA_LOS_SANTOS) PlayerInfo[suspectid][pJailed] = 3; // КПЗ LS
+		else if(cityPlayer == CITY_AREA_SAN_FIERRO) PlayerInfo[suspectid][pJailed] = 9; // КПЗ SF
 		else PlayerInfo[suspectid][pJailed] = 1; // Областная Тюрьма
 
 		if(type == AREST_TYPE_QUIT || type == AREST_TYPE_AFK) PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * 1200; // Вышел из игры при аресте

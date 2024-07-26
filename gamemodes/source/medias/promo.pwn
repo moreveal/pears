@@ -169,7 +169,7 @@ function Call_promo(playerid, pf, unix)
 					givevip(playerid, PromoInfo[pf][roStat][statpf]);
 					mysql_save(playerid, 4);
 				}
-				else if(PlayerInfo[playerid][pDonateRank] >= 3) format(str,sizeof(str),"{ff9000}* VIP: {ffcc00}Активна Premium VIP\n"), strcat(sctring,str);
+				else if(PlayerInfo[playerid][pDonateRank] >= 3) format(str,sizeof(str),"{ff9000}* VIP: {ffcc00}Активна Platinum VIP\n"), strcat(sctring,str);
 			}
 			if(PromoInfo[pf][roPar][statpf] == 13) // Кейс // NEW
 			{

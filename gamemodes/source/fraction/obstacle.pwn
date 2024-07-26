@@ -546,7 +546,7 @@ stock Obstacle_Create_UpdateMapIcons(playerid, teamid, notify = false) {
                     ObstaclePlayerPointsInfo[playerid][teamid][i][obpX],
                     ObstaclePlayerPointsInfo[playerid][teamid][i][obpY],
                     ObstaclePlayerPointsInfo[playerid][teamid][i][obpZ],
-                    .type = 0,
+                    .type = 0, .style = MAPICON_GLOBAL,
                     .color = 0xFFFF00FF,
                     .worldid = GetPlayerVirtualWorld(playerid),
                     .interiorid = GetPlayerInterior(playerid),
