@@ -232,6 +232,8 @@ CMD:radarstatus(playerid, const params[]) {
 	if (radarid < 0 || radarid > MAX_RADARS) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID радара от 1 до "#MAX_RADARS" [ 0 - Все ]");
 	if (repair < 0 || repair > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Статус [ 0 - Сломать | 1 - Починить ]");
 	if (repair == 0 && phase <= RADAR_BROKEN_NONE) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Фаза [ 1 - Горящий | 2 - Дымящийся ]");
+
+	new e_RadarBroken: status = (repair ? RADAR_BROKEN_NONE : e_RadarBroken: phase);
 		
 	new string[144], action[32], log_action[32];
 	if (repair) {
@@ -244,7 +246,7 @@ CMD:radarstatus(playerid, const params[]) {
 		for (new i = 0; i < MAX_RADARS; i++) {
 			if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
 			
-			Radar_SetBroken(i, repair ? RADAR_BROKEN_NONE : phase);
+			Radar_SetBroken(i, status);
 			quan++;
 		}
 		if (quan == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ни один радар не размещён в игровом мире");
@@ -255,7 +257,10 @@ CMD:radarstatus(playerid, const params[]) {
 	} else {
 		radarid--;
 		if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Указанный радар не существует или не размещён в игровом мире");
-		Radar_SetBroken(radarid, repair ? RADAR_BROKEN_NONE : phase);
+		if (RadarInfo[radarid][riBroken] == status) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот радар уже находится в этом состоянии");
+		if (!repair) RadarInfo[radarid][riBrokeReason] = RADAR_BROKE_REASON_COMMAND;
+
+		Radar_SetBroken(radarid, status);
 
 		format(string, sizeof(string), "[ ADM ]: %s %s скоростной радар №%d", PlayerInfo[playerid][pName], action, radarid + 1);
 		ABroadCast(COLOR_ADM, string, 2);

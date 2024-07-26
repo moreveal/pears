@@ -22,6 +22,11 @@
 #define RADAR_DETECT_RADIUS             160 // Радиус для обычного детектора
 #define RADAR_ENHANCED_DETECT_RADIUS    260 // Радиус для улучшенного детектора
 
+enum e_RadarBrokeReason {
+    RADAR_BROKE_REASON_PLAYER, // Разрушил игрок
+    RADAR_BROKE_REASON_COMMAND // Разрушен командой
+};
+
 enum e_RadarBroken {
     RADAR_BROKEN_NONE, // Не сломан
     RADAR_BROKEN_NO_FIX, // Горит (Нельзя чинить)
@@ -31,6 +36,7 @@ enum e_RadarBroken {
 enum e_RadarInfo {
     bool: riPlaced, // Установлен ли радар
     e_RadarBroken: riBroken, // Сломан ли радар
+    e_RadarBrokeReason: riBrokeReason, // Причина разрушения радара
     riBrokenTime, // Время последнего разрушения
     riHits, // Количество попаданий по радару
     riRepairTimerStarted, // Время, когда был запущен таймер на починку/смену статуса сломанного радара

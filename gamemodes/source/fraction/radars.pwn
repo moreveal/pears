@@ -254,12 +254,14 @@ function Radar_SetBroken(id, e_RadarBroken: status) {
     if (RadarInfo[id][riBroken] == status) return 0;
 
     RadarInfo[id][riBroken] = status;
-    if (_:status) {
+    if (status == RADAR_BROKEN_NO_FIX) {
         foreach (new currentid : Player) {
             if (!Radar_IsPlayerNear(currentid, id)) continue;
 
             PlayerPlaySound(currentid, 17003);
         }
+    } else if (status == RADAR_BROKEN_NONE && RadarInfo[id][riBrokeReason] == RADAR_BROKE_REASON_PLAYER) {
+        RadarInfo[id][riBrokenTime] = gettime();
     }
 
     if (status == RADAR_BROKEN_NO_FIX) {
@@ -270,6 +272,15 @@ function Radar_SetBroken(id, e_RadarBroken: status) {
         if (IsValidTimer(RadarInfo[id][riRepairTimer])) KillTimer(RadarInfo[id][riRepairTimer]);
         RadarInfo[id][riRepairTimer] = SetTimerEx("Radar_SetBroken", RADAR_BROKE_TIME * 60 * 1000, false, "dd", id, RADAR_BROKEN_NONE);
         RadarInfo[id][riRepairTimerStarted] = gettime();
+    }
+
+    if (status == RADAR_BROKEN_NONE) {
+        // Сбрасываем всем ID радара по которому был произведен выстрел последний раз
+        foreach (new currentid : Player) {
+            if (PlayerRadarInfo[currentid][priLastRadar] == id) {
+                PlayerRadarInfo[currentid][priLastRadar] = -1;
+            }
+        }
     }
 
     // Пересоздаем радар и 3D текст
@@ -946,8 +957,6 @@ stock Radar_Place(id, bool: status = true) {
         RadarInfo[id][riLastX] = RadarInfo[id][riX];
         RadarInfo[id][riLastY] = RadarInfo[id][riY];
         RadarInfo[id][riLastZ] = RadarInfo[id][riZ];
-
-        SaveRadars(id);
     } else {
         RadarInfo[id][riBroken] = RADAR_BROKEN_NONE; // Помечаем радар исправным, если мы его удаляем
 
@@ -970,9 +979,6 @@ stock Radar_Place(id, bool: status = true) {
         if (IsPlayerInRangeOfPoint(playerid, 50.0, RadarInfo[id][riX], RadarInfo[id][riY], RadarInfo[id][riZ]))
             Streamer_Update(playerid);
     }
-
-    // Если радар был развернут или свернут - сохраняем
-    if (!RadarInfo[id][riBroken]) SaveRadars(id);
 
     return 1;
 }
@@ -1538,6 +1544,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
 
             new string[50]; format(string, sizeof(string), "{99ff66}Вы успешно %s радар", status ? "развернули" : "свернули");
             SuccessMessage(playerid, string);
+            SaveRadars(radarid);
         }
         case RADAR_DIALOG_DELETE: {
             new radarid = DP[0][playerid];
@@ -1638,7 +1645,6 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
         if (IsDepartmentOrganization(fraction(playerid))) return 0; // Пропускаем обработку выстрела для сотрудников департамента
         if (IsPlayerBeginner(playerid)) return 0; // Пропускаем обработку выстрела для новичков
     }
-    if (currentTime - PlayerRadarInfo[playerid][priBrokenRadarTime] < RADAR_BROKE_PLAYER_COOLDOWN * 60) return 0; // Пропускаем обработку выстрела, если у игрока КД
     if (server >= 0 && PlayerInfo[playerid][pSoska] > 0 && PlayerInfo[playerid][pSoska] < 20) return 0; // Младшие администраторы не могут разрушать радары на основном сервере
 
     for (new i = 0; i < MAX_RADARS; i++) {
@@ -1646,40 +1652,52 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
         for (new objid = 0; objid < 30; objid++) {
             new currentobjectid = RadarInfo[i][riObjects][objid];
             if (currentobjectid == objectid) {
-                if (currentTime - RadarInfo[i][riBrokenTime] < RADAR_BROKE_COOLDOWN * 60) return 0; // Пропускаем обработку выстрела, если у радара КД
-
                 if (weaponid >= 22 && weaponid <= 38) {
+                    new bool: cooldown = true;
+                    if (currentTime - RadarInfo[i][riBrokenTime] < RADAR_BROKE_COOLDOWN * 60) { // КД у радара
+                        if (PlayerRadarInfo[playerid][priLastRadar] != i) ErrorMessage(playerid, "{ff6347}Этот радар был разрушен совсем недавно, сейчас это сделать нельзя");
+                    } else if (currentTime - PlayerRadarInfo[playerid][priBrokenRadarTime] < RADAR_BROKE_PLAYER_COOLDOWN * 60) { // КД у игрока
+                        if (PlayerRadarInfo[playerid][priLastRadar] != i) ErrorMessage(playerid, "{ff6347}Вы совсем недавно разрушали радар, сейчас это сделать нельзя");
+                    } else cooldown = false;
+
+                    if (cooldown) {
+                        PlayerRadarInfo[playerid][priLastRadar] = i;
+                        return 0;
+                    }
+
+                    PlayerRadarInfo[playerid][priLastRadar] = i;
                     RadarInfo[i][riHits]++;
 
                     new string[64];
 			        format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~PAѓAP: ~w~%d/%d", RadarInfo[i][riHits], RADAR_BROKE_HITS_AMOUNT);
                     GameTextForPlayer(playerid, string, 2000, 3);
-                }
 
-                if (RadarInfo[i][riHits] >= RADAR_BROKE_HITS_AMOUNT) {
-                    // Выдаём розыск за порчу гос. имущества
-                    new findUk, findP;
-                    if (FindCriminalArticle("Порча гос", findUk, findP)) {
-                        SetPlayerCriminal(playerid, -1, CriminalCodeInfo[findUk][findP][ccName], CriminalCodeInfo[findUk][findP][ccLevel], findUk, findP);
+                    if (RadarInfo[i][riHits] >= RADAR_BROKE_HITS_AMOUNT) {
+                        // Выдаём розыск за порчу гос. имущества
+                        new findUk, findP;
+                        if (FindCriminalArticle("Порча гос", findUk, findP)) {
+                            SetPlayerCriminal(playerid, -1, CriminalCodeInfo[findUk][findP][ccName], CriminalCodeInfo[findUk][findP][ccLevel], findUk, findP);
+                        }
+
+                        // Оповещаем полицейских о разрушении радара
+                        new findraiontolist = FindRaionPos(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]);
+                        foreach (new currentid : Player) {
+                            if (!IsPoliceMember(currentid) || !IsOnline(currentid)) continue;
+
+                            SendClientMessage(currentid, COLOR_LIGHTNEUTRALBLUE, \
+                                "[PD]: Сломан скоростной радар №%d, %s[%d] в районе %s",
+                                
+                                i + 1,
+                                rpplayername(playerid), playerid,
+                                gSAZones[findraiontolist][zName]
+                            );
+                        }
+
+                        RadarInfo[i][riHits] = 0;
+                        RadarInfo[i][riBrokeReason] = RADAR_BROKE_REASON_PLAYER;
+                        Radar_SetBroken(i, RADAR_BROKEN_NO_FIX);
+                        PlayerRadarInfo[playerid][priBrokenRadarTime] = currentTime;
                     }
-
-                    // Оповещаем полицейских о разрушении радара
-                    new findraiontolist = FindRaionPos(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ]);
-                    foreach (new currentid : Player) {
-                        if (!IsPoliceMember(currentid) || !IsOnline(currentid)) continue;
-
-                        SendClientMessage(currentid, COLOR_LIGHTNEUTRALBLUE, \
-                            "[PD]: Сломан скоростной радар №%d, %s[%d] в районе %s",
-                            
-                            i + 1,
-                            rpplayername(playerid), playerid,
-                            gSAZones[findraiontolist][zName]
-                        );
-                    }
-
-                    RadarInfo[i][riHits] = 0;
-                    Radar_SetBroken(i, RADAR_BROKEN_NO_FIX);
-                    PlayerRadarInfo[playerid][priBrokenRadarTime] = RadarInfo[i][riBrokenTime] = currentTime;
                 }
                 return 1;
             }
@@ -1713,7 +1731,11 @@ stock Radar_OnPlayerPressALT(playerid) {
                 return Radar_Dialog_Management(playerid, radarid, .single_dialog = true);
             }
             else if (IsPoliceMember(playerid)) return ErrorMessage(playerid, "{ff6347}Этот радар не принадлежит вашей организации");
-            else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
+            else {
+                if (GetPVarInt(playerid, "idkradarmessage") > 0) return 1;
+                SetPVarInt(playerid, "idkradarmessage", 3);
+                return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
+            }
         }
     }
 
@@ -1721,6 +1743,14 @@ stock Radar_OnPlayerPressALT(playerid) {
 }
 
 stock Radar_ViolationHandler(playerid) {
+    {
+        new idkradarmessage = GetPVarInt(playerid, "idkradarmessage");
+        if (idkradarmessage > 0) {
+            SetPVarInt(playerid, "idkradarmessage", --idkradarmessage);
+            if (idkradarmessage == 0) DeletePVar(playerid, "idkradarmessage");
+        }
+    }
+    
     if(OnlineInfo[playerid][oLogged] == 1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
