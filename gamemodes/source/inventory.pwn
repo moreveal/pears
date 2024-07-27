@@ -76,6 +76,8 @@ new fdrawNameEN[][] = // Название Вещи на Английском
 	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "JACK", "ARMORED FILM 1000", "ARMORED FILM 2000", "ARMORED FILM 3000", "BAG", "SUNSCREEN",
 	"RADAR Detector", "RADAR Detector 2", "RADAR Jammer"
 };
+
+// TODO: При добавлении новых предметов заменить 180 и 198 (Таблетки защиты и атаки, вырезанная система)
 new friskName[][] = // Название Вещи
 {
     "","Хлеб","Золотое Кольцо","Бутылка","Трава","Оболочка Таблетки","Грибы","Порошок","Аптечка","Канистра","Пояс с Взрывчаткой", // 0 - 10
@@ -2798,8 +2800,6 @@ stock player_tile(playerid, inva)
 				//else if(fpick == 189) {}
 				else if(fpick == 193) return format(string, sizeof(string), "%d", inva), pc_cmd_namaz(playerid, string), i_resetveshi(playerid); // Намазлык
 				else if(fpick == 197) return pc_cmd_spray(playerid), i_resetveshi(playerid); // балончик
-				else if(fpick == 180) return usedrugs2(playerid,1), i_resetveshi(playerid); // Таблетка защиты
-				else if(fpick == 198) return usedrugs2(playerid,2), i_resetveshi(playerid); // Таблетка Атаки
 				else if(fpick == 225) return showDialogSettingFlip(playerid), i_resetveshi(playerid); // Домкрат (Настройка автопереворота)
 
 				else if(fpick == 230) return format(string, sizeof(string), "%d", inva), pc_cmd_suncreen(playerid, string), i_resetveshi(playerid); // Солнцезащитный Крем

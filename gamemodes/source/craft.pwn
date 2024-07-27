@@ -552,9 +552,8 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 }
                 else if(Tabs_Load[playerid] == 13) // Химический Стол
                 {
-                    format(line,sizeof(line),"{ff9000}Таблетка Защиты {cccccc}| -20 проц. дамага"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ff9000}Таблетка Атаки {cccccc}| +20 проц. к дамагу"), strcat(lines,line);
-                    ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
+                    ErrorMessage(playerid, "{ff6347}Временно недоступно");
+                    //ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
             }
         }
