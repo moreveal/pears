@@ -20,7 +20,7 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 	if(FollowTime[suspectid] == 0) StopFollow(suspectid); // Прекращение следования за собой
 	new tar;
 	if(IsNormalArestType(type)) RemovePlayerFromVehicle(suspectid);
-	if(DeathInfo[suspectid][deathStatus]) ACSetPlayerHealth(suspectid, 100.0); // Выводим из стадии
+	if(DeathInfo[suspectid][deathStatus]) ACSetPlayerHealth(suspectid, GetMaxPlayerHealth(suspectid)); // Выводим из стадии
 
 	// Арест Игрока
 	if(PlayerInfo[suspectid][pFbi] == 0)

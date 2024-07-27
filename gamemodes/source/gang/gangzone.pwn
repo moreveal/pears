@@ -182,7 +182,7 @@ CMD:zahvat(playerid, const params[])
 				format(string, sizeof(string), " [ ADM ]: %s[%d] начал капт № %d {FF8282}[ Проследите за соблюдением правил ]", PlayerInfo[playerid][pName], playerid, ServerInfo[42]);
 				ABroadCast(COLOR_ADM,string,1);
 				OrgLog(frakid, "zahvat", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ServerInfo[42], "");
-       			
+
 				// Включаем режимы исходя из настроек
        			if(OrganInfo[frakid][gRejim2] == true) GoC[frakid] = 1, GoC[GZInfo[i][gFrakVlad]] = 1, CaptInfo[cCbug] = 1;
 				else GoC[frakid] = 0, GoC[GZInfo[i][gFrakVlad]] = 0, CaptInfo[cCbug] = 0;
@@ -194,8 +194,20 @@ CMD:zahvat(playerid, const params[])
 				{
 					if(MPGO[x] == 0)
 					{
-						if(PlayerInfo[x][pMember] == GZInfo[i][gFrakVlad] || PlayerInfo[x][pLeader] == GZInfo[i][gFrakVlad]) GiveUpdate(x, CaptInfo[cAttack]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
-						if(PlayerInfo[x][pMember] == CaptInfo[cAttack] || PlayerInfo[x][pLeader] == CaptInfo[cAttack]) GiveUpdate(x, GZInfo[i][gFrakVlad]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
+						new g = fraction(x);
+						if (g != CaptInfo[cAttack] && g != CaptInfo[cDefend] &&
+							PlayerInfo[x][pLeader] != GZInfo[i][gFrakVlad] && PlayerInfo[x][pLeader] != CaptInfo[cAttack]) continue;
+
+						if(g == GZInfo[i][gFrakVlad] || PlayerInfo[x][pLeader] == GZInfo[i][gFrakVlad]) {
+							GiveUpdate(x, CaptInfo[cAttack]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
+						}
+						if(g == CaptInfo[cAttack] || PlayerInfo[x][pLeader] == CaptInfo[cAttack]) {
+							GiveUpdate(x, GZInfo[i][gFrakVlad]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
+						}
+
+						if (IsPlayerInDynamicArea(playerid, ZoneGhetto)) {
+							SetPlayerMaxHealth(playerid, 160.0);
+						}
 					}
 				}
 				GangZoneFlashForAll(GZInfo[i][gID],0xff0000AA); // Устанавливаем мигающий цвет зоны
@@ -308,6 +320,7 @@ CMD:stopgz(playerid)
 	foreach(Player,i)
 	{
 		if(gVidga[i] == true) DelUpdate(i);
+		if (fraction(i) == CaptInfo[cAttack] || fraction(i) == CaptInfo[cDefend]) SetPlayerMaxHealth(i, 100.0);
 	}
 	Kapt[CaptInfo[cAttack]] = 0, Kapt[CaptInfo[cDefend]] = 0;
  	FrakCD[CaptInfo[cAttack]] = 0, FrakCD[CaptInfo[cDefend]] = 0;
@@ -613,6 +626,9 @@ stock CheckGangZone() // Распределение результатов по 
 			{
 			    new org = fraction(i), nauniti;
 				new tempKills = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];
+
+				// Сбрасываем максимальное HP через 1 минуту
+				SetTimerEx("SetPlayerMaxHealth", 1000 * 60 * 1, false, "df", i, 100.0);
 
 				// Ищем игрока с наибольшим количеством килов
 				if(saveKills == 0) saveKills = tempKills, playerwin = i; // Записываем первого чувака

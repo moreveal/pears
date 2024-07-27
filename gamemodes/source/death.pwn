@@ -343,7 +343,7 @@ stock CloseRevival(playerid,targetid)
 
     TakeInvent(playerid,8,1,0,999);
     update_ability(playerid, 10, 10 + random(5));
-    ACSetPlayerHealth(targetid, 100);
+    ACSetPlayerHealth(targetid, GetMaxPlayerHealth(targetid));
     return 1;
 }
 

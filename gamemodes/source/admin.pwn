@@ -515,11 +515,11 @@ CMD:hpgro(playerid)
 		{
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
-				ACSetPlayerHealth(i,100);
+				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
 				SendClientMessage(i, COLOR_GRAD1, "Администратор пополнил вам здоровье.");
 			}
 		}
-		ACSetPlayerHealth(playerid,100);
+		ACSetPlayerHealth(playerid,GetMaxPlayerHealth(playerid));
 		SendClientMessage(playerid, COLOR_GRAD1, "Вы пополнили здоровье рядом находящимся игрокам.");
 	}
 	return 1;
