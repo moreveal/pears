@@ -690,7 +690,7 @@ stock CheckGangZone() // Распределение результатов по 
   		case 6: atext = "Раскатали", btext = "Сасамба";
 	}
 	// Подсчёт Результатов
-	if(CaptInfo[cPresenceA] <= 299 && CaptInfo[cPresenceD] >= 300) // Захват не удался по ВРЕМЕНИ
+	/*if(CaptInfo[cPresenceA] <= 299 && CaptInfo[cPresenceD] >= 300) // Захват не удался по ВРЕМЕНИ
 	{
 		if(CaptInfo[cDefend] >= 1)
 		{
@@ -733,7 +733,7 @@ stock CheckGangZone() // Распределение результатов по 
 		capt_loose(CaptInfo[cDefend]);
 		capt_win(CaptInfo[cAttack]);
 		return 1;
-	}
+	}*/
   	if(CaptInfo[cQuanityA] >= 1 && CaptInfo[cQuanityD] >= 1) // По окончанию обе стороны на капте
   	{
 		if(CaptInfo[cKillA] == 0 && CaptInfo[cKillD] == 0) // Никто никого не убил
