@@ -2531,11 +2531,7 @@ stock player_tile(playerid, inva)
 			 	else if(fpick == 6) return pc_cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
 			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), pc_cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // Порошок
 			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // Аптечка
-			 	else if(fpick == 9)
-				{
-					if(Dei[playerid] == 1003) return pc_cmd_molotov(playerid), i_resetveshi(playerid); // Создаём коктейль молотова
-					else return kani(playerid), i_resetveshi(playerid); // Канистра
-				}
+			 	else if(fpick == 9) return kani(playerid), i_resetveshi(playerid); // Канистра
 			 	else if(fpick == 10) return pc_cmd_allahakbar(playerid), i_resetveshi(playerid); // Пояс со взрывчаткой
 			 	else if(fpick == 11)
 				{
