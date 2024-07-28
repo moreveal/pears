@@ -111,6 +111,7 @@ new GangZone[GZONES][GANGZONEENUM] =
     { 2764.236328125, -1715.9378356933594, 2874.236328125, -1605.9378356933594, 14 },
     { 2764.236328125, -1275.9376678466797, 2874.236328125, -1165.9376678466797, 13 }
 };
+new GangZoneAreas[GZONES];
 
 CMD:zahvat(playerid, const params[])
 {
@@ -211,9 +212,13 @@ CMD:zahvat(playerid, const params[])
 						if(g == CaptInfo[cAttack] || PlayerInfo[x][pLeader] == CaptInfo[cAttack]) {
 							GiveUpdate(x, GZInfo[i][gFrakVlad]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
 						}
-
-						if (IsPlayerInDynamicArea(playerid, ZoneGhetto)) {
-							SetPlayerMaxHealth(playerid, 160.0);
+						
+						for(new areaid = 0; areaid < GZONES; areaid++)
+						{
+							if (IsPlayerInDynamicArea(playerid, GangZoneAreas[areaid])) {
+								SetPlayerMaxHealth(playerid, 160.0);
+								break;
+							}
 						}
 					}
 				}
@@ -968,6 +973,14 @@ stock showGangZones(playerid)
 		if(GZInfo[g][gBitva] != 0) GangZoneFlashForPlayer(playerid,g,0xff0000AA);
 	}
     return 1;
+}
+
+stock CreateGangZoneAreas() {
+	for(new i = 0; i < GZONES; i++)
+	{
+		GangZoneAreas[i] = CreateDynamicRectangle(GangZone[i][gzMinX], GangZone[i][gzMinY], GangZone[i][gzMaxX], GangZone[i][gzMaxY], 0, 0);
+	}
+	return 1;
 }
 
 stock IsAPlayerInZone(playerid)
