@@ -352,6 +352,11 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
         return false;
     }
 
+    // Игрок, который наносит урон, не авторизован
+    if (!IsOnline(playerid)) return Kickx(playerid);
+    // Игрок, по которому наносят урон, не авторизован
+    if (!IsOnline(damagedid)) return false;
+
     // Игрок, которому наносим урон, AFK
     if(IsPlayerAfk(damagedid)) return false;
 
