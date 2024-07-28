@@ -215,8 +215,8 @@ CMD:zahvat(playerid, const params[])
 						
 						for(new areaid = 0; areaid < GZONES; areaid++)
 						{
-							if (IsPlayerInDynamicArea(playerid, GangZoneAreas[areaid])) {
-								SetPlayerMaxHealth(playerid, 160.0);
+							if (IsPlayerInDynamicArea(x, GangZoneAreas[areaid])) {
+								SetPlayerMaxHealth(x, 160.0);
 								break;
 							}
 						}
