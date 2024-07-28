@@ -388,7 +388,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             if(listitem >= 1 && listitem <= 6)
             {
                 new stringlog[50];
-                if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
+                if(v < 0 || v >= MAX_CARS || Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
                 if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Это не ваш личный транспорт");
                 if(!IsACar(VehInfo[v][vModel])) return ErrorMessage(playerid,"{ff6347}Тюнинг можно снимать только с автомобиля!");
                 new slot = GetVehicleDetailTunning(v, List[listitem-1][playerid] - 1);

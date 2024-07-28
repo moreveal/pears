@@ -156,6 +156,7 @@ stock showDialogMembersDivision(playerid, org, div)
 		{
 			rank = PlayerInfo[i][pDivRank][0];
 			if(rank <= 0) rank = 1;
+			if (rank > MAX_RANK_ORG) rank = MAX_RANK_ORG;
 
 			// Получаем информацию о рации (Включена или нет)
 			if(PlayerInfo[i][pTransmitterOff][2]) atext = "{FF6347}*";

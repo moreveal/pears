@@ -1075,11 +1075,16 @@ stock IsAGhetto(playerid) // Проверка, находится ли игро�
 stock RespawnSquare()
 {
 	new g = CaptInfo[cZoneID];
+	if (g < 0) return 0;
+
 	new bool:unwanted[MAX_CARS];
 	foreach(Player,i)
 	{
-       	if(IsPlayerInAnyVehicle(i)) { unwanted[GetPlayerVehicleID(i)] = true; }
-       	if(IsTrailerAttachedToVehicle(GetPlayerVehicleID(i))) { unwanted[GetVehicleTrailer(GetPlayerVehicleID(i))] = true; }
+		new vehicleid = GetPlayerVehicleID(i);
+		if (!IsValidVehicle(vehicleid)) continue;
+		
+       	if(IsPlayerInAnyVehicle(i)) { unwanted[vehicleid] = true; }
+       	if(IsTrailerAttachedToVehicle(vehicleid)) { unwanted[GetVehicleTrailer(vehicleid)] = true; }
 	}
 	for(new car = 1; car < MAX_CARS; car++)
 	{
