@@ -885,6 +885,30 @@ stock Obstacle_Dialog_End_Accept(playerid, id) {
     return ShowDialog(playerid, OBSTACLE_DIALOG_END_ACCEPT, DIALOG_STYLE_MSGBOX, "{ff9000}Подтверждение завершения маршрута", "{ffffff}Вы уверены, что хотите завершить этот маршрут?", "Да", "Назад");
 }
 
+stock Obstacle_UpdateTimer(playerid) {
+    new obstacleid = ObstaclePlayerInfo[playerid][obpRouteID];
+    if (Obstacle_IsStarted(obstacleid) && Obstacle_IsMember(playerid, obstacleid)) {
+        new curPassTime = gettime() - ObstacleInfo[obstacleid][obStartedTime];
+
+        new ftime[32];
+        format(ftime, sizeof(ftime), "%s", fine_time(curPassTime));
+        PlayerTextDrawSetString(playerid, ObstacleTimeTD[playerid], ftime);
+
+        if (ObstacleInfo[obstacleid][obPassTime] < 1 || ObstacleInfo[obstacleid][obPassTime] >= curPassTime) {
+            PlayerTextDrawColour(playerid, ObstacleTimeTD[playerid], 0xFFFFFFFF);
+        } else {
+            PlayerTextDrawColour(playerid, ObstacleTimeTD[playerid], 0xFF0000FF);
+        }
+        PlayerTextDrawShow(playerid, ObstacleTimeTD[playerid]);
+
+        if (ObstacleInfo[obstacleid][obPassTime] > 1 && curPassTime > MAX_OBSTACLE_PASSTIME) {
+            Obstacle_DeleteMember(playerid);
+            ErrorMessage(playerid, "{ff6347}Вы не смогли пройти маршрут [Время вышло]");
+        }
+    }
+    return 1;
+}
+
 stock Obstacle_IsMember(playerid, id = -1) {
     for (new teamid = 0; teamid < OBSTACLE_TEAMS_AMOUNT; teamid++) {
         for (new i = 0; i < MAX_OBSTACLE_PLAYERS; i++) {
