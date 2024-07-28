@@ -390,10 +390,19 @@ stock Radar_FlashLight(id) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
     Radar_DeleteFlashlight(id);
-    new Float: x, Float: y, Float: z; GetDynamicObjectPos(RadarInfo[id][riObjects][12], x, y, z);
-    RadarInfo[id][riObjects][29] = CreateDynamicObject(18670, x, y, z - 1.7, 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00);
-    if (IsValidTimer(RadarInfo[id][riDeleteFlashlightTimer])) KillTimer(RadarInfo[id][riDeleteFlashlightTimer]);
-    RadarInfo[id][riDeleteFlashlightTimer] = SetTimerEx("Radar_DeleteFlashlight", 1000, false, "d", id);
+    for (new i = 0; i < RADAR_MAX_OBJECTS; i++) {
+        new objectid = RadarInfo[id][riObjects][i];
+        if (!IsValidDynamicObject(objectid)) continue;
+
+        new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+        if (model == 19143) { // Объект камеры
+            new Float: x, Float: y, Float: z; GetDynamicObjectPos(objectid, x, y, z);
+            RadarInfo[id][riObjects][29] = CreateDynamicObject(18670, x, y, z - 1.7, 0.000000, 0.000000, 0.000000, 0, 0, -1, 300.00, 300.00);
+            if (IsValidTimer(RadarInfo[id][riDeleteFlashlightTimer])) KillTimer(RadarInfo[id][riDeleteFlashlightTimer]);
+            RadarInfo[id][riDeleteFlashlightTimer] = SetTimerEx("Radar_DeleteFlashlight", 1000, false, "d", id);
+            return 1;
+        }
+    }
 
     return 1;
 }
@@ -961,7 +970,7 @@ stock Radar_Place(id, bool: status = true) {
         RadarInfo[id][riBroken] = RADAR_BROKEN_NONE; // Помечаем радар исправным, если мы его удаляем
 
         // Удаляем объекты радара
-        for (new i = 0; i < 30; i++) {
+        for (new i = 0; i < RADAR_MAX_OBJECTS; i++) {
             new objectid = RadarInfo[id][riObjects][i];
             if (IsValidDynamicObject(objectid)) DestroyDynamicObject(objectid);
         }
@@ -1649,7 +1658,7 @@ stock Radar_OnShoot(playerid, weaponid, objectid) {
 
     for (new i = 0; i < MAX_RADARS; i++) {
         if (!Radar_IsExists(i) || !Radar_IsPlaced(i) || Radar_IsBroken(i)) continue;
-        for (new objid = 0; objid < 30; objid++) {
+        for (new objid = 0; objid < RADAR_MAX_OBJECTS; objid++) {
             new currentobjectid = RadarInfo[i][riObjects][objid];
             if (currentobjectid == objectid) {
                 if (weaponid >= 22 && weaponid <= 38) {

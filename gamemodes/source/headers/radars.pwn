@@ -22,6 +22,8 @@
 #define RADAR_DETECT_RADIUS             160 // Радиус для обычного детектора
 #define RADAR_ENHANCED_DETECT_RADIUS    260 // Радиус для улучшенного детектора
 
+#define RADAR_MAX_OBJECTS               30 // Максимальное число объектов у модельки радара
+
 enum e_RadarBrokeReason {
     RADAR_BROKE_REASON_PLAYER, // Разрушил игрок
     RADAR_BROKE_REASON_COMMAND // Разрушен командой
@@ -51,7 +53,7 @@ enum e_RadarInfo {
     riFineTotal, // Общее количество принесённых денег ($)
     riFineTotalBeforeUnits, // Последнее количество принесённых денег до сбора юнитов с радара
     Text3D: riTextLabel, // ID текстлейбла
-    riObjects[30], // ID объектов радара
+    riObjects[RADAR_MAX_OBJECTS], // ID объектов радара
     riPID, // Номер аккаунта игрока, которому принадлежит радар
     riOwnerName[24], // Имя игрока, которому принадлежит радар
 
