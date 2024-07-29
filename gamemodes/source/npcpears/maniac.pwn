@@ -332,7 +332,7 @@ stock CreateManiac(playerid, posID, i)
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
     SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
-    SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
+    //SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
     ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
 
     // Записываем позицию, где мы создали маньяка
@@ -651,7 +651,7 @@ stock TakeManiacMaskForPlayer(playerid)
 			GameTextForPlayer(playerid,string,4000,3);
 
             ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
-            //SaveMaskManiacForPlayer(playerid);
+            SaveMaskManiacForPlayer(playerid);
             break;
         }
     }
@@ -672,16 +672,15 @@ function Call_OnPlayerMaskManiacLoad(playerid, race_check)
         if(is_null == false)
         {
             new string_json[512];
-            cache_get_value_name(0, "mask", string_json, 512);
+            cache_get_value_name(0, "mask", string_json);
 
             new JsonNode:node = JSON_INVALID_NODE;
             if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
             {
-                new string[6];
-                for(new i = 0; i < MAX_MANIAC_MASK; i++)
+                new index = -1, JsonNode: output;
+                while(!JSON_ArrayIterate(node, index, output))
                 {
-                    format(string, sizeof(string), "m%d", i);
-                    JSON_GetBool(node, string, TakeMaskManiac[playerid][i]);
+                    JSON_GetNodeInt(output, TakeMaskManiac[playerid][index]);
                 }
             }
         }
@@ -700,23 +699,21 @@ function Call_OnPlayerMaskManiacLoad(playerid, race_check)
 }
 
 // Сохраняем прогресс сбора масок маньяка для игрока
-/*stock SaveMaskManiacForPlayer(playerid)
+stock SaveMaskManiacForPlayer(playerid)
 {
-    new string[6];
-    new JsonNode:node = JSON_Object(
-        while(i < MAX_MANIAC_MASK)
-        {
-            format(string, sizeof(string), "m%d", i),
-            string, JSON_Bool(TakeMaskManiac[playerid][i])
-        }
-    );
+    new JsonNode:node = JSON_Array();
+
+    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    {
+        JSON_ArrayAppendEx(node, JSON_Int(TakeMaskManiac[playerid][i]));
+    }
 
     new string_json[512];
     if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
     {
         new string_mysql[640];
-        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_maniac` SET `mask`= '%e' WHERE `frakid` = '%d'", string_json, idx);
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_maniac` SET `mask`= '%e' WHERE `user_id` = '%d'", string_json, PlayerInfo[playerid][pID]);
         mysql_tquery(pearsq, string_mysql);
     }
     return true;
-}*/
+}
