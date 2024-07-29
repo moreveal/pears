@@ -117,27 +117,70 @@ new ManiacPosLS[][MANIACPOS] =
     { 118.2678,-1503.9626,11.1072 }
 };
 
+
 #define MAX_MANIAC 3
+#define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка от игрока
+
 enum MANIACINFO
 {
 	NPC:manID[MAX_MANIAC], // ID бота
-    bool:manCreate[MAX_MANIAC] // Статус, создан маньяк или нет
+    bool:manCreate[MAX_MANIAC], // Статус, создан маньяк или нет
+    Float:manCreatePosition[3] // Позиция создания маньяка (где он появился)
 }
-new ManiacInfo[MANIACINFO];
+new ManiacInfo[MAX_MANIAC][MANIACINFO];
+
+// Получаем свободный слот для создания маньяка
+stock GetFreeSlotManiac()
+{
+    new slot = -1;
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manCreate] == false)
+        {
+            slot = i;
+            break;
+        }
+    }
+    return slot;
+}
+
+// Ищем уже созданного маньяка поблизости
+stock GetCreatedManiacNearby(playerid)
+{
+    new slot = -1;
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manCreate] == true)
+        {
+            if(IsNpcNearby(MAX_DIST_MANIAC_POSITION, playerid, ManiacInfo[i][manID]))
+            {
+                slot = i;
+                break;
+            }
+        }
+    }
+    return slot;
+}
 
 // Процесс поиска позиции для создания маньяка
 stock ProcessCreateManiac(playerid)
 {
     if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
 
-    if(ManiacInfo[manCreate][0] == true) return 0; // Если маньяк в LS уже создан (не создаём его больше)
+    // Если уже создан маньяк поблизости (не создаём его больше)
+    if(GetCreatedManiacNearby(playerid) >= 0) return 3;
 
     new resultFind;
+
+    // Ищем свободный слот для создания маньяка
+    new slotManiac = GetFreeSlotManiac();
+    if(slotManiac == -1) return 2;
+
     for(new i = 0; i < sizeof(ManiacPosLS); i++)
     {
         if(GetPlayerDistanceFromPoint(playerid, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]) <= 40.0)
         {
-            CreateManiac(playerid, i, 0);
+            CreateManiac(playerid, i, slotManiac);
             resultFind = 1;
             break;
         }
@@ -146,16 +189,21 @@ stock ProcessCreateManiac(playerid)
 }
 
 // Создаём маньяка
-stock CreateManiac(playerid, i, cityID)
+stock CreateManiac(playerid, posID, i)
 {
-    if(ManiacInfo[manCreate][cityID] == true) return false;
+    if(ManiacInfo[i][manCreate] == true) return false;
 
-    ManiacInfo[manID][cityID] = CreateNpc(507, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]);
-    ManiacInfo[manCreate][cityID] = true;
-    SetNpcWeapon(ManiacInfo[manID][cityID], WEAPON_CHAINSAW);
-    SetNpcHealth(ManiacInfo[manID][cityID], 7000.0);
-    TaskNpcAttackPlayer(ManiacInfo[manID][cityID], playerid);
-    SetNpcStunAnimationEnabled(ManiacInfo[manID][cityID], false); // Выключаем анимацию стана при нанесении дамага маньяку
+    ManiacInfo[i][manID] = CreateNpc(507, ManiacPosLS[posID][Maniac_X], ManiacPosLS[posID][Maniac_Y], ManiacPosLS[posID][Maniac_Z]);
+    ManiacInfo[i][manCreate] = true;
+    SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
+    SetNpcHealth(ManiacInfo[i][manID], 7000.0);
+    TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid);
+    SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
+
+    // Записываем позицию, где мы создали маньяка
+    ManiacInfo[i][manCreatePosition][0] = ManiacPosLS[posID][Maniac_X];
+    ManiacInfo[i][manCreatePosition][1] = ManiacPosLS[posID][Maniac_Y];
+    ManiacInfo[i][manCreatePosition][2] = ManiacPosLS[posID][Maniac_Z];
 
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
     return true;
@@ -168,11 +216,12 @@ CMD:createmaniac(playerid, const params[])
     {
         if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать маньяка для игрока /createmaniac ID");
         if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
-        if(ProcessCreateManiac(params[0]) == 1)
-        {
-            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Маньяк создан","*","");
-        }
-        else ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n\n{cccccc}Возможные причины:\nМаньяк уже создан в этом городе\nИгрок далеко от точки спавна маньяка\nИгрок в интерьере или вирт мире");
+
+        new result = ProcessCreateManiac(params[0]);
+        if(result == 1) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Маньяк создан","*","");
+        else if(result == 2) ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n{ffcc66}Нет свободных слотов для создания маньяка");
+        else if(result == 3) ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n{ffcc66}Где-то близко с игроком уже бегает маньяк");
+        else ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n\n{cccccc}Возможные причины:\nИгрок далеко от точки спавна маньяка\nИгрок в интерьере или вирт мире");
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     return true;
@@ -183,14 +232,30 @@ CMD:findmaniac(playerid, const params[])
     if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
         || PlayerInfo[playerid][pMedia] >= 3)
     {
-        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Найти маньяка /findmaniac 0 - 2");
-        if(params[0] < 0 || params[0] >= MAX_MANIAC) return ErrorMessage(playerid, "{FF6347}ID города маньяка не меньше 0 и не больше 2");
-        if(ManiacInfo[manCreate][params[0]] == false) return ErrorMessage(playerid, "{FF6347}Маньяк в этом городе не создан");
+        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Найти маньяка /findmaniac 0 - %d", MAX_MANIAC - 1);
+        if(params[0] < 0 || params[0] >= MAX_MANIAC) return ErrorMessage(playerid, "{FF6347}Неверный ID маньяка");
+        if(ManiacInfo[params[0]][manCreate] == false) return ErrorMessage(playerid, "{FF6347}Маньяк в этом городе не создан");
 
         new Float:npc_pos[3];
-        GetNpcPosition(ManiacInfo[manID][params[0]], npc_pos[0], npc_pos[1], npc_pos[2]);
+        GetNpcPosition(ManiacInfo[params[0]][manID], npc_pos[0], npc_pos[1], npc_pos[2]);
         CreateGps(playerid, npc_pos[0], npc_pos[1], npc_pos[2], 0, 0, 2.0);
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    return true;
+}
+
+// Процесс жизни маньяка
+stock LifeManiacs()
+{
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manCreate] == false) continue;
+
+        // Маньяк далеко отошел от позиции создания (Удаляем его)
+        if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_MANIAC_POSITION, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
+        {
+
+        }
+    }
     return true;
 }
