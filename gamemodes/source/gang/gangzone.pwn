@@ -111,7 +111,7 @@ new GangZone[GZONES][GANGZONEENUM] =
     { 2764.236328125, -1715.9378356933594, 2874.236328125, -1605.9378356933594, 14 },
     { 2764.236328125, -1275.9376678466797, 2874.236328125, -1165.9376678466797, 13 }
 };
-new GangZoneAreas[GZONES];
+new GhettoZone;
 
 CMD:zahvat(playerid, const params[])
 {
@@ -123,6 +123,7 @@ CMD:zahvat(playerid, const params[])
 	if(Zach[frakid] == 1) return ErrorMessage(playerid, "{FF6347}Сейчас нельзя начать захват территории, вашу банду зачищают");
 	if(OrganInfo[frakid][gstat2] == 1) return ErrorMessage(playerid, "{FF6347}Ваша банда временно закрыта администрацией [ Вероятно, отсутствует лидер ]");
 
+	if (server != 0)
 	{
 		new tmphour;
 		gettime(tmphour);
@@ -213,12 +214,9 @@ CMD:zahvat(playerid, const params[])
 							GiveUpdate(x, GZInfo[i][gFrakVlad]), PlayerPlaySound(x,3201,0,0,0), SetPlayerToTeamColor(x);
 						}
 						
-						for(new areaid = 0; areaid < GZONES; areaid++)
-						{
-							if (IsPlayerInDynamicArea(x, GangZoneAreas[areaid])) {
-								SetPlayerMaxHealth(x, 160.0);
-								break;
-							}
+						if (IsPlayerInDynamicArea(x, GhettoZone)) {
+							SetPlayerMaxHealth(x, 160.0);
+							break;
 						}
 					}
 				}
@@ -975,11 +973,15 @@ stock showGangZones(playerid)
     return 1;
 }
 
-stock CreateGangZoneAreas() {
-	for(new i = 0; i < GZONES; i++)
-	{
-		GangZoneAreas[i] = CreateDynamicRectangle(GangZone[i][gzMinX], GangZone[i][gzMinY], GangZone[i][gzMaxX], GangZone[i][gzMaxY], 0, 0);
+stock CreateGhettoArea() {
+	new Float: minX = 9999.9, Float: minY = 9999.9, Float: maxX = -9999.9, Float: maxY = -9999.9;
+	for (new i = 0; i < GZONES; i++) {
+		if (GangZone[i][gzMinX] < minX) minX = GangZone[i][gzMinX];
+		if (GangZone[i][gzMinY] < minY) minY = GangZone[i][gzMinY];
+		if (GangZone[i][gzMaxX] > maxX) maxX = GangZone[i][gzMaxX];
+		if (GangZone[i][gzMaxY] > maxY) maxY = GangZone[i][gzMaxY];
 	}
+	GhettoZone = CreateDynamicRectangle(minX - 150.0, minY - 150.0, maxX + 150.0, maxY + 150.0, 0, 0);
 	return 1;
 }
 
