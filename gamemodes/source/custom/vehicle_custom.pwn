@@ -1,4 +1,4 @@
-// update 14.07.2024 zver
+// last update 25.07.2024 zver
 /*
 Как добавить новый тс?
 1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
@@ -128,7 +128,21 @@ new vehNameCustom[][] =
     "BMW M5 E60", // 2112
     "BMW M8 Gran Coupe", // 2113
     "Chevrolet Camaro ZL1", // 2114
-    "Motorcycle Kawasaki" // 2115
+    "Motorcycle Kawasaki", // 2115
+    "Lamborghini Aventador", // 2116
+    "BMW X5m", // 2117
+    "BMW X7m", // 2118
+    "Toyota Land Cruiser 200", // 2119
+    "VAZ 2101 Drift", // 2120
+    "Audi RS7", // 2121
+    "A-10 Thunderbolt II", // 2122
+    "M1 Abrams", // 2123
+    "AH-64 Apache", // 2124
+    "F/A-18 Super Hornet", // 2125
+    "AV-8B Harrier II", // 2126
+    "MRAP", // 2127
+    "Ford Mustang GT 2015", // 2128
+    "Газ-21 Волга" // 2129
 };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -248,7 +262,21 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     5000000, // "BMW M5 E60", // 2112
     12000000, // "BMW M8 Gran Coupe", // 2113
     5000000, // "Chevrolet Camaro ZL1", // 2114
-    1500000 // "Motorcycle Kawasaki" // 2115
+    1500000, // "Motorcycle Kawasaki" // 2115
+    45000000, // Lamborghini Aventador", // 2116
+    4000000, // BMW X5m", // 2117
+    9000000, // BMW X7m", // 2118
+    6000000, // Toyota Land Cruiser 200", // 2119
+    40000000, // VAZ 2101 Drift", // 2120
+    12000000, // "Audi RS7", // 2121
+    400000000, // "A-10 Thunderbolt II", // 2122
+    400000000, // "M1 Abrams", // 2123
+    400000000, // "AH-64 Apache", // 2124
+    400000000, // "F/A-18 Super Hornet", // 2125
+    400000000, // "AV-8B Harrier II", // 2126
+    400000000, // "MRAP" // 2127
+    5600000, // "Ford Mustang GT 2015" // 2128
+    2000000 // "Газ-21 Волга" // 2129
 };
 
 stock AddCustomVehice() // Добавляем тс на карту
@@ -365,12 +393,29 @@ stock AddCustomVehice() // Добавляем тс на карту
     AddVehicleSyncModel(559, 2109); // Volvo Polestar One // 2109
     AddVehicleSyncModel(558, 2110); // Mazda RX7 Tune body // 2110
     AddVehicleSyncModel(429, 2111); // Dodge Viper // 2111
-    // update 14.07.2024 zver
     AddVehicleSyncModel(560, 2112); // "BMW M5 E60", // 2112
     AddVehicleSyncModel(560, 2113); // "BMW M8 Gran Coupe", // 2113
     AddVehicleSyncModel(402, 2114); // "Chevrolet Camaro ZL1", // 2114
     AddVehicleSyncModel(521, 2115); // "Motorcycle Kawasaki" // 2115
-	return 1;
+    // update 21.07.2024 zver
+    AddVehicleSyncModel(506, 2116); // Lamborghini Aventador", // 2116
+    AddVehicleSyncModel(579, 2117); // BMW X5m", // 2117
+    AddVehicleSyncModel(579, 2118); // BMW X7m", // 2118
+    AddVehicleSyncModel(579, 2119); // Toyota Land Cruiser 200", // 2119
+    AddVehicleSyncModel(562, 2120); // VAZ 2101 Drift" // 2120
+	// update 24.07.2024 zver
+    AddVehicleSyncModel(560, 2121); // "Audi RS7 2022", // 2121
+    AddVehicleSyncModel(476, 2122); // "A-10 Thunderbolt II", // 2122
+    AddVehicleSyncModel(432, 2123); // "M1 Abrams", // 2123
+    AddVehicleSyncModel(425, 2124); // "AH-64 Apache", // 2124
+    AddVehicleSyncModel(520, 2125); // "F/A-18 Super Hornet", // 2125
+    AddVehicleSyncModel(520, 2126); // "AV-8B Harrier II", // 2126
+    AddVehicleSyncModel(427, 2127); // "MRAP" // 2127
+    // update 25.07.2024 zver
+    AddVehicleSyncModel(602, 2128); // "Ford Mustang GT 2015" // 2128
+    //update 27.07.2024 zver
+    AddVehicleSyncModel(421, 2129); //"Газ-21 Волга" // 2129
+    return 1;
 }
 
 // Проверка на доступный транспорт
@@ -378,7 +423,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2115) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2129) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -397,7 +442,7 @@ stock GetVehicleClass(m)
 	|| m == 2000 || m == 2002 || m == 2003 || m == 2020 || m == 2022 || m == 2023 || m == 2024 || m == 2033 || m == 2034
 	|| m == 2052 || m == 2057 || m == 2056 || m == 2066 || m == 2068 || m == 2069 || m == 2070 || m == 2072
 	|| m == 2084 || m == 2085 || m == 2086 || m == 2087 || m == 2089 || m == 2092 || m == 2093 || m == 2098 || m == 2103
-    || m == 2104 || m == 2105 || m == 2111 || m == 2113) class = 1;
+    || m == 2104 || m == 2105 || m == 2111 || m == 2113 || m == 2116) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -406,7 +451,8 @@ stock GetVehicleClass(m)
     || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
 	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
 	|| m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049 
-	|| m == 2073 || m == 2076 || m == 2083 || m == 2097 || m == 2109 || m == 2112 || m == 2114 || m == 2115) class = 2;
+	|| m == 2073 || m == 2076 || m == 2083 || m == 2097 || m == 2109 || m == 2112 || m == 2114 || m == 2115 || m == 2121
+    || m == 2128) class = 2;
 
     // Economy Class (3) - Бомж
     else if(m == 404 || m == 410 || m == 412 || m == 436 || m == 453 || m == 458 || m == 462 || m == 466 || m == 467 || m == 472
@@ -420,7 +466,7 @@ stock GetVehicleClass(m)
     // Off-Road Class (4) - Внедорожник
     else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
 	|| m == 2005 || m == 2011 || m == 2014 || m == 2015 || m == 2050 || m == 2094 || m == 2107 || m == 2018
-    || m == 2071) class = 4;
+    || m == 2071 || m == 2117 || m == 2118 || m == 2119) class = 4;
 
     // Special Class (5) - Грузовая и Спец Техника
     else if(m == 403 || m == 413 || m == 414 || m == 417 || m == 440 || m == 455 || m == 456
@@ -432,7 +478,7 @@ stock GetVehicleClass(m)
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
     || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062 || m == 2063 || m == 2064
-	|| m == 2088 || m == 2095) class = 6;
+	|| m == 2088 || m == 2095 || m == 2120 || m == 2129) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
@@ -440,7 +486,8 @@ stock GetVehicleClass(m)
     || m == 523 || m == 524 || m == 525 || m == 528 || m == 539 || m == 544 || m == 548 || m == 552 || m == 563 || m == 572 
     || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
 	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
-	|| m == 2047 || m == 2060 || m == 2096 || m == 2100 || m == 2101 || m == 2102 || m == 2108) class = 7;
+	|| m == 2047 || m == 2060 || m == 2096 || m == 2100 || m == 2101 || m == 2102 || m == 2108
+    || m == 2122 || m == 2123 || m == 2124 || m == 2125 || m == 2126 || m == 2127) class = 7;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
