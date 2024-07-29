@@ -75,3 +75,9 @@
 
 #define WORLD_CNN_2LVL 167
 #define INT_CNN_2LVL 0
+
+//==================================================
+// Маньяк
+
+#define WORLD_MANIAC -1
+#define INT_MANIAC 166

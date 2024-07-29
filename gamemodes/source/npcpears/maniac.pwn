@@ -117,6 +117,65 @@ new ManiacPosLS[][MANIACPOS] =
     { 118.2678,-1503.9626,11.1072 }
 };
 
+// Вход в интерьер маньяка
+new Float:ManiacEnterInterior[][] =
+{
+	{ 1424.3281,-1093.3744,17.5633 }, // ls
+	{ -1873.4989,-152.0380,11.8985 }, // sf
+	{ 2488.4824,2291.1934,10.8203 } // lv
+};
+
+// Точка появления из инта маньяка
+new Float:ManiacExitFromInterior[][] =
+{
+	{ 1426.4454,-1093.3986,17.5601,270.6890 }, // ls
+	{ -1875.5769,-151.8994,11.8985,86.4704 }, // sf
+	{ 2491.1992,2291.1384,10.8203,271.0488 } // lv
+};
+
+new Float:ManiacMask[][] =
+{
+    { 1565.673583, -1563.486572, 12.493428, -89.499992, 0.000000, 0.000000 },
+    { 1611.968872, -1484.781127, 12.524797, -88.599937, 0.000000, 0.000000 },
+    { 1721.799682, -1472.595458, 12.518538, -88.099952, 20.100000, 0.000000 },
+    { 1743.102539, -1538.406616, 12.459055, -91.400001, 0.000000, 0.000000 },
+    { 1797.118652, -1703.962524, 12.474699, -90.400070, 32.499996, 0.000000 },
+    { 1613.514282, -1777.189697, 12.506120, -91.800033, 23.799997, 0.000000 },
+    { 1535.573974, -1849.446899, 12.480570, -89.199958, -36.399993, 0.000000 },
+    { 1282.405029, -1877.676147, 12.479522, -90.299972, 12.500000, 0.000000 },
+    { 1209.875244, -1878.278808, 12.496544, -90.299964, 22.899999, 0.000000 },
+    { 1091.971801, -1878.957763, 12.477288, -91.499946, 0.000000, 48.900001 },
+    { 977.890502, -1828.370483, 12.270645, -88.900047, -18.799999, 0.000000 },
+    { 797.509765, -1810.785400, 11.964016, -88.599967, -39.599987, 0.000000 },
+    { 643.769836, -1776.224487, 10.958978, -87.500022, 0.000000, 0.000000 },
+    { 567.542053, -1763.025146, 4.746421, -89.299911, -25.500000, 0.000000 },
+    { 431.216400, -1748.341186, 8.075140, -89.500015, 0.000000, 0.000000 },
+    { 386.936370, -1746.535278, 8.328053, -88.799987, 24.700006, 0.000000 },
+    { 355.155517, -1661.364257, 31.930900, -92.399978, -29.399999, 0.000000 },
+    { 251.003814, -1472.669799, 22.644662, -91.500038, 53.400001, 0.000000 },
+    { 309.593719, -1336.584106, 13.383345, -91.999969, 90.899978, 5.700008 },
+    { 430.521911, -1293.040649, 14.054837, -90.599937, 0.000000, 3.699999 },
+    { 559.648498, -1356.945312, 14.121730, -86.400024, 91.699996, 0.000000 },
+    { 732.176696, -1342.552246, 12.443695, -89.099945, 0.000000, 0.000000 },
+    { 799.562866, -1336.793945, -1.552712, -91.700042, 0.000000, 0.000000 },
+    { 836.960815, -1357.116821, 21.462858, -87.899948, 26.399999, 0.199999 },
+    { 906.540649, -1369.243164, 24.162771, -88.800018, 0.000000, 51.899993 },
+    { 915.191894, -1234.861572, 16.141330, -89.599975, 22.500001, 0.000000 },
+    { 990.094177, -1249.682250, 13.982686, -86.999977, 0.000000, 0.000000 },
+    { 1139.127441, -1250.293823, 24.251979, -90.099967, 69.700035, 0.000000 },
+    { 1233.721435, -1262.122802, 12.260156, -82.799919, 0.000000, 0.000000 },
+    { 1330.156616, -1231.342285, 12.500905, -93.099922, 26.399999, 0.000000 },
+    { 1425.855712, -1315.536499, 12.503373, -89.199974, 70.199996, 0.000000 },
+    { 1784.642211, -1425.905273, 15.915662, -88.299980, 0.000000, 0.000000 },
+    { 1960.741577, -1542.224731, 12.578511, -91.199966, 0.000000, 0.000000 },
+    { 2121.043457, -1556.800415, 12.228185, -90.799987, 0.000000, 0.000000 },
+    { 2316.287841, -1438.261718, 19.911916, -89.000099, 0.000000, 0.000000 },
+    { 2332.126220, -1336.401489, 22.993331, -89.499969, 0.000000, 0.000000 },
+    { 2417.036376, -1293.911499, 24.078737, -91.199989, 0.000000, 23.400001 },
+    { 2533.260986, -1353.717163, 37.791545, -90.199989, 40.399997, 0.000000 },
+    { 2543.481201, -1212.679321, 53.632202, -91.099975, 22.399997, 0.000000 },
+    { 2612.551269, -1086.351684, 68.528511, -88.299934, 0.000000, 0.000000 }
+};
 
 #define MAX_MANIAC 3
 #define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка при создании для игрока
@@ -125,6 +184,10 @@ new ManiacPosLS[][MANIACPOS] =
 #define MANIAC_HEALTH 5000 // Хп маньяка
 #define CD_CREATE_MANIAC 600 // Кд на создание маньяка в слоте (чтобы они не повторялись)
 #define MANIAC_MUSIC_0 "https://cdn.pears.fun/sound/characters/maniac/maniac.mp3" // Аудиофайл маньяка
+#define CD_CREATE_MANIAC_FOR_PLAYER 7200 // Кд на повторное создание маньяка для игрока
+
+#define MAX_MANIAC_MASK 40 // Количество масок маньяка на земле
+#define MANIAC_MASK_MUSIC "https://cdn.pears.fun/sound/characters/maniac/maniac_mask.mp3" // звук когда игрок подобрал маску
 
 enum MANIACINFO
 {
@@ -138,9 +201,61 @@ enum MANIACINFO
     manCD // Кд на повторное создание маньяка в слоте
 }
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
-
 new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
 
+new bool:TakeMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Подобрал ли игрок маску маньяка
+new QuanMaskManiac[MAX_REALPLAYERS];
+new ObjectMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Маски маньяка на земле
+
+// Инициализация системы маньяка (его интерьер)
+stock CreateManiacInterior()
+{
+    // Создаём входы в инт маньяка
+    for(new i = 0; i < sizeof(ManiacEnterInterior); i++)
+    {
+        CreateDynamicPickup(19132, 1, ManiacEnterInterior[i][0], ManiacEnterInterior[i][1], ManiacEnterInterior[i][2], 0, 0); // Входы
+        CreateDynamicPickup(19132, 1, -10.7197,2503.9045,16.5099, i + 1, INT_MANIAC); // Выходы
+    }
+    return true;
+}
+
+// Входы выходы в логово маньяка
+stock DoorManiacStorage(playerid)
+{
+    new bool:findDoor;
+    for(new i = 0; i < sizeof(ManiacEnterInterior); i++)
+    {
+        if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[i][0], ManiacEnterInterior[i][1], ManiacEnterInterior[i][2]) 
+            && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+        {
+            keep(playerid);
+            S_SetPlayerVirtualWorld(playerid, i + 1, INT_MANIAC);
+            PPSetPlayerInterior(playerid, INT_MANIAC);
+            PPSetPlayerPos(playerid, -10.6607,2505.5642,16.5099);
+            PPSetPlayerFacingAngle(playerid,0.9297);
+            SetCameraBehindPlayer(playerid);
+            findDoor = true;
+            break;
+        }
+    }
+    if(findDoor == true) return true;
+
+    new world = GetPlayerVirtualWorld(playerid);
+    if(IsPlayerInRangeOfPoint(playerid,1.0,-10.7197,2503.9045,16.5099) 
+        && world >= 1 && world <= sizeof(ManiacEnterInterior) + 1
+        && GetPlayerInterior(playerid) == INT_MANIAC)
+	{
+        keep(playerid);
+        S_SetPlayerVirtualWorld(playerid, 0, 0);
+        PPSetPlayerInterior(playerid, 0);
+        PPSetPlayerPos(playerid, ManiacExitFromInterior[world - 1][0], ManiacExitFromInterior[world - 1][1], ManiacExitFromInterior[world - 1][2]);
+        PPSetPlayerFacingAngle(playerid,ManiacExitFromInterior[world - 1][3]);
+        SetCameraBehindPlayer(playerid);
+        return true;
+    }
+
+    return false;
+}
 
 // Получаем свободный слот для создания маньяка
 stock GetFreeSlotManiac(bool:forced = false)
@@ -182,6 +297,9 @@ stock GetCreatedManiacNearby(playerid)
 stock ProcessCreateManiac(playerid, bool:forced = false)
 {
     if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
+
+    // Ограничение на автоматическое создание маньяка
+    if(forced == false && PlayerInfo[playerid][pManiacCD] >= gettime()) return 0;
 
     // Если уже создан маньяк поблизости (не создаём его больше)
     if(GetCreatedManiacNearby(playerid) >= 0) return 3;
@@ -237,6 +355,9 @@ stock CreateManiac(playerid, posID, i)
 
     // Обновляем зону стрима для всех игроков
     StreamerUpdateNearby(MAX_DIST_ZONE_EFFECTS_MANIAC, ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], 0, 0);
+
+    // Записываем время создания маньяка для игрока
+    PlayerInfo[playerid][pManiacCD] = gettime() + CD_CREATE_MANIAC_FOR_PLAYER;
 
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
     return true;
@@ -345,6 +466,23 @@ CMD:findmaniac(playerid, const params[])
     return true;
 }
 
+CMD:gotomaniac(playerid, const params[])
+{
+    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
+        || PlayerInfo[playerid][pMedia] >= 3)
+    {
+        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тп к логову маньяка /gotomaniac 0 - %d", sizeof(ManiacEnterInterior));
+        if(params[0] < 0 || params[0] > sizeof(ManiacEnterInterior)) return ErrorMessage(playerid, "{FF6347}Неверный ID логова");
+
+        S_SetPlayerVirtualWorld(playerid, 0, 0);
+        PPSetPlayerInterior(playerid, 0);
+        PPSetPlayerPos(playerid, ManiacEnterInterior[params[0]][0], ManiacEnterInterior[params[0]][1], ManiacEnterInterior[params[0]][2]);
+    }
+    else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    return true;
+}
+
+
 // Процесс жизни маньяка
 stock LifeManiacs()
 {
@@ -356,7 +494,7 @@ stock LifeManiacs()
             if(ManiacInfo[i][manDestroyTimer] > 0)
             {
                 ManiacInfo[i][manDestroyTimer] --;
-                if(ManiacInfo[i][manDestroyTimer] == 0) DestroyManiac(i, true);
+                if(ManiacInfo[i][manDestroyTimer] <= 0) DestroyManiac(i, true);
             }
             else
             {
@@ -452,3 +590,133 @@ stock OnDeathManiacNpc(NPC:npc)
     }
     return yesDeathManiac;
 }
+
+
+//==========================================
+// Маски маньяка
+
+// Создаём для игрока маски маньяка на земле
+stock CreateManiacMaskForPlayer(playerid)
+{
+    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    {
+        if(TakeMaskManiac[playerid][i] == false && ObjectMaskManiac[playerid][i] == 0)
+        {
+            QuanMaskManiac[playerid] ++;
+            ObjectMaskManiac[playerid][i] = CreateDynamicObject(12107, ManiacMask[i][0], ManiacMask[i][1], ManiacMask[i][2], ManiacMask[i][3], ManiacMask[i][4], ManiacMask[i][5], 0, 0, playerid, 50.0, 50.0);
+        }
+    }
+    return true;
+}
+
+// Удаляем маски маньяка для игрока (при выходе из игры)
+stock DestroyManiacMaskForPlayer(playerid)
+{
+    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    {
+        if(TakeMaskManiac[playerid][i] == false && ObjectMaskManiac[playerid][i] > 0) DestroyDynamicObject(ObjectMaskManiac[playerid][i]);
+        TakeMaskManiac[playerid][i] = false;
+        ObjectMaskManiac[playerid][i] = 0;
+    }
+    QuanMaskManiac[playerid] = 0;
+    return true;
+}
+
+// Игрок подбирает маску маньяка
+stock TakeManiacMaskForPlayer(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return false;
+
+    new bool:findMask;
+    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    {
+        if(TakeMaskManiac[playerid][i] == false
+            && IsPlayerInRangeOfPoint(playerid, 2.0, ManiacMask[i][0], ManiacMask[i][1], ManiacMask[i][2]))
+        {
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
+
+            QuanMaskManiac[playerid] --;
+            TakeMaskManiac[playerid][i] = true;
+            DestroyDynamicObject(ObjectMaskManiac[playerid][i]);
+            ObjectMaskManiac[playerid][i] = 0;
+            findMask = true;
+
+            new string[100];
+			format(string,sizeof(string),"{A52C2C}Вы нашли маску маньяка\n{ffcc66}Найдено %d масок из %d", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
+            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
+
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Какая странная маска.. Чья она? {A52C2C}[ Найдено %d из %d масок маньяка ]", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
+            
+            format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~MACKA MAH’•KA: ~w~%d / %d", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
+			GameTextForPlayer(playerid,string,4000,3);
+
+            ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
+            //SaveMaskManiacForPlayer(playerid);
+            break;
+        }
+    }
+    return findMask;
+}
+
+// Загружаем маски маньяка для игрока
+function Call_OnPlayerMaskManiacLoad(playerid, race_check)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
+
+        new bool:is_null;
+        cache_is_value_name_null(0, "mask", is_null);
+        if(is_null == false)
+        {
+            new string_json[512];
+            cache_get_value_name(0, "mask", string_json, 512);
+
+            new JsonNode:node = JSON_INVALID_NODE;
+            if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+            {
+                new string[6];
+                for(new i = 0; i < MAX_MANIAC_MASK; i++)
+                {
+                    format(string, sizeof(string), "m%d", i);
+                    JSON_GetBool(node, string, TakeMaskManiac[playerid][i]);
+                }
+            }
+        }
+		printf("Call_OnPlayerMaskManiacLoad(%s) Маски маньяка найдены", PlayerInfo[playerid][pName]);
+	}
+	else // Если не нашли в таблице, тогда создаём
+	{
+		new string[100];
+		mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_igroki_maniac` SET `user_id`= '%d'", PlayerInfo[playerid][pID]);
+		mysql_tquery(pearsq, string);
+        printf("Call_OnPlayerMaskManiacLoad(%s) Маски маньяка созданы", PlayerInfo[playerid][pName]);
+	}
+
+    CreateManiacMaskForPlayer(playerid);
+	return true;
+}
+
+// Сохраняем прогресс сбора масок маньяка для игрока
+/*stock SaveMaskManiacForPlayer(playerid)
+{
+    new string[6];
+    new JsonNode:node = JSON_Object(
+        while(i < MAX_MANIAC_MASK)
+        {
+            format(string, sizeof(string), "m%d", i),
+            string, JSON_Bool(TakeMaskManiac[playerid][i])
+        }
+    );
+
+    new string_json[512];
+    if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+    {
+        new string_mysql[640];
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_maniac` SET `mask`= '%e' WHERE `frakid` = '%d'", string_json, idx);
+        mysql_tquery(pearsq, string_mysql);
+    }
+    return true;
+}*/
