@@ -1,5 +1,4 @@
 
-#define NOT_FIND_ATTACK_PLAYER 9000
 #define SECOND_FOR_BACK_VILLAGE 300 // Время на возвращение ботов деревенских после того как их всех убили
 #define CD_GIFT_VILLAGE 3600 // Кд, через которое подарки можно будет получить, убив всех ботов
 #define RESPAWN_VILLAGE_NPC 150 // Время респавна для NPC
@@ -554,11 +553,8 @@ stock Village_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 // Игрок, который не является целью для ботов деревенских
 stock IsPlayerNotTargetForVillage(playerid)
 {
-    if(IsPlayerAfk(playerid)
-            || !IsPlayerInDynamicArea(playerid, VillageInfo[villZone])
-            || DeathInfo[playerid][deathStatus] == true
-            || HealthAC[playerid] <= 0.0
-            || !IsPlayerSyncModels(playerid)) return true;
+    if(IsPlayerNotTarget(playerid) &&
+        !IsPlayerInDynamicArea(playerid, VillageInfo[villZone])) return true;
     return false;
 }
 

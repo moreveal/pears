@@ -1,5 +1,18 @@
 
 
+#define NOT_FIND_ATTACK_PLAYER 9000 // Ошибка при поиске игрока для начала атаки (никого не нашли)
+
+// Игрок, который не является целью для ботов
+stock IsPlayerNotTarget(playerid)
+{
+    if(OnlineInfo[playerid][oLogged] == 0
+			|| IsPlayerAfk(playerid)
+            || DeathInfo[playerid][deathStatus] == true
+            || HealthAC[playerid] <= 0.0
+            || !IsPlayerSyncModels(playerid)) return true;
+    return false;
+}
+
 forward IsNpcInRangeOfPoint(NPC:npc, Float:radius, Float:x, Float:y, Float:z);
 public IsNpcInRangeOfPoint(NPC:npc, Float:radius, Float:x, Float:y, Float:z)
 {

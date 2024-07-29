@@ -125,7 +125,8 @@ enum MANIACINFO
 {
 	NPC:manID[MAX_MANIAC], // ID бота
     bool:manCreate[MAX_MANIAC], // Статус, создан маньяк или нет
-    Float:manCreatePosition[3] // Позиция создания маньяка (где он появился)
+    Float:manCreatePosition[3], // Позиция создания маньяка (где он появился)
+    manAttack // Маньяк атакует игрока
 }
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
 
@@ -197,8 +198,9 @@ stock CreateManiac(playerid, posID, i)
     ManiacInfo[i][manCreate] = true;
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
     SetNpcHealth(ManiacInfo[i][manID], 7000.0);
-    TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid);
+    Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
     SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
+    ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
 
     // Записываем позицию, где мы создали маньяка
     ManiacInfo[i][manCreatePosition][0] = ManiacPosLS[posID][Maniac_X];
@@ -206,6 +208,19 @@ stock CreateManiac(playerid, posID, i)
     ManiacInfo[i][manCreatePosition][2] = ManiacPosLS[posID][Maniac_Z];
 
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
+    return true;
+}
+
+// Удаляем маньяка
+stock DestroyManiac(i)
+{
+    if(ManiacInfo[i][manCreate] == false) return false;
+
+    if(IsValidNpc(ManiacInfo[i][manID]))
+    {
+        DestroyNpc(ManiacInfo[i][manID]);
+        ManiacInfo[i][manCreate] = false;
+    }
     return true;
 }
 
@@ -254,8 +269,69 @@ stock LifeManiacs()
         // Маньяк далеко отошел от позиции создания (Удаляем его)
         if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_MANIAC_POSITION, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
         {
+            DestroyManiac(i);
+        }
 
+        // Маньяк не мертвый
+        if(!IsNpcDead(ManiacInfo[i][manID]))
+        {
+            AttackManiacNpcNearbyPlayer(i);
         }
     }
     return true;
+}
+
+stock Maniac_TaskNpcAttackPlayer(NPC:npc, playerid, i)
+{
+    TaskNpcAttackPlayer(npc, playerid);
+    ManiacInfo[i][manAttack] = playerid;
+    return true;
+}
+
+// NPC начинает атаковать ближайшего игрока
+stock AttackManiacNpcNearbyPlayer(i)
+{
+    new latestid = FindClosestPlayerToManiacNpc(ManiacInfo[i][manID], i);
+
+    // Нашли нового игрока, атакуем
+    if(latestid != NOT_FIND_ATTACK_PLAYER 
+        && latestid != INVALID_PLAYER_ID) 
+    {
+        Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], latestid, i);
+        if(server == 0) SendClientMessageToAll(-1, "Маньяк %d атакует игрока %d", i, latestid);
+    }
+
+    else if(latestid == INVALID_PLAYER_ID) // Не нашли игрока для атаки
+    {
+        DestroyManiac(i);
+        if(server == 0) SendClientMessageToAll(-1, "Маньяк %d не нашёл цель в своей зоне и был удалён", i);
+    }
+    return true;
+}
+
+// Ищем ближайшего игрока для атаки
+stock FindClosestPlayerToManiacNpc(NPC:npc, i)
+{
+    new Float:npc_x, Float:npc_y, Float:npc_z;
+    GetNpcPosition(npc, npc_x, npc_y, npc_z);
+
+    new Float:dist = 99999.0;
+    new latestId = INVALID_PLAYER_ID;
+    foreach(Player, playerid) 
+    {
+        if(IsPlayerNotTarget(playerid)) continue;
+
+        new Float:thisDist = GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z);
+        if (thisDist < dist)
+        {
+            dist = thisDist;
+            latestId = playerid;
+        }
+    }
+
+    // Если бот уже атакует этого игрока, игнорим нафиг
+    if(ManiacInfo[i][manAttack] == latestId 
+        && latestId != INVALID_PLAYER_ID) return NOT_FIND_ATTACK_PLAYER;
+
+    return latestId;
 }
