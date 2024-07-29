@@ -394,11 +394,11 @@ stock GiveDamagePlayerToVillageNpc(NPC:npc, damagerid)
                 Village_TaskNpcAttackPlayer(VillageInfo[villID][i], damagerid, i);
                 SetVillageNpcRandomWeapons(i);
             }
+            VillageInfo[villActive] = true;
+            return true;
         }
-
-        VillageInfo[villActive] = true;
     }
-    return true;
+    return false;
 }
 
 stock SetSpawnVillageNpc(NPC:npc)
@@ -421,8 +421,9 @@ stock SetSpawnVillageNpc(NPC:npc)
 
         // Все NPC умерли, открываем призы
         if(quanVillageNpcDeath >= sizeof(VillageNpcWalk)) CreateVillageGift();
+        return true;
     }
-    return true;
+    return false;
 }
 
 stock GetQuanDeadVillageNpc()
@@ -617,7 +618,8 @@ public bool:OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bo
         new vehicleid = Protect_Veh[damagerid];
         if(IsShootingVehicle(VehInfo[vehicleid][vModel])) return false;
     }
-    GiveDamagePlayerToVillageNpc(npc, damagerid);
+    
+    if(GiveDamagePlayerToVillageNpc(npc, damagerid)) return true;
     return true;
 }
 
@@ -639,6 +641,10 @@ public OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, bodypart
 // NPC убили
 public OnNpcDeath(NPC:npc, killerid, reason)
 {
-    SetSpawnVillageNpc(npc);
+    // Убили деревенского бота
+    if(SetSpawnVillageNpc(npc)) return true;
+
+    // Убили бота маньяка
+    if(OnDeathManiacNpc(npc)) return true;
     return true;
 }

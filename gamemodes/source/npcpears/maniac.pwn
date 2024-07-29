@@ -119,27 +119,42 @@ new ManiacPosLS[][MANIACPOS] =
 
 
 #define MAX_MANIAC 3
-#define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка от игрока
+#define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка при создании для игрока
+#define MAX_DIST_ZONE_MANIAC 80 // Максимальная дистанция маньяка внутри его зоны для атаки
+#define MAX_DIST_ZONE_EFFECTS_MANIAC 120 // Зона действия для эффектов с маньяком
+#define MANIAC_HEALTH 5000 // Хп маньяка
+#define CD_CREATE_MANIAC 600 // Кд на создание маньяка в слоте (чтобы они не повторялись)
+#define MANIAC_MUSIC_0 "https://cdn.pears.fun/sound/characters/maniac/maniac.mp3" // Аудиофайл маньяка
 
 enum MANIACINFO
 {
-	NPC:manID[MAX_MANIAC], // ID бота
-    bool:manCreate[MAX_MANIAC], // Статус, создан маньяк или нет
+	NPC:manID, // ID бота
+    bool:manCreate, // Статус, создан маньяк или нет
     Float:manCreatePosition[3], // Позиция создания маньяка (где он появился)
-    manAttack // Маньяк атакует игрока
+    manAttack, // Маньяк атакует игрока
+    manDestroyTimer, // Таймер перед удалением маньяка
+    manObjectEffect, // Объект для эффекта удаления маньяка
+    manZone, // Зона маньяка
+    manCD // Кд на повторное создание маньяка в слоте
 }
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
 
+new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
+
+
 // Получаем свободный слот для создания маньяка
-stock GetFreeSlotManiac()
+stock GetFreeSlotManiac(bool:forced = false)
 {
-    new slot = -1;
+    new slot = -1, unix = gettime();
     for(new i = 0; i < MAX_MANIAC; i++)
     {
-        if(ManiacInfo[i][manCreate] == false)
+        if(ManiacInfo[i][manCreate] == false) // Свободный слот
         {
-            slot = i;
-            break;
+            if(ManiacInfo[i][manCD] < unix || forced == true)
+            {
+                slot = i;
+                break;
+            }
         }
     }
     return slot;
@@ -164,7 +179,7 @@ stock GetCreatedManiacNearby(playerid)
 }
 
 // Процесс поиска позиции для создания маньяка
-stock ProcessCreateManiac(playerid)
+stock ProcessCreateManiac(playerid, bool:forced = false)
 {
     if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
 
@@ -174,7 +189,7 @@ stock ProcessCreateManiac(playerid)
     new resultFind;
 
     // Ищем свободный слот для создания маньяка
-    new slotManiac = GetFreeSlotManiac();
+    new slotManiac = GetFreeSlotManiac(forced);
     if(slotManiac == -1) return 2;
 
     for(new i = 0; i < sizeof(ManiacPosLS); i++)
@@ -197,7 +212,7 @@ stock CreateManiac(playerid, posID, i)
     ManiacInfo[i][manID] = CreateNpc(507, ManiacPosLS[posID][Maniac_X], ManiacPosLS[posID][Maniac_Y], ManiacPosLS[posID][Maniac_Z]);
     ManiacInfo[i][manCreate] = true;
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
-    SetNpcHealth(ManiacInfo[i][manID], 7000.0);
+    SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
     SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
     ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
@@ -207,19 +222,90 @@ stock CreateManiac(playerid, posID, i)
     ManiacInfo[i][manCreatePosition][1] = ManiacPosLS[posID][Maniac_Y];
     ManiacInfo[i][manCreatePosition][2] = ManiacPosLS[posID][Maniac_Z];
 
+    // Создаём зону маньяка
+    ManiacInfo[i][manZone] = CreateDynamicSphere(ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], MAX_DIST_ZONE_EFFECTS_MANIAC, 0, 0);
+
+    // Создаём музыку для маньяка
+    ManiacMusic[i] = CreateAudioStream();
+    SetAudioStreamPosition(ManiacMusic[i], ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2]);
+    SetAudioStreamAutostreamDist(ManiacMusic[i], 72.0); // Максимальная дистанция
+    SetAudioStreamMinDistance(ManiacMusic[i], 30.0); // Минимальная дистанция (менее громкость не меняется)
+    SetAudioStreamMaxDistance(ManiacMusic[i], 70.0); // Макимальная дистанция
+    SetAudioStreamAutostreamState(ManiacMusic[i], true); // Врубать музло когда игрок входит в зону стрима
+    SetAudioStreamSpatialState(ManiacMusic[i], true); // 3d звук
+    SetAudioStreamUrl(ManiacMusic[i], MANIAC_MUSIC_0, true);
+
+    // Обновляем зону стрима для всех игроков
+    StreamerUpdateNearby(MAX_DIST_ZONE_EFFECTS_MANIAC, ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], 0, 0);
+
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
     return true;
 }
 
+// Включаем погоду для игрока в зоне маньяка
+stock Maniac_UpdateWeatherPlayer(playerid)
+{
+    new bool:result;
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manCreate] == true && IsPlayerInDynamicArea(playerid, ManiacInfo[i][manZone]))
+        {
+            SetPlayerWeather(playerid, 20);
+            SetPlayerTime(playerid, 6, 0);
+            result = true;
+            break;
+        }
+    }
+    return result;
+}
+
+// Запускаем процесс удаления маньяка
+stock BeginDestroyManiac(i)
+{
+    if(ManiacInfo[i][manDestroyTimer] > 0) return false; // Процесс удаления уже запущен
+    if(!IsNpcDead(ManiacInfo[i][manID])) TaskNpcStandStill(ManiacInfo[i][manID]); // Если маньяк не дохлый, останавливаем его
+
+    // Создаём объект горения
+    new Float:npc_pos[3];
+    GetNpcPosition(ManiacInfo[i][manID], npc_pos[0], npc_pos[1], npc_pos[2]);
+    ManiacInfo[i][manObjectEffect] = CreateDynamicObject(18723, npc_pos[0], npc_pos[1], npc_pos[2] -1.5, 0.0, 0.0, 0.0, 0, 0, -1, 80.0, 80.0);
+    ManiacInfo[i][manDestroyTimer] = 2; // Удалится через 3 секунды
+
+    // Обновляем отображение объектов в зоне стрима для игрока
+    StreamerUpdateNearby(50.0, npc_pos[0], npc_pos[1], npc_pos[2], 0, 0, STREAMER_TYPE_OBJECT);
+    return true;
+}
+
 // Удаляем маньяка
-stock DestroyManiac(i)
+stock DestroyManiac(i, bool:destroyEffect = false)
 {
     if(ManiacInfo[i][manCreate] == false) return false;
-
+    
+    // Удаляем npc маньяка
     if(IsValidNpc(ManiacInfo[i][manID]))
     {
         DestroyNpc(ManiacInfo[i][manID]);
         ManiacInfo[i][manCreate] = false;
+    }
+
+    // Удаляем зону маньяка
+    if(ManiacInfo[i][manZone] > 0)
+    {
+        DestroyDynamicArea(ManiacInfo[i][manZone]);
+        ManiacInfo[i][manZone] = 0;
+    }
+
+    // Удаляем объект эффекта маньяка
+    if(destroyEffect == true) DestroyDynamicObject(ManiacInfo[i][manObjectEffect]);
+
+    // Записываем кд для повторного создания маньяка
+    ManiacInfo[i][manCD] = gettime() + CD_CREATE_MANIAC;
+
+    // Удаляем музыку маньяка
+    if(ManiacMusic[i] != INVALID_AUDIOSTREAM)
+    {
+        DeleteAudioStream(ManiacMusic[i]);
+        ManiacMusic[i] = INVALID_AUDIOSTREAM;
     }
     return true;
 }
@@ -232,7 +318,7 @@ CMD:createmaniac(playerid, const params[])
         if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать маньяка для игрока /createmaniac ID");
         if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
 
-        new result = ProcessCreateManiac(params[0]);
+        new result = ProcessCreateManiac(params[0], true);
         if(result == 1) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Маньяк создан","*","");
         else if(result == 2) ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n{ffcc66}Нет свободных слотов для создания маньяка");
         else if(result == 3) ErrorMessage(playerid, "{FF6347}Маньяк не был создан для игрока\n{ffcc66}Где-то близко с игроком уже бегает маньяк");
@@ -264,18 +350,28 @@ stock LifeManiacs()
 {
     for(new i = 0; i < MAX_MANIAC; i++)
     {
-        if(ManiacInfo[i][manCreate] == false) continue;
-
-        // Маньяк далеко отошел от позиции создания (Удаляем его)
-        if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_MANIAC_POSITION, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
+        if(ManiacInfo[i][manCreate] == true)
         {
-            DestroyManiac(i);
-        }
+            // Процесс удаления маньяка
+            if(ManiacInfo[i][manDestroyTimer] > 0)
+            {
+                ManiacInfo[i][manDestroyTimer] --;
+                if(ManiacInfo[i][manDestroyTimer] == 0) DestroyManiac(i, true);
+            }
+            else
+            {
+                // Маньяк далеко отошел от позиции создания (Удаляем его)
+                if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_ZONE_MANIAC, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
+                {
+                    BeginDestroyManiac(i);
+                }
 
-        // Маньяк не мертвый
-        if(!IsNpcDead(ManiacInfo[i][manID]))
-        {
-            AttackManiacNpcNearbyPlayer(i);
+                // Маньяк не мертвый
+                if(!IsNpcDead(ManiacInfo[i][manID]))
+                {
+                    AttackManiacNpcNearbyPlayer(i);
+                }
+            }
         }
     }
     return true;
@@ -303,7 +399,7 @@ stock AttackManiacNpcNearbyPlayer(i)
 
     else if(latestid == INVALID_PLAYER_ID) // Не нашли игрока для атаки
     {
-        DestroyManiac(i);
+        BeginDestroyManiac(i);
         if(server == 0) SendClientMessageToAll(-1, "Маньяк %d не нашёл цель в своей зоне и был удалён", i);
     }
     return true;
@@ -334,4 +430,25 @@ stock FindClosestPlayerToManiacNpc(NPC:npc, i)
         && latestId != INVALID_PLAYER_ID) return NOT_FIND_ATTACK_PLAYER;
 
     return latestId;
+}
+
+// Убили маньяка
+stock OnDeathManiacNpc(NPC:npc)
+{
+    new findSlot, bool:yesDeathManiac;
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manID] == npc)
+        {
+            yesDeathManiac = true;
+            findSlot = i;
+            break;
+        }
+    }
+
+    if(yesDeathManiac == true)
+    {
+        BeginDestroyManiac(findSlot);
+    }
+    return yesDeathManiac;
 }
