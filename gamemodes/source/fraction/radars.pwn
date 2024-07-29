@@ -1760,7 +1760,7 @@ stock Radar_ViolationHandler(playerid) {
         }
     }
     
-    if(OnlineInfo[playerid][oLogged] == 1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+    if(OnlineInfo[playerid][oLogged] == 1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !IsPlayerAfk(playerid))
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		if(!(vehicleid >= swatcar[0] && vehicleid <= swatcar[1] || vehicleid >= armcar[0] && vehicleid <= armcar[1]
