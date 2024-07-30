@@ -332,7 +332,7 @@ stock CreateManiac(playerid, posID, i)
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
     SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
-    //SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
+    SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
     ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
 
     // Записываем позицию, где мы создали маньяка
@@ -477,6 +477,22 @@ CMD:gotomaniac(playerid, const params[])
         S_SetPlayerVirtualWorld(playerid, 0, 0);
         PPSetPlayerInterior(playerid, 0);
         PPSetPlayerPos(playerid, ManiacEnterInterior[params[0]][0], ManiacEnterInterior[params[0]][1], ManiacEnterInterior[params[0]][2]);
+    }
+    else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    return true;
+}
+
+CMD:gotomask(playerid, const params[])
+{
+    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
+        || PlayerInfo[playerid][pMedia] >= 3)
+    {
+        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тп по маскам маньяка /gotomask 0 - %d", MAX_MANIAC_MASK - 1);
+        if(params[0] < 0 || params[0] >= MAX_MANIAC_MASK) return ErrorMessage(playerid, "{FF6347}Неверный ID маски");
+
+        S_SetPlayerVirtualWorld(playerid, 0, 0);
+        PPSetPlayerInterior(playerid, 0);
+        PPSetPlayerPos(playerid, ManiacMask[params[0]][0], ManiacMask[params[0]][1], ManiacMask[params[0]][2]);
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     return true;
