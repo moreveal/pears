@@ -187,6 +187,7 @@ new Float:ManiacMask[][] =
 #define CD_CREATE_MANIAC_FOR_PLAYER 7200 // Кд на повторное создание маньяка для игрока
 
 #define MAX_MANIAC_MASK 40 // Количество масок маньяка на земле
+#define MANIAC_MASK_NEED 30 // Требуется собрать масок для продолжения квеста
 #define MANIAC_MASK_MUSIC "https://cdn.pears.fun/sound/characters/maniac/maniac_mask.mp3" // звук когда игрок подобрал маску
 
 enum MANIACINFO
@@ -228,6 +229,8 @@ stock DoorManiacStorage(playerid)
         if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[i][0], ManiacEnterInterior[i][1], ManiacEnterInterior[i][2]) 
             && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
         {
+            if(PlayerInfo[playerid][pManiacQwest] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете зайти в эту дверь\n{ffcc66}Чтобы зайти в логово, вам необходимо найти все маски маньяка\n{ffcc66}Они разбросаны по переулкам города Los Santos");
+
             keep(playerid);
             S_SetPlayerVirtualWorld(playerid, i + 1, INT_MANIAC);
             PPSetPlayerInterior(playerid, INT_MANIAC);
@@ -628,13 +631,19 @@ stock CreateManiacMaskForPlayer(playerid)
 // Удаляем маски маньяка для игрока (при выходе из игры)
 stock DestroyManiacMaskForPlayer(playerid)
 {
-    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    if(PlayerInfo[playerid][pManiacQwest] == 0)
     {
-        if(TakeMaskManiac[playerid][i] == false && ObjectMaskManiac[playerid][i] > 0) DestroyDynamicObject(ObjectMaskManiac[playerid][i]);
-        TakeMaskManiac[playerid][i] = false;
-        ObjectMaskManiac[playerid][i] = 0;
+        for(new i = 0; i < MAX_MANIAC_MASK; i++)
+        {
+            if(TakeMaskManiac[playerid][i] == false && ObjectMaskManiac[playerid][i] > 0) 
+            {
+                DestroyDynamicObject(ObjectMaskManiac[playerid][i]);
+                ObjectMaskManiac[playerid][i] = 0;
+            }
+            TakeMaskManiac[playerid][i] = false;
+        }
+        QuanMaskManiac[playerid] = 0;
     }
-    QuanMaskManiac[playerid] = 0;
     return true;
 }
 
@@ -649,22 +658,51 @@ stock TakeManiacMaskForPlayer(playerid)
         if(TakeMaskManiac[playerid][i] == false
             && IsPlayerInRangeOfPoint(playerid, 2.0, ManiacMask[i][0], ManiacMask[i][1], ManiacMask[i][2]))
         {
-            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
-
             QuanMaskManiac[playerid] --;
             TakeMaskManiac[playerid][i] = true;
             DestroyDynamicObject(ObjectMaskManiac[playerid][i]);
             ObjectMaskManiac[playerid][i] = 0;
             findMask = true;
 
-            new string[100];
-			format(string,sizeof(string),"{A52C2C}Вы нашли маску маньяка\n{ffcc66}Найдено %d масок из %d", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
-            ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
+            new getMasks = MAX_MANIAC_MASK - QuanMaskManiac[playerid]; // Собрано масок
 
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Какая странная маска.. Чья она? {A52C2C}[ Найдено %d из %d масок маньяка ]", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
-            
-            format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~MACKA MAH’•KA: ~w~%d / %d", MAX_MANIAC_MASK - QuanMaskManiac[playerid], MAX_MANIAC_MASK);
-			GameTextForPlayer(playerid,string,4000,3);
+            new string[100];
+            if(getMasks >= MANIAC_MASK_NEED) // Собрали все маски. Запускаем продолжение квеста
+            {
+                DestroyManiacMaskForPlayer(playerid); // Сначала удаляем все оставшиеся маски
+                PlayerInfo[playerid][pManiacQwest] = 1; // Затем отмечаем переменной, что все маски собраны
+                SaveManiacQuestProcess(playerid);
+
+                if(PlayerInfo[playerid][pSex] == 1)
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1.mp3");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу чувак.. ты нашёл все маски");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверен, что хочешь убить этого психа?");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожен");
+                }
+                else
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1_w.mp3");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу подруга.. ты нашла все маски");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверена, что хочешь убить этого психа?");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожна");
+                }
+
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я собрал%s все маски и теперь мне нужно отправиться в логово маньяка", gender(playerid));
+                CreateGps(playerid, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0, 0, 5.0);
+            }
+            else
+            {
+                if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
+
+                format(string,sizeof(string),"{A52C2C}Вы нашли маску маньяка\n{ffcc66}Найдено %d масок из %d", getMasks, MANIAC_MASK_NEED);
+                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
+
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Какая странная маска.. Чья она? {A52C2C}[ Найдено %d из %d масок маньяка ]", getMasks, MANIAC_MASK_NEED);
+                
+                format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~MACKA MAH’•KA: ~w~%d / %d", getMasks, MANIAC_MASK_NEED);
+                GameTextForPlayer(playerid,string,4000,3);
+            }
 
             ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
             SaveMaskManiacForPlayer(playerid);
@@ -672,6 +710,16 @@ stock TakeManiacMaskForPlayer(playerid)
         }
     }
     return findMask;
+}
+
+// Сохраняем процесс выполнения квеста маньяка
+stock SaveManiacQuestProcess(playerid)
+{
+    new string[120];
+    mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki_maniac` SET `pManiacQwest` = '%d' WHERE `user_id` = '%d'", 
+        PlayerInfo[playerid][pManiacQwest], PlayerInfo[playerid][pID]);
+	query_empty(pearsq, string);
+    return true;
 }
 
 // Загружаем маски маньяка для игрока
@@ -683,24 +731,28 @@ function Call_OnPlayerMaskManiacLoad(playerid, race_check)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
-        new bool:is_null;
-        cache_is_value_name_null(0, "mask", is_null);
-        if(is_null == false)
+        cache_get_value_name_int(0, "pManiacQwest", PlayerInfo[playerid][pManiacQwest]);
+        if(PlayerInfo[playerid][pManiacQwest] == 0) // Только если игрок не прошёл квест с масками, грузим ему их
         {
-            new string_json[512];
-            cache_get_value_name(0, "mask", string_json);
-
-            new JsonNode:node = JSON_INVALID_NODE;
-            if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+            new bool:is_null;
+            cache_is_value_name_null(0, "mask", is_null);
+            if(is_null == false)
             {
-                new index = -1, JsonNode: output;
-                while(!JSON_ArrayIterate(node, index, output))
+                new string_json[512];
+                cache_get_value_name(0, "mask", string_json);
+
+                new JsonNode:node = JSON_INVALID_NODE;
+                if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
                 {
-                    JSON_GetNodeInt(output, TakeMaskManiac[playerid][index]);
+                    new index = -1, JsonNode: output;
+                    while(!JSON_ArrayIterate(node, index, output))
+                    {
+                        JSON_GetNodeInt(output, TakeMaskManiac[playerid][index]);
+                    }
                 }
             }
+            printf("Call_OnPlayerMaskManiacLoad(%s) Маски маньяка найдены", PlayerInfo[playerid][pName]);
         }
-		printf("Call_OnPlayerMaskManiacLoad(%s) Маски маньяка найдены", PlayerInfo[playerid][pName]);
 	}
 	else // Если не нашли в таблице, тогда создаём
 	{
@@ -710,7 +762,7 @@ function Call_OnPlayerMaskManiacLoad(playerid, race_check)
         printf("Call_OnPlayerMaskManiacLoad(%s) Маски маньяка созданы", PlayerInfo[playerid][pName]);
 	}
 
-    CreateManiacMaskForPlayer(playerid);
+    if(PlayerInfo[playerid][pManiacQwest] == 0) CreateManiacMaskForPlayer(playerid);
 	return true;
 }
 
