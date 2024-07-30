@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 193
+#define MAX_SKIN_CUSTOM 200
 
 stock AddCustomSkins()
 {
@@ -176,7 +176,7 @@ stock AddCustomSkins()
     AddCharSyncModel(150, 465); // 15653, pearspedee female
     AddCharSyncModel(286, 466); // 15654, pearspedef male
 
-	AddCharSyncModel(23, 467); // 15655, zverworks male
+	AddCharSyncModel(29, 467); // 15655, zverworks male
 	AddCharSyncModel(121, 468); // 15656, pearspedeg male Yakuza
 	AddCharSyncModel(118, 469); // 15657, pearspedeh male Yakuza
 	AddCharSyncModel(123, 470); // 15658, pearspedei male Yakuza
@@ -214,6 +214,13 @@ stock AddCustomSkins()
 	AddCharSyncModel(275, 502); // 15690, pearsmedm3 male
 	AddCharSyncModel(276, 503); // 15691, pearsmedm4 male
 	AddCharSyncModel(274, 504); // 15692, pearsmedm5 male
+	AddCharSyncModel(146, 505); // 15693, pearsebalai male
+	AddCharSyncModel(264, 506); // 15694, pearsvampir male
+	AddCharSyncModel(168, 507); // 15695, pearsbenzop male
+	AddCharSyncModel(130, 508); // 15696, pearsovechka -
+	AddCharSyncModel(31, 509); //  15697, pearskorova -
+	AddCharSyncModel(153, 510); //  15697, pearsscream -
+	AddCharSyncModel(264, 511); //  15697, pearsclown -
     return 1;
 }
 
@@ -235,9 +242,10 @@ stock GetSkinSex(s)
 	|| s >= 376 && s <= 386 || s == 388 || s == 390 || s == 391 || s == 392 || s == 401
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
 	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
-	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 504) return 1; // 1 - мужской скин
+	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507) return 1; // 1 - мужской скин
 
-	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
+	s == 510 || s == 511) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
  	else return 2; // Все остальные 2, значит женские
 }
