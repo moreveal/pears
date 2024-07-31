@@ -120,17 +120,13 @@ new ManiacPosLS[][MANIACPOS] =
 // Вход в интерьер маньяка
 new Float:ManiacEnterInterior[][] =
 {
-	{ 1424.3281,-1093.3744,17.5633 }, // ls
-	{ -1873.4989,-152.0380,11.8985 }, // sf
-	{ 2488.4824,2291.1934,10.8203 } // lv
+	{ 1424.3281,-1093.3744,17.5633 } // ls[]
 };
 
 // Точка появления из инта маньяка
 new Float:ManiacExitFromInterior[][] =
 {
-	{ 1426.4454,-1093.3986,17.5601,270.6890 }, // ls
-	{ -1875.5769,-151.8994,11.8985,86.4704 }, // sf
-	{ 2491.1992,2291.1384,10.8203,271.0488 } // lv
+	{ 1426.4454,-1093.3986,17.5601,270.6890 } // ls
 };
 
 new Float:ManiacMask[][] =
@@ -186,6 +182,7 @@ new Float:ManiacMask[][] =
 #define MANIAC_MUSIC_0 "https://cdn.pears.fun/sound/characters/maniac/maniac.mp3" // Аудиофайл маньяка
 #define CD_CREATE_MANIAC_FOR_PLAYER 7200 // Кд на повторное создание маньяка для игрока
 
+#define COMPLETE_QUEST_MANIAC 3 // Количество действий для полного выполнения квеста с маньяком
 #define MAX_MANIAC_MASK 40 // Количество масок маньяка на земле
 #define MANIAC_MASK_NEED 30 // Требуется собрать масок для продолжения квеста
 #define MANIAC_MASK_MUSIC "https://cdn.pears.fun/sound/characters/maniac/maniac_mask.mp3" // звук когда игрок подобрал маску
@@ -212,52 +209,66 @@ new ObjectMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Маски манья
 stock CreateManiacInterior()
 {
     // Создаём входы в инт маньяка
-    for(new i = 0; i < sizeof(ManiacEnterInterior); i++)
-    {
-        CreateDynamicPickup(19132, 1, ManiacEnterInterior[i][0], ManiacEnterInterior[i][1], ManiacEnterInterior[i][2], 0, 0); // Входы
-        CreateDynamicPickup(19132, 1, -10.7197,2503.9045,16.5099, i + 1, INT_MANIAC); // Выходы
-    }
+    CreateDynamicPickup(19132, 1, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0, 0); // Вход
+    CreateDynamic3DTextLabel("{ff9000}Выйти [ ALT ]",-1,-10.7197,2503.9045,16.5099,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,-1,INT_MANIAC); // Выход
     return true;
 }
 
 // Входы выходы в логово маньяка
 stock DoorManiacStorage(playerid)
 {
-    new bool:findDoor;
-    for(new i = 0; i < sizeof(ManiacEnterInterior); i++)
+    if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2]) 
+        && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
     {
-        if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[i][0], ManiacEnterInterior[i][1], ManiacEnterInterior[i][2]) 
-            && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
-        {
-            if(PlayerInfo[playerid][pManiacQwest] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете зайти в эту дверь\n{ffcc66}Чтобы зайти в логово, вам необходимо найти все маски маньяка\n{ffcc66}Они разбросаны по переулкам города Los Santos");
+        if(PlayerInfo[playerid][pManiacQwest] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете зайти в эту дверь\n{ffcc66}Чтобы зайти в логово, вам необходимо найти все маски маньяка\n{ffcc66}Они разбросаны по переулкам города Los Santos");
 
-            keep(playerid);
-            S_SetPlayerVirtualWorld(playerid, i + 1, INT_MANIAC);
-            PPSetPlayerInterior(playerid, INT_MANIAC);
-            PPSetPlayerPos(playerid, -10.6607,2505.5642,16.5099);
-            PPSetPlayerFacingAngle(playerid,0.9297);
-            SetCameraBehindPlayer(playerid);
-            findDoor = true;
-            break;
-        }
+        keep(playerid);
+        S_SetPlayerVirtualWorld(playerid, playerid + 1, INT_MANIAC);
+        PPSetPlayerInterior(playerid, INT_MANIAC);
+        PPSetPlayerPos(playerid, -10.6607,2505.5642,16.5099);
+        PPSetPlayerFacingAngle(playerid,0.9297);
+        SetCameraBehindPlayer(playerid);
+        return true;
     }
-    if(findDoor == true) return true;
 
-    new world = GetPlayerVirtualWorld(playerid);
-    if(IsPlayerInRangeOfPoint(playerid,1.0,-10.7197,2503.9045,16.5099) 
-        && world >= 1 && world <= sizeof(ManiacEnterInterior) + 1
-        && GetPlayerInterior(playerid) == INT_MANIAC)
+    if(IsPlayerInRangeOfPoint(playerid,1.0,-10.7197,2503.9045,16.5099) && PlayerInInteriorManiac(playerid))
 	{
         keep(playerid);
         S_SetPlayerVirtualWorld(playerid, 0, 0);
         PPSetPlayerInterior(playerid, 0);
-        PPSetPlayerPos(playerid, ManiacExitFromInterior[world - 1][0], ManiacExitFromInterior[world - 1][1], ManiacExitFromInterior[world - 1][2]);
-        PPSetPlayerFacingAngle(playerid,ManiacExitFromInterior[world - 1][3]);
+        PPSetPlayerPos(playerid, ManiacExitFromInterior[0][0], ManiacExitFromInterior[0][1], ManiacExitFromInterior[0][2]);
+        PPSetPlayerFacingAngle(playerid,ManiacExitFromInterior[0][3]);
         SetCameraBehindPlayer(playerid);
         return true;
     }
 
     return false;
+}
+
+// Находится ли игрок внутри интерьера маньяка
+stock PlayerInInteriorManiac(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) == playerid + 1
+        && GetPlayerInterior(playerid) == INT_MANIAC) return true;
+    return false;
+}
+
+stock ShowDialogInfoManiac(playerid)
+{
+    new lines[700];
+    format(lines,sizeof(lines),"{A52C2C}Маньяк\
+                            \n\n{cccccc}- По ночам, в городе Los Santos, бродит маньяк с бензопилой и нападает на людей\
+                            \n{cccccc}- Маньяк появляется с 22:00 до 4:00 в переулках города\
+                            \n{cccccc}- Вы можете обнаружить его совершенно случайно\
+                            \n{cccccc}- За убийство маньяка вы гарантированно получаете кейс\
+                            \n\n{A52C2C}Квест Маньяка\
+                            \n{ffcc66}Для того, чтобы начать прохождение квеста, вам необходимо найти\
+                            \n{ffcc66}%d масок маньяка. Эти маски разбросаны по переулкам города Los Santos.\
+                            \n{A52C2C}Для того, чтобы поднять маску маньяка, подойдите к ней и нажмите ALT\
+                            \n{A52C2C}Внимание! Выполнение квеста доступно только с лаунчера\
+                            ", MANIAC_MASK_NEED);
+    ShowDialog(playerid,1309,DIALOG_STYLE_MSGBOX,"{ff9000}Маньяк",lines,"*","");
+    return true;
 }
 
 // Получаем свободный слот для создания маньяка
@@ -374,13 +385,25 @@ stock Maniac_UpdateWeatherPlayer(playerid)
     {
         if(ManiacInfo[i][manCreate] == true && IsPlayerInDynamicArea(playerid, ManiacInfo[i][manZone]))
         {
-            SetPlayerWeather(playerid, 20);
-            SetPlayerTime(playerid, 6, 0);
+            SetPlayerManiacWeather(playerid);
+            SetPlayerManiacTime(playerid);
             result = true;
             break;
         }
     }
     return result;
+}
+
+stock SetPlayerManiacWeather(playerid)
+{
+    SetPlayerWeather(playerid, 20);
+    return true;
+}
+
+stock SetPlayerManiacTime(playerid)
+{
+    SetPlayerTime(playerid, 6, 0);
+    return true;
 }
 
 // Запускаем процесс удаления маньяка
@@ -469,22 +492,6 @@ CMD:findmaniac(playerid, const params[])
     return true;
 }
 
-CMD:gotomaniac(playerid, const params[])
-{
-    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
-        || PlayerInfo[playerid][pMedia] >= 3)
-    {
-        if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тп к логову маньяка /gotomaniac 0 - %d", sizeof(ManiacEnterInterior));
-        if(params[0] < 0 || params[0] > sizeof(ManiacEnterInterior)) return ErrorMessage(playerid, "{FF6347}Неверный ID логова");
-
-        S_SetPlayerVirtualWorld(playerid, 0, 0);
-        PPSetPlayerInterior(playerid, 0);
-        PPSetPlayerPos(playerid, ManiacEnterInterior[params[0]][0], ManiacEnterInterior[params[0]][1], ManiacEnterInterior[params[0]][2]);
-    }
-    else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    return true;
-}
-
 CMD:gotomask(playerid, const params[])
 {
     if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
@@ -495,7 +502,7 @@ CMD:gotomask(playerid, const params[])
 
         S_SetPlayerVirtualWorld(playerid, 0, 0);
         PPSetPlayerInterior(playerid, 0);
-        PPSetPlayerPos(playerid, ManiacMask[params[0]][0], ManiacMask[params[0]][1], ManiacMask[params[0]][2]);
+        PPSetPlayerPos(playerid, ManiacMask[params[0]][0], ManiacMask[params[0]][1], ManiacMask[params[0]][2] + 1.0);
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     return true;
@@ -647,10 +654,66 @@ stock DestroyManiacMaskForPlayer(playerid)
     return true;
 }
 
+// Запускаем квест с маньяком (оповещение и вся фигня)
+stock StartManiacQuest(playerid)
+{
+    if(PlayerInfo[playerid][pManiacQwest] == 0)
+    {
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac0.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Хей! Как дела? Тут один моментик нарисовался, понадобится твоя помощь");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): В штате орудует маньяк и по ночам нападает на людей");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Если ты найдёшь в переулках города все маски, то сможешь пробраться в его логово");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я видел одну маску неподалёку, сгоняй и забери её");
+        CreateRandomGpsManiacMask(playerid);
+    }
+    else if(PlayerInfo[playerid][pManiacQwest] == 1)
+    {
+        if(PlayerInfo[playerid][pSex] == 1)
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу чувак.. ты нашёл все маски");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверен, что хочешь убить этого психа?");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожен");
+        }
+        else
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1_w.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу подруга.. ты нашла все маски");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверена, что хочешь убить этого психа?");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожна");
+        }
+
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я собрал%s все маски и теперь мне нужно отправиться в логово маньяка", gender(playerid));
+        CreateGps(playerid, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0, 0, 5.0);
+    }
+    return true;
+}
+
+// Создаём GPS метку на рандомную маску
+stock CreateRandomGpsManiacMask(playerid)
+{
+    new randomMask[MAX_MANIAC_MASK], quan;
+    for(new i = 0; i < MAX_MANIAC_MASK; i++)
+    {
+        if(TakeMaskManiac[playerid][i] == false)
+        {
+            randomMask[quan] = i + 1;
+            quan ++;
+        }
+    }
+
+    new findMask = randomMask[random(quan)] - 1;
+    if(findMask < 0 || findMask >= MAX_MANIAC_MASK) findMask = 0;
+
+    CreateGps(playerid,ManiacMask[findMask][0], ManiacMask[findMask][1], ManiacMask[findMask][2], 0, 0, 2.0);
+    return true;
+}
+
 // Игрок подбирает маску маньяка
 stock TakeManiacMaskForPlayer(playerid)
 {
-    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return false;
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0
+        || PlayerInfo[playerid][pManiacQwest] > 0) return false;
 
     new bool:findMask;
     for(new i = 0; i < MAX_MANIAC_MASK; i++)
@@ -673,23 +736,8 @@ stock TakeManiacMaskForPlayer(playerid)
                 PlayerInfo[playerid][pManiacQwest] = 1; // Затем отмечаем переменной, что все маски собраны
                 SaveManiacQuestProcess(playerid);
 
-                if(PlayerInfo[playerid][pSex] == 1)
-                {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1.mp3");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу чувак.. ты нашёл все маски");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверен, что хочешь убить этого психа?");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожен");
-                }
-                else
-                {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac1_w.mp3");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ууу подруга.. ты нашла все маски");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ты уверена, что хочешь убить этого психа?");
-                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно.. я скину тебе GPS метку, но будь осторожна");
-                }
-
-                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я собрал%s все маски и теперь мне нужно отправиться в логово маньяка", gender(playerid));
-                CreateGps(playerid, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0, 0, 5.0);
+                // Запускаем продолжение квеста
+                StartManiacQuest(playerid);
             }
             else
             {

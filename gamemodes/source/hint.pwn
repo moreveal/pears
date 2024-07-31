@@ -1,5 +1,5 @@
 
-#define MAX_HINT 2 // Максимальное количество подсказок (новая система)
+#define MAX_HINT 3 // Максимальное количество подсказок (новая система)
 
 new bool:HintLoad[MAX_REALPLAYERS];
 new HitPlayer[MAX_REALPLAYERS][MAX_HINT];
@@ -10,6 +10,7 @@ stock ShowPlayerHintAfterLogin(playerid)
     if(HintLoad[playerid] == false) return false;
 
     if(HitPlayer[playerid][1] == 0) ShowPlayerHintInfo(playerid, 1); // Подсказка про деревенских
+    else if(HitPlayer[playerid][2] == 0) ShowPlayerHintInfo(playerid, 2); // Подсказка про маньяка
     return true;
 }
 
@@ -33,14 +34,7 @@ stock ShowPlayerHintInfo(playerid, hintid)
     else if(hintid == 1)
     {
         if(!IsPlayerSyncModels(playerid)) return false; // Если нет лаунчера, хрен тебе а не уведомление
-
-        // Если один из этих квестов не пройден, не сообщаем игроку о том, что у нас есть деревенские
-        if(NoCompleteQuest(playerid, 2) // Привести себя в порядок
-            || NoCompleteQuest(playerid, 3) // Взломать тачку
-            || NoCompleteQuest(playerid, 5) // Археологические раскопки
-            || NoCompleteQuest(playerid, 8) // Хавка
-            || NoCompleteQuest(playerid, 9) // Ноут
-            ) return false;
+        if(IsANotComleteImportantQuest(playerid)) return false; // Если один из квестов не пройден, не сообщаем игроку о следующем задании
 
         PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_hint1.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Привет. Ну как оно? Хочу дать тебе наводку на одно дельце");
@@ -49,9 +43,31 @@ stock ShowPlayerHintInfo(playerid, hintid)
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Возьми оружие, друзей и отправляйся [ Y >> Квесты >> Деревенские ]");
     }
 
+    // Подсказка про маньяка
+    else if(hintid == 2)
+    {
+        if(!IsPlayerSyncModels(playerid)) return false; // Если нет лаунчера, хрен тебе а не уведомление
+        if(IsANotComleteImportantQuest(playerid)) return false; // Если один из квестов не пройден, не сообщаем игроку о следующем задании
+        if(PlayerInfo[playerid][pManiacQwest] > 0) return false; // Игрок уже собрал все маски, пропускаем подсказку
+
+        StartManiacQuest(playerid); // Запускаем начало квеста с маньяком
+    }
+
     // Сохраняем результат подсказки
     DoneHintPlayer(playerid, hintid);
     return true;
+}
+
+// Если игрок не прошёл один из важных квестов
+stock IsANotComleteImportantQuest(playerid)
+{
+    if(NoCompleteQuest(playerid, 2) // Привести себя в порядок
+    || NoCompleteQuest(playerid, 3) // Взломать тачку
+    || NoCompleteQuest(playerid, 5) // Археологические раскопки
+    || NoCompleteQuest(playerid, 8) // Хавка
+    || NoCompleteQuest(playerid, 9) // Ноут
+    ) return true;
+    return false;
 }
 
 stock DoneHintPlayer(playerid, hintid, result = 1)

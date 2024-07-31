@@ -41,6 +41,7 @@ stock CreateMysqlTable()
 
     // Подсказки с озвучкой
     AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
+    AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
 	return true;
 }
 

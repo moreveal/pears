@@ -642,7 +642,7 @@ CMD:tp2(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
 	{
-		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage","Выбрать","Отмена");
+		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage\nЛогово маньяка","Выбрать","Отмена");
 	}
    	return 1;
 }
