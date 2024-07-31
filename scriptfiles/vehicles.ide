@@ -339,6 +339,17 @@ cars
 15277,	m8gc,		m8gc,		car, 		M8GC, 	    M8GC, 	    null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 15278, 	camaro17, 	camaro17, 	car, 		CAMARO17, 	CAMARO17, 	null,	executive, 	    5, 	0,	0,		-1, 0.7, 0.7,		0
 15279,	motobike,	motobike,	bike,	    MOTOBIKE,	MOTOBIKE,	bikes,	motorbike,	    6,	0,	3f341210,		16, 0.68, 0.68,		-1
-
+15280,  aventador, 	aventador, 	car, 		AVENTADOR, 	AVENTADOR, 	null,	executive, 	    5, 	0,	0,		-1, 0.75, 0.75,		0
+15281,  bmwx5, 	    bmwx5, 	    car,		BMWX5, 	    BMWX5, 	    null,	richfamily,		6,	7,	0,	    -1, 0.90, 0.90,		0
+15282,  bmwx7, 	    bmwx7, 	    car,		BMWX7, 	    BMWX7, 	    null,	richfamily,		6,	7,	0,	    -1, 0.90, 0.90,		0
+15283,  cruz200,    cruz200,    car,        CRUZ200,    CRUZ200,    null,	richfamily,		6,	7,	0,	    -1, 0.90, 0.90,		0
+15284,  vazkop,     vazkop,     car,        VAZKOP,     VAZKOP,     null,	richfamily, 	7, 	0,	0,		-1, 0.75, 0.75,		1
+15285,	rs72022,	rs72022,	car, 		RS72022, 	RS72022, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
+15286, 	mrap, 	    mrap, 	    car, 		ENFORCER, 	ENFORCR, 	van,	ignore,		    10,	0,	0,		-1, 1.6, 1.6,	-1
+15287,	mustang15,	mustang15,	car, 		MUSTANG15,	MUSTANG15, 	null,	executive, 	    10, 0,	0,	    -1, 0.75, 0.75,		0
+15288, 	volga21, 	volga21, 	car, 		VOLGA21, 	VOLGA21, 	null,	richfamily,	    10,	0,	0,		-1, 0.75, 0.75,		0
+15289, 	delorean, 	delorean, 	car, 		DELOREAN, 	DELOREAN, 	null,	executive, 	    5, 	0,	0,		-1, 0.70, 0.70,		0
+15290,	volga24,	volga24,	car, 		VOLGA24, 	VOLGA24, 	null,	richfamily, 	10, 	0,	0,		-1, 0.75, 0.75,		0
+#15328 LAST
 end
 
