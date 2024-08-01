@@ -1483,6 +1483,11 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                         ErrorText(playerid, "{ff6347}Этот радар нигде не размещён!");
                         return Radar_Dialog_Management(playerid, radarid);
                     }
+                    if (GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0 || PlayerInfo[playerid][pBkyrenie] >= 2)
+                    {
+                        ErrorText(playerid, "{ff6347}Не могу изменять расположение радара, находясь здесь");
+                        return Radar_Dialog_Management(playerid, radarid);
+                    }
 
                     new Float: x, Float: y, Float: z, Float: rx, Float: ry, Float: rz;
                     GetDynamicObjectPos(RadarInfo[radarid][riObjects][0], x, y, z);
