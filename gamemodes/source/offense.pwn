@@ -310,6 +310,7 @@ stock dialogCase_Offense(playerid, dialogid, response, listitem) {
         case OFFENSE_DIALOG_REVIEW_VERDICT:
         {
             new index = DP[0][playerid];
+            if (!OffenseInfo[index][oncPID]) return ErrorMessage(playerid, "{FF6347}Обращение уже кто-то рассмотрел");
 
             new id = -1, intruderid = -1;
             foreach (new currentid : Player)
