@@ -1189,9 +1189,10 @@ stock Radar_IsAnyNearPlayer(playerid, bool: placed = true) {
 }
 
 // Проверяет есть ли с указанным радаром любой другой рядом
-stock Radar_IsAnyNear(radarid) {
+stock Radar_IsAnyNear(radarid, bool: placed = true) {
     for (new i = 0; i < MAX_RADARS; i++) {
-        if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+        if (!Radar_IsExists(i) || (placed && !Radar_IsPlaced(i)) ) continue;
+        if (radarid == i) continue;
 
         if (GetDistanceBetweenCoords3d(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ], RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ]) < RADAR_INTERVAL)
             return 1;
@@ -1437,7 +1438,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                 new maxRadars = Radar_GetMaxRadarsForPlayer(playerid);
                 if(Radar_GetAmount(playerid) >= maxRadars) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу создать больше %d %s", maxRadars, PluralToText(maxRadars, "радара", "радаров", "радаров"));
                 if(Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В одном городе не может быть установлено более "#RADAR_PER_CITY" радаров");
-                if(Radar_IsAnyNearPlayer(playerid)) return ErrorMessage(playerid, "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
+                if(Radar_IsAnyNearPlayer(playerid, .placed = false)) return ErrorMessage(playerid, "{ff6347}Вы не можете установить радар близко с другим [ Минимальный радиус: "#RADAR_INTERVAL" метров ]\n\n* Свёрнутые радары тоже учитываются");
 
                 Radar_StartPump(playerid);
             } else if (listitem > 0) {
@@ -1466,12 +1467,8 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
 
             switch (listitem) {
                 case 0: {
-                    if (!Radar_IsPlaced(radarid)) {
-                        ErrorText(playerid, "{ff6347}Этот радар нигде не размещён!");
-                        return Radar_Dialog_Management(playerid, radarid);
-                    }
                     CreateGps(playerid, RadarInfo[radarid][riX], RadarInfo[radarid][riY], RadarInfo[radarid][riZ], 0, 0, 5.0);
-                    return SendClientMessage(playerid, COLOR_LIGHTBLUE, "{0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}Радар №%d {ffffff}отмечен на карте", radarid + 1);
+                    return SendClientMessage(playerid, COLOR_LIGHTBLUE, "{0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}Местоположение радара №%d {ffffff}отмечено на карте %s", radarid + 1, (!Radar_IsPlaced(radarid) ? "{cccccc}[ Не установлен ]" : "") );
                 }
                 case 1: {
                     return Radar_Dialog_Stats(playerid, radarid);
@@ -1511,7 +1508,7 @@ stock dialogCase_Radars(playerid, dialogid, response, listitem) {
                     return Radar_Dialog_Management(playerid, radarid);
                 }
                 case 6: {
-                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid)) return ErrorMessage(playerid, "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
+                    if (!Radar_IsPlaced(radarid) && Radar_IsAnyNear(radarid, .placed = false)) return ErrorMessage(playerid, "{ff6347}Рядом уже установлен другой радар [ Минимальный радиус: "#RADAR_INTERVAL" метров ]\n\n* Свёрнутые радары тоже учитываются");
                     if (Radar_IsPlaced(radarid) && Radar_IsBroken(radarid)) return ErrorMessage(playerid, "{ff6347}Этот радар сейчас сломан, его нельзя свернуть в таком состоянии");
 
                     return Radar_Dialog_Place(playerid, radarid);
@@ -1609,7 +1606,7 @@ stock Pump_Radar(playerid) {
     // Проверка на дистанцию, доступ к радарам и прочее
     if (!IsPlayerInRangeOfPoint(playerid, 10.0, PlayerRadarInfo[playerid][priX], PlayerRadarInfo[playerid][priY], PlayerRadarInfo[playerid][priZ]) // Далеко от места установки
         || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
-        || !is_repair && Radar_IsAnyNearPlayer(playerid) // Радар ставят, но рядом уже стоит
+        || !is_repair && Radar_IsAnyNearPlayer(playerid, .placed = false) // Радар ставят, но рядом уже стоит
         || (is_repair && !Radar_IsBroken(radarid)) // Радар чинят, но он уже починен
         || Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
     {
