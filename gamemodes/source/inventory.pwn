@@ -1531,7 +1531,7 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
     new inva = -1;
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
 	
-	if(useinva == 9999 || -1) // Не знаем в какую ячейку класть
+	if(useinva == 9999 || useinva == -1) // Не знаем в какую ячейку класть
 	{
 	    if(thingType == 0 && thingPack == 0) // Обычный предмет
 		{
