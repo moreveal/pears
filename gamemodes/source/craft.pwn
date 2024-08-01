@@ -893,11 +893,13 @@ function CraftProcess(playerid, tabs_load)
             else
             {
                 new abilityLevel = get_ability(playerid, 8);
-                new minus = 10 - abilityLevel;
                 new Float:maxHealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
-                new Float:needHealth = maxHealth - (100 * minus);
+                new Float:repairHealth = maxHealth - (100 * (10 - abilityLevel));
                 new Float:currentHealth; GetVehicleHealth(vehicleid, currentHealth);
-                ACSetVehicleHealth(vehicleid, currentHealth >= needHealth ? maxHealth : needHealth);
+
+                // Внешняя починка транспорта при достаточном уровне скилла
+                if (abilityLevel >= 8) RepairVehicle(vehicleid);
+                ACSetVehicleHealth(vehicleid, currentHealth >= repairHealth ? maxHealth : repairHealth);
 
                 // Квест ремонт транспорта
                 if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
@@ -913,13 +915,10 @@ function CraftProcess(playerid, tabs_load)
                     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чем выше мой навык автомеханика, тем быстрее и качественнее я выполняю ремонт [ Y >> Меню >> Навыки ]");
                 }
 
-                // Внешняя починка транспорта при достаточном уровне скилла
-                if (abilityLevel >= 8) RepairVehicle(vehicleid);
-
                 format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", needHealth), strcat(lines,line);
-                if(currentHealth >= needHealth) format(line,sizeof(line),"\n{ffcc66}Состояние транспорта было отличным, поэтому он был починен полностью"), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %.0f", maxHealth), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт до %.0f", repairHealth), strcat(lines,line);
+                if(currentHealth >= repairHealth && abilityLevel != 10) format(line,sizeof(line),"\n{ffcc66}Состояние транспорта было отличным, поэтому он был починен полностью"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
                 format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
                 update_ability(playerid, 8, 15);
