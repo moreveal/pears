@@ -479,11 +479,11 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new radarid = oid;
 
         for (new i = 0; i < MAX_RADARS; i++) {
-            if (radarid == i || !Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
+            if (radarid == i || !Radar_IsExists(i)) continue;
             if (GetDistanceBetweenCoords3d(RadarInfo[i][riX], RadarInfo[i][riY], RadarInfo[i][riZ], x, y, z) < RADAR_INTERVAL) {
                 // Если рядом есть другой радар
                 EndObjectEditing(playerid);
-                return ErrorMessage(playerid, "{ff6347}Нельзя переместить радар близко к другому [ Минимальный радиус: "#RADAR_INTERVAL" метров ]");
+                return ErrorMessage(playerid, "{ff6347}Нельзя переместить радар близко к другому [ Минимальный радиус: "#RADAR_INTERVAL" метров ]\n\n* Свёрнутые радары тоже учитываются");
             }
         }
 
