@@ -440,7 +440,7 @@ stock Radar_Place(id, bool: status = true) {
         
         new object_world = 17, object_int = 228;
 
-        if (RadarInfo[id][riMaxSpeed] <= 90.0) {
+        if (RadarInfo[id][riMaxSpeed] <= 60.0) {
             if (!brokenStatus) {
                 RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1323.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
@@ -609,7 +609,7 @@ stock Radar_Place(id, bool: status = true) {
                     }
                 }
             }
-        } else if (RadarInfo[id][riMaxSpeed] <= 120.0) {
+        } else if (RadarInfo[id][riMaxSpeed] <= 90.0) {
             if (!brokenStatus) {
                 RadarInfo[id][riObjects][0] = CreateDynamicObject(19894, 1326.328002, 1571.031616, 10.960308, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][0], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
@@ -1127,7 +1127,7 @@ stock Radar_Dialog_Stats(playerid, radarid) {
 stock Radar_Dialog_Set_MaxSpeed(playerid, radarid) {
     if (!Radar_IsExists(radarid)) return 0;
 
-    new available_speed_limits[] = {60, 90, 120, 150};
+    new available_speed_limits[] = {60, 90, 120};
 
     new dialog_text[512];
     for (new quan, i = 0; i < sizeof(available_speed_limits); i++) {
@@ -1823,7 +1823,7 @@ stock Radar_ViolationHandler(playerid) {
 				for(new radarid = 0; radarid < MAX_RADARS; radarid++) // Ищем радары по близости
 				{
                     if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) continue; // Пропуск неустановленных радаров
-                    if (VehInfo[vehicleid][vModel] == peugeot_modelid && RadarInfo[radarid][riMaxSpeed] <= 120.0) continue; // Игнорирование радара <= 120м для Peugeot 406
+                    if (VehInfo[vehicleid][vModel] == peugeot_modelid && RadarInfo[radarid][riMaxSpeed] <= 90.0) continue; // Игнорирование радара <= 90м для Peugeot 406
 
                     // Пропускаем, если радар неисправен
                     if (Radar_IsBroken(radarid)) continue;
