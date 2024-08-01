@@ -216,7 +216,6 @@ CMD:zahvat(playerid, const params[])
 						
 						if (IsPlayerInDynamicArea(x, GhettoZone)) {
 							SetPlayerMaxHealth(x, 160.0);
-							break;
 						}
 					}
 				}
