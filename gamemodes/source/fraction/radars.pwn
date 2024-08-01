@@ -1829,7 +1829,7 @@ stock Radar_ViolationHandler(playerid) {
                     if (PlayerRadarInfo[playerid][priCooldown] > 0 && PlayerRadarInfo[playerid][priLastRadar] == radarid) continue;
 
                     // Пропускаем, если игрок - администратор или новичок (только для основного сервера)
-                    if (server > 0 && PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid)) continue;
+                    if (server > 0 && (PlayerInfo[playerid][pSoska] >= 1 || IsPlayerBeginner(playerid))) continue;
 
                     // Вывод уведомления о ближайшем радаре для владельцев детектора
                     {
