@@ -973,8 +973,7 @@ stock Radar_Place(id, bool: status = true) {
 
         // Удаляем объекты радара
         for (new i = 0; i < RADAR_MAX_OBJECTS; i++) {
-            new objectid = RadarInfo[id][riObjects][i];
-            if (IsValidDynamicObject(objectid)) DestroyDynamicObject(objectid);
+            if (IsValidDynamicObject(RadarInfo[id][riObjects][i])) DestroyDynamicObject(RadarInfo[id][riObjects][i]);
         }
         DestroyDynamic3DTextLabel(RadarInfo[id][riTextLabel]);
         RadarInfo[id][riTextLabel] = Text3D: 0;
