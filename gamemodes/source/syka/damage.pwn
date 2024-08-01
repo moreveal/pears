@@ -21,7 +21,7 @@ stock IsShootingWeapon(weaponid)
 {
     switch (weaponid)
     {
-        case 22..36, 38: return 1;
+        case 22..36, 38, 43: return 1;
     }
     return 0;
 }
