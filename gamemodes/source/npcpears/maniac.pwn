@@ -204,6 +204,7 @@ new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
 new bool:TakeMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Подобрал ли игрок маску маньяка
 new QuanMaskManiac[MAX_REALPLAYERS];
 new ObjectMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Маски маньяка на земле
+new ScreamerArea;
 
 // Инициализация системы маньяка (его интерьер)
 stock CreateManiacInterior()
@@ -211,6 +212,13 @@ stock CreateManiacInterior()
     // Создаём входы в инт маньяка
     CreateDynamicPickup(19132, 1, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0, 0); // Вход
     CreateDynamic3DTextLabel("{ff9000}Выйти [ ALT ]",-1,-10.7197,2503.9045,16.5099,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,-1,INT_MANIAC); // Выход
+
+    // Создаём зону скримера для маньяка
+    ScreamerArea = CreateDynamicSphere(-13.7106,2508.2554,18.0494, 1.0, -1, INT_MANIAC);
+
+    // Создаём дохлого чувака на земле
+    new actorid = CreateDynamicActor(21, -25.6682,2516.9600,18.0494,271.4113, true, 100.0, -1, INT_MANIAC);
+    ApplyDynamicActorAnimation(actorid, "CRACK","crckidle1" ,4.1, false, false, false, true, false);
     return true;
 }
 
@@ -341,7 +349,7 @@ stock CreateManiac(playerid, posID, i)
 {
     if(ManiacInfo[i][manCreate] == true) return false;
 
-    ManiacInfo[i][manID] = CreateNpc(507, ManiacPosLS[posID][Maniac_X], ManiacPosLS[posID][Maniac_Y], ManiacPosLS[posID][Maniac_Z]);
+    ManiacInfo[i][manID] = CreateNpc(15695, ManiacPosLS[posID][Maniac_X], ManiacPosLS[posID][Maniac_Y], ManiacPosLS[posID][Maniac_Z]);
     ManiacInfo[i][manCreate] = true;
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
     SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
@@ -666,7 +674,7 @@ stock StartManiacQuest(playerid)
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я видел одну маску неподалёку, сгоняй и забери её");
         CreateRandomGpsManiacMask(playerid);
     }
-    else if(PlayerInfo[playerid][pManiacQwest] == 1)
+    else if(PlayerInfo[playerid][pManiacQwest] == 1 || PlayerInfo[playerid][pManiacQwest] == 2)
     {
         if(PlayerInfo[playerid][pSex] == 1)
         {
@@ -831,5 +839,51 @@ stock SaveMaskManiacForPlayer(playerid)
         mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki_maniac` SET `mask`= '%e' WHERE `user_id` = '%d'", string_json, PlayerInfo[playerid][pID]);
         mysql_tquery(pearsq, string_mysql);
     }
+    return true;
+}
+
+
+//=========================================================
+//=================== Скример маньяка =====================
+new NPC:screamerManiac[MAX_PLAYERS];
+new ScreamerTimer[MAX_PLAYERS];
+
+stock CreateScreamerManiac(playerid)
+{
+    DestroyScreamerManiac(playerid); // Предварительно удаляем уже созданного бота для скримера
+
+    TogglePlayerControllable(playerid, false);
+    FlyCameraPos(playerid, -14.558476, 2508.254882, 18.685031, -19.377931, 2506.938964, 18.481962, 1500, 2000); // Камера отлетает в нужную точку из-за спины игрока
+    screamerManiac[playerid] = CreateNpc(15695, -24.1266,2507.2634,18.0494);
+    SetNpcVirtualWorld(screamerManiac[playerid], playerid + 1);
+    SetNpcStunAnimationEnabled(screamerManiac[playerid], false);
+    TaskNpcGoToPoint(screamerManiac[playerid], -24.4435,2502.2361,18.0494, NPC_MOVE_MODE_WALK);
+    SetNpcWeapon(screamerManiac[playerid], WEAPON_CHAINSAW);
+    ScreamerTimer[playerid] = SetTimerEx("ScreamerDestroyTimer", 5000, true, "d", playerid);
+
+    PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/characters/maniac/screamer0.mp3");
+
+    PlayerInfo[playerid][pManiacQwest] = 2; // Скример отработал и повторно не повторится
+    SaveManiacQuestProcess(playerid);
+    return true;
+}
+
+stock DestroyScreamerManiac(playerid)
+{
+    if(ScreamerTimer[playerid] > 0)
+    {
+        DestroyNpc(screamerManiac[playerid]);
+        KillTimer(ScreamerTimer[playerid]);
+        ScreamerTimer[playerid] = 0;
+        return true;
+    }
+    return false;
+}
+
+function ScreamerDestroyTimer(playerid)
+{
+    DestroyScreamerManiac(playerid);
+    SetCameraBehindPlayer(playerid);
+    TogglePlayerControllable(playerid, true);
     return true;
 }
