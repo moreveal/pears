@@ -85,8 +85,7 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
-	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
-	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
 	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
     
 	// В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
