@@ -462,7 +462,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 GetVehicleHealth(vehicleid, health);
                 new inva = OnlineInfo[playerid][oInventSelectLeft];
                 new thingId = PlayerInfo[playerid][pInven][inva];
-                if(health > 500.0 && !(thingId >= 207 && thingId <= 224)) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
+                if(MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - health < 10.0 && !(thingId >= 207 && thingId <= 224)) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
 
                 if(IsAMoto(model)) ThingNeed[playerid] = 190;
                 else if(IsAPlane(model)) ThingNeed[playerid] = 191;
@@ -893,8 +893,10 @@ function CraftProcess(playerid, tabs_load)
             else
             {
                 new minus = 10 - get_ability(playerid, 8);
-                new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - (100 * minus);
-                ACSetVehicleHealth(vehicleid, health);
+                new Float:maxHealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
+                new Float:needHealth = maxHealth - (100 * minus);
+                new Float:currentHealth; GetVehicleHealth(vehicleid, currentHealth);
+                ACSetVehicleHealth(vehicleid, currentHealth >= needHealth ? maxHealth : needHealth);
 
                 // Квест ремонт транспорта
                 if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
@@ -912,12 +914,13 @@ function CraftProcess(playerid, tabs_load)
 
                 format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", needHealth), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Состояние транспорта было отличным, поэтому он был починен полностью"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
                 format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
                 update_ability(playerid, 8, 15);
             }
-            i_del(playerid, inva); // Забираем предмет
+            TakeInvent(playerid, PlayerInfo[playerid][pInven][inva], 1, PlayerInfo[playerid][pInvenType][inva], inva);
             SuccessMessage(playerid, lines);
         }
         else // Крафт

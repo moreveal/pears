@@ -138,7 +138,7 @@ stock CheckThingQuan(t) // Имеет ли предмет количество (
 	return
 	(t >= 4 && t <= 9 || t >= 18 && t <= 20 || t == 25 || t >= 27 && t <= 30 || t == 41 || t == 46 || t == 47 || t == 55 || t == 60 || t == 61
 	|| t >= 64 && t <= 67 || t == 70 || t >= 71 && t <= 89 || t == 106 || t == 108 || t == 109 || t == 110 || t == 140 || t == 142 || t == 178 || t == 180
-	|| t == 181 || t == 197 || t == 198 || t == 225 || t == 230) ? 1 : 0;
+	|| t == 181 || t == 183 || t >= 190 && t <= 192 || t == 197 || t == 198 || t == 225 || t == 230) ? 1 : 0;
 }
 
 new friskDefault[] = // Гос. стоимости предметов
@@ -1732,6 +1732,7 @@ stock GetFullThingQuan(thingId)
 	else if(thingId == 120) quan = 4; // Sprunk Банка
 	else if(thingId == 121) quan = 4; // Кофе
 	else if(thingId == 124) quan = 4; // Спранк стакан
+	else if(thingId == 183 || thingId >= 190 && thingId <= 192) quan = 2; // Рем. комплекты
 	else if(thingId == 197) quan = 10; // Баллончик с краской
 	else quan = 1;
 	return quan;
@@ -2060,11 +2061,12 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10; 
 	lim[60] = 100*pow; // Палладий
 	lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow;
-	lim[70] = 10;
+	lim[70] = 8; // Бинт
 	lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
 	lim[82] = 10, lim[83] = 10, lim[84] = 10, lim[85] = 10, lim[86] = 10, lim[87] = 10, lim[88] = 10, lim[89] = 10, lim[106] = 12, lim[108] = 20, lim[109] = 20, lim[110] = 20;
 	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 20, lim[230] = 5;
+	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 
     getQuan = get_invent(playerid, thingId, 0);
     getLimit = lim[thingId];
