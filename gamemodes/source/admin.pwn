@@ -701,8 +701,8 @@ CMD:readkill(playerid)
 CMD:readdm(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(GetPVarInt(playerid,"Readdm") == 0) SetPVarInt(playerid,"Readdm",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {99ff66}Активирован");
-	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {FF6347}Отключён");
+	if(GetPVarInt(playerid,"Readdm") == 0) SetPVarInt(playerid,"Readdm",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMatch {99ff66}Активирован");
+	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMatch {FF6347}Отключён");
 	return 1;
 }
 CMD:readhit(playerid, const params[])

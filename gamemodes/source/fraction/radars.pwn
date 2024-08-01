@@ -30,6 +30,8 @@ stock SaveRadars(id = -1) {
         }
         query_empty(pearsq, query_string);
     }
+
+    return 1;
 }
 
 function LoadRadars() {
