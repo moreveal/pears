@@ -117,8 +117,10 @@ function TimerLoadAutoservice(playerid)
         new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
 
         // Возвращаем HP после тестдрайва
-        ACRepairVehicle(vehicleid);
-        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
+        Autoservice_RepairVehicle(playerid);
+
+        // Возвращаем машину в автосервис
+        vehiclePositionAutoservice(vehicleid, playerid);
 
         // Садим игрока обратно в транспорт
         Protect_PutPlayerInVehicle(playerid, vehicleid, 0);
@@ -127,6 +129,18 @@ function TimerLoadAutoservice(playerid)
 		showPlayerAutoserviceMenu(playerid);
 
         if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]), OnlineInfo[playerid][oTimerAutoservice] = 0;
+    }
+    return 1;
+}
+
+stock Autoservice_RepairVehicle(playerid)
+{
+    new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
+    if (IsValidVehicle(vehicleid))
+    {
+        // Чиним автомобиль 
+        ACRepairVehicle(vehicleid);
+        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
     }
     return 1;
 }
