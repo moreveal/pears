@@ -173,14 +173,14 @@ new Float:ManiacMask[][] =
     { 2612.551269, -1086.351684, 68.528511, -88.299934, 0.000000, 0.000000 }
 };
 
-#define MAX_MANIAC 3
+#define MAX_MANIAC 100
 #define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка при создании для игрока
 #define MAX_DIST_ZONE_MANIAC 80 // Максимальная дистанция маньяка внутри его зоны для атаки
 #define MAX_DIST_ZONE_EFFECTS_MANIAC 120 // Зона действия для эффектов с маньяком
-#define MANIAC_HEALTH 5000 // Хп маньяка
+#define MANIAC_HEALTH 2000 // Хп маньяка
 #define CD_CREATE_MANIAC 600 // Кд на создание маньяка в слоте (чтобы они не повторялись)
 #define MANIAC_MUSIC_0 "https://cdn.pears.fun/sound/characters/maniac/maniac.mp3" // Аудиофайл маньяка
-#define CD_CREATE_MANIAC_FOR_PLAYER 7200 // Кд на повторное создание маньяка для игрока
+#define CD_CREATE_MANIAC_FOR_PLAYER 14400 // Кд на повторное создание маньяка для игрока (7 часов)
 
 #define COMPLETE_QUEST_MANIAC 3 // Количество действий для полного выполнения квеста с маньяком
 #define MAX_MANIAC_MASK 40 // Количество масок маньяка на земле
@@ -214,7 +214,7 @@ stock CreateManiacInterior()
     CreateDynamic3DTextLabel("{ff9000}Выйти [ ALT ]",-1,-10.7197,2503.9045,16.5099,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,-1,INT_MANIAC); // Выход
 
     // Создаём зону скримера для маньяка
-    ScreamerArea = CreateDynamicSphere(-13.7106,2508.2554,18.0494, 1.0, -1, INT_MANIAC);
+    ScreamerArea = CreateDynamicCube(-14.197379, 2508.001953, 0.0, -12.035109, 2509.963134, 50.0, -1, INT_MANIAC); // Зона для появления скримера
 
     // Создаём дохлого чувака на земле
     new actorid = CreateDynamicActor(21, -25.6682,2516.9600,18.0494,271.4113, true, 100.0, -1, INT_MANIAC);
@@ -228,14 +228,12 @@ stock DoorManiacStorage(playerid)
     if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2]) 
         && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
     {
-        if(PlayerInfo[playerid][pManiacQwest] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете зайти в эту дверь\n{ffcc66}Чтобы зайти в логово, вам необходимо найти все маски маньяка\n{ffcc66}Они разбросаны по переулкам города Los Santos");
+        if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете продолжить без лаунчера\n{ffcc66}Скачайте лаунчер с нашего официального сайта pears.fun");
+        if(PlayerInfo[playerid][pManiacQwest] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете зайти в эту дверь\n{ffcc66}Чтобы зайти в логово, вам необходимо найти все маски маньяка\n{ffcc66}Они разбросаны по переулкам города Los Santos [ Y >> Квесты >> Маньяк ]");
+        new slotManiac = GetFreeSlotManiac();
+        if(slotManiac == -1) return ErrorMessage(playerid, "{FF6347}Внимание! Вы не можете сейчас продолжить этот квест,\nпоскольку его одновременного проходит большое количество игроков\n\n{ffcc66}Приносим извинения. Приходите немного позже ;)");
 
-        keep(playerid);
-        S_SetPlayerVirtualWorld(playerid, playerid + 1, INT_MANIAC);
-        PPSetPlayerInterior(playerid, INT_MANIAC);
-        PPSetPlayerPos(playerid, -10.6607,2505.5642,16.5099);
-        PPSetPlayerFacingAngle(playerid,0.9297);
-        SetCameraBehindPlayer(playerid);
+		ShowDialog(playerid,1009,DIALOG_STYLE_MSGBOX,"Маньяк","{A52C2C}Внимание! Для продолжения квеста вам понадобится оружие!\n{cccccc}Вы уверены, что хотите войти в логово маньяка?","Да","Нет");
         return true;
     }
 
@@ -251,6 +249,29 @@ stock DoorManiacStorage(playerid)
     }
 
     return false;
+}
+
+stock EnterToManiacHouse(playerid)
+{
+    if(IsPlayerInRangeOfPoint(playerid,1.0,ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2]) 
+        && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    {
+        keep(playerid);
+        S_SetPlayerVirtualWorld(playerid, playerid + 1, INT_MANIAC);
+        PPSetPlayerInterior(playerid, INT_MANIAC);
+        PPSetPlayerPos(playerid, -10.6607,2505.5642,16.5099);
+        PPSetPlayerFacingAngle(playerid,0.9297);
+        SetCameraBehindPlayer(playerid);
+
+        if(PlayerInfo[playerid][pManiacQwest] == 1 || PlayerInfo[playerid][pManiacQwest] == 2) CreateManiacNoteForPlayer(playerid); // Создаём записки игроку
+        else if(PlayerInfo[playerid][pManiacQwest] == 3) StartLastFightManiac(playerid); // Запускаем последнюю битву с маньяком для игрока
+    }
+    return true;
+}
+
+stock Maniac_WriteLastPlayerPosition(playerid)
+{
+    return WriteLastPlayerPosition(playerid, ManiacEnterInterior[0][0], ManiacEnterInterior[0][1], ManiacEnterInterior[0][2], 0.0, 0, 0);
 }
 
 // Находится ли игрок внутри интерьера маньяка
@@ -336,7 +357,7 @@ stock ProcessCreateManiac(playerid, bool:forced = false)
     {
         if(GetPlayerDistanceFromPoint(playerid, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]) <= 40.0)
         {
-            CreateManiac(playerid, i, slotManiac);
+            CreateManiac(playerid, slotManiac, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z], 0);
             resultFind = 1;
             break;
         }
@@ -345,25 +366,27 @@ stock ProcessCreateManiac(playerid, bool:forced = false)
 }
 
 // Создаём маньяка
-stock CreateManiac(playerid, posID, i)
+stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world)
 {
     if(ManiacInfo[i][manCreate] == true) return false;
 
-    ManiacInfo[i][manID] = CreateNpc(15695, ManiacPosLS[posID][Maniac_X], ManiacPosLS[posID][Maniac_Y], ManiacPosLS[posID][Maniac_Z]);
+    ManiacInfo[i][manID] = CreateNpc(15695, x, y, z);
     ManiacInfo[i][manCreate] = true;
     SetNpcWeapon(ManiacInfo[i][manID], WEAPON_CHAINSAW);
     SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
+    SetNpcVirtualWorld(ManiacInfo[i][manID], world);
+
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
     SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
     ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
 
     // Записываем позицию, где мы создали маньяка
-    ManiacInfo[i][manCreatePosition][0] = ManiacPosLS[posID][Maniac_X];
-    ManiacInfo[i][manCreatePosition][1] = ManiacPosLS[posID][Maniac_Y];
-    ManiacInfo[i][manCreatePosition][2] = ManiacPosLS[posID][Maniac_Z];
+    ManiacInfo[i][manCreatePosition][0] = x;
+    ManiacInfo[i][manCreatePosition][1] = y;
+    ManiacInfo[i][manCreatePosition][2] = z;
 
     // Создаём зону маньяка
-    ManiacInfo[i][manZone] = CreateDynamicSphere(ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], MAX_DIST_ZONE_EFFECTS_MANIAC, 0, 0);
+    ManiacInfo[i][manZone] = CreateDynamicSphere(ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], MAX_DIST_ZONE_EFFECTS_MANIAC, world, 0);
 
     // Создаём музыку для маньяка
     ManiacMusic[i] = CreateAudioStream();
@@ -376,7 +399,7 @@ stock CreateManiac(playerid, posID, i)
     SetAudioStreamUrl(ManiacMusic[i], MANIAC_MUSIC_0, true);
 
     // Обновляем зону стрима для всех игроков
-    StreamerUpdateNearby(MAX_DIST_ZONE_EFFECTS_MANIAC, ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], 0, 0);
+    StreamerUpdateNearby(MAX_DIST_ZONE_EFFECTS_MANIAC, ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], world, 0);
 
     // Записываем время создания маньяка для игрока
     PlayerInfo[playerid][pManiacCD] = gettime() + CD_CREATE_MANIAC_FOR_PLAYER;
@@ -513,6 +536,15 @@ CMD:gotomask(playerid, const params[])
         PPSetPlayerPos(playerid, ManiacMask[params[0]][0], ManiacMask[params[0]][1], ManiacMask[params[0]][2] + 1.0);
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    return true;
+}
+
+CMD:clearscreamer(playerid, const params[])
+{
+    PlayerInfo[playerid][pManiacQwest] = 1;
+    SaveManiacQuestProcess(playerid);
+
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Скример сброшен");
     return true;
 }
 
@@ -749,7 +781,7 @@ stock TakeManiacMaskForPlayer(playerid)
             }
             else
             {
-                if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
+                if(OnlineInfo[playerid][oListenRadioPears] == 0) StopAudioStreamForPlayer(playerid), PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
 
                 format(string,sizeof(string),"{A52C2C}Вы нашли маску маньяка\n{ffcc66}Найдено %d масок из %d", getMasks, MANIAC_MASK_NEED);
                 ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
@@ -819,6 +851,7 @@ function Call_OnPlayerMaskManiacLoad(playerid, race_check)
 	}
 
     if(PlayerInfo[playerid][pManiacQwest] == 0) CreateManiacMaskForPlayer(playerid);
+    else if(PlayerInfo[playerid][pManiacQwest] == 1 || PlayerInfo[playerid][pManiacQwest] == 2) CreateManiacNoteForPlayer(playerid);
 	return true;
 }
 
@@ -863,8 +896,8 @@ stock CreateScreamerManiac(playerid)
 
     PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/characters/maniac/screamer0.mp3");
 
-    PlayerInfo[playerid][pManiacQwest] = 2; // Скример отработал и повторно не повторится
-    SaveManiacQuestProcess(playerid);
+    PlayerInfo[playerid][pManiacQwest] = 2; // Скример отработал и повторно не повторится (по крайне мере пока игрок не зайдёт заново в игру)
+    //SaveManiacQuestProcess(playerid); // Поэтому лучше его не сохранять. Пускай игрок повторно увидит, если не пройдёт квест сразу
     return true;
 }
 
@@ -885,5 +918,166 @@ function ScreamerDestroyTimer(playerid)
     DestroyScreamerManiac(playerid);
     SetCameraBehindPlayer(playerid);
     TogglePlayerControllable(playerid, true);
+    return true;
+}
+
+
+//===============================================
+//============= Записки Маньяка
+
+new Float:ManiacNote[][] =
+{
+    { -24.951473, 2496.281982, 18.531148, 20.100021, -2.599999, 170.600173 },
+    { -19.680637, 2496.311279, 17.269458, -3.399991, 0.000000, 21.999996 },
+    { -19.605895, 2505.119628, 17.579397, 0.000000, 0.000000, 34.399990 },
+    { -12.264299, 2503.894042, 18.019407, 0.000000, 0.000000, 93.600006 },
+    { -13.520995, 2496.942382, 17.726942, 0.000000, 0.000000, 69.600013 },
+    { -14.054810, 2512.703613, 18.191257, 24.800006, 0.000000, -19.700010 },
+    { -15.432894, 2516.930664, 18.699422, 0.000000, 0.000000, -46.399990 },
+    { -25.662672, 2513.775878, 19.457822, 0.000000, 0.000000, 32.799999 },
+    { -22.383214, 2514.834960, 17.869403, 0.000000, 0.000000, 23.999998 },
+    { -25.636281, 2517.588378, 17.049392, 0.000000, 0.000000, 38.399990 }
+};
+
+new bool:ManiacNoteCreated[MAX_REALPLAYERS]; // Созданы ли записки маньяка для игрока
+new QuanNoteManiac[MAX_REALPLAYERS];
+new ObjectNoteManiac[MAX_REALPLAYERS][sizeof(ManiacNote)]; // Записки маньяка
+new Text3D:FirstNote[MAX_REALPLAYERS]; // Первая и основная записка маньяка
+
+// Создаём для игрока записки маньяка
+stock CreateManiacNoteForPlayer(playerid)
+{
+    if(ManiacNoteCreated[playerid] == true) return false;
+
+    for(new i = 0; i < sizeof(ManiacNote); i++)
+    {
+        if(ObjectNoteManiac[playerid][i] == 0)
+        {
+            ObjectNoteManiac[playerid][i] = CreateDynamicObject(2953, ManiacNote[i][0], ManiacNote[i][1], ManiacNote[i][2], ManiacNote[i][3], ManiacNote[i][4], ManiacNote[i][5], playerid + 1, INT_MANIAC, playerid, 50.0, 50.0);
+            SetDynamicObjectMaterial(ObjectNoteManiac[playerid][i], 0, 15040, "cuntcuts", "GB_novels06", 0xFFFFFFFF);
+        }
+    }
+    QuanNoteManiac[playerid] = 0;
+
+    FirstNote[playerid] = CreateDynamic3DTextLabel("{A52C2C}Записка Маньяка {cccccc}[ ALT ]",-1, ManiacNote[0][0], ManiacNote[0][1], ManiacNote[0][2],3.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID, 0, playerid + 1, INT_MANIAC);
+    ManiacNoteCreated[playerid] = true;
+    return true;
+}
+
+// Удаляем для игрока записки маньяка
+stock DestroyManiacNoteForPlayer(playerid)
+{
+    if(ManiacNoteCreated[playerid] == false) return false;
+
+    for(new i = 0; i < sizeof(ManiacNote); i++)
+    {
+        if(ObjectNoteManiac[playerid][i] != 0)
+        {
+            DestroyDynamicObject(ObjectNoteManiac[playerid][i]);
+            ObjectNoteManiac[playerid][i] = 0;
+        }
+    }
+    QuanNoteManiac[playerid] = 0;
+
+    if(ObjectNoteManiac[playerid][0] > 0) DestroyDynamic3DTextLabel(FirstNote[playerid]); // Если первая записка существует, тогда удаляем лейбл
+    ManiacNoteCreated[playerid] = false;
+    return true;
+}
+
+new TextManiacNote[][] =
+{
+    "Я спрятал его голову в мусорном баке", 
+    "Обожаю когда бензопила режет плоть", 
+    "Если ты это читаешь, значит я приду к тебе ночью", 
+    "Не оборачивайся. Может быть, я уже у тебя за спиной?",
+    "Ты уже покойник, если читаешь эту записку",
+    "Твоя голова тоже полетит в мусорный бак",
+    "Ты заходишь слишком далеко, но мне это нравится",
+    "Лучше вскройся, так тебе будет хотя-бы не больно",
+    "Начинай звать мамочку, я уже близко",
+    "Добро пожаловать в мой дом. Начнём праздник?"
+};
+
+// Запускаем последнюю битву с маньяком
+stock StartLastFightManiac(playerid)
+{
+    // Ищем свободный слот для создания маньяка
+    new slotManiac = GetFreeSlotManiac(true);
+    if(slotManiac == -1) return ErrorMessage(playerid, "{FF6347}Внимание! Вы не можете сейчас продолжить этот квест,\nпоскольку его одновременного проходит большое количество игроков\n\n{ffcc66}Приносим извинения. Приходите немного позже ;)");
+    
+    CreateManiac(playerid, slotManiac, -23.8523,2511.5674,18.0494, playerid + 1);
+    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac3.mp3");
+    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Твою мать! Он здесь! Гаси его");
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь мне нужно убить этого маньяка");
+    return true;
+}
+
+// Игрок подбирает записку маньяка
+stock TakeManiacNoteForPlayer(playerid)
+{
+    new bool:findNote;
+
+    if(PlayerInInteriorManiac(playerid) && (PlayerInfo[playerid][pManiacQwest] == 1 || PlayerInfo[playerid][pManiacQwest] == 2))
+    {
+        for(new i = 0; i < sizeof(ManiacNote); i++)
+        {
+            if(ObjectNoteManiac[playerid][i] != 0
+                && IsPlayerInRangeOfPoint(playerid, 1.4, ManiacNote[i][0], ManiacNote[i][1], ManiacNote[i][2]))
+            {
+                QuanNoteManiac[playerid] ++;
+                DestroyDynamicObject(ObjectNoteManiac[playerid][i]);
+                ObjectNoteManiac[playerid][i] = 0;
+                findNote = true;
+
+                // Самая первая записка на лице дохлой дэвачки
+                if(i == 0) DestroyDynamic3DTextLabel(FirstNote[playerid]);
+
+                PlayerPlaySound(playerid,5600,0,0,0);
+		        ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
+
+                new string[200];
+                if(QuanNoteManiac[playerid] >= sizeof(ManiacNote)) // Собрали все записки. Запускаем продолжение квеста (Создаём маньяка для битвы с ним)
+                {
+                    PlayerInfo[playerid][pManiacQwest] = 3; // Затем отмечаем переменной, что все записки собраны и теперь нужно победить маньяка
+                    SaveManiacQuestProcess(playerid);
+                    StartLastFightManiac(playerid);
+                }
+                else
+                {
+                    if(OnlineInfo[playerid][oListenRadioPears] == 0 && QuanNoteManiac[playerid] != 1) StopAudioStreamForPlayer(playerid), PlayAudioStreamForPlayer(playerid, MANIAC_MASK_MUSIC);
+
+                    format(string,sizeof(string),"{A52C2C}Вы нашли записку маньяка\n{ffcc66}Найдено %d масок из %d\n\n{cccccc}Текст: {A52C2C}%s", QuanNoteManiac[playerid], sizeof(ManiacNote), TextManiacNote[QuanNoteManiac[playerid] - 1]);
+                    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",string,"*","");
+                    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Читаю записку: %s {A52C2C}[ Найдено %d из %d записок маньяка ]", TextManiacNote[QuanNoteManiac[playerid] - 1], QuanNoteManiac[playerid], sizeof(ManiacNote));
+                    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~3AЊ…CKA MAH’•KA: ~w~%d / %d", QuanNoteManiac[playerid], sizeof(ManiacNote));
+                    GameTextForPlayer(playerid,string,4000,3);
+                }
+
+                // Игрок подобрал первую записку
+                if(QuanNoteManiac[playerid] == 1)
+                {
+                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac2.mp3");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Этот долбанутый ещё и записки оставляет?");
+                    SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Собери все, может быть мы так сможем его найти");
+                }
+                break;
+            }
+        }
+    }
+    else findNote = false;
+    return findNote;
+}
+
+// Выполняем действия при выходе из игры
+stock Maniac_OnPlayerDisconnect(playerid)
+{
+    // Удаляем записки маньяка для игрока
+	if(ManiacNoteCreated[playerid] == true) DestroyManiacNoteForPlayer(playerid);
+
+	// Удаляем скример с маньяком
+	if(ScreamerTimer[playerid] > 0) DestroyScreamerManiac(playerid);
+
+	// Удаляем маски маньяка 
+	DestroyManiacMaskForPlayer(playerid);
     return true;
 }
