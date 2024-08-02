@@ -1629,16 +1629,16 @@ alias:rbiztaxes("rbiznal", "rbiztax", "rbiznalog")
 CMD:rbiztaxes(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в бизе [ /rbiztaxes Номер Биза (0 - все бизы) ]");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в бизнесе [ /rbiztaxes Номер Биза (0 - все бизы) ]");
 
 	new string[144];
 	if(params[0] > 0)
 	{
-		if(params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Такого номера биза не существует");
+		if(params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Такого бизнеса не существует");
 		ReloadBizTaxes(params[0]);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги в бизе № %d", PlayerInfo[playerid][pName], params[0]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги в бизнесе №%d", PlayerInfo[playerid][pName], params[0]);
  		ABroadCast(COLOR_ADM,string,1);
-		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги в бизе");
+		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги в бизнесе");
 	}
 	else
 	{
@@ -1649,7 +1649,7 @@ CMD:rbiztaxes(playerid, const params[])
 		}
 		mysql_commit(pearsq);
 
-		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги во всех бизах", PlayerInfo[playerid][pName]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги во всех бизнесах", PlayerInfo[playerid][pName]);
  		ABroadCast(COLOR_ADM,string,1);
 		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги во всех бизах");	
 	}

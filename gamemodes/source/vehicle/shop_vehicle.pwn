@@ -35,6 +35,7 @@ new BuyCarPos[][BUYCARENUM] =
     { 1357.2124,1584.3049,10.8461, 3092, 184} // 92 // lv
 };
 
+new Text: autoServiceLoadingTD;
 
 stock buy_VehicleShop(playerid)
 {
@@ -110,7 +111,14 @@ function TimerLoadAutoservice(playerid)
 {
     if(IsOnline(playerid) && gAutosalon[playerid] > 0)
 	{
+        TextDrawHideForPlayer(playerid, autoServiceLoadingTD);
+        TextDrawHideForPlayer(playerid, Chernifon);
+
         new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
+
+        // Возвращаем HP после тестдрайва
+        ACRepairVehicle(vehicleid);
+        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
 
         // Садим игрока обратно в транспорт
         Protect_PutPlayerInVehicle(playerid, vehicleid, 0);
@@ -142,12 +150,20 @@ stock closeTestDrive(playerid)
         // Возвращаем транспорт на позицию в автосервис
         vehiclePositionAutoservice(vehicleid, playerid);
 
-        // Чиним транспорт после тест драйва
-        ACRepairVehicle(vehicleid);
-        ACSetVehicleHealth(vehicleid, MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid));
-
-        // Таймер для корректного возвращение игрока в транспорт
-	    GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~3A‚PY3KA A‹ЏOCEP‹…CA", 3000, 3);
+        // Таймер для корректного возвращения игрока в транспорт
+        TextDrawShowForPlayer(playerid, Chernifon);
+        if (_:autoServiceLoadingTD == 0)
+        {
+            autoServiceLoadingTD = TextDrawCreate(323.0000, 375.0000, "€A‚PY€KA_A‹ЏOCEP‹…CA"); // Загрузка автосервиса
+            TextDrawLetterSize(autoServiceLoadingTD, 0.4303, 1.6912);
+            TextDrawAlignment(autoServiceLoadingTD, TEXT_DRAW_ALIGN: 2);
+            TextDrawColour(autoServiceLoadingTD, 10354943);
+            TextDrawBackgroundColour(autoServiceLoadingTD, 255);
+            TextDrawFont(autoServiceLoadingTD, TEXT_DRAW_FONT: 1);
+            TextDrawSetProportional(autoServiceLoadingTD, true);
+            TextDrawSetShadow(autoServiceLoadingTD, 1);
+        }
+        TextDrawShowForPlayer(playerid, autoServiceLoadingTD);
         if(OnlineInfo[playerid][oTimerAutoservice] > 0) KillTimer(OnlineInfo[playerid][oTimerAutoservice]);
 		OnlineInfo[playerid][oTimerAutoservice] = SetTimerEx("TimerLoadAutoservice", 3000, false, "d", playerid);
     }

@@ -161,7 +161,7 @@ public PlayerTrailerTimer(vehicleid, trailerid, tid) {
         if (IsVehicleStandingGround(vehicleid) && !CA_IsVehicleInWater(vehicleid, depth, vehicledepth)) 
         {
             // Ставим трейлер под наш транспорт, чтобы попытаться избежать ошибку Loading Screen
-            SetVehiclePos(trailerid, vehicle_pos[0], vehicle_pos[1], vehicle_pos[2] - 8.0);
+            ACSetVehiclePos(trailerid, vehicle_pos[0], vehicle_pos[1], vehicle_pos[2] - 8.0);
 
             AttachTrailerToVehicle(trailerid, vehicleid); // Присоединяем трейлер обратно
             ACSetVehicleHealth(vehicleid, TrailerSafeHealth[vehicleid]); // Компенсируем возможный полученный дамаг
