@@ -825,6 +825,7 @@ CMD:members(playerid, const params[])
 		if (fractionid < 1 || fractionid > 24) return ErrorMessage(playerid, "{FF6347}ID организации не меньше 1 и не больше 24");
 	}
 	if(fractionid == 0) return ErrorMessage(playerid, "{FF6347}Вы не состоите в организации");
+	if(!GetAccessRankOrg(playerid, fractionid, 78, NO_FBI)) return 1;
 
 	PlayerPlaySound(playerid, 40405, 0, 0, 0);
 	new str[214], sctring[4096], quan;
