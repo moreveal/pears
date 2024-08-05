@@ -309,6 +309,7 @@ stock DivisionGiveRank(playerid, const params[], i = -1)
 		if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
 		if(g != fraction(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей организации");
 		if(PlayerInfo[giveplayerid][pDivision][0] - 1 != i) return ErrorMessage(playerid, "{FF6347}Этот игрок не состоит в вашей подфракции");
+		if(rank < 0 || rank > DivisionInfo[g - 1][i][divRanks]) return ErrorMessage(playerid, "{ff6347}Некорректный номер ранга");
 
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы изменили ранг %s на %d", getPlayerNameTransmitter(giveplayerid), rank);
 		SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* %s изменил ваш ранг в подфракции на %d", getPlayerNameTransmitter(playerid), rank);

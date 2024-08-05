@@ -383,6 +383,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new v = OnlineInfo[playerid][oShowTabs];
+            if(!IsValidVehicle(v)) return 0;
             if(listitem < 0 || listitem > 6) return 0;
             if(listitem == 0) DiagnosVehicle(playerid, v, 0);
             if(listitem >= 1 && listitem <= 6)
