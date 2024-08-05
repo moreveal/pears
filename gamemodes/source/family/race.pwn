@@ -977,7 +977,7 @@ stock StreetRacersBusi(playerid, br)
         if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid,"{FF6347} Для заправки необходимо быть на транспорте");
  		new vehicle = GetPlayerVehicleID(playerid);
  		if(IsAVello(vehicle)) return ErrorMessage(playerid, "{FF6347}Велосипед нельзя заправить");
- 		new fill = Gas[vehicle]+Gelium[vehicle];
+ 		new fill = VehInfo[vehicle][vGas] + VehInfo[vehicle][vGelium];
         if(fill >= 99) return ErrorMessage(playerid, "{FF6347}Транспорт не нужно заправлять [ Бак полон ]");
         new string[200];
         format(string, sizeof(string), "{ffffff}Сколько литров топлива вы хотите заправить?\n\n{cccccc}Стоимость 1 литра на этой заправке = {99ff66}%d$\n{cccccc}Для полного бака вам требуется: %d литров {99ff66}[%d$]",BizzInfo[br][bPrice][0],100-fill,(100-fill)*BizzInfo[br][bPrice][0]);

@@ -102,7 +102,7 @@ stock CreateRentVehicle(playerid, vehicleModel, color1, color2, statusLabel, uni
 
 	new newcar;
 	newcar = PP_CreateVehicle(vehicleModel,pos[0],pos[1],pos[2],pos[3],color1,color2,600,0, -1, 0.0);
-	Gas[newcar] = 100;
+	VehInfo[newcar][vGas] = GasMax;
 	VehInfo[newcar][vAgetid] = playerid;
 	VehInfo[newcar][vRent] = unix+3600;
 	VehInfo[newcar][vBiz] = 0;
@@ -171,7 +171,7 @@ stock UpdateRentVehicle(playerid, vehicleid, slot)
 			&& VehInfo[vehicleid][vRent] > 0) 
 		{
 			SaveRentVehiclePos(playerid, vehicleid, slot);
-			PlayerInfo[playerid][pRentBenz][slot] = Gas[vehicleid];
+			PlayerInfo[playerid][pRentBenz][slot] = VehInfo[vehicleid][vGas];
 		}
 	}
 	return 1;

@@ -597,7 +597,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
 	Cars[CreatedCars[createid]] = 9999;
-	Gas[CreatedCars[createid]] = GasMax;
+	VehInfo[CreatedCars[createid]][vGas] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
 	SendClientMessage(playerid, COLOR_GREY, "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d {cccccc}(col1 %d, col2 %d)", GetVehicleName(model), model, CreatedCars[createid], color1, color2);
 	return 1;

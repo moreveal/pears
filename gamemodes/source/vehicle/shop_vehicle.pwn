@@ -210,7 +210,7 @@ stock openTestDrive_VehicleShop(playerid)
     PPSetPlayerInterior(playerid, 0);
     LinkVehicleToInterior(vehicleid, 0);
 
-    Gas[vehicleid] = 100; // Топливо максимальное количество
+    VehInfo[vehicleid][vGas] = GasMax; // Топливо максимальное количество
 
     positionVehicleTestDrive(vehicleid);
 
