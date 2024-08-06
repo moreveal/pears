@@ -38,22 +38,25 @@ stock OutgoingMessages_Iterate(playerid, &index) {
         } else {
             OutgoingMessagesIterateIndex[playerid] = 0;
         }
-    } else if (queue_filled ? OutgoingMessagesIterateIndex[playerid] == OutgoingMessagesCurrentIndex[playerid] : isnull(OutgoingMessages[playerid][OutgoingMessagesIterateIndex[playerid]])) {
-        OutgoingMessagesIterateIndex[playerid] = -1;
-        return 0;
+    } else {
+        if (queue_filled && OutgoingMessagesIterateIndex[playerid] == OutgoingMessagesCurrentIndex[playerid] || !queue_filled && isnull(OutgoingMessages[playerid][OutgoingMessagesIterateIndex[playerid]]))
+        {
+            OutgoingMessagesIterateIndex[playerid] = -1;
+            return 0;
+        }
     }
 
     index = OutgoingMessagesIterateIndex[playerid]++;
     if (index >= MAX_OUTGOING_MESSAGES) {
         index = 0;
     }
-
+    
     OutgoingMessagesIterateIndex[playerid] %= MAX_OUTGOING_MESSAGES;
 
     return 1;
 }
 
-stock OutgoingMessages_OnPlayerDisconnect(playerid) {
+stock OutgoingMessages_Clear(playerid) {
     OutgoingMessagesCurrentIndex[playerid] = 0;
     OutgoingMessagesIterateIndex[playerid] = 0;
     for (new i = 0; i < MAX_OUTGOING_MESSAGES; i++) {
