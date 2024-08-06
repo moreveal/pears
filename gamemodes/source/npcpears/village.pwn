@@ -554,7 +554,7 @@ stock Village_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 // Игрок, который не является целью для ботов деревенских
 stock IsPlayerNotTargetForVillage(playerid)
 {
-    if(IsPlayerNotTarget(playerid) &&
+    if(IsPlayerNotTarget(playerid) ||
         !IsPlayerInDynamicArea(playerid, VillageInfo[villZone])) return true;
     return false;
 }
@@ -645,6 +645,6 @@ public OnNpcDeath(NPC:npc, killerid, reason)
     if(SetSpawnVillageNpc(npc)) return true;
 
     // Убили бота маньяка
-    if(OnDeathManiacNpc(npc)) return true;
+    if(OnDeathManiacNpc(npc, killerid)) return true;
     return true;
 }

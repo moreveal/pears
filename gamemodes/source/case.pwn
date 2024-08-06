@@ -39,6 +39,16 @@ new ThingAccessoryQuan;
 }
 new OpenCase[MAC_CASES][caseInfo];*/
 
+// Упаковки, которые относятся к кейсу
+stock IsACasePackID(thingPack)
+{
+    if(thingPack == 5 // Стандартный
+    || thingPack == 6 // Деревенских
+    || thingPack == 7 // Кейс маньяка
+        ) return true;
+    return false;
+}
+
 stock IsThingNotVariable(i)
 {
     if(i == 7  || i == 6 || i == 10 || i == 11 || i == 12 || i == 15 || i == 20 || i == 22 || i == 25 || i == 26 || i == 33 || i == 34 || i == 35  || i == 36  

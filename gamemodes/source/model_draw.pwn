@@ -6,7 +6,7 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 	{
 		x = -12.0000, y = 0.0000, z = -22.0000, s = 0.9200;
 	}
-	else if(thingPack == 5)
+	else if(IsACasePackID(thingPack))
 	{
 		if(model == 19918) x = -14.0000, y = 0.0000, z = -26.0000, s = 1.2199;
 		return 1;

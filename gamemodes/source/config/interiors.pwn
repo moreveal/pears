@@ -81,3 +81,8 @@
 
 #define WORLD_MANIAC -1
 #define INT_MANIAC 166
+
+// Маньяк Арена
+
+#define WORLD_MANIAC_AREA -1
+#define INT_MANIAC_AREA 165
