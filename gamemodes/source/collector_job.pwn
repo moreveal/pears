@@ -26,7 +26,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 			{
 				if(listitem == 0)
 				{
-					new stro[86],sctringo[860];
+					new stro[128],sctringo[860];
 			        format(stro,sizeof(stro),"{0088ff}Как заработать?"), strcat(sctringo,stro);
 			        format(stro,sizeof(stro),"\n\n{cccccc}- Выберите пункт \"Начать Работу\" в этом меню"), strcat(sctringo,stro);
 			        format(stro,sizeof(stro),"\n{cccccc}- Отправляйтесь на улицу и возьмите спец. транспорт с парковки"), strcat(sctringo,stro);
