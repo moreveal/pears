@@ -17,6 +17,10 @@ new ThingVehicleQuan;
 new ThingPremiumVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingPremiumVehicleQuan;
 
+// Лимитированный транспорт
+new ThingLimitedVehiclecaseGift[MAX_MODELS_VEHICLE];
+new ThingLimitedehicleQuan;
+
 // Мужские скины
 new ThingSkincaseGift[MAX_MODELS_SKIN];
 new ThingSkinQuan;
@@ -76,6 +80,8 @@ stock IsThingGunNotVariable(i)
 stock CreateVehicleGiftCase()
 {
     ThingVehicleQuan = 0;
+    ThingPremiumVehicleQuan = 0;
+    ThingLimitedehicleQuan = 0;
 
     // Собираем обычный транспорт
     for(new v = 400; v < 612; v++)
@@ -86,7 +92,7 @@ stock CreateVehicleGiftCase()
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
         new vehClass = GetVehicleClass(v);
-        if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
+        if(vehClass == 0 || (vehClass >= 5 && vehClass <= 7)) continue; // Пропускаем невалидные тачки по классу
 
         new vehType = GetVehicleType(v);
         if(vehType == 1 || vehType == 2)
@@ -96,7 +102,6 @@ stock CreateVehicleGiftCase()
         }
     }
 
-    ThingPremiumVehicleQuan = 0;
     // Собираем кастомный транспорт
     for(new v = 2000; v < 2000 + MAX_VEHICLE_CUSTOM; v++)
     {
@@ -106,7 +111,7 @@ stock CreateVehicleGiftCase()
             || VehGos[i] <= 0 || VehGold[i] <= 0) continue; // Пропускаем невалидный транспорт
 
         new vehClass = GetVehicleClass(v);
-        if(vehClass == 0 || vehClass >= 5) continue; // Пропускаем невалидные тачки по классу
+        if(vehClass == 0 || (vehClass >= 5 && vehClass <= 7)) continue; // Пропускаем невалидные тачки по классу
 
         new vehType = GetVehicleType(v);
         if(vehType == 1 || vehType == 2)
@@ -115,6 +120,7 @@ stock CreateVehicleGiftCase()
                 || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) 
                 {
                     if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
+                    else if(vehClass == 8) ThingLimitedVehiclecaseGift[ThingLimitedehicleQuan] = v, ThingLimitedehicleQuan ++; // Limited Vehicle
                     else ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
                 }
         }
@@ -174,6 +180,7 @@ stock StopThingForCase(i, thingType)
     || DocumentThing(i, thingType) // Документы
     || CheckThingQuan(i) // Количественные предметы
     || JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
+    || IsKeyCustomCase(i) // Ключи от кейсов
     ) return true;
     return false;
 }
@@ -337,12 +344,17 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     }
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
-        switch(random(18))
+        switch(random(20))
         {
-            case 8: // Premium
+            case 8, 9: // Premium
             {
                 new thingTemp = random(ThingPremiumVehicleQuan);
                 thingId = ThingPremiumVehiclecaseGift[thingTemp];
+            }
+            case 1: // Limited
+            {
+                new thingTemp = random(ThingLimitedehicleQuan);
+                thingId = ThingLimitedVehiclecaseGift[thingTemp];
             }
             default: // Прочие тс
             {

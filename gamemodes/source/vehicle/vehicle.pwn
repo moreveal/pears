@@ -14,7 +14,7 @@ new VehLimitedCase[MAX_MODELS_VEHICLE]; // Статус лимитированн
 
 new vehClassName[][] =
 {
-    "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Government"
+    "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Government", "Limited"
 };
 
 new vehName[][] =

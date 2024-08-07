@@ -6,6 +6,10 @@
 3. Добавляем в stock IsACasePackID новый ID для упаковки внутри системы инвентаря
 4. Добавляем в stock GetModelCustomCase объект (как будет выглядеть новый кейс)
 5. Добавляем в stock GetCustomCaseInventoryPack(caseID) (id упаковки внутри системы инвентаря)
+
+6. Если кейсу нужен ключ, добавляем строки в stock GetKeyIDCustomCase(thingPack)
+7. Добавляем перечисление id предмета ключа от кейса stock IsKeyCustomCase(i)
+    - А так-же обязательно прописываем новый ключ предмет в inventory.pwn
 */
 
 
@@ -73,8 +77,25 @@ stock GetCaseName(thingPack)
     return name;
 }
 
+// Предмет ключ от кастомного кейса
+stock IsKeyCustomCase(i)
+{
+    if(i == 234 || i == 236) return true;
+    return false;
+}
+
+// Нужен ли ключ для кастомного кейса и какой у него ID
+stock GetKeyIDCustomCase(thingPack)
+{
+    new keyid = -1;
+    if(thingPack == 6) keyid = 234; // maniac
+    // Кейс village не требует ключа
+    else if(thingPack == 8) keyid = 235; // yakuza
+    return keyid;
+}
+
 #define MAX_THING_FOR_CASE 100 // Максимальное количество вариаций предметов для кейса
-#define JSON_FILE "scriptfiles/custom_case.json" // Путь к JSON файлу
+#define JSON_CUSTOM_CASE_FILE "scriptfiles/custom_case.json" // Путь к JSON файлу
 
 // Определяем структуру данных с помощью enum
 enum ManiacItem
@@ -189,7 +210,7 @@ stock ParseCustomCaseItems(playerid, const name[], &quan)
 {
     // Парсинг JSON файла
     new JsonNode:rootNode;
-    if (JSON_ParseFile(JSON_FILE, rootNode) != JSON_CALL_NO_ERR)
+    if (JSON_ParseFile(JSON_CUSTOM_CASE_FILE, rootNode) != JSON_CALL_NO_ERR)
     {
         if(playerid != INVALID_PLAYER_ID) ErrorMessage(playerid, "{FF6347}Ошибка при парсинге JSON файла");
         return 0;

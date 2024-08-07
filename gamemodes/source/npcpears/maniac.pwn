@@ -198,10 +198,12 @@ enum MANIACINFO
     manDestroyTimer, // Таймер перед удалением маньяка
     manObjectEffect, // Объект для эффекта удаления маньяка
     manZone, // Зона маньяка
-    manInterior // Интерьер маньяка
+    manInterior, // Интерьер маньяка
+    manPersonal // Маньяк создан для конкретного игрока
 }
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
 new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
+new PlayerManiac[MAX_REALPLAYERS] = { -1, ... }; // NPC маньяк созданный для игрока
 
 new bool:TakeMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Подобрал ли игрок маску маньяка
 new QuanMaskManiac[MAX_REALPLAYERS];
@@ -280,6 +282,9 @@ stock DoorManiacStorage(playerid)
         PPSetPlayerPos(playerid, -13.5780,2498.5613,18.0569);
         PPSetPlayerFacingAngle(playerid,0.0);
         SetCameraBehindPlayer(playerid);
+
+        // Удаляем личного маньяка для игрока
+        if(PlayerManiac[playerid] != -1) DestroyManiac(PlayerManiac[playerid]), PlayerManiac[playerid] = -1;
         return true;
     }
     return false;
@@ -410,7 +415,7 @@ stock ProcessCreateManiac(playerid, bool:forced = false)
 }
 
 // Создаём маньяка
-stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior)
+stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior, forplayerid = INVALID_PLAYER_ID)
 {
     if(ManiacInfo[i][manCreate] == true) return false;
 
@@ -423,7 +428,18 @@ stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior)
 
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
     SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
-    ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
+
+    if(forplayerid != INVALID_PLAYER_ID) // Создаём маньяка для конкретного игрока (Значит маньяк будет атаковать только его)
+    {
+        ManiacInfo[i][manPersonal] = forplayerid;
+        Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], forplayerid, i);
+        PlayerManiac[playerid] = i;
+    }
+    else
+    {
+        ManiacInfo[i][manAttack] = INVALID_PLAYER_ID;
+        ManiacInfo[i][manPersonal] = INVALID_PLAYER_ID;
+    }
 
     // Записываем позицию, где мы создали маньяка
     ManiacInfo[i][manCreatePosition][0] = x;
@@ -528,6 +544,8 @@ stock DestroyManiac(i, bool:destroyEffect = false)
         DeleteAudioStream(ManiacMusic[i]);
         ManiacMusic[i] = INVALID_AUDIOSTREAM;
     }
+
+    ManiacInfo[i][manDestroyTimer] = 0;
     return true;
 }
 
@@ -607,16 +625,19 @@ stock LifeManiacs()
             }
             else
             {
-                // Маньяк далеко отошел от позиции создания (Удаляем его)
-                if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_ZONE_MANIAC, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
+                if(ManiacInfo[i][manPersonal] == INVALID_PLAYER_ID) // Процесс поиска цели и прочей фигни работает только если маньяк был создан для всех
                 {
-                    BeginDestroyManiac(i);
-                }
+                    // Маньяк далеко отошел от позиции создания (Удаляем его)
+                    if(!IsNpcInRangeOfPoint(ManiacInfo[i][manID], MAX_DIST_ZONE_MANIAC, ManiacInfo[i][manCreatePosition][0], ManiacInfo[i][manCreatePosition][1], ManiacInfo[i][manCreatePosition][2]))
+                    {
+                        BeginDestroyManiac(i);
+                    }
 
-                // Маньяк не мертвый
-                if(!IsNpcDead(ManiacInfo[i][manID]))
-                {
-                    AttackManiacNpcNearbyPlayer(i);
+                    // Маньяк не мертвый
+                    if(!IsNpcDead(ManiacInfo[i][manID]))
+                    {
+                        AttackManiacNpcNearbyPlayer(i);
+                    }
                 }
             }
         }
@@ -697,6 +718,9 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
 
     if(yesDeathManiac == true)
     {
+        new Float:npc_pos[3];
+        GetNpcPosition(ManiacInfo[findSlot][manID], npc_pos[0], npc_pos[1], npc_pos[2]);
+
         if(ManiacInfo[findSlot][manInterior] == INT_MANIAC_AREA) // Маньяк в Интерьере по квесту
         {
             if(PlayerInfo[playerid][pAchieve][130] == 0) AchievePlayer(playerid, 130, 1); // Прошел квест Маньяка
@@ -709,17 +733,19 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 PlayerInfo[playerid][pDonateMoney] += GOLD_QUEST;
                 mysql_save(playerid, 4);
                 DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GOLD_QUEST, "Квест маньяк");
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ]: {cccccc}Вы получили %dG за прохождение этого квеста", GOLD_QUEST);
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ]: {cccccc}Вы получили {ffcc00}%dG {cccccc}за прохождение этого квеста", GOLD_QUEST);
 
                 // Формируем кейс маньяка
                 new thingId, thingQuan, thingType, thingPara, thingPack;
                 CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
 
                 // Кладём кейс маньяка на землю
-                new Float:npc_pos[3];
-                GetNpcPosition(ManiacInfo[findSlot][manID], npc_pos[0], npc_pos[1], npc_pos[2]);
                 SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
-                    npc_pos[0] + random(5), npc_pos[1] + random(5), npc_pos[2], 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+
+                // Кладём ключ маньяка на землю
+                SetThrow(-1, 234, 234, 1, 0, 0, 0, 0, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
+                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
             }
 
             if(PlayerInfo[playerid][pSex] == 1)
@@ -740,6 +766,24 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
         else // Маньяк на улице
         {
             if(PlayerInfo[playerid][pAchieve][129] == 0) AchievePlayer(playerid, 129, 1); // Убил маньяка
+
+            switch(random(2))
+            {
+                case 0: // Кладём кейс маньяка
+                {
+                    // Формируем кейс маньяка
+                    new thingId, thingQuan, thingType, thingPara, thingPack;
+                    CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
+
+                    SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
+                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                }
+                case 1: // Кладём ключ маньяка
+                {
+                    SetThrow(-1, 234, 234, 1, 0, 0, 0, 0, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
+                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                }
+            }
         }
 
         BeginDestroyManiac(findSlot);
@@ -1100,7 +1144,7 @@ stock StartLastFightManiac(playerid)
     new slotManiac = GetFreeSlotManiac();
     if(slotManiac == -1) return ErrorMessage(playerid, "{FF6347}Внимание! Вы не можете сейчас продолжить этот квест,\nпоскольку его одновременного проходит большое количество игроков\n\n{ffcc66}Приносим извинения. Приходите немного позже ;)");
     
-    CreateManiac(playerid, slotManiac, 301.4126,2488.2646,16.7060, playerid + 1, INT_MANIAC_AREA);
+    CreateManiac(playerid, slotManiac, 301.4126,2488.2646,16.7060, playerid + 1, INT_MANIAC_AREA, playerid);
     PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac3.mp3");
     SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Твою мать! Он здесь! Гаси его");
     return true;
@@ -1174,5 +1218,8 @@ stock Maniac_OnPlayerDisconnect(playerid)
 
 	// Удаляем маски маньяка 
 	DestroyManiacMaskForPlayer(playerid);
+
+    // Удаляем личного маньяка для игрока
+    if(PlayerManiac[playerid] != -1) DestroyManiac(PlayerManiac[playerid]), PlayerManiac[playerid] = -1;
     return true;
 }
