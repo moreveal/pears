@@ -868,7 +868,7 @@ stock MenuSettingTransmitter(playerid, tid)
     {
         new g = PlayerInfo[playerid][pRacDiv][0];
         new i = PlayerInfo[playerid][pRacDiv][1];
-        if(g > 0 && i > 0) format(line,sizeof(line),"\n{cccccc}Канал: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
+        if(g > 0 && i > 0 && g <= MAX_ORG && i <= MAX_DIVISION_ORG) format(line,sizeof(line),"\n{cccccc}Канал: %s {%s}[ %s ]", fraklastName[g], DivisionInfo[g - 1][i - 1][divColorHex], DivisionInfo[g - 1][i - 1][divAbbreviation]), strcat(lines,line);
         else format(line,sizeof(line),"\n{cccccc}Канал: нет"), strcat(lines,line);
     }
     ShowDialog(playerid,491,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Настройки Рации",lines,"Выбор","Отмена");

@@ -26,7 +26,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 			{
 				if(listitem == 0)
 				{
-					new stro[86],sctringo[860];
+					new stro[128],sctringo[860];
 			        format(stro,sizeof(stro),"{0088ff}Как заработать?"), strcat(sctringo,stro);
 			        format(stro,sizeof(stro),"\n\n{cccccc}- Выберите пункт \"Начать Работу\" в этом меню"), strcat(sctringo,stro);
 			        format(stro,sizeof(stro),"\n{cccccc}- Отправляйтесь на улицу и возьмите спец. транспорт с парковки"), strcat(sctringo,stro);
@@ -122,7 +122,7 @@ stock dialogCase_CollectorJob(playerid, dialogid, response,listitem)
 	            new model, newcar;
             	if(listitem == 0) newcar = PP_CreateVehicle(428,1107.387, -1216.869, 17.804,1.1,6,1,600,0, -1, 0.0), model = 428;
 				SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я могу посмотреть список всех доступных банкоматов [ /atm ]");
-                Gas[newcar] = 100;
+				VehInfo[newcar][vGas] = GasMax;
 	   			VehInfo[newcar][vAgetid] = playerid;
 	   			VehInfo[newcar][vRent] = unix+3600;
 	   			VehInfo[newcar][vBiz] = 0;

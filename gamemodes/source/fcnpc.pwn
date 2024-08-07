@@ -126,7 +126,7 @@ public FCNPC_OnReachDestination(npcid)
     if(npcid == NpcArmy)
     {
         // Ставим поезд на новую позицию
-        if(TrainRoadID <= 290 || TrainRoadID >= 320) SetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
+        if(TrainRoadID <= 290 || TrainRoadID >= 320) ACSetVehiclePos(train, TrainRoad[TrainRoadID][TrainRoad_X], TrainRoad[TrainRoadID][TrainRoad_Y], TrainRoad[TrainRoadID][TrainRoad_Z]);
 
         if(TrainStoped == 1)
         {

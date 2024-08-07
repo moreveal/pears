@@ -10,7 +10,7 @@ CMD:heal(playerid, const params[])
 	if(GetPlayerState(params[0]) == PLAYER_STATE_SPECTATING
 		&& gSpectateID[params[0]] != INVALID_PLAYER_ID
 		|| !ProxDetectorS(3.0, playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента");
-	if(HealthAC[params[0]] >= 100) return ErrorMessage(playerid, "{FF6347}У пациента полная полоса здоровья и ему не требуется лечение");
+	if(HealthAC[params[0]] >= GetMaxPlayerHealth(params[0])) return ErrorMessage(playerid, "{FF6347}У пациента полная полоса здоровья и ему не требуется лечение");
 	if(MedHeal[params[0]] > 0) return ErrorMessage(playerid, "{FF6347}Пациенту уже предложили лечение");
 
 	new string[150];
@@ -34,7 +34,7 @@ stock HealPlayer(playerid)
 	new price = MedHeal[playerid];
 	if(price == 0) return ErrorMessage(playerid, "{FF6347}Вам не предлагали лечение");
 	MedHeal[playerid] = 0;
-    if(HealthAC[playerid] >= 100) return ErrorMessage(playerid, "{FF6347}У вас полная полоса здоровья и лечение не требуется");
+    if(HealthAC[playerid] >= GetMaxPlayerHealth(playerid)) return ErrorMessage(playerid, "{FF6347}У вас полная полоса здоровья и лечение не требуется");
 
 	new giveplayerid = DP[0][playerid];
 
@@ -48,7 +48,7 @@ stock HealPlayer(playerid)
 	else return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 
     ResetHeal(playerid);
-    ACSetPlayerHealth(playerid, 100); // Пополняем хп
+    ACSetPlayerHealth(playerid, GetMaxPlayerHealth(playerid)); // Пополняем хп
     new string[20];
     format(string, sizeof string, "+%.1f HP", 100 - HealthAC[playerid]);
     SetPlayerChatBubble(playerid, string, COLOR_GREEN, 45.0, 4000);

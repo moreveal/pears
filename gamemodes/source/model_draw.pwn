@@ -61,6 +61,7 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 			case 324: x = 0.0000, y = -18.0000, z = 0.0000, s = 0.8600;
 			case 325: x = 0.0000, y = -36.0000, z = 0.0000, s = 1.6200;
 			case 326: x = 0.0000, y = -34.0000, z = 0.0000, s = 1.4400;
+			case 330: x = -10.0000, y = -2.0000, z = 180.0000, s = 0.8000;
 			case 342: x = 0.0000, y = 0.0000, z = 54.0000, s = 0.6999;
 			case 343: x = 0.0000, y = 0.0000, z = 180.0000, s = 0.6600;
 			case 344: x = 0.0000, y = 0.0000, z = 0.0000, s = 0.9200;
@@ -114,6 +115,7 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 			case 2060: x = 90.0000, y = 0.0000, z = 90.0000, s = 1.0000;
 			case 19308: x = 0.0000, y = 0.0000, z = 90.0000, s = 1.0000;
 			case 1212: x = -10.0000, y = 0.0000, z = 40.0000, s = 1.0000;
+			case 18875: x = -50.0000, y = 0.0000, z = 180.0000, s = 1.0000;
 			case 18872: x = 90.0000, y = 180.0000, z = 0.0000, s = 1.0000;
 			case 18641: x = 70.0000, y = -40.0000, z = 0.0000, s = 1.0000;
 			case 1314: x = 0.0000, y = 0.0000, z = 0.0000, s = 1.0000;
@@ -510,7 +512,7 @@ stock CreateEditModelTextDraw(playerid) // Создаём текстдравы �
 	PlayerTextDrawSetPreviewModel(playerid, DynamicTextDraw[5][playerid], 2709);
 	PlayerTextDrawSetPreviewRot(playerid, DynamicTextDraw[5][playerid], 0.000000, 0.000000, 0.000000, -2.000000);
 
-	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпсь Z
+	DynamicTextDraw[6][playerid] = CreatePlayerTextDraw(playerid, 323.187500, 311.500122, "Z"); // Надпись Z
 	PlayerTextDrawLetterSize(playerid, DynamicTextDraw[6][playerid], 0.611874, 2.008332);
 	PlayerTextDrawAlignment(playerid, DynamicTextDraw[6][playerid], TEXT_DRAW_ALIGN:2);
 	PlayerTextDrawColour(playerid, DynamicTextDraw[6][playerid], -1);

@@ -86,3 +86,6 @@
 
 #define WORLD_MANIAC_AREA -1
 #define INT_MANIAC_AREA 165
+// Полигон NGSA
+#define WORLD_POLYGON_NGSA 4
+#define INT_POLYGON_NGSA 3

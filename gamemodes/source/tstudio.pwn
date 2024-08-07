@@ -61,9 +61,13 @@ stock MatrixDynamicObjectPos(status, Float:x, Float:y, Float:z, Float:rx, Float:
 
         if(i == 0 && status == 1) // Отображаем смещение центра
         {
-            printf("TSInfo[tsOffset][0] = %f;", x - TSInfo[tsPosX][i]);
-            printf("TSInfo[tsOffset][1] = %f;", y - TSInfo[tsPosY][i]);
-            printf("TSInfo[tsOffset][2] = %f;", z - TSInfo[tsPosZ][i]);
+            printf(
+                "\n\nTSInfo[tsOffset][0] = %f;\n" \
+                "TSInfo[tsOffset][1] = %f;\n" \
+                "TSInfo[tsOffset][2] = %f;\n",
+                
+                x - TSInfo[tsPosX][i], y - TSInfo[tsPosY][i], z - TSInfo[tsPosZ][i]
+            );
         }
 
         // Меняем объектам мир и интерьер на необходимый

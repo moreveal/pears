@@ -209,13 +209,32 @@ CMD:gotoradar(playerid, const params[]) {
 	return 1;
 }
 
+alias:speedcoefficient("speedcf")
+CMD:speedcoefficient(playerid, const params[]) {
+	if (server != 0) return ErrorMessage(playerid, "{ff6347}Только на тестовом сервере");
+	new Float: value;
+	if (sscanf(params, "f", value)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменение коэффициента скорости [ /speedcoefficient Значение ]");
+	if (value < 0.0 || value > 100.0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Коэффициент скорости должен быть не меньше 0 и не больше 100");
+	
+	new string[128];
+	format(string, sizeof(string), "[ ADM ]: %s изменил коэффициент скорости на %.2f [Было: %.2f]", PlayerInfo[playerid][pName], value, speedCoefficient);
+	ABroadCast(COLOR_ADM, string, 2);
+
+	speedCoefficient = value;
+
+	return 1;
+}
+
 CMD:radarstatus(playerid, const params[]) {
 	if (PlayerInfo[playerid][pSoska] < 6) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	new radarid, repair;
-	if (sscanf(params, "iI(-1)", radarid, repair)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить статус радара [ /radarstatus Номер Статус ]");
+	new radarid, repair, e_RadarBroken: phase;
+	if (sscanf(params, "iI(-1)I(0)", radarid, repair, phase)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить статус радара [ /radarstatus Номер Статус ]");
 	if (radarid < 0 || radarid > MAX_RADARS) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: ID радара от 1 до "#MAX_RADARS" [ 0 - Все ]");
 	if (repair < 0 || repair > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Статус [ 0 - Сломать | 1 - Починить ]");
+	if (repair == 0 && phase <= RADAR_BROKEN_NONE) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Фаза [ 1 - Горящий | 2 - Дымящийся ]");
 
+	new e_RadarBroken: status = (repair ? RADAR_BROKEN_NONE : e_RadarBroken: phase);
+		
 	new string[144], action[32], log_action[32];
 	if (repair) {
 		strcat(action, "починил"); strcat(log_action, "Починил");
@@ -227,7 +246,7 @@ CMD:radarstatus(playerid, const params[]) {
 		for (new i = 0; i < MAX_RADARS; i++) {
 			if (!Radar_IsExists(i) || !Radar_IsPlaced(i)) continue;
 			
-			Radar_SetBroken(i, bool: !repair);
+			Radar_SetBroken(i, status);
 			quan++;
 		}
 		if (quan == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Ни один радар не размещён в игровом мире");
@@ -238,7 +257,10 @@ CMD:radarstatus(playerid, const params[]) {
 	} else {
 		radarid--;
 		if (!Radar_IsExists(radarid) || !Radar_IsPlaced(radarid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Указанный радар не существует или не размещён в игровом мире");
-		Radar_SetBroken(radarid, bool: !repair);
+		if (RadarInfo[radarid][riBroken] == status) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этот радар уже находится в этом состоянии");
+		if (!repair) RadarInfo[radarid][riBrokeReason] = RADAR_BROKE_REASON_COMMAND;
+
+		Radar_SetBroken(radarid, status);
 
 		format(string, sizeof(string), "[ ADM ]: %s %s скоростной радар №%d", PlayerInfo[playerid][pName], action, radarid + 1);
 		ABroadCast(COLOR_ADM, string, 2);
@@ -493,11 +515,11 @@ CMD:hpgro(playerid)
 		{
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
-				ACSetPlayerHealth(i,100);
+				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
 				SendClientMessage(i, COLOR_GRAD1, "Администратор пополнил вам здоровье.");
 			}
 		}
-		ACSetPlayerHealth(playerid,100);
+		ACSetPlayerHealth(playerid,GetMaxPlayerHealth(playerid));
 		SendClientMessage(playerid, COLOR_GRAD1, "Вы пополнили здоровье рядом находящимся игрокам.");
 	}
 	return 1;
@@ -575,7 +597,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 	SetVehicleVirtualWorld(CreatedCars[createid], GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
 	Cars[CreatedCars[createid]] = 9999;
-	Gas[CreatedCars[createid]] = GasMax;
+	VehInfo[CreatedCars[createid]][vGas] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
 	SendClientMessage(playerid, COLOR_GREY, "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d {cccccc}(col1 %d, col2 %d)", GetVehicleName(model), model, CreatedCars[createid], color1, color2);
 	return 1;
@@ -642,7 +664,7 @@ CMD:tp2(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
 	{
-		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage\nЛогово маньяка","Выбрать","Отмена");
+		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage\nЛогово маньяка\nNGSA Polygon","Выбрать","Отмена");
 	}
    	return 1;
 }
@@ -679,8 +701,8 @@ CMD:readkill(playerid)
 CMD:readdm(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] == 0 && PlayerInfo[playerid][pMedia] != 3) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(GetPVarInt(playerid,"Readdm") == 0) SetPVarInt(playerid,"Readdm",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {99ff66}Активирован");
-	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMath {FF6347}Отключён");
+	if(GetPVarInt(playerid,"Readdm") == 0) SetPVarInt(playerid,"Readdm",1), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMatch {99ff66}Активирован");
+	else SetPVarInt(playerid,"Readdm",0), SendClientMessage(playerid, COLOR_GREY, "[ Мысли ADM ]: {ffcc66}Просмотр нарушений DeathMatch {FF6347}Отключён");
 	return 1;
 }
 CMD:readhit(playerid, const params[])
@@ -871,7 +893,7 @@ CMD:getinvest(playerid, const params[])
 }
 CMD:getgold(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] <= 13) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
+	if(PlayerInfo[playerid][pSoska] < 13) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать");
 	if(sscanf(params, "is[144]",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Взять золото из общака администрации [ /getgold Количество Причина ]");
 	if(params[0] > 10000 || params[0] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не больше 10000 и не меньше 1");
 	if(ServerInfo[33] < params[0]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: В общаке администрации нет столько золота");

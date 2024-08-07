@@ -776,6 +776,10 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				else SkinSale[list] = 1;
 				SaveSkinSale(list);
 				SettingGosPriceSkin(playerid, list);
+
+				new log_str[32];
+				format(log_str, sizeof(log_str), "Скин [ID: %d]", list);
+				OrgLog(7, "salechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", SkinSale[list], log_str);
 			}
 			else if(listitem == 3)
 			{

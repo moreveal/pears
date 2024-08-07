@@ -840,22 +840,36 @@ stock CheckWarningSu(playerid, const tmp[], &playa)
 
 function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 {
-    if (playerid == zakonnik && PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(zakonnik, "{FF6347}Нельзя объявить в розыск самого себя");
+    if (playerid == zakonnik && PlayerInfo[playerid][pSoska] < 22) {
+        ErrorMessage(zakonnik, "{FF6347}Нельзя объявить в розыск самого себя");
+        return -1;
+    }
 
 	new slotUk = -1;
 
     if(IsPlayerConnected(playerid) && zakonnik >= 0)
     {
-        if(WantedInfo[playerid][wanLoad] == true) return ErrorMessage(zakonnik, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
-        if(PlayerInfo[playerid][pJailed] != 0) return ErrorMessage(zakonnik, "{FF6347}Подозреваемый уже находится в заключении");
-        if(CheckPlayerNpc(playerid, playerid)) return 1;
+        if(WantedInfo[playerid][wanLoad] == true) {
+            ErrorMessage(zakonnik, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
+            return -1;
+        }
+        if(PlayerInfo[playerid][pJailed] != 0) {
+            ErrorMessage(zakonnik, "{FF6347}Подозреваемый уже находится в заключении");
+            return -1;
+        }
+        if(CheckPlayerNpc(playerid, playerid)) {
+            return -1;
+        }
     }
 
     if (!IsOnline(zakonnik) && zakonnik > 0) zakonnik = _:COP_TYPE_NONE;
 
     if(IsOnline(zakonnik))
     {
-        if(CriminalCodeInfo[uk][p][ccLevel] == 0 && CriminalCodeInfo[uk][p][ccFine] == 0) return ErrorMessage(zakonnik, "{FF6347}У заголовка статьи нет розыска или штрафа");
+        if(CriminalCodeInfo[uk][p][ccLevel] == 0 && CriminalCodeInfo[uk][p][ccFine] == 0) {
+            ErrorMessage(zakonnik, "{FF6347}У заголовка статьи нет розыска или штрафа");
+            return -1;
+        }
     }
 
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
@@ -877,7 +891,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
     if(IsPlayerConnected(playerid) && slotUk == -1 && resultFine == 0)
     {
         if(IsOnline(zakonnik)) ErrorMessage(zakonnik, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
-        return 1;
+        return -1;
     }
 
     // Выдаём розыск
@@ -976,8 +990,8 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         if(IsOnline(zakonnik)) {
             OrgLog(fractionid, "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], CriminalCodeInfo[uk][p][ccName]);
         } else {
-            new log_string[128]; format(log_string, sizeof(log_string), "Автовыдача розыска [%s]", CriminalCodeInfo[uk][p][ccName]);
-            OrgLog(fractionid, "su", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CriminalCodeInfo[uk][p][ccLevel], log_string);
+            new log_string[128]; format(log_string, sizeof(log_string), "Выдача розыска системой [%s]", CriminalCodeInfo[uk][p][ccName]);
+            OrgLog(fractionid, "su", 0, "", "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], log_string);
         }
     }
 	return slotUk;

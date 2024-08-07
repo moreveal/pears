@@ -7,9 +7,6 @@ new FindCd[MAX_REALPLAYERS];
 
 stock CreateFindZone(playerid, Float:X, Float:Y)
 {
-  // уничтожаем последнюю зону финда, если она по какой-то причине не была удалена
-  // возможно исправит баг с финдом
-  // о баге: в ShowFindZone пишет: "Нельзя найти на данный момент человека, попробуйте позже"
   DestroyFindZone(playerid);
 
   new ability = get_ability(playerid, 9); // Навык сыщика
@@ -55,6 +52,8 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
 
   hideGangZones(playerid);
   GangZoneShowForPlayer(playerid, zoneId[FindZone[playerid]], 0xff0000AA);
+  SetPVarInt(playerid, "GP", 1);
+  SetPlayerCheckpoint(playerid, x, y, 20.0, 5.0);
   ZoneTimer[playerid] = 12;
 
   new ability = get_ability(playerid, 9);
@@ -71,11 +70,11 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   else cd = 90;
   FindCd[playerid] = unix + cd;
 
-  new line[140],lines[420];
+  /*new line[140],lines[420];
   format(line,sizeof(line),"{ffcc66}Поиск %s активирован\n{0088ff}Гражданин находится в области {FF6347}красной зоны {0088ff}на карте", rpplayername(giveplayerid)), strcat(lines,line);
   format(line,sizeof(line), "\n\n{cccccc}Отображение зоны продлится в течении 12 секунд"), strcat(lines,line);
   format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
-  SuccessMessage(playerid, lines);
+  SuccessMessage(playerid, lines);*/
   PlayerPlaySound(playerid,6400,0,0,0);
   format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск {FFD700}%s{cccccc}, квадрат отмечен на GPS. Он в районе: {FFD700}%s.", rpplayername(giveplayerid), gSAZones[findraiontolist][zName]);
   SendClientMessage(playerid,COLOR_GREY,string);
@@ -86,11 +85,15 @@ stock DestroyFindZone(playerid)
 {
   if(FindZone[playerid] == -1) return 0;
 
+  DisablePlayerCheckpoint(playerid);
+  DeletePVar(playerid, "GP");
+
   new number = FindZone[playerid];
   GangZoneDestroy(zoneId[number]);
   zoneId[number] = 0;
   FindZone[playerid] = -1;
   showGangZones(playerid);
+  
   return 1;
 }
 

@@ -51,7 +51,7 @@ stock buyThingAutoserice(playerid, slot)
 	paybiz(b, BizzInfo[b][bPrice][slot]);
 
 	new string[100];
-	format(string,sizeof(string),"Купил %s в бизе %d", GetNameThing(0, thingId, thingType, 0), b);
+	format(string,sizeof(string),"Купил %s в бизнесе №%d", GetNameThing(0, thingId, thingType, 0), b);
     MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][slot], string);
 
 	format(string,sizeof(string),"{99ff66}Вы купили %s", GetNameThing(0, thingId, thingType, 0));
@@ -85,7 +85,7 @@ stock CheckAutoInRangeService(playerid)
 		}
 	}
     if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
-    new v = GetPlayerVehicleID(playerid);
+    new v = OnlineInfo[playerid][oAutoserviceVeh];
     if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
     if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
     if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
@@ -116,7 +116,7 @@ stock CheckAutoInRangeService(playerid)
     SaveCar(v);
     oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][9]);
 
-    format(string, sizeof(string),"Замена хендлинга %s (%s) в бизе %d", GetVehicleName(VehInfo[veh][vModel]), GetVehicleName(VehInfo[veh][vModel]), b);
+    format(string, sizeof(string),"Замена хендлинга %s (%s) в бизнесе №%d", GetVehicleName(VehInfo[veh][vModel]), GetVehicleName(VehInfo[veh][vModel]), b);
     MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][9], string);
     paybiz(b, BizzInfo[b][bPrice][9]);
     DeleteMyVeh(playerid, quan);
@@ -138,7 +138,7 @@ stock ShowDetailHandling(playerid, tuningType)
     if(quan == 0) return ErrorMessage(playerid,"{ff6347}Кажется данных деталей тюнинга нет");
     DP[0][playerid] = quan+1;
     DP[1][playerid] = tuningType;
-    new v = GetPlayerVehicleID(playerid);
+    new v = OnlineInfo[playerid][oAutoserviceVeh];
     new lineHeader[30];
     format(lineHeader,sizeof(lineHeader),"Тюнинг {ff9000}%s",friskDetailTypeName[tuningType]);
     new line[70],lines[10*70];
@@ -211,7 +211,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
     {
         if(response)
         {
-            new v = GetPlayerVehicleID(playerid);
+            new v = OnlineInfo[playerid][oAutoserviceVeh];
             if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
             if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
             DP[2][playerid] = gAutosalon[playerid];
@@ -247,7 +247,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new temp[4],value;
-            new v = GetPlayerVehicleID(playerid);
+            new v = OnlineInfo[playerid][oAutoserviceVeh];
             if(sscanf(inputtext, "i", value)) return ErrorMessage(playerid,"{ff6347}Вы ничего не ввели");
             if((value < 5 || value > 9) && value != 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Введите от 5 до 9, чтобы изменить высоту подвески или 0 что бы убрать");
             if(value == 0)
@@ -269,7 +269,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
     {
         if(response)
         {
-            new v = GetPlayerVehicleID(playerid);
+            new v = OnlineInfo[playerid][oAutoserviceVeh];
             new b = gAutosalon[playerid];
             new money;
             for(new i;i< sizeof(friskDetailTypeName);i++)
@@ -319,7 +319,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                         if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][friskDetail[TempDetail[playerid][i]-207][2]] -= 1;
                     }
                     money += BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]];
-                    format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизе %d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
+                    format(stringlog,sizeof(stringlog),"Купил деталь тюнинга %s, в бизнесе №%d, за %d$",friskName[TempDetail[playerid][i]],b,BizzInfo[b][bPrice][friskDetail[TempDetail[playerid][i] - 207][2]]);
                     CarLog("buytun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[v][vModel], TempDetail[playerid][i], stringlog);
                     TempDetail[playerid][i] = 0;
                 }
@@ -336,7 +336,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
             oGivePlayerMoney(playerid, -money);
 
             new string[120];
-            format(string, sizeof(string),"Купил тюнинг в бизе %d", b);
+            format(string, sizeof(string),"Купил тюнинг в бизнесе №%d", b);
             MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -money, string);
             paybiz(b, money);
             SuccessMessage(playerid,"{99ff66}Вы успешно установили детали тюнинга");
@@ -365,7 +365,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 }
             }
             if(quan == -1) return ErrorMessage(playerid,"{ff6347}Рядом с Автосервисом нет вашего транспорта");
-            new v = GetPlayerVehicleID(playerid);
+            new v = OnlineInfo[playerid][oAutoserviceVeh];
             if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
             if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
             new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
@@ -383,12 +383,13 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
         if(response)
         {
             new v = OnlineInfo[playerid][oShowTabs];
+            if(!IsValidVehicle(v)) return 0;
             if(listitem < 0 || listitem > 6) return 0;
             if(listitem == 0) DiagnosVehicle(playerid, v, 0);
             if(listitem >= 1 && listitem <= 6)
             {
                 new stringlog[50];
-                if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
+                if(v < 0 || v >= MAX_CARS || Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Снимать деталь можно только с личного транспорта");
                 if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Это не ваш личный транспорт");
                 if(!IsACar(VehInfo[v][vModel])) return ErrorMessage(playerid,"{ff6347}Тюнинг можно снимать только с автомобиля!");
                 new slot = GetVehicleDetailTunning(v, List[listitem-1][playerid] - 1);
@@ -408,7 +409,7 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
 
 stock ExitTuningOrSave(playerid)
 {
-    new veh = GetPlayerVehicleID(playerid);
+    new veh = OnlineInfo[playerid][oAutoserviceVeh];
     new line[90],lines[2500];
     format(line,sizeof(line),"{cccccc}Неоплаченный тюнинг транспорта\n"), strcat(lines,line);
     format(line,sizeof(line),"{ff6347}- Детали того же типа, что уже установлены на транспорт будут заменены!\n"), strcat(lines,line);
@@ -471,19 +472,11 @@ stock showPlayerAutoserviceMenu(playerid)
     PPSetPlayerInterior(playerid,223);
 
     OnlineInfo[playerid][oShowInterface] = 20; // Интерфейс автосервиса
-    TextDrawShowForPlayer(playerid, TuningDraw[0]);
-    TextDrawShowForPlayer(playerid, TuningDraw[1]);
-    TextDrawShowForPlayer(playerid, TuningDraw[2]);
-    TextDrawShowForPlayer(playerid, TuningDraw[3]);
-    TextDrawShowForPlayer(playerid, TuningDraw[4]);
-    TextDrawShowForPlayer(playerid, TuningDraw[5]);
-    TextDrawShowForPlayer(playerid, TuningDraw[6]);
-    TextDrawShowForPlayer(playerid, TuningDraw[7]);
-    TextDrawShowForPlayer(playerid, TuningDraw[8]);
-    TextDrawShowForPlayer(playerid, TuningDraw[9]);
-    TextDrawShowForPlayer(playerid, TuningDraw[10]);
-    TextDrawShowForPlayer(playerid, TuningDraw[17]);
-    TextDrawShowForPlayer(playerid, TuningDraw[18]);
+    for (new i = 0; i < sizeof(TuningDraw); i++)
+    {
+        if (i >= 11 && i <= 16) continue;
+        TextDrawShowForPlayer(playerid, TuningDraw[i]);
+    }
     SelectColorDraw(playerid);
     NoAnim[playerid] = 1;
 
@@ -551,7 +544,7 @@ stock vehiclePositionAutoservice(vehicleid, playerid)
 stock openTestDrive_Autoservice(playerid)
 {
     if(gAutosalon[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Вы не находитесь в автосервисе");
-    new vehicleid = GetPlayerVehicleID(playerid);
+    new vehicleid = OnlineInfo[playerid][oAutoserviceVeh];
     if(Cars[vehicleid] != 88) return ErrorMessage(playerid, "{FF6347}Test Drive доступен только для личного транспорта");
     if(GetPVarInt(playerid,"tunstat") > 0) return ErrorMessage(playerid, "{FF6347}Сохраните или отмените выбранную деталь\n{ffcc66}Test Drive доступен только для проверки характеристик транспорта");
     if(OnlineInfo[playerid][oTimerAutoservice] > 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения выхода из тест драйва");
@@ -602,23 +595,9 @@ stock openTestDrive_Autoservice(playerid)
 // Закрываем текстдравы автосервиса
 stock hideDraw_Autoservice(playerid)
 {
-    TextDrawHideForPlayer(playerid, TuningDraw[0]);
-    TextDrawHideForPlayer(playerid, TuningDraw[1]);
-    TextDrawHideForPlayer(playerid, TuningDraw[2]);
-    TextDrawHideForPlayer(playerid, TuningDraw[3]);
-    TextDrawHideForPlayer(playerid, TuningDraw[4]);
-    TextDrawHideForPlayer(playerid, TuningDraw[5]);
-    TextDrawHideForPlayer(playerid, TuningDraw[6]);
-    TextDrawHideForPlayer(playerid, TuningDraw[7]);
-    TextDrawHideForPlayer(playerid, TuningDraw[8]);
-    TextDrawHideForPlayer(playerid, TuningDraw[9]);
-    TextDrawHideForPlayer(playerid, TuningDraw[10]);
-    TextDrawHideForPlayer(playerid, TuningDraw[12]);
-    TextDrawHideForPlayer(playerid, TuningDraw[13]);
-    TextDrawHideForPlayer(playerid, TuningDraw[14]);
-    TextDrawHideForPlayer(playerid, TuningDraw[15]);
-    TextDrawHideForPlayer(playerid, TuningDraw[16]);
-    TextDrawHideForPlayer(playerid, TuningDraw[17]);
-    TextDrawHideForPlayer(playerid, TuningDraw[18]);
+    for (new i = 0; i < sizeof(TuningDraw); i++)
+    {
+        TextDrawHideForPlayer(playerid, TuningDraw[i]);
+    }
     return 1;
 }

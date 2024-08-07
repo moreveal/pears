@@ -462,7 +462,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 GetVehicleHealth(vehicleid, health);
                 new inva = OnlineInfo[playerid][oInventSelectLeft];
                 new thingId = PlayerInfo[playerid][pInven][inva];
-                if(health > 500.0 && !(thingId >= 207 && thingId <= 224)) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
+                if(MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - health < 10.0 && !(thingId >= 207 && thingId <= 224)) return ErrorMessage(playerid, "{FF6347}Двигатель не повреждён и не нуждается в ремонте"), i_resetveshi(playerid);
 
                 if(IsAMoto(model)) ThingNeed[playerid] = 190;
                 else if(IsAPlane(model)) ThingNeed[playerid] = 191;
@@ -552,9 +552,8 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 }
                 else if(Tabs_Load[playerid] == 13) // Химический Стол
                 {
-                    format(line,sizeof(line),"{ff9000}Таблетка Защиты {cccccc}| -20 проц. дамага"), strcat(lines,line);
-                    format(line,sizeof(line),"\n{ff9000}Таблетка Атаки {cccccc}| +20 проц. к дамагу"), strcat(lines,line);
-                    ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
+                    ErrorMessage(playerid, "{ff6347}Временно недоступно");
+                    //ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
             }
         }
@@ -893,9 +892,14 @@ function CraftProcess(playerid, tabs_load)
             }
             else
             {
-                new minus = 10 - get_ability(playerid, 8);
-                new Float:health = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid) - (100 * minus);
-                ACSetVehicleHealth(vehicleid, health);
+                new abilityLevel = get_ability(playerid, 8);
+                new Float:maxHealth = MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid);
+                new Float:repairHealth = maxHealth - (100 * (10 - abilityLevel));
+                new Float:currentHealth; GetVehicleHealth(vehicleid, currentHealth);
+
+                // Внешняя починка транспорта при достаточном уровне скилла
+                if (abilityLevel >= 8) RepairVehicle(vehicleid);
+                ACSetVehicleHealth(vehicleid, currentHealth >= repairHealth ? maxHealth : repairHealth);
 
                 // Квест ремонт транспорта
                 if(NoCompleteQuest(playerid, 4) && IsACar(VehInfo[vehicleid][vModel]))
@@ -912,13 +916,14 @@ function CraftProcess(playerid, tabs_load)
                 }
 
                 format(line,sizeof(line),"{99ff66}Выполнено!"), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %d", MaxVehicleHealth(VehInfo[vehicleid][vModel], vehicleid)), strcat(lines,line);
-                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт на %.0f", health), strcat(lines,line);
+                format(line,sizeof(line),"\n\n{ffcc66}Максимальное HP этого транспорта: %.0f", maxHealth), strcat(lines,line);
+                format(line,sizeof(line),"\n{ffcc66}Ваш навык автомеханика позволил выполнить ремонт до %.0f", repairHealth), strcat(lines,line);
+                if(currentHealth >= repairHealth && abilityLevel != 10) format(line,sizeof(line),"\n{ffcc66}Состояние транспорта было отличным, поэтому он был починен полностью"), strcat(lines,line);
                 format(line,sizeof(line),"\n\n{666666}С увеличением навыка, скорость и качество ремонта повышается"), strcat(lines,line);
                 format(line,sizeof(line),"\n{666666}Посмотреть ваши навыки Y >> Меню >> Навыки"), strcat(lines,line);
                 update_ability(playerid, 8, 15);
             }
-            i_del(playerid, inva); // Забираем предмет
+            TakeInvent(playerid, PlayerInfo[playerid][pInven][inva], 1, PlayerInfo[playerid][pInvenType][inva], inva);
             SuccessMessage(playerid, lines);
         }
         else // Крафт

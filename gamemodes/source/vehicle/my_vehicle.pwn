@@ -3674,7 +3674,7 @@ stock PlayerVehicleCall(playerid)
 		if(vdist <= 30.0) return ErrorMessage(playerid, "{FF6347}Ваш транспорт рядом с вами [ Менее 30 метров ]");
 
 		new vehicleid = v;
-		if(Gas[vehicleid] >= 5) Gas[vehicleid] -= 5;
+		if(VehInfo[vehicleid][vGas] >= GasMax/20) VehInfo[vehicleid][vGas] -= GasMax/20;
 
 		LinkVehicleToInterior(vehicleid, 0);
 		SetVehicleVirtualWorld(vehicleid, 0);
@@ -3731,7 +3731,7 @@ stock CallVehicleProgress(vehicleid)
 		SetVehicleZAngle(vehicleid, ParkingPos[parkingId][3]);
 	}
 	SetVehicleVelocity(vehicleid, 0.1, 0.1, 0.0);
-	if(Gas[vehicleid] >= 5) Gas[vehicleid] -= 5;
+	if(VehInfo[vehicleid][vGas] >= GasMax/20) VehInfo[vehicleid][vGas] -= GasMax/20;
 
 	LinkVehicleToInterior(vehicleid, 0);
 	SetVehicleVirtualWorld(vehicleid, 0);
@@ -4536,7 +4536,7 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 			cache_get_value_name_int(0, "comp9", VehInfo[vehid][vComp9]);
 			cache_get_value_name_int(0, "comp10", VehInfo[vehid][vComp10]);
 			cache_get_value_name_int(0, "comp11", VehInfo[vehid][vComp11]);
-			cache_get_value_name_int(0, "benz2", Gelium[vehid]);
+			cache_get_value_name_int(0, "benz2", VehInfo[vehid][vGelium]);
 			cache_get_value_name_int(0, "keyunix", VehInfo[vehid][vKeyUnix]);
 			cache_get_value_name_int(0, "upgrade", VehInfo[vehid][vEnhancedBoot]);
 			cache_get_value_name_int(0, "panels", VehInfo[vehid][vPanels]);
@@ -4567,7 +4567,6 @@ function LoadCar(playerid, dab, race_check, adminLoad)
 
 			// Загружаем тюнинг транспорта
 			SetHandlingTotal(vehid);
-
 
 			// Высота подвески
 			if(VehInfo[vehid][vTunningBPAN] > 0)
@@ -4715,7 +4714,7 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 	VehInfo[vehid][vNosell] = nyche;
 
 	format(VehInfo[vehid][vNumer], 20,"%s", numer);
-	Gas[vehid] = benz;
+	VehInfo[vehid][vGas] = benz;
 	VehInfo[vehid][vGod] = yearveh;
 
 	GetVehicleParamsEx(vehid, engine, lights, alarm, doors, bonnet, boot, objective);

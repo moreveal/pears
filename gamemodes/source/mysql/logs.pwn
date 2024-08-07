@@ -247,8 +247,10 @@ stock DonateLog(const action[],
     return true;
 }
 
-stock InsultLog(playerid, const rows[])
+stock OffenseLog(primary_player_id, const primary_player_name[], const primary_player_ip[], const rows[])
 {
+    LOGS_NULL_IF_NOT_ASSIGNED(primary_player)
+
     new query[512];
     mysql_format(pearsq_2, query, sizeof(query),
         "INSERT INTO insult_logs ( \
@@ -256,8 +258,8 @@ stock InsultLog(playerid, const rows[])
             `primary_player_name`, \
             `primary_player_ip`, \
             `rows` \
-        ) VALUES ('%d', '%e', '%e', convertCharset('%e', \'windows-1251\', \'utf-8\'))",
-        PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], rows
+        ) VALUES (%d, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'))",
+        primary_player_id_, primary_player_name_, primary_player_ip_, rows
     );
     mysql_tquery(pearsq_2, query);
     return true;

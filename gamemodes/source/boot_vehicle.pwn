@@ -681,6 +681,7 @@ stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[72] = 100, lim[73] = 100, lim[74] = 100, lim[75] = 100, lim[76] = 100, lim[77] = 100, lim[78] = 100, lim[79] = 100, lim[80] = 100, lim[81] = 100;
 	lim[82] = 100, lim[83] = 100, lim[84] = 100, lim[85] = 100, lim[86] = 100, lim[87] = 100, lim[88] = 100, lim[89] = 1000, lim[106] = 100, lim[108] = 100, lim[109] = 100, lim[110] = 100;
 	lim[140] = 1000, lim[141] = 1000, lim[142] = 100, lim[180] = 500, lim[181] = 500, lim[197] = 50, lim[198] = 500, lim[225] = 500, lim[230] = 500;
+	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 
     getQuan = get_boot(v, thingId);
     getLimit = lim[thingId];
@@ -698,6 +699,19 @@ stock get_boot(v, stat) // Поиск при добавлении нового �
 	if(yes == 1) return kolvo;
 	
 	else return -1;
+}
+stock get_boot_para(v, stat) // Параметр предмета
+{
+	new para = 0;
+	for(new inva = 0; inva < 20; inva++)
+	{
+		if(VehInfo[v][vInvent][inva] == stat && VehInfo[v][vInvType][inva] == 0)
+		{
+			para = VehInfo[v][vInvPara][inva];
+			break;
+		}
+	}
+	return para;
 }
 stock get_boot2(v, stat, inva) // Поиск при вытаскивании предмета только в одной ячейке
 {

@@ -483,6 +483,45 @@ CMD:cleartun(playerid)
 	return true;
 }
 
+alias:wheel("wheels", "whel", "whels")
+CMD:wheel(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
+		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить диски на транспорт /wheel ID модели");
+		if(!IsAWheelForVehicles(params[0])) return ErrorMessage(playerid, "{FF6347}Этот id нельзя установить в качестве дисков на транспорт");
+		AddVehicleComponent(vehicleid, params[0]);
+		PlayerPlaySound(playerid,40404,0,0,0);
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+CMD:paint(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		if(IsAVehiclesPaintJob(VehInfo[vehicleid][vModel]) == 0) return ErrorMessage(playerid, "{FF6347}На этот транспорт нельзя установить покрасочную работу");
+		if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить покрасочную работу на транспорт /paint ID paintjob (3 - удалить)");
+
+		ChangeVehiclePaintjob(vehicleid, params[0]);
+		PlayerPlaySound(playerid,1134,0,0,0);
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+stock GetVehicleSale(model) {
+	new vehsale_model = model - 400;
+	if (model >= 2000) vehsale_model = model - 2000 + 212;
+	return VehSale[vehsale_model];
+}
+
 stock GetDetailPosVehicle(playerid, vehicleid, typeSide)
 {
 	if(typeSide < 0 || typeSide > 1) return ErrorMessage(playerid, "{FF6347}Side 0 перед, side 1 зад");
@@ -1072,6 +1111,12 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 
 				// Пересобираем подарки с транспортом
 				CreateVehicleGiftCase();
+
+				new log_str[128];
+				new model = vehicleList + 400;
+				if (vehicleList >= 212) model = vehicleList + 2000 - 212;
+				format(log_str, sizeof(log_str), "Транспорт %s [ID: %d]", GetVehicleName(model), model);
+				OrgLog(7, "salechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", VehSale[vehicleList], log_str);
 			}
 		}
 		else vehprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
@@ -1408,6 +1453,7 @@ function LoadPriceVeh()
 
 		printf("[MODE]: Настройки Транспорта [%d ms]", GetTickCount() - time);
 	}
+
 	return 1;
 }
 

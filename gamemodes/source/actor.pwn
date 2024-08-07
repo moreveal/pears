@@ -100,6 +100,9 @@ stock LoadDynamicActor()
     CreateDynamicActor(163, -2777.3750,381.2728,6.164,182.8925, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 1)
     CreateDynamicActor(164, -2801.6621,378.6697,6.164,181.7841, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 2)
     CreateDynamicActor(150, -2793.0801,376.0515,6.164,270.1448, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Reseption Girl)
+
+    Hank_LoadActor();
+    
     return 1;
 }
 

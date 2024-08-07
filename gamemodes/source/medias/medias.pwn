@@ -57,7 +57,7 @@ CMD:ahelpmedia(playerid)
     format(stro,sizeof(stro),"\n{cccccc}/delaction - Удалить /action игроку"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/bump | /slap - Воткнуть в землю | Поднять над землей"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/sprays /checkveh /checkmed /checkgoods /checkskill /checkpotreb"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n{cccccc}/loss | /trigger - Показ потери пакетов | Срабатование античита"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"\n{cccccc}/trigger - Срабатование античита"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/jetpack | /geo - Джетпак | Откуда игрок"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/plworld | /plint - установить Мир/Интерьер"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/freezeall | /unfreezeall - Заморозить/разморозить игроков в радиусе 50 метров"), strcat(sctringo,stro);

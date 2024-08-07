@@ -20,7 +20,7 @@ stock discount()
 stock defaultPriceDonate()
 {
     donatePrice[0] = 6; // Временная VIP (стоимость 1 день випки)
-    donatePrice[1] = 900; // Premium VIP
+    donatePrice[1] = 900; // Platinum VIP
     donatePrice[2] = 600; // Создание семьи
     donatePrice[3] = 50; // Сменить ник
     donatePrice[4] = 50; // Занять ник (резервирование никнейма)

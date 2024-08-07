@@ -85,8 +85,7 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
-	if(BizzInfo[b][bOrderStatus] == 0) format(line,sizeof(line),"{cccccc}Статус заказа \t {FF6347}[Unactive] \t \n"), strcat(lines,line);
-	else format(line,sizeof(line),"{cccccc}Статус заказа \t {99ff66}[Active] \t \n"), strcat(lines,line);
+	format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
 	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
     
 	// В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
@@ -528,6 +527,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][5] == 0 || stat == 1) BizzInfo[b][bProduct][5] = 175, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // Сигнализация 1 ур.
     	if(BizzInfo[b][bProduct][6] == 0 || stat == 1) BizzInfo[b][bProduct][6] = 176, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Сигнализация 2 ур.
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Сигнализация 3 ур.
+		if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 231, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Детектор радаров
 	}
 	else if(b >= 153 && b <= 162) // Ларьки с едой
 	{
@@ -1629,16 +1629,16 @@ alias:rbiztaxes("rbiznal", "rbiztax", "rbiznalog")
 CMD:rbiztaxes(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в бизе [ /rbiztaxes Номер Биза (0 - все бизы) ]");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить налог в бизнесе [ /rbiztaxes Номер Биза (0 - все бизы) ]");
 
 	new string[144];
 	if(params[0] > 0)
 	{
-		if(params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Такого номера биза не существует");
+		if(params[0] >= MAX_BIZ) return ErrorMessage(playerid, "{FF6347}Такого бизнеса не существует");
 		ReloadBizTaxes(params[0]);
-		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги в бизе № %d", PlayerInfo[playerid][pName], params[0]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги в бизнесе №%d", PlayerInfo[playerid][pName], params[0]);
  		ABroadCast(COLOR_ADM,string,1);
-		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги в бизе");
+		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги в бизнесе");
 	}
 	else
 	{
@@ -1649,7 +1649,7 @@ CMD:rbiztaxes(playerid, const params[])
 		}
 		mysql_commit(pearsq);
 
-		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги во всех бизах", PlayerInfo[playerid][pName]);
+		format(string, sizeof(string), " [ ADM ]: %s сбросил налоги во всех бизнесах", PlayerInfo[playerid][pName]);
  		ABroadCast(COLOR_ADM,string,1);
 		AdminLog("rbiztaxes", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Сбросил налоги во всех бизах");	
 	}

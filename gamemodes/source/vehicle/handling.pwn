@@ -225,7 +225,7 @@ CMD:sethandling(playerid, const params[])
 
 CMD:vehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid, handlingid, value[24];
     if(IsPlayerInAnyVehicle(playerid))
@@ -242,13 +242,18 @@ CMD:vehhand(playerid, const params[])
     if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
     
     SetVehicleHandlingPofigType(vehicleid, handlingid, value);
-    SendClientMessage(playerid, -1, "Handling %s %d %s новое значение %s", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid, handlingName[handlingid], value);
+
+    new str[256];
+    format(str, sizeof(str), "Handling %s %d %s новое значение %s", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid, handlingName[handlingid], value);
+    SendClientMessage(playerid, -1, str);
+
+    AdminLog("vehhand", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", VehInfo[vehicleid][vNewid], str);
     return 1;
 }
 
 CMD:getvehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid, model;
     if(IsPlayerInAnyVehicle(playerid))
@@ -271,7 +276,11 @@ CMD:getvehhand(playerid, const params[])
     // Применили весь хендлинг
     SetHandlingTotal(vehicleid);
 
-    SendClientMessage(playerid, -1, "Handling %s [ID: %d] скопирован для %s [ID: %d Vehicleid: %d]", GetVehicleName(model), model, GetVehicleName(VehInfo[vehicleid][vModel]), VehInfo[vehicleid][vModel], vehicleid);
+    new str[256];
+    format(str, sizeof(str), "Handling %s [ID: %d] скопирован для %s [ID: %d Vehicleid: %d]", GetVehicleName(model), model, GetVehicleName(VehInfo[vehicleid][vModel]), VehInfo[vehicleid][vModel], vehicleid);
+    SendClientMessage(playerid, -1, str);
+
+    AdminLog("getvehhand", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", VehInfo[vehicleid][vNewid], str);
     return 1;
 }
 
@@ -287,7 +296,7 @@ stock SetVehicleHandlingPofigType(vehicleid, handlingid, const value[])
 
 CMD:rvehhand(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new vehicleid;
     if(IsPlayerInAnyVehicle(playerid))
@@ -301,7 +310,12 @@ CMD:rvehhand(playerid, const params[])
     if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
 
     DestroyVehicleHandling(vehicleid);
-    SendClientMessage(playerid, -1, "Handling %s %d {FF6347}сброшен", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid);
+
+    new str[256];
+    format(str, sizeof(str), "Handling %s %d сброшен", GetVehicleName(VehInfo[vehicleid][vModel]), vehicleid);
+    SendClientMessage(playerid, -1, str);
+
+    AdminLog("rvehhand", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", VehInfo[vehicleid][vNewid], str);
     return 1;
 }
 
