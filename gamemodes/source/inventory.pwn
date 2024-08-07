@@ -100,6 +100,16 @@ new friskName[][] = // Название Вещи
 	"ACT","Clutch Masters","Jacson Raceing","HPRacing","Ibach Springs","KONI suspension","BILSTEIN","YKOHAMA","TOYO","Falken Tire",// 211-220
 	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "Домкрат", "Бронеплёнка 1000", "Бронеплёнка 2000", "Бронеплёнка 3000", "Сумка","Солнцезащитный Крем" // 221-230
 };
+
+// Топовые предметы, которым не надо выпадать так просто в кейсах
+stock TopThing(i)
+{
+	if(i == 10 || i == 11 || i == 26 || i == 42 || i == 49 || i >= 64 && i <= 67 || i == 94
+	|| i == 176 || i == 177 || i == 210 || i == 213 || i == 214 || i == 215 || i == 216 || i == 219 || i == 220
+	|| i == 222 || i == 223 || i == 224) return true;
+	return false;
+}
+
 new friskPick[] = // ID Модельки в Инвентаре (обычный предмет)
 {
     0,19579,2710,1520,19473,1241,1578,1279,11738,1650,19515, // 0 - 10
@@ -954,6 +964,34 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 	else
 	{
 		new string[28];
+
+		yesFindModel = GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, Tabs_Load[playerid]);
+		if(thingType == 0 && thingPack == 0) // Обычный предмет
+		{
+			if(CheckThingQuan(thingId) == 1) // Количественный
+			{
+				format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
+			}
+		}
+		else if(thingType == 3 && thingPack == 0) // Одежда (Отображаем ID)
+		{
+			format(string, sizeof(string), "ID %d", thingId), textPickInventory(playerid, inva, string);
+		}
+
+		if(razdel == 1 && (Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999) // Склады
+		{
+			format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
+		}
+
+		if(yesFindModel > 0)
+		{
+			new Float:modelPos[4], findIt;
+			GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+			PlayerTextDrawSetPreviewModel(playerid, textdraw, yesFindModel);
+			if(thingType == 5 && thingPack == 0) PlayerTextDrawSetPreviewVehicleColours(playerid, textdraw, thingQuan, thingQuan);
+			PlayerTextDrawSetPreviewRot(playerid, textdraw, modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
+		}
+
 		if(stat == 0)
 		{
 			PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle1]);
@@ -977,35 +1015,8 @@ stock ShowPickItem(playerid, inva, inva2, stat, thingId, thingQuan, thingPara, t
 			if(throwPlayerId == PlayerInfo[playerid][pID]) PlayerTextDrawBackgroundColour(playerid, textdraw, -226); // Если предмет оставил этот игрок
 			else PlayerTextDrawBackgroundColour(playerid, textdraw, 80); // Если предмет оставил хер знает кто
 		}
-		
-		yesFindModel = GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, Tabs_Load[playerid]);
-		if(thingType == 0 && thingPack == 0) // Обычный предмет
-		{
-			if(CheckThingQuan(thingId) == 1) // Количественный
-			{
-				format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
-			}
-		}
-		else if(thingType == 3 && thingPack == 0) // Одежда (Отображаем ID)
-		{
-			format(string, sizeof(string), "ID %d", thingId), textPickInventory(playerid, inva, string);
-		}
-
-		if(razdel == 1 && (Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) && OnlineInfo[playerid][oShowTabs] != 9999) // Склады
-		{
-			format(string, sizeof(string), "%d", thingQuan), textPickInventory(playerid, inva, string);
-		}
 	}
 	if(OnlineInfo[playerid][oInventSelectRight] == inva2) PlayerTextDrawBackgroundColour(playerid, textdraw, PlayerInfo[playerid][pStyle3]);
-	
-	if(yesFindModel > 0)
-	{
-		new Float:modelPos[4], findIt;
-		GetModelTextDraw(yesFindModel, thingType,thingPack, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
-		PlayerTextDrawSetPreviewModel(playerid, textdraw, yesFindModel);
-		if(thingType == 5 && thingPack == 0) PlayerTextDrawSetPreviewVehicleColours(playerid, textdraw, thingQuan, thingQuan);
-		PlayerTextDrawSetPreviewRot(playerid, textdraw, modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
-	}
 	
 	PlayerTextDrawShow(playerid, textdraw);
 	return 1;
@@ -1917,12 +1928,12 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
     	else if(thingPack == 2) format(hideName,sizeof(hideName),"Ящик");
     	else if(thingPack == 3) format(hideName,sizeof(hideName),"Мешок");
 		else if(thingPack == 4) format(hideName,sizeof(hideName),"Запечатанный Ящик");
-		else if(IsACasePackID(thingPack)) format(hideName,sizeof(hideName),"Кейс");
+		else if(IsACasePackID(thingPack)) format(hideName,sizeof(hideName),"%s", GetCaseName(thingPack));
 	    
 	    if(readStatus == 0 || IsACasePackID(thingPack)) format(nameProduct,sizeof(nameProduct),"%s", hideName);
 	    else // Читаемый, для логов и просмотра содержимого администрацией
 		{
-			if(thingType == 0) 
+			if(thingType == 0)
 			{
 				if(thingId == -1) format(nameProduct,sizeof(nameProduct),"%s (Обычный Предмет)", hideName, friskName[thingId]);
 				else format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, friskName[thingId]);

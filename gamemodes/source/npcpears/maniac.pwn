@@ -173,6 +173,7 @@ new Float:ManiacMask[][] =
     { 2612.551269, -1086.351684, 68.528511, -88.299934, 0.000000, 0.000000 }
 };
 
+#define GOLD_QUEST 190 // Сколько игрок получает голды за пройденный квест с маньяком
 #define MAX_MANIAC 100
 #define MAX_DIST_MANIAC_POSITION 100 // Максимальная дистанция маньяка при создании для игрока
 #define MAX_DIST_ZONE_MANIAC 80 // Максимальная дистанция маньяка внутри его зоны для атаки
@@ -696,13 +697,31 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
 
     if(yesDeathManiac == true)
     {
-        BeginDestroyManiac(findSlot);
-
-        PlayerInfo[playerid][pManiacQwest] = COMPLETE_QUEST_MANIAC;
-        SaveManiacQuestProcess(playerid);
-
-        if(ManiacInfo[findSlot][manInterior] == INT_MANIAC_AREA)
+        if(ManiacInfo[findSlot][manInterior] == INT_MANIAC_AREA) // Маньяк в Интерьере по квесту
         {
+            if(PlayerInfo[playerid][pAchieve][130] == 0) AchievePlayer(playerid, 130, 1); // Прошел квест Маньяка
+
+            if(PlayerInfo[playerid][pManiacQwest] < COMPLETE_QUEST_MANIAC)
+            {
+                PlayerInfo[playerid][pManiacQwest] = COMPLETE_QUEST_MANIAC;
+                SaveManiacQuestProcess(playerid);
+
+                PlayerInfo[playerid][pDonateMoney] += GOLD_QUEST;
+                mysql_save(playerid, 4);
+                DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GOLD_QUEST, "Квест маньяк");
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ]: {cccccc}Вы получили %dG за прохождение этого квеста", GOLD_QUEST);
+
+                // Формируем кейс маньяка
+                new thingId, thingQuan, thingType, thingPara, thingPack;
+                CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
+
+                // Кладём кейс маньяка на землю
+                new Float:npc_pos[3];
+                GetNpcPosition(ManiacInfo[findSlot][manID], npc_pos[0], npc_pos[1], npc_pos[2]);
+                SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
+                    npc_pos[0] + random(5), npc_pos[1] + random(5), npc_pos[2], 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+            }
+
             if(PlayerInfo[playerid][pSex] == 1)
             {
                 PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac4.mp3");
@@ -718,6 +737,12 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ладно... давай, удачки");
             }
         }
+        else // Маньяк на улице
+        {
+            if(PlayerInfo[playerid][pAchieve][129] == 0) AchievePlayer(playerid, 129, 1); // Убил маньяка
+        }
+
+        BeginDestroyManiac(findSlot);
     }
     return yesDeathManiac;
 }

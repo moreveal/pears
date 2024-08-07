@@ -306,7 +306,7 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 				ThrowInfo[g][tPack] = thingPack;
 
 				new string[60];
-			    format(string,sizeof(string),"[tID %d] Оставил: %s",g, GetNameThing(1, fpick, thingType, thingPack));
+			    format(string,sizeof(string),"[tID %d] Оставил: %s", g, GetNameThing(1, fpick, thingType, thingPack));
 			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, string);
 				noobject = 1, gee = g;
 				break;
@@ -358,9 +358,9 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			    format(ThrowInfo[g][tName],24,"%s",PlayerInfo[playerid][pName]);
 			    format(ThrowInfo[g][tIP],24,"%s",PlayerInfo[playerid][pPlaIP]);
 
-				new string[80];
-			    if(fpick != frisk) format(string,sizeof(string),"[tID %d] Оставил: %s (%s)",g,GetNameThing(1, fpick, thingType, thingPack),GetNameThing(1, frisk, thingType, thingPack));
-			    else format(string,sizeof(string),"[tID %d] Оставил: %s", g, GetNameThing(1, fpick, thingType, thingPack));
+				new string[90];
+			    if(fpick != frisk) format(string,sizeof(string),"[tID %d] Оставил: %s (%s)", g, GetNameThing(1, fpick, thingType, thingPack), GetNameThing(1, frisk, thingType, thingPack));
+			    else format(string,sizeof(string),"[tID %d] Оставил: %s (DEBUG %d %d)", g, GetNameThing(1, fpick, thingType, thingPack), fpick, thingType); // VREMENNO отображаем чё за нах
 			    UserLog("throw", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, string);
 			}
 			else if(playerid == -1) ThrowInfo[g][tPlayerid] = 0, format(ThrowInfo[g][tName], 24, "\0"), format(ThrowInfo[g][tIP], 24, "\0");

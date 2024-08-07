@@ -68,7 +68,7 @@ stock GetCaseName(thingPack)
 {
     new name[30];
     new caseID = GetInventoryPackCustomCase(thingPack);
-	if(caseID == -1) format(name, sizeof(name),"Кейс Обыкновенный");
+	if(caseID == -1) format(name, sizeof(name),"Кейс");
 	else format(name, sizeof(name),"%s", customCaseName[caseID]);
     return name;
 }

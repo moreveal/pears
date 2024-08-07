@@ -9,6 +9,7 @@ fpick 94 - Выдача голды человеку.
 oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 */
 
+// Обычный Транспорт
 new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingVehicleQuan;
 
@@ -16,15 +17,34 @@ new ThingVehicleQuan;
 new ThingPremiumVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingPremiumVehicleQuan;
 
+// Мужские скины
 new ThingSkincaseGift[MAX_MODELS_SKIN];
 new ThingSkinQuan;
 
+// Женские скины
 new ThingSkincaseGiftFemale[MAX_MODELS_SKIN];
 new ThingSkinQuanFemale;
 
+// Мужские скины TOP
+new ThingSkinTopcaseGift[MAX_MODELS_SKIN];
+new ThingSkinTopQuan;
+
+// Женские скины TOP
+new ThingSkinTopcaseGiftFemale[MAX_MODELS_SKIN];
+new ThingSkinTopQuanFemale;
+
+// Аксессуары
 new ThingAccessoryGift[MAX_ACCESSORY];
 new ThingAccessoryGiftBone[MAX_ACCESSORY];
 new ThingAccessoryQuan;
+
+// Обычные предметы
+new ThingItem[sizeof(friskPick)];
+new thingItemQuan;
+
+// Обычные предметы (топовые)
+new ThingItemTop[sizeof(friskPick)];
+new thingItemTopQuan;
 
 
 stock IsThingNotVariable(i)
@@ -100,17 +120,30 @@ stock CreateVehicleGiftCase()
 stock CreateSkinGiftCase() // Собираем скины
 {
     ThingSkinQuan = 0;
+    ThingSkinQuanFemale = 0;
+
+    ThingSkinTopQuan = 0;
+    ThingSkinTopQuanFemale = 0;
     
     for(new i; i < MAX_MODELS_SKIN; i++)
     {
         if(SkinSale[i] == 1) 
         {
             new genderSkin = GetSkinSex(i);
-            if(genderSkin == 1 || genderSkin == 0) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
-            else if(genderSkin == 2 || genderSkin == 0) ThingSkincaseGiftFemale[ThingSkinQuan] = i, ThingSkinQuanFemale ++;
+
+            if(SkinTop[i] == true)
+            {
+                if(genderSkin == 1 || genderSkin == 0) ThingSkinTopcaseGift[ThingSkinTopQuan] = i, ThingSkinTopQuan ++;
+                else if(genderSkin == 2 || genderSkin == 0) ThingSkinTopcaseGiftFemale[ThingSkinTopQuanFemale] = i, ThingSkinTopQuanFemale ++;
+            }
+            else
+            {
+                if(genderSkin == 1 || genderSkin == 0) ThingSkincaseGift[ThingSkinQuan] = i, ThingSkinQuan ++;
+                else if(genderSkin == 2 || genderSkin == 0) ThingSkincaseGiftFemale[ThingSkinQuanFemale] = i, ThingSkinQuanFemale ++;
+            }
         }
     }
-    return ThingSkinQuan;
+    return true;
 }
 
 stock CreateAccessoryGiftCase() // Собираем аксессуары для кейса
@@ -128,24 +161,56 @@ stock CreateAccessoryGiftCase() // Собираем аксессуары для 
     return ThingAccessoryQuan;
 }
 
+// Блокируем предметы для кейса (хз, там разные шняги)
+stock StopThingForCase(i, thingType)
+{
+    if(!IsThingNotVariable(i) // Запрещённые предметы для кейса
+    || NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
+    || DocumentThing(i, thingType) // Документы
+    || CheckThingQuan(i) // Количественные предметы
+    || JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
+    ) return true;
+    return false;
+}
+
+stock CreateThingGiftCase() // Собираем обычные предметы для кейса
+{
+    thingItemQuan = 0;
+    for(new i = 1; i < sizeof(friskName); i++)
+    {
+        if(!StopThingForCase(i, 0) && !TopThing(i)) ThingItem[thingItemQuan] = i, thingItemQuan ++;
+    }
+    return thingItemQuan;
+}
+
+stock CreateThingTopGiftCase() // Собираем топовые обычные предметы для кейса
+{
+    thingItemTopQuan = 0;
+    for(new i = 1; i < sizeof(friskName); i++)
+    {
+        if(!StopThingForCase(i, 0) && TopThing(i)) ThingItemTop[thingItemTopQuan] = i, thingItemTopQuan ++;
+    }
+    return thingItemTopQuan;
+}
+
 // Сток для получения обычного предмета из кейса
 stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
 {
-    new quan;
-    new ThingIDcaseGift[sizeof(friskName)];
-    for(new i = 1; i < sizeof(friskName); i++)
+    switch(random(5))
     {
-        if(IsThingNotVariable(i) // Запрещённые предметы для кейса
-            && !NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
-            && !DocumentThing(i, thingType) // Документы
-            && !CheckThingQuan(i) // Количественные предметы
-            && !JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
-            //&& !PerishableThing(i,0) // Портящиеся предметы
-            ) ThingIDcaseGift[quan] = i, quan ++;
+        case 1: // Top предметы
+        {
+            new thingTemp = random(thingItemTopQuan);
+            thingId = ThingItemTop[thingTemp];
+        }
+        default:
+        {
+            new thingTemp = random(thingItemQuan);
+            thingId = ThingItem[thingTemp];
+        }
     }
-    new thingTemp = random(quan);
-    thingId = ThingIDcaseGift[thingTemp];
     thingQuan = 0;
+    thingType = 0;
     thingPack = 5;
     return true;
 }
@@ -218,27 +283,53 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
     {
-        if(playerid == INVALID_PLAYER_ID)
+        switch(random(5))
         {
-            new thingTemp = random(ThingSkinQuan);
-            thingId = ThingSkincaseGift[thingTemp];
-        }
-        else
-        {
-            if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+            case 1: // Premium
             {
-                new thingTemp = random(ThingSkinQuan);
-                thingId = ThingSkincaseGift[thingTemp];
+                if(playerid == INVALID_PLAYER_ID)
+                {
+                    new thingTemp = random(ThingSkinTopQuan);
+                    thingId = ThingSkinTopcaseGift[thingTemp];
+                }
+                else
+                {
+                    if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                    {
+                        new thingTemp = random(ThingSkinTopQuan);
+                        thingId = ThingSkinTopcaseGift[thingTemp];
+                    }
+                    else // Женский скин в кейсе
+                    {
+                        new thingTemp = random(ThingSkinTopQuanFemale);
+                        thingId = ThingSkinTopcaseGiftFemale[thingTemp];
+                    }
+                }
             }
-            else // Женский скин в кейсе
+            default:
             {
-                new thingTemp = random(ThingSkinQuanFemale);
-                thingId = ThingSkincaseGiftFemale[thingTemp];
+                if(playerid == INVALID_PLAYER_ID)
+                {
+                    new thingTemp = random(ThingSkinQuan);
+                    thingId = ThingSkincaseGift[thingTemp];
+                }
+                else
+                {
+                    if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                    {
+                        new thingTemp = random(ThingSkinQuan);
+                        thingId = ThingSkincaseGift[thingTemp];
+                    }
+                    else // Женский скин в кейсе
+                    {
+                        new thingTemp = random(ThingSkinQuanFemale);
+                        thingId = ThingSkincaseGiftFemale[thingTemp];
+                    }
+                }
             }
         }
         thingQuan = 1;
     }
-
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
         switch(random(5))
