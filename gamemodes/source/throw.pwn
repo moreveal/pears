@@ -410,7 +410,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	new Float:correct_z;
 	if(thingPack == 1) model = 3014, setgift = 1; // Подарок
 	else if(thingPack == 2 || thingPack == 4)  model = 3014; // Ящик
-	else if(IsACasePackID(thingPack)) model = 19918; // Кейс
+	else if(IsACasePackID(thingPack)) model = GetModelCustomCase(thingPack); // Кейс
 	else
 	{
 	    if(thingType == 0) // Основные предметы

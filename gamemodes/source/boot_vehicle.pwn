@@ -557,7 +557,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		if(thingPack == 1) yesFindModel = 19054; // Подарок
 		else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик / Запечатанный Ящик
 		else if(thingPack == 3) yesFindModel = 2060; // Мешок
-		else if(IsACasePackID(thingPack)) yesFindModel = 19918; // Кейс
+		else if(IsACasePackID(thingPack)) yesFindModel = GetModelCustomCase(thingPack); // Кейс
 		else if(thingPack == 0) // Без упаковки
 		{
 			if(thingType == 0) // Обычный предмет

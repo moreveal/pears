@@ -1017,7 +1017,7 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 	if(thingPack == 1) yesFindModel = 19054; // Подарок
 	else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик
 	else if(thingPack == 3) yesFindModel = 2060; // Мешок
-	else if(IsACasePackID(thingPack)) yesFindModel = 19918; // Кейс
+	else if(IsACasePackID(thingPack)) yesFindModel = GetModelCustomCase(thingPack); // Кейс
 	else if(thingPack == 0) // Без упаковки
 	{
 		if(thingType == 0) yesFindModel = friskPick[thingId]; // Обычный предмет
@@ -1899,7 +1899,11 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
 	if(thingPack == 0)
 	{
-	    if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s", friskName[thingId]);
+	    if(thingType == 0) 
+		{
+			if(thingId == -1) format(nameProduct,sizeof(nameProduct),"Обычный Предмет");
+			else format(nameProduct,sizeof(nameProduct),"%s", friskName[thingId]);
+		}
 		else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s", gunName[thingId]);
 		else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s", GetNameAccessory(thingId));
 		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"Одежда ID %d", thingId);
@@ -1918,7 +1922,11 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 	    if(readStatus == 0 || IsACasePackID(thingPack)) format(nameProduct,sizeof(nameProduct),"%s", hideName);
 	    else // Читаемый, для логов и просмотра содержимого администрацией
 		{
-			if(thingType == 0) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, friskName[thingId]);
+			if(thingType == 0) 
+			{
+				if(thingId == -1) format(nameProduct,sizeof(nameProduct),"%s (Обычный Предмет)", hideName, friskName[thingId]);
+				else format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, friskName[thingId]);
+			}
 			else if(thingType == 1) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, gunName[thingId]);
 			else if(thingType == 2) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetNameAccessory(thingId));
 			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (Одежда ID %d)", hideName, thingId);

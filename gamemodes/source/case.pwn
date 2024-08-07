@@ -8,8 +8,6 @@ quan - Оставляем один если выдаем один предмет
 fpick 94 - Выдача голды человеку.
 oGivePlayerMoney(playerid, babki) - Выдать игроку денюжку
 */
-#define MAX_CASE_ITEM 10 // Максимальное количество слотов в кейсе
-#define MAC_CASES 1 // Максимальное количество типов Кейсов
 
 new ThingVehiclecaseGift[MAX_MODELS_VEHICLE];
 new ThingVehicleQuan;
@@ -28,26 +26,6 @@ new ThingAccessoryGift[MAX_ACCESSORY];
 new ThingAccessoryGiftBone[MAX_ACCESSORY];
 new ThingAccessoryQuan;
 
-/*enum caseInfo
-{
-    caseId, // кейс ID
-    caseSlots, // Количество предметов в кейсе
-    caseSlot[MAX_CASE_ITEM],// Предметы в кейсе
-    caseSlotType[MAX_CASE_ITEM], // Тип слота в кейсе
-    caseSlotPara[MAX_CASE_ITEM], // Параметр
-    caseSlotQuan[MAX_CASE_ITEM], // Количество
-}
-new OpenCase[MAC_CASES][caseInfo];*/
-
-// Упаковки, которые относятся к кейсу
-stock IsACasePackID(thingPack)
-{
-    if(thingPack == 5 // Стандартный
-    || thingPack == 6 // Деревенских
-    || thingPack == 7 // Кейс маньяка
-        ) return true;
-    return false;
-}
 
 stock IsThingNotVariable(i)
 {
@@ -172,9 +150,35 @@ stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
     return true;
 }
 
+
 // Рандомайзер для создания кейса
-stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack)
+stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack, const name[] = "default")
 {
+    // Поиск кастомного кейса
+    new caseID = GetCustomCaseID(name);
+    if(caseID >= 0) // Обнаружили кастомный кейс по идентификатору
+    {
+        new selectedThing = SelectRandomThing(caseID);
+        if(selectedThing == -1)
+        {
+            CommonThingCase(thingId, thingQuan, thingType, thingPack); // Ошибка, предмет не найден, выдаём стандартный
+            thingPack = GetCustomCaseInventoryPack(caseID);
+            return true;
+        }
+        CustomThingCase(caseID, selectedThing, thingId, thingQuan, thingPara, thingType, thingPack);
+
+        if(thingId < 0
+            || thingId >= sizeof(friskPick) && thingType == 0)
+        {
+            CommonThingCase(thingId, thingQuan, thingType, thingPack); // Обычный предмет из кастомного кейса (на случай мусорного заполнения)
+            thingPack = GetCustomCaseInventoryPack(caseID);
+            return true;
+        }
+        return true;
+    }
+
+
+    // Формирование стандартного кейса
     switch(random(15))
     {
         case 0: thingType = 0; // Обычный предмет
@@ -295,56 +299,63 @@ stock TakeCalculateVehicleLimited(thingId, thingType)
 CMD:givecase(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс [ /givecase ID ]");
-    
-    GivePlayerCase(playerid, params[0]);
+
+    new giveplayerid, getNameCaseCustom[24];
+    if(!sscanf(params, "is[24]", giveplayerid, getNameCaseCustom)) GivePlayerCase(playerid, giveplayerid, getNameCaseCustom);
+    else if(!sscanf(params, "i", giveplayerid)) GivePlayerCase(playerid, giveplayerid);
+    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс [ /givecase ID ]");
     return 1;
 }
 
-CMD:givecaseall(playerid)
+CMD:givecaseall(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    new getNameCaseCustom[24], nameCase[24];
+    if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
+
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, false);
+        if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, nameCase, false);
     }
-
     new string[140];
-	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам кейсы", PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам кейсы [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
-	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Выдал всем кейсы");
+	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
     return 1;
 }
 
-CMD:givecasegro(playerid)
+CMD:givecasegro(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    new getNameCaseCustom[24], nameCase[24];
+    if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
+
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i)
         {
-            GivePlayerCase(playerid, i, false);
+            GivePlayerCase(playerid, i, nameCase, false);
         }
     }
 
     new string[140];
-	format(string, sizeof(string), " [ ADM ]: %s выдал кейсы игрокам рядом с собой", PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), " [ ADM ]: %s выдал кейсы игрокам рядом с собой [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
-	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Выдал кейсы рядом с собой");
+	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
     return 1;
 }
 
-stock GivePlayerCase(playerid, giveplayerid, bool:onePlayer = true)
+stock GivePlayerCase(playerid, giveplayerid, const name[] = "default", bool:onePlayer = true)
 {
     new thingId, thingQuan, thingType, thingPara, thingPack;
-    CreateCasePlayer(giveplayerid, thingId, thingQuan, thingType,thingPara, thingPack);
+    CreateCasePlayer(giveplayerid, thingId, thingQuan, thingType, thingPara, thingPack, name);
     new put_inva = GiveThingPlayer(giveplayerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1 && onePlayer == true) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 
     CalculateVehicleLimited(thingId, thingType);
-    if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s кейс", PlayerInfo[giveplayerid][pName]);
-    if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* Администратор %s выдал вам кейс", PlayerInfo[playerid][pName]);
+    if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s кейс [ %s ]", PlayerInfo[giveplayerid][pName], name);
+    if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* Администратор %s выдал вам кейс [ %s ]", PlayerInfo[playerid][pName], name);
 
-    if(onePlayer == true) AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Рандомный кейс");
+    if(onePlayer == true) AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, name);
     return true;
 }
