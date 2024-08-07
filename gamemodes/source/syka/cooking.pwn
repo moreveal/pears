@@ -34,6 +34,23 @@ stock GetDynamicObjectWorkbench(objectid)
 	return false;
 }
 
+stock GetDynamicObjectElectro(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 12299) return true;
+	return false;
+}
+
+// Узнаём, что нужный нам dynamic object, это холодильник
+stock GetDynamicObjectFridge(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 19916 || model == 12228 || model == 12204 || model == 2140) return true;
+	return false;
+}
+
 stock IsANearbyObject(playerid) // Ищем предметы рядом с игроком
 {
     new Float: player_pos[3];
@@ -57,6 +74,8 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
 
         if(GetDynamicObjectCookPosition(current_object)) return 1; // 0 Кухонная Плита
         if(GetDynamicObjectWorkbench(current_object)) return 2; // 1 Верстак
+        if(GetDynamicObjectFridge(current_object)) return 3; // 2 Холодос
+        if(GetDynamicObjectElectro(current_object)) return 4; // 3 Щиток для электричества
     }
     return 0;
 }

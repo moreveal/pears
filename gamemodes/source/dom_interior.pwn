@@ -97,7 +97,6 @@ stock DeleteObjectDom(playerid, dom, oba)
 	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
         && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
-
     if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = DomInfo[dom][dOmodel][oba];
@@ -109,6 +108,11 @@ stock DeleteObjectDom(playerid, dom, oba)
     else
     {
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Объект был полностью удалён\n{cccccc}Система не позволяет сохранять этот объект в инвентаре","*","");
+    }
+    if(!GetDynamicObjectElectro(oba)) 
+    {
+        DomInfo[dom][dElectroStatus] = DomInfo[dom][dElectroConnect];
+        SaveElectro_Dom(dom);
     }
     DestroyDynamicObject(DomInfo[dom][dObject][oba]);
     DelObject(dom, oba);

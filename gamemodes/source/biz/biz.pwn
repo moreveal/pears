@@ -3,7 +3,7 @@
 new dyn_zone_zzBiz[MAX_BIZ];
 
 // Бизнесы Аренды
-#define MAX_BIZ_TERM 46
+#define MAX_BIZ_TERM 56
 new Float:RentPos_X[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Y[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Z[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RX[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentObject[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
@@ -84,15 +84,23 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	new quan;
 	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
-    format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
-	format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
-	format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
-    
+    if(b < 143 && b > 152)
+	{
+		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
+	}
+
 	// В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
 	if(b >= 163 && b <= 172)
 	{
 		format(line,sizeof(line),"{cccccc}Инкассация денег\t от {99ff66}%d$ \t \n", BizzInfo[b][bAtmCollector]), strcat(lines,line);
-	}	
+	}
+	if(b >= 143 && b <= 152) // В электростанциях нет доставки, оплата за переподключение дома и ремонта колонки
+	{
+		format(line,sizeof(line),"{cccccc}Оплата за переподключение дома\t от {99ff66}%d$ \t \n", BizzInfo[b][bElectroPayForConnect]), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Оплата за ремонт станции\t от {99ff66}%d$ \t \n", BizzInfo[b][bElectroPayForRepair]), strcat(lines,line);
+	}
 	else
 	{
 		for(new i = 0; i < 50; i++)
@@ -530,6 +538,10 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][7] == 0 || stat == 1) BizzInfo[b][bProduct][7] = 177, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Сигнализация 3 ур.
 		if(BizzInfo[b][bProduct][8] == 0 || stat == 1) BizzInfo[b][bProduct][8] = 231, BizzInfo[b][bTypeProduct][8] = 0, yes[8] = true; // Детектор радаров
 	}
+	else if(b >= 143 && b <= 152) // Электростанции
+	{
+	    if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 240, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Киловаты
+	}
 	else if(b >= 153 && b <= 162) // Ларьки с едой
 	{
 		if(BizzInfo[b][bProduct][0] == 0 || stat == 1) BizzInfo[b][bProduct][0] = 141, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Хот Дог
@@ -691,7 +703,7 @@ stock pricebiz(playerid, b)
 	new line[100],lines[4048];
 
 	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 42 && b <= 76 || b >= 77 && b <= 92 || b >= 93 && b <= 102 || b >= 103 && b <= 122 
-	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 153 && b <= 162 || b >= 183 && b <= 200) // Прайс автоматгенерация
+	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 143 && b <= 152 || b >= 153 && b <= 162 || b >= 183 && b <= 200) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -1411,6 +1423,7 @@ stock IsBizTerminal(b)
 		|| b >= 62 && b <= 66 // Мотоциклов (5)
 		|| b >= 67 && b <= 76 // Скутеров (10)
 		|| b >= 153 && b <= 162 // Ларьки (10)
+		|| b >= 143 && b <= 152 // Электростанции (10)
 		|| b >= 163 && b <= 172) return 1; // Банкоматы (10)
 	return 0;
 }

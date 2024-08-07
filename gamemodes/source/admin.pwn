@@ -897,19 +897,6 @@ CMD:setdom(playerid, const params[])
 	SendClientMessage(params[0], COLOR_GREY, string);
 	return 1;
 }
-CMD:setroom(playerid, const params[])
-{
-	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setroom ID Номер ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
-	PlayerInfo[params[0]][pRoom]=params[1];
-	new string[144];
-	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер квартиры {0088ff}%d", PlayerInfo[params[0]][pName],params[1]);
-	SendClientMessage(playerid, COLOR_GREY, string);
-	format(string, sizeof(string), "{FFFFFF}Администрация установила вам номер квартиры %d",params[1]);
-	SendClientMessage(params[0], COLOR_GREY, string);
-	return 1;
-}
 CMD:rkasino(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return 1;

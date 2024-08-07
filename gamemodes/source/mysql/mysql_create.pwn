@@ -16,7 +16,20 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pCDKatana", "INT NOT NULL DEFAULT '0'"); // КД на дуэль на катанах
     AddColumnIfNotExists("pp_igroki", "pCDAd", "INT NOT NULL DEFAULT '0'"); // КД на подачу объявлений
 
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom0", "INT NOT NULL DEFAULT '0'"); 
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom1", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom2", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom3", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom4", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom5", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom6", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom7", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom8", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_igroki", "pApartmentsRoom9", "INT NOT NULL DEFAULT '0'");
+    
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_bizz", "bElectroPayForConnect", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_bizz", "bElectroPayForRepair", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_organization", "gWarehouse", "BOOLEAN NOT NULL DEFAULT '0'");
@@ -25,6 +38,10 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_dom", "dDoorInt1", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dDoor0", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dDoor1", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dElectroStatus", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dElectroConnect", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_dom", "dElectroUnix", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneX", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneY", "FLOAT NOT NULL DEFAULT '0'");

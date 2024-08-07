@@ -721,3 +721,11 @@ stock SaveDopDoor(d)
     query_empty(pearsq, string_mysql);
 	return 1;
 }
+
+stock SaveElectro_Dom(d)
+{
+	new string_mysql[200];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_dom` SET `dElectroStatus`='%d',`dElectroConnect`='%d',`dElectroUnix`='%d' WHERE `Ids`='%d'",DomInfo[d][dElectroStatus],DomInfo[d][dElectroConnect],DomInfo[d][dElectroUnix],d);
+	query_empty(pearsq, string_mysql);
+	return 1;
+}

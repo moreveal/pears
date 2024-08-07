@@ -82,6 +82,7 @@
 #define WORLD_MANIAC -1
 #define INT_MANIAC 166
 
+
 // Маньяк Арена
 
 #define WORLD_MANIAC_AREA -1
@@ -119,3 +120,9 @@
 
 #define WORLD_YAKUZA_SPORTSHALL 14002
 #define INT_YAKUZA_SPORTSHALL 116
+
+//==================================================
+// Квартиры
+
+#define WORLD_APARTMENTS -1
+#define INT_APARTMENTS 163

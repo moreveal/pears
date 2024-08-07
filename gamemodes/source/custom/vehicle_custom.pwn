@@ -587,3 +587,10 @@ stock IsAWheelForVehicles(model)
         || IsAWheelsForVehicleCustom(model)) return true;
     return false;
 }
+
+stock IsAElectroCar(model) // Транспорт с электродвигателем
+{
+	if(model == 2078 || model == 2079 || model == 2086 || model == 2138 || model == 2139 || model == 2140 || model == 2141 || model == 2142
+    || model == 2143) return 1;
+	return 0;
+}

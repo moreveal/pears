@@ -214,13 +214,13 @@ stock ClickDraw_SpawnChoise(playerid, Text:clickedid)
                 format(line,sizeof(line),"{cccccc}Семейный Дом № {ff9000}%d\n", FamilyInfo[fam][fDop5]), strcat(lines,line);
             }
         }
-        if(PlayerInfo[playerid][pRoom])
+        /*if(PlayerInfo[playerid][pRoom])
         {
             List[quan][playerid] = 5;
             ListParam[quan][playerid] = PlayerInfo[playerid][pRoom];
             quan ++;
             format(line,sizeof(line),"{cccccc}Квартира № {ff9000}%d\n", PlayerInfo[playerid][pRoom]), strcat(lines,line);
-        }
+        }*/
         if(PlayerInfo[playerid][pTrailer])
         {
             List[quan][playerid] = 9;
@@ -288,10 +288,10 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
             {
                 if(DomInfo[numSpawn][dArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот дом арестован\n\n{cccccc}Если это ваш дом, оплатите налоги для снятия ареста");
             }
-            else if(spawnId == 5) // Room
+            /*else if(spawnId == 5) // Room
             {
                 if(RoomInfo[numSpawn][rArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот квартира арестована\n\n{cccccc}Если это ваша квартира, оплатите налоги для снятия ареста");
-            }
+            }*/
             else if(spawnId == 9) // Trailer
             {
                 if(TrailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");

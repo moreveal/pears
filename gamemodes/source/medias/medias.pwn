@@ -41,6 +41,14 @@ CMD:media(playerid)
 	return 1;
 }
 
+alias:localclearchat("lcc")
+CMD:localclearchat(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 1 && PlayerInfo[playerid][pMedia] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+	ClearChatbox(playerid, 50);
+	return 1;
+}
+
 CMD:ahelpmedia(playerid)
 {
     if(PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Эти команды доступны только для медиа партнёров 3 Уровня\n{cccccc}У вас есть доступ к некоторым функциям в этом меню только на тестовом сервере");
