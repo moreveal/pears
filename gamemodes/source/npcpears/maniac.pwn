@@ -833,12 +833,20 @@ stock StartManiacQuest(playerid)
 {
     if(PlayerInfo[playerid][pManiacQwest] == 0)
     {
-        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac0.mp3");
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Хей! Как дела? Тут один моментик нарисовался, понадобится твоя помощь");
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): В штате орудует маньяк и по ночам нападает на людей");
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Если ты найдёшь в переулках города все маски, то сможешь пробраться в его логово");
-        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я видел одну маску неподалёку, сгоняй и забери её");
-        CreateRandomGpsManiacMask(playerid);
+        new getMasks = MAX_MANIAC_MASK - QuanMaskManiac[playerid]; // Собрано масок
+        if(getMasks > 0)
+        {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно найти %d масок маньяка [ Маски разбросаны в переулках города Los Santos ]", MANIAC_MASK_NEED - getMasks);
+        }
+        else
+        {
+            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_maniac0.mp3");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Хей! Как дела? Тут один моментик нарисовался, понадобится твоя помощь");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): В штате орудует маньяк и по ночам нападает на людей");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Если ты найдёшь в переулках города все маски, то сможешь пробраться в его логово");
+            SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Я видел одну маску неподалёку, сгоняй и забери её");
+            CreateRandomGpsManiacMask(playerid);
+        }
     }
     else if(PlayerInfo[playerid][pManiacQwest] == 1 || PlayerInfo[playerid][pManiacQwest] == 2)
     {
@@ -871,20 +879,7 @@ stock StartManiacQuest(playerid)
 // Создаём GPS метку на рандомную маску
 stock CreateRandomGpsManiacMask(playerid)
 {
-    new randomMask[MAX_MANIAC_MASK], quan;
-    for(new i = 0; i < MAX_MANIAC_MASK; i++)
-    {
-        if(TakeMaskManiac[playerid][i] == false)
-        {
-            randomMask[quan] = i + 1;
-            quan ++;
-        }
-    }
-
-    new findMask = randomMask[random(quan)] - 1;
-    if(findMask < 0 || findMask >= MAX_MANIAC_MASK) findMask = 0;
-
-    CreateGps(playerid,ManiacMask[findMask][0], ManiacMask[findMask][1], ManiacMask[findMask][2], 0, 0, 2.0);
+    CreateGps(playerid,ManiacMask[0][0], ManiacMask[0][1], ManiacMask[0][2], 0, 0, 2.0);
     return true;
 }
 

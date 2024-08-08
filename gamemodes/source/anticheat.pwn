@@ -292,7 +292,7 @@ stock GivePlayerResetWeaponUnix(playerid)
 {
     for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
     {
-        if(ProtectInfo[playerid][prWeapon][i] >= 0 && ProtectInfo[playerid][prAmmo][i] >= 0) ResetWeaponUnix[playerid][i] = gettime() + 5;
+        if(ProtectInfo[playerid][prWeapon][i] >= 0 && ProtectInfo[playerid][prAmmo][i] >= 0) ResetWeaponUnix[playerid][i] = gettime() + 7;
     }
     return 1;
 }

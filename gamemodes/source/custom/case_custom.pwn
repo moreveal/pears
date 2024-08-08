@@ -80,7 +80,7 @@ stock GetCaseName(thingPack)
 // Предмет ключ от кастомного кейса
 stock IsKeyCustomCase(i)
 {
-    if(i == 234 || i == 236) return true;
+    if(i == 234 || i == 235) return true;
     return false;
 }
 

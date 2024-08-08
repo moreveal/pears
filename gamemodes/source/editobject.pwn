@@ -259,14 +259,6 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
 
         UpdateGangObject(oid+13, OrganInfo[oid+13][gMap], yes);
         show_labelobject(oid, yes), OrgLog(oid+13, "cob", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", ObjectInfo[oid][gOmodel][yes], "");
-
-        if(ObjectInfo[oid][gOmodel][yes] == 2915)
-        {
-            if(ObjectInfo[oid][gDumStat] == 1) DestroyDynamic3DTextLabel(DumLabel[oid]);
-            ObjectInfo[oid][gDumStat] = 1;
-            ObjectInfo[oid][gDumx] = x, ObjectInfo[oid][gDumy] = y, ObjectInfo[oid][gDumz] = z;
-            DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-        }
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_TERMINAL_MOVE || gRedakt[playerid] == REDAKT_TYPE_TERMINAL_SET)
     {
@@ -620,13 +612,6 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
         else if(gRedakt[playerid] == REDAKT_TYPE_GANG_SPAWN_SET) // Установка Маппинга на респах банд
 		{
             if(!IsAGObjectInSquare(oid, x, y)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Объект за пределами территории... {ffcc00}[ Отмена Установки ]"), CancelDynamicEdit(playerid, EditObjectInfo[playerid][editObjectid]);
-            if(ObjectInfo[oid][gOmodel][slot] == 2915)
-            {
-                if(ObjectInfo[oid][gDumStat] == 1) DestroyDynamic3DTextLabel(DumLabel[oid]);
-                ObjectInfo[oid][gDumStat] = 1;
-                ObjectInfo[oid][gDumx] = x, ObjectInfo[oid][gDumy] = y, ObjectInfo[oid][gDumz] = z;
-                DumLabel[oid] = CreateDynamic3DTextLabel("{444444}Гантели \n{cccccc}[ ALT ]",-1,x, y, z,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,0,0,0);
-            }
             ObjectInfo[oid][gUser][slot] = PlayerInfo[playerid][pID];
             ObjectInfo[oid][gStat][slot] = 1;
             UpdateGangObject(oid+13, OrganInfo[oid+13][gMap], slot);
@@ -850,7 +835,6 @@ stock CancelDynamicEditable(playerid)
         // Условности разных систем при отмене создания
         if(gRedakt[playerid] == REDAKT_TYPE_GANG_SPAWN_SET) // Объект на респе Банд
         {
-            if(ObjectInfo[oid][gOmodel][slot] == 2915 && ObjectInfo[oid][gDumStat] == 1) ObjectInfo[oid][gDumStat] = 0, DestroyDynamic3DTextLabel(DumLabel[oid]);
             ObjectInfo[oid][gOmodel][slot] = 0;
         }
         else if(gRedakt[playerid] == REDAKT_TYPE_IKEA_SET) // IKEA

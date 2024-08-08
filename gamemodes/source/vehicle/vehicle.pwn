@@ -1153,7 +1153,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			new vehicleList = OnlineInfo[playerid][oDialogMenu][3];
 			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
 			new input = strval(inputtext);
-			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 0 и не больше 100.000"), SettingGosPriceVehicle(playerid, vehicleList);
+			if(input < 0 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 0 и не больше 100.000"), SettingGosPriceVehicle(playerid, vehicleList);
 			VehLimited[vehicleList] = input;
 
 			new v = CorrectVehicleList(vehicleList);
