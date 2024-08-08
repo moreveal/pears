@@ -150,8 +150,8 @@ stock GetVehicleModelSync(playerid, model) // Получаем модель тр
     new vehId;
     if(playerid == -1 || IsPlayerSyncModels(playerid)) // Мод установлен
 	{
-		if(model >= 612 && model <= 15265) model += 13066;
-		else if(model >= 15266) model += 13266;
+		if(model >= 612 && model <= 2101) model += 13066;
+		else if(model >= 2102) model += 13164;
 		vehId = model;
 	}
     else vehId = GetVehModelOriginal(model);
@@ -310,8 +310,11 @@ stock IsAPosBootOrBonet(playerid, &type)
 		}
 	}
 
-	if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
-	else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+	if(!IsAMoto(VehInfo[vehicleid][vModel]) && !IsABoat(VehInfo[vehicleid][vModel]) && !IsAPlane(VehInfo[vehicleid][vModel]))
+	{
+		if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
+		else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+	}
 
 	return vehicleid;
 }

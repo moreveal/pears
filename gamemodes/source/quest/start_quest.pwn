@@ -521,7 +521,7 @@ stock QuestActorJoneMed(playerid)
         SaveQuest(playerid);
 
         // Запускаем квест знакомство с едой
-        ShowQwest(playerid, 8, 10); // Через 10 сек запустится
+        if(NoCompleteQuest(playerid, 8)) ShowQwest(playerid, 8, 10); // Через 10 сек запустится
     }
     return 1;
 }
@@ -568,7 +568,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
         oGivePlayerMoney(playerid, 5000);
 
         // Запускаем квест знакомство с ноутбуком
-        ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
+        if(NoCompleteQuest(playerid, 9)) ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
     }
     return 1;
 }

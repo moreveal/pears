@@ -276,6 +276,9 @@ stock put_dom(playerid, inva, dom, fpick, fquan, binva, thingType, thingPack)
 	
 	format(string,sizeof(string),"Положил в дом %d: %s", dom, GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
+
+	format(string, sizeof(string), "Положил %s", GetNameThing(1, fpick, thingType, thingPack));
+	HouseLog(0, "wb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], dom, fquan, string);
 	
 	i_resetveshi(playerid);
 	i_resettabs(playerid);
