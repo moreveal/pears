@@ -310,10 +310,13 @@ stock IsAPosBootOrBonet(playerid, &type)
 		}
 	}
 
-	if(!IsAMoto(VehInfo[vehicleid][vModel]) && !IsABoat(VehInfo[vehicleid][vModel]) && !IsAPlane(VehInfo[vehicleid][vModel]))
+	if(vehicleid >= 0)
 	{
-		if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
-		else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+		if(!IsAMoto(VehInfo[vehicleid][vModel]) && !IsABoat(VehInfo[vehicleid][vModel]) && !IsAPlane(VehInfo[vehicleid][vModel]))
+		{
+			if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
+			else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+		}
 	}
 
 	return vehicleid;
