@@ -2997,3 +2997,9 @@ stock UpdateInventTwoBlock(playerid, type, stat) // Подгоняем фон п
 	PlayerTextDrawShow(playerid, PlaInventDraw[5][playerid]);
 	return 1;
 }
+
+stock IsADrinkItem(i) // Проверка на напитки, из-за системы миллиграм
+{
+	if((i >= 112 && i <= 116) || i == 37 || i == 14) return 1;
+	return 0;
+}

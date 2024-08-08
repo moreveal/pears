@@ -653,7 +653,11 @@ stock SetBizPriceItem(b,i)
 stock getThingPriceGos(thingId, thingType)
 {
 	new price;
-	if(thingType == 0) price = friskPrice[thingId];
+	if(thingType == 0)
+	{
+		if(IsADrinkItem(thingId)) price = friskPrice[thingId]/10;
+		else price = friskPrice[thingId];
+	}
 	else if(thingType == 1) price = gunPrice[thingId];
 	else if(thingType == 2) price = GetPriceGosAccessory(thingId);
 	else if(thingType == 3) price = SkinGos[thingId];

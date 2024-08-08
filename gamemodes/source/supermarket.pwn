@@ -195,7 +195,11 @@ stock Korochepokypau(playerid) // Кладём предмет в тележку
     new fquan;
     new put_i = putshopcarts(playerid, item, 0, fquan);
     if(put_i == -1) return ErrorMessage(playerid, "{FF6347}В тележке нет места\n{cccccc}Вы можете положить до 10 предметов");
-    if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][item] -= 1;
+    if(BizzInfo[b][bSost] > 0)
+	{
+		if(BizzInfo[b][bProduct][item] == 14 || BizzInfo[b][bProduct][item] == 37) BizzInfo[b][bItem][item] -= 10;
+		else BizzInfo[b][bItem][item] -= 1;
+	}
 	BizzInfo[b][bUpdate] = 1;
 
 	SetPVarInt(playerid,"sbussines",b);
@@ -244,7 +248,12 @@ stock Svalilizsm(playerid) // Удаляем тележку
 		new b = GetPVarInt(playerid,"sbussines");
 		for(new i = 0; i < 10; i++)
 	    {
-	        if(OnlineInfo[playerid][oShopCartsThing][i] > 0) BizzInfo[b][bItem][OnlineInfo[playerid][oShopCartsThing][i]-1] += 1, OnlineInfo[playerid][oShopCartsThing][i] = 0;
+	        if(OnlineInfo[playerid][oShopCartsThing][i] > 0) 
+			{	
+				if(BizzInfo[b][bProduct][OnlineInfo[playerid][oShopCartsThing][i]-1] == 14 || BizzInfo[b][bProduct][OnlineInfo[playerid][oShopCartsThing][i]-1] == 37) BizzInfo[b][bItem][OnlineInfo[playerid][oShopCartsThing][i]-1] -= 10;
+				else BizzInfo[b][bItem][OnlineInfo[playerid][oShopCartsThing][i]-1] -= 1;
+				OnlineInfo[playerid][oShopCartsThing][i] = 0;
+			}
      	}
      	OnlineInfo[playerid][oShopPrice] = 0;
 		SetPVarInt(playerid,"svzyal",0);
@@ -278,7 +287,11 @@ stock addiction(playerid, item)
 	    new fquan;
 	    new put_i = putshopcarts(playerid, item, 1, fquan);
 	    if(put_i == -1) return 1;
-	    if(BizzInfo[b][bSost] > 0) BizzInfo[b][bItem][item] -= 1;
+	    if(BizzInfo[b][bSost] > 0) 
+		{
+			if(BizzInfo[b][bProduct][item] == 14 || BizzInfo[b][bProduct][item] == 37) BizzInfo[b][bItem][item] -= 10;
+			else BizzInfo[b][bItem][item] -= 1;
+		}
 		BizzInfo[b][bUpdate] = 1;
 
 		SetPVarInt(playerid,"sbussines",b);
