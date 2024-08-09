@@ -220,12 +220,6 @@ stock IsAJizzyBiz(b)
     return 0;
 }
 
-stock BlockObjectBiz(b)
-{
-    if(IsAJizzyBiz(b)) return 8; // В jizzy всегда 8 объектов планировки
-    else return 1;
-}
-
 stock ReloadBizWhore(b, Float:x, Float:y, Float:z, Float:a)
 {
     DestroyBizWhore(b);
@@ -261,7 +255,7 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = BlockObjectBiz(biz); oba < MAX_OBJECT_INT; oba++)
+	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
         {
@@ -292,7 +286,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = BlockObjectBiz(biz); oba < MAX_OBJECT_INT; oba++)
+	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
         {
@@ -318,8 +312,7 @@ stock EditObjectBiz(playerid, biz, oba)
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
         && Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
 
-    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя редактировать объекты планировки");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
+    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
@@ -340,8 +333,7 @@ stock DeleteObjectBiz(playerid, biz, oba)
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
         && Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
 
-    if(IsAJizzyBiz(biz) && oba <= 7) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нельзя редактировать объекты планировки");
-    if(oba == 0) return ErrorMessage(playerid, "{FF6347}Планировку нельзя редактировать");
+    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = BizzInfo[biz][bOmodel][oba];
     if(!NoInventoryFurnitureObject(model))

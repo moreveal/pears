@@ -8,6 +8,8 @@ stock EditObjectDom(playerid, dom, oba)
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
         && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
 
+    if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+
 	new Float:ob[3];
     GetDynamicObjectPos(DomInfo[dom][dObject][oba],ob[0], ob[1], ob[2]);
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
@@ -95,6 +97,8 @@ stock DeleteObjectDom(playerid, dom, oba)
 	if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) 
         && Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) >= 1) return ErrorMessage(playerid, "{FF6347}Этот объект кто-то редактирует");
+
+    if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = DomInfo[dom][dOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
@@ -252,7 +256,7 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+    for(new oba = IsAQuanInterior(DomInfo[dom][dOmodel][0]); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1) 
         {
@@ -278,7 +282,7 @@ stock ClearAllObject(playerid, dom) // Убираем все объекты в �
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = IsAQuanInterior(DomInfo[dom][dOmodel][0]); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba]))
         {
