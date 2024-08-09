@@ -1073,15 +1073,14 @@ stock buy_SkinShop(playerid)
 
 				GiveQuanBuySkin(skin, 0);
 			}
-
 			if(g >= 1 && g <= 22)
 			{
 				OrganInfo[g][glave] += price, OrganInfo[g][gUpdate] = 1;
 			}
-			else if(g == 100)
+			else if(Fractia[playerid] == 100)
 			{
 				paybiz(Bid[playerid], price);
-				if(BizzInfo[b+173][bSost] > 0) StoreQuan[b][sel] -= 1;
+				if(BizzInfo[Bid[playerid]][bSost] > 0) StoreQuan[b][sel] -= 1;
 				if(StoreQuan[b][sel] <= 0)
 				{
 					StoreItem[b][sel] = 0, StorePrice[b][sel] = 0;
