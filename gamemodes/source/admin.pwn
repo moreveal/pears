@@ -376,6 +376,25 @@ CMD:rbiz(playerid, const params[])
 	return 1;
 }
 
+CMD:bproduct(playerid, const params[])
+{
+	new b,idproduct,count;
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "iii",b,idproduct,count)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Добавить новые товары в бизнес [ /bproduct ID Биза ID товара по листу товаров Кол-во]");
+	if(idproduct < 1 || idproduct > MAX_BIZ_ITEM) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: ID товара от 1 до %d",MAX_BIZ_ITEM);
+	if(b < 1 || b > MAX_BIZ-1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: ID Бизнеса от 1 до %d",MAX_BIZ-1);
+	idproduct--;
+	if(BizzInfo[b][bProduct][idproduct] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: В данном слоте нет никакого товара");
+	if(count > maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Для %s лимит %d",GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct]));
+	new string[128];
+	format(string, sizeof(string), " [ ADM ]: %s изменил кол.во товара в бизнесе %d", PlayerInfo[playerid][pName],b), ABroadCast(COLOR_ADM,string,1);
+	format(string, sizeof(string), "Было товара[%s]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bProduct][idproduct],b);
+	BizzInfo[b][bItem][idproduct] = count;
+	BizzInfo[b][bUpdate] = 1;
+	AdminLog("bproduct", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", count, string);
+	return 1;
+}
+
 alias:rbizforce("reloadbizforce", "relbizforce")
 CMD:rbizforce(playerid, const params[])
 {
