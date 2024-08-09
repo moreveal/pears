@@ -103,6 +103,7 @@ new famTypeName[][] =
 stock GetFamilyTypePrice(type)
 {
 	if(type == 0) return 0;
+	if(type == 4) return 0;
 	else return 500;
 }
 

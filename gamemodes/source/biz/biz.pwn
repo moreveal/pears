@@ -10,7 +10,7 @@ new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_T
 new Text3D:RentLabel[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ]; // Позиция аренды и самого Объекта
 new RentPickup[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], bool:RentPickupStat[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new BizIcon[MAX_BIZ];
-new BizCarSlotId[MAX_BIZ][MAX_BIZ_ITEM], BizCarSlotPrice[MAX_BIZ][MAX_BIZ_ITEM]; // Ценник и ид машины прошлые;
+new BizCarSlotId[MAX_BIZ][MAX_BIZ_ITEM], BizCarSlotPrice[MAX_BIZ][MAX_BIZ_ITEM],BizCarSlotItem[MAX_BIZ][MAX_BIZ_ITEM]; // Ценник и ид машины прошлые;
 
 
 new cityName[][] =
@@ -423,7 +423,7 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		for(new s = 0; s < MAX_BIZ_ITEM; s++) 
 		{
 			// записываем залупу, а то может быть новый кастомный кар и все обычные поедут
-			if(BizzInfo[b][bProduct][s] > 0 && BizzInfo[b][bPrice][s] > 0) BizCarSlotId[b][s] = BizzInfo[b][bProduct][s], BizCarSlotPrice[b][s] = BizzInfo[b][bPrice][s];
+			if(BizzInfo[b][bProduct][s] > 0 && BizzInfo[b][bPrice][s] > 0) BizCarSlotId[b][s] = BizzInfo[b][bProduct][s], BizCarSlotPrice[b][s] = BizzInfo[b][bPrice][s], BizCarSlotItem[b][s] = BizzInfo[b][bItem][s];
 			BizzInfo[b][bProduct][s] = 0; // Очищаем все слоты, перед перезагрузкой
 		}
 
@@ -627,6 +627,7 @@ stock SetBizPriceItem(b,i)
 			else 
 			{
 				BizzInfo[b][bPrice][i] = BizCarSlotPrice[b][z];
+				BizzInfo[b][bItem][i] = BizCarSlotItem[b][z];
 				return 1;
 			}
 		}
