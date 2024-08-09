@@ -220,6 +220,12 @@ stock IsAJizzyBiz(b)
     return 0;
 }
 
+stock BlockObjectBiz(b)
+{
+    if(IsAJizzyBiz(b)) return 8; // В jizzy всегда 8 объектов планировки
+    else return 1;
+}
+
 stock ReloadBizWhore(b, Float:x, Float:y, Float:z, Float:a)
 {
     DestroyBizWhore(b);
@@ -255,7 +261,7 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = BlockObjectBiz(biz); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
         {
@@ -286,7 +292,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = BlockObjectBiz(biz); oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
         {
