@@ -174,19 +174,53 @@ CMD:rnamechange(playerid, const params[])
 	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд на повторную смену ника [ /rnamechange ID/NickName ]");
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid)) PlayerInfo[giveplayerid][pUnixRename] = 0;
+	if(IsPlayerConnected(giveplayerid))
+	{
+		PlayerInfo[giveplayerid][pUnixRename] = 0;
+		AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Сбросил кд на изменение Ника");
+		new stringlog[120];
+		format(stringlog, sizeof(stringlog), " [ ADM ]: %s сбросил кд на смену ника у %s", PlayerInfo[playerid][pName],rpplayername(giveplayerid)), ABroadCast(COLOR_ADM,stringlog,1);
+	}
 	else
 	{
 		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
-		new string[100];
-		mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `pUnixRename` = '0' WHERE `Name` = '%e'", params[0]);
-		query_empty(pearsq, string);
+		if(AntiFloodMysqlRequest(playerid, 30)) return 1;
+		new string[120];
+		ShowDialog(playerid,1996,DIALOG_STYLE_MSGBOX,"{ff9000}Снятие кд на смену ника","{cccccc}Поиск аккаунта...","*","");
+		mysql_format(pearsq, string,sizeof(string),"SELECT user_id, pUnixRename FROM `pp_igroki` WHERE `Name` = '%e'", params[0]);
+		mysql_tquery(pearsq, string, "Call_rnamechange", "ds",playerid,params[0]);
 	}
-	new stringlog[120];
-	format(stringlog, sizeof(stringlog), " [ ADM ]: %s сбросил кд на смену ника %s", PlayerInfo[playerid][pName],PlayerInfo[playerid][pUnixRename]), ABroadCast(COLOR_ADM,stringlog,1);
-	if(IsPlayerConnected(giveplayerid)) AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Сбросил кд на изменение Ника");
-	else AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, params[0], "", 0, "Сбросил кд на изменение Ника");
 	return 1;
+}
+function Call_rnamechange(playerid, const targetNickName[])
+{
+	new rows, string[120],stringmessage[120],user_id, unixRename;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+		cache_get_value_name_int(0, "user_id", user_id);
+		cache_get_value_name_int(0, "pUnixRename", unixRename);
+		if(unixRename > gettime())
+		{
+			mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `pUnixRename` = '0' WHERE `Name` = '%e'", targetNickName);
+			query_empty(pearsq, string);
+			format(stringmessage, sizeof(stringmessage), "{44ff99}Аккаунт с никнеймом %s не найден.\n Сброс времени на смену НикНейма не был произведен.",targetNickName);
+			SuccessMessage(playerid, stringmessage);
+			AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], user_id, targetNickName, "", 0, "Сбросил кд на изменение Ника");
+			format(stringmessage, sizeof(stringmessage), " [ ADM ]: %s сбросил кд на смену ника у %s", PlayerInfo[playerid][pName],targetNickName), ABroadCast(COLOR_ADM,stringmessage,1);
+		}
+		else 
+		{
+			format(stringmessage, sizeof(stringmessage), "{ff6347}У Игрока %s уже доступна смена НикНейма.",targetNickName);
+			ErrorMessage(playerid,stringmessage);
+		}
+	}
+	else 
+	{
+		format(stringmessage, sizeof(stringmessage), "{ff6347}Аккаунт с никнеймом %s не найден.\n Сброс времени на смену НикНейма не был произведен.",targetNickName);
+		ErrorMessage(playerid,stringmessage);
+	}
+	return true;
 }
 CMD:stopmaf(playerid)
 {
