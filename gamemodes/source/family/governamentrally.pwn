@@ -140,6 +140,7 @@ stock CloseRally(playerid)
     RallyInfo[0][rallyPoint] = 0;
     RallyInfo[0][rallyStatus] = 0;
     format(RallyInfo[0][rallyInfo], 1, " ");
+    UpdateRallyTableObject();
     return 1;
 }
 
