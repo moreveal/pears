@@ -168,6 +168,26 @@ CMD:mysql(playerid)
 	printf("%s\n", stats);
     return true;
 }
+CMD:rnamechange(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 5+ ]");
+	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд на повторную смену ника [ /rnamechange ID/NickName ]");
+	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
+	new giveplayerid = ReturnUser(params[0], 1);
+	if(IsPlayerConnected(giveplayerid)) PlayerInfo[giveplayerid][pUnixRename] = 0;
+	else
+	{
+		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+		new string[100];
+		mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `pUnixRename` = '0' WHERE `Name` = '%e'", params[0]);
+		query_empty(pearsq, string);
+	}
+	new stringlog[120];
+	format(stringlog, sizeof(stringlog), " [ ADM ]: %s сбросил кд на смену ника %s", PlayerInfo[playerid][pName],PlayerInfo[playerid][pUnixRename]), ABroadCast(COLOR_ADM,stringlog,1);
+	if(IsPlayerConnected(giveplayerid)) AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Сбросил кд на изменение Ника");
+	else AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, params[0], "", 0, "Сбросил кд на изменение Ника");
+	return 1;
+}
 CMD:stopmaf(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 5+ ]");
@@ -388,7 +408,7 @@ CMD:bproduct(playerid, const params[])
 	if(count > maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Для %s лимит %d",GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct]));
 	new string[128];
 	format(string, sizeof(string), " [ ADM ]: %s изменил кол.во товара в бизнесе %d", PlayerInfo[playerid][pName],b), ABroadCast(COLOR_ADM,string,1);
-	format(string, sizeof(string), "Было товара[%s]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bProduct][idproduct],b);
+	format(string, sizeof(string), "Было товара [ %s ]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bItem][idproduct],b);
 	BizzInfo[b][bItem][idproduct] = count;
 	BizzInfo[b][bUpdate] = 1;
 	AdminLog("bproduct", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", count, string);
