@@ -440,11 +440,21 @@ CMD:bproduct(playerid, const params[])
 	idproduct--;
 	if(BizzInfo[b][bProduct][idproduct] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: В данном слоте нет никакого товара");
 	if(count > maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Для %s лимит %d",GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),maxQuanThingProduct(BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct]));
+	if(b >= 42 && b <= 76 || b >= 163 && b <= 182) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: В данном бизнесе нельзя изменять кол-во товара.");
 	new string[128];
-	format(string, sizeof(string), " [ ADM ]: %s изменил кол.во товара в бизнесе %d", PlayerInfo[playerid][pName],b), ABroadCast(COLOR_ADM,string,1);
-	format(string, sizeof(string), "Было товара [ %s ]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bItem][idproduct],b);
+	format(string, sizeof(string), " [ ADM ]: %s изменил кол-во товара в бизнесе %d", PlayerInfo[playerid][pName],b), ABroadCast(COLOR_ADM,string,1);
+	if(b >= 103 && b <= 117 || b >= 153 && b <= 162)
+	{
+		format(string, sizeof(string), "Было товара [ %s ]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bWare][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bItem][idproduct],b);
+	}
+	else 
+	{
+		format(string, sizeof(string), "Было товара [ %s ]: %d. Бизнес: %d", GetNameThing(1,BizzInfo[b][bProduct][idproduct],BizzInfo[b][bTypeProduct][idproduct],0),BizzInfo[b][bItem][idproduct],b);
+	}
 	BizzInfo[b][bItem][idproduct] = count;
-	BizzInfo[b][bUpdate] = 1;
+	if(b <= 12) UpdateFillLabel(b);
+	if(b >= 13 && b <= 26) UpdateSupermarketLabel_S(b);
+	SaveBizzProduct(b);
 	AdminLog("bproduct", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", count, string);
 	return 1;
 }
