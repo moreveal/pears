@@ -212,18 +212,18 @@ stock LoadBot()
 	BotPears[121] = CreateDynamicActor(252, 1156.0387,-1382.1033,898.8210,96.7777, true, 100.0, 1); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 19
 	BotPears[122] = CreateDynamicActor(70, 1118.0420,-1362.3555,898.0916,274.5060, true, 100.0, 1); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 20
 
-	// LSPD пїЅпїЅпїЅпїЅ
+	// LSPD Актеры
 	//148
-	BotPears[149] = CreateDynamicActor(280, 1580.1194,-1634.3180,13.5624,2.8671); // LSPD Bot 2
+	BotPears[149] = CreateDynamicActor(440, 1580.1194,-1634.3180,13.5624,2.8671); // LSPD Bot 2
 	//150
-	BotPears[151] = CreateDynamicActor(281, 1545.1991,-1669.5962,13.5599,20.7507); // LSPD Bot 4
+	BotPears[151] = CreateDynamicActor(442, 1545.1991,-1669.5962,13.5599,20.7507); // LSPD Bot 4
 	BotPears[152] = CreateDynamicActor(259, 1544.4688,-1668.0896,13.5585,205.2824); // LSPD Bot 5
-	BotPears[153] = CreateDynamicActor(282, 1545.0980,-1683.7576,13.5563,0.9871); // LSPD Bot 6
-	BotPears[154] = CreateDynamicActor(284, 1549.5330,-1680.2131,13.5564,193.9789); // LSPD Bot 7
-	BotPears[155] = CreateDynamicActor(280, 1550.4847,-1682.5118,13.5545,18.5106); // LSPD Bot 8
+	BotPears[153] = CreateDynamicActor(441, 1545.0980,-1683.7576,13.5563,0.9871); // LSPD Bot 6
+	BotPears[154] = CreateDynamicActor(443, 1549.5330,-1680.2131,13.5564,193.9789); // LSPD Bot 7
+	BotPears[155] = CreateDynamicActor(444, 1550.4847,-1682.5118,13.5545,18.5106); // LSPD Bot 8
 	// пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	BotPears[156] = CreateDynamicActor(300, 1556.1638,-1660.8695,16.2218,136.1330, true, 100.0, 255); // LSPD Bot 9 ((154))
-	BotPears[157] = CreateDynamicActor(301, 1554.9736,-1661.7855,16.2218,309.0712, true, 100.0, 255); // LSPD Bot 10 ((144))
+	BotPears[157] = CreateDynamicActor(415, 1554.9736,-1661.7855,16.2218,309.0712, true, 100.0, 255); // LSPD Bot 10 ((144))
 
 	BotPears[197] = CreateDynamicActor(141, 1384.8610,1588.3568,10.8484,184.8581, true, 100.0, 230); // NASA Bot 1
 	BotPears[204] = CreateDynamicActor(36, -337.9493,1725.6622,42.8531,270.0621); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1
@@ -373,6 +373,11 @@ stock LoadBot()
     BotPears[517] = CreateDynamicActor(140, 564.8656,-1809.2654,6.0625,280.8233); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	//BotPears[518] = CreateDynamicActor(270, 2530.8591,-1664.4253,15.1665,171.8431); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Grove
 	BotPears[519] = CreateDynamicActor(71, 1089.5840,-1213.9564,18.0118,183.9828); // collector bot work
+    
+    BotPears[520] = CreateDynamicActor(442,1570.5031,-1649.5078,21.2318,100.8627, .worldid = 256); // LSPD Bot 11
+    BotPears[521] = CreateDynamicActor(443,1569.3571,-1649.6467,21.2318,269.8762, .worldid = 256); // LSPD Bot 12
+    BotPears[522] = CreateDynamicActor(422,1580.5566,-1694.6251,6.2187,306.7073); // LSPD Bot 13
+    BotPears[523] = CreateDynamicActor(419,1581.6965,-1693.7367,6.2187,123.5138); // LSPD Bot 14
 
 	LoadAnimBot(5000);
 
@@ -553,7 +558,11 @@ stock LoadAnimBot(stat)
         case 515: ApplyDynamicActorAnimation(BotPears[515],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
         case 516: ApplyDynamicActorAnimation(BotPears[516],"BLOWJOBZ","BJ_STAND_LOOP_P",4.1,1,0,0,0,0);
         case 517: ApplyDynamicActorAnimation(BotPears[517],"BLOWJOBZ","BJ_STAND_LOOP_W",4.1,1,0,0,0,0);
-        
+        case 520: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 11
+        case 521: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 12
+        case 522: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 13
+        case 523: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 14
+
         case 5000:
 		{
         ApplyDynamicActorAnimation(BotPears[7],"PED","SEAT_idle",4.1,1,0,0,0,0);
@@ -726,6 +735,10 @@ stock LoadAnimBot(stat)
         ApplyDynamicActorAnimation(BotPears[515],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
         ApplyDynamicActorAnimation(BotPears[516],"BLOWJOBZ","BJ_STAND_LOOP_P",4.1,1,0,0,0,0);
         ApplyDynamicActorAnimation(BotPears[517],"BLOWJOBZ","BJ_STAND_LOOP_W",4.1,1,0,0,0,0);
+        ApplyDynamicActorAnimation(BotPears[520],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 11
+        ApplyDynamicActorAnimation(BotPears[521],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 12
+        ApplyDynamicActorAnimation(BotPears[522],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 13
+        ApplyDynamicActorAnimation(BotPears[523],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 14
         }
      }
      return 1;

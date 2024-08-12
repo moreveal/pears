@@ -469,11 +469,12 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 S_SetPlayerVirtualWorld(playerid,0,0);
 		        PPSetPlayerInterior(playerid,0);
 
+                keep(playerid);
                 if(vehicleid == prisonbus_LS)
                 {
                     if(TimerPrisonBusLS == 0) 
                     {
-                        if(!IsVehicleInRangeOfPoint(prisonbus_LS, 8.0, 1601.9716,-1618.8732,13.7368)) PP_SetVehicleToRespawn(prisonbus_LS);
+                        if(!IsVehicleInRangeOfPoint(prisonbus_LS, 0.1, 1601.9716,-1618.8732,13.7368)) PP_SetVehicleToRespawn(prisonbus_LS);
                         TimerPrisonBusLS = SetTimerEx("PrisonGo", 30000, false, "d", prisonbus_LS);
                     }
                     switch(random(3))
@@ -488,7 +489,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 {
                     if(TimerPrisonBusSF == 0) 
                     {
-                        if(!IsVehicleInRangeOfPoint(prisonbus_SF, 8.0, -1577.3430,679.9337,7.4451)) PP_SetVehicleToRespawn(prisonbus_SF);
+                        if(!IsVehicleInRangeOfPoint(prisonbus_SF, 0.1, -1577.3430,679.9337,7.4451)) PP_SetVehicleToRespawn(prisonbus_SF);
                         TimerPrisonBusSF = SetTimerEx("PrisonGo", 30000, false, "d", prisonbus_SF);
                     }
                     switch(random(3))

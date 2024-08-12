@@ -14,7 +14,7 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 606 удалённых объектов
+ 	// 616 удалённых объектов
 
 	RemoveBuildingForPlayer(playerid, 1525, 1687.2266, -1239.1250, 15.8125, 0.25); // Удаляем лишнее граффити на Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4717, 1666.4922, -1246.1797, 123.0859, 0.25); // Удаляем ночные окна Пирс Тауэр Джапан
@@ -549,11 +549,22 @@ stock DeleteObject(playerid)
     RemoveBuildingForPlayer(playerid, 17523, 2436.2188, -1788.5625, 15.0234, 0.25);
     //--------------------------------------------------------------------------
 	//--------------------------------[ LSPD ]----------------------------------
-	RemoveBuildingForPlayer(playerid, 4064, 1571.601, -1675.750, 35.679, 0.250);
-	RemoveBuildingForPlayer(playerid, 1525, 1549.890, -1714.523, 15.101, 0.250);
-	RemoveBuildingForPlayer(playerid, 3976, 1571.601, -1675.750, 35.679, 0.250);
-	RemoveBuildingForPlayer(playerid, 1536, 1555.9297, -1677.1250, 15.1797, 0.25);
-	RemoveBuildingForPlayer(playerid, 1536, 1555.8906, -1674.1094, 15.1797, 0.25);
+	RemoveBuildingForPlayer(playerid, 1536, 1555.890, -1674.109, 15.179, 5.00);
+	RemoveBuildingForPlayer(playerid, 3976, 1571.599, -1675.750, 35.679, 0.300);
+	RemoveBuildingForPlayer(playerid, 4064, 1571.599, -1675.750, 35.679, 0.250);
+	RemoveBuildingForPlayer(playerid, 3975, 1578.469, -1676.420, 13.070, 0.250);
+	RemoveBuildingForPlayer(playerid, 4063, 1578.469, -1676.420, 13.070, 0.250);
+	RemoveBuildingForPlayer(playerid, 4192, 1591.699, -1674.849, 20.492, 0.250);
+	RemoveBuildingForPlayer(playerid, 1260, 1538.520, -1609.800, 19.843, 0.250);
+	RemoveBuildingForPlayer(playerid, 1266, 1538.520, -1609.800, 19.843, 0.250);
+	RemoveBuildingForPlayer(playerid, 4230, 1597.910, -1699.750, 30.210, 0.250);
+	RemoveBuildingForPlayer(playerid, 4229, 1597.910, -1699.750, 30.210, 0.250);
+	RemoveBuildingForPlayer(playerid, 620, 1547.569, -1689.979, 13.046, 0.250);
+	RemoveBuildingForPlayer(playerid, 647, 1546.599, -1693.390, 14.437, 7.000);
+	RemoveBuildingForPlayer(playerid, 1525, 1549.890, -1714.520, 15.101, 0.250);
+	RemoveBuildingForPlayer(playerid, 1260, 1565.410, -1722.310, 25.039, 0.250);
+	RemoveBuildingForPlayer(playerid, 1266, 1565.410, -1722.310, 25.039, 0.250);
+	RemoveBuildingForPlayer(playerid, 646, 1545.560, -1672.219, 14.000, 7.250);
     //--------------------------------------------------------------------------
 	//--------------------------[ Мафиозный Корабль ]---------------------------
 	RemoveBuildingForPlayer(playerid, 10793, -1604.0391, 22.7266, 35.5703, 0.25);
