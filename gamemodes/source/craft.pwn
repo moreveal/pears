@@ -949,11 +949,14 @@ stock CreateThingAfterCraft(playerid)
         if(ability >= 3 && ability <= 4) chance = 3;
         else if(ability >= 5 && ability <= 7) chance = 4;
         else if(ability >= 8 && ability <= 9) chance = 5;
-        else if(ability >= 10) chance = 6;
-        switch(random(chance))
+        if(ability >= 10) yes = 1;
+        else
         {
-            case 0: yes = 0;
-            default: yes = 1;
+            switch(random(chance))
+            {
+                case 0: yes = 0;
+                default: yes = 1;
+            }
         }
     }
     else yes = 1; // Кухонный Стол и все остальные
