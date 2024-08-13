@@ -61,6 +61,7 @@ enum e_MineWarInfo
     // NPC
     NPC: mwZombie[MAX_MINEWAR_ZOMBIES], // ID зомби
     mwZombieTypes[MAX_MINEWAR_ZOMBIES], // Типы зомби
+    mwZombieAttackId[MAX_MINEWAR_ZOMBIES], // Атакуемые игроки (+1)
 
     // Игроки
     mwPlayers[MAX_MINEWAR_PLAYERS], // ID участников (+1)
