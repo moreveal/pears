@@ -108,3 +108,6 @@
 
 #define WORLD_VILLAGE 14001
 #define INT_VILLAGE 0
+// Скупщик
+#define WORLD_SKUPSHIK 5
+#define INT_SKUPSHIK 5
