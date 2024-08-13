@@ -611,8 +611,12 @@ stock PlayerExitVillage(playerid)
 }
 
 // Нанесли урон NPC
-public bool:OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bodypart)
+stock Village_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bodypart)
 {
+    #pragma unused amount
+    #pragma unused weaponid
+    #pragma unused bodypart
+
     if(Protect_Veh[damagerid] != 9999)
     {
         new vehicleid = Protect_Veh[damagerid];
@@ -632,19 +636,13 @@ stock IsShootingVehicle(model)
 }
 
 // NPC нанёс урон игроку
-public OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, bodypart)
+stock Village_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, bodypart)
 {
+    #pragma unused npc
+    #pragma unused issuerid
+    #pragma unused amount
+    #pragma unused weaponid
+    #pragma unused bodypart
 
-    return true;
-}
-
-// NPC убили
-public OnNpcDeath(NPC:npc, killerid, reason)
-{
-    // Убили деревенского бота
-    if(SetSpawnVillageNpc(npc)) return true;
-
-    // Убили бота маньяка
-    if(OnDeathManiacNpc(npc, killerid)) return true;
     return true;
 }
