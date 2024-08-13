@@ -10,6 +10,7 @@ CMD:heal(playerid, const params[])
 	if(GetPlayerState(params[0]) == PLAYER_STATE_SPECTATING
 		&& gSpectateID[params[0]] != INVALID_PLAYER_ID
 		|| !ProxDetectorS(3.0, playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Вы далеко от пациента");
+	if(MPGO[playerid] != 0) return ErrorMessage(playerid, "{FF6347}Вы на мероприятии");
 	if(HealthAC[params[0]] >= GetMaxPlayerHealth(params[0])) return ErrorMessage(playerid, "{FF6347}У пациента полная полоса здоровья и ему не требуется лечение");
 	if(MedHeal[params[0]] > 0) return ErrorMessage(playerid, "{FF6347}Пациенту уже предложили лечение");
 
