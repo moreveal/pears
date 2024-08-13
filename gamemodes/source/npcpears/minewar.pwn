@@ -45,7 +45,7 @@ CMD:rminewar(playerid, const params[])
 
     PlayerInfo[currentid][pLastMineWar] = 0;
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили кд на повторную игру в Заброшенной Шахте для %s **", PlayerInfo[currentid][pName]);
-    if(playerid != currentid) SendClientMessage(currentid, COLOR_LIGHTBLUE, "** %s очистил вам кд повторную игру в Заброшенной Шахте **", PlayerInfo[playerid][pName]);
+    if(playerid != currentid) SendClientMessage(currentid, COLOR_LIGHTBLUE, "** %s очистил вам кд на повторную игру в Заброшенной Шахте **", PlayerInfo[playerid][pName]);
 
     AdminLog("rminewar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[currentid][pID], PlayerInfo[currentid][pName], PlayerInfo[currentid][pPlaIP], 0, "");
     return 1;
@@ -558,7 +558,7 @@ stock MineWar_SpawnZombies(roomid)
     return 1;
 }
 
-// Получение количества общего количества зомби, которое должно заспавниться в текущей волне
+// Получение общего количества зомби, которое должно заспавниться в текущей волне
 stock MineWar_GetCurrentWaveZombieTotal(roomid, type = -1)
 {
     if (type < -1 || type >= _:MINEWAR_MAX_ZOMBIE_TYPE) return 0;
