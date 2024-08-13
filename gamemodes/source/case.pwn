@@ -154,6 +154,7 @@ stock CreateSkinGiftCase() // Собираем скины
             }
         }
     }
+    
     return true;
 }
 

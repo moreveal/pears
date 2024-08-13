@@ -63,7 +63,7 @@ stock MineWar_GeneralChat(playerid, const string[])
         if (MineWarPlayerInfo[playerid][mwpRoomID] != MineWarPlayerInfo[currentid][mwpRoomID]) continue;
         if (GetPlayerVirtualWorld(currentid) != GetPlayerVirtualWorld(playerid)) continue;
 
-        SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ] {555555}%s: %s", PlayerInfo[playerid][pName], string);
+        SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ]: {555555}%s: %s", PlayerInfo[playerid][pName], string);
     }
 
     return 1;
@@ -573,7 +573,7 @@ stock MineWar_SpawnZombies(roomid)
     if (!MineWar_IsRoomExists(roomid)) return 0;
 
     new max_spawn = sizeof(MineWarZombieSpawns);
-    if (MineWarInfo[roomid][mwWave] < MINEWAR_WAVE_HARD) max_spawn = 3;
+    if (MineWarInfo[roomid][mwWave] < MINEWAR_WAVE_HARD) max_spawn = 4;
 
     new Float: x, Float: y, Float: z, Float: a;
 
@@ -593,7 +593,7 @@ stock MineWar_SpawnZombies(roomid)
         if (i > nextspawn_indexes[_:MINEWAR_HEAVY_ZOMBIE]) {
             zombie_type = MINEWAR_SUPER_ZOMBIE;
         }
-        else if (i > nextspawn_indexes[_:MINEWAR_NORMAL_ZOMBIE]) // heavy
+        else if (i > nextspawn_indexes[_:MINEWAR_NORMAL_ZOMBIE])
         {
             zombie_type = MINEWAR_HEAVY_ZOMBIE;
         }
@@ -660,7 +660,7 @@ stock MineWar_UpdateNextZombies(roomid)
     new Float: zombie_killed_ratio = MineWar_GetCurrentWaveKilledRatio(roomid);
 
     #if defined MINEWAR_DEBUG_MODE
-        printf("[MINEWAR DEBUG]: Количество убитых зомби для текущей волны: %d/%d (%.03f)", MineWar_GetCurrentWaveZombieTotal(roomid), MineWar_GetCurrentWaveZombieKilled(roomid), zombie_killed_ratio);
+        printf("[MINEWAR DEBUG]: Количество убитых зомби для текущей волны: %d/%d (%.03f)", MineWar_GetCurrentWaveZombieKilled(roomid), MineWar_GetCurrentWaveZombieTotal(roomid), zombie_killed_ratio);
     #endif
 
     // Обнуление предыдущих значений
@@ -875,7 +875,20 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                                 new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
                                 if (!IsOnline(currentid)) continue;
 
-                                SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ] {FFCC66}Текущая волна завершена, подготовьтесь к началу следующей!");
+                                SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ]: {FFCC66}Текущая волна завершена, подготовьтесь к началу следующей!");
+
+                                // Воскрешаем мертвых игроков
+                                for (new j = 0; j < MAX_MINEWAR_PLAYERS; j++)
+                                {
+                                    new deadid = MineWarInfo[roomid][mwPlayers][j] - 1;
+                                    if (!IsOnline(deadid)) continue;
+                                    if (!MineWarPlayerInfo[deadid][mwpDead]) continue;
+
+                                    MineWar_StopSpectate(deadid, .lastposition = true);
+                                    MineWarPlayerInfo[deadid][mwpDead] = false;
+                                    ACSetPlayerHealth(deadid, GetMaxPlayerHealth(deadid));
+                                }
+
                                 MineWar_GivePlayerWaveLoot(currentid);
                             }
                             
@@ -960,7 +973,7 @@ stock MineWar_OnPlayerDeath(issuerid)
         new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
         if (!IsOnline(currentid)) continue;
 
-        SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ] {FFCC66}Союзник %s погиб!", PlayerInfo[issuerid][pName]);
+        SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ]: {FFCC66}Союзник %s погиб!", PlayerInfo[issuerid][pName]);
     }
 
     // Если все игроки умерли - завершаем игру
@@ -1076,13 +1089,16 @@ stock MineWar_SetPlayerSpectate(playerid, spectateid)
     return 1;
 }
 
-stock MineWar_StopSpectate(playerid)
+stock MineWar_StopSpectate(playerid, bool: lastposition = false)
 {
     if (!MineWar_IsPlayerSpectate(playerid)) return 0;
 
-    TogglePlayerSpectating(playerid, false);
-    gSpectateID[playerid] = INVALID_PLAYER_ID;
-
+    if (lastposition) StopSpectate(playerid);
+    else {
+        SetPosa[playerid] = 0;
+        gSpectateID[playerid] = INVALID_PLAYER_ID, gSpectateType[playerid] = ADMIN_SPEC_TYPE_NONE;
+        PPTogglePlayerSpectating(playerid, false);
+    }
     MineWarPlayerInfo[playerid][mwpSpectateID] = 0;
 
     return 1;
@@ -1191,7 +1207,7 @@ stock MineWar_GivePlayerWaveLoot(playerid)
 
     if (!isnull(gived_resources_line)) {
         gived_resources_line[strlen(gived_resources_line) - 2] = EOS;
-        SendClientMessage(playerid, 0x1E6698FF, "[ Шахта ] {FFCC66}Ваши ресурсы были пополнены: %s", gived_resources_line);
+        SendClientMessage(playerid, 0x1E6698FF, "[ Шахта ]: {FFCC66}Ваши ресурсы были пополнены: %s", gived_resources_line);
     }
 
     return 1;
