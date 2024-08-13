@@ -599,12 +599,10 @@ stock Float: MineWar_GetCurrentWaveKilledRatio(roomid)
 stock MineWar_UpdateNextZombies(roomid)
 {
     // Определяем количество зомби, которые должны заспавниться в следующий раз
-    new zombie_total = MineWar_GetCurrentWaveZombieTotal(roomid);
-    new zombie_killed = MineWar_GetCurrentWaveZombieKilled(roomid);
     new Float: zombie_killed_ratio = MineWar_GetCurrentWaveKilledRatio(roomid);
 
     #if defined MINEWAR_DEBUG_MODE
-        printf("[MINEWAR DEBUG]: Количество убитых зомби для текущей волны: %d/%d (%.03f)", zombie_killed, zombie_total, zombie_killed_ratio);
+        printf("[MINEWAR DEBUG]: Количество убитых зомби для текущей волны: %d/%d (%.03f)", MineWar_GetCurrentWaveZombieTotal(roomid), MineWar_GetCurrentWaveZombieKilled(roomid), zombie_killed_ratio);
     #endif
 
     // Обнуление предыдущих значений
