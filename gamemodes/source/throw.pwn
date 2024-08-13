@@ -262,7 +262,10 @@ stock Throw(playerid, fpick, quan, para, qara, thingType, thingPack, DopParametr
 		case 6: herx = -0.3, hery = -0.3;
 		case 7: herx = -0.4, hery = -0.4;
 	}
- 	GetPlayerPos(playerid, X, Y, Z), GetPlayerFacingAngle(playerid,A);
+	// Используем координаты из античита, т.к. они наиболее актуальны в случае телепорта перед выбрасыванием предмета, в отличии от GetPlayerPos()
+ 	X = Protect_X[playerid], Y = Protect_Y[playerid], Z = Protect_Z[playerid];
+	GetPlayerFacingAngle(playerid,A);
+
  	X=X+0.8*floatsin(-A,degrees);
   	Y=Y+0.8*floatcos(-A,degrees);
 

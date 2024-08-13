@@ -95,6 +95,19 @@ stock Float: fmod(Float:x, Float:y) return x - (floatround(x / y, floatround_flo
 // Рандом для диапазона [x; y]
 #define random_range(%0,%1) random(%1-%0+1) + %0
 
+// Рандом для диапазона вещественных чисел [x; y]
+stock Float:frand(Float:min, Float:max) 
+{
+    return float(random(0)) / (float(cellmax) / (max - min)) + min; 
+}
+
+// Рандомная точка в указанном кубе
+stock RandomPointInCube(Float: minx, Float: miny, Float: minz, Float: maxx, Float: maxy, Float: maxz, &Float: x, &Float: y, &Float: z)
+{
+    x = frand(minx, maxx), y = frand(miny, maxy), z = frand(minz, maxz);
+    return 1;
+}
+
 // Чистка Enum
 /*stock memset(array[], val, size = sizeof array)
 {

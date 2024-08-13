@@ -133,6 +133,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || CA_IsPlayerNearWater(playerid, 1.0, 1.0) // В воде
     || PlayerInfo[playerid][pJailed] > 0 // В заключении
     || IsPlayerHavePursuit(playerid) // Активное полицейское преследование
+    || MineWar_IsPlayerInGame(playerid) // Играет в заброшенной шахте
     || (bespilot[playerid] != 0 || GetTickCount() - bespilotejecttick[playerid] < 1000)) return 1; // NGSA беспилотник
     return 0;
 }

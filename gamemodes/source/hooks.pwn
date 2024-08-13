@@ -1,22 +1,3 @@
-
-/*stock PPcache_get_value_name_int(zalupa, const text[], hyi)
-{
-	if (!cache_get_value_name_int(zalupa, text, hyi)) 
-	{
-		PrintBacktrace();
-		return 0;
-	}
-	return 1;
-}
-
-#if defined _ALS_cache_get_value_name_int
-    #undef cache_get_value_name_int
-#else
-    #define _ALS_cache_get_value_name_int
-#endif
-#define cache_get_value_name_int PPcache_get_value_name_int*/
-
-
 // Объекты
 stock PP_DestroyDynamicObject(&STREAMER_TAG_OBJECT:objectid)
 {
@@ -34,7 +15,6 @@ stock PP_DestroyDynamicObject(&STREAMER_TAG_OBJECT:objectid)
     #define _ALS_DestroyDynamicObject
 #endif
 #define DestroyDynamicObject PP_DestroyDynamicObject
-// Объекты
 
 
 // Пикапы
@@ -51,7 +31,6 @@ stock PP_DestroyDynamicPickup(&STREAMER_TAG_PICKUP:pickupid)
     #define _ALS_DestroyDynamicPickup
 #endif
 #define DestroyDynamicPickup PP_DestroyDynamicPickup
-// Пикапы
 
 
 // Чекпоинты
@@ -68,7 +47,6 @@ stock PP_DestroyDynamicCP(&STREAMER_TAG_CP:checkpointid)
     #define _ALS_DestroyDynamicCP
 #endif
 #define DestroyDynamicCP PP_DestroyDynamicCP
-// Чекпоинты
 
 
 // Гоночные чекпоинты
@@ -85,7 +63,6 @@ stock PP_DestroyDynamicRaceCP(&STREAMER_TAG_RACE_CP:checkpointid)
     #define _ALS_DestroyDynamicRaceCP
 #endif
 #define DestroyDynamicRaceCP PP_DestroyDynamicRaceCP
-// Гоночные чекпоинты
 
 
 // Иконки на карте
@@ -102,7 +79,6 @@ stock PP_DestroyDynamicMapIcon(&STREAMER_TAG_MAP_ICON:iconid)
     #define _ALS_DestroyDynamicMapIcon
 #endif
 #define DestroyDynamicMapIcon PP_DestroyDynamicMapIcon
-// Иконки на карте
 
 
 // 3Д тексты
@@ -119,7 +95,6 @@ stock PP_DestroyDynamic3DTextLabel(&STREAMER_TAG_3D_TEXT_LABEL:id)
     #define _ALS_DestroyDynamic3DTextLabel
 #endif
 #define DestroyDynamic3DTextLabel PP_DestroyDynamic3DTextLabel
-// 3Д тексты
 
 
 // Динамические зоны
@@ -136,7 +111,6 @@ stock PP_DestroyDynamicArea(&STREAMER_TAG_AREA:areaid)
     #define _ALS_DestroyDynamicArea
 #endif
 #define DestroyDynamicArea PP_DestroyDynamicArea
-// Динамические зоны
 
 
 // Актёры
@@ -153,16 +127,13 @@ stock PP_DestroyDynamicActor(&STREAMER_TAG_ACTOR:actorid)
     #define _ALS_DestroyDynamicActor
 #endif
 #define DestroyDynamicActor PP_DestroyDynamicActor
-// Актёры
-
-
-
+// ------------------------------------------------------
 
 // Закрываем диалоговое окно (Перехват функции)
 stock PPHidePlayerDialog(playerid)
 {
-	PlayerInfo[playerid][pDialogID] = -1;
-	PlayerInfo[playerid][pDialogClosed] = true;
+	OnlineInfo[playerid][oDialogID] = -1;
+	OnlineInfo[playerid][oDialogClosed] = true;
 	
 	HidePlayerDialog(playerid);
 	return true;
@@ -238,35 +209,3 @@ stock __HOOK_SetVehicleNumberPlate(vehicleid, const numberplate[]) {
 	#define _ALS_SetVehicleNumberPlate
 #endif
 #define SetVehicleNumberPlate __HOOK_SetVehicleNumberPlate
-
-/*stock PPmysql_tquery(MySQL:handle, const query[], const callback[] = "", const format[] = "", {Float,_}:...)
-{
-	if(strlen(query) <= 5)
-	{
-		PrintBacktrace();
-	}
-	return true;
-}
-
-#if defined _ALS_mysql_tquery
-    #undef mysql_tquery
-#else
-    #define _ALS_mysql_tquery
-#endif
-#define mysql_tquery PPmysql_tquery*/
-
-/*stock PPmysql_format(MySQL:handle, output[], max_len, const format[], {MySQL, Float,_}:...)
-{
-    if(!mysql_format(handle, output, max_len, format, {MySQL, Float,_}:...))
-    {
-        PrintBacktrace();
-    }
-	return true;
-}
-
-#if defined _ALS_mysql_format
-    #undef mysql_format
-#else
-    #define _ALS_mysql_format
-#endif
-#define mysql_format PPmysql_format*/

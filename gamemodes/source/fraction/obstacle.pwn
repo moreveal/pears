@@ -845,7 +845,7 @@ stock Obstacle_Dialog_Start_AddMember(playerid, id) {
     new dialog_header[64]; strcat(dialog_header, "{ff9000}Добавление участника");
 
     new dialog_text[256];
-    if (PlayerInfo[playerid][pDialogID] == _:OBSTACLE_DIALOG_START_ADDMEMBER) {
+    if (OnlineInfo[playerid][oDialogID] == _:OBSTACLE_DIALOG_START_ADDMEMBER) {
         PlayerPlaySound(playerid, 4203);
         strcat(dialog_text, "{ffffff}Укажите никнейм или ID игрока для добавления в указанную команду {ff6347}[ Игрок не в сети ]");
     } else {
@@ -928,6 +928,18 @@ stock Obstacle_IsMember(playerid, id = -1) {
     return 0;
 }
 
+stock Obstacle_CreateObstacleTimeTD(playerid)
+{
+    ObstacleTimeTD[playerid] = CreatePlayerTextDraw(playerid, 320.0000, 410.0000, "00:00");
+    PlayerTextDrawLetterSize(playerid, ObstacleTimeTD[playerid], 0.3153, 1.5253);
+    PlayerTextDrawAlignment(playerid, ObstacleTimeTD[playerid], TEXT_DRAW_ALIGN: 2);
+    PlayerTextDrawColour(playerid, ObstacleTimeTD[playerid], -1);
+    PlayerTextDrawBackgroundColour(playerid, ObstacleTimeTD[playerid], 255);
+    PlayerTextDrawFont(playerid, ObstacleTimeTD[playerid], TEXT_DRAW_FONT: 1);
+    PlayerTextDrawSetProportional(playerid, ObstacleTimeTD[playerid], true);
+    PlayerTextDrawSetShadow(playerid, ObstacleTimeTD[playerid], 1);
+}
+
 stock Obstacle_AddMember(playerid, id, teamid) {
     if (!Obstacle_IsExists(id)) return 0;
     if (Obstacle_IsMember(playerid, id)) return 0;
@@ -941,14 +953,7 @@ stock Obstacle_AddMember(playerid, id, teamid) {
         }
     }
 
-    ObstacleTimeTD[playerid] = CreatePlayerTextDraw(playerid, 320.0000, 410.0000, "00:00");
-    PlayerTextDrawLetterSize(playerid, ObstacleTimeTD[playerid], 0.3153, 1.5253);
-    PlayerTextDrawAlignment(playerid, ObstacleTimeTD[playerid], TEXT_DRAW_ALIGN: 2);
-    PlayerTextDrawColour(playerid, ObstacleTimeTD[playerid], -1);
-    PlayerTextDrawBackgroundColour(playerid, ObstacleTimeTD[playerid], 255);
-    PlayerTextDrawFont(playerid, ObstacleTimeTD[playerid], TEXT_DRAW_FONT: 1);
-    PlayerTextDrawSetProportional(playerid, ObstacleTimeTD[playerid], true);
-    PlayerTextDrawSetShadow(playerid, ObstacleTimeTD[playerid], 1);
+    Obstacle_CreateObstacleTimeTD(playerid);
 
     return 1;
 }
@@ -980,6 +985,7 @@ stock Obstacle_DeleteMember(playerid, bool: finish = false) {
 
     Obstacle_HideCheckpoint(playerid);
     PlayerTextDrawHide(playerid, ObstacleTimeTD[playerid]);
+    PlayerTextDrawDestroy(playerid, ObstacleTimeTD[playerid]);
 
     for (new obstacleid = 0; obstacleid < MAX_OBSTACLE_ROUTES; obstacleid++) {
         for (new teamid = 0; teamid < OBSTACLE_TEAMS_AMOUNT; teamid++) {

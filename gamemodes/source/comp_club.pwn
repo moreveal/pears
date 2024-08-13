@@ -1663,7 +1663,7 @@ stock ComputerClubGetSpawnInfo(locationid, spawnid, &Float: x, &Float: y, &Float
     a = computerClubLocationSpawn[locationid][spawnid][cclsPos][3];
 }
 
-// Обработка спавна игрока [ее вызов помещен в OnPlayerSpawn (внутри PlayerSpawnHandler)]
+// Обработка спавна игрока
 stock ComputerClubOnPlayerSpawn(playerid) {
     new gameid = GetPlayerActiveComputerGame(playerid);
     if (gameid > -1) {

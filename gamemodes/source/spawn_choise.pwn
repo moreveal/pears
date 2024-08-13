@@ -26,7 +26,8 @@ stock SaveLastPlayerPosition(playerid)
         || OnlineInfo[playerid][oShowInterface] == 18
         || gAutosalon[playerid] > 0 // В автосервисе
         || Fractia[playerid] > 0  // В выборе одежды
-        || computerClubPlayerInfo[playerid][ccpiInGame] == true) // В комп клубе
+        || computerClubPlayerInfo[playerid][ccpiInGame] == true // В комп клубе
+        || MineWar_IsPlayerInside(playerid)) // В заброшенной шахте
     {
         PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
         PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
