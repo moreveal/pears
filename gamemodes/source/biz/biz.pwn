@@ -104,7 +104,8 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 			{
 				List[quan][playerid] = i;
 				quan ++;
-				format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
+				if(BizzInfo[b][bOrder][i] == 178) format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i]*10000, getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * 10000), strcat(lines,line);
+				else format(line,sizeof(line),"{ff9000}%d. %s \t{cccccc}[Количество: %d] \t{9DF1B4}%d$\n", quan, GetNameThing(0, BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i], 0), BizzInfo[b][bOrderQuan][i], getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i]), strcat(lines,line);
 			}
 		}
 	}
