@@ -191,6 +191,24 @@ stock MoveCamera(playerid)
 	return 1;
 }
 
+// Записываем положение камеры в чат
+stock SavePositionFlyCam(playerid)
+{
+	const Float:fScale = 5.0;
+
+	new Float:fPX, Float:fPY, Float:fPZ, 
+		Float:fVX, Float:fVY, Float:fVZ, 
+		Float:object_x, Float:object_y, Float:object_z;
+	GetPlayerCameraPos(playerid, fPX, fPY, fPZ);
+    GetPlayerCameraFrontVector(playerid, fVX, fVY, fVZ);
+
+	object_x = fPX + floatmul(fVX, fScale);
+	object_y = fPY + floatmul(fVY, fScale);
+	object_z = fPZ + floatmul(fVZ, fScale);
+	SendClientMessage(playerid, COLOR_GREY, "FlyCameraPos(playerid, %f, %f, %f, %f, %f, %f, 1000, 1200);", fPX, fPY, fPZ, object_x, object_y, object_z);
+	return true;
+}
+
 // Сбрасываем настройки скорости камеры
 stock ResetFlycamSpeed(playerid)
 {

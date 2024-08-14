@@ -137,6 +137,9 @@ stock LoadBot()
 	BotPears[56] = CreateDynamicActor(50, -1565.6212,-2740.8579,48.7373,59.4913); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 	BotPears[57] = CreateDynamicActor(151, -1555.9618,-2737.3997,48.5721,235.5593); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot
 
+    BotPears[22] = CreateDynamicActor(348, 2190.7422,1928.0671,68.0681,0.6234, true, 100.0, WORLD_GYM_HALL, INT_GYM_HALL); // Спортзал ресепшен
+    BotPears[23] = CreateDynamicActor(351, 2192.7583,1928.0481,68.0681,1.2733, true, 100.0, WORLD_GYM_HALL, INT_GYM_HALL); // Спортзал ресепшен
+
 	BotPears[30] = CreateDynamicActor(6, 1380.1854,-5.4021,1000.9713,257.5052, true, 100.0, 219); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Bot 1 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ]
 	BotPears[31] = CreateDynamicActor(95, 995.3415,-1954.1554,12.8842,182.6652); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Bot 2 [ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ ]
 	BotPears[32] = CreateDynamicActor(150, 1276.9844,-46.5174,1000.9280,358.1093, true, 100.0, 3); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Bot 1 [ пїЅпїЅпїЅпїЅпїЅ ]
@@ -373,373 +376,196 @@ stock LoadBot()
     BotPears[517] = CreateDynamicActor(140, 564.8656,-1809.2654,6.0625,280.8233); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	//BotPears[518] = CreateDynamicActor(270, 2530.8591,-1664.4253,15.1665,171.8431); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ Grove
 	BotPears[519] = CreateDynamicActor(71, 1089.5840,-1213.9564,18.0118,183.9828); // collector bot work
-    
+
     BotPears[520] = CreateDynamicActor(442,1570.5031,-1649.5078,21.2318,100.8627, .worldid = 256); // LSPD Bot 11
     BotPears[521] = CreateDynamicActor(443,1569.3571,-1649.6467,21.2318,269.8762, .worldid = 256); // LSPD Bot 12
     BotPears[522] = CreateDynamicActor(422,1580.5566,-1694.6251,6.2187,306.7073); // LSPD Bot 13
     BotPears[523] = CreateDynamicActor(419,1581.6965,-1693.7367,6.2187,123.5138); // LSPD Bot 14
 
-	LoadAnimBot(5000);
+	LoadAnimBot();
 
 	CreateDynamicActor(141, 1760.1196,1404.7627,10.9041,87.1673, true, 100.0, 0, 0, -1, 100.0, -1, 0); // aero lv girl
 	return 1;
 }
-stock LoadAnimBot(stat)
+stock LoadAnimBot()
 {
-     switch(stat)
-	 {
-        case 7: ApplyDynamicActorAnimation(BotPears[7],"PED","SEAT_idle",4.1,1,0,0,0,0);
-        case 8: ApplyDynamicActorAnimation(BotPears[8],"PED","SEAT_idle",4.1,1,0,0,0,0);
-        case 12: ApplyDynamicActorAnimation(BotPears[12],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 13: ApplyDynamicActorAnimation(BotPears[13],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 14: ApplyDynamicActorAnimation(BotPears[14],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        case 15: ApplyDynamicActorAnimation(BotPears[15],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 16: ApplyDynamicActorAnimation(BotPears[16],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 17: ApplyDynamicActorAnimation(BotPears[17],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        case 18: ApplyDynamicActorAnimation(BotPears[18],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 19: ApplyDynamicActorAnimation(BotPears[19],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 20: ApplyDynamicActorAnimation(BotPears[20],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        case 21: ApplyDynamicActorAnimation(BotPears[21],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 34: ApplyDynamicActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
-        case 35: ApplyDynamicActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
-        case 37: ApplyDynamicActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
-        case 38: ApplyDynamicActorAnimation(BotPears[38],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 7
-        case 39: ApplyDynamicActorAnimation(BotPears[39],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 8
-        case 40: ApplyDynamicActorAnimation(BotPears[40],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Вокзал Bot 9
-        case 45: ApplyDynamicActorAnimation(BotPears[45],"PED","woman_idlestance",4.1,1,0,0,0,0); // Спермобанк Bot 1
-        case 49: ApplyDynamicActorAnimation(BotPears[49],"PED","woman_idlestance",4.1,1,0,0,0,0); // Госпиталь Bot 2
-        case 51: ApplyDynamicActorAnimation(BotPears[51],"PED","woman_idlestance",4.1,0,1,1,1,1); // Госпиталь Bot 4
-        case 52: ApplyDynamicActorAnimation(BotPears[52],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Госпиталь Bot 5
-        case 53: ApplyDynamicActorAnimation(BotPears[53],"CRACK","crckdeth1",4.1,0,1,1,1,1); // Госпиталь Bot 6
-        case 54: ApplyDynamicActorAnimation(BotPears[54],"CRACK","crckidle2",4.1,0,1,1,1,1); // Госпиталь Bot 7
-        case 56: ApplyDynamicActorAnimation(BotPears[56],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 57: ApplyDynamicActorAnimation(BotPears[57],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        case 58: ApplyDynamicActorAnimation(BotPears[58],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 1 [ Разговаривает ]
-        case 59: ApplyDynamicActorAnimation(BotPears[59],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 2
-        case 60: ApplyDynamicActorAnimation(BotPears[60],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 3
-        case 61: ApplyDynamicActorAnimation(BotPears[61],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 4
-        case 62: ApplyDynamicActorAnimation(BotPears[62],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 5
-        case 69: ApplyDynamicActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 70: ApplyDynamicActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        case 71: ApplyDynamicActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-		case 77: ApplyDynamicActorAnimation(BotPears[77],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 1
-        case 78: ApplyDynamicActorAnimation(BotPears[78],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 2
-		case 83: ApplyDynamicActorAnimation(BotPears[83],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-		case 84: ApplyDynamicActorAnimation(BotPears[84],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		case 85: ApplyDynamicActorAnimation(BotPears[85],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		case 86: ApplyDynamicActorAnimation(BotPears[86],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-		case 87: ApplyDynamicActorAnimation(BotPears[87],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		case 88: ApplyDynamicActorAnimation(BotPears[88],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 89: ApplyDynamicActorAnimation(BotPears[89],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[7],"PED","SEAT_idle",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[8],"PED","SEAT_idle",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[12],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[13],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[14],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[15],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[16],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[17],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[18],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[19],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[20],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[21],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
 
-        case 96: ApplyDynamicActorAnimation(BotPears[96],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 1
-        case 97: ApplyDynamicActorAnimation(BotPears[97],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 2
+    ApplyDynamicActorAnimation(BotPears[22],"PED","SEAT_idle",4.1,1,0,0,0,0); // Спортзал
+    ApplyDynamicActorAnimation(BotPears[23],"PED","SEAT_idle",4.1,1,0,0,0,0); // Спортзал
 
-        case 105: ApplyDynamicActorAnimation(BotPears[105],"BLOWJOBZ","BJ_STAND_LOOP_W",4,1,0,0,1,0); // Sex Bot 1
-        case 106: ApplyDynamicActorAnimation(BotPears[106],"BLOWJOBZ","BJ_STAND_LOOP_P",4,1,0,0,1,0); // Sex Bot 2
-        case 110: ApplyDynamicActorAnimation(BotPears[110],"BD_FIRE","wash_up",4.1,1,0,0,0,0);// Госпиталь Bot 8
-        case 111: ApplyDynamicActorAnimation(BotPears[111],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 9
-        case 112: ApplyDynamicActorAnimation(BotPears[112],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 10
-        case 113: ApplyDynamicActorAnimation(BotPears[113],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 11
-        case 114: ApplyDynamicActorAnimation(BotPears[114],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 12
-        case 115: ApplyDynamicActorAnimation(BotPears[115],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 13
-        case 116: ApplyDynamicActorAnimation(BotPears[116],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 14
-        case 117: ApplyDynamicActorAnimation(BotPears[117],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 15
-        case 118: ApplyDynamicActorAnimation(BotPears[118],"OTB","wtchrace_loop",4.1,1,0,0,0,0);// Госпиталь Bot 16
-        case 119: ApplyDynamicActorAnimation(BotPears[119],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 17
-        case 120: ApplyDynamicActorAnimation(BotPears[120],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 18
-        case 121: ApplyDynamicActorAnimation(BotPears[121],"CRACK","crckidle1",4.1,1,0,0,0,0);// Госпиталь Bot 19
-        case 122: ApplyDynamicActorAnimation(BotPears[122],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Госпиталь Bot 20
-        case 151: ApplyDynamicActorAnimation(BotPears[151],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 4
-        case 152: ApplyDynamicActorAnimation(BotPears[152],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 5
-        case 153: ApplyDynamicActorAnimation(BotPears[153],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // LSPD Bot 6
-        case 154: ApplyDynamicActorAnimation(BotPears[154],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 7
-        case 155: ApplyDynamicActorAnimation(BotPears[155],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 8
-        case 156: ApplyDynamicActorAnimation(BotPears[156],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 9
-        case 157: ApplyDynamicActorAnimation(BotPears[157],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 10
-        case 192: ApplyDynamicActorAnimation(BotPears[192],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Pizza Co Bot 1
-        case 204: ApplyDynamicActorAnimation(BotPears[204],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Археология Bot 1
-        case 207: ApplyDynamicActorAnimation(BotPears[207],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 1
-        case 208: ApplyDynamicActorAnimation(BotPears[208],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 2
-        case 209: ApplyDynamicActorAnimation(BotPears[209],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 3
-        case 219: ApplyDynamicActorAnimation(BotPears[219],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 4
-        case 220: ApplyDynamicActorAnimation(BotPears[220],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 5
-        case 221: ApplyDynamicActorAnimation(BotPears[221],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 6
-		case 227: ApplyDynamicActorAnimation(BotPears[227],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 7
-        case 228: ApplyDynamicActorAnimation(BotPears[228],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 8
-        case 229: ApplyDynamicActorAnimation(BotPears[229],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 9
-        case 230: ApplyDynamicActorAnimation(BotPears[230],"SMOKING","M_smklean_loop",4.1,0,1,1,1,1); // Заправщик Bot 10
-        case 231: ApplyDynamicActorAnimation(BotPears[231],"SMOKING","M_smklean_loop",4.1,0,1,1,1,1); // Заправщик Bot 11
-        case 232: ApplyDynamicActorAnimation(BotPears[232],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 12
-        case 233: ApplyDynamicActorAnimation(BotPears[233],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 13
-        case 234: ApplyDynamicActorAnimation(BotPears[234],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 14
-        case 235: ApplyDynamicActorAnimation(BotPears[235],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 15
-        case 236: ApplyDynamicActorAnimation(BotPears[236],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 16
-        case 237: ApplyDynamicActorAnimation(BotPears[237],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 17
-        case 238: ApplyDynamicActorAnimation(BotPears[238],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 18
-        case 241: ApplyDynamicActorAnimation(BotPears[241],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        case 242: ApplyDynamicActorAnimation(BotPears[242],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        case 313: ApplyDynamicActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
-        case 314: ApplyDynamicActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
-        case 315: ApplyDynamicActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
-        case 324: ApplyDynamicActorAnimation(BotPears[324],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
-        case 325: ApplyDynamicActorAnimation(BotPears[325],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
-        case 350: ApplyDynamicActorAnimation(BotPears[350],"SMOKING","M_smk_loop",4.1,1,0,0,0,0);
-        case 351: ApplyDynamicActorAnimation(BotPears[351],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 352: ApplyDynamicActorAnimation(BotPears[352],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 368: ApplyDynamicActorAnimation(BotPears[368],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 369: ApplyDynamicActorAnimation(BotPears[369],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 370: ApplyDynamicActorAnimation(BotPears[370],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 371: ApplyDynamicActorAnimation(BotPears[371],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 372: ApplyDynamicActorAnimation(BotPears[372],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 373: ApplyDynamicActorAnimation(BotPears[373],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 384: ApplyDynamicActorAnimation(BotPears[384],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 388: ApplyDynamicActorAnimation(BotPears[388],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 391: ApplyDynamicActorAnimation(BotPears[391],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 392: ApplyDynamicActorAnimation(BotPears[392],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 399: ApplyDynamicActorAnimation(BotPears[399],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 400: ApplyDynamicActorAnimation(BotPears[400],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 406: ApplyDynamicActorAnimation(BotPears[406],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 407: ApplyDynamicActorAnimation(BotPears[407],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 408: ApplyDynamicActorAnimation(BotPears[408],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 409: ApplyDynamicActorAnimation(BotPears[409],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 410: ApplyDynamicActorAnimation(BotPears[410],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        case 411: ApplyDynamicActorAnimation(BotPears[411],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 412: ApplyDynamicActorAnimation(BotPears[412],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 413: ApplyDynamicActorAnimation(BotPears[413],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 414: ApplyDynamicActorAnimation(BotPears[414],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 415: ApplyDynamicActorAnimation(BotPears[415],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 418: ApplyDynamicActorAnimation(BotPears[418],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 420: ApplyDynamicActorAnimation(BotPears[420],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 421: ApplyDynamicActorAnimation(BotPears[421],"CRACK", "crckdeth2", 4.0, 1, 0, 0, 0, 0);
-        case 423: ApplyDynamicActorAnimation(BotPears[423],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        case 425: ApplyDynamicActorAnimation(BotPears[425],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 426: ApplyDynamicActorAnimation(BotPears[426],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        case 427: ApplyDynamicActorAnimation(BotPears[427],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        case 428: ApplyDynamicActorAnimation(BotPears[428],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 429: ApplyDynamicActorAnimation(BotPears[429],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 431: ApplyDynamicActorAnimation(BotPears[431],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        case 432: ApplyDynamicActorAnimation(BotPears[432],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 433: ApplyDynamicActorAnimation(BotPears[433],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 434: ApplyDynamicActorAnimation(BotPears[434],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        case 435: ApplyDynamicActorAnimation(BotPears[435],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 436: ApplyDynamicActorAnimation(BotPears[436],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 437: ApplyDynamicActorAnimation(BotPears[437],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 438: ApplyDynamicActorAnimation(BotPears[438],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 439: ApplyDynamicActorAnimation(BotPears[439],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 440: ApplyDynamicActorAnimation(BotPears[440],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        case 441: ApplyDynamicActorAnimation(BotPears[441],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 442: ApplyDynamicActorAnimation(BotPears[442],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 443: ApplyDynamicActorAnimation(BotPears[443],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 444: ApplyDynamicActorAnimation(BotPears[444],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 445: ApplyDynamicActorAnimation(BotPears[445],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 475: ApplyDynamicActorAnimation(BotPears[475],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 476: ApplyDynamicActorAnimation(BotPears[476],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 477: ApplyDynamicActorAnimation(BotPears[477],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 478: ApplyDynamicActorAnimation(BotPears[478],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-        case 479: ApplyDynamicActorAnimation(BotPears[479],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 480: ApplyDynamicActorAnimation(BotPears[480],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 482: ApplyDynamicActorAnimation(BotPears[482],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 486: ApplyDynamicActorAnimation(BotPears[486],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 487: ApplyDynamicActorAnimation(BotPears[487],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 488: ApplyDynamicActorAnimation(BotPears[488],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 490: ApplyDynamicActorAnimation(BotPears[490],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
-        case 491: ApplyDynamicActorAnimation(BotPears[491],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
-        case 492: ApplyDynamicActorAnimation(BotPears[492],"PED","woman_idlestance",4.1,1,0,0,0,0);
-        case 493: ApplyDynamicActorAnimation(BotPears[493],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 494: ApplyDynamicActorAnimation(BotPears[494],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 498: ApplyDynamicActorAnimation(BotPears[498],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-        case 501: ApplyDynamicActorAnimation(BotPears[501],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 509: ApplyDynamicActorAnimation(BotPears[509],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 510: ApplyDynamicActorAnimation(BotPears[510],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 511: ApplyDynamicActorAnimation(BotPears[511],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 512: ApplyDynamicActorAnimation(BotPears[512],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        case 514: ApplyDynamicActorAnimation(BotPears[514],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 515: ApplyDynamicActorAnimation(BotPears[515],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        case 516: ApplyDynamicActorAnimation(BotPears[516],"BLOWJOBZ","BJ_STAND_LOOP_P",4.1,1,0,0,0,0);
-        case 517: ApplyDynamicActorAnimation(BotPears[517],"BLOWJOBZ","BJ_STAND_LOOP_W",4.1,1,0,0,0,0);
-        case 520: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 11
-        case 521: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 12
-        case 522: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 13
-        case 523: ApplyDynamicActorAnimation(BotPears[stat],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 14
+    ApplyDynamicActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
+    ApplyDynamicActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
+    ApplyDynamicActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
+    ApplyDynamicActorAnimation(BotPears[38],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 7
+    ApplyDynamicActorAnimation(BotPears[39],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 8
+    ApplyDynamicActorAnimation(BotPears[40],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Вокзал Bot 9
+    ApplyDynamicActorAnimation(BotPears[45],"PED","woman_idlestance",4.1,1,0,0,0,0); // Спермобанк Bot 1
+    ApplyDynamicActorAnimation(BotPears[49],"PED","woman_idlestance",4.1,1,0,0,0,0); // Госпиталь Bot 2
+    ApplyDynamicActorAnimation(BotPears[51],"PED","woman_idlestance",4.1,0,1,1,1,1); // Госпиталь Bot 4
+    ApplyDynamicActorAnimation(BotPears[52],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Госпиталь Bot 5
+    ApplyDynamicActorAnimation(BotPears[53],"CRACK","crckdeth1",4.1,0,1,1,1,1); // Госпиталь Bot 6
+    ApplyDynamicActorAnimation(BotPears[54],"CRACK","crckidle2",4.1,0,1,1,1,1); // Госпиталь Bot 7
+    ApplyDynamicActorAnimation(BotPears[56],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[57],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[58],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 1 [ Разговаривает ]
+    ApplyDynamicActorAnimation(BotPears[59],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 2
+    ApplyDynamicActorAnimation(BotPears[60],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 3
+    ApplyDynamicActorAnimation(BotPears[61],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 4
+    ApplyDynamicActorAnimation(BotPears[62],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 5
+    ApplyDynamicActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
+    ApplyDynamicActorAnimation(BotPears[77],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 1
+    ApplyDynamicActorAnimation(BotPears[78],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 2
+    ApplyDynamicActorAnimation(BotPears[83],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[84],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[85],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[86],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[87],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[88],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[89],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
 
-        case 5000:
-		{
-        ApplyDynamicActorAnimation(BotPears[7],"PED","SEAT_idle",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[8],"PED","SEAT_idle",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[12],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[13],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[14],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[15],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[16],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[17],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[18],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[19],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[20],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[21],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[34],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 3
-        ApplyDynamicActorAnimation(BotPears[35],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 4
-        ApplyDynamicActorAnimation(BotPears[37],"PED","woman_idlestance",4.1,1,0,0,0,0); // Вокзал Bot 6
-        ApplyDynamicActorAnimation(BotPears[38],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 7
-        ApplyDynamicActorAnimation(BotPears[39],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Вокзал Bot 8
-        ApplyDynamicActorAnimation(BotPears[40],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Вокзал Bot 9
-        ApplyDynamicActorAnimation(BotPears[45],"PED","woman_idlestance",4.1,1,0,0,0,0); // Спермобанк Bot 1
-        ApplyDynamicActorAnimation(BotPears[49],"PED","woman_idlestance",4.1,1,0,0,0,0); // Госпиталь Bot 2
-        ApplyDynamicActorAnimation(BotPears[51],"PED","woman_idlestance",4.1,0,1,1,1,1); // Госпиталь Bot 4
-        ApplyDynamicActorAnimation(BotPears[52],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Госпиталь Bot 5
-        ApplyDynamicActorAnimation(BotPears[53],"CRACK","crckdeth1",4.1,0,1,1,1,1); // Госпиталь Bot 6
-        ApplyDynamicActorAnimation(BotPears[54],"CRACK","crckidle2",4.1,0,1,1,1,1); // Госпиталь Bot 7
-        ApplyDynamicActorAnimation(BotPears[56],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[57],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[58],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 1 [ Разговаривает ]
-        ApplyDynamicActorAnimation(BotPears[59],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 2
-        ApplyDynamicActorAnimation(BotPears[60],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 3
-        ApplyDynamicActorAnimation(BotPears[61],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Russian Mafia Bot 4
-        ApplyDynamicActorAnimation(BotPears[62],"SMOKING","M_smk_loop",4.1,1,0,0,0,0); // Russian Mafia Bot 5
-        ApplyDynamicActorAnimation(BotPears[69],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[70],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправка Bot
-        ApplyDynamicActorAnimation(BotPears[71],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправка Bot
-		ApplyDynamicActorAnimation(BotPears[77],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 1
-        ApplyDynamicActorAnimation(BotPears[78],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // aero lv talk 2
-		ApplyDynamicActorAnimation(BotPears[83],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-		ApplyDynamicActorAnimation(BotPears[84],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		ApplyDynamicActorAnimation(BotPears[85],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		ApplyDynamicActorAnimation(BotPears[86],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-		ApplyDynamicActorAnimation(BotPears[87],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-		ApplyDynamicActorAnimation(BotPears[88],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[89],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[96],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 1
+    ApplyDynamicActorAnimation(BotPears[97],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 2
 
-        ApplyDynamicActorAnimation(BotPears[96],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 1
-        ApplyDynamicActorAnimation(BotPears[97],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт lv security 2
+    ApplyDynamicActorAnimation(BotPears[105],"BLOWJOBZ","BJ_STAND_LOOP_W",4,1,0,0,1,0); // Sex Bot 1
+    ApplyDynamicActorAnimation(BotPears[106],"BLOWJOBZ","BJ_STAND_LOOP_P",4,1,0,0,1,0); // Sex Bot 2
+    ApplyDynamicActorAnimation(BotPears[110],"BD_FIRE","wash_up",4.1,1,0,0,0,0);// Госпиталь Bot 8
+    ApplyDynamicActorAnimation(BotPears[111],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 9
+    ApplyDynamicActorAnimation(BotPears[112],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 10
+    ApplyDynamicActorAnimation(BotPears[113],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 11
+    ApplyDynamicActorAnimation(BotPears[114],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 12
+    ApplyDynamicActorAnimation(BotPears[115],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 13
+    ApplyDynamicActorAnimation(BotPears[116],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 14
+    ApplyDynamicActorAnimation(BotPears[117],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 15
+    ApplyDynamicActorAnimation(BotPears[118],"OTB","wtchrace_loop",4.1,1,0,0,0,0);// Госпиталь Bot 16
+    ApplyDynamicActorAnimation(BotPears[119],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 17
+    ApplyDynamicActorAnimation(BotPears[120],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 18
+    ApplyDynamicActorAnimation(BotPears[121],"CRACK","crckidle1",4.1,1,0,0,0,0);// Госпиталь Bot 19
+    ApplyDynamicActorAnimation(BotPears[122],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Госпиталь Bot 20
+    ApplyDynamicActorAnimation(BotPears[151],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 4
+    ApplyDynamicActorAnimation(BotPears[152],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 5
+    ApplyDynamicActorAnimation(BotPears[153],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // LSPD Bot 6
+    ApplyDynamicActorAnimation(BotPears[154],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 7
+    ApplyDynamicActorAnimation(BotPears[155],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 8
+    ApplyDynamicActorAnimation(BotPears[156],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 9
+    ApplyDynamicActorAnimation(BotPears[157],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 10
 
-        ApplyDynamicActorAnimation(BotPears[105],"BLOWJOBZ","BJ_STAND_LOOP_W",4,1,0,0,1,0); // Sex Bot 1
-        ApplyDynamicActorAnimation(BotPears[106],"BLOWJOBZ","BJ_STAND_LOOP_P",4,1,0,0,1,0); // Sex Bot 2
-        ApplyDynamicActorAnimation(BotPears[110],"BD_FIRE","wash_up",4.1,1,0,0,0,0);// Госпиталь Bot 8
-        ApplyDynamicActorAnimation(BotPears[111],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 9
-        ApplyDynamicActorAnimation(BotPears[112],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 10
-        ApplyDynamicActorAnimation(BotPears[113],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 11
-        ApplyDynamicActorAnimation(BotPears[114],"CRACK","crckidle1",4.1,0,1,1,1,1);// Госпиталь Bot 12
-        ApplyDynamicActorAnimation(BotPears[115],"CRACK","crckidle2",4.1,0,1,1,1,1);// Госпиталь Bot 13
-        ApplyDynamicActorAnimation(BotPears[116],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 14
-        ApplyDynamicActorAnimation(BotPears[117],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 15
-        ApplyDynamicActorAnimation(BotPears[118],"OTB","wtchrace_loop",4.1,1,0,0,0,0);// Госпиталь Bot 16
-        ApplyDynamicActorAnimation(BotPears[119],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 17
-        ApplyDynamicActorAnimation(BotPears[120],"PED","IDLE_CHAT",4.1,1,0,0,0,0);// Госпиталь Bot 18
-        ApplyDynamicActorAnimation(BotPears[121],"CRACK","crckidle1",4.1,1,0,0,0,0);// Госпиталь Bot 19
-        ApplyDynamicActorAnimation(BotPears[122],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Госпиталь Bot 20
-        ApplyDynamicActorAnimation(BotPears[151],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 4
-        ApplyDynamicActorAnimation(BotPears[152],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 5
-        ApplyDynamicActorAnimation(BotPears[153],"SMOKING","M_smk_drag",4.1,1,0,0,0,0); // LSPD Bot 6
-        ApplyDynamicActorAnimation(BotPears[154],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 7
-        ApplyDynamicActorAnimation(BotPears[155],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 8
-        ApplyDynamicActorAnimation(BotPears[156],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 9
-        ApplyDynamicActorAnimation(BotPears[157],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 10
-
-        ApplyDynamicActorAnimation(BotPears[204],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Археология Bot 1
-        ApplyDynamicActorAnimation(BotPears[207],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 1
-        ApplyDynamicActorAnimation(BotPears[208],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 2
-        ApplyDynamicActorAnimation(BotPears[209],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 3
-        ApplyDynamicActorAnimation(BotPears[219],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 4
-        ApplyDynamicActorAnimation(BotPears[220],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 5
-        ApplyDynamicActorAnimation(BotPears[221],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 6
-        ApplyDynamicActorAnimation(BotPears[227],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 7
-        ApplyDynamicActorAnimation(BotPears[228],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 8
-        ApplyDynamicActorAnimation(BotPears[229],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 9
-        ApplyDynamicActorAnimation(BotPears[230],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 10
-        ApplyDynamicActorAnimation(BotPears[231],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 11
-        ApplyDynamicActorAnimation(BotPears[232],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 12
-        ApplyDynamicActorAnimation(BotPears[233],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 13
-        ApplyDynamicActorAnimation(BotPears[234],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 14
-        ApplyDynamicActorAnimation(BotPears[235],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 15
-        ApplyDynamicActorAnimation(BotPears[236],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 16
-        ApplyDynamicActorAnimation(BotPears[237],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 17
-        ApplyDynamicActorAnimation(BotPears[238],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 18
-        ApplyDynamicActorAnimation(BotPears[241],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        ApplyDynamicActorAnimation(BotPears[242],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
-        ApplyDynamicActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
-        ApplyDynamicActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
-        ApplyDynamicActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
-        ApplyDynamicActorAnimation(BotPears[324],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
-        ApplyDynamicActorAnimation(BotPears[325],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
-        ApplyDynamicActorAnimation(BotPears[350],"SMOKING","M_smk_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[351],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[352],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[368],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[369],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[370],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[371],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[372],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[373],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[384],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[388],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[391],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[392],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[399],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[400],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[406],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[407],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[408],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[409],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[410],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[411],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[412],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[413],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[414],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[415],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[418],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[420],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[421],"CRACK", "crckdeth2", 4.0, 1, 0, 0, 0, 0);
-        ApplyDynamicActorAnimation(BotPears[423],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        ApplyDynamicActorAnimation(BotPears[425],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[426],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        ApplyDynamicActorAnimation(BotPears[427],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[428],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[429],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[431],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
-        ApplyDynamicActorAnimation(BotPears[432],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[433],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[434],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[435],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[436],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[437],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[438],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[439],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[440],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[441],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[442],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[443],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[444],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[445],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[475],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[476],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[477],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[478],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[479],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[480],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[482],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[486],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[487],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[488],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[490],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[491],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[492],"PED","woman_idlestance",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[493],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[494],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[498],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[501],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[509],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[510],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[511],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[512],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[514],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[515],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[516],"BLOWJOBZ","BJ_STAND_LOOP_P",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[517],"BLOWJOBZ","BJ_STAND_LOOP_W",4.1,1,0,0,0,0);
-        ApplyDynamicActorAnimation(BotPears[520],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 11
-        ApplyDynamicActorAnimation(BotPears[521],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 12
-        ApplyDynamicActorAnimation(BotPears[522],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 13
-        ApplyDynamicActorAnimation(BotPears[523],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 14
-        }
-     }
-     return 1;
+    ApplyDynamicActorAnimation(BotPears[204],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Археология Bot 1
+    ApplyDynamicActorAnimation(BotPears[207],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 1
+    ApplyDynamicActorAnimation(BotPears[208],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 2
+    ApplyDynamicActorAnimation(BotPears[209],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 3
+    ApplyDynamicActorAnimation(BotPears[219],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 4
+    ApplyDynamicActorAnimation(BotPears[220],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 5
+    ApplyDynamicActorAnimation(BotPears[221],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 6
+    ApplyDynamicActorAnimation(BotPears[227],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 7
+    ApplyDynamicActorAnimation(BotPears[228],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 8
+    ApplyDynamicActorAnimation(BotPears[229],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 9
+    ApplyDynamicActorAnimation(BotPears[230],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 10
+    ApplyDynamicActorAnimation(BotPears[231],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 11
+    ApplyDynamicActorAnimation(BotPears[232],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 12
+    ApplyDynamicActorAnimation(BotPears[233],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 13
+    ApplyDynamicActorAnimation(BotPears[234],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 14
+    ApplyDynamicActorAnimation(BotPears[235],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 15
+    ApplyDynamicActorAnimation(BotPears[236],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 16
+    ApplyDynamicActorAnimation(BotPears[237],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0); // Заправщик Bot 17
+    ApplyDynamicActorAnimation(BotPears[238],"PED","woman_idlestance",4.1,1,0,0,0,0); // Заправщик Bot 18
+    ApplyDynamicActorAnimation(BotPears[241],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
+    ApplyDynamicActorAnimation(BotPears[242],"OTB","wtchrace_loop",4.1,1,0,0,0,0); // Аэропорт Bot 1
+    ApplyDynamicActorAnimation(BotPears[313],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
+    ApplyDynamicActorAnimation(BotPears[314],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Правительство Bot
+    ApplyDynamicActorAnimation(BotPears[315],"DEALER","DEALER_IDLE",4.1,0,1,1,1,1); // Правительство Bot
+    ApplyDynamicActorAnimation(BotPears[324],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
+    ApplyDynamicActorAnimation(BotPears[325],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // Дальнобойщики Bot
+    ApplyDynamicActorAnimation(BotPears[350],"SMOKING","M_smk_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[351],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[352],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[368],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[369],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[370],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[371],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[372],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[373],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[384],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[388],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[391],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[392],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[399],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[400],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[406],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[407],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[408],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[409],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[410],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[411],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[412],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[413],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[414],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[415],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[418],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[420],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[421],"CRACK", "crckdeth2", 4.0, 1, 0, 0, 0, 0);
+    ApplyDynamicActorAnimation(BotPears[423],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
+    ApplyDynamicActorAnimation(BotPears[425],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[426],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
+    ApplyDynamicActorAnimation(BotPears[427],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[428],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[429],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[431],"BD_FIRE","wash_up",4.1,0,1,1,1,1);
+    ApplyDynamicActorAnimation(BotPears[432],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[433],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[434],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[435],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[436],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[437],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[438],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[439],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[440],"SMOKING","M_smkstnd_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[441],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[442],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[443],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[444],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[445],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[475],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[476],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[477],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[478],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[479],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[480],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[482],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[486],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[487],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[488],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[490],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[491],"SMOKING","M_smklean_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[492],"PED","woman_idlestance",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[493],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[494],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[498],"BD_FIRE","wash_up",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[501],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[509],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[510],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[511],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[512],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[514],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[515],"OTB","wtchrace_loop",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[516],"BLOWJOBZ","BJ_STAND_LOOP_P",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[517],"BLOWJOBZ","BJ_STAND_LOOP_W",4.1,1,0,0,0,0);
+    ApplyDynamicActorAnimation(BotPears[520],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 11
+    ApplyDynamicActorAnimation(BotPears[521],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 12
+    ApplyDynamicActorAnimation(BotPears[522],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 13
+    ApplyDynamicActorAnimation(BotPears[523],"PED","IDLE_CHAT",4.1,1,0,0,0,0); // LSPD Bot 14
+    return 1;
 }

@@ -14,7 +14,7 @@ new VehLimitedCase[MAX_MODELS_VEHICLE]; // Статус лимитированн
 
 new vehClassName[][] =
 {
-    "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Government"
+    "Undefiend", "Premium", "Middle", "Economy", "Off-Road", "Special", "Unique", "Government", "Limited"
 };
 
 new vehName[][] =
@@ -150,8 +150,8 @@ stock GetVehicleModelSync(playerid, model) // Получаем модель тр
     new vehId;
     if(playerid == -1 || IsPlayerSyncModels(playerid)) // Мод установлен
 	{
-		if(model >= 612 && model <= 15265) model += 13066;
-		else if(model >= 15266) model += 13266;
+		if(model >= 612 && model <= 2101) model += 13066;
+		else if(model >= 2102) model += 13164;
 		vehId = model;
 	}
     else vehId = GetVehModelOriginal(model);
@@ -310,8 +310,14 @@ stock IsAPosBootOrBonet(playerid, &type)
 		}
 	}
 
-	if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
-	else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+	if(vehicleid >= 0)
+	{
+		if(!IsAMoto(VehInfo[vehicleid][vModel]) && !IsABoat(VehInfo[vehicleid][vModel]) && !IsAPlane(VehInfo[vehicleid][vModel]))
+		{
+			if (type == 1 && !GetVehicleNear_Boot(playerid, vehicleid)) return 0;
+			else if (type == 2 && !GetVehicleNear_Bonet(playerid, vehicleid)) return 0;
+		}
+	}
 
 	return vehicleid;
 }
@@ -1153,7 +1159,7 @@ stock dialogCase_Vehicle(playerid, dialogid, response, listitem, const inputtext
 			new vehicleList = OnlineInfo[playerid][oDialogMenu][3];
 			if(PlayerInfo[playerid][pSoska] < 20) return ErrorText(playerid, "{FF6347}Только для администраторов 20+ уровня"), SettingGosPriceVehicle(playerid, vehicleList);
 			new input = strval(inputtext);
-			if(input < 1 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 0 и не больше 100.000"), SettingGosPriceVehicle(playerid, vehicleList);
+			if(input < 0 || input > 100000) return ErrorText(playerid, "{FF6347}Не меньше 0 и не больше 100.000"), SettingGosPriceVehicle(playerid, vehicleList);
 			VehLimited[vehicleList] = input;
 
 			new v = CorrectVehicleList(vehicleList);

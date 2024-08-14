@@ -7,6 +7,9 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pDivRank0", "INT NOT NULL DEFAULT '0'"); // Ранг в подфракции
     AddColumnIfNotExists("pp_igroki", "pDivRank1", "INT NOT NULL DEFAULT '0'"); // Ранг в подфракции для fbi под прикрытием
     AddColumnIfNotExists("pp_igroki", "pSunScreen", "INT NOT NULL DEFAULT '0'"); // Солнцезащитный крем
+    AddColumnIfNotExists("pp_igroki", "pManiacCD", "INT NOT NULL DEFAULT '0'"); // Кд на повторное создание маньяка
+    AddColumnIfNotExists("pp_igroki", "pGymUnix", "INT NOT NULL DEFAULT '0'"); // Абонемент в спортзал
+    AddColumnIfNotExists("pp_igroki_maniac", "pManiacQwest", "INT NOT NULL DEFAULT '0'"); // Процесс выполнения квеста с маньяком
 
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 
@@ -36,6 +39,10 @@ stock CreateMysqlTable()
 
     // Аксессуары
     AddColumnIfNotExists("accessory", "acCase", "BOOLEAN NOT NULL DEFAULT '0'");
+
+    // Подсказки с озвучкой
+    AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
+    AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
 	return true;
 }
 

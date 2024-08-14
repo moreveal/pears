@@ -29,28 +29,20 @@ stock SaveLastPlayerPosition(playerid)
         || computerClubPlayerInfo[playerid][ccpiInGame] == true // В комп клубе
         || MineWar_IsPlayerInside(playerid)) // В заброшенной шахте
     {
-        PlayerInfo[playerid][pLastPos][0] = SpX[playerid];
-        PlayerInfo[playerid][pLastPos][1] = SpY[playerid];
-        PlayerInfo[playerid][pLastPos][2] = SpZ[playerid];
-        PlayerInfo[playerid][pLastPos][3] = SpA[playerid];
-        PlayerInfo[playerid][pLastWorld] = SpWorld[playerid];
-        PlayerInfo[playerid][pLastInt] = SpInt[playerid];
+        WriteLastPlayerPosition(playerid, SpX[playerid], SpY[playerid], SpZ[playerid], SpA[playerid], SpWorld[playerid], SpInt[playerid]);
     }
     else
     {
+        // Если игрок в логове маньяка, сохраняем последнюю позицию как вход в логово
+        if(PlayerInInteriorManiac(playerid)) return Maniac_WriteLastPlayerPosition(playerid);
+
         new Float:pos[4];
         GetPlayerPos(playerid,pos[0],pos[1],pos[2]);
         GetPlayerFacingAngle(playerid,pos[3]);
 
         if(!IsValidFloat(pos[0]) || !IsValidFloat(pos[1]) || !IsValidFloat(pos[2]) || !IsValidFloat(pos[3])) return false;
 
-        PlayerInfo[playerid][pLastPos][0] = pos[0];
-        PlayerInfo[playerid][pLastPos][1] = pos[1];
-        PlayerInfo[playerid][pLastPos][2] = pos[2];
-        PlayerInfo[playerid][pLastPos][3] = pos[3];
-
-        PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-        PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
+        WriteLastPlayerPosition(playerid, pos[0], pos[1], pos[2], pos[3], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
         // Если последняя точка в динамической зоне квеста и квест выполнен значит сохраняем вирт мир 0
         if((IsPlayerInDynamicArea(playerid, ZoneQuest1) || IsPlayerInDynamicArea(playerid, ZoneQuest2)) && QuestInfo[playerid][QuestBot])
@@ -67,6 +59,17 @@ stock SaveLastPlayerPosition(playerid)
         }
     }
     return 1;
+}
+
+stock WriteLastPlayerPosition(playerid, Float:x, Float:y, Float:z, Float:a, world, interior)
+{
+    PlayerInfo[playerid][pLastPos][0] = x;
+    PlayerInfo[playerid][pLastPos][1] = y;
+    PlayerInfo[playerid][pLastPos][2] = z;
+    PlayerInfo[playerid][pLastPos][3] = a;
+    PlayerInfo[playerid][pLastWorld] = world;
+    PlayerInfo[playerid][pLastInt] = interior;
+    return true;
 }
 
 stock CloseSpawnChoise(playerid)

@@ -170,6 +170,20 @@ stock SendScriptActor(playerid, scriptid, actorid) // Следующая реп�
         QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue10[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue10));
         SendDynamicActorScript(actorid, playerid, scriptCue10[QuestInfo[playerid][ActorText]]);
     }
+
+    // Эрни
+    else if(scriptid == 11)
+    {
+        QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue11[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue11));
+        SendDynamicActorScript(actorid, playerid, scriptCue11[QuestInfo[playerid][ActorText]]);
+    }
+
+    // Бэрни
+    else if(scriptid == 12)
+    {
+        QuestInfo[playerid][ActorTimer] = SetTimerEx("NextScriptActor", msCue12[QuestInfo[playerid][ActorText]], false, "dddd", playerid, scriptid, actorid, sizeof(scriptCue12));
+        SendDynamicActorScript(actorid, playerid, scriptCue12[QuestInfo[playerid][ActorText]]);
+    }
     return 1;
 }
 function NextScriptActor(playerid, scriptid, actorid, maxScript) // Обработчик следующей реплики
@@ -507,7 +521,7 @@ stock QuestActorJoneMed(playerid)
         SaveQuest(playerid);
 
         // Запускаем квест знакомство с едой
-        ShowQwest(playerid, 8, 10); // Через 10 сек запустится
+        if(NoCompleteQuest(playerid, 8)) ShowQwest(playerid, 8, 10); // Через 10 сек запустится
     }
     return 1;
 }
@@ -554,7 +568,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
         oGivePlayerMoney(playerid, 5000);
 
         // Запускаем квест знакомство с ноутбуком
-        ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
+        if(NoCompleteQuest(playerid, 9)) ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
     }
     return 1;
 }
@@ -1202,10 +1216,15 @@ stock QuestCallMessage(playerid)
     {
         PlayerInfo[playerid][pQuest][9] = 5;
         SaveQuest(playerid);
-        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        SetPVarInt(playerid,"qweststat",64), SetPVarInt(playerid,"qwesttime",10);
 
         // Выдаём кейс
         GiveGiftQuest(playerid);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 64)
+    {
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+        ShowPlayerHintInfo(playerid, 1); // Подсказка про деревенских
     }
 
 

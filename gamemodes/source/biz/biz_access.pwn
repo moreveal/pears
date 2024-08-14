@@ -72,11 +72,9 @@ CMD:bac(playerid)
 	// Права доступа бизнеса
 	for(new i; i < MAX_BIZ_ACCESS; ++ i)
 	{
-		if(BizzInfo[b][bFam] > 0 && BizzInfo[b][bAcc][i] == 1)
-		{
-			format(line,sizeof(line),"\n{cccccc}%s \t {ff9000}%d+ Fam Ранг", bizAccess[i],BizzInfo[b][bAccRank][0]), strcat(lines,line);
-		}
-		else  format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}Владелец", bizAccess[i]), strcat(lines,line);
+		if(BizzInfo[b][bAcc][i] == 0) format(line,sizeof(line),"\n{cccccc}%s \t {99ff66}Владелец", bizAccess[i]), strcat(lines,line);
+		else if(BizzInfo[b][bAcc][i] == 1) format(line,sizeof(line),"\n{cccccc}%s \t {ff9000}%d+ Fam Ранг", bizAccess[i],BizzInfo[b][bAccRank][i]), strcat(lines,line);
+		else if(BizzInfo[b][bAcc][i] == 2) format(line,sizeof(line),"\n{cccccc}%s \t {FF6347}Любой Гость", bizAccess[i]), strcat(lines,line);
 
 		List[quan][playerid] = i;
 		ListParam[quan][playerid] = 0;

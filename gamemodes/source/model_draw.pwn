@@ -6,7 +6,7 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 	{
 		x = -12.0000, y = 0.0000, z = -22.0000, s = 0.9200;
 	}
-	else if(thingPack == 5)
+	else if(IsACasePackID(thingPack))
 	{
 		if(model == 19918) x = -14.0000, y = 0.0000, z = -26.0000, s = 1.2199;
 		return 1;
@@ -224,6 +224,8 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 			case 2833: x = 90.0000, y = -10.0000, z = -50.0000, s = 1.0999; // Намазлык
 			case 11715: x = 80.0000, y = 0.0000, z = -52.0000, s = 0.7800; // Вилка
 			case 1135: x = 20.0000, y = 0.0000, z = 34.0000, s = 0.7000; // Труба
+			case 12164: x = 0.0000, y = 0.0000, z = 90.0000, s = 0.5000; // Сигарета
+			case 11746: x = 0.0000, y = 180.0000, z = 180.0000, s = 1.0; // Ключ
 
 			default: x = 0.0, y = 0.0, z = 0.0, s = 1.0, findIt = 0;
 		}

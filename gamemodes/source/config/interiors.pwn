@@ -77,6 +77,28 @@
 #define INT_CNN_2LVL 0
 
 //==================================================
+// Маньяк
+
+#define WORLD_MANIAC -1
+#define INT_MANIAC 166
+
+// Маньяк Арена
+
+#define WORLD_MANIAC_AREA -1
+#define INT_MANIAC_AREA 165
+
+//==================================================
 // Полигон NGSA
 #define WORLD_POLYGON_NGSA 4
 #define INT_POLYGON_NGSA 3
+
+//==================================================
+// Спортзал
+
+#define WORLD_GYM 14000
+#define INT_GYM 0
+
+// Спортзал Холл
+
+#define WORLD_GYM_HALL 163
+#define INT_GYM_HALL 164

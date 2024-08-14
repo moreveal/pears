@@ -266,12 +266,17 @@ CMD:createdaily(playerid, const params[])
     if (taskid == -1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер задания должен быть от 1 до %d [ 0 - Все задания ]", MAX_DAILY_QUEST_PLAYER);
     if (!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
 
-    if (taskid == 0) {
+    if (taskid == 0) 
+    {
+        if(DailyInfo[targetid][daiFull] == true && PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Игрок выполнил все ежедневные задания, нельзя заменить");
         // Перезапуск всех квестов
         SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы перезапустили ежедневные задания для %s", PlayerInfo[targetid][pName]);
         SendClientMessage(targetid, COLOR_LIGHTBLUE, "* Администратор %s перезапустил ваши ежедневные задания", PlayerInfo[playerid][pName]);
         CreateDaily(targetid, 1);
-    } else {
+    } else 
+    {
+        if(DailyInfo[targetid][daiStatus][taskid - 1] == true && PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Нельзя заменить выполненное задание");
+
         // Перезапуск конкретного квеста
         SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы перезапустили ежедневное задание №%d для %s", taskid, PlayerInfo[targetid][pName]);
         SendClientMessage(targetid, COLOR_LIGHTBLUE, "* Администратор %s перезапустил ваше ежедневное задание №%d", PlayerInfo[playerid][pName], taskid);

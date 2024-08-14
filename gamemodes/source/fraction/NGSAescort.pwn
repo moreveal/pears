@@ -2227,8 +2227,9 @@ stock GoTrain(playerid)
 
 	if(BoxInTrain < BoxStat) return ErrorMessage(playerid, "{FF6347}Вы не погрузили все ящики для отправления");
 	if(VehInVehicle[0] == 0 && VehInVehicle[1] == 0 && VehInVehicle[2] == 0) return ErrorMessage(playerid, "{FF6347}В поезде нет ни одного транспортного средства");
-	if(VehInVehicle[0] && VehInfo[VehInVehicle[0]][vModel] != 433 && VehInVehicle[1] && VehInfo[VehInVehicle[1]][vModel] != 433
-		|| VehInVehicle[2] && VehInfo[VehInVehicle[2]][vModel] != 433) return ErrorMessage(playerid, "{FF6347}Погрузите в поезд Barracks, чтобы доставить боеприпасы до базы организации");
+	if(VehInfo[VehInVehicle[0]][vModel] != 433
+		&& VehInfo[VehInVehicle[1]][vModel] != 433
+		&& VehInfo[VehInVehicle[2]][vModel] != 433) return ErrorMessage(playerid, "{FF6347}Погрузите в поезд Barracks, чтобы доставить боеприпасы до базы организации");
 	
 	HidePlayerDialog(playerid);
 

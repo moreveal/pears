@@ -10,6 +10,7 @@ new SkinBuy[MAX_MODELS_SKIN]; // Подсчет покупок скинов за
 new SkinBuyGold[MAX_MODELS_SKIN]; // Подсчет покупок скинов за голду
 new SkinSale[MAX_MODELS_SKIN]; // Доступен ли скин для продажи
 new SkinName[MAX_MODELS_SKIN][MAX_SKIN_NAME]; // Название скина
+new bool:SkinTop[MAX_MODELS_SKIN]; // Топовый скин или нет (для системы кейсов)
 
 new skinNameAll[][] =
 {
@@ -518,6 +519,51 @@ stock ClickTextDraw_ClothesShop(playerid, Text:clickedid)
     return 1;
 }
 
+alias:topskin("skintop")
+CMD:topskin(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 21) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Применить скинам топ статус от голд цены [ /topskin GOLD ]");
+	if(params[0] <= 0 || params[0] >= 1000000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 1.000.000");
+
+	new quan;
+	mysql_transaction(pearsq, true);
+	for(new s = 0; s < MAX_MODELS_SKIN; s++)
+	{
+		if(SkinGold[s] >= params[0])
+		{
+			SkinTop[s] = true;
+			quan ++;
+		}
+		else
+		{
+			SkinTop[s] = false;
+		}
+		SaveSkinTop(s);
+	}
+	mysql_commit(pearsq);
+
+	new string[100];
+	format(string, sizeof(string), " [ ADM ]: Админ %s установил %d топовых скинов от %d Gold", PlayerInfo[playerid][pName], quan, params[0]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("topskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Топ скины от голд цены");
+	return true;
+}
+
+CMD:skinprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 21) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	skinprice(playerid, 0);
+	return true;
+}
+
+CMD:vehprice(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 21) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	vehprice(playerid, 0);
+	return true;
+}
+
 stock skinprice(playerid, page) // Настройки гос. цен одежды
 {
 	new max_line = 40, yesNext, minlist, thisPage;
@@ -601,7 +647,7 @@ stock ShowLineSkinPrice(playerid, s)
 
 stock SettingGosPriceSkin(playerid, list)
 {
-	new line[120],lines[600];
+	new line[120],lines[700];
     if(list >= 312) format(line,sizeof(line),"{0088ff}%s {cccccc}ID: %d\t", GetSkinName(list), list), strcat(lines,line);
 	else format(line,sizeof(line),"{cccccc}%s ID: %d\t", GetSkinName(list), list), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Стоимость:\t{99ff66}%d$ {cccccc}[%s]", SkinGos[list], get_k(SkinGos[list])), strcat(lines,line);
@@ -612,6 +658,9 @@ stock SettingGosPriceSkin(playerid, list)
 	{
 		if(!strcmp(SkinName[list],"\0",true) || !strcmp(SkinName[list],"NULL",true)) format(line,sizeof(line),"\n{cccccc}Название: {FF6347}отсутствует\n"), strcat(lines,line);
 		else format(line,sizeof(line),"\n{cccccc}Название: {0088ff}%s\n", SkinName[list]), strcat(lines,line);
+
+		if(SkinTop[list]) format(line,sizeof(line),"\n{cccccc}Топовый скин:\t{99ff66}[ On ]"), strcat(lines,line);
+		else format(line,sizeof(line),"\n{cccccc}Топовый скин:\t{FF6347}[ Off ]"), strcat(lines,line);
 	}
     ShowDialog(playerid,971,DIALOG_STYLE_TABLIST_HEADERS,"Гос Стоимость Одежды",lines,"Выбрать","Назад");
 	return 1;
@@ -739,6 +788,16 @@ stock dialogCase_Clothes(playerid, dialogid, response, listitem, const inputtext
 				format(line,sizeof(line),"{cccccc}Введите название для {ff9000}%s", GetSkinName(list)), strcat(lines,line);
 				format(line,sizeof(line),"\n{cccccc}Количество символов не меньше 1 и не больше 30"), strcat(lines,line);
 				ShowDialog(playerid,574,DIALOG_STYLE_INPUT,"Одежда",lines,"Принять","Отмена");
+			}
+			else if(listitem == 4)
+			{
+				if(SkinTop[list]) SkinTop[list] = false;
+				else SkinTop[list] = true;
+				SaveSkinTop(list);
+				SettingGosPriceSkin(playerid, list);
+
+				// Перезасобираем набор скинов
+				CreateSkinGiftCase();
 			}
 		}
 		else skinprice(playerid, OnlineInfo[playerid][oDialogMenu][1]);
@@ -1196,6 +1255,7 @@ function LoadPriceSkin()
 			cache_get_value_name_int(s, "SkinBuy", SkinBuy[skinList]);
 			cache_get_value_name_int(s, "SkinBuyGold", SkinBuyGold[skinList]);
 			cache_get_value_name(s, "SkinName", SkinName[skinList], MAX_SKIN_NAME);
+			cache_get_value_name_bool(s, "SkinTop", SkinTop[skinList]);
 		}
 		printf("[MODE]: Настройки Скинов [%d ms]", GetTickCount() - time);
 
@@ -1255,6 +1315,15 @@ stock SaveSkinName(s)
 {
     new string_mysql[200];
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinName` = '%e' WHERE `skin` = '%d'", SkinName[s], s);
+	query_empty(pearsq, string_mysql);
+    return 1;
+}
+
+// Сохраняем статус топовости скина
+stock SaveSkinTop(s)
+{
+    new string_mysql[140];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_priceskin` SET `SkinTop` = '%d' WHERE `skin` = '%d'", SkinTop[s], s);
 	query_empty(pearsq, string_mysql);
     return 1;
 }

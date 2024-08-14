@@ -100,7 +100,8 @@ stock YesGiveMyWeapon(playerid)
         && !Iamzz[playerid] // Не в зз
         && MPGO[playerid] == 0 // Не на мп
         && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
-        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return 1;
+        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER
+        && Protect_Veh[playerid] == 9999) return 1;
     return 0;
 }
 

@@ -822,7 +822,7 @@ stock PrisonGiveSpoon(playerid)
     new string[100];
     mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `PrisonSpoonUnix` = '%d' WHERE `user_id` = '%d'",PlayerInfo[playerid][pPrisonSpoonUnix], PlayerInfo[playerid][pID]);
     query_empty(pearsq, string);
-    SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать заточку на станке");
+    SuccessMessage(playerid,"{66ff99}Вы взяли вилку, из неё вы можете сделать отмычку\n{ffcc66}Отмычки создаются на станке в рабочей зоне тюрьмы");
     ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
     return 1;
 }

@@ -546,7 +546,6 @@ stock DestroyManiac(i, bool:destroyEffect = false)
     }
 
     ManiacInfo[i][manDestroyTimer] = 0;
-    ManiacInfo[i][manID] = NPC: 0;
     return true;
 }
 
