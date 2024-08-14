@@ -294,7 +294,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
         MineWarInfo[roomid][mwZombieNextSpawn][i] = 0;
     }
 
-    MineWarInfo[roomid][mwZombieDamage] = 20.0;
+    MineWarInfo[roomid][mwZombieDamage] = 12.0;
     MineWarInfo[roomid][mwZombieMaxHealth] = 100.0;
 
     // Увеличиваем базовое HP зомби, опираясь на уровень сложности
@@ -1032,7 +1032,7 @@ stock MineWar_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, b
                 new type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 switch (e_MineWarZombieType: type)
                 {
-                    case MINEWAR_HEAVY_ZOMBIE: damage *= 1.3;
+                    case MINEWAR_HEAVY_ZOMBIE: damage *= 1.4;
                     case MINEWAR_SUPER_ZOMBIE: damage *= 1.75;
                     default: {}
                 }
