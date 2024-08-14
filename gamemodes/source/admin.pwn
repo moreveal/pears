@@ -592,7 +592,7 @@ CMD:showdip(playerid, const params[])
 }
 CMD:hpgro(playerid)
 {
-	if(PlayerInfo[playerid][pSoska] >= 4 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] >= 2)
+	if(PlayerInfo[playerid][pSoska] >= 2 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] >= 2)
 	{
 		foreach (Player, i)
 		{
