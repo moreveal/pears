@@ -1091,7 +1091,7 @@ stock MineWar_SetPlayerSpectate(playerid, spectateid)
 
 stock MineWar_StopSpectate(playerid, bool: lastposition = false)
 {
-    if (!MineWar_IsPlayerSpectate(playerid)) return 0;
+    if (!MineWar_IsPlayerSpectate(playerid) || GetPlayerState(playerid) != PLAYER_STATE_SPECTATING) return 0;
 
     if (lastposition) StopSpectate(playerid);
     else {
@@ -1158,16 +1158,14 @@ stock MineWar_GivePlayerWaveLoot(playerid)
         new maxAmmo = 100 * get_power(playerid);
         new currentAmmo = get_invent(playerid, i, 0) + ProtectInfo[playerid][prAmmo][slot];
         
-        // Выдаем патроны, соответственно установленному уровню сложности
-        new Float: multiplier = 1.0 * (_:MineWarInfo[roomid][mwDifficulty] + 1);
         new ammo;
         switch (i) {
-            case 27: ammo = random_range(5, 40);
-            case 28: ammo = random_range(10, 45);
+            case 27: ammo = random_range(5, 50);
+            case 28: ammo = random_range(10, 90);
             case 29: ammo = random_range(50, 200);
-            case 30: ammo = random_range(5, 15);
+            case 30: ammo = random_range(5, 20);
         }
-        ammo *= multiplier;
+        ammo *= (_:MineWarInfo[roomid][mwDifficulty] + 1); // Больше патрон для повышенного уровня сложности
 
         if (currentAmmo + ammo > maxAmmo) ammo = max(maxAmmo - currentAmmo, 0);
         Protect_GiveWeapons(playerid, ProtectInfo[playerid][prWeapon][slot], ammo, 0, 0);
