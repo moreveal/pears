@@ -835,10 +835,10 @@ stock StartManiacQuest(playerid)
 {
     if(PlayerInfo[playerid][pManiacQwest] == 0)
     {
-        new getMasks = MAX_MANIAC_MASK - QuanMaskManiac[playerid]; // Собрано масок
-        if(getMasks > 0)
+        new needMasks = MANIAC_MASK_NEED - (MAX_MANIAC_MASK - QuanMaskManiac[playerid]); // Осталось собрать масок
+        if(needMasks > 0)
         {
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно найти %d масок маньяка [ Маски разбросаны в переулках города Los Santos ]", MANIAC_MASK_NEED - getMasks);
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне нужно найти %d масок маньяка [ Маски разбросаны в переулках города Los Santos ]", needMasks);
         }
         else
         {
