@@ -151,7 +151,7 @@ stock detail_jac(playerid, detail)
     DP[0][playerid] += 1;
     new text[84];
 
-    format(text, 84, "{cccccc}%s \t{9900ff}[ %dU ]\n", unitName[detail], OrganInfo[DP[1][playerid]][gUnit][detail]);
+    format(text, sizeof(text), "{cccccc}%s \t{9900ff}[ %dU ]\n", unitName[detail], OrganInfo[DP[1][playerid]][gUnit][detail]);
 	return text;
 }
 

@@ -981,7 +981,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         // Сообщение по радиоперехватчику
         {
             format(string, sizeof(string), "Объявление в розыск гражданина %s: %s [Уровень розыска: %d]", rpplayername(playerid), reason, zv);
-            RadioInterceptor_SendMessage(RADIO_INTERCEPTOR_STATE_SU, 0xFFBB00FF, string, .excludeid = playerid);
+            RadioInterceptor_SendMessage(RADIO_INTERCEPTOR_STATE_SU, 0xFFDEADFF, string, .excludeid = playerid);
         }
 
         // Врубаем Pursuit

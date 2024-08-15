@@ -62,9 +62,9 @@ stock RadioInterceptor_Dialog_SetStates(playerid)
 		"{cccccc}Перехват задержаний [ /cuff ]\t%s",
 		
 		dialog_text,
-		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_SU) ? "{99ff66}ON" : "{ff6347}OFF",
-		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_PURSUIT) ? "{99ff66}ON" : "{ff6347}OFF",
-		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_CUFF) ? "{99ff66}ON" : "{ff6347}OFF"
+		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_SU) ? "{99ff66}[ On ]" : "{ff6347}[ Off ]",
+		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_PURSUIT) ? "{99ff66}[ On ]" : "{ff6347}[ Off ]",
+		RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_CUFF) ? "{99ff66}[ On ]" : "{ff6347}[ Off ]"
 	);
 	ShowDialog(playerid, RADIO_INTERCEPTOR_SETSTATES, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Режим работы", dialog_text, "Выбор", "Назад");
 	return 1;
@@ -145,7 +145,7 @@ stock dialogCase_RadioInterceptor(playerid, dialogid, response, listitem, const 
 
 			new currentid;
 			if (sscanf(inputtext, "u", currentid)
-				|| !IsOnline(currentid) || !IsPoliceMember(currentid)
+				|| !IsOnline(currentid) || (!IsPoliceMember(currentid) || fraction(currentid) == 2)
 				|| currentid == playerid
 				|| MPGO[currentid]) return RadioInterceptor_Dialog_Find(playerid);
 
