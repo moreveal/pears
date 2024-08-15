@@ -3,10 +3,10 @@
 #define NOT_FIND_ATTACK_PLAYER 9000 // Ошибка при поиске игрока для начала атаки (никого не нашли)
 
 // Игрок, который не является целью для ботов
-stock IsPlayerNotTarget(playerid)
+stock IsPlayerNotTarget(playerid, bool: excludeAFK = false)
 {
     if(OnlineInfo[playerid][oLogged] == 0
-			|| IsPlayerAfk(playerid)
+			|| (!excludeAFK && IsPlayerAfk(playerid))
             || DeathInfo[playerid][deathStatus] == true
             || HealthAC[playerid] <= 0.0
             || !IsPlayerSyncModels(playerid)) return true;

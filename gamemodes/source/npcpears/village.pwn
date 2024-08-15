@@ -159,12 +159,12 @@ stock CreateVillageNpc()
 // Меню информации от сторожа
 stock ShowDialogInfoVillage(playerid)
 {
-    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Этот квест доступен только при наличии лаунчера");
-
     if((IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2])
         || IsPlayerInRangeOfPoint(playerid,1.0,VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2])) 
         && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
     {
+        if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Этот квест доступен только при наличии лаунчера");
+
 		ShowDialog(playerid,1271,DIALOG_STYLE_TABLIST,"{ff9000}Сторож","{ff9000}Расскажи, что это за деревня?\
 		                            \n{666666}Правила >>","Выбор","Отмена");
         return true;

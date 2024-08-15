@@ -1,5 +1,3 @@
-// TODO: Пофиксить то, что у NPC иногда в руках появляются оружия, которых у них быть не должно (думаю конфликт с другими системами)
-
 /*
     CREATE TABLE `minewar` (
     `user_id` int(11) NOT NULL COMMENT 'ID аккаунта',
@@ -481,7 +479,7 @@ stock MineWar_GetNearestPlayerFromZombie(roomid, NPC: npcid, excludeid = -1)
         if (!IsOnline(currentid)) continue; // Игнорируем игроков не в сети
         if (MineWarPlayerInfo[currentid][mwpDead]) continue; // Игнорируем умерших игроков
         if (currentid == excludeid) continue; // Игнорируем необходимого игрока, если нужно
-        if (IsPlayerAfk(currentid)) continue; // Игнорируем AFK игроков
+        if (IsPlayerNotTarget(currentid)) continue; // Игнорируем игроков, которые не могут являться целью для NPC
 
         if (!IsOnline(playerid) || GetPlayerDistanceFromPoint(playerid, x, y, z) > GetPlayerDistanceFromPoint(currentid, x, y, z))
         {
@@ -532,6 +530,7 @@ stock MineWar_CreateZombie(roomid, e_MineWarZombieType: type, Float: x, Float: y
             SetNpcVirtualWorld(npcid, MineWar_GetVirtualWorld(roomid));
             SetNpcStunAnimationEnabled(npcid, false);
 
+            SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие (временное решение, пока в плагине баг)
             if (type == MINEWAR_HEAVY_ZOMBIE) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки усиленному зомби
             else if (type == MINEWAR_SUPER_ZOMBIE) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-зомби
 
@@ -1022,12 +1021,6 @@ stock MineWar_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, b
         for (new npc_i = 0; npc_i < MAX_MINEWAR_ZOMBIES; npc_i++) {
             if (MineWarInfo[roomid][mwZombie][npc_i] == npc)
             {
-                if (IsPlayerAfk(issuerid)) {
-                    // Меняем таргет зомби, если он пытается ударить игрока в AFK
-                    new attackid = MineWar_GetNearestPlayerFromZombie(roomid, npc, .excludeid = issuerid);
-                    if (IsOnline(attackid)) MineWar_ZombieSetAttack(roomid, npc, attackid);
-                }
-
                 new Float: damage = MineWarInfo[roomid][mwZombieDamage];
                 new type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 switch (e_MineWarZombieType: type)

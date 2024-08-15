@@ -427,7 +427,7 @@ stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior, forp
     ManiacInfo[i][manInterior] = interior;
 
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
-    SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // TODO: Выключаем анимацию стана при нанесении дамага маньяку
+    SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
 
     if(forplayerid != INVALID_PLAYER_ID) // Создаём маньяка для конкретного игрока (Значит маньяк будет атаковать только его)
     {
@@ -546,6 +546,7 @@ stock DestroyManiac(i, bool:destroyEffect = false)
     }
 
     ManiacInfo[i][manDestroyTimer] = 0;
+    ManiacInfo[i][manID] = NPC: 0;
     return true;
 }
 
@@ -683,7 +684,7 @@ stock FindClosestPlayerToManiacNpc(NPC:npc, i)
     new latestId = INVALID_PLAYER_ID;
     foreach(Player, playerid) 
     {
-        if(IsPlayerNotTarget(playerid) 
+        if(IsPlayerNotTarget(playerid, .excludeAFK = true) 
             || GetPlayerVirtualWorld(playerid) != GetNpcVirtualWorld(npc)
             || GetPlayerInterior(playerid) != ManiacInfo[i][manInterior]) continue;
 
@@ -694,6 +695,7 @@ stock FindClosestPlayerToManiacNpc(NPC:npc, i)
             latestId = playerid;
         }
     }
+    if (dist > 200.0) return INVALID_PLAYER_ID;
 
     // Если бот уже атакует этого игрока, игнорим нафиг
     if(ManiacInfo[i][manAttack] == latestId 
