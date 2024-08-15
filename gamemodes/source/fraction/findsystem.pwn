@@ -36,7 +36,7 @@ stock CreateFindZone(playerid, Float:X, Float:Y)
   return findz;
 }
 
-stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
+stock ShowFindZone(playerid, giveplayerid, Float:x, Float:y, findraiontolist, bool: message = true)
 {
   FindZone[playerid] = CreateFindZone(playerid, x, y);
   if(FindZone[playerid] == -1) return ErrorMessage(playerid, "{FF6347}Нельзя найти на данный момент человека, попробуйте позже");
@@ -45,8 +45,10 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   new unix = gettime();
   if(FindCd[playerid] > unix)
   {
-    format(string,sizeof(string), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix));
-    ErrorMessage(playerid, string);
+    if (message) {
+      format(string,sizeof(string), "{FF6347}Вы можете повторно использовать поиск через %s\n\n{cccccc}Ограничение становится меньше с повышением навыка", fine_time(FindCd[playerid] - unix));
+      ErrorMessage(playerid, string);
+    }
     return 1;
   }
 
@@ -76,9 +78,12 @@ stock ShowFindZone(playerid, giveplayerid, Float:x,Float:y,findraiontolist)
   format(line,sizeof(line), "\n{cccccc}Размер зоны поиска зависит от вашего навыка детектива"), strcat(lines,line);
   SuccessMessage(playerid, lines);*/
   PlayerPlaySound(playerid,6400,0,0,0);
-  format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск {FFD700}%s{cccccc}, квадрат отмечен на GPS. Он в районе: {FFD700}%s.", rpplayername(giveplayerid), gSAZones[findraiontolist][zName]);
-  SendClientMessage(playerid,COLOR_GREY,string);
-  update_ability(playerid, 9, 10 + random(5));
+  if (message)
+  {
+    format(string,sizeof(string),"{cccccc}[ Мысли ]: Я начал поиск {FFD700}%s{cccccc}, квадрат отмечен на GPS. Он в районе: {FFD700}%s.", rpplayername(giveplayerid), gSAZones[findraiontolist][zName]);
+    SendClientMessage(playerid,COLOR_GREY,string);
+    update_ability(playerid, 9, 10 + random(5));
+  }
   return 1;
 }
 stock DestroyFindZone(playerid)
@@ -113,7 +118,7 @@ CMD:find(playerid, const params[])
     if(MPGO[giveplayerid]) return ErrorMessage(playerid, "{FF6347}Этот игрок на мероприятии");
 
     if(ZoneTimer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}У вас активна зона поиска, дождитесь её окончания");
-    if(PlayerInfo[playerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Возможно, он участник экспедиции NASA");
+    if(PlayerInfo[giveplayerid][pBkyrenie] >= 2) return ErrorMessage(playerid, "{FF6347}Спутники не могут зафиксировать местоположение этого гражданина\n\n{cccccc}Возможно, он участник экспедиции NASA");
 
     new Float:X,Float:Y,Float:Z;
     GetPlayerRealPos(giveplayerid, X, Y, Z);

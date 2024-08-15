@@ -11,7 +11,7 @@
 */
 
 stock Hank_IsGood(thingid) {
-    new things[] = {232, 233};
+    new things[] = {232, 233, 236};
     for (new i = 0; i < sizeof(things); i++) {
         if (thingid == things[i]) return true;
     }
@@ -102,6 +102,20 @@ stock Hank_Dialog_Buy(playerid, thingid) {
                 "Также будет функционировать, если находится в багажнике автомобиля\nДевайс будет оставаться рабочим "#RADAR_JAMMER_SOFTWARE_TIME" дней с момента покупки, далее - требуется обновление ПО"
             );
         }
+        case 236: {
+            strcat(dialog_text,
+                "{cccccc}Устройство позволяет вам отслеживать местоположение полицейских.\n" \
+                "Отслеживание полицейского можно активировать 1 раз в "#RADIO_INTERCEPTOR_FIND_COOLDOWN" минут.\n" \
+                "После активации его позиция будет подсвечена на карте в течение 2 минут с периодичным обновлением местоположения.\n\n" \
+                \
+                "Кроме того, устройство может перехватывать сообщения полицейских.\n" \
+                "Доступны следующие опции (одновременно можно активировать не более двух):\n" \
+                "{ffcc66}- Перехват выдачи розыска [ /su ]\n" \
+                "{ffcc66}- Перехват начала преследования [ /pursuit ]\n" \
+                "{ffcc66}- Перехват задержаний [ /cuff ]\n" \
+                "{cccccc}Девайс будет оставаться рабочим "#RADIO_INTERCEPTOR_SOFTWARE_TIME" дней с момента покупки, далее - требуется настройка частоты"
+            );
+        }
         default: return 0;
     }
 
@@ -110,9 +124,14 @@ stock Hank_Dialog_Buy(playerid, thingid) {
     // Обновление прошивки:
     if (PerishableThing(thingid, 0) && get_invent2(playerid, thingid, 0) > 0 && get_para(playerid, thingid) < currentTime) {
         DP[1][playerid] = 1;
+
+        new update_price = getThingPriceGos(thingid, 0) / 2;
         switch (thingid) {
             case 233: {
-                format(dialog_text, sizeof(dialog_text), "%s\n\n{FF9000}Нет необходимости приобретать устройство вновь!\nУ вас уже есть глушилка с устаревшим ПО, обновление будет стоить: %s$", dialog_text, FormatNumberWithCommas(getThingPriceGos(thingid, 0) / 2));
+                format(dialog_text, sizeof(dialog_text), "%s\n\n{FF9000}Нет необходимости приобретать устройство вновь!\nУ вас уже есть глушилка с устаревшим ПО, обновление будет стоить: %s$", dialog_text, FormatNumberWithCommas(update_price));
+            }
+            case 236: {
+                format(dialog_text, sizeof(dialog_text), "%s\n\n{FF9000}Нет необходимости приобретать устройство вновь!\nУ вас уже есть перехватчик с устаревшей частотой радиопередачи, обновление будет стоить: %s$", dialog_text, FormatNumberWithCommas(update_price));
             }
         }
     }
@@ -188,7 +207,6 @@ stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputte
                     "Если в этом мире и есть то, чему я могу доверять больше чем себе - то только эта прошивка",
                     "Уверяю, у конкурентов хуже",
                     "Никогда не подводила, и я не думаю, что когда-либо подведет!",
-                    "Разработана специально для того, чтобы быть на шаг впереди любых радаров",
                     "Полная поддержка новых частот и алгоритмов детекции"
                 };
                 SendDynamicActorMessage(playerid, hankActor, hankReplies[random(sizeof(hankReplies))]);

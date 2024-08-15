@@ -957,6 +957,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
             }
         }
 
+        // Сообщение по рации для полицейских
         foreach (Player, i)
         {
             if(OnlineInfo[i][oLogged] == 0
@@ -975,6 +976,12 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
                 }
                 SendClientMessage(i, COLOR_LIGHTNEUTRALBLUE, string);
             }
+        }
+
+        // Сообщение по радиоперехватчику
+        {
+            format(string, sizeof(string), "Объявление в розыск гражданина %s: %s [Уровень розыска: %d]", rpplayername(playerid), reason, zv);
+            RadioInterceptor_SendMessage(RADIO_INTERCEPTOR_STATE_SU, 0xFFBB00FF, string, .excludeid = playerid);
         }
 
         // Врубаем Pursuit
