@@ -1588,9 +1588,13 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
         }
         case MINEWAR_DIALOG_INVITE:
         {
-            if (!response) return 1;
-
             new inviterid = DP[0][playerid];
+
+            if (!response) {
+                SendClientMessage(inviterid, COLOR_GREY, "[ Мысли ]: %s отказался быть участником моей команды", playername(playerid));
+                return 1;
+            }
+
             if (!IsOnline(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок вышел из игры");
             if (MineWar_GetElapsedTime(playerid) > 0) return ErrorMessage(playerid, "{FF6347}Ближайшее время вы не сможете принимать участие в игре");
             if (!MineWar_IsPlayerInside(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок не находится в заброшенной шахте");
