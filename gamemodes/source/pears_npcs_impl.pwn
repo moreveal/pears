@@ -21,10 +21,11 @@ stock FindAvailableNpcSlot() {
     return -1;
 }
 
-stock CreateNpcSlot(skinid, Float:x, Float:y, Float:z) {
+stock CreateNpcSlot(skinid, Float:x, Float:y, Float:z, world) {
     new available_slot = FindAvailableNpcSlot();
     if (available_slot == -1) return -1;
     created_npcs[available_slot] = CreateNpc(skinid, x, y, z);
+    SetNpcVirtualWorld(created_npcs[available_slot], world);
     return available_slot;
 }
 
@@ -59,7 +60,7 @@ CMD:create_npc(playerid, const params[]) {
     y += 0.25;
     z += 0.25;
     
-    new npc_slot = CreateNpcSlot(skinid, x, y, z);
+    new npc_slot = CreateNpcSlot(skinid, x, y, z, GetPlayerVirtualWorld(playerid));
     if (!IsValidNpcInSlot(npc_slot)) {
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Переполнен буфер возможных интерактивных ботов");
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Очистите их: [ /clear_npcs ]");
