@@ -263,7 +263,8 @@ CMD:createdaily(playerid, const params[])
 
     new targetid, taskid;
     if (sscanf(params, "uD(-1)", targetid, taskid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Перезапустить ежедневные задания игроку [ /createdaily ID Задание ]");
-    if (taskid == -1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер задания должен быть от 1 до %d [ 0 - Все задания ]", MAX_DAILY_QUEST_PLAYER);
+    if (taskid == -1
+        || taskid > MAX_DAILY_QUEST_PLAYER) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер задания должен быть от 1 до %d [ 0 - Все задания ]", MAX_DAILY_QUEST_PLAYER);
     if (!IsOnline(targetid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети");
 
     if (taskid == 0) 

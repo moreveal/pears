@@ -9,7 +9,8 @@ stock IsPlayerNotTarget(playerid, bool: excludeAFK = false)
 			|| (!excludeAFK && IsPlayerAfk(playerid))
             || DeathInfo[playerid][deathStatus] == true
             || HealthAC[playerid] <= 0.0
-            || !IsPlayerSyncModels(playerid)) return true;
+            || !IsPlayerSyncModels(playerid)
+			|| GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return true;
     return false;
 }
 

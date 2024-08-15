@@ -102,3 +102,9 @@
 
 #define WORLD_GYM_HALL 163
 #define INT_GYM_HALL 164
+
+//==================================================
+// Деревенские
+
+#define WORLD_VILLAGE 14001
+#define INT_VILLAGE 0

@@ -36,6 +36,13 @@ stock SaveLastPlayerPosition(playerid)
         // Если игрок в логове маньяка, сохраняем последнюю позицию как вход в логово
         if(PlayerInInteriorManiac(playerid)) return Maniac_WriteLastPlayerPosition(playerid);
 
+        // Еслиигрок находится в интерьере деревенских, сохраняем последнюю позицию как вход в интерьер
+        if(PlayerInInteriorVillage(playerid)) return Village_WriteLastPlayerPosition(playerid);
+
+
+
+
+
         new Float:pos[4];
         GetPlayerPos(playerid,pos[0],pos[1],pos[2]);
         GetPlayerFacingAngle(playerid,pos[3]);

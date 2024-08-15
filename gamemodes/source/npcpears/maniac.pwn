@@ -181,6 +181,7 @@ new Float:ManiacMask[][] =
 #define MANIAC_HEALTH 4000 // Хп маньяка
 #define MANIAC_MUSIC_0 "https://cdn.pears.fun/sound/characters/maniac/maniac.mp3" // Аудиофайл маньяка
 #define CD_CREATE_MANIAC_FOR_PLAYER 14400 // Кд на повторное создание маньяка для игрока (7 часов)
+#define CD_CREATE_MANIAC_ZONE 1800 // Кд на повторное создание маньяка в одном и том же месте 
 #define WORLD_ALL_MANIAC 5000 // Общий вирт мир для логово маньяка
 
 #define COMPLETE_QUEST_MANIAC 4 // Количество действий для полного выполнения квеста с маньяком
@@ -204,6 +205,7 @@ enum MANIACINFO
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
 new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
 new PlayerManiac[MAX_REALPLAYERS] = { -1, ... }; // NPC маньяк созданный для игрока
+new UnixZoneCreatedManiac[sizeof(ManiacPosLS)]; // Unix последнего создания маньяка в зоне
 
 new bool:TakeMaskManiac[MAX_REALPLAYERS][MAX_MANIAC_MASK]; // Подобрал ли игрок маску маньяка
 new QuanMaskManiac[MAX_REALPLAYERS];
@@ -404,9 +406,12 @@ stock ProcessCreateManiac(playerid, bool:forced = false)
 
     for(new i = 0; i < sizeof(ManiacPosLS); i++)
     {
+        if(UnixZoneCreatedManiac[i] >= gettime()) continue; // Если маньяк создавался здесь недавно, пропускаем эту точку
+
         if(GetPlayerDistanceFromPoint(playerid, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]) <= 40.0)
         {
             CreateManiac(playerid, slotManiac, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z], 0, 0);
+            UnixZoneCreatedManiac[i] = gettime() + CD_CREATE_MANIAC_ZONE;
             resultFind = 1;
             break;
         }
