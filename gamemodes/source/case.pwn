@@ -136,7 +136,7 @@ stock CreateSkinGiftCase() // Собираем скины
     ThingSkinTopQuan = 0;
     ThingSkinTopQuanFemale = 0;
     
-    for(new i; i < MAX_MODELS_SKIN; i++)
+    for(new i = 1; i < MAX_MODELS_SKIN; i++)
     {
         if(SkinSale[i] == 1) 
         {
