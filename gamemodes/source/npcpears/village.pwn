@@ -66,7 +66,8 @@ enum VILLAGEINFO
     Text3D:villEnterLabel[2], // Лейблы входов
     bool:villGiftStatus, // Статус, можно ли забирать подарки
     villCDShowGift, // Время, которое даётся на то, чтобы забрать все подарки
-    villStoroji[2] // Два сторожа (DynamicActor)
+    villStoroji[2], // Два сторожа (DynamicActor)
+    villCDFindAttack[sizeof(VillageNpcWalk)] // Кд на повторный поиск цели
 }
 new VillageInfo[VILLAGEINFO];
 
@@ -145,8 +146,8 @@ stock CreateVillageNpc()
     CreateDynamicPickup(19132, 1, -1475.2959,2614.4619,58.7813, 0, 0);
 
     // Выходы
-    CreateDynamicPickup(19132, 1, -1483.0803,2642.3938,58.7813, 0, 0);
-    CreateDynamicPickup(19132, 1, -1476.9990,2613.9775,58.7813, 0, 0);
+    CreateDynamicPickup(19132, 1, -1483.0803,2642.3938,58.7813, WORLD_VILLAGE, INT_VILLAGE);
+    CreateDynamicPickup(19132, 1, -1476.9990,2613.9775,58.7813, WORLD_VILLAGE, INT_VILLAGE);
 
     VillageInfo[villStoroji][0] = CreateDynamicActor(14, VillageStoroj[0][0],VillageStoroj[0][1],VillageStoroj[0][2],VillageStoroj[0][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
     VillageInfo[villStoroji][1] = CreateDynamicActor(15, VillageStoroj[1][0],VillageStoroj[1][1],VillageStoroj[1][2],VillageStoroj[1][3], true, 100.0, 0, 0, -1, 100.0, -1, 0);
@@ -207,6 +208,19 @@ stock InformationVillage(playerid, listitem)
     return true;
 }
 
+// Находится ли игрок внутри интерьера деревенских
+stock PlayerInInteriorVillage(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) == WORLD_VILLAGE && GetPlayerInterior(playerid) == INT_VILLAGE) return true;
+    return false;
+}
+
+// Записываем последнюю позицию как вход в интерьер деревенских
+stock Village_WriteLastPlayerPosition(playerid)
+{
+    return WriteLastPlayerPosition(playerid, -1483.2771,2644.1699,58.7281, 0.0, 0, 0);
+}
+
 // Входы выходы в хранилище деревенских
 stock DoorVillageStorage(playerid)
 {
@@ -215,6 +229,8 @@ stock DoorVillageStorage(playerid)
 	{
         if(VillageInfo[villGiftStatus] == true)
         {
+            S_SetPlayerVirtualWorld(playerid, WORLD_VILLAGE, INT_VILLAGE);
+            PPSetPlayerInterior(playerid, INT_VILLAGE);
             if(IsPlayerInRangeOfPoint(playerid,1.0,-1483.2771,2644.1699,58.7281)) PPSetPlayerPos(playerid,-1483.2737,2640.6836,58.7813), PPSetPlayerFacingAngle(playerid,185.0136);
             else if(IsPlayerInRangeOfPoint(playerid,1.0,-1475.2959,2614.4619,58.7813)) PPSetPlayerPos(playerid,-1478.7166,2614.4929,58.7880), PPSetPlayerFacingAngle(playerid,47.1690);
             SetCameraBehindPlayer(playerid);
@@ -224,7 +240,7 @@ stock DoorVillageStorage(playerid)
     }
 
     // Выход 1
-    else if(IsPlayerInRangeOfPoint(playerid,1.0,-1483.0803,2642.3938,58.7813) && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    else if(IsPlayerInRangeOfPoint(playerid,1.0,-1483.0803,2642.3938,58.7813) && GetPlayerVirtualWorld(playerid) == WORLD_VILLAGE && GetPlayerInterior(playerid) == INT_VILLAGE)
 	{
         PPSetPlayerPos(playerid,-1483.1899,2646.1348,58.7281), PPSetPlayerFacingAngle(playerid,0.0);
         SetCameraBehindPlayer(playerid);
@@ -232,7 +248,7 @@ stock DoorVillageStorage(playerid)
     }
 
     // Выход 2
-    else if(IsPlayerInRangeOfPoint(playerid,1.0,-1476.9990,2613.9775,58.7813) && GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    else if(IsPlayerInRangeOfPoint(playerid,1.0,-1476.9990,2613.9775,58.7813) && GetPlayerVirtualWorld(playerid) == WORLD_VILLAGE && GetPlayerInterior(playerid) == INT_VILLAGE)
 	{
         PPSetPlayerPos(playerid,-1473.4135,2614.3062,58.7880), PPSetPlayerFacingAngle(playerid,271.4945);
         SetCameraBehindPlayer(playerid);
@@ -287,8 +303,8 @@ stock SpawnVillageNpc(i)
 // Ставим хп ботам деревенским
 stock SetVillageHealthNpc(i)
 {
-    if(IsShootingWeapon(GetNpcWeapon(VillageInfo[villID][i]))) SetNpcHealth(VillageInfo[villID][i], 200.0);
-    else SetNpcHealth(VillageInfo[villID][i], 400.0);
+    if(IsShootingWeapon(GetNpcWeapon(VillageInfo[villID][i]))) SetNpcHealth(VillageInfo[villID][i], 150.0);
+    else SetNpcHealth(VillageInfo[villID][i], 250.0);
     return true;
 }
 
@@ -458,7 +474,7 @@ stock CreateVillageGift()
             new thingId, thingQuan, thingType, thingPara, thingPack;
 			CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack);
 
-            SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, 0,0, -1481.3367 + random(5),2627.9875 + random(5), 57.771343, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+            SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, WORLD_VILLAGE, INT_VILLAGE, -1481.3367 + random(5),2627.9875 + random(5), 57.771343, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
         }
     }
     else
@@ -502,6 +518,9 @@ stock AttackVillageNpcNearbyPlayer(i)
     if(latestid != NOT_FIND_ATTACK_PLAYER 
         && latestid != INVALID_PLAYER_ID) 
     {
+        if(VillageInfo[villCDFindAttack][i] > gettime()) return false; // Не будем атаковать новую цель (только что начали атаковать другую)
+        VillageInfo[villCDFindAttack][i] = gettime() + 2; // Кд на повторную смену цели при атаке 2 секунды
+
         Village_TaskNpcAttackPlayer(VillageInfo[villID][i], latestid, i);
         if(server == 0) SendClientMessageToAll(-1, "бот %d атакует игрока %d", _:VillageInfo[villID][i], latestid);
     }
