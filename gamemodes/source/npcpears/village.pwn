@@ -242,6 +242,7 @@ stock DoorVillageStorage(playerid)
     // Выход 1
     else if(IsPlayerInRangeOfPoint(playerid,1.0,-1483.0803,2642.3938,58.7813) && GetPlayerVirtualWorld(playerid) == WORLD_VILLAGE && GetPlayerInterior(playerid) == INT_VILLAGE)
 	{
+        S_SetPlayerVirtualWorld(playerid, 0, 0);
         PPSetPlayerPos(playerid,-1483.1899,2646.1348,58.7281), PPSetPlayerFacingAngle(playerid,0.0);
         SetCameraBehindPlayer(playerid);
         return true;
@@ -250,6 +251,7 @@ stock DoorVillageStorage(playerid)
     // Выход 2
     else if(IsPlayerInRangeOfPoint(playerid,1.0,-1476.9990,2613.9775,58.7813) && GetPlayerVirtualWorld(playerid) == WORLD_VILLAGE && GetPlayerInterior(playerid) == INT_VILLAGE)
 	{
+        S_SetPlayerVirtualWorld(playerid, 0, 0);
         PPSetPlayerPos(playerid,-1473.4135,2614.3062,58.7880), PPSetPlayerFacingAngle(playerid,271.4945);
         SetCameraBehindPlayer(playerid);
         return true;
