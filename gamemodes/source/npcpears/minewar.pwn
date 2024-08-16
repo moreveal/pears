@@ -51,6 +51,56 @@ CMD:rminewar(playerid, const params[])
     return 1;
 }
 
+stock MineWar_LoadTextdraws(playerid)
+{
+    Obstacle_CreateObstacleTimeTD(playerid);
+
+    MineWarZombieRemainsTD[playerid][0] = CreatePlayerTextDraw(playerid, 35.0000, 191.0000, "120"); // пусто
+    PlayerTextDrawLetterSize(playerid, MineWarZombieRemainsTD[playerid][0], 0.4000, 1.6000);
+    PlayerTextDrawAlignment(playerid, MineWarZombieRemainsTD[playerid][0], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, MineWarZombieRemainsTD[playerid][0], -1);
+    PlayerTextDrawBackgroundColour(playerid, MineWarZombieRemainsTD[playerid][0], 255);
+    PlayerTextDrawFont(playerid, MineWarZombieRemainsTD[playerid][0], TEXT_DRAW_FONT: 3);
+    PlayerTextDrawSetProportional(playerid, MineWarZombieRemainsTD[playerid][0], true);
+    PlayerTextDrawSetShadow(playerid, MineWarZombieRemainsTD[playerid][0], 0);
+
+    MineWarZombieRemainsTD[playerid][1] = CreatePlayerTextDraw(playerid, 7.0000, 185.0000, "pears_element:zombie"); // пусто
+    PlayerTextDrawTextSize(playerid, MineWarZombieRemainsTD[playerid][1], 21.0000, 26.0000);
+    PlayerTextDrawAlignment(playerid, MineWarZombieRemainsTD[playerid][1], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, MineWarZombieRemainsTD[playerid][1], -1);
+    PlayerTextDrawBackgroundColour(playerid, MineWarZombieRemainsTD[playerid][1], 255);
+    PlayerTextDrawFont(playerid, MineWarZombieRemainsTD[playerid][1], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, MineWarZombieRemainsTD[playerid][1], false);
+    PlayerTextDrawSetShadow(playerid, MineWarZombieRemainsTD[playerid][1], 0);
+    
+    return 1;
+}
+
+stock MineWar_SetZombieRemainsTextdraw(playerid, bool: show = true)
+{
+    for (new i = 0; i < sizeof(MineWarZombieRemainsTD[]); i++)
+    {
+        if (show) {
+            PlayerTextDrawShow(playerid, MineWarZombieRemainsTD[playerid][i]);
+        } else {
+            PlayerTextDrawHide(playerid, MineWarZombieRemainsTD[playerid][i]);
+        }
+    }
+    return 1;
+}
+
+stock MineWar_UpdateZombieRemainsTextdraw(roomid)
+{
+    for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
+    {
+        new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
+        if (!IsOnline(currentid)) continue;
+
+        PlayerTextDrawSetString(currentid, MineWarZombieRemainsTD[currentid][0], FormatNumberWithCommas(MineWar_GetCurrentWaveZombieRemains(roomid)));
+    }
+    return 1;
+}
+
 stock MineWar_GeneralChat(playerid, const string[])
 {
     if (!MineWar_IsPlayerInside(playerid)) return 0;
@@ -262,13 +312,16 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
         for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++) {
             new currentid = MineWarInfo[roomid][mwPlayers] - 1;
             if (!IsOnline(currentid)) continue;
+
             PlayerPlaySound(currentid, 6400);
+            MineWar_SetZombieRemainsTextdraw(currentid, false);
         }
 
         MineWarInfo[roomid][mwSetWaveTimer] = SetTimerEx("MineWar_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
         return 1;
     }
 
+    MineWar_UpdateZombieRemainsTextdraw(roomid);
     MineWar_ClearZombies(roomid);
 
     MineWarInfo[roomid][mwWaveCooldown] = 0;
@@ -278,6 +331,8 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
 
         PlayerPlaySound(currentid, 1139);
         PlayerTextDrawHide(currentid, ObstacleTimeTD[currentid]);
+
+        MineWar_SetZombieRemainsTextdraw(currentid, true);
         
         for (new j = 0; j < _:MINEWAR_MAX_ZOMBIE_TYPE; j++)
         {
@@ -365,6 +420,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
         default: return 0;
     }
 
+    MineWar_UpdateZombieRemainsTextdraw(roomid);
     MineWar_UpdateNextZombies(roomid);
     MineWar_SpawnZombies(roomid);
 
@@ -852,6 +908,8 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 MineWarPlayerInfo[killerid][mwpZombieKilled][zombie_type]++;
                 MineWarInfo[roomid][mwZombieAttackId][npc_i] = 0;
 
+                MineWar_UpdateZombieRemainsTextdraw(roomid);
+
                 new zombies = MineWar_GetZombieCount(roomid, .alive = true);
                 if (zombies <= 0)
                 {
@@ -1213,7 +1271,7 @@ stock MineWar_AddMember(roomid, playerid)
         if (!MineWarInfo[roomid][mwPlayers][i])
         {
             MineWarInfo[roomid][mwPlayers][i] = playerid + 1;
-            Obstacle_CreateObstacleTimeTD(playerid);
+            MineWar_LoadTextdraws(playerid);
             return 1;
         }
     }
@@ -1265,7 +1323,10 @@ stock MineWar_DeleteMember(playerid)
     if (!MineWar_IsRoomExists(roomid)) return 0;
 
     MineWar_PlayerInfo_Cleanup(playerid);
+
+    // Удаление текстдравов
     PlayerTextDrawDestroy(playerid, ObstacleTimeTD[playerid]);
+    for (new i = 0; i < sizeof(MineWarZombieRemainsTD[]); i++) PlayerTextDrawDestroy(playerid, MineWarZombieRemainsTD[playerid][i]);
 
     for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
     {
@@ -1395,6 +1456,7 @@ stock MineWar_End(roomid, e_MineWarEndReason: reason)
                 // Потом удаляем ненужные данные и прочее
                 MineWar_PlayerInfo_Cleanup(currentid);
                 PlayerTextDrawDestroy(currentid, ObstacleTimeTD[currentid]);
+                for (new td_i = 0; td_i < sizeof(MineWarZombieRemainsTD[]); td_i++) PlayerTextDrawDestroy(currentid, MineWarZombieRemainsTD[currentid][td_i]);
 
                 PlayerInfo[currentid][pLastMineWar] = gettime();
                 MineWar_Save(currentid);
