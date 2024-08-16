@@ -1202,7 +1202,9 @@ stock MineWar_GivePlayerWaveLoot(playerid)
     // Выдача патрон
     for (new i = 27; i <= 30; i++) {
         new slot = 3 + (i-27);
-        if (i == 28 && ProtectInfo[playerid][prAmmo][3] < 1 && ProtectInfo[playerid][prAmmo][2] >= 1) slot = 2;
+        
+        // Если выдаем 11,43mm и пистолета-пулемета в руках нет, но есть пистолет - выдаем патроны для него
+        if (i == 28 && ProtectInfo[playerid][prAmmo][4] < 1 && ProtectInfo[playerid][prAmmo][2] >= 1) slot = 2;
 
         if (ProtectInfo[playerid][prAmmo][slot] < 1) continue; // Если в руках нет подходящего оружия - не выдаём патроны
 
