@@ -83,6 +83,7 @@ stock GoStreetRacers(playerid)
                 if(StreetRacers[slot][raceMap] == -1) format(line,sizeof(line),"\nКарта {FF6347}[Не выбрана]"), strcat(lines,line);
                 else if(StreetRacers[slot][raceMap] > -1) format(line,sizeof(line),"\nКарта {99ff66}[Выбрана]"), strcat(lines,line);
                 format(line,sizeof(line),"\nСписок гонщиков"), strcat(lines,line);
+                format(line,sizeof(line),"\nКоличество мест гонки: {ff9000}%d", StreetRacers[slot][raceCountFix]), strcat(lines,line);
                 format(line,sizeof(line),"\nЗакончить гонку"), strcat(lines,line);
                 format(line,sizeof(line),"\nЗакончить сходку"), strcat(lines,line);
                 ShowDialog(playerid,1461,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
@@ -221,7 +222,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             if(listitem == 0)
             {
                 if(StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[0][racePosTerminal][1] == 0.0) return ErrorMessage(playerid,"{ff6347}Для гонки обязательно нужно установить терминал для гонки!");
-                if(StreetRacers[slot][raceCountFix] < 0 || StreetRacers[0][raceCountFix] > 20) return ErrorMessage(playerid,"{ff6347}Для гонки обязательно нужно указать кол-во участников от 2 до 20");
+                if(StreetRacers[slot][raceCountFix] < 2 || StreetRacers[0][raceCountFix] > 20) return ErrorMessage(playerid,"{ff6347}Для гонки обязательно нужно указать кол-во участников от 2 до 20");
                 if((StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[0][racePosBenz][1] == 0.0) 
                 || (StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[0][racePosService][1] == 0.0) 
                 || (StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[0][racePosMarket][1] == 0.0)) return ShowDialog(playerid,1509,DIALOG_STYLE_MSGBOX,"{ff9000}Объявление сбора","{cccccc}Вы уверены что хотите начать гонку без установки объектов бизнесов?","Начать","Назад");
@@ -283,6 +284,16 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             new input = strval(inputtext);
 	        if(input < 2 || input > 20) return ErrorText(playerid,"Введите кол-во гонщиков от 2 до 20"),GoStreetRacers(playerid);
             StreetRacers[slot][raceCountFix] = input;
+            if(StreetRacers[slot][raceCountFix] != 0)
+            {
+                for(new i = input-1; i < MAX_RACERS - 1; i++)
+                {
+                    if(StreetRacers[slot][racersCount][i] == -1) continue;
+                    OnlineInfo[playerid][oRacers] = 0;
+                    StreetRacers[slot][racersCount][i] = -1;
+                    OnlineInfo[playerid][oStreetRaceSlot] = 0;
+                }
+            }
             GoStreetRacers(playerid);
         }
         else GoStreetRacers(playerid);
@@ -542,9 +553,13 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             }
             if(listitem == 3)
             {
-                stoprace(slot);
+                ShowDialog(playerid,1510,DIALOG_STYLE_INPUT,"{ff9000}Количество гонщиков","{cccccc}Введите {ff9000}Количество {cccccc}гонщиков для участия\n\nУсловия: не меньше 2 и не больше 20","Принять","Отмена");
             }
             if(listitem == 4)
+            {
+                stoprace(slot);
+            }
+            if(listitem == 5)
             {
                 ClosePartyStreet(slot);
             }
