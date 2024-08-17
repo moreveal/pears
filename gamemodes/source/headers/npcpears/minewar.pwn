@@ -78,7 +78,8 @@ enum e_MineWarPlayerInfo
     mwpLastWaveZombieKilled[_:MINEWAR_MAX_ZOMBIE_TYPE], // Количество убитых зомби каждого вида при завершении последней волны
     mwpSpectateID, // ID игрока, за которым происходит слежка (+1)
     mwpCases, // Гарантированное кол-во кейсов, которые игрок заработал на протяжении игры (не учитывая те, что в конце игры)
-    bool: mwpDead, // Статус смерти
+    mwpSpentAmmo[4], // Потраченные патроны с начала последней волны (fpick 27-30)
+    bool: mwpDead // Статус смерти
 };
 new MineWarPlayerInfo[MAX_REALPLAYERS][e_MineWarPlayerInfo];
 new Float: MineWarGetOutPosition[MAX_REALPLAYERS][4];

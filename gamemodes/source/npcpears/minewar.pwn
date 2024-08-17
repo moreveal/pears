@@ -300,6 +300,18 @@ function MineWar_SetWave_Timer(roomid, waveid, cooldown)
     return MineWar_SetWave(roomid, waveid, cooldown);
 }
 
+stock MineWar_OnShoot(playerid, WEAPON: weaponid)
+{
+    new sl = Protect_Slot(weaponid);
+    new index = sl - 3;
+    if (sl == 2) index = 1;
+    if (index >= 0 && index <= 3)
+    {
+        MineWarPlayerInfo[playerid][mwpSpentAmmo][index]++;
+    }
+    return 1;
+}
+
 stock MineWar_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!MineWar_IsRoomExists(roomid)) return 0;
@@ -320,7 +332,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
         MineWarInfo[roomid][mwSetWaveTimer] = SetTimerEx("MineWar_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
         return 1;
     }
-
+    
     MineWar_UpdateZombieRemainsTextdraw(roomid);
     MineWar_ClearZombies(roomid);
 
@@ -329,6 +341,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
         new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
         if (!IsOnline(currentid)) continue;
 
+        for (new j = 0; j < 4; j++) MineWarPlayerInfo[currentid][mwpSpentAmmo][j] = 0;
         PlayerPlaySound(currentid, 1139);
         PlayerTextDrawHide(currentid, ObstacleTimeTD[currentid]);
 
@@ -1202,23 +1215,18 @@ stock MineWar_GivePlayerWaveLoot(playerid)
     // Выдача патрон
     for (new i = 27; i <= 30; i++) {
         new slot = 3 + (i-27);
+
+        new spentAmmo = MineWarPlayerInfo[playerid][mwpSpentAmmo][i - 27];
         
         // Если выдаем 11,43mm и пистолета-пулемета в руках нет, но есть пистолет - выдаем патроны для него
         if (i == 28 && ProtectInfo[playerid][prAmmo][4] < 1 && ProtectInfo[playerid][prAmmo][2] >= 1) slot = 2;
 
-        if (ProtectInfo[playerid][prAmmo][slot] < 1) continue; // Если в руках нет подходящего оружия - не выдаём патроны
+        if (spentAmmo <= 0) continue; // Если игрок не использовал это оружие - не выдаём патроны
 
         new maxAmmo = 100 * get_power(playerid);
         new currentAmmo = get_invent(playerid, i, 0) + ProtectInfo[playerid][prAmmo][slot];
         
-        new ammo;
-        switch (i) {
-            case 27: ammo = random_range(5, 50);
-            case 28: ammo = random_range(10, 90);
-            case 29: ammo = random_range(50, 200);
-            case 30: ammo = random_range(5, 20);
-        }
-        ammo *= (_:MineWarInfo[roomid][mwDifficulty] + 1); // Больше патрон для повышенного уровня сложности
+        new ammo = floatround(float(spentAmmo) * 0.7);
 
         if (currentAmmo + ammo > maxAmmo) ammo = max(maxAmmo - currentAmmo, 0);
         Protect_GiveWeapons(playerid, ProtectInfo[playerid][prWeapon][slot], ammo, 0, 0);
