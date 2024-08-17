@@ -97,16 +97,15 @@ stock DynamicActorfrontme(actorid, Float:distance, &Float:x, &Float:y, &Float:z,
 
 stock ShowSkupshikMenuInfo(playerid)
 {
-    new stro[104],sctringo[936];
-    format(stro,sizeof(stro),"\n{ff9000}Информация о скупщике"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n\n{cccccc}Вы можете продавать ему свои предметы за {44ff66}3/10 {cccccc}гос.стоимости"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n{cccccc}Он может купить все кроме нелегальных предметов, патронов"), strcat(sctringo,stro);
-
-    format(stro,sizeof(stro),"\n{cccccc}А так же не покупает аксессуары, одежду, и запакованные предметы"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n{cccccc}Деньги с продажи он выдает на руки"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n\n{ff9000}Как продать ему предмет?"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n{444444}Откройте инвентарь, далее выберите предмет, и нажмите на кнопку мусорки."), strcat(sctringo,stro);
-    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Скупщик",sctringo,"*","");
+    new stro[936];
+    format(stro,sizeof(stro),"\n{ff9000}Информация о скупщике\
+                            \n\n{cccccc}Вы можете продавать ему свои предметы за {44ff66}3/10 {cccccc}гос.стоимости\
+                            \n{cccccc}Он может купить все кроме нелегальных предметов, патронов и оружий\
+                            \n{cccccc}А так же не покупает запакованные предметы\
+                            \n{cccccc}Деньги с продажи он выдает на руки\
+                            \n\n{ff9000}Как продать ему предмет?\
+                            \n{444444}Откройте инвентарь, далее выберите предмет, и нажмите на кнопку мусорки."); 
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Скупщик",stro,"*","");
     return 1;
 }
 
