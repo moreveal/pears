@@ -98,7 +98,7 @@ stock CreateVehicleGiftCase()
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
-                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
+                || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
         }
     }
 
@@ -117,7 +117,7 @@ stock CreateVehicleGiftCase()
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
-                || ((VehLimited[i] > 0 && VehQuan[i] < VehLimited[i]) && (VehLimited[i] > 0 && VehLimitedCase[i] < VehLimited[i]))) 
+                || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i]))) 
                 {
                     if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
                     else if(vehClass == 8) ThingLimitedVehiclecaseGift[ThingLimitedehicleQuan] = v, ThingLimitedehicleQuan ++; // Limited Vehicle
