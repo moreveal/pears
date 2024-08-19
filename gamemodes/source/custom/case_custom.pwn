@@ -41,9 +41,9 @@ stock GetModelCustomCase(thingPack)
 {
     new model;
     if(thingPack == 5) model = 19918; // Стандартный
-    else if(thingPack == 6) model = 19918; // maniac
-    else if(thingPack == 7) model = 19918; // village
-    else if(thingPack == 8) model = 19918; // yakuza
+    else if(thingPack == 6) model = 12260; // maniac
+    else if(thingPack == 7) model = 12259; // village
+    else if(thingPack == 8) model = 12261; // yakuza
     else model = 19918;
     return model;
 }

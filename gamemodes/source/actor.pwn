@@ -95,6 +95,20 @@ stock DynamicActorfrontme(actorid, Float:distance, &Float:x, &Float:y, &Float:z,
 	return 1;
 }
 
+stock ShowSkupshikMenuInfo(playerid)
+{
+    new stro[936];
+    format(stro,sizeof(stro),"\n{ff9000}Информация о скупщике\
+                            \n\n{cccccc}Вы можете продавать ему свои предметы за {44ff66}3/10 {cccccc}гос.стоимости\
+                            \n{cccccc}Он может купить все кроме нелегальных предметов, патронов и оружий\
+                            \n{cccccc}А так же не покупает запакованные предметы\
+                            \n{cccccc}Деньги с продажи он выдает на руки\
+                            \n\n{ff9000}Как продать ему предмет?\
+                            \n{444444}Откройте инвентарь, далее выберите предмет, и нажмите на кнопку мусорки."); 
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Скупщик",stro,"*","");
+    return 1;
+}
+
 stock LoadDynamicActor()
 {
     CreateDynamicActor(163, -2777.3750,381.2728,6.164,182.8925, true, 100.0, 189, 0, -1, 100.0, -1, 0); // Goverment Hall (Security 1)
@@ -103,6 +117,8 @@ stock LoadDynamicActor()
 
     Hank_LoadActor();
     
+    CreateDynamicActor(480, 1327.3071, 1555.0947, 1114.9565,359.1448, true, 100.0, WORLD_SKUPSHIK, INT_SKUPSHIK, -1, 100.0, -1, 0); // Скупщик
+
     return 1;
 }
 
