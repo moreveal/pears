@@ -54,6 +54,8 @@ stock SetPlayerDeath(playerid, reason)
         return 0;
     }
 
+    ACSetPlayerHealth(playerid, GetMaxPlayerHealth(playerid) * 0.9);
+
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
 
@@ -88,7 +90,7 @@ stock SetPlayerDeath(playerid, reason)
     if (DeathInfo[playerid][deathCut]) DeathInfo[playerid][deathTime] /= 2;
 
     DeathInfo[playerid][deathUnix] = unix + 3600;
-
+    
     ShowPlayerDeath(playerid);
 
     #if defined SAMPVOICE_COMPILE_3
@@ -106,7 +108,7 @@ stock ShowPlayerDeath(playerid)
     new line[130],lines[520];
    	format(line,sizeof(line),"{FF6347}Ваш персонаж получил тяжёлую травму"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Вы сможете отправиться в больницу через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}В течении ожидания к вам может прибыть скорая помощь, чтобы вылечить вас"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}В течение ожидания к вам может прибыть скорая помощь, чтобы вылечить вас"), strcat(lines,line);
     if(PlayerInfo[playerid][pSoska] > 0) format(line,sizeof(line),"\n{ff9000}Для администрации: /hp"), strcat(lines,line);
   	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
 
@@ -237,6 +239,7 @@ stock DeathEnd(playerid, stat)
     if(!IsOnline(playerid)) return 1; // Проверка на online игрока
 
     DeathInfo[playerid][deathStatus] = false;
+    DeathInfo[playerid][deathTime] = 0;
     for(new i = 0; i < 9; i++) TextDrawHideForPlayer(playerid, DeathDraw[i]);
     PlayerTextDrawHide(playerid, DeathDraw1);
     NoAnim[playerid] = 0;
