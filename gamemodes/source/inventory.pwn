@@ -3016,8 +3016,18 @@ stock SkupshikListItem(i, t, p)
 {
 	if(p < gettime() && PerishableThing(i,t) && t == 0) return 0;
 	if(t == 1 || t == 4) return 0;
-	else if(t == 2 || t == 3 || t == 5) return 1;
-	if(i >= 1 && i <= 3 || i == 13 || i == 14 || i >= 16 && i <= 24 || i == 31 || i == 32 || i >= 37 && i <= 50 
+	else if(t == 5) return 1;
+	else if(t == 2)
+	{
+		if(IsArmor(i)) return 0;
+		else return 1;
+	}
+	else if(t == 3)
+	{
+		if(p != 0) return 0;
+		else return 1;
+	}
+	if(i >= 1 && i <= 3 || i == 13 || i == 14 || i >= 16 && i <= 20 || i >= 22 && i <= 24 || i == 31 || i == 32 || i >= 37 && i <= 42 || i >= 44 && i <= 50 
 	|| i >= 52 && i <= 55 || i >= 60 && i <= 62 || i >= 70 && i <= 110 || i >= 112 && i <= 127 || i >= 141 && i <= 143 
 	|| i >= 163 && i <= 177 || i == 181 || i == 183 || i >= 190 && i <= 192 || i >= 199 && i <= 202 || i >= 207 && i <= 225) return 1;
 	return 0;
