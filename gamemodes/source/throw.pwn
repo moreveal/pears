@@ -329,6 +329,13 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 	if(fpick == 42 && thingType == 0 && type == 1) time = -1; // Ноутбук на столе (-1 значит никогда не исчезнет)
 	if(fpick == 229 && thingType == 0) z -= object_correct_z(18849); // Корректируем позицию предмета сумки с парашютом на земле
 
+	// Если кейс, тогда корректируем
+	else if(IsACasePackID(thingPack) && thingPack != 5)
+	{
+		new model = GetModelCustomCase(thingPack);
+		if(model > 0) z += object_correct_z(model);
+	}
+
 	for(new g = 0; g < MAX_THROW; g++)
 	{
 		if(ThrowInfo[g][tId] == 0)
