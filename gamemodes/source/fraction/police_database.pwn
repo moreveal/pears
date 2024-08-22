@@ -176,7 +176,7 @@ stock PDatabase_IsPlayerNearHack(playerid, fractionid)
 // Проверка доступности базы данных для взлома (Разработчик и выше игнорируют проверку)
 stock PDatabase_CheckHackAvailableTime(playerid, fractionid)
 {
-    if (server == 0 || PlayerInfo[playerid][pSoska] < 22)
+    if (server != 0 && PlayerInfo[playerid][pSoska] < 22)
     {
         new tmphour, tmpminute, tmpsecond;
         gettime(tmphour, tmpminute, tmpsecond);
