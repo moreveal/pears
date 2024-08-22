@@ -877,6 +877,7 @@ stock PDatabase_SetThermitePlace(fractionid, bool: status = true)
                 SetDynamicObjectMaterial(explodeObject[2], 1, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 explodeObject[3] = CreateDynamicObject(1654, 2156.493896, 2413.681640, 64.347236, -89.999992, 179.999984, -90.000015, 0, 0, -1, 300.00, 300.00); // TermitChast
                 SetDynamicObjectMaterial(explodeObject[3], 0, 2702, "pick_up", "CJ_red_FELT", 0x00000000);
+                SetDynamicObjectMaterial(explodeObject[3], 1, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 explodeObject[4] = CreateDynamicObject(1654, 2156.553955, 2417.181640, 64.347236, -89.999992, -179.999984, 90.000015, 0, 0, -1, 300.00, 300.00); // TermitChast
                 SetDynamicObjectMaterial(explodeObject[4], 0, 2702, "pick_up", "CJ_red_FELT", 0x00000000);
                 SetDynamicObjectMaterial(explodeObject[4], 1, 19962, "samproadsigns", "materialtext1", 0x00000000);
@@ -1127,6 +1128,8 @@ stock PDatabase_OnPlayerPressALT(playerid)
                             }
                             policeDatabaseInfo[fractionid][pdiExplodeJoin] = true;
                         }
+
+                        PDatabase_UpdateResetTime(fractionid);
                     } else if (i == 1) { // Выход
                         keep(playerid);
                         S_SetPlayerVirtualWorld(playerid, 0, 0);
