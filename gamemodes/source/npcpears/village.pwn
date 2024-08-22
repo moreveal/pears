@@ -474,7 +474,11 @@ stock CreateVillageGift()
         for(new i = 0; i < MAX_CASE_VILLAGE; i++)
         {
             new thingId, thingQuan, thingType, thingPara, thingPack;
-			CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack);
+            if(i == 0 || i == 1 || i == 2)
+            {
+                CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack, "village");
+            }
+			else CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack);
 
             SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, WORLD_VILLAGE, INT_VILLAGE, -1481.3367 + random(5),2627.9875 + random(5), 57.771343, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
         }

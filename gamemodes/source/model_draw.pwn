@@ -6,7 +6,7 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 	{
 		x = -12.0000, y = 0.0000, z = -22.0000, s = 0.9200;
 	}
-	else if(thingType == 0 || thingType == 1 || thingType == 2 || thingType == 3 || thingType == 4) // Обычный предмет или Аксессуары
+	else
 	{
 		switch(model)
 		{

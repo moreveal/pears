@@ -1961,7 +1961,7 @@ stock ClearPlayerInven(playerid, inva)
 }
 stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получаем обычное имя предмета по его типу (Для текста, диалоговых окон и логов)
 {
-	new nameProduct[84];
+	new nameProduct[184];
 	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель)
 	if(thingPack == 0)
 	{
@@ -1978,7 +1978,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 	}
 	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный ящик, 5 кейс (помещается только 1 предмет и занимает 1 ячейку)
 	{
-	    new hideName[8];
+	    new hideName[30];
 	    if(thingPack == 1) format(hideName,sizeof(hideName),"Подарок");
     	else if(thingPack == 2) format(hideName,sizeof(hideName),"Ящик");
     	else if(thingPack == 3) format(hideName,sizeof(hideName),"Мешок");

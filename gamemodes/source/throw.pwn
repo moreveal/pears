@@ -99,7 +99,7 @@ stock use_throw(playerid, inva, useinva)
 		else return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	}
 	
-	new string[180];
+	new string[280];
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
 	{
 	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
@@ -328,6 +328,13 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 	if(fpick == 11 && thingType == 0) time = 1200;
 	if(fpick == 42 && thingType == 0 && type == 1) time = -1; // Ноутбук на столе (-1 значит никогда не исчезнет)
 	if(fpick == 229 && thingType == 0) z -= object_correct_z(18849); // Корректируем позицию предмета сумки с парашютом на земле
+
+	// Если кейс, тогда корректируем
+	else if(IsACasePackID(thingPack) && thingPack != 5)
+	{
+		new model = GetModelCustomCase(thingPack);
+		if(model > 0) z += object_correct_z(model);
+	}
 
 	for(new g = 0; g < MAX_THROW; g++)
 	{
