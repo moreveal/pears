@@ -551,6 +551,7 @@ stock d_limit(d, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[82] = 1000, lim[83] = 1000, lim[84] = 1000, lim[85] = 1000, lim[86] = 1000, lim[87] = 1000, lim[88] = 1000, lim[89] = 10000, lim[106] = 1000, lim[108] = 1000, lim[109] = 1000, lim[110] = 1000;
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 1000, lim[198] = 1000, lim[225] = 1000, lim[230] = 100;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
+	lim[238] = 10000; // Алюминий
 
     getQuan = get_dom(d, thingId);
     getLimit = lim[thingId];

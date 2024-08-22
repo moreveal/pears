@@ -1763,6 +1763,7 @@ stock Radar_ViolationHandler(playerid) {
         }
     }
     
+    if (GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
     if(OnlineInfo[playerid][oLogged] == 1 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !IsPlayerAfk(playerid))
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
@@ -1774,8 +1775,7 @@ stock Radar_ViolationHandler(playerid) {
 	 	|| Cars[vehicleid] == 21 || Cars[vehicleid] == 22
 		|| vehicleid >= Medcar[0] && vehicleid <= Medcar[1]))
 		{
-	    	if(	IsACar(VehInfo[vehicleid][vModel]) || IsAMoto(VehInfo[vehicleid][vModel])
-				&& (GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0))
+	    	if(	IsACar(VehInfo[vehicleid][vModel]) || IsAMoto(VehInfo[vehicleid][vModel]) )
 	    	{
                 // Подсвечивание радара на мини-карте
                 {

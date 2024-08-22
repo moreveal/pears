@@ -353,9 +353,6 @@ function LoadOrgan()
     RuletObject[0] = CreateDynamicObject(1979, RuletPos[0][0], RuletPos[0][1], RuletPos[0][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (2)
 	RuletObject[1] = CreateDynamicObject(1979, RuletPos[1][0], RuletPos[1][1], RuletPos[1][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (1)
 	RuletObject[2] = CreateDynamicObject(1979, RuletPos[2][0], RuletPos[2][1], RuletPos[2][2], 0.000000, 0.000000, 0.000000, 2001, 55, -1, 300.00, 300.00); // ruletka (0)
-
-	DBLabel = CreateDynamic3DTextLabel("{ff9000}База Данных SWAT\n\n{cccccc}Статус: {99ff66}Активна",-1,2466.4614,2546.1318,22.0781,15.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
-	DBInfo[dbHacker] = -1;
 	load_ammosv(); // Загружаем ящики на склад NGSA
 	dirtunix = gettime()+600;
 

@@ -36,12 +36,12 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 		else if(cityPlayer == CITY_AREA_SAN_FIERRO) PlayerInfo[suspectid][pJailed] = 9; // КПЗ SF
 		else PlayerInfo[suspectid][pJailed] = 1; // Областная Тюрьма
 
-		if(type == AREST_TYPE_QUIT || type == AREST_TYPE_AFK) PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * 1200; // Вышел из игры при аресте
+		if(type == AREST_TYPE_QUIT || type == AREST_TYPE_AFK) PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (15 * 60); // Вышел из игры при аресте
 		else {
 			if(type == AREST_TYPE_KILL) { // Арест при смерти (добили в стадии)
-                PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * 720;
+                PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (10 * 60);
                 PlayerInfo[suspectid][pJailed] = 1;
-            } else PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * 600;
+            } else PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (10 * 7);
 		}
 
 		if (copid < 0) SendClientMessage(suspectid, COLOR_LIGHTRED, "* Вы были арестованы !");

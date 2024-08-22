@@ -346,7 +346,7 @@ stock dialogCase_Trailer(playerid, dialogid, response)
     }
     else if(dialogid == 1463)
     {
-        if(response) CreateBreaking(playerid, 3, DP[0][playerid], 0);
+        if(response) CreateBreaking(playerid, BREAKING_TYPE_TRAILER, DP[0][playerid], 0);
     }
     return 1;
 }

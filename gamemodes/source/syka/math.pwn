@@ -81,10 +81,10 @@ stock GetRelativePos(Float: x, Float: y, Float: z, Float: rx, Float: ry, Float: 
 }
 
 // Вычисление расстояния от точки до точки (3D)
-stock GetDistanceBetweenCoords3d(Float: x, Float: y, Float: z, Float: fx, Float:fy, Float: fz) return floatround(floatsqroot(floatpower(fx - x, 2) + floatpower(fy - y, 2) + floatpower(fz - z, 2)));
+stock Float: GetDistanceBetweenCoords3d(Float: x, Float: y, Float: z, Float: fx, Float:fy, Float: fz) return floatsqroot(floatpower(fx - x, 2) + floatpower(fy - y, 2) + floatpower(fz - z, 2));
 
 // Вычисление расстояния от точки до точки (2D)
-stock GetDistanceBetweenCoords2d(Float: x, Float: y, Float: fx, Float:fy) return floatround(floatsqroot(floatpower(fx - x, 2) + floatpower(fy - y, 2)));
+stock Float: GetDistanceBetweenCoords2d(Float: x, Float: y, Float: fx, Float:fy) return floatsqroot(floatpower(fx - x, 2) + floatpower(fy - y, 2));
 
 // Остаток от деления X на Y
 stock Float: fmod(Float:x, Float:y) return x - (floatround(x / y, floatround_floor) * y);
@@ -106,6 +106,12 @@ stock RandomPointInCube(Float: minx, Float: miny, Float: minz, Float: maxx, Floa
 {
     x = frand(minx, maxx), y = frand(miny, maxy), z = frand(minz, maxz);
     return 1;
+}
+
+// Находится ли точка в указанном кубе
+stock IsPointInCube(Float: x, Float: y, Float: z, Float: minx, Float: miny, Float: minz, Float: maxx, Float: maxy, Float: maxz)
+{
+    return (x >= minx && x <= maxx && y >= miny && y <= maxy && z >= minz && z <= maxz);
 }
 
 // Чистка Enum

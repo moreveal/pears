@@ -1546,7 +1546,7 @@ stock BotSex(playerid,b)
 	PlayerTextDrawShow(playerid, InputDraw1);
 	PlayerTextDrawShow(playerid, InputDraw2);
 	TextDrawShowForPlayer(playerid, InputDraw[1]);
-	procesbar2(playerid, 0);
+	processbar2(playerid, 0);
 	ShowInput(playerid);
 	SendClientMessage(playerid, COLOR_GREY, "{ff33ff}[ Sex ] {cccccc}Вам нужно заполнить шкалу удовольствия | Нажимайте на кнопки, указанные справа от шкалы");
 	SetPVarInt(playerid, "sekas", 20);

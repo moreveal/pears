@@ -401,6 +401,7 @@ stock PrisonKonvoi(playerid, konvoiId)
 {
     if(PlayerInfo[playerid][pJailed] != 3 && PlayerInfo[playerid][pJailed] != 9 && server > 0 // Разные проверки для основного и тестового сервера
         || PlayerInfo[playerid][pJailed] == 0 && server == 0) return ErrorMessage(playerid, "{FF6347}Вы не заключённый в КПЗ");
+    if (konvoiId == 1 && policeDatabaseInfo[0][pdiLightOff]) return ErrorMessage(playerid, "{FF6347}Сейчас вызвать конвой нельзя [ Электричество отключено ]");
     showDialogMenuKonvoi(playerid, konvoiId);
     return 1;
 }
@@ -546,7 +547,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
         if(response)
         {
             if(get_invent2(playerid, 19, 0) == 0) return ErrorMessage(playerid,"{ff6347} У вас нет отмычек\n{cccccc}Вы можете сделать их на станке из вилки");
-            CreateBreaking(playerid, 4, DP[0][playerid], 0);
+            CreateBreaking(playerid, BREAKING_TYPE_PRISON_CAMERA, DP[0][playerid], 0);
         }
     }
     else if(dialogid == 1482)
@@ -1013,6 +1014,7 @@ stock pt_limit(pt, thingId, &getQuan, &getLimit) // Проверяем лими�
 	lim[72] = 1000, lim[73] = 1000, lim[74] = 1000, lim[75] = 1000, lim[76] = 1000, lim[77] = 1000, lim[78] = 1000, lim[79] = 1000, lim[80] = 1000, lim[81] = 1000;
 	lim[82] = 1000, lim[83] = 1000, lim[84] = 1000, lim[85] = 1000, lim[86] = 1000, lim[87] = 1000, lim[88] = 1000, lim[89] = 10000, lim[106] = 1000, lim[108] = 1000, lim[109] = 1000, lim[110] = 1000;
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 100, lim[198] = 1000, lim[225] = 100, lim[230] = 5;
+    lim[238] = 1000;
 
     getQuan = get_prisontable(pt, thingId, 0);
     getLimit = lim[thingId];

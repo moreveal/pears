@@ -1,30 +1,17 @@
-#define MAX_SCALES 6
-
-new Float:breakingdraw_x = 255.000000, Float:breakingdraw_y = 197.000000; // Относительное расположение текстдравов на экране
-
-new bool:breakingDraw[MAX_REALPLAYERS];
-new BreakingTimer[MAX_REALPLAYERS]; //  ID таймера для движения шкалы
-new BreakingScale[MAX_REALPLAYERS]; // Какая шкала в данный момент движется (0-5)
-new BreakingMaxScales[MAX_REALPLAYERS]; // Количество шкал в момент взлома
-new Float:BreakingScaleStat[MAX_REALPLAYERS]; // Прогресс движения шкалы
-new Float:BreakingThickness[MAX_REALPLAYERS]; // Толщина зелёной зоны шкал
-new Float:BreakingMinYPos[MAX_SCALES][MAX_REALPLAYERS]; // Нижняя граница зеленой зоны
-new Float:BreakingMaxYPos[MAX_SCALES][MAX_REALPLAYERS]; // Верхняя граница зеленой зоны
-new BreakingType[MAX_REALPLAYERS]; // Тип взлома (Что взламываем 0 дом, 1 дверь транспорта)
-new BreakingTypeID[MAX_REALPLAYERS]; // ID Того, что мы взламываем (ID дома или транспорта)
-
-new PlayerText:BreakingPlayerDraw[14][MAX_REALPLAYERS]; // Текстдравов взлома (оформление, рамки и ключик)
-new PlayerText:BreakingScalePlayerDraw[24][MAX_REALPLAYERS]; // Текстдравы бара для взлома
-
-stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открываем мини игру для взлома
+stock CreateBreaking(playerid, e_BreakingType: type, breakingId, hardLevel) // Открываем мини игру для взлома
 {
-	if(get_invent4(playerid, 19, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет отмычек\n{cccccc}Y >> GPS >> Услуги >> Супермаркеты");
+	if(type != BREAKING_TYPE_ELECTRICAL_SHIELD && get_invent4(playerid, 19, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет отмычек\n{cccccc}Y >> GPS >> Услуги >> Супермаркеты");
     if(breakingDraw[playerid]) return ErrorMessage(playerid, "{FF6347}Вы уже взламываете замок");
 
 	new needSkill;
 	if(hardLevel == 1) needSkill = 3;
 	else if(hardLevel == 2) needSkill = 6;
 	else if(hardLevel == 3) needSkill = 9;
+
+	// Электрощиток можно взламывать с любым уровнем навыка
+	if (type == BREAKING_TYPE_ELECTRICAL_SHIELD) {
+		needSkill = 0;
+	}
 
 	if(get_ability(playerid, 6) < needSkill)
 	{
@@ -38,8 +25,19 @@ stock CreateBreaking(playerid, type, breakingId, hardLevel) // Открывае�
     BreakingScaleStat[playerid] = 0.0;
     LoadBreakingType(playerid, type, breakingId);
     
-    SetPlayerChatBubble(playerid,"достаёт отмычки и начинает взламывать замок",COLOR_PURPLE,20.0,3000);
-    if(!IsPlayerInAnyVehicle(playerid)) ApplyAnimation(playerid,"COP_AMBIENT","Copbrowse_loop",4.0, false, true, true, true, true, SYNC_ALL);
+	if (type == BREAKING_TYPE_ELECTRICAL_SHIELD) {
+		SetPlayerChatBubble(playerid, "достаёт монтировку и начинает вскрывать электрощиток", COLOR_PURPLE, 20.0, 3000);
+	} else {
+		SetPlayerChatBubble(playerid, "достаёт отмычки и начинает взламывать замок", COLOR_PURPLE, 20.0, 3000);
+	}
+
+    if(!IsPlayerInAnyVehicle(playerid)) {
+		if (type == BREAKING_TYPE_ELECTRICAL_SHIELD) {
+			ApplyAnimation(playerid, "OTB", "betslp_tnk", 4.0, false, true, true, true, SYNC_ALL);
+		} else {
+			ApplyAnimation(playerid,"COP_AMBIENT","Copbrowse_loop",4.0, false, true, true, true, true, SYNC_ALL);
+		}
+	}
     
     if(hardLevel == 0) BreakingThickness[playerid] = -8.0, CreateBreakingDraw(playerid, 3);
     else if(hardLevel == 1) BreakingThickness[playerid] = -6.0, CreateBreakingDraw(playerid, 4);
@@ -70,12 +68,12 @@ stock fine_dayshour(t)
 	else if(days == 0 && hour == 0) format(string,sizeof(string),"%02d минут", tmin);
 	return string;
 }
-stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дверь, которую взламываем
+stock LoadBreakingType(playerid, e_BreakingType: type, breakingId) // Отмечаем ту дверь, которую взламываем
 {
 	PlayerInfo[playerid][pFixCamera] = 0;
     BreakingType[playerid] = type;
     BreakingTypeID[playerid] = breakingId;
-	if(type == 0) // Взламываем дом
+	if(type == BREAKING_TYPE_HOUSE)
 	{
 	    if(DomInfo[breakingId][dBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Эту дверь уже кто-то взламывает");
 		if(DomInfo[breakingId][dTheft] > gettime())
@@ -88,7 +86,7 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 	    DomInfo[breakingId][dBreaking] = PlayerInfo[playerid][pID];
 		AutoMakeCreate(1, 1, breakingId);
 	}
-	else if(type == 1) // Взламываем дверь транспорта
+	else if(type == BREAKING_TYPE_VEHICLE)
 	{
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
@@ -102,22 +100,27 @@ stock LoadBreakingType(playerid, type, breakingId) // Отмечаем ту дв
 		}
 		AutoMakeCreate(1, 0, breakingId);
 	}
-	else if(type == 2) // Взламываем двигатель
+	else if(type == BREAKING_TYPE_ENGINE)
 	{
 	    if(VehInfo[breakingId][vBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт уже кто-то взламывает");
 	    VehInfo[breakingId][vBreaking] = PlayerInfo[playerid][pID];
 		PlayerInfo[playerid][pFixCamera] = IsPlayerRangeOfCamer(playerid);
 		if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] != 1) AutoMakeCreate(1, 0, breakingId);
 	}
-	else if(type == 3) // Взламываем трейлер
+	else if(type == BREAKING_TYPE_TRAILER)
 	{
 	    if(TrailerInfo[breakingId][tBreaking] > 0) return ErrorMessage(playerid, "{FF6347}Этот трейлер уже кто-то взламывает");
 	    TrailerInfo[breakingId][tBreaking] = PlayerInfo[playerid][pID];
 	}
-	else if(type == 4) // Взламываем камеру в тюрьме
+	else if(type == BREAKING_TYPE_PRISON_CAMERA)
 	{
 	    if(KpzDoorStatusBreaking[breakingId] > 0) return ErrorMessage(playerid, "{FF6347}Эту камеру уже кто-то взламывает");
 	    KpzDoorStatusBreaking[breakingId] = PlayerInfo[playerid][pID];
+	}
+	else if(type == BREAKING_TYPE_ELECTRICAL_SHIELD)
+	{
+		if (policeDatabaseShieldInfo[breakingId][pdsiBreakingId] > 0) return ErrorMessage(playerid, "{FF6347}Этот электрощиток уже кто-то взламывает");
+		policeDatabaseShieldInfo[breakingId][pdsiBreakingId] = PlayerInfo[playerid][pID];
 	}
 	return 1;
 }
@@ -134,13 +137,20 @@ public BreakingProcess(playerid) // Таймер заполнения шкалы
 		}
 		else // Шкала добралась до верхней позиции. Взлом проёбан
 		{
-		   	new mkey = get_and_take_invent(playerid, 19, 1); // Отнимаем отмычки при проёбе
 			StopBreaking(playerid);
+
+			if (BreakingType[playerid] == BREAKING_TYPE_ELECTRICAL_SHIELD) {
+				ErrorMessage(playerid, "{FF6347}У вас не получилось взломать электрощиток");
+				PDatabase_FailShieldBreak(playerid, BreakingTypeID[playerid]);
+				return 1;
+			}
+			
 		   	ErrorMessage(playerid, "{FF6347}У вас не получилось взломать замок");
 			if(QuestInfo[playerid][ThingOne] == true && QuestInfo[playerid][ScriptQuest] != 2) QuestInfo[playerid][ThingOne] = false;
-
-	    	if(mkey > 0)
-	    	{
+			
+			new mkey = get_and_take_invent(playerid, 19, 1); // Отнимаем отмычки при проёбе
+			if(mkey > 0)
+			{
 				new string[80];
 				format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~r~-1~n~~r~O¦ЇЁ¤kњ: ~w~%d", mkey-1);
 				GameTextForPlayer(playerid,string,8000,3);
@@ -165,39 +175,65 @@ stock ClickBreaking(playerid) // Кликаем на ключик
     	{
     	    StopBreaking(playerid);
     	    PlayerPlaySound(playerid,1137,0,0,0);
-    	    if(BreakingType[playerid] == 0)
-			{
-				DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
-				DomInfo[BreakingTypeID[playerid]][dLock] = 0;
-			}
-			else if(BreakingType[playerid] == 1)
-			{
-				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-				VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 1;
-				LockCar(BreakingTypeID[playerid], 0);
 
-				if(QuestInfo[playerid][VehicleQuest] && QuestInfo[playerid][VehicleQuest] == BreakingTypeID[playerid] && NoCompleteQuest(playerid, 3))
+			switch (BreakingType[playerid])
+			{
+				case BREAKING_TYPE_HOUSE:
 				{
-					ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Дверь автомобиля взломана\n{ffcc66}Садитесь на кнопку F или Enter, чтобы взять пакет","*","");
+					DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
+					DomInfo[BreakingTypeID[playerid]][dLock] = 0;
 				}
-			}
-			else if(BreakingType[playerid] == 2)
-			{
-				VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-				if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] == 1) VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 3;
-				else VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 2;
-				EngineStart(playerid, BreakingTypeID[playerid]);
-			}
-			else if(BreakingType[playerid] == 3)
-			{
-				TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
-				TrailerInfo[BreakingTypeID[playerid]][tLocked] = false;
-				SavePlayerTrailerInfo(BreakingTypeID[playerid]);
-			}
-			else if(BreakingType[playerid] == 4)
-			{
-				KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
-				OnlineInfo[playerid][oPrsionCellBreaking][BreakingTypeID[playerid]] = 1;
+				case BREAKING_TYPE_VEHICLE:
+				{
+					VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+					VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 1;
+					LockCar(BreakingTypeID[playerid], 0);
+
+					if(QuestInfo[playerid][VehicleQuest] && QuestInfo[playerid][VehicleQuest] == BreakingTypeID[playerid] && NoCompleteQuest(playerid, 3))
+					{
+						ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Дверь автомобиля взломана\n{ffcc66}Садитесь на кнопку F или Enter, чтобы взять пакет","*","");
+					}
+				}
+				case BREAKING_TYPE_ENGINE:
+				{
+					VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+					if(VehInfo[BreakingTypeID[playerid]][vBreakingStatus] == 1) VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 3;
+					else VehInfo[BreakingTypeID[playerid]][vBreakingStatus] = 2;
+					EngineStart(playerid, BreakingTypeID[playerid]);
+				}
+				case BREAKING_TYPE_TRAILER:
+				{
+					TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
+					TrailerInfo[BreakingTypeID[playerid]][tLocked] = false;
+					SavePlayerTrailerInfo(BreakingTypeID[playerid]);
+				}
+				case BREAKING_TYPE_PRISON_CAMERA:
+				{
+					KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
+					OnlineInfo[playerid][oPrsionCellBreaking][BreakingTypeID[playerid]] = 1;
+				}
+				case BREAKING_TYPE_ELECTRICAL_SHIELD:
+				{
+					policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiBreaked] = true;
+					policeDatabasePlayerInfo[playerid][pdpiShieldFailCount] = 0;
+
+					new fractionid = policeDatabasePickups[BreakingTypeID[playerid]][pdpFraction];
+
+					// Взрыв электрощитка
+					PDatabase_ExplodeShield(fractionid, BreakingTypeID[playerid], .playerid = playerid);
+
+					if (PDatabase_GetShieldsCount(fractionid, .broken = true) >= PDatabase_GetShieldsCount(fractionid))
+					{
+						if (PDatabase_GetShieldsCount(fractionid) == 1) {
+							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s с электрощитком, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+						} else {
+							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s со всеми электрощитками, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+						}
+						SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь я могу уничтожить генераторы рядом, чтобы отключить аварийное питание.");
+
+						PDatabase_SetState(fractionid, POLICE_DATABASE_STATE_NO_SHIELD);
+					}
+				}
 			}
 			GameTextForPlayer(playerid,"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~‹џћoЇa®o",5000,3);
 
@@ -206,6 +242,13 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 	}
 	else // Не попал в зелёную зону клика (Red)
 	{
+		if (BreakingType[playerid] == BREAKING_TYPE_ELECTRICAL_SHIELD) {
+			StopBreaking(playerid);
+			ErrorMessage(playerid, "{FF6347}У вас не получилось взломать электрощиток");
+			PDatabase_FailShieldBreak(playerid, BreakingTypeID[playerid]);
+			return 1;
+		}
+
 	    new mkey = get_and_take_invent(playerid, 19, 1);
 	    if(mkey <= 0) 
 		{
@@ -252,11 +295,15 @@ stock StopBreaking(playerid)
 		ClearAnimations(playerid);
     	ClearAnim(playerid);
 	}
-	if(BreakingType[playerid] == 0) DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
-	else if(BreakingType[playerid] == 1) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-	else if(BreakingType[playerid] == 2) VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
-	else if(BreakingType[playerid] == 3) TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
-	else if(BreakingType[playerid] == 4) KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
+	switch(BreakingType[playerid])
+	{
+		case BREAKING_TYPE_HOUSE: DomInfo[BreakingTypeID[playerid]][dBreaking] = 0;
+		case BREAKING_TYPE_VEHICLE: VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+		case BREAKING_TYPE_ENGINE: VehInfo[BreakingTypeID[playerid]][vBreaking] = 0;
+		case BREAKING_TYPE_TRAILER: TrailerInfo[BreakingTypeID[playerid]][tBreaking] = 0;
+		case BREAKING_TYPE_PRISON_CAMERA: KpzDoorStatusBreaking[BreakingTypeID[playerid]] = 0;
+		case BREAKING_TYPE_ELECTRICAL_SHIELD: policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiBreakingId] = 0;
+	}
     HidePlayerDialog(playerid);
     GameTextForPlayer(playerid," ",8000,3);
     if(BreakingTimer[playerid]) KillTimer(BreakingTimer[playerid]), BreakingTimer[playerid] = 0;

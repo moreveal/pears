@@ -209,3 +209,28 @@ stock __HOOK_SetVehicleNumberPlate(vehicleid, const numberplate[]) {
 	#define _ALS_SetVehicleNumberPlate
 #endif
 #define SetVehicleNumberPlate __HOOK_SetVehicleNumberPlate
+
+/*
+	Возможность воспроизведения звука с заглушением всех остальных
+	* При soundid = 0 или указанном аргументе muteseconds - заглушение звуков игнорируется
+*/
+new MuteSoundPlayers[MAX_REALPLAYERS];
+stock __HOOK_PlayerPlaySound(playerid, soundid, Float: x = 0.0, Float: y = 0.0, Float: z = 0.0, muteseconds = 0)
+{
+	if (soundid == 0 || muteseconds > 0) MuteSoundPlayers[playerid] = 0;
+	
+	if (gettime() - MuteSoundPlayers[playerid] < 0) return 0;
+
+	if (muteseconds > 0) {
+		MuteSoundPlayers[playerid] = gettime() + muteseconds;
+	}
+
+	return PlayerPlaySound(playerid, soundid, x, y, z);
+}
+
+#if defined _ALS_PlayerPlaySound
+	#undef PlayerPlaySound
+#else
+	#define _ALS_PlayerPlaySound
+#endif
+#define PlayerPlaySound __HOOK_PlayerPlaySound

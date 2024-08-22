@@ -53,7 +53,7 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
     else if(thingId == 182) // Деталь Бомбы (Инженер)
     {
         i0 = 181, q0 = 3, t0 = 0; // Изолента 3 Штуки
-        i1 = 60, q1 = 40, t1 = 0; // Палладий 80 грамм
+        i1 = 60, q1 = 40, t1 = 0; // Палладий 40 грамм
         // i2 = 61, q2 = 10, t2 = 0; // Гелий 3 10 мл
     }
     else if(thingId == 180) // Таблетка Защиты (Химик)
@@ -79,6 +79,11 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
     else if(thingId == 205) // Бомба Липучка (Инженер)
     {
         i0 = 182, q0 = 1, t0 = 0; // Деталь Бомбы 1 Штуки
+    }
+    else if (thingId == 237) // Термитная смесь
+    {
+        i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
+        i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
     }
     else
     {
@@ -534,6 +539,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                         format(line,sizeof(line),"\n{ff9000}Монтировка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Отмычка"), strcat(lines,line);
                         format(line,sizeof(line),"\n{ff9000}Бомба Липучка"), strcat(lines,line);
+                        format(line,sizeof(line),"\n{ff9000}Термитная смесь"), strcat(lines,line);
                         ShowDialog(playerid,1132,DIALOG_STYLE_LIST,"{ff9000}Верстак",lines,"Выбор","Отмена");
                     }
                     else
@@ -552,8 +558,8 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                 }
                 else if(Tabs_Load[playerid] == 13) // Химический Стол
                 {
-                    ErrorMessage(playerid, "{ff6347}Временно недоступно");
-                    //ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
+                    format(line,sizeof(line),"{ff9000}Термитная смесь"), strcat(lines,line);
+                    ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
             }
         }
