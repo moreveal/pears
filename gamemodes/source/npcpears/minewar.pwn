@@ -1681,7 +1681,7 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
         {
             if (!response) return MineWar_Dialog_Main(playerid);
             if (!MineWar_IsPlayerInside(playerid)) return ErrorMessage(playerid, "{FF6347}Нужно находиться внутри заброшенной шахты");
-            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
+            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) + 1 < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
             if (MineWar_IsPlayerInGame(playerid)) return ErrorMessage(playerid, "{FF6347}Игра уже началась");
             
             return MineWar_Start(playerid);
