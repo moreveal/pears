@@ -176,7 +176,7 @@ stock PDatabase_IsPlayerNearHack(playerid, fractionid)
 // Проверка доступности базы данных для взлома (Разработчик и выше игнорируют проверку)
 stock PDatabase_CheckHackAvailableTime(playerid, fractionid)
 {
-    if (PlayerInfo[playerid][pSoska] < 22)
+    if (server == 0 || PlayerInfo[playerid][pSoska] < 22)
     {
         new tmphour, tmpminute, tmpsecond;
         gettime(tmphour, tmpminute, tmpsecond);
@@ -313,6 +313,7 @@ function PDatabase_HackDraw(playerid) {
 
     new fractionid = policeDatabasePlayerInfo[playerid][pdpiFractionID];
     if (policeDatabaseInfo[fractionid][pdiHackerID] != PlayerInfo[playerid][pID] // Не взламывает БД
+        || DeathInfo[playerid][deathStatus] // Умер (лежит в стадии)
         || !IsPlayerInRangeOfPoint(playerid, 7.0, policeDatabasePlayerInfo[playerid][pdpiX], policeDatabasePlayerInfo[playerid][pdpiY], policeDatabasePlayerInfo[playerid][pdpiZ]) // Далеко от места взлома
     ) {
         PDatabase_HackFail(playerid);
@@ -379,6 +380,8 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
     {
         case POLICE_DATABASE_HACK_STAGE_NONE:
         {
+            TogglePlayerControllable(playerid, true);
+            
             // Возвращаем базу данных в нормальное состояние через некоторое время после взлома
             policeDatabaseInfo[fractionid][pdiResetTime] = POLICE_DATABASE_HACK_BACK_TO_NORMAL;
         }
@@ -462,6 +465,8 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
             GetPlayerPos(playerid, policeDatabasePlayerInfo[playerid][pdpiX], policeDatabasePlayerInfo[playerid][pdpiY], policeDatabasePlayerInfo[playerid][pdpiZ]);
             policeDatabaseInfo[fractionid][pdiHackerID] = PlayerInfo[playerid][pID];
             policeDatabaseInfo[fractionid][pdiHackAttemptTime] = gettime();
+            TogglePlayerControllable(playerid, false);
+            SetCameraBehindPlayer(playerid);
 
             policeDatabasePlayerInfo[playerid][pdpiHackGameCheckpointID] = 0;
 
