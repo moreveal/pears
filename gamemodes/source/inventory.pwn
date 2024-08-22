@@ -3038,3 +3038,19 @@ stock SkupshikListItem(i, t, p)
 	|| i >= 163 && i <= 177 || i == 181 || i == 183 || i >= 190 && i <= 192 || i >= 199 && i <= 202 || i >= 207 && i <= 225) return 1;
 	return 0;
 }
+
+stock IsATunning(i,t)
+{
+	if(t != 0) return 0;
+	new result;
+	for(new p; p < sizeof(friskDetail);p++)
+	{
+		if(i == friskDetail[p][0])
+		{
+			result = 1;
+			break;
+		}
+	}
+	if(result == 1) return 1;
+	else return 0;
+}
