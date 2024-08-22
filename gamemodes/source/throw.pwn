@@ -99,7 +99,7 @@ stock use_throw(playerid, inva, useinva)
 		else return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет\n\n{cccccc}Учитываются упакованные предметы, а так-же раздел товаров");
 	}
 	
-	new string[180];
+	new string[280];
 	if(thingType == 0 && thingPack == 0) // Обычный предмет
 	{
 	    if(CheckThingQuan(fpick) == 1) // Предмет имеет количество
