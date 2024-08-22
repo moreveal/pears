@@ -2174,6 +2174,9 @@ stock dialogCase_PDatabase(playerid, dialogid, response, listitem, const inputte
         }
         case POLICE_DATABASE_DIALOG_HACKPASS:
         {
+            if (policeDatabasePlayerInfo[playerid][pdpiHackStage] != POLICE_DATABASE_HACK_STAGE_PASSWORD) return ErrorMessage(playerid, "{FF6347}Вы не находитесь на этапе взлома пароля");
+            if (DeathInfo[playerid][deathStatus]) return ErrorMessage(playerid, "{FF6347}Вы находитесь в стадии смерти");
+
             new fractionid = policeDatabasePlayerInfo[playerid][pdpiFractionID];
             
             if (!response) {
