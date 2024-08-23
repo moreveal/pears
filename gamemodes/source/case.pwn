@@ -296,48 +296,86 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
     {
+        new bool:givePremiumSkin = false;
         switch(random(5))
         {
-            case 1: // Premium
+            case 1: givePremiumSkin = true; // Premium
+            default: givePremiumSkin = false;
+        }
+
+        if (givePremiumSkin)
+        {
+            if(playerid == INVALID_PLAYER_ID)
             {
-                if(playerid == INVALID_PLAYER_ID)
+                if (ThingSkinTopQuan == 0)
+                {
+                    givePremiumSkin = false;
+                }
+                else
                 {
                     new thingTemp = random(ThingSkinTopQuan);
                     thingId = ThingSkinTopcaseGift[thingTemp];
                 }
-                else
+            }
+            else
+            {
+                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
                 {
-                    if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                    if (ThingSkinTopQuan == 0)
+                    {
+                        givePremiumSkin = false;
+                    }
+                    else
                     {
                         new thingTemp = random(ThingSkinTopQuan);
                         thingId = ThingSkinTopcaseGift[thingTemp];
                     }
-                    else // Женский скин в кейсе
+                }
+                else // Женский скин в кейсе
+                {
+                    if (ThingSkinTopQuanFemale == 0)
+                    {
+                        givePremiumSkin = false;
+                    }
+                    else
                     {
                         new thingTemp = random(ThingSkinTopQuanFemale);
                         thingId = ThingSkinTopcaseGiftFemale[thingTemp];
                     }
                 }
             }
-            default:
+        }
+
+        if (!givePremiumSkin) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет премиум скинов в кейсах
+        {
+            if(playerid == INVALID_PLAYER_ID)
             {
-                if(playerid == INVALID_PLAYER_ID)
+                if (ThingSkinQuan == 0)
                 {
+                    return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
+                }
+                new thingTemp = random(ThingSkinQuan);
+                thingId = ThingSkincaseGift[thingTemp];
+            }
+            else
+            {
+                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                {
+                    if (ThingSkinQuan == 0)
+                    {
+                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
+                    }
                     new thingTemp = random(ThingSkinQuan);
                     thingId = ThingSkincaseGift[thingTemp];
                 }
-                else
+                else // Женский скин в кейсе
                 {
-                    if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                    if (ThingSkinQuanFemale == 0)
                     {
-                        new thingTemp = random(ThingSkinQuan);
-                        thingId = ThingSkincaseGift[thingTemp];
+                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
                     }
-                    else // Женский скин в кейсе
-                    {
-                        new thingTemp = random(ThingSkinQuanFemale);
-                        thingId = ThingSkincaseGiftFemale[thingTemp];
-                    }
+                    new thingTemp = random(ThingSkinQuanFemale);
+                    thingId = ThingSkincaseGiftFemale[thingTemp];
                 }
             }
         }
@@ -345,23 +383,50 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     }
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
     {
+        new bool:givePremiumVehicle = false;
+        new bool:giveLimitedVehicle = false;
         switch(random(20))
         {
-            case 8, 9: // Premium
+            case 8, 9: givePremiumVehicle = true; // Premium
+            case 1: giveLimitedVehicle = true;// Limited
+            default: givePremiumVehicle = giveLimitedVehicle = false; // Прочие тс
+        }
+
+        if (giveLimitedVehicle)
+        {
+            if (ThingLimitedehicleQuan == 0)
             {
-                new thingTemp = random(ThingPremiumVehicleQuan);
-                thingId = ThingPremiumVehiclecaseGift[thingTemp];
+                giveLimitedVehicle = false; // Лимитированных машин нет
+                givePremiumVehicle = true; // Попробуем выдать премиум машину
             }
-            case 1: // Limited
+            else
             {
                 new thingTemp = random(ThingLimitedehicleQuan);
                 thingId = ThingLimitedVehiclecaseGift[thingTemp];
             }
-            default: // Прочие тс
+        }
+
+        if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в кейсах
+        {
+            if (ThingPremiumVehicleQuan == 0)
             {
-                new thingTemp = random(ThingVehicleQuan);
-                thingId = ThingVehiclecaseGift[thingTemp];
+                givePremiumVehicle = false; // Премиум машин нет
             }
+            else
+            {
+                new thingTemp = random(ThingPremiumVehicleQuan);
+                thingId = ThingPremiumVehiclecaseGift[thingTemp];
+            }
+        }
+
+        if (!givePremiumVehicle && !giveLimitedVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных/премиум машин в кейсах
+        {
+            if (ThingVehicleQuan == 0)
+            {
+                return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг машин для кейса нет, выпадет обычный предмет
+            }
+            new thingTemp = random(ThingVehicleQuan);
+            thingId = ThingVehiclecaseGift[thingTemp];
         }
         new colorveh = 1 + random(254); // Color Vehicle
         thingQuan = colorveh;
