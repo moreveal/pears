@@ -406,7 +406,7 @@ stock ProcessCreateManiac(playerid, bool:forced = false)
 
     for(new i = 0; i < sizeof(ManiacPosLS); i++)
     {
-        if(UnixZoneCreatedManiac[i] >= gettime()) continue; // Если маньяк создавался здесь недавно, пропускаем эту точку
+        if(!forced && UnixZoneCreatedManiac[i] >= gettime()) continue; // Если маньяк создавался здесь недавно, пропускаем эту точку
 
         if(GetPlayerDistanceFromPoint(playerid, ManiacPosLS[i][Maniac_X], ManiacPosLS[i][Maniac_Y], ManiacPosLS[i][Maniac_Z]) <= 40.0)
         {
