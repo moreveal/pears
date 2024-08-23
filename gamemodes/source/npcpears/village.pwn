@@ -641,12 +641,6 @@ stock Village_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, 
     #pragma unused amount
     #pragma unused weaponid
     #pragma unused bodypart
-
-    if(Protect_Veh[damagerid] != 9999)
-    {
-        new vehicleid = Protect_Veh[damagerid];
-        if(IsShootingVehicle(VehInfo[vehicleid][vModel])) return false;
-    }
     
     if(GiveDamagePlayerToVillageNpc(npc, damagerid)) return true;
     return true;

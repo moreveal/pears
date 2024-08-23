@@ -1093,6 +1093,15 @@ stock PDatabase_UpdateResetTime(fractionid)
     return 1;
 }
 
+stock PDatabase_CheckPolice(playerid) {
+    // Запрет на взаимодействие копов с пикапами для взлома БД (только на основном сервере)
+    if (server != 0 && IsPoliceMember(playerid)) {
+        ErrorMessage(playerid, "{FF6347}Вы не можете этим воспользоваться [ Сотрудник правоохранительных органов ]");
+        return 0;
+    }
+    return 1;
+}
+
 stock PDatabase_OnPlayerPressALT(playerid)
 {
     if (GetPVarInt(playerid, "Arobsklad") > 0) return 1;
@@ -1144,15 +1153,13 @@ stock PDatabase_OnPlayerPressALT(playerid)
         }
     }
 
-    // Запрет на взаимодействие копов с пикапами для взлома БД (только на основном сервере)
-    if (server != 0 && IsPoliceMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не можете этим воспользоваться [ Сотрудник ПО ]");
-
     // Взаимодействие с пикапами
     for (new i = 0; i < sizeof(policeDatabasePickups); i++)
     {
         if (IsPlayerInRangeOfPoint(playerid, 1.5, policeDatabasePickups[i][pdpX], policeDatabasePickups[i][pdpY], policeDatabasePickups[i][pdpZ]))
         {
             if (GetPlayerVirtualWorld(playerid) != policeDatabasePickups[i][pdpWorld] || GetPlayerInterior(playerid) != policeDatabasePickups[i][pdpInterior]) return 0;
+            if (!PDatabase_CheckPolice(playerid)) return 0;
 
             new fractionid = DP[0][playerid] = policeDatabasePickups[i][pdpFraction];
             DP[1][playerid] = i;
@@ -1235,6 +1242,8 @@ stock PDatabase_OnPlayerPressALT(playerid)
             }
             break;
         } else if (IsPlayerInRangeOfPoint(playerid, 1.5, policeDatabasePickups[i][pdpExitX], policeDatabasePickups[i][pdpExitY], policeDatabasePickups[i][pdpExitZ])) {
+            if (!PDatabase_CheckPolice(playerid)) return 0;
+
             new fractionid = DP[0][playerid] = policeDatabasePickups[i][pdpFraction];
             DP[1][playerid] = i;
             
@@ -1270,8 +1279,11 @@ stock PDatabase_OnPlayerPressALT(playerid)
 
             if (IsPlayerInRangeOfPoint(playerid, 1.5, x, y, z))
             {
+                if (!PDatabase_CheckPolice(playerid)) return 0;
+
                 if (policeDatabaseInfo[fractionid][pdiState] == POLICE_DATABASE_STATE_NORMAL) return ErrorMessage(playerid, "{FF6347}Сейчас сломать генераторы нельзя [ Сигнализация не отключена ]");
                 if (PDatabase_IsGeneratorBroken(fractionid, generatorid)) return ErrorMessage(playerid, "{FF6347}Этот генератор уже был сломан");
+
                 policeDatabasePlayerInfo[playerid][pdpiGeneratorID] = generatorid;
 
                 PDatabase_UpdateResetTime(fractionid);
