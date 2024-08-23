@@ -54,7 +54,15 @@ stock SetPlayerDeath(playerid, reason)
         return 0;
     }
 
-    ACSetPlayerHealth(playerid, GetMaxPlayerHealth(playerid) * 0.9);
+    // Баг? Почему он становится 0.0?
+    // Из-за этого происходит рекурсия ACSetPlayerHealth -> SetPlayerDeath -> ACSetPlayerHealth
+    // [07:27:35] #97 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
+    // [07:27:35] #98 004e83b8 in ACSetPlayerHealth (playerid=14, Float:helalph=0.00000) at pears.pwn:7111
+    // [07:27:35] #99 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
+    // [07:27:35] #100 004e83b8 in public OnPlayerSpawn (playerid=14, 0) at pears.pwn:7111
+    new Float:healthToSet = GetMaxPlayerHealth(playerid) * 0.9;
+    if (healthToSet <= 0.0) healthToSet = 35.0;
+    ACSetPlayerHealth(playerid, healthToSet);
 
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
