@@ -217,15 +217,20 @@ stock __HOOK_SetVehicleNumberPlate(vehicleid, const numberplate[]) {
 new MuteSoundPlayers[MAX_REALPLAYERS];
 stock __HOOK_PlayerPlaySound(playerid, soundid, Float: x = 0.0, Float: y = 0.0, Float: z = 0.0, muteseconds = 0)
 {
-	if (soundid == 0 || muteseconds > 0) MuteSoundPlayers[playerid] = 0;
-	
-	if (gettime() - MuteSoundPlayers[playerid] < 0) return 0;
+	new result = PlayerPlaySound(playerid, soundid, x, y, z);
 
-	if (muteseconds > 0) {
-		MuteSoundPlayers[playerid] = gettime() + muteseconds;
+	if (result)
+	{
+		if (soundid == 0 || muteseconds > 0) MuteSoundPlayers[playerid] = 0;
+		
+		if (gettime() - MuteSoundPlayers[playerid] < 0) return 0;
+
+		if (muteseconds > 0) {
+			MuteSoundPlayers[playerid] = gettime() + muteseconds;
+		}
 	}
 
-	return PlayerPlaySound(playerid, soundid, x, y, z);
+	return result;
 }
 
 #if defined _ALS_PlayerPlaySound
