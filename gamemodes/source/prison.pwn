@@ -466,7 +466,7 @@ stock dialogCase_Prison(playerid, dialogid, response, listitem)
                 if(!vehicleid) return ErrorMessage(playerid, "{FF6347}Тюремный автобус в данный момент выполняет конвой\n{cccccc}Пожалуйста, подождите. Он прибудет обратно примерно через 10 минут");
                 if(GetPlayersInKonvoi(playerid, konvoiId, vehicleid) >= 8) return ErrorMessage(playerid, "{FF6347}В конвой отправлено максимальное количество заключенных\n{cccccc}К сожалению, вы не успели. Дождитесь следующего конвоя");
 
-                CuffedPlayer(playerid, 9999);
+                CuffedPlayer(playerid);
                 S_SetPlayerVirtualWorld(playerid,0,0);
 		        PPSetPlayerInterior(playerid,0);
 
