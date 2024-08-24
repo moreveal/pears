@@ -74,9 +74,9 @@ CMD:create_npc(playerid, const params[]) {
 CMD:npc_attack(playerid, const params[]) {
     if (PlayerInfo[playerid][pSoska] < 8) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 
-    new npcid, targetid;
-    if (sscanf(params, "ii", npcid, targetid)) {
-        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Поручить боту атаковать игрока [ /npc_attack ID бота ID Цели ]");
+    new npcid, targetid, bool: aggressive;
+    if (sscanf(params, "iiI(0)", npcid, targetid, aggressive)) {
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Поручить боту атаковать игрока [ /npc_attack ID бота ID Цели Агрессивность* ]");
         return 1;
     }
 
@@ -88,7 +88,7 @@ CMD:npc_attack(playerid, const params[]) {
     if (npcid != -1) {
         ASSERT_NPC_EXISTS(npc, npcid)
 
-        TaskNpcAttackPlayer(npc, targetid);
+        TaskNpcAttackPlayer(npc, targetid, aggressive);
     } else {
         for (new i = 0; i < sizeof(created_npcs); ++i) {
             if (!IsValidNpcInSlot(i)) continue;
@@ -96,7 +96,7 @@ CMD:npc_attack(playerid, const params[]) {
             new Float:npc_x, Float:npc_y, Float:npc_z;
             GetNpcPosition(npc, npc_x, npc_y, npc_z);
             if (GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z) <= 30.0) {
-                TaskNpcAttackPlayer(npc, targetid);
+                TaskNpcAttackPlayer(npc, targetid, aggressive);
             }
         }
     }

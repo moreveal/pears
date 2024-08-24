@@ -119,7 +119,7 @@ stock MineWar_GeneralChat(playerid, const string[])
 
 stock MineWar_GetElapsedTime(playerid)
 {
-    if (!PlayerInfo[playerid][pLastMineWar]) return 0;
+    if (PlayerInfo[playerid][pLastMineWar] <= 0) return 0;
     if (server == 0) return 0; // Для тестового сервера шахта всегда доступна
 
     return max(PlayerInfo[playerid][pLastMineWar] + MINEWAR_COOLDOWN * 60 - gettime(), 0);
@@ -401,12 +401,12 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
                 case MINEWAR_DIFFICULTY_EASY: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 12;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 2;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 150.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 50.0;
                 }
                 case MINEWAR_DIFFICULTY_HARD: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 16;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 5;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 250.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 100.0;
                 }
                 default: {}
             }
@@ -419,13 +419,13 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 15;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 2;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_SUPER_ZOMBIE] = 1;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 150.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 50.0;
                 }
                 case MINEWAR_DIFFICULTY_HARD: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 18;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 5;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_SUPER_ZOMBIE] = 1;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 250.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 100.0;
                 }
                 default: {}
             }
@@ -515,6 +515,19 @@ stock MineWar_GetZombieKilled(roomid, type = -1, bool: current_wave = false)
     if (current_wave) killed -= lastwave_killed;
 
     return killed;
+}
+
+function MineWar_DestroyDeadZombie(roomid, index)
+{
+    if (!MineWar_IsRoomExists(roomid)) return 0;
+
+    new NPC: npc = MineWarInfo[roomid][mwZombie][index];
+    if (IsValidNpc(npc)) {
+        DestroyNpc(npc);
+    }
+    MineWarInfo[roomid][mwZombie][index] = NPC: 0;
+
+    return 1;
 }
 
 function MineWar_ZombieProcess(roomid)
@@ -919,7 +932,9 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 new zombie_type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 MineWarInfo[roomid][mwZombieKilled][zombie_type]++;
                 MineWarPlayerInfo[killerid][mwpZombieKilled][zombie_type]++;
+
                 MineWarInfo[roomid][mwZombieAttackId][npc_i] = 0;
+                SetTimerEx("MineWar_DestroyDeadZombie", 5 * 1000, false, "dd", roomid, npc_i);
 
                 MineWar_UpdateZombieRemainsTextdraw(roomid);
 
@@ -1005,6 +1020,11 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
         }
     }
     return 0;
+}
+
+stock MineWar_IsTeammates(firstid, secondid)
+{
+    return MineWar_IsPlayerInGame(firstid) && MineWar_GetPlayerRoom(firstid) == MineWar_GetPlayerRoom(secondid);
 }
 
 stock MineWar_GetPlayerRoom(playerid)
@@ -1110,7 +1130,8 @@ stock MineWar_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, b
 
                 // Устанавливаем HP игроку
                 ACSetPlayerHealth(issuerid, health);
-                break;
+                
+                return 0;
             }
         }
     }
@@ -1501,6 +1522,12 @@ stock MineWar_UpdateTimer(playerid) {
 
 stock MineWar_Dialog_Start(playerid)
 {
+    new elapsed_time = MineWar_GetElapsedTime(playerid);
+    if (elapsed_time > 0) {
+        new message[128];
+        format(message, sizeof(message), "{FF6347}Вы не можете играть в заброшенной шахте так часто [Можно через: %s]", fine_time(elapsed_time));
+        return ErrorMessage(playerid, message);
+    }
     return ShowDialog(playerid, MINEWAR_START_ACCEPT, DIALOG_STYLE_MSGBOX, "{ff9000}Заброшенная шахта", "{99ff66}Вы действительно хотите начать?\n\n{cccccc}* Все участники должны находиться внутри шахты", "Начать", "Назад");
 }
 
@@ -1513,7 +1540,7 @@ stock MineWar_Create_GetPlayersCount(playerid)
 
         count++;
     }
-    return count;
+    return count + 1; // Учитываем хоста, который добавится в команду в самом конце
 }
 
 stock MineWar_Dialog_AddMember(playerid)
@@ -1561,6 +1588,7 @@ stock MineWar_OnPlayerDisconnect(playerid)
         MineWar_DeleteMember(playerid);
     }
 
+    MineWar_Save(playerid);
     MineWar_PlayerInfo_Cleanup(playerid);
     foreach (new currentid : Player) MineWar_Create_DeleteMember(currentid, playerid);
 
@@ -1672,8 +1700,9 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
             if (!MineWar_IsPlayerInside(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок не находится в заброшенной шахте");
             if (MineWar_IsPlayerInGame(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок уже находится в игре");
             if (MineWar_Create_IsPlayerMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы уже находитесь в чей-то команде");
-            if (MineWar_Create_AddMember(inviterid, playerid) < 0) return ErrorMessage(playerid, "{FF6347}Максимальное количество участников превышено ["#MAX_MINEWAR_PLAYERS" человек]");
-
+            if (MineWar_Create_GetPlayersCount(inviterid) >= MAX_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Максимальное количество участников превышено ["#MAX_MINEWAR_PLAYERS" человек]");
+            
+            MineWar_Create_AddMember(inviterid, playerid);
             SendClientMessage(inviterid, COLOR_GREY, "[ Мысли ]: %s согласился быть участником моей команды", playername(playerid));
             return SuccessMessage(playerid, "{99ff66}Вы согласились быть участником команды\n\nТеперь вам необходимо дождаться запуска игры");
         }
@@ -1681,10 +1710,16 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
         {
             if (!response) return MineWar_Dialog_Main(playerid);
             if (!MineWar_IsPlayerInside(playerid)) return ErrorMessage(playerid, "{FF6347}Нужно находиться внутри заброшенной шахты");
-            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) + 1 < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
+            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
             if (MineWar_IsPlayerInGame(playerid)) return ErrorMessage(playerid, "{FF6347}Игра уже началась");
             
             return MineWar_Start(playerid);
+        }
+        case MINEWAR_DIALOG_QUEST: {
+            if (!response) return pc_cmd_quest(playerid);
+            
+            CreateGps(playerid, 2373.6345, -651.1652, 127.4785, 0, 0, 2.0);
+            SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}Заброшенная Шахта {ffffff}отмечена на карте");
         }
         case MINEWAR_DIALOG_EXIT:
         {

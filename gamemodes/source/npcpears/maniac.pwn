@@ -653,7 +653,7 @@ stock LifeManiacs()
 
 stock Maniac_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 {
-    TaskNpcAttackPlayer(npc, playerid);
+    TaskNpcAttackPlayer(npc, playerid, .aggressive = true);
     ManiacInfo[i][manAttack] = playerid;
     return true;
 }

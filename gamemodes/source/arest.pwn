@@ -41,7 +41,7 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 			if(type == AREST_TYPE_KILL) { // Арест при смерти (добили в стадии)
                 PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (10 * 60);
                 PlayerInfo[suspectid][pJailed] = 1;
-            } else PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (10 * 7);
+            } else PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (7 * 60);
 		}
 
 		if (copid < 0) SendClientMessage(suspectid, COLOR_LIGHTRED, "* Вы были арестованы !");

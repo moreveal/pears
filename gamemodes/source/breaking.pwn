@@ -215,9 +215,14 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				case BREAKING_TYPE_ELECTRICAL_SHIELD:
 				{
 					policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiBreaked] = true;
-					policeDatabasePlayerInfo[playerid][pdpiShieldFailCount] = 0;
+					policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiFailCount] = 0;
 
 					new fractionid = policeDatabasePickups[BreakingTypeID[playerid]][pdpFraction];
+
+					if (policeDatabaseInfo[fractionid][pdiAlarm]) {
+						policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiBreaked] = false;
+						return ErrorMessage(playerid, "{FF6347}Взлом отменен [ В процессе взлома электрощитка в здании включилась сигнализация ]");
+					}
 
 					// Взрыв электрощитка
 					PDatabase_ExplodeShield(fractionid, BreakingTypeID[playerid], .playerid = playerid);

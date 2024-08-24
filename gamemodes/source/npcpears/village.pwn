@@ -571,7 +571,7 @@ stock ChillVillageNpc()
 
 stock Village_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 {
-    TaskNpcAttackPlayer(npc, playerid);
+    TaskNpcAttackPlayer(npc, playerid, .aggressive = random(2) != 0);
     VillageInfo[villAttackPlayerid][i] = playerid;
     return true;
 }

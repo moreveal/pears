@@ -87,6 +87,7 @@ enum e_DialogId {
     MINEWAR_START_ACCEPT,
     MINEWAR_DIALOG_INVITE,
     MINEWAR_DIALOG_EXIT,
+    MINEWAR_DIALOG_QUEST,
     
     // Радиоперехватчик
     RADIO_INTERCEPTOR_MAIN,
