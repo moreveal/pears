@@ -1715,6 +1715,12 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
             
             return MineWar_Start(playerid);
         }
+        case MINEWAR_DIALOG_QUEST: {
+            if (!response) return pc_cmd_quest(playerid);
+            
+            CreateGps(playerid, 2373.6345, -651.1652, 127.4785, 0, 0, 2.0);
+            SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ {ffffff}Карта {0088ff}]{ffffff}: {0088ff}Заброшенная Шахта {ffffff}отмечена на карте");
+        }
         case MINEWAR_DIALOG_EXIT:
         {
             if (!response) return 1;
