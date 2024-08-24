@@ -1540,7 +1540,7 @@ stock MineWar_Create_GetPlayersCount(playerid)
 
         count++;
     }
-    return count;
+    return count + 1; // Учитываем хоста, который добавится в команду в самом конце
 }
 
 stock MineWar_Dialog_AddMember(playerid)
@@ -1700,8 +1700,9 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
             if (!MineWar_IsPlayerInside(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок не находится в заброшенной шахте");
             if (MineWar_IsPlayerInGame(inviterid)) return ErrorMessage(playerid, "{FF6347}Пригласивший вас игрок уже находится в игре");
             if (MineWar_Create_IsPlayerMember(playerid)) return ErrorMessage(playerid, "{FF6347}Вы уже находитесь в чей-то команде");
-            if (MineWar_Create_AddMember(inviterid, playerid) < 0) return ErrorMessage(playerid, "{FF6347}Максимальное количество участников превышено ["#MAX_MINEWAR_PLAYERS" человек]");
-
+            if (MineWar_Create_GetPlayersCount(inviterid) >= MAX_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Максимальное количество участников превышено ["#MAX_MINEWAR_PLAYERS" человек]");
+            
+            MineWar_Create_AddMember(inviterid, playerid);
             SendClientMessage(inviterid, COLOR_GREY, "[ Мысли ]: %s согласился быть участником моей команды", playername(playerid));
             return SuccessMessage(playerid, "{99ff66}Вы согласились быть участником команды\n\nТеперь вам необходимо дождаться запуска игры");
         }
@@ -1709,7 +1710,7 @@ stock dialogCase_MineWar(playerid, dialogid, response, listitem, const inputtext
         {
             if (!response) return MineWar_Dialog_Main(playerid);
             if (!MineWar_IsPlayerInside(playerid)) return ErrorMessage(playerid, "{FF6347}Нужно находиться внутри заброшенной шахты");
-            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) + 1 < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
+            if (server != 0 && MineWar_Create_GetPlayersCount(playerid) < MIN_MINEWAR_PLAYERS) return ErrorMessage(playerid, "{FF6347}Минимальное количество игроков для участия: "#MIN_MINEWAR_PLAYERS);
             if (MineWar_IsPlayerInGame(playerid)) return ErrorMessage(playerid, "{FF6347}Игра уже началась");
             
             return MineWar_Start(playerid);
