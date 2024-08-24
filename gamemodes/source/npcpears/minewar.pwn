@@ -517,6 +517,19 @@ stock MineWar_GetZombieKilled(roomid, type = -1, bool: current_wave = false)
     return killed;
 }
 
+function MineWar_DestroyDeadZombie(roomid, index)
+{
+    if (!MineWar_IsRoomExists(roomid)) return 0;
+
+    new NPC: npc = MineWarInfo[roomid][mwZombie][index];
+    if (IsValidNpc(npc)) {
+        DestroyNpc(npc);
+    }
+    MineWarInfo[roomid][mwZombie][index] = NPC: 0;
+
+    return 1;
+}
+
 function MineWar_ZombieProcess(roomid)
 {
     if (!MineWar_IsRoomExists(roomid)) return 0;
@@ -919,7 +932,9 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 new zombie_type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 MineWarInfo[roomid][mwZombieKilled][zombie_type]++;
                 MineWarPlayerInfo[killerid][mwpZombieKilled][zombie_type]++;
+
                 MineWarInfo[roomid][mwZombieAttackId][npc_i] = 0;
+                SetTimerEx("MineWar_DestroyDeadZombie", 5 * 1000, false, "dd", roomid, npc_i);
 
                 MineWar_UpdateZombieRemainsTextdraw(roomid);
 
