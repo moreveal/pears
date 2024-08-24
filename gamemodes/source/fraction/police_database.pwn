@@ -722,22 +722,23 @@ stock PDatabase_FailShieldBreak(playerid, shieldid)
 {
     new fractionid = policeDatabasePickups[shieldid][pdpFraction];
 
-    policeDatabasePlayerInfo[playerid][pdpiShieldFailCount]++;
-    if (policeDatabasePlayerInfo[playerid][pdpiShieldFailCount] == POLICE_DATABASE_SHIELD_ATTEMPTS) {
-        ErrorMessage(playerid, "{FF6347}Вы не смогли вскрыть электрощиток "#POLICE_DATABASE_SHIELD_ATTEMPTS" раза подряд [ Сработала сигнализация ]");
-        PDatabase_SetState(fractionid, POLICE_DATABASE_STATE_NORMAL);
-        PDatabase_SetAlarm(fractionid, true);
+    policeDatabaseShieldInfo[shieldid][pdsiFailCount]++;
+    if (policeDatabaseShieldInfo[shieldid][pdsiFailCount] >= POLICE_DATABASE_SHIELD_ATTEMPTS) {
+        if (!policeDatabaseInfo[fractionid][pdiAlarm]) {
+            ErrorMessage(playerid, "{FF6347}Вы не смогли вскрыть электрощиток "#POLICE_DATABASE_SHIELD_ATTEMPTS" раза подряд [ Сработала сигнализация ]");
+            PDatabase_SetAlarm(fractionid, true);
 
-        foreach (new id : Player)
-        {
-            if (GetPlayerVirtualWorld(id) != GetPlayerVirtualWorld(playerid)) continue;
-            if (IsPlayerInRangeOfPoint(id, 100.0, policeDatabasePickups[shieldid][pdpX], policeDatabasePickups[shieldid][pdpY], policeDatabasePickups[shieldid][pdpZ]))
+            foreach (new id : Player)
             {
-                PlayerPlaySound(id, 3401, policeDatabasePickups[shieldid][pdpX], policeDatabasePickups[shieldid][pdpY], policeDatabasePickups[shieldid][pdpZ], .muteseconds = 6);
+                if (GetPlayerVirtualWorld(id) != GetPlayerVirtualWorld(playerid)) continue;
+                if (IsPlayerInRangeOfPoint(id, 100.0, policeDatabasePickups[shieldid][pdpX], policeDatabasePickups[shieldid][pdpY], policeDatabasePickups[shieldid][pdpZ]))
+                {
+                    PlayerPlaySound(id, 3401, policeDatabasePickups[shieldid][pdpX], policeDatabasePickups[shieldid][pdpY], policeDatabasePickups[shieldid][pdpZ], .muteseconds = 6);
+                }
             }
-        }
 
-        policeDatabasePlayerInfo[playerid][pdpiShieldFailCount] = 0;
+            policeDatabaseShieldInfo[shieldid][pdsiFailCount] = 0;
+        }
     }
 
     return 1;
@@ -1861,11 +1862,6 @@ stock PDatabase_SetState(fractionid, e_PoliceDatabaseStates: status)
                 for (new e_PoliceDatabaseShieldInfo: j; j < e_PoliceDatabaseShieldInfo; j++) policeDatabaseShieldInfo[i][j] = 0;
             }
             for (new i = 0; i < MAX_REALPLAYERS; i++) policeDatabaseInfo[fractionid][pdiVentPlayers][i] = 0;
-            foreach (new playerid : Player)
-            {
-                // Сбрасываем количество неудачных взломов электрощитка
-                policeDatabasePlayerInfo[playerid][pdpiShieldFailCount] = 0;
-            }
             policeDatabaseInfo[fractionid][pdiHackerID] = 0;
             policeDatabaseInfo[fractionid][pdiHacked] = false;
             policeDatabaseInfo[fractionid][pdiExplodeFiresCount] = 0;
