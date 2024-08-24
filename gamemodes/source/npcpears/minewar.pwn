@@ -119,7 +119,7 @@ stock MineWar_GeneralChat(playerid, const string[])
 
 stock MineWar_GetElapsedTime(playerid)
 {
-    if (!PlayerInfo[playerid][pLastMineWar]) return 0;
+    if (PlayerInfo[playerid][pLastMineWar] <= 0) return 0;
     if (server == 0) return 0; // Для тестового сервера шахта всегда доступна
 
     return max(PlayerInfo[playerid][pLastMineWar] + MINEWAR_COOLDOWN * 60 - gettime(), 0);
@@ -1517,6 +1517,12 @@ stock MineWar_UpdateTimer(playerid) {
 
 stock MineWar_Dialog_Start(playerid)
 {
+    new elapsed_time = MineWar_GetElapsedTime(playerid);
+    if (elapsed_time > 0) {
+        new message[128];
+        format(message, sizeof(message), "{FF6347}Вы не можете играть в заброшенной шахте так часто [Можно через: %s]", fine_time(elapsed_time));
+        return ErrorMessage(playerid, message);
+    }
     return ShowDialog(playerid, MINEWAR_START_ACCEPT, DIALOG_STYLE_MSGBOX, "{ff9000}Заброшенная шахта", "{99ff66}Вы действительно хотите начать?\n\n{cccccc}* Все участники должны находиться внутри шахты", "Начать", "Назад");
 }
 
@@ -1577,6 +1583,7 @@ stock MineWar_OnPlayerDisconnect(playerid)
         MineWar_DeleteMember(playerid);
     }
 
+    MineWar_Save(playerid);
     MineWar_PlayerInfo_Cleanup(playerid);
     foreach (new currentid : Player) MineWar_Create_DeleteMember(currentid, playerid);
 
