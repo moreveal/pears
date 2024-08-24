@@ -401,12 +401,12 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
                 case MINEWAR_DIFFICULTY_EASY: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 12;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 2;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 150.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 50.0;
                 }
                 case MINEWAR_DIFFICULTY_HARD: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 16;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 5;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 250.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 100.0;
                 }
                 default: {}
             }
@@ -419,13 +419,13 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 15;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 2;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_SUPER_ZOMBIE] = 1;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 150.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 50.0;
                 }
                 case MINEWAR_DIFFICULTY_HARD: {
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_NORMAL_ZOMBIE] = players_count * 18;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_HEAVY_ZOMBIE] = 5;
                     MineWarInfo[roomid][mwZombieWave][_:MINEWAR_SUPER_ZOMBIE] = 1;
-                    MineWarInfo[roomid][mwZombieMaxHealth] += 250.0;
+                    MineWarInfo[roomid][mwZombieMaxHealth] += 100.0;
                 }
                 default: {}
             }
