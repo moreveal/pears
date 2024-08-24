@@ -1022,6 +1022,11 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
     return 0;
 }
 
+stock MineWar_IsTeammates(firstid, secondid)
+{
+    return MineWar_IsPlayerInGame(firstid) && MineWar_GetPlayerRoom(firstid) == MineWar_GetPlayerRoom(secondid);
+}
+
 stock MineWar_GetPlayerRoom(playerid)
 {
     if (!MineWarPlayerInfo[playerid][mwpPlay]) return -1;

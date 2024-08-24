@@ -380,6 +380,9 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     // Блочим дамаг если игроки в одной тиме в комп клубе
     if(ComputerClubIsTeammates(playerid, damagedid)) return false;
 
+    // Блочим дамаг если игроки в одной команде в шахте
+    if (MineWar_IsTeammates(playerid, damagedid)) return false;
+
     // Защита от дамага без интервалов
     new current_tick = GetTickCount();
     new interval = GetTickDiff(current_tick, TickDamagePlayer[playerid]);
