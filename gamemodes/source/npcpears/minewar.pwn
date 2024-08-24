@@ -1125,7 +1125,8 @@ stock MineWar_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, b
 
                 // Устанавливаем HP игроку
                 ACSetPlayerHealth(issuerid, health);
-                break;
+                
+                return 0;
             }
         }
     }
