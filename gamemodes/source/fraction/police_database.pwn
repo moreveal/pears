@@ -466,7 +466,6 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
             policeDatabaseInfo[fractionid][pdiHackerID] = PlayerInfo[playerid][pID];
             policeDatabaseInfo[fractionid][pdiHackAttemptTime] = gettime();
             TogglePlayerControllable(playerid, false);
-            SetCameraBehindPlayer(playerid);
 
             policeDatabasePlayerInfo[playerid][pdpiHackGameCheckpointID] = 0;
 
