@@ -221,9 +221,9 @@ stock CloseCollector(playerid)
 	mysql_save(playerid, 58);
 	CloseCollectorToBiz(playerid);
 	new br = numnrent(b);
-	UpdateLabelTerm(b, br, term);
 	BizzInfo[b][bItem][term] = 0;
 	BizzInfo[b][bUpdate] = 1;
+	UpdateLabelTerm(b, br, term);
 	SuccessMessage(playerid, "{99ff66}Деньги доставлены\n{ffcc66}Вы можете забрать зарплату на базе инкассаторов\nили сесть в Securicar и продолжить работу");
 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу забрать зарплату на базе инкассаторов или продолжить работу");
 	RemovePlayerAttachedObject(playerid, 1);
