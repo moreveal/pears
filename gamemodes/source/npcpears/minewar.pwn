@@ -55,7 +55,7 @@ stock MineWar_LoadTextdraws(playerid)
 {
     Obstacle_CreateObstacleTimeTD(playerid);
 
-    MineWarZombieRemainsTD[playerid][0] = CreatePlayerTextDraw(playerid, 35.0000, 191.0000, "120"); // пусто
+    MineWarZombieRemainsTD[playerid][0] = CreatePlayerTextDraw(playerid, 43.0000, 191.0000, "120"); // пусто
     PlayerTextDrawLetterSize(playerid, MineWarZombieRemainsTD[playerid][0], 0.4000, 1.6000);
     PlayerTextDrawAlignment(playerid, MineWarZombieRemainsTD[playerid][0], TEXT_DRAW_ALIGN: 1);
     PlayerTextDrawColour(playerid, MineWarZombieRemainsTD[playerid][0], -1);
@@ -64,7 +64,7 @@ stock MineWar_LoadTextdraws(playerid)
     PlayerTextDrawSetProportional(playerid, MineWarZombieRemainsTD[playerid][0], true);
     PlayerTextDrawSetShadow(playerid, MineWarZombieRemainsTD[playerid][0], 0);
 
-    MineWarZombieRemainsTD[playerid][1] = CreatePlayerTextDraw(playerid, 7.0000, 185.0000, "pears_element:zombie"); // пусто
+    MineWarZombieRemainsTD[playerid][1] = CreatePlayerTextDraw(playerid, 15.0000, 185.0000, "pears_element:zombie"); // пусто
     PlayerTextDrawTextSize(playerid, MineWarZombieRemainsTD[playerid][1], 21.0000, 26.0000);
     PlayerTextDrawAlignment(playerid, MineWarZombieRemainsTD[playerid][1], TEXT_DRAW_ALIGN: 1);
     PlayerTextDrawColour(playerid, MineWarZombieRemainsTD[playerid][1], -1);
