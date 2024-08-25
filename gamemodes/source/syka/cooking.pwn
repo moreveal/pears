@@ -7,7 +7,10 @@ static const pressCookObjects[][e_pressCookObjects] = {
 	{2135},
   {19915},
   {2144},
-  {19933}
+  {19933},
+
+  // Custom
+  {12225}
 };
 
 stock GetDynamicObjectCookPosition(objectid) {
@@ -22,12 +25,20 @@ stock GetDynamicObjectCookPosition(objectid) {
 	return false;
 }
 
-stock IsANearbyObject(playerid, type) // Ищем предметы рядом с игроком
+// Узнаём, что нужный нам dynamic object, это верстак
+stock GetDynamicObjectWorkbench(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 12173) return true;
+	return false;
+}
+
+stock IsANearbyObject(playerid) // Ищем предметы рядом с игроком
 {
     new Float: player_pos[3];
     GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
-    new chetamkaktam = 0;
     // Получаем ближайшие к игроку динамические объекты
     new objects[5];
     // Функция Streamer_GetAllVisibleItems возвращает количество динамических элементов, которые находятся в зоне стрима игрока и помещает их ID в массив (objects)
@@ -44,13 +55,8 @@ stock IsANearbyObject(playerid, type) // Ищем предметы рядом с
         Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
         if(distance > 1.50) break;
 
-        new result;
-        if(type == 0) result = GetDynamicObjectCookPosition(current_object); // 0 Кухонная Плита
-        if(result)
-        {
-            chetamkaktam = 1;
-            break;
-        }
+        if(GetDynamicObjectCookPosition(current_object)) return 1; // 0 Кухонная Плита
+        if(GetDynamicObjectWorkbench(current_object)) return 2; // 1 Верстак
     }
-    return chetamkaktam;
+    return 0;
 }
