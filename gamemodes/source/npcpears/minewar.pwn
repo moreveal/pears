@@ -572,6 +572,20 @@ stock MineWar_GetNearestPlayerFromZombie(roomid, NPC: npcid, excludeid = -1)
     return playerid;
 }
 
+function MineWar_LeaveExitTimer(playerid)
+{
+    if (MineWar_IsPlayerInside(playerid)) return 0;
+
+    if (MineWar_IsPlayerInGame(playerid))
+    {
+        PlayerInfo[playerid][pLastMineWar] = gettime();
+        MineWar_Save(playerid);
+        MineWar_DeleteMember(playerid);
+    }
+
+    return 1;
+}
+
 stock MineWar_ZombieSetAttack(roomid, NPC: npc, attackid)
 {
     if (!IsValidNpc(npc) || IsNpcDead(npc)) return 0;
@@ -1428,6 +1442,7 @@ stock MineWar_Start(playerid)
         
         MineWarPlayerInfo[currentid][mwpPlay] = true;
         MineWarPlayerInfo[currentid][mwpRoomID] = roomid;
+        MineWar_Create_DeleteMember(playerid, currentid);
         MineWar_AddMember(roomid, currentid);
         SetPlayerVirtualWorld(currentid, MineWar_GetVirtualWorld(roomid));
         PlayerPlaySound(playerid, 3201);
