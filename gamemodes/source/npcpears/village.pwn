@@ -109,6 +109,12 @@ CMD:racvillage(playerid)
     UpdateLabelVillageGift();
     UpdateQuanVillage();
 
+    // Сбрасываем всем игрокам килы деревенских
+    foreach (Player, i) 
+    {
+        if(Village_Kills[i] > 0) Village_Kills[i] = 0;
+    }
+
     new string[100];
     format(string, sizeof(string), " [ ADM ]: %s заспавнил всех деревенских",PlayerInfo[playerid][pName]);
 	ABroadCast(COLOR_ADM,string,1);
