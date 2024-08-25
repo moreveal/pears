@@ -110,6 +110,7 @@ stock MineWar_GeneralChat(playerid, const string[])
     {
         if (MineWarPlayerInfo[playerid][mwpRoomID] != MineWarPlayerInfo[currentid][mwpRoomID]) continue;
         if (GetPlayerVirtualWorld(currentid) != GetPlayerVirtualWorld(playerid)) continue;
+        if (!MineWar_IsPlayerInside(currentid)) continue;
 
         SendClientMessage(currentid, 0x1E6698FF, "[ Шахта ]: {555555}%s: %s", PlayerInfo[playerid][pName], string);
     }
