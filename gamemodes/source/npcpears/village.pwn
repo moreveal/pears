@@ -122,6 +122,25 @@ CMD:racvillage(playerid)
     return true;
 }
 
+alias:rcdvillage("rcdvill", "rvillagecd")
+CMD:rcdvillage(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд получения подарков деревенских [ /rcdvillage ID ]");
+    if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Игрок не в сети");
+
+    PlayerInfo[params[0]][pCDVillage] = 0;
+
+    new string[120];
+    mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDVillage` = '0' WHERE `user_id` = '%d'", PlayerInfo[playerid][pID]);
+    mysql_tquery(pearsq, string);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили кд на получение подарков деревенских для %s **", PlayerInfo[params[0]][pName]);
+    if(playerid != params[0]) SendClientMessage(params[0], COLOR_LIGHTBLUE, "** %s очистил вам кд на получение подарков деревенских **", PlayerInfo[playerid][pName]);
+
+    AdminLog("rcdvillage", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 0, "");
+    return 1;
+}
+
 stock CreateVillageNpc()
 {
     for(new i = 0; i < sizeof(VillageNpcWalk); i++)
@@ -662,6 +681,9 @@ stock ChillVillageNpc()
     {
         if(Village_Kills[i] > 0) Village_Kills[i] = 0;
     }
+
+    // Обновляем количество живых NPC для участников
+    UpdateQuanVillage();
     return true;
 }
 
