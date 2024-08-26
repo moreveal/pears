@@ -132,7 +132,7 @@ CMD:rcdvillage(playerid, const params[])
     PlayerInfo[params[0]][pCDVillage] = 0;
 
     new string[120];
-    mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDVillage` = '0' WHERE `user_id` = '%d'", PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDVillage` = '0' WHERE `user_id` = '%d'", PlayerInfo[params[0]][pID]);
     mysql_tquery(pearsq, string);
 	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили кд на получение подарков деревенских для %s **", PlayerInfo[params[0]][pName]);
     if(playerid != params[0]) SendClientMessage(params[0], COLOR_LIGHTBLUE, "** %s очистил вам кд на получение подарков деревенских **", PlayerInfo[playerid][pName]);
