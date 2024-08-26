@@ -474,6 +474,9 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
                 case 1: policeDatabasePlayerInfo[playerid][pdpiHackGameDuration] = 10 * 60;
                 default: policeDatabasePlayerInfo[playerid][pdpiHackGameDuration] = 5 * 60;
             }
+
+            // Для тестового сервера время ожидания - 1 минута
+            if (server == 0) policeDatabasePlayerInfo[playerid][pdpiHackGameDuration] = 60;
             
             PDatabase_HackDraw(playerid);
         }
@@ -2254,7 +2257,7 @@ stock dialogCase_PDatabase(playerid, dialogid, response, listitem, const inputte
         }
         case POLICE_DATABASE_DIALOG_HACKPASS_DECLINE:
         {
-            if (!response) PDatabase_Dialog_HackPass(playerid);
+            if (!response) return PDatabase_Dialog_HackPass(playerid);
             PDatabase_HackFail(playerid);
         }
         case POLICE_DATABASE_DIALOG_CLEAR_MENU:
