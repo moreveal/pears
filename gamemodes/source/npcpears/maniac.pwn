@@ -183,6 +183,7 @@ new Float:ManiacMask[][] =
 #define CD_CREATE_MANIAC_FOR_PLAYER 14400 // Кд на повторное создание маньяка для игрока (7 часов)
 #define CD_CREATE_MANIAC_ZONE 1800 // Кд на повторное создание маньяка в одном и том же месте 
 #define WORLD_ALL_MANIAC 5000 // Общий вирт мир для логово маньяка
+#define MANIAC_HEALTH_DAMAGE 20 // Сколько раз игрок должен нанести урон по маньяку, чтобы застолбить за собой его лут
 
 #define COMPLETE_QUEST_MANIAC 4 // Количество действий для полного выполнения квеста с маньяком
 #define MAX_MANIAC_MASK 40 // Количество масок маньяка на земле
@@ -198,9 +199,10 @@ enum MANIACINFO
     manAttack, // Маньяк атакует игрока
     manDestroyTimer, // Таймер перед удалением маньяка
     manObjectEffect, // Объект для эффекта удаления маньяка
-    manZone, // Зона маньяка
     manInterior, // Интерьер маньяка
-    manPersonal // Маньяк создан для конкретного игрока
+    manPersonal, // Маньяк создан только для конкретного игрока
+    manPlayer, // Для какого игрока изначально был создан маньяк
+    manDamage // Сколько дамага по маньяку наносил игрок, для которого был создан маньяк
 }
 new ManiacInfo[MAX_MANIAC][MANIACINFO];
 new AudioStream:ManiacMusic[MAX_MANIAC] = { INVALID_AUDIOSTREAM, ... };
@@ -343,7 +345,7 @@ stock ShowDialogInfoManiac(playerid)
                             \n\n{cccccc}- По ночам, в городе Los Santos, бродит маньяк с бензопилой и нападает на людей\
                             \n{cccccc}- Маньяк появляется с 22:00 до 4:00 в переулках города\
                             \n{cccccc}- Вы можете обнаружить его совершенно случайно\
-                            \n{cccccc}- За убийство маньяка вы гарантированно получаете кейс\
+                            \n{cccccc}- На месте смерти маньяка выпадает кейс или ключ от этого кейса\
                             \n\n{A52C2C}Квест Маньяка\
                             \n{ffcc66}Для того, чтобы начать прохождение квеста, вам необходимо найти\
                             \n{ffcc66}%d масок маньяка. Эти маски разбросаны по переулкам города Los Santos.\
@@ -430,6 +432,8 @@ stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior, forp
     SetNpcHealth(ManiacInfo[i][manID], MANIAC_HEALTH);
     SetNpcVirtualWorld(ManiacInfo[i][manID], world);
     ManiacInfo[i][manInterior] = interior;
+    ManiacInfo[i][manPlayer] = playerid;
+    ManiacInfo[i][manDamage] = 0;
 
     Maniac_TaskNpcAttackPlayer(ManiacInfo[i][manID], playerid, i);
     SetNpcStunAnimationEnabled(ManiacInfo[i][manID], false); // Выключаем анимацию стана при нанесении дамага маньяку
@@ -451,9 +455,6 @@ stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior, forp
     ManiacInfo[i][manCreatePosition][1] = y;
     ManiacInfo[i][manCreatePosition][2] = z;
 
-    // Создаём зону маньяка
-    ManiacInfo[i][manZone] = CreateDynamicSphere(ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2], MAX_DIST_ZONE_EFFECTS_MANIAC, world, interior);
-
     // Создаём музыку для маньяка
     ManiacMusic[i] = CreateAudioStream();
     SetAudioStreamPosition(ManiacMusic[i], ManiacInfo[i][manCreatePosition][0],ManiacInfo[i][manCreatePosition][1],ManiacInfo[i][manCreatePosition][2]);
@@ -473,23 +474,6 @@ stock CreateManiac(playerid, i, Float:x, Float:y, Float:z, world, interior, forp
 
     if(server == 0) SendClientMessageToAll(-1, "Маньяк создан для %s", PlayerInfo[playerid][pName]);
     return true;
-}
-
-// Включаем погоду для игрока в зоне маньяка
-stock Maniac_UpdateWeatherPlayer(playerid)
-{
-    new bool:result;
-    for(new i = 0; i < MAX_MANIAC; i++)
-    {
-        if(ManiacInfo[i][manCreate] == true && IsPlayerInDynamicArea(playerid, ManiacInfo[i][manZone]))
-        {
-            SetPlayerManiacWeather(playerid);
-            SetPlayerManiacTime(playerid);
-            result = true;
-            break;
-        }
-    }
-    return result;
 }
 
 stock SetPlayerManiacWeather(playerid)
@@ -533,13 +517,6 @@ stock DestroyManiac(i, bool:destroyEffect = false)
         ManiacInfo[i][manCreate] = false;
     }
 
-    // Удаляем зону маньяка
-    if(ManiacInfo[i][manZone] > 0)
-    {
-        DestroyDynamicArea(ManiacInfo[i][manZone]);
-        ManiacInfo[i][manZone] = 0;
-    }
-
     // Удаляем объект эффекта маньяка
     if(destroyEffect == true) DestroyDynamicObject(ManiacInfo[i][manObjectEffect]);
 
@@ -557,8 +534,7 @@ stock DestroyManiac(i, bool:destroyEffect = false)
 
 CMD:createmaniac(playerid, const params[])
 {
-    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
-        || PlayerInfo[playerid][pMedia] >= 3)
+    if(PlayerInfo[playerid][pSoska] >= 19)
     {
         if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Создать маньяка для игрока /createmaniac ID");
         if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
@@ -575,8 +551,7 @@ CMD:createmaniac(playerid, const params[])
 
 CMD:findmaniac(playerid, const params[])
 {
-    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
-        || PlayerInfo[playerid][pMedia] >= 3)
+    if(PlayerInfo[playerid][pSoska] >= 19)
     {
         if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Найти маньяка /findmaniac 0 - %d", MAX_MANIAC - 1);
         if(params[0] < 0 || params[0] >= MAX_MANIAC) return ErrorMessage(playerid, "{FF6347}Неверный ID маньяка");
@@ -592,8 +567,7 @@ CMD:findmaniac(playerid, const params[])
 
 CMD:gotomask(playerid, const params[])
 {
-    if(admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)
-        || PlayerInfo[playerid][pMedia] >= 3)
+    if(PlayerInfo[playerid][pSoska] >= 19)
     {
         if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тп по маскам маньяка /gotomask 0 - %d", MAX_MANIAC_MASK - 1);
         if(params[0] < 0 || params[0] >= MAX_MANIAC_MASK) return ErrorMessage(playerid, "{FF6347}Неверный ID маски");
@@ -603,15 +577,6 @@ CMD:gotomask(playerid, const params[])
         PPSetPlayerPos(playerid, ManiacMask[params[0]][0], ManiacMask[params[0]][1], ManiacMask[params[0]][2] + 1.0);
     }
     else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-    return true;
-}
-
-CMD:clearscreamer(playerid, const params[])
-{
-    PlayerInfo[playerid][pManiacQwest] = 1;
-    SaveManiacQuestProcess(playerid);
-
-    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Скример сброшен");
     return true;
 }
 
@@ -745,6 +710,7 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 // Формируем кейс маньяка
                 new thingId, thingQuan, thingType, thingPara, thingPack;
                 CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
+                CalculateVehicleLimited(thingId, thingType);
 
                 // Кладём кейс маньяка на землю
                 SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
@@ -774,6 +740,20 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
         {
             if(PlayerInfo[playerid][pAchieve][129] == 0) AchievePlayer(playerid, 129, 1); // Убил маньяка
 
+            // Помечаем лут только для игрока, для которого изначально был создан маньяк
+            new onlyPlayer = 0;
+            if(IsOnline(ManiacInfo[findSlot][manPlayer])) // Игрок, для которого был создан маньяк в игре
+            {
+                if(ManiacInfo[findSlot][manDamage] >= MANIAC_HEALTH_DAMAGE) // Нанёс необходимое количество дамага
+                {
+                    new Float:dist = GetPlayerDistanceFromPoint(playerid, npc_pos[0], npc_pos[1], npc_pos[2]);
+                    if(dist <= MAX_DIST_ZONE_MANIAC) // Рядом с маньяком
+                    {
+                        onlyPlayer = PlayerInfo[ManiacInfo[findSlot][manPlayer]][pID];
+                    }
+                }
+            }
+
             switch(random(2))
             {
                 case 0: // Кладём кейс маньяка
@@ -781,14 +761,15 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                     // Формируем кейс маньяка
                     new thingId, thingQuan, thingType, thingPara, thingPack;
                     CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
+                    CalculateVehicleLimited(thingId, thingType);
 
                     SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
-                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0, onlyPlayer);
                 }
                 case 1: // Кладём ключ маньяка
                 {
                     SetThrow(-1, 234, 234, 1, 0, 0, 0, 0, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
-                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                        npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0, onlyPlayer);
                 }
             }
         }
@@ -1224,4 +1205,36 @@ stock Maniac_OnPlayerDisconnect(playerid)
     // Удаляем личного маньяка для игрока
     if(PlayerManiac[playerid] != -1) DestroyManiac(PlayerManiac[playerid]), PlayerManiac[playerid] = -1;
     return true;
+}
+
+// Нанесли урон NPC
+stock Maniac_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bodypart)
+{
+    #pragma unused amount
+    #pragma unused weaponid
+    #pragma unused bodypart
+    
+    if(GiveDamagePlayerToManiacNpc(npc, damagerid)) return true;
+    return true;
+}
+
+// Наносим дамаг по маньяку
+stock GiveDamagePlayerToManiacNpc(NPC:npc, damagerid)
+{
+    new findSlot = -1;
+    for(new i = 0; i < MAX_MANIAC; i++)
+    {
+        if(ManiacInfo[i][manID] == npc)
+        {
+            findSlot = i;
+            break;
+        }
+    }
+
+    if(findSlot >= 0)
+    {
+        if(ManiacInfo[findSlot][manPlayer] == damagerid) ManiacInfo[findSlot][manDamage] ++; // Игрок, для которого был создан маньяк, наносит по нему дамаг
+        return true;
+    }
+    return false;
 }

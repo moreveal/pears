@@ -41,6 +41,9 @@ stock use_throw(playerid, inva, useinva)
 	if(GetPVarInt(playerid, "svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
 	if(CheckInvent(playerid)) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
+	if(ThrowInfo[t][tOnlyPlayer] > 0 
+		&& ThrowInfo[t][tOnlyPlayer] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет\n{ffcc66}Предмет может подобрать только конкретный игрок"), i_resettabs(playerid);
+
 	if(thingPack == 2 || thingPack == 4) // Ящик с предметом
 	{
 	    if(SitPlayer[playerid] > 0) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет сидя"), i_resettabs(playerid);
@@ -320,7 +323,7 @@ stock GiveThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, 
 	else if(noobject == 0) SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, x, y, z, 0.0, 0.0, rz, time, 0, 0);
 	return 1;
 }
-stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent, DopParametr = 0) // Устанавливаем новый предмет на землю
+stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, world, interior, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, time, type, noinvent, DopParametr = 0, onlyPlayer = 0) // Устанавливаем новый предмет на землю
 {
 	new noobject, gee;
 
@@ -359,6 +362,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 			ThrowInfo[g][tUseplayer] = 0;
 			ThrowInfo[g][tType] = thingType;
 			ThrowInfo[g][tPack] = thingPack;
+			ThrowInfo[g][tOnlyPlayer] = onlyPlayer;
 			if((fpick == 11 || fpick == 205) && para >= 9) ThrowInfo[g][tBombPlant] = true;
 			if(fpick == 205) ThrowInfo[g][tOpenVehicleBomp] = DopParametr;
 

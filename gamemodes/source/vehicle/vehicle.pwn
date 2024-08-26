@@ -449,22 +449,56 @@ CMD:tun(playerid)
 		new vehicleid = GetPlayerVehicleID(playerid);
 		if(!IsACar(VehInfo[vehicleid][vModel])) return ErrorMessage(playerid, "{FF6347}Вы не в автомобиле");
 
-		for(new i = 0; i < MAX_TUNNING_VEHICLE; i++)
-		{
-			if(VehInfo[vehicleid][vTunningID][i] > 0) VehInfo[vehicleid][vTunningID][i] = 0;
-		}
-
-		VehInfo[vehicleid][vTunningID][0] = 224; // Philin Customs
-		VehInfo[vehicleid][vTunningID][1] = 214; // HPRacing
-		VehInfo[vehicleid][vTunningID][2] = 216; // KONI suspension
-		VehInfo[vehicleid][vTunningID][3] = 220; // Falken Tire
-		VehInfo[vehicleid][vTunningID][4] = 223; // Wilwood
-
-		SetHandlingTotal(vehicleid);
-
+		SetVehicleTopTunning(vehicleid);
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Полный пиздатый тюн установлен на транспорт (Без сохранения в базу)","*","");
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не в транспорте");
+	return true;
+}
+
+CMD:tungro(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+	new quan;
+	new Float:X,Float:Y,Float:Z;
+	GetPlayerPos(playerid, X, Y, Z);
+	for(new vehicleid = 1; vehicleid < MAX_CARS; vehicleid++)
+	{
+		if(!IsValidVehicle(vehicleid)) continue; // Транспорта не существует
+		if(Cars[vehicleid] != 9999) continue; // Транспорт не создан через /veh
+		if(!IsACar(VehInfo[vehicleid][vModel])) continue; // Транспорт не авто
+		if(GetVehicleInterior(vehicleid) != GetPlayerInterior(playerid) 
+			|| GetVehicleVirtualWorld(vehicleid) != GetPlayerVirtualWorld(playerid)) continue; // Транспорт в другом мире или инте
+
+		if(GetVehicleDistanceFromPoint(vehicleid, X, Y, Z) <= 30.0) 
+		{
+			SetVehicleTopTunning(vehicleid);
+			quan ++;
+		}
+	}
+	if(quan == 0) return ErrorMessage(playerid, "{FF6347}Рядом с вами нет созданных тс");
+	new string[144];
+    format(string, sizeof(string), " [ ADM ]: %s установил тюн созданному транспорту в 30 метров от себя (%d тс)", PlayerInfo[playerid][pName], quan);
+    ABroadCast(COLOR_ADM,string,1);
+    AdminLog("tungro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "");
+	return true;
+}
+
+stock SetVehicleTopTunning(vehicleid)
+{
+	for(new i = 0; i < MAX_TUNNING_VEHICLE; i++)
+	{
+		if(VehInfo[vehicleid][vTunningID][i] > 0) VehInfo[vehicleid][vTunningID][i] = 0;
+	}
+
+	VehInfo[vehicleid][vTunningID][0] = 224; // Philin Customs
+	VehInfo[vehicleid][vTunningID][1] = 214; // HPRacing
+	VehInfo[vehicleid][vTunningID][2] = 216; // KONI suspension
+	VehInfo[vehicleid][vTunningID][3] = 220; // Falken Tire
+	VehInfo[vehicleid][vTunningID][4] = 223; // Wilwood
+
+	SetHandlingTotal(vehicleid);
 	return true;
 }
 
