@@ -467,6 +467,7 @@ CMD:tungro(playerid)
 	{
 		if(!IsValidVehicle(vehicleid)) continue; // Транспорта не существует
 		if(Cars[vehicleid] != 9999) continue; // Транспорт не создан через /veh
+		if(!IsACar(VehInfo[vehicleid][vModel])) continue; // Транспорт не авто
 		if(GetVehicleInterior(vehicleid) != GetPlayerInterior(playerid) 
 			|| GetVehicleVirtualWorld(vehicleid) != GetPlayerVirtualWorld(playerid)) continue; // Транспорт в другом мире или инте
 

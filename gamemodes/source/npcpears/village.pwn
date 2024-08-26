@@ -250,10 +250,11 @@ stock GetGiftVillage(playerid)
 				CalculateVehicleLimited(thingId, thingType);
             }
 
+            format(string,sizeof(string),"собрал%s %d кейсов", gender(playerid), quanGift);
+            SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 5000);
+
             format(string,sizeof(string),"{99ff66}Поздравляем! Вы получили %d кейсов\n\n{ffcc66}Внимание! В следующий раз вы сможете получить подарки через %d минут", quanGift, CD_GIFT_VILLAGE / 60);
             SuccessMessage(playerid, string);
-            format(string,sizeof(string),"собрал%s %d кейсов", quanGift);
-            SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 5000);
 
             PlayerInfo[playerid][pCDVillage] = gettime() + CD_GIFT_VILLAGE;
             mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDVillage` = '%d' WHERE `user_id` = '%d'", PlayerInfo[playerid][pCDVillage], PlayerInfo[playerid][pID]);
@@ -653,6 +654,7 @@ stock ChillVillageNpc()
             GoVilliageNpc(i, 1, NPC_MOVE_MODE_RUN);
             SetVillageHealthNpc(i);
         }
+        else SpawnVillageNpc(i);
     }
 
     // Сбрасываем всем игрокам килы деревенских
