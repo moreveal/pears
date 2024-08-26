@@ -255,7 +255,12 @@ stock GetGiftVillage(playerid)
 
             new quanGift = Village_Kills[playerid] / EVERY_KILL_VILLAGE;
             if(Village_Kills[playerid] < EVERY_KILL_VILLAGE || quanGift <= 0) return ErrorMessage(playerid, "{FF6347}Вы совершили недостаточно килов для получения подарков\n{ffcc66}Требуется убить и удерживать "#EVERY_KILL_VILLAGE" деревенских");
-            if(!free_invent(playerid, quanGift)) return ErrorMessage(playerid, "{FF6347}У вас не хватает места в инвентаре\n{ffcc66}Требуется "#quanGift" слотов");
+            if(!free_invent(playerid, quanGift))
+            {
+                format(string, sizeof(string), "{FF6347}У вас не хватает места в инвентаре\n{ffcc66}Требуется %d слотов", quanGift);
+                ErrorMessage(playerid, string);
+                return true;
+            }
 
             new thingId, thingQuan, thingType, thingPara, thingPack;
             for(new i = 0; i < quanGift; i++)
