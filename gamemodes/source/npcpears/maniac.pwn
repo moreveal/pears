@@ -747,7 +747,7 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 if(ManiacInfo[findSlot][manDamage] >= MANIAC_HEALTH_DAMAGE) // Нанёс необходимое количество дамага
                 {
                     new Float:dist = GetPlayerDistanceFromPoint(playerid, npc_pos[0], npc_pos[1], npc_pos[2]);
-                    if(dist <= MAX_DIST_ZONE_MANIAC && !howstun(playerid) && HealthAC[playerid] > 0) // Рядом с маньяком, всё ништяк и не дохлый
+                    if(dist <= MAX_DIST_ZONE_MANIAC) // Рядом с маньяком
                     {
                         onlyPlayer = PlayerInfo[ManiacInfo[findSlot][manPlayer]][pID];
                     }
