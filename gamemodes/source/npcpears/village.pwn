@@ -538,6 +538,12 @@ stock PlayerShotVillage(playerid, i)
         }
     }
 
+    if (GetPVarInt(playerid, "VillageWaitToTakeAward"))
+    {
+        DeletePVar(playerid, "VillageWaitToTakeAward");
+        Village_Kills[playerid] = 0;
+    }
+
     VillageInfo[villKillPlayerid][i] = playerid;
     Village_Kills[playerid] ++;
 
@@ -595,6 +601,8 @@ stock CreateVillageGift()
 // Сообщение о завершении битвы
 stock MessageVillageWin(playerid)
 {
+    SetPVarInt(playerid, "VillageWaitToTakeAward", 1);
+
     new lines[360];
     if(Village_Kills[playerid] < EVERY_KILL_VILLAGE)
     {
