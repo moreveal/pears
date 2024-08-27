@@ -1263,18 +1263,25 @@ stock MineWar_GivePlayerWaveLoot(playerid)
         new currentAmmo = get_invent(playerid, i, 0) + ProtectInfo[playerid][prAmmo][slot];
         
         new ammo = floatround(float(spentAmmo) * 0.7);
-
         if (currentAmmo + ammo > maxAmmo) ammo = max(maxAmmo - currentAmmo, 0);
-        Protect_GiveWeapons(playerid, ProtectInfo[playerid][prWeapon][slot], ammo, 0, 0);
 
-        if (ammo > 0) format(gived_resources_line, sizeof(gived_resources_line), "%s%s (%d шт.), ", gived_resources_line, GetNameThing(0, i, 0, 0), ammo);
+        if (ammo > 0) {
+            if (ProtectInfo[playerid][prAmmo][slot] > 0) {
+                // Выдаём сразу, если оружие есть в руках
+                Protect_GiveWeapons(playerid, ProtectInfo[playerid][prWeapon][slot], ammo, 0, 0);
+            }
+            else {
+                // Выдаём патроны в инвентарь, если оружия нет в руках
+                GiveThingPlayer(playerid, i, ammo, 0, 0, 0, 0);
+            }
+            format(gived_resources_line, sizeof(gived_resources_line), "%s%s (%d шт.), ", gived_resources_line, GetNameThing(0, i, 0, 0), ammo);
+        }
 
         #if defined MINEWAR_DEBUG_MODE
             printf("[MINEWAR DEBUG]: Игрок %d получил %d патрон (Слот оружия: %d)", playerid, ammo, slot);
         #endif
-
-        SetPlayerArmedWeapon(playerid, WEAPON_FIST);
     }
+    SetPlayerArmedWeapon(playerid, WEAPON_FIST);
 
     // Выдача бинтов
     new bandageId = 70;
