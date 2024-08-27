@@ -148,7 +148,7 @@ stock AnticheatGunTrigger(playerid, weaponid)
 	    {
             new current_tick = GetTickCount();
             new interval = GetTickDiff(current_tick, AnticheatTick[playerid][1]);
-            if(interval > 400)
+            if(interval > 1000)
             {
                 AnticheatTick[playerid][1] = current_tick;
 
