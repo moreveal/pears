@@ -267,8 +267,8 @@ stock GetGiftVillage(playerid)
             {
                 switch(random(4))
                 {
-                    case 0: CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack, "village");
-                    default: CreateCasePlayer(INVALID_PLAYER_ID, thingId, thingQuan, thingType, thingPara, thingPack);
+                    case 0: CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "village");
+                    default: CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack);
                 }
                 GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
 				CalculateVehicleLimited(thingId, thingType);
