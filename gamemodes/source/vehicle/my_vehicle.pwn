@@ -4748,7 +4748,7 @@ CMD:scrap(playerid)
 		else
 		{
 			new string[160];
-			format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (3/10 от стоимости)",GetVehiclePriceGos(VehInfo[v][vModel]) / 10 * 3);
+			format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (1/10 от стоимости)",GetVehiclePriceGos(VehInfo[v][vModel]) / 10);
 			ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
 		}
 	}
@@ -4769,15 +4769,15 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 		if(VehInfo[newcar][vNosell] >= 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за этот транспорт: {ff0000}Невозможно");
 		else
 		{
-			oGivePlayerMoney(playerid, GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 3);
+			oGivePlayerMoney(playerid, GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
 			new string[90];
-			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 3);
+			format(string,sizeof(string),"[ Мысли ]: Транспорт сдан в утиль [ {99ff66}+%d$ {cccccc}]", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10);
 			SendClientMessage(playerid, COLOR_GREY, string);
 
 			format(string, sizeof(string), "В утиль %s [DB %d]", GetVehicleName(VehInfo[newcar][vModel]), VehInfo[newcar][vNewid]);
-    		MoneyLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 3, string);
+    		MoneyLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, string);
 		}
-		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 3, "");
+		CarLog("scrap", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[newcar][vModel], GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10, "");
 		
 		PlayerInfo[playerid][pMyVeh][slot - 1] = 0;
 		PlayerInfo[playerid][pMyVehID][slot - 1] = 0;
