@@ -94,8 +94,8 @@ function RadioInterceptor_UpdateFindZone(player_userid, find_userid, bool: messa
 
 		if (playerid > -1 && findid > -1) break;
 	}
-	if (OnlineInfo[playerid][oRadioInterceptorZoneTimer] <= 1) return 0;
 	if (!IsOnline(playerid) || !IsOnline(findid) || OnlineInfo[playerid][oRadioInterceptorFindId] != findid) return 0;
+	if (OnlineInfo[playerid][oRadioInterceptorZoneTimer] <= 1) return 0;
 	
 	new Float:X,Float:Y,Float:Z;
 	GetPlayerRealPos(findid, X, Y, Z);
