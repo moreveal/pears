@@ -379,6 +379,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 }
             }
         }
+        thingPara = 0;
         thingQuan = 1;
     }
     else if(thingType == 5) // Транспорт (Список собирается при запуске сервера)
