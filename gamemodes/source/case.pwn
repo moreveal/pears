@@ -386,9 +386,9 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         new bool:givePremiumVehicle = false;
         new bool:giveLimitedVehicle = false;
-        switch(random(20))
+        switch(random(40))
         {
-            case 8, 9: givePremiumVehicle = true; // Premium
+            case 8, 9, 10, 11: givePremiumVehicle = true; // Premium
             case 1: giveLimitedVehicle = true;// Limited
             default: givePremiumVehicle = giveLimitedVehicle = false; // Прочие тс
         }
