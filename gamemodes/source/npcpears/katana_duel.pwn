@@ -169,7 +169,7 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
         case KATANA_DUEL_PRICE:
         {
 		    if(response) SettingKatanaDuel(playerid, inputtext);
-		    else ShowDialogSettingKatanaDuel(playerid);
+		    else showDialogOrganizationMenu(playerid);
 		    return true;
         }
     }
