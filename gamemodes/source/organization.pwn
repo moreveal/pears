@@ -575,6 +575,7 @@ stock showDialogOrganizationMenu(playerid)
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
 		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
 		if(g == 4) format(line,sizeof(line), detail_lmenu(playerid, 18)), strcat(lines,line); // Стоимость лечения
+		if(g == 6) format(line,sizeof(line), detail_lmenu(playerid, 19)), strcat(lines,line); // Пропуск на Дуэль
 	}
 	ShowDialog(playerid,615,DIALOG_STYLE_TABLIST_HEADERS,"Меню Организации",lines,"Выбрать","Отмена");
 	return 1;
@@ -614,6 +615,7 @@ stock detail_lmenu(playerid, detail)
 	}
 	else if(detail == 17) format(text, sizeof(text), "\n{cccccc}Мед оборудование\t{99ff66}%d$", OrganInfo[g][gMedMoney]);
 	else if(detail == 18) format(text, sizeof(text), "\n{ff9000}Стоимость лечения\t{99ff66}%d$", ServerInfo[9]);
+	else if(detail == 19) format(text, sizeof(text), "\n{ff9000}Дуэль с Годжо\t{99ff66}%d$", ServerInfo[35]);
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -655,6 +657,7 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 16) OrderEscort(playerid, g);
 	else if(detail == 17) OrderMedEquipment(playerid);
 	else if(detail == 18) ShowDialogSettingHealPrice(playerid);
+	else if(detail == 19) ShowDialogSettingKatanaDuel(playerid);
 	return 1;
 }
 

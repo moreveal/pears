@@ -39,8 +39,8 @@ stock SaveLastPlayerPosition(playerid)
         // Еслиигрок находится в интерьере деревенских, сохраняем последнюю позицию как вход в интерьер
         if(PlayerInInteriorVillage(playerid)) return Village_WriteLastPlayerPosition(playerid);
 
-
-
+        // Если игрок находится в интерьере Катана Дуэль, сохраняем последнюю позицию как вход в интерьер
+        if(PlayerInInteriorKatanaDuel(playerid)) return KatanaDuel_WriteLastPlayerPosition(playerid);
 
 
         new Float:pos[4];

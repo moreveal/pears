@@ -108,6 +108,14 @@
 
 #define WORLD_VILLAGE 14001
 #define INT_VILLAGE 0
+
+//==================================================
 // Скупщик
 #define WORLD_SKUPSHIK 5
 #define INT_SKUPSHIK 5
+
+//==================================================
+// Спортзал Yakuza
+
+#define WORLD_YAKUZA_SPORTSHALL 14002
+#define INT_YAKUZA_SPORTSHALL 6
