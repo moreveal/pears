@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 209
+#define MAX_SKIN_CUSTOM 274
 
 stock AddCustomSkins()
 {
@@ -230,6 +230,72 @@ stock AddCustomSkins()
 	AddCharSyncModel(77, 518); //  15706, pearszombie7 famale
 	AddCharSyncModel(82, 519); //  15707, pearszombie8 male
 	AddCharSyncModel(83, 520); //  15708, pearszombie9 male
+	// new skins
+	AddCharSyncModel(59, 521); // pearskortu
+	AddCharSyncModel(60, 522); // pearsmajodin
+	AddCharSyncModel(98, 523); // pearsmajodva
+	AddCharSyncModel(23, 524); // pearsmajotri
+	AddCharSyncModel(248, 525); // pearsjil
+	AddCharSyncModel(247, 526); // pearsjildva
+	AddCharSyncModel(187, 527); // pearskosb
+	AddCharSyncModel(91, 528); // pearsmegno woman
+	AddCharSyncModel(19, 529); // pearsgheze
+	AddCharSyncModel(93, 530); // pearswjns woman
+	AddCharSyncModel(184, 531); // pearsdedsp
+	AddCharSyncModel(223, 532); // pearssuitold
+	AddCharSyncModel(186, 533); // pearssuoldv
+	AddCharSyncModel(208, 534); // pearsdetsu
+	AddCharSyncModel(66, 535); // pearskurng
+	AddCharSyncModel(80, 536); // pearsufcng
+	AddCharSyncModel(109, 537); // pearsvago vagos 
+	AddCharSyncModel(110, 538); // pearsvagtr vagos
+	AddCharSyncModel(106, 539); // pearsgroveo Grove
+	AddCharSyncModel(107, 540); // pearsgrovet Grove
+	AddCharSyncModel(195, 541); // pearsgroveg grove woman
+	AddCharSyncModel(102, 542); // pearsballo ballas
+	AddCharSyncModel(102, 543); // pearsballt ballas
+	AddCharSyncModel(13, 544); // pearsballg ballas woman
+	AddCharSyncModel(104, 545); // pearsballtr ballas 
+	AddCharSyncModel(91, 546); // pearsbecky woman
+	AddCharSyncModel(42, 547); // pearsorm 
+	AddCharSyncModel(42, 548); // pearsorgm
+	AddCharSyncModel(258, 549); // pearsamkr
+	AddCharSyncModel(30, 550); // pearsrcep
+	AddCharSyncModel(56, 551); // pearsgigre woman
+	AddCharSyncModel(259, 552); // pearsolbat
+	AddCharSyncModel(258, 553); // pearssimsui
+	AddCharSyncModel(259, 554); // pearssimpol
+	AddCharSyncModel(252, 555); // pearssimnud
+	AddCharSyncModel(217, 556); // pearsardbl
+	AddCharSyncModel(171, 557); // pearsardsui
+	AddCharSyncModel(208, 558); // pearsardsuib
+	AddCharSyncModel(240, 559); // pearsardjil
+	AddCharSyncModel(46, 560); // pearsardjen
+	AddCharSyncModel(223, 561); // pearsardjens
+	AddCharSyncModel(211, 562); // pearsgibl woman
+	AddCharSyncModel(216, 563); // pearsgipink woman 
+	AddCharSyncModel(247, 564); // pearsgjo
+	AddCharSyncModel(248, 565); // pearsgjt
+	AddCharSyncModel(254, 566); // pearsgjtr
+	AddCharSyncModel(100, 567); // pearsgjf
+	AddCharSyncModel(113, 568); // pearsvicbs
+	AddCharSyncModel(111, 569); // pearsvicsrg
+	AddCharSyncModel(125, 570); // pearsvicrm
+	AddCharSyncModel(144, 571); // pearsterro
+	AddCharSyncModel(143, 572); // pearsterrt
+	AddCharSyncModel(176, 573); // pearsterrtr
+	AddCharSyncModel(177, 574); // pearsterrf
+	AddCharSyncModel(177, 575); // pearsterrfm
+	AddCharSyncModel(183, 576); // pearsterrfi
+	AddCharSyncModel(241, 577); // pearsterrs
+	AddCharSyncModel(273, 578); // pearsmono
+	AddCharSyncModel(184, 579); // pearsmont 
+	AddCharSyncModel(119, 580); // pearsmontr
+	AddCharSyncModel(47, 581); // pearsmonf
+	AddCharSyncModel(45, 582); // pearsnudta
+	AddCharSyncModel(300, 583); // pearsguo
+	AddCharSyncModel(300, 584); // pearsgut
+	AddCharSyncModel(301, 585); // pearsgutr
     return 1;
 }
 
@@ -252,7 +318,8 @@ stock GetSkinSex(s)
 	|| s == 403 || s == 405 || s == 406 || s == 410 || s >= 412 && s <= 425 || s == 429
 	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
 	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507
-	|| s >= 512 && s <= 516 || s >= 519 && s <= 520) return 1; // 1 - мужской скин
+	|| s >= 512 && s <= 516 || s >= 519 && s <= 527 || s == 529 || s >= 531 && s <= 540 || s >= 542 && s <= 543
+	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
 	s == 510 || s == 511) return 0; // Не имеет пола (подходит для мужчин и женщин)
@@ -310,6 +377,9 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][38] = 452, OrganInfo[g][gSkinPrice][38] = 30000, OrganInfo[g][gSkinRank][38] = 2;
 		OrganInfo[g][gSkin][39] = 443, OrganInfo[g][gSkinPrice][39] = 250000, OrganInfo[g][gSkinRank][39] = 14;
 		OrganInfo[g][gSkin][40] = 444, OrganInfo[g][gSkinPrice][40] = 250000, OrganInfo[g][gSkinRank][40] = 14;
+		OrganInfo[g][gSkin][41] = 583, OrganInfo[g][gSkinPrice][41] = 50000, OrganInfo[g][gSkinRank][41] = 3;
+		OrganInfo[g][gSkin][42] = 584, OrganInfo[g][gSkinPrice][42] = 50000, OrganInfo[g][gSkinRank][42] = 3;
+		OrganInfo[g][gSkin][43] = 585, OrganInfo[g][gSkinPrice][43] = 50000, OrganInfo[g][gSkinRank][43] = 3;
 
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
@@ -506,6 +576,9 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][5] = 271, OrganInfo[g][gSkinPrice][5] = 100000, OrganInfo[g][gSkinRank][5] = 8;
 		OrganInfo[g][gSkin][6] = 207, OrganInfo[g][gSkinPrice][6] = 0, OrganInfo[g][gSkinRank][6] = 1;
 		OrganInfo[g][gSkin][7] = 65, OrganInfo[g][gSkinPrice][7] = 90000, OrganInfo[g][gSkinRank][7] = 8;
+		OrganInfo[g][gSkin][8] = 539, OrganInfo[g][gSkinPrice][8] = 10000, OrganInfo[g][gSkinRank][8] = 2;
+		OrganInfo[g][gSkin][9] = 540, OrganInfo[g][gSkinPrice][9] = 10000, OrganInfo[g][gSkinRank][9] = 2;
+		OrganInfo[g][gSkin][10] = 541, OrganInfo[g][gSkinPrice][10] = 10000, OrganInfo[g][gSkinRank][10] = 2;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
@@ -517,6 +590,10 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][3] = 296, OrganInfo[g][gSkinPrice][3] = 100000, OrganInfo[g][gSkinRank][3] = 8;
 		OrganInfo[g][gSkin][4] = 243, OrganInfo[g][gSkinPrice][4] = 0, OrganInfo[g][gSkinRank][4] = 1;
 		OrganInfo[g][gSkin][5] = 13, OrganInfo[g][gSkinPrice][5] = 90000, OrganInfo[g][gSkinRank][5] = 8;
+		OrganInfo[g][gSkin][6] = 542, OrganInfo[g][gSkinPrice][6] = 10000, OrganInfo[g][gSkinRank][6] = 2;
+		OrganInfo[g][gSkin][7] = 543, OrganInfo[g][gSkinPrice][7] = 10000, OrganInfo[g][gSkinRank][7] = 2;
+		OrganInfo[g][gSkin][8] = 544, OrganInfo[g][gSkinPrice][8] = 10000, OrganInfo[g][gSkinRank][8] = 2;
+		OrganInfo[g][gSkin][9] = 545, OrganInfo[g][gSkinPrice][9] = 10000, OrganInfo[g][gSkinRank][9] = 2;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
@@ -528,6 +605,8 @@ public ReloadSkin(playerid, g)
 		OrganInfo[g][gSkin][3] = 47, OrganInfo[g][gSkinPrice][3] = 100000, OrganInfo[g][gSkinRank][3] = 8;
 		OrganInfo[g][gSkin][4] = 63, OrganInfo[g][gSkinPrice][4] = 0, OrganInfo[g][gSkinRank][4] = 1;
 		OrganInfo[g][gSkin][5] = 12, OrganInfo[g][gSkinPrice][5] = 90000, OrganInfo[g][gSkinRank][5] = 8;
+		OrganInfo[g][gSkin][6] = 537, OrganInfo[g][gSkinPrice][6] = 10000, OrganInfo[g][gSkinRank][6] = 2;
+		OrganInfo[g][gSkin][7] = 538, OrganInfo[g][gSkinPrice][7] = 10000, OrganInfo[g][gSkinRank][7] = 2;
 		SaveSkinOrganization(g);
 		OrgLog(g, "rskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил Скины");
 	}
