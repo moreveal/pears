@@ -1,5 +1,5 @@
 
-#define GODJO_SATORU_HEALTH 40
+#define GODJO_SATORU_HEALTH 60
 #define GODJO_SATORU_CD_WIN 14400
 #define GODJO_SATORU_CD_LOOSE 3600
 
@@ -237,7 +237,6 @@ stock CloseKatanaDuel(playerid)
     DestroyKatanaDuel(playerid);
     TempGive(playerid);
     ACSetPlayerHealth(playerid, SaveHealth[playerid]); // Возвращаем хп
-    S_SetPlayerVirtualWorld(playerid, WORLD_YAKUZA_SPORTSHALL, INT_YAKUZA_SPORTSHALL); // Возвращаем вирт мир
     return true;
 }
 
@@ -262,12 +261,12 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
                 CalculateVehicleLimited(thingId, thingType);
 
                 SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(KatanaBot[killerid]), INT_YAKUZA_SPORTSHALL, 
-                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0, PlayerInfo[killerid][pID]);
             }
             case 1: // Кладём ключ yakuza
             {
                 SetThrow(-1, 235, 235, 1, 0, 0, 0, 0, GetNpcVirtualWorld(KatanaBot[killerid]), INT_YAKUZA_SPORTSHALL, 
-                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
+                    npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0, PlayerInfo[killerid][pID]);
             }
         }
 
@@ -302,7 +301,9 @@ stock KatanaDuel_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid
 
     if(npc == KatanaBot[issuerid])
     {
-        if(HealthAC[issuerid] <= 10)
+        new Float:health;
+	    GetPlayerHealth(issuerid, health);
+        if(health <= 20)
         {
             CloseKatanaDuel(issuerid);
             PlayerPlaySound(issuerid,31202,0,0,0);
