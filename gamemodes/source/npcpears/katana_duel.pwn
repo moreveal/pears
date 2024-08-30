@@ -4,6 +4,7 @@
 #define GODJO_SATORU_CD_LOOSE 3600
 
 new NPC:KatanaBot[MAX_REALPLAYERS] = { INVALID_NPC, ... };
+new Float:SaveHealth[MAX_REALPLAYERS]; // Здоровье перед началом битвы
 
 alias:rkatana("rcdkatana")
 CMD:rkatana(playerid, const params[])
@@ -31,17 +32,25 @@ stock InitializationKatanaDuel()
     ApplyDynamicActorAnimation(actorid, "PARK","Tai_Chi_Loop" , 3.8, true, false, false, true, false);
 
     CreateDynamicPickup(19132, 1, 1499.4641,750.6773,11.0635, 0, 0); // вход
-    CreateDynamicPickup(19132, 1, 1493.1527,711.9808,10.8901, -1, INT_YAKUZA_SPORTSHALL); // выход
+    CreateDynamic3DTextLabel("{ff9000}Выход ALT",0xA9C4E4FF, 1493.1527,711.9808,10.8901, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, -1, INT_YAKUZA_SPORTSHALL);
     return true;
 }
 
 // Находится ли игрок внутри спортзала yakuza
 stock PlayerInInteriorKatanaDuel(playerid)
 {
-    if((GetPlayerVirtualWorld(playerid) == playerid + 1 || GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_SPORTSHALL)
-        && GetPlayerInterior(playerid) == INT_YAKUZA_SPORTSHALL) return true;
+    if(GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_SPORTSHALL && GetPlayerInterior(playerid) == INT_YAKUZA_SPORTSHALL
+        || PlayerInPersonalInteriorKatanaDuel(playerid)) return true;
     return false;
 }
+
+// Находится ли игрок внутри личного инта 
+stock PlayerInPersonalInteriorKatanaDuel(playerid)
+{
+    if((GetPlayerVirtualWorld(playerid) == playerid + 1) && GetPlayerInterior(playerid) == INT_YAKUZA_SPORTSHALL) return true;
+    return false;
+}
+
 
 // Записываем последнюю позицию как вход в интерьер
 stock KatanaDuel_WriteLastPlayerPosition(playerid)
@@ -94,8 +103,8 @@ stock KatanaDuelMenu(playerid)
 stock KatanaDuelShowDialogMenu(playerid)
 {
     new lines[100];
-   	format(lines,sizeof(lines),"{cccccc}Купить Пропуск {99ff66}%d$\
-   	                        \n{ff9000}Начать Дуэль", ServerInfo[35]);
+   	format(lines,sizeof(lines),"{ff9000}Начать Дуэль\
+   	                        \n{cccccc}Купить Пропуск {99ff66}%d$", ServerInfo[35]);
 	ShowDialog(playerid, KATANA_DUEL_MENU, DIALOG_STYLE_TABLIST, "{ff9000}Годжо Сатору", lines, "Выбор","Отмена");
     return true;
 }
@@ -132,6 +141,19 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
             {
                 if(listitem == 0)
                 {
+                    if(PlayerInfo[playerid][pMember] != 6)
+                    {
+                        new slot = get_invent2_Slot(playerid, 239, 0);
+                        if(slot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет пропуска\n{ffcc66}Приобретите его прямо здесь");
+                        if(PlayerInfo[playerid][pInvenPara][slot] < gettime()) return ErrorMessage(playerid, "{FF6347}Ваш пропуск на дуэль, который лежит в инвентаре, недействителен");
+                    }
+                    if(PlayerInfo[playerid][pCDKatana] > gettime()) return ErrorMessage(playerid, "{FF6347}Вы не можете так часто сражаться с годжо\nПосмотреть время, через которое можно придти [ /time ]");
+                    
+		            ShowDialog(playerid, KATANA_DUEL_CONFIRM, DIALOG_STYLE_MSGBOX,"Годжо Сатору", 
+                        "{ff9000}Вы уверены, что хотите начать дуэль на катанах?\n{ffcc66}Рекомендация: Пополните хп до максимума и наденьте бронежилет","Да","Нет");
+                }
+                else if(listitem == 0)
+                {
                     if(PlayerInfo[playerid][pMember] == 6) return ErrorMessage(playerid, "{FF6347}Вы состоите в Yakuza и вам не нужно покупать пропуск");
 
                     new price = ServerInfo[35];
@@ -151,18 +173,6 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
                     format(string,sizeof(string),"{99ff66}Вы купили %s", friskName[239]);
                     SuccessMessage(playerid, string);
                 }
-                else if(listitem == 1)
-                {
-                    if(PlayerInfo[playerid][pMember] != 6)
-                    {
-                        new slot = get_invent2_Slot(playerid, 239, 0);
-                        if(slot == -1) return ErrorMessage(playerid, "{FF6347}У вас нет пропуска\n{ffcc66}Приобретите его прямо здесь");
-                        if(PlayerInfo[playerid][pInvenPara][slot] < gettime()) return ErrorMessage(playerid, "{FF6347}Ваш пропуск на дуэль, который лежит в инвентаре, недействителен");
-                    }
-                    if(PlayerInfo[playerid][pCDKatana] > gettime()) return ErrorMessage(playerid, "{FF6347}Вы не можете так часто сражаться с годжо\nПосмотреть время, через которое можно придти [ /time ]");
-                    
-                    CreateKatanaDuel(playerid);
-                }
             }
             return true;
         }
@@ -170,6 +180,11 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
         {
 		    if(response) SettingKatanaDuel(playerid, inputtext);
 		    else showDialogOrganizationMenu(playerid);
+		    return true;
+        }
+        case KATANA_DUEL_CONFIRM:
+        {
+		    if(response) CreateKatanaDuel(playerid);
 		    return true;
         }
     }
@@ -196,7 +211,7 @@ stock CreateKatanaDuel(playerid)
     // Временно отнимаем оружие
 	TempTake(playerid, 0);
     Protect_GiveWeapons(playerid, 8, 1, 0, 0); // Выдаём нам катану
-
+    SaveHealth[playerid] = HealthAC[playerid]; // Сохраняем хп до битвы
 
     PlayerInfo[playerid][pCDKatana] = gettime() + GODJO_SATORU_CD_LOOSE;
     new string[100];
@@ -221,6 +236,8 @@ stock CloseKatanaDuel(playerid)
 {
     DestroyKatanaDuel(playerid);
     TempGive(playerid);
+    ACSetPlayerHealth(playerid, SaveHealth[playerid]); // Возвращаем хп
+    S_SetPlayerVirtualWorld(playerid, WORLD_YAKUZA_SPORTSHALL, INT_YAKUZA_SPORTSHALL); // Возвращаем вирт мир
     return true;
 }
 
@@ -260,6 +277,41 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
         new string[100];
         mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDKatana` = '%d' WHERE `user_id` = '%d'", PlayerInfo[killerid][pCDKatana], PlayerInfo[killerid][pID]);
         mysql_tquery(pearsq, string);
+
+        new lines[200];
+        format(lines,sizeof(lines),"{99ff66}Вы победили Годжо Сатору!\
+                                    \n{ffcc66}Подберите приз, который лежит на полу [ N >> Рядом ]\
+                                    \n{ffcc66}Вы можете вернуться и сразиться повторно через %d минут [ /time ]", GODJO_SATORU_CD_WIN / 60);
+        SuccessMessage(killerid, lines);
+
+        SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Омагад... Я победил%s Годжо Сатору [ Подберите приз с пола N >> Рядом ]", gender(killerid));
+        SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Я могу вернуться и сразиться повторно через %d минут [ /time ]", GODJO_SATORU_CD_WIN / 60);
+        return true;
+    }
+    return false;
+}
+
+// Бот наносит урон по игроку
+stock KatanaDuel_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, bodypart)
+{
+    #pragma unused amount
+    #pragma unused weaponid
+    #pragma unused bodypart
+
+    if(KatanaBot[issuerid] == INVALID_NPC) return false;
+
+    if(npc == KatanaBot[issuerid])
+    {
+        if(HealthAC[issuerid] <= 10)
+        {
+            CloseKatanaDuel(issuerid);
+            PlayerPlaySound(issuerid,31202,0,0,0);
+
+            new lines[200];
+            format(lines,sizeof(lines),"{ffcc66}Вы проиграли!\
+   	                        \n{FF6347}Сразиться повторно можно будет через %d минут", GODJO_SATORU_CD_LOOSE / 60);
+            ShowDialog(issuerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+        }
         return true;
     }
     return false;
