@@ -107,5 +107,6 @@ enum e_DialogId {
     // Катана Дуэль
     KATANA_DUEL_MENU,
     KATANA_DUEL_PRICE,
-    KATANA_DUEL_CONFIRM
+    KATANA_DUEL_CONFIRM,
+    KATANA_DUEL_QUEST
 };

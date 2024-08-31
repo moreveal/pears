@@ -28,7 +28,7 @@ CMD:rkatana(playerid, const params[])
 stock InitializationKatanaDuel()
 {
     new actorid = CreateDynamicActor(49, 1511.6743,717.7614,10.8659,90.8572, true, 100.0, WORLD_YAKUZA_SPORTSHALL, INT_YAKUZA_SPORTSHALL, -1, 100.0, -1, 0);
-    CreateDynamic3DTextLabel("{cccccc}Годжо Сатору [ALT]",0xA9C4E4FF, 1511.6743,717.7614,10.8659 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, WORLD_YAKUZA_SPORTSHALL, INT_YAKUZA_SPORTSHALL);
+    CreateDynamic3DTextLabel("{cccccc}Дед Годжо Сатору [ALT]",0xA9C4E4FF, 1511.6743,717.7614,10.8659 + 1.0, 5.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, 0, WORLD_YAKUZA_SPORTSHALL, INT_YAKUZA_SPORTSHALL);
     ApplyDynamicActorAnimation(actorid, "PARK","Tai_Chi_Loop" , 3.8, true, false, false, true, false);
 
     CreateDynamicPickup(19132, 1, 1499.4641,750.6773,11.0635, 0, 0); // вход
@@ -106,6 +106,14 @@ stock KatanaDuelShowDialogMenu(playerid)
    	format(lines,sizeof(lines),"{ff9000}Начать Дуэль\
    	                        \n{cccccc}Купить Пропуск {99ff66}%d$", ServerInfo[35]);
 	ShowDialog(playerid, KATANA_DUEL_MENU, DIALOG_STYLE_TABLIST, "{ff9000}Годжо Сатору", lines, "Выбор","Отмена");
+
+    switch(random(4))
+    {
+        case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo0.mp3");
+        case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo1.mp3");
+        case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo2.mp3");
+        case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo3.mp3");
+    }
     return true;
 }
 
@@ -139,6 +147,7 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
         {
             if(response)
             {
+                if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Квест доступен только с лаунчером Pears Project\n{ffcc66}Скачайте его с нашего официального сайта pears.fun");
                 if(listitem == 0)
                 {
                     if(PlayerInfo[playerid][pMember] != 6)
@@ -152,7 +161,7 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
 		            ShowDialog(playerid, KATANA_DUEL_CONFIRM, DIALOG_STYLE_MSGBOX,"Годжо Сатору", 
                         "{ff9000}Вы уверены, что хотите начать дуэль на катанах?\n{ffcc66}Рекомендация: Пополните хп до максимума и наденьте бронежилет","Да","Нет");
                 }
-                else if(listitem == 0)
+                else if(listitem == 1)
                 {
                     if(PlayerInfo[playerid][pMember] == 6) return ErrorMessage(playerid, "{FF6347}Вы состоите в Yakuza и вам не нужно покупать пропуск");
 
@@ -186,6 +195,15 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
         {
 		    if(response) CreateKatanaDuel(playerid);
 		    return true;
+        }
+        case KATANA_DUEL_QUEST:
+        {
+            if(response)
+            {
+                ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Место проведения дуэлей на катанах отмечена в вашем GPS","*","");
+                CreateGps(playerid, 1499.4641,750.6773,11.0635, 0, 0, 5.0);
+            }
+            else pc_cmd_quest(playerid);
         }
     }
     return false;
@@ -234,9 +252,9 @@ stock DestroyKatanaDuel(playerid)
 // Завершение битвы с ботом
 stock CloseKatanaDuel(playerid)
 {
+    if(KatanaBot[playerid] != INVALID_NPC) ACSetPlayerHealth(playerid, SaveHealth[playerid]); // Возвращаем хп если дуэль активна
     DestroyKatanaDuel(playerid);
     TempGive(playerid);
-    ACSetPlayerHealth(playerid, SaveHealth[playerid]); // Возвращаем хп
     return true;
 }
 
@@ -285,6 +303,12 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
 
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Омагад... Я победил%s Годжо Сатору [ Подберите приз с пола N >> Рядом ]", gender(killerid));
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Я могу вернуться и сразиться повторно через %d минут [ /time ]", GODJO_SATORU_CD_WIN / 60);
+
+        switch(random(2))
+        {
+            case 0: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo7.mp3");
+            case 1: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo8.mp3");
+        }
         return true;
     }
     return false;
@@ -312,6 +336,13 @@ stock KatanaDuel_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid
             format(lines,sizeof(lines),"{ffcc66}Вы проиграли!\
    	                        \n{FF6347}Сразиться повторно можно будет через %d минут", GODJO_SATORU_CD_LOOSE / 60);
             ShowDialog(issuerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+
+            switch(random(3))
+            {
+                case 0: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo4.mp3");
+                case 1: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo5.mp3");
+                case 2: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo6.mp3");
+            }
         }
         return true;
     }
