@@ -41,15 +41,21 @@ stock InfoMafiaBiz(playerid, b)
 
 stock TakeMoneyMafiaBiz(playerid,b)
 {
+    new string[80];
     new g = fraction(playerid);
     if(BizzInfo[b][bMafia] != g) return ErrorMessage(playerid,"{ff6347}Ваша мафия не крышует этот бизнес");
     if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}В сейфе бизнеса не накопилось 10.000$, вернитесь позже.\nПосмотреть деньги на счете бизнеса можно командой [ /mafiabiz ]");
     OrganInfo[g][glave] += BizzInfo[b][bMafiaSchet];
     OrganInfo[g][gUpdate] = 1;
 
-    BizzInfo[b][bMafiaSchet] = 0;
-    BizzInfo[b][bUpdate] = 1;
     SuccessMessage(playerid,"{44ff99}Вы успешно забрали деньги мафии\n{cccccc}Деньги начислены на счет вашей мафии");
     GiveUnit(playerid,18);
+
+    format(string, sizeof(string), "Взял деньги [%d$] за крышевания с бизнеса %d", BizzInfo[b][bMafiaSchet],g);
+    OrgLog(g, "takemoneymafiabiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, string);
+
+    BizzInfo[b][bMafiaSchet] = 0;
+    BizzInfo[b][bUpdate] = 1;
+
     return 1;
 }
