@@ -1,7 +1,7 @@
 
 #define SECOND_FOR_BACK_VILLAGE 300 // Время на возвращение ботов деревенских после того как их всех убили
 #define CD_GIFT_VILLAGE 3600 // Кд, через которое подарки можно будет получить, убив всех ботов
-#define RESPAWN_VILLAGE_NPC 150 // Время респавна для NPC
+#define RESPAWN_VILLAGE_NPC 210 // Время респавна для NPC
 #define EVERY_KILL_VILLAGE 4 // Каждые сколько килов мы получаем кейс в подарок
 
 new Iterator:VillagePlayer<MAX_PLAYERS>;
