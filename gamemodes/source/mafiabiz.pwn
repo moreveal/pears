@@ -51,7 +51,7 @@ stock TakeMoneyMafiaBiz(playerid,b)
     SuccessMessage(playerid,"{44ff99}Вы успешно забрали деньги мафии\n{cccccc}Деньги начислены на счет вашей мафии");
     GiveUnit(playerid,18);
 
-    format(string, sizeof(string), "Взял деньги [%d$] за крышевания с бизнеса %d", BizzInfo[b][bMafiaSchet],g);
+    format(string, sizeof(string), "Взял деньги [%d$] за крышевания с бизнеса %d", BizzInfo[b][bMafiaSchet],b);
     OrgLog(g, "takemoneymafiabiz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, string);
 
     BizzInfo[b][bMafiaSchet] = 0;
