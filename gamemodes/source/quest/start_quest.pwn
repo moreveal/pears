@@ -84,6 +84,24 @@ stock NoCompleteQuest(playerid, questId)
     else if(questId == 7 && PlayerInfo[playerid][pQuest][questId] < 5) return 1; // Мед.карта и лечение болезни
     else if(questId == 8 && PlayerInfo[playerid][pQuest][questId] < 4) return 1; // Хавка
     else if(questId == 9 && PlayerInfo[playerid][pQuest][questId] < 5) return 1; // Ноут
+
+    if (!GetPVarInt(playerid, "NoCompleteQuestCheck"))
+    {
+        SetPVarInt(playerid, "NoCompleteQuestCheck", 1);
+
+        new k;
+
+        for(new i = 0; i < MAX_QUEST; i++) 
+        {
+            if(!NoCompleteQuest(playerid, i)) k++;
+        }
+        if (k == MAX_QUEST) {
+            if(PlayerInfo[playerid][pAchieve][8] == 0) AchievePlayer(playerid, 8, 1);
+        }
+
+        DeletePVar(playerid, "NoCompleteQuestCheck");
+    }
+
     return 0;
 }
 
