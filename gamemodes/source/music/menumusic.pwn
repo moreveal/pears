@@ -84,9 +84,23 @@ CMD:testmusic(playerid)
 alias:rmenumusic("rmusicmenu")
 CMD:rmenumusic(playerid)
 {
-	if(!admin_right(PlayerInfo[playerid][pSoska], ADM_SPHERE_MANAGER)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	if(PlayerInfo[playerid][pSoska] >= 23 && (strfind(PlayerInfo[playerid][pName],"Elon_Musk",true) != (-1)))
+	{
+		ShowDialog(playerid,25,DIALOG_STYLE_MSGBOX,"Музыка Сервера","{FF6347}Вы уверены, что хотите сбросить всю музыку на сервере?","Да","Нет");
+	}
+	else ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	return true;
+}
 
-	ShowDialog(playerid,25,DIALOG_STYLE_MSGBOX,"Музыка Сервера","{FF6347}Вы уверены, что хотите сбросить всю музыку на сервере?","Да","Нет");
+alias:lmenumusic("lmusicmenu", "loadmenumusic", "loadmusicmenu")
+CMD:lmenumusic(playerid)
+{
+	mysql_tquery(pearsq, "SELECT * FROM `pp_MenuMusic`", "LoadMenuMusic", ""); // Загружаем меню с музыкой
+
+	new string[100];
+	format(string, sizeof(string), " [ ADM ]: %s загрузил музыку меню сервера", PlayerInfo[playerid][pName]);
+	ABroadCast(COLOR_ADM,string,1);
+	AdminLog("lmenumusic", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Загрузил музыку");
 	return true;
 }
 
@@ -126,7 +140,7 @@ stock ReloadMenuMusic(playerid)
 	mysql_tquery(pearsq, "COMMIT;");
 
 	new string[100];
-	format(string, sizeof(string), " [ ADM ]: %s сбросил музыку сервера", PlayerInfo[playerid][pName]);
+	format(string, sizeof(string), " [ ADM ]: %s сбросил музыку меню сервера", PlayerInfo[playerid][pName]);
 	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("rmenumusic", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Сбросил музыку");
 	return true;
@@ -199,14 +213,25 @@ stock showDialogMenuMusic(playerid, page)
 		OnlineInfo[playerid][oDialogMenu][0] ++; // Подсчитываем строки
 		OnlineInfo[playerid][oDialogMenu][2] = i;
 
-		if(MenuMusicInfo[i][musID] == 0 || MenuMusicInfo[i][musStat] == false) format(line,sizeof(line),"\n{666666}%d. none\t \t ", i + 1);
-		else
+		if(MenuMusicInfo[i][musID] == 0) format(line,sizeof(line),"\n{666666}%d. none\t \t ", i + 1);
+		else 
 		{
-			format(line, sizeof(line), "\n{ff9000}%d. %s\t%s\t%s",
-				i + 1,
-				MenuMusicInfo[i][musName],
-				typeMenuMusicName[MenuMusicInfo[i][musType]],
-				typeMenuMusicTime[MenuMusicInfo[i][musTime]]);
+			if(MenuMusicInfo[i][musStat] == false) 
+			{
+				format(line, sizeof(line), "\n{666666}%d. %s\t%s\t%s",
+					i + 1,
+					MenuMusicInfo[i][musName],
+					typeMenuMusicName[MenuMusicInfo[i][musType]],
+					typeMenuMusicTime[MenuMusicInfo[i][musTime]]);
+			}
+			else
+			{
+				format(line, sizeof(line), "\n{ff9000}%d. %s\t%s\t%s",
+					i + 1,
+					MenuMusicInfo[i][musName],
+					typeMenuMusicName[MenuMusicInfo[i][musType]],
+					typeMenuMusicTime[MenuMusicInfo[i][musTime]]);
+			}
 		}
 		strcat(lines,line);
 
