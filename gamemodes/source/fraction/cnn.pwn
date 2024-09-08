@@ -11,12 +11,12 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
 
     new str[144];
     if (premium) {
-        format(str, sizeof(str), "* [ AD ]: {FFA200}%s, {FF6C00}от: {FFA200}%s%s {FF6C00}(#%04d)", text, sender, id_str, index);
+        format(str, sizeof(str), "* [ AD ]: {FFA200}%s, {FF6C00}от: {FFA200}%s%s {FF6C00}(#%04d) *", text, sender, id_str, index);
     } else {
-        format(str, sizeof(str), "* [ AD ]: {FFC77A}%s, {ffcc66}от: {FFC77A}%s%s {FFCC66}(#%04d)", text, sender, id_str, index);
+        format(str, sizeof(str), "* [ AD ]: {99ff33}%s, {9ACD32}от: {99ff33}%s%s {9ACD32}(#%04d) *", text, sender, id_str, index);
     }
 
-    return SendClientMessageToAll(premium ? 0xFF6C00FF : 0xFFCC66FF, str);
+    return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
 }
 
 function SendAdInZero() {
@@ -182,7 +182,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     } else strcat(msgtext, ListName[playerid]);
 
                     format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Новое объявление от %s[%d]: %s {0088ff}[ /editad ]", PlayerInfo[playerid][pName], playerid, msgtext);
-                    SendRadioMessage(9, 0xffffffff, msg);
+                    SendRadioMessage(9, 0xFF8282FF, msg);
 
                     SendClientMessage(playerid, COLOR_GREY, "Ваше объявление отправлено сотрудникам CNN на обработку");
                     oGivePlayerBank(playerid, -ServerInfo[66]);
@@ -237,7 +237,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     } else strcat(msgtext, ListName[playerid]);
 
                     format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Новое объявление от %s[%d]: %s {0088ff}[ /editad ]", PlayerInfo[playerid][pName], playerid, msgtext);
-                    SendRadioMessage(9, 0x0088ffff, msg);
+                    SendRadioMessage(9, 0xFF8282FF, msg);
 
                     SendClientMessage(playerid, COLOR_GREY, "Ваше объявление отправлено сотрудникам CNN на обработку");
                     oGivePlayerBank(playerid, -ServerInfo[66]);
