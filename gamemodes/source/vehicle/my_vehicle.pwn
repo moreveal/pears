@@ -4286,14 +4286,24 @@ stock VehicleInfoCreateLines(vehicleid)
 	return lines;
 }
 
-function LoadCar(playerid, dab, race_check, adminLoad)
+function LoadCar(playerid, dab, race_check, adminLoad, typeVehicle)
 {
 	new rows;
 	cache_get_row_count(rows);
 	if(!rows)
 	{
-		ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не найден\n\n{cccccc}Обратитесь к администрации [ /report ]");
 		SetPVarInt(playerid,"stopload",0);
+		if(typeVehicle == 2) // Ключи от тачки
+		{
+			PlayerInfo[playerid][pKeyVeh][0] = 0;
+			mysql_SavePlayer(playerid, "KeyVeh0", 0);
+			ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не найден. Слот с ключами был очищен для вас\
+									\n{ffcc66}Возможно транспорт был продан владельцем или удалён с аккаунта");
+		}
+		else
+		{
+			ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт не найден\n\n{cccccc}Обратитесь к администрации [ /report ]");
+		}
 		return 0;
 	}
 
@@ -5320,6 +5330,6 @@ CMD:loadcar(playerid, const params[])
 	new string[120];
 	SetPVarInt(playerid,"stopload",1);
 	mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_cars` WHERE `newid` = '%d'", params[0]);
-	mysql_tquery(pearsq, string, "LoadCar", "dddd", playerid, params[0], g_MysqlRaceCheck[playerid], 1);
+	mysql_tquery(pearsq, string, "LoadCar", "ddddd", playerid, params[0], g_MysqlRaceCheck[playerid], 1, 1);
 	return true;
 }

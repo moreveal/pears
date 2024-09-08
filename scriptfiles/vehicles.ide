@@ -358,7 +358,15 @@ cars
 15296, 	uh1h,       uh1h, 	    heli, 	    MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,		-1, 0.7, 0.7,		-1
 15297, 	volatus,    volatus, 	heli, 	    MAVERICK,	MAVERIC,	null,	ignore,		    10,	0,	0,		-1, 0.7, 0.7,		-1
 15298, 	maybach650, maybach650, car, 		MAYBACH650, MAYBACH650, null,	normal,		    4, 	0,	0,		-1, 0.78, 0.78,		0
-15299,	cadilcnn, 	cadilcnn, 	car,		CADILCNN, 	CADILCNN, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
+15299,	cadilcnn, 	cadilcnn, 	car,		CADILCNN, 	CADILCNN, 	null,	richfamily,		6,	7,	0,	    -1, 0.90, 0.90,		0
+15300,	audietron,	audietron,	car, 	    AUDIETRON, 	AUDIETRON, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15301,	bmwisem,	bmwisem,	car, 	    BMWISEM, 	BMWISEM, 	null,	richfamily, 	7, 	0,	0,		-1, 0.9, 0.9,		1
+15302,	fordmue, 	fordmue, 	car,		FORDMUE, 	FORDMUE, 	null,	richfamily,		6,	7,	0,	    -1, 0.90, 0.90,		0
+15303,	portaycan,	portaycan,	car, 	    PORTAYCAN, 	PORTAYCAN, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15304,	tcybpol, 	tcybpol, 	car,		TCYBPOL, 	TCYBPOL, 	null,	richfamily,		6,	7,	0,	    -1, 0.99, 0.99,		0
+15305,	tcybtr, 	tcybtr, 	car,		TCYBTR, 	TCYBTR, 	null,	richfamily,		6,	7,	0,	    -1, 0.99, 0.99,		0
+15306,	teslamods,	teslamods,	car, 	    TESLAMODS, 	TESLAMODS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15307,	teslatri,	teslatri,	car, 	    TESLATRI, 	TESLATRI, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 #15328 LAST
 end
 
