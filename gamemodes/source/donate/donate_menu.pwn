@@ -386,7 +386,7 @@ CMD:setvip(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new tmp[121], status;
-    if(sscanf(params, "s[121]i", tmp, status)
+    if(sscanf(params, "s[121]I(1)", tmp, status)
         || status < 0 || status > 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изменить статус Platinum VIP [ /setvip ID 0 или 1 ]");
 	if(strlen(tmp) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 

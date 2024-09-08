@@ -14,6 +14,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pRadioInterceptorFindCd", "INT NOT NULL DEFAULT '0'"); // КД использования поиска в радиоперехватчике
     AddColumnIfNotExists("pp_igroki", "pCDVillage", "INT NOT NULL DEFAULT '0'"); // КД на получение подарков после убийства всех деревенских
     AddColumnIfNotExists("pp_igroki", "pCDKatana", "INT NOT NULL DEFAULT '0'"); // КД на дуэль на катанах
+    AddColumnIfNotExists("pp_igroki", "pCDAd", "INT NOT NULL DEFAULT '0'"); // КД на подачу объявлений
 
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
 
@@ -47,6 +48,11 @@ stock CreateMysqlTable()
     // Подсказки с озвучкой
     AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
     AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
+
+    // Цены за объявления CNN
+    AddColumnIfNotExists("pp_server", "serv65", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_server", "serv66", "INT NOT NULL DEFAULT '0'");
+
 	return true;
 }
 
