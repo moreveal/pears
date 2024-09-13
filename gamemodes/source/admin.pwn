@@ -598,6 +598,10 @@ CMD:hpgro(playerid)
 		{
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
+				if(((IsPlayerInActiveVillage(i)
+					|| MineWar_IsPlayerInside(i))
+					&& server > 0)) continue;
+
 				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
 				SendClientMessage(i, COLOR_GRAD1, "Администратор пополнил вам здоровье.");
 			}
@@ -607,6 +611,7 @@ CMD:hpgro(playerid)
 	}
 	return 1;
 }
+
 CMD:armgro(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
@@ -614,6 +619,10 @@ CMD:armgro(playerid)
 	{
 		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 		{
+			if(((IsPlayerInActiveVillage(i)
+					|| MineWar_IsPlayerInside(i))
+					&& server > 0)) continue;
+
 			ACSetPlayerArmour(i, 100);
 			SendClientMessage(i, COLOR_GRAD1, " Администратор пополнил вам Броню.");
 		}

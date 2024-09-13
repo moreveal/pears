@@ -329,6 +329,13 @@ stock DoorVillageStorage(playerid)
     return false;
 }
 
+// Игрок находится в деревне во время активной битвы
+stock IsPlayerInActiveVillage(playerid)
+{
+    if(IsPlayerInDynamicArea(playerid, VillageInfo[villZone] && VillageInfo[villActive] == false)) return true;
+    return false;
+}
+
 // Обновляем лейблы входов для получения подарков
 stock UpdateLabelVillageGift()
 {
