@@ -367,6 +367,14 @@ cars
 15305,	tcybtr, 	tcybtr, 	car,		TCYBTR, 	TCYBTR, 	null,	richfamily,		6,	7,	0,	    -1, 0.99, 0.99,		0
 15306,	teslamods,	teslamods,	car, 	    TESLAMODS, 	TESLAMODS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 15307,	teslatri,	teslatri,	car, 	    TESLATRI, 	TESLATRI, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
+15308,	duccor,		duccor,		bike,		DUCCOR,		DUCCOR,		bikes,	motorbike,	    10,	0,	1f341210,	16, 0.68, 0.68,		-1
+15309,	hardav,	    hardav,	    bike,		HARDAV,	    HARDAV,	    wayfarer,motorbike,	6,	0,	0,		23, 0.755, 0.755,	-1
+15310,	hondacbr,	hondacbr,	bike,		HONDACBR,	HONDACBR,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.75, 0.75,		-1
+15311,	nrg600,		nrg600,		bike,		NRG600,		NRG600,		bikes,	motorbike,	10,	0,	1f341210,		16, 0.75, 0.75,		-1
+15312,	bati901,	bati901,	bike,		BATI901,	BATI901,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.70, 0.70,		-1
+15313,	ruffian,	ruffian,	bike,		RUFFIAN,	RUFFIAN,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.70, 0.70,		-1
+15314,	suzgsxr,	suzgsxr,	bike,		SUZGSXR,	SUZGSXR,	bikes,	motorbike,	10,	0,	3f341210,		16, 0.68, 0.68,		-1
+15315, 	gtpolice,	gtpolice,	car, 		GTPOLICE,	GTPOLICE, 	null,	executive,	4, 	0,	0,		-1, 0.75, 0.80,		0
 #15328 LAST
 end
 
