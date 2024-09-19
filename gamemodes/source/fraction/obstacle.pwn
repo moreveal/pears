@@ -1050,7 +1050,7 @@ stock Obstacle_ShowCheckpoint(playerid, checkpointid) {
             case OBSTACLE_VEHICLE_CAR, OBSTACLE_VEHICLE_MOTO, OBSTACLE_VEHICLE_WATER: {
                 race_cp_type = (is_finish_checkpoint ? 1 : 0);
 
-                if (ObstacleInfo[obstacleid][obVehiclePass] == OBSTACLE_VEHICLE_MOTO) size = 1.2;
+                if (ObstacleInfo[obstacleid][obVehiclePass] == OBSTACLE_VEHICLE_MOTO) size = 1.5;
             }
             case OBSTACLE_VEHICLE_AVIA: {
                 race_cp_type = (is_finish_checkpoint ? 4 : 3);

@@ -951,7 +951,7 @@ stock IsAllowedTransmitterR(playerid, g)
     {
         if(GetAccessRankOrgMay(playerid, PlayerInfo[playerid][pMember], 55, NO_FBI))
         {
-            if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 9 || g == 11 || g == 21 || g == 22) return 1;
+            if(g == 1 || g == 2 || g == 3 || g == 4 || g == 7 || g == 11 || g == 21 || g == 22) return 1;
         }
     }
     else // Всем прочим только организация, в которой игрок состоит

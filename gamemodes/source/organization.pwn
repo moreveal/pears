@@ -569,9 +569,10 @@ stock showDialogOrganizationMenu(playerid)
 	    format(line,sizeof(line), detail_lmenu(playerid, 6)), strcat(lines,line); // Дипломатия
 	    format(line,sizeof(line), detail_lmenu(playerid, 9)), strcat(lines,line); // Управление гаражем
 	}
-	format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
+	if (g != 9) format(line,sizeof(line), detail_lmenu(playerid, 12)), strcat(lines,line); // Настройки склада
 	if(PlayerInfo[playerid][pLeader] >= 1)
 	{
+		if (g == 9) format(line,sizeof(line), detail_lmenu(playerid, 20)), strcat(lines,line); // Настройка стоимости объявлений
 		format(line,sizeof(line), detail_lmenu(playerid, 11)), strcat(lines,line); // Права доступа
 		format(line,sizeof(line), detail_lmenu(playerid, 13)), strcat(lines,line); // Настройки оплаты
 		if(g == 4) format(line,sizeof(line), detail_lmenu(playerid, 18)), strcat(lines,line); // Стоимость лечения
@@ -584,7 +585,7 @@ stock detail_lmenu(playerid, detail)
 {
     List[DP[0][playerid]][playerid] = detail;
     DP[0][playerid] += 1;
-	new text[50], g = DP[1][playerid];
+	new text[90], g = DP[1][playerid];
 	if(detail == 1) text = "\n{999999}Об организации..\t";
 	else if(detail == 2) text = "\n{cccccc}Участники {99ff66}Online\t";
 	else if(detail == 3) text = "\n{cccccc}Участники {FF6347}Offline\t";
@@ -616,6 +617,7 @@ stock detail_lmenu(playerid, detail)
 	else if(detail == 17) format(text, sizeof(text), "\n{cccccc}Мед оборудование\t{99ff66}%d$", OrganInfo[g][gMedMoney]);
 	else if(detail == 18) format(text, sizeof(text), "\n{ff9000}Стоимость лечения\t{99ff66}%d$", ServerInfo[9]);
 	else if(detail == 19) format(text, sizeof(text), "\n{ff9000}Дуэль с Годжо\t{99ff66}%d$", ServerInfo[35]);
+	else if(detail == 20) format(text, sizeof(text), "\n{ff9000}Цена публикации объявлений\t{99ff66}%d$ {cccccc}/ {FF6C00}%d$", ServerInfo[65], ServerInfo[66]);
 	return text;
 }
 stock open_detail_lmenu(playerid, detail)
@@ -658,6 +660,7 @@ stock open_detail_lmenu(playerid, detail)
 	else if(detail == 17) OrderMedEquipment(playerid);
 	else if(detail == 18) ShowDialogSettingHealPrice(playerid);
 	else if(detail == 19) ShowDialogSettingKatanaDuel(playerid);
+	else if(detail == 20) CNN_EditPriceDialog(playerid,  0);
 	return 1;
 }
 

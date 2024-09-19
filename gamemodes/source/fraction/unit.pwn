@@ -34,7 +34,9 @@ new unitName[][] = // Названия настроек юниты
     "Реанимация пострадавшего", // 21
     "Лечение /heal", // 22
     "Оформление автомобильных номеров", // 23
-    "Фиксирование нарушений скоростного режима" // 24
+    "Фиксирование нарушений скоростного режима", // 24
+    "Обработанное объявление", // 25
+    "Обработанное премиум объявление" // 26
 };
 
 new unitDefault[] =
@@ -63,13 +65,15 @@ new unitDefault[] =
     3000, // 21
     700, // 22
     400, // 23
-    50 // 24
+    50, // 24
+    500, // 25
+    1000 // 26
 };
 
 stock IsAUnitOrganization(unitid, fraction, playerid)
 {
     switch (unitid) {
-        case 0: return 1; // Доставка ящика на склад своей организации (Доступно всем)
+        case 0: return fraction != 9; // Доставка ящика на склад своей организации (Доступно всем, кроме CNN)
         case 1..4: return IsPoliceMember(playerid); // 1 минута на блок посту; RP/NRP арест; Возвращение украденного предмета
         case 5, 6: return IsAGangCapt(playerid); // Килл на капте, Урон за 1хп на капте
         case 7: return IsAFunctionOrganization(57, fraction, playerid) && GetAccessRankOrgMay(playerid, fraction, 57, NO_FBI); // Арест недвижимости
@@ -86,6 +90,7 @@ stock IsAUnitOrganization(unitid, fraction, playerid)
         case 18..20: return IsMafiaMember(playerid); // Снятие денег с бизнеса; Стрела; Порт
         case 21, 22: return fraction == 4; // Реанимация пострадавшего; Лечение [/heal]
         case 23, 24: return IsPoliceMember(playerid); // Оформление автомобильных номеров; Фиксирование нарушений скоростного режима
+        case 25, 26: return fraction == 9; // Обработанное объявление
     }
 
     return 0;

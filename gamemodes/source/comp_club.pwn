@@ -360,7 +360,7 @@ stock ShowComputerClubSetWeapons(playerid, slotid = 0, bool: change_weapon = fal
     if (gameid < 0) return 0;
 
     if (computerClubRoomInfo[gameid][roomid][ccriStarted]) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу изменять редактировать оружие при запущенной игре");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу изменять редактировать оружие при запущенной игре");
         return ShowComputerClubMenu(playerid);
     }
 
@@ -772,7 +772,7 @@ stock ShowComputerClubTeamSettings(playerid) {
     if (gameid < 0) return 0;
 
     if (computerClubRoomInfo[gameid][roomid][ccriStarted]) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу редактировать команды при запущенной игре");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу редактировать команды при запущенной игре");
         return ShowComputerClubMenu(playerid);
     }
 
@@ -1301,7 +1301,7 @@ stock ComputerClubWinRoundHandler(gameid, roomid, win_team = -1, lose_team = -1)
         team_color[1], computerClubRoomInfo[gameid][roomid][ccriTeamScores][1]
     );
 
-    ComputerClubRoomMessage(gameid, roomid, 0xCCCCCCFF, message);
+    ComputerClubRoomMessage(gameid, roomid, COLOR_GREY, message);
     
     return 1;
 }
@@ -1326,7 +1326,7 @@ stock ComputerClubWinHandler(gameid, roomid, win_team = -1, lose_team = -1, win_
 
     new message[47 - 2 + 64];
     format(message, sizeof message, "Команда %s {cccccc}одержала победу в этой игре!", computerClubTeamInfo[gameid][roomid][win_team]);
-    ComputerClubRoomMessage(gameid, roomid, 0xCCCCCCFF, message);
+    ComputerClubRoomMessage(gameid, roomid, COLOR_GREY, message);
 
     return 1;
 }
@@ -1825,7 +1825,7 @@ stock ComputerClubChangeMap(gameid, roomid, locationid) {
 // Обработка ввода сообщений в чат [ее вызов помещен в OnPlayerText]
 stock ComputerClubOnPlayerText(playerid) {
     if (ComputerClubIsSpectate(playerid)) {
-        SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я наблюдаю за игрой");
+        SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я наблюдаю за игрой");
         return 0;
     }
 
@@ -2178,7 +2178,7 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                         }
 
                         if (listitem > 10 && computerClubRoomInfo[gameid][roomid][ccriStarted])
-                            return SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу изменять настройки уже начатой игры");
+                            return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу изменять настройки уже начатой игры");
 
                         // Изменение настроек режима
                         switch (e_ComputerClubGames: gameid) {
@@ -2302,10 +2302,10 @@ stock dialogCase_CompClub(playerid, dialogid, response, listitem, const inputtex
                 roomid = computerClubPlayerInfo[playerid][ccpiRoom];
             if (gameid < 0) return 0;
 
-            if (gameid == _:COMPUTER_GAME_COPCHASE) return SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу редактировать команды этого режима");
+            if (gameid == _:COMPUTER_GAME_COPCHASE) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу редактировать команды этого режима");
 
             if (computerClubRoomInfo[gameid][roomid][ccriStarted]) {
-				SendClientMessage(playerid, 0xCCCCCCFF, "[ Мысли ]: Я не могу редактировать команды при запущенной игре");
+				SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу редактировать команды при запущенной игре");
 				return ShowComputerClubMenu(playerid);
 			}
 

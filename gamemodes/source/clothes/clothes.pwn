@@ -283,7 +283,7 @@ function loadDrop_Clothes(playerid)
 }
 
 // Снять одежду
-stock player_undress(playerid)
+stock player_undress(playerid, bool: accs = false)
 {
     PlayerPlaySound(playerid,5601,0,0,0);
     TakeOffClothes(playerid);
@@ -291,11 +291,11 @@ stock player_undress(playerid)
     ApplyAnimation(playerid,"PED","Turn_R",4.0, false, true, true, false, false);
     if(OnlineInfo[playerid][oShowInterface] == 1) PlayerTextDrawSetPreviewModel(playerid, PlaNestOthe[0][playerid], PlayerInfo[playerid][pModel]), PlayerTextDrawShow(playerid, PlaNestOthe[0][playerid]);
     
-    if(PlayerInfo[playerid][pOdet][0] > 0) RemovePlayerAttachedObject(playerid, 5);
-	if(PlayerInfo[playerid][pOdet][1] > 0) RemovePlayerAttachedObject(playerid, 6);
-	if(PlayerInfo[playerid][pOdet][2] > 0) RemovePlayerAttachedObject(playerid, 7);
-	if(PlayerInfo[playerid][pOdet][3] > 0) RemovePlayerAttachedObject(playerid, 8);
-	if(PlayerInfo[playerid][pOdet][4] > 0) RemovePlayerAttachedObject(playerid, 9);
+	if (accs) {
+		for (new i = 0; i < 5; i++) {
+			if (PlayerInfo[playerid][pOdet][i] > 0) RemovePlayerAttachedObject(playerid, i + 5);
+		}
+	}
 
 	mysql_save(playerid, 75);
 	return 1;

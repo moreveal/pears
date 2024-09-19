@@ -222,6 +222,44 @@ function Call_rnamechange(playerid, const targetNickName[])
 	}
 	return true;
 }
+
+alias:resetachieve("rachieve")
+CMD:resetachieve(playerid, params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 22+ ]");
+	new name[MAX_PLAYER_NAME], achieveid;
+	if (sscanf(params, "s["#MAX_PLAYER_NAME"]d", name, achieveid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить достижения игрока [ /resetachieve ID Достижение ]");
+	achieveid--;
+	if (achieveid < 0 || achieveid >= MAX_ACHIEVE) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер достижения от 1 до "#MAX_ACHIEVE);
+
+	new giveplayerid = ReturnUser(name, 1);
+	if (!strcmp(name, "-1", true)) {
+		new qwer[144];
+		mysql_format(pearsq, qwer, sizeof(qwer), "UPDATE `pp_achieve` SET `a%d` = NULL;", achieveid);
+		query_empty(pearsq, qwer);
+
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили прогресс достижения №%d для всех игроков **", achieveid + 1);
+	} else {
+		if(IsPlayerConnected(giveplayerid)) {
+			PlayerInfo[giveplayerid][pAchieve][achieveid] = 0;
+			PlayerInfo[giveplayerid][pAchieveUnix][achieveid] = 0;
+			PlayerInfo[giveplayerid][pAchieveStat][achieveid] = 0;
+			UpdateAchieve(giveplayerid, achieveid);
+
+			SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили прогресс достижения №%d для игрока %s **", achieveid + 1, PlayerInfo[giveplayerid][pName]);
+			if (playerid != giveplayerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "** %s очистил вам прогресс достижения №%d **", PlayerInfo[playerid][pName], achieveid + 1);
+		}
+		else
+		{
+			if(!CheckRP_Nickname(name)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+			new qwer[144];
+			mysql_format(pearsq, qwer, sizeof(qwer),"SELECT user_id FROM `pp_igroki` WHERE `Name` = '%e' LIMIT 1", name);
+			mysql_tquery(pearsq, qwer, "Call_Offline", "dssdd", playerid, name, name, 37, achieveid);
+		}
+	}
+	return 1;
+}
+
 CMD:stopmaf(playerid)
 {
     if(PlayerInfo[playerid][pSoska] < 5) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 5+ ]");
@@ -922,7 +960,7 @@ CMD:invest(playerid)
 
 CMD:giveinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 23)
+	if(PlayerInfo[playerid][pSoska] >= 21)
     {
 		if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Положить 0-деньги | 1-золото в общак администрации [ /giveinvest ID Количество ]");
 		if(params[0] > 1 || params[0] < 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: 0-деньги 1-золото");
