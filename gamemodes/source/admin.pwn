@@ -960,7 +960,7 @@ CMD:invest(playerid)
 
 CMD:giveinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 21)
+	if(PlayerInfo[playerid][pSoska] >= 23)
     {
 		if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Положить 0-деньги | 1-золото в общак администрации [ /giveinvest ID Количество ]");
 		if(params[0] > 1 || params[0] < 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: 0-деньги 1-золото");
