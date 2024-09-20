@@ -11,9 +11,9 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
 
     new str[144];
     if (premium) {
-        format(str, sizeof(str), "* [ AD ]: {FFA200}%s, {FF6C00}от: {FFA200}%s%s {FF6C00}(#%04d) *", text, sender, id_str, index);
+        format(str, sizeof(str), "* [AD]: {FFA200}%s, {FF6C00}от: {FFA200}%s%s {FF6C00}(#%04d) *", text, sender, id_str, index);
     } else {
-        format(str, sizeof(str), "* [ AD ]: {99ff33}%s, {9ACD32}от: {99ff33}%s%s {9ACD32}(#%04d) *", text, sender, id_str, index);
+        format(str, sizeof(str), "* [AD]: {99ff33}%s, {9ACD32}от: {99ff33}%s%s {9ACD32}(#%04d) *", text, sender, id_str, index);
     }
 
     return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
@@ -157,9 +157,9 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                             strcat(AdvertiseQueue[j][adsSender], PlayerInfo[playerid][pName]);
 
                             if ((minute + 1 + j) >= 60) {
-                                format(msg, sizeof(msg), "Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
-                            } else format(msg, sizeof(msg), "Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
-                            SendClientMessage(playerid, COLOR_GREY, msg);
+                                format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
+                            } else format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
+                            SendClientMessage(playerid, 0xFF8282FF, msg);
                             oGivePlayerBank(playerid, -ServerInfo[65]);
                             OrganInfo[9][glave] += ServerInfo[65];
 
@@ -184,7 +184,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Новое объявление от %s[%d]: %s {0088ff}[ /editad ]", PlayerInfo[playerid][pName], playerid, msgtext);
                     SendRadioMessage(9, 0xFF8282FF, msg);
 
-                    SendClientMessage(playerid, COLOR_GREY, "Ваше объявление отправлено сотрудникам CNN на обработку");
+                    SendClientMessage(playerid, 0xFF8282FF, "{0088ff}** [ CNN ] {ffffff}Ваше объявление отправлено сотрудникам CNN на обработку");
                     oGivePlayerBank(playerid, -ServerInfo[66]);
                     OrganInfo[9][glave] += ServerInfo[66];
                     
@@ -291,9 +291,9 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         strcat(AdvertiseQueue[j][adsHandler], PlayerInfo[playerid][pName]);
 
                         if ((minute + 1 + j) >= 60) {
-                            format(str, sizeof(str), "Объявление обработано и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
-                        } else format(str, sizeof(str), "Объявление обработано и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
-                        SendClientMessage(playerid, COLOR_GREY, str);
+                            format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
+                        } else format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
+                        SendClientMessage(playerid, 0xFF8282FF, str);
 
                         if (playerid != Advertise[i][adsID]) GiveUnit(playerid, 25);
 
@@ -365,10 +365,11 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
 
             Advertise[i][adsText][0] = 0;
             strcat(Advertise[i][adsText], inputtext);
-            format(str, sizeof(str), "%s[%d] отказал объявление %s[%d]. Причина: %s", PlayerInfo[playerid][pName], playerid, PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID], Advertise[i][adsText]);
-            SendRadioMessage(9, COLOR_GREY, str);
-            format(str, sizeof(str), "%s[%d] отказал ваше объявление. Причина: %s", PlayerInfo[playerid][pName], playerid, Advertise[i][adsText]);
-            SendClientMessage(Advertise[i][adsID], COLOR_GREY, str);
+            format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}%s[%d] отказал объявление %s[%d]. Причина: %s", PlayerInfo[playerid][pName], playerid, PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID], Advertise[i][adsText]);
+            SendRadioMessage(9, 0xFF8282FF, str);
+            format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}%s[%d] отказал ваше объявление. Причина: %s", PlayerInfo[playerid][pName], playerid, Advertise[i][adsText]);
+            SendClientMessage(Advertise[i][adsID], 0xFF8282FF, str);
+            PlayerPlaySound(Advertise[i][adsID], 1084, 0.0, 0.0, 0.0);
 
             DeleteAdFromEditList(i);
             TakeAdvertise[i] = -1;
@@ -436,7 +437,7 @@ cmd:ad(playerid, const params[]) { // Отправка объявления (CNN
     
     if (isnull(str)) 
     {
-        ShowDialog(playerid, CNN_DIALOG_SEND_AD, DIALOG_STYLE_INPUT, "{cccccc}** Объявления {ffcc66}CNN", "{ffffff}Введите текст будущего объявления:", "Ввод", "Отменить");
+        ShowDialog(playerid, CNN_DIALOG_SEND_AD, DIALOG_STYLE_INPUT, "{cccccc}** Объявления {ffcc66}CNN", "{cccccc}Введите текст будущего объявления:", "Ввод", "Отменить");
     } else {
         format(ListName[playerid], 64, "%s", str);
         CNN_ChooseTypeDialog(playerid);
