@@ -16,6 +16,8 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
         format(str, sizeof(str), "* [AD]: {99ff33}%s, {9ACD32}от: {99ff33}%s%s {9ACD32}(#%04d) *", text, sender, id_str, index);
     }
 
+    AdvertiseList[index][cnnAdsType] = _:premium;
+
     return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
 }
 
@@ -69,6 +71,7 @@ stock DeleteAdFromQueue(number) { // Удаление объявления (CNN)
     AdvertiseQueue[number][adsHandler][0] = 0;
     AdvertiseQueue[number][adsText][0] = 0;
 }
+
 stock CNN_EditDialog(playerid, i) { // Диалог с обработкой объявления (CNN)
     DP[0][playerid] = i;
 
@@ -76,6 +79,112 @@ stock CNN_EditDialog(playerid, i) { // Диалог с обработкой об
 	TakeAdvertise[i] = playerid;
 	format(str1, sizeof(str1), "{cccccc}%s{ff9000} [%d]\n{ff9000}Отредактировать\n{99ff66}>> Опубликовать\n{ff6347}<< Отклонить", PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID]);
 	return ShowDialog(playerid, CNN_DIALOG_EDIT_AD, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}** Объявления {ffcc66}CNN", str1, "Выбрать", "Назад");
+}
+
+stock CNN_ShowAdInfo(playerid, number)
+{
+    if (isnull(AdvertiseList[number][cnnAdsText])) return ErrorMessage(playerid, "{FF6347}Объявление не найдено");
+    new str[1024];
+    new title[128];
+    new handler[128];
+    new type[128];
+
+    if (AdvertiseList[number][cnnAdsHandler]) format(handler, sizeof(handler), "\n\nОбработал: {ffcc66}%s", AdvertiseList[number][cnnAdsHandler]); else format(handler, sizeof(handler), "");
+    format(type, sizeof(type), "\n\nТип объявления: %s", AdvertiseList[number][cnnAdsType] == 0 ? "{cccccc}Обычное" : "{ff9000}Премиум");
+
+    format(str, sizeof(str),
+        "{ff9000}Отправитель: %s\n\n" \
+        \
+        "{cccccc}%s%s%s\n\n" \
+        \
+        "{ff9000}%s",
+
+        AdvertiseList[number][cnnAdsSender], AdvertiseList[number][cnnAdsText], type, handler, AdvertiseList[number][cnnAdsTime]
+    );
+    format(title, sizeof(title), "{cccccc}* Объявление {ff9000}#%d", number);
+
+    new bool: from_adlist = false;
+    if (OnlineInfo[playerid][oDialogID] == _:CNN_DIALOG_LIST_AD) {
+        from_adlist = true;
+        SetPVarInt(playerid, "FromAdList", from_adlist);
+    }
+
+    return ShowDialog(playerid, CNN_DIALOG_CHECK_AD, DIALOG_STYLE_MSGBOX, title, str, from_adlist ? "Назад" : "Закрыть", "");
+}
+
+// TODO: убрать наху
+CMD:test12(playerid, const params[])
+{
+    new text[128], amount;
+    if (sscanf(params, "s[128]i", text, amount)) return ErrorMessage(playerid, "член");
+    if (amount < 0 || amount > CNN_AD_LIST_MAX) return ErrorMessage(playerid, "член2");
+
+    for (new i = 1; i < amount; i++)
+    {
+        AdvertiseList[i][cnnAdsType] = random(1 + 1);
+        format(AdvertiseList[i][cnnAdsText], 128, text);
+        format(AdvertiseList[i][cnnAdsSender], MAX_PLAYER_NAME + 1, PlayerInfo[playerid][pName]);
+        format(AdvertiseList[i][cnnAdsHandler], MAX_PLAYER_NAME + 1, PlayerInfo[playerid][pName]);
+        new hour, minute, second, year, month, day, date[32];
+        gettime(hour, minute, second);
+        getdate(year, month, day);
+        format(date, sizeof(date), "%02d.%02d.%d %d:%02d", day, month, year, hour, minute);
+        strcat(AdvertiseList[i][cnnAdsTime], date);
+    }
+
+    return SendClientMessage(playerid, COLOR_GREY, "всьо готово");
+}
+
+stock CNN_ShowAdList(playerid, page = 0) { // Список объявлений
+    SetPVarInt(playerid, "ListAdPage", page);
+    new dialog_text[3082] = "{ff9000}Текст\t{cccccc}Отправитель\t{cccccc}Время";
+    
+    new item_index, max_page_index = GetListAdMaxPage() - 1;
+    for (new i = 1 + page * CNN_AD_LIST_PAGE_MAX; i < 1 + (page + 1) * CNN_AD_LIST_PAGE_MAX; i++)
+    {
+        if (i >= CNN_AD_LIST_MAX) break;
+        if (isnull(AdvertiseList[i][cnnAdsText])) continue;
+
+        new msgtext[32];
+        if (strlen(AdvertiseList[i][cnnAdsText]) > 29) {
+            format(msgtext, sizeof(msgtext), AdvertiseList[i][cnnAdsText]);
+            msgtext[28] = 0;
+            strcat(msgtext, "...");
+        } else strcat(msgtext, AdvertiseList[i][cnnAdsText]);
+
+        new id_str[6];
+        foreach (new id : Player)
+        {
+            if (!strcmp(PlayerInfo[id][pName], AdvertiseList[i][cnnAdsSender])) {
+                format(id_str, sizeof(id_str), "[%d]", id);
+                break;
+            }
+        }
+
+        format(dialog_text, sizeof(dialog_text),
+            "%s\n%s%s\t{cccccc}%s%s\t{cccccc}%s", dialog_text,
+
+            AdvertiseList[i][cnnAdsType] == 0 ? "{cccccc}" : "{ff9000}", msgtext,
+            AdvertiseList[i][cnnAdsSender], id_str,
+            AdvertiseList[i][cnnAdsTime]
+        );
+        
+        List[item_index++][playerid] = i;
+    }
+    if (item_index == 0) return ErrorMessage(playerid, "{FF6347}Список объявлений пуст");
+
+    if (page < max_page_index) {
+        strcat(dialog_text, "\n{cccccc}Далее >>");
+        List[item_index++][playerid] = CNN_AD_LIST_MAX + 1;
+    }
+    if (page > 0) {
+        strcat(dialog_text, "\n{cccccc}Назад <<");
+        List[item_index][playerid] = CNN_AD_LIST_MAX + 2;
+    }
+
+    new header[64];
+    format(header, sizeof(header), "{cccccc}** Объявления {ffcc66}CNN {cccccc}| Страница %d", page + 1);
+    return ShowDialog(playerid, CNN_DIALOG_LIST_AD, DIALOG_STYLE_TABLIST_HEADERS, header, dialog_text, "Выбор", "Закрыть");
 }
 
 stock CNN_EditPriceDialog(playerid, stat = 0)
@@ -107,6 +216,8 @@ stock CNN_EditPriceDialog(playerid, stat = 0)
 
 stock CNN_ChooseTypeDialog(playerid)
 {
+    if (strlen(ListName[playerid]) < 5) return ErrorMessage(playerid, "{FF6347}Объявление слишком короткое");
+
     new dialog_text[256];
 
     format(dialog_text, sizeof(dialog_text),
@@ -120,6 +231,27 @@ stock CNN_ChooseTypeDialog(playerid)
     );
 
     return ShowDialog(playerid, CNN_DIALOG_CHOOSE_TYPE, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}** Объявления {ffcc66}CNN", dialog_text, "Выбрать", "Отмена");
+}
+
+stock GetAdAmount()
+{
+    new count = 0;
+
+    for (new i = 1; i < CNN_AD_LIST_MAX; i++)
+    {
+        if (!isnull(AdvertiseList[i][cnnAdsText])) count++;
+    }
+
+    return count;
+}
+
+stock GetListAdMaxPage()
+{
+    new amount = GetAdAmount();
+    new max_page_index = amount / CNN_AD_LIST_PAGE_MAX;
+    if (amount % CNN_AD_LIST_PAGE_MAX > 0) max_page_index++;
+
+    return max_page_index;
 }
 
 stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
@@ -179,7 +311,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     new msgtext[32];
                     if (strlen(ListName[playerid]) > 29) {
                         format(msgtext, sizeof(msgtext), ListName[playerid]);
-                        strdel(msgtext, 28, strlen(ListName[playerid])); 
+                        msgtext[28] = 0;
                         strcat(msgtext, "...");
                     } else strcat(msgtext, ListName[playerid]);
 
@@ -248,7 +380,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             }
             return 1;
         }
-        case CNN_DIALOG_LIST_AD: 
+        case CNN_DIALOG_EDITLIST_AD: 
         {
             if (!response) return 1;
             for (new i = 0; i < CNN_AD_EDIT_MAX; i++) {
@@ -416,12 +548,36 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             PlayerPlaySound(playerid, 40405);
             return CNN_EditPriceDialog(playerid, 0);
         }
+        case CNN_DIALOG_CHECK_AD:
+        {
+            if (GetPVarInt(playerid, "FromAdList")) CNN_ShowAdList(playerid);
+            DeletePVar(playerid, "FromAdList");
+        }
+        case CNN_DIALOG_LIST_AD:
+        {
+            new page = GetPVarInt(playerid, "ListAdPage");
+            if (!response) {
+                DeletePVar(playerid, "ListAdPage");
+                return 1;
+            }
+
+            new i = List[listitem][playerid];
+
+            if (i == CNN_AD_LIST_MAX + 1) { // Далее
+                CNN_ShowAdList(playerid, page + 1);
+            } else if (i == CNN_AD_LIST_MAX + 2) { // Назад
+                CNN_ShowAdList(playerid, page - 1);
+            } else { // Выбор объявления
+                DeletePVar(playerid, "ListAdPage");
+                CNN_ShowAdInfo(playerid, i);
+            }
+        }
         default: return 0;
     }
     return 1;
 }
 
-cmd:ad(playerid, const params[]) { // Отправка объявления (CNN)
+CMD:ad(playerid, const params[]) { // Отправка объявления (CNN)
     if (PlayerInfo[playerid][pSoska] < 22 && gettime() - PlayerInfo[playerid][pCDAd] < CNN_AD_COOLDOWN) {
         new str[128];
         format(str, sizeof(str), "{FF6347}Нельзя подавать объявления так часто [ Осталось: %d сек. ]", CNN_AD_COOLDOWN - (gettime() - PlayerInfo[playerid][pCDAd]));
@@ -458,7 +614,7 @@ cmd:ad(playerid, const params[]) { // Отправка объявления (CNN
     return 1;
 }
 
-cmd:editad(playerid) { // Редактирование объявления (CNN)
+CMD:editad(playerid) { // Редактирование объявления (CNN)
     new g = fraction(playerid);
     if(!IsAFunctionOrganization(79, g, playerid)) return ErrorMessage(playerid, "{FF6347}Вы не сотрудник CNN.");
 	if(!GetAccessRankOrg(playerid, g, 79, NO_FBI)) return 1;
@@ -472,39 +628,20 @@ cmd:editad(playerid) { // Редактирование объявления (CNN
 
 	if (isnull(Advertise[0][adsText])) return ErrorMessage(playerid, "{FF6347}Список объявлений пуст");
 
-	ShowDialog(playerid, CNN_DIALOG_LIST_AD, DIALOG_STYLE_LIST, "{cccccc}** Объявления {ffcc66}CNN", summary_text, "Выбрать", "Отменить");
+	ShowDialog(playerid, CNN_DIALOG_EDITLIST_AD, DIALOG_STYLE_LIST, "{cccccc}** Объявления {ffcc66}CNN", summary_text, "Выбрать", "Отменить");
 	return 1;
 }
 
-cmd:checkad(playerid, const params[]) {
+alias:checkad("adinfo", "adcheck")
+CMD:checkad(playerid, const params[]) {
     new number;
     if (sscanf(params, "d", number)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Просмотреть информацию об объявлении [ /checkad Номер ]");
 
-    if (!isnull(AdvertiseList[number][cnnAdsText])) {
-        new str[1024];
-        new title[128];
-        new handler[128];
-
-        if (AdvertiseList[number][cnnAdsHandler]) format(handler, sizeof(handler), "\n\nОбработал: {ffcc66}%s", AdvertiseList[number][cnnAdsHandler]); else format(handler, sizeof(handler), "");
-
-        format(str, sizeof(str),
-            "{ff9000}------------------------------------------------------------------------------------------------------------------------------\n\n" \
-            "{ff9000}%s\n\n" \
-            \
-            "{cccccc}%s%s\n\n" \
-            \
-            "{ff9000}%s\n\n" \
-            \
-            "{ff9000}------------------------------------------------------------------------------------------------------------------------------",
-
-            AdvertiseList[number][cnnAdsSender], AdvertiseList[number][cnnAdsText], handler, AdvertiseList[number][cnnAdsTime]
-        );
-        format(title, sizeof(title), "{cccccc}* Объявление {ff9000}#%d", number);
-
-        ShowDialog(playerid, CNN_DIALOG_CHECK_AD, DIALOG_STYLE_MSGBOX, title, str, "Закрыть", "");
-
-    } else ErrorMessage(playerid, "{FF6347}Объявление не найдено");
-
-    return 1;
+    return CNN_ShowAdInfo(playerid, number);
 }
-alias:checkad("adinfo")
+
+alias:adlist("listad")
+CMD:adlist(playerid)
+{
+    return CNN_ShowAdList(playerid);
+}
