@@ -131,6 +131,10 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             if (response) 
             {
                 format(ListName[playerid], 64, "%s", inputtext);
+                if(10 > strlen(inputtext) > 64) 
+                {
+                    return ErrorMessage(playerid, "{FF6347}Длина объявления должна быть от 10 до 64");
+                }
                 CNN_ChooseTypeDialog(playerid);
             }
         }
@@ -156,9 +160,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                             strcat(AdvertiseQueue[j][adsText], ListName[playerid]);
                             strcat(AdvertiseQueue[j][adsSender], PlayerInfo[playerid][pName]);
 
-                            if ((minute + 1 + j) >= 60) {
-                                format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
-                            } else format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
+                            format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", hour + (minute + 1 + j) / 60, (minute + 1 + j) % 60);
                             SendClientMessage(playerid, 0xFF8282FF, msg);
                             oGivePlayerBank(playerid, -ServerInfo[65]);
                             OrganInfo[9][glave] += ServerInfo[65];
@@ -185,8 +187,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     SendRadioMessage(9, 0xFF8282FF, msg);
 
                     SendClientMessage(playerid, 0xFF8282FF, "{0088ff}** [ CNN ] {ffffff}Ваше объявление отправлено сотрудникам CNN на обработку");
-                    oGivePlayerBank(playerid, -ServerInfo[66]);
-                    OrganInfo[9][glave] += ServerInfo[66];
                     
                     return 1;
                 }
@@ -240,8 +240,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     SendRadioMessage(9, 0xFF8282FF, msg);
 
                     SendClientMessage(playerid, COLOR_GREY, "Ваше объявление отправлено сотрудникам CNN на обработку");
-                    oGivePlayerBank(playerid, -ServerInfo[66]);
-                    OrganInfo[9][glave] += ServerInfo[66];
 
                     return 1;
                 }
@@ -290,12 +288,17 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         strcat(AdvertiseQueue[j][adsSender], PlayerInfo[Advertise[i][adsID]][pName]);
                         strcat(AdvertiseQueue[j][adsHandler], PlayerInfo[playerid][pName]);
 
-                        if ((minute + 1 + j) >= 60) {
-                            format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", (hour + ((minute + 1 + j - 50) / 10)), (minute + 1 + j) - 60);
-                        } else format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", hour, minute + 1 + j);
+                        format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", hour + (minute + 1 + j) / 60, (minute + 1 + j) % 60);
                         SendClientMessage(playerid, 0xFF8282FF, str);
 
-                        if (playerid != Advertise[i][adsID]) GiveUnit(playerid, 25);
+                        if (playerid != Advertise[i][adsID]) 
+                        {
+                            SendClientMessage(Advertise[i][adsID], 0xFF8282FF, str);
+                            GiveUnit(playerid, 25);
+                        }
+
+                        oGivePlayerBank(Advertise[i][adsID], -ServerInfo[65]);
+                        OrganInfo[9][glave] += ServerInfo[65];
 
                         DeleteAdFromEditList(i);
                         TakeAdvertise[i] = -1;
@@ -327,6 +330,10 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         SendAdvertiseMessage(Advertise[i][adsText], PlayerInfo[Advertise[i][adsID]][pName], j, .premium = true);
 
                         if (playerid != Advertise[i][adsID]) GiveUnit(playerid, 26);
+
+                        oGivePlayerBank(Advertise[i][adsID], -ServerInfo[66]);
+                        OrganInfo[9][glave] += ServerInfo[66];
+                        
                         DeleteAdFromEditList(i);
                         
                         TakeAdvertise[i] = -1;
@@ -434,6 +441,11 @@ cmd:ad(playerid, const params[]) { // Отправка объявления (CNN
 
     new str[128];
     sscanf(params, "s[128]", str);
+
+    if(10 > strlen(str) > 64) 
+    {
+        return ErrorMessage(playerid, "{FF6347}Длина объявления должна быть от 10 до 64");
+    }
     
     if (isnull(str)) 
     {
