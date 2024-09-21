@@ -1,3 +1,5 @@
+// TODO: Реализовать очистку самых старых объявлений при их заполнении
+
 stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = false)
 {
     new id_str[6];
@@ -21,6 +23,17 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
     return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
 }
 
+stock GetAvailableAdSlotsAmount()
+{
+    new count = 0;
+    for (new i = 1; i < CNN_AD_LIST_MAX; i++)
+    {
+        if (!isnull(AdvertiseList[i][cnnAdsText])) count++;
+    }
+
+    return CNN_AD_LIST_MAX - count;
+}
+
 function SendAdInZero() {
     new year, month, day, hour, minute, second;
     new date[32];
@@ -36,7 +49,7 @@ function SendAdInZero() {
         strcat(AdvertiseList[j][cnnAdsText], AdvertiseQueue[0][adsText]);
         strcat(AdvertiseList[j][cnnAdsSender], AdvertiseQueue[0][adsSender]);
         if (!isnull(AdvertiseQueue[0][adsHandler])) strcat(AdvertiseList[j][cnnAdsHandler], AdvertiseQueue[0][adsHandler]);
-        format(date, sizeof(date), "%02d.%02d.%d %02d:%02d", day, month, year, hour, minute);
+        format(date, sizeof(date), "%02d.%02d.%04d %02d:%02d:%02d", day, month, year, hour, minute, second);
         strcat(AdvertiseList[j][cnnAdsTime], date);
 
         SendAdvertiseMessage(AdvertiseQueue[0][adsText], AdvertiseQueue[0][adsSender], j);
@@ -83,7 +96,8 @@ stock CNN_EditDialog(playerid, i) { // Диалог с обработкой об
 
 stock CNN_ShowAdInfo(playerid, number)
 {
-    if (isnull(AdvertiseList[number][cnnAdsText])) return ErrorMessage(playerid, "{FF6347}Объявление не найдено");
+    if (number < 0 || number >= CNN_AD_LIST_MAX || isnull(AdvertiseList[number][cnnAdsText])) return ErrorMessage(playerid, "{FF6347}Объявление не найдено");
+
     new str[1024];
     new title[128];
     new handler[128];
@@ -112,32 +126,9 @@ stock CNN_ShowAdInfo(playerid, number)
     return ShowDialog(playerid, CNN_DIALOG_CHECK_AD, DIALOG_STYLE_MSGBOX, title, str, from_adlist ? "Назад" : "Закрыть", "");
 }
 
-// TODO: убрать наху
-CMD:test12(playerid, const params[])
-{
-    new text[128], amount;
-    if (sscanf(params, "s[128]i", text, amount)) return ErrorMessage(playerid, "член");
-    if (amount < 0 || amount > CNN_AD_LIST_MAX) return ErrorMessage(playerid, "член2");
-
-    for (new i = 1; i < amount; i++)
-    {
-        AdvertiseList[i][cnnAdsType] = random(1 + 1);
-        format(AdvertiseList[i][cnnAdsText], 128, text);
-        format(AdvertiseList[i][cnnAdsSender], MAX_PLAYER_NAME + 1, PlayerInfo[playerid][pName]);
-        format(AdvertiseList[i][cnnAdsHandler], MAX_PLAYER_NAME + 1, PlayerInfo[playerid][pName]);
-        new hour, minute, second, year, month, day, date[32];
-        gettime(hour, minute, second);
-        getdate(year, month, day);
-        format(date, sizeof(date), "%02d.%02d.%d %d:%02d", day, month, year, hour, minute);
-        strcat(AdvertiseList[i][cnnAdsTime], date);
-    }
-
-    return SendClientMessage(playerid, COLOR_GREY, "всьо готово");
-}
-
 stock CNN_ShowAdList(playerid, page = 0) { // Список объявлений
     SetPVarInt(playerid, "ListAdPage", page);
-    new dialog_text[3082] = "{ff9000}Текст\t{cccccc}Отправитель\t{cccccc}Время";
+    new dialog_text[3082] = "{ff9000}Содержание\t{cccccc}Отправитель\t{cccccc}Время";
     
     new item_index, max_page_index = GetListAdMaxPage() - 1;
     for (new i = 1 + page * CNN_AD_LIST_PAGE_MAX; i < 1 + (page + 1) * CNN_AD_LIST_PAGE_MAX; i++)
@@ -162,9 +153,10 @@ stock CNN_ShowAdList(playerid, page = 0) { // Список объявлений
         }
 
         format(dialog_text, sizeof(dialog_text),
-            "%s\n%s%s\t{cccccc}%s%s\t{cccccc}%s", dialog_text,
+            "%s\n{cccccc}№%d. %s%s\t{cccccc}%s%s\t{cccccc}%s", dialog_text,
 
-            AdvertiseList[i][cnnAdsType] == 0 ? "{cccccc}" : "{ff9000}", msgtext,
+            i,
+            (AdvertiseList[i][cnnAdsType] == 0 ? "{cccccc}" : "{ff9000}"), msgtext,
             AdvertiseList[i][cnnAdsSender], id_str,
             AdvertiseList[i][cnnAdsTime]
         );
@@ -273,6 +265,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
         case CNN_DIALOG_CHOOSE_TYPE:
         {
             if (!response) return 0;
+            if (GetAvailableAdSlotsAmount() <= 0) return ErrorMessage(playerid, "{FF6347}Нет доступных слотов для объявлений");
 
             PlayerInfo[playerid][pCDAd] = gettime();
 
@@ -342,7 +335,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         getdate(year, month, day);
                         strcat(AdvertiseList[j][cnnAdsText], ListName[playerid]);
                         strcat(AdvertiseList[j][cnnAdsSender], PlayerInfo[playerid][pName]);
-                        format(date, sizeof(date), "%02d.%02d.%d %d:%02d", day, month, year, hour, minute);
+                        format(date, sizeof(date), "%02d.%02d.%04d %02d:%02d:%02d", day, month, year, hour, minute, second);
                         strcat(AdvertiseList[j][cnnAdsTime], date);
 
                         SendAdvertiseMessage(ListName[playerid], PlayerInfo[playerid][pName], j, .premium = true);
@@ -371,7 +364,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                     format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Новое объявление от %s[%d]: %s {0088ff}[ /editad ]", PlayerInfo[playerid][pName], playerid, msgtext);
                     SendRadioMessage(9, 0xFF8282FF, msg);
 
-                    SendClientMessage(playerid, COLOR_GREY, "Ваше объявление отправлено сотрудникам CNN на обработку");
+                    SendClientMessage(playerid, 0xFF8282FF, "{0088ff}** [ CNN ] {ffffff}Ваше объявление отправлено сотрудникам CNN на обработку");
 
                     return 1;
                 }
@@ -408,6 +401,8 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
             } 
 
             if (listitem == 1) { // Опубликовать
+                if (GetAvailableAdSlotsAmount() <= 0) return ErrorMessage(playerid, "{FF6347}Нет доступных слотов для объявлений");
+
                 if (Advertise[i][adsType] == 0) {
                     new str[128];
                     for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
@@ -443,6 +438,8 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
 
                         return 1;
                     }
+
+                    return ErrorMessage(playerid, "{FF6347}Нет доступных слотов в очереди");
                 }
 
                 if (Advertise[i][adsType] == 1) {
@@ -456,7 +453,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         strcat(AdvertiseList[j][cnnAdsText], Advertise[i][adsText]);
                         strcat(AdvertiseList[j][cnnAdsSender], PlayerInfo[Advertise[i][adsID]][pName]);
                         strcat(AdvertiseList[j][cnnAdsHandler], PlayerInfo[playerid][pName]);
-                        format(date, sizeof(date), "%0d.%02d.%d %d:%02d:%02d", day, month, year, hour, minute, second);
+                        format(date, sizeof(date), "%02d.%02d.%04d %02d:%02d:%02d", day, month, year, hour, minute, second);
                         strcat(AdvertiseList[j][cnnAdsTime], date);
 
                         SendAdvertiseMessage(Advertise[i][adsText], PlayerInfo[Advertise[i][adsID]][pName], j, .premium = true);
