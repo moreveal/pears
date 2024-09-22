@@ -1834,15 +1834,6 @@ stock getAmmoName(thingId) // Получаем название оружия, д
     return name;
 }
 
-/*
-CREATE TABLE `depart_weapons` (
-  `frakid` int(11) NOT NULL,
-  `weapon` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `depart_weapons`
-  ADD UNIQUE KEY `newid` (`frakid`,`weapon`);
-*/
 function LoadOrderWeaponsDepart() {
 	new rows;
 	cache_get_row_count(rows);

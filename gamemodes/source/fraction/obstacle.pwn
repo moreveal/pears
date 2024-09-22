@@ -1,17 +1,3 @@
-/*
-    CREATE TABLE `obstacles` (
-        `id` int(11) NOT NULL,
-        `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ID аккаунта создателя',
-        `passtime` int(11) NOT NULL COMMENT 'Время прохождения',
-        `last_passtime` int(11) NOT NULL COMMENT 'Время прохождения перед последним запуском',
-        `vehiclepass` int(2) NOT NULL COMMENT 'Тип транспорта',
-        `points` blob NOT NULL COMMENT 'Точки маршрута',
-        `stats` blob NOT NULL COMMENT 'Статистика последнего забега'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-    ALTER TABLE `obstacles`
-        ADD UNIQUE KEY `id` (`id`);
-*/
 function Obstacle_Load() {
     new rows;
     cache_get_row_count(rows);
