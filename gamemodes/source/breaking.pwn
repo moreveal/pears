@@ -214,9 +214,6 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 				}
 				case BREAKING_TYPE_ELECTRICAL_SHIELD:
 				{
-					policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiBreaked] = true;
-					policeDatabaseShieldInfo[BreakingTypeID[playerid]][pdsiFailCount] = 0;
-
 					new fractionid = policeDatabasePickups[BreakingTypeID[playerid]][pdpFraction];
 
 					if (policeDatabaseInfo[fractionid][pdiAlarm]) {
@@ -229,14 +226,38 @@ stock ClickBreaking(playerid) // Кликаем на ключик
 
 					if (PDatabase_GetShieldsCount(fractionid, .broken = true) >= PDatabase_GetShieldsCount(fractionid))
 					{
-						if (PDatabase_GetShieldsCount(fractionid) == 1) {
-							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s с электрощитком, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+						if (fractionid == 1 && PlayerInfo[playerid][pDatabaseActive] == DATABASE_ACTIVE_SHORT_CIRCUIT)
+						{
+							PlayerInfo[playerid][pDatabaseActive] = DATABASE_ACTIVE_NONE;
+							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Обо мне заранее позаботились, все генераторы были отключены автоматически.");
+
+							for (new i = 0; i < POLICE_DATABASE_MAX_GENERATORS; i++)
+							{
+								PDatabase_ExplodeGenerator(fractionid, i, playerid);
+							}
 						} else {
-							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s со всеми электрощитками, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+							SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь я могу уничтожить генераторы рядом, чтобы отключить аварийное питание.");
+
+							if (PDatabase_GetShieldsCount(fractionid) == 1) {
+								SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s с электрощитком, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+							} else {
+								SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Отлично! Я %s со всеми электрощитками, это сильно оттянет срабатывание сигнализации.", PlayerInfo[playerid][pSex] == 2 ? "разобралась" : "разобрался");
+							}
 						}
-						SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь я могу уничтожить генераторы рядом, чтобы отключить аварийное питание.");
 
 						PDatabase_SetState(fractionid, POLICE_DATABASE_STATE_NO_SHIELD);
+					} else if (fractionid == 1 && PlayerInfo[playerid][pDatabaseActive] == DATABASE_ACTIVE_OVERLOAD)
+					{
+						PlayerInfo[playerid][pDatabaseActive] = DATABASE_ACTIVE_NONE;
+						SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Обо мне заранее позаботились, оставшиеся электрощитки были отключены автоматически.");
+
+						for (new i = 0; i < sizeof(policeDatabasePickups); i++)
+						{
+							if (policeDatabasePickups[i][pdpType] != POLICE_DATABASE_PICKUP_SHIELD) continue;
+							if (policeDatabasePickups[i][pdpFraction] != fractionid) continue;
+
+							PDatabase_ExplodeShield(fractionid, i, playerid);
+						}
 					}
 				}
 			}

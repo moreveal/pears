@@ -18,6 +18,34 @@ stock Hank_IsGood(thingid) {
     return false;
 }
 
+stock Hank_GetDatabaseActiveName(e_DatabaseActive: active) {
+    new name[24];
+    switch (active)
+    {
+        case DATABASE_ACTIVE_NONE: strcat(name, "Не выбрано");
+        case DATABASE_ACTIVE_DATA_SORT: strcat(name, "Сортировка данных");
+        case DATABASE_ACTIVE_READY_MADE: strcat(name, "На готовенькое");
+        case DATABASE_ACTIVE_OVERLOAD: strcat(name, "Перегрузка");
+        case DATABASE_ACTIVE_SHORT_CIRCUIT: strcat(name, "Короткое замыкание");
+        default: strcat(name, "Неизвестно");
+    }
+    return name;
+}
+
+stock Hank_GetDatabaseActivePrice(e_DatabaseActive: active)
+{
+    switch (active)
+    {
+        case DATABASE_ACTIVE_NONE: return 0;
+        case DATABASE_ACTIVE_DATA_SORT: return 50000;
+        case DATABASE_ACTIVE_READY_MADE: return 150000;
+        case DATABASE_ACTIVE_OVERLOAD: return 250000;
+        case DATABASE_ACTIVE_SHORT_CIRCUIT: return 250000;
+        default: return 0;
+    }
+    return 0;
+}
+
 stock Hank_Dialog_Main(playerid) {
     return ShowDialog(
         playerid, HANK_DIALOG_MAIN, DIALOG_STYLE_TABLIST,
@@ -25,6 +53,7 @@ stock Hank_Dialog_Main(playerid) {
 
         "{cccccc}Кто ты?\n" \
         "{ff6347}Нелегальные товары\t{ff6347}>>\n" \
+        "{ff6347}Поддержка при взломе базы данных\t>>\n" \
         "{555555}Услуги подкупных агентов\t>>",
 
         "Выбор", "Закрыть"
@@ -72,6 +101,158 @@ stock Hank_Dialog_Goods(playerid) {
 
     PlayerPlaySound(playerid, 40405);
     return ShowDialog(playerid, HANK_DIALOG_GOODS, DIALOG_STYLE_TABLIST, "{ff9000}Товары", dialog_text, "Выбор", "Назад");
+}
+
+stock Hank_Dialog_Database_Actives(playerid)
+{
+    new dialog_text[1024];
+
+    strcat(dialog_text, "{cccccc}Подробнее о типах поддержки\t>>");
+
+    for (new quan, i = 1; i < _:DATABASE_ACTIVE_MAX; i++)
+    {
+        new bool: is_owned = _:PlayerInfo[playerid][pDatabaseActive] == i;
+        new e_DatabaseActive: active = e_DatabaseActive: i;
+
+        format(dialog_text, sizeof(dialog_text), "%s\n{%s}%s {99ff66}(%s$)\t{%s}>>",
+            dialog_text,
+            (is_owned ? "FF9000" : "7F7F7F"),
+            Hank_GetDatabaseActiveName(active),
+            FormatNumberWithCommas(Hank_GetDatabaseActivePrice(active)),
+            (is_owned ? "FF9000" : "7F7F7F")
+        );
+        List[++quan][playerid] = i;
+    }
+
+    return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES, DIALOG_STYLE_TABLIST, "{ff9000}Поддержка", dialog_text, "Выбор", "Назад");
+}
+
+stock Hank_Dialog_Database_Actives_About(playerid)
+{
+    return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES_ABOUT, DIALOG_STYLE_MSGBOX, "{cccccc}Подробнее о типах поддержки",
+        "{ff9000}Типы поддержки (активы) {cccccc}представляют собой специализированные инструменты или ресурсы, которые игроки\n" \
+        "могут использовать для облегчения процесса взлома полицейской базы данных.\n\n" \
+        \
+        "Разрешается использовать только один тип поддержки одновременно.\n" \
+        "Если нужно воспользоваться другим - текущий актив необходимо вернуть.\n\n" \
+        \
+        "Каждый тип поддержки имеет свои уникальные преимущества.\n" \
+        "Некоторые могут предложить возврат денег, потраченных на его активацию, при отмене актива игроком.\n" \
+        "Другие напротив, не предусматривают возврат средств, что делает их более рискованными, но потенциально\n" \
+        "более полезными в конкретных ситуациях.\n\n" \
+        \
+        "Выбор и управление типами поддержки требуют стратегического мышления, поскольку\n" \
+        "правильное использование может существенно облегчить взлом базы данных и снизить риск обнаружения.\n" \
+        "Вам нужно тщательно взвешивать, какой актив взять перед началом, в зависимости от текущих задач и условий.",
+
+        "Назад", ""
+    );
+}
+
+stock Hank_IsDatabaseActiveRefundable(e_DatabaseActive: active)
+{
+    switch (active)
+    {
+        case DATABASE_ACTIVE_OVERLOAD, DATABASE_ACTIVE_SHORT_CIRCUIT: {
+            return true;
+        }
+    }
+    return false;
+}
+
+stock Hank_Dialog_Database_Actives_Select(playerid, e_DatabaseActive: active)
+{
+    DP[0][playerid] = active;
+
+    new dialog_text[1024];
+    format(dialog_text, sizeof(dialog_text),
+        "{FF9000}%s%s\n\n{cccccc}",
+        
+        Hank_GetDatabaseActiveName(active),
+        (PlayerInfo[playerid][pDatabaseActive] == active ? " {cccccc}[ Выбрано ]" : "")
+    );
+
+    switch (active)
+    {
+        case DATABASE_ACTIVE_DATA_SORT: {
+            strcat(dialog_text, 
+                "Хэнк позаботится о том, чтобы базу данных \"приготовили\" к вашему приходу:\n" \
+                "нужные люди отсортируют всю информацию, сильно сократив время взлома.\n\n" \
+                \
+                "{ff9000}Сокращает прохождение первого этапа в 2 раза [SAPD / FBI]"
+            );
+        }
+        case DATABASE_ACTIVE_READY_MADE: {
+            strcat(dialog_text,
+                "Хэнк занесёт деньги людям из руководства полиции и сообщит вам код для 2 этапа.\n\n" \
+                \
+                "{ff9000}Вы заранее узнаете код, который должны будете ввести на втором этапе [SAPD]"
+            );
+        }
+        case DATABASE_ACTIVE_OVERLOAD: {
+            strcat(dialog_text,
+                "Хэнк заплатит электрикам, которые будут обслуживать здание федерального бюро,\n" \
+                "вызвав тем самым неисправности в оборудовании.\n\n" \
+                \
+                "{ff9000}После отключения одного из электрощитков, остальные отключатся автоматически [FBI]"
+            );
+        }
+        case DATABASE_ACTIVE_SHORT_CIRCUIT: {
+            strcat(dialog_text,
+                "Хэнк попросит нужных людей устроить короткое замыкание в проводке здания федерального бюро,\n" \
+                "вызвав тем самым неисправности в оборудовании.\n\n" \
+                \
+                "{ff9000}Генераторы отключатся сами после отключения электрощитков [FBI]"
+            );
+        }
+        default: return 0;
+    }
+
+    format(dialog_text, sizeof(dialog_text), "%s\n\n{99ff66}Стоимость: %s$", dialog_text, FormatNumberWithCommas(Hank_GetDatabaseActivePrice(active)));
+
+    return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES_SELECT, DIALOG_STYLE_MSGBOX, "{cccccc}Выбор типа поддержки",
+        dialog_text,
+        (PlayerInfo[playerid][pDatabaseActive] == active ? "Вернуть" : "Купить"), "Назад"
+    );
+}
+
+stock Hank_Dialog_Active_Refund(playerid, e_DatabaseActive: active)
+{
+    new dialog_text[512];
+    format(dialog_text, sizeof(dialog_text),
+        "{cccccc}Возврат актива: {ff9000}%s\n" \
+        "{cccccc}Вы действительно хотите отказаться от приобретённого актива?",
+
+        Hank_GetDatabaseActiveName(active)
+    );
+    if (!Hank_IsDatabaseActiveRefundable(active)) {
+        strcat(dialog_text, "\n\n{ff0000}[!] {ff6347}Данный тип поддержки не предполагает возврата потраченных на него средств");
+    }
+
+    return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES_REFUND, DIALOG_STYLE_MSGBOX, "{ff9000}Отказ от поддержки", dialog_text, "Да", "Назад");
+}
+
+stock Hank_Dialog_Active_Buy(playerid, e_DatabaseActive: active)
+{
+    if (PlayerInfo[playerid][pDatabaseActive] != DATABASE_ACTIVE_NONE)
+    {
+        ErrorText(playerid, "{FF6347}Вы не можете приобрести более одного типа поддержки");
+        return Hank_Dialog_Database_Actives(playerid);
+    }
+
+    new dialog_text[512];
+    format(dialog_text, sizeof(dialog_text),
+        "{cccccc}Приобретение актива: {ff9000}%s {99ff66}(%s$)\n" \
+        "{cccccc}Вы действительно хотите приобрести этот тип поддержки?",
+
+        Hank_GetDatabaseActiveName(active),
+        FormatNumberWithCommas(Hank_GetDatabaseActivePrice(active))
+    );
+    if (!Hank_IsDatabaseActiveRefundable(active)) {
+        strcat(dialog_text, "\n\n{ff0000}[!] {ff6347}Вы не сможете вернуть потраченные средства при отказе от этого типа поддержки");
+    }
+
+    return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES_BUY, DIALOG_STYLE_MSGBOX, "{ff9000}Приобретение поддержки", dialog_text, "Да", "Назад");
 }
 
 stock Hank_Dialog_Buy(playerid, thingid) {
@@ -151,7 +332,8 @@ stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputte
             switch (listitem) {
                 case 0: return Hank_Dialog_AboutMe(playerid);
                 case 1: return Hank_Dialog_Goods(playerid);
-                case 2: return ErrorMessage(playerid, "{FF6347}В разработке");
+                case 2: return Hank_Dialog_Database_Actives(playerid); 
+                case 3: return ErrorMessage(playerid, "{FF6347}В разработке");
             }
         }
         case HANK_DIALOG_ABOUT_ME: {
@@ -223,6 +405,88 @@ stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputte
             MoneyLog("buy", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, log_str);
 
             if(PlayerInfo[playerid][pAchieve][70] == 0) AchievePlayer(playerid, 70, 1); // Выдаём ачивку за покупку предмета у нелегального торговца
+        }
+        case HANK_DIALOG_DATABASE_ACTIVES:
+        {
+            if (!response) return Hank_Dialog_Main(playerid);
+
+            new e_DatabaseActive: active = e_DatabaseActive: List[listitem][playerid];
+            if (active == DATABASE_ACTIVE_NONE) return Hank_Dialog_Database_Actives_About(playerid);
+            return Hank_Dialog_Database_Actives_Select(playerid, active);
+        }
+        case HANK_DIALOG_DATABASE_ACTIVES_ABOUT:
+        {
+            return Hank_Dialog_Database_Actives(playerid);
+        }
+        case HANK_DIALOG_DATABASE_ACTIVES_SELECT:
+        {
+            if (!response) return Hank_Dialog_Database_Actives(playerid);
+            
+            new e_DatabaseActive: active = e_DatabaseActive: DP[0][playerid];
+            if (PlayerInfo[playerid][pDatabaseActive] == active) { // Возврат
+                Hank_Dialog_Active_Refund(playerid, active);
+            } else { // Покупка
+                Hank_Dialog_Active_Buy(playerid, active);
+            }
+        }
+        case HANK_DIALOG_DATABASE_ACTIVES_BUY:
+        {
+            new e_DatabaseActive: active = e_DatabaseActive: DP[0][playerid];
+            if (!response) return Hank_Dialog_Database_Actives_Select(playerid, active);
+
+            new price = Hank_GetDatabaseActivePrice(active);
+            if (oGetPlayerMoney(playerid) - price < 0) {
+                ErrorText(playerid, "{FF6347}У вас недостаточно денег для приобретения этого типа поддержки");
+                return Hank_Dialog_Database_Actives(playerid);
+            }
+            oGivePlayerMoney(playerid, -price);
+
+            PlayerInfo[playerid][pDatabaseActive] = active;
+
+            new log_str[64];
+            format(log_str, sizeof(log_str), "Покупка у Хэнка [ %s ]", Hank_GetDatabaseActiveName(active));
+            MoneyLog("activebuy", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], -price, log_str);
+
+            new const hankReplies[][] = {
+                "За качество своих услуг - отвечаю головой",
+                "Молодец, перестраховка ещё никому не мешала",
+                "Уверен, теперь твои шансы стали втрое выше",
+                "Да, лучше перестраховаться, чем потом сожалеть",
+                "С такой поддержкой любое дело по плечу",
+                "Теперь у тебя точно всё получится"
+            };
+            SendDynamicActorMessage(playerid, hankActor, hankReplies[random(sizeof(hankReplies))]);
+            ApplyDynamicActorAnimation(hankActor, "DEALER","DRUGS_BUY",10.0,0,1,1,0,0);
+        }
+        case HANK_DIALOG_DATABASE_ACTIVES_REFUND:
+        {
+            if (!response) return Hank_Dialog_Database_Actives(playerid);
+
+            new const hankReplies[][] = {
+                "Странно, что тебе это не понадобится, ну ладно, дело за тобой...",
+                "Я бы не стал отказываться от такой помощи, но ладно уж...",
+                "Настолько самоуверенный? Делай, что считаешь нужным",
+                "Действительно, полагаться в жизни стоит только на себя",
+                "Не счёл бы это верным решением, но ладно уж",
+                "Лучше перестраховаться, чем потом сожалеть",
+                "Осторожность - лучшая часть храбрости"
+            };
+            SendDynamicActorMessage(playerid, hankActor, hankReplies[random(sizeof(hankReplies))]);
+
+            new e_DatabaseActive: active = e_DatabaseActive: DP[0][playerid];
+            if (Hank_IsDatabaseActiveRefundable(active))
+            {
+                new price = Hank_GetDatabaseActivePrice(active);
+                oGivePlayerMoney(playerid, price);
+                ApplyDynamicActorAnimation(hankActor, "DEALER","DRUGS_BUY",10.0,0,1,1,0,0);
+
+                new log_str[64];
+                format(log_str, sizeof(log_str), "Возврат у Хэнка [ %s ]", Hank_GetDatabaseActiveName(active));
+                MoneyLog("activerefund", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], price, log_str);
+            }
+
+            SuccessMessage(playerid, "{99ff66}Вы успешно отказались от указанного типа поддержки");
+            PlayerInfo[playerid][pDatabaseActive] = DATABASE_ACTIVE_NONE;
         }
     }
 
