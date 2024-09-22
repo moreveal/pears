@@ -304,7 +304,7 @@ CMD:capture(playerid)
 CMD:reloadcapt(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить территорию [ /setgz ID Фракции ]");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Установить территорию [ /reloadcapt ID Фракции ]");
 	if(params[0] > 16 || params[0] < 13) return ErrorMessage(playerid, "{FF6347}ID банды 13 - 16");
 	if(Kapt[params[0]] > 0) return ErrorMessage(playerid, "{FF6347}Нельзя сбросить кд банды во время капта");
 
@@ -591,6 +591,31 @@ stock timerGangZones()
     return 1;
 }
 
+stock IsPlayerInCaptArea(playerid)
+{
+	if (!CaptInfo[cCaptStat]) return false;
+
+	new g = CaptInfo[cZoneID];
+
+	const squares = 2; // Радиус квадратов от основного, внутри которых засчитывается убийство
+	for (new i = 0; i < sizeof(GangZone); i++)
+	{
+		if (i == g && IsPlayerInSquare(playerid, GangZone[i][gzMinX] - 60.0, GangZone[i][gzMinY] - 60.0, GangZone[i][gzMaxX] + 60.0, GangZone[i][gzMaxY] + 60.0))
+		{
+			new const Float: side = floatabs(GangZone[g][gzMaxX] - GangZone[g][gzMinX]);
+
+			new Float: minX = GangZone[g][gzMinX] - side * float(squares),
+				Float: maxX = GangZone[g][gzMaxX] + side * float(squares),
+				Float: minY = GangZone[g][gzMinY] - side * float(squares),
+				Float: maxY = GangZone[g][gzMaxY] + side * float(squares);
+
+			return (Protect_X[playerid] >= minX && Protect_X[playerid] <= maxX && Protect_Y[playerid] >= minY && Protect_Y[playerid] <= maxY);
+		}
+	}
+
+	return false;
+}
+
 stock CheckGangKill(playerid, killerid) // Капт
 {
 	if(CaptInfo[cCaptStat] == true)
@@ -598,8 +623,7 @@ stock CheckGangKill(playerid, killerid) // Капт
 	    new g = CaptInfo[cZoneID];
  		if(GZInfo[g][gBitva] != 0)
 		{
-			if(IsPlayerInSquare(killerid,GangZone[g][gzMinX]-20.0,GangZone[g][gzMinY]-20.0,GangZone[g][gzMaxX]+20.0,GangZone[g][gzMaxY]+20.0) // Если убийца в зоне гангзоны
-			&& IsPlayerInSquare(playerid,GangZone[g][gzMinX]-20.0,GangZone[g][gzMinY]-20.0,GangZone[g][gzMaxX]+20.0,GangZone[g][gzMaxY]+20.0)) // Если жертва в зоне гангзоны
+            if(IsPlayerInCaptArea(killerid) && IsPlayerInCaptArea(playerid)) // Если жертва и убийца в зоне гангзоны
 			{
 				if((PlayerInfo[playerid][pMember] == CaptInfo[cAttack] || PlayerInfo[playerid][pLeader] == CaptInfo[cAttack]) && (PlayerInfo[killerid][pMember] == CaptInfo[cDefend] || PlayerInfo[killerid][pLeader] == CaptInfo[cDefend]))
 				{
