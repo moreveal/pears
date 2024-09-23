@@ -23,6 +23,7 @@ enum fInfo
 	fStatusRank, // Подключены донат ранги или нет ( 0 - нет, 1 - да )
 	fStatusSpawn, // Подключен спавн семьи или нет ( 0 - нет, 1 - да )
 	fStatusGarage, // Подключён гараж семьи или нет ( 0 - нет, 1 - да )
+	fStatusPlate, // Подключёны номерные знаки или нет ( 0 - нет, 1 - да )
 	fDop1, // Текущее количество участников в семье
 	fDop2, // Запасные Пункты 2
 	fDop3, // Запасные Пункты 3
@@ -83,6 +84,7 @@ enum fInfo
 	fsAltarStatus, // статус алтаря
 	fsUnixAltar, // Восстановление алтаря
 	fStreetRacersID, // Статус гонки есть или нет.
+	fVehPlate[32], // Номерной знак авто
 };
 new FamilyInfo[MAX_FAMILY][fInfo];
 new famwar[MAX_FAMILY][10];
@@ -482,6 +484,7 @@ public LoadFamily()
     	cache_get_value_name_int(f, "statusrank", FamilyInfo[idx][fStatusRank]);
     	cache_get_value_name_int(f, "statusspawn", FamilyInfo[idx][fStatusSpawn]);
     	cache_get_value_name_int(f, "statusgarage", FamilyInfo[idx][fStatusGarage]);
+		cache_get_value_name_int(f, "statusplate", FamilyInfo[idx][fStatusPlate]);
 		cache_get_value_name_int(f, "dop1", FamilyInfo[idx][fDop1]);
 		cache_get_value_name_int(f, "dop2", FamilyInfo[idx][fDop2]);
 		cache_get_value_name_int(f, "dop3", FamilyInfo[idx][fDop3]);
@@ -564,6 +567,7 @@ public LoadFamily()
 		cache_get_value_name_float(f, "altarPosYR", FamilyInfo[idx][fsAltarPos][4]);
 		cache_get_value_name_float(f, "altarPosZR", FamilyInfo[idx][fsAltarPos][5]);
 		cache_get_value_name_int(f, "altarStatus", FamilyInfo[idx][fsAltarStatus]);
+		cache_get_value_name(f, "vehPlate", FamilyInfo[idx][fVehPlate]);
 
 		if(FamilyInfo[idx][fType] == 3 && FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarPos][0] != 0.0 && FamilyInfo[idx][fsAltarStatus] > 0)
 		{
@@ -720,14 +724,14 @@ stock SaveFamily(idx)
 	FamilyInfo[idx][fVeh][5],FamilyInfo[idx][fVeh][6],FamilyInfo[idx][fVeh][7],FamilyInfo[idx][fVeh][8],FamilyInfo[idx][fVeh][9],
 	FamilyInfo[idx][fBiz][0],FamilyInfo[idx][fBiz][1],FamilyInfo[idx][fBiz][2],FamilyInfo[idx][fBiz][3],FamilyInfo[idx][fBiz][4],
 	FamilyInfo[idx][fBiz][5],FamilyInfo[idx][fBiz][6],FamilyInfo[idx][fBiz][7],FamilyInfo[idx][fBiz][8],FamilyInfo[idx][fBiz][9]); // 267 + 220
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',\
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`spawnx`='%f',`spawny`='%f',`spawnz`='%f',`spawna`='%f',`int`='%d',`world`='%d',`statusuch`='%d',`statusrank`='%d',`statusgarage`='%d',`statusplate`='%d',\
 	`statusspawn`='%d',`dop1`='%d',`dop2`='%d',`dop3`='%d',`dop4`='%d',`dop5`='%d',`Mon`='%d',`Accoff`='%d',`Accdip`='%d',`Lossf`='%d',`vehcol1`='%d',`vehcol2`='%d',`type`='%d',\
-	`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d',`influence`='%d',`fRanks`='%d' WHERE `id`='%d'", string_mysql,
-	FamilyInfo[idx][fSpawnX],FamilyInfo[idx][fSpawnY],FamilyInfo[idx][fSpawnZ],FamilyInfo[idx][fSpawnA],FamilyInfo[idx][fInt],FamilyInfo[idx][fWorld],FamilyInfo[idx][fStatusUch],FamilyInfo[idx][fStatusRank],FamilyInfo[idx][fStatusGarage],
+	`parthnerMarket`='%d',`parthnerBenz`='%d',`parthnerService`='%d',`influence`='%d',`fRanks`='%d',`vehPlate`='%e' WHERE `id`='%d'", string_mysql,
+	FamilyInfo[idx][fSpawnX],FamilyInfo[idx][fSpawnY],FamilyInfo[idx][fSpawnZ],FamilyInfo[idx][fSpawnA],FamilyInfo[idx][fInt],FamilyInfo[idx][fWorld],FamilyInfo[idx][fStatusUch],FamilyInfo[idx][fStatusRank],FamilyInfo[idx][fStatusGarage],FamilyInfo[idx][fStatusPlate],
 	FamilyInfo[idx][fStatusSpawn],FamilyInfo[idx][fDop1],FamilyInfo[idx][fDop2],FamilyInfo[idx][fDop3],FamilyInfo[idx][fDop4],FamilyInfo[idx][fDop5],
 	FamilyInfo[idx][fMoney],FamilyInfo[idx][fAccoff],FamilyInfo[idx][fAccdip],FamilyInfo[idx][fLoss],FamilyInfo[idx][fVehCol][0],FamilyInfo[idx][fVehCol][1],
 	FamilyInfo[idx][fType],FamilyInfo[idx][fParthnerMarket],FamilyInfo[idx][fParthnerBenz],FamilyInfo[idx][fParthnerService],
-	FamilyInfo[idx][fInfluence],FamilyInfo[idx][fRanks],idx); // 416 + 253 + 80
+	FamilyInfo[idx][fInfluence],FamilyInfo[idx][fRanks],FamilyInfo[idx][fVehPlate],idx); // 416 + 253 + 80
 	query_empty(pearsq, string_mysql);
 	return true;
 }
