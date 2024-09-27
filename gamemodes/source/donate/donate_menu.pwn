@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 15
+#define MAX_DONATE_SERVICE 16
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -31,9 +31,10 @@ stock defaultPriceDonate()
     donatePrice[9] = 190; // Открыть слот транспорта
     donatePrice[10] = 50; // +1 уровень навыка
     donatePrice[11] = 90; // Максимальное знание языка
-    donatePrice[12] = 190; // Стоимость кейса
+    donatePrice[12] = 90; // Стоимость кейса
     donatePrice[13] = 90; // Стоимость ремонта транспорта
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
+    donatePrice[15] = 1499; // Стоимость голд кейса
 }
 
 stock GetPriceGoldDonateMenu(donateid)
@@ -58,13 +59,13 @@ stock showDialogDonateMenu(playerid)
 	                        \n{cccccc}Услуги Аккаунта {666666}>>\
 	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
-                            \n{cccccc}Купить Кейс {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}GOLD {cccccc}Кейс {ffcc00}[%d G]\
                             \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\
                             \n{666666}Где купить Дом? {99ff66}>>\
                             \n{666666}Где купить Бизнес? {99ff66}>>", 
-                            donatePrice[2], donatePrice[12], donatePrice[13]);
+                            donatePrice[2], donatePrice[15], donatePrice[13]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;
 }

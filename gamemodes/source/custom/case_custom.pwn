@@ -16,13 +16,13 @@
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza"
+    "maniac", "village", "yakuza", "gold"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
-    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza"
+    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс"
 };
 
 // Упаковки, которые относятся к кейсу
@@ -32,6 +32,7 @@ stock IsACasePackID(thingPack)
     || thingPack == 6 // maniac
     || thingPack == 7 // village
     || thingPack == 8 // yakuza
+    || thingPack == 9 // gold
         ) return true;
     return false;
 }
@@ -44,6 +45,7 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 6) model = 12260; // maniac
     else if(thingPack == 7) model = 12259; // village
     else if(thingPack == 8) model = 12261; // yakuza
+    else if(thingPack == 9) model = 19918; // gold
     else model = 19918;
     return model;
 }
@@ -55,6 +57,7 @@ stock GetCustomCaseInventoryPack(caseID)
     if(caseID == 0) thingPack = 6; // maniac
     else if(caseID == 1) thingPack = 7; // village
     else if(caseID == 2) thingPack = 8; // yakuza
+    else if(caseID == 3) thingPack = 9; // gold
     return thingPack;
 }
 
@@ -65,6 +68,7 @@ stock GetInventoryPackCustomCase(thingPack)
     if(thingPack == 6) caseID = 0; // maniac
     else if(thingPack == 7) caseID = 1; // village
     else if(thingPack == 8) caseID = 2; // yakuza
+    else if(thingPack == 9) caseID = 3; // gold
     return caseID;
 }
 
@@ -184,12 +188,16 @@ stock CustomThingCase(caseID, selectedThing, &thingId, &thingQuan, &thingPara, &
 stock GetCustomCaseID(const name[])
 {
     new id = -1;
-    for(new i = 0; i < sizeof(customCaseNameID); i++)
+    if(strfind(name,"gold",true) != (-1)) id = -1;
+    else
     {
-        if(!strcmp(name, customCaseNameID[i], true))
+        for(new i = 0; i < sizeof(customCaseNameID); i++)
         {
-            id = i;
-            break;
+            if(!strcmp(name, customCaseNameID[i], true))
+            {
+                id = i;
+                break;
+            }
         }
     }
     return id;
