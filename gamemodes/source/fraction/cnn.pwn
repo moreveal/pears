@@ -40,58 +40,49 @@ function SendAdInZero() {
     gettime(hour, minute, second);
     getdate(year, month, day);
 
-    // Ещё не время или в очереди пусто
-    if (second != 0 || !AdvertiseQueue[0][adsSender]) return 0;
+    for (new q = 0; q < CNN_AD_QUEUE_MAX; q++)
+    {
+        if (isnull(AdvertiseQueue[q][adsText])) continue;
 
-    for (new j = 1; j < CNN_AD_LIST_MAX; j++) {
-        if (!isnull(AdvertiseList[j][cnnAdsText])) continue;
+        // Ещё не время или в очереди пусто
+        if (second != 0 || !AdvertiseQueue[q][adsSender]) return 0;
 
-        strcat(AdvertiseList[j][cnnAdsText], AdvertiseQueue[0][adsText]);
-        strcat(AdvertiseList[j][cnnAdsSender], AdvertiseQueue[0][adsSender]);
-        if (!isnull(AdvertiseQueue[0][adsHandler])) strcat(AdvertiseList[j][cnnAdsHandler], AdvertiseQueue[0][adsHandler]);
-        format(date, sizeof(date), "%02d.%02d.%04d %02d:%02d:%02d", day, month, year, hour, minute, second);
-        strcat(AdvertiseList[j][cnnAdsTime], date);
+        for (new j = 1; j < CNN_AD_LIST_MAX; j++) {
+            if (!isnull(AdvertiseList[j][cnnAdsText])) continue;
 
-        SendAdvertiseMessage(AdvertiseQueue[0][adsText], AdvertiseQueue[0][adsSender], j);
+            strcat(AdvertiseList[j][cnnAdsText], AdvertiseQueue[q][adsText]);
+            strcat(AdvertiseList[j][cnnAdsSender], AdvertiseQueue[q][adsSender]);
+            if (!isnull(AdvertiseQueue[q][adsHandler])) strcat(AdvertiseList[j][cnnAdsHandler], AdvertiseQueue[q][adsHandler]);
+            format(date, sizeof(date), "%02d.%02d.%04d %02d:%02d:%02d", day, month, year, hour, minute, second);
+            strcat(AdvertiseList[j][cnnAdsTime], date);
 
-        DeleteAdFromQueue(0);
-        for (new q = 0; q < CNN_AD_QUEUE_MAX - 1; q++) { // Смещение объявлений
-            if (isnull(AdvertiseQueue[q][adsText])) {
-                AdvertiseQueue[q] = AdvertiseQueue[q + 1];
-                DeleteAdFromQueue(q + 1);
-            }
+            SendAdvertiseMessage(AdvertiseQueue[q][adsText], AdvertiseQueue[q][adsSender], j);
+            DeleteAdFromQueue(q);
+
+            return 1;
         }
 
-        return 1;
+        return 0;
     }
 
     return 0;
 }
 
-stock ClearAds() { // Очищает список взятых объявлений (CNN)
-	for (new i = 0; i < CNN_AD_EDIT_MAX; i++) {
-		TakeAdvertise[i] = -1;
-	}
-}
-
 stock DeleteAdFromEditList(number) { // Удаление объявления (CNN)
-	Advertise[number][adsText][0] = 0;
-	Advertise[number][adsID] = 0;
+    for (new e_Advertise: i; i < e_Advertise; i++) Advertise[number][i] = 0;
 }
 
 stock DeleteAdFromQueue(number) { // Удаление объявления (CNN)
-	AdvertiseQueue[number][adsSender][0] = 0;
-    AdvertiseQueue[number][adsHandler][0] = 0;
-    AdvertiseQueue[number][adsText][0] = 0;
+    for (new e_AdvertiseQueue: i; i < e_AdvertiseQueue; i++) AdvertiseQueue[number][i] = 0;
 }
 
 stock CNN_EditDialog(playerid, i) { // Диалог с обработкой объявления (CNN)
     DP[0][playerid] = i;
 
-	new str1[256];
+	new dialog_text[256];
 	TakeAdvertise[i] = playerid;
-	format(str1, sizeof(str1), "{cccccc}%s{ff9000} [%d]\n{ff9000}Отредактировать\n{99ff66}>> Опубликовать\n{ff6347}<< Отклонить", PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID]);
-	return ShowDialog(playerid, CNN_DIALOG_EDIT_AD, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}** Объявления {ffcc66}CNN", str1, "Выбрать", "Назад");
+	format(dialog_text, sizeof(dialog_text), "{cccccc}%s{ff9000} [%d]\n{ff9000}Отредактировать\n{99ff66}>> Опубликовать\n{ff6347}<< Отклонить", PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID]);
+	return ShowDialog(playerid, CNN_DIALOG_EDIT_AD, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}** Объявления {ffcc66}CNN", dialog_text, "Выбрать", "Назад");
 }
 
 stock CNN_ShowAdInfo(playerid, number)
@@ -202,6 +193,16 @@ stock CNN_EditPriceDialog(playerid, stat = 0)
 
         ShowDialog(playerid, CNN_DIALOG_EDIT_PRICE_ENTER, DIALOG_STYLE_INPUT, "{ff9000}Стоимость объявления", dialog_text, "Выбор", "Назад");
     }
+
+    return 1;
+}
+
+stock CNN_OnPlayerDisconnect(playerid)
+{
+    for (new i = 0; i < CNN_AD_EDIT_MAX; i++) {
+		if (Advertise[i][adsID] == playerid) DeleteAdFromEditList(i), TakeAdvertise[i] = -1;
+		if (TakeAdvertise[i] == playerid) TakeAdvertise[i] = -1;
+	}
 
     return 1;
 }
@@ -376,26 +377,20 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
         case CNN_DIALOG_EDITLIST_AD: 
         {
             if (!response) return 1;
-            for (new i = 0; i < CNN_AD_EDIT_MAX; i++) {
-                if (listitem == i && !isnull(Advertise[i][adsText]) && (TakeAdvertise[i] == -1 || TakeAdvertise[i] == playerid)) {
-                    CNN_EditDialog(playerid, i);
-                }
-                if (listitem == i && !isnull(Advertise[i][adsText]) && (TakeAdvertise[i] != -1 && TakeAdvertise[i] != playerid)) {
-                    new str[128];
-                    format(str, sizeof(str), "[ Мысли ]: Это объявление обрабатывает %s[%d].", PlayerInfo[TakeAdvertise[i]][pName], TakeAdvertise[i]);
-                    SendClientMessage(playerid, COLOR_GREY, str);
-                }
-                if (listitem == i && isnull(Advertise[i][adsText])) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этого объявления не существует.");
-            }
-            return 1;
+
+            new i = List[listitem][playerid];
+            if (isnull(Advertise[i][adsText])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Этого объявления не существует..");
+            if (TakeAdvertise[i] != -1 && TakeAdvertise[i] != playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Это объявление обрабатывает %s[%d].", PlayerInfo[TakeAdvertise[i]][pName], TakeAdvertise[i]);
+
+            return CNN_EditDialog(playerid, i);
         }
         case CNN_DIALOG_EDIT_AD: {
             new i = DP[0][playerid];
             if (TakeAdvertise[i] != playerid) return ErrorMessage(playerid, "{FF6347}Объявление не найдено");
             if (!response) { TakeAdvertise[i] = -1; return pc_cmd_editad(playerid); }
 
+            new str[128];
             if (listitem == 0) { // Отредактировать
-                new str[128];
                 format(str, sizeof(str), "{ff9000}%s[%d]\n{cccccc}Исходный текст объявления:\n%s", PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID], Advertise[i][adsText]);
                 return ShowDialog(playerid, CNN_DIALOG_EDIT_INPUT_AD, DIALOG_STYLE_INPUT, "{cccccc}** Объявление {ffcc66}CNN", str, "Принять", "Отменить");
             } 
@@ -404,7 +399,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                 if (GetAvailableAdSlotsAmount() <= 0) return ErrorMessage(playerid, "{FF6347}Нет доступных слотов для объявлений");
 
                 if (Advertise[i][adsType] == 0) {
-                    new str[128];
                     for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
                         if (!isnull(AdvertiseQueue[j][adsSender])) continue;
                         
@@ -428,13 +422,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         OrganInfo[9][glave] += ServerInfo[65];
 
                         DeleteAdFromEditList(i);
-                        TakeAdvertise[i] = -1;
-                        for (new q = i; q < CNN_AD_EDIT_MAX - 1; q++) { // Смещение объявлений
-                            if (isnull(Advertise[q][adsText])) {
-                                Advertise[q] = Advertise[q + 1];
-                                DeleteAdFromEditList(q + 1);
-                            }
-                        }
 
                         return 1;
                     }
@@ -466,19 +453,13 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         DeleteAdFromEditList(i);
                         
                         TakeAdvertise[i] = -1;
-                        for (new q = i; q < CNN_AD_EDIT_MAX - 1; q++) { // Смещение объявлений
-                            if (isnull(Advertise[q][adsText])) {
-                                Advertise[q] = Advertise[q + 1];
-                                DeleteAdFromEditList(q + 1);
-                            }
-                        }
+                        DeleteAdFromEditList(i);
 
                         return 1;
                     }
                 }
             }
             if (listitem == 2) { // Отклонить
-                new str[128];
                 format(str, sizeof(str), "{ff9000}%s[%d]\n{cccccc}Укажите причину отказа объявления:\n%s", PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID], Advertise[i][adsText]);
                 return ShowDialog(playerid, CNN_DIALOG_CANCEL_INPUT_AD, DIALOG_STYLE_INPUT, "{cccccc}** Объявление {ffcc66}CNN", str, "Принять", "Отменить");
             }
@@ -509,12 +490,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
 
             DeleteAdFromEditList(i);
             TakeAdvertise[i] = -1;
-            for (new q = i; q < CNN_AD_EDIT_MAX - 1; q++) { // Смещение объявлений
-                if (isnull(Advertise[q][adsText])) {
-                    Advertise[q] = Advertise[q + 1];
-                    DeleteAdFromEditList(q + 1);
-                }
-            }
         }
         case CNN_DIALOG_EDIT_PRICE_SELECT:
         {
@@ -575,7 +550,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
 }
 
 CMD:ad(playerid, const params[]) { // Отправка объявления (CNN)
-    if (PlayerInfo[playerid][pSoska] < 22 && gettime() - PlayerInfo[playerid][pCDAd] < CNN_AD_COOLDOWN) {
+    if (PlayerInfo[playerid][pSoska] < 22 && server != 0 && gettime() - PlayerInfo[playerid][pCDAd] < CNN_AD_COOLDOWN) {
         new str[128];
         format(str, sizeof(str), "{FF6347}Нельзя подавать объявления так часто [ Осталось: %d сек. ]", CNN_AD_COOLDOWN - (gettime() - PlayerInfo[playerid][pCDAd]));
         return ErrorMessage(playerid, str);
@@ -617,16 +592,21 @@ CMD:editad(playerid) { // Редактирование объявления (CNN
 	if(!GetAccessRankOrg(playerid, g, 79, NO_FBI)) return 1;
 
 	new summary_text[64 * 50 + 50 * 2];	
-	for (new i = 0; i < CNN_AD_EDIT_MAX; i++) {
+	for (new quan, i = 0; i < CNN_AD_EDIT_MAX; i++) {
 		if (Advertise[i][adsText]) {
-			format(summary_text, sizeof(summary_text), "%s{ff9000}%d. {cccccc}%s[%d]\n", summary_text, i+1, PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID]);
-		}
+			format(summary_text, sizeof(summary_text), "%s{ff9000}%d. {cccccc}%s[%d]\n", summary_text, quan + 1, PlayerInfo[Advertise[i][adsID]][pName], Advertise[i][adsID]);
+            List[quan++][playerid] = i;
+        }
 	}
 
-	if (isnull(Advertise[0][adsText])) return ErrorMessage(playerid, "{FF6347}Список объявлений пуст");
+    for (new i = 0; i < CNN_AD_EDIT_MAX; i++)
+    {
+        if (!isnull(Advertise[i][adsText])) {
+            return ShowDialog(playerid, CNN_DIALOG_EDITLIST_AD, DIALOG_STYLE_LIST, "{cccccc}** Объявления {ffcc66}CNN", summary_text, "Выбрать", "Отменить");
+        }
+    }
 
-	ShowDialog(playerid, CNN_DIALOG_EDITLIST_AD, DIALOG_STYLE_LIST, "{cccccc}** Объявления {ffcc66}CNN", summary_text, "Выбрать", "Отменить");
-	return 1;
+	return ErrorMessage(playerid, "{FF6347}Список объявлений пуст");
 }
 
 alias:checkad("adinfo", "adcheck")

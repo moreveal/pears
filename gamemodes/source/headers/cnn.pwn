@@ -13,7 +13,7 @@ enum e_Advertise {
 	adsText[128]
 };
 new Advertise[CNN_AD_EDIT_MAX][e_Advertise];
-new TakeAdvertise[CNN_AD_EDIT_MAX];
+new TakeAdvertise[CNN_AD_EDIT_MAX] = {-1, ...};
 
 // Очередь перед публикацией
 enum e_AdvertiseQueue {
