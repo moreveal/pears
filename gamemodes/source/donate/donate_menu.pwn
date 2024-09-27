@@ -167,7 +167,7 @@ stock GetDonate(playerid)
     SetPVarInt(playerid,"acall_donate",1);
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка платежей..","*","");
     new string_mysql[200];
-    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql),"SELECT * FROM `orders` WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'", 
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql),"SELECT * FROM `orders` WHERE `name` = '%e' AND `item_id` = '0' AND `status` = 'paid'", 
         PlayerInfo[playerid][pName]);
     mysql_tquery(pearsq_3, string_mysql, "Call_Donate", "d", playerid);
     return true;
@@ -209,7 +209,7 @@ public Call_Donate(playerid)
     new string_mysql[200];
     new string[300];
     // Отмечаем инфу о том, что голда была выдана на аккаунт
-    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "UPDATE `orders` SET `status` = 'completed' WHERE `name` = '%s' AND `item_id` = '0' AND `status` = 'paid'",
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "UPDATE `orders` SET `status` = 'completed' WHERE `name` = '%e' AND `item_id` = '0' AND `status` = 'paid'",
         PlayerInfo[playerid][pName]);
     mysql_tquery(pearsq_3, string_mysql);
 

@@ -68,7 +68,7 @@ public OnPasswordHashVzlomOffline(playerid, const str_name[], const password[], 
     bcrypt_get_hash(dest);
 
     new string[180];
-	mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e' WHERE `Name` = '%s'", dest, str_name);
+	mysql_format(pearsq, string,sizeof(string),"UPDATE `pp_igroki` SET `Key` = '%e' WHERE `Name` = '%e'", dest, str_name);
     query_empty(pearsq, string);
 
     format(string, sizeof(string), "Администратор %s сгенерировал%s новый пароль для вашего аккаунта. Никнейм: %s | Пароль: %s", 
