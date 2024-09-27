@@ -65,6 +65,7 @@ CMD:ahelpmedia(playerid)
     format(stro,sizeof(stro),"\n{cccccc}/animbot /bottext /bot /delbot - Взаимодействие с ботами"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/cobject /eobject /dobject /map - Маппинг"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n{cccccc}/map /setskingro /setskinmp /makeparty /givegungro - Для мероприятия"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}/paygold - Передать золото игроку"), strcat(sctringo,stro);
     ShowDialog(playerid,1187,DIALOG_STYLE_MSGBOX,"{ff9000}Медиа",sctringo,"Oк","");
     return 1;
 }
