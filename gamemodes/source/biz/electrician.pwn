@@ -622,26 +622,6 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
     return 1;
 }
 
-CMD:agete(playerid)
-{
-    AgetCarElectrician(playerid);
-    return 1;
-}
-
-CMD:gojobe(playerid)
-{
-    dialogElectricianJob(playerid);
-    return 1;
-}
-
-CMD:rhouseunix(playerid)
-{
-    if(PlayerInfo[playerid][pDom] == 0) return 0;
-    DomInfo[PlayerInfo[playerid][pDom]][dElectroUnix] = 0;
-    SaveElectro_Dom(PlayerInfo[playerid][pDom]);
-    return 1;
-}
-
 stock AgetCarElectrician(playerid)
 {
     ShowDialog(playerid, ELECTRICIAN_DIALOG_AGETCAR, DIALOG_STYLE_TABLIST, "{ff9000}Транспорт Электриков", "Ford Econoline", "Выбрать", "Выход");

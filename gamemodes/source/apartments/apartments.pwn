@@ -710,46 +710,6 @@ stock GetPlayerApartmentsId(playerid)
     return apid;
 }
 
-CMD:checkroom(playerid)
-{
-    new world = GetPlayerVirtualWorld(playerid);
-    new result = -1;
-    for(new id; id < MAX_APARTMENTS; id++)
-    {
-        if(Apartments[id][apStatus] == 0) continue;
-        if(world >= Apartments[id][apWorldDefineEntrance] 
-        && world <= Apartments[id][apWorldDefineEntrance] + MAX_APARTMENTS_ROOM_IN_FLOOR * Apartments[id][apFloor] + Apartments[id][apFloor]) 
-        {
-            result = id;
-            break;
-        }
-        else continue;
-    }
-    if(result == -1) return 0;
-    SendClientMessageToAll(-1, "Номер квартирки:%d",GetPlayerApartmentsRoom(playerid,result));
-    return 1;
-}
-
-CMD:checkroomfloor(playerid)
-{
-    new world = GetPlayerVirtualWorld(playerid);
-    new result = -1;
-    for(new id; id < MAX_APARTMENTS; id++)
-    {
-        if(Apartments[id][apStatus] == 0) continue;
-        if(world >= Apartments[id][apWorldDefineEntrance] 
-        && world <= Apartments[id][apWorldDefineEntrance] + MAX_APARTMENTS_ROOM_IN_FLOOR * Apartments[id][apFloor] + Apartments[id][apFloor]) 
-        {
-            result = id;
-            break;
-        }
-        else continue;
-    }
-    if(result == -1) return 0;
-    SendClientMessageToAll(-1, "Номер квартирки:%d",GetRoomIdInFloor(playerid,result,0));
-    return 1;
-}
-
 stock TempBlockBuyRoom(playerid)
 {
     new haveroom;
@@ -1609,12 +1569,9 @@ function Call_OfflineGiveApartments(roomid)
 {
     new rows;
     cache_get_row_count(rows);
-    SendClientMessageToAll(-1,"%d",rows);
     new datad1, datad2[24], datad[10],string[16],result = -1,f_str[144];
     cache_get_value_name_int(0, "user_id", datad1);
     cache_get_value_name(0, "Name", datad2, sizeof(datad2));
-    SendClientMessageToAll(-1,"%d",datad1);
-    SendClientMessageToAll(-1,"%s",datad2);
     for(new i; i < 10; i++)
     {
         format(string, sizeof(string), "pApartmentsRoom%d",i);
