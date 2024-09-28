@@ -197,12 +197,10 @@ CMD:wash_hands(playerid)
     || Hand[playerid] >= 1 
     || Hold[playerid] >= 1) return false;
 
-    new Float:sink_position[4];
-    if(IsPlayerInSink(playerid, sink_position[0], sink_position[1], sink_position[2], sink_position[3]))
+    if(IsANearbyObject(playerid) == 6)
     {
         if(PlayerInfo[playerid][pQuest][2] == 0) return ErrorMessage(playerid, "{FF6347}Неверный порядок квеста\n{ffcc66}Ваш персонаж хочет в душ");
 
-        PPSetPlayerPos(playerid, sink_position[0], sink_position[1], sink_position[2]), PPSetPlayerFacingAngle(playerid, sink_position[3]);
         TogglePlayerControllable(playerid, false);
 		ApplyAnimation(playerid,"INT_HOUSE","wash_up",3.5,false,false,false,false,false, SYNC_ALL);
 		GetPlayerPos(playerid, Job_X[playerid], Job_Y[playerid], Job_Z[playerid]);

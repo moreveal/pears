@@ -30,7 +30,23 @@ stock GetDynamicObjectWorkbench(objectid)
 {
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
-    if(model == 12173) return true;
+    if(model == 12173 || model == 12292) return true;
+	return false;
+}
+
+stock GetDynamicObjectToilet(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 2528 || model == 2738 || model == 2514 || model == 2521 || model == 2525) return true;
+	return false;
+}
+
+stock GetDynamicObjectSink(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 2524 || model == 2515 || model == 2136 || model == 2132 || model == 2130) return true;
 	return false;
 }
 
@@ -47,7 +63,7 @@ stock GetDynamicObjectFridge(objectid)
 {
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
-    if(model == 19916 || model == 12228 || model == 12204 || model == 2140) return true;
+    if(model == 19916 || model == 12228 || model == 12204 || model == 2140 || model == 2127) return true;
 	return false;
 }
 
@@ -76,6 +92,22 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         if(GetDynamicObjectWorkbench(current_object)) return 2; // 1 Верстак
         if(GetDynamicObjectFridge(current_object)) return 3; // 2 Холодос
         if(GetDynamicObjectElectro(current_object)) return 4; // 3 Щиток для электричества
+        if(GetDynamicObjectToilet(current_object))
+        {
+            new Float:x, Float:y, Float:z;
+            GetDynamicObjectPos(current_object, x, y, z);
+            new Float:a = atan2(player_pos[1] - y, player_pos[0]-x) + 90.0; // Направляем игрока на объект.
+            PPSetPlayerFacingAngle(playerid, a);
+            return 5; 
+        }// Туалет
+        if(GetDynamicObjectSink(current_object))
+        {
+            new Float:x, Float:y, Float:z;
+            GetDynamicObjectPos(current_object, x, y, z);
+            new Float:a = atan2(player_pos[1] - y, player_pos[0]-x) + 90.0; // Направляем игрока на объект.
+            PPSetPlayerFacingAngle(playerid, a);
+            return 6; 
+        }// Раковина
     }
     return 0;
 }
