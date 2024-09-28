@@ -404,12 +404,14 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         new bool:giveLimitedVehicle = false;
         switch(random(40))
         {
-            case 8, 9, 10, 11:
-            {
+            case 8, 9, 10, 11:{
                 if(strfind(name,"gold",true) != (-1)) givePremiumVehicle = true; // Premium
                 else givePremiumVehicle = false;
             }
-            case 1: giveLimitedVehicle = true;// Limited
+            case 1:{
+                if(strfind(name,"gold",true) != (-1)) giveLimitedVehicle = true;// Limited
+                else giveLimitedVehicle = false;// Limited
+            }
             default: givePremiumVehicle = giveLimitedVehicle = false; // Прочие тс
         }
 
