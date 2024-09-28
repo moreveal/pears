@@ -851,7 +851,7 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
         }
         else
         {
-            mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%s'", ApartmentsRoom[roomid][aprOwn]);
+            mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", ApartmentsRoom[roomid][aprOwn]);
             mysql_tquery(pearsq, string, "Call_OfflineBuyApartments", "d", roomid);
         }
 	    if(PlayerInfo[playerid][pAchieve][10] == 0) AchievePlayer(playerid, 10, 1);
@@ -897,7 +897,7 @@ function Call_OfflineBuyApartments(roomid)
     new pluslave = datad1 + ApartmentsRoom[roomid][aprSellOwn];
     if(ApartmentsRoom[roomid][aprOwn] == datad2) 
     {
-        mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `Account` = '%d', `pApartmentsRoom%d` = '0' WHERE `user_id` = '%e'",pluslave, result, datad2);
+        mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `Account` = '%d', `pApartmentsRoom%d` = '0' WHERE `user_id` = '%d'",pluslave, result, datad2);
         query_empty(pearsq, f_str);
     }
 	return true;
@@ -917,7 +917,7 @@ stock UpdateLabelApartments(roomid)
         ApartmentsRoom[roomid][aprOwnName]
         );
     }
-    else
+    else if(ApartmentsRoom[roomid][aprOwn] > 0)
     {
         format(label, sizeof(label),
         "{ff9000}Квартира №%d\n" \
@@ -925,6 +925,17 @@ stock UpdateLabelApartments(roomid)
 
         roomid+1,
         ApartmentsRoom[roomid][aprOwnName]
+        );
+    }
+    else
+    {
+        format(label, sizeof(label),
+        "{ff9000}Квартира №%d\n" \
+        "{FFFFFF}[ Продается за: {44ff99}%d${FFFFFF} ]\n" \
+        "{FFFFFF}[ Владелец: Нет ]",
+
+        roomid+1,
+        Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apPrice]
         );
     }
     UpdateDynamic3DTextLabelText(ApartmentsIntLabel[roomid],-1,label);
@@ -1574,10 +1585,10 @@ cmd:giveapartmentsroom(playerid,const params[])
         ApartmentsRoom[params[1]-1][aprStatus] = 1;
         ApartmentsRoom[params[1]-1][aprSellOwn] = 0;
         format(ApartmentsRoom[params[1]-1][aprOwnName], 24,"%s", PlayerInfo[playa][pName]);
-        mysql_save(playa, 8);
-        PlayerPlayMusic(playa);
         SaveApartmentsRoom(params[1]-1);
         UpdateLabelApartments(params[1]-1);
+        mysql_save(playa, 8);
+        PlayerPlayMusic(playa);
 		format(string, sizeof(string),"{0088ff}* [! ! !]: {FFFFFF}Администратор выдал вам Квартиру № %d {0088ff}[ /myhouse ]",params[1]);
 		ShowDialog(playa,1700, 0, "{0088ff}*** {ffffff}  Установка Квартиры {0088ff}***", string, "Ок", "");
 		format(string, sizeof(string), "{0088ff}* [! ! !]: {FFFFFF}Администратор выдал вам Квартиру № %d {0088ff}[ /myhouse ]",params[1]);
@@ -1585,9 +1596,49 @@ cmd:giveapartmentsroom(playerid,const params[])
 		BizLog("givea", PlayerInfo[playa][pID], PlayerInfo[playa][pName], PlayerInfo[playa][pPlaIP], params[1], 0, "Получил от Администратора");
 		AdminLog("givea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playa][pID], PlayerInfo[playa][pName], PlayerInfo[playa][pPlaIP], params[1], "Выдал квартиру");
 	}
-    else ErrorMessage(playerid,"{ff6347}Квартиру можно выдать только игроку онлайн");
+    else
+    {
+        if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
+        mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `Name` = '%e'", tmp);
+        mysql_tquery(pearsq, string, "Call_OfflineGiveApartments", "d", params[1]-1);
+    }
     return 1;
 }
+
+function Call_OfflineGiveApartments(roomid)
+{
+    new rows;
+    cache_get_row_count(rows);
+    SendClientMessageToAll(-1,"%d",rows);
+    new datad1, datad2[24], datad[10],string[16],result = -1,f_str[144];
+    cache_get_value_name_int(0, "user_id", datad1);
+    cache_get_value_name(0, "Name", datad2, sizeof(datad2));
+    SendClientMessageToAll(-1,"%d",datad1);
+    SendClientMessageToAll(-1,"%s",datad2);
+    for(new i; i < 10; i++)
+    {
+        format(string, sizeof(string), "pApartmentsRoom%d",i);
+        cache_get_value_name_int(0, "string", datad[i]);
+        if(datad[i] == 0) 
+        {
+            result = i;
+            break;
+        }
+    }
+
+    ApartmentsRoom[roomid][aprOwn] = datad1;
+    format(ApartmentsRoom[roomid][aprOwnName], 24,"%s", datad2);
+    ApartmentsRoom[roomid][aprStatus] = 1;
+    ApartmentsRoom[roomid][aprSellOwn] = 0;
+    SaveApartmentsRoom(roomid);
+    UpdateLabelApartments(roomid);
+
+    mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `pApartmentsRoom%d` = '%d' WHERE `user_id` = '%d'", result,roomid+1, datad1);
+    query_empty(pearsq, f_str);
+
+	return true;
+}
+
 stock arestroom(playerid, roomid)
 {
 	new g = fraction(playerid);
