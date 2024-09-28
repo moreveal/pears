@@ -18,20 +18,6 @@
 #endif
 */
 
-/*
-    CREATE TABLE `offense` (
-    `id` int(11) NOT NULL,
-    `user_id` int(11) NOT NULL COMMENT 'ID игрока',
-    `name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Ник игрока',
-    `intruder_user_id` int(11) NOT NULL COMMENT 'ID нарушителя',
-    `intruder_name` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Ник нарушителя',
-    `date` blob NOT NULL COMMENT 'Дата',
-    `messages` blob NOT NULL COMMENT 'Сообщения нарушителя'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-    ALTER TABLE `offense`
-        ADD UNIQUE KEY `id` (`id`);
-*/
 enum e_Offense {
     oncPID, // ID аккаунта игрока, сообщившего о нарушении
     oncPlayerName[MAX_PLAYER_NAME + 1], // Никнейм игрока

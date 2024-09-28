@@ -1376,3 +1376,21 @@ CMD:orderweapons(playerid) {
 
 	return 1;
 }
+
+cmd:toearth(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вернуть игрока на землю из космический экспедиции [ /toearth ID ]");
+	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(PlayerInfo[params[0]][pBkyrenie] >= 2)
+	{
+		new str[128];
+		exitplanet(params[0]);
+		format(str, sizeof(str), " Игрок %s был отправлен на землю", PlayerInfo[params[0]][pName]);
+		SendClientMessage(playerid, COLOR_LIGHTBLUE, str);
+		format(str, sizeof(str), " Администратор %s отправил меня на землю.", PlayerInfo[playerid][pName]);
+		SendClientMessage(params[0], COLOR_LIGHTBLUE, str);
+	} else return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок не находится в космосе.");
+
+	return 1;
+}

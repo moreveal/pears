@@ -350,10 +350,12 @@ function PDatabase_HackDraw(playerid) {
         
         new Float: startX, Float: endX;
         PDatabase_Hack_GetBoxPos(playerid, index, startX, endX);
-
-        if (endX > 0.0 && endX < barCurrent) {
-            PDatabase_HackFail(playerid);
-            return 0;
+        
+        if (server != 0) { // Фейл прохождения при позднем нажатии (только для основного сервера)
+            if (endX > 0.0 && endX < barCurrent) {
+                PDatabase_HackFail(playerid);
+                return 0;
+            }
         }
     }
 
@@ -478,6 +480,12 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
             // Для тестового сервера время ожидания - 1 минута
             if (server == 0) policeDatabasePlayerInfo[playerid][pdpiHackGameDuration] = 60;
             
+            if (fractionid == 0 && PlayerInfo[playerid][pDatabaseActive] == DATABASE_ACTIVE_DATA_SORT) {
+                // Актив "Сортировка данных"
+                PlayerInfo[playerid][pDatabaseActive] = DATABASE_ACTIVE_NONE;
+                policeDatabasePlayerInfo[playerid][pdpiHackGameDuration] /= 2;
+            }
+            
             PDatabase_HackDraw(playerid);
         }
         case POLICE_DATABASE_HACK_STAGE_PASSWORD:
@@ -547,7 +555,12 @@ stock PDatabase_SetHackStage(playerid, fractionid, e_PoliceDatabaseHackStage: st
             policeDatabasePasswordInfo[fractionid][pdiPassword][0] = EOS;
             strcat(policeDatabasePasswordInfo[fractionid][pdiPassword], tempPassword);
 
-            if (server == 0) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кажется... пароль от базы данных - \"%s\" [ Только на тестовом сервере ]", policeDatabasePasswordInfo[fractionid][pdiPassword]);
+            if (server == 0) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кажется... пароль от базы данных: %s [ Только на тестовом сервере ]", policeDatabasePasswordInfo[fractionid][pdiPassword]);
+
+            if (fractionid == 0 && PlayerInfo[playerid][pDatabaseActive] == DATABASE_ACTIVE_READY_MADE) {
+                PlayerInfo[playerid][pDatabaseActive] = DATABASE_ACTIVE_NONE;
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Информаторы заранее сообщили мне пароль от базы данных: %s", policeDatabasePasswordInfo[fractionid][pdiPassword]);
+            }
 
             PlayerPlaySound(playerid, 17803);
             ShowDialog(playerid, POLICE_DATABASE_DIALOG_HACKPASS_START, DIALOG_STYLE_MSGBOX, "{ff9000}Второй этап {cccccc}| Подбор пароля",
@@ -2044,6 +2057,8 @@ stock PDatabase_ExplodeGenerator(fractionid, generatorid, playerid = INVALID_PLA
 
     PDatabase_UpdateResetTime(fractionid);
 
+    policeDatabaseGeneratorInfo[fractionid][generatorid][pdgiBroken] = true;
+
     return 1;
 }
 
@@ -2084,6 +2099,9 @@ stock PDatabase_ExplodeShield(fractionid, shieldid, playerid = INVALID_PLAYER_ID
 
     PDatabase_UpdateResetTime(fractionid);
 
+    policeDatabaseShieldInfo[shieldid][pdsiBreaked] = true;
+    policeDatabaseShieldInfo[shieldid][pdsiFailCount] = 0;
+
     return 0;
 }
 
@@ -2105,7 +2123,6 @@ stock PDatabase_StopGeneratorBroke(playerid, stat)
         new fractionid = PDatabase_GetFractionIDByPos(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid]);
         new generatorid = policeDatabasePlayerInfo[playerid][pdpiGeneratorID];
 
-        policeDatabaseGeneratorInfo[fractionid][generatorid][pdgiBroken] = true;
         PDatabase_ExplodeGenerator(fractionid, generatorid, .playerid = playerid);
         {
             new str[256];

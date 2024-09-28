@@ -1,12 +1,3 @@
-/*
-    CREATE TABLE `minewar` (
-    `user_id` int(11) NOT NULL COMMENT 'ID аккаунта',
-    `date` int(11) NOT NULL COMMENT 'Дата последней игры'
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-    ALTER TABLE `minewar`
-    ADD UNIQUE KEY `id` (`user_id`);
-*/
 function MineWar_Load(playerid)
 {
     new rows;
