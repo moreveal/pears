@@ -59,7 +59,7 @@ stock IsThingNotVariable(i)
     || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
     || i == 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
     || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
-    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229
+    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229 || i == 240
     || IsANaborsEdoi(i)) return 0;
     return 1;
 }
@@ -440,7 +440,6 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 thingId = ThingPremiumVehiclecaseGift[thingTemp];
             }
         }
-
         if (!givePremiumVehicle && !giveLimitedVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных/премиум машин в кейсах
         {
             if (ThingVehicleQuan == 0)
