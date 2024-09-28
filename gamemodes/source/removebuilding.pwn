@@ -707,5 +707,7 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 1415, 732.851, -1332.900, 12.687, 0.250);
 	RemoveBuildingForPlayer(playerid, 1439, 732.726, -1341.770, 12.632, 0.250);
 	//--------------------------------------------------------------------------
+
+	RemoveBuildingForPlayer(playerid, 4715, 1567.7188, -1248.6953, 102.5234, 0.25); // Убираем окна у Неоновой башни
 	return 1;
 }
