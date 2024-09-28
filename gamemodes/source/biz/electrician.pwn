@@ -47,6 +47,7 @@ stock dialogElectricianJobComplete(playerid,type)
 								\nили сесть в Ford Econoline и продолжить работу", type == 2 ? "Электрозарядная станция отремонтирована" : "Дом подключен к электростанции");
 	format(string,sizeof(string),"{ff9000}Электрики \t");
 	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX, string, lines, "*", "");
+    PlayerPlaySound(playerid,6401,0,0,0);
 	return true;
 }
 
@@ -182,7 +183,7 @@ stock FindHouseFromElectrician(playerid)
 
 	CreateElectrician(playerid, bizId, domId, 0);
 	new string[200];
-	format(string,sizeof(string),"{ff9000}Ближайшый дом для подключения отмечен на карте\n{cccccc}Бизнес № %d | Дом № %d\nОплата за подключения: {99ff66}%d$", 
+	format(string,sizeof(string),"{ff9000}Ближайший дом для подключения отмечен на карте\n{cccccc}Бизнес № %d | Дом № %d\nОплата за подключения: {99ff66}%d$", 
 		bizId, domId, BizzInfo[bizId][bElectroPayForConnect]);
 	SuccessMessage(playerid, string);
 
@@ -252,7 +253,7 @@ stock CloseElectrician(playerid)
 {
     new b = GetPVarInt(playerid,"job_electrician"), term = GetPVarInt(playerid,"job_electrician_point"), type = GetPVarInt(playerid,"job_electrician_type");
     if(type == 2) BizzInfo[b][bItem][term] = 0, BizzInfo[b][bDeposit] -= BizzInfo[b][bElectroPayForRepair], PlayerInfo[playerid][pSalary] += BizzInfo[b][bElectroPayForRepair];
-    else DomInfo[term][dElectroUnix] = gettime(),DomInfo[term][dElectroConnect] = b, BizzInfo[b][bDeposit] -= BizzInfo[b][bElectroPayForConnect], PlayerInfo[playerid][pSalary] += BizzInfo[b][bElectroPayForConnect], SaveElectro_Dom(term);
+    else DomInfo[term][dElectroUnix] = gettime(),DomInfo[term][dElectroStatus] = 0,DomInfo[term][dElectroConnect] = b, BizzInfo[b][bDeposit] -= BizzInfo[b][bElectroPayForConnect], PlayerInfo[playerid][pSalary] += BizzInfo[b][bElectroPayForConnect], SaveElectro_Dom(term);
    
     PlayerInfo[playerid][pPlacement] = 14;
     BizzInfo[b][bUpdate] = 1;

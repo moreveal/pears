@@ -376,15 +376,19 @@ stock IsAApartmentsTable(playerid)
 	new roomID = GetPlayerApartmentsRoom(playerid,result);
 	if(Apartments[result][apClass] == 0)
 	{
-		if(IsPlayerInRangeOfPoint(playerid,1.0,Apartments[result][apRoomCoordOneExit][0],Apartments[result][apRoomCoordOneExit][1],Apartments[result][apRoomCoordOneExit][2])) return roomID;
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,Apartments[result][apRoomCoordTwoExit][0],Apartments[result][apRoomCoordTwoExit][1],Apartments[result][apRoomCoordTwoExit][2])) return roomID;
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,Apartments[result][apRoomCoordThreeExit][0],Apartments[result][apRoomCoordThreeExit][1],Apartments[result][apRoomCoordThreeExit][2])) return roomID;
-		else if(IsPlayerInRangeOfPoint(playerid,1.0,Apartments[result][apRoomCoordFourExit][0],Apartments[result][apRoomCoordFourExit][1],Apartments[result][apRoomCoordFourExit][2])) return roomID;
+		if(IsPlayerInRangeOfPoint(playerid,1.0,600.5263,-1374.9799,48.0580)) return roomID;
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,592.7370,-1376.9614,48.0440)) return roomID;
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,570.6313,-1376.5552,48.0580)) return roomID;
+		else if(IsPlayerInRangeOfPoint(playerid,1.0,555.9232,-1383.6599,48.0520)) return roomID;
 	}
 	else if(Apartments[result][apClass] == 1)
 	{
 		if(IsPlayerInRangeOfPoint(playerid,1.0, 1503.5256, 1378.5081, 10.9010)) return roomID;
 		else if(IsPlayerInRangeOfPoint(playerid,1.0,1494.6069,1268.5408,10.8507)) return roomID;
+	}
+	else if(Apartments[result][apClass] == 2)
+	{
+		if(IsPlayerInRangeOfPoint(playerid,1.0, 1503.5256, 1378.5081, 10.9010)) return roomID;
 	}
     return -1;
 }

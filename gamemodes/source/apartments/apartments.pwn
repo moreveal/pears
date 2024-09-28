@@ -50,7 +50,7 @@ new Apartments[MAX_APARTMENTS][apartmentsEnum];
 
 new ApartmentsClass[][] = // Название квартирного дома
 {
-    "Обычный","None","None","None","None"
+    "Обычный","Элитный(Exculsiv)","Элитный","None","None"
 };
 
 enum apartmentsRoomEnum
@@ -146,24 +146,24 @@ stock CreateApartments(playerid,id,class,floor)
 
 stock UpdateClassApartments(id,class,status)
 {
-    if(class == 0)
+    if(class == 0) // Старые квартиры
     {
         //Ценники
-        Apartments[id][apPrice] = 500000;
-        Apartments[id][apPriceGold] = 300;
+        Apartments[id][apPrice] = 3000000;
+        Apartments[id][apPriceGold] = 900;
 
         // Интерьер
         Apartments[id][apInt] = 0;
 
         //лифт 0 этаж
-        Apartments[id][apElevatorCoord][0] = 578.7897;
-        Apartments[id][apElevatorCoord][1] = -1367.3628;
+        Apartments[id][apElevatorCoord][0] = 580.6958;
+        Apartments[id][apElevatorCoord][1] = -1370.7643;
         Apartments[id][apElevatorCoord][2] = 14.4780;
 
         //лифт на этажах
-        Apartments[id][apElevatorCoordFloor][0] = 601.7897;
-        Apartments[id][apElevatorCoordFloor][1] = -1358.3628;
-        Apartments[id][apElevatorCoordFloor][2] = 48.0660;
+        Apartments[id][apElevatorCoordFloor][0] = 539.6387;
+        Apartments[id][apElevatorCoordFloor][1] = -1373.3655;
+        Apartments[id][apElevatorCoordFloor][2] = 48.0500;
 
         //Вход на 0 этаже
         Apartments[id][apHolCoord][0] = 575.7531;
@@ -204,17 +204,17 @@ stock UpdateClassApartments(id,class,status)
         Apartments[id][apRoomCoordFourExit][1] = -1378.0646;
         Apartments[id][apRoomCoordFourExit][2] = 48.0660;
     }
-    else if(class == 1)
+    else if(class == 1 || class == 2) // Новые квартиры, class 1 это с виктора квартирой, class 2 без
     {
         //Ценники
-        Apartments[id][apPrice] = 2000000;
-        Apartments[id][apPriceGold] = 1200;
+        Apartments[id][apPrice] = 29000000;
+        Apartments[id][apPriceGold] = 12000;
 
         // Интерьер
         Apartments[id][apInt] = 163;
 
         //лифт 0 этаж
-        Apartments[id][apElevatorCoord][0] = 1529.1094;
+        Apartments[id][apElevatorCoord][0] = 1529.0000;
         Apartments[id][apElevatorCoord][1] = 1445.2300;
         Apartments[id][apElevatorCoord][2] = 10.9330;
 
@@ -245,7 +245,7 @@ stock UpdateClassApartments(id,class,status)
         Apartments[id][apRoomCoordFour][1] = 1437.6134;
         Apartments[id][apRoomCoordFour][2] = 10.8785;
  
-        //Выходы из квартир(Внутри каждой) 1502.9694,1374.5793,10.9010
+        //Выходы из квартир(Внутри каждой)
         Apartments[id][apRoomCoordOneExit][0] = 1502.9694; 
         Apartments[id][apRoomCoordOneExit][1] = 1374.5793;
         Apartments[id][apRoomCoordOneExit][2] = 10.9010;
@@ -262,9 +262,12 @@ stock UpdateClassApartments(id,class,status)
         Apartments[id][apRoomCoordFourExit][1] = 1374.5793;
         Apartments[id][apRoomCoordFourExit][2] = 10.9010;
 
-        Apartments[id][apRoomCoordExclusiveExit][0] = 1494.0314;
-        Apartments[id][apRoomCoordExclusiveExit][1] = 1264.2478;
-        Apartments[id][apRoomCoordExclusiveExit][2] = 10.8507;
+        if(class == 1)
+        {
+            Apartments[id][apRoomCoordExclusiveExit][0] = 1494.0314;
+            Apartments[id][apRoomCoordExclusiveExit][1] = 1264.2478;
+            Apartments[id][apRoomCoordExclusiveExit][2] = 10.8507;
+        }
     }
     if(status == 1) SaveApartments(id);
     return 1;
@@ -401,6 +404,7 @@ stock CreatePickUpApartmentsFloor(id)
 
 stock ApartmentsHolEnterPickUp(playerid)
 {
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не используете лаунчер\n{cccccc}Зайти в данный интерьер нельзя");
     for(new i;i<MAX_APARTMENTS;i++)
     {
         if(!IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[i][apCoord][0], Apartments[i][apCoord][1], Apartments[i][apCoord][2])) continue;
@@ -412,6 +416,7 @@ stock ApartmentsHolEnterPickUp(playerid)
             break;
         }
     }
+    return 1;
 }
 
 stock ApartmentsEnterPickUp(playerid)
@@ -716,10 +721,27 @@ CMD:checkroomfloor(playerid)
     return 1;
 }
 
+stock TempBlockBuyRoom(playerid)
+{
+    new haveroom;
+    for(new i; i < 10; i++)
+    {
+        if(PlayerInfo[playerid][pApartmentsRoom][i] != 0)
+        {
+            haveroom = 1;
+            break;
+        }
+    }
+    new year, month,day;
+ 	getdate(year, month, day);
+  	if(month == 10 && day >= 7) return 0;
+    else return haveroom;
+}
 stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - gold, 2 $ own
 {
 	if(typeBuy != 0 && typeBuy != 1 && typeBuy != 2) return 1;
 	new result = -1,haveroom = -1;
+    if(TempBlockBuyRoom(playerid)) return ErrorMessage(playerid,"{ff6347}Временно ограничено кол.во квартир на аккаунте. Доступна к покупке только одна квартира.\n\n Лимит снимится 7 октября");
     for(new i; i < 10; i++)
     {
         if(PlayerInfo[playerid][pApartmentsRoom][i] != 0)
