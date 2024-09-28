@@ -595,22 +595,33 @@ stock IsPlayerInCaptArea(playerid)
 {
 	if (!CaptInfo[cCaptStat]) return false;
 
-	new g = CaptInfo[cZoneID];
+	new g = CaptInfo[cZoneID]; // Гангзона, на которой проходит капт
+	new const squares = 2; // Радиус квадратов от основного, внутри которых засчитывается убийство
+	new const Float: distance = 60.0; // Дистанция от гангзоны, на которой убийство всё еще будет засчитываться
+	new const Float: side = floatabs(GangZone[g][gzMaxX] - GangZone[g][gzMinX]); // Длина одной стороны квадрата
 
-	const squares = 2; // Радиус квадратов от основного, внутри которых засчитывается убийство
+	// Находим ближайшую к игроку гангзону
+	new nearest_g = 0;
 	for (new i = 0; i < sizeof(GangZone); i++)
 	{
-		if (i == g && IsPlayerInSquare(playerid, GangZone[i][gzMinX] - 60.0, GangZone[i][gzMinY] - 60.0, GangZone[i][gzMaxX] + 60.0, GangZone[i][gzMaxY] + 60.0))
+		if (GetPlayerDistanceFromPoint(playerid, GangZone[i][gzMinX] + side / 2, GangZone[i][gzMinY] + side / 2, Protect_Z[playerid]) <
+			GetPlayerDistanceFromPoint(playerid, GangZone[nearest_g][gzMinX] + side / 2, GangZone[nearest_g][gzMinY] + side / 2, Protect_Z[playerid]))
 		{
-			new const Float: side = floatabs(GangZone[g][gzMaxX] - GangZone[g][gzMinX]);
-
-			new Float: minX = GangZone[g][gzMinX] - side * float(squares),
-				Float: maxX = GangZone[g][gzMaxX] + side * float(squares),
-				Float: minY = GangZone[g][gzMinY] - side * float(squares),
-				Float: maxY = GangZone[g][gzMaxY] + side * float(squares);
-
-			return (Protect_X[playerid] >= minX && Protect_X[playerid] <= maxX && Protect_Y[playerid] >= minY && Protect_Y[playerid] <= maxY);
+			nearest_g = i;
 		}
+	}
+
+	// Если игрок в пределах этой гангзоны
+	new inside = IsPlayerInSquare(playerid, GangZone[nearest_g][gzMinX] - distance, GangZone[nearest_g][gzMinY] - distance, GangZone[nearest_g][gzMaxX] + distance, GangZone[nearest_g][gzMaxY] + distance);
+	if (inside)
+	{
+		new Float: minX = GangZone[g][gzMinX] - side * float(squares),
+			Float: maxX = GangZone[g][gzMaxX] + side * float(squares),
+			Float: minY = GangZone[g][gzMinY] - side * float(squares),
+			Float: maxY = GangZone[g][gzMaxY] + side * float(squares);
+		
+		// Возвращаем результат того, находится ли ближайшая гангзона на допустимом расстоянии от той, где идёт капт
+		return (Protect_X[playerid] >= minX && Protect_X[playerid] <= maxX && Protect_Y[playerid] >= minY && Protect_Y[playerid] <= maxY);
 	}
 
 	return false;
