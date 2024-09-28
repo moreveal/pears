@@ -123,6 +123,7 @@ stock Hank_Dialog_Database_Actives(playerid)
         );
         List[++quan][playerid] = i;
     }
+    List[0][playerid] = DATABASE_ACTIVE_NONE;
 
     return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES, DIALOG_STYLE_TABLIST, "{ff9000}Поддержка", dialog_text, "Выбор", "Назад");
 }
