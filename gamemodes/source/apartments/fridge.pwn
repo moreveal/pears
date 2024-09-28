@@ -459,6 +459,11 @@ stock OnLoadInventRefrigerator(idx)
 	return 1;
 }
 
+/* В дальнейшем, при добавление ДОМОВ или ТРЕЙЛЕРОВ, нам нужно будет зайти в базу и сместить уже имеющие
+строки на N - добавленных домов/трейлеров.
+А в системе ниже добавить дополнительно кол.во. Домов в данный момент 1000, с них идет отсчет
+Трейлеров 1000, Квартир 1600
+*/
 stock GetPlayerRefrigerator(playerid)
 {
 	new world = GetPlayerVirtualWorld(playerid),result = -1;
