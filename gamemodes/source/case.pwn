@@ -98,7 +98,11 @@ stock CreateVehicleGiftCase()
         if(vehType == 1 || vehType == 2)
         {
             if(VehSale[i] == 1
-                || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i]))) ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
+                || (VehLimited[i] > 0 && (VehQuan[i] < VehLimited[i] || VehLimitedCase[i] < VehLimited[i])))
+                {
+                    if(vehClass == 1) ThingPremiumVehiclecaseGift[ThingPremiumVehicleQuan] = v, ThingPremiumVehicleQuan ++; // Premium Vehicle
+                    else ThingVehiclecaseGift[ThingVehicleQuan] = v, ThingVehicleQuan ++;
+                }
         }
     }
 
@@ -271,12 +275,12 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         switch(random(15))
         {
-            case 0: thingType = 0; // Обычный предмет
-            case 1: thingType = 1; // Оружие
-            case 2: thingType = 2; // Аксессуар
-            case 3, 4: thingType = 3; // Одежда
+            case 0: thingType = 5; // Обычный предмет
+            case 1: thingType = 5; // Оружие
+            case 2: thingType = 5; // Аксессуар
+            case 3, 4: thingType = 5; // Одежда
             case 5: thingType = 5; // Транспорт
-            default: thingType = 0; // ПОДКРУТКА обычный предмет
+            default: thingType = 5; // ПОДКРУТКА обычный предмет
         }
     }
 
