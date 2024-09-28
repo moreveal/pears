@@ -10,12 +10,13 @@ new ApartmentsPickup[MAX_APARTMENTS];
 new Text3D:ApartmentsLabel[MAX_APARTMENTS];
 new ApartmentsPickupInt[MAX_APARTMENTS*(MAX_APARTMENTS_FLOOR*MAX_APARTMENTS_ROOM_IN_FLOOR+1)];
 new Text3D:ApartmentsIntLabel[MAX_APARTMENTS*(MAX_APARTMENTS_FLOOR*MAX_APARTMENTS_ROOM_IN_FLOOR+1)];
-new ApartmentsElevatorPickUp[MAX_APARTMENTS*MAX_APARTMENTS_FLOOR+MAX_APARTMENTS];
 new Text3D:ApartmentsElevatorLabel[MAX_APARTMENTS*MAX_APARTMENTS_FLOOR+MAX_APARTMENTS];
 new ApartmentsLastPickUp = -1;
 new ApartmentsNumber = 0; // Для подсчета номеров квартир и записи в Енум
 new ApartmentsLastPickUpTumbler = -1; // В случае удаление необходима перезапись LastPickUp
 new ApartmentsMapIcon[MAX_APARTMENTS];
+new ApartmentsActorResepshen[MAX_APARTMENTS];
+new ApartmentsActorTalk[MAX_APARTMENTS][2];
 
 
 
@@ -138,12 +139,42 @@ stock CreateApartments(playerid,id,class,floor)
     if(id != 0) Apartments[id][apWorldDefineEntrance] = Apartments[id-1][apWorldDefineEntrance] + MAX_APARTMENTS_ROOM_IN_FLOOR * Apartments[id-1][apFloor] + Apartments[id-1][apFloor] + 1;
     else Apartments[id][apWorldDefineEntrance] = START_WORLD_APARTMENTS;
 
+    CreateDynamicActorApartmetns(id);
     UpdateClassApartments(id,class,0);
     CreatePickUpApartments(id,0);
     SaveApartments(id);
     return 1;
 }
 
+stock CreateDynamicActorApartmetns(apid)
+{
+    if(Apartments[apid][apClass] == 0)
+    {
+        ApartmentsActorResepshen[apid] = CreateDynamicActor(141, 572.6284,-1369.0701,14.4780,188.6132, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApartmentsActorTalk[apid][0] = CreateDynamicActor(68, 567.7714,-1375.4067,14.4780,341.8347, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApplyDynamicActorAnimation(ApartmentsActorTalk[apid][0],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+        ApartmentsActorTalk[apid][1] = CreateDynamicActor(60, 568.2419,-1373.9905,14.4780,161.0397, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApplyDynamicActorAnimation(ApartmentsActorTalk[apid][1],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    }
+    else if(Apartments[apid][apClass] == 1 || Apartments[apid][apClass] == 2)
+    {
+        ApartmentsActorResepshen[apid] = CreateDynamicActor(141, 1523.8877,1441.8868,10.9330,182.6944, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApartmentsActorTalk[apid][0] = CreateDynamicActor(98, 1532.4541,1431.4595,10.9330,140.0806, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApplyDynamicActorAnimation(ApartmentsActorTalk[apid][0],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+        ApartmentsActorTalk[apid][1] = CreateDynamicActor(147, 1531.0443,1429.4236,10.9330,321.1890, true, 100.0, Apartments[apid][apWorldDefineEntrance], Apartments[apid][apInt]);
+        ApplyDynamicActorAnimation(ApartmentsActorTalk[apid][1],"PED","IDLE_CHAT",4.1,1,0,0,0,0);
+    }
+    return 1;
+}
+
+stock DestroyDynamicActorApartmetns(apid)
+{
+    if(!ApartmentsActorResepshen[apid] || !ApartmentsActorTalk[apid][0] || !ApartmentsActorTalk[apid][1]) return 0;
+    DestroyDynamicActor(ApartmentsActorResepshen[apid]);
+    DestroyDynamicActor(ApartmentsActorTalk[apid][0]);
+    DestroyDynamicActor(ApartmentsActorTalk[apid][1]);
+    return 1;
+}
 stock UpdateClassApartments(id,class,status)
 {
     if(class == 0) // Старые квартиры
@@ -283,10 +314,8 @@ stock CreatePickUpApartmentsElevator(id,floor)
     );
     if(floor == 0)
     {
-        ApartmentsElevatorPickUp[world] = CreateDynamicPickup(1318, 1, Apartments[id][apElevatorCoord][0], Apartments[id][apElevatorCoord][1], Apartments[id][apElevatorCoord][2], world+START_WORLD_APARTMENTS, Apartments[id][apInt]);
         ApartmentsElevatorLabel[world] = CreateDynamic3DTextLabel(label,-1,Apartments[id][apElevatorCoord][0], Apartments[id][apElevatorCoord][1], Apartments[id][apElevatorCoord][2]+0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,world+START_WORLD_APARTMENTS,Apartments[id][apInt]);
     }
-    ApartmentsElevatorPickUp[world+1] = CreateDynamicPickup(1318, 1, Apartments[id][apElevatorCoordFloor][0], Apartments[id][apElevatorCoordFloor][1], Apartments[id][apElevatorCoordFloor][2], world+START_WORLD_APARTMENTS+1, Apartments[id][apInt]);
     ApartmentsElevatorLabel[world+1] = CreateDynamic3DTextLabel(label,-1,Apartments[id][apElevatorCoordFloor][0], Apartments[id][apElevatorCoordFloor][1], Apartments[id][apElevatorCoordFloor][2]+0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,world+START_WORLD_APARTMENTS+1,Apartments[id][apInt]);
     return 1;
 }
@@ -1142,6 +1171,13 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
             new roomid = DP[1][playerid];
             return ShowMenuApartmentsRoomDetail(playerid,roomid);
         }
+        case APARTMENTS_DIALOG_GPS:
+        {
+            if(!response) pc_cmd_gps(playerid);
+            new apid = List[listitem][playerid];
+            SuccessMessage(playerid, "{99ff66}Квартирный дом отмечен на карте");
+            CreateGps(playerid,Apartments[apid][apCoord][0],Apartments[apid][apCoord][1],Apartments[apid][apCoord][2], 0, 0, 5.0);
+        }
     }
     return 1;
 }
@@ -1261,6 +1297,7 @@ function LoadApartments() {
         cache_get_value_name_float(i, "apRoomCoordExclusiveExit2", Apartments[i][apRoomCoordExclusiveExit][2]);
 
         CreatePickUpApartments(i,0);
+        CreateDynamicActorApartmetns(i);
     }
 }
 
@@ -1430,6 +1467,7 @@ stock ApartmentsDelete(apid)
     Apartments[apid][apCoord][0] = 0.0;
     Apartments[apid][apCoord][1] = 0.0;
     Apartments[apid][apCoord][2] = 0.0;
+    DestroyDynamicActorApartmetns(apid);
     DestroyDynamicPickup(ApartmentsPickup[apid]);
     DestroyDynamic3DTextLabel(ApartmentsLabel[apid]);
     DestroyDynamicMapIcon(ApartmentsMapIcon[apid]);
@@ -1437,7 +1475,6 @@ stock ApartmentsDelete(apid)
     for(new i; i < MAX_APARTMENTS_FLOOR+1; i++)
     {
         world = Apartments[apid][apWorldDefineEntrance] + i - START_WORLD_APARTMENTS;
-        DestroyDynamicPickup(ApartmentsElevatorPickUp[world]);
         DestroyDynamic3DTextLabel(ApartmentsElevatorLabel[world]);
     }
     for(new z = Apartments[apid][apPickupStart]; z < Apartments[apid][apPickupEnd]; z++)
@@ -1510,6 +1547,47 @@ CMD:gotoapartments(playerid, const params[])
 	return 1;
 }
 
+alias:giveapartmentsroom("givea")
+cmd:giveapartmentsroom(playerid,const params[]) 
+{
+    if(PlayerInfo[playerid][pSoska] < 19) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+    new string[144], playa, tmp[24];
+	if(sscanf(params, "s[24]i", tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать квартиру игроку [ /givea ID Номер квартиры ]");
+	if(params[1] > 1600 || params[1] < 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Номер квартиры не меньше 1 и не больше 1600");
+	if(ApartmentsRoom[params[1]-1][aprOwn] >= 1) return SendClientMessage(playerid, COLOR_GRAD5, "[ Мысли ]: Эта квартира занята [ /asellroom ]");
+	playa = ReturnUser(tmp, 1);
+    new result = -1;
+	if(IsPlayerConnected(playa))
+	{
+        for(new i; i < 10; i++)
+        {
+            if(PlayerInfo[playa][pApartmentsRoom][i] != 0) continue;
+            else
+            {
+                result = i;
+                break;
+            }
+        }
+        if(result == -1) return ErrorMessage(playerid, "{FF6347}У него нет свободных слотов под квартиру");
+        PlayerInfo[playa][pApartmentsRoom][result] = ApartmentsRoom[params[1]-1][aprID]+1;
+        ApartmentsRoom[params[1]-1][aprOwn] = PlayerInfo[playa][pID];
+        ApartmentsRoom[params[1]-1][aprStatus] = 1;
+        ApartmentsRoom[params[1]-1][aprSellOwn] = 0;
+        format(ApartmentsRoom[params[1]-1][aprOwnName], 24,"%s", PlayerInfo[playa][pName]);
+        mysql_save(playa, 8);
+        PlayerPlayMusic(playa);
+        SaveApartmentsRoom(params[1]-1);
+        UpdateLabelApartments(params[1]-1);
+		format(string, sizeof(string),"{0088ff}* [! ! !]: {FFFFFF}Администратор выдал вам Квартиру № %d {0088ff}[ /myhouse ]",params[1]);
+		ShowDialog(playa,1700, 0, "{0088ff}*** {ffffff}  Установка Квартиры {0088ff}***", string, "Ок", "");
+		format(string, sizeof(string), "{0088ff}* [! ! !]: {FFFFFF}Администратор выдал вам Квартиру № %d {0088ff}[ /myhouse ]",params[1]);
+		SendClientMessage(playa, COLOR_LIGHTBLUE, string);
+		BizLog("givea", PlayerInfo[playa][pID], PlayerInfo[playa][pName], PlayerInfo[playa][pPlaIP], params[1], 0, "Получил от Администратора");
+		AdminLog("givea", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playa][pID], PlayerInfo[playa][pName], PlayerInfo[playa][pPlaIP], params[1], "Выдал квартиру");
+	}
+    else ErrorMessage(playerid,"{ff6347}Квартиру можно выдать только игроку онлайн");
+    return 1;
+}
 stock arestroom(playerid, roomid)
 {
 	new g = fraction(playerid);

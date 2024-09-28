@@ -58,9 +58,9 @@ stock dialogElectricianHelp(playerid)
                                 \n\n{cccccc}- Выберите пункт \"Начать Работу\" в этом меню\
 								\n{cccccc}- Отправляйтесь на улицу и возьмите спец. транспорт с парковки\
                                 \n{cccccc}- Следуйте по точкам указанным в GPS до терминалов или домов\
-                                \n{cccccc}и выполняйте работу на точках. У домов стоит специальный щиток на улице, к которому нужно подойти\
-                                \n{cccccc}нажать [ {ff9000}ALT {cccccc}] и пройти миниигру\
-                                \n{cccccc}у терминалов вам нужно подойти к самому терминалу нажать [ {ff9000}ALT {cccccc}] и пройти миниигру");
+                                \n{cccccc}и выполняйте работу на точках. У домов стоит {ff9000}специальный щиток на улице(Объект электрощитка){cccccc},\
+                                \n{cccccc}к которому нужно подойти и нажать [ {ff9000}ALT {cccccc}] и пройти миниигру.\
+                                \n{cccccc}У терминалов вам нужно подойти к самому терминалу нажать [ {ff9000}ALT {cccccc}] и пройти миниигру");
 	format(string,sizeof(string),"{ff9000}Электрики \t");
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_GOJOB,DIALOG_STYLE_MSGBOX, string, lines, "Назад", "");
 	return true;
@@ -129,7 +129,7 @@ stock UpdateElectricianMoneyForWork(playerid, b, const inputtext[], type)
 
 stock TotalFindElectrician(playerid)
 {
-    if(GetPVarInt(playerid,"job_electrician_point") != 0) CloseElectricianClear(playerid);
+    if(GetPVarInt(playerid,"job_electrician_point") != 0) return 0;
     if(FindTerminalFromElectrician(playerid)) return 1;
     else if(FindHouseFromElectrician(playerid)) return 1;
     else return 0;
@@ -176,6 +176,7 @@ stock FindHouseFromElectrician(playerid)
         if(ElectricianConnect[d] == 1) continue;
         bizId = DomInfo[d][dElectroStatus];
         if(BizzInfo[bizId][bElectroPayForConnect] <= 0 || BizzInfo[bizId][bDeposit] < BizzInfo[bizId][bElectroPayForConnect]) continue;
+        if(!GetElectroObject(d)) continue;
         findpos = GetPlayerDistanceFromPoint(playerid, DomInfo[d][dKoordinatX], DomInfo[d][dKoordinatY], DomInfo[d][dKoordinatZ]);
         if(findpos <= dist) dist = findpos, domId = d;
     }
@@ -489,7 +490,7 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
 				    	SetPVarInt(playerid,"job_stat",0), RemovePlayerAttachedObject(playerid,0), PlayerPlaySound(playerid,5601,0,0,0);
 				    	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы {FF6347}завершили {ffcc66}работу Электрика","*","");
 				    	DisablePlayerRaceCheckpoint(playerid);
-
+                        CloseElectricianClear(playerid);
 						SpawnRentVehicleJob(playerid, 2091);
 				    }
 		    	}
@@ -566,6 +567,56 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
             }
             else return ElectrostationHouseList(playerid,d);
         }
+        case ELECTRICIAN_DIALOG_TICKETLIST:{
+            if(!response) return 0;
+            if(listitem == 0) 
+            {
+                if(GetPVarInt(playerid, "job_electrician") != 0) return CloseElectricianClear(playerid);
+                else return 0;
+            }
+            if(listitem == 1) CreateListElectrianTerm(playerid);
+            if(listitem == 2) CreateListElectrianHome(playerid);
+        }
+        case ELECTRICIAN_DIALOG_TICKETLISTTERM:{
+            if(!response) return pc_cmd_checkcharg(playerid);
+            if(listitem >= 0 && listitem <= 50)
+            {
+                if(GetPVarInt(playerid,"job_stat") != 14) return ErrorMessage(playerid,"{FF6347}Вы не работаете Электриком\n{ffcc66}Устроиться на работу можно [ Y >> GPS >> Работа >> Электрики ]");
+                new veh = GetPlayerVehicleID(playerid);
+                new model = VehInfo[veh][vModel];
+                if(model != 2091) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Электриков\n{ffcc66}Возьмите транспорт на парковке Электриков");
+                new listterm = List[listitem-1][playerid];
+                new listord = ListParam[listitem-1][playerid];
+				if(listord == 0) return 1;
+                new termid = numnrent(listord);
+                if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "{FF6347}Вы не можете самостоятельно выполнить ремонт зарядной станции в своем бизнесе"), pc_cmd_checkcharg(playerid);
+				if(ElectricianRepair[listord - GetBizMin(17)][listterm] != 0) return ErrorText(playerid,"{FF6347}Упс, вы не успели.. Кто-то принял этот заказ");
+
+				CreateElectrician(playerid, listord, listterm,2);
+                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к терминалу для его ремонта (отмечено в GPS)");
+                CreateGps(playerid,RentPos_X[termid][listterm],RentPos_Y[termid][listterm],RentPos_Z[termid][listterm],0, 0, 10.0);
+            }
+        }
+        case ELECTRICIAN_DIALOG_TICKETLISTHOUSE:{
+            if(!response) return pc_cmd_checkcharg(playerid);
+            if(listitem >= 0 && listitem <= 50)
+            {
+                if(GetPVarInt(playerid,"job_stat") != 14) return ErrorMessage(playerid,"{FF6347}Вы не работаете Электриком\n{ffcc66}Устроиться на работу можно [ Y >> GPS >> Работа >> Электрики ]");
+                new veh = GetPlayerVehicleID(playerid);
+                new model = VehInfo[veh][vModel];
+                if(model != 2091) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Электриков\n{ffcc66}Возьмите транспорт на парковке Электриков");
+                new dom = List[listitem-1][playerid];
+                new biz = ListParam[listitem-1][playerid];
+				if(biz == 0) return 1;
+                if(PlayerInfo[playerid][pBusiness] == biz && server != 0) return ErrorText(playerid, "{FF6347}Вы не можете самостоятельно выполнить подключение домов к электростанции к своему бизнесу"), pc_cmd_checkcharg(playerid);
+				if(ElectricianConnect[dom] != 0) return ErrorText(playerid,"{FF6347}Упс, вы не успели.. Кто-то принял этот заказ");
+
+				CreateElectrician(playerid, biz, dom,1);
+                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Отправляйтесь к дому для его подключения (отмечено в GPS)");
+                SendClientMessage(playerid, COLOR_YELLOW, " SMS от Оператора: {99ff33}Рядом с домом находится электрощиток для подключения.");
+                CreateGps(playerid,DomInfo[dom][dKoordinatX], DomInfo[dom][dKoordinatY], DomInfo[dom][dKoordinatZ],0, 0, 10.0);
+            }
+        }
     }
 
     return 1;
@@ -607,4 +658,74 @@ stock GetElectroObject(dom)
 	}
 	if(slot == -1) return 0;
     else return 1;
+}
+
+
+alias:checkcharg("ect")
+CMD:checkcharg(playerid)
+{
+	ClearList(playerid);
+    new lines[300], string[60];
+	format(lines,sizeof(lines),"\n{ff6347}Отменить принятую заявку\
+                                \n{ff9000}Список терминалов нуждающихся в ременте\
+								\n{ff9000}Список домов нуждающихся в подключение");
+	format(string,sizeof(string),"{cccccc}Работа Электрика");
+	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLIST,DIALOG_STYLE_LIST, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock CreateListElectrianTerm(playerid)
+{
+    new quan;
+	new line[214],lines[4096];
+	ClearList(playerid);
+
+    format(line,sizeof(line),"Номер бизнеса\tОплата"), strcat(lines,line);
+
+	new minb = GetBizMin(17);
+    for(new b = 143; b <= 152; b++)
+	{
+		if(b < 143 || b > 152) continue;
+
+        for(new i = 0; i < 5; i++)
+	    {
+            if(BizzInfo[b][bItem][i] < MIN_PROCENT_REPAIRTERMINAL || ElectricianRepair[b - minb][i] != 0) continue;
+            
+            if(BizzInfo[b][bItem][i] < MIN_PROCENT_REPAIRTERMINAL) continue;
+			if(BizzInfo[b][bElectroPayForRepair] <= 0 || BizzInfo[b][bDeposit] < BizzInfo[b][bElectroPayForRepair]) continue;
+			if(RentStat[b-97][i] <= 0) continue;
+            List[quan][playerid] = i;
+            ListParam[quan][playerid] = b;
+            quan ++;
+            format(line,sizeof(line),"\n{ff9000}Электростанция № %d | Терминал № %d \t%d$", b, i, BizzInfo[b][bElectroPayForRepair]), strcat(lines,line);
+        }
+	}
+    if(quan < 1) return ErrorMessage(playerid,"{FF6347}В данный момент ни один из терминалов не сломан");
+	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLISTTERM,DIALOG_STYLE_TABLIST_HEADERS,"Заявки на ремонт терминалов",lines,"Выбрать","Отмена");
+    return true;
+}
+
+stock CreateListElectrianHome(playerid)
+{
+    new quan,bizId;
+	new line[214],lines[4096];
+	ClearList(playerid);
+
+    format(line,sizeof(line),"Номер Дома\tОплата"), strcat(lines,line);
+
+    for(new d = 1; d <= 1000; d++)
+	{
+        if(DomInfo[d][dElectroStatus] == 0) continue;
+        if(ElectricianConnect[d] == 1) continue;
+        bizId = DomInfo[d][dElectroStatus];
+        if(BizzInfo[bizId][bElectroPayForConnect] <= 0 || BizzInfo[bizId][bDeposit] < BizzInfo[bizId][bElectroPayForConnect]) continue;
+        if(!GetElectroObject(d)) continue;
+        List[quan][playerid] = d;
+        ListParam[quan][playerid] = bizId;
+        quan ++;
+        format(line,sizeof(line),"\n{ff9000}Электростанция № %d | Дом № %d \t%d$", bizId, d, BizzInfo[bizId][bElectroPayForConnect]), strcat(lines,line);
+    }
+    if(quan < 1) return ErrorMessage(playerid,"{FF6347}В данный момент ни один из домов не требует подключения");
+	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLISTHOUSE,DIALOG_STYLE_TABLIST_HEADERS,"Заявки на подключение дома",lines,"Выбрать","Отмена");
+    return true;
 }
