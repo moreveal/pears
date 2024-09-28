@@ -900,7 +900,7 @@ stock SaveQuest(playerid) // Сохраняем информацию о квес
 
     // Сохраняем
     new string_mysql[400];
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%s' WHERE `user_id`='%d'", part, PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `Quest`= '%e' WHERE `user_id`='%d'", part, PlayerInfo[playerid][pID]);
     query_empty(pearsq, string_mysql); // 53 + 11 +
     return 1;
 }

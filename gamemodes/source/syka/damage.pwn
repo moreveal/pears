@@ -394,16 +394,16 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
             || ComputerClubIsPlayerCbugActive(playerid) 
             || MPGO[playerid] > 0) // +C Доступен
         {
-             if(interval < 20) return false;
+            if(interval < 20) return false;
         }
         else 
         {
-             if(interval < s_MaxWeaponShootRate[weaponid]) return false;
+            if(interval < s_MaxWeaponShootRate[weaponid]) return false;
         }
     }
     else if(weaponid <= sizeof(s_MaxWeaponShootRate))
     {
-         if(interval < s_MaxWeaponShootRate[weaponid]) return false;
+        if(interval < s_MaxWeaponShootRate[weaponid]) return false;
     }
     TickDamagePlayer[playerid] = current_tick;
 

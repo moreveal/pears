@@ -71,6 +71,9 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_server", "serv65", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_server", "serv66", "INT NOT NULL DEFAULT '0'");
 
+    AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
+    AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
+
 	return true;
 }
 
