@@ -585,8 +585,8 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
                 new veh = GetPlayerVehicleID(playerid);
                 new model = VehInfo[veh][vModel];
                 if(model != 2091) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Электриков\n{ffcc66}Возьмите транспорт на парковке Электриков");
-                new listterm = List[listitem-1][playerid];
-                new listord = ListParam[listitem-1][playerid];
+                new listterm = List[listitem][playerid];
+                new listord = ListParam[listitem][playerid];
 				if(listord == 0) return 1;
                 new termid = numnrent(listord);
                 if(PlayerInfo[playerid][pBusiness] == listord && server != 0) return ErrorText(playerid, "{FF6347}Вы не можете самостоятельно выполнить ремонт зарядной станции в своем бизнесе"), pc_cmd_checkcharg(playerid);
@@ -605,8 +605,8 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
                 new veh = GetPlayerVehicleID(playerid);
                 new model = VehInfo[veh][vModel];
                 if(model != 2091) return ErrorMessage(playerid,"{FF6347}Вы не на спец. транспорте Электриков\n{ffcc66}Возьмите транспорт на парковке Электриков");
-                new dom = List[listitem-1][playerid];
-                new biz = ListParam[listitem-1][playerid];
+                new dom = List[listitem][playerid];
+                new biz = ListParam[listitem][playerid];
 				if(biz == 0) return 1;
                 if(PlayerInfo[playerid][pBusiness] == biz && server != 0) return ErrorText(playerid, "{FF6347}Вы не можете самостоятельно выполнить подключение домов к электростанции к своему бизнесу"), pc_cmd_checkcharg(playerid);
 				if(ElectricianConnect[dom] != 0) return ErrorText(playerid,"{FF6347}Упс, вы не успели.. Кто-то принял этот заказ");
