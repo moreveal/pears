@@ -236,6 +236,8 @@ stock ElectricianStopProcess(playerid, stat)
     InputProcess[playerid] = 0;
 	InputID[playerid] = 0;
     KillTimer(ElectricianProccessTimers[playerid]);
+    ElectricianProccessTimers[playerid] = 0;
+    ElectricianProccessTime[playerid] = 0;
 
     if (stat == 0) {
         PlayerPlaySound(playerid, 31200);
