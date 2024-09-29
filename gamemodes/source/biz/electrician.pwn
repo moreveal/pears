@@ -216,7 +216,7 @@ stock CloseElectricianClear(playerid)
 
 stock ElectrostationHouseList(playerid,d)
 {
-    new line[90],lines[4096];
+    new line[256],lines[4096];
     format(line,sizeof(line),"{ff9000}Электростанция\t{44ff99}Статус\tОплата в день\n"), strcat(lines,line);
     for(new b = 143; b <= 152; b++)
     {  
@@ -236,6 +236,8 @@ stock ElectricianStopProcess(playerid, stat)
     InputProcess[playerid] = 0;
 	InputID[playerid] = 0;
     KillTimer(ElectricianProccessTimers[playerid]);
+    ElectricianProccessTimers[playerid] = 0;
+    ElectricianProccessTime[playerid] = 0;
 
     if (stat == 0) {
         PlayerPlaySound(playerid, 31200);
@@ -708,4 +710,13 @@ stock CreateListElectrianHome(playerid)
     if(quan < 1) return ErrorMessage(playerid,"{FF6347}В данный момент ни один из домов не требует подключения");
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLISTHOUSE,DIALOG_STYLE_TABLIST_HEADERS,"Заявки на подключение дома",lines,"Выбрать","Отмена");
     return true;
+}
+
+stock Electrician_OnPlayerDisconnect(playerid)
+{
+    if (ElectricianProccessTimers[playerid] != 0)
+    {
+        ElectricianStopProcess(playerid, 0);
+    }
+    return 1;
 }
