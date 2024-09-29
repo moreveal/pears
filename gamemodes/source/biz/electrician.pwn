@@ -709,3 +709,12 @@ stock CreateListElectrianHome(playerid)
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLISTHOUSE,DIALOG_STYLE_TABLIST_HEADERS,"Заявки на подключение дома",lines,"Выбрать","Отмена");
     return true;
 }
+
+stock Electrician_OnPlayerDisconnect(playerid)
+{
+    if (ElectricianProccessTimers[playerid] != 0)
+    {
+        ElectricianStopProcess(playerid, 0);
+    }
+    return 1;
+}
