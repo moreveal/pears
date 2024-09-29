@@ -216,7 +216,7 @@ stock CloseElectricianClear(playerid)
 
 stock ElectrostationHouseList(playerid,d)
 {
-    new line[90],lines[4096];
+    new line[256],lines[4096];
     format(line,sizeof(line),"{ff9000}Электростанция\t{44ff99}Статус\tОплата в день\n"), strcat(lines,line);
     for(new b = 143; b <= 152; b++)
     {  
