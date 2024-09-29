@@ -219,7 +219,7 @@ public OnPasswordHashResetPassword(playerid, const password[])
     if(PlayerInfo[playerid][pTypoihyi] == 0) ShowDialog(playerid,1,DIALOG_STYLE_PASSWORD,"{ff9000}Авторизация",string,"Далее","Отмена");
     else ShowDialog(playerid,1,DIALOG_STYLE_INPUT,"{ff9000}Авторизация",string,"Далее","Отмена");
 
-    OnlineInfo[playerid][oProccessPassword] = false;
+    OnlineInfo[playerid][oProcessPassword] = false;
 
     if(serverType == 0) printf("OnPasswordHashResetPassword %s %s", PlayerInfo[playerid][pName], password);
     return 1;

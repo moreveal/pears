@@ -1,9 +1,9 @@
 #define MIN_PAY_ELECTRICIAN 3000
 #define MIN_PROCENT_REPAIRTERMINAL 5000
 
-new ElectricianProccessTime[MAX_REALPLAYERS];
-new ElectricianProccessTimers[MAX_REALPLAYERS];
-new Float:ElectricianProccessObjectHouse[MAX_REALPLAYERS][3];
+new ElectricianProcessTime[MAX_REALPLAYERS];
+new bool: ElectricianProcessTimers[MAX_REALPLAYERS];
+new Float:ElectricianProcessObjectHouse[MAX_REALPLAYERS][3];
 
 stock dialogElectricianToHouse(playerid, b)
 {
@@ -235,16 +235,15 @@ stock ElectricianStopProcess(playerid, stat)
     DP[0][playerid] = 0;
     InputProcess[playerid] = 0;
 	InputID[playerid] = 0;
-    KillTimer(ElectricianProccessTimers[playerid]);
-    ElectricianProccessTimers[playerid] = 0;
-    ElectricianProccessTime[playerid] = 0;
+    ElectricianProcessTime[playerid] = 0;
+    ElectricianProcessTimers[playerid] = false;
 
     if (stat == 0) {
         PlayerPlaySound(playerid, 31200);
     } else if (stat == 1) {
         CloseElectrician(playerid);
     }
-    ElectricianProccessObjectHouse[playerid][0] = 0.0, ElectricianProccessObjectHouse[playerid][1] = 0.0, ElectricianProccessObjectHouse[playerid][2] = 0.0;
+    ElectricianProcessObjectHouse[playerid][0] = 0.0, ElectricianProcessObjectHouse[playerid][1] = 0.0, ElectricianProcessObjectHouse[playerid][2] = 0.0;
     for (new i = 0; i <= 5; i++) TextDrawHideForPlayer(playerid, InputDraw[i]);
     PlayerTextDrawHide(playerid, InputDraw1);
 	PlayerTextDrawHide(playerid, InputDraw2);
@@ -282,15 +281,18 @@ stock ECTHouse(playerid)
             || IsVehicleInRangeOfPoint(PlayerInfo[playerid][pRentVeh][0], 50.0, DomInfo[d][dKoordinatX], DomInfo[d][dKoordinatY], DomInfo[d][dKoordinatZ])) 
         {
             if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "OTB", "betslp_loop", 4.0, false, true, true, false, false, SYNC_ALL);
-            GetPlayerPos(playerid,ElectricianProccessObjectHouse[playerid][0],ElectricianProccessObjectHouse[playerid][1],ElectricianProccessObjectHouse[playerid][2]);
-            PlayerTextDrawShow(playerid, InputDraw1);
-            PlayerTextDrawShow(playerid, InputDraw2);
-            TextDrawShowForPlayer(playerid, InputDraw[1]);
-            processbar2(playerid, 0);
-            ShowInput(playerid);
-            InputType[playerid] = 2;
-            ElectricianProccessTime[playerid] = 10;
-            ElectricianProccessTimers[playerid] = SetTimerEx("ElectricianProccessTimer", 300, true, "d", playerid);
+            if (InputType[playerid] != 2)
+            {
+                GetPlayerPos(playerid,ElectricianProcessObjectHouse[playerid][0],ElectricianProcessObjectHouse[playerid][1],ElectricianProcessObjectHouse[playerid][2]);
+                PlayerTextDrawShow(playerid, InputDraw1);
+                PlayerTextDrawShow(playerid, InputDraw2);
+                TextDrawShowForPlayer(playerid, InputDraw[1]);
+                processbar2(playerid, 0);
+                ShowInput(playerid);
+                InputType[playerid] = 2;
+                ElectricianProcessTime[playerid] = 10;
+                ElectricianProcessTimer(playerid);
+            }
         }
         else ErrorMessage(playerid, "{FF6347}Транспорт электриков далеко от дома");
 	}
@@ -316,15 +318,17 @@ stock ECT(playerid, br, term)
             || IsVehicleInRangeOfPoint(PlayerInfo[playerid][pRentVeh][0], 50.0, RentPos_X[br][term], RentPos_Y[br][term], RentPos_Z[br][term])) 
         {
             if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "OTB", "betslp_loop", 4.0, false, true, true, false, false, SYNC_ALL);
-
-            PlayerTextDrawShow(playerid, InputDraw1);
-            PlayerTextDrawShow(playerid, InputDraw2);
-            TextDrawShowForPlayer(playerid, InputDraw[1]);
-            processbar2(playerid, 0);
-            ShowInput(playerid);
-            InputType[playerid] = 2;
-            ElectricianProccessTime[playerid] = 10;
-            ElectricianProccessTimers[playerid] = SetTimerEx("ElectricianProccessTimer", 300, true, "d", playerid);
+            if (InputType[playerid] != 2)
+            {
+                PlayerTextDrawShow(playerid, InputDraw1);
+                PlayerTextDrawShow(playerid, InputDraw2);
+                TextDrawShowForPlayer(playerid, InputDraw[1]);
+                processbar2(playerid, 0);
+                ShowInput(playerid);
+                InputType[playerid] = 2;
+                ElectricianProcessTime[playerid] = 10;
+                ElectricianProcessTimer(playerid);
+            }
         }
         else ErrorMessage(playerid, "{FF6347}Транспорт электриков далеко от зарядной станции");
 	}
@@ -336,7 +340,7 @@ stock ECT(playerid, br, term)
 	return 1;
 }
 
-stock ElectricianProccessDisctance(playerid)
+stock ElectricianProcessDistance(playerid)
 {
     new br = numnrent(GetPVarInt(playerid,"job_electrician")), term = GetPVarInt(playerid,"job_electrician_point"), type = (GetPVarInt(playerid,"job_electrician_type"));
     if(type == 2)
@@ -349,7 +353,7 @@ stock ElectricianProccessDisctance(playerid)
     }
     else if(type == 0)
     {
-        if(!IsPlayerInRangeOfPoint(playerid, 2.0, ElectricianProccessObjectHouse[playerid][0],ElectricianProccessObjectHouse[playerid][1],ElectricianProccessObjectHouse[playerid][2]))
+        if(!IsPlayerInRangeOfPoint(playerid, 2.0, ElectricianProcessObjectHouse[playerid][0],ElectricianProcessObjectHouse[playerid][1],ElectricianProcessObjectHouse[playerid][2]))
         {
             ElectricianStopProcess(playerid, 0);
             return 1;
@@ -358,24 +362,28 @@ stock ElectricianProccessDisctance(playerid)
     return 0;
 }
 
-function ElectricianProccessTimer(playerid)
+function ElectricianProcessTimer(playerid)
 {
+    if (!ElectricianProcessTimers[playerid] || !IsOnline(playerid)) return 0;
+    
     if(InputProcess[playerid] >= 5)
 	{
-		if(ElectricianProccessDisctance(playerid)) return 1;
+		if(ElectricianProcessDistance(playerid)) return 1;
 		InputProcess[playerid] -= 5;
 		processbar2(playerid, InputProcess[playerid]);
 	}
 	else
 	{
-        if(ElectricianProccessTime[playerid] > 0) ElectricianProccessTime[playerid]--;
+        if(ElectricianProcessTime[playerid] > 0) ElectricianProcessTime[playerid]--;
 		else
 		{
 			ElectricianStopProcess(playerid, 0);
 		}
 	}
 	TextDrawHideForPlayer(playerid, InputDraw[0]), TextDrawHideForPlayer(playerid, InputDraw[5]);
-	return 1;
+
+    ElectricianProcessTimers[playerid] = true;
+	return SetTimerEx("ElectricianProcessTimer", 300, true, "d", playerid);
 }
 
 stock ElectroFillStart(playerid,br,term)
@@ -566,7 +574,7 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
                 if(!GetElectroObject(d)) return ErrorMessage(playerid,"{ff6347}У вашего дома не установлен электрощиток. Купить его можно в IKEA и установить на улице дома!");
                 DomInfo[d][dElectroStatus] = b;
                 SaveElectro_Dom(d);
-                SuccessMessage(playerid,"{44ff99}Вы успешно сменили электростацнию\n\n{cccccc}Ожидайте приезда электриков, время зависит от электростанции и электриков");
+                SuccessMessage(playerid,"{44ff99}Вы успешно сменили электростанцию\n\n{cccccc}Ожидайте приезда электриков, время зависит от электростанции и электриков");
             }
             else return ElectrostationHouseList(playerid,d);
         }
@@ -651,7 +659,7 @@ CMD:checkcharg(playerid)
     new lines[300], string[60];
 	format(lines,sizeof(lines),"\n{ff6347}Отменить принятую заявку\
                                 \n{ff9000}Список терминалов нуждающихся в ременте\
-								\n{ff9000}Список домов нуждающихся в подключение");
+								\n{ff9000}Список домов нуждающихся в подключении");
 	format(string,sizeof(string),"{cccccc}Работа Электрика");
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLIST,DIALOG_STYLE_LIST, string, lines, "Принять", "Отмена");
 	return true;
@@ -715,7 +723,7 @@ stock CreateListElectrianHome(playerid)
 
 stock Electrician_OnPlayerDisconnect(playerid)
 {
-    if (ElectricianProccessTimers[playerid] != 0)
+    if (ElectricianProcessTimers[playerid])
     {
         ElectricianStopProcess(playerid, 0);
     }

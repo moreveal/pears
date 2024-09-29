@@ -88,10 +88,10 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         Streamer_GetDistanceToItem(player_pos[0], player_pos[1], player_pos[2], STREAMER_TYPE_OBJECT, current_object, distance);
         if(distance > 1.50) break;
 
-        if(GetDynamicObjectCookPosition(current_object)) return 1; // 0 Кухонная Плита
-        if(GetDynamicObjectWorkbench(current_object)) return 2; // 1 Верстак
-        if(GetDynamicObjectFridge(current_object)) return 3; // 2 Холодос
-        if(GetDynamicObjectElectro(current_object)) return 4; // 3 Щиток для электричества
+        if(GetDynamicObjectCookPosition(current_object)) return 1; // Кухонная Плита
+        if(GetDynamicObjectWorkbench(current_object)) return 2; // Верстак
+        if(GetDynamicObjectFridge(current_object)) return 3; // Холодильник
+        if(GetDynamicObjectElectro(current_object)) return 4; // Электрощиток
         if(GetDynamicObjectToilet(current_object))
         {
             new Float:x, Float:y, Float:z;
