@@ -480,6 +480,7 @@ stock dialogCase_Electrician(playerid, dialogid, response, listitem, const input
 				    if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 14) return StopJob(playerid);
 				    if(GetPVarInt(playerid,"job_stat") != 14)
 				    {
+                        if(blockwork[6] == 1) return ErrorMessage(playerid,"{ff6347}Работа временно отключена Администрацией");
 				    	if(get_invent2(playerid, 156, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет водительских прав [ Y >> GPS >> Образовательный Центр ]");
 				    	if(PlayerInfo[playerid][pMechSkill] == 0) return ErrorMessage(playerid, "{FF6347}Ваш персонаж устал и хочет спать");
 				    	SetPVarInt(playerid,"job_stat",14);

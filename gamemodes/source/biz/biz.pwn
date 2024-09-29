@@ -84,25 +84,22 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 	new quan;
 	new line[140],lines[4048];
     format(line,sizeof(line),"{cccccc}Депозит {99ff66}%d$ [%s] \t \t \n", BizzInfo[b][bDeposit], get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
-    if(b < 143 && b > 152)
-	{
-		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
-		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
-		format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
-	}
-
-	// В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
-	if(b >= 163 && b <= 172)
+    
+	if(b >= 163 && b <= 172) // В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
 	{
 		format(line,sizeof(line),"{cccccc}Инкассация денег\t от {99ff66}%d$ \t \n", BizzInfo[b][bAtmCollector]), strcat(lines,line);
 	}
-	if(b >= 143 && b <= 152) // В электростанциях нет доставки, оплата за переподключение дома и ремонта колонки
+	else if (b >= 143 && b <= 152) // В электростанциях нет доставки, оплата за переподключение дома и ремонта колонки
 	{
 		format(line,sizeof(line),"{cccccc}Оплата за переподключение дома\t от {99ff66}%d$ \t \n", BizzInfo[b][bElectroPayForConnect]), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Оплата за ремонт станции\t от {99ff66}%d$ \t \n", BizzInfo[b][bElectroPayForRepair]), strcat(lines,line);
 	}
 	else
 	{
+		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
+	
 		for(new i = 0; i < 50; i++)
 		{
 			List[i][playerid] = 0;
@@ -117,6 +114,7 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 			}
 		}
 	}
+
 	new header[90];
 	format(header,sizeof(header),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,1054,DIALOG_STYLE_TABLIST,header,lines,"Выбрать","Отмена");
