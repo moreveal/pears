@@ -216,6 +216,8 @@ stock LoadCustomCaseOnGameMode()
 
 stock ParseCustomCaseItems(playerid, const name[], &quan)
 {
+    if (!strcmp(name, "gold", true)) return 0;
+
     // Парсинг JSON файла
     new JsonNode:rootNode;
     if (JSON_ParseFile(JSON_CUSTOM_CASE_FILE, rootNode) != JSON_CALL_NO_ERR)
