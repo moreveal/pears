@@ -383,7 +383,7 @@ function ElectricianProcessTimer(playerid)
 	TextDrawHideForPlayer(playerid, InputDraw[0]), TextDrawHideForPlayer(playerid, InputDraw[5]);
 
     ElectricianProcessTimers[playerid] = true;
-	return SetTimerEx("ElectricianProcessTimer", 300, true, "d", playerid);
+	return SetTimerEx("ElectricianProcessTimer", 300, false, "d", playerid);
 }
 
 stock ElectroFillStart(playerid,br,term)
