@@ -10,7 +10,7 @@ stock dialogElectricianToHouse(playerid, b)
 	new lines[300], string[60];
 	format(lines,sizeof(lines),"\n{cccccc}Введите сумму, которую будет получать электрик за один дом\
 								\n\nТекущая минимальная сумма за один дом: {99ff66}%d$\
-								\n{FF6347}Не меньше %d$ и не больше 1.000.000$", BizzInfo[b][bElectroPayForConnect], MIN_PAY_ELECTRICIAN);
+								\n{FF6347}Не меньше %s$ и не больше 1.000.000$", BizzInfo[b][bElectroPayForConnect], FormatNumberWithCommas(MIN_PAY_ELECTRICIAN));
 	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_PAYMENTHOUSE,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
 	return true;
@@ -22,7 +22,7 @@ stock dialogElectricianToTerminal(playerid, b)
 	format(lines,sizeof(lines),"\n{cccccc}Введите сумму, которую будет получать электрик за один терминал\
                                 \n{cccccc}Терминалы ломаются от зарядки и всегда нуждаются в ремонте\
 								\n\nТекущая минимальная сумма за один терминал: {99ff66}%d$\
-								\n{FF6347}Не меньше %d$ и не больше 1.000.000$", BizzInfo[b][bElectroPayForRepair], MIN_PAY_ELECTRICIAN);
+								\n{FF6347}Не меньше %s$ и не больше 1.000.000$", BizzInfo[b][bElectroPayForRepair], FormatNumberWithCommas(MIN_PAY_ELECTRICIAN));
 	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_PAYMENTTERMINAL,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
 	return true;
@@ -58,7 +58,7 @@ stock dialogElectricianHelp(playerid)
                                 \n\n{cccccc}- Выберите пункт \"Начать Работу\" в этом меню\
 								\n{cccccc}- Отправляйтесь на улицу и возьмите спец. транспорт с парковки\
                                 \n{cccccc}- Следуйте по точкам указанным в GPS до терминалов или домов\
-                                \n{cccccc}и выполняйте работу на точках. У домов стоит {ff9000}специальный щиток на улице(Объект электрощитка){cccccc},\
+                                \n{cccccc}и выполняйте работу на точках. У домов стоит {ff9000}специальный щиток на улице (Объект электрощитка){cccccc},\
                                 \n{cccccc}к которому нужно подойти и нажать [ {ff9000}ALT {cccccc}] и пройти миниигру.\
                                 \n{cccccc}У терминалов вам нужно подойти к самому терминалу нажать [ {ff9000}ALT {cccccc}] и пройти миниигру");
 	format(string,sizeof(string),"{ff9000}Электрики \t");
@@ -668,7 +668,7 @@ CMD:checkcharg(playerid)
 	ClearList(playerid);
     new lines[300], string[60];
 	format(lines,sizeof(lines),"\n{ff6347}Отменить принятую заявку\
-                                \n{ff9000}Список терминалов нуждающихся в ременте\
+                                \n{ff9000}Список терминалов нуждающихся в ремонте\
 								\n{ff9000}Список домов нуждающихся в подключении");
 	format(string,sizeof(string),"{cccccc}Работа Электрика");
 	ShowDialog(playerid,ELECTRICIAN_DIALOG_TICKETLIST,DIALOG_STYLE_LIST, string, lines, "Принять", "Отмена");
