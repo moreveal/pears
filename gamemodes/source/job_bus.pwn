@@ -84,7 +84,7 @@ stock FindBusDep(playerid) // Ищем ближайшее автобусное �
 
 stock jobbus(playerid)
 {
-	if(blockwork[2] == 1) return ErrorMessage(playerid,"{ff6347}Работа временна отключена Администрацией");
+	if(blockwork[2] == 1) return ErrorMessage(playerid,"{ff6347}Работа временно отключена Администрацией");
 	if(PlayerInfo[playerid][pPlacement] >= 1 && PlayerInfo[playerid][pPlacement] != 10) return StopJob(playerid);
 	new line[100],lines[400];
 	
