@@ -1,12 +1,12 @@
-new blockwork[10]; // 0 рыба.
+new blockwork[10];
 
 CMD:blockwork(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заблокировать работу до рестарта [ /blockwork ID работы ]");
-	if(params[0] < 0 || params[0] > 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип [ 0 рыбалка, 1 ферма, 2 автобус, 3 архео, 4 НАСА,5 ОХОТА]");
-	if(blockwork[params[0]] == 1) blockwork[params[0]] = 0,SendClientMessage(playerid,COLOR_GREY,"Я открыл работу"),AdminLog("blockwork", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "открыл работу");
-	else if(blockwork[params[0]] == 0) blockwork[params[0]] = 1,SendClientMessage(playerid,COLOR_GREY,"Я закрыл работу"),AdminLog("blockwork", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "Заблокировал работу");
+	if(params[0] < 0 || params[0] > sizeof(blockwork)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Тип [ 0 - Рыбалка, 1 - Ферма, 2 - Автобус, 3 - Археология, 4 - NASA, 5 - Охота, 6 - Электрики ]");
+	if (blockwork[params[0]]) blockwork[params[0]] = 0,SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я открыл работу"), AdminLog("blockwork", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "открыл работу");
+	else blockwork[params[0]] = 1,SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я закрыл работу"), AdminLog("blockwork", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], "закрыл работу");
 	return 1;
 }
 

@@ -1505,7 +1505,7 @@ alias:gotoapartments("gotoa")
 CMD:gotoapartments(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 1 && PlayerInfo[playerid][pMedia] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к бизнесу [ /gotoa ID ]");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к квартирному дому [ /gotoapartments ID ]");
 	if(params[0] >= 1 && params[0] <= MAX_APARTMENTS)
 	{
 	    if(Apartments[params[0]-1][apStatus] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Данный квартирный дом не установлен");
@@ -1518,8 +1518,8 @@ CMD:gotoapartments(playerid, const params[])
 	return 1;
 }
 
-alias:giveapartmentsroom("givea")
-cmd:giveapartmentsroom(playerid,const params[]) 
+alias:giveapartments("givea")
+cmd:giveapartments(playerid,const params[]) 
 {
     if(PlayerInfo[playerid][pSoska] < 19) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
     new string[144], playa, tmp[24];
