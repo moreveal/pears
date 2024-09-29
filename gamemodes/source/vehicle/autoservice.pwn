@@ -109,14 +109,14 @@ stock CheckAutoInRangeService(playerid)
     // Сохраняем тюнинг на транспорте
     SaveTunning(v);
     
-    new string[160];
+    new string[200];
     format(string, sizeof(string),"{99ff66}Корпус вашего транспорта был совмещён с %s\n{ffcc66}%s был разобран на запчасти", GetVehicleName(VehInfo[veh][vModel]), GetVehicleName(VehInfo[veh][vModel]));
     SuccessMessage(playerid, string);
     if(oGetPlayerMoney(playerid) < BizzInfo[b][bPrice][9]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
     SaveCar(v);
     oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][9]);
 
-    format(string, sizeof(string),"Замена хендлинга %s (%s) в бизнесе №%d", GetVehicleName(VehInfo[veh][vModel]), GetVehicleName(VehInfo[veh][vModel]), b);
+    format(string, sizeof(string),"Замена хендлинга %s [DB: %d] (%s) в бизнесе №%d", GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vNewid], GetVehicleName(VehInfo[veh][vModel]), b);
     MoneyLog("autoservice", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][9], string);
     paybiz(b, BizzInfo[b][bPrice][9]);
     DeleteMyVeh(playerid, quan);
