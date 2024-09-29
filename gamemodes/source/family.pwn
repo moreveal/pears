@@ -368,6 +368,7 @@ stock AddFamilyVehicle(playerid, f, type)
 	if(PlayerInfo[playerid][pFamrank] < FamilyInfo[f][fAccgarage]) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу управлять гаражом [ %d+ Ранг ]",FamilyInfo[f][fAccgarage]);
 	if(!IsValidVehicle(vehicleid) || GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid, "{FF6347}Транспорт отсутствует, чтобы установить вам нужно быть за рулём");
 	if(Cars[vehicleid] >= 1000 && Cars[vehicleid] <= 2000) return ErrorMessage(playerid, "{FF6347}Вы не можете установить в гараж семейный транспорт");
+	if(VehInfo[vehicleid][vIdvlad] != playerid) return ErrorMessage(playerid, "{FF6347}Вы не можете установить в гараж чужой транспорт");
 	
 	new freeSlot = GetFreeFamVehSlot(f);
 	if(freeSlot == -1) return ErrorMessage(playerid, "{FF6347}Все слоты транспортных средств заняты");
