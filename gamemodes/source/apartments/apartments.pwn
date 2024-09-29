@@ -433,17 +433,22 @@ stock CreatePickUpApartmentsFloor(id)
 
 stock ApartmentsHolEnterPickUp(playerid)
 {
-    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid, "{FF6347}Вы не используете лаунчер\n{cccccc}Зайти в данный интерьер нельзя");
     for(new i;i<MAX_APARTMENTS;i++)
     {
         if(!IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[i][apCoord][0], Apartments[i][apCoord][1], Apartments[i][apCoord][2])) continue;
-        else{
+
+        if(!IsPlayerSyncModels(playerid))
+        {
+            ErrorMessage(playerid, "{FF6347}Вы не используете лаунчер\n{cccccc}Зайти в данный интерьер нельзя");
+        }
+        else
+        {
             keep(playerid);
             PPSetPlayerPos(playerid,Apartments[i][apHolCoord][0],Apartments[i][apHolCoord][1],Apartments[i][apHolCoord][2]); 
             PPSetPlayerInterior(playerid,Apartments[i][apInt]);
             S_SetPlayerVirtualWorld(playerid,Apartments[i][apWorldDefineEntrance]);
-            break;
         }
+        break;
     }
     return 1;
 }

@@ -188,7 +188,7 @@ stock CustomThingCase(caseID, selectedThing, &thingId, &thingQuan, &thingPara, &
 stock GetCustomCaseID(const name[])
 {
     new id = -1;
-    if(strfind(name,"gold",true) != (-1)) id = -1;
+    if(strcmp(name,"gold") == 0) id = -1;
     else
     {
         for(new i = 0; i < sizeof(customCaseNameID); i++)

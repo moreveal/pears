@@ -260,7 +260,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     }
 
 
-    if(strfind(name,"gold",true) != (-1))
+    if(strcmp(name,"gold") == 0)
     {
         switch(random(6))
         {
@@ -275,12 +275,12 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         switch(random(15))
         {
-            case 0: thingType = 5; // Обычный предмет
-            case 1: thingType = 5; // Оружие
-            case 2: thingType = 5; // Аксессуар
-            case 3, 4: thingType = 5; // Одежда
+            case 0: thingType = 0; // Обычный предмет
+            case 1: thingType = 1; // Оружие
+            case 2: thingType = 2; // Аксессуар
+            case 3, 4: thingType = 3; // Одежда
             case 5: thingType = 5; // Транспорт
-            default: thingType = 5; // ПОДКРУТКА обычный предмет
+            default: thingType = 0; // ПОДКРУТКА обычный предмет
         }
     }
 
@@ -318,7 +318,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         {
             case 1:
             {
-                if(strfind(name,"gold",true) != (-1)) givePremiumSkin = true; // Premium
+                if(strcmp(name,"gold") == 0) givePremiumSkin = true; // Premium
                 else givePremiumSkin = false;
             }
             default: givePremiumSkin = false;
@@ -409,11 +409,11 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         switch(random(40))
         {
             case 8, 9, 10, 11:{
-                if(strfind(name,"gold",true) != (-1)) givePremiumVehicle = true; // Premium
+                if(strcmp(name,"gold") == 0) givePremiumVehicle = true; // Premium
                 else givePremiumVehicle = false;
             }
             case 1:{
-                if(strfind(name,"gold",true) != (-1)) giveLimitedVehicle = true;// Limited
+                if(strcmp(name,"gold") == 0) giveLimitedVehicle = true;// Limited
                 else giveLimitedVehicle = false;// Limited
             }
             default: givePremiumVehicle = giveLimitedVehicle = false; // Прочие тс
@@ -457,7 +457,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         thingQuan = colorveh;
     }
 
-    if(strfind(name,"gold",true) != (-1)) thingPack = 9; // GOLD case
+    if(strcmp(name,"gold") == 0) thingPack = 9; // GOLD case
     else thingPack = 5; // Не трогаем
     return 1;
 }
