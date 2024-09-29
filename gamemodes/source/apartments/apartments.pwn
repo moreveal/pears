@@ -846,13 +846,13 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 
 function Call_OfflineBuyApartments(roomid)
 {
-    new datad1, datad2, datad[10],string[16],result = -1,f_str[144];
+    new datad1, datad2, datad[10],string[32],result = -1,f_str[144];
     cache_get_value_name_int(0, "Account", datad1);
     cache_get_value_name_int(0, "user_id", datad2);
     for(new i; i < 10; i++)
     {
         format(string, sizeof(string), "pApartmentsRoom%d",i);
-        cache_get_value_name_int(0, "string", datad[i]);
+        cache_get_value_name_int(0, string, datad[i]);
         if(datad[i] == roomid) 
         {
             result = i;
@@ -1574,13 +1574,13 @@ function Call_OfflineGiveApartments(roomid)
 {
     new rows;
     cache_get_row_count(rows);
-    new datad1, datad2[24], datad[10],string[16],result = -1,f_str[144];
+    new datad1, datad2[24], datad[10],string[32],result = -1,f_str[144];
     cache_get_value_name_int(0, "user_id", datad1);
     cache_get_value_name(0, "Name", datad2, sizeof(datad2));
     for(new i; i < 10; i++)
     {
         format(string, sizeof(string), "pApartmentsRoom%d",i);
-        cache_get_value_name_int(0, "string", datad[i]);
+        cache_get_value_name_int(0, string, datad[i]);
         if(datad[i] == 0) 
         {
             result = i;
