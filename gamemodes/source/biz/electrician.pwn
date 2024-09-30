@@ -168,9 +168,19 @@ stock FindTerminalFromElectrician(playerid)
 
 stock FindHouseFromElectrician(playerid)
 {
-	new Float: dist, Float: findpos, domId, bizId;
-	dist = GetPlayerDistanceFromPoint(playerid, DomInfo[1][dKoordinatX], DomInfo[1][dKoordinatY], DomInfo[1][dKoordinatZ]);
-	for(new d = 1; d <= 1000; d++)
+	new Float: dist, Float: findpos, domId, bizId, domIdFindOne;
+    for(new dom = 1; dom <= 1000; dom++) // Ищем первый дом для подключения, а дальше проверяем ближе всех он или нет
+	{
+        if(DomInfo[dom][dElectroStatus] == 0) continue;
+        if(ElectricianConnect[dom] == 1) continue;
+        bizId = DomInfo[dom][dElectroStatus];
+        if(BizzInfo[bizId][bElectroPayForConnect] <= 0 || BizzInfo[bizId][bDeposit] < BizzInfo[bizId][bElectroPayForConnect]) continue;
+        if(!GetElectroObject(dom)) continue;
+        findpos = GetPlayerDistanceFromPoint(playerid, DomInfo[dom][dKoordinatX], DomInfo[dom][dKoordinatY], DomInfo[dom][dKoordinatZ]);
+        dist = findpos, domIdFindOne = dom, domId = dom;
+        break; // Обрываем цикл нахер что бы не ходить по циклу два раза
+    }
+	for(new d = domIdFindOne; d <= 1000; d++)
 	{
         if(DomInfo[d][dElectroStatus] == 0) continue;
         if(ElectricianConnect[d] == 1) continue;
