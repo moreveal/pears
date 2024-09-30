@@ -1,7 +1,7 @@
 stock showapartmentstable(playerid, i) // Открываем меню прикроватного столика
 {
 	if(OnlineInfo[playerid][oShowInterface] != 1 || howstun(playerid)) return 1;
-	if(ApartmentsRoom[i][aprOwn] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Открывать тумбу в квартире может только владелец");
+	if(ApartmentsRoom[i][aprOwn] != PlayerInfo[playerid][pID] && PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Открывать тумбу в квартире может только владелец");
 
 	OnlineInfo[playerid][oShowTabs] = i;
 	i_tabs(playerid, 4, 1);

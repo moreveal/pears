@@ -1392,8 +1392,6 @@ CMD:moveapartments(playerid,const params[])
     CreatePickUpApartments(apid, 1);
     SaveApartments(apid);
     
-    new log_str[144];
-    format(log_str, sizeof(log_str), "Создал квартирный дом Класс: %d. Кол-во Этажей: %d",class,floor);
     AdminLog("mapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", apid+1, "Переместил квартирный дом");
 
     return 1;

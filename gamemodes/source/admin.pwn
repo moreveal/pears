@@ -898,6 +898,23 @@ CMD:setdom(playerid, const params[])
 	SendClientMessage(params[0], COLOR_GREY, string);
 	return 1;
 }
+
+CMD:setapr(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setapr ID Номер КВ Слот КВ]");
+	if(params[1] > MAX_APARTMENTS_TABLE || params[1] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальный ID квартиры: %d. Минимальный: 1",MAX_APARTMENTS_TABLE);
+	if(params[2] > 10 || params[2] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальное количество слотов: 10. Минимальное: 1");
+	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	PlayerInfo[params[0]][pApartmentsRoom][params[2]-1]= ApartmentsRoom[params[1]-1][aprID]+1;
+	new string[144];
+	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер квартиры {0088ff}%d в слот %d", PlayerInfo[params[0]][pName],ApartmentsRoom[params[1]-1][aprID]+1,params[2]);
+	SendClientMessage(playerid, COLOR_GREY, string);
+	format(string, sizeof(string), "{FFFFFF}Администрация установила вам номер квартиры %d в слот %d",ApartmentsRoom[params[1]-1][aprID]+1,params[2]);
+	SendClientMessage(params[0], COLOR_GREY, string);
+	return 1;
+}
+
 CMD:rkasino(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return 1;
