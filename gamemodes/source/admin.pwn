@@ -1412,3 +1412,25 @@ cmd:toearth(playerid, const params[])
 
 	return 1;
 }
+
+cmd:setbizpos(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить позицию лейбла бизнеса [ /setbizpos Бизнес ]");
+	if(params[0] >= 1 && params[0] <= 200)
+	{
+		new Float:x, Float:y, Float:z, string[100];
+		GetPlayerPos(playerid, x, y, z);
+
+		BizzInfo[params[0]][bX] = x, BizzInfo[params[0]][bY] = y, BizzInfo[params[0]][bZ] = z;
+		UpdateBizLabel(params[0], 1);
+		format(string, sizeof(string), " [ ADM ]: %s сменил физическую точку бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
+		
+		format(string, sizeof(string), "Смена физической точки бизнеса %d", params[0]);
+		AdminLog("setbizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
+
+		SaveBizz(params[0]);
+	}
+	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	return 1;
+}
