@@ -96,6 +96,11 @@ CMD:createapartments(playerid,const params[])
         }
     }
     if(result == -1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: В данный момент все слоты под Квартирные Дома заняты");
+
+    new log_str[144];
+    format(log_str, sizeof(log_str), "Создал квартирный дом. Класс: %d. Кол-во Этажей: %d",class,floor);
+    AdminLog("createapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", result+1, log_str);
+
     CreateApartments(playerid,result,class,floor);
     return 1;
 }
@@ -1366,6 +1371,7 @@ CMD:asellroom(playerid,const params[])
             }
         }
 	}
+    AdminLog("asellroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ApartmentsRoom[aprid][aprOwn], ApartmentsRoom[aprid][aprOwnName], "", aprid+1, "Слил квартиру");
 	SlivApartments(aprid);
     return 1;
 }
@@ -1385,6 +1391,9 @@ CMD:moveapartments(playerid,const params[])
     DestroyDynamicMapIcon(ApartmentsMapIcon[apid]);
     CreatePickUpApartments(apid, 1);
     SaveApartments(apid);
+    
+    AdminLog("mapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", apid+1, "Переместил квартирный дом");
+
     return 1;
 }
 
@@ -1398,6 +1407,11 @@ CMD:editclassapartments(playerid,const params[])
     if(class > MAX_APARTMENTS_CLASS || class < 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальное класс Квартирного Дома: %d", MAX_APARTMENTS_CLASS);
     apid--, class--;
     if(Apartments[apid][apStatus] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Нет такого квартирного дома");
+
+    new log_str[144];
+    format(log_str, sizeof(log_str), "Сменил класс квартирный дома. Был: %d, Стал: %d",Apartments[apid][apClass]+1,class+1);
+    AdminLog("ecapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", apid+1, log_str);
+
     Apartments[apid][apClass] = class;
     UpdateClassApartments(apid,class,1);
     SaveApartments(apid);
@@ -1415,6 +1429,11 @@ CMD:editfloorapartments(playerid,const params[])
     if(floor > MAX_APARTMENTS_FLOOR || floor < 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальное кол.во этажей: %d", MAX_APARTMENTS_FLOOR);
     apid--;
     if(Apartments[apid][apStatus] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Нет такого квартирного дома");
+
+    new log_str[144];
+    format(log_str, sizeof(log_str), "Сменил кол-во этажей в квартирном доме. Было: %d, Стало: %d",Apartments[apid][apFloor],floor);
+    AdminLog("efapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", apid+1, log_str);
+
     Apartments[apid][apFloor] = floor;
     SaveApartments(apid);
     SuccessMessage(playerid, "Вы успешно сменили кол.во этажей апартаментов. Изменения вступят в силу после рестарта");
@@ -1434,6 +1453,9 @@ CMD:deleteapartments(playerid,const params[])
     SaveApartments(apid);
     SendClientMessage(playerid, COLOR_GRAY, "Вы успешно удалили квартирный дом %d", apid+1);
     SuccessMessage(playerid, "{44ff99}Вы успешно удалили Квартирный дом. \n\nЕсли вы не собираетесь создавать квартирный Дом то можете удалять еще\nЕсли же хотите создать, то сначала создайте, а потом удаляйте еще.");
+    
+    AdminLog("dapartments", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", apid+1, "Удалил квартирный дом");
+
     return 1;
 }
 

@@ -87,6 +87,9 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
     
 	if(b >= 163 && b <= 172) // В банке не нужна доставка товаров, поэтому здесь просто настройка комиссионных
 	{
+		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
+		format(line,sizeof(line),"{cccccc}Оплата за инкассацию денег\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Инкассация денег\t от {99ff66}%d$ \t \n", BizzInfo[b][bAtmCollector]), strcat(lines,line);
 	}
 	else if (b >= 143 && b <= 152) // В электростанциях нет доставки, оплата за переподключение дома и ремонта колонки

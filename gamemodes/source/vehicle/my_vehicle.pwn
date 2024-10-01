@@ -4802,10 +4802,10 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 
 		mysql_tquery(pearsq, "COMMIT;");
 
-		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), PPSetPlayerFacingAngle(playerid,270.0);
-		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), PPSetPlayerFacingAngle(playerid,90.0);
-		else if(IsPlayerInRangeOfPoint(playerid,10.0,2741.2739,-2316.9890,1.0)) PPSetPlayerPos(playerid,2733.0496,-2312.8413,1.5468), PPSetPlayerFacingAngle(playerid,180.0);
-		else PPSetPlayerPos(playerid,42.7541,930.0029,21.7048), PPSetPlayerFacingAngle(playerid,0.0);
+		if(IsPlayerInRangeOfPoint(playerid,10.0,2276.8972,534.0618,1.0)) PPSetPlayerPos(playerid,2284.4485,521.0029,1.7217), PPSetPlayerFacingAngle(playerid,270.0); // Лодки
+		else if(IsPlayerInRangeOfPoint(playerid,10.0,-1467.3530,669.2661,1.0)) PPSetPlayerPos(playerid,-1460.5260,678.3433,1.5122), PPSetPlayerFacingAngle(playerid,90.0); // Лодки
+		else if(IsPlayerInRangeOfPoint(playerid,10.0,2741.2739,-2316.9890,1.0)) PPSetPlayerPos(playerid,2733.0496,-2312.8413,1.5468), PPSetPlayerFacingAngle(playerid,180.0); // Лодки
+		else if(IsPlayerInRangeOfPoint(playerid, 10.0,51.3109,936.5281,22.0238)) PPSetPlayerPos(playerid,42.7541,930.0029,21.7048), PPSetPlayerFacingAngle(playerid,0.0); // Авто
 	}
 	else ErrorMessage(playerid, "{FF6347}Вы не за рулём личного транспорта");
 	return 1;
