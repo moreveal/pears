@@ -832,6 +832,8 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
     format(string, sizeof(string), "Продал Квартиру в квартирном доме %d игроку %s",aprid+1, PlayerInfo[playerid][pName]);
     HouseLog(1, "sellapartmentsroom", ApartmentsRoom[roomid][aprOwn], ApartmentsRoom[roomid][aprOwnName], "", ApartmentsRoom[roomid][aprID], ApartmentsRoom[roomid][aprSellOwn], string);
 
+    if(PlayerInfo[playerid][pAchieve][45] == 0) AchievePlayer(playerid, 45, 1);
+    
 	PlayerInfo[playerid][pApartmentsRoom][result] = ApartmentsRoom[roomid][aprID]+1;
 	ApartmentsRoom[roomid][aprOwn] = PlayerInfo[playerid][pID];
 	ApartmentsRoom[roomid][aprStatus] = 1;
