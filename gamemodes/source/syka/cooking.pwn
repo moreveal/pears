@@ -69,6 +69,9 @@ stock GetDynamicObjectFridge(objectid)
 
 stock IsANearbyObject(playerid) // Ищем предметы рядом с игроком
 {
+    if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
+	|| GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
+	|| GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0; // Ikea блокируем взаимодействие
     new Float: player_pos[3];
     GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
