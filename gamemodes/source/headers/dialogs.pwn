@@ -159,6 +159,9 @@ enum e_DialogId {
 
     // Семья
     FAMILY_DIALOG_ADDVEHICLE,
-    FAMILY_DIALOG_PLATE
+    FAMILY_DIALOG_PLATE,
+
+    // GPS
+    GPS_DIALOG_WAREHOUSE
 };
 
