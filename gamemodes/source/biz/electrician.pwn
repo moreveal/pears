@@ -399,16 +399,19 @@ function ElectricianProcessTimer(playerid)
 stock ElectroFillStart(playerid,br,term)
 {
     new result = -1;
-    for(new vehicleid = 1; vehicleid < MAX_CARS; vehicleid++)
+    new Float: result_distance = 100.0;
+    foreach (new vehicleid : Vehicle)
     {
         if(!IsValidVehicle(vehicleid)) continue;
-        if(!IsAElectroCar(VehInfo[vehicleid][vModel])) continue;
+        if(!IsElectroCarModel(VehInfo[vehicleid][vModel])) continue;
         if(GetVehicleInterior(vehicleid) != GetPlayerInterior(playerid) 
             || GetVehicleVirtualWorld(vehicleid) != GetPlayerVirtualWorld(playerid)) continue;
-        //if(VehInfo[vehicleid][vSost] != PlayerInfo[playerid][pID]) continue;
-        if(GetVehicleDistanceFromPoint(vehicleid, RentPos_X[br][term], RentPos_Y[br][term], RentPos_Z[br][term]) <= 5.0) 
+
+        new Float: distance = GetVehicleDistanceFromPoint(vehicleid, RentPos_X[br][term], RentPos_Y[br][term], RentPos_Z[br][term]);
+        if(distance <= 5.0 && distance < result_distance) 
         {
             result = vehicleid;
+            result_distance = distance;
             break;
         }
     }

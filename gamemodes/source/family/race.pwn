@@ -1024,6 +1024,7 @@ stock StreetRacersBusi(playerid, br)
         if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return ErrorMessage(playerid,"{FF6347} Для заправки необходимо быть на транспорте");
  		new vehicle = GetPlayerVehicleID(playerid);
  		if(IsAVello(vehicle)) return ErrorMessage(playerid, "{FF6347}Велосипед нельзя заправить");
+        if(IsElectroCarModel(VehInfo[vehicle][vModel])) return ErrorMessage(playerid, "{FF6347}Этот транспорт нужно заряжать на специальных станциях");
  		new fill = VehInfo[vehicle][vGas] + VehInfo[vehicle][vGelium];
         if(fill >= 99) return ErrorMessage(playerid, "{FF6347}Транспорт не нужно заправлять [ Бак полон ]");
         new string[200];
