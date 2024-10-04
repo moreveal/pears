@@ -676,9 +676,9 @@ CMD:delaction(playerid, const params[])
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
 	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
 	new kol = 0;
-	for(new i = 0; i < 5; i++)
+	for(new i = 0; i < MAX_PLAYER_ACTIONS; i++)
 	{
-		if(gAction[i][params[0]] == 1) DestroyDynamic3DTextLabel(ActionLabel[i][params[0]]), gAction[i][params[0]] = 0, kol ++, format(ActionText[i][playerid], 20, " ");
+		if(gAction[i][params[0]]) DestroyDynamic3DTextLabel(ActionLabel[i][params[0]]), gAction[i][params[0]] = 0, kol ++, ActionText[i][params[0]][0] = EOS;
 	}
 	if(kol == 0) return ErrorMessage(playerid, "{FF6347}У этого игрока нет RP ситуаций");
 	new string[128];
