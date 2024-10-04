@@ -252,6 +252,7 @@ stock PDatabase_HackFail(playerid)
     PDatabase_SetHackStage(playerid, fractionid, POLICE_DATABASE_HACK_STAGE_NONE);
     PlayerPlaySound(playerid, 31203);
     PDatabase_SetAlarm(fractionid, true);
+    ABroadCast(COLOR_GREY, "[ DEBUG ]: Срабатывание сигнализации из-за неверного прохождения первого этапа взлома", 10);
     policeDatabaseInfo[fractionid][pdiHackerID] = 0;
     policeDatabaseInfo[fractionid][pdiHackAttemptTime] = gettime();
 
@@ -332,6 +333,7 @@ function PDatabase_HackDraw(playerid) {
         new Float: generators_ratio = float(PDatabase_GetGeneratorsCount(fractionid, .broken = true)) / PDatabase_GetGeneratorsCount(fractionid);
         if (progress >= generators_ratio && !policeDatabaseInfo[fractionid][pdiAlarm] && !policeDatabaseInfo[fractionid][pdiHackAlarm]) {
             PDatabase_SetAlarm(fractionid, true);
+            ABroadCast(COLOR_GREY, "[ DEBUG ]: Запланированное срабатывание сигнализации на первом этапе взлома", 10);
             SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кажется, в здании сработала сигнализация, надеюсь я успею..");
             policeDatabaseInfo[fractionid][pdiHackAlarm] = true;
         }
@@ -665,6 +667,7 @@ stock PDatabase_OnPlayerDisconnect(playerid)
         if (policeDatabaseInfo[fractionid][pdiHackerID] == PlayerInfo[playerid][pID]) {
             policeDatabaseInfo[fractionid][pdiHackerID] = 0;
             PDatabase_SetAlarm(fractionid, true);
+            ABroadCast(COLOR_GREY, "[ DEBUG ]: Срабатывание сигнализации из-за выхода игрока, взламывающего базу данных", 10);
             break;
         }
     }
@@ -742,6 +745,7 @@ stock PDatabase_FailShieldBreak(playerid, shieldid)
         if (!policeDatabaseInfo[fractionid][pdiAlarm]) {
             ErrorMessage(playerid, "{FF6347}Вы не смогли вскрыть электрощиток "#POLICE_DATABASE_SHIELD_ATTEMPTS" раза подряд [ Сработала сигнализация ]");
             PDatabase_SetAlarm(fractionid, true);
+            ABroadCast(COLOR_GREY, "[ DEBUG ]: Срабатывание сигнализации из-за неудачных попыток взлома электрощитка", 10);
 
             foreach (new id : Player)
             {
@@ -871,6 +875,7 @@ stock PDatabase_SetThermitePlace(fractionid, bool: status = true)
     // Включаем сигнализацию, если все щитки были исправны при установке термита
     if (PDatabase_GetShieldsCount(fractionid, .broken = true) < 1) {
         PDatabase_SetAlarm(fractionid, true);
+        ABroadCast(COLOR_GREY, "[ DEBUG ]: Срабатывание сигнализации при установке термита при исправных электрощитках", 10);
     }
     
     if (status) {
@@ -1150,6 +1155,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
                             if (PDatabase_GetShieldsCount(fractionid, .broken = true) == 1 && !policeDatabaseInfo[fractionid][pdiExplodeJoin])
                             {
                                 PDatabase_SetAlarm(fractionid, true);
+                                ABroadCast(COLOR_GREY, "[ DEBUG ]: Срабатывание сигнализации из-за входа через термит при условии, что не сломан датчик движения", 10);
                             }
                             policeDatabaseInfo[fractionid][pdiExplodeJoin] = true;
                         }
