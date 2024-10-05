@@ -296,6 +296,10 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     {
         if(g == 9)  return 1;
     }
+    else if(accessId == 80) // /breath
+    {
+        if(IsAPoliceFunction(g) || g == 4) return 1;
+    }
     else return 1;
     return 0;
 }
