@@ -664,6 +664,8 @@ stock PDatabase_OnPlayerDisconnect(playerid)
     // Если вышел игрок, взламывающий БД
     for (new fractionid = 0; fractionid < POLICE_DATABASE_MAX_ORG; fractionid++)
     {
+        if (policeDatabaseInfo[fractionid][pdiHackerID] <= 0) continue;
+        
         if (policeDatabaseInfo[fractionid][pdiHackerID] == PlayerInfo[playerid][pID]) {
             policeDatabaseInfo[fractionid][pdiHackerID] = 0;
             PDatabase_SetAlarm(fractionid, true);
