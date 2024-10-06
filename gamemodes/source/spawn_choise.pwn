@@ -292,7 +292,7 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
             {
                 if(DomInfo[numSpawn][dArest] == 1) return ErrorMessage(playerid, "{FF6347}Этот дом арестован\n\n{cccccc}Если это ваш дом, оплатите налоги для снятия ареста");
             }
-            else if(spawnId == 5) // Room
+            else if(spawnId == 5) // Квартиры
             {
                 PlayerInfo[playerid][pSelectspawn] = spawnId;
                 ClearList(playerid);
@@ -303,18 +303,16 @@ stock dialogCase_SpawnChoise(playerid, dialogid, response, listitem)
                     {
                         format(line,sizeof(line),"{ff9000}Слот %d | {cccccc}№ Квартирного дома: %d [ Квартира: %d ]\n", f+1, ApartmentsRoom[PlayerInfo[playerid][pApartmentsRoom][f]-1][aprApartmentsID]+1, ApartmentsRoom[PlayerInfo[playerid][pApartmentsRoom][f]-1][aprID]+1), strcat(lines,line);
                         quan++;
-                        List[quan][playerid] = f;
+                        List[quan][playerid] = PlayerInfo[playerid][pApartmentsRoom][f]-1;
                     }
                 }
                 if(quan == -1) return ErrorMessage(playerid,"У вас нет квартиры\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
-                DP[0][playerid] = quan;
-                ShowDialog(playerid,APARTMENTS_DIALOG_SPAWNCHOICE,DIALOG_STYLE_TABLIST,"{cccccc}Мои Квартиры",lines,"Выбрать","Отмена");
+                return ShowDialog(playerid,APARTMENTS_DIALOG_SPAWNCHOICE,DIALOG_STYLE_TABLIST,"{cccccc}Мои Квартиры",lines,"Выбрать","Отмена");
             }
             else if(spawnId == 9) // Trailer
             {
                 if(TrailerInfo[numSpawn][tActive] == false) return ErrorMessage(playerid, "{FF6347}Этот трейлер не установлен\n\n{cccccc}Вы всегда можете выбрать спавн в Отеле {ff9000}Жильё >> Отель");
             }
-            
             SelectSpawnChoise(playerid, spawnId);
         }
     }
