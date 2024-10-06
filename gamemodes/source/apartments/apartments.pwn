@@ -1147,6 +1147,7 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
         case APARTMENTS_DIALOG_SPAWNCHOICE:{
             if(!response) return 0;
             ApartmentsSpawnChoise(playerid, List[listitem][playerid]);
+            SelectSpawnChoise(playerid, 5);
         }
     }
     return 1;
@@ -1654,6 +1655,5 @@ stock ApartmentsSpawnChoise(playerid, aprid)
         case 0: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordFourExit][0],Apartments[apid][apRoomCoordFourExit][1],Apartments[apid][apRoomCoordFourExit][2],179.9875, 0, 0, 0, 0, 0, 0);
         default: SetSpawnInHotel(playerid, frakid, models);
     }
-    SelectSpawnChoise(playerid, 5);
     return 1;
 }
