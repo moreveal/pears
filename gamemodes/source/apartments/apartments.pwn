@@ -1646,7 +1646,6 @@ stock ApartmentsSpawnChoise(playerid, aprid)
     new apworld = ApartmentsRoom[aprid][aprWorld];
     new apid = ApartmentsRoom[aprid][aprApartmentsID];
     new idfloorroom = (apworld - Apartments[apid][apWorldDefineEntrance] - Apartments[apid][apFloor]) % 4;
-    SendClientMessageToAll(-1, "HYI world %d, idfloorroom %d, roomid %d", apworld, idfloorroom, aprid);
     PlayerInfo[playerid][pSpawnChangeDop] = aprid+1;
     switch(idfloorroom){
         case 1: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordOneExit][0],Apartments[apid][apRoomCoordOneExit][1],Apartments[apid][apRoomCoordOneExit][2],179.9875, 0, 0, 0, 0, 0, 0);
