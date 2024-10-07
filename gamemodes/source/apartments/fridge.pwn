@@ -33,9 +33,9 @@ stock showRefrigerator(playerid, i) // Открываем меню прикро�
     {
         if(ApartmentsRoom[i-2000][aprOwn] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Открывать холодильник в квартире может только владелец");
     }
-	OnlineInfo[playerid][oShowTabs] = i-1;
+	OnlineInfo[playerid][oShowTabs] = i;
 	i_tabs(playerid, 4, 1);
-	for(new inva = 0; inva < MAX_FRIDGE_SLOTS; inva++) item_second(playerid, Refrigerator[i-1][fridgeInvent][inva], Refrigerator[i-1][fridgeInv][inva], inva, 0, Refrigerator[i-1][fridgeInvPara][inva], Refrigerator[i-1][fridgeInvType][inva], Refrigerator[i-1][fridgeInvPack][inva], 0);
+	for(new inva = 0; inva < MAX_FRIDGE_SLOTS; inva++) item_second(playerid, Refrigerator[i][fridgeInvent][inva], Refrigerator[i][fridgeInv][inva], inva, 0, Refrigerator[i][fridgeInvPara][inva], Refrigerator[i][fridgeInvType][inva], Refrigerator[i][fridgeInvPack][inva], 0);
 	return 1;
 }
 
@@ -433,6 +433,8 @@ stock SaveOneInventRefrigerator(idx, inva) // Сохраняем одну яче
 
 stock OnLoadInventRefrigerator(idx)
 {
+	new id;
+	cache_get_value_name_int(idx,"id",id);
 	for(new i = 0; i < 20; i++)
 	{
 		new string[20], bool:is_null;
@@ -447,12 +449,12 @@ stock OnLoadInventRefrigerator(idx)
 			new JsonNode:node = JSON_INVALID_NODE;
 			if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
 			{
-				JSON_GetInt(node, "id",Refrigerator[idx][fridgeInvent][i]);
-				JSON_GetInt(node, "quan",Refrigerator[idx][fridgeInv][i]);
-				JSON_GetInt(node, "para",Refrigerator[idx][fridgeInvPara][i]);
-				JSON_GetInt(node, "qara",Refrigerator[idx][fridgeInvQara][i]);
-				JSON_GetInt(node, "type",Refrigerator[idx][fridgeInvType][i]);
-				JSON_GetInt(node, "pack",Refrigerator[idx][fridgeInvPack][i]);
+				JSON_GetInt(node, "id",Refrigerator[id][fridgeInvent][i]);
+				JSON_GetInt(node, "quan",Refrigerator[id][fridgeInv][i]);
+				JSON_GetInt(node, "para",Refrigerator[id][fridgeInvPara][i]);
+				JSON_GetInt(node, "qara",Refrigerator[id][fridgeInvQara][i]);
+				JSON_GetInt(node, "type",Refrigerator[id][fridgeInvType][i]);
+				JSON_GetInt(node, "pack",Refrigerator[id][fridgeInvPack][i]);
 			}
 		}
 	}
@@ -499,7 +501,7 @@ CMD:firstloadfridge(playerid)
 function LoadRefegirator() {
     new rows;
     cache_get_row_count(rows);
-    for (new f = 1; f < rows; f++) {
+    for (new f; f < rows; f++) {
         OnLoadInventRefrigerator(f);
     }
 }
