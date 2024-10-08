@@ -180,8 +180,11 @@ stock PDatabase_CheckHackAvailableTime(playerid, fractionid)
     {
         new tmphour, tmpminute, tmpsecond;
         gettime(tmphour, tmpminute, tmpsecond);
-        if(tmphour < 12 || tmphour > 22) {
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: База данных отключена! [ Только с 12:00 до 22:00 ]");
+        if (fractionid == 0 && (tmphour < 11 || tmphour > 22) ) {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Полицейская база данных отключена! [ Только с 11:00 до 22:00 ]");
+            return 1;
+        } else if (fractionid == 1 && (tmphour < 10 || tmphour > 23) ) {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Федереральная база данных отключена! [ Только с 10:00 до 23:00 ]");
             return 1;
         }
 
