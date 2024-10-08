@@ -74,15 +74,3 @@ stock GetClosestVehicle(playerid, Float:maxDistance = 3.0) {
 	}
 	return last_vehicleid;
 }
-
-stock IsFreeVehicle(vehicleid)
-{
-	foreach (new id : Player)
-	{
-		if (GetPlayerVehicleID(id) == vehicleid) {
-			return false;
-		}
-	}
-
-	return true;
-}
