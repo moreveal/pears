@@ -720,27 +720,10 @@ stock GetPlayerApartmentsId(playerid)
     return apid;
 }
 
-stock TempBlockBuyRoom(playerid)
-{
-    new haveroom;
-    for(new i; i < 10; i++)
-    {
-        if(PlayerInfo[playerid][pApartmentsRoom][i] != 0)
-        {
-            haveroom = 1;
-            break;
-        }
-    }
-    new year, month,day;
- 	getdate(year, month, day);
-  	if(month == 10 && day >= 7) return 0;
-    else return haveroom;
-}
 stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - gold, 2 $ own
 {
 	if(typeBuy != 0 && typeBuy != 1 && typeBuy != 2) return 1;
 	new result = -1,haveroom = -1;
-    if(TempBlockBuyRoom(playerid)) return ErrorMessage(playerid,"{ff6347}Временно ограничено кол.во квартир на аккаунте. Доступна к покупке только одна квартира.\n\n Лимит снимится 7 октября");
     for(new i; i < 10; i++)
     {
         if(PlayerInfo[playerid][pApartmentsRoom][i] != 0)
@@ -832,6 +815,8 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
     format(string, sizeof(string), "Продал Квартиру в квартирном доме %d игроку %s",aprid+1, PlayerInfo[playerid][pName]);
     HouseLog(1, "sellapartmentsroom", ApartmentsRoom[roomid][aprOwn], ApartmentsRoom[roomid][aprOwnName], "", ApartmentsRoom[roomid][aprID], ApartmentsRoom[roomid][aprSellOwn], string);
 
+    if(PlayerInfo[playerid][pAchieve][45] == 0) AchievePlayer(playerid, 45, 1);
+    
 	PlayerInfo[playerid][pApartmentsRoom][result] = ApartmentsRoom[roomid][aprID]+1;
 	ApartmentsRoom[roomid][aprOwn] = PlayerInfo[playerid][pID];
 	ApartmentsRoom[roomid][aprStatus] = 1;
@@ -1158,6 +1143,11 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
             new apid = List[listitem][playerid];
             SuccessMessage(playerid, "{99ff66}Квартирный дом отмечен на карте");
             CreateGps(playerid,Apartments[apid][apCoord][0],Apartments[apid][apCoord][1],Apartments[apid][apCoord][2], 0, 0, 5.0);
+        }
+        case APARTMENTS_DIALOG_SPAWNCHOICE:{
+            if(!response) return 0;
+            ApartmentsSpawnChoise(playerid, List[listitem][playerid]);
+            SelectSpawnChoise(playerid, 5);
         }
     }
     return 1;
@@ -1519,7 +1509,7 @@ stock ShowMenuApartmentsRoomDetail(playerid,roomid)
 stock ShowMenuApartmentsRoomInfo(playerid,roomid)
 {
     new line[100],lines[500];
-    format(line,sizeof(line),"{ff9000}Информация о квартире %d %s\n\n", ApartmentsRoom[roomid][aprID], ApartmentsRoom[roomid][aprArest] != 0 ? "{ff6347}[АРЕСТОВАНА]" : " "), strcat(lines,line);
+    format(line,sizeof(line),"{ff9000}Информация о квартире %d %s\n\n", ApartmentsRoom[roomid][aprID]+1, ApartmentsRoom[roomid][aprArest] != 0 ? "{ff6347}[АРЕСТОВАНА]" : " "), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Номер квартирного дома: %d\n", ApartmentsRoom[roomid][aprApartmentsID]+1), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Класс квартирного дома: %s\n\n", ApartmentsClass[Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apClass]]), strcat(lines,line);
     format(line,sizeof(line),"{cccccc}Гос.стоимость квартиры: {99ff66} %d$\n", Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apPrice]), strcat(lines,line);
@@ -1647,5 +1637,23 @@ stock arestroom(playerid, roomid)
     GiveUnit(playerid, 7);
     ApplyAnimation(playerid,"PED","endchat_01",4.0, false, true, true, false, false);
     notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], ApartmentsRoom[roomid][aprOwn], ApartmentsRoom[roomid][aprOwnName], "Квартира арестована за неуплату налогов");
+    return 1;
+}
+
+stock ApartmentsSpawnChoise(playerid, aprid)
+{
+    new frakid = fraction(playerid);
+    new models = PlayerInfo[playerid][pModel];
+    new apworld = ApartmentsRoom[aprid][aprWorld];
+    new apid = ApartmentsRoom[aprid][aprApartmentsID];
+    new idfloorroom = (apworld - Apartments[apid][apWorldDefineEntrance] - Apartments[apid][apFloor]) % 4;
+    PlayerInfo[playerid][pSpawnChangeDop] = aprid+1;
+    switch(idfloorroom){
+        case 1: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordOneExit][0],Apartments[apid][apRoomCoordOneExit][1],Apartments[apid][apRoomCoordOneExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 2: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordTwoExit][0],Apartments[apid][apRoomCoordTwoExit][1],Apartments[apid][apRoomCoordTwoExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 3: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordThreeExit][0],Apartments[apid][apRoomCoordThreeExit][1],Apartments[apid][apRoomCoordThreeExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 0: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordFourExit][0],Apartments[apid][apRoomCoordFourExit][1],Apartments[apid][apRoomCoordFourExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        default: SetSpawnInHotel(playerid, frakid, models);
+    }
     return 1;
 }

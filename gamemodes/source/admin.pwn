@@ -1434,3 +1434,27 @@ cmd:setbizpos(playerid, const params[])
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
 	return 1;
 }
+
+new bool:NameOff[MAX_REALPLAYERS];
+CMD:tag(playerid)
+{
+	if(NameOff[playerid])
+	{
+		foreach(Player,i) 
+		{
+			ShowPlayerNameTagForPlayer(playerid, i, true);
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~G~on", 5000, 5);
+		NameOff[playerid] = false;
+	}
+	else
+	{
+		foreach(Player,i) 
+		{
+			ShowPlayerNameTagForPlayer(playerid, i, false);
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~R~off", 5000, 5);
+		NameOff[playerid] = true;
+	}
+	return true;
+}

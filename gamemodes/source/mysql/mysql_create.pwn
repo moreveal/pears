@@ -16,7 +16,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pDatabaseActive", "INT NOT NULL DEFAULT '0'"); // Выбранный тип поддержки при взломе базы данных
     AddColumnIfNotExists("pp_igroki", "pCDKatana", "INT NOT NULL DEFAULT '0'"); // КД на дуэль на катанах
     AddColumnIfNotExists("pp_igroki", "pCDAd", "INT NOT NULL DEFAULT '0'"); // КД на подачу объявлений
-    AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах
+    AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
+    AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom0", "INT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom1", "INT NOT NULL DEFAULT '0'");
