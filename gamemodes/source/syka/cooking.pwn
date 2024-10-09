@@ -105,6 +105,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         }// Туалет
         if(GetDynamicObjectSink(current_object))
         {
+            if(NoWashHand(playerid)) return 0;
             new Float:x, Float:y, Float:z;
             GetDynamicObjectPos(current_object, x, y, z);
             new Float:a = atan2(player_pos[1] - y, player_pos[0]-x) + 90.0; // Направляем игрока на объект.
