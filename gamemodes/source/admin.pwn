@@ -1438,14 +1438,23 @@ cmd:setbizpos(playerid, const params[])
 new bool:NameOff[MAX_REALPLAYERS];
 CMD:tag(playerid)
 {
-	if(NameOff[playerid]) ShowNameTags(false), NameOff[playerid] = false;
-	else ShowNameTags(true), NameOff[playerid] = true;
-	return true;
-}
-
-stock ClearTagOff(playerid)
-{
-	ShowNameTags(false);
-	NameOff[playerid] = false;
+	if(NameOff[playerid])
+	{
+		foreach(Player,i) 
+		{
+			ShowPlayerNameTagForPlayer(playerid, i, true);
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~G~on", 5000, 5);
+		NameOff[playerid] = false;
+	}
+	else
+	{
+		foreach(Player,i) 
+		{
+			ShowPlayerNameTagForPlayer(playerid, i, false);
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~R~off", 5000, 5);
+		NameOff[playerid] = true;
+	}
 	return true;
 }
