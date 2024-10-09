@@ -1434,3 +1434,18 @@ cmd:setbizpos(playerid, const params[])
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
 	return 1;
 }
+
+new bool:NameOff[MAX_REALPLAYERS];
+CMD:tag(playerid)
+{
+	if(NameOff[playerid]) ShowNameTags(false), NameOff[playerid] = false;
+	else ShowNameTags(true), NameOff[playerid] = true;
+	return true;
+}
+
+stock ClearTagOff(playerid)
+{
+	ShowNameTags(false);
+	NameOff[playerid] = false;
+	return true;
+}
