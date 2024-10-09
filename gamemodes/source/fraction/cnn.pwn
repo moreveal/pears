@@ -464,6 +464,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         oGivePlayerBank(Advertise[i][adsID], -ServerInfo[65]);
                         OrganInfo[9][glave] += ServerInfo[65];
 
+                        TakeAdvertise[i] = -1;
                         DeleteAdFromEditList(i);
 
                         return 1;
