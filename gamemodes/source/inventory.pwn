@@ -1539,7 +1539,8 @@ stock TakeInvent(playerid, thingId, thingQuan, thingType, slot = 999, bool:save 
 {
 	// Если предмет не имеет количества - забираем всё
 	if (thingType != 0 || CheckThingQuan(thingId) == 0) {
-		thingQuan = 999999;
+		if (thingId == 43) {} // Исключения (не имеют количества системно, но оно так или иначе используется - например, ручной электрошокер)
+		else thingQuan = 999999;
 	}
 
 	new plit = -1;
@@ -1561,7 +1562,11 @@ stock TakeInvent(playerid, thingId, thingQuan, thingType, slot = 999, bool:save 
 	    if(PlayerInfo[playerid][pInven][slot] == thingId && PlayerInfo[playerid][pInvenType][slot] == thingType) take_away(playerid, thingQuan, slot, save);
 	}
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][plit], PlayerInfo[playerid][pInvenQuan][plit], plit, PlayerInfo[playerid][pInvenPara][plit], PlayerInfo[playerid][pInvenType][plit], PlayerInfo[playerid][pInvenPack][plit]), PlayerPlaySound(playerid,1053,0,0,0), i_resetveshi(playerid);
-	i_takehands(playerid, thingId);
+	
+	if (thingId != 43) { // Ручной шокер заберём сами в нужный момент времени, не нужно каждый раз
+		i_takehands(playerid, thingId);
+	}
+
 	return plit;
 }
 

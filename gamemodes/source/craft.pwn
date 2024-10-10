@@ -904,7 +904,7 @@ function CraftProcess(playerid, tabs_load)
                 new Float:currentHealth; GetVehicleHealth(vehicleid, currentHealth);
 
                 // Внешняя починка транспорта при достаточном уровне скилла
-                if (abilityLevel >= 8) RepairVehicle(vehicleid);
+                if (abilityLevel >= 8) ACRepairVehicle(vehicleid);
                 ACSetVehicleHealth(vehicleid, currentHealth >= repairHealth ? maxHealth : repairHealth);
 
                 // Квест ремонт транспорта
