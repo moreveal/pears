@@ -689,6 +689,40 @@ CMD:delaction(playerid, const params[])
 	return 1;
 }
 
+new CreatedVehicleID[MAX_REALPLAYERS];
+CMD:rveh(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+
+	new vehiclename[64];
+	if(!sscanf(params, "s[64]", vehiclename))
+	{
+		new model = ReturnVehicle(vehiclename);
+		if (model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+		if (!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+		if (IsATrain(model)) return ErrorMessage(playerid, "{FF6347}Нельзя создать поезд");
+
+		new vehicleid = CreatedVehicleID[playerid];
+		if(vehicleid == 0) return ErrorMessage(playerid, "{FF6347}Вы не создавали транспорт, чтобы его заменить");
+		if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
+		if(Cars[vehicleid] != 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Крайний созданный вами транспорт был удалён");
+
+		new Float:pos[4];
+		GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
+		GetVehicleZAngle(vehicleid, pos[3]);
+
+		new color1, color2;
+		color1 = VehInfo[vehicleid][vVehcol1];
+		color2 = VehInfo[vehicleid][vVehcol2];
+
+		ACDestroyVehicle(vehicleid);
+		CreatedVehicleID[playerid] = PP_CreateVehicle(model, pos[0], pos[1], pos[2], pos[3], color1, color2, -1,0, -1, 0.0);
+		Cars[CreatedVehicleID[playerid]] = 9999;
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить крайний созданный транспорт [ /rveh VehID ]");
+	return true;
+}
+
 CMD:veh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
@@ -727,6 +761,8 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 	VehInfo[vehicleid][vGas] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
 	SendClientMessage(playerid, COLOR_GREY, "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d {cccccc}(col1 %d, col2 %d)", GetVehicleName(model), model, vehicleid, color1, color2);
+	
+	CreatedVehicleID[playerid] = vehicleid;
 	return 1;
 }
 
