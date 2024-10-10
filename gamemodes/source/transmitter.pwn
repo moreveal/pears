@@ -261,7 +261,7 @@ stock commandR(playerid, typeCommand, const params[])
 
     new string[240];
     if(!strcmp(nameRank,"\0",true)) return format(string, sizeof(string), "{FF6347}В %s у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g]), ErrorMessage(playerid, string);
-    if(IsADepartID(g)) // Законные организации
+    if(IsADepartID(g) || g == 9) // Законные организации
     {
         if(typeCommand == 0) format(string, sizeof(string), "** %s%s {00C6FF}%s: %s", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
         else format(string, sizeof(string), "** %s%s {00C6FF}%s: (( %s ))", nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
