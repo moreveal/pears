@@ -195,7 +195,8 @@ CMD:wash_hands(playerid)
     || NoAnim[playerid] == 1 
     || howstun(playerid) 
     || Hand[playerid] >= 1 
-    || Hold[playerid] >= 1) return false;
+    || Hold[playerid] >= 1
+    || NoWashHand(playerid)) return false;
 
     if(IsANearbyObject(playerid) == 6)
     {
@@ -211,4 +212,18 @@ CMD:wash_hands(playerid)
         return true;
     }
     return false;
+}
+
+stock NoWashHand(playerid) // Позиции, где нельзя мыть руки(Влад Дизайнер, раковины в стену спрятал)
+{
+    new result = 0;
+    for(new i = 0; i < sizeof(WashPos); i++)
+	{
+        if(IsPlayerInRangeOfPoint(playerid, 1.0, WashPos[i][Wash_X], WashPos[i][Wash_Y], WashPos[i][Wash_Z]))
+        {
+            result = 1;
+            break;
+        }
+    }
+	return result;
 }

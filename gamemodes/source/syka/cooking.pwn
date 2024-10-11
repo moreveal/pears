@@ -69,6 +69,9 @@ stock GetDynamicObjectFridge(objectid)
 
 stock IsANearbyObject(playerid) // Ищем предметы рядом с игроком
 {
+    if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
+	|| GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
+	|| GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0; // Ikea блокируем взаимодействие
     new Float: player_pos[3];
     GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
@@ -102,6 +105,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         }// Туалет
         if(GetDynamicObjectSink(current_object))
         {
+            if(NoWashHand(playerid)) return 0;
             new Float:x, Float:y, Float:z;
             GetDynamicObjectPos(current_object, x, y, z);
             new Float:a = atan2(player_pos[1] - y, player_pos[0]-x) + 90.0; // Направляем игрока на объект.
