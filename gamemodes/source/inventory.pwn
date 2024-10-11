@@ -2833,7 +2833,7 @@ stock player_tile(playerid, inva)
 		 		else if(fpick >= 175 && fpick <= 177) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Домашняя сигнализация [ Поместите в инвентарь дома для установки ]","*",""), i_resetveshi(playerid);
 		 		else if(fpick == 181) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Изолента используется в крафтах [ Подробнее можно узнать на верстаке ]","*","");
 				else if(fpick == 168) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Мясо в упакове используется в крафтах [ Подробнее можно узнать на кухонной плите ]","*","");
-				else if(fpick == 205) return UseStickyBomb(playerid);
+				else if(fpick == 205) return UseStickyBomb(playerid, inva);
 
 				else if (fpick >= 231 && fpick <= 233) return pc_cmd_thing(playerid), i_resetveshi(playerid);
 

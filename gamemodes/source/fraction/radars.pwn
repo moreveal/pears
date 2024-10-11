@@ -382,8 +382,8 @@ function Radar_UpdateLaser(id, playerid) {
 function Radar_DeleteLaser(id) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, 228);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, 228);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, INVISIBLE_VIRTUAL_WORLD);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, INVISIBLE_VIRTUAL_WORLD);
 
     return 1;
 }
@@ -438,7 +438,7 @@ stock Radar_Place(id, bool: status = true) {
         new e_RadarBroken: brokenStatus = RadarInfo[id][riBroken];
         Radar_Place(id, false); // Удаляем объекты, если они уже были установлены
         
-        new object_world = 17, object_int = 228;
+        new object_world = 17, object_int = INVISIBLE_VIRTUAL_WORLD;
 
         if (RadarInfo[id][riMaxSpeed] <= 60.0) {
             if (!brokenStatus) {
@@ -471,7 +471,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(18643, 1322.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Red
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1323.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -640,7 +640,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(19080, 1325.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Blue
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -809,7 +809,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(19083, 1328.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Green
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1329.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -951,10 +951,10 @@ stock Radar_Place(id, bool: status = true) {
 
         if (brokenStatus == RADAR_BROKEN_NO_FIX) {
             // Огонь спрятан и отображается только через секунду
-            gadd(RadarInfo[id][riObjects][16], 228, 0);
+            gadd(RadarInfo[id][riObjects][16], INVISIBLE_VIRTUAL_WORLD, 0);
             SetTimerEx("SetDynamicObjectVirtualWorld", 1000, false, "dd", RadarInfo[id][riObjects][16], 0);
             gadd(RadarInfo[id][riObjects][17], 0, 0);
-            SetTimerEx("SetDynamicObjectVirtualWorld", 2000, false, "dd", RadarInfo[id][riObjects][17], 228);
+            SetTimerEx("SetDynamicObjectVirtualWorld", 2000, false, "dd", RadarInfo[id][riObjects][17], INVISIBLE_VIRTUAL_WORLD);
         }
 
         Radar_SetNormalZ(id);

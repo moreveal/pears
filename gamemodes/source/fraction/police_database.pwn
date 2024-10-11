@@ -149,10 +149,10 @@ stock PDatabase_Initialize()
     }
 
     // Создание скрытых объектов горения в интерьере FBI
-    CreateDynamicObject(18691, 2408.119384, 2538.662841, 2115.853027, 0.000000, 180.000000, 0.000000, 228, 217, -1, 300.00, 300.00); 
-    CreateDynamicObject(18717, 2408.119384, 2538.662841, 2114.771240, 180.000000, 0.000000, 0.000000, 228, 217, -1, 300.00, 300.00); 
-    CreateDynamicObject(18718, 2408.119384, 2538.662841, 2114.771240, 170.000000, 0.000000, 0.000000, 228, 217, -1, 300.00, 300.00); 
-    CreateDynamicObject(18718, 2408.119384, 2538.662841, 2114.771240, 190.000000, 0.000000, 0.000000, 228, 217, -1, 300.00, 300.00);
+    CreateDynamicObject(18691, 2408.119384, 2538.662841, 2115.853027, 0.000000, 180.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 217, -1, 300.00, 300.00); 
+    CreateDynamicObject(18717, 2408.119384, 2538.662841, 2114.771240, 180.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 217, -1, 300.00, 300.00); 
+    CreateDynamicObject(18718, 2408.119384, 2538.662841, 2114.771240, 170.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 217, -1, 300.00, 300.00); 
+    CreateDynamicObject(18718, 2408.119384, 2538.662841, 2114.771240, 190.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 217, -1, 300.00, 300.00);
 
     return 1;
 }
@@ -937,16 +937,16 @@ stock PDatabase_SetThermitePlace(fractionid, bool: status = true)
                 SetDynamicObjectMaterial(explodeObject[16], 0, 2942, "kmb_atmx", "kmb_wiresC", 0x00000000);
 
                 // Огоньки (будут зажигаться поочередно, сначала существуют в другом вирт. мире)
-                explodeObject[17] = CreateDynamicObject(18688, 2158.174316, 2415.391601, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00); // FireSmall
-                explodeObject[18] = CreateDynamicObject(18688, 2157.574218, 2414.191650, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[19] = CreateDynamicObject(18688, 2156.493896, 2413.681640, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[20] = CreateDynamicObject(18688, 2155.453613, 2414.231689, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[21] = CreateDynamicObject(18688, 2154.853515, 2415.431640, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[22] = CreateDynamicObject(18688, 2155.453613, 2416.631591, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[23] = CreateDynamicObject(18688, 2156.553955, 2417.181640, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[24] = CreateDynamicObject(18688, 2157.574218, 2416.591552, 62.938632, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00);
-                explodeObject[25] = CreateDynamicObject(18691, 2156.433837, 2415.141357, 62.676868, 0.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00); // FireBig
-                explodeObject[26] = CreateDynamicObject(18694, 2156.533935, 2417.013183, 64.696022, 450.000000, 0.000000, 0.000000, 228, 0, -1, 300.00, 300.00); // FireBig
+                explodeObject[17] = CreateDynamicObject(18688, 2158.174316, 2415.391601, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00); // FireSmall
+                explodeObject[18] = CreateDynamicObject(18688, 2157.574218, 2414.191650, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[19] = CreateDynamicObject(18688, 2156.493896, 2413.681640, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[20] = CreateDynamicObject(18688, 2155.453613, 2414.231689, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[21] = CreateDynamicObject(18688, 2154.853515, 2415.431640, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[22] = CreateDynamicObject(18688, 2155.453613, 2416.631591, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[23] = CreateDynamicObject(18688, 2156.553955, 2417.181640, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[24] = CreateDynamicObject(18688, 2157.574218, 2416.591552, 62.938632, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00);
+                explodeObject[25] = CreateDynamicObject(18691, 2156.433837, 2415.141357, 62.676868, 0.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00); // FireBig
+                explodeObject[26] = CreateDynamicObject(18694, 2156.533935, 2417.013183, 64.696022, 450.000000, 0.000000, 0.000000, INVISIBLE_VIRTUAL_WORLD, 0, -1, 300.00, 300.00); // FireBig
             }
             default: return 0;
         }
@@ -1460,7 +1460,7 @@ stock PDatabase_Explode(fractionid, bool: status = true)
                     static explode_models[] = {18691, 18717, 18718};
                     for (new j = 0; j < sizeof(explode_models); j++) {
                         if (model == explode_models[j]) {
-                            SetDynamicObjectVirtualWorld(objectid, 228);
+                            SetDynamicObjectVirtualWorld(objectid, INVISIBLE_VIRTUAL_WORLD);
                         }
                     }
                 }
@@ -1618,7 +1618,7 @@ stock PDatabase_Explode(fractionid, bool: status = true)
         if (IsValidDynamic3DTextLabel(explodeInfoLabel)) Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, explodeInfoLabel, E_STREAMER_WORLD_ID, 0);
     } else {
         // Скрываем пикап о месте размещения термита
-        if (IsValidDynamic3DTextLabel(explodeInfoLabel)) Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, explodeInfoLabel, E_STREAMER_WORLD_ID, 228);
+        if (IsValidDynamic3DTextLabel(explodeInfoLabel)) Streamer_SetIntData(STREAMER_TYPE_3D_TEXT_LABEL, explodeInfoLabel, E_STREAMER_WORLD_ID, INVISIBLE_VIRTUAL_WORLD);
     }
 
     foreach (new playerid : Player) {
