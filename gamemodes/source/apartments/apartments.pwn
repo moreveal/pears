@@ -880,6 +880,24 @@ function Call_OfflineBuyApartments(roomid)
     }
 	return true;
 }
+
+stock UpdateLabelApartmentsName(playerid, const str_name[])
+{
+    mysql_tquery(pearsq, "START TRANSACTION;");
+    for(new i; i < 10; i++)
+    {
+        if(PlayerInfo[playerid][pApartmentsRoom][i] == 0) continue;
+        else
+        {
+            strmid(ApartmentsRoom[PlayerInfo[playerid][pApartmentsRoom][i]-1][aprOwnName], str_name, 0, strlen(str_name), 255);
+            UpdateLabelApartments(PlayerInfo[playerid][pApartmentsRoom][i]-1);
+            SaveApartmentsRoom(PlayerInfo[playerid][pApartmentsRoom][i]-1);
+        }
+    }
+    mysql_tquery(pearsq, "COMMIT;");
+    return 1;
+}
+
 stock UpdateLabelApartments(roomid)
 {
     new label[512];
@@ -1805,3 +1823,4 @@ stock ApartmentsHandlerRoofPlatform(apid,type)
     }
     return 1;
 }
+
