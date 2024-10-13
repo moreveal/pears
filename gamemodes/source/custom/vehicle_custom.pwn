@@ -1,4 +1,4 @@
-// last update 28.09.2024 zver
+// last update 13.10.2024 zver
 /*
 Как добавить новый тс?
 1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
@@ -166,8 +166,16 @@ new vehNameCustom[][] =
     "Suzuki GSX-R 1000", // 2150
     "Ford GT Police Highway Patrol", // 2151
     "Dodge Challenger Hellcat", // 2152
-    "Rolls-Royce Phantom" // 2153
-};
+    "Rolls-Royce Phantom", // 2153
+    "1959 Chevrolet Impala", // 2154
+    "1996 Chevrolet Impala SS", // 2155
+    "1976 Ford Gran Torino", // 2156
+    "Bravado Antares", // 2157
+    "Canis Seminole Frontier", // 2158
+    "1982 Mercury Cougar", // 2159
+    "Chevrolet Corvette C3", // 2160
+    "Cadillac CTS-V" // 2161
+    };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
@@ -325,6 +333,14 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     50000000, // "Ford GT Police Highway Patrol" // 2151
     6600000, // "Dodge Challenger Hellcat", // 2152
     37000000, // "Rolls-Royce Phantom" // 2153
+    2000000, // "1959 Chevrolet Impala", // 2154
+    2500000, // "1996 Chevrolet Impala SS", // 2155
+    2000000, // "1976 Ford Gran Torino", // 2156
+    2300000, // "Bravado Antares", // 2157
+    1800000, // "Canis Seminole Frontier", // 2158
+    10000000, // "1982 Mercury Cougar", // 2159
+    10000000, // "Chevrolet Corvette C3", // 2160
+    10000000, // "Cadillac CTS-V" // 2161
 };
 
 stock AddCustomVehice() // Добавляем тс на карту
@@ -483,6 +499,14 @@ stock AddCustomVehice() // Добавляем тс на карту
     AddVehicleSyncModel(541, 2151); // "Ford GT Police Highway Patrol" // 2151
     AddVehicleSyncModel(402, 2152); // "Dodge Challenger Hellcat", // 2152
     AddVehicleSyncModel(580, 2153); // "Rolls-Royce Phantom" // 2153
+    AddVehicleSyncModel(412, 2154); // "1959 Chevrolet Impala", // 2154
+    AddVehicleSyncModel(426, 2155); // "1996 Chevrolet Impala SS", // 2155
+    AddVehicleSyncModel(491, 2156); // "1976 Ford Gran Torino", // 2156
+    AddVehicleSyncModel(603, 2157); // "Bravado Antares", // 2157
+    AddVehicleSyncModel(579, 2158); // "Canis Seminole Frontier", // 2158
+    AddVehicleSyncModel(507, 2159); // "1982 Mercury Cougar", // 2159
+    AddVehicleSyncModel(603, 2160); // "Chevrolet Corvette C3", // 2160
+    AddVehicleSyncModel(560, 2161); // "Cadillac CTS-V" // 2161
     return 1;
 }
 
@@ -491,7 +515,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2153) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2161) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -530,7 +554,8 @@ stock GetVehicleClass(m)
     || m == 575 || m == 576 || m == 593 || m == 595 || m == 600
 	|| m == 2004 || m == 2019 || m == 2021 || m == 2031 || m == 2043 || m == 2048 || m == 2051 || m == 2053 || m == 2059 || m == 2061
 	|| m == 2065 || m == 2013 || m == 2017 || m == 2025 || m == 2054 || m == 2067 || m == 2074 || m == 2075 || m == 2077
-	|| m == 2082 || m == 2099 || m == 2110 || m == 2143 || m == 2145 || m == 2147 || m == 2148 || m == 2149) class = 3;
+	|| m == 2082 || m == 2099 || m == 2110 || m == 2143 || m == 2145 || m == 2147 || m == 2148 || m == 2149
+    || m == 2154 || m == 2155 || m == 2156 || m == 2157 || m == 2158) class = 3;
 
     // Off-Road Class (4) - Внедорожник
     else if(m == 400 || m == 422 || m == 489 || m == 495 || m == 500 || m == 543 || m == 554 || m == 579
@@ -547,7 +572,7 @@ stock GetVehicleClass(m)
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
     || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062
-	|| m == 2088 || m == 2095 || m == 2125) class = 6;
+	|| m == 2095 || m == 2125) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
@@ -559,7 +584,8 @@ stock GetVehicleClass(m)
     || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151) class = 7;
 
     // Новый класс, типо лимитированные (8)
-    else if(m == 2063 || m == 2064 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153) class = 8;
+    else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
+    || m == 2159 || m == 2160 || m == 2161) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
