@@ -1750,6 +1750,7 @@ CMD:createplatformapartments(playerid,const params[])
     if(type > 2 || type < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Укажите тип установки площадки. 1 - Вход в квартирный дом 2 - Сама площадка");
     apid--;
     if(Apartments[apid][apStatus] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Нет такого квартирного дома");
+    if(Apartments[apid][apClass] == 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: В данный класс квартирного дома нельзя создать вертолетную площадку");
     if(type == 1)
     {
         GetPlayerPos(playerid, Apartments[apid][apCoordRoof][0], Apartments[apid][apCoordRoof][1], Apartments[apid][apCoordRoof][2]);
@@ -1814,7 +1815,7 @@ stock ApartmentsHandlerRoofPlatform(apid,type)
         if(ApartmentsRoofPlatformLabel[apid][2]) DestroyDynamic3DTextLabel(ApartmentsRoofPlatformLabel[apid][2]);
 
         format(label, sizeof(label),
-            "{ff9000}Вызов Авиатранспорта\n" \
+            "{ff9000}Парковка Авиатранспорта\n" \
             "{444444}CAPS LOCK (Гудок) {cccccc}- поставить на стоянку\n"
         );
 
