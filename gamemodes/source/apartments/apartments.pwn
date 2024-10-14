@@ -20,6 +20,10 @@ new ApartmentsActorTalk[MAX_APARTMENTS][2];
 new ApartmentsRoofPlatformPickUP[MAX_APARTMENTS];
 new Text3D:ApartmentsRoofPlatformLabel[MAX_APARTMENTS][4];
 
+new PlayerApartments[MAX_REALPLAYERS][2];
+new Text3D:ApartmentsBizLabel[MAX_APARTMENTS][4];
+new ApartmentsBizPickup[MAX_APARTMENTS][4];
+
 
 
 enum apartmentsEnum
@@ -50,7 +54,9 @@ enum apartmentsEnum
     apWorldDefineEntrance, // Подъезд
     Float:apCoordRoof[3], // Координаты входа на крыше
     Float:apCoordHolRoof[3], // Координаты входа на крыше
-    Float:apCoordPlatform[3] // Вертолетные координаты
+    Float:apCoordPlatform[3], // Вертолетные координаты
+    Float:apCoordBizShop[12], // Координаты Бизнеса Магазина
+    apBiz[4] // Бизнес при загрузки присваивается
 }
 new Apartments[MAX_APARTMENTS][apartmentsEnum];
 
@@ -191,6 +197,29 @@ stock DestroyDynamicActorApartmetns(apid)
     DestroyDynamicActor(ApartmentsActorResepshen[apid]);
     DestroyDynamicActor(ApartmentsActorTalk[apid][0]);
     DestroyDynamicActor(ApartmentsActorTalk[apid][1]);
+    return 1;
+}
+
+stock ApartmentsBizCoord(apid)
+{
+    if(Apartments[apid][apClass] == 0) return 0;
+    else{
+        Apartments[apid][apCoordBizShop][0] = 1518.1786;
+        Apartments[apid][apCoordBizShop][1] = 1450.8770;
+        Apartments[apid][apCoordBizShop][2] = 14.0361;
+
+        Apartments[apid][apCoordBizShop][3] = 1516.1659;
+        Apartments[apid][apCoordBizShop][4] = 1448.4221;
+        Apartments[apid][apCoordBizShop][5] = 14.0361;
+
+        Apartments[apid][apCoordBizShop][6] = 1527.9745;
+        Apartments[apid][apCoordBizShop][7] = 1450.8452;
+        Apartments[apid][apCoordBizShop][8] = 14.0361;
+
+        Apartments[apid][apCoordBizShop][9] = 1529.8403;
+        Apartments[apid][apCoordBizShop][10] =1448.3248;
+        Apartments[apid][apCoordBizShop][11] = 14.0361;
+    }
     return 1;
 }
 stock UpdateClassApartments(id,class,status)
@@ -510,6 +539,30 @@ stock ApartmentsEnterPickUp(playerid)
             DP[0][playerid] = result;
             ShowDialogElevator(playerid, 1);
         }
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[result][apCoordBizShop][0],Apartments[result][apCoordBizShop][1],Apartments[result][apCoordBizShop][2])){
+            PlayerApartments[playerid][0] = Apartments[result][apBiz][0];
+            PlayerApartments[playerid][1] = result+1;
+            S_SetPlayerVirtualWorld(playerid, PlayerApartments[playerid][0]-12 ,206), PPSetPlayerInterior(playerid,206);
+            PPSetPlayerPos(playerid,1110.9181,-1386.4814,1401.7142), PPSetPlayerFacingAngle(playerid, 0.0);
+        }
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[result][apCoordBizShop][3],Apartments[result][apCoordBizShop][4],Apartments[result][apCoordBizShop][5])){
+            PlayerApartments[playerid][0] = Apartments[result][apBiz][1];
+            PlayerApartments[playerid][1] = result+1;
+            S_SetPlayerVirtualWorld(playerid, PlayerApartments[playerid][0],224), PPSetPlayerInterior(playerid,224);
+            PPSetPlayerPos(playerid,1289.0270,1525.6481,10.8555), PPSetPlayerFacingAngle(playerid,90.0);
+        }
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[result][apCoordBizShop][6],Apartments[result][apCoordBizShop][7],Apartments[result][apCoordBizShop][8])){
+            PlayerApartments[playerid][0] = Apartments[result][apBiz][2];
+            PlayerApartments[playerid][1] = result+1;
+            S_SetPlayerVirtualWorld(playerid, PlayerApartments[playerid][0]+3000,BizzInfo[PlayerApartments[playerid][0]][bInterior]), PPSetPlayerInterior(playerid,BizzInfo[PlayerApartments[playerid][0]][bInterior]);
+            PPSetPlayerPos(playerid,BizzInfo[PlayerApartments[playerid][0]][bInteriorX],BizzInfo[PlayerApartments[playerid][0]][bInteriorY],BizzInfo[PlayerApartments[playerid][0]][bInteriorZ]), PPSetPlayerFacingAngle(playerid, BizzInfo[PlayerApartments[playerid][0]][bInteriorA]);
+        }
+        else if(IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[result][apCoordBizShop][9],Apartments[result][apCoordBizShop][10],Apartments[result][apCoordBizShop][11])){
+            PlayerApartments[playerid][0] = Apartments[result][apBiz][3];
+            PlayerApartments[playerid][1] = result+1;
+            S_SetPlayerVirtualWorld(playerid, PlayerApartments[playerid][0]-132,207), PPSetPlayerInterior(playerid,207);
+            PPSetPlayerPos(playerid,1988.8231,1565.2983,1564.1647), PPSetPlayerFacingAngle(playerid,270.0);
+        }
     }
     for(new i;i < Apartments[result][apFloor]; i++)
     {
@@ -592,7 +645,7 @@ stock ApartmentsEnterPickUp(playerid)
     return 1;
 }
 
-// ALT у входа в дом
+// ALT у входа в квартиры
 stock ApartmentsPlayerEnter(playerid, type)
 {
     new result = DP[0][playerid];
@@ -633,7 +686,7 @@ stock ApartmentsPlayerEnter(playerid, type)
             }
         }
     }
-    // Меню покупки дом
+    // Меню покупки квартиры
     if(type == 1)
     {
         if(IsPlayerInRangeOfPoint(playerid, 2.0, Apartments[result][apRoomCoordOne][0], Apartments[result][apRoomCoordOne][1], Apartments[result][apRoomCoordOne][2]))
@@ -1344,12 +1397,15 @@ function LoadApartments() {
         cache_get_value_name_float(i, "apCoordHolRoof1", Apartments[i][apCoordHolRoof][1]);
         cache_get_value_name_float(i, "apCoordHolRoof2", Apartments[i][apCoordHolRoof][2]);
 
+        ApartmentsBizCoord(i);
+
         CreatePickUpApartments(i,0);
         if(Apartments[i][apCoordHolRoof][0] != 0.0 && Apartments[i][apCoordHolRoof][1] != 0.0 && Apartments[i][apCoordPlatform][0] != 0.0 && Apartments[i][apCoordPlatform][1] != 0.0)
         {
             ApartmentsHandlerRoofPlatform(i,0);
             ApartmentsHandlerRoofPlatform(i,1);
         }
+        if(Apartments[i][apClass] != 0) ApartmentsFindBiz(i);
         CreateDynamicActorApartmetns(i);
     }
 }
@@ -1825,3 +1881,32 @@ stock ApartmentsHandlerRoofPlatform(apid,type)
     return 1;
 }
 
+stock ApartmentsFindBiz(apid)
+{
+    new minB,maxB, Float:dist, Float:findpos, result, label[100];
+    for(new i; i < 4; i++)
+    {
+        if(i == 0) bizTypeMin(1,minB,maxB);
+        else if(i == 1) bizTypeMin(15,minB,maxB);
+        else if(i == 2) bizTypeMin(13,minB,maxB);
+        else if(i == 3) bizTypeMin(16,minB,maxB);
+        findpos = GetDistancePoint(Apartments[apid][apCoord][0], Apartments[apid][apCoord][1], Apartments[apid][apCoord][2], BizzInfo[minB][bEnterX],BizzInfo[minB][bEnterY],BizzInfo[minB][bEnterZ]);
+        for(new b =  minB; b< maxB; b++)
+        {
+            dist = GetDistancePoint(Apartments[apid][apCoord][0], Apartments[apid][apCoord][1], Apartments[apid][apCoord][2], BizzInfo[b][bEnterX],BizzInfo[b][bEnterY],BizzInfo[b][bEnterZ]);
+            if(findpos >= dist)
+            {
+                findpos = dist;
+                result = b;
+            }
+        }
+        Apartments[apid][apBiz][i] = result;
+        ApartmentsBizPickup[apid][i] = CreateDynamicPickup(19132, 1, Apartments[apid][apCoordBizShop][0+3*i], Apartments[apid][apCoordBizShop][1+3*i], Apartments[apid][apCoordBizShop][2+3*i], Apartments[apid][apWorldDefineEntrance],Apartments[apid][apInt]);
+        format(label, sizeof(label),
+            "{ff9000}%s\n" \
+            "{FFFFFF}[ ALT ]", bizname(result)
+        );
+        ApartmentsBizLabel[apid][i] = CreateDynamic3DTextLabel(label,-1,Apartments[apid][apCoordBizShop][0+3*i], Apartments[apid][apCoordBizShop][1+3*i], Apartments[apid][apCoordBizShop][2+3*i]+0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,Apartments[apid][apWorldDefineEntrance],Apartments[apid][apInt]);
+    }
+    return 1;
+}
