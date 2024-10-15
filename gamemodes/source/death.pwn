@@ -49,7 +49,8 @@ stock SetPlayerDeath(playerid, reason)
 
         // DM Арест
         if (IsPlayerHavePursuit(playerid) && IsPlayerCanBeArrested(playerid)) {
-            ArestPlayer(playerid, killerid, AREST_TYPE_KILL);
+            new copid = IsPoliceMember(killerid) ? killerid : 0;
+            ArestPlayer(playerid, copid, AREST_TYPE_KILL);
         }
         return 0;
     }
