@@ -553,6 +553,7 @@ stock PlayerShotVillage(playerid, i)
 
     VillageInfo[villKillPlayerid][i] = playerid;
     Village_Kills[playerid] ++;
+    PlayerInfo[playerid][pStatistics][1]++;
 
     if(server == 0) SendClientMessageToAll(-1, "%s убил %d деревенских", PlayerInfo[playerid][pName], Village_Kills[playerid]);
     return true;
