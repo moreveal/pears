@@ -163,6 +163,11 @@ enum e_DialogId {
     FAMILY_DIALOG_PLATE,
 
     // GPS
-    GPS_DIALOG_WAREHOUSE
+    GPS_DIALOG_WAREHOUSE,
+
+    // Раскопка могил
+    GRAVES_DIALOG_MAIN,
+    GRAVES_DIALOG_OPEN,
+    GRAVES_DIALOG_BIOGRAPHY
 };
 

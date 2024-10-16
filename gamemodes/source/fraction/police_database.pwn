@@ -1130,7 +1130,7 @@ stock PDatabase_CheckPolice(playerid) {
 
 stock PDatabase_OnPlayerPressALT(playerid)
 {
-    if (GetPVarInt(playerid, "Arobsklad") > 0) return 1;
+    if (GetPVarInt(playerid, "Arobsklad") > 0) return 0;
 
     // Вход/выход для дыры от взрыва
     for (new fractionid = 0; fractionid < POLICE_DATABASE_MAX_ORG; fractionid++)
@@ -1289,6 +1289,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
 
                     "Да", "Отмена"
                 );
+                return 1;
             }
         }
     }
@@ -1331,7 +1332,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
         }
     }
     
-    return 1;
+    return 0;
 }
 
 stock PDatabase_IsFractionVirtualWorld(fractionid, worldid)

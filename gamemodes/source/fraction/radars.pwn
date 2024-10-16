@@ -1733,9 +1733,9 @@ stock Radar_OnPlayerPressALT(playerid) {
                         "{ff6347}Этот радар сломан\n\n" \
                         "{cccccc}Вы хотите его починить, чтобы восстановить его работу?";
 
-                    return ShowDialog(playerid, _:RADAR_DIALOG_REPAIR, DIALOG_STYLE_MSGBOX, "{ff9000}Восстановление радара", dialog_text, "Да", "Закрыть");
+                    ShowDialog(playerid, _:RADAR_DIALOG_REPAIR, DIALOG_STYLE_MSGBOX, "{ff9000}Восстановление радара", dialog_text, "Да", "Закрыть");
                 }
-                return 0; // Нельзя взаимодействовать со сломанным радаром
+                return 1; // Нельзя взаимодействовать со сломанным радаром
             }
 
             if (RadarInfo[radarid][riFraction] == g) {
@@ -1746,12 +1746,13 @@ stock Radar_OnPlayerPressALT(playerid) {
             else {
                 if (GetPVarInt(playerid, "idkradarmessage") > 0) return 1;
                 SetPVarInt(playerid, "idkradarmessage", 3);
-                return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
             }
+            return 1;
         }
     }
 
-    return 1;
+    return 0;
 }
 
 stock Radar_ViolationHandler(playerid) {
