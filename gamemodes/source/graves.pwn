@@ -416,7 +416,7 @@ stock Graves_Open(playerid, graveid)
     // Назначаем игроку предметы (мусор)
     if (goldJewelId < 0 && silverJewelId < 0) item_chance = 100; // Гарантированное нахождение простого предмета при отсутствии драгоценностей
     new itemId = -1, itemQuan = 1;
-    new items[] = {3, 13, 15, 19, 45, 90, 91, 95, 111, 181, 196, 201, 202, 206, 238};
+    new items[] = {3, 13, 19, 45, 90, 91, 95, 111, 201, 234, 235, 238};
     if (random(100) + 1 <= item_chance) {
         itemId = items[random(sizeof(items))];
         
@@ -676,6 +676,18 @@ stock Graves_Pump(playerid)
 
                 // Отображаем сам гроб
                 SetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][0], 0);
+
+                // Телепортируем игрока (костыльный фикс возможного подбрасывания)
+                {
+                    new Float: x = GraveInfo[graveid][giX],
+                        Float: y = GraveInfo[graveid][giY],
+                        Float: z = GraveInfo[graveid][giZ] + 0.6,
+                        Float: a = 180.0;
+                    
+                    backme(INVALID_PLAYER_ID, 2.35, x, y, z, a);
+                    PPSetPlayerPos(playerid, x, y, z);
+                    PPSetPlayerFacingAngle(playerid, a);
+                }
 
                 // Очистка переменных
                 DeletePVar(playerid, "GraveID");
