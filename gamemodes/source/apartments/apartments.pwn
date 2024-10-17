@@ -132,7 +132,7 @@ CMD:firstloadapartmentsroom(playerid)
 stock ShowDialogElevator(playerid,type)
 {
     new id = DP[0][playerid];
-    DP[2][playerid] = type;
+    DP[5][playerid] = type;
     new line[90],lines[4096],lineheader[90];
     format(lineheader,sizeof(lineheader),"Лифт");
     format(line,sizeof(line),"{cccccc}Подъезд"), strcat(lines,line);
@@ -999,12 +999,12 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
             if(response)
             {
                 new id = DP[0][playerid];
-                new type = DP[2][playerid];
+                new type = DP[5][playerid];
                 if(listitem >= 0 && listitem <= Apartments[id][apFloor])
                 {
                     if(listitem == 0)
                     {
-                        if(type == 1)
+                        if(type == 0)
                         {
                             PPSetPlayerPos(playerid, Apartments[id][apElevatorCoord][0],Apartments[id][apElevatorCoord][1],Apartments[id][apElevatorCoord][2]); 
                             PPSetPlayerInterior(playerid,Apartments[id][apInt]);
@@ -1275,7 +1275,7 @@ stock SaveApartments(id) {
         `apRoomCoordOne0`, `apRoomCoordOne1`, `apRoomCoordOne2`, `apRoomCoordTwo0`, `apRoomCoordTwo1`, `apRoomCoordTwo2`,\
         `apRoomCoordThree0`, `apRoomCoordThree1`, `apRoomCoordThree2`, `apRoomCoordFour0`, `apRoomCoordFour1`, `apRoomCoordFour2`,\
         `apRoomCoordOneExit0`, `apRoomCoordOneExit1`, `apRoomCoordOneExit2`, `apRoomCoordTwoExit0`, `apRoomCoordTwoExit1`, `apRoomCoordTwoExit2`,\
-        `apRoomCoordThreeExit0`, `apRoomCoordThreeExit1`, `apRoomCoordThreeExit2`, `apRoomCoordFourExit0`, `apRoomCoordFourExit1`, `apRoomCoordFourExit2`, `apRoomCoordExclusiveExit0`, `apRoomCoordExclusiveExit1`, `apRoomCoordExclusiveExit2`,
+        `apRoomCoordThreeExit0`, `apRoomCoordThreeExit1`, `apRoomCoordThreeExit2`, `apRoomCoordFourExit0`, `apRoomCoordFourExit1`, `apRoomCoordFourExit2`, `apRoomCoordExclusiveExit0`, `apRoomCoordExclusiveExit1`, `apRoomCoordExclusiveExit2`,\
         `apRoomCoordPlatform0`, `apRoomCoordPlatform1`,`apRoomCoordPlatform2`,`apCoordHolRoof0`, `apCoordHolRoof1`,`apCoordHolRoof2`,`apCoordRoof0`, `apCoordRoof1`,`apCoordRoof2`) \
         VALUES(%d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %f, %f,%d,%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f,  %f, %f, %f,%f, %f, %f,%f, %f, %f,%f, %f, %f)",
         
@@ -1801,7 +1801,7 @@ CMD:createplatformapartments(playerid,const params[])
 {
     new apid,type;
     if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
-    if(sscanf(params, "ii",apid,type)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Создать Многоквартирный Дом [ /moveapartments Номер квартирного дома Статус]");
+    if(sscanf(params, "ii",apid,type)) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Создать Вертолетную площадку квартирному Дому [ /cpapartments Номер квартирного дома Статус]");
     if(apid > MAX_APARTMENTS || apid < 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Укажите корректный номер квартирного дома от 1 до %d", MAX_APARTMENTS);
     if(type > 2 || type < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Укажите тип установки площадки. 1 - Вход в квартирный дом 2 - Сама площадка");
     apid--;
