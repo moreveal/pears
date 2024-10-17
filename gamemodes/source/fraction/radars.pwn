@@ -1905,7 +1905,7 @@ stock Radar_ViolationHandler(playerid) {
                                     }
                                 }
                             } else if (Hank_IsServiceEnabled(playerid, HANK_SERVICE_STATE_PERSONAL_TECHIE)) {
-                                new price = floatround(float(getThingPriceGos(233, 0) / 2) * 1.05);
+                                new price = floatround(float(getThingPriceGos(233, 0) / 2) * 1.10);
 
                                 if (PlayerInfo[playerid][pAccount] >= price) {
                                     RadarInfo[radarid][riJammedTime] = currentTime;
