@@ -302,6 +302,24 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСП
 	return 1;
 }
 
+CMD:spoilthing(playerid, const params[])
+{
+	new id, itemid;
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
+	if(sscanf(params, "ud", id, itemid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Испортить продукт [ /spoil ID Предмет ]");
+	if(itemid >= sizeof(friskName) || itemid <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
+	if(!PerishableThing(itemid, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет не является портящимся");
+	if(get_invent(playerid, itemid, 0) < 1) return ErrorMessage(playerid, "{FF6347}У игрока нет этого предмета");
+	set_para(playerid, itemid, 0);
+	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Предмет {ff9000}%s {cccccc}был успешно испорчен", GetNameThing(0, itemid, 0, 0));
+
+	new log_str[128];
+	format(log_str, sizeof(log_str), "Испортил %s", GetNameThing(0, itemid, 0, 0));
+	AdminLog("spoilthing", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[id][pID], PlayerInfo[id][pName], PlayerInfo[id][pPlaIP], itemid, log_str);
+
+	return 1;
+}
+
 CMD:gthingunix(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту команду без надобности, она не учитывает кучу условий для разных предметов)
 {
     if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");

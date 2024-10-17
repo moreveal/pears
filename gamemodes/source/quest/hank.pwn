@@ -7,7 +7,7 @@
     -------------------------------------------------------------------------------------------------------------------------------------
     Добавление нового предмета в товары:
         1. Добавить ID предмета в Hank_IsGood
-        2. Добавить описание предмета в Hank_Dialog_Buy
+        2. Добавить описание предмета в Hank_Dialog_BuyGood
 */
 
 stock Hank_IsGood(thingid) {
@@ -16,6 +16,27 @@ stock Hank_IsGood(thingid) {
         if (thingid == things[i]) return true;
     }
     return false;
+}
+
+stock Hank_IsServiceEnabled(playerid, e_HankServiceState: status)
+{
+	return (PlayerInfo[playerid][pHankServices] & _:status) != 0;
+}
+
+stock Hank_ToggleService(playerid, e_HankServiceState: status)
+{
+    PlayerInfo[playerid][pHankServices] ^= _:status;
+	return 1;
+}
+
+stock e_HankServiceState: Hank_GetServicePlayerState(e_HankService: service)
+{
+    switch (service)
+    {
+        // Сюда добавляем типы
+        default: {}
+    }
+    return HANK_SERVICE_STATE_PERSONAL_TECHIE;
 }
 
 stock Hank_GetDatabaseActiveName(e_DatabaseActive: active) {
@@ -53,6 +74,7 @@ stock Hank_Dialog_Main(playerid) {
 
         "{cccccc}Кто ты?\n" \
         "{ff6347}Нелегальные товары\t{ff6347}>>\n" \
+        "{ff6347}Предоставляемые услуги\t{ff6347}>>\n" \
         "{ff6347}Поддержка при взломе базы данных\t>>\n" \
         "{555555}Услуги подкупных агентов\t>>",
 
@@ -101,6 +123,35 @@ stock Hank_Dialog_Goods(playerid) {
 
     PlayerPlaySound(playerid, 40405);
     return ShowDialog(playerid, HANK_DIALOG_GOODS, DIALOG_STYLE_TABLIST, "{ff9000}Товары", dialog_text, "Выбор", "Назад");
+}
+
+stock Hank_GetServiceName(e_HankService: service)
+{
+    new name[32];
+    switch (service)
+    {
+        case HANK_SERVICE_PERSONAL_TECHIE: strcat(name, "Личный техник");
+        default: {}
+    }
+    return name;
+}
+
+stock Hank_Dialog_Services(playerid) {
+    new dialog_text[512];
+
+    for (new quan, i = 0; i < _:HANK_SERVICE_MAX; i++)
+    {
+        new e_HankService: service = e_HankService: i;
+        format(dialog_text, sizeof(dialog_text), "%s%s%s\t{ff9000}>>", dialog_text,
+            Hank_IsServiceEnabled(playerid, Hank_GetServicePlayerState(service)) ? "{ff9000}" : "{cccccc}",
+            Hank_GetServiceName(service)
+        );
+
+        List[quan++][playerid] = i;
+    }
+    
+    PlayerPlaySound(playerid, 40405);
+    return ShowDialog(playerid, HANK_DIALOG_SERVICES, DIALOG_STYLE_TABLIST, "{ff9000}Услуги", dialog_text, "Выбор", "Назад");
 }
 
 stock Hank_Dialog_Database_Actives(playerid)
@@ -256,7 +307,7 @@ stock Hank_Dialog_Active_Buy(playerid, e_DatabaseActive: active)
     return ShowDialog(playerid, HANK_DIALOG_DATABASE_ACTIVES_BUY, DIALOG_STYLE_MSGBOX, "{ff9000}Приобретение поддержки", dialog_text, "Да", "Назад");
 }
 
-stock Hank_Dialog_Buy(playerid, thingid) {
+stock Hank_Dialog_BuyGood(playerid, thingid) {
     if (!Hank_IsGood(thingid)) return 0;
     DP[0][playerid] = thingid; // ID предмета
     DP[1][playerid] = 0; // Обновление прошивки
@@ -281,7 +332,8 @@ stock Hank_Dialog_Buy(playerid, thingid) {
             strcat(dialog_text,
                 "{cccccc}Устройство позволяет заглушать радары, мимо которых вы проезжаете, на небольшой промежуток времени\n" \
                 "Глушилка срабатывает не чаще чем 1 раз в "#RADAR_JAMMER_COOLDOWN" секунд и выключает радар для всех в течение "#RADAR_JAMMED_TIME" секунд\n" \
-                "Также будет функционировать, если находится в багажнике автомобиля\nДевайс будет оставаться рабочим "#RADAR_JAMMER_SOFTWARE_TIME" дней с момента покупки, далее - требуется обновление ПО"
+                "Также будет функционировать, если находится в багажнике автомобиля\n" \
+                "Девайс будет оставаться рабочим "#RADAR_JAMMER_SOFTWARE_TIME" дней с момента покупки, далее - требуется обновление ПО"
             );
         }
         case 236: {
@@ -323,6 +375,42 @@ stock Hank_Dialog_Buy(playerid, thingid) {
     return ShowDialog(playerid, HANK_DIALOG_BUY, DIALOG_STYLE_MSGBOX, dialog_header, dialog_text, "Купить", "Назад");
 }
 
+stock Hank_Dialog_BuyService(playerid, e_HankService: serviceid)
+{
+    DP[0][playerid] = _:serviceid;
+
+    new dialog_header[128];
+    format(dialog_header, sizeof(dialog_header), "{FF9000}Покупка услуги: %s", Hank_GetServiceName(serviceid));
+
+    new dialog_text[1024];
+
+    switch (serviceid)
+    {
+        case HANK_SERVICE_PERSONAL_TECHIE: {
+            strcat(dialog_text, 
+                "{cccccc}Хэнк позаботится о своевременном обновлении прошивки на ваших устройствах:\n" \
+                "- Глушилка радаров\n" \
+                "- Радиоперехватчик\n\n" \
+                \
+                "{cccccc}Цена каждой активации: {ff9000}стоимость прошивки + 5%\n" \
+                "{cccccc}Активация будет проходить автоматически при устаревании ПО"
+            );
+        }
+        default: return 0;
+    }
+
+    strcat(dialog_text, "\n{cccccc}На вашем банковском счёте должно быть достаточно денег перед попыткой активации");
+
+    new enabled = Hank_IsServiceEnabled(playerid, Hank_GetServicePlayerState(serviceid));
+    format(dialog_text, sizeof(dialog_text), 
+        "%s\n\n{cccccc}Статус: %s", dialog_text, 
+        
+        enabled ? "{99ff66}Включена" : "{ff6347}Отключена"
+    );
+
+    return ShowDialog(playerid, HANK_DIALOG_BUY_SERVICE, DIALOG_STYLE_MSGBOX, dialog_header, dialog_text, enabled ? "Отключить" : "Включить", "Назад");
+}
+
 stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputtext[]) {
     #pragma unused inputtext
 
@@ -333,8 +421,9 @@ stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputte
             switch (listitem) {
                 case 0: return Hank_Dialog_AboutMe(playerid);
                 case 1: return Hank_Dialog_Goods(playerid);
-                case 2: return Hank_Dialog_Database_Actives(playerid); 
-                case 3: return ErrorMessage(playerid, "{FF6347}В разработке");
+                case 2: return Hank_Dialog_Services(playerid);
+                case 3: return Hank_Dialog_Database_Actives(playerid); 
+                case 4: return ErrorMessage(playerid, "{FF6347}Временно недоступно");
             }
         }
         case HANK_DIALOG_ABOUT_ME: {
@@ -344,7 +433,23 @@ stock dialogCase_HankActor(playerid, dialogid, response, listitem, const inputte
             if (!response) return Hank_Dialog_Main(playerid);
             
             new thingid = List[listitem][playerid];
-            return Hank_Dialog_Buy(playerid, thingid);
+            return Hank_Dialog_BuyGood(playerid, thingid);
+        }
+        case HANK_DIALOG_SERVICES: {
+            if (!response) return Hank_Dialog_Main(playerid);
+
+            new serviceid = List[listitem][playerid];
+            return Hank_Dialog_BuyService(playerid, e_HankService: serviceid);
+        }
+        case HANK_DIALOG_BUY_SERVICE:
+        {
+            if (!response) return Hank_Dialog_Services(playerid);
+
+            new e_HankService: service = e_HankService: DP[0][playerid];
+            Hank_ToggleService(playerid, Hank_GetServicePlayerState(service));
+
+            PlayerPlaySound(playerid, 40405);
+            return Hank_Dialog_BuyService(playerid, service);
         }
         case HANK_DIALOG_BUY: {
             if (!response) return Hank_Dialog_Goods(playerid);

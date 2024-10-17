@@ -1885,23 +1885,36 @@ stock Radar_ViolationHandler(playerid) {
                         if (floatabs(playerPos[2] - radarPos[2]) > 2.5) continue;
 
                         // Глушим радар, если у игрока есть глушилка
-                        if (get_invent2(playerid, 233, 0) && get_para(playerid, 233) > currentTime ||
-                            get_boot(vehicleid, 233) >= 0 && get_boot_para(vehicleid, 233) > currentTime)
+                        if (get_invent2(playerid, 233, 0) || get_boot(vehicleid, 233) >= 0)
                         {
-                            if (currentTime >= PlayerRadarInfo[playerid][priJammedTime] + RADAR_JAMMER_COOLDOWN) { // Нет КД глушения на игроке
-                                if (currentTime > RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) { // Радар не заглушен
-                                    PlayerRadarInfo[playerid][priJammedTime] = currentTime;
-                                    RadarInfo[radarid][riJammedTime] = currentTime;
+                            if (get_para(playerid, 233) > currentTime || get_boot_para(vehicleid, 233) > currentTime) {
+                                if (currentTime >= PlayerRadarInfo[playerid][priJammedTime] + RADAR_JAMMER_COOLDOWN) { // Нет КД глушения на игроке
+                                    if (currentTime > RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) { // Радар не заглушен
+                                        PlayerRadarInfo[playerid][priJammedTime] = currentTime;
+                                        RadarInfo[radarid][riJammedTime] = currentTime;
 
-                                    PlayerPlaySound(playerid, 41603);
-                                    foreach (new currentid : Player) {
-                                        if (currentid == playerid) continue;
-                                        if (!Radar_IsPlayerNear(currentid, radarid)) continue;
+                                        PlayerPlaySound(playerid, 41603);
+                                        foreach (new currentid : Player) {
+                                            if (currentid == playerid) continue;
+                                            if (!Radar_IsPlayerNear(currentid, radarid)) continue;
 
-                                        PlayerPlaySound(currentid, 6003);
+                                            PlayerPlaySound(currentid, 6003);
+                                        }
+                                        
+                                        GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP 3A‚‡YЋEH", 2000, 3);
                                     }
-                                    
-                                    GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP 3A‚‡YЋEH", 2000, 3);
+                                }
+                            } else if (Hank_IsServiceEnabled(playerid, HANK_SERVICE_STATE_PERSONAL_TECHIE)) {
+                                new price = floatround(float(getThingPriceGos(233, 0) / 2) * 1.05);
+
+                                if (PlayerInfo[playerid][pAccount] >= price) {
+                                    RadarInfo[radarid][riJammedTime] = currentTime;
+                                    oGivePlayerBank(playerid, -price);
+                                    SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоей глушилки, можешь пользоваться!");
+
+                                    new quan, para;
+                                    ThingParameters(playerid, 233, quan, para);
+                                    set_para(playerid, 233, para);
                                 }
                             }
                         }
