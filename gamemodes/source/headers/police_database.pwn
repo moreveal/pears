@@ -142,5 +142,3 @@ enum e_PoliceDatabasePlayerInfo {
 };
 new policeDatabasePlayerInfo[MAX_REALPLAYERS][e_PoliceDatabasePlayerInfo];
 new PlayerText: policeDatabasePlayerTextDraws[MAX_REALPLAYERS][POLICE_DATABASE_HACK_GAME_TEXTDRAWS];
-
-// TODO: КЛЮЧ КАРТА
