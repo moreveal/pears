@@ -377,6 +377,14 @@ cars
 15315, 	gtpolice,	gtpolice,	car, 		GTPOLICE,	GTPOLICE, 	null,	executive,	4, 	0,	0,		-1, 0.75, 0.80,		0
 15316, 	dchall, 	dchall, 	car, 		DCHALL, 	DCHALL, 	null,	executive, 	5, 	0,	0,		-1, 0.8, 0.8,		0
 15317, 	rrphan, 	rrphan, 	car, 		RRPHAN, 	RRPHAN, 	null,	normal,		4, 	0,	0,		-1, 0.88, 0.88,		0
+15318, 	impala, 	impala, 	car, 		IMPALA, 	IMPALA, 	null,	poorfamily,	10, 	0,	0,		-1, 0.8, 0.8,		0
+15319, 	impalass, 	impalass, 	car, 		IMPALASS, 	IMPALASS,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
+15320, 	fordgrantor, fordgrantor, car, 		FORDGRANTOR, FORDGRANTOR, 		null,	normal,		10, 	0,	0,		-1, 0.7, 0.7,		0
+15321, 	antares, 	antares, 	car, 		ANTARES, 	ANTARES, 	null,	normal,		7, 	0,	0,		-1, 0.7, 0.7,		0
+15322,	seminole, 	seminole, 	car,		SEMINOLE, 	SEMINOLE, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
+15323, 	cougar, 	cougar, 	car, 		COUGAR, 	COUGAR, 	null,	normal,		10, 	0,	0,		-1, 0.7, 0.7,		0
+15324, 	corvc3, 	corvc3, 	car, 		CORVC3, 	CORVC3, 	null,	normal,		7, 	0,	0,		-1, 0.8, 0.8,		0
+15325,	cadcts,		cadcts,		car, 		CADCTS, 	CADCTS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
 #15328 LAST
 end
 
