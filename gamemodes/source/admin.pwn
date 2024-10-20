@@ -175,7 +175,7 @@ CMD:rnamechange(playerid, const params[])
 	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд на повторную смену ника [ /rnamechange ID/NickName ]");
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid))
+	if(IsOnline(giveplayerid))
 	{
 		PlayerInfo[giveplayerid][pUnixRename] = 0;
 		AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Сбросил кд на изменение Ника");
@@ -241,7 +241,7 @@ CMD:resetachieve(playerid, params[])
 
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили прогресс достижения №%d для всех игроков **", achieveid + 1);
 	} else {
-		if(IsPlayerConnected(giveplayerid)) {
+		if(IsOnline(giveplayerid)) {
 			PlayerInfo[giveplayerid][pAchieve][achieveid] = 0;
 			PlayerInfo[giveplayerid][pAchieveUnix][achieveid] = 0;
 			PlayerInfo[giveplayerid][pAchieveStat][achieveid] = 0;
@@ -674,7 +674,7 @@ CMD:delaction(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации и медиа 3 уровня");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
-	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
+	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
 	new kol = 0;
 	for(new i = 0; i < MAX_PLAYER_ACTIONS; i++)
 	{
@@ -853,7 +853,7 @@ CMD:readhit(playerid, const params[])
 	}
 	else
 	{
-		if (!IsPlayerConnected(targetid) || IsPlayerNPC(targetid))
+		if (!IsOnline(targetid) || IsPlayerNPC(targetid))
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 			return 1;
@@ -876,7 +876,7 @@ CMD:setbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /setbiz ID Номер ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pBusiness] = params[1];
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер бизнеса {0088ff}%d", PlayerInfo[params[0]][pName],params[1]);
@@ -889,7 +889,7 @@ CMD:setdom(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер дома игроку [ /setdom ID Номер ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pDom]=params[1];
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер дома {0088ff}%d", PlayerInfo[params[0]][pName],params[1]);
@@ -905,7 +905,7 @@ CMD:setapr(playerid, const params[])
 	if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setapr ID Номер КВ Слот КВ]");
 	if(params[1] > MAX_APARTMENTS_TABLE || params[1] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальный ID квартиры: %d. Минимальный: 1",MAX_APARTMENTS_TABLE);
 	if(params[2] > 10 || params[2] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальное количество слотов: 10. Минимальное: 1");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pApartmentsRoom][params[2]-1]= ApartmentsRoom[params[1]-1][aprID]+1;
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер квартиры {0088ff}%d в слот %d", PlayerInfo[params[0]][pName],ApartmentsRoom[params[1]-1][aprID]+1,params[2]);
@@ -1275,7 +1275,7 @@ CMD:punishments(playerid,const params[])
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid)) PunishmentsLogs(playerid, giveplayerid);
+	if(IsOnline(giveplayerid)) PunishmentsLogs(playerid, giveplayerid);
 	else
 	{
 		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
@@ -1303,7 +1303,7 @@ CMD:giveeditorder(playerid, const params[])
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid))
+	if(IsOnline(giveplayerid))
 	{
 		new unix = gettime();
 		if (PlayerInfo[giveplayerid][pTaxesUnix] > unix) // если уже есть активное разрешение
@@ -1399,7 +1399,7 @@ cmd:toearth(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вернуть игрока на землю из космический экспедиции [ /toearth ID ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	if(PlayerInfo[params[0]][pBkyrenie] >= 2)
 	{
 		new str[128];

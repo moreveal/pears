@@ -42,7 +42,7 @@ CMD:deathcut(playerid, const params[])
 stock SetPlayerDeath(playerid, reason)
 {
     new killerid = DeathInfo[playerid][deathKiller];
-    if (!IsPlayerConnected(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
+    if (!IsOnline(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
 
     if (NoDeath(playerid)) { // Если игрок не должен умирать (попадать в стадию)
         if (killerid == INVALID_PLAYER_ID) return 0;

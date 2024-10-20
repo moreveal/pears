@@ -291,7 +291,7 @@ function Call_giverefdon(playerid, user_id, gold, bool:IsValid)
 	    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, referalName, string);
 
         // Если этот игрок онлайн, выдаём ему всё на аккаунт и оповещаем
-	    if(IsPlayerConnected(playa))
+	    if(IsOnline(playa))
 		{
             PlayerInfo[playa][pDonateMoney] += gold;
 			if(OnlineInfo[playa][oLogged] == 1)
@@ -393,7 +393,7 @@ CMD:setvip(playerid, const params[])
 
 	new giveplayerid;
  	giveplayerid = ReturnUser(tmp, 1);
-	if(IsPlayerConnected(giveplayerid)) 
+	if(IsOnline(giveplayerid)) 
 	{
         if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
 

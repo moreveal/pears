@@ -149,7 +149,7 @@ CMD:clearfinds(playerid)
   {
     if (DestroyFindZone(i))
     {
-      if (IsPlayerConnected(i))
+      if (IsOnline(i))
       {
         SendClientMessage(playerid, -1, "%s (%d) очищен", PlayerInfo[i][pName], i);
       }

@@ -922,7 +922,7 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерье�
         if(!sscanf(params, "s[24]",playerName))
 	    {
             new giveplayerid = ReturnUser(playerName, 1);
-     	    if(IsPlayerConnected(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // Игрок Online
+     	    if(IsOnline(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // Игрок Online
             else // Игрок Offline
             {
                 if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Вы не правильно указали никнейм\nЕсли вы указали ID, значит игрок Offline");

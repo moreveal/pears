@@ -437,7 +437,7 @@ CMD:setability(playerid, const params[])
 	if(amount <= 0 || amount > 10) return ErrorMessage(playerid, "{FF6347}Уровень навыка не меньше 1 и не больше 10");
 
  	giveplayerid = ReturnUser(tmp, 1);
-	if(!IsPlayerConnected(giveplayerid))
+	if(!IsOnline(giveplayerid))
 	{
 		if(!CheckRP_Nickname(tmp)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
 
