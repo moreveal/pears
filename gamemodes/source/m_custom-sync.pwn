@@ -119,7 +119,7 @@ static
 
 stock SetPlayerSyncModels(playerid, bool:toggle)
 {
-	if (!IsOnline(playerid)) return false;
+	if (!IsPlayerConnected(playerid)) return false;
 	c_player_sync_models{playerid} = toggle;
 	return 1;
 }
@@ -130,7 +130,7 @@ stock SetPlayerSyncModels(playerid, bool:toggle)
 
 stock IsPlayerSyncModels(playerid)
 {
-	if (!IsOnline(playerid)) return false;
+	if (!IsPlayerConnected(playerid)) return false;
 	return _:c_player_sync_models{playerid};
 }
 
@@ -163,7 +163,7 @@ stock IsCustomObject(objectid)
 
 		stock GetPlayerSyncSkin(playerid) // +
 		{
-			if (!IsOnline(playerid))
+			if (!IsPlayerConnected(playerid))
 				return 0;
 			return c_player_model_id[playerid];
 		}
@@ -233,7 +233,7 @@ stock IsCustomObject(objectid)
 
 	stock m_custom_sync_SetPlayerSkin(playerid, skinid)
 	{
-		if (!IsOnline(playerid)) return 1;
+		if (!IsPlayerConnected(playerid)) return 1;
 
 		new
 			newid = skinid;
@@ -268,7 +268,7 @@ stock IsCustomObject(objectid)
 
 	stock m_custom_sync_SetSpawnInfo(playerid, team, skin, Float:x, Float:y, Float:z, Float:rotation, weapon1, weapon1_ammo, weapon2, weapon2_ammo, weapon3, weapon3_ammo)
 	{
-		if (!IsOnline(playerid)) return 1;
+		if (!IsPlayerConnected(playerid)) return 1;
 		
 		new
 			newid = skin;
@@ -449,7 +449,7 @@ stock IsCustomObject(objectid)
 
 stock DisconnectCustomSync(playerid)
 {
-	if (!IsOnline(playerid)) return false;
+	if (!IsPlayerConnected(playerid)) return false;
 	c_player_sync_models{playerid} = false;
 	return 1;
 }
@@ -482,7 +482,7 @@ stock DisconnectCustomSync(playerid)
 #if M_CUSTOM_CustomForPlayers
 	ORPC:CS_RPC_WorldPlayerAdd(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 
 		static
 			wPlayerID;
@@ -520,7 +520,7 @@ stock DisconnectCustomSync(playerid)
 
 	ORPC:CS_RPC_SetSpawnInfo(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 		
 		static
 			byteTeam;
@@ -559,7 +559,7 @@ stock DisconnectCustomSync(playerid)
 
 	ORPC:CS_RPC_RequestClass(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 
 		static
 			byteTeam;
@@ -598,7 +598,7 @@ stock DisconnectCustomSync(playerid)
 
 	ORPC:CS_RPC_SetPlayerSkin(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 
 		static
 			wPlayerID;
@@ -652,7 +652,7 @@ stock DisconnectCustomSync(playerid)
 #if M_CUSTOM_CustomForActors
 	ORPC:CS_RPC_ShowActor(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 
 		static wActorID = -1, wModelID;
 
@@ -692,7 +692,7 @@ stock DisconnectCustomSync(playerid)
 #if M_CUSTOM_CustomForVehicles
 	ORPC:CS_RPC_WorldVehicleAdd(playerid, BitStream:bs)
 	{
-		if(!IsOnline(playerid)) return true;
+		if(!IsPlayerConnected(playerid)) return true;
 
 		static
 			wVehicleID;
@@ -734,7 +734,7 @@ stock DisconnectCustomSync(playerid)
 
 ORPC:CS_RPC_CreateObject(playerid, BitStream:bs)
 {
-	if(!IsOnline(playerid)) return true;
+	if(!IsPlayerConnected(playerid)) return true;
 
 	if (c_player_sync_models{playerid} == true) return true;
 
