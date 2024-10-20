@@ -76,6 +76,7 @@ new VillageInfo[VILLAGEINFO];
 new bool:Village_LoadTextDraws[MAX_REALPLAYERS]; // Отображаются ли текстдравы деревни для игрока
 new PlayerText: VillageRemainsTD[MAX_REALPLAYERS][2]; // Текстдравы для игры с деревенскими
 new Village_Kills[MAX_REALPLAYERS]; // Количество киллов во время битвы с деревенскими
+new Village_BlockTarget[MAX_REALPLAYERS][sizeof(VillageNpcWalk)]; // Запрет на таргет игрока конкретными NPC
 
 new Float: VillageStoroj[2][4] = {
     {-1361.6107,2642.7361,51.9239,255.6489}, // Эрни
@@ -278,7 +279,7 @@ stock GetGiftVillage(playerid)
                 quanGift = floatround(reward);
             }
 
-            if(quanGift <= 0) return ErrorMessage(playerid, "{FF6347}Вы совершили недостаточно убийств для получения подарков\n{ffcc66}Требуется убить и удерживать "#EVERY_KILL_VILLAGE" деревенских");
+            if(quanGift <= 0) return ErrorMessage(playerid, "{FF6347}Вы совершили недостаточно убийств для получения подарков\n{ffcc66}Требуется убить и удерживать "#VILLAGE_KILLS_PER_REWARD" деревенских");
             if(!free_invent(playerid, quanGift))
             {
                 format(string, sizeof(string), "{FF6347}У вас не хватает места в инвентаре\n{ffcc66}Требуется %d слотов", quanGift);
@@ -742,9 +743,6 @@ stock Village_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 // Игрок, который не является целью для ботов деревенских
 stock IsPlayerNotTargetForVillage(playerid)
 {
-    // Если игрок не может становиться целью деревенских некоторое время
-    if (gettime() - GetPVarInt(playerid, "VillageNpcTargetBlock") < 0) return true;
-
     for(new i = 0; i < sizeof(VillageNpcWalk); i++)
     {
         new NPC: npc = VillageInfo[villID][i];
@@ -770,8 +768,8 @@ stock IsPlayerNotTargetForVillage(playerid)
             {
                 if(gettime() - VillageInfo[villAttackPlayeridDistChange][i] >= 15)
                 {
-                    SetPVarInt(playerid, "VillageNpcTargetBlock", gettime() + 5);
-                    return true;
+                    Village_BlockTarget[playerid][i] = gettime() + 10;
+                    continue;
                 }
             }
         }
@@ -804,9 +802,12 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
 
     new Float:dist = 99999.0;
     new latestId = INVALID_PLAYER_ID;
+
+    new currentTime = gettime();
     foreach (VillagePlayer, playerid) 
     {
         if(IsPlayerNotTargetForVillage(playerid)) continue;
+        if(Village_BlockTarget[playerid][i] > currentTime) continue;
 
         new Float:thisDist = GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z);
         if (thisDist < dist) 
