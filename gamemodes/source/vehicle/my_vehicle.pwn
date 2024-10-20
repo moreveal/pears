@@ -4822,7 +4822,7 @@ CMD:delcar(playerid, const params[])
 
 	new string_mysql[140];
 	para1 = ReturnUser(tmp, 1);
-	if(IsPlayerConnected(para1))
+	if(IsOnline(para1))
  	{
  	    if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return ErrorMessage(playerid, "{FF6347}Вы можете удалить только свой личный транспорт");
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT sost, model, nosell FROM `pp_cars` WHERE `sost` = '%d' AND `slot` = '%d'", PlayerInfo[para1][pID], slot);
@@ -4885,7 +4885,7 @@ function Call_delcar(playerid, str_name[], str_id, slot)
 
     	// Если чувак оказался Online
     	new para1 = ReturnUser(str_name, 1);
-	    if(IsPlayerConnected(para1))
+	    if(IsOnline(para1))
 	    {
 			new veh = PlayerInfo[para1][pMyVehID][slot - 1];
 			PlayerInfo[para1][pMyVeh][slot - 1] = 0;
@@ -4949,7 +4949,7 @@ CMD:addcar(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 19) nyche = 1; // Помечаем недоступный для продажи транспорт
     else nyche = 0;
     para1 = ReturnUser(tmp, 1);
-    if(IsPlayerConnected(para1))
+    if(IsOnline(para1))
     {
         if(PlayerInfo[playerid][pSoska] < 19 && playerid != para1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я могу выдать личный транспорт только себе");
         new freeSlot = GetPlayerFreeVehSlot(para1);
@@ -4997,7 +4997,7 @@ function Call_GiveCar(playerid, slot, carid, Float:x,Float:y,Float:z,Float:f,nyc
 	{
 		if(slot < 0 || slot >= MAX_MYVEHICLE) return printf("[debug]: Call_GiveCar (str_name: %s, slot: %d, carid: %d)", PlayerInfo[playerid][pName], slot, carid);
 
-		if(IsPlayerConnected(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
+		if(IsOnline(playerid)) PlayerInfo[playerid][pMyVeh][slot] = carid;
 		new string_mysql[800];
 
 		mysql_tquery(pearsq, "START TRANSACTION;");
@@ -5188,7 +5188,7 @@ CMD:rslot(playerid, const params[])
 	if(PlayerInfo[playerid][pSoska] >= 14)
 	{
 		new string[160];
- 		if(IsPlayerConnected(giveplayerid))
+ 		if(IsOnline(giveplayerid))
    		{
     		if(OnlineInfo[giveplayerid][oLogged] == 0) return SendClientMessage(playerid, COLOR_GREY, "   Игрок не залогинился!!!");
 		    if(PlayerInfo[giveplayerid][pSoska] >= 9 && giveplayerid != playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу сбросить авто администратору выского уровня");

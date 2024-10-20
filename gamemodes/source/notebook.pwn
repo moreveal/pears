@@ -695,7 +695,7 @@ stock gotobuycrypto(playerid,id)
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
 
     new para = ReturnUserID(TradeCrypt[id][tcVlad]);
-    if(IsPlayerConnected(para))
+    if(IsOnline(para))
     {
         if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Покупатель подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
         PlayerInfo[para][pDonateMoney] += count;
@@ -768,7 +768,7 @@ stock gotosellcrypto(playerid,id)
     format(temp_name, 24, "%s", TradeCrypt[id][tcName]);
 
     new para = ReturnUserID(TradeCrypt[id][tcVlad]);
-    if(IsPlayerConnected(para))
+    if(IsOnline(para))
     {
         if(OnlineInfo[para][oLogged] == 0) return ErrorText(playerid, "{FF6347}Продавец подключается к серверу.. Пожалуйста, дождитесь когда он авторизуется"), inserttobuy(playerid, id);
         PlayerInfo[para][pAccount] += price;

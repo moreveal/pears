@@ -844,7 +844,7 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 	{
 		new para1;
         para1 = ReturnUser(ApartmentsRoom[roomid][aprOwnName], 1);
-        if(IsPlayerConnected(para1))
+        if(IsOnline(para1))
         {
             if(ApartmentsRoom[roomid][aprOwn] == PlayerInfo[para1][pID])
             {
@@ -1420,7 +1420,7 @@ CMD:checkapartmentsroom(playerid, const params[])
 
 	new giveplayerid, user_id = -1;
  	giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid)) user_id = PlayerInfo[giveplayerid][pID];
+	if(IsOnline(giveplayerid)) user_id = PlayerInfo[giveplayerid][pID];
 
 	new string[128];
 	if(CheckRP_Nickname(params[0]))
@@ -1487,7 +1487,7 @@ CMD:asellroom(playerid,const params[])
     aprid--;
     if(aprid > MAX_APARTMENTS_TABLE || aprid < 0) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Укажите корректный слот от 1 до 1600");
     targetplayerid = ReturnUser(ApartmentsRoom[aprid][aprOwn], 1);
-	if(IsPlayerConnected(targetplayerid))
+	if(IsOnline(targetplayerid))
 	{
 		if(OnlineInfo[targetplayerid][oLogged] == 1) format(string, sizeof(string), "* Администратор %s продал вашу Квартиру №%d.", PlayerInfo[playerid][pName], aprid+1), SendClientMessage(targetplayerid, COLOR_LIGHTBLUE, string);
 		for(new i; i < 10; i++)
@@ -1683,7 +1683,7 @@ cmd:giveapartments(playerid,const params[])
 	if(ApartmentsRoom[params[1]-1][aprOwn] >= 1) return SendClientMessage(playerid, COLOR_GRAD5, "[ Мысли ]: Эта квартира занята [ /asellroom ]");
 	playa = ReturnUser(tmp, 1);
     new result = -1;
-	if(IsPlayerConnected(playa))
+	if(IsOnline(playa))
 	{
         for(new i; i < 10; i++)
         {

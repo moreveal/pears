@@ -9,7 +9,7 @@ CMD:cleartaxes(playerid, const params[])
 	if(strlen(tmp) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 	new giveplayerid;
  	giveplayerid = ReturnUser(tmp, 1);
-	if(IsPlayerConnected(giveplayerid)) 
+	if(IsOnline(giveplayerid)) 
 	{
         if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
         if(PlayerInfo[giveplayerid][pTaxes][1] <= 0) return ErrorMessage(playerid, "{FF6347}У игрока нет задолженности подоходного налога");

@@ -27,7 +27,7 @@ CMD:showhb(playerid, const params[])
 	}
 	else
 	{
-		if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+		if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 		if(IsARealNPC(params[0])) return ErrorMessage(playerid, "{FF6347}Это NPC");
 		stop_dialog(params[0]);
 		ShowDialog(params[0],1996,DIALOG_STYLE_MSGBOX,"{ff9000}Сообщения","{cccccc}Загрузка личной Доски Почета...","*","");
@@ -46,7 +46,7 @@ CMD:checkhb(playerid,const params[])
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
 	new string[120];
-	if(IsPlayerConnected(giveplayerid))
+	if(IsOnline(giveplayerid))
 	{
 		mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `honorboard` WHERE `playerid` = '%d' ORDER BY `org` LIMIT 30", PlayerInfo[giveplayerid][pID]);
 		mysql_tquery(pearsq, string, "Call_myHB", "d", playerid);
@@ -125,7 +125,7 @@ CMD:inhb(playerid, const params[])
 	new para = ReturnUser(tmpName, 1);
 
 	new string_mysql[140];
-    if(IsPlayerConnected(para))
+    if(IsOnline(para))
     {
 		if(IsARealNPC(para)) return ErrorMessage(playerid, "{FF6347}Это NPC");
 		
@@ -217,7 +217,7 @@ CMD:outhb(playerid, const params[])
 	new para = ReturnUser(tmpName, 1);
 
 	new string_mysql[140];
-    if(IsPlayerConnected(para))
+    if(IsOnline(para))
     {
 		new tmpPlayerID = PlayerInfo[para][pID];
 	  	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT * FROM `honorboard` WHERE `playerid`='%d' AND `org`='%d'", tmpPlayerID, g);

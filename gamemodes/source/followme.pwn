@@ -110,7 +110,7 @@ CMD:followme(playerid, const params[])
   	if(howstun(playerid) || HealthAC[playerid] <= 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мне плохо");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вести за собой [ /fme ID ]");
 	if(params[0] == playerid) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чтоо..?");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	if(!ProxDetectorS(5.0, playerid, params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко");
 	if(GetPlayerState(params[0]) == PLAYER_STATE_SPECTATING && gSpectateID[params[0]] != INVALID_PLAYER_ID) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я слишком далеко");
 	if(CheckPlayerNpc(playerid, params[0])) return 1;
@@ -141,7 +141,7 @@ CMD:followme(playerid, const params[])
 	    if(FollowTime[playerid] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Меня ведут за собой");
 		new string[144];
 		new s = Follow[playerid];
-		if(IsPlayerConnected(s))
+		if(IsOnline(s))
 		{
 			if(OnlineInfo[s][oLogged] == 1)
 			{
@@ -165,7 +165,7 @@ stock StopFollow(p)
     if(Follow[p] == 9999) return 1;
 
 	new s = Follow[p];
-	if(IsPlayerConnected(s))
+	if(IsOnline(s))
 	{
 		if(OnlineInfo[s][oLogged] == 1) Follow[s] = 9999, FollowTime[s] = 0;
 	}
