@@ -844,7 +844,7 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 	{
 		new para1;
         para1 = ReturnUser(ApartmentsRoom[roomid][aprOwnName], 1);
-        if(IsOnline(para1))
+        if(IsPlayerConnected(para1))
         {
             if(ApartmentsRoom[roomid][aprOwn] == PlayerInfo[para1][pID])
             {
