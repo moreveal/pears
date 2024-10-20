@@ -769,6 +769,9 @@ stock IsPlayerNotTargetForVillage(playerid)
                 if(gettime() - VillageInfo[villAttackPlayeridDistChange][i] >= 15)
                 {
                     Village_BlockTarget[playerid][i] = gettime() + 10;
+                    
+                    VillageInfo[villAttackPlayeridDistChange][i] = gettime();
+                    VillageInfo[villAttackPlayeridDist][i] = 0.0;
                     continue;
                 }
             }
