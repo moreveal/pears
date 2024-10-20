@@ -78,6 +78,19 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
     AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
 
+    
+    AddColumnIfNotExists("apartments", "apCoordHolRoof0", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordHolRoof1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordHolRoof2", "FLOAT NOT NULL DEFAULT '0'");
+    
+    AddColumnIfNotExists("apartments", "apCoordPlatform0", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordPlatform1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordPlatform2", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("apartments", "apCoordRoof0", "FLOAT NOT NULL DEFAULT '0'"); 
+    AddColumnIfNotExists("apartments", "apCoordRoof1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordRoof2", "FLOAT NOT NULL DEFAULT '0'");
+
 	return true;
 }
 

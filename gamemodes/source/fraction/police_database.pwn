@@ -2319,7 +2319,7 @@ stock dialogCase_PDatabase(playerid, dialogid, response, listitem, const inputte
                 new p = ReturnUser(inputtext, 1);
                 if (IsNumeric(inputtext)) format(ListName[playerid], 24,"%s", rpplayername(p));
                 else format(ListName[playerid], 24,"%s", inputtext);
-                if(IsPlayerConnected(p))
+                if(IsOnline(p))
                 {
                     if(OnlineInfo[p][oLogged] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет.. [ Игрок не залогинился ]");
                     if(PlayerInfo[p][pCrimes] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Это не преступник.. [ Он не находится в розыске ]");

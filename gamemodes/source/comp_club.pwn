@@ -237,7 +237,7 @@ stock ShowComputerGameMenu(playerid, gameid) {
 
 // Отображает диалог взаимодействия с игроком в комнате (для хостов)
 stock ShowComputerClubPlayerEdit(playerid, targetid) {
-    if (!IsPlayerConnected(targetid)) return 0;
+    if (!IsOnline(targetid)) return 0;
     if (playerid == targetid) return ShowComputerClubPlayersList(playerid);
 
     new dialog_title[64];
@@ -250,7 +250,7 @@ stock ShowComputerClubPlayerEdit(playerid, targetid) {
 
 // Отображает подтверждение действия над игроком
 stock ComputerClubPlayerEditAccept(playerid, targetid, type) {
-    if (!IsPlayerConnected(targetid)) return 0;
+    if (!IsOnline(targetid)) return 0;
 
     new player_str[MAX_PLAYER_NAME + 8];
     format(player_str, sizeof player_str, "%s[%d]", PlayerInfo[targetid][pName], targetid);
@@ -569,7 +569,7 @@ stock ComputerClubSetPlayerWeapons(playerid) {
         roomid = computerClubPlayerInfo[playerid][ccpiRoom];
 
     if (!ComputerClubIsRoomExists(gameid, roomid)) return 0;
-    if (!IsPlayerConnected(playerid)) return 0;
+    if (!IsOnline(playerid)) return 0;
 
     // Кд античита на оружие
     GivePlayerResetWeaponUnix(playerid);

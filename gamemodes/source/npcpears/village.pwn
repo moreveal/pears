@@ -580,6 +580,7 @@ stock PlayerShotVillage(playerid, i)
 
     VillageInfo[villKillPlayerid][i] = playerid;
     Village_Kills[playerid] ++;
+    PlayerInfo[playerid][pStatistics][1]++;
 
     if(server == 0) SendClientMessageToAll(-1, "%s убил %d деревенских", PlayerInfo[playerid][pName], Village_Kills[playerid]);
     return true;
@@ -768,6 +769,9 @@ stock IsPlayerNotTargetForVillage(playerid)
                 if(gettime() - VillageInfo[villAttackPlayeridDistChange][i] >= 15)
                 {
                     Village_BlockTarget[playerid][i] = gettime() + 10;
+                    
+                    VillageInfo[villAttackPlayeridDistChange][i] = gettime();
+                    VillageInfo[villAttackPlayeridDist][i] = 0.0;
                     continue;
                 }
             }

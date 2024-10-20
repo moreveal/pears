@@ -693,7 +693,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
         }
     }
 
-    if (IsPlayerConnected(playerid)) {
+    if (IsOnline(playerid)) {
         if(zv == 0 && mentid > -1)
         {
             if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING || !ProxDetectorS(2.0, playerid, mentid)) return ErrorMessage(mentid, "{FF6347}Вы далеко от игрока");
@@ -717,7 +717,7 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
         WantedInfo[playerid][wanTicketUnix][slotUk] = gettime();
         SaveTicketPlayer(playerid, slotUk);
 
-        if(IsPlayerConnected(playerid) && zv == 0)
+        if(IsOnline(playerid) && zv == 0)
         {
             SendClientMessage(playerid, COLOR_GREY, "{0066ff}[ POLICE ]: {abcdef}%s выписал%s вам штраф в размере {FF6347}%d$", rpplayername(mentid), gender(mentid), CriminalCodeInfo[uk][p][ccFine]);
 
@@ -820,7 +820,7 @@ stock CheckWarningSu(playerid, const tmp[], &playa)
 		return 0;
 	}
 	playa = ReturnUser(tmp);
-	if(!IsPlayerConnected(playa))
+	if(!IsOnline(playa))
 	{
 		ErrorMessage(playerid, "{FF6347}Игрока нет на сервере");
 		return 0;
@@ -847,7 +847,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
 	new slotUk = -1;
 
-    if(IsPlayerConnected(playerid) && zakonnik >= 0)
+    if(IsOnline(playerid) && zakonnik >= 0)
     {
         if(WantedInfo[playerid][wanLoad] == true) {
             ErrorMessage(zakonnik, "{FF6347}Стоп! Игрок заходит на сервер.. Пожалуйста подождите");
@@ -888,7 +888,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         resultFine = CreatePlayerTicket(playerid, zakonnik, zv, uk, p, slotUk);
     }
 
-    if(IsPlayerConnected(playerid) && slotUk == -1 && resultFine == 0)
+    if(IsOnline(playerid) && slotUk == -1 && resultFine == 0)
     {
         if(IsOnline(zakonnik)) ErrorMessage(zakonnik, "{FF6347}У преступника максимальное количество статей в личном деле [ /wanted ]");
         return -1;
@@ -915,7 +915,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
         new string[140];
 
-        if (IsPlayerConnected(playerid)) {
+        if (IsOnline(playerid)) {
             // Сообщения преступнику
             if(zakonnik > -1) format(string, sizeof(string), "{abcdef}Вы совершили преступление [%s] | Полицейский: [%s] {FF6347}Уровень розыска: [%d]",reason, PlayerInfo[zakonnik][pName], zv);
             else format(string, sizeof(string), "{abcdef}Вы совершили преступление [%s] | Полицейский: [Аноним] {FF6347}Уровень розыска: [%d]", reason, zv);
@@ -967,7 +967,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
             if(IsPoliceMember(i) || PlayerInfo[i][pFbi] >= 1)
             {
                 new playerid_str[8];
-                if (IsPlayerConnected(playerid)) format(playerid_str, sizeof(playerid_str), "[%d]", playerid);
+                if (IsOnline(playerid)) format(playerid_str, sizeof(playerid_str), "[%d]", playerid);
 
                 if(IsOnline(zakonnik)) {
                     format(string, sizeof(string), "[DEP]: По заявлению %s[%d], %s%s обвиняется в %s. {FF6347}Ур. розыска: [%d]", PlayerInfo[zakonnik][pName], zakonnik, rpplayername(playerid), playerid_str, reason, zv);

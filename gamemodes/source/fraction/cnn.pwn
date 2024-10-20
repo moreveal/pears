@@ -20,7 +20,7 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
 
     AdvertiseList[index][cnnAdsType] = _:premium;
 
-    return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
+    return OOCNews(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
 }
 
 stock GetAvailableAdSlotsAmount()

@@ -258,7 +258,7 @@ stock OffenseLog(primary_player_id, const primary_player_name[], const primary_p
             `primary_player_name`, \
             `primary_player_ip`, \
             `rows` \
-        ) VALUES (%d, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'))",
+        ) VALUES (%s, %s, %s, convertCharset('%e', \'windows-1251\', \'utf-8\'))",
         primary_player_id_, primary_player_name_, primary_player_ip_, rows
     );
     mysql_tquery(pearsq_2, query);
