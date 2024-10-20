@@ -682,6 +682,7 @@ function OOCOff(color, const string[]) // Чат /ao /o /oo /gov и прочие
     {
         if(OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pBkyrenie] <= 1 && PlayerInfo[i][pTransmitterOff][8] == false) SendClientMessage(i, color, string);
     }
+    return 1;
 }
 
 function OOCNews(color, const string[]) // Новости CNN /news /live
@@ -690,6 +691,7 @@ function OOCNews(color, const string[]) // Новости CNN /news /live
     {
         if(OnlineInfo[i][oLogged] == 1 && PlayerInfo[i][pBkyrenie] <= 1 && PlayerInfo[i][pTransmitterOff][9] == false) SendClientMessage(i, color, string);
     }
+    return 1;
 }
 
 stock dialogCase_Transmitter(playerid, dialogid, response, listitem)
