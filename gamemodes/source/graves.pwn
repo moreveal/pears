@@ -113,17 +113,23 @@ stock Graves_Init()
         #error "The number of biographies must be greater than the number of graves"
     #endif
 
-    for (new Float: x = 882.050109, i = 0; i < MAX_GRAVES; x -= GRAVES_GAP, i++)
-    {
-        if (i == 9) x = 860.202880; // Корректировка для второго объекта надгробий
+    static bool: init = false;
+    if (!init) {
+        init = true;
 
-        GraveInfo[i][giX] = x;
-        GraveInfo[i][giY] = -1108.184937;
-        GraveInfo[i][giZ] = 23.407932;
+        GravesArea = CreateDynamicCube(804.272827, -1130.616821, 21.873744, 952.311950, -1063.319091, 41.357662, 0, 0);
+        for (new Float: x = 882.050109, i = 0; i < MAX_GRAVES; x -= GRAVES_GAP, i++)
+        {
+            if (i == 9) x = 860.202880; // Корректировка для второго объекта надгробий
 
-        for (new j = 0; j < GRAVES_MAX_OBJECTS; j++) {
-            Graves_UpdateBiography(i);
-            GraveInfo[i][giObjects][j] = INVALID_OBJECT_ID;
+            GraveInfo[i][giX] = x;
+            GraveInfo[i][giY] = -1108.184937;
+            GraveInfo[i][giZ] = 23.407932;
+
+            for (new j = 0; j < GRAVES_MAX_OBJECTS; j++) {
+                Graves_UpdateBiography(i);
+                GraveInfo[i][giObjects][j] = INVALID_OBJECT_ID;
+            }
         }
     }
 
@@ -185,6 +191,68 @@ stock Graves_Dialog_ShowInfo(playerid, graveid)
     return ShowDialog(playerid, GRAVES_DIALOG_BIOGRAPHY, DIALOG_STYLE_MSGBOX, "{555555}Информация о могиле", string, "Назад", "");
 }
 
+stock Graves_GetSilverJewelPrice(id)
+{
+    new silverPrice;
+    switch (id)
+    {
+        case 0: silverPrice = 8000;
+        case 1: silverPrice = 15000;
+        case 2: silverPrice = 25000;
+        case 3: silverPrice = 40000;
+        case 4: silverPrice = 65000;
+    }
+    return silverPrice;
+}
+
+stock Graves_GetGoldJewelPrice(id)
+{
+    return (id + 1) * 2;
+}
+
+stock Graves_RandomSilverJewel(&id, &price)
+{
+    id = random(sizeof(GravesSilverJewels));
+    price = Graves_GetSilverJewelPrice(id);
+
+    return 1;
+}
+
+stock Graves_RandomGoldJewel(&id, &price)
+{
+    id = random(sizeof(GravesGoldJewels));
+    price = Graves_GetGoldJewelPrice(id);
+
+    return 1;
+}
+
+stock Graves_GiveGoldJewel(playerid, id)
+{
+    new goldPrice = Graves_GetGoldJewelPrice(id);
+    if (goldPrice < 1) return 0;
+    
+    if (goldPrice > 0) {
+        PlayerInfo[playerid][pDonateMoney] += goldPrice;
+        DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", goldPrice, "Раскопка могил");
+
+        new f_str[128];
+        mysql_format(pearsq, f_str, sizeof(f_str), "UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `Name`='%e'", PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pName]);
+        query_empty(pearsq, f_str);
+    }
+    return 1;
+}
+
+stock Graves_GiveSilverJewel(playerid, id)
+{
+    new silverPrice = Graves_GetSilverJewelPrice(id);
+    if (silverPrice < 1) return 0;
+
+    oGivePlayerMoney(playerid, silverPrice);
+    MoneyLog("givemoney", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", silverPrice, "Раскопка могил");
+
+    return 1;
+}
+
 stock Graves_Open(playerid, graveid)
 {
     if (GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
@@ -229,17 +297,15 @@ stock Graves_Open(playerid, graveid)
     #pragma unused illnessId // Возможно будет выводиться в диалоге
 
     // Назначаем игроку золотое украшение
-    new goldJewelId = -1;
-    new goldJewels[][] = {"Золотой зуб", "Золотое кольцо", "Золотые серьги", "Золотая цепочка", "Золотые часы"};
+    new goldJewelId = -1, goldPrice;
     if (random(100) + 1 <= gold_chance) {
-        goldJewelId = random(sizeof(goldJewels));
+        Graves_RandomGoldJewel(goldJewelId, goldPrice);
     }
 
     // Назначаем игроку серебрянное украшение
-    new silverJewelId = -1;
-    new silverJewels[][] = {"Серебряное кольцо", "Серебряный перстень", "Серебряная цепочка", "Серебряный браслет", "Серебряные часы"};
+    new silverJewelId = -1, silverPrice;
     if (random(100) + 1 <= silver_chance) {
-        silverJewelId = random(sizeof(silverJewels));
+        Graves_RandomSilverJewel(silverJewelId, silverPrice);
     }
 
     // Назначаем игроку предметы (мусор)
@@ -261,43 +327,21 @@ stock Graves_Open(playerid, graveid)
         if (put_inva < 0) itemId = -1; // Не удалось выдать предмет
     }
 
-    new goldPrice = (goldJewelId + 1) * 2;
-    new silverPrice;
-    switch (silverJewelId) {
-        case 0: silverPrice = 8000;
-        case 1: silverPrice = 15000;
-        case 2: silverPrice = 25000;
-        case 3: silverPrice = 40000;
-        case 4: silverPrice = 65000;
-        default: {}
-    }
-
     new dialog_text[1024];
     strcat(dialog_text, "{cccccc}Вы вскрыли гроб и обыскали его!\n\nСписок найденных предметов:");
     if (goldJewelId < 0 && silverJewelId < 0 && itemId < 0) {
         strcat(dialog_text, "\n{555555}Вы ничего не нашли");
     } else {
-        if (goldJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {ff9000}%s {ffcc00}[%d Gold]", dialog_text, goldJewels[goldJewelId], goldPrice);
-        if (silverJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {bbbbbb}%s {99ff66}[%s$]", dialog_text, silverJewels[silverJewelId], FormatNumberWithCommas(silverPrice));
+        if (goldJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {ff9000}%s {ffcc00}[%d Gold]", dialog_text, GravesGoldJewels[goldJewelId], goldPrice);
+        if (silverJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {bbbbbb}%s {99ff66}[%s$]", dialog_text, GravesSilverJewels[silverJewelId], FormatNumberWithCommas(silverPrice));
         if (itemId > -1) {
             if (itemQuan > 1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}%s (%d шт.)", dialog_text, GetNameThing(0, itemId, 0, 0), itemQuan);
             else format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}%s", dialog_text, GetNameThing(0, itemId, 0, 0));
         }
 
         // Выдаём золото и деньги (обычные предметы выдаются сразу)
-        if (goldPrice > 0) {
-            
-            PlayerInfo[playerid][pDonateMoney] += goldPrice;
-		    DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", goldPrice, "Раскопка могил");
-
-            new f_str[128];
-            mysql_format(pearsq, f_str, sizeof(f_str), "UPDATE `pp_igroki` SET `DonateMoney`='%d' WHERE `Name`='%e'",PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pName]);
-            query_empty(pearsq, f_str);
-        }
-        if (silverPrice > 0) {
-            oGivePlayerMoney(playerid, silverPrice);
-            MoneyLog("givemoney", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", silverPrice, "Раскопка могил");
-        }
+        if (goldPrice > 0) Graves_GiveGoldJewel(playerid, goldJewelId);
+        if (silverPrice > 0) Graves_GiveSilverJewel(playerid, silverJewelId);
     }
 
     strcat(dialog_text,
@@ -308,7 +352,7 @@ stock Graves_Open(playerid, graveid)
     );
 
     PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/treasure-chest-open-empt.mp3");
-    ShowDialog(playerid, NO_DIALOG_HANDLER, DIALOG_STYLE_MSGBOX, "{555555}Обыск могилы", dialog_text, "Ок", "");
+    ShowDialog(playerid, GRAVES_DIALOG_LOOT, DIALOG_STYLE_MSGBOX, "{555555}Обыск могилы", dialog_text, "Ок", "");
 
     if (PlayerInfo[playerid][pAchieve][21] == 0) AchievePlayer(playerid, 21, 1);
     GraveInfo[graveid][giOpened] = true;
@@ -568,6 +612,10 @@ stock dialogCase_Graves(playerid, dialogid, response, listitem) {
             if (!response) return 1;
             return Graves_Open(playerid, DP[0][playerid]);
         }
+        case GRAVES_DIALOG_LOOT:
+        {
+            return Graves_TryCreateNPC(playerid);
+        }
         default: return 0;
     }
 
@@ -590,8 +638,7 @@ stock Graves_OnPlayerPressALT(playerid)
 
 stock Graves_OnPlayerDisconnect(playerid)
 {
-    if (IsValidNpc(GravePlayerInfo[playerid][gpiGhostNPC])) DestroyNpc(GravePlayerInfo[playerid][gpiGhostNPC]);
-    if (IsValidNpc(GravePlayerInfo[playerid][gpiAngrySpiritNPC])) DestroyNpc(GravePlayerInfo[playerid][gpiAngrySpiritNPC]);
+    if (IsValidNpc(GravePlayerInfo[playerid][gpiNPC])) DestroyNpc(GravePlayerInfo[playerid][gpiNPC]);
     
     for (new e_GravePlayerInfo: i; i < e_GravePlayerInfo; i++) GravePlayerInfo[playerid][i] = 0;
 
@@ -602,6 +649,428 @@ stock Graves_OnPlayerDisconnect(playerid)
             break;
         }
     }
+
+    return 1;
+}
+
+function Graves_DestroyParticle(objectid)
+{
+    return DestroyDynamicObject(objectid);
+}
+
+function Graves_DestroyNpc(playerid)
+{
+    if (IsValidNpc(GravePlayerInfo[playerid][gpiNPC])) {
+        DestroyNpc(GravePlayerInfo[playerid][gpiNPC]);
+        GravePlayerInfo[playerid][gpiNPC] = NPC: 0;
+
+        return 1;
+    }
+
+    return 0;
+}
+
+function Graves_ProcessNpc(playerid, NPC: npc)
+{
+    if (!IsValidNpc(npc)) return 0;
+    if (npc != GravePlayerInfo[playerid][gpiNPC]) return 0;
+
+    new Float: x, Float: y, Float: z;
+    GetNpcPosition(npc, x, y, z);
+
+    // Регенерация HP (+8.0HP каждую секунду)
+    {
+        new Float: health;
+        GetNpcHealth(npc, health);
+
+        if (health < GravePlayerInfo[playerid][gpiNPCMaxHealth]) {
+            health += 8.0;
+            if (health > GravePlayerInfo[playerid][gpiNPCMaxHealth]) {
+                health = GravePlayerInfo[playerid][gpiNPCMaxHealth];
+            }
+
+            SetNpcHealth(npc, health);
+        }
+    }
+
+    new Float: distance = GetPlayerDistanceFromPoint(playerid, x, y, z);
+    if (GravePlayerInfo[playerid][gpiLastDistChange] == 0) {
+        GravePlayerInfo[playerid][gpiLastDistChange] = gettime();
+        GravePlayerInfo[playerid][gpiLastDist] = distance;
+    } else if (IsPlayerInRangeOfPoint(playerid, 1.0, x, y, z) || floatabs(distance - GravePlayerInfo[playerid][gpiLastDist]) > 5.0) {
+        GravePlayerInfo[playerid][gpiLastDistChange] = gettime();
+        GravePlayerInfo[playerid][gpiLastDist] = distance;
+    } else {
+        if(gettime() - GravePlayerInfo[playerid][gpiLastDistChange] >= 10)
+        {
+            new Float: px, Float: py, Float: pz, Float: pa;
+            GetPlayerPos(playerid, px, py, pz);
+            GetPlayerFacingAngle(playerid, pa);
+
+            // Телепортируем за спину к игроку
+            backme(playerid, 0.5, px, py, pz, pa);
+            SetNpcPosition(npc, px, py, pz);
+            SetNpcFacingAngle(npc, pa);
+
+            // Эффект телепорта
+            new particle = CreateDynamicObject(18682, px, py, pz, 0.0, 0.0, 0.0, 0, 0);
+            SetTimerEx("Graves_DestroyParticle", 1000, false, "d", particle);
+            Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
+
+            GravePlayerInfo[playerid][gpiLastDistChange] = gettime();
+            GravePlayerInfo[playerid][gpiLastDist] = 0.0;
+        }
+    }
+
+    return SetTimerEx("Graves_ProcessNpc", 1000, false, "dd", playerid, _:npc);
+}
+
+stock Graves_TryCreateNPC(playerid)
+{
+    new SPAWN_CHANCE = 10; // Шанс спавна одного из NPC по умолчанию
+
+    if (get_invent2(playerid, 243, 0)) SPAWN_CHANCE += 15; // Некрономикон
+    if (get_invent2(playerid, 5, 0)) SPAWN_CHANCE += 12; // Доска Уиджи
+    if (get_invent2(playerid, 180, 0)) SPAWN_CHANCE += 8; // Карты таро
+    if (get_invent2(playerid, 198, 0)) SPAWN_CHANCE += 5; // Кукла вуду
+
+    if (random(100) < SPAWN_CHANCE)
+    {
+        switch (random(4))
+        {
+            case 0: return Graves_CreateNPC(playerid, GRAVE_NPC_TYPE_SPIRIT);
+            default: return Graves_CreateNPC(playerid, GRAVE_NPC_TYPE_GHOST);
+        }
+    }
+    
+    return 1;
+}
+
+stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
+{
+    if (!force)
+    {
+        if (server != 0)
+        {
+            new hour, minute, second;
+            gettime(hour, minute, second);
+
+            // Может спавниться только с 18:00 до 06:00 (на основном сервере)
+            if (hour > 6 && hour < 18) return 0;
+        }
+
+        // Может спавниться только при условии, что рядом нет игроков
+        foreach (new id : Player)
+        {
+            if (id == playerid) continue;
+
+            if (GetDistanceBetweenPlayers(id, playerid) < 20.0) return 0;
+        }
+    }
+
+    // Спавним только для игроков с лаунчером
+    if (!IsPlayerHaveLauncher(playerid)) return 0;
+    
+    // Спавним только на территории кладбища
+    if (!IsPlayerInDynamicArea(playerid, GravesArea)) return 0;
+    
+    new Float: health = 1500.0;
+    if (type == GRAVE_NPC_TYPE_SPIRIT) health += 1000.0;
+
+    // Череп Осириса гарантированно спавнит Разгневанного Духа (c уменьшенным количеством HP)
+    if (get_invent2(playerid, 242, 0)) {
+        type = GRAVE_NPC_TYPE_SPIRIT;
+        health = 2000.0;
+
+        new para = get_para(playerid, 242) + 1;
+        set_para(playerid, 242, para);
+        if (para >= GRAVES_OSIRIS_SKULL_TIMES) TakeInvent(playerid, 242, 1, 0);
+    }
+    
+    GravePlayerInfo[playerid][gpiNPCMaxHealth] = health;
+    GravePlayerInfo[playerid][gpiLastDist] = 0.0;
+    GravePlayerInfo[playerid][gpiLastDistChange] = 0;
+    GravePlayerInfo[playerid][gpiNPCType] = type;
+
+    // Создаём NPC
+    if (IsValidNpc(GravePlayerInfo[playerid][gpiNPC])) Graves_DestroyNpc(playerid);
+    {
+        new Float: x, Float: y, Float: z, Float: a;
+        GetPlayerPos(playerid, x, y, z);
+        GetPlayerFacingAngle(playerid, a);
+
+        backme(playerid, 12.0, x, y, z, a);
+
+        new skinid = 7;
+        if (type == GRAVE_NPC_TYPE_SPIRIT) skinid = 1;
+
+        GravePlayerInfo[playerid][gpiNPC] = CreateNpc(skinid, x, y, z);
+        new particle = CreateDynamicObject(18715, x, y, z, 0.0, 0.0, 0.0, 0, 0);
+        SetTimerEx("Graves_DestroyParticle", 5000, false, "d", particle);
+
+        SetNpcFacingAngle(GravePlayerInfo[playerid][gpiNPC], a);
+    }
+
+    SetNpcHealth(GravePlayerInfo[playerid][gpiNPC], health);
+    SetNpcWeapon(GravePlayerInfo[playerid][gpiNPC], WEAPON_FIST);
+    TaskNpcAttackPlayer(GravePlayerInfo[playerid][gpiNPC], playerid, true);
+    SetNpcStunAnimationEnabled(GravePlayerInfo[playerid][gpiNPC], false);
+
+    Graves_ProcessNpc(playerid, GravePlayerInfo[playerid][gpiNPC]);
+    Graves_SetPlayerTime(playerid);
+
+    return 1;
+}
+
+stock Graves_SetPlayerTime(playerid)
+{
+    SetPlayerWeather(playerid, 8);
+    return 1;
+}
+
+stock Graves_IsBattleNpc(playerid)
+{
+    return IsValidNpc(GravePlayerInfo[playerid][gpiNPC]);
+}
+
+stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid, bodypart)
+{
+    #pragma unused weaponid
+    #pragma unused bodypart
+
+    if (npc != GravePlayerInfo[damagerid][gpiNPC]) return 0;
+
+    new Float: health;
+    GetNpcHealth(npc, health);
+
+    if (amount >= health) {
+        new Float: x, Float: y, Float: z;
+        GetNpcPosition(npc, x, y, z);
+
+        // Эффект после смерти
+        new modelid = (GravePlayerInfo[damagerid][gpiNPCType] == GRAVE_NPC_TYPE_SPIRIT) ? 18728 : 18723;
+        new particle = CreateDynamicObject(modelid, x, y, z - 3.5, 0.0, 0.0, 0.0, 0, 0);
+        SetTimerEx("Graves_DestroyParticle", 1000, false, "d", particle);
+        SetTimerEx("Graves_DestroyNpc", 2500, false, "d", damagerid);
+        Streamer_Update(damagerid, STREAMER_TYPE_OBJECT);
+
+        // Лут
+        Graves_GivePlayerLootNpc(npc, damagerid);
+
+        // Достижение за убийство NPC
+        if(PlayerInfo[damagerid][pAchieve][133] == 0) AchievePlayer(damagerid, 133, 1);
+    }
+
+    return 1;
+}
+
+stock Graves_GivePlayerLootNpc(NPC: npc, playerid)
+{
+    if (!IsValidNpc(npc)) return 0;
+
+    new silverJewelId = -1, silverPrice,
+        goldJewelId = -1, goldPrice,
+        caseKeyQuan, caseQuan, things[10];
+
+    new dialog_text[1024];
+    switch (GravePlayerInfo[playerid][gpiNPCType])
+    {
+        case GRAVE_NPC_TYPE_GHOST: {
+            strcat(dialog_text, "{ff9000}Вы одолели Призрака!");
+
+            // Назначение золотых украшений (10%)
+            if (random(100) < 10)
+            {
+                Graves_RandomGoldJewel(goldJewelId, goldPrice);
+            }
+
+            // Назначение серебряных украшений (60%)
+            if (random(100) < 60)
+            {
+                Graves_RandomSilverJewel(silverJewelId, silverPrice);
+            }
+
+            // Назначение костяного ключа (50%)
+            if (random(100) < 50) caseKeyQuan = 1;
+
+            // Назначение похоронного кейса
+            caseQuan = 1;
+
+            // Назначение артефактов (30% на каждый)
+            new availableThings[] = {180, 198};
+            for (new quan, i = 0; i < sizeof(availableThings); i++)
+            {
+                if (random(100) < 30)
+                {
+                    new put_inva = GiveThingPlayer(playerid, availableThings[i], 1, 0, 0, 0, 0);
+                    if (put_inva < 0) continue; // Не удалось выдать предмет
+
+                    things[quan++] = availableThings[i];
+                }
+            }
+        }
+        case GRAVE_NPC_TYPE_SPIRIT: {
+            strcat(dialog_text, "{ff9000}Вы одолели Разгневанного Духа!");
+
+            // Назначение золотых украшений (100%)
+            Graves_RandomGoldJewel(goldJewelId, goldPrice);
+
+            // Назначение серебряных украшений (100%)
+            Graves_RandomSilverJewel(silverJewelId, silverPrice);
+
+            // Назначение костяных ключей (100% + 50% + 20%)
+            caseKeyQuan = 1;
+            if (random(100) < 50) caseKeyQuan++;
+            if (random(100) < 20) caseKeyQuan++;
+
+            // Назначение похоронных кейсов (100%)
+            caseQuan = 2;
+
+            // Назначение артефактов (40% на первый, 32% на второй, ...)
+            new chance = 40;
+            new availableThings[] = {180, 198, 5, 243};
+            for (new quan, i = 0; i < sizeof(availableThings); i++)
+            {
+                if (random(100) < chance)
+                {
+                    new put_inva = GiveThingPlayer(playerid, availableThings[i], 1, 0, 0, 0, 0);
+                    if (put_inva < 0) continue; // Не удалось выдать предмет
+
+                    things[quan++] = availableThings[i];
+                }
+                chance -= 8;
+            }
+        }
+        default: return 0;
+    }
+
+    // Выдача костяных ключей
+    for (new i = 0; i < caseKeyQuan; i++)
+    {
+        new put_inva = GiveThingPlayer(playerid, 241, 1, 0, 0, 0, 0);
+        if (put_inva < 0) caseKeyQuan--; // Не удалось выдать предмет
+    }
+
+    // Выдача похоронных кейсов
+    for (new i = 0; i < caseQuan; i++)
+    {
+        new thingId, thingQuan, thingType, thingPara, thingPack;
+        CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "graves");
+        new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
+        if(put_inva < 0) caseQuan--; // Не удалось выдать предмет
+    }
+
+    strcat(dialog_text, "\n\n{99ff66}Ваша награда:");
+
+    if (goldJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {ff9000}%s {ffcc00}[%d Gold]", dialog_text, GravesGoldJewels[goldJewelId], goldPrice);
+    if (silverJewelId > -1) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {bbbbbb}%s {99ff66}[%s$]", dialog_text, GravesSilverJewels[silverJewelId], FormatNumberWithCommas(silverPrice));
+    if (caseKeyQuan > 0) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {bbbbbb}Костяной ключ (%d шт.)", dialog_text, caseKeyQuan);
+    for (new i = 0; i < sizeof(things); i++)
+    {
+        new itemid = things[i];
+        if (itemid < 1) continue;
+
+        format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}%s", dialog_text, GetNameThing(0, itemid, 0, 0));
+    }
+    if (caseQuan > 0) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}Похоронный Кейс (%d шт.)", dialog_text, caseQuan);
+
+    // Выдаём золото и деньги (предметы выдаются сразу)
+    if (goldPrice > 0) Graves_GiveGoldJewel(playerid, goldJewelId);
+    if (silverPrice > 0) Graves_GiveSilverJewel(playerid, silverJewelId);
+
+    strcat(dialog_text,
+        "\n\n{cccccc}Памятка:\n" \
+        "{cccccc}- Артефакты увеличивают шанс появления одной из сущностей при раскопке могил\n" \
+        "{cccccc}- Золотые и серебряные украшения автоматически конвертируются в игровую валюту ({99ff66}Деньги{cccccc}, {ffcc00}Золото{cccccc})\n" \
+        "{cccccc}- Разгневанный Дух появляется реже Призрака, а потому имеет более ценную награду при уничтожении"
+    );
+
+    ShowDialog(playerid, NO_DIALOG_HANDLER, DIALOG_STYLE_MSGBOX, "{555555}Награда", dialog_text, "Ок", "");
+
+    return 1;
+}
+
+stock Graves_IsArtifact(itemid)
+{
+    if (itemid == 5 || itemid == 180 || itemid == 198 || itemid == 242 || itemid == 243) return true;
+    return false;
+}
+
+stock Graves_SetSpawnInfo(playerid)
+{
+    GravePlayerInfo[playerid][gpiNoDeath] = gettime() + 5;
+    OnlineInfo[playerid][oSpawnWorld] = 0, OnlineInfo[playerid][oSpawnInt] = 0;
+    ProtectSetSpawnInfo(playerid, 0, PlayerInfo[playerid][pModel], 998.7671, -1106.4410, 23.8281, 90.0000, 0, 0, 0, 0, 0, 0);
+    return 1;
+}
+
+stock Graves_OnPlayerDeadNpc(NPC: npc, playerid)
+{
+    if (!IsValidNpc(npc) || GravePlayerInfo[playerid][gpiNPC] != npc) return 0;
+
+    Graves_SetSpawnInfo(playerid);
+
+    // Уничтожаем артефакты при смерти
+    for(new i = 0; i < 40; i++)
+	{
+        if (PlayerInfo[playerid][pInvenType][i] != 0) continue;
+
+        new quan = PlayerInfo[playerid][pInvenQuan][i];
+        if (quan < 1) continue;
+
+        new itemid = PlayerInfo[playerid][pInven][i];
+        if (itemid != 242 && Graves_IsArtifact(itemid)) { // Прочие артефакты
+            TakeInvent(playerid, itemid, quan, 0, i);
+        }
+	}
+    Graves_DestroyNpc(playerid);
+
+    return 1;
+}
+
+stock Graves_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, bodypart)
+{
+    #pragma unused weaponid
+    #pragma unused bodypart
+
+    if (GravePlayerInfo[issuerid][gpiNPC] != npc) return 0;
+
+    new Float: health;
+    ACGetPlayerHealth(issuerid, health);
+
+    if (health - amount <= 0.0)
+    {
+        Graves_OnPlayerDeadNpc(npc, issuerid);
+    } else {
+        new Float: nAngle, Float: pAngle;
+        GetPlayerFacingAngle(issuerid, pAngle);
+        GetNpcFacingAngle(npc, nAngle);
+
+        // Если NPC атакует со спины - значительно увеличиваем урон
+        if (floatabs(pAngle - nAngle) < 15.0) {
+            new Float: pHealth;
+            ACGetPlayerHealth(issuerid, pHealth);
+
+            pHealth -= amount * 3.5;
+            if (pHealth <= 0.0) {
+                Graves_OnPlayerDeadNpc(npc, issuerid);
+            }
+            ACSetPlayerHealth(issuerid, pHealth);
+        }
+    }
+
+    return 1;
+}
+
+CMD:gravestest(playerid, const params[])
+{
+    if (server != 0) return 0;
+
+    new type;
+    sscanf(params, "D(0)", type);
+
+    Graves_DestroyNpc(playerid);
+    if (!Graves_CreateNPC(playerid, e_GraveNPCType: type, true)) return 0;
 
     return 1;
 }

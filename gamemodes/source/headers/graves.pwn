@@ -7,6 +7,8 @@
 #define GRAVES_MAX_BIOGRAPHIES      26 // Число биографий
 #define GRAVES_PLAYER_COOLDOWN      3 // КД на раскопку могил для игрока (в часах)
 
+#define GRAVES_OSIRIS_SKULL_TIMES   3 // Количество использований Черепа Осириса до его уничтожения
+
 enum e_GraveBiographyType {
     GRAVE_BIO_HOMELESS, // Очень скудные шансы на что-то стоящее
     GRAVE_BIO_NORMAL, // Обычный человек, средние шансы
@@ -169,8 +171,24 @@ enum e_Grave {
 };
 new GraveInfo[MAX_GRAVES][e_Grave];
 
+enum e_GraveNPCType {
+    GRAVE_NPC_TYPE_GHOST, // "Призрак"
+    GRAVE_NPC_TYPE_SPIRIT // "Разгневанный дух"
+};
+
 enum e_GravePlayerInfo {
-    NPC: gpiGhostNPC, // NPC "Призрак"
-    NPC: gpiAngrySpiritNPC // NPC "Разгневанный дух"
+    NPC: gpiNPC, // NPC
+    e_GraveNPCType: gpiNPCType, // Тип NPC
+    Float: gpiNPCMaxHealth, // Максимальное HP у NPC
+    gpiNoDeath, // Время пока не должна работать система ухода в стадию
+
+    Float: gpiLastDist, // Последняя дистанция от NPC до игрока
+    gpiLastDistChange // Время последнего изменения дистанции
 };
 new GravePlayerInfo[MAX_REALPLAYERS][e_GravePlayerInfo];
+
+new GravesArea; // Зона кладбища (LS)
+
+new GravesSilverJewels[][] = {"Серебряное кольцо", "Серебряный перстень", "Серебряная цепочка", "Серебряный браслет", "Серебряные часы"};
+new GravesGoldJewels[][] = {"Золотой зуб", "Золотое кольцо", "Золотые серьги", "Золотая цепочка", "Золотые часы"};
+

@@ -170,6 +170,7 @@ enum e_DialogId {
     // Раскопка могил
     GRAVES_DIALOG_MAIN,
     GRAVES_DIALOG_OPEN,
-    GRAVES_DIALOG_BIOGRAPHY
+    GRAVES_DIALOG_BIOGRAPHY,
+    GRAVES_DIALOG_LOOT
 };
 
