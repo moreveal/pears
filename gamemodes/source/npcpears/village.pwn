@@ -760,7 +760,7 @@ stock IsPlayerNotTargetForVillage(playerid)
             {
                 VillageInfo[villAttackPlayeridDistChange][i] = gettime();
                 VillageInfo[villAttackPlayeridDist][i] = distance;
-            } else if(floatabs(distance - VillageInfo[villAttackPlayeridDist][i]) > 1.0)
+            } else if(IsPlayerInRangeOfPoint(playerid, 0.75, x, y, z) || floatabs(distance - VillageInfo[villAttackPlayeridDist][i]) > 1.0)
             {
                 VillageInfo[villAttackPlayeridDistChange][i] = gettime();
                 VillageInfo[villAttackPlayeridDist][i] = distance;
