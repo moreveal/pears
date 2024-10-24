@@ -25,7 +25,7 @@ new customCaseName[][] =
 // Упаковки, которые относятся к кейсу
 stock IsACasePackID(thingPack)
 {
-    return GetInventoryPackCustomCase(thingPack) != -1;
+    return thingPack == 5 || GetInventoryPackCustomCase(thingPack) != -1;
 }
 
 // ID объекта, как выглядит кейс
@@ -194,18 +194,17 @@ stock CustomThingCase(caseID, selectedThing, &thingId, &thingQuan, &thingPara, &
 stock GetCustomCaseID(const name[])
 {
     new id = -1;
-    if(strcmp(name,"gold") == 0) id = -1;
-    else
+    if(strcmp(name,"gold") == 0) return id;
+
+    for(new i = 0; i < sizeof(customCaseNameID); i++)
     {
-        for(new i = 0; i < sizeof(customCaseNameID); i++)
+        if(!strcmp(name, customCaseNameID[i], true))
         {
-            if(!strcmp(name, customCaseNameID[i], true))
-            {
-                id = i;
-                break;
-            }
+            id = i;
+            break;
         }
     }
+    
     return id;
 }
 
