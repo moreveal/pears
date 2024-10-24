@@ -1,10 +1,11 @@
-#define MAX_TOMB_ROOMS       20 // Максимальное количество комнат (активных игр) одновременно
-#define MIN_TOMB_PLAYERS     3  // Минимальное количество игроков в одной комнате
-#define MAX_TOMB_PLAYERS     10 // Максимальное количество игроков в одной комнате
-#define MAX_TOMB_MUMMY       200 // Максимальное количество мумий в одной комнате одновременно (включая трупы)
+#define MAX_TOMB_ROOMS          20 // Максимальное количество комнат (активных игр) одновременно
+#define MIN_TOMB_PLAYERS        3  // Минимальное количество игроков в одной комнате
+#define MAX_TOMB_PLAYERS        10 // Максимальное количество игроков в одной комнате
+#define MAX_TOMB_MUMMY          200 // Максимальное количество мумий в одной комнате одновременно (включая трупы)
 
-#define TOMB_WAVE_COOLDOWN   30 // Время в секундах между волнами
-#define TOMB_COOLDOWN        60 // Время в минутах до повторного участия в игре
+#define TOMB_WAVE_COOLDOWN      30 // Время в секундах между волнами
+#define TOMB_WAVE_COOLDOWN_TEST 5 // Время в секундах между волнами (на тестовом сервере)
+#define TOMB_COOLDOWN           60 // Время в минутах до повторного участия в игре
 
 enum e_TombWave
 {
@@ -33,7 +34,7 @@ enum e_TombMummyType
 {
     TOMB_NORMAL_MUMMY,
     TOMB_HEAVY_MUMMY,
-    TOMB_SUPER_MUMMY,
+    TOMB_BOSS_MUMMY,
 
     // Счетчик типов
     TOMB_MAX_MUMMY_TYPE
@@ -101,5 +102,13 @@ new TombMummySpawns[][e_TombMummyPos] = {
 };
 
 new PlayerText: TombMummyRemainsTD[MAX_REALPLAYERS][2];
+
+// TODO: Заполнить
+enum e_TombDisallowedAreas {
+    Float: tdaMinX, Float: tdaMinY,
+    Float: tdaMaxX, Float: tdaMaxY,
+
+    e_TombMummyPos: tdaSpawnPosition[10]
+};
 
 //#define TOMB_DEBUG_MODE // Отладка гробницы (Закомментировать, если не требуется)

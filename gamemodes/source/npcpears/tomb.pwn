@@ -1,3 +1,9 @@
+// TODO: Написать в следующем коммите о необходимости создать таблицу `tomb` (структура идентична `minewar`)
+// TODO: Задать свой скин Анубису, убрать бензопилу
+// TODO: Изменить детект нахождения на одном из объектов, собрать вручную все X/Y/Z у объектов и проверять находится ли игрок там + точки возле них
+// TODO: Сделать прогрессбар для проклятия, проработать его
+// TODO: Добавить объект пирамиды в интерьер, чтобы был виден не только с 22:00 до 5:00
+
 function Tomb_Load(playerid)
 {
     new rows;
@@ -350,7 +356,7 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
     }
 
     TombInfo[roomid][tiMummyDamage] = 12.0;
-    TombInfo[roomid][tiMummyMaxHealth] = 100.0;
+    TombInfo[roomid][tiMummyMaxHealth] = 150.0;
 
     // Увеличиваем базовое HP мумий, опираясь на уровень сложности
     TombInfo[roomid][tiMummyMaxHealth] *= (_:TombInfo[roomid][tpDifficulty] + 1);
@@ -362,10 +368,10 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
             switch (TombInfo[roomid][tpDifficulty])
             {
                 case TOMB_DIFFICULTY_EASY: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 8;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 5;
                 }
                 case TOMB_DIFFICULTY_HARD: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 12;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 9;
                 }
                 default: {}
             }
@@ -375,10 +381,10 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
             switch (TombInfo[roomid][tpDifficulty])
             {
                 case TOMB_DIFFICULTY_EASY: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = 3 + players_count * 11;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = 3 + players_count * 6;
                 }
                 case TOMB_DIFFICULTY_HARD: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = 5 + players_count * 13;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = 5 + players_count * 10;
                 }
                 default: {}
             }
@@ -388,14 +394,14 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
             switch (TombInfo[roomid][tpDifficulty])
             {
                 case TOMB_DIFFICULTY_EASY: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 12;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 7;
                     TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 2;
-                    TombInfo[roomid][tiMummyMaxHealth] += 50.0;
+                    TombInfo[roomid][tiMummyMaxHealth] += 75.0;
                 }
                 case TOMB_DIFFICULTY_HARD: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 16;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 12;
                     TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 5;
-                    TombInfo[roomid][tiMummyMaxHealth] += 100.0;
+                    TombInfo[roomid][tiMummyMaxHealth] += 150.0;
                 }
                 default: {}
             }
@@ -405,16 +411,16 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
             switch (TombInfo[roomid][tpDifficulty])  
             {
                 case TOMB_DIFFICULTY_EASY: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 15;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 9;
                     TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 2;
-                    TombInfo[roomid][tiMummyWave][_:TOMB_SUPER_MUMMY] = 1;
-                    TombInfo[roomid][tiMummyMaxHealth] += 50.0;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_BOSS_MUMMY] = 1;
+                    TombInfo[roomid][tiMummyMaxHealth] += 100.0;
                 }
                 case TOMB_DIFFICULTY_HARD: {
-                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 18;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 14;
                     TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 5;
-                    TombInfo[roomid][tiMummyWave][_:TOMB_SUPER_MUMMY] = 1;
-                    TombInfo[roomid][tiMummyMaxHealth] += 100.0;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_BOSS_MUMMY] = 1;
+                    TombInfo[roomid][tiMummyMaxHealth] += 200.0;
                 }
                 default: {}
             }
@@ -532,6 +538,90 @@ function Tomb_MummyProcess(roomid)
         if (IsOnline(attackid)) Tomb_MummySetAttack(roomid, npc, attackid);
     }
 
+    {
+        static Ticks[MAX_TOMB_ROOMS];
+        new current_tick = GetTickCount();
+        new interval = GetTickDiff(current_tick, Ticks[roomid]);
+        if (interval >= 3000)
+        {
+            Ticks[roomid] = current_tick;
+
+            for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
+            {
+                new playerid = TombInfo[roomid][tpPlayers][i] - 1;
+                if (!IsOnline(playerid)) continue; // Игнорируем игроков не в сети
+                
+                new objects[20];
+                new count = Streamer_GetNearbyItems(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], STREAMER_TYPE_OBJECT, objects, .range = 6.0, .worldid = GetPlayerVirtualWorld(playerid));
+                for (new j = 0; j < min(count, sizeof(objects)); j++)
+                {
+                    new objectid = objects[j];
+                    if (!IsValidDynamicObject(objectid)) break;
+
+                    new model = GetDynamicObjectModel(objectid), bool: next = false;
+                    static const models[] = {2973, 2991, 747, 19796, 19364, 3798, 19451, 751, 651};
+                    for (new id = 0; id < sizeof(models); id++)
+                    {
+                        if (model == models[id]) {
+                            next = true;
+                            break;
+                        }
+                    }
+                    if (!next) continue;
+
+                    new Float: x, Float: y, Float: z;
+                    GetDynamicObjectPos(objectid, x, y, z);
+
+                    z += 1.25;
+
+                    if (Protect_Z[playerid] < z) continue;
+
+                    if (!IsPlayerInSquare(playerid, x - 3.0, y - 3.0, x + 3.0, y + 3.0)) continue;
+
+                    // ТП к ближайшему NPC
+                    // TODO: Нужно долго тестить
+                    {
+                        new npcid = -1,
+                            Float: closestDistance = 5000.0;
+
+                        for (new id = 0; id < MAX_TOMB_MUMMY; id++)
+                        {
+                            new NPC: currentNPC = TombInfo[roomid][tiMummy][id];
+                            if (!IsValidNpc(currentNPC) || IsNpcDead(currentNPC)) continue;
+
+                            new Float: nX, Float: nY, Float: nZ;
+                            GetNpcPosition(currentNPC, nX, nY, nZ);
+
+                            new Float: distance = GetPlayerDistanceFromPoint(playerid, nX, nY, nZ);
+                            if (distance < closestDistance)
+                            {
+                                npcid = id;
+                                closestDistance = distance;
+                            }
+                        }
+
+                        if (npcid != -1)
+                        {
+                            new Float: cnX, Float: cnY, Float: cnZ, Float: cnA;
+                            GetNpcPosition(TombInfo[roomid][tiMummy][npcid], cnX, cnY, cnZ);
+                            GetNpcFacingAngle(TombInfo[roomid][tiMummy][npcid], cnA);
+                            
+                            GetNpcFacingAngle(TombInfo[roomid][tiMummy][npcid], cnA);
+                            frontme(INVALID_PLAYER_ID, 3.0, cnX, cnY, cnZ, cnA);
+                            PPSetPlayerPos(playerid, cnX, cnY, cnZ);
+                            PPSetPlayerFacingAngle(playerid, cnA);
+                            SetCameraBehindPlayer(playerid);
+
+                            PlayerPlaySound(playerid, 31200, 0, 0, 0);
+                        }
+                    }
+                    
+                    break;
+                }
+            }
+        }
+    }
+
     return SetTimerEx("Tomb_MummyProcess", 1000, false, "d", roomid);
 }
 
@@ -593,6 +683,17 @@ stock Tomb_MummySetAttack(roomid, NPC: npc, attackid)
     return 0;
 }
 
+// TODO: Дописать
+stock Tomb_CurseProgressUpdate(playerid)
+{
+    new roomid = Tomb_GetPlayerRoom(playerid);
+    if (roomid < 0) return 0;
+
+
+
+    return 1;
+}
+
 stock Tomb_CreateMummy(roomid, e_TombMummyType: type, Float: x, Float: y, Float: z, Float: a)
 {
     if (!Tomb_IsRoomExists(roomid)) return 0;
@@ -601,13 +702,15 @@ stock Tomb_CreateMummy(roomid, e_TombMummyType: type, Float: x, Float: y, Float:
     {
         if (!TombInfo[roomid][tiMummy][i])
         {
-            new NPC: npcid = CreateNpc(15784, x, y, z);
+            new skinid = 15784;
+            if (type == TOMB_BOSS_MUMMY) skinid = 15784; // TODO: Поменять на скин Анубиса
+            new NPC: npcid = CreateNpc(skinid, x, y, z);
 
             new Float: health = TombInfo[roomid][tiMummyMaxHealth];
-            if (type == TOMB_SUPER_MUMMY) {
+            if (type == TOMB_BOSS_MUMMY) {
                 health *= frand(6.5, 10.0);
             } else if (type == TOMB_HEAVY_MUMMY) {
-                health *= frand(3.0, 4.0);
+                health *= frand(2.0, 3.0);
             }
 
             SetNpcFacingAngle(npcid, a);
@@ -616,8 +719,8 @@ stock Tomb_CreateMummy(roomid, e_TombMummyType: type, Float: x, Float: y, Float:
             SetNpcStunAnimationEnabled(npcid, false);
 
             SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие
-            if (type == TOMB_HEAVY_MUMMY) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки усиленной мумии
-            else if (type == TOMB_SUPER_MUMMY) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-мумии
+            if (type == TOMB_HEAVY_MUMMY) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки проклятой мумии
+            else if (type == TOMB_BOSS_MUMMY) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-мумии
 
             new attackid = Tomb_GetNearestPlayerFromMummy(roomid, npcid);
             if (IsOnline(attackid)) Tomb_MummySetAttack(roomid, npcid, attackid);
@@ -675,7 +778,7 @@ stock Tomb_SpawnMummy(roomid)
         // Спавн усиленных мумий
         new e_TombMummyType: mummy_type = TOMB_NORMAL_MUMMY;
         if (i > nextspawn_indexes[_:TOMB_HEAVY_MUMMY]) {
-            mummy_type = TOMB_SUPER_MUMMY;
+            mummy_type = TOMB_BOSS_MUMMY;
         }
         else if (i > nextspawn_indexes[_:TOMB_NORMAL_MUMMY])
         {
@@ -752,16 +855,16 @@ stock Tomb_UpdateNextMummy(roomid)
     
     // Определение количества мумий каждого вида для спавна в зависимости от стадии волны
     if (mummy_killed_ratio <= 0.2) {
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.35);
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_HEAVY_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] * 0.50);
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.50);
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_HEAVY_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] * 0.70);
     }
     else if (mummy_killed_ratio <= 0.5) {
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.25);
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.40);
     }
     else {
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.40);
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_HEAVY_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] * 0.50);
-        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_SUPER_MUMMY] = TombInfo[roomid][tiMummyWave][_:TOMB_SUPER_MUMMY];
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] * 0.60);
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_HEAVY_MUMMY] = floatround(TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] * 0.80);
+        TombInfo[roomid][tiMummyNextSpawn][_:TOMB_BOSS_MUMMY] = TombInfo[roomid][tiMummyWave][_:TOMB_BOSS_MUMMY];
     }
 
     if (mummy_killed_ratio >= 1) {
@@ -782,7 +885,7 @@ stock Tomb_UpdateNextMummy(roomid)
         printf("[TOMB DEBUG]: Должно быть заспавнено: %d обычных, %d усиленных и %d супер-мумий",
             TombInfo[roomid][tiMummyNextSpawn][_:TOMB_NORMAL_MUMMY],
             TombInfo[roomid][tiMummyNextSpawn][_:TOMB_HEAVY_MUMMY],
-            TombInfo[roomid][tiMummyNextSpawn][_:TOMB_SUPER_MUMMY]
+            TombInfo[roomid][tiMummyNextSpawn][_:TOMB_BOSS_MUMMY]
         );
     #endif
 }
@@ -809,15 +912,15 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
         "%s" \
         "{ff9000}Личная статистика убийств:\n" \
         "{cccccc}- Обычных мумий уничтожено: %d\n" \
-        "{cccccc}- Усиленных мумий уничтожено: %d",
+        "{cccccc}- Проклятых мумий уничтожено: %d",
 
         dialog_text,
         Tomb_PlayerGetMummyKilled(playerid, TOMB_NORMAL_MUMMY),
         Tomb_PlayerGetMummyKilled(playerid, TOMB_HEAVY_MUMMY)
     );
-    if (Tomb_PlayerGetMummyKilled(playerid, TOMB_SUPER_MUMMY) >= 1) strcat(dialog_text, "\n{850000}- Вы уничтожили босса!");
+    if (Tomb_PlayerGetMummyKilled(playerid, TOMB_BOSS_MUMMY) >= 1) strcat(dialog_text, "\n{850000}- Вы уничтожили Анубиса!");
 
-    strcat(dialog_text, "\n\n{ff9000}Ваши призы:\n");
+    strcat(dialog_text, "\n\n{ff9000}Ваши призы:");
     
     new case_amount;
     if (reason == TOMB_END_REASON_WIN) {
@@ -829,7 +932,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
         #endif
     }
 
-    if (Tomb_GetMummyKilled(roomid, _:TOMB_SUPER_MUMMY) >= 1) {
+    if (Tomb_GetMummyKilled(roomid, _:TOMB_BOSS_MUMMY) >= 1) {
         // 40% получить кейс, если был убит босс (даже при поражении)
         if(random(10) <= 3) {
             case_amount++;
@@ -837,6 +940,16 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
                 printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
             #endif
         }
+    }
+
+    // 3% получить Череп Осириса
+    new osirisSkull = -1;
+    if (random(100) < 3)
+    {
+        osirisSkull = 1;
+        #if defined TOMB_DEBUG_MODE
+            printf("[TOMB DEBUG]: Игрок %d получил Череп Осириса", playerid);
+        #endif
     }
 
     {
@@ -866,7 +979,8 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     }
     case_amount += TombPlayerInfo[playerid][tpCases]; // Прибавляем возможные кейсы, которые игрок мог получить на протяжении игры (за волны и т.п.)
 
-    if (case_amount > 0) {
+    if (case_amount < 1 && osirisSkull < 1) strcat(dialog_text, "\n{cccccc}- Отсутствуют\n");
+    else {
         new bool: no_place = false;
         {
             for (new i = 0; i < case_amount; i++)
@@ -893,17 +1007,20 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
             }
         }
 
-        format(dialog_text, sizeof(dialog_text),
-            "%s" \
-            "{cccccc}- Кейс: %d шт.",
+        if (case_amount > 0) {
+            format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- Кейс: %d шт.", dialog_text, case_amount);
+        }
+        if (osirisSkull > 0) {
+            strcat(dialog_text, "\n{ffcc00}- Череп Осириса (Редкий артефакт)");
 
-            dialog_text,
-            case_amount
-        );
+            new put_inva = GiveThingPlayer(playerid, 242, 1, 0, 0, 0, 0);
+            if (put_inva < 0) {
+                no_place = true;
+                Throw(playerid, 242, 1, 0, 0, 0, 0);
+            }
+        }
 
         if (no_place) strcat(dialog_text, "\n{ff6347}* Для одного или нескольких предметов не хватило места в инвентаре\n* Вы сможете найти их рядом с собой\n");
-    } else {
-        strcat(dialog_text, "{cccccc}- Отсутствуют\n");
     }
 
     ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, " ", dialog_text, "Закрыть", "");
@@ -1010,7 +1127,7 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                                 }
                             }
 
-                            Tomb_SetWave(roomid, _:TombInfo[roomid][tiWave] + 1, .cooldown = TOMB_WAVE_COOLDOWN);
+                            Tomb_SetWave(roomid, _:TombInfo[roomid][tiWave] + 1, .cooldown = server == 0 ? TOMB_WAVE_COOLDOWN_TEST : TOMB_WAVE_COOLDOWN);
 
                             #if defined TOMB_DEBUG_MODE
                                 printf("[TOMB DEBUG]: Изменение волны: %d", TombInfo[roomid][tiWave]);
@@ -1121,7 +1238,7 @@ stock Tomb_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, body
                 switch (e_TombMummyType: type)
                 {
                     case TOMB_HEAVY_MUMMY: damage *= 1.4;
-                    case TOMB_SUPER_MUMMY: damage *= 1.75;
+                    case TOMB_BOSS_MUMMY: damage *= 1.75;
                     default: {}
                 }
 

@@ -145,6 +145,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || PlayerInfo[playerid][pJailed] > 0 // В заключении
     || IsPlayerHavePursuit(playerid) // Активное полицейское преследование
     || MineWar_IsPlayerInside(playerid) // Играет в заброшенной шахте
+    || Tomb_IsPlayerInside(playerid) // Играет в гробнице фараона
     || PlayerInPersonalInteriorKatanaDuel(playerid) // Катана дуэль
     || Graves_IsBattleNpc(playerid) || gettime() < GravePlayerInfo[playerid][gpiNoDeath] // Сражается с NPC (Раскопка могил)
     || (bespilot[playerid] != 0 || GetTickCount() - bespilotejecttick[playerid] < 1000)) return 1; // NGSA беспилотник
