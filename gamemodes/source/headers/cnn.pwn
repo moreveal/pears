@@ -19,7 +19,8 @@ new TakeAdvertise[CNN_AD_EDIT_MAX] = {-1, ...};
 enum e_AdvertiseQueue {
     adsSender[32],
     adsHandler[32],
-	adsText[128]
+	adsText[128],
+    adsTargetHour, adsTargetMinute
 }
 new AdvertiseQueue[CNN_AD_QUEUE_MAX][e_AdvertiseQueue];
 

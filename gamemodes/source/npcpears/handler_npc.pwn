@@ -29,7 +29,7 @@ public IsNpcInRangeOfPoint(NPC:npc, Float:radius, Float:x, Float:y, Float:z)
 forward IsNpcNearby(Float:radi, playerid, NPC:npc);
 public IsNpcNearby(Float:radi, playerid, NPC:npc)
 {
-    if(IsPlayerConnected(playerid) && IsValidNpc(npc))
+    if(IsOnline(playerid) && IsValidNpc(npc))
 	{
 		new Float:posx, Float:posy, Float:posz;
 		new Float:oldposx, Float:oldposy, Float:oldposz;

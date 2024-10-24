@@ -20,7 +20,7 @@ stock SendAdvertiseMessage(const text[], const sender[], index, bool: premium = 
 
     AdvertiseList[index][cnnAdsType] = _:premium;
 
-    return SendClientMessageToAll(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
+    return OOCNews(premium ? 0xFF6C00FF : 0x9ACD32FF, str);
 }
 
 stock GetAvailableAdSlotsAmount()
@@ -32,6 +32,42 @@ stock GetAvailableAdSlotsAmount()
     }
 
     return CNN_AD_LIST_MAX - count;
+}
+
+stock GetNextAdTime(&hour, &minute)
+{
+    new tmphour, tmpminute, tmpsecond;
+    gettime(tmphour, tmpminute, tmpsecond);
+
+    // Получаем индекс самого позднего объявления в очереди
+    new index = -1;
+    for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
+        if (isnull(AdvertiseQueue[j][adsSender])) continue;
+
+        new currentunix = AdvertiseQueue[j][adsTargetHour] * 3600 + AdvertiseQueue[j][adsTargetMinute] * 60;
+        if (currentunix < 3600) currentunix += 24 * 3600; // Корректируем время 00:XX, чтобы оно не воспринималось как более раннее
+
+        new prevunix = index == -1 ? 0 : AdvertiseQueue[index][adsTargetHour] * 3600 + AdvertiseQueue[index][adsTargetMinute] * 60;
+
+        if (currentunix > prevunix)
+        {
+            index = j;
+        }
+    }
+    
+    hour = index > -1 ? AdvertiseQueue[index][adsTargetHour] : tmphour;
+    minute = index > -1 ? AdvertiseQueue[index][adsTargetMinute] : tmpminute;
+
+    // Добавляем +1 минуту для следующего объявления
+    if (++minute >= 60) {
+        minute = 0;
+        
+        if (++hour >= 24) {
+            hour = 0;
+        }
+    }
+    
+    return 1;
 }
 
 function SendAdInZero() {
@@ -46,6 +82,9 @@ function SendAdInZero() {
 
         // Ещё не время или в очереди пусто
         if (second != 0 || !AdvertiseQueue[q][adsSender]) return 0;
+        
+        // Не подходит по времени
+        if (hour != AdvertiseQueue[q][adsTargetHour] || minute != AdvertiseQueue[q][adsTargetMinute]) continue;
 
         for (new j = 1; j < CNN_AD_LIST_MAX; j++) {
             if (!isnull(AdvertiseList[j][cnnAdsText])) continue;
@@ -62,7 +101,7 @@ function SendAdInZero() {
             return 1;
         }
 
-        return 0;
+        break;
     }
 
     return 0;
@@ -72,7 +111,7 @@ stock DeleteAdFromEditList(number) { // Удаление объявления (C
     for (new e_Advertise: i; i < e_Advertise; i++) Advertise[number][i] = 0;
 }
 
-stock DeleteAdFromQueue(number) { // Удаление объявления (CNN)
+stock DeleteAdFromQueue(number) { // Удаление объявления из очереди (CNN)
     for (new e_AdvertiseQueue: i; i < e_AdvertiseQueue; i++) AdvertiseQueue[number][i] = 0;
 }
 
@@ -279,14 +318,16 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                 }
                 if (cnnonline <= 0) {
                     for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
-                        if (isnull(AdvertiseQueue[j][adsSender])) { 
-                            new hour, minute, second;
-                            gettime(hour, minute, second);
+                        if (isnull(AdvertiseQueue[j][adsSender])) {
+                            new hour, minute;
+                            GetNextAdTime(hour, minute);
+                            AdvertiseQueue[j][adsTargetHour] = hour;
+                            AdvertiseQueue[j][adsTargetMinute] = minute;
 
                             strcat(AdvertiseQueue[j][adsText], ListName[playerid]);
                             strcat(AdvertiseQueue[j][adsSender], PlayerInfo[playerid][pName]);
 
-                            format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", hour + (minute + 1 + j) / 60, (minute + 1 + j) % 60);
+                            format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", AdvertiseQueue[j][adsTargetHour], AdvertiseQueue[j][adsTargetMinute]);
                             SendClientMessage(playerid, 0xFF8282FF, msg);
                             oGivePlayerBank(playerid, -ServerInfo[65]);
                             OrganInfo[9][glave] += ServerInfo[65];
@@ -401,15 +442,17 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                 if (Advertise[i][adsType] == 0) {
                     for (new j = 0; j < CNN_AD_QUEUE_MAX; j++) {
                         if (!isnull(AdvertiseQueue[j][adsSender])) continue;
-                        
-                        new hour, minute, second;
-                        gettime(hour, minute, second);
+
+                        new hour, minute;
+                        GetNextAdTime(hour, minute);
+                        AdvertiseQueue[j][adsTargetHour] = hour;
+                        AdvertiseQueue[j][adsTargetMinute] = minute;
 
                         strcat(AdvertiseQueue[j][adsText], Advertise[i][adsText]);
                         strcat(AdvertiseQueue[j][adsSender], PlayerInfo[Advertise[i][adsID]][pName]);
                         strcat(AdvertiseQueue[j][adsHandler], PlayerInfo[playerid][pName]);
 
-                        format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", hour + (minute + 1 + j) / 60, (minute + 1 + j) % 60);
+                        format(str, sizeof(str), "{0088ff}** [ CNN ] {ffffff}Объявление обработано и будет опубликовано в %02d:%02d", AdvertiseQueue[j][adsTargetHour], AdvertiseQueue[j][adsTargetMinute]);
                         SendClientMessage(playerid, 0xFF8282FF, str);
 
                         if (playerid != Advertise[i][adsID]) 
@@ -421,6 +464,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         oGivePlayerBank(Advertise[i][adsID], -ServerInfo[65]);
                         OrganInfo[9][glave] += ServerInfo[65];
 
+                        TakeAdvertise[i] = -1;
                         DeleteAdFromEditList(i);
 
                         return 1;
@@ -449,8 +493,6 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
 
                         oGivePlayerBank(Advertise[i][adsID], -ServerInfo[66]);
                         OrganInfo[9][glave] += ServerInfo[66];
-                        
-                        DeleteAdFromEditList(i);
                         
                         TakeAdvertise[i] = -1;
                         DeleteAdFromEditList(i);

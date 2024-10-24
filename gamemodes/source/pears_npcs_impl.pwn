@@ -80,7 +80,7 @@ CMD:npc_attack(playerid, const params[]) {
         return 1;
     }
 
-    if (!IsPlayerConnected(targetid) || IsPlayerNPC(targetid)) {
+    if (!IsOnline(targetid) || IsPlayerNPC(targetid)) {
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Он не в сети...");
         return 1;
     }
@@ -218,7 +218,7 @@ CMD:npc_follow(playerid, const params[]) {
         return 1;
     }
 
-    if (!IsPlayerConnected(targetid) || IsPlayerNPC(targetid)) {
+    if (!IsOnline(targetid) || IsPlayerNPC(targetid)) {
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Он не в сети...");
         return 1;
     }

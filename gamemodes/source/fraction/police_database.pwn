@@ -180,8 +180,11 @@ stock PDatabase_CheckHackAvailableTime(playerid, fractionid)
     {
         new tmphour, tmpminute, tmpsecond;
         gettime(tmphour, tmpminute, tmpsecond);
-        if(tmphour < 12 || tmphour > 22) {
-            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: База данных отключена! [ Только с 12:00 до 22:00 ]");
+        if (fractionid == 0 && (tmphour < 11 || tmphour > 22) ) {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Полицейская база данных отключена! [ Только с 11:00 до 22:00 ]");
+            return 1;
+        } else if (fractionid == 1 && (tmphour < 10 || tmphour > 23) ) {
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Федереральная база данных отключена! [ Только с 10:00 до 23:00 ]");
             return 1;
         }
 
@@ -2315,7 +2318,7 @@ stock dialogCase_PDatabase(playerid, dialogid, response, listitem, const inputte
                 new p = ReturnUser(inputtext, 1);
                 if (IsNumeric(inputtext)) format(ListName[playerid], 24,"%s", rpplayername(p));
                 else format(ListName[playerid], 24,"%s", inputtext);
-                if(IsPlayerConnected(p))
+                if(IsOnline(p))
                 {
                     if(OnlineInfo[p][oLogged] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет.. [ Игрок не залогинился ]");
                     if(PlayerInfo[p][pCrimes] == 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Это не преступник.. [ Он не находится в розыске ]");

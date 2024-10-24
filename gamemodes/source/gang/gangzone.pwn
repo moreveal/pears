@@ -215,7 +215,7 @@ CMD:zahvat(playerid, const params[])
 						}
 						
 						if (IsPlayerInDynamicArea(x, GhettoZone)) {
-							SetPlayerMaxHealth(x, 160.0);
+							SetMaxPlayerHealth(x, 160.0);
 						}
 					}
 				}
@@ -329,7 +329,7 @@ CMD:stopgz(playerid)
 	foreach(Player,i)
 	{
 		if(gVidga[i] == true) DelUpdate(i);
-		if (fraction(i) == CaptInfo[cAttack] || fraction(i) == CaptInfo[cDefend]) SetPlayerMaxHealth(i, 100.0);
+		if (fraction(i) == CaptInfo[cAttack] || fraction(i) == CaptInfo[cDefend]) SetMaxPlayerHealth(i, 100.0);
 	}
 	Kapt[CaptInfo[cAttack]] = 0, Kapt[CaptInfo[cDefend]] = 0;
  	FrakCD[CaptInfo[cAttack]] = 0, FrakCD[CaptInfo[cDefend]] = 0;
@@ -672,7 +672,7 @@ stock CheckGangZone() // Распределение результатов по 
 				new tempKills = PlayerInfo[i][pGangTemp][0]+PlayerInfo[i][pGangTemp][1];
 
 				// Сбрасываем максимальное HP через 1 минуту
-				SetTimerEx("SetPlayerMaxHealth", 1000 * 60 * 1, false, "df", i, 100.0);
+				SetTimerEx("SetMaxPlayerHealth", 1000 * 60 * 1, false, "df", i, 100.0);
 
 				// Ищем игрока с наибольшим количеством килов
 				if(saveKills == 0) saveKills = tempKills, playerwin = i; // Записываем первого чувака

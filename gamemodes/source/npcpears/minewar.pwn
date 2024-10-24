@@ -938,6 +938,7 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 new zombie_type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 MineWarInfo[roomid][mwZombieKilled][zombie_type]++;
                 MineWarPlayerInfo[killerid][mwpZombieKilled][zombie_type]++;
+                PlayerInfo[killerid][pStatistics][2]++;
 
                 MineWarInfo[roomid][mwZombieAttackId][npc_i] = 0;
                 SetTimerEx("MineWar_DestroyDeadZombie", 5 * 1000, false, "dd", roomid, npc_i);

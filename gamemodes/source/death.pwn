@@ -42,14 +42,15 @@ CMD:deathcut(playerid, const params[])
 stock SetPlayerDeath(playerid, reason)
 {
     new killerid = DeathInfo[playerid][deathKiller];
-    if (!IsPlayerConnected(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
+    if (!IsOnline(killerid)) killerid = DeathInfo[playerid][deathKiller] = INVALID_PLAYER_ID;
 
     if (NoDeath(playerid)) { // Если игрок не должен умирать (попадать в стадию)
         if (killerid == INVALID_PLAYER_ID) return 0;
 
         // DM Арест
-        if (IsPoliceMember(killerid) && IsPlayerHavePursuit(playerid) && IsPlayerCanBeArrested(playerid)) {
-            ArestPlayer(playerid, killerid, AREST_TYPE_KILL);
+        if (IsPlayerHavePursuit(playerid) && IsPlayerCanBeArrested(playerid)) {
+            new copid = IsPoliceMember(killerid) ? killerid : 0;
+            ArestPlayer(playerid, copid, AREST_TYPE_KILL);
         }
         return 0;
     }

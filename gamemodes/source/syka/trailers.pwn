@@ -429,7 +429,7 @@ CMD:settrailer(playerid, const params[]) {
     if (PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
     new targetid, trailerid;
     if (sscanf(params, "ud", targetid, trailerid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить трейлер игроку [ /settrailer ID Номер ]");
-    if (!IsPlayerConnected(targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+    if (!IsOnline(targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
     if (trailerid < 0 || trailerid > MAX_TRAILERS) return ErrorMessage(playerid, "{FF6347}Не меньше 0 и не больше "#MAX_TRAILERS);
 
     PlayerInfo[targetid][pTrailer] = trailerid;
