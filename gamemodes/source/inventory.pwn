@@ -1986,7 +1986,7 @@ stock OnPlayerTakeOffline(playerid)
 	new string_mysql[256];
 	if (DP[1][playerid] == 1 || DP[1][playerid] == 2) {
 		mysql_format(pearsq, string_mysql, sizeof(string_mysql),
-			"SELECT `pp_igroki_inventory`.*, `pp_igroki`.Member \
+			"SELECT `pp_igroki_inventory`.*, `pp_igroki`.Member, `pp_igroki`.Online \
 			FROM pp_igroki_inventory \
 			JOIN pp_igroki \
 			ON pp_igroki_inventory.user_id = pp_igroki.user_id  \
