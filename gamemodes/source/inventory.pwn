@@ -2716,7 +2716,6 @@ stock player_tile(playerid, inva)
 				else if(fpick == 2) return ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Обручальное кольцо используется для церемонии бракосочетаний [ Y >> GPS >> Прочее >> Церковь ]","*",""), i_resetveshi(playerid); // Обручальное кольцо
 				else if(fpick == 3) return seeds(playerid, 1003), i_resetveshi(playerid); // Бутылка
 			 	else if(fpick == 4) return pc_cmd_usedrugs1(playerid), i_resetveshi(playerid); // Трава
-			 	else if(fpick == 5) return ErrorMessage(playerid,"Это таблетка пустышка"), i_resetveshi(playerid); // Спиды
 			 	else if(fpick == 6) return pc_cmd_usedrugs3(playerid), i_resetveshi(playerid); // Грибы
 			 	else if(fpick == 7) return format(string, sizeof(string), "%d", inva), pc_cmd_usedrugs4(playerid, string), i_resetveshi(playerid); // Порошок
 			 	else if(fpick == 8) return FindTargetRevival(playerid), i_resetveshi(playerid); // Аптечка

@@ -598,7 +598,10 @@ stock dialogCase_Graves(playerid, dialogid, response, listitem) {
             switch (listitem)
             {
                 case 0: return Graves_Dialog_ShowInfo(playerid, graveid);
-                case 1: return Graves_StartPump(playerid, graveid);
+                case 1: {
+                    if (Graves_IsExists(graveid)) return ErrorMessage(playerid, "{FF6347}Вы не можете начать раскапывать эту могилу");
+                    return Graves_StartPump(playerid, graveid);
+                }
             }
         }
         case GRAVES_DIALOG_BIOGRAPHY:
@@ -838,7 +841,16 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
     #pragma unused weaponid
     #pragma unused bodypart
 
-    if (npc != GravePlayerInfo[damagerid][gpiNPC]) return 0;
+    new bool: isGhost = false;
+    foreach (new playerid : Player)
+    {
+        if (npc == GravePlayerInfo[playerid][gpiNPC])
+        {
+            if (playerid != damagerid) return 0;
+            isGhost = true;
+        }
+    }
+    if (!isGhost) return 1;
 
     new Float: health;
     GetNpcHealth(npc, health);
