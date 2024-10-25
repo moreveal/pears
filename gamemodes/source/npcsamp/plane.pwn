@@ -1,7 +1,7 @@
 
 #define MAX_HEALTH_PLANE 400 // Максимальное хп самолёта
 #define MAX_DIST_OBJECT_PLANE 300.0 // Расстояние отображения объектов на самолёте
-#define HIDE_WORLD_PLANE 228
+#define HIDE_WORLD_PLANE INVISIBLE_VIRTUAL_WORLD
 #define HIDE_INTERIOR_PLANE 10
 
 new plane_health;

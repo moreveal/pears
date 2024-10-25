@@ -1,13 +1,21 @@
+// Есть ли у игрока легальный доступ к Зоне 51
+stock IsPlayerHaveAccessArea51(playerid)
+{
+    if (IsADepart(playerid)) return 1;
+    if (GetPVarInt(playerid, "endorse") == 3) return 1;
+    if (GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return 1;
+
+    return 0;
+}
 
 // Игрок проник на зону 51
 stock PlayerInArea51(playerid)
 {
-    if(!IsADepart(playerid) // Не сотрудник департамента
-				&& (Onli[3] > 0 || server == 0) // Армейцы Online
-				&& GetPVarInt(playerid, "endorse") != 3 // Нет доступа к респе
-                && GetPlayerVirtualWorld(playerid) == 0 // В общем виртуальном мире
-				&& GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+    if(!IsPlayerHaveAccessArea51(playerid) // Нет доступа
+		&& (Onli[3] > 0 || server == 0) // Армейцы Online
+        && GetPlayerVirtualWorld(playerid) == 0) // В общем виртуальном мире
     {
+        // Выдача розыска за проникновение, если он ещё не выдавался
         new findUk, findP;
         if (FindCriminalArticle("Проникновение", findUk, findP, .ignorecase = false)) 
         {

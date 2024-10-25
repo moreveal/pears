@@ -79,8 +79,10 @@ stock HealthPlayer(playerid, time, Float:health, inva, thingId) // Лечим
 	return 1;
 }
 
-stock ResetHeal(playerid)
+function ResetHeal(playerid)
 {
+    if (!IsOnline(playerid)) return false;
+    
     // Старая система кровотечения off
     PlayerInfo[playerid][pRanentors] = 0;
     TextDrawHideForPlayer(playerid, PearsDraw[0]);

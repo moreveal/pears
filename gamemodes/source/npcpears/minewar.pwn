@@ -155,8 +155,6 @@ stock MineWar_Dialog_Main(playerid)
             (MineWar_GetDifficultyName(MineWarPlayerInfo[playerid][mwpDifficulty]))
         );
         ShowDialog(playerid, MINEWAR_DIALOG_MAIN, DIALOG_STYLE_TABLIST, "{ff9000}Заброшенная шахта", dialog_text, "Выбор", "Закрыть");
-    } else {
-        // Возможно, добавить какой-то диалог для завершения игры, если игрок ее запустил и т.п., пока без всего
     }
 
     return 1;
@@ -195,7 +193,8 @@ stock MineWar_Dialog_Rules(playerid)
         \
         "{ff9000}Описание режима\n" \
         "{cccccc}- После запуска игры сразу же появятся зомби, которых потребуется убить вместе с товарищами по команде\n" \
-        "{cccccc}- Зомби подходят волнами, численность их групп меняется в зависимости от стадии волны\n\n" \
+        "{cccccc}- Зомби подходят волнами, численность их групп меняется в зависимости от стадии волны\n" \
+        "{cccccc}- Если перед вашим возрождением умрут все ваши союзники - игра завершается поражением\n\n" \
         \
         "{ff9000}Механика волн\n" \
         "{cccccc}- Каждая волна зомби увеличивается по численности, становясь всё опаснее с каждой новой атакой\n" \
@@ -618,7 +617,7 @@ stock MineWar_CreateZombie(roomid, e_MineWarZombieType: type, Float: x, Float: y
             SetNpcVirtualWorld(npcid, MineWar_GetVirtualWorld(roomid));
             SetNpcStunAnimationEnabled(npcid, false);
 
-            SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие (временное решение, пока в плагине баг)
+            SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие
             if (type == MINEWAR_HEAVY_ZOMBIE) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки усиленному зомби
             else if (type == MINEWAR_SUPER_ZOMBIE) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-зомби
 

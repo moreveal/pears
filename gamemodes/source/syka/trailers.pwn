@@ -535,6 +535,9 @@ CMD:placetrailer(playerid) {
 
         if(IsPlayerInRangeOfPoint(playerid, 50.0, -547.4172, -1018.2808, 24.1529)) return ErrorMessage(playerid, "{FF6347}Нельзя установить трейлер на территории трейлерного парка");
         if(IsANotMoney(playerid)) return ErrorMessage(playerid, "{FF6347}Трейлеры запрещено устанавливать на территории городов");
+        if(IsPlayerInCube(playerid, -1344.426147, 2450.162109, 86.028869, -1263.789428, 2566.796142, 107.494987)) { // Гробница фараона
+            return ErrorMessage(playerid, "{FF6347}Нельзя установить трейлер в этом месте");
+        }
         if(VehInfo[vehicleid][vEngine] == 1) return ErrorMessage(playerid, "{FF6347}Заглушите двигатель транспорта");
         if(GetVehicleSpeed(playerid) > 3) return ErrorMessage(playerid, "{FF6347}Остановите транспорт\n{cccccc}Установить трейлер во время движения невозможно");
 

@@ -12,10 +12,12 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pGymUnix", "INT NOT NULL DEFAULT '0'"); // Абонемент в спортзал
     AddColumnIfNotExists("pp_igroki_maniac", "pManiacQwest", "INT NOT NULL DEFAULT '0'"); // Процесс выполнения квеста с маньяком
     AddColumnIfNotExists("pp_igroki", "pRadioInterceptorFindCd", "INT NOT NULL DEFAULT '0'"); // КД использования поиска в радиоперехватчике
+    AddColumnIfNotExists("pp_igroki", "pHankServices", "INT NOT NULL DEFAULT '0'"); // Услуги Хэнка
     AddColumnIfNotExists("pp_igroki", "pCDVillage", "INT NOT NULL DEFAULT '0'"); // КД на получение подарков после убийства всех деревенских
     AddColumnIfNotExists("pp_igroki", "pDatabaseActive", "INT NOT NULL DEFAULT '0'"); // Выбранный тип поддержки при взломе базы данных
     AddColumnIfNotExists("pp_igroki", "pCDKatana", "INT NOT NULL DEFAULT '0'"); // КД на дуэль на катанах
     AddColumnIfNotExists("pp_igroki", "pCDAd", "INT NOT NULL DEFAULT '0'"); // КД на подачу объявлений
+    AddColumnIfNotExists("pp_igroki", "pCDGraves", "INT NOT NULL DEFAULT '0'"); // КД на раскопку могил
     AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
 

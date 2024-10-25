@@ -13,6 +13,17 @@ enum e_DatabaseActive
     DATABASE_ACTIVE_MAX
 };
 
+enum e_HankService {
+    HANK_SERVICE_PERSONAL_TECHIE, // "Личный техник"
+
+    // Счётчик
+    HANK_SERVICE_MAX
+};
+
+enum e_HankServiceState {
+    HANK_SERVICE_STATE_PERSONAL_TECHIE = 0b0000000001
+};
+
 stock Hank_LoadActor() {
     if (hankActor == -1) {
         hankActor = CreateDynamicActor(30, hankPosition[0], hankPosition[1], hankPosition[2], 0.0, true, 100.0, 0);
