@@ -1242,6 +1242,8 @@ stock Tomb_OnPlayerDeath(playerid)
     TombPlayerInfo[playerid][tpDead] = true;
     TombPlayerInfo[playerid][tpDeadCount]++;
 
+    Tomb_SetCurseTextdraw(playerid, false);
+
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {
         new currentid = TombInfo[roomid][tpPlayers][i] - 1;
