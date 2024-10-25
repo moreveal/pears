@@ -841,7 +841,16 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
     #pragma unused weaponid
     #pragma unused bodypart
 
-    if (npc != GravePlayerInfo[damagerid][gpiNPC]) return 0;
+    new bool: isGhost = false;
+    foreach (new playerid : Player)
+    {
+        if (npc == GravePlayerInfo[playerid][gpiNPC])
+        {
+            if (playerid != damagerid) return 0;
+            isGhost = true;
+        }
+    }
+    if (!isGhost) return 1;
 
     new Float: health;
     GetNpcHealth(npc, health);
