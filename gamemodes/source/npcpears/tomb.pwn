@@ -1252,7 +1252,7 @@ stock Tomb_OnPlayerDeath(playerid)
         SendClientMessage(currentid, 0x1E6698FF, "[ Гробница ]: {FFCC66}Союзник %s погиб!", PlayerInfo[playerid][pName]);
     }
 
-    if (Tomb_GetPlayersCount(roomid) > 1)
+    if (Tomb_GetPlayersCount(roomid, .alive = true) >= 1)
     {
         if (TombPlayerInfo[playerid][tpDeadCount] < TOMB_MAX_DEATHS)
         {
