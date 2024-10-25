@@ -598,7 +598,10 @@ stock dialogCase_Graves(playerid, dialogid, response, listitem) {
             switch (listitem)
             {
                 case 0: return Graves_Dialog_ShowInfo(playerid, graveid);
-                case 1: return Graves_StartPump(playerid, graveid);
+                case 1: {
+                    if (Graves_IsExists(graveid)) return ErrorMessage(playerid, "{FF6347}Вы не можете начать раскапывать эту могилу");
+                    return Graves_StartPump(playerid, graveid);
+                }
             }
         }
         case GRAVES_DIALOG_BIOGRAPHY:
