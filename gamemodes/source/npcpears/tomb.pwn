@@ -1,8 +1,6 @@
 // TODO: Написать в следующем коммите о необходимости создать таблицу `tomb` (структура идентична `minewar`)
 // TODO: Задать свой скин Анубису, убрать бензопилу
-// TODO: Изменить детект нахождения на одном из объектов, собрать вручную все X/Y/Z у объектов и проверять находится ли игрок там + точки возле них
 // TODO: Сделать прогрессбар для проклятия, проработать его
-// TODO: Добавить объект пирамиды в интерьер, чтобы был виден не только с 22:00 до 5:00
 
 function Tomb_Load(playerid)
 {
@@ -406,6 +404,23 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
                 default: {}
             }
         }
+        case TOMB_WAVE_INSANE:
+        {
+            switch (TombInfo[roomid][tpDifficulty])
+            {
+                case TOMB_DIFFICULTY_EASY: {
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 10;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 3;
+                    TombInfo[roomid][tiMummyMaxHealth] += 100.0;
+                }
+                case TOMB_DIFFICULTY_HARD: {
+                    TombInfo[roomid][tiMummyWave][_:TOMB_NORMAL_MUMMY] = players_count * 15;
+                    TombInfo[roomid][tiMummyWave][_:TOMB_HEAVY_MUMMY] = 6;
+                    TombInfo[roomid][tiMummyMaxHealth] += 200.0;
+                }
+                default: {}
+            }
+        }
         case TOMB_WAVE_IMPOSSIBLE:
         {
             switch (TombInfo[roomid][tpDifficulty])  
@@ -525,6 +540,43 @@ function Tomb_DestroyDeadMummy(roomid, index)
     return 1;
 }
 
+stock Tomb_DisallowAreaProcess(roomid)
+{
+    if (!Tomb_IsRoomExists(roomid)) return 0;
+
+    for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
+    {
+        new playerid = TombInfo[roomid][tpPlayers][i] - 1;
+        if (!IsOnline(playerid)) continue; // Игнорируем игроков не в сети
+        
+        for (new j = 0; j < sizeof(TombDisallowedAreas); j++)
+        {
+            if (Protect_Z[playerid] < TombDisallowedAreas[j][tdaZ]) continue;
+            if (!IsPlayerInSquare(playerid, TombDisallowedAreas[j][tdaMinX], TombDisallowedAreas[j][tdaMinY], TombDisallowedAreas[j][tdaMaxX], TombDisallowedAreas[j][tdaMaxY])) continue;
+
+            new Float: closestDistance = 5000.0, point = -1; 
+            for (new currentpoint = 0; currentpoint < sizeof(TombDisallowedAreaPoints); currentpoint++)
+            {
+                new Float: distance = GetPlayerDistanceFromPoint(playerid, TombDisallowedAreaPoints[currentpoint][tdapX], TombDisallowedAreaPoints[currentpoint][tdapY], TombDisallowedAreaPoints[currentpoint][tdapZ]);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    point = currentpoint;
+                }
+            }
+
+            if (point != -1)
+            {
+                PPSetPlayerPos(playerid, TombDisallowedAreaPoints[point][tdapX], TombDisallowedAreaPoints[point][tdapY], TombDisallowedAreaPoints[point][tdapZ]);
+                PPSetPlayerFacingAngle(playerid, TombDisallowedAreaPoints[point][tdapA]);
+                SetCameraBehindPlayer(playerid);
+
+                PlayerPlaySound(playerid, 31200, 0, 0, 0);
+            }
+        }
+    }
+    return 1;
+}
+
 function Tomb_MummyProcess(roomid)
 {
     if (!Tomb_IsRoomExists(roomid)) return 0;
@@ -538,89 +590,7 @@ function Tomb_MummyProcess(roomid)
         if (IsOnline(attackid)) Tomb_MummySetAttack(roomid, npc, attackid);
     }
 
-    {
-        static Ticks[MAX_TOMB_ROOMS];
-        new current_tick = GetTickCount();
-        new interval = GetTickDiff(current_tick, Ticks[roomid]);
-        if (interval >= 3000)
-        {
-            Ticks[roomid] = current_tick;
-
-            for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
-            {
-                new playerid = TombInfo[roomid][tpPlayers][i] - 1;
-                if (!IsOnline(playerid)) continue; // Игнорируем игроков не в сети
-                
-                new objects[20];
-                new count = Streamer_GetNearbyItems(Protect_X[playerid], Protect_Y[playerid], Protect_Z[playerid], STREAMER_TYPE_OBJECT, objects, .range = 6.0, .worldid = GetPlayerVirtualWorld(playerid));
-                for (new j = 0; j < min(count, sizeof(objects)); j++)
-                {
-                    new objectid = objects[j];
-                    if (!IsValidDynamicObject(objectid)) break;
-
-                    new model = GetDynamicObjectModel(objectid), bool: next = false;
-                    static const models[] = {2973, 2991, 747, 19796, 19364, 3798, 19451, 751, 651};
-                    for (new id = 0; id < sizeof(models); id++)
-                    {
-                        if (model == models[id]) {
-                            next = true;
-                            break;
-                        }
-                    }
-                    if (!next) continue;
-
-                    new Float: x, Float: y, Float: z;
-                    GetDynamicObjectPos(objectid, x, y, z);
-
-                    z += 1.25;
-
-                    if (Protect_Z[playerid] < z) continue;
-
-                    if (!IsPlayerInSquare(playerid, x - 3.0, y - 3.0, x + 3.0, y + 3.0)) continue;
-
-                    // ТП к ближайшему NPC
-                    // TODO: Нужно долго тестить
-                    {
-                        new npcid = -1,
-                            Float: closestDistance = 5000.0;
-
-                        for (new id = 0; id < MAX_TOMB_MUMMY; id++)
-                        {
-                            new NPC: currentNPC = TombInfo[roomid][tiMummy][id];
-                            if (!IsValidNpc(currentNPC) || IsNpcDead(currentNPC)) continue;
-
-                            new Float: nX, Float: nY, Float: nZ;
-                            GetNpcPosition(currentNPC, nX, nY, nZ);
-
-                            new Float: distance = GetPlayerDistanceFromPoint(playerid, nX, nY, nZ);
-                            if (distance < closestDistance)
-                            {
-                                npcid = id;
-                                closestDistance = distance;
-                            }
-                        }
-
-                        if (npcid != -1)
-                        {
-                            new Float: cnX, Float: cnY, Float: cnZ, Float: cnA;
-                            GetNpcPosition(TombInfo[roomid][tiMummy][npcid], cnX, cnY, cnZ);
-                            GetNpcFacingAngle(TombInfo[roomid][tiMummy][npcid], cnA);
-                            
-                            GetNpcFacingAngle(TombInfo[roomid][tiMummy][npcid], cnA);
-                            frontme(INVALID_PLAYER_ID, 3.0, cnX, cnY, cnZ, cnA);
-                            PPSetPlayerPos(playerid, cnX, cnY, cnZ);
-                            PPSetPlayerFacingAngle(playerid, cnA);
-                            SetCameraBehindPlayer(playerid);
-
-                            PlayerPlaySound(playerid, 31200, 0, 0, 0);
-                        }
-                    }
-                    
-                    break;
-                }
-            }
-        }
-    }
+    Tomb_DisallowAreaProcess(roomid);
 
     return SetTimerEx("Tomb_MummyProcess", 1000, false, "d", roomid);
 }
@@ -926,7 +896,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     if (reason == TOMB_END_REASON_WIN) {
         // Гарантированные кейсы за прохождение (+1-3)
         case_amount += random_range(1, 2);
-        if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount++;
+        if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount += 2;
         #if defined TOMB_DEBUG_MODE
             printf("[TOMB DEBUG]: Игрок %d получил %d кейсов за прохождение", playerid, case_amount);
         #endif

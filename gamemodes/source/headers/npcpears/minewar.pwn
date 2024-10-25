@@ -4,7 +4,7 @@
 #define MAX_MINEWAR_ZOMBIES     200 // Максимальное количество зомби в одной комнате одновременно (включая трупы)
 
 #define MINEWAR_WAVE_COOLDOWN   30 // Время в секундах между волнами
-#define MINEWAR_COOLDOWN        60 // Время в минутах до повторного участия в игре
+#define MINEWAR_COOLDOWN        90 // Время в минутах до повторного участия в игре
 
 enum e_MineWarWave
 {
