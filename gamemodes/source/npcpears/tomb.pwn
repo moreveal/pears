@@ -1,7 +1,3 @@
-// TODO: Написать в следующем коммите о необходимости создать таблицу `tomb` (структура идентична `minewar`)
-// TODO: Задать свой скин Анубису, убрать бензопилу
-// TODO: Сделать прогрессбар для проклятия, проработать его
-
 function Tomb_Load(playerid)
 {
     new rows;
@@ -48,8 +44,10 @@ CMD:rtomb(playerid, const params[])
 
 stock Tomb_LoadTextdraws(playerid)
 {
+    // Таймер
     Obstacle_CreateObstacleTimeTD(playerid);
 
+    // Осталось NPC
     TombMummyRemainsTD[playerid][0] = CreatePlayerTextDraw(playerid, 43.0000, 191.0000, "120"); // пусто
     PlayerTextDrawLetterSize(playerid, TombMummyRemainsTD[playerid][0], 0.4000, 1.6000);
     PlayerTextDrawAlignment(playerid, TombMummyRemainsTD[playerid][0], TEXT_DRAW_ALIGN: 1);
@@ -68,6 +66,25 @@ stock Tomb_LoadTextdraws(playerid)
     PlayerTextDrawSetProportional(playerid, TombMummyRemainsTD[playerid][1], false);
     PlayerTextDrawSetShadow(playerid, TombMummyRemainsTD[playerid][1], 0);
     
+    // Проклятие
+    TombCurseTD[playerid][0] = CreatePlayerTextDraw(playerid, 264.3334, 400.1557, "LD_SPAC:white"); // бокс
+    PlayerTextDrawTextSize(playerid, TombCurseTD[playerid][0], 102.0000, 11.0000);
+    PlayerTextDrawAlignment(playerid, TombCurseTD[playerid][0], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, TombCurseTD[playerid][0], 572662527);
+    PlayerTextDrawBackgroundColour(playerid, TombCurseTD[playerid][0], 255);
+    PlayerTextDrawFont(playerid, TombCurseTD[playerid][0], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, TombCurseTD[playerid][0], false);
+    PlayerTextDrawSetShadow(playerid, TombCurseTD[playerid][0], false);
+
+    TombCurseTD[playerid][1] = CreatePlayerTextDraw(playerid, 265.3333, 401.7149, "LD_SPAC:white"); // заполнение
+    PlayerTextDrawTextSize(playerid, TombCurseTD[playerid][1], 100.0000, 8.0000);
+    PlayerTextDrawAlignment(playerid, TombCurseTD[playerid][1], TEXT_DRAW_ALIGN: 1);
+    PlayerTextDrawColour(playerid, TombCurseTD[playerid][1], 0xFFDEADFF);
+    PlayerTextDrawBackgroundColour(playerid, TombCurseTD[playerid][1], 255);
+    PlayerTextDrawFont(playerid, TombCurseTD[playerid][1], TEXT_DRAW_FONT: 4);
+    PlayerTextDrawSetProportional(playerid, TombCurseTD[playerid][1], false);
+    PlayerTextDrawSetShadow(playerid, TombCurseTD[playerid][1], false);
+
     return 1;
 }
 
@@ -79,6 +96,19 @@ stock Tomb_SetMummyRemainsTextdraw(playerid, bool: show = true)
             PlayerTextDrawShow(playerid, TombMummyRemainsTD[playerid][i]);
         } else {
             PlayerTextDrawHide(playerid, TombMummyRemainsTD[playerid][i]);
+        }
+    }
+    return 1;
+}
+
+stock Tomb_SetCurseTextdraw(playerid, bool: show = true)
+{
+    for (new i = 0; i < sizeof(TombCurseTD[]); i++)
+    {
+        if (show) {
+            PlayerTextDrawShow(playerid, TombCurseTD[playerid][i]);
+        } else {
+            PlayerTextDrawHide(playerid, TombCurseTD[playerid][i]);
         }
     }
     return 1;
@@ -196,13 +226,21 @@ stock Tomb_Dialog_Rules(playerid)
         \
         "{ff9000}Описание режима\n" \
         "{cccccc}- После запуска игры сразу же появятся мумии, которых потребуется убить вместе с товарищами по команде\n" \
-        "{cccccc}- Мумии подходят волнами, численность их групп меняется в зависимости от стадии волны\n\n" \
+        "{cccccc}- Мумии подходят волнами, численность их групп меняется в зависимости от стадии волны\n" \
+        "{cccccc}- У вас есть "#TOMB_MAX_DEATHS" возможности возрождения после смерти\n" \
+        "{cccccc}- Если перед вашим возрождением умрут все ваши союзники - игра завершается поражением\n\n" \
         \
         "{ff9000}Механика волн\n" \
         "{cccccc}- Каждая волна мумий увеличивается по численности, становясь всё опаснее с каждой новой атакой\n" \
         "{cccccc}- В некоторых волнах появляются усиленные типы мумий, которых сложнее уничтожить, и они наносят больший урон\n" \
         "{cccccc}- После завершения каждой волны у игроков будет время на отдых\n" \
         "{cccccc}- В перерывах между волнами игрокам случайным образом выдаются патроны и бинты для пополнения ресурсов\n\n" \
+        \
+        "{ff9000}Проклятие фараона\n" \
+        "{cccccc}- Если вы будете долго оставаться на месте, вы будете заполнять шкалу проклятия\n" \
+        "{cccccc}- Шкала проклятия также сильно увеличивается, если по вам наносит урон Анубис (босс на последней волне)\n" \
+        "{cccccc}- При достижении критического уровня шкалы, ваш персонаж начинает терять некоторое количество здоровья\n" \
+        "{cccccc}- При полном заполнении шкалы, ваш персонаж умирает до следующего возрождения (если оно доступно)\n\n" \
         \
         "{ff9000}Награды и штрафы\n" \
         "{cccccc}- В случае победы в конце игры каждому участнику будут выданы особые призы\n" \
@@ -320,6 +358,7 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
 
             PlayerPlaySound(currentid, 6400);
             Tomb_SetMummyRemainsTextdraw(currentid, false);
+            Tomb_SetCurseTextdraw(currentid, false);
         }
 
         TombInfo[roomid][tiSetWaveTimer] = SetTimerEx("Tomb_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
@@ -339,6 +378,10 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
         PlayerTextDrawHide(currentid, ObstacleTimeTD[currentid]);
 
         Tomb_SetMummyRemainsTextdraw(currentid, true);
+
+        Tomb_SetCurseTextdraw(currentid, true);
+        Tomb_CurseProcess(currentid);
+        Tomb_UpdateCurseTextdraw(currentid);
         
         for (new j = 0; j < _:TOMB_MAX_MUMMY_TYPE; j++)
         {
@@ -577,6 +620,49 @@ stock Tomb_DisallowAreaProcess(roomid)
     return 1;
 }
 
+stock Tomb_UpdateCurse(playerid, Float: offset)
+{
+    if (TombPlayerInfo[playerid][tpCurse] + offset < 0.0) {
+        TombPlayerInfo[playerid][tpCurse] = 0.0;
+    } else if (TombPlayerInfo[playerid][tpCurse] + offset > 100.0) {
+        TombPlayerInfo[playerid][tpCurse] = 100.0;
+    } else {
+        TombPlayerInfo[playerid][tpCurse] += offset;
+    }
+    Tomb_UpdateCurseTextdraw(playerid);
+    return 1;
+}
+
+function Tomb_CurseProcess(playerid)
+{
+    new roomid = Tomb_GetPlayerRoom(playerid);
+    if (!Tomb_IsRoomExists(roomid)) return 0;
+    if (!IsOnline(playerid)) return 0;
+    if (TombPlayerInfo[playerid][tpDead]) return 0;
+    if (TombInfo[roomid][tiWaveCooldown] > 0) return 0;
+
+    static Float: TombLastPositions[MAX_REALPLAYERS][3];
+    if (GetPlayerDistanceFromPoint(playerid, TombLastPositions[playerid][0], TombLastPositions[playerid][1], TombLastPositions[playerid][2]) <= 0.5)
+    {
+        if (!IsPlayerAfk(playerid)) {
+            Tomb_UpdateCurse(playerid, 0.75);
+        } else {
+            Tomb_UpdateCurse(playerid, 2.0);
+        }
+    } else {
+        Tomb_UpdateCurse(playerid, -0.25);
+    }
+
+    if (TombPlayerInfo[playerid][tpCurse] >= 100.0) return Tomb_OnPlayerDeath(playerid);
+    else if (TombPlayerInfo[playerid][tpCurse] >= 70.0) {
+        // Урон -0.2HP каждые 300мс, если проклятие выше 70%
+        ACSetPlayerHealth(playerid, HealthAC[playerid] - 0.2);
+    }
+
+    GetPlayerPos(playerid, TombLastPositions[playerid][0], TombLastPositions[playerid][1], TombLastPositions[playerid][2]);
+    return SetTimerEx("Tomb_CurseProcess", 300, false, "d", playerid);
+}
+
 function Tomb_MummyProcess(roomid)
 {
     if (!Tomb_IsRoomExists(roomid)) return 0;
@@ -645,7 +731,7 @@ stock Tomb_MummySetAttack(roomid, NPC: npc, attackid)
             if (TombInfo[roomid][tiMummyAttackId][i] - 1 == attackid) return 0;
 
             TombInfo[roomid][tiMummyAttackId][i] = attackid + 1;
-            TaskNpcAttackPlayer(npc, attackid);
+            TaskNpcAttackPlayer(npc, attackid, TombInfo[roomid][tiMummyTypes][i] == _:TOMB_BOSS_MUMMY);
             return 1;
         }
     }
@@ -653,13 +739,19 @@ stock Tomb_MummySetAttack(roomid, NPC: npc, attackid)
     return 0;
 }
 
-// TODO: Дописать
-stock Tomb_CurseProgressUpdate(playerid)
+stock Tomb_UpdateCurseTextdraw(playerid)
 {
     new roomid = Tomb_GetPlayerRoom(playerid);
     if (roomid < 0) return 0;
+    if (TombPlayerInfo[playerid][tpDead]) return 0;
+    if (TombInfo[roomid][tiWaveCooldown] > 0) return 0;
 
+    new Float: width, Float: height;
+    PlayerTextDrawGetTextSize(playerid, TombCurseTD[playerid][1], width, height);
 
+    width = TombPlayerInfo[playerid][tpCurse];
+    PlayerTextDrawTextSize(playerid, TombCurseTD[playerid][1], width, height);
+    PlayerTextDrawShow(playerid, TombCurseTD[playerid][1]);
 
     return 1;
 }
@@ -673,7 +765,7 @@ stock Tomb_CreateMummy(roomid, e_TombMummyType: type, Float: x, Float: y, Float:
         if (!TombInfo[roomid][tiMummy][i])
         {
             new skinid = 15784;
-            if (type == TOMB_BOSS_MUMMY) skinid = 15784; // TODO: Поменять на скин Анубиса
+            if (type == TOMB_BOSS_MUMMY) skinid = 15790; // Босс (Анубис)
             new NPC: npcid = CreateNpc(skinid, x, y, z);
 
             new Float: health = TombInfo[roomid][tiMummyMaxHealth];
@@ -690,7 +782,6 @@ stock Tomb_CreateMummy(roomid, e_TombMummyType: type, Float: x, Float: y, Float:
 
             SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие
             if (type == TOMB_HEAVY_MUMMY) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки проклятой мумии
-            else if (type == TOMB_BOSS_MUMMY) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-мумии
 
             new attackid = Tomb_GetNearestPlayerFromMummy(roomid, npcid);
             if (IsOnline(attackid)) Tomb_MummySetAttack(roomid, npcid, attackid);
@@ -894,8 +985,8 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     
     new case_amount;
     if (reason == TOMB_END_REASON_WIN) {
-        // Гарантированные кейсы за прохождение (+1-3)
-        case_amount += random_range(1, 2);
+        // Гарантированные кейсы за прохождение (+2-4)
+        case_amount += random_range(2, 3);
         if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount += 2;
         #if defined TOMB_DEBUG_MODE
             printf("[TOMB DEBUG]: Игрок %d получил %d кейсов за прохождение", playerid, case_amount);
@@ -1059,6 +1150,7 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                                     new deadid = TombInfo[roomid][tpPlayers][j] - 1;
                                     if (!IsOnline(deadid)) continue;
                                     if (!TombPlayerInfo[deadid][tpDead]) continue;
+                                    if (TombPlayerInfo[deadid][tpDeadCount] >= TOMB_MAX_DEATHS) continue;
 
                                     Tomb_StopSpectate(deadid, .lastposition = true);
                                     TombPlayerInfo[deadid][tpDead] = false;
@@ -1141,20 +1233,31 @@ stock Tomb_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float: amount, weaponid, bo
     return 1;
 }
 
-stock Tomb_OnPlayerDeath(issuerid)
+stock Tomb_OnPlayerDeath(playerid)
 {
-    new roomid = Tomb_GetPlayerRoom(issuerid);
+    new roomid = Tomb_GetPlayerRoom(playerid);
     if (!Tomb_IsRoomExists(roomid)) return 0;
-    if (TombPlayerInfo[issuerid][tpDead]) return 0;
+    if (TombPlayerInfo[playerid][tpDead]) return 0;
 
-    TombPlayerInfo[issuerid][tpDead] = true;
+    TombPlayerInfo[playerid][tpDead] = true;
+    TombPlayerInfo[playerid][tpDeadCount]++;
 
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {
         new currentid = TombInfo[roomid][tpPlayers][i] - 1;
         if (!IsOnline(currentid)) continue;
 
-        SendClientMessage(currentid, 0x1E6698FF, "[ Гробница ]: {FFCC66}Союзник %s погиб!", PlayerInfo[issuerid][pName]);
+        SendClientMessage(currentid, 0x1E6698FF, "[ Гробница ]: {FFCC66}Союзник %s погиб!", PlayerInfo[playerid][pName]);
+    }
+
+    if (Tomb_GetPlayersCount(roomid) > 1)
+    {
+        if (TombPlayerInfo[playerid][tpDeadCount] < TOMB_MAX_DEATHS)
+        {
+            SendClientMessage(playerid, 0x1E6698FF, "[ Гробница ]: {FFCC66}Будьте осторожны, количество возрождений ограничено [ Осталось: %d ]",
+                TOMB_MAX_DEATHS - TombPlayerInfo[playerid][tpDeadCount]
+            );
+        } else SendClientMessage(playerid, 0x1E6698FF, "[ Гробница ]: {FFCC66}У вас не осталось возрождений");
     }
 
     // Если все игроки умерли - завершаем игру
@@ -1169,7 +1272,7 @@ stock Tomb_OnPlayerDeath(issuerid)
             new NPC: npcid = TombInfo[roomid][tiMummy][i];
             if (!IsValidNpc(npcid)) continue;
 
-            new attackid = Tomb_GetNearestPlayerFromMummy(roomid, npcid, .excludeid = issuerid);
+            new attackid = Tomb_GetNearestPlayerFromMummy(roomid, npcid, .excludeid = playerid);
             if (IsOnline(attackid)) Tomb_MummySetAttack(roomid, npcid, attackid);
         }
 
@@ -1179,13 +1282,13 @@ stock Tomb_OnPlayerDeath(issuerid)
             new currentid = TombInfo[roomid][tpPlayers][i] - 1;
             if (!IsOnline(currentid)) continue;
             
-            if (Tomb_GetSpectateID(currentid) == issuerid) {
+            if (Tomb_GetSpectateID(currentid) == playerid) {
                 Tomb_SwitchPlayerSpectate(currentid);
             }
         }
 
         // Кидаем самого человека в наблюдение
-        Tomb_SwitchPlayerSpectate(issuerid);
+        Tomb_SwitchPlayerSpectate(playerid);
     }
 
     return 1;
@@ -1207,8 +1310,13 @@ stock Tomb_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid, body
                 new type = TombInfo[roomid][tiMummyTypes][npc_i];
                 switch (e_TombMummyType: type)
                 {
-                    case TOMB_HEAVY_MUMMY: damage *= 1.4;
-                    case TOMB_BOSS_MUMMY: damage *= 1.75;
+                    case TOMB_HEAVY_MUMMY: {
+                        damage *= 1.4;
+                    }
+                    case TOMB_BOSS_MUMMY: {
+                        damage *= 1.75;
+                        Tomb_UpdateCurse(issuerid, 8.0);
+                    }
                     default: {}
                 }
 
@@ -1456,6 +1564,7 @@ stock Tomb_DeleteMember(playerid)
     // Удаление текстдравов
     PlayerTextDrawDestroy(playerid, ObstacleTimeTD[playerid]);
     for (new i = 0; i < sizeof(TombMummyRemainsTD[]); i++) PlayerTextDrawDestroy(playerid, TombMummyRemainsTD[playerid][i]);
+    for (new i = 0; i < sizeof(TombCurseTD[]); i++) PlayerTextDrawDestroy(playerid, TombCurseTD[playerid][i]);
 
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {
@@ -1587,6 +1696,7 @@ stock Tomb_End(roomid, e_TombEndReason: reason)
                 Tomb_PlayerInfo_Cleanup(currentid);
                 PlayerTextDrawDestroy(currentid, ObstacleTimeTD[currentid]);
                 for (new td_i = 0; td_i < sizeof(TombMummyRemainsTD[]); td_i++) PlayerTextDrawDestroy(currentid, TombMummyRemainsTD[currentid][td_i]);
+                for (new td_i = 0; td_i < sizeof(TombCurseTD[]); td_i++) PlayerTextDrawDestroy(currentid, TombCurseTD[currentid][td_i]);
 
                 PlayerInfo[currentid][pLastTomb] = gettime();
                 Tomb_Save(currentid);

@@ -1613,6 +1613,27 @@ stock take_away(playerid, quan, i, bool:save = true) // Изымаем пред�
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, PlayerInfo[playerid][pInven][i], PlayerInfo[playerid][pInvenQuan][i], i, PlayerInfo[playerid][pInvenPara][i], PlayerInfo[playerid][pInvenType][i], PlayerInfo[playerid][pInvenPack][i]);
 	return 1;
 }
+
+stock m_take_away(playerid, quan, i, bool:save = true) // Изымаем предмет, если он был точно найден в ячейке (Торговля)
+{
+	if(PlayerInfo[playerid][pMarkInvenQuan][i]-quan <= 0) // Если при изъятии ничего не останется - очищаем полностью
+	{
+		PlayerInfo[playerid][pMarkInven][i] = 0;
+		PlayerInfo[playerid][pMarkInvenQuan][i] = 0;
+		PlayerInfo[playerid][pMarkInvenPara][i] = 0;
+		PlayerInfo[playerid][pMarkInvenQara][i] = 0;
+		PlayerInfo[playerid][pMarkInvenType][i] = 0;
+		PlayerInfo[playerid][pMarkInvenPack][i] = 0;
+	}
+	else PlayerInfo[playerid][pMarkInvenQuan][i] -= quan;
+
+	// Сохраняем ячейку в базу данных сразу
+	if(save == true) SaveMark(playerid, i);
+
+	if(OnlineInfo[playerid][oShowInterface] == 1) item_second(playerid, PlayerInfo[playerid][pMarkInven][i], PlayerInfo[playerid][pMarkInvenQuan][i], i, 1, PlayerInfo[playerid][pMarkInvenPara][i], PlayerInfo[playerid][pMarkInvenType][i], PlayerInfo[playerid][pMarkInvenPack][i], 0);
+	return 1;
+}
+
 stock i_del(playerid, i, bool:save = true)
 {
     if(PlayerInfo[playerid][pInvenType][i] == 0) i_takehands(playerid, PlayerInfo[playerid][pInven][i]);

@@ -683,7 +683,7 @@ function Graves_ProcessNpc(playerid, NPC: npc)
         new Float: health;
         GetNpcHealth(npc, health);
 
-        if (health < GravePlayerInfo[playerid][gpiNPCMaxHealth]) {
+        if (health > 0.0 && health < GravePlayerInfo[playerid][gpiNPCMaxHealth]) {
             health += 8.0;
             if (health > GravePlayerInfo[playerid][gpiNPCMaxHealth]) {
                 health = GravePlayerInfo[playerid][gpiNPCMaxHealth];
@@ -842,6 +842,8 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
 
     new Float: health;
     GetNpcHealth(npc, health);
+
+    if (health <= 0.0) return 0;
 
     if (amount >= health) {
         new Float: x, Float: y, Float: z;
@@ -1010,19 +1012,37 @@ stock Graves_OnPlayerDeadNpc(NPC: npc, playerid)
 
     Graves_SetSpawnInfo(playerid);
 
-    // Уничтожаем артефакты при смерти
+    // Уничтожаем артефакты при смерти (даже в товарах лавки)
     for(new i = 0; i < 40; i++)
 	{
-        if (PlayerInfo[playerid][pInvenType][i] != 0) continue;
+        if (PlayerInfo[playerid][pInvenType][i] == 0)
+        {
+            new quan = PlayerInfo[playerid][pInvenQuan][i];
+            if (quan > 0)
+            {
+                new itemid = PlayerInfo[playerid][pInven][i];
+                if (itemid != 242 && Graves_IsArtifact(itemid)) {
+                    TakeInvent(playerid, itemid, quan, 0, i);
+                }
+            }
+        }
 
-        new quan = PlayerInfo[playerid][pInvenQuan][i];
-        if (quan < 1) continue;
-
-        new itemid = PlayerInfo[playerid][pInven][i];
-        if (itemid != 242 && Graves_IsArtifact(itemid)) { // Прочие артефакты
-            TakeInvent(playerid, itemid, quan, 0, i);
+        if (i < 20)
+        {
+            if (PlayerInfo[playerid][pMarkInvenType][i] == 0)
+            {
+                new quan = PlayerInfo[playerid][pMarkInvenQuan][i];
+                if (quan > 0)
+                {
+                    new itemid = PlayerInfo[playerid][pMarkInven][i];
+                    if (itemid != 242 && Graves_IsArtifact(itemid)) {
+                        m_take_away(playerid, quan, i);
+                    }
+                }
+            }
         }
 	}
+
     Graves_DestroyNpc(playerid);
 
     return 1;

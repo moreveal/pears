@@ -7,6 +7,8 @@
 #define TOMB_WAVE_COOLDOWN_TEST 5 // Время в секундах между волнами (на тестовом сервере)
 #define TOMB_COOLDOWN           90 // Время в минутах до повторного участия в игре
 
+#define TOMB_MAX_DEATHS         3 // Максимальное количество смертей за игру
+
 enum e_TombWave
 {
     TOMB_WAVE_EASY,
@@ -81,6 +83,8 @@ enum e_TombPlayerInfo
     tpSpectateID, // ID игрока, за которым происходит слежка (+1)
     tpCases, // Гарантированное кол-во кейсов, которые игрок заработал на протяжении игры (не учитывая те, что в конце игры)
     tpSpentAmmo[4], // Потраченные патроны с начала последней волны (fpick 27-30)
+    Float: tpCurse, // Статус проклятия (0.00 - 100.00)
+    tpDeadCount, // Сколько раз умер
     bool: tpDead // Статус смерти
 };
 new TombPlayerInfo[MAX_REALPLAYERS][e_TombPlayerInfo];
@@ -103,6 +107,7 @@ new TombMummySpawns[][e_TombMummyPos] = {
 };
 
 new PlayerText: TombMummyRemainsTD[MAX_REALPLAYERS][2];
+new PlayerText: TombCurseTD[MAX_PLAYERS][2];
 
 enum e_TombDisallowedAreas {
     Float: tdaMinX, Float: tdaMinY,
