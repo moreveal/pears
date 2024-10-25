@@ -838,7 +838,7 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
     #pragma unused weaponid
     #pragma unused bodypart
 
-    if (npc != GravePlayerInfo[damagerid][gpiNPC]) return 1;
+    if (npc != GravePlayerInfo[damagerid][gpiNPC]) return 0;
 
     new Float: health;
     GetNpcHealth(npc, health);
