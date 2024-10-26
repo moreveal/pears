@@ -868,8 +868,10 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
 
 stock Village_DisallowAreaProcess()
 {   
-    foreach (new playerid : VillagePlayer)
+    foreach (new playerid : Player)
     {
+        if (!IsPlayerInActiveVillage(playerid)) continue;
+
         for (new j = 0; j < sizeof(VillageDisallowedAreas); j++)
         {
             if (Protect_Z[playerid] < VillageDisallowedAreas[j][tdaZ]) continue;
