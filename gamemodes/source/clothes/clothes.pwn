@@ -566,7 +566,7 @@ CMD:vehprice(playerid)
 
 stock skinprice(playerid, page) // Настройки гос. цен одежды
 {
-	new max_line = 40, yesNext, minlist, thisPage;
+	new max_line = 35, yesNext, minlist, thisPage;
 	new line[214],lines[4096];
 
 	// Настраиваем отображение фильтров и страниц
