@@ -377,7 +377,7 @@ stock Graves_StartPump(playerid, graveid)
 
             new year, month, day, hour, minute, second;
             stamp2datetime(PlayerInfo[playerid][pCDGraves] + (GRAVES_PLAYER_COOLDOWN * 3600), year, month, day, hour, minute, second, 3);
-            format(string, sizeof(string), "{FF6347}Нельзя начинать раскопку могил так часто [ Станет доступно: %2d:%2d:%2d ]", day, month, hour, minute, second);
+            format(string, sizeof(string), "{FF6347}Нельзя начинать раскопку могил так часто [ Станет доступно: %2d:%2d:%2d ]", hour, minute, second);
             return ErrorMessage(playerid, string);
         }
     }
