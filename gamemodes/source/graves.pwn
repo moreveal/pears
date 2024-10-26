@@ -1,5 +1,3 @@
-// TODO: Создать команду для очистки предмета из инвентарей/лавок/домов/багажников/складов организаций
-
 stock Graves_IsExists(graveid)
 {
     return IsValidDynamicObject(GraveInfo[graveid][giObjects][0]);
