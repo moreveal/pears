@@ -8,6 +8,7 @@
 #define GRAVES_PLAYER_COOLDOWN      3 // КД на раскопку могил для игрока (в часах)
 
 #define GRAVES_OSIRIS_SKULL_TIMES   3 // Количество использований Черепа Осириса до его уничтожения
+#define GRAVES_MIN_VIRTUAL_WORLD    3000 // Минимальный виртуальный мир для сражения с NPC
 
 enum e_GraveBiographyType {
     GRAVE_BIO_HOMELESS, // Очень скудные шансы на что-то стоящее

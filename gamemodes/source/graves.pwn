@@ -116,7 +116,7 @@ stock Graves_Init()
     if (!init) {
         init = true;
 
-        GravesArea = CreateDynamicCube(804.272827, -1130.616821, 21.873744, 952.311950, -1063.319091, 41.357662, 0, 0);
+        GravesArea = CreateDynamicCube(804.272827, -1130.616821, 21.873744, 952.311950, -1063.319091, 41.357662, -1, 0);
         for (new Float: x = 882.050109, i = 0; i < MAX_GRAVES; x -= GRAVES_GAP, i++)
         {
             if (i == 9) x = 860.202880; // Корректировка для второго объекта надгробий
@@ -648,6 +648,11 @@ stock Graves_OnPlayerDisconnect(playerid)
     return 1;
 }
 
+stock Graves_GetPlayerVirtualWorld(playerid)
+{
+    return GRAVES_MIN_VIRTUAL_WORLD + playerid;
+}
+
 function Graves_DestroyParticle(objectid)
 {
     return DestroyDynamicObject(objectid);
@@ -658,6 +663,10 @@ function Graves_DestroyNpc(playerid)
     if (IsValidNpc(GravePlayerInfo[playerid][gpiNPC])) {
         DestroyNpc(GravePlayerInfo[playerid][gpiNPC]);
         GravePlayerInfo[playerid][gpiNPC] = NPC: 0;
+
+        if (GetPlayerVirtualWorld(playerid) == Graves_GetPlayerVirtualWorld(playerid)) {
+            SetPlayerVirtualWorld(playerid, 0);
+        }
 
         return 1;
     }
@@ -708,8 +717,7 @@ function Graves_ProcessNpc(playerid, NPC: npc)
             SetNpcFacingAngle(npc, pa);
 
             // Эффект телепорта
-            new particle = CreateDynamicObject(18682, px, py, pz, 0.0, 0.0, 0.0, 0, 0);
-            SetTimerEx("Graves_DestroyParticle", 1000, false, "d", particle);
+            Graves_CreateParticleNpc(npc, 18682, px, py, pz);
             Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 
             GravePlayerInfo[playerid][gpiLastDistChange] = gettime();
@@ -718,6 +726,27 @@ function Graves_ProcessNpc(playerid, NPC: npc)
     }
 
     return SetTimerEx("Graves_ProcessNpc", 1000, false, "dd", playerid, _:npc);
+}
+
+stock Graves_CreateParticleNpc(NPC: npc, modelid, Float: x, Float: y, Float: z, time = 1000)
+{
+    new playerid = INVALID_PLAYER_ID;
+    foreach (new id : Player)
+    {
+        if (GravePlayerInfo[id][gpiNPC] == npc)
+        {
+            playerid = id;
+            break;
+        }
+    }
+    if (!IsOnline(playerid)) return 0;
+
+    new worldid = GetNpcVirtualWorld(npc);
+    new particle = CreateDynamicObject(modelid, x, y, z, 0.0, 0.0, 0.0, worldid, 0);
+    SetTimerEx("Graves_DestroyParticle", time, false, "d", particle);
+    Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
+
+    return 1;
 }
 
 stock Graves_TryCreateNPC(playerid)
@@ -782,8 +811,7 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
         if (type == GRAVE_NPC_TYPE_SPIRIT) skinid = 1;
 
         GravePlayerInfo[playerid][gpiNPC] = CreateNpc(skinid, x, y, z);
-        new particle = CreateDynamicObject(18715, x, y, z, 0.0, 0.0, 0.0, 0, 0);
-        SetTimerEx("Graves_DestroyParticle", 5000, false, "d", particle);
+        Graves_CreateParticleNpc(GravePlayerInfo[playerid][gpiNPC], 18715, x, y, z, 5000);
 
         SetNpcFacingAngle(GravePlayerInfo[playerid][gpiNPC], a);
     }
@@ -792,6 +820,10 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
     SetNpcWeapon(GravePlayerInfo[playerid][gpiNPC], WEAPON_FIST);
     TaskNpcAttackPlayer(GravePlayerInfo[playerid][gpiNPC], playerid, true);
     SetNpcStunAnimationEnabled(GravePlayerInfo[playerid][gpiNPC], false);
+    
+    new worldid = Graves_GetPlayerVirtualWorld(playerid);
+    SetNpcVirtualWorld(GravePlayerInfo[playerid][gpiNPC], worldid);
+    SetPlayerVirtualWorld(playerid, worldid);
 
     Graves_ProcessNpc(playerid, GravePlayerInfo[playerid][gpiNPC]);
     Graves_SetPlayerTime(playerid);
@@ -837,8 +869,7 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
 
         // Эффект после смерти
         new modelid = (GravePlayerInfo[damagerid][gpiNPCType] == GRAVE_NPC_TYPE_SPIRIT) ? 18728 : 18723;
-        new particle = CreateDynamicObject(modelid, x, y, z - 3.5, 0.0, 0.0, 0.0, 0, 0);
-        SetTimerEx("Graves_DestroyParticle", 1000, false, "d", particle);
+        Graves_CreateParticleNpc(npc, modelid, x, y, z - 3.5);
         SetTimerEx("Graves_DestroyNpc", 2500, false, "d", damagerid);
         Streamer_Update(damagerid, STREAMER_TYPE_OBJECT);
 
