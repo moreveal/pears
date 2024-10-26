@@ -73,6 +73,43 @@ enum VILLAGEINFO
 }
 new VillageInfo[VILLAGEINFO];
 
+enum e_VillageDisallowedAreas {
+    Float: tdaMinX, Float: tdaMinY,
+    Float: tdaMaxX, Float: tdaMaxY,
+    Float: tdaZ
+};
+new VillageDisallowedAreas[][e_VillageDisallowedAreas] = {
+    {-1485.5533, 2611.4146, -1476.3590, 2643.3020, 62.7813},
+    {-1518.8458, 2579.3130, -1506.4941, 2590.5627, 61.3174},
+    {-1535.4503, 2574.1230, -1526.0785, 2591.4585, 60.3348},
+    {-1535.7977, 2561.6482, -1514.2610, 2567.0188, 59.0694},
+    {-1485.4148, 2574.1006, -1476.1036, 2591.4539, 60.3369},
+    {-1469.4817, 2610.6365, -1461.3585, 2627.6948, 62.0625},
+    {-1443.4009, 2573.6643, -1434.0183, 2591.0291, 60.3398},
+    {-1458.2278, 2610.7925, -1437.0350, 2622.5500, 60.7620},
+    {-1535.8781, 2610.8396, -1525.9083, 2623.0354, 59.4144},
+    {-1525.0355, 2610.9248, -1515.7908, 2626.3289, 59.6797},
+    {-1511.7450, 2611.1848, -1506.4834, 2630.8804, 59.1197}
+};
+
+enum e_VillageDisallowedAreaPoints {
+    Float: tdapX, Float: tdapY, Float: tdapZ, Float: tdapA
+};
+new VillageDisallowedAreaPoints[][e_VillageDisallowedAreaPoints] = {
+    {-1480.0939, 2609.4419, 55.8360, 94.9602},
+    {-1521.0276, 2589.0337, 55.8360, 178.1353},
+    {-1523.6273, 2585.9551, 55.8360, 178.7627},
+    {-1522.2646, 2570.1145, 55.8360, 272.3642},
+    {-1489.3694, 2585.5232, 55.8360, 1.0383},
+    {-1474.0979, 2607.8313, 55.8360, 91.1304},
+    {-1430.5239, 2592.8743, 55.8360, 358.8213},
+    {-1440.6439, 2609.1279, 55.8360, 94.6784},
+    {-1538.8875, 2615.4846, 55.8360, 179.0050},
+    {-1515.8434, 2607.0596, 55.8360, 91.0206},
+    {-1504.2876, 2613.2197, 55.8360, 1.7823},
+    {-1530.8459, 2524.8906, 55.8837, 1.4462}
+};
+
 new bool:Village_LoadTextDraws[MAX_REALPLAYERS]; // Отображаются ли текстдравы деревни для игрока
 new PlayerText: VillageRemainsTD[MAX_REALPLAYERS][2]; // Текстдравы для игры с деревенскими
 new Village_Kills[MAX_REALPLAYERS]; // Количество киллов во время битвы с деревенскими
@@ -357,7 +394,7 @@ stock DoorVillageStorage(playerid)
 // Игрок находится в деревне во время активной битвы
 stock IsPlayerInActiveVillage(playerid)
 {
-    if(IsPlayerInDynamicArea(playerid, VillageInfo[villZone]) && VillageInfo[villActive] == false) return true;
+    if(IsPlayerInDynamicArea(playerid, VillageInfo[villZone]) && VillageInfo[villActive]) return true;
     return false;
 }
 
@@ -477,6 +514,8 @@ stock ProcessVillageNpc()
         // Бот гуляет по городу туды сюды
         if(!VillageInfo[villActive] && !IsNpcDead(VillageInfo[villID][i])) WalkingVillageNpc(i);
     }
+
+    Village_DisallowAreaProcess();
 
     // Обновляем количество живых NPC для участников
     if(ResetVillage == true) UpdateQuanVillage();
@@ -825,6 +864,40 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
         && latestId != INVALID_PLAYER_ID) return NOT_FIND_ATTACK_PLAYER;
 
     return latestId;
+}
+
+stock Village_DisallowAreaProcess()
+{   
+    foreach (new playerid : Player)
+    {
+        if (!IsPlayerInActiveVillage(playerid)) continue;
+
+        for (new j = 0; j < sizeof(VillageDisallowedAreas); j++)
+        {
+            if (Protect_Z[playerid] < VillageDisallowedAreas[j][tdaZ]) continue;
+            if (!IsPlayerInSquare(playerid, VillageDisallowedAreas[j][tdaMinX], VillageDisallowedAreas[j][tdaMinY], VillageDisallowedAreas[j][tdaMaxX], VillageDisallowedAreas[j][tdaMaxY])) continue;
+
+            new Float: closestDistance = 5000.0, point = -1; 
+            for (new currentpoint = 0; currentpoint < sizeof(VillageDisallowedAreaPoints); currentpoint++)
+            {
+                new Float: distance = GetPlayerDistanceFromPoint(playerid, VillageDisallowedAreaPoints[currentpoint][tdapX], VillageDisallowedAreaPoints[currentpoint][tdapY], VillageDisallowedAreaPoints[currentpoint][tdapZ]);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    point = currentpoint;
+                }
+            }
+
+            if (point != -1)
+            {
+                PPSetPlayerPos(playerid, VillageDisallowedAreaPoints[point][tdapX], VillageDisallowedAreaPoints[point][tdapY], VillageDisallowedAreaPoints[point][tdapZ]);
+                PPSetPlayerFacingAngle(playerid, VillageDisallowedAreaPoints[point][tdapA]);
+                SetCameraBehindPlayer(playerid);
+
+                PlayerPlaySound(playerid, 31200, 0, 0, 0);
+            }
+        }
+    }
+    return 1;
 }
 
 // Игрок зашёл в деревню
