@@ -257,7 +257,6 @@ stock Graves_Open(playerid, graveid)
     if (GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
     if (!IsPlayerInRangeOfPoint(playerid, 10.0, GraveInfo[graveid][giX], GraveInfo[graveid][giY], GraveInfo[graveid][giZ])) return 0;
     if (!Streamer_HasIntData(STREAMER_TYPE_OBJECT, GraveInfo[graveid][giObjects][0], STREAMER_GRAVE_TYPE)) return 0;
-    if (Graves_GetPlayerCooldown(playerid) > 0) return 0;
 
     // Формируем список доступных для заражения болезней
     new names[][] = {"Грибок", "Дерматит", "Акне", "Грипп", "ОРВИ", "Сифилис"};
