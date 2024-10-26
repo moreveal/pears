@@ -49,8 +49,8 @@ CMD:flycam(playerid)
 	              UpdateSpeed[playerid] = 0;
 	              DestroyDynamicObject(SpdObj[playerid][0]);
 	              DestroyDynamicObject(SpdObj[playerid][1]);
-	              SpdObj[playerid][0] = INVALID_OBJECT_ID;
-	              SpdObj[playerid][1] = INVALID_OBJECT_ID;
+	              SpdObj[playerid][0] = INVALID_STREAMER_ID;
+	              SpdObj[playerid][1] = INVALID_STREAMER_ID;
 		        }
 		        if(PlayerInfo[playerid][pDrawVisible][7] == false) CloseVehSpeed(playerid);
            }

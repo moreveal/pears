@@ -60,7 +60,7 @@ function Graves_Reload(graveid)
     {
         if (!IsValidDynamicObject(GraveInfo[graveid][giObjects][i])) continue;
         DestroyDynamicObject(GraveInfo[graveid][giObjects][i]);
-        GraveInfo[graveid][giObjects][i] = INVALID_OBJECT_ID;
+        GraveInfo[graveid][giObjects][i] = INVALID_STREAMER_ID;
     }
     GraveInfo[graveid][giPlayerID] = 0;
     GraveInfo[graveid][giOpened] = false;
@@ -127,7 +127,7 @@ stock Graves_Init()
 
             for (new j = 0; j < GRAVES_MAX_OBJECTS; j++) {
                 Graves_UpdateBiography(i);
-                GraveInfo[i][giObjects][j] = INVALID_OBJECT_ID;
+                GraveInfo[i][giObjects][j] = INVALID_STREAMER_ID;
             }
         }
     }
