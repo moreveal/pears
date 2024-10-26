@@ -807,8 +807,8 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
 
         backme(playerid, 12.0, x, y, z, a);
 
-        new skinid = 7;
-        if (type == GRAVE_NPC_TYPE_SPIRIT) skinid = 1;
+        new skinid = 15792;
+        if (type == GRAVE_NPC_TYPE_SPIRIT) skinid = 15791;
 
         GravePlayerInfo[playerid][gpiNPC] = CreateNpc(skinid, x, y, z);
         Graves_CreateParticleNpc(GravePlayerInfo[playerid][gpiNPC], 18715, x, y, z, 5000);

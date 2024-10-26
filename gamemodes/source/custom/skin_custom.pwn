@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 291
+#define MAX_SKIN_CUSTOM 293
 
 stock AddCustomSkins()
 {
@@ -315,6 +315,8 @@ stock AddCustomSkins()
 	AddCharSyncModel(101, 600); // pearsranma1
 	AddCharSyncModel(171, 601); // pearsranma2
 	AddCharSyncModel(167, 602); // pearsanubis
+	AddCharSyncModel(1, 603); // pearsbfost
+	AddCharSyncModel(7, 604); // pearsbmori
 	
     return 1;
 }
@@ -343,7 +345,7 @@ stock GetSkinSex(s)
 	|| s >= 600 && s <= 602) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
-	s == 510 || s == 511) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	s == 510 || s == 511 || s == 603 || s == 604) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
  	else return 2; // Все остальные 2, значит женские
 }
