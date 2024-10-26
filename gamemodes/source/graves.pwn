@@ -165,12 +165,12 @@ stock Graves_Dialog_ShowInfo(playerid, graveid)
     // Вычисляем годы жизни
     new startYear, endYear;
     {
-        const minAge = 20, maxAge = 70;
+        const minAge = 26, maxAge = 73;
 
         static year, month, day;
         if (year == 0) getdate(year, month, day);
         
-        endYear = random_range(year - maxAge, year);
+        endYear = random_range(2000, year);
         new randomAge = random_range(minAge, maxAge);
         startYear = endYear - randomAge;
     }
