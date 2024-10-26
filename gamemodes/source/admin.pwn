@@ -638,7 +638,8 @@ CMD:hpgro(playerid)
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
 				if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
@@ -659,7 +660,8 @@ CMD:armgro(playerid)
 		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 		{
 			if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 			ACSetPlayerArmour(i, 100);
