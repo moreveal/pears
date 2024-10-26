@@ -1241,6 +1241,7 @@ stock Tomb_OnPlayerDeath(playerid)
 
     TombPlayerInfo[playerid][tpDead] = true;
     TombPlayerInfo[playerid][tpDeadCount]++;
+    TombPlayerInfo[playerid][tpCurse] = 0.0; // Сбрасываем проклятие
 
     Tomb_SetCurseTextdraw(playerid, false);
 

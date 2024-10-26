@@ -376,7 +376,7 @@ stock Graves_StartPump(playerid, graveid)
     {
         new tmphour, tmpminute, tmpsecond;
         gettime(tmphour, tmpminute, tmpsecond);
-        if (tmphour > 8 && tmphour < 17) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься раскопкой могил в дневное время {cccccc}17:00 - 8:00");
+        if (tmphour >= 8 && tmphour < 17) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься раскопкой могил в дневное время {cccccc}17:00 - 8:00");
     }
     {
         new cooldown = Graves_GetPlayerCooldown(playerid);
