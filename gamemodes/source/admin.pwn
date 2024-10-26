@@ -691,6 +691,93 @@ CMD:delaction(playerid, const params[])
 	return 1;
 }
 
+CMD:deletethingall(playerid, const params[])
+{
+	if (PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 22+ ]");
+	new itemid;
+	if (sscanf(params, "d", itemid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изъять предмет из всех инвентарей/домов/багажников [ /deletethingall ID ]");
+	if (itemid < 1 || itemid >= sizeof(friskName)) return ErrorMessage(playerid, "{FF6347}Недействительный ID предмета");
+
+	// Удаляем у игроков
+	foreach (new id : Player)
+	{
+		for(new i = 0; i < 40; i++)
+		{
+			// Инвентарь
+			if (PlayerInfo[id][pInvenType][i] == 0)
+			{
+				new quan = PlayerInfo[id][pInvenQuan][i];
+				if (quan > 0)
+				{
+					if (itemid == PlayerInfo[id][pInven][i]) {
+						TakeInvent(id, itemid, quan, 0, i);
+					}
+				}
+			}
+			
+			if (i < 20)
+			{
+				// Лавка
+				if (PlayerInfo[id][pMarkInvenType][i] == 0)
+				{
+					new quan = PlayerInfo[id][pMarkInvenQuan][i];
+					if (quan > 0)
+					{
+						if (itemid == PlayerInfo[id][pMarkInven][i]) {
+							m_take_away(id, quan, i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Удаляем из багажников
+	foreach (new vehicleid : Vehicle)
+	{
+		new max_slotes = GetMaxBootSlotes(vehicleid);
+		for (new i = 0; i < max_slotes; i++)
+		{
+			if(VehInfo[vehicleid][vInvent][i] == itemid && VehInfo[vehicleid][vInvType][i] == 0) 
+			{
+				TakeBoot(vehicleid, itemid, VehInfo[vehicleid][vInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем из домов
+	for (new dom = 0; dom < MAX_DOM; dom++)
+	{
+		for (new i = 0; i < 80; i++)
+		{
+			if (DomInfo[dom][dInvent][i] == itemid && DomInfo[dom][dInvType][i] == 0)
+			{
+				TakeDom(dom, itemid, DomInfo[dom][dInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем со складов
+	for (new g = 0; g < sizeof(OrganInfo); g++)
+	{
+		for (new i = 0; i < 20; i++)
+		{
+			if(OrganInfo[g][gInvent][i] == itemid && OrganInfo[g][gInvType][i] == 0)
+			{
+				TakeSklad(g, itemid, OrganInfo[g][gInv][i], 0, i);
+			}
+		}
+	}
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил предмет \"%s\" [ID: %d] с инвентарей/багажников/домов всех игроков", PlayerInfo[playerid][pName], playerid, GetNameThing(0, itemid, 0, 0), itemid);
+	ABroadCast(COLOR_ADM, string, 2);
+
+	format(string, sizeof(string), "Удалил предмет \"%s\" из инвентарей игроков", GetNameThing(0, itemid, 0, 0));
+	AdminLog("deletethingall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", itemid, string);
+	return 1;
+}
+
 CMD:veh(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");

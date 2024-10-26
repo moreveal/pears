@@ -25,7 +25,7 @@
 
 new fdrawName[][] = // Название Вещи
 {
-    "","X‡EЂ","€O‡OЏOE_KO‡’‰O","ЂYЏ‘‡KA","ЏPA‹A","љOCKA_Y…ѓ„…","‚P…Ђ‘","ЊOPOЋOK","AЊЏEЌKA","KAH…CЏPA","ЊO•C_CO_‹€P‘‹ЌAЏKO…",
+    "","X‡EЂ","€O‡OЏOE_KO‡’‰O","ЂYЏ‘‡KA","ЏPA‹A","ѓOCKA Y…ѓ„…","‚P…Ђ‘","ЊOPOЋOK","AЊЏEЌKA","KAH…CЏPA","ЊO•C_CO_‹€P‘‹ЌAЏKO…",
     "ЂOMЂA","ѓEЏOHAЏOP","‹EPE‹KA","Њ…‹O","none","ЊAЌKA_C…‚APEЏ","ЂPOH•","HA„…‹KA","OЏM‘ЌK…","P‘ЂA","PA‰…•",
     "M•CO","MEЋOK","ЋAЋKA_ЏAKC…","ѓEH’‚…","CMAPЏЃOH","AMMO 20,8mm","AMMO 11,43mm","AMMO 5,45mm","AMMO 45mm","YѓOЌKA","ЃOHAP…K",
 	"BOX","TOY","MAN","CHRISTMAS GIFT","ЋAMЊAHCKOE","ЂOKA‡","YЊAKO‹KA","ЃE…EP‹EPK","ЂEH‚A‡’CK…E O‚H…","HOYЏЂYK","ЋOKEP",

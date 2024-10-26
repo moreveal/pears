@@ -1,3 +1,5 @@
+// TODO: Создать команду для очистки предмета из инвентарей/лавок/домов/багажников/складов организаций
+
 stock Graves_IsExists(graveid)
 {
     return IsValidDynamicObject(GraveInfo[graveid][giObjects][0]);
@@ -8,7 +10,7 @@ stock Graves_IsExcavated(graveid)
     return Graves_IsExists(graveid) && GetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][0]) == 0;
 }
 
-stock Graves_GetClosest(playerid, Float: distance = 5.0)
+stock Graves_GetClosest(playerid, Float: distance = 2.5)
 {
     new id = -1;
     for (new i = 0; i < MAX_GRAVES; i++)
@@ -55,13 +57,12 @@ CMD:rgraves(playerid, const params[])
 
 function Graves_Reload(graveid)
 {
-    if (!Graves_IsExists(graveid)) return 0;
-
     // Удаляем объекты гроба
     for (new i = 0; i < GRAVES_MAX_OBJECTS; i++)
     {
         if (!IsValidDynamicObject(GraveInfo[graveid][giObjects][i])) continue;
         DestroyDynamicObject(GraveInfo[graveid][giObjects][i]);
+        GraveInfo[graveid][giObjects][i] = INVALID_OBJECT_ID;
     }
     GraveInfo[graveid][giPlayerID] = 0;
     GraveInfo[graveid][giOpened] = false;
@@ -372,12 +373,6 @@ stock Graves_StartPump(playerid, graveid)
     if (!IsPlayerInRangeOfPoint(playerid, 2.5, GraveInfo[graveid][giX], GraveInfo[graveid][giY], GraveInfo[graveid][giZ])) return 0;
     if (Graves_IsExcavate(playerid)) return ErrorMessage(playerid, "{FF6347}Вы уже раскапываете могилу");
 
-    if (server != 0) // Проверка времени только на основном сервере
-    {
-        new tmphour, tmpminute, tmpsecond;
-        gettime(tmphour, tmpminute, tmpsecond);
-        if (tmphour >= 8 && tmphour < 17) return ErrorMessage(playerid, "{FF6347}Нельзя заниматься раскопкой могил в дневное время {cccccc}17:00 - 8:00");
-    }
     {
         new cooldown = Graves_GetPlayerCooldown(playerid);
         if (cooldown > 0) {
@@ -751,26 +746,8 @@ stock Graves_TryCreateNPC(playerid)
 
 stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
 {
-    if (!force)
-    {
-        if (server != 0)
-        {
-            new hour, minute, second;
-            gettime(hour, minute, second);
-
-            // Может спавниться только с 18:00 до 06:00 (на основном сервере)
-            if (hour > 6 && hour < 18) return 0;
-        }
-
-        // Может спавниться только при условии, что рядом нет игроков
-        foreach (new id : Player)
-        {
-            if (id == playerid) continue;
-
-            if (GetDistanceBetweenPlayers(id, playerid) < 20.0) return 0;
-        }
-    }
-
+    #pragma unused force
+    
     // Спавним только для игроков с лаунчером
     if (!IsPlayerHaveLauncher(playerid)) return 0;
     
