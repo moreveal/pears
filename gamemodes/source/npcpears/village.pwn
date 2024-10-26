@@ -868,7 +868,7 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
 
 stock Village_DisallowAreaProcess()
 {   
-    foreach (new playerid : Player)
+    foreach (new playerid : VillagePlayer)
     {
         if (!IsPlayerInActiveVillage(playerid)) continue;
 
