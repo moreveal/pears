@@ -753,10 +753,14 @@ stock Graves_TryCreateNPC(playerid)
 {
     new SPAWN_CHANCE = 10; // Шанс спавна одного из NPC по умолчанию
 
-    if (get_invent2(playerid, 243, 0)) SPAWN_CHANCE += 15; // Некрономикон
-    if (get_invent2(playerid, 5, 0)) SPAWN_CHANCE += 12; // Доска Уиджи
-    if (get_invent2(playerid, 180, 0)) SPAWN_CHANCE += 8; // Карты таро
-    if (get_invent2(playerid, 198, 0)) SPAWN_CHANCE += 5; // Кукла вуду
+    if (get_invent2(playerid, 242, 0)) { // Гарантированный спавн духа с Черепом Осириса
+        return Graves_CreateNPC(playerid, GRAVE_NPC_TYPE_SPIRIT);
+    } else {
+        if (get_invent2(playerid, 243, 0)) SPAWN_CHANCE += 15; // Некрономикон
+        if (get_invent2(playerid, 5, 0)) SPAWN_CHANCE += 12; // Доска Уиджи
+        if (get_invent2(playerid, 180, 0)) SPAWN_CHANCE += 8; // Карты таро
+        if (get_invent2(playerid, 198, 0)) SPAWN_CHANCE += 5; // Кукла вуду
+    }
 
     if (random(100) < SPAWN_CHANCE)
     {
@@ -784,9 +788,8 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
     if (type == GRAVE_NPC_TYPE_SPIRIT) health += 1000.0;
 
     // Череп Осириса гарантированно спавнит Разгневанного Духа (c уменьшенным количеством HP)
-    if (get_invent2(playerid, 242, 0)) {
-        type = GRAVE_NPC_TYPE_SPIRIT;
-        health = 2000.0;
+    if (type == GRAVE_NPC_TYPE_SPIRIT && get_invent2(playerid, 242, 0)) {
+        health *= 0.8;
 
         new para = get_para(playerid, 242) + 1;
         set_para(playerid, 242, para);

@@ -4,7 +4,8 @@
 1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+4. Если добавляем специальный скин, использующийся только в системе - добавить новый ID в stock IsSpecialSystemSkin
+5. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
@@ -319,6 +320,26 @@ stock AddCustomSkins()
 	AddCharSyncModel(7, 604); // pearsbmori
 	
     return 1;
+}
+
+stock IsSpecialSystemSkin(skinid)
+{
+	// Скромник (SCP)
+	if (skinid == 505) return 1;
+
+	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
+	if (skinid >= 506 && skinid <= 511) return 1;
+
+	// Хеллоуин
+	if (skinid >= 592 && skinid <= 597) return 1;
+
+	// Зомби
+	if (skinid >= 512 && skinid <= 520) return 1;
+
+	// Раскопка могил и гробница
+	if (skinid >= 602 && skinid <= 604) return 1;
+
+	return 0;
 }
 
 // Получаем пол по скину

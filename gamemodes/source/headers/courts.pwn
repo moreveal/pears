@@ -54,5 +54,5 @@ enum e_PlayerCourtDecison {
     bool: pcdWantedReturn, // Был ли возвращен розыск по статьям (чтобы не выдавать его несколько раз)
     e_WantedInfo: pcdWantedInfo // Информация о статьях, которые были закреплены за игроком на момент вынесения приговора
 };
-new PlayerCourtDecision[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_PlayerCourtDecison]; // Информация о судебных решениях
-new PlayerCourtDecisionWanted[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_WantedInfo]; // Информация о статьях, прикрепленных к делу
+new PlayerCourtDecision[MAX_REALPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_PlayerCourtDecison]; // Информация о судебных решениях
+new PlayerCourtDecisionWanted[MAX_REALPLAYERS][MAX_COURT_PLAYER_DECISIONS][e_WantedInfo]; // Информация о статьях, прикрепленных к делу

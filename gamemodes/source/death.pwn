@@ -8,7 +8,7 @@ enum deathInfo
     deathKiller, // playerid убийцы
     bool: deathCut // сокращённое время смерти
 };
-new DeathInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][deathInfo];
+new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
 CMD:deathcut(playerid, const params[])
 {

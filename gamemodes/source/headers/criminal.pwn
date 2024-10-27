@@ -31,9 +31,9 @@ enum e_WantedInfo
     wanTicketUnix[MAX_CRIME_PLAYER], // unix, когда выдали штраф
     bool: wanLoad // Загрузка розыска из базы
 };
-new WantedInfo[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][e_WantedInfo];
-new WantedPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
-new TicketPolice[MAX_REALPLAYERS + MAX_OFFLINEPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
+new WantedInfo[MAX_REALPLAYERS][e_WantedInfo];
+new WantedPolice[MAX_REALPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал розыск
+new TicketPolice[MAX_REALPLAYERS][MAX_CRIME_PLAYER][24]; // имя мента, который выдал штраф
 
 enum e_CriminalCopType {
     COP_TYPE_COURT = -2, // По решению суда
