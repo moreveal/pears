@@ -1113,7 +1113,6 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                 new mummy_type = TombInfo[roomid][tiMummyTypes][npc_i];
                 TombInfo[roomid][tpMummyKilled][mummy_type]++;
                 TombPlayerInfo[killerid][tpMummyKilled][mummy_type]++;
-                PlayerInfo[killerid][pStatistics][2]++;
 
                 TombInfo[roomid][tiMummyAttackId][npc_i] = 0;
                 SetTimerEx("Tomb_DestroyDeadMummy", 5 * 1000, false, "dd", roomid, npc_i);
