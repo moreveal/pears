@@ -149,7 +149,9 @@ function Call_OnPlayerHalloweenBallLoad(playerid, race_check)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
 
-        cache_get_value_name_int(0, "ballstatus", PlayerInfo[playerid][pHalloweenBallStatus]);
+        cache_get_value_name_int(0, "HalloweenUnix", PlayerInfo[playerid][pHalloweenQuestUnix]);
+        cache_get_value_name_int(0, "HalloweenQuestStatus", PlayerInfo[playerid][pHalloweenQuestStatus]);
+        cache_get_value_name_int(0, "BallStatus", PlayerInfo[playerid][pHalloweenBallStatus]);
         if(PlayerInfo[playerid][pHalloweenBallStatus] == 0)
         {
             new bool:is_null;
@@ -171,8 +173,6 @@ function Call_OnPlayerHalloweenBallLoad(playerid, race_check)
             }
             printf("Call_OnPlayerHalloweenBallLoad(%s) шары хеллуина найдены", PlayerInfo[playerid][pName]);
         }
-        cache_get_value_name_int(0, "HalloweenUnix", PlayerInfo[playerid][pHalloweenQuestUnix]);
-        cache_get_value_name_int(0, "HalloweenQuestStatus", PlayerInfo[playerid][pHalloweenQuestStatus]);
 	}
 	else // Если не нашли в таблице, тогда создаём
 	{

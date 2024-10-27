@@ -686,7 +686,7 @@
             "para": 0
         }
     ],
-	"halloween": [
+	"halloween24": [
         {
             "thing": 12316,
             "type": 2,
@@ -776,13 +776,6 @@
             "type": 2,
             "amount": 1,
             "chance": 20,
-            "para": 0
-        },
-		{
-            "thing": 12333,
-            "type": 2,
-            "amount": 1,
-            "chance": 10,
             "para": 0
         }
 	]

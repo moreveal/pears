@@ -1309,6 +1309,7 @@ stock QuestCallMessage(playerid)
     // Джонни Хеллуин
     else if(GetPVarInt(playerid,"qweststat") == 51)
     {
+        if(PlayerInfo[playerid][pHalloweenQuestStatus]) return SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
         PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/hallowen24/jone_pen_call.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Йоу!");
         SetPVarInt(playerid,"qweststat",52), SetPVarInt(playerid,"qwesttime",1);
@@ -1485,7 +1486,7 @@ stock StartFirstCallQuest(playerid)
 
     if(!PlayerInfo[playerid][pHalloweenQuestStatus] && IsAHalloween()) 
     {
-        ShowQwest(playerid, 10); // Пеннивайз Хеллуин
+        ShowQwest(playerid, 10, 20); // Пеннивайз Хеллуин
         return 1;
     }
 
