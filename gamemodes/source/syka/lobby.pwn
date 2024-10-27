@@ -177,7 +177,7 @@ stock dialogCase_Lobby(playerid, dialogid, response, listitem,const inputtext[])
         case LOBBY_ACCEPTHALLOWEEN: {
             if(!response) return 0;
             if(PlayerInfo[playerid][pHalloweenQuestUnix] < gettime()) HalloweenSetPosition(playerid);
-            else return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ] Время для битвы еще не пришло. Битва станет доступа через: %s!", fine_time(gettime() - PlayerInfo[playerid][pHalloweenQuestUnix]));
+            else return SendClientMessage(playerid,COLOR_GREY,"[ Мысли ] Время для битвы еще не пришло. Битва станет доступа через: %s!", fine_time(PlayerInfo[playerid][pHalloweenQuestUnix] - gettime()));
         }
     }
     return true;

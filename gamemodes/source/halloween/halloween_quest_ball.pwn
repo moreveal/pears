@@ -252,7 +252,7 @@ stock TakeHalloweenBallForPlayer(playerid)
                 for(new b; b < countrewards; b++)
                 {
                     new thingId, thingQuan, thingType, thingPara, thingPack;
-                    CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "halloween");
+                    CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "halloween24");
                     GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
                 }
                 if(countrewards == 5)

@@ -398,6 +398,10 @@ stock DestroyPennivize(i,type)
         PennivizeInfo[i][penID] = NPC: 0;
         PennivizeInfo[i][penCreate] = false;
     }
+    else{
+        PennivizeInfo[i][penID] = NPC: 0;
+        PennivizeInfo[i][penCreate] = false;
+    }
 
     // Удаляем музыку маньяка
     if(PennivizeMusic[i] != INVALID_AUDIOSTREAM)
@@ -524,7 +528,7 @@ stock CountAwardsPennivize(playerid, procent)
     for(new i; i < count; i++)
     {
         new thingId, thingQuan, thingType, thingPara, thingPack;
-        CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "halloween");
+        CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "halloween24");
         GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     }
     return 1;
