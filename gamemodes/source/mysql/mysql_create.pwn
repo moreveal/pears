@@ -21,6 +21,12 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
 
+    // quest halloween
+    AddColumnIfNotExists("pp_quest_temp", "Ball", "BLOB NULL DEFAULT NULL");
+    AddColumnIfNotExists("pp_quest_temp", "BallStatus", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "HalloweenUnix", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "HalloweenQuestStatus", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom0", "INT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom1", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom2", "INT NOT NULL DEFAULT '0'");

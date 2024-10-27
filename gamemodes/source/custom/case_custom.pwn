@@ -13,13 +13,13 @@
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold", "graves"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
-    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс"
+    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024"
 };
 
 // Упаковки, которые относятся к кейсу
@@ -37,6 +37,7 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 8) model = 12261; // yakuza
     else if(thingPack == 9) model = 12303; // gold
     else if(thingPack == 10) model = 12352; // graves
+    else if(thingPack == 11) model = 12337; // Halloween
     else model = 19918;
     return model;
 }
@@ -50,6 +51,7 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 2) thingPack = 8; // yakuza
     else if(caseID == 3) thingPack = 9; // gold
     else if(caseID == 4) thingPack = 10; // graves
+    else if(caseID == 5) thingPack = 11; // Halloween
     return thingPack;
 }
 

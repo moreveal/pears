@@ -1305,6 +1305,25 @@ stock QuestCallMessage(playerid)
         // Подсказка, что мы можем выключить эти звонки
         MessageOffCallQuest(playerid);
     }
+
+    // Джонни Хеллуин
+    else if(GetPVarInt(playerid,"qweststat") == 51)
+    {
+        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/hallowen24/jone_pen_call.mp3");
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Йоу!");
+        SetPVarInt(playerid,"qweststat",52), SetPVarInt(playerid,"qwesttime",1);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 52)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Как поживаешь? Слушай, пригоняй ко мне в гости на хеллоуин, отпразднуем.");
+        SetPVarInt(playerid,"qweststat",53), SetPVarInt(playerid,"qwesttime",6);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 53)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Ну и.. возьми с собой кого нибудь из друзей, вместе будет веселее.");
+        CreateGps(playerid,870.1978,-25.2869,63.9646, 0, 0, 5.0);
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+    }
     return 1;
 }
 
@@ -1463,6 +1482,12 @@ stock StartFirstCallQuest(playerid)
 {
     // Если звонки от квестов выключены
     if(PlayerInfo[playerid][pQwestMessageOff] == true) return 1;
+
+    if(!PlayerInfo[playerid][pHalloweenQuestStatus] && IsAHalloween()) 
+    {
+        ShowQwest(playerid, 10); // Пеннивайз Хеллуин
+        return 1;
+    }
 
     if(NoCompleteQuest(playerid, 3)) return SelectNextStartQuest(playerid); // Джоне или Исследование гробницы в зависимости от заполненности
     if(NoCompleteQuest(playerid, 5)) 
