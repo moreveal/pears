@@ -1623,6 +1623,19 @@ stock Tomb_Start(playerid)
     new roomid = Tomb_CreateRoom(playerid);
     if (roomid < 0) return ErrorMessage(playerid, "{ff6347}Сейчас начать игру нельзя [Нет свободной комнаты]");
 
+    // Если хост участник чужого лобби - кикаем его из него
+    foreach (new id : Player)
+    {
+        if (id == playerid) continue;
+        for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
+        {
+            if (TombPlayerInfo[id][tpPlayers][i] - 1 == playerid)
+            {
+                Tomb_Create_DeleteMember(id, playerid);
+            }
+        }
+    }
+
     Tomb_Create_AddMember(playerid, playerid); // Хост всегда участник
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {

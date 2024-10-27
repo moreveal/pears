@@ -1427,6 +1427,19 @@ stock MineWar_Start(playerid)
     new roomid = MineWar_CreateRoom(playerid);
     if (roomid < 0) return ErrorMessage(playerid, "{ff6347}Сейчас начать игру нельзя [Нет свободной комнаты]");
 
+    // Если хост участник чужого лобби - кикаем его из него
+    foreach (new id : Player)
+    {
+        if (id == playerid) continue;
+        for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
+        {
+            if (MineWarPlayerInfo[id][mwpPlayers][i] - 1 == playerid)
+            {
+                MineWar_Create_DeleteMember(id, playerid);
+            }
+        }
+    }
+
     MineWar_Create_AddMember(playerid, playerid); // Хост всегда участник
     for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
     {
