@@ -681,7 +681,7 @@ stock DestroyPursuit(playerid)
     return 1;
 }
 
-function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
+stock CreatePlayerTicket(playerid, mentid, zv, uk, p)
 {
     new slotUk = -1;
     for(new i = 0; i < MAX_CRIME_PLAYER; i++)
@@ -730,28 +730,9 @@ function CreatePlayerTicket(playerid, mentid, zv, uk, p, slotzv)
     }
     else
     {
-        if(mentid > -1 && slotzv != -1) ErrorMessage(mentid, "{FF6347}У преступника максимальное количество штрафов в личном деле [ /wanted ]");
+        if(mentid > -1) ErrorMessage(mentid, "{FF6347}У преступника максимальное количество штрафов в личном деле [ /wanted ]");
         return 0;
     }
-    return 1;
-}
-
-stock CreatePlayerTicketOffline(suspectid, cop_playerid, zv, uk, p, slotzv) {
-    // Если подозреваемый в сети, выдаем штраф обычным образом
-    foreach (new id : Player) {
-        if (PlayerInfo[id][pID] == suspectid)
-            return CreatePlayerTicket(id, cop_playerid, zv, uk, p, slotzv);
-    }
-
-    // Если подозреваемый не в сети, эмулируем его подключение и выписываем штраф
-    static const playerid = MAX_REALPLAYERS + cop_playerid; new string[144];
-    mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", suspectid);
-    mysql_tquery(pearsq, string, "OnPlayerLoad", "dd", playerid, g_MysqlRaceCheck[playerid]);
-    WantedInfo[playerid][wanLoad] = true;
-    mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_wanted` WHERE `playerid` = '%d'", suspectid);
-    mysql_tquery(pearsq, string, "Call_loadwanted", "dd", playerid, g_MysqlRaceCheck[playerid]);
-    
-    SetTimerEx("CreatePlayerTicket", 50, false, "dddddd", playerid, cop_playerid, zv, uk, p, slotzv);
     return 1;
 }
 
@@ -838,7 +819,7 @@ stock CheckWarningSu(playerid, const tmp[], &playa)
 	return 1;
 }
 
-function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
+stock SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 {
     if (playerid == zakonnik && PlayerInfo[playerid][pSoska] < 22) {
         ErrorMessage(zakonnik, "{FF6347}Нельзя объявить в розыск самого себя");
@@ -885,7 +866,7 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
     // Выписываем штраф
     if(CriminalCodeInfo[uk][p][ccFine] != 0 && zakonnik > -1) 
     {
-        resultFine = CreatePlayerTicket(playerid, zakonnik, zv, uk, p, slotUk);
+        resultFine = CreatePlayerTicket(playerid, zakonnik, zv, uk, p);
     }
 
     if(IsOnline(playerid) && slotUk == -1 && resultFine == 0)
@@ -994,10 +975,12 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
         }
         
         // Логирование выдачи розыска
+        new log_string[128]; 
         if(IsOnline(zakonnik)) {
-            OrgLog(fractionid, "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], CriminalCodeInfo[uk][p][ccName]);
+            format(log_string, sizeof(log_string), "Выдача розыска [%s]", CriminalCodeInfo[uk][p][ccName]);
+            OrgLog(fractionid, "su", PlayerInfo[zakonnik][pID], PlayerInfo[zakonnik][pName], PlayerInfo[zakonnik][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], log_string);
         } else {
-            new log_string[128]; format(log_string, sizeof(log_string), "Выдача розыска системой [%s]", CriminalCodeInfo[uk][p][ccName]);
+            format(log_string, sizeof(log_string), "Выдача розыска системой [%s]", CriminalCodeInfo[uk][p][ccName]);
             OrgLog(fractionid, "su", 0, "", "", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], CriminalCodeInfo[uk][p][ccLevel], log_string);
         }
     }
@@ -1006,6 +989,9 @@ function SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
 
 stock SetPlayerCriminalOffline(suspectid, cop_playerid, const reason[], zv, uk, p) {
     if (zv == 0) return 1;
+    if (PlayerInfo[cop_playerid][pID] == suspectid && PlayerInfo[cop_playerid][pSoska] < 22) {
+        return ErrorMessage(cop_playerid, "{FF6347}Нельзя объявить в розыск самого себя");
+    }
 
     // Если подозреваемый в сети, выдаем розыск обычным образом
     foreach (new id : Player) {
@@ -1013,15 +999,16 @@ stock SetPlayerCriminalOffline(suspectid, cop_playerid, const reason[], zv, uk, 
             return SetPlayerCriminal(id, cop_playerid, reason, zv, uk, p);
     }
 
-    // Если подозреваемый не в сети, эмулируем его подключение и выдаем розыск
-    new playerid = MAX_REALPLAYERS + cop_playerid, string[144];
-    mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", suspectid);
-    mysql_tquery(pearsq, string, "OnPlayerLoad", "dd", playerid, g_MysqlRaceCheck[playerid]);
-    WantedInfo[playerid][wanLoad] = true;
-    mysql_format(pearsq, string, sizeof(string), "SELECT * FROM `pp_wanted` WHERE `playerid` = '%d'", suspectid);
-    mysql_tquery(pearsq, string, "Call_loadwanted", "dd", playerid, g_MysqlRaceCheck[playerid]);
+    // Если подозреваемый не в сети выдаем розыск Offline
+    new string[256];
+    mysql_format(pearsq, string, sizeof(string),
+        "SELECT pp_igroki.*, pp_wanted.* FROM `pp_igroki` " \
+        "INNER JOIN `pp_wanted` ON pp_wanted.playerid = pp_igroki.user_id " \
+        "WHERE pp_igroki.user_id = %d",
 
-    SetTimerEx("SetPlayerCriminal", 50, false, "ddsddd", playerid, cop_playerid, reason, zv, uk, p);
+        suspectid
+    );
+    mysql_tquery(pearsq, string, "Call_OfflineCriminal", "dsddd", cop_playerid, reason, zv, uk, p);
     
     return 1;
 }
