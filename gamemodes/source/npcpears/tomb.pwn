@@ -985,17 +985,17 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     
     new case_amount;
     if (reason == TOMB_END_REASON_WIN) {
-        // Гарантированные кейсы за прохождение (+2-4)
-        case_amount += random_range(2, 3);
-        if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount += 2;
+        // Гарантированные кейсы за прохождение (+4-6)
+        case_amount += random_range(4, 6);
+        if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount += 3;
         #if defined TOMB_DEBUG_MODE
             printf("[TOMB DEBUG]: Игрок %d получил %d кейсов за прохождение", playerid, case_amount);
         #endif
     }
 
     if (Tomb_GetMummyKilled(roomid, _:TOMB_BOSS_MUMMY) >= 1) {
-        // 40% получить кейс, если был убит босс (даже при поражении)
-        if(random(10) <= 3) {
+        // 70% получить кейс, если был убит босс (даже при поражении)
+        if(random(10) <= 7) {
             case_amount++;
             #if defined TOMB_DEBUG_MODE
                 printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
@@ -1014,7 +1014,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     }
 
     {
-        // 25% получить кейс для ТОП-1 по убийствам за всю игру
+        // 50% получить кейс для ТОП-1 по убийствам за всю игру
         new top1_kills_id = -1, top1_kills = 0;
         for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
         {
@@ -1029,7 +1029,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
             }
         }
         if (top1_kills_id == playerid) {
-            if (random(4) < 1) {
+            if (random(4) < 2) {
                 case_amount++;
 
                 #if defined TOMB_DEBUG_MODE
@@ -1178,8 +1178,8 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                                 }
                                 
                                 if (IsOnline(top1_wave_kills_id)) {
-                                    // 10% получить кейс для ТОП-1 по убийствам на протяжении волны
-                                    if (random(10) < 1) {
+                                    // 30% получить кейс для ТОП-1 по убийствам на протяжении волны
+                                    if (random(10) < 3) {
                                         TombPlayerInfo[top1_wave_kills_id][tpCases]++;
                                         #if defined TOMB_DEBUG_MODE
                                             printf("[TOMB DEBUG]: Игрок %d получил кейс за ТОП-1 по убийствам после окончания волны", top1_wave_kills_id);
