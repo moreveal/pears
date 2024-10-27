@@ -574,13 +574,6 @@
             "para": 0
         },
 		{
-            "thing": 596,
-            "type": 3,
-            "amount": 1,
-            "chance": 15,
-            "para": 0
-        },
-		{
             "thing": 597,
             "type": 3,
             "amount": 1,
@@ -647,7 +640,7 @@
             "thing": 242,
             "type": 0,
             "amount": 1,
-            "chance": 15,
+            "chance": 40,
             "para": 0
         },
         {
