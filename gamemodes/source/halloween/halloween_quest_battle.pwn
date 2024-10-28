@@ -388,17 +388,11 @@ stock Pennivize_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid,
 }
 
 stock DestroyPennivize(i,type)
-{
-    if(PennivizeInfo[i][penCreate] == false) return false;
-    
+{    
     // Удаляем npc маньяка
     if(IsValidNpc(PennivizeInfo[i][penID]))
     {
         DestroyNpc(PennivizeInfo[i][penID]);
-        PennivizeInfo[i][penID] = NPC: 0;
-        PennivizeInfo[i][penCreate] = false;
-    }
-    else{
         PennivizeInfo[i][penID] = NPC: 0;
         PennivizeInfo[i][penCreate] = false;
     }
@@ -433,7 +427,6 @@ stock DestroyPennivize(i,type)
 
         if(server == 0) SendClientMessageToAll(-1, "Пеннивайз был убит");
     }
-    PennivizeInfo[i][penID] = NPC: 0;
     return true;
 }
 
@@ -577,6 +570,18 @@ stock GiveDamagePlayerToPennivizeNpc(NPC:npc, damagerid,Float:amount)
     return false;
 }
 
+CMD:reloadpenis(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] <= 20) return 0;
+    for(new i; i < MAX_PENNIVIZE_NPC; i++)
+    {
+        if(!PennivizeInfo[i][penCreate]) continue;
+        else {
+            DestroyPennivize(i, 0);
+        }
+    }
+    return 1;
+}
 
 stock dialogHalloweenEndQuestInfo(playerid)
 {
