@@ -813,10 +813,17 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
         new skinid = 15792;
         if (type == GRAVE_NPC_TYPE_SPIRIT) skinid = 15791;
 
+        // Создаем NPC
         GravePlayerInfo[playerid][gpiNPC] = CreateNpc(skinid, x, y, z);
-        Graves_CreateParticleNpc(GravePlayerInfo[playerid][gpiNPC], 18715, x, y, z, 5000);
-
         SetNpcFacingAngle(GravePlayerInfo[playerid][gpiNPC], a);
+
+        // Помещаем NPC и игрока в отдельный виртуальный мир
+        new worldid = Graves_GetPlayerVirtualWorld(playerid);
+        SetNpcVirtualWorld(GravePlayerInfo[playerid][gpiNPC], worldid);
+        SetPlayerVirtualWorld(playerid, worldid);
+
+        // Эффект появления
+        Graves_CreateParticleNpc(GravePlayerInfo[playerid][gpiNPC], 18715, x, y, z, 5000);
     }
 
     SetNpcHealth(GravePlayerInfo[playerid][gpiNPC], health);
@@ -824,10 +831,6 @@ stock Graves_CreateNPC(playerid, e_GraveNPCType: type, bool: force = false)
     TaskNpcAttackPlayer(GravePlayerInfo[playerid][gpiNPC], playerid, true);
     SetNpcStunAnimationEnabled(GravePlayerInfo[playerid][gpiNPC], false);
     
-    new worldid = Graves_GetPlayerVirtualWorld(playerid);
-    SetNpcVirtualWorld(GravePlayerInfo[playerid][gpiNPC], worldid);
-    SetPlayerVirtualWorld(playerid, worldid);
-
     Graves_ProcessNpc(playerid, GravePlayerInfo[playerid][gpiNPC]);
     Graves_SetPlayerTime(playerid);
 
