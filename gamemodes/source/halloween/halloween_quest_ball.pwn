@@ -241,6 +241,7 @@ stock TakeHalloweenBallForPlayer(playerid)
                 SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кто спрятал этот шарик тут... {A52C2C}[ Найдено %d из %d шариков Пеннивайза ]", getBalls, MAX_HALLOWEEN_BALL_NEED);
             }
             new countrewards;
+            if((getBalls+1) % 10 == 0) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: За следующий шарик я получу награду, надо бы освободить 6 слотов в инвентаре!");
             if(getBalls == 10) countrewards = 1;
             else if(getBalls == 20) countrewards = 2;
             else if(getBalls == 30) countrewards = 3;
