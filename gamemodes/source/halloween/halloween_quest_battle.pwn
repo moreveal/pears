@@ -403,6 +403,15 @@ stock DestroyPennivize(i,type)
         PennivizeInfo[i][penCreate] = false;
     }
 
+    for(new n; n < 4; n++)
+    {
+        if(IsValidNpc(PennivizeInfo[i][penEventNPC][n])) 
+        {
+            DestroyNpc(PennivizeInfo[i][penEventNPC][n]);
+            PennivizeInfo[i][penEventNPC][n] = NPC: 0;
+        }
+    }
+
     // Удаляем музыку маньяка
     if(PennivizeMusic[i] != INVALID_AUDIOSTREAM)
     {
