@@ -342,6 +342,30 @@ stock IsSpecialSystemSkin(skinid)
 	return 0;
 }
 
+stock DeleteSpecialSystemSkins(playerid)
+{
+	if (IsPlayerNPC(playerid)) return 0;
+	
+	if (IsSpecialSystemSkin(PlayerInfo[playerid][pModel])) {
+		TakeOffClothes(playerid);
+	}
+
+	for(new i = 0; i < 40; i++)
+	{
+		if (PlayerInfo[playerid][pInvenType][i] != 3) continue;
+
+		new quan = PlayerInfo[playerid][pInvenQuan][i];
+		if (quan < 1) continue;
+
+		new skinid = PlayerInfo[playerid][pInven][i];
+		if (IsSpecialSystemSkin(skinid)) {
+			TakeInvent(playerid, skinid, quan, 3, i);
+		}
+	}
+
+	return 1;
+}
+
 // Получаем пол по скину
 stock GetSkinSex(s)
 {
