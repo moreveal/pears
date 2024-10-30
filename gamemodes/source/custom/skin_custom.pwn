@@ -4,7 +4,8 @@
 1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+4. Если добавляем специальный скин, использующийся только в системе - добавить новый ID в stock IsSpecialSystemSkin
+5. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
@@ -319,6 +320,43 @@ stock AddCustomSkins()
 	AddCharSyncModel(157, 608); // pearsrabbit
 	AddCharSyncModel(162, 609); // pearswolf
     return 1;
+}
+
+stock IsSpecialSystemSkin(skinid)
+{
+	// Скромник (SCP)
+	if (skinid == 505) return 1;
+	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
+	if (skinid >= 506 && skinid <= 511) return 1;
+	// Хеллоуин
+	if (skinid >= 594 && skinid <= 596) return 1;
+	// Зомби
+	if (skinid >= 512 && skinid <= 520) return 1;
+	// Раскопка могил и гробница
+	if (skinid >= 602 && skinid <= 604) return 1;
+	// Звери
+	if (skinid >= 605 && skinid <= 609) return 1;
+	return 0;
+}
+
+stock DeleteSpecialSystemSkins(playerid)
+{
+	if (IsPlayerNPC(playerid)) return 0;
+	
+	if (IsSpecialSystemSkin(PlayerInfo[playerid][pModel])) {
+		TakeOffClothes(playerid);
+	}
+	for(new i = 0; i < 40; i++)
+	{
+		if (PlayerInfo[playerid][pInvenType][i] != 3) continue;
+		new quan = PlayerInfo[playerid][pInvenQuan][i];
+		if (quan < 1) continue;
+		new skinid = PlayerInfo[playerid][pInven][i];
+		if (IsSpecialSystemSkin(skinid)) {
+			TakeInvent(playerid, skinid, quan, 3, i);
+		}
+	}
+	return 1;
 }
 
 // Получаем пол по скину
