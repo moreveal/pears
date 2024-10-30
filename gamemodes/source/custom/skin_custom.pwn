@@ -331,7 +331,7 @@ stock IsSpecialSystemSkin(skinid)
 	if (skinid >= 506 && skinid <= 511) return 1;
 
 	// Хеллоуин
-	if (skinid >= 592 && skinid <= 597) return 1;
+	if (skinid >= 594 && skinid <= 596) return 1;
 
 	// Зомби
 	if (skinid >= 512 && skinid <= 520) return 1;
