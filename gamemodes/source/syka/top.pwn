@@ -72,6 +72,7 @@ function Call_OnPlayerTopLoad(playerid, race_check)
 		mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_igroki_top` SET `user_id`= '%d',`Name`= '%e'", PlayerInfo[playerid][pID],PlayerInfo[playerid][pName]);
 		mysql_tquery(pearsq, string);
 	}
+	OnlineInfo[playerid][oTopLoad] = 1;
 	return true;
 }
 
