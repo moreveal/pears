@@ -34,7 +34,7 @@ stock defaultPriceDonate()
     donatePrice[12] = 90; // Стоимость кейса
     donatePrice[13] = 90; // Стоимость ремонта транспорта
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
-    donatePrice[15] = 1499; // Стоимость голд кейса
+    donatePrice[15] = 790; // Стоимость голд кейса
 }
 
 stock GetPriceGoldDonateMenu(donateid)
