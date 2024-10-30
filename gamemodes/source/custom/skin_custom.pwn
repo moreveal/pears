@@ -4,8 +4,7 @@
 1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если добавляем специальный скин, использующийся только в системе - добавить новый ID в stock IsSpecialSystemSkin
-5. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
@@ -161,8 +160,6 @@ stock AddCustomSkins()
 	AddCharSyncModel(282, 451); // 15639, pearspeddq male
 	AddCharSyncModel(306, 452); // 15640, pearspeddr female
 	AddCharSyncModel(121, 453); // 15641, pearspedds male
-
-    // Скины FBI
     AddCharSyncModel(165, 454); // 15642, pearspeddt male
     AddCharSyncModel(286, 455); // 15643, pearspeddu male
     AddCharSyncModel(286, 456); // 15644, pearspeddv male
@@ -176,7 +173,6 @@ stock AddCustomSkins()
     AddCharSyncModel(286, 464); // 15652, pearspeded male
     AddCharSyncModel(150, 465); // 15653, pearspedee female
     AddCharSyncModel(286, 466); // 15654, pearspedef male
-
 	AddCharSyncModel(29, 467); // 15655, zverworks male
 	AddCharSyncModel(121, 468); // 15656, pearspedeg male Yakuza
 	AddCharSyncModel(118, 469); // 15657, pearspedeh male Yakuza
@@ -231,7 +227,6 @@ stock AddCustomSkins()
 	AddCharSyncModel(77, 518); //  15706, pearszombie7 famale
 	AddCharSyncModel(82, 519); //  15707, pearszombie8 male
 	AddCharSyncModel(83, 520); //  15708, pearszombie9 male
-	// new skins
 	AddCharSyncModel(59, 521); // pearskortu
 	AddCharSyncModel(60, 522); // pearsmajodin
 	AddCharSyncModel(98, 523); // pearsmajodva
@@ -297,7 +292,6 @@ stock AddCustomSkins()
 	AddCharSyncModel(300, 583); // pearsguo
 	AddCharSyncModel(300, 584); // pearsgut
 	AddCharSyncModel(301, 585); // pearsgutr
-	
 	// halloween
 	AddCharSyncModel(178, 586); // fpearshall1
 	AddCharSyncModel(178, 587); // fpearshall2
@@ -318,52 +312,13 @@ stock AddCustomSkins()
 	AddCharSyncModel(167, 602); // pearsanubis
 	AddCharSyncModel(1, 603); // pearsbfost
 	AddCharSyncModel(7, 604); // pearsbmori
-	
+	// animals
+	AddCharSyncModel(162, 605); // pearsbear
+	AddCharSyncModel(157, 606); // pearsdeer
+	AddCharSyncModel(157, 607); // pearsfox
+	AddCharSyncModel(157, 608); // pearsrabbit
+	AddCharSyncModel(162, 609); // pearswolf
     return 1;
-}
-
-stock IsSpecialSystemSkin(skinid)
-{
-	// Скромник (SCP)
-	if (skinid == 505) return 1;
-
-	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
-	if (skinid >= 506 && skinid <= 511) return 1;
-
-	// Хеллоуин
-	if (skinid >= 594 && skinid <= 596) return 1;
-
-	// Зомби
-	if (skinid >= 512 && skinid <= 520) return 1;
-
-	// Раскопка могил и гробница
-	if (skinid >= 602 && skinid <= 604) return 1;
-
-	return 0;
-}
-
-stock DeleteSpecialSystemSkins(playerid)
-{
-	if (IsPlayerNPC(playerid)) return 0;
-	
-	if (IsSpecialSystemSkin(PlayerInfo[playerid][pModel])) {
-		TakeOffClothes(playerid);
-	}
-
-	for(new i = 0; i < 40; i++)
-	{
-		if (PlayerInfo[playerid][pInvenType][i] != 3) continue;
-
-		new quan = PlayerInfo[playerid][pInvenQuan][i];
-		if (quan < 1) continue;
-
-		new skinid = PlayerInfo[playerid][pInven][i];
-		if (IsSpecialSystemSkin(skinid)) {
-			TakeInvent(playerid, skinid, quan, 3, i);
-		}
-	}
-
-	return 1;
 }
 
 // Получаем пол по скину
@@ -390,7 +345,7 @@ stock GetSkinSex(s)
 	|| s >= 600 && s <= 602) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
-	s == 510 || s == 511 || s == 603 || s == 604) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	s == 510 || s == 511 || s >= 603 && s <= 609) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
  	else return 2; // Все остальные 2, значит женские
 }
