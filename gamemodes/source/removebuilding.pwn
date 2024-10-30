@@ -14,11 +14,13 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 620 удалённых объектов
+ 	// 621 удалённых объектов
 
 	RemoveBuildingForPlayer(playerid, 1525, 1687.2266, -1239.1250, 15.8125, 0.25); // Удаляем лишнее граффити на Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4717, 1666.4922, -1246.1797, 123.0859, 0.25); // Удаляем ночные окна Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4747, 1671.5078, -1343.3359, 87.5391, 0.25); // Удаляем ночные окна Пирс Тауэр
+	
+	RemoveBuildingForPlayer(playerid, 16135, -326.2891, 1851.4141, 41.7344, 0.25); // удаляем гейзер у Археологии
 
 	// Заброшенная шахта
 	RemoveBuildingForPlayer(playerid, 3414, 2351.830, -652.921, 129.188, 0.250);

@@ -126,3 +126,15 @@
 
 #define WORLD_APARTMENTS -1
 #define INT_APARTMENTS 163
+
+//==================================================
+// квест первая часть
+
+#define WORLD_HALLOWEEN_QUEST_1 -1
+#define INT_HALLOWEEN_QUEST_1 161
+
+//==================================================
+// квест вторая часть(битва)
+
+#define WORLD_HALLOWEEN_QUEST_2 -1
+#define INT_HALLOWEEN_QUEST_2 162

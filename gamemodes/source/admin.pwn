@@ -638,7 +638,8 @@ CMD:hpgro(playerid)
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
 				if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
@@ -659,7 +660,8 @@ CMD:armgro(playerid)
 		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 		{
 			if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 			ACSetPlayerArmour(i, 100);
@@ -689,38 +691,91 @@ CMD:delaction(playerid, const params[])
 	return 1;
 }
 
-new CreatedVehicleID[MAX_REALPLAYERS];
-CMD:rveh(playerid, const params[])
+CMD:deletethingall(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+	if (PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 22+ ]");
+	new itemid;
+	if (sscanf(params, "d", itemid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изъять предмет из всех инвентарей/домов/багажников [ /deletethingall ID ]");
+	if (itemid < 1 || itemid >= sizeof(friskName)) return ErrorMessage(playerid, "{FF6347}Недействительный ID предмета");
 
-	new vehiclename[64];
-	if(!sscanf(params, "s[64]", vehiclename))
+	// Удаляем у игроков
+	foreach (new id : Player)
 	{
-		new model = ReturnVehicle(vehiclename);
-		if (model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
-		if (!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
-		if (IsATrain(model)) return ErrorMessage(playerid, "{FF6347}Нельзя создать поезд");
-
-		new vehicleid = CreatedVehicleID[playerid];
-		if(vehicleid == 0) return ErrorMessage(playerid, "{FF6347}Вы не создавали транспорт, чтобы его заменить");
-		if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
-		if(Cars[vehicleid] != 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Крайний созданный вами транспорт был удалён");
-
-		new Float:pos[4];
-		GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
-		GetVehicleZAngle(vehicleid, pos[3]);
-
-		new color1, color2;
-		color1 = VehInfo[vehicleid][vVehcol1];
-		color2 = VehInfo[vehicleid][vVehcol2];
-
-		ACDestroyVehicle(vehicleid);
-		CreatedVehicleID[playerid] = PP_CreateVehicle(model, pos[0], pos[1], pos[2], pos[3], color1, color2, -1,0, -1, 0.0);
-		Cars[CreatedVehicleID[playerid]] = 9999;
+		for(new i = 0; i < 40; i++)
+		{
+			// Инвентарь
+			if (PlayerInfo[id][pInvenType][i] == 0)
+			{
+				new quan = PlayerInfo[id][pInvenQuan][i];
+				if (quan > 0)
+				{
+					if (itemid == PlayerInfo[id][pInven][i]) {
+						TakeInvent(id, itemid, quan, 0, i);
+					}
+				}
+			}
+			
+			if (i < 20)
+			{
+				// Лавка
+				if (PlayerInfo[id][pMarkInvenType][i] == 0)
+				{
+					new quan = PlayerInfo[id][pMarkInvenQuan][i];
+					if (quan > 0)
+					{
+						if (itemid == PlayerInfo[id][pMarkInven][i]) {
+							m_take_away(id, quan, i);
+						}
+					}
+				}
+			}
+		}
 	}
-	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить крайний созданный транспорт [ /rveh VehID ]");
-	return true;
+
+	// Удаляем из багажников
+	foreach (new vehicleid : Vehicle)
+	{
+		new max_slotes = GetMaxBootSlotes(vehicleid);
+		for (new i = 0; i < max_slotes; i++)
+		{
+			if(VehInfo[vehicleid][vInvent][i] == itemid && VehInfo[vehicleid][vInvType][i] == 0) 
+			{
+				TakeBoot(vehicleid, itemid, VehInfo[vehicleid][vInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем из домов
+	for (new dom = 0; dom < MAX_DOM; dom++)
+	{
+		for (new i = 0; i < 80; i++)
+		{
+			if (DomInfo[dom][dInvent][i] == itemid && DomInfo[dom][dInvType][i] == 0)
+			{
+				TakeDom(dom, itemid, DomInfo[dom][dInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем со складов
+	for (new g = 0; g < sizeof(OrganInfo); g++)
+	{
+		for (new i = 0; i < 20; i++)
+		{
+			if(OrganInfo[g][gInvent][i] == itemid && OrganInfo[g][gInvType][i] == 0)
+			{
+				TakeSklad(g, itemid, OrganInfo[g][gInv][i], 0, i);
+			}
+		}
+	}
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил предмет \"%s\" [ID: %d] с инвентарей/багажников/домов всех игроков", PlayerInfo[playerid][pName], playerid, GetNameThing(0, itemid, 0, 0), itemid);
+	ABroadCast(COLOR_ADM, string, 2);
+
+	format(string, sizeof(string), "Удалил предмет \"%s\" из инвентарей игроков", GetNameThing(0, itemid, 0, 0));
+	AdminLog("deletethingall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", itemid, string);
+	return 1;
 }
 
 CMD:veh(playerid, const params[])
@@ -761,8 +816,6 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
 	VehInfo[vehicleid][vGas] = GasMax;
 	AdminLog("veh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", model, "");
 	SendClientMessage(playerid, COLOR_GREY, "{0088ff}%s Модель: {ffcc66}%d {0088ff}ID: {ffcc66}%d {cccccc}(col1 %d, col2 %d)", GetVehicleName(model), model, vehicleid, color1, color2);
-	
-	CreatedVehicleID[playerid] = vehicleid;
 	return 1;
 }
 
@@ -835,7 +888,7 @@ CMD:tp3(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
 	{
-		ShowDialog(playerid,79,DIALOG_STYLE_LIST,"{ff9000}Телепорты 3","IKEA\nЦентр Обмена\nБизнес Центр\nШтраф Стоянка\nВход в Серверную FBI\nНефтеперерабатывающий Завод\nГосударственный Склад\nРынок LS\nЧёрный Рынок\nСпермобанк\nКлининг LS\nКлининг SF\nКлининг LV\nТрейлерный парк\nИнкассаторы\nЭлектрики","Выбрать","Отмена");
+		ShowDialog(playerid,79,DIALOG_STYLE_LIST,"{ff9000}Телепорты 3","IKEA\nЦентр Обмена\nБизнес Центр\nШтраф Стоянка\nВход в Серверную FBI\nНефтеперерабатывающий Завод\nГосударственный Склад\nРынок LS\nЧёрный Рынок\nСпермобанк\nКлининг LS\nКлининг SF\nКлининг LV\nТрейлерный парк\nИнкассаторы\nЭлектрики\nСкупщик\nГробница Фараона\nКладбище LS","Выбрать","Отмена");
 	}
    	return 1;
 }

@@ -3,49 +3,41 @@
 Как добавить новую вариацию кастомного кейса?
 1. Добавляем новый идентификатор по названию в customCaseNameID
 2. Добавляем полное название кейса в customCaseName
-3. Добавляем в stock IsACasePackID новый ID для упаковки внутри системы инвентаря
-4. Добавляем в stock GetModelCustomCase объект (как будет выглядеть новый кейс)
-5. Добавляем в stock GetCustomCaseInventoryPack(caseID) (id упаковки внутри системы инвентаря)
+3. Добавляем в stock GetModelCustomCase объект (как будет выглядеть новый кейс)
+4. Добавляем в stock GetCustomCaseInventoryPack(caseID) (id упаковки внутри системы инвентаря)
 
-6. Если кейсу нужен ключ, добавляем строки в stock GetKeyIDCustomCase(thingPack)
-7. Добавляем перечисление id предмета ключа от кейса stock IsKeyCustomCase(i)
-    - А так-же обязательно прописываем новый ключ предмет в inventory.pwn
+5. Если кейсу нужен ключ, добавляем строки в stock GetKeyIDCustomCase(keyID)
+    - А также обязательно прописываем новый ключ предмет в inventory.pwn
 */
-
 
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
-    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс"
+    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024"
 };
 
 // Упаковки, которые относятся к кейсу
 stock IsACasePackID(thingPack)
 {
-    if(thingPack == 5 // Стандартный
-    || thingPack == 6 // maniac
-    || thingPack == 7 // village
-    || thingPack == 8 // yakuza
-    || thingPack == 9 // gold
-        ) return true;
-    return false;
+    return thingPack == 5 || GetInventoryPackCustomCase(thingPack) != -1;
 }
 
 // ID объекта, как выглядит кейс
 stock GetModelCustomCase(thingPack)
 {
     new model;
-    if(thingPack == 5) model = 19918; // Стандартный
-    else if(thingPack == 6) model = 12260; // maniac
+    if(thingPack == 6) model = 12260; // maniac
     else if(thingPack == 7) model = 12259; // village
     else if(thingPack == 8) model = 12261; // yakuza
     else if(thingPack == 9) model = 12303; // gold
+    else if(thingPack == 10) model = 12352; // graves
+    else if(thingPack == 11) model = 12337; // Halloween
     else model = 19918;
     return model;
 }
@@ -58,18 +50,21 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 1) thingPack = 7; // village
     else if(caseID == 2) thingPack = 8; // yakuza
     else if(caseID == 3) thingPack = 9; // gold
+    else if(caseID == 4) thingPack = 10; // graves
+    else if(caseID == 5) thingPack = 11; // Halloween
     return thingPack;
 }
 
 // Получаем ID кейса отталкиваясь от ID упаковки
 stock GetInventoryPackCustomCase(thingPack)
 {
-    new caseID = -1;
-    if(thingPack == 6) caseID = 0; // maniac
-    else if(thingPack == 7) caseID = 1; // village
-    else if(thingPack == 8) caseID = 2; // yakuza
-    else if(thingPack == 9) caseID = 3; // gold
-    return caseID;
+    for (new i = 0; i < sizeof(customCaseNameID); i++)
+    {
+        new packid = GetCustomCaseInventoryPack(i);
+        if (packid > 0 && thingPack == packid) return i;
+    }
+    
+    return -1;
 }
 
 stock GetCaseName(thingPack)
@@ -81,21 +76,29 @@ stock GetCaseName(thingPack)
     return name;
 }
 
-// Предмет ключ от кастомного кейса
-stock IsKeyCustomCase(i)
+// Предмет - ключ от кастомного кейса
+stock IsKeyCustomCase(thingId)
 {
-    if(i == 234 || i == 235) return true;
+    for (new i = 0; i < sizeof(customCaseNameID); i++)
+    {
+        new keyid = GetKeyIDCustomCase(i);
+        if (keyid >= 0 && thingId == keyid) {
+            return true;
+        }
+    }
     return false;
 }
 
 // Нужен ли ключ для кастомного кейса и какой у него ID
-stock GetKeyIDCustomCase(thingPack)
+stock GetKeyIDCustomCase(caseID)
 {
-    new keyid = -1;
-    if(thingPack == 6) keyid = 234; // maniac
-    // Кейс village не требует ключа
-    else if(thingPack == 8) keyid = 235; // yakuza
-    return keyid;
+    switch (caseID)
+    {
+        case 0: return 234;
+        case 2: return 235;
+        case 4: return 241;
+    }
+    return -1;
 }
 
 #define MAX_THING_FOR_CASE 100 // Максимальное количество вариаций предметов для кейса
@@ -125,7 +128,12 @@ CMD:testcase(playerid, const params[])
     new selectedThing = SelectRandomThing(caseID);
     if (selectedThing != -1)
     {
-        SendClientMessage(playerid, COLOR_GREY, "Кейс %s, Элемент %d", params, CustomCaseItems[caseID][selectedThing][THING]);
+        new string[144];
+        format(string, sizeof(string), "Кейс %s, Элемент %d", params, CustomCaseItems[caseID][selectedThing][THING]);
+        if (CustomCaseItems[caseID][selectedThing][THING] > -1) format(string, sizeof(string), "%s {ff9000}[ %s ]", string, GetNameThing(0, CustomCaseItems[caseID][selectedThing][THING], CustomCaseItems[caseID][selectedThing][TYPE], 0));
+        else strcat(string, " {ff9000}[ Обычный предмет ]");
+
+        SendClientMessage(playerid, COLOR_GREY, string);
     }
     else
     {
@@ -188,18 +196,17 @@ stock CustomThingCase(caseID, selectedThing, &thingId, &thingQuan, &thingPara, &
 stock GetCustomCaseID(const name[])
 {
     new id = -1;
-    if(strcmp(name,"gold") == 0) id = -1;
-    else
+    if(strcmp(name,"gold") == 0) return id;
+
+    for(new i = 0; i < sizeof(customCaseNameID); i++)
     {
-        for(new i = 0; i < sizeof(customCaseNameID); i++)
+        if(!strcmp(name, customCaseNameID[i], true))
         {
-            if(!strcmp(name, customCaseNameID[i], true))
-            {
-                id = i;
-                break;
-            }
+            id = i;
+            break;
         }
     }
+    
     return id;
 }
 

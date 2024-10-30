@@ -815,7 +815,7 @@ stock dialogCase_AutoSit(playerid, dialogid, response, listitem,const inputtext[
 		GetXYInFrontOfPoint(player_pos[0], player_pos[1], player_pos[3], 2.0);
 
 		new objectid = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
-		if (objectid == INVALID_OBJECT_ID) {
+		if (objectid == INVALID_STREAMER_ID) {
 			SendClientMessage(playerid, 0xCCCCCC, "[ Мысли ]: Не удалось создать объект");
 			return 1;
 		}

@@ -1276,7 +1276,7 @@ stock SaveApartments(id) {
         `apRoomCoordThree0`, `apRoomCoordThree1`, `apRoomCoordThree2`, `apRoomCoordFour0`, `apRoomCoordFour1`, `apRoomCoordFour2`,\
         `apRoomCoordOneExit0`, `apRoomCoordOneExit1`, `apRoomCoordOneExit2`, `apRoomCoordTwoExit0`, `apRoomCoordTwoExit1`, `apRoomCoordTwoExit2`,\
         `apRoomCoordThreeExit0`, `apRoomCoordThreeExit1`, `apRoomCoordThreeExit2`, `apRoomCoordFourExit0`, `apRoomCoordFourExit1`, `apRoomCoordFourExit2`, `apRoomCoordExclusiveExit0`, `apRoomCoordExclusiveExit1`, `apRoomCoordExclusiveExit2`,\
-        `apRoomCoordPlatform0`, `apRoomCoordPlatform1`,`apRoomCoordPlatform2`,`apCoordHolRoof0`, `apCoordHolRoof1`,`apCoordHolRoof2`,`apCoordRoof0`, `apCoordRoof1`,`apCoordRoof2`) \
+        `apCoordPlatform0`, `apCoordPlatform1`,`apCoordPlatform2`,`apCoordHolRoof0`, `apCoordHolRoof1`,`apCoordHolRoof2`,`apCoordRoof0`, `apCoordRoof1`,`apCoordRoof2`) \
         VALUES(%d, %d, %d, %d, %d, %d, %d, %f, %f, %f, %f, %f, %f,%d,%d, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f,  %f, %f, %f,%f, %f, %f,%f, %f, %f,%f, %f, %f)",
         
         Apartments[id][apNewId],

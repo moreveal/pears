@@ -1,7 +1,18 @@
 stock RadioInterceptor_IsStateEnabled(playerid, e_RadioInterceptorState: status)
 {
 	if (get_invent(playerid, 236, 0) <= 0) return 0; // Устройство отсутствует
-	if (gettime() > get_para(playerid, 236)) return 0; // Устройство устарело
+	if (gettime() > get_para(playerid, 236)) {
+		new price = floatround(float(getThingPriceGos(236, 0) / 2) * 1.10);
+		if (PlayerInfo[playerid][pAccount] >= price) {
+			oGivePlayerBank(playerid, -price);
+			SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоего радиоперехватчика, можешь пользоваться!");
+
+			new quan, para;
+			ThingParameters(playerid, 236, quan, para);
+			set_para(playerid, 236, para);
+		}
+		return 0; // Устройство устарело
+	}
 
 	return (OnlineInfo[playerid][oRadioInterceptorState] & _:status) != 0;
 }
@@ -33,6 +44,9 @@ stock RadioInterceptor_Disable(playerid)
 
 stock RadioInterceptor_Dialog_Main(playerid)
 {
+	RadioInterceptor_IsStateEnabled(playerid, RADIO_INTERCEPTOR_STATE_SU); // Тригерим обновление частоты (услуга Хэнка)
+	if (gettime() > get_para(playerid, 236)) return ErrorMessage(playerid, "{FF6347}Нельзя использовать устройство [ Требуется настройка частоты ]");
+
 	ShowDialog(playerid, RADIO_INTERCEPTOR_MAIN, DIALOG_STYLE_LIST, "{ff9000}Радиоперехватчик", 
 		"{cccccc}Поиск местоположения\n" \
 		"{cccccc}Перехват радиосообщений",

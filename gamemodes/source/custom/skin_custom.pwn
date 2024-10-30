@@ -4,17 +4,18 @@
 1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если хотим добавить скин в организцию, добавляем его в public ReloadSkin
+4. Если добавляем специальный скин, использующийся только в системе - добавить новый ID в stock IsSpecialSystemSkin
+5. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 274
+#define MAX_SKIN_CUSTOM 293
 
 stock AddCustomSkins()
 {
-	// AddCarSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
+	// AddCharSyncModel(Оригинальный, Новый) ID в сборке с 15500 до 15999
 	// Plus 15188
 
 	// В целом добавить ещё скинов
@@ -296,7 +297,73 @@ stock AddCustomSkins()
 	AddCharSyncModel(300, 583); // pearsguo
 	AddCharSyncModel(300, 584); // pearsgut
 	AddCharSyncModel(301, 585); // pearsgutr
+	
+	// halloween
+	AddCharSyncModel(178, 586); // fpearshall1
+	AddCharSyncModel(178, 587); // fpearshall2
+	AddCharSyncModel(152, 588); // fpearshall3
+	AddCharSyncModel(90, 589); // fpearshall4
+	AddCharSyncModel(195, 590); // fpearshall5
+	AddCharSyncModel(90, 591); // fpearshall6
+	AddCharSyncModel(137, 592); // mpearshall1
+	AddCharSyncModel(252, 593); // mpearshall2
+	AddCharSyncModel(264, 594); // mpearshall3
+	AddCharSyncModel(258, 595); // mpearshall4
+	AddCharSyncModel(222, 596); // mpearshall5
+	AddCharSyncModel(212, 597); // mpearshall6
+	AddCharSyncModel(211, 598); // pearsranfem1
+	AddCharSyncModel(214, 599); // pearsranfem2
+	AddCharSyncModel(101, 600); // pearsranma1
+	AddCharSyncModel(171, 601); // pearsranma2
+	AddCharSyncModel(167, 602); // pearsanubis
+	AddCharSyncModel(1, 603); // pearsbfost
+	AddCharSyncModel(7, 604); // pearsbmori
+	
     return 1;
+}
+
+stock IsSpecialSystemSkin(skinid)
+{
+	// Скромник (SCP)
+	if (skinid == 505) return 1;
+
+	// Горилла, Маньяк, Овца, Корова, Крик, Пеннивайз
+	if (skinid >= 506 && skinid <= 511) return 1;
+
+	// Хеллоуин
+	if (skinid >= 592 && skinid <= 597) return 1;
+
+	// Зомби
+	if (skinid >= 512 && skinid <= 520) return 1;
+
+	// Раскопка могил и гробница
+	if (skinid >= 602 && skinid <= 604) return 1;
+
+	return 0;
+}
+
+stock DeleteSpecialSystemSkins(playerid)
+{
+	if (IsPlayerNPC(playerid)) return 0;
+	
+	if (IsSpecialSystemSkin(PlayerInfo[playerid][pModel])) {
+		TakeOffClothes(playerid);
+	}
+
+	for(new i = 0; i < 40; i++)
+	{
+		if (PlayerInfo[playerid][pInvenType][i] != 3) continue;
+
+		new quan = PlayerInfo[playerid][pInvenQuan][i];
+		if (quan < 1) continue;
+
+		new skinid = PlayerInfo[playerid][pInven][i];
+		if (IsSpecialSystemSkin(skinid)) {
+			TakeInvent(playerid, skinid, quan, 3, i);
+		}
+	}
+
+	return 1;
 }
 
 // Получаем пол по скину
@@ -319,10 +386,11 @@ stock GetSkinSex(s)
 	|| s == 430 || s >= 432 && s <= 436 || s == 438 || s >= 440 && s <= 443 || s >= 446 && s <= 451
 	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507
 	|| s >= 512 && s <= 516 || s >= 519 && s <= 527 || s == 529 || s >= 531 && s <= 540 || s >= 542 && s <= 543
-	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585) return 1; // 1 - мужской скин
+	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585 || s >= 592 && s <= 597
+	|| s >= 600 && s <= 602) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
-	s == 510 || s == 511) return 0; // Не имеет пола (подходит для мужчин и женщин)
+	s == 510 || s == 511 || s == 603 || s == 604) return 0; // Не имеет пола (подходит для мужчин и женщин)
 
  	else return 2; // Все остальные 2, значит женские
 }
