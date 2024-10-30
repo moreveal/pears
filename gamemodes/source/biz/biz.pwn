@@ -259,7 +259,7 @@ stock maxQuanThingProduct(thingId, thingType) // Подсчет максимал
 	if(thingType == 0) // Обычные Предметы
 	{
 		if(thingId == 178) maxQuan = 50000; // Топливо
-		else if(thingId >= 27 && thingId <= 30) maxQuan = 10000; // Патроны
+		else if(thingId >= 27 && thingId <= 30) maxQuan = 50000; // Патроны
 		else maxQuan = 1000; 
 	}
 	else if(thingType == 5) maxQuan = 40; // Транспорт
