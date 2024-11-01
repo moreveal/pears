@@ -262,13 +262,11 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     if(strcmp(name,"gold") == 0)
     {
-        switch(random(6))
+        switch(random(3))
         {
-            case 0: thingType = 2; // Обычный предмет
-            case 1: thingType = 3; // Оружие
-            case 2: thingType = 2; // Аксессуар
-            case 3, 4: thingType = 3; // Одежда
-            case 5: thingType = 5; // Транспорт
+            case 0: thingType = 2; // акс
+            case 1: thingType = 3; // Одежда
+            case 2: thingType = 5; // Транспорт
         }
     }
     else 
