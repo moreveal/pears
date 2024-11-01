@@ -1546,12 +1546,14 @@ cmd:setbizpos(playerid, const params[])
 		GetPlayerPos(playerid, x, y, z);
 
 		BizzInfo[params[0]][bX] = x, BizzInfo[params[0]][bY] = y, BizzInfo[params[0]][bZ] = z;
-		UpdateBizLabel(params[0], 1);
+
+		UpdateBizLabel(params[0], BizzInfo[params[0]][bLab]);
 		format(string, sizeof(string), " [ ADM ]: %s сменил физическую точку бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
 		
 		format(string, sizeof(string), "Смена физической точки бизнеса %d", params[0]);
 		AdminLog("setbizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
-
+		
+		if(params[0] == 200) BizzInfo[params[0]][bLab] = 1;
 		SaveBizz(params[0]);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");

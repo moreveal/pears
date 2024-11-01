@@ -138,3 +138,15 @@
 
 #define WORLD_HALLOWEEN_QUEST_2 -1
 #define INT_HALLOWEEN_QUEST_2 162
+
+//==================================================
+// Casino Room
+
+#define WORLD_CASINO_ROOM -1
+#define INT_CASINO_ROOM 199
+
+//==================================================
+// Casino Hol
+
+#define WORLD_CASINO_HOL -1
+#define INT_CASINO_HOL 55

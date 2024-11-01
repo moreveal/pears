@@ -1,9 +1,10 @@
 
-#define MAX_BIZ_TYPE 24 // Типы бизнесов (заправки, супермаркеты, магазы и т.д.)
+#define MAX_BIZ_TYPE 25 // Типы бизнесов (заправки, супермаркеты, магазы и т.д.)
 new dyn_zone_zzBiz[MAX_BIZ];
 
 // Бизнесы Аренды
 #define MAX_BIZ_TERM 56
+#define MIN_CHIPSFEE 1 // Процент комиссии фишек
 new Float:RentPos_X[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Y[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_Z[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RX[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
 new Float:RentPos_RY[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], Float:RentPos_RZ[MAX_BIZ_TERM][MAX_TERMINAL_BIZ], RentObject[MAX_BIZ_TERM][MAX_TERMINAL_BIZ];
@@ -98,11 +99,12 @@ stock productbiz(playerid, b) // Заказ товаров в бизнес
 		format(line,sizeof(line),"{cccccc}Оплата за ремонт станции\t от {99ff66}%d$ \t \n", BizzInfo[b][bElectroPayForRepair]), strcat(lines,line);
 	}
 	else
-	{
+	{	
+		if(b == 200) format(line,sizeof(line),"{cccccc}Комиссия на вывод фишек \t{99ff66}%d% \t \n", BizzInfo[b][bChipsFee]), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Заказать товар {ff9000}>>\t \t \n"), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Статус заказа \t %s \t \n", BizzInfo[b][bOrderStatus] ? "{99ff66}[Active]" : "{FF6347}[Unactive]"), strcat(lines,line);
 		format(line,sizeof(line),"{cccccc}Оплата доставки товаров\t {99ff66}%d$ {cccccc}[%s] \t \n", BizzInfo[b][bDeliveryPay], get_k(BizzInfo[b][bDeliveryPay])), strcat(lines,line);
-	
+
 		for(new i = 0; i < 50; i++)
 		{
 			List[i][playerid] = 0;
@@ -598,10 +600,21 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
     	if(BizzInfo[b][bProduct][0] == 0) BizzInfo[b][bProduct][0] = 191, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
     	if(BizzInfo[b][bProduct][1] == 0) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
 	}
-	else if(b >= 197 && b <= 200) // Сервис Катеров
+	else if(b >= 197 && b <= 199) // Сервис Катеров
 	{
     	if(BizzInfo[b][bProduct][0] == 0) BizzInfo[b][bProduct][0] = 192, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // Ремонтный набор
     	if(BizzInfo[b][bProduct][1] == 0) BizzInfo[b][bProduct][1] = 184, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // Краска
+	}
+	else if(b == 200) // Казино
+	{
+    	if(BizzInfo[b][bProduct][0] == 0) BizzInfo[b][bProduct][0] = 14, BizzInfo[b][bTypeProduct][0] = 0, yes[0] = true; // пиво
+    	if(BizzInfo[b][bProduct][1] == 0) BizzInfo[b][bProduct][1] = 113, BizzInfo[b][bTypeProduct][1] = 0, yes[1] = true; // вино бокал
+    	if(BizzInfo[b][bProduct][2] == 0) BizzInfo[b][bProduct][2] = 37, BizzInfo[b][bTypeProduct][2] = 0, yes[2] = true; // шампанское бокал
+    	if(BizzInfo[b][bProduct][3] == 0) BizzInfo[b][bProduct][3] = 114, BizzInfo[b][bTypeProduct][3] = 0, yes[3] = true; // виски бокал
+    	if(BizzInfo[b][bProduct][4] == 0) BizzInfo[b][bProduct][4] = 115, BizzInfo[b][bTypeProduct][4] = 0, yes[4] = true; // коньяк бокал
+    	if(BizzInfo[b][bProduct][5] == 0) BizzInfo[b][bProduct][5] = 116, BizzInfo[b][bTypeProduct][5] = 0, yes[5] = true; // брэнди бокал
+    	if(BizzInfo[b][bProduct][6] == 0) BizzInfo[b][bProduct][6] = 112, BizzInfo[b][bTypeProduct][6] = 0, yes[6] = true; // Водка
+		if(BizzInfo[b][bProduct][7] == 0) BizzInfo[b][bProduct][7] = 111, BizzInfo[b][bTypeProduct][7] = 0, yes[7] = true; // Кости
 	}
 	for(new i = 0; i < MAX_BIZ_ITEM; i++)
     {
@@ -709,7 +722,7 @@ stock pricebiz(playerid, b)
 	new line[100],lines[4048];
 
 	if(b >= 1 && b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 42 && b <= 76 || b >= 77 && b <= 92 || b >= 93 && b <= 102 || b >= 103 && b <= 122 
-	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 143 && b <= 152 || b >= 153 && b <= 162 || b >= 183 && b <= 200) // Прайс автоматгенерация
+	|| b >= 123 && b <= 132 || b >= 133 && b <= 142 || b >= 143 && b <= 152 || b >= 153 && b <= 162 || b >= 183 && b <= 199 || b == 200) // Прайс автоматгенерация
 	{
 		for(new i = 0; i < MAX_BIZ_ITEM; i++)
     	{
@@ -983,7 +996,7 @@ stock IsBizOrder(b)
     // Заправка, Супермаркет, Оружейный Магазин, Аптека
 	// Магазин с Техникой, Магазин Одежды
 	// Автосалоны, Мотосалоны, Авиасалоны, Салоны Катеров
-	// Автосервисы
+	// Автосервисы, Казино
     if(b <= 12 || b >= 13 && b <= 26 || b >= 27 && b <= 41 || b >= 77 && b <= 92 || b >= 93 && b <= 122 || b >= 123 && b <= 132
 	|| b >= 133 && b <= 142 || b >= 153 && b <= 162 || b >= 173 && b <= 200) return 1;
 	return 0;
@@ -1232,10 +1245,10 @@ stock SaveBizz(b)
 	
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "%s`PriceProd`='%d',`Bablo`='%d',`Schet`='%d',`Sell`='%d',`Pastime`='%d',`Mafunix`='%d',\
 	`Taxes`='%d',`Warn`='%d',`Lien`='%d',`ArTime`='%d',`ArReason`='%e',`Stat`='%d',`StatReason`='%e',`Taxday`='%d',\
-	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d',`bMafiaSchet`='%d' WHERE `newid`='%d'", string_mysql,
+	`Deposit`='%d',`Income`='%d',`DeliveryPay`='%d',`OrderStatus`='%d',`bMafiaSchet`='%d',`bChipsFee`='%d' WHERE `newid`='%d'", string_mysql,
 	BizzInfo[b][bMafia],BizzInfo[b][bBablo],BizzInfo[b][bSchet],BizzInfo[b][bSell],BizzInfo[b][bPastime],BizzInfo[b][bMafunix],BizzInfo[b][bTaxes],
 	BizzInfo[b][bWarn],BizzInfo[b][bLien],BizzInfo[b][bArTime], BizzInfo[b][bArReason], BizzInfo[b][bStat], BizzInfo[b][bStatReason], BizzInfo[b][bTaxday], 
-	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus],BizzInfo[b][bMafiaSchet], b); // 292 + 187 + 64+29
+	BizzInfo[b][bDeposit], BizzInfo[b][bIncome], BizzInfo[b][bDeliveryPay], BizzInfo[b][bOrderStatus],BizzInfo[b][bMafiaSchet],BizzInfo[b][bChipsFee], b); // 292 + 187 + 64+29
 	query_empty(pearsq, string_mysql); // 1891
 
 	SaveBizzAccess(b);
@@ -1695,4 +1708,132 @@ stock SaveTax_Biz(b)
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_bizz` SET `Taxes`='%d',`Taxday`='%d' WHERE `newid`='%d'", BizzInfo[b][bTaxes], BizzInfo[b][bTaxday], b);
 	query_empty(pearsq, string_mysql);
 	return 1;
+}
+
+stock dialogChipsProcent(playerid, b)
+{
+	new lines[300], string[60];
+	format(lines,sizeof(lines),"\n{cccccc}Введите цифру процента, который вы будете забирать за продоваемые фишки\
+								\n\nТекущий комиссия: {0088ff}%d%\
+								\n{FF6347}Не меньше %s и не больше 10", BizzInfo[b][bChipsFee], FormatNumberWithCommas(MIN_CHIPSFEE));
+	format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+	ShowDialog(playerid,CASINO_EDITCHIPSPROCENT,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock UpdateChipsProcent(playerid, b, const inputtext[])
+{
+	new input = strval(inputtext);
+	if(input < MIN_CHIPSFEE || input > 10) return dialogChipsProcent(playerid, b);
+	BizzInfo[b][bChipsFee] = input;
+	productbiz(playerid, b);
+
+	new string[160];
+	mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_bizz` SET `bChipsFee` = '%d' WHERE `newid` = '%d'", BizzInfo[b][bChipsFee], b);
+	mysql_tquery(pearsq, string);
+
+	BizLog("UpdateChipsProcent", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], b, input, "Комиссия на вывод фишек");
+	return true;
+}
+
+stock ProductBizCasino(playerid,b,listitem)
+{
+	new string[60];
+	if(listitem == 0) // Депозит
+	{
+		new line[120],lines[600];
+		format(line,sizeof(line),"{cccccc}Введите сумму, которую хотите перечислить на депозит бизнеса"), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Мой Счёт: {99ff66}%d$ [%s]", PlayerInfo[playerid][pAccount],get_k(PlayerInfo[playerid][pAccount])), strcat(lines,line);
+		format(line,sizeof(line),"\n{cccccc}Депозит Бизнеса: {99ff66}%d$ [%s]", BizzInfo[b][bDeposit],get_k(BizzInfo[b][bDeposit])), strcat(lines,line);
+		format(line,sizeof(line),"\n\n{444444}- Пополнение депозита необходимо для оплаты обслуживания бизнеса\nили доставки товаров"), strcat(lines,line);
+		format(line,sizeof(line),"\n{444444}- {FF6347}Внимание! Деньги с депозита снять невозможно! | Они используются для обслуживания"), strcat(lines,line);
+		format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1055,DIALOG_STYLE_INPUT,string,lines,"Принять","Отмена");
+	}
+	if(listitem == 1) return dialogChipsProcent(playerid,b); // Процент в бизнесе
+	if(listitem == 2) // Заказать Товары
+	{
+		if (b >= 143 && b <= 152) return dialogElectricianToHouse(playerid,b);
+		if(BizzInfo[b][bOrderStatus] == 1) return ErrorText(playerid, "{FF6347}Нельзя добавить товары, когда активна доставка"), productbiz(playerid, b);
+		if(!IsBizOrder(b)) return ErrorText(playerid, "{FF6347}В этот бизнес нельзя заказывать доставку товаров"), productbiz(playerid, b);
+		DP[1][playerid] = -1;
+		for(new i = 0; i < 50; i++)
+		{
+			if(BizzInfo[b][bOrder][i] == 0)
+			{
+				DP[1][playerid] = i;
+				break;
+			}
+		}
+		if(DP[1][playerid] < 0) return ErrorText(playerid, "{FF6347}Нет свободных слотов для заказа товаров [ Лимит: 50 ]"), productbiz(playerid, b);
+		if(BizzInfo[b][bDeliveryOrder] >= 0) return ErrorText(playerid, "{FF6347}Товар нельзя добавить, доставку выполняет дальнобойщик"), productbiz(playerid, b);
+		ShowOrderThing(playerid, b);
+	}
+	if(listitem == 3) // Статус Заказа
+	{
+		if(BizzInfo[b][bDeliveryOrder] >= 0) return ErrorText(playerid, "{FF6347}Нельзя изменить статус, доставку выполняет дальнобойщик"), productbiz(playerid, b);
+
+
+		// Проверка на добавленные товары
+		new yesOrder, fullPrice;
+
+		// Банк не имеет товаров и поэтому здесь мы можем врубить статус заказа, даже если товары не добавлены
+		for(new i = 0; i < 50; i++)
+		{
+			if(BizzInfo[b][bOrder][i] > 0)
+			{
+				fullPrice += getThingPriceGos(BizzInfo[b][bOrder][i], BizzInfo[b][bOrderType][i]) * BizzInfo[b][bOrderQuan][i];
+				yesOrder = 1;
+			}
+		}
+
+		if(BizzInfo[b][bOrderStatus] == 0) 
+		{
+			new minPay = getPayOrderDelivery(b);
+			new maxPay = getPayOrderDelivery(b) * 100;
+			if(BizzInfo[b][bDeliveryPay] <= 0) return ErrorText(playerid, "{FF6347}Вы не указали оплату доставки"), productbiz(playerid, b);
+			if(BizzInfo[b][bDeliveryPay] < minPay) return ErrorText(playerid, "{FF6347}Указанная сумма для оплаты доставки товаров ниже минимальной"), productbiz(playerid, b);
+			if(BizzInfo[b][bDeliveryPay] > maxPay) return ErrorText(playerid, "{FF6347}Указанная сумма для оплаты доставки товаров выше максимальной"), productbiz(playerid, b);
+			if(yesOrder == 0) return ErrorText(playerid, "{FF6347}Нельзя активировать доставку, у вас не добавлены товары"), productbiz(playerid, b);
+			if(fullPrice + BizzInfo[b][bDeliveryPay] > BizzInfo[b][bDeposit])
+			{
+				SendClientMessage(playerid, -1, "{FF6347}На депозите бизнеса недостаточно средств для оплаты товаров и доставки. Не хватает: {44ff66}%d$",fullPrice + BizzInfo[b][bDeliveryPay] - BizzInfo[b][bDeposit]);
+				return productbiz(playerid, b);
+			}
+			BizzInfo[b][bOrderStatus] = 1;
+
+			Orders ++, BizzInfo[b][bOrders] ++;
+		}
+		else 
+		{
+			BizzInfo[b][bOrderStatus] = 0;
+			BizzInfo[b][bOrders] --;
+			Orders --;
+		}
+		BizzInfo[b][bUpdate] = 1;
+		productbiz(playerid, b);
+	}
+	if(listitem == 4)
+	{
+		if(BizzInfo[b][bDeliveryOrder] >= 0) return ErrorText(playerid, "{FF6347}Нельзя изменить оплату, кто-то выполняет доставку"), productbiz(playerid, b);
+		new minPay = getPayOrderDelivery(b);
+		new line[150],lines[300];
+		format(line,sizeof(line),"\n{cccccc}Введите сумму для оплаты доставки товаров\n{FF6347}Не меньше %d$ и не больше %d$", minPay, minPay*100), strcat(lines,line);
+		format(line,sizeof(line),"\n\n{444444}Оплата расчитывается расстоянием от склада доставки до бизнеса\nУстанавливается правительством в министерстве финансов"), strcat(lines,line);
+
+		format(string,sizeof(string),"{cccccc}Бизнес {ff9000}%s [%d]",bizname(b), b);
+		ShowDialog(playerid,1061,DIALOG_STYLE_INPUT, string, lines, "Принять", "Отмена");
+	}
+
+	if(listitem >= 5 && listitem <= 55)
+	{
+		if(!IsBizOrder(b)) return ErrorText(playerid, "{FF6347}В этот бизнес нельзя заказывать доставку товаров"), productbiz(playerid, b);
+		if(BizzInfo[b][bOrderStatus]) return ErrorText(playerid, "{FF6347}Нельзя менять товары при активном статусе заказа"), productbiz(playerid, b);
+		new listord = List[listitem-4][playerid];
+		if(BizzInfo[b][bOrder][listord] == 0) return ErrorText(playerid, "{FF6347}Ошибка! В слоте нет выбранного товара"), productbiz(playerid, b);
+
+		DP[1][playerid] = listord;
+		insertorder(playerid, b, listord);
+	}
+	return true;
 }
