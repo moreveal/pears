@@ -527,7 +527,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             StreetRacers[slot][racersCount][number] = playerid;
             StreetRacers[slot][racePlace][number] = playerid;
             OnlineInfo[playerid][oStreetRaceSlot] = slot+1;
-            SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
+            SuccessMessage(playerid, "Вы успешно зарегистрировались на гонку");
 		}
     }
     else if(dialogid == 1461)
@@ -991,8 +991,8 @@ stock RegisterToRace(playerid, number,idrace)
                 break;
             }   
         }
-        if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
-        if(OnlineInfo[playerid][oStreetRaceSlot]-1 >= 0 && OnlineInfo[playerid][oStreetRaceSlot]-1 != idrace) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в другой сходке на гонку");
+        if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегистрировались в гонке");
+        if(OnlineInfo[playerid][oStreetRaceSlot]-1 >= 0 && OnlineInfo[playerid][oStreetRaceSlot]-1 != idrace) return ErrorMessage(playerid,"{FF6347} Вы уже зарегистрировались в другой сходке на гонку");
         if(StreetRacers[idrace][racersCount][number] == -1 && otmena != -1)
         {
             ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Занять место в гонке?","Да","Нет");
