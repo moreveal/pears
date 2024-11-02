@@ -176,7 +176,7 @@ new friskDefault[] = // Гос. стоимости предметов
 	150000,30000,1,1200,600,80,700,700,800,10, // 171
 	200,200,300,70000,140000,390000,50,150,-1, 100, // 181
 	-1,1500,3500,1500,7500,10000,10000,-1,1000,30000, // 191
-	5000,1500,3000,10,10,700,-1,-1,50000,-1, // 201
+	5000,1500,3000,10,10,700,-1,25000,50000,-1, // 201
 	-1,-1,-1,-1, 50000,100000,200000,400000,800000, // 210
 	100000,200000,400000,800000,600000,1200000,300000,300000,600000,1000000, // 220
 	100000,200000,800000,1000000,5000,1400000,2800000,4200000,-1,2500, // 230
@@ -261,7 +261,8 @@ stock gthinginfoPage(playerid)
 	if(quanstop >= sizeof(friskName)) return ErrorMessage(playerid,"{ff6347}Дальше нет предметов");
     for(new i = quanstop; i<sizeof(friskName);i++)
     {
-        if(CheckOnInventory(i) == 0 || quan > 60 || friskDefault[i] == -1) continue;
+        //if(CheckOnInventory(i) == 0 || quan > 60 || friskDefault[i] == -1) continue;
+		if(CheckOnInventory(i) == 0 || quan > 60) continue;
         format(line,sizeof(line),"\n{ff9000}%d\t{cccccc}%s\t{44ff99}%d$",i,friskName[i],friskDefault[i]), strcat(lines,line);
 		quan++;
 		quanstop = i;
