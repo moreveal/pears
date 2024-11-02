@@ -1583,3 +1583,125 @@ CMD:tag(playerid)
 	}
 	return true;
 }
+
+alias:ahelp("ah")
+CMD:ahelp(playerid)
+{
+	DP[0][playerid] = 0;
+	new string[214],str[4096];
+ 	if(PlayerInfo[playerid][pSoska] >= 1)
+	{
+		format(string,sizeof(string),"{00FFFF}Хелпер:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/a /sp /spoff /otv /re /rr /com /fipcar /gotowh /izol /unizol /mir /unmir /prison /goto /gethere /getcar /gotocar /nohp /admduty /damage"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gzona /tp /tp2 /tp3 /spawns /noconnect /tags /1lvl /1kkfam /1kk /messoff /readconnect /readkill /readdm /readhit /rvanka"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/loc /toga /frames /pames /delpame /delaction /bump /slap /mute /kick /name /reloadbans /wrong /ban /ram /amute /rt /respcar /sprays"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/racgro /awork /vacation /fun /jailed /wanted /arestcar /signs /checkskill /checkpotreb /checkveh /checkmed /medias /frisk /take /gotoruins"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/hp /gm /trigger /checkpunish /checkpts /launch /mind /ab /nocollision /offense /gotoa /checkar"), strcat(str,string);
+	}
+ 	if(PlayerInfo[playerid][pSoska] >= 2)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 2:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/cpcapt /gang /off /plworld /plint /getfamspawn /vniz /vverh /vpered /nazad /levee /pravee /gpci /geo"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/o /ao /vzlom /flip /jail /setint /vehint /vehworld /gotols /gotosf /gotolv /sethp /hpgro /rodet /setspawn /readm /sslap"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/warn /banip /getip /getip2 /cc /ccgro /delacc /dels /fixveh /findgun /unarestcar /check"), strcat(str,string);
+	}
+ 	if(PlayerInfo[playerid][pSoska] >= 3)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 3:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/jetpack /setnames /gotobiz /gotoradar /noooc /noooc2 /domgetc /checkgarage /setgarage /dom /rguns /rname"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/names /dedit /bedit /checkdaily"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 4)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 4:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/armgro /dynamiczz /areav /delareav /gotoareav /gomp /kickmp /offmp /freezeall /unfreezeall /flycam /flyveh /mc /weathergro /gotomap /rgungro"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gototo /givegungro /vehhp /vehhpgro /setarm /animbot /bottext /botid /bot /delbot /cobject /eobject /dobject /veh /delveh /delvehgro /rvc"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 5)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 5:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/doms /appdom /stopmaf /domlog /dominfo /famlog /bizlog /bizinfo /entercar /entercardrive /ssslap /readan /readex /appdom /disdom /doms"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/clear /setname /offname /rnamechange"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 6)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 6:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /shooting /domname /release /releaseaccess /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/dskin /radarstatus"), strcat(str,string);
+	}
+	/*if(PlayerInfo[playerid][pSoska] >= 7)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 7:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/domname /rdom /rdomgun /rmarket /rinvent /dskin /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+	}*/
+	if(PlayerInfo[playerid][pSoska] >= 8)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 8:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/unban /undel /unbanip /respawn /update /rboot /createdaily"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 9)
+	{
+		format(string,sizeof(string),"\n\n{FDD9B5}Менеджер"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/promo /promolog /server /referal /domlvl /makemedia /menumusic"), strcat(str,string);
+	}
+	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}1 страница", str, "Далее", "Выход");
+	return 1;
+}
+
+stock AHelpList(playerid)
+{
+	DP[0][playerid] = 1;
+	new string[214],str[4096];
+	if(PlayerInfo[playerid][pSoska] >= 10)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Л] Зам Куратора и {FF0000}Куратор Лидеров:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/mysql /mysql2 /nametag /paygold /invest /getinvest /rasformbiz /bizmaf /mafship /rrank /raccess /freezegang /limitcapt /stopgz /reloadcapt /rsetting /accessory /editmodel /exportmodel"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/reloadgz /setgz /vote /relpcapt /readw /relpallcapt /giveunit /takeunit /work2 /leadvig /unleadvig /skick /reproof /unreproof /fdom /unfdom /fbiz /unfbiz /givemats /delmats"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/rskin /admwarn /unadmwarn /au /ai /ag /lwork /givegun /givepoint /givescore /takepoint /takescore /froom /unfroom /inhb /outhb /hidden /asellroom /rngsabomb"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 11)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Э] Зам Куратора и {FF0000}Куратор Экспертов:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/jobexp /makeexpert /getgold"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 12)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Х] Зам Куратора и {FF0000}Куратор Хелперов:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/makehelper /rename"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 13)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[А] Зам Куратора и {FF0000}Куратор Администрации:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/makeadmin /domdist"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 15)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}Кураторы:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/giveeditorder /orderweapons /voteclose /sharpvoteclose /stoprally /rdom /rdomgun /rmarket /rinvent"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 19)
+	{
+		format(string,sizeof(string),"\n\n{FDD9B5}Куратор Media"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/nal /setgravity /resetgravity /sendmind /givebiz /givedom /giveroom /givevoen /giveprava /addcar /makedj"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/slapp /raketa /delcar /setskin /giveskin /giveaksess /findchest /loadchest /clearquest /cleartaxes /setvip"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 20)
+	{
+		format(string,sizeof(string),"\n\n{FF0000}Специальный Администратор:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/pricevehup /pricevehdown /takegold /reloadpriceveh /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/setfam /agiverankfam /block /delmail /delgoogle /rslot /asellbiz /abizlvl /bizcity /abizdep /aselldom /dompos /rdomobject /domclass"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/domup /domdown /domupgold /domdowngold /dp /dg /domgoldall /vehgoldall /domfam /famdom /asellroom /delfam /setpas /setmail /setstat /setability /takemoneybank"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gthinginfo /gthing /gthingunix /spoil /reloadbizparthner /ikea /settrailer /trailerpos /deletetrailer /setvote /createapartments /mapartments /ecapartments /efapartments /dapartments"), strcat(str,string);
+	}
+   	if(PlayerInfo[playerid][pSoska] >= 22)
+ 	{
+		format(string,sizeof(string),"\n\n{444444}Основатель:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/reloadchs /relpla /test5 /slapper /veloc /checkas /giveinvest /animer /sm /speech /givemoneybiz /relsliv /ds /protect"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/servtime /ptime /checkgun /givepayday /givegold /unfill /weather /plweather /givemoneybank /givemoney /givechips /antieblo - сдвиг транспорта (античит)"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall"), strcat(str,string);
+	}
+	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
+	return 1;
+}
