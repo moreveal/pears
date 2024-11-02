@@ -2164,7 +2164,7 @@ stock UnlegalThing(i, thingType, thingPack)
 {
 	if(thingType == 0 // Обычный предмет
 		&& !IsACasePackID(thingPack) // Не кейс
-		&& (i == 4 || i == 5 || i == 6 || i == 7 || i == 10 || i == 11 || i == 12 || i == 140 || i == 19 || i == 90 || i == 182 || i == 205 || Hank_IsGood(i))) return 1;
+		&& (i == 4 || i == 6 || i == 7 || i == 10 || i == 11 || i == 12 || i == 140 || i == 19 || i == 90 || i == 182 || i == 205 || Hank_IsGood(i))) return 1;
 	return 0;
 }
 
