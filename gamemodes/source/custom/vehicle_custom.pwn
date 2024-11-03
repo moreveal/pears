@@ -1,4 +1,4 @@
-// last update 13.10.2024 zver
+// last update 18.10.2024 zver
 /*
 Как добавить новый тс?
 1. Добавляем в define MAX_VEHICLE_CUSTOM (в целом, там сейчас с запасом до 200 кастомных авто)
@@ -176,7 +176,8 @@ new vehNameCustom[][] =
     "Chevrolet Corvette C3", // 2160
     "Cadillac CTS-V", // 2161
     "Cadillac Fleetwood Hearse", // 2162
-    "Albany Lurcher" // 2163 
+    "Albany Lurcher", // 2163
+    "Cadillac Escalade Army" // 2164
     };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -343,8 +344,9 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     10000000, // "1982 Mercury Cougar", // 2159
     10000000, // "Chevrolet Corvette C3", // 2160
     10000000, // "Cadillac CTS-V" // 2161
-    10000000, // "Cadillac Fleetwood Hearse" // 2162
-    10000000 // "Albany Lurcher" // 2163 
+    10000000, // "Cadillac Fleetwood Hearse", // 2162
+    10000000, // "Albany Lurcher" // 2163
+    20000000, // "Cadillac Escalade SA Army" // 2164
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту
@@ -511,8 +513,9 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(507, 2159); // "1982 Mercury Cougar", // 2159
     AddVehicleSyncModel(603, 2160); // "Chevrolet Corvette C3", // 2160
     AddVehicleSyncModel(560, 2161); // "Cadillac CTS-V" // 2161
-    AddVehicleSyncModel(445, 2162); // "Cadillac Fleetwood Hearse" // 2162
+    AddVehicleSyncModel(442, 2162); // "Cadillac Fleetwood Hearse", // 2162
     AddVehicleSyncModel(442, 2163); // "Albany Lurcher" // 2163
+    AddVehicleSyncModel(579, 2164); // "Cadillac Escalade Army" // 2164
     return 1;
 }
 
@@ -541,7 +544,7 @@ stock GetVehicleClass(m)
 	|| m == 2052 || m == 2057 || m == 2056 || m == 2066 || m == 2068 || m == 2069 || m == 2070 || m == 2072
 	|| m == 2084 || m == 2085 || m == 2086 || m == 2087 || m == 2089 || m == 2092 || m == 2093 || m == 2098 || m == 2103
     || m == 2105 || m == 2111 || m == 2113 || m == 2116 || m == 2131 || m == 2133 || m == 2136 || m == 2137 || m == 2139
-    || m == 2146 || m == 2150 || m == 2162 || m == 2163) class = 1;
+    || m == 2146 || m == 2150) class = 1;
 
     // Middle Class (2) - Средний
     else if(m == 401 || m == 405 || m == 418 || m == 419 || m == 421 || m == 426 || m == 439 || m == 445 || m == 452 || m == 460
@@ -587,11 +590,11 @@ stock GetVehicleClass(m)
     || m == 574 || m == 582 || m == 583 || m == 596 || m == 597 || m == 598 || m == 599 || m == 601 
 	|| m == 2032 || m == 2036 || m == 2037 || m == 2038 || m == 2040 || m == 2041 || m == 2044 || m == 2045 || m == 2046
 	|| m == 2047 || m == 2060 || m == 2096 || m == 2100 || m == 2101 || m == 2102 || m == 2108 || m == 2122 || m == 2127
-    || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151) class = 7;
+    || m == 2129 || m == 2129 || m == 2132 || m == 2134 || m == 2135 || m == 2140 || m == 2151 || m == 2164) class = 7;
 
     // Новый класс, типо лимитированные (8)
     else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
-    || m == 2159 || m == 2160 || m == 2161) class = 8;
+    || m == 2159 || m == 2160 || m == 2161 || m == 2162 || m == 2163) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
