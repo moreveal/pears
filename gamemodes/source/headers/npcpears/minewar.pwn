@@ -79,6 +79,8 @@ enum e_MineWarPlayerInfo
     mwpSpectateID, // ID игрока, за которым происходит слежка (+1)
     mwpCases, // Гарантированное кол-во кейсов, которые игрок заработал на протяжении игры (не учитывая те, что в конце игры)
     mwpSpentAmmo[4], // Потраченные патроны с начала последней волны (fpick 27-30)
+    Float: mwpDamage, // Количество нанесённого урона
+    mwpDeadCount, // Сколько раз умер
     bool: mwpDead // Статус смерти
 };
 new MineWarPlayerInfo[MAX_REALPLAYERS][e_MineWarPlayerInfo];

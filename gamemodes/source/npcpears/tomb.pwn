@@ -343,6 +343,58 @@ stock Tomb_OnShoot(playerid, WEAPON: weaponid)
     return 1;
 }
 
+stock Tomb_UpdateWaveInfo(roomid)
+{
+    // Формируем список игроков по ID
+    new players[MAX_TOMB_PLAYERS], quan;
+    for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
+    {
+        new currentid = TombInfo[roomid][tpPlayers][i] - 1;
+        if (!IsOnline(currentid)) continue;
+
+        players[quan++] = currentid;
+    }
+
+    // Сортировка по урону
+    for (new i = 0; i < quan - 1; i++)
+    {
+        for (new j = 0; j < quan - i - 1; j++)
+        {
+            if (TombPlayerInfo[players[j]][tpDamage] < TombPlayerInfo[players[j + 1]][tpDamage])
+            {
+                new temp = players[j];
+                players[j] = players[j + 1];
+                players[j + 1] = temp;
+            }
+        }
+    }
+
+    // Формируем статистику
+    new string[1024];
+    for (new i = 0; i < quan; i++)
+    {
+        new currentid = players[i];
+
+        format(string, sizeof(string), 
+            "%s" \
+            "%s: %d/%d\n",
+
+            string,
+            PlayerInfo[currentid][pName],
+            Tomb_PlayerGetMummyKilled(currentid),
+            TombPlayerInfo[currentid][tpDeadCount]
+        );
+    }
+
+    // Отображаем всем игрокам в комнате
+    for (new i = 0; i < quan; i++) {
+        new currentid = players[i];
+        SetPlayerHudTask(currentid, "Гробница", string);
+    }
+
+    return 1;
+}
+
 stock Tomb_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!Tomb_IsRoomExists(roomid)) return 0;
@@ -366,6 +418,7 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
     }
     
     Tomb_UpdateMummyRemainsTextdraw(roomid);
+    Tomb_UpdateWaveInfo(roomid);
     Tomb_ClearMummy(roomid);
 
     TombInfo[roomid][tiWaveCooldown] = 0;
@@ -1099,7 +1152,6 @@ stock Tomb_SetPlayerTime(playerid)
 
 stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
 {
-    #pragma unused killerid
     #pragma unused reason
 
     for (new roomid = 0; roomid < MAX_TOMB_ROOMS; roomid++)
@@ -1118,6 +1170,7 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                 SetTimerEx("Tomb_DestroyDeadMummy", 5 * 1000, false, "dd", roomid, npc_i);
 
                 Tomb_UpdateMummyRemainsTextdraw(roomid);
+                Tomb_UpdateWaveInfo(roomid);
 
                 new mummy = Tomb_GetMummyCount(roomid, .alive = true);
                 if (mummy <= 0)
@@ -1219,16 +1272,28 @@ stock Tomb_GetPlayerRoom(playerid)
 stock Tomb_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float: amount, weaponid, bodypart)
 {
     #pragma unused npc
-    #pragma unused damagerid
-    #pragma unused amount
     #pragma unused weaponid
     #pragma unused bodypart
 
-    /*new roomid = Tomb_GetPlayerRoom(damagerid);
+    new roomid = Tomb_GetPlayerRoom(damagerid);
     if (Tomb_IsRoomExists(roomid))
     {
-        
-    }*/
+        for (new npc_i = 0; npc_i < MAX_TOMB_MUMMY; npc_i++)
+        {
+            if (NPC: TombInfo[roomid][tiMummy][npc_i] == npc)
+            {
+                // Считаем урон
+                new Float: damage = amount, Float: health;
+                GetNpcHealth(npc, health);
+                if (health - amount < 0.0) {
+                    damage = health;
+                }
+                TombPlayerInfo[damagerid][tpDamage] += damage;
+                Tomb_UpdateWaveInfo(roomid);
+                return 1;
+            }
+        }
+    }
     return 1;
 }
 
@@ -1243,6 +1308,7 @@ stock Tomb_OnPlayerDeath(playerid)
     TombPlayerInfo[playerid][tpCurse] = 0.0; // Сбрасываем проклятие
 
     Tomb_SetCurseTextdraw(playerid, false);
+    Tomb_UpdateWaveInfo(roomid);
 
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {
