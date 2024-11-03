@@ -101,7 +101,7 @@ stock Tomb_SetMummyRemainsTextdraw(playerid, bool: show = true)
     return 1;
 }
 
-stock Tomb_SetCurseTextdraw(playerid, bool: show = true)
+stock Tomb_SetCurseTextdraw(playerid, bool: show)
 {
     for (new i = 0; i < sizeof(TombCurseTD[]); i++)
     {
@@ -111,6 +111,21 @@ stock Tomb_SetCurseTextdraw(playerid, bool: show = true)
             PlayerTextDrawHide(playerid, TombCurseTD[playerid][i]);
         }
     }
+    
+    foreach (new spectatorid : Player)
+    {
+        if (gSpectateID[spectatorid] == playerid) {
+            for (new i = 0; i < sizeof(TombCurseTD[]); i++)
+            {
+                if (show) {
+                    PlayerTextDrawShow(spectatorid, TombCurseTD[spectatorid][i]);
+                } else {
+                    PlayerTextDrawHide(spectatorid, TombCurseTD[spectatorid][i]);
+                }
+            }
+        }
+    }
+    
     return 1;
 }
 
@@ -805,6 +820,14 @@ stock Tomb_UpdateCurseTextdraw(playerid)
     width = TombPlayerInfo[playerid][tpCurse];
     PlayerTextDrawTextSize(playerid, TombCurseTD[playerid][1], width, height);
     PlayerTextDrawShow(playerid, TombCurseTD[playerid][1]);
+
+    foreach (new spectatorid : Player)
+    {
+        if (gSpectateID[spectatorid] == playerid) {
+            PlayerTextDrawTextSize(spectatorid, TombCurseTD[spectatorid][1], width, height);
+            PlayerTextDrawShow(spectatorid, TombCurseTD[spectatorid][1]);
+        }
+    }
 
     return 1;
 }
