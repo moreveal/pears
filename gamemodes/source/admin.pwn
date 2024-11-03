@@ -843,6 +843,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
     if(IsABig(model)) vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2]+2.0, frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
     else vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
 	
+	CreatedVehicleID[playerid] = vehicleid;
 	LinkVehicleToInterior(vehicleid, GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(vehicleid, GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
