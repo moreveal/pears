@@ -372,6 +372,14 @@ stock UseStickyBomb(playerid, inva = 999)
             return ErrorMessage(playerid, string);
         }
         
+        {
+            new tmphour, tmpminute, tmpsecond;
+            gettime(tmphour, tmpminute, tmpsecond);
+            if (tmphour < 10 || tmphour >= 22) {
+                return ErrorMessage(playerid, "{FF6347}Можно воспользоваться только с 10:00 до 22:00");
+            }
+        }
+        
         // Находим ближайшую к игроку бомбу
         new Float: distance = 50.0, bombid = INVALID_STREAMER_ID;
         for (new i = 0; i < sizeof(NGSAStickyBombs); i++)
