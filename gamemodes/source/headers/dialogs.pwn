@@ -194,6 +194,9 @@ enum e_DialogId {
     AUTOSERVICE_BACKDETAIL,
 
     // Casino
-    CASINO_EDITCHIPSPROCENT
+    CASINO_EDITCHIPSPROCENT,
+
+    // Заправка транспорта
+    FILLKANI_DIALOG_ENTER
 };
 
