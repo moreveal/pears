@@ -197,6 +197,10 @@ enum e_DialogId {
     CASINO_EDITCHIPSPROCENT,
 
     // Заправка транспорта
-    FILLKANI_DIALOG_ENTER
+    FILLKANI_DIALOG_ENTER,
+
+    // Дом
+    DOM_DIALOG_DONATE,
+    DOM_DIALOG_DONATE_BUY
 };
 
