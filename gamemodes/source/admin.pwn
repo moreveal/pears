@@ -1627,7 +1627,7 @@ CMD:ahelp(playerid)
 	if(PlayerInfo[playerid][pSoska] >= 6)
 	{
 		format(string,sizeof(string),"\n\n{007a08}Админ 6:"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /shooting /domname /release /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /domname /release /cnn /cnnn /unmute /unwarn"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/dskin /radarstatus"), strcat(str,string);
 	}
 	/*if(PlayerInfo[playerid][pSoska] >= 7)
