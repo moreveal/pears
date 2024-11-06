@@ -201,6 +201,10 @@ enum e_DialogId {
 
     // Дом
     DOM_DIALOG_DONATE,
-    DOM_DIALOG_DONATE_BUY
+    DOM_DIALOG_DONATE_BUY,
+
+    // Администрация
+    ADMIN_DIALOG_CHECKEVENTS,
+    ADMIN_DIALOG_CHECKEVENTS_STATS
 };
 
