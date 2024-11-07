@@ -159,7 +159,7 @@ stock ReloadBizInterior(b)
 stock SaveAllObjectBizz(b)
 {
     mysql_tquery(pearsq, "START TRANSACTION;");
-    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
     {
         if(BizzInfo[b][bOmodel][i] > 0) UpdateObjectBiz(b, i);
     }
@@ -171,7 +171,7 @@ stock SaveAllObjectBizz(b)
 stock DeleteAllObjectBizz(b)
 {
     mysql_tquery(pearsq, "START TRANSACTION;");
-    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
     {
         if(BizzInfo[b][bOmodel][i] > 0)
         {
@@ -255,7 +255,7 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT; oba++)
+	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
         {
@@ -286,7 +286,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT; oba++)
+	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
         {
@@ -306,7 +306,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 
 stock EditObjectBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(oba < 0 || oba >= MAX_OBJECT_INT_BIZ) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
 	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
@@ -327,7 +327,7 @@ stock EditObjectBiz(playerid, biz, oba)
 
 stock DeleteObjectBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(oba < 0 || oba >= MAX_OBJECT_INT_BIZ) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
 	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
@@ -356,7 +356,7 @@ stock DeleteObjectBiz(playerid, biz, oba)
 
 stock EditTextureBiz(playerid, biz, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+	if(oba < 0 || oba >= MAX_OBJECT_INT_BIZ) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
 	if(BizzInfo[biz][bOmodel][oba] == 0) return ErrorMessage(playerid, "{FF6347}Объекта не существует");
 	if(!IsValidDynamicObject(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}DynamicObject под таким ID не существует");
 	if(Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
@@ -396,7 +396,7 @@ stock ClearVariableObjectBiz(biz, oba)
 stock getFreeSlotObjectBiz(biz)
 {
 	new slot = -1;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 		if(BizzInfo[biz][bOmodel][oba] == 0)
 		{
@@ -410,7 +410,7 @@ stock getFreeSlotObjectBiz(biz)
 stock getObjectStreetBiz(biz)
 {
 	new quan;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 		if(BizzInfo[biz][bOmodel][oba] > 0)
 		{
@@ -427,7 +427,7 @@ stock getObjectStreetBiz(biz)
 stock DelObjectBiz(b, obid) // Удаляем объект из biza
 {
 	if(LIMITED_LOADING_SERVER >= 2) return 1;
-	if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
+	if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT_BIZ) return 1;
 
     DelObjectOwner(b, obid, 1);
 	return 1;
@@ -436,7 +436,7 @@ stock DelObjectBiz(b, obid) // Удаляем объект из biza
 stock UpdateObjectBiz(b, obid) // Обновляем объект в bize
 {
     if(LIMITED_LOADING_SERVER >= 2) return 1;
-    if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT) return 1;
+    if(b < 0 || b >= MAX_BIZ || obid < 0 || obid >= MAX_OBJECT_INT_BIZ) return 1;
 
     UpdateObjectOwner(b, obid, 1);
     return 1;

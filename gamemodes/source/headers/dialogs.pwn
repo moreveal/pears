@@ -194,6 +194,17 @@ enum e_DialogId {
     AUTOSERVICE_BACKDETAIL,
 
     // Casino
-    CASINO_EDITCHIPSPROCENT
+    CASINO_EDITCHIPSPROCENT,
+
+    // Заправка транспорта
+    FILLKANI_DIALOG_ENTER,
+
+    // Дом
+    DOM_DIALOG_DONATE,
+    DOM_DIALOG_DONATE_BUY,
+
+    // Администрация
+    ADMIN_DIALOG_CHECKEVENTS,
+    ADMIN_DIALOG_CHECKEVENTS_STATS
 };
 

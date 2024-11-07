@@ -56,6 +56,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_dom", "dElectroConnect", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dElectroUnix", "INT NOT NULL DEFAULT '0'");
 
+    AddColumnIfNotExists("pp_dom", "MoreIntObjects", "INT NOT NULL DEFAULT '0'");    
+
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneX", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneY", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneZ", "FLOAT NOT NULL DEFAULT '0'");

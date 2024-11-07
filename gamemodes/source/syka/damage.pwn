@@ -389,8 +389,7 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     if(weaponid == _:WEAPON_DEAGLE)
     {
         new g = fraction(playerid);
-        if(ChutC[g] != 0 || GoC[g] != 0 
-            || Shooting[playerid] > 0 
+        if(ChutC[g] != 0 || GoC[g] != 0
             || ComputerClubIsPlayerCbugActive(playerid) 
             || MPGO[playerid] > 0) // +C Доступен
         {

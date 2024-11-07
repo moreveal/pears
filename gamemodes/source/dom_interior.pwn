@@ -1,4 +1,3 @@
-
 stock EditObjectDom(playerid, dom, oba)
 {
 	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
@@ -326,15 +325,11 @@ stock DeleteInteractionDom(dom)
     return 1;
 }
 
-stock CheckObject(dom) // Проверяем есть ли свободные слоты для установки объекта мебели
+stock GetMaxDomObjects(dom)
 {
-	new quan;
-	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
-	{
-		if(DomInfo[dom][dOmodel][oba] > 0) quan ++;
-	}
-	if(quan >= MAX_OBJECT_INT) return 1;
-	return 0;
+    new max_objects = MAX_OBJECT_INT;
+    if (!DomInfo[dom][dMoreIntObjects]) max_objects -= 200;
+    return max_objects;
 }
 
 function LoadObject(stat, owner_type) // Грузим объекты интерьера для дома и бизнеса
