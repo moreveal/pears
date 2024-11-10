@@ -1915,6 +1915,7 @@ stock Radar_ViolationHandler(playerid) {
                                     new quan, para;
                                     ThingParameters(playerid, 233, quan, para);
                                     set_para(playerid, 233, para);
+                                    set_boot_para(vehicleid, 233, para);
                                 }
                             }
                         }
