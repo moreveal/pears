@@ -222,8 +222,8 @@ stock PDatabase_HackSuccess(playerid)
     policeDatabaseInfo[fractionid][pdiHacked] = true;
     
     switch (fractionid) {
-        case 1: policeDatabaseInfo[fractionid][pdiClearSuspectRemains] = 4;
-        default: policeDatabaseInfo[fractionid][pdiClearSuspectRemains] = 2;
+        case 1: policeDatabaseInfo[fractionid][pdiClearSuspectRemains] = POLICE_DATABASE_SU_REMAINS_FBI;
+        default: policeDatabaseInfo[fractionid][pdiClearSuspectRemains] = POLICE_DATABASE_SU_REMAINS_DEFAULT;
     }
 
     {
@@ -1226,6 +1226,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
                         case 0: {
                             ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "{0066ff}Серверная LSPD {cccccc}| Информация",
                                 "{ffffff}В серверной Полицейского Департамента хранятся данные о небольшой части подозреваемых (не более 12+ ур. розыска)\n" \
+                                "В базе данных SAPD можно снять розыск не более чем "#POLICE_DATABASE_SU_REMAINS_SAPD" людям\n" \
                                 "Вы можете использовать следующий способ для проникновения:\n\n" \
                                 \
                                 "{ff9000}1. Проникновение с использованием вентиляции\n" \
@@ -1240,6 +1241,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
                         case 1: {
                             ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "{6666ff}Серверная FBI {cccccc}| Информация",
                                 "{ffffff}В серверной Федерального Бюро Расследований хранятся данные об особо опасных подозреваемых (6+ ур. розыска)\n" \
+                                "В базе данных FBI можно снять розыск не более чем "#POLICE_DATABASE_SU_REMAINS_FBI" людям\n" \
                                 "Для проникновения внутрь вы можете использовать любой из трёх предоставленных вариантов:\n\n" \
                                 \
                                 "{ff9000}1. Проникновение с использованием термитной смеси\n" \
