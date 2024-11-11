@@ -125,7 +125,7 @@ stock LifeWildAnimals(a)
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
     if(!IsPointInDynamicArea(WildAnimalsArea[WildAnimals[a][waArea]][0], AnimalX,AnimalY,AnimalZ) && WildAnimals[a][waEvent] != 1) return DestroyAnimals(a),WildAnimals[a][waUnix] = gettime()+300,WildAnimalsArea[WildAnimals[a][waArea]][1] = 0; // Не в зоне своей территории, удаляем.
-    if(WildAnimals[a][waHealth] <= 0.0) return 0;
+    if(WildAnimals[a][waHealth] <= 0.0 || WildAnimals[a][waHealth] >= 1000.0) return 0;
     if(WildAnimals[a][waEvent] == 0) // Прогулка
     {
         if(GetDistancePoint(AnimalX, AnimalY,AnimalZ, WildAnimals[0][waTaskCoord][0], WildAnimals[0][waTaskCoord][1],WildAnimals[a][waTaskCoord][2]) <= 20.0) WildAnimals[a][waDestinationStatus] = true;
@@ -312,6 +312,17 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         WildAnimals[findSlot][waHealth] -= amount;
         if(WildAnimals[findSlot][waHealth] <= 0.0)
         {
+            new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
+            GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
+
+            DestroyNpc(WildAnimals[findSlot][waID]);
+
+            WildAnimals[findSlot][waID] = CreateNpc(AnimalsParam[WildAnimals[findSlot][waType]][0], AnimalX, AnimalY, AnimalZ);
+            SetNpcStunAnimationEnabled(WildAnimals[findSlot][waID], false);
+            SetNpcVirtualWorld(WildAnimals[findSlot][waID], 0);
+            SetNpcHealth(WildAnimals[findSlot][waID], 100000);
+            //TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2", 4.0, true, false, false, false, 500);
+
             WildAnimals[findSlot][waUnix] = gettime()+300;
             SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животного, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] что бы разделать его");
         }
@@ -334,7 +345,7 @@ stock FindCarveAnimals(playerid) // Делаю пока так, ибо я рот
     for(new a = MAX_WILD_ANIMALS_AREA*area; a < MAX_WILD_ANIMALS_AREA*(1+area); a++)
     {
         if(!IsValidNpc(WildAnimals[a][waID])) continue;
-        if(WildAnimals[a][waHealth] > 0.0) continue;
+        if(WildAnimals[a][waHealth] > 0.0 && WildAnimals[a][waHealth] < 1000.0) continue;
         else if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime())
         {
             GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
