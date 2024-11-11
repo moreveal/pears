@@ -1226,7 +1226,7 @@ stock PDatabase_OnPlayerPressALT(playerid)
                         case 0: {
                             ShowDialog(playerid, 1700, DIALOG_STYLE_MSGBOX, "{0066ff}Серверная LSPD {cccccc}| Информация",
                                 "{ffffff}В серверной Полицейского Департамента хранятся данные о небольшой части подозреваемых (не более 12+ ур. розыска)\n" \
-                                "В базе данных SAPD можно снять розыск не более чем "#POLICE_DATABASE_SU_REMAINS_SAPD" людям\n" \
+                                "В базе данных SAPD можно снять розыск не более чем "#POLICE_DATABASE_SU_REMAINS_DEFAULT" людям\n" \
                                 "Вы можете использовать следующий способ для проникновения:\n\n" \
                                 \
                                 "{ff9000}1. Проникновение с использованием вентиляции\n" \
