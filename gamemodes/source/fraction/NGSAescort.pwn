@@ -2972,6 +2972,55 @@ stock ExitWindowTrain(playerid)
 	return 1;
 }
 
+// Трамплины на зону 51 (для въезда и выезда)
+new bool:Area51Status;
+new AreaObject1;
+new AreaObject2;
+new AreaTimer;
+
+CMD:area51(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 9) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+
+	if(Area51Status == false)
+	{
+		PlayerPlaySound(playerid, 32600, 0,0,0);
+		AreaObject1 = CreateDynamicObject(8302, 179.342529, 1783.801147, 18.140611, 0.000000, 0.000000, 17.800012); // На базу
+		AreaObject2 = CreateDynamicObject(8302, 123.273567, 1843.763061, 18.140611, 0.000000, 0.000000, 108.499923); // С базы
+		Area51Status = true;
+		AreaTimer = 20; // Через 20 минут удалятся сами
+	}
+	else
+	{
+		PlayerPlaySound(playerid, 11200, 0,0,0);
+		DestroyTrampinArea51();
+	}
+	return true;
+}
+
+// Процесс таймера для удаления трамплина на зоне 51
+stock ChangeStatusTramplinArea51()
+{
+	if(Area51Status == true)
+	{
+		AreaTimer --;
+		if(AreaTimer <= 0) DestroyTrampinArea51();
+	}
+	return true;
+}
+
+// Удаляем трамплин
+stock DestroyTrampinArea51()
+{
+	DestroyDynamicObject(AreaObject1);
+	DestroyDynamicObject(AreaObject2);
+	AreaObject1 = 0;
+	AreaObject2 = 0;
+	Area51Status = false;
+	AreaTimer = 0;
+	return true;
+}
+
 /*new puttrainpos;
 stock postrainroad(playerid)
 {
