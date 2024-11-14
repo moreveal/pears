@@ -20,6 +20,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pCDGraves", "INT NOT NULL DEFAULT '0'"); // КД на раскопку могил
     AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
+    AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
+    AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
 
     // quest halloween
     AddColumnIfNotExists("pp_quest_temp", "Ball", "BLOB NULL DEFAULT NULL");
