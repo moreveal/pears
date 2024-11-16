@@ -2,6 +2,15 @@
 #define MAX_WILD_ANIMALS_AREA 20
 #define MAX_WILD_ANIMALS_TYPE 5
 
+new friskQualityColorAndText[5][] =
+{
+    { "{FF6347}Ужасное" },
+    { "{D2B48C}Плохое" },
+    { "{54FF9F}Нормальное" }, 
+    { "{8B00FF}Хорошее" }, 
+    { "{ffd700}Отличное" }
+};
+
 new AnimalsParam[MAX_WILD_ANIMALS_TYPE][2] =
 {
     { 15793, 300 },     // Медведь
@@ -29,6 +38,7 @@ new WildAnimals[MAX_WILD_ANIMALS_NPS][wildanimalsnpc];
 
 new WildAnimalsArea[5][2];
 new SittngStatus[MAX_REALPLAYERS];
+new bool:LoadBag;
 
 stock LoadAnimalsArea()
 {
@@ -73,6 +83,7 @@ stock LoadWildAnimals(area)
 
 CMD:gotoanimal(playerid, const params[])
 {
+    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     if(sscanf(params, "i",params[0])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Телепортироваться к животному [ /gotoanimal ID ]");
 	if(params[0] < 0 || params[0] > MAX_WILD_ANIMALS_NPS-1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: ID не меньше 1 и не больше %d",MAX_WILD_ANIMALS_NPS-1);
     if(!IsValidNpc(WildAnimals[params[0]][waID])) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Животного под указанным номером нет!");
@@ -321,7 +332,9 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
             SetNpcStunAnimationEnabled(WildAnimals[findSlot][waID], false);
             SetNpcVirtualWorld(WildAnimals[findSlot][waID], 0);
             SetNpcHealth(WildAnimals[findSlot][waID], 100000);
-            //TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2", 4.0, true, false, false, false, 500);
+
+            #pragma warning disable 202
+            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2");
 
             WildAnimals[findSlot][waUnix] = gettime()+300;
             SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животного, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] что бы разделать его");
@@ -381,23 +394,23 @@ stock CarveAnimals(playerid,a)
     CA_FindZ_For2DCoord(AnimalX,AnimalY,AnimalZ);
 
     new CountMeat, TypeSkin;
-    if(WildAnimals[a][waType] == 0) CountMeat = random(3)+7,TypeSkin = 1;
-    else if(WildAnimals[a][waType] == 1) CountMeat = random(3)+5,TypeSkin = 1;
-    else if(WildAnimals[a][waType] == 2) CountMeat = random(3)+2,TypeSkin = 1;
-    else if(WildAnimals[a][waType] == 3) CountMeat = random(2)+1,TypeSkin = 1;
-    else if(WildAnimals[a][waType] == 4) CountMeat = random(2)+2,TypeSkin = 1;
+    if(WildAnimals[a][waType] == 0) CountMeat = random(3)+7,TypeSkin = 247;
+    else if(WildAnimals[a][waType] == 1) CountMeat = random(3)+5,TypeSkin = 248;
+    else if(WildAnimals[a][waType] == 2) CountMeat = random(3)+2,TypeSkin = 245;
+    else if(WildAnimals[a][waType] == 3) CountMeat = random(2)+1,TypeSkin = 244;
+    else if(WildAnimals[a][waType] == 4) CountMeat = random(2)+2,TypeSkin = 246;
 
     if(chance <= 0)
     {
         SetThrow(-1, 22, 22, CountMeat, 0, 0, 0, 0, 0, 0, AnimalX,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
-        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил только мясо.",gender(playerid));
-        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Мной было сделано много выстрелов... Вся шкура разорвана",gender(playerid));
+        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил%s только мясо.",gender(playerid),gender(playerid));
+        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Мной было сделано много выстрелов... Вся шкура разорвана");
     }
     else
     {
         SetThrow(-1, 22, 22, CountMeat, gettime()+259200, 0, 0, 0, 0, 0, AnimalX,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
         SetThrow(-1, TypeSkin, TypeSkin, 1, chance, 0, 0, 0, 0, 0, AnimalX+0.3,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
-        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил мясо и шкуру с качеством {ff9000}%d%%.",gender(playerid),chance);
+        SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил%s мясо и шкуру с качеством {ff9000}%d%%.",gender(playerid),gender(playerid),chance);
     }
     HidePlayerHudTask(playerid);
     DestroyAnimals(a),WildAnimals[a][waUnix] = gettime()+300,WildAnimalsArea[WildAnimals[a][waArea]][1] = 0; // Удаляем зверушку и ставим КД
@@ -410,7 +423,9 @@ stock Pump_CarveAnimals(playerid)
 	if(GetPVarInt(playerid,"oryjtemp") >= 100)
 	{
 	 	GameTextForPlayer(playerid, RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Разделка туши: ~w~100/100"), 1500, 3);
-	 	CarveAnimals(playerid, GetPVarInt(playerid,"wildanimals"));
+        new a = GetPVarInt(playerid,"wildanimals");
+	 	if(LoadBag && WildAnimals[a][waEvent] != 3) CreateBagWildAnimals(playerid, a);
+        else CarveAnimals(playerid, a);
 	 	ClearAnim(playerid);
         SetPVarInt(playerid, "wildanimals", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
 	}
@@ -436,4 +451,20 @@ stock Pump_StartCarveAnimals(playerid, a)
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь мне нужно начать разделывать тушу {ff9000}[ Нажимайте %s ]", buttonName[Device[playerid]]);
 
     return 1;
+}
+
+CMD:loadbag(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(LoadBag) LoadBag = false, SuccessMessage(playerid, "{44ff99}Баг был исправлен");
+    else LoadBag = true, SuccessMessage(playerid, "{44ff99}Баг был создан");
+    return true;
+}
+
+stock CreateBagWildAnimals(playerid,a)
+{
+    SetNpcHealth(WildAnimals[a][waID],1);
+    WildAnimals[a][waEvent] = 3;
+    TaskNpcAttackPlayer(WildAnimals[a][waID], playerid, .aggressive = true);
+    return true;
 }
