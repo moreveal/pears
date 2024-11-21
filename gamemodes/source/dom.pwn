@@ -103,7 +103,8 @@ CMD:domdist(playerid, const params[])
 stock getFreeSlotObjectDom(dom)
 {
 	new slot = -1;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	new max_objects = GetMaxDomObjects(dom);
+	for(new oba = 1; oba < max_objects; oba++)
 	{
 		if(DomInfo[dom][dOmodel][oba] == 0)
 		{

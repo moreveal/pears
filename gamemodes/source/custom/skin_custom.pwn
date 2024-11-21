@@ -4,14 +4,13 @@
 1. Увеличить define MAX_SKIN_CUSTOM (в базе строки до 600 id скина)
 2. Добавить в stock AddCustomSkins новый AddCharSyncModel (Оригинальный скин, Новый ID следующий по порядку)
 3. Если скин мужской - добавить новый ID в stock GetSkinSex
-4. Если добавляем специальный скин, использующийся только в системе - добавить новый ID в stock IsSpecialSystemSkin
-5. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
+4. Если хотим добавить скин в организацию, добавляем его в public ReloadSkin
 
 Как добавить скин в магазины?
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 297 
+#define MAX_SKIN_CUSTOM 293
 
 stock AddCustomSkins()
 {
@@ -319,6 +318,10 @@ stock AddCustomSkins()
 	AddCharSyncModel(157, 607); // pearsfox
 	AddCharSyncModel(157, 608); // pearsrabbit
 	AddCharSyncModel(162, 609); // pearswolf
+	AddCharSyncModel(145, 610); // pearsfhaz
+	AddCharSyncModel(146, 611); // pearsmhaz1
+	AddCharSyncModel(144, 612); // pearsmhaz2
+	AddCharSyncModel(146, 613); // pearsmhaz3
     return 1;
 }
 
@@ -380,7 +383,7 @@ stock GetSkinSex(s)
 	|| s == 453 || s >= 454 && s <= 459 || s >= 462 && s <= 464 || s >= 466 && s <= 495 || s >= 500 && s <= 507
 	|| s >= 512 && s <= 516 || s >= 519 && s <= 527 || s == 529 || s >= 531 && s <= 540 || s >= 542 && s <= 543
 	|| s == 545 || s >= 547 && s <= 550 || s >= 552 && s <= 561 || s >= 564 && s <= 585 || s >= 592 && s <= 597
-	|| s >= 600 && s <= 602) return 1; // 1 - мужской скин
+	|| s >= 600 && s <= 602 || s >= 611 && s <= 613) return 1; // 1 - мужской скин
 
 	else if(s == 285 || s == 426 || s == 427 || s == 428 || s == 460 || s == 461 || s == 508 || s == 509 ||
 	s == 510 || s == 511 || s >= 603 && s <= 609) return 0; // Не имеет пола (подходит для мужчин и женщин)

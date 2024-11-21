@@ -1215,7 +1215,7 @@ stock Radar_GetNearest(playerid, Float: distance = 9999.0) {
 }
 
 stock Radar_OnPlayerDisconnect(playerid) {
-    #pragma unused playerid
+    for (new e_PlayerRadarInfo: i; i < e_PlayerRadarInfo; i++) PlayerRadarInfo[playerid][i] = 0;
 
     return 1;
 }
@@ -1612,7 +1612,7 @@ stock Pump_Radar(playerid) {
         || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
         || !is_repair && Radar_IsAnyNearPlayer(playerid, .placed = false) // Радар ставят, но рядом уже стоит
         || (is_repair && !Radar_IsBroken(radarid)) // Радар чинят, но он уже починен
-        || Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
+        || !is_repair && Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
     {
         SetPVarInt(playerid, "oryjtemp", 0);
         SetPVarInt(playerid, "Arobsklad", 0);
@@ -1915,6 +1915,7 @@ stock Radar_ViolationHandler(playerid) {
                                     new quan, para;
                                     ThingParameters(playerid, 233, quan, para);
                                     set_para(playerid, 233, para);
+                                    set_boot_para(vehicleid, 233, para);
                                 }
                             }
                         }

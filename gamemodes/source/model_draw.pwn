@@ -263,7 +263,8 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 			case 12385: x = 90.0000, y = 0.0000, z = 60.0000, s = 1.0000;
 			case 12386: x = 90.0000, y = 0.0000, z = 60.0000, s = 1.0000;
 			case 12388: x = 90.0000, y = 0.0000, z = 0.0000, s = 1.0000;
-
+			case 12354: x = 90.0000, y = 158.0000, z = 90.0000, s = 1.2000; // Прокладки
+			
 			default: x = 0.0, y = 0.0, z = 0.0, s = 1.0, findIt = 0;
 		}
 	}

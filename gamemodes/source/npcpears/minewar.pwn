@@ -303,6 +303,58 @@ stock MineWar_OnShoot(playerid, WEAPON: weaponid)
     return 1;
 }
 
+stock MineWar_UpdateWaveInfo(roomid)
+{
+    // Формируем список игроков по ID
+    new players[MAX_MINEWAR_PLAYERS], quan;
+    for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
+    {
+        new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
+        if (!IsOnline(currentid)) continue;
+
+        players[quan++] = currentid;
+    }
+
+    // Сортировка по урону
+    for (new i = 0; i < quan - 1; i++)
+    {
+        for (new j = 0; j < quan - i - 1; j++)
+        {
+            if (MineWarPlayerInfo[players[j]][mwpDamage] < MineWarPlayerInfo[players[j + 1]][mwpDamage])
+            {
+                new temp = players[j];
+                players[j] = players[j + 1];
+                players[j + 1] = temp;
+            }
+        }
+    }
+
+    // Формируем статистику
+    new string[1024];
+    for (new i = 0; i < quan; i++)
+    {
+        new currentid = players[i];
+
+        format(string, sizeof(string), 
+            "%s" \
+            "%s: %d/%d\n",
+
+            string,
+            PlayerInfo[currentid][pName],
+            MineWar_PlayerGetZombieKilled(currentid),
+            MineWarPlayerInfo[currentid][mwpDeadCount]
+        );
+    }
+
+    // Отображаем всем игрокам в комнате
+    for (new i = 0; i < quan; i++) {
+        new currentid = players[i];
+        SetPlayerHudTask(currentid, "Шахта", string);
+    }
+
+    return 1;
+}
+
 stock MineWar_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!MineWar_IsRoomExists(roomid)) return 0;
@@ -325,6 +377,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
     }
     
     MineWar_UpdateZombieRemainsTextdraw(roomid);
+    MineWar_UpdateWaveInfo(roomid);
     MineWar_ClearZombies(roomid);
 
     MineWarInfo[roomid][mwWaveCooldown] = 0;
@@ -923,7 +976,6 @@ stock MineWar_SetPlayerTime(playerid)
 
 stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
 {
-    #pragma unused killerid
     #pragma unused reason
 
     for (new roomid = 0; roomid < MAX_MINEWAR_ROOMS; roomid++)
@@ -943,6 +995,7 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 SetTimerEx("MineWar_DestroyDeadZombie", 5 * 1000, false, "dd", roomid, npc_i);
 
                 MineWar_UpdateZombieRemainsTextdraw(roomid);
+                MineWar_UpdateWaveInfo(roomid);
 
                 new zombies = MineWar_GetZombieCount(roomid, .alive = true);
                 if (zombies <= 0)
@@ -1043,16 +1096,28 @@ stock MineWar_GetPlayerRoom(playerid)
 stock MineWar_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float: amount, weaponid, bodypart)
 {
     #pragma unused npc
-    #pragma unused damagerid
-    #pragma unused amount
     #pragma unused weaponid
     #pragma unused bodypart
 
-    /*new roomid = MineWar_GetPlayerRoom(damagerid);
+    new roomid = MineWar_GetPlayerRoom(damagerid);
     if (MineWar_IsRoomExists(roomid))
     {
-        
-    }*/
+        for (new npc_i = 0; npc_i < MAX_MINEWAR_ZOMBIES; npc_i++)
+        {
+            if (NPC: MineWarInfo[roomid][mwZombie][npc_i] == npc)
+            {
+                // Считаем урон
+                new Float: damage = amount, Float: health;
+                GetNpcHealth(npc, health);
+                if (health - amount < 0.0) {
+                    damage = health;
+                }
+                MineWarPlayerInfo[damagerid][mwpDamage] += damage;
+                MineWar_UpdateWaveInfo(roomid);
+                return 1;
+            }
+        }
+    }
     return 1;
 }
 
@@ -1063,6 +1128,8 @@ stock MineWar_OnPlayerDeath(issuerid)
     if (MineWarPlayerInfo[issuerid][mwpDead]) return 0;
 
     MineWarPlayerInfo[issuerid][mwpDead] = true;
+    MineWarPlayerInfo[issuerid][mwpDeadCount]++;
+    MineWar_UpdateWaveInfo(roomid);
 
     for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
     {

@@ -65,13 +65,13 @@ stock GoStreetRacers(playerid)
                 format(line,sizeof(line),"Сходка StreetRacers.\t Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nОбъявить сбор\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[slot][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosMarket][0] != 0.0 && StreetRacers[slot][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[slot][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosBenz][0] != 0.0 && StreetRacers[slot][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[slot][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosService][0] != 0.0 && StreetRacers[slot][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[slot][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosTerminal][0] != 0.0 && StreetRacers[slot][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]\t"), strcat(lines,line);
                 format(line,sizeof(line),"\nКол-во гоночных мест\t{ff9000}%d",StreetRacers[slot][raceCountFix]), strcat(lines,line);
                 ShowDialog(playerid,1452,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
             }

@@ -233,7 +233,7 @@ stock LoadInteriorToBiz(playerid, b)
     // Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
     {
         // Удаляем текущие объекты из бизнеса
         if(BizzInfo[b][bOmodel][i] > 0) 
@@ -349,7 +349,7 @@ stock useAvailableInterior(playerid, propId, typeProperty)
     // Грузим объекты из бизнеса
     else if(typeProperty == 1)
     {
-        for(new i = 0; i < MAX_OBJECT_INT; i++)
+        for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
         {
             if(BizzInfo[propId][bOmodel][i] > 0) 
             {

@@ -23,6 +23,40 @@ CMD:netstat(playerid)
 	return true;
 }
 
+alias:checkevents("showevents")
+CMD:checkevents(playerid)
+{
+	if (PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	new string[1024] = "{cccccc}Хост\t{cccccc}Локация\n";
+	new quan;
+	for (new i = 0; i < MAX_MINEWAR_ROOMS; i++)
+	{
+		if (!MineWar_IsRoomExists(i)) continue;
+		format(string, sizeof(string), "%s%s\t{42BF0F}Шахта [%d %s]\n", string, PlayerInfo[MineWarInfo[i][mwOwner]][pName], MineWar_GetPlayersCount(i), PluralToText(MineWar_GetPlayersCount(i), "участник", "участника", "участников"));
+		List[quan++][playerid] = i;
+		ListParam[quan - 1][playerid] = 1;
+	}
+	for (new i = 0; i < MAX_TOMB_ROOMS; i++)
+	{
+		if (!Tomb_IsRoomExists(i)) continue;
+		format(string, sizeof(string), "%s%s\t{F5DEB3}Гробница [%d %s]\n", string, PlayerInfo[TombInfo[i][tiOwner]][pName], Tomb_GetPlayersCount(i), PluralToText(Tomb_GetPlayersCount(i), "участник", "участника", "участников"));
+		List[quan++][playerid] = i;
+		ListParam[quan - 1][playerid] = 2;
+	}
+
+	new villageQuan;
+	if (VillageInfo[villActive]) {
+		foreach (new currentid : VillagePlayer) villageQuan++;
+	}
+	if (villageQuan > 0) {
+		format(string, sizeof(string), "%s-\t{FFCC00}Деревня [%d %s]\n", string, villageQuan, PluralToText(villageQuan, "участник", "участника", "участников"));
+		ListParam[quan++][playerid] = 3;
+	}
+	if (quan == 0) return ErrorMessage(playerid, "{FF6347}Сейчас не проходит ни одно событие");
+	
+	return ShowDialog(playerid, ADMIN_DIALOG_CHECKEVENTS, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Текущие события", string, "Выбор", "Закрыть");
+}
+
 CMD:givemats(playerid, const params[])
 {
 	new fractionId, thingId, thingType, thingAmount;
@@ -843,6 +877,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
     if(IsABig(model)) vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2]+2.0, frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
     else vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
 	
+	CreatedVehicleID[playerid] = vehicleid;
 	LinkVehicleToInterior(vehicleid, GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(vehicleid, GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
@@ -1596,7 +1631,7 @@ CMD:ahelp(playerid)
 		format(string,sizeof(string),"\n{cccccc}/gzona /tp /tp2 /tp3 /spawns /noconnect /tags /1lvl /1kkfam /1kk /messoff /readconnect /readkill /readdm /readhit /rvanka"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/loc /toga /frames /pames /delpame /delaction /bump /slap /mute /kick /name /reloadbans /wrong /ban /ram /amute /rt /respcar /sprays"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/racgro /awork /vacation /fun /jailed /wanted /arestcar /signs /checkskill /checkpotreb /checkveh /checkmed /medias /frisk /take /gotoruins"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/hp /gm /trigger /checkpunish /checkpts /launch /mind /ab /nocollision /offense /gotoa /checkar"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/hp /gm /trigger /checkpunish /checkpts /launch /mind /ab /nocollision /offense /gotoa /checkar /checkevents"), strcat(str,string);
 	}
  	if(PlayerInfo[playerid][pSoska] >= 2)
 	{
@@ -1627,7 +1662,7 @@ CMD:ahelp(playerid)
 	if(PlayerInfo[playerid][pSoska] >= 6)
 	{
 		format(string,sizeof(string),"\n\n{007a08}Админ 6:"), strcat(str,string);
-		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /shooting /domname /release /releaseaccess /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /domname /release /cnn /cnnn /unmute /unwarn"), strcat(str,string);
 		format(string,sizeof(string),"\n{cccccc}/dskin /radarstatus"), strcat(str,string);
 	}
 	/*if(PlayerInfo[playerid][pSoska] >= 7)

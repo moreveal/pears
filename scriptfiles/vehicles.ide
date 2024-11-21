@@ -385,8 +385,9 @@ cars
 15323, 	cougar, 	cougar, 	car, 		COUGAR, 	COUGAR, 	null,	normal,		10, 	0,	0,		-1, 0.7, 0.7,		0
 15324, 	corvc3, 	corvc3, 	car, 		CORVC3, 	CORVC3, 	null,	normal,		7, 	0,	0,		-1, 0.8, 0.8,		0
 15325,	cadcts,		cadcts,		car, 		CADCTS, 	CADCTS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
-15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		4, 	0,	0,		-1, 0.78, 0.78,		0
-15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		4, 	0,	0,		-1, 0.88, 0.88,		0
+15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		4, 	0,	0,		-1, 0.75, 0.75,		0
+15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		4, 	0,	0,		-1, 0.78, 0.78,		0
+15328,	armycad, 	armycad, 	car,		ARMYCAD, 	ARMYCAD, 	null,	richfamily,		6,	7,	0,	-1, 0.93, 0.93,		0
 #15328 LAST
 end
 
