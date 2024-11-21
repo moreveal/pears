@@ -194,6 +194,9 @@ enum e_DialogId {
     AUTOSERVICE_BACKDETAIL,
 
     // Casino
-    CASINO_EDITCHIPSPROCENT
+    CASINO_EDITCHIPSPROCENT,
+
+    // Станок для артов
+    ACCESSORYCRAFT_LIST
 };
 

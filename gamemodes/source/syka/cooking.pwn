@@ -34,6 +34,14 @@ stock GetDynamicObjectWorkbench(objectid)
 	return false;
 }
 
+stock GetDynamicObjectWorkbenchAcs(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 3383) return true;
+	return false;
+}
+
 stock GetDynamicObjectToilet(objectid) 
 {
 	if (!IsValidDynamicObject(objectid)) return false;
@@ -95,6 +103,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         if(GetDynamicObjectWorkbench(current_object)) return 2; // Верстак
         if(GetDynamicObjectFridge(current_object)) return 3; // Холодильник
         if(GetDynamicObjectElectro(current_object)) return 4; // Электрощиток
+        if(GetDynamicObjectWorkbenchAcs(current_object)) return 7; // Швейный станок
         if(GetDynamicObjectToilet(current_object))
         {
             new Float:x, Float:y, Float:z;

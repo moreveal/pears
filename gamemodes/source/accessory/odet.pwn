@@ -65,3 +65,31 @@ stock UpdateAllOdet(playerid)
 	query_empty(pearsq, string_mysql);
     return 1;
 }
+
+// Проверка, есть ли у игрока рюкзак
+stock HasABackpack(playerid)
+{
+	for(new i = 0; i < MAX_ODET; i++)
+    {
+		if(PlayerInfo[playerid][pOdet][i] > 0)
+		{
+			new type = IsABackPack(PlayerInfo[playerid][pOdet][i]);
+			if(type == 1) return i;
+		}
+	}
+	return -1;
+}
+
+// Проверка, есть ли у игрока разгрузка
+stock HasAUnloading(playerid)
+{
+	for(new i = 0; i < MAX_ODET; i++)
+    {
+		if(PlayerInfo[playerid][pOdet][i] > 0 )
+		{
+			new type = GetBustAksType(PlayerInfo[playerid][pOdet][i]);
+			if(type == 0) return i;
+		}
+	}
+	return -1;
+}

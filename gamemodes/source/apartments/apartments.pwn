@@ -1114,7 +1114,7 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
                 
                 new getQuan, getLimit;
                 i_limit(playerid, thingId, getQuan, getLimit);
-                if(getQuan+input > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit), ErrorMessage(playerid, string);
+                if(getQuan+input > getLimit) return format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками и рюкзаков", getLimit), ErrorMessage(playerid, string);
                 
                 new put_inva = GiveThingPlayer(playerid, thingId, input, thingPara, thingQara, thingType, thingPack, useinva);
                 if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
