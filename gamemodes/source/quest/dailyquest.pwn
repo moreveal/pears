@@ -34,7 +34,7 @@ new dailyName[][] =
     // Спермобанк
     "Сдать семя", // 5
     // Охота
-    "Охотиться на оленя", // 6
+    "Охотиться на животных", // 6
     // NASA Луна - Марс
     "Собирать базальт", // 7
     "Собирать палладий", // 8
@@ -56,7 +56,13 @@ new dailyName[][] =
     "Работать мусоровозом", // 19
     "Работать мойщиком улиц", // 20
     // Водитель Автобуса
-    "Работать водителем автобуса" // 21
+    "Работать водителем автобуса", // 21
+    // Охота
+    "Убить медведей", // 22
+    "Убить оленей", // 23
+    "Убить лис", // 24
+    "Убить зайцев", // 25
+    "Убить волков" // 26
 };
 
 new dailyDescription[][] =
@@ -75,7 +81,7 @@ new dailyDescription[][] =
     // Спермобанк
     "- Отправляйтесь в спермобанк и выполните процедуру сдачи семени", // 5 Сдать семя
     // Охота
-    "- Отправляйтесь в лавку лесника, приобретите винтовку и начните охоту на оленя", // 6 Охотиться на оленя
+    "- Отправляйтесь в лавку лесника, приобретите винтовку и начните охоту на животных", // 6 Охотиться на оленя
     // NASA Луна - Марс
     "- Отправляйтесь на базу NASA и начините экспедицию на Луну\
         \n- Работайте в карьере или разбивайте метеориты, чтобы найти базальт", // 7 Собирать базальт
@@ -177,6 +183,7 @@ stock GetDailyQuanMinMax(dailyid, &minQuan, &maxQuan) // Диапазон кол
         case 20: minQuan = 10, maxQuan = 20; // Работать мойщиком улиц (Количество раз очистить дорогу)
         // Водитель Автобуса
         case 21: minQuan = 1, maxQuan = 2; // Работать водителем автобуса (Полностью выполнить маршруты)
+        case 22..26: minQuan = 1, maxQuan = 5; // Животных убить надо
         default: minQuan = 1, maxQuan = 0;
     }
 }
@@ -191,9 +198,9 @@ stock DailyGPS(playerid, dailyid, createGps)
     {
         if(createGps == 1) CreateGps(playerid,614.8055,-1542.3635,15.3872, 0, 0, 5.0);
     }
-    else if(dailyid == 6)  // Лавка Лесника
+    else if(dailyid == 6 || dailyid >= 22 && dailyid <= 26)  // Лавка Лесника
     {
-        if(createGps == 1) CreateGps(playerid,-1631.9943,-2236.5115,31.4766, 0, 0, 5.0);
+        if(createGps == 1) CreateGps(playerid,2464.9641, -890.7330, 99.8729, 0, 0, 5.0);
     }
     else if(dailyid >= 7 && dailyid <= 11) // NASA
     {
@@ -581,7 +588,8 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
                 new resultGps = DailyGPS(playerid, dailyid, 0);
                 new line[214],lines[4096];
                 format(line,sizeof(line),"{ff9000}%s", dailyName[dailyid]), strcat(lines,line);
-                format(line,sizeof(line),"\n\n{cccccc}%s", dailyDescription[dailyid]), strcat(lines,line);
+                if(dailyid >= 22 && dailyid <=26) format(line,sizeof(line),"\n\n{cccccc}%s", dailyDescription[6]), strcat(lines,line);
+                else format(line,sizeof(line),"\n\n{cccccc}%s", dailyDescription[dailyid]), strcat(lines,line);
                 if(resultGps == 1) // Только если GPS метка существует (У некоторых заданий нет места выполнения)
                 {
                     format(line,sizeof(line),"\n\n{ffcc66}Хотите отправиться выполнять задание?"), strcat(lines,line);

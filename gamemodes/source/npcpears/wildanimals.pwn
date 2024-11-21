@@ -1,15 +1,7 @@
 #define MAX_WILD_ANIMALS_NPS 100
 #define MAX_WILD_ANIMALS_AREA 20
+#define MAX_WILD_ANIMALS_ZONE 5
 #define MAX_WILD_ANIMALS_TYPE 5
-
-new friskQualityColorAndText[5][] =
-{
-    { "{FF6347}Ужасное" },
-    { "{D2B48C}Плохое" },
-    { "{54FF9F}Нормальное" }, 
-    { "{8B00FF}Хорошее" }, 
-    { "{ffd700}Отличное" }
-};
 
 new AnimalsParam[MAX_WILD_ANIMALS_TYPE][2] =
 {
@@ -36,7 +28,9 @@ enum wildanimalsnpc
 }
 new WildAnimals[MAX_WILD_ANIMALS_NPS][wildanimalsnpc];
 
-new WildAnimalsArea[5][2];
+new WildAnimalsArea[MAX_WILD_ANIMALS_ZONE][2];
+new HuntZone[MAX_REALPLAYERS][MAX_WILD_ANIMALS_ZONE];
+new HuntGangZone[MAX_REALPLAYERS][MAX_WILD_ANIMALS_TYPE];
 new SittngStatus[MAX_REALPLAYERS];
 new bool:LoadBag;
 
@@ -100,7 +94,10 @@ stock CreateAnimals(a,area)
         if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime()) return false;
     }
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
-    if(area == 0) {AnimalX= random(743)-1041, AnimalY= random(1094)-2752;}
+    if(area == 0) {
+        AnimalX= random(743)-1041, AnimalY= random(1094)-2752;
+        if(WildAnimals[a][waType] == 3 || WildAnimals[a][waType] == 1 || WildAnimals[a][waType] == 2) WildAnimals[a][waType] = 4;
+    }
     else if(area == 1) {AnimalX= random(635)-643, AnimalY= random(610)-1582,WildAnimals[a][waType] = 3;}
     else if(area == 2) {AnimalX= random(509)-73, AnimalY= random(443)-380;}
     else if(area == 3) {AnimalX= random(882)+1782, AnimalY= random(599)-904;}
@@ -109,12 +106,14 @@ stock CreateAnimals(a,area)
     AnimalZ += 1.5;
 
     WildAnimals[a][waAttactID] = INVALID_PLAYER_ID;
+    WildAnimals[a][waKillerID] = INVALID_PLAYER_ID;
+    WildAnimals[a][waUnix] = 0;
     WildAnimals[a][waBulletCount] = 0;
     WildAnimals[a][waID] = CreateNpc(AnimalsParam[WildAnimals[a][waType]][0], AnimalX, AnimalY, AnimalZ);
-    WildAnimals[a][waHealth] = AnimalsParam[WildAnimals[a][waType]][1];
+    WildAnimals[a][waHealth] = float(AnimalsParam[WildAnimals[a][waType]][1]);
     SetNpcStunAnimationEnabled(WildAnimals[a][waID], false);
     SetNpcVirtualWorld(WildAnimals[a][waID], 0);
-    SetNpcHealth(WildAnimals[a][waID], AnimalsParam[WildAnimals[a][waType]][1]);
+    SetNpcHealth(WildAnimals[a][waID], WildAnimals[a][waHealth]);
     CreateTaskWalkingAnimals(a,area);
     return true;
 }
@@ -131,12 +130,13 @@ stock LifeWildAnimals(a)
 {
     if(!IsValidNpc(WildAnimals[a][waID])) return 0;
 
-    GetNpcHealth(WildAnimals[a][waID],WildAnimals[a][waHealth]);
+    if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] < gettime()) return DestroyAnimals(a), WildAnimals[a][waUnix] = gettime()+300;    
 
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
     if(!IsPointInDynamicArea(WildAnimalsArea[WildAnimals[a][waArea]][0], AnimalX,AnimalY,AnimalZ) && WildAnimals[a][waEvent] != 1) return DestroyAnimals(a),WildAnimals[a][waUnix] = gettime()+300,WildAnimalsArea[WildAnimals[a][waArea]][1] = 0; // Не в зоне своей территории, удаляем.
-    if(WildAnimals[a][waHealth] <= 0.0 || WildAnimals[a][waHealth] >= 1000.0) return 0;
+    if(IsNpcInvulnerable(WildAnimals[a][waID])) return 0;
+    GetNpcHealth(WildAnimals[a][waID],WildAnimals[a][waHealth]);
     if(WildAnimals[a][waEvent] == 0) // Прогулка
     {
         if(GetDistancePoint(AnimalX, AnimalY,AnimalZ, WildAnimals[0][waTaskCoord][0], WildAnimals[0][waTaskCoord][1],WildAnimals[a][waTaskCoord][2]) <= 20.0) WildAnimals[a][waDestinationStatus] = true;
@@ -145,7 +145,7 @@ stock LifeWildAnimals(a)
     if(WildAnimals[a][waEvent] == 1) // Атакует
     {
         if(!IsOnline(WildAnimals[a][waAttactID])) WildAnimals[a][waAttactID] = INVALID_PLAYER_ID;
-        if(WildAnimals[a][waAttactID] == INVALID_PLAYER_ID || GetPlayerState(WildAnimals[a][waAttactID]) != PLAYER_STATE_ONFOOT) WildAnimals[a][waEvent] = 0, WildAnimals[a][waDestinationStatus] = true;
+        if(WildAnimals[a][waAttactID] == INVALID_PLAYER_ID || GetPlayerState(WildAnimals[a][waAttactID]) != PLAYER_STATE_ONFOOT || DeathInfo[WildAnimals[a][waAttactID]][deathStatus]) WildAnimals[a][waEvent] = 0, WildAnimals[a][waDestinationStatus] = true;
         else{
             new Float: PcordX, Float: PcordY, Float: PcordZ;
             GetPlayerPos(WildAnimals[a][waAttactID],PcordX,PcordY,PcordZ);
@@ -213,7 +213,7 @@ stock EventHandlerActionWildAnimals(playerid,area,setrange)
         {
             if(WildAnimals[a][waType] == 0 || WildAnimals[a][waType] == 4)
             {
-                if(WildAnimals[a][waAttactID] != INVALID_PLAYER_ID) continue;
+                if(WildAnimals[a][waAttactID] != INVALID_PLAYER_ID && DeathInfo[playerid][deathStatus]) continue;
                 else WildAnimals[a][waAttactID] = playerid, TaskNpcAttackPlayer(WildAnimals[a][waID], playerid, .aggressive = true);
                 WildAnimals[a][waEvent] = 1;
                 if(server == 0) SendClientMessageToAll(-1, "Зверек %d[%d] атакует игрока %d", _:WildAnimals[a][waID],WildAnimals[a][waType], playerid);
@@ -319,27 +319,32 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         else if(weaponid >= 33 && weaponid <= 34) WildAnimals[findSlot][waBulletCount] += 2;
         else WildAnimals[findSlot][waBulletCount] += 2;
 
+        new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
+        GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
+
         GetNpcHealth(WildAnimals[findSlot][waID],WildAnimals[findSlot][waHealth]);
         WildAnimals[findSlot][waHealth] -= amount;
         if(WildAnimals[findSlot][waHealth] <= 0.0)
         {
-            new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
-            GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
-
-            DestroyNpc(WildAnimals[findSlot][waID]);
-
-            WildAnimals[findSlot][waID] = CreateNpc(AnimalsParam[WildAnimals[findSlot][waType]][0], AnimalX, AnimalY, AnimalZ);
-            SetNpcStunAnimationEnabled(WildAnimals[findSlot][waID], false);
-            SetNpcVirtualWorld(WildAnimals[findSlot][waID], 0);
-            SetNpcHealth(WildAnimals[findSlot][waID], 100000);
-
-            #pragma warning disable 202
-            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2");
-
+            SetNpcHealth(WildAnimals[findSlot][waID], 5000.0);
+            WildAnimals[findSlot][waHealth] = 5000.0;
+            SetNpcInvulnerable(WildAnimals[findSlot][waID], true);
+            TaskNpcStandStill(WildAnimals[findSlot][waID]);
+            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
+            
             WildAnimals[findSlot][waUnix] = gettime()+300;
             SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животного, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] что бы разделать его");
+            WildAnimals[findSlot][waKillerID] = damagerid;
+            CompletingDaily(damagerid, 6, 1), CompletingDaily(damagerid, WildAnimals[findSlot][waType]+22, 1);
+            if(WildAnimals[findSlot][waType] == 4 && PlayerInfo[damagerid][pAchieve][134] == 0) AchievePlayer(damagerid, 134, 1);
+            if(PlayerInfo[damagerid][pAchieve][135] == 0) AchievePlayer(damagerid, 135, 1);
+            
+            CreateGps(damagerid,AnimalX, AnimalY, AnimalZ, 0, 0, 2.0);
         }
-
+        if(IsNpcInvulnerable(WildAnimals[findSlot][waID]))
+        {
+            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
+        }
         return true;
     }
     return false;
@@ -362,7 +367,7 @@ stock FindCarveAnimals(playerid) // Делаю пока так, ибо я рот
         else if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime())
         {
             GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
-            if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) > 5.0) continue;
+            if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) > 2.0) continue;
             else
             {   
                 result = a;
@@ -375,6 +380,7 @@ stock FindCarveAnimals(playerid) // Делаю пока так, ибо я рот
 
 stock CarveAnimals(playerid,a)
 {
+    if(!IsValidNpc(WildAnimals[a][waID])) return ErrorMessage(playerid,"{ff6347}Туши животного не найдено!");
     SetPlayerChatBubble(playerid,"Разделывает тушу животного",COLOR_PURPLE,20.0,5000);
     ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 3.0, false, true, true, false, false);
     if(getillness(playerid, 18) == -1) PlayerInfo[playerid][pMechSkill] --;
@@ -388,7 +394,7 @@ stock CarveAnimals(playerid,a)
     else if(ability >= 8 && ability <= 9) chance += 30;
     else if(ability >= 10) chance += 50;
 
-    if(chance > 100) chance = 100;
+    if(chance >= 100) chance = 99;
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50.0;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
     CA_FindZ_For2DCoord(AnimalX,AnimalY,AnimalZ);
@@ -412,6 +418,11 @@ stock CarveAnimals(playerid,a)
         SetThrow(-1, TypeSkin, TypeSkin, 1, chance, 0, 0, 0, 0, 0, AnimalX+0.3,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
         SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил%s мясо и шкуру с качеством {ff9000}%d%%.",gender(playerid),gender(playerid),chance);
     }
+    if(Hold[playerid] == 14)
+    {
+    	Hold[playerid] = 0, HoldStat[playerid] = 0, HoldFrisk[playerid] = 0, HoldQuan[playerid] = 0, HoldInva[playerid] = 0, HoldPara[playerid] = 0, HoldQara[playerid] = 0;
+		RemovePlayerAttachedObject(playerid,1), PlayerPlaySound(playerid,5601,0,0,0), ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
+    }
     HidePlayerHudTask(playerid);
     DestroyAnimals(a),WildAnimals[a][waUnix] = gettime()+300,WildAnimalsArea[WildAnimals[a][waArea]][1] = 0; // Удаляем зверушку и ставим КД
     return true;
@@ -420,10 +431,18 @@ stock CarveAnimals(playerid,a)
 stock Pump_CarveAnimals(playerid)
 {
 	SetPVarInt(playerid, "oryjtemp", GetPVarInt(playerid, "oryjtemp") + 1 + random(3));
+
+    new a = GetPVarInt(playerid,"wildanimals");
+    new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
+    GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
+    if(!IsPlayerInRangeOfPoint(playerid, 5.0, AnimalX,AnimalY,AnimalZ)) 
+    {
+        SetPVarInt(playerid, "wildanimals", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
+        return ErrorMessage(playerid, "{ff6347}Вы далеко отошли от животного, разделка прервана!");
+    }
 	if(GetPVarInt(playerid,"oryjtemp") >= 100)
 	{
 	 	GameTextForPlayer(playerid, RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Разделка туши: ~w~100/100"), 1500, 3);
-        new a = GetPVarInt(playerid,"wildanimals");
 	 	if(LoadBag && WildAnimals[a][waEvent] != 3) CreateBagWildAnimals(playerid, a);
         else CarveAnimals(playerid, a);
 	 	ClearAnim(playerid);
@@ -436,7 +455,7 @@ stock Pump_CarveAnimals(playerid)
 	 	GameTextForPlayer(playerid, string, 1500, 3);
 	 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, false, true, true, true, true);
  	}
- 	return 1;
+ 	return true;
 }
 
 stock Pump_StartCarveAnimals(playerid, a)
@@ -447,10 +466,11 @@ stock Pump_StartCarveAnimals(playerid, a)
     if(get_invent4(playerid, 97, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет ножа [ Купите его в супермаркете ]");
     if(Hold[playerid] != 14) return ErrorMessage(playerid, "{FF6347}Возьмите в руки нож, чтобы начать разделывать тушу [ N ]");
     
+    if(WildAnimals[a][waKillerID] != playerid) return ErrorMessage(playerid, "{FF6347}Я не могу разделать тушу животного, которого убил не я");
     SetPVarInt(playerid, "wildanimals", a), SetPVarInt(playerid, "oryjtemp", 0); SetPVarInt(playerid, "Arobsklad", 15);
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь мне нужно начать разделывать тушу {ff9000}[ Нажимайте %s ]", buttonName[Device[playerid]]);
 
-    return 1;
+    return true;
 }
 
 CMD:loadbag(playerid)
@@ -464,7 +484,138 @@ CMD:loadbag(playerid)
 stock CreateBagWildAnimals(playerid,a)
 {
     SetNpcHealth(WildAnimals[a][waID],1);
+    SetNpcInvulnerable(WildAnimals[a][waID],false);
     WildAnimals[a][waEvent] = 3;
     TaskNpcAttackPlayer(WildAnimals[a][waID], playerid, .aggressive = true);
+    return true;
+}
+
+stock huntermap(playerid)
+{
+	if(get_invent4(playerid, 203, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет карты охотника");
+	if(Dei[playerid] == 203)
+	{
+    	SetPlayerChatBubble(playerid,"сворачивает и убирает карту охотника",COLOR_PURPLE,30.0,8000);
+  		Dei[playerid] = 0, PlayerPlaySound(playerid,5600,0,0,0);
+        DestroyWildAnimalZone(playerid);
+  		Close_Huntmap(playerid);
+	}
+	else
+	{
+		if(Dei[playerid] >= 1) return ErrorMessage(playerid, "{FF6347}У вашего персонажа заняты руки");
+		if(HealthAC[playerid] <= 0 || howstun(playerid)) return ErrorMessage(playerid, "{FF6347}Вашему персонажу плохо");
+		infohuntermap(playerid);
+  		SetPlayerChatBubble(playerid,"достаёт и разворачивает карту охотника",COLOR_PURPLE,30.0,8000);
+  		Dei[playerid] = 203, PlayerPlaySound(playerid,5601,0,0,0);
+  		TextDrawShowForPlayer(playerid, MapDrawHunt[0]);
+		Update_Huntmap(playerid);
+        ShowWildAnimalsZone(playerid);
+    }
+	return true;
+}
+
+stock infohuntermap(playerid)
+{
+	new stro[94],sctringo[1310];
+	format(stro,sizeof(stro),"{0088ff}Как пользоваться картой Охотника?"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Карта показывает кто находится в зоне диких животных"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Если карта пустая, значит рядом с вами никого нет(кроме кроликов)"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Волк: в данный момента в этой зоне есть волк"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Лиса: в данный момента в этой зоне есть лиса"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Олень: в данный момента в этой зоне есть Олень"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Медведь: в данный момента в этой зоне есть Олень"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"\n\n{cccccc}Так же на миникарте появляются границы районов охоты и тип животных в них"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"\n- {FF1111}Красный:{cccccc} в данный зоне есть только агрессивные животные"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n- {FDF136}Оранжевый:{cccccc} в данный зоне есть агрессивные и мирные животные"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n- {30D130}Зеленый:{cccccc} в данный зоне есть только мирные животные"), strcat(sctringo,stro);
+	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Карта Охотника",sctringo,"Ок","");
+	return true;
+}
+
+stock Update_Huntmap(playerid)
+{
+	new wildzone = IsPlayerInWildZone(playerid), yes[5];
+    if(wildzone == -1)
+    {
+        TextDrawHideForPlayer(playerid, MapDrawHunt[1]);
+        TextDrawHideForPlayer(playerid, MapDrawHunt[2]);
+        TextDrawHideForPlayer(playerid, MapDrawHunt[3]);
+        TextDrawHideForPlayer(playerid, MapDrawHunt[4]);
+        HuntZone[playerid][0] = 0;
+        HuntZone[playerid][1] = 0;
+        HuntZone[playerid][2] = 0;
+        HuntZone[playerid][4] = 0;
+    }
+    else
+    {
+        new AnimalId = 20*wildzone;
+        for(new a = AnimalId; a < AnimalId+20; a++)
+        {
+            if(!IsValidNpc(WildAnimals[a][waID])) continue;
+            else yes[WildAnimals[a][waType]] = 1;
+        }
+        if(yes[0] && !HuntZone[playerid][0]) TextDrawShowForPlayer(playerid,MapDrawHunt[1]),HuntZone[playerid][0] = 1;
+        if(yes[1] && !HuntZone[playerid][1]) TextDrawShowForPlayer(playerid,MapDrawHunt[2]),HuntZone[playerid][1] = 1;
+        if(yes[2] && !HuntZone[playerid][2]) TextDrawShowForPlayer(playerid,MapDrawHunt[3]),HuntZone[playerid][2] = 1;
+        if(yes[4] && !HuntZone[playerid][4]) TextDrawShowForPlayer(playerid,MapDrawHunt[4]),HuntZone[playerid][4] = 1;
+    }
+
+	return true;
+}
+
+stock Close_Huntmap(p)
+{
+	TextDrawHideForPlayer(p, MapDrawHunt[0]);
+	TextDrawHideForPlayer(p, MapDrawHunt[1]);
+	TextDrawHideForPlayer(p, MapDrawHunt[2]);
+	TextDrawHideForPlayer(p, MapDrawHunt[3]);
+	TextDrawHideForPlayer(p, MapDrawHunt[4]);
+    HuntZone[p][0] = 0;
+    HuntZone[p][1] = 0;
+    HuntZone[p][2] = 0;
+    HuntZone[p][4] = 0;
+	Dei[p] = 0;
+    return true;
+}
+
+stock ShowWildAnimalsZone(playerid)
+{
+    new color[MAX_WILD_ANIMALS_ZONE], animalstype[MAX_WILD_ANIMALS_TYPE];
+    CreateWildAnimalsZone(playerid);
+    for(new z; z < MAX_WILD_ANIMALS_ZONE; z++)
+    {
+        animalstype[0] = 0, animalstype[1] = 0,animalstype[2] = 0, animalstype[3] = 0,animalstype[4] = 0;
+        for(new a=z*20; a < z*20+20; a++)
+        {
+            if(!IsValidNpc(WildAnimals[a][waID])) continue;
+            animalstype[WildAnimals[a][waType]] = 1;
+        }
+        if(animalstype[0] == 0 && animalstype[4] == 0) color[z] = 0x30D130AA;
+        else if((animalstype[0] != 0 || animalstype[4] != 0) && (animalstype[1] != 0 || animalstype[2] != 0 || animalstype[3] != 0)) color[z] = 0xFDF136AA;
+        else if((animalstype[0] != 0 || animalstype[4] != 0) && (animalstype[1] == 0 && animalstype[2] == 0 && animalstype[3] == 0)) color[z] = 0xFF1111AA;
+        else color[z] = 0xFDF136AA;
+        GangZoneShowForPlayer(playerid, HuntGangZone[playerid][z], color[z]);
+    }
+}
+
+stock CreateWildAnimalsZone(playerid)
+{
+    DestroyWildAnimalZone(playerid);
+
+    HuntGangZone[playerid][0] = GangZoneCreate(-1041.2166,-2752.3936, -298.5008,-1658.5681);
+    HuntGangZone[playerid][1] = GangZoneCreate(-643.5008,-1582.5681, -8.5008,-972.5681);
+    HuntGangZone[playerid][2] = GangZoneCreate(-73.0886,-823.3384, 582.9846,-380.0188);
+    HuntGangZone[playerid][3] = GangZoneCreate(1782.0000,-904.5643, 2664.0000,-305.5643);
+    HuntGangZone[playerid][4] = GangZoneCreate(2372.3381,-244.9590, 2789.9521,270.7919);
+    
+    return true;
+}
+
+stock DestroyWildAnimalZone(playerid)
+{
+    for(new z; z < MAX_WILD_ANIMALS_ZONE; z++)
+    {
+        if(HuntGangZone[playerid][z] != 0) GangZoneDestroy(HuntGangZone[playerid][z]), HuntGangZone[playerid][z] = 0;
+    }
     return true;
 }
