@@ -2993,6 +2993,8 @@ stock player_tile(playerid, inva)
 				else if(fpick == 238) return pc_cmd_thing(playerid), i_resetveshi(playerid); // Алюминий
 				
 				else if(Graves_IsArtifact(fpick)) return pc_cmd_thing(playerid), i_resetveshi(playerid); // Артефакты (Раскопка могил)
+
+				else if(fpick == PADS_THINGID) return format(string, sizeof(string), "%d", inva), pc_cmd_usepads(playerid, string), i_resetveshi(playerid); // Прокладки
 	 		}
 	 		
 	 		else if(thingType == 2) // Аксессуары

@@ -36,18 +36,23 @@ stock ShowMenstruation(playerid)
 {
     if(MenstruanionDayInfo[playerid] == false)
     {
-        new lines[280];
+        new lines[420];
 		format(lines,sizeof(lines),"{B21515}Красавица, у тебя начались месячные\
 		                        \n{99ff66}Отправляйся в аптеку и купи прокладки\
 		                        \n\n{cccccc}- Месячные будут длиться в течении %d дней\
-                                \n{cccccc}- В это время у тебя будет происходить кровотечение", TIME_MENSTRUATION / 86400);
+                                \n{cccccc}- В это время у тебя будет происходить кровотечение\
+                                \n{cccccc}- Кровотечение влияет на гигиену и персонажу нужно будет помыться\
+                                \n{cccccc}- О цикле менструации вы можете узнавать в мед. карте", TIME_MENSTRUATION / 86400);
 		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
       	SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Блин! У меня начались {B21515}месячные {cccccc}[ Мне нужно купить прокладки в аптеке ]");
 
         MenstruanionDayInfo[playerid] = true;
     }
-    SetPlayerAttachedObject(playerid, 0, 18668, 1, -0.991000, 0.211000, -0.223999, 0.000000, 0.000000, 0.000000, 0.111999, 0.101999, 0.120000, 0, 0);
+    SetPlayerAttachedObject(playerid, 0, 18668, 1, -1.106999, 0.171000, -0.043000, 0.000000, 87.399993, 0.000000, 0.302000, 0.296000, 0.281999, 0, 0);
     MenstruationDestroy[playerid] = SetTimerEx("DestroyMenstruation", 300, false, "d", playerid);
+
+    // Уменьшаем гигиену
+    if(PlayerInfo[playerid][pInfoload] >= 50) PlayerInfo[playerid][pInfoload] -= 50;
     return true;
 }
 
@@ -56,6 +61,9 @@ function DestroyMenstruation(playerid)
     KillTimer(MenstruationDestroy[playerid]);
     MenstruationDestroy[playerid] = 0;
     RemovePlayerAttachedObject(playerid, 0);
+
+    // Включаем мух, если игрок грязный
+    if(PlayerInfo[playerid][pInfoload] <= 50) SetPlayerAttachedObject(playerid,0,18698,1,0.388000,0.000000,-1.475000,0.000000,0.000000,0.000000,1.000000,1.000000,1.000000); // Мухи
     return true;
 }
 
@@ -83,8 +91,37 @@ CMD:menstruation(playerid, const params[])
 	return 1;
 }
 
+CMD:usepads(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSex] != 2) return ErrorMessage(playerid, "{FF6347}Использовать прокладки могут только женщины");
 
-/*
-- Использовать прокладки
-- Положить прокладк в аптеку + покупка
-*/
+    new unix = gettime();
+    if(unix <= PlayerInfo[playerid][pMenstrDay] && unix >= PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION) // Настал тот самый день
+    {
+        if(PlayerInfo[playerid][pMenstrProkl] != 0) return ErrorMessage(playerid, "{FF6347}Вы уже использовали прокладки\n{ffcc66}Вы сможете использовать эту упаковку во время следующего цикла");
+        new slot = 999;
+        if(!sscanf(params, "i", params[0])) // Указан слот
+        {
+            if(PlayerInfo[playerid][pInven][params[0]] != PADS_THINGID) return ErrorMessage(playerid, "{FF6347}У вас нет прокладок\n{ffcc66}Приобретите прокладки в любой аптеке");
+            slot = params[0];
+        }
+        else
+        {
+            if(get_invent4(playerid, PADS_THINGID, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет прокладок\n{ffcc66}Приобретите прокладки в любой аптеке");
+        }
+
+        new lines[200];
+		format(lines,sizeof(lines),"{B21515}Вы использовали прокладки!\
+		                        \n{99ff66}Теперь эти месячные не будут вас беспокоить");
+		ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
+      	SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Я использовала {B21515}прокладки");
+
+        TakeInvent(playerid, PADS_THINGID, 1, 0, slot); // Забираем
+        if(NoAnim[playerid] == 0) ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false, SYNC_ALL);
+        SetPlayerChatBubble(playerid,"использует прокладки",COLOR_PURPLE,30.0,5000);
+        PlayerInfo[playerid][pMenstrProkl] = 1;
+        SaveMenstruation(playerid);
+        PlayerPlaySound(playerid,20802,0,0,0);
+    }
+	return true;
+}
