@@ -358,10 +358,14 @@ stock MineWar_UpdateWaveInfo(roomid)
 stock MineWar_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!MineWar_IsRoomExists(roomid)) return 0;
-    if (cooldown == 0 && MineWarInfo[roomid][mwWaveCooldown] > 0) return 0;
+
+    if (MineWarInfo[roomid][mwWaveCooldown] > 0)
+    {
+        MineWarInfo[roomid][mwWaveCooldown]--;
+        return SetTimerEx("MineWar_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
+    }
 
     if (cooldown > 0) {
-        if (IsValidTimer(MineWarInfo[roomid][mwSetWaveTimer])) KillTimer(MineWarInfo[roomid][mwSetWaveTimer]);
         MineWarInfo[roomid][mwWaveCooldown] = cooldown;
 
         for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++) {
@@ -372,8 +376,7 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
             MineWar_SetZombieRemainsTextdraw(currentid, false);
         }
 
-        MineWarInfo[roomid][mwSetWaveTimer] = SetTimerEx("MineWar_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
-        return 1;
+        return SetTimerEx("MineWar_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
     }
     
     MineWar_UpdateZombieRemainsTextdraw(roomid);

@@ -52,7 +52,6 @@ enum e_TombInfo
     // Данные о комнате
     e_TombWave: tiWave, // Текущая волна
     e_TombDifficulty: tpDifficulty, // Уровень сложности
-    tiSetWaveTimer, // Таймер на изменение волны
     tiWaveCooldown, // КД до появления следующей волны
     tiMummyWave[_:TOMB_MAX_MUMMY_TYPE], // Сколько заспавнится мумий каждого вида в текущей волне
     tiMummyNextSpawn[_:TOMB_MAX_MUMMY_TYPE], // Сколько заспавнится мумий каждого вида при следующем вызове их спавна

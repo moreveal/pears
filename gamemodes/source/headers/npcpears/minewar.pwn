@@ -48,7 +48,6 @@ enum e_MineWarInfo
     // Данные о комнате
     e_MineWarWave: mwWave, // Текущая волна
     e_MineWarDifficulty: mwDifficulty, // Уровень сложности
-    mwSetWaveTimer, // Таймер на изменение волны
     mwWaveCooldown, // КД до появления следующей волны
     mwZombieWave[_:MINEWAR_MAX_ZOMBIE_TYPE], // Сколько заспавнится зомби каждого вида в текущей волне
     mwZombieNextSpawn[_:MINEWAR_MAX_ZOMBIE_TYPE], // Сколько заспавнится зомби каждого вида при следующем вызове их спавна
