@@ -62,6 +62,20 @@ new friskQualityColorAndText[6][] =
     { "{d7eb02}Легендарное" }
 };
 
+stock FindRandomItemAccessoryCraft(akstype)
+{
+    new quan,quanstart;
+    for(new i; i< MAX_CRAFT_AKS; i++)
+    {
+        if(akstype == AccessoryCraftListBust[i][1])
+        {
+            if(quanstart == 0) quanstart = i;
+            quan++;
+        }
+    }
+    new result = random(quan)+quanstart;
+    return result;
+}
 stock FindItemAccessoryCraft(thingid)
 {
     new result = -1;

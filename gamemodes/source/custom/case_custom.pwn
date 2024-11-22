@@ -13,13 +13,13 @@
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold", "graves","halloween24"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
-    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024"
+    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024","Акссесуары(с бонусами)"
 };
 
 // Упаковки, которые относятся к кейсу
@@ -38,6 +38,7 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 9) model = 12303; // gold
     else if(thingPack == 10) model = 12352; // graves
     else if(thingPack == 11) model = 12337; // Halloween
+    else if(thingPack == 12) model = 12303; // craftaks
     else model = 19918;
     return model;
 }
@@ -52,6 +53,7 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 3) thingPack = 9; // gold
     else if(caseID == 4) thingPack = 10; // graves
     else if(caseID == 5) thingPack = 11; // Halloween
+    else if(caseID == 6) thingPack = 12; // Halloween
     return thingPack;
 }
 
@@ -197,6 +199,7 @@ stock GetCustomCaseID(const name[])
 {
     new id = -1;
     if(strcmp(name,"gold") == 0) return id;
+    if(strcmp(name,"craftaks") == 0) return id;
 
     for(new i = 0; i < sizeof(customCaseNameID); i++)
     {
@@ -224,6 +227,7 @@ stock LoadCustomCaseOnGameMode()
 stock ParseCustomCaseItems(playerid, const name[], &quan)
 {
     if (!strcmp(name, "gold", true)) return 0;
+    if (!strcmp(name, "craftaks", true)) return 0;
 
     // Парсинг JSON файла
     new JsonNode:rootNode;
