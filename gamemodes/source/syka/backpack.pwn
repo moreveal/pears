@@ -75,7 +75,6 @@ stock player_tile_backpack(playerid, inva)
 				{
 					return ErrorMessage(playerid,"{ff6347}Данный предмет может быть один в инвентаре!"),i_resetveshi(playerid);
 				}
-				if(IsFullQuanThingid(playerid,PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]])) return i_resetveshi(playerid);
 				if(NotGiveThing(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]]))
 				{
 					return ErrorMessage(playerid,"{ff6347}Данный предмет нельзя убирать в рюкзак!"),i_resetveshi(playerid);

@@ -1311,6 +1311,19 @@ stock get_invent(playerid, thingId, thingType) // Поиск предмета в
 	}
 	return quan;
 }
+stock get_inventoutbackpack(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля + рюкзак)
+{
+	new quan = 0;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == thingId && PlayerInfo[playerid][pInvenQuan][i] > 0 && PlayerInfo[playerid][pInvenType][i] == thingType) quan += PlayerInfo[playerid][pInvenQuan][i];
+		if(i < 20)
+		{
+		    if(PlayerInfo[playerid][pMarkInven][i] == thingId && PlayerInfo[playerid][pMarkInvenQuan][i] > 0 && PlayerInfo[playerid][pMarkInvenType][i] == thingType) quan += PlayerInfo[playerid][pMarkInvenQuan][i];
+		}
+	}
+	return quan;
+}
 stock get_invent2(playerid, stat, thingType) // Поиск предмета в инвентаре (Только две страницы основного инвентаря + рюкзак)
 {
 	new quan = 0;
@@ -2756,11 +2769,10 @@ stock player_tile(playerid, inva)
 			}
 			else if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) // Перекладываем
 			{
-				if(JustOneThingInventory(BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]]) && get_invent(playerid,BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]]) > 0)
+				if(JustOneThingInventory(BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]]) && get_inventoutbackpack(playerid,BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]]) > 0)
 				{
-					return ErrorMessage(playerid,"{ff6347}Данный предмет может быть один в инвентаре!"),i_resetveshi(playerid);
+					return ErrorMessage(playerid,"{ff6347}Данный предмет может быть один в инвентаре или его нельзя положить в рюкзак!"),i_resetveshi(playerid);
 				}
-				if(IsFullQuanThingid(playerid,BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInv][OnlineInfo[playerid][oInventSelectBackPack]],BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]])) return i_resetveshi(playerid);
 				if(Hold[playerid] == 2 || Hold[playerid] == 3 && HoldStat[playerid] > 0)
 		    	{
 		    	    if(HoldInva[playerid] == OnlineInfo[playerid][oInventSelectBackPack]) HoldInva[playerid] = inva;
@@ -3037,7 +3049,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 	if(thingPack == 1 || IsACasePackID(thingPack)) return i_unpackgift(playerid, inva, thingPack);
 	
 	// Возвращаем украденный предмет
-	if(PlayerInfo[playerid][pInvenQara][inva] > 0)
+	if(PlayerInfo[playerid][pInvenQara][inva] > 0 && !IsABackPack(PlayerInfo[playerid][pInven][inva]))
 	{
 		if(IsPoliceMember(playerid) || PlayerInfo[playerid][pFbi] >= 1)
 		{
