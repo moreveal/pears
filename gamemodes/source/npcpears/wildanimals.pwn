@@ -132,10 +132,11 @@ stock LifeWildAnimals(a)
 
     if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] < gettime()) return DestroyAnimals(a), WildAnimals[a][waUnix] = gettime()+300;    
 
+    if(IsNpcInvulnerable(WildAnimals[a][waID])) return 0;
+    
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
     if(!IsPointInDynamicArea(WildAnimalsArea[WildAnimals[a][waArea]][0], AnimalX,AnimalY,AnimalZ) && WildAnimals[a][waEvent] != 1) return DestroyAnimals(a),WildAnimals[a][waUnix] = gettime()+300,WildAnimalsArea[WildAnimals[a][waArea]][1] = 0; // Не в зоне своей территории, удаляем.
-    if(IsNpcInvulnerable(WildAnimals[a][waID])) return 0;
     GetNpcHealth(WildAnimals[a][waID],WildAnimals[a][waHealth]);
     if(WildAnimals[a][waEvent] == 0) // Прогулка
     {
