@@ -49,7 +49,13 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS][3] =
 new friskQualityBust[2][] =
 {
     { "Кол-во дополнительных переносимых патрон" },
-    { "Дополнительных страниц инвентаря(рюкзака)" }
+    { "Дополнительных страниц инвентаря" }
+};
+
+new friskQualityBustShot[2][] =
+{
+    { "Разгрузка" },
+    { "Рюкзак" }
 };
 
 new friskQualityColorAndText[6][] =
@@ -90,12 +96,34 @@ stock FindItemAccessoryCraft(thingid)
     return result;
 }
 
+
 stock CreateAcsListCraft(playerid)
 {
-    new line[100],lines[MAX_CRAFT_AKS*100];
+    new line[100],lines[sizeof(friskQualityBust)*100],quan =-1;
     for(new i; i< MAX_CRAFT_AKS; i++)
     {
-        format(line,sizeof(line),"{ff9000}%s\n",GetNameThing(1,AccessoryCraftList[i][0],2,0)), strcat(lines,line);
+        if(AccessoryCraftListBust[i][1] != quan)
+        {
+            quan++;
+            format(line,sizeof(line),"{ff9000}%s\n",friskQualityBustShot[quan]), strcat(lines,line);
+        }
+    }
+    ShowDialog(playerid,ACCESSORYCRAFT_LIST_TYPE,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock CreateAcsListCraftType(playerid)
+{
+    new line[100],lines[MAX_CRAFT_AKS*100],quan;
+    ClearList(playerid);
+    for(new i; i< MAX_CRAFT_AKS; i++)
+    {
+        if(AccessoryCraftListBust[i][1] == DP[0][playerid])
+        {
+            format(line,sizeof(line),"{ff9000}%s\n",GetNameThing(1,AccessoryCraftList[i][0],2,0)), strcat(lines,line);
+            List[quan][playerid] = i;
+            quan++;
+        }
     }
     ShowDialog(playerid,ACCESSORYCRAFT_LIST,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
     return 1;

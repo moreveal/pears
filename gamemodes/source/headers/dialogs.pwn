@@ -197,6 +197,7 @@ enum e_DialogId {
     CASINO_EDITCHIPSPROCENT,
 
     // Станок для артов
+    ACCESSORYCRAFT_LIST_TYPE,
     ACCESSORYCRAFT_LIST,
     
     // Заправка транспорта
