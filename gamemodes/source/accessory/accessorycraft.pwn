@@ -1,4 +1,6 @@
 #define MAX_CRAFT_AKS 19
+#define DOP_AKS_BUST 2
+#define MAX_CLASS_AKS 3
 
 new AccessoryCraftList[MAX_CRAFT_AKS][16] =
 {
@@ -23,7 +25,7 @@ new AccessoryCraftList[MAX_CRAFT_AKS][16] =
     { 12373, 245, 2, 0, 246, 1, 0, 247, 1, 0, 248, 1, 0, 0, 0, 0 }           // Аксессуар Рюкзак охота 7
 };
 
-new AccessoryCraftListBust[MAX_CRAFT_AKS][3] =
+new AccessoryCraftListBust[MAX_CRAFT_AKS+DOP_AKS_BUST][3] =
 {
     { 12355, 0, 300},         // Аксессуар разгрузка 1
     { 12356, 0, 300},         // Аксессуар Пояс 1
@@ -43,19 +45,23 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS][3] =
     { 12370, 1, 3},         // Аксессуар Рюкзак охота 4
     { 12371, 1, 3},         // Аксессуар Рюкзак охота 5
     { 12372, 1, 3},         // Аксессуар Рюкзак охота 6
-    { 12373, 1, 3}         // Аксессуар Рюкзак охота 7
+    { 12373, 1, 3},         // Аксессуар Рюкзак охота 7
+    { 12136, 2, 10},         // Дает бонус к урону по NPC
+    { 12101, 2, 15}         // Дает бонус к урону по NPC
 };
 
-new friskQualityBust[2][] =
+new friskQualityBust[MAX_CLASS_AKS][] =
 {
     { "Кол-во дополнительных переносимых патрон" },
-    { "Дополнительных страниц инвентаря" }
+    { "Дополнительных страниц инвентаря" },
+    { "Урон по НПС" }
 };
 
-new friskQualityBustShot[2][] =
+new friskQualityBustShot[MAX_CLASS_AKS][] =
 {
     { "Разгрузка" },
-    { "Рюкзак" }
+    { "Рюкзак" },
+    { "Оружие" }
 };
 
 new friskQualityColorAndText[6][] =
@@ -71,7 +77,7 @@ new friskQualityColorAndText[6][] =
 stock FindRandomItemAccessoryCraft(akstype)
 {
     new quan,quanstart;
-    for(new i; i< MAX_CRAFT_AKS; i++)
+    for(new i; i< MAX_CRAFT_AKS+DOP_AKS_BUST; i++)
     {
         if(akstype == AccessoryCraftListBust[i][1])
         {
@@ -85,9 +91,9 @@ stock FindRandomItemAccessoryCraft(akstype)
 stock FindItemAccessoryCraft(thingid)
 {
     new result = -1;
-    for(new i; i< MAX_CRAFT_AKS; i++)
+    for(new i; i< MAX_CRAFT_AKS+DOP_AKS_BUST; i++)
     {
-        if(thingid == AccessoryCraftList[i][0])
+        if(thingid == AccessoryCraftListBust[i][0])
         {
             result = i;
             break;
@@ -125,6 +131,7 @@ stock CreateAcsListCraftType(playerid)
             quan++;
         }
     }
+    if(quan == 0) return ErrorMessage(playerid,"{ff6347}В данный момент нет аксессуаров, с данным бонусом, которые можно скрафтить"),CreateAcsListCraft(playerid);
     ShowDialog(playerid,ACCESSORYCRAFT_LIST,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
     return 1;
 }
@@ -132,7 +139,7 @@ stock CreateAcsListCraftType(playerid)
 stock GetBustAksType(AksId)
 {
     new result = -1;
-    for(new i; i< MAX_CRAFT_AKS; i++)
+    for(new i; i< MAX_CRAFT_AKS+DOP_AKS_BUST; i++)
     {
         if(AksId == AccessoryCraftListBust[i][0])
         {
@@ -146,7 +153,7 @@ stock GetBustAksType(AksId)
 stock GetBustAks(AksId,AksType)
 {
     new result;
-    for(new i; i< MAX_CRAFT_AKS; i++)
+    for(new i; i< MAX_CRAFT_AKS+DOP_AKS_BUST; i++)
     {
         if(AksType != AccessoryCraftListBust[i][1]) continue;
 

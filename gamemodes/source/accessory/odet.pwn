@@ -93,3 +93,16 @@ stock HasAUnloading(playerid)
 	}
 	return -1;
 }
+
+stock HasANpsAks(playerid)
+{
+	for(new i = 0; i < MAX_ODET; i++)
+    {
+		if(PlayerInfo[playerid][pOdet][i] > 0 )
+		{
+			new type = GetBustAksType(PlayerInfo[playerid][pOdet][i]);
+			if(type == 2) return i;
+		}
+	}
+	return -1;
+}

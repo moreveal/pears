@@ -327,8 +327,8 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
         GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
         
-        GetNpcHealth(WildAnimals[findSlot][waID],WildAnimals[findSlot][waHealth]);
         WildAnimals[findSlot][waHealth] -= amount;
+        //SetNpcHealth(WildAnimals[findSlot][waID],WildAnimals[findSlot][waHealth]);
         if(WildAnimals[findSlot][waHealth] <= 0.0)
         {
             WildAnimals[findSlot][waSoundUnix] = 0, WildAnimalPlaySound(findSlot,1);
@@ -446,6 +446,11 @@ stock Pump_CarveAnimals(playerid)
     {
         SetPVarInt(playerid, "wildanimals", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
         return ErrorMessage(playerid, "{ff6347}Вы далеко отошли от животного, разделка прервана!");
+    }
+    if(Hold[playerid] != 14)
+    {
+        SetPVarInt(playerid, "wildanimals", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
+        return ErrorMessage(playerid, "{ff6347}Вы убрали нож из рук, разделка прервана!");
     }
 	if(GetPVarInt(playerid,"oryjtemp") >= 100)
 	{
