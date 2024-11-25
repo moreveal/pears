@@ -24,6 +24,7 @@ enum wildanimalsnpc
     waKillerID, // кто убил
     Float:waHealth, // ХПшка
     Float:waTaskCoord[3], // Куда идет NPC
+    waSoundUnix, // Кд на звук
     waBulletCount, // Сколько раз попали по животному
 }
 new WildAnimals[MAX_WILD_ANIMALS_NPS][wildanimalsnpc];
@@ -109,6 +110,7 @@ stock CreateAnimals(a,area)
     WildAnimals[a][waKillerID] = INVALID_PLAYER_ID;
     WildAnimals[a][waUnix] = 0;
     WildAnimals[a][waBulletCount] = 0;
+    WildAnimals[a][waSoundUnix] = 0;
     WildAnimals[a][waID] = CreateNpc(AnimalsParam[WildAnimals[a][waType]][0], AnimalX, AnimalY, AnimalZ);
     WildAnimals[a][waHealth] = float(AnimalsParam[WildAnimals[a][waType]][1]);
     SetNpcStunAnimationEnabled(WildAnimals[a][waID], false);
@@ -145,6 +147,7 @@ stock LifeWildAnimals(a)
     }
     if(WildAnimals[a][waEvent] == 1) // Атакует
     {
+        WildAnimalPlaySound(a,0);
         if(!IsOnline(WildAnimals[a][waAttactID])) WildAnimals[a][waAttactID] = INVALID_PLAYER_ID;
         if(WildAnimals[a][waAttactID] == INVALID_PLAYER_ID || GetPlayerState(WildAnimals[a][waAttactID]) != PLAYER_STATE_ONFOOT || DeathInfo[WildAnimals[a][waAttactID]][deathStatus]) WildAnimals[a][waEvent] = 0, WildAnimals[a][waDestinationStatus] = true;
         else{
@@ -153,6 +156,7 @@ stock LifeWildAnimals(a)
             if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) >= 100 || GetPlayerState(WildAnimals[a][waAttactID]) == PLAYER_STATE_SPECTATING) WildAnimals[a][waEvent] = 0, WildAnimals[a][waDestinationStatus] = true, WildAnimals[a][waAttactID] = INVALID_PLAYER_ID;
         }
     }
+    if(WildAnimals[a][waEvent] == 2) WildAnimalPlaySound(a,0);
     return true;
 }
 
@@ -322,11 +326,12 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
 
         new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
         GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
-
+        
         GetNpcHealth(WildAnimals[findSlot][waID],WildAnimals[findSlot][waHealth]);
         WildAnimals[findSlot][waHealth] -= amount;
         if(WildAnimals[findSlot][waHealth] <= 0.0)
         {
+            WildAnimals[findSlot][waSoundUnix] = 0, WildAnimalPlaySound(findSlot,1);
             SetNpcHealth(WildAnimals[findSlot][waID], 5000.0);
             WildAnimals[findSlot][waHealth] = 5000.0;
             SetNpcInvulnerable(WildAnimals[findSlot][waID], true);
@@ -342,6 +347,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
             
             CreateGps(damagerid,AnimalX, AnimalY, AnimalZ, 0, 0, 2.0);
         }
+        else WildAnimalPlaySound(findSlot,0);
         if(IsNpcInvulnerable(WildAnimals[findSlot][waID]))
         {
             TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
@@ -617,6 +623,125 @@ stock DestroyWildAnimalZone(playerid)
     for(new z; z < MAX_WILD_ANIMALS_ZONE; z++)
     {
         if(HuntGangZone[playerid][z] != 0) GangZoneDestroy(HuntGangZone[playerid][z]), HuntGangZone[playerid][z] = 0;
+    }
+    return true;
+}
+
+stock WildAnimalPlaySound(a,type)
+{
+    if(!IsValidNpc(WildAnimals[a][waID])) return false;
+    if(WildAnimals[a][waSoundUnix] > gettime()) return false;
+    WildAnimals[a][waSoundUnix] = gettime()+5;
+    new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
+    GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
+    foreach(Player,playerid)
+    {
+        if(!IsPlayerConnected(playerid)) continue;
+        if(OnlineInfo[playerid][oListenRadioPears] != 0) continue;
+        if(!IsPlayerInRangeOfPoint(playerid,30.0,AnimalX,AnimalY,AnimalZ)) continue;
+        if(WildAnimals[a][waType] == 0) // Beer
+        {
+            if(type == 0) // Атакует
+            {
+                switch(random(5))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack3.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 4: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack4.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_attack0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+            else // dead
+            {
+                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/bear/bear_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+            }
+        }
+        else if(WildAnimals[a][waType] == 1) // Олень
+        {
+            if(type == 0) // Атакует/убегает
+            {
+                switch(random(2))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_run0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_run1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_run0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+            else // dead
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_death1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/deer/deer_death2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+        }
+        else if(WildAnimals[a][waType] == 2) // fox
+        {
+            if(type == 0) // Атакует/убегает
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_run0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_run1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_run2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+            else // dead
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_death1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/fox/fox_death2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+        }
+        else if(WildAnimals[a][waType] == 3) // rabbit
+        {
+            if(type == 0) // Атакует/убегает
+            {
+                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/rabbit/rabbit_run0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+            }
+            else // dead
+            {
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/rabbit/rabbit_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/rabbit/rabbit_death1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/rabbit/rabbit_death2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+        }
+        else if(WildAnimals[a][waType] == 4) // wolf
+        {
+            if(type == 0) // Атакует
+            {
+                switch(random(5))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack3.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 4: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack4.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_attack5.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+            else
+            {
+                switch(random(4))
+                {
+                    case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_death1.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_death2.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_death3.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                    default: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/animals/wolf/wolf_death0.mp3",AnimalX, AnimalY, AnimalZ, 30.0, true);
+                }
+            }
+        }
     }
     return true;
 }
