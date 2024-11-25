@@ -54,7 +54,7 @@ new friskQualityBust[MAX_CLASS_AKS][] =
 {
     { "Кол-во дополнительных переносимых патрон" },
     { "Дополнительных страниц инвентаря" },
-    { "Урон по НПС" }
+    { "Урон по НПС процентов" }
 };
 
 new friskQualityBustShot[MAX_CLASS_AKS][] =
@@ -106,7 +106,7 @@ stock FindItemAccessoryCraft(thingid)
 stock CreateAcsListCraft(playerid)
 {
     new line[100],lines[sizeof(friskQualityBust)*100],quan =-1;
-    for(new i; i< MAX_CRAFT_AKS; i++)
+    for(new i; i< MAX_CRAFT_AKS+DOP_AKS_BUST; i++)
     {
         if(AccessoryCraftListBust[i][1] != quan)
         {
@@ -122,17 +122,18 @@ stock CreateAcsListCraftType(playerid)
 {
     new line[100],lines[MAX_CRAFT_AKS*100],quan;
     ClearList(playerid);
+    format(line,sizeof(line),"{ff9000}Бонус: {0088ff}%s\n",friskQualityBust[DP[0][playerid]]), strcat(lines,line);
     for(new i; i< MAX_CRAFT_AKS; i++)
     {
         if(AccessoryCraftListBust[i][1] == DP[0][playerid])
         {
-            format(line,sizeof(line),"{ff9000}%s\n",GetNameThing(1,AccessoryCraftList[i][0],2,0)), strcat(lines,line);
+            format(line,sizeof(line),"{cccccc}%s\n",GetNameThing(1,AccessoryCraftList[i][0],2,0)), strcat(lines,line);
             List[quan][playerid] = i;
             quan++;
         }
     }
-    if(quan == 0) return ErrorMessage(playerid,"{ff6347}В данный момент нет аксессуаров, с данным бонусом, которые можно скрафтить"),CreateAcsListCraft(playerid);
-    ShowDialog(playerid,ACCESSORYCRAFT_LIST,DIALOG_STYLE_LIST,"{ff9000}Станок",lines,"Выбор","Отмена");
+    if(quan == 0) return SendClientMessage(playerid, COLOR_GRAY, "{ff6347}В данный момент нет аксессуаров, с данным бонусом, которые можно скрафтить"),CreateAcsListCraft(playerid);
+    ShowDialog(playerid,ACCESSORYCRAFT_LIST,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Станок",lines,"Выбор","Отмена");
     return 1;
 }
 
