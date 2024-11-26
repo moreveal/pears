@@ -38,7 +38,7 @@ stock GetDynamicObjectWorkbenchAcs(objectid)
 {
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
-    if(model == 3383) return true;
+    if(model == 12443) return true;
 	return false;
 }
 
