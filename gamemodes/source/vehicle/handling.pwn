@@ -819,7 +819,8 @@ stock ReadVehicleIDE()
                 if(strfind(DefaultHandling[v][HD_Name], Temp[VD_Handling],true) != (-1))
                 {
                     if(Temp[VD_Id] >= 612 && Temp[VD_Id] <= 15265) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13066;
-				    else if(Temp[VD_Id] >= 15266) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13164;
+				    else if(Temp[VD_Id] >= 15266 && Temp[VD_Id] <= 15328) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13164;
+                    else if(Temp[VD_Id] >= 15334) DefaultHandling[v][HD_ModelID] = Temp[VD_Id] - 13169;
                     else DefaultHandling[v][HD_ModelID] = Temp[VD_Id];
                 }
             }
