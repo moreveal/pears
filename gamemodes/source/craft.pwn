@@ -239,10 +239,11 @@ stock GetFullThingForCraft(playerid, type_message) // Проверяем, все
     if(noFull == 1)
     {
         new thingId = CreateThingID[playerid];
+        new thingType = CreateThingType[playerid];
         if(type_message == 0)
         {
             new line[100],lines[1000];
-            format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
+            format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
             format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
             for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
             {
@@ -688,7 +689,7 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     \n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки\
                     \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
                     \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
-                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
+                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Станок",lines,"*","");
                 }
             }
             return 1;
@@ -1046,7 +1047,7 @@ stock CreateThingAfterCraft(playerid)
 	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В вашем инвентаре не хватает места");
 
         if(PlayerInfo[playerid][pAchieve][136] == 0 && CreateThingType[playerid] == 2) AchievePlayer(playerid, 136, 1);
-        if(PlayerInfo[playerid][pAchieve][137] == 0 && param > 500) AchievePlayer(playerid, 137, 1);
+        if(PlayerInfo[playerid][pAchieve][137] == 0 && param >= 500) AchievePlayer(playerid, 137, 1);
         SuccessMessage(playerid, "{99ff66}Выполнено!");
     }
     else // Проёба
@@ -1082,7 +1083,7 @@ stock CreateThingAfterCraft(playerid)
         }
     }
     else if(Tabs_Load[playerid] == 13) update_ability(playerid, 7, 10); // Пополняем навык
-    else if(Tabs_Load[playerid] == 17) update_ability(playerid, 7, 11); // Пополняем навык
+    else if(Tabs_Load[playerid] == 17) update_ability(playerid, 11, 10); // Пополняем навык
 
 
     TakeThingForCraft(playerid); // Забираем предметы
