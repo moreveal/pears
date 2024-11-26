@@ -368,26 +368,37 @@ cars
 15306,	teslamods,	teslamods,	car, 	    TESLAMODS, 	TESLAMODS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 15307,	teslatri,	teslatri,	car, 	    TESLATRI, 	TESLATRI, 	null,	richfamily, 	7, 	0,	0,		-1, 0.8, 0.8,		1
 15308,	duccor,		duccor,		bike,		DUCCOR,		DUCCOR,		bikes,	motorbike,	    10,	0,	1f341210,	16, 0.68, 0.68,		-1
-15309,	hardav,	    hardav,	    bike,		HARDAV,	    HARDAV,	    wayfarer,motorbike,	6,	0,	0,		23, 0.755, 0.755,	-1
-15310,	hondacbr,	hondacbr,	bike,		HONDACBR,	HONDACBR,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.75, 0.75,		-1
-15311,	nrg600,		nrg600,		bike,		NRG600,		NRG600,		bikes,	motorbike,	10,	0,	1f341210,		16, 0.75, 0.75,		-1
-15312,	bati901,	bati901,	bike,		BATI901,	BATI901,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.70, 0.70,		-1
-15313,	ruffian,	ruffian,	bike,		RUFFIAN,	RUFFIAN,	bikes,	motorbike,	10,	0,	1f341210,		16, 0.70, 0.70,		-1
-15314,	suzgsxr,	suzgsxr,	bike,		SUZGSXR,	SUZGSXR,	bikes,	motorbike,	10,	0,	3f341210,		16, 0.68, 0.68,		-1
-15315, 	gtpolice,	gtpolice,	car, 		GTPOLICE,	GTPOLICE, 	null,	executive,	4, 	0,	0,		-1, 0.75, 0.80,		0
-15316, 	dchall, 	dchall, 	car, 		DCHALL, 	DCHALL, 	null,	executive, 	5, 	0,	0,		-1, 0.8, 0.8,		0
-15317, 	rrphan, 	rrphan, 	car, 		RRPHAN, 	RRPHAN, 	null,	normal,		4, 	0,	0,		-1, 0.88, 0.88,		0
-15318, 	impala, 	impala, 	car, 		IMPALA, 	IMPALA, 	null,	poorfamily,	10, 	0,	0,		-1, 0.8, 0.8,		0
+15309,	hardav,	    hardav,	    bike,		HARDAV,	    HARDAV,	    wayfarer,motorbike,	    6,	0,	0,		23, 0.755, 0.755,	-1
+15310,	hondacbr,	hondacbr,	bike,		HONDACBR,	HONDACBR,	bikes,	motorbike,	    10,	0,	1f341210,		16, 0.75, 0.75,		-1
+15311,	nrg600,		nrg600,		bike,		NRG600,		NRG600,		bikes,	motorbike,	    10,	0,	1f341210,		16, 0.75, 0.75,		-1
+15312,	bati901,	bati901,	bike,		BATI901,	BATI901,	bikes,	motorbike,	    10,	0,	1f341210,		16, 0.70, 0.70,		-1
+15313,	ruffian,	ruffian,	bike,		RUFFIAN,	RUFFIAN,	bikes,	motorbike,	    10,	0,	1f341210,		16, 0.70, 0.70,		-1
+15314,	suzgsxr,	suzgsxr,	bike,		SUZGSXR,	SUZGSXR,	bikes,	motorbike,	    10,	0,	3f341210,		16, 0.68, 0.68,		-1
+15315, 	gtpolice,	gtpolice,	car, 		GTPOLICE,	GTPOLICE, 	null,	executive,	    4, 	0,	0,		-1, 0.75, 0.80,		0
+15316, 	dchall, 	dchall, 	car, 		DCHALL, 	DCHALL, 	null,	executive, 	    5, 	0,	0,		-1, 0.8, 0.8,		0
+15317, 	rrphan, 	rrphan, 	car, 		RRPHAN, 	RRPHAN, 	null,	normal,		    4, 	0,	0,		-1, 0.88, 0.88,		0
+15318, 	impala, 	impala, 	car, 		IMPALA, 	IMPALA, 	null,	poorfamily,	    10, 	0,	0,		-1, 0.8, 0.8,		0
 15319, 	impalass, 	impalass, 	car, 		IMPALASS, 	IMPALASS,	null,	richfamily,		10,	0,	0,		-1, 0.7, 0.7,		0
 15320, 	fordgrantor, fordgrantor, car, 		FORDGRANTOR, FORDGRANTOR, 		null,	normal,		10, 	0,	0,		-1, 0.7, 0.7,		0
-15321, 	antares, 	antares, 	car, 		ANTARES, 	ANTARES, 	null,	normal,		7, 	0,	0,		-1, 0.7, 0.7,		0
+15321, 	antares, 	antares, 	car, 		ANTARES, 	ANTARES, 	null,	normal,		    7, 	0,	0,		-1, 0.7, 0.7,		0
 15322,	seminole, 	seminole, 	car,		SEMINOLE, 	SEMINOLE, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
-15323, 	cougar, 	cougar, 	car, 		COUGAR, 	COUGAR, 	null,	normal,		10, 	0,	0,		-1, 0.7, 0.7,		0
-15324, 	corvc3, 	corvc3, 	car, 		CORVC3, 	CORVC3, 	null,	normal,		7, 	0,	0,		-1, 0.8, 0.8,		0
+15323, 	cougar, 	cougar, 	car, 		COUGAR, 	COUGAR, 	null,	normal,		    10, 	0,	0,		-1, 0.7, 0.7,		0
+15324, 	corvc3, 	corvc3, 	car, 		CORVC3, 	CORVC3, 	null,	normal,		    7, 	0,	0,		-1, 0.8, 0.8,		0
 15325,	cadcts,		cadcts,		car, 		CADCTS, 	CADCTS, 	null,	richfamily, 	7, 	0,	0,		-1, 0.7, 0.7,		1
-15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		4, 	0,	0,		-1, 0.75, 0.75,		0
-15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		4, 	0,	0,		-1, 0.78, 0.78,		0
+15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		    4, 	0,	0,		-1, 0.75, 0.75,		0
+15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		    4, 	0,	0,		-1, 0.78, 0.78,		0
 15328,	armycad, 	armycad, 	car,		ARMYCAD, 	ARMYCAD, 	null,	richfamily,		6,	7,	0,	-1, 0.93, 0.93,		0
-#15328 LAST
+15334,	bmwm3c,		bmwm3c,		car, 		BMWM3C, 	BMWM3C, 	null,	richfamily, 	7, 	0,	0,		-1, 0.75, 0.75,		1
+15335,	bmwm3g81,	bmwm3g81,	car, 		BMWM3G81, 	BMWM3G81, 	null,	richfamily, 	7, 	0,	0,		-1, 0.75, 0.75,		1
+15336,	cadxt6v, 	cadxt6v, 	car,		CADXT6V, 	CADXT6V, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
+15337,	dodgeram, 	dodgeram, 	car,		DODGERAM, 	DODGERAM, 	null,	ignore,		    2,	0,	0,		-1, 0.97, 0.97,	-1
+15338,	fordrapt, 	fordrapt, 	car,		FORDRAPT, 	FORDRAPT, 	null,	normal, 	    10,	0,	0,		-1, 0.95, 0.95,		-1
+15339,	jeepsrt, 	jeepsrt, 	car,		JEEPSRT, 	JEEPSRT, 	null,	richfamily,		6,	7,	0,	-1, 0.95, 0.95,		0
+15340, 	laferrari, 	laferrari, 	car, 		LAFERRARI, 	LAFERRARI, 	null,	executive, 	    4, 	0,	0,		-1, 0.72, 0.77,		0
+15341, 	matiz, 	    matiz, 	    car, 		MATIZ, 	    MATIZ, 	    null,	richfamily, 	10, 	0,	0,		-1, 0.71, 0.71,		0
+15342,	mbw140,		mbw140,		car, 		MBW140, 	MBW140, 	null,	normal,		    4, 	0,	0,		-1, 0.78, 0.78,		0
+15343,	rangesport, rangesport, car,		RANGESPORT, RANGESPORT, null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
+15344,	volvoxc90,  volvoxc90,  car,		VOLVOXC90,  VOLVOXC90, null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
+#15499 LAST
 end
 
