@@ -526,6 +526,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 			else if(Tabs_Load[playerid] == 3 || Tabs_Load[playerid] == 4) return ErrorMessage(playerid, "{FF6347}Вы не можете положить предметы на склад\n{ffcc66}Только ящики с оружием, аммуницией или мед оборудованием"), i_resetveshi(playerid); // Склады
 			else if(Tabs_Load[playerid] == 5) // Багажник
 			{
+				if(IsABackPack(myfpick)) return ErrorMessage(playerid,"{ff6347}Рюкзак нельзя положить в багажник авто!"),i_resetveshi(playerid);
 			    if(myThingType == 0 && myThingPack == 0)
 			    {
 			        if(CheckThingQuan(myfpick) == 1)
@@ -1902,6 +1903,12 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 			}
 		}
 		else inva = put_thing_player_backpack(playerid, thingId, quan, para, qara, thingType, thingPack, useinva); // Знаем в какую ячейку класть
+		if(inva != -1)
+		{
+			new string[100];
+			format(string,sizeof(string),"Положил в рюкзак %d: %s", PlayerInfo[playerid][pOdetQara][aks], GetNameThing(1, BackPackInfo[playerid][backpackInvent][inva], BackPackInfo[playerid][backpackInvType][inva], BackPackInfo[playerid][backpackInvPack][inva]));
+			UserLog("inbackpackout", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", BackPackInfo[playerid][backpackInv][inva], string);
+		}
 	}
 	return inva;
 }

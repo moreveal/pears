@@ -106,6 +106,10 @@ stock player_tile_backpack(playerid, inva)
 				OnlineInfo[playerid][oInventSelectBackPack] = 9999;
 
 				CheckCraftReady(playerid);
+
+				new Aks = HasABustAks(playerid,1), string[100];
+				format(string,sizeof(string),"Положил в рюкзак %d: %s", PlayerInfo[playerid][pOdetQara][Aks], GetNameThing(1, BackPackInfo[playerid][backpackInvent][inva], BackPackInfo[playerid][backpackInvType][inva], BackPackInfo[playerid][backpackInvPack][inva]));
+				UserLog("inbackpackinv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", BackPackInfo[playerid][backpackInv][inva], string);
 			}
 			else if(OnlineInfo[playerid][oInventSelectBackPack] != 9999 && OnlineInfo[playerid][oInventSelectBackPack] != inva) // Перекладываем в рюкзаке
 			{
@@ -420,5 +424,13 @@ stock ClearPlayerBackPack(playerid)
 		BackPackInfo[playerid][backpackInvType][inva] = 0;
 		BackPackInfo[playerid][backpackInvPack][inva] = 0;
 	}
+	return 1;
+}
+
+stock DeleteBackPack(backpackid)
+{
+	new string_mysql[128];
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpack` = '%d'", backpackid);
+	query_empty(pearsq, string_mysql);
 	return 1;
 }
