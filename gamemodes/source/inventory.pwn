@@ -1302,7 +1302,7 @@ stock get_invent(playerid, thingId, thingType) // Поиск предмета в
 		    if(PlayerInfo[playerid][pMarkInven][i] == thingId && PlayerInfo[playerid][pMarkInvenQuan][i] > 0 && PlayerInfo[playerid][pMarkInvenType][i] == thingType) quan += PlayerInfo[playerid][pMarkInvenQuan][i];
 		}
 	}
-	if(HasABackpack(playerid) != -1)
+	if(HasABustAks(playerid,1) != -1)
 	{
 		for(new i = 0; i < MAX_INVEN_BACKPACK; i++)
 		{
@@ -1331,7 +1331,7 @@ stock get_invent2(playerid, stat, thingType) // Поиск предмета в �
 	{
 		if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenType][i] == thingType && PlayerInfo[playerid][pInvenQuan][i] > 0) quan += PlayerInfo[playerid][pInvenQuan][i];
 	}
-	if(HasABackpack(playerid) != -1)
+	if(HasABustAks(playerid,1) != -1)
 	{
 		for(new i = 0; i < MAX_INVEN_BACKPACK; i++)
 		{
@@ -1834,7 +1834,7 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 	}
 	if(inva == -1)
 	{
-		new aks = HasABackpack(playerid),slots = -1;
+		new aks = HasABustAks(playerid,1),slots = -1;
 		if(aks != -1) slots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
 		else return inva;
 		if(slots == -1 || slots == 0) slots = 20;
@@ -2381,8 +2381,8 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 {
 	new lim[sizeof(friskName)];
 
-	new bust, aks = HasAUnloading(playerid);
-	if(HasAUnloading(playerid) != -1) bust = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 0,PlayerInfo[playerid][pOdetPara][aks]);
+	new bust, aks = HasABustAks(playerid,0);
+	if(aks != -1) bust = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 0,PlayerInfo[playerid][pOdetPara][aks]);
 
 	new pow = get_power(playerid);
 	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;

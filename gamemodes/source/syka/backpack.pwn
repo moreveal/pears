@@ -41,7 +41,7 @@ stock ShowTabBackpack(playerid)
 {
 	PlayerPlaySound(playerid,17803,0,0,0);
 
-	new aks = HasABackpack(playerid),slots;
+	new aks = HasABustAks(playerid,1),slots;
 	if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) slots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
 	if(slots > 0) Backpages[playerid] = slots;
 	else Backpages[playerid] = 1;
@@ -302,7 +302,7 @@ stock put_thing_player_backpack(playerid, thingId, quan, para, qara, thingType, 
 
 stock SaveInventBackPack(playerid, i)
 {
-	new Aks = HasABackpack(playerid);
+	new Aks = HasABustAks(playerid,1);
 	new backpackid;
 	if(Aks != -1) backpackid = PlayerInfo[playerid][pOdetQara][Aks];
 	else return 0;

@@ -1,6 +1,6 @@
 #define MAX_CRAFT_AKS 19
-#define DOP_AKS_BUST 2
-#define MAX_CLASS_AKS 3
+#define DOP_AKS_BUST 4
+#define MAX_CLASS_AKS 4
 
 new AccessoryCraftList[MAX_CRAFT_AKS][16] =
 {
@@ -46,22 +46,26 @@ new AccessoryCraftListBust[MAX_CRAFT_AKS+DOP_AKS_BUST][3] =
     { 12371, 1, 3},         // Аксессуар Рюкзак охота 5
     { 12372, 1, 3},         // Аксессуар Рюкзак охота 6
     { 12373, 1, 3},         // Аксессуар Рюкзак охота 7
-    { 12136, 2, 10},         // Дает бонус к урону по NPC
-    { 12101, 2, 15}         // Дает бонус к урону по NPC
+    { 12136, 2, 10},         // Катана
+    { 12101, 2, 15},         // Са бля
+    { 12444, 3, 20},         // Apple Vision Pro
+    { 12290, 3, 5}         // Очки гари шпротера
 };
 
 new friskQualityBust[MAX_CLASS_AKS][] =
 {
     { "Кол-во дополнительных переносимых патрон" },
     { "Дополнительных страниц инвентаря" },
-    { "Урон по НПС процентов" }
+    { "Урон по НПС процентов" },
+    { "Дополнительный опыт к навыкам" }
 };
 
 new friskQualityBustShot[MAX_CLASS_AKS][] =
 {
     { "Разгрузка" },
     { "Рюкзак" },
-    { "Оружие" }
+    { "Оружие" },
+    { "Очки" }
 };
 
 new friskQualityColorAndText[6][] =
@@ -132,8 +136,25 @@ stock CreateAcsListCraftType(playerid)
             quan++;
         }
     }
-    if(quan == 0) return SendClientMessage(playerid, COLOR_GRAY, "{ff6347}В данный момент нет аксессуаров, с данным бонусом, которые можно скрафтить"),CreateAcsListCraft(playerid);
+    if(quan == 0) return AcsListCraftInformation(playerid);
     ShowDialog(playerid,ACCESSORYCRAFT_LIST,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Станок",lines,"Выбор","Отмена");
+    return 1;
+}
+
+stock AcsListCraftInformation(playerid)
+{
+    new line[150],lines[1400];
+    format(line,sizeof(line),"{ff9000}Вы выбрали %s", friskQualityBustShot[DP[0][playerid]]), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Но данный тип аксессуара увы нельзя скрафтить!"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Он может выпасть в кейсе, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{ff9000}Список аксессуаров и их бонусов:"), strcat(lines,line);
+    for(new i = 0; i < sizeof(AccessoryCraftListBust); i ++)
+    {
+        if(AccessoryCraftListBust[i][1] == DP[0][playerid]) format(line,sizeof(line),"\n{cccccc}- {0088ff}%s {cccccc}| {444444}%s: +%d", GetNameThing(0, AccessoryCraftListBust[i][0], 2, 0), friskQualityBust[DP[0][playerid]],AccessoryCraftListBust[i][2]), strcat(lines,line);
+    }
+    format(line,sizeof(line),"\n\n{cccccc}Подробнее об бонусах и акссеуарах можно узнать из видео об данной системе"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Либо спросив администрацию в /report"), strcat(lines,line);
+    ShowDialog(playerid,ACCESSORYCRAFT_INFORMATION,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
     return 1;
 }
 

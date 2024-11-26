@@ -66,43 +66,37 @@ stock UpdateAllOdet(playerid)
     return 1;
 }
 
-// Проверка, есть ли у игрока рюкзак
-stock HasABackpack(playerid)
+stock HasABustAks(playerid,type)
 {
 	for(new i = 0; i < MAX_ODET; i++)
     {
 		if(PlayerInfo[playerid][pOdet][i] > 0)
 		{
-			new type = IsABackPack(PlayerInfo[playerid][pOdet][i]);
-			if(type == 1) return i;
+			if(type != 1)
+			{
+				if(type == GetBustAksType(PlayerInfo[playerid][pOdet][i])) return i;
+			}
+			else 
+			{
+				if(type == IsABackPack(PlayerInfo[playerid][pOdet][i])) return i;
+			}
 		}
 	}
 	return -1;
 }
 
-// Проверка, есть ли у игрока разгрузка
-stock HasAUnloading(playerid)
+stock IsADuplicateAks(playerid, fpick)
 {
+	new type = GetBustAksType(fpick);
 	for(new i = 0; i < MAX_ODET; i++)
     {
-		if(PlayerInfo[playerid][pOdet][i] > 0 )
+		if(PlayerInfo[playerid][pOdet][i] > 0)
 		{
-			new type = GetBustAksType(PlayerInfo[playerid][pOdet][i]);
-			if(type == 0) return i;
+			if(type != -1 && type == GetBustAksType(PlayerInfo[playerid][pOdet][i]))
+			{
+				return 0;
+			}
 		}
 	}
-	return -1;
-}
-
-stock HasANpsAks(playerid)
-{
-	for(new i = 0; i < MAX_ODET; i++)
-    {
-		if(PlayerInfo[playerid][pOdet][i] > 0 )
-		{
-			new type = GetBustAksType(PlayerInfo[playerid][pOdet][i]);
-			if(type == 2) return i;
-		}
-	}
-	return -1;
+	return 1;
 }

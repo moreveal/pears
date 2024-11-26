@@ -34,7 +34,8 @@ stock mysql_save_ability(playerid, abilityId) // Сохраняем навык �
 }
 stock update_ability(p, abilityId, quan) // Повышаем навык
 {
-	new yes;
+	new yes, aks = HasABustAks(p,3);
+	if(aks != -1) quan += ResultCountBustAks(PlayerInfo[p][pOdet][aks], 3,PlayerInfo[p][pOdetPara][aks]);
 	if(GetPlayerVip(p) > 0) PlayerInfo[p][pAbility][abilityId] += quan*2;
 	else PlayerInfo[p][pAbility][abilityId] += quan;
 
