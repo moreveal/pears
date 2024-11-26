@@ -413,10 +413,14 @@ stock Tomb_UpdateWaveInfo(roomid)
 stock Tomb_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!Tomb_IsRoomExists(roomid)) return 0;
-    if (cooldown == 0 && TombInfo[roomid][tiWaveCooldown] > 0) return 0;
+
+    if (TombInfo[roomid][tiWaveCooldown] > 0)
+    {
+        TombInfo[roomid][tiWaveCooldown]--;
+        return SetTimerEx("Tomb_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
+    }
 
     if (cooldown > 0) {
-        if (IsValidTimer(TombInfo[roomid][tiSetWaveTimer])) KillTimer(TombInfo[roomid][tiSetWaveTimer]);
         TombInfo[roomid][tiWaveCooldown] = cooldown;
 
         for (new i = 0; i < MAX_TOMB_PLAYERS; i++) {
@@ -428,8 +432,7 @@ stock Tomb_SetWave(roomid, waveid, cooldown = 0)
             Tomb_SetCurseTextdraw(currentid, false);
         }
 
-        TombInfo[roomid][tiSetWaveTimer] = SetTimerEx("Tomb_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
-        return 1;
+        return SetTimerEx("Tomb_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
     }
     
     Tomb_UpdateMummyRemainsTextdraw(roomid);

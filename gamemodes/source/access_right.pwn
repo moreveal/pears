@@ -127,7 +127,7 @@ stock IsAFunctionOrganization(accessId, g, playerid) // Права доступ�
     }
     else if(accessId == 25) // /frisk /take // 25
     {
-        if(IsAPoliceFunction(g) || g == 7) return 1;
+        if(IsAPoliceFunction(g) || g == 7 || g == 3) return 1;
     }
     else if(accessId == 26) // /mafia", // 26 Забить стрелу [Mafia]
     {
