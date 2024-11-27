@@ -142,7 +142,7 @@ stock LifeWildAnimals(a)
     GetNpcHealth(WildAnimals[a][waID],WildAnimals[a][waHealth]);
     if(WildAnimals[a][waEvent] == 0) // Прогулка
     {
-        if(GetDistancePoint(AnimalX, AnimalY,AnimalZ, WildAnimals[0][waTaskCoord][0], WildAnimals[0][waTaskCoord][1],WildAnimals[a][waTaskCoord][2]) <= 20.0) WildAnimals[a][waDestinationStatus] = true;
+        if(GetDistanceBetweenPoints2D(AnimalX, AnimalY, WildAnimals[a][waTaskCoord][0], WildAnimals[a][waTaskCoord][1]) <= 20.0) WildAnimals[a][waDestinationStatus] = true;
         if(WildAnimals[a][waDestinationStatus]) CreateTaskWalkingAnimals(a, WildAnimals[a][waArea]);
     }
     if(WildAnimals[a][waEvent] == 1) // Атакует
