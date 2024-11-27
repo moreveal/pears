@@ -1043,6 +1043,7 @@ stock CreateThingAfterCraft(playerid)
         }
         new param = 0;
         if(CreateThingType[playerid] == 2) param = FindParamInCraftSlot(playerid);
+        param += get_ability(playerid,11);
         new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], 1, param, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
 	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В вашем инвентаре не хватает места");
 
