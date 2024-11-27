@@ -393,9 +393,7 @@ stock DestroyThrow(t) // Удаляем предмет с земли
  	ThrowInfo[t][tUseplayer] = 0;
 	if(IsABackPack(ThrowInfo[t][tId]) && ThrowInfo[t][tQara] != 0)
 	{
-		new string_mysql[128];
-		mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpack` = '%d'", ThrowInfo[t][tQara]);
-		query_empty(pearsq, string_mysql);
+		DeleteBackPack(ThrowInfo[t][tQara]);
 	}
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;
