@@ -31,7 +31,7 @@ new WildAnimals[MAX_WILD_ANIMALS_NPS][wildanimalsnpc];
 
 new WildAnimalsArea[MAX_WILD_ANIMALS_ZONE][2];
 new HuntZone[MAX_REALPLAYERS][MAX_WILD_ANIMALS_ZONE];
-new HuntGangZone[MAX_REALPLAYERS][MAX_WILD_ANIMALS_TYPE];
+new HuntGangZone[MAX_WILD_ANIMALS_ZONE];
 new SittngStatus[MAX_REALPLAYERS];
 new bool:LoadBag;
 
@@ -42,6 +42,12 @@ stock LoadAnimalsArea()
     WildAnimalsArea[2][0] = CreateDynamicCube(-73.0886,-823.3384, 0.0, 582.9846,-380.0188, 250.0, 0, 0);        // Лес туманный округ
     WildAnimalsArea[3][0] = CreateDynamicCube(1782.0000,-904.5643, 0.0, 2664.0000,-305.5643, 250.0, 0, 0);      // Лес у Шахты
     WildAnimalsArea[4][0] = CreateDynamicCube(2372.3381,-244.9590, 0.0, 2789.9521,270.7919, 250.0, 0, 0);       // Лес через ЖД над шахтой
+
+    HuntGangZone[0] = GangZoneCreate(-1041.2166,-2752.3936, -298.5008,-1658.5681);
+    HuntGangZone[1] = GangZoneCreate(-643.5008,-1582.5681, -8.5008,-972.5681);
+    HuntGangZone[2] = GangZoneCreate(-73.0886,-823.3384, 582.9846,-380.0188);
+    HuntGangZone[3] = GangZoneCreate(1782.0000,-904.5643, 2664.0000,-305.5643);
+    HuntGangZone[4] = GangZoneCreate(2372.3381,-244.9590, 2789.9521,270.7919);
 }
 
 stock LoadWildAnimals(area)
@@ -509,7 +515,6 @@ stock huntermap(playerid)
 	{
     	SetPlayerChatBubble(playerid,"сворачивает и убирает карту охотника",COLOR_PURPLE,30.0,8000);
   		Dei[playerid] = 0, PlayerPlaySound(playerid,5600,0,0,0);
-        DestroyWildAnimalZone(playerid);
   		Close_Huntmap(playerid);
 	}
 	else
@@ -587,13 +592,16 @@ stock Close_Huntmap(p)
     HuntZone[p][2] = 0;
     HuntZone[p][4] = 0;
 	Dei[p] = 0;
+    for(new g; g < MAX_WILD_ANIMALS_ZONE; g++)
+    {
+        GangZoneHideForPlayer(p, HuntGangZone[g]);
+    }
     return true;
 }
 
 stock ShowWildAnimalsZone(playerid)
 {
     new color[MAX_WILD_ANIMALS_ZONE], animalstype[MAX_WILD_ANIMALS_TYPE];
-    CreateWildAnimalsZone(playerid);
     for(new z; z < MAX_WILD_ANIMALS_ZONE; z++)
     {
         animalstype[0] = 0, animalstype[1] = 0,animalstype[2] = 0, animalstype[3] = 0,animalstype[4] = 0;
@@ -606,30 +614,8 @@ stock ShowWildAnimalsZone(playerid)
         else if((animalstype[0] != 0 || animalstype[4] != 0) && (animalstype[1] != 0 || animalstype[2] != 0 || animalstype[3] != 0)) color[z] = 0xFDF136AA;
         else if((animalstype[0] != 0 || animalstype[4] != 0) && (animalstype[1] == 0 && animalstype[2] == 0 && animalstype[3] == 0)) color[z] = 0xFF1111AA;
         else color[z] = 0xFDF136AA;
-        GangZoneShowForPlayer(playerid, HuntGangZone[playerid][z], color[z]);
+        GangZoneShowForPlayer(playerid, HuntGangZone[z], color[z]);
     }
-}
-
-stock CreateWildAnimalsZone(playerid)
-{
-    DestroyWildAnimalZone(playerid);
-
-    HuntGangZone[playerid][0] = GangZoneCreate(-1041.2166,-2752.3936, -298.5008,-1658.5681);
-    HuntGangZone[playerid][1] = GangZoneCreate(-643.5008,-1582.5681, -8.5008,-972.5681);
-    HuntGangZone[playerid][2] = GangZoneCreate(-73.0886,-823.3384, 582.9846,-380.0188);
-    HuntGangZone[playerid][3] = GangZoneCreate(1782.0000,-904.5643, 2664.0000,-305.5643);
-    HuntGangZone[playerid][4] = GangZoneCreate(2372.3381,-244.9590, 2789.9521,270.7919);
-    
-    return true;
-}
-
-stock DestroyWildAnimalZone(playerid)
-{
-    for(new z; z < MAX_WILD_ANIMALS_ZONE; z++)
-    {
-        if(HuntGangZone[playerid][z] != 0) GangZoneDestroy(HuntGangZone[playerid][z]), HuntGangZone[playerid][z] = 0;
-    }
-    return true;
 }
 
 stock WildAnimalPlaySound(a,type)
@@ -748,5 +734,90 @@ stock WildAnimalPlaySound(a,type)
             }
         }
     }
+    return true;
+}
+
+
+//=========================================================
+//=================== Касцена Охота=====================
+new NPC:WildAnimalsNPC[MAX_PLAYERS][5];
+new WildAnimalsTimer[MAX_PLAYERS][2];
+
+stock WildAnimalsCuteScene(playerid)
+{
+    TogglePlayerControllable(playerid,false);
+    new Float:X, Float:Y, Float:Z, Float:A;
+    GetPlayerPos(playerid, X, Y, Z); GetPlayerFacingAngle(playerid, A);
+    SpA[playerid]=A;SpX[playerid]=X;SpY[playerid]=Y;SpZ[playerid]=Z;
+    SetPlayerPos(playerid,2623.2979,-849.8397,74.8496);
+    SetPlayerVirtualWorld(playerid, playerid);
+    SetCameraBehindPlayer(playerid);
+    SetPlayerCameraPos(playerid, 2623.2979,-849.8397,74.8496);
+    SetPVarInt(playerid,"qweststat",75), SetPVarInt(playerid,"qwesttime",1);
+    WildAnimalsTimer[playerid][1] = SetTimerEx("WildAnimalsTimers2", 2000, true, "d", playerid);
+    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/forester/forester0.mp3");
+    return true;
+}
+
+stock DestroyWildAnimalsCuteScene(playerid)
+{
+    if(WildAnimalsTimer[playerid][0] > 0)
+    {
+        SetPlayerPos(playerid,SpX[playerid],SpY[playerid],SpZ[playerid]);
+        SetPlayerVirtualWorld(playerid,0);
+        SetPlayerFacingAngle(playerid, SpA[playerid]);
+        SetCameraBehindPlayer(playerid);
+        KillTimer(WildAnimalsTimer[playerid][0]);
+        WildAnimalsTimer[playerid][0] = 0;
+        TogglePlayerControllable(playerid,true);
+        DoneHintPlayer(playerid,3);
+        for(new a; a < 5; a++)
+        {
+            DestroyNpc(WildAnimalsNPC[playerid][a]);
+            WildAnimalsNPC[playerid][a] = NPC:0;
+        }
+        return true;
+    }
+    return false;
+}
+
+function WildAnimalsTimers(playerid)
+{
+    DestroyWildAnimalsCuteScene(playerid);
+    return true;
+}
+
+stock DestroyWildAnimalsCuteScene2(playerid)
+{
+    if(WildAnimalsTimer[playerid][1] > 0)
+    {
+        WildAnimalsTimer[playerid][0] = SetTimerEx("WildAnimalsTimers", 45000, true, "d", playerid);
+        WildAnimalsNPC[playerid][0] = CreateNpc(15796, 2595.1147,-825.8525,78.5166);
+        WildAnimalsNPC[playerid][1] = CreateNpc(15797, 2605.4377,-827.4437,77.5653);
+        WildAnimalsNPC[playerid][2] = CreateNpc(15795, 2505.5630,-860.6196,92.3974);
+        WildAnimalsNPC[playerid][3] = CreateNpc(15794, 2453.4192,-840.2479,106.7003);
+        WildAnimalsNPC[playerid][4] = CreateNpc(15793, 2439.4397,-795.5780,112.2216);
+        SetNpcVirtualWorld(WildAnimalsNPC[playerid][0], playerid);
+        TaskNpcGoToPoint(WildAnimalsNPC[playerid][0], 2552.0205,-800.5846,86.5453, NPC_MOVE_MODE_RUN);
+        SetNpcVirtualWorld(WildAnimalsNPC[playerid][1], playerid);
+        TaskNpcGoToPoint(WildAnimalsNPC[playerid][1], 2553.0205,-800.5846,86.5453, NPC_MOVE_MODE_RUN);
+        new Float:AnimalX,Float:AnimalY,Float:AnimalZ;
+        for(new a = 2; a < 5; a++)
+        {
+            SetNpcVirtualWorld(WildAnimalsNPC[playerid][a], playerid);
+            AnimalX= random(882)+1782, AnimalY= random(599)-904;
+            TaskNpcGoToPoint(WildAnimalsNPC[playerid][a], AnimalX,AnimalY,AnimalZ, NPC_MOVE_MODE_WALK);
+        }
+        FlyCameraPos(playerid, 2454.396484, -803.477600, 112.390365, 2454.953369, -808.368957, 111.515983, 45000, 2000);
+        WildAnimalsTimer[playerid][1] = 0;
+        KillTimer(WildAnimalsTimer[playerid][1]);
+        return true;
+    }
+    return false;
+}
+
+function WildAnimalsTimers2(playerid)
+{
+    DestroyWildAnimalsCuteScene2(playerid);
     return true;
 }

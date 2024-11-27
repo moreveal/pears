@@ -1325,6 +1325,56 @@ stock QuestCallMessage(playerid)
         CreateGps(playerid,870.1978,-25.2869,63.9646, 0, 0, 5.0);
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
+    else if(GetPVarInt(playerid,"qweststat") == 75)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Здрасьте! Вы вошли в зону диких животных.");
+        SetPVarInt(playerid,"qweststat",76), SetPVarInt(playerid,"qwesttime",3);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 76)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Тут водятся как обычные травоядные, так и опасные хищники.");
+        SetPVarInt(playerid,"qweststat",77), SetPVarInt(playerid,"qwesttime",5);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 77)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Вы можете охотиться на них со стрелкового оружия, но будьте окуратнее.");
+        SetPVarInt(playerid,"qweststat",78), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 78)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Травоядные могут испугаться выстрелов и убежать, а хищники наоборот, напасть на вас.");
+        SetPVarInt(playerid,"qweststat",79), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 79)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): И не подходите близко к животным, это так-же может спровоцировать их.");
+        SetPVarInt(playerid,"qweststat",80), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 80)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Туши животных можно разделывать на мясо и шкуры.");
+        SetPVarInt(playerid,"qweststat",81), SetPVarInt(playerid,"qwesttime",3);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 81)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Из шкур создаются аксессуары на станке, а мясо можно продать в моей лавке.");
+        SetPVarInt(playerid,"qweststat",82), SetPVarInt(playerid,"qwesttime",7);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 82)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): В лавке я продаю оружие для охоты и свою карту.");
+        SetPVarInt(playerid,"qweststat",83), SetPVarInt(playerid,"qwesttime",5);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 83)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): На карте я отмечаю зоны с животными, а так-же, какие животные в данный момент в зоне.");
+        SetPVarInt(playerid,"qweststat",84), SetPVarInt(playerid,"qwesttime",6);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 84)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Заходите в любое время в мою лавку. Я всегда рад гостям.");
+        SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
+    }
     return 1;
 }
 
