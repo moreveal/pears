@@ -341,7 +341,7 @@ stock SaveInventBackPackByUserID(backpackid, i, JsonNode:node)
 	if(node == JSON_INVALID_NODE)
 	{
 		new string_mysql[140];
-		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= NULL WHERE `backpackid` = '%d'", i, backpackid);
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= NULL,`lastunix`= '%d' WHERE `backpackid` = '%d'", i,gettime(), backpackid);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -350,8 +350,8 @@ stock SaveInventBackPackByUserID(backpackid, i, JsonNode:node)
 		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
 		{
 			new string_mysql[640];
-			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= '%e' WHERE `backpackid` = '%d'",
-			i, string_json, backpackid);
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= '%e',`lastunix`= '%d' WHERE `backpackid` = '%d'",
+			i, string_json,gettime(),backpackid);
 			mysql_tquery(pearsq, string_mysql);
 		}
 	}
