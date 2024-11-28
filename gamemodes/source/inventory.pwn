@@ -233,6 +233,7 @@ new PrisonTableInfo[MAX_PRISON_TABLE][prisTableInfo];
 enum backpackEnum
 {
     backpackNewId,
+	backpackLoad,
     backpackInvent[MAX_INVEN_BACKPACK],
 	backpackInv[MAX_INVEN_BACKPACK],
 	backpackInvPara[MAX_INVEN_BACKPACK],
@@ -1927,7 +1928,7 @@ stock ThingParameters(playerid, thingId, &quan, &para)
 	else if(thingId == 18 && para == 0) quan = (quan == 0 ? GetFullThingQuan(thingId) : quan), para = unix+604800; // Наживка
 	else if(thingId == 19 && quan == 0) quan = GetFullThingQuan(thingId); // Отмычки (Полный комплект)
 	else if(thingId == 20 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Рыба
-	else if(thingId == 22 && para == 0) quan = GetFullThingQuan(thingId), para = unix+259200; // Мясо
+	else if(thingId == 22 && para == 0) para = unix+259200; // Мясо
 	else if(thingId == 26 && PlayerInfo[playerid][pDrugPerk] == 0) quan = GetFullThingQuan(thingId), NumberSmartfonPlayer(playerid); // Смартфон (Номер телефона)
 	else if(thingId == 37 && quan == 0) quan = GetFullThingQuan(thingId); // Шампанское (Количество)
 	else if(thingId == 41 && quan == 0) quan = GetFullThingQuan(thingId); // Бенгальские свечи (Полный комплект)
@@ -1989,7 +1990,10 @@ stock put_thing_player(playerid, thingId, quan, para, qara, thingType, thingPack
 {
 	if(PlayerInfo[playerid][pInven][slot] != 0 && PlayerInfo[playerid][pInven][slot] != thingId) return -1; // Защита от ошибки, на всякий случай
 
-    if(qara == PlayerInfo[playerid][pID]) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+    if(qara == PlayerInfo[playerid][pID]) 
+	{
+		if(!IsABackPack(thingId)) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+	}
     
     // Выдача особых предметов
     if(thingType == 0) // Обычные предметы

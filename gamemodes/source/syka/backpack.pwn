@@ -22,6 +22,7 @@ stock TabBackpackHide(playerid)
 
 stock BackpackLoadPick(playerid)
 {
+	if(!BackPackInfo[playerid][backpackLoad]) return ErrorMessage(playerid,"{ff6347}Рюкзак еще не загрузился, подождите");
 	Backpack[playerid] = 1;
 
 	Page[playerid] = 0;
@@ -260,8 +261,10 @@ stock put_thing_player_backpack(playerid, thingId, quan, para, qara, thingType, 
 {
 	if(BackPackInfo[playerid][backpackInvent][slot] != 0 && BackPackInfo[playerid][backpackInvent][slot] != thingId) return -1; // Защита от ошибки, на всякий случай
 
-    if(qara == PlayerInfo[playerid][pID]) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
-    
+    if(qara == PlayerInfo[playerid][pID]) 
+	{
+		if(!IsABackPack(thingId)) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+	}
     // Выдача особых предметов
     if(thingType == 0) // Обычные предметы
     {
@@ -410,6 +413,7 @@ stock OnPlayerLoadBackPack(playerid)
 			}
 		}
 	}
+	BackPackInfo[playerid][backpackLoad] = 1;
 	return 1;
 }
 
