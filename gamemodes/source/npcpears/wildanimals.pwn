@@ -50,6 +50,22 @@ stock LoadAnimalsArea()
     HuntGangZone[4] = GangZoneCreate(2372.3381,-244.9590, 2789.9521,270.7919);
 }
 
+CMD:reloadanimals(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+    for(new a; a < MAX_WILD_ANIMALS_NPS; a++)
+    {
+        WildAnimals[a][waUnix] = 0;
+        DestroyAnimals(a);
+    }
+    for(new area; area < MAX_WILD_ANIMALS_ZONE; area++)
+    {
+        WildAnimalsArea[area][1] = 0;
+        LoadWildAnimals(area);
+    }
+    SuccessMessage(playerid,"{44ff99}Я зареспавнил всех животных во всех зонах");
+    return 1;
+}
 stock LoadWildAnimals(area)
 {
     if(WildAnimalsArea[area][1]) return false;
