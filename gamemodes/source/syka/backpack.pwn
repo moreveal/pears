@@ -438,3 +438,25 @@ stock DeleteBackPack(backpackid)
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
+
+CMD:rbackpack(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
+	if(sscanf(params, "u", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Очистить инвентарь игроку [ /rbackpack ID ]");
+	if(IsOnline(params[0]))
+	{
+		new aks = HasABustAks(params[0],1);
+		if(aks == -1) return ErrorMessage(playerid,"{ff6347}На игроке нет рюкзака");
+		new string[128];
+		format(string, sizeof(string), " [ ADM ]: %s[%d] очистил рюкзак №%d у игрока %s[%d]", PlayerInfo[playerid][pName],playerid,PlayerInfo[params[0]][pOdetQara][aks],PlayerInfo[params[0]][pName],params[0]);
+    	ABroadCast(COLOR_ADM,string,2);
+		format(string, sizeof(string), "* Администратор %s очистил ваш рюкзак.", PlayerInfo[playerid][pName]);
+		SendClientMessage(params[0], COLOR_LIGHTBLUE, string);
+    	if(OnlineInfo[params[0]][oShowInterface] == 1) CloseFrisk(params[0]), CancelSelectTextDraw(params[0]);
+		ClearPlayerBackPack(params[0]);
+		for(new i = 0; i < MAX_INVEN_BACKPACK; i ++) SaveInventBackPack(params[0], i);
+		AdminLog("rbackpack", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], PlayerInfo[params[0]][pOdetQara][aks], "Очистил рюкзак");
+	}
+	else SendClientMessage(playerid, COLOR_GRAD5, "[ Мысли ]: Его вообще нет..");
+	return 1;
+}
