@@ -20,6 +20,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pCDGraves", "INT NOT NULL DEFAULT '0'"); // КД на раскопку могил
     AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
+    AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
+    AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
 
     // quest halloween
     AddColumnIfNotExists("pp_quest_temp", "Ball", "BLOB NULL DEFAULT NULL");
@@ -80,6 +82,7 @@ stock CreateMysqlTable()
     // Подсказки с озвучкой
     AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
     AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
+    AddColumnIfNotExists("pp_igroki_hint", "hint3", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
 
     // Цены за объявления CNN
     AddColumnIfNotExists("pp_server", "serv65", "INT NOT NULL DEFAULT '0'");

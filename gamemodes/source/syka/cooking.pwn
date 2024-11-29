@@ -10,7 +10,9 @@ static const pressCookObjects[][e_pressCookObjects] = {
   {19933},
 
   // Custom
-  {12225}
+  {12225},
+  // Котелок
+  {12374},{12375}
 };
 
 stock GetDynamicObjectCookPosition(objectid) {
@@ -31,6 +33,14 @@ stock GetDynamicObjectWorkbench(objectid)
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
     if(model == 12173 || model == 12292) return true;
+	return false;
+}
+
+stock GetDynamicObjectWorkbenchAcs(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 12443) return true;
 	return false;
 }
 
@@ -55,6 +65,15 @@ stock GetDynamicObjectElectro(objectid)
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
     if(model == 12299) return true;
+	return false;
+}
+
+stock GetDynamicObjectTV(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 1717 || model == 1781 || model == 14772 || model == 1747 ||  model == 1751 || model == 12215
+    || model == 1752 ||  model == 2318 ||  model == 2322 ||  model == 19786 ||  model == 19787 || model == 12202 || model == 12206) return true;
 	return false;
 }
 
@@ -95,6 +114,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         if(GetDynamicObjectWorkbench(current_object)) return 2; // Верстак
         if(GetDynamicObjectFridge(current_object)) return 3; // Холодильник
         if(GetDynamicObjectElectro(current_object)) return 4; // Электрощиток
+        if(GetDynamicObjectWorkbenchAcs(current_object)) return 7; // Швейный станок
         if(GetDynamicObjectToilet(current_object))
         {
             new Float:x, Float:y, Float:z;

@@ -196,6 +196,11 @@ enum e_DialogId {
     // Casino
     CASINO_EDITCHIPSPROCENT,
 
+    // Станок для артов
+    ACCESSORYCRAFT_LIST_TYPE,
+    ACCESSORYCRAFT_LIST,
+    ACCESSORYCRAFT_INFORMATION,
+    
     // Заправка транспорта
     FILLKANI_DIALOG_ENTER,
 

@@ -475,6 +475,27 @@ stock getmed(playerid, para1)
 		format(line,sizeof(line),"\n{cccccc}Позволяет находиться рядом с болеющим игроком и не заразиться"), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Получить иммунитет можно только переболев болезнью"), strcat(lines,line);
 	}
+
+	if(PlayerInfo[playerid][pSex] == 2)
+	{
+		new unix = gettime();
+
+		if(unix <= PlayerInfo[playerid][pMenstrDay] && unix >= PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION)
+		{
+			new tyear, tmonth, tday, thour, tminute, tsecond;
+			stamp2datetime(PlayerInfo[playerid][pMenstrDay], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			if(PlayerInfo[playerid][pMenstrProkl] == 0) format(line,sizeof(line),"\n\n{B21515}Сегодня день менструации {cccccc}[ Прокладка отсутствует ]"), strcat(lines,line);
+			else format(line,sizeof(line),"\n\n{B21515}Сегодня день менструации {99ff66}[ Прокладка надета ]"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}Менструация закончится %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		}
+		else
+		{
+			new tyear, tmonth, tday, thour, tminute, tsecond;
+			stamp2datetime(PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			format(line,sizeof(line),"\n\n{B21515}Менструация начнётся %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}Будет длиться в течении %d дней", TIME_MENSTRUATION / 86400), strcat(lines,line);
+		}
+	}
     ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",lines,"Назад","");
 	return 1;
 }

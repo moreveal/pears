@@ -1662,6 +1662,7 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
     {
         if(racers[i] != -1)
         {
+            if(i > 10) continue;
             quan ++;
             format(line,sizeof(line),"%d._%s~n~", quan, PlayerInfo[racers[i]][pName]), strcat(lines,line);
         }

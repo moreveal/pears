@@ -73,6 +73,20 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
         i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
         i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
     }
+    else if (thingId == 237) // Термитная смесь
+    {
+        i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
+        i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
+    }
+    else if (thingId >= 12335 && thingId <= 12373) // Прокладка
+    {
+        new finditem = FindItemAccessoryCraft(thingId);
+        i0 = AccessoryCraftList[finditem][1], q0 = AccessoryCraftList[finditem][2], t0 = AccessoryCraftList[finditem][3];
+        i1 = AccessoryCraftList[finditem][4], q1 = AccessoryCraftList[finditem][5], t1 = AccessoryCraftList[finditem][6];
+        i2 = AccessoryCraftList[finditem][7], q2 = AccessoryCraftList[finditem][8], t2 = AccessoryCraftList[finditem][9]; 
+        i3 = AccessoryCraftList[finditem][10], q3 = AccessoryCraftList[finditem][11], t3 = AccessoryCraftList[finditem][12]; 
+        i4 = AccessoryCraftList[finditem][13], q4 = AccessoryCraftList[finditem][14], t4 = AccessoryCraftList[finditem][15]; 
+    }
     else
     {
         new ingId[6], ingQuan[6];
@@ -190,7 +204,7 @@ stock GetInvaInCraftSlot(playerid, inva) // Добавлен ли предмет
 
 stock CheckCraftReady(playerid)
 {
-    if((Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 12 || Tabs_Load[playerid] == 13)
+    if((Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 12 || Tabs_Load[playerid] == 13 || Tabs_Load[playerid] == 17)
         && CreateThingID[playerid] > 0)
     {
         if(ClearCraftThingItems(playerid)) PlayerPlaySound(playerid,6801,0,0,0);
@@ -225,10 +239,11 @@ stock GetFullThingForCraft(playerid, type_message) // Проверяем, все
     if(noFull == 1)
     {
         new thingId = CreateThingID[playerid];
+        new thingType = CreateThingType[playerid];
         if(type_message == 0)
         {
             new line[100],lines[1000];
-            format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, 0, 0)), strcat(lines,line);
+            format(line,sizeof(line),"{FF6347}Вы не собрали все предметы для: %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
             format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
             for(new i = 0; i < MAX_CRAFT_ITEM; i ++)
             {
@@ -308,6 +323,26 @@ stock TakeThingInCraftSlot(playerid, thingId, thingType, thingQuan) // Заби�
     return quan;
 }
 
+stock FindParamInCraftSlot(playerid)
+{
+    new inva, param;
+    for(new i = 0; i < MAX_CRAFT_ITEM_QUAN; i ++)
+    {
+        if(InvaCraft[playerid][i] > 0)
+        {   
+            for(new it = 0; it < MAX_CRAFT_ITEM_QUAN; it ++)
+            {
+                if(InvaCraftQuan[playerid][i][it] > 0)
+                {
+                    inva = InvaCraftQuan[playerid][i][it] - 1;
+                    param += PlayerInfo[playerid][pInvenPara][inva];
+                }
+            }
+        }
+    }
+    return param;
+}
+
 stock UpdateDrawInvaThing(playerid, slot) // Обновляем отображение ячеек для крафта
 {
     if(OnlineInfo[playerid][oCraftDraw] == false) return 0;
@@ -366,7 +401,7 @@ stock SelectThingCraft(playerid, thingId, thingType) // Выбрали пред�
     CreateThingID[playerid] = thingId;
     CreateThingType[playerid] = thingType;
     
-    new line[100],lines[1000];
+    new line[150],lines[1400];
     format(line,sizeof(line),"{ff9000}Вы выбрали %s", GetNameThing(0, thingId, thingType, 0)), strcat(lines,line);
     format(line,sizeof(line),"\n\n{cccccc}Для крафта этого предмета требуются:"), strcat(lines,line);
     new craftId[MAX_CRAFT_ITEM], craftQuan[MAX_CRAFT_ITEM], craftType[MAX_CRAFT_ITEM];
@@ -377,13 +412,23 @@ stock SelectThingCraft(playerid, thingId, thingType) // Выбрали пред�
     }
     format(line,sizeof(line),"\n\n{cccccc}Выберите необходимые предметы в вашем инвентаре"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}А затем поместите их в свободные ячейки для создания"), strcat(lines,line);
+    if(thingType == 2)
+    {
+        new AksType = GetBustAksType(thingId);
+        if(AksType != -1)
+        {
+            format(line,sizeof(line),"\n\n{cccccc}Данный предмет дает следующие бонусы. От %s {cccccc}до %s качества",friskQualityColorAndText[0],friskQualityColorAndText[5]), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}%s: {ff9000}+%d {cccccc}минимум, {ff9000}+%d {cccccc}максимум",friskQualityBust[AksType],ResultCountBustAks(thingId,AksType,0),ResultCountBustAks(thingId,AksType,600)), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}Качество аксессуара зависит от: {ff9000}Навыка Шитья, Качества ингредиентов, доп.бонусов аксессуаров"), strcat(lines,line);
+        }
+    }
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-    UpdateDrawCraftThing(playerid, thingId);
+    UpdateDrawCraftThing(playerid, thingId, thingType);
     return 1;
 }
 
-stock UpdateDrawCraftThing(playerid, thingId) // Обновляем отображение выбранного предмета
+stock UpdateDrawCraftThing(playerid, thingId, thingType) // Обновляем отображение выбранного предмета
 {
     if(OnlineInfo[playerid][oCraftDraw] == false) return 0;
 
@@ -416,23 +461,34 @@ stock UpdateDrawCraftThing(playerid, thingId) // Обновляем отобра
     FixTextDrawSquare_Y(draw1[1] * one[1], draw1[0]);
     PlayerTextDrawTextSize(playerid, CraftProcessDraw[1][playerid], draw1[0], draw1[1] * one[1]);
 
-    if(thingId == 0)
+    if(thingType == 0)
     {
-        PlayerTextDrawSetPos(playerid, CraftProcessDraw[1][playerid], (centr[0] - draw1[0] / 2) + PlaPickSizeX / 2, back_pos[1] + one[1] * 35);
-        PlayerTextDrawColour(playerid, CraftProcessDraw[1][playerid], 100); // -1
-        PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], 1956);
-        PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[1][playerid], -10.000000, 0.000000, 0.000000, 1.000000);
+        if(thingId == 0)
+        {
+            PlayerTextDrawSetPos(playerid, CraftProcessDraw[1][playerid], (centr[0] - draw1[0] / 2) + PlaPickSizeX / 2, back_pos[1] + one[1] * 35);
+            PlayerTextDrawColour(playerid, CraftProcessDraw[1][playerid], 100); // -1
+            PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], 1956);
+            PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[1][playerid], -10.000000, 0.000000, 0.000000, 1.000000);
+        }
+        else
+        {
+            PlayerTextDrawSetPos(playerid, CraftProcessDraw[1][playerid], (centr[0] - draw1[0] / 2) + PlaPickSizeX / 2, back_pos[1] + one[1] * 28);
+            PlayerTextDrawColour(playerid, CraftProcessDraw[1][playerid], -1);
+            PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], friskPick[thingId]);
+            new Float:modelPos[4], findIt;
+            GetModelTextDraw(friskPick[thingId], 0,0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+            PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[1][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
+        }
     }
     else
     {
         PlayerTextDrawSetPos(playerid, CraftProcessDraw[1][playerid], (centr[0] - draw1[0] / 2) + PlaPickSizeX / 2, back_pos[1] + one[1] * 28);
         PlayerTextDrawColour(playerid, CraftProcessDraw[1][playerid], -1);
-        PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], friskPick[thingId]);
+        PlayerTextDrawSetPreviewModel(playerid, CraftProcessDraw[1][playerid], thingId);
         new Float:modelPos[4], findIt;
-		GetModelTextDraw(friskPick[thingId], 0,0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
+        GetModelTextDraw(thingId, 0,0, modelPos[0], modelPos[1], modelPos[2], modelPos[3], findIt);
         PlayerTextDrawSetPreviewRot(playerid, CraftProcessDraw[1][playerid], modelPos[0], modelPos[1], modelPos[2], modelPos[3]);
     }
-
     PlayerTextDrawShow(playerid, CraftProcessDraw[1][playerid]);
     return 1;
 }
@@ -549,6 +605,10 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     format(line,sizeof(line),"{ff9000}Термитная смесь"), strcat(lines,line);
                     ShowDialog(playerid,1391,DIALOG_STYLE_LIST,"{ff9000}Химический Стол",lines,"Выбор","Отмена");
                 }
+                else if(Tabs_Load[playerid] == 17)
+                {
+                    CreateAcsListCraft(playerid);
+                }
             }
         }
         return 1;
@@ -619,6 +679,17 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
                     \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
                     ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Химический Стол",lines,"*","");
+                }
+                else if(Tabs_Load[playerid] == 17) // Химический Стол
+                {
+                    format(lines,sizeof(lines),
+                    "\n{ff9000}Создание Предметов\
+                    \n{444444}1. Нажмите на {ff9000}пустую область в кружочке сверху\
+                    \n{444444}2. Выберите предмет, который хотите создать\
+                    \n{444444}3. Положите требуемые детали или предметы из инвентаря в пустые ячейки\
+                    \n\n{ffcc66}После выбора предмета и сбора деталей нажмите\
+                    \n{ffcc66}на кнопку с галочкой, чтобы начать процесс");
+                    ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Станок",lines,"*","");
                 }
             }
             return 1;
@@ -936,8 +1007,9 @@ stock CreateThingAfterCraft(playerid)
     new yes, ability;
     if(Tabs_Load[playerid] == 11) ability = get_ability(playerid, 3); // Верстак (Инженер)
     else if(Tabs_Load[playerid] == 13) ability = get_ability(playerid, 7); // Химический Стол (Химик)
+    else if(Tabs_Load[playerid] == 17) ability = get_ability(playerid, 11); // Химический Стол (Химик)
 
-    if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13) // Расчитываем шанс
+    if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13 || Tabs_Load[playerid] == 17) // Расчитываем шанс
     {
         new chance = 2;
         if(ability >= 3 && ability <= 4) chance = 3;
@@ -964,15 +1036,19 @@ stock CreateThingAfterCraft(playerid)
             if(getQuan+1 > getLimit)
             {
                 new string[160];
-                format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками", getLimit);
+                format(string,sizeof(string),"{FF6347}У вас нет места в инвентаре\nЛимит для этого предмета: %d\n\n{cccccc}Предметы учитываются из раздела торговли и упаковок с подарками и рюкзаков", getLimit);
                 ErrorMessage(playerid, string);
                 return 1;
             }
         }
-
-        new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], 1, 0, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
+        new param = 0;
+        if(CreateThingType[playerid] == 2) param = FindParamInCraftSlot(playerid);
+        param += get_ability(playerid,11);
+        new put_inva = GiveThingPlayer(playerid, CreateThingID[playerid], 1, param, 0, CreateThingType[playerid], 0, 9999); // Выдаём предмет игроку
 	    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В вашем инвентаре не хватает места");
 
+        if(PlayerInfo[playerid][pAchieve][136] == 0 && CreateThingType[playerid] == 2) AchievePlayer(playerid, 136, 1);
+        if(PlayerInfo[playerid][pAchieve][137] == 0 && param >= 500) AchievePlayer(playerid, 137, 1);
         SuccessMessage(playerid, "{99ff66}Выполнено!");
     }
     else // Проёба
@@ -1008,6 +1084,8 @@ stock CreateThingAfterCraft(playerid)
         }
     }
     else if(Tabs_Load[playerid] == 13) update_ability(playerid, 7, 10); // Пополняем навык
+    else if(Tabs_Load[playerid] == 17) update_ability(playerid, 11, 10); // Пополняем навык
+
 
     TakeThingForCraft(playerid); // Забираем предметы
     ClearCraftThingItems(playerid);

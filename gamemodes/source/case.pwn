@@ -59,7 +59,7 @@ stock IsThingNotVariable(i)
     || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
     || i == 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
     || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
-    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229 || i == 240
+    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229 || i == 240 || i >= 244 && i <= 248
     || IsANaborsEdoi(i)) return 0;
     return 1;
 }
@@ -169,6 +169,7 @@ stock CreateAccessoryGiftCase() // Собираем аксессуары для 
     {
         if(AccessoryInfo[i][acCase] == true)
         {
+            if(FindItemAccessoryCraft(AccessoryInfo[i][acModel]) != -1) continue;
             ThingAccessoryGift[ThingAccessoryQuan] = AccessoryInfo[i][acModel];
             ThingAccessoryGiftBone[ThingAccessoryQuan] = AccessoryInfo[i][acBone];
             ThingAccessoryQuan ++;
@@ -269,6 +270,10 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             case 2: thingType = 5; // Транспорт
         }
     }
+    else if(strcmp(name,"craftaks") == 0)
+    {
+        thingType = 2;
+    }
     else 
     {
         switch(random(15))
@@ -303,10 +308,25 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         if(ThingAccessoryQuan <= 0) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг аксессуаров для кейса нет, выпадет обычный предмет
 
-        new thingTemp = random(ThingAccessoryQuan);
-        thingId = ThingAccessoryGift[thingTemp];
-        thingPara = ThingAccessoryGiftBone[thingTemp];
-        thingQuan = 1;
+        if(strcmp(name,"craftaks") == 0)
+        {
+            switch(random(61))
+            {
+                case 0..40: thingId = AccessoryCraftListBust[FindRandomItemAccessoryCraft(0)][0]; // Разгрузка (доп переносимых патрон)
+                case 41..49: thingId = AccessoryCraftListBust[FindRandomItemAccessoryCraft(1)][0]; // Рюкзак (слоты)
+                case 50..55: thingId = AccessoryCraftListBust[FindRandomItemAccessoryCraft(2)][0]; // Катана / Са бля (урон нпс)
+                case 56..60: thingId = AccessoryCraftListBust[FindRandomItemAccessoryCraft(3)][0]; // Очки (доп опыт к навыкам)
+            }
+            thingPara = random(520);
+            thingQuan = 1;
+        }
+        else
+        {
+            new thingTemp = random(ThingAccessoryQuan);
+            thingId = ThingAccessoryGift[thingTemp];
+            thingPara = ThingAccessoryGiftBone[thingTemp];
+            thingQuan = 1;
+        }
     }
 
     else if(thingType == 3) // Одежда (Список собирается при запуске сервера)
@@ -456,6 +476,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     }
 
     if(strcmp(name,"gold") == 0) thingPack = 9; // GOLD case
+    else if(strcmp(name,"craftaks") == 0) thingPack = 12; // aks craft
     else thingPack = 5; // Не трогаем
     return 1;
 }

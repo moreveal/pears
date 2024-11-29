@@ -713,7 +713,8 @@ stock DisconnectCustomSync(playerid)
 			{
 				new showModel = c_vehicle_model_id[wVehicleID];
 				if(showModel >= 612 && showModel <= 2101) showModel += 13066;
-				else if(showModel >= 2102) showModel += 13164;
+				else if(showModel >= 2102 && showModel <= 2164) showModel += 13164;
+				else if(showModel >= 2165) showModel += 13169;
 				BS_WriteUint32(bs, showModel);
 			}
 			BS_SetWriteOffset(bs, offset);

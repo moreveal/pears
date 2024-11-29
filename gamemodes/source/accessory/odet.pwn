@@ -65,3 +65,38 @@ stock UpdateAllOdet(playerid)
 	query_empty(pearsq, string_mysql);
     return 1;
 }
+
+stock HasABustAks(playerid,type)
+{
+	for(new i = 0; i < MAX_ODET; i++)
+    {
+		if(PlayerInfo[playerid][pOdet][i] > 0)
+		{
+			if(type != 1)
+			{
+				if(type == GetBustAksType(PlayerInfo[playerid][pOdet][i])) return i;
+			}
+			else 
+			{
+				if(type == IsABackPack(PlayerInfo[playerid][pOdet][i])) return i;
+			}
+		}
+	}
+	return -1;
+}
+
+stock IsADuplicateAks(playerid, fpick)
+{
+	new type = GetBustAksType(fpick);
+	for(new i = 0; i < MAX_ODET; i++)
+    {
+		if(PlayerInfo[playerid][pOdet][i] > 0)
+		{
+			if(type != -1 && type == GetBustAksType(PlayerInfo[playerid][pOdet][i]))
+			{
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
