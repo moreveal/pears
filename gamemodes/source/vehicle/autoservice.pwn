@@ -89,7 +89,10 @@ stock CheckAutoInRangeService(playerid)
     if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
     if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
     if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
-    if(IsElectroCarModel(VehInfo[v][vModel]) && !IsElectroCarModel(VehInfo[veh][vModel]) || !IsElectroCarModel(VehInfo[v][vModel]) && IsElectroCarModel(VehInfo[veh][vModel])) return ErrorMessage(playerid, "{FF6347}Этот транспорт другого класса, переносить характеристик невозможен!");
+    if(IsElectroCarModel(VehInfo[v][vModel]) != IsElectroCarModel(VehInfo[veh][vModel]))
+    {
+        return ErrorMessage(playerid, "{FF6347}Этот транспорт другого класса, переносить характеристик невозможен!");
+    }
     // Ищем дефолтные характеристики той тачки
     new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
     if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Характеристики транспорта не были найдены");
