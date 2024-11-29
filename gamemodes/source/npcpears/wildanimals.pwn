@@ -5,11 +5,11 @@
 
 new AnimalsParam[MAX_WILD_ANIMALS_TYPE][2] =
 {
-    { 15793, 300 },     // Медведь
-    { 15794, 200 },     // Олень
-    { 15795, 100 },     // Лиса
-    { 15796, 50 },      // зайка
-    { 15797, 200 }      // Волк
+    { 15793, 500 },     // Медведь
+    { 15794, 400 },     // Олень
+    { 15795, 200 },     // Лиса
+    { 15796, 100 },      // зайка
+    { 15797, 300 }      // Волк
 };
 
 enum wildanimalsnpc
@@ -87,7 +87,6 @@ stock LoadWildAnimals(area)
         if(IsValidNpc(WildAnimals[a][waID]))
         {
             if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime()) continue;
-            else continue;
         }
         else {
             WildAnimals[a][waType] = typeanimal;
@@ -221,42 +220,48 @@ stock IsPlayerInWildZone(playerid)
 	return -1;
 }
 
-stock EventHandlerActionWildAnimals(playerid,area,setrange)
+stock EventHandlerActionWildAnimalsMore(playerid,area,setrange)
+{
+    for(new a = MAX_WILD_ANIMALS_AREA*area; a < MAX_WILD_ANIMALS_AREA*(1+area); a++)
+    {
+       EventHandlerActionWildAnimals(playerid,a,setrange);
+    }
+    return true;
+}
+
+stock EventHandlerActionWildAnimals(playerid,a,setrange)
 {
     new Float: PcordX, Float: PcordY, Float: PcordZ;
     GetPlayerPos(playerid, PcordX, PcordY, PcordZ);
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ, Float:AnimalA;
     if(GetPlayerState(playerid) != PLAYER_STATE_ONFOOT) return 0;
-    for(new a = MAX_WILD_ANIMALS_AREA*area; a < MAX_WILD_ANIMALS_AREA*(1+area); a++)
+    if(IsValidNpc(WildAnimals[a][waID]))
     {
-        if(IsValidNpc(WildAnimals[a][waID]))
+        if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime()) return false;
+        if(WildAnimals[a][waEvent] != 0) return false;
+    }
+    GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
+    if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) > setrange) return false;
+    else
+    {
+        if(WildAnimals[a][waType] == 0 || WildAnimals[a][waType] == 4)
         {
-            if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] > gettime()) continue;
-            if(WildAnimals[a][waEvent] != 0) continue;
+            if(WildAnimals[a][waAttactID] != INVALID_PLAYER_ID && DeathInfo[playerid][deathStatus]) return false;
+            else WildAnimals[a][waAttactID] = playerid, TaskNpcAttackPlayer(WildAnimals[a][waID], playerid, .aggressive = true);
+            WildAnimals[a][waEvent] = 1;
+            if(server == 0) SendClientMessageToAll(-1, "Зверек %d[%d] атакует игрока %d", _:WildAnimals[a][waID],WildAnimals[a][waType], playerid);
         }
-        GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
-        if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) > setrange) continue;
         else
         {
-            if(WildAnimals[a][waType] == 0 || WildAnimals[a][waType] == 4)
-            {
-                if(WildAnimals[a][waAttactID] != INVALID_PLAYER_ID && DeathInfo[playerid][deathStatus]) continue;
-                else WildAnimals[a][waAttactID] = playerid, TaskNpcAttackPlayer(WildAnimals[a][waID], playerid, .aggressive = true);
-                WildAnimals[a][waEvent] = 1;
-                if(server == 0) SendClientMessageToAll(-1, "Зверек %d[%d] атакует игрока %d", _:WildAnimals[a][waID],WildAnimals[a][waType], playerid);
-            }
-            else
-            {
-                AnimalA = atan2(PcordY - AnimalY, PcordX-AnimalX) + 90.0;
-                SetNpcFacingAngle(WildAnimals[a][waID], AnimalA);
+            AnimalA = atan2(PcordY - AnimalY, PcordX-AnimalX) + 90.0;
+            SetNpcFacingAngle(WildAnimals[a][waID], AnimalA);
 
-                AnimalX=AnimalX+500*floatsin(-AnimalA,degrees);
-	            AnimalY=AnimalY+500*floatcos(-AnimalA,degrees);
-                
-                WildAnimals[a][waEvent] = 2;
-                TaskNpcGoToPoint(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ, NPC_MOVE_MODE_RUN);
-                if(server == 0) SendClientMessageToAll(-1, "Зверек %d[%d]  дал по съебам от игрока %d", _:WildAnimals[a][waID],WildAnimals[a][waType], playerid);
-            }
+            AnimalX=AnimalX+500*floatsin(-AnimalA,degrees);
+            AnimalY=AnimalY+500*floatcos(-AnimalA,degrees);
+            
+            WildAnimals[a][waEvent] = 2;
+            TaskNpcGoToPoint(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ, NPC_MOVE_MODE_RUN);
+            if(server == 0) SendClientMessageToAll(-1, "Зверек %d[%d]  дал по съебам от игрока %d", _:WildAnimals[a][waID],WildAnimals[a][waType], playerid);
         }
     }
     return true;
@@ -269,7 +274,7 @@ stock EventHandlerHuntWildAnimalsShooting(playerid,area,WEAPON:weaponid)
     else if((weaponid >= WEAPON:22 && weaponid <= WEAPON:32) || weaponid == WEAPON:38) setrange = 100;
     if(setrange == 0) return false;
 
-    EventHandlerActionWildAnimals(playerid,area,setrange);
+    EventHandlerActionWildAnimalsMore(playerid,area,setrange);
 
     return true;
 }
@@ -281,7 +286,7 @@ stock EventHandlerHuntWildAnimalsWalking(playerid, area) // При нажати�
     if(SittngStatus[playerid]) setrange = 10;
     else setrange = 30;
 
-    EventHandlerActionWildAnimals(playerid,area,setrange);
+    EventHandlerActionWildAnimalsMore(playerid,area,setrange);
 
     return true;
 }
@@ -346,6 +351,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         else if(weaponid >= 33 && weaponid <= 34) WildAnimals[findSlot][waBulletCount] += 2;
         else WildAnimals[findSlot][waBulletCount] += 2;
 
+        EventHandlerActionWildAnimals(damagerid,findSlot, 300);
         new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
         GetNpcPosition(WildAnimals[findSlot][waID],AnimalX,AnimalY,AnimalZ);
         
