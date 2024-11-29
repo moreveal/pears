@@ -143,15 +143,15 @@ stock AcsListCraftInformation(playerid)
 {
     new line[150],lines[1400];
     format(line,sizeof(line),"{ff9000}Вы выбрали %s", friskQualityBustShot[DP[0][playerid]]), strcat(lines,line);
-    format(line,sizeof(line),"\n\n{cccccc}Но данный тип аксессуара увы нельзя скрафтить!"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Но данный тип аксессуара, увы, нельзя скрафтить!"), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Он может выпасть в кейсе, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ff9000}Список аксессуаров и их бонусов:"), strcat(lines,line);
     for(new i = 0; i < sizeof(AccessoryCraftListBust); i ++)
     {
         if(AccessoryCraftListBust[i][1] == DP[0][playerid]) format(line,sizeof(line),"\n{cccccc}- {0088ff}%s {cccccc}| {444444}%s: +%d", GetNameThing(0, AccessoryCraftListBust[i][0], 2, 0), friskQualityBust[DP[0][playerid]],AccessoryCraftListBust[i][2]), strcat(lines,line);
     }
-    format(line,sizeof(line),"\n\n{cccccc}Подробнее об бонусах и акссеуарах можно узнать из видео об данной системе"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Либо спросив администрацию в /report"), strcat(lines,line);
+    format(line,sizeof(line),"\n\n{cccccc}Подробнее об бонусах и аксессуарах можно узнать из видео о данной системе"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Либо спросив администрацию в [ /report ]"), strcat(lines,line);
     ShowDialog(playerid,ACCESSORYCRAFT_INFORMATION,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
     return 1;
 }

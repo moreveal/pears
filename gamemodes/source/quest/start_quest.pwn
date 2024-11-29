@@ -1337,7 +1337,7 @@ stock QuestCallMessage(playerid)
     }
     else if(GetPVarInt(playerid,"qweststat") == 77)
     {
-        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Вы можете охотиться на них со стрелкового оружия, но будьте окуратнее.");
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Вы можете охотиться на них со стрелкового оружия, но будьте аккуратнее.");
         SetPVarInt(playerid,"qweststat",78), SetPVarInt(playerid,"qwesttime",4);
     }
     else if(GetPVarInt(playerid,"qweststat") == 78)
@@ -1347,7 +1347,7 @@ stock QuestCallMessage(playerid)
     }
     else if(GetPVarInt(playerid,"qweststat") == 79)
     {
-        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): И не подходите близко к животным, это так-же может спровоцировать их.");
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): И не подходите близко к животным, это также может спровоцировать их.");
         SetPVarInt(playerid,"qweststat",80), SetPVarInt(playerid,"qwesttime",4);
     }
     else if(GetPVarInt(playerid,"qweststat") == 80)
@@ -1367,7 +1367,7 @@ stock QuestCallMessage(playerid)
     }
     else if(GetPVarInt(playerid,"qweststat") == 83)
     {
-        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): На карте я отмечаю зоны с животными, а так-же, какие животные в данный момент в зоне.");
+        SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): На карте я отмечаю зоны с животными, а также, какие животные в данный момент в зоне.");
         SetPVarInt(playerid,"qweststat",84), SetPVarInt(playerid,"qwesttime",6);
     }
     else if(GetPVarInt(playerid,"qweststat") == 84)
