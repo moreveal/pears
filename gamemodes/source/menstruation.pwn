@@ -85,7 +85,7 @@ CMD:menstruation(playerid, const params[])
         PlayerInfo[params[0]][pMenstrDay] = gettime() + TIME_MENSTRUATION - 60;
         PlayerInfo[params[0]][pMenstrProkl] = 0;
         TimeMenstruation(params[0]);
-        SaveMenstruation(playerid);
+        SaveMenstruation(params[0]);
 	}
 	else ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
 	return 1;
