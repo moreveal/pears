@@ -41,6 +41,14 @@ stock use_throw(playerid, inva, useinva)
 	if(GetPVarInt(playerid, "svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
 	if(CheckInvent(playerid)) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
+	if(thingType == 2 && thingPack == 0)
+	{
+		if(IsABackPack(fpick))
+		{
+			if(!get_backpack(playerid)) return ErrorMessage(playerid,"{ff6347}Я не могу носить больше 2 рюкзаков");
+		}
+	}
+
 	if(ThrowInfo[t][tOnlyPlayer] > 0 
 		&& ThrowInfo[t][tOnlyPlayer] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет\n{ffcc66}Предмет может подобрать только конкретный игрок"), i_resettabs(playerid);
 

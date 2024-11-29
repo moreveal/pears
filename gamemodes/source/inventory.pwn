@@ -1318,7 +1318,7 @@ stock get_invent(playerid, thingId, thingType) // Поиск предмета в
 	}
 	return quan;
 }
-stock get_inventoutbackpack(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля + рюкзак)
+stock get_inventoutbackpack(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля)
 {
 	new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1780,6 +1780,13 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
 	if(!Backpack[playerid])
 	{
+		if(thingType == 2 && thingPack == 0)
+		{
+			if(IsABackPack(thingId))
+			{
+				if(!get_backpack(playerid)) return -1;
+			}
+		}
 		if(useinva == 9999 || useinva == -1) // Не знаем в какую ячейку класть
 		{
 			if(thingType == 0 && thingPack == 0) // Обычный предмет
