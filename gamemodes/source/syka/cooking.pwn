@@ -66,6 +66,15 @@ stock GetDynamicObjectElectro(objectid)
 	return false;
 }
 
+stock GetDynamicObjectTV(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 1717 || model == 1781 || model == 14772 || model == 1747 ||  model == 1751 || model == 12215
+    || model == 1752 ||  model == 2318 ||  model == 2322 ||  model == 19786 ||  model == 19787 || model == 12202 || model == 12206) return true;
+	return false;
+}
+
 // Узнаём, что нужный нам dynamic object, это холодильник
 stock GetDynamicObjectFridge(objectid) 
 {
