@@ -381,6 +381,8 @@ stock LoadBusinessProduct(b, stat) // Если нет продукта (знач
 		if(BizzInfo[b][bProduct][21] == 0) BizzInfo[b][bProduct][21] = 181, BizzInfo[b][bTypeProduct][21] = 0, yes[21] = true; // Изолента
 		if(BizzInfo[b][bProduct][22] == 0) BizzInfo[b][bProduct][22] = 197, BizzInfo[b][bTypeProduct][22] = 0, yes[22] = true; // Балончик
 		if(BizzInfo[b][bProduct][23] == 0) BizzInfo[b][bProduct][23] = 168, BizzInfo[b][bTypeProduct][23] = 0, yes[23] = true; // Упаковка с мясом
+		if(BizzInfo[b][bProduct][24] == 0) BizzInfo[b][bProduct][24] = 251, BizzInfo[b][bTypeProduct][24] = 0, yes[24] = true; // Котелок
+		if(BizzInfo[b][bProduct][25] == 0) BizzInfo[b][bProduct][25] = 250, BizzInfo[b][bTypeProduct][25] = 0, yes[25] = true; // Котелок
 	}
 	else if(b >= 27 && b <= 41) // Оружейный Магазин
 	{

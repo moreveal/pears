@@ -10,7 +10,9 @@ static const pressCookObjects[][e_pressCookObjects] = {
   {19933},
 
   // Custom
-  {12225}
+  {12225},
+  // Котелок
+  {12374},{12375}
 };
 
 stock GetDynamicObjectCookPosition(objectid) {
