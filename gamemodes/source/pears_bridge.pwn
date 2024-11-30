@@ -199,29 +199,3 @@ stock SetnamePlayerBridge(user_id, const name[])
     ));
     return 1;
 }
-
-// Отправляем почасовой онлайн
-stock SendHourlyOnline()
-{
-    if(server == 0) return 0;
-
-    new string_mysql[1024];
-    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "INSERT INTO sysinternal_logs ( action, row ) VALUES \
-        ('online_hourly', '%d')", OrganInfo[0][gstat2]);
-    mysql_tquery(pearsq_3, string_mysql);
-    return true;
-}
-
-// Отправляем максимальный онлайн
-stock SendMaxdayOnline()
-{
-    if(server == 0) return 0;
-
-    new string_mysql[1024];
-    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "INSERT INTO sysinternal_logs ( action, row ) VALUES \
-        ('online_maxday', '%d')", ServerInfo[45]);
-    mysql_tquery(pearsq_3, string_mysql);
-    return true;
-}
-
-
