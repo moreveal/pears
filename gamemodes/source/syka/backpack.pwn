@@ -43,6 +43,7 @@ stock ShowTabBackpack(playerid)
 	PlayerPlaySound(playerid,17803,0,0,0);
 
 	new aks = HasABustAks(playerid,1),slots;
+	if(aks == -1) return ErrorMessage(playerid,"{ff6347}У вас проблема с рюкзаком. Пожалуйста свяжитесь с разработчиками");
 	if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) slots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
 	if(slots > 0) Backpages[playerid] = slots;
 	else Backpages[playerid] = 1;
@@ -361,7 +362,7 @@ stock SaveInventBackPackByUserID(backpackid, i, JsonNode:node)
 	return 1;
 }
 
-function OnPlayerBackPackLoad(playerid, race_check)
+function OnPlayerBackPackLoad(playerid, race_check,sl)
 {
 	new rows;
 	cache_get_row_count(rows);
@@ -369,7 +370,7 @@ function OnPlayerBackPackLoad(playerid, race_check)
 	if(rows)
 	{
 	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
-		OnPlayerLoadBackPack(playerid);
+		OnPlayerLoadBackPack(playerid,sl);
 		printf("OnPlayerLoadBackPack(%s) Инвентарь Найден", PlayerInfo[playerid][pName]);
 	}
 	return 1;
@@ -379,13 +380,14 @@ function Call_getidBackPack(playerid,Aks) {
 	PlayerInfo[playerid][pOdetQara][Aks] = cache_insert_id();
 	new string_mysql[256];
 	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT * FROM `backpacks` WHERE `backpackid` = '%d'", PlayerInfo[playerid][pOdetQara][Aks]);
-	mysql_tquery(pearsq, string_mysql, "OnPlayerBackPackLoad", "dd",playerid, g_MysqlRaceCheck[playerid]);
+	mysql_tquery(pearsq, string_mysql, "OnPlayerBackPackLoad", "ddd",playerid, g_MysqlRaceCheck[playerid],Aks);
     return 1;
 }
 
-stock OnPlayerLoadBackPack(playerid)
+stock OnPlayerLoadBackPack(playerid,sl)
 {
-	new string[20];
+	new string[20], fqara;
+	cache_get_value_name_int(0,"backpackid",fqara);
 	for(new i = 0; i < MAX_INVEN_BACKPACK; i++)
 	{
 		new bool:is_null;
@@ -414,6 +416,7 @@ stock OnPlayerLoadBackPack(playerid)
 		}
 	}
 	BackPackInfo[playerid][backpackLoad] = 1;
+	PlayerInfo[playerid][pOdetQara][sl] = fqara;
 	return 1;
 }
 
@@ -434,7 +437,7 @@ stock ClearPlayerBackPack(playerid)
 stock DeleteBackPack(backpackid)
 {
 	new string_mysql[128];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpack` = '%d'", backpackid);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpackid` = '%d'", backpackid);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
