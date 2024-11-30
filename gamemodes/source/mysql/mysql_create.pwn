@@ -1,3 +1,34 @@
+function PriceSkinPad()
+{
+    new rows;
+    cache_get_row_count(rows);
+    if (!rows) return 0;
+
+    // Получаем максимальный ID скина в таблице
+    new skinid;
+    cache_get_value_name_int(0, "skin", skinid);
+
+    // Узнаем сколько осталось
+    new remains = MAX_MODELS_SKIN - (skinid + 1);
+    
+    if (remains > 0)
+    {
+        skinid++; // Для удобного построения цикла ниже
+
+        mysql_tquery(pearsq, "START TRANSACTION;");
+
+        new string[144];
+        for (new i = skinid; i < skinid + remains; i++)
+        {
+            mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_priceskin` SET `skin` = '%d'", i);
+            query_empty(pearsq, string);
+        }
+
+        mysql_tquery(pearsq, "COMMIT;");
+    }
+
+    return 1;
+}
 
 stock CreateMysqlTable()
 {
@@ -102,6 +133,9 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("apartments", "apCoordRoof0", "FLOAT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("apartments", "apCoordRoof1", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("apartments", "apCoordRoof2", "FLOAT NOT NULL DEFAULT '0'");
+
+    // Создание недостающих строк в pp_priceskin
+    mysql_tquery(pearsq, "SELECT skin FROM `pp_priceskin` ORDER BY skin DESC LIMIT 1", "PriceSkinPad");
 
 	return true;
 }
