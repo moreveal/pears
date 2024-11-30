@@ -771,7 +771,7 @@ stock WildAnimalsCuteScene(playerid)
     new Float:X, Float:Y, Float:Z, Float:A;
     GetPlayerPos(playerid, X, Y, Z); GetPlayerFacingAngle(playerid, A);
     SpA[playerid]=A;SpX[playerid]=X;SpY[playerid]=Y;SpZ[playerid]=Z;
-    SetPlayerPos(playerid,2623.2979,-849.8397,74.8496);
+    PPSetPlayerPos(playerid,2623.2979,-849.8397,74.8496);
     SetPlayerVirtualWorld(playerid, playerid);
     SetCameraBehindPlayer(playerid);
     SetPlayerCameraPos(playerid, 2623.2979,-849.8397,74.8496);
@@ -785,7 +785,7 @@ stock DestroyWildAnimalsCuteScene(playerid)
 {
     if(WildAnimalsTimer[playerid][0] > 0)
     {
-        SetPlayerPos(playerid,SpX[playerid],SpY[playerid],SpZ[playerid]);
+        PPSetPlayerPos(playerid,SpX[playerid],SpY[playerid],SpZ[playerid]);
         SetPlayerVirtualWorld(playerid,0);
         SetPlayerFacingAngle(playerid, SpA[playerid]);
         SetCameraBehindPlayer(playerid);
