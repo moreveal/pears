@@ -749,6 +749,7 @@ stock Village_DisallowAreaProcess()
     foreach (new playerid : VillagePlayer)
     {
         if (!IsPlayerInActiveVillage(playerid)) continue;
+        if (GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) continue;
 
         for (new j = 0; j < sizeof(VillageDisallowedAreas); j++)
         {
