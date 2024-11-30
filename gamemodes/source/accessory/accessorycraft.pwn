@@ -215,3 +215,26 @@ stock IsABackPack(AksId)
     || (AksId >= 12175 && AksId <= 12195) || AksId == 12331 || AksId == 12348 || (AksId >= 12367 && AksId <= 12373) || GetBustAksType(AksId) == 1) return true;
     else return false;
 }
+
+alias:giveaccessorycraft("giveakscraft")
+cmd:giveaccessorycraft(playerid, const params[])
+{
+    new targetid,aksid,para;
+	if(PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
+	if(sscanf(params, "iii", targetid,aksid,para)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать крафтовый аксессуар с бонусом игроку [ /giveaccessorycraft ID AKSID Параметр]");
+	if(!IsOnline(targetid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+    if(FindItemAccessoryCraft(aksid) == -1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Данного аксессуара нет в списке крафтов");
+    if(para < 1 || para > 599) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Параметр не должен быть выше 599 и не ниже 1!");
+
+    new put_inva = GiveThingPlayer(targetid, aksid, 1, para, 0, 2, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+    new string[100];
+    format(string, sizeof(string), "Администратор %s выдал вам крафтовый аксессуар ID: %d", PlayerInfo[playerid][pName], aksid);
+    SendClientMessage(targetid, COLOR_WHITE, string);
+    format(string, sizeof(string), "Вы выдали %s крафтовый аксессуар ID %d", PlayerInfo[targetid][pName],aksid);
+    SendClientMessage(playerid, COLOR_WHITE, string);
+    AdminLog("giveaccessorycraft", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[targetid][pID], PlayerInfo[targetid][pName], PlayerInfo[targetid][pPlaIP], aksid, "");
+
+	return 1;
+}
