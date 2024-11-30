@@ -436,7 +436,7 @@ stock ClearPlayerBackPack(playerid)
 stock DeleteBackPack(backpackid)
 {
 	new string_mysql[128];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpack` = '%d'", backpackid);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql),"DELETE FROM `backpacks` WHERE `backpackid` = '%d'", backpackid);
 	query_empty(pearsq, string_mysql);
 	return 1;
 }
