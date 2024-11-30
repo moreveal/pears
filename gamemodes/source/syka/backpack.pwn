@@ -419,6 +419,7 @@ stock OnPlayerLoadBackPack(playerid,sl)
 	}
 	BackPackInfo[playerid][backpackLoad] = 1;
 	PlayerInfo[playerid][pOdetQara][sl] = fqara;
+	UpdateOdet(playerid,sl);
 	return 1;
 }
 
