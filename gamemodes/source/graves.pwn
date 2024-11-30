@@ -394,6 +394,18 @@ stock Graves_StartPump(playerid, graveid)
     return 1;
 }
 
+stock Graves_FailPump(playerid)
+{
+    SetPVarInt(playerid, "oryjtemp", 0);
+    SetPVarInt(playerid, "Arobsklad", 0);
+
+    ClearAnim(playerid);
+    PlayerPlaySound(playerid, 31203, 0.0, 0.0, 0.0);
+    
+    Graves_Reload(GetPVarInt(playerid, "GraveID"));
+    return 1;
+}
+
 stock Graves_Pump(playerid)
 {
     new current_tick = GetTickCount();
@@ -410,14 +422,7 @@ stock Graves_Pump(playerid)
             || Hold[playerid] != 6  // Нет лопаты в руках
             || biographyid < 0) // Не установлена биография для гроба (странно)
         {
-            SetPVarInt(playerid, "oryjtemp", 0);
-            SetPVarInt(playerid, "Arobsklad", 0);
-
-            ClearAnim(playerid);
-            PlayerPlaySound(playerid, 31203, 0.0, 0.0, 0.0);
-            
-            Graves_Reload(graveid);
-            return 0;
+            return Graves_FailPump(playerid);
         }
 
         SetPVarInt(playerid,"oryjtemp",GetPVarInt(playerid,"oryjtemp")+1);
@@ -426,7 +431,9 @@ stock Graves_Pump(playerid)
         format(string, sizeof(string), "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Grave: ~w~%d/"#GRAVES_EXCAVATION_TIMES, current_progress), GameTextForPlayer(playerid,string,2000,3);
         ApplyAnimation(playerid,"SWORD","sword_4",4.0, false, false, false, false, false, SYNC_ALL), PlayerPlaySound(playerid,20800,0,0,0);
         SetPlayerArmedWeapon(playerid, WEAPON_FIST);
-        if(current_progress <= 1 && !Graves_IsExists(graveid)) {
+        if(current_progress <= 1) {
+            if (Graves_IsExists(graveid)) return Graves_FailPump(playerid);
+
             new chances[] = {50, 40, 10}; // Шансы по умолчанию для создания гробов: Худший, Средний, Лучший
             switch (e_GraveBiographyType: biographyid)
             {
@@ -517,7 +524,9 @@ stock Graves_Pump(playerid)
 
             Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
         }
-        else if(current_progress >= 2 && current_progress <= GRAVES_EXCAVATION_TIMES && Graves_IsExists(graveid)) {
+        else if(current_progress >= 2 && current_progress < GRAVES_EXCAVATION_TIMES) {
+            if (!Graves_IsExists(graveid)) return Graves_FailPump(playerid);
+
             for (new i = 0; i < GRAVES_MAX_OBJECTS; i++)
             {
                 if (!IsValidDynamicObject(GraveInfo[graveid][giObjects][i])) continue;
@@ -528,50 +537,49 @@ stock Graves_Pump(playerid)
                 z += 1.0 / GRAVES_EXCAVATION_TIMES * GRAVES_UNDER_GROUND;
                 MoveDynamicObject(GraveInfo[graveid][giObjects][i], x, y, z, 0.3);
             }
+        } else {
+            if (!Graves_IsExists(graveid)) return Graves_FailPump(playerid);
 
-            if (current_progress == GRAVES_EXCAVATION_TIMES)
-            {   
-                // Убираем лопату из рук
-                if (Hold[playerid] == 6) pc_cmd_shovel(playerid);
+            // Убираем лопату из рук
+            if (Hold[playerid] == 6) pc_cmd_shovel(playerid);
 
-                // Отображаем лопату в песке
-                if (IsValidDynamicObject(GraveInfo[graveid][giObjects][4])) {
-                    SetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][4], 0);
-                }
+            // Отображаем лопату в песке
+            if (IsValidDynamicObject(GraveInfo[graveid][giObjects][4])) {
+                SetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][4], 0);
+            }
 
-                // Отображаем сам гроб
-                SetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][0], 0);
+            // Отображаем сам гроб
+            SetDynamicObjectVirtualWorld(GraveInfo[graveid][giObjects][0], 0);
 
-                // Телепортируем игрока (костыльный фикс возможного подбрасывания)
-                {
-                    new Float: x = GraveInfo[graveid][giX],
-                        Float: y = GraveInfo[graveid][giY],
-                        Float: z = GraveInfo[graveid][giZ] + 0.6,
-                        Float: a = 180.0;
-                    
-                    backme(INVALID_PLAYER_ID, 2.35, x, y, z, a);
-                    PPSetPlayerPos(playerid, x, y, z);
-                    PPSetPlayerFacingAngle(playerid, a);
-                }
-
-                // Очистка переменных
-                DeletePVar(playerid, "GraveID");
-                DeletePVar(playerid, "oryjtemp"), DeletePVar(playerid, "Arobsklad");
+            // Телепортируем игрока (костыльный фикс возможного подбрасывания)
+            {
+                new Float: x = GraveInfo[graveid][giX],
+                    Float: y = GraveInfo[graveid][giY],
+                    Float: z = GraveInfo[graveid][giZ] + 0.6,
+                    Float: a = 180.0;
                 
-                GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Grave: ~w~"#GRAVES_EXCAVATION_TIMES"/"#GRAVES_EXCAVATION_TIMES, 1500, 3);
-                PlayerPlaySound(playerid, 32000);
-                ClearAnim(playerid);
-                
-                SetTimerEx("Graves_Reload", 5 * 60 * 1000, false, "d", graveid);
-                PlayerPlaySound(playerid, 6401);
+                backme(INVALID_PLAYER_ID, 2.35, x, y, z, a);
+                PPSetPlayerPos(playerid, x, y, z);
+                PPSetPlayerFacingAngle(playerid, a);
+            }
 
-                foreach (new id : Player)
-                {
-                    if (GetPlayerVirtualWorld(id) != 0) continue;
-                    if (!IsPlayerInRangeOfPoint(id, 10.0, GraveInfo[graveid][giX], GraveInfo[graveid][giY], GraveInfo[graveid][giZ])) continue;
-                    
-                    Streamer_Update(id, STREAMER_TYPE_OBJECT);
-                }
+            // Очистка переменных
+            DeletePVar(playerid, "GraveID");
+            DeletePVar(playerid, "oryjtemp"), DeletePVar(playerid, "Arobsklad");
+            
+            GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Grave: ~w~"#GRAVES_EXCAVATION_TIMES"/"#GRAVES_EXCAVATION_TIMES, 1500, 3);
+            PlayerPlaySound(playerid, 32000);
+            ClearAnim(playerid);
+            
+            SetTimerEx("Graves_Reload", 5 * 60 * 1000, false, "d", graveid);
+            PlayerPlaySound(playerid, 6401);
+
+            foreach (new id : Player)
+            {
+                if (GetPlayerVirtualWorld(id) != 0) continue;
+                if (!IsPlayerInRangeOfPoint(id, 10.0, GraveInfo[graveid][giX], GraveInfo[graveid][giY], GraveInfo[graveid][giZ])) continue;
+                
+                Streamer_Update(id, STREAMER_TYPE_OBJECT);
             }
         }
     }
