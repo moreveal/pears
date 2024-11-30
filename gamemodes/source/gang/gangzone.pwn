@@ -113,6 +113,15 @@ new GangZone[GZONES][GANGZONEENUM] =
 };
 new GhettoZone;
 
+stock GetNativeGhettoGangZone(const idx)
+{
+	if (idx < 0 || idx >= sizeof(GZInfo))
+	{
+		return INVALID_GANG_ZONE;
+	}
+	return GZInfo[idx][gID];
+}
+
 CMD:zahvat(playerid, const params[])
 {
 	new frakid = fraction(playerid);
@@ -219,7 +228,7 @@ CMD:zahvat(playerid, const params[])
 						}
 					}
 				}
-				GangZoneFlashForAll(GZInfo[i][gID],0xff0000AA); // Устанавливаем мигающий цвет зоны
+				GangZoneFlashForAll(GetNativeGhettoGangZone(i),0xff0000AA); // Устанавливаем мигающий цвет зоны
     		}
 
 			findCapt = 1;
@@ -348,7 +357,7 @@ CMD:stopgz(playerid)
     }
 	GZInfo[g][gBitva] = 0;
     GZInfo[g][gCherez] = 0;
-	GangZoneShowForAll(g,GetGZColorF(GZInfo[g][gFrakVlad]));
+	GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(GZInfo[g][gFrakVlad]));
 	SaveGangZone(g);
 	format(string, sizeof(string), " [ ADM ]: Админ %s отменил битву за территорию № %d", PlayerInfo[playerid][pName],g);
 	ABroadCast(COLOR_ADM,string,1);
@@ -373,7 +382,7 @@ CMD:setgz(playerid, const params[])
 		if(IsPlayerInSquare(playerid,GangZone[i][gzMinX],GangZone[i][gzMinY],GangZone[i][gzMaxX],GangZone[i][gzMaxY]))
 		{
 			if(GZInfo[i][gBitva] >= 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: За эту территорию ведётся битва");
-			GangZoneShowForAll(i,GetGZColorF(params[0]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(params[0]));
 			GZInfo[i][gFrakVlad] = params[0];
 			SaveGangZone(i);
 			AdminLog("setgz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, "");
@@ -407,7 +416,7 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 				format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: {ffffff}Лидер %s продал территорию банде %s {ffffff}за {99ff66}%d$",PlayerInfo[giveplayerid][pName],frakName[PlayerInfo[playerid][pLeader]],cena);
 				SendRadioMessage(PlayerInfo[giveplayerid][pLeader],COLOR_LIGHTRED,string);
 
-				GangZoneShowForAll(gz,GetGZColorF(PlayerInfo[playerid][pLeader])); // Врубаем цвет новых владельцев
+				GangZoneShowForAll(GetNativeGhettoGangZone(gz),GetGZColorF(PlayerInfo[playerid][pLeader])); // Врубаем цвет новых владельцев
 				GZInfo[gz][gFrakVlad] = PlayerInfo[playerid][pLeader]; // Устанавливаем цифру новых владельцев
 
 				OrgLog(PlayerInfo[giveplayerid][pLeader], "sellgz", PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], gz, "");
@@ -487,7 +496,7 @@ stock dialogCase_GangZone(playerid, dialogid, response, listitem)
 			for(new i = 0; i < GZONES; i++)
 			{
                 GZInfo[i][gFrakVlad] = GangZone[i][defaultOrg];
-				GangZoneShowForAll(i,GetGZColorF(GZInfo[i][gFrakVlad]));
+				GangZoneShowForAll(GetNativeGhettoGangZone(i),GetGZColorF(GZInfo[i][gFrakVlad]));
 				SaveGangZone(i);
 			}
 
@@ -787,7 +796,7 @@ stock CheckGangZone() // Распределение результатов по 
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]: {ffffff}Противники отреагировали на битву, но никого не смогли убить!");
 			}
-			GangZoneShowForAll(g,GetGZColorF(CaptInfo[cAttack]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cAttack]));
 			GZInfo[g][gBitva] = 0, GZInfo[g][gFrakVlad] = CaptInfo[cAttack];
 			GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
 			SaveGangZone(g);
@@ -813,7 +822,7 @@ stock CheckGangZone() // Распределение результатов по 
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 			}
 			GZInfo[g][gBitva] = 0, GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
-			GangZoneShowForAll(g,GetGZColorF(CaptInfo[cDefend]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cDefend]));
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
@@ -835,7 +844,7 @@ stock CheckGangZone() // Распределение результатов по 
 				format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: %s{ffffff}: %d убийств   {ff0000}|   %s{ffffff}: %d убийств",frakName[CaptInfo[cAttack]],CaptInfo[cKillA],frakName[CaptInfo[cDefend]],CaptInfo[cKillD]);
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 			}
-			GangZoneShowForAll(g,GetGZColorF(CaptInfo[cAttack]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cAttack]));
 			GZInfo[g][gBitva] = 0, GZInfo[g][gFrakVlad] = CaptInfo[cAttack];
 			GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
 			SaveGangZone(g);
@@ -860,7 +869,7 @@ stock CheckGangZone() // Распределение результатов по 
 				format(string,sizeof(string),"{0088ff}[ GANG ZONE ]: %s{ffffff}: %d убийств   {ff0000}|   %s{ffffff}: %d убийств",frakName[CaptInfo[cAttack]],CaptInfo[cKillA],frakName[CaptInfo[cDefend]],CaptInfo[cKillD]);
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 			}
-			GZInfo[g][gBitva] = 0, GangZoneShowForAll(g,GetGZColorF(CaptInfo[cDefend]));
+			GZInfo[g][gBitva] = 0, GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cDefend]));
 			GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
@@ -885,7 +894,7 @@ stock CheckGangZone() // Распределение результатов по 
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]:{ffffff}Вы оставили территорию без контроля!");
 			}
 			GZInfo[g][gBitva] = 0, GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
-			GangZoneShowForAll(g,GetGZColorF(CaptInfo[cDefend]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cDefend]));
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
 			capt_loose(CaptInfo[cAttack]);
@@ -905,7 +914,7 @@ stock CheckGangZone() // Распределение результатов по 
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]: {ffffff}Ваши противники оставили территорию без контроля!");
 			}
-			GangZoneShowForAll(g,GetGZColorF(CaptInfo[cAttack]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cAttack]));
 			GZInfo[g][gBitva] = 0, GZInfo[g][gFrakVlad] = CaptInfo[cAttack];
 			GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
 			SaveGangZone(g);
@@ -928,7 +937,7 @@ stock CheckGangZone() // Распределение результатов по 
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,string);
 				SendRadioMessage(CaptInfo[cAttack],COLOR_LIGHTRED,"{0088ff}[ GANG ZONE ]: {ffffff}Вы оставили территорию без контроля!");
 			}
-			GZInfo[g][gBitva] = 0, GangZoneShowForAll(g,GetGZColorF(CaptInfo[cDefend]));
+			GZInfo[g][gBitva] = 0, GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(CaptInfo[cDefend]));
 			GZInfo[g][gCherez] = unixtime+ServerInfo[40]*60;
 			SaveGangZone(g);
 			capt_win(CaptInfo[cDefend]);
@@ -993,7 +1002,7 @@ stock InfoSendZone(g) // Оповещение в чат о результата�
 }
 stock hideGangZones(playerid)
 {
-  for(new g = 0;g < GZONES; g++) GangZoneHideForPlayer(playerid, g);
+  for(new g = 0;g < GZONES; g++) GangZoneHideForPlayer(playerid, GetNativeGhettoGangZone(g));
   return 1;
 }
 
@@ -1001,8 +1010,8 @@ stock showGangZones(playerid)
 {
     for(new g = 0;g < GZONES; g++)
 	{
-		GangZoneShowForPlayer(playerid, g, GetGangZoneColor(g));
-		if(GZInfo[g][gBitva] != 0) GangZoneFlashForPlayer(playerid,g,0xff0000AA);
+		GangZoneShowForPlayer(playerid, GetNativeGhettoGangZone(g), GetGangZoneColor(g));
+		if(GZInfo[g][gBitva] != 0) GangZoneFlashForPlayer(playerid,GetNativeGhettoGangZone(g),0xff0000AA);
 	}
     return 1;
 }
