@@ -382,7 +382,7 @@ CMD:setgz(playerid, const params[])
 		if(IsPlayerInSquare(playerid,GangZone[i][gzMinX],GangZone[i][gzMinY],GangZone[i][gzMaxX],GangZone[i][gzMaxY]))
 		{
 			if(GZInfo[i][gBitva] >= 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: За эту территорию ведётся битва");
-			GangZoneShowForAll(GetNativeGhettoGangZone(g),GetGZColorF(params[0]));
+			GangZoneShowForAll(GetNativeGhettoGangZone(i),GetGZColorF(params[0]));
 			GZInfo[i][gFrakVlad] = params[0];
 			SaveGangZone(i);
 			AdminLog("setgz", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", i, "");
