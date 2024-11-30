@@ -1,3 +1,5 @@
+#define MAX_BACKPACK_ON_PLAYER 2
+
 // Отображаем верхние вкладки инвентаря
 stock TabBackpackShow(playerid)
 {
@@ -462,4 +464,22 @@ CMD:rbackpack(playerid, const params[])
 	}
 	else SendClientMessage(playerid, COLOR_GRAD5, "[ Мысли ]: Его вообще нет..");
 	return 1;
+}
+
+stock get_backpack(playerid) // Поиск рюкзаков в инвентаре
+{
+	new quan = 0;
+	if(HasABustAks(playerid,1) != -1) quan++;
+	for(new i = 0; i < 40; i++)
+	{
+		if(PlayerInfo[playerid][pInven][i] == 0) continue;
+		if(PlayerInfo[playerid][pInvenType][i] != 2) continue;
+		if(IsABackPack(PlayerInfo[playerid][pInven][i])) quan++;
+		if(i < 20)
+		{
+		   if(IsABackPack(PlayerInfo[playerid][pMarkInven][i])) quan++;
+		}
+	}
+	if(quan > MAX_BACKPACK_ON_PLAYER) return false;
+	else return true;
 }

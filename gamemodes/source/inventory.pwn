@@ -1318,7 +1318,7 @@ stock get_invent(playerid, thingId, thingType) // Поиск предмета в
 	}
 	return quan;
 }
-stock get_inventoutbackpack(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля + рюкзак)
+stock get_inventoutbackpack(playerid, thingId, thingType) // Поиск предмета в инвентаре (Основные страницы + Торговля)
 {
 	new quan = 0;
 	for(new i = 0; i < 40; i++)
@@ -1780,6 +1780,13 @@ stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack,
 	if(thingId == 0) return inva; // Малоли где то ошибка может быть (0 - не пропускаем выдачу предмета)
 	if(!Backpack[playerid])
 	{
+		if(thingType == 2 && thingPack == 0)
+		{
+			if(IsABackPack(thingId))
+			{
+				if(!get_backpack(playerid)) return -1;
+			}
+		}
 		if(useinva == 9999 || useinva == -1) // Не знаем в какую ячейку класть
 		{
 			if(thingType == 0 && thingPack == 0) // Обычный предмет
@@ -2407,7 +2414,7 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[27] = 100*pow+bust, lim[28] = 100*pow+bust, lim[29] = 100*pow+bust, lim[30] = 100*pow+bust; // Патроны
 	lim[46] = 5*pow, lim[47] = 5*pow, lim[55] = 10; 
 	lim[60] = 100*pow; // Палладий
-	lim[61] = 50, lim[64] = 100*pow, lim[65] = 100*pow, lim[66] = 100*pow, lim[67] = 100*pow;
+	lim[61] = 50, lim[64] = 100*pow+bust, lim[65] = 100*pow+bust, lim[66] = 100*pow+bust, lim[67] = 100*pow+bust;
 	lim[70] = 8; // Бинт
 	lim[71] = 5;
 	lim[72] = 10, lim[73] = 10, lim[74] = 10, lim[75] = 10, lim[76] = 10, lim[77] = 10, lim[78] = 10, lim[79] = 10, lim[80] = 10, lim[81] = 10;
