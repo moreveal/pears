@@ -842,6 +842,8 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 	}
     else if(typeBuy == 2)
 	{
+        if(oGetPlayerMoney(playerid) < ApartmentsRoom[roomid][aprSellOwn]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
+
 		new para1;
         para1 = ReturnUser(ApartmentsRoom[roomid][aprOwnName], 1);
         if(IsPlayerConnected(para1))
@@ -849,7 +851,6 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
             if(ApartmentsRoom[roomid][aprOwn] == PlayerInfo[para1][pID])
             {
                 new result2 = -1;
-                PlayerInfo[para1][pAccount] += ApartmentsRoom[roomid][aprSellOwn];
                 for(new i; i < 10; i++)
                 {
                     if(PlayerInfo[playerid][pApartmentsRoom][i]-1 == ApartmentsRoom[roomid][aprID])
@@ -862,6 +863,9 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
                 PlayerInfo[para1][pApartmentsRoom][result2] = 0;
                 if(OnlineInfo[para1][oLogged] == 1)
                 {
+                    oGivePlayerMoney(playerid, -ApartmentsRoom[roomid][aprSellOwn]);
+                    PlayerInfo[para1][pAccount] += ApartmentsRoom[roomid][aprSellOwn];
+
                     format(string, sizeof(string), "{0088ff}[ Риэлторское Агентство ]: Ваша {ffcc66}Квартира № %d {0088ff}только что была куплена %s", ApartmentsRoom[roomid][aprID], PlayerInfo[playerid][pName]);
                     SendClientMessage(para1, COLOR_GREY, string);
                     format(string, sizeof(string), "{0088ff}[ Риэлторское Агентство ]: Деньги в размере {99ff66}%d$ {0088ff}перечислены на ваш бансковский счёт", ApartmentsRoom[roomid][aprSellOwn]);
@@ -880,6 +884,8 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
         }
         else
         {
+            oGivePlayerMoney(playerid, -ApartmentsRoom[roomid][aprSellOwn]);
+
             mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", ApartmentsRoom[roomid][aprOwn]);
             mysql_tquery(pearsq, string, "Call_OfflineBuyApartments", "d", roomid);
         }
