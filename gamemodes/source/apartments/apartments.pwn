@@ -868,7 +868,7 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 
                     format(string, sizeof(string), "{0088ff}[ Риэлторское Агентство ]: Ваша {ffcc66}Квартира № %d {0088ff}только что была куплена %s", ApartmentsRoom[roomid][aprID], PlayerInfo[playerid][pName]);
                     SendClientMessage(para1, COLOR_GREY, string);
-                    format(string, sizeof(string), "{0088ff}[ Риэлторское Агентство ]: Деньги в размере {99ff66}%d$ {0088ff}перечислены на ваш бансковский счёт", ApartmentsRoom[roomid][aprSellOwn]);
+                    format(string, sizeof(string), "{0088ff}[ Риэлторское Агентство ]: Деньги в размере {99ff66}%d$ {0088ff}перечислены на ваш банковский счёт", ApartmentsRoom[roomid][aprSellOwn]);
                     SendClientMessage(para1, COLOR_GREY, string);
                     format(string, sizeof(string), "{cccccc}Ваша {ff9000}Квартира № %d {cccccc}только что была куплена {ff9000}%s\n{cccccc}Деньги в размере {99ff66}%d$ {cccccc}перечислены на ваш банковский счёт", ApartmentsRoom[roomid][aprID], PlayerInfo[playerid][pName], ApartmentsRoom[roomid][aprSellOwn]);
                     ShowDialog(para1,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Риэлторское Агентство",string,"Oк","");
