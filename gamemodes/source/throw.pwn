@@ -45,7 +45,7 @@ stock use_throw(playerid, inva, useinva)
 	{
 		if(IsABackPack(fpick))
 		{
-			if(!get_backpack(playerid)) return ErrorMessage(playerid,"{ff6347}Я не могу носить больше 2 рюкзаков");
+			if(!get_backpack(playerid)) return ErrorMessage(playerid,"{ff6347}У вас общие количество рюкзаков больше 2. Выложите их и после подбирайте рюкзак!");
 		}
 	}
 
