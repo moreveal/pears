@@ -155,7 +155,7 @@ stock LifeWildAnimals(a)
 
     if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] < gettime()) return DestroyAnimals(a), WildAnimals[a][waUnix] = gettime()+300;    
 
-    if(IsNpcInvulnerable(WildAnimals[a][waID])) return TaskNpcPlayAnimation(WildAnimals[a][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
+    if(IsNpcInvulnerable(WildAnimals[a][waID])) return TaskNpcPlayAnimation(WildAnimals[a][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 0);
     
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
@@ -376,7 +376,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
             WildAnimals[findSlot][waHealth] = 5000.0;
             SetNpcInvulnerable(WildAnimals[findSlot][waID], true);
             TaskNpcStandStill(WildAnimals[findSlot][waID]);
-            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
+            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 0);
             
             WildAnimals[findSlot][waUnix] = gettime()+300;
             SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животное, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] чтобы разделать его");
@@ -390,7 +390,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         else WildAnimalPlaySound(findSlot,0);
         if(IsNpcInvulnerable(WildAnimals[findSlot][waID]))
         {
-            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
+            TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 0);
         }
         return true;
     }
