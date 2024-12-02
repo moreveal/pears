@@ -475,10 +475,14 @@ stock get_backpack(playerid) // Поиск рюкзаков в инвентар�
 	{
 		if(PlayerInfo[playerid][pInven][i] == 0) continue;
 		if(PlayerInfo[playerid][pInvenType][i] != 2) continue;
+		if(PlayerInfo[playerid][pInvenPack][i] != 0) continue;
 		if(IsABackPack(PlayerInfo[playerid][pInven][i])) quan++;
 		if(i < 20)
 		{
-		   if(IsABackPack(PlayerInfo[playerid][pMarkInven][i])) quan++;
+			if(PlayerInfo[playerid][pMarkInvenPack][i] == 0)
+			{
+				if(IsABackPack(PlayerInfo[playerid][pMarkInven][i])) quan++;
+			}
 		}
 	}
 	if(quan > MAX_BACKPACK_ON_PLAYER) return false;
