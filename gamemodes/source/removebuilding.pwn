@@ -416,19 +416,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 710, 1402.089, 716.031, 25.546, 0.250);
 	RemoveBuildingForPlayer(playerid, 710, 1402.089, 690.726, 25.546, 0.250);
 	RemoveBuildingForPlayer(playerid, 710, 1402.619, 668.382, 25.546, 0.250);
- 	//--------------------------------------------------------------------------
-	//----------------------------[ Главная Ёлка ]------------------------------
- 	if(month == 12 || month == 1)
- 	{
-	    RemoveBuildingForPlayer(playerid, 6107, 1251.7891, -1541.2813, 36.9141, 0.25);
-		RemoveBuildingForPlayer(playerid, 6195, 1236.5234, -1488.1641, 40.6875, 0.25);
-		RemoveBuildingForPlayer(playerid, 1524, 1295.1797, -1465.2188, 10.2813, 0.25);
-		RemoveBuildingForPlayer(playerid, 6224, 1264.0469, -1488.3516, 21.1016, 0.25);
-		RemoveBuildingForPlayer(playerid, 6100, 1251.7891, -1541.2813, 36.9141, 0.25);
-		RemoveBuildingForPlayer(playerid, 1231, 1236.7188, -1520.1484, 15.1953, 0.25);
-		RemoveBuildingForPlayer(playerid, 1231, 1263.3047, -1520.1484, 15.1953, 0.25);
-		RemoveBuildingForPlayer(playerid, 6223, 1264.0469, -1488.3516, 21.1016, 0.25);
-	}
     //--------------------------------------------------------------------------
 	//----------------------------[ Hitman Agency ]-----------------------------
     RemoveBuildingForPlayer(playerid, 3420, -488.0313, -175.2734, 77.2109, 0.25);

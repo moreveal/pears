@@ -367,7 +367,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
             TaskNpcPlayAnimation(WildAnimals[findSlot][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
             
             WildAnimals[findSlot][waUnix] = gettime()+300;
-            SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животное, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] что бы разделать его");
+            SetPlayerHudTask(damagerid, "Разделка туши животного", "Вы убили животное, подойдите к его трупу, возьмите в руку нож и нажмите [ ALT ] чтобы разделать его");
             WildAnimals[findSlot][waKillerID] = damagerid;
             CompletingDaily(damagerid, 6, 1), CompletingDaily(damagerid, WildAnimals[findSlot][waType]+22, 1);
             if(WildAnimals[findSlot][waType] == 4 && PlayerInfo[damagerid][pAchieve][134] == 0) AchievePlayer(damagerid, 134, 1);
@@ -558,12 +558,12 @@ stock infohuntermap(playerid)
 	new stro[94],sctringo[1310];
 	format(stro,sizeof(stro),"{0088ff}Как пользоваться картой Охотника?"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n{cccccc}- Карта показывает кто находится в зоне диких животных"), strcat(sctringo,stro);
-	format(stro,sizeof(stro),"\n{cccccc}- Если карта пустая, значит рядом с вами никого нет(кроме кроликов)"), strcat(sctringo,stro);
+	format(stro,sizeof(stro),"\n{cccccc}- Если карта пустая, значит рядом с вами никого нет (кроме кроликов)"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n{cccccc}- Волк: в данный момента в этой зоне есть волк"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n{cccccc}- Лиса: в данный момента в этой зоне есть лиса"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n{cccccc}- Олень: в данный момента в этой зоне есть олень"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n{cccccc}- Медведь: в данный момента в этой зоне есть медведь"), strcat(sctringo,stro);
-    format(stro,sizeof(stro),"\n\n{cccccc}Так же на миникарте появляются границы районов охоты и цвет зависит от животных в районе"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"\n\n{cccccc}Также, на миникарте появляются границы районов охоты и их цвет зависит от типов животных в районе"), strcat(sctringo,stro);
     format(stro,sizeof(stro),"\n- {FF1111}Красный:{cccccc} в данный зоне есть только агрессивные животные"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n- {FDF136}Оранжевый:{cccccc} в данный зоне есть агрессивные и мирные животные"), strcat(sctringo,stro);
 	format(stro,sizeof(stro),"\n- {30D130}Зеленый:{cccccc} в данный зоне есть только мирные животные"), strcat(sctringo,stro);

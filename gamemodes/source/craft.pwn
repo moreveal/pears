@@ -419,7 +419,7 @@ stock SelectThingCraft(playerid, thingId, thingType) // Выбрали пред�
         {
             format(line,sizeof(line),"\n\n{cccccc}Данный предмет дает следующие бонусы. От %s {cccccc}до %s качества",friskQualityColorAndText[0],friskQualityColorAndText[5]), strcat(lines,line);
             format(line,sizeof(line),"\n{cccccc}%s: {ff9000}+%d {cccccc}минимум, {ff9000}+%d {cccccc}максимум",friskQualityBust[AksType],ResultCountBustAks(thingId,AksType,0),ResultCountBustAks(thingId,AksType,600)), strcat(lines,line);
-            format(line,sizeof(line),"\n{cccccc}Качество аксессуара зависит от: {ff9000}Навыка Шитья, Качества ингредиентов, доп.бонусов аксессуаров"), strcat(lines,line);
+            format(line,sizeof(line),"\n{cccccc}Качество аксессуара зависит от: {ff9000}Навыка Шитья, качества ингредиентов, доп.бонусов аксессуаров"), strcat(lines,line);
         }
     }
     ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");

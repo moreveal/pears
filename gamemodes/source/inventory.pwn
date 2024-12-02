@@ -365,7 +365,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 	if(LoadPick[playerid] != 9999) return reset_aksess_tile(playerid); // Сбрасываем выбранные аксесуары
 	if(LoadGun[playerid] != 9999) return reset_gun_tile(playerid); // Сбрасываем выбранное оружие
 
-	if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) return ErrorMessage(playerid,"{ff6347}Что бы положить предмет, вытащите его из рюкзака в инвентарь");
+	if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) return ErrorMessage(playerid,"{ff6347}Чтобы положить предмет, вытащите его из рюкзака в инвентарь");
 	if(Tabs_Load[playerid] != 6 && Tabs_Load[playerid] != 7)
 	{
 		if(OnlineInfo[playerid][oShowTabs] == 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Вкладка с выбранным предметом закрылась");
@@ -3063,7 +3063,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 		Veshi[playerid] = 1;
 		DP[0][playerid] = inva;
 		new string[140];
-		format(string,sizeof(string),"{cccccc}Вы уверены, что хотите упаковать в {ff0000}Подарок {ff9000}%s ?",GetNameThing(0, fpick, thingType, thingPack));
+		format(string,sizeof(string),"{cccccc}Вы уверены, что хотите упаковать в {ff0000}Подарок {ff9000}%s?",GetNameThing(0, fpick, thingType, thingPack));
 		ShowDialog(playerid,930,DIALOG_STYLE_MSGBOX,"{FF9000}Инвентарь",string,"Да","Нет");
 		return 1;
 	}

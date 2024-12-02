@@ -76,7 +76,7 @@ stock ClearMenstruation(playerid)
 CMD:menstruation(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 15) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу использовать эту команду");
-	if(sscanf(params, "u", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить менструацию сегодня [ /menstuation ID ]");
+	if(sscanf(params, "u", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Запустить менструацию сегодня [ /menstruation ID ]");
 	if(IsOnline(params[0]))
 	{
         if(PlayerInfo[params[0]][pSex] != 2) return ErrorMessage(playerid, "{FF6347}Менструацию можно запустить только для женщины");
@@ -85,7 +85,7 @@ CMD:menstruation(playerid, const params[])
         PlayerInfo[params[0]][pMenstrDay] = gettime() + TIME_MENSTRUATION - 60;
         PlayerInfo[params[0]][pMenstrProkl] = 0;
         TimeMenstruation(params[0]);
-        SaveMenstruation(playerid);
+        SaveMenstruation(params[0]);
 	}
 	else ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети");
 	return 1;

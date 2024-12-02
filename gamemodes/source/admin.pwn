@@ -1602,7 +1602,10 @@ CMD:tag(playerid)
 	{
 		foreach(Player,i) 
 		{
-			ShowPlayerNameTagForPlayer(playerid, i, true);
+			if (!NameTag[i])
+			{
+				ShowPlayerNameTagForPlayer(playerid, i, true);
+			}
 		}
 		GameTextForPlayer(playerid, "~W~Nametags ~G~on", 5000, 5);
 		NameOff[playerid] = false;

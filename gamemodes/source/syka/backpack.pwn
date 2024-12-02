@@ -254,7 +254,7 @@ stock player_tile_backpack(playerid, inva)
 		else if(OnlineInfo[playerid][oInventSelectBackPack] != inva) i_resetveshi(playerid); // Сбрасываем Выбор
         else // Выполняем
 		{
-			ErrorMessage(playerid,"{ff6347}Предмет сначала нужно достать из рюкзака что бы использовать его!");
+			ErrorMessage(playerid,"{ff6347}Предмет сначала нужно достать из рюкзака чтобы использовать его!");
 		}
 	}
 	return 1;

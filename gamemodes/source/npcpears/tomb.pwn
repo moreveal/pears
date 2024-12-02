@@ -661,7 +661,8 @@ stock Tomb_DisallowAreaProcess(roomid)
     for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
     {
         new playerid = TombInfo[roomid][tpPlayers][i] - 1;
-        if (!IsOnline(playerid)) continue; // Игнорируем игроков не в сети
+        if (!IsOnline(playerid)) continue;
+        if (GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) continue;
         
         for (new j = 0; j < sizeof(TombDisallowedAreas); j++)
         {
