@@ -121,7 +121,7 @@ stock CreateAnimals(a,area)
         if(WildAnimals[a][waType] == 3 || WildAnimals[a][waType] == 1 || WildAnimals[a][waType] == 2) WildAnimals[a][waType] = 4;
     }
     else if(area == 1) {AnimalX= random(635)-643, AnimalY= random(610)-1582,WildAnimals[a][waType] = 3;}
-    else if(area == 2) {AnimalX= random(509)-73, AnimalY= random(443)-380;}
+    else if(area == 2) {AnimalX= random(509)-73, AnimalY= random(443)-823;}
     else if(area == 3) {AnimalX= random(882)+1782, AnimalY= random(599)-904;}
     else if(area == 4) {AnimalX= random(417)+2372, AnimalY= random(514)-244;}
     CA_FindZ_For2DCoord(AnimalX,AnimalY,AnimalZ);
@@ -155,7 +155,7 @@ stock LifeWildAnimals(a)
 
     if(WildAnimals[a][waUnix] != 0 && WildAnimals[a][waUnix] < gettime()) return DestroyAnimals(a), WildAnimals[a][waUnix] = gettime()+300;    
 
-    if(IsNpcInvulnerable(WildAnimals[a][waID])) return 0;
+    if(IsNpcInvulnerable(WildAnimals[a][waID])) return TaskNpcPlayAnimation(WildAnimals[a][waID],"CRACK", "crckdeth2",4.1,true, false, false, true, 500);
     
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50;
     GetNpcPosition(WildAnimals[a][waID],AnimalX,AnimalY,AnimalZ);
@@ -175,6 +175,18 @@ stock LifeWildAnimals(a)
             new Float: PcordX, Float: PcordY, Float: PcordZ;
             GetPlayerPos(WildAnimals[a][waAttactID],PcordX,PcordY,PcordZ);
             if(GetDistancePoint(AnimalX,AnimalY,AnimalZ,PcordX, PcordY, PcordZ) >= 100 || GetPlayerState(WildAnimals[a][waAttactID]) == PLAYER_STATE_SPECTATING) WildAnimals[a][waEvent] = 0, WildAnimals[a][waDestinationStatus] = true, WildAnimals[a][waAttactID] = INVALID_PLAYER_ID;
+            else if(IsPlayerInWildZone(WildAnimals[a][waAttactID]) != -1){
+                for(new vehicleid = 1; vehicleid < MAX_CARS; vehicleid++)
+                {
+                    if(!IsValidVehicle(vehicleid)) continue; // Транспорта не существует
+                    if(Cars[vehicleid] == 9999) continue; // Транспорт не создан через /veh
+                    if(GetVehicleDistanceFromPoint(vehicleid, PcordX, PcordY, PcordZ) <= 5.0) 
+                    {
+                        PP_SetVehicleToRespawn(vehicleid);
+                        break;
+                    }
+                }
+            }
         }
     }
     if(WildAnimals[a][waEvent] == 2) WildAnimalPlaySound(a,0);
