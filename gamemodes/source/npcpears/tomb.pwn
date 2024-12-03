@@ -1630,6 +1630,7 @@ stock Tomb_Enter(playerid)
 
 stock Tomb_Exit(playerid)
 {
+    HidePlayerHudTask(playerid);
     PPSetPlayerPos(playerid, -1261.844482, 2490.184570, 87.0468);
     PPSetPlayerFacingAngle(playerid, 90.0);
     S_SetPlayerVirtualWorld(playerid, 0);
@@ -1802,6 +1803,7 @@ stock Tomb_End(roomid, e_TombEndReason: reason)
             } else {
                 // Потом удаляем ненужные данные и прочее
                 Tomb_PlayerInfo_Cleanup(currentid);
+                HidePlayerHudTask(currentid);
                 PlayerTextDrawDestroy(currentid, ObstacleTimeTD[currentid]);
                 for (new td_i = 0; td_i < sizeof(TombMummyRemainsTD[]); td_i++) PlayerTextDrawDestroy(currentid, TombMummyRemainsTD[currentid][td_i]);
                 for (new td_i = 0; td_i < sizeof(TombCurseTD[]); td_i++) PlayerTextDrawDestroy(currentid, TombCurseTD[currentid][td_i]);
