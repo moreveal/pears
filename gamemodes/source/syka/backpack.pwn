@@ -75,11 +75,8 @@ stock player_tile_backpack(playerid, inva)
 		{
 			if(OnlineInfo[playerid][oInventSelectLeft] != 9999) // Перекладываем из инвентаря
 			{
-				if(JustOneThingInventory(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]]) && get_invent(playerid,PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]]) > 0)
-				{
-					return ErrorMessage(playerid,"{ff6347}Данный предмет может быть один в инвентаре!"),i_resetveshi(playerid);
-				}
-				if(NotGiveThing(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]]))
+				if(JustOneThingInventory(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]]) && get_invent(playerid,PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]]) > 0
+				|| NotGiveThing(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenType][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]],PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]]))
 				{
 					return ErrorMessage(playerid,"{ff6347}Данный предмет нельзя убирать в рюкзак!"),i_resetveshi(playerid);
 				}
