@@ -512,7 +512,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 				if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva], myThingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 			}
 			// Кейс нельзя выбрасывать на 3 уровне и ниже
-			if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
+			if(IsNotGiveCase(playerid, myThingPack)) return i_resetveshi(playerid);
 
 			new string[120];
 			if(Tabs_Load[playerid] == 2) // Дом
