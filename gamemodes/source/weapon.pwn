@@ -76,6 +76,10 @@ stock TempGive(playerid) // Возвращаем временно лишённо
 {
 	if(PlayerInfo[playerid][pBeret] >= 1 && YesGiveMyWeapon(playerid))
 	{
+        // Позиция игрока находится на территории зелёной зоны, не смотря на отсутствие статуса нахождения в ней
+        // Это фикс проблемы, когда игрок спавнится в зелёной зоне
+        if(PlayerInGreenZonePosition(playerid)) return false;
+
 		Protect_TakeGuns(playerid, 1);
 		for(new i = 0; i < MAX_WEAPON_SLOTS; i++)
 		{
@@ -100,9 +104,52 @@ stock YesGiveMyWeapon(playerid)
         && !Iamzz[playerid] // Не в зз
         && MPGO[playerid] == 0 // Не на мп
         && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
-        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER
-        && Protect_Veh[playerid] == 9999) return 1;
+
+        // Не за рулём транспорта
+        && GetPlayerState(playerid) != PLAYER_STATE_DRIVER 
+        && Protect_Veh[playerid] == 9999
+
+        ) return 1;
     return 0;
+}
+
+// Проверка, что игрок находится в зелёной зоне (основной или созданной)
+stock PlayerInGreenZonePosition(playerid)
+{
+    new Float:posX = Protect_X[playerid];
+    new Float:posY = Protect_Y[playerid];
+    new Float:posZ = Protect_Z[playerid];
+
+    // Проверяем обычные зоны
+    for (new i = 0; i < MAX_ZONES_ZZ; i++)
+    {
+        if (IsPointInDynamicArea(zones_zz[i], posX, posY, posZ) 
+            && GetDynamicAreaVirtualWorld(zones_zz[i]) == OnlineInfo[playerid][oWorldPlayer]
+            && GetDynamicAreaInterior(zones_zz[i]) == OnlineInfo[playerid][oInteriorPlayer])
+        {
+            return true;
+        }
+    }
+
+    // Проверяем динамические зоны
+    if (dyn_zone_zz > 0 && IsPointInDynamicArea(dyn_zone_zz, posX, posY, posZ)
+        && GetDynamicAreaVirtualWorld(dyn_zone_zz) == OnlineInfo[playerid][oWorldPlayer]
+        && GetDynamicAreaInterior(dyn_zone_zz == OnlineInfo[playerid][oInteriorPlayer]))
+    {
+        return true;
+    }
+
+    return false;
+}
+
+CMD:checkzz(playerid)
+{
+    if(!PlayerInGreenZonePosition(playerid))
+    {
+        SendClientMessage(playerid, -1, "Вы не в зз");
+    }
+    else SendClientMessage(playerid, -1, "{99ff66}Вы в зз");
+    return 1;
 }
 
 // Новый сток загрузки оружия игрока
