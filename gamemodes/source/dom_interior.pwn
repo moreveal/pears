@@ -21,7 +21,10 @@ stock EditObjectDom(playerid, dom, oba)
 
 stock InfoObjectDomBiz(playerid, type, id, oba)
 {
-	if(oba < 0 || oba >= MAX_OBJECT_INT) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
+    new max_objects = MAX_OBJECT_INT;
+    if(type == 2) max_objects = MAX_OBJECT_INT_BIZ;
+
+	if(oba < 0 || oba >= max_objects) return ErrorMessage(playerid, "{FF6347}Несуществующий ID объекта");
     if(oba == 0) return ErrorMessage(playerid, "{FF6347}Нельзя посмотреть информацию планировки");
 
     new model, object, userid;
@@ -159,7 +162,10 @@ stock Delete3DLabelDomBiz(id, obid, type)
 
 stock ShowForPlayer3DLabelDomBiz(playerid, i, type) // Показываем лейблы на объектах в доме или бизах
 {
-    for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+    new max_objects = MAX_OBJECT_INT;
+    if(type == 2) max_objects = MAX_OBJECT_INT_BIZ;
+
+    for(new oba = 1; oba < max_objects; oba++)
 	{
         new model;
         if(type == 1) model = DomInfo[i][dOmodel][oba];
