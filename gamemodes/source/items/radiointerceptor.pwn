@@ -2,14 +2,17 @@ stock RadioInterceptor_IsStateEnabled(playerid, e_RadioInterceptorState: status)
 {
 	if (get_invent(playerid, 236, 0) <= 0) return 0; // Устройство отсутствует
 	if (gettime() > get_para(playerid, 236)) {
-		new price = floatround(float(getThingPriceGos(236, 0) / 2) * 1.10);
-		if (PlayerInfo[playerid][pAccount] >= price) {
-			oGivePlayerBank(playerid, -price);
-			SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоего радиоперехватчика, можешь пользоваться!");
+		if (Hank_IsServiceEnabled(playerid, HANK_SERVICE_STATE_PERSONAL_TECHIE))
+		{
+			new price = floatround(float(getThingPriceGos(236, 0) / 2) * 1.10);
+			if (PlayerInfo[playerid][pAccount] >= price) {
+				oGivePlayerBank(playerid, -price);
+				SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоего радиоперехватчика, можешь пользоваться!");
 
-			new quan, para;
-			ThingParameters(playerid, 236, quan, para);
-			set_para(playerid, 236, para);
+				new quan, para;
+				ThingParameters(playerid, 236, quan, para);
+				set_para(playerid, 236, para);
+			}	
 		}
 		return 0; // Устройство устарело
 	}
