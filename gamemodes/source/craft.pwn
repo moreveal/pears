@@ -1585,12 +1585,18 @@ stock IsAVerstak(playerid)
 	|| (IsPlayerInRangeOfPoint(playerid,1.0,915.5200,1384.5049,1029.4221) || IsPlayerInRangeOfPoint(playerid,1.0,915.5228,1381.2142,1029.4221)
         || IsPlayerInRangeOfPoint(playerid,1.0,906.2047,1381.2142,1029.4221) || IsPlayerInRangeOfPoint(playerid,1.0,906.1731,1384.5043,1029.4221)) 
         && GetPlayerVirtualWorld(playerid) == WORLD_ARABIAN_M1LVL && GetPlayerInterior(playerid) == INT_ARABIAN_M1LVL
-    || IsPlayerInRangeOfPoint(playerid,1.0,1532.1577,1337.9738,12.7373) && GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL
+
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6561,2489.6909,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6563,2495.2856,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,916.6584,2500.8748,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,920.1514,2501.0066,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
     || IsPlayerInRangeOfPoint(playerid,1.0,920.1552,2495.4194,10.8461) && GetPlayerVirtualWorld(playerid) == WORLD_PRISON_WORKING && GetPlayerInterior(playerid) == INT_PRISON_WORKING // тюрьма
+
+    // Yakuza Mafia
+    || (IsPlayerInRangeOfPoint(playerid,1.0,870.1488,1386.1002,1029.3552) || IsPlayerInRangeOfPoint(playerid,1.0,873.0106,1386.1323,1029.3552)
+        || IsPlayerInRangeOfPoint(playerid,1.0,870.1489,1382.0400,1029.3552) || IsPlayerInRangeOfPoint(playerid,1.0,873.0095,1382.0447,1029.3552)
+        || IsPlayerInRangeOfPoint(playerid,1.0,870.1490,1377.8248,1029.3552) || IsPlayerInRangeOfPoint(playerid,1.0,873.0106,1377.7610,1029.3552)) 
+        && GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_GARAGE && GetPlayerInterior(playerid) == INT_YAKUZA_GARAGE
     ) return 1;
 
     return 0;

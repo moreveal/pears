@@ -83,3 +83,57 @@ stock IsACnnLift(playerid)
 
     return false;
 }
+
+// Въезд на склад Yakuza
+stock EnterYakuzaSklad(playerid)
+{
+    if(Stopeee[playerid] == 1 && Stopee[playerid] > 0) return true; //  Если keep (заморозка) всё ещё активна, не позволяем прыгать по интам (условный антифлуд)
+
+    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || Protect_Veh[playerid] == 9999) return true;
+    new vehicleid = Protect_Veh[playerid];
+
+    if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
+	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+
+    keep(playerid);
+    ACSetVehiclePos(vehicleid, 931.2459,1397.7351,1030.0206);
+    SetVehicleZAngle(vehicleid, 90.7436);
+    SetVehicleVirtualWorld(vehicleid, WORLD_YAKUZA_GARAGE);
+    LinkVehicleToInterior(vehicleid, INT_YAKUZA_GARAGE);
+
+    S_SetPlayerVirtualWorld(playerid, WORLD_YAKUZA_GARAGE, INT_YAKUZA_GARAGE);
+    PPSetPlayerInterior(playerid, INT_YAKUZA_GARAGE);
+    SetCameraBehindPlayer(playerid);
+
+    // Выключаем коллизию
+	NoCollisionForAll(playerid, 0);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы заехали в помещение\n{ff9000}Для вас отключены столкновения с другими игроками в транспорте на 20 секунд","*","");
+    return true;
+}
+
+// Выезд со склада Yakuza
+stock ExitYakuzaSklad(playerid)
+{
+    if(Stopeee[playerid] == 1 && Stopee[playerid] > 0) return true; //  Если keep (заморозка) всё ещё активна, не позволяем прыгать по интам (условный антифлуд)
+
+    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || Protect_Veh[playerid] == 9999) return true;
+    new vehicleid = Protect_Veh[playerid];
+
+    if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
+	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+
+    keep(playerid);
+    ACSetVehiclePos(vehicleid, 1434.9194,781.2708,-4.7084);
+    SetVehicleZAngle(vehicleid, 75.0368);
+    SetVehicleVirtualWorld(vehicleid, 0);
+    LinkVehicleToInterior(vehicleid, 0);
+
+    S_SetPlayerVirtualWorld(playerid, 0, 0);
+    PPSetPlayerInterior(playerid, 0);
+    SetCameraBehindPlayer(playerid);
+
+    // Выключаем коллизию
+	NoCollisionForAll(playerid, 0);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы выехали их помещения\n{ff9000}Для вас отключены столкновения с другими игроками в транспорте на 20 секунд","*","");
+    return true;
+}
