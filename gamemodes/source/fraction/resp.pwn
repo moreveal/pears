@@ -35,15 +35,23 @@ stock CheckPlayerInResp(playerid)
     new orgid = IsASpawn(playerid);
     if(orgid > 0)
     {
-        // Впервые оказались на этой терре
-        if(Iamterr[playerid] != orgid)
+        // Если мы на респе нгса, копим время, чтобы выдать звёзды
+        if(orgid == 3)
         {
-            // Игрок оказался на зоне 51
-			if(orgid == 3) PlayerInArea51(playerid);
+            if(OnlineInfo[playerid][oPauseInArea] == 300) PlayerInArea51(playerid); // Через 5 минут выдаём розыск
+            else OnlineInfo[playerid][oPauseInArea] ++;
         }
         Iamterr[playerid] = orgid;
     }
     else if(Iamterr[playerid] > 0) Iamterr[playerid] = 0;
+
+    if(orgid == 0) ClearAreaTime(playerid);
+    return true;
+}
+
+stock ClearAreaTime(playerid)
+{
+    if(OnlineInfo[playerid][oPauseInArea] > 0) OnlineInfo[playerid][oPauseInArea] --;
     return true;
 }
 
