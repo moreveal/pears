@@ -670,3 +670,12 @@ stock IsElectroCarModel(model) // Транспорт с электродвига
     || model == 2143) return 1;
 	return 0;
 }
+
+// Транспорт, на котором можно ехать стоя на нём
+stock IsARideOnVehicle(model)
+{
+	if(model == 406 || model == 422 || model == 478 || model == 543 || model == 554 
+	|| model == 537 || model == 538 || model == 569 || model == 570 || model == 2141 
+	|| model == 2036 || model == 2168 || model == 2169) return true;
+	return false;
+}

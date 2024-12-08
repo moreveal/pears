@@ -1547,14 +1547,6 @@ stock IsNoMessageVehicle(vehicleid)
 	return 0;
 }
 
-// Транспорт, на котором можно ехать стоя на нём
-stock IsARideOnVehicle(model)
-{
-	if(model == 406 || model == 422 || model == 478 || model == 543 || model == 554 
-	|| model == 537 || model == 538 || model == 569 || model == 570 || model == 2141 
-	|| model == 2036) return true;
-	return false;
-}
 
 CMD:rvehquan(playerid, const params[])
 {
