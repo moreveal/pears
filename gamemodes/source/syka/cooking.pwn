@@ -56,7 +56,7 @@ stock GetDynamicObjectSink(objectid)
 {
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
-    if(model == 2524 || model == 2515 || model == 2136 || model == 2132 || model == 2130) return true;
+    if(model == 2524 || model == 2515 || model == 2136 || model == 2132 || model == 2130 || model == 12427) return true;
 	return false;
 }
 

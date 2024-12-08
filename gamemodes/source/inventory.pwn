@@ -512,7 +512,7 @@ stock tile_second(playerid, invatab) // Клацаем по ячейкам в п
 				if(NotGiveThing(myfpick, myThingType, PlayerInfo[playerid][pInvenQuan][myinva], myThingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 			}
 			// Кейс нельзя выбрасывать на 3 уровне и ниже
-			if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
+			if(IsNotGiveCase(playerid, myThingPack)) return i_resetveshi(playerid);
 
 			new string[120];
 			if(Tabs_Load[playerid] == 2) // Дом
@@ -1557,6 +1557,17 @@ stock get_lic(playerid, stat) // Поиск лицензий (Которые п�
 			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenType][i] == 0 && PlayerInfo[playerid][pMarkInvenPara][i] == PlayerInfo[playerid][pID]) kolvo ++;
 		}
 	}
+	new aks = HasABustAks(playerid,1);
+	if(aks != -1)
+	{
+		new bpslots;
+		if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+		if(bpslots == 0) bpslots = 1;
+		for(new i = 0; i < bpslots*20; i++)
+		{
+			if(BackPackInfo[playerid][backpackInvent][i] == stat && BackPackInfo[playerid][backpackInv][i] > 0 && BackPackInfo[playerid][backpackInvType][i] == 0) kolvo++;
+		}
+	}
 	return kolvo;
 }
 stock get_watch(playerid) // Поиск аксессуаров часов
@@ -1603,6 +1614,26 @@ stock get_alienlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5, &s6) // Поиск л
 		    }
 		}
 	}
+	new aks = HasABustAks(playerid,1);
+	if(aks != -1)
+	{
+		new bpslots;
+		if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+		if(bpslots == 0) bpslots = 1;
+		for(new i = 0; i < bpslots*20; i++)
+		{
+			if(BackPackInfo[playerid][backpackInvPara][i] != PlayerInfo[playerid][pID] && BackPackInfo[playerid][backpackInvType][i] == 0)
+		    {
+				if(BackPackInfo[playerid][backpackInvent][i] == 156) s0 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 157) s1 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 158) s2 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 159) s3 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 161) s4 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 162) s5 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 160) s6 = 1;
+			}
+		}
+	}
 	return 1;
 }
 stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лицензий (Украденной)
@@ -1631,33 +1662,94 @@ stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лиц
 			}
 		}
 	}
+	new aks = HasABustAks(playerid,1);
+	if(aks != -1)
+	{
+		new bpslots;
+		if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+		if(bpslots == 0) bpslots = 1;
+		for(new i = 0; i < bpslots*20; i++)
+		{
+			if(BackPackInfo[playerid][backpackInvPara][i] != PlayerInfo[playerid][pID] && BackPackInfo[playerid][backpackInvType][i] == 0)
+		    {
+				if(BackPackInfo[playerid][backpackInvent][i] == 156) s0 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 157) s1 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 158) s2 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 159) s3 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 161) s4 = 1;
+				if(BackPackInfo[playerid][backpackInvent][i] == 162) s5 = 1;
+			}
+		}
+	}
 	return 1;
 }
 stock get_para(playerid, fpick, slot = 999) // Параметр предмета
 {
-	new minid = 0, maxid = 40;
+	new minid = 0, maxid = 40,para = 0, invtype = 0;
+	if(OnlineInfo[playerid][oInventSelectBackPack]) invtype = 1;
 	if (slot != 999) minid = slot, maxid = slot + 1;
-
-	new para = 0;
-	for(new i = minid; i < maxid; i++)
+	if(!invtype)
 	{
-		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+		for(new i = minid; i < maxid; i++)
 		{
-			para = PlayerInfo[playerid][pInvenPara][i];
-			break;
+			if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+			{
+				para = PlayerInfo[playerid][pInvenPara][i];
+				break;
+			}
+		}
+	}
+	else
+	{
+		new aks = HasABustAks(playerid,1);
+		if(aks != -1)
+		{
+			new bpslots;
+			if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+			if(bpslots == 0) bpslots = 1;
+			for(new i = minid; i < bpslots*20; i++)
+			{
+				if(BackPackInfo[playerid][backpackInvent][i] == fpick && BackPackInfo[playerid][backpackInvType][i] == 0)
+				{
+					para = BackPackInfo[playerid][backpackInvPara][i];
+					break;
+				}
+			}
 		}
 	}
 	return para;
 }
 stock get_qara(playerid, fpick) // Второй параметр предмета
 {
-	new qara = 0;
-	for(new i = 0; i < 40; i++)
+	new qara = 0,invtype = 0;
+	if(OnlineInfo[playerid][oInventSelectBackPack]) invtype = 1;
+	if(!invtype)
 	{
-		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+		for(new i = 0; i < 40; i++)
 		{
-			qara = PlayerInfo[playerid][pInvenQara][i];
-			break;
+			if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
+			{
+				qara = PlayerInfo[playerid][pInvenQara][i];
+				break;
+			}
+		}
+	}
+	else
+	{
+		new aks = HasABustAks(playerid,1);
+		if(aks != -1)
+		{
+			new bpslots;
+			if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+			if(bpslots == 0) bpslots = 1;
+			for(new i = minid; i < bpslots*20; i++)
+			{
+				if(BackPackInfo[playerid][backpackInvent][i] == fpick && BackPackInfo[playerid][backpackInvType][i] == 0)
+				{
+					qara = BackPackInfo[playerid][backpackInvQara][i];
+					break;
+				}
+			}
 		}
 	}
 	return qara;

@@ -605,10 +605,10 @@ stock Update_Huntmap(playerid)
             if(!IsValidNpc(WildAnimals[a][waID])) continue;
             else yes[WildAnimals[a][waType]] = 1;
         }
-        if(yes[0] && !HuntZone[playerid][0]) TextDrawShowForPlayer(playerid,MapDrawHunt[1]),HuntZone[playerid][0] = 1;
-        if(yes[1] && !HuntZone[playerid][1]) TextDrawShowForPlayer(playerid,MapDrawHunt[2]),HuntZone[playerid][1] = 1;
-        if(yes[2] && !HuntZone[playerid][2]) TextDrawShowForPlayer(playerid,MapDrawHunt[3]),HuntZone[playerid][2] = 1;
-        if(yes[4] && !HuntZone[playerid][4]) TextDrawShowForPlayer(playerid,MapDrawHunt[4]),HuntZone[playerid][4] = 1;
+        if(yes[0] && !HuntZone[playerid][0]) TextDrawShowForPlayer(playerid,MapDrawHunt[1]),HuntZone[playerid][0] = 1; // Beer
+        if(yes[1] && !HuntZone[playerid][1]) TextDrawShowForPlayer(playerid,MapDrawHunt[2]),HuntZone[playerid][1] = 1; // Olen
+        if(yes[2] && !HuntZone[playerid][2]) TextDrawShowForPlayer(playerid,MapDrawHunt[3]),HuntZone[playerid][2] = 1; // Fox
+        if(yes[4] && !HuntZone[playerid][4]) TextDrawShowForPlayer(playerid,MapDrawHunt[4]),HuntZone[playerid][4] = 1; // Wolf
     }
 
 	return true;

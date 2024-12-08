@@ -40,6 +40,9 @@ new ThingSkinTopQuanFemale;
 // Аксессуары
 new ThingAccessoryGift[MAX_ACCESSORY];
 new ThingAccessoryGiftBone[MAX_ACCESSORY];
+new ThingAccessoryGiftTop[MAX_ACCESSORY];
+new ThingAccessoryGiftBoneTop[MAX_ACCESSORY];
+new ThingAccessoryQuanTop;
 new ThingAccessoryQuan;
 
 // Обычные предметы
@@ -165,17 +168,27 @@ stock CreateSkinGiftCase() // Собираем скины
 stock CreateAccessoryGiftCase() // Собираем аксессуары для кейса
 {
     ThingAccessoryQuan = 0;
+    ThingAccessoryQuanTop = 0;
     for(new i; i < MAX_ACCESSORY; i++)
     {
         if(AccessoryInfo[i][acCase] == true)
         {
             if(FindItemAccessoryCraft(AccessoryInfo[i][acModel]) != -1) continue;
-            ThingAccessoryGift[ThingAccessoryQuan] = AccessoryInfo[i][acModel];
-            ThingAccessoryGiftBone[ThingAccessoryQuan] = AccessoryInfo[i][acBone];
-            ThingAccessoryQuan ++;
+            if(AccessoryInfo[i][acPrice] > 1000000)
+            {
+                ThingAccessoryGiftTop[ThingAccessoryQuanTop] = AccessoryInfo[i][acModel];
+                ThingAccessoryGiftBoneTop[ThingAccessoryQuanTop] = AccessoryInfo[i][acBone];
+                ThingAccessoryQuanTop ++;
+            }
+            else
+            {
+                ThingAccessoryGift[ThingAccessoryQuan] = AccessoryInfo[i][acModel];
+                ThingAccessoryGiftBone[ThingAccessoryQuan] = AccessoryInfo[i][acBone];
+                ThingAccessoryQuan ++;
+            }
         }
     }
-    return ThingAccessoryQuan;
+    return ThingAccessoryQuan+ThingAccessoryQuanTop;
 }
 
 // Блокируем предметы для кейса (хз, там разные шняги)
@@ -306,6 +319,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     else if(thingType == 2) // Аксессуары (Список собирается при запуске сервера и при активации аксессуара для кейса)
     {
+        new bool:givePremiumAks = false;
         if(ThingAccessoryQuan <= 0) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг аксессуаров для кейса нет, выпадет обычный предмет
 
         if(strcmp(name,"craftaks") == 0)
@@ -322,9 +336,28 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         }
         else
         {
-            new thingTemp = random(ThingAccessoryQuan);
-            thingId = ThingAccessoryGift[thingTemp];
-            thingPara = ThingAccessoryGiftBone[thingTemp];
+            switch(random(5))
+            {
+                case 1:
+                {
+                    if(strcmp(name,"gold") == 0) givePremiumAks = true; // Premium
+                    else givePremiumAks = false;
+                }
+                default: givePremiumAks = false;
+            }
+            new thingTemp;
+            if(givePremiumAks) 
+            {
+                thingTemp = random(ThingAccessoryQuanTop);
+                thingId = ThingAccessoryGiftTop[thingTemp];
+                thingPara = ThingAccessoryGiftBoneTop[thingTemp];
+            }
+            else
+            {
+                thingTemp = random(ThingAccessoryQuan);
+                thingId = ThingAccessoryGift[thingTemp];
+                thingPara = ThingAccessoryGiftBone[thingTemp];
+            }
             thingQuan = 1;
         }
     }

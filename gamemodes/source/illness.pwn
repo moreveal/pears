@@ -136,6 +136,8 @@ CMD:remedy(playerid, const params[])
 		new bool: fullHeal = PlayerInfo[playerid][pSoska] > 0;
 		TakeInvent(playerid, params[0]+71, fullHeal ? 999 : 1, 0);
 		new medid = infectremedy(playerid, illn, fullHeal ? 9999 : 200);
+
+		if((PlayerInfo[playerid][pIllnessProg][medid]-1000)/200 < 0) infectremedy(playerid,PlayerInfo[playerid][pIllness][medid],9999);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
@@ -179,6 +181,7 @@ stock getmed(playerid, para1)
 	for(new i = 0; i < 5; i++)
 	{
 		new Float:ostmed = (PlayerInfo[para1][pIllnessProg][i]-1000)/200;
+		if((PlayerInfo[para1][pIllnessProg][i]-1000)/200 < 0) infectremedy(para1,PlayerInfo[para1][pIllness][i],9999);
 		if(PlayerInfo[para1][pIllness][i] == 1 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Хламидиоз
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
