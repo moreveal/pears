@@ -1782,12 +1782,16 @@ stock get_drugs(playerid, stat) // Поиск веществ
 	}
 	return kolvo;
 }
-stock set_para(playerid, fpick, para) // Установка параметра предмета
+stock set_para(playerid, fpick, para, slot = -1) // Установка параметра предмета
 {
-	for(new i = 0; i < 40; i++)
+	new minid = (slot == -1) ? 0 : slot,
+		maxid = (slot == -1) ? 40 : slot + 1;
+
+	for(new i = minid; i < maxid; i++)
 	{
 		if(PlayerInfo[playerid][pInven][i] != fpick || PlayerInfo[playerid][pInvenQuan][i] == 0 || PlayerInfo[playerid][pInvenType][i] != 0) continue;
 		PlayerInfo[playerid][pInvenPara][i] = para;
+		break;
 	}
 	new aks = HasABustAks(playerid,1);
 	if(aks != -1)

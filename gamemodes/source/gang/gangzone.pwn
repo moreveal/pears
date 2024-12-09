@@ -136,7 +136,7 @@ CMD:zahvat(playerid, const params[])
 	{
 		new tmphour;
 		gettime(tmphour);
-		if (tmphour < 15 || tmphour >= 22) return ErrorMessage(playerid, "{FF6347}Захватывать территории можно в дневное время суток\n{ffcc66}Капты доступны с 15:00 до 22:00");
+		if (tmphour < 15) return ErrorMessage(playerid, "{FF6347}Захватывать территории можно в дневное время суток\n{ffcc66}Капты доступны с 15:00 до 00:00");
 	}
 	
 	new unixtime = gettime();
