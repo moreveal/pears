@@ -1774,6 +1774,18 @@ stock set_para(playerid, fpick, para) // Установка параметра �
 		if(PlayerInfo[playerid][pInven][i] != fpick || PlayerInfo[playerid][pInvenQuan][i] == 0 || PlayerInfo[playerid][pInvenType][i] != 0) continue;
 		PlayerInfo[playerid][pInvenPara][i] = para;
 	}
+	new aks = HasABustAks(playerid,1);
+	if(aks != -1)
+	{
+		new bpslots;
+		if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+		if(bpslots == 0) bpslots = 1;
+		for(new i = 0; i < bpslots*20; i++)
+		{
+			if(BackPackInfo[playerid][backpackInvent][i] != fpick || BackPackInfo[playerid][backpackInvType][i] != 0 || BackPackInfo[playerid][backpackInv][i] == 0) continue;
+			BackPackInfo[playerid][backpackInvPara][i] = para;
+		}
+	}
 }
 stock TakeInvent(playerid, thingId, thingQuan, thingType, slot = 999, bool:save = true) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
 {
