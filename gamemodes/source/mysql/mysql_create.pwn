@@ -1,3 +1,34 @@
+function PriceSkinPad()
+{
+    new rows;
+    cache_get_row_count(rows);
+    if (!rows) return 0;
+
+    // Получаем максимальный ID скина в таблице
+    new skinid;
+    cache_get_value_name_int(0, "skin", skinid);
+
+    // Узнаем сколько осталось
+    new remains = MAX_MODELS_SKIN - (skinid + 1);
+    
+    if (remains > 0)
+    {
+        skinid++; // Для удобного построения цикла ниже
+
+        mysql_tquery(pearsq, "START TRANSACTION;");
+
+        new string[144];
+        for (new i = skinid; i < skinid + remains; i++)
+        {
+            mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_priceskin` SET `skin` = '%d'", i);
+            query_empty(pearsq, string);
+        }
+
+        mysql_tquery(pearsq, "COMMIT;");
+    }
+
+    return 1;
+}
 
 stock CreateMysqlTable()
 {
@@ -12,12 +43,25 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pGymUnix", "INT NOT NULL DEFAULT '0'"); // Абонемент в спортзал
     AddColumnIfNotExists("pp_igroki_maniac", "pManiacQwest", "INT NOT NULL DEFAULT '0'"); // Процесс выполнения квеста с маньяком
     AddColumnIfNotExists("pp_igroki", "pRadioInterceptorFindCd", "INT NOT NULL DEFAULT '0'"); // КД использования поиска в радиоперехватчике
+    AddColumnIfNotExists("pp_igroki", "pHankServices", "INT NOT NULL DEFAULT '0'"); // Услуги Хэнка
     AddColumnIfNotExists("pp_igroki", "pCDVillage", "INT NOT NULL DEFAULT '0'"); // КД на получение подарков после убийства всех деревенских
     AddColumnIfNotExists("pp_igroki", "pDatabaseActive", "INT NOT NULL DEFAULT '0'"); // Выбранный тип поддержки при взломе базы данных
     AddColumnIfNotExists("pp_igroki", "pCDKatana", "INT NOT NULL DEFAULT '0'"); // КД на дуэль на катанах
     AddColumnIfNotExists("pp_igroki", "pCDAd", "INT NOT NULL DEFAULT '0'"); // КД на подачу объявлений
+    AddColumnIfNotExists("pp_igroki", "pCDGraves", "INT NOT NULL DEFAULT '0'"); // КД на раскопку могил
     AddColumnIfNotExists("pp_igroki", "pJobHint", "INT NOT NULL DEFAULT '0'"); // Подсказки на работах 
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
+    AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
+    AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
+
+    //Просьба дениса.
+    AddColumnIfNotExists("blacklist", "type", "INT NOT NULL DEFAULT '0'"); // 0 - может вынести лидер. 1 Может вынести только админ
+    // quest halloween
+    AddColumnIfNotExists("pp_quest_temp", "Ball", "BLOB NULL DEFAULT NULL");
+    AddColumnIfNotExists("pp_quest_temp", "BallStatus", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "HalloweenUnix", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "HalloweenQuestStatus", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "user_id", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom0", "INT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom1", "INT NOT NULL DEFAULT '0'");
@@ -33,6 +77,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_bizz", "bAtmCollector", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bElectroPayForConnect", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bElectroPayForRepair", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_bizz", "bChipsFee", "INT NOT NULL DEFAULT '0'"); // Для кзаино
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_organization", "gWarehouse", "BOOLEAN NOT NULL DEFAULT '0'");
@@ -45,6 +90,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_dom", "dElectroStatus", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dElectroConnect", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dElectroUnix", "INT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "MoreIntObjects", "INT NOT NULL DEFAULT '0'");    
 
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneX", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorOneY", "FLOAT NOT NULL DEFAULT '0'");
@@ -68,13 +115,33 @@ stock CreateMysqlTable()
     // Подсказки с озвучкой
     AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
     AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
+    AddColumnIfNotExists("pp_igroki_hint", "hint3", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
 
     // Цены за объявления CNN
     AddColumnIfNotExists("pp_server", "serv65", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_server", "serv66", "INT NOT NULL DEFAULT '0'");
 
+    // День подсчёта максимального онлайна за сегодня
+    AddColumnIfNotExists("pp_server", "serv67", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
     AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
+
+    
+    AddColumnIfNotExists("apartments", "apCoordHolRoof0", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordHolRoof1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordHolRoof2", "FLOAT NOT NULL DEFAULT '0'");
+    
+    AddColumnIfNotExists("apartments", "apCoordPlatform0", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordPlatform1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordPlatform2", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("apartments", "apCoordRoof0", "FLOAT NOT NULL DEFAULT '0'"); 
+    AddColumnIfNotExists("apartments", "apCoordRoof1", "FLOAT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("apartments", "apCoordRoof2", "FLOAT NOT NULL DEFAULT '0'");
+
+    // Создание недостающих строк в pp_priceskin
+    mysql_tquery(pearsq, "SELECT skin FROM `pp_priceskin` ORDER BY skin DESC LIMIT 1", "PriceSkinPad");
 
 	return true;
 }

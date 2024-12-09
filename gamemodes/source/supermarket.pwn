@@ -24,7 +24,9 @@ new Float:SupermarketItemPos[][] =
 	{ 1131.505126, -1372.518798, 1402.124633 }, // 20 Свадебный торт
 	{ 1103.220092, -1378.248413, 1401.914550 }, // 21 Изолента
 	{ 1122.468994, -1372.837768, 1401.855346 },// 22 Баллончик
-	{ 1129.744750, -1380.981811, 1401.484130 } // 23 мясо в упакове
+	{ 1129.744750, -1380.981811, 1401.484130 }, // 23 мясо в упакове
+	{ 1118.450805, -1381.694458, 1401.443969 }, // 24 Котелок большой
+	{ 1118.450805, -1379.728271, 1401.443969 } // 25 Котелок маленький
 };
 
 /* 
@@ -301,8 +303,8 @@ stock addiction(playerid, item)
 
 		new string[120];
 		format(string, sizeof(string), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
-		if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-		else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0));
+		else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0));
 		SendClientMessage(playerid, COLOR_GREY, string);
 		UpdateSupermarketLabel_S(b);
     }

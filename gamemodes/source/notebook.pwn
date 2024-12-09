@@ -1,5 +1,5 @@
 
-#define MAX_GOLD_COURSE 10000 // Максимальный курс голды
+#define MAX_GOLD_COURSE 9500 // Максимальный курс голды
 #define MAX_TRADECRYPT 1000
 #define MAX_TRADECRYPTLOG 20
 enum TradeCryptInfo

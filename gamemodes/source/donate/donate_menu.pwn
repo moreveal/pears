@@ -34,7 +34,7 @@ stock defaultPriceDonate()
     donatePrice[12] = 90; // Стоимость кейса
     donatePrice[13] = 90; // Стоимость ремонта транспорта
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
-    donatePrice[15] = 1499; // Стоимость голд кейса
+    donatePrice[15] = 790; // Стоимость голд кейса
 }
 
 stock GetPriceGoldDonateMenu(donateid)
@@ -60,12 +60,13 @@ stock showDialogDonateMenu(playerid)
 	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
                             \n{cccccc}Купить {FF9000}GOLD {cccccc}Кейс {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}Акссесуарный {cccccc}Кейс {ffcc00}[%d G]\
                             \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\
                             \n{666666}Где купить Дом? {99ff66}>>\
                             \n{666666}Где купить Бизнес? {99ff66}>>", 
-                            donatePrice[2], donatePrice[15], donatePrice[13]);
+                            donatePrice[2], donatePrice[15],donatePrice[15], donatePrice[13]);
 	ShowDialog(playerid,455,DIALOG_STYLE_TABLIST,"{cccccc}Меню {ff9000}Donate",lines,"Выбор","Отмена");
 	return true;
 }
@@ -291,7 +292,7 @@ function Call_giverefdon(playerid, user_id, gold, bool:IsValid)
 	    notify(PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], user_id, referalName, string);
 
         // Если этот игрок онлайн, выдаём ему всё на аккаунт и оповещаем
-	    if(IsPlayerConnected(playa))
+	    if(IsOnline(playa))
 		{
             PlayerInfo[playa][pDonateMoney] += gold;
 			if(OnlineInfo[playa][oLogged] == 1)
@@ -393,7 +394,7 @@ CMD:setvip(playerid, const params[])
 
 	new giveplayerid;
  	giveplayerid = ReturnUser(tmp, 1);
-	if(IsPlayerConnected(giveplayerid)) 
+	if(IsOnline(giveplayerid)) 
 	{
         if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
 

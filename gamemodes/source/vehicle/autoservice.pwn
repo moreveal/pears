@@ -88,8 +88,11 @@ stock CheckAutoInRangeService(playerid)
     new v = OnlineInfo[playerid][oAutoserviceVeh];
     if(Cars[v] != 88) return ErrorMessage(playerid, "{FF6347}Установить эту деталь можно только на личный транспорт");
     if(VehInfo[v][vSost] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid,"{ff6347}Вы сидите не в своем транспорте");
-    if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такой же как и в транспорте, с которого хотите перенести");
-
+    if(VehInfo[v][vHandlingModel] == GetVehicleRealModel(veh)) return ErrorMessage(playerid, "{FF6347}Характеристики этой машины такие же, как и в транспорте, с которого хотите перенести");
+    if(IsElectroCarModel(VehInfo[v][vModel]) != IsElectroCarModel(VehInfo[veh][vModel]))
+    {
+        return ErrorMessage(playerid, "{FF6347}Это транспорт другого класса, перенос характеристик невозможен!");
+    }
     // Ищем дефолтные характеристики той тачки
     new vehicleHandlingID = FindVehicleModelHandling(GetVehicleRealModel(veh));
     if(vehicleHandlingID == -1) return ErrorMessage(playerid, "{FF6347}Ошибка! Характеристики транспорта не были найдены");
@@ -198,6 +201,10 @@ stock ShowAllTypeDetail(playerid)
 
 stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputtext[])
 {
+    if(e_DialogId:dialogid == AUTOSERVICE_BACKDETAIL)
+    {
+        ShowDetailHandling(playerid,DP[1][playerid]);
+    }
     if(dialogid == 575)
     {
         if(response)
@@ -229,16 +236,16 @@ stock dialogCase_AutoService(playerid, dialogid, response, listitem,const inputt
                 }
                 RemoveDetailTunningSlot(v, slot);
                 SaveOneTunning(v, slot);
-                return SuccessMessage(playerid,"{44ff99}Вы успешно сняли деталь тюнинга");
+                return ShowDialog(playerid,AUTOSERVICE_BACKDETAIL,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг","{44ff99}Вы успешно сняли деталь тюнинга","*",""), PlayerPlaySound(playerid,6401,0,0,0);
             }
             if(listitem == DP[0][playerid]-1)
             {
                 if(TempDetail[playerid][DP[1][playerid]] == 0) return ErrorMessage(playerid,"{ff6347}В вашем транспорте нет временного типа детали");
                 TempDetail[playerid][DP[1][playerid]] = 0;
-                return SuccessMessage(playerid,"{44ff99}Вы успешно сняли временную деталь тюнинга");
+                return ShowDialog(playerid,AUTOSERVICE_BACKDETAIL,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг","{44ff99}Вы успешно сняли временную деталь тюнинга","*",""), PlayerPlaySound(playerid,6401,0,0,0);
             }
             TempDetail[playerid][friskDetail[ListParam[listitem][playerid]][1]] = friskDetail[ListParam[listitem][playerid]][0];
-            SuccessMessage(playerid,"{44ff99}Вы успешно установили временно деталь тюнинга\n\nПосле выхода из автосервиса вам предложит купить весь временный тюнинг");
+            return ShowDialog(playerid,AUTOSERVICE_BACKDETAIL,DIALOG_STYLE_MSGBOX,"{ff9000}Тюнинг","{44ff99}Вы успешно установили временно деталь тюнинга\n\nПосле выхода из автосервиса вам предложит купить весь временный тюнинг","*",""), PlayerPlaySound(playerid,6401,0,0,0);
         }
         else return ShowAllTypeDetail(playerid);
     }

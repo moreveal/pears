@@ -75,7 +75,7 @@ CMD:rvoice(playerid, const params[])
 	{
         if(PlayerInfo[playerid][pSoska] == 0) return ErrorMessage(playerid, "{FF6347}Только администратор может перезагрузить voice другому игроку");
         new giveplayerid = ReturnUser(tmp, 1);
-     	if(IsPlayerConnected(giveplayerid))
+     	if(IsOnline(giveplayerid))
 	 	{
             if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
             if(ReloadVoice(giveplayerid) == 0) return ErrorMessage(playerid, "{FF6347}У игрока не запущен голосовой чат");

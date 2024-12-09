@@ -90,7 +90,7 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
 	{
 		SendClientMessage(suspectid, COLOR_LIGHTBLUE, "* Извините, мы не были осведомлены, что вы агент под прикрытием!");
 		S_SetPlayerVirtualWorld(suspectid, 0, 0), PPSetPlayerInterior(suspectid, 0);
-		PPSetPlayerPos(suspectid, 1437.1986, 48.7517, 31.4865), PPSetPlayerFacingAngle(suspectid, 218.6129);
+		PPSetPlayerPos(suspectid, 900.1669, 2392.2295, 10.8203), PPSetPlayerFacingAngle(suspectid, 270.0);
 		ClearAllWantedPlayer(suspectid);
 	}
 

@@ -1,6 +1,6 @@
 
- #define MAX_BOMB 10 // Максимальное количество взрывов или активных бомб
- #define MAX_OBJECT_RUINS 7 // Количество объектов после взрыва
+#define MAX_BOMB 10 // Максимальное количество взрывов или активных бомб
+#define MAX_OBJECT_RUINS 7 // Количество объектов после взрыва
 
 enum boInfo
 {
@@ -15,6 +15,30 @@ enum boInfo
 }
 new RuinsInfo[MAX_BOMB][boInfo];
 
+new NGSAStickyBombs[2], NGSAExplodeObjects[6], NGSAExplodeCD, NGSAExplodeGates = INVALID_STREAMER_ID;
+stock NGSAStickyBombInit()
+{
+    new object_world = INVISIBLE_VIRTUAL_WORLD, object_int = 0; // Все объекты по умолчанию скрыты
+
+    // Бомбы-липучки
+    NGSAStickyBombs[0] = CreateDynamicObject(363, 96.652191, 1921.186035, 19.084711, -7.700006, 32.399978, -89.999954, object_world, object_int, -1, 300.00, 300.00);
+    NGSAStickyBombs[1] = CreateDynamicObject(363, 96.627006, 1920.013549, 18.453948, -1.800010, -17.000047, -89.999954, object_world, object_int, -1, 300.00, 300.00);
+
+    // Эффект взрыва
+    NGSAExplodeObjects[0] = CreateDynamicObject(18683, 96.764518, 1920.437866, 17.372821, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00);
+    
+    // После взрыва
+    NGSAExplodeObjects[1] = CreateDynamicObject(8674, 101.095222, 1926.277221, 17.327096, -17.900001, 0.000000, -50.699996, object_world, object_int, -1, 300.00, 300.00);
+    NGSAExplodeObjects[2] = CreateDynamicObject(8674, 102.555877, 1914.463378, 17.315469, 84.000022, -26.099998, 75.800186, object_world, object_int, -1, 300.00, 300.00);
+    NGSAExplodeObjects[3] = CreateDynamicObject(868, 99.370643, 1917.819458, 17.075191, 14.600003, -18.400007, -47.400024, object_world, object_int, -1, 300.00, 300.00);
+    SetDynamicObjectMaterial(NGSAExplodeObjects[3], 0, 16110, "desert", "des_redrock2", 0x00000000);
+    NGSAExplodeObjects[4] = CreateDynamicObject(867, 101.473983, 1923.929809, 17.244083, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00);
+    SetDynamicObjectMaterial(NGSAExplodeObjects[4], 0, 16110, "desert", "des_redrock2", 0x00000000);
+    NGSAExplodeObjects[5] = CreateDynamicObject(897, 106.400779, 1919.870117, 11.953762, 1.999999, 8.299998, -12.199985, object_world, object_int, -1, 300.00, 300.00);
+    SetDynamicObjectMaterial(NGSAExplodeObjects[5], 0, 16110, "desert", "des_redrock2", 0x00000000);
+
+    return 1;
+}
 
 stock PlantBomb(playerid, time)
 {
@@ -280,31 +304,203 @@ stock PressCleanUpRuins(playerid) // Нажимаем на кнопку PKM
     return 1;
 }
 
-stock UseStickyBomb(playerid)
+// Сбрасывает состояние ворот NGSA после взрыва бомбы
+function NGSAStickyBombRestore()
+{
+    // Взрыва не было - ничего не делаем
+    if (!IsValidDynamicObject(NGSAExplodeGates) || GetDynamicObjectVirtualWorld(NGSAExplodeGates) == 0) return 0;
+
+    // Убираем объекты после взрыва
+    for (new i = 0; i < sizeof(NGSAExplodeObjects); i++) SetDynamicObjectVirtualWorld(NGSAExplodeObjects[i], INVISIBLE_VIRTUAL_WORLD);
+
+    // Возвращаем ворота
+    SetDynamicObjectVirtualWorld(NGSAExplodeGates, 0);
+
+    // Обновляем игрокам объекты в зоне стрима
+    new Float: x, Float: y, Float: z;
+    GetDynamicObjectPos(NGSAExplodeGates, x, y, z);
+    foreach (new playerid : Player)
+    {
+        if (GetPlayerVirtualWorld(playerid) != 0) continue;
+        if (!IsPlayerInRangeOfPoint(playerid, 10.0, x, y, z)) continue;
+
+        Streamer_Update(playerid, STREAMER_TYPE_OBJECT);    
+    }
+
+    // КД на повторную установку бомбы (только на основном сервере)
+    if (server != 0) NGSAExplodeCD = gettime() + 3600; // 1 час
+
+    return 1;
+}
+
+alias:resetngsabomb("rngsabomb")
+CMD:resetngsabomb(playerid)
+{
+    if (PlayerInfo[playerid][pSoska] < 10) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if (!NGSAStickyBombRestore()) return ErrorMessage(playerid, "{FF6347}Ворота NGSA не взорваны");
+    
+    new string[144];
+    format(string, sizeof(string), " [ ADM ]: %s восстановил состояние ворот NGSA после взрыва", PlayerInfo[playerid][pName]);
+    ABroadCast(COLOR_ADM, string, 2);
+
+    AdminLog("rngsabomb", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Восстановил состояние ворот NGSA");
+
+    NGSAExplodeCD = 0;
+
+    return 1;
+}
+
+stock UseStickyBomb(playerid, inva = 999)
 {
     new vehicleid = IsAPosBootHardLock(playerid);
-    if(vehicleid == 0) return ErrorMessage(playerid, "{FF6347}Подойдите к багажнику бронированного транспорта\n\n{ffcc66}Бомба липучка используется для взлома бронированных замков");
-    if(IsVehicleOpen(playerid, vehicleid)) return ErrorMessage(playerid, "{FF6347}Вы можете открыть багажник этого транспорта [ N >> Багажник ]");
-    
-    new result = Throw(playerid, 205, 1, 10, 0, 0, 0, vehicleid); // Кладём предмет на землю
-    if(!result) return ErrorMessage(playerid, "{FF6347}Ошибка! Лимит выброшенных предметов\nСвяжитесь с администрацией [ /report ]");
+    if (IsValidVehicle(vehicleid)) { // Установка на багажник бронированного автомобиля
+        if (IsVehicleOpen(playerid, vehicleid)) return ErrorMessage(playerid, "{FF6347}Вы можете открыть багажник этого транспорта [ N >> Багажник ]");
+        
+        new result = Throw(playerid, 205, 1, 10, 0, 0, 0, vehicleid); // Кладём предмет на землю
+        if (!result) return ErrorMessage(playerid, "{FF6347}Ошибка! Лимит выброшенных предметов\nСвяжитесь с администрацией [ /report ]");
 
-    TakeInvent(playerid, 205, 1, 0, 999);
-    TurnPlayerFaceToVehicle(playerid, vehicleid);
+        TakeInvent(playerid, 205, 1, 0, inva);
+        TurnPlayerFaceToVehicle(playerid, vehicleid);
+        SuccessMessage(playerid, "{99ff66}Бомба установлена и взорвётся через 10 секунд\n{cccccc}Отойдите на безопасное расстояние");
+    } else if (IsPlayerInRangeOfPoint(playerid, 5.0, 96.671943, 1922.000244, 19.729703)) { // Установка на ворота NGSA
+        if (IsValidDynamicObject(NGSAExplodeGates) && GetDynamicObjectVirtualWorld(NGSAExplodeGates) != 0) return ErrorMessage(playerid, "{FF6347}Ворота уже были взорваны"), i_resetveshi(playerid);
+        if (gettime() < NGSAExplodeCD) {
+            i_resetveshi(playerid);
+
+            new string[144];
+            format(string, sizeof(string), "{FF6347}Бомба была установлена совсем недавно [ Можно через: %s ]", fine_time(NGSAExplodeCD - gettime()));
+            return ErrorMessage(playerid, string);
+        }
+        
+        {
+            new tmphour, tmpminute, tmpsecond;
+            gettime(tmphour, tmpminute, tmpsecond);
+            if (tmphour < 10 || tmphour >= 22) {
+                return ErrorMessage(playerid, "{FF6347}Можно воспользоваться только с 10:00 до 22:00");
+            }
+        }
+        
+        // Находим ближайшую к игроку бомбу
+        new Float: distance = 50.0, bombid = INVALID_STREAMER_ID;
+        for (new i = 0; i < sizeof(NGSAStickyBombs); i++)
+        {
+            new objectid = NGSAStickyBombs[i];
+            if (GetDynamicObjectVirtualWorld(objectid) == INVISIBLE_VIRTUAL_WORLD) { // Бомба не установлена
+                new Float: x, Float: y, Float: z;
+                GetDynamicObjectPos(objectid, x, y, z);
+
+                new Float: objectdistance = GetPlayerDistanceFromPoint(playerid, x, y, z);
+                if (objectdistance < distance)
+                {
+                    distance = objectdistance;
+                    bombid = objectid;
+                }
+            }
+        }
+
+        if (!IsValidDynamicObject(bombid)) return ErrorMessage(playerid, "{FF6347}Бомба уже была установлена, ожидайте пока она взорвётся");
+
+        new Float: x, Float: y, Float: z, Float: rx, Float: ry, Float: rz;
+        GetDynamicObjectPos(bombid, x, y, z);
+        GetDynamicObjectRot(bombid, rx, ry, rz);
+        SetDynamicObjectVirtualWorld(bombid, 0);
+
+        foreach (new id : Player)
+        {
+            if (GetDistanceBetweenPlayers(playerid, id) <= 10.0)
+            {
+                Streamer_Update(id, STREAMER_TYPE_OBJECT);
+            }
+        }
+
+        new bool: completed = true; // Бомбы установлены
+        for (new i = 0; i < sizeof(NGSAStickyBombs); i++)
+        {
+            new objectid = NGSAStickyBombs[i];
+            if (GetDynamicObjectVirtualWorld(objectid) == INVISIBLE_VIRTUAL_WORLD)
+            {
+                completed = false;
+                break;
+            }
+        }
+
+        TakeInvent(playerid, 205, 1, 0, inva);
+        
+        if (completed)
+        {
+            SetThrow(playerid, 205, 205, 1, 10, 0, 0, 0, INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD, x, y, z, rx, ry, rz, 600, 0, 0);
+            SuccessMessage(playerid, "{99ff66}Бомбы установлены и взорвутся через 10 секунд\n\n{cccccc}Отойдите на безопасное расстояние и дождитесь взрыва\nУ вас будет ровно 20 минут перед тем, как ворота починят!");
+        } else {
+            ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false, SYNC_ALL);
+            around_player_audio(playerid, 25800, 0, 8.0);
+            SetPlayerChatBubble(playerid,"устанавливает бомбу-липучку",COLOR_PURPLE,20.0,3000);
+
+            i_resetveshi(playerid);
+            return SuccessMessage(playerid, "{99ff66}Бомба установлена!\n\n{cccccc}Чтобы взорвать ворота, вам необходимо установить ещё одну взрывчатку");
+        }
+    } else {
+        return ErrorMessage(playerid, 
+            "{ff9000}Бомба-липучка должна быть установлена на подходящей поверхности:\n\n" \
+            \
+            "{cccccc}- Багажник бронированного транспорта\n" \
+            "{cccccc}- Ворота военной базы (Area 51)"
+        );
+    }
+
     ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false, SYNC_ALL);
     around_player_audio(playerid, 25800, 0, 8.0);
 
-    SuccessMessage(playerid, "{99ff66}Бомба установлена и взорвётся через 10 секунд\n{cccccc}Отойдите на безопасное расстояние");
     SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я установил%s бомбу {0088ff}[ Взрыв произойдёт через 10 секунд ]", gender(playerid));
-    SetPlayerChatBubble(playerid,"устанавливает бомбу липучку",COLOR_PURPLE,20.0,3000);
+    SetPlayerChatBubble(playerid,"устанавливает бомбу-липучку",COLOR_PURPLE,20.0,3000);
+
     return 1;
 }
 
 stock StickyBompExplosion(t)
 {
     new vehicleid = ThrowInfo[t][tOpenVehicleBomp];
-    if(IsVehicleInRangeOfPoint(vehicleid, 20.0, ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ])) LockCar(vehicleid, 0);
-    CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ], 12, 3);
+    if (IsValidVehicle(vehicleid)) {
+        if(IsVehicleInRangeOfPoint(vehicleid, 20.0, ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ])) LockCar(vehicleid, 0);
+        CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY] , ThrowInfo[t][tZ], 12, 3);
+    } else if (GetDistanceBetweenPoints3D(ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ], 96.671943, 1922.000244, 19.729703) <= 5.0) { // Взрыв ворот NGSA
+        for (new i = 0; i < sizeof(NGSAStickyBombs); i++)
+        {
+            new objectid = NGSAStickyBombs[i];
+            SetDynamicObjectVirtualWorld(objectid, INVISIBLE_VIRTUAL_WORLD);
+        }
+
+        // Эффекты взрыва
+        for (new i = 0; i < sizeof(NGSAExplodeObjects); i++) SetDynamicObjectVirtualWorld(NGSAExplodeObjects[i], 0);
+        SetTimerEx("SetDynamicObjectVirtualWorld", 500, false, "dd", NGSAExplodeObjects[0], INVISIBLE_VIRTUAL_WORLD);
+
+        // Убираем ворота
+        if (!IsValidDynamicObject(NGSAExplodeGates))
+        {
+            new objects[5];
+            new count = Streamer_GetNearbyItems(96.671943, 1922.000244, 19.729703, STREAMER_TYPE_OBJECT, objects, .range = 2.0, .worldid = 0);
+            for (new i = 0; i < min(count, sizeof(objects)); i++)
+            {
+                if (GetDynamicObjectModel(objects[i]) == 19313) {
+                    NGSAExplodeGates = objects[i];
+                    break;
+                }
+            }
+        }
+        SetDynamicObjectVirtualWorld(NGSAExplodeGates, INVISIBLE_VIRTUAL_WORLD);
+
+        foreach (new id : Player)
+        {
+            if (IsPlayerInRangeOfPoint(id, 10.0, ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ]))
+            {
+                PlayerPlaySound(id, 17003, ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ]);
+                Streamer_Update(id, STREAMER_TYPE_OBJECT);
+            }
+        }
+
+        CreateExplosion(ThrowInfo[t][tX], ThrowInfo[t][tY], ThrowInfo[t][tZ], 11, 3);
+        SetTimer("NGSAStickyBombRestore", 1200 * 1000, false); // Восстанавливаем ворота через 20 минут
+    }
+
     DestroyThrow(t); // Удаляем бомбу
     return 1;
 }

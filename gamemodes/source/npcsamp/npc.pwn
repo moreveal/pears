@@ -134,7 +134,7 @@ stock GetIDNpcFromName(playerid)
 stock SetNpcSpawn(playerid)
 {
     new id = OnlineInfo[playerid][oNpcID];
-    ProtectSetSpawnInfo(playerid, 2, PlayerInfo[playerid][pModel], NpcPositionSpawn[id][Npc_X],NpcPositionSpawn[id][Npc_Y],NpcPositionSpawn[id][Npc_Z],NpcPositionSpawn[id][Npc_A], 0, 0, 0, 0, 0, 0);
+    ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, PlayerInfo[playerid][pModel], NpcPositionSpawn[id][Npc_X],NpcPositionSpawn[id][Npc_Y],NpcPositionSpawn[id][Npc_Z],NpcPositionSpawn[id][Npc_A], 0, 0, 0, 0, 0, 0);
 
     if(id == 0) NPCInfo[id][npcVehicle] = prisonbus_LS; // Водитель тюремного автобуса LS
     else if(id == 1) NPCInfo[id][npcVehicle] = prisonbus_SF; // Водитель тюремного автобуса SF

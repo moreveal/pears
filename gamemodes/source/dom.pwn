@@ -103,7 +103,8 @@ CMD:domdist(playerid, const params[])
 stock getFreeSlotObjectDom(dom)
 {
 	new slot = -1;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	new max_objects = GetMaxDomObjects(dom);
+	for(new oba = 1; oba < max_objects; oba++)
 	{
 		if(DomInfo[dom][dOmodel][oba] == 0)
 		{
@@ -352,8 +353,11 @@ stock put_thing_dom(dom, thingId, quan, para, qara, thingType, thingPack, i)
 {
 	if(DomInfo[dom][dInvent][i] != 0 && DomInfo[dom][dInvent][i] != thingId) return -1; // Защита от ошибки, на всякий случай
 
-	if(DomInfo[dom][dSost] > 0 && qara == DomInfo[dom][dSost] && thingPack == 0) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
-
+	if(DomInfo[dom][dSost] > 0 && qara == DomInfo[dom][dSost] && thingPack == 0) 
+	{
+		if(!IsABackPack(thingId)) qara = 0; // Удаляем статус краденного предмета, если он принадлежит этому игроку
+	}
+	
 	DomInfo[dom][dInvent][i] = thingId; // Ставим предмет в слот
 	DomInfo[dom][dInv][i] += quan; // Ставим количество в слот
 

@@ -2,8 +2,6 @@
 #define NON_DAMAGE_TEAM 1 // Тима для отмены стандартного урона
 #define max(%0,%1) (%0 > %1 ? %0 : %1) // Получает максимальное значение среди двух переданных
 
-#define DEFAULT_PLAYER_TEAM 2
-
 #if !defined BODY_PART_TORSO
 enum {
 	BODY_PART_TORSO = 3,
@@ -380,8 +378,8 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     // Блочим дамаг если игроки в одной тиме в комп клубе
     if(ComputerClubIsTeammates(playerid, damagedid)) return false;
 
-    // Блочим дамаг если игроки в одной команде в шахте
-    if (MineWar_IsTeammates(playerid, damagedid)) return false;
+    // Блочим дамаг если игроки в одной команде в шахте / гробнице
+    if (MineWar_IsTeammates(playerid, damagedid) || Tomb_IsTeammates(playerid, damagedid)) return false;
 
     // Защита от дамага без интервалов
     new current_tick = GetTickCount();
@@ -389,8 +387,7 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     if(weaponid == _:WEAPON_DEAGLE)
     {
         new g = fraction(playerid);
-        if(ChutC[g] != 0 || GoC[g] != 0 
-            || Shooting[playerid] > 0 
+        if(ChutC[g] != 0 || GoC[g] != 0
             || ComputerClubIsPlayerCbugActive(playerid) 
             || MPGO[playerid] > 0) // +C Доступен
         {

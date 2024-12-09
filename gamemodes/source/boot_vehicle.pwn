@@ -714,6 +714,14 @@ stock get_boot_para(v, stat) // Параметр предмета
 	}
 	return para;
 }
+stock set_boot_para(v, stat, para) // Установка параметра предмета
+{
+	for(new inva = 0; inva < 20; inva++)
+	{
+		if(VehInfo[v][vInvent][inva] != stat || VehInfo[v][vInv] == 0 || VehInfo[v][vInvType][inva] != 0) continue;
+		VehInfo[v][vInvPara][inva] = para;
+	}
+}
 stock get_boot2(v, stat, inva) // Поиск при вытаскивании предмета только в одной ячейке
 {
 	if(VehInfo[v][vInvent][inva] == stat && VehInfo[v][vInvType][inva] == 0)

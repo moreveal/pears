@@ -14,11 +14,13 @@ stock DeleteObject(playerid)
     new year, month,day;
  	getdate(year, month, day);
  	
- 	// 620 удалённых объектов
+ 	// 621 удалённых объектов
 
 	RemoveBuildingForPlayer(playerid, 1525, 1687.2266, -1239.1250, 15.8125, 0.25); // Удаляем лишнее граффити на Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4717, 1666.4922, -1246.1797, 123.0859, 0.25); // Удаляем ночные окна Пирс Тауэр Джапан
 	RemoveBuildingForPlayer(playerid, 4747, 1671.5078, -1343.3359, 87.5391, 0.25); // Удаляем ночные окна Пирс Тауэр
+	
+	RemoveBuildingForPlayer(playerid, 16135, -326.2891, 1851.4141, 41.7344, 0.25); // удаляем гейзер у Археологии
 
 	// Заброшенная шахта
 	RemoveBuildingForPlayer(playerid, 3414, 2351.830, -652.921, 129.188, 0.250);
@@ -414,19 +416,6 @@ stock DeleteObject(playerid)
 	RemoveBuildingForPlayer(playerid, 710, 1402.089, 716.031, 25.546, 0.250);
 	RemoveBuildingForPlayer(playerid, 710, 1402.089, 690.726, 25.546, 0.250);
 	RemoveBuildingForPlayer(playerid, 710, 1402.619, 668.382, 25.546, 0.250);
- 	//--------------------------------------------------------------------------
-	//----------------------------[ Главная Ёлка ]------------------------------
- 	if(month == 12 || month == 1)
- 	{
-	    RemoveBuildingForPlayer(playerid, 6107, 1251.7891, -1541.2813, 36.9141, 0.25);
-		RemoveBuildingForPlayer(playerid, 6195, 1236.5234, -1488.1641, 40.6875, 0.25);
-		RemoveBuildingForPlayer(playerid, 1524, 1295.1797, -1465.2188, 10.2813, 0.25);
-		RemoveBuildingForPlayer(playerid, 6224, 1264.0469, -1488.3516, 21.1016, 0.25);
-		RemoveBuildingForPlayer(playerid, 6100, 1251.7891, -1541.2813, 36.9141, 0.25);
-		RemoveBuildingForPlayer(playerid, 1231, 1236.7188, -1520.1484, 15.1953, 0.25);
-		RemoveBuildingForPlayer(playerid, 1231, 1263.3047, -1520.1484, 15.1953, 0.25);
-		RemoveBuildingForPlayer(playerid, 6223, 1264.0469, -1488.3516, 21.1016, 0.25);
-	}
     //--------------------------------------------------------------------------
 	//----------------------------[ Hitman Agency ]-----------------------------
     RemoveBuildingForPlayer(playerid, 3420, -488.0313, -175.2734, 77.2109, 0.25);

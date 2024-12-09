@@ -135,7 +135,11 @@ static const pressSeatObjects[][e_pressSeatObjects] = {
 	{ 12294, {176.5045, 0.6762, -0.4771, 1.0109} },
 	{ 12280, {180.2646, 0.6359, -0.0168, 0.7005} },
 	{ 12211, {90.6271, 0.4976, 0.0071, 0.6171} },
-	{ 12219, {178.0249, 0.5277, -0.0214, 1.0008} }
+	{ 12219, {178.0249, 0.5277, -0.0214, 1.0008} },
+
+	{ 12426, {177.8304, 0.6705, -0.0351, 1.0112} },
+	{ 12428, {180.6504, 0.6289, -0.0248, 0.9873} },
+	{ 12438, {180.0197, 0.7453, -0.0671, 0.9584} }
 };
 
 new bool:playerSeat[MAX_REALPLAYERS];
@@ -815,7 +819,7 @@ stock dialogCase_AutoSit(playerid, dialogid, response, listitem,const inputtext[
 		GetXYInFrontOfPoint(player_pos[0], player_pos[1], player_pos[3], 2.0);
 
 		new objectid = CreateDynamicObject(modelid, player_pos[0], player_pos[1], player_pos[2], 0.0, 0.0, 0.0);
-		if (objectid == INVALID_OBJECT_ID) {
+		if (objectid == INVALID_STREAMER_ID) {
 			SendClientMessage(playerid, 0xCCCCCC, "[ Мысли ]: Не удалось создать объект");
 			return 1;
 		}

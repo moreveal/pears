@@ -65,13 +65,13 @@ stock GoStreetRacers(playerid)
                 format(line,sizeof(line),"Сходка StreetRacers.\t Активна до [ %02d.%02d.%d %02d:%02d ]",tday, tmonth, tyear, thour, tminute), strcat(lines,line);
                 format(line,sizeof(line),"\nОбъявить сбор\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosMarket][0] == 0.0 && StreetRacers[slot][racePosMarket][1] == 0.0) format(line,sizeof(line),"\nТележка с хот-догами {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosMarket][0] != 0.0 && StreetRacers[slot][racePosMarket][1] != 0.0) format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nТележка с хот-догами {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosBenz][0] == 0.0 && StreetRacers[slot][racePosBenz][1] == 0.0) format(line,sizeof(line),"\nКолонка с бензином {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosBenz][0] != 0.0 && StreetRacers[slot][racePosBenz][1] != 0.0) format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nКолонка с бензином {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosService][0] == 0.0 && StreetRacers[slot][racePosService][1] == 0.0) format(line,sizeof(line),"\nСтойка автосервиса {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosService][0] != 0.0 && StreetRacers[slot][racePosService][1] != 0.0) format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nСтойка автосервиса {99ff66}[Установлена]\t"), strcat(lines,line);
                 if(StreetRacers[slot][racePosTerminal][0] == 0.0 && StreetRacers[slot][racePosTerminal][1] == 0.0) format(line,sizeof(line),"\nТерминал для гонки {FF6347}[Не установлена]\t"), strcat(lines,line);
-                else if(StreetRacers[slot][racePosTerminal][0] != 0.0 && StreetRacers[slot][racePosTerminal][1] != 0.0) format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]\t"), strcat(lines,line);
+                else format(line,sizeof(line),"\nТерминал для гонки {99ff66}[Установлена]\t"), strcat(lines,line);
                 format(line,sizeof(line),"\nКол-во гоночных мест\t{ff9000}%d",StreetRacers[slot][raceCountFix]), strcat(lines,line);
                 ShowDialog(playerid,1452,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}StreetRacers Menu",lines,"Выбрать","Назад");
             }
@@ -527,7 +527,7 @@ stock dialogCase_Race(playerid, dialogid, response, listitem,const inputtext[])
             StreetRacers[slot][racersCount][number] = playerid;
             StreetRacers[slot][racePlace][number] = playerid;
             OnlineInfo[playerid][oStreetRaceSlot] = slot+1;
-            SuccessMessage(playerid, "Вы успешно зарегестрировались на гонку");
+            SuccessMessage(playerid, "Вы успешно зарегистрировались на гонку");
 		}
     }
     else if(dialogid == 1461)
@@ -991,8 +991,8 @@ stock RegisterToRace(playerid, number,idrace)
                 break;
             }   
         }
-        if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в гонке");
-        if(OnlineInfo[playerid][oStreetRaceSlot]-1 >= 0 && OnlineInfo[playerid][oStreetRaceSlot]-1 != idrace) return ErrorMessage(playerid,"{FF6347} Вы уже зарегестрированы в другой сходке на гонку");
+        if(otmena == -1) return ErrorMessage(playerid,"{FF6347} Вы уже зарегистрировались в гонке");
+        if(OnlineInfo[playerid][oStreetRaceSlot]-1 >= 0 && OnlineInfo[playerid][oStreetRaceSlot]-1 != idrace) return ErrorMessage(playerid,"{FF6347} Вы уже зарегистрировались в другой сходке на гонку");
         if(StreetRacers[idrace][racersCount][number] == -1 && otmena != -1)
         {
             ShowDialog(playerid,1460,DIALOG_STYLE_MSGBOX,"{ff9000}StreetRacers Menu","Занять место в гонке?","Да","Нет");
@@ -1662,6 +1662,7 @@ stock FindPlaceRacePlayer(playerid, racers[], text[])
     {
         if(racers[i] != -1)
         {
+            if(i > 10) continue;
             quan ++;
             format(line,sizeof(line),"%d._%s~n~", quan, PlayerInfo[racers[i]][pName]), strcat(lines,line);
         }

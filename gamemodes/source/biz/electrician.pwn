@@ -664,6 +664,17 @@ stock GetElectroObject(dom)
     else return 1;
 }
 
+stock GetTVObject(dom)
+{
+    new slot = -1;
+    for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+        if(!IsValidDynamicObject(DomInfo[dom][dObject][oba])) continue;
+        if(GetDynamicObjectTV(DomInfo[dom][dObject][oba]) && GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba]) != 0) slot = oba;
+	}
+	if(slot == -1) return 0;
+    else return 1;
+}
 
 alias:checkcharg("ect")
 CMD:checkcharg(playerid)

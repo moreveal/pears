@@ -151,7 +151,8 @@ stock GetVehicleModelSync(playerid, model) // Получаем модель тр
     if(playerid == -1 || IsPlayerSyncModels(playerid)) // Мод установлен
 	{
 		if(model >= 612 && model <= 2101) model += 13066;
-		else if(model >= 2102) model += 13164;
+		else if(model >= 2102 && model <= 2164) model += 13164;
+		else if(model >= 2165) model += 13169;
 		vehId = model;
 	}
     else vehId = GetVehModelOriginal(model);
@@ -1546,14 +1547,6 @@ stock IsNoMessageVehicle(vehicleid)
 	return 0;
 }
 
-// Транспорт, на котором можно ехать стоя на нём
-stock IsARideOnVehicle(model)
-{
-	if(model == 406 || model == 422 || model == 478 || model == 543 || model == 554 
-	|| model == 537 || model == 538 || model == 569 || model == 570 
-	|| model == 2036) return true;
-	return false;
-}
 
 CMD:rvehquan(playerid, const params[])
 {

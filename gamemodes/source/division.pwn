@@ -403,7 +403,7 @@ stock DivisionUninvite(playerid, const params[], i = -1)
 		if(checksimvol(reason)) return ErrorMessage(playerid, "{FF6347}Вы используете запрещённый символ\n{cccccc}Используйте, буквы и цифры");
 
 		giveplayerid = ReturnUser(playerName);
-		if(IsPlayerConnected(giveplayerid))
+		if(IsOnline(giveplayerid))
 		{
 			if(OnlineInfo[giveplayerid][oLogged] == 0) return ErrorMessage(playerid, "{FF6347}Игрок не залогинился");
 			if(PlayerInfo[giveplayerid][pDivision][0] != i && PlayerInfo[giveplayerid][pDivision][1] != i) return ErrorMessage(playerid, "{FF6347}Игрок не состоит в вашей подфракции");

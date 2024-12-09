@@ -1,85 +1,3 @@
-
-#define SECOND_FOR_BACK_VILLAGE 300 // Время на возвращение ботов деревенских после того как их всех убили
-#define CD_GIFT_VILLAGE 3600 // Кд, через которое подарки можно будет получить, убив всех ботов
-#define RESPAWN_VILLAGE_NPC 210 // Время респавна для NPC
-#define EVERY_KILL_VILLAGE 4 // Каждые сколько килов мы получаем кейс в подарок
-
-new Iterator:VillagePlayer<MAX_PLAYERS>;
-
-enum VILLAGENPCWALK { Float:WalkStart_X, Float:WalkStart_Y, Float:WalkStart_Z, Float:WalkStop_X, Float:WalkStop_Y, Float:WalkStop_Z }
-new VillageNpcWalk[][VILLAGENPCWALK] =
-{
-	{ -1563.2344,2677.7383,55.6835, -1563.2062,2697.9192,55.8183},
-	{ -1506.4155,2663.7102,55.8360, -1535.9773,2664.2480,55.8360},
-	{ -1553.6833,2662.3206,55.8403, -1553.4933,2600.9385,55.8360},
-    { -1518.4160,2678.9146,55.8360, -1551.8831,2678.6255,55.8360},
-    { -1538.3955,2659.9458,55.8360, -1538.3961,2613.3933,55.8360},
-    { -1485.8319,2678.9893,55.8360, -1517.1202,2678.7100,55.8360},
-    { -1503.6010,2662.5103,55.8403, -1503.3816,2629.3110,55.8360},
-    { -1488.2751,2661.3218,55.8360, -1488.0927,2611.8557,55.8360},
-    { -1486.4047,2663.3298,55.8360, -1436.0438,2663.5657,55.8360},
-    { -1418.4076,2664.9028,55.8360, -1418.2400,2610.5056,55.8360},
-    { -1433.7734,2610.7292,55.8360, -1433.7128,2659.7478,55.8360},
-    { -1418.1667,2593.7991,55.7587, -1445.6686,2593.9309,55.8360},
-    { -1448.5513,2593.8240,55.8360, -1486.4504,2593.8064,55.8360},
-    { -1485.9523,2608.5994,55.8360, -1466.0657,2608.7263,55.8360},
-    { -1462.9865,2608.6899,55.8360, -1437.2056,2608.7302,55.8360},
-    { -1488.4540,2588.2324,55.8360, -1488.4872,2563.0142,55.8360},
-    { -1503.4723,2560.9150,55.8360, -1503.3622,2589.5986,55.8360},
-    { -1505.3534,2593.6526,55.8360, -1536.9777,2593.3191,55.8360},
-    { -1536.4692,2608.5618,55.8360, -1504.9670,2609.0723,55.8360},
-    { -1499.0168,2544.4089,55.8360, -1532.9425,2543.7427,55.8360},
-    { -1537.8613,2558.9189,55.8360, -1506.2584,2558.6521,55.8360},
-    { -1500.7140,2532.3186,55.6875, -1527.1494,2532.5203,55.6875},
-    { -1524.5896,2679.1912,55.8360, -1550.7054,2677.3784,55.8360},
-    { -1553.9613,2661.8264,55.8360, -1553.2594,2628.3672,55.8360},
-    { -1538.1300,2632.1814,55.8360, -1538.3060,2654.8223,55.8360},
-    { -1426.7478,2594.5620,55.8360, -1440.5133,2594.5186,55.8360},
-    { -1433.7206,2613.3018,55.8360, -1433.3739,2630.3848,55.8360},
-    { -1407.4387,2630.5642,55.6875, -1408.3096,2649.6248,55.6875},
-    { -1476.0532,2680.3450,55.6742, -1476.1816,2696.7197,55.8194},
-    { -1471.8306,2679.6736,55.8360, -1436.1375,2678.8806,55.8360},
-    { -1432.8440,2611.5532,55.8360, -1433.4375,2658.2288,55.8360},
-    { -1444.2333,2663.1423,55.8360, -1466.0264,2662.2234,55.8360},
-    { -1488.6769,2660.2205,55.8360, -1488.4928,2612.9570,55.8360},
-    { -1478.0665,2593.2788,55.8360, -1450.7744,2593.7302,55.8360},
-    { -1417.9578,2621.0537,55.8360, -1418.1655,2651.4641,55.8360},
-    { -1437.1744,2627.4558,55.8360, -1454.8990,2627.2456,55.8360},
-    { -1516.2959,2638.5239,55.8360, -1533.8876,2637.3040,55.8360},
-    { -1554.3000,2602.8113,55.8360, -1553.7778,2564.9648,55.8360},
-    { -1535.5031,2569.6995,55.8360, -1508.0277,2577.2761,55.8360},
-    { -1596.3037,2676.6538,55.0900, -1596.6954,2696.1082,55.0639}
-};
-
-new VillageRandomWeapons[] = { 4, 6, 9, 9, 25, 26, 30, 30, 30, 30 };
-new VillageRandomSkins[] = { 1, 15, 32, 33, 34, 95, 128, 132, 133, 134, 136, 158, 159, 160, 161, 162, 183, 200, 202, 234, 235, 236 };
-
-enum VILLAGEINFO
-{
-	NPC:villID[sizeof(VillageNpcWalk)], // ID бота
-    bool:villActive, // Статус активна ли битва (боты агрессивные или нет)
-    villRespawn[sizeof(VillageNpcWalk)], // Время, через которое бот заспавнится
-    villZone, // Динамическая зона деревни
-    villAttackPlayerid[sizeof(VillageNpcWalk)], // ID игрока, которого атакует бот
-    villDestination[sizeof(VillageNpcWalk)], // Направление прогулки бота, чтобы повторно не направлять в одну и ту-же точку
-    Text3D:villEnterLabel[2], // Лейблы входов
-    bool:villGiftStatus, // Статус, можно ли забирать подарки
-    villCDShowGift, // Время, которое даётся на то, чтобы забрать все подарки
-    villStoroji[2], // Два сторожа (DynamicActor)
-    villCDFindAttack[sizeof(VillageNpcWalk)], // Кд на повторный поиск цели
-    villKillPlayerid[sizeof(VillageNpcWalk)] // ID игрока, который убил этого бота
-}
-new VillageInfo[VILLAGEINFO];
-
-new bool:Village_LoadTextDraws[MAX_REALPLAYERS]; // Отображаются ли текстдравы деревни для игрока
-new PlayerText: VillageRemainsTD[MAX_REALPLAYERS][2]; // Текстдравы для игры с деревенскими
-new Village_Kills[MAX_REALPLAYERS]; // Количество килов во время битвы с деревенскими
-
-new Float: VillageStoroj[2][4] = {
-    {-1361.6107,2642.7361,51.9239,255.6489}, // Эрни
-    {-1619.9281,2685.8677,54.9776,74.5639} // Бэрни
-};
-
 // Проверка бота, дохлый ли он
 stock IsNpcDead(NPC:npc)
 {
@@ -105,6 +23,7 @@ CMD:racvillage(playerid)
     VillageInfo[villActive] = false;
     VillageInfo[villGiftStatus] = false;
     VillageInfo[villCDShowGift] = 0;
+    foreach (new i : Player) Village_Kills[i] = 0;
     for(new i = 0; i < sizeof(VillageNpcWalk); i++) SpawnVillageNpc(i);
     UpdateLabelVillageGift();
     UpdateQuanVillage();
@@ -253,8 +172,29 @@ stock GetGiftVillage(playerid)
                 return true;
             }
 
-            new quanGift = Village_Kills[playerid] / EVERY_KILL_VILLAGE;
-            if(Village_Kills[playerid] < EVERY_KILL_VILLAGE || quanGift <= 0) return ErrorMessage(playerid, "{FF6347}Вы совершили недостаточно килов для получения подарков\n{ffcc66}Требуется убить и удерживать "#EVERY_KILL_VILLAGE" деревенских");
+            // Рассчитываем количество кейсов для игрока
+            new quanGift;
+            {
+                new Float: reward;
+                new Float: currentQuan = VILLAGE_BASE_CASE_REWARD;
+                new Float: killComplete = Village_Kills[playerid] / VILLAGE_KILLS_PER_REWARD;
+                new Float: killRemains = Village_Kills[playerid] % VILLAGE_KILLS_PER_REWARD;
+
+                for (new i = 0; i < killComplete; i++)
+                {
+                    reward += currentQuan;
+                    currentQuan *= VILLAGE_DECREASE_REWARD_FACTOR;
+                }
+
+                if (killRemains > 0)
+                {
+                    reward += currentQuan * (killRemains / VILLAGE_KILLS_PER_REWARD);
+                }
+
+                quanGift = floatround(reward);
+            }
+
+            if(quanGift <= 0) return ErrorMessage(playerid, "{FF6347}Вы совершили недостаточно убийств для получения подарков\n{ffcc66}Требуется убить и удерживать "#VILLAGE_KILLS_PER_REWARD" деревенских");
             if(!free_invent(playerid, quanGift))
             {
                 format(string, sizeof(string), "{FF6347}У вас не хватает места в инвентаре\n{ffcc66}Требуется %d слотов", quanGift);
@@ -332,7 +272,7 @@ stock DoorVillageStorage(playerid)
 // Игрок находится в деревне во время активной битвы
 stock IsPlayerInActiveVillage(playerid)
 {
-    if(IsPlayerInDynamicArea(playerid, VillageInfo[villZone] && VillageInfo[villActive] == false)) return true;
+    if(IsPlayerInDynamicArea(playerid, VillageInfo[villZone]) && VillageInfo[villActive]) return true;
     return false;
 }
 
@@ -425,6 +365,7 @@ stock ProcessVillageNpc()
             ResetVillage = true; // Процесс перезапуска деревенских
             VillageInfo[villActive] = false;
             VillageInfo[villGiftStatus] = false;
+            foreach (new i : Player) Village_Kills[i] = 0;
             UpdateLabelVillageGift();
         }
     }
@@ -442,14 +383,17 @@ stock ProcessVillageNpc()
             }
         }
 
-        // Боты постоянно ищут ближайшего игрока для атаки
-        if(VillageInfo[villActive] == true
-            && !IsNpcDead(VillageInfo[villID][i])) AttackVillageNpcNearbyPlayer(i);
+        if(VillageInfo[villActive] && !IsNpcDead(VillageInfo[villID][i]))
+        {
+            // Боты постоянно ищут ближайшего игрока для атаки
+            AttackVillageNpcNearbyPlayer(i);
+        }
 
         // Бот гуляет по городу туды сюды
-        if(VillageInfo[villActive] == false
-            && !IsNpcDead(VillageInfo[villID][i])) WalkingVillageNpc(i);
+        if(!VillageInfo[villActive] && !IsNpcDead(VillageInfo[villID][i])) WalkingVillageNpc(i);
     }
+
+    Village_DisallowAreaProcess();
 
     // Обновляем количество живых NPC для участников
     if(ResetVillage == true) UpdateQuanVillage();
@@ -475,34 +419,40 @@ stock WalkingVillageNpc(i)
 
 stock GiveDamagePlayerToVillageNpc(NPC:npc, damagerid)
 {
-    if(VillageInfo[villActive] == false)
+    new bool: isVillage = false;
+    for(new i = 0; i < sizeof(VillageNpcWalk); i++)
     {
-        new bool:goAttack;
-        for(new i = 0; i < sizeof(VillageNpcWalk); i++)
+        if(VillageInfo[villID][i] == npc)
         {
-            if(VillageInfo[villID][i] == npc)
-            {
-                goAttack = true;
-                break;
-            }
-        }
-
-        // Запускаем атаку на игрока
-        if(goAttack == true)
-        {
-            for(new i = 0; i < sizeof(VillageNpcWalk); i++)
-            {
-                if(!IsNpcDead(VillageInfo[villID][i]))
-                {
-                    Village_TaskNpcAttackPlayer(VillageInfo[villID][i], damagerid, i);
-                    SetVillageNpcRandomWeapons(i);
-                }
-            }
-            VillageInfo[villActive] = true;
-            return true;
+            isVillage = true;
+            break;
         }
     }
-    return false;
+
+    if (isVillage)
+    {
+        // Не пропускаем урон от игроков, которые не могут являться целью атаки деревенских
+        if(IsPlayerNotTargetForVillage(damagerid)) return false;
+
+        // Запускаем режим битвы, если его не было
+        if(VillageInfo[villActive] == false)
+        {
+            VillageInfo[villActive] = true;
+
+            for(new i = 0; i < sizeof(VillageNpcWalk); i++)
+            {
+                VillageInfo[villAttackPlayeridDist][i] = 0.0;
+                VillageInfo[villAttackPlayeridDistChange][i] = 0;
+
+                if (IsNpcDead(VillageInfo[villID][i])) continue;
+
+                Village_TaskNpcAttackPlayer(VillageInfo[villID][i], damagerid, i);
+                SetVillageNpcRandomWeapons(i);
+            }
+        }
+    }
+
+    return true;
 }
 
 stock SetSpawnVillageNpc(NPC:npc, playerid)
@@ -545,14 +495,9 @@ stock PlayerShotVillage(playerid, i)
         }
     }
 
-    if (GetPVarInt(playerid, "VillageWaitToTakeAward"))
-    {
-        DeletePVar(playerid, "VillageWaitToTakeAward");
-        Village_Kills[playerid] = 0;
-    }
-
     VillageInfo[villKillPlayerid][i] = playerid;
     Village_Kills[playerid] ++;
+    PlayerInfo[playerid][pStatistics][1]++;
 
     if(server == 0) SendClientMessageToAll(-1, "%s убил %d деревенских", PlayerInfo[playerid][pName], Village_Kills[playerid]);
     return true;
@@ -608,15 +553,13 @@ stock CreateVillageGift()
 // Сообщение о завершении битвы
 stock MessageVillageWin(playerid)
 {
-    SetPVarInt(playerid, "VillageWaitToTakeAward", 1);
-
     new lines[360];
-    if(Village_Kills[playerid] < EVERY_KILL_VILLAGE)
+    if(Village_Kills[playerid] < VILLAGE_KILLS_PER_REWARD)
     {
         format(lines,sizeof(lines),"{FB9656}Все деревенские были убиты!\
                             \n{cccccc}- Перед победой вы устранили и удерживали {FF6347}%d деревенских\
                             \n{FF6347}- Вам недоступны призы, поскольку вы внесли недостаточный вклад для победы\
-                            \n{FF6347}- Требуется убить и удерживать минимум %d деревенских", Village_Kills[playerid], EVERY_KILL_VILLAGE);
+                            \n{FF6347}- Требуется убить и удерживать минимум %d деревенских", Village_Kills[playerid], VILLAGE_KILLS_PER_REWARD);
         ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
     }
     else
@@ -717,8 +660,47 @@ stock Village_TaskNpcAttackPlayer(NPC:npc, playerid, i)
 // Игрок, который не является целью для ботов деревенских
 stock IsPlayerNotTargetForVillage(playerid)
 {
-    if(IsPlayerNotTarget(playerid) ||
-        !IsPlayerInDynamicArea(playerid, VillageInfo[villZone])) return true;
+    for(new i = 0; i < sizeof(VillageNpcWalk); i++)
+    {
+        new NPC: npc = VillageInfo[villID][i];
+        if(IsNpcDead(npc)) continue;
+        
+        new Float: x, Float: y, Float: z;
+        GetNpcPosition(npc, x, y, z);
+        
+        // Если игрок является целью одного из NPC, но тот существенно не изменял свою позицию более чем 15 секунд
+        if(VillageInfo[villActive] && VillageInfo[villAttackPlayerid][i] == playerid)
+        {
+            new Float: distance = GetPlayerDistanceFromPoint(playerid, x, y, z);
+
+            if(VillageInfo[villAttackPlayeridDistChange][i] == 0)
+            {
+                VillageInfo[villAttackPlayeridDistChange][i] = gettime();
+                VillageInfo[villAttackPlayeridDist][i] = distance;
+            } else if(IsPlayerInRangeOfPoint(playerid, 0.75, x, y, z) || floatabs(distance - VillageInfo[villAttackPlayeridDist][i]) > 1.0)
+            {
+                VillageInfo[villAttackPlayeridDistChange][i] = gettime();
+                VillageInfo[villAttackPlayeridDist][i] = distance;
+            } else
+            {
+                if(gettime() - VillageInfo[villAttackPlayeridDistChange][i] >= 15)
+                {
+                    Village_BlockTarget[playerid][i] = gettime() + 10;
+                    
+                    VillageInfo[villAttackPlayeridDistChange][i] = gettime();
+                    VillageInfo[villAttackPlayeridDist][i] = 0.0;
+                    continue;
+                }
+            }
+        }
+        
+        // Если игрок сильно выше одного из NPC
+        if(Protect_Z[playerid] - z > 10.0) return true;
+    }
+
+    // Если игрок не является целью для всех NPC или не находится в деревне
+    if(IsPlayerNotTarget(playerid) || !IsPlayerInDynamicArea(playerid, VillageInfo[villZone])) return true;
+
     return false;
 }
 
@@ -740,9 +722,12 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
 
     new Float:dist = 99999.0;
     new latestId = INVALID_PLAYER_ID;
+
+    new currentTime = gettime();
     foreach (VillagePlayer, playerid) 
     {
         if(IsPlayerNotTargetForVillage(playerid)) continue;
+        if(Village_BlockTarget[playerid][i] > currentTime) continue;
 
         new Float:thisDist = GetPlayerDistanceFromPoint(playerid, npc_x, npc_y, npc_z);
         if (thisDist < dist) 
@@ -757,6 +742,41 @@ stock FindClosestPlayerToVillageNpc(NPC:npc, i)
         && latestId != INVALID_PLAYER_ID) return NOT_FIND_ATTACK_PLAYER;
 
     return latestId;
+}
+
+stock Village_DisallowAreaProcess()
+{   
+    foreach (new playerid : VillagePlayer)
+    {
+        if (!IsPlayerInActiveVillage(playerid)) continue;
+        if (GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) continue;
+
+        for (new j = 0; j < sizeof(VillageDisallowedAreas); j++)
+        {
+            if (Protect_Z[playerid] < VillageDisallowedAreas[j][tdaZ]) continue;
+            if (!IsPlayerInSquare(playerid, VillageDisallowedAreas[j][tdaMinX], VillageDisallowedAreas[j][tdaMinY], VillageDisallowedAreas[j][tdaMaxX], VillageDisallowedAreas[j][tdaMaxY])) continue;
+
+            new Float: closestDistance = 5000.0, point = -1; 
+            for (new currentpoint = 0; currentpoint < sizeof(VillageDisallowedAreaPoints); currentpoint++)
+            {
+                new Float: distance = GetPlayerDistanceFromPoint(playerid, VillageDisallowedAreaPoints[currentpoint][tdapX], VillageDisallowedAreaPoints[currentpoint][tdapY], VillageDisallowedAreaPoints[currentpoint][tdapZ]);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    point = currentpoint;
+                }
+            }
+
+            if (point != -1)
+            {
+                PPSetPlayerPos(playerid, VillageDisallowedAreaPoints[point][tdapX], VillageDisallowedAreaPoints[point][tdapY], VillageDisallowedAreaPoints[point][tdapZ]);
+                PPSetPlayerFacingAngle(playerid, VillageDisallowedAreaPoints[point][tdapA]);
+                SetCameraBehindPlayer(playerid);
+
+                PlayerPlaySound(playerid, 31200, 0, 0, 0);
+            }
+        }
+    }
+    return 1;
 }
 
 // Игрок зашёл в деревню
@@ -844,7 +864,7 @@ stock Village_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, 
     #pragma unused weaponid
     #pragma unused bodypart
     
-    if(GiveDamagePlayerToVillageNpc(npc, damagerid)) return true;
+    if(!GiveDamagePlayerToVillageNpc(npc, damagerid)) return false;
     return true;
 }
 

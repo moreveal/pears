@@ -155,8 +155,6 @@ stock MineWar_Dialog_Main(playerid)
             (MineWar_GetDifficultyName(MineWarPlayerInfo[playerid][mwpDifficulty]))
         );
         ShowDialog(playerid, MINEWAR_DIALOG_MAIN, DIALOG_STYLE_TABLIST, "{ff9000}Заброшенная шахта", dialog_text, "Выбор", "Закрыть");
-    } else {
-        // Возможно, добавить какой-то диалог для завершения игры, если игрок ее запустил и т.п., пока без всего
     }
 
     return 1;
@@ -195,7 +193,8 @@ stock MineWar_Dialog_Rules(playerid)
         \
         "{ff9000}Описание режима\n" \
         "{cccccc}- После запуска игры сразу же появятся зомби, которых потребуется убить вместе с товарищами по команде\n" \
-        "{cccccc}- Зомби подходят волнами, численность их групп меняется в зависимости от стадии волны\n\n" \
+        "{cccccc}- Зомби подходят волнами, численность их групп меняется в зависимости от стадии волны\n" \
+        "{cccccc}- Если перед вашим возрождением умрут все ваши союзники - игра завершается поражением\n\n" \
         \
         "{ff9000}Механика волн\n" \
         "{cccccc}- Каждая волна зомби увеличивается по численности, становясь всё опаснее с каждой новой атакой\n" \
@@ -304,13 +303,69 @@ stock MineWar_OnShoot(playerid, WEAPON: weaponid)
     return 1;
 }
 
+stock MineWar_UpdateWaveInfo(roomid)
+{
+    // Формируем список игроков по ID
+    new players[MAX_MINEWAR_PLAYERS], quan;
+    for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
+    {
+        new currentid = MineWarInfo[roomid][mwPlayers][i] - 1;
+        if (!IsOnline(currentid)) continue;
+
+        players[quan++] = currentid;
+    }
+
+    // Сортировка по урону
+    for (new i = 0; i < quan - 1; i++)
+    {
+        for (new j = 0; j < quan - i - 1; j++)
+        {
+            if (MineWarPlayerInfo[players[j]][mwpDamage] < MineWarPlayerInfo[players[j + 1]][mwpDamage])
+            {
+                new temp = players[j];
+                players[j] = players[j + 1];
+                players[j + 1] = temp;
+            }
+        }
+    }
+
+    // Формируем статистику
+    new string[1024];
+    for (new i = 0; i < quan; i++)
+    {
+        new currentid = players[i];
+
+        format(string, sizeof(string), 
+            "%s" \
+            "%s: %d/%d\n",
+
+            string,
+            PlayerInfo[currentid][pName],
+            MineWar_PlayerGetZombieKilled(currentid),
+            MineWarPlayerInfo[currentid][mwpDeadCount]
+        );
+    }
+
+    // Отображаем всем игрокам в комнате
+    for (new i = 0; i < quan; i++) {
+        new currentid = players[i];
+        SetPlayerHudTask(currentid, "Шахта", string);
+    }
+
+    return 1;
+}
+
 stock MineWar_SetWave(roomid, waveid, cooldown = 0)
 {
     if (!MineWar_IsRoomExists(roomid)) return 0;
-    if (cooldown == 0 && MineWarInfo[roomid][mwWaveCooldown] > 0) return 0;
+
+    if (MineWarInfo[roomid][mwWaveCooldown] > 0)
+    {
+        MineWarInfo[roomid][mwWaveCooldown]--;
+        return SetTimerEx("MineWar_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
+    }
 
     if (cooldown > 0) {
-        if (IsValidTimer(MineWarInfo[roomid][mwSetWaveTimer])) KillTimer(MineWarInfo[roomid][mwSetWaveTimer]);
         MineWarInfo[roomid][mwWaveCooldown] = cooldown;
 
         for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++) {
@@ -321,11 +376,11 @@ stock MineWar_SetWave(roomid, waveid, cooldown = 0)
             MineWar_SetZombieRemainsTextdraw(currentid, false);
         }
 
-        MineWarInfo[roomid][mwSetWaveTimer] = SetTimerEx("MineWar_SetWave_Timer", cooldown * 1000, false, "ddd", roomid, waveid, 0);
-        return 1;
+        return SetTimerEx("MineWar_SetWave_Timer", 1000, false, "ddd", roomid, waveid, 0);
     }
     
     MineWar_UpdateZombieRemainsTextdraw(roomid);
+    MineWar_UpdateWaveInfo(roomid);
     MineWar_ClearZombies(roomid);
 
     MineWarInfo[roomid][mwWaveCooldown] = 0;
@@ -618,7 +673,7 @@ stock MineWar_CreateZombie(roomid, e_MineWarZombieType: type, Float: x, Float: y
             SetNpcVirtualWorld(npcid, MineWar_GetVirtualWorld(roomid));
             SetNpcStunAnimationEnabled(npcid, false);
 
-            SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие (временное решение, пока в плагине баг)
+            SetNpcWeapon(npcid, WEAPON: 0); // Очищаем оружие
             if (type == MINEWAR_HEAVY_ZOMBIE) SetNpcWeapon(npcid, WEAPON_BAT); // Бита в руки усиленному зомби
             else if (type == MINEWAR_SUPER_ZOMBIE) SetNpcWeapon(npcid, WEAPON_CHAINSAW); // Бензопила в руки супер-зомби
 
@@ -924,7 +979,6 @@ stock MineWar_SetPlayerTime(playerid)
 
 stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
 {
-    #pragma unused killerid
     #pragma unused reason
 
     for (new roomid = 0; roomid < MAX_MINEWAR_ROOMS; roomid++)
@@ -938,11 +992,13 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                 new zombie_type = MineWarInfo[roomid][mwZombieTypes][npc_i];
                 MineWarInfo[roomid][mwZombieKilled][zombie_type]++;
                 MineWarPlayerInfo[killerid][mwpZombieKilled][zombie_type]++;
+                PlayerInfo[killerid][pStatistics][2]++;
 
                 MineWarInfo[roomid][mwZombieAttackId][npc_i] = 0;
                 SetTimerEx("MineWar_DestroyDeadZombie", 5 * 1000, false, "dd", roomid, npc_i);
 
                 MineWar_UpdateZombieRemainsTextdraw(roomid);
+                MineWar_UpdateWaveInfo(roomid);
 
                 new zombies = MineWar_GetZombieCount(roomid, .alive = true);
                 if (zombies <= 0)
@@ -1043,16 +1099,28 @@ stock MineWar_GetPlayerRoom(playerid)
 stock MineWar_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float: amount, weaponid, bodypart)
 {
     #pragma unused npc
-    #pragma unused damagerid
-    #pragma unused amount
     #pragma unused weaponid
     #pragma unused bodypart
 
-    /*new roomid = MineWar_GetPlayerRoom(damagerid);
+    new roomid = MineWar_GetPlayerRoom(damagerid);
     if (MineWar_IsRoomExists(roomid))
     {
-        
-    }*/
+        for (new npc_i = 0; npc_i < MAX_MINEWAR_ZOMBIES; npc_i++)
+        {
+            if (NPC: MineWarInfo[roomid][mwZombie][npc_i] == npc)
+            {
+                // Считаем урон
+                new Float: damage = amount, Float: health;
+                GetNpcHealth(npc, health);
+                if (health - amount < 0.0) {
+                    damage = health;
+                }
+                MineWarPlayerInfo[damagerid][mwpDamage] += damage;
+                MineWar_UpdateWaveInfo(roomid);
+                return 1;
+            }
+        }
+    }
     return 1;
 }
 
@@ -1063,6 +1131,8 @@ stock MineWar_OnPlayerDeath(issuerid)
     if (MineWarPlayerInfo[issuerid][mwpDead]) return 0;
 
     MineWarPlayerInfo[issuerid][mwpDead] = true;
+    MineWarPlayerInfo[issuerid][mwpDeadCount]++;
+    MineWar_UpdateWaveInfo(roomid);
 
     for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
     {
@@ -1426,6 +1496,19 @@ stock MineWar_Start(playerid)
 
     new roomid = MineWar_CreateRoom(playerid);
     if (roomid < 0) return ErrorMessage(playerid, "{ff6347}Сейчас начать игру нельзя [Нет свободной комнаты]");
+
+    // Если хост участник чужого лобби - кикаем его из него
+    foreach (new id : Player)
+    {
+        if (id == playerid) continue;
+        for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
+        {
+            if (MineWarPlayerInfo[id][mwpPlayers][i] - 1 == playerid)
+            {
+                MineWar_Create_DeleteMember(id, playerid);
+            }
+        }
+    }
 
     MineWar_Create_AddMember(playerid, playerid); // Хост всегда участник
     for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)

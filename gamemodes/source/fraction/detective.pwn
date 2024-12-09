@@ -191,31 +191,43 @@ function CrimeCar(playerid, wh, car, zalupa)
     new tempname[24];
     new g = fraction(playerid);
 	cache_get_value_name(0, "Name", tempname, 24);
-	format(crimeInfo[slot][crmTargetName], 24, "%s", tempname); // Записываем имя чела
-    format(crimeInfo[slot][crmSenderName], 24, "%s", PlayerInfo[playerid][pName]); // Записываем имя чела
-	crimeInfo[slot][crmStatus] = 0; 
-    crimeInfo[slot][crmType] = PlayerInfo[playerid][pFixCamera];
-    crimeInfo[slot][crmStatusCrime] = 0;
-    crimeInfo[slot][crmSenderID] = PlayerInfo[playerid][pID];
-    crimeInfo[slot][crmTargetID] = VehInfo[car][vSost];
-    crimeInfo[slot][crmTargetZalupa] = VehInfo[car][vNewid];
-    crimeInfo[slot][crmTargetZalupaParam] = VehInfo[car][vModel];
-    crimeInfo[slot][crmSklad] = wh+1;
-    crimeInfo[slot][crmUnix] = gettime();
-	VehInfo[car][vSklad] = wh+1;
+
+    // Не отправляем машину на склад, если она принадлежит администратору
+    new bool: keepcar = PlayerInfo[VehInfo[car][vIdvlad]][pSoska] > 0;
+
+    if (!keepcar)
+    {
+        format(crimeInfo[slot][crmTargetName], 24, "%s", tempname); // Записываем имя чела
+        format(crimeInfo[slot][crmSenderName], 24, "%s", PlayerInfo[playerid][pName]); // Записываем имя чела
+        crimeInfo[slot][crmStatus] = 0; 
+        crimeInfo[slot][crmType] = PlayerInfo[playerid][pFixCamera];
+        crimeInfo[slot][crmStatusCrime] = 0;
+        crimeInfo[slot][crmSenderID] = PlayerInfo[playerid][pID];
+        crimeInfo[slot][crmTargetID] = VehInfo[car][vSost];
+        crimeInfo[slot][crmTargetZalupa] = VehInfo[car][vNewid];
+        crimeInfo[slot][crmTargetZalupaParam] = VehInfo[car][vModel];
+        crimeInfo[slot][crmSklad] = wh+1;
+        crimeInfo[slot][crmUnix] = gettime();
+        VehInfo[car][vSklad] = wh+1;
+    }
+
     OrganInfo[g][glave] += 5000;
     GiveUnit(playerid, 11);
 
     // Сохраняем статус угона транспорта и сохраняем преступление
-    mysql_transaction(pearsq);
-	SaveCar(car);
-    SaveCrime(slot);
-    mysql_commit(pearsq);
+    if (!keepcar)
+    {
+        mysql_transaction(pearsq);
+        SaveCar(car);
+        SaveCrime(slot);
+        mysql_commit(pearsq);
+    }
 
     new string[40];
     format(string,sizeof(string), "Фрак: %d, Склад: %d", g, wh);
     CarLog("inwh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[car][vModel], wh, string);
 	ACDestroyVehicle(car);
+
 	return 1;
 }
 

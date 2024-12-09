@@ -78,6 +78,7 @@ CMD:stoprally(playerid)
     if(PlayerInfo[playerid][pSoska] < 15) return 0;
     CloseRally(playerid);
     AdminLog("stoprally", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Остановил митинг");
+    SuccessMessage(playerid,"{44ff99}Я предварительно завершил митинг у Правительстве");
     return 1;
 }
 
@@ -86,6 +87,7 @@ CMD:voteclose(playerid)
     if(PlayerInfo[playerid][pSoska] < 15) return 0;
     SelectVoteAfterRally();
     AdminLog("voteclose", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, "Предварительно завершил голосование в GOV");
+    SuccessMessage(playerid,"{44ff99}Я предварительно завершил голосование в Правительстве");
     return 1;
 }
 

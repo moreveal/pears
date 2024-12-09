@@ -130,6 +130,7 @@ CMD:setskin(playerid, const params[]) // Сменить активную оде�
 	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
 	if(IsPlayerInAnyVehicle(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока в транспорте");
 	if(NoAnim[giveplayerid] == 1) return ErrorMessage(playerid, "{FF6347}Нельзя сменить скин во время активного действия игрока");
+	if(PlayerInfo[playerid][pSoska] < 22 && IsSpecialSystemSkin(params[1])) return ErrorMessage(playerid, "{FF6347}Действие недоступно [ Особый скин для систем ]");
 
 	PlayerInfo[giveplayerid][pModel] = params[1];
 	PlayerInfo[giveplayerid][pModel2] = 0;
@@ -168,6 +169,7 @@ CMD:giveskin(playerid, const params[]) // Выдать одежду в инве�
 	giveplayerid = ReturnUser(tmp, 1);
 
 	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
+	if(PlayerInfo[playerid][pSoska] < 22 && IsSpecialSystemSkin(params[1])) return ErrorMessage(playerid, "{FF6347}Действие недоступно [ Особый скин для систем ]");
     
     new put_inva = GiveThingPlayer(giveplayerid, params[1], 1, 0, 0, 3, 0, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
@@ -204,6 +206,7 @@ CMD:setskinmp(playerid, const params[]) // Временно сменить ск�
 	if(sscanf(params, "s[34]i",tmp,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Временно изменить скин [ /setskinmp ID ID Скина ]");
 	if(!IsASkinExisting(params[1])) return ErrorMessage(playerid, "{FF6347}Несуществующий ID скина [1 - 311, кастомные 312 и выше]");
 	if(Pognalinamp == 0 && PlayerInfo[playerid][pSoska] <= 9) return ErrorMessage(playerid, "{FF6347}Эта команда доступна вам только во время мероприятия");
+	if(PlayerInfo[playerid][pSoska] < 22 && IsSpecialSystemSkin(params[1])) return ErrorMessage(playerid, "{FF6347}Действие недоступно [ Особый скин для систем ]");
 
     giveplayerid = ReturnUser(tmp, 1);
 	if(!IsOnline(giveplayerid)) return ErrorMessage(playerid, "{FF6347}Игрока нет в сети или он не залогинился");
@@ -566,7 +569,7 @@ CMD:vehprice(playerid)
 
 stock skinprice(playerid, page) // Настройки гос. цен одежды
 {
-	new max_line = 40, yesNext, minlist, thisPage;
+	new max_line = 35, yesNext, minlist, thisPage;
 	new line[214],lines[4096];
 
 	// Настраиваем отображение фильтров и страниц
@@ -1218,7 +1221,7 @@ stock IsAShmot(playerid)
 	|| IsPlayerInRangeOfPoint(playerid,1.0,2607.8682,918.0507,1551.0000) // Department Раздевалка
 	|| IsPlayerInRangeOfPoint(playerid,1.0,1383.1306,-1.3530,1000.9217) && GetPlayerVirtualWorld(playerid) == 9 && GetPlayerInterior(playerid) == 5 // Госпиталь
  	|| IsPlayerInRangeOfPoint(playerid,1.0,-1507.6846,1957.5139,1357.0326) && GetPlayerVirtualWorld(playerid) == 5 && GetPlayerInterior(playerid) == 1 // Cosa Nostra
-	|| IsPlayerInRangeOfPoint(playerid,1.0,1539.6632,1319.2186,16.0415) 
+	|| IsPlayerInRangeOfPoint(playerid,1.0,910.1101,1391.0000,1029.3732) 
 		&& GetPlayerVirtualWorld(playerid) == WORLD_YAKUZA_1LVL && GetPlayerInterior(playerid) == INT_YAKUZA_1LVL // Yakuza Mafia
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-2008.8141,152.5642,1666.0313) && GetPlayerInterior(playerid) == 7 && GetPlayerVirtualWorld(playerid) == 7 // Правительство
 	|| IsPlayerInRangeOfPoint(playerid,1.0,-506.7065,-87.0514,964.8114) && GetPlayerVirtualWorld(playerid) == 8 && GetPlayerInterior(playerid) == 8 // Hitman Agency

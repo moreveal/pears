@@ -41,6 +41,14 @@ stock use_throw(playerid, inva, useinva)
 	if(GetPVarInt(playerid, "svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
 	if(CheckInvent(playerid)) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
+	if(thingType == 2 && thingPack == 0)
+	{
+		if(IsABackPack(fpick))
+		{
+			if(!get_backpack(playerid)) return ErrorMessage(playerid,"{ff6347}У вас общие количество рюкзаков больше 2. Выложите их и после подбирайте рюкзак!");
+		}
+	}
+
 	if(ThrowInfo[t][tOnlyPlayer] > 0 
 		&& ThrowInfo[t][tOnlyPlayer] != PlayerInfo[playerid][pID]) return ErrorMessage(playerid, "{FF6347}Вы не можете взять этот предмет\n{ffcc66}Предмет может подобрать только конкретный игрок"), i_resettabs(playerid);
 
@@ -391,6 +399,10 @@ stock DestroyThrow(t) // Удаляем предмет с земли
 	ThrowInfo[t][tBombPlant] = false;
 	ThrowInfo[t][tOpenVehicleBomp] = 0;
  	ThrowInfo[t][tUseplayer] = 0;
+	if(IsABackPack(ThrowInfo[t][tId]) && ThrowInfo[t][tQara] != 0)
+	{
+		DeleteBackPack(ThrowInfo[t][tQara]);
+	}
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;
 }

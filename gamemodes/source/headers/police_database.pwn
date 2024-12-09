@@ -27,6 +27,9 @@
 #define POLICE_DATABASE_HACK_PASSWORD_COOLDOWN  5 // Время (в секундах), сколько должно пройти времени после предыдущей попытки
 #define POLICE_DATABASE_HACK_PASSWORD_TIME      3 // Время (в минутах), за которое требуется подобрать пароль для успешного взлома (2 этап)
 
+#define POLICE_DATABASE_SU_REMAINS_DEFAULT      8 // Возможное количество людей для снятия розыска после взлома базы данных (по умолчанию)
+#define POLICE_DATABASE_SU_REMAINS_FBI          12 // Возможное количество людей для снятия розыска после взлома базы данных (FBI)
+
 enum e_PoliceDatabasePickupType
 {
     POLICE_DATABASE_PICKUP_HACK, // Ноутбук (место для подключения к базе данных)
@@ -142,5 +145,3 @@ enum e_PoliceDatabasePlayerInfo {
 };
 new policeDatabasePlayerInfo[MAX_REALPLAYERS][e_PoliceDatabasePlayerInfo];
 new PlayerText: policeDatabasePlayerTextDraws[MAX_REALPLAYERS][POLICE_DATABASE_HACK_GAME_TEXTDRAWS];
-
-// TODO: КЛЮЧ КАРТА

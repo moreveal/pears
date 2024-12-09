@@ -233,7 +233,7 @@ stock LoadInteriorToBiz(playerid, b)
     // Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-    for(new i = 0; i < MAX_OBJECT_INT; i++)
+    for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
     {
         // Удаляем текущие объекты из бизнеса
         if(BizzInfo[b][bOmodel][i] > 0) 
@@ -349,7 +349,7 @@ stock useAvailableInterior(playerid, propId, typeProperty)
     // Грузим объекты из бизнеса
     else if(typeProperty == 1)
     {
-        for(new i = 0; i < MAX_OBJECT_INT; i++)
+        for(new i = 0; i < MAX_OBJECT_INT_BIZ; i++)
         {
             if(BizzInfo[propId][bOmodel][i] > 0) 
             {
@@ -922,7 +922,7 @@ CMD:loadinterior(playerid, const params[]) // Загружаем интерье�
         if(!sscanf(params, "s[24]",playerName))
 	    {
             new giveplayerid = ReturnUser(playerName, 1);
-     	    if(IsPlayerConnected(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // Игрок Online
+     	    if(IsOnline(giveplayerid)) goloadInterior(playerid, PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName]); // Игрок Online
             else // Игрок Offline
             {
                 if(!CheckRP_Nickname(playerName)) return ErrorMessage(playerid, "{FF6347}Вы не правильно указали никнейм\nЕсли вы указали ID, значит игрок Offline");

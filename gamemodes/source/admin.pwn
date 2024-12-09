@@ -23,6 +23,40 @@ CMD:netstat(playerid)
 	return true;
 }
 
+alias:checkevents("showevents")
+CMD:checkevents(playerid)
+{
+	if (PlayerInfo[playerid][pSoska] < 1) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+	new string[1024] = "{cccccc}Хост\t{cccccc}Локация\n";
+	new quan;
+	for (new i = 0; i < MAX_MINEWAR_ROOMS; i++)
+	{
+		if (!MineWar_IsRoomExists(i)) continue;
+		format(string, sizeof(string), "%s%s\t{42BF0F}Шахта [%d %s]\n", string, PlayerInfo[MineWarInfo[i][mwOwner]][pName], MineWar_GetPlayersCount(i), PluralToText(MineWar_GetPlayersCount(i), "участник", "участника", "участников"));
+		List[quan++][playerid] = i;
+		ListParam[quan - 1][playerid] = 1;
+	}
+	for (new i = 0; i < MAX_TOMB_ROOMS; i++)
+	{
+		if (!Tomb_IsRoomExists(i)) continue;
+		format(string, sizeof(string), "%s%s\t{F5DEB3}Гробница [%d %s]\n", string, PlayerInfo[TombInfo[i][tiOwner]][pName], Tomb_GetPlayersCount(i), PluralToText(Tomb_GetPlayersCount(i), "участник", "участника", "участников"));
+		List[quan++][playerid] = i;
+		ListParam[quan - 1][playerid] = 2;
+	}
+
+	new villageQuan;
+	if (VillageInfo[villActive]) {
+		foreach (new currentid : VillagePlayer) villageQuan++;
+	}
+	if (villageQuan > 0) {
+		format(string, sizeof(string), "%s-\t{FFCC00}Деревня [%d %s]\n", string, villageQuan, PluralToText(villageQuan, "участник", "участника", "участников"));
+		ListParam[quan++][playerid] = 3;
+	}
+	if (quan == 0) return ErrorMessage(playerid, "{FF6347}Сейчас не проходит ни одно событие");
+	
+	return ShowDialog(playerid, ADMIN_DIALOG_CHECKEVENTS, DIALOG_STYLE_TABLIST_HEADERS, "{cccccc}Текущие события", string, "Выбор", "Закрыть");
+}
+
 CMD:givemats(playerid, const params[])
 {
 	new fractionId, thingId, thingType, thingAmount;
@@ -175,7 +209,7 @@ CMD:rnamechange(playerid, const params[])
 	if(sscanf(params, "s[121]", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Сбросить кд на повторную смену ника [ /rnamechange ID/NickName ]");
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid))
+	if(IsOnline(giveplayerid))
 	{
 		PlayerInfo[giveplayerid][pUnixRename] = 0;
 		AdminLog("rnamechange", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, "Сбросил кд на изменение Ника");
@@ -241,7 +275,7 @@ CMD:resetachieve(playerid, params[])
 
 		SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы очистили прогресс достижения №%d для всех игроков **", achieveid + 1);
 	} else {
-		if(IsPlayerConnected(giveplayerid)) {
+		if(IsOnline(giveplayerid)) {
 			PlayerInfo[giveplayerid][pAchieve][achieveid] = 0;
 			PlayerInfo[giveplayerid][pAchieveUnix][achieveid] = 0;
 			PlayerInfo[giveplayerid][pAchieveStat][achieveid] = 0;
@@ -638,7 +672,8 @@ CMD:hpgro(playerid)
 			if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 			{
 				if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 				ACSetPlayerHealth(i,GetMaxPlayerHealth(i));
@@ -659,7 +694,8 @@ CMD:armgro(playerid)
 		if(GetDistanceBetweenPlayers(playerid,i) < 32 && playerid != i)
 		{
 			if(((IsPlayerInActiveVillage(i)
-					|| MineWar_IsPlayerInside(i))
+					|| MineWar_IsPlayerInside(i)
+					|| Tomb_IsPlayerInside(i))
 					&& server > 0)) continue;
 
 			ACSetPlayerArmour(i, 100);
@@ -674,7 +710,7 @@ CMD:delaction(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] <= 0 && PlayerInfo[playerid][pMedia] != 3) return ErrorMessage(playerid, "{FF6347}Эта команда доступна только администрации и медиа 3 уровня");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Удалить созданные ситуации игрока [ /delaction ID ]");
-	if(!IsPlayerConnected(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
+	if(!IsOnline(params[0])) return ErrorMessage(playerid, "{FF6347}Этого игрока нет в сети [ Неверный ID ]");
 	new kol = 0;
 	for(new i = 0; i < MAX_PLAYER_ACTIONS; i++)
 	{
@@ -687,6 +723,127 @@ CMD:delaction(playerid, const params[])
 	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил все RP ситуации %s[%d]", PlayerInfo[playerid][pName],playerid,PlayerInfo[params[0]][pName],params[0]);
 	ABroadCast(COLOR_ADM,string,1);
 	return 1;
+}
+
+CMD:deletethingall(playerid, const params[])
+{
+	if (PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 22+ ]");
+	new itemid;
+	if (sscanf(params, "d", itemid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Изъять предмет из всех инвентарей/домов/багажников [ /deletethingall ID ]");
+	if (itemid < 1 || itemid >= sizeof(friskName)) return ErrorMessage(playerid, "{FF6347}Недействительный ID предмета");
+
+	// Удаляем у игроков
+	foreach (new id : Player)
+	{
+		for(new i = 0; i < 40; i++)
+		{
+			// Инвентарь
+			if (PlayerInfo[id][pInvenType][i] == 0)
+			{
+				new quan = PlayerInfo[id][pInvenQuan][i];
+				if (quan > 0)
+				{
+					if (itemid == PlayerInfo[id][pInven][i]) {
+						TakeInvent(id, itemid, quan, 0, i);
+					}
+				}
+			}
+			
+			if (i < 20)
+			{
+				// Лавка
+				if (PlayerInfo[id][pMarkInvenType][i] == 0)
+				{
+					new quan = PlayerInfo[id][pMarkInvenQuan][i];
+					if (quan > 0)
+					{
+						if (itemid == PlayerInfo[id][pMarkInven][i]) {
+							m_take_away(id, quan, i);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Удаляем из багажников
+	foreach (new vehicleid : Vehicle)
+	{
+		new max_slotes = GetMaxBootSlotes(vehicleid);
+		for (new i = 0; i < max_slotes; i++)
+		{
+			if(VehInfo[vehicleid][vInvent][i] == itemid && VehInfo[vehicleid][vInvType][i] == 0) 
+			{
+				TakeBoot(vehicleid, itemid, VehInfo[vehicleid][vInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем из домов
+	for (new dom = 0; dom < MAX_DOM; dom++)
+	{
+		for (new i = 0; i < 80; i++)
+		{
+			if (DomInfo[dom][dInvent][i] == itemid && DomInfo[dom][dInvType][i] == 0)
+			{
+				TakeDom(dom, itemid, DomInfo[dom][dInv][i], 0, i);
+			}
+		}
+	}
+
+	// Удаляем со складов
+	for (new g = 0; g < sizeof(OrganInfo); g++)
+	{
+		for (new i = 0; i < 20; i++)
+		{
+			if(OrganInfo[g][gInvent][i] == itemid && OrganInfo[g][gInvType][i] == 0)
+			{
+				TakeSklad(g, itemid, OrganInfo[g][gInv][i], 0, i);
+			}
+		}
+	}
+
+	new string[144];
+	format(string, sizeof(string), " [ ADM ]: %s[%d] удалил предмет \"%s\" [ID: %d] с инвентарей/багажников/домов всех игроков", PlayerInfo[playerid][pName], playerid, GetNameThing(0, itemid, 0, 0), itemid);
+	ABroadCast(COLOR_ADM, string, 2);
+
+	format(string, sizeof(string), "Удалил предмет \"%s\" из инвентарей игроков", GetNameThing(0, itemid, 0, 0));
+	AdminLog("deletethingall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", itemid, string);
+	return 1;
+}
+
+new CreatedVehicleID[MAX_REALPLAYERS];
+CMD:rveh(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 4 && PlayerInfo[playerid][pMedia] < 3) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 4+ ]");
+
+	new vehiclename[64];
+	if(!sscanf(params, "s[64]", vehiclename))
+	{
+		new model = ReturnVehicle(vehiclename);
+		if (model == -1) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+		if (!IsAVehExisting(model)) return ErrorMessage(playerid, "{FF6347}Неверный ID или название транспорта (400 - 612, 2000 и выше - кастомные авто)");
+		if (IsATrain(model)) return ErrorMessage(playerid, "{FF6347}Нельзя создать поезд");
+
+		new vehicleid = CreatedVehicleID[playerid];
+		if(vehicleid == 0) return ErrorMessage(playerid, "{FF6347}Вы не создавали транспорт, чтобы его заменить");
+		if(!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорта не существует");
+		if(Cars[vehicleid] != 9999) return ErrorMessage(playerid, "{FF6347}Ошибка! Крайний созданный вами транспорт был удалён");
+
+		new Float:pos[4];
+		GetVehiclePos(vehicleid, pos[0], pos[1], pos[2]);
+		GetVehicleZAngle(vehicleid, pos[3]);
+
+		new color1, color2;
+		color1 = VehInfo[vehicleid][vVehcol1];
+		color2 = VehInfo[vehicleid][vVehcol2];
+
+		ACDestroyVehicle(vehicleid);
+		CreatedVehicleID[playerid] = PP_CreateVehicle(model, pos[0], pos[1], pos[2], pos[3], color1, color2, -1,0, -1, 0.0);
+		Cars[CreatedVehicleID[playerid]] = 9999;
+	}
+	else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Заменить крайний созданный транспорт [ /rveh VehID ]");
+	return true;
 }
 
 CMD:veh(playerid, const params[])
@@ -720,6 +877,7 @@ stock AdmCmdVeh(playerid, const vehiclename[], color1, color2)
     if(IsABig(model)) vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2]+2.0, frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
     else vehicleid = PP_CreateVehicle(model, frontme_pos[0], frontme_pos[1], frontme_pos[2], frontme_pos[3]+180.0, color1, color2, -1,0, -1, 0.0);
 	
+	CreatedVehicleID[playerid] = vehicleid;
 	LinkVehicleToInterior(vehicleid, GetPlayerInterior(playerid));
 	SetVehicleVirtualWorld(vehicleid, GetPlayerVirtualWorld(playerid));
 	QuanCar ++;
@@ -799,7 +957,7 @@ CMD:tp3(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
 	{
-		ShowDialog(playerid,79,DIALOG_STYLE_LIST,"{ff9000}Телепорты 3","IKEA\nЦентр Обмена\nБизнес Центр\nШтраф Стоянка\nВход в Серверную FBI\nНефтеперерабатывающий Завод\nГосударственный Склад\nРынок LS\nЧёрный Рынок\nСпермобанк\nКлининг LS\nКлининг SF\nКлининг LV\nТрейлерный парк\nИнкассаторы\nЭлектрики","Выбрать","Отмена");
+		ShowDialog(playerid,79,DIALOG_STYLE_LIST,"{ff9000}Телепорты 3","IKEA\nЦентр Обмена\nБизнес Центр\nШтраф Стоянка\nВход в Серверную FBI\nНефтеперерабатывающий Завод\nГосударственный Склад\nРынок LS\nЧёрный Рынок\nСпермобанк\nКлининг LS\nКлининг SF\nКлининг LV\nТрейлерный парк\nИнкассаторы\nЭлектрики\nСкупщик\nГробница Фараона\nКладбище LS","Выбрать","Отмена");
 	}
    	return 1;
 }
@@ -853,7 +1011,7 @@ CMD:readhit(playerid, const params[])
 	}
 	else
 	{
-		if (!IsPlayerConnected(targetid) || IsPlayerNPC(targetid))
+		if (!IsOnline(targetid) || IsPlayerNPC(targetid))
 		{
 			SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 			return 1;
@@ -876,7 +1034,7 @@ CMD:setbiz(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /setbiz ID Номер ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pBusiness] = params[1];
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер бизнеса {0088ff}%d", PlayerInfo[params[0]][pName],params[1]);
@@ -889,7 +1047,7 @@ CMD:setdom(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер дома игроку [ /setdom ID Номер ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pDom]=params[1];
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер дома {0088ff}%d", PlayerInfo[params[0]][pName],params[1]);
@@ -905,7 +1063,7 @@ CMD:setapr(playerid, const params[])
 	if(sscanf(params, "iii",params[0],params[1],params[2])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер квартиры игроку [ /setapr ID Номер КВ Слот КВ]");
 	if(params[1] > MAX_APARTMENTS_TABLE || params[1] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальный ID квартиры: %d. Минимальный: 1",MAX_APARTMENTS_TABLE);
 	if(params[2] > 10 || params[2] < 1) return SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Максимальное количество слотов: 10. Минимальное: 1");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	PlayerInfo[params[0]][pApartmentsRoom][params[2]-1]= ApartmentsRoom[params[1]-1][aprID]+1;
 	new string[144];
 	format(string, sizeof(string), "{FFFFFF}Игроку %s установлен номер квартиры {0088ff}%d в слот %d", PlayerInfo[params[0]][pName],ApartmentsRoom[params[1]-1][aprID]+1,params[2]);
@@ -1275,7 +1433,7 @@ CMD:punishments(playerid,const params[])
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длинна никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid)) PunishmentsLogs(playerid, giveplayerid);
+	if(IsOnline(giveplayerid)) PunishmentsLogs(playerid, giveplayerid);
 	else
 	{
 		if(!CheckRP_Nickname(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Игрок offline, попробую использовать его никнейм. Пример: Lol_Lolkin");
@@ -1303,7 +1461,7 @@ CMD:giveeditorder(playerid, const params[])
 	if(strlen(params[0]) > 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Длина никнейма не больше 20-ти символов");
 	new giveplayerid;
 	giveplayerid = ReturnUser(params[0], 1);
-	if(IsPlayerConnected(giveplayerid))
+	if(IsOnline(giveplayerid))
 	{
 		new unix = gettime();
 		if (PlayerInfo[giveplayerid][pTaxesUnix] > unix) // если уже есть активное разрешение
@@ -1399,7 +1557,7 @@ cmd:toearth(playerid, const params[])
 {
 	if(PlayerInfo[playerid][pSoska] < 4) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу это сделать..");
 	if(sscanf(params, "i", params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Вернуть игрока на землю из космический экспедиции [ /toearth ID ]");
-	if(!IsPlayerConnected(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
 	if(PlayerInfo[params[0]][pBkyrenie] >= 2)
 	{
 		new str[128];
@@ -1423,14 +1581,165 @@ cmd:setbizpos(playerid, const params[])
 		GetPlayerPos(playerid, x, y, z);
 
 		BizzInfo[params[0]][bX] = x, BizzInfo[params[0]][bY] = y, BizzInfo[params[0]][bZ] = z;
-		UpdateBizLabel(params[0], 1);
+
+		UpdateBizLabel(params[0], BizzInfo[params[0]][bLab]);
 		format(string, sizeof(string), " [ ADM ]: %s сменил физическую точку бизнеса %s № %d", PlayerInfo[playerid][pName],bizname(params[0]), params[0]), ABroadCast(COLOR_ADM,string,1);
 		
 		format(string, sizeof(string), "Смена физической точки бизнеса %d", params[0]);
 		AdminLog("setbizpos", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", params[0], string);
-
+		
+		if(params[0] == 200) BizzInfo[params[0]][bLab] = 1;
 		SaveBizz(params[0]);
 	}
 	else SendClientMessage(playerid,COLOR_GREY, "[ Мысли ]: Номер бизнеса не меньше 1 и не больше 200 [ 0 - Сбросить Все ]");
+	return 1;
+}
+
+new bool:NameOff[MAX_REALPLAYERS];
+CMD:tag(playerid)
+{
+	if(NameOff[playerid])
+	{
+		foreach(Player,i) 
+		{
+			if (!NameTag[i])
+			{
+				ShowPlayerNameTagForPlayer(playerid, i, true);
+			}
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~G~on", 5000, 5);
+		NameOff[playerid] = false;
+	}
+	else
+	{
+		foreach(Player,i) 
+		{
+			ShowPlayerNameTagForPlayer(playerid, i, false);
+		}
+		GameTextForPlayer(playerid, "~W~Nametags ~R~off", 5000, 5);
+		NameOff[playerid] = true;
+	}
+	return true;
+}
+
+alias:ahelp("ah")
+CMD:ahelp(playerid)
+{
+	DP[0][playerid] = 0;
+	new string[214],str[4096];
+ 	if(PlayerInfo[playerid][pSoska] >= 1)
+	{
+		format(string,sizeof(string),"{00FFFF}Хелпер:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/a /sp /spoff /otv /re /rr /com /fipcar /gotowh /izol /unizol /mir /unmir /prison /goto /gethere /getcar /gotocar /nohp /admduty /damage"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gzona /tp /tp2 /tp3 /spawns /noconnect /tags /1lvl /1kkfam /1kk /messoff /readconnect /readkill /readdm /readhit /rvanka"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/loc /toga /frames /pames /delpame /delaction /bump /slap /mute /kick /name /reloadbans /wrong /ban /ram /amute /rt /respcar /sprays"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/racgro /awork /vacation /fun /jailed /wanted /arestcar /signs /checkskill /checkpotreb /checkveh /checkmed /medias /frisk /take /gotoruins"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/hp /gm /trigger /checkpunish /checkpts /launch /mind /ab /nocollision /offense /gotoa /checkar /checkevents"), strcat(str,string);
+	}
+ 	if(PlayerInfo[playerid][pSoska] >= 2)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 2:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/cpcapt /gang /off /plworld /plint /getfamspawn /vniz /vverh /vpered /nazad /levee /pravee /gpci /geo"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/o /ao /vzlom /flip /jail /setint /vehint /vehworld /gotols /gotosf /gotolv /sethp /hpgro /rodet /setspawn /readm /sslap"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/warn /banip /getip /getip2 /cc /ccgro /delacc /dels /fixveh /findgun /unarestcar /check"), strcat(str,string);
+	}
+ 	if(PlayerInfo[playerid][pSoska] >= 3)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 3:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/jetpack /setnames /gotobiz /gotoradar /noooc /noooc2 /domgetc /checkgarage /setgarage /dom /rguns /rname"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/names /dedit /bedit /checkdaily"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 4)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 4:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/armgro /dynamiczz /areav /delareav /gotoareav /gomp /kickmp /offmp /freezeall /unfreezeall /flycam /flyveh /mc /weathergro /gotomap /rgungro"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gototo /givegungro /vehhp /vehhpgro /setarm /animbot /bottext /botid /bot /delbot /cobject /eobject /dobject /veh /delveh /delvehgro /rvc"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/fixcam /snowall /freeze /unfreeze /fuelgro /map /setskingro /setskinmp /makeparty /fixvehgro /toearth"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 5)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 5:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/doms /appdom /stopmaf /domlog /dominfo /famlog /bizlog /bizinfo /entercar /entercardrive /ssslap /readan /readex /appdom /disdom /doms"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/clear /setname /offname /rnamechange"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 6)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 6:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/famloss /famgar /unprison /readfam /domname /release /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/dskin /radarstatus"), strcat(str,string);
+	}
+	/*if(PlayerInfo[playerid][pSoska] >= 7)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 7:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/domname /rdom /rdomgun /rmarket /rinvent /dskin /cnn /cnnn /unmute /unwarn"), strcat(str,string);
+	}*/
+	if(PlayerInfo[playerid][pSoska] >= 8)
+	{
+		format(string,sizeof(string),"\n\n{007a08}Админ 8:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/unban /undel /unbanip /respawn /update /rboot /createdaily"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 9)
+	{
+		format(string,sizeof(string),"\n\n{FDD9B5}Менеджер"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/promo /promolog /server /referal /domlvl /makemedia /menumusic"), strcat(str,string);
+	}
+	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}1 страница", str, "Далее", "Выход");
+	return 1;
+}
+
+stock AHelpList(playerid)
+{
+	DP[0][playerid] = 1;
+	new string[214],str[4096];
+	if(PlayerInfo[playerid][pSoska] >= 10)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Л] Зам Куратора и {FF0000}Куратор Лидеров:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/mysql /mysql2 /nametag /paygold /invest /getinvest /rasformbiz /bizmaf /mafship /rrank /raccess /freezegang /limitcapt /stopgz /reloadcapt /rsetting /accessory /editmodel /exportmodel"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/reloadgz /setgz /vote /relpcapt /readw /relpallcapt /giveunit /takeunit /work2 /leadvig /unleadvig /skick /reproof /unreproof /fdom /unfdom /fbiz /unfbiz /givemats /delmats"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/rskin /admwarn /unadmwarn /au /ai /ag /lwork /givegun /givepoint /givescore /takepoint /takescore /froom /unfroom /inhb /outhb /hidden /asellroom /rngsabomb"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 11)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Э] Зам Куратора и {FF0000}Куратор Экспертов:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/jobexp /makeexpert /getgold"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 12)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[Х] Зам Куратора и {FF0000}Куратор Хелперов:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/makehelper /rename"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 13)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}[А] Зам Куратора и {FF0000}Куратор Администрации:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/makeadmin /domdist"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 15)
+	{
+		format(string,sizeof(string),"\n\n{ff9000}Кураторы:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/giveeditorder /orderweapons /voteclose /sharpvoteclose /stoprally /rdom /rdomgun /rmarket /rinvent"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 19)
+	{
+		format(string,sizeof(string),"\n\n{FDD9B5}Куратор Media"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/nal /setgravity /resetgravity /sendmind /givebiz /givedom /giveroom /givevoen /giveprava /addcar /makedj"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/slapp /raketa /delcar /setskin /giveskin /giveaksess /findchest /loadchest /clearquest /cleartaxes /setvip"), strcat(str,string);
+	}
+	if(PlayerInfo[playerid][pSoska] >= 20)
+	{
+		format(string,sizeof(string),"\n\n{FF0000}Специальный Администратор:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/pricevehup /pricevehdown /takegold /reloadpriceveh /fuelcars /unfuelcars /reloadbiz /reloadbizpos /herfam /setbiz /setdom /setroom"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/setfam /agiverankfam /block /delmail /delgoogle /rslot /asellbiz /abizlvl /bizcity /abizdep /aselldom /dompos /rdomobject /domclass"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/domup /domdown /domupgold /domdowngold /dp /dg /domgoldall /vehgoldall /domfam /famdom /asellroom /delfam /setpas /setmail /setstat /setability /takemoneybank"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/takemoney /givecase /restart /dellave /reloadlog /givedrugs /idinahyi /delaccs /readsit /takechips /rkasino /clearorder /cleargraffity"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/gthinginfo /gthing /gthingunix /spoil /reloadbizparthner /ikea /settrailer /trailerpos /deletetrailer /setvote /createapartments /mapartments /ecapartments /efapartments /dapartments"), strcat(str,string);
+	}
+   	if(PlayerInfo[playerid][pSoska] >= 22)
+ 	{
+		format(string,sizeof(string),"\n\n{444444}Основатель:"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/reloadchs /relpla /test5 /slapper /veloc /checkas /giveinvest /animer /sm /speech /givemoneybiz /relsliv /ds /protect"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/servtime /ptime /checkgun /givepayday /givegold /unfill /weather /plweather /givemoneybank /givemoney /givechips /antieblo - сдвиг транспорта (античит)"), strcat(str,string);
+		format(string,sizeof(string),"\n{cccccc}/players /famrefundcar /deletethingall"), strcat(str,string);
+	}
+	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
 	return 1;
 }

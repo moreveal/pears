@@ -1,13 +1,21 @@
+// Есть ли у игрока легальный доступ к Зоне 51
+stock IsPlayerHaveAccessArea51(playerid)
+{
+    if (IsADepart(playerid)) return 1;
+    if (GetPVarInt(playerid, "endorse") == 3) return 1;
+    if (GetPlayerState(playerid) == PLAYER_STATE_SPECTATING) return 1;
+
+    return 0;
+}
 
 // Игрок проник на зону 51
 stock PlayerInArea51(playerid)
 {
-    if(!IsADepart(playerid) // Не сотрудник департамента
-				&& (Onli[3] > 0 || server == 0) // Армейцы Online
-				&& GetPVarInt(playerid, "endorse") != 3 // Нет доступа к респе
-                && GetPlayerVirtualWorld(playerid) == 0 // В общем виртуальном мире
-				&& GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+    if(!IsPlayerHaveAccessArea51(playerid) // Нет доступа
+		&& (Onli[3] > 0 || server == 0) // Армейцы Online
+        && GetPlayerVirtualWorld(playerid) == 0) // В общем виртуальном мире
     {
+        // Выдача розыска за проникновение, если он ещё не выдавался
         new findUk, findP;
         if (FindCriminalArticle("Проникновение", findUk, findP, .ignorecase = false)) 
         {
@@ -27,15 +35,23 @@ stock CheckPlayerInResp(playerid)
     new orgid = IsASpawn(playerid);
     if(orgid > 0)
     {
-        // Впервые оказались на этой терре
-        if(Iamterr[playerid] != orgid)
+        // Если мы на респе нгса, копим время, чтобы выдать звёзды
+        if(orgid == 3)
         {
-            // Игрок оказался на зоне 51
-			if(orgid == 3) PlayerInArea51(playerid);
+            if(OnlineInfo[playerid][oPauseInArea] == 300) PlayerInArea51(playerid); // Через 5 минут выдаём розыск
+            else OnlineInfo[playerid][oPauseInArea] ++;
         }
         Iamterr[playerid] = orgid;
     }
     else if(Iamterr[playerid] > 0) Iamterr[playerid] = 0;
+
+    if(orgid == 0) ClearAreaTime(playerid);
+    return true;
+}
+
+stock ClearAreaTime(playerid)
+{
+    if(OnlineInfo[playerid][oPauseInArea] > 0) OnlineInfo[playerid][oPauseInArea] --;
     return true;
 }
 
@@ -74,4 +90,58 @@ stock IsACnnLift(playerid)
     ) return true;
 
     return false;
+}
+
+// Въезд на склад Yakuza
+stock EnterYakuzaSklad(playerid)
+{
+    if(Stopeee[playerid] == 1 && Stopee[playerid] > 0) return true; //  Если keep (заморозка) всё ещё активна, не позволяем прыгать по интам (условный антифлуд)
+
+    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || Protect_Veh[playerid] == 9999) return true;
+    new vehicleid = Protect_Veh[playerid];
+
+    if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
+	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+
+    keep(playerid);
+    ACSetVehiclePos(vehicleid, 931.2459,1397.7351,1030.0206);
+    SetVehicleZAngle(vehicleid, 90.7436);
+    SetVehicleVirtualWorld(vehicleid, WORLD_YAKUZA_GARAGE);
+    LinkVehicleToInterior(vehicleid, INT_YAKUZA_GARAGE);
+
+    S_SetPlayerVirtualWorld(playerid, WORLD_YAKUZA_GARAGE, INT_YAKUZA_GARAGE);
+    PPSetPlayerInterior(playerid, INT_YAKUZA_GARAGE);
+    SetCameraBehindPlayer(playerid);
+
+    // Выключаем коллизию
+	NoCollisionForAll(playerid, 0);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы заехали в помещение\n{ff9000}Для вас отключены столкновения с другими игроками в транспорте на 20 секунд","*","");
+    return true;
+}
+
+// Выезд со склада Yakuza
+stock ExitYakuzaSklad(playerid)
+{
+    if(Stopeee[playerid] == 1 && Stopee[playerid] > 0) return true; //  Если keep (заморозка) всё ещё активна, не позволяем прыгать по интам (условный антифлуд)
+
+    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || Protect_Veh[playerid] == 9999) return true;
+    new vehicleid = Protect_Veh[playerid];
+
+    if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
+	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+
+    keep(playerid);
+    ACSetVehiclePos(vehicleid, 1434.9194,781.2708,-4.7084);
+    SetVehicleZAngle(vehicleid, 75.0368);
+    SetVehicleVirtualWorld(vehicleid, 0);
+    LinkVehicleToInterior(vehicleid, 0);
+
+    S_SetPlayerVirtualWorld(playerid, 0, 0);
+    PPSetPlayerInterior(playerid, 0);
+    SetCameraBehindPlayer(playerid);
+
+    // Выключаем коллизию
+	NoCollisionForAll(playerid, 0);
+	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*","{ffcc66}Вы выехали их помещения\n{ff9000}Для вас отключены столкновения с другими игроками в транспорте на 20 секунд","*","");
+    return true;
 }

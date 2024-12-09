@@ -382,8 +382,8 @@ function Radar_UpdateLaser(id, playerid) {
 function Radar_DeleteLaser(id) {
     if (!Radar_IsExists(id) || !Radar_IsPlaced(id) || Radar_IsBroken(id)) return 0;
 
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, 228);
-    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, 228);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_WORLD_ID, INVISIBLE_VIRTUAL_WORLD);
+    Streamer_SetIntData(STREAMER_TYPE_OBJECT, RadarInfo[id][riObjects][8], E_STREAMER_INTERIOR_ID, INVISIBLE_VIRTUAL_WORLD);
 
     return 1;
 }
@@ -438,7 +438,7 @@ stock Radar_Place(id, bool: status = true) {
         new e_RadarBroken: brokenStatus = RadarInfo[id][riBroken];
         Radar_Place(id, false); // Удаляем объекты, если они уже были установлены
         
-        new object_world = 17, object_int = 228;
+        new object_world = 17, object_int = INVISIBLE_VIRTUAL_WORLD;
 
         if (RadarInfo[id][riMaxSpeed] <= 60.0) {
             if (!brokenStatus) {
@@ -471,7 +471,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(18643, 1322.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Red
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1323.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 1315, "dyntraffic", "Alumox64e", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -640,7 +640,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(19080, 1325.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Blue
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1326.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 16640, "a51", "ws_metalpanel1", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -809,7 +809,7 @@ stock Radar_Place(id, bool: status = true) {
                 RadarInfo[id][riObjects][8] = CreateDynamicObject(19083, 1328.955444, 1571.066650, 10.820317, 0.000060, 0.000000, 89.999816, object_world, object_int, -1, 300.00, 300.00); // Laser Green
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 0, 19962, "samproadsigns", "materialtext1", 0x00000000);
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][8], 2, 19962, "samproadsigns", "materialtext1", 0x00000000);
-                gadd(RadarInfo[id][riObjects][8], 228, 228);
+                gadd(RadarInfo[id][riObjects][8], INVISIBLE_VIRTUAL_WORLD, INVISIBLE_VIRTUAL_WORLD);
                 RadarInfo[id][riObjects][9] = CreateDynamicObject(19894, 1329.328002, 1570.969604, 11.219310, 0.000000, 0.000000, 0.000000, object_world, object_int, -1, 300.00, 300.00); 
                 SetDynamicObjectMaterial(RadarInfo[id][riObjects][9], 0, 3474, "freightcrane", "oldpaintyelend_256", 0x00000000);
                 gadd(RadarInfo[id][riObjects][9], 0, 0);
@@ -951,10 +951,10 @@ stock Radar_Place(id, bool: status = true) {
 
         if (brokenStatus == RADAR_BROKEN_NO_FIX) {
             // Огонь спрятан и отображается только через секунду
-            gadd(RadarInfo[id][riObjects][16], 228, 0);
+            gadd(RadarInfo[id][riObjects][16], INVISIBLE_VIRTUAL_WORLD, 0);
             SetTimerEx("SetDynamicObjectVirtualWorld", 1000, false, "dd", RadarInfo[id][riObjects][16], 0);
             gadd(RadarInfo[id][riObjects][17], 0, 0);
-            SetTimerEx("SetDynamicObjectVirtualWorld", 2000, false, "dd", RadarInfo[id][riObjects][17], 228);
+            SetTimerEx("SetDynamicObjectVirtualWorld", 2000, false, "dd", RadarInfo[id][riObjects][17], INVISIBLE_VIRTUAL_WORLD);
         }
 
         Radar_SetNormalZ(id);
@@ -1215,7 +1215,7 @@ stock Radar_GetNearest(playerid, Float: distance = 9999.0) {
 }
 
 stock Radar_OnPlayerDisconnect(playerid) {
-    #pragma unused playerid
+    for (new e_PlayerRadarInfo: i; i < e_PlayerRadarInfo; i++) PlayerRadarInfo[playerid][i] = 0;
 
     return 1;
 }
@@ -1612,7 +1612,7 @@ stock Pump_Radar(playerid) {
         || !is_repair && !GetAccessRankOrgMay(playerid, fraction(playerid), 35, NO_FBI) // Радар ставят, но нет доступа к размещению радара
         || !is_repair && Radar_IsAnyNearPlayer(playerid, .placed = false) // Радар ставят, но рядом уже стоит
         || (is_repair && !Radar_IsBroken(radarid)) // Радар чинят, но он уже починен
-        || Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
+        || !is_repair && Radar_GetAmount(.city = GetPlayerCityArea(playerid, true)) >= RADAR_PER_CITY) // Количество радаров в одном городе стало превышать допустимое
     {
         SetPVarInt(playerid, "oryjtemp", 0);
         SetPVarInt(playerid, "Arobsklad", 0);
@@ -1733,9 +1733,9 @@ stock Radar_OnPlayerPressALT(playerid) {
                         "{ff6347}Этот радар сломан\n\n" \
                         "{cccccc}Вы хотите его починить, чтобы восстановить его работу?";
 
-                    return ShowDialog(playerid, _:RADAR_DIALOG_REPAIR, DIALOG_STYLE_MSGBOX, "{ff9000}Восстановление радара", dialog_text, "Да", "Закрыть");
+                    ShowDialog(playerid, _:RADAR_DIALOG_REPAIR, DIALOG_STYLE_MSGBOX, "{ff9000}Восстановление радара", dialog_text, "Да", "Закрыть");
                 }
-                return 0; // Нельзя взаимодействовать со сломанным радаром
+                return 1; // Нельзя взаимодействовать со сломанным радаром
             }
 
             if (RadarInfo[radarid][riFraction] == g) {
@@ -1746,12 +1746,13 @@ stock Radar_OnPlayerPressALT(playerid) {
             else {
                 if (GetPVarInt(playerid, "idkradarmessage") > 0) return 1;
                 SetPVarInt(playerid, "idkradarmessage", 3);
-                return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не знаю, как этим пользоваться..");
             }
+            return 1;
         }
     }
 
-    return 1;
+    return 0;
 }
 
 stock Radar_ViolationHandler(playerid) {
@@ -1884,23 +1885,37 @@ stock Radar_ViolationHandler(playerid) {
                         if (floatabs(playerPos[2] - radarPos[2]) > 2.5) continue;
 
                         // Глушим радар, если у игрока есть глушилка
-                        if (get_invent2(playerid, 233, 0) && get_para(playerid, 233) > currentTime ||
-                            get_boot(vehicleid, 233) >= 0 && get_boot_para(vehicleid, 233) > currentTime)
+                        if (get_invent2(playerid, 233, 0) || get_boot(vehicleid, 233) >= 0)
                         {
-                            if (currentTime >= PlayerRadarInfo[playerid][priJammedTime] + RADAR_JAMMER_COOLDOWN) { // Нет КД глушения на игроке
-                                if (currentTime > RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) { // Радар не заглушен
-                                    PlayerRadarInfo[playerid][priJammedTime] = currentTime;
-                                    RadarInfo[radarid][riJammedTime] = currentTime;
+                            if (get_para(playerid, 233) > currentTime || get_boot_para(vehicleid, 233) > currentTime) {
+                                if (currentTime >= PlayerRadarInfo[playerid][priJammedTime] + RADAR_JAMMER_COOLDOWN) { // Нет КД глушения на игроке
+                                    if (currentTime > RadarInfo[radarid][riJammedTime] + RADAR_JAMMED_TIME) { // Радар не заглушен
+                                        PlayerRadarInfo[playerid][priJammedTime] = currentTime;
+                                        RadarInfo[radarid][riJammedTime] = currentTime;
 
-                                    PlayerPlaySound(playerid, 41603);
-                                    foreach (new currentid : Player) {
-                                        if (currentid == playerid) continue;
-                                        if (!Radar_IsPlayerNear(currentid, radarid)) continue;
+                                        PlayerPlaySound(playerid, 41603);
+                                        foreach (new currentid : Player) {
+                                            if (currentid == playerid) continue;
+                                            if (!Radar_IsPlayerNear(currentid, radarid)) continue;
 
-                                        PlayerPlaySound(currentid, 6003);
+                                            PlayerPlaySound(currentid, 6003);
+                                        }
+                                        
+                                        GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP 3A‚‡YЋEH", 2000, 3);
                                     }
-                                    
-                                    GameTextForPlayer(playerid, "~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~g~PAѓAP 3A‚‡YЋEH", 2000, 3);
+                                }
+                            } else if (Hank_IsServiceEnabled(playerid, HANK_SERVICE_STATE_PERSONAL_TECHIE)) {
+                                new price = floatround(float(getThingPriceGos(233, 0) / 2) * 1.10);
+
+                                if (PlayerInfo[playerid][pAccount] >= price) {
+                                    RadarInfo[radarid][riJammedTime] = currentTime;
+                                    oGivePlayerBank(playerid, -price);
+                                    SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоей глушилки, можешь пользоваться!");
+
+                                    new quan, para;
+                                    ThingParameters(playerid, 233, quan, para);
+                                    set_para(playerid, 233, para);
+                                    set_boot_para(vehicleid, 233, para);
                                 }
                             }
                         }

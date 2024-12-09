@@ -773,7 +773,7 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 }
             }
         }
-
+        PlayerInfo[playerid][pStatistics][0]++;
         BeginDestroyManiac(findSlot);
     }
     return yesDeathManiac;

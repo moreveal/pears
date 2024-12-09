@@ -38,10 +38,30 @@
 #define INT_TRAILER 187
 
 //==================================================
-// Yakuza 1 Этаж Интерьер
+// Yakuza 1 Этаж Интерьер Холл
 
 #define WORLD_YAKUZA_1LVL 173
 #define INT_YAKUZA_1LVL 6
+
+// Yakuza Гараж интерьер
+
+#define WORLD_YAKUZA_GARAGE 160
+#define INT_YAKUZA_GARAGE 6
+
+// Yakuza Ресторан
+
+#define WORLD_YAKUZA_RESTIK 159
+#define INT_YAKUZA_RESTIK 6
+
+// Yakuza Отель номер
+
+#define WORLD_YAKUZA_HOTEL -1
+#define INT_YAKUZA_HOTEL 158
+
+// Yakuza Отель Коридор
+
+#define WORLD_YAKUZA_KORID -1
+#define INT_YAKUZA_KORID 157
 
 //==================================================
 // Правительство Суд
@@ -126,3 +146,27 @@
 
 #define WORLD_APARTMENTS -1
 #define INT_APARTMENTS 163
+
+//==================================================
+// квест первая часть
+
+#define WORLD_HALLOWEEN_QUEST_1 -1
+#define INT_HALLOWEEN_QUEST_1 161
+
+//==================================================
+// квест вторая часть(битва)
+
+#define WORLD_HALLOWEEN_QUEST_2 -1
+#define INT_HALLOWEEN_QUEST_2 162
+
+//==================================================
+// Casino Room
+
+#define WORLD_CASINO_ROOM -1
+#define INT_CASINO_ROOM 199
+
+//==================================================
+// Casino Hol
+
+#define WORLD_CASINO_HOL -1
+#define INT_CASINO_HOL 55

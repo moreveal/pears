@@ -133,22 +133,25 @@ CMD:remedy(playerid, const params[])
 			if(!getdiagnosis(playerid, params[0])) return ErrorMessage(playerid, "{FF6347}Лекарства можно принимать только по рецепту от врача");
 			illn = params[0];
 		}
-		TakeInvent(playerid, params[0]+71, 1, 0, 999);
-		new medid = infectremedy(playerid, illn, 200);
+		new bool: fullHeal = PlayerInfo[playerid][pSoska] > 0;
+		TakeInvent(playerid, params[0]+71, fullHeal ? 999 : 1, 0);
+		new medid = infectremedy(playerid, illn, fullHeal ? 9999 : 200);
+
+		if((PlayerInfo[playerid][pIllnessProg][medid]-1000)/200 < 0) infectremedy(playerid,PlayerInfo[playerid][pIllness][medid],9999);
 		PlayerPlaySound(playerid, 32200, 0.0, 0.0, 0.0);
 		ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false);
 		
 		new line[120],lines[600];
-		if(PlayerInfo[playerid][pIllness][medid] <= 0)
+		if(PlayerInfo[playerid][pIllness][medid] <= 0 || fullHeal)
 		{
 			format(line,sizeof(line),"{99ff66}Вы приняли лекарство {ff9000}%s {99ff66}и полностью излечили болезнь", friskName[params[0]+71]), strcat(lines,line);
-			format(line,sizeof(line),"\n{99ff66}Проверьте мед карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
+			format(line,sizeof(line),"\n{99ff66}Проверьте медицинскую карту на наличие других болезней [ N - Инвентарь >> Мед Карта ]"), strcat(lines,line);
 
 			if(ContagiousInfect(illn))
 			{
 				format(line,sizeof(line),"\n\n{ff6666}Это была заразная болезнь и теперь у вас иммунитет на 30 дней"), strcat(lines,line);
-				format(line,sizeof(line),"\n{ffcc66}- Вас никто не сможет заразить в течении этого времени"), strcat(lines,line);
-				format(line,sizeof(line),"\n{ffcc66}- Однако, вы всё-равно можете заболеть если будете купаться в холодной воде"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Вас никто не сможет заразить в течение этого времени"), strcat(lines,line);
+				format(line,sizeof(line),"\n{ffcc66}- Однако, вы всё равно можете заболеть если будете купаться в холодной воде"), strcat(lines,line);
 			}
 			SuccessMessage(playerid, lines);
 			if(PlayerInfo[playerid][pAchieve][14] == 0) AchievePlayer(playerid, 14, 1);
@@ -178,6 +181,7 @@ stock getmed(playerid, para1)
 	for(new i = 0; i < 5; i++)
 	{
 		new Float:ostmed = (PlayerInfo[para1][pIllnessProg][i]-1000)/200;
+		if((PlayerInfo[para1][pIllnessProg][i]-1000)/200 < 0) infectremedy(para1,PlayerInfo[para1][pIllness][i],9999);
 		if(PlayerInfo[para1][pIllness][i] == 1 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Хламидиоз
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
@@ -474,6 +478,27 @@ stock getmed(playerid, para1)
 		format(line,sizeof(line),"\n{cccccc}Позволяет находиться рядом с болеющим игроком и не заразиться"), strcat(lines,line);
 		format(line,sizeof(line),"\n{cccccc}Получить иммунитет можно только переболев болезнью"), strcat(lines,line);
 	}
+
+	if(PlayerInfo[playerid][pSex] == 2)
+	{
+		new unix = gettime();
+
+		if(unix <= PlayerInfo[playerid][pMenstrDay] && unix >= PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION)
+		{
+			new tyear, tmonth, tday, thour, tminute, tsecond;
+			stamp2datetime(PlayerInfo[playerid][pMenstrDay], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			if(PlayerInfo[playerid][pMenstrProkl] == 0) format(line,sizeof(line),"\n\n{B21515}Сегодня день менструации {cccccc}[ Прокладка отсутствует ]"), strcat(lines,line);
+			else format(line,sizeof(line),"\n\n{B21515}Сегодня день менструации {99ff66}[ Прокладка надета ]"), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}Менструация закончится %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+		}
+		else
+		{
+			new tyear, tmonth, tday, thour, tminute, tsecond;
+			stamp2datetime(PlayerInfo[playerid][pMenstrDay] - TIME_MENSTRUATION, tyear, tmonth, tday, thour, tminute, tsecond, 3);
+			format(line,sizeof(line),"\n\n{B21515}Менструация начнётся %02d.%02d.%d %02d:%02d", tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{cccccc}Будет длиться в течении %d дней", TIME_MENSTRUATION / 86400), strcat(lines,line);
+		}
+	}
     ShowDialog(playerid,1126,DIALOG_STYLE_MSGBOX,"{ff6666}Осмотр Пациента",lines,"Назад","");
 	return 1;
 }
@@ -736,13 +761,14 @@ stock infectremedy(playerid, stat, prog)
 				if(ContagiousInfect(stat))
 				{
 					PlayerInfo[playerid][pColdCD] = gettime() + 2592000;
+					update_illness(playerid, i, stat);
 				}
 			}
-			medid = i;
-			break;
+
+			return medid;
 		}
 	}
-	return medid;
+	return 0;
 }
 stock createcold(playerid)
 {
@@ -819,19 +845,19 @@ stock getdiagnosis(playerid, stat)
 	}
 	return stope;
 }
-stock update_illness(playerid, stat)
+stock update_illness(playerid, i, stat = -1)
 {
 	new string_mysql[260];
 	if(ContagiousInfect(stat))
 	{
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d',`pColdCD`='%d' WHERE `user_id`='%d'", 
-		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], 
+		i, PlayerInfo[playerid][pIllness][i], i, PlayerInfo[playerid][pIllnessStat][i], i, PlayerInfo[playerid][pIllnessProg][i], 
 		PlayerInfo[playerid][pColdCD], PlayerInfo[playerid][pID]);
 	}
 	else
 	{
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `user_id`='%d'", 
-		stat, PlayerInfo[playerid][pIllness][stat], stat, PlayerInfo[playerid][pIllnessStat][stat], stat, PlayerInfo[playerid][pIllnessProg][stat], 
+		i, PlayerInfo[playerid][pIllness][i], i, PlayerInfo[playerid][pIllnessStat][i], i, PlayerInfo[playerid][pIllnessProg][i], 
 		PlayerInfo[playerid][pID]);
 	}
     query_empty(pearsq, string_mysql);

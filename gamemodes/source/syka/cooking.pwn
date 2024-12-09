@@ -10,7 +10,9 @@ static const pressCookObjects[][e_pressCookObjects] = {
   {19933},
 
   // Custom
-  {12225}
+  {12225},
+  // Котелок
+  {12374},{12375}
 };
 
 stock GetDynamicObjectCookPosition(objectid) {
@@ -34,6 +36,14 @@ stock GetDynamicObjectWorkbench(objectid)
 	return false;
 }
 
+stock GetDynamicObjectWorkbenchAcs(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 12443) return true;
+	return false;
+}
+
 stock GetDynamicObjectToilet(objectid) 
 {
 	if (!IsValidDynamicObject(objectid)) return false;
@@ -46,7 +56,7 @@ stock GetDynamicObjectSink(objectid)
 {
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
-    if(model == 2524 || model == 2515 || model == 2136 || model == 2132 || model == 2130) return true;
+    if(model == 2524 || model == 2515 || model == 2136 || model == 2132 || model == 2130 || model == 12427) return true;
 	return false;
 }
 
@@ -55,6 +65,15 @@ stock GetDynamicObjectElectro(objectid)
 	if (!IsValidDynamicObject(objectid)) return false;
 	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
     if(model == 12299) return true;
+	return false;
+}
+
+stock GetDynamicObjectTV(objectid) 
+{
+	if (!IsValidDynamicObject(objectid)) return false;
+	new model = Streamer_GetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID);
+    if(model == 1717 || model == 1781 || model == 14772 || model == 1747 ||  model == 1751 || model == 12215
+    || model == 1752 ||  model == 2318 ||  model == 2322 ||  model == 19786 ||  model == 19787 || model == 12202 || model == 12206) return true;
 	return false;
 }
 
@@ -69,6 +88,9 @@ stock GetDynamicObjectFridge(objectid)
 
 stock IsANearbyObject(playerid) // Ищем предметы рядом с игроком
 {
+    if(GetPlayerVirtualWorld(playerid) == 192 && GetPlayerInterior(playerid) == 192
+	|| GetPlayerVirtualWorld(playerid) == 193 && GetPlayerInterior(playerid) == 193
+	|| GetPlayerVirtualWorld(playerid) == 194 && GetPlayerInterior(playerid) == 194) return 0; // Ikea блокируем взаимодействие
     new Float: player_pos[3];
     GetPlayerPos(playerid, player_pos[0], player_pos[1], player_pos[2]);
 
@@ -92,6 +114,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         if(GetDynamicObjectWorkbench(current_object)) return 2; // Верстак
         if(GetDynamicObjectFridge(current_object)) return 3; // Холодильник
         if(GetDynamicObjectElectro(current_object)) return 4; // Электрощиток
+        if(GetDynamicObjectWorkbenchAcs(current_object)) return 7; // Швейный станок
         if(GetDynamicObjectToilet(current_object))
         {
             new Float:x, Float:y, Float:z;
@@ -102,6 +125,7 @@ stock IsANearbyObject(playerid) // Ищем предметы рядом с иг�
         }// Туалет
         if(GetDynamicObjectSink(current_object))
         {
+            if(NoWashHand(playerid)) return 0;
             new Float:x, Float:y, Float:z;
             GetDynamicObjectPos(current_object, x, y, z);
             new Float:a = atan2(player_pos[1] - y, player_pos[0]-x) + 90.0; // Направляем игрока на объект.

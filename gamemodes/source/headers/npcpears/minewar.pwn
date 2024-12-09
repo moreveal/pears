@@ -4,7 +4,7 @@
 #define MAX_MINEWAR_ZOMBIES     200 // Максимальное количество зомби в одной комнате одновременно (включая трупы)
 
 #define MINEWAR_WAVE_COOLDOWN   30 // Время в секундах между волнами
-#define MINEWAR_COOLDOWN        60 // Время в минутах до повторного участия в игре
+#define MINEWAR_COOLDOWN        90 // Время в минутах до повторного участия в игре
 
 enum e_MineWarWave
 {
@@ -48,7 +48,6 @@ enum e_MineWarInfo
     // Данные о комнате
     e_MineWarWave: mwWave, // Текущая волна
     e_MineWarDifficulty: mwDifficulty, // Уровень сложности
-    mwSetWaveTimer, // Таймер на изменение волны
     mwWaveCooldown, // КД до появления следующей волны
     mwZombieWave[_:MINEWAR_MAX_ZOMBIE_TYPE], // Сколько заспавнится зомби каждого вида в текущей волне
     mwZombieNextSpawn[_:MINEWAR_MAX_ZOMBIE_TYPE], // Сколько заспавнится зомби каждого вида при следующем вызове их спавна
@@ -79,6 +78,8 @@ enum e_MineWarPlayerInfo
     mwpSpectateID, // ID игрока, за которым происходит слежка (+1)
     mwpCases, // Гарантированное кол-во кейсов, которые игрок заработал на протяжении игры (не учитывая те, что в конце игры)
     mwpSpentAmmo[4], // Потраченные патроны с начала последней волны (fpick 27-30)
+    Float: mwpDamage, // Количество нанесённого урона
+    mwpDeadCount, // Сколько раз умер
     bool: mwpDead // Статус смерти
 };
 new MineWarPlayerInfo[MAX_REALPLAYERS][e_MineWarPlayerInfo];
