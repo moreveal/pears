@@ -39,10 +39,6 @@ stock ProcessFollowMe(playerid)
 
 				// Подошли близко, останавливаем
 				if(distcop < min_dist && GetPVarInt(playerid, "Follow_Run")) StopFollowMe(playerid);
-
-				// Разрешаем передвижение с места смерти, если игрок без сознания
-				if (!IsBlockDeathReturnEnabled(playerid))
-					if(DeathInfo[playerid][deathStatus]) BlockDeathReturn(playerid, .allowed_state = PLAYER_STATE_ONFOOT);
 			}
 		}
 	}
@@ -152,7 +148,6 @@ CMD:followme(playerid, const params[])
 				//ProxDetector(30.0, playerid, string, COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE,COLOR_PURPLE);
 				format(string, sizeof(string), "отпускает %s", playername(s));
 				SetPlayerChatBubble(playerid,string,COLOR_PURPLE,30.0,10000);
-				BlockDeathReturn(s, .status = false);
 			}
 		}
 		Follow[playerid] = 9999, FollowTime[playerid] = 0;
