@@ -6,7 +6,8 @@ enum deathInfo
     deathUnix, // unix предыдущей смерти
     deathReason, // id причина смерти
     deathKiller, // playerid убийцы
-    bool: deathCut // сокращённое время смерти
+    bool: deathCut, // сокращённое время смерти
+    bool:deathDelayed // Пауза на активацию возврата после полноценной смерти
 };
 new DeathInfo[MAX_REALPLAYERS][deathInfo];
 
@@ -57,17 +58,29 @@ stock SetPlayerDeath(playerid, reason)
 
     if(debugDeath) SendClientMessage(playerid, COLOR_GREY,"{ff0000}[debug] SetPlayerDeath %s", PlayerInfo[playerid][pName]);
 
-    // Баг? Почему он становится 0.0?
-    // Из-за этого происходит рекурсия ACSetPlayerHealth -> SetPlayerDeath -> ACSetPlayerHealth
-    // [07:27:35] #97 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
-    // [07:27:35] #98 004e83b8 in ACSetPlayerHealth (playerid=14, Float:helalph=0.00000) at pears.pwn:7111
-    // [07:27:35] #99 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
-    // [07:27:35] #100 004e83b8 in public OnPlayerSpawn (playerid=14, 0) at pears.pwn:7111
-    
-    // Тестим
-    //new Float:healthToSet = GetMaxPlayerHealth(playerid) * 0.9;
-    //if (healthToSet <= 0.0) healthToSet = 35.0;
-    //ACSetPlayerHealth(playerid, healthToSet);
+    // Если игрок утонул
+    if(reason == 53)
+    {
+        new Float:tempDepth, Float:tempPlayerDepth;
+        if(CA_IsPlayerInWater(playerid, tempDepth, tempPlayerDepth)) // Игрок в воде
+        {
+            GoPlayerInHospital(playerid); // Отправляем его в больку после спавна
+            return 0;
+        }
+    }
+
+    // Если игрок умер полностью, не создаём систему смерти сразу
+    if(
+        reason == 49 // Если сбили транспортом
+        || reason == 50 // Лопастями верта
+        || reason == 51 // Если игрок взорвался
+        || reason == 54 // Если упал с высоты
+        || reason == 255 // Сдох почему то сам
+    ) 
+    {
+        DeathInfo[playerid][deathDelayed] = true;
+    }
+    else DeathInfo[playerid][deathDelayed] = false;
 
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
@@ -85,13 +98,13 @@ stock SetPlayerDeath(playerid, reason)
         if (PlayerInfo[playerid][pLastPos][2] > zpos + 1.0) PlayerInfo[playerid][pLastPos][2] = zpos + 1.0;
     }
 
-    // Сразу ставим игрока в новую Z координату
-    if (reason != 51) ReturnPositionDeath(playerid); // Только если умер не от взрыва
+    if(DeathInfo[playerid][deathDelayed] == false) ReturnPositionDeath(playerid); // Только если умер и заспавнился
 
     PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
     PlayerInfo[playerid][pLastInt] = GetPlayerInterior(playerid);
 
     new unix = gettime();
+    StopFollow(playerid);
     DeathInfo[playerid][deathStatus] = true;
     DeathInfo[playerid][deathReason] = reason;
     
@@ -130,6 +143,7 @@ stock ShowPlayerDeath(playerid)
 stock NoDeath(playerid) // Не запускать систему смерти
 {
     new g = fraction(playerid);
+
     if(DeathInfo[playerid][deathStatus] // Уже мертв
     || PlayerInfo[playerid][pJailed] == 4 || PlayerInfo[playerid][pJailed] == 7 || PlayerInfo[playerid][pJailed] == 8 // В больке
     || MPGO[playerid] > 0 // На мп
@@ -142,7 +156,7 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || VehShopInfo[playerid][vsTest] // test drive
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
     || IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
-    || CA_IsPlayerNearWater(playerid, 1.0, 1.0) // В воде
+    // || CA_IsPlayerNearWater(playerid, 1.0, 1.0) // Типо у воды
     || PlayerInfo[playerid][pJailed] > 0 // В заключении
     || IsPlayerHavePursuit(playerid) // Активное полицейское преследование
     || MineWar_IsPlayerInside(playerid) // Играет в заброшенной шахте
@@ -175,6 +189,8 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
 // Возвращаем позицию игрока после спавна для смерти
 stock WeReturnToDeathPosition(playerid)
 {
+    DeathInfo[playerid][deathDelayed] = false;
+
     NoAnim[playerid] = 1;
 	S_SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld], PlayerInfo[playerid][pLastInt]), PPSetPlayerInterior(playerid, PlayerInfo[playerid][pLastInt]);
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
@@ -188,61 +204,36 @@ stock WeReturnToDeathPosition(playerid)
     return 1;
 }
 
-stock IsBlockDeathReturnEnabled(playerid) {
-    return GetPVarInt(playerid, "BlockDeathReturn") > 0;
-}
-
-// Приостанавливаем возвращение на место смерти, если игрок в стадии
-stock BlockDeathReturn(playerid, allowed_state = PLAYER_STATE_PASSENGER, bool: status = true) {
-    if (status) {
-        SetPVarInt(playerid, "BlockDeathReturn", 1);
-        SetPVarInt(playerid, "BlockDeathReturnAllowedState", allowed_state);
-        DeletePVar(playerid, "BlockDeathReturnAttempts");
-    } else {
-        DeletePVar(playerid, "BlockDeathReturn");
-    }
-    return 1;
-}
-
 stock UpdateDeathProcess(playerid)
 {
     UpdateDeathDrawProcess(playerid);
 
-    new string[24];
-    //TogglePlayerControllable(playerid, false);
-
-    if (!GetPVarInt(playerid, "BlockDeathReturn")) ApplyAnimation(playerid,"CRACK","crckidle2",3.0, false, true, true, true, true, SYNC_ALL);
-
     // Выводим над головой статус "без сознания" + время, когда игрок сможет отправиться в больницу
-    if (!IsPlayerHavePursuit(playerid)) {
+    if (!IsPlayerHavePursuit(playerid)) 
+    {
+        new string[24];
         strcat(string, "Без сознания");
         if (DeathInfo[playerid][deathTime] > 0) format(string, sizeof(string), "%s [%s]", string, fine_time(DeathInfo[playerid][deathTime]));
         SetPlayerChatBubble(playerid, string, COLOR_LIGHTRED, 20.0, 1500);
     }
 
-    if(!IsPlayerInRangeOfPoint(playerid,0.8, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
+    if(DeathInfo[playerid][deathDelayed] == false)
     {
-        ReturnPositionDeath(playerid);
+        new animname[32], animlib[32];
+        GetAnimationName(GetPlayerAnimationIndex(playerid),animlib,32,animname,32);
+        if(strcmp(animlib, "CRACK", true) == 0 && strcmp(animname, "crckidle2", true) == 0) {}
+        else ApplyAnimation(playerid,"CRACK","crckidle2", 3.0, false, true, true, true, 0, SYNC_ALL);
+
+        if(!IsPlayerInRangeOfPoint(playerid,0.8, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]))
+        {
+            ReturnPositionDeath(playerid);
+        }
     }
     return 1;
 }
 
 stock ReturnPositionDeath(playerid, bool:setPosition = true)
 {
-    if (GetPVarInt(playerid, "BlockDeathReturn")) {
-        if (_:GetPlayerState(playerid) == GetPVarInt(playerid, "BlockDeathReturnAllowedState")) {
-            GetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
-            PlayerInfo[playerid][pLastPos][0] -= 0.6;
-
-            return true;
-        }
-
-        new return_attempts = GetPVarInt(playerid, "BlockDeathReturnAttempts");
-        SetPVarInt(playerid, "BlockDeathReturnAttempts", ++return_attempts);
-
-        if (return_attempts >= 3) BlockDeathReturn(playerid, .status = false);
-    }
-
     if(setPosition == true)
     {
         PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
