@@ -1037,8 +1037,23 @@ stock i_resetveshi(p) // Сброс отображения выбранной я
 			&& OnlineInfo[p][oInventSelectLeft] >= 79) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-60][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-60][p]);
 		
 		OnlineInfo[p][oInventSelectLeft] = 9999;
-		OnlineInfo[p][oInventSelectBackPack] = 9999;
 		if(OnlineInfo[p][oInventSelectRight] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+	}
+	else if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectBackPack] != 9999)
+	{
+		if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectBackPack] != 9999)
+		{
+			if(Page[p] == 0 && OnlineInfo[p][oInventSelectBackPack] <= 19) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]][p]);
+			else if(Page[p] == 1 && OnlineInfo[p][oInventSelectBackPack] >= 20
+				&& OnlineInfo[p][oInventSelectBackPack] <= 39) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-20][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-20][p]);
+			else if(Page[p] == 2 && OnlineInfo[p][oInventSelectBackPack] >= 40
+				&& OnlineInfo[p][oInventSelectBackPack] >= 59) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-40][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-40][p]);
+			else if(Page[p] == 3 && OnlineInfo[p][oInventSelectBackPack] >= 60
+				&& OnlineInfo[p][oInventSelectBackPack] >= 79) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-60][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-60][p]);
+			
+			OnlineInfo[p][oInventSelectBackPack] = 9999;
+			if(OnlineInfo[p][oInventSelectRight] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+		}
 	}
 	return 1;
 }
