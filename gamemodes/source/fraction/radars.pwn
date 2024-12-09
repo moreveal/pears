@@ -1773,7 +1773,7 @@ stock Radar_ViolationHandler(playerid) {
 		|| vehicleid == janswat[0] || vehicleid == janswat[1] || vehicleid == janswat[2] || vehicleid == janswat[3] || Cars[vehicleid] == 4 || Cars[vehicleid] == 3
 		|| vehicleid >= SFPDcar[0] && vehicleid <= SFPDcar[1] || vehicleid >= NonLSCar[0] && vehicleid <= NonLSCar[1] || vehicleid >= NonSFCar[0] && vehicleid <= NonSFCar[1]
 		|| Cars[vehicleid] == 1 || Cars[vehicleid] == 11 || Cars[vehicleid] == 2 || Cars[vehicleid] == 7 || Cars[vehicleid] == 28
-	 	|| Cars[vehicleid] == 21 || Cars[vehicleid] == 22
+	 	|| Cars[vehicleid] == 21 || Cars[vehicleid] == 22 || vehicleid >= govcar[0] && vehicleid <= govcar[1]
 		|| vehicleid >= Medcar[0] && vehicleid <= Medcar[1]))
 		{
 	    	if(	IsACar(VehInfo[vehicleid][vModel]) || IsAMoto(VehInfo[vehicleid][vModel]) )
