@@ -1,4 +1,4 @@
-#define MAX_WEATHER 6 // Максимальное количество заявок
+#define MAX_WEATHER 8 // Максимальное количество погод
 // CreateDynamicCircle
 new WeatherID = -1; // ID погоды
 new WeatherCount; // Кол-во шагов
@@ -36,7 +36,7 @@ CMD:startweather(playerid, const params[])
 
 CMD:showweather(playerid)
 {
-    if(PlayerInfo[playerid][pMember] != 9 && PlayerInfo[playerid][pLeader] != 9 && PlayerInfo[playerid][pSoska] != 0) return 0;
+    if(PlayerInfo[playerid][pMember] != 9 && PlayerInfo[playerid][pLeader] != 9 && PlayerInfo[playerid][pSoska] == 0) return 0;
     WeatherShowMenu(playerid);
     return 1;
 }
@@ -162,7 +162,7 @@ stock CompletionWeather()
     for(new i; i < MAX_WEATHER; i++)
     {
         if(i == 0) Weather[i][weatherUnix] = gettime() + random(86400/MAX_WEATHER);
-        else Weather[i][weatherUnix] = Weather[i-1][weatherUnix] +7200+ random(14400);
+        else Weather[i][weatherUnix] = Weather[i-1][weatherUnix] + 7200 + random(14400);
         Weather[i][weatherStatus] = 0;
         Weather[i][weatherID] = random(3);
         if(Weather[i][weatherID] == 0) Weather[i][weatherID] = 8;

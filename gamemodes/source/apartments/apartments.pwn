@@ -1786,18 +1786,17 @@ stock arestroom(playerid, roomid)
 
 stock ApartmentsSpawnChoise(playerid, aprid)
 {
-    new frakid = fraction(playerid);
     new models = PlayerInfo[playerid][pModel];
     new apworld = ApartmentsRoom[aprid][aprWorld];
     new apid = ApartmentsRoom[aprid][aprApartmentsID];
     new idfloorroom = (apworld - Apartments[apid][apWorldDefineEntrance] - Apartments[apid][apFloor]) % 4;
     PlayerInfo[playerid][pSpawnChangeDop] = aprid+1;
     switch(idfloorroom){
-        case 1: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordOneExit][0],Apartments[apid][apRoomCoordOneExit][1],Apartments[apid][apRoomCoordOneExit][2],179.9875, 0, 0, 0, 0, 0, 0);
-        case 2: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordTwoExit][0],Apartments[apid][apRoomCoordTwoExit][1],Apartments[apid][apRoomCoordTwoExit][2],179.9875, 0, 0, 0, 0, 0, 0);
-        case 3: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordThreeExit][0],Apartments[apid][apRoomCoordThreeExit][1],Apartments[apid][apRoomCoordThreeExit][2],179.9875, 0, 0, 0, 0, 0, 0);
-        case 0: ProtectSetSpawnInfo(playerid, frakid, models, Apartments[apid][apRoomCoordFourExit][0],Apartments[apid][apRoomCoordFourExit][1],Apartments[apid][apRoomCoordFourExit][2],179.9875, 0, 0, 0, 0, 0, 0);
-        default: SetSpawnInHotel(playerid, frakid, models);
+        case 1: ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, models, Apartments[apid][apRoomCoordOneExit][0],Apartments[apid][apRoomCoordOneExit][1],Apartments[apid][apRoomCoordOneExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 2: ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, models, Apartments[apid][apRoomCoordTwoExit][0],Apartments[apid][apRoomCoordTwoExit][1],Apartments[apid][apRoomCoordTwoExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 3: ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, models, Apartments[apid][apRoomCoordThreeExit][0],Apartments[apid][apRoomCoordThreeExit][1],Apartments[apid][apRoomCoordThreeExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        case 0: ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, models, Apartments[apid][apRoomCoordFourExit][0],Apartments[apid][apRoomCoordFourExit][1],Apartments[apid][apRoomCoordFourExit][2],179.9875, 0, 0, 0, 0, 0, 0);
+        default: SetSpawnInHotel(playerid, DEFAULT_PLAYER_TEAM, models);
     }
     return 1;
 }

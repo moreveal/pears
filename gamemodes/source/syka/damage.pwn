@@ -2,8 +2,6 @@
 #define NON_DAMAGE_TEAM 1 // Тима для отмены стандартного урона
 #define max(%0,%1) (%0 > %1 ? %0 : %1) // Получает максимальное значение среди двух переданных
 
-#define DEFAULT_PLAYER_TEAM 2
-
 #if !defined BODY_PART_TORSO
 enum {
 	BODY_PART_TORSO = 3,

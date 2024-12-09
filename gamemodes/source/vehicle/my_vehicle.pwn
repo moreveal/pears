@@ -4737,10 +4737,10 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 
 stock ScrapDialog(playerid, vehicleid)
 {
-	DP[1][playerid] = GetVehiclePriceGos(VehInfo[vehicleid][vModel]) / 10 * 3;
+	DP[1][playerid] = GetVehiclePriceGos(VehInfo[vehicleid][vModel]) / 10 * 2;
 
 	new string[256];
-	format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (3/10 от стоимости)", DP[1][playerid]);
+	format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (2/10 от стоимости)", DP[1][playerid]);
 	ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
 
 	return 1;

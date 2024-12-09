@@ -1033,7 +1033,7 @@ stock Graves_SetSpawnInfo(playerid)
 {
     GravePlayerInfo[playerid][gpiNoDeath] = gettime() + 5;
     OnlineInfo[playerid][oSpawnWorld] = 0, OnlineInfo[playerid][oSpawnInt] = 0;
-    ProtectSetSpawnInfo(playerid, 0, PlayerInfo[playerid][pModel], 998.7671, -1106.4410, 23.8281, 90.0000, 0, 0, 0, 0, 0, 0);
+    ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, PlayerInfo[playerid][pModel], 998.7671, -1106.4410, 23.8281, 90.0000, 0, 0, 0, 0, 0, 0);
     return 1;
 }
 

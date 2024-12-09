@@ -2042,7 +2042,7 @@ stock LoadOrderEscort(playerid)
 	{
 		if(OnlineInfo[i][oLogged] == 0 || fraction(i) != 3 || GetPlayerState(i) == PLAYER_STATE_SPECTATING
 			|| GetPlayerVirtualWorld(i) != 0 || GetPlayerInterior(i) != 0) continue;
-		if(IsPlayerInRangeOfPoint(i,70.0, xp,yp,zp))
+		if(IsPlayerInRangeOfPoint(i,100.0, xp,yp,zp))
 		{
 			MemberTrainStart[quan] = PlayerInfo[i][pID];
 			quan++;
@@ -2760,7 +2760,7 @@ stock UnloadBoxesToWarehouse(playerid)
 			{
 				new giveplayerid = ReturnUserID(MemberTrainStart[i]);
 				if(giveplayerid == INVALID_PLAYER_ID) continue;
-				if(IsPlayerInRangeOfPoint(giveplayerid,70.0, EscortOrg[g][0],EscortOrg[g][1],EscortOrg[g][2])) GiveUnit(giveplayerid, 15);
+				if(IsPlayerInRangeOfPoint(giveplayerid,100.0, EscortOrg[g][0],EscortOrg[g][1],EscortOrg[g][2])) GiveUnit(giveplayerid, 15);
 			}
 		}
 
@@ -2837,7 +2837,7 @@ stock MessageBoxFullOnTrain(playerid)
     return 1;
 }
 
-/*stock MessageTrainStartOnRuins(playerid)
+/*stock MessageTrainStartOnRuins(playerid)ц
 {
     new line[80],lines[320];
     format(line,sizeof(line),"{336633}Завалы, после взрыва бомбы, устранены!"), strcat(lines,line);

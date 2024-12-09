@@ -303,8 +303,8 @@ stock addiction(playerid, item)
 
 		new string[120];
 		format(string, sizeof(string), "кладёт в тележку %s", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0)), SetPlayerChatBubble(playerid,string,COLOR_PURPLE,20.0,3000);
-		if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
-		else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0), fquan);
+		if(PlayerInfo[playerid][pSex] == 1) format(string, sizeof(string), "[ Мысли ]: Я положил в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0));
+		else format(string, sizeof(string), "[ Мысли ]: Я положила в тележку {0088ff}%s {FF6347}[ Кажется, у меня зависимость ]", GetNameThing(0, BizzInfo[b][bProduct][item], BizzInfo[b][bTypeProduct][item], 0));
 		SendClientMessage(playerid, COLOR_GREY, string);
 		UpdateSupermarketLabel_S(b);
     }

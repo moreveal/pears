@@ -55,15 +55,19 @@ stock SetPlayerDeath(playerid, reason)
         return 0;
     }
 
+    if(debugDeath) SendClientMessage(playerid, COLOR_GREY,"{ff0000}[debug] SetPlayerDeath %s", PlayerInfo[playerid][pName]);
+
     // Баг? Почему он становится 0.0?
     // Из-за этого происходит рекурсия ACSetPlayerHealth -> SetPlayerDeath -> ACSetPlayerHealth
     // [07:27:35] #97 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
     // [07:27:35] #98 004e83b8 in ACSetPlayerHealth (playerid=14, Float:helalph=0.00000) at pears.pwn:7111
     // [07:27:35] #99 00288488 in SetPlayerDeath (playerid=14, reason=0) at ../gamemodes/source/death.pwn:60
     // [07:27:35] #100 004e83b8 in public OnPlayerSpawn (playerid=14, 0) at pears.pwn:7111
-    new Float:healthToSet = GetMaxPlayerHealth(playerid) * 0.9;
-    if (healthToSet <= 0.0) healthToSet = 35.0;
-    ACSetPlayerHealth(playerid, healthToSet);
+    
+    // Тестим
+    //new Float:healthToSet = GetMaxPlayerHealth(playerid) * 0.9;
+    //if (healthToSet <= 0.0) healthToSet = 35.0;
+    //ACSetPlayerHealth(playerid, healthToSet);
 
     // Отключаем процесс разных систем после смерти
     PlayerDeathSystems(playerid);
@@ -114,12 +118,9 @@ stock ShowPlayerDeath(playerid)
     ShowInterfaceDeath(playerid);
     UpdateDeathProcess(playerid);
 
-    new line[130],lines[520];
-   	format(line,sizeof(line),"{FF6347}Ваш персонаж получил тяжёлую травму"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Вы сможете отправиться в больницу через {FF6347}%s", fine_time(DeathInfo[playerid][deathTime])), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}В течение ожидания к вам может прибыть скорая помощь, чтобы вылечить вас"), strcat(lines,line);
-    if(PlayerInfo[playerid][pSoska] > 0) format(line,sizeof(line),"\n{ff9000}Для администрации: /hp"), strcat(lines,line);
-  	ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}*",lines,"*","");
+    new string[130];
+    format(string, sizeof(string), "Ваш персонаж получил тяжёлую травму.\nЧерез %s вы сможете отправиться в госпиталь", fine_time(DeathInfo[playerid][deathTime]));
+    SetPlayerHudTask(playerid, "Тяжелое Ранение", string);
 
     AutoMakeCreate(2, 2, playerid);
     TempTake(playerid, 0);
@@ -179,9 +180,11 @@ stock WeReturnToDeathPosition(playerid)
 	if(PlayerInfo[playerid][pBeret] == 0) Protect_MyWeapon(playerid); // Возвращаем оружие
 	SetPlayerToTeamColor(playerid); // Возвращаем цвет
 
-    ReturnPositionDeath(playerid);
+    ReturnPositionDeath(playerid, false);
     UpdateDeathProcess(playerid);
     ACSetPlayerHealth(playerid, 90.0);
+
+    if(debugDeath) SendClientMessage(playerid, COLOR_GREY,"{CD0E0E}[debug] WeReturnToDeathPosition %s", PlayerInfo[playerid][pName]);
     return 1;
 }
 
@@ -224,7 +227,7 @@ stock UpdateDeathProcess(playerid)
     return 1;
 }
 
-stock ReturnPositionDeath(playerid)
+stock ReturnPositionDeath(playerid, bool:setPosition = true)
 {
     if (GetPVarInt(playerid, "BlockDeathReturn")) {
         if (_:GetPlayerState(playerid) == GetPVarInt(playerid, "BlockDeathReturnAllowedState")) {
@@ -240,8 +243,11 @@ stock ReturnPositionDeath(playerid)
         if (return_attempts >= 3) BlockDeathReturn(playerid, .status = false);
     }
 
-    PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
-    PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+    if(setPosition == true)
+    {
+        PPSetPlayerPos(playerid, PlayerInfo[playerid][pLastPos][0], PlayerInfo[playerid][pLastPos][1], PlayerInfo[playerid][pLastPos][2]);
+        PPSetPlayerFacingAngle(playerid, PlayerInfo[playerid][pLastPos][3]);
+    }
     TogglePlayerControllable(playerid, false);
     return true;
 }
@@ -255,6 +261,9 @@ stock DeathEnd(playerid, stat)
     for(new i = 0; i < 9; i++) TextDrawHideForPlayer(playerid, DeathDraw[i]);
     PlayerTextDrawHide(playerid, DeathDraw1);
     NoAnim[playerid] = 0;
+
+    // Выключаем подсказку
+    HidePlayerHudTask(playerid);
 
     if(stat == 0) // Время вышло
     {
