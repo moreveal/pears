@@ -304,14 +304,14 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСП
 	if(IsNumeric(itemname)) thingItem = strval(itemname);
 	else
 	{
-		// Ищем по названию среди обычного транспорта
+		// Ищем по названию
 		for(new i = 0; i < sizeof(friskName); i++)
 		{
-		if(strfind(friskName[i], itemname, true) != -1)
-		{
-			thingItem = i;
-			break;
-		}
+			if(strfind(friskName[i], itemname, true) != -1)
+			{
+				thingItem = i;
+				break;
+			}
 		}
 	}
 	if(thingItem == -1) return ErrorMessage(playerid, "{FF6347}Нужный предмет не был найден в списке предметов \n\nИспользуйте - /gthinginfo - для просмотра списка предметов");
