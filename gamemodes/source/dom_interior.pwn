@@ -581,6 +581,21 @@ stock JSON_Get3DVector(&JsonNode:node, const key[], &Float:x, &Float:y, &Float:z
     return 1;
 }
 
+// Количество объектов в интерьере дома
+stock GetQuanObjectsInteriorDom(dom)
+{
+	new kolobj;
+	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba])) 
+		{
+			if(GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba]) > 0
+				|| GetDynamicObjectInterior(DomInfo[dom][dObject][oba]) > 0) kolobj ++;
+		}
+	}
+	return kolobj;
+}
+
 // Комнада для пересбора текстур к новому набору
 /*new stopReload;
 CMD:reloadtexture(playerid)

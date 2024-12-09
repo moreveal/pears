@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 16
+#define MAX_DONATE_SERVICE 17
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -35,6 +35,7 @@ stock defaultPriceDonate()
     donatePrice[13] = 90; // Стоимость ремонта транспорта
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
     donatePrice[15] = 790; // Стоимость голд кейса
+    donatePrice[16] = 3900; // Увеличенный лимит мебели в доме
 }
 
 stock GetPriceGoldDonateMenu(donateid)
