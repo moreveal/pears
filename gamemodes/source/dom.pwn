@@ -143,7 +143,14 @@ stock use_dom(playerid, dom, inva, useinva)
  		
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+		if(!Backpack[playerid])
+ 		{
+			if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+		}
+		else
+		{
+			if(BackPackInfo[playerid][backpackInvent][useinva] != DomInfo[dom][dInvent][inva] && BackPackInfo[playerid][backpackInv][useinva] != 0) return 1;
+		}
 	}
 
 	if(!IsANearWardrobeDom(playerid, dom)) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);

@@ -29,7 +29,7 @@ stock defaultPriceDonate()
     donatePrice[7] = 600; // Снять ban
     donatePrice[8] = 8; // Снять мут (стоимость 1 минуты мута)
     donatePrice[9] = 190; // Открыть слот транспорта
-    donatePrice[10] = 50; // +1 уровень навыка
+    donatePrice[10] = 100; // +1 уровень навыка
     donatePrice[11] = 90; // Максимальное знание языка
     donatePrice[12] = 90; // Стоимость кейса
     donatePrice[13] = 90; // Стоимость ремонта транспорта

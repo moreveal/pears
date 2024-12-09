@@ -1037,8 +1037,23 @@ stock i_resetveshi(p) // Сброс отображения выбранной я
 			&& OnlineInfo[p][oInventSelectLeft] >= 79) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-60][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectLeft]-60][p]);
 		
 		OnlineInfo[p][oInventSelectLeft] = 9999;
-		OnlineInfo[p][oInventSelectBackPack] = 9999;
 		if(OnlineInfo[p][oInventSelectRight] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+	}
+	else if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectBackPack] != 9999)
+	{
+		if(OnlineInfo[p][oShowInterface] == 1 && OnlineInfo[p][oInventSelectBackPack] != 9999)
+		{
+			if(Page[p] == 0 && OnlineInfo[p][oInventSelectBackPack] <= 19) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]][p]);
+			else if(Page[p] == 1 && OnlineInfo[p][oInventSelectBackPack] >= 20
+				&& OnlineInfo[p][oInventSelectBackPack] <= 39) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-20][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-20][p]);
+			else if(Page[p] == 2 && OnlineInfo[p][oInventSelectBackPack] >= 40
+				&& OnlineInfo[p][oInventSelectBackPack] >= 59) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-40][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-40][p]);
+			else if(Page[p] == 3 && OnlineInfo[p][oInventSelectBackPack] >= 60
+				&& OnlineInfo[p][oInventSelectBackPack] >= 79) PlayerTextDrawBackgroundColour(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-60][p], PlayerInfo[p][pStyle1]),PlayerTextDrawShow(p, PlaNestPick[OnlineInfo[p][oInventSelectBackPack]-60][p]);
+			
+			OnlineInfo[p][oInventSelectBackPack] = 9999;
+			if(OnlineInfo[p][oInventSelectRight] == 9999) reset_pick_othe(p), PlayerTextDrawShow(p, PlaNestOthe[2][p]);
+		}
 	}
 	return 1;
 }
@@ -1773,6 +1788,18 @@ stock set_para(playerid, fpick, para) // Установка параметра �
 	{
 		if(PlayerInfo[playerid][pInven][i] != fpick || PlayerInfo[playerid][pInvenQuan][i] == 0 || PlayerInfo[playerid][pInvenType][i] != 0) continue;
 		PlayerInfo[playerid][pInvenPara][i] = para;
+	}
+	new aks = HasABustAks(playerid,1);
+	if(aks != -1)
+	{
+		new bpslots;
+		if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+		if(bpslots == 0) bpslots = 1;
+		for(new i = 0; i < bpslots*20; i++)
+		{
+			if(BackPackInfo[playerid][backpackInvent][i] != fpick || BackPackInfo[playerid][backpackInvType][i] != 0 || BackPackInfo[playerid][backpackInv][i] == 0) continue;
+			BackPackInfo[playerid][backpackInvPara][i] = para;
+		}
 	}
 }
 stock TakeInvent(playerid, thingId, thingQuan, thingType, slot = 999, bool:save = true) // Сток для изъятия предмета из инвентаря (id, id премета, количество, ячейка)
