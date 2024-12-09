@@ -49,7 +49,6 @@ stock use_mygoods(playerid, inva, useinva) // Берём предмет  из с
     ClearMyGoods(playerid, inva);
     PlayerInfo[playerid][pM_Update][inva] = true;
     item_second(playerid, 0, 0, inva, 1, 0, 0, 0, 0);
-    PlayerInfo[playerid][pI_Update][put_inva] = true; // Сохраняем то, что игрок взял
 
 	// Отображаем всем кто смотрит раздел моих товаров
 	updategoods(playerid, inva);
