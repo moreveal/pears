@@ -292,15 +292,98 @@ stock gthinginfoPage(playerid)
 	return 1;
 }
 
-CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСПОЛЬЗОВАТЬ эту команду без надобности, она не учитывает кучу условий для разных предметов)
+alias:gthing("gt")
+CMD:gthing(playerid, const params[])
 {
 	new itemname[64];
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
 	if(sscanf(params, "is[64]I(1)",params[0],itemname,params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь [ ID, Предмет, Количество ]");
 
-	new thingItem = -1;
+	if(params[1] <= 0 || params[1] >= 10000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 10.000");
+	new thingItem = FindThingName(itemname);
+	if(thingItem == -1) return ErrorMessage(playerid, "{FF6347}Нужный предмет не был найден в списке предметов \n\nИспользуйте - /gthinginfo - для просмотра списка предметов");
+	if(thingItem >= sizeof(friskName) || thingItem <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
 
-	// Если указан id, просто передаём id
+	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+	new put_inva = GiveThingPlayer(params[0], thingItem, params[1], 0, 0, 0, 0, 9999);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
+
+	PlayerPlaySound(params[0],1052,0,0,0);
+	SendClientMessage(playerid, COLOR_LIGHTBLUE, "** Вы выдали %s %s в количестве %d **", PlayerInfo[params[0]][pName], GetNameThing(0, thingItem, 0, 0), params[1]);
+    if(playerid != params[0]) SendClientMessage(params[0], COLOR_LIGHTBLUE, "** %s выдал вам %s в количестве %d **", PlayerInfo[playerid][pName], GetNameThing(0, thingItem, 0, 0), params[1]);
+
+	AdminLog("gthing", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], params[1], GetNameThing(0, thingItem, 0, 0));
+	return 1;
+}
+
+alias:gthinggro("gtgro")
+CMD:gthinggro(playerid, const params[])
+{
+	new itemname[64], quan;
+	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
+	if(sscanf(params, "s[64]I(1)",itemname, quan)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать предмет в инвентарь игрокам рядом [ Предмет, Количество ] (Команда учитывает лимиты инвентаря)");
+
+	if(quan <= 0 || quan >= 10000) return ErrorMessage(playerid, "{FF6347}Не меньше 1 и не больше 10.000");
+	new thingItem = FindThingName(itemname);
+	if(thingItem == -1) return ErrorMessage(playerid, "{FF6347}Нужный предмет не был найден в списке предметов \n\nИспользуйте - /gthinginfo - для просмотра списка предметов");
+	if(thingItem >= sizeof(friskName) || thingItem <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
+
+	new quanPlayers;
+	foreach (Player, i)
+	{
+		if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(30.0, playerid, i))
+		{
+			GivePlayerItemCommand(playerid, i, thingItem, quan);
+			quanPlayers ++;
+		}
+	}
+
+	new string[144];
+    format(string, sizeof(string), " [ ADM ]: %s выдал %s в количестве %d игрокам в радиусе 30 метров (%d игрок)", PlayerInfo[playerid][pName], GetNameThing(0, thingItem, 0, 0), quan, quanPlayers);
+    ABroadCast(COLOR_ADM,string,1);
+    AdminLog("gthinggro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", quan, GetNameThing(0, thingItem, 0, 0));
+	return 1;
+}
+
+stock GivePlayerItemCommand(playerid, currentid, thingItem, quan)
+{
+	new realQuan;
+	if(CheckThingQuan(thingItem))
+	{
+		new getQuan, getLimit;
+		i_limit(currentid, thingItem, getQuan, getLimit);
+		new maxQuan = getLimit - getQuan; // Вычисляем сколько всего влезет в инвентарь
+
+		if(getQuan >= getLimit || maxQuan <= 0) 
+		{
+			SendClientMessage(currentid, COLOR_LIGHTBLUE, "** %s пытался выдать вам %s, но у вас уже лимит этих предметов **", 
+				PlayerInfo[playerid][pName], GetNameThing(0, thingItem, 0, 0));
+			return true;
+		}
+
+		if(quan > maxQuan) realQuan = maxQuan; // Выдаём под лимит, если указано больше лимита
+		else realQuan = quan; // Выдаем то самое число, если указано меньше лимита
+	}
+	else realQuan = 1;
+
+	if(realQuan > 0)
+	{
+		new put_inva = GiveThingPlayer(currentid, thingItem, realQuan, 0, 0, 0, 0, 9999);
+		if(put_inva != -1)
+		{
+			PlayerPlaySound(currentid,1052,0,0,0);
+			SendClientMessage(currentid, COLOR_LIGHTBLUE, "** %s выдал вам %s в количестве %d **", PlayerInfo[playerid][pName], GetNameThing(0, thingItem, 0, 0), realQuan);
+			AdminLog("gthinggro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[currentid][pID], PlayerInfo[currentid][pName], PlayerInfo[currentid][pPlaIP], realQuan, GetNameThing(0, thingItem, 0, 0));
+		}
+	}
+	return true;
+}
+
+
+// Ищем предмет по названию
+stock FindThingName(const itemname[])
+{
+	new thingItem;
 	if(IsNumeric(itemname)) thingItem = strval(itemname);
 	else
 	{
@@ -314,15 +397,7 @@ CMD:gthing(playerid, const params[]) // Выдать предмет (НЕ ИСП
 			}
 		}
 	}
-	if(thingItem == -1) return ErrorMessage(playerid, "{FF6347}Нужный предмет не был найден в списке предметов \n\nИспользуйте - /gthinginfo - для просмотра списка предметов");
-	if(thingItem >= sizeof(friskName) || thingItem <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
-
-	// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
-	new put_inva = GiveThingPlayer(params[0], thingItem, params[1], 0, 0, 0, 0, 9999);
-	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
-
-	AdminLog("gthing", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", thingItem, friskName[thingItem]);
-	return 1;
+	return thingItem;
 }
 
 CMD:spoilthing(playerid, const params[])
