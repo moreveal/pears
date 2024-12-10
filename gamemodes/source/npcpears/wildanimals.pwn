@@ -789,7 +789,7 @@ stock WildAnimalsCuteScene(playerid)
     SetPlayerCameraPos(playerid, 2623.2979,-849.8397,74.8496);
     SetPVarInt(playerid,"qweststat",75), SetPVarInt(playerid,"qwesttime",1);
     WildAnimalsTimer[playerid][1] = SetTimerEx("WildAnimalsTimers2", 2000, true, "d", playerid);
-    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/forester/forester0.mp3");
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/forester/forester0.mp3");
     return true;
 }
 

@@ -159,7 +159,7 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
          		else format(str,sizeof(str),"\n\n{cccccc}Вы заплатили: {FF6347}%d$",zaplati), strcat(sctring,str);
             	ShowDialog(playerid,1742,DIALOG_STYLE_MSGBOX,"{ff9000}Супермаркет",sctring,"•","");
             	PlayerPlaySound(playerid,6401,0,0,0);
-            	PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/check.mp3");
+            	if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/check.mp3");
 
             	payanim(playerid, 0); // Анимация оплаты
             	Svalilizsm(playerid); // Очистка переменных супермаркета
