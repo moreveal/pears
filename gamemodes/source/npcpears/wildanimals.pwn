@@ -436,10 +436,10 @@ stock CarveAnimals(playerid,a)
     new ability = get_ability(playerid, 4);
 
     new chance = 100-WildAnimals[a][waBulletCount];
-    if(ability >= 3 && ability <= 4) chance += 10;
-    else if(ability >= 5 && ability <= 7) chance += 20;
-    else if(ability >= 8 && ability <= 9) chance += 30;
-    else if(ability >= 10) chance += 50;
+    if(ability >= 3 && ability <= 4) chance += 2;
+    else if(ability >= 5 && ability <= 7) chance += 4;
+    else if(ability >= 8 && ability <= 9) chance += 6;
+    else if(ability >= 10) chance += 10;
 
     if(chance >= 100) chance = 99;
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ = 50.0;
