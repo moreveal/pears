@@ -168,3 +168,14 @@ stock StopFollow(p)
 	DeletePVar(p, "Follow_Run");
 	return 1;
 }
+
+// Останавливаем следование игрока за нами
+stock StopPlayerFollowForMe(playerid)
+{
+	if(Follow[playerid] != 9999 && FollowTime[playerid] == 1) 
+	{
+		StopFollow(Follow[playerid]);
+		return true;
+	}
+	return false;
+}

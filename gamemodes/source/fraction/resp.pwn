@@ -100,14 +100,22 @@ stock EnterYakuzaSklad(playerid)
     if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER || Protect_Veh[playerid] == 9999) return true;
     new vehicleid = Protect_Veh[playerid];
 
+    if(GetPVarInt(playerid,"endorse") != 6 && PlayerInfo[playerid][pMember] != 6) return ErrorMessage(playerid, "{FF6347}У вас нет ключей от этих ворот");
     if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
 	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+    if(CheckEnterVehicleInterior(playerid, vehicleid)) return true;
+
+    // Останавливаем следование игрока за нами
+    StopPlayerFollowForMe(playerid);
 
     keep(playerid);
     ACSetVehiclePos(vehicleid, 931.2459,1397.7351,1030.0206);
     SetVehicleZAngle(vehicleid, 90.7436);
     SetVehicleVirtualWorld(vehicleid, WORLD_YAKUZA_GARAGE);
     LinkVehicleToInterior(vehicleid, INT_YAKUZA_GARAGE);
+
+    // Меняем вирт мир и инт пассажирам транспорта
+    PassengerWorldVehicle(vehicleid, WORLD_YAKUZA_GARAGE, INT_YAKUZA_GARAGE);
 
     S_SetPlayerVirtualWorld(playerid, WORLD_YAKUZA_GARAGE, INT_YAKUZA_GARAGE);
     PPSetPlayerInterior(playerid, INT_YAKUZA_GARAGE);
@@ -129,12 +137,19 @@ stock ExitYakuzaSklad(playerid)
 
     if(IsPlayerHavePursuit(playerid)) return ErrorMessage(playerid, "{FF6347}Вас преследует полиция, сейчас вы не можете заехать в ворота");
 	if(VehInfo[vehicleid][vTrailerID] > 0) return ErrorMessage(playerid, "{FF6347}Открепите трейлер, прежде чем заезжать в ворота");
+    if(CheckEnterVehicleInterior(playerid, vehicleid)) return true;
+
+    // Останавливаем следование игрока за нами
+    StopPlayerFollowForMe(playerid);
 
     keep(playerid);
     ACSetVehiclePos(vehicleid, 1434.9194,781.2708,-4.7084);
     SetVehicleZAngle(vehicleid, 75.0368);
     SetVehicleVirtualWorld(vehicleid, 0);
     LinkVehicleToInterior(vehicleid, 0);
+
+    // Меняем вирт мир и инт пассажирам транспорта
+    PassengerWorldVehicle(vehicleid, 0, 0);
 
     S_SetPlayerVirtualWorld(playerid, 0, 0);
     PPSetPlayerInterior(playerid, 0);
