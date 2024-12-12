@@ -54,6 +54,9 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
     AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
 
+    //Top
+    AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
+
     //Просьба дениса.
     AddColumnIfNotExists("blacklist", "type", "INT NOT NULL DEFAULT '0'"); // 0 - может вынести лидер. 1 Может вынести только админ
     // quest halloween

@@ -78,7 +78,7 @@ stock GetThingForCraft(thingId, &i0, &q0, &t0, &i1, &q1, &t1, &i2, &q2, &t2, &i3
         i0 = 60, q0 = 20, t0 = 0; // Палладий 20 Штук
         i1 = 238, q1 = 10, t1 = 0; // Алюминий 10 Штук
     }
-    else if (thingId >= 12335 && thingId <= 12373) // Прокладка
+    else if (thingId >= 12335 && thingId <= 12373) // крафт аксы
     {
         new finditem = FindItemAccessoryCraft(thingId);
         i0 = AccessoryCraftList[finditem][1], q0 = AccessoryCraftList[finditem][2], t0 = AccessoryCraftList[finditem][3];
@@ -1049,6 +1049,13 @@ stock CreateThingAfterCraft(playerid)
 
         if(PlayerInfo[playerid][pAchieve][136] == 0 && CreateThingType[playerid] == 2) AchievePlayer(playerid, 136, 1);
         if(PlayerInfo[playerid][pAchieve][137] == 0 && param >= 500) AchievePlayer(playerid, 137, 1);
+        if(CreateThingType[playerid] == 2) 
+        {
+            CalculatePointTopCraft(playerid, CreateThingID[playerid], param);
+            new string_log[200];
+            format(string_log, sizeof(string_log), "%s [%d]. Качество: %s [%d]", GetNameThing(1, CreateThingID[playerid], CreateThingType[playerid], 0), CreateThingID[playerid],friskQualityColorAndText[param/100],param);
+		    UserLog("craftaks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CreateThingID[playerid], string_log);
+        }
         SuccessMessage(playerid, "{99ff66}Выполнено!");
     }
     else // Проёба

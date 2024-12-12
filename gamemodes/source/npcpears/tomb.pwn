@@ -1438,6 +1438,13 @@ stock Tomb_IsPlayerSpectate(playerid)
     return TombPlayerInfo[playerid][tpSpectateID] > 0;
 }
 
+stock Tomb_SetSpectateSpawnInfo(playerid)
+{
+    if (!Tomb_IsPlayerSpectate(playerid)) return 0;
+    ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, PlayerInfo[playerid][pModel], SpX[playerid], SpY[playerid], SpZ[playerid], SpA[playerid], 0, 0, 0, 0, 0, 0);
+    return 1;
+}
+
 stock Tomb_SetPlayerSpectate(playerid, spectateid)
 {
     if (!Tomb_IsPlayerInGame(playerid) || !Tomb_IsPlayerInGame(spectateid)) return 0;
