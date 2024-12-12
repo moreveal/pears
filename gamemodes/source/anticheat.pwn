@@ -2,7 +2,7 @@
 #define CHEAT_HISTORY 30 // количество записей варнингов у каждого игрока
 #define TRIG_DGUN 5 // количество триггеров на dgun
 #define TRIG_DISTANCE_DAMAGE 5 // количество триггеров на dgun
-#define TIME_TO_SPAWN 10 // Игроку даётся время в секундх на выполнение спавна от сервера, иначе кик
+#define TIME_TO_SPAWN 15 // Игроку даётся время в секундх на выполнение спавна от сервера, иначе кик
 
 new cheatName[][] =
 {

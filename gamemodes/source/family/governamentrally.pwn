@@ -54,14 +54,14 @@ stock StartRally(playerid)
     }
     else if(RallyInfo[0][rallyStatus] != 0 && OnlineInfo[playerid][oRally] > 0)
     {
-        RemovePlayerAttachedObject(playerid,3);
+        RemovePlayerAttachedObject(playerid,2);
         OnlineInfo[playerid][oRally] = 0;
         SuccessMessage(playerid,"{44ff99}Вы вернули флажок и перестали участвовать в митинге");
         ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
     }
     else if(RallyInfo[0][rallyStatus] == 0 && OnlineInfo[playerid][oRally] > 0)
     {
-        RemovePlayerAttachedObject(playerid,3);
+        RemovePlayerAttachedObject(playerid,2);
         OnlineInfo[playerid][oRally] = 0;
         ApplyAnimation(playerid,"GANGS","DRUGS_BUY",3.0, false, true, true, false, false);
         SuccessMessage(playerid,"{44ff99}Вы вернули флажок");
@@ -152,7 +152,7 @@ stock GoToRally(playerid,status)
     new model;
     if(status == 1) OnlineInfo[playerid][oRally] = 2,model = 19306;
     else OnlineInfo[playerid][oRally] = 1,model = 2914;
-    SetPlayerAttachedObject(playerid, 3, model, 6, 0.069999, -0.009000, -0.008000, -172.200027, -158.500000, 0.000000, 0.344999, 0.379999, 0.424000, 0, 0);
+    SetPlayerAttachedObject(playerid, 2, model, 6, 0.069999, -0.009000, -0.008000, -172.200027, -158.500000, 0.000000, 0.344999, 0.379999, 0.424000, 0, 0);
     SuccessMessage(playerid,"{66ff99} Вы начали участвовать в митиинге");
     return 1;
 }
