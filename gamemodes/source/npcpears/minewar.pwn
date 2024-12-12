@@ -1220,6 +1220,13 @@ stock MineWar_IsPlayerSpectate(playerid)
     return MineWarPlayerInfo[playerid][mwpSpectateID] > 0;
 }
 
+stock MineWar_SetSpectateSpawnInfo(playerid)
+{
+    if (!MineWar_IsPlayerSpectate(playerid)) return 0;
+    ProtectSetSpawnInfo(playerid, DEFAULT_PLAYER_TEAM, PlayerInfo[playerid][pModel], SpX[playerid], SpY[playerid], SpZ[playerid], SpA[playerid], 0, 0, 0, 0, 0, 0);
+    return 1;
+}
+
 stock MineWar_SetPlayerSpectate(playerid, spectateid)
 {
     if (!MineWar_IsPlayerInGame(playerid) || !MineWar_IsPlayerInGame(spectateid)) return 0;
