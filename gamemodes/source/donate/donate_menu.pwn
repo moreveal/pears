@@ -61,7 +61,7 @@ stock showDialogDonateMenu(playerid)
 	                        \n{cccccc}Навыки {666666}>>\
 	                        \n{cccccc}Создать Семью {ffcc00}[%d G]\
                             \n{cccccc}Купить {FF9000}GOLD {cccccc}Кейс {ffcc00}[%d G]\
-                            \n{cccccc}Купить {FF9000}Акссесуарный {cccccc}Кейс {ffcc00}[%d G]\
+                            \n{cccccc}Купить {FF9000}Аксессуарный {cccccc}Кейс {ffcc00}[%d G]\
                             \n{cccccc}Ремонт Транспорта {ffcc00}[%d G]\
                             \n{666666}Где купить Скин/Одежду? {99ff66}>>\
                             \n{666666}Где купить Машину? {99ff66}>>\
