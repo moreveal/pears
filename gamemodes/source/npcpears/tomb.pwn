@@ -1075,7 +1075,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
 
     if (Tomb_GetMummyKilled(roomid, _:TOMB_BOSS_MUMMY) >= 1) {
         // 70% получить кейс, если был убит босс (даже при поражении)
-        if(random(10) <= 7) {
+        if(random(10) < 7) {
             case_amount++;
             #if defined TOMB_DEBUG_MODE
                 printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
