@@ -1455,6 +1455,7 @@ stock Tomb_SetPlayerSpectate(playerid, spectateid)
     #endif
 
     gSpectateID[playerid] = spectateid;
+    TombPlayerInfo[playerid][tpSpectateID] = spectateid + 1;
     
     if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING) // Сохраняем позицию
 	{
@@ -1466,10 +1467,9 @@ stock Tomb_SetPlayerSpectate(playerid, spectateid)
 		S_SetPlayerVirtualWorld(playerid,GetPlayerVirtualWorld(spectateid),GetPlayerInterior(spectateid));
 		PPSetPlayerInterior(playerid,GetPlayerInterior(spectateid));
         PPOpenSpectating(playerid, X, Y, Z);
+        StartSpectate(playerid, spectateid, 0);
 	}
 
-    TombPlayerInfo[playerid][tpSpectateID] = spectateid + 1;
-    StartSpectate(playerid, spectateid, 0);
     PlayerSpectatePlayer(playerid, spectateid);
 
     return 1;
