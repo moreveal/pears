@@ -349,7 +349,7 @@ stock Graves_Open(playerid, graveid)
         "{cccccc}- Раскапывать могилы можно не чаще чем 1 раз в "#GRAVES_PLAYER_COOLDOWN" часа"
     );
 
-    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/treasure-chest-open-empt.mp3");
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/treasure-chest-open-empt.mp3");
     ShowDialog(playerid, GRAVES_DIALOG_LOOT, DIALOG_STYLE_MSGBOX, "{555555}Обыск могилы", dialog_text, "Ок", "");
 
     if (PlayerInfo[playerid][pAchieve][21] == 0) AchievePlayer(playerid, 21, 1);

@@ -32,19 +32,19 @@ stock Dominic_StartQuest(playerid)
         {
             case 0:
             {
-                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic0.mp3",pos[0], pos[1], pos[2],6.0,true);
+                if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic0.mp3",pos[0], pos[1], pos[2],6.0,true);
                 SetPlayerChatBubble(NPCInfo[5][npcID],"Ну что, давай прокатимся?",0x67b2ffFF,5.0,3000);
             }
             case 1:
             {
                 if(PlayerInfo[playerid][pSex] == 1)
                 {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1.mp3",pos[0], pos[1], pos[2],6.0,true);
                     SetPlayerChatBubble(NPCInfo[5][npcID],"Уверен, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
                 }
                 else
                 {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1_w.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic1_w.mp3",pos[0], pos[1], pos[2],6.0,true);
                     SetPlayerChatBubble(NPCInfo[5][npcID],"Уверена, что сможешь победить меня?",0x67b2ffFF,5.0,3000);
                 }
             }
@@ -52,18 +52,18 @@ stock Dominic_StartQuest(playerid)
             {
                 if(PlayerInfo[playerid][pSex] == 1)
                 {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2.mp3",pos[0], pos[1], pos[2],6.0,true);
                     SetPlayerChatBubble(NPCInfo[5][npcID],"Готов прокатиться?",0x67b2ffFF,5.0,3000);
                 }
                 else
                 {
-                    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2_w.mp3",pos[0], pos[1], pos[2],6.0,true);
+                    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic2_w.mp3",pos[0], pos[1], pos[2],6.0,true);
                     SetPlayerChatBubble(NPCInfo[5][npcID],"Готова прокатиться?",0x67b2ffFF,5.0,3000);
                 }
             }
             case 3:
             {
-                PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic3.mp3",pos[0], pos[1], pos[2],6.0,true);
+                if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic3.mp3",pos[0], pos[1], pos[2],6.0,true);
                 SetPlayerChatBubble(NPCInfo[5][npcID],"Мы болтаем или едем?",0x67b2ffFF,5.0,3000);
             }
         }
@@ -248,20 +248,20 @@ stock Dominic_PickupRaceCheckpoint()
             {
                 if(PlayerInfo[DominicPlayeridRace][pSex] == 1)
                 {
-                    PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6.mp3");
+                    if(OnlineInfo[DominicPlayeridRace][oListenRadioPears] == 0) PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6.mp3");
                     SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли, брат");
                     SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
                 }
                 else
                 {
-                    PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6_w.mp3");
+                    if(OnlineInfo[DominicPlayeridRace][oListenRadioPears] == 0) PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic6_w.mp3");
                     SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Неплохо погоняли");
                     SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Заезжай как-нибудь ещё, я всегда рад прокатиться");
                 }
             }
             case 1:
             {
-                PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic10.mp3");
+                if(OnlineInfo[DominicPlayeridRace][oListenRadioPears] == 0) PlayAudioStreamForPlayer(DominicPlayeridRace, "https://cdn.pears.fun/sound/characters/dominic/dominic10.mp3");
                 SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Покажи мне как ты ездишь и я скажу кто ты");
                 SendClientMessage(DominicPlayeridRace, COLOR_YELLOW,"Доминик (голосовое): Прокатимся как-нибудь ещё");
             }
@@ -277,22 +277,22 @@ stock Dominic_TalkingRace(playerid)
     {
         case 0:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic11.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic11.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Гони или умри");
         }
         case 1:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic12.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic12.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Говорят в дороге думается лучше. Кем ты был и кем станешь");
         }
         case 2:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic13.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic13.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Все ищут острых ощущений, но самое важное - это семья");
         }
         case 3:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic14.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic14.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Не важно, что у машины под капотом. Самое важное - это то кто сидит за рулём");
         }
     }
@@ -318,25 +318,25 @@ stock Dominic_FinishPlayer(playerid)
     {
         case 0:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic4.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic4.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Хорошая гонка");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Надеюсь ещё прокатимся");
         }
         case 1:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic5.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic5.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Неважно, на сантиметр впереди или на километр");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Победа есть победа");
         }
         case 2:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic7.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic7.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Молодец, ты неплохо водишь");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Этот подарок для тебя");
         }
         case 3:
         {
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic8.mp3");
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic8.mp3");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Ты хороший водитель");
             SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Надеюсь тебе понравится мой подарок");
         }
@@ -387,7 +387,7 @@ stock dialogCase_Dominic(playerid, dialogid, response)
         if(response) // Запускаем доминика
         {
             if(NPCInfo[5][npcStart] == true) return ErrorMessage(playerid, "{FF6347}Упс! Вы не успели.. Кто-то начал гонку с домиником раньше вас");
-            PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic_music.mp3",-2420.4680,-607.9064,132.4383,30.0,true);
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic_music.mp3",-2420.4680,-607.9064,132.4383,30.0,true);
 
             new raceid = 1;
             if(PlayerInfo[playerid][pAchieve][127] > 0) raceid += random(MAX_ROUTE_DOMINIC); // Ачивку получали, значит маршрут можем выбрать рандомный
@@ -407,7 +407,7 @@ stock Dominic_CheckDamageVehicle(playerid, vehicleid)
     if(VehInfo[vehicleid][vHealth] <= 1500.0 && DominicDamageReplic == 0)
     {
         DominicDamageReplic = 1;
-        PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic9.mp3");
+        if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/dominic/dominic9.mp3");
         SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Ты как? В порядке?");
         SendClientMessage(playerid, COLOR_YELLOW,"Доминик (голосовое): Смотри не убейся");
     }

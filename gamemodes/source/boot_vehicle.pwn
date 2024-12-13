@@ -99,13 +99,6 @@ stock use_boot(playerid, v, inva, useinva)
 	if(VehInfo[v][vNewid] > 0) format(string,sizeof(string),"Взял из %s [DB %d]: %s", GetVehicleName(VehInfo[v][vModel]), VehInfo[v][vNewid], GetNameThing(1, fpick, thingType, thingPack));
 	else format(string,sizeof(string),"Взял из %s: %s", GetVehicleName(VehInfo[v][vModel]), GetNameThing(1, fpick, thingType, thingPack));
 	UserLog("getboot", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", fquan, string);
-
-	// Квест ремонт транспорта
-	if(NoCompleteQuest(playerid, 4) && fpick == 183 && IsACar(VehInfo[v][vModel]) && VehInfo[v][vHealth] <= 400.0)
-	{
-		PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jone/jone_repair3.mp3");
-		SendClientMessage(playerid, COLOR_YELLOW,"Джоне (голосовое): Теперь подойди к капоту и открой его так-же как багажник");
-	}
 	return 1;
 }
 

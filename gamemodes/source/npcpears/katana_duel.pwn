@@ -107,12 +107,15 @@ stock KatanaDuelShowDialogMenu(playerid)
    	                        \n{cccccc}Купить Пропуск {99ff66}%d$", ServerInfo[35]);
 	ShowDialog(playerid, KATANA_DUEL_MENU, DIALOG_STYLE_TABLIST, "{ff9000}Годжо Сатору", lines, "Выбор","Отмена");
 
-    switch(random(4))
+    if(OnlineInfo[playerid][oListenRadioPears] == 0)
     {
-        case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo0.mp3");
-        case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo1.mp3");
-        case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo2.mp3");
-        case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo3.mp3");
+        switch(random(4))
+        {
+            case 0: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo0.mp3");
+            case 1: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo1.mp3");
+            case 2: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo2.mp3");
+            case 3: PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/godjo/godjo3.mp3");
+        }
     }
     return true;
 }
@@ -304,10 +307,13 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Омагад... Я победил%s Годжо Сатору [ Подберите приз с пола N >> Рядом ]", gender(killerid));
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Я могу вернуться и сразиться повторно через %d минут [ /time ]", GODJO_SATORU_CD_WIN / 60);
 
-        switch(random(2))
+        if(OnlineInfo[killerid][oListenRadioPears] == 0)
         {
-            case 0: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo7.mp3");
-            case 1: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo8.mp3");
+            switch(random(2))
+            {
+                case 0: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo7.mp3");
+                case 1: PlayAudioStreamForPlayer(killerid, "https://cdn.pears.fun/sound/characters/godjo/godjo8.mp3");
+            }
         }
         return true;
     }
@@ -337,11 +343,14 @@ stock KatanaDuel_OnPlayerTakeDamageNpc(NPC:npc, issuerid, Float:amount, weaponid
    	                        \n{FF6347}Сразиться повторно можно будет через %d минут", GODJO_SATORU_CD_LOOSE / 60);
             ShowDialog(issuerid,1700,DIALOG_STYLE_MSGBOX,"{ffcc00}*",lines,"*","");
 
-            switch(random(3))
+            if(OnlineInfo[issuerid][oListenRadioPears] == 0)
             {
-                case 0: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo4.mp3");
-                case 1: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo5.mp3");
-                case 2: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo6.mp3");
+                switch(random(3))
+                {
+                    case 0: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo4.mp3");
+                    case 1: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo5.mp3");
+                    case 2: PlayAudioStreamForPlayer(issuerid, "https://cdn.pears.fun/sound/characters/godjo/godjo6.mp3");
+                }
             }
         }
         return true;
