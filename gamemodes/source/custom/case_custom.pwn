@@ -13,13 +13,14 @@
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks","clothes","accessory","car","crypto"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
-    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024", "Аксессуары (с бонусами)"
+    "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024", "Кейс Аксессуарный(крафтовый)",
+    "Кейс Одежды", "Кейс Аксессуаров", "Кейс Автомобильный", "Крипто Кейс"
 };
 
 // Упаковки, которые относятся к кейсу
@@ -39,6 +40,10 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 10) model = 12352; // graves
     else if(thingPack == 11) model = 12337; // Halloween
     else if(thingPack == 12) model = 12303; // craftaks
+    else if(thingPack == 13) model = 12449; // Одежда
+    else if(thingPack == 14) model = 12450; // Акс
+    else if(thingPack == 15) model = 12448; // автокейс
+    else if(thingPack == 16) model = 12452; // Крипта
     else model = 19918;
     return model;
 }
@@ -53,7 +58,11 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 3) thingPack = 9; // gold
     else if(caseID == 4) thingPack = 10; // graves
     else if(caseID == 5) thingPack = 11; // Halloween
-    else if(caseID == 6) thingPack = 12; // Halloween
+    else if(caseID == 6) thingPack = 12; // craftaks
+    else if(caseID == 7) thingPack = 13; // Одежда
+    else if(caseID == 8) thingPack = 14; // Акс
+    else if(caseID == 9) thingPack = 15; // Авто
+    else if(caseID == 10) thingPack = 16; // Крипта
     return thingPack;
 }
 
@@ -200,6 +209,10 @@ stock GetCustomCaseID(const name[])
     new id = -1;
     if(strcmp(name,"gold") == 0) return id;
     if(strcmp(name,"craftaks") == 0) return id;
+    if(strcmp(name,"clothes") == 0) return id;
+    if(strcmp(name,"accessory") == 0) return id;
+    if(strcmp(name,"car") == 0) return id;
+    if(strcmp(name,"crypto") == 0) return id;
 
     for(new i = 0; i < sizeof(customCaseNameID); i++)
     {
@@ -228,6 +241,10 @@ stock ParseCustomCaseItems(playerid, const name[], &quan)
 {
     if (!strcmp(name, "gold", true)) return 0;
     if (!strcmp(name, "craftaks", true)) return 0;
+    if (!strcmp(name, "clothes", true)) return 0;
+    if (!strcmp(name, "accessory", true)) return 0;
+    if (!strcmp(name, "car", true)) return 0;
+    if (!strcmp(name, "crypto", true)) return 0;
 
     // Парсинг JSON файла
     new JsonNode:rootNode;
@@ -341,4 +358,54 @@ stock FormingCustomCaseAccessory(thingID) // В момент формирова�
         }
     }
     return thingBone;
+}
+
+stock UseCoupon(playerid, const params[])
+{
+    new inva;
+    if(!sscanf(params, "i", inva))
+    {
+        if(get_invent4(playerid, PlayerInfo[playerid][pInven][inva], 0) < 10) return dialogCouponCase(playerid,PlayerInfo[playerid][pInven][inva],0);
+        else dialogCouponCase(playerid,PlayerInfo[playerid][pInven][inva],1);
+    }
+    return true;
+}
+
+stock dialogCouponCase(playerid, thingId, type)
+{
+	new lines[500], string[60];
+	format(lines,sizeof(lines),"\n{ff9000}Это {ff6347}%s {ff9000}он необходим для получения кейса такого же вида\
+                                \n\n{cccccc}- Для обмена нужно иметь 10 купонов одного вида\
+								\n{cccccc}- В кейсе может выпасть только тот вид предмета что указан в купоне\
+								\n{cccccc}- Данные купоны можно получить в пропуске или открывая кейсы", GetNameThing(0,thingId,0,0));
+	format(string,sizeof(string),"{0088ff}Информация о купонах");
+	if(type == 0) ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX, string, lines, "*", "");
+    else
+    {
+        DP[0][playerid] = thingId;
+        ShowDialog(playerid,COUPON_DIALOG_INFORMATION,DIALOG_STYLE_MSGBOX, string, lines, "Обменять", "Отмена");
+    }
+    return true;
+}
+stock GiveCouponCase(playerid, thingId)
+{
+    new caseID = -1;
+    if(get_invent4(playerid, thingId, 0) < 10) return ErrorMessage(playerid,"{ff6347}У вас нет 10 купонов для получения кейса");
+
+    new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
+
+    if(thingId == 252) caseID = 7;
+    else if(thingId == 253) caseID = 8;
+    else if(thingId == 254) caseID = 9;
+    else caseID = -1;
+
+	if(caseID == -1) format(casename, sizeof(casename),"default");
+	else format(casename, sizeof(casename),"%s", customCaseNameID[caseID]);
+    CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
+
+    new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+
+    TakeInvent(playerid, thingId, 10, 0, 999, true);
+    return true;
 }
