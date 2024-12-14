@@ -437,24 +437,8 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 {
                     return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
                 }
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
-                {
-                    if (ThingSkinQuan == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuan);
-                    thingId = ThingSkincaseGift[thingTemp];
-                }
-                else // Женский скин в кейсе
-                {
-                    if (ThingSkinQuanFemale == 0)
-                    {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
-                    }
-                    new thingTemp = random(ThingSkinQuanFemale);
-                    thingId = ThingSkincaseGiftFemale[thingTemp];
-                }
+                new thingTemp = random(ThingSkinQuan);
+                thingId = ThingSkincaseGift[thingTemp];
             }
             else
             {
