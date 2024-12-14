@@ -1237,6 +1237,7 @@ stock MineWar_SetPlayerSpectate(playerid, spectateid)
     #endif
 
     gSpectateID[playerid] = spectateid;
+    MineWarPlayerInfo[playerid][mwpSpectateID] = spectateid + 1;
     
     if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING) // Сохраняем позицию
 	{
@@ -1248,10 +1249,9 @@ stock MineWar_SetPlayerSpectate(playerid, spectateid)
 		S_SetPlayerVirtualWorld(playerid,GetPlayerVirtualWorld(spectateid),GetPlayerInterior(spectateid));
 		PPSetPlayerInterior(playerid,GetPlayerInterior(spectateid));
         PPOpenSpectating(playerid, X, Y, Z);
+        StartSpectate(playerid, spectateid, 0);
 	}
 
-    MineWarPlayerInfo[playerid][mwpSpectateID] = spectateid + 1;
-    StartSpectate(playerid, spectateid, 0);
     PlayerSpectatePlayer(playerid, spectateid);
 
     return 1;

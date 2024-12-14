@@ -597,7 +597,7 @@ CMD:ad(playerid, const params[]) { // Отправка объявления (CNN
         format(str, sizeof(str), "{FF6347}Нельзя подавать объявления так часто [ Осталось: %d сек. ]", CNN_AD_COOLDOWN - (gettime() - PlayerInfo[playerid][pCDAd]));
         return ErrorMessage(playerid, str);
     }
-
+    if(isamute(playerid) == 1) return 1;
     if (!IsPlayerInRangeOfPoint(playerid,5.0,957.6464,1457.2570,1029.3549) && !GetPlayerVip(playerid)) return ErrorMessage(playerid, "{FF6347}Нужно находиться в офисе CNN\n\n{cccccc}С VIP-статусом подавать объявление можно в любом месте");
     if (PlayerInfo[playerid][pBkyrenie] >= 2) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Чего, блин ?! Я не на земле");
     PlayerPlaySound(playerid, 40405);

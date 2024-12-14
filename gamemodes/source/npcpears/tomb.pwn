@@ -1075,7 +1075,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
 
     if (Tomb_GetMummyKilled(roomid, _:TOMB_BOSS_MUMMY) >= 1) {
         // 70% получить кейс, если был убит босс (даже при поражении)
-        if(random(10) <= 7) {
+        if(random(10) < 7) {
             case_amount++;
             #if defined TOMB_DEBUG_MODE
                 printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
@@ -1455,6 +1455,7 @@ stock Tomb_SetPlayerSpectate(playerid, spectateid)
     #endif
 
     gSpectateID[playerid] = spectateid;
+    TombPlayerInfo[playerid][tpSpectateID] = spectateid + 1;
     
     if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING) // Сохраняем позицию
 	{
@@ -1466,10 +1467,9 @@ stock Tomb_SetPlayerSpectate(playerid, spectateid)
 		S_SetPlayerVirtualWorld(playerid,GetPlayerVirtualWorld(spectateid),GetPlayerInterior(spectateid));
 		PPSetPlayerInterior(playerid,GetPlayerInterior(spectateid));
         PPOpenSpectating(playerid, X, Y, Z);
+        StartSpectate(playerid, spectateid, 0);
 	}
 
-    TombPlayerInfo[playerid][tpSpectateID] = spectateid + 1;
-    StartSpectate(playerid, spectateid, 0);
     PlayerSpectatePlayer(playerid, spectateid);
 
     return 1;
