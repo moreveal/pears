@@ -679,3 +679,12 @@ stock IsARideOnVehicle(model)
 	|| model == 2036 || model == 2168 || model == 2169) return true;
 	return false;
 }
+
+// ХЕЛИКОПТЕР ХЕЛИКОПТЕР
+stock IsAHelicopter(model)
+{
+    if(model == 417 || model == 447 || model == 469 || model == 487 || model == 488 
+	|| model == 497 || model == 548 || model == 563 || model == 2100 || model == 2102 
+	|| model == 2129) return true;
+	return false;
+}
