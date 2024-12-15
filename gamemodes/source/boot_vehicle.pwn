@@ -683,7 +683,8 @@ stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[140] = 1000, lim[141] = 1000, lim[142] = 100, lim[180] = 500, lim[181] = 500, lim[197] = 50, lim[198] = 500, lim[225] = 500, lim[230] = 500;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 5000; // Алюминий
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_boot(v, thingId);
     getLimit = lim[thingId];
 	return 1;
