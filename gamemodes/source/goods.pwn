@@ -19,7 +19,7 @@ stock use_mygoods(playerid, inva, useinva) // Берём предмет  из с
 {
     new fpick = PlayerInfo[playerid][pMarkInven][inva], fquan = PlayerInfo[playerid][pMarkInvenQuan][inva], thingType = PlayerInfo[playerid][pMarkInvenType][inva], thingPack = PlayerInfo[playerid][pMarkInvenPack][inva];
     if(fpick == 0) return i_resettabs(playerid);
-	if(useinva != 9999)
+	if(useinva != 9999 && !Backpack[playerid])
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}

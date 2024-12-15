@@ -511,7 +511,7 @@ stock use_trash(playerid, tra, inva, useinva)
 	if(trash_stat[tra] != 1) return ErrorMessage(playerid, "{FF6347}Мусорного контейнера нет на месте"), i_resettabs(playerid);
 	
 	new fpick = gTrash[inva][tra], fquan = gTrashKol[inva][tra], fpara = gTrashPara[inva][tra], fqara = gTrashQara[inva][tra], thingType = gTrashType[inva][tra], thingPack = gTrashPack[inva][tra];
-	if(useinva != 9999)
+	if(useinva != 9999 && !Backpack[playerid])
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}

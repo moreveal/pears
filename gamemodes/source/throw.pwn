@@ -34,7 +34,7 @@ stock use_throw(playerid, inva, useinva)
     new fpick = ThrowInfo[t][tId], fquan = ThrowInfo[t][tQuan], thingPara = ThrowInfo[t][tPara], thingQara = ThrowInfo[t][tQara], thingType = ThrowInfo[t][tType], thingPack = ThrowInfo[t][tPack];
     
     if(fpick == 0) return i_resettabs(playerid);
-	if(useinva != 9999)
+	if(useinva != 9999 && !Backpack[playerid])
 	{
  		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
 	}
