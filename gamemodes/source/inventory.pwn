@@ -2621,6 +2621,7 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[140] = 100, lim[141] = 100, lim[142] = 10, lim[180] = 50, lim[181] = 10, lim[197] = 10, lim[198] = 50, lim[225] = 20, lim[230] = 5;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 100*pow; // Алюминий
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
 
     getQuan = get_invent(playerid, thingId, 0);
     getLimit = lim[thingId];
@@ -2639,7 +2640,8 @@ stock apartments_limit(pt, thingId, &getQuan, &getLimit) // Проверяем �
 	lim[72] = 1000, lim[73] = 1000, lim[74] = 1000, lim[75] = 1000, lim[76] = 1000, lim[77] = 1000, lim[78] = 1000, lim[79] = 1000, lim[80] = 1000, lim[81] = 1000;
 	lim[82] = 1000, lim[83] = 1000, lim[84] = 1000, lim[85] = 1000, lim[86] = 1000, lim[87] = 1000, lim[88] = 1000, lim[89] = 10000, lim[106] = 1000, lim[108] = 1000, lim[109] = 1000, lim[110] = 1000;
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 100, lim[198] = 1000, lim[225] = 100, lim[230] = 5;
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_ApartmentsTable(pt, thingId, 0);
     getLimit = lim[thingId];
 	return 1;
