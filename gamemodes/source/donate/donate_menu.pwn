@@ -473,6 +473,7 @@ function Call_setvip(playerid, const str_name[], status)
 stock RepairVehicleForGold(playerid)
 {
     if(Protect_Veh[playerid] == 9999 && Protect_Seat[playerid] == 9999) return ErrorText(playerid, "{FF6347}Вы не в транспорте"), showDialogDonateMenu(playerid);
+    if(PursuitTime[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Меня преследует полиция..."), showDialogDonateMenu(playerid);
     if(PlayerInfo[playerid][pDonateMoney] < donatePrice[13]) return pc_cmd_donate(playerid), ErrorText(playerid, "{FF6347}Вам не хватает золота");
 
     new vehicleid;
