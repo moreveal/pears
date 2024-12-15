@@ -721,7 +721,7 @@ stock pricebiz(playerid, b)
 {
 	DP[4][playerid] = b;
 	
-	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
+	if(b >= 173 && b <= 182) return SendClientMessage(playerid,COLOR_GREY, "{FF6347}Прайс можно настроить только в меню покупки товара."), mybiz(playerid, b);
 	new lol[84], quan;
 	new line[100],lines[4048];
 
