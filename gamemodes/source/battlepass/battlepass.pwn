@@ -86,7 +86,7 @@ new BattlePassWeeklyTaskName[][] =
     "Найти сокровища в море", // 13
     "Спустится с вертолета с помощью веревки", // 14
     "Выбить с игрока предмет битой", // 15
-    "Получить шкур качеством 90% и больше", // 16
+    "Получить шкур качеством 90 и больше", // 16
     "Убить медведей", // 17
     "Убить оленей", // 18
     "Убить лис", // 19
@@ -315,7 +315,9 @@ stock dialogBattlePassListTask(playerid,type)
     else if(type == 1)
     {
         new lines[MAX_WEEKLY_BATTLEPASS_TASK*100], TaskID;
-        format(line,sizeof(line),"{C8A2C8}Еженедельные задания\tОпыт\tПрогресс\n"), strcat(lines,line);
+        new tyear, tmonth, tday, thour, tminute, tsecond;
+        stamp2datetime(BattlePass[playerid][bpWeekly], tyear, tmonth, tday, thour, tminute, tsecond, 3);
+        format(line,sizeof(line),"{C8A2C8}Обновление заданий в %d:%d %d.%d \tОпыт\tПрогресс\n",thour,tminute,tday,tmonth), strcat(lines,line);
         for(new i; i < MAX_WEEKLY_BATTLEPASS_TASK; i++)
         {
             TaskID = BattlePass[playerid][bpTaskWeekly][i];
@@ -393,6 +395,16 @@ CMD:testbattlepass(playerid)
     else BattlePass[playerid][bpDonate] = 0;
     return true;
 }
+
+CMD:resetbattlepass(playerid)
+{
+    BattlePass[playerid][bpDay] = 0;
+    BattlePass[playerid][bpWeekly] = 0;
+    BattlePass[playerid][bpOneTimeLoad] = 0;
+    CreateAllTasksBattlePassForPlayer(playerid);
+    return 1;
+}
+
 stock dialogCase_BattlePass(playerid, dialogid, response, listitem) {
     switch (e_DialogId: dialogid) {
         case BATTLEPASS_SHOW_MENU: {
