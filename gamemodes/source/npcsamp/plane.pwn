@@ -73,6 +73,7 @@ stock PlaneDamage(playerid, bool:explosion = false)
 
     if(plane_health <= 0)
     {
+        CompleteBattlePassTask(playerid, 38, 1);
         SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Мешок падает с самолёта! Нужно дождаться когда он упадёт и подобрать его [ N >> Рядом ]");
         PlayerPlaySound(playerid,6401,0,0,0);
 

@@ -438,6 +438,7 @@ stock CompletingDaily(playerid, dailyid, quan)
 
             PlayerInfo[playerid][pExp] ++;
 	        UpdatePlayerExp(playerid);
+            CompleteBattlePassTask(playerid, 0, 0);
         }
     }
 

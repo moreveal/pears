@@ -384,6 +384,12 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
             CompletingDaily(damagerid, 6, 1), CompletingDaily(damagerid, WildAnimals[findSlot][waType]+22, 1);
             if(WildAnimals[findSlot][waType] == 4 && PlayerInfo[damagerid][pAchieve][134] == 0) AchievePlayer(damagerid, 134, 1);
             if(PlayerInfo[damagerid][pAchieve][135] == 0) AchievePlayer(damagerid, 135, 1);
+
+            if(WildAnimals[findSlot][waType] == 0) CompleteBattlePassTask(damagerid, 17, 1);
+            else if(WildAnimals[findSlot][waType] == 1) CompleteBattlePassTask(damagerid, 18, 1);
+            else if(WildAnimals[findSlot][waType] == 2) CompleteBattlePassTask(damagerid, 19, 1);
+            else if(WildAnimals[findSlot][waType] == 4) CompleteBattlePassTask(damagerid, 20, 1);
+            
             
             CreateGps(damagerid,AnimalX, AnimalY, AnimalZ, 0, 0, 2.0);
         }
@@ -464,6 +470,7 @@ stock CarveAnimals(playerid,a)
         SetThrow(-1, 22, 22, CountMeat, gettime()+259200, 0, 0, 0, 0, 0, AnimalX,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
         SetThrow(-1, TypeSkin, TypeSkin, 1, chance, 0, 0, 0, 0, 0, AnimalX+0.3,AnimalY, AnimalZ, 0.0, 0.0, 0.0, 600, 0, 0);
         SendClientMessage(playerid, COLOR_GRAY,"[ Мысли ] Я разделал%s тушку животного и получил%s мясо и шкуру с качеством {ff9000}%d%%.",gender(playerid),gender(playerid),chance);
+        if(chance >= 90) CompleteBattlePassTask(playerid, 16, 1);
     }
     if(Hold[playerid] == 14)
     {

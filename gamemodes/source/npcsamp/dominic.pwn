@@ -344,6 +344,7 @@ stock Dominic_FinishPlayer(playerid)
 
     Dominic_Restriction(playerid); // Кд на повторную гонку
     Dominic_GiveGift(playerid); // Получаем подарок от Доминика
+    CompleteBattlePassTask(playerid, 10, 1);
     return 1;
 }
 

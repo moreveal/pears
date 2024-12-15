@@ -1580,6 +1580,7 @@ stock MineWar_End(roomid, e_MineWarEndReason: reason)
                 ACSetPlayerHealth(currentid, 1.0);
                 if (!MineWar_StopSpectate(currentid)) PPSpawnPlayer(currentid);
                 MineWar_Dialog_Stats(currentid, reason);
+                CompleteBattlePassTask(currentid, 3, 1);
             } else {
                 // Потом удаляем ненужные данные и прочее
                 MineWar_PlayerInfo_Cleanup(currentid);

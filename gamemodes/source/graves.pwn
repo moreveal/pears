@@ -892,6 +892,7 @@ stock Graves_OnPlayerGiveDamageNpc(NPC: npc, damagerid, Float: amount, weaponid,
 
         // Достижение за убийство NPC
         if(PlayerInfo[damagerid][pAchieve][133] == 0) AchievePlayer(damagerid, 133, 1);
+        CompleteBattlePassTask(damagerid, 12, 1);
     }
 
     return 1;

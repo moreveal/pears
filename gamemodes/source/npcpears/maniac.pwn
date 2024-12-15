@@ -739,6 +739,7 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
         else // Маньяк на улице
         {
             if(PlayerInfo[playerid][pAchieve][129] == 0) AchievePlayer(playerid, 129, 1); // Убил маньяка
+            CompleteBattlePassTask(playerid, 11, 1);
 
             // Помечаем лут только для игрока, для которого изначально был создан маньяк
             new onlyPlayer = 0;

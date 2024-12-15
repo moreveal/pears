@@ -947,6 +947,8 @@ function CraftProcess(playerid, tabs_load)
                         CarLog("settun", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], VehInfo[vehicleid][vModel], thingId, stringlog);
                     }
                     SaveOneTunning(vehicleid, slot2);
+
+                    CompleteBattlePassTask(playerid, 1, 1);
                 }
                 else
                 {
@@ -1007,7 +1009,7 @@ stock CreateThingAfterCraft(playerid)
     new yes, ability;
     if(Tabs_Load[playerid] == 11) ability = get_ability(playerid, 3); // Верстак (Инженер)
     else if(Tabs_Load[playerid] == 13) ability = get_ability(playerid, 7); // Химический Стол (Химик)
-    else if(Tabs_Load[playerid] == 17) ability = get_ability(playerid, 11); // Химический Стол (Химик)
+    else if(Tabs_Load[playerid] == 17) ability = get_ability(playerid, 11); // Ткацкий станок
 
     if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13 || Tabs_Load[playerid] == 17) // Расчитываем шанс
     {
@@ -1056,6 +1058,9 @@ stock CreateThingAfterCraft(playerid)
             format(string_log, sizeof(string_log), "%s [%d]. Качество: %s [%d]", GetNameThing(1, CreateThingID[playerid], CreateThingType[playerid], 0), CreateThingID[playerid],friskQualityColorAndText[param/100],param);
 		    UserLog("craftaks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CreateThingID[playerid], string_log);
         }
+
+        if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13 || Tabs_Load[playerid] == 17) CompleteBattlePassTask(playerid, 31, 1);
+        else CompleteBattlePassTask(playerid, 32, 1);
         SuccessMessage(playerid, "{99ff66}Выполнено!");
     }
     else // Проёба
