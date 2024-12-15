@@ -198,11 +198,11 @@ public Call_Donate(playerid)
 	if(rows == 0) return showDialogErrorDonateCall(playerid);
 
 	// Собираем все донаты на аккаунте
-	new gold;
+	new gold = 0;
 	for(new i = 0; i < rows; i++)
 	{
 		new amount;
-		cache_get_value_name_int(0, "amount", amount);
+		cache_get_value_name_int(i, "amount", amount);
 		gold += amount;
 	}
 
