@@ -399,6 +399,11 @@ stock GiveCouponCase(playerid, thingId)
     else if(thingId == 254) caseID = 9;
     else caseID = -1;
 
+    new inva = get_invent2_Slot(playerid, thingId, thingType);
+    if(inva == -1) return ErrorMessage(playerid, "{ff6347}Ошибка, обратитесь к администрации!");
+
+    if(PlayerInfo[playerid][pInvenQuan][inva] < 10) return ErrorMessage(playerid, "{ff6347}Купоны лежат в разных слотах, объедените их!\n\nМожно через любой инвентарь справа");
+
 	if(caseID == -1) format(casename, sizeof(casename),"default");
 	else format(casename, sizeof(casename),"%s", customCaseNameID[caseID]);
     CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
@@ -406,6 +411,6 @@ stock GiveCouponCase(playerid, thingId)
     new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
 
-    TakeInvent(playerid, thingId, 10, 0, 999, true);
+    TakeInvent(playerid, thingId, 10, 0, inva, true);
     return true;
 }
