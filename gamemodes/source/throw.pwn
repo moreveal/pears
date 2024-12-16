@@ -34,9 +34,9 @@ stock use_throw(playerid, inva, useinva)
     new fpick = ThrowInfo[t][tId], fquan = ThrowInfo[t][tQuan], thingPara = ThrowInfo[t][tPara], thingQara = ThrowInfo[t][tQara], thingType = ThrowInfo[t][tType], thingPack = ThrowInfo[t][tPack];
     
     if(fpick == 0) return i_resettabs(playerid);
-	if(useinva != 9999 && !Backpack[playerid])
+	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+		if(!IsAItemMatch(playerid, useinva, fpick)) return i_resettabs(playerid);
 	}
 	if(GetPVarInt(playerid, "svzyal") >= 1) return ErrorMessage(playerid, "{FF6347}Нельзя подбирать предметы во время покупок в супермаркете"), i_resettabs(playerid);
 	if(CheckInvent(playerid)) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");

@@ -2692,7 +2692,7 @@ stock use_sklad(playerid, wh, inva, useinva)
 	new fpick = OrganInfo[wh][gInvent][inva], thingType = OrganInfo[wh][gInvType][inva], unixtime = gettime();
     if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != OrganInfo[wh][gInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+ 		if(!IsAItemMatch(playerid, useinva, fpick)) return i_resettabs(playerid);
 	}
 	if(JustOneThingInventory(fpick, thingType) && get_invent(playerid, fpick, thingType) > 0) return ErrorMessage(playerid, "{FF6347}У меня уже есть этот предмет");
 
@@ -3674,6 +3674,27 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 			DP[1][playerid] = inva;
 			format(string,sizeof(string),"{cccccc}Чтобы взять {ff9000}[ %s ] {cccccc}введите количество патронов",gunName[weapon]);
 			ShowDialog(playerid,903,DIALOG_STYLE_INPUT,"{ff9000}Инвентарь",string,"Принять","Отмена");
+		}
+	}
+	return 1;
+}
+
+stock IsAItemMatch(playerid, useinva, item)
+{
+	if(OnlineInfo[playerid][oInventSelectLeft] != 9999)
+	{
+		if(PlayerInfo[playerid][pInven][useinva] != item && PlayerInfo[playerid][pInven][useinva] != 0) 
+		{
+			ErrorMessage(playerid, "{FF6347}Эта ячейка занята");
+			return 0;
+		}
+	}
+	else
+	{
+		if(BackPackInfo[playerid][backpackInvent][useinva] != item && BackPackInfo[playerid][backpackInvent][useinva] != 0)
+		{
+			ErrorMessage(playerid, "{FF6347}Эта ячейка занята");
+			return 0;
 		}
 	}
 	return 1;
