@@ -883,7 +883,7 @@ stock use_prisontable(playerid, i, inva, useinva)
  		
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != PrisonTableInfo[i][ptInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+        if(!IsAItemMatch(playerid, useinva, PrisonTableInfo[i][ptInvent][inva])) return 1;
 	}
     if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
 

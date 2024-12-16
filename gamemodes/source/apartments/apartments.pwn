@@ -1109,7 +1109,7 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
 
                 if(useinva != 9999)
                 {
-                    if(PlayerInfo[playerid][pInven][useinva] != ApartmentsRoom[i][aprInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+                    if(!IsAItemMatch(playerid, useinva, thingId)) return 1;
                 }
                 
                 HidePlayerDialog(playerid);

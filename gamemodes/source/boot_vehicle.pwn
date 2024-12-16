@@ -12,7 +12,7 @@ stock use_boot(playerid, v, inva, useinva)
  	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
  	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != VehInfo[v][vInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+		if(!IsAItemMatch(playerid, useinva, VehInfo[v][vInvent][inva])) return i_resettabs(playerid);
 	}
 	if(fpick == 0) return 1;
 	
