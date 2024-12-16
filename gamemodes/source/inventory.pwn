@@ -3681,7 +3681,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 
 stock IsAItemMatch(playerid, useinva, item)
 {
-	if(OnlineInfo[playerid][oInventSelectLeft] != 9999)
+	if(!Backpack[playerid])
 	{
 		if(PlayerInfo[playerid][pInven][useinva] != item && PlayerInfo[playerid][pInven][useinva] != 0) 
 		{
