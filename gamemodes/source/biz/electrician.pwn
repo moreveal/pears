@@ -245,6 +245,7 @@ stock ElectricianStopProcess(playerid, stat)
     DP[0][playerid] = 0;
     InputProcess[playerid] = 0;
 	InputID[playerid] = 0;
+    InputType[playerid] = 0;
     ElectricianProcessTime[playerid] = 0;
     ElectricianProcessTimers[playerid] = false;
 
