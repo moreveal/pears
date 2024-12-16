@@ -721,7 +721,7 @@ stock pricebiz(playerid, b)
 {
 	DP[4][playerid] = b;
 	
-	if(b >= 173 && b <= 182) return ErrorMessage(playerid, "{FF6347}Прайс можно настроить только в меню выбора товара"), mybiz(playerid, b);
+	if(b >= 173 && b <= 182) return SendClientMessage(playerid,COLOR_GREY, "{FF6347}Прайс можно настроить только в меню покупки товара."), mybiz(playerid, b);
 	new lol[84], quan;
 	new line[100],lines[4048];
 
@@ -754,7 +754,7 @@ stock use_biz(playerid, biz, inva, useinva)
 	if(IsPlayerEditObject(playerid)) return ErrorMessage(playerid, "{FF6347}Ваш персонаж занят ремонтом или настройкой предмета"), i_resettabs(playerid);
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != BizzInfo[biz][bInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+		if(!IsAItemMatch(playerid, useinva, BizzInfo[biz][bInvent][inva])) return i_resettabs(playerid);
 	}
 	if(!IsANearWardrobeBiz(playerid, biz)) return ErrorMessage(playerid, "{FF6347}Вы далеко от склада бизнеса"), closetab(playerid, 1);
 

@@ -62,7 +62,7 @@ stock IsThingNotVariable(i)
     || i == 108 || i == 109 || i == 110 || i == 111 || i == 120 || i == 123 || i == 125
     || i == 139 || i == 141 || i >= 142 && i <= 160 || i >= 163 && i <= 174 || i == 178 || i == 179 || i >= 184 && i <= 189 || i == 191 
     || i == 192 || i == 193 || i == 194 || i == 195 || i == 196 || i == 199 
-    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229 || i == 240 || i >= 244 && i <= 248
+    || i == 200 || i == 203 || i == 204 || i == 206 || i == 226 || i == 227 || i == 228 || i == 229 || i == 240 || i >= 244 && i <= 248 || i >= 252 && i <= 260
     || IsANaborsEdoi(i)) return 0;
     return 1;
 }
@@ -287,6 +287,9 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     {
         thingType = 2;
     }
+    else if(strcmp(name,"clothes") == 0) thingType = 3;
+    else if(strcmp(name,"accessory") == 0) thingType = 2;
+    else if(strcmp(name,"car") == 0) thingType = 5;
     else 
     {
         switch(random(15))
@@ -299,10 +302,19 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             default: thingType = 0; // ПОДКРУТКА обычный предмет
         }
     }
-
+    
     new quan;
     if(thingType == 0) CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если выпал обычный
-
+    if(thingType > 1 && strcmp(name,"default") == 0) // Дропаем вместо крутых предметов купоны
+    {
+        switch(thingType)
+        {
+            case 2: thingId = 253, thingQuan = 1, thingType = 0;
+            case 3: thingId = 252, thingQuan = 1, thingType = 0;
+            case 5: thingId = 254, thingQuan = 1, thingType = 0;
+            default: CommonThingCase(thingId, thingQuan, thingType, thingPack);
+        }
+    }
     else if(thingType == 1)
     {
         new ThingIDcaseGift[46];
@@ -510,7 +522,11 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
 
     if(strcmp(name,"gold") == 0) thingPack = 9; // GOLD case
     else if(strcmp(name,"craftaks") == 0) thingPack = 12; // aks craft
+    else if(strcmp(name,"clothes") == 0) thingPack = 13;
+    else if(strcmp(name,"accessory") == 0) thingPack = 14;
+    else if(strcmp(name,"car") == 0) thingPack = 15;
     else thingPack = 5; // Не трогаем
+
     return 1;
 }
 

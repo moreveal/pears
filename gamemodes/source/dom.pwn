@@ -143,14 +143,7 @@ stock use_dom(playerid, dom, inva, useinva)
  		
 	if(useinva != 9999)
 	{
-		if(!Backpack[playerid])
- 		{
-			if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
-		}
-		else
-		{
-			if(BackPackInfo[playerid][backpackInvent][useinva] != DomInfo[dom][dInvent][inva] && BackPackInfo[playerid][backpackInv][useinva] != 0) return 1;
-		}
+		if(!IsAItemMatch(playerid, useinva, DomInfo[dom][dInvent][inva])) return 1;
 	}
 
 	if(!IsANearWardrobeDom(playerid, dom)) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
@@ -564,7 +557,8 @@ stock d_limit(d, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 1000, lim[198] = 1000, lim[225] = 1000, lim[230] = 100;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 10000; // Алюминий
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_dom(d, thingId);
     getLimit = lim[thingId];
 	return 1;

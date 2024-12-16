@@ -210,6 +210,9 @@ enum e_DialogId {
 
     // Администрация
     ADMIN_DIALOG_CHECKEVENTS,
-    ADMIN_DIALOG_CHECKEVENTS_STATS
+    ADMIN_DIALOG_CHECKEVENTS_STATS,
+
+    // Купонный кейс
+    COUPON_DIALOG_INFORMATION
 };
 

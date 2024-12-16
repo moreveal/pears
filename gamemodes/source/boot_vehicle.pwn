@@ -12,7 +12,7 @@ stock use_boot(playerid, v, inva, useinva)
  	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
  	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != VehInfo[v][vInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+		if(!IsAItemMatch(playerid, useinva, VehInfo[v][vInvent][inva])) return i_resettabs(playerid);
 	}
 	if(fpick == 0) return 1;
 	
@@ -677,7 +677,8 @@ stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[140] = 1000, lim[141] = 1000, lim[142] = 100, lim[180] = 500, lim[181] = 500, lim[197] = 50, lim[198] = 500, lim[225] = 500, lim[230] = 500;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 5000; // Алюминий
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_boot(v, thingId);
     getLimit = lim[thingId];
 	return 1;
