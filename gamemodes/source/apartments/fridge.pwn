@@ -171,7 +171,7 @@ stock put_Refrigerator(playerid, inva, i, thingId, thingQuan, binva, thingType, 
 	if(GetPlayerRefrigerator(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от холодильника"), closetab(playerid, 1);
 	
 	if(NotGiveInflatabelBoat(playerid, thingId, thingType)) return i_resetveshi(playerid);
-	if(!PerishableThing(thingId, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя положить в холодильник"), i_resetveshi(playerid);
+	if(!PerishableThing(thingId, thingType) || thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя положить в холодильник"), i_resetveshi(playerid);
 
 
 	new string[100];
