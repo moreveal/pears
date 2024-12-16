@@ -402,7 +402,7 @@ stock GiveCouponCase(playerid, thingId)
     new inva = get_invent2_Slot(playerid, thingId, thingType);
     if(inva == -1) return ErrorMessage(playerid, "{ff6347}Ошибка, обратитесь к администрации!");
 
-    if(PlayerInfo[playerid][pInvenQuan][inva] < 10) return ErrorMessage(playerid, "{ff6347}Купоны лежат в разных слотах, объедените их!\n\nМожно через любой инвентарь справа");
+    if(PlayerInfo[playerid][pInvenQuan][inva] < 10) return ErrorMessage(playerid, "{ff6347}Купоны лежат в разных слотах, объедините их!\n\nМожно через любой инвентарь справа");
 
 	if(caseID == -1) format(casename, sizeof(casename),"default");
 	else format(casename, sizeof(casename),"%s", customCaseNameID[caseID]);
