@@ -188,7 +188,14 @@ new vehNameCustom[][] =
     "Daewoo Matiz", // 2172
     "Mercedes Benz W140", // 2173
     "Range Rover Sport", // 2174
-    "Volvo XC90" // 2175
+    "Volvo XC90", // 2175
+    "Mercedes-Benz G63 AMG 6x6", // 2176
+    "Lamborghini Urus", // 2177
+    "Ford Crown Victoria Kill Mure", // 2178
+    "Lamborghini Countach LPI 800-4", // 2179
+    "BMW XM", // 2180
+    "Volkswagen Golf VII GTI", // 2181
+    "Bugatti Bolide" // 2182
     };
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
@@ -369,6 +376,13 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     1000000, // "Mercedes Benz W140", // 2173
     7500000, // "Range Rover Sport", // 2174
     5000000, // "Volvo XC90" // 2175
+    20000000, // "Mercedes-Benz G63 AMG 6x6", // 2176
+    16000000, // "Lamborghini Urus", // 2177
+    10000000, // "Ford Crown Victoria Kill Mure", // 2178
+    50000000, // "Lamborghini Countach LPI 800-4", // 2179
+    20000000, // "BMW XM", // 2180
+    6000000, // "Volkswagen Golf VII GTI" // 2181
+    90000000, // "Bugatti Bolide" // 2182
 };
 
 stock AddCustomVehicle() // Добавляем тс на карту
@@ -549,6 +563,13 @@ stock AddCustomVehicle() // Добавляем тс на карту
     AddVehicleSyncModel(560, 2173); // "Mercedes Benz W140", // 2173
     AddVehicleSyncModel(579, 2174); // "Range Rover Sport", // 2174
     AddVehicleSyncModel(579, 2175); // "Volvo XC90" // 2175
+    AddVehicleSyncModel(579, 2176); // "Mercedes-Benz G63 AMG 6x6", // 2176
+    AddVehicleSyncModel(579, 2177); // "Lamborghini Urus", // 2177
+    AddVehicleSyncModel(494, 2178); // "Ford Crown Victoria Kill Mure", // 2178
+    AddVehicleSyncModel(451, 2179); // "Lamborghini Countach LPI 800-4", // 2179
+    AddVehicleSyncModel(579, 2180); // "BMW XM", // 2180
+    AddVehicleSyncModel(589, 2181); // "Volkswagen Golf VII GTI" // 2181
+    AddVehicleSyncModel(411, 2182); // "Bugatti Bolide" // 2182
     return 1;
 }
 
@@ -557,7 +578,7 @@ stock IsAVehExisting(v)
 {
     if(v >= 400 && v <= 611 // Стандартный транспорт gta
 
-    || v >= 2000 && v <= 2175) return 1; // Кастомный транспорт пирса
+    || v >= 2000 && v <= 2182) return 1; // Кастомный транспорт пирса
 
 	if(v == 537 || v == 538) return 0; // Поезд создавать через /veh нельзя
     return 0;
@@ -616,7 +637,7 @@ stock GetVehicleClass(m)
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
     || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062
-	|| m == 2095 || m == 2125) class = 6;
+	|| m == 2095 || m == 2125 || m == 2182) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
@@ -629,7 +650,8 @@ stock GetVehicleClass(m)
 
     // Новый класс, типо лимитированные (8)
     else if(m == 2063 || m == 2064 || m == 2088 || m == 2104 || m == 2120 || m == 2124 || m == 2126 || m == 2128 || m == 2153
-    || m == 2159 || m == 2160 || m == 2161 || m == 2162 || m == 2163) class = 8;
+    || m == 2159 || m == 2160 || m == 2161 || m == 2162 || m == 2163 || m == 2176 || m == 2177 || m == 2178
+    || m == 2179 || m == 2180 || m == 2181) class = 8;
 
     else class = 0; // 0 Класс недоступен для продажи (неизвестный транспорт)
     return class;
@@ -676,7 +698,7 @@ stock IsARideOnVehicle(model)
 {
 	if(model == 406 || model == 422 || model == 478 || model == 543 || model == 554 
 	|| model == 537 || model == 538 || model == 569 || model == 570 || model == 2141 
-	|| model == 2036 || model == 2168 || model == 2169) return true;
+	|| model == 2036 || model == 2168 || model == 2169 || model == 2176) return true;
 	return false;
 }
 
@@ -684,7 +706,7 @@ stock IsARideOnVehicle(model)
 stock IsAHelicopter(model)
 {
     if(model == 417 || model == 447 || model == 469 || model == 487 || model == 488 
-	|| model == 497 || model == 548 || model == 563 || model == 2100 || model == 2102 
-	|| model == 2129) return true;
-	return false;
+    || model == 497 || model == 548 || model == 563 || model == 2100 || model == 2102 
+    || model == 2129) return true;
+    return false;
 }
