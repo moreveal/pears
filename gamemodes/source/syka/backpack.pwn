@@ -84,7 +84,7 @@ stock player_tile_backpack(playerid, inva)
 		    	{
 		    	    if(HoldInva[playerid] == OnlineInfo[playerid][oInventSelectLeft]) HoldInva[playerid] = inva;
 		    	}
-		    	if(IsABackPack(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]]) && thingPack == 0) return ErrorMessage(playerid,"{ff6347}Рюкзак нельзя убирать в рюкзак!"),i_resetveshi(playerid);
+		    	if(IsABackPack(PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]]) && PlayerInfo[playerid][pInvenPack][OnlineInfo[playerid][oInventSelectLeft]] == 0) return ErrorMessage(playerid,"{ff6347}Рюкзак нельзя убирать в рюкзак!"),i_resetveshi(playerid);
 
 				BackPackInfo[playerid][backpackInvent][inva] = PlayerInfo[playerid][pInven][OnlineInfo[playerid][oInventSelectLeft]];
 				BackPackInfo[playerid][backpackInv][inva] = PlayerInfo[playerid][pInvenQuan][OnlineInfo[playerid][oInventSelectLeft]];
