@@ -4737,10 +4737,8 @@ stock CreatePersonalVehicle(playerid, newid, dab, sostid, model, Float:x, Float:
 
 stock ScrapDialog(playerid, vehicleid)
 {
-	DP[1][playerid] = GetVehiclePriceGos(VehInfo[vehicleid][vModel]) / 10 * 2;
-
 	new string[256];
-	format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (2/10 от стоимости)", DP[1][playerid]);
+	format(string,sizeof(string),"{ff9000}Вы уверены что хотите сдать транспорт в утиль?\n{cccccc}Возврат: [ {99ff66}%d$ {cccccc}] (2/10 от стоимости)", GetVehiclePriceGos(VehInfo[vehicleid][vModel]) / 10 * 2);
 	ShowDialog(playerid,765,DIALOG_STYLE_MSGBOX,"{FF9000}Утиль",string,"Да","Нет");
 
 	return 1;
@@ -4773,7 +4771,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 	{
 		new slot = VehInfo[newcar][vDatabase];
 		new model = VehInfo[newcar][vModel];
-		new price = DP[1][playerid];
+		new price = GetVehiclePriceGos(VehInfo[newcar][vModel]) / 10 * 2;
 
 		if(PlayerInfo[playerid][pVehTax][slot - 1] > 0) return ErrorMessage(playerid, "{FF6347}Вам необходимо оплатить налоги на транспорт");
 		if(VehInfo[newcar][vNosell] >= 1) SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Транспорт сдан в утиль! Возвращение суммы за этот транспорт: {ff0000}Невозможно");
