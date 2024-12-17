@@ -120,21 +120,21 @@ new BattlePassWeeklyTaskSetting[sizeof(BattlePassWeeklyTaskName)][2] =
 {
     // 1 - ID, 2 - Exp, 2 - Count
     { 100, 100000},     // 0
-    { 100, 1},          // 1
+    { 100, 3},          // 1
     { 100, 200},        // 2
     { 100, 4},          // 3
     { 100, 4},          // 4
     { 100, 4},          // 5 
     { 100, 30},         // 6
     { 100, 10},         // 7
-    { 100, 1},          // 8
-    { 100, 1},          // 9
-    { 100, 1},          // 10
-    { 100, 1},          // 11
-    { 100, 1},          // 12
-    { 100, 1},          // 13 
-    { 100, 1},          // 14
-    { 100, 1},           // 15
+    { 100, 2},          // 8
+    { 100, 3},          // 9
+    { 100, 2},          // 10
+    { 100, 2},          // 11
+    { 100, 2},          // 12
+    { 100, 2},          // 13 
+    { 100, 10},          // 14
+    { 100, 3},           // 15
     { 100, 10},           // 16
     { 100, 10},           // 17
     { 100, 15},           // 18
@@ -157,7 +157,7 @@ new BattlePassWeeklyTaskSetting[sizeof(BattlePassWeeklyTaskName)][2] =
     { 100, 1800},          // 35
     { 100, 5},          // 36
     { 100, 2},          // 37
-    { 100, 1},          // 38
+    { 100, 2},          // 38
     { 100, 10},          // 39
     { 100, 40},          // 40
     { 100, 1000000},          // 41
@@ -168,7 +168,9 @@ new BattlePassOneTimeTaskName[][] =
 {
     "Пройти новогодние квесты", // 0
     "Получить питомца", // 1
-    "Открыть голд кейсов" // 2
+    "Открыть голд кейсов", // 2
+    "Купите трейлер", // 3
+    "Купите транспорт в салоне" // 4
 };
 
 
@@ -177,7 +179,9 @@ new BattlePassOneTimeTaskSetting[sizeof(BattlePassOneTimeTaskName)][2] =
     // 1 - Exp, 2 - Count
     { 5000, 1},         // 0
     { 5000, 1},          // 1
-    { 5000, 10}         // 2
+    { 5000, 10},        // 2
+    { 1000, 1},         // 3
+    { 1000, 3}         // 4
 };
 
 #define MAX_WEEKLY_BATTLEPASS_TASK 8 // Максимальное кол.во недельных заданий
@@ -216,26 +220,26 @@ new BattlePassAwarsdItem[MAX_LEVEL_BATTLEPASS][20] =
     { 218, 0, 1, 0, 0,     0, 0, 0, 0, 0,      219, 0, 1, 0, 0,      0, 0, 0, 0, 0 },
     { 221, 0, 1, 0, 0,     0, 0, 0, 0, 0,      222, 0, 1, 0, 0,      0, 0, 0, 0, 0 },
     { 1, 0, 1, 0, 5,     0, 0, 0, 0, 0,      1, 0, 1, 0, 14,      0, 0, 0, 0, 0 }, // 30
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 }, // 35
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 }, // 40
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 }, // 45
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0,     0, 0, 0, 0, 0,      0, 0, 0, 0, 0,      0, 0, 0, 0, 0 } // 50
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 257, 0, 10, 0, 0,     0, 0, 0, 0, 0,      257, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 258, 0, 10, 0, 0,     0, 0, 0, 0, 0,      258, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 254, 0, 1, 0, 0,     0, 0, 0, 0, 0,      1, 0, 1, 0, 15,      0, 0, 0, 0, 0 },        // 35
+    { 259, 0, 10, 0, 0,     0, 0, 0, 0, 0,      259, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 260, 0, 10, 0, 0,     0, 0, 0, 0, 0,      260, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 244, 0, 1, 90, 0,     245, 0, 1, 90, 0,      246, 0, 1, 90, 0,      248, 0, 1, 90, 0 },
+    { 246, 0, 1, 90, 0,     248, 0, 1, 90, 0,      248, 0, 1, 90, 0,      247, 0, 1, 90, 0 },
+    { 1, 0, 1, 0, 17,     1, 0, 1, 0, 17,      1, 0, 1, 0, 17,      1, 0, 1, 0, 17 }, // 40
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 257, 0, 10, 0, 0,     0, 0, 0, 0, 0,      257, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 258, 0, 10, 0, 0,     0, 0, 0, 0, 0,      258, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 12404, 2, 1, 0, 0,     0, 0, 0, 0, 0,      12418, 2, 1, 0, 0,      12419, 2, 1, 0, 0 }, // 45
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 256, 0, 10, 0, 0,     0, 0, 0, 0, 0,      256, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 257, 0, 10, 0, 0,     0, 0, 0, 0, 0,      257, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 258, 0, 10, 0, 0,     0, 0, 0, 0, 0,      258, 0, 20, 0, 0,      0, 0, 0, 0, 0 },
+    { 12461, 2, 1, 0, 0,     0, 0, 0, 0, 0,      2125, 5, 1, 0, 0,      0, 0, 0, 0, 0 } // 50
 };
 
 enum battlepassInfo
@@ -589,16 +593,16 @@ stock CompleteBattlePassTask(playerid, TaskID, TaskType, TaskPara = 0)
                 if(TaskPara == 0) BattlePass[playerid][bpTaskOneTimeQuan][i]++;
                 else
                 {
-                    if(BattlePass[playerid][bpTaskOneTimeQuan][i]+TaskPara > BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1]
-                     && BattlePass[playerid][bpTaskOneTimeQuan][i] < BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1]) BattlePass[playerid][bpTaskOneTimeQuan][i] = BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1];
+                    if(BattlePass[playerid][bpTaskOneTimeQuan][i]+TaskPara > BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1]
+                     && BattlePass[playerid][bpTaskOneTimeQuan][i] < BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1]) BattlePass[playerid][bpTaskOneTimeQuan][i] = BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1];
                     else BattlePass[playerid][bpTaskOneTimeQuan][i]+=TaskPara;
                 }
-                if(BattlePass[playerid][bpTaskOneTimeQuan][i] == BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1])
+                if(BattlePass[playerid][bpTaskOneTimeQuan][i] == BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1])
                 {
-                    format(string, sizeof(string), "{0088ff}Вы выполнили разовое задание {ffcc66}Пропуска {0088ff}и получили {99ff66}%d {0088ff}опыта", BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][0]);
+                    format(string, sizeof(string), "{0088ff}Вы выполнили разовое задание {ffcc66}Пропуска {0088ff}и получили {99ff66}%d {0088ff}опыта", BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][0]);
                     SendClientMessage(playerid, COLOR_GREY, string);
                     BattlePass[playerid][bpTaskOneTimeComplete][i] = true;
-                    GiveExpBattlePass(playerid,BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][0]);
+                    GiveExpBattlePass(playerid,BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][0]);
                     SaveSlotBattlePassTask(playerid,i,TaskType);
                 }
                 break;
@@ -629,7 +633,7 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
 
         if(BattlePassAwarsdItem[AwardsID][2+i*5] > 0) yesAwards[i] = true;
         if(!yesAwards[i]) continue;
-        if(BattlePassAwarsdItem[AwardsID][1+i*5] == 0)
+        if(CheckThingQuan(BattlePassAwarsdItem[AwardsID][0+i*5]))
         {
             new getQuan, getLimit;
             i_limit(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], getQuan, getLimit);
@@ -643,8 +647,20 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
         }
         else
         {
-            new put_inva = GiveThingPlayer(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], BattlePassAwarsdItem[AwardsID][2+i*5], BattlePassAwarsdItem[AwardsID][3+i*5], 0, BattlePassAwarsdItem[AwardsID][1+i*5], BattlePassAwarsdItem[AwardsID][4+i*5], 9999); // Выдаём предмет игроку
-			if(put_inva == -1) Throw(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], BattlePassAwarsdItem[AwardsID][2+i*5], BattlePassAwarsdItem[AwardsID][3+i*5], 0, BattlePassAwarsdItem[AwardsID][1+i*5], BattlePassAwarsdItem[AwardsID][4+i*5]), yesDropAwards = true;
+            if(IsACasePackID(BattlePassAwarsdItem[AwardsID][4+i*5]))
+            {
+                new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
+                format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(BattlePassAwarsdItem[AwardsID][4+i*5])]);
+                CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
+
+                new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+                if(put_inva == -1) Throw(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack), yesDropAwards = true;
+            }
+            else
+            {
+                new put_inva = GiveThingPlayer(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], BattlePassAwarsdItem[AwardsID][2+i*5], BattlePassAwarsdItem[AwardsID][3+i*5], 0, BattlePassAwarsdItem[AwardsID][1+i*5], BattlePassAwarsdItem[AwardsID][4+i*5], 9999); // Выдаём предмет игроку
+                if(put_inva == -1) Throw(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], BattlePassAwarsdItem[AwardsID][2+i*5], BattlePassAwarsdItem[AwardsID][3+i*5], 0, BattlePassAwarsdItem[AwardsID][1+i*5], BattlePassAwarsdItem[AwardsID][4+i*5]), yesDropAwards = true;
+            }
         }
     }
 

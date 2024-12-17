@@ -415,6 +415,8 @@ stock trailer_add(playerid, model, trailer)
         SendClientMessage(playerid, COLOR_GRAY, "[ Мысли ]: Я Купил трейлер и могу забрать его в точке загрузки");
         SuccessMessage(playerid, "{99ff66}Вы купили трейлер\n{ffcc66}Заберите трейлер в точке загрузки\n{ffcc66}Для этого подъедьте на автомобиле и нажмите CAPS LOCK");
  	    CreateGps(playerid,-547.4172, -1018.2808, 24.1529, 0, 0, 10.0);
+        
+        CompleteBattlePassTask(playerid,3,2);
 
         HouseLog(2, "buytrailer", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[playerid][pTrailer], 0, "");
 
