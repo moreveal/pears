@@ -13,14 +13,14 @@
 // Идентификатор кастомных кейсов
 new customCaseNameID[][] =
 {
-    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks","clothes","accessory","car","crypto"
+    "maniac", "village", "yakuza", "gold", "graves","halloween24","craftaks","clothes","accessory","car","crypto","newyear25"
 };
 
 // Названия кастомных кейсов
 new customCaseName[][] =
 {
     "Кейс Маньяка", "Кейс Деревенских", "Кейс Yakuza", "Gold Кейс", "Похоронный кейс", "Halloween Кейс 2024", "Кейс Аксессуарный(крафтовый)",
-    "Кейс Одежды", "Кейс Аксессуаров", "Кейс Автомобильный", "Крипто Кейс"
+    "Кейс Одежды", "Кейс Аксессуаров", "Кейс Автомобильный", "Крипто Кейс","Новогодний Кейс 2025"
 };
 
 // Упаковки, которые относятся к кейсу
@@ -44,6 +44,7 @@ stock GetModelCustomCase(thingPack)
     else if(thingPack == 14) model = 12450; // Акс
     else if(thingPack == 15) model = 12448; // автокейс
     else if(thingPack == 16) model = 12452; // Крипта
+    else if(thingPack == 17) model = 12403; // Новогодний
     else model = 19918;
     return model;
 }
@@ -63,6 +64,7 @@ stock GetCustomCaseInventoryPack(caseID)
     else if(caseID == 8) thingPack = 14; // Акс
     else if(caseID == 9) thingPack = 15; // Авто
     else if(caseID == 10) thingPack = 16; // Крипта
+    else if(caseID == 11) thingPack = 17; // Крипта
     return thingPack;
 }
 
