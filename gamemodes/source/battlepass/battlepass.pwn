@@ -510,14 +510,17 @@ stock dialogBattlePassListAwards(playerid)
     new line[250];
     new lines[MAX_LEVEL_BATTLEPASS*250];
     format(line,sizeof(line),"{cccccc}Обычный пропуск \t \t{ffcc00}Премиум пропуск\t "), strcat(lines,line);
-    new tempText[4][MAX_LETTERS_IN_DIALOGBATTLEPASSMENU];
+    new tempText[5][MAX_LETTERS_IN_DIALOGBATTLEPASSMENU];
     for(new i; i< MAX_LEVEL_BATTLEPASS; i++)
     {
         format(tempText[0],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"[ %d шт. ]",BattlePassAwarsdItem[i][2]);
         format(tempText[1],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"[ %d шт. ]",BattlePassAwarsdItem[i][7]);
         format(tempText[2],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"[ %d шт. ]",BattlePassAwarsdItem[i][12]);
         format(tempText[3],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"[ %d шт. ]",BattlePassAwarsdItem[i][17]);
-        format(line,sizeof(line),"\n%s%d.{ffffff} %s %s \t%s %s\t%s %s\t%s %s",(BattlePass[playerid][bpTakeAwards][i] && BattlePass[playerid][bpTakeAwardsDonate][i]) ? "{99ff66}" : "{ff6347}",i+1,
+        if(BattlePass[playerid][bpTakeAwards][i] && BattlePass[playerid][bpTakeAwardsDonate][i]) format(tempText[4],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"{99ff66}");
+        else if(BattlePass[playerid][bpTakeAwards][i] && !BattlePass[playerid][bpTakeAwardsDonate][i]) format(tempText[4],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"{ffcc00}");
+        else if(!BattlePass[playerid][bpTakeAwards][i] && !BattlePass[playerid][bpTakeAwardsDonate][i]) format(tempText[4],MAX_LETTERS_IN_DIALOGBATTLEPASSMENU,"{ff6347}");
+        format(line,sizeof(line),"\n%s%d.{ffffff} %s %s \t%s %s\t%s %s\t%s %s",tempText[4],i+1,
         GetNameThing(0, BattlePassAwarsdItem[i][0], BattlePassAwarsdItem[i][1], BattlePassAwarsdItem[i][4]),
         BattlePassAwarsdItem[i][2] != 0 ? tempText[0] : " ",
         GetNameThing(0, BattlePassAwarsdItem[i][5], BattlePassAwarsdItem[i][6], BattlePassAwarsdItem[i][9]),
