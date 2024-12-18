@@ -50,7 +50,7 @@ stock use_Refrigerator(playerid, i, inva, useinva)
  		
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != Refrigerator[i][fridgeInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+		if(!IsAItemMatch(playerid, useinva, Refrigerator[i][fridgeInvent][inva])) return 1;
 	}
     if(GetPlayerRefrigerator(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от холодильника"), closetab(playerid, 1);
 
@@ -171,7 +171,7 @@ stock put_Refrigerator(playerid, inva, i, thingId, thingQuan, binva, thingType, 
 	if(GetPlayerRefrigerator(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от холодильника"), closetab(playerid, 1);
 	
 	if(NotGiveInflatabelBoat(playerid, thingId, thingType)) return i_resetveshi(playerid);
-	if(!PerishableThing(thingId, thingType)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя положить в холодильник"), i_resetveshi(playerid);
+	if(!PerishableThing(thingId, thingType) || thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя положить в холодильник"), i_resetveshi(playerid);
 
 
 	new string[100];

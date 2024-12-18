@@ -513,7 +513,7 @@ stock use_trash(playerid, tra, inva, useinva)
 	new fpick = gTrash[inva][tra], fquan = gTrashKol[inva][tra], fpara = gTrashPara[inva][tra], fqara = gTrashQara[inva][tra], thingType = gTrashType[inva][tra], thingPack = gTrashPack[inva][tra];
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+ 		if(!IsAItemMatch(playerid, useinva, fpick)) return i_resettabs(playerid);
 	}
 	
 	if(!IsPlayerInRangeOfPoint(playerid,3.0,TrashPos[tra][TrashPos_X], TrashPos[tra][TrashPos_Y], TrashPos[tra][TrashPos_Z])) return ErrorMessage(playerid, "{FF6347}Вы далеко от мусорного контейнера"), closetab(playerid, 1);

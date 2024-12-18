@@ -21,7 +21,7 @@ stock use_mygoods(playerid, inva, useinva) // Берём предмет  из с
     if(fpick == 0) return i_resettabs(playerid);
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != fpick && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+ 		if(!IsAItemMatch(playerid, useinva, fpick)) return i_resettabs(playerid);
 	}
 	if(Goods[playerid] == 0) return ErrorMessage(playerid, "{FF6347}Вы не можете сейчас перекладывать товары\n{cccccc}Откройте или арендуйте торговую лавку"), i_resetveshi(playerid), i_resettabs(playerid);
 	

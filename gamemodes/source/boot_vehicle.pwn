@@ -12,7 +12,7 @@ stock use_boot(playerid, v, inva, useinva)
  	new fpick = VehInfo[v][vInvent][inva], fquan = VehInfo[v][vInv][inva], thingPara = VehInfo[v][vInvPara][inva], thingQara = VehInfo[v][vInvQara][inva], thingType = VehInfo[v][vInvType][inva], thingPack = VehInfo[v][vInvPack][inva];
  	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != VehInfo[v][vInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return i_resettabs(playerid);
+		if(!IsAItemMatch(playerid, useinva, VehInfo[v][vInvent][inva])) return i_resettabs(playerid);
 	}
 	if(fpick == 0) return 1;
 	
@@ -666,6 +666,7 @@ stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;
 	lim[8] = 100, lim[19] = 100, lim[41] = 1000, lim[25] = 1000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 1кк
 	lim[4] = 10000, lim[5] = 10000, lim[6] = 10000, lim[7] = 10000, lim[9] = 20, lim[18] = 1000, lim[20] = 10000, lim[27] = 10000, lim[28] = 10000, lim[29] = 10000, lim[30] = 10000;
+	lim[22] = 100; // Мясо
 	lim[46] = 100, lim[47] = 100, lim[55] = 100;
 	lim[60] = 5000; // Палладий
 	lim[61] = 100, lim[64] = 1000, lim[65] = 1000, lim[66] = 1000, lim[67] = 1000;
@@ -676,7 +677,8 @@ stock v_limit(v, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[140] = 1000, lim[141] = 1000, lim[142] = 100, lim[180] = 500, lim[181] = 500, lim[197] = 50, lim[198] = 500, lim[225] = 500, lim[230] = 500;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 5000; // Алюминий
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_boot(v, thingId);
     getLimit = lim[thingId];
 	return 1;

@@ -198,11 +198,11 @@ public Call_Donate(playerid)
 	if(rows == 0) return showDialogErrorDonateCall(playerid);
 
 	// Собираем все донаты на аккаунте
-	new gold;
+	new gold = 0;
 	for(new i = 0; i < rows; i++)
 	{
 		new amount;
-		cache_get_value_name_int(0, "amount", amount);
+		cache_get_value_name_int(i, "amount", amount);
 		gold += amount;
 	}
 
@@ -473,6 +473,7 @@ function Call_setvip(playerid, const str_name[], status)
 stock RepairVehicleForGold(playerid)
 {
     if(Protect_Veh[playerid] == 9999 && Protect_Seat[playerid] == 9999) return ErrorText(playerid, "{FF6347}Вы не в транспорте"), showDialogDonateMenu(playerid);
+    if(PursuitTime[playerid] >= 1) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Меня преследует полиция..."), showDialogDonateMenu(playerid);
     if(PlayerInfo[playerid][pDonateMoney] < donatePrice[13]) return pc_cmd_donate(playerid), ErrorText(playerid, "{FF6347}Вам не хватает золота");
 
     new vehicleid;

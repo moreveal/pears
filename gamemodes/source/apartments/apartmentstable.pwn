@@ -20,7 +20,7 @@ stock use_Apartments_table(playerid, i, inva, useinva)
  		
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != ApartmentsRoom[i][aprInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+		if(!IsAItemMatch(playerid, useinva, ApartmentsRoom[i][aprInvent][inva])) return 1;
 	}
     if(IsAApartmentsTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
 

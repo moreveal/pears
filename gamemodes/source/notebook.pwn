@@ -707,7 +707,7 @@ stock gotobuycrypto(playerid,id)
    			SendClientMessage(para, COLOR_GREY, "{99ff66}[ GOLD TRADE ]: {cccccc}Успешная сделка на %d$ с {ff9000}%s {cccccc}| Ваш доход: {ffcc00}%dG", price, rpplayername(playerid), count);
         }
 
-        format(string, sizeof(string),"Подал %dG за %d$", count, price);
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[para][pID], PlayerInfo[para][pName], PlayerInfo[para][pPlaIP], -count, string);
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);
@@ -719,7 +719,7 @@ stock gotobuycrypto(playerid,id)
 		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"SELECT DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", TradeCrypt[id][tcVlad]);
 		mysql_tquery(pearsq, string_mysql, "get_tobuytradecrypto", "ddddds", playerid, TradeCrypt[id][tcVlad], price, id, TradeCrypt[id][tcCount], TradeCrypt[id][tcName]);
 
-        format(string, sizeof(string),"Подал %dG за %d$", count, price);
+        format(string, sizeof(string),"Продал %dG за %d$", count, price);
         DonateLog("sellgold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], TradeCrypt[id][tcVlad], TradeCrypt[id][tcName], "", -count, string);
 
         format(string, sizeof(string),"Купил %dG за %d$", count, price);

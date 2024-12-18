@@ -44,6 +44,9 @@ stock ArestPlayer(suspectid, copid, e_ArestType: type)
             } else PlayerInfo[suspectid][pJailTime] = PlayerInfo[suspectid][pCrimes] * (7 * 60);
 		}
 
+		if(PlayerInfo[suspectid][pLevel] < 5 && PlayerInfo[suspectid][pJailTime] > 3600) PlayerInfo[suspectid][pJailTime] = 3600;
+		else if(PlayerInfo[suspectid][pJailTime] > 7200) PlayerInfo[suspectid][pJailTime] = 7200; // ВРЕМЕННО
+
 		if (copid < 0) SendClientMessage(suspectid, COLOR_LIGHTRED, "* Вы были арестованы !");
 		else
 		{

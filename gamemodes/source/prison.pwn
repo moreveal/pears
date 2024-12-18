@@ -883,7 +883,7 @@ stock use_prisontable(playerid, i, inva, useinva)
  		
 	if(useinva != 9999)
 	{
- 		if(PlayerInfo[playerid][pInven][useinva] != PrisonTableInfo[i][ptInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
+        if(!IsAItemMatch(playerid, useinva, PrisonTableInfo[i][ptInvent][inva])) return 1;
 	}
     if(IsAPrisonBedTable(playerid) == -1) return ErrorMessage(playerid, "{FF6347}Вы далеко от тумбы"), closetab(playerid, 1);
 
@@ -1009,6 +1009,7 @@ stock pt_limit(pt, thingId, &getQuan, &getLimit) // Проверяем лими�
 	lim[8] = 100, lim[19] = 1000, lim[41] = 1000, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100000, lim[5] = 100000, lim[6] = 100000, lim[7] = 100000, lim[9] = 20, lim[18] = 10000, lim[20] = 10000, lim[27] = 50000, lim[28] = 50000, lim[29] = 50000, lim[30] = 50000;
 	lim[46] = 1000, lim[47] = 1000, lim[55] = 100, lim[60] = 1000, lim[61] = 500, lim[64] = 10000, lim[65] = 10000, lim[66] = 10000, lim[67] = 10000;
+    lim[22] = 100; // Мясо
     lim[70] = 100;
     lim[71] = 1000;
 	lim[72] = 1000, lim[73] = 1000, lim[74] = 1000, lim[75] = 1000, lim[76] = 1000, lim[77] = 1000, lim[78] = 1000, lim[79] = 1000, lim[80] = 1000, lim[81] = 1000;

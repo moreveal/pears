@@ -143,14 +143,7 @@ stock use_dom(playerid, dom, inva, useinva)
  		
 	if(useinva != 9999)
 	{
-		if(!Backpack[playerid])
- 		{
-			if(PlayerInfo[playerid][pInven][useinva] != DomInfo[dom][dInvent][inva] && PlayerInfo[playerid][pInven][useinva] != 0) return 1;
-		}
-		else
-		{
-			if(BackPackInfo[playerid][backpackInvent][useinva] != DomInfo[dom][dInvent][inva] && BackPackInfo[playerid][backpackInv][useinva] != 0) return 1;
-		}
+		if(!IsAItemMatch(playerid, useinva, DomInfo[dom][dInvent][inva])) return 1;
 	}
 
 	if(!IsANearWardrobeDom(playerid, dom)) return ErrorMessage(playerid, "{FF6347}Вы далеко от шкафа"), closetab(playerid, 1);
@@ -553,6 +546,7 @@ stock d_limit(d, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	for(new i = 0; i < sizeof(friskName); i++) lim[i] = 1;
 	lim[8] = 1000, lim[19] = 1000, lim[41] = 1000, lim[25] = 999000000; // Аптечки, Отмычки, Бенгальские Свечи, Деньги 999кк
 	lim[4] = 100000, lim[5] = 100000, lim[6] = 100000, lim[7] = 100000, lim[9] = 20, lim[18] = 10000, lim[20] = 10000, lim[27] = 50000, lim[28] = 50000, lim[29] = 50000, lim[30] = 50000;
+	lim[22] = 100; // Мясо
 	lim[46] = 1000, lim[47] = 1000, lim[55] = 100;
 	lim[60] = 10000; // Палладий
 	lim[61] = 500, lim[64] = 10000, lim[65] = 10000, lim[66] = 10000, lim[67] = 10000;
@@ -563,7 +557,8 @@ stock d_limit(d, thingId, &getQuan, &getLimit) // Проверяем лимит�
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 1000, lim[198] = 1000, lim[225] = 1000, lim[230] = 100;
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 10000; // Алюминий
-
+	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
+	
     getQuan = get_dom(d, thingId);
     getLimit = lim[thingId];
 	return 1;
