@@ -3261,7 +3261,7 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 	// Упаковываем подарок
 	if(Hold[playerid] == 4)
 	{
-		if(thingtype != 5)
+		if(thingType != 5)
 		{
 			if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
 			if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет уже упакован");
