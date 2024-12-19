@@ -3261,8 +3261,11 @@ stock UseItem(playerid,inva, fpick,fquan,fpara,thingType,thingPack)
 	// Упаковываем подарок
 	if(Hold[playerid] == 4)
 	{
-		if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
-		if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет уже упакован");
+		if(thingtype != 5)
+		{
+			if(NotGiveThing(fpick, thingType, fquan)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя упаковать в подарок");
+			if(thingPack > 0) return ErrorMessage(playerid, "{FF6347}Этот предмет уже упакован");
+		}
 		if(fpick == 51 || fpick == 63 || DocumentThing(fpick, thingType)) return ErrorMessage(playerid, "{FF6347}Документы нельзя упаковать в подарок");
 		
 		Veshi[playerid] = 1;
