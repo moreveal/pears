@@ -147,7 +147,7 @@ new BattlePassWeeklyTaskSetting[sizeof(BattlePassWeeklyTaskName)][2] =
     { 100, 1000},           // 25
     { 100, 5000},          // 26
     { 100, 1000000},          // 27
-    { 100, 500},          // 28
+    { 100, 20},          // 28
     { 100, 10},          // 29
     { 100, 10},          // 30
     { 100, 40},          // 31
@@ -260,7 +260,8 @@ enum battlepassInfo
     bpTaskOneTime[sizeof(BattlePassOneTimeTaskName)], // Разовые задания за БП
     bool:bpTaskOneTimeComplete[sizeof(BattlePassOneTimeTaskName)], // Ежедневные задания
     bpTaskOneTimeQuan[sizeof(BattlePassOneTimeTaskName)], // Разовые задания за БП подсчет
-    bpOneTimeLoad // Загружены ли были разовые задания
+    bpOneTimeLoad, // Загружены ли были разовые задания
+    bpBuyLevel // Кол.во покупок лвла, для подсчета умножения
 }
 new BattlePass[MAX_REALPLAYERS][battlepassInfo];
 
@@ -291,6 +292,50 @@ stock dialogBattlePassMenu(playerid)
                                 onetimequan == onetimemaxquan ? "{99ff66}Выполнены" : tempText[2]);
 	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
 	ShowDialog(playerid,BATTLEPASS_SHOW_MENU,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock dialogBattlePassLevelMenu(playerid)
+{
+	new lines[500], string[100];
+	format(lines,sizeof(lines),"{C8A2C8}Пропуск: %s\t "\
+                                "\n{ff9000}Информация о пропуске\t "\
+                                "\n{0088ff}Купить ЛВЛ пропуска за {66ff99}Вирты \t 1 lvl = {66ff99}%d$"\
+								"\n{0088ff}Купить ЛВЛ пропуска за {ffcc00}Gold \t 1 lvl = {ffcc00}%d Gold",
+                                !BattlePass[playerid][bpDonate] ? "{cccccc}Обычный" : "{ffcc00}Премиум",
+                                !BattlePass[playerid][bpDonate] ? 1000000+1000000*BattlePass[playerid][bpBuyLevel] : (1000000+1000000*BattlePass[playerid][bpBuyLevel])/2,
+                                !BattlePass[playerid][bpDonate] ? 100+100*BattlePass[playerid][bpBuyLevel] : (100+100*BattlePass[playerid][bpBuyLevel])/2);
+	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
+	ShowDialog(playerid,BATTLEPASS_SHOW_LEVELMENU,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock dialogBattlePassLevelMenuInformation(playerid)
+{
+	new lines[3000], string[140];
+	format(lines,sizeof(lines),"{C8A2C8}Пропуск: %s"\
+                                "\n\n{ff9000}Что это за пропуск?"\
+                                "\n{cccccc}- Это сезонное игровое событие, во время которого за выполнение заданий, можно получать опыт этого пропуска"\
+                                "\n{cccccc}- За опыт повышается уровень пропуска, а уже за каждый уровень есть награды, которые может получить абсолютно любой игрок"\
+                                "\n{cccccc}- Задания бывают 3 типов. Ежедневные - обновляются каждый день. Еженедельные - обновляются раз в неделю"\
+                                "\n{cccccc}Разовые задания - не обновляются, и доступны 1 раз за сезон пропуска"\
+                                "\n\n{ff9000}- Пропуск бывает 2 типов:"\
+                                "\n{ffffff}Обычный {cccccc}- со стандартными наградами, доступен всем без вложений/доната"\
+                                "\n{ffcc00}Премиум {cccccc}- с премиум наградами, покупка уровня в 2 раза дешевле, доступен к покупке на нашем сайте"\
+                                "\n\n\n{ff9000}Вопрос-ответ по пропуску:"\
+                                "\n{0088ff}Я не покупал пропуск, но собрал все награды, я смогу получить премиум награды если куплю пропуск?"\
+                                "\n{cccccc}- Да, цифра перед наградой показывает статус сбора наград: {ff6347}Красным{cccccc}, если никакая награда не собрана, вообще"\
+                                "\n{ffcc00}Желтым{cccccc} если собрана обычная награда, а премиум не была собрана и {99ff66}зеленым{cccccc} если собраны все награды"\
+                                "\n{0088ff}Как мне заменить еженедельное задание?"\
+                                "\n{cccccc}- Увы никак, у нас есть причины не вводить данную функцию, задания специально подбирались под невозможность замены"\
+                                "\n{cccccc}Так же, мы хотим что бы игрок был ознакомлен со всеми системами, которые присутствуют в заданиях"\
+                                "\n{0088ff}Я не успеваю получить 50 уровень, что мне делать?"\
+                                "\n{cccccc}- Вы можете купить уровни за вирты или золото. С каждой покупкой уровня, его стоимость будет увеличиваться на 1.000.000$ или 100 GOLD"\
+                                "\n{0088ff}Какие награды идут после 50 уровня?"\
+                                "\n{cccccc}- Каждый уровень вы будете получать по Новогоднему Кейсу, а каждый 5 уровень по одному Gold кейсу",
+                                !BattlePass[playerid][bpDonate] ? "{cccccc}Обычный" : "{ffcc00}Премиум");
+	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
+	ShowDialog(playerid,BATTLEPASS_SHOW_LEVELMENU_INFO,DIALOG_STYLE_MSGBOX, string, lines, "*", "");
 	return true;
 }
 
@@ -415,6 +460,7 @@ stock dialogCase_BattlePass(playerid, dialogid, response, listitem) {
             if (!response) return false;
             else
             {
+                if(listitem == 0) dialogBattlePassLevelMenu(playerid);
                 if(listitem == 1) dialogBattlePassListAwards(playerid);
                 if(listitem > 1) return dialogBattlePassListTask(playerid, listitem - 2);
             }
@@ -439,6 +485,48 @@ stock dialogCase_BattlePass(playerid, dialogid, response, listitem) {
             else{
                 GiveAwardsBattlePassLevel(playerid,listitem);
             }
+        }
+        case BATTLEPASS_SHOW_LEVELMENU: {
+            if(!response) return dialogBattlePassMenu(playerid);
+            else
+            {
+                if(listitem == 0) dialogBattlePassLevelMenuInformation(playerid);
+                if(listitem == 2)
+                {
+                    new gold = 100+100*BattlePass[playerid][bpBuyLevel];
+                    if(BattlePass[playerid][bpDonate]) gold /= 2;
+                    if(PlayerInfo[playerid][pDonateMoney] < gold) return ErrorMessage(playerid, "{FF6347}У вас недостаточно Gold [ Y >> Donate ]");
+                    PlayerInfo[playerid][pDonateMoney] -= gold;
+                    tclArifmetikAllGold -= gold;
+                    mysql_save(playerid,4);
+                    BattlePass[playerid][bpBuyLevel]++;
+                    GiveExpBattlePass(playerid,1000);
+
+                    new string[50];
+                    format(string, sizeof(string),"Купил уровень пропуска за голду [%d покупка]", BattlePass[playerid][bpBuyLevel]);
+ 	                DonateLog("buylevelbp", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -gold, string);
+
+                    SuccessMessage(playerid,"{44ff99}Я купил уровень пропуска за золото!");
+                }
+                if(listitem == 1)
+                {
+                    new money = 1000000+1000000*BattlePass[playerid][bpBuyLevel];
+                    if(BattlePass[playerid][bpDonate]) money /= 2;
+                    if(oGetPlayerMoney(playerid) < money) return ErrorMessage(playerid, "{FF6347}У вас недостаточно Денег на руках");
+                    oGivePlayerMoney(playerid, -money);
+                    BattlePass[playerid][bpBuyLevel]++;
+                    GiveExpBattlePass(playerid,1000);
+                    
+                    new string[50];
+                    format(string, sizeof(string),"Купил уровень пропуска за вирты [%d покупка]", BattlePass[playerid][bpBuyLevel]);
+ 	                MoneyLog("buylevelbp", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -money, string);
+
+                    SuccessMessage(playerid,"{44ff99}Я купил уровень пропуска за вирты!");
+                }
+            }
+        }
+        case BATTLEPASS_SHOW_LEVELMENU_INFO:{
+            dialogBattlePassLevelMenu(playerid);
         }
     }
 
@@ -690,6 +778,32 @@ stock GiveExpBattlePass(playerid, exp)
         SendClientMessage(playerid,COLOR_GREY,"{0088ff}Мой уровень {ffcc66}Пропуска {0088ff}был повышем и я могу получить награду{cccccc}[ Y > Пропуск > Награды]");
     }
     else BattlePass[playerid][bpExp] += exp;
+
+    if(BattlePass[playerid][bpLevel] > 50)
+    {
+        new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
+        if(BattlePass[playerid][bpLevel] % 5 == 0) thingPack = 9;
+        else thingPack = 17;
+        format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(thingPack)]);
+        CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
+
+        new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+        if(put_inva == -1)
+        {   
+            Throw(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack);
+            SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Черт! У меня нет места в карманах, предметы лежат на земле!");
+        }
+    }
+
+    SaveLevelBattlePass(playerid);
+    return true;
+}
+
+stock SaveLevelBattlePass(playerid)
+{
+    new string_mysql[200];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate`= '%d',`bpLevel`= '%d',`bpExp`= '%d',`bpBuyLevel`= '%d' WHERE `user_id` = '%d'",BattlePass[playerid][bpDonate], BattlePass[playerid][bpLevel],BattlePass[playerid][bpExp],BattlePass[playerid][bpBuyLevel], PlayerInfo[playerid][pID]);
+    mysql_tquery(pearsq, string_mysql);
     return true;
 }
 
@@ -835,6 +949,7 @@ stock OnPlayerLoadBattlePass(playerid)
     cache_get_value_name_int(0,"bpDay",BattlePass[playerid][bpDay]);
     cache_get_value_name_int(0,"bpWeekly",BattlePass[playerid][bpWeekly]);
     cache_get_value_name_int(0,"bpOneTimeLoad",BattlePass[playerid][bpOneTimeLoad]);
+    cache_get_value_name_int(0,"bpBuyLevel",BattlePass[playerid][bpBuyLevel]);
     for(new i; i < MAX_LEVEL_BATTLEPASS; i++)
     {
         new bool:is_null;
