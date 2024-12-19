@@ -50,7 +50,7 @@ new fdrawName[][] = // Название Вещи
 	"KVR Perfomance","Brembo","Wilwood", "Philin Customs", "ѓOMKPAЏ", "ЂPOHEЊ‡EHKA 1000", "ЂPOHEЊ‡EHKA 2000", "ЂPOHEЊ‡EHKA 3000", "CYMKA", "KPEM OЏ CO‡H‰A",
 	"ѓe¦ek¦op paљapoў 1 yp.", "ѓe¦ek¦op paљapoў 2 yp.", "‚ћyҐњћka paљapoў", "KEY CASE MANIAC", "KEY CASE YAKUZA", "PAѓ…OЊEPEX‹AЏЌ…K",
 	"ЏEP–…ЏHA•_C–EC’", "A‡”M…H…†", "‚Oѓ„O ЊPOЊYCK", "Kњћoўa¦¦", "KEY CASE GRAVES", "ЌEPEЊ_OC…P…CA", "HEKPOHO–…KOH","MEX 3A†‰A", "MEX ‡…C‘", "ЋKYPA ‹O‡KA", "ЋKYPA MEѓ‹Eѓ•", "KO„A O‡EH•","ЊPOK‡AѓK…","KOЏE‡OK",
-	"KOЏE‡OK", "KYЊOH OѓE„ѓA", "KYЊOH AKCECCYAP", "KYЊOH A‹ЏO", "KYЊOH KP…ЊЏA","X‡EЂ","X‡EЂ","X‡EЂ","X‡EЂ","X‡EЂ"
+	"KOЏE‡OK", "KYЊOH OѓE„ѓA", "KYЊOH AKCECCYAP", "KYЊOH A‹ЏO", "KYЊOH KP…ЊЏA","H…ЏK…","ЋEPCЏ’","YЊ‡OЏHEHHA• KO„A","ЏKAH’","…‚O‡K…"
 };
 new fdrawNameEN[][] = // Название Вещи на Английском
 {
