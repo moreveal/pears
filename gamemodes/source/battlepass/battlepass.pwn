@@ -710,6 +710,7 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
     if(BattlePass[playerid][bpTakeAwards][AwardsID] && !BattlePass[playerid][bpTakeAwardsDonate][AwardsID] && !BattlePass[playerid][bpDonate]) return ErrorMessage(playerid,"{ff6347}Для получения премиум награды нужно купить пропуск [ /donate ]");
 
     new bool:yesAwards[4], bool:noGiveAwards[4], bool:yesDropAwards, bool:nohavePremium;
+    new getQuan, getLimit;
     for(new i; i < 4; i++)
     {
         if(BattlePass[playerid][bpTakeAwards][AwardsID] && (i == 0 || i == 1)) continue;
@@ -726,7 +727,7 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
         if(!yesAwards[i]) continue;
         if(CheckThingQuan(BattlePassAwarsdItem[AwardsID][0+i*5]))
         {
-            new getQuan, getLimit;
+            getQuan = 0, getLimit = 0;
             i_limit(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], getQuan, getLimit);
             if(getQuan+BattlePassAwarsdItem[AwardsID][0+i*5] > getLimit) noGiveAwards[i] = true;
         }
