@@ -17,8 +17,8 @@ new BattlePassDailyTaskSetting[sizeof(BattlePassDailyTaskName)][2] =
 
 new BattlePassWeeklyTaskDescription[][] =
 {
-    "- Вам нужно отправится на работу (/job), после заработать нужную сумму", // 0
-    "- Езжайте в СТО (/gps > Автосервис), купите деталь повышающую характеристики"\
+    "- Вам нужно отправиться на работу (/job), после заработать нужную сумму", // 0
+    "- Поезжайте в СТО (/gps > Автосервис), купите деталь повышающую характеристики"\
     "   \nвашего авто, либо же установите деталь через капот (если у вас имеется она)", // 1
     "- Мусорки разбросаны на территории городов, открывайте их и забирайте патроны", // 2
     "- Отправляйтесь на территорию шахты (/quest > заброшенная шахта), и поиграйте в ивент", // 3
@@ -26,9 +26,9 @@ new BattlePassWeeklyTaskDescription[][] =
     "- Отправляйтесь на территорию деревни (/quest > Деревенские), и поиграйте в ивент", // 5
     "- Включите радио и слушайте его (/radio)", // 6
     "- Сделайте так что бы игроки повысили вам репутацию (/rep)", // 7
-    "- Отправляйтесь в казино (/gps > развлечение), сделайте ставку и выйграйте за раз 1.000.000$", // 8
+    "- Отправляйтесь в казино (/gps > развлечение), сделайте ставку и выиграйте за раз 1.000.000$", // 8
     "- Нло появляется каждый час c 21:00 до 11:00, в разных городах. Вы можете искать его на карте"\
-    "   \nДля выполнения вы должны выстрелить последний патрон, который собъет НЛО"\
+    "   \nДля выполнения вы должны выстрелить последний патрон, который собьет НЛО"\
     "   \nНавык космонавта упростит процесс поиска НЛО, прочитайте описание навыка(/skill)", // 9
     "- Отправляйтесь к Доминику (/quest > Доминик), начните гонку и победите его!", // 10
     "- Подробная информация как найти маньянка в меню квестов (/quest > Маньяк > Правила)", // 11
@@ -46,7 +46,7 @@ new BattlePassWeeklyTaskDescription[][] =
     "- Катайтесь на мотоцикле по штату", // 22
     "- Летайте на самолете по штату", // 23
     "- Летайте на вертолете по штату", // 24
-    "- Плавайте на катери по штату", // 25
+    "- Плавайте на катере по штату", // 25
     "- Прокачивайте навык на работах/станках/используя действия. Подробнее (/skill)", // 26
     "- Отправляйтесь в IKEA (/gps > Услуги > IKEA), и покупайте мебель", // 27
     "- Отправляйтесь в IKEA (/gps > Услуги > IKEA), и покупайте мебель",  // 28
@@ -56,14 +56,14 @@ new BattlePassWeeklyTaskDescription[][] =
     "   \nКупить их в дом можно в IKEA (gps > Услуги > IKEA)", // 31
     "- Подойдите к плите, нажмите [ N ], и в меню начните готовить блюдо"\
     "   \nКупить плиту в дом можно в IKEA (gps > Услуги > IKEA)", // 32
-    "- Поучаствуйте в гонке от Семьи, и доедьте до финиша", // 33
+    "- Поучаствуйте в гонке от Семьи, и доедьте до финиша(во время гонок появляется значек финишного флага на карте)", // 33
     "- Поучаствуйте в гонке от Семьи, и доедьте до финиша первым", // 34
     "- Придите на площадь перед правительством (/gps > Организации > Фракции). И поучаствуйте в митинге", // 35
     "- Отправляйтесь в здание правительства (/gps > Организации > Фракции), и покормите рыбок в аквариуме", // 36
     "- Вам тут еще нужно какое-то объяснение? А ну быстро смотреть Магическую Битву!!!!!", // 37
     "- Каждые 30 минут над территорией штата летит самолет с сумкой. Найдите и сбейте с него сумку", // 38
     "- Купите монтировку, отправляйтесь на лёд, возьмите монтировку в руку и нажмите [ ALT ]", // 39
-    "- Купите или найдите отмучку, и взломайте ей любую дверь(Дома, Авто, Фракции, Генератора)", // 40
+    "- Купите или найдите отмычку, и взломайте ей любую дверь(Дома, Авто, Фракции, Генератора)", // 40
     "- Найдите точку пожертвований, подойдите к ней и нажмите [ ALT ] и сделайте пожертвование", // 41
     "- Отправляйтесь в тюрьму, у камер будет стоять бутылка, вам нужно сесть на неё нажимая кнопку [ C ]" // 42
 };
@@ -730,7 +730,7 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
         {
             getQuan = 0, getLimit = 0;
             i_limit(playerid, BattlePassAwarsdItem[AwardsID][0+i*5], getQuan, getLimit);
-            if(getQuan+BattlePassAwarsdItem[AwardsID][0+i*5] > getLimit) noGiveAwards[i] = true;
+            if(getQuan+BattlePassAwarsdItem[AwardsID][2+i*5] > getLimit) noGiveAwards[i] = true;
         }
 
         if(noGiveAwards[i])
@@ -743,7 +743,7 @@ stock GiveAwardsBattlePassLevel(playerid, AwardsID)
             if(IsACasePackID(BattlePassAwarsdItem[AwardsID][4+i*5]))
             {
                 new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
-                format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(BattlePassAwarsdItem[AwardsID][4+i*5])]);
+                if(BattlePassAwarsdItem[AwardsID][4+i*5] != 5) format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(BattlePassAwarsdItem[AwardsID][4+i*5])]);
                 CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
 
                 new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
@@ -778,24 +778,24 @@ stock GiveExpBattlePass(playerid, exp)
         BattlePass[playerid][bpLevel] += (BattlePass[playerid][bpExp]+exp) / 1000;
         BattlePass[playerid][bpExp] = (BattlePass[playerid][bpExp]+exp) % 1000;
         SendClientMessage(playerid,COLOR_GREY,"{0088ff}Мой уровень {ffcc66}Пропуска {0088ff}был повышем и я могу получить награду{cccccc}[ Y > Пропуск > Награды]");
-    }
-    else BattlePass[playerid][bpExp] += exp;
 
-    if(BattlePass[playerid][bpLevel] > 50)
-    {
-        new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
-        if(BattlePass[playerid][bpLevel] % 5 == 0) thingPack = 9;
-        else thingPack = 17;
-        format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(thingPack)]);
-        CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
+        if(BattlePass[playerid][bpLevel] > 50)
+        {
+            new thingIdCase, thingQuan, thingType, thingPara, thingPack, casename[30];
+            if(BattlePass[playerid][bpLevel] % 5 == 0) thingPack = 9;
+            else thingPack = 17;
+            format(casename, sizeof(casename),"%s", customCaseNameID[GetInventoryPackCustomCase(thingPack)]);
+            CreateCasePlayer(playerid, thingIdCase, thingQuan, thingType,thingPara, thingPack, casename);
 
-        new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
-        if(put_inva == -1)
-        {   
-            Throw(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack);
-            SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Черт! У меня нет места в карманах, предметы лежат на земле!");
+            new put_inva = GiveThingPlayer(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+            if(put_inva == -1)
+            {   
+                Throw(playerid, thingIdCase, thingQuan, thingPara, 0, thingType, thingPack);
+                SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Черт! У меня нет места в карманах, предметы лежат на земле!");
+            }
         }
     }
+    else BattlePass[playerid][bpExp] += exp;
 
     SaveLevelBattlePass(playerid);
     return true;
