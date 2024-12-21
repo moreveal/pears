@@ -20,7 +20,7 @@
 // 11. pt_limit - лимиты тумбы в тюрьме
 
 
-// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт)
+// Тип товара (0 обычный, 1 оружие, 2 аксессуар, 3 одежда, 4 мебель, 5 транспорт, 6 - животные)
 // Упаковка (0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный Ящик, 5 Кейс)
 
 new fdrawName[][] = // Название Вещи
@@ -986,6 +986,11 @@ stock i_infofpick(playerid, fpick, thingQuan, inva, sels, fpara, thingType, thin
 			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "ЏPAHCЊOPЏ");
 			else format(string, sizeof(string), "VEHICLE");
 		}
+		else if(thingType == 6) // Питомцы
+	    {
+			if(PlayerInfo[playerid][pDrawLanguage] == false && Device[playerid] != 1) format(string, sizeof(string), "Њ…ЏOM‰‘");
+			else format(string, sizeof(string), "PETS");
+		}
 	}
 	
 	yesFindModel = GetModelPickItem(playerid, fpick, thingType, fpara, thingPack, sels);
@@ -1324,7 +1329,7 @@ stock GetModelPickItem(playerid, thingId, thingType, thingPara, thingPack, sels)
 			}
 		}
 		if(thingType == 2) yesFindModel = thingId; // Аксессуары
-		if(thingType == 3) yesFindModel = GetModelSkin(playerid, thingId); // Одежда
+		if(thingType == 3 || thingType == 6) yesFindModel = GetModelSkin(playerid, thingId); // Одежда и питомцы
 		if(thingType == 4) yesFindModel = thingId; // Мебель
 		if(thingType == 5) yesFindModel = GetVehicleModelSync(playerid, thingId); // Транспорт
 	}
@@ -2494,6 +2499,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 		else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"Одежда ID %d", thingId);
 		else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s", getIkeaObjectName(thingId));
 		else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s", GetVehicleName(thingId));
+		else if(thingType == 6) format(nameProduct,sizeof(nameProduct),"Питомец ID %d", thingId);
 	}
 	else if(thingPack >= 1) // 0 предмет, 1 подарок, 2 ящик, 3 Мешок, 4 Запечатанный ящик, 5 кейс (помещается только 1 предмет и занимает 1 ячейку)
 	{
@@ -2517,6 +2523,7 @@ stock GetNameThing(readStatus, thingId, thingType, thingPack) // Получае�
 			else if(thingType == 3) format(nameProduct,sizeof(nameProduct),"%s (Одежда ID %d)", hideName, thingId);
 			else if(thingType == 4) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, getIkeaObjectName(thingId));
 			else if(thingType == 5) format(nameProduct,sizeof(nameProduct),"%s (%s)", hideName, GetVehicleName(thingId));
+			else if(thingType == 6) format(nameProduct,sizeof(nameProduct),"%s (Питомец ID %d)", hideName, thingId);
 		}
 	}
 	return nameProduct;
