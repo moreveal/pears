@@ -98,10 +98,10 @@ stock SavePlayerTop(playerid)
     return true;
 }
 
-stock CalculatePointTopCraft(playerid,thingid, param)
+stock CalculatePointTopCraft(playerid,thingid,thingtype, param)
 {
 	new item[5],quan[5],type[5], point;
-	GetThingForCraft(thingid,item[0],quan[0],type[0],item[1],quan[1],type[1],item[2],quan[2],type[2],item[3],quan[3],type[3],item[4],quan[4],type[4]);
+	GetThingForCraft(thingid,thingtype,item[0],quan[0],type[0],item[1],quan[1],type[1],item[2],quan[2],type[2],item[3],quan[3],type[3],item[4],quan[4],type[4]);
 	for(new i; i < 5; i++)
 	{
 		if(item[i] == 0) continue;
