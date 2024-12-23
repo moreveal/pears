@@ -7,8 +7,10 @@ stock RadioInterceptor_IsStateEnabled(playerid, e_RadioInterceptorState: status)
 			new price = floatround(float(getThingPriceGos(236, 0) / 2) * 1.10);
 			if (PlayerInfo[playerid][pAccount] >= price) {
 				oGivePlayerBank(playerid, -price);
+				MoneyLog("hank_radiointerceptor",
+					PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP],
+					0, "", "", -price, "Прошивка радиоперехватчика у Хэнка");
 				SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоего радиоперехватчика, можешь пользоваться!");
-
 				new quan, para;
 				ThingParameters(playerid, 236, quan, para);
 				set_para(playerid, 236, para);
