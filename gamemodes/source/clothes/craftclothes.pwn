@@ -57,7 +57,7 @@ stock ResultCountBustSkin(skinID, skinType, SkinParam)
     if(FindItemSkinCraft(skinID) == -1) return 0;
     SkinParam -= 50;
     new result = 0;
-    if(skinType == 1)
+    if(skinType == 0)
     {
         new Float:count = GetBustSkin(skinID,skinType);
         new Float:math = float(SkinParam)/float(1000);
