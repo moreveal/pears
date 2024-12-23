@@ -1773,11 +1773,10 @@ stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лиц
 	}
 	return 1;
 }
-stock get_para(playerid, fpick, slot = 999) // Параметр предмета
+stock get_para(playerid, fpick) // Параметр предмета
 {
 	new minid = 0, maxid = 40,para = 0, invtype = 0;
 	if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) invtype = 1;
-	if (slot != 999) minid = slot, maxid = slot + 1;
 	if(!invtype)
 	{
 		for(new i = minid; i < maxid; i++)
