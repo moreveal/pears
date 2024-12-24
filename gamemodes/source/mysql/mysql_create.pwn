@@ -57,6 +57,9 @@ stock CreateMysqlTable()
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
 
+    //battlepass
+    AddColumnIfNotExists("battlepass", "Name", "VARCHAR(24) DEFAULT ''");
+
     //Просьба дениса.
     AddColumnIfNotExists("blacklist", "type", "INT NOT NULL DEFAULT '0'"); // 0 - может вынести лидер. 1 Может вынести только админ
     // quest halloween

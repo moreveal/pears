@@ -808,7 +808,7 @@ stock GiveExpBattlePass(playerid, exp)
 stock SaveLevelBattlePass(playerid)
 {
     new string_mysql[200];
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate`= '%d',`bpLevel`= '%d',`bpExp`= '%d',`bpBuyLevel`= '%d',`pName`='%e' WHERE `user_id` = '%d'",BattlePass[playerid][bpDonate], BattlePass[playerid][bpLevel],BattlePass[playerid][bpExp],BattlePass[playerid][bpBuyLevel],PlayerInfo[playerid][pName], PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate`= '%d',`bpLevel`= '%d',`bpExp`= '%d',`bpBuyLevel`= '%d',`Name`='%e' WHERE `user_id` = '%d'",BattlePass[playerid][bpDonate], BattlePass[playerid][bpLevel],BattlePass[playerid][bpExp],BattlePass[playerid][bpBuyLevel],PlayerInfo[playerid][pName], PlayerInfo[playerid][pID]);
     mysql_tquery(pearsq, string_mysql);
     return true;
 }

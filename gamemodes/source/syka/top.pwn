@@ -13,6 +13,7 @@ CMD:top(playerid)
 	format(str,sizeof(str),"Смерти\n"), strcat(sctring,str);
 	format(str,sizeof(str),"Ходок на Зону\n"), strcat(sctring,str);
 	format(str,sizeof(str),"Крафты\n"), strcat(sctring,str);
+	format(str,sizeof(str),"Пропуск\n"), strcat(sctring,str);
 	ShowDialog(playerid,51,DIALOG_STYLE_LIST,"{ff9000}Топ Игроков",sctring,"Выбор","Отмена");
 	return 1;
 }
@@ -35,6 +36,7 @@ public Call_top(playerid, top)
 		case 8:{ atext = "Смерти"; btext = "Deaths"; }
 		case 9:{ atext = "Ходок на Зону"; btext = "Hodka"; }
 		case 10:{ atext = "Крафты"; btext = "pCraftCount"; }
+		case 11:{ atext = "Пропуск"; btext = "bpLevel"; }
 		default: { return 1; }
 	}
 	new year, month,day;
