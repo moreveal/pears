@@ -170,7 +170,8 @@ new BattlePassOneTimeTaskName[][] =
     "Получить питомца", // 1
     "Открыть голд кейсов", // 2
     "Купите трейлер", // 3
-    "Купите транспорт в салоне" // 4
+    "Купите транспорт в салоне", // 4
+    "Собрать подарков Санты" // 5
 };
 
 
@@ -181,7 +182,8 @@ new BattlePassOneTimeTaskSetting[sizeof(BattlePassOneTimeTaskName)][2] =
     { 2000, 1},         // 1
     { 2000, 10},        // 2
     { 2000, 1},         // 3
-    { 2000, 3}         // 4
+    { 2000, 3},         // 4
+    { 2000, 20}         // 5
 };
 
 #define MAX_WEEKLY_BATTLEPASS_TASK 8 // Максимальное кол.во недельных заданий
@@ -804,7 +806,7 @@ stock GiveExpBattlePass(playerid, exp)
 stock SaveLevelBattlePass(playerid)
 {
     new string_mysql[200];
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate`= '%d',`bpLevel`= '%d',`bpExp`= '%d',`bpBuyLevel`= '%d' WHERE `user_id` = '%d'",BattlePass[playerid][bpDonate], BattlePass[playerid][bpLevel],BattlePass[playerid][bpExp],BattlePass[playerid][bpBuyLevel], PlayerInfo[playerid][pID]);
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate`= '%d',`bpLevel`= '%d',`bpExp`= '%d',`bpBuyLevel`= '%d',`pName`='%e' WHERE `user_id` = '%d'",BattlePass[playerid][bpDonate], BattlePass[playerid][bpLevel],BattlePass[playerid][bpExp],BattlePass[playerid][bpBuyLevel],PlayerInfo[playerid][pName], PlayerInfo[playerid][pID]);
     mysql_tquery(pearsq, string_mysql);
     return true;
 }
