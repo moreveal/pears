@@ -65,6 +65,9 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_quest_temp", "HalloweenUnix", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_quest_temp", "HalloweenQuestStatus", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_quest_temp", "user_id", "INT NOT NULL DEFAULT '0'");
+    // new year
+    AddColumnIfNotExists("pp_quest_temp", "pDedMorozMessage", "INT NOT NULL DEFAULT '0'");
+    AddColumnIfNotExists("pp_quest_temp", "pNewYearQuestComplete", "BLOB NULL DEFAULT NULL");
 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom0", "INT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("pp_igroki", "pApartmentsRoom1", "INT NOT NULL DEFAULT '0'");
@@ -118,7 +121,8 @@ stock CreateMysqlTable()
     // Подсказки с озвучкой
     AddColumnIfNotExists("pp_igroki_hint", "hint1", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о деревенских
     AddColumnIfNotExists("pp_igroki_hint", "hint2", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
-    AddColumnIfNotExists("pp_igroki_hint", "hint3", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о маньяке
+    AddColumnIfNotExists("pp_igroki_hint", "hint3", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о охоте
+    AddColumnIfNotExists("pp_igroki_hint", "hint4", "INT NOT NULL DEFAULT '0'"); // Подсказка от джоне о Новом годе
 
     // Цены за объявления CNN
     AddColumnIfNotExists("pp_server", "serv65", "INT NOT NULL DEFAULT '0'");

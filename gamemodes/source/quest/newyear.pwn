@@ -1,0 +1,483 @@
+#define MAX_NEWYEARSGIFTS 76
+#define MAX_LOAD_NEWYEARSGIFTS 20
+#define NEWYEARMUSIC "https://cdn.pears.fun/sound/newyear01.mp3"
+
+new bool:TakeNewYearGiftsItem[MAX_NEWYEARSGIFTS];
+new QuanLoadNewYearGifts = 0;
+new ObjectNewYearGifts[MAX_NEWYEARSGIFTS];
+new TakeNewYearGiftsUnix[MAX_NEWYEARSGIFTS];
+new LaplandiaCube;
+new VremenniLock;
+
+new Float:NewYearsGiftsPos[][] =
+{
+    { 2825.489257, -2380.607177, 12.074913 },
+    { 2874.753173, -2124.703125, 4.229651 },
+    { 2173.919921, -1998.472045, 19.968690 },
+    { 1450.119506, -1964.446533, 29.859375 },
+    { 1744.319213, -1562.918945, 14.162378 },
+    { 1869.361450, -1365.480834, 19.140586 },
+    { 1675.090942, -1357.223022, 158.867218 },
+    { 1561.091064, -1251.914062, 270.531799 },
+    { 1165.305786, -1200.192138, 32.027549 },
+    { 916.051086, -1235.293701, 17.210912 },
+    { 65.668373, -1520.742431, 12.893699 },
+    { 632.667236, -518.744567, 16.335899 },
+    { 820.213623, -560.010925, 20.336259 },
+    { 221.379837, -234.421737, 1.778618 },
+    { 271.871002, -200.912841, 7.061348 },
+    { 184.136276, -107.518669, 2.023437 },
+    { -155.165878, -279.615325, 3.905314 },
+    { -473.163421, -175.238983, 78.210899 },
+    { -478.733306, -544.662170, 29.121551 },
+    { -995.767578, -721.030761, 35.937511 },
+    { -1072.953735, -1154.480224, 129.219192 },
+    { -1429.962402, -1476.728271, 101.671623 },
+    { -1851.483154, -1699.837280, 40.867160 },
+    { -2172.965332, -2415.048583, 34.296852 },
+    { -2005.713134, -2397.754394, 30.625000 },
+    { -2789.937500, -1522.947998, 139.182556 },
+    { -1946.848876, -727.456604, 35.882835 },
+    { -1954.563110, -943.023925, 35.890884 },
+    { -1675.951904, -628.650695, 14.148437 },
+    { -1196.602416, -92.256408, 14.143965 },
+    { -2723.063476, -319.403961, 7.843788 },
+    { -2357.060546, -122.392219, 35.312500 },
+    { -2526.729736, 140.614456, 22.273450 },
+    { -2613.067138, 180.294097, 4.327496 },
+    { -2498.697998, 391.589538, 35.119426 },
+    { -2104.170898, 121.410011, 35.290908 },
+    { -2041.415039, 300.758728, 35.369285 },
+    { -1974.760498, 480.546997, 29.015586 },
+    { -1747.191894, 524.009765, 38.085731 },
+    { -2104.323730, 657.945739, 52.367149 },
+    { -2542.523437, 662.072998, 14.459196 },
+    { -2762.310791, 762.342407, 52.781250 },
+    { -2545.744384, 928.214599, 64.984397 },
+    { -1899.769409, 1159.283569, 45.859413 },
+    { -1801.340698, 749.118957, 24.890686 },
+    { -1624.961669, 1424.082275, 7.175174 },
+    { -1508.176391, 1374.666137, 3.746025 },
+    { -1456.084838, 1874.356811, 32.632785 },
+    { -1213.603393, 1831.412475, 41.929714 },
+    { -879.639648, 1538.580444, 25.914064 },
+    { -857.608276, 1535.618896, 22.587005 },
+    { -731.477233, 1538.727416, 40.436500 },
+    { -684.572631, 941.858886, 13.632812 },
+    { -317.584564, 818.070434, 14.326829 },
+    { -170.179946, 1032.810058, 19.734388 },
+    { -215.991485, 1052.110107, 19.742212 },
+    { -100.532470, 1365.784057, 10.273487 },
+    { -10.221295, 2333.001953, 24.140636 },
+    { 412.984283, 2530.703613, 19.148475 },
+    { -236.908691, 2666.697509, 63.858558 },
+    { 1489.435424, 2773.544677, 10.820312 },
+    { 1766.016601, 2783.305419, 10.835937 },
+    { 2595.452880, 2392.725097, 17.820312 },
+    { 2307.401367, 2352.750732, 11.265733 },
+    { 2101.303710, 1927.404541, 13.232126 },
+    { 2515.277832, 1552.642456, 11.088271 },
+    { 2098.629394, 914.147277, 10.837452 },
+    { 1725.353027, 1402.114013, 10.846714 },
+    { 1087.391601, 1073.335693, 10.838157 },
+    { 2295.732177, 582.306701, 9.255548 },
+    { 1628.364013, 600.000488, 1.757762 },
+    { 1324.015869, 285.990753, 20.045232 },
+    { 1283.486816, 158.074188, 20.793418 },
+    { 2281.225830, 59.565418, 30.483470 },
+    { 2326.517578, 61.828880, 26.492162 },
+    { 2313.577392, -1422.292480, 23.399204 },
+    { 2683.722900, -1111.508666, 69.384071 }
+};
+
+function Call_OnPlayerNewYearLoad(playerid, race_check)
+{
+	new rows;
+	cache_get_row_count(rows);
+	if(rows)
+	{
+	    if(g_MysqlRaceCheck[playerid] != race_check) return Kickx(playerid);
+
+        new bool:is_null;
+        cache_is_value_name_null(0, "pNewYearQuestComplete", is_null);
+        if(is_null == false)
+        {
+            new string_json[512];
+            cache_get_value_name(0, "pNewYearQuestComplete", string_json);
+
+            new JsonNode:node = JSON_INVALID_NODE;
+            if (JSON_Parse(string_json, node) == JSON_CALL_NO_ERR) 
+            {
+                new index = -1, JsonNode: output;
+                while(!JSON_ArrayIterate(node, index, output))
+                {
+                    JSON_GetNodeInt(output, PlayerInfo[playerid][pNewYearQuestComplete][index]);
+                }
+            }
+        }
+        cache_get_value_name_int(0, "pDedMorozMessage", PlayerInfo[playerid][pDedMorozMessage]);
+
+        printf("Call_OnPlayerNewYearLoad(%s) загружен новогодний квест", PlayerInfo[playerid][pName]);
+	}
+	else // Если не нашли в таблице, тогда создаём
+	{
+		new string[100];
+		mysql_format(pearsq, string, sizeof(string), "INSERT INTO `pp_quest_temp` SET `user_id`= '%d'", PlayerInfo[playerid][pID]);
+		mysql_tquery(pearsq, string);
+        printf("Call_OnPlayerNewYearLoad(%s) добавлена ячейка", PlayerInfo[playerid][pName]);
+	}
+    OnlineInfo[playerid][oLoadNewYear] = 1;
+
+	return true;
+}
+
+stock CreateNewYearGifts()
+{
+    if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) return false;
+    new rand = random(MAX_NEWYEARSGIFTS-20);
+    for(new i = rand; i < MAX_NEWYEARSGIFTS; i++)
+    {
+        if(TakeNewYearGiftsUnix[i] > gettime()) continue;
+        else TakeNewYearGiftsItem[i] = false;
+        if(TakeNewYearGiftsItem[i]) continue;
+        ObjectNewYearGifts[i] = CreateDynamicObject(12403, NewYearsGiftsPos[i][0], NewYearsGiftsPos[i][1], NewYearsGiftsPos[i][2]-0.875024, 0.0, 0.0, 0.0, 0, 0, -1, 50.0, 50.0);
+        QuanLoadNewYearGifts++;
+        if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) break;
+    }
+    return true;
+}
+stock SaveNewYearQuestPlayer(playerid)
+{
+    new JsonNode:node = JSON_Array();
+
+    for(new i = 0; i < 13; i++)
+    {
+        JSON_ArrayAppendEx(node, JSON_Int(PlayerInfo[playerid][pNewYearQuestComplete][i]));
+    }
+
+    new string_json[512];
+    if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
+    {
+        new string_mysql[640];
+        mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_quest_temp` SET `pNewYearQuestComplete` = '%e', `pDedMorozMessage` = '%d' WHERE `user_id` = '%d'",
+        string_json,PlayerInfo[playerid][pDedMorozMessage], PlayerInfo[playerid][pID]);
+        mysql_tquery(pearsq, string_mysql);
+    }
+    return true;
+}
+
+stock SendMessageDedMoroz(playerid)
+{
+    if(!IsANewYearSoon() && PlayerInfo[playerid][pSoska] <= 22) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я смогу написать письмо только с 20 декабря по 31 декабря ;(");
+    if(PlayerInfo[playerid][pDedMorozMessage]) return ErrorMessage(playerid, "{ff6347}Вы уже отправили письмо!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid, "{ff6347}Подождите, ваш аккаунт еще не до конца загрузился!");
+    if(GetPVarInt(playerid,"antiflood") > 0) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кхм... использование команды раз в 30 секунд");
+    new stro[110],sctringo[1000];
+    format(stro,sizeof(stro),"\n\n{0088ff}Письмо Деду Морозу\n"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"{cccccc}- Вы можете попросить у него всё, что угодно ;)\n"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"{cccccc}- Письмо не должно содержать мат или оскорбительный смысл\n"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"{cccccc}- Количество символов не меньше 20 и не больше 120\n\n"), strcat(sctringo,stro);
+    format(stro,sizeof(stro),"{ff6347}ВАЖНО!! {cccccc}Письмо можно написать только один раз в году!\n\n"), strcat(sctringo,stro);
+    ShowDialog(playerid,418,DIALOG_STYLE_INPUT,"{0088ff}Письмо Деду Морозу",sctringo,"Отправить","Отмена");
+    return 1;
+}
+
+
+stock CreateNewYearPickup()
+{
+    if(IsANewYear())
+    {
+        CreateNewYearGifts();
+        CreateDynamicPickup(12463, 1, 3296.0962,-358.3546,8.3526, 0, 0); // пьсмо
+        CreateDynamic3DTextLabel("{ff9000}Письмо Дедушке Морозу \n\n{444444}[ ALT ]",-1,3296.0962,-358.3546,8.3526 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        
+        CreateDynamic3DTextLabel("{ff9000}Жердин из овчарни\n\n{444444}[ ALT ]",-1,3261.6216,-340.3169,8.4405 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        LaplandiaCube = CreateDynamicCube(3110.4719,-468.8748, 0.0, 3412.3660,-237.0729, 50.0, 0, 0);
+    }
+    return true;
+}
+
+stock TakeNewYearGifts(playerid)
+{
+    if(GetPlayerVirtualWorld(playerid) > 0 || GetPlayerInterior(playerid) > 0) return false;
+
+    new bool:findBall;
+    for(new i = 0; i < MAX_NEWYEARSGIFTS; i++)
+    {
+        if(IsPlayerInRangeOfPoint(playerid, 2.0, NewYearsGiftsPos[i][0], NewYearsGiftsPos[i][1], NewYearsGiftsPos[i][2]) && ObjectNewYearGifts[i])
+        {
+            TakeNewYearGiftsItem[i] = true;
+            QuanLoadNewYearGifts--;
+            TakeNewYearGiftsUnix[i] = gettime() + 7200;
+            DestroyDynamicObject(ObjectNewYearGifts[i]);
+            ObjectNewYearGifts[i] = 0;
+            findBall = true;
+
+            if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, NEWYEARMUSIC);
+
+            SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Кто-то спрятал подарок... Наверное рядом есть еще подарки {D93A49}[ Подарков на карте %d ]", QuanLoadNewYearGifts);
+
+            new thingId, thingQuan, thingType, thingPara, thingPack;
+            CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "newyear25");
+            GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+                
+            ApplyAnimation(playerid,"CARRY","liftup",4.1, false, true, true, false, 0); // Анимация поднять предмет
+
+            CompleteBattlePassTask(playerid, 5, 2);
+            break;
+        }
+    }
+    return findBall;
+}
+
+CMD:testny(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 10) return 0;
+    CreateQuestOneMan(playerid);
+    return 1;
+}
+
+CMD:questunlock(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 22) return 0;
+    VremenniLock = 1;
+    return 1;
+}
+
+//
+//          Квестовая залупка
+//
+enum NewYearQuestNpc
+{
+    NPC:nyID,  // NPC
+    nyTask, // Задача NPC
+    NPC:nyTargetNpc //
+}
+new NewYearNPC[MAX_REALPLAYERS][NewYearQuestNpc];
+new NPC:ShipNPC[MAX_REALPLAYERS][10];
+new Float:ShipNPCHealt[MAX_REALPLAYERS][10];
+new CountKill[MAX_REALPLAYERS][2];
+
+stock StartNewYearOneMan(playerid)
+{
+    if(!VremenniLock) return ErrorMessage(playerid,"{ff6347}Квест откроется на стриме, следите за постом в группе!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][0] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/1/1_hello.mp3");
+    new lines[300];
+	format(lines,sizeof(lines),"{D93A49}Хо хо хо\n{D93A49}С новым годом, емае!"\
+                                "\n\n{cccccc}Я сейчас собираюсь покрамсать овечек у одного фермера"\
+                                "\n{cccccc}Если грохнешь больше овечек чем я, получишь от меня подгон"\
+                                "\n{cccccc}Пушка есть?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTONEQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CreateQuestOneMan(playerid)
+{
+    SaveReturnCoord(playerid);
+    S_SetPlayerVirtualWorld(playerid,playerid, 0);
+    PPSetPlayerPos(playerid, -164.4, 1.0, 3.11);
+    PPSetPlayerFacingAngle(playerid, 65.0);
+    SetCameraBehindPlayer(playerid);
+
+    NewYearNPC[playerid][nyID] = CreateNpc(15845, -164.0, 15.0, 3.11);
+    SetNpcVirtualWorld(NewYearNPC[playerid][nyID], playerid);
+    SetNpcInvulnerable(NewYearNPC[playerid][nyID]);
+    SetNpcStunAnimationEnabled(NewYearNPC[playerid][nyID], false);
+    SetNpcWeapon(NewYearNPC[playerid][nyID], WEAPON_MINIGUN);
+    SetNpcWeaponSkill(NewYearNPC[playerid][nyID],NPC_SKILL_TYPE_PRO);
+    OnlineInfo[playerid][oNewYearQuest] = 1;
+
+    new Float:ShipCoordX, Float:ShipCoordY, Float:ShipCoordZ = 50;
+    for(new i; i < 10; i++)
+    {
+        ShipCoordX = random(55)-229, ShipCoordY = random(150)-79;
+        CA_FindZ_For2DCoord(ShipCoordX,ShipCoordY,ShipCoordZ);
+        ShipCoordZ += 1.5;
+        ShipNPC[playerid][i] = CreateNpc(15696, ShipCoordX, ShipCoordY, ShipCoordZ);
+        SetNpcVirtualWorld(ShipNPC[playerid][i], playerid);
+        SetNpcHealth(ShipNPC[playerid][i], 100.0);
+        ShipNPCHealt[playerid][i] = 100.0;
+    }
+    new ship = random(10);
+    TaskNpcAttackNpc(NewYearNPC[playerid][nyID], ShipNPC[playerid][ship], true);
+    NewYearNPC[playerid][nyTargetNpc] = ShipNPC[playerid][ship];
+
+    return 1;
+}
+
+stock DestroyQuestOneMan(playerid)
+{
+    PPSetPlayerPos(playerid, OnlineInfo[playerid][oReturnCord][0],OnlineInfo[playerid][oReturnCord][1],OnlineInfo[playerid][oReturnCord][2]);
+	S_SetPlayerVirtualWorld(playerid, OnlineInfo[playerid][oReturnWorld], OnlineInfo[playerid][oReturnInt]);
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    if(IsValidNpc(NewYearNPC[playerid][nyID])) DestroyNpc(NewYearNPC[playerid][nyID]);
+    for(new i; i < 10; i++)
+    {
+        if(IsValidNpc(ShipNPC[playerid][i])) DestroyNpc(ShipNPC[playerid][i]);
+    }
+    HidePlayerHudTask(playerid);
+
+    if(CountKill[playerid][0] > CountKill[playerid][1])
+    {
+        if(OnlineInfo[playerid][oListenRadioPears] == 0)
+        {
+            if(PlayerInfo[playerid][pSex] == 2) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/1/1win_w.mp3");
+            else PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/1/1win.mp3");
+        }
+        SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: %s Не ожидал, что ты сможешь меня победить, емае", PlayerInfo[playerid][pSex] == 2 ? "Красотка!" : "Красавец!");
+        SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Вот подгон, как и обещал. Заходи к моему братану, Канавному Остолопу завтра!");
+        GiveNewYesrCase(playerid);
+        PlayerInfo[playerid][pNewYearQuestComplete][0] = 1;
+        SaveNewYearQuestPlayer(playerid);
+    }
+    else
+    {
+        if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/1/1loose.mp3");
+        SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Тюююю, я знал что ты не сдюжишь!");
+    }
+    CountKill[playerid][0] = 0;
+    CountKill[playerid][1] = 0;
+
+    return 1;
+}
+
+stock GiveNewYesrCase(playerid)
+{
+    new thingId, thingQuan, thingType, thingPara, thingPack;
+    CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack,"newyear25");
+    new put_inva = GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
+    //CalculateVehicleLimited(thingId, thingType);
+    if(put_inva == -1)
+    {
+        Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+    }
+    return 1;
+}
+stock LifeNewYearQuestOne(playerid)
+{
+    new quanshipnolife;
+    if(IsValidNpc(NewYearNPC[playerid][nyID]))
+    {
+        new Float:ShipCoordX, Float:ShipCoordY, Float:ShipCoordZ;
+        new Float:tempHealt;
+
+        for(new i = 0; i < 10; i++)
+        {
+            if(IsValidNpc(ShipNPC[playerid][i]))
+            {
+                GetNpcHealth(ShipNPC[playerid][i],tempHealt);
+                if(tempHealt <= 0.0) 
+                {
+                    quanshipnolife++;
+                    if(NewYearNPC[playerid][nyTargetNpc] != ShipNPC[playerid][i]) continue;
+                    else 
+                    {
+                        TaskNpcStandStill(NewYearNPC[playerid][nyID]);
+                        CountKill[playerid][1]++;
+                        for(new s = 0; s < 10; s++)
+                        {
+                            if(!IsValidNpc(ShipNPC[playerid][s])) continue;
+                            GetNpcHealth(ShipNPC[playerid][s],tempHealt);
+                            if(tempHealt <= 0.0) continue;
+                            else
+                            {
+                                NewYearNPC[playerid][nyTargetNpc] = ShipNPC[playerid][s];
+                                TaskNpcAttackNpc(NewYearNPC[playerid][nyID], ShipNPC[playerid][s], true);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    ShipCoordX = random(55)-229, ShipCoordY = random(150)-79;
+                    CA_FindZ_For2DCoord(ShipCoordX,ShipCoordY,ShipCoordZ);
+                    ShipCoordZ += 1.5;
+                    TaskNpcGoToPoint(ShipNPC[playerid][i],ShipCoordX,ShipCoordY,ShipCoordZ, NPC_MOVE_MODE:2);
+                }
+            }
+        }
+    }
+
+    new string[100];
+    format(string,sizeof(string),"Моих убийств: %d\nУбийств Жердина-из-овчарни: %d",CountKill[playerid][0],CountKill[playerid][1]);
+    SetPlayerHudTask(playerid, "Новогодний Квест", string);
+    
+    if(quanshipnolife >= 10) return DestroyQuestOneMan(playerid);
+    return true;
+}
+
+stock NewYearQuestOne_OnNpcDeath(NPC:npc, killerid, reason)
+{
+    #pragma unused reason
+    for(new i; i < 10; i++)
+    {
+        if(ShipNPC[killerid][i] == npc) 
+        {
+            CountKill[killerid][0]++;
+            return true;
+        }
+    }
+    return false;
+}
+
+stock NewYearQuestOne_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, weaponid, bodypart)
+{
+    #pragma unused weaponid
+    #pragma unused bodypart
+    #pragma unused amount
+    
+    new findSlot = -1;
+    for(new i = 0; i < 10; i++)
+    {
+        if(ShipNPC[damagerid][i] == npc)
+        {
+            findSlot = i;
+            break;
+        }
+    }
+
+    ShipNPCHealt[damagerid][findSlot] -= 20;
+    SetNpcHealth(ShipNPC[damagerid][findSlot], ShipNPCHealt[damagerid][findSlot]);
+
+    return true;
+}
+
+
+//=========================================================
+//=================== Касцена Лапландия=====================
+new LaplandiaTimer[MAX_PLAYERS];
+
+stock LaplandiaCuteScene(playerid)
+{
+    TogglePlayerControllable(playerid,false);
+    FlyCameraPos(playerid, 3258.263427, -363.157165, 15.110763, 3263.212158, -363.009460, 14.412275, 28000, 1200);
+    SetPVarInt(playerid,"qweststat",85), SetPVarInt(playerid,"qwesttime",1);
+    LaplandiaTimer[playerid] = SetTimerEx("LaplandiaTimers", 28000, true, "d", playerid);
+    PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/jolo.mp3");
+    return true;
+}
+
+stock DestroyLaplandiaCuteScene(playerid)
+{
+    if(LaplandiaTimer[playerid] > 0)
+    {
+        SetCameraBehindPlayer(playerid);
+        KillTimer(LaplandiaTimer[playerid]);
+        LaplandiaTimer[playerid] = 0;
+        TogglePlayerControllable(playerid,true);
+        DoneHintPlayer(playerid,4);
+        return true;
+    }
+    return false;
+}
+
+function LaplandiaTimers(playerid)
+{
+    DestroyLaplandiaCuteScene(playerid);
+    return true;
+}

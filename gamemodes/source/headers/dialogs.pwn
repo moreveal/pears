@@ -229,6 +229,9 @@ enum e_DialogId {
 
     // Питомцы
     PETS_SHOW_LIST,
-    PETS_SHOW_PETMANAGE
+    PETS_SHOW_PETMANAGE,
+
+    // Новый год
+    NEWYEAR_SHOW_STARTONEQUEST
 };
 
