@@ -69,6 +69,7 @@ new PetInfo[MAX_PETS][petsnpc];
 
 stock CreatePet(playerid, pet,petId)
 {
+    #pragma unused petId
     if(IsValidNpc(PetInfo[pet][petID])) return false;
     new Float:PetX, Float:PetY, Float:PetZ = 50;
     GetPlayerPos(playerid,PetX,PetY,PetZ);
