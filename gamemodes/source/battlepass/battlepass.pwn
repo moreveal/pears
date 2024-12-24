@@ -436,24 +436,26 @@ CMD:battlepass(playerid)
     return true;
 }
 
-CMD:givelvlbp(playerid)
+CMD:givebattlepass(playerid, const params[])
 {
-    BattlePass[playerid][bpLevel]++;
-    return true;
-}
-CMD:testbattlepass(playerid)
-{
-    if(BattlePass[playerid][bpDonate] == 0) BattlePass[playerid][bpDonate] = 1;
-    else BattlePass[playerid][bpDonate] = 0;
+    if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /givebattlepass ID Номер ]");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+    if(BattlePass[params[0]][bpDonate] == 0) BattlePass[params[0]][bpDonate] = 1;
+    else ErrorMessage(playerid,"{ff6347}У игрока уже есть премиум пропуск");
     return true;
 }
 
-CMD:resetbattlepass(playerid)
+CMD:resetbattlepass(playerid, const params[])
 {
-    BattlePass[playerid][bpDay] = 0;
-    BattlePass[playerid][bpWeekly] = 0;
-    BattlePass[playerid][bpOneTimeLoad] = 0;
-    CreateAllTasksBattlePassForPlayer(playerid);
+    if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /resetbattlepass ID Номер ]");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+    BattlePass[params[0]][bpDay] = 0;
+    BattlePass[params[0]][bpWeekly] = 0;
+    BattlePass[params[0]][bpOneTimeLoad] = 0;
+    CreateAllTasksBattlePassForPlayer(params[0]);
+    SuccessMessage(playerid,"{44ff99}Игроку очищенны задания");
     return 1;
 }
 
