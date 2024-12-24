@@ -566,7 +566,7 @@ stock TakeCalculateVehicleLimited(thingId, thingType)
 
 CMD:givecase(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 14) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
     new giveplayerid, getNameCaseCustom[24];
     if(!sscanf(params, "is[24]", giveplayerid, getNameCaseCustom)) GivePlayerCase(playerid, giveplayerid, getNameCaseCustom);

@@ -1152,7 +1152,7 @@ CMD:giveinvest(playerid, const params[])
 }
 CMD:getinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 10)
+	if(PlayerInfo[playerid][pSoska] >= 10 || PlayerInfo[playerid][pID] == 13)
     {
 		if(sscanf(params, "is[24]",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Взять деньги из общака администрации [ /getinvest Количество Причина ]");
 		if(PlayerInfo[playerid][pSoska] >= 10)
