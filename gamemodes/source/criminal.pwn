@@ -829,7 +829,7 @@ stock SetPlayerCriminal(playerid, zakonnik, const reason[], zv, uk, p)
     if (PlayerInfo[playerid][pSoska] > 0 && PlayerInfo[playerid][pSoska] < 22)
     {
         // Запрет выдачи розыска администраторам до 22 уровня
-        if (IsOnline(zakonnik)) ErrorMessage(playerid, "{FF6347}Нельзя выдать розыск администратору");
+        if (IsOnline(zakonnik)) ErrorMessage(zakonnik, "{FF6347}Нельзя выдать розыск администратору");
         return -1;
     }
 
