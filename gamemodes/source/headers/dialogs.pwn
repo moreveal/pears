@@ -222,7 +222,7 @@ enum e_DialogId {
     // МП
     MP_DIALOG_TIME_INPUT,
     MP_DIALOG_SKIN_SELECT,
-    MP_DIALOG_SKIN_INPUT
+    MP_DIALOG_SKIN_INPUT,
 
     
     //Боевой пропуск
