@@ -116,6 +116,11 @@ stock GetPlayerDamageByWeaponId(playerid, damagedid, WEAPON: weaponid, bodypart,
         || DeathInfo[playerid][deathStatus] == true // Урон наносит игрок в стадии смерти
     ) return 0;
 
+    if(GameInfo[gamDamage] && MPGO[playerid]) // Ванильный урон для МП
+    {
+        if(weaponid <= WEAPON:54) damage = s_WeaponDamage[weaponid];
+        return 1;
+    }
 
     // Ящеры (Отключение кастомного дамага)
     if(IsAGangCapt(playerid) && IsAGangCapt(damagedid))
@@ -371,6 +376,9 @@ function PlayerGiveDamageHandler(playerid, damagedid, Float: amount, weaponid, b
     {
         if(ProtectInfo[playerid][prWeapon][slot] != weaponid || ProtectInfo[playerid][prAmmo][slot] <= 0) return false;
     }
+
+    // Урон по союзникам на МП
+    if(!GameInfo[gamTeamKill] && Pognalinamp && (MPSpawn[playerid] == MPSpawn[damagedid])) return false;
 
     // Защита для новичков
     if(BeginnerDamage(playerid, damagedid)) return false;
