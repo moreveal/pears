@@ -441,7 +441,11 @@ CMD:givebattlepass(playerid, const params[])
     if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
 	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /givebattlepass ID Номер ]");
 	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
-    if(BattlePass[params[0]][bpDonate] == 0) BattlePass[params[0]][bpDonate] = 1;
+    if(BattlePass[params[0]][bpDonate] == 0) 
+    {
+        BattlePass[params[0]][bpDonate] = 1;
+        AdminLog("givebattlepass", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 1, "Выдал премиум пропуск");
+    }
     else ErrorMessage(playerid,"{ff6347}У игрока уже есть премиум пропуск");
     return true;
 }
