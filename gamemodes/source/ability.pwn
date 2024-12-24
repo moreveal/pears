@@ -38,6 +38,7 @@ stock update_ability(p, abilityId, quan) // Повышаем навык
 	if(aks != -1) quan += ResultCountBustAks(PlayerInfo[p][pOdet][aks], 3,PlayerInfo[p][pOdetPara][aks]);
 	if(GetPlayerVip(p) > 0) PlayerInfo[p][pAbility][abilityId] += quan*2;
 	else PlayerInfo[p][pAbility][abilityId] += quan;
+	CompleteBattlePassTask(p,26,1,quan);
 
 	if(PlayerInfo[p][pAbility][abilityId] >= 1000 && PlayerInfo[p][pAbility][abilityId] <= 4999 && PlayerInfo[p][pAbilStat][abilityId] <= 1) yes = 1, PlayerInfo[p][pAbilStat][abilityId] = 2;
 	else if(PlayerInfo[p][pAbility][abilityId] >= 5000 && PlayerInfo[p][pAbility][abilityId] <= 9999 && PlayerInfo[p][pAbilStat][abilityId] <= 2) yes = 1, PlayerInfo[p][pAbilStat][abilityId] = 3;

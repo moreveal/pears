@@ -6,6 +6,10 @@ stock GetModelTextDraw(model, thingType,thingPack, &Float:x, &Float:y, &Float:z,
 	{
 		x = -12.0000, y = 0.0000, z = -22.0000, s = 0.9200;
 	}
+	else if(thingType == 6)
+	{
+		x = 10.0000, y = 0.0000, z = -30.0000, s = 1.0;
+	}
 	else
 	{
 		switch(model)

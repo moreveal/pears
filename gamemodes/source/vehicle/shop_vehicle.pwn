@@ -672,6 +672,9 @@ stock dialogCase_VehicleShop(playerid, dialogid, response, listitem, const input
                 format(string,sizeof(string),"Veh %d", modelId);
                 DonateLog("buycar", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, string);
             }
+
+            CompleteBattlePassTask(playerid,4,2);
+
             format(string,sizeof(string),"{0088ff}Поздравляем! Вы купили %s {ffcc66}[ Y >> Транспорт или /car ]", GetVehicleName(modelId));
             SendClientMessage(playerid, COLOR_GREY, string);
 

@@ -1,5 +1,5 @@
 
-#define MAX_HINT 4 // Максимальное количество подсказок (новая система)
+#define MAX_HINT 5 // Максимальное количество подсказок (новая система)
 
 new bool:HintLoad[MAX_REALPLAYERS];
 new HitPlayer[MAX_REALPLAYERS][MAX_HINT];

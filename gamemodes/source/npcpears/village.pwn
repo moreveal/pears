@@ -223,6 +223,7 @@ stock GetGiftVillage(playerid)
             PlayerInfo[playerid][pCDVillage] = gettime() + CD_GIFT_VILLAGE;
             mysql_format(pearsq, string, sizeof(string),"UPDATE `pp_igroki` SET `pCDVillage` = '%d' WHERE `user_id` = '%d'", PlayerInfo[playerid][pCDVillage], PlayerInfo[playerid][pID]);
             mysql_tquery(pearsq, string);
+            CompleteBattlePassTask(playerid, 5, 1);
         }
         else ErrorMessage(playerid, "{FF6347}Хранилище деревенских закрыто");
         return true;

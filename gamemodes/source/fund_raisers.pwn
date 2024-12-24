@@ -292,6 +292,8 @@ function Call_pay_fundraisers(playerid, i, amount, race_check)
     oGivePlayerMoney(playerid, -input);
     payanim(playerid, 0);
 
+    CompleteBattlePassTask(playerid, 41, 1, input);
+
     new tempMoney = FundRaisersInfo[i][fundMoney] + input;
     FundRaisersInfo[i][fundMoney] = tempMoney;
     FundRaisersInfo[i][fundQuan] ++;

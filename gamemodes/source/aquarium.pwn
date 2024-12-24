@@ -278,6 +278,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
                 for(new i; i < MAX_FISH_IN_AQUARIUM; ++i) AquariumInfo[aquaid][aqFullSatiety][i] = 0; 
                 AquariumInfo[aquaid][aqFeedFish] = MAX_FISH_IN_AQUARIUM; // Процесс кормёжки
                 AquariumInfo[aquaid][aqCdFeed] = gettime() + 600; // Кд на кормление (10 минут)
+                CompleteBattlePassTask(playerid, 36, 1);
             }
             else if(listitem >= 1 && listitem <= MAX_FISH_IN_AQUARIUM + 1)
             {

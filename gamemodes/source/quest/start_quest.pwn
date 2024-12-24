@@ -1375,6 +1375,36 @@ stock QuestCallMessage(playerid)
         SendClientMessage(playerid, COLOR_YELLOW,"Лесник (голосовое): Заходите в любое время в мою лавку. Я всегда рад гостям.");
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
     }
+    else if(GetPVarInt(playerid,"qweststat") == 85)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): Это лапландия, мой дом, емае");
+        SetPVarInt(playerid,"qweststat",86), SetPVarInt(playerid,"qwesttime",3);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 86)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): Тут живу я << Жердина из овчарни >> и мои двенадцать братьев");
+        SetPVarInt(playerid,"qweststat",87), SetPVarInt(playerid,"qwesttime",4);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 87)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): Канавный остолоп, Обрубок, Ложколиз, Горшколиз, Мисколиз");
+        SetPVarInt(playerid,"qweststat",88), SetPVarInt(playerid,"qwesttime",7);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 88)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): Аааа, да ну вас всех перечислять. Короче, мы Йольские Парни!");
+        SetPVarInt(playerid,"qweststat",89), SetPVarInt(playerid,"qwesttime",5);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 89)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): Заходи к каждому из нас в гости, чтобы получать подгоны в праздничные дни");
+        SetPVarInt(playerid,"qweststat",90), SetPVarInt(playerid,"qwesttime",5);
+    }
+    else if(GetPVarInt(playerid,"qweststat") == 90)
+    {
+        SendClientMessage(playerid, COLOR_YELLOW,"Йольский парень (голосовое): И не забудь написать письмо деду морозу возле главной ёлки! Всё, я жду");
+        SetPVarInt(playerid,"qweststat",91), SetPVarInt(playerid,"qwesttime",4);
+    }
     return 1;
 }
 

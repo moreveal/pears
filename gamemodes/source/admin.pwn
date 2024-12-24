@@ -949,7 +949,7 @@ CMD:tp2(playerid)
 {
 	if(PlayerInfo[playerid][pSoska] >= 1 || PlayerInfo[playerid][pHidden] > 0 || PlayerInfo[playerid][pMedia] > 0 || server == 0)
 	{
-		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage\nЛогово маньяка\nNGSA Polygon\nЗаброшенная шахта\nСпортзал","Выбрать","Отмена");
+		ShowDialog(playerid,77,DIALOG_STYLE_LIST,"{ff9000}Телепорты 2","Тихущее Место\nТюнинг SF\nДПС LS-1\nФерма\nКазино 4 Дракона\nТюрьма\nСалон Катеров\nДальнобойщики\nМарс\nКомпьютерный Клуб\nСауна\nУтиль\nNGSA Train\nVillage\nЛогово маньяка\nNGSA Polygon\nЗаброшенная шахта\nСпортзал\nЛапландия","Выбрать","Отмена");
 	}
    	return 1;
 }
@@ -1152,7 +1152,7 @@ CMD:giveinvest(playerid, const params[])
 }
 CMD:getinvest(playerid, const params[])
 {
-	if(PlayerInfo[playerid][pSoska] >= 10)
+	if(PlayerInfo[playerid][pSoska] >= 10 || PlayerInfo[playerid][pID] == 13)
     {
 		if(sscanf(params, "is[24]",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Взять деньги из общака администрации [ /getinvest Количество Причина ]");
 		if(PlayerInfo[playerid][pSoska] >= 10)
