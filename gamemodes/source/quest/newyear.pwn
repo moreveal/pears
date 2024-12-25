@@ -130,6 +130,22 @@ function Call_OnPlayerNewYearLoad(playerid, race_check)
 	return true;
 }
 
+CMD:reloadgifts(playerid)
+{
+    if(PlayerInfo[playerid][pSoska] < 10) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+    for(new i = 0; i < MAX_NEWYEARSGIFTS; i++)
+    {
+        TakeNewYearGiftsItem[i] = true;
+        TakeNewYearGiftsUnix[i] = 0;
+        if(ObjectNewYearGifts[i] != 0) DestroyDynamicObject(ObjectNewYearGifts[i]);
+        ObjectNewYearGifts[i] = 0;
+    }
+    QuanLoadNewYearGifts = 0;
+    CreateNewYearGifts();
+    SendClientMessage(playerid,COLOR_GREY,"[ Мысли ]: Я очистил новогодние подарки. Их на карте сейчас %d", QuanLoadNewYearGifts);
+    return true;
+}
+
 stock CreateNewYearGifts()
 {
     if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) return false;
@@ -139,7 +155,7 @@ stock CreateNewYearGifts()
         if(TakeNewYearGiftsUnix[i] > gettime()) continue;
         else TakeNewYearGiftsItem[i] = false;
         if(TakeNewYearGiftsItem[i]) continue;
-        ObjectNewYearGifts[i] = CreateDynamicObject(12403, NewYearsGiftsPos[i][0], NewYearsGiftsPos[i][1], NewYearsGiftsPos[i][2]-0.875024, 0.0, 0.0, 0.0, 0, 0, -1, 50.0, 50.0);
+        if(ObjectNewYearGifts[i] == 0) ObjectNewYearGifts[i] = CreateDynamicObject(12403, NewYearsGiftsPos[i][0], NewYearsGiftsPos[i][1], NewYearsGiftsPos[i][2]-0.875024, 0.0, 0.0, 0.0, 0, 0, -1, 50.0, 50.0);
         QuanLoadNewYearGifts++;
         if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) break;
     }
@@ -209,7 +225,7 @@ stock TakeNewYearGifts(playerid)
             TakeNewYearGiftsItem[i] = true;
             QuanLoadNewYearGifts--;
             TakeNewYearGiftsUnix[i] = gettime() + 7200;
-            DestroyDynamicObject(ObjectNewYearGifts[i]);
+            if(ObjectNewYearGifts[i] != 0)DestroyDynamicObject(ObjectNewYearGifts[i]);
             ObjectNewYearGifts[i] = 0;
             findBall = true;
 
