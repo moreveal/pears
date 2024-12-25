@@ -439,7 +439,7 @@ CMD:battlepass(playerid)
 CMD:givebattlepass(playerid, const params[])
 {
     if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
-	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить номер бизнеса игроку [ /givebattlepass ID Номер ]");
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать премиум пропуск игроку [ /givebattlepass ID ]");
 	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
     if(BattlePass[params[0]][bpDonate] == 0) 
     {
