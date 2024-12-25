@@ -316,7 +316,7 @@ stock dialogPetsList(playerid)
         quan ++;
         if(quan > 20) return ErrorMessage(playerid,"{ff6347}У вас в инвентаре больше 20 питомцев! Загрузка прервана");
 	}
-    if(quan == 0) return ErrorMessage(playerid,"{ff6347}У меня нет питомцев в инвентаре");
+    if(quan == 0) return ErrorMessage(playerid,"{ff6347}У меня нет питомцев в инвентаре. Питомцы станут доступны после нового года");
     ShowDialog(playerid,PETS_SHOW_LIST,DIALOG_STYLE_TABLIST_HEADERS,"{ff9000}Мои питомцы",lines,"Выбрать","Отмена");
     return true;
 }
