@@ -485,3 +485,14 @@ stock get_backpack(playerid) // Поиск рюкзаков в инвентар�
 	if(quan > MAX_BACKPACK_ON_PLAYER) return false;
 	else return true;
 }
+
+CMD:givebackpack(playerid, const params[])
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");	
+	if(sscanf(params, "i",params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать себе рюкзак [ /givebackpack ID рюкзака(БД)]");
+
+	new put_inva = GiveThingPlayer(playerid, 12367, 1, 520, params[0], 2, 0, 9999);
+	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места");
+
+	return true;
+}
