@@ -4821,7 +4821,7 @@ stock Scrap(playerid) // Сдаём транспорт в утиль
 
 CMD:delcar(playerid, const params[])
 {
-	if(!(PlayerInfo[playerid][pSoska] >= 14
+	if(!(PlayerInfo[playerid][pSoska] >= 15
 		|| PlayerInfo[playerid][pMedia] >= 2 && server == 0)) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
 
 	new tmp[24],slot,para1;
