@@ -19,6 +19,7 @@ stock BonusCheck(playerid)
 	if(PlayerInfo[playerid][pToday] == Days)
 	{
 	    PlayerInfo[playerid][pBonHour] ++;
+        CompleteBattlePassTask(playerid, 3, 0, 1);
 	    if(PlayerInfo[playerid][pBonHour] == ServerInfo[10])
 	    {
             SendClientMessage(playerid, COLOR_GREY, "  {0088ff}%d Часов в игре: {99ff66}Кейс", ServerInfo[10]);

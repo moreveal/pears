@@ -307,6 +307,7 @@ stock OnDeathKatanaDuel(NPC:npc, killerid)
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Омагад... Я победил%s Годжо Сатору [ Подберите приз с пола N >> Рядом ]", gender(killerid));
         SendClientMessage(killerid, COLOR_GREY, "[ Мысли ]: Я могу вернуться и сразиться повторно через %d минут [ /time ]", GODJO_SATORU_CD_WIN / 60);
 
+        CompleteBattlePassTask(killerid, 37, 1);
         if(OnlineInfo[killerid][oListenRadioPears] == 0)
         {
             switch(random(2))

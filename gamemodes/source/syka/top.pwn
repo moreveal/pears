@@ -13,6 +13,7 @@ CMD:top(playerid)
 	format(str,sizeof(str),"Смерти\n"), strcat(sctring,str);
 	format(str,sizeof(str),"Ходок на Зону\n"), strcat(sctring,str);
 	format(str,sizeof(str),"Крафты\n"), strcat(sctring,str);
+	format(str,sizeof(str),"Пропуск\n"), strcat(sctring,str);
 	ShowDialog(playerid,51,DIALOG_STYLE_LIST,"{ff9000}Топ Игроков",sctring,"Выбор","Отмена");
 	return 1;
 }
@@ -35,6 +36,7 @@ public Call_top(playerid, top)
 		case 8:{ atext = "Смерти"; btext = "Deaths"; }
 		case 9:{ atext = "Ходок на Зону"; btext = "Hodka"; }
 		case 10:{ atext = "Крафты"; btext = "pCraftCount"; }
+		case 11:{ atext = "Пропуск"; btext = "bpLevel"; }
 		default: { return 1; }
 	}
 	new year, month,day;
@@ -98,10 +100,10 @@ stock SavePlayerTop(playerid)
     return true;
 }
 
-stock CalculatePointTopCraft(playerid,thingid, param)
+stock CalculatePointTopCraft(playerid,thingid,thingtype, param)
 {
 	new item[5],quan[5],type[5], point;
-	GetThingForCraft(thingid,item[0],quan[0],type[0],item[1],quan[1],type[1],item[2],quan[2],type[2],item[3],quan[3],type[3],item[4],quan[4],type[4]);
+	GetThingForCraft(thingid,thingtype,item[0],quan[0],type[0],item[1],quan[1],type[1],item[2],quan[2],type[2],item[3],quan[3],type[3],item[4],quan[4],type[4]);
 	for(new i; i < 5; i++)
 	{
 		if(item[i] == 0) continue;

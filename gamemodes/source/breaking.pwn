@@ -175,6 +175,8 @@ stock ClickBreaking(playerid) // Кликаем на ключик
     	{
     	    StopBreaking(playerid);
     	    PlayerPlaySound(playerid,1137,0,0,0);
+			
+			CompleteBattlePassTask(playerid, 40, 1);
 
 			switch (BreakingType[playerid])
 			{

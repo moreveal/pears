@@ -1910,6 +1910,9 @@ stock Radar_ViolationHandler(playerid) {
                                 if (PlayerInfo[playerid][pAccount] >= price) {
                                     RadarInfo[radarid][riJammedTime] = currentTime;
                                     oGivePlayerBank(playerid, -price);
+                                    MoneyLog("hank_glushilka",
+                                        PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP],
+                                        0, "", "", -price, "Прошивка глушилки у Хэнка");
                                     SendClientMessage(playerid, COLOR_YELLOW, " SMS от Хэнка: {99ff33}Решил вопрос с прошивкой твоей глушилки, можешь пользоваться!");
 
                                     new quan, para;

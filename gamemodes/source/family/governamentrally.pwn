@@ -160,8 +160,8 @@ stock GoToRally(playerid,status)
 stock SetRallyPoint(playerid)
 {
     if(RallyInfo[0][rallyPoint] >= RALLY_MAX_POINT) CloseRally(-1);
-    if(OnlineInfo[playerid][oRally] == 1) RallyInfo[0][rallyPoint] += 10;
-    else if(OnlineInfo[playerid][oRally] == 2) RallyInfo[0][rallyPoint] -= 10;
+    if(OnlineInfo[playerid][oRally] == 1) RallyInfo[0][rallyPoint] += 10, CompleteBattlePassTask(playerid, 35, 1);
+    else if(OnlineInfo[playerid][oRally] == 2) RallyInfo[0][rallyPoint] -= 10, CompleteBattlePassTask(playerid, 35, 1);
     else return 0;
     return 1;
 }

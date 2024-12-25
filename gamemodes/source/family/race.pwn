@@ -1216,6 +1216,8 @@ stock RaceWinner(playerid,idrace)
 
     new string[120];
     format(string,sizeof(string),"[ Мысли ]: Я завершил гонку на %d месте",quan+1);
+    CompleteBattlePassTask(playerid, 33, 1);
+    if(quan+1 == 1) CompleteBattlePassTask(playerid, 34, 1);
     SendClientMessage(playerid,COLOR_GREY,string);
     foreach(Player,i)
     {

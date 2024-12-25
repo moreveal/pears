@@ -8,6 +8,8 @@ stock CreateIceHol(playerid)
 {
     GetPlayerPos(playerid,IceHoleCoord[playerid][0],IceHoleCoord[playerid][1],IceHoleCoord[playerid][2]);
     IceHoleStatus[playerid] = true, IceHoleUnix[playerid] = 300;
+    
+    CompleteBattlePassTask(playerid, 39, 1);
 
     new string[100];
     format(string,sizeof(string),"{ff9000}Прорубь игрока \n{444444}%s",rpplayername(playerid));

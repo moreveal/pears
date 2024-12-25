@@ -1807,6 +1807,7 @@ stock Tomb_End(roomid, e_TombEndReason: reason)
                 ACSetPlayerHealth(currentid, 1.0);
                 if (!Tomb_StopSpectate(currentid)) PPSpawnPlayer(currentid);
                 Tomb_Dialog_Stats(currentid, reason);
+                CompleteBattlePassTask(currentid, 4, 1);
             } else {
                 // Потом удаляем ненужные данные и прочее
                 Tomb_PlayerInfo_Cleanup(currentid);
