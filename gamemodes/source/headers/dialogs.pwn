@@ -238,6 +238,6 @@ enum e_DialogId {
     PETS_SHOW_PETMANAGE,
 
     // Новый год
-    NEWYEAR_SHOW_STARTONEQUEST
+    NEWYEAR_SHOW_STARTQUEST
 };
 
