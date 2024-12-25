@@ -42,10 +42,10 @@ enum VEHICLE_COMPONENTS_TYPE
 
 native bool:AddVehicleCustomComponent(vehicleid, component);
 native bool:RemoveVehicleCustomComponent(vehicleid, component);
-native GetVehicleCustomComponentInSlot(vehicleid, slot);
+native GetVehicleCustomComponentInSlot(vehicleid, VEHICLE_COMPONENTS_TYPE: slot);
 
 native GetVehicleCustomComponentType(component);
-native SetVehicleCustomComponentType(component, slot);
+native SetVehicleCustomComponentType(component, VEHICLE_COMPONENTS_TYPE: slot);
 native bool:IsVehicleCustomComponent(component);
 
 /*
@@ -71,3 +71,21 @@ stock _PVEHICLE_RemoveVehicleComponent(vehicleid, component)
     #define _ALS_RemoveVehicleComponent
 #endif
 #define RemoveVehicleComponent _PVEHICLE_RemoveVehicleComponent
+
+stock _PVEHICLE_AddVehicleComponent(vehicleid, component)
+{
+    new bool: result = false;
+	if (IsVehicleCustomComponent(component)) {
+        result = AddVehicleCustomComponent(vehicleid, component);
+    } else {
+        result = AddVehicleComponent(vehicleid, component);
+    }
+    return result;
+}
+
+#if defined _ALS_AddVehicleComponent
+    #undef AddVehicleComponent
+#else
+    #define _ALS_AddVehicleComponent
+#endif
+#define AddVehicleComponent _PVEHICLE_AddVehicleComponent
