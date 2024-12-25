@@ -47,14 +47,14 @@ CMD:vehiclecomponent(playerid, const params[])
 {
     if (PlayerInfo[playerid][pSoska] < 22) return ErrorMessage(playerid, "Вам недоступна эта команда");
 
-    new vehicleid = GetPlayerVehicleID(playerid);
-    if (!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{ff6347}Вы должны находиться внутри транспорта");
-
     new component;
     if (sscanf(params, "d", component))
     {
         return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Установить компонент транспорта [ /vehiclecomponent ID ]");
     }
+
+    new vehicleid = GetPlayerVehicleID(playerid);
+    if (!IsValidVehicle(vehicleid)) return ErrorMessage(playerid, "{ff6347}Вы должны находиться внутри транспорта");
 
     if (!AddVehicleComponent(vehicleid, component))
     {
