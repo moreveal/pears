@@ -441,9 +441,11 @@ stock NewYearQuestOne_OnPlayerGiveDamageNpc(NPC:npc, damagerid, Float:amount, we
         }
     }
 
-    ShipNPCHealt[damagerid][findSlot] -= 20;
-    SetNpcHealth(ShipNPC[damagerid][findSlot], ShipNPCHealt[damagerid][findSlot]);
-
+    if(findSlot >= 0)
+    {
+        ShipNPCHealt[damagerid][findSlot] -= 20;
+        SetNpcHealth(ShipNPC[damagerid][findSlot], ShipNPCHealt[damagerid][findSlot]);
+    }
     return true;
 }
 
