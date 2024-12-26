@@ -208,6 +208,7 @@ stock CreateNewYearPickup()
         
         CreateDynamic3DTextLabel("{ff9000}Жердин из овчарни\n\n{444444}[ ALT ]",-1,3261.6216,-340.3169,8.4405 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
         CreateDynamic3DTextLabel("{ff9000}Канавный остолоп\n\n{444444}[ ALT ]",-1,3271.8430,-326.0200,8.3832 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Обрубок\n\n{444444}[ ALT ]",-1,3289.9795,-321.6499,8.5798 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
         LaplandiaCube = CreateDynamicCube(3110.4719,-468.8748, 0.0, 3412.3660,-237.0729, 50.0, 0, 0);
     }
     return true;
@@ -268,15 +269,52 @@ new NPC:ShipNPC[MAX_REALPLAYERS][10];
 new Float:ShipNPCHealt[MAX_REALPLAYERS][10];
 new CountKill[MAX_REALPLAYERS][2];
 
+stock StartNewYearThreeMan(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][2] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_hello.mp3");
+
+    OnlineInfo[playerid][oNewYearQuest] = 3;
+    new lines[500];
+	format(lines,sizeof(lines),"{D93A49}Ей, ты! Здравствуй.\n"\
+                                "\n{cccccc}Принеси мне хлеба, про братски. Только я люблю испорченный."\
+                                "\n{cccccc}Я не знаю, ну поищи на помойке, что-ле."\
+                                "\n{cccccc}От меня разумеется подарок!"\
+                                "\n\n{cccccc}Готов начать?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CloseNewYearQuestThree(playerid)
+{
+    if(get_invent4(playerid, 1, 0) <= 0 || get_para(playerid, 1) < gettime()) return ErrorMessage(playerid, "{FF6347}У вас нет испорченнего хлеба");
+    if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
+
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Класс! Спасибо тебе большое! Век не забуду. Держи подарок");
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Не забудь зайти завтра к моему брату, Ложколизу");
+
+    GiveNewYesrCase(playerid);
+    PlayerInfo[playerid][pNewYearQuestComplete][2] = 1;
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    OnlineInfo[playerid][oNewYearQuestDop] = 0;
+    TakeInvent(playerid, 1, 1, 0, 999);
+    SaveNewYearQuestPlayer(playerid);
+    return true;
+}
+
 stock StartNewYearTwoMan(playerid)
 {
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
     if(PlayerInfo[playerid][pNewYearQuestComplete][1] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
     if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
     if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
     if(OnlineInfo[playerid][oListenRadioPears] == 0) 
     {
-        if(PlayerInfo[playerid][pSex] == 2) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/2/2_hello.mp3");
-        else PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/2/2_hello_w.mp3");
+        if(PlayerInfo[playerid][pSex] == 2) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/2/2_hello_w.mp3");
+        else PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/2/2_hello.mp3");
     }
     OnlineInfo[playerid][oNewYearQuest] = 2;
     new lines[500];
@@ -327,6 +365,7 @@ stock CloseNewYearQuestTwo(playerid)
 
 stock StartNewYearOneMan(playerid)
 {
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
     if(PlayerInfo[playerid][pNewYearQuestComplete][0] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
     if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
     if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
