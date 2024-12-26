@@ -443,10 +443,20 @@ CMD:givebattlepass(playerid, const params[])
 	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
     if(BattlePass[params[0]][bpDonate] == 0) 
     {
-        BattlePass[params[0]][bpDonate] = 1;
+        GivePlayerBattlePass(params[0]);
         AdminLog("givebattlepass", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], 1, "Выдал премиум пропуск");
     }
     else ErrorMessage(playerid,"{ff6347}У игрока уже есть премиум пропуск");
+    return true;
+}
+
+stock GivePlayerBattlePass(playerid)
+{
+    new string_mysql[200];
+    BattlePass[playerid][bpDonate] = 1;
+
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `battlepass` SET `bpDonate` = '1' WHERE `user_id` = '%d'", PlayerInfo[playerid][pID]);
+	mysql_tquery(pearsq, string_mysql);
     return true;
 }
 
