@@ -1,5 +1,4 @@
 #define MAX_NEWYEARSGIFTS 76
-#define MAX_LOAD_NEWYEARSGIFTS 20
 #define NEWYEARMUSIC "https://cdn.pears.fun/sound/newyear01.mp3"
 
 new bool:TakeNewYearGiftsItem[MAX_NEWYEARSGIFTS];
@@ -148,7 +147,6 @@ CMD:reloadgifts(playerid)
 
 stock CreateNewYearGifts()
 {
-    if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) return false;
     new rand = random(MAX_NEWYEARSGIFTS-20);
     for(new i = rand; i < MAX_NEWYEARSGIFTS; i++)
     {
@@ -157,7 +155,6 @@ stock CreateNewYearGifts()
         if(TakeNewYearGiftsItem[i]) continue;
         if(ObjectNewYearGifts[i] == 0) ObjectNewYearGifts[i] = CreateDynamicObject(12403, NewYearsGiftsPos[i][0], NewYearsGiftsPos[i][1], NewYearsGiftsPos[i][2]-0.875024, 0.0, 0.0, 0.0, 0, 0, -1, 50.0, 50.0);
         QuanLoadNewYearGifts++;
-        if(QuanLoadNewYearGifts > MAX_LOAD_NEWYEARSGIFTS) break;
     }
     return true;
 }
@@ -225,7 +222,7 @@ stock TakeNewYearGifts(playerid)
         {
             TakeNewYearGiftsItem[i] = true;
             QuanLoadNewYearGifts--;
-            TakeNewYearGiftsUnix[i] = gettime() + 7200;
+            TakeNewYearGiftsUnix[i] = gettime() + 21600;
             if(ObjectNewYearGifts[i] != 0)DestroyDynamicObject(ObjectNewYearGifts[i]);
             ObjectNewYearGifts[i] = 0;
             findBall = true;
