@@ -140,7 +140,10 @@ stock createorder(playerid, b, ord, thingId, thingType, thingPrice)
 {
 	if(BizzInfo[b][bDeposit] < thingPrice) return ErrorText(playerid, "{FF6347}На депозите бизнеса недостаточно средств"), productbiz(playerid, b);
 	BizzInfo[b][bOrder][ord] = thingId;
-	BizzInfo[b][bOrderQuan][ord] = 1;
+
+	if(thingId == 178) BizzInfo[b][bOrderQuan][ord] = 10000; // Заказываем топливо
+	else BizzInfo[b][bOrderQuan][ord] = 1;
+	
 	BizzInfo[b][bOrderType][ord] = thingType;
 	SaveBizzOrder(b, ord);
 	PlayerPlaySound(playerid,6401,0,0,0);
