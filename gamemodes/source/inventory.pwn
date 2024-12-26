@@ -1766,35 +1766,13 @@ stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лиц
 }
 stock get_para(playerid, fpick) // Параметр предмета
 {
-	new minid = 0, maxid = 40,para = 0, invtype = 0;
-	if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) invtype = 1;
-	if(!invtype)
+	new minid = 0, maxid = 40,para = 0;
+	for(new i = minid; i < maxid; i++)
 	{
-		for(new i = minid; i < maxid; i++)
+		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
 		{
-			if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
-			{
-				para = PlayerInfo[playerid][pInvenPara][i];
-				break;
-			}
-		}
-	}
-	else
-	{
-		new aks = HasABustAks(playerid,1);
-		if(aks != -1)
-		{
-			new bpslots;
-			if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
-			if(bpslots == 0) bpslots = 1;
-			for(new i = 0; i < bpslots*20; i++)
-			{
-				if(BackPackInfo[playerid][backpackInvent][i] == fpick && BackPackInfo[playerid][backpackInvType][i] == 0)
-				{
-					para = BackPackInfo[playerid][backpackInvPara][i];
-					break;
-				}
-			}
+			para = PlayerInfo[playerid][pInvenPara][i];
+			break;
 		}
 	}
 	return para;
