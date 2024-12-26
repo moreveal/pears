@@ -172,7 +172,7 @@ CMD:remedy(playerid, const params[])
  	}
  	return 1;
 }
-stock getmed(playerid, para1)
+stock getmed(playerid, para1, bool:showProcess = false)
 {
 	new stope, agaest;
 	new line[214],lines[4096];
@@ -181,8 +181,7 @@ stock getmed(playerid, para1)
 	for(new i = 0; i < 5; i++)
 	{
 		new Float:ostmed = (PlayerInfo[para1][pIllnessProg][i]-1000)/200;
-		if((PlayerInfo[para1][pIllnessProg][i]-1000)/200 < 0) infectremedy(para1,PlayerInfo[para1][pIllness][i],9999);
-		if(PlayerInfo[para1][pIllness][i] == 1 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Хламидиоз
+		if(PlayerInfo[para1][pIllness][i] == 1 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Хламидиоз
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -190,14 +189,14 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			if(PlayerInfo[para1][pSex] == 1) format(line,sizeof(line),"\n{cccccc}выделения из мочеиспускательного канала"), strcat(lines,line);
 			else format(line,sizeof(line),"\n{cccccc}выделения из влагалища"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}легкая боль при мочеиспускании"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-10 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 2 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гонорея
+		if(PlayerInfo[para1][pIllness][i] == 2 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Гонорея
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -205,13 +204,13 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}гнойные выделения из уретры"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-20 хп во время мочеиспускании"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 3 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Сифилис
+		if(PlayerInfo[para1][pIllness][i] == 3 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Сифилис
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -219,7 +218,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}жжение и зуд во время мочеиспускания"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
@@ -227,7 +226,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 4 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Лучевая Болезнь
+		if(PlayerInfo[para1][pIllness][i] == 4 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Лучевая Болезнь
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -235,7 +234,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}общая слабость и сонливость"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}головная боль"), strcat(lines,line);
@@ -244,7 +243,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 5 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Перитонит мочевого пузыря
+		if(PlayerInfo[para1][pIllness][i] == 5 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Перитонит мочевого пузыря
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -252,7 +251,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}сильная боль в низу живота"), strcat(lines,line);
@@ -260,7 +259,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 6 && PlayerInfo[para1][pIllnessProg][i] > 1000) //  Грибок ногтей
+		if(PlayerInfo[para1][pIllness][i] == 6 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) //  Грибок ногтей
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -268,12 +267,12 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}зуд, жжение, покраснение, мелкие трещины в межпальцевом промежутке"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 7 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Дерматит
+		if(PlayerInfo[para1][pIllness][i] == 7 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Дерматит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -281,14 +280,14 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}покраснение кожи"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}ощущение покалывания, жжения и зуда"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}небольшие высыпания"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 8 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Акне
+		if(PlayerInfo[para1][pIllness][i] == 8 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Акне
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -296,13 +295,13 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}высыпания на коже"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}угри"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 9 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Порошковаяовая Зависимость
+		if(PlayerInfo[para1][pIllness][i] == 9 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Порошковаяовая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -310,14 +309,14 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}депрессия"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}сонливость, утомляемость"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная тяга к порошку"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 10 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Никотиновая Зависимость
+		if(PlayerInfo[para1][pIllness][i] == 10 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Никотиновая Зависимость
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -325,14 +324,14 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}головокружение"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}мышечная слабость"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тревога, беспокойство"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тяга к сигаретам"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 11 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Алкоголизм
+		if(PlayerInfo[para1][pIllness][i] == 11 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Алкоголизм
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -340,7 +339,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}мутные и покрасневшие белки глаз"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}темные круги под глазами"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}морщины и отеки"), strcat(lines,line);
@@ -348,7 +347,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}тяга к алкоголю"), strcat(lines,line);
 			stope = 1;
 		}
-        if(PlayerInfo[para1][pIllness][i] == 12 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Гастрит
+        if(PlayerInfo[para1][pIllness][i] == 12 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Гастрит
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -356,13 +355,13 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 13 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Язва
+		if(PlayerInfo[para1][pIllness][i] == 13 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Язва
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -370,7 +369,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}боли в желудке"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}тошнота"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура"), strcat(lines,line);
@@ -378,7 +377,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-4 хп каждые 30 секунд"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 14 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Простуда
+		if(PlayerInfo[para1][pIllness][i] == 14 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Простуда
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -386,14 +385,14 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}кашель"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 15 && PlayerInfo[para1][pIllnessProg][i] > 1000) // ОРВИ
+		if(PlayerInfo[para1][pIllness][i] == 15 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // ОРВИ
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -401,7 +400,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
@@ -409,7 +408,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 16 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Грипп
+		if(PlayerInfo[para1][pIllness][i] == 16 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Грипп
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -417,7 +416,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}насморк"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}боль в горле"), strcat(lines,line);
@@ -427,7 +426,7 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 17 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Covid 19
+		if(PlayerInfo[para1][pIllness][i] == 17 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Covid 19
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1)
 			{
@@ -435,7 +434,7 @@ stock getmed(playerid, para1)
 				format(line,sizeof(line),"\n{444444}Лечение: %d таблеток", floatround(ostmed, floatround_ceil)), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}повышенная температура тела"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}затрудненное дыхание"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}сухой кашель"), strcat(lines,line);
@@ -443,11 +442,11 @@ stock getmed(playerid, para1)
 			format(line,sizeof(line),"\n{cccccc}-2 хп каждую минуту"), strcat(lines,line);
 			stope = 1;
 		}
-		if(PlayerInfo[para1][pIllness][i] == 18 && PlayerInfo[para1][pIllnessProg][i] > 1000) // Вампиризм
+		if(PlayerInfo[para1][pIllness][i] == 18 && (PlayerInfo[para1][pIllnessProg][i] > 1000 || showProcess == true)) // Вампиризм
 		{
 			if(PlayerInfo[para1][pIllnessStat][i] == 1) format(line,sizeof(line),"\n\n{ff6666}Вампиризм {444444}[ Лекарство: Неизвестно ]"), strcat(lines,line);
 			else format(line,sizeof(line),"\n"), strcat(lines,line), agaest ++;
-			if(PlayerInfo[playerid][pSoska] >= 15) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
+			if(PlayerInfo[playerid][pSoska] >= 1) format(line,sizeof(line),"\n{cccccc}[Slot: %d, ID %d] Прогресс: %d", i, PlayerInfo[para1][pIllness][i], PlayerInfo[para1][pIllnessProg][i]), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}бледная кожа"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}реакция на ультрафиолет"), strcat(lines,line);
 			format(line,sizeof(line),"\n{cccccc}отторжение пищи"), strcat(lines,line);
@@ -604,6 +603,7 @@ stock VampireInfo(playerid)
 	format(line,sizeof(line),"{684F7D}Как найти проклятие?"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Откройте один из четырёх саркофагов в этой гробнице"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Проклятие может произойти случайно только с одним человеком раз в 4 часа"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С момента проклятия должно пройти 2 часа, чтобы вы стали вампиром"), strcat(lines,line);
 
 	format(line,sizeof(line),"\n\n{684F7D}Что даёт проклятие?"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Вы никогда не заболеете любыми другими болезнями"), strcat(lines,line);
@@ -618,6 +618,7 @@ stock VampireInfo(playerid)
 	format(line,sizeof(line),"\n\n{684F7D}Вы можете обратить другого игрока в вампира"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Приобретите нож в супермаркете и наполните бокал своей кровью"), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}- Если вы вампир, дайте выпить эту кровь другому игроку"), strcat(lines,line);
+	format(line,sizeof(line),"\n{cccccc}- С момента употребления должно пройти 2 часа, чтобы игрок стал вампиром"), strcat(lines,line);
 
 	format(line,sizeof(line),"\n\n{684F7D}Как вам питаться?"), strcat(lines,line);
 	format(line,sizeof(line),"\n{ffcc66}1. Вы можете выпить кровь у игрока без сознания, чтобы насытиться"), strcat(lines,line);
@@ -701,6 +702,8 @@ stock ContagiousInfect(stat) // Заразные болезни
 }
 stock create_infect(playerid, stat, prog, i)
 {
+	if(serverType == 0) SendClientMessage(playerid, -1, "[debug] create_infect %d, stat %d, prog %d", playerid, stat, prog);
+
 	PlayerInfo[playerid][pIllness][i] = stat;
 	PlayerInfo[playerid][pIllnessProg][i] += prog;
 	if(PlayerInfo[playerid][pIllnessProg][i] >= 1000)
@@ -752,6 +755,8 @@ stock infectremedy(playerid, stat, prog)
 			PlayerInfo[playerid][pIllnessProg][i] -= prog;
 			if(PlayerInfo[playerid][pIllnessProg][i] <= 1199)
 			{
+				if(serverType == 0) SendClientMessage(playerid, -1, "[debug] infectremedy %d, stat %d", playerid, stat);
+
 				PlayerInfo[playerid][pIllness][i] = 0;
 				PlayerInfo[playerid][pIllnessStat][i] = 0;
 				PlayerInfo[playerid][pIllnessProg][i] = 0;
@@ -761,7 +766,7 @@ stock infectremedy(playerid, stat, prog)
 				if(ContagiousInfect(stat))
 				{
 					PlayerInfo[playerid][pColdCD] = gettime() + 2592000;
-					update_illness(playerid, i, stat);
+					update_cold(playerid);
 				}
 			}
 
@@ -770,6 +775,16 @@ stock infectremedy(playerid, stat, prog)
 	}
 	return 0;
 }
+
+// Сбросить иммунитет
+CMD:rcold(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 25) return ErrorMessage(playerid,"{ff6347}Вы не можете использовать эту команду");
+	PlayerInfo[playerid][pColdCD] = 0;
+	update_cold(playerid);
+	return true;
+}
+
 stock createcold(playerid)
 {
 	for(new i = 0; i < 5; i++)
@@ -845,24 +860,24 @@ stock getdiagnosis(playerid, stat)
 	}
 	return stope;
 }
-stock update_illness(playerid, i, stat = -1)
+stock update_illness(playerid, i)
 {
 	new string_mysql[260];
-	if(ContagiousInfect(stat))
-	{
-		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d',`pColdCD`='%d' WHERE `user_id`='%d'", 
-		i, PlayerInfo[playerid][pIllness][i], i, PlayerInfo[playerid][pIllnessStat][i], i, PlayerInfo[playerid][pIllnessProg][i], 
-		PlayerInfo[playerid][pColdCD], PlayerInfo[playerid][pID]);
-	}
-	else
-	{
-		mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `user_id`='%d'", 
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql),"UPDATE `pp_igroki` SET `Illness%d`='%d',`IllnessStat%d`='%d',`IllnessProg%d`='%d' WHERE `user_id`='%d'", 
 		i, PlayerInfo[playerid][pIllness][i], i, PlayerInfo[playerid][pIllnessStat][i], i, PlayerInfo[playerid][pIllnessProg][i], 
 		PlayerInfo[playerid][pID]);
-	}
     query_empty(pearsq, string_mysql);
 	return 1;
 }
+
+stock update_cold(playerid)
+{
+	new string_mysql[260];
+	mysql_format(pearsq, string_mysql,sizeof(string_mysql), "UPDATE `pp_igroki` SET `pColdCD`='%d' WHERE `user_id`='%d'", PlayerInfo[playerid][pColdCD], PlayerInfo[playerid][pID]);
+    query_empty(pearsq, string_mysql);
+	return 1;
+}
+
 stock update_allillness(playerid)
 {
 	new string_mysql[600];

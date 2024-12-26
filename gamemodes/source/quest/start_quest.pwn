@@ -1234,12 +1234,12 @@ stock QuestCallMessage(playerid)
     {
         PlayerInfo[playerid][pQuest][9] = 5;
         SaveQuest(playerid);
-        SetPVarInt(playerid,"qweststat",64), SetPVarInt(playerid,"qwesttime",10);
+        SetPVarInt(playerid,"qweststat", 67), SetPVarInt(playerid,"qwesttime",10);
 
         // Выдаём кейс
         GiveGiftQuest(playerid);
     }
-    else if(GetPVarInt(playerid,"qweststat") == 64)
+    else if(GetPVarInt(playerid,"qweststat") == 67)
     {
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
         ShowPlayerHintInfo(playerid, 1); // Подсказка про деревенских
