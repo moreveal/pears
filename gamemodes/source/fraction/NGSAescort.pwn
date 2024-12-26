@@ -3021,6 +3021,12 @@ stock DestroyTrampinArea51()
 	return true;
 }
 
+stock RushArea51()
+{
+	if(Area51Status == true) return 1;
+	return 0;
+}
+
 /*new puttrainpos;
 stock postrainroad(playerid)
 {
