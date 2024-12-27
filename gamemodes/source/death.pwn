@@ -122,6 +122,9 @@ stock SetPlayerDeath(playerid, reason)
     #if defined SAMPVOICE_COMPILE_3
     SampvoiceStopTalking(playerid);
     #endif
+
+    WupakSound(playerid);
+    Wupak(playerid);
     return 1;
 }
 
