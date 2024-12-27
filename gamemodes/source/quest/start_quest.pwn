@@ -584,6 +584,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
 
         // Выдаём деньги на руки
         oGivePlayerMoney(playerid, 5000);
+        MoneyLog("quest", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 5000, "Прошел квест с хавкой");
 
         // Запускаем квест знакомство с ноутбуком
         if(NoCompleteQuest(playerid, 9)) ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд

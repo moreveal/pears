@@ -469,6 +469,10 @@ stock ElectroFillClose(playerid,type)
     else SendClientMessage(playerid,COLOR_GRAY,"[ Мысли ]: Машина отьехала от зарядной станции, она была заряжена на %d кВт за {99ff66}%d$", zaprcarElectroKol[playerid], price);
 
     zaprcarBizElectro[playerid] = 0, zaprcarTermElectro[playerid] = 0, zaprcarElectro[playerid] = 0, zaprcarElectroTimer[playerid] = 0;
+
+    new string[40];
+    format(string, sizeof(string), "Зарядка в бизе %d", b);
+    MoneyLog("electro_fill", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
     return 1;
 }
 

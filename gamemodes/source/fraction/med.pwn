@@ -57,5 +57,7 @@ stock HealPlayer(playerid)
 	OrganInfo[4][glave] += price;
 	OrganInfo[4][gUpdate] = 1;
     GiveUnit(giveplayerid, 22);
+
+	MoneyLog("heal", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "Медик вылечил игрока");
 	return true;
 }

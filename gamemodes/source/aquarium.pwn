@@ -272,6 +272,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
 
                 SuccessMessage(playerid, "{99ff66}Вы покормили рыбок\n{cccccc}Теперь рыбки будут счастливы :)");
                 oGivePlayerMoney(playerid, -price);
+                MoneyLog("feedfish", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
                 putkazna(2, price);
                 payanim(playerid, 0);
 
@@ -302,6 +303,7 @@ stock dialogCase_Aquarium(playerid, dialogid, response, listitem, const inputtex
             format(string,sizeof(string),"{99ff66}Вы приобрели: %s\n{cccccc}Стоимость: {99ff66}%d$", GetNameThing(0, 194, 0, 0), price);
             SuccessMessage(playerid, string);
             oGivePlayerMoney(playerid, -price);
+            MoneyLog("buyfish", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
             putkazna(2, price);
             payanim(playerid, 0);
 

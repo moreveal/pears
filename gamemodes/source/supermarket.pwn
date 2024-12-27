@@ -153,6 +153,7 @@ CMD:buy(playerid) // Покупаем предметы в супермаркет
           		if(zaplati >= 1)
           		{
 	        		oGivePlayerMoney(playerid, -zaplati);
+					MoneyLog("buy", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -zaplati, "Покупки в супермаркете");
 	        		paybiz(b, zaplati);
               		format(str,sizeof(str),"\n\n{cccccc}Вы заплатили: {99ff66}%d$",zaplati), strcat(sctring,str);
          		}

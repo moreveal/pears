@@ -249,7 +249,15 @@ public Call_BattlePass(playerid)
     DonateLog("battlepass", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, "");
 
     // Выдаём излишки голды на аккаунт, если игрок несколько раз купил BattlePass
-    if(rows > 1) GivePlayerGold(playerid, gold - amount);
+    if(rows > 1) 
+    {
+        GivePlayerGold(playerid, gold - amount);
+
+        // Запись в логе
+        new string[90];
+        format(string, sizeof(string),"Автодонат (Купил BP %d раза)", rows);
+        DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold - amount, string);
+    }
 
     ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate", "{99ff66}Поздравляю! Вы приобрели BattlePass","Ок","");
 
