@@ -374,10 +374,10 @@ stock UpdateObjectOwner(nd, sla, owner_type)
     new JsonNode:node;
     CreateJsonUpdateObject(nd, sla, owner_type, node);
 
-    new string_json[4096];
+    new string_json[6096];
     if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
     {
-        new string_mysql[4600];
+        new string_mysql[6600];
         mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_owner_objects` (`owner_type`, `owner_id`, `slot`, `data`) \
         VALUES ('%d', '%d', '%d', '%e') ON DUPLICATE KEY UPDATE data = VALUES(data)", owner_type, nd, sla, string_json);
 
@@ -495,7 +495,7 @@ stock NewLoadObject(f, owner_type)
     //if(owner_type == 0) cache_get_value_name_int(f, "newid", DomInfo[nd][dNewid][sla]);
     //else if(owner_type == 1) cache_get_value_name_int(f, "newid", BizzInfo[nd][bNewid][sla]);
 
-    new string_json[4096];
+    new string_json[6096];
 	cache_get_value_name(f, "data", string_json, sizeof(string_json));
 
     new JsonNode:node = JSON_INVALID_NODE;
