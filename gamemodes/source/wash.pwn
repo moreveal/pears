@@ -88,6 +88,7 @@ CMD:wash(playerid)
 			if(AeroStat[playerid] > 0) DestroyPlayerObject(playerid, AeroObj[playerid]);
 			AeroStat[playerid] = 1;
 	    	AeroObj[playerid] = CreatePlayerObject(playerid, 18740, posic[0], posic[1], posic[2], 0.0, 0.0, 0.0);
+            CompleteBattlePassTask(playerid, 29, 1);
             return true;
     	}
     }

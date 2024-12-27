@@ -360,7 +360,7 @@ stock GiveDamagePlayerToWildAnimals(NPC:npc,damagerid,weaponid,Float:amount)
         if(weaponid == 24) WildAnimals[findSlot][waBulletCount] += 20;
         else if(weaponid >= 25 && weaponid <= 27) WildAnimals[findSlot][waBulletCount] += 40;
         else if(weaponid >= 28 && weaponid <= 32) WildAnimals[findSlot][waBulletCount] += 4;
-        else if(weaponid >= 33 && weaponid <= 34) WildAnimals[findSlot][waBulletCount] += 2;
+        else if(weaponid >= 33 && weaponid <= 34) WildAnimals[findSlot][waBulletCount] += 1;
         else WildAnimals[findSlot][waBulletCount] += 2;
 
         EventHandlerActionWildAnimals(damagerid,findSlot, 300);

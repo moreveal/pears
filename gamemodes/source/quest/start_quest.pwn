@@ -584,6 +584,7 @@ stock QuestActorJoneHavka(playerid) // Начинаем взаимодейств
 
         // Выдаём деньги на руки
         oGivePlayerMoney(playerid, 5000);
+        MoneyLog("quest", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 5000, "Прошел квест с хавкой");
 
         // Запускаем квест знакомство с ноутбуком
         if(NoCompleteQuest(playerid, 9)) ShowQwest(playerid, 9, 10); // Следующий квест через 10 секунд
@@ -1234,12 +1235,12 @@ stock QuestCallMessage(playerid)
     {
         PlayerInfo[playerid][pQuest][9] = 5;
         SaveQuest(playerid);
-        SetPVarInt(playerid,"qweststat",64), SetPVarInt(playerid,"qwesttime",10);
+        SetPVarInt(playerid,"qweststat", 67), SetPVarInt(playerid,"qwesttime",10);
 
         // Выдаём кейс
         GiveGiftQuest(playerid);
     }
-    else if(GetPVarInt(playerid,"qweststat") == 64)
+    else if(GetPVarInt(playerid,"qweststat") == 67)
     {
         SetPVarInt(playerid,"qweststat",0), SetPVarInt(playerid,"qwesttime",0);
         ShowPlayerHintInfo(playerid, 1); // Подсказка про деревенских

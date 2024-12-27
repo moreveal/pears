@@ -826,7 +826,7 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 		if(oGetPlayerMoney(playerid) < Apartments[aprid][apPrice]) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 		oGivePlayerMoney(playerid, -Apartments[aprid][apPrice]);
         format(string, sizeof(string), "Купил квартиру %d в квартирном доме %d",ApartmentsRoom[roomid][aprID], aprid+1);
-        MoneyLog("buyapartmentsroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", Apartments[aprid][apPrice], string);
+        MoneyLog("buyapartmentsroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -Apartments[aprid][apPrice], string);
 	}
 	else if(typeBuy == 1)
 	{
@@ -837,8 +837,8 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 		tclArifmetikAllGold -= Apartments[aprid][apPriceGold];
 		mysql_save(playerid, 4);
 
-		format(string, sizeof(string), "Купил квартиру %d в квартирном доме %d за голду",ApartmentsRoom[roomid][aprID], aprid+1);
-		MoneyLog("buyapartmentsroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", Apartments[aprid][apPrice], string);
+        format(string, sizeof(string), "Купил квартиру %d в квартирном доме %d за голду",ApartmentsRoom[roomid][aprID], aprid+1);
+        DonateLog("buyapartmentsroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -Apartments[aprid][apPrice], string);
 	}
     else if(typeBuy == 2)
 	{
@@ -875,6 +875,9 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 
                     mysql_save(para1, 0);
                     mysql_save(para1, 8);
+
+                    format(string, sizeof(string), "Продал квартиру %d в доме %d", ApartmentsRoom[roomid][aprID], aprid+1);
+                    MoneyLog("sellapartmentsroom", PlayerInfo[para1][pID], PlayerInfo[para1][pName], PlayerInfo[para1][pPlaIP], 0, "", "", ApartmentsRoom[roomid][aprSellOwn], string);
                 }
                 else
                 {
@@ -887,9 +890,12 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
             oGivePlayerMoney(playerid, -ApartmentsRoom[roomid][aprSellOwn]);
 
             mysql_format(pearsq, string,sizeof(string),"SELECT * FROM `pp_igroki` WHERE `user_id` = '%d'", ApartmentsRoom[roomid][aprOwn]);
-            mysql_tquery(pearsq, string, "Call_OfflineBuyApartments", "d", roomid);
+            mysql_tquery(pearsq, string, "Call_OfflineBuyApartments", "dd", roomid, aprid);
         }
 	    if(PlayerInfo[playerid][pAchieve][10] == 0) AchievePlayer(playerid, 10, 1);
+
+        format(string, sizeof(string), "Купил квартиру %d в доме %d", ApartmentsRoom[roomid][aprID], aprid+1);
+        MoneyLog("buyapartmentsroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -ApartmentsRoom[roomid][aprSellOwn], string);
 	}
 
     format(string, sizeof(string), "Купил Квартиру в квартирном доме %d у игрока %s",aprid+1,ApartmentsRoom[roomid][aprOwnName]);
@@ -916,15 +922,16 @@ stock BuyApartmentsRoom(playerid, typeBuy, aprid, roomid) // typeBuy 0 - $, 1 - 
 	return 1;
 }
 
-function Call_OfflineBuyApartments(roomid)
+function Call_OfflineBuyApartments(roomid, aprid)
 {
-    new datad1, datad2, datad[10],string[32],result = -1,f_str[144];
+    new datad1, datad2, datad[10], text[32],result = -1,f_str[144], sellerName[24];
     cache_get_value_name_int(0, "Account", datad1);
     cache_get_value_name_int(0, "user_id", datad2);
+    cache_get_value_name(0, "Name", sellerName, 24);
     for(new i; i < 10; i++)
     {
-        format(string, sizeof(string), "pApartmentsRoom%d",i);
-        cache_get_value_name_int(0, string, datad[i]);
+        format(text, sizeof(text), "pApartmentsRoom%d",i);
+        cache_get_value_name_int(0, text, datad[i]);
         if(datad[i] == roomid) 
         {
             result = i;
@@ -937,6 +944,10 @@ function Call_OfflineBuyApartments(roomid)
         mysql_format(pearsq, f_str,sizeof(f_str),"UPDATE `pp_igroki` SET `Account` = '%d', `pApartmentsRoom%d` = '0' WHERE `user_id` = '%d'",pluslave, result, datad2);
         query_empty(pearsq, f_str);
     }
+
+    new string[64];
+    format(string, sizeof(string), "Продал квартиру %d в доме %d", ApartmentsRoom[roomid][aprID], aprid+1);
+    MoneyLog("sellapartmentsroom", datad2, sellerName, "", 0, "", "", ApartmentsRoom[roomid][aprSellOwn], string);
 	return true;
 }
 
@@ -1244,7 +1255,7 @@ stock dialogCase_Apartments(playerid, dialogid, response, listitem, const inputt
                     }
                     SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Риэлторское Агентство ]: Поздравляем с продажей Квартиры");
                     HouseLog(1, "sellroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], ApartmentsRoom[roomid][aprID], Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apPrice]/2, "Продал Квартиру (Гос)");
-                    MoneyLog("sellroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apPrice]/2, "Продал Квартиру (Гос)");
+                    MoneyLog("sellroom", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -Apartments[ApartmentsRoom[roomid][aprApartmentsID]][apPrice]/2, "Продал Квартиру (Гос)");
                     mysql_save(playerid, 8);
                 }
                 else ErrorMessage(playerid,"Ошибка, у меня нет квартиры");

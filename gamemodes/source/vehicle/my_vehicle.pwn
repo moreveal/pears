@@ -4394,7 +4394,9 @@ function LoadCar(playerid, dab, race_check, adminLoad, typeVehicle)
 			BizzInfo[b][bUpdate] = 1;
 			oGivePlayerMoney(playerid, -BizzInfo[b][bPrice][slot]*2);
 			paybiz(b, BizzInfo[b][bPrice][slot]*2);
-
+			new string[50];
+			format(string, sizeof(string), "Восстановил личный тс в бизе № %d", b);
+			MoneyLog("recoveryveh", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -BizzInfo[b][bPrice][slot]*2, string);
 			death = false;
 
 			// Сохраняем авто

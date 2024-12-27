@@ -176,6 +176,7 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
                     new put_inva = GiveThingPlayer(playerid, 239, 1, 0, 0, 0, 0);
                     if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}В инвентаре не хватает места");
                     oGivePlayerMoney(playerid, -price);
+                    MoneyLog("godjo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "Купил пропуск godjo");
                     payanim(playerid, 0);
 
                     OrganInfo[6][glave] += price;

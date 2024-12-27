@@ -574,6 +574,8 @@ stock Graves_Pump(playerid)
             SetTimerEx("Graves_Reload", 5 * 60 * 1000, false, "d", graveid);
             PlayerPlaySound(playerid, 6401);
 
+            CompleteBattlePassTask(playerid, 30, 1);
+
             foreach (new id : Player)
             {
                 if (GetPlayerVirtualWorld(id) != 0) continue;

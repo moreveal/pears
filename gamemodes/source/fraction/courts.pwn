@@ -385,7 +385,11 @@ stock CourtCloseProcess(courtofferid, deposit = -1, period = -1)
             {
                 return ErrorMessage(arbiterid, "{ff6347}У заключенного не хватает денег на руках для оплаты залога");
             }
-            else oGivePlayerMoney(prisonerid, -deposit);
+            else 
+            {
+                oGivePlayerMoney(prisonerid, -deposit);
+                MoneyLog("deposit", PlayerInfo[prisonerid][pID], PlayerInfo[prisonerid][pName], PlayerInfo[prisonerid][pPlaIP], 0, "", "", -deposit, "Оплата залога в суде");
+            }
 
             if (courtDecision == COURT_CLASS_PAROLE) {
                 format(log_message, sizeof(log_message), "Одобрил заявку на УДО [Залог %d$ | Срок: %s]", deposit, pretty_period);

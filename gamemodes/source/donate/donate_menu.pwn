@@ -52,8 +52,9 @@ CMD:donate(playerid)
 
 stock showDialogDonateMenu(playerid)
 {
-    new lines[1200];
+    new lines[1300];
 	format(lines, sizeof(lines),"{99ff66}Получить {ffcc00}Золото\
+                            \n{99ff66}Получить {c8a2c8}BattlePass\
                             \n{ffcc00}Gold Trade {666666}[ Обменник Голды ]\
 	                        \n{666666}Информация..\
 	                        \n{ffcc00}VIP {cccccc}Аккаунт {666666}>>\
@@ -176,6 +177,140 @@ stock GetDonate(playerid)
     return true;
 }
 
+stock GetBattlePass(playerid)
+{
+    if(server == 0) return ErrorMessage(playerid, "{FF6347}Недоступно на тестовом сервере");
+
+    if(GetPVarInt(playerid,"afdonate") > 0)
+    {
+        new string[80];
+        format(string,sizeof(string),"{FF6347}Пожалуйста, повторите запрос позже [ Подождите %d секунд ]", GetPVarInt(playerid,"afdonate"));
+        ErrorText(playerid, string);
+        pc_cmd_donate(playerid);
+        return true;
+    }
+    SetPVarInt(playerid,"afdonate",20);
+
+
+    if(GetPVarInt(playerid,"acall_donate") == 1) return ErrorMessage(playerid, "{FF6347}Пожалуйста, дождитесь начисления прежде чем отправлять следующий запрос");
+    SetPVarInt(playerid,"acall_donate",1);
+    ShowDialog(playerid,1700,DIALOG_STYLE_MSGBOX,"{ff9000}Pears Project","{ff9000}Загрузка платежей..","*","");
+    new string_mysql[200];
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql),"SELECT * FROM `orders` WHERE `name` = '%e' AND `item_id` = '1' AND `status` = 'paid'", 
+        PlayerInfo[playerid][pName]);
+    mysql_tquery(pearsq_3, string_mysql, "Call_BattlePass", "d", playerid);
+    return true;
+}
+
+
+    /*
+	// Собираем все донаты на аккаунте
+	new gold = 0, item_id, battlePass;
+	for(new i = 0; i < rows; i++)
+	{
+		new amount;
+		cache_get_value_name_int(i, "amount", amount);
+		gold += amount;
+
+        cache_get_value_name_int(i, "item_id", item_id);
+        if(item_id == 1) battlePass ++;
+	}
+    */
+
+forward Call_BattlePass(playerid);
+public Call_BattlePass(playerid)
+{
+	new rows;
+	cache_get_row_count(rows);
+
+	// Ничего не нашли, значит донатов нет
+	if(rows == 0) return showDialogErrorDonateCall(playerid);
+
+	// Собираем все донаты на аккаунте
+	new gold = 0, amount = 0;
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_value_name_int(i, "amount", amount);
+		gold += amount;
+	}
+
+	// Общая сумма донатов, почему-то 0
+	if(gold == 0) return showDialogErrorDonateCall(playerid);
+
+    new string_mysql[200];
+    // Отмечаем инфу о том, что battlepass был выдан на аккаунт
+    mysql_format(pearsq_3, string_mysql, sizeof(string_mysql), "UPDATE `orders` SET `status` = 'completed' WHERE `name` = '%e' AND `item_id` = '1' AND `status` = 'paid'",
+        PlayerInfo[playerid][pName]);
+    mysql_tquery(pearsq_3, string_mysql);
+
+    GivePlayerBattlePass(playerid);
+
+    // Запись в логе
+    DonateLog("battlepass", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, "");
+
+    // Выдаём излишки голды на аккаунт, если игрок несколько раз купил BattlePass
+    if(rows > 1) 
+    {
+        GivePlayerGold(playerid, gold - amount);
+
+        // Запись в логе
+        new string[90];
+        format(string, sizeof(string),"Автодонат (Купил BP %d раза)", rows);
+        DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold - amount, string);
+    }
+
+    ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate", "{99ff66}Поздравляю! Вы приобрели BattlePass","Ок","");
+
+    SetPVarInt(playerid,"acall_donate",0);
+	return 1;
+}
+
+stock GivePlayerGold(playerid, gold)
+{
+    if(gold <= 0) return false;
+
+    PlayerInfo[playerid][pDonateMoney] += gold;
+    PlayerInfo[playerid][pDonateAll] += gold; // Сумма донатов за всё время
+
+    PlayerPlaySound(playerid,6401,0,0,0);
+    SendClientMessage(playerid, COLOR_GREY,"{0088ff}На ваш аккаунт начислено {ffcc00}%dG {ffcc66}[ Баланс %dG ]", gold, PlayerInfo[playerid][pDonateMoney]);
+
+    // Сохраняем голду в базе
+    new string_mysql[300];
+    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `DonateMoney` = '%d',`DonateAll` = '%d' WHERE `user_id` = '%d'",
+				PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pDonateAll], PlayerInfo[playerid][pID]);
+	mysql_tquery(pearsq, string_mysql);
+
+    // Ачивки
+    if(PlayerInfo[playerid][pAchieve][36] == 0) AchievePlayer(playerid, 36, 1); // Первый Донат
+    if(PlayerInfo[playerid][pAchieve][37] == 0 && PlayerInfo[playerid][pDonateAll] >= 500) AchievePlayer(playerid, 37, 1); // Общая сумма донатов
+    if(PlayerInfo[playerid][pAchieve][38] == 0 && PlayerInfo[playerid][pDonateAll] >= 1000) AchievePlayer(playerid, 38, 1);
+    if(PlayerInfo[playerid][pAchieve][39] == 0 && PlayerInfo[playerid][pDonateAll] >= 10000) AchievePlayer(playerid, 39, 1);
+    if(PlayerInfo[playerid][pAchieve][40] == 0 && PlayerInfo[playerid][pDonateAll] >= 20000) AchievePlayer(playerid, 40, 1);
+    if(PlayerInfo[playerid][pAchieve][41] == 0 && PlayerInfo[playerid][pDonateAll] >= 30000) AchievePlayer(playerid, 41, 1);
+    if(PlayerInfo[playerid][pAchieve][42] == 0 && PlayerInfo[playerid][pDonateAll] >= 40000) AchievePlayer(playerid, 42, 1);
+    if(PlayerInfo[playerid][pAchieve][43] == 0 && PlayerInfo[playerid][pDonateAll] >= 50000) AchievePlayer(playerid, 43, 1);
+    if(PlayerInfo[playerid][pAchieve][44] == 0 && PlayerInfo[playerid][pDonateAll] >= 100000) AchievePlayer(playerid, 44, 1);
+    if(PlayerInfo[playerid][pAchieve][26] == 0 && PlayerInfo[playerid][pDonateMoney] >= 10000) AchievePlayer(playerid, 26, 1); // Сумма на счёте больше 10к голды
+
+    // Подарок игроку, который нас пригласил (Начисляем ему рефералы)
+    if(PlayerInfo[playerid][pReferalID] > 0 && PlayerInfo[playerid][pReferalID] != PlayerInfo[playerid][pID])
+    {
+        new koef = gold/100;
+        if(koef >= 1)
+        {
+            new proc = koef * REFERAL_PROCENT_DONATE;
+            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"SELECT Name, DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", PlayerInfo[playerid][pReferalID]);
+            new Cache:cache = mysql_query(pearsq, string_mysql);
+            Call_giverefdon(playerid, PlayerInfo[playerid][pReferalID], proc, cache != MYSQL_INVALID_CACHE);
+            if(cache != MYSQL_INVALID_CACHE) cache_delete(cache);
+        }
+    }
+
+    SetPVarInt(playerid,"acall_donate",0);
+    return true;
+}
+
 stock showDialogErrorDonateCall(playerid)
 {
     PlayerPlaySound(playerid,4203,0,0,0);
@@ -220,51 +355,15 @@ public Call_Donate(playerid)
     if(newskidka1 > 0) format(string, sizeof(string),"Автодонат X%d", newskidka1);
     else format(string, sizeof(string),"Автодонат");
     DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", gold, string);
-
-    // Выдаём голду на аккаунт
-    PlayerInfo[playerid][pDonateMoney] += gold;
-    PlayerInfo[playerid][pDonateAll] += gold; // Сумма донатов за всё время
+    
+    // Начисляем голду и сохраняем всё
+    GivePlayerGold(playerid, gold);
 
     format(string, sizeof(string),"{99ff66}Счёт Пополнен\
                                 \n{cccccc}Начислено: {ffcc00}%dG\
                                 \n{cccccc}Баланс: {ffcc00}%dG", 
                                 gold, PlayerInfo[playerid][pDonateMoney]);
     ShowDialog(playerid,457,DIALOG_STYLE_MSGBOX,"{ff9000}Donate",string,"Ок","");
-    PlayerPlaySound(playerid,6401,0,0,0);
-    SendClientMessage(playerid, COLOR_GREY,"{0088ff}На ваш аккаунт начислено {ffcc00}%dG {ffcc66}[ Баланс %dG ]", gold, PlayerInfo[playerid][pDonateMoney]);
-
-    // Сохраняем голду в базе
-    mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_igroki` SET `DonateMoney` = '%d',`DonateAll` = '%d' WHERE `user_id` = '%d'",
-				PlayerInfo[playerid][pDonateMoney], PlayerInfo[playerid][pDonateAll], PlayerInfo[playerid][pID]);
-	mysql_tquery(pearsq, string_mysql);
-
-    // Ачивки
-    if(PlayerInfo[playerid][pAchieve][36] == 0) AchievePlayer(playerid, 36, 1); // Первый Донат
-    if(PlayerInfo[playerid][pAchieve][37] == 0 && PlayerInfo[playerid][pDonateAll] >= 500) AchievePlayer(playerid, 37, 1); // Общая сумма донатов
-    if(PlayerInfo[playerid][pAchieve][38] == 0 && PlayerInfo[playerid][pDonateAll] >= 1000) AchievePlayer(playerid, 38, 1);
-    if(PlayerInfo[playerid][pAchieve][39] == 0 && PlayerInfo[playerid][pDonateAll] >= 10000) AchievePlayer(playerid, 39, 1);
-    if(PlayerInfo[playerid][pAchieve][40] == 0 && PlayerInfo[playerid][pDonateAll] >= 20000) AchievePlayer(playerid, 40, 1);
-    if(PlayerInfo[playerid][pAchieve][41] == 0 && PlayerInfo[playerid][pDonateAll] >= 30000) AchievePlayer(playerid, 41, 1);
-    if(PlayerInfo[playerid][pAchieve][42] == 0 && PlayerInfo[playerid][pDonateAll] >= 40000) AchievePlayer(playerid, 42, 1);
-    if(PlayerInfo[playerid][pAchieve][43] == 0 && PlayerInfo[playerid][pDonateAll] >= 50000) AchievePlayer(playerid, 43, 1);
-    if(PlayerInfo[playerid][pAchieve][44] == 0 && PlayerInfo[playerid][pDonateAll] >= 100000) AchievePlayer(playerid, 44, 1);
-    if(PlayerInfo[playerid][pAchieve][26] == 0 && PlayerInfo[playerid][pDonateMoney] >= 10000) AchievePlayer(playerid, 26, 1); // Сумма на счёте больше 10к голды
-
-    // Подарок игроку, который нас пригласил (Начисляем ему рефералы)
-    if(PlayerInfo[playerid][pReferalID] > 0 && PlayerInfo[playerid][pReferalID] != PlayerInfo[playerid][pID])
-    {
-        new koef = gold/100;
-        if(koef >= 1)
-        {
-            new proc = koef * REFERAL_PROCENT_DONATE;
-            mysql_format(pearsq, string_mysql, sizeof(string_mysql),"SELECT Name, DonateMoney FROM `pp_igroki` WHERE `user_id` = '%d'", PlayerInfo[playerid][pReferalID]);
-            new Cache:cache = mysql_query(pearsq, string_mysql);
-            Call_giverefdon(playerid, PlayerInfo[playerid][pReferalID], proc, cache != MYSQL_INVALID_CACHE);
-            if(cache != MYSQL_INVALID_CACHE) cache_delete(cache);
-        }
-    }
-
-    SetPVarInt(playerid,"acall_donate",0);
 	return 1;
 }
 

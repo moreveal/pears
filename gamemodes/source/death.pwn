@@ -122,6 +122,9 @@ stock SetPlayerDeath(playerid, reason)
     #if defined SAMPVOICE_COMPILE_3
     SampvoiceStopTalking(playerid);
     #endif
+
+    WupakSound(playerid);
+    Wupak(playerid);
     return 1;
 }
 
@@ -352,6 +355,8 @@ stock CloseRevival(playerid,targetid)
 
         // Выдаём медику юниты за реанимацию
         GiveUnit(playerid, 21);
+
+        MoneyLog("revival", PlayerInfo[targetid][pID], PlayerInfo[targetid][pName], PlayerInfo[targetid][pPlaIP], 0, "", "", -price, "Оплата реанимации");
     }
     
     // Закрываем вызов и сообщаем, что мы вылечили пострадавшего

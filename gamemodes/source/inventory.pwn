@@ -1766,35 +1766,13 @@ stock get_stolenlic(playerid, &s0, &s1, &s2, &s3, &s4, &s5) // Поиск лиц
 }
 stock get_para(playerid, fpick) // Параметр предмета
 {
-	new minid = 0, maxid = 40,para = 0, invtype = 0;
-	if(OnlineInfo[playerid][oInventSelectBackPack] != 9999) invtype = 1;
-	if(!invtype)
+	new minid = 0, maxid = 40,para = 0;
+	for(new i = minid; i < maxid; i++)
 	{
-		for(new i = minid; i < maxid; i++)
+		if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
 		{
-			if(PlayerInfo[playerid][pInven][i] == fpick && PlayerInfo[playerid][pInvenType][i] == 0)
-			{
-				para = PlayerInfo[playerid][pInvenPara][i];
-				break;
-			}
-		}
-	}
-	else
-	{
-		new aks = HasABustAks(playerid,1);
-		if(aks != -1)
-		{
-			new bpslots;
-			if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
-			if(bpslots == 0) bpslots = 1;
-			for(new i = 0; i < bpslots*20; i++)
-			{
-				if(BackPackInfo[playerid][backpackInvent][i] == fpick && BackPackInfo[playerid][backpackInvType][i] == 0)
-				{
-					para = BackPackInfo[playerid][backpackInvPara][i];
-					break;
-				}
-			}
+			para = PlayerInfo[playerid][pInvenPara][i];
+			break;
 		}
 	}
 	return para;
@@ -2614,7 +2592,7 @@ stock i_limit(playerid, thingId, &getQuan, &getLimit) // Проверяем ли
 	lim[183] = lim[190] = lim[191] = lim[192] = 2;
 	lim[238] = 100*pow; // Алюминий
 	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
-	lim[256] = 300, lim[257] = 300, lim[258] = 300, lim[259] = 300; // Наборы для крафта
+	lim[256] = 300, lim[257] = 300, lim[258] = 300, lim[259] = 300, lim[260] = 300; // Наборы для крафта
 
     getQuan = get_invent(playerid, thingId, 0);
     getLimit = lim[thingId];
@@ -2635,7 +2613,7 @@ stock apartments_limit(pt, thingId, &getQuan, &getLimit) // Проверяем �
 	lim[82] = 1000, lim[83] = 1000, lim[84] = 1000, lim[85] = 1000, lim[86] = 1000, lim[87] = 1000, lim[88] = 1000, lim[89] = 10000, lim[106] = 1000, lim[108] = 1000, lim[109] = 1000, lim[110] = 1000;
 	lim[140] = 10000, lim[141] = 10000, lim[142] = 1000, lim[180] = 1000, lim[181] = 1000, lim[197] = 100, lim[198] = 1000, lim[225] = 100, lim[230] = 5;
 	lim[252] = 100, lim[253] = 100, lim[254] = 100, lim[255] = 100; // Купоны
-	lim[256] = 1000, lim[257] = 1000, lim[258] = 1000, lim[259] = 1000; // Наборы для крафта
+	lim[256] = 1000, lim[257] = 1000, lim[258] = 1000, lim[259] = 1000, lim[260] = 1000; // Наборы для крафта
 	
     getQuan = get_ApartmentsTable(pt, thingId, 0);
     getLimit = lim[thingId];

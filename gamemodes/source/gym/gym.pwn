@@ -606,6 +606,7 @@ stock BuyGymAbonement(playerid)
     if(oGetPlayerMoney(playerid) < PRICE_GYM) return ErrorMessage(playerid, "{FF6347}Вам не хватает денег");
 
     oGivePlayerMoney(playerid, -PRICE_GYM);
+    MoneyLog("gym", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -PRICE_GYM, "Абонемент в спортзал");
     PlayerInfo[playerid][pGymUnix] = gettime() + 604800;
     payanim(playerid, 0);
 

@@ -405,6 +405,8 @@ stock LoadBot()
 
     BotPears[524] = CreateDynamicActor(657, 3261.6216,-340.3169,8.4405,245.5138); // Йольский Парень
     BotPears[525] = CreateDynamicActor(508, 3264.2461,-336.4369,8.4471,165.9117); // Овечка
+    BotPears[526] = CreateDynamicActor(657, 3271.8430,-326.0200,8.3832,215.6650); // Йольский Парень
+    BotPears[526] = CreateDynamicActor(657, 3289.9795,-321.6499,8.5798,181.9233); // Йольский Парень 
 
 	LoadAnimBot();
 

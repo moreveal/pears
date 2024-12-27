@@ -555,6 +555,13 @@ stock use_trash(playerid, tra, inva, useinva)
 	new put_inva = GiveThingPlayer(playerid, fpick, fquan, fpara, fqara, thingType, thingPack, useinva);
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места в инвентаре"); // Получили -1 в ответ, значит не нашли ячейку, куда класть предмет
     TakeTrash(tra, fpick, fquan, thingType, inva);
+
+	if(OnlineInfo[playerid][oNewYearQuest] == 3 && fpick == 1) 
+	{
+		SuccessMessage(playerid, "Я нашел хлеб, теперь нужно отдать его Обрубку");
+		CreateGps(playerid, 3289.9795,-321.6499,8.5798, 0, 0, 10.0);
+		OnlineInfo[playerid][oNewYearQuestDop] = 1;
+	}
     
     if(PlayerInfo[playerid][pInfoload] >= 50) PlayerInfo[playerid][pInfoload] -= 50;
 	else PlayerInfo[playerid][pInfoload] = 0;

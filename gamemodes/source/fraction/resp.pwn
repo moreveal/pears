@@ -38,7 +38,10 @@ stock CheckPlayerInResp(playerid)
         // Если мы на респе нгса, копим время, чтобы выдать звёзды
         if(orgid == 3)
         {
-            if(OnlineInfo[playerid][oPauseInArea] == 300) PlayerInArea51(playerid); // Через 5 минут выдаём розыск
+            new timeArea = 120; // Время до звёзд на армейке 2 минуты
+            if(RushArea51() == 1) timeArea = 300; // Время до звёзд во время раша на стриме 5 минут
+
+            if(OnlineInfo[playerid][oPauseInArea] == timeArea) PlayerInArea51(playerid);
             else OnlineInfo[playerid][oPauseInArea] ++;
         }
         Iamterr[playerid] = orgid;

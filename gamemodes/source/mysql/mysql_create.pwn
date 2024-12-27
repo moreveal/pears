@@ -134,6 +134,9 @@ stock CreateMysqlTable()
     // День подсчёта максимального онлайна за сегодня
     AddColumnIfNotExists("pp_server", "serv67", "INT NOT NULL DEFAULT '0'");
 
+    // Радость моя для щупы
+    AddColumnIfNotExists("pp_server", "serv68", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
     AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
 

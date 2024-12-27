@@ -322,16 +322,17 @@ stock commandD(playerid, typeCommand, const params[])
     }
 
     new string[240];
-    if(!strcmp(nameRank,"\0",true)) return format(string, sizeof(string), "{FF6347}В %s у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g]), ErrorMessage(playerid, string);
-    if(IsAGangID(g)) // Банды
-    {
-	    if(!GetAccessRankOrg(playerid, g, 39, NO_FBI)) return 1;
-    }        
+    if(!strcmp(nameRank,"\0",true)) return format(string, sizeof(string), "{FF6347}В %s у вашего ранга нет названия\n{cccccc}Обратитесь к лидеру вашей организации или к администрации", frakeasyName[g]), ErrorMessage(playerid, string);  
 
     if(IsADepartID(g) || IsAGangID(g) || IsAMafiaID(g))
     {
+        if(!GetAccessRankOrg(playerid, g, 39, PlayerInfo[playerid][pFbi])) return 1;
+
+        new realRank = PlayerInfo[playerid][pRank];
+        if(g == 2 && PlayerInfo[playerid][pFbi] > 0) realRank = PlayerInfo[playerid][pFbi];
+
         new maxRank = get_maxrank(g);
-        if(PlayerInfo[playerid][pRank] >= maxRank - 1) // Лидеры и Замы
+        if(realRank >= maxRank - 1) // Лидеры и Замы
         {
             if(typeCommand == 0) format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: %s **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);
             else format(string, sizeof(string), "** [%s] %s%s%s {FF8282}%s: (( %s )) **", AbbName[g], FrakColor[g], nameAbb, nameRank, getPlayerNameTransmitter(playerid), params[0]);

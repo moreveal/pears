@@ -1,6 +1,6 @@
 stock RadioInterceptor_IsStateEnabled(playerid, e_RadioInterceptorState: status)
 {
-	if (get_invent(playerid, 236, 0) <= 0) return 0; // Устройство отсутствует
+	if (get_invent4(playerid, 236, 0) <= 0) return 0; // Устройство отсутствует
 	if (gettime() > get_para(playerid, 236)) {
 		if (Hank_IsServiceEnabled(playerid, HANK_SERVICE_STATE_PERSONAL_TECHIE))
 		{

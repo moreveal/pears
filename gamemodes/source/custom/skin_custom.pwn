@@ -10,7 +10,7 @@
 1. В настройках гос цен правительства указываешь ценник и доступ для заказа в магазы (и УСЁ)
 */
 
-#define MAX_SKIN_CUSTOM 351
+#define MAX_SKIN_CUSTOM 352
 
 stock AddCustomSkins()
 {
