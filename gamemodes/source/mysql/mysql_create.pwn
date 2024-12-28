@@ -54,6 +54,11 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
     AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
 
+    AddColumnIfNotExists("pp_igroki", "WarnClearTime", "INT NOT NULL DEFAULT '0'"); // Когда будет снят варн
+    AddColumnIfNotExists("pp_igroki", "GunWarns", "INT NOT NULL DEFAULT '0'"); // Количество ганварнов
+    AddColumnIfNotExists("pp_igroki", "GunWarnsZZTime", "INT NOT NULL DEFAULT '0'"); // Время персональной ЗЗ при ганварне
+    AddColumnIfNotExists("pp_igroki", "GunWarnsDonateCD", "INT NOT NULL DEFAULT '0'"); // Когда можно будет снять ганварн за донат
+
     //Top
     AddColumnIfNotExists("pp_igroki_top", "pCraftCount", "INT NOT NULL DEFAULT '0'"); // Кол-во очков для крафта.
 
@@ -137,6 +142,9 @@ stock CreateMysqlTable()
     // Радость моя для щупы
     AddColumnIfNotExists("pp_server", "serv68", "INT NOT NULL DEFAULT '0'");
 
+    // Тариф (GUNWARN)
+    AddColumnIfNotExists("pp_server", "serv69", "INT NOT NULL DEFAULT '0'");
+
     AddColumnIfNotExists("pp_family", "vehPlate", "VARCHAR(32) DEFAULT ''"); // Номера авто в семье
     AddColumnIfNotExists("pp_family", "statusplate", "INT NOT NULL DEFAULT '0'"); // Статус покупки номерных знаков в семью
 
@@ -152,6 +160,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("apartments", "apCoordRoof0", "FLOAT NOT NULL DEFAULT '0'"); 
     AddColumnIfNotExists("apartments", "apCoordRoof1", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("apartments", "apCoordRoof2", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_work", "gunwarn", "INT NOT NULL DEFAULT '0'"); // Счетчик выданных GunWarns у администраторов
 
     // Создание недостающих строк в pp_priceskin
     mysql_tquery(pearsq, "SELECT skin FROM `pp_priceskin` ORDER BY skin DESC LIMIT 1", "PriceSkinPad");

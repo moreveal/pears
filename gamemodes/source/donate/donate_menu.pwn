@@ -25,7 +25,7 @@ stock defaultPriceDonate()
     donatePrice[3] = 50; // Сменить ник
     donatePrice[4] = 50; // Занять ник (резервирование никнейма)
     donatePrice[5] = 200; // Сменить номер телефона
-    donatePrice[6] = 200; // Снять warn
+    donatePrice[6] = 200; // Снять gunwarn
     donatePrice[7] = 600; // Снять ban
     donatePrice[8] = 8; // Снять мут (стоимость 1 минуты мута)
     donatePrice[9] = 190; // Открыть слот транспорта
