@@ -203,7 +203,7 @@ stock agetcollector(playerid)
 {
 	if(IsPlayerInRangeOfPoint(playerid,3.0,1107.387, -1216.869, 17.804))
 	{
-		ShowDialog(playerid, 1340, 2, "{ff9000}Транспорт Инкасаторов", "Securicar", "Выбрать", "Выход");
+		ShowDialog(playerid, 1340, 2, "{ff9000}Транспорт Инкассаторов", "Securicar", "Выбрать", "Выход");
   	}
     return 1;
 }
@@ -212,7 +212,7 @@ stock CloseCollector(playerid)
 {
 	new b = GetPlayerVirtualWorld(playerid) - 3000;
 	new term = GetPVarInt(playerid, "job_collector_term");
-	if(GetPVarInt(playerid, "job_collector") != b || GetPVarInt(playerid, "job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкасатором или не выполняете доставку в этот банк");
+	if(GetPVarInt(playerid, "job_collector") != b || GetPVarInt(playerid, "job_collector_status") != 2) return ErrorMessage(playerid, "{FF6347}Вы не работаете инкассатором или не выполняете доставку в этот банк");
 	if(NoAnim[playerid] == 0) ApplyAnimation(playerid, "BOMBER", "BOM_Plant", 4.0, false, false, false, false, false);
 	paybiz(b,BizzInfo[b][bItem][term]);
 	BizzInfo[b][bDeposit] -= BizzInfo[b][bDeliveryPay];
