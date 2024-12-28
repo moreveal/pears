@@ -104,6 +104,7 @@ stock YesGiveMyWeapon(playerid)
         && !Iamzz[playerid] // Не в зз
         && MPGO[playerid] == 0 // Не на мп
         && PlayerInfo[playerid][pBkyrenie] <= 1 // Не в космосе
+        && !IsPlayerGunWarned(playerid) // Отсутствует GunWarn
 
         // Не за рулём транспорта
         && GetPlayerState(playerid) != PLAYER_STATE_DRIVER 
