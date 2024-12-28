@@ -35,133 +35,133 @@
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 341,
             "type": 2,
             "amount": 1,
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 19583,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 18875,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 33,
             "type": 3,
             "amount": 1,
             "chance": 10,
             "para": 0
         },
-		{
+        {
             "thing": 319,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 354,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 424,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 435,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 312,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 328,
             "type": 3,
             "amount": 1,
             "chance": 15,
             "para": 0
         },
-		{
+        {
             "thing": 442,
             "type": 5,
             "amount": 1,
             "chance": 1,
             "para": 0
         },
-		{
+        {
             "thing": 2013,
             "type": 5,
             "amount": 1,
             "chance": 9,
             "para": 0
         },
-		{
+        {
             "thing": 2020,
             "type": 5,
             "amount": 1,
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 2025,
             "type": 5,
             "amount": 1,
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 2089,
             "type": 5,
             "amount": 1,
             "chance": 2,
             "para": 0
         },
-		{
+        {
             "thing": 2115,
             "type": 5,
             "amount": 1,
             "chance": 3,
             "para": 0
         },
-		{
+        {
             "thing": 2117,
             "type": 5,
             "amount": 1,
             "chance": 3,
             "para": 0
         },
-		{
+        {
             "thing": 2121,
             "type": 5,
             "amount": 1,
             "chance": 2,
             "para": 0
         },
-		{
+        {
             "thing": 94,
             "type": 0,
             "amount": 1,
@@ -205,119 +205,119 @@
             "chance": 25,
             "para": 0
         },
-		{
+        {
             "thing": 18890,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 19553,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 2228,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 32,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 34,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 128,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 133,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 158,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 161,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 162,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 236,
             "type": 3,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 422,
             "type": 5,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 478,
             "type": 5,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 542,
             "type": 5,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 2061,
             "type": 5,
             "amount": 1,
             "chance": 6,
             "para": 0
         },
-		{
+        {
             "thing": 600,
             "type": 5,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 512,
             "type": 5,
             "amount": 1,
@@ -502,68 +502,131 @@
             "para": 0
         }
     ],
-	"graves": [
-		{
+    "graves": [
+        {
+            "thing": 586,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 587,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 588,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 589,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 590,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 591,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 592,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 593,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 597,
+            "type": 3,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
             "thing": 12343,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12347,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12348,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12349,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12350,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12351,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 2162,
             "type": 5,
             "amount": 1,
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 2163,
             "type": 5,
             "amount": 1,
             "chance": 5,
             "para": 0
         },
-		{
+        {
             "thing": 242,
             "type": 0,
             "amount": 1,
-            "chance": 15,
+            "chance": 40,
             "para": 0
         },
         {
@@ -609,70 +672,7 @@
             "para": 0
         }
     ],
-	"halloween24": [
-        {
-            "thing": 586,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 587,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 588,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 589,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 590,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 591,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 592,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 593,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
-        {
-            "thing": 597,
-            "type" : 3,
-            "amount": 1,
-            "chance": 1,
-            "para": 0
-        },
+    "halloween24": [
         {
             "thing": 12316,
             "type": 2,
@@ -680,89 +680,217 @@
             "chance": 40,
             "para": 0
         },
-		{
+        {
             "thing": 12317,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12318,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12319,
             "type": 2,
             "amount": 1,
             "chance": 30,
             "para": 0
         },
-		{
+        {
             "thing": 12320,
             "type": 2,
             "amount": 1,
             "chance": 25,
             "para": 0
         },
-		{
+        {
             "thing": 12321,
             "type": 2,
             "amount": 1,
             "chance": 25,
             "para": 0
         },
-		{
+        {
             "thing": 12322,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 12323,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 12324,
             "type": 2,
             "amount": 1,
             "chance": 10,
             "para": 0
         },
-		{
+        {
             "thing": 12328,
             "type": 2,
             "amount": 1,
             "chance": 10,
             "para": 0
         },
-		{
+        {
             "thing": 12330,
             "type": 2,
             "amount": 1,
             "chance": 10,
             "para": 0
         },
-		{
+        {
             "thing": 12331,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
         },
-		{
+        {
             "thing": 12332,
             "type": 2,
             "amount": 1,
             "chance": 20,
             "para": 0
+        },
+        {
+            "thing": 12333,
+            "type": 2,
+            "amount": 1,
+            "chance": 10,
+            "para": 0
         }
-	]
+    ],
+    "newyear25": [
+        {
+            "thing": 12256,
+            "type": 2,
+            "amount": 1,
+            "chance": 70,
+            "para": 0
+        },
+        {
+            "thing": 12271,
+            "type": 2,
+            "amount": 1,
+            "chance": 70,
+            "para": 0
+        },
+        {
+            "thing": 12272,
+            "type": 2,
+            "amount": 1,
+            "chance": 70,
+            "para": 0
+        },
+        {
+            "thing": 12273,
+            "type": 2,
+            "amount": 1,
+            "chance": 70,
+            "para": 0
+        },
+        {
+            "thing": 12405,
+            "type": 2,
+            "amount": 1,
+            "chance": 70,
+            "para": 0
+        },
+        {
+            "thing": 12406,
+            "type": 2,
+            "amount": 1,
+            "chance": 100,
+            "para": 0
+        },
+        {
+            "thing": 12407,
+            "type": 2,
+            "amount": 1,
+            "chance": 10,
+            "para": 0
+        },
+        {
+            "thing": 12408,
+            "type": 2,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 12420,
+            "type": 2,
+            "amount": 1,
+            "chance": 15,
+            "para": 0
+        },
+        {
+            "thing": 12433,
+            "type": 2,
+            "amount": 1,
+            "chance": 20,
+            "para": 0
+        },
+        {
+            "thing": 12473,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12474,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12475,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12476,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12477,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12478,
+            "type": 2,
+            "amount": 1,
+            "chance": 30,
+            "para": 0
+        },
+        {
+            "thing": 12479,
+            "type": 2,
+            "amount": 1,
+            "chance": 25,
+            "para": 0
+        }
+    ]
 }
