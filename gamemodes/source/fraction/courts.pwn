@@ -143,11 +143,11 @@ function LoadPlayerCourtDecisions(playerid, race_check) {
 }
 
 stock SavePlayerCourtDecisions(playerid) {
-    new mysql_string[4096];
+    new mysql_string[5120];
     
     mysql_tquery(pearsq, "START TRANSACTION;");
 
-    new JsonNode: crimes = JSON_Array(), wanted_json[4096];
+    new JsonNode: crimes = JSON_Array(), wanted_json[5120];
     for (new decisionid = 0; decisionid < MAX_COURT_PLAYER_DECISIONS; decisionid++) {
         if (!PlayerCourtDecision[playerid][decisionid][pcdType]) continue;
         
