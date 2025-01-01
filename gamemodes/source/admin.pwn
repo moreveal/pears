@@ -1402,7 +1402,7 @@ function Call_PunishmentsName(playerid, const parama)
 			convertCharset(rows, \'utf-8\', \'windows-1251\') AS rows_1251, \
 			DATE_FORMAT(timestamp, \'%%d.%%c.%%Y %%H:%%i:%%s\', \'Europe/Moscow\') AS timestamp_fmt \
 			FROM `admin_logs` WHERE `secondary_player_id` = '%d' \
-			AND action IN ('warn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
+			AND action IN ('warn', 'gunwarn', 'unwarn', 'mute', 'unmute', 'prison', 'unprison', 'ban', 'unban', 'kick') \
 			ORDER BY `timestamp` DESC LIMIT 40", datad1);
 		mysql_tquery(pearsq_2, string, "Call_Punishments", "d", playerid);
 	}
