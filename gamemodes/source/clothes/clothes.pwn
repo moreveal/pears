@@ -1071,7 +1071,7 @@ stock buy_SkinShop(playerid)
 				format(string, sizeof(string),"[ Мысли ]: Я купил%s одежду за {99ff66}%d$ {ff9000}[ID: %d] (Одежда в инвентаре)", gender(playerid), price, skin);
 				SendClientMessage(playerid, COLOR_GREY, string);
 				oGivePlayerMoney(playerid, -price);
-				format(string, sizeof(string),"Одежда ID: %d", skin);
+				format(string, sizeof(string),"Одежда ID: %d [Бизнес: %d]", skin, ((g >= 1 && g <= 22) ? -1 : b));
 				MoneyLog("buyskin", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
 
 				GiveQuanBuySkin(skin, 0);
