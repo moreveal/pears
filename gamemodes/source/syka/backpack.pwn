@@ -436,9 +436,9 @@ stock OnPlayerLoadBackPack(playerid,sl)
 			}
 		}
 	}
-	new string[90];
-	format(string,sizeof(string),"[ID %d] Одел %s", fqara, GetNameThing(1, PlayerInfo[playerid][pOdet][sl], 2, 0));
-	UserLog("odetbackpack", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, string);
+	new stringlog[90];
+	format(stringlog,sizeof(stringlog),"[ID %d] Одел %s", fqara, GetNameThing(1, PlayerInfo[playerid][pOdet][sl], 2, 0));
+	UserLog("odetbackpack", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, stringlog);
 	BackPackInfo[playerid][backpackLoad] = 1;
 	PlayerInfo[playerid][pOdetQara][sl] = fqara;
 	UpdateOdet(playerid,sl);
