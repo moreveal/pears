@@ -156,6 +156,18 @@ stock menuEatIngredient(thingId, &ing1, &ing2, &ing3, &ing4, &ing5, &ing6, &ingQ
 		ing1 = 100, ingQuan1 = 3; // Яблачко
 		return 1;
 	}
+	else if(thingId == 261) // Скирн
+	{
+		ing1 = 102, ingQuan1 = 3; // Молоко
+		return 1;
+	}
+	else if(thingId == 262) // Колбаса
+	{
+		ing1 = 22, ingQuan1 = 3; // Мясо
+		ing2 = 1, ingQuan2 = 1; // Хлеб
+		ing3 = 102, ingQuan3 = 1; // Молоко
+		return 1;
+	}
 	return 0;
 }
 
@@ -222,7 +234,7 @@ stock godrink(playerid)
 		if(HoldStat[playerid] == 125 || HoldStat[playerid] == 127 || HoldStat[playerid] == 141|| HoldStat[playerid] == 163
 			|| HoldStat[playerid] == 105|| HoldStat[playerid] == 104|| HoldStat[playerid] == 103 || HoldStat[playerid] == 101 
 			|| HoldStat[playerid] == 102 || HoldStat[playerid] == 100 || HoldStat[playerid] == 99 || HoldStat[playerid] == 89 
-			|| HoldStat[playerid] == 164 || HoldStat[playerid] == 166 || HoldStat[playerid] == 167
+			|| HoldStat[playerid] == 164 || HoldStat[playerid] == 166 || HoldStat[playerid] == 167 || HoldStat[playerid] == 262
 			) ApplyAnimation(playerid,"FOOD","EAT_Pizza",4.1, false, false, false, false, false); // Жрём
 		else ApplyAnimation(playerid,"BAR","dnk_stndM_loop",2.0, false, false, false, false, false); // Пьём
 	}
@@ -430,7 +442,7 @@ stock drink_eat(playerid, inva, fpick, thingPack = -1)
 	    if(fpick == 121) return ErrorMessage(playerid, "{FF6347}Кофе нельзя налить в бокал {cccccc}[ Уберите бокал и пейте напиток из кружки ]");
 	    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 1 ||fpick == 54 ||fpick == 55 ||fpick == 89 ||fpick == 99 ||fpick == 100 ||fpick == 101 || fpick == 103 
 		|| fpick == 104 ||fpick == 126 ||fpick == 127 ||fpick == 141 ||fpick == 163 || fpick == 166 
-		|| fpick == 172 || fpick == 173) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
+		|| fpick == 172 || fpick == 173 || fpick == 261 || fpick == 262) return ErrorMessage(playerid, "{FF6347}У вас заняты руки [Предмет или оружие]");
 	    if(HoldQuan[playerid] > 1) return ErrorMessage(playerid, "{FF6347}В вашем бокале ещё есть содержимое {cccccc}[ Допейте или поставьте бокал F ]");
 	    if(PlayerInfo[playerid][pInvenQuan][inva] <= 1) return ErrorMessage(playerid, "{FF6347}Эта бутылка пустая");
 	    ApplyAnimation(playerid,"OTB","betslp_loop",4.0, false, true, true, false, false);
@@ -474,7 +486,7 @@ stock in_hand_eat(playerid, hold, fpick, soder, quan, inva, para, qara, noinvent
     object_in_hand(playerid, friskPick[fpick]);
 
 	new string[140];
-    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141 || fpick == 167) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
+    if(fpick == 125 || fpick == 126 || fpick == 127 || fpick == 164 || fpick == 141 || fpick == 167 || fpick == 262) format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Кушать: %s ]", friskName[fpick], (HoldQuan[playerid]-1)*100, buttonName[Device[playerid]]);
 	else if(fpick == 163 || fpick == 166)
 	{
 		format(string,sizeof(string),"{ffcc66}Вы взяли в руки %s (%d гр.) {ff9000}[ Поставьте на стол F и порежьте кухонным ножом ]", friskName[fpick], (HoldQuan[playerid]-1)*100);

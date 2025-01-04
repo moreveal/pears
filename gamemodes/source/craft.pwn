@@ -642,6 +642,8 @@ stock ClickTextDraw_CraftProcess(playerid, PlayerText:playertextid)
                     format(line,sizeof(line),"{ff9000}Пицца Домашняя"), strcat(lines,line);
                     format(line,sizeof(line),"\n{ff9000}Апельсиновый сок"), strcat(lines,line);
                     format(line,sizeof(line),"\n{ff9000}Яблочный сок"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ff9000}Скирн"), strcat(lines,line);
+                    format(line,sizeof(line),"\n{ff9000}Колбаса"), strcat(lines,line);
                     ShowDialog(playerid,1393,DIALOG_STYLE_LIST,"{ff9000}Кухонная Плита",lines,"Выбор","Отмена");
                 }
                 else if(Tabs_Load[playerid] == 13) // Химический Стол
@@ -1104,6 +1106,16 @@ stock CreateThingAfterCraft(playerid)
 		    UserLog("craftaks", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", CreateThingID[playerid], string_log);
         }
 
+        if(OnlineInfo[playerid][oNewYearQuest] == 8 && CreateThingID[playerid] == 261)
+        {
+            OnlineInfo[playerid][oNewYearQuestDop] = 1;
+            SuccessMessage(playerid,"{44ff99}Круто, я сделал Скирн, надо отвезти его Йольскому Парню!");
+        }
+        if(OnlineInfo[playerid][oNewYearQuest] == 9 && CreateThingID[playerid] == 262)
+        {
+            OnlineInfo[playerid][oNewYearQuestDop] = 1;
+            SuccessMessage(playerid,"{44ff99}Круто, я сделал Колбасу, надо отвезти его Йольскому Парню!");
+        }
         if(Tabs_Load[playerid] == 11 || Tabs_Load[playerid] == 13 || Tabs_Load[playerid] == 17) CompleteBattlePassTask(playerid, 31, 1);
         else CompleteBattlePassTask(playerid, 32, 1);
         SuccessMessage(playerid, "{99ff66}Выполнено!");

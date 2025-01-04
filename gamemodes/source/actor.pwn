@@ -402,12 +402,19 @@ stock LoadBot()
     BotPears[522] = CreateDynamicActor(422,1580.5566,-1694.6251,6.2187,306.7073); // LSPD Bot 13
     BotPears[523] = CreateDynamicActor(419,1581.6965,-1693.7367,6.2187,123.5138); // LSPD Bot 14
     
-
-    BotPears[524] = CreateDynamicActor(657, 3261.6216,-340.3169,8.4405,245.5138); // Йольский Парень
-    BotPears[525] = CreateDynamicActor(508, 3264.2461,-336.4369,8.4471,165.9117); // Овечка
-    BotPears[526] = CreateDynamicActor(657, 3271.8430,-326.0200,8.3832,215.6650); // Йольский Парень
-    BotPears[526] = CreateDynamicActor(657, 3289.9795,-321.6499,8.5798,181.9233); // Йольский Парень 
-
+    if(IsANewYear())
+    {
+        BotPears[524] = CreateDynamicActor(657, 3261.6216,-340.3169,8.4405,245.5138); // Йольский Парень
+        BotPears[525] = CreateDynamicActor(508, 3264.2461,-336.4369,8.4471,165.9117); // Овечка
+        BotPears[526] = CreateDynamicActor(657, 3271.8430,-326.0200,8.3832,215.6650); // Йольский Парень
+        BotPears[257] = CreateDynamicActor(657, 3289.9795,-321.6499,8.5798,181.9233); // Йольский Парень
+        BotPears[258] = CreateDynamicActor(657, 3304.9819,-327.0664,8.6575,151.9233); // Йольский Парень 
+        BotPears[259] = CreateDynamicActor(657, 3318.8401,-337.3204,8.7701,129.6197); // Йольский Парень
+        BotPears[260] = CreateDynamicActor(657, 3328.3542,-348.5233,8.3832,110.5297); // Йольский Парень 
+        BotPears[261] = CreateDynamicActor(657, 3330.1108,-365.0452,9.3281,88.6566); // Йольский Парень 
+        BotPears[262] = CreateDynamicActor(657, 3325.5002,-379.7283,8.6575,68.8280); // Йольский Парень 
+        BotPears[263] = CreateDynamicActor(657, 3318.1042,-391.1663,8.4765,209.8294); // Йольский Парень 
+    }
 	LoadAnimBot();
 
 	CreateDynamicActor(141, 1760.1196,1404.7627,10.9041,87.1673, true, 100.0, 0, 0, -1, 100.0, -1, 0); // aero lv girl
