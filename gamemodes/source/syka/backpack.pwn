@@ -251,7 +251,29 @@ stock player_tile_backpack(playerid, inva)
 		else if(OnlineInfo[playerid][oInventSelectBackPack] != inva) i_resetveshi(playerid); // Сбрасываем Выбор
         else // Выполняем
 		{
-			ErrorMessage(playerid,"{ff6347}Предмет сначала нужно достать из рюкзака чтобы использовать его!");
+			if(CheckThingQuan(BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]]) == 1) return ErrorMessage(playerid,"{ff6347}Количественный предмет можно только переложить");
+			// ^ Тоже костыль, иначи будет дюп, тут уже только переписывать все.
+			Backpack[playerid] = 0;// Костыль.
+
+			new put_inva = GiveThingPlayer(playerid, BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInv][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvPara][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvQara][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvPack][OnlineInfo[playerid][oInventSelectBackPack]], 9999);
+			if(put_inva == -1) return ErrorMessage(playerid,"{ff6347}Ошибка! Нет места в инвентаре и рюкзаке"); 
+			new Aks = HasABustAks(playerid,1), string[100];
+			format(string,sizeof(string),"Вытащил из рюкзака %d: %s", PlayerInfo[playerid][pOdetQara][Aks], GetNameThing(1, BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvPack][OnlineInfo[playerid][oInventSelectBackPack]]));
+			UserLog("outbackpackinv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", BackPackInfo[playerid][backpackInv][OnlineInfo[playerid][oInventSelectBackPack]], string);
+			
+			Backpack[playerid] = 1;
+
+			// Старую плитку удаляем
+			BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			BackPackInfo[playerid][backpackInv][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			BackPackInfo[playerid][backpackInvPara][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			BackPackInfo[playerid][backpackInvQara][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			BackPackInfo[playerid][backpackInvPack][OnlineInfo[playerid][oInventSelectBackPack]] = 0;
+			i_tile(playerid, BackPackInfo[playerid][backpackInvent][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInv][OnlineInfo[playerid][oInventSelectBackPack]], OnlineInfo[playerid][oInventSelectBackPack], BackPackInfo[playerid][backpackInvPara][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvType][OnlineInfo[playerid][oInventSelectBackPack]], BackPackInfo[playerid][backpackInvPack][OnlineInfo[playerid][oInventSelectBackPack]]);
+			i_tile(playerid, BackPackInfo[playerid][backpackInvent][put_inva], BackPackInfo[playerid][backpackInv][put_inva], put_inva, BackPackInfo[playerid][backpackInvPara][put_inva], BackPackInfo[playerid][backpackInvType][put_inva], BackPackInfo[playerid][backpackInvPack][put_inva]);
+
+			SaveInventBackPack(playerid,OnlineInfo[playerid][oInventSelectBackPack]);
 		}
 	}
 	return 1;

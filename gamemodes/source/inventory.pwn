@@ -2996,6 +2996,10 @@ stock player_tile(playerid, inva)
 				OnlineInfo[playerid][oInventSelectLeft] = 9999;
 
 				CheckCraftReady(playerid);
+
+				new Aks = HasABustAks(playerid,1), string[100];
+				format(string,sizeof(string),"Вытащил из рюкзака %d: %s", PlayerInfo[playerid][pOdetQara][Aks], GetNameThing(1, BackPackInfo[playerid][backpackInvent][inva], BackPackInfo[playerid][backpackInvType][inva], BackPackInfo[playerid][backpackInvPack][inva]));
+				UserLog("outbackpackinv", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", BackPackInfo[playerid][backpackInv][inva], string);
 			}
 		}
 		else if(OnlineInfo[playerid][oInventSelectRight] != 9999) // Берём Откуда-то
