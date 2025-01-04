@@ -119,49 +119,49 @@ new BattlePassWeeklyTaskName[][] =
 new BattlePassWeeklyTaskSetting[sizeof(BattlePassWeeklyTaskName)][2] =
 {
     // 1 - ID, 2 - Exp, 2 - Count
-    { 200, 100000},     // 0
-    { 200, 3},          // 1
-    { 200, 200},        // 2
-    { 200, 4},          // 3
-    { 200, 4},          // 4
-    { 200, 4},          // 5 
-    { 200, 1800},         // 6
-    { 200, 10},         // 7
-    { 200, 2},          // 8
-    { 200, 3},          // 9
-    { 200, 2},          // 10
-    { 200, 2},          // 11
-    { 200, 2},          // 12
-    { 200, 2},          // 13 
-    { 200, 10},          // 14
-    { 200, 3},           // 15
-    { 200, 10},           // 16
-    { 200, 10},           // 17
-    { 200, 15},           // 18
-    { 200, 10},           // 19
-    { 200, 10},           // 20
-    { 200, 1000},           // 21
-    { 200, 1000},           // 22
-    { 200, 1000},           // 23
-    { 200, 1000},           // 24
-    { 200, 1000},           // 25
-    { 200, 3000},          // 26
-    { 200, 1000000},          // 27
-    { 200, 20},          // 28
-    { 200, 30},          // 29
-    { 200, 15},          // 30
-    { 200, 40},          // 31
-    { 200, 10},          // 32
-    { 200, 20},          // 33
-    { 200, 2},          // 34
-    { 200, 3000},          // 35
-    { 200, 5},          // 36
-    { 200, 2},          // 37
-    { 200, 1},          // 38
-    { 200, 10},          // 39
-    { 200, 40},          // 40
-    { 200, 1000000},          // 41
-    { 200, 500}         // 42
+    { 300, 100000},     // 0
+    { 300, 3},          // 1
+    { 300, 200},        // 2
+    { 300, 4},          // 3
+    { 300, 4},          // 4
+    { 300, 4},          // 5 
+    { 300, 1800},         // 6
+    { 300, 10},         // 7
+    { 300, 2},          // 8
+    { 300, 3},          // 9
+    { 300, 2},          // 10
+    { 300, 2},          // 11
+    { 300, 2},          // 12
+    { 300, 2},          // 13 
+    { 300, 10},          // 14
+    { 300, 3},           // 15
+    { 300, 10},           // 16
+    { 300, 10},           // 17
+    { 300, 15},           // 18
+    { 300, 10},           // 19
+    { 300, 10},           // 20
+    { 300, 1000},           // 21
+    { 300, 1000},           // 22
+    { 300, 1000},           // 23
+    { 300, 1000},           // 24
+    { 300, 1000},           // 25
+    { 300, 3000},          // 26
+    { 300, 1000000},          // 27
+    { 300, 20},          // 28
+    { 300, 30},          // 29
+    { 300, 15},          // 30
+    { 300, 40},          // 31
+    { 300, 10},          // 32
+    { 300, 20},          // 33
+    { 300, 2},          // 34
+    { 300, 3000},          // 35
+    { 300, 5},          // 36
+    { 300, 2},          // 37
+    { 300, 1},          // 38
+    { 300, 10},          // 39
+    { 300, 40},          // 40
+    { 300, 1000000},          // 41
+    { 300, 500}         // 42
 };
 
 new BattlePassOneTimeTaskName[][] =
@@ -178,12 +178,12 @@ new BattlePassOneTimeTaskName[][] =
 new BattlePassOneTimeTaskSetting[sizeof(BattlePassOneTimeTaskName)][2] =
 {
     // 1 - Exp, 2 - Count
-    { 1000, 1},         // 0
-    { 1000, 1},         // 1
-    { 1000, 10},        // 2
-    { 1000, 1},         // 3
-    { 1000, 3},         // 4
-    { 1000, 20}         // 5
+    { 2000, 1},         // 0
+    { 2000, 1},         // 1
+    { 2000, 10},        // 2
+    { 2000, 1},         // 3
+    { 2000, 3},         // 4
+    { 2000, 20}         // 5
 };
 
 #define MAX_WEEKLY_BATTLEPASS_TASK 8 // Максимальное кол.во недельных заданий
@@ -450,6 +450,19 @@ CMD:givebattlepass(playerid, const params[])
     return true;
 }
 
+CMD:givebattlepassexp(playerid, const params[])
+{
+    if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Не могу выполнить это действие");
+	if(sscanf(params, "ii",params[0],params[1])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать премиум пропуск игроку [ /givebattlepassexp ID ]");
+	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
+    if(params[1] < 1 || params[1] > 1000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выдать меньше 1 и больше 1000 опыта");
+
+    GiveExpBattlePass(playerid,params[1]);
+
+    AdminLog("givebattlepassexp", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], params[1], "Выдал опыт пропуска");
+    return true;
+}
+
 stock GivePlayerBattlePass(playerid)
 {
     new string_mysql[200];
@@ -657,7 +670,7 @@ stock CompleteBattlePassTask(playerid, TaskID, TaskType, TaskPara = 0)
                      && BattlePass[playerid][bpTaskDailyQuan][i] < BattlePassDailyTaskSetting[BattlePass[playerid][bpTaskDaily][i]][1]) BattlePass[playerid][bpTaskDailyQuan][i] = BattlePassDailyTaskSetting[BattlePass[playerid][bpTaskDaily][i]][1];
                     else BattlePass[playerid][bpTaskDailyQuan][i]+=TaskPara;
                 }
-                if(BattlePass[playerid][bpTaskDailyQuan][i] == BattlePassDailyTaskSetting[BattlePass[playerid][bpTaskDaily][i]][1])
+                if(BattlePass[playerid][bpTaskDailyQuan][i] >= BattlePassDailyTaskSetting[BattlePass[playerid][bpTaskDaily][i]][1])
                 {
                     format(string, sizeof(string), "{0088ff}Вы выполнили ежедневное задание {ffcc66}Пропуска {0088ff}и получили {99ff66}%d {0088ff}опыта", BattlePassDailyTaskSetting[BattlePass[playerid][bpTaskDaily][i]][0]);
                     SendClientMessage(playerid, COLOR_GREY, string);
@@ -682,7 +695,7 @@ stock CompleteBattlePassTask(playerid, TaskID, TaskType, TaskPara = 0)
                      && BattlePass[playerid][bpTaskWeeklyQuan][i] < BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskWeekly][i]][1]) BattlePass[playerid][bpTaskWeeklyQuan][i] = BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskWeekly][i]][1];
                     else BattlePass[playerid][bpTaskWeeklyQuan][i]+=TaskPara;
                 }
-                if(BattlePass[playerid][bpTaskWeeklyQuan][i] == BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskWeekly][i]][1])
+                if(BattlePass[playerid][bpTaskWeeklyQuan][i] >= BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskWeekly][i]][1])
                 {
                     format(string, sizeof(string), "{0088ff}Вы выполнили еженедельное задание {ffcc66}Пропуска {0088ff}и получили {99ff66}%d {0088ff}опыта", BattlePassWeeklyTaskSetting[BattlePass[playerid][bpTaskWeekly][i]][0]);
                     SendClientMessage(playerid, COLOR_GREY, string);
@@ -707,7 +720,7 @@ stock CompleteBattlePassTask(playerid, TaskID, TaskType, TaskPara = 0)
                      && BattlePass[playerid][bpTaskOneTimeQuan][i] < BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1]) BattlePass[playerid][bpTaskOneTimeQuan][i] = BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1];
                     else BattlePass[playerid][bpTaskOneTimeQuan][i]+=TaskPara;
                 }
-                if(BattlePass[playerid][bpTaskOneTimeQuan][i] == BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1])
+                if(BattlePass[playerid][bpTaskOneTimeQuan][i] >= BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][1])
                 {
                     format(string, sizeof(string), "{0088ff}Вы выполнили разовое задание {ffcc66}Пропуска {0088ff}и получили {99ff66}%d {0088ff}опыта", BattlePassOneTimeTaskSetting[BattlePass[playerid][bpTaskOneTime][i]][0]);
                     SendClientMessage(playerid, COLOR_GREY, string);
