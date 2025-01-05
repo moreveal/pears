@@ -316,7 +316,7 @@ stock StartNewYearEightMan(playerid)
 
 stock CloseNewYearQuestNine(playerid)
 {
-    if(get_invent4(playerid, 262, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет испорченнего хлеба");
+    if(get_invent4(playerid, 262, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет колбасы");
     //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
 
     SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Класс! Я теперь так обожрусь колбасок! Век не забуду тебя. Держи подарок");
@@ -332,7 +332,7 @@ stock CloseNewYearQuestNine(playerid)
 
 stock CloseNewYearQuestEight(playerid)
 {
-    if(get_invent4(playerid, 261, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет испорченнего хлеба");
+    if(get_invent4(playerid, 261, 0) <= 0) return ErrorMessage(playerid, "{FF6347}У вас нет скирна");
     //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
 
     SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: А ты случаем не из Исландии? У тебя получилось божественно! Держи подарок");
