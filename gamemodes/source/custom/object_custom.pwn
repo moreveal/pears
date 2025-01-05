@@ -143,9 +143,9 @@ stock IsAQuanInterior(model)
 // Проверка на то, что объект является рюкзаком
 stock IsABackPack(AksId)
 {
-    if(AksId == 12104 || (AksId >= 12114 && AksId <= 12133) || AksId == 12171 || AksId == 12172 || AksId == 12137 || (AksId >= 12114 && AksId <= 12133) 
-    || (AksId >= 12175 && AksId <= 12195) || AksId == 12331 || AksId == 12348 || (AksId >= 12367 && AksId <= 12373) || (AksId >= 12473 && AksId <= 12478) 
-    || GetBustAksType(AksId) == 1) return true;
+    if(AksId == 12104 || (AksId >= 12114 && AksId <= 12133) || AksId == 12171 || AksId == 12172 || AksId == 12137 
+    || (AksId >= 12175 && AksId <= 12195) || AksId == 12331 || AksId == 12348 || (AksId >= 12367 && AksId <= 12373) 
+    || AksId == 12407 || (AksId >= 12473 && AksId <= 12478) || GetBustAksType(AksId) == 1) return true;
     else return false;
 }
 
