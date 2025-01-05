@@ -410,6 +410,7 @@ CMD:spoilthing(playerid, const params[])
 	new id, itemid;
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Только для Системных администраторов");
 	if(sscanf(params, "ud", id, itemid)) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Испортить продукт [ /spoil ID Предмет ]");
+	if(!IsOnline(id)) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
 	if(itemid >= sizeof(friskName) || itemid <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
 	if(!PerishableThing(itemid, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет не является портящимся");
 	if(get_invent(playerid, itemid, 0) < 1) return ErrorMessage(playerid, "{FF6347}У игрока нет этого предмета");
