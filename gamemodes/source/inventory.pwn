@@ -413,8 +413,8 @@ CMD:spoilthing(playerid, const params[])
 	if(!IsOnline(id)) return ErrorText(playerid, "[ Мысли ]: Игрока нет в сети");
 	if(itemid >= sizeof(friskName) || itemid <= 0) return ErrorMessage(playerid, "{FF6347}Несуществующий ID предмета");
 	if(!PerishableThing(itemid, 0)) return ErrorMessage(playerid, "{FF6347}Этот предмет не является портящимся");
-	if(get_invent(playerid, itemid, 0) < 1) return ErrorMessage(playerid, "{FF6347}У игрока нет этого предмета");
-	set_para(playerid, itemid, 0);
+	if(get_invent(id, itemid, 0) < 1) return ErrorMessage(playerid, "{FF6347}У игрока нет этого предмета");
+	set_para(id, itemid, 0);
 	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Предмет {ff9000}%s {cccccc}был успешно испорчен", GetNameThing(0, itemid, 0, 0));
 
 	new log_str[128];
