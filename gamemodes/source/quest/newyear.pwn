@@ -7,6 +7,52 @@ new ObjectNewYearGifts[MAX_NEWYEARSGIFTS];
 new TakeNewYearGiftsUnix[MAX_NEWYEARSGIFTS];
 new LaplandiaCube;
 
+new Float:CandlesPosNewYear[][] =
+{
+    {3269.5271,-399.8250,8.3631},
+    {3294.2329,-408.3743,8.5798},
+    {3289.5745,-410.3390,8.5798},
+    {3303.1040,-397.6117,8.6501},
+    {3307.4717,-400.6337,8.6578},
+    {3312.0632,-390.9363,11.109},
+    {3311.2173,-393.7215,11.109},
+    {3329.8564,-382.1311,8.6575},
+    {3329.7495,-360.2035,9.3281},
+    {3332.5708,-360.7018,9.3281},
+    {3326.6860,-345.2749,8.3832},
+    {3314.9033,-339.0758,8.7701},
+    {3316.5820,-333.8947,8.7778},
+    {3308.4204,-323.2083,8.6575},
+    {3284.6069,-317.9158,8.5798},
+    {3289.1318,-315.8502,8.5798},
+    {3274.3542,-323.6554,8.3832},
+    {3267.9026,-340.0154,11.323}
+};
+new PlayerTakeCandle[MAX_REALPLAYERS][sizeof(CandlesPosNewYear)]; 
+
+new Float:WindowPosNewYear[][] =
+{
+    {3271.5959,-387.3220,8.3552},
+    {3278.4629,-396.9425,8.6521},
+    {3274.0474,-394.6434,8.6521},
+    {3293.7849,-396.9828,8.3552},
+    {3286.7590,-397.0605,8.5797},
+    {3313.5117,-386.6299,8.3552},
+    {3316.9717,-381.1005,8.3552},
+    {3319.5073,-375.2523,8.3552},
+    {3323.9980,-365.1008,9.3278},
+    {3321.5210,-348.2910,8.6722},
+    {3315.3315,-343.0193,8.3552},
+    {3310.1533,-339.9247,8.3552},
+    {3306.3699,-335.5358,8.3552},
+    {3299.7678,-332.3102,8.3552},
+    {3292.6111,-329.9173,8.3552},
+    {3284.2891,-330.2480,8.3552},
+    {3277.8489,-330.2879,8.6366},
+    {3273.9580,-333.2327,8.6722},
+    {3271.8796,-342.7209,8.3552}
+};
+
 new Float:NewYearsGiftsPos[][] =
 {
     { 2825.489257, -2380.607177, 12.074913 },
@@ -214,6 +260,11 @@ stock CreateNewYearPickup()
         CreateDynamic3DTextLabel("{ff9000}Дверехлопальщик\n\n{444444}[ ALT ]",-1,3330.1108,-365.0452,9.3281 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
         CreateDynamic3DTextLabel("{ff9000}Скирный Обжора\n\n{444444}[ ALT ]",-1,3325.5002,-379.7283,8.6575 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
         CreateDynamic3DTextLabel("{ff9000}Колбасохват\n\n{444444}[ ALT ]",-1,3318.1042,-391.1663,8.4765 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+
+        CreateDynamic3DTextLabel("{ff9000}Подглядыватель в окна\n\n{444444}[ ALT ]",-1,3302.1863,-401.8705,8.6501 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Дверевынюхиватель\n\n{444444}[ ALT ]",-1,3289.0723,-404.1032,8.5798 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Мясной крюк\n\n{444444}[ ALT ]",-1,3273.0542,-401.0622,8.3631 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
+        CreateDynamic3DTextLabel("{ff9000}Свечной попрошайка\n\n{444444}[ ALT ]",-1,3266.8120,-389.1149,8.4329 +0.5,5.0,INVALID_PLAYER_ID,INVALID_VEHICLE_ID,1,0,0);
         LaplandiaCube = CreateDynamicCube(3110.4719,-468.8748, 0.0, 3412.3660,-237.0729, 50.0, 0, 0);
     }
     return true;
@@ -252,13 +303,6 @@ stock TakeNewYearGifts(playerid)
     return findBall;
 }
 
-CMD:testny(playerid)
-{
-    if(PlayerInfo[playerid][pSoska] < 10) return 0;
-    CreateQuestOneMan(playerid);
-    return 1;
-}
-
 //
 //          Квестовая залупка
 //
@@ -275,6 +319,185 @@ new NewYearNPC[MAX_REALPLAYERS][NewYearQuestNpc];
 new NPC:ShipNPC[MAX_REALPLAYERS][10];
 new Float:ShipNPCHealt[MAX_REALPLAYERS][10];
 new CountKill[MAX_REALPLAYERS][2];
+
+
+stock IsACandleNewYear(playerid)
+{
+    new result = -1, quan = 0, string[120];
+    for(new i; i < sizeof(CandlesPosNewYear); i++)
+    {
+        if(PlayerTakeCandle[playerid][i]) continue;
+        if(IsPlayerInRangeOfPoint(playerid, 3.0, CandlesPosNewYear[i][0],CandlesPosNewYear[i][1],CandlesPosNewYear[i][2]))
+        {
+            result = i;
+            quan--;
+        }
+        quan++;
+    }
+    if(quan == 0) format(string,sizeof(string),"Я собрал все свечи, теперь нужно отдать их Свечному Попрошайке");
+    else format(string,sizeof(string),"Мне нужно собрать свечи в домах Йольских Парней. Осталось свечей %d",quan);
+    SetPlayerHudTask(playerid, "Новогодний Квест", string);
+    return result;
+}
+
+stock IsAWindowNewYear(playerid)
+{
+    new result = 0;
+    for(new i; i < sizeof(WindowPosNewYear); i++)
+    {
+        if(IsPlayerInRangeOfPoint(playerid, 3.0, WindowPosNewYear[i][0],WindowPosNewYear[i][1],WindowPosNewYear[i][2]))
+        {
+            result = 1;
+            break;
+        }
+    }
+    return result;
+}
+
+stock StartNewYearThriTeenMan(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][12] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_hello.mp3");
+
+    OnlineInfo[playerid][oNewYearQuest] = 13;
+    new lines[500];
+	format(lines,sizeof(lines),"{D93A49}Привет, я последний Йольский парень\n"\
+                                "\n{cccccc}У меня всегда не хватало свечей"\
+                                "\n{cccccc}Можешь мне нарулить из домов моих братьев свечей"\
+                                "\n{cccccc}С меня будет тебе подарочек"\
+                                "\n\n{cccccc}Готов начать?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CloseNewYearQuestThriTeen(playerid)
+{
+    new quan = 0;
+    for(new i; i < sizeof(CandlesPosNewYear); i++)
+    {
+        if(PlayerTakeCandle[playerid][i]) quan++;
+    }
+    if(quan < sizeof(CandlesPosNewYear)) return ErrorMessage(playerid, "{FF6347}Я не собрал все свечи");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
+
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Туда их, давай их быстро сюда, устрою себе романтик!");
+
+    GiveNewYesrCase(playerid);
+    PlayerInfo[playerid][pNewYearQuestComplete][12] = 1;
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    OnlineInfo[playerid][oNewYearQuestDop] = 0;
+    HidePlayerHudTask(playerid);
+    SaveNewYearQuestPlayer(playerid);
+    return true;
+}
+
+stock StartNewYearTwelvMan(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][11] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_hello.mp3");
+
+    OnlineInfo[playerid][oNewYearQuest] = 12;
+    new lines[500];
+	format(lines,sizeof(lines),"{D93A49}ДАРОВА\n"\
+                                "\n{cccccc}Слышал ты моим братьям тут во всю помогаешь?"\
+                                "\n{cccccc}Давайка ты мне тоже поможешь, мне лень тащится за мясом, а крюки украсить хочется"\
+                                "\n{cccccc}Притащи мне свежего мяска, что бы я мог украсить свои крюки"\
+                                "\n\n{cccccc}Готов начать?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CloseNewYearQuestTwelv(playerid)
+{
+    if(get_invent4(playerid, 22, 0) <= 0 && get_para(playerid, 22) < gettime()) return ErrorMessage(playerid, "{FF6347}Я нет свежего мяса");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
+
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Оооо, харош, спасибо за помощь!");
+
+    GiveNewYesrCase(playerid);
+    PlayerInfo[playerid][pNewYearQuestComplete][11] = 1;
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    OnlineInfo[playerid][oNewYearQuestDop] = 0;
+    TakeInvent(playerid, 22, 1, 0, 999);
+    SaveNewYearQuestPlayer(playerid);
+    return true;
+}
+
+stock StartNewYearElevenMan(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][10] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_hello.mp3");
+
+    OnlineInfo[playerid][oNewYearQuest] = 11;
+    new lines[500];
+	format(lines,sizeof(lines),"{D93A49}Привет пистолет\n"\
+                                "\n{cccccc}Привези-ка мне свежий хлеб, фабрики нынчи закрылись"\
+                                "\n{cccccc}Мне негде вынюхивать в поисках свежего хлеба"\
+                                "\n{cccccc}С меня будет тебе подарочек"\
+                                "\n\n{cccccc}Готов начать?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CloseNewYearQuestEleven(playerid)
+{
+    if(get_invent4(playerid, 1, 0) <= 0 && get_para(playerid, 1) < gettime()) return ErrorMessage(playerid, "{FF6347}У вас нет свежего хлеба");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
+
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Знал бы ты как я скучал по запаху свежего хлеба.... Держи подарок");
+
+    GiveNewYesrCase(playerid);
+    PlayerInfo[playerid][pNewYearQuestComplete][10] = 1;
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    OnlineInfo[playerid][oNewYearQuestDop] = 0;
+    TakeInvent(playerid, 1, 1, 0, 999);
+    SaveNewYearQuestPlayer(playerid);
+    return true;
+}
+
+stock StartNewYearTenMan(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuest] > 0) return ErrorMessage(playerid,"{ff6347}Я уже выполняю какой-то квест!");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][9] == 1) return ErrorMessage(playerid,"{ff6347}Я уже выполнил данный квест!");
+    if(!OnlineInfo[playerid][oLoadNewYear]) return ErrorMessage(playerid,"{ff6347}Мой аккаунт еще не успел до конца загрузится!");
+    if(!IsPlayerSyncModels(playerid)) return ErrorMessage(playerid,"{ff6347}Доступно только с лаунчером!");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_hello.mp3");
+
+    OnlineInfo[playerid][oNewYearQuest] = 10;
+    new lines[500];
+	format(lines,sizeof(lines),"{D93A49}Привет, готов заняться истинным делом?\n"\
+                                "\n{cccccc}Я люблю подглядывать в окна, и надеюсь ты тоже"\
+                                "\n{cccccc}Подглядывай за моими братьями в их окна в течение 120 секунд"\
+                                "\n{cccccc}За это от меня тебе будет подарочек"\
+                                "\n\n{cccccc}Готов начать?");
+	ShowDialog(playerid,NEWYEAR_SHOW_STARTQUEST,DIALOG_STYLE_MSGBOX, "{ff9000}Новогодний квест", lines, "Да", "Нет");
+	return true;
+}
+
+stock CloseNewYearQuestTen(playerid)
+{
+    if(OnlineInfo[playerid][oNewYearQuestDop] < 119) return ErrorMessage(playerid, "{FF6347}Я не выполнил задание!");
+    //if(OnlineInfo[playerid][oListenRadioPears] == 0) PlayAudioStreamForPlayer(playerid, "https://cdn.pears.fun/sound/characters/jolosveinar/3/3_win.mp3");
+
+    SendClientMessage(playerid, COLOR_GREY, "{D93A49}Йольский парень{cccccc}: Как тебе мои братки балбесы? Вдоволь налюбовался ими?");
+
+    GiveNewYesrCase(playerid);
+    PlayerInfo[playerid][pNewYearQuestComplete][9] = 1;
+    OnlineInfo[playerid][oNewYearQuest] = 0;
+    OnlineInfo[playerid][oNewYearQuestDop] = 0;
+    HidePlayerHudTask(playerid);
+    SaveNewYearQuestPlayer(playerid);
+    return true;
+}
 
 stock StartNewYearNineMan(playerid)
 {
@@ -708,6 +931,12 @@ stock GiveNewYesrCase(playerid)
         Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
         SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
     }
+    new quan = 0;
+    for(new i; i < 13; i++)
+    {
+        if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
+    }
+    if(quan >= 13) CompleteBattlePassTask(playerid, 0, 2);
     return 1;
 }
 stock LifeNewYearQuestOne(playerid)
