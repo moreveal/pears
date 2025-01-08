@@ -274,6 +274,7 @@ stock player_tile_backpack(playerid, inva)
 			i_tile(playerid, BackPackInfo[playerid][backpackInvent][put_inva], BackPackInfo[playerid][backpackInv][put_inva], put_inva, BackPackInfo[playerid][backpackInvPara][put_inva], BackPackInfo[playerid][backpackInvType][put_inva], BackPackInfo[playerid][backpackInvPack][put_inva]);
 
 			SaveInventBackPack(playerid,OnlineInfo[playerid][oInventSelectBackPack]);
+			OnlineInfo[playerid][oInventSelectBackPack] = 9999, OnlineInfo[playerid][oInventSelectLeft] = 9999;
 		}
 	}
 	return 1;

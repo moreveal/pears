@@ -5,7 +5,7 @@
 
 new PetsParam[MAX_PETS_TYPE][3] =
 {   // Skin, HP
-    { 15797, 50, 608 },      // Волк
+    { 15797, 50, 609 },      // Волк
     { 15814, 50, 626 },      //  
     { 15815, 50, 627 },      //  
     { 15816, 50, 628 },      //  
@@ -38,7 +38,8 @@ enum pet_TaskToNpc
     PET_TASK_GOSEATCAR,
     PET_TASK_SEATCAR,
     PET_TASK_SEAT,
-    PET_TASK_ATTACNPC
+    PET_TASK_ATTACNPC,
+    PET_TASK_AUTO
 };
 
 enum petsnpc
@@ -63,24 +64,41 @@ enum petsnpc
     Float:petTaskCoord[3], // Куда идет NPC
     petSoundUnix, // Кд на звук
     petAnim, // Анимка
-    petVehicle // Машина куда должен сесть NPC
+    petVehicle, // Машина куда должен сесть NPC
+    bool:petAuto // Для автотаски
 }
 new PetInfo[MAX_PETS][petsnpc];
 
-stock CreatePet(playerid, pet,petId)
+stock FindPet(thingid)
 {
-    #pragma unused petId
+    new result = -1;
+    for(new i; i< MAX_PETS_TYPE; i++)
+    {
+        if(thingid == PetsParam[i][2])
+        {
+            result = i;
+            break;
+        }
+    }
+    return result;
+}
+
+stock CreatePet(playerid, pet, petSkin)
+{
     if(IsValidNpc(PetInfo[pet][petID])) return false;
     new Float:PetX, Float:PetY, Float:PetZ = 50;
     GetPlayerPos(playerid,PetX,PetY,PetZ);
     CA_FindZ_For2DCoord(PetX,PetY,PetZ);
     PetZ += 1.5;
 
+    new PetParam = FindPet(petSkin);
+    if(PetParam == -1) return ErrorMessage(playerid,"{ff6347}Данный питомец не найден в списке питомцев");
+
     PetInfo[pet][petPlayer] = playerid;
     PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
     PetInfo[pet][petAttactNpcID] = INVALID_NPC;
     PetInfo[pet][petKillerID] = INVALID_PLAYER_ID;
-    PetInfo[pet][petType] = 0;
+    PetInfo[pet][petType] = PetParam;
     PetInfo[pet][petUnix] = 0;
     PetInfo[pet][petAnim] = 0;
     PetInfo[pet][petSoundUnix] = 0;
@@ -90,6 +108,19 @@ stock CreatePet(playerid, pet,petId)
     SetNpcStunAnimationEnabled(PetInfo[pet][petID], true);
     SetNpcVirtualWorld(PetInfo[pet][petID], GetPlayerVirtualWorld(playerid));
     SetNpcHealth(PetInfo[pet][petID], PetInfo[pet][petHealth]);
+
+    return true;
+}
+
+stock DestroyPet(playerid, slotpet)
+{
+    if(OnlineInfo[playerid][oPet][slotpet] == -1) return ErrorMessage(playerid, "{ff6347}У меня не загружен данный питомец");
+    new pet = OnlineInfo[playerid][oPet][slotpet];
+    OnlineInfo[playerid][oPet][slotpet] = -1;
+    OnlineInfo[playerid][oPetID][slotpet] = -1;
+
+    if(IsValidNpc(PetInfo[pet][petID])) DestroyNpc(PetInfo[pet][petID]);
+
     return true;
 }
 
@@ -104,10 +135,20 @@ stock LifePet(pet)
     GetPlayerPos(PetInfo[pet][petPlayer],PcordX,PcordY,PcordZ);
     GetNpcHealth(PetInfo[pet][petID],PetInfo[pet][petHealth]);
     if(PetInfo[pet][petHealth] <= 0.0) return 0;
+    SendClientMessageToAll(-1, "%d",PetInfo[pet][petEvent]);
+    if(PetInfo[pet][petEvent] == PET_TASK_AUTO || PetInfo[pet][petAuto])
+    {
+        if(!IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet, PET_TASK_GOSEATCAR);
+        else if(IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet,PET_TASK_SEATCAR);
+        else if(IsNpcInAnyVehicle(PetInfo[pet][petID]) && !IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+        else HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+    }
     if(PetInfo[pet][petEvent] == PET_TASK_WALKING) // Прогулка
     {
+        SendClientMessageToAll(-1, "Zawlo:%d",PetInfo[pet][petEvent]);
         if(GetDistanceBetweenPoints2D(PetX, PetY, PcordX, PcordY) <= 10.0)
         {
+            SendClientMessageToAll(-1, "Zawlo 2:%d",PetInfo[pet][petEvent]);
             PetInfo[pet][petDestinationStatus] = true;
             if(!PetInfo[pet][petAnim])
             {
@@ -115,7 +156,7 @@ stock LifePet(pet)
                 TaskNpcPlayAnimation(PetInfo[pet][petID],"PED", "WEAPON_CROUCH", 4.1, true, false, false, true, 0), PetInfo[pet][petAnim] = 1;
             }
         }
-        else if(PetInfo[pet][petDestinationStatus]) TaskNpcFollowPlayer(PetInfo[pet][petID], PetInfo[pet][petPlayer]), PetInfo[pet][petAnim] = 0;
+        else if(PetInfo[pet][petDestinationStatus]) TaskNpcFollowPlayer(PetInfo[pet][petID], PetInfo[pet][petPlayer]), PetInfo[pet][petAnim] = 0, SendClientMessageToAll(-1, "Zawlo 3:%d",PetInfo[pet][petEvent]);
     }
     if(PetInfo[pet][petEvent] == PET_TASK_ATTAC) // Атакует
     {
@@ -174,6 +215,7 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
             PetInfo[pet][petVehicle] = INVALID_VEHICLE_ID;
             PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
             PetInfo[pet][petStartAttactNpcID] = false;
+            if(IsNpcInAnyVehicle(PetInfo[pet][petID])) RemoveNpcFromVehicle(PetInfo[pet][petID]);
         }
         case PET_TASK_GOSEATCAR:
         {
@@ -195,6 +237,10 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
             PetInfo[pet][petAttactNpcID] = targetidNpc;
             PetInfo[pet][petStartAttactNpcID] = false;
         }
+        case PET_TASK_AUTO:
+        {
+            PetInfo[pet][petEvent] = PET_TASK_AUTO;
+        }
     }
     return true;
 }
@@ -202,7 +248,7 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
 stock LoadPlayerPet(playerid,slotpet, petId)
 {
     if(OnlineInfo[playerid][oPet][slotpet] != -1) return ErrorMessage(playerid, "{ff6347}У меня уже есть загруженный питомец!");
-    for(new pet; pet < MAX_PETS; pet++)
+    for(new pet = 0; pet < MAX_PETS; pet++)
     {
         if(IsValidNpc(PetInfo[pet][petID])) continue;
         OnlineInfo[playerid][oPet][slotpet] = pet;
@@ -210,8 +256,7 @@ stock LoadPlayerPet(playerid,slotpet, petId)
         CreatePet(playerid,pet,petId);
         break;
     }
-    if(OnlineInfo[playerid][oPet][slotpet] != -1) return SuccessMessage(playerid, "{44ff99}Мой питомец успешно загружен");
-    else return ErrorMessage(playerid, "{ff6347}Случилась ошибка, свободных слотов под питомца не оказалось...");
+    return true;
 }
 
 CMD:mypets(playerid)
@@ -304,7 +349,7 @@ stock dialogPetsList(playerid)
         format(temptext, 10, "{cccccc}");
         for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
         {
-            if(OnlineInfo[playerid][oPetID][pet] == PlayerInfo[playerid][pInvenPara][i]) 
+            if(OnlineInfo[playerid][oPetID][pet] == PlayerInfo[playerid][pInven][i]) 
             {
                 format(temptext, 10, "{ff9000}");
                 ListParam[quan][playerid] = pet+1;
@@ -324,11 +369,13 @@ stock dialogPetsList(playerid)
 stock dialogPetMenagment(playerid,slot)
 {
     new pet = OnlineInfo[playerid][oPet][slot];
+    DP[0][playerid] = slot;
     new type = PetInfo[pet][petType];
 
 	new lines[500], string[60];
 	format(lines,sizeof(lines),"{ff9000}Питомец: %s\t "\
                                 "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/1000 ]"\
+                                "\n{0088ff}Выгрузить питомца\t "\
                                 "\n{0088ff}Команды питомцу\t "\
 								"\n{0088ff}Автоматизация\t ",
                                 GetSkinName(PetsParam[type][2]),
@@ -372,11 +419,24 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
                 for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
                 {
                     if(OnlineInfo[playerid][oPetID][pet] != -1) continue;
-                    LoadPlayerPet(playerid,pet, PlayerInfo[playerid][pInvenPara][inva]);
+                    LoadPlayerPet(playerid, pet, PlayerInfo[playerid][pInven][inva]);
                     yes = true;
                     break;   
                 }
                 if(!yes) return ErrorMessage(playerid,"{ff6347}У меня нет слотов для загрузки питомцев!");
+            }
+        }
+        case PETS_SHOW_PETMANAGE: {
+            if(!response) dialogPetsList(playerid);
+            else 
+            {
+                new pet = OnlineInfo[playerid][oPet][DP[0][playerid]];
+                if(listitem == 1) DestroyPet(playerid,DP[0][playerid]);
+                if(listitem == 3) 
+                {
+                   if(!PetInfo[pet][petAuto]) HandlerCreateTaskPets(pet, PET_TASK_AUTO), PetInfo[pet][petAuto] = true;
+                   else HandlerCreateTaskPets(pet, PET_TASK_WALKING), PetInfo[pet][petAuto] = false;
+                }
             }
         }
     }
