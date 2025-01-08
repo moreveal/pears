@@ -1947,6 +1947,7 @@ stock i_del(playerid, i, bool:save = true)
 
 	if(OnlineInfo[playerid][oShowInterface] == 1) i_tile(playerid, 0, 0, i, 0, 0, 0);
 }
+
 stock GiveThingPlayer(playerid, thingId, quan, para, qara, thingType, thingPack, useinva = 9999) // Даём игроку предмет в инвентарь
 {
     new inva = -1;

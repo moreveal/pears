@@ -521,3 +521,18 @@ CMD:givebackpack(playerid, const params[])
 
 	return true;
 }
+
+stock backpack_del(playerid, i)
+{
+	BackPackInfo[playerid][backpackInvent][i] = 0;
+	BackPackInfo[playerid][backpackInv][i] = 0;
+	BackPackInfo[playerid][backpackInvPara][i] = 0;
+	BackPackInfo[playerid][backpackInvQara][i] = 0;
+	BackPackInfo[playerid][backpackInvType][i] = 0;
+	BackPackInfo[playerid][backpackInvPack][i] = 0;
+	SaveInventBackPack(playerid, i);
+
+	if(OnlineInfo[playerid][oShowInterface] == 1 && Backpack[playerid]) i_tile(playerid, 0, 0, i, 0, 0, 0);
+
+	return true;
+}
