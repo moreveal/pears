@@ -457,7 +457,7 @@ CMD:givebattlepassexp(playerid, const params[])
 	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
     if(params[1] < 1 || params[1] > 1000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выдать меньше 1 и больше 1000 опыта");
 
-    GiveExpBattlePass(playerid,params[1]);
+    GiveExpBattlePass(params[0],params[1]);
 
     AdminLog("givebattlepassexp", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], params[1], "Выдал опыт пропуска");
     return true;
