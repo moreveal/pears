@@ -1053,8 +1053,21 @@ stock CheckpointRaceRout(playerid)
     if(r >= 60) return RaceWinner(playerid,idrace);
     else
     {
-        if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:1,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
-	    else if(StreetRacers[idrace][raceCordX][r+1] != 0.0 && StreetRacers[idrace][raceCordY][r+1] != 0.0) SetPlayerRaceCheckpoint(playerid,CP_TYPE:0,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r+1], StreetRacers[idrace][raceCordY][r+1], StreetRacers[idrace][raceCordZ][r+1],7.0);
+        new Float:tempZ, CP_TYPE:type;
+        if(StreetRacers[idrace][raceCordX][r] != 0.0 && StreetRacers[idrace][raceCordY][r] != 0.0 && StreetRacers[idrace][raceCordX][r+1] == 0.0 && StreetRacers[idrace][raceCordY][r+1] == 0.0)
+        {
+            CA_FindZ_For2DCoord(StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r],tempZ);
+            if(tempZ+1.0 >= StreetRacers[idrace][raceCordZ][r]) type = CP_TYPE:1;
+            else type = CP_TYPE:4;
+            SetPlayerRaceCheckpoint(playerid,type,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r],7.0);
+        }
+	    else if(StreetRacers[idrace][raceCordX][r+1] != 0.0 && StreetRacers[idrace][raceCordY][r+1] != 0.0)
+        {
+            CA_FindZ_For2DCoord(StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r],tempZ);
+            if(tempZ+1.0 >= StreetRacers[idrace][raceCordZ][r]) type = CP_TYPE:0;
+            else type = CP_TYPE:3;
+            SetPlayerRaceCheckpoint(playerid,type,StreetRacers[idrace][raceCordX][r], StreetRacers[idrace][raceCordY][r], StreetRacers[idrace][raceCordZ][r], StreetRacers[idrace][raceCordX][r+1], StreetRacers[idrace][raceCordY][r+1], StreetRacers[idrace][raceCordZ][r+1],7.0);
+        }
         else if(StreetRacers[idrace][raceCordX][r] == 0.0 && StreetRacers[idrace][raceCordY][r] == 0.0) return RaceWinner(playerid,idrace);
     }
     UpdatePointRace(idrace, playerid);
@@ -1151,7 +1164,11 @@ stock TimerToStart(idrace)
                 PlayerPlaySound(StreetRacers[idrace][racersCount][i],3201,0,0,0);
                 GameTextForPlayer(StreetRacers[idrace][racersCount][i], "~g~ GO!", 2000, 6);
                 carRaceCheckpoint[StreetRacers[idrace][racersCount][i]] = 0;
-                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],CP_TYPE:0,StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0], StreetRacers[idrace][raceCordZ][0],StreetRacers[idrace][raceCordX][1],StreetRacers[idrace][raceCordY][1],StreetRacers[idrace][raceCordZ][1],6.0);
+                new Float:tempZ, CP_TYPE:type;
+                CA_FindZ_For2DCoord(StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0],tempZ);
+                if(tempZ+1.0 >= StreetRacers[idrace][raceCordZ][0]) type = CP_TYPE:0;
+                else type = CP_TYPE:3;
+                SetPlayerRaceCheckpoint(StreetRacers[idrace][racersCount][i],type,StreetRacers[idrace][raceCordX][0], StreetRacers[idrace][raceCordY][0], StreetRacers[idrace][raceCordZ][0],StreetRacers[idrace][raceCordX][1],StreetRacers[idrace][raceCordY][1],StreetRacers[idrace][raceCordZ][1],6.0);
             }
         } 
     }
