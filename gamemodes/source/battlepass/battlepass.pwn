@@ -432,6 +432,15 @@ stock ReceptionStatsBattlePass(playerid, &dailyquan, &weeklyquan, &onetimequan, 
 CMD:battlepass(playerid)
 {
     if(!OnlineInfo[playerid][oBattlePassLoad]) return ErrorMessage(playerid,"{ff6347}Попробуйте чуть позже, пропуск не успел загрузится");
+    if(!PlayerInfo[playerid][pNewYearQuestComplete][0]) // VREMENNO
+    {
+        new quan = 0;
+        for(new i; i < 13; i++)
+        {
+            if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
+        }
+        if(quan >= 12) CompleteBattlePassTask(playerid, 0, 2);
+    }
     dialogBattlePassMenu(playerid);
     return true;
 }
