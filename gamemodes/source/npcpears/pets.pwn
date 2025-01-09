@@ -102,6 +102,7 @@ stock CreatePet(playerid, pet, petSkin)
     PetInfo[pet][petUnix] = 0;
     PetInfo[pet][petAnim] = 0;
     PetInfo[pet][petSoundUnix] = 0;
+    PetInfo[pet][petAuto] = false;
     PetInfo[pet][petEvent] = pet_TaskToNpc:PET_TASK_WALKING;
     PetInfo[pet][petID] = CreateNpc(PetsParam[PetInfo[pet][petType]][0], PetX + 0.5, PetY + 0.5, PetZ);
     PetInfo[pet][petHealth] = float(PetsParam[PetInfo[pet][petType]][1]);
@@ -135,20 +136,20 @@ stock LifePet(pet)
     GetPlayerPos(PetInfo[pet][petPlayer],PcordX,PcordY,PcordZ);
     GetNpcHealth(PetInfo[pet][petID],PetInfo[pet][petHealth]);
     if(PetInfo[pet][petHealth] <= 0.0) return 0;
-    SendClientMessageToAll(-1, "%d",PetInfo[pet][petEvent]);
     if(PetInfo[pet][petEvent] == PET_TASK_AUTO || PetInfo[pet][petAuto])
     {
         if(!IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet, PET_TASK_GOSEATCAR);
         else if(IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet,PET_TASK_SEATCAR);
         else if(IsNpcInAnyVehicle(PetInfo[pet][petID]) && !IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet,PET_TASK_WALKING);
-        else HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+        else 
+        {
+            if(PetInfo[pet][petEvent] != PET_TASK_WALKING) HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+        }
     }
     if(PetInfo[pet][petEvent] == PET_TASK_WALKING) // Прогулка
     {
-        SendClientMessageToAll(-1, "Zawlo:%d",PetInfo[pet][petEvent]);
         if(GetDistanceBetweenPoints2D(PetX, PetY, PcordX, PcordY) <= 10.0)
         {
-            SendClientMessageToAll(-1, "Zawlo 2:%d",PetInfo[pet][petEvent]);
             PetInfo[pet][petDestinationStatus] = true;
             if(!PetInfo[pet][petAnim])
             {
@@ -156,7 +157,7 @@ stock LifePet(pet)
                 TaskNpcPlayAnimation(PetInfo[pet][petID],"PED", "WEAPON_CROUCH", 4.1, true, false, false, true, 0), PetInfo[pet][petAnim] = 1;
             }
         }
-        else if(PetInfo[pet][petDestinationStatus]) TaskNpcFollowPlayer(PetInfo[pet][petID], PetInfo[pet][petPlayer]), PetInfo[pet][petAnim] = 0, SendClientMessageToAll(-1, "Zawlo 3:%d",PetInfo[pet][petEvent]);
+        else if(PetInfo[pet][petDestinationStatus]) TaskNpcFollowPlayer(PetInfo[pet][petID], PetInfo[pet][petPlayer]), PetInfo[pet][petAnim] = 0;
     }
     if(PetInfo[pet][petEvent] == PET_TASK_ATTAC) // Атакует
     {
@@ -299,6 +300,18 @@ stock PetTaskSeatInCar(pet)
                 }
             }
         }
+        for (new i; i < MAX_PETS; i++)
+        {
+            if(!IsValidNpc(PetInfo[i][petID])) continue;
+            if(!IsNpcInAnyVehicle(PetInfo[i][petID])) continue;
+            if(GetNpcVehicleID(PetInfo[i][petID]) != veh) continue;
+            for (new seatid = 1; seatid <= seats_count; seatid++) {
+                if (GetNpcVehicleSeat(PetInfo[i][petID]) == seatid) {
+                    occupied_seats[seatid] = true;
+                    break;
+                }
+            }
+        }
         for (new seatid = seats_count; seatid >= 1; seatid--) {
             if (!occupied_seats[seatid]) {
                 empty_seatid = seatid;
@@ -377,9 +390,10 @@ stock dialogPetMenagment(playerid,slot)
                                 "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/1000 ]"\
                                 "\n{0088ff}Выгрузить питомца\t "\
                                 "\n{0088ff}Команды питомцу\t "\
-								"\n{0088ff}Автоматизация\t ",
+								"\n{0088ff}Всегда следовать за мной %s\t ",
                                 GetSkinName(PetsParam[type][2]),
-                                PetInfo[pet][petLevel],PetInfo[pet][petExp]);
+                                PetInfo[pet][petLevel],PetInfo[pet][petExp],
+                                PetInfo[pet][petAuto] ? "{44ff99} [ On ]" : "{ff6347}[ Off ]");
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
 	ShowDialog(playerid,PETS_SHOW_PETMANAGE,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
 	return true;

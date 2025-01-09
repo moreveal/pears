@@ -936,7 +936,7 @@ stock GiveNewYesrCase(playerid)
     {
         if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
     }
-    if(quan >= 13) CompleteBattlePassTask(playerid, 0, 2);
+    if(quan >= 12) CompleteBattlePassTask(playerid, 0, 2);
     return 1;
 }
 stock LifeNewYearQuestOne(playerid)
