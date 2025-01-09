@@ -1057,13 +1057,7 @@ stock IsAZoneCapt(playerid)
 		{
 		    if(CaptInfo[cAttack] == org || CaptInfo[cDefend] == org)
 		    {
-		    	new Float:Pos[3];
-				GetPlayerPos(playerid,Pos[0],Pos[1],Pos[2]);
-		    	if(IsPlayerInSquare(playerid,GangZone[g][gzMinX],GangZone[g][gzMinY],GangZone[g][gzMaxX],GangZone[g][gzMaxY]) && ADUTY[playerid] == 0 && GetPVarInt(playerid,"afksystem") < 5 && OnlineInfo[playerid][oLogged] == 1 && Pos[2] <= 90.000)
-		    	{
-					return 1;
-				}
-				return 0;
+				return IsPlayerInCaptArea(playerid);
 		    }
 		    return 0;
 		}
