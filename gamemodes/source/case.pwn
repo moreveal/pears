@@ -577,7 +577,7 @@ CMD:givecase(playerid, const params[])
 
 CMD:givecaseall(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     new getNameCaseCustom[24], nameCase[24];
     if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
 
@@ -594,7 +594,7 @@ CMD:givecaseall(playerid, const params[])
 
 CMD:givecasegro(playerid, const params[])
 {
-    if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
+    if(PlayerInfo[playerid][pSoska] < 19) return ErrorMessage(playerid, "{FF6347}Вы не можете использовать эту команду");
     new getNameCaseCustom[24], nameCase[24];
     if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
 
