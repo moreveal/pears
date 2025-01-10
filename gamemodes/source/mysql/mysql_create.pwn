@@ -92,6 +92,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_bizz", "bElectroPayForConnect", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bElectroPayForRepair", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_bizz", "bChipsFee", "INT NOT NULL DEFAULT '0'"); // Для кзаино
+    AddColumnIfNotExists("pp_bizz", "bInteriorPack", "INT NOT NULL DEFAULT '0'");
 
     AddColumnIfNotExists("pp_organization", "gMedMoney", "INT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_organization", "gWarehouse", "BOOLEAN NOT NULL DEFAULT '0'");
@@ -122,6 +123,8 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntX", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntY", "FLOAT NOT NULL DEFAULT '0'");
     AddColumnIfNotExists("pp_dom", "dCoordDopDoorTwoIntZ", "FLOAT NOT NULL DEFAULT '0'");
+
+    AddColumnIfNotExists("pp_dom", "dInteriorPack", "INT NOT NULL DEFAULT '0'");
 
     // Аксессуары
     AddColumnIfNotExists("accessory", "acCase", "BOOLEAN NOT NULL DEFAULT '0'");

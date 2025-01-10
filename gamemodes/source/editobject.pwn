@@ -658,7 +658,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
             UpdateObjectBiz(oid, slot); // Обновляем только расположение (текстуры не обновляем)
             if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
         }
-        else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET || gRedakt[playerid] == REDAKT_TYPE_OWN_MOVE)
+        /*else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET || gRedakt[playerid] == REDAKT_TYPE_OWN_MOVE)
 		{
             new prewSel = peoInfo[oid][peoSelObject]; // Получаем ID предыдущего выбранного объекта
             peoInfo[oid][peoSelObject] = slot; // Записываем выбранный новый объект
@@ -675,7 +675,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
                 if(peoInfo[oid][peoModel][prewSel] > 0) update3dtextLabel(playerid, prewSel); // Обновляем label предыдущего объекта
             }
             peoInfo[oid][peoQuanUpdates] ++;
-		}
+		}*/
         else if(gRedakt[playerid] >= REDAKT_TYPE_STREET_MARKET && gRedakt[playerid] <= REDAKT_TYPE_STREET_TERMINAL) // Объекты для стритов
         {
             WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
@@ -843,11 +843,11 @@ stock CancelDynamicEditable(playerid)
             IkeaInfo[oid][iObject] = 0;
             if(IkeaInfo[oid][iLabelstat] > 0)  DestroyDynamic3DTextLabel(IkeaLabel[oid]), IkeaInfo[oid][iLabelstat] = 0;
         }
-        else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET) // Личный Редактор
+        /*else if(gRedakt[playerid] == REDAKT_TYPE_OWN_SET) // Личный Редактор
         {
             peoInfo[oid][peoModel][slot] = 0;
             peoInfo[oid][peoObject][slot] = 0;
-        }
+        }*/
 
         DestroyDynamicObject(EditObjectInfo[playerid][editObjectid]);
     }
