@@ -1,5 +1,6 @@
 
 #define MAX_PACK_INTERIORS 50
+#define BUY_SLOTS_PACK 5 // Количество покупаемых слотов за один раз
 
 enum PackInteriorsInfo
 {
@@ -81,6 +82,10 @@ CMD:myint(playerid)
 
 stock showDialogPackInteriors(playerid)
 {
+    if(PlayerInfo[playerid][pPackInteriors] == 0) PlayerInfo[playerid][pPackInteriors] = 2; // Всем игрокам доступно 2 слота для архива интерьеров домов
+    DP[4][playerid] = 0; // Сбрасываем выбор покупки слота
+    DP[5][playerid] = 0; // Сбрасываем выбор покупки нескольких слотов
+
     new typeInterior;
     new ownerID;
     WherePlayerInInterior(playerid, typeInterior, ownerID);
@@ -105,7 +110,22 @@ stock showDialogPackInteriors(playerid)
                 get_k(PackInteriors[playerid][i][piPrice]),
                 atext), strcat(lines,line);
         }
-        else format(line,sizeof(line),"\n{cccccc}%d. ...\t \t \t ", i + 1), strcat(lines,line);
+        else
+        {
+            if(PlayerInfo[playerid][pPackInteriors] > i) format(line,sizeof(line),"\n{cccccc}%d. ...\t \t \t ", i + 1), strcat(lines,line);
+            else if(i < MAX_PACK_INTERIORS)
+            {
+                DP[4][playerid] = i;
+                format(line,sizeof(line),"\n{ffcc00}Покупаю Слот %dG", donatePrice[17]), strcat(lines,line);
+
+                if(i + BUY_SLOTS_PACK < MAX_PACK_INTERIORS)
+                {
+                    DP[5][playerid] = i + 1; // Следующая строка, поэтому + 1
+                    format(line,sizeof(line),"\n{ffcc00}Покупаю %d слотов %dG", BUY_SLOTS_PACK, donatePrice[18]), strcat(lines,line);
+                }
+                break;
+            }
+        }
     }
 	ShowDialog(playerid, PACK_INTERIORS_MENU, DIALOG_STYLE_TABLIST_HEADERS, "{ff9000}Архив Интерьеров", lines, "Выбор", "Отмена");
     return true;
@@ -187,11 +207,63 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
         {
             if(response) 
             {
-                DP[0][playerid] = listitem;
-                showDialogSettingPackInterior(playerid);
+                if(DP[4][playerid] > 0 && DP[4][playerid] == listitem)
+                {
+                    DP[6][playerid] = 1;
+					new line[120];
+					format(line,sizeof(line),"{ff9000}Вы хотите приобрести {ff9000}Слот архива интерьеров?\n{cccccc}Стоимость: {ffcc00}%dG", donatePrice[17]);
+					ShowDialog(playerid, PACK_INTERIORS_DONATE, DIALOG_STYLE_MSGBOX,"{ff9000}Donate", line, "Да", "Нет");
+                }
+                else if(DP[5][playerid] > 0 && DP[5][playerid] == listitem)
+                {
+                    DP[6][playerid] = BUY_SLOTS_PACK;
+					new line[120];
+					format(line,sizeof(line),"{ff9000}Вы хотите приобрести {ff9000}%d слотов архива интерьеров?\n{cccccc}Стоимость: {ffcc00}%dG", BUY_SLOTS_PACK, donatePrice[18]);
+					ShowDialog(playerid, PACK_INTERIORS_DONATE, DIALOG_STYLE_MSGBOX,"{ff9000}Donate", line, "Да", "Нет");
+                }
+                else
+                {
+                    DP[0][playerid] = listitem;
+                    showDialogSettingPackInterior(playerid);
+                }
             }
             return true;
         }
+
+        case PACK_INTERIORS_DONATE:
+        {
+            if(response)
+            {
+                new price;
+                if(DP[6][playerid] == BUY_SLOTS_PACK) price = donatePrice[18];
+                else price = donatePrice[17];
+
+                if(PlayerInfo[playerid][pDonateMoney] < price) return showDialogPackInteriors(playerid), ErrorText(playerid, "[ Мысли ]: Мне не хватает золота");
+                if(PlayerInfo[playerid][pPackInteriors] >= MAX_PACK_INTERIORS) return showDialogPackInteriors(playerid), ErrorText(playerid, "[ Мысли ]: У меня куплены все слоты");
+
+                if(DP[6][playerid] == BUY_SLOTS_PACK) PlayerInfo[playerid][pPackInteriors] += 5;
+                else PlayerInfo[playerid][pPackInteriors] ++;
+                new string_mysql[120];
+                mysql_format(pearsq, string_mysql ,sizeof(string_mysql), "UPDATE `pp_igroki` SET `pPackInteriors` = '%d' WHERE `user_id` = '%d'", 
+                    PlayerInfo[playerid][pPackInteriors], PlayerInfo[playerid][pID]);
+                mysql_tquery(pearsq, string_mysql);
+
+                PlayerInfo[playerid][pDonateMoney] -= price;
+                tclArifmetikAllGold -= price;
+                mysql_save(playerid, 4);
+
+                showDialogPackInteriors(playerid);
+                PlayerPlaySound(playerid,6401,0,0,0);
+
+                new string[90];
+                if(DP[6][playerid] == BUY_SLOTS_PACK) format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~%d C‡OЏO‹ KYЊ‡EHO: ~y~-%dG", BUY_SLOTS_PACK, price);
+                else format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~C‡OЏ KYЊ‡EH: ~y~-%dG", price);
+                GameTextForPlayer(playerid,string,4000,3);
+                DonateLog("buypackint",PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "");
+            }
+            else showDialogPackInteriors(playerid);
+        }
+
         case PACK_INTERIORS_SETTING:
         {
             if(response)

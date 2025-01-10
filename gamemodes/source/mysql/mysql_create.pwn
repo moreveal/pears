@@ -53,6 +53,7 @@ stock CreateMysqlTable()
     AddColumnIfNotExists("pp_igroki", "pSpawnChangeDop", "INT NOT NULL DEFAULT '0'"); // Доп параметр для спавна
     AddColumnIfNotExists("pp_igroki", "pMenstrDay", "INT NOT NULL DEFAULT '0'"); // День следующей менструации
     AddColumnIfNotExists("pp_igroki", "pMenstrProkl", "INT NOT NULL DEFAULT '0'"); // Применены ли прокладки на текущий день менструации
+    AddColumnIfNotExists("pp_igroki", "pPackInteriors", "INT NOT NULL DEFAULT '0'"); // Количество купленных слотов для архива интерьера
 
     AddColumnIfNotExists("pp_igroki", "WarnClearTime", "INT NOT NULL DEFAULT '0'"); // Когда будет снят варн
     AddColumnIfNotExists("pp_igroki", "GunWarns", "INT NOT NULL DEFAULT '0'"); // Количество ганварнов
