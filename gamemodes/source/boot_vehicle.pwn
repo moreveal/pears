@@ -164,7 +164,7 @@ stock put_boot(playerid, inva, v, fpick, fquan, binva, thingType, thingPack)
 	
 	if(NotGiveInflatabelBoat(playerid, fpick, thingType)) return i_resetveshi(playerid);
 
-	// Кейс нельзя выбрасывать на 3 уровне и ниже
+	// шкатулку нельзя выбрасывать на 3 уровне и ниже
 	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
 
     if(NotGiveThing(fpick, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
@@ -550,7 +550,7 @@ stock item_boot(playerid, v, fpick, fquan, inva, fpara, thingType, thingPack)
 		if(thingPack == 1) yesFindModel = 19054; // Подарок
 		else if(thingPack == 2 || thingPack == 4) yesFindModel = 3014; // Ящик / Запечатанный Ящик
 		else if(thingPack == 3) yesFindModel = 2060; // Мешок
-		else if(IsACasePackID(thingPack)) yesFindModel = GetModelCustomCase(thingPack); // Кейс
+		else if(IsACasePackID(thingPack)) yesFindModel = GetModelCustomCase(thingPack); // шкатулку
 		else if(thingPack == 0) // Без упаковки
 		{
 			if(thingType == 0) // Обычный предмет

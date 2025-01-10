@@ -345,7 +345,7 @@ stock ShowDialogInfoManiac(playerid)
                             \n\n{cccccc}- По ночам, в городе Los Santos, бродит маньяк с бензопилой и нападает на людей\
                             \n{cccccc}- Маньяк появляется с 22:00 до 4:00 в переулках города\
                             \n{cccccc}- Вы можете обнаружить его совершенно случайно\
-                            \n{cccccc}- На месте смерти маньяка выпадает кейс или ключ от этого кейса\
+                            \n{cccccc}- На месте смерти маньяка выпадает шкатулка или ключ от этого шкатулки\
                             \n\n{A52C2C}Квест Маньяка\
                             \n{ffcc66}Для того, чтобы начать прохождение квеста, вам необходимо найти\
                             \n{ffcc66}%d масок маньяка. Эти маски разбросаны по переулкам города Los Santos.\
@@ -707,12 +707,12 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
                 DonateLog("givegold", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", GOLD_QUEST, "Квест маньяк");
                 SendClientMessage(playerid, COLOR_GREY, "{0088ff}[ Квест ]: {cccccc}Вы получили {ffcc00}%dG {cccccc}за прохождение этого квеста", GOLD_QUEST);
 
-                // Формируем кейс маньяка
+                // Формируем шкатулку маньяка
                 new thingId, thingQuan, thingType, thingPara, thingPack;
                 CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
                 CalculateVehicleLimited(thingId, thingType);
 
-                // Кладём кейс маньяка на землю
+                // Кладём шкатулку маньяка на землю
                 SetThrow(-1, thingId, thingId, thingQuan, thingPara, 0, thingType, thingPack, GetNpcVirtualWorld(ManiacInfo[findSlot][manID]), ManiacInfo[findSlot][manInterior], 
                     npc_pos[0] + random(2), npc_pos[1] + random(2), npc_pos[2] - 1.0, 0.0, 0.0, 0.0 + random(90), 600, 0, 0, 0);
 
@@ -757,9 +757,9 @@ stock OnDeathManiacNpc(NPC:npc, playerid)
 
             switch(random(2))
             {
-                case 0: // Кладём кейс маньяка
+                case 0: // Кладём шкатулку маньяка
                 {
-                    // Формируем кейс маньяка
+                    // Формируем шкатулку маньяка
                     new thingId, thingQuan, thingType, thingPara, thingPack;
                     CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack, "maniac");
                     CalculateVehicleLimited(thingId, thingType);

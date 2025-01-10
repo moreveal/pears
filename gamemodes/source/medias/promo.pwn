@@ -171,11 +171,11 @@ function Call_promo(playerid, pf, unix)
 				}
 				else if(PlayerInfo[playerid][pDonateRank] >= 3) format(str,sizeof(str),"{ff9000}* VIP: {ffcc00}Активна Platinum VIP\n"), strcat(sctring,str);
 			}
-			if(PromoInfo[pf][roPar][statpf] == 13) // Кейс // NEW
+			if(PromoInfo[pf][roPar][statpf] == 13) // Шкатулка // NEW
 			{
 				if(PromoInfo[pf][roLevel] > 0)
 				{
-					format(str,sizeof(str),"{ff9000}* Кейс {999999}[ Инвентарь N ]\n"), strcat(sctring,str);
+					format(str,sizeof(str),"{ff9000}* Шкатулка {999999}[ Инвентарь N ]\n"), strcat(sctring,str);
 					new thingId, thingQuan, thingType, thingPara, thingPack;
 					CreateCasePlayer(playerid, thingId, thingQuan, thingType,thingPara, thingPack);
 					GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);
@@ -476,7 +476,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 				ListDop[playerid] = listitem-1;
 				if(PromoInfo[pf][roPar][listitem-1] == 0)
 				{
-					ShowDialog(playerid,624,DIALOG_STYLE_LIST,"{ff9000}Промокод","{cccccc}Деньги\n{cccccc}Золото\n{cccccc}Уровень\n{cccccc}X2 Exp\n{cccccc}VIP Временная\n{cccccc}Кейс\n{cccccc}Транспорт\n{cccccc}Одежда","Выбрать","Отмена");
+					ShowDialog(playerid,624,DIALOG_STYLE_LIST,"{ff9000}Промокод","{cccccc}Деньги\n{cccccc}Золото\n{cccccc}Уровень\n{cccccc}X2 Exp\n{cccccc}VIP Временная\n{cccccc}Шкатулка\n{cccccc}Транспорт\n{cccccc}Одежда","Выбрать","Отмена");
 				}
 				else
 				{
@@ -677,7 +677,7 @@ stock dialogCase_Promo(playerid, dialogid, response, listitem,const inputtext[])
 				PlayerPlaySound(playerid,31203,0,0,0);
 				setprom(playerid);
 				SavePromo(statpf, pf);
-				AdminLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, PromoInfo[pf][roName], "", 1, "Подарок: Кейс");
+				AdminLog("promo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, PromoInfo[pf][roName], "", 1, "Подарок: Шкатулка");
 			}
 			if(listitem == 6) ShowDialog(playerid,600,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите ID транспорта {ff9000}400 - 612, 2000 и выше - кастомные авто","Принять","Отмена");
 			if(listitem == 7) ShowDialog(playerid,597,DIALOG_STYLE_INPUT,"{ff9000}Промокод","{cccccc}Введите ID скина {ff9000}1 - 311, кастомные 312 и выше","Принять","Отмена");

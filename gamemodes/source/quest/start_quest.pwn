@@ -30,11 +30,11 @@ new StartQuestPresent[][] =
     "Деньги",
     "Транспорт",
     "",
-    "Кейс",
+    "Шкатулка",
     "",
     "",
     "Деньги",
-    "Кейс"
+    "Шкатулка"
 };
 
 new ZoneQuest1; // ID Zone Quest в Los Santos
@@ -387,7 +387,7 @@ stock QuestActorBruce(playerid) // Начинаем взаимодействов
         PlayerInfo[playerid][pQuest][5] = 8;
         SaveQuest(playerid);
 
-        // Выдаём кейс
+        // Выдаём Шкатулку
         GiveGiftQuest(playerid);
 
         // Запускаем следующий квест
@@ -1237,7 +1237,7 @@ stock QuestCallMessage(playerid)
         SaveQuest(playerid);
         SetPVarInt(playerid,"qweststat", 67), SetPVarInt(playerid,"qwesttime",10);
 
-        // Выдаём кейс
+        // Выдаём Шкатулку
         GiveGiftQuest(playerid);
     }
     else if(GetPVarInt(playerid,"qweststat") == 67)
@@ -1442,11 +1442,11 @@ stock GiveGiftQuest(playerid, bool:message = true)
     if(put_inva == -1)
     {
         Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
-        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпал кейс в подарок. {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+        SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вам выпала шкатулка в подарок. {ffcc66}[ В инвентаре нет места, шкатулка упала на землю ]");
     }
     else 
     {
-        if(message == true) SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпал кейс в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
+        if(message == true) SendClientMessage(playerid, COLOR_GREY,"{0088ff}Вам выпала шкатулка в подарок. Откройте инвентарь и распакуйте его {ffcc66}[ Кнопка N ]");
     }
     return 1;
 }

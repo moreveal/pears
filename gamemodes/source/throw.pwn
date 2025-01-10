@@ -340,7 +340,7 @@ stock SetThrow(playerid, fpick, frisk, quan, para, qara, thingType, thingPack, w
 	if(fpick == 42 && thingType == 0 && type == 1) time = -1; // Ноутбук на столе (-1 значит никогда не исчезнет)
 	if(fpick == 229 && thingType == 0) z -= object_correct_z(18849); // Корректируем позицию предмета сумки с парашютом на земле
 
-	// Если кейс, тогда корректируем
+	// Если шкатулку, тогда корректируем
 	else if(IsACasePackID(thingPack) && thingPack != 5)
 	{
 		new model = GetModelCustomCase(thingPack);
@@ -436,7 +436,7 @@ stock ObjectThrow(playerid, t) // Получаем id объекта на зем
 	new Float:correct_z;
 	if(thingPack == 1) model = 3014, setgift = 1; // Подарок
 	else if(thingPack == 2 || thingPack == 4)  model = 3014; // Ящик
-	else if(IsACasePackID(thingPack)) model = GetModelCustomCase(thingPack); // Кейс
+	else if(IsACasePackID(thingPack)) model = GetModelCustomCase(thingPack); // шкатулка
 	else
 	{
 	    if(thingType == 0) // Основные предметы

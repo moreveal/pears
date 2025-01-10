@@ -1,5 +1,5 @@
 /*
-Добавляем кейс, Указываем параметры рандома, условно:
+Добавляем шкатулку, Указываем параметры рандома, условно:
 case 0..1 - Значит шанс равен 2%
 case 2..99 - Значит шанс равен 98%
 
@@ -73,7 +73,7 @@ stock IsThingClotheNotVariable(i)
     return 1;
 }
 
-// Оружие которое нельзя давать в кейс
+// Оружие которое нельзя давать в шкатулку
 stock IsThingGunNotVariable(i)
 {
     if(i == 0 || i == 1 || i == 2 || i == 4 || i == 7 || i == 9 || i >= 15 && i <= 21 || i == 23 || i == 26 || i == 34 || i >= 34) return 0; // Низя
@@ -165,7 +165,7 @@ stock CreateSkinGiftCase() // Собираем скины
     return true;
 }
 
-stock CreateAccessoryGiftCase() // Собираем аксессуары для кейса
+stock CreateAccessoryGiftCase() // Собираем аксессуары для шкатулки
 {
     ThingAccessoryQuan = 0;
     ThingAccessoryQuanTop = 0;
@@ -191,20 +191,20 @@ stock CreateAccessoryGiftCase() // Собираем аксессуары для 
     return ThingAccessoryQuan+ThingAccessoryQuanTop;
 }
 
-// Блокируем предметы для кейса (хз, там разные шняги)
+// Блокируем предметы для шкатулки (хз, там разные шняги)
 stock StopThingForCase(i, thingType)
 {
-    if(!IsThingNotVariable(i) // Запрещённые предметы для кейса
+    if(!IsThingNotVariable(i) // Запрещённые предметы для шкатулки
     || NotGiveThing(i, thingType, 1) // Предметы которые нельзя передать
     || DocumentThing(i, thingType) // Документы
     || CheckThingQuan(i) // Количественные предметы
     || JustOneThingInventory(i, thingType) // Предмет только в единственном экземпляре в инвентаре
-    || IsKeyCustomCase(i) // Ключи от кейсов
+    || IsKeyCustomCase(i) // Ключи от шкатулки
     ) return true;
     return false;
 }
 
-stock CreateThingGiftCase() // Собираем обычные предметы для кейса
+stock CreateThingGiftCase() // Собираем обычные предметы для шкатулки
 {
     thingItemQuan = 0;
     for(new i = 1; i < sizeof(friskName); i++)
@@ -214,7 +214,7 @@ stock CreateThingGiftCase() // Собираем обычные предметы 
     return thingItemQuan;
 }
 
-stock CreateThingTopGiftCase() // Собираем топовые обычные предметы для кейса
+stock CreateThingTopGiftCase() // Собираем топовые обычные предметы для шкатулки
 {
     thingItemTopQuan = 0;
     for(new i = 1; i < sizeof(friskName); i++)
@@ -224,7 +224,7 @@ stock CreateThingTopGiftCase() // Собираем топовые обычные
     return thingItemTopQuan;
 }
 
-// Сток для получения обычного предмета из кейса
+// Сток для получения обычного предмета из шкатулки
 stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
 {
     switch(random(5))
@@ -247,12 +247,12 @@ stock CommonThingCase(&thingId, &thingQuan, &thingType, &thingPack)
 }
 
 
-// Рандомайзер для создания кейса
+// Рандомайзер для создания шкатулки
 stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &thingPack, const name[] = "default")
 {
-    // Поиск кастомного кейса
+    // Поиск кастомного шкатулки
     new caseID = GetCustomCaseID(name);
-    if(caseID >= 0) // Обнаружили кастомный кейс по идентификатору
+    if(caseID >= 0) // Обнаружили кастомный шкатулки по идентификатору
     {
         new selectedThing = SelectRandomThing(caseID);
         if(selectedThing == -1)
@@ -266,7 +266,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         if(thingId < 0
             || thingId >= sizeof(friskPick) && thingType == 0)
         {
-            CommonThingCase(thingId, thingQuan, thingType, thingPack); // Обычный предмет из кастомного кейса (на случай мусорного заполнения)
+            CommonThingCase(thingId, thingQuan, thingType, thingPack); // Обычный предмет из кастомного шкатулки (на случай мусорного заполнения)
             thingPack = GetCustomCaseInventoryPack(caseID);
             return true;
         }
@@ -329,10 +329,10 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
         thingQuan = 1;
     }
 
-    else if(thingType == 2) // Аксессуары (Список собирается при запуске сервера и при активации аксессуара для кейса)
+    else if(thingType == 2) // Аксессуары (Список собирается при запуске сервера и при активации аксессуара для шкатулки)
     {
         new bool:givePremiumAks = false;
-        if(ThingAccessoryQuan <= 0) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг аксессуаров для кейса нет, выпадет обычный предмет
+        if(ThingAccessoryQuan <= 0) return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг аксессуаров для шкатулки нет, выпадет обычный предмет
 
         if(strcmp(name,"craftaks") == 0)
         {
@@ -402,7 +402,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             }
             else
             {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
                 {
                     if (ThingSkinTopQuan == 0)
                     {
@@ -414,7 +414,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                         thingId = ThingSkinTopcaseGift[thingTemp];
                     }
                 }
-                else // Женский скин в кейсе
+                else // Женский скин в шкатулке
                 {
                     if (ThingSkinTopQuanFemale == 0)
                     {
@@ -429,33 +429,33 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
             }
         }
 
-        if (!givePremiumSkin) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет премиум скинов в кейсах
+        if (!givePremiumSkin) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет премиум скинов в шкатулке
         {
             if(playerid == INVALID_PLAYER_ID)
             {
                 if (ThingSkinQuan == 0)
                 {
-                    return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
+                    return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
                 }
                 new thingTemp = random(ThingSkinQuan);
                 thingId = ThingSkincaseGift[thingTemp];
             }
             else
             {
-                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в кейсе
+                if(PlayerInfo[playerid][pSex] == 1) // Мужской скин в шкатулке
                 {
                     if (ThingSkinQuan == 0)
                     {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
+                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
                     }
                     new thingTemp = random(ThingSkinQuan);
                     thingId = ThingSkincaseGift[thingTemp];
                 }
-                else // Женский скин в кейсе
+                else // Женский скин в шкатулке
                 {
                     if (ThingSkinQuanFemale == 0)
                     {
-                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для кейса нет, выпадет обычный предмет
+                        return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг скинов для шкатулки нет, выпадет обычный предмет
                     }
                     new thingTemp = random(ThingSkinQuanFemale);
                     thingId = ThingSkincaseGiftFemale[thingTemp];
@@ -495,7 +495,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 thingId = ThingLimitedVehiclecaseGift[thingTemp];
             }
         }
-        if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в кейсах
+        if (givePremiumVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных машин в шкатулках
         {
             if (ThingPremiumVehicleQuan == 0)
             {
@@ -507,11 +507,11 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
                 thingId = ThingPremiumVehiclecaseGift[thingTemp];
             }
         }
-        if (!givePremiumVehicle && !giveLimitedVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных/премиум машин в кейсах
+        if (!givePremiumVehicle && !giveLimitedVehicle) // if/else здесь не подходит, так как мы можем позже упасть сюда, когда нет лимитированных/премиум машин в шкатулках
         {
             if (ThingVehicleQuan == 0)
             {
-                return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг машин для кейса нет, выпадет обычный предмет
+                return CommonThingCase(thingId, thingQuan, thingType, thingPack); // Если вдруг машин для шкатулки нет, выпадет обычный предмет
             }
             new thingTemp = random(ThingVehicleQuan);
             thingId = ThingVehiclecaseGift[thingTemp];
@@ -530,7 +530,7 @@ stock CreateCasePlayer(playerid, &thingId, &thingQuan, &thingType, &thingPara, &
     return 1;
 }
 
-// Добавляем лимитированный транспорт в кейсе на руках
+// Добавляем лимитированный транспорт в шкатулке на руках
 stock CalculateVehicleLimited(thingId, thingType)
 {
     if(thingType != 5) return false; // Это не транспорт, значит не считаем
@@ -547,7 +547,7 @@ stock CalculateVehicleLimited(thingId, thingType)
     return true;
 }
 
-// Вычитаем лимитированный транспорт в кейсе на руках
+// Вычитаем лимитированный транспорт в шкатулке на руках
 stock TakeCalculateVehicleLimited(thingId, thingType)
 {
     if(thingType != 5) return false; // Это не транспорт, значит не считаем
@@ -571,7 +571,7 @@ CMD:givecase(playerid, const params[])
     new giveplayerid, getNameCaseCustom[24];
     if(!sscanf(params, "is[24]", giveplayerid, getNameCaseCustom)) GivePlayerCase(playerid, giveplayerid, getNameCaseCustom);
     else if(!sscanf(params, "i", giveplayerid)) GivePlayerCase(playerid, giveplayerid);
-    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать кейс [ /givecase ID ]");
+    else SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Выдать шкатулку [ /givecase ID ]");
     return 1;
 }
 
@@ -586,7 +586,7 @@ CMD:givecaseall(playerid, const params[])
         if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, nameCase, false);
     }
     new string[140];
-	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам кейсы [ %s ]", PlayerInfo[playerid][pName], nameCase);
+	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам шкатулку [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
     return 1;
@@ -607,7 +607,7 @@ CMD:givecasegro(playerid, const params[])
     }
 
     new string[140];
-	format(string, sizeof(string), " [ ADM ]: %s выдал кейсы игрокам рядом с собой [ %s ]", PlayerInfo[playerid][pName], nameCase);
+	format(string, sizeof(string), " [ ADM ]: %s выдал шкатулку игрокам рядом с собой [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
 	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
     return 1;
@@ -621,8 +621,8 @@ stock GivePlayerCase(playerid, giveplayerid, const name[] = "default", bool:oneP
     if(put_inva == -1 && onePlayer == true) return ErrorMessage(playerid, "{FF6347}У игрока нет места в инвентаре");
 
     CalculateVehicleLimited(thingId, thingType);
-    if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s кейс [ %s ]", PlayerInfo[giveplayerid][pName], name);
-    if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* Администратор %s выдал вам кейс [ %s ]", PlayerInfo[playerid][pName], name);
+    if(onePlayer == true) SendClientMessage(playerid, COLOR_LIGHTBLUE, "* Вы выдали %s шкатулку [ %s ]", PlayerInfo[giveplayerid][pName], name);
+    if(giveplayerid != playerid) SendClientMessage(giveplayerid, COLOR_LIGHTBLUE, "* Администратор %s выдал вам шкатулку [ %s ]", PlayerInfo[playerid][pName], name);
 
     if(onePlayer == true) AdminLog("givecase", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[giveplayerid][pID], PlayerInfo[giveplayerid][pName], PlayerInfo[giveplayerid][pPlaIP], 0, name);
     return true;

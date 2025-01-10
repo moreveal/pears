@@ -412,7 +412,7 @@ stock CompletingDaily(playerid, dailyid, quan)
         new noComplete = GetNoCompleteDailyQuan(playerid);
         if(noComplete > 0) // Нашли невыполненные задания
         {
-            format(string, sizeof(string), "{0088ff}Вы выполнили ежедневное задание {ffcc66}%s {cccccc}[ Осталось %d заданий, чтобы получить кейс ]", dailyName[dailyid], noComplete);
+            format(string, sizeof(string), "{0088ff}Вы выполнили ежедневное задание {ffcc66}%s {cccccc}[ Осталось %d заданий, чтобы получить шкатулку ]", dailyName[dailyid], noComplete);
             SendClientMessage(playerid, COLOR_GREY, string);
         }
         else // Все задания выполнены
@@ -429,11 +429,11 @@ stock CompletingDaily(playerid, dailyid, quan)
             if(plit == -1)
             {
                 Throw(playerid, thingId, thingQuan, 0, 0, thingType, thingPack);
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ В инвентаре нет места, шкатулка упала на землю ]");
             }
             else
             {
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ Проверьте инвентарь, там вас ждёт кейс ]");
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы выполнили все ежедневные задания {ffcc66}[ Проверьте инвентарь, там вас ждёт шкатулка ]");
             }
 
             PlayerInfo[playerid][pExp] ++;
@@ -527,7 +527,7 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
             {
                 static const lines[] =
                     "{ffcc66}Что такое ежедневные задания?" \
-                    "\n{cccccc}- Это небольшие действия, которые нужно выполнить, чтобы получить кейс" \
+                    "\n{cccccc}- Это небольшие действия, которые нужно выполнить, чтобы получить шкатулку" \
                     "\n{cccccc}- После выполнения задания вы так-же получаете +1 Exp [ /stats ]" \
                     "\n{cccccc}- Большинство заданий связано со стандартными работами" \
                     "\n{cccccc}- Однако, иногда вам могут попадаться уникальные задания" \
@@ -536,8 +536,8 @@ stock dialogCase_DailyQuest(playerid, dialogid, response, listitem)
                     "\n{cccccc}- Ежедневные задания обновляются 1 раз в день" \
                     "\n{cccccc}- Обновление происходит в тот момент, когда вы заходите на сервер" \
                     \
-                    "\n\n{ffcc66}Что в кейсе?" \
-                    "\n{cccccc}- В кейсе могут находиться как мелкие предметы, не имеющие ценности," \
+                    "\n\n{ffcc66}Что в шкатулке?" \
+                    "\n{cccccc}- В шкатулке могут находиться как мелкие предметы, не имеющие ценности," \
                     "\n{cccccc}так и большие подарки." \
                     "\n{cccccc}Например: одежда, транспорт, деньги и даже золото";
 
@@ -685,7 +685,7 @@ function OnPlayerQuestsLoad(playerid)
     // Если задания не выполнены, пишем уведомление
     if(DailyInfo[playerid][daiFull] == false) 
     {
-        SendClientMessage(playerid, COLOR_GREY,"{0088ff}Выполните ежедневные задания и получите кейс в подарок {ffcc66}[ Y >> Квесты ]");
+        SendClientMessage(playerid, COLOR_GREY,"{0088ff}Выполните ежедневные задания и получите шкатулку в подарок {ffcc66}[ Y >> Квесты ]");
     }
     return 1;
 }

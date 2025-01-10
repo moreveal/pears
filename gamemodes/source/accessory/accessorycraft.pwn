@@ -145,7 +145,7 @@ stock AcsListCraftInformation(playerid)
     new line[150],lines[1400];
     format(line,sizeof(line),"{ff9000}Вы выбрали %s", friskQualityBustShot[DP[0][playerid]]), strcat(lines,line);
     format(line,sizeof(line),"\n\n{cccccc}Но данный тип аксессуара, увы, нельзя скрафтить!"), strcat(lines,line);
-    format(line,sizeof(line),"\n{cccccc}Он может выпасть в кейсе, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
+    format(line,sizeof(line),"\n{cccccc}Он может выпасть в шкатулке, или выдаваться администрацией в конкурсах/мероприятиях"), strcat(lines,line);
     format(line,sizeof(line),"\n\n{ff9000}Список аксессуаров и их бонусов:"), strcat(lines,line);
     for(new i = 0; i < sizeof(AccessoryCraftListBust); i ++)
     {
