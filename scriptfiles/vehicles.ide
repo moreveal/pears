@@ -388,7 +388,7 @@ cars
 15326, 	fleetwood,	fleetwood, 	car, 		FLEETWOOD,	FLEETWOOD,	 null,	normal,		    4, 	0,	0,	-1, 0.75, 0.75,		0
 15327, 	lurcher,	lurcher, 	car, 		LURCHER,	LURCHER,	 null,	normal,		    4, 	0,	0,	-1, 0.78, 0.78,		0
 15328,	armycad, 	armycad, 	car,		ARMYCAD, 	ARMYCAD, 	null,	richfamily,		6,	7,	0,	-1, 0.93, 0.93,		0
-15334,	bmwm3c,		bmwm3c,		car, 		BMWM3C, 	BMWM3C, 	null,	richfamily, 	7, 	0,	0,	1, 0.75, 0.75,		1
+15334,	bmwm3c,		bmwm3c,		car, 		BMWM3C, 	BMWM3C, 	null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15335,	bmwm3g81,	bmwm3g81,	car, 		BMWM3G81, 	BMWM3G81, 	null,	richfamily, 	7, 	0,	0,	-1, 0.75, 0.75,		1
 15336,	cadxt6v, 	cadxt6v, 	car,		CADXT6V, 	CADXT6V, 	null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15337,	dodgeram, 	dodgeram, 	car,		DODGERAM, 	DODGERAM, 	null,	ignore,		    2,	0,	0,	-1, 0.97, 0.97,	-1
@@ -406,6 +406,7 @@ cars
 15349,	bmwxm,      bmwxm,     car,		    BMWXM,      BMWXM,     null,	richfamily,		6,	7,	0,	-1, 0.90, 0.90,		0
 15350,	golf7gti, 	golf7gti, 	car, 		GOLF7GTI,	GOLF7GTI, 	null,	normal, 	    8,	0,	0,	-1, 0.74, 0.74,		0
 15351, 	bugbolid, 	bugbolid, 	car, 		BUGBOLID, 	BUGBOLID, 	null,	executive,  	5, 	0,	0,	-1, 0.81, 0.81,		0
+15352, 	imppriv, 	imppriv, 	car, 		IMPPRIV, 	IMPPRIV, 	null,	richfamily, 	10,	0,	0,	-1, 0.70, 0.70,		0
 #15499 LAST
 end
 

@@ -879,26 +879,26 @@ stock MineWar_Dialog_Stats(playerid, e_MineWarEndReason: reason)
     
     new case_amount;
     if (reason == MINEWAR_END_REASON_WIN) {
-        // Гарантированные кейсы за прохождение (+1-3)
+        // Гарантированные шкатулки за прохождение (+1-3)
         case_amount += random_range(1, 2);
         if (_:MineWarInfo[roomid][mwDifficulty] > _:MINEWAR_DIFFICULTY_EASY) case_amount++;
         #if defined MINEWAR_DEBUG_MODE
-            printf("[MINEWAR DEBUG]: Игрок %d получил %d кейсов за прохождение", playerid, case_amount);
+            printf("[MINEWAR DEBUG]: Игрок %d получил %d шкатулок за прохождение", playerid, case_amount);
         #endif
     }
 
     if (MineWar_GetZombieKilled(roomid, _:MINEWAR_SUPER_ZOMBIE) >= 1) {
-        // 40% получить кейс, если был убит босс (даже при поражении)
+        // 40% получить шкатулку, если был убит босс (даже при поражении)
         if(random(10) <= 3) {
             case_amount++;
             #if defined MINEWAR_DEBUG_MODE
-                printf("[MINEWAR DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
+                printf("[MINEWAR DEBUG]: Игрок %d получил дополнительную шкатулку за то, что при прохождении был убит босс", playerid);
             #endif
         }
     }
 
     {
-        // 25% получить кейс для ТОП-1 по убийствам за всю игру
+        // 25% получить шкатулку для ТОП-1 по убийствам за всю игру
         new top1_kills_id = -1, top1_kills = 0;
         for (new i = 0; i < MAX_MINEWAR_PLAYERS; i++)
         {
@@ -917,12 +917,12 @@ stock MineWar_Dialog_Stats(playerid, e_MineWarEndReason: reason)
                 case_amount++;
 
                 #if defined MINEWAR_DEBUG_MODE
-                    printf("[MINEWAR DEBUG]: Игрок %d получил дополнительный кейс за ТОП-1 по убийствам", playerid);
+                    printf("[MINEWAR DEBUG]: Игрок %d получил дополнительную шкатулку за ТОП-1 по убийствам", playerid);
                 #endif
             }
         }
     }
-    case_amount += MineWarPlayerInfo[playerid][mwpCases]; // Прибавляем возможные кейсы, которые игрок мог получить на протяжении игры (за волны и т.п.)
+    case_amount += MineWarPlayerInfo[playerid][mwpCases]; // Прибавляем возможные шкатулки, которые игрок мог получить на протяжении игры (за волны и т.п.)
 
     if (case_amount > 0) {
         new bool: no_place = false;
@@ -953,7 +953,7 @@ stock MineWar_Dialog_Stats(playerid, e_MineWarEndReason: reason)
 
         format(dialog_text, sizeof(dialog_text),
             "%s" \
-            "{cccccc}- Кейс: %d шт.",
+            "{cccccc}- Шкатулка: %d шт.",
 
             dialog_text,
             case_amount
@@ -1058,11 +1058,11 @@ stock MineWar_OnNpcDeath(NPC:npc, killerid, reason)
                                 }
                                 
                                 if (IsOnline(top1_wave_kills_id)) {
-                                    // 10% получить кейс для ТОП-1 по убийствам на протяжении волны
+                                    // 10% получить шкатулку для ТОП-1 по убийствам на протяжении волны
                                     if (random(10) < 1) {
                                         MineWarPlayerInfo[top1_wave_kills_id][mwpCases]++;
                                         #if defined MINEWAR_DEBUG_MODE
-                                            printf("[MINEWAR DEBUG]: Игрок %d получил кейс за ТОП-1 по убийствам после окончания волны", top1_wave_kills_id);
+                                            printf("[MINEWAR DEBUG]: Игрок %d получил шкатулку за ТОП-1 по убийствам после окончания волны", top1_wave_kills_id);
                                         #endif
                                     }
                                 }

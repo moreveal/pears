@@ -525,8 +525,8 @@ stock CountAwardsPennivize(playerid, procent)
     else if(procent >= 35 && procent < 45) count = 3;
     else if(procent >= 45) count = 4;
 
-    SendClientMessage(playerid,COLOR_GREY,"[ Мысли ] Я нанес Пеннивайзу %d%% урона и получил %d Хэллуин Кейса", procent,count);
-    // Формируем кейс
+    SendClientMessage(playerid,COLOR_GREY,"[ Мысли ] Я нанес Пеннивайзу %d%% урона и получил %d Хэллуин Шкатулок", procent,count);
+    // Формируем шкатулку
     for(new i; i < count; i++)
     {
         new thingId, thingQuan, thingType, thingPara, thingPack;

@@ -66,6 +66,11 @@ stock CreateMysqlTable()
     //battlepass
     AddColumnIfNotExists("battlepass", "Name", "VARCHAR(24) DEFAULT ''");
 
+    //backpack
+    AddColumnIfNotExists("backpacks", "Name", "VARCHAR(24) DEFAULT ''");
+    AddColumnIfNotExists("backpacks", "user_id", "INT NOT NULL DEFAULT '0'");
+
+
     //Просьба дениса.
     AddColumnIfNotExists("blacklist", "type", "INT NOT NULL DEFAULT '0'"); // 0 - может вынести лидер. 1 Может вынести только админ
     // quest halloween

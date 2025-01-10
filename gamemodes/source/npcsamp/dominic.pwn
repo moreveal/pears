@@ -72,7 +72,7 @@ stock Dominic_StartQuest(playerid)
             "{ff9000}Вы уверены, что хотите начать гонку?\
             \n\n{99ff66}Вы можете выиграть:\
             \n{cccccc}- Деталь для тюнинга\
-            \n- Кейс\
+            \n- Шкатулка\
             \n- Рем. комплект\
             \n- Домкрат\
             \n- Пиво\
@@ -100,7 +100,7 @@ stock Dominic_GiveGift(playerid)
         case 5..8: thingId = 183; // Рем комплект
         case 9..11: thingId = 119; // Пиво разливное
         case 12..13: thingId = 207 + random(18); // Какая-то деталь тюнинга (207 - 225)
-        case 14: CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack); // Кейс
+        case 14: CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack); // Шкатулка
     }
 
     // Количественный предмет (Проверка на лимиты)

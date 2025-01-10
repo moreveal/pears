@@ -274,6 +274,7 @@ stock player_tile_backpack(playerid, inva)
 			i_tile(playerid, BackPackInfo[playerid][backpackInvent][put_inva], BackPackInfo[playerid][backpackInv][put_inva], put_inva, BackPackInfo[playerid][backpackInvPara][put_inva], BackPackInfo[playerid][backpackInvType][put_inva], BackPackInfo[playerid][backpackInvPack][put_inva]);
 
 			SaveInventBackPack(playerid,OnlineInfo[playerid][oInventSelectBackPack]);
+			OnlineInfo[playerid][oInventSelectBackPack] = 9999, OnlineInfo[playerid][oInventSelectLeft] = 9999;
 		}
 	}
 	return 1;
@@ -337,7 +338,7 @@ stock SaveInventBackPack(playerid, i)
 	else return 0;
 	new JsonNode:node;
 	CreateJsonBackPack(playerid, i, node);
-	SaveInventBackPackByUserID(backpackid, i, node);
+	SaveInventBackPackByUserID(playerid, backpackid, i, node);
 	return 1;
 }
 
@@ -361,12 +362,13 @@ stock CreateJsonBackPack(playerid, i, &JsonNode:node)
 	return 1;
 }
 
-stock SaveInventBackPackByUserID(backpackid, i, JsonNode:node)
+stock SaveInventBackPackByUserID(playerid,backpackid, i, JsonNode:node)
 {
 	if(node == JSON_INVALID_NODE)
 	{
-		new string_mysql[140];
-		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= NULL,`lastunix`= '%d' WHERE `backpackid` = '%d'", i,gettime(), backpackid);
+		new string_mysql[300];
+		mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `user_id`= '%d',`Name`= '%e',`b_slot_%d`= NULL,`lastunix`= '%d' WHERE `backpackid` = '%d'",
+		PlayerInfo[playerid][pID],PlayerInfo[playerid][pName], i,gettime(), backpackid);
 		mysql_tquery(pearsq, string_mysql);
 	}
 	else
@@ -374,9 +376,9 @@ stock SaveInventBackPackByUserID(backpackid, i, JsonNode:node)
 		new string_json[512];
 		if (JSON_Stringify(node, string_json) == JSON_CALL_NO_ERR) 
 		{
-			new string_mysql[640];
-			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `b_slot_%d`= '%e',`lastunix`= '%d' WHERE `backpackid` = '%d'",
-			i, string_json,gettime(),backpackid);
+			new string_mysql[840];
+			mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `backpacks` SET `user_id`= '%d',`Name`= '%e',`b_slot_%d`= '%e',`lastunix`= '%d' WHERE `backpackid` = '%d'",
+			PlayerInfo[playerid][pID],PlayerInfo[playerid][pName], i, string_json,gettime(),backpackid);
 			mysql_tquery(pearsq, string_mysql);
 		}
 	}
@@ -518,6 +520,21 @@ CMD:givebackpack(playerid, const params[])
 
 	new put_inva = GiveThingPlayer(playerid, 12367, 1, 520, params[0], 2, 0, 9999);
 	if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У меня нет места");
+
+	return true;
+}
+
+stock backpack_del(playerid, i)
+{
+	BackPackInfo[playerid][backpackInvent][i] = 0;
+	BackPackInfo[playerid][backpackInv][i] = 0;
+	BackPackInfo[playerid][backpackInvPara][i] = 0;
+	BackPackInfo[playerid][backpackInvQara][i] = 0;
+	BackPackInfo[playerid][backpackInvType][i] = 0;
+	BackPackInfo[playerid][backpackInvPack][i] = 0;
+	SaveInventBackPack(playerid, i);
+
+	if(OnlineInfo[playerid][oShowInterface] == 1 && Backpack[playerid]) i_tile(playerid, 0, 0, i, 0, 0, 0);
 
 	return true;
 }

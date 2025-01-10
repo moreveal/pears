@@ -249,7 +249,7 @@ stock TakeHalloweenBallForPlayer(playerid)
             else if(getBalls == 50) countrewards = 5;
             if(countrewards != 0)
             {
-                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Воу, я собрал уже их так много! {A52C2C}[ Получено кейсов %d ]", countrewards);
+                SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Воу, я собрал уже их так много! {A52C2C}[ Получено шкатулок %d ]", countrewards);
                 for(new b; b < countrewards; b++)
                 {
                     new thingId, thingQuan, thingType, thingPara, thingPack;

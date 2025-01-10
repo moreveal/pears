@@ -1034,7 +1034,7 @@ stock put_prisontable(playerid, inva, i, thingId, thingQuan, binva, thingType, t
 	if(NotGiveInflatabelBoat(playerid, thingId, thingType)) return i_resetveshi(playerid);
 	if(NotGiveThing(thingId, thingType, PlayerInfo[playerid][pInvenQuan][inva], thingPack)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя передавать, продавать или убирать"), i_resetveshi(playerid);
 	
-    // Кейс нельзя выбрасывать на 3 уровне и ниже
+    // шкатулку нельзя выбрасывать на 3 уровне и ниже
 	if(IsNotGiveCase(playerid, thingPack)) return i_resetveshi(playerid);
 
 	new string[100];

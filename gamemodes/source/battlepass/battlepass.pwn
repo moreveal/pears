@@ -2,7 +2,7 @@ new BattlePassDailyTaskName[][] =
 {
     "Выполнить ежедневные задания (/quest)", 
     "Откопать сокровища археологии", 
-    "Открыть 3 любых кейса",
+    "Открыть 3 любых шкатулки",
     "Отыграть 3 часа"
 };
 
@@ -168,7 +168,7 @@ new BattlePassOneTimeTaskName[][] =
 {
     "Пройти новогодние квесты", // 0
     "Получить питомца", // 1
-    "Открыть голд кейсов", // 2
+    "Открыть голд шкатулок", // 2
     "Купите трейлер", // 3
     "Купите транспорт в салоне", // 4
     "Собрать подарков Санты" // 5
@@ -334,7 +334,7 @@ stock dialogBattlePassLevelMenuInformation(playerid)
                                 "\n{0088ff}Я не успеваю получить 50 уровень, что мне делать?"\
                                 "\n{cccccc}- Вы можете купить уровни за вирты или золото. С каждой покупкой уровня, его стоимость будет увеличиваться на %d$ или %d GOLD"\
                                 "\n{0088ff}Какие награды идут после 50 уровня?"\
-                                "\n{cccccc}- Каждый уровень вы будете получать по Новогоднему Кейсу, а каждый 5 уровень по одному Gold кейсу",
+                                "\n{cccccc}- Каждый уровень вы будете получать по Новогодней Шкатулки, а каждый 5 уровень по одной Gold Шкатулке",
                                 !BattlePass[playerid][bpDonate] ? "{cccccc}Обычный" : "{ffcc00}Премиум",
                                 !BattlePass[playerid][bpDonate] ? 1000000 : 500000, !BattlePass[playerid][bpDonate] ? 100 : 50);
 	format(string,sizeof(string),"{C8A2C8}Пропуск Зима 2024-2025");
@@ -432,6 +432,15 @@ stock ReceptionStatsBattlePass(playerid, &dailyquan, &weeklyquan, &onetimequan, 
 CMD:battlepass(playerid)
 {
     if(!OnlineInfo[playerid][oBattlePassLoad]) return ErrorMessage(playerid,"{ff6347}Попробуйте чуть позже, пропуск не успел загрузится");
+    if(PlayerInfo[playerid][pNewYearQuestComplete][0]) // VREMENNO
+    {
+        new quan = 0;
+        for(new i; i < 13; i++)
+        {
+            if(PlayerInfo[playerid][pNewYearQuestComplete][i]) quan++;
+        }
+        if(quan >= 12) CompleteBattlePassTask(playerid, 0, 2);
+    }
     dialogBattlePassMenu(playerid);
     return true;
 }
@@ -457,7 +466,7 @@ CMD:givebattlepassexp(playerid, const params[])
 	if(!IsOnline(params[0])) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Его вообще нет..");
     if(params[1] < 1 || params[1] > 1000) return SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Я не могу выдать меньше 1 и больше 1000 опыта");
 
-    GiveExpBattlePass(playerid,params[1]);
+    GiveExpBattlePass(params[0],params[1]);
 
     AdminLog("givebattlepassexp", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], PlayerInfo[params[0]][pID], PlayerInfo[params[0]][pName], PlayerInfo[params[0]][pPlaIP], params[1], "Выдал опыт пропуска");
     return true;

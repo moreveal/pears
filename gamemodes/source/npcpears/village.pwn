@@ -172,7 +172,7 @@ stock GetGiftVillage(playerid)
                 return true;
             }
 
-            // Рассчитываем количество кейсов для игрока
+            // Рассчитываем количество шкатулок для игрока
             new quanGift;
             {
                 new Float: reward;
@@ -214,10 +214,10 @@ stock GetGiftVillage(playerid)
 				CalculateVehicleLimited(thingId, thingType);
             }
 
-            format(string,sizeof(string),"собрал%s %d кейсов", gender(playerid), quanGift);
+            format(string,sizeof(string),"собрал%s %d шкатулок", gender(playerid), quanGift);
             SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 20.0, 5000);
 
-            format(string,sizeof(string),"{99ff66}Поздравляем! Вы получили %d кейсов\n\n{ffcc66}Внимание! В следующий раз вы сможете получить подарки через %d минут", quanGift, CD_GIFT_VILLAGE / 60);
+            format(string,sizeof(string),"{99ff66}Поздравляем! Вы получили %d шкатулок\n\n{ffcc66}Внимание! В следующий раз вы сможете получить подарки через %d минут", quanGift, CD_GIFT_VILLAGE / 60);
             SuccessMessage(playerid, string);
 
             PlayerInfo[playerid][pCDVillage] = gettime() + CD_GIFT_VILLAGE;
