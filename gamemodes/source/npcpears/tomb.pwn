@@ -1065,20 +1065,20 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     
     new case_amount;
     if (reason == TOMB_END_REASON_WIN) {
-        // Гарантированные кейсы за прохождение (+4-6)
+        // Гарантированные шкатулкb за прохождение (+4-6)
         case_amount += random_range(4, 6);
         if (_:TombInfo[roomid][tpDifficulty] > _:TOMB_DIFFICULTY_EASY) case_amount += 3;
         #if defined TOMB_DEBUG_MODE
-            printf("[TOMB DEBUG]: Игрок %d получил %d кейсов за прохождение", playerid, case_amount);
+            printf("[TOMB DEBUG]: Игрок %d получил %d шкатулок за прохождение", playerid, case_amount);
         #endif
     }
 
     if (Tomb_GetMummyKilled(roomid, _:TOMB_BOSS_MUMMY) >= 1) {
-        // 70% получить кейс, если был убит босс (даже при поражении)
+        // 70% получить шкатулку, если был убит босс (даже при поражении)
         if(random(10) < 7) {
             case_amount++;
             #if defined TOMB_DEBUG_MODE
-                printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за то, что при прохождении был убит босс", playerid);
+                printf("[TOMB DEBUG]: Игрок %d получил дополнительную шкатулку за то, что при прохождении был убит босс", playerid);
             #endif
         }
     }
@@ -1094,7 +1094,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
     }
 
     {
-        // 50% получить кейс для ТОП-1 по убийствам за всю игру
+        // 50% получить шкатулку для ТОП-1 по убийствам за всю игру
         new top1_kills_id = -1, top1_kills = 0;
         for (new i = 0; i < MAX_TOMB_PLAYERS; i++)
         {
@@ -1113,12 +1113,12 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
                 case_amount++;
 
                 #if defined TOMB_DEBUG_MODE
-                    printf("[TOMB DEBUG]: Игрок %d получил дополнительный кейс за ТОП-1 по убийствам", playerid);
+                    printf("[TOMB DEBUG]: Игрок %d получил дополнительную шкатулку за ТОП-1 по убийствам", playerid);
                 #endif
             }
         }
     }
-    case_amount += TombPlayerInfo[playerid][tpCases]; // Прибавляем возможные кейсы, которые игрок мог получить на протяжении игры (за волны и т.п.)
+    case_amount += TombPlayerInfo[playerid][tpCases]; // Прибавляем возможные шкатулку, которые игрок мог получить на протяжении игры (за волны и т.п.)
 
     if (case_amount < 1 && osirisSkull < 1) strcat(dialog_text, "\n{cccccc}- Отсутствуют\n");
     else {
@@ -1149,7 +1149,7 @@ stock Tomb_Dialog_Stats(playerid, e_TombEndReason: reason)
         }
 
         if (case_amount > 0) {
-            format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- Кейс: %d шт.", dialog_text, case_amount);
+            format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- Шкатулка: %d шт.", dialog_text, case_amount);
         }
         if (osirisSkull > 0) {
             strcat(dialog_text, "\n{ffcc00}- Череп Осириса (Редкий артефакт)");
@@ -1258,11 +1258,11 @@ stock Tomb_OnNpcDeath(NPC:npc, killerid, reason)
                                 }
                                 
                                 if (IsOnline(top1_wave_kills_id)) {
-                                    // 30% получить кейс для ТОП-1 по убийствам на протяжении волны
+                                    // 30% получить шкатулку для ТОП-1 по убийствам на протяжении волны
                                     if (random(10) < 3) {
                                         TombPlayerInfo[top1_wave_kills_id][tpCases]++;
                                         #if defined TOMB_DEBUG_MODE
-                                            printf("[TOMB DEBUG]: Игрок %d получил кейс за ТОП-1 по убийствам после окончания волны", top1_wave_kills_id);
+                                            printf("[TOMB DEBUG]: Игрок %d получил шкатулку за ТОП-1 по убийствам после окончания волны", top1_wave_kills_id);
                                         #endif
                                     }
                                 }

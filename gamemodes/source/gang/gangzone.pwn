@@ -965,14 +965,14 @@ stock GiftFromCapt(playerid, kills)
     		if(put_inva == -1)
 			{
 				Throw(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack);
-                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок {ffcc66}[ В инвентаре нет места, кейс упал на землю ]");
+                SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили шкатулку в подарок {ffcc66}[ В инвентаре нет места, шкатулка упала на землю ]");
 			}
-			else SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили кейс в подарок");
+			else SendClientMessage(playerid, COLOR_GREY, "{0088ff}Вы заняли первое место на капте и получили шкатулку в подарок");
 
 			mysql_tquery(pearsq, "COMMIT;");
 
 			new string[144];
-			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %d убийств и получил кейс в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);
+			format(string, sizeof(string), "** %s[%d] из %s {FF8282}совершил %d убийств и получил шкатулку в подарок **", rpplayername(playerid), playerid, frakName[fraction(playerid)], kills);
 			SendGangMessage(COLOR_ALLDEPT, string);
 		}
 	}

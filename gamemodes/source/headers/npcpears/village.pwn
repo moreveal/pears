@@ -4,8 +4,8 @@
 #define VILLAGE_SWITCH_ATTACK_CD        3 // Время (в секундах), как часто NPC будет менять цель атаки, когда в него стреляет другой игрок
 
 // -- Начисление призов --
-#define VILLAGE_BASE_CASE_REWARD        1 // Базовое количество кейсов за первые X киллов
-#define VILLAGE_KILLS_PER_REWARD        5 // Количество убийств для получения указанного количества кейсов
+#define VILLAGE_BASE_CASE_REWARD        1 // Базовое количество шкатулок за первые X киллов
+#define VILLAGE_KILLS_PER_REWARD        5 // Количество убийств для получения указанного количества шкатулок
 #define VILLAGE_DECREASE_REWARD_FACTOR  0.75 // Коэффициент уменьшения награды за каждый последующий набор киллов
 
 new Iterator:VillagePlayer<MAX_PLAYERS>;

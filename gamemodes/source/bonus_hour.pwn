@@ -22,7 +22,7 @@ stock BonusCheck(playerid)
         CompleteBattlePassTask(playerid, 3, 0, 1);
 	    if(PlayerInfo[playerid][pBonHour] == ServerInfo[10])
 	    {
-            SendClientMessage(playerid, COLOR_GREY, "  {0088ff}%d Часов в игре: {99ff66}Кейс", ServerInfo[10]);
+            SendClientMessage(playerid, COLOR_GREY, "  {0088ff}%d Часов в игре: {99ff66}Шкатулка", ServerInfo[10]);
             GiveGiftQuest(playerid, false);
             return true;
 	    }
@@ -30,6 +30,6 @@ stock BonusCheck(playerid)
 	}
 	else PlayerInfo[playerid][pToday] = Days, PlayerInfo[playerid][pBonHour] = 1;
 
-    SendClientMessage(playerid, COLOR_GREY, "  {0088ff}%d Часов из %d до получения кейса", PlayerInfo[playerid][pBonHour], ServerInfo[10]);
+    SendClientMessage(playerid, COLOR_GREY, "  {0088ff}%d Часов из %d до получения шкатулки", PlayerInfo[playerid][pBonHour], ServerInfo[10]);
 	return true;
 }

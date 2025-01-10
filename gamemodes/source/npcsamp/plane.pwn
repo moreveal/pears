@@ -36,7 +36,7 @@ stock GetBagPlane(playerid, t)
     // Даём голд (если он был в этой сумке)
     if(plane_gold > 0) GiveThingPlayer(playerid, 94, 1, 0, 0, 0, 0, 9999);
 
-    // Даём кейс
+    // Даём Шкатулка
     new thingId, thingQuan, thingType, thingPara, thingPack;
     CreateCasePlayer(playerid, thingId, thingQuan, thingType, thingPara, thingPack);
     GiveThingPlayer(playerid, thingId, thingQuan, thingPara, 0, thingType, thingPack, 9999);

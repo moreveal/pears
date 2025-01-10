@@ -216,7 +216,7 @@ enum e_DialogId {
     ADMIN_DIALOG_CHECKEVENTS,
     ADMIN_DIALOG_CHECKEVENTS_STATS,
 
-    // Купонный кейс
+    // Купонные шкатулки
     COUPON_DIALOG_INFORMATION,
 
     // МП

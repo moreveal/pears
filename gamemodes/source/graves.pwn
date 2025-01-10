@@ -929,7 +929,7 @@ stock Graves_GivePlayerLootNpc(NPC: npc, playerid)
             // Назначение костяного ключа (50%)
             if (random(100) < 50) caseKeyQuan = 1;
 
-            // Назначение похоронного кейса
+            // Назначение похоронного шкатулкиа
             caseQuan = 1;
 
             // Назначение артефактов (30% на каждый)
@@ -959,7 +959,7 @@ stock Graves_GivePlayerLootNpc(NPC: npc, playerid)
             if (random(100) < 50) caseKeyQuan++;
             if (random(100) < 20) caseKeyQuan++;
 
-            // Назначение похоронных кейсов (100%)
+            // Назначение похоронных шкатулоков (100%)
             caseQuan = 2;
 
             // Назначение артефактов (40% на первый, 32% на второй, ...)
@@ -987,7 +987,7 @@ stock Graves_GivePlayerLootNpc(NPC: npc, playerid)
         if (put_inva < 0) caseKeyQuan--; // Не удалось выдать предмет
     }
 
-    // Выдача похоронных кейсов
+    // Выдача похоронных шкатулок
     for (new i = 0; i < caseQuan; i++)
     {
         new thingId, thingQuan, thingType, thingPara, thingPack;
@@ -1008,7 +1008,7 @@ stock Graves_GivePlayerLootNpc(NPC: npc, playerid)
 
         format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}%s", dialog_text, GetNameThing(0, itemid, 0, 0));
     }
-    if (caseQuan > 0) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}Похоронный Кейс (%d шт.)", dialog_text, caseQuan);
+    if (caseQuan > 0) format(dialog_text, sizeof(dialog_text), "%s\n{cccccc}- {555555}Похоронная Шкатулка (%d шт.)", dialog_text, caseQuan);
 
     // Выдаём золото и деньги (предметы выдаются сразу)
     if (goldPrice > 0) Graves_GiveGoldJewel(playerid, goldJewelId);
