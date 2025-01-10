@@ -117,7 +117,11 @@ stock GetCoordFrame(model, &Float:x, &Float:y, &Float:z, &Float:rx, &Float:ry, &
 
 		// Custom Interior 12360 зверь сделал
 		case 12360: x = 1378.149291, y = -1.029935, z = 1003.975646, rx = 0.000000, ry = 0.000000, rz = 90.000000;
-		
+
+		// Custom Interior 2 and 3
+		case 12489: x = 1386.507690, y= -17.355667, z = 1003.591857, rx = 0.000000, ry = 0.000000, rz = -90.000000; 
+		case 12490: x = 1384.798461, y= -7.303909,  z = 1004.367553, rx = 0.000000, ry = 0.000000, rz = -45.000000; 
+	
 		default: x = 0.0, y = 0.0, z = 0.0, rx = 0.0, ry = 0.0, rz = 0.0;
 	}
     return 1;
