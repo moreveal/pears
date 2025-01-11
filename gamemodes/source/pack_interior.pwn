@@ -278,6 +278,7 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
                     if(typeInterior == 0 && AccessRightDomInterior(playerid, ownerID)) return true; // Проверка прав доступа на редактирование интерьера в доме
                     if(typeInterior == 1)
                     {
+                        if(!IsABizInteriorFrame(ownerID)) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нет системы интерьеров и мебели");
                         if(!GetAccessBiz(playerid, ownerID, 7)) return false; // Проверка прав доступа на редактирование интерьа в бизе
                         if(IsAJizzyBiz(ownerID)) return ErrorMessage(playerid, "{FF6347}Из этого бизнеса запрещено сохранять планировку");
                     }
@@ -318,11 +319,13 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
                     if(typeInterior == 0) 
                     {
                         if(AccessRightDomInterior(playerid, ownerID)) return true; // Проверка прав доступа на редактирование интерьера в доме
-                        if(DomInfo[ownerID][dClass] > PackInteriors[playerid][i][piClass] && DomInfo[ownerID][dClass] != 5) return ErrorMessage(playerid, "{FF6347}Класс интерьера не подходит для класса этого дома");
+                        if(PackInteriors[playerid][i][piClass] > 0 && DomInfo[ownerID][dClass] > PackInteriors[playerid][i][piClass] 
+                            && DomInfo[ownerID][dClass] != 5) return ErrorMessage(playerid, "{FF6347}Класс интерьера не подходит для класса этого дома");
                         if(PackInteriors[playerid][i][piObjects] > 301 && DomInfo[ownerID][dMoreIntObjects] == false) return ErrorMessage(playerid, "{FF6347}В этот дом нельзя установить интерьер с таким количеством объектов\n{ffcc66}В доме необходимо приобрести увеличенный лимит объектов [ /mydom >> Донат ]");
                     }
                     else if(typeInterior == 1)
                     {
+                        if(!IsABizInteriorFrame(ownerID)) return ErrorMessage(playerid, "{FF6347}В этом бизнесе нет системы интерьеров и мебели");
                         if(!GetAccessBiz(playerid, ownerID, 7)) return false; // Проверка прав доступа на редактирование интерьа в бизе
                         if(IsAJizzyBiz(ownerID)) return ErrorMessage(playerid, "{FF6347}В этот бизнес запрещено устанавливать другие интерьеры");
                         if(PackInteriors[playerid][i][piObjects] >= MAX_OBJECT_INT_BIZ) return ErrorMessage(playerid, "{FF6347}В этот бизнес нельзя установить интерьер с таким количеством объектов");
@@ -375,9 +378,11 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
             {
                 new i = DP[0][playerid];
                 if(PackInteriors[playerid][i][piNewid] == 0) return ErrorMessage(playerid, "{FF6347}Ошибка! Интерьера не существует");
-                if(CDProcessInterior[playerid] == true) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения загрузки или установки интерьера");
-
-                CDProcessInterior[playerid] = true;
+                
+                new typeInterior = DP[2][playerid];
+                new ownerID = DP[3][playerid];
+                if(PauseInstallInterior(playerid, typeInterior, ownerID)) return true;
+                
                 new string_mysql[200];
                 mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT data FROM `pp_pack_interiors` WHERE `piNewid` = '%d'", PackInteriors[playerid][i][piNewid]);
 			    mysql_tquery(pearsq, string_mysql, "LoadPackInterior", "dddd", playerid, DP[2][playerid], DP[3][playerid], PackInteriors[playerid][i][piNewid]);
@@ -389,10 +394,14 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
             if(response)
             {
                 if(DP[1][playerid] > PlayerInfo[playerid][pAccount]) return ErrorMessage(playerid, "{FF6347}На вашем банковском счету недостаточно средств");
-                if(CDProcessInterior[playerid] == true) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения загрузки или установки интерьера");
+                if(GetPVarInt(playerid,"antiflood") > 0) return ErrorMessage(playerid, "{FF6347}Пожалуйста, подождите 3 секунды и повторите попытку");
 
-                CDProcessInterior[playerid] = true;
-                SaveThisInteriors(playerid, DP[0][playerid]);
+                new typeInterior = DP[2][playerid];
+                new ownerID = DP[3][playerid];
+                if(PauseInstallInterior(playerid, typeInterior, ownerID)) return true;
+
+                SetPVarInt(playerid,"antiflood",3);
+                SaveThisInteriors(playerid, DP[0][playerid], typeInterior, ownerID);
 
                 if(DP[1][playerid] > 0)
                 {
@@ -427,16 +436,39 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
     return false;
 }
 
-// Начинаем сохранять интерьер в архив
-stock SaveThisInteriors(playerid, slot)
+// Проверка и установка паузы для загрузки и сохранения интерьера
+stock PauseInstallInterior(playerid, typeInterior, ownerID)
 {
-    new typeInterior = DP[2][playerid];
-    new ownerID = DP[3][playerid];
-    if(ownerID == 0) return ErrorMessage(playerid, "{FF6347}Вы должны находиться в интерьере дома или бизнеса, чтобы его сохранить");
+    if(CDProcessInterior[playerid] == true) return ErrorMessage(playerid, "{FF6347}Ошибка! Дождитесь завершения загрузки или установки интерьера");
+    CDProcessInterior[playerid] = true;
 
-    if(typeInterior == 0 && PlayerInfo[playerid][pDom] != ownerID) return ErrorMessage(playerid, "{FF6347}Этот дом вам не принадлежит");
-    if(typeInterior == 1 && PlayerInfo[playerid][pBusiness] != ownerID) return ErrorMessage(playerid, "{FF6347}Этот бизнес вам не принадлежит");
+    if(typeInterior == 0)
+    {
+        if(ownerID < 0 || ownerID >= MAX_DOM) return false;
+        if(DomInfo[ownerID][dCDInstallInterior] == true) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения установки или сохранения интерьера");
+        DomInfo[ownerID][dCDInstallInterior] = true;
+    }
+    else if(typeInterior == 1)
+    {
+        if(ownerID < 0 || ownerID >= MAX_BIZ) return false;
+        if(BizzInfo[ownerID][bCDInstallInterior] == true) return ErrorMessage(playerid, "{FF6347}Дождитесь завершения установки или сохранения интерьера");
+        BizzInfo[ownerID][bCDInstallInterior] = true;
+    }
+    return false;
+}
 
+// Очищаем паузу установки интерьера
+stock ClearPauseInstallInterior(playerid, typeInterior, ownerID)
+{
+    CDProcessInterior[playerid] = false;
+    if(typeInterior == 0) DomInfo[ownerID][dCDInstallInterior] = false;
+    else if(typeInterior == 1) BizzInfo[ownerID][bCDInstallInterior] = false;
+    return true;
+}
+
+// Начинаем сохранять интерьер в архив
+stock SaveThisInteriors(playerid, slot, typeInterior, ownerID)
+{
     // Создаём общую ноду для всех объектов и считаем их стоимость
     new price, quanObjects, classInt;
     new JsonNode:node;
@@ -447,6 +479,7 @@ stock SaveThisInteriors(playerid, slot)
     {
         if(PackInteriors[playerid][slot][piNewid] > 0)
         {
+            PackInteriors[playerid][slot][piTypeInterior] = typeInterior;
             PackInteriors[playerid][slot][piPrice] = price;
             PackInteriors[playerid][slot][piObjects] = quanObjects;
             PackInteriors[playerid][slot][piEditUnix] = gettime();
@@ -454,7 +487,8 @@ stock SaveThisInteriors(playerid, slot)
 
             static string_mysql[65535];
             mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_pack_interiors` SET \
-                `piPrice` = '%d', `piObjects` = '%d', `piEditUnix` = '%d', `piClass` = '%d', `data` = '%e' WHERE `piNewid` = '%d'",
+                `piTypeInterior` = '%d', `piPrice` = '%d', `piObjects` = '%d', `piEditUnix` = '%d', `piClass` = '%d', `data` = '%e' WHERE `piNewid` = '%d'",
+                    PackInteriors[playerid][slot][piTypeInterior],
                     PackInteriors[playerid][slot][piPrice],
                     PackInteriors[playerid][slot][piObjects],
                     PackInteriors[playerid][slot][piEditUnix],
@@ -463,7 +497,7 @@ stock SaveThisInteriors(playerid, slot)
                     PackInteriors[playerid][slot][piNewid]);
             mysql_tquery(pearsq, string_mysql);
 
-            CDProcessInterior[playerid] = false;
+            ClearPauseInstallInterior(playerid, typeInterior, ownerID);
         }
         else
         {
@@ -505,7 +539,7 @@ function Call_Getid_PackInterior(playerid, slot, typeInterior, ownerID)
     if(typeInterior == 0) SetDomThisInterior(ownerID, PackInteriors[playerid][slot][piNewid]);
     else if(typeInterior == 1) SetBizThisInterior(ownerID, PackInteriors[playerid][slot][piNewid]);
 
-    CDProcessInterior[playerid] = false;
+    ClearPauseInstallInterior(playerid, typeInterior, ownerID);
     return 1;
 }
 
@@ -687,7 +721,7 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid)
     }
     else ErrorMessage(playerid, "{FF6347}Ошибка! Интерьер не найден в базе данных");
 
-    CDProcessInterior[playerid] = false;
+    ClearPauseInstallInterior(playerid, typeInterior, ownerID);
     return 1;
 }
 
