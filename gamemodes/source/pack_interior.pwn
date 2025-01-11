@@ -474,7 +474,7 @@ stock SaveThisInteriors(playerid, slot, typeInterior, ownerID)
     new JsonNode:node;
     CreatePackInteriorsNodeObjects(node, typeInterior, ownerID, price, quanObjects, classInt);
 
-    static text[65535];
+    static text[90000];
     if (JSON_Stringify(node, text) == JSON_CALL_NO_ERR)
     {
         if(PackInteriors[playerid][slot][piNewid] > 0)
@@ -485,7 +485,7 @@ stock SaveThisInteriors(playerid, slot, typeInterior, ownerID)
             PackInteriors[playerid][slot][piEditUnix] = gettime();
             PackInteriors[playerid][slot][piClass] = classInt;
 
-            static string_mysql[65535];
+            static string_mysql[90000];
             mysql_format(pearsq, string_mysql, sizeof(string_mysql),"UPDATE `pp_pack_interiors` SET \
                 `piTypeInterior` = '%d', `piPrice` = '%d', `piObjects` = '%d', `piEditUnix` = '%d', `piClass` = '%d', `data` = '%e' WHERE `piNewid` = '%d'",
                     PackInteriors[playerid][slot][piTypeInterior],
@@ -509,7 +509,7 @@ stock SaveThisInteriors(playerid, slot, typeInterior, ownerID)
             PackInteriors[playerid][slot][piClass] = classInt;
             format(PackInteriors[playerid][slot][piName], 44, "Инт %d от %s", slot + 1, PlayerInfo[playerid][pName]);
 
-            static string_mysql[65535];
+            static string_mysql[90000];
             mysql_format(pearsq, string_mysql, sizeof(string_mysql), "INSERT INTO `pp_pack_interiors` \
                 (`piUserid`, `piTypeInterior`, `piPrice`, `piObjects`, `piCreateUnix`, `piName`, `slot`, `piClass`, `data`) \
             VALUES ('%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%e')", 
@@ -678,7 +678,7 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid)
             }
         }
 
-        static string_json[65535];
+        static string_json[90000];
         cache_get_value_name(0, "data", string_json, sizeof(string_json));
 
         new JsonNode:node = JSON_INVALID_NODE;
