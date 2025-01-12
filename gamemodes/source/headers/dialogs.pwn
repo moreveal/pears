@@ -236,6 +236,8 @@ enum e_DialogId {
     // Питомцы
     PETS_SHOW_LIST,
     PETS_SHOW_PETMANAGE,
+    PETS_SHOW_PETMANAGE_TASK,
+    PET_CREATETASK_ATTAC,
 
     // Новый год
     NEWYEAR_SHOW_STARTQUEST,
