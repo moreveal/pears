@@ -399,10 +399,6 @@ stock DestroyThrow(t) // Удаляем предмет с земли
 	ThrowInfo[t][tBombPlant] = false;
 	ThrowInfo[t][tOpenVehicleBomp] = 0;
  	ThrowInfo[t][tUseplayer] = 0;
-	if(IsABackPack(ThrowInfo[t][tId]) && ThrowInfo[t][tQara] != 0)
-	{
-		DeleteBackPack(ThrowInfo[t][tQara]);
-	}
 	ThrowInfo[t][tId] = 0, ThrowInfo[t][tQuan] = 0, ThrowInfo[t][tPara] = 0, ThrowInfo[t][tQara] = 0, ThrowInfo[t][tType] = 0, ThrowInfo[t][tPack] = 0, throwkol --;
 	return 1;
 }
