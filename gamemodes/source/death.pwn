@@ -155,7 +155,6 @@ stock NoDeath(playerid) // Не запускать систему смерти
     || Zahvat[g] > 0 // Порт
     || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
-    || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
     || computerClubPlayerInfo[playerid][ccpiInGame] // Компьютерный клуб
     || IsPlayerInDynamicArea(playerid, zone_lava) || IsPlayerInDynamicArea(playerid, zone_lava2) // Умер в лаве
@@ -180,7 +179,6 @@ stock NoHospital(playerid) // Не отправлять в госпиталь п
     || Zahvat[g] > 0 // Порт
     || PlayerInfo[playerid][pBkyrenie] >= 2 // Луна, Марс
     || gSkafandr[playerid] > 0 && (GetPlayerInterior(playerid) == 221 && GetPlayerVirtualWorld(playerid) == 221 || GetPlayerInterior(playerid) == 222 && GetPlayerVirtualWorld(playerid) == 222) // В скафандре
-    || peoInfo[playerid][peoInEditor] // personal editor
     || VehShopInfo[playerid][vsTest] // test drive
     || ADUTY[playerid] == 1 // Администратор на дежурстве
     || PlayerInfo[playerid][pJailed] > 0 // В заключении

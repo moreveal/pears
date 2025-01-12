@@ -1,6 +1,6 @@
 
 #define REFERAL_PROCENT_DONATE 10
-#define MAX_DONATE_SERVICE 17
+#define MAX_DONATE_SERVICE 19
 
 new donatePrice[MAX_DONATE_SERVICE];
 
@@ -36,6 +36,8 @@ stock defaultPriceDonate()
     donatePrice[14] = 10; // Стоимость замены одного ежедневного задания
     donatePrice[15] = 790; // Стоимость голд шкатулки
     donatePrice[16] = 3900; // Увеличенный лимит мебели в доме
+    donatePrice[17] = 290; // Слот для архива интерьеров
+    donatePrice[18] = 890; // 5 слотов архивов для интерьеров
 }
 
 stock GetPriceGoldDonateMenu(donateid)

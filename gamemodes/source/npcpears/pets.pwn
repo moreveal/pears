@@ -40,6 +40,17 @@ enum pet_TaskToNpc
     PET_TASK_SEAT,
     PET_TASK_ATTACNPC,
     PET_TASK_AUTO
+}; 
+
+enum pet_Skills
+{
+    PET_SKILL_VOICE,
+    PET_SKILL_ATTAC_PLAYER,
+    PET_SKILL_ATTAC_NPC,
+    PET_SKILL_FOLLOWME,
+    PET_SKILL_SNIFF,
+    PET_SKILL_SIT,
+    PET_SKILL_SITCAR
 };
 
 enum petsnpc
@@ -54,6 +65,7 @@ enum petsnpc
     petEndurance, // Выносливость
     bool:petDestinationStatus, // Идет или пришел
     pet_TaskToNpc: petEvent,
+    pet_Skills: petSkills[pet_Skills],
     petUnix, // Время убийства для деспавна
     petType, // Тип животного
     petAttactID, // Кого атакует
@@ -136,7 +148,7 @@ stock LifePet(pet)
     GetPlayerPos(PetInfo[pet][petPlayer],PcordX,PcordY,PcordZ);
     GetNpcHealth(PetInfo[pet][petID],PetInfo[pet][petHealth]);
     if(PetInfo[pet][petHealth] <= 0.0) return 0;
-    if(PetInfo[pet][petEvent] == PET_TASK_AUTO || PetInfo[pet][petAuto])
+    if((PetInfo[pet][petEvent] == PET_TASK_AUTO || PetInfo[pet][petAuto]) && PetInfo[pet][petEvent] != PET_TASK_ATTACNPC && PetInfo[pet][petEvent] != PET_TASK_ATTAC)
     {
         if(!IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet, PET_TASK_GOSEATCAR);
         else if(IsNpcInAnyVehicle(PetInfo[pet][petID]) && IsPlayerInAnyVehicle(PetInfo[pet][petPlayer])) HandlerCreateTaskPets(pet,PET_TASK_SEATCAR);
@@ -144,6 +156,14 @@ stock LifePet(pet)
         else 
         {
             if(PetInfo[pet][petEvent] != PET_TASK_WALKING) HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+        }
+    }
+    if(PetInfo[pet][petEvent] == PET_TASK_SEAT) // Приказали сидеть
+    {
+        if(!PetInfo[pet][petAnim])
+        {
+            TaskNpcStandStill(PetInfo[pet][petID]);
+            TaskNpcPlayAnimation(PetInfo[pet][petID],"PED", "WEAPON_CROUCH", 4.1, true, false, false, true, 0), PetInfo[pet][petAnim] = 1;
         }
     }
     if(PetInfo[pet][petEvent] == PET_TASK_WALKING) // Прогулка
@@ -231,6 +251,12 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
         case PET_TASK_SEAT:
         {
             PetInfo[pet][petEvent] = PET_TASK_SEAT;
+            PetInfo[pet][petDestinationStatus] = false;
+            PetInfo[pet][petAttactNpcID] = INVALID_NPC;
+            PetInfo[pet][petVehicle] = INVALID_VEHICLE_ID;
+            PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
+            PetInfo[pet][petStartAttactNpcID] = false;
+            PetInfo[pet][petAnim] = 0;
         }
         case PET_TASK_ATTACNPC:
         {
@@ -276,7 +302,7 @@ stock PetTaskGoSeatInCar(playerid,pet)
 
 stock PetTaskAttacNPC(pet, NPC:npc)
 {
-    if(PetInfo[pet][petEvent] == PET_TASK_ATTACNPC) return false;
+    if(PetInfo[pet][petEvent] == PET_TASK_ATTACNPC || PetInfo[pet][petID] == npc || !PetInfo[pet][petAuto]) return false;
     HandlerCreateTaskPets(pet, PET_TASK_ATTACNPC, INVALID_PLAYER_ID, npc);
     return true;
 }
@@ -399,6 +425,34 @@ stock dialogPetMenagment(playerid,slot)
 	return true;
 }
 
+stock dialogPetCreateTask(playerid,slot)
+{
+    new pet = OnlineInfo[playerid][oPet][slot];
+    DP[0][playerid] = slot;
+    new type = PetInfo[pet][petType];
+
+	new lines[500], string[60];
+	format(lines,sizeof(lines),"{ff9000}Питомец: %s \t Доступность навыка \t "\
+                                "\n{0088ff}Голос\t%s\t%s"\
+                                "\n{0088ff}Фас на игрока\t%s\t%s"\
+                                "\n{0088ff}Фас на NPC\t%s\t%s"\
+                                "\n{0088ff}За мной\t%s\t%s"\
+                                "\n{0088ff}Принюхивайся\t%s\t%s"\
+								"\n{0088ff}Жди здесь\t%s\t%s"\
+                                "\n{0088ff}Садись в машину\t%s\t%s",
+                                GetSkinName(PetsParam[type][2]),
+                                PetInfo[pet][petSkills][PET_SKILL_VOICE] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petUnix] ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_ATTAC_PLAYER] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_ATTAC ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_ATTAC_NPC] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_ATTACNPC ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_WALKING ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_SNIFF] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_WALKING ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_SIT] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SEAT ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_SITCAR] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SEATCAR ? "{44ff99}Выполняет" : "");
+	format(string,sizeof(string),"{ff9000}Управление питомцем");
+	ShowDialog(playerid,PETS_SHOW_PETMANAGE_TASK,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
+	return true;
+}
+
 CMD:givepet(playerid, const params[]) // Выдать питомца в инвентарь
 {
 	if(PlayerInfo[playerid][pSoska] < 20) return ErrorMessage(playerid, "{FF6347}Это действие вам недоступно [ Админ 15+ ]");
@@ -444,8 +498,10 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
             if(!response) dialogPetsList(playerid);
             else 
             {
-                new pet = OnlineInfo[playerid][oPet][DP[0][playerid]];
-                if(listitem == 1) DestroyPet(playerid,DP[0][playerid]);
+                new slot = DP[0][playerid];
+                new pet = OnlineInfo[playerid][oPet][slot];
+                if(listitem == 1) DestroyPet(playerid,slot);
+                if(listitem == 2) dialogPetCreateTask(playerid,slot);
                 if(listitem == 3) 
                 {
                    if(!PetInfo[pet][petAuto]) HandlerCreateTaskPets(pet, PET_TASK_AUTO), PetInfo[pet][petAuto] = true;
@@ -453,6 +509,58 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
                 }
             }
         }
+        case PETS_SHOW_PETMANAGE_TASK: {
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            if(!response) dialogPetMenagment(playerid,slot);
+            switch(listitem)
+            {
+                //case 0: // звук
+                case 1..2: HandlerCreateTaskPets(pet, PET_TASK_AUTO), PetInfo[pet][petAuto] = true;// Фас на игрока/NPC включаем режим авто, на атаку игрока
+                case 3: HandlerCreateTaskPets(pet,PET_TASK_WALKING);// идти за мной
+                //case 4: HandlerCreateTaskPets(pet,PET_TASK_WALKING); // принюхаться
+                case 5: HandlerCreateTaskPets(pet,PET_TASK_SEAT);// сидеть на месте
+                case 6: PetTaskGoSeatInCar(playerid,pet);// сидеть на месте
+                default: dialogPetMenagment(playerid,slot);
+            }
+        }
+        case PET_CREATETASK_ATTAC: {
+            if(!response) show_interaction(playerid, Moiplayer[playerid]);
+            new pet = OnlineInfo[playerid][oPet][listitem];
+            HandlerCreateTaskPets(pet, PET_TASK_ATTAC, Moiplayer[playerid]);
+        }
     }
     return false;
+}
+
+stock GetPlayerLoadPet(playerid)
+{
+    new quan = 0;
+	for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
+	{
+		if(OnlineInfo[playerid][oPet][pet] != -1) 
+		{
+            quan++;
+		}
+	}
+    if(quan > 0) return quan;
+    else return false;
+}
+
+stock ListPlayerLoadPet(playerid)
+{
+    new line[100],lines[100*MAX_PETS_AT_PLAYER];
+    new quan = 0;
+	for(new pet = 0; pet < MAX_PETS_AT_PLAYER; pet++)
+	{
+		if(OnlineInfo[playerid][oPet][pet] != -1) 
+		{
+            format(line,sizeof(line),"{cccccc}%d. %s\n", quan + 1, GetSkinName(PetsParam[PetInfo[OnlineInfo[playerid][oPet][pet]][petType]][2])), strcat(lines,line);
+			List[quan][playerid] = pet+1;
+            quan ++;
+		}
+	}
+    if(quan == 0) return false;
+    ShowDialog(playerid,PET_CREATETASK_ATTAC,DIALOG_STYLE_TABLIST,"{ff9000}Выберите питомца для атаки",lines,"Выбрать","Отмена");
+    return true;
 }

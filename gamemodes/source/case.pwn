@@ -581,14 +581,19 @@ CMD:givecaseall(playerid, const params[])
     new getNameCaseCustom[24], nameCase[24];
     if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
 
+    new amount = 0;
     foreach(Player,i)
     {
-        if(OnlineInfo[i][oLogged] == 1) GivePlayerCase(playerid, i, nameCase, false);
+        if(OnlineInfo[i][oLogged] == 1)
+        {
+            GivePlayerCase(playerid, i, nameCase, false);
+            amount++;
+        }
     }
     new string[140];
 	format(string, sizeof(string), " [ ADM ]: %s выдал всем игрокам шкатулку [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
-	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
+	AdminLog("givecaseall", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", amount, nameCase);
     return 1;
 }
 
@@ -598,18 +603,20 @@ CMD:givecasegro(playerid, const params[])
     new getNameCaseCustom[24], nameCase[24];
     if(!sscanf(params, "s[24]", getNameCaseCustom)) format(nameCase, sizeof(nameCase), "%s", getNameCaseCustom);
 
+    new amount = 0;
     foreach(Player,i)
     {
         if(OnlineInfo[i][oLogged] == 1 && ProxDetectorS(20.0, playerid, i) && playerid != i)
         {
             GivePlayerCase(playerid, i, nameCase, false);
+            amount++;
         }
     }
 
     new string[140];
 	format(string, sizeof(string), " [ ADM ]: %s выдал шкатулку игрокам рядом с собой [ %s ]", PlayerInfo[playerid][pName], nameCase);
 	ABroadCast(COLOR_ADM,string,1);
-	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", 0, nameCase);
+	AdminLog("givecasegro", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", amount, nameCase);
     return 1;
 }
 
