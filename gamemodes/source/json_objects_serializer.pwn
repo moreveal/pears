@@ -28,9 +28,9 @@ stock bool:SerializeDynamicObjectProperties(objectid, &JsonNode:node)
         JSON_ArrayAppendEx(materials, JSON_Object(
             "slot", JSON_Int(slot),
             "modelId", JSON_Int(modelId),
-            "textureLibrary", JSON_String(textureLibrary),
-            "textureName", JSON_String(textureName),
-            "materialColour", JSON_Int(materialColour)
+            "texLib", JSON_String(textureLibrary),
+            "tex", JSON_String(textureName),
+            "matCol", JSON_Int(materialColour)
         ));
     }
     materialTexts = JSON_Array();
@@ -51,50 +51,38 @@ stock bool:SerializeDynamicObjectProperties(objectid, &JsonNode:node)
         JSON_ArrayAppendEx(materials, JSON_Object(
             "slot", JSON_Int(slot),
             "text", JSON_String(text),
-            "materialSize", JSON_Int(materialSize),
+            "matSz", JSON_Int(materialSize),
             "fontFace", JSON_String(fontFace),
-            "fontSize", JSON_Int(fontSize),
+            "fontSz", JSON_Int(fontSize),
             "isBold", JSON_Bool(bool:isBold),
-            "fontColour", JSON_Int(fontColour),
-            "backColour", JSON_Int(backColour),
-            "textAlignment", JSON_Int(textAlignment)
+            "fontCol", JSON_Int(fontColour),
+            "backCol", JSON_Int(backColour),
+            "textAlign", JSON_Int(textAlignment)
         ));
     }
     
     JSON_Cleanup(node);
     node = JSON_Object(
         "model", JSON_Int(modelid),
-        "position", JSON_Object(
+        "pos", JSON_Object(
             "x", JSON_Float(posX),
             "y", JSON_Float(posY),
             "z", JSON_Float(posZ)
         ),
-        "rotation", JSON_Object(
+        "rot", JSON_Object(
             "x", JSON_Float(rotX),
             "y", JSON_Float(rotY),
             "z", JSON_Float(rotZ)
         ),
-        "materials", materials,
-        "materialTexts", materialTexts
+        "mats", materials,
+        "matTexts", materialTexts
     );
 
     return true;
 }
 
-#pragma warning disable 240
-
 stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAMER_TAG_OBJECT:object)
 {
-    #define JSON_DESERIALIZE_ERR_CHECKUP_RET(%0)    \
-    {                                           \
-        new JsonCallResult:callResult = %0;     \
-        if (callResult != JSON_CALL_NO_ERR)     \
-        {                                       \
-            DestroyDynamicObject(object);       \
-            return callResult;                  \
-        }                                       \
-    }
-
     object = INVALID_STREAMER_ID;
 
     new modelid;
@@ -105,7 +93,14 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
     {
         new JsonNode:positionNode = JSON_INVALID_NODE;
-        JSON_GetObject(node, "position", positionNode);
+#if 0
+        JSON_GetObject(node, "pos", positionNode);
+#else
+        if (JSON_GetObject(node, "pos", positionNode) != JSON_CALL_NO_ERR)
+        {
+            JSON_GetObject(node, "position", positionNode);
+        }
+#endif
         JSON_GetFloat(positionNode, "x", posX);
         JSON_GetFloat(positionNode, "y", posY);
         JSON_GetFloat(positionNode, "z", posZ);
@@ -113,7 +108,14 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
     {
         new JsonNode:rotationNode = JSON_INVALID_NODE;
-        JSON_GetObject(node, "rotation", rotationNode);
+#if 0
+        JSON_GetObject(node, "rot", rotationNode);
+#else
+        if (JSON_GetObject(node, "rot", rotationNode) != JSON_CALL_NO_ERR)
+        {
+            JSON_GetObject(node, "rotation", rotationNode);
+        }
+#endif
         JSON_GetFloat(rotationNode, "x", rotX);
         JSON_GetFloat(rotationNode, "y", rotY);
         JSON_GetFloat(rotationNode, "z", rotZ);
@@ -127,7 +129,14 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
     {
         new JsonNode:materialsNode = JSON_INVALID_NODE;
-        JSON_GetArray(node, "materials", materialsNode);
+#if 0
+        JSON_GetArray(node, "mats", materialsNode);
+#else
+        if (JSON_GetArray(node, "mats", materialsNode) != JSON_CALL_NO_ERR)
+        {
+            JSON_GetArray(node, "materials", materialsNode);
+        }
+#endif
         new JsonNode:material = JSON_INVALID_NODE;
         new index = -1;
         while(!JSON_ArrayIterate(materialsNode, index, material))
@@ -140,9 +149,30 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
             JSON_GetInt(material, "slot", slot);
             JSON_GetInt(material, "modelId", modelId);
-            JSON_GetString(material, "textureLibrary", textureLibrary);
-            JSON_GetString(material, "textureName", textureName);
-            JSON_GetInt(material, "materialColour", materialColour);
+#if 0
+            JSON_GetString(material, "texLib", textureLibrary);
+#else
+            if (JSON_GetString(material, "texLib", textureLibrary) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetString(material, "textureLibrary", textureLibrary);
+            }
+#endif
+#if 0
+            JSON_GetString(material, "tex", textureName);
+#else
+            if (JSON_GetString(material, "tex", textureName) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetString(material, "textureName", textureName);
+            }
+#endif
+#if 0
+            JSON_GetInt(material, "matCol", materialColour);
+#else
+            if (JSON_GetInt(material, "matCol", materialColour) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(material, "materialColour", materialColour);
+            }
+#endif
 
             SetDynamicObjectMaterial(object, slot, modelId, textureLibrary, textureName, materialColour);
         }
@@ -150,7 +180,14 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
     {
         new JsonNode:materialTextsNode = JSON_INVALID_NODE;
-        JSON_GetArray(node, "materialTexts", materialTextsNode);
+#if 0
+        JSON_GetArray(node, "matTexts", materialTextsNode);
+#else
+        if (JSON_GetArray(node, "matTexts", materialTextsNode) != JSON_CALL_NO_ERR)
+        {
+            JSON_GetArray(node, "materialTexts", materialTextsNode);
+        }
+#endif
         new JsonNode:materialText = JSON_INVALID_NODE;
         new index = -1;
         while(!JSON_ArrayIterate(materialTextsNode, index, materialText))
@@ -167,22 +204,55 @@ stock JsonCallResult:DeserializeDynamicObjectProperties(&JsonNode:node, &STREAME
 
             JSON_GetInt(materialText, "slot", slot);
             JSON_GetString(materialText, "text", text);
-            JSON_GetInt(materialText, "materialSize", materialSize);
+#if 0
+            JSON_GetInt(materialText, "matSz", materialSize);
+#else
+            if (JSON_GetInt(materialText, "matSz", materialSize) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(materialText, "materialSize", materialSize);
+            }
+#endif
             JSON_GetString(materialText, "fontFace", fontFace);
-            JSON_GetInt(materialText, "fontSize", fontSize);
+#if 0
+            JSON_GetInt(materialText, "fontSz", fontSize);
+#else
+            if (JSON_GetInt(materialText, "fontSz", fontSize) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(materialText, "fontSize", fontSize);
+            }
+#endif
             JSON_GetBool(materialText, "isBold", isBold);
-            JSON_GetInt(materialText, "fontColour", fontColour);
-            JSON_GetInt(materialText, "backColour", backColour);
-            JSON_GetInt(materialText, "textAlignment", textAlignment);
+#if 0
+            JSON_GetInt(materialText, "fontCol", fontColour);
+#else
+            if (JSON_GetInt(materialText, "fontCol", fontColour) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(materialText, "fontColour", fontColour);
+            }
+#endif
+#if 0
+            JSON_GetInt(materialText, "backCol", backColour);
+#else
+            if (JSON_GetInt(materialText, "backCol", backColour) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(materialText, "backColour", backColour);
+            }
+#endif
+#if 0
+            JSON_GetInt(materialText, "textAlign", textAlignment);
+#else
+            if (JSON_GetInt(materialText, "textAlign", textAlignment) != JSON_CALL_NO_ERR)
+            {
+                JSON_GetInt(materialText, "textAlignment", textAlignment);
+            }
+#endif
 
             SetDynamicObjectMaterialText(object, slot, text, materialSize, fontFace, fontSize, _:isBold, fontColour, backColour, textAlignment);
         }
     }
 
     return JSON_CALL_NO_ERR;
-    #undef JSON_DESERIALIZE_ERR_CHECKUP_RET
 }
-#pragma warning enable 240
 
 stock bool:SerializeDynamicObjectPropertiesToJsonStr(objectid, out[], const outSize = sizeof(out))
 {
