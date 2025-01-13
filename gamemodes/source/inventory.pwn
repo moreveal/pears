@@ -1818,7 +1818,47 @@ stock get_qara(playerid, fpick) // Второй параметр предмет�
 	}
 	return qara;
 }
-stock get_drugs(playerid, stat) // Поиск веществ
+stock get_drugs_and_backpack(playerid, stat) // Поиск веществ
+{
+	new result = 0;
+	for(new i = 0; i < 40; i++)
+	{
+	    if(PlayerInfo[playerid][pInven][i] == stat && PlayerInfo[playerid][pInvenQuan][i] >= 1 && PlayerInfo[playerid][pInvenType][i] == 0)
+		{
+			result = 1;
+			break;
+		}
+	    if(i < 20)
+		{
+			if(PlayerInfo[playerid][pMarkInven][i] == stat && PlayerInfo[playerid][pMarkInvenQuan][i] >= 1 && PlayerInfo[playerid][pMarkInvenType][i] == 0)
+			{
+				result = 1;
+				break;
+			}
+		}
+	}
+	if(result == 0)
+	{
+		new aks = HasABustAks(playerid,1);
+		if(aks != -1)
+		{
+			new bpslots;
+			if(GetBustAksType(PlayerInfo[playerid][pOdet][aks]) == 1) bpslots = ResultCountBustAks(PlayerInfo[playerid][pOdet][aks], 1,PlayerInfo[playerid][pOdetPara][aks]);
+			if(bpslots == 0) bpslots = 1;
+			for(new i = 0; i < bpslots*20; i++)
+			{
+				if(BackPackInfo[playerid][backpackInvent][i] == stat && BackPackInfo[playerid][backpackInv][i] >= 1 && BackPackInfo[playerid][backpackInvType][i] == 0)
+				{
+					result = 1;
+					break;
+				}
+			}
+		}
+	}
+	return result;
+}
+
+stock get_drugs(playerid, stat) // Поиск веществ вместе с рюкзаком
 {
 	new kolvo = 0;
 	for(new i = 0; i < 40; i++)
@@ -1831,6 +1871,7 @@ stock get_drugs(playerid, stat) // Поиск веществ
 	}
 	return kolvo;
 }
+
 stock set_para(playerid, fpick, para, slot = -1) // Установка параметра предмета
 {
 	new minid = (slot == -1) ? 0 : slot,

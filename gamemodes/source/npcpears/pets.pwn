@@ -39,7 +39,8 @@ enum pet_TaskToNpc
     PET_TASK_SEATCAR,
     PET_TASK_SEAT,
     PET_TASK_ATTACNPC,
-    PET_TASK_AUTO
+    PET_TASK_AUTO,
+    PET_TASK_SNIFF,
 }; 
 
 enum pet_Skills
@@ -214,6 +215,19 @@ stock LifePet(pet)
         if(!IsValidNpc(PetInfo[pet][petAttactNpcID]) || tempHealth <= 0.0) return HandlerCreateTaskPets(pet, PET_TASK_WALKING);
         if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcAttackNpc(PetInfo[pet][petID], PetInfo[pet][petAttactNpcID], true), PetInfo[pet][petStartAttactNpcID] = true;
     }
+    if(PetInfo[pet][petEvent] == PET_TASK_ATTACNPC)
+    {
+        if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcStandStill(PetInfo[pet][petID]);
+        new Float:tempHealth;
+        if(IsValidNpc(PetInfo[pet][petAttactNpcID])) GetNpcHealth(PetInfo[pet][petAttactNpcID],tempHealth);
+        if(!IsValidNpc(PetInfo[pet][petAttactNpcID]) || tempHealth <= 0.0) return HandlerCreateTaskPets(pet, PET_TASK_WALKING);
+        if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcAttackNpc(PetInfo[pet][petID], PetInfo[pet][petAttactNpcID], true), PetInfo[pet][petStartAttactNpcID] = true;
+    }
+    if(PetInfo[pet][petEvent] == PET_TASK_SNIFF)
+    {
+        if(PetTaskGoFindSniffTarget(pet) != -1) PlayAudioStreamForPlayer(PetInfo[pet][petPlayer], "https://cdn.pears.fun/sound/animals/bear/bear_attack0.mp3",PetX, PetY, PcordX, 30.0, true);
+        else HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+    }
     return true;
 }
 
@@ -267,6 +281,10 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
         case PET_TASK_AUTO:
         {
             PetInfo[pet][petEvent] = PET_TASK_AUTO;
+        }
+        case PET_TASK_SNIFF:
+        {
+            PetInfo[pet][petEvent] = PET_TASK_SNIFF;
         }
     }
     return true;
@@ -515,10 +533,10 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
             if(!response) dialogPetMenagment(playerid,slot);
             switch(listitem)
             {
-                //case 0: // звук
+                case 0: PlayAudioStreamForPlayer(playerid,"https://cdn.pears.fun/sound/characters/maniac/screamer0.mp3");
                 case 1..2: HandlerCreateTaskPets(pet, PET_TASK_AUTO), PetInfo[pet][petAuto] = true;// Фас на игрока/NPC включаем режим авто, на атаку игрока
                 case 3: HandlerCreateTaskPets(pet,PET_TASK_WALKING);// идти за мной
-                //case 4: HandlerCreateTaskPets(pet,PET_TASK_WALKING); // принюхаться
+                case 4: HandlerCreateTaskPets(pet,PET_TASK_SNIFF); // принюхаться
                 case 5: HandlerCreateTaskPets(pet,PET_TASK_SEAT);// сидеть на месте
                 case 6: PetTaskGoSeatInCar(playerid,pet);// сидеть на месте
                 default: dialogPetMenagment(playerid,slot);
@@ -563,4 +581,37 @@ stock ListPlayerLoadPet(playerid)
     if(quan == 0) return false;
     ShowDialog(playerid,PET_CREATETASK_ATTAC,DIALOG_STYLE_TABLIST,"{ff9000}Выберите питомца для атаки",lines,"Выбрать","Отмена");
     return true;
+}
+
+stock PetSniffPlayer(playerid)
+{
+    new drugfind = 0;
+    
+    for(new i = 4; i < 8; i++)
+    {
+        if(i == 5) continue;
+        drugfind = get_drugs_and_backpack(playerid, i);
+        if(drugfind) break;
+    }
+
+    return drugfind;
+}
+
+stock PetTaskGoFindSniffTarget(pet)
+{
+    new Float:PetX = 0.0, Float:PetY = 0.0, Float:PetZ = 0.0, PetWorld = GetNpcVirtualWorld(PetInfo[pet][petID]), PetFind = -1;
+    GetNpcPosition(PetInfo[pet][petID],PetX,PetY,PetZ);
+    foreach(Player,i)
+    {
+        if(OnlineInfo[i][oLogged] == 0) continue;
+        if(IsPlayerInRangeOfPoint(i,10.0,PetX,PetY,PetZ) && GetPlayerVirtualWorld(i) == PetWorld)
+        {
+            if(PetSniffPlayer(i))
+            {
+                PetFind = i;
+                break;
+            }
+        }
+    }
+    return PetFind;
 }
