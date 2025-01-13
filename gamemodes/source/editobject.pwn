@@ -33,12 +33,13 @@ new EditObjectInfo[MAX_REALPLAYERS][editObjectInfoEnum];
  objectid - идентификатор объекта, который был создан ранее
  - Затем в OnPlayerEditDynamicObject под EDIT_RESPONSE_FINAL добавляем условия для соответствующей системы (лейблы там и т.д.)
 */
-stock CreateEditPlayerObject(playerid, e_RedaktType: id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+stock CreateEditPlayerObject(playerid, e_RedaktType: id, type, option, slot, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, dopoption = 0)
 {
     EditObjectInfo[playerid][editPlayerOrDynamic] = 0;
     gRedakt[playerid] = id;
     EditObjectInfo[playerid][editType] = type;
     EditObjectInfo[playerid][editOption] = option;
+    EditObjectInfo[playerid][editDopOption] = dopoption;
     EditObjectInfo[playerid][editSlot] = slot;
 
     EditObjectInfo[playerid][editTempObject] = CreatePlayerObject(playerid, modelid, x, y, z, rx, ry, rz, 300.0);
@@ -97,6 +98,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     new string[180];
     new oid = EditObjectInfo[playerid][editOption];
     new slot = EditObjectInfo[playerid][editSlot];
+    new option = EditObjectInfo[playerid][editDopOption];
     //new type = EditObjectInfo[playerid][editType];
 
     if(gRedakt[playerid] == REDAKT_TYPE_MAP) // Создание или Перемещение Map Объекта (Админская Система)
@@ -391,10 +393,10 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
         new Float:dist = GetPlayerDistanceFromPoint(playerid, x, y, z);
         if(dist >= 30.0) return ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вас [Отмена установки]"), EndObjectEditing(playerid);
 
-        WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-        RentObjectRace[DP[0][playerid]][oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
-        CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
-        UpdateLabelTermRace(oid,DP[0][playerid]);
+        WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz, option);
+        RentObjectRace[option][oid] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,0,0);
+        CreateLabelTermRace(oid,RentObjectRace[option][oid],option);
+        UpdateLabelTermRace(oid,option);
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_SECTA) // Объекты для секты
     {
@@ -585,6 +587,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 
         new oid = EditObjectInfo[playerid][editOption];
         new slot = EditObjectInfo[playerid][editSlot];
+        new option = EditObjectInfo[playerid][editDopOption];
         //new type = EditObjectInfo[playerid][editType];
 
         // Условности разных систем при сохранении установки или перемещения объекта
@@ -678,9 +681,9 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 		}*/
         else if(gRedakt[playerid] >= REDAKT_TYPE_STREET_MARKET && gRedakt[playerid] <= REDAKT_TYPE_STREET_TERMINAL) // Объекты для стритов
         {
-            WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz);
-            CreateLabelTermRace(oid,RentObjectRace[DP[0][playerid]][oid],DP[0][playerid]);
-            UpdateLabelTermRace(oid,DP[0][playerid]);
+            WriteRaceTerminalPosition(playerid, x, y, z, rx, ry, rz, option);
+            CreateLabelTermRace(oid,RentObjectRace[option][oid],option);
+            UpdateLabelTermRace(oid,option);
         }
         else if(gRedakt[playerid] == REDAKT_TYPE_TRAILER || gRedakt[playerid] == REDAKT_TYPE_ADM_TRAILER) // редачим трейлер
         {
@@ -714,9 +717,8 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
     return 1;
 }
 
-stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+stock WriteRaceTerminalPosition(playerid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, slot)
 {
-    new slot = DP[0][playerid];
     if(gRedakt[playerid] == REDAKT_TYPE_STREET_MARKET)
     {
         StreetRacers[slot][racePosMarket][0] = x;
