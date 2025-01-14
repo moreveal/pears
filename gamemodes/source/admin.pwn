@@ -1747,3 +1747,11 @@ stock AHelpList(playerid)
 	ShowDialog(playerid, 176, DIALOG_STYLE_MSGBOX,"{FFFFFF}Команды {FF9000}Администрации {FFFFFF}2 страница", str, "Назад", "Выход");
 	return 1;
 }
+
+CMD:logdp4(playerid)
+{
+	if(PlayerInfo[playerid][pSoska] < 20) return SendClientMessage(playerid, COLOR_GREY,"[ Мысли ]: Я не могу это сделать..");
+	OnlineInfo[playerid][oLogDP4] ^= true;
+	SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Лог DP4 %s", OnlineInfo[playerid][oLogDP4] ? "включен" : "выключен");
+	return 1;
+}
