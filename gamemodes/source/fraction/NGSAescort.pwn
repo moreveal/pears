@@ -1736,8 +1736,9 @@ stock OrderEscort(playerid, frak)
 	DP[4][playerid] = frak;
 	new g = fraction(playerid);
 	new quan;
-	new line[90],lines[1170];
-    format(line,sizeof(line),"{cccccc}Счет {99ff66}%d$ [%s] \t \t", OrganInfo[g][glave], get_k(OrganInfo[g][glave])), strcat(lines,line);
+	new line[90],lines[1170],glave_str[MAX_BIGINT_LEN];
+	bigint_get_str(OrganInfo[g][glave], glave_str);
+    format(line,sizeof(line),"{cccccc}Счет {99ff66}%s$ [%s] \t \t", glave_str, get_k(OrganInfo[g][glave])), strcat(lines,line);
     format(line,sizeof(line),"\n{cccccc}Заказать боеприпасы {ff9000}>>\t \t"), strcat(lines,line);
 	if(OrganInfo[g][gOrderStatus] == 0) format(line,sizeof(line),"\n{cccccc}Статус заказа \t {FF6347}Unactive \t"), strcat(lines,line);
 	else format(line,sizeof(line),"\n{cccccc}Статус заказа \t {99ff66}Active \t"), strcat(lines,line);
@@ -1967,8 +1968,9 @@ stock orderfrak(playerid)
 	if(!GetAccessRankOrg(playerid, frak, 51, NO_FBI)) return 1;
 
 	new quan;
-	new line[100],lines[4000];
-	format(line,sizeof(line),"{cccccc}Счёт NGSA: {99ff66}%d$ {cccccc}[%s]\t\t", OrganInfo[3][glave], get_k(OrganInfo[3][glave])), strcat(lines,line);
+	new line[100],lines[4000],glave_str[MAX_BIGINT_LEN];
+	bigint_get_str(OrganInfo[3][glave], glave_str);
+	format(line,sizeof(line),"{cccccc}Счёт NGSA: {99ff66}%s$ {cccccc}[%s]\t\t", glave_str, get_k(OrganInfo[3][glave])), strcat(lines,line);
 	format(line,sizeof(line),"\n{cccccc}Стоимость Доставки: \t{99ff66}%d$\t", OrganInfo[3][gTax]), strcat(lines,line);
 	for(new g = 0; g < sizeof(OrganInfo); g++)
 	{
@@ -2085,7 +2087,7 @@ stock LoadOrderEscort(playerid)
 	}
 
 	// Снимаем половину стоимости бп (NGSA получают оружие по половине гос. цены)
-	OrganInfo[3][glave] -= OrganInfo[g][gDeliveryPay] / 2;
+	bigint_sub(OrganInfo[3][glave], OrganInfo[g][gDeliveryPay] / 2);
 	OrganInfo[3][gUpdate] = 1;
 
 	// Перечисляем эти деньги в казну
@@ -2626,7 +2628,7 @@ stock EscortFail()
 {
 	if(EscortStatus == 0) return 0;
 	new g = EscortOrganization, string[50];
-	OrganInfo[3][glave] -= OrganInfo[g][gDeliveryPay]; // Что б хуй пососали за проебанные БП
+	bigint_sub(OrganInfo[3][glave], OrganInfo[g][gDeliveryPay]); // Что б хуй пососали за проебанные БП
 	format(string,sizeof(string),"Провал доставка для: %s", frakeasyName[g]);
 	OrgLog(3, "escortfail", 0, "", "", 0, "", "", -OrganInfo[g][gDeliveryPay], string);
 	// Сбрасываем доставку
@@ -2694,13 +2696,13 @@ stock UnloadBoxesToWarehouse(playerid)
 		else
 		{
 			// Снимаем лаве с организации, которой привезли бп
-			OrganInfo[g][glave] -= OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax];
+			bigint_sub(OrganInfo[g][glave], OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax]);
 			if(notFull) OrgLog(g, "escort", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -(OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax]), "Неполная доставка БП");
 			else OrgLog(g, "escort", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -(OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax]), "Доставка БП");
 			SaveOrgan(g);
 
 			// Перечисляем NGSA лаве на счет
-			OrganInfo[3][glave] += OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax];
+			bigint_add(OrganInfo[3][glave], OrganInfo[g][gDeliveryPay] + OrganInfo[3][gTax]);
 			if(notFull)
 			{
 				format(string,sizeof(string),"Неполная доставка для: %s", frakeasyName[g]);

@@ -5,7 +5,7 @@
 
 enum gInfo
 {
-	glave,
+	BigInt:glave,
 	gbenz,
 	gmats,
 	gdepozit,
@@ -140,7 +140,9 @@ function LoadOrgan()
 	for(new f; f < MAX_ORG; ++f)
 	{
 		cache_get_value_name_int(f, "frakid", idx);
-		cache_get_value_name_int(f, "lave", OrganInfo[idx][glave]);
+		new glave_str[MAX_BIGINT_LEN];
+		cache_get_value_name(f, "lave", glave_str);
+		OrganInfo[idx][glave] = bigint_create_str(glave_str);
 		cache_get_value_name_int(f, "benz", OrganInfo[idx][gbenz]);
 		cache_get_value_name_int(f, "mats", OrganInfo[idx][gmats]);
 		cache_get_value_name_int(f, "depozit", OrganInfo[idx][gdepozit]);
@@ -428,9 +430,10 @@ stock SaveOneSkinOrganization(g, i)
 
 stock SaveOrgan(idx)
 {
-	new string_mysql[1400];
-	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%d',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
-		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",OrganInfo[idx][glave],OrganInfo[idx][gbenz],
+	new string_mysql[1400],glave_str[MAX_BIGINT_LEN];
+	bigint_get_str(OrganInfo[idx][glave], glave_str);
+	mysql_format(pearsq, string_mysql, sizeof(string_mysql), "UPDATE `pp_organization` SET `lave`='%s',`benz`='%d',`mats`='%d',`depozit`='%d',`caracc0`='%d',`caracc1`='%d',`caracc2`='%d',\
+		`caracc3`='%d',`caracc4`='%d',`caracc5`='%d',`caracc6`='%d',`caracc7`='%d',`caracc8`='%d',`caracc9`='%d',",glave_str,OrganInfo[idx][gbenz],
 		OrganInfo[idx][gmats], OrganInfo[idx][gdepozit],OrganInfo[idx][gCarAcc][0],OrganInfo[idx][gCarAcc][1],OrganInfo[idx][gCarAcc][2],
 		OrganInfo[idx][gCarAcc][3],OrganInfo[idx][gCarAcc][4],OrganInfo[idx][gCarAcc][5],OrganInfo[idx][gCarAcc][6],OrganInfo[idx][gCarAcc][7],
 		OrganInfo[idx][gCarAcc][8],OrganInfo[idx][gCarAcc][9]); // 235 + 154

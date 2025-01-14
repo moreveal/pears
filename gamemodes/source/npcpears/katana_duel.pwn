@@ -179,7 +179,7 @@ stock dialogCase_KatanaDuel(playerid, dialogid, response, listitem, const inputt
                     MoneyLog("godjo", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, "Купил пропуск godjo");
                     payanim(playerid, 0);
 
-                    OrganInfo[6][glave] += price;
+                    bigint_add(OrganInfo[6][glave], price);
                     OrganInfo[6][gUpdate] = 1;
 
                     new string[100];
