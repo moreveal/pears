@@ -1776,7 +1776,7 @@ stock InsertOrderEscort(playerid, g, ord)
 
 stock CreateOrderEscort(playerid, g, ord, thingId, thingType, thingPrice)
 {
-	if(bigint_cmp(OrganInfo[g][glave], thingPrice) < 0) return ErrorText(playerid, "{FF6347}На банке организации недостаточно средств"), OrderEscort(playerid, g);
+	if(OrganInfo[g][glave] < thingPrice) return ErrorText(playerid, "{FF6347}На банке организации недостаточно средств"), OrderEscort(playerid, g);
 	OrganInfo[g][gOrder][ord] = thingId;
 	OrganInfo[g][gOrderQuan][ord] = 1;
 	OrganInfo[g][gOrderType][ord] = thingType;
@@ -2024,7 +2024,7 @@ stock LoadOrderEscort(playerid)
 
 	new string[160];
 	new g = EscortOrganization;
-	if(bigint_cmp(OrganInfo[3][glave], OrganInfo[g][gDeliveryPay]) < 0) return format(string,sizeof(string),"{FF6347}На счету NGSA недостаточно средств для оплаты гос. стоимости боеприпасов\n\nСтоимость боеприпасов в заказе: %d$", OrganInfo[g][gDeliveryPay]), ErrorMessage(playerid, string);
+	if(OrganInfo[3][glave] < OrganInfo[g][gDeliveryPay]) return format(string,sizeof(string),"{FF6347}На счету NGSA недостаточно средств для оплаты гос. стоимости боеприпасов\n\nСтоимость боеприпасов в заказе: %d$", OrganInfo[g][gDeliveryPay]), ErrorMessage(playerid, string);
 	if(EscortStatus >= 2) return ErrorMessage(playerid, "{FF6347}В текущем заказе боеприпасы уже были отгружены для дальнейшей доставки");
 	
 	new bool:stop;
