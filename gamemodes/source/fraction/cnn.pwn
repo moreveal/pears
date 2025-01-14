@@ -330,7 +330,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                             format(msg, sizeof(msg), "{0088ff}** [ CNN ] {ffffff}Объявление не обработано, так как сотрудников CNN нет, и будет опубликовано в %02d:%02d", AdvertiseQueue[j][adsTargetHour], AdvertiseQueue[j][adsTargetMinute]);
                             SendClientMessage(playerid, 0xFF8282FF, msg);
                             oGivePlayerBank(playerid, -ServerInfo[65]);
-                            OrganInfo[9][glave] += ServerInfo[65];
+                            bigint_add(OrganInfo[9][glave], ServerInfo[65]);
 
                             MoneyLog("ad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -ServerInfo[65], "Объявление CNN");
                             return 1;
@@ -384,7 +384,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         SendAdvertiseMessage(ListName[playerid], PlayerInfo[playerid][pName], j, .premium = true);
                         
                         oGivePlayerBank(playerid, -ServerInfo[66]);
-                        OrganInfo[9][glave] += ServerInfo[66];
+                        bigint_add(OrganInfo[9][glave], ServerInfo[66]);
 
                         MoneyLog("ad", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -ServerInfo[66], "Объявление CNN");
                         return 1;
@@ -464,7 +464,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         }
 
                         oGivePlayerBank(Advertise[i][adsID], -ServerInfo[65]);
-                        OrganInfo[9][glave] += ServerInfo[65];
+                        bigint_add(OrganInfo[9][glave], ServerInfo[65]);
 
                         TakeAdvertise[i] = -1;
                         DeleteAdFromEditList(i);
@@ -495,7 +495,7 @@ stock dialogCase_CNN(playerid, dialogid, response, listitem, const inputtext[])
                         if (playerid != Advertise[i][adsID]) GiveUnit(playerid, 26);
 
                         oGivePlayerBank(Advertise[i][adsID], -ServerInfo[66]);
-                        OrganInfo[9][glave] += ServerInfo[66];
+                        bigint_add(OrganInfo[9][glave], ServerInfo[66]);
                         
                         TakeAdvertise[i] = -1;
                         DeleteAdFromEditList(i);

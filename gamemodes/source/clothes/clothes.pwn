@@ -1078,7 +1078,8 @@ stock buy_SkinShop(playerid)
 			}
 			if(g >= 1 && g <= 22)
 			{
-				OrganInfo[g][glave] += price, OrganInfo[g][gUpdate] = 1;
+				bigint_add(OrganInfo[g][glave], price);
+				OrganInfo[g][gUpdate] = 1;
 			}
 			else if(Fractia[playerid] == 100)
 			{

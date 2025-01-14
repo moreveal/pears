@@ -74,7 +74,7 @@ stock FindCarInWareHouse(playerid)
         SuccessMessage(playerid,"{99ff66}Вы нашли угнанную машину\n{ffcc66}Можно взять новое дело и проверить этот же склад на другой транспорт");
         format(string, sizeof(string), "Угнанный %s был найден полицией", GetVehicleName(crimeInfo[i][crmTargetZalupaParam]));
         notify(0, "",crimeInfo[i][crmTargetID], crimeInfo[i][crmTargetName], string);
-        OrganInfo[g][glave] += 5000;
+        bigint_add(OrganInfo[g][glave], 5000);
 
         GiveUnit(playerid, 12);
         PlayerInfo[playerid][pTheft] = -1;
@@ -211,7 +211,7 @@ function CrimeCar(playerid, wh, car, zalupa)
         VehInfo[car][vSklad] = wh+1;
     }
 
-    OrganInfo[g][glave] += 5000;
+    bigint_add(OrganInfo[g][glave], 5000);
     GiveUnit(playerid, 11);
 
     // Сохраняем статус угона транспорта и сохраняем преступление

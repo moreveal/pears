@@ -54,7 +54,7 @@ stock HealPlayer(playerid)
     format(string, sizeof string, "+%.1f HP", 100 - HealthAC[playerid]);
     SetPlayerChatBubble(playerid, string, COLOR_GREEN, 45.0, 4000);
 
-	OrganInfo[4][glave] += price;
+	bigint_add(OrganInfo[4][glave], price);
 	OrganInfo[4][gUpdate] = 1;
     GiveUnit(giveplayerid, 22);
 

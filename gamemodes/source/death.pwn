@@ -350,7 +350,7 @@ stock CloseRevival(playerid,targetid)
         mysql_save(targetid,0);
 
         // Кладём деньги на счет ASGH
-        OrganInfo[4][glave] += price;
+        bigint_add(OrganInfo[4][glave], price);
 	    OrganInfo[4][gUpdate] = true;
 
         // Выдаём медику юниты за реанимацию

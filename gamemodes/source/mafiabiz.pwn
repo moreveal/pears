@@ -45,7 +45,7 @@ stock TakeMoneyMafiaBiz(playerid,b)
     new g = fraction(playerid);
     if(BizzInfo[b][bMafia] != g) return ErrorMessage(playerid,"{ff6347}Ваша мафия не крышует этот бизнес");
     if(BizzInfo[b][bMafiaSchet] < 10000) return ErrorMessage(playerid,"{ff6347}В сейфе бизнеса не накопилось 10.000$, вернитесь позже.\nПосмотреть деньги на счете бизнеса можно командой [ /mafiabiz ]");
-    OrganInfo[g][glave] += BizzInfo[b][bMafiaSchet];
+    bigint_add(OrganInfo[g][glave], BizzInfo[b][bMafiaSchet]);
     OrganInfo[g][gUpdate] = 1;
 
     SuccessMessage(playerid,"{44ff99}Вы успешно забрали деньги мафии\n{cccccc}Деньги начислены на счет вашей мафии");
