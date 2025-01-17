@@ -48,18 +48,18 @@ new vehNameCustom[][] =
     "Prison Bus", // 2032
     "Mercedes-Benz AMG GT63", // 2033
     "Bentley Mulliner Bacalar", // 2034
-    "BMW 325I E30",// 2035
+    "BMW 325i E30",// 2035
 	"Arm Cargo", // 2036
-    "Ford Raptor", // 2037
-    "Dodge Charger Police", // 2038
-    "Dodge Charger Dep", // 2039
+    "Unmarked Charger SRT Hellcat", // 2037
+    "Dodge Charger SRT Hellcat Police", // 2038
+    "Dodge Charger SRT", // 2039
     "Enforcer SWAT", // 2040
     "Truck SWAT", // 2041
     "F1 Ferrari",// 2042
 	"Ford Crown Victoria", // 2043
-    "Ford Crown Victoria Dep", // 2044
-    "Ford Expedition", // 2045
-    "Ford Explorer Dep", // 2046
+    "Unmarked Ford Crown Victoria", // 2044
+    "SWAT Headquarters Vehicle ", // 2045
+    "Unmarked Ford Explorer", // 2046
     "Ford Explorer Police", // 2047
     "Ford Focus ST", // 2048
     "Nissan Silvia S13", // 2049
@@ -201,160 +201,160 @@ new vehNameCustom[][] =
 
 new vehSummaCustom[] = // Гос цены на авто (Дефолтные) Кастомный транспорт
 {
-    19000000, // Lamba Murcielago // 2000
-    900000, // BMW E36 328i // 2001
-    10000000, // BMW M4 G82 // 2002
-    11000000, // Mercedes S63 // 2003
-    400000, // Acura Integra // 2004
-    3500000, // Hummer H2 // 2005
-    12000000, // Nissan GT-R R35 RB // 2006
-    2500000, // Impreza WRX STi // 2007
-    1100000, // Skoda Octavia // 2008
-    2800000, // Mercedes C63 // 2009
-	1400000, // Nissan 350Z // 2010
-    5000000, // Audi Q7 // 2011
-    3000000, // BMW 530i // 2012
-    500000, // BMW M635CSI E24 // 2013
-    9000000, // Mercedes G63 B800 // 2014
-    4200000, // Ford Raptor // 2015
-    10000000, // Audi RS5 // 2016
-    600000, // BMW 325i E30 // 2017
-    4500000, // BMW X6M // 2018
-    400000, // Volkswagen Golf // 2019
-	2500000, // Cadillac Fleetwood // 2020
-    950000, // BMW 750il E38 // 2021
-    7000000, // Dodge Super Bee // 2022
-    4000000, // Ford GT // 2023
-    60000000, // Lamba Centenario // 2024
-    6000000, // Mercedes W124 // 2025
-    7000000, // Mercedes SL 65 // 2026
-    1300000, // Nissan 240SX // 2027
-    3000000, // Porsche 911 GT2// 2028
-    3200000, // Shelby GT 500 // 2029
-	5000000, // Toyota Supra MK5 // 2030
-    1200000, // Toyota AE86 // 2031
+    46000000, // Lamba Murcielago // 2000
+    1700000, // BMW E36 328i // 2001
+    16000000, // BMW M4 G82 // 2002
+    18000000, // Mercedes S63 // 2003
+    750000, // Acura Integra // 2004
+    6500000, // Hummer H2 // 2005
+    21000000, // Nissan GT-R R35 RB // 2006
+    4600000, // Impreza WRX STi // 2007
+    2100000, // Skoda Octavia // 2008
+    5500000, // Mercedes C63 // 2009
+	2600000, // Nissan 350Z // 2010
+    9000000, // Audi Q7 // 2011
+    5400000, // BMW 530i // 2012
+    940000, // BMW M635CSI E24 // 2013
+    17000000, // Mercedes G63 B800 // 2014
+    7800000, // Ford Raptor // 2015
+    23000000, // Audi RS5 // 2016
+    1100000, // BMW 325i E30 // 2017
+    9500000, // BMW X6M // 2018
+    600000, // Volkswagen Golf // 2019
+	8000000, // Cadillac Fleetwood // 2020
+    1500000, // BMW 750il E38 // 2021
+    15000000, // Dodge Super Bee // 2022
+    7000000, // Ford GT // 2023
+    87000000, // Lamba Centenario // 2024
+    11000000, // Mercedes W124 // 2025
+    13000000, // Mercedes SL 65 // 2026
+    2500000, // Nissan 240SX // 2027
+    8500000, // Porsche 911 GT2// 2028
+    6500000, // Shelby GT 500 // 2029
+	9500000, // Toyota Supra MK5 // 2030
+    2300000, // Toyota AE86 // 2031
     1300000, // Prison Bus // 2032
-    15000000, // Mercedes AMG GT63 // 2033
-    24000000, // Bentley Mulliner Bacalar // 2034
-    1500000, // BMW 325I E30 // 2035
+    25000000, // Mercedes AMG GT63 // 2033
+    40000000, // Bentley Mulliner Bacalar // 2034
+    3200000, // BMW 325I E30 // 2035
 	31000000, // Arm Cargo // 2036
-    4200000, // Ford Raptor // 2037
+    5000000, // charger unm // 2037
     5000000, // Charger Police // 2038
-    5000000, // Charger Dep // 2039
+    2500000, // Charger Civ // 2039
     4500000, // Enforcer SWAT // 2040
     4000000, // Truck SWAT // 2041
     300000000, // F1 Ferrari // 2042
-	1200000, // Ford Crown Victoria // 2043
-    1200000, // Ford Crown Victoria Dep // 2044
-    7000000, // Expedition // 2045
+	2300000, // Ford Crown Victoria // 2043
+    1200000, // Ford Crown Victoria unm // 2044
+    7000000, // Enforcer PRO// 2045
     3500000, // Explorer Dep // 2046
     3500000, // Explorer Police // 2047
-    500000, // Ford Focus ST // 2048
-    1200000, // Silvia S13 // 2049
-	3000000, // Jeep Wrangler // 2050
-    900000, // Lexus LS400 // 2051
-    4700000, // Lexus RCF // 2052
-    700000, // Mazda RX7 // 2053
-    1200000, // Audi RS6 C5 // 2054
-    17000000, // Mercedes Sprinter // 2055
-    70000000, // Ferrari Enzo // 2056
-	11000000, // Mercedes E63 // 2057
-    1800000, // Mitsubishi Eclipse // 2058
-    2100000, // Nissan Silvia S14 // 2059
+    950000, // Ford Focus ST // 2048
+    2500000, // Silvia S13 // 2049
+	5500000, // Jeep Wrangler // 2050
+    1900000, // Lexus LS400 // 2051
+    9500000, // Lexus RCF // 2052
+    1300000, // Mazda RX7 // 2053
+    2400000, // Audi RS6 C5 // 2054
+    12000000, // Mercedes Sprinter // 2055
+    95000000, // Ferrari Enzo // 2056
+	20000000, // Mercedes E63 // 2057
+    3500000, // Mitsubishi Eclipse // 2058
+    3800000, // Nissan Silvia S14 // 2059
     9000000, // Hummer H1 // 2060
-    6000000, // Plymouth Hemi // 2061
+    10000000, // Plymouth Hemi // 2061
     2900000, // Toyota Camry Taxi // 2062
-    500000, // Vaz 2106 // 2063
-    500000, // Vaz 2105 // 2064
-	300000,  // Volkswagen Golf R32 // 2065
-    5500000,  // BMW G11 // 2066
-    750000,  // Toyota Chaser JZX100 // 2067
-    15000000,  // BMW M5 F90 // 2068
-    7000000,  // Audi R8 // 2069
-    28000000,  // Rolls-Royce Wraith // 2070
-    32000000,  // Rolls-Royce Cullinan // 2071
-    70000000, // Pagani Zonda // 2072
-	3200000,  // Audi RS3 // 2073
-    2900000,  // Nissan GT-R R34 // 2074
-    2500000,  // Silvia S15 // 2075
-    5200000,  // Nissan GT-R R35 // 2076
-    1300000, // Charger RT 69 // 2077
+    35000000, // Vaz 2106 // 2063
+    35000000, // Vaz 2105 // 2064
+	550000,  // Volkswagen Golf R32 // 2065
+    12000000,  // BMW G11 // 2066
+    1300000,  // Toyota Chaser JZX100 // 2067
+    27000000,  // BMW M5 F90 // 2068
+    12500000,  // Audi R8 // 2069
+    55000000,  // Rolls-Royce Wraith // 2070
+    64000000,  // Rolls-Royce Cullinan // 2071
+    100000000, // Pagani Zonda // 2072
+	6000000,  // Audi RS3 // 2073
+    5500000,  // Nissan GT-R R34 // 2074
+    4500000,  // Silvia S15 // 2075
+    9500000,  // Nissan GT-R R35 // 2076
+    2800000, // Charger RT 69 // 2077
     200000000, // Mars Rover // 2078
     200000000, // Mars Rider // 2079
     200000000, // Mars RC Car // 2080
     200000000, // Ingenuity // 2081
-    45000000, // Peugeot 406 2003 // 2082
-	1400000, // Alfa-Romeo 159 Ti // 2083
-    15000000, // Aston-Martin DB11 // 2084
-    6000000, // Chevrolet Corvette C6 ZR1 // 2085
+    8000000, // Peugeot 406 2003 // 2082
+	2500000, // Alfa-Romeo 159 Ti // 2083
+    27000000, // Aston-Martin DB11 // 2084
+    10000000, // Chevrolet Corvette C6 ZR1 // 2085
     30000000, // Tesla Model X P100D // 2086
-    90000000, // Chiron // 2087
-    40000000, // Porsche 911 JS Edition // 2088
-    20000000, // Bentley Turbo R 1991 // 2089
-    1000000, // Chevrolet Express // 2090
-    1000000, // Ford Econoline Pack // 2091
-    11000000, // Audi RS7 // 2092
-    40000000, // Bentley Continental GT// 2093
-	1000000, // Chevrolet Tahoe // 2094
+    85000000, // Chiron // 2087
+    35000000, // Porsche 911 JS Edition // 2088
+    36000000, // Bentley Turbo R 1991 // 2089
+    1900000, // Chevrolet Express // 2090
+    1500000, // Ford Econoline Pack // 2091
+    17000000, // Audi RS7 // 2092
+    68000000, // Bentley Continental GT// 2093
+	2800000, // Chevrolet Tahoe // 2094
     4000000, // Sa Bus // 2095
     5000000, // Paramedic // 2096
-    10000000, // Mercedes-Benz CLS 63 AMG // 2097
-    100000000, // Bugatti Divo // 2098
-    1500000, // Toyota Chaser BN Sports // 2099
+    17000000, // Mercedes-Benz CLS 63 AMG // 2097
+    135000000, // Bugatti Divo // 2098
+    2800000, // Toyota Chaser BN Sports // 2099
     50000000, // SAPD Helicopter // 2100
     50000000, // MH-6 Little Bird // 2101
     50000000, // FBI Helicopter // 2102
-    30000000, // McLaren 720s Spider // 2103
-    22000000, // Lamborghini Miura P400 SV // 2104
-    25000000, // Lamborghini Gallardo Superleggera // 2105
-    20000000, // Ferrari 348 // 2106
-    3000000, // Jeep Cherokee 1984 Sand Edition // 2107
+    49000000, // McLaren 720s Spider // 2103
+    35000000, // Lamborghini Miura P400 SV // 2104
+    56000000, // Lamborghini Gallardo Superleggera // 2105
+    32000000, // Ferrari 348 // 2106
+    5500000, // Jeep Cherokee 1984 Sand Edition // 2107
     10000000, // Mercedes-Benz CLS 63 AMG Police // 2108
-    4000000, // Volvo Polestar One // 2109
-    2500000, // Mazda RX7 Tune body // 2110
-    13000000, // Dodge Viper // 2111
-    5000000, // "BMW M5 E60", // 2112
-    12000000, // "BMW M8 Competition Gran Coupe", // 2113
-    5000000, // "Chevrolet Camaro ZL1", // 2114
-    1500000, // "Motorcycle Kawasaki" // 2115
-    45000000, // Lamborghini Aventador", // 2116
-    4000000, // BMW X5M", // 2117
-    9000000, // BMW X7M", // 2118
-    6000000, // Toyota Land Cruiser 200", // 2119
-    40000000, // VAZ 2101 Drift", // 2120
-    12000000, // "Audi RS7", // 2121
+    9500000, // Volvo Polestar One // 2109
+    4600000, // Mazda RX7 Tune body // 2110
+    24000000, // Dodge Viper // 2111
+    11000000, // "BMW M5 E60", // 2112
+    19000000, // "BMW M8 Competition Gran Coupe", // 2113
+    8600000, // "Chevrolet Camaro ZL1", // 2114
+    2300000, // "Motorcycle Kawasaki" // 2115
+    74000000, // Lamborghini Aventador", // 2116
+    7400000, // BMW X5M", // 2117
+    16000000, // BMW X7M", // 2118
+    10000000, // Toyota Land Cruiser 200", // 2119
+    35000000, // VAZ 2101 Drift", // 2120
+    26500000, // "Audi RS7", // 2121
     400000000, // "MRAP" // 2122
-    5600000, // "Ford Mustang GT 2015" // 2123
-    20000000, // "Газ-21 Волга" // 2124
-    20000000, // "DeLorean DMC-12" // 2125
-    20000000, // "Газ-24 Волга" // 2126
+    10400000, // "Ford Mustang GT 2015" // 2123
+    35000000, // "Газ-21 Волга" // 2124
+    35000000, // "DeLorean DMC-12" // 2125
+    35000000, // "Газ-24 Волга" // 2126
     20000000, // "BMW M5 F90 UNMARKED", // 2127
-    20000000, // "BMW M5 Competition Sport // 2128
+    35000000, // "BMW M5 Competition Sport // 2128
     70000000, // "SA News Helicopter", // 2129
-    50000000, // "Robinson R44", // 2130
-    60000000, // "Buckingham SuperVolito Carbon", // 2131
+    28000000, // "Robinson R44", // 2130
+    45000000, // "Buckingham SuperVolito Carbon", // 2131
     70000000, // "Bell UH-1 Iroquois", // 2132
     70000000, // "Buckingham Volatus" // 2133
     15000000, // "Mercedes-Benz Maybach S650" // 2134
     15000000, // "Cadillac Escalade SA News" // 2135
-    10000000, // "Audi E-Tron GT", // 2136
-    17000000, // "BMW i7", // 2137
-    7000000, // "Ford Mustang E-Tech", // 2138
-    14000000, // "Porsche Taycan Turbo S", // 2139
+    19000000, // "Audi E-Tron GT", // 2136
+    30000000, // "BMW i7", // 2137
+    12000000, // "Ford Mustang E-Tech", // 2138
+    29000000, // "Porsche Taycan Turbo S", // 2139
     50000000, // "Tesla Cybertruck Police", // 2140
-    24000000, // "Tesla Cybertruck", // 2141
-    10000000, // "Tesla Model S", // 2142
-    5000000, // "Tesla Model 3" // 2143
-    1500000, // "Ducati Corse", // 2144
-    800000, // "Harley Davidson 1986", // 2145
-    3000000, // "Honda CBR 1000RR", // 2146
-    2000000, // "NRG 600 Racing", // 2147
-    2300000, // "Pegassi Bati 901s", // 2148
-    2200000, // "Pegassi Ruffian", // 2149
-    2800000, // "Suzuki GSX-R 1000", // 2150
+    34000000, // "Tesla Cybertruck", // 2141
+    18000000, // "Tesla Model S", // 2142
+    9600000, // "Tesla Model 3" // 2143
+    2600000, // "Ducati Corse", // 2144
+    1400000, // "Harley Davidson 1986", // 2145
+    5400000, // "Honda CBR 1000RR", // 2146
+    3900000, // "NRG 600 Racing", // 2147
+    4600000, // "Pegassi Bati 901s", // 2148
+    4000000, // "Pegassi Ruffian", // 2149
+    5400000, // "Suzuki GSX-R 1000", // 2150
     50000000, // "Ford GT Police Highway Patrol" // 2151
-    6600000, // "Dodge Challenger Hellcat", // 2152
-    37000000, // "Rolls-Royce Phantom" // 2153
+    11500000, // "Dodge Challenger Hellcat", // 2152
+    35000000, // "Rolls-Royce Phantom" // 2153
     2000000, // "1959 Chevrolet Impala", // 2154
     2500000, // "1996 Chevrolet Impala SS", // 2155
     2000000, // "1976 Ford Gran Torino", // 2156
@@ -366,21 +366,21 @@ new vehSummaCustom[] = // Гос цены на авто (Дефолтные) К�
     10000000, // "Cadillac Fleetwood Hearse", // 2162
     10000000, // "Albany Lurcher" // 2163
     20000000, // "Cadillac Escalade SA Army" // 2164
-    9000000, // "BMW M3 Competition", //2165
-    9000000, // "BMW M3 G81", // 2166
-    7000000, // "Cadillac XT6-V", // 216
-    7300000, // "Dodge Ram", // 2168
-    7400000, // "Ford Raptor", // 2169
+    16000000, // "BMW M3 Competition", //2165
+    17000000, // "BMW M3 G81", // 2166
+    12000000, // "Cadillac XT6-V", // 2167
+    13500000, // "Dodge Ram", // 2168
+    12800000, // "Ford Raptor", // 2169
     6000000, // "Jeep Grand Cherokee SRT 12 2170
-    60000000, // "Ferrari LaFerrari", // 2171
+    94000000, // "Ferrari LaFerrari", // 2171
     800000, // "Daewoo Matiz", // 2172
-    1000000, // "Mercedes Benz W140", // 2173
-    7500000, // "Range Rover Sport", // 2174
-    5000000, // "Volvo XC90" // 2175
+    1800000, // "Mercedes Benz W140", // 2173
+    13800000, // "Range Rover Sport", // 2174
+    9000000, // "Volvo XC90" // 2175
     20000000, // "Mercedes-Benz G63 AMG 6x6", // 2176
-    16000000, // "Lamborghini Urus", // 2177
+    31000000, // "Lamborghini Urus", // 2177
     10000000, // "Ford Crown Victoria Kill Mure", // 2178
-    50000000, // "Lamborghini Countach LPI 800-4", // 2179
+    85000000, // "Lamborghini Countach LPI 800-4", // 2179
     20000000, // "BMW XM", // 2180
     6000000, // "Volkswagen Golf VII GTI" // 2181
     90000000, // "Bugatti Bolide" // 2182
@@ -426,15 +426,15 @@ stock AddCustomVehicle() // Добавляем тс на карту
 	AddVehicleSyncModel(533, 2034); // Bentley Mulliner Bacalar (Feltzer)
 	AddVehicleSyncModel(502, 2035); // BMW 325i E30	(Hotring Racer A)
 	AddVehicleSyncModel(487, 2036); // Arm Cargo (Maverick)
-	AddVehicleSyncModel(554, 2037); // Ford Raptor (Yosomite)
+	AddVehicleSyncModel(560, 2037); // Charger unm
 	AddVehicleSyncModel(596, 2038); // Charger Police (copcarla)
-	AddVehicleSyncModel(426, 2039); // Charger Dep (Premier)
+	AddVehicleSyncModel(426, 2039); // Charger Civ (Premier)
 	AddVehicleSyncModel(427, 2040); // Enforcer SWAT (enforcer)
 	AddVehicleSyncModel(528, 2041); // Truck SWAT (fbitruck)
 	AddVehicleSyncModel(494, 2042); // Ferrari F1 (hotring)
 	AddVehicleSyncModel(426, 2043); // Ford Crown Victoria (Premier)
 	AddVehicleSyncModel(426, 2044); // Ford Crown Victoria Dep (Premier)
-	AddVehicleSyncModel(490, 2045); // Ford Expedition (fbirancher)
+	AddVehicleSyncModel(427, 2045); // Enforcer Pro 
 	AddVehicleSyncModel(490, 2046); // Ford Explorer Dep (fbirancher)
 	AddVehicleSyncModel(490, 2047); // Ford Explorer Police (fbirancher)
 	AddVehicleSyncModel(589, 2048); // Ford Focus ST (Club)
@@ -609,7 +609,7 @@ stock GetVehicleClass(m)
     || m == 507 || m == 511 || m == 516 || m == 533 || m == 534 || m == 550 || m == 551 || m == 555 || m == 558 || m == 561
     || m == 581 || m == 585 || m == 587 || m == 589 || m == 602 || m == 603
 	|| m == 2001 || m == 2006 || m == 2007 || m == 2008 || m == 2009 || m == 2010 || m == 2012 || m == 2016
-	|| m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2039 || m == 2049 
+	|| m == 2026 || m == 2027 || m == 2028 || m == 2029 || m == 2030 || m == 2049 
 	|| m == 2073 || m == 2076 || m == 2083 || m == 2097 || m == 2109 || m == 2112 || m == 2114 || m == 2115 || m == 2121
     || m == 2123 || m == 2130 || m == 2138 || m == 2141 || m == 2142 || m == 2144 || m == 2152 || m == 2165
     || m == 2166 || m == 2173 || m == 2106) class = 2;
@@ -640,7 +640,7 @@ stock GetVehicleClass(m)
     || m == 476 || m == 481 || m == 483
     || m == 504 || m == 509 || m == 510 || m == 530 || m == 531 || m == 532 || m == 545 || m == 556 || m == 557 || m == 571 
     || m == 573 || m == 577 || m == 588 || m == 592 || m == 2035 || m == 2042 || m == 2058 || m == 2062
-	|| m == 2095 || m == 2125 || m == 2182) class = 6;
+	|| m == 2095 || m == 2125 || m == 2182 || m == 2039) class = 6;
 
     // Goverment Class (7) - Государственный Транспорт
     else if(m == 406 || m == 407 || m == 408 || m == 416 || m == 420 || m == 425 || m == 427 || m == 428 || m == 430 || m == 432 
