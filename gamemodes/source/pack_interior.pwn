@@ -751,9 +751,12 @@ stock CopyMaterialsFromObject(playerid, objectid)
     new quan;
     for(new i = 0; i < 16; i++)
     {
-        CopyMaterial[playerid][i][copy_modelid] = 0;
-        GetDynamicObjectMaterial(objectid, i, CopyMaterial[playerid][i][copy_modelid], CopyMaterial[playerid][i][copy_texturelib], CopyMaterial[playerid][i][copy_texturename], CopyMaterial[playerid][i][copy_materialcolor]);
-        if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++;
+        new yesText;
+        CopyMaterial[playerid][i][copy_modelid] = 0; // Очищаем переменную
+        yesText = GetDynamicObjectMaterial(objectid, i, CopyMaterial[playerid][i][copy_modelid], CopyMaterial[playerid][i][copy_texturelib], CopyMaterial[playerid][i][copy_texturename], CopyMaterial[playerid][i][copy_materialcolor]);
+        if(!yesText) CopyMaterial[playerid][i][copy_modelid] = 0; // Если тексты в слоте не оказалось, чистим
+        
+        if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++; // Считаем записанные текстуры
     }
     return quan;
 }
