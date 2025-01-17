@@ -412,6 +412,30 @@ stock GetMaxDomObjects(dom)
     return max_objects;
 }
 
+// Удаляем все объекты в интерьере с 0 до максимального (улицу игнорим)
+stock DestroyAllInteriorObjectsDom(dom)
+{
+    for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
+    {
+        if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba]))
+        {
+
+            if(GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba]) > 0
+                || GetDynamicObjectInterior(DomInfo[dom][dObject][oba]) > 0)
+            {
+                DestroyDynamicObject(DomInfo[dom][dObject][oba]);
+
+                // Удаляем объекты в доме
+                DelObject(dom, oba);
+
+                // Стираем старый объект в доме
+                ClearVariableObjectDom(dom, oba);
+            }
+        }
+    }
+    return true;
+}
+
 function LoadObject(stat, owner_type) // Грузим объекты интерьера для дома и бизнеса
 {
     new time = GetTickCount();
@@ -659,7 +683,7 @@ stock JSON_Get3DVector(&JsonNode:node, const key[], &Float:x, &Float:y, &Float:z
 stock GetQuanObjectsInteriorDom(dom)
 {
 	new kolobj;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
 	{
 		if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba])) 
 		{
@@ -668,6 +692,36 @@ stock GetQuanObjectsInteriorDom(dom)
 		}
 	}
 	return kolobj;
+}
+
+// Количество объектов на улице дома
+stock GetQuanObjectsStreetDom(dom)
+{
+	new kolobj;
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba])) 
+		{
+			if(GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba]) == 0
+				&& GetDynamicObjectInterior(DomInfo[dom][dObject][oba]) == 0) kolobj ++;
+		}
+	}
+	return kolobj;
+}
+
+// Получаем свободный слот объекта в доме
+stock GetFreeSlotObjectDom(dom)
+{
+	new slot = -1;
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
+	{
+		if(DomInfo[dom][dOmodel][oba] == 0) 
+		{
+			slot = oba;
+            break;
+		}
+	}
+	return slot;
 }
 
 // Сохраняем текущий id интерьер в доме из набора интерьеров

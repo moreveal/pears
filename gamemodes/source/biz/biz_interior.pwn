@@ -245,7 +245,7 @@ stock PasteMaterialObjectBiz(playerid, biz, oba)
         ErrorMessage(playerid, "{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте");
         return true;
     }
-    
+
     if(PasteMaterialsToObject(playerid, BizzInfo[biz][bObject][oba]))
     {
         PlayerPlaySound(playerid,6801,0,0,0);
@@ -425,3 +425,66 @@ stock SetBizThisInterior(biz, intid)
 	query_empty(pearsq, string_mysql);
     return true;
 }
+
+// Количество объектов на улице бизнеса
+stock GetQuanObjectsStreetBiz(biz)
+{
+	new kolobj;
+	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba])) 
+		{
+			if(GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba]) == 0
+				&& GetDynamicObjectInterior(BizzInfo[biz][bObject][oba]) == 0) kolobj ++;
+		}
+	}
+	return kolobj;
+}
+
+// Получаем свободный слот объекта в бизнесе
+stock GetFreeSlotObjectBiz(biz)
+{
+	new slot = -1;
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] == 0) 
+		{
+			slot = oba;
+            break;
+		}
+	}
+	return slot;
+}
+
+// Удаляем все объекты в интерьере с 0 до максимального (улицу игнорим)
+stock DestroyAllInteriorObjectsVBiz(biz)
+{
+    for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
+    {
+        if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
+        {
+
+            if(GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba]) > 0
+                || GetDynamicObjectInterior(BizzInfo[biz][bObject][oba]) > 0)
+            {
+                DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
+
+                // Удаляем объекты в бизе
+                DelObjectBiz(biz, oba);
+
+                // Стираем старый объект в бизе
+                ClearVariableObjectBiz(biz, oba);
+            }
+        }
+    }
+    return true;
+}
+
+#pragma warning disable 203 // Удалить pragma тут и под стоком, когда расширение объектов биза будет добавлено
+stock GetMaxBizObjects(biz)
+{
+    new max_objects = MAX_OBJECT_INT_BIZ;
+    // if (!DomInfo[dom][dMoreIntObjects]) max_objects -= 200; // Расширения объектов у биза нету
+    return max_objects;
+}
+#pragma warning enable 203
