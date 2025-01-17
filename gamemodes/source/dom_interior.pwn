@@ -41,11 +41,20 @@ stock PasteMaterialObjectDom(playerid, dom, oba)
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
 		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(DomInfo[dom][dObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
 
-    if(GetQuanCopyMaterial(playerid) > GetTexturesOnObject(DomInfo[dom][dOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте");
+    new string[140];
+    new quanCopyTexture = GetQuanCopyMaterial(playerid);
+    new quanObjectTexture = GetTexturesOnObject(DomInfo[dom][dOmodel][oba]);
+    if(quanCopyTexture > quanObjectTexture)
+    {
+        format(string,sizeof(string),"{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте/
+        \n\n{cccccc}В буфере обмена: %d\n{cccccc}Слотов на объекте: %d", quanCopyTexture, quanObjectTexture);
+        ErrorMessage(playerid, "{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте");
+        return true;
+    }
+    
     if(PasteMaterialsToObject(playerid, DomInfo[dom][dObject][oba]))
     {
         PlayerPlaySound(playerid,6801,0,0,0);
-        new string[90];
         format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~ЏEKCЏYP‘ ЊP…MEHEH‘~n~OЂђEKЏ ~y~%d", oba);
 	    GameTextForPlayer(playerid,string,1500,3);
         UpdateObject(dom, oba);

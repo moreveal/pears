@@ -4067,7 +4067,7 @@ CMD:car(playerid)
 }
 stock showDialog_MyCar(playerid)
 {
-	new line[100],lines[2400];
+	new line[130],lines[3400];
 	format(line,sizeof(line),"{cccccc}Название \t "), strcat(lines,line);
 
 	// Личный Транспорт
@@ -4079,7 +4079,8 @@ stock showDialog_MyCar(playerid)
         {
 			if(PlayerInfo[playerid][pMyVehID][i] > 0)
 			{
-				format(line,sizeof(line),"\n{ff9000}%d. %s \t ", i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i])), strcat(lines,line);
+				format(line,sizeof(line),"\n{ff9000}%d. %s [ID %d] \t ", 
+					i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i]), PlayerInfo[playerid][pMyVehID][i]), strcat(lines,line);
 			}
 			else format(line,sizeof(line),"\n{cccccc}%d. %s \t ", i + 1, GetVehicleName(PlayerInfo[playerid][pMyVeh][i])), strcat(lines,line);
 			List[quan][playerid] = i;
@@ -4097,7 +4098,8 @@ stock showDialog_MyCar(playerid)
 	{
 		if(PlayerInfo[playerid][pKeyVehID] > 0)
 		{
-			format(line,sizeof(line),"\n{ff9000}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), tday, tmonth, tyear, thour, tminute), strcat(lines,line);
+			format(line,sizeof(line),"\n{ff9000}%s [ID %d] \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", 
+				GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), PlayerInfo[playerid][pKeyVehID], tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		}
 		else format(line,sizeof(line),"\n{cccccc}%s \t {cccccc}Ключи до %02d.%02d.%d %02d:%02d", GetVehicleName(PlayerInfo[playerid][pKeyVeh][0]), tday, tmonth, tyear, thour, tminute), strcat(lines,line);
 		List[quan][playerid] = 0;
@@ -4166,6 +4168,8 @@ stock slcar(playerid, i)
 
 	if(DP[5][playerid] > 0) return ErrorMessage(playerid, "{FF6347}Этот транспорт не нужно восстанавливать");
 
+	if(!IsValidVehicle(v)) return ErrorMessage(playerid, "{FF6347}Ошибка! Транспорт отсутствует на сервере");
+
     model = VehInfo[v][vModel];
     new str[100],sctring[500],qwer[124];
 	if(VehInfo[v][vCallParking] == 0) format(str,sizeof(str),"{ff9000}Доставить Транспорт \t{cccccc}[-5 Fuel]\n"), strcat(sctring,str);
@@ -4200,7 +4204,7 @@ stock slcar(playerid, i)
 		format(str,sizeof(str),"{999999}О продаже..\t\n"), strcat(sctring,str);
 	}
 
-	format(qwer,sizeof(qwer),"{ff9000}%s {cccccc}[%d] Личный",GetVehicleName(model), v);
+	format(qwer,sizeof(qwer),"{ff9000}%s {cccccc}[ID %d] Личный",GetVehicleName(model), v);
 	ShowDialog(playerid,298,DIALOG_STYLE_TABLIST,qwer,sctring,"Выбрать","Отмена");
 	return 1;
 }
@@ -4564,9 +4568,6 @@ function LoadCar(playerid, dab, race_check, adminLoad, typeVehicle)
 			// Загружаем повреждения
 			UpdateVehicleDamageStatus(vehid, VEHICLE_PANEL_STATUS:VehInfo[vehid][vPanels], VEHICLE_DOOR_STATUS:VehInfo[vehid][vDoors], VEHICLE_LIGHT_STATUS:VehInfo[vehid][vFara], VEHICLE_TYRE_STATUS:VehInfo[vehid][vTires]);
 
-			format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
-			SuccessMessage(playerid, string);
-
 			// Загружаем тюнинг транспорта
 			SetHandlingTotal(vehid);
 
@@ -4574,6 +4575,20 @@ function LoadCar(playerid, dab, race_check, adminLoad, typeVehicle)
 			if(VehInfo[vehid][vTunningBPAN] > 0)
 			{
 				SetVehicleHandlingFloat(vehid, HANDLING_SUSPFORCELEVEL, VehInfo[vehid][vTunningBPAN]);
+			}
+
+
+			// Открываем меню
+			if(paramet[0] == PlayerInfo[playerid][pID]) // Это личная тачка
+			{
+				PlayerPlaySound(playerid,6401,0,0,0);
+				DP[1][playerid] = 1; // Личная
+				slcar(playerid, dab);
+			}
+			else // Загрузили чужую, отображаем просто диалог
+			{
+				format(string, sizeof(string),"{99ff66}Транспорт загружен\n{ffcc66}VehicleID %d", vehid);
+				SuccessMessage(playerid, string);
 			}
 		}
 	}
