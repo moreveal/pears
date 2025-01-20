@@ -1,34 +1,34 @@
+// MAX_PETS_AT_PLAYER - pears.pwn Кол-во загружаемых петов
 #define MAX_PETS_TYPE 24 // Тип животинки
 #define MAX_PETS_PARAM 2 // Кол-во параметров для животных
 #define MAX_PETS 2000 // Общие кол-во питомцев на сервере
-// MAX_PETS_AT_PLAYER - pears.pwn Кол-во загружаемых петов
 
-new PetsParam[MAX_PETS_TYPE][3] =
-{   // Skin, HP
-    { 15797, 50, 609 },      // Волк
-    { 15814, 50, 626 },      //  
-    { 15815, 50, 627 },      //  
-    { 15816, 50, 628 },      //  
-    { 15817, 50, 629 },      //  
-    { 15818, 50, 630 },      //  
-    { 15819, 50, 631 },      //  
-    { 15820, 50, 632 },      //  
-    { 15821, 50, 633 },      //  
-    { 15822, 50, 634 },      //  
-    { 15823, 50, 635 },      //  
-    { 15824, 50, 636 },      //  
-    { 15825, 50, 637 },      //  
-    { 15826, 50, 638 },      //  
-    { 15827, 50, 639 },      //  
-    { 15828, 50, 640 },      //  
-    { 15829, 50, 641 },      //  
-    { 15830, 50, 642 },      //  
-    { 15831, 50, 643 },      //  
-    { 15832, 50, 644 },      //  
-    { 15833, 50, 645 },      //  
-    { 15834, 50, 646 },      //  
-    { 15835, 50, 647 },      //  
-    { 15836, 50, 648 }      // 
+new PetsParam[MAX_PETS_TYPE][4] =
+{   // Skin, HP, skin, может заспавнится как дикий
+    { 15797, 50, 609, 0 },      // Волк
+    { 15814, 50, 626, 0 },      // Кошка белая с зелеными глазами
+    { 15815, 50, 627, 1 },      // Кошка рыжий с белой грудкой
+    { 15816, 50, 628, 1 },      // Кошка Черно с серыми пятнами и белой грудкой
+    { 15817, 50, 629, 0 },      // Кошка Сиамская
+    { 15818, 50, 630, 1 },      // Кошка Серая с рыжими пятнами и белой грудкой
+    { 15819, 50, 631, 0 },      // Кошка черная с желтыми глазами
+    { 15820, 50, 632, 0 },      // Барбос типо питбуль коричнивый с пятнами 
+    { 15821, 50, 633, 0 },      // Барбос типо питбуль светло-коричнивый
+    { 15822, 50, 634, 0 },      // Барбос типо питбуль черный и коричнивыми пятнами
+    { 15823, 50, 635, 0 },      // Чихуахуя белый
+    { 15824, 50, 636, 0 },      // Барбос типо питбуль черный с кричнивыми
+    { 15825, 50, 637, 0 },      // Чихуахуя черный
+    { 15826, 50, 638, 0 },      // Барбос типо питбуль оранжевый с белой грудкой
+    { 15827, 50, 639, 0 },      // Доберман черный с рыжими пятнами
+    { 15828, 50, 640, 0 },      // Бультерьер серый с белой грудкой 
+    { 15829, 50, 641, 1 },      // Барбос без хвоста серый с белой грудкой
+    { 15830, 50, 642, 0 },      // Сибу-ину УПОРОТЫЙ
+    { 15831, 50, 643, 1 },      // Мухтар
+    { 15832, 50, 644, 0 },      // Барбас белый демон
+    { 15833, 50, 645, 0 },      // Хаски?
+    { 15834, 50, 646, 0 },      // Пудиль
+    { 15835, 50, 647, 0 },      // Гончая
+    { 15836, 50, 648, 0 }      // Долматинец
 };
 
 enum pet_TaskToNpc
@@ -61,9 +61,11 @@ enum petsnpc
     petHunger, // Голод 
     petLevel, // Уровень
     petExp, // Экспулечка
+    petPoint, // Очки прокачки
     petPower, // Сила
     petAgility, // Ловкость
     petEndurance, // Выносливость
+    petFeatures[10], // Особенности питомца
     bool:petDestinationStatus, // Идет или пришел
     pet_TaskToNpc: petEvent,
     pet_Skills: petSkills[pet_Skills],
@@ -72,6 +74,7 @@ enum petsnpc
     petAttactID, // Кого атакует
     NPC:petAttactNpcID, // Кого атакует из NPC
     bool:petStartAttactNpcID, // Тумблер
+    bool:petStartAttactID, // Тумблер
     petKillerID, // кто убил
     Float:petHealth, // ХПшка
     Float:petTaskCoord[3], // Куда идет NPC
@@ -187,6 +190,7 @@ stock LifePet(pet)
         else{
             GetPlayerPos(PetInfo[pet][petAttactID],PcordX,PcordY,PcordZ);
             if(GetDistancePoint(PetX,PetY,PetZ,PcordX, PcordY, PcordZ) >= 100 || GetPlayerState(PetInfo[pet][petAttactID]) == PLAYER_STATE_SPECTATING) HandlerCreateTaskPets(pet, PET_TASK_WALKING), PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
+            if(!PetInfo[pet][petStartAttactID]) TaskNpcAttackPlayer(PetInfo[pet][petID], PetInfo[pet][petAttactID], true), PetInfo[pet][petStartAttactID] = true;
         }
     }
     if(PetInfo[pet][petEvent] == PET_TASK_GOSEATCAR) // Топает в машину
@@ -215,18 +219,14 @@ stock LifePet(pet)
         if(!IsValidNpc(PetInfo[pet][petAttactNpcID]) || tempHealth <= 0.0) return HandlerCreateTaskPets(pet, PET_TASK_WALKING);
         if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcAttackNpc(PetInfo[pet][petID], PetInfo[pet][petAttactNpcID], true), PetInfo[pet][petStartAttactNpcID] = true;
     }
-    if(PetInfo[pet][petEvent] == PET_TASK_ATTACNPC)
-    {
-        if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcStandStill(PetInfo[pet][petID]);
-        new Float:tempHealth;
-        if(IsValidNpc(PetInfo[pet][petAttactNpcID])) GetNpcHealth(PetInfo[pet][petAttactNpcID],tempHealth);
-        if(!IsValidNpc(PetInfo[pet][petAttactNpcID]) || tempHealth <= 0.0) return HandlerCreateTaskPets(pet, PET_TASK_WALKING);
-        if(!PetInfo[pet][petStartAttactNpcID]) TaskNpcAttackNpc(PetInfo[pet][petID], PetInfo[pet][petAttactNpcID], true), PetInfo[pet][petStartAttactNpcID] = true;
-    }
     if(PetInfo[pet][petEvent] == PET_TASK_SNIFF)
     {
-        if(PetTaskGoFindSniffTarget(pet) != -1) PlayAudioStreamForPlayer(PetInfo[pet][petPlayer], "https://cdn.pears.fun/sound/animals/bear/bear_attack0.mp3",PetX, PetY, PcordX, 30.0, true);
-        else HandlerCreateTaskPets(pet,PET_TASK_WALKING);
+        new tempUser = PetTaskGoFindSniffTarget(pet);
+        if(tempUser != -1)
+        {
+            PlayAudioStreamForPlayer(PetInfo[pet][petPlayer], "https://cdn.pears.fun/sound/animals/bear/bear_attack0.mp3",PetX, PetY, PcordX, 30.0, true);
+        }
+        HandlerCreateTaskPets(pet,PET_TASK_WALKING);
     }
     return true;
 }
@@ -241,6 +241,7 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
         {
             PetInfo[pet][petAttactID] = targetid;
             PetInfo[pet][petEvent] = PET_TASK_ATTAC;
+            PetInfo[pet][petStartAttactID] = false;
         }
         case PET_TASK_WALKING:
         {
@@ -250,6 +251,7 @@ stock HandlerCreateTaskPets(pet, pet_TaskToNpc: type, targetid = INVALID_PLAYER_
             PetInfo[pet][petVehicle] = INVALID_VEHICLE_ID;
             PetInfo[pet][petAttactID] = INVALID_PLAYER_ID;
             PetInfo[pet][petStartAttactNpcID] = false;
+            PetInfo[pet][petStartAttactID] = false;
             if(IsNpcInAnyVehicle(PetInfo[pet][petID])) RemoveNpcFromVehicle(PetInfo[pet][petID]);
         }
         case PET_TASK_GOSEATCAR:
@@ -430,16 +432,32 @@ stock dialogPetMenagment(playerid,slot)
     new type = PetInfo[pet][petType];
 
 	new lines[500], string[60];
-	format(lines,sizeof(lines),"{ff9000}Питомец: %s\t "\
+	format(lines,sizeof(lines),"{ff9000}Питомец: %s\t Голод: %d"\
                                 "\n{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/1000 ]"\
                                 "\n{0088ff}Выгрузить питомца\t "\
                                 "\n{0088ff}Команды питомцу\t "\
 								"\n{0088ff}Всегда следовать за мной %s\t ",
-                                GetSkinName(PetsParam[type][2]),
+                                GetSkinName(PetsParam[type][2]), PetInfo[pet][petHunger],
                                 PetInfo[pet][petLevel],PetInfo[pet][petExp],
                                 PetInfo[pet][petAuto] ? "{44ff99} [ On ]" : "{ff6347}[ Off ]");
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
 	ShowDialog(playerid,PETS_SHOW_PETMANAGE,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
+	return true;
+}
+
+stock dialogPetInformation(playerid,pet)
+{
+	new lines[1024], string[60];
+	format(lines,sizeof(lines),"{ff9000}Уровень {99ff66}%d\t{cccccc}Опыт [ {99ff66}%d{cccccc}/1000 ]\tОчков прокачки: %d"\
+                                "\nОсобенности питомца\t \t"\
+                                "\n{0088ff}Сила\t \t{cccccc}%d"\
+                                "\n{0088ff}Ловкость\t \t{cccccc}%d"\
+                                "\n{0088ff}Выносливость\t \t{cccccc}%d"\
+								"\n{0088ff}Прокачка навыков питомца\t ",
+                                PetInfo[pet][petLevel],PetInfo[pet][petExp], PetInfo[pet][petPoint],
+                                PetInfo[pet][petPower],PetInfo[pet][petAgility], PetInfo[pet][petEndurance]);
+	format(string,sizeof(string),"{ff9000}Управление питомцем");
+	ShowDialog(playerid,PETS_SHOW_PETMANAGE_INFORMATION,DIALOG_STYLE_TABLIST_HEADERS, string, lines, "Принять", "Отмена");
 	return true;
 }
 
@@ -463,7 +481,7 @@ stock dialogPetCreateTask(playerid,slot)
                                 PetInfo[pet][petSkills][PET_SKILL_ATTAC_PLAYER] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_ATTAC ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_ATTAC_NPC] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_ATTACNPC ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_FOLLOWME] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_WALKING ? "{44ff99}Выполняет" : "", 
-                                PetInfo[pet][petSkills][PET_SKILL_SNIFF] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_WALKING ? "{44ff99}Выполняет" : "", 
+                                PetInfo[pet][petSkills][PET_SKILL_SNIFF] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SNIFF ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_SIT] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SEAT ? "{44ff99}Выполняет" : "", 
                                 PetInfo[pet][petSkills][PET_SKILL_SITCAR] ? "{44ff99}[ Доступно ]" : "{ff6347}[ Недоступно ]", PetInfo[pet][petEvent] == PET_TASK_SEATCAR ? "{44ff99}Выполняет" : "");
 	format(string,sizeof(string),"{ff9000}Управление питомцем");
@@ -518,6 +536,7 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
             {
                 new slot = DP[0][playerid];
                 new pet = OnlineInfo[playerid][oPet][slot];
+                if(listitem == 0) dialogPetInformation(playerid, pet);
                 if(listitem == 1) DestroyPet(playerid,slot);
                 if(listitem == 2) dialogPetCreateTask(playerid,slot);
                 if(listitem == 3) 
@@ -547,6 +566,17 @@ stock dialogCase_Pets(playerid, dialogid, response, listitem) {
             new pet = OnlineInfo[playerid][oPet][listitem];
             HandlerCreateTaskPets(pet, PET_TASK_ATTAC, Moiplayer[playerid]);
         }
+        case PET_CREATETASK_SNIFF: {
+            if(!response) show_interaction(playerid, Moiplayer[playerid]);
+            new pet = OnlineInfo[playerid][oPet][listitem];
+            if(PetSniffPlayer(Moiplayer[playerid]) > 0) SendClientMessage(playerid,COLOR_GRAY,"[ Мысли ] Кажется питомец что-то учуял у %s",rpplayername(Moiplayer[playerid]));
+            else SendClientMessage(playerid,COLOR_GRAY,"[ Мысли ] Питомец ничего не чует у %s",rpplayername(Moiplayer[playerid]));
+        }
+        case PETS_SHOW_PETMANAGE_INFORMATION: {
+            new slot = DP[0][playerid];
+            new pet = OnlineInfo[playerid][oPet][slot];
+            if(!response) dialogPetMenagment(playerid,slot);
+        }
     }
     return false;
 }
@@ -565,7 +595,7 @@ stock GetPlayerLoadPet(playerid)
     else return false;
 }
 
-stock ListPlayerLoadPet(playerid)
+stock ListPlayerLoadPet(playerid,type)
 {
     new line[100],lines[100*MAX_PETS_AT_PLAYER];
     new quan = 0;
@@ -579,7 +609,8 @@ stock ListPlayerLoadPet(playerid)
 		}
 	}
     if(quan == 0) return false;
-    ShowDialog(playerid,PET_CREATETASK_ATTAC,DIALOG_STYLE_TABLIST,"{ff9000}Выберите питомца для атаки",lines,"Выбрать","Отмена");
+    if(type == 0) ShowDialog(playerid,PET_CREATETASK_ATTAC,DIALOG_STYLE_TABLIST,"{ff9000}Выберите питомца для атаки",lines,"Выбрать","Отмена");
+    else if(type == 1) ShowDialog(playerid,PET_CREATETASK_SNIFF,DIALOG_STYLE_TABLIST,"{ff9000}Выберите питомца для атаки",lines,"Выбрать","Отмена");
     return true;
 }
 
@@ -606,7 +637,8 @@ stock PetTaskGoFindSniffTarget(pet)
         if(OnlineInfo[i][oLogged] == 0) continue;
         if(IsPlayerInRangeOfPoint(i,10.0,PetX,PetY,PetZ) && GetPlayerVirtualWorld(i) == PetWorld)
         {
-            if(PetSniffPlayer(i))
+            if(i == PetInfo[pet][petPlayer]) continue;
+            if(PetSniffPlayer(i) > 0)
             {
                 PetFind = i;
                 break;
