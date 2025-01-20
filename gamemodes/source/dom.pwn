@@ -118,7 +118,7 @@ stock getFreeSlotObjectDom(dom)
 stock getObjectStreetDom(dom)
 {
 	new quan;
-	for(new oba = 1; oba < MAX_OBJECT_INT; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
 	{
 		if(DomInfo[dom][dOmodel][oba] > 0)
 		{

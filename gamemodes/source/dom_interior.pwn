@@ -1,7 +1,7 @@
 stock EditObjectDom(playerid, dom, oba)
 {
 	if(CheckObjectRedaktDom(playerid, dom, oba)) return true;
-    if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(DomInfo[dom][dOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(DomInfo[dom][dObject][oba],ob[0], ob[1], ob[2]);
@@ -66,7 +66,7 @@ stock PasteMaterialObjectDom(playerid, dom, oba)
 stock PosObjectDom(playerid, dom, oba, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0)
 {
 	if(CheckObjectRedaktDom(playerid, dom, oba)) return true;
-    if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(DomInfo[dom][dOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(DomInfo[dom][dObject][oba], ob[0], ob[1], ob[2]);
@@ -173,7 +173,7 @@ stock EditTextureDom(playerid, dom, oba)
 stock DeleteObjectDom(playerid, dom, oba)
 {
 	if(CheckObjectRedaktDom(playerid, dom, oba)) return true;
-    if(oba < IsAQuanInterior(DomInfo[dom][dOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
+    if(IsAFrameObject(DomInfo[dom][dOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = DomInfo[dom][dOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
@@ -334,15 +334,17 @@ stock ClearVariableObjectDom(dom, oba)
     DomInfo[dom][dUser][oba] = 0;
 }
 
-stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодействие
+stock RemoveAllObject(playerid, dom) // Удаляем объекты и отключаем взаимодействие (кроме планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-    for(new oba = IsAQuanInterior(DomInfo[dom][dOmodel][0]); oba < MAX_OBJECT_INT; oba++)
+    for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1) 
         {
+            if(IsAFrameObject(DomInfo[dom][dOmodel][oba])) continue; // Игнорим объекты планировки
+
             DestroyDynamicObject(DomInfo[dom][dObject][oba]);
             DelObject(dom, oba);
             ClearVariableObjectDom(dom, oba);
@@ -360,15 +362,17 @@ stock RemoveAllObject(playerid, dom) // Удаляем объекты и отк�
 	return 1;
 }
 
-stock ClearAllObject(playerid, dom) // Убираем все объекты в дом отключаем взаимодействие
+stock ClearAllObject(playerid, dom) // Убираем все объекты в дом отключаем взаимодействие (кроме объектов планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(DomInfo[dom][dOmodel][0]); oba < MAX_OBJECT_INT; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
 	{
 	    if(DomInfo[dom][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[dom][dObject][oba]))
         {
+            if(IsAFrameObject(DomInfo[dom][dOmodel][oba])) continue; // Игнорим объекты планировки
+
             if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
                 || Streamer_GetIntData(STREAMER_TYPE_OBJECT, DomInfo[dom][dObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
             {
@@ -709,7 +713,7 @@ stock GetQuanObjectsStreetDom(dom)
 	return kolobj;
 }
 
-// Получаем свободный слот объекта в доме
+// Получаем свободный слот объекта в доме (чтобы запихать в него объект системно)
 stock GetFreeSlotObjectDom(dom)
 {
 	new slot = -1;

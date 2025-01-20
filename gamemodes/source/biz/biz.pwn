@@ -773,7 +773,7 @@ stock use_biz(playerid, biz, inva, useinva)
 			if(!getIkeaObjectStreet(obid)) return ErrorMessage(playerid, "{FF6347}Этот предмет нельзя устанавливать на улице");
 			if(getObjectStreetBiz(biz) >= MAX_DOM_OBJECT_STREET) return ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
 		}
-		if(getFreeSlotObjectBiz(biz) == -1) return ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
+		if(GetFreeSlotObjectBiz(biz) == -1) return ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
 		if(BizzInfo[biz][bInv][inva] == 1000) return ErrorMessage(playerid, "{FF6347}Этот предмет мебели кто-то устанавливает");
 
 		PlayerPlaySound(playerid,1052,0,0,0);

@@ -626,12 +626,6 @@ stock GetFreeSlotPackInteriors(playerid)
     return slots;
 }
 
-/*
-if(PackInteriors[playerid][i][piObjects] > 301 && DomInfo[ownerID][dMoreIntObjects] == false) return ErrorMessage(playerid, "{FF6347}В этот дом нельзя установить интерьер с таким количеством объектов\n{ffcc66}В доме необходимо приобрести увеличенный лимит объектов [ /mydom >> Донат ]");
-
-if(PackInteriors[playerid][i][piObjects] >= MAX_OBJECT_INT_BIZ) return ErrorMessage(playerid, "{FF6347}В этот бизнес нельзя установить интерьер с таким количеством объектов");
-*/
-
 // Чекаем чё там по количеству объектов с учетом уличных
 stock CheckInstallInteriorObjects(playerid, typeInterior, ownerID, i, quanStreetObjects, maxObjects)
 {
@@ -743,6 +737,7 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid, i)
 }
 
 
+//=========================
 // Личное хранилище текстур
 enum ObjectMaterialInfo
 {
@@ -805,4 +800,13 @@ stock GetQuanCopyMaterial(playerid)
         if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++;
     }
     return quan;
+}
+
+// Проверяем, является ли объект планировкой или его частью
+stock IsAFrameObject(model)
+{
+    new Float:pos[6];
+	GetCoordFrame(model, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
+	if(pos[0] != 0.0 && pos[1] != 0.0) return true; // Нашли объект в списке, значит это планировка или её часть
+    return false;
 }

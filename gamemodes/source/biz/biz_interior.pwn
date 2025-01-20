@@ -137,15 +137,17 @@ stock ReloadBizBar(b, Float:x, Float:y, Float:z)
     return true;
 }
 
-stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
+stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз (кроме объектов планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
         {
+            if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) continue; // Игнорим объекты планировки
+
             if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
                 || Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
             {
@@ -168,15 +170,17 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	return 1;
 }
 
-stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
+stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты (кроме объектов планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
         {
+            if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) continue; // Игнорим объекты планировки
+
             DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
             DelObjectBiz(biz, oba);
             ClearVariableObjectBiz(biz, oba);
@@ -194,7 +198,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 stock EditObjectBiz(playerid, biz, oba)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
@@ -261,7 +265,7 @@ stock PasteMaterialObjectBiz(playerid, biz, oba)
 stock PosObjectBiz(playerid, biz, oba, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba], ob[0], ob[1], ob[2]);
@@ -300,7 +304,7 @@ stock CheckObjectRedaktBiz(playerid, biz, oba)
 stock DeleteObjectBiz(playerid, biz, oba)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = BizzInfo[biz][bOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
@@ -355,24 +359,10 @@ stock ClearVariableObjectBiz(biz, oba)
     BizzInfo[biz][bUser][oba] = 0;
 }
 
-stock getFreeSlotObjectBiz(biz)
-{
-	new slot = -1;
-	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
-	{
-		if(BizzInfo[biz][bOmodel][oba] == 0)
-		{
-			slot = oba;
-			break;
-		}
-	}
-	return slot;
-}
-
 stock getObjectStreetBiz(biz)
 {
 	new quan;
-	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 		if(BizzInfo[biz][bOmodel][oba] > 0)
 		{
@@ -430,7 +420,7 @@ stock SetBizThisInterior(biz, intid)
 stock GetQuanObjectsStreetBiz(biz)
 {
 	new kolobj;
-	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 		if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba])) 
 		{
