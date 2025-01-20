@@ -137,15 +137,17 @@ stock ReloadBizBar(b, Float:x, Float:y, Float:z)
     return true;
 }
 
-stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз
+stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты в биз (кроме объектов планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
         {
+            if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) continue; // Игнорим объекты планировки
+
             if(!Streamer_HasIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT)
                 || Streamer_GetIntData(STREAMER_TYPE_OBJECT, BizzInfo[biz][bObject][oba], STREAMER_EDITABLE_DYNAMIC_OBJECT) <= 0)
             {
@@ -168,15 +170,17 @@ stock ClearAllObjectBiz(playerid, biz) // Убираем все объекты �
 	return 1;
 }
 
-stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
+stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты (кроме объектов планировки)
 {
 	// Начало транзакции
 	mysql_tquery(pearsq, "START TRANSACTION;");
 
-	for(new oba = IsAQuanInterior(BizzInfo[biz][bOmodel][0]); oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 	    if(BizzInfo[biz][bOmodel][oba] >= 1) 
         {
+            if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) continue; // Игнорим объекты планировки
+
             DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
             DelObjectBiz(biz, oba);
             ClearVariableObjectBiz(biz, oba);
@@ -194,7 +198,7 @@ stock RemoveAllObjectBiz(playerid, biz) // Удаляем объекты
 stock EditObjectBiz(playerid, biz, oba)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba],ob[0], ob[1], ob[2]);
@@ -235,11 +239,20 @@ stock PasteMaterialObjectBiz(playerid, biz, oba)
   	if(!IsPlayerInRangeOfPoint(playerid, 20.0, ob[0], ob[1], ob[2])
 		|| GetPlayerVirtualWorld(playerid) != GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba])) return ErrorMessage(playerid, "{FF6347}Предмет далеко от вас");
 
-    if(GetQuanCopyMaterial(playerid) > GetTexturesOnObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте");
+    new string[140];
+    new quanCopyTexture = GetQuanCopyMaterial(playerid);
+    new quanObjectTexture = GetTexturesOnObject(BizzInfo[biz][bOmodel][oba]);
+    if(quanCopyTexture > quanObjectTexture)
+    {
+        format(string,sizeof(string),"{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте/
+        \n\n{cccccc}В буфере обмена: %d\n{cccccc}Слотов на объекте: %d", quanCopyTexture, quanObjectTexture);
+        ErrorMessage(playerid, "{FF6347}Количество текстур в буфере обмена больше чем слотов текстур на объекте");
+        return true;
+    }
+
     if(PasteMaterialsToObject(playerid, BizzInfo[biz][bObject][oba]))
     {
         PlayerPlaySound(playerid,6801,0,0,0);
-        new string[90];
         format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~ЏEKCЏYP‘ ЊP…MEHEH‘~n~OЂђEKЏ ~y~%d", oba);
 	    GameTextForPlayer(playerid,string,1500,3);
 
@@ -252,7 +265,7 @@ stock PasteMaterialObjectBiz(playerid, biz, oba)
 stock PosObjectBiz(playerid, biz, oba, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:rx = 0.0, Float:ry = 0.0, Float:rz = 0.0)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя перемещать детали планировки");
 
 	new Float:ob[3];
     GetDynamicObjectPos(BizzInfo[biz][bObject][oba], ob[0], ob[1], ob[2]);
@@ -291,7 +304,7 @@ stock CheckObjectRedaktBiz(playerid, biz, oba)
 stock DeleteObjectBiz(playerid, biz, oba)
 {
 	if(CheckObjectRedaktBiz(playerid, biz, oba)) return false;
-    if(oba < IsAQuanInterior(BizzInfo[biz][bOmodel][0])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
+    if(IsAFrameObject(BizzInfo[biz][bOmodel][oba])) return ErrorMessage(playerid, "{FF6347}Нельзя удалять детали планировки");
 
     new model = BizzInfo[biz][bOmodel][oba];
     if(!NoInventoryFurnitureObject(model))
@@ -346,24 +359,10 @@ stock ClearVariableObjectBiz(biz, oba)
     BizzInfo[biz][bUser][oba] = 0;
 }
 
-stock getFreeSlotObjectBiz(biz)
-{
-	new slot = -1;
-	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
-	{
-		if(BizzInfo[biz][bOmodel][oba] == 0)
-		{
-			slot = oba;
-			break;
-		}
-	}
-	return slot;
-}
-
 stock getObjectStreetBiz(biz)
 {
 	new quan;
-	for(new oba = 1; oba < MAX_OBJECT_INT_BIZ; oba++)
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
 	{
 		if(BizzInfo[biz][bOmodel][oba] > 0)
 		{
@@ -416,3 +415,66 @@ stock SetBizThisInterior(biz, intid)
 	query_empty(pearsq, string_mysql);
     return true;
 }
+
+// Количество объектов на улице бизнеса
+stock GetQuanObjectsStreetBiz(biz)
+{
+	new kolobj;
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba])) 
+		{
+			if(GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba]) == 0
+				&& GetDynamicObjectInterior(BizzInfo[biz][bObject][oba]) == 0) kolobj ++;
+		}
+	}
+	return kolobj;
+}
+
+// Получаем свободный слот объекта в бизнесе
+stock GetFreeSlotObjectBiz(biz)
+{
+	new slot = -1;
+	for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
+	{
+		if(BizzInfo[biz][bOmodel][oba] == 0) 
+		{
+			slot = oba;
+            break;
+		}
+	}
+	return slot;
+}
+
+// Удаляем все объекты в интерьере с 0 до максимального (улицу игнорим)
+stock DestroyAllInteriorObjectsVBiz(biz)
+{
+    for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
+    {
+        if(BizzInfo[biz][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[biz][bObject][oba]))
+        {
+
+            if(GetDynamicObjectVirtualWorld(BizzInfo[biz][bObject][oba]) > 0
+                || GetDynamicObjectInterior(BizzInfo[biz][bObject][oba]) > 0)
+            {
+                DestroyDynamicObject(BizzInfo[biz][bObject][oba]);
+
+                // Удаляем объекты в бизе
+                DelObjectBiz(biz, oba);
+
+                // Стираем старый объект в бизе
+                ClearVariableObjectBiz(biz, oba);
+            }
+        }
+    }
+    return true;
+}
+
+#pragma warning disable 203 // Удалить pragma тут и под стоком, когда расширение объектов биза будет добавлено
+stock GetMaxBizObjects(biz)
+{
+    new max_objects = MAX_OBJECT_INT_BIZ;
+    // if (!DomInfo[dom][dMoreIntObjects]) max_objects -= 200; // Расширения объектов у биза нету
+    return max_objects;
+}
+#pragma warning enable 203

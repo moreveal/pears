@@ -385,7 +385,7 @@ stock dialogCase_PackInterior(playerid, dialogid, response, listitem, const inpu
                 
                 new string_mysql[200];
                 mysql_format(pearsq, string_mysql, sizeof(string_mysql), "SELECT data FROM `pp_pack_interiors` WHERE `piNewid` = '%d'", PackInteriors[playerid][i][piNewid]);
-			    mysql_tquery(pearsq, string_mysql, "LoadPackInterior", "dddd", playerid, DP[2][playerid], DP[3][playerid], PackInteriors[playerid][i][piNewid]);
+			    mysql_tquery(pearsq, string_mysql, "LoadPackInterior", "ddddd", playerid, DP[2][playerid], DP[3][playerid], PackInteriors[playerid][i][piNewid], i);
             }
             else showDialogSettingPackInterior(playerid);
         }
@@ -626,7 +626,24 @@ stock GetFreeSlotPackInteriors(playerid)
     return slots;
 }
 
-function LoadPackInterior(playerid, typeInterior, ownerID, newid)
+// Чекаем чё там по количеству объектов с учетом уличных
+stock CheckInstallInteriorObjects(playerid, typeInterior, ownerID, i, quanStreetObjects, maxObjects)
+{
+    if(PackInteriors[playerid][i][piObjects] + quanStreetObjects > maxObjects)
+    {
+        new string[150];
+        format(string, sizeof(string), "{FF6347}Не хватает %d слотов объектов для установки интерьера\n/
+        {ffcc66}Вероятно, объекты на улице занимают недостающее количество слотов", 
+            maxObjects - PackInteriors[playerid][i][piObjects] + quanStreetObjects);
+        ErrorMessage(playerid, string);
+
+        ClearPauseInstallInterior(playerid, typeInterior, ownerID); // Прервали процесс - тогда очищаем кд на загрузку
+        return false;
+    }
+    return false;
+}
+
+function LoadPackInterior(playerid, typeInterior, ownerID, newid, i)
 {
     new rows;
     cache_get_row_count(rows);
@@ -635,47 +652,33 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid)
     {
         new world;
         new interior;
+
+        // Действия и проверки перед установкой
         if(typeInterior == 0) // Объекты грузятся в дом
         {
+            new quanStreetObjects = GetQuanObjectsStreetDom(ownerID);
+            new maxObjects = GetMaxDomObjects(ownerID);
+            if(CheckInstallInteriorObjects(playerid, typeInterior, ownerID, i, quanStreetObjects, maxObjects)) return false;
+
             EjectDom(ownerID, playerid, false); // Выгоняем игроков из помещения
             world = ownerID + 1000;
             interior = 90;
 
-            // Удаляем объекты из дома
-            for(new oba = 0; oba < MAX_OBJECT_INT; oba++)
-            {
-                if(DomInfo[ownerID][dOmodel][oba] >= 1 && IsValidDynamicObject(DomInfo[ownerID][dObject][oba]))
-                {
-                    DestroyDynamicObject(DomInfo[ownerID][dObject][oba]);
-
-                    // Удаляем объекты в доме
-                    DelObject(ownerID, oba);
-
-                    // Стираем старый объект в доме
-                    ClearVariableObjectDom(ownerID, oba);
-                }
-            }
+            // Удаляем объекты в интерьере из дома
+            DestroyAllInteriorObjectsDom(ownerID);
         }
         else if(typeInterior == 1) // Объекты грузятся в биз
         {
+            new quanStreetObjects = GetQuanObjectsStreetBiz(ownerID);
+            new maxObjects = GetMaxBizObjects(ownerID);
+            if(CheckInstallInteriorObjects(playerid, typeInterior, ownerID, i, quanStreetObjects, maxObjects)) return false;
+
             EjectBiz(ownerID, playerid, false); // Выгоняем игроков из помещения
             world = ownerID + 3000;
             interior = 90;
 
             // Удаляем объекты из бизнеса
-            for(new oba = 0; oba < MAX_OBJECT_INT_BIZ; oba++)
-            {
-                if(BizzInfo[ownerID][bOmodel][oba] >= 1 && IsValidDynamicObject(BizzInfo[ownerID][bObject][oba]))
-                {
-                    DestroyDynamicObject(BizzInfo[ownerID][bObject][oba]);
-
-                    // Удаляем объекты в бизнесе
-                    DelObjectBiz(ownerID, oba);
-
-                    // Стираем старый объект в бизнесе
-                    ClearVariableObjectBiz(ownerID, oba);
-                }
-            }
+            DestroyAllInteriorObjectsVBiz(ownerID);
         }
 
         static string_json[120000];
@@ -687,32 +690,40 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid)
             new JsonNode:json_object;
             new index = -1;
             new object;
-            new quanObjects;
             while(!JSON_ArrayIterate(node, index, json_object))
             {
+                new slot;
+                if(typeInterior == 0) slot = GetFreeSlotObjectDom(ownerID);
+                else if(typeInterior == 1) slot = GetFreeSlotObjectBiz(ownerID);
+
+                if(slot == -1) // Слот не нашли, останавливаем процесс
+                {
+                    ClearPauseInstallInterior(playerid, typeInterior, ownerID);
+                    break;
+                }
+
                 DeserializeDynamicObjectProperties(json_object, object);
                 SetDynamicObjectVirtualWorld(object, world);
                 SetDynamicObjectInterior(object, interior);
 
                 if(typeInterior == 0) // Объекты грузятся в дом
                 {
-                    DomInfo[ownerID][dObject][quanObjects] = object;
-                    DomInfo[ownerID][dUser][quanObjects] = PlayerInfo[playerid][pID];
-                    DomInfo[ownerID][dOmodel][quanObjects] = GetDynamicObjectModel(object);
+                    DomInfo[ownerID][dObject][slot] = object;
+                    DomInfo[ownerID][dUser][slot] = PlayerInfo[playerid][pID];
+                    DomInfo[ownerID][dOmodel][slot] = GetDynamicObjectModel(object);
 
                     // Сохраняем каждый объект в базу
-			        UpdateObject(ownerID, quanObjects);
+			        UpdateObject(ownerID, slot);
                 }
                 else if(typeInterior == 1) // Объекты грузятся в бизнес
                 {
-                    BizzInfo[ownerID][bObject][quanObjects] = object;
-                    BizzInfo[ownerID][bUser][quanObjects] = PlayerInfo[playerid][pID];
-                    BizzInfo[ownerID][bOmodel][quanObjects] = GetDynamicObjectModel(object);
+                    BizzInfo[ownerID][bObject][slot] = object;
+                    BizzInfo[ownerID][bUser][slot] = PlayerInfo[playerid][pID];
+                    BizzInfo[ownerID][bOmodel][slot] = GetDynamicObjectModel(object);
 
                     // Сохраняем каждый объект в базу
-			        UpdateObjectBiz(ownerID, quanObjects);
+			        UpdateObjectBiz(ownerID, slot);
                 }
-                quanObjects ++;
             }
         }
 
@@ -726,6 +737,7 @@ function LoadPackInterior(playerid, typeInterior, ownerID, newid)
 }
 
 
+//=========================
 // Личное хранилище текстур
 enum ObjectMaterialInfo
 {
@@ -751,9 +763,12 @@ stock CopyMaterialsFromObject(playerid, objectid)
     new quan;
     for(new i = 0; i < 16; i++)
     {
-        CopyMaterial[playerid][i][copy_modelid] = 0;
-        GetDynamicObjectMaterial(objectid, i, CopyMaterial[playerid][i][copy_modelid], CopyMaterial[playerid][i][copy_texturelib], CopyMaterial[playerid][i][copy_texturename], CopyMaterial[playerid][i][copy_materialcolor]);
-        if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++;
+        new yesText;
+        CopyMaterial[playerid][i][copy_modelid] = 0; // Очищаем переменную
+        yesText = GetDynamicObjectMaterial(objectid, i, CopyMaterial[playerid][i][copy_modelid], CopyMaterial[playerid][i][copy_texturelib], CopyMaterial[playerid][i][copy_texturename], CopyMaterial[playerid][i][copy_materialcolor]);
+        if(!yesText) CopyMaterial[playerid][i][copy_modelid] = 0; // Если тексты в слоте не оказалось, чистим
+        
+        if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++; // Считаем записанные текстуры
     }
     return quan;
 }
@@ -785,4 +800,13 @@ stock GetQuanCopyMaterial(playerid)
         if(CopyMaterial[playerid][i][copy_modelid] > 0) quan ++;
     }
     return quan;
+}
+
+// Проверяем, является ли объект планировкой или его частью
+stock IsAFrameObject(model)
+{
+    new Float:pos[6];
+	GetCoordFrame(model, pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]);
+	if(pos[0] != 0.0 && pos[1] != 0.0) return true; // Нашли объект в списке, значит это планировка или её часть
+    return false;
 }

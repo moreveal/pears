@@ -332,7 +332,7 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
             return 1;
         }
         
-        new findSlot = getFreeSlotObjectBiz(oid);
+        new findSlot = GetFreeSlotObjectBiz(oid);
         if(findSlot == -1)
         {
             ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
