@@ -250,6 +250,9 @@ enum e_DialogId {
     PACK_INTERIORS_DELETE,
     PACK_INTERIORS_NAME,
     PACK_INTERIORS_INFO,
-    PACK_INTERIORS_DONATE
+    PACK_INTERIORS_DONATE,
+
+    // Клонируем объект в интерьере дома или биза
+    CLONE_OBJECT_INTERIOR
 };
 

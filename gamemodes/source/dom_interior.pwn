@@ -102,6 +102,47 @@ stock CheckObjectRedaktDom(playerid, dom, oba)
     return false;
 }
 
+// Готовимся клонировать объект (из дома или биза)
+stock PreviewCloneObject(playerid, typeInterior, ownerID, oba)
+{
+    new model;
+    if(typeInterior == 0)
+    {
+        if(CheckObjectRedaktDom(playerid, ownerID, oba)) return true;
+        model = DomInfo[ownerID][dOmodel][oba];
+    }
+    else if(typeInterior == 1)
+    {
+        if(CheckObjectRedaktBiz(playerid, ownerID, oba)) return true;
+        model = BizzInfo[ownerID][bOmodel][oba];
+    }
+
+    if(IsAFrameObject(model)) return ErrorMessage(playerid, "{FF6347}Нельзя клонировать детали планировки");
+    new price = getIkeaObjectPrice(model); // Находим цену в IKEA
+    DP[0][playerid] = typeInterior; // Запоминаем, откуда клонируем объект
+    DP[1][playerid] = oba; // ID объекта
+    DP[2][playerid] = price; // Стоимость объекта
+    DP[3][playerid] = ownerID; // Запоминаем номер дома или биза, откуда клонируем объект
+    
+    QuestionCloneObject(playerid, oba, model, price); // Отображаем диалоговое окно с вопросом о начале клонирования
+    return true;
+}
+
+stock QuestionCloneObject(playerid, oba, model, price)
+{
+    if(price > PlayerInfo[playerid][pAccount]) return ErrorMessage(playerid, "{FF6347}На вашем банковском счету недостаточно средств");
+
+    new string[240];
+    format(string, sizeof(string),"{ff9000}Вы уверены, что хотите клонировать объект ID %d, Model %d?
+                            \n{cccccc}Стоимость клонирования из IKEA: {99ff66}%d$ {cccccc}(%s)", 
+                                    oba, 
+                                    model,
+                                    price,
+                                    get_k(price));
+    ShowDialog(playerid, CLONE_OBJECT_INTERIOR, DIALOG_STYLE_MSGBOX, "{ff9000}Редактор Объектов", string, "Да", "Нет");
+    return true;
+}
+
 stock InfoObjectDomBiz(playerid, type, id, oba)
 {
     new max_objects = MAX_OBJECT_INT;
@@ -751,4 +792,72 @@ stock AccessRightDomInterior(playerid, nd)
 		if(DomInfo[nd][dAccfur] == 3 && (DomInfo[nd][dFam] >= 1 && PlayerInfo[playerid][pFamily] != DomInfo[nd][dFam]) && PlayerInfo[playerid][pHouserent] != nd) return ErrorMessage(playerid, "{FF6347}Изменять интерьер в этом доме могут только владелец, проживающие и семья, которая здесь живёт");
 	}
 	return false;
+}
+
+stock dialogCase_RedaktInterior(playerid, dialogid, response)
+{
+    switch (e_DialogId: dialogid) 
+    {
+        case CLONE_OBJECT_INTERIOR: // Клонируем выбранный объект
+        {
+            if(response) 
+            {
+                new typeInterior = DP[0][playerid]; // Откуда клонируем объект (0 дом, 1 биз)
+                new oba = DP[1][playerid]; // ID объекта (слот в переменной)
+                new price = DP[2][playerid]; // Стоимость объекта (расчитали из IKEA)
+                new ownerID = DP[3][playerid]; // Номер дома или биза, откуда клонируем объект и куда ставим
+
+                if(price > PlayerInfo[playerid][pAccount]) return ErrorMessage(playerid, "{FF6347}На вашем банковском счету недостаточно средств");
+            
+                new findSlot, model;
+                if(typeInterior == 0) // Клонируем объект в дом
+                {
+                    if(CheckObjectRedaktDom(playerid, ownerID, oba)) return true;
+                    model = DomInfo[ownerID][dOmodel][oba];
+
+                    new Float:obj_pos[3], Float:obj_rot[3];
+ 			    	GetDynamicObjectPos(DomInfo[ownerID][dObject][oba], obj_pos[0], obj_pos[1], obj_pos[2]);
+                    GetDynamicObjectRot(DomInfo[ownerID][dObject][oba], obj_rot[0], obj_rot[1], obj_rot[2]);
+
+                    findSlot = CreateObjectInDom(playerid, ownerID, model, obj_pos[0] + 0.5, obj_pos[1] + 0.5, obj_pos[2], obj_rot[0], obj_rot[1], obj_rot[2], ownerID + 1000, 90);
+                    if(findSlot >= 0)
+                    {
+                        CopyAndPasteMaterialObject(DomInfo[ownerID][dObject][oba], DomInfo[ownerID][dObject][findSlot]); // Копируем текстуры
+                        UpdateObject(ownerID, findSlot); // Сохраняем клонированный объект в базу
+                    }
+                }
+                else if(typeInterior == 1) // Клонируем объект в бизнес
+                {
+                    if(CheckObjectRedaktBiz(playerid, ownerID, oba)) return true;
+                    model = BizzInfo[ownerID][bOmodel][oba];
+
+                    new Float:obj_pos[3], Float:obj_rot[3];
+ 			    	GetDynamicObjectPos(BizzInfo[ownerID][bObject][oba], obj_pos[0], obj_pos[1], obj_pos[2]);
+                    GetDynamicObjectRot(BizzInfo[ownerID][bObject][oba], obj_rot[0], obj_rot[1], obj_rot[2]);
+
+                    findSlot = CreateObjectInBiz(playerid, ownerID, model, obj_pos[0] + 0.5, obj_pos[1] + 0.5, obj_pos[2], obj_rot[0], obj_rot[1], obj_rot[2], ownerID + 3000, 90);
+                    if(findSlot >= 0)
+                    {
+                        CopyAndPasteMaterialObject(BizzInfo[ownerID][bObject][oba], BizzInfo[ownerID][bObject][findSlot]); // Копируем текстуры
+                        UpdateObjectBiz(ownerID, findSlot); // Сохраняем клонированный объект в базу
+                    }
+                }
+
+                if(findSlot >= 0)
+                {
+                    if(price > 0) oGivePlayerBank(playerid, -price); // Снимаем деньги за клонирование
+                    PlayerPlaySound(playerid,45400,0,0,0);
+                    new string[100];
+                    format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~OЂђEKЏ %d K‡OH…PO‹AH~n~CO3ѓAH ~y~%d", oba, findSlot);
+                    GameTextForPlayer(playerid,string,1500,3);
+                    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Предмет ID %d клонирован и создан ID %d (Стоимость %d$)", oba, findSlot, price);
+
+                    format(string, sizeof(string),"Clone object model %d", model);
+                    MoneyLog("buyfurn", PlayerInfo[playerid][pID], PlayerInfo[playerid][pName], PlayerInfo[playerid][pPlaIP], 0, "", "", -price, string);
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 }

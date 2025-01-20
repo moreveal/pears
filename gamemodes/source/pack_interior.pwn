@@ -810,3 +810,25 @@ stock IsAFrameObject(model)
 	if(pos[0] != 0.0 && pos[1] != 0.0) return true; // Нашли объект в списке, значит это планировка или её часть
     return false;
 }
+
+stock CopyAndPasteMaterialObject(copy_objectid, paste_objectid)
+{
+    if(!IsValidDynamicObject(copy_objectid) || !IsValidDynamicObject(paste_objectid)) return false;
+
+    new clone_modelid;
+    new clone_texturelib[32];
+	new clone_texturename[32];
+    new clone_materialcolor;
+    
+    for(new i = 0; i < 16; i++)
+    {
+        new yesText = GetDynamicObjectMaterial(copy_objectid, i, clone_modelid, clone_texturelib, clone_texturename, clone_materialcolor);
+        if(!yesText) clone_modelid = 0;
+        
+        if(clone_modelid > 0)
+        {
+            SetDynamicObjectMaterial(paste_objectid, i, clone_modelid, clone_texturelib, clone_texturename, clone_materialcolor);
+        }
+    }
+    return true;
+}

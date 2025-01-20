@@ -123,46 +123,23 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_FURNITURE_SET) // Установка мебели в доме
     {
-        new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
-        new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
-        if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
+        new findSlot = CreateObjectInDom(playerid, oid, modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+       
+        // Неудачная установка, значит отменяем редактирование
+        if(findSlot == -1) 
         {
-            format(string,sizeof(string),"{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше %.0f метров от дома", DomInfo[oid][dMapDistance]);
-            ErrorMessage(playerid, string);
             CancelEditable(playerid);
-            return 1;
+            return false;
         }
 
-        new findSlot = getFreeSlotObjectDom(oid);
-        if(findSlot == -1)
-        {
-            ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
-            CancelEditable(playerid);
-            return 1;
-        }
-
-        if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
-		{
-            if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET)
-            {
-                ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице");
-                CancelEditable(playerid);
-                return 1;
-            }
-        }
-        
-        DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0; // Удаляем предмет из дома
+        // Удаляем предмет из дома
+        DomInfo[oid][dInvent][slot] = 0, DomInfo[oid][dInv][slot] = 0;
         SaveOneTainik(oid, slot);
-
-        DomInfo[oid][dObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
-		DomInfo[oid][dUser][findSlot] = PlayerInfo[playerid][pID];
-		DomInfo[oid][dQara][findSlot] = DomInfo[oid][dInvQara][slot];
-		DomInfo[oid][dOmodel][findSlot] = modelid;
-        UpdateObject(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
-
-        Update3DLabelDomBiz(oid, findSlot, 1);
-        if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
+        
+        // Сохраняем объект в базу
+        UpdateObject(oid, findSlot);
     }
+
     else if(gRedakt[playerid] == REDAKT_TYPE_CAMERA) // Установка Камер Слежения
 	{
         if(camerafbi >= 100) return ErrorMessage(playerid, "{FF6347}Лимит камер слежения"), EndObjectEditing(playerid);
@@ -323,44 +300,21 @@ stock SaveEditPlayerObject(playerid, modelid, Float:x, Float:y, Float:z, Float:r
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_BIZ_FURNITURE_SET) // Установка мебели в бизнесе
     {
-        new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
-        new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
-        if(dist > 200.0 && distStreet > 30.0)
+        new findSlot = CreateObjectInBiz(playerid, oid, modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+       
+        // Неудачная установка, значит отменяем редактирование
+        if(findSlot == -1) 
         {
-            ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
             CancelEditable(playerid);
-            return 1;
-        }
-        
-        new findSlot = GetFreeSlotObjectBiz(oid);
-        if(findSlot == -1)
-        {
-            ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
-            CancelEditable(playerid);
-            return 1;
+            return false;
         }
 
-        if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
-		{
-            if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET)
-            {
-                ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
-                CancelEditable(playerid);
-                return 1;
-            }
-        }
-        
+        // Удаляем предмет из биза
         BizzInfo[oid][bInvent][slot] = 0, BizzInfo[oid][bInv][slot] = 0; // Удаляем предмет из бизнеса
         SaveSkladBiz(oid, slot);
-
-        BizzInfo[oid][bObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), -1, 200.00, 200.00);
-		BizzInfo[oid][bUser][findSlot] = PlayerInfo[playerid][pID];
-		BizzInfo[oid][bQara][findSlot] = BizzInfo[oid][bInvQara][slot];
-		BizzInfo[oid][bOmodel][findSlot] = modelid;
-        UpdateObjectBiz(oid, findSlot); // Обновляем только расположение (текстуры не обновляем)
-
-        Update3DLabelDomBiz(oid, findSlot, 2);
-        if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
+        
+        // Сохраняем объект в базу
+        UpdateObjectBiz(oid, findSlot);
     }
     else if(gRedakt[playerid] == REDAKT_TYPE_BUS_STATION) // Установка Остановки
     {
@@ -863,4 +817,78 @@ stock CancelDynamicEditable(playerid)
     CancelPlayerEditObject(playerid);
     PlayerPlaySound(playerid, 31200, 0, 0, 0);
     return 1;
+}
+
+// Создание объекта в слот в доме
+stock CreateObjectInDom(playerid, oid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid)
+{
+    new Float:dist = GetDistancePoint(x, y, z, DomInfo[oid][dEnterX], DomInfo[oid][dEnterY], DomInfo[oid][dEnterZ]);
+    new Float:distStreet = GetDistancePoint(x, y, z, DomInfo[oid][dKoordinatX], DomInfo[oid][dKoordinatY], DomInfo[oid][dKoordinatZ]);
+    if(dist > 200.0 && distStreet > DomInfo[oid][dMapDistance])
+    {
+        new string[150];
+        format(string,sizeof(string),"{FF6347}Предмет слишком далеко от вашего дома\n{cccccc}Установка объектов доступна только в интерьере или не дальше %.0f метров от дома", DomInfo[oid][dMapDistance]);
+        ErrorMessage(playerid, string);
+        return -1;
+    }
+
+    new findSlot = getFreeSlotObjectDom(oid);
+    if(findSlot == -1)
+    {
+        ErrorMessage(playerid, "{FF6347}В этом доме закончились слоты для установки объектов");
+        return -1;
+    }
+
+    if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    {
+        if(getObjectStreetDom(oid) >= MAX_DOM_OBJECT_STREET)
+        {
+            ErrorMessage(playerid, "{FF6347}В этом доме установлено максимальное количество предметов на улице");
+            return -1;
+        }
+    }
+    
+    DomInfo[oid][dObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, worldid, interiorid, -1, 200.00, 200.00);
+    DomInfo[oid][dUser][findSlot] = PlayerInfo[playerid][pID];
+    DomInfo[oid][dOmodel][findSlot] = modelid;
+
+    Update3DLabelDomBiz(oid, findSlot, 1);
+    if(PlayerInfo[playerid][pAchieve][11] == 0) AchievePlayer(playerid, 11, 1);
+    return findSlot;
+}
+
+// Создание объекта в слот в бизнесе
+stock CreateObjectInBiz(playerid, oid, modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid)
+{
+    new Float:dist = GetDistancePoint(x, y, z, BizzInfo[oid][bEnterX], BizzInfo[oid][bEnterY], BizzInfo[oid][bEnterZ]);
+    new Float:distStreet = GetDistancePoint(x, y, z, BizzInfo[oid][bInteriorX], BizzInfo[oid][bInteriorY], BizzInfo[oid][bInteriorZ]);
+    if(dist > 200.0 && distStreet > 30.0)
+    {
+        ErrorMessage(playerid, "{FF6347}Предмет слишком далеко от вашего бизнеса\n{cccccc}Установка объектов доступна только в интерьере или не дальше 30 метров от бизнеса");
+        return -1;
+    }
+        
+    new findSlot = GetFreeSlotObjectBiz(oid);
+    if(findSlot == -1)
+    {
+        ErrorMessage(playerid, "{FF6347}В этом бизнесе закончились слоты для установки объектов");
+        return -1;
+    }
+
+    if(GetPlayerVirtualWorld(playerid) == 0 && GetPlayerInterior(playerid) == 0)
+    {
+        if(getObjectStreetBiz(oid) >= MAX_DOM_OBJECT_STREET)
+        {
+            ErrorMessage(playerid, "{FF6347}В этом бизнесе установлено максимальное количество предметов на улице");
+            return -1;
+        }
+    }
+        
+    BizzInfo[oid][bObject][findSlot] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, worldid, interiorid, -1, 200.00, 200.00);
+    BizzInfo[oid][bUser][findSlot] = PlayerInfo[playerid][pID];
+    BizzInfo[oid][bOmodel][findSlot] = modelid;
+
+    Update3DLabelDomBiz(oid, findSlot, 2);
+    if(PlayerInfo[playerid][pAchieve][122] == 0) AchievePlayer(playerid, 122, 1);
+    return findSlot;
 }
