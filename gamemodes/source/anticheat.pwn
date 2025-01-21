@@ -310,3 +310,16 @@ stock AntiIgnoreSpawn(playerid)
     }
     return 1;
 }
+
+CMD:testint(playerid)
+{
+    SetTimerEx("TestChangeInt", 5000, false, "d", playerid);
+    return true;
+}
+
+function TestChangeInt(playerid)
+{
+    PPSetPlayerInterior(playerid, 228);
+    SendClientMessage(playerid, -1, "Интерьер сменился, unix: %d", gettime());
+    return true;
+}
