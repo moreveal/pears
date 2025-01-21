@@ -31,8 +31,10 @@ enum wildpetnpc
 	NPC:wildpetID, // ID бота
     wildpetPos, // Позиция спавна
     wildpetType, // Скин 
+    wildpetHungry, // Кормление
     wildpet_Events: wildpetEvent, // Задачки
     wildpetEventUnix, // Время на задачки
+    wildpetPlayer,
     wildpetUnix, // Таймер на спавн.
     wildpetAnim, // Статус анимки
     wildpetSoundUnix, // КД на звук дикого питомца
@@ -84,6 +86,8 @@ stock CreateWildPet(pet)
     WildPetInfo[pet][wildpetType] = FindRandomWildPet();
     WildPetInfo[pet][wildpetUnix] = gettime();
     WildPetInfo[pet][wildpetPos] = pos;
+    WildPetInfo[pet][wildpetPlayer] = INVALID_PLAYER_ID;
+    WildPetInfo[pet][wildpetHungry] = 0;
     WildPetInfo[pet][wildpetID] = CreateNpc(PetsParam[WildPetInfo[pet][wildpetType]][0], WildPetCords[pos][WildPetX], WildPetCords[pos][WildPetY], WildPetCords[pos][WildPetZ]);
     SetNpcInvulnerable(WildPetInfo[pet][wildpetID], true);
     SetNpcStunAnimationEnabled(WildPetInfo[pet][wildpetID], false);
@@ -103,6 +107,92 @@ CMD:gotowildpet(playerid, const params[])
     new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
     GetNpcPosition(WildPetInfo[pet][wildpetID],AnimalX,AnimalY,AnimalZ);
     PPSetPlayerPos(playerid, AnimalX, AnimalY, AnimalZ);
+    return true;
+}
+
+stock Pump_FeedWildPet(playerid)
+{
+	SetPVarInt(playerid, "oryjtemp", GetPVarInt(playerid, "oryjtemp") + 1);
+
+    new pet = GetPVarInt(playerid,"wildpet");
+    new Float:AnimalX, Float:AnimalY, Float:AnimalZ;
+    GetNpcPosition(WildPetInfo[pet][wildpetID],AnimalX,AnimalY,AnimalZ);
+    if(!IsPlayerInRangeOfPoint(playerid, 5.0, AnimalX,AnimalY,AnimalZ)) 
+    {
+        SetPVarInt(playerid, "wildpet", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
+        return ErrorMessage(playerid, "{ff6347}Вы далеко отошли от питомца, кормление прервано!");
+    }
+    if(HoldStat[playerid] != 262)
+    {
+        SetPVarInt(playerid, "wildpet", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
+        return ErrorMessage(playerid, "{ff6347}Вы убрали колбасу из рук, кормление прервано!");
+    }
+	if(GetPVarInt(playerid,"oryjtemp") >= 10)
+	{
+	 	GameTextForPlayer(playerid, RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Кормление: ~w~10/10"), 1500, 3);
+	 	
+        switch(random(10) + WildPetInfo[pet][wildpetHungry])
+        {
+            case 0..9:
+            {
+                WildPetInfo[pet][wildpetHungry]++;
+                ErrorMessage(playerid, "{ff6347}Питомец съел всю колбасу... Нужно попробывать еще\n\n{cccccc}Шанс на успешное приручение был повышен!");
+            }
+            default: GivePlayerWildPet(playerid,pet);
+        }
+
+        stopdrink(playerid);
+        RemovePlayerAttachedObject(playerid,1);
+
+	 	ClearAnim(playerid);
+        SetPVarInt(playerid, "wildpet", 0), SetPVarInt(playerid, "oryjtemp", 0), SetPVarInt(playerid,"Arobsklad",0);
+	}
+	else
+	{
+		new string[75];
+		format(string, sizeof(string), RusToGame("~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~y~Кормление: ~w~%d/10"), GetPVarInt(playerid, "oryjtemp"));
+	 	GameTextForPlayer(playerid, string, 1500, 3);
+	 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, false, true, true, true, true);
+ 	}
+ 	return true;
+}
+
+stock FindWildPet(playerid)
+{
+    for(new pet = 0; pet < MAX_WILDPET; pet++)
+    {
+        if(WildPetInfo[pet][wildpetPlayer] == playerid)
+        {
+            Pump_StartFeedWildPet(playerid,pet);
+            break;
+        }       
+    }
+    return true;
+}
+
+stock GivePlayerWildPet(playerid,pet)
+{
+    new put_inva = GiveThingPlayer(playerid, PetsParam[WildPetInfo[pet][wildpetType]][2], 1, 0, 0, 6, 0, 9999);
+    if(put_inva == -1) return ErrorMessage(playerid, "{FF6347}У вас нет места в инвентаре");
+
+    DestroyWildPet(pet);
+    SuccessMessage(playerid, "{44ff99}Я получил питомца. Теперь он в моем инвентаре!");
+
+    return true;
+}
+
+stock Pump_StartFeedWildPet(playerid, pet)
+{
+    if(GetPlayerVirtualWorld(playerid) != 0 || GetPlayerInterior(playerid) != 0) return 0;
+    if(GetPVarInt(playerid, "Arobsklad") > 0) return 0;
+
+    if(get_invent4(playerid, 262, 0) <= 0 || get_para(playerid,262) < gettime()) return ErrorMessage(playerid, "{FF6347}У вас нет колбасы [ Приготовьте её на плите ]");
+    if(HoldStat[playerid] != 262) return ErrorMessage(playerid, "{FF6347}Возьмите в руки колбасу, чтобы начать кормить питомца [ N ]");
+    
+    if(WildPetInfo[pet][wildpetPlayer] != playerid) return ErrorMessage(playerid, "{FF6347}Я не могу кормить животное которое шло не ко мне");
+    SetPVarInt(playerid, "wildpet", pet), SetPVarInt(playerid, "oryjtemp", 0); SetPVarInt(playerid, "Arobsklad", 18);
+    SendClientMessage(playerid, COLOR_GREY, "[ Мысли ]: Теперь мне нужно начать кормить питомца {ff9000}[ Нажимайте %s ]", buttonName[Device[playerid]]);
+
     return true;
 }
 
@@ -163,6 +253,8 @@ stock DestroyWildPet(pet)
 {
     if(IsValidNpc(WildPetInfo[pet][wildpetID])) DestroyNpc(WildPetInfo[pet][wildpetID]);
     WildPetPosOccupied[WildPetInfo[pet][wildpetPos]] = 0;
+    // Очищаем все переменные WildPet
+	for(new wildpetnpc:i; i < wildpetnpc; ++i) WildPetInfo[pet][i] = 0;
     WildPetInfo[pet][wildpetUnix] += 3600;
 
     return true;
@@ -189,6 +281,7 @@ stock WildPetPlaySound(pet)
             if(WildPetInfo[pet][wildpetEvent] == WILDPET_FOLLOW) return false;
             TaskNpcFollowPlayer(WildPetInfo[pet][wildpetID], playerid);
             WildPetInfo[pet][wildpetEvent] = WILDPET_FOLLOW;
+            WildPetInfo[pet][wildpetPlayer] = playerid;
         }
         else
         {
@@ -203,6 +296,7 @@ stock WildPetPlaySound(pet)
             WildPetInfo[pet][wildpetEvent] = WILDPET_RUN;
             TaskNpcGoToPoint(WildPetInfo[pet][wildpetID],AnimalX,AnimalY,AnimalZ, NPC_MOVE_MODE_RUN);
             WildPetInfo[pet][wildpetEventUnix] = gettime()+1000;
+            WildPetInfo[pet][wildpetPlayer] = INVALID_PLAYER_ID;
         }
     }
     return true;
