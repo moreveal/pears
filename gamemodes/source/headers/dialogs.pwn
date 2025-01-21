@@ -225,7 +225,7 @@ enum e_DialogId {
     MP_DIALOG_SKIN_INPUT,
 
     
-    //Боевой пропуск
+    // Боевой пропуск
     BATTLEPASS_SHOW_MENU,
     BATTLEPASS_SHOW_MENU_TASKS,
     BATTLEPASS_SHOW_MENU_AWARDS,
@@ -238,6 +238,9 @@ enum e_DialogId {
     PETS_SHOW_PETMANAGE,
 
     // Новый год
-    NEWYEAR_SHOW_STARTQUEST
+    NEWYEAR_SHOW_STARTQUEST,
+
+    // Тюремный терминал
+    JAIL_DIALOG_TERMINAL
 };
 
