@@ -301,3 +301,18 @@ stock WildPetPlaySound(pet)
     }
     return true;
 }
+
+stock dialogInformationWildPets(playerid)
+{
+	new lines[700], string[60];
+	format(lines,sizeof(lines),"\n{0088ff}Что за кошки/собаки гуляют по улицам?\n\
+                                \n{cccccc}- Это дикие питомцы, их можно приручить и начать ухаживать за ними.\
+								\n{cccccc}- Что бы приручить питомца вам нужно приготовить колбасу на кухонной плите.\
+                                \n{cccccc}- Приготовьте несколько колбас. Шанс что питомец станет вашем с первой колбасы очень мал\
+                                \n{cccccc}но с каждой колбасой шанс на приручение становится больше!\
+                                \n{cccccc}- Дикие питомцы очень слабые, их прокачка займет много времени!\
+                                \n{cccccc}- Питомцы спавнятся раз в час на территории Лос-Сантоса, в закаулках, у мусорок и т.п.");
+	format(string,sizeof(string),"{ff9000}Что за кошки/собаки гуляют по улицам?");
+	ShowDialog(playerid,PETS_HELP_LIST,DIALOG_STYLE_MSGBOX, string, lines, "Назад", "");
+	return true;
+}
