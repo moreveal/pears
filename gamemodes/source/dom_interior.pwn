@@ -845,7 +845,11 @@ stock dialogCase_RedaktInterior(playerid, dialogid, response)
 
                 if(findSlot >= 0)
                 {
-                    if(price > 0) oGivePlayerBank(playerid, -price); // Снимаем деньги за клонирование
+                    if(price > 0)
+                    {
+                        oGivePlayerBank(playerid, -price); // Снимаем деньги за клонирование
+                        putkazna(2, price); // Кладём деньги в казну
+                    }
                     PlayerPlaySound(playerid,45400,0,0,0);
                     new string[100];
                     format(string,sizeof(string),"~n~~n~~n~~n~~n~~n~~n~~n~~n~~n~~w~OЂђEKЏ %d K‡OH…PO‹AH~n~CO3ѓAH ~y~%d", oba, findSlot);
