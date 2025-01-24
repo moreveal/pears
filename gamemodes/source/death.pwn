@@ -125,6 +125,7 @@ stock SetPlayerDeath(playerid, reason)
 
     WupakSound(playerid);
     Wupak(playerid);
+    AdminAks(playerid);
     return 1;
 }
 
